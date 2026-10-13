@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "328f42c09a250cd649e26749eeeb682a3e3288209e2a86570be7c2690abc1958",
+  "git_delta": {
+    "base_commit": "a6802acd0ff1273ebba6a4e11fede6370a947f4c",
+    "candidate_commit": "cd047f6674e9d5a232a54367843e9340eb2d6c56",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ods_interval_sup_le",
+    "diff_sha256": "6e8d4075e06062bb5c59403b5365ac8901e81ddc09224cfba71cb5aa92ffbf77",
+    "source_sha256": "410f751a8333eaa082eed70b08267e00ffa28f993af09c0d70b901dac6dc44bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ods_interval_sup_le",
+      "statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K W (Icc (-a) a) → ∀ t ∈ Icc (-a) a, ‖W t‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) + Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "06856594563bb4b2a0b66eaf7063044ea7264300da534cdbebcd13c24d710438",
+  "git_delta": {
+    "base_commit": "8b633c47349f345c91d7e6dfd6535b5fae2f0b88",
+    "candidate_commit": "50a2a442df0f93195c7644b39f702ab047f58df3",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "78346ae0ea1f494b243ace75274f314af789170bf285a45045c6c7d464a3df4a",
+    "source_sha256": "b31f9df6e73870387262f1201c151c13816e0d265efd327ff4aedbf93667af44",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gps_fderiv_zero_apply",
+      "statement": "∀ (n ℓ : ℕ) (H : Rn n →L[ℝ] Rn ℓ) (x : Rn n) (y : Rn ℓ), fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H (graphPoint x y) = graphPoint (∑ i : Fin n, inner ℝ (H (EuclideanSpace.single i 1)) y • EuclideanSpace.single i 1) (H x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

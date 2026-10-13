@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.height_transfer-a1.ae_transfer-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.height_transfer-a1",
+  "depth": 4,
+  "title": "Push-forward domination by Borel integrands extends to a.e.-measurable integrands (null-set transport; steps 1, 3, 7 of the height transfer)",
+  "statement": "Let n, l >= 0. Let nu be a measure on R^n (Rn n) and mu a measure on R^(n+l) (Amb n l), both spaces with their Borel sigma-algebras, and let F : R^n -> R^(n+l) be nu-a.e.-measurable (AEMeasurable F nu). Assume (E): for every Borel measurable h : R^(n+l) -> [0, infinity], the lower Lebesgue integral of h(F(x)) d nu(x) is at most the lower Lebesgue integral of h d mu. Then for every g : R^(n+l) -> [0, infinity] that is mu-a.e.-measurable (AEMeasurable g mu), the lower integral of g(F(x)) d nu(x) is at most the lower integral of g d mu. (Lower integrals are Mathlib's lintegral, defined for arbitrary [0, infinity]-valued functions.)",
+  "lean_statement": "∀ (n ℓ : ℕ) (ν : Measure (Rn n)) (μ : Measure (Amb n ℓ)) (F : Rn n → Amb n ℓ), AEMeasurable F ν → (∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ) → ∀ g : Amb n ℓ → ℝ≥0∞, AEMeasurable g μ → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ",
+  "lean_name": "any_radius_gr_ht_ae_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-height-transfer-a1-ae-transfer-a1-a1"
+}

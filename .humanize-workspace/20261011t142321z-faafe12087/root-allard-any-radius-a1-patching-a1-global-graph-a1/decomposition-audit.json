@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "subset_of_closure_inter_subset|theorem Convex.isPreconnected|theorem convex_ball|theorem ContDiffOn.contDiffAt|theorem ContDiffAt.congr_of_eventuallyEq|theorem ContDiffAt.contDiffWithinAt|theorem Filter.EventuallyEq.fderiv_eq|instance.*hasOpNorm",
+        "arp_ball_subset_of_closed_rel_open|arp_contDiffOn_of_local_C1_reps",
+        "python3 -I '/tmp/gg-independent-audit-swxtc9xn/run_check.py' 'Checks/Children.lean'",
+        "python3 -I '/tmp/gg-independent-audit-swxtc9xn/run_check.py' 'Checks/Challenge_ball_cover.lean'",
+        "python3 -I '/tmp/gg-independent-audit-swxtc9xn/run_check.py' 'Checks/Challenge_local_c1.lean'",
+        "python3 -I '/tmp/gg-independent-audit-swxtc9xn/run_check.py' 'Checks/ParentSkeleton.lean'"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Connected/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convex/PathConnected.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/Convex.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-patching-a1-global-graph-a1/decomposition-v1.json",
+        "/tmp/gg-independent-audit-swxtc9xn/Checks/Children.lean",
+        "/tmp/gg-independent-audit-swxtc9xn/Checks/Challenge_ball_cover.lean",
+        "/tmp/gg-independent-audit-swxtc9xn/Checks/Challenge_local_c1.lean",
+        "/tmp/gg-independent-audit-swxtc9xn/Checks/ParentSkeleton.lean"
+      ],
+      "conclusion": "The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; workspace contract and compiler inputs match. The cited connectedness and calculus lemmas have the required hypotheses and conclusions. Independently translated both supplied child proofs into Lean: both compile and depend only on propext, Classical.choice and Quot.sound. Both exact one-line types pass validation and elaborate in comparator-generated challenges without importing either implementation. A compiled rfl check confirms the derivative norm is the operator norm; no Matrix/IsUnit construction occurs. Neither bare name is reserved by another DAG branch, and no existing DAG type is identical. Dependencies are acyclic. Splitting is appropriate: the children isolate steps 6 and 11 while leaving the geometric construction in the selected parent. The byte-identical parent type compiles from exactly these two obligations and its existing coordinate sibling, with only standard axioms otherwise; all five conclusions are preserved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the standalone Lean proposition. The supplied proof establishes openness of U using the stated neighborhoods, nonempty intersection using R > 0 and c ∈ D, and the closure condition using closedness of D. Preconnectedness then gives the precise conclusion. Every step is justified without circular reliance or deferred proof search. It applies in parent step 6 with D = π(K), c = 0 and ε = s. The bare name is unreserved and the empty dependency list is correct."
+    },
+    {
+      "key": "local_c1",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including openness of Ω and the derivative bound only at each representative's center. Positive ε and openness give a full neighborhood on which u = f; eventual equality transfers ContDiffAt and fderiv, yielding both conclusions pointwise. No additional sign or dimension hypotheses are needed. The proof is complete, non-circular and directly formalizable. Parent step 11 supplies every hypothesis with ε = s. The operator-norm instance was independently checked; the bare name is unreserved and no child dependency is missing."
+    }
+  ],
+  "required_changes": []
+}

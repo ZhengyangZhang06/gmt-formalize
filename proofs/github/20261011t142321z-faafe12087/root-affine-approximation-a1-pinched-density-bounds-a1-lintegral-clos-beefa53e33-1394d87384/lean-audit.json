@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c97ea97bc4f6628f118fbba4904f9a2c459fd72715b2e66ac4c47c2eae8b2a0f",
+  "git_delta": {
+    "base_commit": "f700d191071daed3f77c3940be211b0cdeba3b8c",
+    "candidate_commit": "9d88259dd1c4173a3bde5236756fc76b2e35b9e1",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_lintegral_closedBall_le_of_annuli",
+    "diff_sha256": "c41f3d396ce49a3995c2214a48cac776f79c36623da33df12acb5f4f4739642d",
+    "source_sha256": "b7a707b12fa3fd31174356e3ebc3cf894773dec71ee25dae32da0c6da3fd5f84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_lintegral_closedBall_le_of_annuli",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (s M : ℝ), 0 < s → (∀ x, 0 ≤ g x) → g y = 0 → (∀ t : ℝ, 0 < t → t < s → IntegrableOn g (closedBall y s \\ closedBall y t) μ ∧ ∫ x in closedBall y s \\ closedBall y t, g x ∂μ ≤ M) → ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal M",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

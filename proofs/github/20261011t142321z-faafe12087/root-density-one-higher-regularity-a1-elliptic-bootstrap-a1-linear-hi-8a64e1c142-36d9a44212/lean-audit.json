@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "596e9affc4c50b644f5868dbf04858296f7a021e1bc2114347e8a72735cdf7d2",
+  "git_delta": {
+    "base_commit": "e8d35e73edb7fc5b219addebd1eb552647a6e5b6",
+    "candidate_commit": "b0f24c74dee8362bf23cc49925169d6fbfe9f9d4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_cub_scalar_c1_bounds",
+    "diff_sha256": "61b0d5e96b509301531d9976b06db4c490662488112591626347b716f106b705",
+    "source_sha256": "cc32bb6c9f6ae1c28a2af0c9deef924956b992bbec6096931de0c3209ac5817e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_cub_scalar_c1_bounds",
+      "statement": "∀ (n : ℕ) (α : ℝ) (U K : Set (Rn n)) (f : Rn n → ℝ), 0 < α → α ≤ 1 → IsOpen U → IsCompact K → Convex ℝ K → K ⊆ U → ContDiffOn ℝ 1 f U → ∃ S : ℝ, 0 ≤ S ∧ ∀ x ∈ K, ∀ y ∈ K, |f x| ≤ S ∧ |f x - f y| ≤ S * ‖x - y‖ ^ α",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

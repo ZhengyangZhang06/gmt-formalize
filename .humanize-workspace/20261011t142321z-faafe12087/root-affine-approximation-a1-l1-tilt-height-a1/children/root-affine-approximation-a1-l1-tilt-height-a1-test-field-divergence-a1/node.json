@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.l1_tilt_height-a1.test_field_divergence-a1",
+  "parent_id": "root.affine_approximation-a1.l1_tilt_height-a1",
+  "depth": 3,
+  "title": "Tangential divergence of the height test field X(y) = zeta(y)^2 p_{T^perp}(y - z) (Simon 5.2.1, displays (1)-(3))",
+  "statement": "Let n, l in N, U any subset of R^{n+l}, V a rectifiable n-varifold in U (contract structure RectifiableVarifold n l U), zeta : R^{n+l} -> R, z, x in R^{n+l}, and P, T linear subspaces of R^{n+l} of dimension n; write p_W = W.starProjection for the orthogonal projection onto a subspace W, D zeta(x) = fderiv R zeta x, and hsNormSq for the squared Hilbert-Schmidt norm. Assume zeta is differentiable at x and V.tangentProj x = p_P. Then the vector field X(y) := zeta(y)^2 p_{T^perp}(y - z) satisfies V.divM X x (= trace(DX(x) o V.tangentProj x)) = zeta(x)^2 * hsNormSq(V.tangentProj x - p_T)/2 + 2 zeta(x) * D zeta(x)((V.tangentProj x - p_T)(p_{T^perp}(x - z))).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ζ : Amb n ℓ → ℝ) (z x : Amb n ℓ) (P T : Submodule ℝ (Amb n ℓ)), DifferentiableAt ℝ ζ x → Module.finrank ℝ P = n → Module.finrank ℝ T = n → V.tangentProj x = P.starProjection → V.divM (fun y => ζ y ^ 2 • Tᗮ.starProjection (y - z)) x = ζ x ^ 2 * (hsNormSq (V.tangentProj x - T.starProjection) / 2) + 2 * ζ x * fderiv ℝ ζ x ((V.tangentProj x - T.starProjection) (Tᗮ.starProjection (x - z)))",
+  "lean_name": "aal_l1th_test_field_divergence",
+  "depends_on": [
+    "root.affine_approximation-a1.l1_tilt_height-a1.projection_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.l1_tilt_height-a1.projection_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-l1-tilt-height-a1-test-field-divergence-a1-a1"
+}

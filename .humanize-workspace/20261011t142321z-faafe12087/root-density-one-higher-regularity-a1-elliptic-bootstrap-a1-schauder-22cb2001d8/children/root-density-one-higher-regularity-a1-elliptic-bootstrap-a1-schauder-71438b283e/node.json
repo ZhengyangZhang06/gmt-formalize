@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1",
+  "depth": 5,
+  "title": "Arzela-Ascoli with diagonal extraction for uniformly Hoelder maps on growing balls",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l) with the operator norm, alpha > 0 and K >= 0 real, f_k : R^n -> L (k in N) and reals R_k with R_k -> +infinity. Assume f_k(0) = 0 for every k, and ||f_k(z) - f_k(z')|| <= K |z - z'|^alpha for every k and all z, z' in the open ball B_{R_k}(0). Then there are a strictly increasing phi : N -> N and V : R^n -> L such that V(0) = 0, V is continuous, ||V(z) - V(z')|| <= K |z - z'|^alpha for all z, z' in R^n, and for every real r, f_{phi(j)} -> V uniformly on the closed ball Bbar_r(0) as j -> infinity.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α K : ℝ) (f : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (R : ℕ → ℝ), 0 < α → 0 ≤ K → Tendsto R atTop atTop → (∀ k, f k 0 = 0) → (∀ k, ∀ z ∈ ball (0 : Rn n) (R k), ∀ z' ∈ ball (0 : Rn n) (R k), ‖f k z - f k z'‖ ≤ K * ‖z - z'‖ ^ α) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ V 0 = 0 ∧ Continuous V ∧ (∀ z z' : Rn n, ‖V z - V z'‖ ≤ K * ‖z - z'‖ ^ α) ∧ ∀ r : ℝ, TendstoUniformlyOn (fun j => f (φ j)) V atTop (closedBall (0 : Rn n) r)",
+  "lean_name": "dohr_eb_sch_bu_holder_diag_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-71438b283e-a1"
+}

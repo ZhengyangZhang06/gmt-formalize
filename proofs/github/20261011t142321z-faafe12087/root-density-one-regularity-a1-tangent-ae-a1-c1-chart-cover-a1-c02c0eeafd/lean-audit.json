@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "31a867d0c9c27e266b3c9b01d8bb87f3cac798e68620200691f04ac68a3fdf0f",
+  "git_delta": {
+    "base_commit": "1ae443252d12942f7588d6a74cebd371fbaaa081",
+    "candidate_commit": "8b0b92ec7a6ca37823ed4a34742ef7560d5ae4e7",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_rectifiable_c1_chart_cover",
+    "diff_sha256": "0cc2613d95b526c06cc966ae823fc84d4f5164bebad750bf6eb6c3ea94925af1",
+    "source_sha256": "993274a6dd12b15ce4fd212955847c5a3d38f4e6956d4100abe786bbb0ad93af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_rectifiable_c1_chart_cover",
+      "statement": "∀ {n ℓ : ℕ} (M : Set (Amb n ℓ)), 1 ≤ n → Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N₀ : Set (Amb n ℓ)) (G : ℕ → Rn n → Amb n ℓ) (c : ℕ → Rn n) (ρ : ℕ → ℝ), (μHE[n] : Measure (Amb n ℓ)) N₀ = 0 ∧ (∀ k, ContDiff ℝ 1 (G k)) ∧ (∀ k, ∀ v ∈ ball (c k) (ρ k), Function.Injective (fderiv ℝ (G k) v)) ∧ (∀ k, ∃ κ : ℝ, 0 < κ ∧ ∀ v ∈ ball (c k) (ρ k), ∀ w ∈ ball (c k) (ρ k), κ * ‖v - w‖ ≤ ‖G k v - G k w‖) ∧ M ⊆ N₀ ∪ ⋃ k, G k '' ball (c k) (ρ k)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

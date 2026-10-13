@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "50d4d73da4b6421ffe50cf4a0736675014d9b1f33ae58d0e0e0c2b2b7181b254",
+  "git_delta": {
+    "base_commit": "1b863de3fe4be93d72e9bbb4a4ebe2f1cf4357d7",
+    "candidate_commit": "92c00c5e42b6bae60f4a06aa1e6685a2ff649e6f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gta_vertical_trace_sum",
+    "diff_sha256": "8fe3fa6ccfc116ae6f003bff49a338df843ba4b1bdb2c56f40a1f94358e1dc65",
+    "source_sha256": "e7f910f9016909e69cdf32c7a6df6b8b9ffeb37ac95561025e6e63a5ba0df52f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gta_vertical_trace_sum",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (S : Submodule ℝ (Amb n ℓ)), Module.finrank ℝ S = n → ∑ j : Fin ℓ, ‖S.starProjection (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))‖ ^ 2 = hsNormSq (S.starProjection - (rotatedPlane q).starProjection) / 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

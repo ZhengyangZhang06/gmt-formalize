@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "13ec2ad88830e6a3655cedad3ffe809a5462f1da676d41704a77880fd5cd76b4",
+  "git_delta": {
+    "base_commit": "aee5bb6a5e91532f9787e68305b3d38c1c69a3e8",
+    "candidate_commit": "70e9ffaa6a183ca62ea9043243acd7014c84fe78",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "c5b4bf4fb2a6f1c610fe9717d634c191e89816a42578a0e5651f84c31a5ee5ee",
+    "source_sha256": "be0c4ec8ffc4e861092aa1b385d6cac5eeb4f9ac9e06f37c9b3514189ced1c9d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gpa_graphProj_smooth",
+      "statement": "∀ (n ℓ : ℕ), ContDiff ℝ 2 (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) ∧ ∀ H : Rn n →L[ℝ] Rn ℓ, hsNormSq (fderiv ℝ (fun A : Rn n →L[ℝ] Rn ℓ => (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection) 0 H) = 2 * hsNormSq H",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

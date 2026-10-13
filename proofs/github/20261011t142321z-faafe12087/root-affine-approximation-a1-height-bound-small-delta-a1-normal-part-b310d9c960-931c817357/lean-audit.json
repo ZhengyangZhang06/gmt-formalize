@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9096feda3350c622b66778f3e1f8d9135f98e4b9e2645173578e3a04cd805d4a",
+  "git_delta": {
+    "base_commit": "d38bed062d525d87e927e555d775c21ffbcce6bf",
+    "candidate_commit": "06517c9627ca05c341a7a091e3e5d51c30d48171",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aal_normal_sq_lintegral_le_conical",
+    "diff_sha256": "2c5d11829b24f1104837c2092be9c1d9c2726a5decaa215c274f1347c1ba9042",
+    "source_sha256": "692721b5f536a4c23764c962a7ad5ea96c7f61cc3379ca797e901030c0dd49eb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_normal_sq_lintegral_le_conical",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ) (y : Amb n ℓ) (s : ℝ), 0 < s → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal (s ^ (n + 2)) * ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

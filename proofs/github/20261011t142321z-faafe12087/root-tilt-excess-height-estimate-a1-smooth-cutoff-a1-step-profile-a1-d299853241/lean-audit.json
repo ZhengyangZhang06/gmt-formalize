@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ab8b67a08f55bdf10ec6f3e1d724f7e4218d10098c72b68f54adb001d87164f",
+  "git_delta": {
+    "base_commit": "a0b1c14fc81b767c03133bd3bedfca0f53b1009f",
+    "candidate_commit": "a848bdd4f1c1b3faae2d4587793b5217d8d0853b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "exists_smooth_step_profile_lipschitz_three",
+    "diff_sha256": "54e872afda9a14d0821fac4c96c64330225913281987665702416dc184852d86",
+    "source_sha256": "f52d8a7bb81f4677e6b69be6482f62f6830a0d377d9a5408c09ea070f3042173",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_smooth_step_profile_lipschitz_three",
+      "statement": "∃ φ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ ∧ (∀ t, 0 ≤ φ t ∧ φ t ≤ 1) ∧ (∀ t, t ≤ 1 / 2 → φ t = 1) ∧ (∀ t, 1 ≤ t → φ t = 0) ∧ LipschitzWith 3 φ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

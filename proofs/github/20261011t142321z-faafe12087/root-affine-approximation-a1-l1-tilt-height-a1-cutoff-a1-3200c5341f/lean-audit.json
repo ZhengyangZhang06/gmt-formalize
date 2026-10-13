@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "706a1392e436857dab76fd35101b557428a6d7d17d49dbf591022cb02080e4e3",
+  "git_delta": {
+    "base_commit": "d7481606a21aebae0f4c40c3704ccab6544d8454",
+    "candidate_commit": "3ab7575b7789eda18b2a9c66c130ae8ba6618797",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "707fa653c53057929c260f6605797b5f3ca59d741d972c86a32e28cd013f196a",
+    "source_sha256": "fd3dd48e56cb7b5579a15f5d052325628d24a08a0de94fb3ea0e80f02080dc5a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aal_l1th_exists_cutoff",
+      "statement": "∀ (m : ℕ) (ξ : Rn m) (ρ : ℝ), 0 < ρ → ∃ ζ : Rn m → ℝ, ContDiff ℝ 1 ζ ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ (∀ x ∈ closedBall ξ (ρ / 2), ζ x = 1) ∧ (∀ x, ρ ≤ dist x ξ → ζ x = 0) ∧ ∀ x, ‖fderiv ℝ ζ x‖ ≤ 3 / ρ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

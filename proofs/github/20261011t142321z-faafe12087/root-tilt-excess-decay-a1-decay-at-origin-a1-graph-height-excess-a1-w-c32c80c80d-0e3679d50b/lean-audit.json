@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "718316c7b9b1dbbc79151e7b261d41ea1a893b2a8e0db50b3ff517a1e24a5010",
+  "git_delta": {
+    "base_commit": "20ae906ba9bb88cff682b568c7262476cac8b103",
+    "candidate_commit": "5fc1b321431c898deedd4adc3d994b2f80d7fb03",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ghe_setLIntegral_weight_le_mul",
+    "diff_sha256": "fceaea55bc9e0279af2d3fc4d98523e0332410156d99ec62a42c3622aaa2c8d4",
+    "source_sha256": "a2c229d2a3b93c2187bc228cc1bff365aaf92b74f5632dc184bac3151d3b8012",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ghe_setLIntegral_weight_le_mul",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (E : Set (Amb n ℓ)) (C : ℝ) (g : Amb n ℓ → ℝ≥0∞), MeasurableSet E → Measurable g → (∀ᵐ x ∂V.weight, x ∈ E → V.mult x ≤ C) → ∫⁻ x in E, g x ∂V.weight ≤ ENNReal.ofReal C * ∫⁻ x in E, g x ∂(μHE[n] : Measure (Amb n ℓ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

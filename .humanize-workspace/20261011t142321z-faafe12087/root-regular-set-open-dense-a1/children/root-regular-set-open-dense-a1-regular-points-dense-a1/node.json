@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.regular_points_dense-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Every ball centred on spt V meets reg V",
+  "statement": "Assume AllardRegularityTheorem (Simon 5.2, the sibling node). Let n ≥ 1, U ⊆ ℝ^{n+ℓ} open, V = v(M, θ) a rectifiable n-varifold in U with generalized mean curvature H, H locally in Lᵖ(μ_V) with p > n, and θ a positive integer μ_V-a.e. on spt V. Then for every ξ ∈ spt V and every r > 0 the open ball B̆_r(ξ) contains a point of reg V.",
+  "lean_statement": "AllardRegularityTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, x ∈ V.support → ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → (V.regularSet ∩ ball ξ r).Nonempty",
+  "lean_name": "rsod_regularSet_meets_ball",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1",
+    "root.regular_set_open_dense-a1.localized_varifold-a1",
+    "root.regular_set_open_dense-a1.density_one_regular_point-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+    "root.regular_set_open_dense-a1.least_integer_density_point-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.localized_varifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_one_regular_point-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.least_integer_density_point-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-regular-points-dense-a1-a1"
+}

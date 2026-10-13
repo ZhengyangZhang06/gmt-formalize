@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "231a98ecbe3d45c84de9440110c0a58653c2e5f4aceea4e97975274f7027eae6",
+  "git_delta": {
+    "base_commit": "7bc4489b32174e6eb8b9c35eda58cfc15c2c0e64",
+    "candidate_commit": "15bd07dd3ddb65297c5b0d8b5b855edfc9fbf9dc",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_am_integrating_factor_limit",
+    "diff_sha256": "08837de6ebe62227696385b6058b34f9ec18a99ec58f607157a0a4eed2ece295",
+    "source_sha256": "e2cd1d609f025cdc9b8df32f5ec648d576b0d4e9c7200eafd99ecb5d7c95397c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_am_integrating_factor_limit",
+      "statement": "∀ (R β M K Λ : ℝ) (a : ℕ → ℝ → ℝ) (a₀ : ℝ → ℝ) (Q : ℕ → ℝ → ℝ) (Q₀ : ℝ → ℝ), 0 < R → β < 1 → 0 < Λ → K * R ^ (1 - β) / (1 - β) ≤ Λ / 4 → (∀ k, AEStronglyMeasurable (a k) (volume.restrict (Ioc 0 R))) → (∀ k t, 0 < t → t ≤ R → |a k t| ≤ M * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => a k t) atTop (𝓝 (a₀ t))) → (∀ t, 0 < t → t ≤ R → |a₀ t| ≤ K * t ^ (-β)) → (∀ t, 0 < t → t ≤ R → Tendsto (fun k => Q k t) atTop (𝓝 (Q₀ t))) → (∀ k s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a k t) * Q k s ≤ Real.exp (-∫ t in (0)..r, a k t) * Q k r) → (∀ r, 0 < r → r ≤ R → Real.exp (-Λ) ≤ Real.exp (-∫ t in (0)..r, a₀ t) ∧ Real.exp (-∫ t in (0)..r, a₀ t) ≤ Real.exp Λ ∧ |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - β) ∧ (Λ ≤ 1 → |Real.exp (-∫ t in (0)..r, a₀ t) - 1| ≤ Λ * (r / R) ^ (1 - β))) ∧ (∀ s r, 0 < s → s ≤ r → r ≤ R → Real.exp (-∫ t in (0)..s, a₀ t) * Q₀ s ≤ Real.exp (-∫ t in (0)..r, a₀ t) * Q₀ r)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

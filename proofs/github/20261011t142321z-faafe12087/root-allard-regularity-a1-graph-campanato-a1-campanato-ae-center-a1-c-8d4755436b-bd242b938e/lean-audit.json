@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1c35969d3d3a194305a8ecb7e1d919453e4604f27a6f5d13ec3a911d2a6c3ade",
+  "git_delta": {
+    "base_commit": "b35901df833beeb7c208587ef1a954458b4ec4ca",
+    "candidate_commit": "1c927624c91ea83397db41eb150e707d82584796",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_cae_center_eq_at_lebesgue_point",
+    "diff_sha256": "6fe8706f74094c77ab64d15028f2ef18fe31c8831979b546be256a94935a7972",
+    "source_sha256": "b540756e22cd46d8ae821bbd7eaccd4ce32e8c0aa1f2bebbe4ce81e9b44b6c5a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_cae_center_eq_at_lebesgue_point",
+      "statement": "∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (z : Rn n) (T : Rn m →L[ℝ] Rn k) (A R α s₀ : ℝ), 0 < R → 0 < α → 0 < s₀ → Measurable G → Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0) → (∀ s : ℝ, 0 < s → s ≤ s₀ → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - T)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → G z = T",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

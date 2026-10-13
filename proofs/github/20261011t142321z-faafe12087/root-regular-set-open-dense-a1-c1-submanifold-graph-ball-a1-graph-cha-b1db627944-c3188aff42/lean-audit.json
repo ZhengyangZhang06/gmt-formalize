@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "85be52f6a9365c8d74310b865fd44a4735962e1d8d2d80773678d1cb95023fde",
+  "git_delta": {
+    "base_commit": "b5b87e197149dc4917af6b0f6ed8051eb099bef1",
+    "candidate_commit": "97c0c4bcbd057080ea42cd2f42e83d84d8989153",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_graphChart_injective_contDiffOn_fderiv_injective",
+    "diff_sha256": "f9b25c46f446acd8f5ae79a3476cf047976dcb407ab6dfdc9a27569a74d126c2",
+    "source_sha256": "48d191873f8762aa191e6a729ffea078ab4c3a65c5f095cf0d53f2d773342a22",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_graphChart_injective_contDiffOn_fderiv_injective",
+      "statement": "∀ {n ℓ : ℕ} (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (x₀ : Amb n ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → Function.Injective (fun x => q (graphPoint x (u x)) + x₀) ∧ ContDiffOn ℝ 1 (fun x => q (graphPoint x (u x)) + x₀) Ω ∧ ∀ x ∈ Ω, Function.Injective (fderiv ℝ (fun x => q (graphPoint x (u x)) + x₀) x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

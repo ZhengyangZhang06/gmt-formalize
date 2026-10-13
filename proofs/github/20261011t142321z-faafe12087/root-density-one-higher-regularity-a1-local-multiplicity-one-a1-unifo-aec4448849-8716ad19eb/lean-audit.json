@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "023f803b589091d7abb0cbe3a1842058f3672f6cd2d2b4f70dc31eccbd60aa52",
+  "git_delta": {
+    "base_commit": "ca5860f12b697185af0a323b0da4b3d43087b84f",
+    "candidate_commit": "13ec9554d92851fe0b4b92597d77dfbf414ec871",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_uniform_monotonicity_bound",
+    "diff_sha256": "136f8f193f88d6eb7e268c1fc41605e906497cc630383cba010f617da31c4a8d",
+    "source_sha256": "f0abbf5c4a70b0e23199418de599cefaa66324ca1e51ae611b7a3bfa6c507942",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_uniform_monotonicity_bound",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (ξ : Amb n ℓ) (R : ℝ), (n : ℝ) < p → 0 < R → closedBall ξ R ⊆ U → (∀ (y : Amb n ℓ) (R' Λ : ℝ), 0 < R' → closedBall y R' ⊆ U → (∀ᵐ x ∂V.weight, x ∈ ball y R' → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → AEStronglyMeasurable (fun x => V.tangentProj x) (V.weight.restrict (ball y R')) → 0 < Λ → Λ ≤ 1 → V.scaledLpNorm H p y R' ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → ∃ F : ℝ → ℝ, (∀ r ∈ Ioo 0 R', |F r - 1| ≤ Λ ∧ Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ) ∧ Tendsto F (𝓝[>] 0) (𝓝 1) ∧ MonotoneOn (fun r => F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) (Ioo 0 R') ∧ ∃ t : ℝ, 0 ≤ t ∧ V.HasDensity y t ∧ Tendsto (fun r => F r * (r ^ n)⁻¹ * (V.weight (closedBall y r)).toReal + F r - 1) (𝓝[>] 0) (𝓝 (unitBallVolume n * t))) → (∀ᵐ x ∂V.weight, x ∈ ball ξ R → ∃ P : Submodule ℝ (Amb n ℓ), Module.finrank ℝ P = n ∧ V.tangentProj x = P.starProjection) → AEStronglyMeasurable (fun x => V.tangentProj x) (V.weight.restrict (ball ξ R)) → ∫⁻ x in closedBall ξ R, ‖H x‖ₑ ^ p ∂V.weight < ⊤ → ∃ t₁ > 0, ∃ Λ : ℝ → ℝ, Tendsto Λ (𝓝[>] 0) (𝓝 0) ∧ ∀ y ∈ ball ξ (R / 2), ∀ t ∈ Ioc 0 t₁, ∀ z ∈ closedBall y t, ∃ Θ : ℝ, 0 ≤ Θ ∧ V.HasDensity z Θ ∧ ∀ r ∈ Ioo 0 t, unitBallVolume n * Θ ≤ Real.exp (Λ t) * (r ^ n)⁻¹ * (V.weight (closedBall z r)).toReal + Λ t",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

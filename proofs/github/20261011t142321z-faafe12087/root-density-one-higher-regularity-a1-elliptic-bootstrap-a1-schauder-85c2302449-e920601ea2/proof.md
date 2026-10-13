@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1.compact_subseq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2b-e of the parent proof (Arzela-Ascoli on a compact set). The theorem cited there, BoundedContinuousFunction.arzela_ascoli, is not imported by the frozen contract. It is replaced by its classical proof through the sibling lemmas diagonal_extract (Submission.dohr_eb_sch_bu_hds_diagonal_extract) and unif_of_dense (Submission.dohr_eb_sch_bu_hds_unif_of_dense).
+1. Empty case. If S is empty, take chi := id and G := 0. Uniform convergence on the empty set holds trivially (tendstoUniformlyOn_empty).
+2. A countable dense subset. Assume S is nonempty. R^n is second countable, hence so is the subspace S, which is therefore separable. So there is a countable set D with D contained in S and S contained in the closure of D (TopologicalSpace.exists_countable_dense_subset). D is nonempty, because S is nonempty and the closure of the empty set is empty. A nonempty countable set is the range of a sequence (Set.Countable.exists_eq_range), so D = {d_m : m in N} for some d : N -> R^n.
+3. Extraction at one point. Let m in N and let psi : N -> N be strictly increasing. Since d_m lies in D, a subset of S, ||g_{psi(j)}(d_m)|| <= M for every j. So the sequence j -> g_{psi(j)}(d_m) lies in the closed ball of radius M about 0 in L. That ball is compact (isCompact_closedBall), because L is a finite-dimensional normed space and hence proper. L is a metric space, so a sequence in a compact set has a convergent subsequence (IsCompact.tendsto_subseq). Thus there are a strictly increasing chi and v in L with g_{psi(chi(j))}(d_m) -> v. Uniform convergence on a singleton is convergence at its point (tendstoUniformlyOn_singleton_iff_tendsto), so g_{psi(chi(j))} -> (the constant map with value v) uniformly on {d_m}.
+4. Diagonal over the points of D. Step 3 is exactly the hypothesis of diagonal_extract for F := g and S_m := {d_m}. That lemma gives a strictly increasing chi : N -> N and W : R^n -> L with g_{chi(j)} -> W uniformly on {d_m} for every m. Hence, for every d in D, writing d = d_m, the sequence g_{chi(j)}(d) converges to W(d_m) (TendstoUniformlyOn.tendsto_at).
+5. Upgrade to uniform convergence. Apply unif_of_dense to F_j := g_{chi(j)}, the compact set S and the set D, which is contained in S and whose closure contains S. Its Hoelder hypothesis holds because every g_k is K-alpha-Hoelder on S, and its convergence hypothesis on D holds by step 4. It gives G : R^n -> L with g_{chi(j)} -> G uniformly on S. Together with the strictly increasing chi of step 4 this is the claim. QED.
+
+## Key steps
+
+1. if S is empty the claim is trivial
+2. take a countable dense subset D of S and enumerate it as (d_m)
+3. at each d_m every subsequence has a further convergent subsequence, by compactness of the closed M-ball in the finite-dimensional L
+4. diagonal_extract with S_m = {d_m} gives chi with g_{chi(j)} convergent at every point of D
+5. unif_of_dense upgrades convergence on D to uniform convergence on S
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Contract.lean`
+- `rg -l -i '\barzela|\bascoli\b|ArzelaAscoli' <snapshot>/mathlib/Mathlib <snapshot>/project`
+- `rg -n -i 'diagonal (sub)?sequence|diagonal extraction|extraction_forall_of_frequently|extraction_of_frequently_atTop|extraction_forall_of_eventually' <snapshot>/mathlib/Mathlib <snapshot>/project`
+- `rg -n -i 'arzela|ascoli|diagonal|equicontinu|subsequence' <snapshot>/project --glob '*.lean'`
+- `rg -n -i 'ascoli' <snapshot>/mathlib/Mathlib/Topology/UniformSpace/Equicontinuity.lean`
+- `rg -n 'theorem arzela_ascoli|theorem tendstoUniformlyOn_singleton_iff_tendsto|theorem UniformCauchySeqOn.cauchySeq|theorem tendstoUniformlyOn_empty|theorem TendstoUniformlyOn.congr_right|theorem IsSeparable.exists_countable_dense_subset|theorem exists_countable_dense_subset|theorem Countable.exists_eq_range|theorem exists_dense_seq|theorem IsCompact.tendsto_subseq|theorem UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem uniformCauchySeqOn_iff|theorem IsCompact.elim_finite_subcover_image|theorem continuousAt_rpow_const|theorem TendstoUniformlyOn.congr |theorem tendsto_nhds_limUnder|theorem cauchySeq_tendsto_of_complete|theorem strictMono_nat_of_lt_succ|theorem StrictMono.id_le|theorem eventually_all_finite|theorem TendstoUniformlyOn.tendsto_at|theorem le_of_tendsto |instance.*proper_real|theorem mem_closure_iff ' <snapshot>/mathlib/Mathlib`
+- `lean after `import GMT.Ch05.Submission`: #eval env.getModuleIdx? for Mathlib.Topology.UniformSpace.Ascoli, Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli, Mathlib.Topology.MetricSpace.Sequences, Mathlib.Topology.Sequences, Mathlib.Topology.UniformSpace.UniformConvergence, Mathlib.Topology.UniformSpace.Equicontinuity, Mathlib.Topology.UniformSpace.CompactConvergence`
+- `lean #check BoundedContinuousFunction.arzela_ascoli / ArzelaAscoli.isCompact_of_equicontinuous / tendsto_subseq_of_bounded / IsCompact.tendsto_subseq / Metric.uniformCauchySeqOn_iff / TopologicalSpace.exists_countable_dense_subset and inferInstance for ProperSpace, FirstCountableTopology, CompleteSpace, SeparableSpace on Rn n and Rn n →L[ℝ] Rn ℓ`
+- `python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') -> replayed child scope`
+- `python3 scan of dag.json: lean_name collisions for dohr_eb_sch_bu_hds_*, accepted nodes whose types mention StrictMono/TendstoUniformlyOn/UniformCauchySeqOn, depth and status of the selected node and its siblings`
+- `grep max_depth /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; read check_source_delta in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `lean checks in /tmp/hds-decomp: Challenge_<name>.lean (5 frozen types), Split.lean (full proofs + #print axioms), AsmParent.lean, AsmCompact.lean, Inst.lean, node/Solution_<name>.lean against the Submission_with_split build; python3 leafsim.py (check_source_delta replay)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/Ascoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/Equicontinuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/WellFounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Order/Monotone/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/OrderClosed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-71438b283e/parent-child-handoff.json`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean is byte-identical to the snapshot Contract.lean.
+
+Arzela-Ascoli is not usable by any child. Pinned Mathlib contains BoundedContinuousFunction.arzela_ascoli (Topology/ContinuousMap/Bounded/ArzelaAscoli.lean:109) and ArzelaAscoli.isCompact_of_equicontinuous (Topology/UniformSpace/Ascoli.lean). Neither module, nor Topology/MetricSpace/Sequences.lean, is transitively imported by the frozen contract: getModuleIdx? returns none and #check reports unknown constants. Leaves cannot add imports, so the parent's step 2d citation is replaced by the children's classical proof.
+
+Available under the contract imports and used by the compiled child proofs:
+- IsCompact.tendsto_subseq (Topology/Sequences.lean:298)
+- In UniformConvergence.lean: tendstoUniformlyOn_singleton_iff_tendsto (:327), tendstoUniformlyOn_empty (:324), TendstoUniformlyOn.congr (:196), TendstoUniformlyOn.congr_right (:218), TendstoUniformlyOn.tendsto_at (:154), UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto (:499), UniformCauchySeqOn.cauchySeq (:573)
+- Metric.uniformCauchySeqOn_iff (Topology/MetricSpace/Cauchy.lean:70)
+- TopologicalSpace.exists_countable_dense_subset (Topology/Bases.lean:353)
+- Set.Countable.exists_eq_range (Data/Set/Countable.lean:149)
+- IsCompact.elim_finite_subcover_image (Topology/Compactness/Compact.lean:347)
+- Filter.eventually_all_finite (Order/Filter/Finite.lean:252)
+- cauchySeq_tendsto_of_complete (Topology/UniformSpace/Cauchy.lean:425)
+- tendsto_nhds_limUnder (Topology/Basic.lean:245)
+- Real.continuousAt_rpow_const (Analysis/SpecialFunctions/Pow/Continuity.lean:220)
+- StrictMono.id_le (Order/WellFounded.lean:267)
+- strictMono_nat_of_lt_succ (Order/Monotone/Basic.lean:569)
+- Metric.mem_closure_iff (Topology/MetricSpace/Pseudo/Defs.lean:1220)
+- le_of_tendsto (Topology/Order/OrderClosed.lean:133)
+- the FiniteDimensional.proper_real instance (Analysis/Normed/Module/FiniteDimension.lean:554)
+
+Filter.extraction_forall_of_frequently (Order/Filter/AtTopBot/Basic.lean:123) is a pointwise extraction and does not give a diagonal for uniform convergence on sets. The project snapshot has no Arzela-Ascoli, equicontinuity-upgrade or diagonal-subsequence lemma; its only subsequence hits are unrelated prose in Ch01, Ch02 and Ch08.
+
+dag.json has no node named dohr_eb_sch_bu_hds_* and no accepted node with any of the proposed types. The selected node is at depth 5 and max_depth is 6, so the children are leaves.
+
+Lean evidence:
+- All child types elaborate in the replayed comparator scope.
+- Full single-theorem proofs of the four children and the parent assembly compile with axioms [propext, Classical.choice, Quot.sound].
+- The parent is proved from the three child types as axioms.
+- The NodeSolution checks and the check_source_delta replay pass.
+- Instances confirmed by rfl: ^ is Real.rpow, and L carries the operator-norm uniformity.
+
+The evidence is in GMT/Scratch/dohr_eb_sch_bu_hds/.

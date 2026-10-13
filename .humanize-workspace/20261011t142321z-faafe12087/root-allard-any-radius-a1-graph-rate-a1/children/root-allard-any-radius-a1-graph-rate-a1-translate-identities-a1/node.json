@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.translate_identities-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "depth": 3,
+  "title": "Translation invariance of ball masses, tilt-excess, scaled L^p norms and the multiplicity condition",
+  "statement": "Let n, l >= 0, U, U' any subsets of R^(n+l), V a contract rectifiable n-varifold in U, V' one in U', and zeta in R^(n+l). Assume:\n- V'.weight is the push-forward of V.weight under tau(x) = x - zeta;\n- V'.mult x = V.mult(zeta + x) for all x;\n- V'.tangentProj x = V.tangentProj(zeta + x) for all x.\nThen:\n(R1) V'.weight(B_s(0)) = V.weight(B_s(zeta)) for every real s (closed balls);\n(R2) V'.tiltExcess 0 s T = V.tiltExcess zeta s T for every s and every subspace T;\n(R3) V'.scaledLpNorm (x -> H(zeta + x)) p 0 s = V.scaledLpNorm H p zeta s for every H, p and s;\n(R4) if 1 <= V.mult holds V.weight-a.e., then 1 <= V'.mult holds V'.weight-a.e.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ζ : Amb n ℓ), V'.weight = V.weight.map (fun x => x - ζ) → (∀ x, V'.mult x = V.mult (ζ + x)) → (∀ x, V'.tangentProj x = V.tangentProj (ζ + x)) → (∀ s : ℝ, V'.weight (closedBall 0 s) = V.weight (closedBall ζ s)) ∧ (∀ (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), V'.tiltExcess 0 s T = V.tiltExcess ζ s T) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p s : ℝ), V'.scaledLpNorm (fun x => H (ζ + x)) p 0 s = V.scaledLpNorm H p ζ s) ∧ ((∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ᵐ x ∂V'.weight, 1 ≤ V'.mult x)",
+  "lean_name": "any_radius_gr_translate_identities",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-translate-identities-a1-a1"
+}

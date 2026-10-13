@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c0f4c32a76672cf98da64fd52b87e2d00542b472cb13755169c79293c31492a3",
+  "git_delta": {
+    "base_commit": "d373a396197c426a2806328e17c4b7a241f63467",
+    "candidate_commit": "5dbd1acf8e0e049ebf15780351c82574914d2ff5",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "571d110e9103176a91b1582a038df645bfe004b4dc62a70e89dd8280ab398013",
+    "source_sha256": "c97d967c67b7178f91ffed8800ac83c4edfdacbd046b242c0bea85c8f526d33d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ae_weightedApproximateTangent_density_eq_mult",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), 1 ≤ n → IsOpen U → AEStronglyMeasurable V.tangentProj ((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Amb n ℓ)).restrict V.carrier), (∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P) ∧ V.HasDensity x (V.mult x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

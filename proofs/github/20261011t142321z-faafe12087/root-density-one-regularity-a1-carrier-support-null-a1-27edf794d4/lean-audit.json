@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0c3e1d987c8c424f9a9610a3bfe0aeed92d58a2beada9c922a01d2be21807f80",
+  "git_delta": {
+    "base_commit": "d37ad6eccf895ee4e7e897ae658449ad091a5ce4",
+    "candidate_commit": "0ab760ef359b914225aad9f42e6d5a51622eb647",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "84fb5a919328f5125c7fef0dde359a3f7d344f4eb9b9d447038ce6013c09e745",
+    "source_sha256": "0b951054b90b0c5a3a6a613221169c6de095551704ea9eb7fda11c858d1719c3",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.hausdorff_carrier_symmDiff_support_null",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), (∀ x ∈ V.support, ∃ t : ℝ, 0 < t ∧ V.HasDensity x t) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff V.carrier V.support) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

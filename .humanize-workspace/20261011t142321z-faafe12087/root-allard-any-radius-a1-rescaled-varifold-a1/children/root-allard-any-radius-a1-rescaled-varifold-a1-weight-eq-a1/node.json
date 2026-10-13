@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.weight_eq-a1",
+  "parent_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+  "depth": 3,
+  "title": "Weight of the rescaled varifold",
+  "statement": "Let n, ℓ ∈ ℕ, let U, U' ⊆ ℝ^{n+ℓ} be arbitrary sets, let V be a rectifiable n-varifold in U with carrier M, multiplicity θ and weight μ_V = (H^n⌞M).withDensity (ofReal ∘ θ), and let W be a rectifiable n-varifold in U' with weight μ_W = (H^n⌞W.carrier).withDensity (ofReal ∘ W.mult), where H^n = μHE[n]. Let c ∈ ℝ^{n+ℓ}, R > 0, ψ(x) := c + R x and φ(y) := R⁻¹(y − c). If W.carrier = ψ⁻¹(M) and W.mult(x) = θ(c + R x) for every x, then μ_W = R^{-n} φ_# μ_V, i.e. W.weight = (ENNReal.ofReal (R^n))⁻¹ • Measure.map φ V.weight.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (c : Amb n ℓ) (R : ℝ), 0 < R → W.carrier = (fun x => c + R • x) ⁻¹' V.carrier → (∀ x, W.mult x = V.mult (c + R • x)) → W.weight = (ENNReal.ofReal (R ^ n))⁻¹ • V.weight.map (fun x => R⁻¹ • (x - c))",
+  "lean_name": "any_radius_rv_weight_eq",
+  "depends_on": [
+    "root.allard_any_radius-a1.rescaled_varifold-a1.map_hausdorff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1.map_hausdorff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-rescaled-varifold-a1-weight-eq-a1-a1"
+}

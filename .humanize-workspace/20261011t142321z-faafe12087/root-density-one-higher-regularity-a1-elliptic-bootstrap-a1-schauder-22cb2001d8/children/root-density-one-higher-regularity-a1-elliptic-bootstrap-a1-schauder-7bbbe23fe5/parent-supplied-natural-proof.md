@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_sub_affine-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the integral computation of step 6 of the parent proof, stated for a general open set Omega (Lean: D), constant c, linear map P0 and scale s. The parent applies it to the rescaled data produced by the sibling rescale lemma.
+1. Part (i). x -> v(x) - c - P0 x is v (C^1 on Omega by (H3)) minus a constant minus the continuous linear map P0 (C^infinity). So it is C^1 on Omega, and so is its scalar multiple V.
+2. Part (ii). Fix x in Omega. Omega is open and v is C^1 on Omega, so v is differentiable at x with derivative Dv(x). (Use ContDiffOn.differentiableOn and IsOpen.mem_nhds.) The constant has derivative 0, and P0 has derivative P0 at every point. By linearity of the derivative, V has derivative s (Dv(x) - P0) at x. So DV(x) = s (Dv(x) - P0).
+3. Fix a C^1_c map zeta with T := tsupport zeta contained in Omega. T is compact because zeta has compact support. Dzeta is continuous on R^n because zeta is C^1, and Dzeta(x) = 0 for x outside T (Mathlib support_fderiv_subset).
+4. Integrability lemma. Let g : R^n -> R be continuous on Omega with g(x) = 0 for every x outside T. Then g is integrable on Omega and on R^n, and the integrals of g over Omega and over R^n agree. Proof: g is continuous on the compact set T, which is contained in Omega and has finite Lebesgue measure, so g is integrable on T (ContinuousOn.integrableOn_compact). Since g = 0 outside T, g is integrable on every measurable superset of T. Its integrals over Omega, T and R^n all agree (setIntegral_eq_integral_of_forall_compl_eq_zero).
+5. Define g1(x) := b(x)[Dv(x)][Dzeta(x)], g2(x) := b(x)[P0][Dzeta(x)], g3(x) := Theta(x)[Dzeta(x)], g4(x) := Theta0[Dzeta(x)] and g5(x) := B0[P0][Dzeta(x)].
+ a. Dv is continuous on Omega, since v is C^1 on the open set Omega (ContDiffOn.continuousOn_fderiv_of_isOpen).
+ b. The maps x -> (x, Dv(x), Dzeta(x)) and x -> (x, P0, Dzeta(x)) are continuous on Omega, so g1 and g2 are continuous on Omega by (H1).
+ c. g3 is continuous on Omega by (H2) and continuity of evaluation L* x L -> R. g4 and g5 are continuous on R^n.
+ d. Each gi is linear in Dzeta(x), so it vanishes wherever Dzeta(x) = 0, in particular outside T.
+ By step 4 all five are integrable on Omega. Moreover, by (H5), the integral of g4 over Omega equals its integral over R^n, which is 0, and likewise for g5.
+6. By (ii) and bilinearity, b(x)[DV(x)][Dzeta(x)] = s g1(x) - s g2(x) for every x in Omega. A set integral over Omega depends only on the values on Omega (setIntegral_congr on the measurable set Omega). Using the integrability from step 5, the integral over Omega of b[DV][Dzeta] equals s (int_Omega g1) - s (int_Omega g2).
+7. By (H4), int_Omega g1 = int_Omega g3. Hence the integral over Omega of b[DV][Dzeta] equals s (int_Omega g3) - s (int_Omega g2). By step 5, int_Omega g4 = int_Omega g5 = 0, so this equals s (int_Omega g3 - int_Omega g4) - s (int_Omega g2 - int_Omega g5).
+8. Evaluation is linear, so for every x and every Q in L: (s ((Theta(x) - Theta0) - (b(x)[P0] - B0[P0])))[Q] = s (Theta(x)[Q] - Theta0[Q]) - s (b(x)[P0][Q] - B0[P0][Q]). With Q = Dzeta(x), the integrand on the right of (iii) is s (g3 - g4) - s (g2 - g5). By integrability (step 5) its integral over Omega is s (int_Omega g3 - int_Omega g4) - s (int_Omega g2 - int_Omega g5). This is the value found in step 7, which proves (iii). QED.
+Lean note: smul_sub and similar rewrites on L, and instances such as ContinuousSub on L*, may need `set_option maxSynthPendingDepth 3` at tactic level.
+
+## Key steps
+
+1. (i),(ii): V = s (v - c - P0 .) is C^1 on the open set Omega with DV = s (Dv - P0) by linearity of the derivative
+2. Dzeta is continuous and vanishes outside the compact T = tsupport zeta inside Omega
+3. a function continuous on Omega and zero off T is integrable, and its integrals over Omega and R^n agree
+4. the five integrands b[Dv][Dzeta], b[P0][Dzeta], Theta[Dzeta], Theta0[Dzeta], B0[P0][Dzeta] are continuous on Omega (H1, H2) and vanish off T
+5. bilinearity gives int_Omega b[DV][Dzeta] = s int_Omega b[Dv][Dzeta] - s int_Omega b[P0][Dzeta]; (H4) replaces the first term by int_Omega Theta[Dzeta]
+6. (H5) makes the Theta0 and B0[P0] integrals vanish; regrouping by linearity gives (iii)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `rg -l -i '\barzela|\bascoli\b|ArzelaAscoli' <snapshot>/mathlib/Mathlib <snapshot>/project`
+- `rg -n -i 'blow-?up|arzela|ascoli|weak equation|weak solution' <snapshot>/project`
+- `grep -n 'theorem hasFDerivAt_of_tendstoUniformlyOn|hasFDerivAt_of_tendstoUniformlyOnFilter|cauchy_map_of_uniformCauchySeqOn_fderiv' <snapshot>/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean`
+- `grep (pinned Mathlib) for BoundedContinuousFunction.arzela_ascoli, ArzelaAscoli.isCompact_of_equicontinuous, tendsto_subseq_of_bounded, IsCompact.tendsto_subseq, TendstoUniformlyOn.tendsto_comp, setIntegral_eq_integral_of_forall_compl_eq_zero, norm_setIntegral_le_of_norm_le_const, integral_eq_sub_of_hasDerivAt, norm_integral_le_of_norm_le_const, opNorm_le_bound₂, le_opNorm₂, ContinuousOn.clm_apply, support_fderiv_subset, fderiv_const_smul, ContDiffOn.continuousOn_fderiv_of_isOpen, contDiff_one_iff_fderiv, continuousAt_rpow_const, rpow_inv_rpow, rpow_rpow_inv, tendsto_inv_nhdsGT_zero, tendsto_one_div_atTop_nhds_zero_nat, ball_subset_ball'`
+- `python3 scan of dag.json: statuses of the sibling nodes (all 'decomposing'), lean_name collisions for dohr_eb_sch_bu_*, topic scan (arzela, ascoli, diagonal, uniform limit, weak limit), cross-branch dependency pattern`
+- `python3 gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch05.main_theorem') -> replayed child scope (open ...; namespace GMT.Ch05; namespace/end RectifiableVarifold; open RectifiableVarifold)`
+- `lean -o build/GMT/Ch05/Submission.olean src/Submission.lean in scratch /tmp/blowup-decomp-*/ (Lean 4.35.0-rc3, shared lake-packages-25730c7c)`
+- `lean checks/Challenges.lean (first draft: TopologicalSpace/HSub/PseudoMetricSpace/AddCommGroup on the bilinear-form type fail at default depth), checks/Challenges2.lean (revised types elaborate)`
+- `lean checks/node/Challenge_<key>.lean and checks/node/Solution_<key>.lean for the 5 keys (solutions against a scratch Submission declaring the children)`
+- `lean checks/AsmLimit.lean (blowup_limit from the three leaf child types as axioms; #print axioms)`
+- `lean checks/AsmParent.lean (frozen parent type from weak_eq_sub_affine, blowup_limit and the four sibling frozen types as axioms; #print axioms)`
+- `lean checks/Inst.lean, checks/InstVerify.lean (instances: maxSynthPendingDepth 3 for Bil, smul/evaluation on L and L*, uniform structure on L, rpow, Haar volume)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch08/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/Ascoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/UniformApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Order/Field.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-estimate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-22cb2001d8/parent-child-handoff.json`
+
+Snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace Submission.lean is byte-identical to the snapshot Contract.lean. Pinned Mathlib supplies the tools the children need: BoundedContinuousFunction.arzela_ascoli (Topology/ContinuousMap/Bounded/ArzelaAscoli.lean:109), ArzelaAscoli.isCompact_of_equicontinuous (Topology/UniformSpace/Ascoli.lean:499), hasFDerivAt_of_tendstoUniformlyOn (Analysis/Calculus/UniformLimitsDeriv.lean:419) and its Filter version (:308), tendsto_subseq_of_bounded (Topology/MetricSpace/Sequences.lean:38; not imported by the contract, so a child must add the import), TendstoUniformlyOn.tendsto_comp (UniformApproximation.lean:173), setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486), intervalIntegral.integral_eq_sub_of_hasDerivAt (FundThmCalculus.lean:1148), ContinuousLinearMap.opNorm_le_bound₂ and le_opNorm₂ (Operator/Bilinear.lean:67,71), ContinuousOn.clm_apply (BoundedLinearMaps.lean:476) and support_fderiv_subset (FDeriv/Const.lean:379). Neither Mathlib nor the project contains blow-up compactness, stability of weak equations or a C^1-limit lemma on growing domains. The project snapshot has no Arzela-Ascoli or weak-equation matches; the only blow-up hits are the Ch08 README varifold tangent cones, which are unrelated. dag.json: the four sibling prerequisites of this node are all still 'decomposing', so children cannot depend on them. There is no dohr_eb_sch_bu_* name, and no accepted node has an identical type. The closest node, dohr_eb_dql_c1Holder_of_tendstoUniformlyOn, is speculative-lean with a different type. Instance finding: at the default maxSynthPendingDepth, the frozen scope cannot synthesize TopologicalSpace, HSub, PseudoMetricSpace or AddCommGroup on the bilinear-form type, and inside proofs ContinuousSub on L* also fails. The child types therefore use joint continuity of (z,P,Q) -> b z P Q and scalar bounds. Inside proofs, set_option maxSynthPendingDepth 3 recovers these instances, and FiniteDimensional.proper_real gives ProperSpace. Lean checks: (1) all 5 child types elaborate as NodeChallenge targets, and every NodeSolution closes by exact Submission.X. (2) blowup_limit is proved without sorry from the three leaf types as axioms; #print axioms lists propext, Classical.choice, Quot.sound and those three. (3) The frozen parent type is proved without sorry from weak_eq_sub_affine, blowup_limit and the four sibling types as axioms; #print axioms lists exactly these six and the three standard axioms. (4) Instances of the inline constructions check out: (s • T) Q = s * T Q on L*; (s • P) v = s • P v on L; B (s • P) Q = s * B P Q; TendstoUniformlyOn on L is the operator-norm metric version; ‖z‖ ^ α is Real.rpow; volume on Rn n is an additive Haar measure.

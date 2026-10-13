@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "af973ca4b1e03c42dedc2d002e413491b8ba1fb0554dd6e599deec7a3ad97d84",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "066406829f5683c27ac3a01e8406376a154ff75a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_upper_density_zero_ae",
+    "diff_sha256": "c69941e251683b0179e15d744086e92ff29e3180e22ad906a7a178338a9fd9e9",
+    "source_sha256": "aede045390ec4235382644874db614bbc5324c6c6cc3201064479028890fb4b2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_upper_density_zero_ae",
+      "statement": "∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), MeasurableSet A → ν A < ⊤ → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∉ A → Tendsto (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

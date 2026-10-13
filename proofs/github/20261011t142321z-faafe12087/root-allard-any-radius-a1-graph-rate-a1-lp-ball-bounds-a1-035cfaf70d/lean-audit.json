@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0c9c38d9c791af0c8feff9b2d17f295a10a39bd705888cdc9bd0671b56a5a138",
+  "git_delta": {
+    "base_commit": "548a472beb00e143f5dfd455caadff3068b76b9e",
+    "candidate_commit": "46ec34ffb98b852a754c0807035cde3b053be664",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_scaled_lp_ball_bounds",
+    "diff_sha256": "e4924aea4ef7ba5a0cb430c51c6fb4aa78d8264c06c3610bc3181b2dcd1cb95e",
+    "source_sha256": "008cb74dec3712ba59bf85a9bc376fd745b79b805acb2a34e90d6d64cd1ca0d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_scaled_lp_ball_bounds",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (z : Amb n ℓ) (r ρ : ℝ), 0 < r → r ≤ ρ → closedBall z r ⊆ closedBall 0 ρ → V.scaledLpNorm H p z r ≤ V.scaledLpNorm H p 0 ρ ∧ ∀ δ : ℝ, 0 ≤ δ → V.scaledLpNorm H p 0 ρ ≤ ENNReal.ofReal δ → V.weight (closedBall z r) < ⊤ → ∫ x in closedBall z r, ‖H x‖ ∂V.weight ≤ δ * ρ ^ ((n : ℝ) / p - 1) * (V.weight (closedBall z r)).toReal ^ (1 - 1 / p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

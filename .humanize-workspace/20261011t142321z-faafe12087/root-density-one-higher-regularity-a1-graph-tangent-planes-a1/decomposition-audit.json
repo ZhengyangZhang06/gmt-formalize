@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -uuu 'dohr_tp_|dohr_graph_tangent_planes' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7",
+        "ae_tendsto_lintegral_enorm_sub_div|theorem ae_tendsto_average_norm_sub",
+        "hausdorffMeasure_image_le|setIntegral_image_emb|integral_map|aemeasurable_indicator_iff₀|restrict_apply₀.|restrict_restrict₀|le_restrict_apply",
+        "inverse_continuousAt|isUnit_iff_bijective|eq_starProjection_of_mem_of_inner_eq_zero|starProjection_map_apply|aemeasurable_indicator_iff₀",
+        "git -C .lake/packages/mathlib status --short --untracked-files=no",
+        "git -C .lake/packages/simongmt status --short --untracked-files=no",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Probe.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/decomposition-v4.json",
+        "swarm-project.json",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_graph_approx_tangent.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_approx_tangent_isometry.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_graph_ball_growth.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_lebesgue_point_growth.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_weighted_tangent_pointwise.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_weighted_tangent_ae.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Challenge_tangent_projection_continuous.lean",
+        "/tmp/independent-tangent-audit-gg1ltze_/src/Probe.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; the project contract files match the snapshot byte-for-byte, and the pinned dependency worktrees are clean. All seven exact one-line propositions passed the statement validator and independently elaborated in verifier-generated challenge modules against a fresh frozen Submission build, without child implementations. Every proposed name is a bare identifier, is absent from the snapshot, and conflicts with no other DAG declaration. No accepted declaration is reused. Imported uniqueness, differentiation, Hausdorff-image and inverse-continuity results have only propext, Classical.choice and Quot.sound as axioms. Separate Lean checks confirm that continuous-linear-endomorphism multiplication is composition and that the required inverse-continuity instance exists. The split is appropriate: the supplied assembly uses affine transport, weighted tangency and uniqueness to obtain the exact projection identity, then projection continuity to obtain a.e. strong measurability. Its only sibling dependencies are weighted_tangent_ae on lebesgue_point_growth and weighted_tangent_pointwise, with no cycle. Historical branch-status and budget claims were not relied upon: several related declarations are now accepted with different types, and the inspected configuration sets max_nodes to 1000."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. Injectivity supplies dimension n; the localized bi-Lipschitz measure comparison, explicitly established integrability and uniform continuity prove the required test-integral convergence without an area formula or circular reliance."
+    },
+    {
+      "key": "approx_tangent_isometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation cancels in the blow-up identity. Isometric change of variables and compactly supported test-function pullback prove exactly the mapped-plane conclusion, including its dimension, without additional measurability assumptions on S."
+    },
+    {
+      "key": "graph_ball_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact containment supplies the derivative and Lipschitz bounds. The radius-2r parameter-ball argument and normalized Hausdorff image estimate establish the stated uniform bound for every center and positive radius, including the empty-intersection case."
+    },
+    {
+      "key": "lebesgue_point_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Growth supplies local finiteness and the Besicovitch hypotheses. Differentiation and the ENNReal comparison prove the exact limit; zero-mass balls and the possibility of nonpositive C are correctly handled."
+    },
+    {
+      "key": "weighted_tangent_pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Scaling and localization use the stated null-measurability hypotheses correctly. The Lebesgue-limit assumption establishes integrability before subtraction of integrals, and the resulting error estimate proves exactly the weighted tangent predicate."
+    },
+    {
+      "key": "weighted_tangent_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both dependencies are correctly directed. Indicator integrability, transfer of the differentiation exceptional set and pointwise inheritance establish the a.e. conclusion simultaneously for every P. No measurability of S is silently assumed."
+    },
+    {
+      "key": "tangent_projection_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit adjoint construction yields invertible A#A and the orthogonal projection formula. The independently checked endomorphism ring uses composition; inverse continuity and conjugation prove the exact ContinuousOn statement, including n = 0."
+    }
+  ],
+  "required_changes": []
+}

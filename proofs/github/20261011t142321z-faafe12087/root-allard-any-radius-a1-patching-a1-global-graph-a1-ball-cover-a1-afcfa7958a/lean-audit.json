@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c871549036a35d7c32af59ee3b41a4fa0d854d5709cd67f668abe9ea16d4dfd0",
+  "git_delta": {
+    "base_commit": "7492018686039fd7060c6417b4dc30754f0f3f16",
+    "candidate_commit": "801ea1ccdaece4d2b3b8b6f9670b128218a114a0",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "arp_ball_subset_of_closed_rel_open",
+    "diff_sha256": "b1f0c072e57b5aca7971f9a302b7a51174e489d9680625e2c4537ae941bdcbbc",
+    "source_sha256": "4d8347e0d8d314c08de7d91be197cdebf2ad525827ee0ec8a3a1ca72da996e0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_ball_subset_of_closed_rel_open",
+      "statement": "∀ {m : ℕ} (D : Set (Rn m)) (c : Rn m) (R : ℝ), 0 < R → IsClosed D → c ∈ D → (∀ w ∈ D ∩ ball c R, ∃ ε : ℝ, 0 < ε ∧ ball w ε ∩ ball c R ⊆ D) → ball c R ⊆ D",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

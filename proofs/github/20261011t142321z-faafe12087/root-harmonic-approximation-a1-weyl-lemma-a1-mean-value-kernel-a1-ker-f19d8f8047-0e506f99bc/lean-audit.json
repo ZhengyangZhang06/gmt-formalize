@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "18de68c8b0c3f34ad88caff6887377d4efbfa405e66f53b980b5cff118a494b5",
+  "git_delta": {
+    "base_commit": "949117079b001523313f6f59fdbf32d0e767b7f6",
+    "candidate_commit": "a5cdd7f81f45e85f8c873a8c3d6767b18464064c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "mvk_exists_kernel_potential",
+    "diff_sha256": "236d9712f4269f5d54b7c3c6f55f2c2aeb7a452ef54f43a75bb3295535720035",
+    "source_sha256": "095adaba6376f144727d736be672554a7219b6cb1bbbde436f896debfb8122c8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.mvk_exists_kernel_potential",
+      "statement": "∀ n : ℕ, ∃ ρ Ψ : Rn n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ ContDiff ℝ (⊤ : ℕ∞) Ψ ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → ρ z = 0) ∧ (∀ z : Rn n, 1 ≤ ‖z‖ → Ψ z = 0) ∧ (∀ z : Rn n, ρ (-z) = ρ z) ∧ ∫ z, ρ z = 1 ∧ ∀ z v : Rn n, fderiv ℝ Ψ z v = ρ z * inner ℝ z v",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

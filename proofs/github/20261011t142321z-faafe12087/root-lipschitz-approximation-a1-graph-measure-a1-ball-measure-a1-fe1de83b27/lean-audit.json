@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "644a9db35d60f9113bc3d642ae50db491502fccf809503a5c67cafe3fc04414b",
+  "git_delta": {
+    "base_commit": "826faa88065cac76d6672a3326fc317746444beb",
+    "candidate_commit": "1085f86f008bd172de1ca9636c439f48f8711f51",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_gm_ball_measure",
+    "diff_sha256": "5edfd4308ab3d8823977c05f710093ea73a653e78e4d34ef7d457e505aa845e9",
+    "source_sha256": "7435506dd25d5cd61c85a7e9d4614e4f906fc32a9d9ac12cef2280165c3a9f83",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_gm_ball_measure",
+      "statement": "∀ (n : ℕ), 1 ≤ n → ∀ (c : Rn n) (r : ℝ), 0 ≤ r → (μHE[n] : Measure (Rn n)) (closedBall c r) = ENNReal.ofReal (unitBallVolume n * r ^ n)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

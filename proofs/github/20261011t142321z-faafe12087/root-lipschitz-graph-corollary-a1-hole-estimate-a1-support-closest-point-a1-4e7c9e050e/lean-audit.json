@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "08d919ffad35e81db173e7d67e30508c4f4417276bef1856a732ac887e0e437f",
+  "git_delta": {
+    "base_commit": "8542082ecd54d93699a84701a8d4cee8a849cda0",
+    "candidate_commit": "ccc3508966704ce3db0d4f1e982a000aa25ca654",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lgc_support_closest_point",
+    "diff_sha256": "e5b2e98aee30a01bb6efbd4cd7483d98614827d9dc41a6177a058624c7f65264",
+    "source_sha256": "822123aee775ed683abe3d23d97287157fec9ee1ffd75bdc0647cb8e4573b387",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_support_closest_point",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ρ : ℝ) (ζ : Amb n ℓ), (0 : Amb n ℓ) ∈ V.support → closedBall (0 : Amb n ℓ) ρ ⊆ U → ‖ζ‖ + infDist ζ V.support ≤ ρ → ∃ y ∈ V.support, dist y ζ = infDist ζ V.support ∧ V.weight (ball ζ (infDist ζ V.support)) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

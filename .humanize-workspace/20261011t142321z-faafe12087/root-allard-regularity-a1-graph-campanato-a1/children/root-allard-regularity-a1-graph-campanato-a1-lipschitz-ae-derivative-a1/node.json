@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1",
+  "depth": 3,
+  "title": "A Lipschitz map whose a.e. derivative is continuous has that derivative everywhere",
+  "statement": "Let n, l >= 0, f : R^n -> R^l, g : R^n -> L(R^n, R^l), c in R^n, r real and K >= 0. If f is K-Lipschitz on the open ball B^o_r(c), g is continuous on B^o_r(c), and for Lebesgue-almost every x in B^o_r(c) the map f has Frechet derivative g(x) at x, then f has Frechet derivative g(x) at every x in B^o_r(c).",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (c : Rn n) (r : ℝ) (K : ℝ≥0), LipschitzOnWith K f (ball c r) → ContinuousOn g (ball c r) → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x) → ∀ x ∈ ball c r, HasFDerivAt f (g x) x",
+  "lean_name": "allard52_lipschitz_hasFDerivAt_of_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-a1-a1"
+}

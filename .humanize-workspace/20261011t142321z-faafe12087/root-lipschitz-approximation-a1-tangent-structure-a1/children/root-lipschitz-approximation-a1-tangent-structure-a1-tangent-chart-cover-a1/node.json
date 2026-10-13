@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.tangent_structure-a1.tangent_chart_cover-a1",
+  "parent_id": "root.lipschitz_approximation-a1.tangent_structure-a1",
+  "depth": 3,
+  "title": "C^1 chart cover of a countably n-rectifiable set by Borel pieces of finite H^n-measure with continuous approximate tangent planes (Simon Ch. 2 Thm 1.5; Ch. 3 Lemma 1.2, Remark 1.3, Thm 1.6 for C^1 pieces)",
+  "statement": "Let n >= 1 and l be natural numbers, R^m := EuclideanSpace R (Fin m), R^(n+l) = Amb n l, and H^n := muHE[n] on R^(n+l). Let M be a subset of R^(n+l) that is countably n-rectifiable in the sense of SimonGMT Chapter03.CountablyRectifiable n M: there are M_0 with H^n(M_0) = 0 and maps F_j : R^n -> R^(n+l) (j in N), each Lipschitz, with M contained in M_0 union the union over j of F_j(R^n). No measurability of M is assumed. Then there are sets N_k in R^(n+l) and maps T_k from R^(n+l) to the linear subspaces of R^(n+l) (k in N) such that, for every k:\n (i) N_k is Borel measurable;\n (ii) H^n(N_k) < infinity;\n (iii) x -> (T_k x).starProjection, the orthogonal projection onto T_k(x), is continuous on N_k for the operator-norm topology;\n (iv) for every x in N_k, T_k(x) is an approximate tangent space of N_k at x in the sense of SimonGMT Chapter03.HasApproximateTangentSpaceAt n N_k x (T_k x). That is, finrank T_k(x) = n and, for every continuous compactly supported f : R^(n+l) -> R, the integral of f over blowUpMap x r '' N_k tends to the integral of f over T_k(x), both with respect to H^n, as r -> 0+. Here blowUpMap x r z = r^-1 (z - x).\nMoreover:\n (v) H^n(M minus the union over k of N_k) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N : ℕ → Set (Amb n ℓ)) (T : ℕ → Amb n ℓ → Submodule ℝ (Amb n ℓ)), (∀ k, MeasurableSet (N k)) ∧ (∀ k, (μHE[n] : Measure (Amb n ℓ)) (N k) < ⊤) ∧ (∀ k, ContinuousOn (fun x => (T k x).starProjection) (N k)) ∧ (∀ k, ∀ x ∈ N k, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (N k) x (T k x)) ∧ (μHE[n] : Measure (Amb n ℓ)) (M \\ ⋃ k, N k) = 0",
+  "lean_name": "lipts_rectifiable_tangent_chart_cover",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.projection_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.projection_continuity-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-projection-c-ed781ad605-a1",
+      "result_commit": "9f89be4c6f3781e8d518dff64e552c3d1263533e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-tangent-structure-a1-tangent-chart-cover-a1-a1"
+}

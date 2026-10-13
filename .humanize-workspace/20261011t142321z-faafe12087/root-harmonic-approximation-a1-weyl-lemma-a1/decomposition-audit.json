@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsW12WithGradient|abbrev Rn",
+        "weyl's lemma|weyl lemma|weakly harmonic|weaklyHarmonic|distributional.*harmonic",
+        "def HarmonicAt|def HarmonicOnNhd|harmonicAt_congr_nhds|continuousOn",
+        "laplacian|instLaplacian",
+        "convolution_precompR_apply|theorem convolution_assoc|theorem convolution_symm|theorem convolution_eq_swap",
+        "support_normed_eq|contDiff_normed|integral_normed|nonneg_normed",
+        "eqOn_open_of_ae_eq",
+        "integral_comp_inv_smul_of_nonneg",
+        "continuousAt_fderiv|contDiff_infty_iff_deriv",
+        "fderiv_of_notMem_tsupport|HasCompactSupport.fderiv_apply",
+        "quasiMeasurePreserving_add|quasiMeasurePreserving_sub",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/weyl-independent-audit-wia0_145/Audit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/weyl-independent-audit-wia0_145/API.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-weyl-lemma-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-weyl-lemma-a1/decomposition-v1.json",
+        "/tmp/weyl-independent-audit-wia0_145/Audit.lean",
+        "/tmp/weyl-independent-audit-wia0_145/API.lean"
+      ],
+      "conclusion": "The six-way split appropriately separates substantive obligations for the selected Weyl lemma. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Both frozen project files and twelve inspected core mathlib files match the compilation sources byte-for-byte. The Weyl/weak-harmonicity search returned no relevant match. The inspected APIs support convolution differentiation, bump convergence, support-local integration by parts, harmonic congruence, scaling, and the fundamental lemma.\n\nIndependent Lean checks succeeded: all six exact type strings elaborate as theorem parameters without child implementations; their conclusions imply the exact frozen parent proposition. A separate rfl check confirms the intended Euclidean Laplacian instance. The assembly and thirteen checked library lemmas depend only on propext, Classical.choice and Quot.sound, with no sorryAx. These are interface and assembly checks, not formal proofs of the children.\n\nAll six names are bare identifiers. Scanning the DAG and 457 run JSON artifacts found their reservations only in this proposal's own artifacts. No previously accepted declaration is being reused. The only sibling dependencies are local_representative on mollifier_harmonic and mean_value_kernel; they are correctly directed and acyclic. Every child supplies a complete argument rather than a future proof-search plan. The mollification/commutation/limit route is also corroborated by [Hamburg PDE notes, §2.5](https://wwwp2.math.uni-hamburg.de/en/forschung/bereiche/am/geom-part-differentialgleichungen/dokumente/pde.pdf#page=34)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weak_laplacian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches all prose hypotheses and the conclusion. Finite-volume L²-to-L¹ integrability, admissibility of derivative test functions, pairing the weak-gradient identity with basis vectors, and summing the second derivatives justify the Laplacian identity. The argument is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "mollifier_harmonic",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated unrestricted real ε. The proof explicitly handles ε ≤ 0 by the zero kernel. Compact support justifies smooth convolution and twice differentiating under the integral. The reflected test function has support inside B, and its two derivative signs cancel, yielding exactly the claimed Laplacian vanishing."
+    },
+    {
+      "key": "mean_value_kernel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely expresses the existential smooth kernel, boundary vanishing, positive scale, global C² hypothesis, and closed-ball harmonicity. The proof constructs and normalizes the kernel and its compactly supported potential. FTC, Fubini on [0,t] × Rⁿ, justified integration by parts, removal of the null endpoint, scaling, and reflection establish the exact integral identity without invoking a mean-value or Weyl theorem."
+    },
+    {
+      "key": "local_representative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose and uses precisely its two declared siblings. It uses only smoothness, support, and the mean-value property from the kernel contract. The interior-ball estimates permit applying that property to smooth bump mollifications. The explicit absolute-integrability estimate justifies Fubini, and the two convergence results identify the candidate with w almost everywhere on the required smaller ball."
+    },
+    {
+      "key": "harmonic_patching",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes exactly the assumed family of representatives and the desired global representative. Continuity on the overlap upgrades almost-everywhere compatibility to pointwise equality. The stated radius estimates give local equality with one fixed harmonic representative, while the countable 1/m family supplies a single null exceptional set. No measurability assumption on the chosen family or sibling theorem is needed."
+    },
+    {
+      "key": "gradient_identification",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully states local C¹ regularity, the W¹,² weak-gradient hypothesis, and almost-everywhere equality. The proof establishes continuity and integrability of the test-weighted products despite arbitrary behavior outside B. Its integration-by-parts application satisfies the pinned lemma's support-local differentiability requirements. Pairing with arbitrary vectors and applying the vector-valued fundamental lemma proves the exact gradient equality independently of the parent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1.dq_basic-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.el_c2alpha-a1",
+  "depth": 4,
+  "title": "Elementary properties of difference quotients of a C^1 map with Hoelder derivative",
+  "statement": "Let n, l be natural numbers, u : R^n -> R^l, U an open subset of R^n with u of class C^1 on U, K a subset of U, V a subset of R^n, e in R^n and d, eps, H, alpha real numbers with d nonzero. Assume that x + (td)e lies in K for all x in V and t in [0,1], that ||Du(x)|| <= eps for x in K, and that ||Du(x) - Du(y)|| <= H ||x - y||^alpha for x, y in K. Let w(z) := d^{-1}(u(z + de) - u(z)). Then (i) w is C^1 on V; (ii) Dw(x) = d^{-1}(Du(x + de) - Du(x)) for x in V; (iii) ||w(x)|| <= eps ||e|| for x in V; (iv) ||Dw(x) - Dw(y)|| <= 2 |d|^{-1} H ||x - y||^alpha for x, y in V.",
+  "lean_statement": "∀ (n ℓ : ℕ) (u : Rn n → Rn ℓ) (U V K : Set (Rn n)) (e : Rn n) (d ε H α : ℝ), IsOpen U → ContDiffOn ℝ 1 u U → K ⊆ U → d ≠ 0 → (∀ x ∈ V, ∀ t ∈ Icc (0 : ℝ) 1, x + (t * d) • e ∈ K) → (∀ x ∈ K, ‖fderiv ℝ u x‖ ≤ ε) → (∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ H * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 (fun z => d⁻¹ • (u (z + d • e) - u z)) V ∧ (∀ x ∈ V, fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x = d⁻¹ • (fderiv ℝ u (x + d • e) - fderiv ℝ u x)) ∧ (∀ x ∈ V, ‖d⁻¹ • (u (x + d • e) - u x)‖ ≤ ε * ‖e‖) ∧ ∀ x ∈ V, ∀ y ∈ V, ‖fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) x - fderiv ℝ (fun z => d⁻¹ • (u (z + d • e) - u z)) y‖ ≤ 2 * |d|⁻¹ * H * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_elc2_dq_basic",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-el-c2alph-f308b12e1a-a1"
+}

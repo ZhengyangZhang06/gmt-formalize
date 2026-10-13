@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bb80f707f4c032ff6a201b0b240c9c2e89c06251c338a48276bc37b4852aa701",
+  "git_delta": {
+    "base_commit": "7b614d9943b29bf00dcc7dd9340c9eefae417fd4",
+    "candidate_commit": "34f31545de8e5ecec509272e1e3a8b36463ffc55",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_rv_map_hausdorff",
+    "diff_sha256": "aa01d524e694b8e34497f777283d3051f319394cbce9723a29191b977af3951c",
+    "source_sha256": "7d0b2ec98214dadafc18c198d4c3282e3d4a8035b30e70a006327b4b08b69255",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_rv_map_hausdorff",
+      "statement": "∀ (n ℓ : ℕ) (c : Amb n ℓ) (R : ℝ), 0 < R → (μHE[n] : Measure (Amb n ℓ)).map (fun x => c + R • x) = (ENNReal.ofReal (R ^ n))⁻¹ • (μHE[n] : Measure (Amb n ℓ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

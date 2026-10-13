@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1.diagonal_extract-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.holder_diag_subseq-a1",
+  "depth": 6,
+  "title": "Diagonal extraction of one subsequence converging uniformly on countably many sets, with a single glued limit",
+  "statement": "Let n, l be natural numbers and L := L(R^n, R^l) with the operator norm. Let F_k : R^n -> L (k in N) be any maps and S_m (m in N) any subsets of R^n. Assume that for every m in N and every strictly increasing psi : N -> N there are a strictly increasing chi : N -> N and g : R^n -> L such that F_{psi(chi(j))} -> g uniformly on S_m as j -> infinity. Then there are a strictly increasing phi : N -> N and a single V : R^n -> L such that, for every m in N, F_{phi(j)} -> V uniformly on S_m as j -> infinity.",
+  "lean_statement": "∀ (n ℓ : ℕ) (F : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (S : ℕ → Set (Rn n)), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ (χ : ℕ → ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono χ ∧ TendstoUniformlyOn (fun j => F (ψ (χ j))) g atTop (S m)) → ∃ (φ : ℕ → ℕ) (V : Rn n → (Rn n →L[ℝ] Rn ℓ)), StrictMono φ ∧ ∀ m : ℕ, TendstoUniformlyOn (fun j => F (φ j)) V atTop (S m)",
+  "lean_name": "dohr_eb_sch_bu_hds_diagonal_extract",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-576625c3fc-a1"
+}

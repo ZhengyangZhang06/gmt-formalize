@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f386274d2b49efcaddfef449a3d135fa7d11f403cfb3f12a439f81f709b48f54",
+  "git_delta": {
+    "base_commit": "678a7952a87720ec4223f59ec63818d4b21f42d9",
+    "candidate_commit": "edb0cd8f78d2d5ce021c701fcdc8a73e52c84c8c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn",
+    "diff_sha256": "27897c29b4f222d6d876afe371f9d334b2ca6624eff8f08975e19acffe45089e",
+    "source_sha256": "e72c3225fedcc31df20e2af04ea2989d8845d70cca41414ba520226f0e052207",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn",
+      "statement": "∀ (n : ℕ) (K : Set (Rn n)) (f : ℕ → Rn n → ℝ) (g : Rn n → ℝ), IsCompact K → (∀ᶠ k in atTop, Integrable (f k)) → Integrable g → (∀ᶠ k in atTop, ∀ z, z ∉ K → f k z = 0) → (∀ z, z ∉ K → g z = 0) → TendstoUniformlyOn f g atTop K → Tendsto (fun k => ∫ z, f k z) atTop (𝓝 (∫ z, g z))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

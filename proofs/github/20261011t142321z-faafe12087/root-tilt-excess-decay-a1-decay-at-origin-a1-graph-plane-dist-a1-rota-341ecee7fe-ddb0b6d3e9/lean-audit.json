@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "16f7923909f5ca741a45d7c5a193d222005311f8d0ce0568be20c742e55b4da9",
+  "git_delta": {
+    "base_commit": "382cb515b7c3364a4237147bcfde022115319a1c",
+    "candidate_commit": "7bbf09e28a86e0ee1ad32f71c2b463970855e0c0",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_gpd_infDist_rotatedPlane_graphPoint",
+    "diff_sha256": "b14780e1011b379b67d276c989de35127b992d87ce342f1b3bdf5921ea800edc",
+    "source_sha256": "9c7162d900b3bdb41b53c003db9dcde06c8447b667c4fa0bdc9cb371e1e3f854",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_gpd_infDist_rotatedPlane_graphPoint",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q (graphPoint a b)) (rotatedPlane q : Set (Amb n ℓ)) = ‖b‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

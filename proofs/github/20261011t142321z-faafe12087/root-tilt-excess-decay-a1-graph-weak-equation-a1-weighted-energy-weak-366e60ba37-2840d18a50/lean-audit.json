@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "045bf444384aa4e1efcef5a537aa69df2c7248169ea65a342ba7d19d782c8901",
+  "git_delta": {
+    "base_commit": "a7effe3e16ce37557ba52116a0911b6efcef6630",
+    "candidate_commit": "b5e93e79a8b66b3379708801c92047aabf4727ea",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_wewe_setIntegral_le_sqrt_mul_sqrt",
+    "diff_sha256": "01598ddcac9b23493493593fdee1a8484693c37c6a1ccd51398ac61e1fd40f9a",
+    "source_sha256": "6d855488a00e334c3d5ff57c3b0aaff688359619fbc488c6386f75b09c84f627",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_wewe_setIntegral_le_sqrt_mul_sqrt",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (g D : X → ℝ), μ S < ⊤ → AEStronglyMeasurable g (μ.restrict S) → IntegrableOn D S μ → (∀ᵐ x ∂(μ.restrict S), 0 ≤ g x ∧ g x ^ 2 ≤ D x) → ∫ x in S, g x ∂μ ≤ Real.sqrt (μ S).toReal * Real.sqrt (∫ x in S, D x ∂μ)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

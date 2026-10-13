@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Reduction to a plane of small tilt and small height (Simon 4.5, proof steps (1), (2))",
+  "statement": "Assume the contract Prop AffineApproximationLemma (Simon 2.5). For n >= 1, l and p > n there is C > 0, depending only on n, l, p, with the property: if U is open, V is a contract rectifiable n-varifold in U, H : R^{n+l} -> R^{n+l}, 0 < δ <= 1/4, AllardHypotheses H p δ ρ hold, x |-> V.tangentProj x is V.weight-a.e. strongly measurable, and μ(B̄_{δρ}(0)) >= ω_n (δρ)^n / 2 (μ = V.weight, ω_n = unitBallVolume n), then for every n-dimensional subspace T there is an n-dimensional subspace T' with E_*(0, δρ, T') <= E_*(0, δρ, T), E(0, δρ, T') <= C (δ^γ)^2, and dist(x, T') <= C δ^γ (δρ) for all x in spt V ∩ B̄_{2δρ}(0), where γ = 1/(2n+2), E = V.tiltExcess and E_* = V.tiltExcessStar H p δ.",
+  "lean_statement": "AffineApproximationLemma → ∀ n ℓ : ℕ, 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ C : ℝ, 0 < C ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ 1 / 4 → V.AllardHypotheses H p δ ρ → AEStronglyMeasurable V.tangentProj V.weight → ENNReal.ofReal (unitBallVolume n * (δ * ρ) ^ n / 2) ≤ V.weight (closedBall 0 (δ * ρ)) → ∀ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n → ∃ T' : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T' = n ∧ V.tiltExcessStar H p δ 0 (δ * ρ) T' ≤ V.tiltExcessStar H p δ 0 (δ * ρ) T ∧ V.tiltExcess 0 (δ * ρ) T' ≤ C * (δ ^ (1 / (2 * (n : ℝ) + 2))) ^ 2 ∧ ∀ x ∈ V.support ∩ closedBall 0 (2 * (δ * ρ)), infDist x (T' : Set (Amb n ℓ)) ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * (δ * ρ)",
+  "lean_name": "tdo_small_tilt_plane",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.scaled_lp_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.tilt_iteration-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Iteration of the tilt-excess decay theorem 4.5 at the centre",
+  "statement": "Assume TiltExcessDecayTheorem (Simon 4.5 as frozen in the contract). For n >= 1, p > n and constants c_l > 0, c_u there are delta_6 > 0, C_II, C_III such that: if U is open, V a contract rectifiable n-varifold in U with generalized mean curvature H satisfying AllardHypotheses H p delta rho with 0 < delta <= delta_6, sigma in (0, delta rho/2], c_l omega_n s^n <= mu(B_s(0)) <= c_u omega_n s^n for all s in (0, sigma], and S_0 is an n-dimensional subspace, then there is an n-dimensional subspace S with |p_S - p_{S_0}|^2 <= C_II E_*(0, sigma, S_0) and E(0, s, S) <= C_III (s/sigma)^(2(1 - n/p)) E_*(0, sigma, S_0) for all s in (0, sigma], where E = V.tiltExcess and E_* = V.tiltExcessStar H p delta.",
+  "lean_statement": "TiltExcessDecayTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ cl cu : ℝ, 0 < cl → ∃ δ₆ CII CIII : ℝ, 0 < δ₆ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ σ : ℝ), 0 < δ → δ ≤ δ₆ → V.AllardHypotheses H p δ ρ → 0 < σ → σ ≤ δ * ρ / 2 → (∀ s : ℝ, 0 < s → s ≤ σ → cl * unitBallVolume n * s ^ n ≤ (V.weight (closedBall 0 s)).toReal ∧ (V.weight (closedBall 0 s)).toReal ≤ cu * unitBallVolume n * s ^ n) → ∀ S₀ : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S₀ = n → ∃ S : Submodule ℝ (Amb n ℓ), Module.finrank ℝ S = n ∧ hsNormSq (S.starProjection - S₀.starProjection) ≤ CII * V.tiltExcessStar H p δ 0 σ S₀ ∧ ∀ s : ℝ, 0 < s → s ≤ σ → V.tiltExcess 0 s S ≤ CIII * (s / σ) ^ (2 * (1 - (n : ℝ) / p)) * V.tiltExcessStar H p δ 0 σ S₀",
+  "lean_name": "any_radius_tilt_iteration",
+  "depends_on": [
+    "root.allard_any_radius-a1.tangent_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-tilt-iteration-a1-a1"
+}

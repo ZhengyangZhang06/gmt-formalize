@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "664818b0a96a103a91c703b40cc8fb03b5b9d17a7bf2c469aa8d2e734fb1ef04",
+  "git_delta": {
+    "base_commit": "9a8a03041411292a5b3c1e46effb42b6a8a0e80b",
+    "candidate_commit": "7013ea3a022d7d61d5224ff90162be54161b651a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_sqrt_det_second_deriv",
+    "diff_sha256": "fbbb5034e35263f69d12479a573dc081457d7614b0812b995e65dacbf7b690cb",
+    "source_sha256": "0e36c6a792261c121fa86905cce63fe6553d13b0d9384974d48bce44fb2ba160",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_sqrt_det_second_deriv",
+      "statement": "∀ n : ℕ, ∀ S : Matrix (Fin n) (Fin n) ℝ, deriv (deriv (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S)))) 0 = Matrix.trace S",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

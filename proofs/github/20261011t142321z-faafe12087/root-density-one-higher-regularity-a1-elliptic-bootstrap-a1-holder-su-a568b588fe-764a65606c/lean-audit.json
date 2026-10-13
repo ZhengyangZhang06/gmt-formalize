@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d62ba31b594c2b1be1fefaaeb983e6088485d49f19629c35f06646f565657f5",
+  "git_delta": {
+    "base_commit": "c300e3dcf10896d4e78d277427d01a1546170065",
+    "candidate_commit": "1b7ccba6312a257f082f691a41b919af123f3a64",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_hsif_contDiffOn_clm_iff_columns",
+    "diff_sha256": "4f5e9d635f5717f887387c3d7652327b87469cc2dd50d5b7b5559b3c8fba49f8",
+    "source_sha256": "739263fdc5019f65158ba41e745442b0e980209f777b35aa89a18d0b98a38b80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_hsif_contDiffOn_clm_iff_columns",
+      "statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (m : ℕ) (g : Rn n → (Rn n →L[ℝ] E)) (U : Set (Rn n)), ContDiffOn ℝ m g U ↔ ∀ k : Fin n, ContDiffOn ℝ m (fun x => g x (EuclideanSpace.single k (1 : ℝ))) U",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

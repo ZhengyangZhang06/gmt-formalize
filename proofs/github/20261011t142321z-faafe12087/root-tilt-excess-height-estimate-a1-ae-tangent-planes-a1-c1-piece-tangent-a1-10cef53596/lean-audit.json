@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f9d9e3b129da5db29506f6bec747190d37ff2d2e4143c6740a2aafc690021b16",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "94f106887c3757ba4d899ab4dd6c54affd5b8466",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_c1_piece_approxTangent",
+    "diff_sha256": "471b9119a3e24cca43c6cc285d5463183f14c6aff928a8f50104ad1a603c9171",
+    "source_sha256": "abb098d94ee83cd7b522e5bcdf28205d0056ad09cb3df0eb6e0ac8c09b91cf4c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_c1_piece_approxTangent",
+      "statement": "∀ (n ℓ : ℕ) (G : Rn n → Amb n ℓ) (c : Rn n) (r σ : ℝ), ContDiff ℝ 1 G → 0 < σ → (∀ b ∈ ball c r, Function.Injective (fderiv ℝ G b)) → (∀ b₁ ∈ ball c r, ∀ b₂ ∈ ball c r, σ * ‖b₁ - b₂‖ ≤ ‖G b₁ - G b₂‖) → MeasurableSet (G '' ball c r) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball c r) < ⊤ ∧ ∀ b ∈ ball c r, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (G '' ball c r) (G b) (LinearMap.range (fderiv ℝ G b).toLinearMap)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

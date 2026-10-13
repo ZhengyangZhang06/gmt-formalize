@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Approximate tangent space forces density θ(x) (Simon 3.1.8(2))",
+  "statement": "Let n ≥ 1, U ⊆ ℝ^{n+ℓ} open, V = v(M, θ) a rectifiable n-varifold in U, x ∈ U, and P a subspace which is the approximate tangent space of M at x with respect to θ (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P). Then Θⁿ(μ_V, x) = θ(x), i.e. V.HasDensity x (θ x).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), x ∈ U → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P → V.HasDensity x (V.mult x)",
+  "lean_name": "rsod_hasDensity_of_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bfd84bef0c3c609ab218ceabeb7ee4e9328ecec687ff8ec661386d9360a8461b",
+  "git_delta": {
+    "base_commit": "cc59bc46c4c1f1391d21197539b68cf37a53888a",
+    "candidate_commit": "78e49ee2d4079532566aced23d3b827d78e93557",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_c1_lusin_clm_volume",
+    "diff_sha256": "0b6b07a20394188921164258e44831cd0b4f9f8a135b93114bb2f85cff327e9e",
+    "source_sha256": "7e66e42f15bdd317cabbddf0f1a7d05787edb1ae5cdd0e731acb49a9dcc5a0f0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_c1_lusin_clm_volume",
+      "statement": "∀ {n : ℕ} (F : Rn n → (Rn n →L[ℝ] ℝ)), Measurable F → ∀ S : Set (Rn n), MeasurableSet S → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ C : Set (Rn n), C ⊆ S ∧ IsClosed C ∧ volume (S \\ C) < δ ∧ ContinuousOn F C",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

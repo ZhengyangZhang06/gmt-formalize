@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "460c7816848c8c795304f5c96d755eadd4a7ae8f586ebe2da01420fbd784167e",
+  "git_delta": {
+    "base_commit": "ff9ce087de582fc76ffcc26fecd0f98908d78b32",
+    "candidate_commit": "a5844da75d84729f1c09a0d9fdebac4ad23d4aac",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "852d0a0f1370627492ff366061ed59476814862254edbd3709270f5e8a4e346b",
+    "source_sha256": "91a362be929624886b77c520f700c95702c936781b7c39b5a66c7f8cab988319",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_exists_translated_varifold",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ), ∃ W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier ∧ (∀ y, W.mult y = V.mult (y + x₀)) ∧ W.weight = V.weight.map (fun y => y - x₀) ∧ W.support = (fun y => y + x₀) ⁻¹' V.support ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → W.HasGeneralizedMeanCurvature (fun y => H (y + x₀))) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

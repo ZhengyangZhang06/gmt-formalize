@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Harmonic approximation lemma (Simon 5.3.1)",
+  "statement": "For n >= 1 and eps > 0 there is delta > 0 such that: if B is the open unit ball of R^n, f in L^2(B), g in L^2(B;R^n) with integral_B f grad zeta = - integral_B zeta g for all zeta in C_c^infinity(B), integral_B |g|^2 <= 1, and |integral_B g . grad zeta| <= delta M whenever zeta in C_c^infinity(B) and |grad zeta| <= M everywhere, then there is u harmonic on B (C^2 near each point with Laplacian 0) with integral_B |grad u|^2 <= 1 and integral_B |u - f|^2 <= eps (extended integrals).",
+  "lean_statement": "HarmonicApproximationLemma",
+  "lean_name": "harmonic_approximation_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-a1"
+}

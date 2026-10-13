@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "caccioppoli|Caccioppoli|Campanato|Schauder|Liouville",
+        "integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable|integral_comp_smul|setIntegral_eq_integral_of_forall_compl_eq_zero|contDiff_convolution_left|hasFDerivAt_integral_of_dominated_of_fderiv_le|isSymmSndFDerivAt|integral_normed|hasFDerivAt_of_tendstoUniformlyOn|arzela_ascoli|norm_image_sub_le_of_norm_hasFDerivWithin_le",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/AllChallenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/TwoProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Checks/InstVerify.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/sch-independent-audit-8gjsck_s/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Complex/Harmonic/Liouville.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-estimate-a1/decomposition-v1.json",
+        "/tmp/sch-decomp-vQxbTq/proj/Checks/AllChallenges.lean",
+        "/tmp/sch-decomp-vQxbTq/proj/Checks/Assembly.lean",
+        "/tmp/sch-decomp-vQxbTq/proj/Checks/TwoProofs.lean",
+        "/tmp/sch-decomp-vQxbTq/proj/Checks/InstVerify.lean",
+        "/tmp/sch-independent-audit-8gjsck_s/LibraryAxioms.lean"
+      ],
+      "conclusion": "Independently confirmed the frozen handoff, project revision ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d, and Lean 4.35.0-rc3. Inspected library files match the compiler's package sources byte-for-byte. The snapshot search found no relevant Caccioppoli, Campanato, or Schauder PDE theorem; the inspected harmonic Liouville result concerns the complex plane. The cited calculus, integration, and compactness lemmas exist and their independently printed axioms are only propext, Classical.choice, and Quot.sound. All seven exact child types and the exact parent type elaborate; this checks types, not the five remaining analytic implementations. The supplied zero_mean and interpolation proofs and the conditional parent assembly independently compile with only standard axioms. Inline scalar actions, operator enorms, and Haar volume infer the intended instances; no matrix construction occurs. All seven names are bare, distinct, and unreserved in the 440-node DAG. Dependencies are correctly directed and acyclic. The split follows the selected proof, and rescale plus unit_ball_estimate establish the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "zero_mean",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match. Compact support ensures derivative integrability; commuting evaluation with integration and integrating by parts with the constant function 1 proves the conclusion, including n = 0. The supplied Lean proof independently compiles without additional axioms."
+    },
+    {
+      "key": "interpolation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match, including alpha >= 0 and K >= 0. The proof derives S >= 0, applies the mean-value inequality on the contained closed ball, and obtains the operator-norm bound by homogeneity. Degenerate dimensions are covered. The supplied Lean proof independently compiles."
+    },
+    {
+      "key": "rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the generalized open-set statement. The proof handles nonpositive r, transfers compactly supported tests through the affine homeomorphism, and establishes the derivative and rho-squared integrand identities. The pinned Haar change-of-variables and support lemmas justify the argument without integrability assumptions."
+    },
+    {
+      "key": "caccioppoli",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lower-integral contract matches the prose, including a potentially infinite right-hand side. The cutoff makes the test globally C1 despite only local regularity of V. All absorption integrals are finite; coercivity, the bilinear bound, and Young's inequality give the stated constant. Passing to ENNReal preserves validity even when a coefficient is zero and the outer integral is infinite."
+    },
+    {
+      "key": "liouville",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact global weak-solution statement is proved using only the declared Caccioppoli dependency and library facts. Mollification and difference quotients preserve the equation; iterated Caccioppoli yields the negative exponent 2 alpha - n - 2. Consequently high derivatives vanish, and sublinear gradient growth forces the resulting polynomial to be constant. The final mollification limit and the n = 0 case are justified."
+    },
+    {
+      "key": "blowup_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-constant formulation matches the prose. Normalization, interpolation, vanishing scales, affine subtraction, compactness, and passage to the weak equation are justified with the stated bounds. The limit retains a nonzero gradient difference, contradicting the declared Liouville child. Negative-constant and zero-target cases are handled. The proof supplies the systems argument fully; the cited scaling methodology is consistent with [Vita, section 5.2](https://arxiv.org/html/2510.01765v1)."
+    },
+    {
+      "key": "unit_ball_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes precisely H1-H8 and the additional nonnegative constant promised in prose. H7 makes Q finite; rescaling and the blow-up child yield Q <= Q/2 + (512 + 64 C_delta) M. The resulting constant (1024 + 128 C_delta) max(M,0) controls both conclusions. Dependencies are sufficient and non-circular. Together with rescale, this child proves the exact selected parent, as independently checked by the conditional Lean assembly."
+    }
+  ],
+  "required_changes": []
+}

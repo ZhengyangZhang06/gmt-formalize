@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1.hs_norm-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.la_basics-a1",
+  "depth": 4,
+  "title": "Hilbert-Schmidt norm basics and the Hilbert-Schmidt bound for orthogonal projections",
+  "statement": "(L8) For all m, k >= 0 and all continuous linear maps M, N : R^m -> R^k, with hsNormSq M := sum_{i in Fin m} |M e_i|^2 (e_i = EuclideanSpace.single i 1 the standard basis of R^m), hsNorm M := sqrt(hsNormSq M) and ||M|| the operator norm: (a) 0 <= hsNormSq M; (b) hsNorm(M)^2 = hsNormSq M; (c) hsNormSq(M + N) <= 2 hsNormSq M + 2 hsNormSq N; (d) hsNormSq(-M) = hsNormSq M; (e) hsNormSq M = 0 implies M = 0; (f) ||M|| <= hsNorm M; (g) hsNorm M <= sqrt(m) ||M||. (L9) For every m >= 0 and every linear subspace K of R^m, with P_K := K.starProjection the orthogonal projection onto K viewed as a continuous linear map R^m -> R^m, hsNormSq(P_K) <= m.",
+  "lean_statement": "(∀ (m k : ℕ) (M N : Rn m →L[ℝ] Rn k), 0 ≤ hsNormSq M ∧ hsNorm M ^ 2 = hsNormSq M ∧ hsNormSq (M + N) ≤ 2 * hsNormSq M + 2 * hsNormSq N ∧ hsNormSq (-M) = hsNormSq M ∧ (hsNormSq M = 0 → M = 0) ∧ ‖M‖ ≤ hsNorm M ∧ hsNorm M ≤ Real.sqrt m * ‖M‖) ∧ ∀ (m : ℕ) (K : Submodule ℝ (Rn m)), hsNormSq K.starProjection ≤ m",
+  "lean_name": "any_radius_gr_la_hsNorm_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-la-basics-a1-hs-norm-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fa9873d006e67506ec186b3d76c61ff1531fb4aaf038ba7fbbc170bbe9e7056f",
+  "git_delta": {
+    "base_commit": "a35d0b572a274fdbb2ef86c8d271d7d050688e2e",
+    "candidate_commit": "838f56b3f912a3f4744354ba4f2c5a75adf1e54f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_ht_ae_transfer",
+    "diff_sha256": "29304ba9026b64ccead35ac56364e743d78245f7c32ef370cc11a73e0297c43e",
+    "source_sha256": "a13e98368cf04dd7707a224d2c9fd82d35aa3aa45e97ee944fb446a1e18aa610",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_ht_ae_transfer",
+      "statement": "∀ (n ℓ : ℕ) (ν : Measure (Rn n)) (μ : Measure (Amb n ℓ)) (F : Rn n → Amb n ℓ), AEMeasurable F ν → (∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ) → ∀ g : Amb n ℓ → ℝ≥0∞, AEMeasurable g μ → ∫⁻ x, g (F x) ∂ν ≤ ∫⁻ y, g y ∂μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

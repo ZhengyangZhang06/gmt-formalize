@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bcde472546e30b183d34671634c46b8030a59c250dffb35b524196b0d114005a",
+  "git_delta": {
+    "base_commit": "03dd4115b31310266168e649fb7d46b16807d8a9",
+    "candidate_commit": "cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "upperDensity_ne_zero_outside_hausdorff_null",
+    "diff_sha256": "ba8230b80f35c99ab3b27fc3ff75d301917dad26483f1da1f404629eadd11606",
+    "source_sha256": "0b0990e1ce74e59e551f449f66208cdb88d10779ae9df9701f5b95deacf4eb05",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.upperDensity_ne_zero_outside_hausdorff_null",
+      "statement": "∀ {n ℓ : ℕ} (ν : Measure (Amb n ℓ)) (A : Set (Amb n ℓ)), NullMeasurableSet A ν → ν A < ∞ → (μHE[n] : Measure (Amb n ℓ)) {x | x ∉ A ∧ limsup (fun r : ℝ => ν (A ∩ closedBall x r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) ≠ 0} = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "19b1ba9124e433b462a76c9ea788e08cf4102da63cb97a863159670043134f61",
+  "git_delta": {
+    "base_commit": "bb1627f252b77f78ad9867601b77c0b1233315ac",
+    "candidate_commit": "3bbcc99c36b404bb1900c3026eb80172e6b874d5",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gte_weight_null_finite",
+    "diff_sha256": "dd18ada7118a8542aac4d3ebb6b2bd553c5b12ef12dae9bd3a96edab11e45e5d",
+    "source_sha256": "88ffbeaafb80bcb84ef5c7cbf018c2c09255c5005d9f6063a59f31a5d7dd1019",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gte_weight_null_finite",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ⊤) ∧ V.weight (V.support)ᶜ = 0 ∧ ∀ Z : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Z = 0 → V.weight Z = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

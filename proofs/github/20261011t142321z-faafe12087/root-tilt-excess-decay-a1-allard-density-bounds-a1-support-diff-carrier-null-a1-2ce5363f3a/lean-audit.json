@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ef4f8d72a7e0d61e709594aa9d8b03bf98ea308950ab5f65e2ebe90c145e3d23",
+  "git_delta": {
+    "base_commit": "dfeab7261eb86c59d13fc4b9ae25f86d90fea649",
+    "candidate_commit": "5fb44252112e6fbc8d3b3961db922f94999c58a4",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_adb_support_diff_carrier_null",
+    "diff_sha256": "b74503e547da7d93a3e621eb49887fdd1e21ac7739b5d081129a01ce004b781e",
+    "source_sha256": "8602fdd00e413d91d6858a813b686fff55a5aff2f864a05d3bb31a746df53515",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_adb_support_diff_carrier_null",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : Set (Amb n ℓ)), IsOpen W → V.weight W < ⊤ → (∀ y ∈ V.support ∩ W, ∃ c : ℝ, 0 < c ∧ ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ W) \\ V.carrier) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

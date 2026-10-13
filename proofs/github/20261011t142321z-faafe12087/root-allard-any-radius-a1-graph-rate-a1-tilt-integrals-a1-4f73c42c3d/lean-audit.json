@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "28a063dc32b4f846a4704605879d8a02f4fee0c7f4b2fb3e0efe096b40e11978",
+  "git_delta": {
+    "base_commit": "ab0fb97470283c3848e33f0d4de03577affbf231",
+    "candidate_commit": "c688306ec3fd6a66edd2aa36a0ba3ced6b8def3f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_tilt_integral_facts",
+    "diff_sha256": "537243df28c9b3e0dc67a480f67fcc85087e9925c175ccdb901a83f862e6a380",
+    "source_sha256": "5f47b68e9634a4cc97b5f9c350561aeaa9186b892460e709b108742f83c34388",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_tilt_integral_facts",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (T : Submodule ℝ (Amb n ℓ)), (∀ s : ℝ, 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T)) ∧ (∀ σ s : ℝ, 0 < σ → σ ≤ s → V.weight (closedBall ζ s) < ⊤ → σ ^ n * V.tiltExcess ζ σ T ≤ s ^ n * V.tiltExcess ζ s T) ∧ ∀ s : ℝ, 0 < s → 0 ≤ V.tiltExcess ζ s T",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

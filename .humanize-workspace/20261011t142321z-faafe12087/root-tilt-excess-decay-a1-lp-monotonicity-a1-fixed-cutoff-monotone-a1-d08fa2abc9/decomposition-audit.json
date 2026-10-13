@@ -1,0 +1,47 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ted_lpm_fcm_cmd_radial_integrable|allard52_am_cc_cutoff_integral_hasDerivAt|ted_lpm_fcm_cutoff_mass_hasDerivAt",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|IntegrableOn.of_bound|integrable_of_forall_notMem_eq_zero|setIntegral_eq_integral_of_forall_compl_eq_zero|exists_bound_of_continuousOn",
+        "git diff b14e7ebcddb57255ebe59c0c83c300e78378057e 78a807ebd10dcb649b9421e3cf85d7f01bf8fb35 -- GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean AuditProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-d08fa2abc9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-d08fa2abc9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-b17468f7e9/accepted-candidate.json",
+        "/tmp/cmd-independent-audit-odec_7cm/Types_weighted_cutoff_derivative.lean",
+        "/tmp/cmd-independent-audit-odec_7cm/Types_radial_profile_integrable.lean",
+        "/tmp/cmd-independent-audit-odec_7cm/Types_selected_parent.lean",
+        "/tmp/cmd-independent-audit-odec_7cm/AuditProofs.lean"
+      ],
+      "conclusion": "Verified the pinned project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; inspected Mathlib sources match the build sources. The snapshot project contains none of the three searched declarations. Both child types and the selected parent type independently elaborate. The accepted weighted proof, a direct formalization of the supplied radial proof, and the supplied parent assembly compile with only propext, Classical.choice and Quot.sound. The Amb BorelSpace instance also checks. The split is appropriate: the children establish all three selected conclusions, their empty dependency lists are justified, and accepted reuse introduces no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weighted_cutoff_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the independent one-line Lean proposition. The proof establishes cutoff bounds and derivative vanishing, restricted-measure measurability and integrability, domination by (2C/t)|f|, pointwise differentiation, and neighborhood transfer back to μ. It requires no unstated finiteness assumption or circular theorem invocation. The bare name uniquely belongs to comparator-accepted candidate 78a807ebd10dcb649b9421e3cf85d7f01bf8fb35 with an identical frozen type and no dependencies. Its specialization f = 1 proves parent conclusion (c)."
+    },
+    {
+      "key": "radial_profile_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independent one-line Lean proposition match, including the absence of T > 0. The compact-interval argument with K = max(K0, 0) remains valid when T < 0. Continuity supplies measurability; the uniform bound and finite ball measure give integrability on the ball; T*t < S and t > 0 give vanishing outside it. These steps prove the exact statement without circularity or deferred proof construction. The bare name is unreserved. Applying it to φ and u ↦ u*deriv φ u establishes parent conclusions (a) and (b)."
+    }
+  ],
+  "required_changes": []
+}

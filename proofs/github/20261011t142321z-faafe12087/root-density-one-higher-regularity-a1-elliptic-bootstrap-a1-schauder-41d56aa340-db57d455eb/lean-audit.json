@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f18cf9df21e02abd6e2e4fd1e858376224a33231f70b9e892d9423f7e1ef3203",
+  "git_delta": {
+    "base_commit": "e821d88672aa1de5d3985dce6544d905efe7420d",
+    "candidate_commit": "b973ecdb798582541e482761a1ee4df34b880c0a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_fderiv_norm_interpolation",
+    "diff_sha256": "556789afd1178bf989cd27007a4eb0a8b51dffa021874f97091460517be87646",
+    "source_sha256": "f5784105edfc27cc1de25caa892a9e59154f55649e980979d5387d02dc2284e5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_fderiv_norm_interpolation",
+      "statement": "∀ (n ℓ : ℕ) (w : Rn n → Rn ℓ) (x : Rn n) (ρ t α S K : ℝ), 0 ≤ α → 0 ≤ K → 0 < t → t < ρ → ContDiffOn ℝ 1 w (ball x ρ) → (∀ y ∈ ball x ρ, ‖w y‖ ≤ S) → (∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖fderiv ℝ w y - fderiv ℝ w z‖ ≤ K * ‖y - z‖ ^ α) → ‖fderiv ℝ w x‖ ≤ 2 * S / t + t ^ α * K",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

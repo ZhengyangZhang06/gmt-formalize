@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Interior C^{1,alpha} Schauder estimate for C^{1,alpha} weak solutions of Legendre-elliptic divergence-form systems",
+  "statement": "Let n >= 1, l in N, 0 < alpha < 1, lam > 0, M in R, R > 0, and L := L(R^n, R^l) with the operator norm. There is a constant C such that for every x0 in R^n, every map a from R^n to continuous bilinear forms on L, every map Phi from R^n to continuous linear forms on L and every w : R^n -> R^l satisfying, on the open ball B := B_R(x0): (H1) lam ||P||^2 <= a(x)[P][P]; (H2) |a(x)[P][Q]| <= M ||P|| ||Q||; (H3) |a(x)[P][Q] - a(y)[P][Q]| <= M |x - y|^alpha ||P|| ||Q||; (H4) |Phi(x)[P] - Phi(y)[P]| <= M |x - y|^alpha ||P||; (H5) |w(x)| <= M; (H6) w is C^1 on B; (H7) Dw is alpha-Hoelder on B with some (unquantified) constant; (H8) the integral over B of a(x)[Dw(x)][Dzeta(x)] equals the integral over B of Phi(x)[Dzeta(x)] for every C^1 compactly supported zeta : R^n -> R^l with tsupport in B; one has ||Dw(x)|| <= C and ||Dw(x) - Dw(y)|| <= C |x - y|^alpha for all x, y in B_{R/2}(x0). C depends only on n, l, alpha, lam, M, R.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M R : ℝ, 0 < lam → 0 < R → ∃ C : ℝ, ∀ (x₀ : Rn n) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ), (∀ x ∈ ball x₀ R, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball x₀ R, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball x₀ R, ‖w x‖ ≤ M) → ContDiffOn ℝ 1 w (ball x₀ R) → (∃ K : ℝ, ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x₀ R → ∫ x in ball x₀ R, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball x₀ R, Φ x (fderiv ℝ ζ x)) → (∀ x ∈ ball x₀ (R / 2), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball x₀ (R / 2), ∀ y ∈ ball x₀ (R / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_schauder_interior_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-estimate-a1-a1"
+}

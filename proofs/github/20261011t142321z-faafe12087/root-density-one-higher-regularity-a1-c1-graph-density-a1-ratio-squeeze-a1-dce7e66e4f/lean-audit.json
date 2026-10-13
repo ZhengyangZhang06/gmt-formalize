@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fb00e924a3b9ce66d03fc46a97be2a34110ba78589bcb42449a1e6a9ab01f5d",
+  "git_delta": {
+    "base_commit": "6ae2695cefa6a5c5a526aa6eaf7f4035aa27758c",
+    "candidate_commit": "30f4d064163c7e92ebb3cbba2a12a77698e55084",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_ratio_tendsto_one_of_pinching",
+    "diff_sha256": "33396133b7256062f778acd6896945578035201310c9a591226ca540d8fc5fa7",
+    "source_sha256": "23e810ffdf0e63b40951e7999488cff189d86f62cd8fc925901852b97647bb88",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_ratio_tendsto_one_of_pinching",
+      "statement": "∀ (f : ℝ → ℝ≥0∞) (g : ℝ → ℝ), (∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < g r ∧ ENNReal.ofReal ((1 - δ) * g r) ≤ f r ∧ f r ≤ ENNReal.ofReal ((1 + δ) * g r)) → Tendsto (fun r => f r / ENNReal.ofReal (g r)) (𝓝[>] 0) (𝓝 1)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

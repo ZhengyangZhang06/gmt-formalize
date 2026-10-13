@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.weighted_from_unweighted-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent spaces from unweighted ones on closed subsets (Simon Remark 3.1.8(1))",
+  "statement": "Let n, ℓ ∈ ℕ, Hⁿ := μHE[n] on ℝ^{n+ℓ}, A a Borel set with Hⁿ(A) < ∞, and ϑ : ℝ^{n+ℓ} → ℝ Borel measurable and Hⁿ-integrable on A. Suppose that for every closed set K ⊆ A, Hⁿ-a.e. x ∈ K has an approximate tangent space of K (Simon Def. 3.1.4; Chapter03.HasApproximateTangentSpaceAt n K x P for some P). Then for Hⁿ-a.e. x ∈ A there is a subspace P that is the approximate tangent space of A at x with respect to ϑ (Simon Def. 3.1.7; Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P).",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Measurable ϑ → IntegrableOn ϑ A (μHE[n] : Measure (Amb n ℓ)) → (∀ K : Set (Amb n ℓ), IsClosed K → K ⊆ A → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ K → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n K x P) → ∀ᵐ x ∂(μHE[n] : Measure (Amb n ℓ)), x ∈ A → ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n A ϑ x P",
+  "lean_name": "rsod_ae_weightedApproxTangent_of_unweighted",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+    "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.upper_density_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-weighted-f-298de173be-a1"
+}

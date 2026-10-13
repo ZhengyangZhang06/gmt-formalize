@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.radial_height-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Radial integration: a weighted L^2 bound on u - Du x gives a linear height bound",
+  "statement": "For every n >= 1 there is a constant C = C(n) > 0, independent of the codimension l, such that for every l >= 0 the following holds: if 0 < r_1 < R, eps >= 0, m >= 0, u : R^n -> R^l is C^1 on the open ball B^o_R(0) with u(0) = 0, ||Du|| <= 1 (operator norm) there, |u(x)| <= eps |x| for |x| < r_1, and the lower integral over B^o_R(0) of |u(x) - Du(x) x|^2/|x|^(n+2) dx is at most m, then |u(x)| <= (eps + C (log(R/r_1) m)^(1/(n+1))) |x| for every x in B^o_R(0). (Quantifier order: for all n >= 1 there is C > 0 such that for all l and all u, R, r_1, eps, m.)",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 < C ∧ ∀ (ℓ : ℕ) (u : Rn n → Rn ℓ) (R r₁ ε m : ℝ), 0 < r₁ → r₁ < R → 0 ≤ ε → 0 ≤ m → ContDiffOn ℝ 1 u (ball 0 R) → u 0 = 0 → (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ 1) → (∀ x ∈ ball (0 : Rn n) r₁, ‖u x‖ ≤ ε * ‖x‖) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖u x - fderiv ℝ u x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal m → ∀ x ∈ ball (0 : Rn n) R, ‖u x‖ ≤ (ε + C * (Real.log (R / r₁) * m) ^ (1 / ((n : ℝ) + 1))) * ‖x‖",
+  "lean_name": "any_radius_radial_height",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-radial-height-a1-a1"
+}

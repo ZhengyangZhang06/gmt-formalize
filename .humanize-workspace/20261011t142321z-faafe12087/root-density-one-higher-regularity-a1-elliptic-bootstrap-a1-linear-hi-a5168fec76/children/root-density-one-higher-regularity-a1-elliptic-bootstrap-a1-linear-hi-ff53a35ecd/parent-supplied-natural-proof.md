@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1.bilinear_basis_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1, 2 and 6 of the parent proof, isolated for an arbitrary pair B, B' of continuous bilinear forms on an arbitrary finite-dimensional real normed space L. Those steps are the basis of the finite-dimensional space L, the coordinate bounds |pi_r(P)| <= c||P||, the bilinear expansion a(x)[P][Q] = sum_{r,t} pi_r(P) pi_t(Q) a_rt(x), and the triangle-inequality summation. The parent applies this lemma with L := L(R^n, R^l), B := a(x) and B' := a(y).
+
+Lean note (checked by a trial proof at the pin):
+- Basis and constants: b := Module.finBasis ℝ L (index Fin (Module.finrank ℝ L)), E r := b r, π r := LinearMap.toContinuousLinearMap (b.coord r). Then π r P = b.repr P r by simp [π] (LinearMap.coe_toContinuousLinearMap', Basis.coord_apply). Take c0 := ∑ r, ‖π r‖ and c := c0 ^ 2.
+- Only the real numbers B P Q are manipulated. B - B' is never formed, so no algebraic instance on L →L[ℝ] L →L[ℝ] ℝ is needed.
+- Expansion: conv_lhs => rw [← b.sum_repr P, ← b.sum_repr Q], then simp only [map_sum, map_smul, ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]. The two ContinuousLinearMap lemmas are deprecated aliases at the pin but still usable.
+- That simp leaves the Q-index outermost, so finish with rw [Finset.sum_comm] and ring termwise.
+- The array bound uses Finset.abs_sum_le_sum_abs (twice), abs_mul, mul_le_mul, Finset.mul_sum, Finset.sum_mul and ring.
+- The difference case rewrites with Finset.sum_sub_distrib and mul_sub.
+
+1. Basis and coordinates. L is finite-dimensional. Let N := dim L and fix a basis E_0, ..., E_{N-1} of L (Module.finBasis ℝ L). For P in L write P_r for the r-th coordinate of P, so that P = sum_r P_r E_r for every P in L (Basis.sum_repr). Each coordinate map pi_r : P ↦ P_r is linear (Basis.coord). Since L is finite-dimensional, pi_r is continuous (LinearMap.toContinuousLinearMap). Write ||pi_r|| for its operator norm.
+
+2. Coordinate bound. Put c0 := sum_r ||pi_r||; c0 >= 0 because it is a sum of norms. For each r and each P in L: |P_r| = |pi_r(P)| <= ||pi_r|| ||P|| (ContinuousLinearMap.le_opNorm) <= c0 ||P||. The last step holds because ||pi_r|| <= sum_s ||pi_s||, all summands being nonnegative (Finset.single_le_sum), and ||P|| >= 0.
+
+3. Expansion. Let B be a continuous bilinear form on L and let P, Q be in L. By step 1, P = sum_r P_r E_r and Q = sum_t Q_t E_t. B is linear in its first argument, so B(P) = sum_r P_r B(E_r) as linear forms. Evaluating at Q and using the linearity of each linear form B(E_r) gives
+   B(P)(Q) = sum_r P_r B(E_r)(Q) = sum_r P_r sum_t Q_t B(E_r)(E_t) = sum_r sum_t P_r Q_t B(E_r)(E_t).
+
+4. Estimate for an arbitrary array. Let beta_{rt} (r, t < N) be any real numbers. Use the triangle inequality for finite sums (for the outer sum and for each inner sum), then |uv| = |u||v|, then step 2; all factors involved are nonnegative. This gives
+   |sum_r sum_t P_r Q_t beta_{rt}| <= sum_r sum_t |P_r| |Q_t| |beta_{rt}| <= sum_r sum_t (c0 ||P||)(c0 ||Q||) |beta_{rt}| = c0^2 (sum_r sum_t |beta_{rt}|) ||P|| ||Q||.
+
+5. Conclusion. Take N and E_0, ..., E_{N-1} from step 1 and c := c0^2 >= 0.
+   (i) Let B be a continuous bilinear form and P, Q in L. Step 3 writes B(P)(Q) as the array sum with beta_{rt} := B(E_r)(E_t). Step 4 then gives |B(P)(Q)| <= c (sum_r sum_t |B(E_r)(E_t)|) ||P|| ||Q||.
+   (ii) Let B, B' be continuous bilinear forms and P, Q in L. Apply step 3 to B and to B' and subtract the two finite sums termwise, using P_r Q_t B(E_r)(E_t) - P_r Q_t B'(E_r)(E_t) = P_r Q_t (B(E_r)(E_t) - B'(E_r)(E_t)). This gives B(P)(Q) - B'(P)(Q) = sum_r sum_t P_r Q_t (B(E_r)(E_t) - B'(E_r)(E_t)). Step 4 with beta_{rt} := B(E_r)(E_t) - B'(E_r)(E_t) gives |B(P)(Q) - B'(P)(Q)| <= c (sum_r sum_t |B(E_r)(E_t) - B'(E_r)(E_t)|) ||P|| ||Q||.
+   If N = 0, then L = {0}, every sum is empty and both sides vanish; the argument above covers this case unchanged. QED
+
+## Key steps
+
+1. basis E_r of L (Module.finBasis) with continuous coordinate functionals pi_r, so that P = sum_r P_r E_r
+2. coordinate bound |P_r| <= c0 ||P|| with c0 := sum_r ||pi_r|| (le_opNorm)
+3. bilinear expansion B(P)(Q) = sum_{r,t} P_r Q_t B(E_r)(E_t); for B and B', subtract termwise
+4. triangle inequality: |sum_{r,t} P_r Q_t beta_rt| <= c0^2 (sum_{r,t} |beta_rt|) ||P|| ||Q||
+5. take c := c0^2 and apply with beta_rt = B(E_r)(E_t) and with beta_rt = B(E_r)(E_t) - B'(E_r)(E_t)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `git show a0cbb004:GMT/Ch05/Submission.lean | cmp - GMT/Ch05/Contract.lean; git show a0cbb004:GMT/Ch05/Contract.lean | cmp - <snapshot>/project/GMT/Ch05/Contract.lean`
+- `python3 scan of dag.json: parent node and its six children (statuses), statements containing Convex+ContDiffOn / FiniteDimensional / rpow / Module.finBasis, lean_names containing holder/lipschitz/bilinear/basis`
+- `grep -c dohr_eb_lhr_cub_scalar_c1_bounds|dohr_eb_lhr_cub_bilinear_basis_bound|dohr_eb_lhr_cub in dag.json, nodes/, <snapshot>/project; git grep -l dohr_eb_lhr_cub over every local branch/remote head (no match)`
+- `rg -n in <snapshot>/mathlib/Mathlib for: ContDiffOn.continuousOn, ContDiffOn.continuousOn_fderiv_of_isOpen, ContDiffOn.differentiableOn, exists_bound_of_continuousOn, norm_image_sub_le_of_norm_fderiv_le, IsCompact.isBounded, diam_nonneg, dist_le_diam_of_mem, rpow_add, rpow_le_rpow, zero_rpow, rpow_nonneg, finBasis, Basis.sum_repr, coord_apply, toContinuousLinearMap, coe_toContinuousLinearMap', le_opNorm, abs_sum_le_sum_abs, single_le_sum, prod_comm/sum_comm, ContinuousLinearMap.finiteDimensional`
+- `rg -n -i 'schauder|holder|hölder|finBasis|bilinear' <snapshot>/project/GMT/Ch05`
+- `rg -l -i 'finBasis|exists_bound_of_continuousOn|norm_image_sub_le_of_norm_fderiv_le' lake-packages-25730c7c/simongmt/Poincare`
+- `lake build GMT.Ch05.Submission in scratch /tmp/cub-decomp-SOIqD6/proj (Lean 4.35.0-rc3, shared lake-packages-25730c7c)`
+- `python3 -I scripts/gen.py (verifier gmt-compare.py child_modules, contract mode) then lake env lean Checks/Challenge_scalar_c1_bounds.lean and Checks/Challenge_bilinear_basis_bound.lean`
+- `lake env lean Checks/Assembly.lean (parent frozen type from the two child types as axioms; #print axioms)`
+- `lake env lean Checks/ChildA.lean, Checks/ChildB.lean, Checks/Full.lean (#check of cited names, trial proofs, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Sigma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+
+The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The proof-base Submission.lean (commit a0cbb004) is byte-identical to Contract.lean, which is byte-identical to the snapshot Contract.
+
+Neither child statement exists in the project, the snapshot or the DAG. The project mentions Hölder only in IsHolderCkα / IsLocallyHolderCkα, and has no bilinear or basis lemmas. simongmt only uses these Mathlib lemmas and has no reusable lemma. The nearest accepted declaration, dohr_eb_holder_of_contDiffOn_succ, has a different type, so it is not reused.
+
+The names dohr_eb_lhr_cub_scalar_c1_bounds and dohr_eb_lhr_cub_bilinear_basis_bound are fresh: no match in dag.json, the node directories, the snapshot, or any local branch or remote head.
+
+All cited Mathlib lemmas exist at the pin:
+- ContDiffOn.continuousOn (ContDiff/Defs.lean:557)
+- ContDiffOn.differentiableOn (Defs.lean:578; it takes n ≠ 0, so use one_ne_zero)
+- ContDiffOn.continuousOn_fderiv_of_isOpen (Defs.lean:916)
+- IsCompact.exists_bound_of_continuousOn (to_additive, Normed/Group/Bounded.lean:91)
+- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499; pass C explicitly)
+- IsCompact.isBounded (MetricSpace/Bounded.lean:192), Metric.diam_nonneg (:411), Metric.dist_le_diam_of_mem (:494)
+- Real.zero_rpow (Pow/Real.lean:128), Real.rpow_nonneg (:163), Real.rpow_add (:207), Real.rpow_le_rpow (:549)
+- Module.finBasis (Dimension/Free.lean:334), Basis.sum_repr (Basis/Defs.lean:258)
+- LinearMap.toContinuousLinearMap (FiniteDimension.lean:307), coe_toContinuousLinearMap' (:323), ContinuousLinearMap.finiteDimensional (:80-89)
+- ContinuousLinearMap.le_opNorm (Operator/Basic.lean:234)
+- Finset.abs_sum_le_sum_abs (Order/BigOperators/Group/Finset.lean:371)
+- Finset.sum_comm (to_additive of prod_comm, Sigma.lean:121)
+- ContinuousLinearMap.sum_apply / smul_apply are deprecated aliases but still usable.
+
+Lean checks in the scratch build:
+- Both child types elaborate in the comparator's contract-scope challenge files.
+- The parent's frozen type follows from the two child types as axioms. #print axioms lists propext, Classical.choice, Quot.sound, childA, childB.
+- Trial proofs of both children and of the whole chain compile using only propext, Classical.choice and Quot.sound.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.graph_support_density-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "Finiteness and unit density of a set that coincides with a rotated C^1 graph in a ball",
+  "statement": "Let n, l be natural numbers, S a subset of R^(n+l), xi in R^(n+l), R real, Q a linear isometry equivalence of R^(n+l), and u : R^n -> R^l C^1 on the open ball Bo^n_R(0). Write G(x) := graphPoint x (u x) = (x, u(x)), Gamma := graphOver u (Bo^n_R(0)) = G(Bo^n_R(0)), H^n := muHE[n], omega_n := unitBallVolume n, B_r closed and Bo_r open balls. Assume (graph) Q((S - xi)) cap Bo_R(0) = Gamma cap Bo_R(0), and (C4) for every x in Bo^n_R(0), H^n(Gamma cap B_r(G(x))) / ofReal(omega_n r^n) -> 1 in [0,inf] as r -> 0+. Then (a) H^n(S cap Bo_rho(xi)) < inf for every real rho < R, and (b) for every y in S cap Bo_R(xi), H^n(S cap B_r(y)) / ofReal(omega_n r^n) -> 1 as r -> 0+.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (S : Set (Amb n ℓ)) (ξ : Amb n ℓ) (R : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (∀ x ∈ ball (0 : Rn n) R, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1)) → (∀ ρ : ℝ, ρ < R → (μHE[n] : Measure (Amb n ℓ)) (S ∩ ball ξ ρ) < ⊤) ∧ ∀ y ∈ S ∩ ball ξ R, Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) (S ∩ closedBall y r) / ENNReal.ofReal (unitBallVolume n * r ^ n)) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "dohr_lmo_graph_support_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-graph-d37c53e241-a1"
+}

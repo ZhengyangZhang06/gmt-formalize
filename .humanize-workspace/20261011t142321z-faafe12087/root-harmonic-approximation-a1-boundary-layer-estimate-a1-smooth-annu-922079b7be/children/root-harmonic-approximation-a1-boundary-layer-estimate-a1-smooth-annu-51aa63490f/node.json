@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.ray_inequality-a1",
+  "parent_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1",
+  "depth": 4,
+  "title": "Pointwise ray inequality for C^1 functions (inequality (2.2))",
+  "statement": "Let n ∈ ℕ, let φ : R^n → ℝ be C^1 on R^n = EuclideanSpace ℝ (Fin n), let x ∈ R^n with |x| ≤ 1, and let τ ≤ 1 be real. Then (1 - τ)|φ(x)|^2 ≤ 2 ∫_{[τ,1]} |φ(t x)|^2 dt + 2 (1 - τ)^2 ∫_{[τ,1]} |∇φ(σ x)|^2 dσ. All integrals are lintegrals over Icc τ 1 for Lebesgue measure on ℝ, |·|^2 are squared extended norms, ∇φ is Mathlib's gradient, and (1 - τ) and (1 - τ)^2 enter via ENNReal.ofReal.",
+  "lean_statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (x : Rn n), ‖x‖ ≤ 1 → ∀ τ : ℝ, τ ≤ 1 → ENNReal.ofReal (1 - τ) * ‖φ x‖ₑ ^ 2 ≤ 2 * (∫⁻ t in Icc τ 1, ‖φ (t • x)‖ₑ ^ 2) + 2 * ENNReal.ofReal ((1 - τ) ^ 2) * ∫⁻ σ in Icc τ 1, ‖gradient φ (σ • x)‖ₑ ^ 2",
+  "lean_name": "ble_sac_ray_sq_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-51aa63490f-a1"
+}

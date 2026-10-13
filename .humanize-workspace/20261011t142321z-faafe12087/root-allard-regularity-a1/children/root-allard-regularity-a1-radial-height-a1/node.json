@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.radial_height-a1",
+  "parent_id": "root.allard_regularity-a1",
+  "depth": 2,
+  "title": "Radial integration: small conical excess of a C^1 graph bounds its height",
+  "statement": "For n >= 1, l >= 0, alpha in (0,1], M >= 0 and A >= 0 there is C >= 0 such that: if R > 0, 0 < delta <= 1, f : R^n -> R^l with f(0) = 0, f C^1 and 1-Lipschitz on the open ball B^o_R(0), hsNorm(Df(x)) <= M (|x|/R)^alpha for x in B^o_R(0), and the extended integral over B^o_R(0) of |f(x) - Df(x) x|^2 |x|^(-n-2) dx is at most A delta, then |f(x)| <= C delta^(1/(2n+2)) |x| for every x in B^o_R(0).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (α M A : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → Rn ℓ) (R δ : ℝ), 0 < R → 0 < δ → δ ≤ 1 → f 0 = 0 → ContDiffOn ℝ 1 f (ball 0 R) → LipschitzOnWith 1 f (ball 0 R) → (∀ x ∈ ball (0 : Rn n) R, hsNorm (fderiv ℝ f x) ≤ M * (‖x‖ / R) ^ α) → ∫⁻ x in ball (0 : Rn n) R, ENNReal.ofReal (‖f x - fderiv ℝ f x x‖ ^ 2 / ‖x‖ ^ (n + 2)) ≤ ENNReal.ofReal (A * δ) → ∀ x ∈ ball (0 : Rn n) R, ‖f x‖ ≤ C * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖",
+  "lean_name": "allard52_radial_height",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-radial-height-a1-a1"
+}

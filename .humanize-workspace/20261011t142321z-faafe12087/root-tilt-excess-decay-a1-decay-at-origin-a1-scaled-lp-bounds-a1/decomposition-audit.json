@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "scaledLpNorm|structure RectifiableVarifold|abbrev Amb|noncomputable def weight",
+        "exists_measurable_le_lintegral_eq|theorem lintegral_mono|theorem setLIntegral_one|lintegral_mul_norm_pow_le|lintegral_mul_le_Lp_mul_Lq",
+        "theorem (rpow_mul|mul_rpow_of_nonneg|rpow_le_rpow|ofReal_rpow_of_nonneg)|theorem (div_rpow|rpow_add)",
+        "setLIntegral_rpow_le|lintegral_rpow_le_lintegral_rpow|lintegral_rpow_le_",
+        "tdo_slb_setLIntegral_rpow_le_holder|tdo_slb_scaledLpNorm_le_of_subset|tdo_slb_lintegral_rpow_le_scaledLpNorm",
+        "python3 -I /tmp/slb-independent-audit-sawxwnc7/check.py IndependentTypes.lean",
+        "python3 -I /tmp/slb-independent-audit-sawxwnc7/check.py CheckedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-scaled-lp-bounds-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/tmp/slb-independent-audit-sawxwnc7/IndependentTypes.lean",
+        "/tmp/slb-independent-audit-sawxwnc7/CheckedProofs.lean"
+      ],
+      "conclusion": "The pinned contract and relevant Mathlib sources match the workspace. Basic.lean:84,98,124,139 supports arbitrary-integrand monotonicity, arbitrary-set restriction and the measurable minorant; MeanInequalities.lean:222 supplies Hölder including zero exponents. The inspected power lemmas justify all coefficient identities. Searches found no matches for the queried generic bound names or competing reservations of the three proposed names in the 388-node DAG. All names are bare identifiers. Independently compiled all frozen types before any child declarations, checked the integral parse and Real/ENNReal power instances by rfl, and recompiled the inspected child proofs against a freshly built contract. Each child and the assembled parent use only propext, Classical.choice and Quot.sound. The split is appropriate: it isolates the nonmeasurable Hölder argument and the two exact conjuncts of tdo_scaledLpNorm_bounds. The sole child dependency, holder_scaled_bound on lintegral_holder, is acyclic and correctly directed; pairing the two bounds proves the exact frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lintegral_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches every prose hypothesis, including arbitrary B and nonmeasurable g. The measurable minorant preserves the lower integral; the stated power identities, measurable Hölder application and monotonicity prove the exact bound. The proof covers q = p, zero mass and infinite values, requires no undeclared dependency, and is sufficiently detailed for formalization."
+    },
+    {
+      "key": "scaling_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type is exactly the parent's first conjunct and matches the prose. Positive radii justify the real-power factorization; domain monotonicity and nonnegative ENNReal powers yield the stated coefficient. Every step is valid for nonmeasurable H and infinite integrals. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "holder_scaled_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type is exactly the parent's second conjunct and preserves all hypotheses. Its only sibling use is the declared lintegral_holder dependency. Domain and mass monotonicity, followed by the explicitly proved scale-cancellation identity, give the exact coefficient without additional measurability, finiteness or positivity assumptions on s. The proof covers q = p, m = 0 and infinite integrals and contains no circular reliance."
+    }
+  ],
+  "required_changes": []
+}

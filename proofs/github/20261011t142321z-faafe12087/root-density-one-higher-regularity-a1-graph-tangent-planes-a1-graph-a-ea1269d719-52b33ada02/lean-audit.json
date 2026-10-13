@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7dd4ea9085d3259938327ab3891c474f25354c46ae76a3f23b9996b6d5802a8d",
+  "git_delta": {
+    "base_commit": "d095551b98d6f1b18351bc077d3e64c0471ac35e",
+    "candidate_commit": "c37f14f23cb877c4f16f8c2f32bb2b73e3076567",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_gat_bilip_measure_comparison",
+    "diff_sha256": "b4c24a55217aea503d213907bfbb21c2cc5a7469e37e784440aa493c91e83d1a",
+    "source_sha256": "8781758b2c94e09cd6b5e0d47743293addc60f8da5881fda46710097b4a66c8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_gat_bilip_measure_comparison",
+      "statement": "∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (Φ : Amb n ℓ → Amb n ℓ) (δ : ℝ), MeasurableSet A → 0 ≤ δ → δ < 1 → (∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q - (p - q)‖ ≤ δ * ‖p - q‖) → (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ∧ Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

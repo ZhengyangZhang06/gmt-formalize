@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_cover_ae_tangent-a1.blowup_vanish-a1",
+  "parent_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1.c1_cover_ae_tangent-a1",
+  "depth": 4,
+  "title": "Blow-up integrals over a finite-measure set of zero n-density at x tend to 0 (Simon 3.1.6 ⇒, error estimate)",
+  "statement": "Let n, ℓ ∈ ℕ, x ∈ ℝ^{n+ℓ} (= Amb n ℓ), Hⁿ := μHE[n], and let A ⊆ ℝ^{n+ℓ} be a set with Hⁿ(A) < ∞ (no measurability assumed). Suppose that A has n-density zero at x in the sense (ρⁿ)⁻¹·Hⁿ.real(A ∩ B_ρ(x)) → 0 as ρ ↓ 0, where B_ρ(x) is the closed ball and Hⁿ.real := (Hⁿ ·).toReal. Then for every compactly supported continuous f : ℝ^{n+ℓ} → ℝ (f ∈ C_c(ℝ^{n+ℓ}, ℝ)), ∫_{η_{x,r}(A)} f dHⁿ → 0 as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) is Simon's blow-up map (Chapter03.blowUpMap x r).",
+  "lean_statement": "∀ (n ℓ : ℕ) (x : Amb n ℓ) (A : Set (Amb n ℓ)), (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real (A ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → ∀ f : CompactlySupportedContinuousMap (Amb n ℓ) ℝ, Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂(μHE[n] : Measure (Amb n ℓ))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "rsod_blowUp_integral_tendsto_zero",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.density_of_approx_tangent-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-density-of-approx-tangent-a1-blowup-ch-45b63ae1fc-a1",
+      "result_commit": "98fd790d5bc2f705d0efa953dadfb274b5462997",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-c1-cover-a-22511af8f0-a1"
+}

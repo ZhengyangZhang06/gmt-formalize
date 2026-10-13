@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1.bilip_integral_sandwich-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1",
+  "depth": 5,
+  "title": "Integrals of a bounded continuous function against two mutually κ-comparable finite measures",
+  "statement": "Let n, ℓ ∈ ℕ and E := ℝ^{n+ℓ} (Amb n ℓ). Let μ₁ and μ₂ be measures on E with μ₂ finite.\nLet φ : E → ℝ be continuous with |φ(w)| ≤ M for all w ∈ E.\nLet κ ≥ 1 be real with μ₁ ≤ κ·μ₂ and μ₂ ≤ κ·μ₁ as measures, where the scalar is ENNReal.ofReal κ.\nThen |∫ φ dμ₁ − ∫ φ dμ₂| ≤ 2((κ − 1)κ(M·V)), where V := μ₂(E).toReal is the total mass of μ₂ as a real number.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ₁ μ₂ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (κ M : ℝ), IsFiniteMeasure μ₂ → Continuous φ → (∀ w, |φ w| ≤ M) → 1 ≤ κ → μ₁ ≤ ENNReal.ofReal κ • μ₂ → μ₂ ≤ ENNReal.ofReal κ • μ₁ → |∫ w, φ w ∂μ₁ - ∫ w, φ w ∂μ₂| ≤ 2 * ((κ - 1) * κ * (M * (μ₂ univ).toReal))",
+  "lean_name": "dohr_tp_gat_bilip_integral_sandwich",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-dd02ad2100-a1"
+}

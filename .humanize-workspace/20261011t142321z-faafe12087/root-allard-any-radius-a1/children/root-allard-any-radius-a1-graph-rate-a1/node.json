@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1",
+  "parent_id": "root.allard_any_radius-a1",
+  "depth": 2,
+  "title": "Rate estimates for a C^1 graph piece of spt V: height, slope and Hoelder bounds of order delta^(1/(2n+2))",
+  "statement": "Assume TiltExcessDecayTheorem and ConicalApproximationTheorem. For n >= 1, p > n, 0 < gamma_1 < gamma_2 < 1, 0 < c_1 < gamma_2 and C_0 >= 0 there are delta_R > 0 and CR such that: for every open U, contract varifold V with generalized mean curvature H, 0 < delta <= delta_R and rho with AllardHypotheses H p delta rho, every linear isometry q and every u : R^n -> R^l that is C^1 on B^o_{gamma_2 rho}(0) with u(0) = 0, ||Du|| <= 1/7 there, q(graph u over B^o_{gamma_2 rho}(0)) contained in spt V cap B^o_rho(0), spt V cap B^o_{gamma_2 rho}(0) contained in q(graph u over B^o_{gamma_2 rho}(0)), and |u(x)| <= C_0 delta^(1/(2n+2)) |x| for |x| < c_1 rho, one has for all x, y in B_{gamma_1 rho}(0): |u(x)| <= CR delta^(1/(2n+2)) |x|, |Du(x)| <= CR delta^(1/(2n+2)) and |Du(x) - Du(y)| <= CR delta^(1/(2n+2)) (|x - y|/rho)^(1 - n/p) (Hilbert-Schmidt norms).",
+  "lean_statement": "TiltExcessDecayTheorem → ConicalApproximationTheorem → ∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ γ₁ γ₂ c₁ C₀ : ℝ, 0 < γ₁ → γ₁ < γ₂ → γ₂ < 1 → 0 < c₁ → c₁ < γ₂ → 0 ≤ C₀ → ∃ δR CR : ℝ, 0 < δR ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δR → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 (γ₂ * ρ)) → u 0 = 0 → (∀ x ∈ ball (0 : Rn n) (γ₂ * ρ), ‖fderiv ℝ u x‖ ≤ 1 / 7) → q '' graphOver u (ball 0 (γ₂ * ρ)) ⊆ V.support ∩ ball 0 ρ → V.support ∩ ball 0 (γ₂ * ρ) ⊆ q '' graphOver u (ball 0 (γ₂ * ρ)) → (∀ x ∈ ball (0 : Rn n) (c₁ * ρ), ‖u x‖ ≤ C₀ * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖) → (∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), ‖u x‖ ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2)) * ‖x‖) ∧ (∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), hsNorm (fderiv ℝ u x) ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2))) ∧ ∀ x ∈ closedBall (0 : Rn n) (γ₁ * ρ), ∀ y ∈ closedBall (0 : Rn n) (γ₁ * ρ), hsNorm (fderiv ℝ u x - fderiv ℝ u y) ≤ CR * δ ^ (1 / (2 * (n : ℝ) + 2)) * (‖x - y‖ / ρ) ^ (1 - (n : ℝ) / p)",
+  "lean_name": "any_radius_graph_rate",
+  "depends_on": [
+    "root.allard_any_radius-a1.tangent_ae-a1",
+    "root.allard_any_radius-a1.rescaled_varifold-a1",
+    "root.allard_any_radius-a1.monotonicity_bounds-a1",
+    "root.allard_any_radius-a1.pinching-a1",
+    "root.allard_any_radius-a1.tilt_height_l1-a1",
+    "root.allard_any_radius-a1.tilt_iteration-a1",
+    "root.allard_any_radius-a1.graph_comparison-a1",
+    "root.allard_any_radius-a1.radial_height-a1",
+    "root.allard_any_radius-a1.campanato-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.tangent_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.rescaled_varifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.monotonicity_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.pinching-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.tilt_height_l1-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.tilt_iteration-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.radial_height-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.campanato-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-a1"
+}

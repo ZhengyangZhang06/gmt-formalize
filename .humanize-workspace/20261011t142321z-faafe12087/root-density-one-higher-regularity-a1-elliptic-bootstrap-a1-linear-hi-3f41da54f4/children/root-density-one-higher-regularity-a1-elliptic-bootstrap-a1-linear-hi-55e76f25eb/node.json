@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1.translate_weak-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.differentiated_system-a1",
+  "depth": 5,
+  "title": "Translating the test functions of a weak identity",
+  "statement": "Let n, l be natural numbers, L := L(R^n, R^l), U a subset of R^n, ω₁, ω₂ : R^n -> L* = L(L, R), e ∈ R^n, s ∈ R and ζ : R^n -> R^l of class C^1 with compact support such that y + s e ∈ U for every y ∈ tsupport ζ. Assume that ∫_U ω₁(x)[Dφ(x)] dx = ∫_U ω₂(x)[Dφ(x)] dx for every C^1 compactly supported φ : R^n -> R^l with tsupport φ ⊆ U. Then ∫_{R^n} ω₁(y + s e)[Dζ(y)] dy = ∫_{R^n} ω₂(y + s e)[Dζ(y)] dy (Lebesgue/Bochner integrals, no integrability assumptions).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (ω₁ ω₂ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (e : Rn n) (s : ℝ) (ζ : Rn n → Rn ℓ), (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in U, ω₁ x (fderiv ℝ φ x) = ∫ x in U, ω₂ x (fderiv ℝ φ x)) → ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ y ∈ tsupport ζ, y + s • e ∈ U) → ∫ y, ω₁ (y + s • e) (fderiv ℝ ζ y) = ∫ y, ω₂ (y + s • e) (fderiv ℝ ζ y)",
+  "lean_name": "dohr_eb_lhr_ds_translate_weak_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-55e76f25eb-a1"
+}

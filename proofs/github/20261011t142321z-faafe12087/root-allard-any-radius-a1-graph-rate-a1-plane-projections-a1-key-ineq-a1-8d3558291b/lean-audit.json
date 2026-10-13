@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ec1a491fd829f82857612a26c290a98b798edcb904f08ae4dfa25967ab5b0883",
+  "git_delta": {
+    "base_commit": "c6aaafd37c7c448391296fb9d1e25b57d9837091",
+    "candidate_commit": "62348767c455604db259e91a0291f991193f9524",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "any_radius_gr_pp_key_inequality",
+    "diff_sha256": "71dcbe4db6ec69c3cb4a004ed92759860fec9f39687f115b220dc343615c499c",
+    "source_sha256": "c89523b613ece0da988ea191930ea2062b7e8d251db6ac8bc4ac8fbde400ce4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_gr_pp_key_inequality",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A B : Rn n →L[ℝ] Rn ℓ), 2 * hsNormSq (A - B) ≤ (1 + ‖A‖ ^ 2) * (1 + ‖B‖ ^ 2) * hsNormSq ((Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v)))).starProjection)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

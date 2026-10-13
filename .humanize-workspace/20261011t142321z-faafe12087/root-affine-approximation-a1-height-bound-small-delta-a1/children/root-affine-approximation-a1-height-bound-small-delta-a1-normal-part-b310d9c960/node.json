@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.height_bound_small_delta-a1.normal_part_conical_bound-a1",
+  "parent_id": "root.affine_approximation-a1.height_bound_small_delta-a1",
+  "depth": 3,
+  "title": "Normal-part integral bounded by the conical-excess integrand (book (1))",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l), P : R^(n+l) -> L(R^(n+l), R^(n+l)) an arbitrary map into continuous linear endomorphisms, y in R^(n+l) and s > 0. Then the Lebesgue integral of ofReal(|(x - y) - P(x)(x - y)|^2) over the closed ball B_s(y) is at most ofReal(s^(n+2)) times the Lebesgue integral of ofReal(|(x - y) - P(x)(x - y)|^2 / |x - y|^(n+2)) over B_s(y). Here the quotient is 0 at x = y (real division by 0 is 0), ofReal(t) = max(t, 0), integrals take values in [0, infinity], and no measurability is assumed.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (P : Amb n ℓ → Amb n ℓ →L[ℝ] Amb n ℓ) (y : Amb n ℓ) (s : ℝ), 0 < s → ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2) ∂μ ≤ ENNReal.ofReal (s ^ (n + 2)) * ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - P x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂μ",
+  "lean_name": "aal_normal_sq_lintegral_le_conical",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-height-bound-small-delta-a1-normal-part-b310d9c960-a1"
+}

@@ -1,0 +1,132 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.harmonic_approximation-a1`
+- Child DAG node: `root.harmonic_approximation-a1.poincare_inequality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source and role. This is fact (P) of the parent proof (Simon p. 114: 'by the Poincare inequality (see e.g. [GT01])'; Gilbarg-Trudinger (7.45), the Poincare inequality on convex domains). It is proved here by the elementary segment argument for smooth functions, followed by approximation. It uses the sibling Submission.w12_ball_smooth_approximation, called (A): for IsW12WithGradient f g B and 0 < r < 1 there are C^infinity functions phi_j with int_{B_r}|phi_j - f|^2 -> 0 and int_{B_r}|grad phi_j - g|^2 -> 0.
+
+Notation. As in (A): B_s := ball(0,s), B := B_1, and |B| in (0, infinity) is its Lebesgue measure. Integrals of nonnegative functions are lintegrals in [0, infinity], and ||u||_{2,E} := (int_E |u|^2)^{1/2}. Fix n >= 1 and set C := 2^{n+2}.
+
+Proof.
+0. Measurability. Replace f, g by strongly measurable functions equal to them a.e. on B. This changes neither the hypothesis, nor lambda, nor either side of the claim.
+
+1. Smooth estimate. Let phi be in C^1(R^n) and 0 < r <= 1. Then int_{B_r} int_{B_r} |phi(x) - phi(y)|^2 dx dy <= 2^{n+2} |B| int_{B_r} |grad phi|^2.
+Proof. For x, y in B_r, the map t -> phi((1-t)y + tx) is C^1 on [0,1] with derivative <grad phi((1-t)y + tx), x - y>. So phi(x) - phi(y) = int_0^1 <grad phi((1-t)y + tx), x - y> dt. By Cauchy-Schwarz in R^n and on [0,1], and since |x - y| < 2r <= 2:
+|phi(x) - phi(y)|^2 <= |x-y|^2 int_0^1 |grad phi((1-t)y + tx)|^2 dt <= 4 int_0^1 |grad phi((1-t)y + tx)|^2 dt.
+Integrating over (x,y) in B_r x B_r and using Tonelli, the left side is <= 4 int_0^1 I(t) dt, where I(t) := int_{B_r} int_{B_r} |grad phi((1-t)y + tx)|^2 dx dy.
+- If 1/2 <= t < 1: for fixed y in B_r, the affine map x -> z := (1-t)y + tx has Jacobian t^n >= 2^{-n} and maps B_r into B_r by convexity. So int_{B_r} |grad phi((1-t)y + tx)|^2 dx = t^{-n} int_{(1-t)y + tB_r} |grad phi(z)|^2 dz <= 2^n int_{B_r} |grad phi|^2. Integrating over y in B_r gives I(t) <= 2^n |B_r| int_{B_r} |grad phi|^2 <= 2^n |B| int_{B_r} |grad phi|^2.
+- If 0 < t <= 1/2: the same bound holds. Substitute y -> z := (1-t)y + tx for fixed x (Jacobian (1-t)^n >= 2^{-n}, image in B_r), then integrate over x.
+The substitutions use translation invariance and Lebesgue scaling (Mathlib integral_comp_smul, setIntegral_comp_smul_of_pos, or the lintegral analogues for Haar measure). Hence the double integral is <= 4 * 2^n |B| int_{B_r} |grad phi|^2 = 2^{n+2} |B| int_{B_r} |grad phi|^2.
+
+2. Passage to f on B_r. Fix r in (0,1) and let phi_j be given by (A).
+(i) By Minkowski in L^2(B_r), ||grad phi_j||_{2,B_r} <= ||g||_{2,B_r} + ||grad phi_j - g||_{2,B_r}. So limsup_j int_{B_r} |grad phi_j|^2 <= int_{B_r} |g|^2 <= int_B |g|^2.
+(ii) Convergence in L^2(B_r) implies convergence in measure on B_r, so a subsequence phi_{j_m} -> f a.e. on B_r (Mathlib tendstoInMeasure_of_tendsto_eLpNorm and TendstoInMeasure.exists_seq_tendsto_ae). Hence for a.e. x in B_r and a.e. y in B_r, |phi_{j_m}(x) - phi_{j_m}(y)|^2 -> |f(x) - f(y)|^2.
+(iii) Apply Fatou's lemma, first in y for each such x and then in x, together with step 1 and (i):
+int_{B_r} int_{B_r} |f(x) - f(y)|^2 dy dx <= liminf_m int_{B_r} int_{B_r} |phi_{j_m}(x) - phi_{j_m}(y)|^2 <= liminf_m 2^{n+2} |B| int_{B_r} |grad phi_{j_m}|^2 <= 2^{n+2} |B| int_B |g|^2.
+
+3. r -> 1. Let r_m := 1 - 1/(m+2), which increases to 1. The functions (x,y) -> 1_{B_{r_m}}(x) 1_{B_{r_m}}(y) |f(x) - f(y)|^2 increase pointwise to 1_B(x) 1_B(y) |f(x) - f(y)|^2. By monotone convergence for the iterated lintegral, int_B int_B |f(x) - f(y)|^2 dy dx <= 2^{n+2} |B| int_B |g|^2.
+
+4. The mean. Since f is in L^2(B), hence in L^1(B), and |B| < infinity, lambda = |B|^{-1} int_B f is a real number. For every x, f(x) - lambda = |B|^{-1} int_B (f(x) - f(y)) dy. By Cauchy-Schwarz, |f(x) - lambda|^2 <= |B|^{-1} int_B |f(x) - f(y)|^2 dy, valid in [0, infinity]. Integrating over x in B and using step 3:
+int_B |f - lambda|^2 <= |B|^{-1} int_B int_B |f(x) - f(y)|^2 dy dx <= 2^{n+2} int_B |g|^2.
+This is the claim with C = 2^{n+2} >= 0. In Lean it reads: the lintegral over B of ||f x - (average of f over B)||_e^2 is <= ENNReal.ofReal C times the lintegral over B of ||g x||_e^2. (Alternatively, the exact identity int_B int_B |f(x) - f(y)|^2 = 2|B| int_B |f - lambda|^2 gives C = 2^{n+1}.) QED
+
+## Key steps
+
+1. Segment FTC and Cauchy-Schwarz: |phi(x)-phi(y)|^2 <= 4 int_0^1 |grad phi((1-t)y+tx)|^2 dt on B_r
+2. Affine substitution with Jacobian >= 2^{-n}, plus convexity of B_r: the double integral is <= 2^{n+2}|B| int_{B_r} |grad phi|^2
+3. Approximate f on B_r by w12_ball_smooth_approximation; Fatou along an a.e.-convergent subsequence
+4. Monotone convergence as r increases to 1
+5. Cauchy-Schwarz for the mean: int_B|f-lambda|^2 <= |B|^{-1} int int |f(x)-f(y)|^2 <= 2^{n+2} int_B|g|^2
+
+## Reference use
+
+### local-project
+
+Queries:
+- `for pat in 'Rellich' 'Kondrachov' 'Poincar' 'Weyl' 'weakly harmonic|weaklyHarmonic|WeaklyHarmonic' 'mean value property|meanValue|mean_value' 'Sobolev' 'weak derivative|weakDeriv|WeakDeriv|HasWeakDeriv' 'mollif|Mollif'; do rg -l -i "$pat" <snapshot>/mathlib/Mathlib; done`
+- `rg -n 'theorem .*isSeqCompact|theorem .*exists_tendsto.*weak|seqCompact.*WeakDual|WeakDual.*SeqCompact' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem .*ae_eq_zero_of_integral_contDiff|theorem .*ae_eq_of_integral_contDiff' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem .*convolution_tendsto|theorem .*ae_convolution_tendsto|theorem .*tendsto_convolution' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem arzela_ascoli' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable|theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|theorem integral_bilinear_fderiv_right_eq_neg_left_of_integrable' <snapshot>/mathlib/Mathlib`
+- `rg -n 'instance.*SecondCountableTopology.*Lp|SeparableSpace.*Lp|instance.*Lp.*SecondCountable|theorem .*secondCountableTopology' <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `rg -n 'theorem MemLp.exists_hasCompactSupport|theorem .*exists_contDiff.*eLpNorm|theorem .*_dense' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `rg -n '^(theorem|lemma|noncomputable def|def) ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean`
+- `rg -n 'theorem _root_\.HasCompactSupport\.(contDiff|hasFDerivAt|hasDerivAt|fderiv)' <snapshot>/mathlib/Mathlib/Analysis`
+- `rg -n 'theorem (normed|nonneg_normed|integral_normed|support_normed_eq|hasCompactSupport_normed|contDiff_normed|tsupport_normed_eq)' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `rg -n 'theorem tendsto_integral_smul_of_tendsto_average_norm_sub' -A 12 <snapshot>/mathlib/Mathlib`
+- `rg -n -e 'def toDual' -e 'theorem contDiff_norm_sq' -e 'theorem tendstoInMeasure_of_tendsto_eLpNorm' -e 'theorem TendstoInMeasure.exists_seq_tendsto_ae' -e 'theorem cauchy_complete_eLpNorm' -e 'theorem IsCompact.tendsto_subseq' -e 'theorem integral_comp_inv_smul_of_nonneg' -e 'expNegInvGlue.contDiff' <snapshot>/mathlib/Mathlib/{Analysis,MeasureTheory,Topology}`
+- `rg -n -e 'theorem convolution_symm' -e 'theorem convolution_flip' -e 'theorem integral_comp_smul ' -e 'theorem setIntegral_comp_smul' <snapshot>/mathlib/Mathlib/Analysis/Convolution.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `rg -l -i 'rellich|poincare_ineq|poincaré inequality|weyl|weakly harmonic|mollif|meanValue|mean_value|IsW12|weak gradient|weakGradient' .lake/packages/simongmt/Poincare`
+- `rg -n '^(theorem|lemma|def|noncomputable def|structure)' .lake/packages/simongmt/Poincare/SimonGMT/Chapter05/*.lean`
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean`
+- `grep -n -i 'harmonic approximation|Lemma 3.1|Rellich' book/sources/chapter-05-source.txt; sed -n 580,660p book/sources/chapter-05-source.txt`
+- `lake env lean /tmp/hal-decomp-check/Check.lean (frozen-contract copy + the 7 child declarations + a HarmonicApproximationLemma assembly skeleton)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/WeakDual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Distribution/Sobolev.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/SeparableMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSpace/Complete.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Average.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-05-source.txt`
+- `/tmp/hal-decomp-check/Check.lean`
+
+Pinned snapshot: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The snapshot's GMT/Ch05/Contract.lean and Submission.lean are byte-identical to the workspace copies (cmp; Contract sha256 c966f51efddb5a68ce15ef2a2a322fd9df0ca69da4626c7acef05b05d1691e12), so the Lean check below applies to the frozen contract.
+
+No usable matches:
+- Mathlib has no Rellich/Kondrachov, weakly-harmonic, weak-derivative or mollifier API (0 files each).
+- 'Poincar' hits only unrelated files (curve-integral Poincare lemma, Poincare conjecture, the hyperbolic metric).
+- 'Weyl' hits only Lie-algebra and root-system files.
+- 'Sobolev' hits only SobolevInequality.lean (Gagliardo-Nirenberg-Sobolev for compactly supported C^1 functions) and the Fourier-side Bessel-potential spaces (Analysis/Distribution/Sobolev.lean, BesselPotentialSpace.lean). Neither gives W^{1,2}(B) Poincare or Rellich.
+- Mean-value hits are one-dimensional or complex only (Analysis/Complex/Harmonic/MeanValue.lean); there is no n-dimensional mean value property.
+So Poincare, Rellich, weak compactness and Weyl must be proved; hence the children.
+
+Usable Mathlib items cited in the child proofs, all verified to exist:
+- Harmonic functions and Laplacian: HarmonicAt/HarmonicOnNhd and harmonicAt_congr_nhds (Harmonic/Basic.lean); laplacian_eq_iteratedFDeriv_orthonormalBasis (Laplacian.lean:171).
+- Convolution: HasCompactSupport.contDiff_convolution_left and hasFDerivAt_convolution_left (ContDiff/Convolution.lean:427,91); convolution_assoc and convolution_symm (Convolution.lean:925,688).
+- Bump functions: the ContDiffBump.normed API (BumpFunction/Normed.lean); ContDiffBump.convolution_tendsto_right_of_continuous and ae_convolution_tendsto_right_of_locallyIntegrable (BumpFunction/Convolution.lean:94,103).
+- Distributions and integration by parts: IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205); integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (LineDeriv/IntegrationByParts.lean:226).
+- Compactness: BoundedContinuousFunction.arzela_ascoli (Bounded/ArzelaAscoli.lean:109); IsCompact.tendsto_subseq (Sequences.lean:298); WeakDual.isSeqCompact_closedBall (WeakDual.lean:369).
+- Hilbert and Lp spaces: InnerProductSpace.toDual (Dual.lean:136); L2.inner_def (L2Space.lean:136); instance Lp.SecondCountableTopology (SeparableMeasure.lean:426); MemLp.exists_hasCompactSupport_eLpNorm_sub_le (ContinuousMapDense.lean:141); tendstoInMeasure_of_tendsto_eLpNorm and TendstoInMeasure.exists_seq_tendsto_ae (ConvergenceInMeasure.lean:452,273); cauchy_complete_eLpNorm (LpSpace/Complete.lean:370).
+- Smooth functions and scaling: expNegInvGlue.contDiff (SmoothTransition.lean); contDiff_norm_sq (InnerProductSpace/Calculus.lean:140); integral_comp_inv_smul_of_nonneg and integral_comp_smul (Haar/NormedSpace.lean).
+- Lebesgue differentiation with general kernels: tendsto_integral_smul_of_tendsto_average_norm_sub (Integral/Average.lean:835).
+Several of these live in modules the contract does not import. The comparator byte-checks only the contract and build inputs, so they may be imported in GMT/Ch05/Submission.lean; the proofs note this.
+
+simongmt (pinned package, outside the snapshot):
+- No Rellich, no W^{1,2} Poincare, no Weyl lemma.
+- Chapter04/Poincare.lean is Simon's varifold Poincare-type inequality, a different statement.
+- Chapter08/DistributionalConstancy.lean (WeakDerivativesZero.fderiv_convolution_eq_zero, ae_constancyMollifier_convolution_tendsto) is a usable Lean template for the Weyl child's mollification steps.
+- Chapter05 contains only graph-area and harmonic-energy algebra.
+
+Book source (chapter-05-source.txt, about lines 588-645): the printed proof of Lemma 3.1 cites the Poincare inequality and Rellich's theorem ([GT01]) and weak L^2 convergence of the gradients with int|grad w|^2 <= 1, and concludes 'w is harmonic'. This matches the supplied proof and the children.
+
+Lean check (/tmp/hal-decomp-check/Check.lean, lake env lean, exit 0): all seven child types elaborate in namespace GMT.Ch05.Submission after the frozen contract. An assembly skeleton of HarmonicApproximationLemma from the Poincare, Rellich, weak-compactness and Weyl children type-checks; the glue is left as sorry, and the only warnings are sorry and a push_neg deprecation.
+
+Public sources consulted: Wikipedia 'Weyl's lemma (Laplace equation)'; University of Hamburg PDE lecture notes (radial-kernel mean value argument); TauCeti PR #14110, which cites Hormander ALPDO I Thm 4.4.1 and Folland Cor. 2.20. Textbook citations in the proofs either follow the parent proof (GT (7.45), Thm 7.26) or are section-level (Evans sections 5.3, 5.7, 5.8, App. D).

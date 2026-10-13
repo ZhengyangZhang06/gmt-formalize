@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6271fe049137b41ad7c7e0ad8ab335095b07ea7d04950954cb82889a1007c951",
+  "git_delta": {
+    "base_commit": "26e4363361b085c6344ce20d46fbd01254414419",
+    "candidate_commit": "f80feb9d1b1aca920d76d6bcbf26a2d1e9932b2d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_am_cutoff_integral_tendsto",
+    "diff_sha256": "18324061da94175688b192893ce4e5959e5bd1e56564f30bbb6be4daa53d3ed2",
+    "source_sha256": "e74e4e8a5d5ff169be79b84c8f6e8d45e30fa050ff0ea2d8047d49d1d53d203c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_am_cutoff_integral_tendsto",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (S T t : ℝ), 0 < t → 1 ≤ T → T * t ≤ S → IntegrableOn g (closedBall y S) μ → (∀ k, Continuous (φ k)) → (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) → (∀ k s, s ≤ 1 → φ k s = 1) → (∀ k s, T ≤ s → φ k s = 0) → (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * g x ∂μ) atTop (𝓝 (∫ x in closedBall y t, g x ∂μ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

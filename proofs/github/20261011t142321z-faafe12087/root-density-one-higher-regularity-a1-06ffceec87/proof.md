@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.density_one_higher_regularity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Ch. 5, Theorem 7.1 (second assertion) and the first two paragraphs of its printed proof (p. 127-128): apply 5.2 to get spt V = graph u near xi, deduce theta = 1, derive the system 1.3 with right-hand side from Section 1, and conclude by Schauder theory. The documented erratum (Theta = 1 only on spt V cap B_rho(xi)) is applied; the 'standard Schauder theory' step is made explicit with precise citations; the multiplicity-one step uses the monotonicity formula with the correct constant of Ch. 4, 4.2 (kappa = (p-n)/(4p)) and keeps the omega_n normalization of the additive error. Notation: mu = V.weight, balls closed unless 'open', graphOver u W = {(x, u(x)) : x in W}; alpha in (0,1) and q >= 0 are the given Hoelder data; J(P) := sqrt(det(I_n + P^T P)) for l x n matrices P, A(P) := dJ/dP (an l x n matrix-valued real-analytic map near 0) with dA/dP(0) = identity on R^(l x n) (J(P) = 1 + |P|^2/2 + O(|P|^4)).
+
+Siblings used: AllardRegularityTheorem (5.2: delta_7, gamma_7). Facts: (F1) Theta = theta mu-a.e. (Ch.3 1.8(2), 1.9); (F2) mu(complement of spt mu) = 0, theta > 0 on M; (M) [Ch. 4, 4.1-4.10, coefficient kappa := (p-n)/(4p) in 4.2] if B_R(y) is in U and (R^(p-n) integral_{B_R(y)} |H|^p dmu)^(1/p) <= kappa Lambda with Lambda <= 1, then there is F on (0,R) with |F(r) - 1| <= Lambda and e^-Lambda <= F <= e^Lambda such that Phi(r) := F(r) r^-n mu(B_r(y)) + F(r) - 1 is nondecreasing on (0,R) and omega_n Theta(y) = lim_{r -> 0} Phi(r); Theta exists everywhere in U, is upper semicontinuous (4.9), and Theta >= 1 on spt V when theta >= 1 mu-a.e. (4.10(1)); (Leb) Lebesgue-Besicovitch differentiation for H^n restricted to a C^1 graph; (Inv) translation/isometry invariance; (Area) area formula for C^1 graphs; (FV) first variation of area for graphs: for X(x,y) = chi(x,y) (0, phi(x)) with chi = 1 near the graph of u over spt phi and phi in C^1_c, integral over the graph of div_graph X dH^n = integral sum_{j,a} A_{ja}(Du) D_a phi^j dx; (DQ) difference quotients [Giaquinta-Martinazzi, An Introduction to the Regularity Theory for Elliptic Systems..., 2nd ed. (2012), Sect. 4.3 and 8.2]: a C^1 weak solution with |Du| small of sum_a D_a(A_{ja}(Du)) = g_j, g in L^infinity_loc, lies in W^{2,2}_loc, and v := D_k u solves sum_a D_a(sum_{i,b} a_{ja}^{ib}(x) D_b v^i) = D_k g_j weakly with a(x) := dA/dP(Du(x)); (S) Schauder estimates for linear divergence-form systems [Giaquinta-Martinazzi Thm 5.19/5.20; Giaquinta 1983, Ch. III]: if, for some nu in (0,1) and integer m >= 0, the coefficients a are C^{m,nu}_loc and satisfy the Legendre condition, F is C^{m,nu}_loc, and v in W^{1,2}_loc solves sum_a D_a(a_{ja}^{ib} D_b v^i) = sum_a D_a F_j^a, then Dv is C^{m,nu}_loc.
+
+Proof.
+1. Hypotheses of the first assertion. theta is a positive integer mu-a.e., so theta >= 1 a.e.; H = h mu-a.e. with h continuous on U, so H is locally bounded and H in L^p_loc for every p > n. Fix p > n with beta := 1 - n/p > alpha.
+2. Graph. xi is in spt V (Theta(xi) = 1 > 0). As omega_n^-1 r^-n mu(B_r(xi)) -> 1 and (r^(p-n) integral_{B_r(xi)} |H|^p)^(1/p) <= (r/r_0)^beta (r_0^(p-n) integral_{B_{r_0}(xi)} |H|^p)^(1/p) -> 0, choose r with 5.1 (parameter delta_7) at (xi, r); 5.2 for V translated by -xi (Inv) gives q, u, C^1 on B^n_{rho_1} with rho_1 := gamma_7 r, u(0) = 0, Du(0) = 0, [Du]_beta finite, and with Q := q^-1, W_1 := {x in open B^n_{rho_1} : |(x, u(x))| < rho_1} (open, as |(x,u(x))| >= |x|): spt V cap open B_{rho_1}(xi) = xi + Q^-1(graphOver u W_1). Moreover H^n(M minus spt V) = 0 (F2) and H^n((spt V cap open B_{rho_1}(xi)) minus M) = 0 (by (Leb) the density of mu = theta H^n restricted to M vanishes at H^n-a.e. point of the graph outside M, while Theta >= 1 on spt V), so M cap open B_{rho_1}(xi) and the graph differ by an H^n-null set.
+3. theta = 1. Fix t_0 > 0 with B_{2 t_0}(xi) in U and let A_h := sup{|h(x)| : x in B_{2 t_0}(xi)} < infinity (h is continuous on U). Since |H| = |h| <= A_h mu-a.e. on B_{2 t_0}(xi), for y in B_{t_0}(xi) and 0 < R <= t_0: (R^(p-n) integral_{B_R(y)} |H|^p dmu)^(1/p) <= A_h R^(1-n/p) mu(B_{2 t_0}(xi))^(1/p). Choose t in (0, t_0] with (i) A_h t^(1-n/p) mu(B_{2 t_0}(xi))^(1/p) <= kappa min{omega_n, 1}/100, so that (M) applies at every y in B_t(xi) with R = t and Lambda := min{omega_n, 1}/100 (B_t(y) is in B_{2 t_0}(xi)); and (ii) omega_n^-1 s^-n mu(B_s(xi)) <= 11/10 for 0 < s <= 2t (possible since Theta(xi) = 1). Let x in spt V with |x - xi| <= t/(100 n). By (M) at x with R = t: for r < t, omega_n Theta(x) <= Phi(r) <= e^Lambda r^-n mu(B_r(x)) + Lambda <= e^Lambda r^-n mu(B_{r + |x - xi|}(xi)) + Lambda; letting r -> t and using (ii) with s = t + |x - xi| <= 2t: Theta(x) <= e^Lambda (1 + |x - xi|/t)^n (11/10) + Lambda/omega_n <= e^(1/100) (1 + 1/(100 n))^n (11/10) + 1/100 <= e^(1/50) (11/10) + 1/100 < 2 (the additive error is divided by omega_n, which is why Lambda <= omega_n/100 was required). Let s_1 := t/(100 n). As Theta = theta mu-a.e. (F1), mu-a.e. point lies in spt V (F2), and theta is an integer >= 1 mu-a.e., theta = 1 mu-a.e. on B_{s_1}(xi). Shrink: rho_2 := min(rho_1, s_1), W_2 := {x in W_1 : |(x,u(x))| < rho_2}. Then on open B_{rho_2}(xi), mu = H^n restricted to the C^1 graph (step 2), and Theta(x) = 1 for every x in open B_{rho_2}(xi) cap spt V (the H^n-density of a C^1 graph is 1 at each of its points).
+4. Euler-Lagrange system (book (2); Section 1, 1.3). Rotate H: let H~(x) := Q(H(xi + Q^-1 x)), h~ likewise, and g_j(x) := J(Du(x)) h~^(n+j)(x, u(x)), j = 1..l. For phi in C^1_c(open B^n_{r_2}(0); R^l), r_2 small so that the graph over spt phi lies in open B_{rho_2}(0), the test field X := chi (0, phi(x)) (rotated back) and (FV), (Area) give, since mu = H^n on the graph and H = h a.e.:
+ integral sum_{j,a} A_{ja}(Du) D_a phi^j dx = - integral sum_j phi^j g_j dx,
+ i.e. sum_a D_a(A_{ja}(Du)) = g_j weakly on B^n_{r_2}. g is C^{0, min(alpha, beta)} = C^{0,alpha} (h~ in C^{q,alpha}_loc with q >= 0, u in C^{1,beta}).
+5. Bootstrap. Shrinking r_2, |Du| is so small that a(x) = dA/dP(Du(x)) is uniformly close to the identity tensor, hence satisfies the Legendre condition, and a is C^{0,beta}. By (DQ), u in W^{2,2}_loc and v := D_k u solves sum_a D_a(sum a_{ja}^{ib} D_b v^i) = sum_a D_a(delta_{ak} g_j). By (S) with m = 0: Dv in C^{0,alpha}_loc, so u in C^{2,alpha}_loc. Induction on m <= q: if u is C^{m+1,alpha}_loc, then a = dA/dP(Du) is C^{m,alpha}_loc and g = J(Du) h~(x, u(x)) is C^{m,alpha}_loc (as h~ is C^{q,alpha}_loc, m <= q), so (S) gives Dv in C^{m,alpha}_loc, i.e. u in C^{m+2,alpha}_loc. After m = q: u in C^{q+2,alpha}_loc(open B^n_{r_2}).
+6. Conclusion. Choose rho in (0, min(rho_2, r_2/2)), W := {x in open B^n_rho : |(x,u(x))| < rho} (open, contains 0, relatively compact in open B^n_{r_2}). Then u is C^{q+2} on W with all derivatives of order <= q+2 bounded on W and the (q+2)-th derivative alpha-Hoelder on W (IsHolderCkα (q+2) α u W), u 0 = 0, fderiv u 0 = 0; H^n((Q(M - xi) cap open B_rho(0)) Delta graphOver u W) = 0 (intersect step 2's null-set statement with open B_rho(0)); and Theta(x) = 1 for all x in open B_rho(xi) cap spt V by step 3.
+
+## Key steps
+
+1. H is locally bounded, so H in L^p_loc for some p with 1 - n/p > alpha
+2. 5.2 gives the C^{1,beta} graph and the carrier identification
+3. theta = 1 near xi: Theta < 2 there by monotonicity (corrected constant, omega_n-normalized error) and theta is an integer
+4. Euler-Lagrange system from vertical test fields
+5. Difference quotients and Schauder bootstrap up to C^{q+2,alpha}
+6. Shrink to W with global bounds; Theta = 1 on spt V near xi
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -l 'TiltExcessHeightEstimate|AffineApproximationLemma|LipschitzApproximationLemma|LipschitzGraphCorollary|HarmonicApproximationLemma|TiltExcessDecayTheorem|AllardRegularityTheorem|AllardRegularityAnyRadius|ConicalApproximationTheorem|DensityOneRegularity|DensityOneHigherRegularity|RegularSetOpenDense' <snapshot>`
+- `for pat in Rellich Kondrachov Weyl Campanato Kirszbraun '[Cc]oarea' '[Vv]arifold' Allard Schauder 'Poincare_inequality|poincare_inequality'; do rg -l $pat <snapshot>/mathlib/Mathlib | wc -l; done`
+- `rg -n 'def HarmonicOnNhd|def HarmonicAt|theorem mk_ball' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic`
+- `rg -n 'theorem LipschitzOnWith.extend_real|lipschitzExtensionConstant' <snapshot>/mathlib/Mathlib`
+- `rg -l 'exists_disjoint_subfamily_covering_enlargement|Besicovitch|Rademacher|lintegral_image_eq_lintegral_abs_det_fderiv_mul' <snapshot>/mathlib/Mathlib`
+- `rg -n 'def lpMeanCurvatureKappa|structure LpAnnularCorrection|exists_lpAnnularCorrection|one_le_stationaryDensityReal_of_mem_support_lp|fiveTimes|lipschitz_extension_real_optimal|rademacher_ae_differentiableAt|injective_area_formula_lipschitz_simon|harmonicComparison_energy_le_sixthPower|HasWeightedApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT`
+- `rg -c sorry .lake/packages/simongmt/Poincare/SimonGMT`
+- `lake env lean /tmp/gmt-ch05-v2-check/Check.lean (Contract.lean lines 1-460, then namespace Submission with the 12 child declarations, then the root assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/SobolevCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/HarmonicEnergy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/gmt-ch05-v2-check/Check.lean`
+
+Snapshot pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json).
+
+No prior proofs: the 12 conjunct names occur only in project/GMT/Ch05/{Contract,Submission}.lean and README.md.
+
+No-match searches in mathlib/Mathlib (0 files each): Rellich, Kondrachov, Campanato, Kirszbraun, coarea, varifold, Allard, Poincare_inequality. 'Weyl' matches only Lie-algebra and root-system files, and 'Schauder' only Schauder-basis files (l2Space.lean, Normed/Module/Bases.lean). So Mathlib has no Weyl lemma for harmonic functions and no Schauder PDE theory.
+
+Usable Mathlib items:
+- HarmonicAt and HarmonicOnNhd (Harmonic/Basic.lean:41,48).
+- LipschitzOnWith.extend_real (Topology/MetricSpace/Lipschitz.lean:308) and lipschitzExtensionConstant (FiniteDimension.lean:194).
+- Vitali and Besicovitch coverings.
+- Rademacher (Analysis/Calculus/Rademacher.lean).
+- Change of variables (MeasureTheory/Function/Jacobian.lean).
+
+The pinned simongmt package lies outside the snapshot; 'rg -c sorry' finds no matches. It provides:
+- lpMeanCurvatureKappa = (p-n)/(4p) (Chapter04/LpMeanCurvature.lean:76) and LpAnnularCorrection (Chapter04/LpAnnular.lean:335). These confirm the corrected monotonicity used in all revised child proofs: Lambda = 4 p delta/(p-n), factor bounds e^(-Lambda) <= F <= e^Lambda, error |F-1| <= (e^(Lambda/2)/2) Lambda (rho/R)^(1-n/p), and |F-1| <= Lambda (rho/R)^(1-n/p) when Lambda <= 1.
+- one_le_stationaryDensityReal_of_mem_support_lp (LpLowerDensity.lean:43).
+- Chapter01.exists_fiveTimesCovering (used at Chapter04/SobolevCovering.lean:39).
+- lipschitz_extension_real_optimal and rademacher_ae_differentiableAt (Chapter02/Lipschitz.lean:170,192).
+- injective_area_formula_lipschitz_simon (Chapter02/AreaLipschitz.lean:126).
+- HasWeightedApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean:345).
+- harmonicComparison_energy_le_sixthPower (Chapter05/HarmonicEnergy.lean:94).
+The Chapter04 results are stated for the stronger Chapter04.RectifiableVarifold, which stores the tangent field as data, so reuse needs a bridge via Ch. 3, 1.9 and axiom checks.
+
+Lean check (Check.lean): all 12 child types elaborate in the contract scope, and the root assembly has exactly the type of main_theorem. The only warnings are sorry warnings for the placeholder child declarations.

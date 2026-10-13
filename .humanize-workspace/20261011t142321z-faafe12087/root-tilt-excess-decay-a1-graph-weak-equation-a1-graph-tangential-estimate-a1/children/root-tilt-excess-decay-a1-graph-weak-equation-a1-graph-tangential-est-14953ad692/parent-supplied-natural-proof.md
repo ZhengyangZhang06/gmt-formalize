@@ -1,0 +1,156 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.localized_comparison-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Context. This child is steps 5, 6, 7 (first half), 10 and 11 of the proof of gwe_graph_tangential_estimate, stated for an abstract measure space. In step 6 the vanishing of Phi on (B \ Gamma') cap Gamma is now hypothesis (5). The parent applies it with:
+- X = R^{n+l}, mu = V.weight;
+- B = B_{sigma/2}(0), B' = B_sigma(0), G = Gamma, G' = Gamma';
+- Phi = the integrand of gwe_vertical_first_variation, phi = <grad f^j(a), grad zeta(a)>, psi = |p - P|^2;
+- m = mu(B_{sigma/2}(0) cap (spt V \ Gamma)).
+The hypothesis M >= 0 cannot be dropped: if X is empty, (4) holds for a negative M, and the claim fails when m > 0. No extra import is needed. All integrals are Bochner set integrals against mu.
+
+1. First split. G' is measurable and Phi is integrable on B. By integral_inter_add_sdiff,
+ int_{B cap G'} Phi + int_{B \ G'} Phi = int_B Phi,
+ and B cap G' = G' by (2).
+2. Second split. Phi is integrable on B \ G', a subset of B (IntegrableOn.mono_set). G is measurable, so integral_inter_add_sdiff gives
+ int_{(B \ G') cap G} Phi + int_{(B \ G') \ G} Phi = int_{B \ G'} Phi.
+3. Vanishing part. By (5), int_{(B \ G') cap G} Phi = 0 (setIntegral_eq_zero_of_forall_eq_zero). With steps 1 and 2,
+ int_{G'} Phi = int_B Phi - int_{(B \ G') \ G} Phi.
+4. Off part.
+ - mu((B \ G') \ G) <= m < infinity by (6), so this set has finite measure.
+ - By (4), ||Phi(x)|| <= M on it. So norm_setIntegral_le_of_norm_le_const gives |int_{(B \ G') \ G} Phi| <= M mu.real((B \ G') \ G). Here mu.real s = (mu s).toReal by definition (Measure.real), so the bound is M mu((B \ G') \ G).toReal.
+ - Since m != infinity, ENNReal.toReal_mono gives mu((B \ G') \ G).toReal <= m.toReal. With M >= 0, |int_{(B \ G') \ G} Phi| <= M m.toReal.
+5. Integrability on G'.
+ - Phi is integrable on G' (a subset of B), and psi is integrable on G' (a subset of B').
+ - Phi - phi is a.e. strongly measurable for mu restricted to G'. Phi's integrability gives this for Phi, and (7) gives it for phi.
+ - G' is measurable, so (9) yields ||Phi(x) - phi(x)|| <= M psi(x) for a.e. x with respect to mu restricted to G' (ae_restrict_iff').
+ - M psi is integrable on G'. By domination (Integrable.mono'), Phi - phi is integrable on G'. Hence phi = Phi - (Phi - phi) is integrable on G'.
+6. Comparison.
+ - Both are integrable, so int_{G'} Phi - int_{G'} phi = int_{G'} (Phi - phi) (integral_sub).
+ - By the a.e. bound of step 5, norm_integral_le_of_norm_le and integral_const_mul give |int_{G'} (Phi - phi)| <= int_{G'} M psi = M int_{G'} psi.
+ - psi >= 0 is integrable on B' and G' is contained in B'. So int_{G'} psi <= int_{B'} psi (setIntegral_mono_set). As M >= 0, |int_{G'} Phi - int_{G'} phi| <= M int_{B'} psi.
+7. Conclusion.
+ |int_{G'} phi| <= |int_{G'} Phi| + |int_{G'} Phi - int_{G'} phi|, by the triangle inequality;
+ <= |int_B Phi| + |int_{(B \ G') \ G} Phi| + M int_{B'} psi, by step 3, the triangle inequality and step 6;
+ <= |int_B Phi| + M m.toReal + M int_{B'} psi, by step 4. QED
+
+## Key steps
+
+1. Split int_B Phi along G' and then along G (integral_inter_add_sdiff, using G, G' measurable and Phi integrable on B); the (B \ G') cap G part vanishes by (5), so int_{G'} Phi = int_B Phi - int_{(B \ G') \ G} Phi.
+2. Off part: |int_{(B \ G') \ G} Phi| <= M mu((B \ G') \ G).toReal <= M m.toReal (norm_setIntegral_le_of_norm_le_const, toReal_mono, M >= 0).
+3. Phi - phi is a.e. strongly measurable on G' and dominated by M psi there, so it is integrable on G' (Integrable.mono'); hence phi is integrable on G'.
+4. |int_{G'} Phi - int_{G'} phi| = |int_{G'} (Phi - phi)| <= M int_{G'} psi <= M int_{B'} psi (setIntegral_mono_set, psi >= 0).
+5. Combine with the triangle inequality.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean (both identical)`
+- `cat <snapshot>/manifest.json; git -C lake-packages-25730c7c/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n '^abbrev EuclideanSpace.finAddEquivProd|^theorem measurableSet_of_differentiableAt|^theorem measurable_fderiv |^theorem ae_differentiableWithinAt_of_mem |^theorem norm_fderiv_le_of_lipschitzOn|^theorem support_fderiv_subset|theorem toDual_symm_apply|^theorem integral_inter_add_sdiff|^theorem setIntegral_eq_zero_of_forall_eq_zero|^theorem norm_setIntegral_le_of_norm_le_const |^theorem setIntegral_mono_set|^theorem Integrable.mono' |theorem starProjection_norm_le|^theorem withDensity_absolutelyContinuous|^theorem restrict_apply₀' |^theorem setLIntegral_measure_zero|^theorem setLIntegral_one|^theorem measure_eq_zero_iff_ae_notMem|^theorem Measurable.inner |^theorem withDensity_apply |^theorem restrict_restrict |^theorem norm_integral_le_of_norm_le |^theorem integral_sub |^theorem ContDiff.continuous_fderiv |^theorem IsCompact.image_of_continuousOn|^theorem Continuous.clm_apply|^theorem IsCompact.measurableSet' <snapshot>/mathlib/Mathlib`
+- `rg -n 'lemma measure_compl_support|theorem _root_.Continuous.comp_aestronglyMeasurable₂|theorem absolutelyContinuous_of_le|theorem continuous_inner|integrableOn_of_bounded|lemma norm_single' <snapshot>/mathlib/Mathlib`
+- `rg -c 'gte_' <snapshot>/project/GMT (no match)`
+- `rg -l -i varifold <snapshot>/mathlib/Mathlib (0 files)`
+- `python3 -I: dag.json lean_name census for prefix gte_ (0 of 465) and scan of every nodes/**/*.json for the five proposed names (0 hits)`
+- `python3 -I: regex scan of dag.json lean_statements (accepted nodes) for V.weight finiteness / null complement of support / absolute continuity / DifferentiableAt / gradient (fun y => f y j) / finAddEquivProd (q.symm patterns`
+- `sed -n 520,640p verifier/gmt-compare.py (contract_scope / child_modules); python3 -I scripts/gen_checks.py verifier/gmt-compare.py GMT/Ch05/Contract.lean out/children.json checks`
+- `lean -o /tmp/gte-decomp-20261012/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (contract-only); lean checks/challenge/<X>.lean for all 5 children`
+- `lean proofs/Child{A,B,C,D,E}.lean; lean -o olean_test/GMT/Ch05/Submission.olean testsub/GMT/Ch05/Submission.lean; lean checks/sol_<X>.lean (#print axioms HumanizeNodeComparator.target, Submission.<X>)`
+- `lean checks/Assembly.lean (#print axioms parent_check); lean checks/Wiring.lean (#print axioms wiring_check)`
+- `grep -n '4.5 Theorem|(8)|(12)' book/chapter-05.txt; sed -n 800,900p book/chapter-05.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-estimate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-transfer-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/SpecialFunctions/Inner.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Continuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/gte-decomp-20261012/out/children.json`
+- `/tmp/gte-decomp-20261012/proofs/ChildA.lean`
+- `/tmp/gte-decomp-20261012/proofs/ChildB.lean`
+- `/tmp/gte-decomp-20261012/proofs/ChildC.lean`
+- `/tmp/gte-decomp-20261012/proofs/ChildD.lean`
+- `/tmp/gte-decomp-20261012/proofs/ChildE.lean`
+- `/tmp/gte-decomp-20261012/checks/Assembly.lean`
+- `/tmp/gte-decomp-20261012/checks/Wiring.lean`
+- `/tmp/gte-decomp-20261012/testsub/GMT/Ch05/Submission.lean`
+
+Revisions. Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The compiling lake-packages-25730c7c/mathlib is at the same commit. The snapshot Contract.lean, the workspace Contract.lean and the workspace Submission.lean are byte-identical.
+
+Mathlib facts used by the five children and the assembly, located in the snapshot (path:line):
+- EuclideanSpace.finAddEquivProd (Analysis/InnerProductSpace/PiL2.lean:378).
+- Measure.measure_compl_support (MeasureTheory/Measure/Support.lean:202; needs HereditarilyLindelofSpace).
+- measurableSet_of_differentiableAt and measurable_fderiv (Analysis/Calculus/FDeriv/Measurable.lean:372, 378; arbitrary f, complete target).
+- LipschitzOnWith.ae_differentiableWithinAt_of_mem (Analysis/Calculus/Rademacher.lean:361).
+- norm_fderiv_le_of_lipschitzOn (Analysis/Calculus/FDeriv/Basic.lean:939).
+- support_fderiv_subset (Analysis/Calculus/FDeriv/Const.lean:379).
+- InnerProductSpace.toDual_symm_apply (Analysis/InnerProductSpace/Dual.lean:178).
+- In MeasureTheory/Integral/Bochner/Set.lean: integral_inter_add_sdiff (:114), setIntegral_eq_zero_of_forall_eq_zero (:357), norm_setIntegral_le_of_norm_le_const (:613, returns C * mu.real s) and setIntegral_mono_set (:737).
+- integral_sub and norm_integral_le_of_norm_le (Bochner/Basic.lean:263, 985).
+- Integrable.mono' (Function/L1Space/Integrable.lean:104).
+- Measure.integrableOn_of_bounded (Integral/IntegrableOn.lean:716).
+- Continuous.comp_aestronglyMeasurable₂ (StronglyMeasurable/AEStronglyMeasurable.lean:263).
+- Submodule.starProjection_norm_le (InnerProductSpace/Projection/Basic.lean:386).
+- withDensity_apply and withDensity_absolutelyContinuous (Measure/WithDensity.lean:44, 146).
+- absolutelyContinuous_of_le (Measure/AbsolutelyContinuous.lean:56).
+- restrict_apply₀' and restrict_restrict (Measure/Restrict.lean:136, 205).
+- setLIntegral_one and setLIntegral_measure_zero (Integral/Lebesgue/Basic.lean:124, 478).
+- measure_eq_zero_iff_ae_notMem (OuterMeasure/AE.lean:145).
+- continuous_inner (InnerProductSpace/Continuous.lean:65).
+- Continuous.clm_apply (Normed/Operator/BoundedLinearMaps.lean:471).
+- IsCompact.image_of_continuousOn (Topology/Compactness/Compact.lean:110).
+- IsCompact.measurableSet (Constructions/BorelSpace/Basic.lean:262).
+- ContDiff.continuous_fderiv (Calculus/ContDiff/Defs.lean:1271).
+- PiLp.norm_single (Normed/Lp/PiLp.lean:1044).
+Measurable.inner (Function/SpecialFunctions/Inner.lean:24) exists, but the contract does not import it, so the assembly uses continuous_inner.measurable instead.
+
+No-match results.
+- Snapshot Mathlib has no varifold file (0 matches). Varifold facts must be proved from the contract definitions; gte_weight_null_finite and gte_tangentProj_integrands do this.
+- No 'gte_' occurs in the snapshot project sources, in the live dag.json (465 names) or in any nodes/**/*.json. All five names are free.
+- No accepted DAG declaration states any child as a whole. Partial overlaps are lip_approx_tangent_structure (b2 on compact sets, n >= 1), rsod_graphPoint_eq_finAddEquivProd_symm and arp_rotatedPlane_graphPoint_coords (graphPoint = finAddEquivProd.symm), and anyrad_gc_graph_lintegral_transfer (Borel graph images). These are recorded in the rationale; no reuse edge is needed.
+
+Lean evidence, against a freshly compiled contract-only Submission olean.
+- All five verifier-generated challenges elaborate.
+- All five children are proved sorry-free.
+- The verifier-generated NodeSolution files elaborate against a test Submission containing the proofs.
+- parent_check derives the exact frozen parent type from the frozen types of FV, TA, AREA, GC and the five children, and wiring_check connects it to the real Submission.X theorems.
+- All of these use only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced every check.
+
+Source: Simon's proof of Theorem 4.5, displays (8)-(12), is at book/chapter-05.txt:847-888.

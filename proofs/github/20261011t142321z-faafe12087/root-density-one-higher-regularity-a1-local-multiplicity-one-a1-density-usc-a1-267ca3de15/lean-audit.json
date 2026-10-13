@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7961a43221373684ce6e30fad5167f9c179e09b1cef4ed2b75ad3a015eb84f1",
+  "git_delta": {
+    "base_commit": "ca5860f12b697185af0a323b0da4b3d43087b84f",
+    "candidate_commit": "098ca96fe84dd96ea27424b15c906e2961485140",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_density_usc",
+    "diff_sha256": "5a088c6622a8d05505db76bf76a875fff41a2f312928fd3a5c2f937dd907e492",
+    "source_sha256": "26374e17df24821492f39717e46182b74e90fdc062f34142548fbe4c2e4f6cc4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_density_usc",
+      "statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (y : Amb n ℓ) (t₁ : ℝ) (Λ : ℝ → ℝ), 0 < t₁ → Tendsto Λ (𝓝[>] 0) (𝓝 0) → (∀ t ∈ Ioc 0 t₁, ∀ z ∈ closedBall y t, ∃ Θ : ℝ, 0 ≤ Θ ∧ V.HasDensity z Θ ∧ ∀ r ∈ Ioo 0 t, unitBallVolume n * Θ ≤ Real.exp (Λ t) * (r ^ n)⁻¹ * (V.weight (closedBall z r)).toReal + Λ t) → ∀ Θy : ℝ, 0 ≤ Θy → V.HasDensity y Θy → ∀ c : ℝ, Θy < c → ∃ d > 0, ∀ z ∈ closedBall y d, ∃ Θ : ℝ, Θ < c ∧ V.HasDensity z Θ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

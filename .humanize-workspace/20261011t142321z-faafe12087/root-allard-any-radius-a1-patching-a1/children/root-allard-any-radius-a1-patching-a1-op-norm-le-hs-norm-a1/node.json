@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.op_norm_le_hs_norm-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1",
+  "depth": 3,
+  "title": "Operator norm is bounded by the Hilbert-Schmidt norm",
+  "statement": "For all natural numbers m, k and every continuous linear map A from the Euclidean space R^m (Rn m) to R^k (Rn k), the operator norm satisfies ||A|| <= hsNorm A, where hsNorm A = sqrt(sum over i < m of |A e_i|^2) and e_i = EuclideanSpace.single i 1 is the i-th standard basis vector.",
+  "lean_statement": "∀ {m k : ℕ} (A : Rn m →L[ℝ] Rn k), ‖A‖ ≤ hsNorm A",
+  "lean_name": "arp_opNorm_le_hsNorm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-op-norm-le-hs-norm-a1-a1"
+}

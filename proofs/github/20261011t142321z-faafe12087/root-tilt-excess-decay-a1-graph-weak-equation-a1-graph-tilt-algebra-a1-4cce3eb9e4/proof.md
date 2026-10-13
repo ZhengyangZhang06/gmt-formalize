@@ -1,0 +1,155 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1`
+- Child DAG node: `root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tilt_algebra-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Context. This is the linear algebra of Simon 4.5 (7), (10), (11), (13) (steps 3 and 5 of the parent proof). The parent and gwe_graph_tangential_estimate apply it at a graph point x = q(graphPoint x' (f x')) where p_x = p, with D = Df(x'), r = grad f^j(x') and w = grad zeta(x'). Prerequisites:
+- hsNorm_starProjection_trace_identities (PA): (i) ||A|| <= hsNorm A; (iii) trace(p_{T-perp} o p_S) = hsNormSq(p_S - p_T)/2 when dim S = dim T;
+- lip_approx_graph_coordinates (GC): (i) graphPoint a b - graphPoint a' b' = graphPoint (a - a') (b - b'); (ii) ||graphPoint a b||^2 = ||a||^2 + ||b||^2; (iv) P(q(graphPoint a b)) = q(graphPoint a 0).
+
+Notation. e_i is the standard basis of R^n, eps_j := EuclideanSpace.single j 1 in R^l, e'_j := q(graphPoint 0 eps_j), Q := p_{T-perp} = I - P, and |A|^2 := hsNormSq A. graphPoint a b = E.symm (a, b) with E := EuclideanSpace.finAddEquivProd (compare coordinates), so graphPoint is linear in the pair (a, b). Polarizing GC(ii) gives <graphPoint a b, graphPoint a' b'> = <a, a'> + <b, b'>. The isometry q preserves inner products.
+
+1. Projections. p, P, Q are orthogonal projections: self-adjoint, idempotent, of operator norm <= 1 (Submodule.starProjection_norm_le). Also p u = u for u in S, p u = 0 for u in S-perp, and similarly for P with T.
+ - By GC(iv), q(graphPoint a 0) = P(q(graphPoint a 0)) lies in T.
+ - P e'_j = q(graphPoint 0 0) = 0, so e'_j is in T-perp and Q e'_j = e'_j.
+2. Dimensions. The map G : v |-> q(graphPoint v (D v)) is linear and injective, since ||G v||^2 = ||v||^2 + ||D v||^2 >= ||v||^2 (GC(ii)). S = range G, so dim S = n. T = q(horizontalPlane) is the image of R^n under the injective linear map a |-> q(graphPoint a 0) (horizontalPlane is spanned by the vectors graphPoint e_i 0), so dim T = n. Hence finrank S = finrank T.
+3. Rows. Let r satisfy <r, v> = (D v)_j for all v. Then ||r||^2 = <r, r> = (D r)_j <= ||D r|| <= ||D|| ||r|| (|y_j| <= ||y||, PiLp.norm_apply_le), so ||r|| <= ||D|| <= 1. For each j, the vector r_j := (InnerProductSpace.toDual R R^n).symm ((EuclideanSpace.proj j) o D) satisfies <r_j, v> = (D v)_j (toDual_symm_apply). Moreover
+ sum_j ||r_j||^2 = sum_j sum_i <r_j, e_i>^2 = sum_i sum_j (D e_i)_j^2 = sum_i ||D e_i||^2 = |D|^2
+ (Parseval in R^n and in R^l: ||y||^2 = sum_k y_k^2).
+4. Graph orthogonality (Simon (7)). For j and r as in step 3, put g := q(graphPoint r 0), which lies in T. By GC(i), e'_j - g = q(graphPoint (-r) eps_j). For every v,
+ <q(graphPoint (-r) eps_j), G v> = <-r, v> + <eps_j, D v> = -(D v)_j + (D v)_j = 0.
+ So e'_j - g is orthogonal to every generator of S, hence lies in S-perp (Submodule.mem_orthogonal, span induction). Therefore p e'_j = p g.
+5. Projection inequality (Simon (10)-(11)). For u, w in T: <p u, p w> - <u, w> = <u, p w> - <u, w> = -<u, (I - p) w> = -<u, P (I - p) P w>, using u = P u, w = P w and P self-adjoint.
+ - Expanding with p(I - p) = 0 = (I - p)p: (P - p)(I - p)(P - p) = (P - p)(I - p)P = P(I - p)P - p(I - p)P = P(I - p)P.
+ - Since P - p is self-adjoint and ||I - p|| <= 1 (I - p = p_{S-perp}), |<p u, p w> - <u, w>| = |<(P - p)u, (I - p)(P - p)w>| <= ||P - p||^2 ||u|| ||w||.
+ - By PA(i), ||P - p|| <= hsNorm(P - p), and hsNorm(P - p)^2 = hsNormSq(P - p) = hsNormSq(p - P) (each ||A e_i||^2 is invariant under A |-> -A).
+ - Hence |<p u, p w> - <u, w>| <= |p - P|^2 ||u|| ||w||.
+6. Trace identity (Simon 4.4). sum_j ||p e'_j||^2 = |p - P|^2/2.
+ - b_k := q(e_k) (k in Fin(n + l), e_k the standard basis of R^{n+l}) is an orthonormal basis.
+ - Splitting Fin(n + l) with Fin.addCases: e_{castAdd i} = graphPoint e_i 0 and e_{natAdd j} = graphPoint 0 eps_j (coordinates). So b_{castAdd i} lies in T and b_{natAdd j} = e'_j lies in T-perp.
+ - For a linear map L, trace L = sum_k <b_k, L b_k> (LinearMap.trace_eq_sum_inner; equivalently trace L = trace(q^{-1} L q) = sum_k <e_k, q^{-1} L q e_k>).
+ - With L = Q o p, <b_k, Q p b_k> = <Q b_k, p b_k>. This is 0 for b_k in T, and equals <e'_j, p e'_j> = ||p e'_j||^2 for b_k = e'_j. So trace(Q o p) = sum_j ||p e'_j||^2.
+ - By PA(iii) and step 2, trace(Q o p) = hsNormSq(p - P)/2.
+7. Proof of (a). For each j, g_j := q(graphPoint r_j 0) lies in T and ||g_j|| = ||r_j|| <= 1 (GC(ii), step 3).
+ - Step 5 with u = w = g_j gives ||g_j||^2 <= <p g_j, p g_j> + |p - P|^2 ||g_j||^2 <= ||p e'_j||^2 + |p - P|^2, since p g_j = p e'_j by step 4.
+ - Summing over j and using steps 3 and 6: |D|^2 = sum_j ||r_j||^2 = sum_j ||g_j||^2 <= sum_j ||p e'_j||^2 + l |p - P|^2 = (l + 1/2) |p - P|^2.
+8. Proof of (b). Let j, r, w satisfy <r, v> = (D v)_j for all v.
+ - Put g := q(graphPoint r 0) in T and u := q(graphPoint w 0) in T. By step 3, ||g|| = ||r|| <= 1; ||u|| = ||w||; and <g, u> = <graphPoint r 0, graphPoint w 0> = <r, w>.
+ - By step 4, p e'_j = p g, so <p e'_j, p u> - <r, w> = <p g, p u> - <g, u>.
+ - By step 5 its absolute value is <= |p - P|^2 ||g|| ||u|| <= |p - P|^2 ||w||. QED
+
+## Key steps
+
+1. S = q(graph D) and T = q(R^n x {0}) both have dimension n; e'_j lies in T-perp; rows r_j satisfy ||r_j|| <= ||D|| <= 1 and sum_j ||r_j||^2 = |D|^2.
+2. e'_j - q(graphPoint r_j 0) is orthogonal to S, so p e'_j = p q(graphPoint r_j 0) (Simon (7)).
+3. For u, w in T: <p u, p w> - <u, w> = -<(P - p)u, (I - p)(P - p)w>, so the error is <= ||P - p||^2 |u||w| <= |p - P|^2 |u||w| (Simon (10)-(11)).
+4. sum_j ||p e'_j||^2 = trace(p_{T-perp} p) = |p - P|^2/2 (trace identity, PA(iii)).
+5. (a) |D|^2 = sum_j ||g_j||^2 <= sum_j ||p e'_j||^2 + l|p - P|^2 = (l + 1/2)|p - P|^2; (b) apply the projection inequality with u = q(r,0), w = q(w,0).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean; cmp GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean (both identical)`
+- `cat <snapshot>/manifest.json; python3 -I: workspace lake-manifest.json revs; git -C lake-packages-25730c7c/{mathlib,simongmt} rev-parse HEAD vs .lake/packages/{mathlib,simongmt}`
+- `python3 -I: dag.json lean_name census for gwe_* and for hsNorm_starProjection_trace_identities, lip_approx_graph_coordinates, exists_smooth_cutoff_half_ball_grad_le (status, lean_statement/title/statement equality, depends_on); regex scan of every nodes/**/*.json for "lean_name": "gwe_`
+- `grep -rn gwe_ <snapshot>/project/GMT (no match)`
+- `grep -rl -i varifold --include=*.lean <snapshot>/mathlib/Mathlib (0 files)`
+- `grep -n -A14 'theorem weighted_area_formula_lipschitz_injOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n 'theorem areaJacobianAt_sq_eq_det_gram' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean; sed -n 15,40p Chapter02/Area.lean`
+- `sed -n 1,80p <snapshot>/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean | grep -n 'instance|borel|BorelSpace'`
+- `grep -n -A4 'theorem MeasurableSet.image_of_continuousOn_injOn' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `grep -rn -A6 'theorem lintegral_withDensity_eq_lintegral_mul_non_measurable₀|theorem integral_withDensity_eq_integral_toReal_smul ' <snapshot>/mathlib/Mathlib`
+- `grep -n 'theorem integral_map ' MeasureTheory/Integral/Bochner/Basic.lean; 'theorem addHaar_sphere ' MeasureTheory/Measure/Lebesgue/EqHaar.lean; 'theorem volume_ball ' MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean; 'theorem norm_fderiv_le_of_lipschitzOn ' Analysis/Calculus/FDeriv/Basic.lean; 'measurableSet_of_differentiableAt|measurable_fderiv' Analysis/Calculus/FDeriv/Measurable.lean; 'ae_differentiableWithinAt_of_mem' Analysis/Calculus/Rademacher.lean; 'LipschitzOnWith.extend_real' Topology/MetricSpace/Lipschitz.lean; 'restrict_withDensity' WithDensity.lean; 'measure_compl_support' Support.lean; 'exists_measurable_superset_of_null' MeasureSpaceDef.lean; 'aemeasurable_indicator_iff₀' AEMeasurable.lean; 'lintegral_indicator₀' Integral/Lebesgue/Basic.lean; 'det_eq_prod_eigenvalues|trace_eq_sum_eigenvalues' Analysis/Matrix/Spectrum.lean (all under <snapshot>/mathlib/Mathlib)`
+- `sed -n 540,612p verifier/gmt-compare.py (contract_scope / child_modules: comparator replays the contract scope at main_theorem)`
+- `grep -n '4.5 Theorem|(14)|(16)' book/chapter-05.txt; sed -n 780,800p book/chapter-05.txt`
+- `lean -o /tmp/gwe-decomp-v2-20261012/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean (contract-only)`
+- `python3 -I /tmp/gwe-decomp-v2-20261012/scripts/build_v2.py decomposition-v1.json out/subproblems_v2.json (prose-only edits; asserts lean fields unchanged)`
+- `python3 -I /tmp/gwe-decomp-v2-20261012/scripts/gen_checks.py verifier/gmt-compare.py GMT/Ch05/Contract.lean out/subproblems_v2.json checks`
+- `lean checks/challenge/<X>.lean for all 10 children; lean checks/TypesSubmission.lean (10 sorry warnings, no errors)`
+- `lean checks/Assembly.lean (#print axioms parent_check); lean checks/TangWiring.lean (#print axioms tang_check); lean checks/TransferWiring.lean (#print axioms transfer_check); lean checks/Inst.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Lp/MeasurableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/AEMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Matrix/Spectrum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/tmp/gwe-decomp-v2-20261012/scripts/build_v2.py`
+- `/tmp/gwe-decomp-v2-20261012/scripts/gen_checks.py`
+- `/tmp/gwe-decomp-v2-20261012/checks/TypesSubmission.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Defs.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Assembly.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/TangWiring.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/TransferWiring.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/Inst.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_lipschitz_graph_area_formula.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_varifold_graph_transfer.lean`
+- `/tmp/gwe-decomp-v2-20261012/checks/challenge/gwe_weighted_energy_weak_equation.lean`
+
+Revisions. Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The workspace pins simongmt 2b3663083f3fe399b6296fb8eaee52169170e197. The lake-packages used for compilation are at the same Mathlib and simongmt commits.
+
+Names and reuse.
+- No gwe_ name occurs in dag.json, in any other node's JSON, or in the snapshot's project sources. The seven new names are free.
+- The three reused declarations are 'accepted' in dag.json with byte-identical lean_statement, title and statement, and empty depends_on: hsNorm_starProjection_trace_identities (164f08e), lip_approx_graph_coordinates (e291574), exists_smooth_cutoff_half_ball_grad_le (cfec068).
+- No-match: Mathlib has no varifold file (0 matches), so the varifold transfer and first-variation steps are proved in the children from the contract's definitions.
+
+Borel correction, confirmed in the snapshot.
+- WithLp.measurableSpace (Analysis/Normed/Lp/MeasurableSpace.lean:26) is the comap of the product structure, and the PiLp.borelSpace instance (line 52) makes it Borel on EuclideanSpace R (Fin n) = PiLp 2 (fun _ => R). So MeasurableSet A on Rn n means Borel A, which is what the corrected prose of the area and transfer children now says.
+- SimonGMT weighted_area_formula_lipschitz_injOn (Chapter02/AreaLipschitz.lean:101) takes MeasurableSet s under [BorelSpace E] and an arbitrary g : F -> ENNReal. areaJacobianAt_sq_eq_det_gram is at Chapter02/AreaParametrization.lean:22.
+- Lusin-Souslin, MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821), needs a Borel source set.
+
+Other Mathlib items located:
+- lintegral_withDensity_eq_lintegral_mul_non_measurable₀ (WithDensity.lean:508) and integral_withDensity_eq_integral_toReal_smul (Bochner/ContinuousLinearMap.lean:318). Neither needs sigma-finiteness or integrability.
+- integral_map (Bochner/Basic.lean:1081).
+- addHaar_sphere (EqHaar.lean:527), for every radius in a nontrivial space.
+- EuclideanSpace.volume_ball (VolumeOfBalls.lean:307).
+- norm_fderiv_le_of_lipschitzOn (FDeriv/Basic.lean:939).
+- measurableSet_of_differentiableAt and measurable_fderiv (FDeriv/Measurable.lean:372, 378).
+- LipschitzOnWith.ae_differentiableWithinAt_of_mem (Rademacher.lean:361).
+- LipschitzOnWith.extend_real (Topology/MetricSpace/Lipschitz.lean:308).
+- restrict_withDensity (WithDensity.lean:215).
+- measure_compl_support (Support.lean:202).
+- exists_measurable_superset_of_null (MeasureSpaceDef.lean:219).
+- aemeasurable_indicator_iff₀ (AEMeasurable.lean:323).
+- lintegral_indicator₀ (Lebesgue/Basic.lean:518).
+- Matrix.IsHermitian.det_eq_prod_eigenvalues and trace_eq_sum_eigenvalues (Analysis/Matrix/Spectrum.lean:192, 239).
+
+Source. Simon's proof of Theorem 4.5 is at book/chapter-05.txt lines 747-930, displays (1)-(16). This node covers displays (5)-(16).
+
+Fresh Lean checks against a newly compiled contract-only Submission olean.
+- All 10 exact comparator challenges elaborate. They were generated by the verifier's own contract_scope/child_modules code: namespace GMT.Ch05, opens MeasureTheory Metric Set Filter Topology, scoped ENNReal NNReal, RectifiableVarifold.
+- All 10 elaborate as theorem Submission.X.
+- The matrix and coordinate instances are as intended.
+- Sorry-free parent_check proves the frozen parent type from the child propositions. tang_check and transfer_check prove the two internal dependency derivations.
+- All three use only propext, Classical.choice and Quot.sound.

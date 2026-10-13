@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f6534b3f57e4039b0f61d6993435e0aa74ca9c4811eb287e470c5bfa41e4c7b",
+  "git_delta": {
+    "base_commit": "468b3f9025fbce4853d359b3ff9f10a1a9245e5e",
+    "candidate_commit": "5f97188b0e1abf1e1d6ea0a04ad1723d699949c7",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_graph_comparison",
+    "diff_sha256": "73b6eebf1159d097eaf294950af42fde37d5d60d66ee2c8d7aa4fd845cc952d5",
+    "source_sha256": "6c277e18e9373f7ab1bbcb9e34099c5364781ab15eabff6c1c976c0ba36b18d6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_graph_comparison",
+      "statement": "∀ (n : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₂ : ℝ, 0 < δ₂ ∧ ∀ (ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₂ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), 0 < R → R ≤ δ * ρ → f 0 = 0 → LipschitzOnWith 1 f (closedBall 0 R) → V.support ∩ closedBall 0 R = q '' graphOver f (closedBall 0 R) ∩ closedBall 0 R → ∀ Φ : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ) → ℝ≥0∞, Measurable (Function.uncurry Φ) → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ ball 0 (R / 2) → ∫⁻ x in A, Φ (q (graphPoint x (f x))) ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ f x v))).map q.toLinearEquiv.toLinearMap).starProjection ≤ ∫⁻ y in q '' graphOver f A, Φ y (V.tangentProj y) ∂V.weight",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

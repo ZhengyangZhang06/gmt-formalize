@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61464da2db3737bcbf8894f665b67c4406332977f9ec5382b9c30be4b08e8ba0",
+  "git_delta": {
+    "base_commit": "819d5918c9dcfc1c50033e9d575a99bdb3333b9a",
+    "candidate_commit": "83e7fae6e32395b369c5598a3bb25743b1f08293",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_lad_hasFDerivAt_of_line_integral",
+    "diff_sha256": "5dc88406e0b838ae81fb1d37111b7cd99f14b62dba9bc1be258293fd3108785a",
+    "source_sha256": "ff497faaeaa2326796f8a77d707a3bf03e84621d0ccb4140a0e25b62a7635091",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lad_hasFDerivAt_of_line_integral",
+      "statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (U : Set (Rn n)) (x : Rn n), IsOpen U → x ∈ U → ContinuousOn g U → (∀ y ∈ U, f y - f x = ∫ τ in (0:ℝ)..1, g (x + τ • (y - x)) (y - x)) → HasFDerivAt f (g x) x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "224f9a9e98cb71892602ead14578755c9e4a448318de6085c445c36994661e5f",
+  "git_delta": {
+    "base_commit": "9c39286827f024569cb6e852673fe9b70e2c7956",
+    "candidate_commit": "604fb68cd386ea744e2756fd53bf0dbe0d6af799",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_gl_graph_map_lipschitzOn",
+    "diff_sha256": "148cd9e41dad0462142578d32a9dadd76b20dd9db6cd95a82f98f620cfbe8b7f",
+    "source_sha256": "c3fd9c299ba7a2857a32ce1697ce7ac1df4c5859bc54d2c0a02b25fd38b47b34",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_gl_graph_map_lipschitzOn",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (D : Set (Rn n)) (L : ℝ≥0), LipschitzOnWith L f D → LipschitzOnWith (NNReal.sqrt (1 + L ^ 2)) (fun x => q (graphPoint x (f x))) D",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

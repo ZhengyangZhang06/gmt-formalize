@@ -1,0 +1,49 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasApproximateTangentSpaceAt",
+        "theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image|theorem Isometry.euclideanHausdorffMeasure_image|theorem setIntegral_union \\(|theorem norm_setIntegral_le_of_norm_le_const|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|lemma IntegrableOn.of_bound",
+        "theorem restrict_apply |theorem ae_restrict_mem |theorem ae_restrict_of_ae |theorem tendsto_toReal |protected theorem Tendsto.const_mul|bounded_above_of_compact_support",
+        "aetp_blowUp_integral_tendsto_zero_of_density_zero|aetp_approxTangent_of_density_zero_symmDiff",
+        "python3 -I /tmp/aetp-tloc-independent-review/audit.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-locality-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-locality-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/accepted-candidate.json",
+        "/tmp/aetp-tloc-independent-review/audit.py",
+        "/tmp/aetp-tloc-independent-review/AuditProofs.lean",
+        "/tmp/aetp-tloc-independent-review/DependencyCheck.lean"
+      ],
+      "conclusion": "Verified the parent digest, byte-identical frozen contract, and pinned library revisions. Scaling applies to arbitrary sets; restrict_apply requires measurability only of the evaluated closed ball. Both exact child types independently compile as comparator challenges before implementation. Recompiled the supplied proof evidence with helpers local, and checked the exact parent assembly. Both children, the assembly, and accepted density sibling use only propext, Classical.choice and Quot.sound. The reused density type matches its frozen contract. No conflicting DAG or proposal name reservation was found. The split appropriately separates the twice-used analytic estimate from pointwise tangent transfer."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree, including arbitrary S and n = 0. All seven proof steps are justified: compact support supplies the radius and bound; scaling and the ball identity hold without measurability of S; positive finite factors justify ENNReal cancellation; density convergence gives eventual finiteness; measurable-ball restriction yields the integral bound; toReal continuity and squeezing finish. No missing hypothesis, circular reliance, or typeclass ambiguity occurs. The name is bare and unreserved."
+    },
+    {
+      "key": "tangent_density_congr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose lists exactly the Lean hypotheses. The proof correctly preserves dimension, applies blowup_vanish to both differences, establishes measurable disjoint images and integrability using the Borel and finiteness hypotheses, and transfers convergence through integral additivity. Membership of x in either set is unnecessary. Its sole child dependency is correctly directed and acyclic. Together with the accepted density sibling, restriction to A ∩ N proves the exact selected parent, with an exceptional set independent of f. The name is bare and unreserved; the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

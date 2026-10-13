@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7ac62092b49de4d51f2b5fa180c0ea1b85ce2fd1c64f1fe4e606806bde8405b",
+  "git_delta": {
+    "base_commit": "df276497197108103483916987c3b01aebc18a74",
+    "candidate_commit": "46e15218bd16dfce80823ea25c4ef0283d5551f9",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_graph_hole_measure",
+    "diff_sha256": "0eb19475e4b7af763c1573e22b2aabb0bf746029fa27b1efcf209d17dfbe86aa",
+    "source_sha256": "5aab7f85a508ac86424571ee94058a47561e462b70bdea8bf66152f1941868c9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_graph_hole_measure",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ ε δ₀ C₀ : ℝ, 0 < ε ∧ 0 < δ₀ ∧ 0 ≤ C₀ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₀ → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ε * ‖x - z‖) → (∀ x ∈ closedBall (0 : Rn n) (δ * ρ / 2), ‖f x‖ ≤ δ * ρ / 32) → (μHE[n] : Measure (Amb n ℓ)) (closedBall 0 (δ * ρ / 2) ∩ (q '' graphOver f (closedBall 0 (δ * ρ / 2)) \\ V.support)) ≤ ENNReal.ofReal C₀ * (V.weight (closedBall 0 (3 * (δ * ρ) / 4) \\ q '' graphOver f univ) + ENNReal.ofReal (∫ x in closedBall 0 (δ * ρ), hsNormSq (V.tangentProj x - (rotatedPlane q).starProjection) ∂V.weight))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

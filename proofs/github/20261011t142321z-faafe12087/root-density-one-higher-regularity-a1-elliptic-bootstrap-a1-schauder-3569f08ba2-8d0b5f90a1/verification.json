@@ -1,0 +1,23 @@
+{
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3913",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4771",
+  "candidate_commit": "57df108edcf1d523c8b7f8b4a2df337604225e70",
+  "integrated_commit": "",
+  "proof_base_commit": "e821d88672aa1de5d3985dce6544d905efe7420d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1",
+  "requires": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.caccioppoli-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.poly_const-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.chain_vanish-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.abstract_liouville-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.snd_deriv_symm-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.dir_deriv-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.liouville-a1.mollify-a1"
+  ]
+}

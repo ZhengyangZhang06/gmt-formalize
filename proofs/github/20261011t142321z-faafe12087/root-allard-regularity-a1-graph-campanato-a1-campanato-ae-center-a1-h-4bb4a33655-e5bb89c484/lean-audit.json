@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74d0c1bca3eaf12cf03aef76f043670f71194baaea1945b80372ac81ae8b0ab4",
+  "git_delta": {
+    "base_commit": "b35901df833beeb7c208587ef1a954458b4ec4ca",
+    "candidate_commit": "cf728a097e1ff33b3f1a3d91abbc6e8b0da6c94f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_cae_hsNormSq_lebesgue_ae",
+    "diff_sha256": "3d5a2ddc3a1d7cc37ada749b15f87dd944311c121f118865b907c02c84e63d1e",
+    "source_sha256": "0ecabb179c2ac91b6345b2e850333a8406d400c122e80179cf3f86b640e98f43",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_cae_hsNormSq_lebesgue_ae",
+      "statement": "∀ (n m k : ℕ) (G : Rn n → (Rn m →L[ℝ] Rn k)) (B : ℝ), Measurable G → (∀ x, ‖G x‖ ≤ B) → ∀ᵐ z ∂(volume : Measure (Rn n)), Tendsto (fun t : ℝ => (volume (closedBall z t))⁻¹ * ∫⁻ x in closedBall z t, ENNReal.ofReal (hsNormSq (G x - G z))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

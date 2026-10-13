@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.global_graph-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1",
+  "depth": 3,
+  "title": "Local graphs over T0 inside a thin cone patch into one graph over a disc",
+  "statement": "Let S be a subset of R^{n+l}, q0 a linear isometry of R^{n+l}, and T0 := rotatedPlane q0. Let R, A, B, s, t, kappa, L be reals with:\n- R > 0, s > 0, 0 <= kappa < 1;\n- R <= (1 - kappa) A, A + t <= B, and s + 2 kappa A <= t.\nAssume:\n- S cap B_A(0) is closed and 0 is in S;\n- infDist(z, T0) <= kappa |z| for every z in S cap B_B(0);\n- local graphs: for every y in S cap B_A(0) and every c in R^n, d in R^l with y = q0(graphPoint c d), there is f : R^n -> R^l such that\n  - f is C^1 on the open ball B°_s(c) and |fderiv f w| <= L there;\n  - q0(graphPoint w (f w)) is in S cap B_t(y) for w in B°_s(c);\n  - b = f(w) whenever w is in B°_s(c) and q0(graphPoint w b) is in S cap B_t(y).\nThen there is u : R^n -> R^l such that:\n- u is C^1 on B°_R(0) and |fderiv u x| <= L there;\n- q0(graphPoint x (u x)) is in S cap B°_A(0) for x in B°_R(0);\n- b = u(x) whenever x is in B°_R(0) and q0(graphPoint x b) is in S cap B_A(0);\n- S cap B°_R(0) is contained in q0(graph of u over B°_R(0)).\nHere B is a closed ball and B° an open ball.",
+  "lean_statement": "∀ {n ℓ : ℕ} (S : Set (Amb n ℓ)) (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (R A B s t κ L : ℝ), 0 < R → 0 < s → 0 ≤ κ → κ < 1 → R ≤ (1 - κ) * A → A + t ≤ B → s + 2 * κ * A ≤ t → IsClosed (S ∩ closedBall 0 A) → (0 : Amb n ℓ) ∈ S → (∀ z ∈ S ∩ closedBall 0 B, infDist z (rotatedPlane q₀ : Set (Amb n ℓ)) ≤ κ * ‖z‖) → (∀ y ∈ S ∩ closedBall 0 A, ∀ (c : Rn n) (d : Rn ℓ), y = q₀ (graphPoint c d) → ∃ f : Rn n → Rn ℓ, ContDiffOn ℝ 1 f (ball c s) ∧ (∀ w ∈ ball c s, ‖fderiv ℝ f w‖ ≤ L) ∧ (∀ w ∈ ball c s, q₀ (graphPoint w (f w)) ∈ S ∩ closedBall y t) ∧ (∀ w ∈ ball c s, ∀ b : Rn ℓ, q₀ (graphPoint w b) ∈ S ∩ closedBall y t → b = f w)) → ∃ u : Rn n → Rn ℓ, ContDiffOn ℝ 1 u (ball 0 R) ∧ (∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x‖ ≤ L) ∧ (∀ x ∈ ball (0 : Rn n) R, q₀ (graphPoint x (u x)) ∈ S ∩ ball 0 A) ∧ (∀ x ∈ ball (0 : Rn n) R, ∀ b : Rn ℓ, q₀ (graphPoint x b) ∈ S ∩ closedBall 0 A → b = u x) ∧ S ∩ ball 0 R ⊆ q₀ '' graphOver u (ball 0 R)",
+  "lean_name": "arp_global_graph_of_local_graphs",
+  "depends_on": [
+    "root.allard_any_radius-a1.patching-a1.rotated_coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.patching-a1.rotated_coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-global-graph-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d833d0ce7df5384217df180d5ddeee091448740a91eb945c0c3a185a98777a0b",
+  "git_delta": {
+    "base_commit": "733c1bbbf9bb964dcd894a79a37a39d303b258a2",
+    "candidate_commit": "7eecb17232bce75325ab89dcb992b15a2f18bc7b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "ted_lpm_fcm_cutoff_pairing_continuousAt",
+    "diff_sha256": "834fe99efe598f310e5ce4c585bd709129436e900dc5d4ac274685305bd26f79",
+    "source_sha256": "c33628916c7d598dc65da596bf89ad4c12e70d79691d2034046d6c32a0835a88",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ted_lpm_fcm_cutoff_pairing_continuousAt",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (φ : ℝ → ℝ) (S T t : ℝ), 0 < T → IntegrableOn H (closedBall y S) μ → Continuous φ → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * inner ℝ (x - y) (H x) ∂μ) t",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

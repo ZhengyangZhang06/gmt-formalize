@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f6c833dbaa5904c5fedefc7b1dc5364004f1b6221a5d4292deecb151876e2bf",
+  "git_delta": {
+    "base_commit": "826faa88065cac76d6672a3326fc317746444beb",
+    "candidate_commit": "5aa6a51f31c13578c2d0e8ccb2ec63ff397388ee",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_gm_graph_map_lipschitz",
+    "diff_sha256": "769afb1c496471c6b2e7f8210f7576d26dc5b59b73444e5dbe3134624388dc06",
+    "source_sha256": "023f3fc1996fd01201b237c63653bdac2de8d799f116a457449e999d98e88ced",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_gm_graph_map_lipschitz",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ), (∀ x z, ‖f x - f z‖ ≤ ‖x - z‖) → LipschitzWith (NNReal.sqrt 2) (fun x => q (graphPoint x (f x)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

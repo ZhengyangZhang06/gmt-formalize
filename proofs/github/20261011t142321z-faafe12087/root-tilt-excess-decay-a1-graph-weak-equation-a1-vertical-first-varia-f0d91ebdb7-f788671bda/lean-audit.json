@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d44ab3a3f3da843d1608d72d7c1f8e2b048c653455f6f9ea1479b416a0b7e22",
+  "git_delta": {
+    "base_commit": "c81e5430712f6ad9366aa423c7fa5e93522ba7a2",
+    "candidate_commit": "dd3ab429df547a215fa868a9dec444d051582c1f",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_vfv_abs_le_grad_bound_mul_radius",
+    "diff_sha256": "a00f2cd810c76a2bd164d61ca5e71b2a9234a5d6634fa368755461c57c8438f7",
+    "source_sha256": "dbcf0ab9b1d35571e07579837de563c1a8dd6c9766107bf61daf9ddd87e256a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_vfv_abs_le_grad_bound_mul_radius",
+      "statement": "∀ n : ℕ, 1 ≤ n → ∀ (ζ : Rn n → ℝ) (r M : ℝ), 0 ≤ r → Differentiable ℝ ζ → tsupport ζ ⊆ ball 0 r → (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ y, |ζ y| ≤ M * r",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

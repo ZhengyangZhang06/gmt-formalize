@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1.linear_family_continuity-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_weak_equation-a1",
+  "depth": 5,
+  "title": "Continuity of a linear-form family evaluated along continuous data",
+  "statement": "Let n, ℓ be natural numbers and L := L(R^n, R^ℓ) the finite-dimensional space of (continuous) linear maps R^n → R^ℓ. Let U ⊆ R^n be open and Φ : R^n → L* = L(L, R) be such that x ↦ Φ(x)[P] is continuous on U for every P ∈ L. Let s : R^n → R^n, B : R^n → L and x₀ ∈ R^n with s(x₀) ∈ U, s continuous at x₀ and B continuous at x₀. Then x ↦ Φ(s(x))[B(x)] is continuous at x₀.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (s : Rn n → Rn n) (B : Rn n → Rn n →L[ℝ] Rn ℓ) (x₀ : Rn n), IsOpen U → (∀ P : Rn n →L[ℝ] Rn ℓ, ContinuousOn (fun x => Φ x P) U) → s x₀ ∈ U → ContinuousAt s x₀ → ContinuousAt B x₀ → ContinuousAt (fun x => Φ (s x) (B x)) x₀",
+  "lean_name": "dohr_eb_lhr_dqwe_linear_family_continuousAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-c2d6d67cb4-a1"
+}

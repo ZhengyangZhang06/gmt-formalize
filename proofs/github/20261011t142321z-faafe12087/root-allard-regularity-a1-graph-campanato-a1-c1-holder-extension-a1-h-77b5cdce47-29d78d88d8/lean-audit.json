@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e2e17a1b48ccd89589f8d5e298e47adf9a36b0d97a1fe60ac8338766d9374ddc",
+  "git_delta": {
+    "base_commit": "e5cffb27356879d25e397eb97e254a3845f7e000",
+    "candidate_commit": "11df7e22149e8570f0a43c33702bc6ca31c40049",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_c1h_opNorm_le_hsNorm_continuous",
+    "diff_sha256": "542066e60152a4e89ea69f59a8c0ae790e2f4559d30ba05dfed401914d59da00",
+    "source_sha256": "1b727583da34dce79b2c54f5d1fc635d50cb7a752902f0716cdfd439f2ecb664",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_c1h_opNorm_le_hsNorm_continuous",
+      "statement": "∀ (m k : ℕ), (∀ A : Rn m →L[ℝ] Rn k, ‖A‖ ≤ hsNorm A) ∧ Continuous (fun A : Rn m →L[ℝ] Rn k => hsNorm A)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

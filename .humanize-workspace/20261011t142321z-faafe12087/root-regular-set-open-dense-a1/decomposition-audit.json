@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "AllardHypotheses|AllardConclusion|AllardRegularityTheorem|RegularSetOpenDense|regularSet|HasDensity",
+        "rg -n 'rsod_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "rg -l --hidden --no-ignore 'rsod_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes -g '*.json' -g '*.lean'",
+        "varifold|HasWeightedApproximateTangent|countably.?rectifiable|whitney",
+        "isClosed_support|mem_support_iff_forall|notMem_support_iff_exists|support_mem_ae|interior_inter_support|support_restrict_subset",
+        "measurePreserving_euclideanHausdorffMeasure|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image",
+        "simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsod-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsod-check/RsodCheck/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsod-independent-audit/AxiomsBuilt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsod-independent-audit/WhitneyExtensionAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/tmp/rsod-independent-audit/Types.lean",
+        "/tmp/rsod-independent-audit/AxiomsBuilt.lean",
+        "/tmp/rsod-independent-audit/WhitneyExtensionAudit.lean",
+        "/tmp/rsod-check/RsodCheck/All.lean"
+      ],
+      "conclusion": "The selected contract is exactly RegularSetOpenDense. The split is appropriate: all twelve obligations contribute to its openness or density conclusion, and their dependencies are acyclic and correctly directed. The external Allard premise is discharged by the selected node's existing sibling dependency. All names are bare, distinct identifiers with no reservations found in other branches. All twelve exact one-line propositions independently elaborate without child declarations and pass validate_lean_statement; no Matrix/IsUnit instance issue occurs. The assembly and dependency glue compile with the twelve children and sibling assumed, which validates composition rather than their missing implementations. The pinned Mathlib search found no relevant varifold or approximate-tangent theorem; its Whitney matches concern different results. The inspected SimonGMT sources match revision 2b3663083f3fe399b6296fb8eaee52169170e197. Axiom checks of the cited tangent uniqueness, upper-density, Lusin, Whitney extension, critical-image, area-formula and plane-volume results report only propext, Classical.choice and Quot.sound. The positive finite Hausdorff normalization bridge supports the required null-set transfers. Each supplied natural proof was checked independently; none requires a new proof-search or prose-generation pass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_submanifold_open_inter",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the full chart-based statement. Restricting both chart domains preserves the image identity, differentiability, injectivity and properness; the compact-preimage equality is explicitly justified."
+    },
+    {
+      "key": "c1_submanifold_graph_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closed-ball hypothesis suffices for the claimed open-ball submanifold. The proof establishes the graph norm inequality, open chart domain, injective derivative, exact image and compact preimages without assuming an extension beyond the closed ball."
+    },
+    {
+      "key": "regular_set_rel_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The union of chosen regular balls supplies O. The positive radius obtained from the distance to a containing ball's boundary and the declared restriction lemma prove the reverse inclusion."
+    },
+    {
+      "key": "localized_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All structure fields and every stated transfer are addressed for arbitrary U. Eventual equality of blow-up integrals proves equality of tangent predicates, hence of the chosen projections; support, first variation and local integrability then transfer correctly."
+    },
+    {
+      "key": "translated_varifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction uses the correct inverse translations for carriers and pushforward weights. Hausdorff invariance, identical blow-up predicates, translated test fields and compact-set transport establish all conjuncts."
+    },
+    {
+      "key": "allard_hypotheses_small_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density one forces support membership and the small-radius mass bound. Local Lp finiteness and p > n make the scaled curvature bound tend to zero; intersecting the eventual conditions yields every frozen Allard hypothesis."
+    },
+    {
+      "key": "density_one_regular_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit Allard premise and exactly the listed dependencies suffice. Translation preserves density and the almost-everywhere multiplicity bound; the resulting graph lemma proves support regularity at the original point."
+    },
+    {
+      "key": "rectifiable_c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the C1 approximation argument through finite-measure Lusin/Egoroff sets and verified Whitney compatibility. Null exceptional images, critical-image nullity, proper finite-measure immersion patches and countable assembly establish the exact cover."
+    },
+    {
+      "key": "ae_approx_tangent_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positivity transfers null sets and the multiplicity lower bound gives local Hausdorff finiteness. The Borel representative, localization, C1-piece blow-ups, test-function-independent density exceptions and weighted Lusin argument prove the stated almost-everywhere weighted tangent existence."
+    },
+    {
+      "key": "density_of_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integrability justifies the blow-up change of variables. Both cutoff bounds are supplied, including nonnegativity of the multiplicity value when x is outside the carrier; their limits give precisely the ENNReal closed-ball density."
+    },
+    {
+      "key": "least_integer_density_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive measure of the support ball and the two conull hypotheses make the set of positive integer densities nonempty. Its least element has a witness and gives the required almost-everywhere multiplicity lower bound."
+    },
+    {
+      "key": "regular_points_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly promotes integrality on support to an unrestricted almost-everywhere statement, obtains density equal to multiplicity, normalizes by the least integer density, and transfers regularity back after shrinking the ball. Together with relative openness and closedness of measure support, this proves the selected parent exactly."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.key_ineq-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+  "depth": 4,
+  "title": "Key inverse-Lipschitz inequality for graph-plane projections: 2|A - B|^2 <= (1 + ||A||^2)(1 + ||B||^2)|P_A - P_B|^2",
+  "statement": "For all n, l, every linear isometry (linear isometric equivalence) q of R^(n+l) = Amb n l, and all continuous linear A, B : R^n -> R^l: let P_A and P_B be the orthogonal projections (starProjection) of R^(n+l) onto G_A = q(span{graphPoint(v, A v) : v in R^n}) and G_B = q(span{graphPoint(v, B v) : v in R^n}). Then 2 hsNormSq(A - B) <= (1 + ||A||^2)(1 + ||B||^2) hsNormSq(P_A - P_B). Here hsNormSq M = sum_i |M e_i|^2 over the standard basis of the domain of M (for P_A - P_B, the standard basis of R^(n+l)), and ||.|| is the operator norm.",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (A B : Rn n →L[ℝ] Rn ℓ), 2 * hsNormSq (A - B) ≤ (1 + ‖A‖ ^ 2) * (1 + ‖B‖ ^ 2) * hsNormSq ((Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v)))).starProjection - (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v)))).starProjection)",
+  "lean_name": "any_radius_gr_pp_key_inequality",
+  "depends_on": [
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_proj_split-a1",
+    "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.graph_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_proj_split-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.graph_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-plane-projections-a1-key-ineq-a1-a1"
+}

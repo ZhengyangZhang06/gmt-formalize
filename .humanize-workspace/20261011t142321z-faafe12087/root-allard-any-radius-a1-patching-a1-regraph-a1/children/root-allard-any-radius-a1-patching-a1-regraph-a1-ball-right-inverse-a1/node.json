@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.patching-a1.regraph-a1.ball_right_inverse-a1",
+  "parent_id": "root.allard_any_radius-a1.patching-a1.regraph-a1",
+  "depth": 4,
+  "title": "Quantitative right inverse on balls of a near-linear self-map of R^n",
+  "statement": "Let n be a natural number, Phi : R^n -> R^n a function, A : R^n -> R^n a continuous linear map, c in R^n, r > 0 and 0 <= eps <= 1/24. Assume (H1) |A h| >= (11/12)|h| for every h in R^n; (H2) |Phi(x1) - Phi(x2) - A(x1 - x2)| <= eps |x1 - x2| for all x1, x2 in the closed ball B_r(0); (H3) Phi(0) = c. Then there is X : R^n -> R^n such that (1) for every w in the closed ball B_{r/2}(c), X(w) lies in the closed ball B_{3r/5}(0) and Phi(X(w)) = w; (2) if x is in B_r(0), w is in B_{r/2}(c) and Phi(x) = w, then x = X(w); (3) (7/8)|X(w1) - X(w2)| <= |w1 - w2| for all w1, w2 in B_{r/2}(c).",
+  "lean_statement": "∀ {n : ℕ} (Φ : Rn n → Rn n) (A : Rn n →L[ℝ] Rn n) (c : Rn n) (r ε : ℝ), 0 < r → 0 ≤ ε → ε ≤ 1 / 24 → (∀ h : Rn n, 11 / 12 * ‖h‖ ≤ ‖A h‖) → (∀ x₁ ∈ closedBall (0 : Rn n) r, ∀ x₂ ∈ closedBall (0 : Rn n) r, ‖Φ x₁ - Φ x₂ - A (x₁ - x₂)‖ ≤ ε * ‖x₁ - x₂‖) → Φ 0 = c → ∃ X : Rn n → Rn n, (∀ w ∈ closedBall c (r / 2), X w ∈ closedBall (0 : Rn n) (3 * r / 5) ∧ Φ (X w) = w) ∧ (∀ x ∈ closedBall (0 : Rn n) r, ∀ w ∈ closedBall c (r / 2), Φ x = w → x = X w) ∧ (∀ w₁ ∈ closedBall c (r / 2), ∀ w₂ ∈ closedBall c (r / 2), 7 / 8 * ‖X w₁ - X w₂‖ ≤ ‖w₁ - w₂‖)",
+  "lean_name": "arp_rgr_ball_right_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-patching-a1-regraph-a1-ball-right-inverse-a1-a1"
+}

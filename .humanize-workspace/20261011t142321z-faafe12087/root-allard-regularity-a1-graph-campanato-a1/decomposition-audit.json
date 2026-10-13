@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'campanato|hasfderivat.*of_ae|hasfderivat.*ae_eq|lipschitz.*ae.*deriv|deriv.*ae.*lipschitz' Mathlib/Analysis Mathlib/MeasureTheory",
+        "rg -n 'ae_tendsto_average_norm_sub|addHaar_closedBall\\x27|isUnifLocDoublingMeasureOfIsAddHaarMeasure|const_of_ae_hasDerivAt_zero|LipschitzOnWith.absolutelyContinuousOnInterval|continuousOn_extendFrom|extendFrom_eq|measure_prod_null|prod_apply_symm|exists_measurable_superset_of_null' Mathlib/MeasureTheory Mathlib/Topology",
+        "allard52_campanato_from_tilt|allard52_campanato_ae_center|allard52_campanato_center_holder|allard52_lipschitz_hasFDerivAt_of_ae|allard52_c1_holder_of_ae_fderiv",
+        "sed -n '20,112p' Mathlib/Topology/ExtendFrom.lean",
+        "sed -n '145,199p' Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gc-independent-audit-wit164ko/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gc-independent-audit-wit164ko/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gc-independent-audit-wit164ko/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ExtendFrom.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1/decomposition-v1.json",
+        "/tmp/gc-independent-audit-wit164ko/Types.lean",
+        "/tmp/gc-independent-audit-wit164ko/Assembly.lean",
+        "/tmp/gc-independent-audit-wit164ko/Axioms.lean"
+      ],
+      "conclusion": "Verified project revision ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; the frozen project source and 15 inspected Mathlib files match the compilation sources. Snapshot searches found the required differentiation, integration, projection and extension lemmas, but no matching replacement for the proposed analytic obligations. The accepted any_radius_campanato requires continuity and cannot supply the missing derivative extension. All five exact one-line types independently elaborate and pass the contract validator. Reconstructed the supplied assembly with explicit contract assumptions: it proves the exact selected parent type without sorry and uses only propext, Classical.choice and Quot.sound. The inspected library lemmas have the same permitted axiom set. Projection, Borel, completeness, Haar-measure and product-measurability instance checks pass; no Matrix/IsUnit construction occurs. All proposed names are bare, unique and unreserved. The reachable dependency graph, including the proposed children, is acyclic. The five-child split is appropriate and establishes this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "campanato_from_tilt",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every explicit hypothesis and matches the independently elaborated type. Compact containment and the bound 4(n+ℓ) establish integrability before converting tilt excess to a lintegral estimate. The comparison argument proves the exact conclusion for arbitrary A and e. Required sibling conclusions are explicit hypotheses, so there is no hidden dependency or circularity."
+    },
+    {
+      "key": "campanato_ae_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Bounded measurable G is locally integrable; Lebesgue differentiation and the averaged Hilbert–Schmidt inequality force G(z)=c(z) almost everywhere. Using max(A,0) correctly handles negative A. The argument requires no measurability of c and covers zero-dimensional operator spaces."
+    },
+    {
+      "key": "campanato_center_holder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated hypotheses and dimension-only constant. Midpoint-ball containment, measurable lintegral addition, positive finite ball volume and the displayed arithmetic give C²=2^(2n+4)/v_n. The proof establishes the bound for every pair without assuming continuity, boundedness of G or prior a.e. identification."
+    },
+    {
+      "key": "lipschitz_ae_derivative",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, including unrestricted dimensions and radius. The proof supplies a measurable null envelope, correctly applies Tonelli to translated segments, proves the segment identity using absolute continuity, and removes translations by continuity on a compact set. The final remainder estimate establishes the asserted Fréchet derivative everywhere. Empty balls and dimension zero cause no gap."
+    },
+    {
+      "key": "c1_holder_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently usable type agree. Full measure gives density; the Hölder modulus and operator-norm comparison give Cauchy limits and a continuous extension preserving the exact bound. Its sole declared dependency supplies everywhere differentiability, after which the open-set C¹ criterion applies. This dependency is correctly directed, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

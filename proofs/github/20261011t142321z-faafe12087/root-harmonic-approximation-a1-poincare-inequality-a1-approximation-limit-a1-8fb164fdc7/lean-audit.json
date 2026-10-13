@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "34f78ae7775e0b673a908b09e448fe4184c0c72958ab476bfc5af67e1486dd3e",
+  "git_delta": {
+    "base_commit": "94ac5f3a4c0bc9b73fc661bb91c43ec4906a0727",
+    "candidate_commit": "a0eb27cc4d0fce06286dc8857c7892f0c0d4b44d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "poincare_approx_ball_double_integral_bound",
+    "diff_sha256": "3f85dbb054803680542df4cbbf9d6343c99e75dcaf4c62b752bd26221524885c",
+    "source_sha256": "bceb81bc3ab7e2dc4b9b9a1dc1f94d46a64226000ac948b36ccb41052b818ad6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_approx_ball_double_integral_bound",
+      "statement": "∀ (n : ℕ) (f : Rn n → ℝ) (g : Rn n → Rn n) (φ : ℕ → Rn n → ℝ) (r : ℝ), 0 < r → r ≤ 1 → AEStronglyMeasurable f (volume.restrict (ball (0 : Rn n) r)) → AEStronglyMeasurable g (volume.restrict (ball (0 : Rn n) r)) → (∀ j, ContDiff ℝ 1 (φ j)) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) → Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0) → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖f x - f y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖g x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

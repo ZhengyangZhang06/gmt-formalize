@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n '^theorem (IsometryEquiv.measurePreserving_euclideanHausdorffMeasure)' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'theorem (setLIntegral_comp_preimage_emb|lintegral_map_equiv)\\b' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "rg -n 'theorem (integrableOn_map_equiv|MeasurePreserving.integrableOn_comp_preimage)\\b' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "rg -n 'theorem _root_.MeasureTheory.NullMeasurableSet.preimage' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "rg -n 'theorem measure_preimage_emb' <snapshot>/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "rg -n 'theorem (restrict_map|map_apply)\\b' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n '^theorem integral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "rg -n '^theorem fderiv_comp_sub\\b' <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "rg -n 'HasCompactMulSupport.comp_homeomorph|lemma mulTSupport_comp_subset_preimage' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "rg -n 'def (divRight|mulRight)\\b' <snapshot>/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean <snapshot>/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+        "rg -n '^lemma mem_support_iff_forall' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "rg -n 'support_map' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean (no match)",
+        "rg -n 'theorem ContinuousWithinAt.tendsto_nhdsWithin \\{' <snapshot>/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "rg -n 'class HasOrthogonalProjection' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "rg -n -i 'translat|addRight|subRight|vadd' <snapshot>/project/GMT/Ch05 (no match)",
+        "rg -n 'noncomputable def tangentProj|open Classical in|def divM|def support|def weight|def LocallyLp|def HasGeneralizedMeanCurvature' <snapshot>/project/GMT/Ch05/Submission.lean",
+        "diff -q <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean (identical)",
+        "rg -n 'noncomputable def blowUpMap|^def HasWeightedApproximateTangentSpaceAt|^def CountablyRectifiable' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n -i 'translat|addRight|subRight' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03 .lake/packages/simongmt/Poincare/SimonGMT/Chapter04 (no match)",
+        "rg -ln 'rsod_tv_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087 <snapshot>/project (no match; name-collision check)",
+        "python3: DAG dag.json lean_name listing (other translation nodes dohr_translate_varifold, exists_translated_varifold_allardHypotheses use image-form domains, not identical types)",
+        "python3: gmt-compare.py contract_scope(Contract.lean, GMT.Ch05.main_theorem) and lean_contract.validate_lean_statement on all child types",
+        "LEAN_PATH=$(lake env printenv LEAN_PATH):/tmp/rsod-tv-check/build lean /tmp/rsod-tv-check/src/All2.lean (6 full child proofs, parent assembly, comparator-shaped targets, #print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/rsod-tv-check/src/All2.lean"
+      ],
+      "conclusion": "The snapshot is pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The snapshot's project/GMT/Ch05/Submission.lean is byte-identical to the worktree's.\n\nNo-match results:\n- The project has no translation lemmas for RectifiableVarifold (rg for translat/addRight/subRight/vadd in project/GMT/Ch05).\n- simongmt Chapter03 and Chapter04 have none either.\n- Mathlib's Measure/Support.lean has no support_map lemma, so the support child proves the identity directly with mem_support_iff_forall (Support.lean:75) and MeasurableEquiv.map_apply.\n- No rsod_tv_ name exists in the run, so there are no collisions.\n- The other translation nodes (dohr_translate_varifold, exists_translated_varifold_allardHypotheses) have different, image-form types and are not reusable verbatim.\n\nUsable Mathlib items (in the snapshot):\n- IsometryEquiv.measurePreserving_euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:127), with IsometryEquiv.addRight/subRight (IsometricSMul.lean:157,167).\n- MeasurableEquiv.addRight/subRight (MeasurableEquiv.lean:117,193), measurable_sub_const and measurable_add_const.\n- MeasurePreserving.measure_preimage_emb (MeasurePreserving.lean:151) and NullMeasurableSet.preimage (QuasiMeasurePreserving.lean:134).\n- MeasureTheory.MeasurePreserving.setLIntegral_comp_preimage_emb and lintegral_map_equiv (Lebesgue/Map.lean:130,94).\n- integrableOn_map_equiv and MeasurePreserving.integrableOn_comp_preimage (IntegrableOn.lean:315,319).\n- MeasurableEmbedding.restrict_map and MeasurableEquiv.restrict_map (Restrict.lean:890), and Measure.restrict_restrict.\n- withDensity_apply and integral_map_equiv (Bochner/Basic.lean:1105).\n- fderiv_comp_sub (FDeriv/Add.lean:892).\n- HasCompactSupport.comp_homeomorph and tsupport_comp_subset_preimage (Topology/Algebra/Support.lean:562,99).\n- ContinuousWithinAt.tendsto_nhdsWithin (ContinuousOn.lean:59).\n- LipschitzWith.sub.\n- Core dite_eq_left and dite_eq_right.\n- HasOrthogonalProjection is a Prop class (Projection/Basic.lean:48), so `congr 1` closes the instance argument.\n\nsimongmt (pinned under .lake/packages, outside the snapshot): Chapter03/Rectifiable.lean gives CountablyRectifiable (line 34), blowUpMap (96) and HasWeightedApproximateTangentSpaceAt (330), and the tangent child relies on these definitions.\n\nLean check (/tmp/rsod-tv-check/src/All2.lean, compiled against a scratch build of GMT.Ch05.Submission with Lean v4.35.0-rc3):\n- All six children are fully proved.\n- The frozen parent type is assembled from them.\n- Comparator-shaped targets compile for all six children and the parent.\n- The only axioms are propext, Classical.choice and Quot.sound.\n- All types pass validate_lean_statement.\n\nPitfall found: rewriting the predicate equality inside the dependent if-then-else of tangentProj fails with 'motive is not type correct'. The fix is a case split with dite_eq_left/dite_eq_right, a Classical.choose congruence and `congr 1`."
+    }
+  ],
+  "parent_id": "root.regular_set_open_dense-a1.translated_varifold-a1",
+  "child_id": "root.regular_set_open_dense-a1.translated_varifold-a1.locally_lp-a1",
+  "subproblem": {
+    "key": "locally_lp",
+    "title": "Local Lᵖ bounds transfer under translation",
+    "statement": "Let n, ℓ ∈ ℕ, let U ⊆ ℝ^{n+ℓ} be arbitrary, let V be a rectifiable n-varifold in U, let x₀ ∈ ℝ^{n+ℓ}, and let W be a rectifiable n-varifold in {y : y + x₀ ∈ U} whose weight μ_W is the pushforward of μ_V under y ↦ y − x₀. Then for every H : ℝ^{n+ℓ} → ℝ^{n+ℓ} and every p ∈ ℝ the following holds. If ∫_K |H|^p dμ_V < ∞ for every compact K ⊆ U (lintegral of ‖H‖ₑ^p), then ∫_K |H(y + x₀)|^p dμ_W(y) < ∞ for every compact K ⊆ {y : y + x₀ ∈ U}.",
+    "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (x₀ : Amb n ℓ) (W : RectifiableVarifold n ℓ ((fun y => y + x₀) ⁻¹' U)), W.weight = V.weight.map (fun y => y - x₀) → ∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ), V.LocallyLp H p → W.LocallyLp (fun y => H (y + x₀)) p",
+    "lean_name": "rsod_tv_locallyLp",
+    "depends_on": [],
+    "natural_proof": "Notation: μ := V.weight, τ(y) := y + x₀, and σ := MeasurableEquiv.subRight x₀. σ is definitionally y ↦ y − x₀; in Lean, rewrite (fun y => y - x₀) = ⇑(MeasurableEquiv.subRight x₀) by rfl. Hypothesis: (hw) W.weight = map σ μ.\nLet H and p satisfy V.LocallyLp H p, i.e. ∫⁻_K ‖H‖ₑ^p dμ < ∞ for every compact K ⊆ U.\n\n1. Let K be compact with K ⊆ τ⁻¹U. We must show ∫⁻_K ‖H(y + x₀)‖ₑ^p d(W.weight)(y) < ∞. Rewrite W.weight = map σ μ by (hw).\n\n2. Restriction commutes with pushforward by a measurable equivalence: (map σ μ)⌞K = map σ (μ⌞σ⁻¹K) (MeasurableEquiv.restrict_map). Also ∫⁻ g d(map σ ν) = ∫⁻ (g ∘ σ) dν for every g (lintegral_map_equiv). So the integral equals\n ∫⁻_{σ⁻¹K} ‖H((x − x₀) + x₀)‖ₑ^p dμ(x) = ∫⁻_{σ⁻¹K} ‖H(x)‖ₑ^p dμ(x) (sub_add_cancel).\n\n3. σ⁻¹K = {x : x − x₀ ∈ K} = τ(K) = {k + x₀ : k ∈ K}:\n- if x − x₀ ∈ K, then x = (x − x₀) + x₀;\n- if x = k + x₀ with k ∈ K, then x − x₀ = k ∈ K.\n\n4. τ(K) is compact (IsCompact.image with continuous_add_const x₀). Also τ(K) ⊆ U: for k ∈ K ⊆ τ⁻¹U, k + x₀ ∈ U.\n\n5. Applying V.LocallyLp H p to τ(K) gives ∫⁻_{τ(K)} ‖H‖ₑ^p dμ < ∞. By steps 2-3 this is the required integral. Hence W.LocallyLp (fun y => H (y + x₀)) p.",
+    "proof_key_steps": [
+      "Rewrite W.weight as map σ μ with σ = MeasurableEquiv.subRight x₀",
+      "MeasurableEquiv.restrict_map and lintegral_map_equiv turn the integral over K into an integral over σ⁻¹K of ‖H‖ₑ^p",
+      "σ⁻¹K = K + x₀ is compact and contained in U",
+      "Apply V.LocallyLp on K + x₀"
+    ]
+  },
+  "audit": {
+    "key": "locally_lp",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Restriction and lintegral transport under the measurable equivalence reduce the required bound to the compact set K + x₀ contained in U. The proof works for every real p and requires no additional measurability of H, exactly matching the supplied prose and Lean type."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-translated-varifold-a1-locally-lp-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-translated-varifold-a1-locally-lp-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-translated-varifold-a1-locally-lp-a1/parent-supplied-natural-proof.json"
+}

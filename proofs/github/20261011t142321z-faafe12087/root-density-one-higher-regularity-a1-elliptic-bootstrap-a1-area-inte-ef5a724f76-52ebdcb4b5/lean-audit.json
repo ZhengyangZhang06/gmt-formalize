@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1a21027ca305685aab3be35775cd0acb421145f627497a91733e2966c07b603a",
+  "git_delta": {
+    "base_commit": "97f6b51b56bfb4166cd41675a59b7c32b81f5f97",
+    "candidate_commit": "9e5b7b79d68b55a7e234d913d93a1f548a719629",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_ail_contDiff",
+    "diff_sha256": "c9e8f5972b9d631f75451c2ef8cccf4e27cd1aa672774070c0ccf73f6cd065e9",
+    "source_sha256": "17a772e0bde0c607dacd1d148c7d44c30eeb803f90fe7da645910122b4fadebd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_ail_contDiff",
+      "statement": "∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

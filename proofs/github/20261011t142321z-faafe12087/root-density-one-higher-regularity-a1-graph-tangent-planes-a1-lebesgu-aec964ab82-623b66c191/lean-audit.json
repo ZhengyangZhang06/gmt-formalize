@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d11462f8a5957dd953fb352196e080dc05fa783a6fef4886c9437012ae1d2a03",
+  "git_delta": {
+    "base_commit": "499f270471da942d67906c2b21c40c79e1a02c82",
+    "candidate_commit": "f35ad7a0bd569886bfffaec144088892ba595fc3",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_ae_lebesgue_point_of_growth",
+    "diff_sha256": "a598da41ff502785ad6cfcdb121b23c10d9b0ddbc46ee13a23e7144b058625b4",
+    "source_sha256": "83a2649e4bfcc7ec51368468e3ab993513b992822b6e3bd9a73d156e9461c738",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_ae_lebesgue_point_of_growth",
+      "statement": "∀ (n ℓ : ℕ) (ν : Measure (Amb n ℓ)) (f : Amb n ℓ → ℝ) (C : ℝ), Integrable f ν → (∀ (z : Amb n ℓ) (r : ℝ), 0 < r → ν (closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)) → ∀ᵐ y ∂ν, Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) * ∫⁻ w in closedBall y r, ‖f w - f y‖ₑ ∂ν) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.ae_approx_tangent_exists-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Approximate tangent spaces w.r.t. θ exist μ_V-a.e. (Simon 3.1.9)",
+  "statement": "Let n ≥ 1, U ⊆ ℝ^{n+ℓ} open and V = v(M, θ) a rectifiable n-varifold in U with θ ≥ 1 μ_V-a.e. Then for μ_V-a.e. x there is a subspace P such that P is the approximate tangent space of M at x with respect to θ in the sense of Simon Ch. 3, Definition 1.7 (Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x P).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P",
+  "lean_name": "rsod_ae_exists_approxTangent",
+  "depends_on": [
+    "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-ae-approx-tangent-exists-a1-a1"
+}

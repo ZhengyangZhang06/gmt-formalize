@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d874fb160af7d301a56acc1441fef8211c349a8fd134181a489d416d813e1228",
+  "git_delta": {
+    "base_commit": "0411ac4a80b117bde5c46afc690619168639aa8a",
+    "candidate_commit": "e3903bbb0e633929a718f1e7ccc8567504940d51",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_regularSet_relOpen",
+    "diff_sha256": "0ee1847706cfbda692bfce5856bd4fdd957117d05da6b14a07644c6fcbb263be",
+    "source_sha256": "f5faee15c41ac43194cf248638fbc41c60ce2051d6c30c78e09a0fed2a49e04b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_regularSet_relOpen",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

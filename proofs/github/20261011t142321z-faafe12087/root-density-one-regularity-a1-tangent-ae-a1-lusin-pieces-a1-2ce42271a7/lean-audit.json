@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d70d86a6d243a55512bf98592b3a59506aadeeebd0559ae29c8328b073d9944c",
+  "git_delta": {
+    "base_commit": "03892445286ca53cad3e7381cf875f275517b2f5",
+    "candidate_commit": "cb1e1a0c527cb677aaf40c54b49b19255d70d8b9",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_mult_lusin_compact_pieces",
+    "diff_sha256": "186e81de85f7b73eff7a02559a360c80fc2f4ce067730becb732e63f8f3dad72",
+    "source_sha256": "4036006a345bc93bb707e2c4ff4a96d708725f85d428e1b486a686a72c9a1aae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_mult_lusin_compact_pieces",
+      "statement": "∀ {n ℓ : ℕ} {U : Set (Amb n ℓ)} (V : RectifiableVarifold n ℓ U), IsOpen U → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsCompact (C i) ∧ C i ⊆ V.carrier ∧ ContinuousOn V.mult (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ ⋃ i, C i) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

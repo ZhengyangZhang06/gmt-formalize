@@ -1,0 +1,141 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.c1_graph_density-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.c1_graph_density-a1.ratio_squeeze-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. The final sentence of step 7 of the parent proof: "Both bounds tend to 1 as eps -> 0 and eps was arbitrary, so the quotient (an extended-real quotient by ofReal(omega_n r^n) > 0, with finite numerator) tends to 1 as r decreases to 0". It is isolated here as a generic statement about [0, ∞]-valued ratios. The parent applies it with f(r) = H^n(graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) and g(r) = omega_n r^n.
+
+Notation. ofReal := ENNReal.ofReal : R → [0, ∞], and division is in [0, ∞]. "Eventually" means for all r in some set belonging to the filter 𝓝[>] 0 of right neighbourhoods of 0. Hypothesis (H): for every δ > 0, eventually 0 < g(r), ofReal((1 - δ) g(r)) ≤ f(r) and f(r) ≤ ofReal((1 + δ) g(r)).
+
+1. Pointwise bounds. Fix δ > 0 and take r in the eventual set given by (H). Then c := ofReal(g(r)) satisfies c ≠ 0 (as g(r) > 0) and c ≠ ∞.
+ - Lower bound. If 1 - δ ≤ 0, then ofReal(1 - δ) = 0 ≤ f(r)/c. If 1 - δ > 0, then ofReal((1 - δ) g(r)) = ofReal(1 - δ) · c (ENNReal.ofReal_mul with 1 - δ ≥ 0). So ofReal(1 - δ) · c ≤ f(r), i.e. ofReal(1 - δ) ≤ f(r)/c (ENNReal.le_div_iff_mul_le, using c ≠ 0 and c ≠ ∞).
+ - Upper bound. ofReal((1 + δ) g(r)) = ofReal(1 + δ) · c, so f(r) ≤ ofReal(1 + δ) · c, i.e. f(r)/c ≤ ofReal(1 + δ) (ENNReal.div_le_iff with c ≠ 0, c ≠ ∞).
+ Hence for every δ > 0, eventually ofReal(1 - δ) ≤ f(r)/ofReal(g(r)) ≤ ofReal(1 + δ).
+
+2. Order characterization. [0, ∞] carries the order topology. By tendsto_order it suffices to show two things: for every a < 1, eventually a < f(r)/ofReal(g(r)); and for every b > 1, eventually f(r)/ofReal(g(r)) < b.
+
+3. Lower targets. Let a < 1 in [0, ∞]. Then a ≠ ∞ and 0 ≤ a.toReal < 1 (ENNReal.toReal_lt_toReal). Take δ := (1 - a.toReal)/2 > 0. By step 1, eventually f(r)/ofReal(g(r)) ≥ ofReal(1 - δ). Also a = ofReal(a.toReal) < ofReal(1 - δ) = ofReal((1 + a.toReal)/2), because a.toReal < (1 + a.toReal)/2 and the latter is positive (ENNReal.ofReal_lt_ofReal_iff). Hence eventually a < f(r)/ofReal(g(r)).
+
+4. Upper targets. Let b > 1 in [0, ∞]. If b = ∞, step 1 with δ = 1 gives eventually f(r)/ofReal(g(r)) ≤ ofReal(2) < ∞ = b. Otherwise 1 < b.toReal; take δ := (b.toReal - 1)/2 > 0. By step 1, eventually f(r)/ofReal(g(r)) ≤ ofReal(1 + δ) < ofReal(b.toReal) = b, because 1 + δ < b.toReal.
+
+5. By steps 2-4, f(r)/ofReal(g(r)) → 1 as r → 0 with r > 0. ∎
+
+Implementation aid (not part of the mathematical argument above). During decomposition, the following Lean proof of exactly this frozen statement compiled after `import GMT.Ch05.Submission`, inside `namespace GMT.Ch05` / `namespace Submission`, with the contract's `open MeasureTheory Metric Set Filter Topology`, `open scoped ENNReal NNReal` and `open RectifiableVarifold` (Lean 4.35.0-rc3, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d). It was compiled together with its sibling theorems and the assembled parent theorem, with no `sorry`; `#print axioms` reports only propext, Classical.choice and Quot.sound. It uses no sibling theorem.
+
+```lean
+theorem dohr_ratio_tendsto_one_of_pinching : ∀ (f : ℝ → ℝ≥0∞) (g : ℝ → ℝ), (∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < g r ∧ ENNReal.ofReal ((1 - δ) * g r) ≤ f r ∧ f r ≤ ENNReal.ofReal ((1 + δ) * g r)) → Tendsto (fun r => f r / ENNReal.ofReal (g r)) (𝓝[>] 0) (𝓝 1) := by
+  intro f g h
+  -- Pointwise: the bounds give `ofReal (1 - δ) ≤ f r / g r ≤ ofReal (1 + δ)`.
+  have key : ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (1 - δ) ≤ f r / ENNReal.ofReal (g r) ∧
+        f r / ENNReal.ofReal (g r) ≤ ENNReal.ofReal (1 + δ) := by
+    intro δ hδ
+    filter_upwards [h δ hδ] with r ⟨hg, hlo, hhi⟩
+    have hg0 : ENNReal.ofReal (g r) ≠ 0 := by simpa using hg
+    have hgt : ENNReal.ofReal (g r) ≠ ⊤ := ENNReal.ofReal_ne_top
+    constructor
+    · rcases le_or_gt (1 - δ) 0 with hd | hd
+      · rw [ENNReal.ofReal_of_nonpos hd]; exact bot_le
+      · rw [ENNReal.le_div_iff_mul_le (Or.inl hg0) (Or.inl hgt), ← ENNReal.ofReal_mul hd.le]
+        exact hlo
+    · rw [ENNReal.div_le_iff hg0 hgt, ← ENNReal.ofReal_mul (by linarith)]
+      exact hhi
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    -- `a < 1`, so `a.toReal < 1` and `a = ofReal a.toReal`.
+    have hat : a ≠ ⊤ := ne_top_of_lt ha
+    have ha' : a.toReal < 1 := by
+      have := (ENNReal.toReal_lt_toReal hat ENNReal.one_ne_top).2 ha
+      simpa using this
+    have hδ : 0 < (1 - a.toReal) / 2 := by linarith
+    have ha0 : 0 ≤ a.toReal := ENNReal.toReal_nonneg
+    filter_upwards [key _ hδ] with r ⟨hlo, _⟩
+    refine lt_of_lt_of_le ?_ hlo
+    calc a = ENNReal.ofReal a.toReal := (ENNReal.ofReal_toReal hat).symm
+      _ < _ := (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+  · intro b hb
+    rcases eq_or_ne b ⊤ with rfl | hbt
+    · filter_upwards [key 1 one_pos] with r ⟨_, hhi⟩
+      exact lt_of_le_of_lt hhi ENNReal.ofReal_lt_top
+    · have hb' : 1 < b.toReal := by
+        have := (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hbt).2 hb
+        simpa using this
+      have hδ : 0 < (b.toReal - 1) / 2 := by linarith
+      filter_upwards [key _ hδ] with r ⟨_, hhi⟩
+      refine lt_of_le_of_lt hhi ?_
+      calc ENNReal.ofReal (1 + (b.toReal - 1) / 2) < ENNReal.ofReal b.toReal :=
+            (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+        _ = b := ENNReal.ofReal_toReal hbt
+```
+
+## Key steps
+
+1. for every δ > 0, eventually ofReal(1-δ) <= f/ofReal(g) <= ofReal(1+δ), dividing by ofReal(g(r)) ∈ (0, ∞)
+2. order characterization of convergence: targets a < 1 via δ = (1 - a)/2; targets b > 1 via δ = (b - 1)/2, or δ = 1 if b = ∞
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean (identical); diff GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean (identical)`
+- `rg -n 'theorem LipschitzOnWith.hausdorffMeasure_image_le|theorem hausdorffMeasure_image_le' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n norm_image_sub_le_of_norm_hasFDerivWithin_le <snapshot>/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen' <snapshot>/mathlib/Mathlib/Analysis/Calculus/ContDiff/*.lean`
+- `rg -n finrank_range_of_inj <snapshot>/mathlib/Mathlib/LinearAlgebra`
+- `rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_def|theorem InnerProductSpace.euclideanHausdorffMeasure_eq_volume|theorem Isometry.map_euclideanHausdorffMeasure' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n 'theorem restrict_apply \(' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean; rg -n 'theorem tendsto_order ' <snapshot>/mathlib/Mathlib/Topology/Order/Basic.lean; rg -n 'theorem addHaar_closedBall ' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean; rg -n 'theorem image_inter_preimage' <snapshot>/mathlib/Mathlib/Data/Set/Image.lean`
+- `rg -n 'noncomputable def normDet|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; rg -n volume_closedBall <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `sed -n 1,200p .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean (areaJacobianWithin, ae_fderivWithin_eq_of_lipschitz_extension, injective_area_formula_lipschitzOn); sed -n 1,80p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (imports)`
+- `lake env lean -o /tmp/c1gd-v2/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Avail.lean' (#check LipschitzOnWith.hausdorffMeasure_image_le, Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le, ContDiffOn.continuousOn_fderiv_of_isOpen, LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, Measure.restrict_apply, Measure.euclideanHausdorffMeasure_def, ENNReal.rpow_natCast, Ioc_mem_nhdsGT, tendsto_order)`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Unavail.lean' (#check LinearMap.normDet, Poincare.SimonGMT.Chapter02.injective_area_formula_lipschitzOn, InnerProductSpace.volume_closedBall, EuclideanSpace.volume_closedBall, LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume)`
+- `lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/c1gd-v2/build lean /tmp/c1gd-v2/src/Full.lean' (all 4 child proofs + parent assembly; #print axioms)`
+- `lake env lean --root=/tmp/c1gd-v2/sim -o /tmp/c1gd-v2/build2/GMT/Ch05/Submission.olean /tmp/c1gd-v2/sim/GMT/Ch05/Submission.lean (Submission copy with the 5 proofs in namespace Submission)`
+- `python3 -I /tmp/c1gd-v2/scripts/nodemods.py (verifier gmt-compare.py contract_scope/child_modules, mode contract); lean NodeChallenge.lean against /tmp/c1gd-v2/build and NodeSolution.lean + '#print axioms HumanizeNodeComparator.target' against /tmp/c1gd-v2/build2 for all 5 statements`
+- `python3 -I /tmp/c1gd-v2/scripts/mkstmts.py (verifier lean_contract.validate_lean_statement on the 4 statements; lean_name ownership in dag.json; rsod_planeMeasure_closedBall type copied from dag.json)`
+- `python3 -I (dag.json): list id | lean_name | status for all nodes (200, re-read later: 217); print lean_statement of all 68 accepted checkpoints`
+- `git -C .swarm-worktrees/7b984ce372887989aaee/gmt-ch05 show 7881dde:GMT/Ch05/Submission.lean (accepted proof of rsod_planeMeasure_closedBall)`
+- `ls -d .swarm-worktrees/*/gmt-ch05/GMT/Ch05 | xargs -P 16 grep -lr -E 'dohr_c1_uniform_first_order|dohr_c1_graph_mass_pinching|dohr_ratio_tendsto_one_of_pinching' (1000 worktrees: no match); grep -rl same names lake-packages-25730c7c/simongmt/Poincare (no match)`
+- `sed -n 1793,1990p and 6503,6545p /runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py (_solve_children reuse of accepted checkpoints and node bound; _existing_lean_name_problem); python3 -I: .humanize/swarm-configs/* with github_selected_issue 476 (max_nodes 1000)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-c1-graph-density-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/math-wiki/submission-rsod-planemeasure-closedball.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/runtime.py`
+- `/tmp/c1gd-v2/src/Avail.lean`
+- `/tmp/c1gd-v2/src/Unavail.lean`
+- `/tmp/c1gd-v2/src/Full.lean`
+- `/tmp/c1gd-v2/sim/GMT/Ch05/Submission.lean`
+- `/tmp/c1gd-v2/nodes/graph_mass_pinching/NodeChallenge.lean`
+- `/tmp/c1gd-v2/nodes/graph_mass_pinching/NodeSolution.lean`
+- `/tmp/c1gd-v2/final/stmts.json`
+
+Pinned snapshot (manifest.json): project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot Contract.lean is byte-identical to the workspace Contract.lean, and the workspace Submission.lean is still a byte copy of the contract. Usable under the frozen imports (snapshot line numbers): LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean l.733), Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le (MeanValue.lean l.422), ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean l.916), LinearMap.finrank_range_of_inj (Dimension/Finrank.lean l.127), euclideanHausdorffMeasure_def / Isometry.map_euclideanHausdorffMeasure / InnerProductSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean l.74/141/191), Measure.restrict_apply (Restrict.lean l.75), tendsto_order (Topology/Order/Basic.lean l.139), addHaar_closedBall (EqHaar.lean l.500) and Set.image_inter_preimage (Image.lean l.454). Not reachable: LinearMap.normDet and euclideanHausdorffMeasure_image_eq_normDet_mul_volume (NormDet.lean l.69/433), InnerProductSpace/EuclideanSpace.volume_closedBall (VolumeOfBalls.lean l.354/324) and simongmt Chapter02.injective_area_formula_lipschitzOn (AreaDomain.lean); Lean reports unknown constants/identifiers. This forces the supplied step 6 to be replaced by Lipschitz-image comparisons. Reuse: Submission.rsod_planeMeasure_closedBall is an accepted checkpoint (status accepted, candidate commit 7881dde5f7e308e54f05a8f95dc7a4b94e277e4c, math-wiki page). Its proof is import-free (it computes the unit-ball volume by Gaussian integrals). Its frozen type is copied byte-identically from dag.json, and runtime.py maps a child with that lean_name to the existing node. No match: dohr_c1_uniform_first_order, dohr_c1_graph_mass_pinching and dohr_ratio_tendsto_one_of_pinching occur nowhere in dag.json, the 1000 swarm worktrees or simongmt; the only other relevant prior artifact is this node's own unpublished decomposition-v1 (audited acceptable). Lean checks: all four child types pass validate_lean_statement and elaborate in the verifier-generated NodeChallenge modules against the frozen Submission. Full proofs of the four children and of the parent assembly compile; the NodeSolution checks `exact Submission.X` pass for all five; the axioms are only propext, Classical.choice and Quot.sound. The issue-476 worker configuration allows max_nodes = 1000 (217 nodes at the last re-read), so the three new nodes fit.

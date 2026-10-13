@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.c1_submanifold_open_inter-a1",
+  "parent_id": "root.regular_set_open_dense-a1",
+  "depth": 2,
+  "title": "Open restriction of a C¹ submanifold",
+  "statement": "For all m, N ∈ ℕ and sets S, B ⊆ ℝ^N: if S is an m-dimensional C¹ submanifold in the sense of IsC1Submanifold m S (each point has a proper, injective C¹ chart with injective derivative onto W ∩ S for some open W) and B is open, then B ∩ S is an m-dimensional C¹ submanifold (IsC1Submanifold m (B ∩ S)).",
+  "lean_statement": "∀ (m N : ℕ) (S B : Set (EuclideanSpace ℝ (Fin N))), IsC1Submanifold m S → IsOpen B → IsC1Submanifold m (B ∩ S)",
+  "lean_name": "rsod_isC1Submanifold_open_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-open-inter-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6a58b6752bff1f76b80376aedbddd5d9977cfaff19c16cf99699ed924944555f",
+  "git_delta": {
+    "base_commit": "99a36a553d0f091de1cd5add8395927bdee5c662",
+    "candidate_commit": "ef2f554a487fbeb198b053808ad009907e7eee31",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1tan_blowUp_chart_reparam",
+    "diff_sha256": "b9647ce86d8fe091b60b6974669d6ab8119816b051465f76a98233a364ad339f",
+    "source_sha256": "23266f26ae56424627e25a5a07c3e78c59b7e2973392c1850809dec58a44f6ae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1tan_blowUp_chart_reparam",
+      "statement": "∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (r : ℝ), IsOpen V → DifferentiableOn ℝ φ V → InjOn φ V → r ≠ 0 → IsOpen {u : Rn m | v₀ + r • u ∈ V} ∧ InjOn (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) {u : Rn m | v₀ + r • u ∈ V} ∧ (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) '' {u : Rn m | v₀ + r • u ∈ V} = Poincare.SimonGMT.Chapter03.blowUpMap (φ v₀) r '' (φ '' V) ∧ ∀ u ∈ {u : Rn m | v₀ + r • u ∈ V}, HasFDerivAt (fun u : Rn m => r⁻¹ • (φ (v₀ + r • u) - φ v₀)) (fderiv ℝ φ (v₀ + r • u)) u",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

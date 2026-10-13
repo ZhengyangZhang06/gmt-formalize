@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "63b522a1b1f65bdd5fbde6b365a799e78e955f057481b7063de144d8cd3763ea",
+  "git_delta": {
+    "base_commit": "b14e7ebcddb57255ebe59c0c83c300e78378057e",
+    "candidate_commit": "78a807ebd10dcb649b9421e3cf85d7f01bf8fb35",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_am_cc_cutoff_integral_hasDerivAt",
+    "diff_sha256": "e741c8d9bd8d5517757a17443a36610d1f777e3ada8b4eb53d0abbf5aa477953",
+    "source_sha256": "8263593c6da4f051794f029fa8695ef1d22050af4b1d05cfc30e65182fa99bcb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_am_cc_cutoff_integral_hasDerivAt",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

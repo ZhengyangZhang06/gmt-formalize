@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "arzela|ascoli|diagonal|equicontinu|subsequence",
+        "theorem (arzela_ascoli|IsCompact.tendsto_subseq|Metric.uniformCauchySeqOn_iff|UniformCauchySeqOn.tendstoUniformlyOn_of_tendsto|exists_countable_dense_subset)|FiniteDimensional.proper_real",
+        "dohr_eb_sch_bu_hds_(diagonal_extract|unif_of_dense|compact_subseq|holder_of_limit)",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py base",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py split",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py challenges",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py assemblies",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py instances",
+        "python3 /tmp/hds-independent-audit-nmyny1i_/run_checks.py solutions"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Cauchy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-71438b283e/parent-child-handoff.json",
+        "/tmp/hds-independent-audit-nmyny1i_/run_checks.py",
+        "/tmp/hds-independent-audit-nmyny1i_/Instances.lean",
+        "/tmp/hds-independent-audit-nmyny1i_/Axioms.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical frozen contract, and requested parent digest. Project searches found only unrelated subsequence prose. The cited Arzela-Ascoli modules exist but are absent from the frozen imports; the proposed classical replacement uses available lemmas. The split is appropriate: its acyclic dependencies establish exactly the selected parent, including normalization, every-real-radius convergence, and global Holder regularity. All names are bare, distinct, and unreserved in the DAG. Every frozen type independently elaborates in comparator-generated challenge scope with all proposed declarations absent. Supplied proofs, exact-type solution checks, and assemblies from only the declared child contracts compile. Each completed child and the selected parent has precisely the permitted axioms propext, Classical.choice, and Quot.sound. Source-delta checks pass. Independent instance checks confirm Real.rpow and the operator norm with its associated topology and uniformity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "diagonal_extract",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary sets without nesting or covering assumptions. The recursive extractions give a strictly increasing diagonal; each fixed tail factors through its convergent subsequence with indices at least j. Uniqueness of limits validates gluing on overlaps, and zero defines the complement. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "unif_of_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in the exact standalone type. The positive Holder scale, finite net inside D, and simultaneous Cauchy estimates establish uniform Cauchyness. Completeness supplies pointwise limits, and the cited uniform-Cauchy lemma gives uniform convergence. The final non-strict epsilon estimate suffices by epsilon rescaling. Empty S and K = 0 cause no gap."
+    },
+    {
+      "key": "compact_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including unrestricted real M. The proof handles empty S, enumerates a nonempty countable dense subset otherwise, and extracts at each point using compactness of the operator-norm M-ball. Applying diagonal_extract to singletons and then unif_of_dense proves the conclusion. These are exactly its declared dependencies, with no circular use of compact extraction or the parent."
+    },
+    {
+      "key": "holder_of_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly permits the eventual threshold to depend on the pair of points. Pointwise convergence, continuous subtraction and norm, and closedness of the real order bound establish the global Holder estimate. Positivity of alpha makes the comparison function vanish at zero; squeezing proves continuity everywhere. The supplied proof is complete and has no child or parent dependencies."
+    }
+  ],
+  "required_changes": []
+}

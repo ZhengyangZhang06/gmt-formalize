@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd8c1af364104c5fbc9f89325d506e27c0744373ed5734c4991c552dec7e5d6b",
+  "git_delta": {
+    "base_commit": "ca5860f12b697185af0a323b0da4b3d43087b84f",
+    "candidate_commit": "179e62e360fe8cf082c98c57c7c417e37fc00e78",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_lmo_carrier_graph_symmDiff",
+    "diff_sha256": "d92e797bfc494d58cb57c5b8d4829e9965ab9e1764d9278464b8f2026c01bd3a",
+    "source_sha256": "33e50096106cb5df4775f64f40d03b3b12d2cf44c6a9423f02f8e7998920dc7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_lmo_carrier_graph_symmDiff",
+      "statement": "∀ n ℓ : ℕ, ∀ (M S : Set (Amb n ℓ)) (ξ : Amb n ℓ) (R s : ℝ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), s ≤ R → Q '' ((fun x => x - ξ) '' S) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (M ∩ ball ξ s) (S ∩ ball ξ s)) = 0 → ∀ ρ : ℝ, 0 < ρ → ρ ≤ s → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (Q '' ((fun x => x - ξ) '' M) ∩ ball 0 ρ) (graphOver u {x | x ∈ ball (0 : Rn n) ρ ∧ ‖graphPoint x (u x)‖ < ρ})) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

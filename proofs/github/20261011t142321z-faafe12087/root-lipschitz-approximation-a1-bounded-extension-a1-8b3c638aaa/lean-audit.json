@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f5ef3146e360386581259cac36c228dc1a75eac15227deed0a0faa4ce6d2012",
+  "git_delta": {
+    "base_commit": "3ead40d6dbe8307bbaa9668fe07c5ee021fa686d",
+    "candidate_commit": "db18290f6801de71c18be502eb8697c339415321",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_bounded_extension",
+    "diff_sha256": "0f2ea0c688d89aa4b56943c88f9632d7de0ddc28e8a1c8fa48d469ea88ccae38",
+    "source_sha256": "d27a2d17804716c379e8be7d9e1ab42eb32f2ca3c18cc4c09bafd5d62323d5b6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_bounded_extension",
+      "statement": "∀ (n ℓ : ℕ) (A : Set (Rn n)) (g : Rn n → Rn ℓ) (M R₀ : ℝ), 0 ≤ M → 0 ≤ R₀ → (∀ x ∈ A, ∀ z ∈ A, ‖g x - g z‖ ≤ M * ‖x - z‖) → (∀ x ∈ A, ‖g x‖ ≤ R₀) → ∃ f : Rn n → Rn ℓ, (∀ x ∈ A, f x = g x) ∧ (∀ x z, ‖f x - f z‖ ≤ Real.sqrt ℓ * M * ‖x - z‖) ∧ ∀ x, ‖f x‖ ≤ R₀",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.translate_varifold-a1",
+  "parent_id": "root.density_one_higher_regularity-a1",
+  "depth": 2,
+  "title": "Translation invariance of rectifiable varifolds with generalized mean curvature",
+  "statement": "Let V = v(M, theta) be a rectifiable n-varifold in U, a subset of R^(n+l), and xi in R^(n+l); put tau(x) = x - xi. There is a rectifiable n-varifold V' in tau(U) with carrier tau(M), multiplicity y -> theta(y + xi), weight mu_V' equal to the image measure tau_# mu_V, and support spt V' = tau(spt V), such that whenever V has generalized mean curvature H in U, V' has generalized mean curvature y -> H(y + xi) in tau(U).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x - ξ) '' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ (∀ y, V'.mult y = V.mult (y + ξ)) ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ V'.support = (fun x => x - ξ) '' V.support ∧ ∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun y => H (y + ξ))",
+  "lean_name": "dohr_translate_varifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-translate-varifold-a1-a1"
+}

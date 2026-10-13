@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "092a5465099aeaf763985f8fb33b83cad77fea51a2f9fe798b9a04e7b7104dbc",
+  "git_delta": {
+    "base_commit": "fbbd0f1e3e2cd4b6898a8f9676ac7f88dd124cbb",
+    "candidate_commit": "6c7aeaf7198512ee0735cdb75196c3bf8b2959ca",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_sch_cacc_test_function",
+    "diff_sha256": "89292a11312ff2a8475092a95a291b3966a8c4332c9837f0529008aebf51964f",
+    "source_sha256": "cdcd8d3b2576797925e425260ad1c910af75b36c6905535525a273220e3427fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_sch_cacc_test_function",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (V : Rn n → Rn ℓ) (η : Rn n → ℝ) (c : Rn ℓ), IsOpen U → ContDiffOn ℝ 1 V U → ContDiff ℝ 1 η → HasCompactSupport η → tsupport η ⊆ U → ContDiff ℝ 1 (fun x => η x ^ 2 • (V x - c)) ∧ HasCompactSupport (fun x => η x ^ 2 • (V x - c)) ∧ tsupport (fun x => η x ^ 2 • (V x - c)) ⊆ U ∧ ∀ x, fderiv ℝ (fun x => η x ^ 2 • (V x - c)) x = η x ^ 2 • fderiv ℝ V x + (2 * η x) • (fderiv ℝ η x).smulRight (V x - c)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

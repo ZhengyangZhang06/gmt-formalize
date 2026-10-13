@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "liouville|caccioppoli|mollif",
+        "theorem .*liouville|caccioppoli",
+        "contDiff_convolution_left|hasFDerivAt_integral_of_dominated_of_fderiv_le|hasDerivAt_integral_of_dominated_loc_of_deriv_le|isSymmSndFDerivAt|integral_normed|support_eq",
+        "addHaar_ball_of_pos|eqOn_open_of_ae_eq|lintegral_eq_zero_iff|le_opENorm|norm_image_sub_le_of_norm_deriv_le_segment",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/liouville-independent-audit-p5nrsfe4/AuditChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/liouville-independent-audit-p5nrsfe4/AuditAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/liouville-independent-audit-p5nrsfe4/AuditAvailability.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-3569f08ba2/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/issue-workers.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/dohr_eb_sch_liou/frozen_child_types.json",
+        "/tmp/liouville-independent-audit-p5nrsfe4/AuditChildren.lean",
+        "/tmp/liouville-independent-audit-p5nrsfe4/AuditAssembly.lean",
+        "/tmp/liouville-independent-audit-p5nrsfe4/AuditAvailability.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected Liouville contract. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the frozen contract matches the workspace and proof base, and the checked library files match the compiler's package sources. Searches found no reusable elliptic-system Liouville theorem. Relevant convolution, dominated differentiation, mean-value, ball-scaling and almost-everywhere uniqueness tools are available. Availability checks confirm that second-derivative symmetry and ContDiffBump.normed are absent from the frozen imports. Convolution smoothness also has public corroboration in the [Mathlib source](https://raw.githubusercontent.com/leanprover-community/mathlib4/25730c7c759d108ef87ab70af2342a196760f79d/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean). All six frozen types independently elaborate before their implementations, exactly match the supplied proof headers, and pass the lexical contract and single-declaration gates. Independent compilation of all six proofs and the exact conditional parent assembly succeeds, with only propext, Classical.choice and Quot.sound; none depends on sorryAx. The assembly uses the exact inherited Caccioppoli type. Names are bare, distinct and unreserved; no previously accepted declaration is reused. Dependencies are exactly abstract_liouville → {chain_vanish, poly_const} and dir_deriv → snd_deriv_symm, without cycles. Operator norms, extended norms, real powers and Lebesgue measures have the intended interpretations; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "poly_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary real C and alpha < 1 without a positivity assumption. The derivative-chain induction establishes the finite Taylor formula, the top-coefficient estimate forces every positive-degree coefficient to vanish, and the conclusion includes m = 0. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "chain_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All class, regularity, closure, growth and sign hypotheses appear in both statements. The base energy estimate and recurrence give exponent n + 2 alpha - 2 - 2j; at j = n it is negative. Monotonicity forces zero energy, and continuity plus positivity of Lebesgue measure gives the exact pointwise derivative conclusion. The argument also covers n = 0 and uses no undeclared theorem dependency."
+    },
+    {
+      "key": "abstract_liouville",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated Caccioppoli-class theorem. Restriction to t ↦ t x produces the required derivative chain, chain_vanish gives G_(n+1) = 0, and the origin growth bound supplies poly_const with m = n + 1. Evaluation at t = 1 and extensionality prove gradient constancy. Both declared dependencies are correctly directed and non-circular."
+    },
+    {
+      "key": "snd_deriv_symm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition states precisely symmetry of the second Fréchet derivative under C² regularity. The two mean-value estimates control the same symmetric second difference; division by positive t² and arbitrary delta yield equality. Continuity and differentiation follow from C² regularity without presupposing symmetry or the parent theorem."
+    },
+    {
+      "key": "dir_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree; ellipticity is correctly unnecessary. Translated test functions give an identically zero parameterized integral. Compact support and a compact thickening provide integrable domination, justifying differentiation under the integral. The declared symmetry child identifies the resulting derivative with D(d_v V). The proof establishes the exact weak equation without circular reliance."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and all four conclusions match exactly. The positive normalized bump defines a smooth convolution; compact-support bounds justify its derivative formula. Nonnegativity, K ≥ 0 and alpha > 0 yield the stated Hölder and approximation bounds. Product compact support justifies Fubini, and translated test functions establish the weak equation. The proof is complete for all stated dimensions."
+    }
+  ],
+  "required_changes": []
+}

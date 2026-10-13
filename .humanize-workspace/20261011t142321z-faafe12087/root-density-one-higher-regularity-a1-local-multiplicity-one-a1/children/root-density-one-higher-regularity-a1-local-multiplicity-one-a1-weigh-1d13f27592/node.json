@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.weight_restrict_eq-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1",
+  "depth": 3,
+  "title": "Multiplicity one and null symmetric difference give mu_V restricted to O = H^n restricted to spt V cap O",
+  "statement": "Let n, l be natural numbers, U a subset of R^(n+l), V = v(M, theta) a rectifiable n-varifold in U with weight mu := V.weight and support Sigma := V.support (H^n := muHE[n]), and O a measurable subset of R^(n+l). Assume theta = 1 mu-a.e. on O (for mu-a.e. x, x in O implies V.mult x = 1) and H^n((M cap O) symmetric-difference (Sigma cap O)) = 0. Then mu restricted to O equals H^n restricted to Sigma cap O (V.weight.restrict O = muHE[n].restrict (V.support cap O)).",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O : Set (Amb n ℓ)), MeasurableSet O → (∀ᵐ x ∂V.weight, x ∈ O → V.mult x = 1) → (μHE[n] : Measure (Amb n ℓ)) (symmDiff (V.carrier ∩ O) (V.support ∩ O)) = 0 → V.weight.restrict O = (μHE[n] : Measure (Amb n ℓ)).restrict (V.support ∩ O)",
+  "lean_name": "dohr_lmo_weight_restrict_eq",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.hausdorff_null_of_weight_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.local_multiplicity_one-a1.hausdorff_null_of_weight_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-local-multiplicity-one-a1-weigh-1d13f27592-a1"
+}

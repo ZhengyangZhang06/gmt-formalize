@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b1982ec3b0d6e8abff0e829b76f7427324631ed88c0ec0eeb41bf8b9b6f15b00",
+  "git_delta": {
+    "base_commit": "5d75fb7e314a2ab093b68306643a84cf1e737e1c",
+    "candidate_commit": "d3edf8fdf1636c1499e4c20040cd28fa9aa686f5",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_c1_graph_mass_pinching",
+    "diff_sha256": "a60e2663197de8e71ba09f4963d4d4227e0a516ca165eac3443940bec1abcbbc",
+    "source_sha256": "d866977d98bf14504825b341390c3ffa4539e9812e22bc8f4a711f9b1e1cefc3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_c1_graph_mass_pinching",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R : ℝ) (u : Rn n → Rn ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ∀ x ∈ ball (0 : Rn n) R, ∀ ε : ℝ, 0 < ε → ε < 1 → ∃ η : ℝ, 0 < η ∧ ∀ r : ℝ, 0 < r → r ≤ η → ENNReal.ofReal ((1 - ε) ^ n / (1 + ε) ^ n * (unitBallVolume n * r ^ n)) ≤ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ∧ (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 R) ∩ closedBall (graphPoint x (u x)) r) ≤ ENNReal.ofReal ((1 + ε) ^ n / (1 - ε) ^ n * (unitBallVolume n * r ^ n))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

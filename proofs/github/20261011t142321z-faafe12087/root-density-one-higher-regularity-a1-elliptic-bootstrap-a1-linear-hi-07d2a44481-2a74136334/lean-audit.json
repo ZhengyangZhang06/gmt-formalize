@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c668d71547319d53e294a61e0b71708698585e24d58d437b895358b6a2d599ed",
+  "git_delta": {
+    "base_commit": "e5918219b3e5fe5cf5f19f1966503101f9d021ed",
+    "candidate_commit": "a8541fd693d0c72311b0f646937cd1438766fc07",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqub_form_coords",
+    "diff_sha256": "9ebe8021bb399b61f256b4f680eb5e9095875beb74f0259d62fe02488fd73480",
+    "source_sha256": "63c70b3bee9c7a633e0ba49a009839e6933eb049ac2f506a8315fa0222246383",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqub_form_coords",
+      "statement": "∀ (L : Type) [NormedAddCommGroup L] [NormedSpace ℝ L] [FiniteDimensional ℝ L], ∃ (N : ℕ) (b : Fin N → L) (C : ℝ), 0 ≤ C ∧ (∀ (f : L → ℝ) (m : ℝ), IsLinearMap ℝ f → 0 ≤ m → (∀ r, |f (b r)| ≤ m) → ∀ P, |f P| ≤ C * m * ‖P‖) ∧ ∀ (β : L → L → ℝ) (m : ℝ), (∀ P, IsLinearMap ℝ (fun Q => β Q P)) → (∀ Q, IsLinearMap ℝ (β Q)) → 0 ≤ m → (∀ r t, |β (b r) (b t)| ≤ m) → ∀ Q P, |β Q P| ≤ C * m * ‖Q‖ * ‖P‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

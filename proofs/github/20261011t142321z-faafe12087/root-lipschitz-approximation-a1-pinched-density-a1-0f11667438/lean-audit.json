@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5f6026b201b89a8ee95eaab53e7fcaa433655817e32e2783f5ee79003fbeb32",
+  "git_delta": {
+    "base_commit": "031a9f02a60b6a16ad23a7e7a6370b8521c09505",
+    "candidate_commit": "ee6cf43aecdedfc76fea588305ee8ec995c785f1",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lip_approx_pinched_density",
+    "diff_sha256": "246dc3f1441bf38d9a972e462162c7e0e55f4e02ab92a941a31810d102bae795",
+    "source_sha256": "bb819f115c265b5234da563e491e3d5b80ec11fcdf91c762a4cfb91705d7a4d2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lip_approx_pinched_density",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δP : ℝ, 0 < δP ∧ δP ≤ 1 / 8 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δP → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * (δ * ρ) → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal (2 * unitBallVolume n * s ^ n) ∧ (y ∈ V.support → ENNReal.ofReal (unitBallVolume n * s ^ n / 2) ≤ V.weight (closedBall y s))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

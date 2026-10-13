@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "96226143c5f57fd10506706d782be906812ebbe228959b4478940fbeddbccdc8",
+  "git_delta": {
+    "base_commit": "827b79d613564b1f7882cc5cfb4d108fb0710175",
+    "candidate_commit": "53c5cdd8d9b1cae33b790d1e38eba0df3757cdc7",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_wfu_lusin_closed_exhaustion",
+    "diff_sha256": "d71c9f2ccd1fb46b0e2eb0087c1f3bee22d7e4412f511ec35e06e9bfaeb6cefc",
+    "source_sha256": "6df3ba5d548ea51cb1216ae048f200c47b33538a1328be6d69e3f4018d65e520",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_wfu_lusin_closed_exhaustion",
+      "statement": "∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (ϑ : Amb n ℓ → ℝ), MeasurableSet A → (μHE[n] : Measure (Amb n ℓ)) A < ∞ → Measurable ϑ → ∃ C : ℕ → Set (Amb n ℓ), (∀ i, IsClosed (C i) ∧ C i ⊆ A ∧ ContinuousOn ϑ (C i)) ∧ (μHE[n] : Measure (Amb n ℓ)) (A \\ ⋃ i, C i) = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

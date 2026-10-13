@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0dbed0aef48ab5fc98906c38ddbb81ba41765671a231761b1aea6516a3709f63",
+  "git_delta": {
+    "base_commit": "4625a24b9aea70f1f949a336b7affdc4b3a8177b",
+    "candidate_commit": "a9fe7dd18350d80eecd08c9706814247f1cf870c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_lipschitz_graph_area_formula",
+    "diff_sha256": "985139f7e7b23a4108601eebd24073d791b6deb3421290bfab08a35e64c723cc",
+    "source_sha256": "c079bd39310388c5f91b30d3a66f9561151c7a245032f3e735fa241fd0366846",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_lipschitz_graph_area_formula",
+      "statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → ∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ g : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, g y ∂(μHE[n] : Measure (Amb n ℓ)) = ∫⁻ x in A, ENNReal.ofReal (Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ)))))) * g (q (graphPoint x (f x)))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

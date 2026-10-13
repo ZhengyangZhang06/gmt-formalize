@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b6dd57025a9096d005ab25f25e1cc01c583a23dc71748aefac7ce6095e5afac8",
+  "git_delta": {
+    "base_commit": "4f7618e510a38ce8bd667167f4e503f820e04550",
+    "candidate_commit": "2d7d584c504b6af20cecf39834c711a6a8625023",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_stp_hsNormSq_sub_le_tiltExcess",
+    "diff_sha256": "7dcd449d278faea437de7aed25cad77d592b7403211347322cbe21b5190e73b1",
+    "source_sha256": "8ec2e4c67dcaddb59c3d09c41106a1f195c9bcf01667fc3674a4f79f30a3a314",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_stp_hsNormSq_sub_le_tiltExcess",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z : Amb n ℓ) (s : ℝ), 0 < s → V.weight (closedBall z s) ≠ ⊤ → ∀ P Q : Submodule ℝ (Amb n ℓ), (V.weight (closedBall z s)).toReal * hsNormSq (P.starProjection - Q.starProjection) ≤ 2 * s ^ n * (V.tiltExcess z s P + V.tiltExcess z s Q)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

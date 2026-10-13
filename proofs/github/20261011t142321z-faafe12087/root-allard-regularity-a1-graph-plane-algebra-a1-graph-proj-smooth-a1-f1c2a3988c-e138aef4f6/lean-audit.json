@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd00c71b860bcdbb64673aa0d6d8a09d5101c1730354f4d4e28ae7af33f3b45b",
+  "git_delta": {
+    "base_commit": "ca5f89c230fc5d7ca82b652d8b3edc461777008c",
+    "candidate_commit": "27b54d61ffd059d36da506fccdc3fdac2ce9ec8a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_gfz_graphPoint_inner",
+    "diff_sha256": "6e2716efa86e62e5163125857b57f2c9dd545236dd127c50769b6d6d7c6da987",
+    "source_sha256": "fcefef2ea2b85841dd1edd8ed6d0a56da4126812ffef750c1700977dc12202ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_gfz_graphPoint_inner",
+      "statement": "∀ (n ℓ : ℕ) (x x' : Rn n) (y y' : Rn ℓ), inner ℝ (graphPoint x y) (graphPoint x' y') = inner ℝ x x' + inner ℝ y y'",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

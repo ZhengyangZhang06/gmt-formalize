@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.opnorm_sq_le_hs-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "Squared operator norm is at most the squared Hilbert-Schmidt norm",
+  "statement": "For all natural numbers m, k and every continuous linear map Q : R^m -> R^k (Q : Rn m →L[ℝ] Rn k), ||Q||^2 <= sum_{a in Fin m} ||Q e_a||^2, where ||Q|| is the operator norm and e_a = EuclideanSpace.single a 1.",
+  "lean_statement": "∀ m k : ℕ, ∀ Q : Rn m →L[ℝ] Rn k, ‖Q‖ ^ 2 ≤ ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2",
+  "lean_name": "dohr_eb_ail_opNorm_sq_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-f75b500a1c-a1"
+}

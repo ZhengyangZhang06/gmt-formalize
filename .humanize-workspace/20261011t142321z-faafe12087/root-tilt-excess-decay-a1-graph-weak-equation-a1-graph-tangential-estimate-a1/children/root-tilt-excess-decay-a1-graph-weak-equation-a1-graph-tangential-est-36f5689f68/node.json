@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.weight_null_finite-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "depth": 4,
+  "title": "Varifold weight: finite on compact subsets of U, null off spt V, absolutely continuous with respect to H^n",
+  "statement": "Let n, l be natural numbers, U an arbitrary subset of R^{n+l} (no openness is assumed), and V = v(M, theta) a rectifiable n-varifold in U (the contract structure RectifiableVarifold), with M := V.carrier, theta := V.mult, H^n := muHE[n] on R^{n+l} and weight mu := V.weight = (H^n restricted to M).withDensity (ofReal o theta). Then: (i) mu(K) < infinity for every compact set K contained in U; (ii) mu(R^{n+l} \\ spt V) = 0, where spt V = V.support = U cap supp(mu); (iii) every set Z of R^{n+l} with H^n(Z) = 0 (Z arbitrary, not necessarily measurable) satisfies mu(Z) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ U → V.weight K < ⊤) ∧ V.weight (V.support)ᶜ = 0 ∧ ∀ Z : Set (Amb n ℓ), (μHE[n] : Measure (Amb n ℓ)) Z = 0 → V.weight Z = 0",
+  "lean_name": "gte_weight_null_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-est-36f5689f68-a1"
+}

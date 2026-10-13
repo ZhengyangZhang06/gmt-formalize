@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "02a7776df3778c0eab5c68cd4d1126b6b27e559c1a0ca6b46d0f31f4af33646f",
+  "git_delta": {
+    "base_commit": "1cac8dc743bc7555dab932338eab43d42c2e6f5d",
+    "candidate_commit": "f15e34061dc38aa7223d1a9e3c01840056ebeb92",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "de4c332b7840e77a3fb50f2f534925c94c1004d040675d0d9aeb07409b8b169f",
+    "source_sha256": "51b959d014568f3f9ba3d92c6249b4f8c48e323f2c83e1c9b5c75139c4908f1b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lipschitz_approximation_lemma",
+      "statement": "LipschitzApproximationLemma",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

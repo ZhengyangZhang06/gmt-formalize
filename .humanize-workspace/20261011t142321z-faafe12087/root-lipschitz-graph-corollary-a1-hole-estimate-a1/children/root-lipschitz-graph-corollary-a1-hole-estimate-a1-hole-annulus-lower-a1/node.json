@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hole_annulus_lower-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "depth": 3,
+  "title": "Lower bound for the normal-part integral from annular monotonicity at a hole (corrected Simon 2.6 (9))",
+  "statement": "Let n, l be natural numbers and mu a measure on R^(n+l). Let p : R^(n+l) -> L(R^(n+l)) be a mu-a.e. strongly measurable field of continuous linear maps with operator norm ||p(x)|| <= 1 for all x. Let zeta, y be points of R^(n+l), s > 0, omega > 0 and c real. Write B_r(w) for closed balls, g(x) := |(x - zeta) - p(x)(x - zeta)|^2, and I := the Bochner integral of g over B_{3s}(zeta) with respect to mu. Assume: (1) mu(B_s(zeta)) = 0; (2) mu(B_{3s}(zeta)) < infinity; (3) dist(y, zeta) <= 2s; (4) ENNReal.ofReal(omega s^n / 2) <= mu(B_s(y)); (5) c <= omega/(4 * 3^n); (6) the annular monotonicity inequality ((3s)^n)^(-1) mu(B_{3s}(zeta)) <= e^2 ((s^n)^(-1) mu(B_s(zeta))) + c + e^2 J, where J := the Bochner integral over B_{3s}(zeta) minus B_s(zeta) of g(x)/|x - zeta|^(n+2) dmu and the ball masses are real numbers (toReal). Then s^(n+2) <= (4 * 3^n * e^2 / omega) * I.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (ζ y : Amb n ℓ) (s ω c : ℝ), 0 < s → 0 < ω → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → μ (closedBall ζ s) = 0 → μ (closedBall ζ (3 * s)) ≠ ⊤ → dist y ζ ≤ 2 * s → ENNReal.ofReal (ω * s ^ n / 2) ≤ μ (closedBall y s) → c ≤ ω / (4 * 3 ^ n) → ((3 * s) ^ n)⁻¹ * (μ (closedBall ζ (3 * s))).toReal ≤ Real.exp 2 * ((s ^ n)⁻¹ * (μ (closedBall ζ s)).toReal) + c + Real.exp 2 * ∫ x in closedBall ζ (3 * s) \\ closedBall ζ s, ‖(x - ζ) - p x (x - ζ)‖ ^ 2 / ‖x - ζ‖ ^ (n + 2) ∂μ → s ^ (n + 2) ≤ 4 * 3 ^ n * Real.exp 2 / ω * ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ",
+  "lean_name": "lgc_hole_annulus_lower",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hole-annulus-lower-a1-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "36ecca107933ec676c03c70f13cef36c5eda4bcc54ba3e5ea453b2a91a1427b0",
+  "git_delta": {
+    "base_commit": "99a36a553d0f091de1cd5add8395927bdee5c662",
+    "candidate_commit": "0dd79e09ad613b0119b983b44761fec20a2a761a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1tan_approxTangent_of_local_eq",
+    "diff_sha256": "4d289b9a1115ec275b1b4fa6b13078455802b901d5fbf7f928e6475c865b5af8",
+    "source_sha256": "4b42b05ecac8ab2d9eb768c104f6842daf855a70407fe66ca40bf73b276773c7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1tan_approxTangent_of_local_eq",
+      "statement": "∀ (m N : ℕ) (S T : Set (EuclideanSpace ℝ (Fin N))) (x : EuclideanSpace ℝ (Fin N)) (ε : ℝ) (P : Submodule ℝ (EuclideanSpace ℝ (Fin N))), 0 < ε → S ∩ ball x ε = T ∩ ball x ε → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m T x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt m S x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

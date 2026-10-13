@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d85f9ff23262eb79930ec484fb882fea0615c8f125b74d4a31b80862401d57e8",
+  "git_delta": {
+    "base_commit": "8de4af48527439f6d9bd1a4ffe687baa20ccc26c",
+    "candidate_commit": "6dd3d3a30cac10bf1fb79befccb69bf312329d89",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "08864b7b995b21f451379f72b52e27ce2e325326276e9f013323e322a2089f58",
+    "source_sha256": "84c4f4579462f230d81e17334993281e52f5206aa1a4c0fc4bc39b1e632f9a2e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.harmonic_approximation_lemma",
+      "statement": "HarmonicApproximationLemma",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

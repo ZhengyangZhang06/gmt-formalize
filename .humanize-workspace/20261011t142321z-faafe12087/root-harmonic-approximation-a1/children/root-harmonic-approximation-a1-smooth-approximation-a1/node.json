@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Interior smooth approximation of W^{1,2}(B) functions",
+  "statement": "Let n >= 1, B := ball(0,1) the open unit ball of R^n, and let f : R^n -> R, g : R^n -> R^n satisfy IsW12WithGradient f g B: f in L^2(B), g in L^2(B;R^n), and int_B f grad zeta = - int_B zeta g for every zeta in C^infinity(R^n) with compact support and tsupport zeta in B. Then for every r with 0 < r < 1 there is a sequence (phi_j) of C^infinity functions R^n -> R with int_{B_r} |phi_j - f|^2 -> 0 and int_{B_r} |grad phi_j - g|^2 -> 0. Here B_r := ball(0,r) and the integrals are the lintegrals of the squared extended norms.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∀ r : ℝ, 0 < r → r < 1 → ∃ φ : ℕ → Rn n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (φ j)) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖φ j x - f x‖ₑ ^ 2) atTop (𝓝 0) ∧ Tendsto (fun j => ∫⁻ x in ball (0 : Rn n) r, ‖gradient (φ j) x - g x‖ₑ ^ 2) atTop (𝓝 0)",
+  "lean_name": "w12_ball_smooth_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-smooth-approximation-a1-a1"
+}

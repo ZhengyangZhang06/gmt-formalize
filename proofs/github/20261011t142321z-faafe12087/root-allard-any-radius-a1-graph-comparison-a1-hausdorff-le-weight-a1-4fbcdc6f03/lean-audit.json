@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54502ef90f2cbef999ca434de2101d64fd8d7238465ffa3000bb3bfa0f4b67de",
+  "git_delta": {
+    "base_commit": "83125dcfeb9e6038a939b3b5a275299c23ce3292",
+    "candidate_commit": "748914e80fdcfe64d91f113a7ba5fce3da4e8ada",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "anyrad_gc_hausdorff_restrict_le_weight",
+    "diff_sha256": "8de84a2d0fba28c8acab6caf175719ccfc8fc631ea05e1cc6dcec04069c4c5ba",
+    "source_sha256": "f367d3f78b9d8749537434c4819d044501d6ad395b11c9d6d0ce2607364ea0af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.anyrad_gc_hausdorff_restrict_le_weight",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (O Γ : Set (Amb n ℓ)), IsOpen O → V.weight O < ⊤ → Γ ⊆ O → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → (∀ y ∈ Γ, ∃ c s₀ : ℝ, 0 < c ∧ 0 < s₀ ∧ ∀ s : ℝ, 0 < s → s < s₀ → ENNReal.ofReal (c * s ^ n) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)).restrict Γ ≤ V.weight",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

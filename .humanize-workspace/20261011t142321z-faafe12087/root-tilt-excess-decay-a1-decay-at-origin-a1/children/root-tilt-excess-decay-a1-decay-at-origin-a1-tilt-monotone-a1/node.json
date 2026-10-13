@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.tilt_monotone-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1",
+  "depth": 3,
+  "title": "Monotonicity of the tilt-excess under inclusion of balls",
+  "statement": "Let n, l be natural numbers, U a subset of R^{n+l}, and V a contract rectifiable n-varifold in U such that x |-> V.tangentProj x is V.weight-a.e. strongly measurable. If 0 < s <= t, B̄_s(z) ⊆ B̄_t(w) ⊆ U (closed balls) and S is any linear subspace of R^{n+l}, then E(z, s, S) <= (t/s)^n E(w, t, S), where E = V.tiltExcess.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z w : Amb n ℓ) (s t : ℝ) (S : Submodule ℝ (Amb n ℓ)), 0 < s → s ≤ t → closedBall z s ⊆ closedBall w t → closedBall w t ⊆ U → V.tiltExcess z s S ≤ (t / s) ^ n * V.tiltExcess w t S",
+  "lean_name": "tdo_tiltExcess_le_of_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-tilt-monotone-a1-a1"
+}

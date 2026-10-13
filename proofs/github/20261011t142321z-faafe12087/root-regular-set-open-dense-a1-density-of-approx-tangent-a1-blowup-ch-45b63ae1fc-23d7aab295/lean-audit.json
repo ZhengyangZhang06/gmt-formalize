@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5dc3f1febc4a987f3aec90affd83e24deb53e132f9e96d3a84b74a7e735b4c0",
+  "git_delta": {
+    "base_commit": "e85cf00b1bdd5997f4cb0c4d0320ac0d5013a15a",
+    "candidate_commit": "98fd790d5bc2f705d0efa953dadfb274b5462997",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_blowUp_setIntegral_eq",
+    "diff_sha256": "f65ac6ef3403e7639a5ebf038df43846193b06d79e224b28a97159d588f2187c",
+    "source_sha256": "21699a38bc54b2e30e5287cdb99aeef070a4b9b0af82c480d34200e1a47ce851",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_blowUp_setIntegral_eq",
+      "statement": "∀ (n ℓ : ℕ) (M : Set (Amb n ℓ)) (f θ : Amb n ℓ → ℝ) (x : Amb n ℓ) (r : ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Amb n ℓ)) = (r ^ n)⁻¹ * ∫ z in M, f (Poincare.SimonGMT.Chapter03.blowUpMap x r z) * θ z ∂(μHE[n] : Measure (Amb n ℓ))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

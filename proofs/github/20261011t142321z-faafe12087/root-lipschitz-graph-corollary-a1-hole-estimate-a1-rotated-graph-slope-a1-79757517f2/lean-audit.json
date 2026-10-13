@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8ec5b3293bf1e810c18797434606c42bdd63ae44a62e0e0f49f69320e9d8675e",
+  "git_delta": {
+    "base_commit": "8542082ecd54d93699a84701a8d4cee8a849cda0",
+    "candidate_commit": "8d5b6117f215c5ea6a82d9b4e90b562fd38ed575",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "lgc_rotated_graph_slope",
+    "diff_sha256": "ac202363a9d3e408cc056e3bbf068aec3c59dc656ab762038afdbe69086e9447",
+    "source_sha256": "7dfcd1a1236864e4f5c2c44e6582b4099dab253b6d7a23065113d102142030f3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lgc_rotated_graph_slope",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (ε : ℝ), 0 ≤ ε → LipschitzWith (Real.toNNReal ε) f → IsClosed (q '' graphOver f univ) ∧ ∀ x ∈ q '' graphOver f univ, ∀ z ∈ q '' graphOver f univ, ‖(x - z) - (rotatedPlane q).starProjection (x - z)‖ ≤ ε * ‖x - z‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "26e5924ed50886cf2337f1646e5cb1494a5611afae6363da2d57bb0ede159294",
+  "git_delta": {
+    "base_commit": "f97a922a5ac71e31c87490f68f3acaae8239b9f1",
+    "candidate_commit": "7b606d8abf9779fce22896f6fe9e88c08e287570",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "3df0f8492b3727a5ddf672bc48898380ce7d047d27f30ed5059a30febe9fd9aa",
+    "source_sha256": "47328d8dc8ed7b9bf16e4adbc08df7d0cff14aafa519dd132df8dabb98ac44ea",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_area_integrand_legendre",
+      "statement": "∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∃ ε : ℝ, 0 < ε ∧ ∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, 1 / 2 * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) P Q Q",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

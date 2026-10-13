@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea06c25529fbd3a79ce2374ac9949b7858e8ca6550405ddb390e47887a14185d",
+  "git_delta": {
+    "base_commit": "ea56868440df1b290b9adc8b6b4dbfd94df0871d",
+    "candidate_commit": "e66c2ab5a2aeb2db2e88df4bd2cb04a924e65377",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_gat_blowup_two_point",
+    "diff_sha256": "49b9eeeb5ff757fe91f46652c80226bab74e4c78d1e61ee9b0e9152905eea375",
+    "source_sha256": "7c366a2888ddaf7ca35eb026b9a73a63188597da6d3ee615348f4a20af6a9b62",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_gat_blowup_two_point",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (G : Rn n → Amb n ℓ) (x : Rn n) (ρ ε : ℝ), IsOpen U → ContDiffOn ℝ 1 G U → x ∈ U → 0 < ε → ∀ᶠ t in 𝓝[>] (0 : ℝ), (∀ v ∈ closedBall (0 : Rn n) ρ, x + t • v ∈ U) ∧ ∀ v ∈ closedBall (0 : Rn n) ρ, ∀ v' ∈ closedBall (0 : Rn n) ρ, ‖t⁻¹ • (G (x + t • v) - G (x + t • v')) - fderiv ℝ G x (v - v')‖ ≤ ε * ‖v - v'‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f88551ec458b42038cede807a9edc83696f2d8cc84ffed668e48a95b1468b7e3",
+  "git_delta": {
+    "base_commit": "fbede7e107de4da3826ef92b2317ece5d3e5e061",
+    "candidate_commit": "c725725698f2db80d4063086cdcc98d35b514b4a",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "00d060f6a111c7c04fb5a5679ff68e81f3097c49a623ea19f1d6658174dfb719",
+    "source_sha256": "16d9f6602abcf3703d5baf4c66f072a400df655634f769b10f647e59347891a3",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.any_radius_graph_comparison",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δE : ℝ, 0 < δE ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δE → V.AllardHypotheses H p δ ρ → ∀ (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (Ω : Set (Rn n)), IsOpen Ω → ContDiffOn ℝ 1 u Ω → q '' graphOver u Ω ⊆ V.support ∩ ball 0 ρ → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ Ω → ∀ g : Amb n ℓ → ℝ≥0∞, Measurable g → ∫⁻ x in A, g (q (graphPoint x (u x))) ≤ ∫⁻ y in q '' graphOver u A, g y ∂V.weight) ∧ (∀ᵐ x ∂(volume.restrict Ω), V.tangentProj (q (graphPoint x (u x))) = (Submodule.map q.toLinearEquiv.toLinearMap (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (fderiv ℝ u x v)))).starProjection) ∧ ∀ᵐ x ∂(volume.restrict Ω), Tendsto (fun s : ℝ => (V.weight (closedBall (q (graphPoint x (u x))) s))⁻¹ * ∫⁻ y in closedBall (q (graphPoint x (u x))) s, ENNReal.ofReal (hsNormSq (V.tangentProj y - V.tangentProj (q (graphPoint x (u x))))) ∂V.weight) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

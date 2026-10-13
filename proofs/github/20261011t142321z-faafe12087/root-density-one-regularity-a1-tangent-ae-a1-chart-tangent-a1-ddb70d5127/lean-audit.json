@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06b65acf3c8703ae27f8cae22a17d67643eb223903e6eec5433a29903cfc82bd",
+  "git_delta": {
+    "base_commit": "03892445286ca53cad3e7381cf875f275517b2f5",
+    "candidate_commit": "54cac7deea7fec819237344af01d85c25ab643ca",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tae_c1_chart_image_approxTangent",
+    "diff_sha256": "046dbed9943c11456dce43b1714ea035cf13bbc2092d9a48efd3923754477165",
+    "source_sha256": "f60cd39a76910e6752aad3242ccb2cd9e4b44c6d502b0728bf1ef92ed833a5c2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tae_c1_chart_image_approxTangent",
+      "statement": "∀ {n ℓ : ℕ} (G : Rn n → Amb n ℓ) (c : Rn n) (ρ κ : ℝ), 1 ≤ n → ContDiff ℝ 1 G → 0 < κ → (∀ v ∈ ball c ρ, Function.Injective (fderiv ℝ G v)) → (∀ v ∈ ball c ρ, ∀ w ∈ ball c ρ, κ * ‖v - w‖ ≤ ‖G v - G w‖) → MeasurableSet (G '' ball c ρ) ∧ (μHE[n] : Measure (Amb n ℓ)) (G '' ball c ρ) < ⊤ ∧ ∃ T : Amb n ℓ → Submodule ℝ (Amb n ℓ), ContinuousOn (fun x => (T x).starProjection) (G '' ball c ρ) ∧ ∀ x ∈ G '' ball c ρ, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (G '' ball c ρ) x (T x)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

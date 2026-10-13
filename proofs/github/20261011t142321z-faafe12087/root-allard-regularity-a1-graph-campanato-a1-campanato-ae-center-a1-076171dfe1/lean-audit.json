@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d5b33f7437e3f89eb0493487faa00125d75b87fa86d8555b17a0454d2cac93d9",
+  "git_delta": {
+    "base_commit": "6223108a7fe625da289bcbdcfa4125486f693b64",
+    "candidate_commit": "469ee87ecc273a872fff24953fc97dcdd8c8f356",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "5aefce36ca9072f3d9bd00b5a44c37e7e04af73c74c65263e3b83b89dfa37463",
+    "source_sha256": "4b4c7730c8cc8cea082530dc5c7758d94566c527669a6c0e7e07b144ff1915c1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_campanato_ae_center",
+      "statement": "∀ (n m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α B : ℝ), 1 ≤ n → 0 < R → 0 < α → Measurable G → (∀ x, ‖G x‖ ≤ B) → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ᵐ z ∂(volume : Measure (Rn n)), z ∈ ball (0 : Rn n) (R / 4) → G z = c z",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

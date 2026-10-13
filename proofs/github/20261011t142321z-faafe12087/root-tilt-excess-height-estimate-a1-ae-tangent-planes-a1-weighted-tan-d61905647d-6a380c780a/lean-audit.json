@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11dfb1b0104f4d0cd017bfe895b86f3cf18fe5c355b543e5a39a4af798605a68",
+  "git_delta": {
+    "base_commit": "de4bba25657942ce0984f6776ad7195b5576a9c3",
+    "candidate_commit": "8a976e56ab76b5f9ac9bd79b4b524311b1b93e9c",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_weightedTangent_of_lusin_compact",
+    "diff_sha256": "8a07def239f6b96fdc6f8638a31b50fc3783b46604e1db2c23452f7a1ae93bb4",
+    "source_sha256": "0a46714bb91d0d99175571ad049bdbeb27037592d5322e02ebcf08c75f3e89ec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_weightedTangent_of_lusin_compact",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (K : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), IsCompact K → K ⊆ V.carrier → x ∈ K → ContinuousOn V.mult K → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => V.weight ((V.carrier \\ K) ∩ closedBall x (R * r)) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0)) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n K x P → Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

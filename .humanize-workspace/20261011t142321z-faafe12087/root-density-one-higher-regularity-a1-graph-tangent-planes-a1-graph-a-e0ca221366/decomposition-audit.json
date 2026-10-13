@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -l 'euclideanHausdorffMeasure_image_le_of_lipschitzOn|dohr_tp_gat_bilip_measure_comparison|dohr_tp_gat_bilip_integral_sandwich' project mathlib",
+        "rg -n -A 6 -B 2 'theorem map_apply_of_aemeasurable|theorem restrict_apply\\x27|theorem restrict_apply \\(|theorem le_iff\\b' Mathlib/MeasureTheory/Measure/Map.lean Mathlib/MeasureTheory/Measure/Restrict.lean Mathlib/MeasureTheory/Measure/CompleteLattice.lean",
+        "rg -n -A 7 -B 2 'integral_mono_measure |theorem integral_smul_measure |^theorem integral_map |^theorem ContinuousOn.aemeasurable |^theorem Integrable.smul_measure ' Mathlib/MeasureTheory/Integral/Bochner/Basic.lean Mathlib/MeasureTheory/Integral/IntegrableOn.lean Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "sed -n '725,737p' Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "sed -n '177,197p' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '185,238p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Checks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-e0ca221366/parent-child-handoff.json",
+        "/tmp/bilip-independent-audit-hp6nl4qk/Checks.lean",
+        "/tmp/bilip-independent-audit-hp6nl4qk/Checks.log",
+        "/tmp/bilip-independent-audit-hp6nl4qk/Assembly.lean",
+        "/tmp/bilip-independent-audit-hp6nl4qk/Assembly.log"
+      ],
+      "conclusion": "Verified pinned project ea5607598f31, Mathlib 25730c7c759d, and simongmt 2b3663083f3f. The snapshot Submission, workspace Contract, and workspace Submission are byte-identical. Relevant library signatures support arbitrary-set Hausdorff image bounds, the stated restriction formulas, restricted a.e. measurability, and integral comparison. The normalized image-bound helper has no match in the snapshot; its implementation is present in the pinned simongmt dependency and uses only standard axioms. Neither proposed name occurs in the DAG or other nodes' JSON records. Both one-line propositions pass the statement validator and independently elaborate against a fresh compilation of the frozen Submission, before either child exists. Explicit instance output confirms ENNReal scalar multiplication of measures, measure order, and Set.univ. Both supplied child implementations and their assembly of the exact frozen parent type recompile successfully; all three use only propext, Classical.choice, and Quot.sound. The split appropriately isolates two independent measure-theoretic obligations, and their conclusions establish the selected parent through the supplied remaining argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilip_measure_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently elaborated Lean proposition. The proof correctly derives both Lipschitz bounds, restricted a.e. measurability, injectivity, and the Lipschitz inverse; converts the constants; and proves both measure inequalities on measurable test sets. Neither measurability of Φ(A) nor global measurability of Φ is silently assumed: the cited restriction formulas and arbitrary-set image bound suffice. Empty sets and n = 0 remain covered. The proof is complete, non-circular, and ready for formalization. Its empty dependency list is correct, and its bare declaration name is unreserved."
+    },
+    {
+      "key": "bilip_integral_sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently elaborated Lean proposition agree, including the finite-mass hypothesis and exact constant. The proof derives finiteness of μ₁ and M ≥ 0, establishes integrability for the original and scaled measures, applies integral monotonicity in both directions, and correctly obtains the absolute estimate. Splitting φ into its positive and negative parts justifies the factor 2. No compact-support hypothesis is needed. The proof is complete and non-circular. This child assumes measure comparisons rather than invoking the first child, so its empty dependency list is correct. Its bare declaration name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

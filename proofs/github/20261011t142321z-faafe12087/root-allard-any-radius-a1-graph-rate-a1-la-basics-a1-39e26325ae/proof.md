@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_any_radius-a1.graph_rate-a1`
+- Child DAG node: `root.allard_any_radius-a1.graph_rate-a1.la_basics-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Notation. N := n + l. For k in Fin N let eps_k be the k-th standard basis vector of R^N = Amb n l; e_i (i < n), f_j (j < l) are the standard basis vectors of R^n, R^l. Every index of Fin N is exactly one of castAdd l i (i < n) or natAdd n j (j < l). By definition graphPoint a b = toLp(Fin.append a b), i.e. (graphPoint a b)_{castAdd l i} = a_i and (graphPoint a b)_{natAdd n j} = b_j. hsNormSq M = sum_{i<m} |M e_i|^2, hsNorm M = sqrt(hsNormSq M), ||.|| is the operator norm, T_0 := rotatedPlane q = q(horizontalPlane).
+
+1. (L1)-(L3). Compare coordinates. At castAdd l i both sides of (L1) equal a_i + a'_i and at natAdd n j both equal b_j + b'_j; likewise (L2) with differences and (L3) with t a_i and t b_j. Vectors of R^N with equal coordinates are equal.
+
+2. (L4) and inner products. Splitting the sum over Fin N into its castAdd and natAdd parts (Fin.sum_univ_add): |graphPoint a b|^2 = sum_k (graphPoint a b)_k^2 = sum_{i<n} a_i^2 + sum_{j<l} b_j^2 = |a|^2 + |b|^2. The same splitting gives <graphPoint a b, graphPoint a' b'> = <a, a'> + <b, b'>.
+
+3. Description of horizontalPlane. By step 1 (coordinates), eps_{castAdd l i} = graphPoint(e_i, 0), so by (L1), (L3) graphPoint(a, 0) = sum_i a_i eps_{castAdd l i} lies in horizontalPlane; conversely every element sum_i c_i eps_{castAdd l i} of the span equals graphPoint(sum_i c_i e_i, 0). Hence horizontalPlane = {graphPoint(c, 0) : c in R^n}. For h = graphPoint(c, 0) and any b, step 2 gives <graphPoint(0, b), h> = <0, c> + <b, 0> = 0.
+
+4. (L5). Let v := q(graphPoint a b) and k := q(graphPoint a 0). By step 3, k lies in q(horizontalPlane) = T_0. By (L2) and linearity of q, v - k = q(graphPoint(a - a, b - 0)) = q(graphPoint(0, b)). Every element of T_0 is q(h) with h in horizontalPlane, and <q(graphPoint(0, b)), q(h)> = <graphPoint(0, b), h> = 0, because the linear isometry q preserves inner products (polarization) and by step 3. Thus k is in T_0 and v - k is orthogonal to T_0. T_0 is finite-dimensional, hence complete, and the orthogonal projection onto a complete subspace K is characterized by: if k in K and <v - k, w> = 0 for all w in K, then P_K v = k. Hence P_{T_0} v = k = q(graphPoint(a, 0)).
+
+5. (L6). Let K be a complete subspace, P := P_K and v a vector. For k in K, v - Pv is orthogonal to K and Pv - k lies in K, so by Pythagoras |v - k|^2 = |v - Pv|^2 + |Pv - k|^2 >= |v - Pv|^2; and Pv lies in K. Hence infDist(v, K) = inf_{k in K} |v - k| = |v - Pv|. With K = T_0 and v = q(graphPoint a b), step 4 gives v - Pv = q(graphPoint(0, b)), whose norm is |graphPoint(0, b)| = (|0|^2 + |b|^2)^(1/2) = |b| by (L4) and since q is an isometry.
+
+6. (L7). The n vectors eps_{castAdd l i}, i < n, are distinct members of the standard orthonormal basis (castAdd l is injective), hence linearly independent, so their span horizontalPlane has finrank n. T_0 is the image of horizontalPlane under the linear equivalence q, and the image of a subspace under a linear equivalence has the same finrank. So finrank T_0 = n.
+
+7. (L8). Let M, N : R^m -> R^k be linear and e_i (i < m) the standard basis.
+(a), (b): hsNormSq M is a finite sum of squares, so it is >= 0, and hsNorm(M)^2 = (sqrt(hsNormSq M))^2 = hsNormSq M.
+(c): for each i, |(M+N)e_i| <= |M e_i| + |N e_i| and (x + y)^2 <= 2x^2 + 2y^2 (since 2x^2 + 2y^2 - (x+y)^2 = (x - y)^2 >= 0), so |(M+N)e_i|^2 <= 2|M e_i|^2 + 2|N e_i|^2; sum over i.
+(d): |(-M)e_i| = |-(M e_i)| = |M e_i|.
+(e): if hsNormSq M = 0, every summand (each >= 0) is 0, so M e_i = 0 for all i; every v in R^m is sum_i v_i e_i, so M v = sum_i v_i M e_i = 0, i.e. M = 0.
+(f): for v = sum_i v_i e_i, |M v| <= sum_i |v_i| |M e_i| <= (sum_i v_i^2)^(1/2) (sum_i |M e_i|^2)^(1/2) = |v| hsNorm M (triangle inequality, then Cauchy-Schwarz in R^m). Since hsNorm M >= 0, the definition of the operator norm gives ||M|| <= hsNorm M.
+(g): |M e_i| <= ||M|| |e_i| = ||M||, so hsNormSq M <= m ||M||^2, and taking (monotone) square roots, hsNorm M <= sqrt(m ||M||^2) = sqrt(m) ||M||.
+
+8. (L9). K is finite-dimensional, hence complete, and v = P_K v + (v - P_K v) with orthogonal summands, so |P_K v|^2 <= |v|^2. Hence hsNormSq(P_K) = sum_{i<m} |P_K e_i|^2 <= sum_{i<m} |e_i|^2 = m.
+
+## Key steps
+
+1. Coordinates of graphPoint (castAdd part a, natAdd part b) give (L1)-(L3), |graphPoint a b|^2 = |a|^2 + |b|^2 and the inner-product splitting
+2. horizontalPlane = {graphPoint(c,0)} and graphPoint(0,b) is orthogonal to it; q preserves inner products, so P_{T_0} q(graphPoint(a,b)) = q(graphPoint(a,0)) by the characterization of orthogonal projections
+3. Pythagoras gives infDist(v,K) = |v - P_K v|, which equals |b| for v = q(graphPoint(a,b))
+4. T_0 is the image under the linear equivalence q of the span of n orthonormal vectors, so finrank T_0 = n
+5. Hilbert-Schmidt facts termwise; Cauchy-Schwarz gives ||M|| <= hsNorm M; |M e_i| <= ||M|| gives hsNorm M <= sqrt(m)||M||; |P_K e_i| <= 1 gives hsNormSq(P_K) <= m
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean; diff GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of every lean_name field in dag.json and nodes/*/*.json for the 8 any_radius_gr_* names; grep -rl any_radius_gr_ --include=*.json <run>; git grep -c any_radius_gr_ <ref> -- '*.lean' over all refs; rg -l any_radius_gr_ <snapshot>/project`
+- `python3 -I dump of nodes/root-allard-any-radius-a1/decomposition-v2.json (sibling statements tangent_ae, rescaled_varifold, monotonicity_bounds, tilt_height_l1, tilt_iteration, graph_comparison, radial_height, campanato, pinching) and of this node's parent-child-handoff.json, decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json`
+- `sed -n 200,210p and sed -n 515,530p <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean (integral_undef, integral_eq_lintegral_of_nonneg_ae)`
+- `rg -n 'theorem lintegral_mul_le_Lp_mul_Lq' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean; sed -n 195,215p of the same file`
+- `rg -n 'eLpNorm_le_eLpNorm_mul_rpow_measure_univ' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `grep -n 'theorem toReal_rpow|theorem ofReal_rpow_of_nonneg|theorem mul_rpow_of_nonneg' <snapshot>/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean; grep -n 'ofReal_norm' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `grep -n 'theorem integral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean; grep -n 'theorem lintegral_map_equiv' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean; grep -n 'theorem lintegral_mono_set' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/*.lean`
+- `lake build GMT.Ch05.Submission in /tmp/gr-v2-scratch/proj (fresh copy of the pinned snapshot project, packages symlinked to lake-packages-25730c7c)`
+- `lake env lean Checks/Types.lean and Checks/TypesV2.lean (the 8 child lean_statements from v1 and from the final v2 draft, plus the selected parent type)`
+- `lake env lean Checks/Iface.lean (14 sibling/child interface examples)`
+- `lake env lean Checks/LpBall.lean (complete proof of the frozen lp_ball_bounds type; #print axioms)`
+- `lake env lean Checks/Names.lean (#check of every Mathlib name cited in the corrected lp_ball_bounds proof)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-any-radius-a1-graph-rate-a1/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/CompareExp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/NNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project`
+- `/tmp/gr-v2-scratch/proj/Checks/Types.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/TypesV2.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Iface.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/LpBall.lean`
+- `/tmp/gr-v2-scratch/proj/Checks/Names.lean`
+
+Snapshot
+- Pinned at project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d.
+- Snapshot Contract.lean and Submission.lean are byte-identical to the workspace copies, and Submission equals Contract.
+
+Definitions that shape the split
+- scaledLpNorm = (ofReal(sigma^(p-n)) * lintegral over closedBall xi sigma of ‖H x‖ₑ^p)^(1/p).
+- tiltExcess = (sigma^n)^-1 times a Bochner integral.
+- lp_ball_bounds is stated for an arbitrary H (no measurability hypothesis), so its (K2) proof must split on the integrability of f = ‖H‖ itself.
+
+Mathlib facts behind the correction
+- integral_undef (Bochner/Basic.lean:204) applies to the actual integrand f.
+- integral_eq_lintegral_of_nonneg_ae (:515) needs only 0 <=ᵐ f and AEStronglyMeasurable f.
+- ENNReal.lintegral_mul_le_Lp_mul_Lq (MeanInequalities.lean:202) needs AEMeasurable of both factors.
+- ENNReal.toReal_rpow (Pow/NNReal.lean:962) is unconditional.
+- ofReal_norm replaces the deprecated ofReal_norm_eq_enorm (Normed/Group/Basic.lean:389).
+- IntegrableOn.aestronglyMeasurable does not exist; Integrable.aestronglyMeasurable is cited instead.
+- Change of variables along a MeasurableEquiv needs no measurability, which supports translate_identities: integral_map_equiv (Bochner/Basic.lean:1105) and lintegral_map_equiv (Lebesgue/Map.lean:94). Neither does lintegral_mono_set (Lebesgue/Basic.lean:98).
+
+No-match results
+- 'any_radius_gr_' occurs in 0 snapshot project files and in 0 .lean files on any git branch.
+- In dag.json and nodes/*/*.json it occurs only in this node's own v1 proposal, audit and receipt, so the 8 names are free.
+
+Lean
+- All 8 frozen child types and the parent type elaborate.
+- The full lp_ball_bounds proof compiles with only propext, Classical.choice and Quot.sound.
+- The 14 interface examples compile without sorry.

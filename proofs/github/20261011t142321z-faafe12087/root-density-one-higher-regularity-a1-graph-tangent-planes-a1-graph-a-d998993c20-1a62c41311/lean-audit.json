@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "50b8c19ada93e0bd8e26990678dd92485ab9b39c4f87a9f2069503739739744e",
+  "git_delta": {
+    "base_commit": "ea56868440df1b290b9adc8b6b4dbfd94df0871d",
+    "candidate_commit": "4d7abc8204c5276080256ef08d707f22f184be15",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_gat_setIntegral_eq_of_inter",
+    "diff_sha256": "5ba8ab8ccfdd1597f4f12bcce5faca0410e6aea049af2d7ab6aa4e8b7d1db50e",
+    "source_sha256": "7803bddf0d282d75dbc0a7848bfa55d4d0b70d857e78c8f9bf2ad036baae8407",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_gat_setIntegral_eq_of_inter",
+      "statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (φ : Amb n ℓ → ℝ) (S T B : Set (Amb n ℓ)), MeasurableSet B → (∀ w, w ∉ B → φ w = 0) → S ∩ B ⊆ T → T ⊆ S → ∫ w in S, φ w ∂μ = ∫ w in T, φ w ∂μ",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

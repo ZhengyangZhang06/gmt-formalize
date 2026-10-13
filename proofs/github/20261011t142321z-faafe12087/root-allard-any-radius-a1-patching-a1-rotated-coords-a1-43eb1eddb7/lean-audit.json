@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "54f9e7ef6cba0b68f8af01b6ba1bcbd5d4fb2aac33cee684989a3c2b18c78694",
+  "git_delta": {
+    "base_commit": "651992e260522c2569bb391ea55b43bdd81dd10e",
+    "candidate_commit": "4494f34daecc52903614a77a5fbd08129fa3c499",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "73dd7ad391f6e3e474c2b1e27221f96244684ab84c3b1da422c61e15c5db20bf",
+    "source_sha256": "472970fd956724243bef5cd8230f83895f212b20b32fd5375effc024ec37656e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.arp_rotatedPlane_graphPoint_coords",
+      "statement": "∀ (n ℓ : ℕ), (∀ (a : Rn n) (b : Rn ℓ), graphPoint a b = (EuclideanSpace.finAddEquivProd : Amb n ℓ ≃L[ℝ] Rn n × Rn ℓ).symm (a, b)) ∧ (∀ (a : Rn n) (b : Rn ℓ), ‖graphPoint a b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2) ∧ ∀ (q₀ : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (a : Rn n) (b : Rn ℓ), infDist (q₀ (graphPoint a b)) (rotatedPlane q₀ : Set (Amb n ℓ)) = ‖b‖",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

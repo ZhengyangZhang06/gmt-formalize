@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1.uniform_limit_integral-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.schauder_estimate-a1.blowup_estimate-a1.weak_eq_limit-a1",
+  "depth": 6,
+  "title": "Convergence of integrals under uniform convergence on a compact set containing the supports",
+  "statement": "Let n be a natural number; integrals are Bochner integrals for Lebesgue measure on R^n. Let K be a compact subset of R^n, f_k : R^n -> R (k in N) and g : R^n -> R. Assume: f_k is integrable for all sufficiently large k; g is integrable; for all sufficiently large k, f_k(z) = 0 for every z not in K; g(z) = 0 for every z not in K; and f_k -> g uniformly on K as k -> infinity. Then the integral of f_k over R^n tends to the integral of g over R^n as k -> infinity.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Rn n)) (f : ℕ → Rn n → ℝ) (g : Rn n → ℝ), IsCompact K → (∀ᶠ k in atTop, Integrable (f k)) → Integrable g → (∀ᶠ k in atTop, ∀ z, z ∉ K → f k z = 0) → (∀ z, z ∉ K → g z = 0) → TendstoUniformlyOn f g atTop K → Tendsto (fun k => ∫ z, f k z) atTop (𝓝 (∫ z, g z))",
+  "lean_name": "dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-schauder-1e6ac96686-a1"
+}

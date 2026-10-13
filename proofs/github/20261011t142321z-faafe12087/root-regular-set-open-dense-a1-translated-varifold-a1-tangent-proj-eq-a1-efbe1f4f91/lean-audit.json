@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d00d18fb9aec7b47f654bc334140489f0ad9c84a4393323a0ebfa19208be7f69",
+  "git_delta": {
+    "base_commit": "e8359b53bb7bc46effe2f2815350ceac0145cb4b",
+    "candidate_commit": "e9dece5c26fe76fa2bb55825478b2249e1521013",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_tv_tangentProj_eq",
+    "diff_sha256": "74908c71a70fc51a00b0827a33df3a97129bb581aec81afd7b2410514997c717",
+    "source_sha256": "b12dbe29b0acf5e4e2d274109735bb2fdfc81d14b3ac0dd89137640c194640d4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_tv_tangentProj_eq",
+      "statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : RectifiableVarifold n ℓ U') (x₀ : Amb n ℓ), W.carrier = (fun y => y + x₀) ⁻¹' V.carrier → (∀ y, W.mult y = V.mult (y + x₀)) → ∀ y, W.tangentProj y = V.tangentProj (y + x₀)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

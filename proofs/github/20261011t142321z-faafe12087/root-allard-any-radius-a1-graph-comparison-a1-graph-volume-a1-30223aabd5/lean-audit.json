@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54718c850669d871d4f125458a2084c9a6ef67a8cdd759dbbfae28cfbce4fa48",
+  "git_delta": {
+    "base_commit": "3ffbaa9842cca9af59060b5bced4f3dcddb0ccf2",
+    "candidate_commit": "b1fbb1cec91e6cdb4bce9297f8efb42910429287",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "anyrad_gc_volume_le_graph_hausdorff",
+    "diff_sha256": "0cb7fef2adb1102328123bb3bd097d3ae97e00c44bb1c3070b2e5f3fdc267317",
+    "source_sha256": "5ca135e51c1b4232fe3de0d14c8639c47f9a70fa045c5774a0087e5927109a68",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.anyrad_gc_volume_le_graph_hausdorff",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (A : Set (Rn n)), volume A ≤ (μHE[n] : Measure (Amb n ℓ)) (q '' graphOver u A)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

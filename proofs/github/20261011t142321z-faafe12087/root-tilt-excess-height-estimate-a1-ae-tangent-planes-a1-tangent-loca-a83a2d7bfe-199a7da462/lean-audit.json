@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5aed6025aa6c04d5784523a467e1c000099788e0d070fd2e233993c183783d7e",
+  "git_delta": {
+    "base_commit": "1f723bb9ec5d787807c9093433b7da392463052f",
+    "candidate_commit": "3e858558bd15bb6fad5d2ab0567750aed24f651a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "aetp_approxTangent_of_density_zero_symmDiff",
+    "diff_sha256": "13b6356f2428106a43f4ef5084e84e2f4be73b3f9770f70e9573f6c683b01f59",
+    "source_sha256": "069146d6d064a469e5c4d109bbd192f83d59ec262fbb4406d9993857b5850555",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.aetp_approxTangent_of_density_zero_symmDiff",
+      "statement": "∀ (n ℓ : ℕ) (A N : Set (Amb n ℓ)) (x : Amb n ℓ) (Q : Submodule ℝ (Amb n ℓ)), MeasurableSet A → MeasurableSet N → (μHE[n] : Measure (Amb n ℓ)) A < ⊤ → (μHE[n] : Measure (Amb n ℓ)) N < ⊤ → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((A \\ N) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (μHE[n] : Measure (Amb n ℓ)) ((N \\ A) ∩ closedBall x r) / ENNReal.ofReal (r ^ n)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x Q → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n A x Q",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

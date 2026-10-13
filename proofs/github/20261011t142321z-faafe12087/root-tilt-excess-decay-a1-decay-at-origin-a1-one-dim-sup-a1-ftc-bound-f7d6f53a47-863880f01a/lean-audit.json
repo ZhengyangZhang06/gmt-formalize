@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "957ed962754e01c4c646c7d29abbcff830f5b7f08e79e72637407a20df090684",
+  "git_delta": {
+    "base_commit": "2ecf770d5df85949153a4cb4f8f973777433c140",
+    "candidate_commit": "c350aa53cb1210323ad567426d2a6c1273dd0c9d",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ods_intervalIntegral_le_of_ae_abs_le",
+    "diff_sha256": "20f2ab0b959cc063a6169a154e5c17003da5b8119bce269f1654383c826ddb5a",
+    "source_sha256": "860bea4d4543b851f327620dff9c058dc64b74a45c3978979b2c53c9cc75c077",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ods_intervalIntegral_le_of_ae_abs_le",
+      "statement": "∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

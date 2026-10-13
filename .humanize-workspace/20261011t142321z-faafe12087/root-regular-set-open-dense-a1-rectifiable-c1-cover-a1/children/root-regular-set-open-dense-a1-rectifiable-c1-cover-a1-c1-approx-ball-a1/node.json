@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1",
+  "depth": 3,
+  "title": "C¹ approximation of a real Lipschitz function on a closed ball (Simon 2.1.5, localized)",
+  "statement": "Let n ∈ ℕ, K ∈ ℝ≥0 and f : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be K-Lipschitz. Then for every R ∈ ℝ and every ε ∈ (0, ∞] there is g : ℝⁿ → ℝ of class C¹ (ContDiff ℝ 1 g) such that Lⁿ(B_R(0) ∩ {x : f(x) ≠ g(x)}) < ε, where B_R(0) = closedBall 0 R and Lⁿ is Lebesgue measure (volume) on ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ (R : ℝ) (ε : ℝ≥0∞), 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume (closedBall (0 : Rn n) R ∩ {x | f x ≠ g x}) < ε",
+  "lean_name": "rsod_lipschitz_c1_approx_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-a1-a1"
+}

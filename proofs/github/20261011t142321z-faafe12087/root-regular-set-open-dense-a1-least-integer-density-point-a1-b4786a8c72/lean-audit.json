@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1af7ea98a4eb756686f75353231d38b1031470b09938f44e823ec560d463246d",
+  "git_delta": {
+    "base_commit": "07fc355de43561c2564473fa671e4d88b426e92d",
+    "candidate_commit": "91d2366bf5606e7c3f7392b79ebf728d2f94c95b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_exists_least_integer_density_point",
+    "diff_sha256": "bde510a59b1156d14c4ec901c56ec68a0c7cf0a80d6b477eb24fba3ffdd8265f",
+    "source_sha256": "71a6e5b35758119044231bd60d9dedd90dd364adf15c8982dded802756327db6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_exists_least_integer_density_point",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, V.HasDensity x (V.mult x)) → (∀ᵐ x ∂V.weight, ∃ k : ℕ, 1 ≤ k ∧ V.mult x = k) → ∀ ξ ∈ V.support, ∀ r : ℝ, 0 < r → ∃ (N : ℕ) (x₀ : Amb n ℓ), 1 ≤ N ∧ x₀ ∈ ball ξ r ∧ V.HasDensity x₀ N ∧ ∀ᵐ x ∂V.weight, x ∈ ball ξ r → (N : ℝ) ≤ V.mult x",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

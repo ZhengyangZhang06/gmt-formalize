@@ -1,0 +1,29 @@
+{
+  "node_id": "root.tilt_excess_decay-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/118",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/5200",
+  "candidate_commit": "14b7adf1a28b4905663b4860a280b199d144c3d9",
+  "integrated_commit": "",
+  "proof_base_commit": "9006898db16cb903d87a94c4365a96593c0805ea",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.tilt_excess_height_estimate-a1",
+    "root.affine_approximation-a1",
+    "root.lipschitz_approximation-a1",
+    "root.harmonic_approximation-a1",
+    "root.tilt_excess_decay-a1.translate_varifold-a1",
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+    "root.tilt_excess_decay-a1.density_ge_one-a1",
+    "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+    "root.tilt_excess_decay-a1.harmonic_affine_approx-a1",
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+    "root.tilt_excess_decay-a1.lemma_a_tilt_height-a1",
+    "root.tilt_excess_decay-a1.decay_at_origin-a1"
+  ]
+}

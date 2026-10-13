@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b3c658df4d77e3c9bf2baa221c865574dbfa1d73ce47b59b7005cdd54e17b2a1",
+  "git_delta": {
+    "base_commit": "e631e41ea45c6c5afd279369ede1cbf7971fc282",
+    "candidate_commit": "4b923ce9786a89b4e946288b915ff77284dac128",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tv_tangentProj_eq",
+    "diff_sha256": "d112b1c48005df3298e01935463a28f7c1512a34d25065b656f8a7aa6085d4c3",
+    "source_sha256": "7e23794e1e6346df131cb6d7dd681d5ca465a04bbabee4a57b57d059c93d95de",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tv_tangentProj_eq",
+      "statement": "∀ (n ℓ : ℕ) (U U' : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (V' : RectifiableVarifold n ℓ U') (ξ : Amb n ℓ), V'.carrier = (fun x => x - ξ) '' V.carrier → (∀ y, V'.mult y = V.mult (y + ξ)) → ∀ y, V'.tangentProj y = V.tangentProj (y + ξ)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

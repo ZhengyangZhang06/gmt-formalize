@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "434406757f39e15930eda9a59dd42ef1e31bb4685e703f4cf889eed964fad165",
+  "git_delta": {
+    "base_commit": "819d5918c9dcfc1c50033e9d575a99bdb3333b9a",
+    "candidate_commit": "d56eb73c421a567ad065bf6534d854909c6dd5ed",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "allard52_lad_segment_null",
+    "diff_sha256": "13cb32ad1a50f6c3d1251749acd155b57de1430b411ef988f34eef748ef1d9ac",
+    "source_sha256": "2499e6ebc56712b46bff57e0a7318015bdb691fb0a7e4b7f3b66fe48611dd5f9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.allard52_lad_segment_null",
+      "statement": "∀ (n : ℕ) (N : Set (Rn n)), volume N = 0 → ∀ (x h : Rn n), ∀ᵐ w ∂(volume : Measure (Rn n)), volume {t : ℝ | x + w + t • h ∈ N} = 0",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

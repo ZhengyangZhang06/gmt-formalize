@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "acc67ee270d45718fd28b76972eddda4d14aca3380bf3e6b9674bf5ad3f32866",
+  "git_delta": {
+    "base_commit": "21ffb16a34463dd694d42d377c682b93c82dcdd2",
+    "candidate_commit": "aecc51b04245f51cfa66b91a5114f9e8955cf1e7",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_approxTangent_transfer",
+    "diff_sha256": "054b11d7270a72312d184c0d62202ce51d430e40ded8a2b05b3f6e00b1d844dd",
+    "source_sha256": "671a8b84a64417a8a8aa03e9e0cb8e9010a9f97ee70a2573717af73f8466fcc8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_approxTangent_transfer",
+      "statement": "∀ (n ℓ : ℕ) (C N D : Set (Amb n ℓ)) (x : Amb n ℓ) (P : Submodule ℝ (Amb n ℓ)), MeasurableSet D → D ⊆ C → D ⊆ N → (μHE[n] : Measure (Amb n ℓ)) C < ∞ → (μHE[n] : Measure (Amb n ℓ)) N < ∞ → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((C \\ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Tendsto (fun ρ : ℝ => (ρ ^ n)⁻¹ * (μHE[n] : Measure (Amb n ℓ)).real ((N \\ D) ∩ closedBall x ρ)) (𝓝[>] 0) (𝓝 0) → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n N x P → Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n C x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

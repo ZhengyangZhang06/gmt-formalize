@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb96d28f2a008ba51c0809e82f0ddcd671ff779c7653cb60230359397e46fb8c",
+  "git_delta": {
+    "base_commit": "7c8ecfd75bf300a35710bd7740f45f6451aae9ed",
+    "candidate_commit": "f534e97e91e495123231592a8ab06cf1804a3a2e",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_tp_wtlp_rescaled_limit",
+    "diff_sha256": "1add67f1644051cf47258b70925f8a5e493d01ff42ecb4fb0d5cdae4b0d14cdb",
+    "source_sha256": "f6dbe4224977c72d10e45d5898579383cc07d6e3af615ff7834e1fcfb23810d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_tp_wtlp_rescaled_limit",
+      "statement": "∀ (n : ℕ) (L : ℝ → ℝ≥0∞) (ρ : ℝ), 0 < ρ → Tendsto (fun t : ℝ => ENNReal.ofReal ((t ^ n)⁻¹) * L t) (𝓝[>] 0) (𝓝 0) → (∀ᶠ r in 𝓝[>] (0 : ℝ), L (r * ρ) ≠ ⊤) ∧ Tendsto (fun r : ℝ => (r ^ n)⁻¹ * (L (r * ρ)).toReal) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

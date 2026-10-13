@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bf2910002def47087b7aae4ced6e358f2480c7be4587f77bb23db4c40262614f",
+  "git_delta": {
+    "base_commit": "466ca47f5d672366b9ba56fdeae31cf2cd90691b",
+    "candidate_commit": "191cc1d92dbade936e0dd47e4116a0b76b354ea2",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "6a1ec5d51bf40f5a441e81e66fd6afb44cc2e359b7214deb4fe8898dba8f8cf8",
+    "source_sha256": "a5f66754aecfae844dbb9e937075e282797973b71d2d1fede97cfcf7d7c93ff5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_allard_graph_at_density_one",
+      "statement": "AllardRegularityTheorem → ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (p : ℝ), (n : ℝ) < p → V.HasGeneralizedMeanCurvature H → V.LocallyLp H p → (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ ξ ∈ U, V.HasDensity ξ 1 → ∃ R > 0, ∃ (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ), closedBall ξ R ⊆ U ∧ ContDiffOn ℝ 1 u (ball 0 R) ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) R, ∀ y ∈ ball (0 : Rn n) R, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ (1 - (n : ℝ) / p)) ∧ Q '' ((fun x => x - ξ) '' V.support) ∩ ball 0 R = graphOver u (ball 0 R) ∩ ball 0 R",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

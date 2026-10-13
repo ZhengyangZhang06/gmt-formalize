@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f98180511cb3645086e4796b935a2bc81b0923da045e6ca05889f84aedacb914",
+  "git_delta": {
+    "base_commit": "99a36a553d0f091de1cd5add8395927bdee5c662",
+    "candidate_commit": "dc8114026c8cf57b7df48c5b03486ccdd777954a",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "rsod_c1tan_chart_blowUp_tendsto",
+    "diff_sha256": "d4e8735847f952081906f75caa6098bd3fb5c00cffb40948b1c543b206e73549",
+    "source_sha256": "b3ce0ef0d4ccb1cbb2adb8db0a73f0264362d9c5a67400c336adef21fe0f2710",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_c1tan_chart_blowUp_tendsto",
+      "statement": "∀ (m N : ℕ) (V : Set (Rn m)) (φ : Rn m → EuclideanSpace ℝ (Fin N)) (J : Rn m → ℝ) (L : Rn m →L[ℝ] EuclideanSpace ℝ (Fin N)) (v₀ : Rn m) (c δ ε : ℝ) (f : EuclideanSpace ℝ (Fin N) → ℝ), IsOpen V → ContinuousOn φ V → ContinuousOn J V → HasFDerivAt φ L v₀ → 0 < c → 0 < δ → 0 < ε → closedBall v₀ δ ⊆ V → (∀ w : Rn m, ‖w‖ ≤ δ → c * ‖w‖ ≤ ‖φ (v₀ + w) - φ v₀‖) → (∀ v ∈ V, δ ≤ ‖v - v₀‖ → ε ≤ ‖φ v - φ v₀‖) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ u in {u : Rn m | v₀ + r • u ∈ V}, J (v₀ + r • u) * f (r⁻¹ • (φ (v₀ + r • u) - φ v₀)) ∂(μHE[m] : Measure (Rn m))) (𝓝[>] 0) (𝓝 (∫ u, J v₀ * f (L u) ∂(μHE[m] : Measure (Rn m))))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

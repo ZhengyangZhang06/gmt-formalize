@@ -1,0 +1,18 @@
+{
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/3874",
+  "solution_pr": "https://github.com/ZhengyangZhang06/gmt-formalize/pull/4701",
+  "candidate_commit": "6560162afc43e4e433cc552fe60a9e9d38ac9c3e",
+  "integrated_commit": "",
+  "proof_base_commit": "a0cbb004aa77d989e268c52c1ac74415d2527a6f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit ea5607598f3133b40a13241f2e51517a8c6423cd {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1",
+  "requires": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1.scalar_c1_bounds-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.coeff_uniform_bounds-a1.bilinear_basis_bound-a1"
+  ]
+}

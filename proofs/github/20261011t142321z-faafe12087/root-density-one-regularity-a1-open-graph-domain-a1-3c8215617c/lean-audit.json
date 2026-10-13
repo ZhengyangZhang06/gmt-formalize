@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f84d24d2cef7f8246d15ad353aa1101e8b5cf5b76bda9cb448411ec1baab2bd",
+  "git_delta": {
+    "base_commit": "025b69e428559faeefc423e717bdd594bebe8c24",
+    "candidate_commit": "9522a4f1b6fdc35312ffa77323c641974de08171",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "exists_open_graph_domain_of_closedBall_graph",
+    "diff_sha256": "c5292e53c70f3656039789af45cee500431ef05e9252a9b917d7153fd6a84243",
+    "source_sha256": "a32f879a7fe9b6ed66b383b6a1e753678e5f372fc47432692f90096d75ebbc7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.exists_open_graph_domain_of_closedBall_graph",
+      "statement": "∀ {n ℓ : ℕ} (S : Set (Amb n ℓ)) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (u : Rn n → Rn ℓ) (s : ℝ), 0 < s → ContinuousOn u (closedBall 0 s) → u 0 = 0 → S ∩ closedBall 0 s = q '' graphOver u (closedBall 0 s) ∩ closedBall 0 s → ∃ W : Set (Rn n), IsOpen W ∧ (0 : Rn n) ∈ W ∧ W ⊆ ball 0 s ∧ q.symm '' S ∩ ball 0 s = graphOver u W",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f2bf0052482ef91e3d8b94c488a294d77fba4f6d66f7afd4b19680c4ecb40e89",
+  "git_delta": {
+    "base_commit": "ea152d967bbebd0cb8d538e78e1937a42d196480",
+    "candidate_commit": "ab2a8e266dcfdc0040fb0ab5544e66a59ce58c8b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_vgt_graph_measurability",
+    "diff_sha256": "d1454d5fe99990794d33e1613a10997da8924645e2d6764234e66ce555c4088d",
+    "source_sha256": "922bf1609d3bff2dceb89764b91f233bc5c06d0597416fc4fa307062e9c9e95a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_vgt_graph_measurability",
+      "statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), ContinuousOn f (closedBall 0 R) → (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → MeasurableSet (q '' graphOver f A)) ∧ (∃ Fh : Rn n → Amb n ℓ, Measurable Fh ∧ ∀ x ∈ closedBall (0 : Rn n) R, Fh x = q (graphPoint x (f x))) ∧ Measurable (fun x : Rn n => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "615e1abb87a707df2af488f880e1c3cf2ee47c0d0ba9b8fa054e3b3d0814884a",
+  "git_delta": {
+    "base_commit": "aef525dd6e4247949d0d8187ea97c0c9ea704cdb",
+    "candidate_commit": "14b7adf1a28b4905663b4860a280b199d144c3d9",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "03364a823a97b8316998323bcc93ee31e58960f17ec35e82298aef2c44f9307d",
+    "source_sha256": "9fc1b216b9baa50a9ae0d931f547094cfc6ff0eed81b61341b14e1d317684305",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tilt_excess_decay_theorem",
+      "statement": "TiltExcessDecayTheorem",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

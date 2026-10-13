@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "90701c3fae92a53eba2eb7d25210eb166ded2057dc81aec959216d91b4d22b01",
+  "git_delta": {
+    "base_commit": "d31f75edef7d50a79bb55bedbc9b7100332afbf4",
+    "candidate_commit": "01bd8636b7b2cd2b083a4accd7aff6c60c1ed0ab",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "tdo_ods_ball_integral_eq_interval",
+    "diff_sha256": "3e42e84cc76b8b6ce3841ba2f895a611d37b4ba9a2565df00570d621bef4ba3c",
+    "source_sha256": "cb964f75ea225867dcb049245b4dabc344864cb0858a712003a0abf2ebe33486",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_ods_ball_integral_eq_interval",
+      "statement": "∀ (φ : Rn 1 → ℝ) (a : ℝ), (∫ y in ball (0 : Rn 1) a, φ y) = ∫ t in Ioo (-a) a, φ (EuclideanSpace.single (0 : Fin 1) t)",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a3bac0c16bda2be843b65268a6bb40e310b0854c11d8c63f33bfc1439e8d450",
+  "git_delta": {
+    "base_commit": "f2af21d5dd58e7d814f5196d9b678add52e3933b",
+    "candidate_commit": "51224cc6ea96bd02d4433fb8f67cabdb4fdd0e2b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "poincare_c1_ball_double_integral_bound",
+    "diff_sha256": "91e05bc0624732ddb0bc91b2001fe3c74ba42b6159a04c5cecca072b07f3b452",
+    "source_sha256": "b6aaf8c179ab58a5c8f6f27646aff755b935683d85dc7812efe733c7873fe60c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.poincare_c1_ball_double_integral_bound",
+      "statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ r : ℝ, 0 < r → r ≤ 1 → ∫⁻ x in ball (0 : Rn n) r, ∫⁻ y in ball (0 : Rn n) r, ‖φ x - φ y‖ₑ ^ 2 ≤ (2 : ℝ≥0∞) ^ (n + 2) * volume (ball (0 : Rn n) 1) * ∫⁻ x in ball (0 : Rn n) r, ‖gradient φ x‖ₑ ^ 2",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1.localized_first_variation-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+  "depth": 4,
+  "title": "Localized first variation for a field φ e with constant e: ∫_{B_s} div_M(φ e) dμ = −∫_{B_s} φ ⟨e, H⟩ dμ",
+  "statement": "Let n, l ∈ N, U ⊆ R^{n+l}, and V a rectifiable n-varifold in U with generalized mean curvature H in U; μ = V.weight. Let φ : R^{n+l} → R be C^1, let e ∈ R^{n+l}, and let r, s, R be real numbers with 0 < r, 2r <= R, r <= s <= R and B_R(0) ⊆ U (closed balls). Assume every x ∈ spt V ∩ B_R(0) with x ∈ tsupport φ satisfies ‖x‖ < r, where spt V = V.support = U ∩ supp μ. Then ∫_{B_s(0)} div_M(φ e) dμ = −∫_{B_s(0)} φ(x) ⟨e, H(x)⟩ dμ, where div_M(φ e)(x) = V.divM (y ↦ φ(y) e) x. These are Bochner integrals and no integrability is assumed; by Lean's convention a non-integrable integrand has integral 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ (φ : Amb n ℓ → ℝ) (e : Amb n ℓ) (r s R : ℝ), ContDiff ℝ 1 φ → 0 < r → 2 * r ≤ R → r ≤ s → s ≤ R → closedBall (0 : Amb n ℓ) R ⊆ U → (∀ x ∈ V.support ∩ closedBall 0 R, x ∈ tsupport φ → ‖x‖ < r) → ∫ x in closedBall (0 : Amb n ℓ) s, V.divM (fun y => φ y • e) x ∂V.weight = -∫ x in closedBall (0 : Amb n ℓ) s, φ x * inner ℝ e (H x) ∂V.weight",
+  "lean_name": "gwe_vfv_localized_first_variation",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ae_mem_support-a1",
+    "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ae_mem_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a-e32a298e67-a1",
+      "result_commit": "8c1c60879a450348a1f82a0e41ff0b27230e9ea5",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-a1",
+      "result_commit": "cfec0688754671ca1b5207c66bd4ae6dc83dd2e6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-varia-8b0f317ea4-a1"
+}

@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dohr_tv_|dohr_translate' <snapshot>",
+        "rg -n -i 'translat' <snapshot>/project/GMT",
+        "rg -n 'support_map|map_support' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/",
+        "rg -n 'theorem .*withDensity.*map|lemma .*withDensity.*map|theorem .*map.*withDensity|lemma .*map.*withDensity' <snapshot>/mathlib/Mathlib/MeasureTheory",
+        "rg -n 'measurePreserving_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "rg -n 'def divRight|def mulRight' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean",
+        "rg -n 'lemma mem_support_iff_forall' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "rg -n 'theorem lintegral_map_equiv|theorem image_eq_preimage_symm|theorem restrict_map' <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean <snapshot>/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n 'MeasurableEmbedding.integral_map|MeasurableEmbedding.integrable_map_iff' <snapshot>/mathlib/Mathlib",
+        "rg -n 'integrableOn_comp_preimage|theorem restrict_preimage_emb|NullMeasurableSet.preimage|theorem comp_quasiMeasurePreserving' <snapshot>/mathlib/Mathlib/MeasureTheory <snapshot>/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "rg -n 'theorem fderiv_comp_sub ' <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "rg -n 'lemma Topology.IsEmbedding.map_nhdsWithin_eq' <snapshot>/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "rg -n 'HasCompactMulSupport.comp_homeomorph|mulTSupport_comp_eq_preimage' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "grep -n 'def CountablyRectifiable|def blowUpMap|def HasWeightedApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "rg -n -i 'translat|blowUpMap_|subRight|addRight' .lake/packages/simongmt/Poincare/SimonGMT",
+        "cmp <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; cmp <snapshot>/project/GMT/Ch05/Submission.lean GMT/Ch05/Submission.lean",
+        "lake env lean -o /tmp/dohr-tv-check/build/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean",
+        "lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/dohr-tv-check/build lean /tmp/dohr-tv-check/src/Children.lean'",
+        "lake env bash -c 'LEAN_PATH=$LEAN_PATH:/tmp/dohr-tv-check/build lean /tmp/dohr-tv-check/src/Full.lean'",
+        "python3 -I name-collision check of the 5 proposed lean_names against all 79 lean_name fields of .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-translate-varifold-a1/parent-child-handoff.json",
+        "/tmp/dohr-tv-check/src/Children.lean",
+        "/tmp/dohr-tv-check/src/Full.lean"
+      ],
+      "conclusion": "The pinned snapshot (manifest.json) records project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Its Contract.lean and Submission.lean are byte-identical to the workspace copies (cmp).\n\nNothing to reuse for this node:\n- Neither the snapshot nor simongmt has a translation lemma for the contract's RectifiableVarifold. 'translat' matches only a remark in the Ch08 README, and 'dohr_tv_' matches nothing anywhere.\n- Mathlib has no lemma for the support of a pushforward ('support_map' / 'map_support' match nothing in Measure/Support.lean).\n- Mathlib has no general map-of-withDensity lemma for measurable equivalences; only Jacobian and rnDeriv variants exist.\nSo children 2 and 3 are real obligations.\n\nLibrary facts the child proofs use (snapshot line numbers):\n- IsometryEquiv.measurePreserving_euclideanHausdorffMeasure and Isometry.euclideanHausdorffMeasure_image: Geometry/Euclidean/Volume/Measure.lean:127, 131.\n- Translations subRight/addRight, the to_additive forms of divRight/mulRight: Topology/MetricSpace/IsometricSMul.lean:157, 167 and MeasureTheory/Group/MeasurableEquiv.lean:117, 193.\n- Measure.mem_support_iff_forall: Support.lean:75.\n- lintegral_map_equiv: Integral/Lebesgue/Map.lean:94.\n- MeasurableEquiv.image_eq_preimage_symm: MeasurableSpace/Embedding.lean:315.\n- MeasurableEquiv.restrict_map: Measure/Restrict.lean:890.\n- MeasurableEmbedding.integral_map: Bochner/Basic.lean:1093.\n- MeasurableEmbedding.integrable_map_iff: L1Space/Integrable.lean:374.\n- MeasurePreserving.integrableOn_comp_preimage: IntegrableOn.lean:319.\n- MeasurePreserving.restrict_preimage_emb: Dynamics/Ergodic/MeasurePreserving.lean:81.\n- NullMeasurableSet.preimage: QuasiMeasurePreserving.lean:134.\n- fderiv_comp_sub: FDeriv/Add.lean:892.\n- Topology.IsEmbedding.map_nhdsWithin_eq: ContinuousOn.lean:841.\n- HasCompactSupport.comp_homeomorph and tsupport_comp_eq_preimage: to_additive forms at Topology/Algebra/Support.lean:562 and 106.\n- simongmt Chapter03/Rectifiable.lean: CountablyRectifiable (l.34), blowUpMap (l.96), HasWeightedApproximateTangentSpaceAt (l.330). Its blow-up form makes the tangent-plane transport a direct rewrite.\n\nLean checks used the pinned toolchain with Submission compiled to a scratch olean:\n- All five child statements elaborate.\n- The parent assembly from the five sorry'd children compiles with no sorry of its own.\n- Complete scratch proofs of all five children compile, and #print axioms gives only [propext, Classical.choice, Quot.sound] for each child and for Submission.dohr_translate_varifold.\n- The independent reviewer reproduced these results.\n\nThe five dohr_tv_ names collide with none of the 79 DAG lean_names."
+    }
+  ],
+  "proof": "Source: the parent-supplied proof's fact (I2) (used in its Step 4), specialised to the homeomorphism tau and proved here in full. Notation: sigma(x) := x + xi, the inverse of tau.\n\n1. For every set N (measurable or not), (tau_# mu)(N) = mu(tau^{-1}(N)), because tau is the underlying function of the measurable equivalence MeasurableEquiv.subRight xi (MeasurableEquiv.map_apply).\n\n2. By Measure.mem_support_iff_forall, a point y lies in spt nu if and only if 0 < nu(N) for every N in the neighbourhood filter of y. Combined with step 1: y lies in spt(tau_# mu) if and only if 0 < mu(tau^{-1}(N)) for every neighbourhood N of y.\n\n3. Inclusion of spt(tau_# mu) in tau(spt mu). Let y be in spt(tau_# mu). We show that y + xi is in spt mu; since tau(y + xi) = y, this gives y in tau(spt mu). Let N be a neighbourhood of y + xi. The map sigma is continuous and sigma(y) = y + xi, so N' := sigma^{-1}(N) is a neighbourhood of y. By step 2, 0 < mu(tau^{-1}(N')), and tau^{-1}(N') = {x : (x - xi) + xi in N} = N. Hence 0 < mu(N) for every neighbourhood N of y + xi, i.e. y + xi is in spt mu.\n\n4. Inclusion of tau(spt mu) in spt(tau_# mu). Let x be in spt mu and let N be a neighbourhood of tau(x). The map tau is continuous at x, so tau^{-1}(N) is a neighbourhood of x, and therefore 0 < mu(tau^{-1}(N)) = (tau_# mu)(N) by step 1. Since N was arbitrary, tau(x) is in spt(tau_# mu) by step 2.\n\n5. Steps 3 and 4 prove spt(tau_# mu) = tau(spt mu).",
+  "key_steps": [
+    "(tau_# mu)(N) = mu(tau^{-1} N) for every set N because tau is a measurable equivalence",
+    "characterize the support by positivity of the measure on all neighbourhoods",
+    "if y is in spt(tau_# mu) then y + xi is in spt mu, using the neighbourhood sigma^{-1}(N) of y",
+    "if x is in spt mu then tau(x) is in spt(tau_# mu) by continuity of tau"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

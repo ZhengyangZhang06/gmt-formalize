@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6a7ade0b98ff0bdc36d183653ca4e02dc392c5cd732a27dd0f0b09276bd476a8",
+  "git_delta": {
+    "base_commit": "af095e1f310cf74d2bca61f00778b4e540a302ad",
+    "candidate_commit": "d2068f1c384d817e9a1ab357e16e7a9787e0efd6",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_ds_bilin_leibniz",
+    "diff_sha256": "6604b4f997597857780a0268d3a13ddc64a18157dbd5e82f520407ad756356d4",
+    "source_sha256": "8d1dcd6895869ab92e9192b7bf444b999fb0cea57537591908598a7dfad79523",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_ds_bilin_leibniz",
+      "statement": "∀ (n ℓ : ℕ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → (Rn n →L[ℝ] Rn ℓ)) (e : Rn n), IsOpen U → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U) → ContDiffOn ℝ 1 w U → ContDiffOn ℝ 1 (fun x => a x (w x)) U ∧ ∀ x ∈ U, ∀ P : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fun z => a z (w z)) x e P = a x (fderiv ℝ w x e) P + fderiv ℝ (fun z => a z (w x) P) x e",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

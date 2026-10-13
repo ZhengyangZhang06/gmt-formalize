@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1.uniform_taylor_remainder-a1",
+  "parent_id": "root.regular_set_open_dense-a1.rectifiable_c1_cover-a1.c1_approx_ball-a1",
+  "depth": 4,
+  "title": "Egoroff uniformization of the first-order Taylor remainder of a Lipschitz function on a closed set of finite measure",
+  "statement": "Let n ∈ ℕ, K ∈ ℝ≥0 and let f : ℝⁿ → ℝ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be K-Lipschitz. Let C ⊆ ℝⁿ be closed with Lⁿ(C) < ∞ (Lⁿ = volume), such that f is differentiable at every point of C, and let δ ∈ (0, ∞]. Write Df(x) := fderiv ℝ f x. Then there is a closed set A ⊆ C with Lⁿ(C \\ A) < δ with the following property: for every τ > 0 there is ρ > 0 such that |f(y) − f(x) − Df(x)(y − x)| ≤ τ|y − x| for all x, y ∈ A with |x − y| < ρ.",
+  "lean_statement": "∀ (n : ℕ) (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ C : Set (Rn n), IsClosed C → volume C ≠ ∞ → (∀ x ∈ C, DifferentiableAt ℝ f x) → ∀ δ : ℝ≥0∞, δ ≠ 0 → ∃ A : Set (Rn n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < δ ∧ ∀ τ : ℝ, 0 < τ → ∃ ρ : ℝ, 0 < ρ ∧ ∀ x ∈ A, ∀ y ∈ A, dist x y < ρ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ τ * ‖y - x‖",
+  "lean_name": "rsod_c1ab_uniform_taylor_remainder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-rectifiable-c1-cover-a1-c1-approx-ball-b52c4c1082-a1"
+}
