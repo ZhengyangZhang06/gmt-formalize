@@ -1,0 +1,102 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbr_bim_|cbr_boundary_isIntegerMultiplicity|rsd_mw_tfa_norm_props|cmr_abs_apply_le_massOn|lcmp_massOn_le_of_vanish_off_compact|lcmp_imRep_measure_restrict|dtc_extend_by_zero' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "theorem integral_withDensity_eq_integral_smul|theorem restrict_withDensity|theorem withDensity_absolutelyContinuous|theorem enorm_integral_le_lintegral_enorm|theorem lintegral_indicator_one_le|theorem setLIntegral_congr_fun|theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "exists_cthickening_subset_open|exists_contDiff_support_eq|exists_contMDiffMap_one_nhds_of_subset_interior|integrable_withDensity_iff_integrable_smul",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show 7a706164baaf42fc7f55751247396a8836928310:GMT/Ch07/Submission.lean",
+        "git show a3cc98d1f008606225ddd111bbd6688136867146:GMT/Ch07/Submission.lean",
+        "git show ae810e9b4cb8d26664747b2f51d22fb4241e09ca:GMT/Ch07/Submission.lean",
+        "git show 2527748da70b09774a09fb289587a318d32d7832:GMT/Ch07/Submission.lean",
+        "python3 /tmp/cbr-bim-review-fl15qq0h/build.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/AllProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/slice_localization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/extension_masses.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-bim-review-fl15qq0h/deformation_closure.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10c568d35f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10c568d35f/decomposition-v3.json",
+        "/tmp/cbr-bim-review-fl15qq0h/build.py",
+        "/tmp/cbr-bim-review-fl15qq0h/Types.lean",
+        "/tmp/cbr-bim-review-fl15qq0h/Assembly.lean",
+        "/tmp/cbr-bim-review-fl15qq0h/AllProofs.lean",
+        "/tmp/cbr-bim-review-fl15qq0h/slice_localization.lean",
+        "/tmp/cbr-bim-review-fl15qq0h/extension_masses.lean",
+        "/tmp/cbr-bim-review-fl15qq0h/deformation_closure.lean"
+      ],
+      "conclusion": "The split appropriately separates localization, extension mass bounds, and deformation followed by CL(d). The handoff digest was independently reproduced. The snapshot contract matches the workspace contract and Submission; package revisions match the pins. Searching the snapshot project found none of the proposed names. Five reuses have accepted checkpoints and byte-identical frozen types; three new names remain unreserved. All names are bare identifiers, and all eight one-line propositions elaborate without child implementations. The expanded graph has 27 reachable vertices and no cycles. Each new proof compiles using only its declared sibling hypotheses. All eight proofs and the exact selected parent assembly compile with only propext, Classical.choice, and Quot.sound, without sorryAx. The assembly uses the existing im_local dependency and proves the selected CL(d) ⇒ BR(d) contract. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match all four conclusions. The coefficient-vector construction uses the Euclidean WithLp norm correctly. Linearity, the operator-norm coefficient bound, and the resulting Lipschitz estimate prove every conclusion without circularity. Accepted reuse is type-identical."
+    },
+    {
+      "key": "eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The signed rescalings are admissible, r is correctly shown nonnegative, and finite mass justifies conversion to toReal. Letting ε tend to zero also covers r = 0. The proof requires no omitted openness assumption and establishes the exact accepted type."
+    },
+    {
+      "key": "vanish_off_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The empty-carrier case and smooth cutoff construction cover the stated generality. The residual form vanishes near C, while the cutoff form remains admissible in V and in the original domain U. Taking the supremum proves the inequality for arbitrary G. Reuse is exact."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute continuity transfers strong measurability correctly. Restriction commutes with the weighted measure, and the measurable finite density permits the Bochner identity for arbitrary forms, including nonintegrable integrands. The prose, proof, and accepted frozen type agree."
+    },
+    {
+      "key": "extend_by_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every conclusion: null modification preserves approximate tangents, the transferred representation defines a continuous current, restriction recovers X, and the support is a compact subset of K. The cutoff argument preserves vanishing boundary, including degree zero. Accepted helper dependencies are non-circular, and reuse is type-identical."
+    },
+    {
+      "key": "slice_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit REP, IMC(b), IMC(d), and SL hypotheses suffice. The integrated bound yields one good radius without assuming measurability of the slice-mass function. Compact-sphere localization gives finite total boundary mass; representation restriction gives the required carrier and finite mass. The final support argument proves precisely the stated boundary agreement. The proof compiles with only its two declared dependencies."
+    },
+    {
+      "key": "extension_masses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "VO gives vanishing off C for Y; support containment under exterior differentiation gives it for ∂Y. The declared cutoff lemma localizes both masses. Reinterpreting admissible forms on U and compatibility of boundary with domain restriction prove both exact inequalities, without an extra finiteness hypothesis."
+    },
+    {
+      "key": "deformation_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DT supplies approximants with vanishing error masses and uniformly bounded boundary masses. The declared norm and evaluation lemmas prove weak convergence. Boundary mass is zero in every degree, with degree zero treated explicitly, so CL(d) applies with its exact hypotheses. No BR(d) or CL(d+1) is assumed. This agrees with [Simon, Chapter 6, §§6.2–6.4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "required_changes": []
+}
