@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "546ee046bfbb0e239d2363d5c78e7d9f0cb0c4ef816afd2641c059ad0d84540b",
+  "git_delta": {
+    "base_commit": "b4e5177cf4713405155eac18cecd8750ba27ce36",
+    "candidate_commit": "3fc8d36f63a94e940851cb17a585029261ad8990",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "09e1fbd3d0ddd20ca7d4383f757ed92b283d725d9295b0cffb948424c650a3b5",
+    "source_sha256": "d35568c31ad53ea126210352eabad68493a8b87977e0ba0889366a5b5a3e34f1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgce_left_inverse_tangentSpace_eq_range",
+      "statement": "∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) = (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

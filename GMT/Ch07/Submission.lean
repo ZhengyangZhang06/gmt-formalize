@@ -451,6 +451,145 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §4, (4.3)**: if `Φ` is `C¹` on `D = B_s(0) ⊆ ℝᵈ` and `x ↦ L(x − z)` is a left
+inverse of `Φ` on `D`, then `T_{Φ(v)}Φ(D) ⊆ DΦ(v)(ℝᵈ)` for every `v ∈ D`.  If `γ` witnesses
+`w ∈ T_{Φ(v)}Φ(D)`, the curve `c(t) = L(γ(t) − z)` has `c(0) = v`, `c'(0) = L w` and
+`γ = Φ ∘ c` on `(−1, 1)`, so the chain rule and uniqueness of derivatives give
+`w = DΦ(v)(L w)`. -/
+theorem Submission.dgce_left_inverse_tangentSpace_subset_range : ∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) ⊆ (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P)) := by
+  rintro d P Φ L z s hΦ hL v₀ hv₀ w ⟨γ, -, hγ, hγ0, hγw⟩
+  -- `Φ` is `C¹` on the open ball, hence differentiable at `v₀`
+  have hΦv₀ : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (hΦ.differentiableOn_one.differentiableAt (isOpen_ball.mem_nhds hv₀)).hasFDerivAt
+  -- `c(t) = L(γ(t) − z)` has `c'(0) = L w` and `c(0) = L(Φ(v₀) − z) = v₀`
+  have hc : HasDerivAt (fun t => L (γ t - z)) (L w) 0 :=
+    L.hasFDerivAt.comp_hasDerivAt 0 (hγw.sub_const z)
+  have hc0 : v₀ = L (γ 0 - z) := by rw [hγ0, hL v₀ hv₀]
+  -- `γ = Φ ∘ c` on the neighbourhood `(−1, 1)` of `0`: `γ(t) = Φ(u)` with `u ∈ D`, so `c(t) = u`
+  have hγc : γ =ᶠ[𝓝 0] Φ ∘ fun t => L (γ t - z) := by
+    filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos] with t ht
+    obtain ⟨u, hu, hut⟩ := hγ ht
+    rw [Function.comp_apply, ← hut, hL u hu]
+  -- chain rule, then uniqueness of derivatives: `w = DΦ(v₀)(L w)`
+  have hw : w = fderiv ℝ Φ v₀ (L w) :=
+    hγw.unique ((hΦv₀.comp_hasDerivAt_of_eq 0 hc hc0).congr_of_eventuallyEq hγc)
+  exact ⟨L w, hw.symm⟩
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
+then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
+`Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
+`B_{ρ₀}(v) ⊆ V`, `c = ρ₀ / |a|` and `h(t) = t / (1 + t² / c²)` (smooth, `h(0) = 0`, `h'(0) = 1`,
+`|h| ≤ c / 2`), the curve `γ(t) = ψ(v + h(t) a)` stays in `ψ(V)` and has velocity `Dψ(v) a`. -/
+theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v) := by
+  rintro P r d N V ψ hr hV hψ hN v hv _ ⟨a, rfl⟩
+  -- `ψ` is `C¹` on `V`, hence differentiable at the interior point `v`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `ψ(v)` has velocity `0 = Dψ(v) 0`
+    subst ha
+    refine ⟨fun _ => ψ v, contDiffOn_const, fun _ _ => hN (mem_image_of_mem ψ hv), rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (ψ v)
+  · -- `a ≠ 0`: `β(t) = v + h(t) a` with `h(t) = t / (1 + t² / c²)`, `c = ρ₀ / |a|`
+    obtain ⟨ρ₀, hρ₀, hball⟩ := Metric.isOpen_iff.mp hV v hv
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    set c : ℝ := ρ₀ / ‖a‖ with hc_def
+    have hc : 0 < c := div_pos hρ₀ ha'
+    have hden : ∀ t : ℝ, 0 < 1 + t ^ 2 / c ^ 2 := fun t => by positivity
+    set h : ℝ → ℝ := fun t => t / (1 + t ^ 2 / c ^ 2) with hh_def
+    -- (a) `h` is smooth
+    have h_cd : ContDiff ℝ 1 h :=
+      contDiff_id.div (contDiff_const.add ((contDiff_id.pow 2).div_const _)) fun t => (hden t).ne'
+    -- (b) `h'(0) = 1`
+    have h_deriv : HasDerivAt h 1 0 := by
+      have := hasDerivAt_id' (x := (0 : ℝ)) |>.fun_div
+        (((hasDerivAt_id' (x := (0 : ℝ))).fun_pow 2).div_const (c ^ 2) |>.const_add 1) (hden 0).ne'
+      convert this using 1
+      simp
+    -- (c) `|h(t)| ≤ c / 2`, since `2 c |t| ≤ c² + t²`
+    have h_bd : ∀ t, |h t| ≤ c / 2 := by
+      intro t
+      rw [hh_def, abs_div, abs_of_pos (hden t), div_le_iff₀ (hden t)]
+      have h1 : c / 2 * (1 + t ^ 2 / c ^ 2) = (c ^ 2 + |t| ^ 2) / (2 * c) := by
+        rw [sq_abs]; field_simp
+      rw [h1, le_div_iff₀ (by positivity)]
+      nlinarith [sq_nonneg (c - |t|)]
+    -- `β` stays in `B_{ρ₀}(v) ⊆ V`, `β(0) = v` and `β'(0) = a`
+    set β : ℝ → Euclid d := fun t => v + h t • a with hβ_def
+    have hβV : ∀ t, β t ∈ V := fun t => hball <| by
+      rw [Metric.mem_ball, dist_eq_norm, hβ_def]
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      calc |h t| * ‖a‖ ≤ c / 2 * ‖a‖ := by gcongr; exact h_bd t
+        _ = ρ₀ / 2 := by rw [hc_def]; field_simp
+        _ < ρ₀ := by linarith
+    have hβ0 : β 0 = v := by simp [hβ_def, hh_def]
+    have hβ_cd : ContDiff ℝ 1 β := contDiff_const.add (h_cd.smul contDiff_const)
+    have hβ_deriv : HasDerivAt β a 0 := by
+      have := HasDerivAt.const_add v (h_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = ψ ∘ β` is `C¹` on `(-1, 1)`, lies in `ψ(V) ⊆ N`, and `γ'(0) = Dψ(v) a`
+    refine ⟨ψ ∘ β, hψ1.comp hβ_cd.contDiffOn fun t _ => hβV t,
+      fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
+    exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
+
+/-- **Simon Ch. 2, §4, (4.3)** for a map with a continuous affine left inverse: if `Φ` is `C¹` on
+`D = B_s(0) ⊆ ℝᵈ` and `L(Φ(v) − z) = v` for `v ∈ D`, then `T_{Φ(v₀)}Φ(D) = DΦ(v₀)(ℝᵈ)` for every
+`v₀ ∈ D`.  `⊆` is `dgce_left_inverse_tangentSpace_subset_range`.  For `⊇` and `a ∈ ℝᵈ`, take the
+constant curve if `a = 0`.  Otherwise, with `c₀ = (s − |v₀|) / (2|a|)` and `θ(t) = c₀ sin(t / c₀)`
+(smooth, `θ(0) = 0`, `θ'(0) = 1`, `|θ| ≤ c₀`), the curve `γ(t) = Φ(v₀ + θ(t) a)` stays in `Φ(D)`
+and has velocity `DΦ(v₀) a`. -/
+theorem Submission.dgce_left_inverse_tangentSpace_eq_range : ∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) = (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P)) := by
+  intro d P Φ L z s hΦ hL v₀ hv₀
+  refine Subset.antisymm
+    (Submission.dgce_left_inverse_tangentSpace_subset_range d P Φ L z s hΦ hL v₀ hv₀) ?_
+  rintro _ ⟨a, rfl⟩
+  -- `Φ` is `C¹` on the open ball `D`, hence differentiable at `v₀`
+  have hΦv₀ : HasFDerivAt Φ (fderiv ℝ Φ v₀) v₀ :=
+    (hΦ.differentiableOn_one.differentiableAt (isOpen_ball.mem_nhds hv₀)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `Φ(v₀)` has velocity `0 = DΦ(v₀) 0`
+    subst ha
+    refine ⟨fun _ => Φ v₀, contDiffOn_const, fun _ _ => mem_image_of_mem Φ hv₀, rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (Φ v₀)
+  · -- `a ≠ 0`: `κ(t) = v₀ + θ(t) a` with `θ(t) = c₀ sin(t / c₀)`, `c₀ = (s − |v₀|) / (2|a|)`
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    have hv₀s : ‖v₀‖ < s := mem_ball_zero_iff.mp hv₀
+    set c₀ : ℝ := (s - ‖v₀‖) / (2 * ‖a‖) with hc₀_def
+    have hc₀ : 0 < c₀ := div_pos (sub_pos.mpr hv₀s) (by positivity)
+    set θ : ℝ → ℝ := fun t => c₀ * Real.sin (t / c₀) with hθ_def
+    -- (a) `θ` is smooth
+    have hθ_cd : ContDiff ℝ 1 θ :=
+      contDiff_const.mul (Real.contDiff_sin.comp (contDiff_id.div_const c₀))
+    -- (b) `θ(0) = 0` and `θ'(0) = c₀ cos 0 / c₀ = 1`
+    have hθ0 : θ 0 = 0 := by simp [hθ_def]
+    have hθ_deriv : HasDerivAt θ 1 0 := by
+      have h := ((Real.hasDerivAt_sin (0 / c₀)).comp 0
+        ((hasDerivAt_id' (x := (0 : ℝ))).div_const c₀)).const_mul c₀
+      rw [zero_div, Real.cos_zero, one_mul, mul_one_div_cancel hc₀.ne'] at h
+      exact h
+    -- (c) `|θ(t)| ≤ c₀`
+    have hθ_bd : ∀ t, |θ t| ≤ c₀ := fun t => by
+      rw [hθ_def, abs_mul, abs_of_pos hc₀]
+      exact mul_le_of_le_one_right hc₀.le (Real.abs_sin_le_one _)
+    -- `κ` stays in `D`, `κ(0) = v₀` and `κ'(0) = a`
+    set κ : ℝ → Euclid d := fun t => v₀ + θ t • a with hκ_def
+    have hκD : ∀ t, κ t ∈ ball (0 : Euclid d) s := fun t => by
+      rw [mem_ball_zero_iff]
+      calc ‖κ t‖ ≤ ‖v₀‖ + |θ t| * ‖a‖ := by
+            simpa only [hκ_def, norm_smul, Real.norm_eq_abs] using norm_add_le v₀ (θ t • a)
+        _ ≤ ‖v₀‖ + c₀ * ‖a‖ := by gcongr; exact hθ_bd t
+        _ = ‖v₀‖ + (s - ‖v₀‖) / 2 := by rw [hc₀_def]; field_simp
+        _ < s := by linarith
+    have hκ0 : κ 0 = v₀ := by simp [hκ_def, hθ0]
+    have hκ_cd : ContDiff ℝ 1 κ := contDiff_const.add (hθ_cd.smul contDiff_const)
+    have hκ_deriv : HasDerivAt κ a 0 := by
+      have := HasDerivAt.const_add v₀ (hθ_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = Φ ∘ κ` is `C¹` on `(-1, 1)`, lies in `Φ(D)`, and `γ'(0) = DΦ(v₀) a`
+    refine ⟨Φ ∘ κ, hΦ.comp hκ_cd.contDiffOn fun t _ => hκD t,
+      fun t _ => mem_image_of_mem Φ (hκD t), by simp [hκ0], ?_⟩
+    exact hΦv₀.comp_hasDerivAt_of_eq 0 hκ_deriv hκ0.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
