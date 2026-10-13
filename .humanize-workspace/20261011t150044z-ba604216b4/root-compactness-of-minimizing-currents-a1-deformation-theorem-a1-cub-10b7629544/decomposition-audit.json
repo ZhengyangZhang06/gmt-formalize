@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_cbm_st_|piFinSuccAbove|trace_eq_sum_inner|integral_divergence|volume_preserving_toLp",
+        "theorem volume_preserving_piFinSuccAbove|theorem PiLp.volume_preserving_toLp|theorem integral_prod_symm|theorem MeasurePreserving.setIntegral_preimage_emb|theorem MeasurePreserving.integrableOn_comp_preimage|lemma trace_eq_sum_inner|theorem integral_deriv_eq_sub|theorem integral_mono_interval|theorem norm_integral_le_abs_integral_norm|theorem Integrable.integral_prod_right|theorem ContinuousOn.integrableOn_compact|theorem prod_restrict|theorem integral_mono_of_nonneg",
+        "inner_single_left|norm_single",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/smooth-trace-independent-audit-lg5c1ps4/ModuleReplay.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-10b7629544/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-10b7629544/decomposition-v1.json",
+        "/tmp/smooth-trace-independent-audit-lg5c1ps4/ModuleReplay.lean"
+      ],
+      "conclusion": "The split is appropriate: all five children contribute to this selected smooth-trace theorem, and dependencies are acyclic and correctly directed. Snapshot revisions match the active dependencies; 15 inspected mathlib files match byte-for-byte. The project search found no matching helper. Pinned declarations confirm the intended Euclidean norms, volume transport, Fubini, FTC and trace operations. All names are bare identifiers and unreserved in the current 1726-node DAG. All exact types elaborate before any child declaration and contain no implementation-dependent aliases. The five unchanged supplied proof blocks, parent assembly and exact-type comparison examples compile with only propext, Classical.choice and Quot.sound. Replay used module mode after legacy-mode runs exhausted available memory, explicitly exposing ContDiff.WithLp; an independent import-graph check confirmed that module already belongs to the frozen header's transitive imports. Summing the coordinate estimates and bounding Dv(G) yields exactly the frozen parent's coefficients."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "box_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches all dimensions, arbitrary endpoints and continuity. The open box lies in the compact image of the product closed interval; compact integrability followed by restriction proves the claim. Empty boxes and dimension zero are covered without additional hypotheses or circular reliance."
+    },
+    {
+      "key": "slice_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches both conclusions and the stated ordering and integrability hypotheses. The coordinate equivalence preserves the correct measures, its box preimage is correct, and restricted Fubini supplies equality and slice-function integrability. Null endpoints justify the interval-integral conversion, including a=b and m=0."
+    },
+    {
+      "key": "interval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the supplied C¹ interval estimate. FTC, control of both segment orientations, averaging over the positive length b−a, and the endpoint bounds on γ establish precisely the coefficients 2/(b−a) and 2. Every step is justified and independent of the parent theorem."
+    },
+    {
+      "key": "coord_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The domain, hypotheses, derivative direction and constants match exactly. Using only its three declared dependencies, the proof establishes the affine-line derivative, required integrability, coefficient bound and unit-vector operator-norm estimate, then integrates to obtain the claimed inequality. The explicitly acknowledged redundant hypothesis 0≤δ is harmless."
+    },
+    {
+      "key": "div_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Pointwise differentiability suffices for the stated type. Coordinate projection and product differentiation, the orthonormal-basis trace formula, and linear expansion of G(x) prove the exact sum-minus identity. The subtraction is outside the finite sum as intended. No child or parent conclusion is assumed."
+    }
+  ],
+  "required_changes": []
+}

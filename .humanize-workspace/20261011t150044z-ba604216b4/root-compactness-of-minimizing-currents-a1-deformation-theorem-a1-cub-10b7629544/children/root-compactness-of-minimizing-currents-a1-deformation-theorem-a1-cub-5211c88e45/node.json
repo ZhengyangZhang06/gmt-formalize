@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1.slice_integral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+  "depth": 5,
+  "title": "Coordinate slicing (Fubini) on an open cube of Euclid (m+1)",
+  "statement": "Let m ∈ ℕ, i ∈ Fin (m+1) and a ≤ b real. Give ℝ^{m+1} = Euclid (m+1) Lebesgue measure and ℝ^m = (Fin m → ℝ) the product Lebesgue measure. Let h : ℝ^{m+1} → ℝ be integrable on Q = {z ∈ ℝ^{m+1} : a < z_j < b for all j}, and let Q' = {y ∈ ℝ^m : a < y_k < b for all k}. For t ∈ ℝ and y ∈ ℝ^m, let ι(t, y) = toLp 2 (Fin.insertNth i t y) ∈ ℝ^{m+1}: the point whose i-th coordinate is t and whose remaining coordinates are y_0, …, y_{m−1} in order. Then (I) the function y ↦ ∫_a^b h(ι(t, y)) dt (interval integral) is integrable on Q', and (II) ∫_Q h = ∫_{Q'} (∫_a^b h(ι(t, y)) dt) dy.",
+  "lean_statement": "∀ (m : ℕ) (i : Fin (m + 1)) (a b : ℝ) (h : Euclid (m + 1) → ℝ), a ≤ b → IntegrableOn h {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b} → IntegrableOn (fun y : Fin m → ℝ => ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y))) {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b} ∧ ∫ x in {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b}, h x = ∫ y in {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b}, ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y))",
+  "lean_name": "cmcdt_cbm_st_slice_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-5211c88e45-a1"
+}

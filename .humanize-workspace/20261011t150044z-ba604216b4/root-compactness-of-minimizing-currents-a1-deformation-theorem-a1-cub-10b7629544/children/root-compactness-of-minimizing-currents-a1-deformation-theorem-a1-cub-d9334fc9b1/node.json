@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1.interval_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+  "depth": 5,
+  "title": "One-dimensional boundary-term and trace estimate on an interval",
+  "statement": "Let a < b be real and let φ, γ : ℝ → ℝ be C¹ functions with |γ(t)| ≤ 1 for all t. Then |∫_a^b (φγ)'(t) dt| ≤ (2/(b − a)) ∫_a^b |φ(t)| dt + 2 ∫_a^b |φ'(t)| dt, where ' denotes the derivative (deriv) and the integrals are interval integrals.",
+  "lean_statement": "∀ (φ γ : ℝ → ℝ) (a b : ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 γ → (∀ t, |γ t| ≤ 1) → a < b → |∫ t in a..b, deriv (fun s => φ s * γ s) t| ≤ 2 / (b - a) * (∫ t in a..b, |φ t|) + 2 * ∫ t in a..b, |deriv φ t|",
+  "lean_name": "cmcdt_cbm_st_interval_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-d9334fc9b1-a1"
+}

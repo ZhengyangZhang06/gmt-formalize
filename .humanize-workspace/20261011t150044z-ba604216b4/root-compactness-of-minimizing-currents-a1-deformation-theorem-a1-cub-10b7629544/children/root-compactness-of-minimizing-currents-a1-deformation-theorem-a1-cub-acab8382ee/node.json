@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1.div_product-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+  "depth": 5,
+  "title": "Pointwise product rule for the divergence: v·div G = Σ_i ∂_i(vG_i) − Dv(G)",
+  "statement": "Let m ∈ ℕ and ℝⁿ = Euclid (m+1). Let e_i = EuclideanSpace.single i 1 (i ∈ Fin (m+1)) be the standard basis, and write G_i(y) = (G y)_i for the coordinates of G. If v : ℝⁿ → ℝ and G : ℝⁿ → ℝⁿ are differentiable at the point x, then v(x)·trace DG(x) = Σ_i D(vG_i)(x)e_i − Dv(x)(G(x)).",
+  "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (x : Euclid (m + 1)), DifferentiableAt ℝ v x → DifferentiableAt ℝ G x → v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) = ∑ i, fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1) - fderiv ℝ v x (G x)",
+  "lean_name": "cmcdt_cbm_st_div_product",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-acab8382ee-a1"
+}

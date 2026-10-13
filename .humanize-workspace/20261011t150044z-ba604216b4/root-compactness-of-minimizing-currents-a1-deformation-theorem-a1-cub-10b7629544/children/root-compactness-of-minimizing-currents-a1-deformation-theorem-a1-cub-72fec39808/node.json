@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1.box_integrable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+  "depth": 5,
+  "title": "Continuous functions are integrable on open boxes of Euclid n",
+  "statement": "Let n ∈ ℕ and let a, b ∈ ℝ be arbitrary (no order between a and b is assumed). Give ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n) its Lebesgue measure, and write z_j for the j-th coordinate. If h : ℝⁿ → ℝ is continuous, then h is Lebesgue integrable on the open box B = {z ∈ ℝⁿ : a < z_j < b for all j ∈ Fin n}.",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (a b : ℝ), Continuous h → IntegrableOn h {z : Euclid n | ∀ j, a < z j ∧ z j < b}",
+  "lean_name": "cmcdt_cbm_st_box_integrableOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-72fec39808-a1"
+}
