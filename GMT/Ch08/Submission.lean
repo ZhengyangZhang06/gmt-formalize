@@ -410,6 +410,341 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- A countably `n`-rectifiable set `M ⊆ ℝ^N` carries a σ-finite measure `H^n ⌞ M`: up to the
+`H^n`-null set `M₀`, `M` is covered by the compact Lipschitz images `F_j(B_k(0))`, each of finite
+`H^n`-measure. -/
+theorem Submission.allard_tc_tpr_rectifiable_sigmaFinite :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)), Chapter03.CountablyRectifiable n M → SigmaFinite ((μHE[n] : Measure (Euclidean N)).restrict M) := by
+  intro N n M hM
+  -- Step 1: `M ⊆ M₀ ∪ ⋃ j, range (F j)` with `H^n(M₀) = 0` and `F j` `K j`-Lipschitz.
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  choose K hK using hF
+  -- Step 2: the compact pieces `C (j, k) = F j '' closedBall 0 k` are measurable.
+  let C : ℕ × ℕ → Set (Euclidean N) := fun p ↦ F p.1 '' closedBall 0 p.2
+  have hCmeas : ∀ p, MeasurableSet (C p) := fun p ↦
+    ((isCompact_closedBall _ _).image (hK p.1).continuous).isClosed.measurableSet
+  -- Step 3: `H^n(C (j, k)) ≤ K_j^n H^n(closedBall 0 k) < ∞`, using `μHE[n] = c • μH[n]`.
+  have hCfin : ∀ p, (μHE[n] : Measure (Euclidean N)) (C p) < ∞ := by
+    intro p
+    have hball : (μHE[n] : Measure (EuclideanSpace ℝ (Fin n)))
+        (closedBall (0 : EuclideanSpace ℝ (Fin n)) p.2) < ∞ := by
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact measure_closedBall_lt_top
+    have hle : (μHE[n] : Measure (Euclidean N)) (C p) ≤
+        (K p.1 : ℝ≥0∞) ^ (n : ℝ) * (μHE[n] : Measure (EuclideanSpace ℝ (Fin n)))
+          (closedBall (0 : EuclideanSpace ℝ (Fin n)) p.2) := by
+      simp only [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+        smul_eq_mul]
+      rw [mul_left_comm]
+      gcongr
+      exact (hK p.1).hausdorffMeasure_image_le (Nat.cast_nonneg n) _
+    exact hle.trans_lt (ENNReal.mul_lt_top
+      (ENNReal.rpow_lt_top_of_nonneg (Nat.cast_nonneg n) ENNReal.coe_ne_top) hball)
+  -- Step 4: `S = toMeasurable H M₀ ∪ ⋃ C` is measurable and contains `M`.
+  let T := toMeasurable (μHE[n] : Measure (Euclidean N)) M₀
+  let S := T ∪ ⋃ p, C p
+  have hSmeas : MeasurableSet S :=
+    (measurableSet_toMeasurable _ _).union (MeasurableSet.iUnion hCmeas)
+  have hMS : M ⊆ S := by
+    intro x hx
+    rcases hcover hx with h0 | hr
+    · exact Or.inl (subset_toMeasurable _ _ h0)
+    · obtain ⟨j, y, rfl⟩ := mem_iUnion.1 hr
+      obtain ⟨k, hk⟩ := exists_nat_ge ‖y‖
+      exact Or.inr (mem_iUnion.2 ⟨(j, k), y, mem_closedBall_zero_iff.2 hk, rfl⟩)
+  -- Steps 5–7: the countable family `{Sᶜ, T} ∪ {C p}` covers and has finite `H^n ⌞ M`-measure.
+  refine Measure.sigmaFinite_of_countable (S := insert Sᶜ (insert T (range C)))
+    (((countable_range C).insert _).insert _) ?_ ?_
+  · rintro s (rfl | rfl | ⟨p, rfl⟩)
+    · rw [Measure.restrict_apply hSmeas.compl,
+        measure_mono_null (fun x hx ↦ (hx.1 (hMS hx.2)).elim) measure_empty]
+      exact ENNReal.zero_lt_top
+    · refine (Measure.restrict_apply_le _ _).trans_lt ?_
+      rw [measure_toMeasurable, hM₀]
+      exact ENNReal.zero_lt_top
+    · exact (Measure.restrict_apply_le _ _).trans_lt (hCfin p)
+  · rw [sUnion_insert, sUnion_insert, sUnion_range]
+    exact compl_union_self S
+/-- `μ`-null sets of positive density are `H^n`-null (Simon Ch. 1, Theorem 3.3, as used in Ch. 8):
+if `μ` is finite on compact sets, `μ(Z) = 0` and `Θ^n(μ, x) = θ(x) > 0` for every `x ∈ Z`, then
+`H^n(Z) = 0`.  Proof by a Vitali covering of `Z_k = {x ∈ Z : θ(x) > 1/(k+1)}` with closed balls
+inside an open `O ⊇ Z_k` of small `μ`-measure. -/
+theorem Submission.allard_tc_tpr_hausdorff_null_of_weight_null :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (Z : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → μ Z = 0 → (∀ x ∈ Z, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → μHE[n] Z = 0 := by
+  intro N n μ Z θ hμK hμZ hZ
+  -- Step 1: `μ` is finite on compact sets, hence outer regular on `ℝ^N`.
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK ↦ (hμK K hK).lt_top⟩
+  -- Step 2: `μHE[n]` is a constant multiple of `μH[n]`, so it suffices that `μH[n] Z = 0`.
+  suffices hH : μH[(n : ℝ)] Z = 0 by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+  -- Step 3: `ω_n ∈ (0, ∞)`.
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos volume (0 : EuclideanSpace ℝ (Fin n)) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 4: `Z ⊆ ⋃ k, Z_k` with `Z_k = {x ∈ Z : 1/(k+1) < θ x}`; fix `k`.
+  have hcover : Z ⊆ ⋃ k : ℕ, {x | x ∈ Z ∧ 1 / ((k : ℝ) + 1) < θ x} := fun x hx ↦
+    mem_iUnion.2 ((exists_nat_one_div_lt (hZ x hx).1).imp fun _ hk ↦ ⟨hx, hk⟩)
+  refine measure_mono_null hcover (measure_iUnion_null fun k ↦ ?_)
+  set A := {x | x ∈ Z ∧ 1 / ((k : ℝ) + 1) < θ x} with hA
+  have hs : (0 : ℝ) < 1 / ((k : ℝ) + 1) := Nat.one_div_pos_of_nat
+  have hμA : μ A = 0 := measure_mono_null (fun x hx ↦ hx.1) hμZ
+  set c : ℝ≥0∞ := ENNReal.ofReal (1 / ((k : ℝ) + 1)) * unitBallVolume n with hc
+  have hc0 : c ≠ 0 := mul_ne_zero (ENNReal.ofReal_pos.2 hs).ne' hω0
+  have hct : c ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top hωt
+  -- Step 5: small closed balls about points of `A` have mass at least `c ρ^n`.
+  have hball : ∀ x ∈ A, ∀ᶠ ρ in 𝓝[>] (0 : ℝ),
+      c * ENNReal.ofReal ρ ^ n ≤ μ (closedBall x ρ) := by
+    intro x hx
+    have hlt : ENNReal.ofReal (1 / ((k : ℝ) + 1)) < ENNReal.ofReal (θ x) :=
+      (ENNReal.ofReal_lt_ofReal_iff (hs.trans hx.2)).2 hx.2
+    filter_upwards [(hZ x hx.1).2.eventually (lt_mem_nhds hlt)] with ρ hρ
+    rw [hc, mul_assoc]
+    exact ENNReal.mul_le_of_le_div hρ.le
+  -- Step 6: Vitali covering: for every open `O ⊇ A`, `μH[n](A) ≤ 8^n c⁻¹ μ(O)`.
+  have hcov : ∀ O : Set (Euclidean N), IsOpen O → A ⊆ O →
+      μH[(n : ℝ)] A ≤ 8 ^ n * c⁻¹ * μ O := by
+    intro O hO hAO
+    have hrad : ∀ (m : ℕ) (x : Euclidean N), ∃ ρ : ℝ, x ∈ A → 0 < ρ ∧ ρ ≤ 1 / ((m : ℝ) + 1) ∧
+        closedBall x ρ ⊆ O ∧ c * ENNReal.ofReal ρ ^ n ≤ μ (closedBall x ρ) := by
+      intro m x
+      by_cases hx : x ∈ A
+      · obtain ⟨δ, hδ, hδO⟩ := Metric.isOpen_iff.1 hO x (hAO hx)
+        have hsmall : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ < min δ (1 / ((m : ℝ) + 1)) :=
+          nhdsWithin_le_nhds (gt_mem_nhds (lt_min hδ Nat.one_div_pos_of_nat))
+        obtain ⟨ρ, ⟨hρc, hρs⟩, hρ0⟩ := (((hball x hx).and hsmall).and self_mem_nhdsWithin).exists
+        exact ⟨ρ, fun _ ↦ ⟨hρ0, (hρs.trans_le (min_le_right _ _)).le,
+          (closedBall_subset_ball (hρs.trans_le (min_le_left _ _))).trans hδO, hρc⟩⟩
+      · exact ⟨1, fun h ↦ absurd h hx⟩
+    choose r hr using hrad
+    have hvit : ∀ m : ℕ, ∃ u ⊆ A, (u.PairwiseDisjoint fun b ↦ closedBall b (r m b)) ∧
+        ∀ a ∈ A, ∃ b ∈ u, closedBall a (r m a) ⊆ closedBall b (4 * r m b) := fun m ↦
+      Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall A id (r m)
+        (1 / ((m : ℝ) + 1)) (fun a ha ↦ (hr m a ha).2.1) 4 (by norm_num)
+    choose u huA hud huc using hvit
+    have hcount : ∀ m, (u m).Countable := fun m ↦
+      (hud m).countable_of_nonempty_interior fun b hb ↦
+        ⟨b, ball_subset_interior_closedBall (mem_ball_self (hr m b (huA m hb)).1)⟩
+    have : ∀ m, Countable (u m) := fun m ↦ (hcount m).to_subtype
+    have hdiam : ∀ (b : Euclidean N) (R : ℝ), ediam (closedBall b R) ≤ ENNReal.ofReal (2 * R) :=
+      fun b R ↦ ediam_le_of_forall_dist_le fun x hx y hy ↦
+        calc dist x y ≤ dist x b + dist y b := dist_triangle_right _ _ _
+          _ ≤ R + R := add_le_add hx hy
+          _ = 2 * R := by ring
+    have hsum : ∀ m, ∑' b : u m, ediam (closedBall (b : Euclidean N) (4 * r m b)) ^ (n : ℝ) ≤
+        8 ^ n * c⁻¹ * μ O := by
+      intro m
+      calc ∑' b : u m, ediam (closedBall (b : Euclidean N) (4 * r m b)) ^ (n : ℝ)
+          ≤ ∑' b : u m, 8 ^ n * c⁻¹ * μ (closedBall (b : Euclidean N) (r m b)) := by
+            refine ENNReal.tsum_le_tsum fun b ↦ ?_
+            obtain ⟨hb0, -, -, hbμ⟩ := hr m b (huA m b.2)
+            have hd : ediam (closedBall (b : Euclidean N) (4 * r m b)) ≤
+                8 * ENNReal.ofReal (r m b) := by
+              refine (hdiam _ _).trans (le_of_eq ?_)
+              rw [show 2 * (4 * r m b) = 8 * r m b by ring, ENNReal.ofReal_mul (by norm_num),
+                ENNReal.ofReal_ofNat]
+            rw [ENNReal.rpow_natCast, mul_assoc]
+            calc ediam (closedBall (b : Euclidean N) (4 * r m b)) ^ n
+                ≤ (8 * ENNReal.ofReal (r m b)) ^ n := by gcongr
+              _ = 8 ^ n * ENNReal.ofReal (r m b) ^ n := mul_pow _ _ _
+              _ ≤ 8 ^ n * (c⁻¹ * μ (closedBall (b : Euclidean N) (r m b))) := by
+                gcongr
+                exact (ENNReal.mul_le_iff_le_inv hc0 hct).1 hbμ
+        _ = 8 ^ n * c⁻¹ * μ (⋃ b ∈ u m, closedBall b (r m b)) := by
+            rw [ENNReal.tsum_mul_left, measure_biUnion (hcount m) (hud m)
+              fun b _ ↦ measurableSet_closedBall]
+        _ ≤ 8 ^ n * c⁻¹ * μ O := by
+            gcongr
+            exact iUnion₂_subset fun b hb ↦ (hr m b (huA m hb)).2.2.1
+    calc μH[(n : ℝ)] A
+        ≤ liminf (fun m ↦ ∑' b : u m, ediam (closedBall (b : Euclidean N) (4 * r m b)) ^ (n : ℝ))
+            atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum (n : ℝ) A
+            (fun m : ℕ ↦ ENNReal.ofReal (8 * (1 / ((m : ℝ) + 1)))) ?_
+            (fun m (b : u m) ↦ closedBall (b : Euclidean N) (4 * r m b)) ?_ ?_
+      _ ≤ 8 ^ n * c⁻¹ * μ O := liminf_le_of_frequently_le' (Frequently.of_forall hsum)
+    · have h := ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat.const_mul 8)
+      rwa [mul_zero, ENNReal.ofReal_zero] at h
+    · refine Eventually.of_forall fun m b ↦ (hdiam _ _).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith [(hr m b (huA m b.2)).2.1]
+    · refine Eventually.of_forall fun m a ha ↦ ?_
+      obtain ⟨b, hb, hsub⟩ := huc m a ha
+      exact mem_iUnion.2 ⟨⟨b, hb⟩, hsub (mem_closedBall_self (hr m a ha).1.le)⟩
+  -- Step 7: outer regularity makes `μ(O)` arbitrarily small, so `μH[n](A) = 0`.
+  have hle : ∀ m : ℕ, μH[(n : ℝ)] A ≤ 8 ^ n * c⁻¹ * (m : ℝ≥0∞)⁻¹ := by
+    intro m
+    obtain ⟨O, hAO, hO, hμO⟩ := Set.exists_isOpen_lt_of_lt A ((m : ℝ≥0∞)⁻¹)
+      (hμA.symm ▸ ENNReal.inv_pos.2 (ENNReal.natCast_ne_top m))
+    exact (hcov O hO hAO).trans (by gcongr)
+  have htend : Tendsto (fun m : ℕ ↦ 8 ^ n * c⁻¹ * (m : ℝ≥0∞)⁻¹) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero
+      (Or.inr (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.ofNat_ne_top)
+        (ENNReal.inv_ne_top.2 hc0)) : (0 : ℝ≥0∞) ≠ 0 ∨ 8 ^ n * c⁻¹ ≠ ∞)
+    rwa [mul_zero] at h
+  exact nonpos_iff_eq_zero.1 (ge_of_tendsto' htend hle)
+
+/-- **The weight is `θ H^n ⌞ M` once it is `θ H^n ⌞ E` for some `E ⊆ M`** (child
+`weight_eq_restrict` of `tangent_point_representation`; gives `μ_C = θ H^n ⌞ M` when writing
+`C = v(M, θ)` in the proof of Simon Ch. 8, 5.7).  Let `B* = toMeasurable (H^n ⌞ M) E`.  The
+hypothesis on `B*ᶜ` is an integral over `E ∩ B*ᶜ = ∅`, so `μ(M ∖ B*) = 0`, and child
+`hausdorff_null_of_weight_null` gives `H^n(M ∖ B*) = 0` because `θ > 0` is the density of `μ` on
+`M`.  As `H^n ⌞ M` is s-finite, `(H^n ⌞ M)(B* ∩ D) = (H^n ⌞ M)(E ∩ D)` for measurable `D`; hence
+`H^n ⌞ (E ∩ B) = H^n ⌞ (M ∩ B)` for Borel `B`, and the two set integrals agree. -/
+theorem Submission.allard_tc_tpr_weight_eq_restrict :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M E : Set (Euclidean N)) (θ : Euclidean N → ℝ), (∀ K : Set (Euclidean N), IsCompact K → μ K ≠ ∞) → SFinite ((μHE[n] : Measure (Euclidean N)).restrict M) → E ⊆ M → (∀ x ∈ M, 0 < θ x ∧ HasDensity n μ x (ENNReal.ofReal (θ x))) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro N n μ M E θ hμK hSF hEM hθ hrep B hB
+  set H : Measure (Euclidean N) := μHE[n]
+  -- Step 1: the measurable hull `B*` of `E` for the s-finite measure `ν = H^n ⌞ M`.
+  set ν : Measure (Euclidean N) := H.restrict M with hν
+  set Bs : Set (Euclidean N) := toMeasurable ν E
+  have hBs : MeasurableSet Bs := measurableSet_toMeasurable ν E
+  have hEBs : E ⊆ Bs := subset_toMeasurable ν E
+  -- Step 2: `μ(M ∖ B*) = 0`, since `μ(B*ᶜ)` is the integral over `E ∩ B*ᶜ = ∅`.
+  have hμc : μ Bsᶜ = 0 := by
+    have hempty : E ∩ Bsᶜ = ∅ := subset_empty_iff.1 fun x hx ↦ hx.2 (hEBs hx.1)
+    rw [hrep Bsᶜ hBs.compl, hempty, Measure.restrict_empty, lintegral_zero_measure]
+  have hμZ : μ (M \ Bs) = 0 := measure_mono_null (fun x hx ↦ hx.2) hμc
+  -- Step 3: `H^n(M ∖ B*) = 0` by child `hausdorff_null_of_weight_null`, as `M ∖ B* ⊆ M`.
+  have hHZ : H (M \ Bs) = 0 :=
+    Submission.allard_tc_tpr_hausdorff_null_of_weight_null N n μ (M \ Bs) θ hμK hμZ
+      fun x hx ↦ hθ x hx.1
+  -- Step 4: `H^n ⌞ (E ∩ B) = H^n ⌞ (M ∩ B)`, tested on measurable `D`.
+  have hres : H.restrict (E ∩ B) = H.restrict (M ∩ B) := by
+    refine Measure.ext fun D hD ↦ ?_
+    rw [Measure.restrict_apply hD, Measure.restrict_apply hD]
+    refine le_antisymm (measure_mono (inter_subset_inter_right D
+      (inter_subset_inter_left B hEM))) ?_
+    have hDB : MeasurableSet (D ∩ B) := hD.inter hB
+    calc H (D ∩ (M ∩ B)) ≤ H (Bs ∩ (D ∩ B) ∩ M ∪ M \ Bs) := by
+          refine measure_mono fun x hx ↦ ?_
+          by_cases hx' : x ∈ Bs
+          · exact Or.inl ⟨⟨hx', hx.1, hx.2.2⟩, hx.2.1⟩
+          · exact Or.inr ⟨hx.2.1, hx'⟩
+      _ ≤ H (Bs ∩ (D ∩ B) ∩ M) + H (M \ Bs) := measure_union_le _ _
+      _ = ν (Bs ∩ (D ∩ B)) := by
+          rw [hHZ, add_zero, hν, Measure.restrict_apply (hBs.inter hDB)]
+      _ = ν (E ∩ (D ∩ B)) := Measure.measure_toMeasurable_inter_of_sFinite hDB E
+      _ = H (E ∩ (D ∩ B)) := Measure.restrict_eq_self H fun x hx ↦ hEM hx.1
+      _ = H (D ∩ (E ∩ B)) := by rw [inter_left_comm]
+  -- Step 5: the two set integrals are integrals against equal measures.
+  rw [hrep B hB, hres]
+/-- Integration against the weight `μ = H^n ⌞ θ` of `v(M, θ)` (Simon Ch. 8, p. 206): if
+`μ(B) = ∫_{M ∩ B} θ dH^n` for every Borel `B`, then `∫ g dμ = ∫_M g θ dH^n` for every
+`g : ℝ^N → ℝ`. -/
+theorem Submission.allard_tc_tpr_integral_eq_weighted :
+    ∀ (N n : ℕ) (μ : Measure (Euclidean N)) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), NullMeasurableSet M μHE[n] → (∀ x ∈ M, 0 < θ x) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]) → ∀ g : Euclidean N → ℝ, ∫ z, g z ∂μ = ∫ z in M, g z * θ z ∂μHE[n] := by
+  intro N n μ M θ hM hθ hint hμ g
+  -- Step 1: `θ` is a.e.-measurable for `H^n ⌞ M`, exhausting `M` by the pieces `M ∩ B_k(0)`.
+  have hθm : AEMeasurable θ ((μHE[n] : Measure (Euclidean N)).restrict M) := by
+    have hcover : M = ⋃ k : ℕ, M ∩ closedBall (0 : Euclidean N) k := by
+      rw [← inter_iUnion, iUnion_closedBall_nat, inter_univ]
+    rw [hcover, aemeasurable_iUnion_iff]
+    exact fun k ↦ (hint _ (isCompact_closedBall 0 k)).aemeasurable
+  -- Step 2: `μ = (H^n ⌞ M).withDensity (ofReal ∘ θ)`, as both agree on Borel sets.
+  have hμeq : μ = ((μHE[n] : Measure (Euclidean N)).restrict M).withDensity
+      fun x ↦ ENNReal.ofReal (θ x) := by
+    ext B hB
+    rw [hμ B hB, withDensity_apply _ hB, Measure.restrict_restrict hB, Set.inter_comm M B]
+  -- Step 3: the `withDensity` identity for the Bochner integral, valid for every `g`.
+  rw [hμeq, integral_withDensity_eq_integral_toReal_smul₀ hθm.ennreal_ofReal
+    (ae_of_all _ fun _ ↦ ENNReal.ofReal_lt_top)]
+  -- Step 4: `(ofReal θ).toReal = θ` on `M`, and `H^n ⌞ M`-a.e. point lies in `M`.
+  refine integral_congr_ae ?_
+  filter_upwards [ae_restrict_mem₀ hM] with x hx
+  rw [ENNReal.toReal_ofReal (hθ x hx).le, smul_eq_mul, mul_comm]
+/-- Change of variables under a blow-up (Simon Ch. 8, 5.1/5.5): for `r > 0` and
+`η_{x,r}(z) = r⁻¹(z - x)`, `∫_{η_{x,r}(M)} φ dH^n = r^{-n} ∫_M φ ∘ η_{x,r} dH^n` for every set `M`
+and every function `φ`. -/
+theorem Submission.allard_tc_tpr_blowup_setIntegral :
+    ∀ (N n : ℕ) (M : Set (Euclidean N)) (φ : Euclidean N → ℝ) (x : Euclidean N) (r : ℝ), 0 < r → ∫ y in Chapter03.blowUpMap x r '' M, φ y ∂μHE[n] = r⁻¹ ^ n * ∫ z in M, φ (Chapter03.blowUpMap x r z) ∂μHE[n] := by
+  intro N n M φ x r hr
+  set H : Measure (Euclidean N) := μHE[n]
+  set η : Euclidean N → Euclidean N := Chapter03.blowUpMap x r
+  have hr' : r⁻¹ ≠ 0 := inv_ne_zero hr.ne'
+  -- Step 1: `η` is translation by `-x` followed by dilation by `r⁻¹`, a homeomorphism, hence a
+  -- measurable embedding.
+  let e : Euclidean N ≃ₜ Euclidean N :=
+    (Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero r⁻¹ hr')
+  have he : ⇑e = η := by
+    funext z
+    simp [e, η, Chapter03.blowUpMap]
+  have hemb : MeasurableEmbedding η := he ▸ e.toMeasurableEquiv.measurableEmbedding
+  -- Step 2: `H(η(A)) = r^{-n} H(A)` for every set `A` (translation invariance and scaling).
+  have hscale : ∀ A : Set (Euclidean N), H (η '' A) = ENNReal.ofReal (r⁻¹ ^ n) * H A := by
+    intro A
+    have himg : η '' A = r⁻¹ • ((fun z ↦ z - x) '' A) := by
+      rw [← Set.image_smul, Set.image_image]
+      rfl
+    have hiso : Isometry (fun z : Euclidean N ↦ z - x) := (IsometryEquiv.subRight x).isometry
+    rw [himg, Measure.euclideanHausdorffMeasure_smul₀ n hr', hiso.euclideanHausdorffMeasure_image]
+    rw [ENNReal.smul_def, smul_eq_mul, ENNReal.coe_pow, ← ENNReal.ofReal_coe_nnreal, coe_nnnorm,
+      Real.norm_of_nonneg (inv_pos.mpr hr).le, ← ENNReal.ofReal_pow (inv_pos.mpr hr).le]
+  -- Step 3: `H ⌞ η(M) = r^{-n} η_# (H ⌞ M)`, checked on measurable sets `D` via
+  -- `η(η⁻¹(D) ∩ M) = D ∩ η(M)`.
+  have hmeas : H.restrict (η '' M) = ENNReal.ofReal (r⁻¹ ^ n) • (H.restrict M).map η := by
+    ext D hD
+    rw [Measure.restrict_apply hD, Measure.smul_apply, Measure.map_apply hemb.measurable hD,
+      Measure.restrict_apply (hemb.measurable hD), smul_eq_mul, ← hscale,
+      Set.inter_comm (η ⁻¹' D), Set.image_inter_preimage, Set.inter_comm]
+  -- Step 4: integrate; `MeasurableEmbedding.integral_map` needs no measurability of `φ`.
+  rw [hmeas, integral_smul_measure, hemb.integral_map, ENNReal.toReal_ofReal
+    (pow_nonneg (inv_pos.mpr hr).le n), smul_eq_mul]
+/-- Varifold tangent planes versus approximate tangent planes (Simon Ch. 8, Definition 1.1 against
+Ch. 3, 1.7): if `μ_V = H^n ⌞ θ` on `M` and `V` has tangent plane `T` with multiplicity `θ(x)`
+at `x`, then `T` is the unique approximate tangent space of `M` at `x` with respect to `θ`. -/
+theorem Submission.allard_tc_tpr_weighted_approx_tangent_iff :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (V : Varifold N n U) (M : Set (Euclidean N)) (θ : Euclidean N → ℝ) (x : Euclidean N) (T : Grassmannian N n), NullMeasurableSet M μHE[n] → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Euclidean N), IsCompact K → IntegrableOn θ (M ∩ K) μHE[n]) → (∀ B : Set (Euclidean N), MeasurableSet B → V.weight B = ∫⁻ y in M ∩ B, ENNReal.ofReal (θ y) ∂μHE[n]) → HasTangentPlane V x T (θ x) → ∀ S : Grassmannian N n, Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T := by
+  intro N n U V M θ x T hM hθ hθint hweight hT
+  -- Steps 1–6: `T.plane` is an approximate tangent space of `M` at `x` with respect to `θ`.
+  have hTM : Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x T.plane := by
+    refine ⟨T.finrank_plane, fun g ↦ ?_⟩
+    -- Step 2: the test function `f(z, S) = g(z)` is compactly supported, `G(N,n)` being compact.
+    have hf : HasCompactSupport (fun z : Euclidean N × Grassmannian N n ↦ g z.1) :=
+      HasCompactSupport.intro (g.hasCompactSupport.isCompact.prod isCompact_univ) fun z hz ↦
+        image_eq_zero_of_notMem_tsupport fun h ↦ hz ⟨h, mem_univ _⟩
+    let f : C_c(Euclidean N × Grassmannian N n, ℝ) :=
+      ⟨⟨fun z ↦ g z.1, (map_continuous g).comp continuous_fst⟩, hf⟩
+    have hfc : Continuous (f : Euclidean N × Grassmannian N n → ℝ) := map_continuous f
+    -- Step 3: Definition 1.1 tested with `f`; the plane side is `θ(x) ∫_T g dH^n`.
+    have hlim := hT.2.2 f
+    have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+        ∫ y in (T.plane : Set (Euclidean N)), g y ∂μHE[n] := by
+      rw [planeVarifoldMeasure, integral_map (φ := fun y : Euclidean N ↦ (y, T)) (by fun_prop)
+        hfc.aestronglyMeasurable]
+      rfl
+    rw [hplane] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr0 : (0 : ℝ) < r := hr
+    have hr' : (0 : ℝ) ≤ r⁻¹ ^ n := pow_nonneg (inv_nonneg.2 hr0.le) n
+    have hg : Continuous fun y : Euclidean N ↦ g (r⁻¹ • (y - x)) := by fun_prop
+    -- Step 5: by the two sibling children and `x + r • η_{x,r}(z) = z`, the weighted blow-up
+    -- integral is `r^{-n} ∫ g(r^{-1}(z - x)) dμ_V(z)` for `r > 0`.
+    have hblow : ∫ y in Chapter03.blowUpMap x r '' M, g y * θ (x + r • y) ∂μHE[n] =
+        r⁻¹ ^ n * ∫ z, g (r⁻¹ • (z - x)) ∂V.weight := by
+      rw [Submission.allard_tc_tpr_blowup_setIntegral N n M
+          (fun y ↦ g y * θ (x + r • y)) x r hr0,
+        Submission.allard_tc_tpr_integral_eq_weighted N n V.weight M θ hM hθ hθint hweight]
+      congr 1
+      refine integral_congr_ae (Eventually.of_forall fun z ↦ ?_)
+      simp only [Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
+        add_sub_cancel]
+    -- Step 4: the rescaled side `∫ f dV_{x,r}` is also `r^{-n} ∫ g(r^{-1}(z - x)) dμ_V(z)`.
+    rw [hblow, rescaledMeasure, integral_smul_measure,
+      integral_map (φ := fun z : Euclidean N × Grassmannian N n ↦ (r⁻¹ • (z.1 - x), z.2))
+        (by fun_prop) hfc.aestronglyMeasurable, ENNReal.toReal_ofReal hr', smul_eq_mul,
+      Varifold.weight, integral_map measurable_fst.aemeasurable hg.aestronglyMeasurable]
+    rfl
+  -- Step 7: weighted approximate tangent planes are unique where `θ(x) ≠ 0`, and a point of
+  -- `G(N,n)` is determined by its plane, since `Grassmannian.ofSubmodule S.plane _ = S`.
+  intro S
+  refine ⟨fun hS ↦ ?_, ?_⟩
+  · have hST : S.plane = T.plane := hS.unique hT.2.1.ne' hTM
+    calc S = Grassmannian.ofSubmodule S.plane S.finrank_plane :=
+          (Grassmannian.ofSubmodule_plane S).symm
+      _ = Grassmannian.ofSubmodule T.plane T.finrank_plane := by congr 1
+      _ = T := Grassmannian.ofSubmodule_plane T
+  · rintro rfl
+    exact hTM
 /-- Weight blow-ups at a tangent point (Simon Ch. 8, Definition 1.1 tested with `f(y,S) = g(y)`):
 if `V` has tangent plane `T` with multiplicity `θ` at `x`, then for every `g ∈ C_c(ℝ^N)`,
 `t^{-n} ∫ g(t^{-1}(z - x)) dμ_V(z) → θ ∫_T g dH^n` as `t ↓ 0`. -/
@@ -1935,6 +2270,73 @@ theorem Submission.allard_tc_tangent_plane_dilation :
     exact (mul_left_cancel₀ hT.2.1.ne' h).symm
   -- Step 5: an `n`-plane is determined by these integrals.
   exact ⟨Submission.allard_tc_tpd_plane_eq_of_integral_eq N n T T' hplane, hθ⟩
+
+/-- **Canonical representation `C = v(M, θ)` by varifold tangent planes** (step B3 of the proof of
+Simon Ch. 8, 5.7).  Take `M` and `θ` from the First Rectifiability Theorem 1.2.  Since `μ_C` is
+`θ H^n ⌞ M`, at every `x ∈ M` the weighted approximate tangent planes of `(M, θ)` are exactly the
+varifold tangent planes of `C` with multiplicity `θ(x)`, so they may replace the approximate tangent
+planes in `IsVarifoldOf`. -/
+theorem Submission.allard_tc_tangent_point_representation :
+    FirstRectifiabilityTheorem → ∀ (N n : ℕ) (C : Varifold N n (univ : Set (Euclidean N))),
+      (∀ᵐ x ∂C.weight, ∃ (T : Grassmannian N n) (θ : ℝ), HasTangentPlane C x T θ) →
+      ∃ (M : Set (Euclidean N)) (θ : Euclidean N → ℝ), IsVarifoldOf C M θ ∧
+        (∀ x ∈ M, ∃ T : Grassmannian N n, HasTangentPlane C x T (θ x)) ∧
+        ∀ A : Set (Euclidean N × Grassmannian N n), MeasurableSet A →
+          C.measure A = ∫⁻ x in {x | x ∈ M ∧ ∃ T : Grassmannian N n,
+            HasTangentPlane C x T (θ x) ∧ (x, T) ∈ A}, ENNReal.ofReal (θ x) ∂μHE[n] := by
+  intro hFRT N n C hC
+  -- 1.2 gives `θ`, a tangent plane with multiplicity `θ(x)` at every `x ∈ M`, and `C = v(M, θ)`,
+  -- where `M` is the set of tangent points in `spt μ_C`; only these properties of `M` are used.
+  obtain ⟨θ, hT, hV⟩ := hFRT N n univ C hC
+  generalize {x | x ∈ C.weight.support ∧ ∃ (T : Grassmannian N n) (θ' : ℝ),
+    HasTangentPlane C x T θ'} = M at hT hV
+  obtain ⟨-, hMmeas, hMrect, hθpos, hθint, hrep⟩ := id hV
+  refine ⟨M, θ, hV, hT, ?_⟩
+  -- `μ_C(B) = ∫_{E ∩ B} θ dH^n`, where `E ⊆ M` is the set of points with an approximate tangent
+  -- plane (`IsVarifoldOf` at `A = B × G(N,n)`).
+  obtain ⟨E, hEM, hE⟩ : ∃ E ⊆ M, ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in E ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    refine ⟨{x | x ∈ M ∧ ∃ S : Grassmannian N n,
+      Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane}, fun x hx ↦ hx.1, ?_⟩
+    intro B hB
+    rw [C.weight_apply hB, hrep _ (hB.prod MeasurableSet.univ)]
+    congr 2
+    ext x
+    simp only [mem_ofPred_eq, mem_inter_iff, mem_prod, mem_univ, and_true]
+    constructor
+    · rintro ⟨hx, S, hS, hxB⟩
+      exact ⟨⟨hx, S, hS⟩, hxB⟩
+    · rintro ⟨⟨hx, S, hS⟩, hxB⟩
+      exact ⟨hx, S, hS, hxB⟩
+  -- `μ_C = θ H^n ⌞ M`: `H^n ⌞ M` is σ-finite and `θ(x)` is the density of `μ_C` at `x ∈ M`.
+  have hW : ∀ B : Set (Euclidean N), MeasurableSet B →
+      C.weight B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    have := Submission.allard_tc_tpr_rectifiable_sigmaFinite N n M hMrect
+    refine Submission.allard_tc_tpr_weight_eq_restrict N n C.weight M E θ
+      (fun K hK ↦ C.weight_finite_on_compact K hK (subset_univ K)) inferInstance hEM
+      (fun x hx ↦ ⟨hθpos x hx, ?_⟩) hE
+    obtain ⟨T, hTx⟩ := hT x hx
+    exact Submission.allard_tc_tangent_plane_density N n univ C x T (θ x) hTx
+  -- Hence at `x ∈ M` the approximate tangent planes are exactly the tangent planes of `C` with
+  -- multiplicity `θ(x)`.
+  have hiff : ∀ x : Euclidean N, ∀ T : Grassmannian N n, HasTangentPlane C x T (θ x) →
+      ∀ S : Grassmannian N n,
+        Chapter03.HasWeightedApproximateTangentSpaceAt n M θ x S.plane ↔ S = T :=
+    fun x T hTx ↦ Submission.allard_tc_tpr_weighted_approx_tangent_iff N n univ C M θ x T
+      hMmeas hθpos (fun K hK ↦ hθint K hK (subset_univ K)) hW hTx
+  intro A hA
+  rw [hrep A hA]
+  congr 2
+  ext x
+  simp only [mem_ofPred_eq]
+  constructor
+  · rintro ⟨hx, S, hS, hxS⟩
+    obtain ⟨T, hTx⟩ := hT x hx
+    refine ⟨hx, S, ?_, hxS⟩
+    rw [(hiff x T hTx S).1 hS]
+    exact hTx
+  · rintro ⟨hx, T, hTx, hxT⟩
+    exact ⟨hx, T, (hiff x T hTx T).2 rfl, hxT⟩
 
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
