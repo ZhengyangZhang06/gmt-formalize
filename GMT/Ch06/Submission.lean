@@ -551,6 +551,222 @@ theorem Submission.dr_cc_similarity_bound : ∀ (m ℓ : ℕ) (a : Eucl (m + 1 +
   rw [hdist]
   exact (min_le_right _ _).trans
     (mul_le_mul_of_nonneg_left (Metric.infDist_le_dist_of_mem hw') hs.le)
+/-- Simon Ch. 6, proof of Lemma 5.4: the radial retraction `ψ_F` with origin `c` (p. 161) of
+`F = {x ∈ [0,1]^D : xᵢ = cᵢ (i ∉ J)}` onto its relative boundary, with its pointwise Lipschitz
+bound (printed (8), p. 163).  Here `g(x) = c + N(x - c)⁻¹ • (x - c)` for the gauge
+`N(v) = max_{i ∈ J} max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`, and `s = N(x - c)⁻¹`. -/
+theorem Submission.dr_cc_radial_map : ∀ (D : ℕ) (a : Eucl D), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ (J : Finset (Fin D)) (c : Eucl D), (∀ i ∈ J, c i = a i) → ∃ g : Eucl D → Eucl D, ∀ x : Eucl D, (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ≠ c → (∀ i, 0 ≤ g x i ∧ g x i ≤ 1) ∧ (∃ i ∈ J, g x i = 0 ∨ g x i = 1) ∧ ∃ s : ℝ, 0 < s ∧ (∀ i, g x i - c i = s * (x i - c i)) ∧ s * dist x c ≤ Real.sqrt (D : ℝ) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl D, (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → dist x' x < δ → dist (g x') (g x) ≤ ((1 + 4 * Real.sqrt (D : ℝ)) * s + ε) * dist x' x := by
+  intro D a ha J c hcJ
+  -- Step 1: for `J = ∅` the face is `{c}`, so no `x` is admissible.
+  rcases J.eq_empty_or_nonempty with hJ | hJ
+  · refine ⟨id, fun x _ hxJ hxc => absurd ?_ hxc⟩
+    ext i
+    exact hxJ i (by simp [hJ])
+  -- Step 0: `aᵢ, 1 - aᵢ > 1/4`, coordinates are bounded by the norm, `diam [0,1]^D ≤ √D`.
+  have ha0 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
+  have ha1 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
+  have hcoord : ∀ (v : Eucl D) (i : Fin D), |v i| ≤ ‖v‖ := by
+    intro v i
+    have h := PiLp.norm_apply_le v i
+    rwa [Real.norm_eq_abs] at h
+  have hdiam : ∀ p q : Eucl D, (∀ i, 0 ≤ p i ∧ p i ≤ 1) → (∀ i, 0 ≤ q i ∧ q i ≤ 1) →
+      dist p q ≤ Real.sqrt D := by
+    intro p q hp hq
+    rw [EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, dist (p i) (q i) ^ 2 ≤ ∑ _i : Fin D, (1 : ℝ) := by
+          refine Finset.sum_le_sum fun i _ => ?_
+          have h1 : 0 ≤ 1 - p i + q i := by linarith [(hp i).2, (hq i).1]
+          have h2 : 0 ≤ 1 + p i - q i := by linarith [(hp i).1, (hq i).2]
+          rw [Real.dist_eq, sq_abs]
+          nlinarith [mul_nonneg h1 h2]
+      _ = D := by simp
+  -- Step 2: the gauge `N(v) = max_{i ∈ J} fᵢ(v)`, `fᵢ(v) = max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`.
+  obtain ⟨f, hf⟩ : ∃ f : Eucl D → Fin D → ℝ,
+      ∀ v i, f v i = max (v i / (1 - a i)) (-v i / a i) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : Eucl D → ℝ, ∀ v, N v = J.sup' hJ (f v) := ⟨_, fun _ => rfl⟩
+  have hfN : ∀ v, ∀ i ∈ J, f v i ≤ N v := by
+    intro v i hi
+    rw [hN]
+    exact Finset.le_sup' (f v) hi
+  have hNatt : ∀ v, ∃ i ∈ J, N v = f v i := by
+    intro v
+    obtain ⟨i, hi, h⟩ := Finset.exists_mem_eq_sup' hJ (f v)
+    exact ⟨i, hi, (hN v).trans h⟩
+  -- (N2): each `fᵢ`, hence `N`, is `4`-Lipschitz.
+  have hfLip : ∀ v w : Eucl D, ∀ i, f w i ≤ f v i + 4 * ‖w - v‖ := by
+    intro v w i
+    have hwv : |w i - v i| ≤ ‖w - v‖ := hcoord (w - v) i
+    have e1 : |w i / (1 - a i) - v i / (1 - a i)| ≤ 4 * |w i - v i| := by
+      rw [← sub_div, abs_div, abs_of_pos (ha1 i), div_le_iff₀ (ha1 i)]
+      nlinarith [abs_nonneg (w i - v i), (ha i).2]
+    have e2 : |-w i / a i - -v i / a i| ≤ 4 * |w i - v i| := by
+      rw [← sub_div, abs_div, abs_of_pos (ha0 i), div_le_iff₀ (ha0 i), neg_sub_neg,
+        abs_sub_comm (v i) (w i)]
+      nlinarith [abs_nonneg (w i - v i), (ha i).1]
+    have e3 := (abs_le.mp (abs_max_sub_max_le_max (w i / (1 - a i)) (-w i / a i)
+      (v i / (1 - a i)) (-v i / a i))).2
+    have e4 := max_le e1 e2
+    rw [hf, hf]
+    linarith
+  have hNle : ∀ v w : Eucl D, N w ≤ N v + 4 * ‖w - v‖ := by
+    intro v w
+    rw [hN w]
+    exact Finset.sup'_le hJ (f w) fun i hi => (hfLip v w i).trans (by linarith [hfN v i hi])
+  have hNlip : ∀ v w : Eucl D, |N w - N v| ≤ 4 * ‖w - v‖ := by
+    intro v w
+    rw [abs_le]
+    constructor
+    · have h := hNle w v
+      rw [norm_sub_rev] at h
+      linarith
+    · linarith [hNle v w]
+  -- Step 8 (core): the estimate `|u w - t v| ≤ ((1 + 4√D) t + ε) |w - v|` for `t = N(v)⁻¹`,
+  -- `u = N(w)⁻¹`, written with `W = w - v`, `V = v`, `ν = N(v)`, `μ = N(w)`, `ρ = |w - v|`.
+  have key : ∀ (ν μ ρ ε : ℝ) (V W : Eucl D), 0 < ν → ‖W‖ = ρ → |μ - ν| ≤ 4 * ρ →
+      ν⁻¹ * ‖V‖ ≤ Real.sqrt D → ρ < ν / 8 → ρ < ε * ν ^ 2 / (8 * (1 + 4 * Real.sqrt D)) →
+      ‖μ⁻¹ • W + (μ⁻¹ - ν⁻¹) • V‖ ≤ ((1 + 4 * Real.sqrt D) * ν⁻¹ + ε) * ρ := by
+    intro ν μ ρ ε V W hν hW hμν hV hρ1 hρ2
+    have hβ : 0 < 1 + 4 * Real.sqrt D := by positivity
+    have hρ0 : 0 ≤ ρ := hW ▸ norm_nonneg W
+    have hμ : ν / 2 < μ := by linarith [(abs_le.mp hμν).1]
+    have hμ0 : 0 < μ := by linarith
+    have ht : 0 < ν⁻¹ := inv_pos.mpr hν
+    have hu : 0 < μ⁻¹ := inv_pos.mpr hμ0
+    have htν : ν⁻¹ * ν = 1 := inv_mul_cancel₀ hν.ne'
+    have huμ : μ⁻¹ * μ = 1 := inv_mul_cancel₀ hμ0.ne'
+    generalize ν⁻¹ = t at ht htν hV ⊢
+    generalize μ⁻¹ = u at hu huμ ⊢
+    -- (b): `u - t = u t (ν - μ)`, so `|u - t| ≤ 4 u t ρ`; and `u < 2 t`.
+    have hut : u - t = u * t * (ν - μ) := by linear_combination (-u) * htν + t * huμ
+    have habs : |u - t| ≤ 4 * u * t * ρ := by
+      rw [hut, abs_mul, abs_of_pos (mul_pos hu ht), abs_sub_comm ν μ]
+      have h := mul_le_mul_of_nonneg_left hμν (mul_pos hu ht).le
+      linarith
+    have hu2t : u < 2 * t := by
+      have h1 : u * (μ * ν) = ν := by rw [← mul_assoc, huμ, one_mul]
+      have h2 : 2 * t * (μ * ν) = 2 * μ := by
+        have h : 2 * t * (μ * ν) = 2 * μ * (t * ν) := by ring
+        rw [h, htν, mul_one]
+      have h3 : u * (μ * ν) < 2 * t * (μ * ν) := by rw [h1, h2]; linarith
+      exact lt_of_mul_lt_mul_right h3 (mul_pos hμ0 hν).le
+    -- (d): `u ≤ t + 8 t² ρ` and `8 (1 + 4√D) t² ρ ≤ ε`.
+    have hu_le : u ≤ t + 8 * t ^ 2 * ρ := by
+      have h1 : u - t ≤ 4 * u * t * ρ := (le_abs_self _).trans habs
+      have h2 := mul_le_mul_of_nonneg_right hu2t.le (by positivity : (0 : ℝ) ≤ 4 * t * ρ)
+      nlinarith
+    have h8 : 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ ≤ ε := by
+      have h1 : ρ * (8 * (1 + 4 * Real.sqrt D)) < ε * ν ^ 2 := by
+        rwa [lt_div_iff₀ (by positivity)] at hρ2
+      calc 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ
+          = t ^ 2 * (ρ * (8 * (1 + 4 * Real.sqrt D))) := by ring
+        _ ≤ t ^ 2 * (ε * ν ^ 2) := mul_le_mul_of_nonneg_left h1.le (by positivity)
+        _ = ε * (t * ν) ^ 2 := by ring
+        _ = ε := by rw [htν, one_pow, mul_one]
+    -- (a), (c), (e).
+    calc ‖u • W + (u - t) • V‖ ≤ ‖u • W‖ + ‖(u - t) • V‖ := norm_add_le _ _
+      _ = u * ρ + |u - t| * ‖V‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hu, hW]
+      _ ≤ u * ρ + 4 * u * t * ρ * ‖V‖ := by
+          have h := mul_le_mul_of_nonneg_right habs (norm_nonneg V)
+          linarith
+      _ = u * ρ * (1 + 4 * (t * ‖V‖)) := by ring
+      _ ≤ u * ρ * (1 + 4 * Real.sqrt D) := by
+          refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hu.le hρ0)
+          linarith
+      _ = (1 + 4 * Real.sqrt D) * u * ρ := by ring
+      _ ≤ (1 + 4 * Real.sqrt D) * (t + 8 * t ^ 2 * ρ) * ρ :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hu_le hβ.le) hρ0
+      _ = ((1 + 4 * Real.sqrt D) * t + 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ) * ρ := by ring
+      _ ≤ ((1 + 4 * Real.sqrt D) * t + ε) * ρ := by
+          refine mul_le_mul_of_nonneg_right ?_ hρ0
+          linarith
+  -- Step 3: the map `g(y) = c + N(y - c)⁻¹ (y - c)`.
+  obtain ⟨g, hg⟩ : ∃ g : Eucl D → Eucl D, ∀ y, g y = c + (N (y - c))⁻¹ • (y - c) :=
+    ⟨_, fun _ => rfl⟩
+  have hgi : ∀ y i, g y i = c i + (N (y - c))⁻¹ * (y i - c i) := by
+    intro y i
+    rw [hg]
+    rfl
+  refine ⟨g, fun x hx hxJ hxc => ?_⟩
+  -- Step 4: `ν = N(x - c) > 0` (N3); `s = ν⁻¹`.
+  have hxc_i : ∀ i, (x - c) i = x i - c i := fun i => rfl
+  have hν : 0 < N (x - c) := by
+    by_contra hle
+    rw [not_lt] at hle
+    apply hxc
+    ext i
+    by_cases hi : i ∈ J
+    · have h := (hfN (x - c) i hi).trans hle
+      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), zero_mul, zero_mul,
+        hxc_i] at h
+      linarith [h.1, h.2]
+    · exact hxJ i hi
+  -- Step 5: `g(x) ∈ [0,1]^D` (printed (R1)).
+  have hgx_cube : ∀ i, 0 ≤ g x i ∧ g x i ≤ 1 := by
+    intro i
+    rw [hgi]
+    by_cases hi : i ∈ J
+    · have h := hfN (x - c) i hi
+      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), hxc_i] at h
+      have k1 : (N (x - c))⁻¹ * (x i - c i) ≤ 1 - a i := by
+        rw [inv_mul_le_iff₀ hν]
+        exact h.1
+      have k2 : -((N (x - c))⁻¹ * (x i - c i)) ≤ a i := by
+        rw [← mul_neg, inv_mul_le_iff₀ hν]
+        exact h.2
+      constructor <;> linarith [hcJ i hi]
+    · rw [← hxJ i hi, sub_self, mul_zero, add_zero]
+      exact hx i
+  -- Step 7: `s |x - c| = |g(x) - c| ≤ √D` (printed (R5)), as `c ∈ [0,1]^D`.
+  have hc_cube : ∀ i, 0 ≤ c i ∧ c i ≤ 1 := by
+    intro i
+    by_cases hi : i ∈ J
+    · rw [hcJ i hi]
+      exact ⟨(ha0 i).le, by linarith [ha1 i]⟩
+    · rw [← hxJ i hi]
+      exact hx i
+  have hR5 : (N (x - c))⁻¹ * ‖x - c‖ ≤ Real.sqrt D := by
+    have h := hdiam (g x) c hgx_cube hc_cube
+    rwa [hg, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hν)] at h
+  refine ⟨hgx_cube, ?_, (N (x - c))⁻¹, inv_pos.mpr hν, fun i => by rw [hgi]; ring,
+    by rw [dist_eq_norm]; exact hR5, ?_⟩
+  · -- Step 6: a coordinate `i₀ ∈ J` realizing the maximum is sent to `0` or `1`.
+    obtain ⟨i₀, hi₀, hmax⟩ := hNatt (x - c)
+    refine ⟨i₀, hi₀, ?_⟩
+    rw [hgi, hcJ i₀ hi₀]
+    rw [hf, hxc_i, hcJ i₀ hi₀] at hmax
+    rcases le_total (-(x i₀ - a i₀) / a i₀) ((x i₀ - a i₀) / (1 - a i₀)) with h | h
+    · right
+      rw [max_eq_left h] at hmax
+      have e : x i₀ - a i₀ = N (x - c) * (1 - a i₀) := by
+        rw [hmax, div_mul_cancel₀ _ (ha1 i₀).ne']
+      rw [e, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
+      ring
+    · left
+      rw [max_eq_right h] at hmax
+      have e : x i₀ - a i₀ = -(N (x - c) * a i₀) := by
+        rw [hmax, div_mul_cancel₀ _ (ha0 i₀).ne', neg_neg]
+      rw [e, mul_neg, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
+      ring
+  · -- Step 8: the pointwise estimate (printed (8)), with `δ = min (ν/8) (εν²/(8(1 + 4√D)))`.
+    intro ε hε
+    refine ⟨min (N (x - c) / 8) (ε * N (x - c) ^ 2 / (8 * (1 + 4 * Real.sqrt D))),
+      lt_min (by linarith) (div_pos (mul_pos hε (pow_pos hν 2)) (by positivity)), ?_⟩
+    intro x' _ _ hx'
+    have hid : g x' - g x = (N (x' - c))⁻¹ • ((x' - c) - (x - c)) +
+        ((N (x' - c))⁻¹ - (N (x - c))⁻¹) • (x - c) := by
+      rw [hg, hg]
+      module
+    have hwv : ‖(x' - c) - (x - c)‖ = dist x' x := by
+      rw [sub_sub_sub_cancel_right, dist_eq_norm]
+    have hμν : |N (x' - c) - N (x - c)| ≤ 4 * dist x' x := by
+      have h := hNlip (x - c) (x' - c)
+      rwa [hwv] at h
+    rw [dist_eq_norm (g x') (g x), hid]
+    exact key (N (x - c)) (N (x' - c)) (dist x' x) ε (x - c) ((x' - c) - (x - c)) hν hwv hμν hR5
+      (hx'.trans_le (min_le_left _ _)) (hx'.trans_le (min_le_right _ _))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
