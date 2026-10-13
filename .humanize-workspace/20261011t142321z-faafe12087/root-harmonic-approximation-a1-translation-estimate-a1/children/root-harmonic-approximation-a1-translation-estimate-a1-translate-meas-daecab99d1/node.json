@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.translation_estimate-a1.translate_measurability-a1",
+  "parent_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+  "depth": 3,
+  "title": "Translates of a.e.-strongly measurable functions on balls",
+  "statement": "Let n be a natural number, h : R^n -> R, r, s real numbers and z in R^n with r + |z| <= s. If h is a.e.-strongly measurable for Lebesgue measure restricted to B_s := ball(0,s) in EuclideanSpace R (Fin n), then x |-> h(x - z) is a.e.-strongly measurable for Lebesgue measure restricted to B_r := ball(0,r).",
+  "lean_statement": "∀ (n : ℕ) (h : Rn n → ℝ) (r s : ℝ) (z : Rn n), r + ‖z‖ ≤ s → AEStronglyMeasurable h (volume.restrict (ball (0 : Rn n) s)) → AEStronglyMeasurable (fun x => h (x - z)) (volume.restrict (ball (0 : Rn n) r))",
+  "lean_name": "aestronglyMeasurable_ball_comp_sub",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-translation-estimate-a1-translate-meas-daecab99d1-a1"
+}

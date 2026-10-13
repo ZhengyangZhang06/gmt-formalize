@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1.ae_mem_support-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_height_excess-a1",
+  "depth": 4,
+  "title": "The weight of a rectifiable varifold is concentrated on its support (Simon 4.5, proof step (1a))",
+  "statement": "Let n, l be natural numbers, U an arbitrary subset of R^{n+l} = EuclideanSpace R (Fin (n+l)), and V a contract rectifiable n-varifold in U (structure RectifiableVarifold n l U). V has carrier M, so M ⊆ U and M is H^n-null-measurable (H^n = μHE[n]), and multiplicity θ. Its weight is μ = V.weight = (H^n restricted to M) with density x ↦ ofReal(θ(x)), and its support is spt V = V.support = U ∩ supp μ, where supp μ = μ.support is the support of the measure μ. Then μ-almost every point of R^{n+l} lies in spt V, i.e. μ(R^{n+l} \\ spt V) = 0.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), ∀ᵐ x ∂V.weight, x ∈ V.support",
+  "lean_name": "tdo_ghe_ae_mem_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-height-excess-a1-a-e32a298e67-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.poincare_inequality-a1",
+  "parent_id": "root.harmonic_approximation-a1",
+  "depth": 2,
+  "title": "Poincare inequality on the unit ball for W^{1,2}(B)",
+  "statement": "For every n >= 1 there is a constant C >= 0 (C = 2^{n+2} works) such that the following holds. For all f : R^n -> R and g : R^n -> R^n with IsW12WithGradient f g B (B the open unit ball), int_B |f(x) - lambda|^2 dx <= C int_B |g|^2, where lambda is the average of f over B, i.e. |B|^{-1} int_B f. Both sides are lintegrals of squared extended norms, and the right side is ENNReal.ofReal C times the energy.",
+  "lean_statement": "∀ n : ℕ, 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (f : Rn n → ℝ) (g : Rn n → Rn n), IsW12WithGradient f g (ball 0 1) → ∫⁻ x in ball (0 : Rn n) 1, ‖f x - ⨍ y in ball (0 : Rn n) 1, f y‖ₑ ^ 2 ≤ ENNReal.ofReal C * ∫⁻ x in ball (0 : Rn n) 1, ‖g x‖ₑ ^ 2",
+  "lean_name": "w12_ball_poincare_inequality",
+  "depends_on": [
+    "root.harmonic_approximation-a1.smooth_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-poincare-inequality-a1-a1"
+}

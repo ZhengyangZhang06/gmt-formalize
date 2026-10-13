@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1.rotated_chain_rule-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+  "depth": 4,
+  "title": "Chain rule in rotated coordinates: D(ζ ∘ a)(x) = ⟨q(graphPoint (∇ζ(a(x))) 0), ·⟩",
+  "statement": "Let n, l ∈ N, let q be a linear isometry of R^{n+l}, ζ : R^n → R and x ∈ R^{n+l}. Write a(y) := (EuclideanSpace.finAddEquivProd (q^{-1} y)).1 ∈ R^n, and assume ζ is differentiable at a(x). Then y ↦ ζ(a(y)) has Fréchet derivative at x equal to the continuous linear functional v ↦ ⟨q(graphPoint (∇ζ(a(x))) 0), v⟩ (innerSL ℝ of that vector; ∇ = gradient).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (ζ : Rn n → ℝ) (x : Amb n ℓ), DifferentiableAt ℝ ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1 → HasFDerivAt (fun y : Amb n ℓ => ζ (EuclideanSpace.finAddEquivProd (q.symm y)).1) (innerSL ℝ (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) x",
+  "lean_name": "gwe_vfv_hasFDerivAt_comp_first_block",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-varia-ac4a8822a1-a1"
+}

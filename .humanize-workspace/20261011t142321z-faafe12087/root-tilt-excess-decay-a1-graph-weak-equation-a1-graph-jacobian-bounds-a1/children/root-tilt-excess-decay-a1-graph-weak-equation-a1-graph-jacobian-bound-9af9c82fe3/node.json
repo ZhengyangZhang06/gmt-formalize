@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1.exp_half_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+  "depth": 4,
+  "title": "Scalar bound exp(s/2) <= 1 + (e^{T/2}/2) s for 0 <= s <= T",
+  "statement": "For all real numbers s and T with 0 <= s and s <= T: exp(s/2) <= 1 + (exp(T/2)/2) * s.",
+  "lean_statement": "∀ (s T : ℝ), 0 ≤ s → s ≤ T → Real.exp (s / 2) ≤ 1 + Real.exp (T / 2) / 2 * s",
+  "lean_name": "gwe_gjb_exp_half_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-jacobian-bound-9af9c82fe3-a1"
+}

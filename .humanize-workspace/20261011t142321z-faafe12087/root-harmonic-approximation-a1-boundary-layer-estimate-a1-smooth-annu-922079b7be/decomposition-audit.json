@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ble_sac_|theorem (lintegral_comp_smul|setLIntegral_comp_smul)|annulus_dilation|ray_sq_bound",
+        "map_addHaar_smul|MeasurableEmbedding.restrict_map|MeasurableEmbedding.lintegral_map|theorem lintegral_smul_measure|theorem restrict_smul",
+        "lintegral_mul_le_Lp_mul_Lq|enorm_integral_le_lintegral_enorm|theorem integral_eq_sub_of_hasDerivAt|theorem inner_gradient_left|theorem ContDiff.continuous_fderiv",
+        "rg -l 'ble_sac_lintegral_comp_smul|ble_sac_ray_sq_bound|ble_sac_annulus_dilation_avg_le' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes",
+        "In /tmp/ble-sac-independent-audit-fcbqw7kx: /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-922079b7be/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-922079b7be/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Scratch/ble_sac/ble_smooth_annulus_estimate_assembly.lean.txt",
+        "/tmp/ble-sac-independent-audit-fcbqw7kx/Audit.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical frozen Submission. Independently compiled the three proofs extracted from natural_proof and the supplied parent assembly using the frozen imports. All frozen propositions elaborated before any child declaration; all comparator-style checks passed. All four theorems depend only on propext, Classical.choice and Quot.sound. The sole sorry warning concerns the unrelated frozen main_theorem. The snapshot search found no matching proposed declarations or direct dilation lemma, and the current 236-node DAG and other branches reserve none of the proposed bare names. The split appropriately isolates three distinct analytic obligations. Its sole sibling dependency is annulus_kernel_bound depending on dilation_formula, and the remaining parent argument establishes the exact selected contract, including its constant and finite positive cancellation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dilation_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary n, nonmeasurable F and E, and t > 0. The measurable equivalence, inverse-preimage identity, Haar scaling and restricted change of variables are valid; the pinned embedding lemmas impose no missing measurability hypotheses. The supplied proof is complete, compiles independently, and uses neither siblings nor the parent. The bare name is unreserved."
+    },
+    {
+      "key": "ray_inequality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree on global C1 regularity, norm x ≤ 1, τ ≤ 1, gradient, interval measures and coefficients. Independently checked gradient continuity, the chain rule, FTC, the Bochner-to-lintegral norm bound, Hölder, the extended-real square inequality and averaging. These prove the exact statement, including τ = 1 and negative τ. Parentheses correctly isolate the first integral. The complete proof compiles without sibling or parent reliance; its bare name is unreserved."
+    },
+    {
+      "key": "annulus_kernel_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis of the exact one-line type. The proof establishes kernel measurability, the dilation identity, Tonelli, vanishing outside B_s, and support in (norm y/s, norm y/(rs)], whose length is at most 2(1-r). Together with t^(-n) ≤ 2^n these give the stated coefficient. Infinite F values, y = 0 and the empty interval when τ > 1 are covered. The complete proof compiles using only the declared dilation_formula sibling dependency. Its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

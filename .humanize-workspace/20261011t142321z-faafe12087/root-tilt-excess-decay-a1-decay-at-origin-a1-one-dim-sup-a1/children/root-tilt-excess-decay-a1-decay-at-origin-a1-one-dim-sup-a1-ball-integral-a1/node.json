@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ball_integral-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "depth": 4,
+  "title": "Integrals over the open ball of R^1 are integrals over the interval (-a, a)",
+  "statement": "Let R^1 = EuclideanSpace R (Fin 1), let phi : R^1 -> R be an arbitrary function and a an arbitrary real number, and let iota(t) := EuclideanSpace.single 0 t be the vector of R^1 whose unique coordinate is t. Then the Bochner integral of phi over the open ball B_a(0) of R^1 with respect to Lebesgue measure (volume) equals the Bochner integral of t |-> phi(iota t) over the open interval (-a, a): ∫_{B_a(0)} phi = ∫_{(-a,a)} phi(iota t) dt. No integrability hypothesis is needed.",
+  "lean_statement": "∀ (φ : Rn 1 → ℝ) (a : ℝ), (∫ y in ball (0 : Rn 1) a, φ y) = ∫ t in Ioo (-a) a, φ (EuclideanSpace.single (0 : Fin 1) t)",
+  "lean_name": "tdo_ods_ball_integral_eq_interval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ball-integral-a1-a1"
+}

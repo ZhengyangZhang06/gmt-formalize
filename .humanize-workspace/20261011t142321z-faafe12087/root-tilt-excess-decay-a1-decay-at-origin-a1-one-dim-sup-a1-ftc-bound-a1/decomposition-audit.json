@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "theorem (norm_deriv_le_of_lipschitzOn|measurable_deriv|ae_differentiableWithinAt_of_mem|Measure.integrableOn_of_bounded|setIntegral_mono_on_ae|setIntegral_mono_set|integral_Ioc_eq_integral_Ioo|integrableOn_Ioc_iff_integrableOn_Ioo|HasDerivAt.inner|abs_real_inner_le_norm|norm_integral_le_integral_norm_uIoc|measure_Ioo_lt_top|intervalIntegrable_iff|_root_.LipschitzOnWith.absolutelyContinuousOnInterval|integral_deriv_eq_sub|intervalIntegrable_deriv)( |$)",
+        "tdo_ods_integrableOn_norm_deriv|tdo_ods_ae_abs_deriv_inner_le|tdo_ods_intervalIntegral_le_of_ae_abs_le",
+        "inner_apply|inner_eq|abbrev EuclideanSpace|def EuclideanSpace|norm_inv_smul|norm_smul_inv",
+        "def check_source_delta|def check_parent_git_delta|import|one theorem|frozen base|helper",
+        "python3 /tmp/ftc-independent-audit-48p5u5__/run_lean.py /tmp/ftc-independent-audit-48p5u5__/StandaloneTypes.lean",
+        "python3 /tmp/ftc-independent-audit-48p5u5__/run_lean.py --root=/tmp/ftc-independent-audit-48p5u5__ -o /tmp/ftc-independent-audit-48p5u5__/olean/ParentFromChildren.olean /tmp/ftc-independent-audit-48p5u5__/ParentFromChildren.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/parent_verification.py",
+        "/tmp/ftc-independent-audit-48p5u5__/StandaloneTypes.lean",
+        "/tmp/ftc-independent-audit-48p5u5__/deriv_norm_integrable.lean",
+        "/tmp/ftc-independent-audit-48p5u5__/ae_deriv_inner_bound.lean",
+        "/tmp/ftc-independent-audit-48p5u5__/interval_dominated_bound.lean",
+        "/tmp/ftc-independent-audit-48p5u5__/ParentFromChildren.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatibility of the inspected sources. The split is appropriate: three independent analytic obligations isolate the integrability, derivative comparison, and integral domination steps; scalarization and scalar absolute-continuity FTC remain in the parent. Independently confirmed that the required AC lemmas are absent from the frozen imports, that adding their import violates the leaf gate, and that the parent gate permits the proposed proof-file change. All frozen propositions elaborate in the exact comparator scope before child implementations exist. Each supplied child proof was independently translated and compiled using only the frozen imports, and each insertion passed the real leaf gate. A separate proof compiled deriving the exact selected parent proposition from the three child propositions as hypotheses. These proofs use only propext, Classical.choice, and Quot.sound. The Euclidean inner-product instance was checked against the coordinate dot product. All names are bare identifiers; searches found no conflicting declarations or reservations in another DAG branch and no identical frozen type requiring reuse. Empty child dependency lists are accurate and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "deriv_norm_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Measurability, the local Lipschitz derivative bound, restriction to the measurable interval, and finite measure establish integrability. Completeness and measurability instances hold for Rn ℓ, including ℓ = 0. Nonpositive a causes no gap. The proof is complete, independently formalizable, and non-circular."
+    },
+    {
+      "key": "ae_deriv_inner_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses the stated Lebesgue-a.e. implication with ‖u‖ ≤ 1. Rademacher supplies within differentiability; interior membership supplies the neighborhood needed for ordinary differentiability. The inner-product derivative rule and Cauchy–Schwarz then prove the bound. All typeclass assumptions hold for the specified Euclidean spaces. No parent or sibling conclusion is used."
+    },
+    {
+      "key": "interval_dominated_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all prose hypotheses and the oriented-integral conclusion. The proof correctly handles either endpoint order, transfers integrability across the null endpoint, and obtains integrability of |g|. Domination implies the required a.e. nonnegativity of h throughout Ioc (-a) a, so no positivity hypothesis is missing. Both integral comparisons and endpoint removal are justified. The proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

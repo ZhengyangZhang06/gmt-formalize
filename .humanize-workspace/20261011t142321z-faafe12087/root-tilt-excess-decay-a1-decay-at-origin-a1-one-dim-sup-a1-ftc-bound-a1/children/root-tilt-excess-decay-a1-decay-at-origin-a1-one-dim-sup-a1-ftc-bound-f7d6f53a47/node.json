@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.interval_dominated_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+  "depth": 5,
+  "title": "Interval integral bounded by the integral over (-a, a) of an a.e. dominating function",
+  "statement": "Let g, h : R -> R and let a, s, t be real numbers. Suppose that h is Lebesgue integrable on the open interval (-a, a), that s and t lie in the closed interval [-a, a], and that g is interval integrable between s and t, i.e. integrable on uIoc s t = (min s t, max s t]. Suppose also that for Lebesgue-almost every r, -a < r < a implies |g(r)| <= h(r). Then the oriented interval integral ∫_s^t g(r) dr is at most the Bochner integral ∫_{(-a,a)} h(r) dr for Lebesgue measure on (-a, a).",
+  "lean_statement": "∀ (g h : ℝ → ℝ) (a s t : ℝ), IntegrableOn h (Ioo (-a) a) → s ∈ Icc (-a) a → t ∈ Icc (-a) a → IntervalIntegrable g volume s t → (∀ᵐ r ∂(volume : Measure ℝ), r ∈ Ioo (-a) a → |g r| ≤ h r) → ∫ r in s..t, g r ≤ ∫ r in Ioo (-a) a, h r",
+  "lean_name": "tdo_ods_intervalIntegral_le_of_ae_abs_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-f7d6f53a47-a1"
+}

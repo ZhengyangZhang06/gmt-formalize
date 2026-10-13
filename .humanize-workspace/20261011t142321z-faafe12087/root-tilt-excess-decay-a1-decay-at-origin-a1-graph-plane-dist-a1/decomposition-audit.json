@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "graphPoint|rotatedPlane|horizontalPlane|hsNorm|abbrev Amb|abbrev Rn|^namespace|^open|^axiom|sorry",
+        "finrank_range_of_inj|theorem span_eq|finrank_euclideanSpace_fin|finAddEquivProd",
+        "infDist_le_dist_of_mem|lemma le_infDist|theorem le_infDist",
+        "starProjection_apply_mem|eq_starProjection_of_mem_of_inner_eq_zero|starProjection_eq_self_iff|HasOrthogonalProjection|CompleteSpace",
+        "sum_mul_sq_le_sq_mul_sq|norm_sq_eq",
+        "graphPoint|rotatedPlane|tdo_gpd_",
+        "git show e2915745b92c2117161b0d9eaeb226a1f6c30d1b:GMT/Ch05/Submission.lean",
+        "git show 18a457c495d0ee5b9257b1656886d4da963c6fd8:GMT/Ch05/Submission.lean",
+        "git show 7372f81c6640dd17bd99bd3c9bbe79675f27d126:GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gpd-independent-audit-zuyg05lf/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gpd-independent-audit-zuyg05lf/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-plane-dist-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1-graph-coordinates-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-graph-poi-152c2738dc/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1/accepted-candidate.json",
+        "/tmp/gpd-independent-audit-zuyg05lf/Types.lean",
+        "/tmp/gpd-independent-audit-zuyg05lf/Full.lean",
+        "/tmp/gpd-independent-audit-zuyg05lf/graph_plane_finrank.lean",
+        "/tmp/gpd-independent-audit-zuyg05lf/rotated_plane_dist.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte equality of the snapshot Contract.lean with the workspace contract and submission. Located the required coordinate, projection, finrank, Cauchy–Schwarz, and infDist results; le_infDist explicitly requires the nonemptiness supplied by the proof. No graphPoint, rotatedPlane, or tdo_gpd_ matches were found in snapshot Mathlib, and no tdo_gpd_ matches in snapshot project sources. Acceptance records confirm comparator approval and identical frozen types for all three reused declarations. Neither new name is reserved elsewhere in the DAG or other decomposition proposals. All names are bare identifiers. All six frozen types independently elaborate before child declarations exist; the projection instance synthesizes successfully. Both new proofs compile with only their declared sibling dependency. The full chain and exact-type comparator targets compile, with only propext, Classical.choice, and Quot.sound as axioms. The split is appropriate: its two dependency edges are acyclic and correctly directed, and its children establish all five conjuncts of the selected parent through the supplied assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree. Coordinate subtraction, the split norm sum, and coordinate reconstruction prove the first three conjuncts. Horizontal membership and vertical orthogonality, transported by q, prove the projection identity. Finite dimensionality supplies the projection instance, including zero-dimensional cases. Exact-type comparator-accepted reuse is verified; no circular reliance occurs."
+    },
+    {
+      "key": "graph_point_linear_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate formulas for finAddEquivProd and its inverse establish the exact stated equality by Fin.addCases. The proof is complete and matches the accepted frozen type. This is a continuous linear equivalence; the downstream argument correctly uses linearity and injectivity without assuming it preserves the product norm."
+    },
+    {
+      "key": "hs_norm_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every conjunct: continuity by finite sums of continuous evaluations, nonnegativity by squares, the operator-norm upper bound on basis vectors, and the pointwise bound by basis expansion and Cauchy–Schwarz. Squaring uses nonnegative quantities, and empty-dimensional cases remain valid. The prose matches the exact accepted type."
+    },
+    {
+      "key": "graph_plane_finrank",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependency identifies graphPoint with E.symm. The composite q ∘ E.symm ∘ (id, A) is linear and injective, its range equals the stated span, and finrank_range_of_inj gives dimension n. This proves the exact contract and the parent's first conjunct. The fresh name is unreserved, and compilation with only the listed dependency succeeds."
+    },
+    {
+      "key": "rotated_plane_dist",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared coordinate lemma supplies the norm consequences and projection identity. Projection membership and fixed-point characterization establish exactly which points lie in the plane. A horizontal comparison point gives the upper bound; nonemptiness and le_infDist give the lower bound. Both directions prove the exact equality without circularity. The fresh name is unreserved, and compilation with only the listed dependency succeeds."
+    }
+  ],
+  "required_changes": []
+}

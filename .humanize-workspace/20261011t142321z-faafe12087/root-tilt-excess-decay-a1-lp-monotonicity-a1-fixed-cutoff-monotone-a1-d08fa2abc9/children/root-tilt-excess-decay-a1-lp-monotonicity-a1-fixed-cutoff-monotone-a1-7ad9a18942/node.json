@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1.cutoff_mass_derivative-a1.radial_profile_integrable-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1.cutoff_mass_derivative-a1",
+  "depth": 5,
+  "title": "Integrability of a continuous radial profile g(|x - y|/t) that vanishes beyond T",
+  "statement": "Let n, l be natural numbers, E := R^{n+l} (Euclidean space), mu a measure on E, y in E, g : R -> R and S, T, t real numbers. Write B_S(y) for the closed ball of radius S about y. Assume: mu(B_S(y)) < infinity; g is continuous; g(u) = 0 for every u > T; t > 0; and T t < S. Then the real function x -> g(|x - y|/t) is mu-integrable on E.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (g : ℝ → ℝ) (S T t : ℝ), μ (closedBall y S) < ⊤ → Continuous g → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → Integrable (fun x => g (‖x - y‖ / t)) μ",
+  "lean_name": "ted_lpm_fcm_cmd_radial_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-fixed-cutoff-monotone-a1-7ad9a18942-a1"
+}

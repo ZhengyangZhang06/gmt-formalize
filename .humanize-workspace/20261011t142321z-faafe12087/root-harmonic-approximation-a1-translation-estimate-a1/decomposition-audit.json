@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "translation.*estimate|difference.quotient|w12_ball_translation|IsW12WithGradient",
+        "theorem lintegral_div_right_eq_self",
+        "theorem restrict_preimage",
+        "comp_measurePreserving",
+        "eLpNorm_nnreal_pow_eq_lintegral",
+        "eLpNorm_of_not_aestronglyMeasurable",
+        "theorem eLpNorm_add_le",
+        "theorem lintegral_add_right'",
+        "theorem lintegral_const_mul'",
+        "theorem lintegral_lintegral_swap",
+        "theorem integral_eq_sub_of_hasDerivAt ",
+        "continuous_rpow_const",
+        "theorem Tendsto.const_mul",
+        "^(theorem|lemma|def|abbrev) (lintegral_ball_comp_sub_le|contDiff_one_ball_translation_estimate|lintegral_sq_le_of_l2_approximation|lintegral_ball_translation_difference_le|aestronglyMeasurable_ball_comp_sub)\\b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -o /tmp/translation-estimate-audit-yv8oerbh/olean/GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env sh -c 'LEAN_PATH=/tmp/translation-estimate-audit-yv8oerbh/olean:$LEAN_PATH lean /tmp/translation-estimate-audit-yv8oerbh/Challenge.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env sh -c 'LEAN_PATH=/tmp/translation-estimate-audit-yv8oerbh/olean:$LEAN_PATH lean /tmp/translation-estimate-audit-yv8oerbh/ProofCheck.lean'"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-translation-estimate-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-translation-estimate-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-smooth-approximation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LpSeminorm/TriangleInequality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/MeanInequalities.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/MeanInequalitiesPow.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        "/tmp/te-decomp/src/Final.lean",
+        "/tmp/translation-estimate-audit-yv8oerbh/Challenge.lean",
+        "/tmp/translation-estimate-audit-yv8oerbh/ProofCheck.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned project and Mathlib revisions, byte-identical contract/submission files, and compatibility of the inspected Mathlib sources. Searches found no existing proposed child declarations or ready-made W12 translation estimate. The snapshot supports arbitrary-function translation invariance, restricted measure-preserving composition, measurable L2 seminorm identities, one-measurable-summand lintegral additivity, FTC, Tonelli, and the required ENNReal continuity facts.\n\nBoth independent Lean checks finished successfully. Every literal child proposition elaborates before any child is declared; integral parenthesization checks pass. All five supplied child proofs use only propext, Classical.choice and Quot.sound. With the exact frozen smooth-approximation sibling type supplied as an explicit hypothesis, the assembly proves the exact selected parent contract using only those standard axioms.\n\nThe split is appropriate: its five obligations establish the smooth estimate, approximation-error convergence and limit passage for this selected theorem. All names are bare identifiers and unreserved in the DAG and other recorded decomposition proposals. Dependencies are correctly directed and acyclic; no child relies on the selected parent or an ancestor. Euclidean-space, gradient, measure and ENNReal instances match the prose."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ball_translate_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree, including arbitrary F and unrestricted real radii. Ball inclusion, measurable indicators, monotonicity and translation by a measurable equivalence prove the inequality without assuming measurability of F. Empty-ball cases are covered. The proof is complete and independent."
+    },
+    {
+      "key": "smooth_translation_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "C1 regularity supplies the continuous derivative and gradient required for segment FTC. Hölder on the unit-measure interval gives the exact squared displacement factor; joint measurability and sigma-finiteness justify Tonelli. The declared translation-lemma dependency supplies the enlarged-ball bound. All dimensions and real radii in the exact Lean type are covered."
+    },
+    {
+      "key": "l2_limit_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the arbitrary measures, normed additive groups and measurability hypotheses in the prose. Those hypotheses justify every L2 seminorm identity. Minkowski, square-root convergence and continuity of multiplication by finite sqrt(c) establish the limit inequality, including c = 0 and infinite energies. No unstated finiteness, completeness or sigma-finiteness assumption is needed."
+    },
+    {
+      "key": "translation_difference_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pointwise quadratic inequality gives two terms with coefficient 2. Restricting the stated measurability hypothesis makes the untranslated summand measurable, which suffices for lintegral additivity. The declared translation lemma and ball monotonicity bound both terms by the larger-ball energy, yielding exactly 4. No hidden dependency on translate_measurability is required."
+    },
+    {
+      "key": "translate_measurability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly establishes measure preservation on the full preimage of the larger ball, pulls back a strongly measurable representative and its null exceptional set, then restricts to the smaller ball using the displacement hypothesis. This proves the exact stated a.e.-strong measurability conclusion without additional hypotheses or circular reliance."
+    }
+  ],
+  "required_changes": []
+}

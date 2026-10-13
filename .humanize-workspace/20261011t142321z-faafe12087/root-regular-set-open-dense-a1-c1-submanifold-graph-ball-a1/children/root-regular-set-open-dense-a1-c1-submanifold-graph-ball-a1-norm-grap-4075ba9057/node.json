@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1.norm_graph_point_sq-a1",
+  "parent_id": "root.regular_set_open_dense-a1.c1_submanifold_graph_ball-a1",
+  "depth": 3,
+  "title": "Pythagorean identity for graph points",
+  "statement": "For all n, ℓ ∈ ℕ, x ∈ ℝⁿ and y ∈ ℝ^ℓ (Euclidean spaces Rn n = EuclideanSpace ℝ (Fin n), Rn ℓ), the graph point graphPoint x y = toLp 2 (Fin.append (ofLp x) (ofLp y)) ∈ ℝ^{n+ℓ} (first n coordinates x, last ℓ coordinates y) satisfies ‖graphPoint x y‖² = ‖x‖² + ‖y‖² (Euclidean norms).",
+  "lean_statement": "∀ {n ℓ : ℕ} (x : Rn n) (y : Rn ℓ), ‖graphPoint x y‖ ^ 2 = ‖x‖ ^ 2 + ‖y‖ ^ 2",
+  "lean_name": "rsod_norm_graphPoint_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-c1-submanifold-graph-ball-a1-norm-grap-4075ba9057-a1"
+}
