@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_im_coarea_|[Ee]ilenberg|coarea",
+        "hausdorffMeasure_apply|hausdorffMeasure_le_liminf_tsum",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|euclideanHausdorffMeasure_zero",
+        "def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique",
+        "normDet_comp_of_finrank_eq|normDet_eq_abs_det|normDet_codRestrict",
+        "lpf_c1r_lusin_closed",
+        "lpf_c1r_uniform_remainder",
+        "lpf_c1r_whitney_extension",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Pieces.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Glue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Review_C1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/coarea-independent-audit-znykn4kr/Api.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa68/20261012T143731Z-ch06-root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximati-36g8okuj/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa7/20261012T161215Z-ch06-root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximati-zsemnx3n/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa32/20261012T151520Z-ch06-root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximati-02kmznhw/comparator.log",
+        "/tmp/coarea-independent-audit-znykn4kr/Types.lean",
+        "/tmp/coarea-independent-audit-znykn4kr/Assembly.lean",
+        "/tmp/coarea-independent-audit-znykn4kr/Pieces.lean",
+        "/tmp/coarea-independent-audit-znykn4kr/Glue.lean",
+        "/tmp/coarea-independent-audit-znykn4kr/Review_C1.lean",
+        "/tmp/coarea-independent-audit-znykn4kr/Api.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and exact handoff for Submission.slicing_im_coarea. The split is appropriate: its acyclic dependencies establish this selected parent, including both measurability and the integral identity. All nine standalone, one-line propositions elaborate in the frozen comparator scope without child implementations. Every name is a bare identifier; none collides in the refreshed 385-node DAG. No matrix-unit construction occurs. The project search found no existing slicing_im_coarea_* declaration or co-area implementation; relevant area, density, Hausdorff-normalization and Jacobian APIs were inspected. Independent Lean reruns passed for the conditional parent assembly, pieces assembly, complete glue proof and C¹-approximation assembly, using only propext, Classical.choice and Quot.sound. The three accepted C¹ helpers match their retained comparator challenges exactly and passed the same axiom restrictions. The mathematical organization also agrees with [Simon, Chapter 2 §6 and Chapter 3 §2](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "eilenberg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-set, Lipschitz-on-set majorant statement. The dimension-only normalization, interval covers, pointwise Hausdorff liminf bound and Fatou argument prove it, including m = 0, L = 0 and infinite measure."
+    },
+    {
+      "key": "glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice for arbitrary M and without measurability of J or g. Restriction congruence, disjoint measurable unions, a.e.-measurable summation and the weight-null remainder establish the conclusion. The supplied Lean proof independently compiled."
+    },
+    {
+      "key": "c1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher followed by the accepted Lusin, uniform-remainder and Whitney contracts proves the exact closed-set and derivative conclusion. Their frozen types and comparator acceptance were checked; the conditional assembly independently compiled. The expanded proof supplies the underlying construction."
+    },
+    {
+      "key": "chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise approximation gives equality of maps and derivatives on almost-covering sets. The independent area theorem removes critical images; local derivative bounds and countable localization produce the required charts. The dependency on c1_approx is correctly directed."
+    },
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the exact local integrability, positivity and chart hypotheses. Chart blow-up convergence, compact continuous-weight pieces and zero-density estimates prove the weighted tangent limit outside one null exceptional set. Injectivity gives the universally quantified preimage conclusion."
+    },
+    {
+      "key": "line_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly obtains eventual membership of both comparison curves in the Lipschitz neighbourhood. Their difference is little-o of t, so its derivative is zero; the chain and sum rules give precisely the stated derivative without ambient differentiability of F."
+    },
+    {
+      "key": "pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four dependencies supply all chart, approximation and derivative facts. Borel null supersets and a Borel kernel justify disjointification despite merely null-measurable M. Gradient identification and null-remainder coverage prove every conjunct; the conditional Lean assembly independently compiled."
+    },
+    {
+      "key": "chart_critical",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded localization, small-derivative balls and antilipschitz estimate give an arbitrarily small integral majorant through eilenberg. Taking countable infima and then exhausting the domain proves a.e.-null slices. No global measurability or Lipschitz assumption on f is silently used."
+    },
+    {
+      "key": "chart_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inverse-function construction supplies valid local slice charts. The block-determinant argument proves the stated Jacobian identity, including m = 0. Area formulas, change of variables and Tonelli establish both slice measurability and the identity locally; disjointification and glue complete the exact contract without invoking the parent."
+    }
+  ],
+  "required_changes": []
+}
