@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.im_of_chart_density-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Integer multiplicity of a current given by an integer chart-oriented n-vector density (parent Steps 7, 8, 10, 11)",
+  "statement": "Assume (WTC) [the frozen statement of lpf_weighted_tangent_on_c1_chart]: if V ⊆ ℝ^Q is open, M ⊆ V is Hⁿ-null-measurable, θ > 0 on M and θ is Hⁿ-integrable on M ∩ K for every compact K ⊆ V, and Φ : ℝⁿ → ℝ^Q is C¹ and antilipschitz on an open Ω ⊆ ℝⁿ, then for Hⁿ⌞(M ∩ Φ(Ω))-a.e. y and every w ∈ Ω with Φ(w) = y, HasWeightedApproximateTangentSpaceAt n M θ y (range DΦ(w)); and assume (SNA) [the frozen statement of the uncle lemma lpf_simple_nvector_algebra]: for all P, n and v : Fin n → ℝ^P, ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j}; and for all P, n, every real n×n matrix B and τ : Fin n → ℝ^P, simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B) • simpleNVector τ. Let Q, n ∈ ℕ, V ⊆ ℝ^Q open, and G_k : ℝⁿ → ℝ^Q C¹ maps with O_k ⊆ ℝⁿ open, G_k c_k-antilipschitz on O_k for some c_k > 0 (k ∈ ℕ). Let Y ⊆ V be Hⁿ-null-measurable with Hⁿ(Y ∩ K) < ∞ for every compact K ⊆ V. Let Ψ : ℝ^Q → NVector(ℝ^Q, n) be Hⁿ⌞Y-a.e. strongly measurable, with ‖Ψ‖ Hⁿ-integrable on Y ∩ K for every compact K ⊆ V. Assume that for Hⁿ⌞Y-a.e. y, there are m ∈ ℕ, integers a_1,…,a_m, indices k_1,…,k_m ∈ ℕ, points w_i ∈ O_{k_i} with G_{k_i}(w_i) = y, and orthonormal σ_i : Fin n → ℝ^Q with span(range σ_i) = range DG_{k_i}(w_i) (i = 1,…,m), such that Ψ(y) = Σ_i a_i • simpleNVector σ_i. If S ∈ D_n(V) satisfies S(ω) = ∫_Y Ψ(y)(ω(y)) dHⁿ(y) for every ω ∈ Dⁿ(V), then S is an integer multiplicity current (IsIntegerMultiplicity S).",
+  "lean_statement": "(∀ (Q n : ℕ) (V M : Set (Eucl Q)) (θ : Eucl Q → ℝ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)), IsOpen V → M ⊆ V → NullMeasurableSet M (μHE[n] : Measure (Eucl Q)) → (∀ y ∈ M, 0 < θ y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl Q))) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict (M ∩ Φ '' Ω)), ∀ w ∈ Ω, Φ w = y → HasWeightedApproximateTangentSpaceAt n M θ y (LinearMap.range (fderiv ℝ Φ w).toLinearMap)) → ((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (Q n : ℕ) (V Y : Set (Eucl Q)) (Ψ : Eucl Q → NVector (Eucl Q) n) (G : ℕ → Eucl n → Eucl Q) (O : ℕ → Set (Eucl n)) (S : GeometricCurrentOn V n), IsOpen V → (∀ k, IsOpen (O k)) → (∀ k, ContDiff ℝ 1 (G k)) → (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ O k, ∀ w' ∈ O k, c * ‖w - w'‖ ≤ ‖G k w - G k w'‖) → Y ⊆ V → NullMeasurableSet Y (μHE[n] : Measure (Eucl Q)) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → (μHE[n] : Measure (Eucl Q)) (Y ∩ K) < ∞) → AEStronglyMeasurable Ψ ((μHE[n] : Measure (Eucl Q)).restrict Y) → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → IntegrableOn (fun y => ‖Ψ y‖) (Y ∩ K) (μHE[n] : Measure (Eucl Q))) → (∀ᵐ y ∂((μHE[n] : Measure (Eucl Q)).restrict Y), ∃ (m : ℕ) (a : Fin m → ℤ) (k : Fin m → ℕ) (w : Fin m → Eucl n) (σ : Fin m → Fin n → Eucl Q), (∀ i, w i ∈ O (k i) ∧ G (k i) (w i) = y ∧ Orthonormal ℝ (σ i) ∧ Submodule.span ℝ (range (σ i)) = LinearMap.range (fderiv ℝ (G (k i)) (w i)).toLinearMap) ∧ Ψ y = ∑ i, (a i : ℝ) • simpleNVector (σ i)) → (∀ ω : TestFormOn V n, S ω = ∫ y in Y, Ψ y ((ω : DifferentialForm (Eucl Q) n) y) ∂(μHE[n] : Measure (Eucl Q))) → IsIntegerMultiplicity S",
+  "lean_name": "lpf_pi_im_of_chart_density",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.simple_unit_facts-a1",
+    "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.chart_image_rectifiable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.simple_unit_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.chart_image_rectifiable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-im-of-cha-999423cb08-a1"
+}

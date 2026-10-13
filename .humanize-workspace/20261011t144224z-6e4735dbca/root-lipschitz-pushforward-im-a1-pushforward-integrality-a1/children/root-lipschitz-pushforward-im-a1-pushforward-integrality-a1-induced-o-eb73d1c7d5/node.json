@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.induced_orientation-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Induced orientation of a pushed-forward unit simple n-vector (printed 3.4–3.5)",
+  "statement": "Assume (SNA) [the frozen statement of the uncle lemma lpf_simple_nvector_algebra]: for all P, n and v : Fin n → ℝ^P, ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j}; and for all P, n, every real n×n matrix B and τ : Fin n → ℝ^P, simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B) • simpleNVector τ. Let P, Q, n ∈ ℕ, τ : Fin n → ℝ^P orthonormal, A : ℝ^P → ℝ^Q continuous linear, and w an n-vector on ℝ^P with w = simpleNVector τ or w = −simpleNVector τ. If A_#w := nVectorPushforward n A w ≠ 0, then:\n(i) the family (Aτ_1,…,Aτ_n) is linearly independent;\n(ii) there is an orthonormal σ : Fin n → ℝ^Q with span(range σ) = span{Aτ_1,…,Aτ_n} and either A_#w = ‖A_#w‖ • simpleNVector σ or A_#w = −(‖A_#w‖ • simpleNVector σ).",
+  "lean_statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → ∀ (P Q n : ℕ) (τ : Fin n → Eucl P) (A : Eucl P →L[ℝ] Eucl Q) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → nVectorPushforward n A w ≠ 0 → LinearIndependent ℝ (fun i => A (τ i)) ∧ ∃ σ : Fin n → Eucl Q, Orthonormal ℝ σ ∧ Submodule.span ℝ (range σ) = Submodule.span ℝ (range (fun i => A (τ i))) ∧ (nVectorPushforward n A w = ‖nVectorPushforward n A w‖ • simpleNVector σ ∨ nVectorPushforward n A w = -(‖nVectorPushforward n A w‖ • simpleNVector σ))",
+  "lean_name": "lpf_pi_induced_orientation",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.simple_unit_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.simple_unit_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-induced-o-eb73d1c7d5-a1"
+}

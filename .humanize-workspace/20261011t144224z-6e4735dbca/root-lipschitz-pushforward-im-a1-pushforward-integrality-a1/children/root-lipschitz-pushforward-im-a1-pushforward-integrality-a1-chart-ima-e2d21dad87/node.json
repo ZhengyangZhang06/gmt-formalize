@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.chart_image_rectifiable-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Images of open sets under C¹ maps ℝⁿ → ℝ^Q are countably n-rectifiable",
+  "statement": "For all Q, n ∈ ℕ, every map G : ℝⁿ → ℝ^Q and every open O ⊆ ℝⁿ such that G is C¹ on O, the image G(O) is countably n-rectifiable.",
+  "lean_statement": "∀ (Q n : ℕ) (G : Eucl n → Eucl Q) (O : Set (Eucl n)), IsOpen O → ContDiffOn ℝ 1 G O → CountablyRectifiable n (G '' O)",
+  "lean_name": "lpf_pi_chart_image_rectifiable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-chart-ima-e2d21dad87-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.measurability-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Measurability of the multiplicity and of the pushed-forward orientation (parent Step 1)",
+  "statement": "Let P, Q, n ∈ ℕ, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, and L : ℝ^P → L(ℝ^P, ℝ^Q) Hⁿ⌞M-a.e. strongly measurable. Then θ is Hⁿ⌞M-a.e. measurable, and x ↦ L(x)_#ξ(x) = nVectorPushforward n (L x) (ξ x) is Hⁿ⌞M-a.e. strongly measurable.",
+  "lean_statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) ∧ AEStronglyMeasurable (fun x => nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M)",
+  "lean_name": "lpf_pi_measurability",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-measurability-a1-a1"
+}

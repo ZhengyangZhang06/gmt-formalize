@@ -359,6 +359,65 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Unit simple `n`-vectors orienting the same `n`-plane agree up to sign (the orientations
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of Simon Ch. 6, 3.1), given the simple `n`-vector algebra
+`‖v₁ ∧ ⋯ ∧ vₙ‖² = det(⟨vᵢ, vⱼ⟩)` and `(∑ⱼ B₁ⱼ τⱼ) ∧ ⋯ ∧ (∑ⱼ Bₙⱼ τⱼ) = det B · τ₁ ∧ ⋯ ∧ τₙ`.
+An orthonormal `σ` has Gram matrix `1`, so `‖σ₁ ∧ ⋯ ∧ σₙ‖ = 1`.  If `σ, σ'` span the same
+plane, then `σ'ᵢ = ∑ⱼ Bᵢⱼ σⱼ`, so `σ'₁ ∧ ⋯ ∧ σ'ₙ = det B · σ₁ ∧ ⋯ ∧ σₙ`, and taking norms
+gives `|det B| = 1`. -/
+theorem Submission.lpf_pi_simple_unit_facts :
+    ((∀ (P n : ℕ) (v : Fin n → Eucl P),
+        ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧
+      ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+        simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) →
+    (∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1) ∧
+      ∀ (Q n : ℕ) (σ σ' : Fin n → Eucl Q), Orthonormal ℝ σ → Orthonormal ℝ σ' →
+        Submodule.span ℝ (range σ) = Submodule.span ℝ (range σ') →
+          simpleNVector σ' = simpleNVector σ ∨ simpleNVector σ' = -simpleNVector σ := by
+  rintro ⟨hgram, hdet⟩
+  -- An orthonormal family has Gram matrix `1`, so `‖σ₁ ∧ ⋯ ∧ σₙ‖² = det 1 = 1`.
+  have hunit : ∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1 := by
+    intro Q n σ hσ
+    have hG : (Matrix.of fun i j => inner ℝ (σ i) (σ j)) = (1 : Matrix (Fin n) (Fin n) ℝ) := by
+      ext i j
+      simp [Matrix.one_apply, orthonormal_iff_ite.mp hσ i j]
+    have h := hgram Q n σ
+    rw [hG, Matrix.det_one] at h
+    exact (pow_eq_one_iff_of_nonneg (ContinuousLinearMap.opNorm_nonneg _) two_ne_zero).mp h
+  refine ⟨hunit, fun Q n σ σ' hσ hσ' hspan => ?_⟩
+  -- `‖c • w‖ = |c| ‖w‖` for `n`-vectors, from `opNorm_smul_le` for `c` and `c⁻¹`
+  -- (instance search does not find `NormSMulClass ℝ (NVector _ n)`, so no `norm_smul`).
+  have hnorm_smul : ∀ (c : ℝ) (w : NVector (Eucl Q) n), ‖c • w‖ = |c| * ‖w‖ := by
+    intro c w
+    apply le_antisymm
+    · simpa [Real.norm_eq_abs] using ContinuousLinearMap.opNorm_smul_le c w
+    · rcases eq_or_ne c 0 with rfl | hc
+      · rw [abs_zero, zero_mul]
+        exact ContinuousLinearMap.opNorm_nonneg _
+      · have h := ContinuousLinearMap.opNorm_smul_le c⁻¹ (c • w)
+        rw [smul_smul, inv_mul_cancel₀ hc, one_smul, norm_inv, Real.norm_eq_abs] at h
+        exact (le_inv_mul_iff₀ (abs_pos.mpr hc)).mp h
+  -- Expand `σ'ᵢ = ∑ⱼ Bᵢⱼ σⱼ` in the common span: `σ'₁ ∧ ⋯ ∧ σ'ₙ = det B · σ₁ ∧ ⋯ ∧ σₙ`.
+  have hmem : ∀ i, σ' i ∈ Submodule.span ℝ (range σ) := fun i => by
+    rw [hspan]
+    exact Submodule.subset_span ⟨i, rfl⟩
+  choose B hB using fun i => (Submodule.mem_span_range_iff_exists_fun ℝ).mp (hmem i)
+  have hexp : (fun i => ∑ j, B i j • σ j) = σ' := funext hB
+  have key : simpleNVector σ' = Matrix.det B • simpleNVector σ := by
+    rw [← hexp]
+    exact hdet Q n B σ
+  -- Taking norms, `|det B| = 1`, so `det B = ±1`.
+  have habs : |Matrix.det B| = 1 :=
+    calc |Matrix.det B| = |Matrix.det B| * ‖simpleNVector σ‖ := by rw [hunit Q n σ hσ, mul_one]
+      _ = ‖simpleNVector σ'‖ := by rw [key, hnorm_smul]
+      _ = 1 := hunit Q n σ' hσ'
+  rcases (abs_eq zero_le_one).mp habs with h | h
+  · left
+    rw [key, h, one_smul]
+  · right
+    rw [key, h]
+    exact neg_one_smul ℝ (simpleNVector σ)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
