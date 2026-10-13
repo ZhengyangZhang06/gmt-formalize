@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.pairing_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1",
+  "depth": 4,
+  "title": "Integrability and sup-norm bound for the pairing integral ∫_E ξ(ω) dμ of a form vanishing off a finite-measure set",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on ℝ^P (Euclid P), and let ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n: continuous linear functionals on n-covectors) be μ-a.e. strongly measurable and such that, for μ-a.e. x, |ξ(x)(α)| ≤ |α| holds for every n-covector α, where |α| = covectorEuclideanNorm α is the Euclidean coefficient norm. Let E, K ⊆ ℝ^P with K measurable and μ(K) < ∞, let ω : ℝ^P → Λⁿ(ℝ^P) (DifferentialForm (Euclid P) n) be continuous with ω(x) = 0 for every x ∉ K, and let ε ∈ ℝ satisfy |ω(x)| ≤ ε for every x ∈ ℝ^P. Then x ↦ ξ(x)(ω(x)) is integrable with respect to μ restricted to E, and |∫_E ξ(x)(ω(x)) dμ(x)| ≤ ε·μ(K), where μ(K) is read as the real number (μ K).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E K : Set (Euclid P)) (ω : DifferentialForm (Euclid P) n) (ε : ℝ), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Continuous ω → MeasurableSet K → μ K < ∞ → (∀ x, x ∉ K → ω x = 0) → (∀ x, covectorEuclideanNorm (ω x) ≤ ε) → Integrable (fun x => ξ x (ω x)) (μ.restrict E) ∧ |∫ x in E, ξ x (ω x) ∂μ| ≤ ε * (μ K).toReal",
+  "lean_name": "cmcs_rc_pairing_integrable_abs_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-b240604c2f-a1"
+}
