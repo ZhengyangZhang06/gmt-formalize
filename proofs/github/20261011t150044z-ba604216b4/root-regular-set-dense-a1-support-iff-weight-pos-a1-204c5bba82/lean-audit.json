@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fc0cfcd7fb54d0f6a9f1bcc57370ec236f740aca672b019ea32437409b0368e8",
+  "git_delta": {
+    "base_commit": "a75c9c56ff3ff24fb924120f9721490927abadb3",
+    "candidate_commit": "8735baaba10aa9d18f51c39059d254b556f8f3b1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "rsd_mem_support_iff_measure_ball_pos",
+    "diff_sha256": "a261ef0e07b39490498e5b72d7b9d1213f3f7387b10a8fed45d08a9d84d6e85b",
+    "source_sha256": "b99e1fd5ad5c93dba9a0a1d187623baee7f0eee0d6f3586dfbf6524697c0b74a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsd_mem_support_iff_measure_ball_pos",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ x : Euclid P, x ∈ T.support ↔ x ∈ U ∧ ∀ r : ℝ, 0 < r → 0 < R.measure (ball x r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
