@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ed4953e338e90f9aab941e34273df1898f764d0bc1ff66fd1eaff7d176e3d5c3",
+  "git_delta": {
+    "base_commit": "09caffc2e19c026f52fde45135067535f009032b",
+    "candidate_commit": "f9e4df7c999140c4c105810dbdfa2b7b37f1f1a3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "2ec919612ec9d48c02b82d657d10b6b97c30adfc43f93fad010f0b3649e1c577",
+    "source_sha256": "93ef56e16b02c338f53197287e2e7017ed9e9feb68ceff31a07025333874feca",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_tendsto_integral_of_limsup_liminf",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
