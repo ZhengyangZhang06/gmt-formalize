@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1.hs_ideal-a1",
+  "parent_id": "root.allard_any_radius-a1.graph_rate-a1.plane_projections-a1",
+  "depth": 4,
+  "title": "Hilbert-Schmidt norm: transposition invariance and the two-sided operator-ideal bounds",
+  "statement": "For all natural numbers m, k, p, write R^m = EuclideanSpace ℝ (Fin m) (Rn m) with standard basis e_i = EuclideanSpace.single i 1. For a continuous linear X : R^m -> R^k let hsNormSq X = sum_{i<m} |X e_i|^2. Let <.,.> be the Euclidean inner product and ||.|| the operator norm. Then: (H1) if X : R^m -> R^k and Y : R^k -> R^m are continuous linear maps with <X u, v> = <u, Y v> for all u in R^m and v in R^k (i.e. Y is an adjoint of X), then hsNormSq Y = hsNormSq X; (H2) for continuous linear Y : R^k -> R^p and X : R^m -> R^k, hsNormSq (Y o X) <= ||Y||^2 hsNormSq X; (H3) for continuous linear X : R^m -> R^k and W : R^p -> R^m, hsNormSq (X o W) <= ||W||^2 hsNormSq X.",
+  "lean_statement": "(∀ (m k : ℕ) (X : Rn m →L[ℝ] Rn k) (Y : Rn k →L[ℝ] Rn m), (∀ (u : Rn m) (v : Rn k), inner ℝ (X u) v = inner ℝ u (Y v)) → hsNormSq Y = hsNormSq X) ∧ (∀ (m k p : ℕ) (Y : Rn k →L[ℝ] Rn p) (X : Rn m →L[ℝ] Rn k), hsNormSq (Y ∘L X) ≤ ‖Y‖ ^ 2 * hsNormSq X) ∧ ∀ (m k p : ℕ) (X : Rn m →L[ℝ] Rn k) (W : Rn p →L[ℝ] Rn m), hsNormSq (X ∘L W) ≤ ‖W‖ ^ 2 * hsNormSq X",
+  "lean_name": "any_radius_gr_pp_hs_ideal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-any-radius-a1-graph-rate-a1-plane-projections-a1-hs-ideal-a1-a1"
+}
