@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.support_null_reduction-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+  "depth": 3,
+  "title": "Null on every vanishing relatively compact open set implies null off the support",
+  "statement": "For all P, n ∈ ℕ, every U ⊆ ℝ^P, every current T ∈ D_n(U) (T : GeometricCurrentOn U n), every set M ⊆ ℝ^P with M ⊆ U and every measure μ on ℝ^P: if μ(M ∩ W) = 0 for every open W ⊆ ℝ^P such that closure W is compact, closure W ⊆ U and T vanishes on W (T(ω) = 0 for every ω ∈ Dⁿ(U) with tsupport ω ⊆ W), then μ(M ∖ spt T) = 0. Here spt T = T.support = U ∖ Z_T, where the zero region Z_T = T.zeroRegion is the union of all such sets W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \\ T.support) = 0",
+  "lean_name": "lpf_rsn_null_diff_support_of_local_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-support-2d52519b95-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.covector_separating_family-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+  "depth": 3,
+  "title": "Finitely many n-covectors separate n-vectors",
+  "statement": "For all P, n ∈ ℕ there are N ∈ ℕ and n-covectors b₁, …, b_N on ℝ^P (elements of Covector (Eucl P) n, the continuous alternating n-linear maps (ℝ^P)ⁿ → ℝ) such that every n-vector w (an element of NVector (Eucl P) n, i.e. a continuous linear functional on n-covectors) with w(b_i) = 0 for all i is the zero functional.",
+  "lean_statement": "∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0",
+  "lean_name": "lpf_rsn_covector_separating_family",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-covector-84c64c5778-a1"
+}
