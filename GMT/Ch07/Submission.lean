@@ -451,6 +451,96 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`C¹` approximation of an indicator in `L¹`**: if `P ⊆ B_R(0) ⊆ ℝⁿ` is measurable and
+`η > 0`, there is a `C¹` function `ψ : ℝⁿ → [0, 1]` with compact support in `B_R(0)` and
+`∫ |ψ - 1_P| < η`.  Take a compact `K ⊆ P` with `L(P \ K) < η/2` (inner regularity), an open
+`U ⊇ K` with `L(U \ K) < η/2` (outer regularity at `K`) and `r' < R` with `K ⊆ B_{r'}(0)`; the
+smooth Urysohn lemma for `K ⊆ s := U ∩ B_{r'}(0)` gives `ψ` with `support ψ = s` and `ψ = 1`
+exactly on `K`, and `|ψ - 1_P| ≤ 1_{P \ K} + 1_{s \ K}`. -/
+theorem Submission.codim1_rdo_dg_bvc_smooth_indicator_approx : ∀ (n : ℕ) (P : Set (Euclid n)) (R η : ℝ), MeasurableSet P → P ⊆ ball (0 : Euclid n) R → 0 < η → ∃ ψ : Euclid n → ℝ, ContDiff ℝ 1 ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ ball (0 : Euclid n) R ∧ (∀ z, 0 ≤ ψ z ∧ ψ z ≤ 1) ∧ ∫ z, |ψ z - P.indicator (fun _ => (1 : ℝ)) z| < η := by
+  intro n P R η hP hPR hη
+  -- Step 1: `L(P) ≤ L(B_R) < ∞`
+  have hPfin : volume P ≠ ∞ := (measure_mono hPR |>.trans_lt measure_ball_lt_top).ne
+  have hη2 : ENNReal.ofReal (η / 2) ≠ 0 := (ENNReal.ofReal_pos.2 (half_pos hη)).ne'
+  -- Step 2: a compact closed `K ⊆ P` with `L(P \ K) < η/2`
+  obtain ⟨K, hKP, hKc, hKcl, hPK⟩ := hP.exists_isCompact_isClosed_sdiff_lt hPfin hη2
+  -- Step 3: an open `U ⊇ K` with `L(U) < L(K) + η/2`
+  obtain ⟨U, hKU, hUo, hU⟩ := hKc.exists_isOpen_lt_add (μ := volume) hη2
+  -- Step 4: `K ⊆ B_{r'}(0)` for some `r' < R`
+  obtain ⟨r', hr'R, hKr'⟩ := exists_lt_subset_ball hKcl (hKP.trans hPR)
+  -- Step 5: smooth Urysohn for `K ⊆ s := U ∩ B_{r'}(0)`
+  set s := U ∩ ball (0 : Euclid n) r' with hsdef
+  have hs : IsOpen s := hUo.inter isOpen_ball
+  have hKs : K ⊆ s := fun x hx => ⟨hKU hx, hKr' hx⟩
+  obtain ⟨ψ, hψ, hψr, hψs, hψ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1) hs hKcl hKs
+  have hψ01 : ∀ z, 0 ≤ ψ z ∧ ψ z ≤ 1 := fun z => hψr (mem_range_self z)
+  -- Step 6: `tsupport ψ = closure s ⊆ B̄_{r'}(0) ⊆ B_R(0)`, which is compact
+  have htsupp : tsupport ψ ⊆ closedBall (0 : Euclid n) r' := by
+    rw [tsupport, hψs]
+    exact closure_minimal (inter_subset_right.trans ball_subset_closedBall) isClosed_closedBall
+  refine ⟨ψ, hψ, ?_, htsupp.trans (closedBall_subset_ball hr'R), hψ01, ?_⟩
+  · exact HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall _ _)
+      ((subset_tsupport ψ).trans htsupp)
+  -- Step 7: `|ψ - 1_P| ≤ 1_{P \ K} + 1_{s \ K}` pointwise
+  have hdom : ∀ z, |ψ z - P.indicator (fun _ => (1 : ℝ)) z|
+      ≤ (P \ K).indicator (fun _ => (1 : ℝ)) z + (s \ K).indicator (fun _ => (1 : ℝ)) z := by
+    intro z
+    have h01 := hψ01 z
+    by_cases hzK : z ∈ K
+    · have h1 : ψ z = 1 := (hψ1 z).1 hzK
+      simp [h1, hKP hzK, hzK]
+    · by_cases hzP : z ∈ P
+      · have : (P \ K).indicator (fun _ => (1 : ℝ)) z = 1 := by simp [hzP, hzK]
+        rw [indicator_of_mem hzP, this]
+        have : 0 ≤ (s \ K).indicator (fun _ => (1 : ℝ)) z :=
+          indicator_nonneg (fun _ _ => zero_le_one) _
+        rw [abs_le]; constructor <;> linarith
+      · rw [indicator_of_notMem hzP, sub_zero, abs_of_nonneg h01.1]
+        by_cases hzs : z ∈ s
+        · have : (s \ K).indicator (fun _ => (1 : ℝ)) z = 1 := by simp [hzs, hzK]
+          rw [this]
+          have : 0 ≤ (P \ K).indicator (fun _ => (1 : ℝ)) z :=
+            indicator_nonneg (fun _ _ => zero_le_one) _
+          linarith [h01.2]
+        · have : ψ z = 0 := by
+            by_contra h
+            exact hzs (hψs ▸ (mem_support.2 h))
+          rw [this]
+          exact add_nonneg (indicator_nonneg (fun _ _ => zero_le_one) _)
+            (indicator_nonneg (fun _ _ => zero_le_one) _)
+  -- Step 8: integrate, using `L(P \ K) < η/2` and `L(s \ K) ≤ L(U \ K) < η/2`
+  have hPKm : MeasurableSet (P \ K) := hP.diff hKcl.measurableSet
+  have hsKm : MeasurableSet (s \ K) := hs.measurableSet.diff hKcl.measurableSet
+  have hPKfin : volume (P \ K) ≠ ∞ := (measure_mono sdiff_subset |>.trans_lt hPfin.lt_top).ne
+  have hsKlt : volume (s \ K) < ENNReal.ofReal (η / 2) := by
+    calc volume (s \ K) ≤ volume (U \ K) :=
+          measure_mono (sdiff_subset_sdiff_left inter_subset_left)
+      _ = volume U - volume K :=
+          measure_sdiff hKU hKcl.measurableSet.nullMeasurableSet hKc.measure_lt_top.ne
+      _ < ENNReal.ofReal (η / 2) := by
+        rw [ENNReal.sub_lt_iff_lt_right hKc.measure_lt_top.ne (measure_mono hKU)]
+        rwa [add_comm]
+  have hsKfin : volume (s \ K) ≠ ∞ := (hsKlt.trans ENNReal.ofReal_lt_top).ne
+  have hint1 : Integrable ((P \ K).indicator (fun _ => (1 : ℝ))) :=
+    (integrableOn_const hPKfin).integrable_indicator hPKm
+  have hint2 : Integrable ((s \ K).indicator (fun _ => (1 : ℝ))) :=
+    (integrableOn_const hsKfin).integrable_indicator hsKm
+  calc ∫ z, |ψ z - P.indicator (fun _ => (1 : ℝ)) z|
+      ≤ ∫ z, ((P \ K).indicator (fun _ => (1 : ℝ)) z + (s \ K).indicator (fun _ => (1 : ℝ)) z) :=
+        integral_mono_of_nonneg (Filter.Eventually.of_forall fun z => abs_nonneg _)
+          (hint1.add hint2) (Filter.Eventually.of_forall hdom)
+    _ = (volume (P \ K)).toReal + (volume (s \ K)).toReal := by
+        rw [integral_add hint1 hint2, integral_indicator_const _ hPKm,
+          integral_indicator_const _ hsKm]
+        simp [Measure.real]
+    _ < η / 2 + η / 2 := by
+        gcongr
+        · exact (ENNReal.toReal_lt_toReal hPKfin ENNReal.ofReal_ne_top).2 hPK
+            |>.trans_eq (ENNReal.toReal_ofReal (half_pos hη).le)
+        · exact (ENNReal.toReal_lt_toReal hsKfin ENNReal.ofReal_ne_top).2 hsKlt
+            |>.trans_eq (ENNReal.toReal_ofReal (half_pos hη).le)
+    _ = η := add_halves η
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
