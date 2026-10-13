@@ -661,6 +661,35 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Chart localization** (Simon Ch. 2, §4, (4.1)–(4.2)).  Let `ψ` be continuous, 1:1 and proper
+on `V` with `ψ(V) = W₀ ∩ N`, `W₀` open, and let `v₀ ∈ V` with `x = ψ(v₀)` in the open set `W` and
+`B_ρ(v₀) ⊆ V`.  Then `N ∩ W ∩ B_δ(x) = ψ(B_ρ(v₀)) ∩ B_δ(x)` for some `δ > 0`.  Take
+`δ = min(δ₁, δ₂)`, where `δ₁` is the inverse-continuity radius of `ψ` at `v₀` for `ρ` and
+`B_{δ₂}(x) ⊆ W ∩ W₀`.  A point `y ∈ N ∩ W ∩ B_δ(x)` lies in `W₀ ∩ N = ψ(V)`, so `y = ψ(v)` with
+`v ∈ V`, and `|ψ(v) − x| < δ₁` gives `|v − v₀| < ρ`.  Conversely `ψ(B_ρ(v₀)) ⊆ ψ(V) ⊆ N` and
+`B_δ(x) ⊆ W`. -/
+theorem Submission.codim1_ac_sat_chart_localization : ∀ (P m : ℕ) (N W W₀ : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m) (ρ : ℝ), IsOpen W → IsOpen W₀ → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W₀ ∩ N → (∀ K ⊆ W₀, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ψ v₀ ∈ W → 0 < ρ → ball v₀ ρ ⊆ V → ∃ δ : ℝ, 0 < δ ∧ N ∩ W ∩ ball (ψ v₀) δ = ψ '' ball v₀ ρ ∩ ball (ψ v₀) δ := by
+  intro P m N W W₀ V ψ v₀ ρ hW hW₀ hψ hinj hψV hproper hv₀ hv₀W hρ hball
+  -- `ψ(V) = W₀ ∩ N` lies in `W₀` and in `N`; in particular `ψ(v₀) ∈ W₀`
+  have hVW₀ : ψ '' V ⊆ W₀ := hψV ▸ inter_subset_left
+  have hVN : ψ '' V ⊆ N := hψV ▸ inter_subset_right
+  have hxW₀ : ψ v₀ ∈ W₀ := hVW₀ (mem_image_of_mem ψ hv₀)
+  -- inverse continuity at `v₀` for `ε = ρ`: `v ∈ V` and `|ψ(v) − ψ(v₀)| < δ₁` give `|v − v₀| < ρ`
+  obtain ⟨δ₁, hδ₁, hδ₁V⟩ := Submission.dsmc_chart_inverse_continuity P m V W₀ ψ hψ hinj hVW₀
+    hproper v₀ hv₀ ρ hρ
+  -- `B_{δ₂}(ψ(v₀)) ⊆ W ∩ W₀`, hence `B_δ(ψ(v₀)) ⊆ W ∩ W₀` for `δ = min(δ₁, δ₂)`
+  obtain ⟨δ₂, hδ₂, hδ₂W⟩ := Metric.isOpen_iff.1 (hW.inter hW₀) (ψ v₀) ⟨hv₀W, hxW₀⟩
+  have hδW : ball (ψ v₀) (min δ₁ δ₂) ⊆ W ∩ W₀ :=
+    (ball_subset_ball (min_le_right δ₁ δ₂)).trans hδ₂W
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, Subset.antisymm ?_ ?_⟩
+  · -- `⊆`: `y ∈ W₀ ∩ N = ψ(V)`, so `y = ψ(v)` with `v ∈ V` and `|v − v₀| < ρ`
+    rintro y ⟨⟨hyN, -⟩, hyδ⟩
+    obtain ⟨v, hvV, rfl⟩ : y ∈ ψ '' V := hψV ▸ ⟨(hδW hyδ).2, hyN⟩
+    exact ⟨⟨v, mem_ball.2 (hδ₁V v hvV ((mem_ball.1 hyδ).trans_le (min_le_left δ₁ δ₂))), rfl⟩,
+      hyδ⟩
+  · -- `⊇`: `ψ(B_ρ(v₀)) ⊆ ψ(V) ⊆ N` and `B_δ(ψ(v₀)) ⊆ W`
+    rintro _ ⟨⟨v, hv, rfl⟩, hyδ⟩
+    exact ⟨⟨hVN (mem_image_of_mem ψ (hball hv)), (hδW hyδ).1⟩, hyδ⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
