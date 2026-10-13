@@ -515,6 +515,74 @@ theorem Submission.dtc_approxTangent_sdiff_singleton : ∀ (P n : ℕ) (M : Set 
     exact hfp
   · exact absurd ⟨z, ⟨hz, hzp⟩, rfl⟩ hy
 
+/-- Deleting a point `p ∈ M` from a `0`-dimensional triple `R = (M, θ, ξ)` (Simon 6.3.1 with
+`n = 0`).  `R' = (M ∖ {p}, θ, ξ)` is again a triple in `U`; off `p` its approximate tangent spaces
+are those of `M`.  As `H⁰{p} = 1`, `H⁰⌞M = H⁰⌞(M ∖ {p}) + δ_p`, so `μ_R = μ_{R'} + θ(p) δ_p`.
+The integrand `θ ⟨ω, ξ⟩` vanishes off `spt ω` and `M ∩ spt ω` is finite, so it is integrable on
+`M` and splitting `∫_M = ∫_{M ∖ {p}} + ∫_{{p}}` gives `τ_R(ω) = τ_{R'}(ω) + θ(p) ⟨ω(p), ξ(p)⟩`. -/
+theorem Submission.dtc_dim_zero_erase_point : ∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R.measure = R'.measure + (R.mult p : ℝ≥0∞) • Measure.dirac p ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p) := by
+  intro P U R p hp
+  -- `H⁰{y} = 1`, as `μHE[0] = μH[0]`
+  have hH : ∀ y : Euclid P, μHE[0] ({y} : Set (Euclid P)) = 1 := fun y => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  -- `M = (M ∖ {p}) ∪ {p}`, a disjoint union of Borel sets
+  have hMp : MeasurableSet (R.carrier \ {p}) :=
+    R.measurableSet_carrier.diff (measurableSet_singleton p)
+  have hsplit : R.carrier \ {p} ∪ {p} = R.carrier :=
+    Set.sdiff_union_of_subset (Set.singleton_subset_iff.mpr hp)
+  have hdisj : Disjoint (R.carrier \ {p}) {p} := Set.disjoint_sdiff_left
+  -- orientation: `H⁰`-a.e. `x ∈ M ∖ {p}` has `x ≠ p`, so `TₓM = Tₓ(M ∖ {p})`
+  have horients : ∀ᵐ x ∂(μHE[0].restrict (R.carrier \ {p})), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt 0 (R.carrier \ {p}) x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.sdiff_subset R.orients,
+      ae_restrict_mem hMp] with x hx hxM
+    obtain ⟨Q, hQ, hξ⟩ := hx
+    exact ⟨Q, Submission.dtc_approxTangent_sdiff_singleton P 0 R.carrier x p Q
+      R.measurableSet_carrier hxM.2 hQ, hξ⟩
+  refine ⟨{ carrier := R.carrier \ {p}
+            mult := R.mult
+            orient := R.orient
+            measurableSet_carrier := hMp
+            carrier_subset := Set.sdiff_subset.trans R.carrier_subset
+            rectifiable := R.rectifiable.mono Set.sdiff_subset
+            measurable_mult := R.measurable_mult
+            mult_pos := fun x hx => R.mult_pos x hx.1
+            locallyIntegrable_mult := fun K hK hKU =>
+              ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU)
+                (lintegral_mono_set (Set.inter_subset_inter_left K Set.sdiff_subset))
+            aestronglyMeasurable_orient := R.aestronglyMeasurable_orient.mono_measure
+              (Measure.restrict_mono Set.sdiff_subset le_rfl)
+            orients := horients }, rfl, rfl, rfl, ?_, fun ω => ?_⟩
+  · -- `H⁰⌞M = H⁰⌞(M ∖ {p}) + δ_p` and `δ_p.withDensity θ = θ(p) δ_p`
+    have hres : μHE[0].restrict R.carrier =
+        μHE[0].restrict (R.carrier \ {p}) + Measure.dirac p := by
+      conv_lhs => rw [← hsplit]
+      rw [Measure.restrict_union hdisj (measurableSet_singleton p), Measure.restrict_singleton,
+        hH p, one_smul]
+    show (μHE[0].restrict R.carrier).withDensity (fun x => (R.mult x : ℝ≥0∞)) =
+      (μHE[0].restrict (R.carrier \ {p})).withDensity (fun x => (R.mult x : ℝ≥0∞)) +
+        (R.mult p : ℝ≥0∞) • Measure.dirac p
+    rw [hres, withDensity_add_measure, dirac_withDensity]
+  · -- `g = θ ξ(ω)` vanishes off `spt ω`, and `M ∩ spt ω` is finite, so `g` is integrable on `M`
+    have hfin : (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)).Finite :=
+      Submission.dtc_dim_zero_carrier_finite P U _ R ω.property.1.2 ω.property.2
+    have hint : IntegrableOn (fun x => (R.mult x : ℝ) *
+        R.orient x ((ω : DifferentialForm (Euclid P) 0) x)) R.carrier μHE[0] := by
+      refine IntegrableOn.of_forall_sdiff_eq_zero
+        (s := R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0)) ?_
+        R.measurableSet_carrier ?_
+      · rw [← Set.biUnion_of_singleton (R.carrier ∩ tsupport (ω : DifferentialForm (Euclid P) 0))]
+        exact (integrableOn_finite_biUnion hfin).mpr fun y _ =>
+          integrableOn_singleton (hx := by rw [hH y]; exact ENNReal.one_lt_top)
+      · rintro x ⟨hxM, hxK⟩
+        rw [image_eq_zero_of_notMem_tsupport fun h => hxK ⟨hxM, h⟩, map_zero, mul_zero]
+    -- split `∫_M = ∫_{M ∖ {p}} + ∫_{{p}}` and evaluate `∫_{{p}} g dH⁰ = H⁰{p} g(p) = g(p)`
+    have hsum := setIntegral_union hdisj (measurableSet_singleton p)
+      (hint.mono_set Set.sdiff_subset)
+      (integrableOn_singleton (hx := by rw [hH p]; exact ENNReal.one_lt_top))
+    rw [hsplit, integral_singleton, measureReal_def, hH p, ENNReal.toReal_one, one_smul] at hsum
+    exact hsum
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
