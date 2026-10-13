@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.adapted_onb-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Orthonormal basis adapted to a linear functional: α(u_0) = ‖α‖ and α(u_j) = 0 for j ≠ 0 (parent Steps 4–5)",
+  "statement": "For every P ∈ ℕ and every continuous linear functional α : ℝ^P → ℝ (Eucl P →L[ℝ] ℝ) there is an orthonormal basis u = (u_0,…,u_{P−1}) of ℝ^P, indexed by Fin P, such that for every j ∈ Fin P: α(u_j) = ‖α‖ (the operator norm) if j = 0, and α(u_j) = 0 if j ≠ 0. No hypothesis α ≠ 0 is needed: for α = 0 the standard basis works.",
+  "lean_statement": "∀ (P : ℕ) (α : Eucl P →L[ℝ] ℝ), ∃ u : OrthonormalBasis (Fin P) ℝ (Eucl P), ∀ j : Fin P, α (u j) = if (j : ℕ) = 0 then ‖α‖ else 0",
+  "lean_name": "slicing_mb_wn_adapted_onb",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-adapted-onb-a1-a1"
+}
