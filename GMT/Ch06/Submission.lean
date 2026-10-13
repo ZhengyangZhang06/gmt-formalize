@@ -1051,6 +1051,146 @@ theorem Submission.rpn_abs_apply_le_opNorm_mul_massOn :
         Submission.cmb_abs_apply_le_of_massOn_le P n U W T ω B _ hB hM hW hE
     _ = (P : ℝ) ^ n * B * C := by ring
 
+/-- Simon Ch. 6, the estimate behind Lemma 2.36 (via Remark 2.35), for a linear map
+`L : ℝ^P → ℝⁿ`, `n = m + 1`: if `M_W(T), M_W(∂T) < ∞` and `f` is a smooth compactly supported
+cutoff with `tsupport f ⊆ W`, then every test form `φ = f · (a ∘ L) · L^*dy` satisfies
+`|T(φ)| ≤ C · M · Lⁿ(spt a)^{1/n}` whenever `|a| ≤ M`, with `C` independent of `a`, `M`, `φ`.
+
+Write `a = ∑ⱼ ∂ⱼψⱼ` with `|ψⱼ| ≤ R = C₁ M Lⁿ(spt a)^{1/n}` (`rpn_potential_estimate`) and
+`Φ = ∑ⱼ (-1)ʲ f (ψⱼ ∘ L) θⱼ`, `θⱼ = ⋀_{i ≠ j} (yⁱ ∘ L)`.  Then `dΦ = φ + Ξ` with
+`Ξ = ∑ⱼ (-1)ʲ (ψⱼ ∘ L) Df ∧ θⱼ` (`rpn_extDeriv_potential_form`), so `T(φ) = ∂T(Φ) - T(Ξ)`,
+and both terms are bounded through `M_W(∂T)` and `M_W(T)`
+(`rpn_abs_apply_le_opNorm_mul_massOn`). -/
+theorem Submission.rpn_pullback_top_form_bound :
+    ∀ (P m : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U (m + 1)), W ⊆ U →
+      T.massOn W < ∞ → T.boundary.massOn W < ∞ → ∀ f : Eucl P → ℝ,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → tsupport f ⊆ W →
+      ∀ L : Eucl P →L[ℝ] Eucl (m + 1), ∃ C : ℝ, ∀ a : Eucl (m + 1) → ℝ,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ M : ℝ,
+      (∀ y, |a y| ≤ M) → ∀ φ : TestFormOn U (m + 1),
+      (∀ x, (φ : DifferentialForm (Eucl P) (m + 1)) x = (f x * a (L x)) •
+        wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L)) →
+      |T φ| ≤ C * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+  intro P m U W T hWU hT hbT f hf hfc hfW L
+  /- Step 1: constants depending only on `T`, `W`, `f` and `L`. -/
+  obtain ⟨C₁, hC₁⟩ := Submission.rpn_potential_estimate m
+  -- `θⱼ = ⋀_{i ≠ j} (yⁱ ∘ L)`, an `m`-covector.
+  let θ : Fin (m + 1) → Covector (Eucl P) m := fun j =>
+    wedgeCovectors m (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L)
+  -- `ηⱼ(x) = Df(x) ∧ θⱼ = Λⱼ(Df(x))`, where `Λⱼ γ = Alt(γ ⊗ θⱼ)` is continuous linear.
+  let η : Fin (m + 1) → DifferentialForm (Eucl P) (m + 1) := fun j x =>
+    wedgeCovectors (m + 1) (Fin.cons (fderiv ℝ f x)
+      (fun i => (EuclideanSpace.proj (j.succAbove i) : Eucl (m + 1) →L[ℝ] ℝ).comp L) :
+        Fin (m + 1) → (Eucl P →L[ℝ] ℝ))
+  have hηΛ : ∀ j, η j = fun x =>
+      ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp
+        ((ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m)).flip (θ j)))
+          (fderiv ℝ f x) := by
+    intro j
+    funext x
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
+      ContinuousLinearMap.smulRightL_apply_apply,
+      ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply]
+    rfl
+  -- `Df` is continuous and vanishes off `tsupport f`, so each `ηⱼ` is continuous with compact
+  -- support, hence bounded by some `Hⱼ`.
+  have hηbdd : ∀ j, ∃ H : ℝ, ∀ x, ‖η j x‖ ≤ H := by
+    intro j
+    rw [hηΛ j]
+    exact (ContinuousLinearMap.continuous _).comp (hf.continuous_fderiv (by simp))
+      |>.bounded_above_of_compact_support ((hfc.fderiv ℝ).comp_left (map_zero _))
+  choose H hH using hηbdd
+  have hηzero : ∀ j x, x ∉ tsupport f → η j x = 0 := by
+    intro j x hx
+    rw [hηΛ j]
+    simp only [fderiv_of_notMem_tsupport ℝ hx, map_zero]
+  -- `F₀ = sup |f|`, `B₀ = M_W(T)`, `B₁ = M_W(∂T)`.
+  obtain ⟨F₀, hF₀⟩ := hf.continuous.bounded_above_of_compact_support hfc
+  have hF₀nn : 0 ≤ F₀ := (norm_nonneg _).trans (hF₀ 0)
+  set B₀ : ℝ := (T.massOn W).toReal
+  set B₁ : ℝ := (T.boundary.massOn W).toReal
+  have hTB₀ : T.massOn W ≤ ENNReal.ofReal B₀ := (ENNReal.ofReal_toReal hT.ne).ge
+  have hbTB₁ : T.boundary.massOn W ≤ ENNReal.ofReal B₁ := (ENNReal.ofReal_toReal hbT.ne).ge
+  refine ⟨C₁ * ((P : ℝ) ^ m * B₁ * F₀ * ∑ j, ‖θ j‖ + (P : ℝ) ^ (m + 1) * B₀ * ∑ j, H j), ?_⟩
+  intro a ha hac M hM φ hφ
+  /- Step 2: the potential `ψ`, with `∑ⱼ ∂ⱼψⱼ = a` and `|ψⱼ| ≤ R`. -/
+  obtain ⟨ψ, hψ, hdiv, hψb⟩ := hC₁ a ha hac M hM
+  set R : ℝ := C₁ * M * ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) with hR
+  have hR0 : 0 ≤ R := (abs_nonneg _).trans (hψb 0 0)
+  /- Step 3: the test `m`-form `Φ = ∑ⱼ (-1)ʲ f (ψⱼ ∘ L) θⱼ`, supported in `tsupport f ⊆ W`. -/
+  let Φf : DifferentialForm (Eucl P) m := fun z =>
+    ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z))) • θ j
+  have hΦsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Φf :=
+    ContDiff.sum fun j _ =>
+      (contDiff_const.mul (hf.mul ((hψ j).comp L.contDiff))).smul contDiff_const
+  have hΦsupp : Function.support Φf ⊆ Function.support f := by
+    intro z hz
+    rw [Function.mem_support] at hz ⊢
+    contrapose! hz
+    simp [Φf, hz]
+  have hΦts : tsupport Φf ⊆ tsupport f := closure_mono hΦsupp
+  let Φ : TestFormOn U m := ⟨Φf, ⟨⟨hΦsmooth, hfc.mono hΦsupp⟩, hΦts.trans (hfW.trans hWU)⟩⟩
+  /- Step 4: `dΦ = φ + Ξ` with `Ξ = ∑ⱼ (-1)ʲ (ψⱼ ∘ L) ηⱼ`. -/
+  let dΦ : TestFormOn U (m + 1) := exteriorDerivativeTestOn U m Φ
+  have hdΦ : ∀ x, (dΦ : DifferentialForm (Eucl P) (m + 1)) x =
+      (f x * a (L x)) •
+        wedgeCovectors (m + 1) (fun i => (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ).comp L) +
+      ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * ψ j (L x)) • η j x := by
+    intro x
+    have hd := Submission.rpn_extDeriv_potential_form P m L f ψ x
+      (hf.differentiable (by simp) x) (fun j => (hψ j).differentiable (by simp) (L x))
+    rw [hdiv (L x)] at hd
+    exact hd
+  let Ξ : TestFormOn U (m + 1) := dΦ - φ
+  have hΞ : ∀ x, (Ξ : DifferentialForm (Eucl P) (m + 1)) x =
+      ∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * ψ j (L x)) • η j x := by
+    intro x
+    change (dΦ : DifferentialForm (Eucl P) (m + 1)) x -
+      (φ : DifferentialForm (Eucl P) (m + 1)) x = _
+    rw [hdΦ x, hφ x, add_sub_cancel_left]
+  -- `Ξ` vanishes off `tsupport f`, because every `ηⱼ` does.
+  have hΞts : tsupport (Ξ : DifferentialForm (Eucl P) (m + 1)) ⊆ W := by
+    refine (closure_minimal (fun x hx => ?_) (isClosed_tsupport f)).trans hfW
+    by_contra hxf
+    exact hx (by rw [hΞ x]; simp [hηzero _ x hxf])
+  /- Step 5: `T(φ) = T(dΦ) - T(Ξ) = ∂T(Φ) - T(Ξ)`. -/
+  have hsplit : T φ = T.boundary Φ - T Ξ := by
+    rw [GeometricCurrentOn.boundary_apply]
+    change T.toCurrent φ = T.toCurrent dΦ - T.toCurrent (dΦ - φ)
+    rw [T.toCurrent.map_sub dΦ φ]
+    ring
+  /- Step 6: pointwise bounds `‖Φ‖ ≤ F₀ R ∑ⱼ ‖θⱼ‖` and `‖Ξ‖ ≤ R ∑ⱼ Hⱼ`. -/
+  have hΦbound : ∀ z, ‖(Φ : DifferentialForm (Eucl P) m) z‖ ≤ F₀ * R * ∑ j, ‖θ j‖ := by
+    intro z
+    change ‖∑ j : Fin (m + 1), ((-1 : ℝ) ^ (j : ℕ) * (f z * ψ j (L z))) • θ j‖ ≤ _
+    rw [Finset.mul_sum]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+    rw [norm_smul, Real.norm_eq_abs, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow,
+      one_mul]
+    have hfz : |f z| ≤ F₀ := by simpa only [Real.norm_eq_abs] using hF₀ z
+    exact mul_le_mul_of_nonneg_right
+      (mul_le_mul hfz (hψb j (L z)) (abs_nonneg _) hF₀nn) (norm_nonneg _)
+  have hΞbound : ∀ x, ‖(Ξ : DifferentialForm (Eucl P) (m + 1)) x‖ ≤ R * ∑ j, H j := by
+    intro x
+    rw [hΞ x, Finset.mul_sum]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+    rw [norm_smul, Real.norm_eq_abs, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
+    exact mul_le_mul (hψb j (L x)) (hH j x) (norm_nonneg _) hR0
+  /- Step 7: the mass bounds for `∂T(Φ)` and `T(Ξ)`. -/
+  have hbΦ := Submission.rpn_abs_apply_le_opNorm_mul_massOn P m U W T.boundary Φ B₁
+    (F₀ * R * ∑ j, ‖θ j‖) ENNReal.toReal_nonneg hbTB₁ (hΦts.trans hfW) hΦbound
+  have hTΞ := Submission.rpn_abs_apply_le_opNorm_mul_massOn P (m + 1) U W T Ξ B₀
+    (R * ∑ j, H j) ENNReal.toReal_nonneg hTB₀ hΞts hΞbound
+  /- Step 8: conclusion. -/
+  rw [hsplit]
+  calc |T.boundary Φ - T Ξ| ≤ |T.boundary Φ| + |T Ξ| := abs_sub _ _
+    _ ≤ (P : ℝ) ^ m * B₁ * (F₀ * R * ∑ j, ‖θ j‖) + (P : ℝ) ^ (m + 1) * B₀ * (R * ∑ j, H j) :=
+      add_le_add hbΦ hTΞ
+    _ = C₁ * ((P : ℝ) ^ m * B₁ * F₀ * ∑ j, ‖θ j‖ + (P : ℝ) ^ (m + 1) * B₀ * ∑ j, H j) * M *
+        ((volume (tsupport a)).toReal) ^ ((1 : ℝ) / ((m : ℝ) + 1)) := by
+      rw [hR]
+      ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
