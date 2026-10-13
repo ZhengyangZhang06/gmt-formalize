@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23024f5632a8cd7cc949f85ce9a74b8aadde06073c3992aae790aa22c3ff9756",
+  "git_delta": {
+    "base_commit": "9b7c9f8e9a52c3ed56e4aef2c6f80a122261edaf",
+    "candidate_commit": "a5f7db84d32438a194ab8fee5ed4875e55adbb59",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ptd_tl_blowUp_measure_scaling",
+    "diff_sha256": "fabfb9746e71fc882e2494e1fb2ac437c09a6ee74b2f27c7fac7595b1f96df9d",
+    "source_sha256": "94744a8249dfd60ea2cf9e2af7756d860e2293e3cf2ebf77e2626ea5d85d278f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ptd_tl_blowUp_measure_scaling",
+      "statement": "∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
