@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'iwl_cr_|dph_|interval_product' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "sed -n '1,220p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "iwl_cr_hausdorff_product_formula",
+        "iwl_cr_interval_product_im",
+        "iwl_cr_ci_slice_testForm",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "tendsto_integral_filter_of_dominated_convergence",
+        "StronglyMeasurable.integral_prod_right",
+        "git show 55f78c3b410c52ee2950210f30a580142758fc05:GMT/Ch06/Submission.lean | sed -n '3280,3355p'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/interval_product_audit/Contracts.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-a63896b906/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-a63896b906/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa0/20261013T062115Z-ch06-root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1-vktkt17c/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa24/20261013T091349Z-ch06-root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1-3dime38l/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa60/20261013T022026Z-ch06-root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1-_h_u9n9w/comparator-config.json",
+        "/tmp/interval_product_audit/Contracts.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the frozen definitions. The project search found no existing iwl_cr_/dph_/interval_product declarations in the snapshot; the required area-formula, measurability and dominated-convergence tools exist in the pinned libraries. Each proposed bare identifier has exactly one accepted owner and a byte-identical frozen type. Candidate sources match the retained comparator inputs, whose successful checks permit only propext, Classical.choice and Quot.sound. All 26 reachable reused nodes are accepted, with no cycle or path to the selected node or its ancestors. Independently elaborated all three child propositions and compiled a placeholder-free assembly of the exact selected parent; exit 0, with only standard axioms. The split is appropriate: Hausdorff transport supports product existence, and slice forms establish the uniqueness needed for arbitrary Z."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes both null-cylinder transfer and the product formula with all stated hypotheses. The proof handles dimension zero, proves the covering estimate, reduces to Borel sets, constructs disjoint injective pieces, verifies the lifted Jacobian, and applies measure-preserving coordinate splitting and Tonelli. Local finiteness supplies the required sigma-finiteness. No circular dependency occurs; identical-type accepted reuse is valid."
+    },
+    {
+      "key": "product_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly asserts existence of an integer-multiplicity current satisfying the required identity for every admissible slice family. The proof verifies the product triple, transfers exceptional sets, proves the weighted tangent limit with an integrable dominating function, establishes current continuity, and derives the action by Fubini. Its Hausdorff-product dependency is correctly directed. Together with slice_forms, its conclusion proves the selected arbitrary-Z statement by equality on test forms. The construction also agrees with [Simon, Chapter 6, 3.2(2)](https://web.stanford.edu/class/math285/ts-gmt)."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the existence, joint-continuity and evaluation assertions. The proof constructs the continuous linear contraction, proves smoothness by composition, establishes compact support using the Euclidean coordinate norm bound, and proves joint continuity. The inline coordinate constructions have the intended Euclidean types. It requires neither the selected theorem nor product existence, and supplies the slice family needed to prevent vacuous use of ProdChar."
+    }
+  ],
+  "required_changes": []
+}
