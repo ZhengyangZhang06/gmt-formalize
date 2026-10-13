@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.frame_sign_top-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1",
+  "depth": 4,
+  "title": "An orthonormal n-frame in ℝⁿ has simple n-vector ±e₁∧⋯∧eₙ",
+  "statement": "Let n ∈ ℕ, ℝⁿ := Eucl n = EuclideanSpace ℝ (Fin n), and e = (e_1,…,e_n) with e_i := EuclideanSpace.single i 1 the standard basis. If τ = (τ_1,…,τ_n) : Fin n → ℝⁿ is an orthonormal family, then simpleNVector τ = simpleNVector e or simpleNVector τ = −simpleNVector e. Here simpleNVector v is the n-vector α ↦ α(v) on n-covectors α, so the claim is τ_1∧⋯∧τ_n = ±e_1∧⋯∧e_n.",
+  "lean_statement": "∀ (n : ℕ) (τ : Fin n → Eucl n), Orthonormal ℝ τ → simpleNVector τ = simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ)) ∨ simpleNVector τ = -simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "ind_top_orthonormal_frame_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1-f-d98902e57d-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.top_integer_density-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1",
+  "depth": 4,
+  "title": "A top-dimensional integer multiplicity current has an a.e. integer-valued density, integrable on compacts",
+  "statement": "Let m ∈ ℕ, n := m+1, U ⊆ ℝⁿ = Eucl n an arbitrary set, e_i := EuclideanSpace.single i 1, and let dx be Lebesgue measure (volume). Let X ∈ D_n(U) be integer multiplicity (IsIntegerMultiplicity X). Then there is u : ℝⁿ → ℝ such that:\n(i) u(x) ∈ ℤ for Lebesgue-a.e. x ∈ ℝⁿ;\n(ii) u is integrable on every compact K ⊆ U;\n(iii) X(ω) = ∫_U u(x)·ω(x)(e_1,…,e_n) dx for every ω ∈ Dⁿ(U) (TestFormOn U n).",
+  "lean_statement": "∀ (m : ℕ) (U : Set (Eucl (m + 1))) (X : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity X → ∃ u : Eucl (m + 1) → ℝ, (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∃ k : ℤ, u x = k) ∧ (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) ∧ ∀ ω : TestFormOn U (m + 1), X ω = ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume",
+  "lean_name": "ind_top_dim_integer_density",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.frame_sign_top-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.frame_sign_top-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-const-integer-a1-t-da58bc8a39-a1"
+}

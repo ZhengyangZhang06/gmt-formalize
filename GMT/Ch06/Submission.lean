@@ -1527,6 +1527,258 @@ theorem Submission.ind_pi_projected_limit : LipschitzPushforwardIntegerMultiplic
   have h := hZlim η
   rw [hlim] at h
   exact h.congr fun k => (hact k).symm
+/-- An orthonormal `n`-frame in `ℝⁿ` has simple `n`-vector `±e₁ ∧ ⋯ ∧ eₙ` (Simon Ch. 6, 3.1 in top
+dimension: an orientation `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` is `±e₁ ∧ ⋯ ∧ eₙ`, so `⟨ω, ξ⟩ = ±a` for
+`ω = a dx¹ ∧ ⋯ ∧ dxⁿ`, as in the proof of 8.2, p. 179).  `τ` is linearly independent with
+`n = dim ℝⁿ` members, hence an orthonormal basis of `ℝⁿ`, as is the standard basis `e`.  An
+`n`-covector `α` is an alternating `n`-form on `ℝⁿ`, so `α(τ) = α(e) det_e(τ)`
+(`AlternatingMap.eq_smul_basis_det`), and `det_e(τ) = ±1` because the change of basis between
+orthonormal bases is orthogonal (`OrthonormalBasis.det_to_matrix_orthonormalBasis_real`). -/
+theorem Submission.ind_top_orthonormal_frame_sign :
+    ∀ (n : ℕ) (τ : Fin n → Eucl n), Orthonormal ℝ τ →
+      simpleNVector τ = simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ)) ∨
+        simpleNVector τ = -simpleNVector (fun i => EuclideanSpace.single i (1 : ℝ)) := by
+  intro n τ hτ
+  -- Step 1: `τ` spans `ℝⁿ` (`n = 0` included).
+  have hspan : Submodule.span ℝ (range τ) = ⊤ :=
+    hτ.linearIndependent.span_eq_top_of_card_eq_finrank' (by simp)
+  -- Step 2: `τ` and the standard basis `e` are orthonormal bases `bτ`, `be` of `ℝⁿ`.
+  let bτ : OrthonormalBasis (Fin n) ℝ (Eucl n) := OrthonormalBasis.mk hτ hspan.ge
+  let be : OrthonormalBasis (Fin n) ℝ (Eucl n) := EuclideanSpace.basisFun (Fin n) ℝ
+  have hbτ : ⇑bτ = τ := OrthonormalBasis.coe_mk hτ hspan.ge
+  have hbe : ⇑be.toBasis = fun i => EuclideanSpace.single i (1 : ℝ) := by
+    funext i
+    simp [be]
+  -- Step 3: `det_e(τ) = ±1`, the change of basis between orthonormal bases being orthogonal.
+  have hd : be.toBasis.det τ = 1 ∨ be.toBasis.det τ = -1 := by
+    simpa only [hbτ] using be.det_to_matrix_orthonormalBasis_real bτ
+  -- Step 4: an `n`-covector `α` is `α(e) • det_e`, so `α(τ) = α(e) * det_e(τ)`.
+  have key : ∀ α : Covector (Eucl n) n,
+      α τ = α (fun i => EuclideanSpace.single i (1 : ℝ)) * be.toBasis.det τ := by
+    intro α
+    have h := DFunLike.congr_fun (α.toAlternatingMap.eq_smul_basis_det be.toBasis) τ
+    rw [AlternatingMap.smul_apply, smul_eq_mul, hbe] at h
+    exact h
+  -- Step 5: extensionality, as `simpleNVector v α = α v`.
+  rcases hd with hd | hd
+  · left
+    refine ContinuousLinearMap.ext fun α => ?_
+    rw [simpleNVector_apply, simpleNVector_apply, key α, hd, mul_one]
+  · right
+    refine ContinuousLinearMap.ext fun α => ?_
+    rw [_root_.neg_apply, simpleNVector_apply, simpleNVector_apply, key α, hd, mul_neg_one]
+/-- Densities of top-degree test-form functionals on an open set are unique a.e. (Simon Ch. 6, end
+of the Proof of 8.2, p. 179: `θ ≡ θ(x)` in `B₁ⁿ(0)`, top-dimensional currents acting by
+`ω = a dx¹ ∧ ⋯ ∧ dxⁿ ↦ ∫ a θ dLⁿ` as in 2.35 (∗)).  For `a ∈ C_c^∞(U)`, the form `ω = a • vol`
+with `vol = dx¹ ∧ ⋯ ∧ dxⁿ` is a test form on `U` with `ω(x)(e₁, …, eₙ) = a(x)`
+(`wedgeCovectors_apply_det`: `vol(e) = det 1 = 1`), so the hypothesis gives
+`∫ a (u - v) = ∫_U u a - ∫_U v a = 0`.  As `u - v` is locally integrable on the open set `U`, the
+fundamental lemma of the calculus of variations
+(`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) gives `u = v` a.e. on `U`. -/
+theorem Submission.ind_top_form_density_ae_unique :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (u v : Eucl (m + 1) → ℝ), IsOpen U →
+      (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) →
+      (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn v K volume) →
+      (∀ ω : TestFormOn U (m + 1),
+        ∫ x in U, u x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume =
+        ∫ x in U, v x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) →
+      ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x = v x := by
+  intro m U u v hU hu hv h
+  -- Step 1: the volume covector `vol = dx¹ ∧ ⋯ ∧ dxⁿ` has `vol(e) = det 1 = 1`.
+  obtain ⟨vol, hvol⟩ : ∃ vol : Covector (Eucl (m + 1)) (m + 1),
+      vol (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    refine ⟨wedgeCovectors (m + 1) (fun j => EuclideanSpace.proj j), ?_⟩
+    rw [wedgeCovectors_apply_det]
+    have hI : (Matrix.of fun i j =>
+        (EuclideanSpace.proj i : Eucl (m + 1) →L[ℝ] ℝ) (EuclideanSpace.single j (1 : ℝ))) = 1 := by
+      ext i j
+      simp [Matrix.one_apply]
+    rw [hI, Matrix.det_one]
+  -- Step 2: `u - v` is integrable on compact subsets of the open set `U`, so it is locally
+  -- integrable on `U`.
+  have hloc : LocallyIntegrableOn (fun x => u x - v x) U volume := by
+    rw [locallyIntegrableOn_iff hU.isLocallyClosed]
+    intro K hKU hK
+    exact (hu K hK hKU).sub (hv K hK hKU)
+  -- Step 3: the fundamental lemma; it remains to show `∫ a • (u - v) = 0` for `a ∈ C_c^∞(U)`.
+  have key : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → u x - v x = 0 := by
+    refine hU.ae_eq_zero_of_integral_contDiff_smul_eq_zero hloc fun a ha ha_cs ha_sub => ?_
+    -- Step 4: `ω = a • vol` is a test form on `U` with `ω(x)(e) = a(x)`.
+    let ω : TestFormOn U (m + 1) :=
+      ⟨fun x => a x • vol,
+        ⟨⟨ha.smul contDiff_const, ha_cs.smul_right⟩,
+          (tsupport_smul_subset_left _ _).trans ha_sub⟩⟩
+    have hω : ∀ x, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+        (fun i => EuclideanSpace.single i (1 : ℝ)) = a x := by
+      intro x
+      simp [ω, hvol]
+    -- Step 5: the hypothesis for `ω` reads `∫_U u a = ∫_U v a`.
+    have hua := h ω
+    simp only [hω] at hua
+    -- Step 6: `w a` is integrable for `w ∈ {u, v}`: it is integrable on the compact set
+    -- `tsupport a ⊆ U` and vanishes outside it.
+    have hK : IsCompact (tsupport a) := ha_cs
+    have hint : ∀ w : Eucl (m + 1) → ℝ,
+        (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn w K volume) →
+        IntegrableOn (fun x => w x * a x) U volume := by
+      intro w hw
+      have h1 : IntegrableOn (fun x => w x * a x) (tsupport a) volume :=
+        (hw _ hK ha_sub).mul_continuousOn ha.continuous.continuousOn hK
+      have h2 : Integrable (fun x => w x * a x) volume := by
+        rw [← integrableOn_iff_integrable_of_support_subset]
+        · exact h1
+        · intro x hx
+          apply subset_tsupport
+          intro hax
+          apply hx
+          simp [hax]
+      exact h2.integrableOn
+    -- Step 7: `a = 0` off `U`, so `∫ a • (u - v) = ∫_U u a - ∫_U v a = 0`.
+    have hzero : ∀ x, x ∉ U → a x • (u x - v x) = 0 := by
+      intro x hx
+      have : a x = 0 := image_eq_zero_of_notMem_tsupport (fun hx' => hx (ha_sub hx'))
+      simp [this]
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+    have hsplit : ∀ x, a x • (u x - v x) = u x * a x - v x * a x := by
+      intro x
+      simp only [smul_eq_mul]
+      ring
+    simp only [hsplit]
+    rw [integral_sub (hint u hu) (hint v hv), hua, sub_self]
+  -- Step 8: conclusion.
+  filter_upwards [key] with x hx hxU
+  exact sub_eq_zero.mp (hx hxU)
+
+/-- A top-dimensional integer multiplicity current has an integer density (Simon Ch. 6, 2.35 (∗),
+`T(ω) = ∫ aθ dLⁿ` for `ω = a dx¹ ∧ ⋯ ∧ dxⁿ`, with `θ` integer-valued as at the end of the Proof of
+8.2, p. 179).  Write `X = τ(M, θ, ξ)` in `U ⊆ ℝⁿ`, `n = m + 1`, and `e = (e₁, …, eₙ)`; on `ℝⁿ`,
+`Hⁿ = μHE[n]` is Lebesgue measure.  By `Submission.ind_top_orthonormal_frame_sign`,
+`ξ = ±e₁ ∧ ⋯ ∧ eₙ` a.e. on `M`, so `ξ(x)(α) = σ(x) α(e)` with the sign
+`σ(x) = ξ(x)(dx¹ ∧ ⋯ ∧ dxⁿ) = ±1`.  The density is `u = θσ` on `M` and `u = 0` off `M`. -/
+theorem Submission.ind_top_dim_integer_density :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (X : GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity X → ∃ u : Eucl (m + 1) → ℝ,
+        (∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), ∃ k : ℤ, u x = k) ∧
+        (∀ K : Set (Eucl (m + 1)), IsCompact K → K ⊆ U → IntegrableOn u K volume) ∧
+        ∀ ω : TestFormOn U (m + 1), X ω = ∫ x in U, u x *
+          (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+            (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume := by
+  intro m U X hX
+  -- Step 1: `X = τ(M, θ, ξ)` with `θ` integer-valued on `M`; `μHE[m + 1]` is `volume`.
+  obtain ⟨M, θ, ξ, hT, hθ, hXω⟩ := hX
+  have hvol : (μHE[m + 1] : Measure (Eucl (m + 1))) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume (m + 1)
+  have hM : NullMeasurableSet M volume := by
+    simpa only [hvol] using hT.nullMeasurableSet
+  have hξ : AEStronglyMeasurable ξ (volume.restrict M) := by
+    simpa only [hvol] using hT.aestronglyMeasurable
+  have horients := hT.orients
+  rw [hvol] at horients
+  set e : Fin (m + 1) → Eucl (m + 1) := fun i => EuclideanSpace.single i (1 : ℝ) with he
+  -- Step 2: the volume covector `vol = dx¹ ∧ ⋯ ∧ dxⁿ` has `vol(e) = det 1 = 1`.
+  set vol : Covector (Eucl (m + 1)) (m + 1) :=
+    wedgeCovectors (m + 1) fun j => EuclideanSpace.proj j with hvol_def
+  have hvol_e : vol e = 1 := by
+    rw [hvol_def, wedgeCovectors_apply_det]
+    convert Matrix.det_one (n := Fin (m + 1)) (R := ℝ)
+    ext i j
+    simp [he, Matrix.one_apply]
+  -- Step 3: `ξ = ±e₁ ∧ ⋯ ∧ eₙ` a.e. on `M`.
+  have hsign : ∀ᵐ x ∂volume.restrict M, ξ x = simpleNVector e ∨ ξ x = -simpleNVector e := by
+    filter_upwards [horients] with x hx
+    obtain ⟨τ, hτ, -, hξτ⟩ := hx
+    rcases Submission.ind_top_orthonormal_frame_sign (m + 1) τ hτ with h | h <;>
+      rcases hξτ with hξτ | hξτ
+    · exact Or.inl (hξτ.trans h)
+    · exact Or.inr (by rw [hξτ, h])
+    · exact Or.inr (hξτ.trans h)
+    · refine Or.inl (ContinuousLinearMap.ext fun α => ?_)
+      rw [hξτ, _root_.neg_apply, h, _root_.neg_apply, neg_neg]
+  -- Step 4: the sign `σ(x) = ξ(x)(vol)`; a.e. on `M`, `σ = ±1` and `ξ(x)(α) = σ(x) α(e)`.
+  set σ : Eucl (m + 1) → ℝ := fun x => ξ x vol
+  have hσm : AEStronglyMeasurable σ (volume.restrict M) :=
+    (continuous_eval_const vol).comp_aestronglyMeasurable hξ
+  have hσ : ∀ᵐ x ∂volume.restrict M, (σ x = 1 ∨ σ x = -1) ∧
+      ∀ α : Covector (Eucl (m + 1)) (m + 1), ξ x α = σ x * α e := by
+    filter_upwards [hsign] with x hx
+    rcases hx with hx | hx
+    · have h1 : σ x = 1 := by
+        show ξ x vol = 1
+        rw [hx, simpleNVector_apply, hvol_e]
+      exact ⟨Or.inl h1, fun α => by rw [h1, one_mul, hx, simpleNVector_apply]⟩
+    · have h1 : σ x = -1 := by
+        show ξ x vol = -1
+        rw [hx, _root_.neg_apply, simpleNVector_apply, hvol_e]
+      exact ⟨Or.inr h1, fun α => by
+        rw [h1, neg_one_mul, hx, _root_.neg_apply, simpleNVector_apply]⟩
+  -- Step 5: `u = θσ` on `M` and `u = 0` off `M`.
+  refine ⟨M.indicator fun x => θ x * σ x, ?_, ?_, ?_⟩
+  · -- Step 6: `u` is integer-valued a.e.
+    filter_upwards [(ae_restrict_iff'₀ hM).1 hσ] with x hx
+    by_cases hxM : x ∈ M
+    · obtain ⟨k, hk⟩ := hθ x hxM
+      rcases (hx hxM).1 with h1 | h1
+      · exact ⟨k, by simp [Set.indicator_of_mem hxM, hk, h1]⟩
+      · exact ⟨-k, by simp [Set.indicator_of_mem hxM, hk, h1]⟩
+    · exact ⟨0, by simp [Set.indicator_of_notMem hxM]⟩
+  · -- Step 7: `θ` is integrable on `M ∩ K` and `|σ| ≤ 1`, so `u` is integrable on `K`.
+    intro K hK hKU
+    rw [integrableOn_indicator_iff hM]
+    have hθK : IntegrableOn θ (M ∩ K) volume := by
+      simpa only [hvol] using hT.integrableOn K hK hKU
+    refine Integrable.mul_bdd (c := 1) hθK
+      (hσm.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)) ?_
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset
+      (Set.inter_subset_left : M ∩ K ⊆ M) hσ] with x hx
+    rcases hx.1 with h1 | h1 <;> simp [h1]
+  · -- Step 8: `X(ω) = ∫_M θσ ω(e) dx = ∫_U u ω(e) dx`.
+    intro ω
+    have hMU : NullMeasurableSet M (volume.restrict U) := hM.mono Measure.restrict_le_self
+    rw [hXω ω, tauAction, hvol]
+    calc ∫ x in M, θ x * ξ x ((ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x) ∂volume
+        = ∫ x in M, θ x * σ x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e ∂volume := by
+          refine integral_congr_ae ?_
+          filter_upwards [hσ] with x hx
+          rw [hx.2]
+          ring
+      _ = ∫ x in U, M.indicator (fun x =>
+            θ x * σ x * (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e) x ∂volume := by
+          rw [integral_indicator₀ hMU, Measure.restrict_restrict₀ hMU,
+            Set.inter_eq_left.2 hT.subset]
+      _ = ∫ x in U, M.indicator (fun x => θ x * σ x) x *
+            (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x e ∂volume := by
+          congr 1
+          funext x
+          by_cases hx : x ∈ M <;> simp [hx]
+
+/-- A constant multiple `c [[U]]` of a nonempty open `U ⊆ ℝⁿ` is integer multiplicity only if
+`c ∈ ℤ` (Simon Ch. 6, end of the proof of 8.2, p. 179: "`θ ≡ θ(x)` in `B₁ⁿ(0)`; thus
+`θ(x) ∈ ℤ`").  An integer multiplicity `X ∈ 𝒟ₙ(U)` acts as `X(ω) = ∫_U u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ`
+with `u` a.e. integer-valued and integrable on compact subsets of `U`; the constant `c` is a
+second such density of `X`, so `c = u` a.e. on `U`, and `Lⁿ(U) > 0`. -/
+theorem Submission.ind_const_multiple_integer :
+    ∀ (m : ℕ) (U : Set (Eucl (m + 1))) (c : ℝ) (X : GeometricCurrentOn U (m + 1)), IsOpen U →
+      U.Nonempty → IsIntegerMultiplicity X →
+      (∀ ω : TestFormOn U (m + 1),
+        X ω = c * ∫ x in U, (ω : DifferentialForm (Eucl (m + 1)) (m + 1)) x
+          (fun i => EuclideanSpace.single i (1 : ℝ)) ∂volume) → ∃ k : ℤ, c = k := by
+  intro m U c X hU hne hX hXc
+  -- `X(ω) = ∫_U u ω(e) dx` with `u` a.e. integer-valued and integrable on compacts of `U`.
+  obtain ⟨u, hu_int, hu_loc, hu_rep⟩ := Submission.ind_top_dim_integer_density m U X hX
+  -- The constant `c` is another density of `X`, hence `c = u` a.e. on `U`.
+  have hcu : ∀ᵐ x ∂(volume : Measure (Eucl (m + 1))), x ∈ U → c = u x :=
+    Submission.ind_top_form_density_ae_unique m U (fun _ => c) u hU
+      (fun K hK _ => integrableOn_const hK.measure_ne_top) hu_loc
+      (fun ω => by rw [integral_const_mul, ← hXc]; exact hu_rep ω)
+  -- If `c ∉ ℤ`, a.e. point lies outside `U`, contradicting `Lⁿ(U) > 0` for open `U ≠ ∅`.
+  by_contra hc
+  have hnull : (volume : Measure (Eucl (m + 1))) U = 0 := by
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hcu, hu_int] with x hx ⟨k, hk⟩ hxU
+    exact hc ⟨k, (hx hxU).trans hk⟩
+  exact (hU.measure_pos volume hne).ne' hnull
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
