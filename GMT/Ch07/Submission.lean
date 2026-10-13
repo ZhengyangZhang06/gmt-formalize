@@ -505,6 +505,90 @@ theorem Submission.dtc_bc_lr_left_inverse_projection : ∀ (P d : ℕ) (L : Eucl
         Submodule.starProjection_apply]
     rw [hLA]
     exact Q.starProjection_norm_le
+/-- **Local `C¹` inverse** (inverse function theorem, step 2 of the local retraction in the proof
+of Simon 7.3.1).  If `h` is `C¹` on the open set `V ∋ v₀` with `Dh(v₀) = id`, there are open
+`V₀ ⊆ V` with `v₀ ∈ V₀` and `O`, and `k`, `C¹` on `O`, such that `h : V₀ → O` and `k : O → V₀` are
+mutually inverse, and `Dk(h(v₀)) = id`.  The inverse function theorem gives a partial
+homeomorphism `e` with `⇑e = h`, source `S ∋ v₀` and target `T`; on the open set
+`G = {v ∈ V : ‖Dh(v) − 1‖ < 1}` (which contains `v₀`) `Dh(v)` is invertible (Neumann series).  Take
+`V₀ = S ∩ G`, `O = T ∩ e.symm⁻¹(V₀)`, `k = e.symm`; the `C¹` inverse rule at each `u ∈ O` makes
+`k` `C¹` on `O`, and `k` has derivative `id⁻¹ = id` at `h(v₀)`. -/
+theorem Submission.dtc_bc_lr_local_inverse : ∀ (d : ℕ) (h : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 h V → fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) → ∃ (V₀ O : Set (Euclid d)) (k : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ V₀ ⊆ V ∧ v₀ ∈ V₀ ∧ MapsTo h V₀ O ∧ MapsTo k O V₀ ∧ (∀ v ∈ V₀, k (h v) = v) ∧ (∀ u ∈ O, h (k u) = u) ∧ ContDiffOn ℝ 1 k O ∧ fderiv ℝ k (h v₀) = ContinuousLinearMap.id ℝ (Euclid d) := by
+  intro d h V v₀ hV hv₀ hh hd
+  -- Step 1: `h` is `C¹` at every point of `V`, `Dh` is continuous on `V`, and `h` has strict
+  -- derivative `id` at `v₀`
+  have hca : ∀ v ∈ V, ContDiffAt ℝ 1 h v := fun v hv => hh.contDiffAt (hV.mem_nhds hv)
+  have hcont : ContinuousOn (fderiv ℝ h) V := hh.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hfd : HasFDerivAt h
+      ((ContinuousLinearEquiv.refl ℝ (Euclid d) : Euclid d ≃L[ℝ] Euclid d) :
+        Euclid d →L[ℝ] Euclid d) v₀ := by
+    rw [ContinuousLinearEquiv.coe_refl, ← hd]
+    exact ((hca v₀ hv₀).differentiableAt one_ne_zero).hasFDerivAt
+  have hs := (hca v₀ hv₀).hasStrictFDerivAt' hfd one_ne_zero
+  -- Step 2: the inverse function theorem gives a partial homeomorphism `e` with `⇑e = h`, and
+  -- its inverse has derivative `id⁻¹ = id` at `h(v₀)`
+  obtain ⟨e, he⟩ : ∃ e : OpenPartialHomeomorph (Euclid d) (Euclid d),
+      e = hs.toOpenPartialHomeomorph h := ⟨_, rfl⟩
+  have hecoe : (e : Euclid d → Euclid d) = h := by
+    rw [he]; exact hs.toOpenPartialHomeomorph_coe
+  have hv₀e : v₀ ∈ e.source := by
+    rw [he]; exact hs.mem_toOpenPartialHomeomorph_source
+  have hk : HasFDerivAt (e.symm : Euclid d → Euclid d) (ContinuousLinearMap.id ℝ (Euclid d))
+      (h v₀) := by
+    have h7 := hs.to_localInverse
+    rw [hs.localInverse_def, ← he, ContinuousLinearEquiv.refl_symm,
+      ContinuousLinearEquiv.coe_refl] at h7
+    exact h7.hasFDerivAt
+  -- Step 3: `G = {v ∈ V : ‖Dh(v) − 1‖ < 1}` is open, contains `v₀`, and `Dh(v)` is invertible
+  -- for `v ∈ G`
+  obtain ⟨G, hG⟩ : ∃ G : Set (Euclid d), G = V ∩ fderiv ℝ h ⁻¹' ball 1 1 := ⟨_, rfl⟩
+  have hGo : IsOpen G := hG ▸ hcont.isOpen_inter_preimage hV isOpen_ball
+  have hGV : G ⊆ V := hG ▸ inter_subset_left
+  have hv₀G : v₀ ∈ G := by
+    rw [hG]
+    refine ⟨hv₀, ?_⟩
+    show fderiv ℝ h v₀ ∈ ball 1 1
+    rw [hd, ← ContinuousLinearMap.one_def]
+    exact mem_ball_self one_pos
+  have hGu : ∀ v ∈ G, ∃ L : Euclid d ≃L[ℝ] Euclid d,
+      (L : Euclid d →L[ℝ] Euclid d) = fderiv ℝ h v := by
+    intro v hv
+    rw [hG] at hv
+    have hu : IsUnit (fderiv ℝ h v) := by
+      by_contra hnu
+      exact nonunits.subset_compl_ball (mem_nonunits_iff.mpr hnu) hv.2
+    obtain ⟨u, hu⟩ := hu
+    refine ⟨ContinuousLinearEquiv.unitsEquiv ℝ (Euclid d) u, ?_⟩
+    ext x
+    simp [ContinuousLinearEquiv.unitsEquiv_apply, ← hu]
+  -- Step 4: `V₀ = S ∩ G`, `O = T ∩ e.symm⁻¹(V₀)`, `k = e.symm`
+  refine ⟨e.source ∩ G, e.target ∩ e.symm ⁻¹' (e.source ∩ G), e.symm,
+    e.open_source.inter hGo, e.isOpen_inter_preimage_symm (e.open_source.inter hGo),
+    fun v hv => hGV hv.2, ⟨hv₀e, hv₀G⟩, ?_, fun u hu => hu.2, fun v hv => ?_, fun u hu => ?_,
+    ?_, ?_⟩
+  -- Step 5: mapping and inverse identities
+  · intro v hv
+    have h1 := e.map_source hv.1
+    have h2 := e.left_inv hv.1
+    rw [hecoe] at h1 h2
+    exact ⟨h1, by rw [mem_preimage, h2]; exact hv⟩
+  · have h2 := e.left_inv hv.1
+    rwa [hecoe] at h2
+  · have h2 := e.right_inv hu.1
+    rwa [hecoe] at h2
+  -- Step 6: `k` is `C¹` on `O`, by the `C¹` inverse rule at each `u ∈ O`
+  · intro u hu
+    obtain ⟨L, hL⟩ := hGu _ hu.2.2
+    have ha : e.symm u ∈ V := hGV hu.2.2
+    have hfa : HasFDerivAt (e : Euclid d → Euclid d) (L : Euclid d →L[ℝ] Euclid d)
+        (e.symm u) := by
+      rw [hL, hecoe]
+      exact ((hca _ ha).differentiableAt one_ne_zero).hasFDerivAt
+    have hca' : ContDiffAt ℝ 1 (e : Euclid d → Euclid d) (e.symm u) := by
+      rw [hecoe]; exact hca _ ha
+    exact (e.contDiffAt_symm hu.1 hfa hca').contDiffWithinAt
+  -- Step 7: `Dk(h(v₀)) = id`
+  · exact hk.fderiv
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
