@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "Co-area formula and level-set structure on one C¹ chart (Simon Ch. 2, 6.3, 6.4 and 6.6 for the submanifold ψ(V))",
+  "statement": "Let P, n ∈ ℕ. Let ψ : ℝ^{n+1} → ℝ^P be C¹, V ⊆ ℝ^{n+1} open with ψ injective on V and Dψ(y) injective for y ∈ V, F : ℝ^{n+1} → ℝ C¹, and Y ⊆ ℝ^{n+1} Borel with closure(Y) compact and contained in V. Let G : ℝ^P → ℝ^P satisfy, for every y ∈ Y, G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1}) and ⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e for all e ∈ ℝ^{n+1} (so G∘ψ is the gradient of F∘ψ⁻¹ along ψ(V)). Write Hᵏ = μHE[k]. Then: (i) for every Borel g : ℝ^P → [0, ∞], the function t ↦ ∫_{ψ(Y ∩ F⁻¹(t))} g dHⁿ is L¹-a.e.-measurable and ∫_ℝ ∫_{ψ(Y ∩ F⁻¹(t))} g dHⁿ dt = ∫_{ψ(Y)} |G| g dH^{n+1}; (ii) for L¹-a.e. t, the set S_t := ψ(Y ∩ F⁻¹(t)) is countably n-rectifiable, and for Hⁿ-a.e. x ∈ S_t we have G(x) ≠ 0 and, for the y ∈ Y with ψ(y) = x, S_t has approximate tangent space Dψ(y)(ℝ^{n+1}) ∩ G(x)^⊥ at x.",
+  "lean_statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n] = ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) ∧ ∀ᵐ t, CountablyRectifiable n (ψ '' (Y ∩ F ⁻¹' {t})) ∧ ∀ᵐ x ∂(μHE[n].restrict (ψ '' (Y ∩ F ⁻¹' {t}))), G x ≠ 0 ∧ ∀ y ∈ Y, ψ y = x → HasApproximateTangentSpaceAt n (ψ '' (Y ∩ F ⁻¹' {t})) x (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ G x)ᗮ)",
+  "lean_name": "dtc_bc_lc_sl_chart_coarea",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4f70e02bff-a1"
+}

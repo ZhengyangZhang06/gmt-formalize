@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "The slices ⟨T, f, t⟩ as integer multiplicity triples, the co-area mass bound and the averaged slice identity (Simon Ch. 6, 4.2–4.4, 4.5(1) and the computation proving 4.5(2))",
+  "statement": "Let P, m ∈ ℕ, T ∈ 𝒟_{m+2}(ℝ^P) represented by the integer multiplicity triple R_T = (M, θ, ξ) (IMRep univ (m+2)), ∂T represented by R_∂ = (M', θ', ξ') (IMRep univ (m+1)), and f : ℝ^P → ℝ L-Lipschitz. Write Hᵏ = μHE[k], τ(R)(ω) := ∫_N φ⟨ω, ζ⟩ dH^{m+1} = R.action ω for a triple R = (N, φ, ζ), μ_R := R.measure = φH^{m+1}⌞N, and γ_{a,b}(s) := min{1, max{0, (b − s)/(b − a)}}. Then there is a family (R_t)_{t∈ℝ} of integer multiplicity triples in ℝ^P of dimension m+1 (Rs : ℝ → IMRep univ (m+1)) such that: (1) the carrier of R_t is contained in f⁻¹(t) for every t; (2) for every Borel W ⊆ ℝ^P, t ↦ μ_{R_t}(W) is L¹-a.e.-measurable and ∫_ℝ μ_{R_t}(W) dt ≤ L·μ_{R_T}(W); (3) for every ω ∈ 𝒟^{m+1}(ℝ^P), s ↦ τ(R_s)(ω) is Lebesgue integrable on ℝ; (4) for every ω ∈ 𝒟^{m+1}(ℝ^P) and all real a < b, ∫_a^b τ(R_s)(ω) ds = (b − a)·(∫_M θ γ_{a,b}(f) ⟨dω, ξ⟩ dH^{m+2} − ∫_{M'} θ' γ_{a,b}(f) ⟨ω, ξ'⟩ dH^{m+1}). For a.e. t, R_t is Simon's slice ⟨T, f, t⟩ = τ(M₊ ∩ f⁻¹(t), θ, ξ⌞(∇^M f/|∇^M f|)) of 4.4, and (4) is the identity in the proof of 4.5(2) for the cut-off γ_{a,b} after the co-area formula 4.2.",
+  "lean_statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ) (L : NNReal), RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Rs : ℝ → IMRep (univ : Set (Euclid P)) (m + 1), (∀ t, (Rs t).carrier ⊆ f ⁻¹' {t}) ∧ (∀ W : Set (Euclid P), MeasurableSet W → AEMeasurable (fun t => (Rs t).measure W) ∧ ∫⁻ t, (Rs t).measure W ≤ (L : ℝ≥0∞) * RT.measure W) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Integrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) (m + 1)))) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) (m + 1)) = (b - a) * ((∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) - ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1])",
+  "lean_name": "dtc_bc_lc_sl_slice_family",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1214e51a12-a1"
+}

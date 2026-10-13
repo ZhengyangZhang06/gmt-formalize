@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.c1_approx-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "C¹ approximation of a Lipschitz function off a set of small measure (Simon Ch. 2, Theorem 1.5)",
+  "statement": "Let n ∈ ℕ, K ≥ 0 and let f : ℝⁿ → ℝ be K-Lipschitz (ℝⁿ = Euclid n with Lebesgue measure Lⁿ = volume). Then for every ε ∈ (0, ∞] there is a C¹ function g : ℝⁿ → ℝ (ContDiff ℝ 1 g) such that Lⁿ({x : f(x) ≠ g(x) or Df(x) ≠ Dg(x)}) < ε, where Df(x) = fderiv ℝ f x (which is 0 at points where f is not differentiable) and likewise for g.",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (K : NNReal), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+  "lean_name": "dtc_bc_lc_sl_c1_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-effa2ccfd2-a1"
+}

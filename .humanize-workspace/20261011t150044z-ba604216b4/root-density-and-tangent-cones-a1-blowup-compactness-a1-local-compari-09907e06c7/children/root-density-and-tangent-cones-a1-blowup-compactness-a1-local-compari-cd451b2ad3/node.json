@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "Eilenberg's inequality for the level sets of a Lipschitz function (Simon Ch. 2, Theorem 1.9 with m = 1)",
+  "statement": "For every n ∈ ℕ there is a constant C ∈ [0, ∞) (depending only on n) with the following property. Let P ∈ ℕ, let A ⊆ ℝ^P be any set (not necessarily measurable), let L ≥ 0 and let f : ℝ^P → ℝ be L-Lipschitz on A (LipschitzOnWith L f A). Then there is a Borel function φ : ℝ → [0, ∞] with Hⁿ(A ∩ f⁻¹(t)) ≤ φ(t) for every t ∈ ℝ and ∫_ℝ φ dL¹ ≤ C·L·H^{n+1}(A), where Hᵏ = μHE[k] on ℝ^P (Mathlib's Euclidean Hausdorff measure). In Simon's language: the upper integral of t ↦ Hⁿ(A ∩ f⁻¹(t)) is at most C·L·H^{n+1}(A).",
+  "lean_statement": "∀ n : ℕ, ∃ C : NNReal, ∀ (P : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μHE[n] (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * μHE[n + 1] A",
+  "lean_name": "dtc_bc_lc_sl_eilenberg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-cd451b2ad3-a1"
+}

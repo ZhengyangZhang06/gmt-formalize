@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.coarea-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1",
+  "depth": 5,
+  "title": "Co-area formula, tangential gradient and slices of a countably rectifiable set (Simon Ch. 6, Lemma 4.1; Ch. 3, 2.1, 2.8–2.10)",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be Borel and countably (n+1)-rectifiable with H^{n+1}(M ∩ K) < ∞ for every compact K (Hᵏ = μHE[k]), and let f : ℝ^P → ℝ be L-Lipschitz. Then there is a Borel map G : ℝ^P → ℝ^P (Simon's ∇^M f) with |G(x)| ≤ L for every x such that: (1) (tangential gradient) for H^{n+1}-a.e. x ∈ M, M has an approximate tangent space at x, namely T_xM := approxTangentPlane (n+1) M x, G(x) ∈ T_xM, and for every ε > 0, r^{−(n+1)}·H^{n+1}({y ∈ M ∩ B_r(x) : |f(y) − f(x) − ⟨G(x), y − x⟩| > ε|y − x|}) → 0 as r ↓ 0; (2) (co-area) for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹(t)} g dHⁿ is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}; (3) (slices) for L¹-a.e. t, M ∩ f⁻¹(t) is countably n-rectifiable, and for Hⁿ-a.e. x ∈ M ∩ f⁻¹(t): G(x) ≠ 0 and M ∩ f⁻¹(t) has approximate tangent space T_xM ∩ G(x)^⊥ at x.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet M → CountablyRectifiable (n + 1) M → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → LipschitzWith L f → ∃ G : Euclid P → Euclid P, Measurable G ∧ (∀ x, ‖G x‖ ≤ L) ∧ (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ G x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) ∧ (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) ∧ ∀ᵐ t, CountablyRectifiable n (M ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (M ∩ f ⁻¹' {t}) x (approxTangentPlane (n + 1) M x ⊓ (ℝ ∙ G x)ᗮ)",
+  "lean_name": "dtc_bc_lc_sl_coarea",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.chart_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-772be56655-a1"
+}
