@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "Pinched density and conical-excess bounds 2.4 with explicit constants",
+  "statement": "Let n >= 1, l >= 0, p > n. There are C_P >= 1 and delta_P in (0, 1/8] with C_P delta_P <= 1/2, depending only on n, l and p (the proof gives dependence on n and p only), such that: if U is open, V is a RectifiableVarifold n l U, H : R^(n+l) -> R^(n+l), 0 < delta <= delta_P and AllardHypotheses H p delta rho hold, then for every y with |y| <= 3 delta rho and every s in (0, rho/2]: (P.i) mu(B_s(y)) <= (1 + C_P delta) omega_n s^n; and if moreover y in spt V, then (P.ii) mu(B_s(y)) >= (1 - C_P delta) omega_n s^n and (P.iii) the lower integral over B_s(y) of g_y(x) = |x - y - p_x(x - y)|^2/|x - y|^(n+2) (:= 0 at x = y) with respect to mu is at most C_P omega_n delta.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ Cp δp : ℝ, 1 ≤ Cp ∧ 0 < δp ∧ δp ≤ 1 / 8 ∧ Cp * δp ≤ 1 / 2 ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δp → V.AllardHypotheses H p δ ρ → ∀ y : Amb n ℓ, ‖y‖ ≤ 3 * δ * ρ → ∀ s : ℝ, 0 < s → s ≤ ρ / 2 → V.weight (closedBall y s) ≤ ENNReal.ofReal ((1 + Cp * δ) * (unitBallVolume n * s ^ n)) ∧ (y ∈ V.support → ENNReal.ofReal ((1 - Cp * δ) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s) ∧ ∫⁻ x in closedBall y s, ENNReal.ofReal (‖(x - y) - V.tangentProj x (x - y)‖ ^ 2 / ‖x - y‖ ^ (n + 2)) ∂V.weight ≤ ENNReal.ofReal (Cp * unitBallVolume n * δ))",
+  "lean_name": "aal_pinched_density_bounds",
+  "depends_on": [
+    "root.affine_approximation-a1.lp_monotonicity-a1",
+    "root.affine_approximation-a1.density_ge_one-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.lp_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1.density_ge_one-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-a1"
+}
