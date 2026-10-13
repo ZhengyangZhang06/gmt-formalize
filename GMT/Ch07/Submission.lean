@@ -465,6 +465,22 @@ theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n 
       map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
   have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
   -- `|ι(s)|² = ⟨ι(s), ι(s)⟩ = Σᵢ sᵢ² = |s|²`, so `ι` is an isometry
+/-- A test function on the parameter domain of a plane extends to an ambient test function (step 6
+of the constancy argument for a current carried by a plane, Simon Ch. 6, 2.34).  For orthonormal
+`τ`, `ι(s) = Σᵢ sᵢτᵢ` and `ψ ∈ C^∞_c` with `spt ψ ⊆ ι⁻¹(V)`, let `ι*(y) = (⟨τₖ, y⟩)ₖ` (so
+`ι*ι = id`, `ι*τⱼ = eⱼ`) and `q(y) = y − ι(ι*y)`.  Choose `δ > 0` with
+`cthickening δ (ι(spt ψ)) ⊆ V` and a smooth bump `χ`, `χ = 1` on `B̄_{δ/2}(0)`, `spt χ ⊆ B̄_δ(0)`,
+and put `f(y) = ψ(ι*y)·χ(q y)`.  Then `spt f ⊆ {y : ι*y ∈ spt ψ, |q y| ≤ δ}`, a compact subset of
+`V`, and `f = ψ ∘ ι*` near `ι(s)`, so `f(ι(s)) = ψ(s)` and `Df(ι(s))(τⱼ) = Dψ(s)(eⱼ)`. -/
+theorem Submission.idtp_pc_plane_test_extension : ∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (ψ : Euclid n → ℝ), IsOpen V → Orthonormal ℝ τ → ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∃ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f ∧ HasCompactSupport f ∧ tsupport f ⊆ V ∧ ∀ s : Euclid n, f (∑ i, s i • τ i) = ψ s ∧ ∀ j : Fin n, fderiv ℝ f (∑ i, s i • τ i) (τ j) = fderiv ℝ ψ s (EuclideanSpace.single j (1 : ℝ)) := by
+  intro P n V τ ψ hV hτ hψ hψc hψΩ
+  -- the parametrization L and its left inverse Ls
+  let L₀ : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  let L : Euclid n →L[ℝ] Euclid P := LinearMap.toContinuousLinearMap L₀
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
   have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
     intro s
     have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
@@ -487,6 +503,84 @@ theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n 
   have h := hiso.map_euclideanHausdorffMeasure (d := n)
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
   exact h.symm
+  let Ls₀ : Euclid P →ₗ[ℝ] Euclid n :=
+    { toFun := fun y => (WithLp.equiv 2 (Fin n → ℝ)).symm (fun k => inner ℝ (τ k) y)
+      map_add' := fun y z => by ext k; simp [inner_add_right]
+      map_smul' := fun c y => by ext k; simp [inner_smul_right] }
+  let Ls : Euclid P →L[ℝ] Euclid n := LinearMap.toContinuousLinearMap Ls₀
+  have hLsL : ∀ s, Ls (L s) = s := by
+    intro s
+    ext k
+    simp [Ls, Ls₀, L, L₀, orthonormal_iff_ite.mp hτ]
+  have hLsτ : ∀ j, Ls (τ j) = EuclideanSpace.single j (1 : ℝ) := by
+    intro j
+    ext k
+    simp [Ls, Ls₀, orthonormal_iff_ite.mp hτ, eq_comm]
+  -- the normal component q y = y - L (Ls y)
+  let q : Euclid P →L[ℝ] Euclid P := ContinuousLinearMap.id ℝ (Euclid P) - L.comp Ls
+  have hqapp : ∀ y, q y = y - L (Ls y) := fun y => rfl
+  have hqL : ∀ s, q (L s) = 0 := by intro s; rw [hqapp, hLsL, sub_self]
+  -- compactness and a margin δ
+  set K := tsupport ψ with hKdef
+  have hK : IsCompact K := hψc
+  have hLK : IsCompact (L '' K) := hK.image L.continuous
+  have hLKV : L '' K ⊆ V := by
+    rintro _ ⟨s, hs, rfl⟩
+    exact hψΩ hs
+  obtain ⟨δ, hδ, hδV⟩ := hLK.exists_cthickening_subset_open hV hLKV
+  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+  -- the bump function
+  let χ : ContDiffBump (0 : Euclid P) := ⟨δ / 2, δ, by positivity, by linarith⟩
+  let f : Euclid P → ℝ := fun y => ψ (Ls y) * χ (q y)
+  have hfapp : ∀ y, f y = ψ (Ls y) * χ (q y) := fun y => rfl
+  -- the set A
+  let A : Set (Euclid P) := {y | Ls y ∈ K ∧ ‖q y‖ ≤ δ}
+  have hAclosed : IsClosed A :=
+    (isClosed_tsupport ψ |>.preimage Ls.continuous).inter
+      (isClosed_le (continuous_norm.comp q.continuous) continuous_const)
+  have hsuppA : support f ⊆ A := by
+    intro y hy
+    have hy' : ψ (Ls y) * χ (q y) ≠ 0 := hy
+    refine ⟨subset_tsupport ψ (left_ne_zero_of_mul hy'), ?_⟩
+    have hχ : χ (q y) ≠ 0 := right_ne_zero_of_mul hy'
+    have : q y ∈ support χ := hχ
+    rw [χ.support_eq] at this
+    simpa [dist_eq_norm] using (mem_ball.mp this).le
+  have htsuppA : tsupport f ⊆ A := closure_minimal hsuppA hAclosed
+  have hAbdd : A ⊆ closedBall 0 (R + δ) := by
+    intro y hy
+    rw [mem_closedBall, dist_zero_right]
+    have h1 : y = L (Ls y) + q y := by rw [hqapp]; abel
+    have h2 : ‖Ls y‖ ≤ R := by simpa using hR hy.1
+    calc ‖y‖ = ‖L (Ls y) + q y‖ := by rw [← h1]
+      _ ≤ ‖L (Ls y)‖ + ‖q y‖ := norm_add_le _ _
+      _ = ‖Ls y‖ + ‖q y‖ := by rw [hnorm]
+      _ ≤ R + δ := add_le_add h2 hy.2
+  have hAcpt : IsCompact A := (isCompact_closedBall 0 (R + δ)).of_isClosed_subset hAclosed hAbdd
+  have hAV : A ⊆ V := by
+    intro y hy
+    apply hδV
+    apply mem_cthickening_of_dist_le y (L (Ls y)) δ (L '' K) ⟨Ls y, hy.1, rfl⟩
+    rw [dist_eq_norm, ← hqapp]
+    exact hy.2
+  refine ⟨f, ?_, ?_, htsuppA.trans hAV, fun s => ⟨?_, fun j => ?_⟩⟩
+  · exact (hψ.comp Ls.contDiff).mul (χ.contDiff.comp q.contDiff)
+  · exact HasCompactSupport.of_support_subset_isCompact hAcpt hsuppA
+  · show ψ (Ls (L s)) * χ (q (L s)) = ψ s
+    rw [hLsL, hqL, χ.one_of_mem_closedBall (by simp; positivity), mul_one]
+  · -- near L s, f = ψ ∘ Ls
+    have hev : f =ᶠ[𝓝 (L s)] fun y => ψ (Ls y) := by
+      have hq : Tendsto q (𝓝 (L s)) (𝓝 0) := by
+        have := q.continuous.tendsto (L s)
+        rwa [hqL] at this
+      filter_upwards [hq (closedBall_mem_nhds 0 (by positivity : (0:ℝ) < δ / 2))] with y hy
+      rw [hfapp, χ.one_of_mem_closedBall hy, mul_one]
+    show fderiv ℝ f (L s) (τ j) = _
+    rw [hev.fderiv_eq]
+    change fderiv ℝ (ψ ∘ Ls) (L s) (τ j) = _
+    have hψd : DifferentiableAt ℝ ψ (Ls (L s)) := (hψ.differentiable (by simp)).differentiableAt
+    rw [fderiv_comp (L s) hψd Ls.differentiableAt, ContinuousLinearMap.fderiv]
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply, hLsτ, hLsL]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
