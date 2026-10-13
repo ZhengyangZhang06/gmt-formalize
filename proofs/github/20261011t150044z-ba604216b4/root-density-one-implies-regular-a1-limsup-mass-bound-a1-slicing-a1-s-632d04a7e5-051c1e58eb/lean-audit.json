@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f8f4a62c2683497ae10483cd3baffa94f2ad08231dcc7e8765d80a523a5e879",
+  "git_delta": {
+    "base_commit": "1168c6e4badb328cf3121ce45ac1860fb4f852a1",
+    "candidate_commit": "322623514f1a2a885d5fe3984e836b79654db978",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pwl_fderiv_weak_smooth",
+    "diff_sha256": "087c126a81dc03a96f3eea77f2c14077177da2206148cf2999e2208efaf92605",
+    "source_sha256": "10528ea2acd4dfd9d127320e5e0a316b4abea10570af09b1c0f8b2e899e88166",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pwl_fderiv_weak_smooth",
+      "statement": "∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Ψ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Ψ y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
