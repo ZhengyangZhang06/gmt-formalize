@@ -638,6 +638,20 @@ theorem Submission.idtp_tpf_bss_dilation_image_slab : ∀ (P : ℕ) (S : Set (Eu
   rw [hyx, map_smul, ← smul_sub, norm_smul, Real.norm_of_nonneg hσ.le, mul_comm β σ] at h
   exact lt_of_mul_lt_mul_left h hσ.le
 
+/-- **Supports of blow-ups lie in the rescaled slab** (proof of 7.3.3(2): the height
+`h(spt S, L, ρ, x) = sup_{y ∈ spt S ∩ B_ρ(x)} |q(y − x)|`, `q` the orthogonal projection onto
+`L^⊥`, chapter-07.txt lines 524–530, under blow-up as in (5), line 537).  If
+`|(y − x) − p_Q(y − x)| < βσ` for `y ∈ spt T ∩ B_σ(x)`, then `|u − p_Q(u)| < β` for
+`u ∈ spt(η_{x,σ#}T) ∩ B_1(0)`: `spt(η_{x,σ#}T) = η_{x,σ}(spt T)` (`dtc_blowUp_algebra` (iii)),
+and `η_{x,σ}` maps the slab of width `βσ` about `x + Q` onto the slab of width `β` about `Q`. -/
+theorem Submission.idtp_tpf_blowUp_support_slab : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (σ β : ℝ) (hσ : 0 < σ) (Q : Submodule ℝ (Euclid P)), (∀ y ∈ T.support, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ (blowUp T x σ hσ.ne').support, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β := by
+  intro P n U T x σ β hσ Q hslab u hu hu1
+  -- Step 1: `spt(η_{x,σ#}T) = η_{x,σ}(spt T)`, so `u = η_{x,σ}(y)` for some `y ∈ spt T`.
+  rw [(Submission.dtc_blowUp_algebra P U x σ hσ).2.2.1 n T] at hu
+  -- Steps 2–3: `y − x = σu`, so `|y − x| = σ|u| < σ`, and
+  -- `(y − x) − p_Q(y − x) = σ(u − p_Q u)` by linearity of `p_Q`.
+  exact Submission.idtp_tpf_bss_dilation_image_slab P T.support x σ β hσ Q hslab u hu hu1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
