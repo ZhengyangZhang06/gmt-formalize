@@ -668,6 +668,63 @@ theorem Submission.codim1_zsl_ga_linear_area : ∀ (n P : ℕ) (L : Euclid n →
   rw [himg, Isometry.euclideanHausdorffMeasure_image hiso,
     EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
     Measure.addHaar_image_continuousLinearMap, hdetLL, Real.sqrt_sq_eq_abs]
+/-- Relative bi-Lipschitz comparison of `Hⁿ` (Simon Ch. 2, Theorem 1.8(i), relative form).  If
+`a‖Lx − Ly‖ ≤ ‖Fx − Fy‖ ≤ b‖Lx − Ly‖` for `x, y ∈ S` (`a > 0`, `b ≥ 0`), then
+`aⁿ Hⁿ(L(S)) ≤ Hⁿ(F(S)) ≤ bⁿ Hⁿ(L(S))` for arbitrary (not necessarily measurable) `S`: the
+transfer maps `φ = F ∘ (L|_S)⁻¹` on `L(S)` and `ψ = L ∘ (F|_S)⁻¹` on `F(S)` are well defined,
+`b`- and `a⁻¹`-Lipschitz, and satisfy `φ(L(S)) = F(S)`, `ψ(F(S)) = L(S)`. -/
+theorem Submission.codim1_zsl_ga_relative_lipschitz_measure : ∀ (n P : ℕ) (F L : Euclid n → Euclid P) (S : Set (Euclid n)) (a b : ℝ), 0 < a → 0 ≤ b → (∀ x ∈ S, ∀ y ∈ S, a * ‖L x - L y‖ ≤ ‖F x - F y‖ ∧ ‖F x - F y‖ ≤ b * ‖L x - L y‖) → ENNReal.ofReal (a ^ n) * μHE[n] (L '' S) ≤ μHE[n] (F '' S) ∧ μHE[n] (F '' S) ≤ ENNReal.ofReal (b ^ n) * μHE[n] (L '' S) := by
+  intro n P F L S a b ha hb hFL
+  -- Step 1: the transfer maps `φ = F ∘ (L|_S)⁻¹` and `ψ = L ∘ (F|_S)⁻¹` (`invFunOn`).
+  obtain ⟨φ, hφ⟩ : ∃ φ : Euclid P → Euclid P, ∀ x ∈ S, φ (L x) = F x := by
+    refine ⟨fun z => F (Function.invFunOn L S z), fun x hx => ?_⟩
+    have hex : ∃ y ∈ S, L y = L x := ⟨x, hx, rfl⟩
+    have h := (hFL _ (Function.invFunOn_mem hex) x hx).2
+    rw [Function.invFunOn_eq hex, sub_self, norm_zero, mul_zero] at h
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+  obtain ⟨ψ, hψ⟩ : ∃ ψ : Euclid P → Euclid P, ∀ x ∈ S, ψ (F x) = L x := by
+    refine ⟨fun z => L (Function.invFunOn F S z), fun x hx => ?_⟩
+    have hex : ∃ y ∈ S, F y = F x := ⟨x, hx, rfl⟩
+    have h := (hFL _ (Function.invFunOn_mem hex) x hx).1
+    rw [Function.invFunOn_eq hex, sub_self, norm_zero] at h
+    have h0 : ‖L (Function.invFunOn F S (F x)) - L x‖ ≤ 0 :=
+      le_of_mul_le_mul_left (h.trans (mul_zero a).ge) ha
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  have himφ : φ '' (L '' S) = F '' S := by
+    rw [Set.image_image]
+    exact Set.image_congr hφ
+  have himψ : ψ '' (F '' S) = L '' S := by
+    rw [Set.image_image]
+    exact Set.image_congr hψ
+  -- Step 2: `φ` is `b`-Lipschitz on `L(S)` and `ψ` is `a⁻¹`-Lipschitz on `F(S)`.
+  have hφlip : LipschitzOnWith (Real.toNNReal b) φ (L '' S) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    rw [hφ x hx, hφ y hy, dist_eq_norm, dist_eq_norm]
+    exact (hFL x hx y hy).2
+  have hψlip : LipschitzOnWith (Real.toNNReal a⁻¹) ψ (F '' S) := by
+    refine LipschitzOnWith.of_dist_le' ?_
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    rw [hψ x hx, hψ y hy, dist_eq_norm, dist_eq_norm, inv_mul_eq_div, le_div_iff₀ ha]
+    linarith [(hFL x hx y hy).1]
+  -- Step 3: the Lipschitz image bound (Simon 2.1.8(i)) for `φ` and `ψ`.
+  have hup := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hφlip
+  have hlo := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hψlip
+  rw [himφ] at hup
+  rw [himψ] at hlo
+  -- Steps 4–5: `(b⁺)ⁿ = ofReal (bⁿ)` and `ofReal (aⁿ) · (a⁻¹)ⁿ = 1`.
+  have hb' : ((Real.toNNReal b : NNReal) : ℝ≥0∞) ^ n = ENNReal.ofReal (b ^ n) :=
+    (ENNReal.ofReal_pow hb n).symm
+  have ha' : ENNReal.ofReal (a ^ n) * ((Real.toNNReal a⁻¹ : NNReal) : ℝ≥0∞) ^ n = 1 := by
+    change ENNReal.ofReal (a ^ n) * ENNReal.ofReal a⁻¹ ^ n = 1
+    rw [← ENNReal.ofReal_pow (inv_nonneg.mpr ha.le), ← ENNReal.ofReal_mul (pow_nonneg ha.le n),
+      ← mul_pow, mul_inv_cancel₀ ha.ne', one_pow, ENNReal.ofReal_one]
+  rw [hb'] at hup
+  refine ⟨?_, hup⟩
+  calc ENNReal.ofReal (a ^ n) * μHE[n] (L '' S)
+      ≤ ENNReal.ofReal (a ^ n) * (((Real.toNNReal a⁻¹ : NNReal) : ℝ≥0∞) ^ n * μHE[n] (F '' S)) :=
+        mul_le_mul_of_nonneg_left hlo zero_le
+    _ = μHE[n] (F '' S) := by rw [← mul_assoc, ha', one_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
