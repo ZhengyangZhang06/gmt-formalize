@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_coordinates-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Normal coordinates of a C² immersion: a C¹ map g with g(ψ(v) + n) = v for small normal n",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d open, ψ : ℝ^d → ℝ^P C² on V with Dψ(v) injective for every v ∈ V, and v₀ ∈ V. For v ∈ ℝ^d let P̂(v) be the orthogonal projection of ℝ^P onto range Dψ(v). Then there are δ > 0, an open set O ⊆ ℝ^P and a map g : ℝ^P → ℝ^d with the following properties. B̄_δ(v₀) ⊆ V and g is C¹ on O. For every v ∈ B_δ(v₀) and every n ∈ ℝ^P with P̂(v)n = 0 and |n| < δ, we have ψ(v) + n ∈ O and g(ψ(v) + n) = v.",
+  "lean_statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → ContDiffOn ℝ 2 ψ V → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (δ : ℝ) (O : Set (Euclid P)) (g : Euclid P → Euclid d), 0 < δ ∧ closedBall v₀ δ ⊆ V ∧ IsOpen O ∧ ContDiffOn ℝ 1 g O ∧ ∀ v ∈ ball v₀ δ, ∀ n : Euclid P, (fderiv ℝ ψ v).range.starProjection n = 0 → ‖n‖ < δ → ψ v + n ∈ O ∧ g (ψ v + n) = v",
+  "lean_name": "dor_lmb_ret_normal_coordinates",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_projection-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_space_transfer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.tangent_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_space_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-0513f409ad-a1"
+}
