@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3d4b1e349ff71d03c13c0643a14fc9458353f2d8b66d2d4bd253d9d19d7031b0",
+  "git_delta": {
+    "base_commit": "21dd6b4195ce694b2f7659e802280a3906231472",
+    "candidate_commit": "50ef52b3e09d2390159db56dcbe1d17af3d6cc05",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "slicing_im_ll_gws_lipschitz_ibp",
+    "diff_sha256": "bea637d753a6c368b33d3f48a56d49b9175eb927c4cf1fb972e5cc783bfb8553",
+    "source_sha256": "ee5dcc5a6806d8c8f615ffc7edf6c28ae26fa1516839d315a3c02f9f7b6f5bd0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.slicing_im_ll_gws_lipschitz_ibp",
+      "statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (b : Eucl n → Eucl n), IsOpen Ω → ContDiff ℝ 1 b → HasCompactSupport b → tsupport b ⊆ Ω → ∃ g : Eucl n → ℝ, Integrable g (volume : Measure (Eucl n)) ∧ ∀ (L : ℝ≥0) (f : Eucl n → ℝ), LipschitzOnWith L f Ω → IntegrableOn (fun w => f w * g w) Ω (volume : Measure (Eucl n)) ∧ ∫ w in Ω, fderiv ℝ f w (b w) = -∫ w in Ω, f w * g w",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
