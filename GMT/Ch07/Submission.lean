@@ -464,6 +464,24 @@ theorem Submission.cmc_fc_sl_massOn_le_add_of_eval_eq : ∀ (P n : ℕ) (U G : S
     intro α
     rw [covectorEuclideanNorm, covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs,
       ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- `c ω` is admissible for `M_G` together with `ω`
+  have hcω : c • ω ∈ massAdmissibleOn U n G := by
+    refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hω.1, fun x => ?_⟩
+    change covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+    rw [hnorm]
+    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) hc).trans (hω.2 x)
+  have hY : Y (c • ω) = c * Y ω := by
+    rw [map_smul, smul_eq_mul]
+  calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (X ω + Y (c • ω)) := by rw [hZ ω hω.1, hY]
+    _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal (Y (c • ω)) := ENNReal.ofReal_add_le
+    _ ≤ X.massOn G + Y.massOn G := add_le_add (X.le_massOn hω) (Y.le_massOn hcω)
 /-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
 (Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
 `τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
@@ -564,19 +582,33 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
     split_ifs
     · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
     · rw [mul_zero]
-  apply sSup_le
-  rintro r ⟨ω, hω, rfl⟩
-  -- `c ω` is admissible for `M_G` together with `ω`
-  have hcω : c • ω ∈ massAdmissibleOn U n G := by
-    refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hω.1, fun x => ?_⟩
-    change covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
-    rw [hnorm]
-    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) hc).trans (hω.2 x)
-  have hY : Y (c • ω) = c * Y ω := by
-    rw [map_smul, smul_eq_mul]
-  calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (X ω + Y (c • ω)) := by rw [hZ ω hω.1, hY]
-    _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal (Y (c • ω)) := ENNReal.ofReal_add_le
-    _ ≤ X.massOn G + Y.massOn G := add_le_add (X.le_massOn hω) (Y.le_massOn hcω)
+  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+    intro s hs hrs
+    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+      intro c hc
+      have hmem : c • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [hsmul]
+        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                (inv_nonneg.2 hs.le)
+          _ = 1 := inv_mul_cancel₀ hs.ne'
+      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+    rw [neg_mul, ← mul_neg] at h2
+    rw [abs_le]
+    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+  -- let `s ↓ r`
+  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+      (𝓝 (r * (T.massOn W).toReal)) :=
+    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
 /-- **Finite partial sums of integer multiplicity currents** (the partial sums of the series
 `R^{(ℓ)} = Σ_{r ≥ ℓ} R_r` in the proof of Simon Ch. 6, 7.2, p. 172).  If differences of integer
@@ -619,33 +651,6 @@ theorem Submission.cmc_fc_sl_im_partial_sum : ∀ (P n : ℕ) (U : Set (Euclid P
             add_le_add (hZG G) le_rfl
         _ = ∑ i ∈ Finset.range (N + 1 + 1), (Y i).massOn G :=
             (Finset.sum_range_succ _ (N + 1)).symm
-  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
-  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
-  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
-    intro s hs hrs
-    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
-      intro c hc
-      have hmem : c • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
-        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
-        rw [hsmul]
-        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
-              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
-                (inv_nonneg.2 hs.le)
-          _ = 1 := inv_mul_cancel₀ hs.ne'
-      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
-      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
-    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
-    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
-    rw [neg_mul, ← mul_neg] at h2
-    rw [abs_le]
-    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
-  -- let `s ↓ r`
-  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
-      (𝓝 (r * (T.massOn W).toReal)) :=
-    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
-  exact ge_of_tendsto hlim
-    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 /-- **A linear functional on `𝒟ⁿ(U)` with zeroth-order bounds is a current** (Simon 6.2.1; used
 for the restricted currents `ω ↦ ∫_E ⟨ω, ξ⟩ dμ` in the slicing argument behind 7.2.4).  Suppose
 every compact `K ⊆ U` has a `c` with `|L(ω)| ≤ c M` whenever `spt ω ⊆ K` and `‖ω(x)‖ ≤ M` for all
