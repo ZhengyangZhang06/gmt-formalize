@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f103ce837349cbdc91963a5efa8d28fa180607686ad68a205ce4a28b402d5cba",
+  "git_delta": {
+    "base_commit": "574bef96f73b762bcf016fdbfc3186df4eb863cc",
+    "candidate_commit": "21dd628cfe1c8277775119a1cc5660485ede7dfc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cipi_affine_plane_measure",
+    "diff_sha256": "3824176256b6161b868a10074ca63873fe42016954432e92381404325a9da4f2",
+    "source_sha256": "590bfa19e9482b74a3b4547951c6d0eac2866afe03c48183c6781b561ed73af2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_affine_plane_measure",
+      "statement": "∀ (P m : ℕ) (w : Fin m → Euclid P) (a : Euclid P), Orthonormal ℝ w → Measure.map (fun z : Fin m → ℝ => a + ∑ i, z i • w i) volume = (μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ IsClosed {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) K < ∞) ∧ ∀ r : ℝ, 0 < r → 0 < ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) (ball a r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
