@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Bochner integrals over an injective continuous image (supplied steps 5–6 of the graph area
+formula): if `μ(G(B)) = ∫_B J dLᵐ` for every measurable `B ⊆ A`, then `μ⌞G(A) = φ#ν` for the
+measurable embedding `φ = G|_A` of the subtype `A` (Lusin–Souslin) and `ν` the restriction of `J Lᵐ`
+to `A`, so `∫_{G(A)} f dμ = ∫_A J·(f ∘ G) dLᵐ` for every `f`. -/
+theorem Submission.codim1_zsl_ga_integral_transfer : ∀ (m P : ℕ) (μ : Measure (Euclid P)) (G : Euclid m → Euclid P) (J : Euclid m → ℝ) (A : Set (Euclid m)) (f : Euclid P → ℝ), MeasurableSet A → ContinuousOn G A → InjOn G A → Measurable J → (∀ w ∈ A, 0 ≤ J w) → (∀ B : Set (Euclid m), MeasurableSet B → B ⊆ A → μ (G '' B) = ∫⁻ w in B, ENNReal.ofReal (J w)) → ∫ y in G '' A, f y ∂μ = ∫ w in A, J w * f (G w) := by
+  intro m P μ G J A f hA hGc hGi hJm hJ hμ
+  -- `G|_A` is a measurable embedding of the subtype `A` (Lusin–Souslin)
+  have hφ : MeasurableEmbedding (A.domRestrict G) := hGc.measurableEmbedding hA hGi
+  -- `ν` is the restriction to `A` of `J Lᵐ`
+  let ν : Measure A := Measure.comap Subtype.val (volume.withDensity fun w => ENNReal.ofReal (J w))
+  -- `μ⌞G(A) = (G|_A)#ν`: for measurable `Y`, `Y ∩ G(A) = G(A ∩ G⁻¹Y)`
+  have hmap : μ.restrict (G '' A) = Measure.map (A.domRestrict G) ν := by
+    ext Y hY
+    have hpre : Subtype.val '' (A.domRestrict G ⁻¹' Y) = A ∩ G ⁻¹' Y :=
+      Subtype.image_preimage_coe A (G ⁻¹' Y)
+    have hB : MeasurableSet (A ∩ G ⁻¹' Y) := hpre ▸ hA.subtype_image (hφ.measurable hY)
+    rw [Measure.restrict_apply hY, hφ.map_apply, (MeasurableEmbedding.subtype_coe hA).comap_apply,
+      hpre, withDensity_apply _ hB, inter_comm, ← image_inter_preimage, hμ _ hB inter_subset_left]
+  calc ∫ y in G '' A, f y ∂μ = ∫ y, f y ∂(Measure.map (A.domRestrict G) ν) := by rw [hmap]
+    _ = ∫ x, f (G x) ∂ν := hφ.integral_map f
+    _ = ∫ w, f (G w) ∂(Measure.map Subtype.val ν) :=
+        ((MeasurableEmbedding.subtype_coe hA).integral_map fun w => f (G w)).symm
+    -- `ENNReal.ofReal r = ↑r.toNNReal` by definition
+    _ = ∫ w in A, f (G w) ∂(volume.withDensity fun w => ((J w).toNNReal : ℝ≥0∞)) := by
+        rw [map_comap_subtype_coe hA]
+        rfl
+    _ = ∫ w in A, (J w).toNNReal • f (G w) :=
+        setIntegral_withDensity_eq_setIntegral_smul hJm.real_toNNReal _ hA
+    _ = ∫ w in A, J w * f (G w) := setIntegral_congr_fun hA fun w hw => by
+        rw [NNReal.smul_def, Real.coe_toNNReal _ (hJ w hw), smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

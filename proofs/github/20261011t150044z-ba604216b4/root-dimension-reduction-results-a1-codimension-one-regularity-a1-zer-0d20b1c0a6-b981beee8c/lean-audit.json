@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b962c9912b2860bddfcd0a64ae97dc4a0ebb8c68183802d7573c56665745cd6",
+  "git_delta": {
+    "base_commit": "246970da823b696cc94e88bef9bc5b5d9f0a8199",
+    "candidate_commit": "1075234eaac71675858b29f631fc93b47867a6e8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_ga_integral_transfer",
+    "diff_sha256": "e53203cf594d7ecbbf824ed06333065fffd0045cafed43d77f26c18f566e4732",
+    "source_sha256": "3bf6bc7d01f798425ad65a19e8a3255d3a407c851e03c20b06019f78a7b134ff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_ga_integral_transfer",
+      "statement": "∀ (m P : ℕ) (μ : Measure (Euclid P)) (G : Euclid m → Euclid P) (J : Euclid m → ℝ) (A : Set (Euclid m)) (f : Euclid P → ℝ), MeasurableSet A → ContinuousOn G A → InjOn G A → Measurable J → (∀ w ∈ A, 0 ≤ J w) → (∀ B : Set (Euclid m), MeasurableSet B → B ⊆ A → μ (G '' B) = ∫⁻ w in B, ENNReal.ofReal (J w)) → ∫ y in G '' A, f y ∂μ = ∫ w in A, J w * f (G w)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
