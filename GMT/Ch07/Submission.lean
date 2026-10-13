@@ -550,6 +550,99 @@ theorem Submission.dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U
   · rw [hzero j x hx, norm_zero]
     exact hε.le
 
+/-- **Simon 6.2.23–2.24 (2)–(3)** (chapter-06.txt lines 403–440): for a triple `R = (M, θ, ξ)` in
+`U` and a `C¹` map `φ` equal to the identity off a compact `K ⊆ U`, the push-forward formula
+`ω ↦ ∫_M θ(x) ⟨ω(φ(x)) ∘ Dφ(x), ξ(x)⟩ dHⁿ(x)` defines a current in `U`.  With `‖Dφ‖ ≤ Λ`, the
+covector field `F_ω(x) = ω(φ(x)) ∘ Dφ(x)` is continuous, vanishes off the compact set
+`tsupport ω ∪ K ⊆ U` and has `‖F_ω‖ ≤ sup ‖ω‖ · Λⁿ`; this gives integrability, hence linearity.
+If `ωⱼ → 0`, then `F_{ωⱼ}` vanishes off a fixed compact `C ∪ K` and is eventually bounded by
+`η Λⁿ`, which gives sequential continuity. -/
+theorem Submission.dpf_pushforward_formula_current_exists : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+  intro P n U K R φ hK hKU hφ hid
+  -- step 1: `‖Dφ(x)‖ ≤ Λ` for every `x`
+  obtain ⟨Λ, hΛ0, hΛ⟩ := Submission.dpf_pfc_fderiv_norm_le_of_eq_id_off_compact P K φ hK hφ hid
+  -- the pulled-back covector field `F ω x = ω(φ(x)) ∘ Dφ(x)`
+  set F : DifferentialForm (Euclid P) n → Euclid P → Covector (Euclid P) n :=
+    fun ω x => (ω (φ x)).compContinuousLinearMap (fderiv ℝ φ x) with hFdef
+  have hFcont : ∀ ω : DifferentialForm (Euclid P) n, Continuous ω → Continuous (F ω) := by
+    intro ω hω
+    have h := (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM (𝕜 := ℝ)
+      (ι := Fin n) (G := ℝ) |>.comp (hφ.continuous_fderiv one_ne_zero)).clm_apply
+      (hω.comp hφ.continuous)
+    simpa only [Function.comp_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply]
+      using h
+  -- step 2: `‖F ω‖ ≤ B Λⁿ` when `‖ω‖ ≤ B`
+  have hFnorm : ∀ (ω : DifferentialForm (Euclid P) n) (B : ℝ), (∀ y, ‖ω y‖ ≤ B) →
+      ∀ x, ‖F ω x‖ ≤ B * Λ ^ n := by
+    intro ω B hB x
+    calc ‖F ω x‖ ≤ ‖ω (φ x)‖ * ‖fderiv ℝ φ x‖ ^ n := by
+          simpa only [Fintype.card_fin] using
+            ContinuousAlternatingMap.norm_compContinuousLinearMap_le (ω (φ x)) (fderiv ℝ φ x)
+      _ ≤ B * Λ ^ n := mul_le_mul (hB _) (pow_le_pow_left₀ (norm_nonneg _) (hΛ x) n)
+          (pow_nonneg (norm_nonneg _) n) ((norm_nonneg _).trans (hB (φ x)))
+  -- step 3: `F ω` vanishes off `C ∪ K` when `ω` vanishes off `C`
+  have hFzero : ∀ (ω : DifferentialForm (Euclid P) n) (C : Set (Euclid P)),
+      (∀ y, y ∉ C → ω y = 0) → ∀ x, x ∉ C ∪ K → F ω x = 0 := by
+    intro ω C hC x hx
+    rw [mem_union, not_or] at hx
+    ext v
+    simp [hFdef, hid x hx.2, hC x hx.1]
+  -- `F ω x` is linear in `ω`
+  have hFadd : ∀ (ω₁ ω₂ : DifferentialForm (Euclid P) n) x, F (ω₁ + ω₂) x = F ω₁ x + F ω₂ x := by
+    intro ω₁ ω₂ x
+    ext v
+    simp [hFdef]
+  have hFsmul : ∀ (c : ℝ) (ω : DifferentialForm (Euclid P) n) x, F (c • ω) x = c • F ω x := by
+    intro c ω x
+    ext v
+    simp [hFdef]
+  -- step 4: the integrand of a test form is integrable
+  have hint : ∀ ω : TestFormOn U n, Integrable
+      (fun x => (R.mult x : ℝ) * R.orient x (F (ω : DifferentialForm (Euclid P) n) x))
+      (μHE[n].restrict R.carrier) := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous ω.property.1.1
+    obtain ⟨B, hB⟩ := hωc.bounded_above_of_compact_support ω.property.1.2
+    exact (Submission.dpf_pfc_imrep_pairing_integrable_abs_le P n U
+      (tsupport (ω : DifferentialForm (Euclid P) n) ∪ K) R (F ω) (B * Λ ^ n)
+      (ω.property.1.2.isCompact.union hK) (union_subset ω.property.2 hKU)
+      (hFcont _ hωc).aestronglyMeasurable
+      (hFzero _ _ fun y hy => image_eq_zero_of_notMem_tsupport hy) (hFnorm _ _ hB)).1
+  -- step 5: the action is linear
+  let S₀ : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω =>
+        ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F (ω : DifferentialForm (Euclid P) n) x)
+          ∂μHE[n]
+      map_add' := fun ω₁ ω₂ => by
+        rw [← integral_add (hint ω₁) (hint ω₂)]
+        congr 1
+        ext x
+        rw [Submodule.coe_add, hFadd, map_add, mul_add]
+      map_smul' := fun c ω => by
+        rw [RingHom.id_apply, smul_eq_mul, ← integral_const_mul]
+        congr 1
+        ext x
+        rw [Submodule.coe_smul, hFsmul, map_smul, smul_eq_mul, mul_left_comm] }
+  -- steps 6–7: sequential continuity, and the action is the push-forward formula by definition
+  refine ⟨⟨S₀, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+  obtain ⟨C, hC, hCU, hCzero, hsmall⟩ :=
+    Submission.dpf_pfc_testFormOnConverges_zero_uniform P n U ωs hωs
+  set I : ℝ := (∫⁻ x in R.carrier ∩ (C ∪ K), (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal
+  have hI : 0 ≤ Λ ^ n * I := mul_nonneg (pow_nonneg hΛ0 n) ENNReal.toReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hη : 0 < ε / (Λ ^ n * I + 1) := div_pos hε (by linarith)
+  filter_upwards [hsmall _ hη] with j hj
+  have hb := (Submission.dpf_pfc_imrep_pairing_integrable_abs_le P n U (C ∪ K) R
+    (F (ωs j : DifferentialForm (Euclid P) n)) (ε / (Λ ^ n * I + 1) * Λ ^ n) (hC.union hK)
+    (union_subset hCU hKU)
+    (hFcont _ (ContDiff.continuous (ωs j).property.1.1)).aestronglyMeasurable
+    (hFzero _ _ (hCzero j)) (hFnorm _ _ hj)).2
+  rw [Real.dist_eq, sub_zero]
+  calc |S₀ (ωs j)| ≤ ε / (Λ ^ n * I + 1) * Λ ^ n * I := hb
+    _ = ε * (Λ ^ n * I / (Λ ^ n * I + 1)) := by ring
+    _ < ε := mul_lt_of_lt_one_right hε ((div_lt_one (by linarith)).2 (lt_add_one _))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
