@@ -541,6 +541,30 @@ theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b 
     rfl
   rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
 
+/-- Step 4(d) of the local unit representation of `∂[[E]]` (Simon 7.5; Gram–Schmidt as in the
+graph chart): if `a₁, …, aₙ` are linearly independent in `ℝᴾ`, the Gram determinant
+`Γ = det(⟨aᵢ, aⱼ⟩)` is positive and `ξ = Γ^{-1/2} a₁ ∧ ⋯ ∧ aₙ`, i.e.
+`⟨α, ξ⟩ = Γ^{-1/2} α(a₁, …, aₙ)`, is a unit orientation of `span a`.  For an orthonormal frame
+`σ` of `span a` and `R = (⟨σᵢ, aⱼ⟩)`, `Γ = (det R)²` and `α(a) = det R · α(σ)`, so
+`ξ = sign(det R) σ₁ ∧ ⋯ ∧ σₙ`. -/
+theorem Submission.codim1_lur_normalized_wedge_orientation : ∀ (P n : ℕ) (a : Fin n → Euclid P), LinearIndependent ℝ a → 0 < Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j)) ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, ξ α = (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (a i) (a j))))⁻¹ * α a) → IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range a)) := by
+  intro P n a ha
+  -- an orthonormal frame `σ` of `span a` with `Γ = (det R)²`, `R = (⟨σᵢ, aⱼ⟩)` invertible
+  obtain ⟨σ, hσ, hspan, hgram, hdet, -⟩ :=
+    Submission.dpf_exists_orthonormal_frame_det_gram P n a ha
+  set d := Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (a j))
+  refine ⟨hgram ▸ sq_pos_of_ne_zero hdet, fun ξ hξ => ⟨σ, hσ, hspan, ?_⟩⟩
+  -- `α(a) = det R · α(σ)`, hence `⟨α, ξ⟩ = |det R|⁻¹ det R · α(σ)`
+  have hξ' : ∀ α : Covector (Euclid P) n, ξ α = |d|⁻¹ * d * α σ := fun α => by
+    rw [hξ, hgram, Real.sqrt_sq_eq_abs, mul_assoc,
+      Submission.dgoj_covector_eq_det_mul_of_mem_span P n σ a hσ
+        (fun j => hspan ▸ Submodule.subset_span ⟨j, rfl⟩) α]
+  rcases hdet.lt_or_gt with hneg | hpos
+  · exact Or.inr fun α => by
+      rw [hξ', abs_of_neg hneg, inv_neg, neg_mul, inv_mul_cancel₀ hdet, neg_one_mul]
+  · exact Or.inl fun α => by
+      rw [hξ', abs_of_pos hpos, inv_mul_cancel₀ hdet, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
