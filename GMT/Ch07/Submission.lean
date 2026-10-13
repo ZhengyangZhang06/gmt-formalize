@@ -1084,6 +1084,74 @@ theorem Submission.cbrr_ud_uniformize_eventually : ∀ (P : ℕ) (μ : Measure (
   obtain ⟨k, hk⟩ := (hlim.eventually (gt_mem_nhds (pos_iff_ne_zero.mpr hη))).exists
   exact ⟨G k, 1 / ((k : ℝ) + 1), inter_subset_left, Nat.one_div_pos_of_nat, hk,
     fun x hx ρ hρ hρk => mem_iInter₂.mp hx.2 ρ ⟨hρ, hρk⟩⟩
+/-- **Uniform lower density and cone bounds on a set of almost full measure** (Simon Ch. 3, proof
+of Theorem 1.6 “⇐”, (4)–(9)).  Let `μ = Hⁿ⌞M` with `Hⁿ(M) < ∞`, let `x ↦ p_{Q(x)}` be `μ`-a.e.
+strongly measurable and let `Q(x)` be the approximate tangent space of `M` at `μ`-a.e. `x`.  If
+`ofReal a < ωₙ`, `b > 0` and `ε > 0`, there are `E ⊆ M` with `Hⁿ(M \ E) < ε` and `δ > 0` such that
+for `x ∈ E` and `0 < ρ < δ`: `dim Q(x) = n`, `aρⁿ ≤ μ(B̄_ρ(x))` and `μ(X(x) ∩ B_ρ(x)) ≤ bρⁿ`,
+where `X(x) = {z : 2|p_{Q(x)}(z − x)| < |z − x|}`.  Lusin's theorem gives a compact `K ⊆ M` of
+tangent points with `Hⁿ(M \ K) < ε/2` on which `x ↦ p_{Q(x)}` is continuous.  The set `T_ρ` of
+points of `K` with both bounds at radius `ρ` is closed, and each `x ∈ K` lies in `T_ρ` for all
+small `ρ > 0` by the lower density and cone density bounds.  Uniformizing gives `E ⊆ K` with
+`Hⁿ(K \ E) < ε/2` and `δ > 0` with `E ⊆ T_ρ` for `0 < ρ < δ`. -/
+theorem Submission.cbrr_uniform_density_on_large_set : ∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), 0 < n → MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → ∀ (a b ε : ℝ), ENNReal.ofReal a < unitBallVolume n → 0 < b → 0 < ε → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ M ∧ 0 < δ ∧ μHE[n] (M \ E) < ENNReal.ofReal ε ∧ (∀ x ∈ E, Module.finrank ℝ (Q x) = n) ∧ (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ (μHE[n].restrict M) (closedBall y ρ)) ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → (μHE[n].restrict M) ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n) := by
+  intro P n M Q hn hM hMfin hQm hQt a b ε ha hb hε
+  -- Step 1: `μ = Hⁿ⌞M` is finite, and `ofReal (ε/2) ≠ 0`
+  have : IsFiniteMeasure (μHE[n].restrict M) := isFiniteMeasure_restrict.mpr hMfin
+  have hε2 : ENNReal.ofReal (ε / 2) ≠ 0 := (ENNReal.ofReal_pos.mpr (half_pos hε)).ne'
+  -- Step 2: Lusin's theorem: a compact `K ⊆ M` of tangent points with `Hⁿ(M \ K) < ε/2`, on which
+  -- `x ↦ p_{Q(x)}` is continuous
+  obtain ⟨K, hK, hKM, hMK, hKt, hKc⟩ := Submission.cbrr_ud_lusin_of_aestronglyMeasurable P
+    μHE[n] M (fun x => (Q x).starProjection) (fun x => HasApproximateTangentSpaceAt n M x (Q x))
+    hM hMfin hQm hQt (ENNReal.ofReal (ε / 2)) hε2
+  -- Step 3: `T_ρ = {y : ofReal(aρⁿ) ≤ μ(B̄_ρ(y))} ∩ {x ∈ K : μ(X(x) ∩ B_ρ(x)) ≤ ofReal(bρⁿ)}` is
+  -- closed: closed-ball mass is upper semicontinuous, and cone mass is lower semicontinuous on the
+  -- closed set `K`, where `x ↦ p_{Q(x)}` is continuous
+  set T : ℝ → Set (Euclid P) := fun ρ =>
+    {y | ENNReal.ofReal (a * ρ ^ n) ≤ (μHE[n].restrict M) (closedBall y ρ)} ∩
+      {x | x ∈ K ∧ (μHE[n].restrict M) ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩
+        ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)}
+  have hTc : ∀ ρ : ℝ, 0 < ρ → IsClosed (T ρ) := fun ρ _ =>
+    (Submission.cbrr_ud_isClosed_closedBall_mass_ge P (μHE[n].restrict M) ρ
+      (ENNReal.ofReal (a * ρ ^ n))).inter
+      (Submission.cbrr_ud_isClosed_cone_mass_le P (μHE[n].restrict M) K Q ρ
+        (ENNReal.ofReal (b * ρ ^ n)) hK.isClosed hKc)
+  -- Step 4: every `x ∈ K` lies in `T_ρ` for all small `ρ > 0`, by the lower density bound with
+  -- `c = ofReal a` and the cone density bound with `t = ofReal b`; here `μ(S) = Hⁿ(M ∩ S)` and
+  -- `ofReal(cρⁿ) = ofReal c · ofReal ρⁿ` (`ρⁿ ≥ 0`)
+  have hTev : ∀ x ∈ K, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), x ∈ T ρ := by
+    intro x hx
+    filter_upwards [Submission.doragm_approxTangent_lower_density P n M x (Q x) hn (hKt x hx)
+      (ENNReal.ofReal a) ha, Submission.cbrr_tangent_cone_density_zero P n M x (Q x) hn hMfin
+      (hKt x hx) (ENNReal.ofReal b) (ENNReal.ofReal_pos.mpr hb), self_mem_nhdsWithin]
+      with ρ hρa hρb hρ
+    have hρn : 0 ≤ ρ ^ n := pow_nonneg (le_of_lt (show 0 < ρ from hρ)) n
+    refine ⟨?_, hx, ?_⟩
+    · show ENNReal.ofReal (a * ρ ^ n) ≤ (μHE[n].restrict M) (closedBall x ρ)
+      rw [ENNReal.ofReal_mul' hρn, Measure.restrict_apply' hM, inter_comm]
+      exact hρa
+    · show (μHE[n].restrict M) ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤
+        ENNReal.ofReal (b * ρ ^ n)
+      rw [ENNReal.ofReal_mul hb.le, Measure.restrict_apply' hM, inter_comm]
+      exact hρb
+  -- Step 5: uniformize: `E ⊆ K` with `Hⁿ(K \ E) < ε/2` and `δ > 0` with `E ⊆ T_ρ` for `0 < ρ < δ`
+  obtain ⟨E, δ, hEK, hδ, hKE, hET⟩ := Submission.cbrr_ud_uniformize_eventually P μHE[n] K T
+    hK.isClosed.measurableSet (measure_ne_top_of_subset hKM hMfin) hTc hTev
+    (ENNReal.ofReal (ε / 2)) hε2
+  -- Step 6: `E ⊆ K ⊆ M` consists of tangent points, both bounds come from `T_ρ`, and
+  -- `M \ E ⊆ (M \ K) ∪ (K \ E)`, so `Hⁿ(M \ E) < ε/2 + ε/2 = ε`
+  refine ⟨E, δ, hEK.trans hKM, hδ, ?_, fun x hx => (hKt x (hEK hx)).1,
+    fun y hy ρ hρ hρδ => (hET y hy ρ hρ hρδ).1, fun x hx ρ hρ hρδ => (hET x hx ρ hρ hρδ).2.2⟩
+  calc μHE[n] (M \ E)
+      ≤ μHE[n] ((M \ K) ∪ (K \ E)) := by
+        refine measure_mono fun x hx => ?_
+        by_cases hxK : x ∈ K
+        · exact Or.inr ⟨hxK, hx.2⟩
+        · exact Or.inl ⟨hx.1, hxK⟩
+    _ ≤ μHE[n] (M \ K) + μHE[n] (K \ E) := measure_union_le _ _
+    _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := ENNReal.add_lt_add hMK hKE
+    _ = ENNReal.ofReal ε := by
+        rw [← ENNReal.ofReal_add (half_pos hε).le (half_pos hε).le, add_halves]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
