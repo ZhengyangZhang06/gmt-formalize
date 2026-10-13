@@ -915,6 +915,29 @@ theorem Submission.dtc_cwv_action_dilation_invariant : ∀ (P n : ℕ) (R : IMRe
     rw [hω' y]
   rw [← hGl, hconst, hG1]
 
+/-- **Radial tangency makes a boundaryless current a cone** (step 4 of the cone-splitting proof:
+Simon 7.3.1(2) proof, Ch. 6, 2.25–2.27 and 2.33).  Let `S = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)`, `n ≥ 1`,
+`∂S = 0`, with `x ∈ TₓM` for `μ`-a.e. `x`.  Then `x ∧ ξ(x) = 0` `μ`-a.e.
+(`dtc_cone_wedge_vanishes`), so `S` annihilates `L_X β = nβ + Dβ[·]` for the Euler field
+(`dtc_cwv_euler_lie_annihilated`), hence `G(s) = S(sⁿ ω(s ·))` is constant on `(0, ∞)`
+(`dtc_cwv_action_dilation_invariant`), i.e. `S(λ⁻ⁿ ω(λ⁻¹ ·)) = S(ω)`, and `S` is a cone by the
+cone criterion `dtc_cwv_isConeCurrent_of_pullback_invariant`. -/
+theorem Submission.dimred_cs_cone_of_radial_tangency : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → IsConeCurrent S := by
+  intro P n S R hn hR hb hrad
+  -- step 2: `ξ(x)(ι_x β) = 0` for `μ`-a.e. `x` and every `(n + 1)`-covector `β`
+  have hw := Submission.dtc_cone_wedge_vanishes P n univ R hrad
+  -- step 4: `R.action (L_X β) = S(L_X β) = 0`
+  have hL : ∀ β γ : TestFormOn (univ : Set (Euclid P)) n,
+      (∀ y, (γ : DifferentialForm (Euclid P) n) y =
+        (n : ℝ) • (β : DifferentialForm (Euclid P) n) y +
+          fderiv ℝ (β : DifferentialForm (Euclid P) n) y y) →
+      R.action (γ : DifferentialForm (Euclid P) n) = 0 := fun β γ hγ =>
+    (hR γ).symm.trans (Submission.dtc_cwv_euler_lie_annihilated P n S R hn hR hb hw β γ hγ)
+  -- steps 1, 3 and 5: by the cone criterion, `S(ω') = R.action ω' = R.action ω = S(ω)`
+  refine Submission.dtc_cwv_isConeCurrent_of_pullback_invariant P n S fun lam hlam ω ω' hω' => ?_
+  rw [hR ω', hR ω]
+  exact Submission.dtc_cwv_action_dilation_invariant P n R hL lam hlam ω ω' hω'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
