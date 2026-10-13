@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1.perturbed_frame_trace_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+  "depth": 4,
+  "title": "Frame trace bound for a first-order perturbation of the identity (Simon Ch. 2, §5)",
+  "statement": "Let P, n ∈ ℕ and A, η, t ∈ ℝ with η ≤ 1. Let B, L : ℝ^P → ℝ^P be continuous linear maps with ‖B‖ ≤ A and ‖L − I − tB‖ ≤ η|t|, where I is the identity map of ℝ^P and ‖·‖ is the operator norm. Let τ_1, …, τ_n be an orthonormal family in ℝ^P, and write u·w and |w| for the Euclidean inner product and norm. Then (i) |Σ_{a=1}^n τ_a·Bτ_a| ≤ nA, and (ii) Σ_{a=1}^n |Lτ_a|² − n ≤ 2t Σ_{a=1}^n τ_a·Bτ_a + 2nη|t| + n(A + 1)²t².",
+  "lean_statement": "∀ (P n : ℕ) (A η t : ℝ) (B L : Euclid P →L[ℝ] Euclid P) (τ : Fin n → Euclid P), η ≤ 1 → ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → Orthonormal ℝ τ → |∑ a, inner ℝ (τ a) (B (τ a))| ≤ (n : ℝ) * A ∧ ∑ a, ‖L (τ a)‖ ^ 2 - (n : ℝ) ≤ 2 * t * (∑ a, inner ℝ (τ a) (B (τ a))) + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2",
+  "lean_name": "fvmb_perturbed_frame_sum_norm_sq_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-c62e243c25-a1"
+}
