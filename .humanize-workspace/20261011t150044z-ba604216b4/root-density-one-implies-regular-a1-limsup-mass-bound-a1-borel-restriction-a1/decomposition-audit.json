@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem restrict_withDensity|theorem withDensity_apply|theorem restrict_restrict|structure IMRep|def IMRep.measure|def IMRep.Represents",
+        "dor_lmb_imrep_restrict_current|rsd_imrep_compact_measure_ne_top|regcomp_rim_sub_imrep|dtc_imrep_current",
+        "def TestFormOnConverges|structure GeometricCurrentOn|def CurrentOn|def IsTestForm|def TestFormOn|def Covector|abbrev Covector|theorem CountablyRectifiable.mono",
+        "git show 702e708:GMT/Ch07/Submission.lean",
+        "git show 8c5617a:GMT/Ch07/Submission.lean",
+        "git show 642d745:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/borel-independent-audit-ye25jqh3/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/borel-independent-audit-ye25jqh3/Conditional.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-restriction-integer-multipl-316de9a899/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/accepted-candidate.json",
+        "/tmp/borel-independent-audit-ye25jqh3/Types.lean",
+        "/tmp/borel-independent-audit-ye25jqh3/Conditional.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Borel-restriction theorem. The pinned definitions and library restriction identities support every step; no matching Submission helpers occur in the snapshot itself. All three reused declarations have identical frozen types, matching accepted proof hashes and successful comparator receipts. Their names are bare identifiers; active-proposal scans found no conflicting reservations. The dependency graph remains acyclic, with tangent locality correctly retained as an existing sibling dependency. Fresh Lean checks confirmed independent proposition elaboration and the exact parent conclusion conditional only on that sibling. The three accepted proofs and conditional assembly depend solely on propext, Classical.choice and Quot.sound. The frozen root theorem's sorry is not a dependency. No problematic typeclass-sensitive inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_finiteness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including arbitrary U and compact K ⊆ U. Steps 1–6 establish both conclusions: measurable restriction identifies the weighted mass with the finite lower integral, and θ ≥ 1 bounds the unweighted measure. The argument is complete and non-circular. Its first conclusion supplies precisely the parent's tangent-locality hypothesis."
+    },
+    {
+      "key": "sub_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including the almost-everywhere forward tangent inheritance, match the one-line Lean type. The proof verifies every IMRep field: subset rectifiability, multiplicity measurability and positivity, integral domination, orientation measurability under measure restriction, and tangent-orientation transfer. The resulting field equalities are definitional. No parent or sibling theorem is assumed internally; the parent explicitly supplies the inheritance hypothesis."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition matches the prose for arbitrary U. The proof establishes the orientation bound, measurable evaluation, integrable compact-support domination, linearity, and sequential continuity using the zeroth-derivative convergence and ε/(C_K + 1) estimate. It covers degree zero and requires no unstated openness or finite-measure assumption. The constructed functional satisfies precisely GeometricCurrentOn and Represents, without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
