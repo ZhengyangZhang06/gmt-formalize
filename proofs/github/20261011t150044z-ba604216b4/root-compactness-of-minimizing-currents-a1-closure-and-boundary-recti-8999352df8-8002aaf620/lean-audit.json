@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0b97e0c7353106d8fa96a0a518100becfdd4d0456d0ad33b00fbcd2076f7e621",
+  "git_delta": {
+    "base_commit": "3eb6c5646d0c9482942e030eb164f15e55e86190",
+    "candidate_commit": "dbf3516604dc2c16e437e46e6a2e99696db727f1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ct_vs_diagonal_subseq",
+    "diff_sha256": "099a0d3804b5a43c9cdddbe825aad625d8c49c718c6bafd1b988aa60bc12dad0",
+    "source_sha256": "7dc6ef6d740eea225fb63dfd35267dc496f2baac0feabf5eba36b3bb67995648",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ct_vs_diagonal_subseq",
+      "statement": "∀ (ι : Type) (F : ℕ → Set ι) (s : ι → ℕ → ℝ), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (ψ (θ j))) atTop (𝓝 c)) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ m : ℕ, ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (φ j)) atTop (𝓝 c)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
