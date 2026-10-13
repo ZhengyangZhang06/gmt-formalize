@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e90ac6401103ad2c63fd9d949f4a91f3d862d2780e57ef46148da902567fae8f",
+  "git_delta": {
+    "base_commit": "18273b5df741e16e990e55dd99b223be6614b5c8",
+    "candidate_commit": "caa9d322dbb0911248dc41ceb868ebd22a8e926a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_zsl_gc_oriented_frame",
+    "diff_sha256": "fb64249e82341d67123c283131c70aed1a81b55edef2c6ae5dfc84103ed8b0ae",
+    "source_sha256": "7feaead15a495e40a94b05b9a6356181f934d6d6f2e671ca56f7f07e8349e7e7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zsl_gc_oriented_frame",
+      "statement": "∀ (n k : ℕ) (Q : Submodule ℝ (Euclid (n + 1 + k))) (ξ : MultiVector (n + 1 + k) (n + 1)), IsUnitOrientationOf ξ Q → ∃ (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) ∧ Set.range ι = (Q : Set (Euclid (n + 1 + k))) ∧ ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξ α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
