@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "332e55a2ef9c887e747f90c8d722664269f012ffe58863205607fd62b6e8e369",
+  "git_delta": {
+    "base_commit": "bad0934817c7c91e7374db6cfc12262a93497dee",
+    "candidate_commit": "492f34a22bc563abc08b90e75a903c13b476d25b",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gjb_gram_symm_psd_trace",
+    "diff_sha256": "644a56b44d7edca1dd3038fa88f0615852d607919c499d419e1ec4fd32379ba8",
+    "source_sha256": "05467c6923ea303ef8d35701eeb3517f6bb2167819f70835ed36a1f8a1aadccb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gjb_gram_symm_psd_trace",
+      "statement": "∀ (n ℓ : ℕ) (D : Rn n →L[ℝ] Rn ℓ), Matrix.IsSymm (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) ∧ (∀ x : Fin n → ℝ, 0 ≤ dotProduct x (Matrix.mulVec (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) x)) ∧ Matrix.trace (Matrix.of fun a b : Fin n => inner ℝ (D (EuclideanSpace.single a (1 : ℝ))) (D (EuclideanSpace.single b (1 : ℝ)))) = hsNormSq D",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
