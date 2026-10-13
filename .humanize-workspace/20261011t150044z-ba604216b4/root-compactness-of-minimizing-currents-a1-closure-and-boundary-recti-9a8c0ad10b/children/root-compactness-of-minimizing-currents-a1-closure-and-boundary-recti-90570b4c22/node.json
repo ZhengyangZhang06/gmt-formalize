@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.orient_ae_eq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1",
+  "depth": 4,
+  "title": "Equal set integrals against all test forms of an open set B determine the orientation a.e. on B",
+  "statement": "Let P, k ∈ ℕ, B ⊆ ℝ^P open, μ₁, μ₂ Borel measures on ℝ^P, and ξ₁, ξ₂ : ℝ^P → Λ_k(ℝ^P) (MultiVector P k: continuous linear functionals on the space Λ^k = Covector (Euclid P) k of k-covectors). Assume: (i) μ₁(K) < ∞ for every compact K ⊆ B; (ii) μ₁⌞B = μ₂⌞B; (iii) ξ_i is a.e. strongly measurable for μ_i (i = 1, 2); (iv) for i = 1, 2, for μ_i-a.e. x and every α ∈ Λ^k, |ξ_i(x)(α)| ≤ |α| (Euclidean coefficient norm covectorEuclideanNorm); (v) ∫_E ξ₁(x)(ω(x)) dμ₁(x) = ∫_E ξ₂(x)(ω(x)) dμ₂(x) for every Borel set E ⊆ ℝ^P and every test form ω ∈ 𝒟^k(B) (TestFormOn B k: smooth compactly supported k-forms on ℝ^P with tsupport ω ⊆ B). Then ξ₁(x) = ξ₂(x) for μ₁-a.e. x ∈ B, i.e. for μ₁-a.e. x, x ∈ B implies ξ₁(x) = ξ₂(x).",
+  "lean_statement": "∀ (P k : ℕ) (B : Set (Euclid P)) (μ₁ μ₂ : Measure (Euclid P)) (ξ₁ ξ₂ : Euclid P → MultiVector P k), IsOpen B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ B → μ₁ K < ∞) → μ₁.restrict B = μ₂.restrict B → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ (E : Set (Euclid P)) (ω : TestFormOn B k), MeasurableSet E → ∫ x in E, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in E, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂) → ∀ᵐ x ∂μ₁, x ∈ B → ξ₁ x = ξ₂ x",
+  "lean_name": "cbr_orient_ae_eq_of_setIntegral_eq",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.covector_finite_dimensional-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.covector_finite_dimensional-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31-a1",
+      "result_commit": "127487dd6bed94a74811cb8523d5535db984c906",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-90570b4c22-a1"
+}
