@@ -451,6 +451,51 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The interior-product covector `ι_z(dy)` on `ℝ^{d+1}`** (used for the `d`-form `f · ι_z(dy)`,
+whose exterior derivative is `(∂_z f) dy`, in White's projection argument for the closure theorem
+behind Simon 7.2.4; cf. the forms `ωⱼ` in the proof of Simon 6.2.34).  For `z ∈ ℝ^{d+1}` there is
+a continuous alternating `d`-form `ε` on `ℝ^{d+1}` with `ε(e₀, …, êᵢ, …, e_d) = (−1)ⁱ zᵢ`:
+`ε(u₁, …, u_d) = det [z | u₁ | ⋯ | u_d] = δ(z, u₁, …, u_d)` for the standard determinant form `δ`. -/
+theorem Submission.cbr_ci_pw_ipf_coord_covector : ∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, ∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i := by
+  intro d z
+  classical
+  -- The standard basis `b l = e_l` and its determinant `δ₀ c = det (c l r)_{r,l}`.
+  let b : Module.Basis (Fin (d + 1)) ℝ (Euclid (d + 1)) :=
+    (EuclideanSpace.basisFun (Fin (d + 1)) ℝ).toBasis
+  have hdet : ∀ c : Fin (d + 1) → Euclid (d + 1), b.det c = (Matrix.of fun r l => c l r).det := by
+    intro c
+    rw [Module.Basis.det_apply]
+    congr 1
+  -- `δ₀` is continuous (entrywise continuous matrix, then `det`), so it is a covector `δ`.
+  have hcont : Continuous (fun c : Fin (d + 1) → Euclid (d + 1) => b.det c) := by
+    simp only [hdet]
+    apply Continuous.matrix_det
+    refine continuous_matrix fun r l => ?_
+    exact (EuclideanSpace.proj r).continuous.comp (continuous_apply l)
+  let δ : Covector (Euclid (d + 1)) (d + 1) := { b.det with cont := hcont }
+  have hδ : ∀ c, δ c = b.det c := fun c => rfl
+  -- `ε = δ.curryLeft z`, so `ε u = det M(u)` with columns `z, u₀, …, u_{d-1}`; expand along
+  -- column `0`: `det M(u) = Σ_r (−1)ʳ z_r det N_r` with minors `N_r`.
+  refine ⟨δ.curryLeft z, fun i => ?_⟩
+  rw [ContinuousAlternatingMap.curryLeft_apply_apply, hδ, hdet, Matrix.det_succ_column_zero,
+    Finset.sum_eq_single i]
+  · -- `r = i`: `(N_i)_{a,k} = (e_{i.succAbove k})_{i.succAbove a} = [a = k]`, so `N_i = 1`.
+    have h1 : (Matrix.of fun r l => (Matrix.vecCons z (i.removeNth fun l =>
+        EuclideanSpace.single l (1 : ℝ)) : Fin (d + 1) → Euclid (d + 1)) l r).submatrix
+          i.succAbove Fin.succ = 1 := by
+      ext a k
+      simp [Matrix.one_apply, Fin.removeNth_apply]
+    rw [h1, Matrix.det_one]
+    simp
+  · -- `r ≠ i`: row `a₀` of `N_r`, where `r.succAbove a₀ = i`, is `(e_{i.succAbove k})_i = 0`.
+    intro r _ hri
+    obtain ⟨a₀, ha₀⟩ := Fin.exists_succAbove_eq (x := i) (y := r) (Ne.symm hri)
+    rw [Matrix.det_eq_zero_of_row_eq_zero a₀, mul_zero]
+    intro k
+    simp [Fin.removeNth_apply, ha₀]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
