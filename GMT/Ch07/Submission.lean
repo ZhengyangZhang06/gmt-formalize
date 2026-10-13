@@ -720,6 +720,138 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 hW y hyW
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
+/-- **Tangent projections of an embedded `C¹` submanifold** (Simon Ch. 2, §4, (4.1)–(4.3)).  Let
+`M ⊆ ℝᴾ` be an embedded `C¹` `m`-dimensional submanifold, `S_x = span T_xM` and `P_x` the
+orthogonal projection onto `S_x`.  Then (a) `dim S_x = m` on `M`, (b) `x ↦ P_x` is continuous on
+`M`, and (c) `x ↦ trace(P_x ∘ DX(x))` is continuous on `M` for every `C¹` field `X`.  For a chart
+`(V, W, ψ)`, `S_{ψ(v)} = Dψ(v)(ℝᵐ)` by `dsmc_chart_tangentSpace_eq_range`, and for injective `D`
+the projection onto `D(ℝᵐ)` is `D (D*D)⁻¹ D*`, continuous in `v` since `Dψ` is continuous and
+inversion is continuous at units.  Continuity of `ψ⁻¹` on `W ∩ M` moves this to `x = ψ(v)`; (c)
+follows as the trace is linear on the finite-dimensional space `L(ℝᴾ)`. -/
+theorem Submission.codim1_hcp_fv_tangent_projection_continuousOn : ∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = m) ∧ ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection) M ∧ ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → ContinuousOn (fun x => LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap)) M := by
+  intro P m M hM
+  -- step 1: the span of the range of a continuous linear map is its range
+  have hspan_range : ∀ D : Euclid m →L[ℝ] Euclid P,
+      Submodule.span ℝ (Set.range D) = LinearMap.range (D : Euclid m →ₗ[ℝ] Euclid P) := by
+    intro D
+    rw [← ContinuousLinearMap.coe_coe, ← LinearMap.coe_range, Submodule.span_eq]
+  -- step 2: for injective `D`, `G = D*D` is a unit and `P_{range D} = D G⁻¹ D*`
+  have hproj : ∀ D : Euclid m →L[ℝ] Euclid P, Injective D →
+      IsUnit (ContinuousLinearMap.adjoint D ∘L D) ∧
+      (LinearMap.range (D : Euclid m →ₗ[ℝ] Euclid P)).starProjection =
+        D ∘L (Ring.inverse (ContinuousLinearMap.adjoint D ∘L D) ∘L ContinuousLinearMap.adjoint D) := by
+    intro D hD
+    set G := ContinuousLinearMap.adjoint D ∘L D
+    -- (a) `Gw = 0` gives `|Dw|² = ⟨Gw, w⟩ = 0`, so `w = 0`; injective endomorphisms are units
+    have hGinj : Injective G := by
+      rw [injective_iff_map_eq_zero]
+      intro w hw
+      apply hD
+      rw [map_zero]
+      have hnorm : ‖D w‖ ^ 2 = 0 := by
+        rw [← real_inner_self_eq_norm_sq, ← ContinuousLinearMap.adjoint_inner_left]
+        change inner ℝ (G w) w = 0
+        rw [hw, inner_zero_left]
+      exact norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp hnorm)
+    have hGunit : IsUnit G := ContinuousLinearMap.isUnit_iff_bijective.mpr
+      ⟨hGinj, (LinearMap.injective_iff_surjective (f := (G : Euclid m →ₗ[ℝ] Euclid m))).mp hGinj⟩
+    refine ⟨hGunit, ?_⟩
+    -- (b) with `y = G⁻¹D*h`, `Dy ∈ range D` and `h - Dy ⊥ range D`, so `P h = Dy`
+    ext1 h
+    set y := Ring.inverse G (ContinuousLinearMap.adjoint D h)
+    have hGy : G y = ContinuousLinearMap.adjoint D h := by
+      rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel _ hGunit, one_apply_eq_self]
+    change _ = D y
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (LinearMap.mem_range_self (D : Euclid m →ₗ[ℝ] Euclid P) y) ?_
+    rintro _ ⟨x, rfl⟩
+    rw [ContinuousLinearMap.coe_coe, ← ContinuousLinearMap.adjoint_inner_left, map_sub]
+    change inner ℝ (_ - G y) x = 0
+    rw [hGy, sub_self, inner_zero_left]
+  -- step 3: chart data at `y ∈ M`: `span T_{ψ v}M = range Dψ(v)` and `ψ⁻¹` is continuous
+  have hlocal : ∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P),
+      IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ 1 ψ V ∧ ψ '' V = W ∩ M ∧
+      (∀ z ∈ V, Injective (fderiv ℝ ψ z)) ∧
+      (∀ v ∈ V, Submodule.span ℝ (tangentSpace M (ψ v)) =
+        LinearMap.range (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P)) ∧
+      (∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧
+        ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) := by
+    intro y hy
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hder⟩ := hM y hy
+    refine ⟨V, W, ψ, hV, hW, hyW, hψ, himg, hder, fun v hv => ?_, fun v hv => ?_⟩
+    · have h := (Submission.dsmc_chart_tangentSpace_eq_range P 1 m M V W ψ le_rfl hV hW hψ hinj
+        himg hprop hder v hv).1
+      rw [h, hspan_range]
+    · exact (Submission.dsmc_chart_tangentSpace_eq_range P 1 m M V W ψ le_rfl hV hW hψ hinj
+        himg hprop hder v hv).2.1
+  -- step 4, (a): `S_{ψ v} = range Dψ(v)` with `Dψ(v)` injective has dimension `m`
+  have hfin : ∀ x ∈ M, Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = m := by
+    intro x hx
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, himg, hder, hsp, -⟩ := hlocal x hx
+    obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := by rw [himg]; exact ⟨hxW, hx⟩
+    rw [hsp v hv, LinearMap.finrank_range_of_inj (hder v hv), finrank_euclideanSpace_fin]
+  -- step 5, (b): `x ↦ P_x` is continuous within `M` at every `y = ψ(v₀)`
+  have hcont : ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection) M := by
+    intro y hy
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, himg, hder, hsp, hinv⟩ := hlocal y hy
+    obtain ⟨v₀, hv₀, rfl⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hyW, hy⟩
+    -- (a) `v ↦ D(v)`, `v ↦ D(v)*` and `v ↦ G(v) = D(v)*D(v)` are continuous on `V`
+    have hD : ContinuousOn (fun v => fderiv ℝ ψ v) V := hψ.continuousOn_fderiv_of_isOpen hV le_rfl
+    have hadj : Continuous (fun A : Euclid m →L[ℝ] Euclid P => ContinuousLinearMap.adjoint A) :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid m) (F := Euclid P)).continuous
+    have hDt : ContinuousOn (fun v => ContinuousLinearMap.adjoint (fderiv ℝ ψ v)) V :=
+      hadj.comp_continuousOn hD
+    have hG : ContinuousOn
+        (fun v => ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v) V :=
+      hDt.clm_comp hD
+    -- (b) each `G(v)` is a unit and inversion is continuous at units, so `R(v)` is continuous
+    have hGinv : ContinuousOn (fun v =>
+        Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v)) V := by
+      intro v hv
+      obtain ⟨u, hu⟩ := (hproj _ (hder v hv)).1
+      have hinvc := NormedRing.inverse_continuousAt u
+      rw [hu] at hinvc
+      exact hinvc.comp_continuousWithinAt
+        (f := fun v => ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v) (hG v hv)
+    have hR : ContinuousOn (fun v => fderiv ℝ ψ v ∘L (Ring.inverse
+        (ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v) ∘L
+          ContinuousLinearMap.adjoint (fderiv ℝ ψ v))) V :=
+      hD.clm_comp (hGinv.clm_comp hDt)
+    -- (c) `P_{ψ v} = R(v)` on `V`
+    have hPR : ∀ v ∈ V, (Submodule.span ℝ (tangentSpace M (ψ v))).starProjection =
+        fderiv ℝ ψ v ∘L (Ring.inverse (ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L
+          fderiv ℝ ψ v) ∘L ContinuousLinearMap.adjoint (fderiv ℝ ψ v)) := by
+      intro v hv
+      rw [← (hproj _ (hder v hv)).2]
+      congr 1
+      exact hsp v hv
+    -- (d) `x ∈ M` near `ψ v₀` is `ψ v` with `v ∈ V` near `v₀`, so `P_x` is near `P_{ψ v₀}`
+    rw [Metric.continuousWithinAt_iff]
+    intro ε hε
+    have hRat : ContinuousAt (fun v => fderiv ℝ ψ v ∘L (Ring.inverse
+        (ContinuousLinearMap.adjoint (fderiv ℝ ψ v) ∘L fderiv ℝ ψ v) ∘L
+          ContinuousLinearMap.adjoint (fderiv ℝ ψ v))) v₀ :=
+      hR.continuousAt (hV.mem_nhds hv₀)
+    obtain ⟨ρ, hρ, hρR⟩ := Metric.continuousAt_iff.mp hRat ε hε
+    obtain ⟨δ₁, hδ₁, hδ₁inv⟩ := hinv v₀ hv₀ ρ hρ
+    obtain ⟨δ₂, hδ₂, hδ₂W⟩ := Metric.isOpen_iff.mp hW (ψ v₀) hyW
+    refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun {x} hxM hxy => ?_⟩
+    have hxW : x ∈ W := hδ₂W (lt_of_lt_of_le hxy (min_le_right _ _))
+    obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := by rw [himg]; exact ⟨hxW, hxM⟩
+    have hvv : dist v v₀ < ρ := hδ₁inv v hv (lt_of_lt_of_le hxy (min_le_left _ _))
+    rw [hPR v hv, hPR v₀ hv₀]
+    exact hρR hvv
+  -- step 6, (c): `T ↦ trace T` is linear on `L(ℝᴾ)`, hence continuous; compose with `P_x ∘ DX(x)`
+  refine ⟨hfin, hcont, fun X hX => ?_⟩
+  have htr : Continuous (fun T : Euclid P →L[ℝ] Euclid P =>
+      LinearMap.trace ℝ (Euclid P) (T : Euclid P →ₗ[ℝ] Euclid P)) :=
+    LinearMap.continuous_of_finiteDimensional
+      ((LinearMap.trace ℝ (Euclid P)).comp (ContinuousLinearMap.coeLM ℝ))
+  have hcomp : ContinuousOn (fun x =>
+      (Submodule.span ℝ (tangentSpace M x)).starProjection ∘L fderiv ℝ X x) M :=
+    hcont.clm_comp (hX.continuous_fderiv one_ne_zero).continuousOn
+  refine (htr.comp_continuousOn hcomp).congr fun x _ => ?_
+  simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
