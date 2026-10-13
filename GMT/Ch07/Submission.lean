@@ -1541,6 +1541,131 @@ theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)
     · have h := hωn (x + lam • z)
       rwa [hω, hηι] at h
 
+/-- **Locally bounded masses of blow-ups at moving centres** (scaling identity (1) and the bound
+`sup_j M_{B_R(0)}(η_{x,λⱼ#}T) < ∞` in the proof of Simon 7.3.1, chapter-07.txt lines 326–335, here
+with moving centres `xⱼ → x`): if `T = τ(M, θ, ξ)` in the open set `U` satisfies the monotonicity
+inequality on every compact `K ⊆ U`, `xⱼ → x ∈ U`, `λⱼ > 0` and `λⱼ → 0`, then for every `R` the
+masses `M_{B_R(0)}(η_{xⱼ,λⱼ#}T)` are bounded for all large `j`.  Fix `r > 0` with
+`B̄_{2r}(x) ⊆ U`; `M_{B_{2r}(x)}(T) = μ_T(B_{2r}(x)) < ∞` by the local integrability of `θ`
+(`Submission.dor_imrep_massOn_eq_measure_and_support`).  Monotonicity between `ρ` and `r/2` on
+balls centred at `y`, `|y − x| < r`, gives `M_{B_ρ(y)}(T) ≤ ρⁿ c₁` for `0 < ρ < r/2`, where
+`c₁ = e^{Λr}(2/r)ⁿ M_{B_{2r}(x)}(T)`.  For large `j`, `η_{xⱼ,λⱼ}(B_{λⱼR'}(xⱼ)) = B_{R'}(0)` with
+`R' = max(R, 1)`, and mass scaling (`Submission.dtc_blowUp_massOn_image`) gives
+`M_{B_R(0)}(η_{xⱼ,λⱼ#}T) ≤ λⱼ⁻ⁿ (λⱼR')ⁿ c₁ = R'ⁿ c₁`. -/
+theorem Submission.dimred_mbl_bh_moving_blowUp_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∀ (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T (xs j) (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c := by
+  intro P n U T hU hIM hmon x xs lams hlams hxU hxs hlam0 R
+  -- `η_{a,λ}(y) = λ⁻¹ • (y - a)`
+  have hdil : ∀ (a : Euclid P) (lam : ℝ) (y : Euclid P), dilation a lam y = lam⁻¹ • (y - a) := by
+    intro a lam y
+    simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.coe_id', id_eq, smul_sub]
+    abel
+  -- Step 0: a radius `r` with `closedBall x (2r) ⊆ U`
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+  set r := ε / 3 with hr_def
+  have hr : 0 < r := by positivity
+  have hK : closedBall x (2 * r) ⊆ U := by
+    intro y hy
+    apply hεU
+    rw [mem_ball]
+    rw [mem_closedBall] at hy
+    linarith
+  have hKc : IsCompact (closedBall x (2 * r)) := isCompact_closedBall x (2 * r)
+  -- Step 1: monotonicity on `K = closedBall x (2r)`
+  obtain ⟨Λ, hΛ, hmono⟩ := hmon _ hKc hK
+  -- Step 2: `M_{B_{2r}(x)}(T) < ∞`
+  obtain ⟨Rep, hRep⟩ := hIM
+  have hfin : T.massOn (ball x (2 * r)) ≠ ∞ := by
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P n U T Rep hU hRep).1 _ isOpen_ball]
+    have h1 : Rep.measure (ball x (2 * r)) ≤ Rep.measure (closedBall x (2 * r)) :=
+      measure_mono ball_subset_closedBall
+    have h2 : Rep.measure (closedBall x (2 * r)) =
+        ∫⁻ y in Rep.carrier ∩ closedBall x (2 * r), (Rep.mult y : ℝ≥0∞) ∂μHE[n] := by
+      unfold IMRep.measure
+      rw [withDensity_apply _ measurableSet_closedBall,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    have h3 := Rep.locallyIntegrable_mult _ hKc hK
+    rw [← h2] at h3
+    exact ne_top_of_le_ne_top h3 h1
+  -- Step 3: the constant `c₁`
+  set c₁ : ℝ≥0∞ := ENNReal.ofReal (Real.exp (Λ * r) * (2 / r) ^ n) * T.massOn (ball x (2 * r))
+    with hc₁_def
+  have hc₁ : c₁ ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin
+  -- Step 4: `M_{B_ρ(y)}(T) ≤ ρⁿ c₁` for `|y - x| < r`, `0 < ρ < r/2`
+  have hkey : ∀ y : Euclid P, dist y x < r → ∀ ρ : ℝ, 0 < ρ → ρ < r / 2 →
+      T.massOn (ball y ρ) ≤ ENNReal.ofReal (ρ ^ n) * c₁ := by
+    intro y hy ρ hρ hρr
+    have hKy : closedBall y r ⊆ closedBall x (2 * r) := by
+      intro z hz
+      rw [mem_closedBall] at hz ⊢
+      linarith [dist_triangle z y x]
+    have hρmem : ρ ∈ Ioo 0 r := ⟨hρ, by linarith⟩
+    have hr2mem : r / 2 ∈ Ioo 0 r := ⟨by positivity, by linarith⟩
+    have hle := hmono y r hKy hρmem hr2mem hρr.le
+    have hball : ball y (r / 2) ⊆ ball x (2 * r) := by
+      intro z hz
+      rw [mem_ball] at hz ⊢
+      linarith [dist_triangle z y x]
+    have hM : T.massOn (ball y (r / 2)) ≤ T.massOn (ball x (2 * r)) := T.massOn_mono hball
+    have hcoef : ENNReal.ofReal (Real.exp (Λ * (r / 2)) / (r / 2) ^ n) ≤
+        ENNReal.ofReal (Real.exp (Λ * r) * (2 / r) ^ n) := by
+      apply ENNReal.ofReal_le_ofReal
+      rw [div_eq_mul_inv, ← inv_pow, inv_div]
+      gcongr
+      nlinarith
+    have h1 : ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ) ≤ c₁ :=
+      hle.trans (mul_le_mul' hcoef hM)
+    have hexp : 1 ≤ Real.exp (Λ * ρ) := Real.one_le_exp (by positivity)
+    have h2 : ENNReal.ofReal ((ρ ^ n)⁻¹) * T.massOn (ball y ρ) ≤ c₁ := by
+      refine le_trans (mul_le_mul' (ENNReal.ofReal_le_ofReal ?_) le_rfl) h1
+      rw [div_eq_mul_inv]
+      have : 0 < (ρ ^ n)⁻¹ := by positivity
+      nlinarith
+    calc T.massOn (ball y ρ)
+        = ENNReal.ofReal (ρ ^ n) * (ENNReal.ofReal ((ρ ^ n)⁻¹) * T.massOn (ball y ρ)) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+            mul_inv_cancel₀ (by positivity), ENNReal.ofReal_one, one_mul]
+      _ ≤ ENNReal.ofReal (ρ ^ n) * c₁ := mul_le_mul' le_rfl h2
+  -- Step 5: rescale
+  set R' := max R 1 with hR'_def
+  have hR' : 0 < R' := lt_of_lt_of_le one_pos (le_max_right _ _)
+  refine ⟨ENNReal.ofReal (R' ^ n) * c₁, ENNReal.mul_ne_top ENNReal.ofReal_ne_top hc₁, ?_⟩
+  have hev1 : ∀ᶠ j in atTop, dist (xs j) x < r := Metric.tendsto_nhds.1 hxs r hr
+  have hev2 : ∀ᶠ j in atTop, lams j * R' < r / 2 := by
+    have h0 : Tendsto (fun j => lams j * R') atTop (𝓝 0) := by
+      simpa using hlam0.mul_const R'
+    exact (tendsto_order.1 h0).2 (r / 2) (by positivity)
+  filter_upwards [hev1, hev2] with j hj1 hj2
+  have hlam := hlams j
+  have himg : dilation (xs j) (lams j) '' ball (xs j) (lams j * R') = ball 0 R' := by
+    ext z
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      rw [mem_ball, dist_zero_right, hdil, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hlam.le),
+        ← dist_eq_norm]
+      rw [mem_ball] at hy
+      calc (lams j)⁻¹ * dist y (xs j) < (lams j)⁻¹ * (lams j * R') :=
+            mul_lt_mul_of_pos_left hy (inv_pos.2 hlam)
+        _ = R' := by field_simp
+    · intro hz
+      refine ⟨xs j + lams j • z, ?_, ?_⟩
+      · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+        rw [mem_ball, dist_zero_right] at hz
+        exact mul_lt_mul_of_pos_left hz hlam
+      · rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+  calc (blowUp T (xs j) (lams j) (hlams j).ne').massOn (ball 0 R)
+      ≤ (blowUp T (xs j) (lams j) (hlams j).ne').massOn (ball 0 R') :=
+        GeometricCurrentOn.massOn_mono _ (ball_subset_ball (le_max_left _ _))
+    _ = (blowUp T (xs j) (lams j) (hlams j).ne').massOn
+          (dilation (xs j) (lams j) '' ball (xs j) (lams j * R')) := by rw [himg]
+    _ = ENNReal.ofReal ((lams j)⁻¹ ^ n) * T.massOn (ball (xs j) (lams j * R')) :=
+        Submission.dtc_blowUp_massOn_image P n U T (xs j) (lams j) (hlams j) _
+    _ ≤ ENNReal.ofReal ((lams j)⁻¹ ^ n) * (ENNReal.ofReal ((lams j * R') ^ n) * c₁) :=
+        mul_le_mul' le_rfl (hkey _ hj1 _ (by positivity) hj2)
+    _ = ENNReal.ofReal (R' ^ n) * c₁ := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), ← mul_pow,
+          inv_mul_cancel_left₀ hlam.ne']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
