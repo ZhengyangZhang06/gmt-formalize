@@ -1,0 +1,24 @@
+{
+  "node_id": "root.compactness_mass_bounds-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/314",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ec8c9ac424f61ff642ab71a2626ee7a617b2f96d",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.compactness_mass_bounds-a1.exhaustion-a1",
+    "root.compactness_mass_bounds-a1.mass_bound-a1",
+    "root.compactness_mass_bounds-a1.covector_expansion-a1",
+    "root.compactness_mass_bounds-a1.testform_separable-a1",
+    "root.compactness_mass_bounds-a1.mollify-a1",
+    "root.compactness_mass_bounds-a1.weak_subseq-a1",
+    "root.compactness_mass_bounds-a1.repr_bound-a1",
+    "root.compactness_mass_bounds-a1.continuous_form_conv-a1"
+  ]
+}
