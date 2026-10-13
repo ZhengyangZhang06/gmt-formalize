@@ -1,0 +1,136 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.integral_div_zero-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof step 6: for every C¹ compactly supported φ, ∫ div φ dL = 0, because each ∫ ∂_i φ^i dL vanishes by Fubini and the fundamental theorem of calculus.
+
+Notation. e_1, …, e_P is the standard orthonormal basis of ℝ^P (EuclideanSpace.single i 1, i.e. EuclideanSpace.basisFun). φ^i := ⟨e_i, φ⟩, K := tsupport φ (compact), L := L^P (volume), and ∂_i f(z) := Df(z)e_i.
+
+1. Coordinates. Each φ^i = ⟨e_i, ·⟩ ∘ φ is C¹, being a composition with a continuous linear functional, and Dφ^i(z)w = ⟨e_i, Dφ(z)w⟩. φ^i vanishes outside K, so it has compact support. If P = 0, all sums below are empty and both claims are trivial.
+
+2. Trace in coordinates. For every linear T : ℝ^P → ℝ^P, trace T = Σ_i ⟨e_i, T e_i⟩ (trace in an orthonormal basis). Hence div φ(z) = Σ_i ⟨e_i, Dφ(z)e_i⟩ = Σ_i ∂_iφ^i(z).
+
+3. Integrability. Since φ^i is C¹, z ↦ ∂_iφ^i(z) is continuous. It vanishes outside K: φ^i vanishes on the open complement of the closed set tsupport φ^i, so its derivative is 0 there, and tsupport φ^i ⊆ K. So ∂_iφ^i is continuous with compact support, hence Lebesgue integrable. The finite sum div φ is therefore integrable too. This is the first conclusion.
+
+4. ∫ ∂_iφ^i dL = 0 for each i. Write f := φ^i and choose R > 0 with K ⊆ B_R(0). Split z = (s, ẑ), where s = z_i ∈ ℝ and ẑ ∈ ℝ^{P−1} collects the other coordinates. This coordinate permutation is a measure-preserving linear isomorphism ℝ^P ≅ ℝ × ℝ^{P−1}, because Lebesgue measure is the product measure. Since ∂_if is integrable, Fubini gives ∫ ∂_if dL = ∫_{ℝ^{P−1}} (∫_ℝ ∂_if(s, ẑ) ds) dẑ. For fixed ẑ, u(s) := f(s, ẑ) is C¹ with u′(s) = ∂_if(s, ẑ), and u(s) = 0 for |s| ≥ R. By the fundamental theorem of calculus, ∫_ℝ u′ ds = ∫_{−R}^{R} u′ ds = u(R) − u(−R) = 0. Hence ∫ ∂_if dL = 0.
+The Lean appendix uses an equivalent route. Since f is C¹ with compact support, it is Lipschitz. Mathlib's integration by parts for Lipschitz functions, LipschitzWith.integral_lineDeriv_mul_eq, applied to the constant function 1 (which is 0-Lipschitz) and to f in the direction e_i, gives ∫ (∂_{e_i}1)·f dL = ∫ 1·∂_{−e_i}f dL, i.e. 0 = −∫ ∂_if dL. The lemma integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable is not available under the contract imports.
+
+5. Conclusion. By steps 2–4 and linearity of the integral (each summand is integrable), ∫ div φ dL = Σ_i ∫ ∂_iφ^i dL = 0. ∎
+
+Appendix (non-normative). A kernel-checked Lean proof of exactly this frozen statement was found during decomposition (workspace file GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean, git-ignored; it uses only the contract imports, compiles without warnings after `import GMT.Ch07.Submission` inside `namespace GMT.Ch07` with the contract opens, and `#print axioms` gives [propext, Classical.choice, Quot.sound]):
+
+```lean
+theorem Submission.codim1_rdo_dg_ce_integral_div_eq_zero : ∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → Integrable (fun z => LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P)) ∧ ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0 := by
+  intro P φ hφ hφc
+  set b := EuclideanSpace.basisFun (Fin P) ℝ with hb
+  have hdiff : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  -- coordinate functions φ_i := ⟨b i, φ⟩
+  set f : Fin P → Euclid P → ℝ := fun i w => innerSL ℝ (b i) (φ w) with hf
+  have hfC : ∀ i, ContDiff ℝ 1 (f i) := fun i => (innerSL ℝ (b i)).contDiff.comp hφ
+  have hfcs : ∀ i, HasCompactSupport (f i) := fun i => hφc.comp_left (map_zero _)
+  have hfder : ∀ i z, fderiv ℝ (f i) z = (innerSL ℝ (b i)).comp (fderiv ℝ φ z) := by
+    intro i z
+    exact ((innerSL ℝ (b i)).hasFDerivAt.comp z (hdiff z).hasFDerivAt).fderiv
+  have hcoord : ∀ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) =
+      ∑ i, fderiv ℝ (f i) z (b i) := by
+    intro z
+    rw [LinearMap.trace_eq_sum_inner _ b]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hfder]
+    simp [innerSL_apply_apply]
+  have hint_i : ∀ i, Integrable (fun z => fderiv ℝ (f i) z (b i)) := by
+    intro i
+    apply Continuous.integrable_of_hasCompactSupport
+    · exact ((hfC i).continuous_fderiv one_ne_zero).clm_apply continuous_const
+    · refine (hfcs i).mono' ?_
+      intro z hz
+      refine support_fderiv_subset ℝ ?_
+      intro h0
+      exact hz (by simp [h0])
+  have hzero_i : ∀ i, ∫ z, fderiv ℝ (f i) z (b i) = 0 := by
+    intro i
+    obtain ⟨C, hC⟩ := (hfC i).lipschitzWith_of_hasCompactSupport (hfcs i) one_ne_zero
+    have h1 := (LipschitzWith.const (1 : ℝ) : LipschitzWith 0 (fun _ : Euclid P => (1 : ℝ))).integral_lineDeriv_mul_eq
+      (μ := (volume : Measure (Euclid P))) hC (hfcs i) (b i)
+    have hl : ∀ x, lineDeriv ℝ (f i) x (-b i) = -fderiv ℝ (f i) x (b i) := by
+      intro x
+      rw [(((hfC i).differentiable one_ne_zero) x).lineDeriv_eq_fderiv, map_neg]
+    have hc : ∀ x, lineDeriv ℝ (fun _ : Euclid P => (1 : ℝ)) x (b i) = 0 := by
+      intro x
+      simp [lineDeriv]
+    simp only [hc, zero_mul, integral_zero, mul_one, hl, integral_neg] at h1
+    linarith
+  have hint : Integrable (fun z => LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P)) := by
+    simp_rw [hcoord]
+    exact integrable_finsetSum _ fun i _ => hint_i i
+  refine ⟨hint, ?_⟩
+  simp_rw [hcoord]
+  rw [integral_finsetSum _ fun i _ => hint_i i]
+  exact Finset.sum_eq_zero fun i _ => hzero_i i
+```
+
+## Key steps
+
+1. Write div φ = Σ_i ∂_i φ^i using trace T = Σ_i ⟨e_i, T e_i⟩ and the coordinates φ^i = ⟨e_i, φ⟩.
+2. Each ∂_iφ^i is continuous and vanishes off tsupport φ, so it is compactly supported and integrable.
+3. ∫ ∂_iφ^i dL = 0 by Fubini and the 1-D fundamental theorem of calculus (in Lean: LipschitzWith.integral_lineDeriv_mul_eq with the constant function 1).
+4. Sum over i.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `python3 scans of dag.json: de_giorgi-a1 children (status, lean_name, depth); accepted nodes whose title/statement matches cut-off|bump|smoothstep|layer|Fubini|integration by parts|divergence; statements of dorag_th_radial_cutoff, doragm_sab_cutoff_profile, dorag_ha_mv_radial_potential, dsmc_em_cutoff_tendsto_ball, doragm_sab_cutoff_mass_sandwich, doragm_sab_annulus_increment_sandwich, dorag_ha_lsc_ibp_c1_ball, regcomp_smooth_cutoff_product; collision check of the five codim1_rdo_dg_ce_* names (974 nodes: all free)`
+- `grep -rn codim1_rdo_dg_ce /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt (no match)`
+- `rg -n 'theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|theorem integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable|lemma trace_smulRight|theorem trace_eq_matrix_trace |theorem addHaar_ball |theorem volume_ball|theorem contDiffAt_norm|theorem norm_fderiv_le_of_lipschitz|theorem fderiv_smul_const|theorem HasCompactSupport.smul_right|theorem integral_integral_swap|theorem lintegral_eq_lintegral_meas_le|theorem inner_neg_neg|theorem finrank_euclideanSpace_fin|theorem addHaar_sphere|trace_eq_sum_inner' <snapshot>/mathlib/Mathlib`
+- `rg -n for contDiff_one_iff_deriv, lipschitzWith_of_nnnorm_deriv_le, IsLocalMax.fderiv_eq_zero, IsLocalMin.fderiv_eq_zero, support_fderiv_subset, Continuous.integrable_of_hasCompactSupport, integral_inner, antitone_of_deriv_nonpos, mem_nhdsGT_iff_exists_Ioo_subset, def basisFun, Integrable.integral_prod_right, setIntegral_eq_integral_of_forall_compl_eq_zero, integral_add_compl, HasDerivWithinAt.union, norm_integral_le_of_norm_le, integral_indicator_const, integrableOn_of_bounded, IsCompact.sSup_mem, HasCompactSupport.intro, LipschitzWith.of_dist_le_mul, mul_le_mul_right' in <snapshot>/mathlib/Mathlib`
+- `sed -n 560,700p book/chapter-03.txt; grep -n of the numbered steps (1)-(6), '4.3 Theorem' and 'Proof: By 1.6' in book/chapter-03.txt`
+- `git show 46877ce9:GMT/Ch07/Submission.lean; git show 296e19be:GMT/Ch07/Submission.lean (accepted IBP proofs keep the contract imports; LipschitzWith.integral_lineDeriv_mul_eq usage)`
+- `lake env lean -DautoImplicit=false /tmp/ce-split-check/Types.lean (five child types elaborate; sorry warnings only)`
+- `lake env lean -DautoImplicit=false /tmp/ce-split-check/Assembly.lean (frozen parent type proved from child stubs; type byte-identical to handoff lean_statement; #print axioms = propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean -DautoImplicit=false GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean and /tmp/ce-split-check/FromPayload.lean (all five children proved and the parent proved from them; no warnings; #print axioms = [propext, Classical.choice, Quot.sound] for all six)`
+- `sed -n 1380,1440p and grep -n _existing_lean_name_problem /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py; cat swarm-project.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/VolumeOfBalls.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L2Space.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LocalExtr/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition/child_statements.json`
+- `/tmp/ce-split-check/Types.lean`
+- `/tmp/ce-split-check/Assembly.lean`
+- `/tmp/ce-split-check/FromPayload.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+
+Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c. The workspace HEAD is b4d606db, and Contract.lean and Submission.lean are byte-identical. Library. No local declaration has the exact types needed for the annulus cut-off, the signed layer cake, ∫ div φ = 0 or the quantitative normal-average bound. The closest accepted nodes differ: dorag_th_radial_cutoff, doragm_sab_cutoff_profile, dorag_ha_mv_radial_potential, dorag_ha_lsc_ibp_c1_ball. So all five children are new, with fresh codim1_rdo_dg_ce_* names that are free among 974 DAG nodes and in SimonGMT. Snapshot Mathlib supplies every tool used: LinearMap.trace_smulRight, LinearMap.trace_eq_sum_inner, fderiv_smul_const, contDiffAt_norm, norm_fderiv_le_of_lipschitz, lipschitzWith_of_nnnorm_deriv_le, IsLocalMax/IsLocalMin.fderiv_eq_zero, integral_integral_swap, Integrable.integral_prod_right, Measure.addHaar_ball, finrank_euclideanSpace_fin, Measure.integrableOn_of_bounded, and LipschitzWith.integral_lineDeriv_mul_eq (Rademacher, imported). integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (LineDeriv/IntegrationByParts.lean) and integral_inner (L2Space.lean) exist in the snapshot but are not imported by the contract; accepted submissions 46877ce9 and 296e19be keep the contract imports. Book. Simon Ch. 3, 4.3 steps (1) and (3)–(6) at chapter-03.txt lines 604–652 match the parent's cited source. Lean. The five child types elaborate. The parent's frozen type is proved from the children, with a byte-identical type. Complete proofs of all five children and of the parent build with axioms [propext, Classical.choice, Quot.sound]; they are saved in GMT/Scratch/codim1_rdo_dg_cutoff_estimates_decomposition and repeated as appendices. Runtime. The node is at depth 5 < max_depth 6, so the children (depth 6) are leaves, and the name-collision rule is satisfied.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.radial_cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+  "depth": 6,
+  "title": "C¹ radial cut-off between B̄_ρ(y) and B̄_{ρ+δ}(y) with |Dζ| ≤ 3/(2δ) and closed-ball superlevel sets (parent step 2)",
+  "statement": "Let P ∈ ℕ, y ∈ ℝ^P (Euclid P) and ρ, δ ∈ ℝ with ρ > 0 and δ > 0. Then there is ζ : ℝ^P → ℝ such that: (a) ζ is C¹ (ContDiff ℝ 1); (b) ζ has compact support; (c) 0 ≤ ζ(z) ≤ 1 for all z; (d) ζ(z) = 1 for every z in the closed ball B̄_ρ(y); (e) tsupport ζ ⊆ B̄_{ρ+δ}(y); (f) the operator norm of Dζ(z) = fderiv ℝ ζ z satisfies ‖Dζ(z)‖ ≤ 3/(2δ) for every z; (g) Dζ(z) = 0 for every z ∉ B_{ρ+δ}(y) ∖ B̄_ρ(y) (B the open ball); (h) for every t with 0 < t ≤ 1 there is r ∈ ℝ with ρ ≤ r < ρ + δ and {z : t ≤ ζ(z)} = B̄_r(y).",
+  "lean_statement": "∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ 3 / (2 * δ)) ∧ (∀ z, z ∉ ball y (ρ + δ) \\ closedBall y ρ → fderiv ℝ ζ z = 0) ∧ ∀ t : ℝ, 0 < t → t ≤ 1 → ∃ r : ℝ, ρ ≤ r ∧ r < ρ + δ ∧ {z | t ≤ ζ z} = closedBall y r",
+  "lean_name": "codim1_rdo_dg_ce_radial_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-04d1586b61-a1"
+}
