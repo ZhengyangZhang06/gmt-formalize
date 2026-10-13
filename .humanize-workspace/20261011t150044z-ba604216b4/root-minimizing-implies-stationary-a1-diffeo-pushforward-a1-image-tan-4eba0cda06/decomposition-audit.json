@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json",
+        "rg -n 'approxTangentPlane' project/GMT --glob '*.lean'",
+        "rg -n 'dpf_itt_|bilipschitz_image|ae_of_ae_pieces' project/GMT --glob '*.lean'",
+        "rg -n 'AntilipschitzWith|hausdorffMeasure_image_le|image_of_continuousOn_injOn|ae_imp_of_ae_restrict' project/GMT --glob '*.lean'",
+        "sed -n '45,115p' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "sed -n '590,640p' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "sed -n '800,840p' mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "sed -n '218,276p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "dpf_itt_approxTangentPlane_eq",
+        "dpf_itt_bilipschitz_image_locfin",
+        "dpf_itt_comp_bilipschitz_piece",
+        "dpf_itt_ae_of_ae_pieces",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/itt-independent-audit-f3higzgf/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/itt-independent-audit-f3higzgf/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/itt-independent-audit-f3higzgf/Challenge.lean",
+        "/tmp/itt-independent-audit-f3higzgf/Proofs.lean"
+      ],
+      "conclusion": "The split is appropriate: all four independent obligations contribute directly to the selected tangent-transport theorem. The pinned project and library revisions match the checked environment; project searches found no existing proposed declarations. All names are bare identifiers, with no competing reservations in the 518-node DAG or other stored proposals. Dependencies are acyclic and correctly directed. Each exact one-line proposition elaborates independently in the comparator scope before child implementation. Independent compilation of the supplied proof implementations and assembly establishes the exact selected parent type conditional on precisely its two frozen sibling contracts; all checked proofs use only propext, Classical.choice and Quot.sound. The inferred volume is measureSpaceOfInnerProductSpace, and derivative coercions are ContinuousLinearMap.toLinearMap. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chosen_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match. The tangent hypothesis supplies the existential witness, choose_spec supplies the chosen plane's tangent property, and the pinned uniqueness theorem identifies it with Q without additional hypotheses. The proof is complete and non-circular."
+    },
+    {
+      "key": "image_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. Continuity and injectivity justify Lusin–Souslin; the preimage identity gives containment in U; antilipschitzness makes compact preimages bounded, hence compact. The normalized Hausdorff Lipschitz bound then proves local finiteness. Neither openness nor surjectivity is needed."
+    },
+    {
+      "key": "composed_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four conclusions exactly match the prose. The explicit positive constant m/(Λ'+1) handles zero antilipschitz constants. Differentiability hypotheses justify the chain rule, injectivity composes, and the checked continuous-linear-map coercions and range_comp prove the subspace identity. No missing dependency or circular step occurs."
+    },
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary sets B_i and property p require no unstated measurability: ae_imp_of_ae_restrict gives null exceptional parameter sets. The nonzero Hausdorff normalization and Lipschitz bound give null images. The explicit exceptional-set inclusion and countable union argument prove the result, with Borel measurability of M correctly used for ae_restrict_iff'."
+    }
+  ],
+  "required_changes": []
+}

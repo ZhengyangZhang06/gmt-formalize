@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (with the n = 0 provisions of its step 10). It plays the role of Simon's decomposition of Lemma 1.2 / Remark 1.3 of Ch. 3 (chapter-03.txt lines 25–75: M = ⋃_j M_j disjoint, M_j ⊆ N_j, H^n(M_0) = 0), with bi-Lipschitz Borel pieces in place of pieces of C¹ submanifolds; families are indexed by ℕ and empty pieces are allowed. Notation: E := ℝ^P; H^n := μHE[n] (on ℝ^n it equals Lebesgue measure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume).
+1. Rectifiable cover. By CountablyRectifiable n M there are M₀ ⊆ E with H^n(M₀) = 0 and Lipschitz maps F_j : ℝ^n → E (j ∈ ℕ) with M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n).
+2. Regular sets. Let G_j := {a ∈ ℝ^n : F_j is differentiable at a and DF_j(a) is injective} (SimonGMT areaRegularSet F_j). G_j is Borel (SimonGMT measurableSet_areaRegularSet) and H^n(F_j(ℝ^n ∖ G_j)) = 0 (SimonGMT area_image_compl_regularSet_eq_zero with s = univ; finrank ℝ ℝ^n = n).
+3. Coercivity constant and radius. For an injective linear A : ℝ^n → E choose m(A) > 0 with (†) |Ah| ≥ m(A)|h| for all h ∈ ℝ^n: if n ≥ 1 take m(A) := min{|Ah| : |h| = 1} (the unit sphere is compact and nonempty and h ↦ |Ah| is continuous and positive on it; for h ≠ 0 apply this to h/|h|; h = 0 is trivial); if n = 0 take m(A) := 1 (the only vector is h = 0). (Alternatively m(A) := 1/K for K > 0 with AntilipschitzWith K A from Mathlib LinearMap.exists_antilipschitzWith, valid in every dimension.) Define r : (ℝ^n →L[ℝ] E) → ℝ≥0 by r(A) := m(A)/2 if A is injective and r(A) := 1 otherwise. Then r(A) ≠ 0 for every A.
+4. Partition. For each j apply Mathlib exists_partition_approximatesLinearOn_of_hasFDerivWithinAt to f := F_j, s := G_j, f' := fderiv ℝ F_j (for a ∈ G_j, F_j is differentiable at a, so HasFDerivWithinAt F_j (DF_j(a)) G_j a) and the radius r of step 3 (rpos holds). It gives pairwise disjoint measurable sets t_{j,k} ⊆ ℝ^n (k ∈ ℕ) with G_j ⊆ ⋃_k t_{j,k}, and continuous linear maps A_{j,k} with ApproximatesLinearOn F_j A_{j,k} (G_j ∩ t_{j,k}) (r(A_{j,k})), i.e. |F_j(a) − F_j(a') − A_{j,k}(a − a')| ≤ r(A_{j,k})|a − a'| for a, a' ∈ G_j ∩ t_{j,k}; and if G_j ≠ ∅ then A_{j,k} = DF_j(y) for some y ∈ G_j.
+5. Bi-Lipschitz pieces. Put D_{j,k} := G_j ∩ t_{j,k} (Borel) and ρ_{j,k} := r(A_{j,k}) > 0. Claim: |F_j(a) − F_j(a')| ≥ ρ_{j,k}|a − a'| for a, a' ∈ D_{j,k}. If D_{j,k} = ∅ this is vacuous. Otherwise G_j ≠ ∅, so A := A_{j,k} = DF_j(y) with y ∈ G_j is injective and ρ_{j,k} = m(A)/2; by step 4 and (†), |F_j(a) − F_j(a')| ≥ |A(a − a')| − (m(A)/2)|a − a'| ≥ (m(A)/2)|a − a'|. In particular F_j is injective on D_{j,k}, and F_j is differentiable with injective derivative at every point of D_{j,k} ⊆ G_j.
+6. Enumeration. Let i ↦ (j(i), k(i)) be the bijection ℕ → ℕ × ℕ (Nat.unpair). Put F_i := F_{j(i)}, D_i := D_{j(i),k(i)}, m_i := ρ_{j(i),k(i)} > 0, and N_i := F_i(D_i). F_i is continuous, D_i Borel and F_i injective on D_i, so N_i is Borel by the Lusin–Souslin theorem (Mathlib MeasurableSet.image_of_continuousOn_injOn).
+7. Disjoint pieces. Define B_i := D_i ∩ F_i^{-1}(M ∖ ⋃_{i'<i} N_{i'}). B_i is Borel (F_i continuous; M and the N_{i'} Borel) and F_i(B_i) = (N_i ∩ M) ∖ ⋃_{i'<i} N_{i'} =: P_i, which is Borel and contained in M. Since B_i ⊆ D_i, the lower bound m_i|a − a'| ≤ |F_i(a) − F_i(a')| and the differentiability/injectivity of DF_i hold on B_i, and F_i is Lipschitz. If i' < i then P_{i'} ⊆ N_{i'} and P_i ∩ N_{i'} = ∅, so the P_i are pairwise disjoint. (This is the parent's recursive definition B_i := (D_i ∩ F_i^{-1}(M)) ∖ F_i^{-1}(⋃_{i'<i} F_{i'}(B_{i'})) in closed form: by induction ⋃_{i'<i} F_{i'}(B_{i'}) = M ∩ ⋃_{i'<i} N_{i'}.)
+8. Null remainder. Let x ∈ M ∖ (M₀ ∪ ⋃_j F_j(ℝ^n ∖ G_j)). By step 1, x = F_j(a) for some j and a, and a ∈ G_j. Then a ∈ t_{j,k} for some k, so a ∈ D_i for the index i with (j(i), k(i)) = (j, k), and x ∈ N_i ∩ M. If i₀ is the least index with x ∈ N_{i₀}, then x ∈ P_{i₀}. Hence M ∖ ⋃_i F_i(B_i) ⊆ M₀ ∪ ⋃_j F_j(ℝ^n ∖ G_j), a countable union of H^n-null sets (steps 1–2), so H^n(M ∖ ⋃_i F_i(B_i)) = 0.
+9. n = 0 and n > P need no separate treatment: for n = 0 every A is injective, m(A) = 1, r(A) = 1/2, every map ℝ^0 → E is differentiable with injective derivative (G_j = ℝ^0), and each D_i ⊆ ℝ^0 has at most one point; for n > P no linear map ℝ^n → E is injective, so all G_j are empty, all B_i = ∅, and step 8 says H^n(M) = 0. (Imports: areaRegularSet and its lemmas live in Poincare.SimonGMT.Chapter02.AreaLipschitz, which the submission may import; the frozen statement does not use it.)
+
+## Key steps
+
+1. Cover M by M₀ ∪ ⋃F_j(ℝ^n) and remove the null images F_j(ℝ^n ∖ G_j) of the non-regular points.
+2. Radius r(A) := m(A)/2 for injective A (m(A) a coercivity constant, 1 when n = 0), r(A) := 1 otherwise, so r(A) ≠ 0 for all A.
+3. Mathlib's partition theorem gives pieces G_j ∩ t_{j,k} on which F_j is bi-Lipschitz with lower constant r(A_{j,k}).
+4. Enumerate the pieces over ℕ; their images are Borel by Lusin–Souslin.
+5. B_i := D_i ∩ F_i^{-1}(M ∖ ⋃_{i'<i} F_{i'}(D_{i'})) yields disjoint Borel images in M covering M up to a null set.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)`
+- `python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/{parent-child-handoff.json,decomposition-scope-v1.json,decomposition-scope-v2.json,decomposition-v2.json,decomposition-audit-v1.json,decomposition-audit-v2.json,decomposition-review-receipt-v1.json,decomposition-review-receipt-v2.json}; sha256(handoff natural_proof) = edb40234e38681383059766fc8fce5de4e38aeb8b70b1da74d3e2f3509f688a2`
+- `python3 -I: dag.json scan of all 451 nodes for the 11 dpf_ lean_names (no hits) and for approxTangent/pushforward/area_formula/bilipschitz lean_names`
+- `grep -l '"<each dpf_ name>"' nodes/*/decomposition-v*.json (hits only in this node's own v1/v2)`
+- `grep -n diffeo-pushforward issue-workers.json; git branch -a | grep diffeo; git grep -n 'dpf_\|imrep_c1_diffeo' <node proof branch> -- GMT (no matches)`
+- `rg -n 'pushforward|Pushforward' project/GMT --glob '*.lean'`
+- `rg -n 'dpf_|imrep_c1_diffeo|approxTangent.*map|area_formula' project/GMT --glob '*.lean' (no match)`
+- `grep -rn in mathlib/Mathlib: exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, ae_tendsto_measure_inter_div, ae_tendsto_average_norm_sub, image_of_continuousOn_injOn, hausdorffMeasure_image_le, contDiff_symm, extDerivWithin_pullback, det_isEmpty, theorem lintegral_iUnion, normDet_comp, normDet_sq_eq_det_gram, euclideanHausdorffMeasure_image, normDet_of_subsingleton, euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton, exists_antilipschitzWith, analyticOnNhd_compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, convolution_tendsto_right_of_continuous, hasFDerivAt_convolution_right, contDiff_convolution_left, lipschitzWith_of_nnnorm_fderiv_le, toHomeomorphOfContinuousClosed, ofInjectiveEndo, eq_smul_basis_det, comp_quasiMeasurePreserving, integral_eq_lintegral_pos_part_sub_lintegral_neg_part, euclideanHausdorffMeasure_homothety_image, euclideanHausdorffMeasure_eq_volume, lintegral_withDensity_eq_lintegral_mul_non_measurable, norm_fderiv_le_of_lipschitz, addHaar_closedBall_eq_addHaar_ball, exists_cthickening_subset_open, continuous_det, det_fromBlocks_zero₂₁, gramSchmidtOrthonormalBasis`
+- `grep -n -A12 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' Mathlib/MeasureTheory/Function/Jacobian.lean; grep -A6 'Homeomorph.contDiff_symm' Mathlib/Analysis/Calculus/ContDiff/Operations.lean; grep -A8 euclideanHausdorffMeasure_homothety_image Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -A5 'normDet_comp\|normDet_sq_eq_det_gram\|euclideanHausdorffMeasure_image' Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `grep -rn in simongmt/Poincare/SimonGMT: def areaRegularSet, measurableSet_areaRegularSet, area_image_compl_regularSet_eq_zero, weighted_area_formula_lipschitz_injOn, measurable_areaJacobianAt, def HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique, def blowUpMap, exteriorDerivativeOn_pullbackFormWithin, def pullbackFormWithin, exteriorDerivativeTestOn, boundary_apply, def TestFormOnConverges, def IsTestForm, def IsSmoothForm, exteriorDerivative_isTestForm, tsupport_exteriorDerivative_subset, def CountablyRectifiable, def areaJacobianAt, structure GeometricCurrentOn`
+- `grep -n '^theorem\|^lemma' simongmt/Poincare/SimonGMT/Chapter03/*.lean`
+- `lake env lean /tmp/dpf-a3-review/Types.lean`
+- `lake env lean /tmp/dpf-a3-review/Assembly.lean (#print axioms assembly_conditional)`
+- `lake env lean /tmp/dpf-a3-review/Wiring.lean`
+- `lake env lean /tmp/dpf-a3-review/Instances.lean (#print axioms gram_eq_normDet_check)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-review-receipt-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/tmp/dpf-a3-review/Types.lean`
+- `/tmp/dpf-a3-review/Assembly.lean`
+- `/tmp/dpf-a3-review/Wiring.lean`
+- `/tmp/dpf-a3-review/Instances.lean`
+
+No declaration in the local snapshot proves this push-forward statement or any of the 11 children, so the children are new. The only related project item is the Ch06 contract's LipschitzPushforwardIntegerMultiplicity, a different Prop about IsLipschitzPushforward that is still unproved (its main_theorem is sorry). SimonGMT Chapter03 asserts no theorem that rectifiable sets have approximate tangent planes almost everywhere. Every library fact the child proofs rely on exists in the pinned Mathlib (25730c7c) and SimonGMT (2b36630) with compatible hypotheses:
+- the partition theorem, with rpos : ∀ A, r A ≠ 0;
+- Homeomorph.contDiff_symm and the homothety scaling of μHE;
+- Besicovitch density and Lebesgue differentiation;
+- normDet_comp, normDet_sq_eq_det_gram and euclideanHausdorffMeasure_image;
+- SimonGMT's weighted injective Lipschitz area formula, which takes an arbitrary weight and has no rank hypothesis;
+- HasApproximateTangentSpaceAt (finrank plus C_c blow-up convergence) and its uniqueness.
+All 11 frozen child types and the parent type elaborate in the comparator's replayed contract scope. The parent assembly compiles, and its conditional form uses only propext, Classical.choice and Quot.sound. Sibling wiring and the inferred instances were confirmed in Lean: the Matrix.of Gram expression equals normDet of the restricted map, ‖L‖ is the operator norm, and HasOrthogonalProjection is found. No name collides with the 451 DAG nodes or with other nodes' stored proposals.
