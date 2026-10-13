@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes of a bi-Lipschitz Lipschitz image",
+  "statement": "Let F : ℝ^n → ℝ^P be L-Lipschitz, B ⊆ ℝ^n Borel and m > 0 with m|a − a'| ≤ |F(a) − F(a')| for a, a' ∈ B. Suppose F is differentiable with injective derivative at every point of B. Then for Lebesgue-a.e. b ∈ B, F(B) has approximate tangent space range DF(b) at F(b): HasApproximateTangentSpaceAt n (F '' B) (F b) (range DF(b)).",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "ptd_piece_image_approxTangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66-a1"
+}
