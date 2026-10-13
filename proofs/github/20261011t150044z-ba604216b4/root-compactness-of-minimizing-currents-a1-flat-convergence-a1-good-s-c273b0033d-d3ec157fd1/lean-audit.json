@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "78ef177ffb103f80042f89b4ad37b1ccbcc2d489b992ad3be81085be122b8020",
+  "git_delta": {
+    "base_commit": "b90a83a139bed1a86156d0999625ae94e7decb38",
+    "candidate_commit": "53725a30b3d08242b3bf43f405b42f9a02a4ff1c",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b5381a90a1a25a6bbba1408b65c502fd7f155217a89a9e2f742b5283e17ebca7",
+    "source_sha256": "ecd4d562e97584cc645a981a2ad6af93397b5c7eeb1f8d065fa47e4307fe3868",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_gs_ae_quotient_finite",
+      "statement": "∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j (Ioo (t - h) t)) (𝓝[>] 0)) atTop ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
