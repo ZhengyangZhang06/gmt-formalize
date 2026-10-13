@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1cbb13ddba8d1cffcb0ddfd2d404382e36152f298ad73f3358fee2505cf05e0d",
+  "git_delta": {
+    "base_commit": "a2ee6047e98437f5ed1345e0934c22c407ebd2d0",
+    "candidate_commit": "b6a7374ce9382e45a82b0deb1cee1327df6478ea",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_bvc_mollified_lipschitz",
+    "diff_sha256": "0e62e8b1d5aeb3c88bcb2b4aac7088d3ee755a9c0f43c5743546d7c194200d6b",
+    "source_sha256": "87306ea18b4805fa6ff1a7387ee2bfcbfcfe34953c10041d9d8774b749a2e790",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_bvc_mollified_lipschitz",
+      "statement": "∀ (n : ℕ) (ρ : Euclid n → ℝ), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → ∃ L : ℝ, ∀ F : Set (Euclid n), MeasurableSet F → (∀ x, |∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)| ≤ L) ∧ ∀ x x', |(∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)) - ∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x' - y)| ≤ L * ‖x - x'‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
