@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdtfr_|IsLatticeChain|latticeFace|polyhedral|cubical",
+        "HasApproximateTangentSpaceAt|CountablyRectifiable|blowUpMap|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "covectorEuclideanNorm|massAdmissibleOn|def mass|massOn_mono|le_massOn",
+        "integral_divergence_of_hasFDerivAt_off_countable|exists_contDiff_support_eq_eq_one_iff|hausdorffMeasure_of_dimH_lt|dimH_univ_eq_finrank|eq_smul_basis_det|det_to_matrix_orthonormalBasis_real",
+        "cmcdtfr_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_replacement_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_replacement_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_replacement_independent_audit/InstCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_replacement_independent_audit/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/decomposition-v1.json",
+        "/tmp/frdecomp/lean/InstCheck.lean",
+        "/tmp/frdecomp/lean/InstCheck2.lean",
+        "/tmp/face_replacement_independent_audit/Types.lean",
+        "/tmp/face_replacement_independent_audit/Assembly.lean",
+        "/tmp/face_replacement_independent_audit/InstCheck.lean",
+        "/tmp/face_replacement_independent_audit/Axioms.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace; Mathlib and SimonGMT revisions match their pins. The inspected definitions and library results support the supplied arguments. No cmcdtfr_ declaration was found in the snapshot or the latest 1010-node DAG. All nine names are valid bare identifiers, and all frozen types are standalone one-line propositions matching their prose. Dependencies are acyclic and correctly directed; CB has no back-reference to this branch. Independent elaboration and reconstructed exact-type assembly pass, proving that CB and the child conclusions imply this selected parent contract. The assembly and audited library lemmas use only propext, Classical.choice and Quot.sound. Instance checks confirm the intended Euclidean coordinates, C-infinity order, trace coercion, current subtraction and zero-dimensional measures; no matrix-unit construction occurs. The original InstCheck.lean contains scratch errors, but the supplied InstCheck2 corrections pass in the combined independent check. Splitting is appropriate: every child contributes to the selected face-replacement proof."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "face_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all volume, isometry, diameter and separation clauses. The coordinate and floor arguments prove both separation alternatives, including k = 0, without circular dependencies."
+    },
+    {
+      "key": "skeleton_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable cover consists of affine planes of dimension at most m. Hausdorff-dimension bounds give H^(m+1)-nullity, and normalization preserves nullity. The argument includes P ≤ m and P = 0."
+    },
+    {
+      "key": "plane_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact bump argument forces Q into the coordinate plane without assuming A measurable. Equal dimensions identify the planes; the orthonormal change-of-basis determinant supplies one fixed sign for every covector. The zero-dimensional case is covered."
+    },
+    {
+      "key": "skeleton_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "VO, MR and IMC antecedents match verbatim. The proof establishes null remainders, finitely many disjoint faces, measurable integer-valued densities, integrability, the mass bound and the exact action formula. It uses local integrability correctly without requiring an omitted global mass hypothesis."
+    },
+    {
+      "key": "boundary_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Face separation yields disjoint open neighborhoods. The constructed test forms have the required coefficient norm and divergence; finite boundary mass justifies toReal and supremum approximation. VO and the proved support inclusion establish the face-contact conclusion."
+    },
+    {
+      "key": "face_integral_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Bounded coefficient evaluations establish integrability and current continuity. The mass estimate, divergence construction for boundary mass, and vanishing outside the closed union of nonzero-density faces prove every clause for any represented D."
+    },
+    {
+      "key": "polyhedral_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every IMRep field, including approximate tangents through local equality with a plane. Change of variables establishes representation; MR gives the exact mass and integer dichotomy. Vertices, empty chains and k > P are handled."
+    },
+    {
+      "key": "chain_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The face indices, endpoint translations and alternating signs match the exterior derivative. The applicable box divergence theorem gives cubical Stokes, and finite regrouping produces integer coefficients. The m = 0 boundary formula is included."
+    },
+    {
+      "key": "finite_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness bounds the possible lattice corners, and the coefficient bound gives finitely many coefficient vectors. Choosing representations yields an injection by current extensionality. Negative Λ and degenerate dimensions cause no gap."
+    }
+  ],
+  "required_changes": []
+}

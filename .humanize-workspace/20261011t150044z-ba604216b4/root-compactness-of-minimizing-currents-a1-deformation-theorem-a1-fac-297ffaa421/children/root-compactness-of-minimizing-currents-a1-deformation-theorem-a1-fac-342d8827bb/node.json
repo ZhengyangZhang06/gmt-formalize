@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 4,
+  "title": "Approximate tangent planes and unit orientations of subsets of a coordinate plane are ±e_ι",
+  "statement": "Let P, n ∈ ℕ, ι : Fin n → Fin P strictly increasing, A ⊆ ℝ^P, x ∈ ℝ^P, Q a linear subspace of ℝ^P, and ξ an n-vector (a continuous linear functional on n-covectors). Assume a_i = x_i for every a ∈ A and every i ∉ range ι. Assume also that Q is an approximate tangent space of A at x (HasApproximateTangentSpaceAt n A x Q, Simon Ch. 3, 1.4) and ξ is a unit orientation of Q (IsUnitOrientationOf ξ Q). Then either ξ(α) = α(e_{ι(0)}, …, e_{ι(n−1)}) for every n-covector α, or ξ(α) = −α(e_{ι(0)}, …, e_{ι(n−1)}) for every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)))",
+  "lean_name": "cmcdtfr_plane_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb-a1"
+}

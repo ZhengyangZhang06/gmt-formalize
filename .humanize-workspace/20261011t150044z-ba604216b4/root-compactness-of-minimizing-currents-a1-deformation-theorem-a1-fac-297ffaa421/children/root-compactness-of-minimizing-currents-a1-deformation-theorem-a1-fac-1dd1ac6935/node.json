@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.skeleton_null-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 4,
+  "title": "The (n−1)-skeleton of the unit lattice is Hⁿ-null",
+  "statement": "For all P, m ∈ ℕ, the set L_m := {x ∈ ℝ^P : there is s ⊆ {0,…,P−1} with P ≤ m + |s| and x_i ∈ ℤ for all i ∈ s} (points with at least P − m integer coordinates) satisfies μHE[m+1](L_m) = 0.",
+  "lean_statement": "∀ (P m : ℕ), μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0",
+  "lean_name": "cmcdtfr_skeleton_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-1dd1ac6935-a1"
+}
