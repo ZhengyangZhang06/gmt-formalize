@@ -694,6 +694,38 @@ theorem tdo_gpd_graph_plane_finrank : ∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ
     exact congrArg Set.range (funext fun v => (hΦ v).symm)
   rw [hrange, Submodule.span_eq, LinearMap.finrank_range_of_inj hinj, finrank_euclideanSpace_fin]
 
+/-- A step in the proof of Simon Ch. 5, Theorem 4.5 (displays (10)–(11)): for `u, w ∈ T`,
+`|⟪p_S u, p_S w⟫ − ⟪u, w⟫| ≤ |p_S − p_T|² |u| |w|`, with `|p_S − p_T|` the Hilbert–Schmidt norm. -/
+theorem gwe_gta_proj_inner_defect : ∀ (m : ℕ) (S T : Submodule ℝ (Rn m)) (u w : Rn m), u ∈ T → w ∈ T → |inner ℝ (S.starProjection u) (S.starProjection w) - inner ℝ u w| ≤ hsNormSq (S.starProjection - T.starProjection) * (‖u‖ * ‖w‖) := by
+  intro m S T u w hu hw
+  -- `p_T` fixes `u, w ∈ T`, so `(p_S − p_T) x = p_S x − x` for `x = u, w`.
+  have hfix : ∀ x ∈ T, (S.starProjection - T.starProjection) x = S.starProjection x - x :=
+    fun x hx => by rw [sub_apply, T.starProjection_eq_self_iff.2 hx]
+  -- `p_S` is self-adjoint and idempotent, so `⟪p_S u, p_S w⟫ = ⟪u, p_S w⟫ = ⟪p_S u, w⟫`; hence
+  -- `⟪p_S u, p_S w⟫ − ⟪u, w⟫ = −⟪(p_S − p_T) u, (p_S − p_T) w⟫`.
+  have hid : inner ℝ (S.starProjection u) (S.starProjection w) - inner ℝ u w =
+      -inner ℝ ((S.starProjection - T.starProjection) u)
+        ((S.starProjection - T.starProjection) w) := by
+    have h1 := S.inner_starProjection_left_eq_right u (S.starProjection w)
+    have h2 := S.inner_starProjection_left_eq_right u w
+    rw [S.starProjection_eq_self_iff.2 (S.starProjection_apply_mem w)] at h1
+    rw [hfix u hu, hfix w hw, inner_sub_left, inner_sub_right, inner_sub_right]
+    linarith
+  -- `|⟪A x, A y⟫| ≤ ‖A x‖ ‖A y‖ ≤ ‖A‖² ‖x‖ ‖y‖ ≤ |A|² ‖x‖ ‖y‖`, since `‖A‖ ≤ |A|`.
+  have key : ∀ (A : Rn m →L[ℝ] Rn m) (x y : Rn m),
+      |inner ℝ (A x) (A y)| ≤ hsNormSq A * (‖x‖ * ‖y‖) := by
+    intro A x y
+    have hA : ‖A‖ ^ 2 ≤ hsNormSq A :=
+      (Real.le_sqrt (norm_nonneg A) (Finset.sum_nonneg fun i _ => sq_nonneg _)).1
+        (hsNorm_starProjection_trace_identities.1 m m A)
+    calc |inner ℝ (A x) (A y)| ≤ ‖A x‖ * ‖A y‖ := abs_real_inner_le_norm _ _
+      _ ≤ ‖A‖ * ‖x‖ * (‖A‖ * ‖y‖) :=
+          mul_le_mul (A.le_opNorm x) (A.le_opNorm y) (norm_nonneg _) (by positivity)
+      _ = ‖A‖ ^ 2 * (‖x‖ * ‖y‖) := by ring
+      _ ≤ hsNormSq A * (‖x‖ * ‖y‖) := by gcongr
+  rw [hid, abs_neg]
+  exact key _ u w
+
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
