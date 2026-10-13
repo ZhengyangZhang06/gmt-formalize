@@ -460,6 +460,358 @@ def RegularSetOpenDense : Prop :=
 
 namespace Submission
 
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): under the change of variables `x = y + ρ z` with `ρ > 0`, which maps `B̆_r(0)` onto
+`B̆_{ρr}(y)`, the Hölder bound `‖ρ g(y + ρ z) − ρ g(y + ρ z')‖ ≤ c ‖z − z'‖^α` on `B̆_r(0)` is
+equivalent to the scale-weighted bound `ρ^{1+α} ‖g(x) − g(x')‖ ≤ c ‖x − x'‖^α` on `B̆_{ρr}(y)`,
+because `ρ^{1+α} = ρ ρ^α` and `‖x − x'‖^α = ρ^α ‖z − z'‖^α`. -/
+theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
+  intro n ℓ g y ρ r α c hρ
+  -- Step 1: `ρ^α > 0`, `ρ^{1+α} = ρ ρ^α`, `‖(y + ρ z) − (y + ρ z')‖^α = ρ^α ‖z − z'‖^α` and
+  -- `‖ρ A − ρ B‖ = ρ ‖A − B‖`.
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
+    intro u v
+    rw [show ρ • u - ρ • v = ρ • (u - v) from (smul_sub ρ u v).symm, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hρ]
+  -- Step 2: `z(x) = ρ⁻¹ (x − y)` satisfies `y + ρ z(x) = x` and maps `B̆_{ρr}(y)` into `B̆_r(0)`.
+  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
+    intro x
+    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
+  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ,
+      inv_mul_lt_iff₀ hρ]
+    exact hx
+  constructor
+  -- Step 3: (a) ⇒ (b), multiplying the bound at `z(x), z(x')` by `ρ^α > 0`.
+  · intro h x hx x' hx'
+    have h1 := h _ (hinball x hx) _ (hinball x' hx')
+    rw [hback, hback, hsm] at h1
+    have h2 := hnorm (ρ⁻¹ • (x - y)) (ρ⁻¹ • (x' - y))
+    rw [hback, hback] at h2
+    rw [hsplit, h2]
+    calc ρ * ρ ^ α * ‖g x - g x'‖ = ρ ^ α * (ρ * ‖g x - g x'‖) := by ring
+      _ ≤ ρ ^ α * (c * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by gcongr
+      _ = c * (ρ ^ α * ‖ρ⁻¹ • (x - y) - ρ⁻¹ • (x' - y)‖ ^ α) := by ring
+  -- Step 4: (b) ⇒ (a), cancelling the factor `ρ^α > 0` in the bound at `y + ρ z, y + ρ z'`.
+  · intro h z hz z' hz'
+    have hmap : ∀ u ∈ ball (0 : Rn n) r, y + ρ • u ∈ ball y (ρ * r) := by
+      intro u hu
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+      rw [mem_ball_zero_iff] at hu
+      exact mul_lt_mul_of_pos_left hu hρ
+    have h1 := h _ (hmap z hz) _ (hmap z' hz')
+    rw [hsplit, hnorm] at h1
+    rw [hsm]
+    have h2 : ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖) ≤ ρ ^ α * (c * ‖z - z'‖ ^ α) := by
+      calc ρ ^ α * (ρ * ‖g (y + ρ • z) - g (y + ρ • z')‖)
+          = ρ * ρ ^ α * ‖g (y + ρ • z) - g (y + ρ • z')‖ := by ring
+        _ ≤ c * (ρ ^ α * ‖z - z'‖ ^ α) := h1
+        _ = ρ ^ α * (c * ‖z - z'‖ ^ α) := by ring
+    exact le_of_mul_le_mul_left h2 hρα
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): if `ρ > 0` and `|y₀| + ρ ≤ 1`, the rescaled data `a(y₀ + ρ z)`, `ρ Φ(y₀ + ρ z)` and
+`w(y₀ + ρ z)` on `B̆₁(0)` satisfy the structure conditions of `a`, `Φ`, `w` with the same
+constants.  The map `z ↦ y₀ + ρ z` sends `B̆₁(0)` into itself and multiplies distances by
+`ρ ≤ 1`, so the Hölder quotients acquire the factors `ρ^α ≤ 1` and `ρ ρ^α ≤ 1`. -/
+theorem dohr_eb_sch_ube_rescaled_structure : ∀ (n ℓ : ℕ) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ) (y₀ : Rn n) (ρ α lam M : ℝ), 0 < ρ → ‖y₀‖ + ρ ≤ 1 → 0 ≤ α → 0 ≤ M → (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ M) → (∀ z ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a (y₀ + ρ • z) P P) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q| ≤ M * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a (y₀ + ρ • z) P Q - a (y₀ + ρ • z') P Q| ≤ M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) ∧ (∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |(ρ • Φ (y₀ + ρ • z)) P - (ρ • Φ (y₀ + ρ • z')) P| ≤ M * ‖z - z'‖ ^ α * ‖P‖) ∧ ∀ z ∈ ball (0 : Rn n) 1, ‖w (y₀ + ρ • z)‖ ≤ M := by
+  intro n ℓ a Φ w y₀ ρ α lam M hρ hyρ hα hM h1 h2 h3 h4 h5
+  -- Step 1: `0 < ρ ≤ 1`, hence `ρ^α ≤ 1`.
+  have hρ1 : ρ ≤ 1 := by linarith [norm_nonneg y₀]
+  have hρα : ρ ^ α ≤ 1 := Real.rpow_le_one hρ.le hρ1 hα
+  have hρα0 : 0 ≤ ρ ^ α := Real.rpow_nonneg hρ.le α
+  -- Step 2: `z ↦ y₀ + ρ z` maps `B̆₁(0)` into `B̆₁(0)`.
+  have hmap : ∀ z ∈ ball (0 : Rn n) 1, y₀ + ρ • z ∈ ball (0 : Rn n) 1 := by
+    intro z hz
+    rw [mem_ball_zero_iff] at hz ⊢
+    calc ‖y₀ + ρ • z‖ ≤ ‖y₀‖ + ‖ρ • z‖ := norm_add_le _ _
+      _ = ‖y₀‖ + ρ * ‖z‖ := by rw [norm_smul, Real.norm_eq_abs, abs_of_pos hρ]
+      _ < ‖y₀‖ + ρ * 1 := by gcongr
+      _ ≤ 1 := by linarith
+  -- Step 3: `|(y₀ + ρ z) − (y₀ + ρ z')|^α = ρ^α |z − z'|^α`.
+  have hdiff : ∀ z z' : Rn n, ‖(y₀ + ρ • z) - (y₀ + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
+    intro z z'
+    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
+      Real.mul_rpow hρ.le (norm_nonneg _)]
+  -- Step 4: (i), (ii), (v) hold pointwise at `y₀ + ρ z ∈ B̆₁(0)`.
+  refine ⟨fun z hz P => h1 _ (hmap z hz) P, fun z hz P Q => h2 _ (hmap z hz) P Q, ?_, ?_,
+    fun z hz => h5 _ (hmap z hz)⟩
+  -- Step 5: (iii), discarding the factor `ρ^α ≤ 1` as `M ≥ 0`.
+  · intro z hz z' hz' P Q
+    have h := h3 _ (hmap z hz) _ (hmap z' hz') P Q
+    rw [hdiff] at h
+    have hX : 0 ≤ M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ :=
+      mul_nonneg (mul_nonneg (mul_nonneg hM (Real.rpow_nonneg (norm_nonneg _) _))
+        (norm_nonneg _)) (norm_nonneg _)
+    calc |a (y₀ + ρ • z) P Q - a (y₀ + ρ • z') P Q|
+        ≤ M * (ρ ^ α * ‖z - z'‖ ^ α) * ‖P‖ * ‖Q‖ := h
+      _ = ρ ^ α * (M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) := by ring
+      _ ≤ 1 * (M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖) := mul_le_mul_of_nonneg_right hρα hX
+      _ = M * ‖z - z'‖ ^ α * ‖P‖ * ‖Q‖ := one_mul _
+  -- Step 6: (iv), as `(ρ Φ(u))[P] = ρ Φ(u)[P]`, discarding the factor `ρ ρ^α ≤ 1`.
+  · intro z hz z' hz' P
+    have h := h4 _ (hmap z hz) _ (hmap z' hz') P
+    rw [hdiff] at h
+    have hX : 0 ≤ M * ‖z - z'‖ ^ α * ‖P‖ :=
+      mul_nonneg (mul_nonneg hM (Real.rpow_nonneg (norm_nonneg _) _)) (norm_nonneg _)
+    simp only [smul_apply, smul_eq_mul]
+    rw [← mul_sub, abs_mul, abs_of_pos hρ]
+    have hρρ : ρ * ρ ^ α ≤ 1 := by nlinarith
+    calc ρ * |Φ (y₀ + ρ • z) P - Φ (y₀ + ρ • z') P|
+        ≤ ρ * (M * (ρ ^ α * ‖z - z'‖ ^ α) * ‖P‖) := by gcongr
+      _ = (ρ * ρ ^ α) * (M * ‖z - z'‖ ^ α * ‖P‖) := by ring
+      _ ≤ 1 * (M * ‖z - z'‖ ^ α * ‖P‖) := mul_le_mul_of_nonneg_right hρρ hX
+      _ = M * ‖z - z'‖ ^ α * ‖P‖ := one_mul _
+/-- One-step improvement of a scale-weighted Hölder bound (steps 3–5 of the absorption argument
+for the interior `C^{1,α}` Schauder estimate on the unit ball, in the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1).  Let `g : ℝⁿ → L(ℝⁿ, ℝ^ℓ)` (operator norm), `0 < α ≤ 1` and
+`M, A, Q ≥ 0`; call `(y, ρ)` admissible if `ρ > 0` and `|y| + ρ ≤ 1`.  Assume
+(P1) `ρ^{1+α} ‖g(x) − g(x')‖ ≤ Q |x − x'|^α` on `B̆_{ρ/2}(y)` for admissible `(y, ρ)`;
+(P2) for admissible `(y, ρ)` and real `K`, if `‖g(x) − g(x')‖ ≤ K |x − x'|^α` on `B̆_ρ(y)`, then
+`ρ^{1+α} ‖g(x) − g(x')‖ ≤ ((1/16) ρ^{1+α} K + A) |x − x'|^α` on `B̆_{ρ/2}(y)`;
+(P3) `‖g(x)‖ ≤ 2M/t + t^α K` whenever `|x| + r ≤ 1`, `K ≥ 0`, `0 < t < r` and
+`‖g(z) − g(z')‖ ≤ K |z − z'|^α` on `B̆_r(x)`.
+Then for admissible `(y, ρ)`: `ρ ‖g(x)‖ ≤ 32 M + Q/4 + 16 A` on `B̆_{ρ/2}(y)`, and
+`ρ^{1+α} ‖g(x) − g(x')‖ ≤ (Q/2 + 512 M + 32 A) |x − x'|^α` on `B̆_{ρ/2}(y)`. -/
+theorem dohr_eb_sch_ube_holder_improvement : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (α M A Q : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → 0 ≤ Q → (∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ Q * ‖x - x'‖ ^ α) → (∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖g x - g x'‖ ≤ K * ‖x - x'‖ ^ α) → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (1 / 16 * ρ ^ (1 + α) * K + A) * ‖x - x'‖ ^ α) → (∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r → (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖g z - g z'‖ ≤ K * ‖z - z'‖ ^ α) → ‖g x‖ ≤ 2 * M / t + t ^ α * K) → ∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y (ρ / 2), ρ * ‖g x‖ ≤ 32 * M + Q / 4 + 16 * A) ∧ ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by
+  intro n ℓ g α M A Q hα0 hα1 hM hA hQ0 hP1 hP2 hP3 y ρ hρ hyρ
+  -- Step 1: points `x` of `B̆_{ρ/2}(y)` have `|x| + ρ/2 < 1`.
+  have hxnorm : ∀ x ∈ ball y (ρ / 2), ‖x‖ + ρ / 2 < 1 := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    have : ‖x‖ ≤ ‖y‖ + ‖x - y‖ := by
+      calc ‖x‖ = ‖y + (x - y)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖y‖ + ‖x - y‖ := norm_add_le _ _
+    linarith
+  -- Step 2: numerical facts about the powers.
+  have hR : 0 < ρ ^ (1 + α) := Real.rpow_pos_of_pos hρ _
+  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
+  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
+  have p2pos : (0:ℝ) < 2 ^ (1 + α) := by positivity
+  have p4pos : (0:ℝ) < 4 ^ (1 + α) := by positivity
+  have p2ne : (2:ℝ) ^ (1 + α) ≠ 0 := p2pos.ne'
+  have p4ne : (4:ℝ) ^ (1 + α) ≠ 0 := p4pos.ne'
+  have hRne : ρ ^ (1 + α) ≠ 0 := hR.ne'
+  have p2le : (2:ℝ) ^ (1 + α) ≤ 4 := by
+    calc (2:ℝ) ^ (1 + α) ≤ 2 ^ (2:ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      _ = 4 := by rw [Real.rpow_two]; norm_num
+  have p4le : (4:ℝ) ^ (1 + α) ≤ 16 := by
+    calc (4:ℝ) ^ (1 + α) ≤ 4 ^ (2:ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      _ = 16 := by rw [Real.rpow_two]; norm_num
+  have hH0 : 0 ≤ Q / 4 + 16 * A := by linarith
+  -- Step 3: `ρ^{1+α} |g(z) − g(z')| ≤ (Q/4 + 16 A) |z − z'|^α` on `B̆_{ρ/8}(x)`, by (P1) at
+  -- `(x, ρ/2)` and (P2) at `(x, ρ/4)`.
+  have hsmall : ∀ x ∈ ball y (ρ / 2), ∀ z ∈ ball x (ρ / 8), ∀ z' ∈ ball x (ρ / 8),
+      ρ ^ (1 + α) * ‖g z - g z'‖ ≤ (Q / 4 + 16 * A) * ‖z - z'‖ ^ α := by
+    intro x hx z hz z' hz'
+    have hx1 := hxnorm x hx
+    have hρ2 : 0 < ρ / 2 := by positivity
+    have hρ4 : 0 < ρ / 4 := by positivity
+    have e2 : (ρ / 2) ^ (1 + α) = ρ ^ (1 + α) / 2 ^ (1 + α) :=
+      Real.div_rpow hρ.le (by norm_num) _
+    have e4 : (ρ / 4) ^ (1 + α) = ρ ^ (1 + α) / 4 ^ (1 + α) :=
+      Real.div_rpow hρ.le (by norm_num) _
+    have hpos2 : 0 < (ρ / 2) ^ (1 + α) := Real.rpow_pos_of_pos hρ2 _
+    have hHolK : ∀ u ∈ ball x (ρ / 4), ∀ u' ∈ ball x (ρ / 4),
+        ‖g u - g u'‖ ≤ Q / (ρ / 2) ^ (1 + α) * ‖u - u'‖ ^ α := by
+      intro u hu u' hu'
+      have e : ρ / 2 / 2 = ρ / 4 := by ring
+      have h := hP1 x (ρ / 2) hρ2 hx1.le u (by rwa [e]) u' (by rwa [e])
+      rw [div_mul_eq_mul_div, le_div_iff₀ hpos2]
+      linarith
+    have hx4 : ‖x‖ + ρ / 4 ≤ 1 := by linarith
+    have e8 : ρ / 4 / 2 = ρ / 8 := by ring
+    have h1 := hP2 x (ρ / 4) (Q / (ρ / 2) ^ (1 + α)) hρ4 hx4 hHolK z (by rwa [e8])
+      z' (by rwa [e8])
+    rw [e4, e2] at h1
+    have hd : 0 ≤ ‖z - z'‖ ^ α := Real.rpow_nonneg (norm_nonneg _) _
+    have key : 1 / 16 * (ρ ^ (1 + α) / 4 ^ (1 + α)) * (Q / (ρ ^ (1 + α) / 2 ^ (1 + α)))
+        = Q * 2 ^ (1 + α) / (16 * 4 ^ (1 + α)) := by
+      field_simp
+    rw [key] at h1
+    have h2 : ρ ^ (1 + α) * ‖g z - g z'‖
+        ≤ (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := by
+      have h3 := mul_le_mul_of_nonneg_left h1 p4pos.le
+      calc ρ ^ (1 + α) * ‖g z - g z'‖
+          = 4 ^ (1 + α) * (ρ ^ (1 + α) / 4 ^ (1 + α) * ‖g z - g z'‖) := by
+            field_simp
+        _ ≤ 4 ^ (1 + α) * ((Q * 2 ^ (1 + α) / (16 * 4 ^ (1 + α)) + A) * ‖z - z'‖ ^ α) := h3
+        _ = (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := by
+            field_simp
+    calc ρ ^ (1 + α) * ‖g z - g z'‖
+        ≤ (Q * 2 ^ (1 + α) / 16 + A * 4 ^ (1 + α)) * ‖z - z'‖ ^ α := h2
+      _ ≤ (Q / 4 + 16 * A) * ‖z - z'‖ ^ α := by
+          apply mul_le_mul_of_nonneg_right _ hd
+          have q1 := mul_le_mul_of_nonneg_left p2le hQ0
+          have q2 := mul_le_mul_of_nonneg_left p4le hA
+          linarith
+  -- Step 4: `ρ |g(x)| ≤ 32 M + (Q/4 + 16 A) / 16^α`, by (P3) with `r = ρ/8`, `t = ρ/16`.
+  have hsupfine : ∀ x ∈ ball y (ρ / 2), ρ * ‖g x‖ ≤ 32 * M + (Q / 4 + 16 * A) / 16 ^ α := by
+    intro x hx
+    have hx1 := hxnorm x hx
+    have hK0 : 0 ≤ (Q / 4 + 16 * A) / ρ ^ (1 + α) := div_nonneg hH0 hR.le
+    have hHol8 : ∀ z ∈ ball x (ρ / 8), ∀ z' ∈ ball x (ρ / 8),
+        ‖g z - g z'‖ ≤ (Q / 4 + 16 * A) / ρ ^ (1 + α) * ‖z - z'‖ ^ α := by
+      intro z hz z' hz'
+      have h := hsmall x hx z hz z' hz'
+      rw [div_mul_eq_mul_div, le_div_iff₀ hR]
+      linarith
+    have h := hP3 x (ρ / 8) (ρ / 16) ((Q / 4 + 16 * A) / ρ ^ (1 + α)) (by linarith) hK0
+      (by positivity) (by linarith) hHol8
+    have e16 : (ρ / 16) ^ α = ρ ^ α / 16 ^ α := Real.div_rpow hρ.le (by norm_num) _
+    rw [e16, hsplit] at h
+    have p16 : (0:ℝ) < 16 ^ α := by positivity
+    have p16ne : (16:ℝ) ^ α ≠ 0 := p16.ne'
+    have hραne : ρ ^ α ≠ 0 := hρα.ne'
+    have hρne : ρ ≠ 0 := hρ.ne'
+    have hid : ρ * (2 * M / (ρ / 16) + ρ ^ α / 16 ^ α * ((Q / 4 + 16 * A) / (ρ * ρ ^ α)))
+        = 32 * M + (Q / 4 + 16 * A) / 16 ^ α := by
+      field_simp
+      ring
+    calc ρ * ‖g x‖
+        ≤ ρ * (2 * M / (ρ / 16) + ρ ^ α / 16 ^ α * ((Q / 4 + 16 * A) / (ρ * ρ ^ α))) :=
+          mul_le_mul_of_nonneg_left h hρ.le
+      _ = 32 * M + (Q / 4 + 16 * A) / 16 ^ α := hid
+  have h16 : (1:ℝ) ≤ 16 ^ α := Real.one_le_rpow (by norm_num) hα0.le
+  refine ⟨?_, ?_⟩
+  -- Step 5: conclusion (a), since `16^α ≥ 1`.
+  · intro x hx
+    have h := hsupfine x hx
+    have : (Q / 4 + 16 * A) / 16 ^ α ≤ Q / 4 + 16 * A := div_le_self hH0 h16
+    linarith
+  -- Step 6: conclusion (b), by cases `|x − x'| < ρ/8` (step 3) and `|x − x'| ≥ ρ/8` (step 4).
+  · intro x hx x' hx'
+    have hd : 0 ≤ ‖x - x'‖ ^ α := Real.rpow_nonneg (norm_nonneg _) _
+    by_cases hcase : ‖x - x'‖ < ρ / 8
+    · have hxin : x ∈ ball x (ρ / 8) := mem_ball_self (by positivity)
+      have hx'in : x' ∈ ball x (ρ / 8) := by
+        rw [mem_ball, dist_comm, dist_eq_norm]; exact hcase
+      have h := hsmall x hx x hxin x' hx'in
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (Q / 4 + 16 * A) * ‖x - x'‖ ^ α := h
+        _ ≤ (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by
+          apply mul_le_mul_of_nonneg_right _ hd; linarith
+    · push Not at hcase
+      have hdl : (ρ / 8) ^ α ≤ ‖x - x'‖ ^ α := Real.rpow_le_rpow (by positivity) hcase hα0.le
+      have e8 : (ρ / 8) ^ α = ρ ^ α / 8 ^ α := Real.div_rpow hρ.le (by norm_num) _
+      have p8 : (0:ℝ) < 8 ^ α := by positivity
+      have p16 : (0:ℝ) < 16 ^ α := by positivity
+      have hρα8 : ρ ^ α ≤ 8 ^ α * ‖x - x'‖ ^ α := by
+        rw [e8, div_le_iff₀ p8] at hdl; linarith
+      have h8 : (8:ℝ) ^ α ≤ 8 := by
+        calc (8:ℝ) ^ α ≤ 8 ^ (1:ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hα1
+          _ = 8 := Real.rpow_one 8
+      have h816 : (8:ℝ) ^ α ≤ 16 ^ α := Real.rpow_le_rpow (by norm_num) (by norm_num) hα0.le
+      have hA1 : ρ ^ α ≤ 8 * ‖x - x'‖ ^ α := by
+        have := mul_le_mul_of_nonneg_right h8 hd
+        linarith
+      have hA2 : ρ ^ α / 16 ^ α ≤ ‖x - x'‖ ^ α := by
+        have := mul_le_mul_of_nonneg_right h816 hd
+        rw [div_le_iff₀ p16]
+        linarith
+      have hsx := hsupfine x hx
+      have hsx' := hsupfine x' hx'
+      have htri : ‖g x - g x'‖ ≤ ‖g x‖ + ‖g x'‖ := norm_sub_le _ _
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ = ρ ^ α * (ρ * ‖g x - g x'‖) := by rw [hsplit]; ring
+        _ ≤ ρ ^ α * (ρ * ‖g x‖ + ρ * ‖g x'‖) := by
+            apply mul_le_mul_of_nonneg_left _ hρα.le
+            rw [← mul_add]
+            exact mul_le_mul_of_nonneg_left htri hρ.le
+        _ ≤ ρ ^ α * (2 * (32 * M + (Q / 4 + 16 * A) / 16 ^ α)) := by
+            apply mul_le_mul_of_nonneg_left _ hρα.le
+            linarith
+        _ = 64 * M * ρ ^ α + 2 * (Q / 4 + 16 * A) * (ρ ^ α / 16 ^ α) := by ring
+        _ ≤ 64 * M * (8 * ‖x - x'‖ ^ α) + 2 * (Q / 4 + 16 * A) * ‖x - x'‖ ^ α :=
+            add_le_add (mul_le_mul_of_nonneg_left hA1 (by linarith))
+              (mul_le_mul_of_nonneg_left hA2 (by linarith))
+        _ = (Q / 2 + 512 * M + 32 * A) * ‖x - x'‖ ^ α := by ring
+/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
+(p. 127): absorption by the best scale-weighted Hölder constant.  Call `(y, ρ)` admissible if
+`ρ > 0` and `|y| + ρ ≤ 1`.  Let `Q` be the supremum of `0` and of the quotients
+`ρ^{1+α} ‖g x - g x'‖ / |x - x'|^α` over admissible `(y, ρ)` and `x ≠ x'` in `B̆_{ρ/2}(y)`; it is
+finite because `ρ^{1+α} ≤ 1` and `g` is `α`-Hölder on `B̆₁(0)`.  The one-step improvement
+`dohr_eb_sch_ube_holder_improvement` for this `Q` gives `Q ≤ Q/2 + 512 M + 32 A`, so
+`Q ≤ 1024 M + 64 A`, and the admissible pair `(0, 1)` gives both bounds on `B̆_{1/2}(0)`. -/
+theorem dohr_eb_sch_ube_absorption : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (α M A : ℝ), 0 < α → α ≤ 1 → 0 ≤ M → 0 ≤ A → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖g x - g y‖ ≤ K * ‖x - y‖ ^ α) → (∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖g x - g x'‖ ≤ K * ‖x - x'‖ ^ α) → ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ (1 / 16 * ρ ^ (1 + α) * K + A) * ‖x - x'‖ ^ α) → (∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r → (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖g z - g z'‖ ≤ K * ‖z - z'‖ ^ α) → ‖g x‖ ≤ 2 * M / t + t ^ α * K) → (∀ x ∈ ball (0 : Rn n) (1 / 2), ‖g x‖ ≤ 1024 * M + 64 * A) ∧ ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖g x - g y‖ ≤ (1024 * M + 64 * A) * ‖x - y‖ ^ α := by
+  intro n ℓ g α M A hα0 hα1 hM hA hK hP2 hP3
+  obtain ⟨K0, hK0⟩ := hK
+  -- Step 1: for admissible `(y, ρ)`, `B̆_{ρ/2}(y) ⊆ B̆₁(0)`.
+  have hmem : ∀ (y : Rn n) (ρ : ℝ) (x : Rn n), 0 < ρ → ‖y‖ + ρ ≤ 1 → x ∈ ball y (ρ / 2) →
+      x ∈ ball (0 : Rn n) 1 := by
+    intro y ρ x hρ hyρ hx
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff]
+    calc ‖x‖ = ‖y + (x - y)‖ := by rw [add_sub_cancel]
+      _ ≤ ‖y‖ + ‖x - y‖ := norm_add_le _ _
+      _ < ‖y‖ + ρ / 2 := by linarith
+      _ ≤ 1 := by linarith
+  -- Step 2: `T` is `0` together with the scale-weighted Hölder quotients; it is bounded above
+  -- by `max K0 0`, so `Q := sup T` is a real number `≥ 0`.
+  let T : Set ℝ := {q | q = 0 ∨ ∃ (y : Rn n) (ρ : ℝ) (x x' : Rn n), 0 < ρ ∧ ‖y‖ + ρ ≤ 1 ∧
+      x ∈ ball y (ρ / 2) ∧ x' ∈ ball y (ρ / 2) ∧ x ≠ x' ∧
+      q = ρ ^ (1 + α) * ‖g x - g x'‖ / ‖x - x'‖ ^ α}
+  have hbdd : BddAbove T := by
+    refine ⟨max K0 0, ?_⟩
+    rintro q (rfl | ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩)
+    · exact le_max_right _ _
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      have hρa : ρ ^ (1 + α) ≤ 1 :=
+        Real.rpow_le_one hρ.le (by linarith [norm_nonneg y]) (by linarith)
+      rw [div_le_iff₀ hpow]
+      calc ρ ^ (1 + α) * ‖g x - g x'‖ ≤ 1 * ‖g x - g x'‖ :=
+            mul_le_mul_of_nonneg_right hρa (norm_nonneg _)
+        _ ≤ K0 * ‖x - x'‖ ^ α := by
+            rw [one_mul]
+            exact hK0 x (hmem y ρ x hρ hyρ hx) x' (hmem y ρ x' hρ hyρ hx')
+        _ ≤ max K0 0 * ‖x - x'‖ ^ α :=
+            mul_le_mul_of_nonneg_right (le_max_left _ _) hpow.le
+  have h0T : (0 : ℝ) ∈ T := Or.inl rfl
+  set Q := sSup T
+  have hQ0 : 0 ≤ Q := le_csSup hbdd h0T
+  -- Step 3: (P1) holds with the constant `Q`.
+  have hP1 : ∀ (y : Rn n) (ρ : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 → ∀ x ∈ ball y (ρ / 2),
+      ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ Q * ‖x - x'‖ ^ α := by
+    intro y ρ hρ hyρ x hx x' hx'
+    by_cases hne : x = x'
+    · subst hne
+      simp [Real.zero_rpow hα0.ne']
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      have hq : ρ ^ (1 + α) * ‖g x - g x'‖ / ‖x - x'‖ ^ α ∈ T :=
+        Or.inr ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩
+      have h := le_csSup hbdd hq
+      rwa [div_le_iff₀ hpow] at h
+  -- Step 4: the one-step improvement for this `Q`.
+  have himp := Submission.dohr_eb_sch_ube_holder_improvement n ℓ g α M A Q hα0 hα1 hM hA hQ0
+    hP1 hP2 hP3
+  -- Step 5: absorption, `Q ≤ Q/2 + 512 M + 32 A`, hence `Q ≤ 1024 M + 64 A`.
+  have hQle : Q ≤ Q / 2 + 512 * M + 32 * A := by
+    refine csSup_le ⟨0, h0T⟩ ?_
+    rintro q (rfl | ⟨y, ρ, x, x', hρ, hyρ, hx, hx', hne, rfl⟩)
+    · linarith
+    · have hpow : 0 < ‖x - x'‖ ^ α :=
+        Real.rpow_pos_of_pos (norm_pos_iff.2 (sub_ne_zero.2 hne)) α
+      rw [div_le_iff₀ hpow]
+      exact (himp y ρ hρ hyρ).2 x hx x' hx'
+  have hQC : Q ≤ 1024 * M + 64 * A := by linarith
+  -- Step 6: the admissible pair `(0, 1)`.
+  have h01 : ‖(0 : Rn n)‖ + 1 ≤ 1 := by simp
+  refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+  · have h := (himp 0 1 one_pos h01).1 x hx
+    rw [one_mul] at h
+    linarith
+  · have h := hP1 0 1 one_pos h01 x hx y hy
+    rw [Real.one_rpow, one_mul] at h
+    exact h.trans (mul_le_mul_of_nonneg_right hQC (Real.rpow_nonneg (norm_nonneg _) _))
 /-- Affine subtraction and scaling of a `C¹` weak solution (the integral computation in the blow-up
 step of the Schauder estimate used for the elliptic bootstrap in Simon Ch. 5, 7.1): if `v` is `C¹`
 on the open set `D`, `∫_D b[Dv][Dζ] = ∫_D Θ[Dζ]` for all `ζ ∈ C¹_c(D)`, and `B₀[P₀][Dζ]`, `Θ₀[Dζ]`
@@ -3138,5 +3490,79 @@ theorem dohr_eb_sch_blowup_holder_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α
   exact zero_ne_one he₀
 
 end Submission
+
+/-- **Interior `C^{1,α}` estimate on the unit ball** (the case `x₀ = 0`, `R = 1` of the Schauder
+estimate in the elliptic bootstrap for Simon 7.1, second assertion).  Let `w` be `C¹` on `B̆₁(0)`
+with `∫ a(x)[Dw][Dζ] = ∫ Φ(x)[Dζ]` for every `ζ ∈ C¹_c(B̆₁(0); ℝ^ℓ)`, where `a` is Legendre
+elliptic with constant `lam > 0`, `a` and `Φ` are bounded and `α`-Hölder with constant `M`,
+`|w| ≤ M`, and `Dw` is `α`-Hölder on `B̆₁(0)` with some constant.  Then `‖Dw‖ ≤ C` and
+`‖Dw(x) − Dw(y)‖ ≤ C |x − y|^α` on `B̆_{1/2}(0)`, where `C` depends only on `n, ℓ, α, lam, M`.
+Proof: take `δ = 1/16`, `C_δ` from the blow-up estimate and `C = (1024 + 128 C_δ) M`.  Rescaling
+`B̆_ρ(y) ⊆ B̆₁(0)` to `B̆₁(0)` and applying the blow-up estimate there gives
+`ρ^{1+α} ‖Dw(x) − Dw(x')‖ ≤ (ρ^{1+α} K / 16 + 2 C_δ M) |x − x'|^α` on `B̆_{ρ/2}(y)` whenever
+`Dw` is `K`-Hölder on `B̆_ρ(y)`; with the interpolation bound for `‖Dw‖`, the absorption lemma
+for the best scale-weighted Hölder constant concludes. -/
+theorem Submission.dohr_eb_sch_unit_ball_estimate : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α : ℝ, 0 < α → α < 1 → ∀ lam M : ℝ, 0 < lam → ∃ C : ℝ, 0 ≤ C ∧ ∀ (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (w : Rn n → Rn ℓ), (∀ x ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) → (∀ x ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ M * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ M * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖) → (∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ∀ P : Rn n →L[ℝ] Rn ℓ, |Φ x P - Φ y P| ≤ M * ‖x - y‖ ^ α * ‖P‖) → (∀ x ∈ ball (0 : Rn n) 1, ‖w x‖ ≤ M) → ContDiffOn ℝ 1 w (ball (0 : Rn n) 1) → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) 1, ∀ y ∈ ball (0 : Rn n) 1, ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ K * ‖x - y‖ ^ α) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Rn n) 1 → ∫ x in ball (0 : Rn n) 1, a x (fderiv ℝ w x) (fderiv ℝ ζ x) = ∫ x in ball (0 : Rn n) 1, Φ x (fderiv ℝ ζ x)) → (∀ x ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball (0 : Rn n) (1 / 2), ∀ y ∈ ball (0 : Rn n) (1 / 2), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro n ℓ hn α hα hα1 lam M hlam
+  -- Step 0: `C_δ` from the blow-up estimate with `δ = 1/16`; for `M < 0`, (H5) is impossible.
+  obtain ⟨Cδ, hCδ0, hCδ⟩ := Submission.dohr_eb_sch_blowup_holder_estimate n ℓ hn α hα hα1 lam M
+    (1 / 16) hlam (by norm_num)
+  by_cases hM : 0 ≤ M
+  swap
+  · refine ⟨0, le_rfl, fun a Φ w _ _ _ _ hS _ _ _ => ?_⟩
+    exact absurd ((norm_nonneg _).trans (hS 0 (mem_ball_self one_pos))) hM
+  have hA : 0 ≤ Cδ * (M + M) := mul_nonneg hCδ0 (add_nonneg hM hM)
+  refine ⟨1024 * M + 64 * (Cδ * (M + M)),
+    add_nonneg (mul_nonneg (by norm_num) hM) (mul_nonneg (by norm_num) hA), ?_⟩
+  intro a Φ w hlg hab haH hΦH hS hw hK hweak
+  -- Step 1: the one-scale estimate on every `B̆_ρ(y) ⊆ B̆₁(0)`.  With `w̃(z) = w(y + ρz)`,
+  -- `Dw̃(z) = ρ Dw(y + ρz)` is `ρ^{1+α} K`-Hölder on `B̆₁(0)`, and the blow-up estimate for the
+  -- rescaled data on `B̆₁(0)` (with `S = G = M`) scales back to `B̆_{ρ/2}(y)`.
+  have hstep : ∀ (y : Rn n) (ρ K : ℝ), 0 < ρ → ‖y‖ + ρ ≤ 1 →
+      (∀ x ∈ ball y ρ, ∀ x' ∈ ball y ρ, ‖fderiv ℝ w x - fderiv ℝ w x'‖ ≤ K * ‖x - x'‖ ^ α) →
+      ∀ x ∈ ball y (ρ / 2), ∀ x' ∈ ball y (ρ / 2), ρ ^ (1 + α) * ‖fderiv ℝ w x - fderiv ℝ w x'‖ ≤
+        (1 / 16 * ρ ^ (1 + α) * K + Cδ * (M + M)) * ‖x - x'‖ ^ α := by
+    intro y ρ K hρ hyρ hHol
+    have hsub : ball (y + ρ • (0 : Rn n)) (ρ * 1) ⊆ ball (0 : Rn n) 1 := by
+      rw [smul_zero, add_zero, mul_one]
+      exact ball_subset_ball' (by rw [dist_zero_right]; linarith)
+    obtain ⟨hwt, hdwt, hweakt⟩ := Submission.dohr_eb_sch_weak_eq_affine_rescale n ℓ a Φ w
+      (ball (0 : Rn n) 1) y 0 ρ 1 hρ isOpen_ball hsub hw hweak
+    obtain ⟨h1, h2, h3, h4, h5⟩ := Submission.dohr_eb_sch_ube_rescaled_structure n ℓ a Φ w y ρ α
+      lam M hρ hyρ hα.le hM hlg hab haH hΦH hS
+    have hHolt : ∀ z ∈ ball (0 : Rn n) 1, ∀ z' ∈ ball (0 : Rn n) 1,
+        ‖fderiv ℝ (fun z => w (y + ρ • z)) z - fderiv ℝ (fun z => w (y + ρ • z)) z'‖ ≤
+          ρ ^ (1 + α) * K * ‖z - z'‖ ^ α := by
+      have h := (Submission.dohr_eb_sch_ube_holder_rescale n ℓ (fderiv ℝ w) y ρ 1 α
+        (ρ ^ (1 + α) * K) hρ).mpr fun x hx x' hx' => by
+          rw [mul_one] at hx hx'
+          rw [mul_assoc]
+          exact mul_le_mul_of_nonneg_left (hHol x hx x' hx') (Real.rpow_nonneg hρ.le _)
+      intro z hz z' hz'
+      rw [hdwt z hz, hdwt z' hz']
+      exact h z hz z' hz'
+    have hbl := hCδ (fun z => a (y + ρ • z)) (fun z => ρ • Φ (y + ρ • z))
+      (fun z => w (y + ρ • z)) (ρ ^ (1 + α) * K) M M hM h1 h2 h3 h4 h5 hwt hHolt hweakt
+    have h := (Submission.dohr_eb_sch_ube_holder_rescale n ℓ (fderiv ℝ w) y ρ (1 / 2) α
+      (1 / 16 * (ρ ^ (1 + α) * K) + Cδ * (M + M)) hρ).mp fun z hz z' hz' => by
+        rw [← hdwt z (ball_subset_ball (by norm_num) hz),
+          ← hdwt z' (ball_subset_ball (by norm_num) hz')]
+        exact hbl z hz z' hz'
+    intro x hx x' hx'
+    rw [← mul_one_div ρ 2] at hx hx'
+    rw [mul_assoc (1 / 16 : ℝ)]
+    exact h x hx x' hx'
+  -- Step 2: the interpolation bound `‖Dw(x)‖ ≤ 2M/t + t^α K` on every `B̆_r(x) ⊆ B̆₁(0)`.
+  have hint : ∀ (x : Rn n) (r t K : ℝ), ‖x‖ + r ≤ 1 → 0 ≤ K → 0 < t → t < r →
+      (∀ z ∈ ball x r, ∀ z' ∈ ball x r, ‖fderiv ℝ w z - fderiv ℝ w z'‖ ≤ K * ‖z - z'‖ ^ α) →
+      ‖fderiv ℝ w x‖ ≤ 2 * M / t + t ^ α * K := by
+    intro x r t K hxr hK0 ht htr hHol
+    have hsub : ball x r ⊆ ball (0 : Rn n) 1 :=
+      ball_subset_ball' (by rw [dist_zero_right]; linarith)
+    exact Submission.dohr_eb_sch_fderiv_norm_interpolation n ℓ w x r t α M K hα.le hK0 ht htr
+      (hw.mono hsub) (fun z hz => hS z (hsub hz)) hHol
+  -- Step 3: absorption with `g = Dw` and `A = 2 C_δ M`.
+  exact Submission.dohr_eb_sch_ube_absorption n ℓ (fderiv ℝ w) α M (Cδ * (M + M)) hα hα1.le hM
+    hA hK hstep hint
 
 end GMT.Ch05
