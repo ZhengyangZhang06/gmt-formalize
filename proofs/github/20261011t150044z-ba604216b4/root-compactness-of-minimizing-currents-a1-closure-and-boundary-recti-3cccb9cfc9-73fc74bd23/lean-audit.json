@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a22e3fb38c4562104fe95298df6563b1615f32b1fefecbe215f5b19b4ec7e1ad",
+  "git_delta": {
+    "base_commit": "f4a3a481b2306a311e5fc5b6523b44beda9984d1",
+    "candidate_commit": "f548e2b8fa642e5319612e77431a93a8c878cd18",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrr_lipschitz_cover_of_cone_condition",
+    "diff_sha256": "5c87bcfab5fc604e7e14e612b2d443f910aba632bf38abbd97db4dcbbbb69b37",
+    "source_sha256": "6ef0d9c17c922cff5df678fb3612032cfa618d46642c9bbad579559a7e6b3638",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrr_lipschitz_cover_of_cone_condition",
+      "statement": "∀ (P n : ℕ) (T : Submodule ℝ (Euclid P)) (D : Set (Euclid P)) (C : ℝ), Module.finrank ℝ T = n → (∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ C * ‖T.starProjection (y - x)‖) → ∃ F : Euclid n → Euclid P, (∃ K : NNReal, LipschitzWith K F) ∧ D ⊆ range F",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
