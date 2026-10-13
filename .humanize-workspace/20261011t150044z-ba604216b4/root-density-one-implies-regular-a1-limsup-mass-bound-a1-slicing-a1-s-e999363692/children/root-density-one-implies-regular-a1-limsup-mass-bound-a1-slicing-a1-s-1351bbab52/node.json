@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Countably rectifiable sets are covered by C¹ submanifolds up to a null set (Simon Ch. 3, Lemma 1.2, “only if”)",
+  "statement": "Let P, m ∈ ℕ and let M ⊆ ℝ^P be countably m-rectifiable (CountablyRectifiable m M: M ⊆ M₀ ∪ ⋃_j F_j(ℝ^m) with H^m(M₀) = 0 and Lipschitz F_j : ℝ^m → ℝ^P; H^m = μHE[m]). Then there are a set N₀ ⊆ ℝ^P with H^m(N₀) = 0 and sets N_l ⊆ ℝ^P (l ∈ ℕ), each an embedded m-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 m N_l: every point of N_l has an open W ∋ y and a C¹ map ψ on an open V ⊆ ℝ^m, injective on V, with ψ(V) = W ∩ N_l, V ∩ ψ⁻¹(K) compact for compact K ⊆ W, and Dψ(z) injective for z ∈ V), such that M ⊆ N₀ ∪ ⋃_l N_l.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), CountablyRectifiable m M → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ M ⊆ N₀ ∪ ⋃ l, N l",
+  "lean_name": "dor_lmbsf_rectifiable_c1_cover",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52-a1"
+}

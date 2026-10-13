@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Approximate tangent space of a compact C¹ image at an interior regular point",
+  "statement": "Let k, P ∈ ℕ, V ⊆ ℝ^k open, χ : ℝ^k → ℝ^P of class C¹ on V (ContDiffOn ℝ 1 χ V), C ⊆ V compact with χ injective on C, and y ∈ int C with Dχ(y) = fderiv ℝ χ y injective. Then χ(C) has approximate tangent space Q := Dχ(y)(ℝ^k) (= LinearMap.range (fderiv ℝ χ y)) at χ(y) in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt k (χ '' C) (χ y) Q): dim Q = k and, for every continuous compactly supported f : ℝ^P → ℝ, ∫_{η_{χ(y),r}(χ(C))} f dH^k → ∫_Q f dH^k as r ↓ 0, where η_{x,r}(z) = r⁻¹(z − x) and H^k = μHE[k].",
+  "lean_statement": "∀ (k P : ℕ) (V C : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen V → ContDiffOn ℝ 1 χ V → IsCompact C → C ⊆ V → InjOn χ C → y ∈ interior C → Injective (fderiv ℝ χ y) → HasApproximateTangentSpaceAt k (χ '' C) (χ y) (LinearMap.range (fderiv ℝ χ y : Euclid k →ₗ[ℝ] Euclid P))",
+  "lean_name": "dor_lmbsf_c1_image_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-a0846a5122-a1"
+}
