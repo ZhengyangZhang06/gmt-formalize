@@ -451,6 +451,223 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Planar fibre geometry** (fibre count for the cone-sector endpoint density in the proof of
+Simon 7.3.3).  Let `Q ⊆ ℝᴾ` be a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`.  Then (a) `|p_T(Ax)| ≤ |πx| ≤ |x|`
+for every subspace `T`; (b) for `t > 0` and `|α| < Real.pi/2`, the point
+`x₀ = t(cos α a + sin α e)` has `⟨x₀, a⟩ > 0`, `|x₀| = t`, `f(x₀) = α`, `πx₀ = x₀` and
+`|π(Ax₀)| = t`; (c) every other `x` with `⟨x, a⟩ > 0`, `|x| = t` and `f(x) = α` has `|πx| < t`.
+A dimension count gives `Q = span{a, e}`, hence `πx = ⟨x, a⟩a + ⟨x, e⟩e` and `|Ax| = |πx|`; in
+(c), `|πx| = |x|` would give `x ∈ Q`, `x = ua + ve` with `u² + v² = t²`, and then `cos α = u/t`,
+`sin α = v/t` force `x = x₀`. -/
+theorem Submission.idtp_cse_fc_planar_fibre_geometry : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P), ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ≤ ‖Q.starProjection x‖ ∧ ‖Q.starProjection x‖ ≤ ‖x‖) ∧ ∀ t α : ℝ, 0 < t → |α| < Real.pi / 2 → (0 < inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a ∧ ‖t • (Real.cos α • a + Real.sin α • e)‖ = t ∧ Real.arctan (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e / inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a) = α ∧ Q.starProjection (t • (Real.cos α • a + Real.sin α • e)) = t • (Real.cos α • a + Real.sin α • e) ∧ ‖Q.starProjection (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a • e - inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e • a)‖ = t) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ‖x‖ = t → Real.arctan (inner ℝ x e / inner ℝ x a) = α → x ≠ t • (Real.cos α • a + Real.sin α • e) → ‖Q.starProjection x‖ < t := by
+  intro P Q a e hQ haQ heQ ha he hae
+  -- Step 1: the Gram matrix of `(a, e)`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- Step 2: `Q = span {a, e}` by a dimension count, so every `w ∈ Q` is `c₁ a + c₂ e`
+  have hQmem : ∀ w ∈ Q, ∃ c₁ c₂ : ℝ, w = c₁ • a + c₂ • e := by
+    have hon : Orthonormal ℝ ![a, e] := by
+      rw [orthonormal_iff_ite]
+      intro i j
+      fin_cases i <;> fin_cases j <;> simp [ha, he, hae, hea]
+    have hspan : Submodule.span ℝ (Set.range ![a, e]) = Q := by
+      refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+      · rw [Submodule.span_le, Set.range_subset_iff]
+        intro i
+        fin_cases i
+        · simpa using haQ
+        · simpa using heQ
+      · rw [finrank_span_eq_card hon.linearIndependent, hQ, Fintype.card_fin]
+    intro w hw
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+    obtain ⟨c, rfl⟩ := hw
+    exact ⟨c 0, c 1, by simp [Fin.sum_univ_two]⟩
+  -- Step 3: `πx = ⟨x, a⟩ a + ⟨x, e⟩ e`
+  have hproj : ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+    intro x
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ)) fun w hw => ?_
+    obtain ⟨c₁, c₂, rfl⟩ := hQmem w hw
+    simp only [inner_sub_left, inner_add_left, inner_add_right, real_inner_smul_left,
+      real_inner_smul_right, haa, hee, hae, hea]
+    ring
+  -- Step 4: `‖u e − v a‖² = u² + v² = ‖u a + v e‖²`, hence `‖Ax‖ = ‖πx‖`
+  have hnormA : ∀ u v : ℝ, ‖u • e - v • a‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hnormP : ∀ u v : ℝ, ‖u • a + v • e‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hAx : ∀ x : Euclid P, ‖inner ℝ x a • e - inner ℝ x e • a‖ = ‖Q.starProjection x‖ := by
+    intro x
+    rw [hproj x]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((hnormA _ _).trans (hnormP _ _).symm)
+  -- Step 5: part (a)
+  refine ⟨fun T x => ⟨(T.norm_starProjection_apply_le _).trans (hAx x).le,
+    Q.norm_starProjection_apply_le x⟩, fun t α ht hα => ?_⟩
+  -- Step 6: part (b)
+  obtain ⟨hα₁, hα₂⟩ := abs_lt.1 hα
+  have hcos : 0 < Real.cos α := Real.cos_pos_of_mem_Ioo ⟨hα₁, hα₂⟩
+  have hx₀Q : t • (Real.cos α • a + Real.sin α • e) ∈ Q :=
+    Q.smul_mem t (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ))
+  have hx₀a : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a = t * Real.cos α := by
+    simp only [real_inner_smul_left, inner_add_left, haa, hea]
+    ring
+  have hx₀e : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e = t * Real.sin α := by
+    simp only [real_inner_smul_left, inner_add_left, hee, hae]
+    ring
+  have hx₀n : ‖t • (Real.cos α • a + Real.sin α • e)‖ = t := by
+    have h1 : ‖Real.cos α • a + Real.sin α • e‖ = 1 :=
+      (pow_left_inj₀ (norm_nonneg _) zero_le_one two_ne_zero).1
+        (by rw [hnormP, Real.cos_sq_add_sin_sq, one_pow])
+    rw [norm_smul, h1, mul_one, Real.norm_eq_abs, abs_of_pos ht]
+  refine ⟨⟨?_, hx₀n, ?_, Submodule.starProjection_eq_self_iff.2 hx₀Q, ?_⟩, ?_⟩
+  · rw [hx₀a]
+    exact mul_pos ht hcos
+  · rw [hx₀a, hx₀e, mul_div_mul_left _ _ ht.ne', ← Real.tan_eq_sin_div_cos,
+      Real.arctan_tan hα₁ hα₂]
+  · rw [Submodule.starProjection_eq_self_iff.2 (Q.sub_mem (Q.smul_mem _ heQ) (Q.smul_mem _ haQ)),
+      hAx, Submodule.starProjection_eq_self_iff.2 hx₀Q, hx₀n]
+  -- Steps 7–8: part (c)
+  · intro x hxa hxt hxα hne
+    refine not_le.1 fun hlt => ?_
+    have hπx : ‖Q.starProjection x‖ = ‖x‖ :=
+      le_antisymm (Q.norm_starProjection_apply_le x) (by rw [hxt]; exact hlt)
+    have hx : x = inner ℝ x a • a + inner ℝ x e • e := by
+      rw [← hproj x,
+        Submodule.starProjection_eq_self_iff.2 ((Q.mem_iff_norm_starProjection x).2 hπx)]
+    have huv : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 = t ^ 2 := by
+      rw [← hnormP, ← hx, hxt]
+    have hu0 : inner ℝ x a ≠ 0 := hxa.ne'
+    have hsqrt : √(1 + (inner ℝ x e / inner ℝ x a) ^ 2) = t / inner ℝ x a := by
+      rw [← Real.sqrt_sq (div_pos ht hxa).le]
+      congr 1
+      field_simp
+      linarith [huv]
+    have hcosα : Real.cos α = inner ℝ x a / t := by
+      rw [← hxα, Real.cos_arctan, hsqrt, one_div_div]
+    have hsinα : Real.sin α = inner ℝ x e / t := by
+      rw [← hxα, Real.sin_arctan, hsqrt]
+      field_simp
+    apply hne
+    rw [hcosα, hsinα, smul_add, smul_smul, smul_smul, mul_div_cancel₀ _ ht.ne',
+      mul_div_cancel₀ _ ht.ne']
+    exact hx
+/-- **Fibre-count arithmetic** (Simon 7.3.3, cone-sector endpoint density: integrality of the
+fibre multiplicity).  Let `θ : ι → ℕ`, `w : ι → ℝ` and `t > 0` with `w i ≤ t` for all `i`, and
+`∑' i, θ i · ofReal (w i) = ofReal (m t)` in `[0, ∞]`.  Then `m ≤ ∑' i, θ i`.  If moreover every
+`θ i ≥ 1`, `θ i₀ = k`, `w i₀ = t` and `w i < t` for `i ≠ i₀`, then `k ≤ m`, and `k < m` gives
+`m + 1 ≤ ∑' i, θ i`: a finite total multiplicity forces `ι` to be finite, and the terms off `i₀`
+are strictly below `θ i · ofReal t`. -/
+theorem Submission.idtp_cse_fc_tsum_count_arith : ∀ (ι : Type) (θ : ι → ℕ) (w : ι → ℝ) (t : ℝ) (m : ℕ), 0 < t → (∀ i, w i ≤ t) → ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) = ENNReal.ofReal ((m : ℝ) * t) → (m : ℝ≥0∞) ≤ ∑' i, (θ i : ℝ≥0∞) ∧ ∀ (i₀ : ι) (k : ℕ), (∀ i, 1 ≤ θ i) → θ i₀ = k → w i₀ = t → (∀ i, i ≠ i₀ → w i < t) → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' i, (θ i : ℝ≥0∞)) := by
+  intro ι θ w t m ht hw hsum
+  -- `τ = ofReal t ∈ (0, ∞)`, and the hypothesis reads `H = m τ`
+  have hτ0 : ENNReal.ofReal t ≠ 0 := (ENNReal.ofReal_pos.mpr ht).ne'
+  have hτ : ENNReal.ofReal t ≠ ∞ := ENNReal.ofReal_ne_top
+  rw [ENNReal.ofReal_mul (Nat.cast_nonneg m), ENNReal.ofReal_natCast] at hsum
+  -- (i): termwise `θ i ofReal (w i) ≤ θ i τ`, so `m τ = H ≤ N τ`
+  have hN : ∑' i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) ≤
+      (∑' i, (θ i : ℝ≥0∞)) * ENNReal.ofReal t := by
+    rw [← ENNReal.tsum_mul_right]
+    exact ENNReal.tsum_le_tsum fun i => by gcongr; exact hw i
+  refine ⟨(ENNReal.mul_le_mul_iff_left hτ0 hτ).mp (hsum ▸ hN), ?_⟩
+  intro i₀ k hθ1 hk hw0 hlt
+  -- (ii) `k ≤ m`: the `i₀` term `k τ` is at most `H = m τ`
+  have hkτ : (k : ℝ≥0∞) * ENNReal.ofReal t ≤ (m : ℝ≥0∞) * ENNReal.ofReal t := by
+    rw [← hsum, ← hk, ← hw0]
+    exact ENNReal.le_tsum (f := fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal (w i)) i₀
+  refine ⟨by exact_mod_cast (ENNReal.mul_le_mul_iff_left hτ0 hτ).mp hkτ, fun hkm => ?_⟩
+  -- if `N = ∞` there is nothing to prove; otherwise `ι` is finite, as every `θ i ≥ 1`
+  by_cases hNtop : ∑' i, (θ i : ℝ≥0∞) = ∞
+  · rw [hNtop]
+    exact le_top
+  have hfin : {i : ι | (1 : ℝ≥0∞) ≤ θ i}.Finite :=
+    ENNReal.finite_const_le_of_tsum_ne_top hNtop one_ne_zero
+  have huniv : {i : ι | (1 : ℝ≥0∞) ≤ θ i} = univ :=
+    eq_univ_of_forall fun i => by exact_mod_cast hθ1 i
+  rw [huniv] at hfin
+  have : Finite ι := finite_univ_iff.mp hfin
+  cases nonempty_fintype ι
+  classical
+  rw [tsum_fintype] at hsum ⊢
+  -- split off the `i₀` term of `H` and of `N τ`
+  have hsplitH : (θ i₀ : ℝ≥0∞) * ENNReal.ofReal (w i₀) +
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) =
+      ∑ i, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) :=
+    Finset.add_sum_erase _ (fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal (w i)) (Finset.mem_univ i₀)
+  have hsplitN : (θ i₀ : ℝ≥0∞) * ENNReal.ofReal t +
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal t =
+      ∑ i, (θ i : ℝ≥0∞) * ENNReal.ofReal t :=
+    Finset.add_sum_erase _ (fun i => (θ i : ℝ≥0∞) * ENNReal.ofReal t) (Finset.mem_univ i₀)
+  -- `E = ι \ {i₀}` is nonempty, since otherwise `k τ = m τ`, i.e. `k = m`
+  have hE : (Finset.univ.erase i₀).Nonempty := by
+    rw [Finset.nonempty_iff_ne_empty]
+    intro hE
+    rw [← hsplitH, hE, Finset.sum_empty, add_zero, hk, hw0, ENNReal.mul_left_inj hτ0 hτ] at hsum
+    exact hkm.ne (by exact_mod_cast hsum)
+  -- each remaining term is strictly below `θ i τ`, so `m τ < N τ`
+  have hstrict : ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal (w i) <
+      ∑ i ∈ Finset.univ.erase i₀, (θ i : ℝ≥0∞) * ENNReal.ofReal t := by
+    refine ENNReal.sum_lt_sum_of_nonempty hE fun i hi => ?_
+    have hθi : (θ i : ℝ≥0∞) ≠ 0 := by exact_mod_cast (Nat.one_le_iff_ne_zero.mp (hθ1 i))
+    exact ENNReal.mul_lt_mul_right hθi (ENNReal.natCast_ne_top _)
+      ((ENNReal.ofReal_lt_ofReal_iff ht).mpr (hlt i (Finset.ne_of_mem_erase hi)))
+  have hmN : (m : ℝ≥0∞) * ENNReal.ofReal t < (∑ i, (θ i : ℝ≥0∞)) * ENNReal.ofReal t := by
+    rw [← hsum, ← hsplitH, Finset.sum_mul, ← hsplitN, hw0]
+    exact ENNReal.add_lt_add_left (ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hτ) hstrict
+  -- `N` is the natural number `∑ i, θ i`, so `m < N` gives `m + 1 ≤ N`
+  have hmN' : m < ∑ i, θ i := by exact_mod_cast (ENNReal.mul_lt_mul_iff_left hτ0 hτ).mp hmN
+  exact_mod_cast hmN'
+
+/-- Pointwise fibre count for the density at the edge of a planar sector of a `2`-dimensional
+minimizing cone (part of the classification of such cones used in the proof of Simon 7.3.3(1),
+which the book cites to [Whi82]).  Let `p = (t, α)` with `|t − 1| < s`, `|α| < s ≤ 1/4`, let `X(p) = M ∩ Z_s ∩ F̃⁻¹{p}` be the fibre of
+`F̃(x) = (|x|, arctan(⟨x, e⟩/⟨x, a⟩))` and weight its points by `w(x) = |p_{TₓM}(Ax)|`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a`.  Every fibre point has `|x| = t` and `w(x) ≤ |πx| ≤ t`, so
+`Σ θ w = mt` forces `Σ θ ≥ m`.  If `x_Q(p) = t(cos α a + sin α e) ∈ M` has multiplicity `k` and
+`T_{x_Q(p)}M = Q`, it is a fibre point of weight `t` and every other fibre point has weight `< t`,
+so `k ≤ m`, and `Σ θ ≥ m + 1` if `k < m`.  The planar facts are
+`idtp_cse_fc_planar_fibre_geometry`; the counting is `idtp_cse_fc_tsum_count_arith`. -/
+theorem Submission.idtp_cse_fc_fibre_pointwise : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (m k : ℕ) (p : ℝ × ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → |p.1 - 1| < s → |p.2| < s → ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ENNReal.ofReal ((m : ℝ) * p.1) → (m : ℝ≥0∞) ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) ∧ ((p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier → R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k → approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞))) := by
+  intro P R Q a e s m k p hQ haQ heQ ha he hae hs hs4 hp1 hp2 hH
+  obtain ⟨hA, hB⟩ := Submission.idtp_cse_fc_planar_fibre_geometry P Q a e hQ haQ heQ ha he hae
+  -- `t = p.1 > 0` and `|α| = |p.2| < 1/4 < π/2`
+  have ht : 0 < p.1 := by linarith [(abs_lt.mp hp1).1]
+  have hα : |p.2| < Real.pi / 2 := by linarith [Real.two_le_pi]
+  obtain ⟨⟨hx0a, hx0n, hx0f, hx0Q, hx0w⟩, hlt⟩ := hB p.1 p.2 ht hα
+  -- a fibre point `x` has `|x| = t` and `f(x) = α`, hence weight `w(x) ≤ |πx| ≤ t`
+  have hfib : ∀ x : Euclid P, (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) = p →
+      ‖x‖ = p.1 ∧ Real.arctan (inner ℝ x e / inner ℝ x a) = p.2 := fun x hx =>
+    ⟨congrArg Prod.fst hx, congrArg Prod.snd hx⟩
+  have hw : ∀ i : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}),
+      ‖(approxTangentPlane 2 R.carrier (i : Euclid P)).starProjection
+        (inner ℝ (i : Euclid P) a • e - inner ℝ (i : Euclid P) e • a)‖ ≤ p.1 := fun i =>
+    ((hA (approxTangentPlane 2 R.carrier i) i).1.trans (hA Q i).2).trans (hfib i i.2.2).1.le
+  -- `m ≤ N(p)`
+  obtain ⟨hmN, hcount⟩ := Submission.idtp_cse_fc_tsum_count_arith _ _ _ p.1 m ht hw hH
+  refine ⟨hmN, fun hx0M hx0k hx0T => ?_⟩
+  -- `x_Q(p)` is a fibre point of weight `t`, every other fibre point has weight `< t`
+  refine hcount ⟨p.1 • (Real.cos p.2 • a + Real.sin p.2 • e), ⟨hx0M, hx0a, ?_, ?_, ?_⟩, ?_⟩ k
+    (fun i => R.mult_pos _ i.2.1.1) hx0k ?_ fun i hi => ?_
+  · rw [hx0n]; exact hp1
+  · rw [hx0f]; exact hp2
+  · rw [hx0Q, sub_self, norm_zero, hx0n]; exact mul_pos hs ht
+  · exact Prod.ext hx0n hx0f
+  · show ‖(approxTangentPlane 2 R.carrier _).starProjection _‖ = p.1
+    rw [hx0T]; exact hx0w
+  · obtain ⟨hin, hif⟩ := hfib i i.2.2
+    exact (hA (approxTangentPlane 2 R.carrier i) i).1.trans_lt
+      (hlt i i.2.1.2.1 hin hif fun h => hi (Subtype.ext h))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
