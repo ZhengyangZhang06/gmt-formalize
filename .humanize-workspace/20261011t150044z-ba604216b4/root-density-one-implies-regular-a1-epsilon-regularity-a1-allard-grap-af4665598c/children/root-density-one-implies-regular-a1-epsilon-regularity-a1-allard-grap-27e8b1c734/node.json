@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1",
+  "depth": 5,
+  "title": "Area bounds for a 1-Lipschitz graph over an n-plane",
+  "statement": "Let n ≥ 1, k ≥ 0, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, ξ ∈ ℝ^{n+k}, f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ |v − w| for all v, w, and Φ(v) := ξ + ιv + ι'f(v). Then for every measurable set A ⊆ ℝⁿ and every measurable h : ℝ^{n+k} → [0, ∞]: ∫_A h(Φ(v)) dLⁿ(v) ≤ ∫_{Φ(A)} h dHⁿ ≤ ∫_A (1 + 2ⁿ Σ_{i=1}^{n} |Df(v)e_i|²) h(Φ(v)) dLⁿ(v). Here Hⁿ = μHE[n] on ℝ^{n+k}, Lⁿ = volume on ℝⁿ, Df(v) = fderiv ℝ f v (0 where f is not differentiable), e_i = EuclideanSpace.single i 1, the weight is ENNReal.ofReal of the displayed real number, and all integrals are lower Lebesgue integrals.",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (ξ : Euclid (n + k)) (f : Euclid n → Euclid k) (A : Set (Euclid n)) (h : Euclid (n + k) → ℝ≥0∞), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → MeasurableSet A → Measurable h → (∫⁻ v in A, h (ξ + ι v + ι' (f v)) ≤ ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' A, h x ∂μHE[n]) ∧ ∫⁻ x in (fun v => ξ + ι v + ι' (f v)) '' A, h x ∂μHE[n] ≤ ∫⁻ v in A, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * h (ξ + ι v + ι' (f v))",
+  "lean_name": "dorag_tes_lipschitz_graph_area_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-27e8b1c734-a1"
+}
