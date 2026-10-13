@@ -1820,6 +1820,55 @@ theorem Submission.br_top_dim_lattice_approximation : ∀ (m : ℕ) (X : Geometr
     rw [mul_zero, zero_mul] at h
     exact h.congr fun k => by ring
 
+/-- **Lattice approximation with bounded boundary masses** (the first paragraph of the proof of
+Simon Ch. 6, 6.2, p. 169, for `M(X), M(∂X) < ∞`).  If `P < m + 1` every `(m+1)`-current on `ℝ^P`
+vanishes and `P_k = 0` works; `P = m + 1` is `br_top_dim_lattice_approximation`.  If
+`P = m + 1 + ℓ` with `ℓ ≥ 1`, the Deformation Theorem 5.3 at scale `ρ_k = 1/(k+1)` gives
+`X − P_k = ∂R_k + S_k` with integer `β_F`, `M(∂P_k) ≤ C M(∂X)`, `M(R_k) ≤ C ρ_k M(X) → 0` and
+`M(S_k) ≤ C ρ_k M(∂X) → 0`, so `P_k ⇀ X`. -/
+theorem Submission.br_lattice_approximation : DeformationTheorem → ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) P → ℤ) (Pk : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ k, 0 < ρ k) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧ WeaklyConvergesOn Pk X ∧ (⨆ k, (Pk k).boundary.mass) < ∞ := by
+  intro hdef P m X hX hXm hXb
+  rcases lt_trichotomy P (m + 1) with hP | rfl | hP
+  · -- `P < m + 1`: `X = 0`, so `ρ_k = 1`, `β_k = 0`, `P_k = 0` work; `M(∂0) = 0`.
+    have h0 : (0 : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)).boundary.mass = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, -, rfl⟩
+      simp
+    refine ⟨fun _ => 1, fun _ _ => 0, fun _ => 0, fun _ => one_pos, fun _ ω => by simp,
+      fun ω => ?_, by simp [h0]⟩
+    rw [Submission.br_la_apply_eq_zero_of_lt_degree P (m + 1) univ X hP ω]
+    exact tendsto_const_nhds
+  · -- `P = m + 1`: the top-dimensional case.
+    exact Submission.br_top_dim_lattice_approximation m X hX hXm hXb
+  · -- `P = m + 1 + ℓ`, `ℓ ≥ 1`: the Deformation Theorem at scale `ρ_k = 1/(k+1)`.
+    obtain ⟨ℓ, rfl⟩ : ∃ ℓ, P = m + 1 + ℓ := ⟨P - (m + 1), by omega⟩
+    obtain ⟨C, hC⟩ := hdef m ℓ (by omega)
+    have hρ : ∀ k : ℕ, (0 : ℝ) < 1 / ((k : ℝ) + 1) := fun k => by positivity
+    choose Pc β' R S hlat hdec _ hPb hR hS _ _ hint _ using
+      fun k => hC X (ENNReal.add_lt_top.2 ⟨hXm, hXb⟩) _ (hρ k)
+    -- `X` is integer multiplicity, so every `β'_k(F)` is an integer `β_k(F)`.
+    choose β hβ using fun k => (hint k hX).1
+    -- `C ρ_k A → 0` in `[0, ∞]` for finite `A`.
+    have hlim : ∀ A : ℝ≥0∞, A ≠ ∞ → Tendsto
+        (fun k : ℕ => (C : ℝ≥0∞) * ENNReal.ofReal (1 / ((k : ℝ) + 1)) * A) atTop (𝓝 0) := by
+      intro A hA
+      have h := ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+      rw [ENNReal.ofReal_zero] at h
+      have h' := ENNReal.Tendsto.mul_const
+        (ENNReal.Tendsto.const_mul h (Or.inr (ENNReal.coe_ne_top (r := C)))) (Or.inr hA)
+      rwa [mul_zero, zero_mul] at h'
+    refine ⟨fun k => 1 / ((k : ℝ) + 1), β, Pc, hρ, fun k ω => ?_, ?_, ?_⟩
+    · simp only [hlat k ω, hβ]
+    · -- `M(R_k) ≤ C ρ_k M(X) → 0` and `M(S_k) ≤ C ρ_k M(∂X) → 0`.
+      exact Submission.br_la_weaklyConvergesOn_of_flat_decomposition (m + 1 + ℓ) m univ X Pc S R
+        hdec
+        (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim _ hXm.ne)
+          (fun _ => zero_le) hR)
+        (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim _ hXb.ne)
+          (fun _ => zero_le) hS)
+    · -- `sup_k M(∂P_k) ≤ C M(∂X) < ∞`.
+      exact (iSup_le hPb).trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hXb)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
