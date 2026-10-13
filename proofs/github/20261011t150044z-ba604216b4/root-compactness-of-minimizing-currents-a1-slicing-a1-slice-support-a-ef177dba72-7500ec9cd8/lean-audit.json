@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "47c0b9b1556609a4c655d5d322dd5f45cb9d906c88afd34924da03198925ad54",
+  "git_delta": {
+    "base_commit": "922a0dd24e6fda0e1ecc3d608db041c56ea2a6bd",
+    "candidate_commit": "6145af6845af8439ce7f3cf49f9151c30a4678f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_ss_boundary_eq_of_tsupport_subset",
+    "diff_sha256": "4d277518bf2c2a29f4d8a159af94ed108f9a51a4dcafceacf3a3164b3cd244c6",
+    "source_sha256": "bab8861c993152cea0cd6c86ab86f153a083e49591ab952321a817e1a664f5a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_ss_boundary_eq_of_tsupport_subset",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (S : Set (Euclid P)) (A : GeometricCurrentOn U (k + 1)) (B : GeometricCurrentOn U k), (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → (∀ ω : TestFormOn U (k + 1), A ω = ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, B θ = ∫ x in S, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ∀ θ : TestFormOn U k, tsupport (θ : DifferentialForm (Euclid P) k) ⊆ S → A.boundary θ = B θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
