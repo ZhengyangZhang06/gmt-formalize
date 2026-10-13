@@ -410,6 +410,300 @@ def IntegralCompactnessTheorem : Prop :=
     ∀ (φ : ℕ → ℕ) (V : Varifold N n U), StrictMono φ →
       Varifold.RadonConverges (fun j ↦ Vj (φ j)) V → IsIntegral V
 
+/-- `H^n` of the balls of an `n`-plane centred on the plane (step 0(c) of the flat-limit step of
+Simon Ch. 8, 5.9): for `T ∈ G(N,n)`, `a ∈ T` and `r > 0`, both `T ∩ B_r(a)` and `T ∩ B°_r(a)`
+have `H^n`-measure `ω_n r^n`. -/
+theorem Submission.intcpt_fli_plane_ball_measure :
+    ∀ (N n : ℕ) (T : Grassmannian N n) (a : Euclidean N) (r : ℝ), a ∈ T.plane → 0 < r → (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ closedBall a r) = unitBallVolume n * ENNReal.ofReal r ^ n ∧ (μHE[n] : Measure (Euclidean N)) ((T.plane : Set (Euclidean N)) ∩ ball a r) = unitBallVolume n * ENNReal.ofReal r ^ n := by
+  intro N n T a r ha hr
+  -- Step 1: an orthonormal basis `B` of `T.plane` indexed by `Fin n` (`dim T.plane = n`) gives a
+  -- linear isometry `L : ℝ^n → ℝ^N` with values in `T.plane` and `L (B.repr v) = v`.
+  let B : OrthonormalBasis (Fin n) ℝ T.plane :=
+    (stdOrthonormalBasis ℝ T.plane).reindex (finCongr (Grassmannian.finrank_plane T))
+  let L : EuclideanSpace ℝ (Fin n) →ₗᵢ[ℝ] Euclidean N :=
+    T.plane.subtypeₗᵢ.comp B.repr.symm.toLinearIsometry
+  have hLrepr : ∀ v : T.plane, L (B.repr v) = v := fun v ↦ by simp [L]
+  -- Step 2: `ι x = a + L x` is an isometry with `ι 0 = a`.
+  let ι : EuclideanSpace ℝ (Fin n) → Euclidean N := fun x ↦ a + L x
+  have hι : Isometry ι := Isometry.of_dist_eq fun x y ↦ by
+    simp only [ι, dist_eq_norm, add_sub_add_left_eq_sub, ← map_sub, L.norm_map]
+  have hι0 : ι 0 = a := by simp [ι]
+  -- Step 3: `ι` maps onto `T.plane` (`y = ι (B.repr (y - a))` for `y ∈ T.plane`), so it maps
+  -- `B_r(0) = ι⁻¹(B_r(a))` onto `T.plane ∩ B_r(a)`, and likewise for open balls.
+  have hrange : range ι = (T.plane : Set (Euclidean N)) := by
+    ext y
+    refine ⟨?_, fun hy ↦ ⟨B.repr ⟨y - a, T.plane.sub_mem hy ha⟩, by simp [ι, hLrepr]⟩⟩
+    rintro ⟨x, rfl⟩
+    exact T.plane.add_mem ha (B.repr.symm x).2
+  -- Step 4: `μHE[n]` is isometry invariant and equals `volume` on `ℝ^n`.
+  have hvol : ∀ S : Set (EuclideanSpace ℝ (Fin n)),
+      (μHE[n] : Measure (Euclidean N)) (ι '' S) = volume S := fun S ↦ by
+    rw [hι.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- Steps 5–6: Haar scaling of balls in `ℝ^n` (no nontriviality is needed, so `n = 0` is
+  -- included) and `ofReal (r ^ n) = (ofReal r) ^ n`.
+  constructor
+  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_closedBall,
+      hvol, Measure.addHaar_closedBall _ _ hr.le, finrank_euclideanSpace_fin, unitBallVolume,
+      ENNReal.ofReal_pow hr.le, mul_comm]
+  · rw [← hrange, inter_comm, ← hι0, ← image_preimage_eq_inter_range, hι.preimage_ball, hvol,
+      Measure.addHaar_ball_of_pos _ _ hr, finrank_euclideanSpace_fin, unitBallVolume,
+      ENNReal.ofReal_pow hr.le, mul_comm]
+/-- Tilt cutoffs are test functions (the cutoff `χ(z) t_P(S)` of the flat-limit step of Simon
+Ch. 8, 5.9): for `P ∈ G(N,n)` and continuous compactly supported `χ` on `ℝ^N`, the function
+`(z,S) ↦ χ(z) ‖p_S - p_P‖` lies in `C_c(ℝ^N × G(N,n))` and has support in `spt χ × G(N,n)`. -/
+theorem Submission.intcpt_fli_tilt_cutoff_cc :
+    ∀ (N n : ℕ) (P : Grassmannian N n) (χ : Euclidean N → ℝ), Continuous χ → HasCompactSupport χ → ∃ f : C_c(Euclidean N × Grassmannian N n, ℝ), (∀ (z : Euclidean N) (S : Grassmannian N n), f (z, S) = χ z * ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖) ∧ tsupport f ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+  intro N n P χ hχ hχcs
+  -- Step 1: `Φ = toContinuousLinearMap ∘ (toMatrix b b)⁻¹` is linear on the finite-dimensional
+  -- matrix space, hence continuous.
+  let b := (EuclideanSpace.basisFun (Fin N) ℝ).toBasis
+  let Φ : Matrix (Fin N) (Fin N) ℝ →ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N) :=
+    (LinearMap.toContinuousLinearMap :
+      (Euclidean N →ₗ[ℝ] Euclidean N) ≃ₗ[ℝ] (Euclidean N →L[ℝ] Euclidean N)).toLinearMap ∘ₗ
+      (LinearMap.toMatrix b b).symm.toLinearMap
+  have hΦ : Continuous Φ := Φ.continuous_of_finiteDimensional
+  -- Step 2: `p_S = (toMatrix b b)⁻¹ S`, so by linearity
+  -- `toContinuousLinearMap (p_S - p_P) = Φ (S - P)`.
+  have heq : ∀ S : Grassmannian N n, LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P) = Φ (S.1 - P.1) := by
+    intro S
+    have h : (LinearMap.toMatrix b b).symm (S.1 - P.1) =
+        Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P := by
+      rw [map_sub]
+      rfl
+    rw [← h]
+    rfl
+  -- Step 3: `t_P(S) = ‖Φ (S - P)‖` is continuous in `S`.
+  have ht : Continuous fun S : Grassmannian N n ↦ ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖ := by
+    simp only [heq]
+    exact (hΦ.comp (continuous_subtype_val.sub continuous_const)).norm
+  -- Step 4: `F(z,S) = χ(z) t_P(S)` is continuous.
+  let F : Euclidean N × Grassmannian N n → ℝ := fun z ↦ χ z.1 * ‖LinearMap.toContinuousLinearMap
+      (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖
+  have hF : Continuous F := (hχ.comp continuous_fst).mul (ht.comp continuous_snd)
+  -- Step 5: `support F ⊆ support χ × G ⊆ tsupport χ × G`, which is closed.
+  have hFsupp : tsupport F ⊆ tsupport χ ×ˢ (univ : Set (Grassmannian N n)) := by
+    refine closure_minimal (fun z hz ↦ ⟨subset_tsupport χ fun h ↦ hz ?_, mem_univ _⟩)
+      ((isClosed_tsupport χ).prod isClosed_univ)
+    simp only [F, h, zero_mul]
+  -- Step 6: `tsupport χ × G` is compact (`G` is compact), so `F ∈ C_c(ℝ^N × G)`.
+  have hFcs : HasCompactSupport F :=
+    (hχcs.prod isCompact_univ).of_isClosed_subset (isClosed_tsupport F) hFsupp
+  exact ⟨⟨⟨F, hF⟩, hFcs⟩, fun z S ↦ rfl, hFsupp⟩
+
+/-- Tangent planes at points of small tilt excess are close to `P` (Simon Ch. 8, proof of 5.9,
+pp. 218–221: step 7 of the proof that flat limits of integral varifolds have integer multiplicity,
+at points satisfying the tilt bound (2) of the proof of 5.10, p. 221; child `tangent_tilt_bound`
+of `flat_limit_integer`).  If `W` has tangent plane `T` with multiplicity `θ ≥ 1` at `y` and
+`∫_{Gₙ(B_ρ(y))} ‖p_S - p_P‖ dW(z,S) ≤ ε ρ^n` for `0 < ρ < 1`, then
+`‖p_T - p_P‖ ≤ ε / ω_n`: testing the tangent-plane convergence against `χ_κ(z) ‖p_S - p_P‖`
+(`tilt_cutoff`), with a cutoff `χ_κ = 1` on `B_κ(0)` and `χ_κ = 0` off `B°_1(0)`, gives
+`θ ω_n κ^n ‖p_T - p_P‖ ≤ ε` (`plane_ball_measure`), and then `κ ↑ 1`. -/
+theorem Submission.intcpt_fli_tangent_tilt_bound :
+    ∀ (N n : ℕ) (U : Set (Euclidean N)) (W : Varifold N n U) (P T : Grassmannian N n) (y : Euclidean N) (θ ε : ℝ), HasTangentPlane W y T θ → 1 ≤ θ → 0 ≤ ε → (∀ ρ : ℝ, 0 < ρ → ρ < 1 → (∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)), ENNReal.ofReal ‖LinearMap.toContinuousLinearMap (Grassmannian.projectionLinearMap z.2 - Grassmannian.projectionLinearMap P)‖ ∂W.measure) ≤ ENNReal.ofReal (ε * ρ ^ n)) → ∀ v : Euclidean N, ‖Grassmannian.project T v - Grassmannian.project P v‖ ≤ ε / (unitBallVolume n).toReal * ‖v‖ := by
+  intro N n U W P T y θ ε hT hθ1 hε htilt v
+  -- Step 1: `ω = ω_n ∈ (0, ∞)`, and `t(S) = ‖p_S - p_P‖ ≥ 0`.
+  have hωne : unitBallVolume n ≠ ∞ := by
+    unfold unitBallVolume
+    exact (measure_ball_lt_top (μ := volume)).ne
+  have hωpos : 0 < (unitBallVolume n).toReal := by
+    unfold unitBallVolume
+    exact ENNReal.toReal_pos (Metric.measure_ball_pos _ _ one_pos).ne'
+      (measure_ball_lt_top (μ := volume)).ne
+  set ω := (unitBallVolume n).toReal
+  set t : Grassmannian N n → ℝ := fun S ↦ ‖LinearMap.toContinuousLinearMap
+    (Grassmannian.projectionLinearMap S - Grassmannian.projectionLinearMap P)‖
+  have ht0 : ∀ S, 0 ≤ t S := fun S ↦ norm_nonneg _
+  have h0T : (0 : Euclidean N) ∈ T.plane := T.plane.zero_mem
+  have hTmeas : MeasurableSet (T.plane : Set (Euclidean N)) :=
+    (Submodule.closed_of_finiteDimensional _).measurableSet
+  -- Step 2: `t(T) ω κ^n ≤ ε` for every `κ ∈ (0, 1)`.
+  have hκ : ∀ κ : ℝ, 0 < κ → κ < 1 → t T * (ω * κ ^ n) ≤ ε := by
+    intro κ hκ0 hκ1
+    -- Step 2a: `χ_κ(z) = max(0, min(1, (1 - |z|) / (1 - κ)))` is continuous, `[0, 1]`-valued,
+    -- `= 1` on `B_κ(0)` and `= 0` off `B°_1(0)`; `tilt_cutoff` gives `f ∈ C_c(ℝ^N × G(N,n))`
+    -- with `f(z, S) = χ_κ(z) t(S)`.
+    set χ : Euclidean N → ℝ := fun z ↦ max 0 (min 1 ((1 - ‖z‖) / (1 - κ))) with hχdef
+    have hκ' : 0 < 1 - κ := by linarith
+    have hχcont : Continuous χ := by
+      simp only [hχdef]
+      fun_prop
+    have hχ0 : ∀ z, 0 ≤ χ z := fun z ↦ le_max_left _ _
+    have hχ1 : ∀ z, χ z ≤ 1 := fun z ↦ max_le zero_le_one (min_le_left _ _)
+    have hχzero : ∀ z, 1 ≤ ‖z‖ → χ z = 0 := by
+      intro z hz
+      simp only [hχdef]
+      apply max_eq_left
+      refine (min_le_right _ _).trans ?_
+      exact div_nonpos_of_nonpos_of_nonneg (by linarith) hκ'.le
+    have hχone : ∀ z, ‖z‖ ≤ κ → χ z = 1 := by
+      intro z hz
+      simp only [hχdef]
+      rw [min_eq_left, max_eq_right zero_le_one]
+      rw [le_div_iff₀ hκ']
+      linarith
+    have hχcs : HasCompactSupport χ :=
+      HasCompactSupport.intro (isCompact_closedBall 0 1) fun z hz ↦ by
+        apply hχzero
+        rw [mem_closedBall, dist_zero_right, not_le] at hz
+        exact hz.le
+    obtain ⟨f, hf, -⟩ := Submission.intcpt_fli_tilt_cutoff_cc N n P χ hχcont hχcs
+    -- Steps 2b–2d: `∫ f dW_{y,ρ} ≤ ε` for every `ρ ∈ (0, 1)`.
+    have hbound : ∀ ρ : ℝ, 0 < ρ → ρ < 1 → ∫ z, f z ∂(rescaledMeasure W y ρ) ≤ ε := by
+      intro ρ hρ0 hρ1
+      -- Step 2b: `∫ f dW_{y,ρ} = ρ^{-n} ∫ h dW` with `h(z) = χ_κ(ρ^{-1}(z.1 - y)) t(z.2) ≥ 0`.
+      unfold rescaledMeasure
+      rw [integral_smul_measure, integral_map (μ := W.measure)
+        (φ := fun z : Euclidean N × Grassmannian N n ↦ (ρ⁻¹ • (z.1 - y), z.2)) (by fun_prop)
+        (map_continuous f).aestronglyMeasurable]
+      set h : Euclidean N × Grassmannian N n → ℝ := fun z ↦ f (ρ⁻¹ • (z.1 - y), z.2) with hhdef
+      have hh0 : ∀ z, 0 ≤ h z := by
+        intro z
+        simp only [hhdef, hf]
+        exact mul_nonneg (hχ0 _) (ht0 _)
+      -- Step 2c: `ofReal(h(z)) ≤ 1_{B_ρ(y) × G(N,n)}(z) ofReal(t(z.2))`, as `χ_κ ≤ 1` and
+      -- `χ_κ(ρ^{-1}(z.1 - y)) = 0` when `|z.1 - y| > ρ`.
+      have hhle : ∀ z, ENNReal.ofReal (h z) ≤
+          (closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))).indicator
+            (fun z ↦ ENNReal.ofReal (t z.2)) z := by
+        intro z
+        by_cases hz : z ∈ closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))
+        · rw [indicator_of_mem hz]
+          apply ENNReal.ofReal_le_ofReal
+          simp only [hhdef, hf]
+          exact mul_le_of_le_one_left (ht0 _) (hχ1 _)
+        · rw [indicator_of_notMem hz]
+          have hzy : ρ < ‖z.1 - y‖ := by
+            simp only [mem_prod, mem_closedBall, mem_univ, and_true, not_le, dist_eq_norm] at hz
+            exact hz
+          have hχz : χ (ρ⁻¹ • (z.1 - y)) = 0 := by
+            apply hχzero
+            rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ0, inv_mul_eq_div,
+              le_div_iff₀ hρ0, one_mul]
+            exact hzy.le
+          simp only [hhdef, hf, hχz, zero_mul, ENNReal.ofReal_zero, le_refl]
+      -- Step 2d: by the tilt hypothesis `∫ h dW ≤ ε ρ^n`, so `∫ f dW_{y,ρ} ≤ ρ^{-n} ε ρ^n = ε`.
+      have hlint : ∫⁻ z, ENNReal.ofReal (h z) ∂W.measure ≤ ENNReal.ofReal (ε * ρ ^ n) := by
+        calc ∫⁻ z, ENNReal.ofReal (h z) ∂W.measure
+            ≤ ∫⁻ z, (closedBall y ρ ×ˢ (univ : Set (Grassmannian N n))).indicator
+                (fun z ↦ ENNReal.ofReal (t z.2)) z ∂W.measure := lintegral_mono hhle
+          _ = ∫⁻ z in closedBall y ρ ×ˢ (univ : Set (Grassmannian N n)),
+                ENNReal.ofReal (t z.2) ∂W.measure :=
+              lintegral_indicator (measurableSet_closedBall.prod MeasurableSet.univ) _
+          _ ≤ ENNReal.ofReal (ε * ρ ^ n) := htilt ρ hρ0 hρ1
+      have hhcont : Continuous h := f.continuous.comp (by fun_prop)
+      have hint_eq : ∫ z, h z ∂W.measure = (∫⁻ z, ENNReal.ofReal (h z) ∂W.measure).toReal :=
+        integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hh0) hhcont.aestronglyMeasurable
+      have hint_le : ∫ z, h z ∂W.measure ≤ ε * ρ ^ n := by
+        rw [hint_eq]
+        exact ENNReal.toReal_le_of_le_ofReal (by positivity) hlint
+      rw [ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+      calc ρ⁻¹ ^ n * ∫ z, h z ∂W.measure ≤ ρ⁻¹ ^ n * (ε * ρ ^ n) := by gcongr
+        _ = ε := by
+          have hρn : ρ ^ n ≠ 0 := pow_ne_zero n hρ0.ne'
+          rw [inv_pow, mul_comm ε, ← mul_assoc, inv_mul_cancel₀ hρn, one_mul]
+    -- Step 2e: `∫ f dW_{y,ρ} → θ ∫ f dv(T)` as `ρ ↓ 0` (`HasTangentPlane`), so `θ ∫ f dv(T) ≤ ε`.
+    have hle : θ * ∫ z, f z ∂(planeVarifoldMeasure T) ≤ ε := by
+      apply le_of_tendsto (hT.2.2 f)
+      filter_upwards [Ioo_mem_nhdsGT one_pos] with ρ hρ
+      exact hbound ρ hρ.1 hρ.2
+    -- Step 2f: `∫ f dv(T) = t(T) J` with `J = ∫_T χ_κ dH^n`, by `integral_map` along `z ↦ (z, T)`.
+    have hplane : ∫ z, f z ∂(planeVarifoldMeasure T) =
+        t T * ∫ z in (T.plane : Set (Euclidean N)), χ z ∂(μHE[n] : Measure (Euclidean N)) := by
+      unfold planeVarifoldMeasure
+      rw [integral_map
+        (μ := (μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)))
+        (φ := fun z : Euclidean N ↦ (z, T)) (by fun_prop) (map_continuous f).aestronglyMeasurable]
+      simp only [hf]
+      rw [integral_mul_const, mul_comm]
+    -- Step 2g: `J ≥ ω κ^n`: `1_{B_κ(0)} ≤ χ_κ ≤ 1_{B_1(0)}` and `H^n(T ∩ B_r(0)) = ω_n r^n`
+    -- (`plane_ball_measure` with `a = 0`).
+    have hballfin : (μHE[n] : Measure (Euclidean N))
+        ((T.plane : Set (Euclidean N)) ∩ closedBall 0 1) ≠ ∞ := by
+      rw [(Submission.intcpt_fli_plane_ball_measure N n T 0 1 h0T one_pos).1]
+      exact ENNReal.mul_ne_top hωne (ENNReal.pow_ne_top ENNReal.ofReal_ne_top)
+    have hχle_ind : ∀ z, χ z ≤ (closedBall (0 : Euclidean N) 1).indicator 1 z := by
+      intro z
+      by_cases hz : z ∈ closedBall (0 : Euclidean N) 1
+      · rw [indicator_of_mem hz]
+        exact hχ1 z
+      · rw [indicator_of_notMem hz]
+        rw [mem_closedBall, dist_zero_right, not_le] at hz
+        rw [hχzero z hz.le]
+    have hχint : IntegrableOn χ (T.plane : Set (Euclidean N)) μHE[n] := by
+      have hfin : ((μHE[n] : Measure (Euclidean N)).restrict (T.plane : Set (Euclidean N)))
+          (closedBall 0 1) ≠ ∞ := by
+        rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+        exact hballfin
+      refine Integrable.mono' (g := (closedBall (0 : Euclidean N) 1).indicator 1) ?_
+        hχcont.aestronglyMeasurable ?_
+      · exact (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const hfin)
+      · exact Eventually.of_forall fun z ↦ by
+          rw [Real.norm_eq_abs, abs_of_nonneg (hχ0 z)]
+          exact hχle_ind z
+    have hχlow : ω * κ ^ n ≤
+        ∫ z in (T.plane : Set (Euclidean N)), χ z ∂(μHE[n] : Measure (Euclidean N)) := by
+      have hle' : ∀ z, (closedBall (0 : Euclidean N) κ).indicator (1 : Euclidean N → ℝ) z
+          ≤ χ z := by
+        intro z
+        by_cases hz : z ∈ closedBall (0 : Euclidean N) κ
+        · rw [indicator_of_mem hz, hχone z (by simpa [mem_closedBall, dist_zero_right] using hz)]
+          rfl
+        · rw [indicator_of_notMem hz]
+          exact hχ0 z
+      have h1 : ∫ z in (T.plane : Set (Euclidean N)),
+          (closedBall (0 : Euclidean N) κ).indicator (1 : Euclidean N → ℝ) z
+            ∂(μHE[n] : Measure (Euclidean N)) ≤
+          ∫ z in (T.plane : Set (Euclidean N)), χ z ∂(μHE[n] : Measure (Euclidean N)) :=
+        integral_mono_of_nonneg
+          (Eventually.of_forall fun z ↦ indicator_nonneg (fun _ _ ↦ zero_le_one) z)
+          hχint (Eventually.of_forall hle')
+      have h2 : ∫ z in (T.plane : Set (Euclidean N)),
+          (closedBall (0 : Euclidean N) κ).indicator (1 : Euclidean N → ℝ) z
+            ∂(μHE[n] : Measure (Euclidean N)) = ω * κ ^ n := by
+        rw [integral_indicator_one measurableSet_closedBall, Measure.real,
+          Measure.restrict_apply measurableSet_closedBall, inter_comm,
+          (Submission.intcpt_fli_plane_ball_measure N n T 0 κ h0T hκ0).1,
+          ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.toReal_ofReal hκ0.le]
+      linarith
+    -- Step 2h: as `t(T) ≥ 0`, `J ≥ 0` and `θ ≥ 1`, `t(T) ω κ^n ≤ t(T) J ≤ θ t(T) J ≤ ε`.
+    rw [hplane] at hle
+    have hint0 : 0 ≤ ∫ z in (T.plane : Set (Euclidean N)), χ z
+        ∂(μHE[n] : Measure (Euclidean N)) :=
+      setIntegral_nonneg hTmeas fun z _ ↦ hχ0 z
+    have hA : t T * (ω * κ ^ n) ≤ t T *
+        ∫ z in (T.plane : Set (Euclidean N)), χ z ∂(μHE[n] : Measure (Euclidean N)) :=
+      mul_le_mul_of_nonneg_left hχlow (ht0 T)
+    have hB : t T * ∫ z in (T.plane : Set (Euclidean N)), χ z ∂(μHE[n] : Measure (Euclidean N))
+        ≤ θ * (t T * ∫ z in (T.plane : Set (Euclidean N)), χ z
+          ∂(μHE[n] : Measure (Euclidean N))) :=
+      le_mul_of_one_le_left (mul_nonneg (ht0 T) hint0) hθ1
+    linarith
+  -- Step 3: letting `κ ↑ 1` in step 2 gives `t(T) ω ≤ ε`.
+  have hmain : t T * ω ≤ ε := by
+    have hc : Continuous fun κ : ℝ ↦ t T * (ω * κ ^ n) := by fun_prop
+    have hlim : Tendsto (fun κ : ℝ ↦ t T * (ω * κ ^ n)) (𝓝[<] 1) (𝓝 (t T * ω)) := by
+      have := hc.tendsto 1
+      simp only [one_pow, mul_one] at this
+      exact tendsto_nhdsWithin_of_tendsto_nhds this
+    apply le_of_tendsto hlim
+    filter_upwards [Ioo_mem_nhdsLT one_pos] with κ hκ'
+    exact hκ κ hκ'.1 hκ'.2
+  -- Step 4: `p_T v - p_P v = (p_T - p_P) v`, so `‖p_T v - p_P v‖ ≤ t(T) ‖v‖ ≤ (ε / ω) ‖v‖`.
+  have hop : Grassmannian.project T v - Grassmannian.project P v =
+      (LinearMap.toContinuousLinearMap
+        (Grassmannian.projectionLinearMap T - Grassmannian.projectionLinearMap P)) v := by
+    simp [Grassmannian.project]
+  rw [hop]
+  calc ‖(LinearMap.toContinuousLinearMap
+        (Grassmannian.projectionLinearMap T - Grassmannian.projectionLinearMap P)) v‖
+      ≤ t T * ‖v‖ := ContinuousLinearMap.le_opNorm _ _
+    _ ≤ ε / ω * ‖v‖ := by
+        gcongr
+        rw [le_div_iff₀ hωpos]
+        exact hmain
+
 theorem main_theorem : FirstRectifiabilityTheorem ∧ FirstVariationIsMassDerivative ∧ FirstVariationRepresentation ∧ MonotonicityFormula ∧ StationaryMonotonicityIdentity ∧ DensityExistsAE ∧ DensitySemicontinuity ∧ ConstancyTheorem ∧ VarifoldTangentCones ∧ TangentConesAreRectifiableCones ∧ AllardRectifiabilityTheorem ∧ CompactnessTheorem ∧ IntegralCompactnessTheorem := by sorry
 
 end GMT.Ch08
