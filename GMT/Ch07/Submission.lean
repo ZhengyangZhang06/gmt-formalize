@@ -792,6 +792,73 @@ theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M 
   rw [mem_ball, dist_eq_norm] at hz
   simpa [hη, Poincare.SimonGMT.Chapter03.blowUpMap] using hz
 
+/-- **`Df(x)` fixes the approximate tangent space of a pointwise fixed set** (steps 5–6 of the proof
+that a map fixing `spt T` preserves the orientation of `T`; approximate tangent spaces as in Simon
+Ch. 3, Definition 1.4).  If `f` is differentiable at `x`, `f(x) = x`, `f` fixes every point of `A`
+and `Q` is an approximate tangent space of `A` at `x`, then `Df(x)v = v` for every `v ∈ Q`.  The
+blow-up points `u = λ⁻¹(y − x)`, `y ∈ A`, approach `v` as `λ ↓ 0`; since `f(y) − f(x) = y − x`,
+differentiability gives `|u − Df(x)u| ≤ η|u|`, so `|Df(x)v − v| ≤ ε` for every `ε > 0`. -/
+theorem Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent : ∀ (P n : ℕ) (A : Set (Euclid P)) (f : Euclid P → Euclid P) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n A x Q → DifferentiableAt ℝ f x → f x = x → (∀ y ∈ A, f y = y) → ∀ v ∈ Q, fderiv ℝ f x v = v := by
+  intro P n A f x Q hQ hf hfx hA v hv
+  set L := fderiv ℝ f x
+  have hfL : HasFDerivAt f L x := hf.hasFDerivAt
+  -- Step 1: it suffices to show `|Lv − v| ≤ ε` for every `ε > 0`; fix the constants
+  refine eq_of_forall_dist_le fun ε hε => ?_
+  rw [dist_eq_norm]
+  set C : ℝ := ‖v‖ + 1 with hC
+  set K : ℝ := ‖L‖ + 1 with hK
+  have hCpos : 0 < C := by rw [hC]; positivity
+  have hKpos : 0 < K := by rw [hK]; positivity
+  set η : ℝ := ε / (2 * C) with hη
+  set s : ℝ := min 1 (ε / (2 * K))
+  have hηpos : 0 < η := div_pos hε (mul_pos two_pos hCpos)
+  have hspos : 0 < s := lt_min one_pos (div_pos hε (mul_pos two_pos hKpos))
+  have hKs : K * s ≤ ε / 2 := by
+    calc K * s ≤ K * (ε / (2 * K)) := mul_le_mul_of_nonneg_left (min_le_right _ _) hKpos.le
+      _ = ε / 2 := by field_simp
+  have hηC : η * C = ε / 2 := by rw [hη]; field_simp
+  -- Step 2: differentiability gives `δ > 0` with `|f(y) − f(x) − L(y − x)| ≤ η|y − x|` near `x`
+  obtain ⟨δ, hδ, hδf⟩ := Metric.eventually_nhds_iff.mp (hfL.isLittleO.bound hηpos)
+  -- Step 3: blow-up points of `A ∩ A = A` approach `v`
+  obtain ⟨lam₀, hlam₀, hpts⟩ :=
+    Submission.dsmc_att_blowUp_points_of_approxTangent P n A A x v Q (by simp) hQ hv s hspos
+  -- Step 4: the scale `λ = min(λ₀/2, δ/(2C))` and the point `u = λ⁻¹(y − x)`
+  set lam : ℝ := min (lam₀ / 2) (δ / (2 * C))
+  have hlampos : 0 < lam := lt_min (half_pos hlam₀) (div_pos hδ (mul_pos two_pos hCpos))
+  obtain ⟨y, ⟨hyA, -⟩, hy⟩ := hpts lam hlampos ((min_le_left _ _).trans_lt (half_lt_self hlam₀))
+  set u : Euclid P := lam⁻¹ • (y - x) with hu
+  have hyx : y - x = lam • u := by rw [hu, smul_inv_smul₀ hlampos.ne']
+  have huv : ‖u - v‖ < s := hy
+  have huC : ‖u‖ ≤ C := by
+    have h1 := norm_le_norm_sub_add u v
+    have h2 := huv.trans_le (min_le_left _ _)
+    rw [hC]; linarith
+  have hyδ : dist y x < δ := by
+    rw [dist_eq_norm, hyx, norm_smul, Real.norm_of_nonneg hlampos.le]
+    calc lam * ‖u‖ ≤ δ / (2 * C) * C :=
+          mul_le_mul (min_le_right _ _) huC (norm_nonneg _) (div_pos hδ (mul_pos two_pos hCpos)).le
+      _ = δ / 2 := by field_simp
+      _ < δ := half_lt_self hδ
+  -- Step 5: `f(y) = y` and `f(x) = x` turn the estimate into `|u − Lu| ≤ η|u| ≤ ε/2`
+  have hkey : ‖u - L u‖ ≤ ε / 2 := by
+    have h := hδf hyδ
+    rw [hA y hyA, hfx, hyx, map_smul, ← smul_sub, norm_smul, norm_smul,
+      Real.norm_of_nonneg hlampos.le, mul_left_comm] at h
+    calc ‖u - L u‖ ≤ η * ‖u‖ := le_of_mul_le_mul_left h hlampos
+      _ ≤ η * C := mul_le_mul_of_nonneg_left huC hηpos.le
+      _ = ε / 2 := hηC
+  -- Step 6: `|Lv − v| ≤ |L(v − u)| + |Lu − u| + |u − v| ≤ Ks + ε/2 ≤ ε`
+  have hLvu : ‖L v - L u‖ ≤ ‖L‖ * ‖u - v‖ := by
+    calc ‖L v - L u‖ = ‖L (v - u)‖ := by rw [map_sub]
+      _ ≤ ‖L‖ * ‖v - u‖ := L.le_opNorm _
+      _ = ‖L‖ * ‖u - v‖ := by rw [norm_sub_rev]
+  calc ‖L v - v‖ = ‖(L v - L u) + (L u - u) + (u - v)‖ := by congr 1; abel
+    _ ≤ ‖L v - L u‖ + ‖L u - u‖ + ‖u - v‖ := norm_add₃_le
+    _ ≤ ‖L‖ * ‖u - v‖ + ε / 2 + ‖u - v‖ := by rw [norm_sub_rev (L u) u]; linarith
+    _ = K * ‖u - v‖ + ε / 2 := by rw [hK]; ring
+    _ ≤ K * s + ε / 2 := by linarith [mul_le_mul_of_nonneg_left huv.le hKpos.le]
+    _ ≤ ε := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
