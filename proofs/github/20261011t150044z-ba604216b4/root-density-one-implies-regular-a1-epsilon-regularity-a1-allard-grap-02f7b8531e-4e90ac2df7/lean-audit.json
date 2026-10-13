@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4b2cb2ee2acbae56a32744bd0e01111149c80c8fbf45fcd090286bb70e78e0aa",
+  "git_delta": {
+    "base_commit": "04a644fed0b0d89ba89d04cd7068e0071f80659a",
+    "candidate_commit": "a73e7f3c57d2b45df57983f914f79d79c4b93cf0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_total_bounded",
+    "diff_sha256": "ed6226710292b229145cd7bbf198a1dadab6dc6d3f8b0d7aea239467c9ecb488",
+    "source_sha256": "9e3ae2f28ac64afc03baf6c5fc5909a2b2da1ef5fcc03778f04c05cf1f242739",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_total_bounded",
+      "statement": "∀ (n : ℕ) (M : ℝ) (u : ℕ → Euclid n → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (u j)) → (∀ j, ∫ x in ball (0 : Euclid n) 1, u j x ^ 2 ≤ M) → (∀ j, ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ (u j) x‖ ^ 2 ≤ M) → ∀ η : ℝ, 0 < η → ∃ S : Finset ℕ, ∀ j, ∃ k ∈ S, ∫ x in ball (0 : Euclid n) 1, (u j x - u k x) ^ 2 ≤ η",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
