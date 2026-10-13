@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e12524031b9bb04a888157a4b52b83796cd1ad338dff19a791ef4c6e9113124",
+  "git_delta": {
+    "base_commit": "3af8bcbd61d5c83f427f8086a37f24c564b8c1df",
+    "candidate_commit": "007c2d36ae2cd431ff42760774bbe26ac23973c0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gv_vertical_field_first_variation",
+    "diff_sha256": "c1be2cec83f25c46a4eccc5923d4032a1f6d137d4a8e1045c55d2a586868fc8a",
+    "source_sha256": "7cfbd31bb87dc2709d311ef626901ae5bc041d20e607c4442045593926e7bcee",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gv_vertical_field_first_variation",
+      "statement": "∀ (m n : ℕ) (U : Set (Euclid m)) (R : IMRep U n) (ζ : Euclid m → ℝ) (e : Euclid m), Differentiable ℝ ζ → R.firstVariation (fun x => ζ x • e) = ∫ x, fderiv ℝ ζ x ((approxTangentPlane n R.carrier x).starProjection e) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
