@@ -741,6 +741,28 @@ theorem Submission.regcomp_exists_covector_eval_orthonormal_eq_one : ∀ (P n : 
   refine ⟨β, (pow_eq_one_iff_of_nonneg (covectorEuclideanNorm_nonneg β) two_ne_zero).mp ?_, hβτ⟩
   exact mul_left_cancel₀ hfac (by rw [← hsq, mul_one])
 
+/-- **Covectors vanish through a rank-deficient projection** (Simon Ch. 6, §1): if
+`dim V < n`, then `β ∘ p_V = 0` for every `n`-covector `β` on `ℝᴾ`, `p_V` the orthogonal
+projection onto `V`.  For any `u₁, …, uₙ` the `n` vectors `p_V u₁, …, p_V uₙ` lie in `V`, so they
+are linearly dependent, and the alternating form `β` vanishes on a linearly dependent family. -/
+theorem Submission.cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt : ∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V < n → ∀ β : Covector (Euclid P) n, β.compContinuousLinearMap V.starProjection = 0 := by
+  intro P n V hlt β
+  -- Step 1: it suffices that `β(p_V u₁, …, p_V uₙ) = 0` for every family `u`
+  ext u
+  rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.coe_zero,
+    Pi.zero_apply]
+  -- Step 2: an alternating form vanishes on a family that is not linearly independent
+  apply β.toAlternatingMap.map_linearDependent
+  -- Step 3: `p_V ∘ u = V.subtype ∘ v` with `vᵢ := p_V uᵢ ∈ V`; were it independent, so would be
+  -- the `n` vectors `vᵢ` of `V`, giving `n ≤ dim V < n`
+  intro hli
+  have hli' : LinearIndependent ℝ (fun i => V.orthogonalProjectionOnto (u i)) := by
+    apply LinearIndependent.of_comp V.subtype
+    exact hli
+  have hcard := hli'.fintype_card_le_finrank
+  rw [Fintype.card_fin] at hcard
+  omega
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
