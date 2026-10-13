@@ -502,6 +502,28 @@ theorem dohr_eb_ail_gram_det_pos : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn �
     exact zero_le_one
   obtain ⟨s, ⟨hs0, -⟩, hs⟩ := intermediate_value_Icc' zero_le_one hcont.continuousOn ⟨h1, h0⟩
   exact hne s hs0 hs
+/-- Smoothness of the graph area integrand.  For `P ∈ L(ℝⁿ, ℝ^ℓ)` put
+`G(P) = (⟨P eₐ, P e_b⟩)_{a,b}`; then `J(P) = √(det(I + G(P)))` is `C^∞` on `L(ℝⁿ, ℝ^ℓ)`.
+Each entry `P ↦ δ_{ab} + ⟨P eₐ, P e_b⟩` is smooth (evaluation at `eₐ` is continuous linear and
+the inner product is bilinear), so `det(I + G(P))` is smooth by the Leibniz formula
+(`Matrix.det_apply`, `ContDiff.sum`, `contDiff_prod`).  It is positive
+(`dohr_eb_ail_gram_det_pos`), and `√` is smooth away from `0` (`ContDiff.sqrt`). -/
+theorem dohr_eb_ail_contDiff : ∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) := by
+  intro n ℓ
+  have hentry : ∀ i j : Fin n, ContDiff ℝ (⊤ : ℕ∞) fun P : Rn n →L[ℝ] Rn ℓ =>
+      ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+        inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) i j := by
+    intro i j
+    simp only [Matrix.add_apply, Matrix.of_apply]
+    exact contDiff_const.add (ContDiff.inner ℝ
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single i (1 : ℝ))).contDiff
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single j (1 : ℝ))).contDiff)
+  have hdet : ContDiff ℝ (⊤ : ℕ∞) fun P : Rn n →L[ℝ] Rn ℓ =>
+      Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+        inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) := by
+    simp only [Matrix.det_apply, Units.smul_def, zsmul_eq_mul]
+    exact ContDiff.sum fun σ _ => contDiff_const.mul (contDiff_prod fun i _ => hentry (σ i) i)
+  exact hdet.sqrt fun P => (Submission.dohr_eb_ail_gram_det_pos n ℓ P).ne'
 
 end Submission
 
