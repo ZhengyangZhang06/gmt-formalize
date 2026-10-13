@@ -3571,4 +3571,176 @@ theorem Submission.fiw_tb_top_dim_approx : (∀ (P n : ℕ) (U : Set (Eucl P)), 
       _ ≤ c * ENNReal.ofReal ρ * X.boundary.mass :=
         hc ρ hρ u _ hum (Submission.fiw_tb_translation_estimate m X u huint hXu)
 
+/-- Simon Ch. 6, proof of 7.2 (p. 171, (1)–(3)): for `K ⊆ U` compact there is `C` such that for
+every `B < ∞` and `ρ > 0` finitely many `Q ∈ 𝒟_{m+1}(U)` have the property that every `T` with
+`T`, `∂T` integer multiplicity, `spt T ⊆ K` and `M(T) + M(∂T) ≤ B` is `T − Q = ∂R + S` with
+`R`, `S` integer multiplicity and `M(R) + M(S) ≤ C ρ B`.  If `P < m + 1` then `T = 0`; otherwise
+the centres `Q` are restrictions to `U` of lattice chains, from the Deformation Theorem
+(`P ≥ m + 2`) or `fiw_tb_top_dim_approx` (`P = m + 1`), whose integer coefficients range over a
+finite set (`fiw_tb_lattice_coeff_finite`). -/
+theorem Submission.fiw_tb_finite_net :
+    DeformationTheorem →
+    (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n)
+      (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n),
+      IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) →
+      ∀ W : Set (Eucl P), IsOpen W →
+        T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) →
+    (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ),
+      IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ →
+      (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S) →
+    ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)), IsCompact K → K ⊆ U →
+    ∃ C : ℝ≥0, ∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ ρ : ℝ, 0 < ρ →
+      ∃ Qs : Set (GeometricCurrentOn U (m + 1)), Qs.Finite ∧
+      ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T →
+        IsIntegerMultiplicity T.boundary → T.support ⊆ K → T.mass + T.boundary.mass ≤ B →
+        ∃ Q ∈ Qs, ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)),
+          IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          (∀ ω, T ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ C * ENNReal.ofReal ρ * B := by
+  intro hDT hMF hLC P m U hU K hK hKU
+  -- (Z1) The zero current is integer multiplicity: `0 = τ(∅, 1, 0)`.
+  have hzero : ∀ (N k : ℕ) (V : Set (Eucl N)),
+      IsIntegerMultiplicity (0 : GeometricCurrentOn V k) := by
+    intro N k V
+    refine ⟨∅, fun _ => 1, fun _ => 0, ⟨empty_subset V, nullMeasurableSet_empty,
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty,
+      fun x hx => absurd hx (notMem_empty x), fun _ _ _ => by simp, aestronglyMeasurable_const,
+      by simp⟩, fun x hx => absurd hx (notMem_empty x), fun ω => ?_⟩
+    simp [tauAction]
+  -- (Z2) `M(0) = 0`: every admissible evaluation of `0` is `ofReal 0 = 0`.
+  have hmass0 : ∀ (N k : ℕ) (V : Set (Eucl N)), (0 : GeometricCurrentOn V k).mass = 0 := by
+    intro N k V
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  -- (Z3)–(Z4) A lattice chain is determined by its coefficients, so the chains with
+  -- coefficients in a finite set `𝓑` form a finite set.
+  have hchains : ∀ (n N : ℕ) (V : Set (Eucl N)) (ρ : ℝ) (Bs : Set (LatticeFaceIndex n N → ℝ)),
+      Bs.Finite → {Pc : GeometricCurrentOn V n | ∃ β ∈ Bs, IsLatticeChain ρ β Pc}.Finite := by
+    intro n N V ρ Bs hBs
+    classical
+    let Φ : (LatticeFaceIndex n N → ℝ) → GeometricCurrentOn V n := fun β =>
+      if h : ∃ Pc : GeometricCurrentOn V n, IsLatticeChain ρ β Pc then h.choose else 0
+    refine (hBs.image Φ).subset ?_
+    rintro Pc ⟨β, hβ, hPc⟩
+    have h : ∃ Pc : GeometricCurrentOn V n, IsLatticeChain ρ β Pc := ⟨Pc, hPc⟩
+    refine ⟨β, hβ, GeometricCurrentOn.ext fun ω => ?_⟩
+    simp only [Φ, dite_eq_left h]
+    rw [h.choose_spec ω, hPc ω]
+  -- (Z5) It suffices to find the centres for currents on `ℝ^P`: extend `T` to `X` on `ℝ^P`
+  -- (`fiw_tb_extend_to_univ`) and restrict `Q`, `R`, `S` to `U`
+  -- (`fiw_tb_restrictDomain_mass_im`); `T(ω) = X(ιω)` and `∂(Y|_U)(ω) = ∂Y(ιω)`.
+  have htransfer : ∀ C : ℝ≥0, (∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ ρ : ℝ, 0 < ρ →
+      ∃ Qs : Set (GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), Qs.Finite ∧
+      ∀ X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity X →
+        IsIntegerMultiplicity X.boundary → X.support ⊆ K → X.mass + X.boundary.mass ≤ B →
+        ∃ Q ∈ Qs, ∃ (R : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1 + 1))
+          (S : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+          IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          (∀ ω, X ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ C * ENNReal.ofReal ρ * B) →
+      ∀ (B : ℝ≥0∞), B ≠ ∞ → ∀ ρ : ℝ, 0 < ρ →
+      ∃ Qs : Set (GeometricCurrentOn U (m + 1)), Qs.Finite ∧
+      ∀ T : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity T →
+        IsIntegerMultiplicity T.boundary → T.support ⊆ K → T.mass + T.boundary.mass ≤ B →
+        ∃ Q ∈ Qs, ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)),
+          IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          (∀ ω, T ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ C * ENNReal.ofReal ρ * B := by
+    intro C hnet B hB ρ hρ
+    obtain ⟨Qs, hQs, hXnet⟩ := hnet B hB ρ hρ
+    refine ⟨(fun Q => Q.restrictDomain (subset_univ U)) '' Qs, hQs.image _, ?_⟩
+    intro T hT hdT hspt hmass
+    have hTm : T.mass ≠ ∞ := ne_top_of_le_ne_top hB (le_self_add.trans hmass)
+    obtain ⟨X, hXT, hXspt, hXm, hXdm, hXim, hXdim⟩ :=
+      Submission.fiw_tb_extend_to_univ hMF P m U K hU hK hKU T hspt hTm
+    obtain ⟨Q, hQ, R, S, hR, hS, hEq, hRS⟩ :=
+      hXnet X (hXim hT) (hXdim hdT) hXspt ((add_le_add hXm hXdm).trans hmass)
+    have hRU := Submission.fiw_tb_restrictDomain_mass_im P (m + 1 + 1) univ U (subset_univ U) hU R
+    have hSU := Submission.fiw_tb_restrictDomain_mass_im P (m + 1) univ U (subset_univ U) hU S
+    refine ⟨Q.restrictDomain (subset_univ U), ⟨Q, hQ, rfl⟩, R.restrictDomain (subset_univ U),
+      S.restrictDomain (subset_univ U), hRU.2 hR, hSU.2 hS, fun ω => ?_,
+      (add_le_add hRU.1 hSU.1).trans hRS⟩
+    rw [← hXT]
+    exact hEq (testFormOnInclusion (subset_univ U) (m + 1) ω)
+  rcases lt_trichotomy P (m + 1) with hP | rfl | hP
+  · -- Case `P < m + 1`: every `(m+1)`-covector on `ℝ^P` is `0`, so `T = 0`; take `C = 0`,
+    -- `𝒬 = {0}` and `Q = R = S = 0`.
+    refine ⟨0, fun B _ ρ _ => ⟨{0}, finite_singleton 0, fun T _ _ _ _ =>
+      ⟨0, mem_singleton 0, 0, 0, hzero P (m + 1 + 1) U, hzero P (m + 1) U, fun ω => ?_, ?_⟩⟩⟩
+    · have hω : ω = 0 := by
+        apply Subtype.ext
+        funext x
+        ext v
+        refine AlternatingMap.map_linearDependent
+          ((ω : DifferentialForm (Eucl P) (m + 1)) x).toAlternatingMap v fun hv => ?_
+        have hle := hv.fintype_card_le_finrank
+        rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hle
+        exact absurd hle (Nat.not_le.2 hP)
+      have hT : T ω = 0 := by
+        rw [hω, map_zero]
+      simp [hT]
+    · simp [hmass0]
+  · -- Case `P = m + 1`: `fiw_tb_top_dim_approx` at scale `ρ`; `Q = Pc`, `R = 0`, `S = S̃`.
+    obtain ⟨c, hc⟩ := Submission.fiw_tb_top_dim_approx hMF hLC m
+    refine ⟨c, htransfer c fun B hB ρ hρ => ?_⟩
+    set Y : Set (Eucl (m + 1)) := cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ) * ρ) K
+    set A : ℝ := 2 * B.toReal / ρ ^ (m + 1) with hA
+    set Bs := {β : LatticeFaceIndex (m + 1) (m + 1) → ℝ | (∀ F, ∃ k : ℤ, β F = k) ∧
+      ∀ F, β F ≠ 0 → latticeFace ρ F ⊆ Y ∧ |β F| ≤ A}
+    have hBsfin : Bs.Finite := Submission.fiw_tb_lattice_coeff_finite (m + 1) (m + 1) ρ hρ Y
+      hK.isBounded.cthickening A
+    refine ⟨{Pc | ∃ β ∈ Bs, IsLatticeChain ρ β Pc}, hchains (m + 1) (m + 1) univ ρ Bs hBsfin, ?_⟩
+    intro X hX _ hspt hmass
+    have hXm : X.mass ≤ B := le_self_add.trans hmass
+    have hXdm : X.boundary.mass ≤ B := le_add_self.trans hmass
+    obtain ⟨β, Pc, S, hPc, hβint, hβface, hβmass, hS, hEq, hSm⟩ :=
+      hc X hX (hXm.trans_lt hB.lt_top) (hXdm.trans_lt hB.lt_top) ρ hρ
+    -- `β ∈ 𝓑`: its faces lie in `Y`, and `|β F| ρ^{m+1} ≤ 2 M(X) ≤ 2B`.
+    have hβ : β ∈ Bs := by
+      refine ⟨hβint, fun F hF => ⟨(hβface F hF).trans (cthickening_subset_of_subset _ hspt), ?_⟩⟩
+      have h := (ENNReal.ofReal_le_iff_le_toReal (ENNReal.mul_ne_top ENNReal.ofNat_ne_top hB)).1
+        ((hβmass F).trans (mul_le_mul_right hXm 2))
+      rw [ENNReal.toReal_mul, ENNReal.toReal_ofNat] at h
+      rw [hA, le_div_iff₀ (pow_pos hρ _)]
+      exact h
+    refine ⟨Pc, ⟨β, hβ, hPc⟩, 0, S, hzero (m + 1) (m + 1 + 1) univ, hS, fun ω => ?_, ?_⟩
+    · simp [hEq ω]
+    · rw [hmass0, zero_add]
+      exact hSm.trans (mul_le_mul_right hXdm _)
+  · -- Case `P ≥ m + 2`: the Deformation Theorem at scale `ρ` in `ℝ^{(m+1)+ℓ}`; `Q = Pc`,
+    -- `R = R̃`, `S = S̃`, and `fiw_tb_lattice_chain_coeff` puts the coefficients `β` in `𝓑`.
+    obtain ⟨ℓ, rfl⟩ : ∃ ℓ, P = m + 1 + ℓ := ⟨P - (m + 1), by omega⟩
+    obtain ⟨C, hC⟩ := hDT m ℓ (by omega)
+    refine ⟨C, htransfer C fun B hB ρ hρ => ?_⟩
+    set Y : Set (Eucl (m + 1 + ℓ)) :=
+      cthickening (2 * Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ) * ρ) K
+    set A : ℝ := C * B.toReal / ρ ^ (m + 1) with hA
+    set Bs := {β : LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℝ | (∀ F, ∃ k : ℤ, β F = k) ∧
+      ∀ F, β F ≠ 0 → latticeFace ρ F ⊆ Y ∧ |β F| ≤ A}
+    have hBsfin : Bs.Finite := Submission.fiw_tb_lattice_coeff_finite (m + 1) (m + 1 + ℓ) ρ hρ
+      Y hK.isBounded.cthickening A
+    refine ⟨{Pc | ∃ β ∈ Bs, IsLatticeChain ρ β Pc},
+      hchains (m + 1) (m + 1 + ℓ) univ ρ Bs hBsfin, ?_⟩
+    intro X hX hdX hspt hmass
+    have hXm : X.mass ≤ B := le_self_add.trans hmass
+    obtain ⟨Pc, β, R, S, hPc, hEq, hPcm, -, hRm, hSm, hsptPR, -, hIM, hSim⟩ :=
+      hC X (hmass.trans_lt hB.lt_top) ρ hρ
+    obtain ⟨hβint, -, hRim⟩ := hIM hX
+    -- `β ∈ 𝓑`: `F ⊆ spt Pc ⊆ Y` and `|β F| ρ^{m+1} ≤ M(Pc) ≤ C M(X) ≤ C B`.
+    have hβ : β ∈ Bs := by
+      refine ⟨hβint, fun F hF => ?_⟩
+      obtain ⟨hFspt, hFmass⟩ :=
+        Submission.fiw_tb_lattice_chain_coeff m (m + 1 + ℓ) ρ β Pc hρ hPc F hF
+      refine ⟨fun x hx => thickening_subset_cthickening _ _
+        (thickening_subset_of_subset _ hspt (hsptPR (mem_union_left _ (hFspt hx)))), ?_⟩
+      have h := (ENNReal.ofReal_le_iff_le_toReal (ENNReal.mul_ne_top ENNReal.coe_ne_top hB)).1
+        (hFmass.trans (hPcm.trans (mul_le_mul_right hXm _)))
+      rw [ENNReal.toReal_mul, ENNReal.coe_toReal] at h
+      rw [hA, le_div_iff₀ (pow_pos hρ _)]
+      exact h
+    refine ⟨Pc, ⟨β, hβ, hPc⟩, R, S, hRim, hSim hX hdX, hEq, ?_⟩
+    calc R.mass + S.mass
+        ≤ C * ENNReal.ofReal ρ * X.mass + C * ENNReal.ofReal ρ * X.boundary.mass :=
+          add_le_add hRm hSm
+      _ = C * ENNReal.ofReal ρ * (X.mass + X.boundary.mass) := (mul_add _ _ _).symm
+      _ ≤ C * ENNReal.ofReal ρ * B := mul_le_mul_right hmass _
+
 end GMT.Ch06
