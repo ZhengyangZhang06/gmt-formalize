@@ -359,6 +359,92 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Median minimization: if `c₀` is a median of `u` on `F` (each of `F ∩ {u ≤ c₀}` and
+`F ∩ {u ≥ c₀}` has measure at least `a / 2`, where `μ F = a`), then `c₀` minimizes
+`c ↦ ∫_F |u - c| dμ`. -/
+theorem Submission.fiw_tb_tda_im_median_minimizes :
+    ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a c₀ : ℝ) (u : α → ℝ),
+      MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → IntegrableOn u F μ →
+      ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | u x ≤ c₀}) →
+      ENNReal.ofReal (a / 2) ≤ μ (F ∩ {x | c₀ ≤ u x}) →
+      ∀ c : ℝ,
+        ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ := by
+  intro α _ μ F a c₀ u hF ha hμF hu _ hle hge c
+  -- (P2)–(P3): if `μ (F ∩ S) ≥ a / 2`, then `μ (F \ S) = a - μ (F ∩ S) ≤ a / 2 ≤ μ (F ∩ S)`.
+  have half : ∀ S : Set α, MeasurableSet S → ENNReal.ofReal (a / 2) ≤ μ (F ∩ S) →
+      μ (F \ S) ≤ μ (F ∩ S) := by
+    intro S hS hS2
+    have ha2 : (0 : ℝ) ≤ a / 2 := by linarith
+    have hfin : μ (F ∩ S) ≠ ∞ := ne_top_of_le_ne_top (by rw [hμF]; exact ENNReal.ofReal_ne_top)
+      (measure_mono inter_subset_left)
+    have hsum : μ (F ∩ S) + μ (F \ S) ≤ μ (F ∩ S) + ENNReal.ofReal (a / 2) :=
+      calc μ (F ∩ S) + μ (F \ S) = μ F := measure_inter_add_sdiff F hS
+        _ = ENNReal.ofReal (a / 2) + ENNReal.ofReal (a / 2) := by
+          rw [hμF, ← ENNReal.ofReal_add ha2 ha2, add_halves]
+        _ ≤ μ (F ∩ S) + ENNReal.ofReal (a / 2) := by gcongr
+    exact ((ENNReal.add_le_add_iff_left hfin).1 hsum).trans hS2
+  -- Step 1 (comparison): for `d ≥ 0`, if `|u - c₀| + d ≤ |u - c|` on `S`, `|u - c₀| - d ≤ |u - c|`
+  -- off `S` and `μ (F \ S) ≤ μ (F ∩ S)`, integrate over `F ∩ S` and `F \ S`.
+  have key : ∀ (S : Set α) (d : ℝ), MeasurableSet S → 0 ≤ d → μ (F \ S) ≤ μ (F ∩ S) →
+      (∀ x ∈ S, |u x - c₀| + d ≤ |u x - c|) → (∀ x ∉ S, |u x - c₀| - d ≤ |u x - c|) →
+      ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ ≤ ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ := by
+    intro S d hS hd hμS hin hout
+    have hin' : ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S) ≤
+        ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ :=
+      calc ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S)
+          = ∫⁻ x in F ∩ S, (ENNReal.ofReal |u x - c₀| + ENNReal.ofReal d) ∂μ := by
+            rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+        _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ :=
+          setLIntegral_mono' (hF.inter hS) fun x hx => by
+            rw [← ENNReal.ofReal_add (abs_nonneg _) hd]
+            exact ENNReal.ofReal_le_ofReal (hin x hx.2)
+    have hout' : ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ ≤
+        ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S) :=
+      calc ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ
+          ≤ ∫⁻ x in F \ S, (ENNReal.ofReal |u x - c| + ENNReal.ofReal d) ∂μ :=
+            setLIntegral_mono' (hF.diff hS) fun x hx =>
+              (ENNReal.ofReal_le_ofReal (by linarith [hout x hx.2])).trans ENNReal.ofReal_add_le
+        _ = ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F \ S) := by
+            rw [lintegral_add_right _ measurable_const, setLIntegral_const]
+        _ ≤ ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S) := by
+            gcongr
+    calc ∫⁻ x in F, ENNReal.ofReal |u x - c₀| ∂μ
+        = ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c₀| ∂μ :=
+          (lintegral_inter_add_sdiff (fun x => ENNReal.ofReal |u x - c₀|) F hS).symm
+      _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ +
+            (∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ + ENNReal.ofReal d * μ (F ∩ S)) := by
+          gcongr
+      _ = (∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c₀| ∂μ + ENNReal.ofReal d * μ (F ∩ S)) +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ := by
+          ring
+      _ ≤ ∫⁻ x in F ∩ S, ENNReal.ofReal |u x - c| ∂μ +
+            ∫⁻ x in F \ S, ENNReal.ofReal |u x - c| ∂μ := by
+          gcongr
+      _ = ∫⁻ x in F, ENNReal.ofReal |u x - c| ∂μ :=
+          lintegral_inter_add_sdiff (fun x => ENNReal.ofReal |u x - c|) F hS
+  rcases le_or_gt c₀ c with hc | hc
+  · -- Step 2: `c₀ ≤ c`; take `S = {u ≤ c₀}` and `d = c - c₀`.
+    have hS : MeasurableSet {x | u x ≤ c₀} := measurableSet_le hu measurable_const
+    refine key _ (c - c₀) hS (by linarith) (half _ hS hle) (fun x hx => ?_) (fun x hx => ?_)
+    · have hx : u x ≤ c₀ := hx
+      rw [abs_of_nonpos (show u x - c₀ ≤ 0 by linarith),
+        abs_of_nonpos (show u x - c ≤ 0 by linarith)]
+      linarith
+    · have hx : c₀ < u x := not_le.1 hx
+      rw [abs_of_pos (show 0 < u x - c₀ by linarith)]
+      linarith [le_abs_self (u x - c)]
+  · -- Step 3: `c < c₀`; take `S = {c₀ ≤ u}` and `d = c₀ - c`.
+    have hS : MeasurableSet {x | c₀ ≤ u x} := measurableSet_le measurable_const hu
+    refine key _ (c₀ - c) hS (by linarith) (half _ hS hge) (fun x hx => ?_) (fun x hx => ?_)
+    · have hx : c₀ ≤ u x := hx
+      rw [abs_of_nonneg (show 0 ≤ u x - c₀ by linarith),
+        abs_of_nonneg (show 0 ≤ u x - c by linarith)]
+      linarith
+    · have hx : u x < c₀ := not_le.1 hx
+      rw [abs_of_neg (show u x - c₀ < 0 by linarith)]
+      linarith [neg_le_abs (u x - c)]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
