@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c34e59b68882660d737f49c80b041480d0ae5724b8495ab834d24dc04d502e46",
+  "git_delta": {
+    "base_commit": "331632e3da972b51949ce41c9b00f85d730d1f71",
+    "candidate_commit": "0a00d6a3533d9cb50ba325230a42bb2ce45a4f11",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le",
+    "diff_sha256": "657e46f78d07b3c44a62390612cb093fc3dea79bea13059bfee6e0329427466f",
+    "source_sha256": "a321a2c1245ab5f622ef34ee8e46a09270075d6cf5a928b2ded70c2beab17ab8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le",
+      "statement": "∀ (N : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (ν : Measure (Eucl N)) [IsFiniteMeasure ν] (f : Eucl N → E), MemLp f 1 ν → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ g : Eucl N → E, HasCompactSupport g ∧ eLpNorm (f - g) 1 ν ≤ ε ∧ Continuous g ∧ MemLp g 1 ν",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
