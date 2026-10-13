@@ -726,6 +726,49 @@ theorem Submission.dorag_ha_ie_norm_fderiv_le_of_mean_value : ∀ (n : ℕ) (u :
     have hdiffint : (∫ y in ball (x + w) ρ, u y) - ∫ y in ball x ρ, u y
         = ω * (ρ ^ n * (u (x + w) - u x)) := by
       rw [hmv (x + w) hxw, hmv x hx, hvol, hvol]
+      ring
+    rw [hdiffint, abs_mul, abs_mul, abs_of_pos hω, abs_of_pos (pow_pos hρ n), hω_def] at hcmp
+    refine le_of_mul_le_mul_left ?_ hω
+    calc ω * (ρ ^ n * |u (x + w) - u x|) ≤ K * ω * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n) := hcmp
+      _ = ω * (K * ((ρ + ‖w‖) ^ n - (ρ - ‖w‖) ^ n)) := by ring
+  -- Step 3: `(ρ + s)ⁿ − (ρ − s)ⁿ ≤ 2sn(ρ + η)ⁿ⁻¹` for `0 ≤ s ≤ ρ`, `s ≤ η`
+  have hpow : ∀ s η : ℝ, 0 ≤ s → s ≤ ρ → s ≤ η →
+      (ρ + s) ^ n - (ρ - s) ^ n ≤ 2 * s * n * (ρ + η) ^ (n - 1) := by
+    intro s η hs hsρ hsη
+    have h := abs_pow_sub_pow_le (ρ + s) (ρ - s) n
+    rw [show ρ + s - (ρ - s) = 2 * s by ring, abs_of_nonneg (by linarith : (0 : ℝ) ≤ 2 * s),
+      abs_of_nonneg (by linarith : (0 : ℝ) ≤ ρ + s), abs_of_nonneg (by linarith : (0 : ℝ) ≤ ρ - s),
+      max_eq_left (by linarith : ρ - s ≤ ρ + s)] at h
+    calc (ρ + s) ^ n - (ρ - s) ^ n ≤ |(ρ + s) ^ n - (ρ - s) ^ n| := le_abs_self _
+      _ ≤ 2 * s * n * (ρ + s) ^ (n - 1) := h
+      _ ≤ 2 * s * n * (ρ + η) ^ (n - 1) := by gcongr
+  -- Step 4: `‖Du(x)‖ ≤ C_η := 2nK(ρ + η)ⁿ⁻¹/ρⁿ` for `0 < η ≤ ρ/2`
+  have hstep : ∀ η : ℝ, 0 < η → η ≤ ρ / 2 →
+      ‖fderiv ℝ u x‖ ≤ 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n := by
+    intro η hη hηρ
+    refine hdiff.hasFDerivAt.le_of_lip' (by positivity) ?_
+    filter_upwards [ball_mem_nhds x hη] with y hy
+    rw [mem_ball, dist_eq_norm] at hy
+    have h₁ := hshift (y - x) (by linarith)
+    rw [add_sub_cancel] at h₁
+    have h₂ := hpow ‖y - x‖ η (norm_nonneg _) (by linarith) hy.le
+    rw [Real.norm_eq_abs, div_mul_eq_mul_div, le_div_iff₀ (pow_pos hρ n)]
+    calc |u y - u x| * ρ ^ n = ρ ^ n * |u y - u x| := mul_comm _ _
+      _ ≤ K * ((ρ + ‖y - x‖) ^ n - (ρ - ‖y - x‖) ^ n) := h₁
+      _ ≤ K * (2 * ‖y - x‖ * n * (ρ + η) ^ (n - 1)) := mul_le_mul_of_nonneg_left h₂ hK
+      _ = 2 * n * K * (ρ + η) ^ (n - 1) * ‖y - x‖ := by ring
+  -- Step 5: let `η → 0⁺`; `C_η → 2nKρⁿ⁻¹/ρⁿ = 2nK/ρ`
+  have hlim : Tendsto (fun η : ℝ => 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n) (𝓝[>] 0)
+      (𝓝 (2 * n * K * (ρ + 0) ^ (n - 1) / ρ ^ n)) := by
+    have hC : Continuous fun η : ℝ => 2 * n * K * (ρ + η) ^ (n - 1) / ρ ^ n := by fun_prop
+    exact (hC.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hval : 2 * n * K * (ρ + 0) ^ (n - 1) / ρ ^ n = 2 * n * K / ρ := by
+    have hpn : ρ ^ n = ρ * ρ ^ (n - 1) := by rw [← pow_succ', Nat.sub_add_cancel hn]
+    rw [add_zero, hpn, mul_div_mul_right _ _ (pow_ne_zero _ hρ.ne')]
+  rw [← hval]
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [Ioo_mem_nhdsGT (half_pos hρ)] with η hη
+  exact hstep η hη.1 hη.2.le
 /-- **Integration by parts for a Lipschitz function against a `C²` test function on a ball**
 (Step 0 of the harmonic approximation lemma: the integration by parts in Simon Ch. 5, Lemma 3.1,
 made explicit for Lipschitz `u` via Rademacher's theorem).  Both integrands vanish off
@@ -2901,7 +2944,6 @@ theorem Submission.dorag_ha_poincare_ball : ∀ n : ℕ, 0 < n → ∃ CP : ℝ,
     _ ≤ _ := mul_le_mul_of_nonneg_left
           (Submission.dorag_ha_pb_double_integral_bound n u L hu) (inv_nonneg.mpr hω.le)
     _ = _ := by rw [mul_comm (2 ^ (n + 2) : ℝ), mul_assoc, inv_mul_cancel_left₀ hω.ne']
-namespace Submission
 
 /-- Fundamental theorem of calculus for a Lipschitz `u` along the line `τ ↦ p + τ v`: if `u` is
 differentiable at `p + τ v` for a.e. `τ ∈ [a, b]`, then
