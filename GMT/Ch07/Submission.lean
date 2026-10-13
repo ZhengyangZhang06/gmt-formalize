@@ -600,6 +600,61 @@ theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α
     unfold covectorEuclideanNorm
     rw [← he, hsum, Real.sqrt_one]
 
+/-- **Simon 6.1.2, 6.1.5, 6.1.15** (the coefficient norm is Euclidean): `n`-covectors on `ℝᴾ`
+with `|α|_E = (Σ_I α(e_I)²)^{1/2}`, `I` strictly increasing, form a Euclidean space `ℝᵈ`.  The
+coefficient map `A α = (α(e_I))_I` (zero off the increasing `I`) into `ℝ^{Fin n → Fin P}` has
+`‖A α‖ = |α|_E`, and it is injective by the Gram bound `|α v| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}`.
+An orthonormal basis of `range A` identifies it isometrically with `ℝᵈ`; then covectors are
+finite-dimensional, so this linear equivalence is continuous. -/
+theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖ := by
+  intro P n
+  -- the coefficient map `A α = (α(e_I))_I`, zero off the strictly increasing `I`
+  let A : Covector (Euclid P) n →ₗ[ℝ] EuclideanSpace ℝ (Fin n → Fin P) :=
+    { toFun := fun α => WithLp.toLp 2 (fun I => if StrictMono I then
+        α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0)
+      map_add' := fun α β => by
+        ext I
+        simp only [PiLp.add_apply, ContinuousAlternatingMap.add_apply]
+        split_ifs <;> simp
+      map_smul' := fun t α => by
+        ext I
+        simp only [PiLp.smul_apply, ContinuousAlternatingMap.smul_apply, RingHom.id_apply,
+          smul_eq_mul]
+        split_ifs <;> simp }
+  -- `‖A α‖ = |α|_E`
+  have hnorm : ∀ α, ‖A α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq]
+    unfold covectorEuclideanNorm
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  -- `A` is injective: `|α|_E = 0` forces `α v = 0` by the Gram bound
+  have hinj : Function.Injective A := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro α hα
+    have h0 : covectorEuclideanNorm α = 0 := by rw [← hnorm, hα, norm_zero]
+    ext v
+    have hv := (Submission.covectorEuclideanNorm_gram_bounds P n).1 α v
+    rw [h0, zero_mul] at hv
+    simpa using abs_nonpos_iff.mp hv
+  -- identify `range A` isometrically with `ℝᵈ` through an orthonormal basis
+  let S := LinearMap.range A
+  let b := stdOrthonormalBasis ℝ S
+  let e₀ : Covector (Euclid P) n ≃ₗ[ℝ] S := LinearEquiv.ofInjective A hinj
+  let c₀ : Covector (Euclid P) n ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ S)) :=
+    e₀.trans b.repr.toLinearEquiv
+  have hc₀ : ∀ α, ‖c₀ α‖ = covectorEuclideanNorm α := by
+    intro α
+    have h1 : c₀ α = b.repr (e₀ α) := rfl
+    rw [h1, LinearIsometryEquiv.norm_map, ← Submodule.norm_coe, LinearEquiv.ofInjective_apply,
+      hnorm]
+  -- covectors are finite-dimensional, so `c₀` is continuous
+  have : FiniteDimensional ℝ (Covector (Euclid P) n) := LinearEquiv.finiteDimensional c₀.symm
+  refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
+  rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
