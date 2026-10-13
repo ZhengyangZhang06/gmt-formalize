@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.overlap_finite-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1",
+  "depth": 3,
+  "title": "Local summability of integer multiplicities: Θ is locally integrable and overlaps are finite a.e.",
+  "statement": "Let P, n ∈ ℕ, H := μHE[n] on ℝ^P, U ⊆ ℝ^P open. For r ∈ ℕ let:\n- M_r ⊆ U be H-null-measurable;\n- θ_r : ℝ^P → ℝ be H-integrable on M_r ∩ K for every compact K ⊆ U, with θ_r ≥ 1 on M_r;\n- c_r ∈ ℤ;\nsuch that Σ'_r |c_r|·∫⁻_{M_r ∩ W} ofReal θ_r dH < ∞ for every open W ⊂⊂ U (CompactlyContainedOpen W U). Let Θ(x) := Σ'_r |c_r|·1_{M_r}(x)·ofReal θ_r(x) ∈ [0, ∞]. Then:\n(a) ∫⁻_K Θ dH < ∞ for every compact K ⊆ U;\n(b) for H-a.e. x ∈ ℝ^P the set {r : c_r ≠ 0 and x ∈ M_r} is finite.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (M : ℕ → Set (Eucl P)) (θ : ℕ → Eucl P → ℝ) (c : ℕ → ℤ), (∀ r, M r ⊆ U) → (∀ r, NullMeasurableSet (M r) (μHE[n] : Measure (Eucl P))) → (∀ r, ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn (θ r) (M r ∩ K) (μHE[n] : Measure (Eucl P))) → (∀ r, ∀ x ∈ M r, 1 ≤ θ r x) → (∀ W, CompactlyContainedOpen W U → (∑' r, ((c r).natAbs : ℝ≥0∞) * ∫⁻ x in M r ∩ W, ENNReal.ofReal (θ r x) ∂(μHE[n] : Measure (Eucl P))) < ∞) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (∫⁻ x in K, ∑' r, ((c r).natAbs : ℝ≥0∞) * (M r).indicator (fun y => ENNReal.ofReal (θ r y)) x ∂(μHE[n] : Measure (Eucl P))) < ∞) ∧ ∀ᵐ x ∂(μHE[n] : Measure (Eucl P)), {r | c r ≠ 0 ∧ x ∈ M r}.Finite",
+  "lean_name": "fiw_ims_overlap_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-overlap-finite-a1-a1"
+}

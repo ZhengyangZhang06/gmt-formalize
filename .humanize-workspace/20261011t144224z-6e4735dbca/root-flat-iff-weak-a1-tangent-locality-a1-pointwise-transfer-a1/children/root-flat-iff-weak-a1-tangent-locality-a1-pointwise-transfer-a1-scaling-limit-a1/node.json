@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.scaling_limit-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+  "depth": 4,
+  "title": "Little-o scaling limit: r^{−n}·K·E(Rr) → 0 when E = o(G) and G = O(sⁿ) at 0⁺",
+  "statement": "Let n ∈ ℕ, D : ℝ → ℝ, E, G : ℝ → [0, ∞] and R, K, C ∈ ℝ with R > 0. Assume:\n(a) for every ε > 0, E(s) ≤ ofReal(ε)·G(s) for all sufficiently small s > 0 (∀ᶠ s in 𝓝[>] 0);\n(b) G(s) ≤ ofReal(C·sⁿ) for all sufficiently small s > 0;\n(c) ‖D(r)‖ₑ ≤ ofReal((rⁿ)⁻¹)·ofReal(K)·E(R·r) for all sufficiently small r > 0.\nThen D(r) → 0 as r → 0⁺, i.e. Tendsto D (𝓝[>] 0) (𝓝 0). No sign condition on K or C is assumed.",
+  "lean_statement": "∀ (n : ℕ) (D : ℝ → ℝ) (E G : ℝ → ℝ≥0∞) (R K C : ℝ), 0 < R → (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), E s ≤ ENNReal.ofReal ε * G s) → (∀ᶠ s in 𝓝[>] (0 : ℝ), G s ≤ ENNReal.ofReal (C * s ^ n)) → (∀ᶠ r in 𝓝[>] (0 : ℝ), ‖D r‖ₑ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K * E (R * r)) → Tendsto D (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "fiw_tl_tr_scaling_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1-a1"
+}
