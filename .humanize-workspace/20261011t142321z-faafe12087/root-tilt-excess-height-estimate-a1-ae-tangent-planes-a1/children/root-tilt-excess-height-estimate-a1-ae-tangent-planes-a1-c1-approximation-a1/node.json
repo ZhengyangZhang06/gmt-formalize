@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.c1_approximation-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "C¹ approximation of Lipschitz functions (Simon Ch. 2, Thm 1.5)",
+  "statement": "Let n ≥ 1 and let f : ℝⁿ → ℝ (ℝⁿ = Rn n = EuclideanSpace ℝ (Fin n)) be Lipschitz with constant K ∈ ℝ≥0. Then for every ε ∈ (0, ∞] there is a C¹ function g : ℝⁿ → ℝ (ContDiff ℝ 1 g) such that the Lebesgue measure (volume) of {x : f(x) ≠ g(x)} is less than ε. (Simon Ch. 2, Theorem 1.5; used for the cited fact (H4) of the parent proof.)",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∀ (f : Rn n → ℝ) (K : ℝ≥0), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Rn n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x} < ε",
+  "lean_name": "aetp_lipschitz_c1_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-c1-approximation-a1-a1"
+}

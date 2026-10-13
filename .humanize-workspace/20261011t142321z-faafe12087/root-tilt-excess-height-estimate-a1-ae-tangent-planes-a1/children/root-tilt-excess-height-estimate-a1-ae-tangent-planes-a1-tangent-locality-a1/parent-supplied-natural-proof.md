@@ -1,0 +1,113 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1`
+- Child DAG node: `root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the parent proof's step 4 (Simon Ch. 3, printed proof of Theorem 1.6 '⇒' and Remark 1.5(2)), with the documented correction: the printed proof applies the upper-density estimate to 'M ∖ N_j', but its displayed decomposition ∫_{η(M)} = ∫_{η(N_j)} − ∫_{η(N_j∖M_j)} + ∫_{η(M∖M_j)} needs it for M ∖ M_j and N_j ∖ M_j. Here A plays the role of M (resp. M_j) and N the role of N_j, and the estimate is applied to A ∖ N and N ∖ A.
+
+Notation. ℝ^{n+ℓ} = Amb n ℓ, Hⁿ = μHE[n], B_r(x) closed ball, η_{x,λ}(y) := λ^(−1)(y − x) = Chapter03.blowUpMap x λ y. For S ⊆ ℝ^{n+ℓ} and a subspace Q, 'T_xS = Q' means Chapter03.HasApproximateTangentSpaceAt n S x Q: finrank Q = n and ∫_{η_{x,λ}(S)} f dHⁿ → ∫_Q f dHⁿ as λ ↓ 0 for every compactly supported continuous f. The sibling upper_density_zero states: for a measure ν and a Borel set S with ν(S) < ∞, for Hⁿ-a.e. x ∉ S, ν(S ∩ B_s(x))/ofReal(sⁿ) → 0 as s ↓ 0.
+
+Proof.
+1. Density estimates. A ∖ N and N ∖ A are Borel, with Hⁿ(A ∖ N) ≤ Hⁿ(A) < ∞ and Hⁿ(N ∖ A) ≤ Hⁿ(N) < ∞. The sibling upper_density_zero with ν := Hⁿ gives: for Hⁿ-a.e. x ∉ A ∖ N, Hⁿ((A ∖ N) ∩ B_s(x))/ofReal(sⁿ) → 0, and for Hⁿ-a.e. x ∉ N ∖ A, Hⁿ((N ∖ A) ∩ B_s(x))/ofReal(sⁿ) → 0 (s ↓ 0). A point of A ∩ N belongs to neither A ∖ N nor N ∖ A; as A ∩ N is Borel (ae_restrict_iff'), both limits therefore hold for Hⁿ⌞(A ∩ N)-almost every x. Fix such an x ∈ A ∩ N.
+2. Decomposition. Fix a compactly supported continuous f, R > 0 with f = 0 outside B_R(0), M_f := sup|f|, and λ > 0. η := η_{x,λ} is a homeomorphism, so it maps Borel sets to Borel sets and preserves disjointness: η(A) = η(A ∩ N) ⊔ η(A ∖ N) and η(N) = η(A ∩ N) ⊔ η(N ∖ A). By Hausdorff scaling (SimonGMT Chapter04.hausdorff_blowUp_image) Hⁿ(η(S)) = λ^(−n)·Hⁿ(S) < ∞ for every S ⊆ A ∪ N, so the bounded continuous f is integrable on each of these sets, and additivity of the integral over disjoint measurable sets gives
+ ∫_{η(A)} f dHⁿ = ∫_{η(N)} f dHⁿ − ∫_{η(N∖A)} f dHⁿ + ∫_{η(A∖N)} f dHⁿ.
+3. Error terms. For S ∈ {A ∖ N, N ∖ A}, since f vanishes outside B_R(0),
+ |∫_{η(S)} f dHⁿ| ≤ M_f·Hⁿ(η(S) ∩ B_R(0)) = M_f·λ^(−n)·Hⁿ(S ∩ B_{λR}(x)) (SimonGMT Chapter04.hausdorff_blowUp_ball) = M_f·Rⁿ·Hⁿ(S ∩ B_{λR}(x))/(λR)ⁿ,
+ which tends to 0 as λ ↓ 0 by step 1 (with s = λR ↓ 0).
+4. Conclusion. By hypothesis (x ∈ N), ∫_{η(N)} f dHⁿ → ∫_{P(x)} f dHⁿ. With steps 2–3, ∫_{η(A)} f dHⁿ → ∫_{P(x)} f dHⁿ for every compactly supported continuous f. Also finrank P(x) = n by the hypothesis at x ∈ N. Hence Chapter03.HasApproximateTangentSpaceAt n A x (P x) holds for Hⁿ⌞(A ∩ N)-almost every x. ∎
+
+## Key steps
+
+1. Upper density zero (sibling) for A ∖ N and N ∖ A, hence both density estimates a.e. on A ∩ N
+2. Disjoint decomposition of η(A) and η(N); integrability from Hausdorff scaling
+3. Error integrals bounded by M_f Rⁿ Hⁿ(S ∩ B_{λR}(x))/(λR)ⁿ → 0
+4. Hence ∫_{η(A)} f → ∫_{P(x)} f, i.e. T_xA = P(x)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; diff -q GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; diff -q GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `python3 -I scan of .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json nodes[*].lean_name and nodes/*/decomposition-v*.json subproblems[*].lean_name (reserved names); grep -rn 'aetp_' .lake/packages/simongmt/Poincare GMT dag.json nodes`
+- `python3 -I print of dag.json lean_statement for rsod_rectifiable_subset_c1_cover, rsod_ae_exists_approxTangent, ae_weightedApproximateTangent_density_eq_mult and the *_tangent_* proposals of other branches`
+- `grep -n '^theorem\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/{Rectifiable,SubmanifoldCover,Differential,DisjointCover,CoordinateProjection}.lean`
+- `grep -n 'theorem simon_theorem_3_6\|ae_dimensionalUpperDensity_eq_zero_outside' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean; grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `grep -rn 'theorem measure_toOuterMeasure_isBorelRegular\|theorem simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure' .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n '^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/{AreaLipschitz,AreaCritical,WeightedArea,AreaLinearWeighted,AreaApproximation,AreaNormalization,Area,Lipschitz,WhitneyExtension}.lean; grep -n 'structure HasWhitneyC1Compatibility' -A 8 .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `grep -n '^theorem\|^def' .lake/packages/simongmt/Poincare/SimonGMT/Chapter04/{TangentDensity,WeightedBlowUp,ClassicalTangent}.lean`
+- `rg -n -i lusin -g '*.lean' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem (eq_starProjection_of|starProjection_eq_self_iff|isStarProjection_iff)|theorem tendstoUniformlyOn_of_ae_tendsto\b|theorem measurable_fderiv\b|theorem finrank_range_of_inj\b|theorem tendsto_integral_filter_of_dominated_convergence\b|exists_isClosed_diff_lt' -g '*.lean' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'theorem addHaar_sphere\|norm_image_sub_le_of_norm_fderiv_le\|isOpen_iUnion_countable\|continuousOn_clm_apply\|isClosed_iUnion\|injective_iff_antilipschitz\|isOpen_injective\|inverse_continuousAt\|of_pseudoMetrizableSpace_of_isFiniteMeasure\|withDensity_apply_le\|exists_measurable_subset_ae_eq\|image_of_continuousOn_injOn\|infEDist_pos_iff_notMem_closure\|norm_fderiv_le_of_lipschitz\|ofReal_rpow_of_pos\|mul_div_mul_left' .lake/packages/mathlib/Mathlib`
+- `sed -n 150,330p book/chapter-02.txt (Thm 1.5, Whitney 1.6); sed -n 1,400p book/chapter-03.txt (1.1-1.9)`
+- `sed -n 430,600p verifier/gmt-compare.py; validate_lean_statement from verifier/lean_contract.py run on all 8 child types`
+- `lake env lean GMT/Ch05/Submission.lean -o /tmp/aetp-decomp/mybuild/GMT/Ch05/Submission.olean; lean /tmp/aetp-decomp/check/NodeCheck.lean (import GMT.Ch05.Submission + replayed contract scope + the 8 frozen child types)`
+- `lean /tmp/aetp-decomp/check/Skel.lean (parent frozen type from children 2-8 as hypotheses; #print axioms GMT.Ch05.skeleton)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/CoordinateProjection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/aetp-decomp/check/NodeCheck.lean`
+- `/tmp/aetp-decomp/check/Skel.lean`
+- `/tmp/aetp-decomp/draft.md`
+
+Snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace .lake/packages/mathlib is at the same commit and simongmt at 2b3663083f3fe399b6296fb8eaee52169170e197 (lake-manifest). Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical. No proposed aetp_* name occurs in SimonGMT, the project, dag.json (51 reserved names) or any decomposition proposal; other branches' tangent nodes (aal_tangent_structure, any_radius_tangent_ae, allard52_tangent_ae, lip_approx_tangent_structure, lgc_tangent_plane_ae, ae_weightedApproximateTangent_density_eq_mult, rsod_ae_exists_approxTangent, rsod_rectifiable_subset_c1_cover) have different statements, so no child duplicates a DAG node. Library facts: SimonGMT Chapter03 defines the tangent predicates and proves HasWeightedApproximateTangentSpaceAt.unique but not existence (Rectifiable.lean says 1.6/1.9 are not asserted; SubmanifoldCover.lean has only the easy direction of Lemma 1.2). Available and used by the children: Lusin (Chapter01.exists_isClosed_continuousOn_of_measurable, finite measure with closed inner regularity), Upper Density 3.6 (Chapter01.ae_dimensionalUpperDensity_eq_zero_outside, Simon normalization, bridged by Chapter02.simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure and Chapter01.measure_toOuterMeasure_isBorelRegular), Whitney C¹ extension (Chapter02.exists_contDiff_one_extension_of_whitney with HasWhitneyC1Compatibility), the critical-image theorem (Chapter02.area_image_criticalSet_eq_zero, no hypotheses), the injective-derivative area formula in Bochner form (Chapter02.integral_area_formula_of_injective_derivative), the linear area formula (Chapter02.measurePreserving_linearMap_normDet_smul), continuous_normDet, the Lipschitz image bound, and the blow-up scaling lemmas (Chapter04.hausdorff_blowUp_image, hausdorff_blowUp_ball, map_inverse_blowUp_carrier). Missing: the C¹ approximation theorem (Simon Ch. 2, 1.5) — Mathlib has no continuity-Lusin and SimonGMT has only Whitney; it becomes child c1_approximation with the printed proof (an audit in this run rejected a proof that merely cited it). Mathlib supplies Rademacher, measurable_fderiv, Egorov, dominated convergence, WeaklyRegular for finite measures, isOpen_injective, injective_iff_antilipschitz, mean value inequality, Lindelöf, NormedRing.inverse_continuousAt, eq_starProjection_of_mem_of_inner_eq_zero, Metric.infEDist API. Lean checks: all 8 child types elaborate after import GMT.Ch05.Submission in the replayed contract scope (only sorry warnings) and pass verifier/lean_contract.py unchanged; Skel.lean proves the parent's exact frozen type sorry-free from children 2-8 as hypotheses, axioms propext, Classical.choice, Quot.sound. An independent review agent re-compiled the skeleton, spot-checked every cited lemma and found no defects.
