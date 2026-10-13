@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hsNormSq|abbrev Rn|ae_tendsto_lintegral_enorm_sub_div|tendsto_closedBall_filterAt|addHaar_closedBall\\x27|isUnifLocDoublingMeasureOfIsAddHaarMeasure",
+        "allard52_cae_hsNormSq_lebesgue_ae|allard52_cae_center_eq_at_lebesgue_point",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cae-independent-audit-qqbi33pn/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cae-independent-audit-qqbi33pn/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-ae-center-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-campanato-ae-center-a1/decomposition-v1.json",
+        "/tmp/cae-independent-audit-qqbi33pn/Types.lean",
+        "/tmp/cae-independent-audit-qqbi33pn/Full.lean"
+      ],
+      "conclusion": "Independently confirmed project pin ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot supplies the stated differentiation, closed-ball scaling, integration and limit lemmas, including their required side conditions. Rn is Euclidean space; continuous linear maps carry the intended operator norm and Borel structure. No problematic matrix construction occurs. Neither proposed name appears in the snapshot or current DAG; node-artifact matches belong only to this proposal. Both exact child types elaborate as standalone propositions before either child is declared. After freshly compiling the frozen Submission source, the supplied complete child proofs and byte-identical parent assembly compile with Lean 4.35.0-rc3. Each child and the assembled parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: two independent analytic obligations establish exactly the selected parent, with no cyclic dependencies or declaration reuse."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hs_lebesgue_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line Lean proposition. The bare name is unreserved, and the type is independently usable. Step-by-step verification confirms local integrability, differentiation along centred closed balls, the bound hsNormSq(G(x)-G(z)) ≤ 2mB‖G(x)-G(z)‖, and the ENNReal squeeze with a finite multiplier. Nonnegativity of B is correctly derived. Zero-dimensional cases are covered. The proof is complete, non-circular and sufficiently explicit for formalization; its empty dependency list is correct."
+    },
+    {
+      "key": "center_eq_at_lebesgue_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including measurability, the three positivity hypotheses and the explicit quadratic Lebesgue-point assumption. The bare name is unreserved. The proof establishes Hilbert–Schmidt definiteness and the integrated inequality, then correctly cancels positive finite ball volume. Factoring ofReal using the nonnegative radius factor handles arbitrary A. Both terms of the normalized bound tend to zero, yielding G(z)=T. No boundedness hypothesis or sibling theorem is implicitly used. The empty dependency list is therefore correct. Applying this child with T=c(z) and s₀=R/4 to the first child's almost-everywhere conclusion proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

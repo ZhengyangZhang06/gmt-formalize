@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'Rn|namespace|^import|^open|axiom|sorry' project/GMT/Ch05/Submission.lean project/GMT/Ch05/Contract.lean",
+        "const_of_ae_hasDerivAt_zero|integral_deriv_eq_sub|LipschitzOnWith.absolutelyContinuousOnInterval|measure_prod_null|prod_apply_symm|exists_cthickening_subset_open|continuousAt_of_dominated_interval",
+        "theorem HasFDerivAt.comp_hasDerivAt",
+        "theorem norm_integral_le_of_norm_le_const",
+        "theorem integral_interval_sub_left",
+        "rg -n 'HasFDerivAt.*ae|ae.*HasFDerivAt|lipschitz.*[Ff][Tt][Cc]|segment.*integral|line.*integral' mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean mathlib/Mathlib/Analysis/Calculus/MeanValue.lean mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean project/GMT/Ch05/Submission.lean",
+        "allard52_lad_"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-a1/parent-child-handoff.json",
+        "/tmp/lad-independent-audit-hgm4246a/Types.lean",
+        "/tmp/lad-independent-audit-hgm4246a/Assembly.lean",
+        "/tmp/lad-independent-audit-hgm4246a/Inst.lean",
+        "/tmp/lad-independent-audit-hgm4246a/Full.lean"
+      ],
+      "conclusion": "Verified project revision ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d. The handoff and DAG preserve the selected contract. Inspected library signatures support Tonelli, vector-valued absolute-continuity constancy, dominated interval continuity, compact thickening, equality from a.e. equality on open sets, and the little-o criterion. The targeted search found no existing replacement for the selected criterion. The five-part split is appropriate: line_integral_rep depends precisely on the first three children; together with fderiv_of_line_integral it proves the exact selected parent. Dependencies are acyclic and non-circular. All names are bare identifiers, with no reservation collisions among 361 DAG nodes, 379 other decomposition files, or 1,241 run refs. Fresh Lean checks succeeded: each exact child type elaborates without declaring any child; assembly proves the frozen parent from child assumptions; instance checks confirm Euclidean Haar volume, sigma-finiteness, positive measure on open sets, standard scalar action and product topology, and real Lebesgue interval integration. No matrix-unit construction occurs. The supplied full proof was independently inspected and recompiled against a freshly built frozen source; all five children and the parent use only propext, Classical.choice, and Quot.sound. The stated additional pinned AbsolutelyContinuousFun import is sufficient. Public corroboration of the scalar case and proof method appears in [Minguzzi, Theorem 16](https://arxiv.org/pdf/1308.6675#page=28)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary nonmeasurable null N and unrestricted n, x, h. The measurable null envelope justifies Tonelli; translation invariance makes every transverse section null; product-null disintegration and monotonicity yield the stated conclusion. The proof is complete and independent, including h = 0 and n = 0."
+    },
+    {
+      "key": "lipschitz_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean type. Compact boundedness and interval additivity make the primitive Lipschitz. Interior continuity and local strong measurability justify FTC-1; removing the null endpoints supplies the exact a.e. hypothesis for the vector-valued constancy theorem. Endpoint evaluation proves the formula, including a = b. No circular reliance or additional planning is needed."
+    },
+    {
+      "key": "segment_integral_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses continuity on U × U in the standard product topology. The proof constructs a compact thickening inside U, controls nearby segments and their direction vectors, and verifies measurability, domination, integrability, and parameter continuity for dominated convergence. Nonnegativity of the bound is justified. This independently proves the stated conclusion."
+    },
+    {
+      "key": "line_integral_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree with every hypothesis present. The proof correctly forms the null bad set, applies segment_null, establishes the Lipschitz and chain-rule hypotheses of lipschitz_ftc, and uses segment_integral_continuous to extend the identity to zero translation. Positive measure of nonempty open sets justifies the final step. Exactly the three declared siblings are used; neither the parent nor the differentiability child is assumed."
+    },
+    {
+      "key": "fderiv_of_line_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the prose. Openness supplies a local ball, so global convexity is unnecessary. Continuity gives both interval integrability and the operator-norm bound; integral subtraction yields the remainder estimate ε‖h‖, which proves the exact Fréchet derivative through the little-o criterion. The proof is complete and uses no sibling or parent conclusion."
+    }
+  ],
+  "required_changes": []
+}

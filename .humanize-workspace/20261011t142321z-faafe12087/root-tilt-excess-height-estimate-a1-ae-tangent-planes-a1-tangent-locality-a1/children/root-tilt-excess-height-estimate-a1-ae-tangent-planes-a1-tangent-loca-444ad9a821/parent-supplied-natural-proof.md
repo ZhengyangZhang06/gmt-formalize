@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1`
+- Child DAG node: `root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.tangent_locality-a1.blowup_vanish-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3, printed proof of Theorem 1.6 '⇒' — the estimate |∫_{η_{x,λ}(M∖N_j)} f dHⁿ| ≤ sup|f|·Hⁿ(B_R(0) ∩ η_{x,λ}(M∖N_j)) = sup|f|·λ^{−n}·Hⁿ(B_{λR}(x) ∩ M∖N_j) → 0 — i.e. step 3 of the parent proof, stated for an arbitrary set S whose n-density at x tends to 0 (the parent proof applies it to S = A∖N and S = N∖A). Documented erratum: Simon prints the error set as 'M∖N_j', whereas his decomposition needs the estimate for M∖M_j and N_j∖M_j; since S is arbitrary here, this lemma covers both corrected error sets.
+
+Notation. μ := Hⁿ = μHE[n] on ℝ^{n+ℓ} = Amb n ℓ; B_ρ(y) is the closed ball (Metric.closedBall); η_r := η_{x,r} = Chapter03.blowUpMap x r, η_r(y) = r⁻¹(y − x); 'r ↓ 0' means along the filter 𝓝[>] 0; ofReal = ENNReal.ofReal. Hypothesis (D): μ(S ∩ B_s(x))/ofReal(sⁿ) → 0 in [0, ∞] as s ↓ 0. Fix f ∈ C_c(ℝ^{n+ℓ}, ℝ) (CompactlySupportedContinuousMap); we show ∫_{η_r(S)} f dμ → 0 as r ↓ 0.
+
+Proof.
+1. Support radius and sup bound. tsupport f is compact, hence bounded, so tsupport f ⊆ B_{R₀}(0) for some R₀ ∈ ℝ. Put R := max(R₀, 1) > 0. If y ∉ B_R(0) then f(y) = 0: otherwise y ∈ support f ⊆ tsupport f ⊆ B_{R₀}(0) ⊆ B_R(0). Since f is continuous with compact support it is bounded: fix C ∈ ℝ with |f(y)| ≤ C for all y (Continuous.bounded_above_of_compact_support).
+2. Scaling of Hⁿ under η_r (r > 0). For every T ⊆ ℝ^{n+ℓ}, μ(η_r(T)) = ofReal(r⁻¹)ⁿ · μ(T). Indeed η_r = h ∘ τ with τ(y) = y − x and h the homothety with center 0 and ratio r⁻¹ ≠ 0. τ is an isometry, so μ(τ(T)) = μ(T) (Isometry.euclideanHausdorffMeasure_image), and μ(h(T')) = ‖r⁻¹‖₊ⁿ · μ(T') = ofReal(r⁻¹)ⁿ · μ(T') because r⁻¹ > 0 (euclideanHausdorffMeasure_homothety_image). (This is SimonGMT Chapter04.hausdorff_blowUp_image; it is re-derived from Mathlib because Chapter04 is outside the frozen import closure of GMT.Ch05.Submission.)
+3. Ball identity (r > 0). For every y, |η_r(y)| = r⁻¹|y − x| ≤ R ⟺ |y − x| ≤ rR, i.e. η_r(y) ∈ B_R(0) ⟺ y ∈ B_{rR}(x). Hence B_R(0) ∩ η_r(S) = η_r(S ∩ B_{rR}(x)), and by step 2, μ(B_R(0) ∩ η_r(S)) = ofReal(r⁻¹)ⁿ · μ(S ∩ B_{rR}(x)).
+4. Density form. Define g(r) := ofReal(Rⁿ) · (μ(S ∩ B_{rR}(x)) / ofReal((rR)ⁿ)) ∈ [0, ∞]. For r > 0, ofReal((rR)ⁿ) = ofReal(rⁿ)·ofReal(Rⁿ) with both factors in (0, ∞), and ofReal(r⁻¹)ⁿ = ofReal(rⁿ)⁻¹. Therefore, in [0, ∞], g(r) = ofReal(Rⁿ)·ofReal(Rⁿ)⁻¹ · (ofReal(rⁿ)⁻¹ · μ(S ∩ B_{rR}(x))) = ofReal(rⁿ)⁻¹ · μ(S ∩ B_{rR}(x)) = μ(B_R(0) ∩ η_r(S)), using ofReal(Rⁿ)·ofReal(Rⁿ)⁻¹ = 1 and step 3.
+5. g(r) → 0 as r ↓ 0. The map r ↦ rR is continuous, equals 0 at r = 0 and maps (0, ∞) into (0, ∞) since R > 0; hence it tends from 𝓝[>] 0 to 𝓝[>] 0. Composing with (D): μ(S ∩ B_{rR}(x))/ofReal((rR)ⁿ) → 0 as r ↓ 0. Multiplying by the finite constant ofReal(Rⁿ) (ENNReal.Tendsto.const_mul) gives g(r) → ofReal(Rⁿ)·0 = 0. In particular, as 0 < ∞, g(r) < ∞ for all sufficiently small r > 0.
+6. Estimate. Let r > 0 with g(r) < ∞ and put ν := μ.restrict(η_r(S)), so ∫_{η_r(S)} f dμ = ∫ f dν. As f = 0 off B_R(0), ∫ f dν = ∫_{B_R(0)} f dν (setIntegral_eq_integral_of_forall_compl_eq_zero). B_R(0) is closed, hence measurable, so ν(B_R(0)) = μ(B_R(0) ∩ η_r(S)) = g(r) < ∞ (Measure.restrict_apply and step 4). Since |f| ≤ C, norm_setIntegral_le_of_norm_le_const gives |∫_{B_R(0)} f dν| ≤ C · ν(B_R(0)).toReal = C · g(r).toReal. Hence |∫_{η_r(S)} f dμ| ≤ C · g(r).toReal for all sufficiently small r > 0. (This is Simon's display |∫_{η(S)} f| ≤ sup|f|·Hⁿ(B_R(0) ∩ η(S)) = sup|f|·λ^{−n}·Hⁿ(B_{λR}(x) ∩ S).)
+7. Conclusion. By step 5 and continuity of toReal at 0 ≠ ∞ (ENNReal.tendsto_toReal), g(r).toReal → 0, so C · g(r).toReal → 0. By step 6 and the squeeze theorem for norms (squeeze_zero_norm'), ∫_{η_{x,r}(S)} f dHⁿ → 0 as r ↓ 0. Since f ∈ C_c(ℝ^{n+ℓ}, ℝ) was arbitrary, the theorem follows. ∎
+Remarks: no measurability or finiteness of S is used (only closed balls are fed to Measure.restrict_apply, and μ is applied to arbitrary sets as an outer measure); the case n = 0 needs no change (ofReal(s⁰) = 1). Steps 2–4 are routine and are carried out inline (as `have`s) in the single theorem: the problem policy requires every new named helper to be its own DAG node.
+
+## Key steps
+
+1. Choose R > 0 with f = 0 off B_R(0) and C with |f| ≤ C (compact support, continuity)
+2. Scaling Hⁿ(η_{x,r}(T)) = ofReal(r⁻¹)ⁿ·Hⁿ(T) (translation isometry + homothety) and ball identity B_R(0) ∩ η_{x,r}(S) = η_{x,r}(S ∩ B_{rR}(x))
+3. Hⁿ(B_R(0) ∩ η_{x,r}(S)) = g(r) := ofReal(Rⁿ)·Hⁿ(S ∩ B_{rR}(x))/ofReal((rR)ⁿ), and g(r) → 0 by the density hypothesis composed with r ↦ rR
+4. |∫_{η_{x,r}(S)} f dHⁿ| ≤ C·g(r).toReal for small r > 0 (f vanishes off B_R(0); finite-measure sup bound)
+5. Squeeze: ∫_{η_{x,r}(S)} f dHⁿ → 0 as r ↓ 0
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; diff -q <snapshot>/project/GMT/Ch05/Contract.lean GMT/Ch05/Contract.lean; diff -q GMT/Ch05/Contract.lean GMT/Ch05/Submission.lean`
+- `grep -n 'HasApproximateTangentSpaceAt\|def blowUpMap\|blowUp' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/*.lean`
+- `grep -rn 'hausdorff_blowUp_image\|hausdorff_blowUp_ball\|map_inverse_blowUp_carrier\|theorem.*blowUp' .lake/packages/simongmt/Poincare/SimonGMT/`
+- `grep -rn 'notation.*μHE\|μHE\[' .lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 120,175p of the same file`
+- `rg -n "theorem MeasureTheory.euclideanHausdorffMeasure_homothety_image|theorem Isometry.euclideanHausdorffMeasure_image|^theorem setIntegral_union \(|^theorem norm_setIntegral_le_of_norm_le_const \{|^theorem setIntegral_eq_integral_of_forall_compl_eq_zero \(h|^lemma IntegrableOn.of_bound|bounded_above_of_compact_support|^theorem tendsto_toReal \{|protected theorem Tendsto.const_mul|theorem ae_restrict_mem \(|theorem ae_restrict_of_ae \{" -g '*.lean' <snapshot>/mathlib/Mathlib`
+- `python3 -I scan of dag.json nodes[*].lean_name/lean_statement containing blowUpMap, HasApproximateTangentSpaceAt, congr, density_zero`
+- `grep -rn 'aetp_blowUp_integral_tendsto_zero_of_density_zero\|aetp_approxTangent_of_density_zero_symmDiff' dag.json nodes .lake/packages/simongmt/Poincare GMT`
+- `python3 -I print of nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/decomposition-v1.json subproblems (lean_name, lean_statement, depends_on); cat nodes/...-upper-density-zero-a1/accepted-candidate.json`
+- `git show 066406829f5683c27ac3a01e8406376a154ff75a:GMT/Ch05/Submission.lean | grep -n '^import\|aetp_upper_density_zero_ae'`
+- `sed -n 60,180p book/chapter-03.txt (Remark 1.3, Def 1.4, Remark 1.5, printed proof of Thm 1.6 '⇒'); sed -n 460,500p problem.md`
+- `python3 -I: gmt-compare.contract_scope(Contract.lean, 'GMT.Ch05.main_theorem'); lean_contract.validate_lean_statement on both child types`
+- `lake env lean GMT/Ch05/Submission.lean -o /tmp/tloc-decomp/mybuild/GMT/Ch05/Submission.olean; LEAN_PATH=…:/tmp/tloc-decomp/mybuild lean /tmp/tloc-decomp/check/{NodeCheck,Skel,Child1,Child2,Combined}.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-upper-density-zero-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/tloc-decomp/check/NodeCheck.lean`
+- `/tmp/tloc-decomp/check/Skel.lean`
+- `/tmp/tloc-decomp/check/Child1.lean`
+- `/tmp/tloc-decomp/check/Child2.lean`
+- `/tmp/tloc-decomp/check/Combined.lean`
+
+The snapshot pins project ea5607598f31 and Mathlib 25730c7c759d. Its Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Submission imports only Mathlib plus Poincare.SimonGMT.Chapter03.Rectifiable, so SimonGMT's Chapter04.hausdorff_blowUp_image, hausdorff_blowUp_ball and map_inverse_blowUp_carrier (TangentDensity.lean, WeightedBlowUp.lean) are outside the import closure. The children therefore re-derive the scaling Hⁿ(η_{x,r}(T)) = ofReal(r⁻¹)ⁿ·Hⁿ(T) from Mathlib's Isometry.euclideanHausdorffMeasure_image and MeasureTheory.euclideanHausdorffMeasure_homothety_image (Geometry/Euclidean/Volume/Measure.lean:131,164). Other Mathlib facts used, all present in the snapshot: setIntegral_union, setIntegral_eq_integral_of_forall_compl_eq_zero, norm_setIntegral_le_of_norm_le_const (Bochner/Set.lean:87,486,613), IntegrableOn.of_bound (IntegrableOn.lean:174), Continuous.bounded_above_of_compact_support (Normed/Group/Bounded.lean:153), ENNReal.tendsto_toReal and ENNReal.Tendsto.const_mul (ENNReal/Lemmas.lean:102,354), ae_restrict_mem and ae_restrict_of_ae (Restrict.lean:640,651). Rectifiable.lean defines blowUpMap x r y = r⁻¹•(y−x) and HasApproximateTangentSpaceAt (finrank = n ∧ ∀ f : C_c, blow-up integrals tend to the plane integral along 𝓝[>] 0). The accepted sibling aetp_upper_density_zero_ae (candidate 066406829f) has exactly the density form the children use. No proposed name occurs in dag.json, any nodes/* file, SimonGMT, Mathlib or GMT/. Related nodes in other branches have different statements, and no exact accepted declaration is reusable: rsod_weightedApproxTangent_congr (weighted, open-set/null-set congruence), rsod_blowUp_setIntegral_eq (change of variables), rsod_blowUpMap_measure_scaling (not accepted). Simon's printed proof (chapter-03.txt l.113–143) gives exactly the decomposition, limit and error estimate extracted into the two children. problem.md requires every new named helper to be its own node, so the helpers stay inline. Lean: all checks compile in the replayed contract scope. Combined.lean has exit 0, no sorry and only the standard axioms (propext, Classical.choice, Quot.sound).

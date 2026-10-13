@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.height_bound_small_delta-a1",
+  "parent_id": "root.affine_approximation-a1",
+  "depth": 2,
+  "title": "Height bound via a good approximate tangent plane for delta <= delta_1 (Simon 5.2.5, proof steps (1)-(6))",
+  "statement": "Let n >= 1, l >= 0, p > n. There are delta_1 > 0 and C_1 > 0 depending only on n, l and p (the proof gives dependence on n and p only) such that: if U is open, V is a RectifiableVarifold n l U, H : R^(n+l) -> R^(n+l), 0 < delta <= delta_1 and AllardHypotheses H p delta rho hold, then for every xi in spt V with |xi| <= delta rho and every sigma in (0, 2 delta rho] there is an n-dimensional subspace T with dist(x - xi, T) <= C_1 delta^(1/(2n+2)) sigma for all x in spt V cap B_sigma(xi).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ 0 < C₁ ∧ ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), 0 < δ → δ ≤ δ₁ → V.AllardHypotheses H p δ ρ → ∀ ξ ∈ V.support ∩ closedBall (0 : Amb n ℓ) (δ * ρ), ∀ σ : ℝ, 0 < σ → σ ≤ 2 * δ * ρ → ∃ T : Submodule ℝ (Amb n ℓ), Module.finrank ℝ T = n ∧ ∀ x ∈ V.support ∩ closedBall ξ σ, infDist (x - ξ) (T : Set (Amb n ℓ)) ≤ C₁ * δ ^ (1 / (2 * (n : ℝ) + 2)) * σ",
+  "lean_name": "aal_height_bound_small_delta",
+  "depends_on": [
+    "root.affine_approximation-a1.tangent_structure-a1",
+    "root.affine_approximation-a1.pinched_density_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1.tangent_structure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-height-bound-small-delta-a1-a1"
+}

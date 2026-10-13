@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.localized_comparison-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "depth": 4,
+  "title": "Localization of a set integral to a good set with a pointwise comparison (abstract measure theory)",
+  "statement": "Let X be a type (in Lean's lowest universe, Type) with a measurable structure and a measure mu. Let B, B', G, G' be subsets of X, Phi, phi, psi : X -> R, M >= 0 real and m in [0, infinity]. Assume: (1) G and G' are measurable; (2) G' is contained in B and in B'; (3) Phi is mu-integrable on B; (4) |Phi(x)| <= M for every x in X; (5) Phi(x) = 0 for every x in (B \\ G') cap G; (6) mu((B \\ G') \\ G) <= m and m < infinity; (7) phi is a.e. strongly measurable for mu restricted to G'; (8) psi is mu-integrable on B' and psi(x) >= 0 for every x; (9) for mu-a.e. x, x in G' implies |Phi(x) - phi(x)| <= M psi(x). Then |int_{G'} phi dmu| <= |int_B Phi dmu| + M m.toReal + M int_{B'} psi dmu (Bochner set integrals; the proof also shows that phi is mu-integrable on G').",
+  "lean_statement": "∀ {X : Type} [MeasurableSpace X] (μ : Measure X) (B B' G G' : Set X) (Φ φ ψ : X → ℝ) (M : ℝ) (m : ℝ≥0∞), 0 ≤ M → MeasurableSet G → MeasurableSet G' → G' ⊆ B → G' ⊆ B' → IntegrableOn Φ B μ → (∀ x, |Φ x| ≤ M) → (∀ x ∈ (B \\ G') ∩ G, Φ x = 0) → μ ((B \\ G') \\ G) ≤ m → m < ⊤ → AEStronglyMeasurable φ (μ.restrict G') → IntegrableOn ψ B' μ → (∀ x, 0 ≤ ψ x) → (∀ᵐ x ∂μ, x ∈ G' → |Φ x - φ x| ≤ M * ψ x) → |∫ x in G', φ x ∂μ| ≤ |∫ x in B, Φ x ∂μ| + M * m.toReal + M * ∫ x in B', ψ x ∂μ",
+  "lean_name": "gte_localized_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-est-14953ad692-a1"
+}

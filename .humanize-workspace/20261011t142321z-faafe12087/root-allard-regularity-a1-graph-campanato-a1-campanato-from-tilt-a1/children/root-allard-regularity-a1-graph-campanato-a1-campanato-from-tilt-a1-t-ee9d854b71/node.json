@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1.tilt_lintegral-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_from_tilt-a1",
+  "depth": 4,
+  "title": "Tilt-excess as a lower integral on a ball of finite weight",
+  "statement": "Let n, ℓ ∈ ℕ, U ⊆ ℝ^{n+ℓ}, and V a rectifiable n-varifold in U in the sense of the contract (RectifiableVarifold n ℓ U). Write μ := V.weight and p_y := V.tangentProj y, and assume y ↦ p_y is μ-a.e. strongly measurable. Let ζ ∈ ℝ^{n+ℓ}, s > 0 and T a linear subspace of ℝ^{n+ℓ} with orthogonal projection P := T.starProjection, and assume μ(B_s(ζ)) < ∞ (B_s(ζ) the closed ball). Then ∫⁻_{B_s(ζ)} ofReal(hsNormSq(p_y − P)) dμ(y) = ofReal(s^n · V.tiltExcess ζ s T). Here hsNormSq(A) = Σ_{i<n+ℓ} ‖A e_i‖² and V.tiltExcess ζ s T = (s^n)^{-1} ∫_{B_s(ζ)} hsNormSq(p_y − P) dμ(y) (Bochner integral).",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (ζ : Amb n ℓ) (s : ℝ) (T : Submodule ℝ (Amb n ℓ)), 0 < s → V.weight (closedBall ζ s) < ⊤ → ∫⁻ y in closedBall ζ s, ENNReal.ofReal (hsNormSq (V.tangentProj y - T.starProjection)) ∂V.weight = ENNReal.ofReal (s ^ n * V.tiltExcess ζ s T)",
+  "lean_name": "allard52_cft_tilt_lintegral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-from-tilt-a1-t-ee9d854b71-a1"
+}

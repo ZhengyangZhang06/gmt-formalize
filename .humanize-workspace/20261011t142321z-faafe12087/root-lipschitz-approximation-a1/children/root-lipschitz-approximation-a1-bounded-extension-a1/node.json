@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1.bounded_extension-a1",
+  "parent_id": "root.lipschitz_approximation-a1",
+  "depth": 2,
+  "title": "Lipschitz extension into R^l with exact sup bound (fact Ext plus radial retraction)",
+  "statement": "Let A be a subset of R^n, g : R^n -> R^l, M >= 0 and R_0 >= 0 with |g(x) - g(z)| <= M |x - z| for x, z in A and |g(x)| <= R_0 for x in A. Then there is f : R^n -> R^l with f = g on A, |f(x) - f(z)| <= sqrt(l) M |x - z| for all x, z, and |f(x)| <= R_0 for all x.",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : Set (Rn n)) (g : Rn n → Rn ℓ) (M R₀ : ℝ), 0 ≤ M → 0 ≤ R₀ → (∀ x ∈ A, ∀ z ∈ A, ‖g x - g z‖ ≤ M * ‖x - z‖) → (∀ x ∈ A, ‖g x‖ ≤ R₀) → ∃ f : Rn n → Rn ℓ, (∀ x ∈ A, f x = g x) ∧ (∀ x z, ‖f x - f z‖ ≤ Real.sqrt ℓ * M * ‖x - z‖) ∧ ∀ x, ‖f x‖ ≤ R₀",
+  "lean_name": "lip_approx_bounded_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-bounded-extension-a1-a1"
+}

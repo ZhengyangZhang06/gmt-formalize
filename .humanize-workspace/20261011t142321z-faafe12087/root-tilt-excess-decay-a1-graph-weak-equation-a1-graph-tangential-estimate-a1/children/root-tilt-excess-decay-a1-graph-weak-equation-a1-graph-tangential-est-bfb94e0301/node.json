@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.lipschitz_ball_calculus-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "depth": 4,
+  "title": "Lipschitz maps on a closed ball: Rademacher null set, derivative bound and gradient rows",
+  "statement": "Let n, l be natural numbers, K >= 0 (K in R_{>=0}), R real, and f : R^n -> R^l K-Lipschitz on the closed ball B^n_R(0) (nothing is assumed off the ball). Let Z := {x in B°^n_R(0) : f is not (Frechet) differentiable at x}, where B°^n_R(0) is the open ball. Then: (i) Z is a Borel set (MeasurableSet); (ii) L^n(Z) = 0, where L^n is Lebesgue measure (volume) on R^n; (iii) for every x in B°^n_R(0): ||Df(x)|| <= K (operator norm, Df(x) = fderiv R f x, which is 0 where f is not differentiable), and if f is differentiable at x then, for every j in Fin l and every v in R^n, <grad f^j(x), v> = (Df(x) v)_j, where f^j = (y |-> (f y)_j) is the j-th coordinate function of f and grad = gradient (the Riesz representative of the derivative).",
+  "lean_statement": "∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (K : ℝ≥0) (R : ℝ), LipschitzOnWith K f (closedBall 0 R) → MeasurableSet (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) ∧ volume (ball (0 : Rn n) R ∩ {x | ¬DifferentiableAt ℝ f x}) = 0 ∧ ∀ x ∈ ball (0 : Rn n) R, ‖fderiv ℝ f x‖ ≤ K ∧ (DifferentiableAt ℝ f x → ∀ (j : Fin ℓ) (v : Rn n), inner ℝ (gradient (fun y => f y j) x) v = fderiv ℝ f x v j)",
+  "lean_name": "gte_lipschitz_ball_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-est-bfb94e0301-a1"
+}

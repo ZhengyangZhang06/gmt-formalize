@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.energy_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1",
+  "depth": 4,
+  "title": "Unweighted energy bound from the weighted energy and the zero set of W (Simon 4.5 (16))",
+  "statement": "Let n, l be natural numbers, K0 >= 0, sigma > 0, E >= 0, f : R^n -> R^l 1-Lipschitz on closedBall 0 (sigma/2), and W : R^n -> R measurable. Put B1 := ball 0 (3 sigma/8) and |Df(x)|^2 := hsNormSq(fderiv R f x). Assume:\n(H1') for a.e. x: if x is in B1, then W(x) = 0 or W(x) >= 1;\n(H2) L^n(B1 cap {W = 0}) <= ofReal(K0 E sigma^n);\n(H3) the lower Lebesgue integral over B1 of ofReal(|Df|^2 W) is <= ofReal(K0 E sigma^n).\nThen x -> |Df(x)|^2 is integrable on B1, and int_{B1} |Df|^2 dL^n <= (1 + n) K0 E sigma^n.",
+  "lean_statement": "∀ (n ℓ : ℕ) (K0 σ E : ℝ) (f : Rn n → Rn ℓ) (W : Rn n → ℝ), 0 ≤ K0 → 0 < σ → 0 ≤ E → LipschitzOnWith 1 f (closedBall 0 (σ / 2)) → Measurable W → (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 (3 * σ / 8) → W x = 0 ∨ 1 ≤ W x) → volume (ball (0 : Rn n) (3 * σ / 8) ∩ {x | W x = 0}) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → ∫⁻ x in ball (0 : Rn n) (3 * σ / 8), ENNReal.ofReal (hsNormSq (fderiv ℝ f x) * W x) ≤ ENNReal.ofReal (K0 * E * σ ^ n) → IntegrableOn (fun x => hsNormSq (fderiv ℝ f x)) (ball (0 : Rn n) (3 * σ / 8)) ∧ ∫ x in ball (0 : Rn n) (3 * σ / 8), hsNormSq (fderiv ℝ f x) ≤ (1 + n) * K0 * E * σ ^ n",
+  "lean_name": "gwe_wewe_energy_bound",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.lipschitz_fderiv_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.weighted_energy_weak_equation-a1.lipschitz_fderiv_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-1b3d0b2dbe-a1"
+}

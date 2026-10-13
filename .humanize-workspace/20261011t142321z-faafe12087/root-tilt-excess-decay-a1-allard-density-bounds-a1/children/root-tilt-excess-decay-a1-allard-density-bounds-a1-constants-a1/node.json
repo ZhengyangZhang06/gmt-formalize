@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1.constants-a1",
+  "parent_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+  "depth": 3,
+  "title": "Explicit constants for the two-sided mass bounds (steps 1-2 of the parent)",
+  "statement": "Let n be a natural number and kappa, omega real numbers with kappa > 0 and omega > 0. Then there are real numbers C and delta_P with 1 <= C, 0 < delta_P, delta_P <= 1/8, delta_P <= kappa and C delta_P <= 1/2 such that for every real t with 0 < t <= delta_P, writing Lambda := t/kappa and (1 - 4t)^n for the n-th natural power: (P) exp(2 Lambda) * ((1 + t)/(1 - 4t)^n * omega) + 2 exp(Lambda) Lambda <= (1 + C t) omega, and (M) (1 - C t) omega <= exp(-Lambda) (omega - Lambda).",
+  "lean_statement": "∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ C δP : ℝ, 1 ≤ C ∧ 0 < δP ∧ δP ≤ 1 / 8 ∧ δP ≤ κ ∧ C * δP ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δP → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 4 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + C * t) * ω ∧ (1 - C * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ)",
+  "lean_name": "ted_adb_constants",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-allard-density-bounds-a1-constants-a1-a1"
+}

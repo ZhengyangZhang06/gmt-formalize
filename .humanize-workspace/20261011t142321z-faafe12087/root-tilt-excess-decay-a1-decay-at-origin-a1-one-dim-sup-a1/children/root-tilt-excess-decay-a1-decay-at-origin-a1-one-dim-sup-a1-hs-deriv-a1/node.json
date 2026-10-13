@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.hs_deriv-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "depth": 4,
+  "title": "Hilbert-Schmidt norm of the derivative of a map on R^1 equals the squared norm of the derivative along the coordinate line",
+  "statement": "Let l be a natural number, w : R^1 -> R^l an arbitrary map (R^1 = EuclideanSpace R (Fin 1), R^l = EuclideanSpace R (Fin l)), and t a real number. Then hsNormSq(fderiv R w (EuclideanSpace.single 0 t)) = ||deriv (s |-> w(EuclideanSpace.single 0 s)) t||^2. Here fderiv and deriv are Mathlib's derivatives, both 0 at points of non-differentiability. hsNormSq B = sum over i : Fin 1 of ||B(EuclideanSpace.single i 1)||^2.",
+  "lean_statement": "∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (t : ℝ), hsNormSq (fderiv ℝ w (EuclideanSpace.single (0 : Fin 1) t)) = ‖deriv (fun s : ℝ => w (EuclideanSpace.single (0 : Fin 1) s)) t‖ ^ 2",
+  "lean_name": "tdo_ods_hsNormSq_fderiv_single",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-hs-deriv-a1-a1"
+}

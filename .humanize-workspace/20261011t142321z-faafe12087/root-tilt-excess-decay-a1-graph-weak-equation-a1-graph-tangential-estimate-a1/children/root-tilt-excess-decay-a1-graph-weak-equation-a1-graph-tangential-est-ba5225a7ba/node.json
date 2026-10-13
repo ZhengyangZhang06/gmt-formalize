@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1.graph_image_geometry-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_tangential_estimate-a1",
+  "depth": 4,
+  "title": "Graph coordinates: continuity, the first-block map a, and the rotated graph images over closed and open balls",
+  "statement": "For all natural numbers n, l and every linear isometry q of R^{n+l}, let a(z) := (EuclideanSpace.finAddEquivProd (q^{-1} z)).1 in R^n (the first n coordinates of q^{-1} z). Then: (i) (x, y) |-> graphPoint x y is continuous from R^n x R^l (product topology) to R^{n+l}; (ii) a is continuous; (iii) a(q(graphPoint x y)) = x for all x in R^n and y in R^l; (iv) for every f : R^n -> R^l continuous on the closed ball B^n_R(0) (nothing is assumed off the ball) and all reals r <= R, the set q(graph f over B^n_R(0)) = q '' graphOver f (closedBall 0 R) is compact, and the set q(graph f over the open ball B°^n_r(0)) = q '' graphOver f (ball 0 r) is a Borel subset of R^{n+l} (MeasurableSet for Mathlib's Borel measurable structure on EuclideanSpace).",
+  "lean_statement": "∀ (n ℓ : ℕ) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), Continuous (fun p : Rn n × Rn ℓ => graphPoint p.1 p.2) ∧ Continuous (fun z : Amb n ℓ => (EuclideanSpace.finAddEquivProd (q.symm z)).1) ∧ (∀ (x : Rn n) (y : Rn ℓ), (EuclideanSpace.finAddEquivProd (q.symm (q (graphPoint x y)))).1 = x) ∧ ∀ (f : Rn n → Rn ℓ) (R r : ℝ), ContinuousOn f (closedBall 0 R) → r ≤ R → IsCompact (q '' graphOver f (closedBall 0 R)) ∧ MeasurableSet (q '' graphOver f (ball 0 r))",
+  "lean_name": "gte_graph_image_geometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-est-ba5225a7ba-a1"
+}

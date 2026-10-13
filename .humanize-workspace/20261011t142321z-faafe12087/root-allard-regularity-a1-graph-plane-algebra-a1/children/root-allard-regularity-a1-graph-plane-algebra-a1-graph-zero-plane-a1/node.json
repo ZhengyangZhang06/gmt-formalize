@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_zero_plane-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "The graph of the zero map is the horizontal plane",
+  "statement": "For all natural numbers n, l: span{graphPoint v (0 v) : v in R^n} = horizontalPlane n l, where 0 : R^n -> R^l is the zero continuous linear map and horizontalPlane n l = span{EuclideanSpace.single (Fin.castAdd l i) 1 : i < n}.",
+  "lean_statement": "∀ (n ℓ : ℕ), Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v ((0 : Rn n →L[ℝ] Rn ℓ) v)) = horizontalPlane n ℓ",
+  "lean_name": "allard52_gpa_span_graph_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-zero-plane-a1-a1"
+}

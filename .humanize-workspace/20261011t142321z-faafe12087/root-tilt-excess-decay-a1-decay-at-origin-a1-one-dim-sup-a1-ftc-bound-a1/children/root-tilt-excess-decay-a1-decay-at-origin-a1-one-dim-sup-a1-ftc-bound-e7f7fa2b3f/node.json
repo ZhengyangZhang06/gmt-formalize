@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1.deriv_norm_integrable-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+  "depth": 5,
+  "title": "Integrability of ||W'|| on (-a, a) for a curve that is Lipschitz on [-a, a]",
+  "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a a real number and K >= 0, and suppose W is K-Lipschitz on the closed interval [-a, a]. Then the function r |-> ||deriv W r|| is integrable for Lebesgue measure on the open interval (-a, a). Here deriv is Mathlib's derivative (0 where W is not differentiable).",
+  "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a)",
+  "lean_name": "tdo_ods_integrableOn_norm_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-e7f7fa2b3f-a1"
+}

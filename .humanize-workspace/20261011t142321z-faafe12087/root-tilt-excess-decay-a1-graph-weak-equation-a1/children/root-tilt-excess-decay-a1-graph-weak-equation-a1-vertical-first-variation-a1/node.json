@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "First variation with a vertical cylinder test field: |int (p_x e'_j).(p_x grad zeta~) dmu| <= M (sigma/4) int |H| dmu",
+  "statement": "Let n >= 1, l, U an open subset of R^{n+l}, V a rectifiable n-varifold in U with generalized mean curvature H in U (mu = V.weight, p_x = V.tangentProj x), sigma > 0 with B_sigma(0) contained in U, q a linear isometry of R^{n+l} with dist(x, T) <= sigma/16 for every x in spt V cap B_sigma(0), where T = rotatedPlane q. Let zeta : R^n -> R be C^1 with compact support and tsupport zeta contained in the open ball B°_{sigma/4}(0), let M satisfy |grad zeta| <= M everywhere, and let j be in Fin l. For x in R^{n+l} let a(x) := (EuclideanSpace.finAddEquivProd (q^{-1} x)).1 be the first block of q^{-1}x, e'_j := q(graphPoint 0 (EuclideanSpace.single j 1)), and g(x) := q(graphPoint (grad zeta(a(x))) 0). Then |int_{B_{sigma/2}(0)} <p_x e'_j, p_x g(x)> dmu| <= M (sigma/4) int_{B_{sigma/2}(0)} |H| dmu (Bochner integrals; no measurability of x |-> p_x is assumed, and a non-integrable integrand has integral 0 by Lean's convention).",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ), V.HasGeneralizedMeanCurvature H → ∀ σ : ℝ, 0 < σ → closedBall 0 σ ⊆ U → ∀ q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ, (∀ x ∈ V.support ∩ closedBall 0 σ, infDist x (rotatedPlane q : Set (Amb n ℓ)) ≤ σ / 16) → ∀ ζ : Rn n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball 0 (σ / 4) → ∀ M : ℝ, (∀ x, ‖gradient ζ x‖ ≤ M) → ∀ j : Fin ℓ, |∫ x in closedBall (0 : Amb n ℓ) (σ / 2), inner ℝ (V.tangentProj x (q (graphPoint 0 (EuclideanSpace.single j (1 : ℝ))))) (V.tangentProj x (q (graphPoint (gradient ζ (EuclideanSpace.finAddEquivProd (q.symm x)).1) 0))) ∂V.weight| ≤ M * (σ / 4) * ∫ x in closedBall (0 : Amb n ℓ) (σ / 2), ‖H x‖ ∂V.weight",
+  "lean_name": "gwe_vertical_first_variation",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+    "root.lipschitz_approximation-a1.graph_coordinates-a1",
+    "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.projection_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-projection-algebra-a1-a1",
+      "result_commit": "164f08e449a335e8b0962c8f511579e3e102246a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1.graph_coordinates-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-graph-coordinates-a1-a1",
+      "result_commit": "e2915745b92c2117161b0d9eaeb226a1f6c30d1b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.smooth_cutoff-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-smooth-cutoff-a1-a1",
+      "result_commit": "cfec0688754671ca1b5207c66bd4ae6dc83dd2e6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-variation-a1-a1"
+}

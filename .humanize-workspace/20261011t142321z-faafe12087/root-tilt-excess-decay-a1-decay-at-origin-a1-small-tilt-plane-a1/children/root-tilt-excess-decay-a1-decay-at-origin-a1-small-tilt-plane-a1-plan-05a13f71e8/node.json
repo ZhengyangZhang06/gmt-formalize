@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1.plane_tilt_comparison-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1",
+  "depth": 4,
+  "title": "Mass-weighted comparison of two planes by their tilt-excess on a ball",
+  "statement": "Let n, l be natural numbers, U any subset of R^{n+l}, and V a contract rectifiable n-varifold in U with weight mu = V.weight such that x |-> V.tangentProj x is mu-a.e. strongly measurable. Let z in R^{n+l} and s > 0 with mu(B_s(z)) < oo (closed ball). Then for all linear subspaces P, Q of R^{n+l}: mu(B_s(z)) * hsNormSq(p_P - p_Q) <= 2 s^n (E(z, s, P) + E(z, s, Q)), where mu(B_s(z)) is taken as a real number (ENNReal.toReal), p_S = S.starProjection, hsNormSq is the squared Hilbert-Schmidt norm and E = V.tiltExcess, E(z, s, S) = s^{-n} * integral over B_s(z) of hsNormSq(V.tangentProj x - p_S) dmu.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight → ∀ (z : Amb n ℓ) (s : ℝ), 0 < s → V.weight (closedBall z s) ≠ ⊤ → ∀ P Q : Submodule ℝ (Amb n ℓ), (V.weight (closedBall z s)).toReal * hsNormSq (P.starProjection - Q.starProjection) ≤ 2 * s ^ n * (V.tiltExcess z s P + V.tiltExcess z s Q)",
+  "lean_name": "tdo_stp_hsNormSq_sub_le_tiltExcess",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1-a1",
+      "result_commit": "7372f81c6640dd17bd99bd3c9bbe79675f27d126",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1-plan-05a13f71e8-a1"
+}

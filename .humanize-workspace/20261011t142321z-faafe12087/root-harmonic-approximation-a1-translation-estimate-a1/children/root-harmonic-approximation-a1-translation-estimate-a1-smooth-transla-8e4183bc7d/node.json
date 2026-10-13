@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.translation_estimate-a1.smooth_translation_estimate-a1",
+  "parent_id": "root.harmonic_approximation-a1.translation_estimate-a1",
+  "depth": 3,
+  "title": "Translation estimate for C^1 functions on balls",
+  "statement": "Let n be a natural number and phi : R^n -> R continuously differentiable (ContDiff R 1 phi), where R^n = EuclideanSpace R (Fin n). Then for every real r and every z in R^n: int^-_(B_r) |phi(x - z) - phi(x)|^2 dx <= |z|^2 int^-_(B_(r+|z|)) |grad phi(x)|^2 dx, where B_rho := ball(0,rho), grad phi is Mathlib's gradient (Riesz representative of the derivative), the integrals are lintegrals of squared extended norms for Lebesgue measure, and the factor |z|^2 is ENNReal.ofReal(|z|^2).",
+  "lean_statement": "∀ (n : ℕ) (φ : Rn n → ℝ), ContDiff ℝ 1 φ → ∀ (r : ℝ) (z : Rn n), ∫⁻ x in ball (0 : Rn n) r, ‖φ (x - z) - φ x‖ₑ ^ 2 ≤ ENNReal.ofReal (‖z‖ ^ 2) * ∫⁻ x in ball (0 : Rn n) (r + ‖z‖), ‖gradient φ x‖ₑ ^ 2",
+  "lean_name": "contDiff_one_ball_translation_estimate",
+  "depends_on": [
+    "root.harmonic_approximation-a1.translation_estimate-a1.ball_translate_lintegral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.harmonic_approximation-a1.translation_estimate-a1.ball_translate_lintegral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-translation-estimate-a1-smooth-transla-8e4183bc7d-a1"
+}

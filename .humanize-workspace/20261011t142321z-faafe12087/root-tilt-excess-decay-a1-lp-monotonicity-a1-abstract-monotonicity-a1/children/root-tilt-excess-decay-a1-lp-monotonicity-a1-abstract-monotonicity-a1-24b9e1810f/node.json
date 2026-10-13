@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.cutoff_sequence-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "depth": 4,
+  "title": "C^1 cutoff sequence phi_k = 1 on (-infinity, 1], = 0 on [1 + eps_k, infinity), eps_k -> 0 (parent step 4)",
+  "statement": "Let delta > 0 be a real number (the Lean binder ε₁). Then there exist functions phi_k : R -> R and real numbers eps_k, indexed by k in N = {0, 1, 2, ...}, such that: (1) 0 < eps_k <= delta for every k; (2) eps_k -> 0 as k -> infinity; (3) every phi_k is C^1; (4) every phi_k is nonincreasing (antitone); (5) 0 <= phi_k(s) <= 1 for all k and all real s; (6) phi_k(s) = 1 for all k whenever s <= 1; (7) phi_k(s) = 0 whenever s >= 1 + eps_k; (8) for every real s > 1, phi_k(s) = 0 for all sufficiently large k.",
+  "lean_statement": "∀ ε₁ : ℝ, 0 < ε₁ → ∃ (φ : ℕ → ℝ → ℝ) (ε : ℕ → ℝ), (∀ k, 0 < ε k ∧ ε k ≤ ε₁) ∧ Tendsto ε atTop (𝓝 0) ∧ (∀ k, ContDiff ℝ 1 (φ k)) ∧ (∀ k, Antitone (φ k)) ∧ (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) ∧ (∀ k s, s ≤ 1 → φ k s = 1) ∧ (∀ k s, 1 + ε k ≤ s → φ k s = 0) ∧ (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0)",
+  "lean_name": "ted_lpm_am_cutoff_sequence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-24b9e1810f-a1"
+}

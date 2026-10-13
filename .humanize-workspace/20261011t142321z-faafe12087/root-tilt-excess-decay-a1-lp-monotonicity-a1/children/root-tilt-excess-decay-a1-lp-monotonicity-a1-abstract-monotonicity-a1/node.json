@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+  "depth": 3,
+  "title": "L^p monotonicity inequality for an abstract measure satisfying the radial first-variation inequality (Simon Ch. 4, 4.1-4.8 with the cutoff limit)",
+  "statement": "Let n >= 1 and l be natural numbers, E := R^{n+l}, p > n a real number, mu a measure on E, H : E -> E, y in E, and R, S, Lambda real numbers with 0 < R < S and Lambda > 0. Write r(x) := |x - y|, B_t(y) for the closed ball, phi' := deriv phi, kappa := (p - n)/(4p) and alpha := 1 - n/p. Assume: mu(B_S(y)) < infinity; H is mu-integrable on B_S(y); integral^-_{B_S(y)} |H|^p dmu < infinity (lower integral); (ofReal(R^(p-n)) * integral^-_{B_R(y)} |H|^p dmu)^(1/p) <= ofReal(kappa Lambda) in [0, infinity]; and (A5) for every real T, every C^1 nonincreasing phi : R -> R with phi(t) = 1 for t <= 1 and phi(t) = 0 for t >= T, and every rho > 0 with T rho < S, integral_E [n phi(r/rho) + (r/rho) phi'(r/rho)] dmu <= - integral_E phi(r/rho) (x - y).H dmu (Bochner integrals). Then there is F : R -> R such that (i) for 0 < r <= R: e^(-Lambda) <= F(r) <= e^Lambda, |F(r) - 1| <= (1/2) e^(Lambda/2) Lambda (r/R)^alpha, and |F(r) - 1| <= Lambda (r/R)^alpha if Lambda <= 1; (ii) for 0 < s <= r <= R: F(s) (mu(B_s(y)).toReal/s^n) + (F(s) - 1) <= F(r) (mu(B_r(y)).toReal/r^n) + (F(r) - 1).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (μ : Measure (Amb n ℓ)) (H : Amb n ℓ → Amb n ℓ) (y : Amb n ℓ) (R S Λ : ℝ), 0 < R → R < S → 0 < Λ → μ (closedBall y S) < ⊤ → IntegrableOn H (closedBall y S) μ → ∫⁻ x in closedBall y S, ‖H x‖ₑ ^ p ∂μ < ⊤ → (ENNReal.ofReal (R ^ (p - n)) * ∫⁻ x in closedBall y R, ‖H x‖ₑ ^ p ∂μ) ^ (1 / p) ≤ ENNReal.ofReal ((p - n) / (4 * p) * Λ) → (∀ (φ : ℝ → ℝ) (T ρ : ℝ), ContDiff ℝ 1 φ → Antitone φ → (∀ t : ℝ, t ≤ 1 → φ t = 1) → (∀ t : ℝ, T ≤ t → φ t = 0) → 0 < ρ → T * ρ < S → ∫ x, ((n : ℝ) * φ (‖x - y‖ / ρ) + ‖x - y‖ / ρ * deriv φ (‖x - y‖ / ρ)) ∂μ ≤ -∫ x, φ (‖x - y‖ / ρ) * inner ℝ (x - y) (H x) ∂μ) → ∃ F : ℝ → ℝ, (∀ r : ℝ, 0 < r → r ≤ R → Real.exp (-Λ) ≤ F r ∧ F r ≤ Real.exp Λ ∧ |F r - 1| ≤ Real.exp (Λ / 2) / 2 * Λ * (r / R) ^ (1 - (n : ℝ) / p) ∧ (Λ ≤ 1 → |F r - 1| ≤ Λ * (r / R) ^ (1 - (n : ℝ) / p))) ∧ ∀ s r : ℝ, 0 < s → s ≤ r → r ≤ R → F s * ((μ (closedBall y s)).toReal / s ^ n) + (F s - 1) ≤ F r * ((μ (closedBall y r)).toReal / r ^ n) + (F r - 1)",
+  "lean_name": "ted_lpm_abstract_monotonicity",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1.curvature_holder-a1",
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.curvature_holder-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.fixed_cutoff_monotone-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-a1"
+}
