@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9c38de80078fcf028ae6c5b92689493515df50bf95056f750c41147fd5fb5124",
+  "git_delta": {
+    "base_commit": "2dcd02614975c100d8651de170661e5cb9eb6103",
+    "candidate_commit": "b189cdb763cfcb8a1c2454a721f1535810be092d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_ha_rb_mollify_bounds",
+    "diff_sha256": "5a18738ebf6fcfbc03fd7bfd47efb60d0b99f1d66f182a3ff54f28ce00349da3",
+    "source_sha256": "b27da59b1a524e7ba6d1d472fb8dd4b686461527de7c408d1b9a380461353d58",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_ha_rb_mollify_bounds",
+      "statement": "∀ (n : ℕ) (u ρ : Euclid n → ℝ) (C ε s : ℝ), Continuous u → Continuous ρ → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → (∀ z, |ρ z| ≤ C) → (∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖) → 0 < ε → ε ≤ s / 2 → (∀ x ∈ closedBall (0 : Euclid n) (1 - s), |∫ z, u (x - ε • z) * ρ z| ≤ (ε ^ n)⁻¹ * C * ∫ y in ball (0 : Euclid n) 1, |u y|) ∧ ∀ x ∈ closedBall (0 : Euclid n) (1 - s), ∀ x' ∈ closedBall (0 : Euclid n) (1 - s), |(∫ z, u (x - ε • z) * ρ z) - ∫ z, u (x' - ε • z) * ρ z| ≤ (ε ^ (n + 1))⁻¹ * C * ‖x - x'‖ * ∫ y in ball (0 : Euclid n) 1, |u y|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
