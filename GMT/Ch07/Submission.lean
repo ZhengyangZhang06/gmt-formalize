@@ -451,6 +451,79 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
+claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
+lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
+`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
+theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
+  intro P U x lams hU hx hpos hlim K hK
+  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
+  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
+  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
+    simpa using hlim.mul_const (|r| + 1)
+  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
+  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
+  refine ⟨x + lams i • w, hball ?_, ?_⟩
+  · have hw : ‖w‖ ≤ |r| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
+    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
+  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
+
+/-- **Weak limits of blow-ups of a cycle are cycles** (`∂C = 0` for the blow-up limit `C` in the
+proof of Simon 7.3.3(2), chapter-07.txt line 512 ff.; cf. the proof of 7.3.1, lines 335–336,
+where `∂η_{x,λⱼ#}T = 0` in `B_{MR}(0)` for large `j`, and Ch. 6, 2.13 and 2.24(1)).  If
+`∂T = 0` in `U`, `λᵢ > 0`, `λᵢ → 0` and `η_{x,λᵢ#}T ⇀ C` in `ℝᴾ`, then `∂C = 0`: for
+`ω ∈ 𝒟ᵐ(ℝᴾ)`, the compact set `spt ω ⊇ spt dω` lies in `η_{x,λᵢ}(U)` for all large `i`
+(`idtp_tpf_blowUp_domain_eventually`), and there
+`η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`; hence
+`∂C(ω) = C(dω) = limᵢ η_{x,λᵢ#}T(dω) = 0`. -/
+theorem Submission.idtp_tpf_blowUp_limit_boundaryVanishes : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → BoundaryVanishes T → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T x (lams i) (hlams i).ne') C → BoundaryVanishes C := by
+  intro P n U T x lams hlams C hU hx hT hlim hconv
+  cases n with
+  | zero => trivial
+  | succ m =>
+    -- step 1: `∂T = 0`, and it suffices that `∂C(ω) = C(dω) = 0` for every `ω ∈ 𝒟ᵐ(ℝᴾ)`
+    change T.boundary = 0 at hT
+    change C.boundary = 0
+    ext ω
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    -- step 2: the compact set `spt ω` lies in `η_{x,λᵢ}(U)` for all large `i`
+    have hev := Submission.idtp_tpf_blowUp_domain_eventually P U x lams hU hx hlams hlim
+      (tsupport (ω : DifferentialForm (Euclid P) m)) ω.property.1.2.isCompact.isBounded
+    -- steps 3–4: for such `i`, `η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`
+    have hzero : ∀ᶠ i in atTop, currentEval (blowUp T x (lams i) (hlams i).ne')
+        (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) = 0 := by
+      filter_upwards [hev] with i hi
+      -- `∂` commutes with the affine push-forward `η_{x,λᵢ#}` (Simon 6.2.24(1)) ...
+      have hB : (blowUp T x (lams i) (hlams i).ne').boundary =
+          blowUp T.boundary x (lams i) (hlams i).ne' := by
+        unfold blowUp
+        rw [GeometricCurrentOn.boundary_affinePushforward]
+        rfl
+      -- ... and the blow-up of the zero current is zero
+      have h0 : blowUp (0 : GeometricCurrentOn U m) x (lams i) (hlams i).ne' = 0 := by
+        ext η
+        unfold blowUp
+        rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+          GeometricCurrentOn.zero_apply, GeometricCurrentOn.zero_apply]
+      -- `ω` is a test form in `η_{x,λᵢ}(U)`, and `currentEval` evaluates the blow-up on `dω`
+      let ωi : TestFormOn (dilation x (lams i) '' U) m := ⟨ω, ω.property.1, hi⟩
+      have hd : IsTestForm (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ∧
+          tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ⊆
+            dilation x (lams i) '' U :=
+        ⟨exteriorDerivative_isTestForm ω.property.1,
+          (tsupport_exteriorDerivative_subset _).trans hi⟩
+      rw [currentEval, dite_eq_left hd]
+      change (blowUp T x (lams i) (hlams i).ne').boundary ωi = 0
+      rw [hB, hT, h0, GeometricCurrentOn.zero_apply]
+    -- step 5: `C(dω)` is the limit of a sequence that is eventually `0`
+    exact tendsto_nhds_unique (hconv (exteriorDerivativeTestOn univ m ω))
+      (tendsto_const_nhds.congr' (hzero.mono fun i hi => hi.symm))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
