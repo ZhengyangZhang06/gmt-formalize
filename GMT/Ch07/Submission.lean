@@ -1019,6 +1019,159 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **A common Borel orientation for countably many integer multiplicity pieces** (countable
+form of the orientation argument behind Simon Ch. 6, Remark 3.2(1); chapter-06.txt lines
+733–756, with Ch. 3, 1.4–1.5, chapter-03.txt lines 77–89).  Let `Rᵢ = (Mᵢ, θᵢ, ξᵢ)` be
+`IMRep`s in an open `U` whose union `N = ⋃ᵢ Mᵢ` is locally `Hⁿ`-finite in `U`.  Then there are
+a Borel `η` and Borel signs `sᵢ = ±1` such that, for `Hⁿ`-a.e. `x ∈ N`, `η(x)` orients an
+approximate tangent space of `N` at `x`, and `ξᵢ = sᵢ η` for `Hⁿ`-a.e. `x ∈ Mᵢ`.
+
+Proof sketch:
+* Replace `ξᵢ` by a Borel `ξ'ᵢ` with `ξ'ᵢ = ξᵢ` `Hⁿ`-a.e. on `Mᵢ`, and disjointify the
+  carriers: `Dᵢ = Mᵢ \ ⋃_{j<i} Mⱼ`.
+* `η = Σᵢ 1_{Dᵢ} ξ'ᵢ` equals `ξ'ⱼ` on `Dⱼ` and `0` off `N`; it is Borel as the pointwise limit
+  of the finite-stage approximants `gₖ₊₁ = ξ'ₖ` on `Dₖ`, `gₖ₊₁ = gₖ` elsewhere.
+* Tangent transfer for `Mⱼ ⊆ N`: `Hⁿ`-a.e. on `N`, for every `j` with `x ∈ Mⱼ`, `ξ'ⱼ(x)`
+  orients an approximate tangent space of `N` at `x`.
+* Approximate tangent spaces are unique (Remark 1.5(1)), so `η(x)` and every `ξ'ᵢ(x)` with
+  `x ∈ Mᵢ` orient the same `TₓN`, and the sign rule gives `ξ'ᵢ(x) = ±η(x)`.  With `sᵢ = 1`
+  where `ξ'ᵢ = η` and `sᵢ = -1` elsewhere, `ξᵢ = ξ'ᵢ = sᵢ η` `Hⁿ`-a.e. on `Mᵢ`. -/
+theorem Submission.cmcdt_ims_common_orientation : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] ((⋃ i, (R i).carrier) ∩ K) ≠ ∞) → ∃ (η : Euclid P → MultiVector P n) (s : ℕ → Euclid P → ℝ), StronglyMeasurable η ∧ (∀ i, Measurable (s i)) ∧ (∀ i x, s i x = 1 ∨ s i x = -1) ∧ (∀ᵐ x ∂(μHE[n].restrict (⋃ i, (R i).carrier)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (⋃ i, (R i).carrier) x Q ∧ IsUnitOrientationOf (η x) Q) ∧ ∀ i, ∀ᵐ x ∂(μHE[n].restrict (R i).carrier), (R i).orient x = s i x • η x := by
+  intro P n U R hU hfin
+  classical
+  set M : ℕ → Set (Euclid P) := fun i => (R i).carrier with hMdef
+  set N : Set (Euclid P) := ⋃ i, M i with hNdef
+  have hMmeas : ∀ i, MeasurableSet (M i) := fun i => (R i).measurableSet_carrier
+  have hNmeas : MeasurableSet N := MeasurableSet.iUnion hMmeas
+  have hNU : N ⊆ U := iUnion_subset fun i => (R i).carrier_subset
+  -- Borel versions `ξ'ᵢ` of the orientations, `ξ'ᵢ = ξᵢ` a.e. on `Mᵢ`
+  set ξ' : ℕ → Euclid P → MultiVector P n :=
+    fun i => (R i).aestronglyMeasurable_orient.mk (R i).orient
+  have hξ'sm : ∀ i, StronglyMeasurable (ξ' i) :=
+    fun i => (R i).aestronglyMeasurable_orient.stronglyMeasurable_mk
+  have hξ'ae : ∀ i, ∀ᵐ x ∂(μHE[n].restrict (M i)), (R i).orient x = ξ' i x :=
+    fun i => (R i).aestronglyMeasurable_orient.ae_eq_mk
+  -- the disjoint pieces `Dᵢ = Mᵢ \ ⋃_{j<i} Mⱼ`
+  set D : ℕ → Set (Euclid P) := disjointed M with hDdef
+  have hDmeas : ∀ i, MeasurableSet (D i) := MeasurableSet.disjointed hMmeas
+  have hDsub : ∀ i, D i ⊆ M i := disjointed_subset M
+  have hDdisj : Pairwise (Disjoint on D) := disjoint_disjointed M
+  have hDunion : ⋃ i, D i = N := iUnion_disjointed
+  -- the reference orientation `η = Σᵢ 1_{Dᵢ} ξ'ᵢ`: `η = ξ'ⱼ` on `Dⱼ`, `η = 0` off `N`
+  set η : Euclid P → MultiVector P n := fun x => ∑' i, (D i).indicator (ξ' i) x with hηdef
+  have hη_eq : ∀ j x, x ∈ D j → η x = ξ' j x := by
+    intro j x hx
+    simp only [hηdef]
+    rw [tsum_eq_single j]
+    · exact indicator_of_mem hx _
+    · intro i hij
+      exact indicator_of_notMem (fun hxi => (hDdisj hij).ne_of_mem hxi hx rfl) _
+  have hη_zero : ∀ x, (∀ i, x ∉ D i) → η x = 0 := by
+    intro x hx
+    simp only [hηdef]
+    have h0 : ∀ i, (D i).indicator (ξ' i) x = 0 := fun i => indicator_of_notMem (hx i) _
+    simp [h0]
+  -- `MultiVector P n` is metrizable: its operator-norm topology is the strong topology
+  have hmetr : TopologicalSpace.MetrizableSpace (MultiVector P n) :=
+    { toPseudoMetrizableSpace := ⟨⟨PseudoMetricSpace.toUniformSpace, rfl,
+        Metric.uniformity_basis_dist_inv_nat_succ.isCountablyGenerated⟩⟩
+      toT0Space := inferInstance }
+  -- finite-stage approximants `gₖ₊₁ = ξ'ₖ` on `Dₖ`, `gₖ₊₁ = gₖ` elsewhere (`ite` only)
+  let g : ℕ → Euclid P → MultiVector P n := fun k => Nat.rec (fun _ => 0)
+    (fun j gj => fun x => if x ∈ D j then ξ' j x else gj x) k
+  have hg_succ : ∀ k x, g (k + 1) x = if x ∈ D k then ξ' k x else g k x := fun k x => rfl
+  have hg_sm : ∀ k, StronglyMeasurable (g k) := by
+    intro k
+    induction k with
+    | zero => exact stronglyMeasurable_const
+    | succ k ih =>
+      have : g (k + 1) = fun x => if x ∈ D k then ξ' k x else g k x := funext (hg_succ k)
+      rw [this]
+      exact StronglyMeasurable.ite (hDmeas k) (hξ'sm k) ih
+  have hg_eq : ∀ k x, (∀ i, i < k → x ∉ D i) → g k x = 0 := by
+    intro k
+    induction k with
+    | zero => intro x _; rfl
+    | succ k ih =>
+      intro x hx
+      rw [hg_succ, ite_eq_right (hx k (Nat.lt_succ_self k))]
+      exact ih x fun i hi => hx i (Nat.lt_succ_of_lt hi)
+  have hg_mem : ∀ j x, x ∈ D j → ∀ k, j < k → g k x = ξ' j x := by
+    intro j x hj k
+    induction k with
+    | zero => intro h; omega
+    | succ k ih =>
+      intro hk
+      rw [hg_succ]
+      by_cases hjk : j = k
+      · subst hjk; rw [ite_eq_left hj]
+      · have hxk : x ∉ D k := fun hxk => (hDdisj (Ne.symm hjk)).ne_of_mem hxk hj rfl
+        rw [ite_eq_right hxk]
+        exact ih (by omega)
+  -- `gₖ → η` pointwise, so `η` is Borel
+  have hη_sm : StronglyMeasurable η := by
+    refine stronglyMeasurable_of_tendsto atTop hg_sm ?_
+    rw [tendsto_pi_nhds]
+    intro x
+    by_cases hx : ∃ j, x ∈ D j
+    · obtain ⟨j, hj⟩ := hx
+      apply tendsto_atTop_of_eventually_const (i₀ := j + 1)
+      intro k hk
+      rw [hη_eq j x hj]
+      exact hg_mem j x hj k (by omega)
+    · have hx' : ∀ i, x ∉ D i := fun i hi => hx ⟨i, hi⟩
+      rw [hη_zero x hx']
+      apply tendsto_atTop_of_eventually_const (i₀ := 0)
+      intro k _
+      exact hg_eq k x fun i _ => hx' i
+  -- the signs `sᵢ = 1` where `ξ'ᵢ = η`, `sᵢ = -1` elsewhere
+  set s : ℕ → Euclid P → ℝ := fun i x => if ξ' i x = η x then 1 else -1 with hsdef
+  have hs_meas : ∀ i, Measurable (s i) := fun i =>
+    Measurable.ite ((hξ'sm i).measurableSet_eq_fun hη_sm) measurable_const measurable_const
+  have hs_val : ∀ i x, s i x = 1 ∨ s i x = -1 := by
+    intro i x
+    by_cases h : ξ' i x = η x
+    · exact Or.inl (ite_eq_left h)
+    · exact Or.inr (ite_eq_right h)
+  -- tangent transfer for `Mⱼ ⊆ N`: a.e. on `Mⱼ`, `ξ'ⱼ(x)` orients a tangent space of `N`
+  have hP : ∀ j, ∀ᵐ x ∂(μHE[n].restrict (M j)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n N x Q ∧ IsUnitOrientationOf (ξ' j x) Q := by
+    intro j
+    have h1 := Submission.rsdic_imrep_ae_tangent_orient_of_subset P n U (M j) N (R j) hU
+      (hMmeas j) hNmeas subset_rfl (subset_iUnion M j) hNU hfin
+    filter_upwards [h1, hξ'ae j] with x hx1 hx2
+    obtain ⟨Q, hQ1, hQ2⟩ := hx1
+    exact ⟨Q, hQ1, hx2 ▸ hQ2⟩
+  -- the same, for every `j` at once, `Hⁿ`-a.e. on `N`
+  have hPN : ∀ᵐ x ∂(μHE[n].restrict N), ∀ j, x ∈ M j → ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n N x Q ∧ IsUnitOrientationOf (ξ' j x) Q := by
+    rw [ae_all_iff]
+    intro j
+    exact ae_restrict_of_ae ((ae_restrict_iff' (hMmeas j)).mp (hP j))
+  -- uniqueness of `TₓN` and the sign rule: `η(x)` orients `TₓN`, `ξ'ᵢ(x) = ±η(x)` on `Mᵢ`
+  have hgood : ∀ᵐ x ∂(μHE[n].restrict N), (∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n N x Q ∧ IsUnitOrientationOf (η x) Q) ∧
+      ∀ i, x ∈ M i → (ξ' i x = η x ∨ ξ' i x = -η x) := by
+    filter_upwards [hPN, ae_restrict_mem hNmeas] with x hx hxN
+    rw [← hDunion] at hxN
+    obtain ⟨j, hj⟩ := mem_iUnion.mp hxN
+    obtain ⟨Qj, hQj1, hQj2⟩ := hx j (hDsub j hj)
+    rw [← hη_eq j x hj] at hQj2
+    refine ⟨⟨Qj, hQj1, hQj2⟩, fun i hi => ?_⟩
+    obtain ⟨Qi, hQi1, hQi2⟩ := hx i hi
+    rw [hQi1.unique hQj1] at hQi2
+    exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n (η x) (ξ' i x) Qj hQj2 hQi2
+  refine ⟨η, s, hη_sm, hs_meas, hs_val, hgood.mono fun x hx => hx.1, fun i => ?_⟩
+  -- `ξᵢ = ξ'ᵢ = sᵢ η` a.e. on `Mᵢ ⊆ N`
+  have hgoodi : ∀ᵐ x ∂(μHE[n].restrict (M i)), x ∈ M i → (ξ' i x = η x ∨ ξ' i x = -η x) :=
+    ae_restrict_of_ae_restrict_of_subset (subset_iUnion M i) (hgood.mono fun x hx => hx.2 i)
+  filter_upwards [hgoodi, ae_restrict_mem (hMmeas i), hξ'ae i] with x hx hxM hxe
+  rw [hxe]
+  by_cases h : ξ' i x = η x
+  · rw [show s i x = 1 from ite_eq_left h, one_smul, h]
+  · rw [show s i x = -1 from ite_eq_right h, (hx hxM).resolve_left h]
+    exact (neg_one_smul ℝ (η x)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
