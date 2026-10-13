@@ -2095,6 +2095,100 @@ theorem Submission.dorag_monotonicity_density : ∀ (n k : ℕ), 0 < n → ∀ (
         rw [hν (A m) (measurableSet_closedBall.diff measurableSet_closedBall)]
         exact hannulus _ (div_pos ht (by linarith)) (div_lt_self ht hm)
 
+/-- **The support minus the carrier is `Hⁿ`-null** (Simon Ch. 1, 3.3; Ch. 4, 4.10(1)).  Let
+`V = v(M, θ)` have mean curvature `H`, `|H| ≤ κ`, in the open set `W ⊆ U`, and let
+`A = (spt μ_V ∩ W) \ M`.  Then `μ_V(A) = 0`, as `μ_V = θ Hⁿ⌞M` is concentrated on `M`.  At
+`x ∈ A` the monotonicity bound `ωₙ ≤ e^{κt} t⁻ⁿ μ_V(B̄_t(x))` (`B̄_t(x) ⊆ W`) gives
+`μ_V(B̄_t(x)) ≥ c tⁿ` for small `t`, with `c = ωₙ e^{-|κ|}`.  Since `μ_V` is locally finite at the
+points of `A`, `A` has open neighbourhoods `O` with `μ_V(O) < ε`, and the density comparison
+theorem gives `Hⁿ(A) ≤ C μ_V(O) ≤ C ε` with `C < ∞` depending only on `n + k`, `n` and `c`.
+Letting `ε ↓ 0`, `Hⁿ(A) = 0`. -/
+theorem Submission.dorag_support_sdiff_carrier_null : ∀ (n k : ℕ), 0 < n → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ : ℝ), IsOpen W → W ⊆ U → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → μHE[n] ((R.measure.support ∩ W) \ R.carrier) = 0 := by
+  intro n k hn U W R H κ hW hWU hH hHκ hfv
+  -- (D): `∫_{B̄_t(y)} F_y dμ_V + ωₙ ≤ e^{κt} t⁻ⁿ μ_V(B̄_t(y))` for `y ∈ spt μ_V`, `B̄_t(y) ⊆ W`
+  have hD := (Submission.dorag_monotonicity_density n k hn U W R H κ hW hWU hH hHκ hfv).2
+  -- `0 < ωₙ < ∞`, so `c = ωₙ e^{-|κ|} > 0`
+  have hω0 : 0 < unitBallVolume n := by
+    rw [unitBallVolume]
+    exact measure_ball_pos _ _ one_pos
+  have hωtop : unitBallVolume n ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  obtain ⟨c, hc_def⟩ : ∃ c : ℝ, c = (unitBallVolume n).toReal * Real.exp (-|κ|) := ⟨_, rfl⟩
+  have hc : 0 < c := hc_def ▸ mul_pos (ENNReal.toReal_pos hω0.ne' hωtop) (Real.exp_pos _)
+  obtain ⟨C, hCtop, hcomp⟩ :=
+    Submission.dorag_sn_hausdorff_le_mul_of_lower_density (n + k) n c hc
+  -- step 1: `μ_V(Mᶜ) = 0`, as `μ_V = θ Hⁿ⌞M ≪ Hⁿ⌞M`; hence `μ_V(A) = 0`
+  have hMc : R.measure R.carrierᶜ = 0 := by
+    refine withDensity_absolutelyContinuous _ _ ?_
+    rw [Measure.restrict_apply' R.measurableSet_carrier, compl_inter_self, measure_empty]
+  have hA0 : R.measure ((R.measure.support ∩ W) \ R.carrier) = 0 :=
+    measure_mono_null (fun x hx => hx.2) hMc
+  -- every `x ∈ A ⊆ W` is the centre of a closed ball `B̄_r(x) ⊆ W`
+  have hball : ∀ x ∈ (R.measure.support ∩ W) \ R.carrier,
+      ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ W := by
+    intro x hx
+    obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.mp hW x hx.1.2
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεW⟩
+  -- a closed ball `B̄_r(x) ⊆ W ⊆ U` is a compact subset of `U`, so
+  -- `μ_V(B̄_r(x)) = ∫_{M ∩ B̄_r(x)} θ dHⁿ < ∞`
+  have hloc : ∀ x ∈ (R.measure.support ∩ W) \ R.carrier,
+      ∃ r : ℝ, 0 < r ∧ R.measure (ball x r) ≠ ∞ := by
+    intro x hx
+    obtain ⟨r, hr, hrW⟩ := hball x hx
+    refine ⟨r, hr, ne_top_of_le_ne_top ?_ (measure_mono ball_subset_closedBall)⟩
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall x r) (hrW.trans hWU)
+  -- step 2: for `x ∈ A` and `0 < t < min r 1`, (D) gives
+  -- `μ_V(B̄_t(x)) ≥ e^{-κt} ωₙ tⁿ ≥ c tⁿ`, since `κt ≤ |κ|`
+  have hdens : ∀ x ∈ (R.measure.support ∩ W) \ R.carrier, ∃ t₀ : ℝ, 0 < t₀ ∧
+      ∀ t : ℝ, 0 < t → t < t₀ → ENNReal.ofReal (c * t ^ n) ≤ R.measure (closedBall x t) := by
+    intro x hx
+    obtain ⟨r, hr, hrW⟩ := hball x hx
+    refine ⟨min r 1, lt_min hr one_pos, fun t ht htr => ?_⟩
+    have htW : closedBall x t ⊆ W :=
+      (closedBall_subset_closedBall (htr.le.trans (min_le_left _ _))).trans hrW
+    have h1 : unitBallVolume n ≤
+        ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall x t) :=
+      le_add_self.trans (hD x hx.1.1 t ht htW)
+    have hkt : κ * t ≤ |κ| :=
+      calc κ * t ≤ |κ| * t := mul_le_mul_of_nonneg_right (le_abs_self κ) ht.le
+        _ ≤ |κ| := mul_le_of_le_one_right (abs_nonneg κ) (htr.le.trans (min_le_right _ _))
+    have htn : t ^ n ≠ 0 := (pow_pos ht n).ne'
+    have hexp : Real.exp (κ * t) ≠ 0 := (Real.exp_pos _).ne'
+    calc ENNReal.ofReal (c * t ^ n)
+        ≤ ENNReal.ofReal (Real.exp (-(κ * t)) * t ^ n * (unitBallVolume n).toReal) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [hc_def, show Real.exp (-(κ * t)) * t ^ n * (unitBallVolume n).toReal =
+            (unitBallVolume n).toReal * Real.exp (-(κ * t)) * t ^ n by ring]
+          gcongr
+      _ = ENNReal.ofReal (Real.exp (-(κ * t)) * t ^ n) * unitBallVolume n := by
+          rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_toReal hωtop]
+      _ ≤ ENNReal.ofReal (Real.exp (-(κ * t)) * t ^ n) *
+          (ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall x t)) := by
+          gcongr
+      _ = R.measure (closedBall x t) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+            show Real.exp (-(κ * t)) * t ^ n * (Real.exp (κ * t) / t ^ n) = 1 by
+              rw [Real.exp_neg]
+              field_simp,
+            ENNReal.ofReal_one, one_mul]
+  -- steps 3–4: an open `O ⊇ A` with `μ_V(O) < ε` gives `Hⁿ(A) ≤ C μ_V(O) ≤ C ε`
+  have hbound : ∀ ε : ℝ≥0∞, 0 < ε →
+      μHE[n] ((R.measure.support ∩ W) \ R.carrier) ≤ C * ε := by
+    intro ε hε
+    obtain ⟨O, hO, hAO, hOε⟩ :=
+      Submission.dorag_sn_open_superset_measure_lt (n + k) R.measure _ hA0 hloc ε hε
+    calc μHE[n] ((R.measure.support ∩ W) \ R.carrier) ≤ C * R.measure O :=
+          hcomp R.measure _ O hO hAO hdens
+      _ ≤ C * ε := by gcongr
+  -- step 5: `C < ∞`, so `C ε_j → 0` along `ε_j = 1 / j`, and `Hⁿ(A) = 0`
+  have hlim : Tendsto (fun j : ℕ => C * (j : ℝ≥0∞)⁻¹) atTop (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul ENNReal.tendsto_inv_nat_nhds_zero (Or.inr hCtop)
+  exact nonpos_iff_eq_zero.mp
+    (ge_of_tendsto' hlim fun j => hbound _ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top j)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
