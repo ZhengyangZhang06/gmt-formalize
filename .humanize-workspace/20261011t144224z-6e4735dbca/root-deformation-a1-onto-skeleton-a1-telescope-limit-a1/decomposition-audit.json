@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "telescop|HasSum|tsum|WeaklyConvergesOn|fiw_|deformation_telescope|CompactlyContainedOpen|Add|Sub",
+        "hasProd_nat_add_iff.|HasProd.tendsto_prod_nat|tsum_comp_le_tsum_of_injective|theorem tsum_le_tsum",
+        "exists_isSubordinate|theorem sum_eq_one|tsupport.*subset",
+        "exists_open_between_and_isCompact_closure|norm_iteratedFDeriv_zero",
+        "git show bf9ca0af59c29a43051813c46db6cfd1dc1429fe:GMT/Ch06/Submission.lean",
+        "git show 2065ad1fee8c7dc9474c00d6ca127895bd6127f5:GMT/Ch06/Submission.lean",
+        "git show 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6:GMT/Ch06/Submission.lean",
+        "git show 02f3305faacfc43200f665dd4b67e2a44ab25d0b:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tl_check/Assembly2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tl_check/RealDecls.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-telescope-limit-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-telescope-limit-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-mass-bound-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/isolated-comparator-result.json",
+        "/tmp/tl_check/Assembly2.lean",
+        "/tmp/tl_check/RealDecls.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected deformation_telescope_limit contract. The snapshot provides no matching series-current or telescope-limit theorem; its definitions and pinned dependencies support the proposed arguments. All four children have bare names, byte-identical accepted frozen types, passing comparator records, and no conflicting reservations. Their dependency closures are acyclic and do not contain the selected parent. Each explicit one-line proposition independently elaborates in the comparator scope. I reran both Lean checks successfully: the assembly proves the exact frozen parent from child stand-ins; replaying the actual accepted declarations removes sorryAx, leaving only propext, Classical.choice and Quot.sound. The assembly constructs A₀ plus the series current through underlying linear-map addition, proves weak convergence and both mass bounds, identifies every specified difference current with its tail current, and applies closed-support preservation. It requires no finite-mass assumption on A₀. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "series_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including arbitrary U and V, positive C, support containment, and the global coefficient-norm bound. Homogeneity makes the signed rescaling admissible; linearity and le_massOn bound the absolute evaluation. Multiplication by ofReal C reverses the scaling without requiring finite mass. This complete, non-circular proof supplies the stated dependency of series_current."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses local weighted-mass summability, pointwise HasSum, and the mass bound for every set W. Compact neighborhoods and bounded test forms give absolute summability; uniqueness of sums gives linearity. Zeroth-derivative convergence and the coefficient/operator-norm estimate give uniform smallness, and the finite local mass sum gives sequential continuity. Testing admissible forms proves the unrestricted-W mass bound, including infinite right-hand sides. Zero coefficients cause no invalid cancellation. The proof is complete, uses only the directed mass-bound dependency and justified auxiliary facts, and directly supplies the parent's tail currents."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree for arbitrary U. Disjointness places the compact test-form support inside the defined zero region. A finite subcover and a subordinate smooth partition of unity decompose the form into admissible test forms annihilated by T; linearity finishes. Smoothness, compact support, domain containment, and the empty-support case are addressed. No openness of U or circular support principle is assumed."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match their prose hypotheses and conclusions. Exterior differentiation preserves support, proving the boundary claim for arbitrary U. For weak limits, openness of U and closedness of K provide a relatively compact ball missing K; vanish_off_support and uniqueness of real limits prove local vanishing. The linear-combination claim uses a ball inside both zero regions and the given action identity. The dependency on vanish_off_support is correctly directed, and part (2) establishes precisely the parent's final conjunct."
+    }
+  ],
+  "required_changes": []
+}
