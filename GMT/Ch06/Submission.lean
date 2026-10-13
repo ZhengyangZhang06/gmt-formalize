@@ -2553,61 +2553,6 @@ theorem Submission.isoperimetric_coord_box_measure :
   rw [hQ, (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage
     measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, Finset.prod_const,
     Finset.card_univ, Fintype.card_fin, ENNReal.ofReal_pow (sub_nonneg.2 hab)]
-/-- Mass estimate (Simon Ch. 6, 2.4–2.5): if `M(Z) < ∞` and `|η(x)| ≤ c` everywhere (Euclidean
-coefficient norm) with `c > 0`, then `|Z(η)| ≤ c · M(Z)`. -/
-theorem Submission.fiw_tb_te_abs_apply_le_mul_mass :
-    ∀ (P n : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U n) (η : TestFormOn U n) (c : ℝ),
-      0 < c → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ c) →
-      Z.mass ≠ ∞ → |Z η| ≤ c * Z.mass.toReal := by
-  intro P n U Z η c hc hη hZ
-  -- Homogeneity of the Euclidean coefficient norm: `|t β| = |t| |β|`.
-  have hsmul : ∀ (t : ℝ) (β : Covector (Eucl P) n),
-      covectorEuclideanNorm (t • β) = |t| * covectorEuclideanNorm β := by
-    intro t β
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
-    congr 1
-    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image α)) ?_,
-      Finset.sum_image (fun j _ j' _ h => α.injective h)]
-    · refine Finset.sum_congr rfl fun j _ => ?_
-      rw [hι_on, hι_on, dist_add_left]
-    · intro i _ hi
-      have hi' : i ∉ range α := by
-        rintro ⟨j, rfl⟩
-        exact hi (Finset.mem_image_of_mem α (Finset.mem_univ j))
-      rw [hι_off y i hi', hι_off y' i hi', dist_self]
-      ring
-  -- `ι` maps the cube `[a, b]ⁿ` onto the box, with preimage `y_j = x_{α j} - c_{α j}`.
-  have himage : ι '' {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
-      {x : Eucl N | ∀ i : Fin N, (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧
-        (i ∉ range α → x i = c i)} := by
-    ext x
-    constructor
-    · rintro ⟨y, hy, rfl⟩ i
-      refine ⟨?_, hι_off y i⟩
-      rintro ⟨j, rfl⟩
-      rw [hι_on]
-      exact ⟨by linarith [(hy j).1], by linarith [(hy j).2]⟩
-    · intro hx
-      refine ⟨WithLp.toLp 2 (fun j => x (α j) - c (α j)), fun j => ?_, ?_⟩
-      · have h := (hx (α j)).1 ⟨j, rfl⟩
-        constructor <;> dsimp only <;> linarith [h.1, h.2]
-      · ext i
-        by_cases hi : i ∈ range α
-        · obtain ⟨j, rfl⟩ := hi
-          rw [hι_on]
-          simp
-        · rw [hι_off _ i hi, (hx i).2 hi]
-  rw [← himage, hiso.euclideanHausdorffMeasure_image,
-    EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-  -- The cube is the preimage of `Icc` under the volume-preserving `WithLp.ofLp`.
-  have hQ : {y : EuclideanSpace ℝ (Fin n) | ∀ j, a ≤ y j ∧ y j ≤ b} =
-      WithLp.ofLp ⁻¹' Icc (fun _ : Fin n => a) (fun _ => b) := by
-    ext y
-    simp [Pi.le_def, forall_and]
-  rw [hQ, (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage
-    measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, Finset.prod_const,
-    Finset.card_univ, Fintype.card_fin, ENNReal.ofReal_pow (sub_nonneg.2 hab)]
 /-- Smooth cut-off for a lattice face: for `ρ, δ > 0` there is a compactly supported smooth
 `φ : ℝ^N → [0, 1]` equal to `1` on the shrunken face
 `{x : ρ(zᵢ + δ) ≤ xᵢ ≤ ρ(zᵢ + 1 − δ) (i ∈ α), xᵢ = ρ zᵢ (i ∉ α)}` and vanishing on every other
@@ -2893,31 +2838,6 @@ theorem Submission.br_latticeFace_setIntegral_eq_cube :
     exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h2
   -- The face lies in the range of `L`.
   have hrange : latticeFace ρ G ⊆ Set.range L := by
-/-- Simon Ch. 6, 2.11: a current kills every test form whose support misses `spt T`.
-`tsupport ω` is a compact subset of the zero region, so finitely many open `W ⊂⊂ U` on which `T`
-vanishes cover it, and a smooth partition of unity `ψᵢ` on `tsupport ω` subordinate to them
-splits `ω = ∑ᵢ ψᵢ ω` into test forms supported in those `W`. -/
-theorem Submission.fiw_tb_apply_eq_zero_of_disjoint_support :
-    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n),
-      Disjoint (tsupport (ω : DifferentialForm (Eucl P) n)) T.support → T ω = 0 := by
-  intro P n U T ω hdisj
-  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) n)) := ω.property.1.2
-  have hKU : tsupport (ω : DifferentialForm (Eucl P) n) ⊆ U := ω.property.2
-  -- `tsupport ω` lies in the zero region: the union of the open `W ⊂⊂ U` on which `T` vanishes.
-  have hKZ : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
-      ⋃ W : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧
-        T.VanishesOn W}, (W : Set (Eucl P)) := by
-    intro x hx
-    have hxZ : x ∈ T.zeroRegion := by
-      by_contra h
-      exact Set.disjoint_left.1 hdisj hx ⟨hKU hx, h⟩
-    obtain ⟨W, hW, hxW⟩ := Set.mem_sUnion.1 hxZ
-    exact Set.mem_iUnion.2 ⟨⟨W, hW⟩, hxW⟩
-  -- A finite subcover, indexed by the finset `t`.
-  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover _ (fun W => W.2.1) hKZ
-  have hcov : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
-      ⋃ i : t, ((i : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧
-        closure W ⊆ U ∧ T.VanishesOn W}) : Set (Eucl P)) := by
     intro x hx
     refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), PiLp.ext fun l => ?_⟩
     by_cases hl : l ∈ Set.range G.2
@@ -3529,104 +3449,6 @@ theorem Submission.fiw_tb_te_l1d_compact_sign_approx : ∀ (n : ℕ) (w : Eucl n
     integral_congr_ae (hwv.mono fun x hx => by simp only [hx])
   rw [h1, h2]
   linarith
-
-/-- Integrals over a lattice face as integrals over the parameter cube: for every `g`,
-`∫_{latticeFace ρ G} g dHᵈ = ∫_{[0,ρ]^d} g(∑_l ρ w_l e_l + ∑_j s_j e_{γ(j)}) ds`, `G = (w, γ)`.
-The map `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` is an isometry (`(e_{γ(j)})_j` is orthonormal)
-whose range contains the face, so `L_* Hᵈ = Hᵈ ⌞ range L` and the integral is pulled back along
-`L` and then along the volume-preserving `toLp : (Fin d → ℝ) → ℝᵈ`; the face pulls back to
-`[0,ρ]^d`. -/
-theorem Submission.br_latticeFace_setIntegral_eq_cube :
-    ∀ (P d : ℕ) (ρ : ℝ) (G : LatticeFaceIndex d P) (g : Eucl P → ℝ),
-      ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P)) =
-        ∫ s in Set.Icc (0 : Fin d → ℝ) (fun _ => ρ),
-          g (∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
-            ∑ j, s j • EuclideanSpace.single (G.2 j) (1 : ℝ)) := by
-  intro P d ρ G g
-  -- The parametrization `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` of the face.
-  obtain ⟨L, hL⟩ : ∃ L : EuclideanSpace ℝ (Fin d) → Eucl P, ∀ t, L t =
-      ∑ l, (ρ * (G.1 l : ℝ)) • EuclideanSpace.single l (1 : ℝ) +
-        ∑ j, t j • EuclideanSpace.single (G.2 j) (1 : ℝ) := ⟨_, fun _ => rfl⟩
-  -- Coordinates: `L(t)_{γ(j)} = ρ w_{γ(j)} + t_j` and `L(t)_l = ρ w_l` for `l ∉ range γ`.
-  have hcoord : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P),
-      L t l = ρ * (G.1 l : ℝ) + ∑ j, if l = G.2 j then t j else 0 := by
-    intro t l
-    rw [hL]
-    simp [Pi.single_apply]
-  have hcoord₁ : ∀ (t : EuclideanSpace ℝ (Fin d)) (j : Fin d),
-      L t (G.2 j) = ρ * (G.1 (G.2 j) : ℝ) + t j := by
-    intro t j
-    rw [hcoord]
-    simp
-  have hcoord₂ : ∀ (t : EuclideanSpace ℝ (Fin d)) (l : Fin P), l ∉ Set.range G.2 →
-      L t l = ρ * (G.1 l : ℝ) := by
-    intro t l hl
-    rw [hcoord, add_eq_left]
-    exact Finset.sum_eq_zero fun j _ => ite_eq_right fun h => hl ⟨j, h.symm⟩
-  -- `L` is an isometry because `(e_{γ(j)})_j` is orthonormal.
-  have hv : Orthonormal ℝ (fun j => EuclideanSpace.single (G.2 j) (1 : ℝ)) :=
-    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).comp _ G.2.injective
-  have hiso : Isometry L := by
-    refine Isometry.of_dist_eq fun t t' => ?_
-    have hdiff : L t - L t' = ∑ j, (t j - t' j) • EuclideanSpace.single (G.2 j) (1 : ℝ) := by
-      rw [hL, hL]
-      simp [sub_smul, Finset.sum_sub_distrib]
-    have h2 : ‖L t - L t'‖ ^ 2 = ‖t - t'‖ ^ 2 := by
-      rw [hdiff, ← real_inner_self_eq_norm_sq, hv.inner_sum, EuclideanSpace.norm_sq_eq]
-      simp [sq]
-    rw [dist_eq_norm, dist_eq_norm]
-    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h2
-  -- The face lies in the range of `L`.
-  have hrange : latticeFace ρ G ⊆ Set.range L := by
-    intro x hx
-    refine ⟨WithLp.toLp 2 (fun j => x (G.2 j) - ρ * (G.1 (G.2 j) : ℝ)), PiLp.ext fun l => ?_⟩
-    by_cases hl : l ∈ Set.range G.2
-    · obtain ⟨j, rfl⟩ := hl
-      rw [hcoord₁]
-      simp
-    · rw [hcoord₂ _ _ hl]
-      exact ((hx l).2 hl).symm
-  -- The face pulls back to the cube `[0,ρ]^d` of parameters.
-  have hpre : (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
-      (L ⁻¹' latticeFace ρ G) = Set.Icc 0 (fun _ => ρ) := by
-    ext s
-    simp only [Set.mem_preimage, Set.mem_Icc]
-    constructor
-    · intro h
-      refine ⟨fun j => ?_, fun j => ?_⟩
-      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).1
-        rw [hcoord₁] at this
-        simp only [Pi.zero_apply]
-        linarith
-      · have := ((h (G.2 j)).1 ⟨j, rfl⟩).2
-        rw [hcoord₁] at this
-        linarith
-    · rintro ⟨h0, h1⟩ i
-      refine ⟨?_, hcoord₂ _ i⟩
-      rintro ⟨j, rfl⟩
-      rw [hcoord₁]
-      have h0j := h0 j
-      have h1j := h1 j
-      simp only [Pi.zero_apply] at h0j
-      constructor <;> nlinarith
-  -- `L_* Hᵈ = Hᵈ ⌞ range L`; change variables along `L`, then along `toLp`.
-  calc ∫ x in latticeFace ρ G, g x ∂(μHE[d] : Measure (Eucl P))
-      = ∫ x in latticeFace ρ G, g x
-          ∂((μHE[d] : Measure (EuclideanSpace ℝ (Fin d))).map L) := by
-        rw [hiso.map_euclideanHausdorffMeasure, Measure.restrict_restrict_of_subset hrange]
-    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t)
-          ∂(μHE[d] : Measure (EuclideanSpace ℝ (Fin d))) :=
-        hiso.isClosedEmbedding.setIntegral_map _
-    _ = ∫ t in L ⁻¹' latticeFace ρ G, g (L t) := by
-        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
-    _ = ∫ s in (WithLp.toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)) ⁻¹'
-          (L ⁻¹' latticeFace ρ G), g (L (WithLp.toLp 2 s)) :=
-        ((PiLp.volume_preserving_toLp (Fin d)).setIntegral_preimage_emb
-          (MeasurableEquiv.toLp 2 (Fin d → ℝ)).measurableEmbedding
-          (fun t => g (L t)) (L ⁻¹' latticeFace ρ G)).symm
-    _ = _ := by
-        rw [hpre]
-        simp only [hL]
 
 /-- Difference of two integral flat decompositions (Simon Ch. 6, proof of 7.2): `R := R₁ − R₂` and
 `S := S₁ − S₂` are integer multiplicity (by the linear-combination hypothesis with `a = 1`,
