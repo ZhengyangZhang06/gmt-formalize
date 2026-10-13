@@ -451,6 +451,184 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Jordan decomposition of a locally bounded `Λ : C_c(X, ℝ) → ℝ`.  For `f : C_c(X, ℝ≥0)` put
+`V f := sup {Λ h : |h| ≤ f}` (bounded above by rescaling the local bound on `tsupport f`).  `V` is
+additive (clamp `h₁ := (h ⊓ f) ⊔ (-f)`) and `ℝ≥0`-homogeneous, so `V̂ := toRealPositiveLinear V`
+is positive; `V̂ + Λ` is positive since `-k` is admissible for `k ≥ 0`, and `Λ = (V̂ + Λ) - V̂`. -/
+theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f := by
+  intro X _ Λ hΛ
+  -- scaled bound: `tsupport f ⊆ K`, `|f| ≤ s` give `|Λ f| ≤ s * M_K` (`s = 0`, else rescale)
+  have hscale : ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ (f : CompactlySupportedContinuousMap X ℝ)
+      (s : ℝ), tsupport f ⊆ K → 0 ≤ s → (∀ x, |f x| ≤ s) → |Λ f| ≤ s * M := by
+    intro K hK
+    obtain ⟨M, hM⟩ := hΛ K hK
+    refine ⟨M, fun f s hfK hs hfs => ?_⟩
+    rcases hs.eq_or_lt with rfl | hspos
+    · have hf0 : f = 0 := by
+        ext x
+        simpa using hfs x
+      simp [hf0]
+    · have hsub : tsupport (s⁻¹ • f) ⊆ K :=
+        (tsupport_smul_subset_right (fun _ : X => s⁻¹) f).trans hfK
+      have hbd : ∀ x, |(s⁻¹ • f) x| ≤ 1 := by
+        intro x
+        rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
+          abs_of_pos (inv_pos.mpr hspos)]
+        calc s⁻¹ * |f x| ≤ s⁻¹ * s := mul_le_mul_of_nonneg_left (hfs x) (inv_pos.mpr hspos).le
+          _ = 1 := inv_mul_cancel₀ hspos.ne'
+      have h1 := hM _ hsub hbd
+      rw [map_smul, smul_eq_mul, abs_mul, abs_of_pos (inv_pos.mpr hspos)] at h1
+      have := (inv_mul_le_iff₀ hspos).mp h1
+      linarith
+  -- `A f = {h : |h| ≤ f}` contains `0`, and `Λ '' A f` is bounded above: members of `A f` have
+  -- `tsupport h ⊆ tsupport f` and `|h| ≤ max C 0` with `C` a bound for `f`
+  let A : CompactlySupportedContinuousMap X NNReal → Set (CompactlySupportedContinuousMap X ℝ) :=
+    fun f => {h | ∀ x, |h x| ≤ (f x : ℝ)}
+  have hA0 : ∀ f, (0 : CompactlySupportedContinuousMap X ℝ) ∈ A f := by
+    intro f x
+    simp
+  have hbdd : ∀ f, BddAbove (Λ '' A f) := by
+    intro f
+    obtain ⟨M, hM⟩ := hscale (tsupport f) f.hasCompactSupport.isCompact
+    obtain ⟨C, hC⟩ := f.toReal.continuous.bounded_above_of_compact_support
+      f.toReal.hasCompactSupport
+    refine ⟨max C 0 * M, ?_⟩
+    rintro _ ⟨h, hh, rfl⟩
+    have hsupp : tsupport h ⊆ tsupport f := by
+      apply closure_mono
+      intro x hx hfx
+      apply hx
+      have := hh x
+      rw [hfx] at this
+      simpa using this
+    have hbd : ∀ x, |h x| ≤ max C 0 := by
+      intro x
+      refine (hh x).trans ((le_abs_self _).trans ?_)
+      have h' : ‖f.toReal x‖ ≤ C := hC x
+      rw [CompactlySupportedContinuousMap.toReal_apply, Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    exact (le_abs_self _).trans (hM h _ hsupp (le_max_right _ _) hbd)
+  -- the variation `V f = sup (Λ '' A f) ≥ Λ 0 = 0`
+  let V : CompactlySupportedContinuousMap X NNReal → ℝ := fun f => sSup (Λ '' A f)
+  have hle : ∀ f, ∀ h ∈ A f, Λ h ≤ V f := fun f h hh => le_csSup (hbdd f) ⟨h, hh, rfl⟩
+  have hVle : ∀ f (c : ℝ), (∀ h ∈ A f, Λ h ≤ c) → V f ≤ c := by
+    intro f c hc
+    exact csSup_le ⟨0, 0, hA0 f, map_zero Λ⟩ (by rintro _ ⟨h, hh, rfl⟩; exact hc h hh)
+  have hV0 : ∀ f, 0 ≤ V f := fun f => by simpa using hle f 0 (hA0 f)
+  -- additivity: `≤` by the clamp `h₁ = (h ⊓ f) ⊔ (-f)`, `h - h₁ ∈ A g`; `≥` by `h₁ + h₂ ∈ A (f + g)`
+  have hadd : ∀ f g, V (f + g) = V f + V g := by
+    intro f g
+    apply le_antisymm
+    · apply hVle
+      intro h hh
+      let h₁ : CompactlySupportedContinuousMap X ℝ := (h ⊓ f.toReal) ⊔ (-f.toReal)
+      have hpt : ∀ x, |h₁ x| ≤ (f x : ℝ) ∧ |(h - h₁) x| ≤ (g x : ℝ) := by
+        intro x
+        have hx := hh x
+        have hf0 : (0 : ℝ) ≤ f x := (f x).2
+        have hg0 : (0 : ℝ) ≤ g x := (g x).2
+        simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add] at hx
+        simp only [h₁, CompactlySupportedContinuousMap.sub_apply,
+          CompactlySupportedContinuousMap.sup_apply, CompactlySupportedContinuousMap.inf_apply,
+          CompactlySupportedContinuousMap.neg_apply, CompactlySupportedContinuousMap.toReal_apply]
+        rw [abs_le] at hx ⊢
+        rw [abs_le]
+        rcases le_total (h x) (f x) with h1 | h1
+        · rw [min_eq_left h1]
+          rcases le_total (h x) (-(f x : ℝ)) with h2 | h2
+          · rw [max_eq_right h2]
+            constructor <;> constructor <;> linarith
+          · rw [max_eq_left h2]
+            constructor <;> constructor <;> linarith
+        · rw [min_eq_right h1, max_eq_left (by linarith)]
+          constructor <;> constructor <;> linarith
+      have h1mem : h₁ ∈ A f := fun x => (hpt x).1
+      have h2mem : h - h₁ ∈ A g := fun x => (hpt x).2
+      have e : Λ h = Λ h₁ + Λ (h - h₁) := by rw [map_sub]; ring
+      rw [e]
+      exact add_le_add (hle f h₁ h1mem) (hle g _ h2mem)
+    · have key : V f ≤ V (f + g) - V g := by
+        apply hVle
+        intro h₁ hh₁
+        have : V g ≤ V (f + g) - Λ h₁ := by
+          apply hVle
+          intro h₂ hh₂
+          have hmem : h₁ + h₂ ∈ A (f + g) := by
+            intro x
+            simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add]
+            exact (abs_add_le _ _).trans (add_le_add (hh₁ x) (hh₂ x))
+          have := hle _ _ hmem
+          rw [map_add] at this
+          linarith
+        linarith
+      linarith
+  -- homogeneity: `A 0 = {0}`; for `c > 0`, `h ↦ c⁻¹ • h` maps `A (c • f)` into `A f`
+  have hzero : V 0 = 0 := by
+    apply le_antisymm _ (hV0 0)
+    apply hVle
+    intro h hh
+    have : h = 0 := by
+      ext x
+      simpa using hh x
+    simp [this]
+  have hsmul_le : ∀ (c : NNReal) f, V (c • f) ≤ c * V f := by
+    intro c f
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp [hzero]
+    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
+    apply hVle
+    intro h hh
+    have hmem : (c : ℝ)⁻¹ • h ∈ A f := by
+      intro x
+      have := hh x
+      simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, NNReal.coe_mul] at this
+      rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
+        abs_of_pos (inv_pos.mpr hcpos)]
+      rw [inv_mul_le_iff₀ hcpos]
+      exact this
+    have := hle f _ hmem
+    rw [map_smul, smul_eq_mul] at this
+    exact (inv_mul_le_iff₀ hcpos).mp this
+  have hsmul : ∀ (c : NNReal) f, V (c • f) = c * V f := by
+    intro c f
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp [hzero]
+    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
+    apply le_antisymm (hsmul_le c f)
+    have h := hsmul_le c⁻¹ (c • f)
+    rw [inv_smul_smul₀ hc, NNReal.coe_inv] at h
+    exact (le_inv_mul_iff₀ hcpos).mp h
+  -- `V` is `ℝ≥0`-linear; `V̂ := toRealPositiveLinear V` is a positive functional on `C_c(X, ℝ)`
+  let W : CompactlySupportedContinuousMap X NNReal →ₗ[NNReal] NNReal :=
+    { toFun := fun f => ⟨V f, hV0 f⟩
+      map_add' := fun f g => NNReal.eq (hadd f g)
+      map_smul' := fun c f => NNReal.eq (hsmul c f) }
+  let Vh := CompactlySupportedContinuousMap.toRealPositiveLinear W
+  -- `V̂ + Λ` is positive: for `k ≥ 0`, `V̂ k = V k⁺` and `-k ∈ A k⁺`, so `-Λ k ≤ V̂ k`
+  have hdom : ∀ k : CompactlySupportedContinuousMap X ℝ, 0 ≤ k → 0 ≤ Vh k + Λ k := by
+    intro k hk
+    have hkeq : k.nnrealPart.toReal = k := by
+      ext x
+      rw [CompactlySupportedContinuousMap.toReal_apply,
+        CompactlySupportedContinuousMap.nnrealPart_apply]
+      exact Real.coe_toNNReal _ (hk x)
+    have hVk : Vh k = V k.nnrealPart := by
+      have := CompactlySupportedContinuousMap.eq_toRealPositiveLinear_toReal W k.nnrealPart
+      rw [hkeq] at this
+      exact this
+    have hmem : -k ∈ A k.nnrealPart := by
+      intro x
+      rw [CompactlySupportedContinuousMap.neg_apply, abs_neg,
+        CompactlySupportedContinuousMap.nnrealPart_apply, Real.coe_toNNReal _ (hk x)]
+      exact (abs_of_nonneg (hk x)).le
+    have := hle _ _ hmem
+    rw [map_neg] at this
+    rw [hVk]
+    linarith
+  refine ⟨PositiveLinearMap.mk₀ (Vh.toLinearMap + Λ) hdom, Vh, fun f => ?_⟩
+  show Λ f = (Vh f + Λ f) - Vh f
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
