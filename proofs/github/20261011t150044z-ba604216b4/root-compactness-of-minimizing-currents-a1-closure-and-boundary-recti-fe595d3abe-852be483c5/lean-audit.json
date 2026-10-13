@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7b98115c1564e536ff94a8cc7312f1f6d05559c8be57392bfdc7dcac0000c36",
+  "git_delta": {
+    "base_commit": "9e0347e2a1c83f69381c3a37a5166ad04de5a3a3",
+    "candidate_commit": "54eb07ba9e488285077a685bc48ab36e0348f2d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cc_zcs_setIntegral_finset_hausdorff_zero",
+    "diff_sha256": "793291f58f192de999a68b8b0fda273e8582ca4b64311243c9e9bb06a4dba301",
+    "source_sha256": "7364a399bc34cb471f5c5dc54e3808c5092f29592967e526394300ad84b21237",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero",
+      "statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ), ∫ x in (F : Set (Euclid P)), f x ∂μHE[0] = ∑ x ∈ F, f x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

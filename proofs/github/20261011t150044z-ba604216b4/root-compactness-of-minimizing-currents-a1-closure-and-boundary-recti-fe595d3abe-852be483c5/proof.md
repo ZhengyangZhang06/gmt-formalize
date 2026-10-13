@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1.finset_integral_h0-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6 of the parent proof ("The integrand is integrable on the finite set M₀, each singleton having finite measure (integrableOn_singleton_iff, integrableOn_finset_iUnion), so ∫_{M₀} h dH⁰ = Σ_{x∈F} H⁰({x})·h(x) = Σ_{x∈F} h(x) (setIntegral_finset)"), together with step 1 (H⁰({x}) = 1). Both are stated here for an arbitrary finite set and an arbitrary real function. In Simon, H⁰ is counting measure (chapter-02.txt line 787). Write H⁰ = μHE[0].
+
+1. Point masses.
+   - H⁰ = μH[0] on ℝ^P (Measure.euclideanHausdorffMeasure_zero).
+   - So H⁰({x}) = 1 for every x ∈ ℝ^P (Measure.hausdorffMeasure_zero_singleton).
+   - In particular H⁰({x}) < ∞, and H⁰.real({x}) := (H⁰({x})).toReal = 1.
+2. Integrability on a singleton. Fix x ∈ ℝ^P.
+   - The restricted measure H⁰⌞{x} has total mass H⁰({x}) = 1, so it is finite. It gives zero mass to ℝ^P ∖ {x}.
+   - Hence f agrees (H⁰⌞{x})-a.e. with the constant f(x).
+   - A real constant is integrable against a finite measure, so f is integrable on {x}.
+   - In Mathlib this is integrableOn_singleton. Its side conditions hold: ‖f(x)‖ₑ ≠ ∞ because f(x) is real, H⁰({x}) < ∞ by step 1, and ℝ^P has measurable singletons.
+3. Integrability on F.
+   - As sets, F = ⋃_{x∈F} {x}, a finite union.
+   - A function integrable on each of finitely many sets is integrable on their union (integrableOn_finset_iUnion).
+   - By step 2, f is therefore integrable on F against H⁰.
+4. Evaluation. For a function integrable on a finite set, in a space with measurable singletons, setIntegral_finset gives ∫_F f dH⁰ = Σ_{x∈F} H⁰.real({x}) · f(x).
+5. By step 1, H⁰.real({x}) = 1 for every x. So ∫_F f dH⁰ = Σ_{x∈F} 1·f(x) = Σ_{x∈F} f(x). ∎
+
+## Key steps
+
+1. μHE[0] = μH[0] gives every singleton H⁰-mass 1.
+2. f is integrable on each singleton (finite measure, a.e. constant), hence on the finite union F.
+3. setIntegral_finset gives ∫_F f dH⁰ = Σ H⁰.real({x})·f(x) = Σ_{x∈F} f(x).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Contract.lean (identical); sha256sum of workspace Submission.lean and Contract.lean (identical, prebuilt olean newer than source)`
+- `rg -n 'dor_zdm|regcomp_cop_zdr|cbr_cc_zcs|zero_current_finite_sum|setIntegral_finset' <snapshot>/project  -> no match`
+- `rg -n 'theorem setIntegral_finset|theorem integrableOn_finset_iUnion|theorem integrableOn_singleton |theorem hausdorffMeasure_zero_singleton|theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero :|lemma mem_support_iff_forall' over <snapshot>/mathlib/Mathlib/{MeasureTheory/Integral/Bochner/SumMeasure.lean, MeasureTheory/Integral/IntegrableOn.lean, MeasureTheory/Measure/Hausdorff.lean, Geometry/Euclidean/Volume/Measure.lean, MeasureTheory/Measure/Support.lean}`
+- `python3 -I scan of dag.json lean_statement for degree-0 patterns (IMRep U 0, μHE[0], elim0, GeometricCurrentOn (univ ...) 0) with status and candidate_commit; extraction of exact frozen strings of dor_zdm_imrep_zero_structure, regcomp_cop_zdr_unitOrientation_zero, dor_imrep_massOn_eq_measure_and_support, dtc_dim_zero_carrier_finite and the selected node; lean_name collision check for cbr_cc_zcs_* (none)`
+- `git show 39634bad5e / b79a8362eb / d49dda91b7 / 897839f250 (accepted candidate proofs; sorry count 1 = frozen main_theorem only); sed of the accepted parent-supplied-natural-proof.md of both reused nodes`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|_install_parent_supplied_child_handoff|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/{runtime.py,store.py}`
+- `sed -n of lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean 40-140 (massAdmissibleOn, massOn as sSup), Chapter06/CurrentLocalEquality.lean 95-145 (VanishesOn, zeroRegion, support = U \ zeroRegion, isOpen_zeroRegion), Chapter03/Rectifiable.lean 20-130 (CountablyRectifiable, HasApproximateTangentSpaceAt)`
+- `python3 -I verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) -> open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on the 3 child statements (all pass, unchanged)`
+- `lake env lean /tmp/zcs-decomp-q3/lean/{Types,Assembly,FinSum}.lean with #print axioms`
+- `sed -n 783,790p book/chapter-02.txt (H⁰ is counting measure); sed -n 729,736p book/chapter-06.txt (Def. 3.1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-23d83beaa8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-4b50b377f9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-f8430bc5ec/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/zcs-decomp-q3/lean/Types.lean`
+- `/tmp/zcs-decomp-q3/lean/Assembly.lean`
+- `/tmp/zcs-decomp-q3/lean/FinSum.lean`
+
+Snapshot:
+- The snapshot contract equals the workspace contract, and the snapshot project contains none of the proposed names. The mathlib snapshot provides every cited lemma: setIntegral_finset at SumMeasure.lean:204, integrableOn_singleton at IntegrableOn.lean:221, integrableOn_finset_iUnion at IntegrableOn.lean:234, hausdorffMeasure_zero_singleton at Hausdorff.lean:628, euclideanHausdorffMeasure_zero at Volume/Measure.lean:82 and mem_support_iff_forall at Support.lean:75.
+
+DAG:
+- Two accepted declarations cover steps 1–2, 4 and 5 of the supplied proof exactly: dor_zdm_imrep_zero_structure (candidate 39634bad5e) and regcomp_cop_zdr_unitOrientation_zero (candidate b79a8362eb). Their exact frozen strings are reused, so the runtime links them without new work.
+- The finite-set H⁰ integral exists only as the unaccepted, other-parent cbrz_finset_integral_hausdorff_zero. A fresh, collision-free name cbr_cc_zcs_setIntegral_finset_hausdorff_zero is therefore used.
+
+Lean:
+- All three child types elaborate in the replayed contract scope.
+- The frozen node type is proved from the three child types alone, together with the node's own MR and VO premises.
+- The new child is proved outright.
+- Every check reports only propext, Classical.choice and Quot.sound.
