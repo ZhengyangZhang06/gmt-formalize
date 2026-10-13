@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.radial_potential-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+  "depth": 6,
+  "title": "C¹ compactly supported radial potential with gradient g(|y|²)·y",
+  "statement": "Let n ∈ ℕ, let r > 0, and let g : ℝ → ℝ be continuous with g(t) = 0 for every t ≥ r². Then there is Ψ : ℝⁿ → ℝ (ℝⁿ = Euclid n) such that (a) Ψ is C¹ on ℝⁿ, (b) Ψ has compact support, (c) tsupport Ψ ⊆ closedBall(0, r), and (d) DΨ(y)v = g(|y|²)·⟨y, v⟩ for all y, v ∈ ℝⁿ, where DΨ(y) = fderiv ℝ Ψ y and ⟨·,·⟩ is the Euclidean inner product.",
+  "lean_statement": "∀ (n : ℕ) (r : ℝ) (g : ℝ → ℝ), 0 < r → Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∃ Ψ : Euclid n → ℝ, ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ ∧ tsupport Ψ ⊆ closedBall 0 r ∧ ∀ y v : Euclid n, fderiv ℝ Ψ y v = g (‖y‖ ^ 2) * inner ℝ y v",
+  "lean_name": "dorag_ha_mv_radial_potential",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e0e5b416fe-a1"
+}

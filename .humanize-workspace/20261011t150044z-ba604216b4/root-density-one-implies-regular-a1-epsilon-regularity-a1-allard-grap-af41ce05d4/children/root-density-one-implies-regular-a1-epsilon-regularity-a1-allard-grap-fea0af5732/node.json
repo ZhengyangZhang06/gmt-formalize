@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.dilation_average-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Dilation averaging estimate on the boundary annulus of the unit ball",
+  "statement": "Let n ∈ ℕ, let F : ℝⁿ → ℝ be measurable with F ≥ 0 and F integrable on B := B̆_1(0) (ℝⁿ = Euclid n), and let 0 < s ≤ 1/2. Put A_s := B ∖ B̆_{1−s}(0). Then ∫_{A_s} (∫_{1/2}^1 F(tx) dt) dx ≤ 2^{n+1} s ∫_B F, with Bochner integrals and an interval integral inside.",
+  "lean_statement": "∀ (n : ℕ) (F : Euclid n → ℝ) (s : ℝ), Measurable F → (∀ y, 0 ≤ F y) → IntegrableOn F (ball (0 : Euclid n) 1) → 0 < s → s ≤ 1 / 2 → ∫ x in ball (0 : Euclid n) 1 \\ ball (0 : Euclid n) (1 - s), (∫ t in (1 / 2 : ℝ)..1, F (t • x)) ≤ 2 ^ (n + 1) * s * ∫ y in ball (0 : Euclid n) 1, F y",
+  "lean_name": "dorag_ha_rb_dilation_average",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-fea0af5732-a1"
+}

@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rellich|kondrachov|weyl.?lemma|poincare_inequality|PoincareInequality|mean_value_property",
+        "integral_lineDeriv_mul_eq|ae_differentiableAt|measurableSet_of_differentiableAt",
+        "iteratedFDeriv_two_apply|theorem.*circleAverage|theorem.*meanValue|theorem.*mean_value",
+        "harmonic|rellich|poincar|sorry",
+        "ae_tendsto_average_norm_sub|contDiff_convolution_left|hasFDerivAt_convolution_left|theorem arzela_ascoli|setIntegral_comp_smul_of_pos|def smoothTransition|smoothTransition_pos|contDiff_smoothTransition",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/harmapprox-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/harmapprox-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/Sobolev.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-365b96669a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-365b96669a/decomposition-v1.json",
+        "/tmp/harmapprox-independent-audit/Types.lean",
+        "/tmp/harmapprox-independent-audit/Types.log",
+        "/tmp/harmapprox-independent-audit/Assembly.lean",
+        "/tmp/harmapprox-independent-audit/Assembly.log"
+      ],
+      "conclusion": "Splitting is appropriate. The searched analytic roots yielded no matches for the listed Rellich/Poincaré/Weyl theorem patterns; the inspected sources supply the lower-level tools used by the proofs. Ch05's harmonic approximation statement is a Prop definition with its enclosing theorem admitted, not a reusable proof. The pinned contract matches the workspace contract and Submission byte-for-byte, and the installed Mathlib revision matches the manifest. All seven exact propositions independently elaborate without child declarations or proof stubs; derivative expansion and Euclidean basis norms also check. The exact frozen parent compiles with the two top-level child propositions as explicit hypotheses, using only propext, Classical.choice and Quot.sound. The dependency graph is acyclic, correctly directed, and every child contributes transitively. A JSON reservation scan covering 236 DAG nodes and 1,952 files found these seven bare names only in this proposal and its retry copy, with no conflicting branch reservation. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mean_value",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone Lean proposition matches all prose hypotheses and both conclusions. The radial potential, dominated differentiation, localized integration by parts, and mean value theorem establish the kernel identity without circularity. Dominated convergence and reflection then give the open-ball identity."
+    },
+    {
+      "key": "interior_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly records smoothness, harmonicity, both integrability assumptions, and all three bounds. Harmonic directional derivatives and mean values give the first-order estimates; shifted-ball comparison gives the stated Hessian bound, and Taylor integration yields CH‖v‖²/R. Only the declared mean_value dependency is used."
+    },
+    {
+      "key": "weyl_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The distributional hypothesis and smooth harmonic representative conclusion match exactly. Mollification uses admissible compactly supported tests; mean_value and Fubini establish local equality of mollifications. This supplies smoothness and harmonicity, while Lebesgue differentiation proves the required a.e. equality."
+    },
+    {
+      "key": "poincare_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the real-valued mean and operator norm. Rademacher and Tonelli justify segment FTC for a.e. pair. Averaging and the two affine changes of variables establish the claimed inequality with CP = 2^(n+2), without invoking the child itself."
+    },
+    {
+      "key": "rellich_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly permits separate Lipschitz constants and concludes L² convergence along a strictly increasing subsequence. The translation estimate, dilation-based boundary-layer bound, and Arzelà–Ascoli establish total boundedness. The 5η/4 covering radius suffices because η is arbitrary. Completeness supplies the stated representative and integral convergence."
+    },
+    {
+      "key": "energy_lsc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All convergence, regularity, and a.e.-equality hypotheses match the type. Integration by parts cancels the constants and transfers the energy duality bound to h. Testing with χ_r∇h bounds interior energies; monotone exhaustion proves both global integrability and the exact bound E."
+    },
+    {
+      "key": "harmonic_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compactness contradiction correctly applies all four declared dependencies and supplies every regularity, integrability, and quantitative conclusion. Positive-radius scaling preserves the exact test-function contract and powers of R₀. Together with interior_estimates it proves the frozen parent with C = max(√2 CH, max(2, 2ω_n CH²)), independent of ε', and one affine pair for every θ'. The argument follows [Simon, Chapter 5 §3](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=73)."
+    }
+  ],
+  "required_changes": []
+}

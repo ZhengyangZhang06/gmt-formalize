@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)",
+        "rg -n -i 'gram|normDet|areaJacobian|eigenvalue|det_id_add|prod_one_add' <snapshot>/project/GMT --glob '*.lean'",
+        "rg -n 'det_eq_prod_eigenvalues|trace_eq_sum_eigenvalues|theorem.*eigenvalues_nonneg|eigenvalues_le|IsPositive.*eigenvalues' <snapshot>/mathlib/Mathlib",
+        "rg -n 'theorem ext_inner_left|theorem ext_inner_right|theorem adjoint_inner_left|theorem adjoint_inner_right|theorem apply_eigenvectorBasis|theorem inner_map_map|theorem basisFun_apply|theorem toMatrix_apply |theorem det_toMatrix |theorem coe_toBasis ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/ <snapshot>/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "grep -n 'theorem\\|lemma\\|def ' <snapshot>/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "grep -n 'theorem\\|lemma\\|def ' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "lean (lean-4.35.0-rc3, workspace LEAN_PATH) on /tmp/ga-split/Avail.lean and /tmp/ga-split/Avail2.lean: #check of normDet, areaJacobianAt, weighted_area_formula_lipschitz_injOn, IsSymmetric.eigenvectorBasis, trace_eq_sum_inner, det_toMatrix after `import GMT.Ch07.Submission`",
+        "python3 -I lean_name scan over dag.json and nodes/*/decomposition-v*.json (639 names); grep -rl dorag_tes_ga_ over dag.json, nodes/, cluster-state; git grep -l dorag_tes_ga_ over all 1127 git refs  (no match)",
+        "python3 -I /tmp/ga-split/scripts/gen.py (verifier/gmt-compare.py contract_scope + child_modules, verifier/lean_contract.py validate_lean_statement) -> /tmp/ga-split/chal/Challenge_{prod_bound,gram_identity,det_bound}.lean, compiled with lean",
+        "lean on /tmp/ga-split/kids/Kids.lean, /tmp/ga-split/asm/Assembly.lean, /tmp/ga-split/full/P1.lean, /tmp/ga-split/sol/Sol.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Positive.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-27e8b1c734/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ga-split/chal/Challenge_prod_bound.lean",
+        "/tmp/ga-split/chal/Challenge_gram_identity.lean",
+        "/tmp/ga-split/chal/Challenge_det_bound.lean",
+        "/tmp/ga-split/kids/Kids.lean",
+        "/tmp/ga-split/asm/Assembly.lean",
+        "/tmp/ga-split/full/P1.lean",
+        "/tmp/ga-split/sol/Sol.lean"
+      ],
+      "conclusion": "The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, so every check ran in the frozen compiler context.\n\nNo snapshot project declaration proves the selected theorem or any child. The project search only found GMT/Ch02's own areaJacobian contract, which Ch07 does not import, and a NormDet import in Ch03.\n\nMathlib supplies, all in scope after `import GMT.Ch07.Submission`:\n- LinearMap.IsSymmetric.eigenvectorBasis and apply_eigenvectorBasis (Spectrum.lean:324);\n- LinearMap.trace_eq_sum_inner (Trace.lean);\n- LinearMap.det_toMatrix (Determinant.lean:206) and Matrix.det_diagonal;\n- EuclideanSpace.basisFun_apply (PiL2.lean:806);\n- ContinuousLinearMap.adjoint_inner_right (Adjoint.lean:125);\n- LinearIsometry.inner_map_map and ext_inner_left (Basic.lean:324).\n\nNot in scope after that import: LinearMap.normDet (NormDet.lean), and SimonGMT areaJacobianAt and weighted_area_formula_lipschitz_injOn (Chapter02/Area.lean, AreaLipschitz.lean:101). The children are therefore stated with `.det` of continuous linear maps; only the parent uses the area formula, through the new import.\n\nLean results:\n- All three child types elaborate in the comparator scope.\n- Complete child proofs compile with standard axioms only.\n- The exact frozen parent type is proved from the children plus SimonGMT with [propext, Classical.choice, Quot.sound].\n\nNo reserved name collides with the three proposed names. The related doraggt_graph_map_gram_identity is not accepted and has a different type, so it is not reused."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1",
+  "child_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.det_bound-a1",
+  "subproblem": {
+    "key": "det_bound",
+    "title": "Determinant bounds 1 ≤ det(id + B*B) ≤ 1 + 2ⁿ Σ|Beᵢ|² for ‖B‖ ≤ 1",
+    "statement": "Let n, k ∈ ℕ and let B : ℝⁿ → ℝᵏ be a continuous linear map with operator norm ‖B‖ ≤ 1. Let det(id + B*B) be the determinant (ContinuousLinearMap.det) of the endomorphism id_{ℝⁿ} + B*∘B of ℝⁿ, where B* is the adjoint. Then 1 ≤ det(id + B*B) and det(id + B*B) ≤ 1 + 2ⁿ Σ_{i ∈ Fin n} |B e_i|², where e_i = EuclideanSpace.single i 1 is the i-th standard basis vector of ℝⁿ = Euclid n.",
+    "lean_statement": "∀ (n k : ℕ) (B : Euclid n →L[ℝ] Euclid k), ‖B‖ ≤ 1 → 1 ≤ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ∧ (ContinuousLinearMap.id ℝ (Euclid n) + B.adjoint ∘L B).det ≤ 1 + 2 ^ n * ∑ i : Fin n, ‖B (EuclideanSpace.single i (1 : ℝ))‖ ^ 2",
+    "lean_name": "dorag_tes_ga_det_id_add_adjoint_comp_bounds",
+    "depends_on": [
+      "prod_bound"
+    ],
+    "natural_proof": "Source: parent proof Steps 6–7 (spectrum of P = B*B; det(I + P) = Π(1 + λ_i)). The sibling prod_bound supplies the elementary product inequality with constant 2ⁿ.\n\nNotation: e_i := EuclideanSpace.single i 1 (i ∈ Fin n) is the standard orthonormal basis of ℝⁿ (EuclideanSpace.basisFun). P := B*∘B, regarded as a linear endomorphism of ℝⁿ.\n\n1. P is symmetric. For x, y ∈ ℝⁿ, ⟨x, Py⟩ = ⟨x, B*(By)⟩ = ⟨Bx, By⟩ (ContinuousLinearMap.adjoint_inner_right). Hence ⟨Px, y⟩ = ⟨y, Px⟩ = ⟨By, Bx⟩ = ⟨Bx, By⟩ = ⟨x, Py⟩, so P is symmetric (LinearMap.IsSymmetric).\n2. Spectral theorem. Since finrank ℝⁿ = n (finrank_euclideanSpace_fin), P has an orthonormal eigenbasis b_1, …, b_n of ℝⁿ with real eigenvalues λ_1, …, λ_n: P b_i = λ_i b_i for every i (LinearMap.IsSymmetric.eigenvectorBasis, eigenvalues, apply_eigenvectorBasis).\n3. Range of the eigenvalues.\n   - Since |b_i| = 1, step 1 gives λ_i = λ_i|b_i|² = ⟨b_i, λ_i b_i⟩ = ⟨b_i, P b_i⟩ = ⟨Bb_i, Bb_i⟩ = |Bb_i|². Hence λ_i ≥ 0.\n   - |Bb_i| ≤ ‖B‖·|b_i| = ‖B‖ ≤ 1, so λ_i = |Bb_i|² ≤ 1.\n4. Determinant.\n   - (id + P)b_j = b_j + λ_j b_j = (1 + λ_j)b_j for every j.\n   - So the matrix of id + P in the basis b (both domain and codomain) is the diagonal matrix with entries 1 + λ_j: its (i, j) entry is the i-th b-coordinate of (1 + λ_j)b_j, which is (1 + λ_j)δ_ij.\n   - ContinuousLinearMap.det is by definition LinearMap.det of the underlying linear map. The determinant of an endomorphism equals the determinant of its matrix in any basis (LinearMap.det_toMatrix). The determinant of a diagonal matrix is the product of its diagonal entries (Matrix.det_diagonal).\n   Therefore det(id + B*B) = Π_i (1 + λ_i).\n5. Trace. For every orthonormal basis c of ℝⁿ, trace P = Σ_i ⟨c_i, P c_i⟩ (LinearMap.trace_eq_sum_inner).\n   - With c = b: trace P = Σ_i ⟨b_i, P b_i⟩ = Σ_i λ_i, by step 3.\n   - With c the standard basis (EuclideanSpace.basisFun_apply: c_i = e_i): trace P = Σ_i ⟨e_i, P e_i⟩ = Σ_i ⟨Be_i, Be_i⟩ = Σ_i |Be_i|², by step 1.\n   Therefore Σ_i λ_i = Σ_i |Be_i|².\n6. Conclusion. By step 3, λ : Fin n → ℝ satisfies 0 ≤ λ_i ≤ 1 for all i. The sibling prod_bound with m := n gives 1 ≤ Π_i(1 + λ_i) and Π_i(1 + λ_i) ≤ 1 + 2ⁿ Σ_i λ_i. Substituting steps 4 and 5 gives 1 ≤ det(id + B*B) and det(id + B*B) ≤ 1 + 2ⁿ Σ_i |Be_i|². ∎",
+    "proof_key_steps": [
+      "P = B*B is symmetric, with ⟨x, Py⟩ = ⟨Bx, By⟩.",
+      "Spectral theorem: orthonormal eigenbasis b_i with P b_i = λ_i b_i.",
+      "λ_i = |Bb_i|² ∈ [0, 1] because ‖B‖ ≤ 1 and |b_i| = 1.",
+      "The matrix of id + P in the basis b is diag(1 + λ_i), so det(id + B*B) = Π(1 + λ_i).",
+      "Compute trace P in the bases b and e: Σλ_i = Σ|Be_i|².",
+      "Apply prod_bound with m = n."
+    ]
+  },
+  "audit": {
+    "key": "det_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type exactly states the prose bounds using the operator norm and ordinary endomorphism determinant. The proof establishes symmetry, obtains an orthonormal eigenbasis, derives eigenvalues in [0,1], and identifies their product and sum through determinant and trace computations. Applying prod_bound then proves both conclusions, including n = 0. Its sole declared dependency is correct, and the proof is complete and non-circular."
+  },
+  "resolved_dependencies": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_area-a1.prod_bound-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-758a008bda/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-758a008bda/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-758a008bda/parent-supplied-natural-proof.json"
+}
