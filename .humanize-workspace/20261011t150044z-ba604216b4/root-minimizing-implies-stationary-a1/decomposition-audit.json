@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_eq_zero_of_integral_contDiff_smul_eq_zero|ae_tendsto_measure_inter_div",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|exists_antilipschitzWith|normDet_comp|normDet_sq_eq_det_gram|normDet_of_subsingleton|euclideanHausdorffMeasure_image",
+        "theorem exists_isSubordinate|theorem measurable_fderiv|extDerivWithin_pullback",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-ch07-independent-audit-q5abcrrs/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-ch07-independent-audit-q5abcrrs/Libraries.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/gmt-ch07-independent-audit-q5abcrrs/Contracts.lean",
+        "/tmp/gmt-ch07-independent-audit-q5abcrrs/Libraries.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected MinimizingImpliesStationary contract. Independently compiled all twelve exact types with the frozen contract inlined and no child implementations present. Conditional parent assembly and the checked library lemmas use only propext, Classical.choice and Quot.sound. Matrix.of, orthogonal-projection and continuous-linear-map norm constructions passed the instance checks. The installed revisions match the pins; eight inspected Mathlib files match the snapshot byte-for-byte. All child names are bare, with no collisions in the latest 60-node DAG; dependencies resolve and are acyclic and correctly directed. No declarations with the proposed names were found in the searched snapshot. The mathematical source was also checked against [Simon's 2014 notes, Chapters 1, 3 and 7](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes the stated hypotheses. Countable reduction, finite-measure localization, smooth scalar testing and finite-dimensional separation prove carrier nullity off support without assuming the mass formula."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the complete chart assumptions. Properness and injectivity justify inverse continuity; derivative coercivity controls lifted difference quotients. Both inclusions are proved, including zero-dimensional charts."
+    },
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact measurability conclusion follows from tangent uniqueness and the continuous projection map obtained from compact orthonormal frames. The measurable extension and dimension-zero case are justified without assuming tangent-field measurability."
+    },
+    {
+      "key": "covector_gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match the coefficient norm in the pinned definition. The alternating expansion, Cauchy–Binet calculation and determinant covector establish them, including empty frames and n > P. The Gram matrix explicitly uses Matrix.of."
+    },
+    {
+      "key": "mass_equals_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both inequalities for the exact mass definition. Measurable near-dual selection, norm-preserving smoothing and relatively compact exhaustion justify the lower bound, including infinite mass on W."
+    },
+    {
+      "key": "diffeo_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the current, proves boundary preservation by smooth approximation, and verifies every transported IMRep field using tangent transport and the area formula. The revised positive-radius construction covers every linear map; dimension zero, empty piece families and integrability are addressed. No circular push-forward assumption remains."
+    },
+    {
+      "key": "tangential_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart construction and finite composition prove the stated spatial regularity, bijectivity, support control, preservation of N ∩ U and uniform derivative expansion. Defining the family as identity for large parameters is valid because the contract imposes no time regularity there."
+    },
+    {
+      "key": "first_variation_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram estimate gives a uniform Jacobian upper bound with controlled error. Support control and finite weight justify integration and the mass supremum. The hypotheses suffice without bijectivity, openness of U or W ⊆ U."
+    },
+    {
+      "key": "stationary_of_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies integer multiplicity, equal boundary and compact competitor support inside (N ∩ U) ∩ W. Minimality and the two-sided parameter estimate force vanishing first variation. The zero-dimensional and zero-mass cases are handled separately."
+    },
+    {
+      "key": "approx_tangent_in_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Chart flatness and a compactly supported separating test function prove the exact pointwise tangent inclusion. The null-set hypothesis survives dilation; no unstated measurability or local-finiteness assumption on M is needed."
+    },
+    {
+      "key": "tangent_projection_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart projection formula, local straightening and a partition of unity on the open neighbourhood construct the claimed C¹ extension. The proof requires no global closedness of N and handles N empty."
+    },
+    {
+      "key": "mean_curvature_of_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit derivative-of-projection formula supplies measurable H and compact-set bounds. The cutoff field is an admissible tangential test field; tangent inclusion and the trace computation give the required integral identity. This establishes the selected parent's second conclusion without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
