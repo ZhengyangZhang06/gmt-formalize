@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1.open_compact_exhaustion-a1",
+  "parent_id": "root.first_rectifiability-a1.weight_eq_theta_hausdorff-a1",
+  "depth": 3,
+  "title": "Compact exhaustion K_p ⊆ interior K_{p+1} of an open set U ⊆ ℝ^N",
+  "statement": "Let N ∈ ℕ and let U ⊆ ℝ^N (= Euclidean N) be open. Then there are sets K_p ⊆ ℝ^N, p ∈ ℕ, such that every K_p is compact, K_p ⊆ U, K_p ⊆ interior K_{p+1}, the sequence is increasing (K_p ⊆ K_q whenever p ≤ q), and ⋃_p K_p = U.",
+  "lean_statement": "∀ (N : ℕ) (U : Set (Euclidean N)), IsOpen U → ∃ K : ℕ → Set (Euclidean N), (∀ p, IsCompact (K p)) ∧ (∀ p, K p ⊆ U) ∧ (∀ p, K p ⊆ interior (K (p + 1))) ∧ Monotone K ∧ ⋃ p, K p = U",
+  "lean_name": "frt_weq_open_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-first-rectifiability-a1-weight-eq-theta-hausdorff-a1-open-compac-72fc5ce955-a1"
+}

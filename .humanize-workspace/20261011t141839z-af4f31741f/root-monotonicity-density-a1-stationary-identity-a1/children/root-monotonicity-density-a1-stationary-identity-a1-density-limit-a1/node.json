@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.monotonicity_density-a1.stationary_identity-a1.density_limit-a1",
+  "parent_id": "root.monotonicity_density-a1.stationary_identity-a1",
+  "depth": 3,
+  "title": "Limit at 0⁺ and ball identity from an additive annular identity in [0,∞]",
+  "statement": "Let P : ℝ → [0,∞], D : ℝ → ℝ → [0,∞] and T : ℝ → [0,∞] be arbitrary functions, and let ρ0 > 0 be real. Assume:\n(i) P(σ) + D(σ,ρ) = P(ρ) whenever 0 < σ ≤ ρ < ρ0;\n(ii) for every ρ with 0 < ρ < ρ0, D(σ,ρ) → T(ρ) as σ → 0 with σ > 0, along the filter 𝓝[>] 0 on ℝ, in the order topology of [0,∞].\nThen there exists θ ∈ [0,∞] such that P(t) → θ as t → 0 with t > 0, and θ + T(ρ) = P(ρ) for every ρ with 0 < ρ < ρ0.",
+  "lean_statement": "∀ (P : ℝ → ℝ≥0∞) (D : ℝ → ℝ → ℝ≥0∞) (T : ℝ → ℝ≥0∞) (ρ₀ : ℝ), 0 < ρ₀ → (∀ σ ρ : ℝ, 0 < σ → σ ≤ ρ → ρ < ρ₀ → P σ + D σ ρ = P ρ) → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → Tendsto (fun σ : ℝ ↦ D σ ρ) (𝓝[>] 0) (𝓝 (T ρ))) → ∃ θ : ℝ≥0∞, Tendsto P (𝓝[>] 0) (𝓝 θ) ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → θ + T ρ = P ρ",
+  "lean_name": "annular_identity_limit_at_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch08/20261011t141839z-af4f31741f/root-monotonicity-density-a1-stationary-identity-a1-density-limit-a1-a1"
+}
