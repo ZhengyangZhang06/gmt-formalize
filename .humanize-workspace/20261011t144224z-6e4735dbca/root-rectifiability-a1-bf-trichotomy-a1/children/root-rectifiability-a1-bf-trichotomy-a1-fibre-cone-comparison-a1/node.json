@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.fibre_cone_comparison-a1",
+  "parent_id": "root.rectifiability-a1.bf_trichotomy-a1",
+  "depth": 3,
+  "title": "Cones versus unions of fibres: ϑ_j ≤ Φ ≤ N^{k/2} Σ_j ϑ_j",
+  "statement": "Let N, m ∈ ℕ, k := m + 1, μ any measure on ℝ^N (= Eucl N), δ ∈ ℝ, a ∈ ℝ^N and u = (u₁, …, u_k) ∈ (ℝ^N)^k, with L_u(y) := (⟨u₁,y⟩, …, ⟨u_k,y⟩) ∈ ℝᵏ and X_u(a,r,s) := {x : |x − a| < r, |L_u(x − a)| < s|x − a|}. For j ∈ {1, …, N} (Fin N) and c ∈ ℝᵏ let u ⊕_j c := (u₁ + c₁e_j, …, u_k + c_ke_j), where e_j is the j-th standard basis vector (EuclideanSpace.single j 1), and for t ∈ ℝ let K_j(t) := {x ∈ ℝ^N : x ≠ a and L_{u⊕_jc}(x − a) = 0 for some c ∈ ℝᵏ with |c| < t}. Let Φ := limsup_{s→0⁺} sup_{0<r<δ} μ(X_u(a,r,s))/(rs)ᵏ and ϑ_j := limsup_{t→0⁺} sup_{0<r<δ} μ(B(a,r) ∩ K_j(t))/(rt)ᵏ, where B is the open ball, (rs)ᵏ and (rt)ᵏ are read via ENNReal.ofReal, quotients are in [0,∞] and limsups are along 𝓝[>]0. Then ϑ_j ≤ Φ for every j, and Φ ≤ (√N)ᵏ·Σ_{j=1}^{N} ϑ_j, where (√N)ᵏ := ENNReal.ofReal((√N)ᵏ).",
+  "lean_statement": "∀ (N m : ℕ) (μ : Measure (Eucl N)) (δ : ℝ) (a : Eucl N) (u : Fin (m + 1) → Eucl N), (∀ j : Fin N, limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) ≤ limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0)) ∧ limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (N : ℝ) ^ (m + 1)) * ∑ j : Fin N, limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0)",
+  "lean_name": "rectifiability_bf_fibre_cone_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-trichotomy-a1-fibre-cone-comparison-a1-a1"
+}

@@ -1,0 +1,199 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.rectifiability-a1.mickle_rado-a1`
+- Child DAG node: `root.rectifiability-a1.mickle_rado-a1.vitali_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent-supplied proof (Mattila, Thm 18.5, Mickle–Radó), namely the chain ψ(B(c₀,t)∖K) ≤ Σ_iψ(B(z′_i,6d_i)) ≤ q6ᵏΣ_id_iᵏ = q6ᵏω_k^{−1}Σ_iLᵏ(B(z_i,d_i)) ≤ q6ᵏω_k^{−1}Lᵏ(B(c₀,2t)∖K). Here it is stated for an arbitrary constant C in place of q and an arbitrary admissible radius r in place of 1/q. The parent obtains the bound 6d_i < 1/q from d_i ≤ 2ε^{1/k}t. This child uses instead d_i ≤ |z_i − c₀| < t, which the parent also proves, together with 6t ≤ r.
+
+Notation. k := m + 1. ℝᵏ = EuclideanSpace ℝ (Fin k) with Euclidean distance |·|. B(x,ρ) is the open ball. Lᵏ is Lebesgue measure (`volume`). ω := Lᵏ(B(0,1)). For ρ ≥ 0, ρᵏ in [0,∞] means ENNReal.ofReal(ρᵏ). Arithmetic is in [0,∞], with 0·∞ = 0. Hypotheses: ψ is an outer measure (monotone and countably subadditive); K is closed with ψ(K) = 0; C ∈ [0,∞]; r ∈ ℝ; (B) ψ(B(z,τ)) ≤ C·τᵏ for all z ∈ K and 0 < τ < r; c₀ ∈ K; and t ∈ ℝ with 0 < t and 6t ≤ r.
+
+0. Facts used. (a) For x ∈ ℝᵏ and ρ ≥ 0, Lᵏ(B(x,ρ)) = ρᵏ·ω. This is the scaling of the additive Haar measure Lᵏ (Mathlib `Measure.addHaar_ball`), with finrank_ℝ ℝᵏ = k (Mathlib `finrank_euclideanSpace_fin`). (b) K is nonempty, because c₀ ∈ K.
+1. Removing K. Put T := B(c₀,t)∖K. Since B(c₀,t) ⊆ T ∪ K, subadditivity gives ψ(B(c₀,t)) ≤ ψ(T) + ψ(K) = ψ(T).
+2. Radii. For z ∈ ℝᵏ let d(z) := dist(z,K) = inf_{y∈K}|z − y| (Mathlib `Metric.infDist`). Let z ∈ T. Then: (i) d(z) > 0, because K is closed and nonempty and z ∉ K (Mathlib `IsClosed.notMem_iff_infDist_pos`); (ii) d(z) ≤ |z − c₀| < t, because c₀ ∈ K and z ∈ B(c₀,t) (Mathlib `Metric.infDist_le_dist_of_mem`); (iii) B(z,d(z)) ∩ K = ∅, because every y ∈ K has |z − y| ≥ d(z) (Mathlib `Metric.disjoint_ball_infDist`).
+3. Vitali selection. Apply the Vitali covering lemma for open balls (Mathlib `Vitali.exists_disjoint_subfamily_covering_enlargement_ball`) to the index set T, the centres z ↦ z, the radii d, the radius bound R := t (valid by 2(ii)) and the enlargement factor 5 > 3. It gives u ⊆ T such that the balls B(b,d(b)), b ∈ u, are pairwise disjoint, and every a ∈ T has some b ∈ u with B(a,d(a)) ⊆ B(b,5d(b)).
+4. Countability of u. The balls B(b,d(b)), b ∈ u, are open, nonempty (they contain b, by 2(i)) and pairwise disjoint in the separable space ℝᵏ. So u is countable: each such ball contains a point of a fixed countable dense set, and distinct indices give distinct points (Mathlib `Set.PairwiseDisjoint.countable_of_isOpen`).
+5. Recentring on K. K is closed and nonempty in the proper space ℝᵏ. So for every b ∈ ℝᵏ we may choose z′_b ∈ K with |b − z′_b| = d(b) (Mathlib `IsClosed.exists_infDist_eq_dist`). If |y − b| < 5d(b), then |y − z′_b| ≤ |y − b| + |b − z′_b| < 5d(b) + d(b) = 6d(b). Hence B(b,5d(b)) ⊆ B(z′_b,6d(b)). Now let a ∈ T. Then a ∈ B(a,d(a)) because d(a) > 0. By step 3, B(a,d(a)) ⊆ B(b,5d(b)) ⊆ B(z′_b,6d(b)) for some b ∈ u. Therefore T ⊆ ⋃_{b∈u} B(z′_b,6d(b)).
+6. Bound on each enlarged ball. Let b ∈ u ⊆ T. By 2(i)–(ii), 0 < 6d(b) < 6t ≤ r, and z′_b ∈ K. So (B) gives ψ(B(z′_b,6d(b))) ≤ C·(6d(b))ᵏ = C·6ᵏ·d(b)ᵏ.
+7. ψ-estimate. By step 5, monotonicity, and countable subadditivity over the countable index set u (Mathlib `measure_biUnion_le`), then step 6:
+ ψ(T) ≤ ψ(⋃_{b∈u}B(z′_b,6d(b))) ≤ Σ_{b∈u} ψ(B(z′_b,6d(b))) ≤ Σ_{b∈u} C·6ᵏ·d(b)ᵏ = C·6ᵏ·Σ_{b∈u} d(b)ᵏ.
+8. Volume estimate. Let b ∈ u and y ∈ B(b,d(b)). Then |y − c₀| ≤ |y − b| + |b − c₀| < d(b) + t < 2t by 2(ii), and y ∉ K by 2(iii). So B(b,d(b)) ⊆ B(c₀,2t)∖K. These balls are pairwise disjoint Borel sets indexed by the countable set u. By fact 0(a), countable additivity of Lᵏ (Mathlib `measure_biUnion`) and monotonicity:
+ (Σ_{b∈u} d(b)ᵏ)·ω = Σ_{b∈u} Lᵏ(B(b,d(b))) = Lᵏ(⋃_{b∈u}B(b,d(b))) ≤ Lᵏ(B(c₀,2t)∖K).
+9. Conclusion. Multiplication by a fixed element of [0,∞] is monotone. Also (Σ_b x_b)·ω = Σ_b (x_b·ω) and Σ_b (a·x_b) = a·Σ_b x_b for nonnegative extended reals (Mathlib `ENNReal.tsum_mul_right`, `ENNReal.tsum_mul_left`). Using steps 1, 7 and 8:
+ ψ(B(c₀,t))·ω ≤ ψ(T)·ω ≤ C·6ᵏ·(Σ_{b∈u} d(b)ᵏ)·ω ≤ C·6ᵏ·Lᵏ(B(c₀,2t)∖K).
+ This holds for every C ∈ [0,∞]. If T = ∅ then u = ∅, all sums vanish, and ψ(B(c₀,t)) = 0. ∎
+
+Lean reference proof (appendix; compile-checked as a single declaration inside `namespace GMT.Ch06` of a scratch copy of the frozen project, commit d8d46c9587747dee0751a1f780fcafdba16a3886, Lean v4.35.0-rc3, pinned Mathlib 25730c7c; `#print axioms` = [propext, Classical.choice, Quot.sound]; it introduces no auxiliary declarations):
+```lean
+theorem Submission.rectifiability_mickle_rado_vitali_bound : ∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (K : Set (Eucl (m + 1))) (C : ℝ≥0∞) (r : ℝ), IsClosed K → ψ K = 0 → (∀ z ∈ K, ∀ τ ∈ Ioo (0 : ℝ) r, ψ (ball z τ) ≤ C * ENNReal.ofReal (τ ^ (m + 1))) → ∀ c₀ ∈ K, ∀ t : ℝ, 0 < t → 6 * t ≤ r → ψ (ball c₀ t) * (volume : Measure (Eucl (m + 1))) (ball 0 1) ≤ C * 6 ^ (m + 1) * (volume : Measure (Eucl (m + 1))) (ball c₀ (2 * t) \ K) := by
+  intro m ψ K C r hK hψK hbound c₀ hc₀ t ht htr
+  set μ : Measure (Eucl (m + 1)) := volume with hμ
+  set ω := μ (ball 0 1) with hω
+  have hfin : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  have hKne : K.Nonempty := ⟨c₀, hc₀⟩
+  -- step 1: ψ(ball c₀ t) ≤ ψ(ball c₀ t \ K)
+  have h1 : ψ (ball c₀ t) ≤ ψ (ball c₀ t \ K) := by
+    calc ψ (ball c₀ t) ≤ ψ ((ball c₀ t \ K) ∪ K) := measure_mono (fun x hx => by
+          by_cases h : x ∈ K
+          · exact Or.inr h
+          · exact Or.inl ⟨hx, h⟩)
+      _ ≤ ψ (ball c₀ t \ K) + ψ K := measure_union_le _ _
+      _ = ψ (ball c₀ t \ K) := by rw [hψK, add_zero]
+  set T := ball c₀ t \ K with hT
+  set d : Eucl (m + 1) → ℝ := fun z => infDist z K with hd
+  have hd_pos : ∀ z ∈ T, 0 < d z := fun z hz => (hK.notMem_iff_infDist_pos hKne).1 hz.2
+  have hd_lt : ∀ z ∈ T, d z < t := fun z hz =>
+    (infDist_le_dist_of_mem hc₀).trans_lt (mem_ball.1 hz.1)
+  obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement_ball
+    T (fun z => z) d t (fun z hz => (hd_lt z hz).le) 5 (by norm_num)
+  have hu_count : u.Countable := hdisj.countable_of_isOpen (fun _ _ => isOpen_ball)
+    (fun z hz => ⟨z, mem_ball_self (hd_pos z (huT hz))⟩)
+  have hnear : ∀ z, ∃ y ∈ K, infDist z K = dist z y := fun z => hK.exists_infDist_eq_dist hKne z
+  choose z' hz'K hz'd using hnear
+  have hcover : T ⊆ ⋃ b ∈ u, ball (z' b) (6 * d b) := by
+    intro a ha
+    obtain ⟨b, hbu, hab⟩ := hcov a ha
+    have hab' : a ∈ ball b (5 * d b) := hab (mem_ball_self (hd_pos a ha))
+    refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+    rw [mem_ball] at hab' ⊢
+    have hbz : dist b (z' b) = d b := (hz'd b).symm
+    calc dist a (z' b) ≤ dist a b + dist b (z' b) := dist_triangle _ _ _
+      _ < 5 * d b + d b := by rw [hbz]; linarith
+      _ = 6 * d b := by ring
+  have h2 : ψ T ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+    calc ψ T ≤ ψ (⋃ b ∈ u, ball (z' b) (6 * d b)) := measure_mono hcover
+      _ ≤ ∑' b : u, ψ (ball (z' b) (6 * d b)) := measure_biUnion_le ψ hu_count _
+      _ ≤ ∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+        refine ENNReal.tsum_le_tsum fun b => ?_
+        have hb : (b : Eucl (m + 1)) ∈ T := huT b.2
+        have hpos := hd_pos b hb
+        have hlt := hd_lt b hb
+        calc ψ (ball (z' b) (6 * d b)) ≤ C * ENNReal.ofReal ((6 * d b) ^ (m + 1)) :=
+              hbound (z' b) (hz'K b) (6 * d b) ⟨by linarith, by linarith⟩
+          _ = C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1)) := by
+            rw [mul_pow, ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow (by norm_num)]
+            simp [mul_assoc]
+  have h3 : ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω ≤ μ (ball c₀ (2 * t) \ K) := by
+    have heq : ∀ b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω = μ (ball (b : Eucl (m + 1)) (d b)) := by
+      intro b
+      rw [Measure.addHaar_ball μ _ (hd_pos b (huT b.2)).le, hfin]
+    simp_rw [heq]
+    rw [← measure_biUnion hu_count hdisj (fun _ _ => measurableSet_ball)]
+    apply measure_mono
+    intro y hy
+    obtain ⟨b, hbu, hyb⟩ := mem_iUnion₂.1 hy
+    have hbT := huT hbu
+    refine ⟨?_, ?_⟩
+    · rw [mem_ball] at hyb ⊢
+      have hbc := mem_ball.1 hbT.1
+      have := hd_lt b hbT
+      calc dist y c₀ ≤ dist y b + dist b c₀ := dist_triangle _ _ _
+        _ < 2 * t := by linarith
+    · intro hyK
+      exact Set.disjoint_left.1 (disjoint_ball_infDist (x := b) (s := K)) hyb hyK
+  calc ψ (ball c₀ t) * ω
+      ≤ (∑' b : u, C * 6 ^ (m + 1) * ENNReal.ofReal ((d b) ^ (m + 1))) * ω := by
+        gcongr; exact h1.trans h2
+    _ = C * 6 ^ (m + 1) * ∑' b : u, ENNReal.ofReal ((d b) ^ (m + 1)) * ω := by
+        rw [ENNReal.tsum_mul_left, ENNReal.tsum_mul_right, mul_assoc]
+    _ ≤ C * 6 ^ (m + 1) * μ (ball c₀ (2 * t) \ K) := by gcongr
+```
+
+## Key steps
+
+1. ψ(B(c₀,t)) ≤ ψ(T) + ψ(K) = ψ(T) for T := B(c₀,t)∖K.
+2. For z ∈ T, d(z) := dist(z,K) satisfies 0 < d(z) < t, and B(z,d(z)) misses K (K is closed and contains c₀).
+3. Vitali (enlargement 5) on the balls B(z,d(z)), z ∈ T, gives a disjoint, hence countable, subfamily u whose 5-fold enlargements cover T. Recentring on nearest points z′_b ∈ K gives T ⊆ ⋃_{b∈u} B(z′_b,6d(b)).
+4. Since 0 < 6d(b) < 6t ≤ r, ψ(B(z′_b,6d(b))) ≤ C6ᵏd(b)ᵏ, so countable subadditivity gives ψ(T) ≤ C6ᵏΣ_b d(b)ᵏ.
+5. The disjoint balls B(b,d(b)) lie in B(c₀,2t)∖K, so ωΣ_b d(b)ᵏ = Lᵏ(⋃B(b,d(b))) ≤ Lᵏ(B(c₀,2t)∖K). Multiplying gives the claim.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean /tmp/mickle-rado-decomp-VkNUMK/GMT/Ch06/Contract.lean (all identical)`
+- `rg -n 'theorem exists_disjoint_subfamily_covering_enlargement|theorem ae_tendsto_measure_inter_div|theorem exists_mem_of_measure_ne_zero_of_ae|theorem countable_of_isOpen|theorem measure_biUnion_le|theorem addHaar_ball|theorem addHaar_closedBall|theorem exists_infDist_eq_dist|exists_isCompact_lt_add|exists_lt_isCompact|theorem LowerSemicontinuous.measurable|lowerSemicontinuous_iSup|theorem HasBasis.limsup_eq_iInf_iSup|theorem nhdsGT_basis' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `sed -n 50,80p and 150,215p mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean; sed -n 1080,1115p mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean; sed -n 420,432p mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n -i 'mickle|radó|rado\b' local-references/197bdd4b88278494/mathlib/Mathlib; rg -n -i 'mickle' local-references/197bdd4b88278494/project; rg -n -i 'mickle|radó' lake-packages-25730c7c/simongmt/Poincare (no Mickle–Radó result; only author-name false positives 'Herradón')`
+- `rg -n 'LowerSemicontinuous|lowerSemicontinuous' lake-packages-25730c7c/simongmt/Poincare/SimonGMT; sed -n 1,420p SimonGMT/Chapter01/Densities.lean`
+- `grep -n '^theorem\|^lemma\|^def\|^noncomputable def' SimonGMT/Chapter01/{InfiniteDensitySet,HausdorffDensityBounds,RadonDensity,DensityComparison,DensityCovering,LowerDensityComparison,GeneralDensity,SymmetricVitali}.lean; sed -n 15,75p and 290,420p DensityComparison.lean; sed -n 1,80p DensityCovering.lean; sed -n 15,100p HausdorffDensityBounds.lean`
+- `cmp -s snapshot mathlib/Mathlib/{MeasureTheory/Covering/Vitali,MeasureTheory/Covering/Besicovitch,MeasureTheory/Measure/Restrict,MeasureTheory/Measure/Regular,MeasureTheory/Measure/Lebesgue/EqHaar,Order/LiminfLimsup,Topology/Semicontinuity/Basic}.lean against lake-packages-25730c7c/mathlib (all identical; git rev-parse HEAD = 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `lake env lean Scratch/Names.lean (#synth volume.InnerRegular, IsLocallyFiniteMeasure, ProperSpace, SeparableSpace, IsAddHaarMeasure on Eucl 3; #check of every cited Mathlib lemma)`
+- `lake env lean Scratch/Parent.lean; Scratch/Assembly.lean (parent from four sorry'd children); Scratch/Easy.lean; Scratch/Vitali.lean; Scratch/Full.lean with #print axioms of all five declarations`
+- `lake env lean GMT/Ch06/Submission.lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean -i ...ilean (scratch Submission with the five declarations inserted before main_theorem)`
+- `python3 -I /tmp/mickle-rado-gen/gen.py: verifier/lean_contract.validate_lean_statement + gmt-compare.child_modules(mode=contract) for the 5 statements; lake env lean on the 10 generated NodeChallenge/NodeSolution modules (all rc=0)`
+- `python3 lean_name collision scan of dag.json (257 nodes) and nodes/*/decomposition-v*.json (422 proposed names)`
+- `python3 survey of nodes/*/decomposition-audit-v*.json (rejection reasons); sed -n 340,378p problem.md (helper-declaration rule at line 378)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityCovering.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/InfiniteDensitySet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/LowerDensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/GeneralDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SymmetricVitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mickle-rado-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mickle-rado-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mickle-rado-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-density-comparison-a1/decomposition-v1.json`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Parent.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Names.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Assembly.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Easy.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Vitali.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Full.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/GMT/Ch06/Submission.lean`
+- `/tmp/mickle-rado-decomp-VkNUMK/Scratch/Cmp`
+- `/tmp/mickle-rado-gen/gen.py`
+- `/tmp/mickle-rado-gen/children.json`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract. It is byte-identical to the workspace Contract.lean and Submission.lean and to the scratch copy.
+
+No existing Mickle–Radó result: neither the snapshot Mathlib, the project, nor the pinned SimonGMT contains one (rg -i 'mickle|radó' finds only author-name false positives).
+
+SimonGMT's density results do not apply to the bare outer measure ψ, which has only inner continuity on balls:
+- Chapter01/Densities.lean: lowerSemicontinuous_measure_ball needs a Measure; lowerSemicontinuous_outerMeasure_inter_ball and measurable_dimensionalUpperDensity need borel ≤ caratheodory and finite closed balls; nhdsGT_zero_basis_rat is also there.
+- DensityComparison.lean: simon_theorem_3_3 and simon_theorem_3_6 need IsBorelRegularOuterMeasure.
+So the four child obligations are genuine.
+
+The snapshot Mathlib supplies every ingredient the children and the assembly use:
+- limsup_eq_iinf: nhdsGT_basis (LeftRightNhds.lean:80), Filter.HasBasis.limsup_eq_iInf_iSup (LiminfLimsup.lean:308), exists_nat_one_div_lt.
+- sup_lsc: lt_biSup_iff, ENNReal.continuous_div_const, Continuous.comp_lowerSemicontinuous, lowerSemicontinuous_biSup.
+- vitali_bound: Vitali.exists_disjoint_subfamily_covering_enlargement_ball (Vitali.lean:195), Set.PairwiseDisjoint.countable_of_isOpen, IsClosed.exists_infDist_eq_dist, IsClosed.notMem_iff_infDist_pos, Metric.disjoint_ball_infDist, measure_biUnion_le (OuterMeasure/Basic.lean:74), measure_biUnion, Measure.addHaar_ball (EqHaar.lean:456), finrank_euclideanSpace_fin.
+- density_zero: Besicovitch.ae_tendsto_measure_inter_div (Besicovitch.lean:1105), Measure.addHaar_closedBall (EqHaar.lean:500), measure_sdiff_add_inter, ENNReal.Tendsto.sub and ENNReal.Tendsto.const_mul, tendsto_of_tendsto_of_tendsto_of_le_of_le'.
+- parent assembly: LowerSemicontinuous.measurable (BorelSpace/Order.lean:686), Measurable.iInf, MeasurableSet.exists_lt_isCompact (Regular.lean:732, with the InnerRegular instance on volume), Measure.exists_mem_of_measure_ne_zero_of_ae (Restrict.lean:426), ENNReal.exists_nat_gt, ENNReal.exists_inv_nat_lt.
+The snapshot files are byte-identical to the pinned package Mathlib used for compilation.
+
+Compile checks in a scratch copy of the frozen project:
+- All four children and the parent assembly compile; #print axioms gives [propext, Classical.choice, Quot.sound] for all five declarations.
+- All 10 comparator-generated NodeChallenge/NodeSolution modules compile in the exact child scope.
+- All five statements pass validate_lean_statement.
+
+No proposed lean_name collides with the 257 DAG names or the 422 names proposed in decompositions.
