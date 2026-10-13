@@ -451,6 +451,251 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Translations are continuous in measure on balls: for measurable `F ⊆ ℝᵐ`,
+`Lᵐ(((F − z) Δ F) ∩ B_R(0)) → 0` as `z → 0`, where `F − z = {v : v + z ∈ F}`.  Inner and outer
+regularity give `K ⊆ A = F ∩ B_{R+1}(0) ⊆ O`, `K` compact, `O` open, with `Lᵐ(A \ K)` and
+`Lᵐ(O \ A)` below `ε / 4`, and some `δ > 0` with the `δ`-thickening of `K` inside `O`.  For
+`|z| < min(δ, 1)` the set lies in `((A \ K) − z) ∪ (O \ A) ∪ (A \ K) ∪ ((O \ A) − z)`, whose
+measure is at most `ε` by translation invariance. -/
+theorem Submission.codim1_zsl_pc_translate_tendsto_zero : ∀ (m : ℕ) (F : Set (Euclid m)) (R : ℝ), MeasurableSet F → Tendsto (fun z : Euclid m => volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)) (𝓝 0) (𝓝 0) := by
+  intro m F R hF
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  have hε4 : ε / 2 / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.half_pos hε.ne').ne').ne'
+  -- the bounded piece `A = F ∩ B(0, R+1)` of `F`
+  obtain ⟨A, hA⟩ : ∃ A : Set (Euclid m), A = F ∩ ball (0 : Euclid m) (R + 1) := ⟨_, rfl⟩
+  have hmem : ∀ v : Euclid m, v ∈ A ↔ v ∈ F ∧ ‖v‖ < R + 1 := by
+    intro v
+    rw [hA, Set.mem_inter_iff, mem_ball_zero_iff]
+  have hAmeas : MeasurableSet A := by
+    rw [hA]
+    exact hF.inter measurableSet_ball
+  have hAfin : volume A ≠ ∞ := by
+    rw [hA]
+    exact ne_of_lt (lt_of_le_of_lt (measure_mono inter_subset_right) measure_ball_lt_top)
+  -- inner and outer regularity: `K ⊆ A ⊆ O`, `K` compact, `O` open
+  obtain ⟨K, hKA, hKc, hK⟩ := hAmeas.exists_isCompact_sdiff_lt hAfin hε4
+  obtain ⟨O, hAO, hOo, -, hO⟩ := hAmeas.exists_isOpen_sdiff_lt hAfin hε4
+  -- a uniform margin: `thickening δ K ⊆ O`
+  obtain ⟨δ, hδ, hδO⟩ := hKc.exists_thickening_subset_open hOo (hKA.trans hAO)
+  filter_upwards [ball_mem_nhds (0 : Euclid m) (lt_min hδ one_pos)] with z hz
+  rw [mem_ball_zero_iff] at hz
+  have hzδ : ‖z‖ < δ := lt_of_lt_of_le hz (min_le_left _ _)
+  have hz1 : ‖z‖ < 1 := lt_of_lt_of_le hz (min_le_right _ _)
+  have hsub : symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R ⊆
+      ((fun v => v + z) ⁻¹' (A \ K) ∪ (O \ A)) ∪ ((A \ K) ∪ (fun v => v + z) ⁻¹' (O \ A)) := by
+    intro v hv
+    obtain ⟨hv1, hv2⟩ := hv
+    rw [mem_ball_zero_iff] at hv2
+    have hvA : ‖v‖ < R + 1 := by linarith
+    have hvzA : ‖v + z‖ < R + 1 :=
+      calc ‖v + z‖ ≤ ‖v‖ + ‖z‖ := norm_add_le _ _
+        _ < R + 1 := by linarith
+    rcases Set.mem_symmDiff.1 hv1 with ⟨ha, hb⟩ | ⟨ha, hb⟩
+    · -- `v + z ∈ F`, `v ∉ F`
+      rw [mem_preimage] at ha
+      left
+      by_cases hK' : v + z ∈ K
+      · right
+        refine ⟨hδO (mem_thickening_iff.2 ⟨v + z, hK', ?_⟩), fun h => hb ((hmem v).1 h).1⟩
+        rw [dist_self_add_right]
+        exact hzδ
+      · left
+        exact ⟨(hmem (v + z)).2 ⟨ha, hvzA⟩, hK'⟩
+    · -- `v ∈ F`, `v + z ∉ F`
+      rw [mem_preimage] at hb
+      right
+      by_cases hK' : v ∈ K
+      · right
+        refine ⟨hδO (mem_thickening_iff.2 ⟨v, hK', ?_⟩), fun h => hb ((hmem (v + z)).1 h).1⟩
+        rw [dist_self_add_left]
+        exact hzδ
+      · left
+        exact ⟨(hmem v).2 ⟨ha, hvA⟩, hK'⟩
+  calc volume (symmDiff ((fun v => v + z) ⁻¹' F) F ∩ ball (0 : Euclid m) R)
+      ≤ volume (((fun v => v + z) ⁻¹' (A \ K) ∪ (O \ A)) ∪
+          ((A \ K) ∪ (fun v => v + z) ⁻¹' (O \ A))) := measure_mono hsub
+    _ ≤ (volume ((fun v => v + z) ⁻¹' (A \ K)) + volume (O \ A)) +
+          (volume (A \ K) + volume ((fun v => v + z) ⁻¹' (O \ A))) :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) (measure_union_le _ _))
+    _ = (volume (A \ K) + volume (O \ A)) + (volume (A \ K) + volume (O \ A)) := by
+        rw [measure_preimage_add_right (volume : Measure (Euclid m)) z (A \ K),
+          measure_preimage_add_right (volume : Measure (Euclid m)) z (O \ A)]
+    _ ≤ (ε / 2 / 2 + ε / 2 / 2) + (ε / 2 / 2 + ε / 2 / 2) :=
+        add_le_add (add_le_add hK.le hO.le) (add_le_add hK.le hO.le)
+    _ = ε := by rw [ENNReal.add_halves, ENNReal.add_halves]
+
+/-- Mollifying `u = 1_F` with any continuous `ρ ≥ 0`, `∫ρ = 1`, `spt ρ ⊆ B̄_δ(0)`, moves it by at
+most `η` in `L¹(B_R(0))` once `δ` is small (Simon 2.5).  By `∫ρ = 1`,
+`|ρ * u(v) - u(v)| ≤ ∫ρ(z)|u(v - z) - u(v)| dz`; Tonelli bounds `∫_{B_R}|ρ * u - u|` by
+`∫ρ(z) L^m(((F + z) Δ F) ∩ B_R) dz`, and `codim1_zsl_pc_translate_tendsto_zero` makes the
+translation defect `≤ η` for `|z| ≤ δ`. -/
+theorem Submission.codim1_zsl_pc_mollify_indicator_l1 : ∀ (m : ℕ) (F : Set (Euclid m)) (R η : ℝ), MeasurableSet F → 0 < η → ∃ δ : ℝ, 0 < δ ∧ ∀ ρ : Euclid m → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z, δ < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → ∫⁻ v in ball (0 : Euclid m) R, ‖(∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ ≤ ENNReal.ofReal η := by
+  intro m F R η hF hη
+  -- `δ = ε/2`, where the translation defect is `< η` on `B_ε(0)`.
+  have hev : ∀ᶠ y in 𝓝 (0 : Euclid m),
+      volume (symmDiff ((fun v => v + y) ⁻¹' F) F ∩ ball (0 : Euclid m) R) < ENNReal.ofReal η :=
+    (Submission.codim1_zsl_pc_translate_tendsto_zero m F R hF).eventually
+      (eventually_lt_nhds (ENNReal.ofReal_pos.2 hη))
+  obtain ⟨ε, hε, hεP⟩ := Metric.eventually_nhds_iff.1 hev
+  refine ⟨ε / 2, half_pos hε, ?_⟩
+  intro ρ hρc hρ0 hρsupp hρ1
+  -- Facts about the indicator `u = 1_F`, which is then made opaque.
+  have hu_meas : Measurable (F.indicator (fun _ => (1 : ℝ))) := measurable_const.indicator hF
+  have hu_bd : ∀ x, ‖F.indicator (fun _ => (1 : ℝ)) x‖ ≤ 1 := by
+    intro x
+    by_cases hx : x ∈ F <;> simp [hx]
+  have hu_sd : ∀ v y : Euclid m,
+      ‖F.indicator (fun _ => (1 : ℝ)) (v + y) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ
+        = (symmDiff ((fun w => w + y) ⁻¹' F) F).indicator 1 v := by
+    intro v y
+    by_cases h1 : v + y ∈ F <;> by_cases h2 : v ∈ F <;>
+      simp [h1, h2, Set.mem_symmDiff]
+  generalize F.indicator (fun _ => (1 : ℝ)) = u at hu_meas hu_bd hu_sd ⊢
+  -- `ρ` is integrable (compact support), hence so is each convolution integrand.
+  have hρ_cs : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid m) (ε / 2)) fun x hx => ?_
+    apply hρsupp
+    simpa using hx
+  have hρ_int : Integrable ρ := hρc.integrable_of_hasCompactSupport hρ_cs
+  have hρ_meas : Measurable ρ := hρc.measurable
+  have hint : ∀ v, Integrable (fun z => ρ z * u (v - z)) := by
+    intro v
+    refine hρ_int.mono
+      (by exact (hρ_meas.mul (hu_meas.comp (measurable_const_sub v))).aestronglyMeasurable)
+      (ae_of_all _ fun z => ?_)
+    rw [norm_mul]
+    calc ‖ρ z‖ * ‖u (v - z)‖ ≤ ‖ρ z‖ * 1 := by gcongr; exact hu_bd _
+      _ = ‖ρ z‖ := mul_one _
+  -- Pointwise bound, using `∫ ρ = 1`.
+  have hpt : ∀ v, ‖(∫ z, ρ z * u (v - z)) - u v‖ₑ ≤ ∫⁻ z, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ := by
+    intro v
+    have h1 : (∫ z, ρ z * u (v - z)) - u v = ∫ z, (ρ z * u (v - z) - ρ z * u v) := by
+      rw [integral_sub (hint v) (hρ_int.mul_const (u v)), integral_mul_const (u v) ρ, hρ1,
+        one_mul]
+    rw [h1]
+    refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+    refine lintegral_congr fun z => ?_
+    rw [← mul_sub, enorm_mul]
+  -- The inner integral is the translation defect of `codim1_zsl_pc_translate_tendsto_zero`.
+  have hΦ : ∀ z, ∫⁻ v in ball (0 : Euclid m) R, ‖u (v - z) - u v‖ₑ
+      = volume (symmDiff ((fun v => v + -z) ⁻¹' F) F ∩ ball (0 : Euclid m) R) := by
+    intro z
+    have hS : MeasurableSet (symmDiff ((fun v => v + -z) ⁻¹' F) F) :=
+      (hF.preimage (measurable_add_const _)).symmDiff hF
+    rw [← Measure.restrict_apply hS, ← lintegral_indicator_one hS]
+    refine lintegral_congr fun v => ?_
+    rw [sub_eq_add_neg v z]
+    exact hu_sd v (-z)
+  have hmeas : Measurable (Function.uncurry fun (v z : Euclid m) =>
+      ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ) := by
+    have : Measurable fun p : Euclid m × Euclid m => ‖ρ p.2‖ₑ * ‖u (p.1 - p.2) - u p.1‖ₑ :=
+      (hρ_meas.comp measurable_snd).enorm.mul
+        ((hu_meas.comp (measurable_fst.sub measurable_snd)).sub
+          (hu_meas.comp measurable_fst)).enorm
+    exact this
+  -- Tonelli, then `Φ(-z) ≤ η` wherever `ρ z ≠ 0`, and `∫⁻ ‖ρ‖ₑ = ofReal (∫ ρ) = 1`.
+  calc ∫⁻ v in ball (0 : Euclid m) R, ‖(∫ z, ρ z * u (v - z)) - u v‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R, ∫⁻ z, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ :=
+        lintegral_mono fun v => hpt v
+    _ = ∫⁻ z, ∫⁻ v in ball (0 : Euclid m) R, ‖ρ z‖ₑ * ‖u (v - z) - u v‖ₑ :=
+        lintegral_lintegral_swap hmeas.aemeasurable
+    _ = ∫⁻ z, ‖ρ z‖ₑ * ∫⁻ v in ball (0 : Euclid m) R, ‖u (v - z) - u v‖ₑ := by
+        refine lintegral_congr fun z => ?_
+        exact lintegral_const_mul _ (by fun_prop)
+    _ ≤ ∫⁻ z, ‖ρ z‖ₑ * ENNReal.ofReal η := by
+        refine lintegral_mono fun z => ?_
+        by_cases hz : ρ z = 0
+        · simp [hz]
+        · have hz' : ‖z‖ ≤ ε / 2 := by
+            by_contra h
+            exact hz (hρsupp z (not_le.1 h))
+          gcongr
+          rw [hΦ z]
+          refine (hεP ?_).le
+          rw [dist_zero_right, norm_neg]
+          linarith
+    _ = (∫⁻ z, ‖ρ z‖ₑ) * ENNReal.ofReal η := lintegral_mul_const _ (by fun_prop)
+    _ = ENNReal.ofReal η := by
+        rw [← ofReal_integral_norm_eq_lintegral_enorm hρ_int]
+        have : (fun x => ‖ρ x‖) = ρ := funext fun x => Real.norm_of_nonneg (hρ0 x)
+        rw [this, hρ1, ENNReal.ofReal_one, one_mul]
+/-- `L¹` translation estimate for a `C¹` function `f : ℝᵐ → ℝ`:
+`∫_{B_R(0)} |f(v + h) − f(v)| dv ≤ |h| ∫_{B_{R+|h|}(0)} ‖Df(w)‖ dw`.  By the fundamental theorem
+of calculus along `t ↦ v + t h`, `|f(v + h) − f(v)| ≤ |h| ∫₀¹ ‖Df(v + t h)‖ dt`; integrate over
+`B_R(0)`, exchange the order of integration (Tonelli) and use, for `t ∈ (0, 1]`, the inclusion
+`B_R(0) + t h ⊆ B_{R+|h|}(0)` and the translation invariance of Lebesgue measure. -/
+theorem Submission.codim1_zsl_pc_smooth_translate_l1 : ∀ (m : ℕ) (f : Euclid m → ℝ) (h : Euclid m) (R : ℝ), ContDiff ℝ 1 f → ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ ≤ ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+  intro m f h R hf
+  have hcont : Continuous (fderiv ℝ f) := hf.continuous_fderiv one_ne_zero
+  have hdiff : Differentiable ℝ f := hf.differentiable one_ne_zero
+  have hGc : Continuous (fun w : Euclid m => ‖fderiv ℝ f w‖ₑ) := hcont.enorm
+  have hGm : Measurable (fun w : Euclid m => ‖fderiv ℝ f w‖ₑ) := hGc.measurable
+  have hshift : Continuous (fun p : Euclid m × ℝ => p.1 + p.2 • h) :=
+    continuous_fst.add (continuous_snd.smul continuous_const)
+  have hmeas2 : Measurable (uncurry fun (v : Euclid m) (t : ℝ) => ‖fderiv ℝ f (v + t • h)‖ₑ) :=
+    (hGc.comp hshift).measurable
+  -- Steps 1–2: pointwise bound via the fundamental theorem of calculus along `t ↦ v + t • h`
+  have key : ∀ v : Euclid m, ‖f (v + h) - f v‖ₑ ≤
+      ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := by
+    intro v
+    have hseg : Continuous (fun t : ℝ => v + t • h) :=
+      continuous_const.add (continuous_id.smul continuous_const)
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => f (v + s • h))
+        (fderiv ℝ f (v + t • h) h) t := by
+      intro t
+      have h1 : HasDerivAt (fun s : ℝ => v + s • h) h t :=
+        (((hasDerivAt_id' t).smul_const h).const_add v).congr_deriv (one_smul ℝ h)
+      exact (hdiff (v + t • h)).hasFDerivAt.comp_hasDerivAt t h1
+    have hc1 : Continuous (fun t : ℝ => fderiv ℝ f (v + t • h) h) :=
+      (hcont.comp hseg).clm_apply continuous_const
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hc1.intervalIntegrable 0 1)
+    simp only [one_smul, zero_smul, add_zero] at hFTC
+    rw [← hFTC, intervalIntegral.integral_of_le zero_le_one]
+    calc ‖∫ t in Ioc (0 : ℝ) 1, fderiv ℝ f (v + t • h) h‖ₑ
+        ≤ ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h) h‖ₑ :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ t in Ioc (0 : ℝ) 1, ‖h‖ₑ * ‖fderiv ℝ f (v + t • h)‖ₑ :=
+          lintegral_mono fun t =>
+            (ContinuousLinearMap.le_opENorm (fderiv ℝ f (v + t • h)) h).trans_eq (mul_comm _ _)
+      _ = ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ :=
+          lintegral_const_mul _ (hGc.comp hseg).measurable
+  have hmeasv : Measurable
+      (fun v : Euclid m => ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ) :=
+    hmeas2.lintegral_prod_right
+  -- Step 4: translation invariance of Lebesgue measure and inclusion of balls
+  have hball : ∀ t ∈ Ioc (0 : ℝ) 1, ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ ≤
+      ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+    intro t ht
+    have ht' : ‖t • h‖ ≤ ‖h‖ := by
+      rw [norm_smul, Real.norm_of_nonneg ht.1.le]
+      exact mul_le_of_le_one_left (norm_nonneg h) ht.2
+    have hsub : ball (0 : Euclid m) R ⊆
+        (fun v => v + t • h) ⁻¹' ball (0 : Euclid m) (R + ‖h‖) := by
+      intro v hv
+      rw [mem_preimage, mem_ball_zero_iff]
+      exact (norm_add_le _ _).trans_lt (add_lt_add_of_lt_of_le (mem_ball_zero_iff.mp hv) ht')
+    calc ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ
+        ≤ ∫⁻ v in (fun v => v + t • h) ⁻¹' ball (0 : Euclid m) (R + ‖h‖),
+            ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_mono_set hsub
+      _ = ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ :=
+          (measurePreserving_add_right volume (t • h)).setLIntegral_comp_preimage
+            measurableSet_ball hGm
+  -- Steps 3 and 5: integrate, exchange the order of integration (Tonelli), and conclude
+  calc ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R,
+          ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_mono key
+    _ = ‖h‖ₑ * ∫⁻ v in ball (0 : Euclid m) R,
+          ∫⁻ t in Ioc (0 : ℝ) 1, ‖fderiv ℝ f (v + t • h)‖ₑ := lintegral_const_mul _ hmeasv
+    _ = ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1,
+          ∫⁻ v in ball (0 : Euclid m) R, ‖fderiv ℝ f (v + t • h)‖ₑ :=
+        congrArg (‖h‖ₑ * ·) (lintegral_lintegral_swap hmeas2.aemeasurable)
+    _ ≤ ‖h‖ₑ * ∫⁻ t in Ioc (0 : ℝ) 1,
+          ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ :=
+        mul_le_mul_right (setLIntegral_mono' measurableSet_Ioc hball) _
+    _ = ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := by
+        rw [setLIntegral_const, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one, mul_one]
 /-- Integration by parts for a Lipschitz `u` against `C¹` fields `Φᵢ` with compact support in
 `B = B_R(0)`: `∫_B Σᵢ Du(x)eᵢ Φᵢ(x) dx = −∫_B u(x) Σᵢ DΦᵢ(x)eᵢ dx`.  Each `Φᵢ` is Lipschitz, so
 Lipschitz integration by parts in direction `eᵢ` (`LipschitzWith.integral_lineDeriv_mul_eq`) applies
@@ -1174,6 +1419,131 @@ theorem Submission.codim1_zsl_pc_mollify_grad_bound : ∀ (m : ℕ) (F : Set (Eu
     Submission.codim1_zsl_pc_mollify_test_field m F ρ ψ r ε hF hρ hρ0 hρs hρ1 hψ hψc hψs hψ1
   rw [heq]
   exact hP ψ' hψ' hψ'c hψ's hψ'1
+
+/-- Translation estimate for sets of locally finite perimeter: if `∫_F div φ ≤ c` for all smooth
+fields `φ` with `|φ| ≤ 1` and compact support in `B_{R+2}(0)`, then
+`L^m(((F − h) Δ F) ∩ B_R(0)) ≤ c|h|` for `|h| ≤ 1`.  The left side is
+`∫_{B_R}|1_F(v + h) − 1_F(v)| dv`, and `c ≥ 0` (test with `φ = 0`).  Given `η > 0`,
+`codim1_zsl_pc_mollify_indicator_l1` gives a radius `δ`; a normalized bump `ρ` of radius
+`s = min(δ, 1/2)` mollifies `1_F` to a smooth `f` with `∫_{B_{R+1}}‖Df‖ ≤ c`
+(`codim1_zsl_pc_mollify_grad_bound`, since `B_{R+1+s} ⊆ B_{R+2}`) and `∫_{B_{R+1}}|f − 1_F| ≤ η`.
+By `codim1_zsl_pc_smooth_translate_l1`, `∫_{B_R}|f(v + h) − f(v)| ≤ c|h|`; the triangle inequality
+and translation invariance of `L^m` bound the left side by `c|h| + 2η`. -/
+theorem Submission.codim1_zsl_pc_translation_estimate : ∀ (m : ℕ) (F : Set (Euclid m)) (R c : ℝ), MeasurableSet F → (∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid m) (R + 2) → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (c * ‖h‖) := by
+  intro m F R c hF hc h hh
+  -- `0 ≤ c`, by testing the hypothesis with `φ = 0`.
+  have hc0 : 0 ≤ c := by
+    have h0 := hc (fun _ => (0 : Euclid m)) contDiff_const HasCompactSupport.zero
+      (by simp [tsupport]) (by simp)
+    simpa using h0
+  -- The measure of the symmetric difference as an `L¹` norm of indicators.
+  have hχm : Measurable (F.indicator (fun _ => (1 : ℝ))) := measurable_const.indicator hF
+  have hS : MeasurableSet (symmDiff ((fun v => v + h) ⁻¹' F) F) :=
+    (measurable_add_const h hF).symmDiff hF
+  have hL : volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R)
+      = ∫⁻ v in ball (0 : Euclid m) R,
+          ‖F.indicator (fun _ => (1 : ℝ)) (v + h) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ := by
+    rw [← Measure.restrict_apply hS, ← lintegral_indicator_one hS]
+    refine lintegral_congr (fun v => ?_)
+    by_cases h1 : v + h ∈ F <;> by_cases h2 : v ∈ F <;>
+      simp [h1, h2, Set.mem_symmDiff]
+  rw [hL]
+  -- An `ε` of room: it suffices to prove the bound up to `ε = η + η`.
+  refine ENNReal.le_of_forall_pos_le_add (fun ε hε _ => ?_)
+  obtain ⟨η, hη, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η + η = (ε : ℝ) :=
+    ⟨(ε : ℝ) / 2, half_pos (by exact_mod_cast hε), add_halves _⟩
+  -- The `L¹`-approximation radius `δ` on `B_{R+1}`, and the mollifier radius `s ≤ min(δ, 1/2)`.
+  obtain ⟨δ, hδ, hmoll⟩ := Submission.codim1_zsl_pc_mollify_indicator_l1 m F (R + 1) η hF hη
+  obtain ⟨s, hs, hsδ, hs2⟩ : ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ s ≤ 1 / 2 :=
+    ⟨min δ (1 / 2), lt_min hδ (by norm_num), min_le_left _ _, min_le_right _ _⟩
+  -- A smooth mollifier supported in `closedBall 0 s`: a normalized bump function.
+  obtain ⟨ρ, hρ_smooth, hρ_nn, hρ_supp, hρ_int⟩ : ∃ ρ : Euclid m → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ρ ∧ (∀ z, 0 ≤ ρ z) ∧ (∀ z, s < ‖z‖ → ρ z = 0) ∧ ∫ z, ρ z = 1 := by
+    obtain ⟨b, hb_out⟩ : ∃ b : ContDiffBump (0 : Euclid m), b.rOut = s :=
+      ⟨⟨s / 2, s, half_pos hs, half_lt_self hs⟩, rfl⟩
+    have hbi : Integrable b := b.continuous.integrable_of_hasCompactSupport b.hasCompactSupport
+    have hbpos : 0 < ∫ x, b x := by
+      rw [integral_pos_iff_support_of_nonneg (fun x => b.nonneg' x) hbi, b.support_eq, hb_out]
+      exact measure_ball_pos volume 0 hs
+    refine ⟨fun x => (∫ y, b y)⁻¹ * b x, contDiff_const.mul b.contDiff,
+      fun z => mul_nonneg (inv_nonneg.mpr hbpos.le) (b.nonneg' z), fun z hz => ?_, ?_⟩
+    · have hz0 : b z = 0 := b.zero_of_le_dist (by rw [dist_zero_right, hb_out]; exact hz.le)
+      simp [hz0]
+    · show ∫ z, (∫ y, b y)⁻¹ * b z = 1
+      rw [integral_const_mul]
+      exact inv_mul_cancel₀ hbpos.ne'
+  have hρ_supp' : ∀ z, δ < ‖z‖ → ρ z = 0 := fun z hz => hρ_supp z (lt_of_le_of_lt hsδ hz)
+  -- The mollified indicator `f`: smooth, `∫_{B_{R+1}} ‖Df‖ ≤ c`, and `L¹`-close to `1_F`.
+  obtain ⟨f, hf_smooth, hf_grad, hE⟩ : ∃ f : Euclid m → ℝ, ContDiff ℝ (⊤ : ℕ∞) f ∧
+      ∫⁻ v in ball (0 : Euclid m) (R + 1), ‖fderiv ℝ f v‖ₑ ≤ ENNReal.ofReal c ∧
+      ∫⁻ v in ball (0 : Euclid m) (R + 1), ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ
+        ≤ ENNReal.ofReal η := by
+    obtain ⟨h1, h2⟩ := Submission.codim1_zsl_pc_mollify_grad_bound m F ρ (R + 1) s c hF
+      hρ_smooth hρ_nn hρ_supp hρ_int (fun φ hφ1 hφ2 hφ3 hφ4 =>
+        hc φ hφ1 hφ2 (hφ3.trans (ball_subset_ball (by linarith))) hφ4)
+    exact ⟨_, h1, h2, hmoll ρ hρ_smooth.continuous hρ_nn hρ_supp' hρ_int⟩
+  have hfm : Measurable f := hf_smooth.continuous.measurable
+  -- The translation estimate for the smooth function `f`.
+  have htr := Submission.codim1_zsl_pc_smooth_translate_l1 m f h R
+    (hf_smooth.of_le (by exact_mod_cast le_top))
+  have hT : ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ ≤ ENNReal.ofReal (c * ‖h‖) := by
+    calc ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ
+        ≤ ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ := htr
+      _ ≤ ‖h‖ₑ * ENNReal.ofReal c := by
+        gcongr
+        exact (lintegral_mono_set (ball_subset_ball (by linarith))).trans hf_grad
+      _ = ENNReal.ofReal (c * ‖h‖) := by
+        rw [ENNReal.ofReal_mul hc0, ofReal_norm, mul_comm]
+  -- The two `L¹` error terms, at `v + h` and at `v`.
+  have hsub : ball (0 : Euclid m) R ⊆ (fun x => x + h) ⁻¹' ball (0 : Euclid m) (R + 1) := by
+    intro v hv
+    rw [mem_ball_zero_iff] at hv
+    show v + h ∈ ball (0 : Euclid m) (R + 1)
+    rw [mem_ball_zero_iff]
+    calc ‖v + h‖ ≤ ‖v‖ + ‖h‖ := norm_add_le _ _
+      _ < R + 1 := by linarith
+  have h9b : ∫⁻ v in ball (0 : Euclid m) R,
+      ‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ ≤ ENNReal.ofReal η := by
+    calc ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ
+        ≤ ∫⁻ v in (fun x => x + h) ⁻¹' ball (0 : Euclid m) (R + 1),
+            ‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ := lintegral_mono_set hsub
+      _ = ∫⁻ w in ball (0 : Euclid m) (R + 1), ‖f w - F.indicator (fun _ => (1 : ℝ)) w‖ₑ :=
+          (measurePreserving_add_right volume h).setLIntegral_comp_preimage_emb
+            (measurableEmbedding_addRight h)
+            (fun w => ‖f w - F.indicator (fun _ => (1 : ℝ)) w‖ₑ) _
+      _ ≤ ENNReal.ofReal η := hE
+  have h9a : ∫⁻ v in ball (0 : Euclid m) R, ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ
+      ≤ ENNReal.ofReal η :=
+    (lintegral_mono_set (ball_subset_ball (by linarith))).trans hE
+  -- Pointwise triangle inequality.
+  have hpt : ∀ v, ‖F.indicator (fun _ => (1 : ℝ)) (v + h) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ ≤
+      ‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ + ‖f (v + h) - f v‖ₑ
+        + ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ := by
+    intro v
+    have e : F.indicator (fun _ => (1 : ℝ)) (v + h) - F.indicator (fun _ => (1 : ℝ)) v
+        = -(f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)) + (f (v + h) - f v)
+          + (f v - F.indicator (fun _ => (1 : ℝ)) v) := by ring
+    rw [e, ← enorm_neg (f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h))]
+    exact enorm_add₃_le
+  have hg3m : Measurable (fun v => ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ) :=
+    (hfm.sub hχm).enorm
+  have hg2m : Measurable (fun v => ‖f (v + h) - f v‖ₑ) :=
+    ((hfm.comp (measurable_add_const h)).sub hfm).enorm
+  -- Conclusion: the left side is at most `η + c|h| + η`.
+  calc ∫⁻ v in ball (0 : Euclid m) R,
+        ‖F.indicator (fun _ => (1 : ℝ)) (v + h) - F.indicator (fun _ => (1 : ℝ)) v‖ₑ
+      ≤ ∫⁻ v in ball (0 : Euclid m) R,
+          (‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ + ‖f (v + h) - f v‖ₑ
+            + ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ) := lintegral_mono hpt
+    _ = (∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - F.indicator (fun _ => (1 : ℝ)) (v + h)‖ₑ)
+          + (∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ)
+          + ∫⁻ v in ball (0 : Euclid m) R, ‖f v - F.indicator (fun _ => (1 : ℝ)) v‖ₑ := by
+        rw [lintegral_add_right _ hg3m, lintegral_add_right _ hg2m]
+    _ ≤ ENNReal.ofReal η + ENNReal.ofReal (c * ‖h‖) + ENNReal.ofReal η :=
+        add_le_add (add_le_add h9b hT) h9a
+    _ = ENNReal.ofReal (c * ‖h‖) + (ENNReal.ofReal η + ENNReal.ofReal η) := by ring
+    _ = ENNReal.ofReal (c * ‖h‖) + ε := by
+        rw [← ENNReal.ofReal_add hη.le hη.le, hηε, ENNReal.ofReal_coe_nnreal]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
