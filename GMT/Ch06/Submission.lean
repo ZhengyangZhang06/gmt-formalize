@@ -359,6 +359,160 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Counting identity: for any family `u` of vectors of `ℝ^P` and any `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = k! ∑_{I strictly increasing} φ(u_{I 0}, …, u_{I (k-1)})²`,
+where `I` ranges over all maps `Fin k → Fin P`. -/
+theorem Submission.slicing_mb_wn_sq_sum_eq_factorial_mul :
+    ∀ (P k : ℕ) (u : Fin P → Eucl P) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        (k.factorial : ℝ) * ∑ I : Fin k → Fin P,
+          if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  classical
+  set g : (Fin k → Fin P) → ℝ := fun I => (φ (fun i => u (I i))) ^ 2
+  -- A non-injective `I` repeats a vector of `u ∘ I`, so `φ (u ∘ I) = 0`.
+  have h0 : ∀ I : Fin k → Fin P, ¬Function.Injective I → g I = 0 := by
+    intro I hI
+    have hv : ¬Function.Injective (fun i => u (I i)) :=
+      fun h => hI fun a b hab => h (by simp only [hab])
+    simp only [g, φ.map_eq_zero_of_not_injective _ hv, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow]
+  -- `φ (u ∘ I ∘ σ) = sign σ • φ (u ∘ I)`, so the square is invariant under permutations.
+  have hperm : ∀ (I : Fin k → Fin P) (σ : Equiv.Perm (Fin k)), g (I ∘ σ) = g I := by
+    intro I σ
+    have h : φ (fun i => u ((I ∘ σ) i)) = Equiv.Perm.sign σ • φ (fun i => u (I i)) :=
+      φ.toAlternatingMap.map_perm (fun i => u (I i)) σ
+    simp only [g, h]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h' | h' <;> simp [h']
+  -- Write both sides as sums over the injective, resp. strictly increasing, maps.
+  have hL : ∑ I, g I = ∑ I ∈ Finset.univ.filter Function.Injective, g I := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs with h
+    · rfl
+    · exact h0 I h
+  have hR : (∑ I : Fin k → Fin P, if StrictMono I then g I else 0) =
+      ∑ I ∈ Finset.univ.filter StrictMono, g I := (Finset.sum_filter _ _).symm
+  -- `(σ, β) ↦ β ∘ σ` is a bijection from permutations × strictly increasing maps onto the
+  -- injective maps, with inverse `I ↦ ((sort I)⁻¹, I ∘ sort I)`.
+  have hbij : ∑ I ∈ Finset.univ.filter Function.Injective, g I =
+      ∑ p ∈ (Finset.univ : Finset (Equiv.Perm (Fin k))) ×ˢ Finset.univ.filter StrictMono,
+        g (p.2 ∘ p.1) := by
+    refine Finset.sum_nbij' (fun I => ((Tuple.sort I)⁻¹, I ∘ Tuple.sort I))
+      (fun p => p.2 ∘ p.1) ?_ ?_ ?_ ?_ ?_
+    · intro I hI
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hI
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and]
+      exact (Tuple.monotone_sort I).strictMono_of_injective (hI.comp (Tuple.sort I).injective)
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact hp.injective.comp σ.injective
+    · intro I _
+      funext i
+      simp
+    · rintro ⟨σ, β⟩ hp
+      simp only [Finset.mem_product, Finset.mem_univ, Finset.mem_filter, true_and] at hp
+      -- sorting `β ∘ σ` recovers the strictly increasing `β`
+      have hsorted : (β ∘ σ) ∘ Tuple.sort (β ∘ σ) = β := by
+        rw [Tuple.comp_perm_comp_sort_eq_comp_sort,
+          (Tuple.sort_eq_refl_iff_monotone).2 hp.monotone]
+        rfl
+      have hσ : σ * Tuple.sort (β ∘ σ) = 1 := by
+        ext i
+        have := congrFun hsorted i
+        simp only [Function.comp_apply] at this
+        simpa using congrArg Fin.val (hp.injective this)
+      have hinv : (Tuple.sort (β ∘ σ))⁻¹ = σ := by
+        rw [inv_eq_iff_eq_inv]
+        exact eq_inv_of_mul_eq_one_right hσ
+      simp only [hinv, hsorted]
+    · intro I _
+      congr 1
+      funext i
+      simp
+  -- Each permutation contributes `∑_β g β`, and there are `k!` permutations.
+  rw [hL, hbij, hR, Finset.sum_product]
+  simp_rw [hperm]
+  rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+/-- Basis independence of the full coefficient sum (Parseval's identity, one slot at a time): for
+orthonormal bases `u`, `v` of `ℝ^P` and a `k`-covector `φ`,
+`∑_I φ(u_{I 0}, …, u_{I (k-1)})² = ∑_I φ(v_{I 0}, …, v_{I (k-1)})²`, both sums over all index maps
+`I : Fin k → Fin P`.  Induction on `k`: write `I = (i, J)` and `φ(w_I) = (φ.curryLeft w_i)(w_J)`,
+replace `u` by `v` in the last `k` slots by the induction hypothesis for `φ.curryLeft (u i)`, then
+in slot `0` by `OrthonormalBasis.norm_dual` for the functional `z ↦ (φ.curryLeft z)(v_J)`. -/
+theorem Submission.slicing_mb_wn_sq_sum_onb_invariant :
+    ∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 =
+        ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2 := by
+  intro P k u v
+  induction k with
+  | zero =>
+    -- Both families are the empty tuple.
+    intro φ
+    exact Fintype.sum_congr _ _ fun I => by
+      rw [Subsingleton.elim (fun i => u (I i)) (fun i => v (I i))]
+  | succ k ih =>
+    intro φ
+    -- Split `I = Fin.cons i J`; then `φ(w_I) = (φ.curryLeft w_i)(w_J)`.
+    have hsplit : ∀ w : OrthonormalBasis (Fin P) ℝ (Eucl P),
+        ∑ I : Fin (k + 1) → Fin P, (φ (fun i => w (I i))) ^ 2 =
+          ∑ i : Fin P, ∑ J : Fin k → Fin P, (φ.curryLeft (w i) (fun j => w (J j))) ^ 2 := by
+      intro w
+      rw [← Fintype.sum_prod_type', ← (Fin.consEquiv fun _ => Fin P).sum_comp]
+      refine Fintype.sum_congr _ _ fun p => ?_
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext i
+      refine Fin.cases ?_ (fun j => ?_) i <;>
+        simp only [Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ, Matrix.cons_val_zero,
+          Matrix.cons_val_succ]
+    -- Slots `1, …, k`: the induction hypothesis for each `k`-covector `φ.curryLeft (u i)`.
+    rw [hsplit u, hsplit v]
+    simp_rw [ih]
+    -- Slot `0`: for each `J`, Parseval for `ℓ_J z = (φ.curryLeft z)(v_J)` in the bases `u`, `v`.
+    rw [Finset.sum_comm]
+    conv_rhs => rw [Finset.sum_comm]
+    refine Fintype.sum_congr _ _ fun J => ?_
+    let ℓ : StrongDual ℝ (Eucl P) :=
+      (ContinuousAlternatingMap.apply ℝ (Eucl P) ℝ (fun j => v (J j))).comp φ.curryLeft
+    have hu := u.norm_dual ℓ
+    have hv := v.norm_dual ℓ
+    simp only [ℓ, ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.apply_apply] at hu hv
+    rw [← hu, ← hv]
+
+/-- The Euclidean coefficient norm of a `k`-covector can be computed in any orthonormal basis
+`u` of `ℝ^P` (Simon Ch. 6, 1.5–1.6 and Remark 2.6): `|φ|² = ∑_{I increasing} φ(u_I)²`.
+With `e` the standard basis used by `covectorEuclideanNorm` and `N_w(φ) = ∑_{all I} φ(w_I)²`,
+`k! |φ|² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`, and `k! ≠ 0`. -/
+theorem Submission.slicing_mb_wn_norm_sq_eq_onb_sum :
+    ∀ (P k : ℕ) (u : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k),
+      covectorEuclideanNorm φ ^ 2 =
+        ∑ I : Fin k → Fin P, if StrictMono I then (φ (fun i => u (I i))) ^ 2 else 0 := by
+  intro P k u φ
+  -- `k! ∑_{I increasing} φ(e_I)² = N_e(φ) = N_u(φ) = k! ∑_{I increasing} φ(u_I)²`.
+  have key := (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) φ).symm.trans
+    ((Submission.slicing_mb_wn_sq_sum_onb_invariant P k
+      (EuclideanSpace.basisFun (Fin P) ℝ) u φ).trans
+        (Submission.slicing_mb_wn_sq_sum_eq_factorial_mul P k u φ))
+  -- `|φ|² = ∑_{I increasing} φ(e_I)²`: the radicand is a sum of squares and zeros.
+  rw [covectorEuclideanNorm, Real.sq_sqrt]
+  · exact mul_left_cancel₀ (Nat.cast_ne_zero.mpr k.factorial_ne_zero) key
+  · exact Finset.sum_nonneg fun I _ => by split_ifs <;> positivity
+
+/-- Full tuple sum of squared coefficients in the standard basis `e` of `ℝ^m`: for a `j`-covector
+`γ`, `∑_i γ(e_{i 0}, …, e_{i (j-1)})² = j! |γ|²`, the sum over all index maps `i : Fin j → Fin m`.
+The counting identity turns the left side into `j! ∑_{I increasing} γ(e_I)²`, and the
+orthonormal-basis formula for `|γ|²`, applied to `e` itself, identifies that sum with `|γ|²`. -/
+theorem Submission.iwl_sp_pn_sum_sq_tuples_eq_factorial_mul :
+    ∀ (m j : ℕ) (γ : Covector (Eucl m) j),
+      ∑ i : Fin j → Fin m, (γ (fun k => EuclideanSpace.basisFun (Fin m) ℝ (i k))) ^ 2 =
+        (j.factorial : ℝ) * covectorEuclideanNorm γ ^ 2 := by
+  intro m j γ
+  rw [Submission.slicing_mb_wn_norm_sq_eq_onb_sum m j (EuclideanSpace.basisFun (Fin m) ℝ) γ]
+  exact Submission.slicing_mb_wn_sq_sum_eq_factorial_mul m j (EuclideanSpace.basisFun (Fin m) ℝ) γ
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
