@@ -733,6 +733,60 @@ theorem Submission.iwl_sp_covectorEuclideanNorm_pullback_le : ∀ (P Q j : ℕ) 
   exact le_of_sq_le_sq hsq
     (mul_nonneg (pow_nonneg (norm_nonneg L) j) (covectorEuclideanNorm_nonneg α))
 
+/-- Bounded compatible pull-back forms (Steps 2–3 of the Lipschitz push-forward construction): if
+`f` is `C^∞`, proper on `A`, and `‖Df‖ ≤ Λ` on an open `O ⊇ A`, every `ω ∈ 𝒟ᵏ(ℝ^{m′})` has a
+pull-back `η ∈ 𝒟ᵏ(ℝ^m)` with `η = f^#ω` on an open `N ⊇ A` and `|η(x)| ≤ Λ^k C` whenever
+`|ω| ≤ C`.  The cut-off pull-back `η = ζ f^#ω ∈ 𝒟ᵏ(O)` of
+`Submission.iwl_sp_exists_compatible_testForm` is also a test form on `ℝ^m`; on `O`,
+`|ζ f^#ω| = ζ |f^#ω| ≤ ‖Df‖^k |ω ∘ f| ≤ Λ^k C` by
+`Submission.iwl_sp_covectorEuclideanNorm_pullback_le`, and off `O ⊇ spt η` it vanishes. -/
+theorem Submission.dph_lpfex_bounded_compatible_form :
+    ∀ (m m' k : ℕ) (f : Eucl m → Eucl m') (A O : Set (Eucl m)) (Λ : ℝ≥0), IsOpen O → A ⊆ O →
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ x ∈ O, ‖fderiv ℝ f x‖ ≤ Λ) →
+      (∀ K : Set (Eucl m'), IsCompact K → IsCompact (f ⁻¹' K ∩ A)) →
+      ∀ ω : TestFormOn (univ : Set (Eucl m')) k, ∃ η : TestFormOn (univ : Set (Eucl m)) k,
+        (∃ N : Set (Eucl m), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl m) k) x =
+          ((ω : DifferentialForm (Eucl m') k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧
+        ∀ C : ℝ, (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl m') k) y) ≤ C) →
+          ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl m) k) x) ≤ (Λ : ℝ) ^ k * C := by
+  intro m m' k f A O Λ hO hAO hf hDf hprop ω
+  -- 1. The cut-off pull-back `η₀ = ζ f^#ω ∈ 𝒟ᵏ(O)` with `0 ≤ ζ ≤ 1`, equal to `f^#ω` on `N ⊇ A`.
+  obtain ⟨η₀, ζ, N, hN, hAN, hζ, hη₀, hη₀N, -⟩ :=
+    Submission.iwl_sp_exists_compatible_testForm m m' k O univ A f hO hAO hf
+      (fun K hK _ => hprop K hK) ω
+  obtain ⟨hη₀test, hη₀O⟩ := η₀.property
+  -- 2. `spt η₀ ⊆ O ⊆ ℝ^m`, so the same form is a test form on `ℝ^m`.
+  refine ⟨⟨(η₀ : DifferentialForm (Eucl m) k), hη₀test, subset_univ _⟩, ⟨N, hN, hAN, hη₀N⟩,
+    fun C hC x => ?_⟩
+  show covectorEuclideanNorm ((η₀ : DifferentialForm (Eucl m) k) x) ≤ (Λ : ℝ) ^ k * C
+  -- 3. Homogeneity `|c γ| = |c| |γ|`: every squared coefficient scales by `c²`.
+  have hsmul : ∀ (c : ℝ) (γ : Covector (Eucl m) k),
+      covectorEuclideanNorm (c • γ) = |c| * covectorEuclideanNorm γ := by
+    intro c γ
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  -- 4. `C ≥ |ω(0)| ≥ 0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  by_cases hx : x ∈ O
+  · -- On `O`: `|ζ f^#ω| = ζ |f^#ω| ≤ |f^#ω| ≤ ‖Df‖^k |ω ∘ f| ≤ Λ^k C`.
+    rw [hη₀ x, hsmul, abs_of_nonneg (hζ x).1]
+    calc _ ≤ covectorEuclideanNorm
+          (((ω : DifferentialForm (Eucl m') k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) :=
+          mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hζ x).2
+      _ ≤ ‖fderiv ℝ f x‖ ^ k * covectorEuclideanNorm ((ω : DifferentialForm (Eucl m') k) (f x)) :=
+          Submission.iwl_sp_covectorEuclideanNorm_pullback_le m m' k _ _
+      _ ≤ (Λ : ℝ) ^ k * C :=
+          mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) (hDf x hx) k) (hC _)
+            (covectorEuclideanNorm_nonneg _) (pow_nonneg Λ.coe_nonneg k)
+  · -- Off `O ⊇ spt η₀` the form vanishes.
+    rw [image_eq_zero_of_notMem_tsupport fun h => hx (hη₀O h), covectorEuclideanNorm_zero]
+    exact mul_nonneg (pow_nonneg Λ.coe_nonneg k) hC0
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
