@@ -505,6 +505,111 @@ theorem Submission.ind_pi_pl_linear_pushforward_family :
     simp only [one_pow, ENNReal.ofReal_one, one_mul] at hm hbm
     exact ⟨hm.trans ((X k).massOn_mono inter_subset_right),
       hbm.trans ((X k).boundary.massOn_mono inter_subset_right)⟩
+/-- Geometry of an orthonormal frame `τ` in `ℝ^P`: with `π y = ∑ ⟪τᵢ, y⟫ τᵢ`, `p y = (⟪τᵢ, y⟫)ᵢ`
+and `d y = ‖y − π y‖`, Pythagoras gives `‖y‖² = ‖p y‖² + d(y)²`; hence `‖p‖ ≤ 1`, `d` is
+`1`-Lipschitz, `p` inverts `a ↦ ∑ aᵢ τᵢ`, `d = 0` on `span τ`, the cylinder
+`{‖p‖ < 1, d < 3/4}` lies in `closedBall 0 (5/4) ⊆ B₂(0)`, and `p⁻¹(K) ∩ {d ≤ γ}` is a compact
+subset of it for compact `K ⊆ B₁(0)` and `γ < 3/4`. -/
+theorem Submission.ind_pi_frame_geometry :
+    ∀ (P n : ℕ) (τ : Fin n → Eucl P) (p : Eucl P →L[ℝ] Eucl n) (d : Eucl P → ℝ), Orthonormal ℝ τ → (∀ y i, p y i = inner ℝ (τ i) y) → (∀ y, d y = ‖y - ∑ i, inner ℝ (τ i) y • τ i‖) → LipschitzWith 1 d ∧ (∀ y, ‖y‖ ^ 2 = ‖p y‖ ^ 2 + d y ^ 2) ∧ ‖p‖ ≤ 1 ∧ (∀ a : Eucl n, p (∑ i, a i • τ i) = a) ∧ (∀ i, p (τ i) = EuclideanSpace.single i (1 : ℝ)) ∧ (∀ z ∈ Submodule.span ℝ (Set.range τ), d z = 0) ∧ CompactlyContainedOpen {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} (ball (0 : Eucl P) 2) ∧ ∀ γ : ℝ, γ < 3 / 4 → ∀ K : Set (Eucl n), IsCompact K → K ⊆ ball (0 : Eucl n) 1 → IsCompact (p ⁻¹' K ∩ {y | d y ≤ γ}) ∧ p ⁻¹' K ∩ {y | d y ≤ γ} ⊆ {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} := by
+  intro P n τ p d hτ hp hd
+  -- The orthogonal projection `π y = ∑ ⟪τᵢ, y⟫ τᵢ` onto `span τ`, so `d y = ‖y − π y‖`.
+  obtain ⟨π, hπ⟩ : ∃ π : Eucl P → Eucl P, ∀ y, π y = ∑ i, inner ℝ (τ i) y • τ i :=
+    ⟨_, fun _ => rfl⟩
+  have hdπ : ∀ y, d y = ‖y - π y‖ := fun y => by rw [hd, hπ]
+  -- Step 1: `⟪τⱼ, π y⟫ = ⟪τⱼ, y⟫`.
+  have h1 : ∀ y j, inner ℝ (τ j) (π y) = inner ℝ (τ j) y := fun y j => by
+    rw [hπ]
+    exact hτ.inner_right_fintype (fun i => inner ℝ (τ i) y) j
+  have hπinner : ∀ y v, inner ℝ (π y) v = ∑ i, inner ℝ (τ i) y * inner ℝ (τ i) v := by
+    intro y v
+    rw [hπ, sum_inner]
+    simp only [real_inner_smul_left]
+  -- Step 2: `π y ⊥ y − π y`.
+  have h2 : ∀ y, inner ℝ (π y) (y - π y) = 0 := by
+    intro y
+    rw [hπinner]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [inner_sub_right, h1, sub_self, mul_zero]
+  -- Step 3: `‖p y‖² = ‖π y‖² = ∑ ⟪τᵢ, y⟫²` and Pythagoras.
+  have hpπ : ∀ y, ‖p y‖ ^ 2 = ‖π y‖ ^ 2 := by
+    intro y
+    rw [EuclideanSpace.real_norm_sq_eq, ← real_inner_self_eq_norm_sq, hπinner]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [h1, hp, sq]
+  have hb : ∀ y, ‖y‖ ^ 2 = ‖p y‖ ^ 2 + d y ^ 2 := by
+    intro y
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (h2 y)
+    rw [add_sub_cancel] at h
+    rw [hpπ, hdπ, sq, sq, sq, h]
+  -- Step 4: `0 ≤ d y ≤ ‖y‖` and `‖p y‖ ≤ ‖y‖`.
+  have hd0 : ∀ y, 0 ≤ d y := fun y => by rw [hdπ]; exact norm_nonneg _
+  have hdle : ∀ y, d y ≤ ‖y‖ := by
+    intro y
+    have := hb y
+    nlinarith [hd0 y, norm_nonneg y, sq_nonneg ‖p y‖]
+  have hple : ∀ y, ‖p y‖ ≤ ‖y‖ := by
+    intro y
+    have := hb y
+    nlinarith [norm_nonneg (p y), norm_nonneg y, sq_nonneg (d y)]
+  -- Step 5: `π` is additive, so `d x ≤ d y + d (x − y) ≤ d y + dist x y`.
+  have hπsub : ∀ x y, π (x - y) = π x - π y := by
+    intro x y
+    simp only [hπ, inner_sub_right, sub_smul, Finset.sum_sub_distrib]
+  have hLip : LipschitzWith 1 d := by
+    refine LipschitzWith.of_le_add fun x y => ?_
+    have e : x - π x = (y - π y) + ((x - y) - π (x - y)) := by rw [hπsub]; abel
+    calc d x = ‖(y - π y) + ((x - y) - π (x - y))‖ := by rw [hdπ, e]
+      _ ≤ ‖y - π y‖ + ‖(x - y) - π (x - y)‖ := norm_add_le _ _
+      _ = d y + d (x - y) := by rw [hdπ, hdπ]
+      _ ≤ d y + ‖x - y‖ := by gcongr; exact hdle _
+      _ = d y + dist x y := by rw [dist_eq_norm]
+  -- The cylinder `{‖p‖ ≤ 1, d ≤ 3/4}` lies in `closedBall 0 (5/4)`.
+  have hball : ∀ y, ‖p y‖ ≤ 1 → d y ≤ 3 / 4 → y ∈ closedBall (0 : Eucl P) (5 / 4) := by
+    intro y hpy hdy
+    rw [mem_closedBall_zero_iff]
+    have h := hb y
+    have hp0 := norm_nonneg (p y)
+    have hd0' := hd0 y
+    nlinarith [norm_nonneg y]
+  refine ⟨hLip, hb, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  -- (c) `‖p‖ ≤ 1`.
+  · exact p.opNorm_le_bound zero_le_one fun y => by rw [one_mul]; exact hple y
+  -- (d) `p (∑ aᵢ τᵢ) = a`.
+  · intro a
+    ext j
+    rw [hp]
+    exact hτ.inner_right_fintype (fun i => a i) j
+  -- (e) `p τᵢ = eᵢ`.
+  · intro i
+    ext j
+    rw [hp, PiLp.single_apply, orthonormal_iff_ite.mp hτ j i]
+  -- (f) `d = 0` on `span τ`.
+  · intro z hz
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hz
+    have hc : ∀ i, inner ℝ (τ i) (∑ j, c j • τ j) = c i := fun i => hτ.inner_right_fintype c i
+    rw [hd]
+    simp only [hc, sub_self, norm_zero]
+  -- (g) `{‖p‖ < 1, d < 3/4} ⊂⊂ B₂(0)`.
+  · have hcl : closure {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} ⊆ closedBall (0 : Eucl P) (5 / 4) := by
+      refine (closure_minimal (t := {y : Eucl P | ‖p y‖ ≤ 1 ∧ d y ≤ 3 / 4})
+        (fun y hy => ⟨hy.1.le, hy.2.le⟩) ?_).trans fun y hy => hball y hy.1 hy.2
+      exact (isClosed_le p.continuous.norm continuous_const).inter
+        (isClosed_le hLip.continuous continuous_const)
+    refine ⟨?_, ?_, ?_⟩
+    · exact (isOpen_lt p.continuous.norm continuous_const).inter
+        (isOpen_lt hLip.continuous continuous_const)
+    · exact (isCompact_closedBall (0 : Eucl P) (5 / 4)).of_isClosed_subset isClosed_closure hcl
+    · exact hcl.trans (closedBall_subset_ball (by norm_num))
+  -- (h) `p⁻¹(K) ∩ {d ≤ γ}` is compact and lies in the cylinder.
+  · intro γ hγ K hK hKB
+    have hsub : p ⁻¹' K ∩ {y | d y ≤ γ} ⊆ {y : Eucl P | ‖p y‖ < 1 ∧ d y < 3 / 4} := by
+      intro y hy
+      exact ⟨mem_ball_zero_iff.mp (hKB hy.1), lt_of_le_of_lt hy.2 hγ⟩
+    refine ⟨?_, hsub⟩
+    refine (isCompact_closedBall (0 : Eucl P) (5 / 4)).of_isClosed_subset ?_
+      fun y hy => hball y (hsub hy).1.le (hsub hy).2.le
+    exact (hK.isClosed.preimage p.continuous).inter (isClosed_le hLip.continuous continuous_const)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
