@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.area_formula-a1.chart_piece_formula-a1",
+  "parent_id": "root.area_formula-a1",
+  "depth": 2,
+  "title": "Weighted area formula on one bi-Lipschitz chart piece",
+  "statement": "Let n, N, p ∈ ℕ, ψ : ℝⁿ → ℝ^N, f : ℝ^N → ℝ^p, D ⊆ ℝⁿ, K, C ∈ ℝ≥0, J : ℝ^N → ℝ, S ⊆ ℝ^N and h : ℝ^N → [0, ∞]. Assume:\n- D is compact;\n- ψ is differentiable at every u ∈ D, and Dψ(u) is injective for u ∈ D;\n- ψ is K-Lipschitz on D, and |u − v| ≤ C|ψ(u) − ψ(v)| for u, v ∈ D;\n- f∘ψ is K-Lipschitz on D;\n- S ⊆ ψ(D), and S is Hⁿ-measurable (null-measurable for μHE[n] on ℝ^N);\n- for Lⁿ-a.e. u ∈ D with ψ(u) ∈ S, f∘ψ is differentiable at u and J(ψ(u))·normDet(Dψ(u)) = normDet(D(f∘ψ)(u));\n- h is Hⁿ⌞S-a.e.-measurable.\n\nThen ∫_S h·ofReal(J) dHⁿ = ∫_{ℝ^p} Σ_{x∈S∩f⁻¹{y}} h(x) dHⁿ(y), and y ↦ Σ_{x∈S∩f⁻¹{y}} h(x) is AEMeasurable for Hⁿ on ℝ^p.",
+  "lean_statement": "∀ (n N p : ℕ) (ψ : Rn n → Rn N) (f : Rn N → Rn p) (D : Set (Rn n)) (K C : ℝ≥0) (J : Rn N → ℝ) (S : Set (Rn N)) (h : Rn N → ℝ≥0∞), IsCompact D → (∀ u ∈ D, DifferentiableAt ℝ ψ u) → (∀ u ∈ D, Function.Injective (fderiv ℝ ψ u)) → LipschitzOnWith K ψ D → (∀ u ∈ D, ∀ v ∈ D, dist u v ≤ (C : ℝ) * dist (ψ u) (ψ v)) → LipschitzOnWith K (f ∘ ψ) D → S ⊆ ψ '' D → NullMeasurableSet S μHE[n] → (∀ᵐ u ∂(volume : Measure (Rn n)), u ∈ D → ψ u ∈ S → DifferentiableAt ℝ (f ∘ ψ) u ∧ J (ψ u) * (fderiv ℝ ψ u).toLinearMap.normDet = (fderiv ℝ (f ∘ ψ) u).toLinearMap.normDet) → AEMeasurable h ((μHE[n] : Measure (Rn N)).restrict S) → (∫⁻ x in S, h x * ENNReal.ofReal (J x) ∂μHE[n] = ∫⁻ y, ∑' x : ↥(S ∩ f ⁻¹' {y}), h x ∂μHE[n]) ∧ AEMeasurable (fun y ↦ ∑' x : ↥(S ∩ f ⁻¹' {y}), h x) (μHE[n] : Measure (Rn p))",
+  "lean_name": "areaFormula_on_chart_piece",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-area-formula-a1-chart-piece-formula-a1-a1"
+}
