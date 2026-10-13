@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normal-coordinate map calculus.**  Let `V ⊆ ℝᵈ` be open, `v₀ ∈ V`, `ψ : ℝᵈ → ℝᴾ` and
+`Q : ℝᵈ → L(ℝᴾ, ℝᴾ)` be `C¹` on `V`, and `Q(v₀)k = 0` for `k ∈ E`.  Then
+`Φ(v, k) = ψ(v) + k − Q(v)k` is `C¹` on `V × E` (chain rule along `pr₁`, `ContDiffOn.clm_apply`),
+and by the chain and product rules its derivative at `(v₀, 0)` is
+`(w, h) ↦ Dψ(v₀)w + h − Q(v₀)h − (DQ(v₀)w)(0) = Dψ(v₀)w + h`. -/
+theorem Submission.dor_lmb_ret_nc_map_calculus : ∀ (P d : ℕ) (E : Submodule ℝ (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (Q : Euclid d → (Euclid P →L[ℝ] Euclid P)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 ψ V → ContDiffOn ℝ 1 Q V → (∀ k ∈ E, Q v₀ k = 0) → ContDiffOn ℝ 1 (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) (V ×ˢ univ) ∧ HasFDerivAt (fun z : Euclid d × E => ψ z.1 + (z.2 : Euclid P) - Q z.1 (z.2 : Euclid P)) ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E) + E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, 0) := by
+  intro P d E V ψ Q v₀ hV hv₀ hψ hQ hQ0
+  -- `pr₁` maps `V × E` into `V`; `ι ∘ pr₂` is continuous linear.
+  have hpr : MapsTo (Prod.fst : Euclid d × E → Euclid d) (V ×ˢ univ) V := fun z hz => hz.1
+  have hι : ContDiff ℝ 1 (fun z : Euclid d × E => (z.2 : Euclid P)) :=
+    (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)).contDiff
+  -- `Φ = ψ ∘ pr₁ + ι ∘ pr₂ − (Q ∘ pr₁)(ι ∘ pr₂)` is `C¹` on `V × E`.
+  refine ⟨((hψ.comp contDiffOn_fst hpr).add hι.contDiffOn).sub
+    ((hQ.comp contDiffOn_fst hpr).clm_apply hι.contDiffOn), ?_⟩
+  -- `ψ` and `Q` are differentiable at `v₀ ∈ V`, `V` open.
+  have hVn : V ∈ 𝓝 v₀ := hV.mem_nhds hv₀
+  have hψd : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+    (hψ.contDiffAt hVn).differentiableAt_one.hasFDerivAt
+  have hQd : HasFDerivAt Q (fderiv ℝ Q v₀) v₀ :=
+    (hQ.contDiffAt hVn).differentiableAt_one.hasFDerivAt
+  -- Chain rule along `pr₁`, and the derivative of `ι ∘ pr₂`.
+  have d1 : HasFDerivAt (fun z : Euclid d × E => ψ z.1)
+      ((fderiv ℝ ψ v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    hψd.comp (v₀, (0 : E)) hasFDerivAt_fst
+  have d2 : HasFDerivAt (fun z : Euclid d × E => (z.2 : Euclid P))
+      (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    (E.subtypeL.comp (ContinuousLinearMap.snd ℝ (Euclid d) E)).hasFDerivAt
+  have dQ : HasFDerivAt (fun z : Euclid d × E => Q z.1)
+      ((fderiv ℝ Q v₀).comp (ContinuousLinearMap.fst ℝ (Euclid d) E)) (v₀, (0 : E)) :=
+    hQd.comp (v₀, (0 : E)) hasFDerivAt_fst
+  -- Product rule for application, then `Q(v₀)h = 0` for `h ∈ E`.
+  convert (d1.add d2).sub (dQ.clm_apply d2) using 1
+  refine ContinuousLinearMap.ext fun z => ?_
+  simp [hQ0 _ z.2.2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
