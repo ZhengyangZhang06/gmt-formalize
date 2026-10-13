@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5a76e08971ba9859b21f9e9126daada0cce2101f2146f8c43e716640a75b662c",
+  "git_delta": {
+    "base_commit": "ef2e57da4b4eb78239fbcecfc6d53594cd12e433",
+    "candidate_commit": "533e83aac5a2ef02c171f227fdc00fe2f4d1d692",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "dc0577094386b99a4be158a9f50a5d39975e17e59930b545be62e13f5a24f529",
+    "source_sha256": "22eafd14083ef9c342bea4dc98d89826f5a90f5685c33c374f0e035549ca5b1d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ci_integral_exchange",
+      "statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (K : Set (Eucl P)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m) (ψ : TestFormOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → IsCompact K → Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) → (∀ s ∈ Icc (0 : ℝ) 1, tsupport (φ s : DifferentialForm (Eucl P) m) ⊆ K) → (∀ (x : Eucl P) (v : Fin m → Eucl P), (ψ : DifferentialForm (Eucl P) m) x v = ∫ s in (0 : ℝ)..1, (φ s : DifferentialForm (Eucl P) m) x v) → ∫ s in (0 : ℝ)..1, X (φ s) = X ψ",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
