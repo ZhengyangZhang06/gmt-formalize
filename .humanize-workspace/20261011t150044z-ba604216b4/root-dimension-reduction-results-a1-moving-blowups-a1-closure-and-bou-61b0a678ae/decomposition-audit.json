@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dmcbr_|dtc_approxTangent_of_null_diff|dtc_restrictDomain_isIntegerMultiplicity|dtc_massOn_eq_of_agreeOn|cmc_ml_measure_eq_of_eq_on_open_subsets|lcn_covector_finiteDimensional|cbr_imRep_measure_basic|cbr_orient_ae_eq_of_setIntegral_eq|isIntegerMultiplicity_of_local_reps' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "ext_of_generate_finite|isPiSystem_isOpen|withDensity_absolutelyContinuous|mono_ac|ae_restrict_iUnion_iff|ae_restrict_iff|restrict_congr_meas|restrict_eq_self_of_ae_mem",
+        "exists_contDiff_support_eq_eq_one_iff|ae_eq_of_forall_setIntegral_eq_of_sigmaFinite|exists_cthickening_subset_open|ext_alternating|hausdorffMeasure_image_le|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "isOpen_iUnion_countable|exists_eq_range|disjointed_subset|iUnion_disjointed|theorem MeasurableSet.disjointed|lemma MeasurableSet.disjointed|measurable_to_countable|lintegral_iUnion|theorem measure_iUnion",
+        "git show 022bd01bf7500f65a1cfbba033ecf91be9652452:GMT/Ch07/Submission.lean",
+        "git show 8f3bacb2e7f68423e88b488e5939a0d419c646fb:GMT/Ch07/Submission.lean",
+        "git show 0c79e2ab8192c141221cbe30fcd242e4becc6f00:GMT/Ch07/Submission.lean",
+        "git show 9adc8b20a486bc0e31782b03829041145baea564:GMT/Ch07/Submission.lean",
+        "git show 127487dd6bed94a74811cb8523d5535db984c906:GMT/Ch07/Submission.lean",
+        "git show d37eb4dfabd4fb449ac71a0682db55be0cc13023:GMT/Ch07/Submission.lean",
+        "git show 83e1683a29dd306d488f5d311b3237fe6b20cb16:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit/ChildContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit/SelectedAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_independent_audit/ReusedChildren.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-61b0a678ae/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-61b0a678ae/decomposition-v1.json",
+        "/tmp/dmcbr_independent_audit/ChildContracts.lean",
+        "/tmp/dmcbr_independent_audit/SelectedAssembly.lean",
+        "/tmp/dmcbr_independent_audit/ReusedChildren.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest; the frozen definitions are unchanged. The snapshot project contains no matching child declarations. Independently checked all eight proofs and compiled all eight standalone contract types. The seven reused declarations have accepted DAG records and byte-identical frozen types; their extracted proofs compile against the pinned contract using only propext, Classical.choice and Quot.sound. The new gluing name is unreserved. All names are bare identifiers, all types are independent one-line propositions, and dependencies are correctly directed and acyclic. No matrix-unit construction occurs. Splitting is appropriate for the distinct restriction, measure identification, orientation identification and countable gluing obligations. A freshly reconstructed hypothesis-only assembly compiles to the exact selected parent type using these children and the handoff's existing restrict_unique dependency, with only the same standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "approx_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary carriers without measurability assumptions. Cutting to a bounded test-function support confines the discrepancy to a Lipschitz image of the stated null set. Equality of restricted measures yields eventual equality of blow-up integrals. No circular dependency."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof checks every field of the restricted IMRep and its representing action. approx_local transfers tangent spaces at points of the open subdomain, so openness of the larger domain is genuinely unnecessary. The dependency and exact reused type are correct."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both inclusions between admissible-value sets follow from W ⊆ V ⊆ U and the stated action agreement. Taking suprema proves precisely the frozen mass identity, without unstated openness or finiteness assumptions."
+    },
+    {
+      "key": "measure_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The relatively compact open exhaustion is valid, including O equal to the whole space. Agreement on open sets supplies finiteness for the second restricted measure. Finite-measure uniqueness and continuity from below prove the exact conclusion; ≠ ∞ and < ∞ are equivalent here."
+    },
+    {
+      "key": "covector_fd",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on standard-basis tuples gives an injective linear map into a finite-dimensional function space. Alternating-map extensionality proves injectivity in all degrees, including degenerate dimensions. This supplies the declared orientation-proof dependency."
+    },
+    {
+      "key": "imrep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes all seven conjuncts. Positivity on the measurable carrier gives reverse absolute continuity; local finiteness and orientation measurability follow in the stated directions. The pinned density-change lemma applies to arbitrary integrands, so the unrestricted DifferentialForm conclusion needs no additional integrability hypothesis."
+    },
+    {
+      "key": "orient_ae_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Common restricted measures, compact-set finiteness and the evaluation bounds justify integrability. Smooth cutoffs convert the test-form hypothesis into scalar set-integral equality; density uniqueness, countable exhaustion and the covector_fd finite basis give simultaneous equality of the functionals. All required hypotheses are explicit."
+    },
+    {
+      "key": "glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof constructs the measurable partition, carrier and multiplicity, then proves the weight-measure identity before checking the IMRep fields. Reverse absolute continuity correctly transfers measurability and local orientation equality. Both tangent-locality applications have established local finiteness. The final action identity uses imrep_measure only after constructing the representation. The empty-domain case is covered, and no step relies on this child or the parent theorem."
+    }
+  ],
+  "required_changes": []
+}
