@@ -470,6 +470,56 @@ theorem Submission.deformation_dilation_hausdorff : ∀ (N k : ℕ) (ρ : ℝ), 
       one_pow, ENNReal.ofReal_one]
   rw [hc, one_mul]
 
+/-- Mass scaling under dilation (Simon Ch. 6, 2.23 for `η_ρ(x) = ρx`, where
+`|η_ρ^# ω|(x) = ρᵏ |ω(ρx)|`): if `Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, then `M(Y) = ρᵏ M(X)`.
+For a `σ`-pair `(A, B)` and `ω` admissible for `M(B)`, the pull-back `η = σᵏ ω(σ ·)` gives the
+admissible form `σ⁻ᵏ η = ω(σ ·)` for `M(A)` and `B(ω) = σᵏ A(σ⁻ᵏ η)`, so `M(B) ≤ σᵏ M(A)`.  As
+`(Y, X)` is a `ρ⁻¹`-pair, also `M(X) ≤ ρ⁻ᵏ M(Y)`, and the two bounds give equality in `[0, ∞]`. -/
+theorem Submission.deformation_dilation_mass : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass := by
+  intro N ρ hρ k X Y hXY
+  -- `M(B) ≤ σᵏ M(A)` for every `σ`-pair `(A, B)`, `σ > 0`.
+  have half : ∀ σ : ℝ, 0 < σ → ∀ A B : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          σ ^ k • (ω : DifferentialForm (Eucl N) k) (σ • x)) → B ω = A η) →
+      B.mass ≤ ENNReal.ofReal (σ ^ k) * A.mass := by
+    intro σ hσ A B hAB
+    have hσk : σ ^ k ≠ 0 := pow_ne_zero k hσ.ne'
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (B ω) ≤ _
+    obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N σ hσ k).1 ω
+    -- `σ⁻ᵏ η = ω(σ ·)` is admissible for `M(A)`.
+    have hη' : ∀ x, (((σ ^ k)⁻¹ • η : TestFormOn (univ : Set (Eucl N)) k) :
+        DifferentialForm (Eucl N) k) x = (ω : DifferentialForm (Eucl N) k) (σ • x) := by
+      intro x
+      rw [Submodule.coe_smul, Pi.smul_apply, hη x, smul_smul, inv_mul_cancel₀ hσk, one_smul]
+    have hadm : (σ ^ k)⁻¹ • η ∈ massAdmissibleOn univ k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      rw [hη' x]
+      exact hω.2 _
+    -- `B ω = A η = σᵏ A(σ⁻ᵏ η)`.
+    have hB : B ω = σ ^ k * A ((σ ^ k)⁻¹ • η) := by
+      rw [hAB ω η hη, map_smul, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hσk, one_mul]
+    rw [hB, ENNReal.ofReal_mul (pow_nonneg hσ.le k)]
+    exact mul_le_mul_right (A.le_massOn hadm) _
+  -- `(Y, X)` is a `ρ⁻¹`-pair: `η(x) = ρ⁻ᵏ ω(ρ⁻¹x)` for all `x` gives `ω(x) = ρᵏ η(ρx)`.
+  have hYX : ∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+      (∀ x, (η : DifferentialForm (Eucl N) k) x =
+        ρ⁻¹ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ⁻¹ • x)) → X ω = Y η := by
+    intro ω η hη
+    refine (hXY η ω fun x => ?_).symm
+    rw [hη (ρ • x), inv_smul_smul₀ hρ.ne', smul_smul, ← mul_pow, mul_inv_cancel₀ hρ.ne',
+      one_pow, one_smul]
+  -- `M(Y) ≤ ρᵏ M(X)` and `ρᵏ M(X) ≤ ρᵏ ρ⁻ᵏ M(Y) = M(Y)`.
+  refine le_antisymm (half ρ hρ X Y hXY) ?_
+  calc ENNReal.ofReal (ρ ^ k) * X.mass
+      ≤ ENNReal.ofReal (ρ ^ k) * (ENNReal.ofReal (ρ⁻¹ ^ k) * Y.mass) :=
+        mul_le_mul_right (half ρ⁻¹ (inv_pos.2 hρ) Y X hYX) _
+    _ = Y.mass := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (pow_nonneg hρ.le k), ← mul_pow,
+          mul_inv_cancel₀ hρ.ne', one_pow, ENNReal.ofReal_one, one_mul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
