@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d10771530d77a73eb78312612bae2901dcf800a3f8779c5629a1dbb22bd17e73",
+  "git_delta": {
+    "base_commit": "bad0934817c7c91e7374db6cfc12262a93497dee",
+    "candidate_commit": "66720a8678184615b93ffb60195dd2c938e2c169",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "gwe_gjb_exp_half_le",
+    "diff_sha256": "7ffc1dfada6c746766bd9d9ae286111adbdea63bf627124296a50d0185efb49c",
+    "source_sha256": "204c208bad00d8a8fb46f20925a2f852f417f2cbd55d2c3dd2ce5d2980de3b55",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.gwe_gjb_exp_half_le",
+      "statement": "∀ (s T : ℝ), 0 ≤ s → s ≤ T → Real.exp (s / 2) ≤ 1 + Real.exp (T / 2) / 2 * s",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
