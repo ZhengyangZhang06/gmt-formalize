@@ -627,6 +627,48 @@ theorem Submission.ind_pi_frame_geometry :
     refine (isCompact_closedBall (0 : Eucl P) (5 / 4)).of_isClosed_subset ?_
       fun y hy => hball y (hsub hy).1.le (hsub hy).2.le
     exact (hK.isClosed.preimage p.continuous).inter (isClosed_le hLip.continuous continuous_const)
+/-- Simon Ch. 6, proof of 8.2: for an orthonormal frame `τ₁, …, τₙ` of `Q = span τ ⊆ ℝ^P`, the
+parametrization `ι(a) = ∑ᵢ aᵢ τᵢ` is a linear isometry `ℝⁿ → ℝ^P` with range `Q`, so it pushes
+Lebesgue measure on `ℝⁿ` (`= Hⁿ`) forward to `Hⁿ ⌞ Q`.  As a closed, hence measurable, embedding
+it gives `∫_Q h dHⁿ = ∫_{ℝⁿ} h(ι(a)) da` for every `h`, and `(Hⁿ ⌞ Q)(K) = Lⁿ(ι⁻¹ K) < ∞` for
+compact `K`. -/
+theorem Submission.ind_pi_span_integral :
+    ∀ (P n : ℕ) (τ : Fin n → Eucl P), Orthonormal ℝ τ → (∀ h : Eucl P → ℝ, ∫ z in (Submodule.span ℝ (Set.range τ) : Set (Eucl P)), h z ∂(μHE[n] : Measure (Eucl P)) = ∫ a : Eucl n, h (∑ i, a i • τ i)) ∧ ∀ K : Set (Eucl P), IsCompact K → ((μHE[n] : Measure (Eucl P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Eucl P))) K < ∞ := by
+  intro P n τ hτ
+  -- The parametrization `ι(a) = ∑ᵢ aᵢ τᵢ` is linear.
+  let ι : Eucl n →ₗ[ℝ] Eucl P :=
+    { toFun := fun a => ∑ i, a i • τ i
+      map_add' := fun a b => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c a => by simp [Finset.smul_sum, smul_smul] }
+  have hι : ∀ a : Eucl n, ι a = ∑ i, a i • τ i := fun a => rfl
+  -- `ι` is an isometry: `‖ι a‖² = ∑ᵢ aᵢ² = ‖a‖²` by orthonormality.
+  have hiso : Isometry ι := by
+    refine AddMonoidHomClass.isometry_of_norm ι fun a => ?_
+    have hsq : ‖ι a‖ ^ 2 = ‖a‖ ^ 2 := by
+      rw [hι, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.real_norm_sq_eq]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 hsq
+  -- `range ι = span τ`.
+  have hrange : Set.range ι = (Submodule.span ℝ (Set.range τ) : Set (Eucl P)) := by
+    ext z
+    rw [SetLike.mem_coe, Submodule.mem_span_range_iff_exists_fun]
+    constructor
+    · rintro ⟨a, rfl⟩
+      exact ⟨fun i => a i, rfl⟩
+    · rintro ⟨c, rfl⟩
+      exact ⟨WithLp.toLp 2 c, by simp [hι]⟩
+  -- `ι` is a closed, hence measurable, embedding.
+  have hemb : MeasurableEmbedding ι := hiso.isClosedEmbedding.measurableEmbedding
+  -- `ι` pushes Lebesgue measure `= Hⁿ` on `ℝⁿ` forward to `Hⁿ ⌞ span τ`.
+  have hmap : (volume : Measure (Eucl n)).map ι =
+      (μHE[n] : Measure (Eucl P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Eucl P)) := by
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume n, hiso.map_euclideanHausdorffMeasure,
+      hrange]
+  refine ⟨fun h => ?_, fun K hK => ?_⟩
+  · rw [← hmap, hemb.integral_map]
+    rfl
+  · rw [← hmap, hemb.map_apply]
+    exact (hiso.isClosedEmbedding.isCompact_preimage hK).measure_lt_top
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
