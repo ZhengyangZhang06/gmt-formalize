@@ -359,6 +359,28 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- The wedge `γ ∧ β₀ ∧ ⋯ ∧ β_{m-1}` is linear in its first factor `γ`. -/
+theorem Submission.rpn_pfd_wedge_cons_isLinearMap :
+    ∀ (P m : ℕ) (β : Fin m → (Eucl P →L[ℝ] ℝ)), IsLinearMap ℝ (fun γ : Eucl P →L[ℝ] ℝ =>
+      wedgeCovectors (m + 1) (Fin.cons γ β : Fin (m + 1) → (Eucl P →L[ℝ] ℝ))) := by
+  intro P m β
+  -- Unfolding, `wedgeCovectors (m + 1) (Fin.cons γ β)` is
+  -- `alternatizeUncurryFin (γ.smulRight (wedgeCovectors m β))`; `alternatizeUncurryFin` is
+  -- linear, so it remains to see that `γ ↦ γ.smulRight (wedgeCovectors m β)` is linear.
+  constructor
+  · intro γ δ
+    simp only [wedgeCovectors, Fin.cons_zero, Fin.tail_cons]
+    rw [← ContinuousAlternatingMap.alternatizeUncurryFin_add]
+    congr 1
+    ext v w
+    simp [add_smul]
+  · intro c γ
+    simp only [wedgeCovectors, Fin.cons_zero, Fin.tail_cons]
+    rw [← ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+    congr 1
+    ext v w
+    simp [mul_smul]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

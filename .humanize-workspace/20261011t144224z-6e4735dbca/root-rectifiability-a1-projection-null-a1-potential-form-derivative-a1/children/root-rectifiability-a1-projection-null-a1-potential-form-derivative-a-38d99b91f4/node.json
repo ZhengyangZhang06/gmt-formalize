@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_sign-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "depth": 4,
+  "title": "Sign lemma: moving λ_j to the front costs (−1)^j, and a repeated factor kills the wedge",
+  "statement": "Let P, m ∈ ℕ, let l_0, …, l_m be continuous linear functionals on ℝ^P (l : Fin (m+1) → (ℝ^P)^*), and let j ∈ Fin (m+1). Write l∘j.succAbove for the m-tuple k ↦ l_{j.succAbove k}, i.e. the family l with l_j omitted. Then:\n(a) wedgeCovectors (m+1) (Fin.cons l_j (l∘j.succAbove)) = (−1)^j • wedgeCovectors (m+1) l, where j is read as a natural number in {0, …, m};\n(b) wedgeCovectors (m+1) (Fin.cons l_i (l∘j.succAbove)) = 0 for every i ∈ Fin (m+1) with i ≠ j.",
+  "lean_statement": "∀ (P m : ℕ) (l : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) (j : Fin (m + 1)), wedgeCovectors (m + 1) (Fin.cons (l j) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = ((-1 : ℝ) ^ (j : ℕ)) • wedgeCovectors (m + 1) l ∧ ∀ i : Fin (m + 1), i ≠ j → wedgeCovectors (m + 1) (Fin.cons (l i) (fun k => l (j.succAbove k)) : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)) = 0",
+  "lean_name": "rpn_pfd_wedge_cons_succAbove_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-38d99b91f4-a1"
+}
