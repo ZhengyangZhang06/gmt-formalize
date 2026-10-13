@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c54ce23baee37094cbc3e5e8cf294f235f69b5989c3ea2b612e7ad83310bf57d",
+  "git_delta": {
+    "base_commit": "ee28c5263fbe205d3e527f885593b4805b3ae7e0",
+    "candidate_commit": "0aeeaf94810c4c199753e5113de87d0f40424438",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dorag_tes_gah_lipschitz_weight_ball_le",
+    "diff_sha256": "ed33f19d300f05461756b21163ca97cbfe496138592dd25389e37bbc3925ee32",
+    "source_sha256": "e5d5945b3e699f14f7fa4dbd64d5eac21e4c99beb09597f0c849fcd87dd2ff97",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_tes_gah_lipschitz_weight_ball_le",
+      "statement": "∀ (n k : ℕ), 0 < n → ∀ (f : Euclid n → Euclid k), (∀ v w, ‖f v - f w‖ ≤ ‖v - w‖) → ∀ (G : Euclid n → ℝ≥0∞) (t : ℝ), (∫⁻ v in closedBall (0 : Euclid n) t, ENNReal.ofReal (1 + 2 ^ n * ∑ i : Fin n, ‖fderiv ℝ f v (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * G v) ≤ ENNReal.ofReal (1 + n * 2 ^ n) * (∫⁻ v in ball (0 : Euclid n) t, G v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
