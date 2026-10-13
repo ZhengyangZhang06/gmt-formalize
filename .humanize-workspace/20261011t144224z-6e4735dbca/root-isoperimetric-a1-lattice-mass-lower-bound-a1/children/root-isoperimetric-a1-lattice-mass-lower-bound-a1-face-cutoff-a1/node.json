@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1",
+  "parent_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "depth": 3,
+  "title": "Smooth cut-off equal to 1 on a shrunken lattice face and vanishing on all parallel lattice faces",
+  "statement": "Let n, N ∈ ℕ, ρ > 0, δ > 0, z ∈ ℤ^N and let α : Fin n ↪o Fin N be a strictly increasing multi-index with A := range α. Let K := {x ∈ ℝ^N : ρ(z_i + δ) ≤ x_i ≤ ρ(z_i + 1 − δ) for i ∈ A, and x_i = ρ z_i for i ∉ A}. Then there is a C^∞ function φ : ℝ^N → ℝ (ContDiff ℝ (⊤ : ℕ∞) φ) with compact support such that 0 ≤ φ ≤ 1 everywhere, φ = 1 on K, and φ = 0 on every lattice face latticeFace ρ (z', α) = ρ(z' + F_α) with z' ∈ ℤ^N, z' ≠ z.",
+  "lean_statement": "∀ (n N : ℕ) (ρ δ : ℝ) (z : Fin N → ℤ) (α : SimonMultiIndex n N), 0 < ρ → 0 < δ → ∃ φ : Eucl N → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ ∧ HasCompactSupport φ ∧ (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧ (∀ x : Eucl N, (∀ i : Fin N, (i ∈ range α → ρ * ((z i : ℝ) + δ) ≤ x i ∧ x i ≤ ρ * ((z i : ℝ) + 1 - δ)) ∧ (i ∉ range α → x i = ρ * (z i : ℝ))) → φ x = 1) ∧ ∀ z' : Fin N → ℤ, z' ≠ z → ∀ x ∈ latticeFace ρ ((z', α) : LatticeFaceIndex n N), φ x = 0",
+  "lean_name": "isoperimetric_lattice_face_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-face-cutoff-a1-a1"
+}

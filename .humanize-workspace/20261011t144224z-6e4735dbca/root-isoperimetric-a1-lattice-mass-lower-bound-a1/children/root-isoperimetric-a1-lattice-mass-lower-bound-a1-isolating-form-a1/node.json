@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.isolating_form-a1",
+  "parent_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "depth": 3,
+  "title": "Mass-admissible test form isolating one lattice face",
+  "statement": "Let n, N ∈ ℕ, ρ > 0, 0 < δ < 1/4 and F₀ ∈ LatticeFaceIndex n N (an n-face ρ(z + F_α) of the cubical lattice 𝓛_n(ρ) in ℝ^N). Then there is a test form ω ∈ TestFormOn univ n (a C^∞ compactly supported n-form on ℝ^N) which is mass-admissible (ω ∈ massAdmissibleOn univ n univ, i.e. tsupport ω ⊆ univ and covectorEuclideanNorm(ω(x)) ≤ 1 for all x), satisfies [[F]](ω) = latticeFaceAction ρ F ω = 0 for every face index F ≠ F₀, and satisfies (ρ(1 − 2δ))^n ≤ [[F₀]](ω).",
+  "lean_statement": "∀ (n N : ℕ) (ρ δ : ℝ) (F₀ : LatticeFaceIndex n N), 0 < ρ → 0 < δ → δ < 1 / 4 → ∃ ω : TestFormOn (univ : Set (Eucl N)) n, ω ∈ massAdmissibleOn (univ : Set (Eucl N)) n univ ∧ (∀ F : LatticeFaceIndex n N, F ≠ F₀ → latticeFaceAction ρ F (ω : DifferentialForm (Eucl N) n) = 0) ∧ (ρ * (1 - 2 * δ)) ^ n ≤ latticeFaceAction ρ F₀ (ω : DifferentialForm (Eucl N) n)",
+  "lean_name": "isoperimetric_lattice_face_isolating_form",
+  "depends_on": [
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.box_measure-a1",
+    "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.coord_covector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.box_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.face_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-isolating-form-a1-a1"
+}
