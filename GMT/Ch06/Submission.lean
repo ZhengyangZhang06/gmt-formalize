@@ -1526,6 +1526,112 @@ theorem Submission.fiw_tb_tda_poincare_sum :
     _ = ENNReal.ofReal ((2 * s) ^ (m + 1) * s) * ENNReal.ofReal ρ * Λ := by
         rw [hconst, ENNReal.ofReal_mul hC]
     _ = _ := by rw [ENNReal.ofReal_eq_coe_nnreal hC]
+/-- Simon Ch. 6, 2.11: a current kills every test form whose support misses `spt T`.
+`tsupport ω` is a compact subset of the zero region, so finitely many open `W ⊂⊂ U` on which `T`
+vanishes cover it, and a smooth partition of unity `ψᵢ` on `tsupport ω` subordinate to them
+splits `ω = ∑ᵢ ψᵢ ω` into test forms supported in those `W`. -/
+theorem Submission.fiw_tb_apply_eq_zero_of_disjoint_support :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n),
+      Disjoint (tsupport (ω : DifferentialForm (Eucl P) n)) T.support → T ω = 0 := by
+  intro P n U T ω hdisj
+  have hKc : IsCompact (tsupport (ω : DifferentialForm (Eucl P) n)) := ω.property.1.2
+  have hKU : tsupport (ω : DifferentialForm (Eucl P) n) ⊆ U := ω.property.2
+  -- `tsupport ω` lies in the zero region: the union of the open `W ⊂⊂ U` on which `T` vanishes.
+  have hKZ : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
+      ⋃ W : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧
+        T.VanishesOn W}, (W : Set (Eucl P)) := by
+    intro x hx
+    have hxZ : x ∈ T.zeroRegion := by
+      by_contra h
+      exact Set.disjoint_left.1 hdisj hx ⟨hKU hx, h⟩
+    obtain ⟨W, hW, hxW⟩ := Set.mem_sUnion.1 hxZ
+    exact Set.mem_iUnion.2 ⟨⟨W, hW⟩, hxW⟩
+  -- A finite subcover, indexed by the finset `t`.
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover _ (fun W => W.2.1) hKZ
+  have hcov : tsupport (ω : DifferentialForm (Eucl P) n) ⊆
+      ⋃ i : t, ((i : {W : Set (Eucl P) // IsOpen W ∧ IsCompact (closure W) ∧
+        closure W ⊆ U ∧ T.VanishesOn W}) : Set (Eucl P)) := by
+    intro x hx
+    obtain ⟨W, hWt, hxW⟩ := Set.mem_iUnion₂.1 (ht hx)
+    exact Set.mem_iUnion.2 ⟨⟨W, hWt⟩, hxW⟩
+  -- A smooth partition of unity `f i` on `tsupport ω` with `tsupport (f i) ⊆ W i`.
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Eucl P)) hKc.isClosed _ (fun i => i.1.2.1) hcov
+  -- `η i = f i • ω` is a test form in `U` supported in `W i`, hence `T (η i) = 0`.
+  have hfs : ∀ i, ContDiff ℝ _ (f i : Eucl P → ℝ) :=
+    fun i => contMDiff_iff_contDiff.1 (f i).contMDiff
+  have hsm : ∀ i, ContDiff ℝ _ (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) :=
+    fun i => (hfs i).smul ω.property.1.1
+  have hcs : ∀ i, HasCompactSupport (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) :=
+    fun i => hKc.of_isClosed_subset (isClosed_tsupport _)
+      (tsupport_smul_subset_right (fun x => f i x) _)
+  have hsU : ∀ i, tsupport (fun x => f i x • (ω : DifferentialForm (Eucl P) n) x) ⊆ U :=
+    fun i => (tsupport_smul_subset_right (fun x => f i x) _).trans hKU
+  let η : t → TestFormOn U n := fun i =>
+    ⟨fun x => f i x • (ω : DifferentialForm (Eucl P) n) x, ⟨⟨hsm i, hcs i⟩, hsU i⟩⟩
+  have hη : ∀ i, T (η i) = 0 := fun i =>
+    i.1.2.2.2.2 (η i) ((tsupport_smul_subset_left (fun x => f i x) _).trans (hf i))
+  -- `ω = ∑ i, η i`: `∑ i, f i = 1` on `tsupport ω`, and `ω = 0` off it.
+  have hsum : ω = ∑ i, η i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Eucl P) n) x =
+      ∑ i, f i x • (ω : DifferentialForm (Eucl P) n) x
+    rw [← Finset.sum_smul]
+    by_cases hx : x ∈ tsupport (ω : DifferentialForm (Eucl P) n)
+    · rw [← finsum_eq_sum_of_fintype, f.sum_eq_one hx, one_smul]
+    · rw [image_eq_zero_of_notMem_tsupport hx, smul_zero]
+  change T.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => hη i
+
+/-- **A rectifiable representation lives on the support (Simon Ch. 6, proof of 7.2, (G2)).**
+Under the mass formula `M_W(T) = ∫_{M ∩ W} θ dHⁿ` (MF), `T = τ(M, θ, ξ)` has `Hⁿ(M ∖ spt T) = 0`.
+Let `V = U ∩ Z`, `Z` the zero region of `T`.  An admissible form for `M_V(T)` is supported in
+`V ⊆ Z`, which misses `spt T = U ∖ Z`, so `T` kills it (`fiw_tb_apply_eq_zero_of_disjoint_support`):
+`M_V(T) = 0`, and `∫_{M ∩ V} θ dHⁿ = 0` by MF.  For compact `K ⊆ U`, `θ` is integrable on `M ∩ K`,
+hence a.e.-measurable, and positive on `M`, so `Hⁿ(M ∩ V ∩ K) = 0`.  The compact sets
+`F i ∩ closedBall 0 j` (`F i ⊆ U` closed, `⋃ i, F i = U`) cover `M ∩ V ⊇ M ∖ spt T`. -/
+theorem Submission.fiw_tb_rectifiable_support_null : (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ W : Set (Eucl P), IsOpen W → T.massOn W = ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))) → ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \ T.support) = 0 := by
+  intro hMF P n U hU T M θ ξ hM hT
+  -- `V = U ∩ Z` is open, and `M ∖ spt T ⊆ M ∩ V` since `M ⊆ U` and `spt T = U ∖ Z`.
+  have hV : IsOpen (U ∩ T.zeroRegion) := hU.inter T.isOpen_zeroRegion
+  have hsub : M \ T.support ⊆ M ∩ (U ∩ T.zeroRegion) := fun x hx =>
+    ⟨hx.1, hM.subset hx.1, Classical.byContradiction fun hxZ => hx.2 ⟨hM.subset hx.1, hxZ⟩⟩
+  -- `M_V(T) = 0`: an admissible form is supported in `V ⊆ Z`, which misses `spt T`.
+  have hmass : T.massOn (U ∩ T.zeroRegion) = 0 := by
+    refine nonpos_iff_eq_zero.1 (sSup_le ?_)
+    rintro _ ⟨ω, hω, rfl⟩
+    refine (ENNReal.ofReal_eq_zero.2 (le_of_eq ?_)).le
+    exact Submission.fiw_tb_apply_eq_zero_of_disjoint_support P n U T ω
+      (Set.disjoint_left.2 fun x hxω hxs => hxs.2 (hω.1 hxω).2)
+  -- MF with `W = V`: `∫_{M ∩ V} θ dHⁿ = 0`.
+  have hint : ∫⁻ x in M ∩ (U ∩ T.zeroRegion), ENNReal.ofReal (θ x)
+      ∂(μHE[n] : Measure (Eucl P)) = 0 :=
+    (hMF P n U hU T M θ ξ hM hT _ hV).symm.trans hmass
+  -- `Hⁿ(M ∩ V ∩ K) = 0` for compact `K ⊆ U`: `θ` is a.e.-measurable there, so `θ = 0` a.e. on
+  -- `M ∩ V ∩ K`, while `θ > 0` on `M`.
+  have hnull : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U →
+      (μHE[n] : Measure (Eucl P)) (M ∩ (U ∩ T.zeroRegion) ∩ K) = 0 := by
+    intro K hKc hKU
+    have hθ : AEMeasurable (fun x => ENNReal.ofReal (θ x))
+        ((μHE[n] : Measure (Eucl P)).restrict (M ∩ (U ∩ T.zeroRegion) ∩ K)) :=
+      ((hM.integrableOn K hKc hKU).aestronglyMeasurable.aemeasurable.mono_set
+        (fun x hx => ⟨hx.1.1, hx.2⟩ : M ∩ (U ∩ T.zeroRegion) ∩ K ⊆ M ∩ K)).ennreal_ofReal
+    have hae := (lintegral_eq_zero_iff' hθ).1
+      (nonpos_iff_eq_zero.1 ((lintegral_mono_set inter_subset_left).trans hint.le))
+    have h0 : (μHE[n] : Measure (Eucl P)).restrict (M ∩ (U ∩ T.zeroRegion) ∩ K)
+        (M ∩ (U ∩ T.zeroRegion) ∩ K) = 0 :=
+      measure_mono_null (t := {x | ENNReal.ofReal (θ x) ≠ 0})
+        (fun x hx => (ENNReal.ofReal_pos.2 (hM.pos x hx.1.1)).ne') (ae_iff.1 hae)
+    rwa [Measure.restrict_apply_self] at h0
+  -- The compact sets `F i ∩ closedBall 0 j ⊆ U` (`F i` closed, `⋃ i, F i = U`) cover `M ∩ V`.
+  obtain ⟨F, hFc, hFU, hFeq, -⟩ := hU.exists_iUnion_isClosed
+  refine measure_mono_null (hsub.trans fun x hx => ?_) (measure_iUnion_null fun k : ℕ × ℕ =>
+    hnull _ ((isCompact_closedBall 0 k.2).inter_left (hFc k.1)) (inter_subset_left.trans (hFU k.1)))
+  obtain ⟨i, hi⟩ := mem_iUnion.1 (by rw [hFeq]; exact hx.2.1 : x ∈ ⋃ i, F i)
+  exact mem_iUnion.2 ⟨(i, ⌈‖x‖⌉₊), hx, hi, mem_closedBall_zero_iff.2 (Nat.le_ceil _)⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
