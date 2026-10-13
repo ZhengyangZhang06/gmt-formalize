@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1.coeff_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1",
+  "depth": 5,
+  "title": "Uniform bound on the Euclidean coefficient norm of a test form",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be any set and let ω ∈ 𝒟^k(U) (TestFormOn U k: a C^∞ k-form ω : ℝ^P → Λ^k with compact support and tsupport ω ⊆ U). Then there is a real number M ≥ 0 such that |ω(x)|_E ≤ M for every x ∈ ℝ^P, where |α|_E := covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_{I(1)}, …, e_{I(k)})²)^{1/2} is the Euclidean coefficient norm of a k-covector α.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k), ∃ M : ℝ, 0 ≤ M ∧ ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ M",
+  "lean_name": "cbr_rlim_coeffNorm_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ff778db7b0-a1"
+}
