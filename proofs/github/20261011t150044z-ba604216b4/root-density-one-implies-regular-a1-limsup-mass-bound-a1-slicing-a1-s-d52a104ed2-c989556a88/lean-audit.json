@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f517d4d11721106429c3c89485adb32e831568df331ff6898664cdc1afe0c45",
+  "git_delta": {
+    "base_commit": "c0cfe7444a02ab0622da32c2dee3c1a9bca87b2f",
+    "candidate_commit": "a1f76b6cf3550511242c3679dd38ed7739056c89",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pc_straightening_cover",
+    "diff_sha256": "c0fd409b44647563ed8d13a165b745a0bf82d15697fd4085d9e36ef0169cd45e",
+    "source_sha256": "c0a3c16e5f87bbb5e4df0ed3c245ccaeadd420b57fd0f7d84b65ddc0c4e5e01e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pc_straightening_cover",
+      "statement": "∀ (n : ℕ) (F : Euclid (n + 1) → ℝ), ContDiff ℝ 1 F → ∃ (B : ℕ → Set (Euclid (n + 1))) (Ψ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ q, IsOpen (B q)) ∧ (∀ q, ContDiffOn ℝ 1 (Ψ q) (B q)) ∧ (∀ q, InjOn (Ψ q) (B q)) ∧ (∀ q, ∀ w ∈ B q, Bijective (fderiv ℝ (Ψ q) w)) ∧ (∀ q, ∀ w ∈ B q, F (Ψ q w) = w 0) ∧ (∀ q, IsOpen (Ψ q '' B q)) ∧ {y | fderiv ℝ F y ≠ 0} ⊆ ⋃ q, Ψ q '' B q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
