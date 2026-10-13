@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25f4783e43c159511c37ea8d06553b67aee031d3481cd2d4789bfd0986a3be3b",
+  "git_delta": {
+    "base_commit": "395e37817d8e6a787f9e15160161821ffafaf4e4",
+    "candidate_commit": "06e17ac224036f4281469656f89955cfec7f66fe",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dph_sh_extDeriv_compatible",
+    "diff_sha256": "848f5fbf9453664c88313aacfde2989189f62e1212d16886888d4753b615e7e7",
+    "source_sha256": "a9878b4710e7e1b45f4fa02351e6417fa33d356e914af53f84b8d84668bd4f4c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dph_sh_extDeriv_compatible",
+      "statement": "∀ (P Q j : ℕ) (G : Eucl P → Eucl Q) (ω : DifferentialForm (Eucl Q) j) (θ : DifferentialForm (Eucl P) j) (N : Set (Eucl P)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) G → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → IsOpen N → (∀ x ∈ N, θ x = (ω (G x)).compContinuousLinearMap (fderiv ℝ G x)) → ∀ x ∈ N, exteriorDerivative θ x = ((exteriorDerivative ω) (G x)).compContinuousLinearMap (fderiv ℝ G x)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
