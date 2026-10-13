@@ -1,0 +1,184 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1.flux_zero-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (M'(s) = 0 for s ∈ (0, 1]). The radial potential, Green's identity and the scaling formulas come from the sibling lemmas radial_potential (Submission.dorag_ha_mv_radial_potential), green_identity (Submission.dorag_ha_mv_green_identity) and affine_comp_deriv (Submission.dorag_ha_mv_affine_comp_deriv).
+
+1. (Radial potential.) By radial_potential applied to n, r, g, there is Ψ : ℝⁿ → ℝ that is C¹, has compact support, satisfies tsupport Ψ ⊆ closedBall(0, r), and has DΨ(y)v = g(|y|²)⟨y, v⟩ for all y, v.
+
+2. (The rescaled function.) Let V := ball(0, R), which is open, and G(z) := h(x − s z). For z ∈ V, |(x − s z) − x| = s|z| ≤ |z| < R because 0 < s ≤ 1, so x − s z ∈ closedBall(x, R) ⊆ U. The map z ↦ x − s z is affine, hence C^∞, and maps V into U. As h is C² on U, G is C² on V (ContDiffOn.comp).
+
+3. (Support.) tsupport Ψ ⊆ closedBall(0, r) ⊆ ball(0, R) = V, because r < R (closedBall_subset_ball).
+
+4. (Green.) green_identity applies to V, G, Ψ: V is open, G is C² on V, Ψ is C¹ with compact support, and tsupport Ψ ⊆ V. It gives
+∫ Σ_i DΨ(y)e_i·DG(y)e_i dy = −∫ Ψ(y)·Σ_i D²G(y)(e_i, e_i) dy.
+
+5. (The right side is 0.) Let y ∈ ℝⁿ.
+- If y ∈ V: by affine_comp_deriv, D²G(y)(e_i, e_i) = s²·D²h(x − s y)(e_i, e_i) for each i. So Σ_i D²G(y)(e_i, e_i) = s²·Δh(x − s y) = 0, because x − s y ∈ U by step 2.
+- If y ∉ V: then y ∉ tsupport Ψ by step 3, so Ψ(y) = 0.
+In both cases Ψ(y)·Σ_i D²G(y)(e_i, e_i) = 0, so the right side of step 4 is −∫ 0 = 0.
+
+6. (The left integrand.) Fix any y.
+- By step 1, DΨ(y)e_i = g(|y|²)⟨y, e_i⟩.
+- By affine_comp_deriv, which holds for every y and every function h, DG(y)e_i = −s·Dh(x − s y)e_i.
+- y = Σ_i ⟨y, e_i⟩e_i (expansion in the standard orthonormal basis EuclideanSpace.basisFun; ⟨y, e_i⟩ = y_i). Since Dh(x − s y) is linear, Σ_i ⟨y, e_i⟩·Dh(x − s y)e_i = Dh(x − s y)(y).
+Therefore
+Σ_i DΨ(y)e_i·DG(y)e_i = Σ_i g(|y|²)⟨y, e_i⟩·(−s·Dh(x − s y)e_i) = −s·(Dh(x − s y)(y)·g(|y|²)).
+
+7. (Conclusion.) By steps 4–6,
+0 = ∫ −s·(Dh(x − s y)(y)·g(|y|²)) dy = −s·∫ Dh(x − s y)(y)·g(|y|²) dy.
+Pulling a constant out of a Bochner integral needs no integrability (integral_const_mul). Since −s ≠ 0, ∫ Dh(x − s y)(y)·g(|y|²) dy = 0. ∎
+
+Formalization appendix. Given the three sibling theorems, this compiled at decomposition time inside namespace GMT.Ch07 under the frozen header (Lean 4.35.0-rc3, Mathlib 25730c7c). #print axioms reports propext, Classical.choice, Quot.sound. If a transcription detail fails, the numbered proof above is authoritative.
+
+theorem Submission.dorag_ha_mv_flux_zero : ∀ (n : ℕ) (U : Set (Euclid n)) (h : Euclid n → ℝ), IsOpen U → ContDiffOn ℝ 2 h U → (∀ y ∈ U, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → ∀ (x : Euclid n) (r R : ℝ), 0 < r → r < R → closedBall x R ⊆ U → ∀ g : ℝ → ℝ, Continuous g → (∀ t : ℝ, r ^ 2 ≤ t → g t = 0) → ∀ s : ℝ, 0 < s → s ≤ 1 → ∫ y : Euclid n, fderiv ℝ h (x - s • y) y * g (‖y‖ ^ 2) = 0 := by
+  intro n U h hU hh hΔ x r R hr hrR hRU g hg hgr s hs0 hs1
+  obtain ⟨Ψ, hΨC, hΨc, hΨsupp, hΨd⟩ := Submission.dorag_ha_mv_radial_potential n r g hr hg hgr
+  set G : Euclid n → ℝ := fun z => h (x - s • z) with hG
+  have hVmaps : ∀ z ∈ ball (0 : Euclid n) R, x - s • z ∈ U := by
+    intro z hz
+    apply hRU
+    rw [mem_closedBall, dist_eq_norm, sub_sub_cancel_left, norm_neg, norm_smul, Real.norm_eq_abs,
+      abs_of_pos hs0]
+    rw [mem_ball, dist_zero_right] at hz
+    nlinarith [norm_nonneg z]
+  have hGC : ContDiffOn ℝ 2 G (ball (0 : Euclid n) R) := by
+    have hA : ContDiff ℝ 2 (fun z : Euclid n => x - s • z) := contDiff_const.sub (contDiff_id.const_smul s)
+    exact hh.comp hA.contDiffOn (fun z hz => hVmaps z hz)
+  have hsuppV : tsupport Ψ ⊆ ball (0 : Euclid n) R := hΨsupp.trans (closedBall_subset_ball hrR)
+  have hgreen := Submission.dorag_ha_mv_green_identity n (ball (0 : Euclid n) R) G Ψ isOpen_ball hGC hΨC hΨc hsuppV
+  have hRHS : ∀ z, Ψ z * ∑ i : Fin n, iteratedFDeriv ℝ 2 G z ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+    intro z
+    by_cases hz : z ∈ ball (0 : Euclid n) R
+    · have hsum : ∑ i : Fin n, iteratedFDeriv ℝ 2 G z ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+        simp_rw [hG, (Submission.dorag_ha_mv_affine_comp_deriv n h x s z _ _).2]
+        rw [← Finset.mul_sum, hΔ _ (hVmaps z hz), mul_zero]
+      rw [hsum, mul_zero]
+    · have : Ψ z = 0 := image_eq_zero_of_notMem_tsupport (fun h' => hz (hsuppV h'))
+      rw [this, zero_mul]
+  have hexp : ∀ (L : Euclid n →L[ℝ] ℝ) (z : Euclid n), ∑ i : Fin n, inner ℝ z (EuclideanSpace.single i (1:ℝ)) * L (EuclideanSpace.single i 1) = L z := by
+    intro L z
+    conv_rhs => rw [← (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr z]
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp [EuclideanSpace.inner_single_right, map_smul]
+  have hLHS : ∀ z, ∑ i : Fin n, fderiv ℝ Ψ z (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ G z (EuclideanSpace.single i (1 : ℝ)) = -s * (fderiv ℝ h (x - s • z) z * g (‖z‖ ^ 2)) := by
+    intro z
+    have hGd : ∀ a, fderiv ℝ G z a = -(s * fderiv ℝ h (x - s • z) a) := fun a =>
+      (Submission.dorag_ha_mv_affine_comp_deriv n h x s z a a).1
+    simp_rw [hΨd, hGd]
+    rw [← hexp (fderiv ℝ h (x - s • z)) z, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  simp_rw [hLHS, hRHS, integral_zero, neg_zero, integral_const_mul] at hgreen
+  rcases mul_eq_zero.1 hgreen with h1 | h1
+  · exact absurd h1 (by linarith)
+  · exact h1
+
+## Key steps
+
+1. Take Ψ from radial_potential: C¹, compact support in closedBall(0, r), DΨ(y)v = g(|y|²)⟨y, v⟩.
+2. G(z) = h(x − s z) is C² on V = ball(0, R), because 0 < s ≤ 1 keeps x − s z in closedBall(x, R) ⊆ U; and tsupport Ψ ⊆ V since r < R.
+3. green_identity gives ∫ Σ_i DΨ e_i·DG e_i = −∫ Ψ·Σ_i D²G(e_i, e_i); the right side vanishes because Σ_i D²G(y)(e_i, e_i) = s²Δh(x − s y) = 0 on V (affine_comp_deriv) and Ψ = 0 off V.
+4. By affine_comp_deriv and y = Σ⟨y, e_i⟩e_i, the left integrand is −s·Dh(x − s y)(y)·g(|y|²); pull out −s ≠ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean && cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (IDENTICAL)`
+- `grep -rn 'theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|theorem integral_lineDeriv_mul_eq|theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem integral_hasDerivAt_right|theorem HasFDerivAt.norm_sq|theorem hasStrictFDerivAt_norm_sq|theorem tsupport_eq|theorem iteratedFDeriv_two_apply|theorem exists_hasDerivAt_eq_slope|theorem constant_of_derivWithin_zero|theorem tendsto_integral_of_dominated_convergence|theorem cthickening_closedBall|theorem comp_right_fderiv|theorem fderiv_comp_sub' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'iteratedFDeriv_comp_add_left|iteratedFDeriv_comp_right|iteratedFDeriv_comp_sub|exists_cthickening_subset_open|lipschitzWith_of_hasCompactSupport|measurePreserving_sub_left|iteratedFDeriv_const_smul|ContinuousLinearEquiv.iteratedFDerivWithin_comp_right|inner_single_right|support_fderiv_subset|fderiv_comp_add_left|addHaar_ball_center' <snapshot>/mathlib/Mathlib`
+- `sed -n 1,60p and 215,250p Analysis/Calculus/LineDeriv/IntegrationByParts.lean; sed -n 280,310p Analysis/Calculus/ParametricIntegral.lean; sed -n 940,985p Analysis/Calculus/ContDiff/FTaylorSeries.lean; sed -n 430,500p Analysis/Calculus/ContDiff/Basic.lean; sed -n 190,215p Analysis/InnerProductSpace/Calculus.lean`
+- `grep -n '^theorem|^lemma|^def' Analysis/InnerProductSpace/Laplacian.lean; ls Analysis/InnerProductSpace/Harmonic/; grep -rn -E 'theorem .*(mean|Mean)' Analysis/InnerProductSpace/Harmonic/*.lean; grep -n '^theorem' Analysis/Complex/Harmonic/MeanValue.lean`
+- `grep -rn -i -E 'mean_value|meanValue|mean value|laplacian|harmonic|integral_mul_fderiv|lineDeriv_mul' <snapshot>/project/GMT; grep -rln -i -E 'mean_value|meanValue|laplacian|harmonic' .lake/packages/simongmt; grep -n -E '^(theorem|lemma|def) ' SimonGMT/Chapter08/DistributionalConstancy.lean Chapter05/HarmonicEnergy.lean Chapter05/Basic.lean Chapter04/FirstVariation.lean`
+- `sed -n 336,386p and 540,640p verifier/gmt-compare.py (child scope replay; only Contract.lean and build inputs are frozen, new Lean files allowed under GMT/Ch07/); git show <ref>:GMT/Ch07/Submission.lean | grep '^import' over all 957 refs (accepted branches add Mathlib/SimonGMT imports)`
+- `python3 -I scan of dag.json (325 nodes) and nodes/*/*.json lean_name fields (566 distinct names) for the 6 proposed dorag_ha_mv_* names: no collision`
+- `lean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH = workspace .lake builds) /tmp/mv-decomp/Scope.lean, Children.lean, Assembly.lean, Flux.lean, AffineTest.lean, RadialGreenTest.lean, DerivTest.lean, BallTest.lean, Avail.lean, AllChildren.lean, AllChildrenClean.lean (#print axioms)`
+- `ls lake-packages-25730c7c/mathlib/.lake/build/lib/lean/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.olean (present)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Equiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Harmonic/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter05/HarmonicEnergy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-9f82487345/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/.lake/build/lib/lean/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.olean`
+- `/tmp/mv-decomp/Children.lean`
+- `/tmp/mv-decomp/Assembly.lean`
+- `/tmp/mv-decomp/Flux.lean`
+- `/tmp/mv-decomp/AffineTest.lean`
+- `/tmp/mv-decomp/RadialGreenTest.lean`
+- `/tmp/mv-decomp/DerivTest.lean`
+- `/tmp/mv-decomp/BallTest.lean`
+- `/tmp/mv-decomp/Avail.lean`
+- `/tmp/mv-decomp/AllChildrenClean.lean`
+
+Snapshot and scope:
+- The snapshot pins project b4d606d and Mathlib 25730c7c.
+- GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, so child types are checked in exactly the comparator scope.
+
+Nothing reusable exists for this node:
+- The project snapshot has none of the needed lemmas; Ch05 HarmonicApproximationLemma is only a Prop.
+- SimonGMT has no mean value, Green or radial-potential lemma; Chapter05/Basic.lean only re-exports HarmonicOn vocabulary.
+- Mathlib's only harmonic mean value theorem is HarmonicOnNhd.circleAverage_eq on ℂ (Complex/Harmonic/MeanValue.lean).
+- Laplacian.lean has no composition-on-the-right lemma.
+So the general-n argument must be built from the following pinned Mathlib lemmas.
+
+Pinned Mathlib lemmas used by the children:
+- integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable (LineDeriv/IntegrationByParts.lean:226). It requires each factor to be differentiable only on the other's tsupport, which removes the parent's cutoff. The frozen header does not import it, so green_identity adds the import; the olean is present in the comparator package tree.
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286).
+- Continuous.integral_hasStrictDerivAt, contDiff_one_iff_deriv, hasStrictFDerivAt_norm_sq / contDiff_norm_sq (InnerProductSpace/Calculus.lean:197,140).
+- iteratedFDeriv_two_apply and iteratedFDeriv_comp_add_left (FTaylorSeries.lean:948,958).
+- ContinuousLinearEquiv.iteratedFDerivWithin_comp_right (ContDiff/Basic.lean:436) and ContinuousLinearEquiv.comp_right_fderiv (FDeriv/Equiv.lean:227).
+- fderiv_comp_add_left (FDeriv/Add.lean:867) and support_fderiv_subset (FDeriv/Const.lean:379).
+- exists_hasDerivAt_eq_slope (Deriv/MeanValue.lean:123).
+- IsCompact.exists_cthickening_subset_open (Thickening.lean:426) and cthickening_closedBall (Ball/Pointwise.lean:318).
+- tendsto_integral_of_dominated_convergence (DominatedConvergence.lean:57), Measure.measurePreserving_sub_left, MeasurePreserving.setIntegral_preimage_emb and Measure.addHaar_ball_center (EqHaar.lean:418).
+All except the IBP lemma are reachable from the frozen imports, as Avail.lean confirmed.
+
+Comparator and names:
+- gmt-compare.py freezes only Contract.lean and the build inputs, and allows new Lean files under GMT/Ch07/.
+- The six dorag_ha_mv_* names are unreserved: no collision among the 566 lean_names in dag.json and the node files.
+
+Lean checks:
+- All six child types elaborate in comparator scope.
+- Complete proofs of all six children compile, and so does the parent assembly of the exact frozen dorag_ha_mean_value type (AllChildrenClean.lean).
+- Axioms are only propext, Classical.choice and Quot.sound.
