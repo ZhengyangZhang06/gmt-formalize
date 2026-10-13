@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1.signed_coarea-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_identity-a1",
+  "depth": 4,
+  "title": "Signed co-area identity on bands {a < f < b} and integrability of the slice density (Simon Ch. 6, Remark 4.2; parent Step 4)",
+  "statement": "Let P ∈ ℕ, let μ and ν be measures on ℝ^P, and let M ⊆ ℝ^P. Let f : ℝ^P → ℝ, G : ℝ^P → ℝ^P and g : ℝ^P → ℝ be Borel, with x ↦ |G(x)|·g(x) integrable for μ⌞M. Assume the co-area identity (CA): for every Borel h : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹{t}} h dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹{t}} h dν dt = ∫_M |G| h dμ (integrals against restricted measures). Let φ(t) := ∫_{M∩f⁻¹{t}} g dν be the Bochner integral against ν⌞(M ∩ f⁻¹{t}), which is 0 if g is not integrable there. Then φ is Lebesgue-integrable on ℝ, and for all a, b ∈ ℝ, ∫_{M∩f⁻¹((a,b))} |G| g dμ = ∫_{(a,b)} φ(t) dt.",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Eucl P)) (M : Set (Eucl P)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (g : Eucl P → ℝ), Measurable f → Measurable G → Measurable g → Integrable (fun x => ‖G x‖ * g x) (μ.restrict M) → (∀ h : Eucl P → ℝ≥0∞, Measurable h → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, h x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * h x ∂μ) → Integrable (fun t : ℝ => ∫ x in M ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∀ a b : ℝ, ∫ x in M ∩ f ⁻¹' Ioo a b, ‖G x‖ * g x ∂μ = ∫ t in Ioo a b, (∫ x in M ∩ f ⁻¹' {t}, g x ∂ν)",
+  "lean_name": "slicing_im_si_signed_coarea",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1-signed-coarea-a1-a1"
+}

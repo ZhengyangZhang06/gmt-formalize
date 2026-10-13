@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "simpleNVector|tauAction|fiw_ims_tt_|norm_simpleNVector|simpleNVector_norm|abs_simpleNVector",
+        "Continuous.comp_aestronglyMeasurable",
+        "aestronglyMeasurable_indicator_iff₀",
+        "ae_restrict_iff'₀",
+        "isBoundedBilinearMap_apply",
+        "hasSum_integral_of_summable_integral_norm",
+        "fiw_ims_tt_unit_bound",
+        "fiw_ims_tt_term_bound",
+        "sed -n '1,300p' /tmp/tsumtau_decomp.RSBst6/Scratch/ChildProofs.lean",
+        "sed -n '1,180p' /tmp/tsumtau_decomp.RSBst6/Scratch/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Scratch/Child_fiw_ims_tt_unit_bound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Scratch/Child_fiw_ims_tt_term_bound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Scratch/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/tsumtau_decomp.RSBst6/Scratch/Child_fiw_ims_tt_unit_bound.lean",
+        "/tmp/tsumtau_decomp.RSBst6/Scratch/Child_fiw_ims_tt_term_bound.lean",
+        "/tmp/tsumtau_decomp.RSBst6/Scratch/ChildProofs.lean",
+        "/tmp/tsumtau_decomp.RSBst6/Scratch/Full.lean"
+      ],
+      "conclusion": "The split appropriately separates the orthonormal evaluation bound and single-triple analytic estimate, leaving localization and summation with the selected parent. The dependency chain unit_bound → term_bound → parent is acyclic and sufficient for the exact frozen HasSum statement. The pinned definitions and library lemmas support every proof step; searches found no existing project/SimonGMT bound under the searched simpleNVector names. Both bare names are unreserved outside this proposal in the scanned DAG/decompositions. Independently validated both one-line types and confirmed their challenge files exactly match the comparator generator; both elaborate without child implementations. Scratch project/build inputs match the snapshot, and package revisions match their pins. Independently reran Full.lean: its child and parent types match the frozen strings, compilation succeeds, and the parent depends only on propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match exactly, including orthonormality, both signs, and the covector operator norm. The supplied proof correctly combines simpleNVector_apply, the alternating-map operator-norm inequality, unit vector norms, and absolute-value invariance under negation. It also covers n = 0. The obligation is independent, non-circular, and directly supports term_bound. Its bare name is unreserved."
+    },
+    {
+      "key": "term_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match the standalone Lean type. The proof correctly localizes to M ∩ closure W, obtains restricted strong measurability, verifies continuous evaluation, and extends by a null-measurable indicator. The declared unit_bound dependency yields the a.e. estimate; positivity of θ and the existing norm bound justify the ofReal multiplication, including B ≥ 0. The lintegral steps require no omitted measurability assumption. No openness of U or extra smoothness is needed. The complete proof is non-circular and supplies exactly the estimate used in the checked parent assembly. Its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.term_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1",
+  "depth": 4,
+  "title": "Measurability and L¹ bound of one rectifiable triple's integrand against a bounded continuous form",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P. Let U, W, M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → NVector (Eucl P) n satisfy IsRectifiableTriple U n M θ ξ. Assume CompactlyContainedOpen W U: W is open, closure W is compact, and closure W ⊆ U. Let ω : ℝ^P → Covector (Eucl P) n be continuous with tsupport ω ⊆ W, and let B ∈ ℝ with ‖ω(x)‖ ≤ B for every x ∈ ℝ^P (operator norm). Put G := M.indicator (x ↦ θ(x)·ξ(x)(ω(x))). Then G is H-a.e. strongly measurable, and ∫⁻ ‖G(x)‖ₑ dH(x) ≤ ofReal(B)·∫⁻_{M∩W} ofReal(θ(x)) dH(x).",
+  "lean_statement": "∀ (P n : ℕ) (U W M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (ω : Eucl P → Covector (Eucl P) n) (B : ℝ), IsRectifiableTriple U n M θ ξ → CompactlyContainedOpen W U → Continuous ω → tsupport ω ⊆ W → (∀ x, ‖ω x‖ ≤ B) → AEStronglyMeasurable (M.indicator fun x => θ x * ξ x (ω x)) (μHE[n] : Measure (Eucl P)) ∧ ∫⁻ x, ‖M.indicator (fun y => θ y * ξ y (ω y)) x‖ₑ ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal B * ∫⁻ x in M ∩ W, ENNReal.ofReal (θ x) ∂(μHE[n] : Measure (Eucl P))",
+  "lean_name": "fiw_ims_tt_term_bound",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-term-bound-a1-a1"
+}
