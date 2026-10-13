@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.slice_comparison-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1",
+  "depth": 5,
+  "title": "Locality of interval products: Z(η) = Z(η′) when η = η′ near [0,1] × spt X",
+  "statement": "Let m, q ∈ ℕ, X ∈ D_q(ℝ^m) and Z ∈ D_{q+1}(ℝ^{m+1}) with ProdChar(X, Z). Let η, η′ ∈ D^{q+1}(ℝ^{m+1}) and let N ⊆ ℝ^{m+1} be an open set with cyl(spt X) ⊆ N and η(y) = η′(y) for every y ∈ N. Then Z(η) = Z(η′). (No finiteness of M(X) is assumed.) Notation: ℝ^p := Eucl p = EuclideanSpace ℝ (Fin p). For s ∈ ℝ and x ∈ ℝ^m, cons(s, x) := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ ℝ^{m+1}; ι(v) := cons(0, v); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{m+1}; for y ∈ ℝ^{m+1}, t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)); cyl(A) := {y : t(y) ∈ [0,1] ∧ tl(y) ∈ A}. D_q(ℝ^p) := GeometricCurrentOn univ q, D^q(ℝ^p) := TestFormOn univ q, M = mass, spt = support, |γ| := covectorEuclideanNorm γ. For X ∈ D_q(ℝ^m) and Z ∈ D_{q+1}(ℝ^{m+1}), ProdChar(X, Z) means: for every η ∈ D^{q+1}(ℝ^{m+1}) and every φ : ℝ → D^q(ℝ^m) with φ(s)(x)(v) = η(cons(s, x))(Fin.cons e₀ (i ↦ ι(v_i))) for all s ∈ [0,1], x ∈ ℝ^m and v : Fin q → ℝ^m, one has Z(η) = ∫_0^1 X(φ(s)) ds (interval integral).",
+  "lean_statement": "∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (q + 1)), (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) q), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin q → Eucl m), (φ s : DifferentialForm (Eucl m) q) x v = (η : DifferentialForm (Eucl (m + 1)) (q + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ∀ (η η' : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1)) (N : Set (Eucl (m + 1))), IsOpen N → {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧ (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N → (∀ y ∈ N, (η : DifferentialForm (Eucl (m + 1)) (q + 1)) y = (η' : DifferentialForm (Eucl (m + 1)) (q + 1)) y) → Z η = Z η'",
+  "lean_name": "dph_sh_apply_eq_of_eqOn_nhds_cyl",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1-a1",
+      "result_commit": "143edefdefb78884021e674a1258fa4be2c3d315",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-locality-a1-a1",
+      "result_commit": "2bb89d471b76edd9ebc081e2c902866237ab1a3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-33fe8712de-a1"
+}

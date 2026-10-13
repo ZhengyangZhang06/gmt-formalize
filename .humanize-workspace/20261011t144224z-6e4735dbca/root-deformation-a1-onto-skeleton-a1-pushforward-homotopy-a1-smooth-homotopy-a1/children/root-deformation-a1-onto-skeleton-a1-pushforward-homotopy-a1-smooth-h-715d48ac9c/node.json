@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1",
+  "depth": 5,
+  "title": "Interior-product and pull-back bound |γ(w, T·, …, T·)| ≤ √(k+1)·|w|·‖T‖^k·|γ| (fact (F8))",
+  "statement": "Let m, m′, k ∈ ℕ, let γ be a (k+1)-covector on ℝ^{m′} (γ : Covector (Eucl m′) (k+1)), w ∈ ℝ^{m′}, T : ℝ^m → ℝ^{m′} a continuous linear map, a ∈ ℝ, and let β be a k-covector on ℝ^m with β(v) = a·γ(Fin.cons w (i ↦ T(v_i))) for every v : Fin k → ℝ^m. Then |β| ≤ |a|·√(k+1)·‖w‖·‖T‖^k·|γ|. Here |·| = covectorEuclideanNorm, the Euclidean norm of the coefficients α(e_{I(1)}, …, e_{I(n)}) over strictly increasing index tuples I (e = standard basis, EuclideanSpace.basisFun), ‖w‖ is the Euclidean norm and ‖T‖ the operator norm.",
+  "lean_statement": "∀ (m m' k : ℕ) (γ : Covector (Eucl m') (k + 1)) (w : Eucl m') (T : Eucl m →L[ℝ] Eucl m') (a : ℝ) (β : Covector (Eucl m) k), (∀ v : Fin k → Eucl m, β v = a * γ (Fin.cons w (fun i => T (v i)))) → covectorEuclideanNorm β ≤ |a| * Real.sqrt ((k : ℝ) + 1) * ‖w‖ * ‖T‖ ^ k * covectorEuclideanNorm γ",
+  "lean_name": "dph_sh_covectorEuclideanNorm_interior_le",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1-a1",
+      "result_commit": "3e52d3e816fb507ab732d7ad15590fb7280bc981",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53-a1",
+      "result_commit": "5d1a7f344e2f451f9ba86a77653fa6071726ad71",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c-a1"
+}
