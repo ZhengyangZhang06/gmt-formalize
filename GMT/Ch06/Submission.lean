@@ -370,17 +370,6 @@ theorem Submission.ind_rs_dilation_measurePreserving :
           (μHE[n] : Measure (Eucl P)) := by
   intro P n x r hr
   -- `η` is a homeomorphism of `ℝ^P`: translation by `-x`, then dilation by `r⁻¹`.
-/-- `τ(M, θ, ξ)` tested against `(rⁿ)⁻¹ ω ∘ η`, `η(y) = r⁻¹(y − x)`, `r > 0`, equals
-`τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` tested against `ω`: `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ` and
-`ξ(y)` is linear. -/
-theorem Submission.ind_rs_tauAction_dilation :
-    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
-      (x : Eucl P) (r : ℝ) (ω : DifferentialForm (Eucl P) n), 0 < r →
-      tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) =
-        tauAction n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z))
-          (fun z => ξ (x + r • z)) ω := by
-  intro P n M θ ξ x r ω hr
-  -- `η(y) = r⁻¹ • (y - x)` is a homeomorphism of `ℝ^P`, hence a measurable embedding.
   let e : Eucl P ≃ₜ Eucl P :=
     (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
   have he : (e : Eucl P → Eucl P) = fun y : Eucl P => r⁻¹ • (y - x) := by
@@ -410,6 +399,59 @@ theorem Submission.ind_rs_tauAction_dilation :
       coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
       ENNReal.ofReal_one]
   rw [hc, one_mul]
+
+/-- `τ(M, θ, ξ)` tested against `(rⁿ)⁻¹ ω ∘ η`, `η(y) = r⁻¹(y − x)`, `r > 0`, equals
+`τ(η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` tested against `ω`: `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ` and
+`ξ(y)` is linear. -/
+theorem Submission.ind_rs_tauAction_dilation :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n)
+      (x : Eucl P) (r : ℝ) (ω : DifferentialForm (Eucl P) n), 0 < r →
+      tauAction n M θ ξ (fun y => (r ^ n)⁻¹ • ω (r⁻¹ • (y - x))) =
+        tauAction n ((fun y => r⁻¹ • (y - x)) '' M) (fun z => θ (x + r • z))
+          (fun z => ξ (x + r • z)) ω := by
+  intro P n M θ ξ x r ω hr
+  -- `η(y) = r⁻¹ • (y - x)` is a homeomorphism of `ℝ^P`, hence a measurable embedding.
+  let e : Eucl P ≃ₜ Eucl P :=
+    (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+  have he : (e : Eucl P → Eucl P) = fun y : Eucl P => r⁻¹ • (y - x) := by
+    funext y
+    simp [e, sub_eq_add_neg]
+  have hemb : MeasurableEmbedding (fun y : Eucl P => r⁻¹ • (y - x)) :=
+    he ▸ e.measurableEmbedding
+  -- `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η⁻¹(B) = x + r • B`.
+  have hmp : MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x))
+      (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) (μHE[n] : Measure (Eucl P)) := by
+    refine ⟨hemb.measurable, ?_⟩
+    ext B hB
+    rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+    have hpre : (fun y : Eucl P => r⁻¹ • (y - x)) ⁻¹' B =
+        (fun z => x + z) '' ((fun z => r • z) '' B) := by
+      ext y
+      simp only [mem_preimage, mem_image]
+      constructor
+      · intro hy
+        exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
+          rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+      · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
+        rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+    rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+      smul_eq_mul, ← mul_assoc]
+    have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+      rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+        coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+        ENNReal.ofReal_one]
+    rw [hc, one_mul]
+  -- Change variables on the right; on the left, pull `(rⁿ)⁻¹` out of the linear `ξ(y)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun z => θ (x + r • z) * ξ (x + r • z) (ω z)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
+  congr 1
+  funext y
+  simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, map_smul, smul_eq_mul]
+  ring
+
 /-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
 `η(w) = r⁻¹(w − x)`, `r > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `y`, it is
 the approximate tangent space of `(η(M), θ ∘ η⁻¹)` at `η(y)`.  The blow-up of `η(M)` at `η(y)`
@@ -529,39 +571,7 @@ theorem Submission.ind_rs_rectifiableTriple_dilation :
     show ξ (x + r • η y) = _ ∨ ξ (x + r • η y) = _
     rw [hinv]
     exact hξy
-  -- `η` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η⁻¹(B) = x + r • B`.
-  have hmp : MeasurePreserving (fun y : Eucl P => r⁻¹ • (y - x))
-      (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) (μHE[n] : Measure (Eucl P)) := by
-    refine ⟨hemb.measurable, ?_⟩
-    ext B hB
-    rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
-    have hpre : (fun y : Eucl P => r⁻¹ • (y - x)) ⁻¹' B =
-        (fun z => x + z) '' ((fun z => r • z) '' B) := by
-      ext y
-      simp only [mem_preimage, mem_image]
-      constructor
-      · intro hy
-        exact ⟨r • r⁻¹ • (y - x), ⟨r⁻¹ • (y - x), hy, rfl⟩, by
-          rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
-      · rintro ⟨z, ⟨b, hb, rfl⟩, rfl⟩
-        rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
-    rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
-      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
-      smul_eq_mul, ← mul_assoc]
-    have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
-      rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
-        coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
-        ENNReal.ofReal_one]
-    rw [hc, one_mul]
-  -- Change variables on the right; on the left, pull `(rⁿ)⁻¹` out of the linear `ξ(y)`.
-  simp only [tauAction]
-  rw [hmp.setIntegral_image_emb hemb (fun z => θ (x + r • z) * ξ (x + r • z) (ω z)) M,
-    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
-    smul_eq_mul, ← integral_const_mul]
-  congr 1
-  funext y
-  simp only [smul_inv_smul₀ hr.ne', add_sub_cancel, map_smul, smul_eq_mul]
-  ring
+
 /-- Mass bound for a current `Y` obtained from `X` by pull-back along the dilation
 `φ(y) = r⁻¹(y − x)`, `r > 0`: if every test form `ω` has a test form `η = (rⁿ)⁻¹ ω ∘ φ` and
 `Y ω = X η` for all such pairs, then `M_W(Y) ≤ (rⁿ)⁻¹ M_{φ⁻¹(W)}(X)` for every `W`, since
@@ -601,6 +611,7 @@ theorem Submission.ind_rs_massOn_dilation_le :
     rw [hB ω η hη, map_smul, smul_eq_mul, ← mul_assoc, inv_mul_cancel₀ hrn, one_mul]
   rw [hY, ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg hr.le n))]
   exact mul_le_mul_right (X.le_massOn hadm) _
+
 /-- Rescaling about `x` by `r > 0`: `Y = η_# X` for the dilation `η(y) = r⁻¹(y − x)`, the
 push-forward along the proper affine map `η = b + L` with `L = r⁻¹ • id`, `b = −(r⁻¹ • x)`
 (`GeometricCurrentOn.affinePushforward`).  The pull-back of `ω` is `η^# ω = r⁻ⁿ ω ∘ η`, so
