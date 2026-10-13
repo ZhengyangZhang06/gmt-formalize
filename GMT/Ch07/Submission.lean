@@ -451,6 +451,293 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pull-back of a test form by a compactly supported perturbation of the identity**
+(Simon 6.2.23–6.2.24).  Let `K'` be compact and `ψ` a `C^∞` map with `ψ = id` off `K'`.  For a
+test form `α ∈ 𝒟ᵈ`, the pull-back `ψ^#α(x) = α(ψ(x)) ∘ Dψ(x)` is a test form with
+`spt ψ^#α ⊆ spt α ∪ K'`.  It is `C^∞` as `ψ^#α(x) = Φ(Dψ(x))(α(ψ(x)))`, where the precomposition
+`Φ(L) = (γ ↦ γ ∘ L)` is analytic in `L`.  Off the closed compact set `spt α ∪ K'` we have
+`ψ(z) = z` and `α(z) = 0`, so `ψ^#α(z) = 0`. -/
+theorem Submission.dpf_pb_smooth_pullback_isTestForm : ∀ (P d : ℕ) (K' : Set (Euclid P)) (ψ : Euclid P → Euclid P) (α : DifferentialForm (Euclid P) d), IsCompact K' → ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ x, x ∉ K' → ψ x = x) → IsTestForm α → IsTestForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ∧ tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆ tsupport α ∪ K' := by
+  intro P d K' ψ α hK hψ hfix hα
+  -- `α` is `C^∞` with compact support
+  obtain ⟨hαs, hαc⟩ := hα
+  -- the precomposition `Φ(L) = (γ ↦ γ ∘ L)` on `d`-covectors is analytic, hence `C^∞`
+  have hΦ : ContDiff ℝ (⊤ : ℕ∞) (ContinuousAlternatingMap.compContinuousLinearMapCLM :
+      (Euclid P →L[ℝ] Euclid P) →
+        (Euclid P [⋀^Fin d]→L[ℝ] ℝ) →L[ℝ] (Euclid P [⋀^Fin d]→L[ℝ] ℝ)) :=
+    (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff
+  -- `Dψ` and `α ∘ ψ` are `C^∞`, so `ψ^#α = Φ(Dψ)(α ∘ ψ)` is `C^∞`
+  have hDψ : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ ψ) := (contDiff_infty_iff_fderiv.mp hψ).2
+  have hαψ : ContDiff ℝ (⊤ : ℕ∞) (fun x => α (ψ x)) := hαs.comp hψ
+  have hsmooth : IsSmoothForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) :=
+    (hΦ.comp hDψ).clm_apply hαψ
+  -- off the closed set `spt α ∪ K'`, `ψ(z) = z` and `α(z) = 0`, so `ψ^#α(z) = 0`
+  have hsupp : tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆
+      tsupport α ∪ K' := by
+    refine closure_minimal ?_ ((isClosed_tsupport α).union hK.isClosed)
+    intro z hz
+    by_contra hzF
+    rw [mem_union, not_or] at hzF
+    refine Function.mem_support.mp hz ?_
+    show (α (ψ z)).compContinuousLinearMap (fderiv ℝ ψ z) = 0
+    rw [hfix z hzF.2, image_eq_zero_of_notMem_tsupport hzF.1]
+    ext v
+    simp
+  -- `spt ψ^#α` is a closed subset of the compact set `spt α ∪ K'`
+  exact ⟨⟨hsmooth, (IsCompact.union hαc hK).of_isClosed_subset (isClosed_tsupport _) hsupp⟩,
+    hsupp⟩
+/-- **Dominated convergence for pulled-back integrals** (Simon 6.2.23–6.2.24, the limit step in the
+push-forward by a `C¹` map).  Let `R = (M, θ, ξ)` be an integer multiplicity triple in `U`, `α` a
+continuous `n`-form with compact support in `U`, and `ψₖ` `C¹` maps equal to the identity off the
+compact `K' ⊆ U`, with `‖Dψₖ‖ ≤ C`, `ψₖ → φ` and `Dψₖ → Dφ` pointwise.  Then
+`∫_M θ ⟨α(ψₖ)∘Dψₖ, ξ⟩ dHⁿ → ∫_M θ ⟨α(φ)∘Dφ, ξ⟩ dHⁿ`: the integrands are dominated by
+`A Cⁿ θ 1_{spt α ∪ K'}` (`‖α‖ ≤ A`, `|ξ(γ)| ≤ ‖γ‖` a.e.), which is integrable since `θ` is locally
+`Hⁿ⌞M`-integrable in `U`. -/
+theorem Submission.dpf_pb_imrep_pullback_integral_tendsto : ∀ (P n : ℕ) (U K' : Set (Euclid P)) (R : IMRep U n) (α : DifferentialForm (Euclid P) n) (ψ : ℕ → Euclid P → Euclid P) (φ : Euclid P → Euclid P) (C : ℝ), IsCompact K' → K' ⊆ U → Continuous α → HasCompactSupport α → tsupport α ⊆ U → (∀ k, ContDiff ℝ 1 (ψ k)) → (∀ k x, x ∉ K' → ψ k x = x) → (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) → (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) → (∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((α (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n])) := by
+  intro P n U K' R α ψ φ C hK' hK'U hα hαc hαU hψ hψid hψC hψφ hDψ
+  -- `C₀ = spt α ∪ K'` is compact, closed (hence measurable) and contained in `U`
+  have hC₀ : IsCompact (tsupport α ∪ K') := hαc.isCompact.union hK'
+  have hC₀m : MeasurableSet (tsupport α ∪ K') := hC₀.isClosed.measurableSet
+  -- `‖α‖ ≤ A` everywhere, so `0 ≤ A`
+  obtain ⟨A, hA⟩ := hα.bounded_above_of_compact_support hαc
+  have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
+  -- `θ` is measurable
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  -- orientation bound: `|ξ(x)(γ)| = |γ(τ)| ≤ ‖γ‖ ∏ ‖τᵢ‖ = ‖γ‖` for `Hⁿ⌞M`-a.e. `x`
+  have hξ : ∀ᵐ x ∂μHE[n].restrict R.carrier, ∀ γ : Covector (Euclid P) n,
+      |R.orient x γ| ≤ ‖γ‖ := by
+    filter_upwards [R.orients] with x ⟨Q, _, τ, hτ, _, hor⟩ γ
+    have hγ : |γ τ| ≤ ‖γ‖ := by
+      have h := γ.le_opNorm τ
+      simp only [hτ.1, Finset.prod_const_one, mul_one] at h
+      rwa [Real.norm_eq_abs] at h
+    rcases hor with h | h
+    · rw [h γ]; exact hγ
+    · rw [h γ, abs_neg]; exact hγ
+  -- `x ↦ α(ψₖ(x))∘Dψₖ(x)` is continuous
+  have hβ : ∀ k, Continuous fun x =>
+      (α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x) := by
+    intro k
+    have h1 : Continuous fun x => (ContinuousAlternatingMap.compContinuousLinearMapCLM
+        (fderiv ℝ (ψ k) x) : Covector (Euclid P) n →L[ℝ] Covector (Euclid P) n) :=
+      ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp
+        ((hψ k).continuous_fderiv one_ne_zero)
+    exact h1.clm_apply (hα.comp (hψ k).continuous)
+  refine tendsto_integral_of_dominated_convergence
+    ((tsupport α ∪ K').indicator fun x => A * C ^ n * (R.mult x : ℝ)) ?_ ?_ ?_ ?_
+  · -- each integrand is a.e. strongly measurable
+    intro k
+    refine hθm.aestronglyMeasurable.mul ?_
+    have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+      isBoundedBilinearMap_apply.continuous
+    exact Continuous.comp_aestronglyMeasurable₂
+      (g := fun (L : MultiVector P n) (v : Covector (Euclid P) n) => L v) hev
+      R.aestronglyMeasurable_orient (hβ k).aestronglyMeasurable
+  · -- the bound `A Cⁿ θ 1_{C₀}` is integrable, as `θ` is integrable on `M ∩ C₀`
+    refine IntegrableOn.integrable_indicator ?_ hC₀m
+    refine Integrable.const_mul ?_ _
+    show Integrable _ ((μHE[n].restrict R.carrier).restrict (tsupport α ∪ K'))
+    rw [Measure.restrict_restrict hC₀m, inter_comm]
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    show ∫⁻ x in R.carrier ∩ (tsupport α ∪ K'), ‖(R.mult x : ℝ)‖ₑ ∂μHE[n] < ∞
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult _ hC₀ (union_subset hαU hK'U))
+  · -- domination `|hₖ| ≤ A Cⁿ θ 1_{C₀}` a.e.
+    intro k
+    filter_upwards [hξ] with x hx
+    by_cases hxC : x ∈ tsupport α ∪ K'
+    · rw [indicator_of_mem hxC]
+      have hβle : ‖(α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)‖ ≤ A * C ^ n := by
+        refine (ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _).trans ?_
+        rw [Fintype.card_fin]
+        exact mul_le_mul (hA _) (pow_le_pow_left₀ (norm_nonneg _) (hψC k x) n)
+          (pow_nonneg (norm_nonneg _) n) hA0
+      rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x))|
+          ≤ (R.mult x : ℝ) * (A * C ^ n) :=
+            mul_le_mul_of_nonneg_left ((hx _).trans hβle) (Nat.cast_nonneg _)
+        _ = A * C ^ n * (R.mult x : ℝ) := mul_comm _ _
+    · -- off `C₀`: `ψₖ(x) = x` and `α(x) = 0`, so the integrand vanishes
+      rw [indicator_of_notMem hxC]
+      have hxK : x ∉ K' := fun h => hxC (Or.inr h)
+      have hxα : x ∉ tsupport α := fun h => hxC (Or.inl h)
+      have h0 : (0 : Covector (Euclid P) n).compContinuousLinearMap (fderiv ℝ (ψ k) x) = 0 :=
+        map_zero (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ (ψ k) x))
+      rw [hψid k x hxK, image_eq_zero_of_notMem_tsupport hxα, h0, map_zero, mul_zero, norm_zero]
+  · -- pointwise convergence, by continuity of `α`, of `L ↦ (· ∘ L)` and of evaluation
+    refine Eventually.of_forall fun x => ?_
+    refine tendsto_const_nhds.mul (((R.orient x).continuous.tendsto _).comp ?_)
+    have h1 : Tendsto (fun k => (ContinuousAlternatingMap.compContinuousLinearMapCLM
+        (fderiv ℝ (ψ k) x) : Covector (Euclid P) n →L[ℝ] Covector (Euclid P) n)) atTop
+        (𝓝 (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ φ x))) :=
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.tendsto _).comp (hDψ x)
+    have h2 : Tendsto (fun k => α (ψ k x)) atTop (𝓝 (α (φ x))) := (hα.tendsto _).comp (hψφ x)
+    exact (isBoundedBilinearMap_apply.continuous.tendsto _).comp (h1.prodMk_nhds h2)
+/-- Simon 6.2.24(1), reduction from `C¹` to smooth maps (step 3 of the push-forward proof): a `C¹`
+map `φ` of `ℝᴾ` with `φ = id` off the compact set `K ⊆ U` is the pointwise `C¹` limit of `C^∞`
+maps `ψₖ` that equal `id` off one compact `K' ⊆ U` and have uniformly bounded differentials.
+`K' = cthickening δ K ⊆ U` and `ψₖ = id + ρₖ ⋆ (φ − id)`, `ρₖ` a normalized smooth bump supported
+in `B_{δ/(k+2)}(0)`; then `Dψₖ = I + ρₖ ⋆ D(φ − id)`, so `‖Dψₖ‖ ≤ 1 + sup ‖D(φ − id)‖`, and the
+mollifications of the continuous `φ − id` and `D(φ − id)` converge pointwise. -/
+theorem Submission.dpf_smooth_approx_compact_perturbation : ∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ (ψ : ℕ → Euclid P → Euclid P) (K' : Set (Euclid P)) (C : ℝ), IsCompact K' ∧ K' ⊆ U ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ψ k)) ∧ (∀ k x, x ∉ K' → ψ k x = x) ∧ (∀ k x, ‖fderiv ℝ (ψ k) x‖ ≤ C) ∧ (∀ x, Tendsto (fun k => ψ k x) atTop (𝓝 (φ x))) ∧ ∀ x, Tendsto (fun k => fderiv ℝ (ψ k) x) atTop (𝓝 (fderiv ℝ φ x)) := by
+  intro P U K φ hU hK hKU hφ hfix
+  -- Step 1: a margin `δ > 0` with `K' = cthickening δ K ⊆ U`
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  -- Step 2: the perturbation `g = φ - id` is `C¹` and vanishes off `K`; `‖Dg‖ ≤ A`
+  obtain ⟨g, hg⟩ : ∃ g : Euclid P → Euclid P, ∀ x, g x = φ x - x := ⟨fun x => φ x - x, fun _ => rfl⟩
+  have hgφ : g = fun x => φ x - x := funext hg
+  have hg1 : ContDiff ℝ 1 g := by
+    rw [hgφ]
+    exact hφ.sub contDiff_id
+  have hgK : ∀ x, x ∉ K → g x = 0 := fun x hx => by rw [hg, hfix x hx, sub_self]
+  have hgcs : HasCompactSupport g := HasCompactSupport.intro hK hgK
+  have hgc : Continuous g := hg1.continuous
+  have hDgc : Continuous (fderiv ℝ g) := hg1.continuous_fderiv one_ne_zero
+  have hDg : ∀ x, fderiv ℝ g x = fderiv ℝ φ x - ContinuousLinearMap.id ℝ (Euclid P) := by
+    intro x
+    rw [hgφ]
+    exact (((hφ.differentiable one_ne_zero) x).hasFDerivAt.sub (hasFDerivAt_id x)).fderiv
+  obtain ⟨A, hA⟩ := hDgc.bounded_above_of_compact_support (hgcs.fderiv ℝ)
+  have hA0 : 0 ≤ A := (norm_nonneg _).trans (hA 0)
+  -- Step 3: nonnegative smooth `ρ k` with `∫ ρ k = 1`, supported in `ball 0 (r k)`, where
+  -- `r k = δ / (k + 2)`: the bump `β k` with `rOut = r k`, divided by its integral
+  obtain ⟨r, hr0, hrδ, hrlim⟩ : ∃ r : ℕ → ℝ, (∀ k, 0 < r k) ∧ (∀ k, r k ≤ δ) ∧
+      Tendsto r atTop (𝓝 0) := by
+    refine ⟨fun k => δ / ((k : ℝ) + 2), fun k => by positivity, fun k => ?_, ?_⟩
+    · exact div_le_self hδ.le (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
+    · exact tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop)
+  obtain ⟨ρ, hρs, hρn, hρi, hρsupp⟩ : ∃ ρ : ℕ → Euclid P → ℝ,
+      (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ρ k)) ∧ (∀ k x, 0 ≤ ρ k x) ∧ (∀ k, ∫ x, ρ k x = 1) ∧
+      (∀ k, support (ρ k) ⊆ ball 0 (r k)) := by
+    let β : ∀ k, ContDiffBump (0 : Euclid P) := fun k =>
+      ⟨r k / 2, r k, half_pos (hr0 k), half_lt_self (hr0 k)⟩
+    have hβi : ∀ k, 0 < ∫ x, β k x := fun k => by
+      rw [integral_pos_iff_support_of_nonneg (fun x => (β k).nonneg)
+        ((β k).continuous.integrable_of_hasCompactSupport (β k).hasCompactSupport),
+        (β k).support_eq]
+      exact measure_ball_pos _ _ (hr0 k)
+    refine ⟨fun k x => (∫ y, β k y)⁻¹ * β k x, fun k => contDiff_const.mul (β k).contDiff,
+      fun k x => mul_nonneg (inv_nonneg.2 (hβi k).le) (β k).nonneg, fun k => ?_,
+      fun k x hx => ?_⟩
+    · rw [integral_const_mul, inv_mul_cancel₀ (hβi k).ne']
+    · have hx' : x ∈ support (β k) := right_ne_zero_of_mul hx
+      rwa [(β k).support_eq] at hx'
+  have hρc : ∀ k, HasCompactSupport (ρ k) := fun k =>
+    HasCompactSupport.intro (isCompact_closedBall 0 (r k)) fun x hx =>
+      notMem_support.1 fun h => hx (ball_subset_closedBall (hρsupp k h))
+  have hρloc : ∀ k, LocallyIntegrable (ρ k) volume := fun k => (hρs k).continuous.locallyIntegrable
+  have hsmall : Tendsto (fun k => support (ρ k)) atTop (𝓝 (0 : Euclid P)).smallSets := by
+    rw [tendsto_smallSets_iff]
+    intro t ht
+    obtain ⟨ε, hε, hεt⟩ := Metric.mem_nhds_iff.1 ht
+    filter_upwards [(tendsto_order.1 hrlim).2 ε hε] with k hk
+    exact (hρsupp k).trans ((ball_subset_ball hk.le).trans hεt)
+  -- Steps 4 and 6: `ψ k = id + ρ k ⋆ g` has derivative `I + ρ k ⋆ Dg` (the `precompR`
+  -- convolution of `hasFDerivAt_convolution_right` is the scalar one)
+  have hL : (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid P →L[ℝ] Euclid P).precompR (Euclid P) =
+      (ContinuousLinearMap.lsmul ℝ ℝ :
+        ℝ →L[ℝ] (Euclid P →L[ℝ] Euclid P) →L[ℝ] (Euclid P →L[ℝ] Euclid P)) := by
+    ext a f v
+    simp [ContinuousLinearMap.precompR]
+  have hderiv : ∀ k x, HasFDerivAt
+      (fun y => y + convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume y)
+      (ContinuousLinearMap.id ℝ (Euclid P) +
+        convolution (ρ k) (fderiv ℝ g) (ContinuousLinearMap.lsmul ℝ ℝ) volume x) x := by
+    intro k x
+    have h := hgcs.hasFDerivAt_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ) (hρloc k) hg1 x
+    rw [hL] at h
+    exact (hasFDerivAt_id x).add h
+  -- Step 5: off `K'`, `g = 0` on `ball x (r k)`, so `(ρ k ⋆ g) x = 0`
+  have hsupp : ∀ k x, x ∉ cthickening δ K →
+      convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0 := by
+    intro k x hx
+    have hgy : ∀ y ∈ ball x (r k), g y = 0 := fun y hy => hgK y fun hyK =>
+      hx (mem_cthickening_of_dist_le x y δ K hyK ((mem_ball'.1 hy).le.trans (hrδ k)))
+    rw [convolution_eq_right' _ (hρsupp k) fun y hy =>
+      (hgy y hy).trans (hgy x (mem_ball_self (hr0 k))).symm, hgy x (mem_ball_self (hr0 k))]
+    simp
+  refine ⟨fun k x => x + convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x,
+    cthickening δ K, 1 + A, hK.cthickening, hδU, fun k => ?_, fun k x hx => ?_, fun k x => ?_,
+    fun x => ?_, fun x => ?_⟩
+  · exact contDiff_id.add
+      ((hρc k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρs k)
+        hgc.locallyIntegrable)
+  · simp only [hsupp k x hx, add_zero]
+  · -- Step 6: `‖Dψ k‖ ≤ ‖I‖ + sup ‖Dg‖ ≤ 1 + A`
+    rw [(hderiv k x).fderiv]
+    refine (norm_add_le _ _).trans (add_le_add ContinuousLinearMap.norm_id_le ?_)
+    have h := dist_convolution_le (x₀ := x) (z₀ := 0) (μ := volume) hA0 (hρsupp k) (hρn k) (hρi k)
+      hDgc.aestronglyMeasurable fun y _ => by rw [dist_zero_right]; exact hA y
+    rwa [dist_zero_right] at h
+  · -- Step 7: `ψ k x → x + g x = φ x`
+    have h := convolution_tendsto_right (μ := volume) (φ := ρ) (g := fun _ => g)
+      (k := fun _ => x) (Eventually.of_forall hρn) (Eventually.of_forall hρi) hsmall
+      (Eventually.of_forall fun _ => hgc.aestronglyMeasurable) ((hgc.tendsto x).comp tendsto_snd)
+      tendsto_const_nhds
+    have h2 := (tendsto_const_nhds : Tendsto (fun _ : ℕ => x) atTop (𝓝 x)).add h
+    rwa [hg x, add_sub_cancel] at h2
+  · -- Step 7: `Dψ k x → I + Dg x = Dφ x`
+    have h := convolution_tendsto_right (μ := volume) (φ := ρ) (g := fun _ => fderiv ℝ g)
+      (k := fun _ => x) (Eventually.of_forall hρn) (Eventually.of_forall hρi) hsmall
+      (Eventually.of_forall fun _ => hDgc.aestronglyMeasurable)
+      ((hDgc.tendsto x).comp tendsto_snd) tendsto_const_nhds
+    have h2 := (tendsto_const_nhds : Tendsto (fun _ : ℕ => ContinuousLinearMap.id ℝ (Euclid P))
+      atTop (𝓝 (ContinuousLinearMap.id ℝ (Euclid P)))).add h
+    rw [hDg x, add_sub_cancel] at h2
+    exact h2.congr fun k => ((hderiv k x).fderiv).symm
+
+/-- Simon 6.2.24(1), `∂f_#T = f_#∂T`, for the `C¹` push-forward formula of 6.2.24(2) (step 3
+of the push-forward proof): if `T = τ(M, θ, ξ)` has `∂T = 0` in `U` and
+`S(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ`, where the `C¹` map `φ` is the identity off a compact
+`K ⊆ U`, then `∂S = 0` in `U`.  Take `C^∞` maps `ψₖ`, equal to the identity off one compact
+`K' ⊆ U`, with `‖Dψₖ‖ ≤ C`, `ψₖ → φ` and `Dψₖ → Dφ` pointwise.  For `η ∈ 𝒟ⁿ⁻¹(U)`,
+`ψₖ^#η ∈ 𝒟ⁿ⁻¹(U)` and `d(ψₖ^#η) = ψₖ^#(dη)`, so `0 = ∂T(ψₖ^#η) = ∫_M θ ⟨ψₖ^#(dη), ξ⟩ dHⁿ`;
+by dominated convergence these integrals tend to `S(dη) = ∂S(η)`. -/
+theorem Submission.dpf_pushforward_formula_boundaryVanishes : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T S : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]) → BoundaryVanishes T → BoundaryVanishes S := by
+  intro P n U K T S R φ hU hRT hK hKU hφ hφK hS hT
+  -- Step 1: `∂ = 0` in degree `0`; for `n = m + 1` show `∂S(η) = S(dη) = 0` for every `η`
+  rcases n with _ | m
+  · trivial
+  change T.boundary = 0 at hT
+  change S.boundary = 0
+  -- Step 2: `C^∞` maps `ψₖ = id` off a compact `K' ⊆ U`, `‖Dψₖ‖ ≤ C`, `ψₖ → φ`, `Dψₖ → Dφ`
+  obtain ⟨ψ, K', C, hK', hK'U, hψ, hψK', hψC, hψφ, hDψφ⟩ :=
+    Submission.dpf_smooth_approx_compact_perturbation P U K φ hU hK hKU hφ hφK
+  ext η
+  rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hS]
+  -- the test form `α = dη ∈ 𝒟ⁿ(U)`
+  set α : DifferentialForm (Euclid P) (m + 1) :=
+    (exteriorDerivativeTestOn U m η : DifferentialForm (Euclid P) (m + 1))
+  have hα : IsTestForm α ∧ tsupport α ⊆ U := (exteriorDerivativeTestOn U m η).property
+  -- Steps 3–5: `∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ = ∂T(ψₖ^#η) = 0` for every `k`
+  have hI : ∀ k, ∫ x in R.carrier, (R.mult x : ℝ) *
+      R.orient x ((α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x)) ∂μHE[m + 1] = 0 := by
+    intro k
+    -- Step 3: `ψₖ^#η` is a test form supported in `tsupport η ∪ K' ⊆ U`
+    obtain ⟨hηk, hηkK⟩ := Submission.dpf_pb_smooth_pullback_isTestForm P m K' (ψ k)
+      (η : DifferentialForm (Euclid P) m) hK' (hψ k) (hψK' k) η.property.1
+    let ηk : TestFormOn U m :=
+      ⟨fun x => ((η : DifferentialForm (Euclid P) m) (ψ k x)).compContinuousLinearMap
+        (fderiv ℝ (ψ k) x), hηk, hηkK.trans (union_subset η.property.2 hK'U)⟩
+    -- Step 4: `d(ψₖ^#η) = ψₖ^#(dη)` (Simon 6.1.14; Mathlib `extDeriv_pullback`)
+    have hnat : (exteriorDerivativeTestOn U m ηk : DifferentialForm (Euclid P) (m + 1)) =
+        fun x => (α (ψ k x)).compContinuousLinearMap (fderiv ℝ (ψ k) x) := by
+      funext x
+      exact extDeriv_pullback (η.property.1.1.differentiable (by simp)).differentiableAt
+        (hψ k).contDiffAt (by simp)
+    -- Step 5: `0 = ∂T(ψₖ^#η) = T(d(ψₖ^#η)) = ∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ`
+    have h0 : T (exteriorDerivativeTestOn U m ηk) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hT, GeometricCurrentOn.zero_apply]
+    rw [hRT, IMRep.action, hnat] at h0
+    exact h0
+  -- Step 6: dominated convergence, `∫_M θ ⟨ψₖ^#α, ξ⟩ dHⁿ → ∫_M θ ⟨φ^#α, ξ⟩ dHⁿ = S(dη)`
+  have hlim := Submission.dpf_pb_imrep_pullback_integral_tendsto P (m + 1) U K' R α ψ φ C hK'
+    hK'U hα.1.1.continuous hα.1.2 hα.2 (fun k => (hψ k).of_le (by exact_mod_cast le_top)) hψK'
+    hψC hψφ hDψφ
+  -- Step 7: the limit of the vanishing integrals is `0`
+  exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun k => (hI k).symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
