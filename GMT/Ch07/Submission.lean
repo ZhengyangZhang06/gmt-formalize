@@ -2887,4 +2887,158 @@ theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Eu
       with x hx
     rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
 
+/-- **A cycle carried by an `n`-plane `Q` in an open set `V` has constant multiplicity there**
+(the constancy step in the proof of Simon 7.3.3(1), p. 191, by the constancy theorem, Simon Ch. 6,
+2.34).  Let `C = τ(M, θ, ξ) ∈ 𝒟ₙ(ℝᴾ)` with `∂C = 0`, `n ≥ 1`, `spt C ∩ V ⊆ Q`, `dim Q = n` and
+`V ∩ Q` connected.  The restriction `C⌞V = τ(M ∩ V, θ, ξ) ∈ 𝒟ₙ(V)` is integer multiplicity
+(approximate tangent planes are local), `∂(C⌞V) = 0` (as `ι(dβ) = d(ιβ)` for the inclusion `ι` of
+test forms) and `spt(C⌞V) ⊆ spt C ∩ V ⊆ Q` (as `μ_{C⌞V} = μ_C⌞V`).  For an orthonormal basis `τ`
+of `Q` the planar constancy theorem gives `c ∈ ℤ` with `μ_C(W) = M_W(C⌞V) = |c| Hⁿ(W ∩ Q)` for
+open `W ⊆ V`.  So `μ_C⌞V` and `|c| Hⁿ⌞Q⌞V` agree on open sets, which form a π-system generating
+the Borel sets, and are finite on balls (`θ` is locally `Hⁿ`-integrable); hence they are equal. -/
+theorem Submission.idtp_tdc_puvd_planar_piece_measure : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (V : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)), 1 ≤ n → IsOpen V → BoundaryVanishes C → R.Represents C → Module.finrank ℝ Q = n → IsConnected (V ∩ (Q : Set (Euclid P))) → C.support ∩ V ⊆ (Q : Set (Euclid P)) → ∃ c : ℕ, ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ V → R.measure E = (c : ℝ≥0∞) * μHE[n] (E ∩ (Q : Set (Euclid P))) := by
+  intro P n C R V Q hn hV hbd hR hQ hconn hsupp
+  -- an orthonormal basis `τ` of `Q`, pushed into `ℝᴾ`, is orthonormal with `span τ = Q`
+  obtain ⟨τ, hτ, hτQ⟩ : ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧
+      Submodule.span ℝ (range τ) = Q := by
+    let b := (stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)
+    refine ⟨fun k => (b k : Euclid P), b.orthonormal.comp_linearIsometry Q.subtypeₗᵢ, ?_⟩
+    have hrange : range (fun k => (b k : Euclid P)) = Q.subtype '' range b := by
+      rw [← range_comp]; rfl
+    rw [hrange, Submodule.span_image, ← b.coe_toBasis, b.toBasis.span_eq,
+      Submodule.map_subtype_top]
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  have hbd' : C.boundary = 0 := hbd
+  -- the restriction `C⌞V ∈ 𝒟ₙ(V)`, `C⌞V(ω) = C(ιω)`
+  set CV := C.restrictDomain (subset_univ V) with hCV
+  -- at `x ∈ V`, an approximate tangent plane of `M` is one of `M ∩ V`: the blow-ups of `M` and
+  -- of `M ∩ V` agree in `B_L(0) ⊇ spt f` once `B_{rL}(x) ⊆ V`
+  have htan : ∀ x ∈ V, ∀ T : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt (m + 1) R.carrier x T →
+        HasApproximateTangentSpaceAt (m + 1) (R.carrier ∩ V) x T := by
+    intro x hxV T hT
+    refine ⟨hT.1, fun f => ?_⟩
+    obtain ⟨s, hs, hsV⟩ := Metric.isOpen_iff.mp hV x hxV
+    obtain ⟨L, hL, hfL⟩ := f.hasCompactSupport.isCompact.isBounded.subset_ball_lt 0 0
+    refine (hT.2 f).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hs hL)] with r hr
+    have hr0 : 0 < r := hr.1
+    have hη : Poincare.SimonGMT.Chapter03.blowUpMap x r = fun y => r⁻¹ • (y - x) := rfl
+    rw [hη]
+    -- `f` vanishes off `B_L(0)`, so each blow-up integral may be cut to `B_L(0)`
+    have hfB : ∀ y, y ∉ ball (0 : Euclid P) L → f y = 0 := fun y hy =>
+      image_eq_zero_of_notMem_tsupport fun h => hy (hfL h)
+    have hcut : ∀ S : Set (Euclid P),
+        ∫ y in S, f y ∂μHE[m + 1] = ∫ y in ball (0 : Euclid P) L ∩ S, f y ∂μHE[m + 1] := by
+      intro S
+      rw [← Measure.restrict_restrict measurableSet_ball]
+      exact (setIntegral_eq_integral_of_forall_compl_eq_zero hfB).symm
+    -- `η_{x,r}(z) ∈ B_L(0)` forces `z ∈ B_{rL}(x) ⊆ B_s(x) ⊆ V`
+    have hset : ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' R.carrier =
+        ball (0 : Euclid P) L ∩ (fun y : Euclid P => r⁻¹ • (y - x)) '' (R.carrier ∩ V) := by
+      refine Subset.antisymm ?_ (inter_subset_inter_right _ (image_mono inter_subset_left))
+      rintro y ⟨hyB, z, hz, rfl⟩
+      refine ⟨hyB, z, ⟨hz, hsV ?_⟩, rfl⟩
+      rw [mem_ball_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr0.le,
+        inv_mul_lt_iff₀ hr0] at hyB
+      have hrL := (lt_div_iff₀ hL).mp hr.2
+      rw [mem_ball, dist_eq_norm]
+      linarith
+    rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' (R.carrier ∩ V)), hset]
+  -- the restricted triple `R' = (M ∩ V, θ, ξ)` in `V`
+  let R' : IMRep V (m + 1) :=
+    { carrier := R.carrier ∩ V
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := R.measurableSet_carrier.inter hV.measurableSet
+      carrier_subset := inter_subset_right
+      rectifiable := R.rectifiable.mono inter_subset_left
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      locallyIntegrable_mult := fun K hK hKV => by
+        rw [inter_assoc, inter_eq_right.2 hKV]
+        exact R.locallyIntegrable_mult K hK (subset_univ K)
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+      orients := by
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset
+          (inter_subset_left : R.carrier ∩ V ⊆ R.carrier) R.orients,
+          ae_restrict_mem (R.measurableSet_carrier.inter hV.measurableSet)] with x hx hxMV
+        obtain ⟨T, hT, hξT⟩ := hx
+        exact ⟨T, htan x hxMV.2 T hT, hξT⟩ }
+  -- `C⌞V = τ(M ∩ V, θ, ξ)`: a test form supported in `V` vanishes on `M ∖ V`
+  have hR' : R'.Represents CV := by
+    intro ω
+    rw [hCV, GeometricCurrentOn.restrictDomain_apply, hR, testFormOnInclusion_coe]
+    change ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x
+        ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] =
+      ∫ x in R.carrier ∩ V, (R.mult x : ℝ) * R.orient x
+        ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]
+    refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+      inter_subset_left fun x hx => ?_
+    have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) (m + 1)) :=
+      fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
+    rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
+  -- `μ_{R'} = θHⁿ⌞(M ∩ V) = μ_R⌞V`
+  have hR'meas : R'.measure = R.measure.restrict V := by
+    change (μHE[m + 1].restrict (R.carrier ∩ V)).withDensity (fun x => (R.mult x : ℝ≥0∞)) =
+      ((μHE[m + 1].restrict R.carrier).withDensity fun x => (R.mult x : ℝ≥0∞)).restrict V
+    rw [restrict_withDensity hV.measurableSet, Measure.restrict_restrict hV.measurableSet,
+      inter_comm]
+  -- `∂(C⌞V) = 0`: `∂(C⌞V)(β) = C(ι(dβ)) = C(d(ιβ)) = ∂C(ιβ) = 0`
+  have hbdV : BoundaryVanishes CV := by
+    change CV.boundary = 0
+    ext β
+    have hι : testFormOnInclusion (subset_univ V) (m + 1) (exteriorDerivativeTestOn V m β) =
+        exteriorDerivativeTestOn univ m (testFormOnInclusion (subset_univ V) m β) :=
+      Subtype.ext rfl
+    rw [GeometricCurrentOn.boundary_apply, hCV, GeometricCurrentOn.restrictDomain_apply, hι,
+      ← GeometricCurrentOn.boundary_apply, hbd', GeometricCurrentOn.zero_apply,
+      GeometricCurrentOn.zero_apply]
+  -- `spt(C⌞V) ⊆ spt C ∩ V ⊆ Q`: balls about `x ∈ spt(C⌞V)` have positive `μ_R⌞V ≤ μ_R` measure
+  have hsptV : CV.support ⊆ (Q : Set (Euclid P)) := by
+    intro x hx
+    have hxV : x ∈ V := CV.support_subset_domain hx
+    refine hsupp ⟨?_, hxV⟩
+    rw [(Submission.dimred_im_mass_measure P (m + 1) univ C R isOpen_univ hR).2.1 x (mem_univ x)]
+    intro ε hε h0
+    refine ((Submission.dimred_im_mass_measure P (m + 1) V CV R' hV hR').2.1 x hxV).mp hx ε hε ?_
+    rw [hR'meas]
+    exact nonpos_iff_eq_zero.mp ((Measure.restrict_apply_le _ _).trans h0.le)
+  -- constancy: `M_W(C⌞V) = |c| Hⁿ(W ∩ Q)` for open `W ⊆ V`
+  obtain ⟨c, -, hmass⟩ := Submission.idtp_planar_cycle_eq_const_mul P (m + 1) V CV τ hn hV hτ
+    ⟨R', hR'⟩ hbdV (by rw [hτQ]; exact hsptV) (by rw [hτQ]; exact hconn)
+  rw [hτQ] at hmass
+  -- `μ_R(W) = μ_{R'}(W) = M_W(C⌞V) = |c| Hⁿ(W ∩ Q)` for open `W ⊆ V`
+  have hopen : ∀ W : Set (Euclid P), IsOpen W → W ⊆ V →
+      R.measure W = (c.natAbs : ℝ≥0∞) * μHE[m + 1] (W ∩ (Q : Set (Euclid P))) := by
+    intro W hW hWV
+    rw [← hmass W hW hWV, (Submission.dimred_im_mass_measure P (m + 1) V CV R' hV hR').1 W hW hWV,
+      hR'meas, Measure.restrict_eq_self _ hWV]
+  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞ := by
+    intro K hK
+    change (μHE[m + 1].restrict R.carrier).withDensity (fun x => (R.mult x : ℝ≥0∞)) K ≠ ∞
+    rw [withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+    exact R.locallyIntegrable_mult K hK (subset_univ K)
+  -- `μ_R⌞V = |c| Hⁿ⌞Q⌞V`: they agree on the open sets and are finite on the balls `B_i(0)`
+  have hext : R.measure.restrict V =
+      ((c.natAbs : ℝ≥0∞) • μHE[m + 1].restrict (Q : Set (Euclid P))).restrict V := by
+    refine Measure.ext_of_generateFrom_of_iUnion {s | IsOpen s}
+      (fun i : ℕ => ball (0 : Euclid P) i) BorelSpace.measurable_eq isPiSystem_isOpen
+      (iUnion_ball_nat 0) (fun i => show IsOpen (ball (0 : Euclid P) i) from isOpen_ball)
+      (fun i => ?_) (fun s hs => ?_)
+    · exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall 0 i))
+        ((Measure.restrict_apply_le _ _).trans (measure_mono ball_subset_closedBall))
+    · have hs' : IsOpen s := hs
+      rw [Measure.restrict_apply hs'.measurableSet, Measure.restrict_apply hs'.measurableSet,
+        Measure.smul_apply, Measure.restrict_apply (hs'.measurableSet.inter hV.measurableSet),
+        smul_eq_mul]
+      exact hopen _ (hs'.inter hV) inter_subset_right
+  -- for Borel `E ⊆ V`: `μ_R(E) = (μ_R⌞V)(E) = |c| Hⁿ(E ∩ Q)`
+  refine ⟨c.natAbs, fun E hE hEV => ?_⟩
+  rw [← Measure.restrict_eq_self R.measure hEV, hext, Measure.restrict_eq_self _ hEV,
+    Measure.smul_apply, Measure.restrict_apply hE, smul_eq_mul]
+
 end GMT.Ch07
