@@ -1205,6 +1205,28 @@ theorem Submission.cmc_fc_eu_cutoff_mass_le : ∀ (P m : ℕ) (U K : Set (Euclid
           Submission.dtc_massOn_eq_of_agreeOn P m univ U U (subset_univ U) Y.boundary X.boundary
             Subset.rfl fun η _ => hagree' η
 
+/-- **Extension to `ℝᴾ`** (step 3(c) of the flat-convergence argument in the proof of Simon
+7.2.4: a current supported in a compact `K ⊂ U` extends to `ℝᴾ` without increasing masses).  Let
+`U` be open, `K ⊆ U` compact and `X = τ(M, θ, ξ) ∈ 𝒟_{m+1}(U)` with `spt X ⊆ K`.  Then
+`Hⁿ(M \ K) ≤ Hⁿ(M \ spt X) = 0`, so extension by zero gives an integer multiplicity
+`Y ∈ 𝒟_{m+1}(ℝᴾ)` with `Y⌞U = X` and `spt Y ⊆ K`.  For a cutoff `ζ ∈ C^∞_c(U; [0, 1])` equal to
+`1` near `K` we get `Y(ω) = X(ζω)` and `∂Y(ω) = ∂X(ζω)`, with `|ζω| ≤ 1` whenever `|ω| ≤ 1`, so
+`M(Y) ≤ M(X)` and `M(∂Y) ≤ M(∂X)`.  The two hypotheses (restricted representations, and mass
+equal to the measure of a representation) are not needed. -/
+theorem Submission.cmc_fc_extend_to_univ : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity X → X.support ⊆ K → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = X ∧ Y.support ⊆ K ∧ Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass := by
+  intro _hIR _hME P m U K X hU hK hKU hX hspt
+  -- Steps 1–2: a representation `R = (M, θ, ξ)` of `X` has `Hⁿ(M \ K) ≤ Hⁿ(M \ spt X) = 0`
+  obtain ⟨R, hR⟩ := hX
+  have hnull : μHE[m + 1] (R.carrier \ K) = 0 :=
+    measure_mono_null (sdiff_subset_sdiff_right hspt)
+      (Submission.imrep_carrier_sdiff_support_null P (m + 1) U X R hU hR)
+  -- Steps 3–6: extension by zero to `ℝᴾ`: `Y⌞U = X`, `spt Y ⊆ K`, `Y` integer multiplicity
+  obtain ⟨Y, hres, hsupp, -, -, hYIM⟩ := Submission.dtc_extend_by_zero P (m + 1) univ U K
+    (subset_univ U) X R isOpen_univ hU hK hKU hR hnull
+  -- Steps 7–8: the cutoff argument gives `M(Y) ≤ M(X)` and `M(∂Y) ≤ M(∂X)`
+  obtain ⟨hm, hbm⟩ := Submission.cmc_fc_eu_cutoff_mass_le P m U K X Y hU hK hKU hres hsupp
+  exact ⟨Y, hYIM, hres, hsupp, hm, hbm⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
