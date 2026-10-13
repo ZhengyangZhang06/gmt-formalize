@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd8f46709e54e8cdb43bdface26d60282e04795d20058baa8ff24d8eb2ae88a5",
+  "git_delta": {
+    "base_commit": "cafb25ea54117ebc610303249f3af1164a35e044",
+    "candidate_commit": "80db92b07fdeb10b77cdbe962fcf3022a52dbb7a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_c1t_lower_lipschitz",
+    "diff_sha256": "1c13098082e9d4756d7467fde1a504b2b0ad9f69034c736472482cb86e034ff3",
+    "source_sha256": "103724c85019935cb4bda68239a30bcc141f2d4ec8cbbf1ef715ba8ba72f86a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_c1t_lower_lipschitz",
+      "statement": "∀ (P d : ℕ) (g : Euclid d → Euclid P) (U K : Set (Euclid d)), IsOpen U → IsCompact K → K ⊆ U → ContDiffOn ℝ 1 g U → InjOn g K → (∀ z ∈ K, Injective (fderiv ℝ g z)) → ∃ m : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖g a - g b‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
