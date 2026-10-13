@@ -2501,6 +2501,68 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
     Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
+/-- **Carrier, mass and support of integer multiplicity currents in `ℝᴾ`** (Simon Ch. 6, 2.11 and
+Remark 3.2(3)).  (1) If `Y = τ(M, θ, ξ)` in `ℝᴾ`, then `Hⁿ(M \ spt Y) = 0`, `M(Y) = μ_R(ℝᴾ)`, and
+`μ_R(ℝᴾ) < ∞` if `spt Y` is compact.  (2) `spt Y₁` is closed and `spt(Y₁ - Y₂) ⊆ spt Y₁ ∪ spt Y₂`.
+`Y` kills every form supported in the open set `W = ℝᴾ \ spt Y` (`dtc_vanish_off_support`), so
+`μ_R(W) = M_W(Y) = 0` (`dtc_mass_eq_measure`) and, as `θ ≥ 1` on `M`, `Hⁿ(M ∩ W) = 0`; for compact
+`spt Y`, `μ_R(ℝᴾ) ≤ μ_R(spt Y) + μ_R(W) = ∫_{M ∩ spt Y} θ dHⁿ < ∞`.  A common relatively compact
+neighbourhood on which `Y₁` and `Y₂` vanish lies in the zero region of `Y₁ - Y₂`. -/
+theorem Submission.dtc_bc_lc_pf_imrep_carrier_mass_support : ∀ (P n : ℕ), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → μHE[n] (R.carrier \ Y.support) = 0 ∧ Y.mass = R.measure univ ∧ (IsCompact Y.support → R.measure univ ≠ ∞)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y₁.support ∧ (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support := by
+  intro P n
+  -- Step 1: `spt Y = ℝᴾ \ Z(Y)` is closed, the zero region `Z(Y)` being open
+  have hclosed : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed Y.support := by
+    intro Y
+    rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff]
+    exact Y.isOpen_zeroRegion.isClosed_compl
+  refine ⟨fun Y R hRY => ?_, fun Y₁ Y₂ => ⟨hclosed Y₁, ?_⟩⟩
+  · -- Step 2: `M_W(Y) = 0` on the open set `W = ℝᴾ \ spt Y` (`dtc_vanish_off_support`)
+    have hWo : IsOpen (Y.support)ᶜ := (hclosed Y).isOpen_compl
+    have hmass : Y.massOn (Y.support)ᶜ = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, hω, rfl⟩
+      dsimp only
+      rw [Submission.dtc_vanish_off_support P n univ Y ω
+        (subset_compl_iff_disjoint_right.mp hω.1), ENNReal.ofReal_zero]
+    -- Step 3: `μ_R(W) = M_W(Y) = 0` (`dtc_mass_eq_measure`); as `θ ≥ 1` on `M`, `Hⁿ(M ∩ W) = 0`
+    have hμW : R.measure (Y.support)ᶜ = 0 := by
+      rw [← Submission.dtc_mass_eq_measure P n univ _ Y R isOpen_univ hWo (subset_univ _) hRY]
+      exact hmass
+    have hnull : μHE[n] (R.carrier \ Y.support) = 0 := by
+      have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+        measurable_from_nat.comp R.measurable_mult
+      have h := (withDensity_apply_eq_zero' (μ := μHE[n].restrict R.carrier)
+        hθ.aemeasurable).1 hμW
+      rw [Measure.restrict_apply' R.measurableSet_carrier] at h
+      refine measure_mono_null ?_ h
+      intro x hx
+      exact ⟨⟨Nat.cast_ne_zero.2 (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+    -- Step 4: `M(Y) = M_{ℝᴾ}(Y) = μ_R(ℝᴾ)`
+    refine ⟨hnull, Submission.dtc_mass_eq_measure P n univ univ Y R isOpen_univ isOpen_univ
+      subset_rfl hRY, fun hK => ?_⟩
+    -- Step 5: `μ_R(ℝᴾ) ≤ μ_R(spt Y) + μ_R(W) = ∫_{M ∩ spt Y} θ dHⁿ < ∞`
+    have hKm : R.measure Y.support =
+        ∫⁻ x in R.carrier ∩ Y.support, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+        Measure.restrict_restrict hK.measurableSet, inter_comm]
+    refine ne_top_of_le_ne_top ?_ ((measure_mono (union_compl_self Y.support).ge).trans
+      ((measure_union_le _ _).trans_eq (by rw [hμW, add_zero])))
+    rw [hKm]
+    exact R.locallyIntegrable_mult _ hK (subset_univ _)
+  · -- Step 6: `x ∉ spt Y₁ ∪ spt Y₂` lies in open `W₁`, `W₂` with compact closures on which
+    -- `Y₁`, `Y₂` vanish; then `W₁ ∩ W₂` witnesses `x ∈ Z(Y₁ - Y₂)`
+    intro x hx
+    by_contra hxs
+    rw [mem_union, not_or] at hxs
+    have hZ : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) n, x ∉ Y.support →
+        x ∈ Y.zeroRegion := fun Y h => not_not.mp fun h' => h ⟨mem_univ x, h'⟩
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁v⟩, hxW₁⟩ := mem_sUnion.mp (hZ Y₁ hxs.1)
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ := mem_sUnion.mp (hZ Y₂ hxs.2)
+    -- `closure (W₁ ∩ W₂) ⊆ closure W₁` is compact, and `(Y₁ - Y₂)(ω) = Y₁(ω) - Y₂(ω) = 0`
+    refine hx.2 ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o, hW₁c.of_isClosed_subset isClosed_closure
+      (closure_mono inter_subset_left), subset_univ _, fun ω hω => ?_⟩, hxW₁, hxW₂⟩
+    show Y₁ ω - Y₂ ω = 0
+    rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
