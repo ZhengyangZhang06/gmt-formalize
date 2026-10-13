@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "depth": 4,
+  "title": "Fundamental-theorem bound for a Lipschitz curve: ||W(t) - W(s)|| <= ∫_{(-a,a)} ||W'||",
+  "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a a real number and K >= 0, and suppose W is K-Lipschitz on the closed interval [-a, a]. Then for all s, t in [-a, a]: ||W(t) - W(s)|| <= ∫_{(-a,a)} ||deriv W r|| dr. Here deriv is Mathlib's derivative (0 where W is not differentiable), and the integral is the Bochner integral for Lebesgue measure on the open interval (-a, a).",
+  "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → ∀ s ∈ Icc (-a) a, ∀ t ∈ Icc (-a) a, ‖W t - W s‖ ≤ ∫ r in Ioo (-a) a, ‖deriv W r‖",
+  "lean_name": "tdo_ods_norm_sub_le_integral_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-ftc-bound-a1-a1"
+}

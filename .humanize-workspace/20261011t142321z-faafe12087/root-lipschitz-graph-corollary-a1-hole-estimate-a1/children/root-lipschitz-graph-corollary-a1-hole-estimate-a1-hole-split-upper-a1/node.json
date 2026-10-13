@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hole_split_upper-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1",
+  "depth": 3,
+  "title": "Upper bound for the normal-part integral by slope, mass off the graph, and tilt",
+  "statement": "Let n, l be natural numbers and mu a measure on R^(n+l). Let p : R^(n+l) -> L(R^(n+l)) be a mu-a.e. strongly measurable field of continuous linear maps with ||p(x)|| <= 1 for all x. Let T be a linear subspace of R^(n+l) with orthogonal projection P = T.starProjection, F a measurable subset of R^(n+l), zeta in R^(n+l), s > 0 and eps real. Write B := B_{3s}(zeta) (closed ball), and assume mu(B) < infinity and |(x - zeta) - P(x - zeta)| <= eps |x - zeta| for every x in F. Then the Bochner integral over B of |(x - zeta) - p(x)(x - zeta)|^2 dmu is at most 18 s^2 [ eps^2 mu(B) + mu(B minus F) + the Bochner integral over B of hsNormSq(p(x) - P) dmu ], with the masses taken as real numbers (toReal).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (p : Amb n ℓ → (Amb n ℓ →L[ℝ] Amb n ℓ)) (T : Submodule ℝ (Amb n ℓ)) (F : Set (Amb n ℓ)) (ζ : Amb n ℓ) (s ε : ℝ), 0 < s → AEStronglyMeasurable p μ → (∀ x, ‖p x‖ ≤ 1) → MeasurableSet F → μ (closedBall ζ (3 * s)) ≠ ⊤ → (∀ x ∈ F, ‖(x - ζ) - T.starProjection (x - ζ)‖ ≤ ε * ‖x - ζ‖) → ∫ x in closedBall ζ (3 * s), ‖(x - ζ) - p x (x - ζ)‖ ^ 2 ∂μ ≤ 18 * s ^ 2 * (ε ^ 2 * (μ (closedBall ζ (3 * s))).toReal + (μ (closedBall ζ (3 * s) \\ F)).toReal + ∫ x in closedBall ζ (3 * s), hsNormSq (p x - T.starProjection) ∂μ)",
+  "lean_name": "lgc_hole_split_upper",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hole-split-upper-a1-a1"
+}

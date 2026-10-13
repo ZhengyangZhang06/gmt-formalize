@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.campanato_center_holder-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1",
+  "depth": 3,
+  "title": "Campanato centres are Hoelder continuous (midpoint averaging)",
+  "statement": "For every n >= 1 there is C >= 0, depending only on n, such that: for all m, k >= 0, all G, c : R^n -> L(R^m, R^k), A >= 0, R > 0 and 0 < alpha <= 1 with G Borel measurable and lintegral over the closed ball B_{s/2}(z) of ofReal(hsNormSq(G(x) - c(z))) dx <= ofReal(A s^n (s/R)^(2 alpha)) for every z in the closed ball B_{R/4}(0) and every 0 < s <= R/4, one has hsNorm(c(x) - c(y)) <= C sqrt(A) (||x - y||/R)^alpha for all x, y in the open ball B^o_{R/16}(0).",
+  "lean_statement": "∀ (n : ℕ), 1 ≤ n → ∃ C : ℝ, 0 ≤ C ∧ ∀ (m k : ℕ) (G c : Rn n → (Rn m →L[ℝ] Rn k)) (A R α : ℝ), 0 ≤ A → 0 < R → 0 < α → α ≤ 1 → Measurable G → (∀ z ∈ closedBall (0 : Rn n) (R / 4), ∀ s : ℝ, 0 < s → s ≤ R / 4 → ∫⁻ x in closedBall z (s / 2), ENNReal.ofReal (hsNormSq (G x - c z)) ≤ ENNReal.ofReal (A * s ^ n * (s / R) ^ (2 * α))) → ∀ x ∈ ball (0 : Rn n) (R / 16), ∀ y ∈ ball (0 : Rn n) (R / 16), hsNorm (c x - c y) ≤ C * Real.sqrt A * (‖x - y‖ / R) ^ α",
+  "lean_name": "allard52_campanato_center_holder",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-campanato-center-holder-a1-a1"
+}

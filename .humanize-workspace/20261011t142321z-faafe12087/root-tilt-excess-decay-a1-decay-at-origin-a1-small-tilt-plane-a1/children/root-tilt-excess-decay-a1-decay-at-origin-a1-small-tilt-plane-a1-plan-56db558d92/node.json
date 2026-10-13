@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1.plane_dist_transfer-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.small_tilt_plane-a1",
+  "depth": 4,
+  "title": "Distance to a plane is controlled by the distance to a nearby plane",
+  "statement": "Let n, l be natural numbers, P and Q linear subspaces of R^{n+l} with orthogonal projections p_P = P.starProjection and p_Q = Q.starProjection, and x in R^{n+l}. Then dist(x, P) <= dist(x, Q) + hsNorm(p_P - p_Q) ||x||, where dist(x, S) = infDist x S and hsNorm is the Hilbert-Schmidt norm (hsNorm A = sqrt(hsNormSq A), hsNormSq A = sum_i ||A e_i||^2).",
+  "lean_statement": "∀ (n ℓ : ℕ) (P Q : Submodule ℝ (Amb n ℓ)) (x : Amb n ℓ), infDist x (P : Set (Amb n ℓ)) ≤ infDist x (Q : Set (Amb n ℓ)) + hsNorm (P.starProjection - Q.starProjection) * ‖x‖",
+  "lean_name": "tdo_stp_infDist_le_infDist_add_hsNorm",
+  "depends_on": [
+    "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_graph_corollary-a1.hole_estimate-a1.hs_norm_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-hole-estimate-a1-hs-norm-bounds-a1-a1",
+      "result_commit": "7372f81c6640dd17bd99bd3c9bbe79675f27d126",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-small-tilt-plane-a1-plan-56db558d92-a1"
+}

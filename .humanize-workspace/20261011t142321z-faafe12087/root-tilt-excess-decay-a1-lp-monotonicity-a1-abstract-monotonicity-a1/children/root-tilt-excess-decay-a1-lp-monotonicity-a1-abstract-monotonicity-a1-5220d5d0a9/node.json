@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.cutoff_integral_tendsto-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "depth": 4,
+  "title": "Dominated convergence for radial cutoff integrals: integral phi_k(|x - y|/t) g dmu -> integral over B_t(y) of g (parent step 8)",
+  "statement": "Let n, l be natural numbers, E = R^(n+l) (Amb n l), mu a measure on E, g : E -> R, y in E, phi_k : R -> R (k in N), and S, T, t real numbers with t > 0, T >= 1 and T t <= S. Assume: g is mu-integrable on the closed ball B_S(y); every phi_k is continuous; 0 <= phi_k(s) <= 1 for all k and s; phi_k(s) = 1 for all k and all s <= 1; phi_k(s) = 0 for all k and all s >= T; and for every s > 1, phi_k(s) = 0 for all sufficiently large k. Then the Bochner integrals integral_E phi_k(|x - y|/t) g(x) dmu(x) converge, as k -> infinity, to the set integral of g over the closed ball B_t(y) with respect to mu.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (φ : ℕ → ℝ → ℝ) (S T t : ℝ), 0 < t → 1 ≤ T → T * t ≤ S → IntegrableOn g (closedBall y S) μ → (∀ k, Continuous (φ k)) → (∀ k s, 0 ≤ φ k s ∧ φ k s ≤ 1) → (∀ k s, s ≤ 1 → φ k s = 1) → (∀ k s, T ≤ s → φ k s = 0) → (∀ s, 1 < s → ∀ᶠ k in atTop, φ k s = 0) → Tendsto (fun k => ∫ x, φ k (‖x - y‖ / t) * g x ∂μ) atTop (𝓝 (∫ x in closedBall y t, g x ∂μ))",
+  "lean_name": "ted_lpm_am_cutoff_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-5220d5d0a9-a1"
+}

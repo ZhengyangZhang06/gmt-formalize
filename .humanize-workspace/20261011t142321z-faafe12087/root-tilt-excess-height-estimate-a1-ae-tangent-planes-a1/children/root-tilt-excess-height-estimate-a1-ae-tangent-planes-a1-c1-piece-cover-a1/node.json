@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.c1_piece_cover-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Cover of a countably n-rectifiable set by embedded C¹ pieces (Simon Ch. 3, Lemma 1.2)",
+  "statement": "Let n ≥ 1, ℓ ≥ 0 and let M ⊆ ℝ^{n+ℓ} (= Amb n ℓ) be countably n-rectifiable in the sense of SimonGMT Chapter03.CountablyRectifiable (M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) with Hⁿ(M₀) = 0 and F_j : ℝⁿ → ℝ^{n+ℓ} Lipschitz; Hⁿ = μHE[n]). Then there exist a Borel set Z₀ with Hⁿ(Z₀) = 0 and, for k ∈ ℕ, C¹ maps G_k : ℝⁿ → ℝ^{n+ℓ}, points c_k ∈ ℝⁿ and reals r_k > 0, σ_k > 0 such that for every k: DG_k(b) is injective for every b in the open ball B°_{r_k}(c_k); σ_k|b₁ − b₂| ≤ |G_k(b₁) − G_k(b₂)| for all b₁, b₂ ∈ B°_{r_k}(c_k); and M ⊆ Z₀ ∪ ⋃_k G_k(B°_{r_k}(c_k)). (Quantitative form of Simon Ch. 3, Lemma 1.2, 'only if'.)",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ Z₀ : Set (Amb n ℓ), MeasurableSet Z₀ ∧ (μHE[n] : Measure (Amb n ℓ)) Z₀ = 0 ∧ ∃ (G : ℕ → Rn n → Amb n ℓ) (c : ℕ → Rn n) (r σ : ℕ → ℝ), (∀ k, ContDiff ℝ 1 (G k)) ∧ (∀ k, 0 < r k) ∧ (∀ k, 0 < σ k) ∧ (∀ k, ∀ b ∈ ball (c k) (r k), Function.Injective (fderiv ℝ (G k) b)) ∧ (∀ k, ∀ b₁ ∈ ball (c k) (r k), ∀ b₂ ∈ ball (c k) (r k), σ k * ‖b₁ - b₂‖ ≤ ‖G k b₁ - G k b₂‖) ∧ M ⊆ Z₀ ∪ ⋃ k, G k '' ball (c k) (r k)",
+  "lean_name": "aetp_rectifiable_c1_piece_cover",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.c1_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.c1_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-c1-piece-cover-a1-a1"
+}

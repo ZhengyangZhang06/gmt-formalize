@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1.lusin_exhaustion-a1",
+  "parent_id": "root.tilt_excess_height_estimate-a1.ae_tangent_planes-a1",
+  "depth": 3,
+  "title": "Lusin compact exhaustion of a rectifiable varifold's carrier (Simon Ch. 3, Remark 1.8(1))",
+  "statement": "Let n, ℓ ≥ 0, U ⊆ ℝ^{n+ℓ} open, and V = v(M, θ) a rectifiable n-varifold in U (contract structure RectifiableVarifold; M = V.carrier, θ = V.mult). Then there are compact sets K_m ⊆ M (m ∈ ℕ) such that θ is continuous on each K_m, Hⁿ(K_m) < ∞, and Hⁿ(M ∖ ⋃_m K_m) = 0 (Hⁿ = μHE[n]). (Simon Ch. 3, Remark 1.8(1), first assertion.)",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), ∃ K : ℕ → Set (Amb n ℓ), (∀ m, IsCompact (K m)) ∧ (∀ m, K m ⊆ V.carrier) ∧ (∀ m, ContinuousOn V.mult (K m)) ∧ (∀ m, (μHE[n] : Measure (Amb n ℓ)) (K m) < ⊤) ∧ (μHE[n] : Measure (Amb n ℓ)) (V.carrier \\ ⋃ m, K m) = 0",
+  "lean_name": "aetp_lusin_compact_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-height-estimate-a1-ae-tangent-planes-a1-lusin-exhaustion-a1-a1"
+}

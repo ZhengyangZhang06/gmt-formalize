@@ -1,0 +1,150 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_approximation-a1`
+- Child DAG node: `root.lipschitz_approximation-a1.graph_hole_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 5, proof of Lemma 2.6, the covering argument after (10) (steps 8-9 of the parent proof), with correction (v): graph points far from spt V are reached by a path argument so that the hole estimate is only used inside B_(3 sigma_0/4)(0).
+
+Constants. From the hole-estimate child (lip_approx_hole_estimate) take eps_h, delta_h, C_h. Put omega_n := unitBallVolume n and
+ eps := min{eps_h, 1} > 0, delta_0 := min{delta_h, 1/8} > 0, C_0 := 2^(n/2) omega_n 16^n C_h >= 0.
+Let 0 < delta <= delta_0, 2.3 hold, sigma_0 := delta rho, q a linear isometry, T_0 := rotatedPlane q, P := p_(T_0), Q := I - P, mu := V.weight, f with |f(x) - f(z)| <= eps |x - z| for all x, z and |f(x)| <= sigma_0/32 for |x| <= sigma_0/2. Put Fhat := q '' graphOver f univ = {q(graphPoint x (f x)) : x in R^n}, F := q '' graphOver f (closedBall 0 (sigma_0/2)), Z := B_(sigma_0/2)(0) cap (F minus spt V), tau(x) := hsNormSq(p_x - P), tilt(A) := integral_A tau dmu, and let Psi be the measure Psi(A) := mu(A minus Fhat) + integral_A ofReal(tau) dmu (= (mu restricted to the complement of Fhat) + mu.withDensity(ofReal o tau)). For closed balls B contained in B_rho(0), Psi(B) = mu(B minus Fhat) + ofReal(tilt(B)) (tau is integrable on B by the tangent-structure child lip_approx_tangent_structure). The graph-coordinates child is lip_approx_graph_coordinates and the graph-measure child is lip_approx_graph_measure.
+1. Properties of Fhat. (a) Fhat is closed: by the graph-coordinates child (iii) every w equals graphPoint (a(w)) (b(w)), where a(w), b(w) are the first n and last l coordinates of w (continuous linear functions of w); the range of x -> graphPoint x (f x) is {w : b(w) = f(a(w))}, which is closed because f is continuous (Lipschitz); and q is a homeomorphism. (b) Cone property: for x = q(graphPoint a (f a)) and z = q(graphPoint a' (f a')) in Fhat, the graph-coordinates child gives x - z = q(graphPoint (a - a') (f a - f a')), P(x - z) = q(graphPoint (a - a') 0), hence Q(x - z) = q(graphPoint 0 (f a - f a')) (by (i)), so |Q(x - z)| = |f a - f a'| <= eps |a - a'| <= eps |x - z|, because |x - z|^2 = |a - a'|^2 + |f a - f a'|^2 by (ii). (c) If zeta = q(graphPoint a_zeta (f a_zeta)) and x = q(graphPoint a (f a)) lie in Fhat with |x - zeta| <= t, then |a - a_zeta| <= t, so Fhat cap B_t(zeta) is contained in q '' graphOver f (closedBall a_zeta t). (d) |q(graphPoint a b)| <= |a| + |b| (by (ii)). (e) F is contained in Fhat.
+2. Positive distance. For zeta in Z: zeta lies in B_(sigma_0/2)(0), contained in the open ball B^o_rho(0) and so in U, and zeta is not in spt V = U cap spt mu, hence not in spt mu. As spt mu is closed and spt V (which contains 0) is a subset of spt mu, d(zeta) := infDist(zeta, spt V) >= infDist(zeta, spt mu) > 0.
+3. Far case: some zeta in Z has d(zeta) > sigma_0/16. Write zeta = q(graphPoint x_zeta (f x_zeta)) with |x_zeta| <= sigma_0/2 and gamma(t) := q(graphPoint (t x_zeta) (f(t x_zeta))) for t in [0,1], a continuous path in Fhat. The function h(t) := infDist(gamma(t), spt V) is continuous (infDist is 1-Lipschitz), h(0) <= |gamma(0) - 0| = |f(0)| <= sigma_0/32 (0 in spt V; (d)), and h(1) = d(zeta) > sigma_0/16. By the intermediate value theorem there is t* in [0,1] with h(t*) = sigma_0/16; put zeta' := gamma(t*), which lies in Fhat and satisfies |zeta'| <= sigma_0/2 + sigma_0/32 = 17 sigma_0/32 by (d). The hole-estimate child (T := T_0, F := Fhat, closed with cone constant eps <= eps_h by 1(a),(b); delta <= delta_h; infDist(zeta', spt V) = sigma_0/16) gives (sigma_0/32)^n <= C_h [mu(B_(3 sigma_0/32)(zeta') minus Fhat) + tilt(B_(3 sigma_0/32)(zeta'))] <= C_h [mu(B_(3 sigma_0/4)(0) minus Fhat) + tilt(B_(sigma_0)(0))], since B_(3 sigma_0/32)(zeta') is contained in B_(20 sigma_0/32)(0), a subset of B_(3 sigma_0/4)(0) and of B_(sigma_0)(0), and tau >= 0 is integrable on B_(sigma_0)(0). By the graph-measure child (f is 1-Lipschitz since eps <= 1; c = 0, r = sigma_0/2): H^n(Z) <= H^n(F) <= 2^(n/2) omega_n (sigma_0/2)^n = 2^(n/2) omega_n 16^n (sigma_0/32)^n <= C_0 [mu(B_(3 sigma_0/4)(0) minus Fhat) + tilt(B_(sigma_0)(0))].
+4. Near case: d(zeta) <= sigma_0/16 for every zeta in Z. For zeta in Z put s(zeta) := d(zeta)/2 in (0, sigma_0/32] and r(zeta) := 3 s(zeta) in (0, 3 sigma_0/32]. Since zeta lies in F, a subset of Fhat, and |zeta| <= sigma_0/2 <= 17 sigma_0/32, the hole-estimate child gives s(zeta)^n <= C_h Psi(B_(r(zeta))(zeta)). Also B_(r(zeta))(zeta) is contained in B_(sigma_0/2 + 3 sigma_0/32)(0), a subset of W := B_(3 sigma_0/4)(0); and by 1(c), 1(e) and the graph-measure child (c = a_zeta, r = 15 s(zeta)), H^n(Z cap B_(5 r(zeta))(zeta)) <= H^n(Fhat cap B_(15 s(zeta))(zeta)) <= H^n(q '' graphOver f (closedBall a_zeta (15 s(zeta)))) <= 2^(n/2) omega_n 15^n s(zeta)^n <= 2^(n/2) omega_n 15^n C_h Psi(B_(r(zeta))(zeta)). The Vitali child (lip_approx_vitali_bound) with N = n + l, nu := H^n, the measure Psi, S := Z, W, radii r(zeta) <= R_0 := 3 sigma_0/32 and M := ofReal(2^(n/2) omega_n 15^n C_h) yields H^n(Z) <= M Psi(B_(3 sigma_0/4)(0)) = M [mu(B_(3 sigma_0/4)(0) minus Fhat) + ofReal(tilt(B_(3 sigma_0/4)(0)))] <= ofReal(C_0) [mu(B_(3 sigma_0/4)(0) minus Fhat) + ofReal(tilt(B_(sigma_0)(0)))].
+5. In both cases H^n(B_(sigma_0/2)(0) cap (q '' graphOver f (closedBall 0 (sigma_0/2)) minus spt V)) = H^n(Z) <= ofReal(C_0) [V.weight(B_(3 sigma_0/4)(0) minus q '' graphOver f univ) + ofReal(tilt(B_(sigma_0)(0)))].
+
+## Key steps
+
+1. Fhat = q(graph f over R^n) is closed and has the eps-cone property relative to T_0 (graph-coordinates child)
+2. Every hole point zeta in Z has 0 < d(zeta) = dist(zeta, spt V)
+3. Far case: a path in Fhat from q(0, f(0)) to zeta and the intermediate value theorem give a point at distance exactly sigma_0/16; the hole estimate there bounds sigma_0^n, hence H^n(F) <= 2^(n/2) omega_n (sigma_0/2)^n
+4. Near case: hole estimate at every zeta in Z with s = d/2, graph-measure bound on 15s-balls, Vitali child with W = B_(3 sigma_0/4)(0)
+5. Both cases give H^n(Z) <= C_0 [mu(B_(3 sigma_0/4)(0) minus Fhat) + tilt(B_(sigma_0)(0))]
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json`
+- `diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean (identical)`
+- `grep -n 'def C1Approximation|def WhitneyExtension|def Rademacher' GMT/Ch02/Contract.lean; grep -n sorry GMT/Ch02/Submission.lean`
+- `grep -o 'lip_approx_[a-z_]*' dag.json DAG.md dag.mmd issue-workers.json problem.json (no matches)`
+- `python3 -I: list dag.json nodes with 'tangent' in id (aal_tangent_structure, rectifiableVarifold_ae_tangentProj_starProjection)`
+- `grep -n 'theorem LipschitzWith.ae_differentiableAt' <snapshot>/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `grep -n 'theorem tendstoUniformlyOn_of_ae_tendsto' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `grep -n 'theorem measurableSet_of_differentiableAt|theorem measurable_fderiv' <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `grep -rn 'exists_isClosed_diff_lt' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'theorem isClosed_iUnion' <snapshot>/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `grep -rn 'theorem contDiff_euclidean|theorem contDiff_piLp' <snapshot>/mathlib/Mathlib`
+- `grep -rn 'theorem norm_fderiv_le_of_lipschitz' <snapshot>/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `grep -rn 'theorem ContinuousOn.measurable_piecewise' <snapshot>/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `grep -rn 'norm_image_sub_le_of_norm_fderiv_le' <snapshot>/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `grep -n 'theorem hausdorffMeasure_homothety_image' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n 'euclideanHausdorffMeasure_eq_volume|def MeasureTheory.Measure.euclideanHausdorffMeasure' <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rn sorry .lake/packages/simongmt/Poincare/SimonGMT (0 matches); git -C lake-packages-25730c7c/simongmt rev-parse HEAD`
+- `grep -n '^theorem|^structure' SimonGMT/Chapter02/WhitneyExtension.lean SimonGMT/Chapter02/WhitneyJet.lean`
+- `grep -n '^theorem' -A 12 SimonGMT/Chapter01/Lusin.lean`
+- `grep -rn 'theorem simon_theorem_3_6' -A 30 SimonGMT/Chapter01/; grep -n 'def dimensionalDensityQuotient|def dimensionalUpperDensity' SimonGMT/Chapter01/Densities.lean`
+- `grep -n 'theorem measure_toOuterMeasure_isBorelRegular' SimonGMT/Chapter01/Basic.lean; grep -n 'simonAreaNormalization' SimonGMT/Chapter02/AreaNormalization.lean`
+- `grep -n '^theorem' SimonGMT/Chapter02/{AreaLipschitz,AreaCritical,AreaFormula,AreaNoninjective,Area}.lean; grep -rn 'theorem weighted_area_formula_volume_of_injective_derivative|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' SimonGMT/Chapter02`
+- `grep -n '^theorem|^def' SimonGMT/Chapter03/{SubmanifoldCover,DisjointCover,Rectifiable}.lean`
+- `sed -n 150,290p book/sources/chapter-02-source.txt (printed proof of Thm 1.5); sed -n 1,360p book/sources/chapter-03-source.txt (1.1-1.9)`
+- `lean --root=/tmp/lipapprox-dec-v2 -o GMT/Ch05/Submission.olean GMT/Ch05/Submission.lean; lean -o LipApproxAux/WhitneyExtension.olean LipApproxAux/WhitneyExtension.lean (verbatim copy of SimonGMT Chapter02/WhitneyExtension.lean)`
+- `lean --root=/tmp/lipapprox-dec-v2 c1a/Api.lean (#check of cited APIs and #print axioms for Whitney and Lusin)`
+- `lean --root=/tmp/lipapprox-dec-v2 c1a/C1A.lean (C1ACheck.c1_approx_scalar, C1ACheck.c1_approx; #print axioms)`
+- `python3 -I scripts/gen_checks.py decomposition statements (verifier/lean_contract.validate_lean_statement); lean check/lip_approx_*.lean; lean check/All.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/LocallyFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-02-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-lipschitz-approximation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-affine-approximation-a1-tangent-structure-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lipapprox-dec-v2/c1a/C1A.lean`
+- `/tmp/lipapprox-dec-v2/c1a/Api.lean`
+- `/tmp/lipapprox-dec-v2/LipApproxAux/WhitneyExtension.lean`
+- `/tmp/lipapprox-dec-v2/check/All.lean`
+
+Pinned versions. Snapshot a7f8fcd21d5c8fc7 pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The pinned SimonGMT, 2b3663083f3fe399b6296fb8eaee52169170e197, lies outside the snapshot and contains no sorry. The workspace GMT/Ch05/Submission.lean is byte-identical to the snapshot copy.
+
+C1A has no usable proof anywhere:
+- GMT/Ch02/Contract.lean:199 defines C1Approximation, but GMT/Ch02/Submission.lean:377 proves its main_theorem by sorry.
+- SimonGMT Chapter03/SubmanifoldCover.lean proves only the C^1-to-rectifiable direction of Lemma 1.2.
+So the proof is supplied as Part A of tangent_structure.
+
+Checked ingredients located in Mathlib (paths under mathlib/Mathlib):
+- LipschitzWith.ae_differentiableAt (Analysis/Calculus/Rademacher.lean:385);
+- measurableSet_of_differentiableAt and measurable_fderiv (Analysis/Calculus/FDeriv/Measurable.lean:372, 378);
+- tendstoUniformlyOn_of_ae_tendsto (MeasureTheory/Function/Egorov.lean:205);
+- MeasurableSet.exists_isClosed_sdiff_lt (MeasureTheory/Measure/Regular.lean, alias exists_isClosed_diff_lt at :1044);
+- LocallyFinite.isClosed_iUnion (Topology/LocallyFinite.lean:128);
+- contDiff_euclidean (Analysis/InnerProductSpace/Calculus.lean:339);
+- norm_fderiv_le_of_lipschitz (Analysis/Calculus/FDeriv/Basic.lean:947);
+- Convex.norm_image_sub_le_of_norm_fderiv_le (Analysis/Calculus/MeanValue.lean:499);
+- ContinuousOn.measurable_piecewise (MeasureTheory/Constructions/BorelSpace/Basic.lean:523);
+- hausdorffMeasure_homothety_image (MeasureTheory/Measure/Hausdorff.lean:1060);
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:187).
+
+Checked ingredients located in SimonGMT (paths under Poincare/SimonGMT):
+- Chapter02.exists_contDiff_one_extension_of_whitney (WhitneyExtension.lean:373); its hypothesis HasWhitneyC1Compatibility (WhitneyJet.lean:34) has the fields continuous_value, continuous_derivative and remainder;
+- Chapter01.exists_isClosed_continuousOn_of_measurable, the finite-measure Lusin theorem (Lusin.lean:127);
+- Chapter01.simon_theorem_3_6 (DensityComparison.lean:332), with its density quotient over closed balls (Densities.lean);
+- Chapter01.measure_toOuterMeasure_isBorelRegular (Basic.lean:309);
+- simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure and simonAreaNormalization_pos/_ne_top (Chapter02/AreaNormalization.lean:45, 31, 37);
+- Chapter02.area_image_criticalSet_eq_zero (AreaCritical.lean:185);
+- Chapter02.weighted_area_formula_volume_of_injective_derivative (WeightedArea.lean:120);
+- Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (Lipschitz.lean:216);
+- Chapter03.simon_remark_1_3_nullMeasurable (DisjointCover.lean:109);
+- Chapter03.HasWeightedApproximateTangentSpaceAt.unique (Rectifiable.lean:345).
+None of these is the Chapter04.RectifiableVarifold that the chapter README excludes.
+
+The book's printed proofs are followed: Thm 1.5 at book/sources/chapter-02-source.txt lines 165-270, and Ch. 3, 1.1-1.9.
+
+Lean results:
+- /tmp/lipapprox-dec-v2/c1a/C1A.lean compiles with 0 errors and no sorry.
+- C1ACheck.c1_approx_scalar, C1ACheck.c1_approx, exists_contDiff_one_extension_of_whitney and exists_isClosed_continuousOn_of_measurable depend only on propext, Classical.choice and Quot.sound.
+- All 11 child types elaborate in the contract scope with 0 errors and only sorry warnings, and pass validate_lean_statement.
+
+No lip_approx_ name is reserved anywhere in the DAG. The tangent nodes of other branches, aal_tangent_structure and rectifiableVarifold_ae_tangentProj_starProjection, have different Lean types, so there is no collision and no reuse.

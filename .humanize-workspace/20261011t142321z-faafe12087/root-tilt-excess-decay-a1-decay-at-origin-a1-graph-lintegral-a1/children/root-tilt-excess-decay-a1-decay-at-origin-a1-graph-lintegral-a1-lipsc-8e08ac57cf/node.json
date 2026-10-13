@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1.lipschitz_image_lintegral-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.graph_lintegral-a1",
+  "depth": 4,
+  "title": "Hausdorff integrals over the image of a Lipschitz map from R^n",
+  "statement": "Setting:\n- n, N are natural numbers, and R^m denotes EuclideanSpace R (Fin m).\n- F : R^n -> R^N is any function, D is a measurable subset of R^n, and K >= 0 is a nonnegative real (K in R>=0).\n- Assume F is K-Lipschitz on D.\n- H^n = muHE[n] is the n-dimensional Euclidean Hausdorff measure on R^N (Mathlib's normalisation: muHE[n] = Lebesgue measure on R^n).\n\nConclusion: for every measurable g : R^N -> [0, infinity],\n(integral of g over F(D) with respect to muHE[n]) <= K^n * (integral over x' in D of g(F x') with respect to Lebesgue measure (volume) on R^n).\nBoth sides are lower Lebesgue integrals with values in [0, infinity].",
+  "lean_statement": "∀ (n N : ℕ) (F : Rn n → EuclideanSpace ℝ (Fin N)) (D : Set (Rn n)) (K : ℝ≥0), MeasurableSet D → LipschitzOnWith K F D → ∀ g : EuclideanSpace ℝ (Fin N) → ℝ≥0∞, Measurable g → ∫⁻ x in F '' D, g x ∂(μHE[n] : Measure (EuclideanSpace ℝ (Fin N))) ≤ (K : ℝ≥0∞) ^ n * ∫⁻ x' in D, g (F x')",
+  "lean_name": "tdo_gl_lintegral_image_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-graph-lintegral-a1-lipsc-8e08ac57cf-a1"
+}

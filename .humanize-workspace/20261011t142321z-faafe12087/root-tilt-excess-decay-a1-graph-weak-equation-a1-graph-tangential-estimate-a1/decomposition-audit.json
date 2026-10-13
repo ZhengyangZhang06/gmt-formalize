@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hsNormSq|graphPoint|structure RectifiableVarifold|noncomputable def weight|def support|noncomputable def tangentProj|integrableOn_mult",
+        "theorem measurableSet_of_differentiableAt|theorem measurable_fderiv |theorem ae_differentiableWithinAt_of_mem|theorem norm_fderiv_le_of_lipschitzOn|toDual_symm_apply",
+        "theorem integral_inter_add_sdiff|theorem norm_setIntegral_le_of_norm_le_const |theorem setIntegral_mono_set|theorem Measure.integrableOn_of_bounded|theorem Integrable.mono.|measure_compl_support|theorem restrict_apply₀.|theorem withDensity_absolutelyContinuous",
+        "rg -n 'gte_(weight_null_finite|tangentProj_integrands|graph_image_geometry|lipschitz_ball_calculus|localized_comparison)' project/GMT",
+        "rg -l -i varifold mathlib/Mathlib",
+        "sed -n '365,394p' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py contract",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py test",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py challenge_bundle",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py solution_bundle",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py assembly",
+        "python3 -I /tmp/gte-selected-audit-8j5bdtp_/run_lean.py wiring"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-estimate-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-graph-tangential-estimate-a1/decomposition-v1.json",
+        "/tmp/gte-selected-audit-8j5bdtp_/test/GMT/Ch05/Submission.lean",
+        "/tmp/gte-selected-audit-8j5bdtp_/checks/Challenges.lean",
+        "/tmp/gte-selected-audit-8j5bdtp_/checks/Solutions.lean",
+        "/tmp/gte-selected-audit-8j5bdtp_/checks/Assembly.lean",
+        "/tmp/gte-selected-audit-8j5bdtp_/checks/Wiring.lean"
+      ],
+      "conclusion": "The split is appropriate: five independent obligations isolate the selected estimate's measure, integrability, geometry, calculus, and localization arguments. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the compiling Mathlib revision matches, and the snapshot Contract matches both workspace Contract and Submission. Relevant definitions and cited APIs were inspected. No proposed name occurs in snapshot project sources, the DAG, or other branches' node JSON files; the Mathlib varifold search returned no matches. All names are bare identifiers, and no accepted declaration is being reused as a child. Dependencies are correctly directed and acyclic. Independently rebuilt all five exact comparator challenge types against a fresh contract-only module with autoImplicit disabled; all elaborate without child implementations. All five supplied proof implementations and comparator solutions compile. Coordinate coercions, operator norms, and finite-dimensional starProjection instances agree with the prose; no matrix-unit construction occurs. Fresh assembly and wiring checks derive the exact selected frozen parent type from its four inherited prerequisite contracts and these five children. Child proofs, comparator solutions, and assembly checks use only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weight_null_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary U and potentially nonmeasurable Z. Density/restriction absolute continuity proves the null-set implication; compact-set integrability bounds the weight; carrier concentration and conull measure support prove the support-complement claim. All three arguments are complete and non-circular."
+    },
+    {
+      "key": "tangent_proj_integrands",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes contraction directly from the projection-or-zero definition. Continuous evaluation and the finite Hilbert–Schmidt sum give the required strong measurability, while bounds by ‖e‖C and 4(n+ℓ) give both integrability conclusions on arbitrary finite-weight sets. The hypotheses and inferred instances match the exact type."
+    },
+    {
+      "key": "graph_image_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate calculation proves the left inverse and both continuity claims. Continuity only on the closed ball suffices for compactness. The open-ball graph equals the compact graph intersected with the inverse image of the open ball, proving Borel measurability. No unstated global continuity or radius positivity is needed."
+    },
+    {
+      "key": "lipschitz_ball_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel differentiability, Rademacher on the open ball, and conversion from within-differentiability prove the exact null-set claim. The neighborhood Lipschitz bound also covers the total fderiv convention at nondifferentiability points. The coordinate chain rule and Riesz identity prove the gradient-row formula. The proof is complete for all stated dimensions and radii."
+    },
+    {
+      "key": "localized_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both integral decompositions have the required measurability and integrability. Finiteness justifies toReal monotonicity for the off-set bound. Domination establishes integrability of φ before subtracting integrals, and M ≥ 0 together with ψ ≥ 0 justifies enlarging the comparison domain. The triangle inequality yields precisely the stated bound without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

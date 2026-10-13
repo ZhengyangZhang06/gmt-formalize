@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1.rank_one_divergence-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.vertical_first_variation-a1",
+  "depth": 4,
+  "title": "Tangential divergence of a rank-one field: div_M(f e)(x) = ⟨p_x e, p_x g⟩ when Df(x) = ⟨g, ·⟩",
+  "statement": "Let n, l ∈ N, U ⊆ R^{n+l}, and V a rectifiable n-varifold in U with tangent projection p_x = V.tangentProj x. Let f : R^{n+l} → R and e, g, x ∈ R^{n+l}, and assume f has Fréchet derivative v ↦ ⟨g, v⟩ at x. Then the tangential divergence of the field y ↦ f(y) e at x satisfies V.divM (y ↦ f(y) e) x = ⟨p_x e, p_x g⟩.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (f : Amb n ℓ → ℝ) (e g x : Amb n ℓ), HasFDerivAt f (innerSL ℝ g) x → V.divM (fun y => f y • e) x = inner ℝ (V.tangentProj x e) (V.tangentProj x g)",
+  "lean_name": "gwe_vfv_divM_smul_const_eq_inner",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-vertical-first-varia-ecc602208d-a1"
+}

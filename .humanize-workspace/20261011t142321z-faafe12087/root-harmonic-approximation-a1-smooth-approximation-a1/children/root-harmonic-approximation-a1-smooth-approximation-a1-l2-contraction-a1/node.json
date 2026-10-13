@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.smooth_approximation-a1.l2_contraction-a1",
+  "parent_id": "root.harmonic_approximation-a1.smooth_approximation-a1",
+  "depth": 3,
+  "title": "L^2 contraction of convolution with a continuous probability kernel",
+  "statement": "Let n be a natural number, E a real Banach space, and mu Lebesgue measure on R^n. Let rho : R^n -> R be continuous with rho(z) >= 0 for all z and int rho dmu = 1 (Bochner integral), and let H : R^n -> E be mu-a.e. strongly measurable. Then int^-_x ||int_z rho(z) H(x - z) dz||_e^2 dx <= int^-_x ||H(x)||_e^2 dx, where both sides are lintegrals (values in [0, infinity]) of squared extended norms and the inner integral is the Bochner integral.",
+  "lean_statement": "∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] (ρ : Rn n → ℝ) (H : Rn n → E), Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → AEStronglyMeasurable H volume → ∫⁻ x, ‖∫ z, ρ z • H (x - z)‖ₑ ^ 2 ≤ ∫⁻ x, ‖H x‖ₑ ^ 2",
+  "lean_name": "mollifier_l2_contraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-smooth-approximation-a1-l2-contraction-a1-a1"
+}

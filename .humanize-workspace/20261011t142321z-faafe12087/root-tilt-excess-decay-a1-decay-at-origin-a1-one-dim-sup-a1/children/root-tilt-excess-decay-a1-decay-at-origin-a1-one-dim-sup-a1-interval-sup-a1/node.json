@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.interval_sup-a1",
+  "parent_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1",
+  "depth": 4,
+  "title": "One-dimensional sup bound on an interval by the L^2 norms of a Lipschitz curve and of its derivative",
+  "statement": "Let l be a natural number, W : R -> R^l (R^l = EuclideanSpace R (Fin l)), a > 0 and K >= 0, and suppose W is K-Lipschitz on [-a, a]. Then for every t in [-a, a]: ||W(t)|| <= ((2a)^{-1} ∫_{(-a,a)} ||W||^2)^{1/2} + (2a ∫_{(-a,a)} ||deriv W||^2)^{1/2}. Here deriv is Mathlib's derivative and the integrals are Bochner integrals for Lebesgue measure on the open interval.",
+  "lean_statement": "∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K W (Icc (-a) a) → ∀ t ∈ Icc (-a) a, ‖W t‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ s in Ioo (-a) a, ‖W s‖ ^ 2) + Real.sqrt (2 * a * ∫ s in Ioo (-a) a, ‖deriv W s‖ ^ 2)",
+  "lean_name": "tdo_ods_interval_sup_le",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+    "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.cauchy_schwarz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.ftc_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.decay_at_origin-a1.one_dim_sup-a1.cauchy_schwarz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-decay-at-origin-a1-one-dim-sup-a1-interval-sup-a1-a1"
+}

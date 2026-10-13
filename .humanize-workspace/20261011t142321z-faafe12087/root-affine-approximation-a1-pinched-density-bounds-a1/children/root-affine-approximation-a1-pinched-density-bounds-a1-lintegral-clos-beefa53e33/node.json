@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1.lintegral_closed_ball_le_of_annuli-a1",
+  "parent_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+  "depth": 3,
+  "title": "Lower integral over a closed ball from uniform annular bounds (monotone convergence step)",
+  "statement": "Let n, l be natural numbers, mu a measure on R^(n+l) (Borel sigma-algebra), g : R^(n+l) -> R, y in R^(n+l), s > 0 and M real. Assume g(x) >= 0 for every x, g(y) = 0, and for every t in (0, s) the function g is mu-integrable on the annulus B_s(y) minus B_t(y) (closed balls) with integral_{B_s(y) minus B_t(y)} g dmu <= M. Then the lower integral over B_s(y) of ofReal(g) with respect to mu is at most ofReal(M).",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (g : Amb n ℓ → ℝ) (y : Amb n ℓ) (s M : ℝ), 0 < s → (∀ x, 0 ≤ g x) → g y = 0 → (∀ t : ℝ, 0 < t → t < s → IntegrableOn g (closedBall y s \\ closedBall y t) μ ∧ ∫ x in closedBall y s \\ closedBall y t, g x ∂μ ≤ M) → ∫⁻ x in closedBall y s, ENNReal.ofReal (g x) ∂μ ≤ ENNReal.ofReal M",
+  "lean_name": "aal_lintegral_closedBall_le_of_annuli",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-lintegral-clos-beefa53e33-a1"
+}

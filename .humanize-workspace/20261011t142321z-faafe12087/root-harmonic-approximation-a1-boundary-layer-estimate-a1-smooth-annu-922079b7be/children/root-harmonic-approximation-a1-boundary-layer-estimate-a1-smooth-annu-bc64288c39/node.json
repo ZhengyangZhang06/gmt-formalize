@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1.dilation_formula-a1",
+  "parent_id": "root.harmonic_approximation-a1.boundary_layer_estimate-a1.smooth_annulus_estimate-a1",
+  "depth": 4,
+  "title": "Dilation formula for lintegrals on R^n",
+  "statement": "Let n ∈ ℕ and let R^n := EuclideanSpace ℝ (Fin n) carry Lebesgue measure. Let F : R^n → [0, ∞] be any function and E ⊆ R^n any set (neither is assumed measurable), and let t > 0 be real. Then ∫_E F(t x) dx = t^{-n} ∫_{E_t} F(y) dy, where E_t := {y ∈ R^n : t⁻¹ y ∈ E} (= tE). Both integrals are lintegrals with values in [0, ∞], and t^{-n} enters as ENNReal.ofReal ((t^n)⁻¹).",
+  "lean_statement": "∀ (n : ℕ) (F : Rn n → ℝ≥0∞) (E : Set (Rn n)) (t : ℝ), 0 < t → ∫⁻ x in E, F (t • x) = ENNReal.ofReal ((t ^ n)⁻¹) * ∫⁻ y in (fun y => t⁻¹ • y) ⁻¹' E, F y",
+  "lean_name": "ble_sac_lintegral_comp_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-harmonic-approximation-a1-boundary-layer-estimate-a1-smooth-annu-bc64288c39-a1"
+}

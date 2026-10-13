@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.translate_varifold-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Translation invariance of rectifiable varifolds (re-centring)",
+  "statement": "For all n, l in N, every set U in R^{n+l}, every contract rectifiable n-varifold V = v(M, theta) in U and every xi in R^{n+l}, there is a rectifiable n-varifold V' in U' := {x : x + xi in U} (the translate V - xi) such that: (0) the carrier of V' is M - xi, i.e. V'.carrier = (fun x => x - xi) '' V.carrier; (1) mu_{V'} is the image of mu_V under x |-> x - xi; (2) V'.mult x = theta(x + xi) for all x; (3) V'.tangentProj x = V.tangentProj (x + xi) for all x; (4) x in spt V' iff x + xi in spt V; (5) if V has generalized mean curvature H in U, then V' has generalized mean curvature H(. + xi) in U'; (6) V'.tiltExcess z s S = V.tiltExcess (z + xi) s S for all z, s, S; (7) V'.scaledLpNorm (H(. + xi)) p z s = V.scaledLpNorm H p (z + xi) s for all H, p, z, s.",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (ξ : Amb n ℓ), ∃ V' : RectifiableVarifold n ℓ ((fun x => x + ξ) ⁻¹' U), V'.carrier = (fun x => x - ξ) '' V.carrier ∧ V'.weight = V.weight.map (fun x => x - ξ) ∧ (∀ x, V'.mult x = V.mult (x + ξ)) ∧ (∀ x, V'.tangentProj x = V.tangentProj (x + ξ)) ∧ (∀ x, x ∈ V'.support ↔ x + ξ ∈ V.support) ∧ (∀ H : Amb n ℓ → Amb n ℓ, V.HasGeneralizedMeanCurvature H → V'.HasGeneralizedMeanCurvature (fun x => H (x + ξ))) ∧ (∀ (z : Amb n ℓ) (s : ℝ) (S : Submodule ℝ (Amb n ℓ)), V'.tiltExcess z s S = V.tiltExcess (z + ξ) s S) ∧ (∀ (H : Amb n ℓ → Amb n ℓ) (p : ℝ) (z : Amb n ℓ) (s : ℝ), V'.scaledLpNorm (fun x => H (x + ξ)) p z s = V.scaledLpNorm H p (z + ξ) s)",
+  "lean_name": "ted_translate_varifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-translate-varifold-a1-a1"
+}

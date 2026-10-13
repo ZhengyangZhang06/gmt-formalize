@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1.lipschitz_ftc-a1",
+  "parent_id": "root.allard_regularity-a1.graph_campanato-a1.lipschitz_ae_derivative-a1",
+  "depth": 4,
+  "title": "Fundamental theorem of calculus for a Lipschitz curve with continuous a.e. derivative",
+  "statement": "Let l >= 0, phi, k : R -> R^l, a <= b real and L >= 0. Suppose phi is L-Lipschitz on [a, b], k is continuous on [a, b], and for Lebesgue-almost every t in the open interval (a, b) the map phi has derivative k(t) at t. Then phi(b) - phi(a) = integral_a^b k(t) dt.",
+  "lean_statement": "∀ (ℓ : ℕ) (φ k : ℝ → Rn ℓ) (a b : ℝ) (L : ℝ≥0), a ≤ b → LipschitzOnWith L φ (Icc a b) → ContinuousOn k (Icc a b) → (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → HasDerivAt φ (k t) t) → φ b - φ a = ∫ t in a..b, k t",
+  "lean_name": "allard52_lad_lipschitz_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-campanato-a1-lipschitz-ae-derivative-73a473832b-a1"
+}

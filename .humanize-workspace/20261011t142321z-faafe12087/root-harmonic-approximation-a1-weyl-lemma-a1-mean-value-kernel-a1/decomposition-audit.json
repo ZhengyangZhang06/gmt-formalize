@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "laplacian.*comp|comp.*laplacian|Green|green",
+        "theorem integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable",
+        "intervalIntegral_integral_swap",
+        "theorem integral_comp_inv_smul_of_nonneg",
+        "theorem integral_inv_eq_self|theorem integral_neg_eq_self",
+        "iteratedFDeriv_comp_add_left|iteratedFDeriv_two_apply",
+        "theorem integral_pos_iff_support_of_nonneg",
+        "measure_ball_pos",
+        "measureSpaceOfInnerProductSpace|theorem volume_preserving_ofLp|lemma volume_preserving_ofLp",
+        "mvk_exists_kernel_potential|mvk_integral_ray_fubini|mvk_integral_fderiv_grad_eq_neg_laplacian|mvk_laplacian_comp_add_smul|mvk_integral_rescale_reflect|mvk_integral_radial_fderiv_eq_neg_laplacian",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mvk-independent-audit-1ho5e7mc/src/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mvk-independent-audit-1ho5e7mc/src/TypesFinal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mvk-independent-audit-1ho5e7mc/src/CombinedFinal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 1 /tmp/mvk-independent-audit-1ho5e7mc/src/Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Laplacian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Haar/OfBasis.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-harmonic-approximation-a1-weyl-lemma-a1-mean-value-kernel-a1/decomposition-v1.json",
+        "/tmp/mvk-independent-audit-1ho5e7mc/src/IndependentTypes.lean",
+        "/tmp/mvk-independent-audit-1ho5e7mc/src/TypesFinal.lean",
+        "/tmp/mvk-independent-audit-1ho5e7mc/src/CombinedFinal.lean",
+        "/tmp/mvk-independent-audit-1ho5e7mc/src/Instances.lean"
+      ],
+      "conclusion": "The six-child split is appropriate and establishes exactly the selected mean-value kernel contract. The manifest pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The frozen header matches the workspace, and 19 inspected Mathlib files match the compile-time package byte-for-byte. Relevant FTC, Fubini, directional integration-by-parts, derivative-composition, support, scaling and reflection APIs were verified; the inspected Laplacian/IBP files contain no direct affine-rescaling or stated Green-identity theorem. After rebuilding the frozen header in a fresh scratch directory, all six exact proposition strings elaborated without declaring any child. The supplied parent assembly compiled from the child contracts. The complete supplied proofs also compiled, with only propext, Classical.choice and Quot.sound in every child's and the selected parent's axiom closure. Instance checks confirmed the Euclidean inner product, scalar action, Lebesgue volume and ordinary InnerProductSpace Laplacian, including the inline affine composition. All names are bare identifiers with no other-branch reservation found. Only radial_ibp depends on siblings, exactly green_identity and laplacian_rescale; dependencies are acyclic. No existing comparator-accepted declaration is being reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "kernel_potential",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches every stated property. Positive unit-ball measure justifies normalization for every n, including zero. FTC and smoothness of the profile give the primitive; the chain rule establishes the exact potential derivative and boundary vanishing. The construction is complete, non-circular, and supplies the parent's kernel and potential."
+    },
+    {
+      "key": "ray_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including C¹ regularity and t ≥ 0. The proof establishes raywise FTC, integrability under the restricted product measure on (0,t] × Rⁿ, the Fubini interchange, and justified integral subtraction. It also covers t = 0. The detailed proof correctly restricts the time variable rather than requiring global compact support of F."
+    },
+    {
+      "key": "green_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "C² regularity of H and compactly supported C¹ regularity of Ψ suffice. The basis expansion identifies the integrand without needing a separate regularity assumption on w. All three integration-by-parts products are proved integrable; the directional second-derivative identity and finite summation yield exactly the stated Laplacian pairing. The additional import is permitted. The sign also agrees with [Grigoryan, Lecture 12, p. 1](https://web.math.ucsb.edu/~grigoryan/124B/lecs/lec12.pdf)."
+    },
+    {
+      "key": "laplacian_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the statement for arbitrary real σ, including zero. C² regularity justifies composition of second derivatives with the linear dilation; multilinearity contributes σ², translation shifts the evaluation point, and the orthonormal-basis formula finishes the proof. The inline composition selects the intended Laplacian instance."
+    },
+    {
+      "key": "rescale_reflect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The absence of integrability hypotheses is valid: the pinned Haar scaling, constant-factor and reflection identities apply to arbitrary Bochner integrands. Positivity of t permits inverse cancellation, finrank supplies exponent n, and evenness gives the required reflection. The proof establishes the exact one-line proposition independently."
+    },
+    {
+      "key": "radial_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis in the type. Identifying w(z) = ρ(z) • z with the gradient and using the pointwise derivative identity avoids any missing regularity assumption on ρ. The proof uses exactly its two declared sibling dependencies and correctly cancels σ to obtain −σ. Together with support and closed-ball harmonicity, this vanishes for 0 < σ ≤ t; ray_fubini, normalization and rescale_reflect then prove the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1.pinched_density_bounds-a1.pinched_constants-a1",
+  "parent_id": "root.affine_approximation-a1.pinched_density_bounds-a1",
+  "depth": 3,
+  "title": "Explicit constants for the pinched density bounds (elementary inequalities E1-E5)",
+  "statement": "Let n be a natural number (n = 0 allowed) and let kappa > 0 and omega > 0 be real numbers. There exist real numbers C_P and delta_P with C_P >= 1, 0 < delta_P <= 1/8, delta_P <= kappa and C_P delta_P <= 1/2 (depending only on n, kappa, omega) such that for every t in (0, delta_P], writing Lambda := t/kappa and a := (1 + t)/(1 - 4t)^n (natural-number power), the following three inequalities hold: (i) e^(2 Lambda) (a omega) + 2 e^Lambda Lambda <= (1 + C_P t) omega; (ii) (1 - C_P t) omega <= e^(-Lambda) (omega - Lambda); (iii) e^Lambda (e^Lambda (a omega) + Lambda - omega) <= C_P omega t.",
+  "lean_statement": "∀ (n : ℕ) (κ ω : ℝ), 0 < κ → 0 < ω → ∃ Cp δp : ℝ, 1 ≤ Cp ∧ 0 < δp ∧ δp ≤ 1 / 8 ∧ δp ≤ κ ∧ Cp * δp ≤ 1 / 2 ∧ ∀ t : ℝ, 0 < t → t ≤ δp → Real.exp (2 * (t / κ)) * ((1 + t) / (1 - 4 * t) ^ n * ω) + 2 * Real.exp (t / κ) * (t / κ) ≤ (1 + Cp * t) * ω ∧ (1 - Cp * t) * ω ≤ Real.exp (-(t / κ)) * (ω - t / κ) ∧ Real.exp (t / κ) * (Real.exp (t / κ) * ((1 + t) / (1 - 4 * t) ^ n * ω) + t / κ - ω) ≤ Cp * ω * t",
+  "lean_name": "aal_pinched_constants",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-pinched-density-bounds-a1-pinched-constants-a1-a1"
+}

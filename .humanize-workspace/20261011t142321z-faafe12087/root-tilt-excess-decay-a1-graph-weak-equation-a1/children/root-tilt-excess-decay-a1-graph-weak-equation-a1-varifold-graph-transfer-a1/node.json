@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.varifold_graph_transfer-a1",
+  "parent_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1",
+  "depth": 3,
+  "title": "Pull-back of the varifold weight to the parameter domain of a 1-Lipschitz graph",
+  "statement": "Let n >= 1, l, U a subset of R^{n+l}, V = v(M, theta) a rectifiable n-varifold in U with weight mu = V.weight = (H^n restricted to M) with density theta (M = V.carrier, theta = V.mult, H^n = muHE[n]), q a linear isometry of R^{n+l}, R real, f : R^n -> R^l 1-Lipschitz on the closed ball B_R(0) (nothing is assumed off the ball), F(x) := q(graphPoint x (f x)), and J_f(x) := sqrt(det(I_n + (<Df(x) e_a, Df(x) e_b>)_{a,b})), with Df(x) = fderiv R f x (0 where f is not differentiable) and e_a = EuclideanSpace.single a 1. Then there is a Borel function W : R^n -> [0, infinity) such that: (a) for every Borel set A contained in B_R(0) (MeasurableSet A for the Borel sigma-algebra of R^n = EuclideanSpace R (Fin n); Lebesgue-measurable non-Borel sets are not covered) and every function phi : R^{n+l} -> [0, infinity] (not necessarily measurable), int_{F(A)} phi dmu = int_A ofReal(W) phi(F) dL^n (both sides lower, ENNReal-valued Lebesgue integrals); (b) for every such Borel A and every Borel phi : R^{n+l} -> R, int_{F(A)} phi dmu = int_A W phi(F) dL^n (Bochner integrals, with Lean's convention that a non-integrable function has integral 0; the identity holds for every Borel phi, integrable or not); (c) for L^n-a.e. x in the open ball B°_R(0), W(x) = J_f(x) 1_M(F(x)) theta(F(x)); (d) for every mu-null set Z, for L^n-a.e. x in B_R(0), F(x) in Z implies W(x) = 0. (Here F(A) = q '' graphOver f A.)",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ) (f : Rn n → Rn ℓ) (R : ℝ), LipschitzOnWith 1 f (closedBall 0 R) → ∃ W : Rn n → ℝ, Measurable W ∧ (∀ x, 0 ≤ W x) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ≥0∞, ∫⁻ y in q '' graphOver f A, φ y ∂V.weight = ∫⁻ x in A, ENNReal.ofReal (W x) * φ (q (graphPoint x (f x)))) ∧ (∀ A : Set (Rn n), MeasurableSet A → A ⊆ closedBall 0 R → ∀ φ : Amb n ℓ → ℝ, Measurable φ → ∫ y in q '' graphOver f A, φ y ∂V.weight = ∫ x in A, W x * φ (q (graphPoint x (f x)))) ∧ (∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 R → W x = Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ f x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ f x (EuclideanSpace.single b (1 : ℝ))))) * V.carrier.indicator V.mult (q (graphPoint x (f x)))) ∧ ∀ Z : Set (Amb n ℓ), V.weight Z = 0 → ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ closedBall 0 R → q (graphPoint x (f x)) ∈ Z → W x = 0",
+  "lean_name": "gwe_varifold_graph_transfer",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+    "root.tilt_excess_decay-a1.graph_weak_equation-a1.lipschitz_graph_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.graph_jacobian_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.graph_weak_equation-a1.lipschitz_graph_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-graph-weak-equation-a1-varifold-graph-transfer-a1-a1"
+}

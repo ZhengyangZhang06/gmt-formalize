@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_graph_corollary-a1.tangent_plane_ae-a1",
+  "parent_id": "root.lipschitz_graph_corollary-a1",
+  "depth": 2,
+  "title": "A.e. weighted approximate tangent planes and measurability of tangentProj (Simon Ch. 3, 1.2-1.9)",
+  "statement": "Let n >= 1, l >= 0, U an open subset of R^(n+l), and V = v(M, theta) a RectifiableVarifold n l U: M ⊆ U is H^n-null-measurable and countably n-rectifiable, theta > 0 on M, theta is a.e. measurable for H^n restricted to M, and the integral of theta over M ∩ K is finite for every compact K ⊆ U. Let mu = V.weight = (H^n restricted to M) with density theta and p_x = V.tangentProj x. Then (a) x -> p_x is mu-a.e. strongly measurable; (b) for mu-a.e. x there is a linear subspace T of R^(n+l) which is an approximate tangent space of M with respect to theta at x in the sense of Simon Ch. 3, Def. 1.7 (Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n M theta x T, which includes dim T = n), and p_x = T.starProjection is the orthogonal projection onto T.",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), AEStronglyMeasurable V.tangentProj V.weight ∧ ∀ᵐ x ∂V.weight, ∃ T : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x T ∧ V.tangentProj x = T.starProjection",
+  "lean_name": "lgc_tangent_plane_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-graph-corollary-a1-tangent-plane-ae-a1-a1"
+}

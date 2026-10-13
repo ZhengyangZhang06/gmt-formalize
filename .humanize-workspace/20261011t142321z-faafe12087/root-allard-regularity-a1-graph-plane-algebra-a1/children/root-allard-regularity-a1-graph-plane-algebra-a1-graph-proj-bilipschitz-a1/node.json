@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_bilipschitz-a1",
+  "parent_id": "root.allard_regularity-a1.graph_plane_algebra-a1",
+  "depth": 3,
+  "title": "(Gp) for unrotated graph planes: two-sided Hilbert-Schmidt comparison near 0",
+  "statement": "For all natural numbers n, l there is L_0 with 0 < L_0 <= 1/4 such that for all continuous linear A, B : R^n -> R^l with hsNorm A <= L_0 and hsNorm B <= L_0: hsNormSq (A - B) <= hsNormSq (Pi(A) - Pi(B)) <= 3 hsNormSq (A - B), where Pi(A) is the orthogonal projection (starProjection) of R^(n+l) onto span{graphPoint v (A v) : v in R^n}.",
+  "lean_statement": "∀ (n ℓ : ℕ), ∃ L₀ : ℝ, 0 < L₀ ∧ L₀ ≤ 1 / 4 ∧ ∀ (A B : Rn n →L[ℝ] Rn ℓ), hsNorm A ≤ L₀ → hsNorm B ≤ L₀ → hsNormSq (A - B) ≤ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ∧ hsNormSq ((Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (A v))).starProjection - (Submodule.span ℝ (Set.range fun v : Rn n => graphPoint v (B v))).starProjection) ≤ 3 * hsNormSq (A - B)",
+  "lean_name": "allard52_gpa_graphProj_bilipschitz",
+  "depends_on": [
+    "root.allard_regularity-a1.graph_plane_algebra-a1.hs_norm_bounds-a1",
+    "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.hs_norm_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.allard_regularity-a1.graph_plane_algebra-a1.graph_proj_smooth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-graph-plane-algebra-a1-graph-proj-bilipschitz-a1-a1"
+}

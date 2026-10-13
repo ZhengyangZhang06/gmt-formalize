@@ -1,0 +1,140 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.allard_regularity-a1`
+- Child DAG node: `root.allard_regularity-a1.density_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the facts (M), (M.iv) and (P) of the parent proof (Simon Ch. 4, 4.1-4.10 with the corrected coefficient kappa = (p-n)/(4p) of 4.2, and Simon Ch. 5, 2.4 with explicit constants), copied and completed. The argument is arranged so that the quantifier structure of the statement is visible: the constants delta_P and C_P are fixed in step 1 from n and p alone, before the codimension l and the data U, V, H, delta, rho, y, s are chosen (steps 2-8 work for every l with these fixed constants).
+
+Notation. Fix n >= 1 and p > n. kappa := (p-n)/(4p) in (0, 1/4), alpha' := 1 - n/p in (0,1), omega_n := unitBallVolume n > 0. From step 2 on, l >= 0 is arbitrary, U is an open subset of R^(n+l), V is a rectifiable n-varifold in U (M := V.carrier, theta := V.mult) with generalized mean curvature H, mu := V.weight, spt V := V.support = U cap spt mu, p_x := V.tangentProj x, p_x^perp := I - p_x, K(z,s) := (s^(p-n) integral_{B_s(z)} |H|^p dmu)^(1/p) in [0, infinity] (= V.scaledLpNorm H p z s). For a centre y put r := |x - y| and nu_y(x) := |p_x^perp(x - y)|^2 / |x - y|^2 for x != y, nu_y(y) := 0; then nu_y(x) r^-n = ||x - y - p_x(x - y)||^2 / ||x - y||^(n+2), and both sides vanish at x = y (real division by 0 is 0). Balls B_s(z) are closed.
+Facts used. (T) [sibling allard52_tangent_ae, applied to n, l, U, V] p is mu-a.e. strongly measurable; for mu-a.e. x, p_x is the orthogonal projection onto an n-dimensional subspace; Theta^n(mu, x) = theta(x) for mu-a.e. x (V.HasDensity x (V.mult x)). (F2) mu(R^(n+l) minus spt mu) = 0, mu(R^(n+l) minus U) = 0 and mu(K) < infinity for compact K in U (theta is integrable on M cap K).
+
+1. Constants; they depend only on n and p. Let t_0 := min{1/8, kappa} and, for t in [0, t_0], Lambda_t := t/kappa in [0,1],
+ g_+(t) := e^(2 Lambda_t)(1 + t)(1 - 3t)^-n + 2 e^(Lambda_t) Lambda_t/omega_n,
+ g_-(t) := e^(-Lambda_t)(1 - Lambda_t/omega_n),
+ g_c(t) := e^(Lambda_t)(e^(Lambda_t)(1 + t)(1 - 3t)^-n - 1) + e^(Lambda_t) Lambda_t/omega_n.
+ They are C^1 on [0, t_0] (1 - 3t >= 5/8), with g_+(0) = g_-(0) = 1 and g_c(0) = 0. Let C_P := max{1, sup|g_+'|, sup|g_-'|, sup|g_c'|} (suprema over [0, t_0]); by the mean value theorem g_+(t) <= 1 + C_P t, g_-(t) >= 1 - C_P t and g_c(t) <= C_P t on [0, t_0]. Put delta_P := min{t_0, 1/(2 C_P)}. Then 0 < delta_P <= 1/8, C_P > 0 and C_P delta_P <= 1/2. Only kappa and omega_n enter, so delta_P and C_P depend only on n and p and are the same for every codimension l. From now on let l >= 0 be arbitrary; steps 2-8 prove, for this l and all U, V, H, delta, rho, y, s as in the statement, the asserted bounds with these fixed delta_P, C_P. This is exactly the statement with "there exist delta_P, C_P" placed before "for all l".
+
+2. Curvature scaling. Under 2.3, if B_s(z) is contained in B_rho(0) then K(z,s)^p = s^(p-n) integral_{B_s(z)} |H|^p dmu <= s^(p-n) integral_{B_rho(0)} |H|^p dmu <= (s/rho)^(p-n) delta^p, so K(z,s) <= (s/rho)^(alpha') delta <= delta. In particular integral_{B_rho(0)} |H|^p dmu < infinity.
+
+3. Monotonicity (M) [Simon Ch. 4, 4.1-4.8 with kappa = (p-n)/(4p) in 4.2, the value required by the integration after 4.4; this is the conclusion LpAnnularCorrection of SimonGMT Chapter04 HasGeneralizedMeanCurvatureIn.exists_lpAnnularCorrection, proved there for the library varifold structure]. Let y in R^(n+l), R > 0 with B_R(y) contained in U, and Lambda in (0,1] with K(y,R) <= kappa Lambda. Then there are F : (0,R) -> (0, infinity) and numbers G(s,r) such that for all 0 < s <= r < R:
+ (M.i) e^-Lambda <= F(r) <= e^Lambda and |F(r) - 1| <= Lambda (r/R)^(alpha') <= Lambda;
+ (M.ii) Phi(r) - Phi(s) = G(s,r) integral_{B_r(y) minus B_s(y)} nu_y r^-n dmu with G(s,r) in [e^-Lambda, e^Lambda], where Phi(t) := F(t) t^-n mu(B_t(y)) + F(t) - 1;
+ (M.iii) Phi is nondecreasing on (0,R); Theta(y) := lim_{t -> 0+} omega_n^-1 t^-n mu(B_t(y)) exists in [0, infinity) and omega_n Theta(y) = lim_{t -> 0+} Phi(t) <= Phi(r) for every r in (0,R); in particular mu({y}) = 0.
+ Derivation. (a) Fix eps in (0,1) and phi in C^1(R, [0,1]) with phi = 1 on (-infinity, 1], phi = 0 on [1 + eps, infinity), phi' <= 0. For 0 < s < R/(1+eps) the field X(x) := phi(r/s)(x - y) is C^1 (phi(r/s) = 1 near y) with tsupport in B_{(1+eps)s}(y), contained in B_R(y) and hence in U, so it is admissible in V.HasGeneralizedMeanCurvature H. At mu-a.e. x (where p_x is a rank-n orthogonal projection, by (T)) DX(x)v = phi(r/s) v + s^-1 phi'(r/s) r^-1 ((x - y).v)(x - y), hence div_M X = trace(DX o p_x) = n phi(r/s) + (r/s) phi'(r/s) (1 - nu_y(x)). With I(s) := integral phi(r/s) dmu and J(s) := integral phi(r/s) nu_y dmu (finite and C^1 in s, with s I'(s) = -integral (r/s) phi'(r/s) dmu and s J'(s) = -integral (r/s) phi'(r/s) nu_y dmu), the first variation identity integral div_M X dmu = -integral X.H dmu reads n I - s I' + s J' = -integral phi(r/s)(x - y).H dmu, i.e. d/ds (s^-n I(s)) = s^-n J'(s) + s^(-n-1) integral phi(r/s)(x - y).H dmu.
+ (b) As |x - y| <= (1+eps)s where phi(r/s) != 0 and 0 <= phi <= 1, Hoelder's inequality gives |integral phi(r/s)(x - y).H dmu| <= (1+eps) s ||H||_{L^p(B_R(y))} I(s)^(1-1/p), and ||H||_{L^p(B_R(y))} = R^(n/p - 1) K(y,R) <= R^(n/p - 1) kappa Lambda. With a^(1-1/p) <= 1 + a (a >= 0) this gives d/ds (s^-n I) = s^-n J' - F_0(s)(1 + s^-n I) for a function F_0 with |F_0(s)| <= 2 kappa Lambda R^-1 (s/R)^(-n/p).
+ (c) Put F_eps(s) := exp(integral_0^s F_0). Since integral_0^s |F_0| <= 2 kappa Lambda R^-1 integral_0^s (t/R)^(-n/p) dt = 2 kappa Lambda (p/(p-n)) (s/R)^(alpha') = (Lambda/2)(s/R)^(alpha') (this is where kappa = (p-n)/(4p) enters), we get e^-Lambda <= F_eps <= e^Lambda and |F_eps(s) - 1| <= e^(Lambda/2)(Lambda/2)(s/R)^(alpha') <= Lambda (s/R)^(alpha') (Lambda <= 1 and e^(1/2)/2 < 1). A direct computation gives d/ds [F_eps(s) s^-n I(s) + F_eps(s) - 1] = F_eps(s) s^-n J'(s) >= 0.
+ (d) Integrate from s to r and let eps -> 0: the F_eps are uniformly bounded and equicontinuous on compact subintervals of (0,R) (by the bound on F_0), so along a sequence eps_k -> 0 they converge locally uniformly to some F satisfying (M.i); I_eps(t) and J_eps(t) decrease to mu(B_t(y)) and integral_{B_t(y)} nu_y dmu for every t (monotone convergence, closed balls); and integral_s^r F_eps(t) t^-n dJ_eps(t) lies between the minimum and the maximum of F_eps on [s,r] times integral_s^r t^-n dJ_eps(t), which converges to integral_{B_r(y) minus B_s(y)} nu_y r^-n dmu. This gives (M.ii) with G(s,r) in [e^-Lambda, e^Lambda] (take G := quotient when the annular integral is positive and G := 1 otherwise). (M.iii): Phi is nondecreasing by (M.ii); Phi >= F - 1 >= -Lambda, so lim_{t -> 0} Phi(t) exists; since F(t) -> 1, t^-n mu(B_t(y)) converges to the same finite limit, and mu({y}) <= t^n sup_{t' <= t} t'^-n mu(B_t'(y)) -> 0.
+
+4. Density at least 1 on spt V cap B^o_rho(0) [Ch. 4, 4.9 and 4.10(1); cf. SimonGMT one_le_stationaryDensityReal_of_mem_support_lp]. Assume 2.3 with delta <= kappa and put Lambda := delta/kappa <= 1. Let W := B^o_rho(0). For x in W and 0 < R <= rho - |x|, step 2 gives K(x,R) <= delta = kappa Lambda, so (M) holds at x and Theta(x) exists. Theta is upper semicontinuous on W: let x_k -> x in W and fix R_0 > 0 with B_{2 R_0}(x) contained in W; for large k, (M) applies at x_k with radius R_0, and for 0 < r < R_0, using F_k(r) <= 1 + Lambda (r/R_0)^(alpha'),
+ Theta(x_k) <= omega_n^-1 Phi_{x_k}(r) <= omega_n^-1 [(1 + Lambda (r/R_0)^(alpha')) r^-n mu(B_r(x_k)) + Lambda (r/R_0)^(alpha')].
+ Since limsup_k mu(B_r(x_k)) <= mu(B_r(x)) (closed balls, mu finite near x), limsup_k Theta(x_k) <= omega_n^-1 [(1 + Lambda (r/R_0)^(alpha')) r^-n mu(B_r(x)) + Lambda (r/R_0)^(alpha')], which tends to Theta(x) as r -> 0. By (T) and 2.3, Theta = theta >= 1 mu-a.e. Hence N := {x in W : Theta(x) < 1} is open and mu(N) = 0, so N is disjoint from spt mu: Theta >= 1 on spt V cap W.
+
+5. Setting. Let 0 < delta <= delta_P, assume 2.3 (AllardHypotheses H p delta rho), |y| <= 3 delta rho and 0 < s <= rho/2. Put R_y := (1 - 3 delta) rho >= 5 rho/8 > s and Lambda := delta/kappa <= 1 (delta <= delta_P <= t_0 <= kappa). Then |y| + R_y <= rho, so B_{R_y}(y) is contained in B_rho(0) and in U, and K(y, R_y) <= delta = kappa Lambda by step 2; thus (M) holds at y with R = R_y. Moreover mu(B_r(y)) <= mu(B_rho(0)) <= (1 + delta) omega_n rho^n for r < R_y.
+
+6. (P.i). For s <= r < R_y, (M.iii) gives Phi(s) <= Phi(r), so by (M.i) F(s) s^-n mu(B_s(y)) <= F(r) r^-n mu(B_r(y)) + (F(r) - 1) - (F(s) - 1) <= e^Lambda r^-n mu(B_r(y)) + 2 Lambda; dividing by F(s) >= e^-Lambda, s^-n mu(B_s(y)) <= e^(2 Lambda) r^-n (1 + delta) omega_n rho^n + 2 e^Lambda Lambda. Letting r -> R_y = (1 - 3 delta) rho gives s^-n mu(B_s(y)) <= omega_n g_+(delta) <= (1 + C_P delta) omega_n, i.e. mu(B_s(y)) <= ofReal((1 + C_P delta)(omega_n s^n)).
+
+7. (P.ii). Let y in spt V. As |y| <= 3 delta rho < rho, step 4 gives Theta(y) >= 1, and (M.iii) gives omega_n <= omega_n Theta(y) <= Phi(s) = F(s) s^-n mu(B_s(y)) + F(s) - 1 <= F(s) s^-n mu(B_s(y)) + Lambda. Since g_-(delta) >= 1 - C_P delta >= 1/2 > 0 we have omega_n - Lambda > 0, and F(s) <= e^Lambda, so s^-n mu(B_s(y)) >= e^-Lambda (omega_n - Lambda) = omega_n g_-(delta) >= (1 - C_P delta) omega_n, i.e. ofReal((1 - C_P delta)(omega_n s^n)) <= mu(B_s(y)).
+
+8. (P.iii). Let y in spt V and 0 < t < s <= r < R_y. By (M.ii) (G >= e^-Lambda), (M.iii) and Phi(t) >= omega_n Theta(y) >= omega_n:
+ integral_{B_s(y) minus B_t(y)} nu_y r^-n dmu <= e^Lambda (Phi(s) - Phi(t)) <= e^Lambda (Phi(r) - omega_n) <= e^Lambda (e^Lambda r^-n mu(B_r(y)) + Lambda - omega_n).
+ Letting r -> R_y bounds the left side by omega_n e^Lambda (e^Lambda (1 + delta)(1 - 3 delta)^-n - 1) + e^Lambda Lambda = omega_n g_c(delta) <= C_P omega_n delta. Letting t -> 0 (monotone convergence), the integral of nu_y r^-n over B_s(y) minus {y} is <= C_P omega_n delta; the integrand vanishes at x = y (and mu({y}) = 0). Since nu_y r^-n = ||x - y - p_x(x - y)||^2/||x - y||^(n+2), the extended integral over B_s(y) of ofReal(||x - y - V.tangentProj x (x - y)||^2/||x - y||^(n+2)) is <= ofReal(C_P omega_n delta).
+
+9. Conclusion. Step 1 produced delta_P, C_P depending only on n and p with 0 < delta_P <= 1/8, 0 < C_P and C_P delta_P <= 1/2. For every l >= 0 and all U, V, H, delta, rho, y, s as in the statement, steps 5-8 give (P.i), and, when y in spt V, (P.ii) and (P.iii). This proves the theorem.
+
+## Key steps
+
+1. Choose C_P, delta_P from n and p only, via the smooth functions g_+, g_-, g_c (kappa = (p-n)/(4p), omega_n); then let the codimension l be arbitrary
+2. Under 2.3, K(z,s) <= (s/rho)^(1-n/p) delta for balls inside B_rho(0)
+3. Monotonicity identity (M) with kappa = (p-n)/(4p) from the first variation with radial fields, Hoelder and an integrating factor
+4. Upper semicontinuity of Theta and Theta = theta >= 1 a.e. give Theta >= 1 on spt V cap B^o_rho(0)
+5. Apply (M) at y with R_y = (1 - 3 delta) rho to obtain (P.i), (P.ii), (P.iii)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `diff GMT/Ch05/Contract.lean <snapshot>/project/GMT/Ch05/Contract.lean; diff GMT/Ch05/Submission.lean <snapshot>/project/GMT/Ch05/Submission.lean`
+- `rg -l 'allard52_' <snapshot>`
+- `rg -l 'allard52_' .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087 --include=*.json`
+- `python: list dag.json nodes with lean_name and lean_statement (name-reservation check)`
+- `rg -n 'theorem measurePreserving_homeomorphUnitSphereProd|def toSphere|theorem LipschitzWith.ae_differentiableAt|theorem measurable_fderiv\b|theorem Submodule.range_starProjection|theorem LipschitzOnWith.extend_pi|theorem ae_tendsto_average_norm_sub|theorem norm_fderiv_le_of_lipschitzOn|theorem LocallyIntegrableOn.integrableOn_isCompact|theorem lintegral_image_eq_lintegral_abs_det_fderiv_mul|theorem uniqueDiffOn_convex|theorem aestronglyMeasurable_of_tendsto_ae' <snapshot>/mathlib/Mathlib`
+- `rg -n 'range_starProjection|theorem aestronglyMeasurable_of_tendsto_ae|theorem LocallyIntegrableOn.integrableOn_compact_subset' <snapshot>/mathlib/Mathlib`
+- `for pat in Campanato 'radial.*height' Allard monotonicity_formula upperDensity; do rg -l $pat <snapshot>/mathlib/Mathlib | wc -l; done`
+- `rg -n '5.2|Allard|AllardRegularityTheorem|1/\(2n\+2\)|rate|gamma|γ' <snapshot>/project/GMT/Ch05/README.md`
+- `grep -n 'def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique' -A 25 .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -rn 'theorem mul_simonHausdorff_le_of_le_dimensionalUpperDensity|theorem simon_theorem_3_6\b|theorem injective_area_formula_lipschitz_simon|theorem weighted_area_formula_lipschitz_injOn|def simonHausdorff|structure LpAnnularCorrection|def lpMeanCurvatureKappa' -A 22 .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'theorem one_le_stationaryDensityReal_of_mem_support_lp|theorem simon_remark_1_3|theorem exists_contDiff_one_extension_of_whitney' .lake/packages/simongmt/Poincare/SimonGMT/{Chapter04/LpLowerDensity,Chapter03/DisjointCover,Chapter02/WhitneyExtension}.lean`
+- `lean GMT/Ch05/Submission.lean -o /tmp/allard-decomp-v2/build/lib/lean/GMT/Ch05/Submission.olean (toolchains/lean-4.35.0-rc3-linux, LEAN_PATH from `lake env printenv LEAN_PATH`)`
+- `LEAN_PATH=/tmp/allard-decomp-v2/build/lib/lean:<lake LEAN_PATH> lean /tmp/allard-decomp-v2/check/Types.lean (import GMT.Ch05.Submission; theorem Submission.<lean_name> : <lean_statement> := by sorry for all 8 children; #synth/#check instance probes)`
+- `lean /tmp/allard-decomp-v2/check/Axioms.lean (#print axioms for the cited SimonGMT and Mathlib lemmas)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/TangentCone/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-allard-regularity-a1/decomposition-review-receipt-v1.json`
+- `/tmp/allard-decomp-v2/check/Types.lean`
+- `/tmp/allard-decomp-v2/check/Axioms.lean`
+
+Snapshot pins: project ea5607598f3133b40a13241f2e51517a8c6423cd, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d (manifest.json). The workspace GMT/Ch05/Contract.lean and Submission.lean are byte-identical to the snapshot copies.
+
+Names.
+- `allard52_` has no match in the snapshot.
+- In the run directory it occurs only in this node's rejected v1 decomposition, audit and receipt files.
+- dag.json reserves other names, none of which collide: the 12 root conjunct names, plus rectifiableVarifold_ae_tangentProj_starProjection, divM_height_test_field_eq, hsNorm_starProjection_trace_identities and exists_smooth_cutoff_half_ball_grad_le in the tilt_excess_height_estimate branch.
+- The eight bare names are therefore globally unique.
+
+Mathlib. These searches return 0 files each: Campanato, radial.*height, Allard, monotonicity_formula, upperDensity. All eight children are therefore new. Usable lemmas found:
+- toSphere (HaarToSphere.lean:51) and measurePreserving_homeomorphUnitSphereProd (HaarToSphere.lean:142);
+- LipschitzWith.ae_differentiableAt (Rademacher.lean:385);
+- measurable_fderiv (FDeriv/Measurable.lean:378);
+- ae_tendsto_average_norm_sub (DensityTheorem.lean:150; Differentiation.lean:837);
+- Submodule.range_starProjection (Projection/Basic.lean:302);
+- LipschitzOnWith.extend_pi (Lipschitz.lean:344);
+- norm_fderiv_le_of_lipschitzOn (FDeriv/Basic.lean:939);
+- LocallyIntegrableOn.integrableOn_isCompact and integrableOn_compact_subset (LocallyIntegrable.lean:117,122);
+- uniqueDiffOn_convex (TangentCone/Real.lean:79);
+- lintegral_image_eq_lintegral_abs_det_fderiv_mul (Jacobian.lean:1183).
+
+SimonGMT (pinned package, outside the snapshot).
+- HasWeightedApproximateTangentSpaceAt (Chapter03/Rectifiable.lean:330) includes finrank P = n. It is a Bochner-integral limit over the blow-up weighted by θ(x + r•y). So V.tangentProj is everywhere 0 or a rank-n orthogonal projection, as the children use.
+- HasWeightedApproximateTangentSpaceAt.unique (Rectifiable.lean:345) needs θ x ≠ 0.
+- lpMeanCurvatureKappa = (p−n)/(4p) (Chapter04/LpMeanCurvature.lean:76) and LpAnnularCorrection (Chapter04/LpAnnular.lean:335) confirm the corrected monotonicity constants used in density_bounds. These are proved for SimonGMT's own varifold, so density_bounds re-derives them for the contract's RectifiableVarifold.
+- mul_simonHausdorff_le_of_le_dimensionalUpperDensity and simon_theorem_3_6 (Chapter01/DensityComparison.lean:251,332) and injective_area_formula_lipschitz_simon (Chapter02/AreaLipschitz.lean:126) match their citations.
+
+README (Ch05, lines 149-151) records that the δ-rate at a fixed γ needs an argument beyond the printed proof. This is Part III, isolated in radial_height.
+
+Lean checks.
+- Submission.lean compiled to a temporary olean; Types.lean (import GMT.Ch05.Submission) elaborated all eight lean_statement strings with only sorry warnings. Only density_bounds and graph_comparison changed type relative to v1: ∀ ℓ now comes after the existential constants.
+- Instance probes: Prod.instMeasurableSpace, ContinuousLinearMap.instBorelSpace, Monoid.npow for ‖x‖^(n+2), and Submodule.starProjection on mapped graph planes.
+- #print axioms gives only [propext, Classical.choice, Quot.sound] for: HasWeightedApproximateTangentSpaceAt.unique, simon_remark_1_3, injective_area_formula_lipschitz_simon, weighted_area_formula_lipschitz_injOn, simon_theorem_3_6, mul_simonHausdorff_le_of_le_dimensionalUpperDensity, exists_lpAnnularCorrection, one_le_stationaryDensityReal_of_mem_support_lp, measurePreserving_homeomorphUnitSphereProd, LipschitzWith.ae_differentiableAt, measurable_fderiv, ae_tendsto_average_norm_sub, LipschitzOnWith.extend_pi and Submodule.range_starProjection.
+- Chapter02/WhitneyExtension has no built olean in the shared package cache, so its axioms were not printed. Its source contains no sorry, and it is cited only as a reference inside tangent_ae's proof.
