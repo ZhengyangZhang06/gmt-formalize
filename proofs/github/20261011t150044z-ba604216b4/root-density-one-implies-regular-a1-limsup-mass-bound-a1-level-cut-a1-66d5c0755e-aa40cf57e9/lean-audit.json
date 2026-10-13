@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3dd28fc6611dced0f00305a4dd9f800cfea4fef777c8111debb466cbab46fed8",
+  "git_delta": {
+    "base_commit": "70ea3e0da35992280a413d39bf1aad6a02290c27",
+    "candidate_commit": "c84012df48f41bf22468dc34289187bfb9d6c182",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_glc_massOn_sub_le",
+    "diff_sha256": "49cbf0b825f939d6f7d9828dfac3cc0fdcbf50f5a2fa8a88edf3a0e6f61467cd",
+    "source_sha256": "cfff9eb6ec81f851ba79dcf5ff84987926c4649774768ad20d94dab2b2b3ee68",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_glc_massOn_sub_le",
+      "statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T S Y : GeometricCurrentOn U n), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Y ω = T ω - S ω) → Y.massOn W ≤ T.massOn W + S.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
