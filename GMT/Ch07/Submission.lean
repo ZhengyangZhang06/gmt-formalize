@@ -451,6 +451,391 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The `C¹` radial cut-off between `B̄_ρ(y)` and `B̄_{ρ+δ}(y)` (it replaces Simon's Lipschitz
+cut-offs in Ch. 3, 4.3 (3)–(4)): `ζ = h ∘ a` with `a(z) = (|z - y| - ρ)/δ` and the clamped
+smoothstep `h = p ∘ clamp_{[0,1]}`, `p(s) = 1 - 3s² + 2s³`.  As `p'(0) = p'(1) = 0`, `h` is `C¹`,
+nonincreasing and `3/2`-Lipschitz, so `ζ` is `C¹`, `ζ = 1` on `B̄_ρ`, `tsupport ζ ⊆ B̄_{ρ+δ}`,
+`‖Dζ‖ ≤ 3/(2δ)`, `Dζ = 0` off the open annulus (Fermat at the extrema `ζ = 0, 1`), and
+`{t ≤ ζ} = B̄_{ρ+δ s_t}` with `s_t = max {s ∈ [0, 1] | t ≤ h s} < 1`. -/
+theorem Submission.codim1_rdo_dg_ce_radial_cutoff : ∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ 3 / (2 * δ)) ∧ (∀ z, z ∉ ball y (ρ + δ) \ closedBall y ρ → fderiv ℝ ζ z = 0) ∧ ∀ t : ℝ, 0 < t → t ≤ 1 → ∃ r : ℝ, ρ ≤ r ∧ r < ρ + δ ∧ {z | t ≤ ζ z} = closedBall y r := by
+  intro P y ρ δ hρ hδ
+  -- Steps 1–3: the profile `h = p ∘ cl`, `p(s) = 1 - 3s² + 2s³`, `cl(s) = max 0 (min s 1)`
+  have profile : ∃ h : ℝ → ℝ, ContDiff ℝ 1 h ∧ Antitone h ∧ (∀ s, 0 ≤ h s ∧ h s ≤ 1) ∧
+      (∀ s, s ≤ 0 → h s = 1) ∧ (∀ s, 1 ≤ s → h s = 0) ∧ LipschitzWith (3 / 2 : NNReal) h := by
+    set p : ℝ → ℝ := fun s => 1 - 3 * s ^ 2 + 2 * s ^ 3 with hp_def
+    set cl : ℝ → ℝ := fun s => max 0 (min s 1) with hcl_def
+    set h : ℝ → ℝ := fun s => p (cl s) with hh_def
+    set q : ℝ → ℝ := fun s => -6 * cl s + 6 * cl s ^ 2 with hq_def
+    have hp : ∀ s, HasDerivAt p (-6 * s + 6 * s ^ 2) s := by
+      intro s
+      have h1 := ((hasDerivAt_pow 2 s).const_mul 3).const_sub 1
+      have h2 := (hasDerivAt_pow 3 s).const_mul 2
+      convert h1.add h2 using 1
+      push_cast
+      ring
+    have hcl0 : ∀ s, s ≤ 0 → cl s = 0 := fun s hs => by
+      simp only [hcl_def]; exact max_eq_left (min_le_of_left_le hs)
+    have hcl1 : ∀ s, 1 ≤ s → cl s = 1 := fun s hs => by
+      simp only [hcl_def]; rw [min_eq_right hs]; exact max_eq_right zero_le_one
+    have hclmid : ∀ s, 0 ≤ s → s ≤ 1 → cl s = s := fun s h0 h1 => by
+      simp only [hcl_def]; rw [min_eq_left h1]; exact max_eq_right h0
+    have hcl01 : ∀ s, 0 ≤ cl s ∧ cl s ≤ 1 := fun s =>
+      ⟨le_max_left _ _, max_le zero_le_one (min_le_right _ _)⟩
+    -- Step 2: `h' = q = p' ∘ cl` everywhere; at `0` and `1` the one-sided derivatives agree
+    have hderiv : ∀ s, HasDerivAt h (q s) s := by
+      intro s
+      rcases lt_trichotomy s 0 with hs | hs | hs
+      · have heq : h =ᶠ[𝓝 s] fun _ => (1 : ℝ) := by
+          filter_upwards [Iio_mem_nhds hs] with u hu
+          simp only [hh_def, hcl0 u (le_of_lt hu), hp_def]; norm_num
+        have hq0 : q s = 0 := by simp only [hq_def, hcl0 s hs.le]; norm_num
+        rw [hq0]; exact (hasDerivAt_const s (1 : ℝ)).congr_of_eventuallyEq heq
+      · subst hs
+        have hq0 : q 0 = 0 := by simp only [hq_def, hcl0 0 le_rfl]; norm_num
+        rw [hq0]
+        have hL : HasDerivWithinAt h 0 (Iic 0) 0 := by
+          refine (hasDerivWithinAt_const (0 : ℝ) (Iic 0) (1 : ℝ)).congr (fun u hu => ?_) ?_
+          · simp only [hh_def, hcl0 u hu, hp_def]; norm_num
+          · simp only [hh_def, hcl0 0 le_rfl, hp_def]; norm_num
+        have hR : HasDerivWithinAt h 0 (Ici 0) 0 := by
+          have := (hp 0).hasDerivWithinAt (s := Ici 0)
+          simp only [mul_zero, zero_pow two_ne_zero, add_zero] at this
+          refine this.congr_of_eventuallyEq ?_ ?_
+          · filter_upwards [inter_mem_nhdsWithin (Ici (0 : ℝ))
+                (Iio_mem_nhds (show (0 : ℝ) < 1 by norm_num))] with u hu
+            simp only [hh_def, hclmid u hu.1 (le_of_lt hu.2)]
+          · simp only [hh_def, hclmid 0 le_rfl zero_le_one]
+        have := hL.union hR
+        rwa [Iic_union_Ici, hasDerivWithinAt_univ] at this
+      · rcases lt_trichotomy s 1 with hs1 | hs1 | hs1
+        · have heq : h =ᶠ[𝓝 s] p := by
+            filter_upwards [Ioo_mem_nhds hs hs1] with u hu
+            simp only [hh_def, hclmid u hu.1.le hu.2.le]
+          have hqs : q s = -6 * s + 6 * s ^ 2 := by simp only [hq_def, hclmid s hs.le hs1.le]
+          rw [hqs]; exact (hp s).congr_of_eventuallyEq heq
+        · subst hs1
+          have hq0 : q 1 = 0 := by simp only [hq_def, hcl1 1 le_rfl]; norm_num
+          rw [hq0]
+          have hR : HasDerivWithinAt h 0 (Ici 1) 1 := by
+            refine (hasDerivWithinAt_const (1 : ℝ) (Ici 1) (0 : ℝ)).congr (fun u hu => ?_) ?_
+            · simp only [hh_def, hcl1 u hu, hp_def]; norm_num
+            · simp only [hh_def, hcl1 1 le_rfl, hp_def]; norm_num
+          have hL : HasDerivWithinAt h 0 (Iic 1) 1 := by
+            have := (hp 1).hasDerivWithinAt (s := Iic 1)
+            norm_num at this
+            refine this.congr_of_eventuallyEq ?_ ?_
+            · filter_upwards [inter_mem_nhdsWithin (Iic (1 : ℝ))
+                  (Ioi_mem_nhds (show (0 : ℝ) < 1 by norm_num))] with u hu
+              simp only [hh_def, hclmid u (le_of_lt hu.2) hu.1]
+            · simp only [hh_def, hclmid 1 zero_le_one le_rfl]
+          have := hL.union hR
+          rwa [Iic_union_Ici, hasDerivWithinAt_univ] at this
+        · have heq : h =ᶠ[𝓝 s] fun _ => (0 : ℝ) := by
+            filter_upwards [Ioi_mem_nhds hs1] with u hu
+            simp only [hh_def, hcl1 u (le_of_lt hu), hp_def]; norm_num
+          have hq0 : q s = 0 := by simp only [hq_def, hcl1 s hs1.le]; norm_num
+          rw [hq0]; exact (hasDerivAt_const s (0 : ℝ)).congr_of_eventuallyEq heq
+    -- Step 3: `h ∈ C¹`, `-3/2 ≤ h' ≤ 0`, so `h` is antitone and `3/2`-Lipschitz; `0 ≤ h ≤ 1`
+    have hdiff : Differentiable ℝ h := fun s => (hderiv s).differentiableAt
+    have hderiv_eq : deriv h = q := funext fun s => (hderiv s).deriv
+    have hclcont : Continuous cl := by
+      simp only [hcl_def]; fun_prop
+    have hqcont : Continuous q := by
+      simp only [hq_def]; fun_prop
+    have hC1 : ContDiff ℝ 1 h := contDiff_one_iff_deriv.2 ⟨hdiff, hderiv_eq ▸ hqcont⟩
+    have hq_nonpos : ∀ s, q s ≤ 0 := by
+      intro s; obtain ⟨h0, h1⟩ := hcl01 s; simp only [hq_def]; nlinarith
+    have hq_abs : ∀ s, |q s| ≤ 3 / 2 := by
+      intro s; obtain ⟨h0, h1⟩ := hcl01 s
+      rw [abs_of_nonpos (hq_nonpos s)]; simp only [hq_def]; nlinarith [sq_nonneg (cl s - 1 / 2)]
+    have hanti : Antitone h := antitone_of_deriv_nonpos hdiff fun s => hderiv_eq ▸ hq_nonpos s
+    refine ⟨h, hC1, hanti, ?_, ?_, ?_, ?_⟩
+    · intro s; obtain ⟨h0, h1⟩ := hcl01 s
+      simp only [hh_def, hp_def]
+      have e1 : 1 - 3 * cl s ^ 2 + 2 * cl s ^ 3 = (1 - cl s) ^ 2 * (1 + 2 * cl s) := by ring
+      constructor
+      · rw [e1]; exact mul_nonneg (sq_nonneg _) (by linarith)
+      · nlinarith [mul_nonneg (sq_nonneg (cl s)) (by linarith : (0 : ℝ) ≤ 3 - 2 * cl s)]
+    · intro s hs; simp only [hh_def, hcl0 s hs, hp_def]; norm_num
+    · intro s hs; simp only [hh_def, hcl1 s hs, hp_def]; norm_num
+    · refine lipschitzWith_of_nnnorm_deriv_le hdiff fun s => ?_
+      rw [hderiv_eq, ← NNReal.coe_le_coe, coe_nnnorm, Real.norm_eq_abs]
+      simpa using hq_abs s
+  obtain ⟨h, hC1, hanti, h01, h0, h1, hlip⟩ := profile
+  -- Step 4: `ζ = h ∘ a`, `a(z) = (|z - y| - ρ)/δ`; `ζ = 1` on `B̄_ρ` and `ζ = 0` off `B_{ρ+δ}`
+  set a : Euclid P → ℝ := fun z => (‖z - y‖ - ρ) / δ with ha_def
+  set ζ : Euclid P → ℝ := fun z => h (a z) with hζ_def
+  have hζ1 : ∀ z ∈ closedBall y ρ, ζ z = 1 := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm] at hz
+    exact h0 _ (div_nonpos_of_nonpos_of_nonneg (by linarith) hδ.le)
+  have hζ0 : ∀ z, ρ + δ ≤ ‖z - y‖ → ζ z = 0 := by
+    intro z hz
+    refine h1 _ ?_
+    rw [ha_def, le_div_iff₀ hδ]; linarith
+  have hsupp : support ζ ⊆ ball y (ρ + δ) := by
+    intro z hz
+    rw [mem_ball, dist_eq_norm]
+    by_contra hcon
+    exact hz (hζ0 z (not_lt.1 hcon))
+  have htsupp : tsupport ζ ⊆ closedBall y (ρ + δ) :=
+    closure_minimal (hsupp.trans ball_subset_closedBall) isClosed_closedBall
+  have hcomp : HasCompactSupport ζ :=
+    HasCompactSupport.intro (isCompact_closedBall y (ρ + δ)) fun z hz =>
+      image_eq_zero_of_notMem_tsupport (fun h' => hz (htsupp h'))
+  -- Step 5: `ζ` is `C¹`: constant near points of `B_ρ`, a `C¹` composite where `z ≠ y`
+  have hC1ζ : ContDiff ℝ 1 ζ := by
+    refine contDiff_iff_contDiffAt.2 fun z => ?_
+    by_cases hz : ‖z - y‖ < ρ
+    · have heq : ζ =ᶠ[𝓝 z] fun _ => (1 : ℝ) := by
+        have hmem : ball y ρ ∈ 𝓝 z :=
+          isOpen_ball.mem_nhds (by rw [mem_ball, dist_eq_norm]; exact hz)
+        filter_upwards [hmem] with u hu
+        exact hζ1 u (ball_subset_closedBall hu)
+      exact contDiffAt_const.congr_of_eventuallyEq heq
+    · have hzy : z - y ≠ 0 := by
+        intro h0'; rw [h0', norm_zero] at hz; exact hz hρ
+      have hn : ContDiffAt ℝ 1 (fun u : Euclid P => ‖u - y‖) z :=
+        (contDiffAt_id.sub contDiffAt_const).norm ℝ hzy
+      have ha' : ContDiffAt ℝ 1 a z := (hn.sub contDiffAt_const).div_const δ
+      exact hC1.contDiffAt.comp z ha'
+  -- Step 6: `ζ` is `3/(2δ)`-Lipschitz, hence `‖Dζ‖ ≤ 3/(2δ)`
+  have hlipζ : LipschitzWith (Real.toNNReal (3 / (2 * δ))) ζ := by
+    refine LipschitzWith.of_dist_le_mul fun z w => ?_
+    have h1' := hlip.dist_le_mul (a z) (a w)
+    have h2' : dist (a z) (a w) ≤ dist z w / δ := by
+      rw [Real.dist_eq, ha_def]
+      simp only
+      rw [← sub_div, abs_div, abs_of_pos hδ, dist_eq_norm]
+      gcongr
+      calc |‖z - y‖ - ρ - (‖w - y‖ - ρ)| = |‖z - y‖ - ‖w - y‖| := by ring_nf
+        _ ≤ ‖(z - y) - (w - y)‖ := abs_norm_sub_norm_le _ _
+        _ = ‖z - w‖ := by abel_nf
+    rw [Real.coe_toNNReal _ (by positivity)]
+    calc dist (ζ z) (ζ w) ≤ (3 / 2 : NNReal) * dist (a z) (a w) := h1'
+      _ ≤ (3 / 2 : ℝ) * (dist z w / δ) := by
+          push_cast; gcongr
+      _ = 3 / (2 * δ) * dist z w := by field_simp
+  have hgrad : ∀ z, ‖fderiv ℝ ζ z‖ ≤ 3 / (2 * δ) := by
+    intro z
+    have := norm_fderiv_le_of_lipschitz ℝ hlipζ (x₀ := z)
+    rwa [Real.coe_toNNReal _ (by positivity)] at this
+  -- Step 7: `Dζ = 0` off the open annulus (Fermat at the extrema `ζ = 0` and `ζ = 1`)
+  have hζle : ∀ z, ζ z ≤ 1 := fun z => (h01 _).2
+  have hζge : ∀ z, 0 ≤ ζ z := fun z => (h01 _).1
+  have hzero : ∀ z, z ∉ ball y (ρ + δ) \ closedBall y ρ → fderiv ℝ ζ z = 0 := by
+    intro z hz
+    rw [Set.mem_sdiff, not_and_or, not_not] at hz
+    rcases hz with hz | hz
+    · rw [mem_ball, dist_eq_norm, not_lt] at hz
+      have hmin : IsLocalMin ζ z := Eventually.of_forall fun u => by rw [hζ0 z hz]; exact hζge u
+      exact hmin.fderiv_eq_zero
+    · have hmax : IsLocalMax ζ z := Eventually.of_forall fun u => by rw [hζ1 z hz]; exact hζle u
+      exact hmax.fderiv_eq_zero
+  -- Step 8: `{t ≤ ζ} = B̄_{ρ+δ s_t}` with `s_t = sup M`, `M = {s ∈ [0, 1] | t ≤ h s}` compact
+  have hlevel : ∀ t : ℝ, 0 < t → t ≤ 1 →
+      ∃ r : ℝ, ρ ≤ r ∧ r < ρ + δ ∧ {z | t ≤ ζ z} = closedBall y r := by
+    intro t ht0 ht1
+    set M : Set ℝ := Icc 0 1 ∩ h ⁻¹' Ici t with hM
+    have hMc : IsCompact M :=
+      isCompact_Icc.inter_right (isClosed_Ici.preimage hC1.continuous)
+    have hM0 : (0 : ℝ) ∈ M := ⟨⟨le_rfl, zero_le_one⟩, by simp [h0 0 le_rfl, ht1]⟩
+    set st := sSup M with hst
+    have hstM : st ∈ M := hMc.sSup_mem ⟨0, hM0⟩
+    have hst0 : 0 ≤ st := hstM.1.1
+    have hst1 : st < 1 := by
+      rcases hstM.1.2.lt_or_eq with hlt | heq
+      · exact hlt
+      · exfalso; have := hstM.2; rw [heq, mem_preimage, mem_Ici, h1 1 le_rfl] at this; linarith
+    have hiff : ∀ u : ℝ, t ≤ h u ↔ u ≤ st := by
+      intro u
+      constructor
+      · intro hu
+        by_contra hcon
+        push Not at hcon
+        rcases le_or_gt u 1 with hu1 | hu1
+        · have huM : u ∈ M := ⟨⟨hst0.trans hcon.le, hu1⟩, hu⟩
+          exact absurd (le_csSup hMc.bddAbove huM) (not_le.2 hcon)
+        · rw [h1 u hu1.le] at hu; linarith
+      · intro hu
+        exact le_trans hstM.2 (hanti hu)
+    refine ⟨ρ + δ * st, by nlinarith, by nlinarith, ?_⟩
+    ext z
+    simp only [Set.mem_ofPred_eq, mem_closedBall, dist_eq_norm, hζ_def]
+    rw [hiff, ha_def, div_le_iff₀ hδ]
+    constructor <;> intro hh <;> linarith
+  exact ⟨ζ, hC1ζ, hcomp, fun z => h01 _, hζ1, htsupp, hgrad, hzero, hlevel⟩
+/-- **Signed layer cake** (Simon Ch. 3, 4.3 (4)–(5), the limit procedure of the De Giorgi cut-off
+estimates): let `0 ≤ ζ ≤ 1` vanish off `S`, `μ(S) < ∞`, `ζ = 1` on `B`, `|g| ≤ 1` and `c ≥ 0`.  If
+`c μ({ζ ≥ t}) ≤ ∫_{ζ ≥ t} g dμ` for every `t ∈ (0, 1]`, then `c μ(B) ≤ ∫ ζ g dμ`.
+
+Proof sketch:
+* `ζ(x) g(x) = ∫_{(0,1]} H(x, t) dt` with `H(x, t) = 1{t ≤ ζ(x)} g(x)`; `H` is bounded and
+  measurable on the finite product `μ⌞S ⊗ λ⌞(0, 1]`, so Fubini swaps the two integrals.
+* For `t ∈ (0, 1]`, `B ⊆ {ζ ≥ t} ⊆ S`, so `∫ H(·, t) dμ⌞S = ∫_{ζ ≥ t} g dμ ≥ c μ({ζ ≥ t}) ≥ c μ(B)`;
+  integrating over `(0, 1]` concludes. -/
+theorem Submission.codim1_rdo_dg_ce_signed_layer_cake : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (ζ g : X → ℝ) (S B : Set X) (c : ℝ), Measurable ζ → Measurable g → (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) → (∀ x, |g x| ≤ 1) → MeasurableSet S → μ S ≠ ∞ → (∀ x, x ∉ S → ζ x = 0) → (∀ x ∈ B, ζ x = 1) → 0 ≤ c → (∀ t : ℝ, 0 < t → t ≤ 1 → c * (μ {x | t ≤ ζ x}).toReal ≤ ∫ x in {x | t ≤ ζ x}, g x ∂μ) → c * (μ B).toReal ≤ ∫ x, ζ x * g x ∂μ := by
+  intro X _ μ ζ g S B c hζ hg hζ01 hg1 hS hSfin hζS hζB hc hlev
+  -- the finite measures `μ⌞S` and `λ⌞(0, 1]`
+  have : IsFiniteMeasure (μ.restrict S) := isFiniteMeasure_restrict.2 hSfin
+  set ν : Measure ℝ := volume.restrict (Ioc (0 : ℝ) 1) with hν
+  have : IsFiniteMeasure ν := isFiniteMeasure_restrict.2 (by simp)
+  -- for `t ∈ (0, 1]`, `B ⊆ {ζ ≥ t} ⊆ S`
+  have hLS : ∀ t : ℝ, 0 < t → {x | t ≤ ζ x} ⊆ S := fun t ht x hx => by
+    by_contra hxS
+    have hx' : t ≤ ζ x := hx
+    rw [hζS x hxS] at hx'
+    linarith
+  have hBL : ∀ t : ℝ, t ≤ 1 → B ⊆ {x | t ≤ ζ x} := fun t ht x hx => by
+    show t ≤ ζ x
+    rw [hζB x hx]
+    exact ht
+  -- the layer-cake integrand `H(x, t) = 1{t ≤ ζ(x)} g(x)` is integrable on `μ⌞S ⊗ λ⌞(0, 1]`
+  set H : X → ℝ → ℝ := fun x t => if t ≤ ζ x then g x else 0 with hH
+  have hHmeas : Measurable (uncurry H) :=
+    Measurable.ite (measurableSet_le measurable_snd (hζ.comp measurable_fst))
+      (hg.comp measurable_fst) measurable_const
+  have hHint : Integrable (uncurry H) ((μ.restrict S).prod ν) := by
+    refine Integrable.of_bound hHmeas.aestronglyMeasurable 1 (Eventually.of_forall fun p => ?_)
+    simp only [uncurry, hH]
+    split_ifs
+    · simpa [Real.norm_eq_abs] using hg1 p.1
+    · simp
+  -- inner integral in `t`: `∫_{(0,1]} H(x, t) dt = λ((0, ζ(x)]) g(x) = ζ(x) g(x)`
+  have hinner : ∀ x, ∫ t, H x t ∂ν = ζ x * g x := by
+    intro x
+    have : (fun t => H x t) = (Iic (ζ x)).indicator (fun _ => g x) := by
+      funext t; simp [hH, indicator_apply, mem_Iic]
+    rw [this, integral_indicator_const _ measurableSet_Iic, smul_eq_mul, hν, Measure.real,
+      Measure.restrict_apply measurableSet_Iic]
+    have hset : Iic (ζ x) ∩ Ioc (0 : ℝ) 1 = Ioc 0 (ζ x) := by
+      ext t; simp only [mem_inter_iff, mem_Iic, mem_Ioc]
+      constructor
+      · rintro ⟨h1, h2, _⟩; exact ⟨h2, h1⟩
+      · rintro ⟨h2, h1⟩; exact ⟨h1, h2, h1.trans (hζ01 x).2⟩
+    rw [hset, Real.volume_Ioc, sub_zero, ENNReal.toReal_ofReal (hζ01 x).1]
+  -- `ζ g` vanishes off `S`, so `∫ ζ g dμ = ∫∫ H dt dμ⌞S`
+  have hleft : ∫ x, ζ x * g x ∂μ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := by
+    simp_rw [hinner]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    simp [hζS x hx]
+  -- for `t ∈ (0, 1]`: `∫ H(·, t) dμ⌞S = ∫_{ζ ≥ t} g dμ ≥ c μ({ζ ≥ t}) ≥ c μ(B)`
+  have hlow : ∀ t ∈ Ioc (0 : ℝ) 1, c * (μ B).toReal ≤ ∫ x, H x t ∂(μ.restrict S) := by
+    intro t ht
+    have hLmeas : MeasurableSet {x | t ≤ ζ x} := measurableSet_le measurable_const hζ
+    have : (fun x => H x t) = {x | t ≤ ζ x}.indicator g := by
+      funext x; simp [hH, indicator_apply]
+    rw [this, integral_indicator hLmeas, Measure.restrict_restrict hLmeas,
+      inter_eq_left.2 (hLS t ht.1)]
+    refine le_trans ?_ (hlev t ht.1 ht.2)
+    have hLfin : μ {x | t ≤ ζ x} ≠ ∞ := ne_top_of_le_ne_top hSfin (measure_mono (hLS t ht.1))
+    exact mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hLfin (measure_mono (hBL t ht.2))) hc
+  have hint_t : Integrable (fun t => ∫ x, H x t ∂(μ.restrict S)) ν := hHint.integral_prod_right
+  calc c * (μ B).toReal = ∫ t, c * (μ B).toReal ∂ν := by
+        simp [hν, Measure.real]
+    _ ≤ ∫ t, ∫ x, H x t ∂(μ.restrict S) ∂ν := by
+        refine integral_mono_ae (integrable_const _) hint_t ?_
+        rw [hν, EventuallyLE, ae_restrict_iff' measurableSet_Ioc]
+        exact Eventually.of_forall hlow
+    _ = ∫ x, ∫ t, H x t ∂ν ∂(μ.restrict S) := (integral_integral_swap hHint).symm
+    _ = ∫ x, ζ x * g x ∂μ := hleft.symm
+
+/-- Annular bound behind De Giorgi's cut-off estimates (Simon Ch. 3, 4.3 (3)–(6), in
+finite-difference form, as used for 7.5.8).  Suppose `F` satisfies the Gauss–Green identity
+`∫_F div φ dLᴾ = -∫ ⟨φ, ν⟩ dμ` for `C¹` fields `φ` with compact support in `D ⊇ B̄_{ρ₂}(y)`
+(`|ν| ≤ 1`, `μ(B̄_{ρ₂}(y)) < ∞`), and `½ μ(B̄_r(y)) ≤ ∫_{B̄_r(y)} ⟨ν, v⟩ dμ` for `0 < r < ρ₂`
+(`|v| ≤ 1`).  Then `δ μ(B̄_ρ(y)) ≤ 3 Lᴾ(F ∩ (B_{ρ+δ}(y) \ B̄_ρ(y)))` whenever `ρ, δ > 0` and
+`ρ + δ < ρ₂`.  Test the identity with `φ = ζ v`, `ζ` the radial cut-off
+`Submission.codim1_rdo_dg_ce_radial_cutoff`: `div φ = Dζ v` vanishes off the annulus and is
+bounded by `3/(2δ)`, while the signed layer-cake formula
+`Submission.codim1_rdo_dg_ce_signed_layer_cake` over the superlevel balls `{ζ ≥ t} = B̄_r(y)`
+gives `∫ ζ ⟨v, ν⟩ dμ ≥ ½ μ(B̄_ρ(y))`. -/
+theorem Submission.codim1_rdo_dg_ce_annular_bound : ∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₂ : ℝ), MeasurableSet F → closedBall y ρ₂ ⊆ D → μ (closedBall y ρ₂) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ ≤ 1 → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → (∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ) → ∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₂ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal 3 * volume (F ∩ (ball y (ρ + δ) \ closedBall y ρ)) := by
+  intro P D F μ ν y v ρ₂ _hF hD hfin hν hν1 hv hGG h1' ρ δ hρ hδ hρδ
+  set A := ball y (ρ + δ) \ closedBall y ρ
+  -- Step 1: `μ(B̄_ρ) ≤ μ(B̄_{ρ+δ}) ≤ μ(B̄_{ρ₂}) < ∞` and `Lᴾ(F ∩ A) ≤ Lᴾ(B_{ρ+δ}) < ∞`.
+  have hSsub : closedBall y (ρ + δ) ⊆ closedBall y ρ₂ := closedBall_subset_closedBall hρδ.le
+  have hSfin : μ (closedBall y (ρ + δ)) ≠ ∞ := ne_top_of_le_ne_top hfin (measure_mono hSsub)
+  have hBfin : μ (closedBall y ρ) ≠ ∞ :=
+    ne_top_of_le_ne_top hSfin (measure_mono (closedBall_subset_closedBall (by linarith)))
+  have hAmeas : MeasurableSet A := measurableSet_ball.diff measurableSet_closedBall
+  have hAfin : volume A ≠ ∞ :=
+    ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono sdiff_subset)
+  have hFAfin : volume (F ∩ A) ≠ ∞ := ne_top_of_le_ne_top hAfin (measure_mono inter_subset_right)
+  -- Step 2: the radial cut-off `ζ`, `= 1` on `B̄_ρ`, supported in `B̄_{ρ+δ}`, `|Dζ| ≤ 3/(2δ)`.
+  obtain ⟨ζ, hζC, hζc, hζ01, hζ1, hζsupp, hζgrad, hζzero, hζlevel⟩ :=
+    Submission.codim1_rdo_dg_ce_radial_cutoff P y ρ δ hρ hδ
+  -- Step 3: Gauss–Green for `φ = ζ v`, whose divergence is the trace `Dζ v` of the rank-one
+  -- map `Dφ = Dζ ⊗ v`: `∫ ζ ⟨v, ν⟩ dμ = -∫_F Dζ v dLᴾ`.
+  have hφD : tsupport (fun z => ζ z • v) ⊆ D :=
+    (tsupport_smul_subset_left _ _).trans (hζsupp.trans (hSsub.trans hD))
+  have htrace : ∀ z, LinearMap.trace ℝ (Euclid P)
+      (fderiv ℝ (fun z => ζ z • v) z : Euclid P →ₗ[ℝ] Euclid P) = fderiv ℝ ζ z v := by
+    intro z
+    rw [fderiv_smul_const ((hζC.differentiable one_ne_zero) z) v]
+    exact LinearMap.trace_smulRight _ _
+  have hGGζ : ∫ z, ζ z * inner ℝ v (ν z) ∂μ = -∫ z in F, fderiv ℝ ζ z v := by
+    have h := hGG (fun z => ζ z • v) (hζC.smul contDiff_const) hζc.smul_right hφD
+    simp only [htrace, real_inner_smul_left] at h
+    rw [h, neg_neg]
+  -- Step 4: `|Dζ v| ≤ (3/(2δ)) 𝟙_A`, so `-∫_F Dζ v dLᴾ ≤ (3/(2δ)) Lᴾ(F ∩ A)`.
+  have hpt : ∀ z, ‖fderiv ℝ ζ z v‖ ≤ A.indicator (fun _ => 3 / (2 * δ)) z := by
+    intro z
+    by_cases hz : z ∈ A
+    · rw [indicator_of_mem hz]
+      calc ‖fderiv ℝ ζ z v‖ ≤ ‖fderiv ℝ ζ z‖ * ‖v‖ := (fderiv ℝ ζ z).le_opNorm v
+        _ ≤ 3 / (2 * δ) * 1 := mul_le_mul (hζgrad z) hv (norm_nonneg _) (by positivity)
+        _ = 3 / (2 * δ) := mul_one _
+    · rw [indicator_of_notMem hz, hζzero z hz]
+      simp
+  have hup : -∫ z in F, fderiv ℝ ζ z v ≤ 3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+    have hint : Integrable (A.indicator (fun _ => 3 / (2 * δ))) (volume.restrict F) :=
+      ((integrableOn_const hAfin).integrable_indicator hAmeas).restrict
+    have heq : ∫ z in F, A.indicator (fun _ => 3 / (2 * δ)) z =
+        3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+      rw [integral_indicator_const _ hAmeas, smul_eq_mul, mul_comm]
+      congr 1
+      simp only [Measure.real, Measure.restrict_apply hAmeas, inter_comm]
+    calc -∫ z in F, fderiv ℝ ζ z v ≤ ‖∫ z in F, fderiv ℝ ζ z v‖ := by
+          rw [Real.norm_eq_abs]; exact neg_le_abs _
+      _ ≤ ∫ z in F, A.indicator (fun _ => 3 / (2 * δ)) z :=
+          norm_integral_le_of_norm_le hint (Eventually.of_forall hpt)
+      _ = 3 / (2 * δ) * (volume (F ∩ A)).toReal := heq
+  -- Step 5: the signed layer-cake formula with `g = ⟨v, ν⟩`, `S = B̄_{ρ+δ}`, `B = B̄_ρ`, `c = ½`;
+  -- each `{ζ ≥ t} = B̄_r` has `0 < ρ ≤ r < ρ + δ < ρ₂`, where `(1′)` applies.
+  have hg : Measurable (fun z => inner ℝ v (ν z)) :=
+    (continuous_const.inner continuous_id).measurable.comp hν
+  have hlow : (1 / 2 : ℝ) * (μ (closedBall y ρ)).toReal ≤ ∫ z, ζ z * inner ℝ v (ν z) ∂μ := by
+    refine Submission.codim1_rdo_dg_ce_signed_layer_cake (Euclid P) μ ζ (fun z => inner ℝ v (ν z))
+      (closedBall y (ρ + δ)) (closedBall y ρ) (1 / 2) hζC.continuous.measurable hg hζ01 ?_
+      measurableSet_closedBall hSfin ?_ hζ1 (by norm_num) ?_
+    · intro z
+      calc |inner ℝ v (ν z)| ≤ ‖v‖ * ‖ν z‖ := abs_real_inner_le_norm _ _
+        _ ≤ 1 * 1 := mul_le_mul hv (hν1 z) (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    · intro z hz
+      exact image_eq_zero_of_notMem_tsupport (fun h => hz (hζsupp h))
+    · intro t ht0 ht1
+      obtain ⟨r, hr1, hr2, hrset⟩ := hζlevel t ht0 ht1
+      rw [hrset]
+      simpa only [real_inner_comm] using h1' r (by linarith) (by linarith)
+  -- Step 6: `½ μ(B̄_ρ) ≤ (3/(2δ)) Lᴾ(F ∩ A)`; multiply by `2δ > 0`.
+  have hreal : δ * (μ (closedBall y ρ)).toReal ≤ 3 * (volume (F ∩ A)).toReal := by
+    have key : (1 / 2 : ℝ) * (μ (closedBall y ρ)).toReal ≤
+        3 / (2 * δ) * (volume (F ∩ A)).toReal := by
+      linarith
+    have h3 : 3 / (2 * δ) * (volume (F ∩ A)).toReal * (2 * δ) = 3 * (volume (F ∩ A)).toReal := by
+      field_simp
+    nlinarith [key, hδ]
+  -- Step 7: back to `[0, ∞]`, both measures being finite by step 1.
+  calc ENNReal.ofReal δ * μ (closedBall y ρ)
+      = ENNReal.ofReal (δ * (μ (closedBall y ρ)).toReal) := by
+        rw [ENNReal.ofReal_mul hδ.le, ENNReal.ofReal_toReal hBfin]
+    _ ≤ ENNReal.ofReal (3 * (volume (F ∩ A)).toReal) := ENNReal.ofReal_le_ofReal hreal
+    _ = ENNReal.ofReal 3 * volume (F ∩ A) := by
+        rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_toReal hFAfin]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
