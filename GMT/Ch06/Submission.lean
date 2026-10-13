@@ -2625,6 +2625,85 @@ theorem Submission.deformation_ipl_cc_chart_integral_representation : ∀ (P Q k
     have hpush : nVectorPushforward k (A (Φ w)) (ξ (Φ w)) (α (f (Φ w))) = ξ (Φ w) β := rfl
     rw [hpush, mul_assoc, key, hβv, hfv, hF₁]
     ring
+/-- Push-forward integrands on a rectifiable triple (Simon Ch. 6, 3.6–3.9): if `x ↦ A(x)_# ξ(x)`
+and `β` are `Hᵏ⌞M`-a.e.-strongly measurable and `|A(x) v| ≤ Λ |v|` on the weighted approximate
+tangent spaces of `(M, θ)` at `Hᵏ`-a.e. `x ∈ M`, then `θ · ⟨β, A_# ξ⟩` is `Hᵏ⌞M`-a.e.-strongly
+measurable and bounded by `Λᵏ ‖β‖ θ` at `Hᵏ`-a.e. point of `M`.  Measurability of `θ` comes from
+exhausting `U` by compact sets; the bound evaluates `β` on the frame `A(x) τ`, where
+`ξ(x) = ±τ₁ ∧ ⋯ ∧ τₖ`. -/
+theorem Submission.deformation_ipl_cc_pushforward_integrand_bound : ∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (β : Eucl P → Covector (Eucl Q) k) (Λ : ℝ), IsOpen U → IsRectifiableTriple U k M θ ξ → AEStronglyMeasurable (fun x => nVectorPushforward k (A x) (ξ x)) ((μHE[k] : Measure (Eucl P)).restrict M) → AEStronglyMeasurable β ((μHE[k] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, ‖A x v‖ ≤ Λ * ‖v‖) → AEStronglyMeasurable (fun x => θ x * nVectorPushforward k (A x) (ξ x) (β x)) ((μHE[k] : Measure (Eucl P)).restrict M) ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), |θ x * nVectorPushforward k (A x) (ξ x) (β x)| ≤ Λ ^ k * ‖β x‖ * θ x := by
+  intro P Q k U M θ ξ A β Λ hU hT hAξm hβm hA
+  -- `θ` is a.e.-strongly measurable on `M`: exhaust `U` by the compact sets
+  -- `K_q = B̄(0, q) ∖ thickening (1 / (q + 1)) Uᶜ`.
+  set Kq : ℕ → Set (Eucl P) := fun q =>
+    closedBall (0 : Eucl P) q ∩ (thickening (1 / ((q : ℝ) + 1)) Uᶜ)ᶜ with hKq
+  have hKqc : ∀ q, IsCompact (Kq q) := fun q =>
+    (isCompact_closedBall _ _).inter_right isOpen_thickening.isClosed_compl
+  have hKqU : ∀ q, Kq q ⊆ U := by
+    intro q x hx
+    by_contra hxU
+    exact hx.2 (Metric.self_subset_thickening (by positivity) _ hxU)
+  have hUcov : U ⊆ ⋃ q, Kq q := by
+    intro x hx
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU x hx
+    obtain ⟨q₁, hq₁⟩ := exists_nat_one_div_lt hε
+    obtain ⟨q₂, hq₂⟩ := exists_nat_ge ‖x‖
+    refine mem_iUnion.mpr ⟨max q₁ q₂, ?_, ?_⟩
+    · rw [mem_closedBall, dist_zero_right]
+      exact hq₂.trans (by exact_mod_cast le_max_right q₁ q₂)
+    · intro hth
+      obtain ⟨z, hz, hdz⟩ := Metric.mem_thickening_iff.mp hth
+      apply hz
+      apply hball
+      rw [mem_ball, dist_comm]
+      calc dist x z < 1 / ((max q₁ q₂ : ℕ) + 1 : ℝ) := hdz
+        _ ≤ 1 / ((q₁ : ℝ) + 1) := by
+            gcongr
+            exact_mod_cast le_max_left q₁ q₂
+        _ < ε := hq₁
+  have hMeq : M = ⋃ q, M ∩ Kq q := by
+    ext x
+    simp only [mem_iUnion, mem_inter_iff]
+    constructor
+    · intro hx
+      obtain ⟨q, hq⟩ := mem_iUnion.mp (hUcov (hT.subset hx))
+      exact ⟨q, hx, hq⟩
+    · rintro ⟨q, hx, -⟩; exact hx
+  have hθm : AEStronglyMeasurable θ ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    rw [hMeq, aestronglyMeasurable_iUnion_iff]
+    intro q
+    exact (hT.integrableOn (Kq q) (hKqc q) (hKqU q)).aestronglyMeasurable
+  constructor
+  · -- The pairing `(N, γ) ↦ N γ` is continuous.
+    have hpair : Continuous (fun p : NVector (Eucl Q) k × Covector (Eucl Q) k => p.1 p.2) :=
+      isBoundedBilinearMap_apply.continuous
+    exact hθm.mul (hpair.comp_aestronglyMeasurable (hAξm.prodMk hβm))
+  · -- At a.e. `x ∈ M`, `ξ x = ±simpleNVector τ` for an orthonormal tangent frame `τ`, and
+    -- `|A x (τ a)| ≤ Λ`.
+    filter_upwards [hT.orients, hA, ae_restrict_mem₀ hT.nullMeasurableSet] with x hor hAx hxM
+    obtain ⟨τ, hτ, hτT, hξτ⟩ := hor
+    have hθ : 0 < θ x := hT.pos x hxM
+    have hb : ∀ a, ‖A x (τ a)‖ ≤ Λ := fun a => by
+      have := hAx _ hτT (τ a) (Submodule.subset_span (mem_range_self a))
+      rwa [hτ.1 a, mul_one] at this
+    have hval : |nVectorPushforward k (A x) (ξ x) (β x)| = |β x (fun a => A x (τ a))| := by
+      rcases hξτ with h | h
+      · rw [h, nVectorPushforward_simple, simpleNVector_apply]; rfl
+      · have : nVectorPushforward k (A x) (-simpleNVector τ) (β x) =
+            -(nVectorPushforward k (A x) (simpleNVector τ) (β x)) := rfl
+        rw [h, this, abs_neg, nVectorPushforward_simple, simpleNVector_apply]; rfl
+    have hprod : ∏ a, ‖A x (τ a)‖ ≤ Λ ^ k := by
+      calc ∏ a, ‖A x (τ a)‖ ≤ ∏ _a : Fin k, Λ :=
+            Finset.prod_le_prod₀ (fun a _ => norm_nonneg _) (fun a _ => hb a)
+        _ = Λ ^ k := by simp
+    have hle : |β x (fun a => A x (τ a))| ≤ Λ ^ k * ‖β x‖ := by
+      calc |β x (fun a => A x (τ a))| = ‖β x (fun a => A x (τ a))‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖β x‖ * ∏ a, ‖A x (τ a)‖ := ContinuousAlternatingMap.le_opNorm _ _
+        _ ≤ ‖β x‖ * Λ ^ k := by gcongr
+        _ = Λ ^ k * ‖β x‖ := mul_comm _ _
+    rw [abs_mul, abs_of_pos hθ, hval]
+    calc θ x * |β x (fun a => A x (τ a))| ≤ θ x * (Λ ^ k * ‖β x‖) := by gcongr
+      _ = Λ ^ k * ‖β x‖ * θ x := by ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
