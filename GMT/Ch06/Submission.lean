@@ -1826,6 +1826,1442 @@ theorem Submission.iwl_cr_cone_boundary :
     (Set.disjoint_of_subset_left hsupp hYB.disjoint_compl_left)
   rw [map_sub Y.toCurrent] at h0
   exact sub_eq_zero.1 h0
+/-- **Product formula in measure form (Federer 3.2.23; Simon Ch. 6, 3.2(2)).**  Write
+`π(y₀, …, y_P) = (y₁, …, y_P)` and `Φ(s, x) = (s, x₁, …, x_P)`.  If `Hᵐ(A ∩ K) < ∞` for every
+compact `K ⊆ ℝ^P` and `∫⁻_{π⁻¹(A)} g dH^{m+1} = ∫⁻_ℝ ∫⁻_A g(Φ(s, x)) dHᵐ(x) ds` for every Borel
+`g ≥ 0`, then `H^{m+1}⌞π⁻¹(A) = Φ_#(L¹ × Hᵐ⌞A)`.  Testing the formula with `g = 1_B` gives
+`(H^{m+1}⌞π⁻¹(A))(B) = ∫⁻_ℝ (Hᵐ⌞A){x : Φ(s, x) ∈ B} ds = (L¹ × Hᵐ⌞A)(Φ⁻¹(B))` for Borel `B`;
+`Hᵐ⌞A` is finite on compact sets, hence σ-finite, so the product measure is given by sections. -/
+theorem Submission.iwl_cr_ip_restrict_preimage_eq_map : ∀ (P m : ℕ) (A : Set (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g → ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A}, g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫⁻ s : ℝ, ∫⁻ x in A, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A)) := by
+  intro P m A hfin hPF
+  -- Step 1: `ν := Hᵐ⌞A` is finite on compact sets (compact sets are closed, hence Borel), so it
+  -- is σ-finite on the σ-compact space `ℝ^P`; in particular `Measure.prod_apply` applies to `L¹ × ν`.
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hfin K hK⟩
+  -- Step 2: `Φ(s, x) = (s, x)` is continuous, hence Borel measurable.
+  have hΦ : Measurable (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := by
+    refine ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_).measurable
+    exact Continuous.finCons continuous_fst
+      ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+  -- Steps 3-7: the two measures agree on every Borel set `B`.  The left side is
+  -- `∫⁻_{π⁻¹(A)} 1_B dH^{m+1} = ∫⁻_ℝ ∫⁻_A 1_B(Φ(s, x)) dHᵐ(x) ds` (the hypothesis with `g = 1_B`),
+  -- the right side is `∫⁻_ℝ ν({x : Φ(s, x) ∈ B}) ds` (`Measure.map_apply`, `Measure.prod_apply`),
+  -- and `1_B(Φ(s, x)) = 1_{{x : Φ(s, x) ∈ B}}(x)`.
+  ext B hB
+  rw [Measure.map_apply hΦ hB, Measure.prod_apply (hΦ hB), ← lintegral_indicator_one hB,
+    hPF (B.indicator 1) (measurable_one.indicator hB)]
+  refine lintegral_congr fun s => ?_
+  rw [← lintegral_indicator_one (measurable_prodMk_left (hΦ hB))]
+  rfl
+/-- Measure identity on the slab over `A` (fact (D2) in the proof of the product triple): for
+`Φ(s, x) = (s, x₁, …, x_P)` and `π(y) = (y₁, …, y_P)`, the cylinder identity
+`Hᵐ⁺¹ ⌞ {π ∈ A} = Φ_#(L¹ × Hᵐ ⌞ A)` restricts to the slab `{π ∈ A, 0 < y₀ < 1}`.  Restricting
+both sides to the Borel set `{0 < y₀ < 1}`, whose `Φ`-preimage is `(0, 1) × ℝ^P`, gives
+`Φ_#((L¹ ⌞ (0, 1)) × Hᵐ ⌞ A)`; `Hᵐ ⌞ A` is finite on compact sets, hence s-finite. -/
+theorem Submission.iwl_cr_ip_pt_slab_restrict_eq_map :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) →
+    ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+            EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+        Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+          (((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+            ((μHE[m] : Measure (Eucl P)).restrict A)) := by
+  intro P m hMP A hA hArect hAfin
+  -- `Hᵐ ⌞ A` is finite on compact sets, hence σ-finite (`ℝ^P` is σ-compact).
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hAfin K hK⟩
+  -- `Φ` is continuous and `O = {0 < y₀ < 1}` is open, so both are Borel.
+  have hΦ : Measurable (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) :=
+    ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp (Continuous.finCons
+      continuous_fst ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))).measurable
+  have hO : MeasurableSet
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  -- `Φ(s, x)₀ = s`, so `Φ⁻¹(O) = (0, 1) × ℝ^P`.
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
+        {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      Ioo (0 : ℝ) 1 ×ˢ univ := by
+    ext ⟨s, x⟩
+    simp only [mem_preimage, mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply,
+      Fin.cons_zero, mem_prod, mem_univ, and_true]
+  -- The slab is `O ∩ {π ∈ A}`.
+  have hslab : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} := by
+    ext y
+    exact and_comm
+  rw [hslab, ← Measure.restrict_restrict hO, hMP A hA hArect hAfin, Measure.restrict_map hΦ hO,
+    hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+
+/-- Integrability and a.e. strong measurability pass from `A ⊆ ℝ^P` to the slab
+`S_A = {y | π y ∈ A ∧ y₀ ∈ (0, 1)}`, `π y = (y₁, …, y_P)`.  By `slab_restrict_eq_map`,
+`H^{m+1} ⌞ S_A = Φ'_# ((L¹ ⌞ (0, 1)) ⊗ (Hᵐ ⌞ A))` for `Φ'(s, x) = (s, x₁, …, x_P)`, a
+homeomorphism (hence a measurable embedding) with `π ∘ Φ' = Prod.snd`.  So (a) is integrability
+of `f ∘ Prod.snd` for the product of the finite measure `L¹ ⌞ (0, 1)` with `Hᵐ ⌞ A`, and (b) is
+a.e. strong measurability of `g ∘ Prod.snd`, `Prod.snd` being quasi-measure-preserving onto
+`Hᵐ ⌞ A`. -/
+theorem Submission.iwl_cr_ip_pt_slab_transfer : ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (∀ f : Eucl P → ℝ, IntegrableOn f A (μHE[m] : Measure (Eucl P)) → IntegrableOn (fun y : Eucl (P + 1) => f ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (μHE[m + 1] : Measure (Eucl (P + 1)))) ∧ ∀ g : Eucl P → NVector (Eucl P) m, AEStronglyMeasurable g ((μHE[m] : Measure (Eucl P)).restrict A) → AEStronglyMeasurable (fun y : Eucl (P + 1) => g ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ((μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}) := by
+  intro P m hMP A hA hArect hAfin
+  -- `H^{m+1} ⌞ S_A = Φ'_# ((L¹ ⌞ (0, 1)) ⊗ (Hᵐ ⌞ A))`.
+  have hD := Submission.iwl_cr_ip_pt_slab_restrict_eq_map P m hMP A hA hArect hAfin
+  -- `Hᵐ ⌞ A` is finite on compact sets, hence σ-finite, as `Integrable.comp_snd` needs.
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hAfin K hK⟩
+  -- `Φ'` is a homeomorphism `ℝ × ℝ^P ≃ ℝ^{P+1}` with inverse `y ↦ (y₀, π y)`.
+  let Φh : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0,
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      left_inv := fun p => by
+        rcases p with ⟨s, x⟩
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+          ContinuousLinearEquiv.symm_apply_apply]
+      continuous_toFun := by
+        refine (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_
+        exact Continuous.finCons continuous_fst
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+      continuous_invFun := by
+        refine Continuous.prodMk ?_ ?_
+        · exact (continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+        · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+          exact continuous_pi fun i =>
+            (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
+  have hΦ : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
+  -- `π ∘ Φ' = Prod.snd`.
+  have hπΦ : ∀ p : ℝ × Eucl P, (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))))) = p.2 := by
+    intro p
+    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  refine ⟨fun f hf => ?_, fun g hg => ?_⟩
+  · -- (a) `f ∘ Prod.snd` is integrable for the product, `L¹ ⌞ (0, 1)` being finite.
+    rw [IntegrableOn, hD, hΦ.integrable_map_iff]
+    refine (Integrable.comp_snd hf ((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1))).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
+  · -- (b) `Prod.snd` is quasi-measure-preserving from the product onto `Hᵐ ⌞ A`.
+    rw [hD, hΦ.aestronglyMeasurable_map_iff]
+    refine (hg.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_snd).congr
+      (Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hπΦ]
+/-- **Slice formula for the product `[[(0, 1)]] × τ(M, θ, ξ)` (Simon Ch. 6, 2.17 and 3.2(2),
+pp. 138, 146).**  Write `Φ(s, x) = (s, x) ∈ ℝ^{P+1}` and `π(y) = (y₁, …, y_P)`, and assume the
+product formula `H^{m+1}⌞{π ∈ A} = Φ_#(L¹ × Hᵐ⌞A)` for every `Hᵐ`-measurable, countably
+`m`-rectifiable `A ⊆ ℝ^P` with `Hᵐ(A ∩ K) < ∞` for all compact `K`.  Let `(M, θ, ξ)` be a
+rectifiable triple in `ℝ^P` with `θ ≥ 1` on `M`, and let `⟨α, ξ'(s, x)⟩ = ⟨β, ξ(x)⟩` whenever
+`β(v) = α(e₀, (0, v₁), …, (0, vₘ))`.  If `θ(π y) ⟨η(y), ξ'(y)⟩` is `H^{m+1}`-integrable on
+`M̃ = {y : π y ∈ M, y₀ ∈ (0, 1)}` and `φ(s)(x)(v) = η(s, x)(e₀, (0, v₁), …, (0, vₘ))` for
+`s ∈ [0, 1]`, then `τ(M̃, θ ∘ π, ξ')(η) = ∫₀¹ τ(M, θ, ξ)(φ(s)) ds`.  As `θ ≥ 1`, `M` has locally
+finite `Hᵐ`-measure, so `H^{m+1}⌞M̃ = Φ_#(L¹⌞(0, 1) × Hᵐ⌞M)` and Fubini applies. -/
+theorem Submission.iwl_cr_ip_slice_formula : ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m) (ξ' : Eucl (P + 1) → NVector (Eucl (P + 1)) (m + 1)), IsRectifiableTriple (univ : Set (Eucl P)) m M θ ξ → (∀ x ∈ M, 1 ≤ θ x) → (∀ (s : ℝ) (x : Eucl P) (α : Covector (Eucl (P + 1)) (m + 1)) (β : Covector (Eucl P) m), (∀ v : Fin m → Eucl P, β v = α (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → ξ' ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) α = ξ x β) → ∀ (η : DifferentialForm (Eucl (P + 1)) (m + 1)) (φ : ℝ → DifferentialForm (Eucl P) m), IntegrableOn (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) * ξ' y (η y)) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (μHE[m + 1] : Measure (Eucl (P + 1))) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), φ s x v = η ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → tauAction (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ξ' η = ∫ s in (0 : ℝ)..1, tauAction m M θ ξ (φ s) := by
+  intro P m hMP M θ ξ ξ' hT hθ1 hchar η φ hint hφ
+  -- Step 1: `Hᵐ(M ∩ K) ≤ ∫_{M ∩ K} |θ| dHᵐ < ∞` for every compact `K`, since `θ ≥ 1` on `M`.
+  have hlf : ∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞ := by
+    intro K hK
+    have hI := hT.integrableOn K hK (subset_univ K)
+    have hnm : NullMeasurableSet (M ∩ K) (μHE[m] : Measure (Eucl P)) :=
+      hT.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet
+    calc (μHE[m] : Measure (Eucl P)) (M ∩ K)
+        = ∫⁻ _ in M ∩ K, 1 ∂(μHE[m] : Measure (Eucl P)) := by
+          rw [setLIntegral_const, one_mul]
+      _ ≤ ∫⁻ x in M ∩ K, ‖θ x‖ₑ ∂(μHE[m] : Measure (Eucl P)) := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hnm] with x hx
+          rw [← ofReal_norm, ENNReal.one_le_ofReal, Real.norm_eq_abs]
+          exact (hθ1 x hx.1).trans (le_abs_self _)
+      _ < ∞ := hI.2
+  -- So the product formula applies to `M`, and `Hᵐ⌞M` is finite on compacts, hence σ-finite.
+  have hS := hMP M hT.nullMeasurableSet hT.countablyRectifiable hlf
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict M) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hlf K hK⟩
+  -- `Φ(s, x) = (s, x)` is a homeomorphism `ℝ × ℝ^P ≃ ℝ^{P+1}` with inverse `y ↦ (y₀, π y)`,
+  -- hence a measurable embedding.
+  let Φh : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0,
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      left_inv := fun p => by
+        rcases p with ⟨s, x⟩
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+          ContinuousLinearEquiv.symm_apply_apply]
+      continuous_toFun := by
+        refine (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_
+        exact Continuous.finCons continuous_fst
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+      continuous_invFun := by
+        refine Continuous.prodMk ?_ ?_
+        · exact (continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+        · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+          exact continuous_pi fun i =>
+            (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
+  have hΦm : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
+  -- Step 2: `H^{m+1}⌞M̃ = Φ_#(L¹⌞(0, 1) × Hᵐ⌞M)`, restricting the product formula for `M` to the
+  -- open slab `{y₀ ∈ (0, 1)}`, whose preimage under `Φ` is `(0, 1) × ℝ^P`.
+  have hOm : MeasurableSet {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹'
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} = Ioo (0 : ℝ) 1 ×ˢ univ := by
+    ext ⟨s, x⟩
+    simp only [mem_preimage, Set.mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero,
+      mem_prod, mem_univ, and_true]
+  have hset : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+      EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} ∩
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+    ext y
+    simp only [Set.mem_ofPred_eq, mem_inter_iff]
+    exact and_comm
+  have hMt : (μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+      {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+        (((volume : Measure ℝ).restrict (Ioo 0 1)).prod ((μHE[m] : Measure (Eucl P)).restrict M)) := by
+    rw [hset, ← Measure.restrict_restrict hOm, hS, Measure.restrict_map hΦm.measurable hOm, hpre,
+      ← Measure.prod_restrict, Measure.restrict_univ]
+  -- Step 4: the integrand composed with `Φ` is integrable for `L¹⌞(0, 1) × Hᵐ⌞M`.
+  have hint' := hint
+  rw [IntegrableOn, hMt, hΦm.integrable_map_iff] at hint'
+  -- Steps 3, 5 and 7: transport the integral along `Φ`, apply Fubini, and write `∫₀¹` as the
+  -- set integral over `(0, 1]`, equivalently over `(0, 1)`.
+  simp only [tauAction]
+  rw [hMt, hΦm.integral_map, integral_prod, intervalIntegral.integral_of_le zero_le_one,
+    integral_Ioc_eq_integral_Ioo]
+  · -- Step 6: for `s ∈ (0, 1)`, `π(Φ(s, x)) = x` and `⟨η(Φ(s, x)), ξ'(Φ(s, x))⟩ = ⟨φ(s)(x), ξ(x)⟩`.
+    refine setIntegral_congr_fun measurableSet_Ioo (fun s hs => ?_)
+    refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+    rw [hchar s x _ _ (fun v => hφ s (Ioo_subset_Icc_self hs) x v)]
+  · exact hint'
+/-- Cylinders over null-measurable sets: let `π(y) = (y_1, …, y_P)` for `y ∈ ℝ^{P+1}`.  If
+`π⁻¹(N)` is `H^{m+1}`-null for every `Hᵐ`-null `N ⊆ ℝ^P`, then `π⁻¹(M)` is `H^{m+1}`-null-measurable
+for every `Hᵐ`-null-measurable `M ⊆ ℝ^P`.  `π` is continuous, hence Borel, and the hypothesis makes
+it quasi-measure-preserving from `H^{m+1}` to `Hᵐ`. -/
+theorem Submission.iwl_cr_ip_pt_cylinder_nullMeasurableSet :
+    ∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 →
+      (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) →
+      ∀ M : Set (Eucl P), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) →
+        NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M}
+          (μHE[m + 1] : Measure (Eucl (P + 1))) := by
+  intro P m hNT M hM
+  -- `π = equiv_P⁻¹ ∘ Fin.tail ∘ equiv_{P+1}` is continuous, hence measurable.
+  have hπm : Measurable (fun y : Eucl (P + 1) =>
+      (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) := by
+    refine ((EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_).measurable
+    exact continuous_pi fun i =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+  -- The hypothesis on measurable null sets gives `π_* H^{m+1} ≪ Hᵐ`.
+  have hq : Measure.QuasiMeasurePreserving (fun y : Eucl (P + 1) =>
+      (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      (μHE[m + 1] : Measure (Eucl (P + 1))) (μHE[m] : Measure (Eucl P)) := by
+    refine ⟨hπm, Measure.AbsolutelyContinuous.mk fun s hs hs0 => ?_⟩
+    rw [Measure.map_apply hπm hs]
+    exact hNT s hs0
+  exact hM.preimage hq
+/-- Cylinders over countably `m`-rectifiable sets: if `π(y) = (y_1, …, y_P)` pulls
+`Hᵐ`-null sets of `ℝ^P` back to `H^{m+1}`-null sets of `ℝ^{P+1}`, then for countably
+`m`-rectifiable `M ⊆ ℝ^P` the cylinder `{y : π(y) ∈ M}` is countably `(m+1)`-rectifiable,
+parametrized by `G_j(u) = (u_0, F_j(u_1, …, u_m))`. -/
+theorem Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable : ∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), CountablyRectifiable m M → CountablyRectifiable (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+  intro P m hNT M hM
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := hM
+  -- Step 1: the continuous linear maps `hd u = u_0`, `tl u = (u_1, …, u_m)` and
+  -- `Ψ (a, x) = (a, x_1, …, x_P)`.
+  let hd : Eucl (m + 1) →L[ℝ] ℝ :=
+    (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) 0).comp
+      (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap
+  let tl : Eucl (m + 1) →L[ℝ] Eucl m :=
+    (EuclideanSpace.equiv (Fin m) ℝ).symm.toContinuousLinearMap.comp
+      ((ContinuousLinearMap.pi fun i : Fin m =>
+          ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (m + 1) => ℝ) i.succ).comp
+        (EuclideanSpace.equiv (Fin (m + 1)) ℝ).toContinuousLinearMap)
+  let Ψ : ℝ × Eucl P →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      map_add' := by
+        intro p q
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.fst_add, Prod.snd_add, map_add, ContinuousLinearEquiv.apply_symm_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := by
+        intro c p
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Prod.smul_fst, Prod.smul_snd, map_smul, ContinuousLinearEquiv.apply_symm_apply,
+          RingHom.id_apply]
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  -- Step 2: the exceptional set is the cylinder over `M₀` (null by `hNT`) and
+  -- `G_j = Ψ ∘ (hd, F_j ∘ tl)` is Lipschitz.
+  refine ⟨{y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M₀},
+    hNT M₀ hM₀, fun j u => Ψ (hd u, F j (tl u)), fun j => ?_, ?_⟩
+  · obtain ⟨K, hK⟩ := hF j
+    exact ⟨_, Ψ.lipschitzWith.comp (hd.lipschitzWith.prodMk (hK.comp tl.lipschitzWith))⟩
+  -- Step 3: if `π(y) = F_j(w)` then `G_j(y_0, w) = (y_0, π(y)) = y`.
+  · intro y hy
+    rcases hcover hy with h0 | h1
+    · exact Or.inl h0
+    · right
+      obtain ⟨j, w, hw⟩ := mem_iUnion.mp h1
+      refine mem_iUnion.mpr ⟨j, (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w)), ?_⟩
+      have h1' : hd ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) =
+          EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 := by
+        simp [hd]
+      have h2' : tl ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0) (EuclideanSpace.equiv (Fin m) ℝ w))) = w := by
+        apply (EuclideanSpace.equiv (Fin m) ℝ).injective
+        ext i
+        simp [tl]
+      show Ψ (hd _, F j (tl _)) = y
+      rw [h1', h2', hw]
+      show (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+        (EuclideanSpace.equiv (Fin P) ℝ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y
+      simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+/-- Orienting frame of the product triple `(0, 1) × M` (Simon Ch. 6, 3.2(2), used in the proof
+of 8.2): if `τ₁, …, τₘ` is orthonormal in `ℝ^P`, then `(e₀, ιτ₁, …, ιτₘ)` is orthonormal in
+`ℝ^{P+1}`, `ι v = (0, v)`.  In coordinates `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩` and `e₀ = (1, 0)`. -/
+theorem Submission.iwl_cr_ip_pt_frame_orthonormal :
+    ∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ →
+      Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1))
+        (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) := by
+  intro P m τ hτ
+  rw [orthonormal_iff_ite] at hτ ⊢
+  -- `⟨(a, u), (b, w)⟩ = a b + ⟨u, w⟩`: split off the coordinate `0` of the sum.
+  have hinner : ∀ (a b : ℝ) (u w : Eucl P),
+      inner ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons a (EuclideanSpace.equiv (Fin P) ℝ u)))
+        ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons b (EuclideanSpace.equiv (Fin P) ℝ w))) = a * b + inner ℝ u w := by
+    intro a b u w
+    rw [PiLp.inner_apply, PiLp.inner_apply, Fin.sum_univ_succ]
+    simp [mul_comm]
+  -- `e₀ = (1, 0)`, compared coordinatewise.
+  have he : (EuclideanSpace.single 0 1 : Eucl (P + 1)) =
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 1 (EuclideanSpace.equiv (Fin P) ℝ 0)) := by
+    apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  intro i j
+  refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+  · simp only [Fin.cons_zero, he, hinner]
+    simp
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [(Fin.succ_ne_zero j).symm]
+  · simp only [Fin.cons_zero, Fin.cons_succ, he, hinner]
+    simp [Fin.succ_ne_zero i]
+  · -- `⟨ιτᵢ, ιτⱼ⟩ = ⟨τᵢ, τⱼ⟩` and `i.succ = j.succ ↔ i = j`.
+    simp only [Fin.cons_succ, hinner, zero_mul, zero_add, Fin.succ_inj]
+    exact hτ i j
+/-- The product frame of `(0, 1) × M` (Simon Ch. 6, Remark 3.2(2), for `[[(0, 1)]] × τ(M, θ, ξ)`).
+Write `ℝ^{P+1} = ℝ × ℝ^P` with `Φ(s, u) = (s, u₁, …, u_P)` and `π(z) = (z₁, …, z_P)`.  If `τ` is an
+orthonormal family in `ℝ^P`, then `τ̃ = (e₀, Φ(0, τ₁), …, Φ(0, τ_m))` is orthonormal, its span `Q`
+has dimension `m + 1`, and `Q = π⁻¹(span τ)` as sets.  In coordinates
+`⟨Φ(a, u), Φ(b, w)⟩ = ab + ⟨u, w⟩` and `e₀ = Φ(1, 0)`; the generators of `Q` project into `span τ`,
+and conversely `z = z₀ e₀ + ∑ᵢ cᵢ Φ(0, τᵢ)` whenever `π z = ∑ᵢ cᵢ τᵢ`. -/
+theorem Submission.iwl_cr_ip_wt_product_plane :
+    ∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) ∧ Module.finrank ℝ (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)))) = m + 1 ∧ ((Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))) : Submodule ℝ (Eucl (P + 1))) : Set (Eucl (P + 1))) = {z : Eucl (P + 1) | ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z))) ∈ Submodule.span ℝ (range τ)} := by
+  intro P m τ hτ
+  -- Coordinates: `Φ(s, u) = (s, u₁, …, u_P)`, `e₀ = Φ(1, 0)`, `⟨Φ(a, u), Φ(b, w)⟩ = ab + ⟨u, w⟩`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  have he₀ : (EuclideanSpace.single 0 1 : Eucl (P + 1)) = Φ 1 0 := by
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp [Φ]
+    · simp [Φ, Fin.succ_ne_zero]
+  have hinner : ∀ (a b : ℝ) (u w : Eucl P), inner ℝ (Φ a u) (Φ b w) = a * b + inner ℝ u w := by
+    intro a b u w
+    simp only [Φ, PiLp.inner_apply, Fin.sum_univ_succ]
+    simp [mul_comm]
+  set v : Fin (m + 1) → Eucl (P + 1) := (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1))
+    (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) with hv
+  have hv0 : v 0 = Φ 1 0 := by rw [hv, Fin.cons_zero, he₀]
+  have hvs : ∀ i : Fin m, v i.succ = Φ 0 (τ i) := fun i => by rw [hv, Fin.cons_succ]
+  -- `τ̃ = (Φ(1, 0), Φ(0, τ₁), …, Φ(0, τ_m))` is orthonormal, hence linearly independent.
+  have hon : Orthonormal ℝ v := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · rw [hv0, hinner]; simp
+    · rw [hv0, hvs, hinner]; simp [(Fin.succ_ne_zero j').symm]
+    · rw [hv0, hvs, hinner]; simp [Fin.succ_ne_zero i']
+    · rw [hvs, hvs, hinner, (orthonormal_iff_ite.1 hτ) i' j']
+      simp [Fin.succ_inj]
+  refine ⟨hon, ?_, ?_⟩
+  · rw [finrank_span_eq_card hon.linearIndependent, Fintype.card_fin]
+  · -- The projection `π` as a linear map; `span τ̃ = π⁻¹(span τ)`.
+    let πₗ : Eucl (P + 1) →ₗ[ℝ] Eucl P :=
+      (EuclideanSpace.equiv (Fin P) ℝ).symm.toLinearMap ∘ₗ
+        (LinearMap.funLeft ℝ ℝ Fin.succ ∘ₗ (EuclideanSpace.equiv (Fin (P + 1)) ℝ).toLinearMap)
+    have hπ : ∀ z, πₗ z = (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z)) := fun z => rfl
+    have hπΦ : ∀ s u, πₗ (Φ s u) = u := by
+      intro s u
+      rw [hπ]
+      simp only [Φ, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+        ContinuousLinearEquiv.symm_apply_apply]
+    have hspan : Submodule.span ℝ (range v) = (Submodule.span ℝ (range τ)).comap πₗ := by
+      apply le_antisymm
+      · rw [Submodule.span_le]
+        rintro _ ⟨i, rfl⟩
+        refine Fin.cases ?_ (fun i' => ?_) i
+        · simp only [SetLike.mem_coe, Submodule.mem_comap, hv0, hπΦ]
+          exact Submodule.zero_mem _
+        · simp only [SetLike.mem_coe, Submodule.mem_comap, hvs, hπΦ]
+          exact Submodule.subset_span ⟨i', rfl⟩
+      · intro z hz
+        rw [Submodule.mem_comap, Submodule.mem_span_range_iff_exists_fun] at hz
+        obtain ⟨c, hc⟩ := hz
+        -- `z = Φ(z₀, π z)` and `Φ` is linear, so `z = z₀ e₀ + ∑ᵢ cᵢ Φ(0, τᵢ)`.
+        have hz' : z = (EuclideanSpace.equiv (Fin (P + 1)) ℝ z 0) • v 0 +
+            ∑ i, c i • v i.succ := by
+          have hdecomp : z = Φ (EuclideanSpace.equiv (Fin (P + 1)) ℝ z 0) (πₗ z) := by
+            apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+            simp only [Φ, hπ, ContinuousLinearEquiv.apply_symm_apply]
+            exact (Fin.cons_self_tail _).symm
+          have hlin : ∀ (a b : ℝ) (u w : Eucl P), Φ a u + Φ b w = Φ (a + b) (u + w) := by
+            intro a b u w
+            simp only [Φ, ← map_add]
+            congr 1
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          have hsmul : ∀ (c : ℝ) (a : ℝ) (u : Eucl P), c • Φ a u = Φ (c * a) (c • u) := by
+            intro c a u
+            simp only [Φ, ← map_smul]
+            congr 1
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          have hsum : ∀ (s : Finset (Fin m)) (a : Fin m → ℝ) (u : Fin m → Eucl P),
+              ∑ i ∈ s, Φ (a i) (u i) = Φ (∑ i ∈ s, a i) (∑ i ∈ s, u i) := by
+            intro s a u
+            induction s using Finset.induction_on with
+            | empty =>
+              have h00 : Φ 0 0 = 0 := by
+                apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+                simp only [Φ, ContinuousLinearEquiv.apply_symm_apply, map_zero]
+                ext i
+                refine Fin.cases ?_ (fun j => ?_) i <;> simp
+              simp [h00]
+            | insert j s hj ih => rw [Finset.sum_insert hj, Finset.sum_insert hj,
+                Finset.sum_insert hj, ih, hlin]
+          rw [hv0]
+          simp_rw [hvs, hsmul, hsum, hlin, mul_zero, Finset.sum_const_zero, mul_one, smul_zero,
+            zero_add, add_zero, hc]
+          exact hdecomp
+        rw [hz']
+        refine Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩))
+          (Submodule.sum_mem _ fun i _ =>
+            Submodule.smul_mem _ _ (Submodule.subset_span ⟨i.succ, rfl⟩))
+    rw [hspan]
+    rfl
+/-- Fubini on the product plane `π⁻¹(T)`, `T = span τ`, for compactly supported continuous `f`
+(Simon Ch. 6, 3.2(2), product with an interval).  Write `Φ′(s, u) = (s, u) ∈ ℝ^{P+1}` and
+`π(y) = (y₁, …, y_P)`, and assume the product formula (MP) `H^{m+1} ⌞ π⁻¹(A) = Φ′_#(L¹ × Hᵐ ⌞ A)`
+for every `Hᵐ`-measurable, countably `m`-rectifiable, locally `Hᵐ`-finite `A ⊆ ℝ^P`.  Then for an
+orthonormal `τ`, `∫_{π⁻¹(T)} f dH^{m+1} = ∫_ℝ ∫_T f(Φ′(σ, w)) dHᵐ(w) dσ`.
+`T` is closed, has dimension `m`, is the range of the Lipschitz map `u ↦ ∑ uᵢ τᵢ`, and `Hᵐ ⌞ T` is
+regular, so (MP) applies to `A = T`.  Change variables along the homeomorphism
+`Φ′ : ℝ × ℝ^P ≃ ℝ^{P+1}` and apply Fubini to the compactly supported continuous `f ∘ Φ′`. -/
+theorem Submission.iwl_cr_ip_wt_plane_fubini :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ τ : Fin m → Eucl P, Orthonormal ℝ τ → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∫ z in {z : Eucl (P + 1) | ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z))) ∈ Submodule.span ℝ (range τ)}, f z ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫ σ : ℝ, ∫ w in (Submodule.span ℝ (range τ) : Set (Eucl P)), f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) ∂(μHE[m] : Measure (Eucl P)) := by
+  intro P m hMP τ hτ f hfc hfcs
+  -- Coordinates `Φ(s, u) = (s, u)` and `π(y) = (y₁, …, y_P)`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  let π : Eucl (P + 1) → Eucl P := fun y =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))
+  have hΦc : Continuous fun p : ℝ × Eucl P => Φ p.1 p.2 :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  -- `Φ′ = Φ.uncurry` is a homeomorphism `ℝ × ℝ^P ≃ ℝ^{P+1}` with inverse `y ↦ (y₀, π y)`.
+  let e : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => Φ p.1 p.2
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0, π y)
+      left_inv := fun p => by
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply]
+        exact Fin.cons_self_tail _
+      continuous_toFun := hΦc
+      continuous_invFun := by
+        refine Continuous.prodMk ((continuous_apply 0).comp
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) ?_
+        exact (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp
+          (continuous_pi fun i : Fin P => (continuous_apply i.succ).comp
+            (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) }
+  have hemb : MeasurableEmbedding (fun p : ℝ × Eucl P => Φ p.1 p.2) := e.measurableEmbedding
+  -- The plane `T = span τ` is `Hᵐ`-measurable, countably `m`-rectifiable and locally `Hᵐ`-finite.
+  set T : Submodule ℝ (Eucl P) := Submodule.span ℝ (range τ) with hT
+  have hfinT : Module.finrank ℝ T = m := by
+    rw [hT, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  have hTmeas : MeasurableSet (T : Set (Eucl P)) := T.closed_of_finiteDimensional.measurableSet
+  have hTrect : CountablyRectifiable m (T : Set (Eucl P)) := by
+    let Λₗ : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Eucl P :=
+      Fintype.linearCombination ℝ τ ∘ₗ (EuclideanSpace.equiv (Fin m) ℝ).toLinearMap
+    let Λ : EuclideanSpace ℝ (Fin m) →L[ℝ] Eucl P := LinearMap.toContinuousLinearMap Λₗ
+    have hrange : range Λ = (T : Set (Eucl P)) := by
+      ext v
+      simp only [Λ, LinearMap.coe_toContinuousLinearMap', mem_range, SetLike.mem_coe, hT,
+        Submodule.mem_span_range_iff_exists_fun]
+      constructor
+      · rintro ⟨u, rfl⟩
+        exact ⟨fun i => u i, by simp [Λₗ, Fintype.linearCombination_apply]⟩
+      · rintro ⟨c, rfl⟩
+        exact ⟨(EuclideanSpace.equiv (Fin m) ℝ).symm c, by
+          simp [Λₗ, Fintype.linearCombination_apply]⟩
+    rw [← hrange]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range Λ.lipschitzWith
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Eucl P) hfinT
+  have hTfin : ∀ K : Set (Eucl P), IsCompact K →
+      (μHE[m] : Measure (Eucl P)) ((T : Set (Eucl P)) ∩ K) < ∞ := by
+    intro K hK
+    rw [inter_comm, ← Measure.restrict_apply hK.measurableSet]
+    exact hK.measure_lt_top
+  -- (MP) for `A = T`.
+  have hMPT : (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {z | π z ∈ T} =
+      Measure.map (fun p : ℝ × Eucl P => Φ p.1 p.2)
+        ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict (T : Set (Eucl P)))) :=
+    hMP (T : Set (Eucl P)) hTmeas.nullMeasurableSet hTrect hTfin
+  -- Change of variables along `Φ′`, then Fubini for the integrable `f ∘ Φ′`.
+  have hint : Integrable (fun p : ℝ × Eucl P => f (Φ p.1 p.2))
+      ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict (T : Set (Eucl P)))) :=
+    (hfc.comp e.continuous).integrable_of_hasCompactSupport (hfcs.comp_homeomorph e)
+  show ∫ z, f z ∂((μHE[m + 1] : Measure (Eucl (P + 1))).restrict {z | π z ∈ T}) = _
+  rw [hMPT, hemb.integral_map, integral_prod _ hint]
+/-- Simon Ch. 6, 3.2(2) (product with an interval), Hausdorff measure on `(0,1) × M`.  Write
+`Φ(s, u) = (s, u)`, `π(y) = (y₁, …, y_P)` and assume `(MP)`: `H^{m+1} ⌞ π⁻¹(A) = Φ_# (L¹ ⊗ Hᵐ ⌞ A)`
+for every `Hᵐ`-measurable, countably `m`-rectifiable `A ⊆ ℝ^P` with `Hᵐ(A ∩ K) < ∞` for compact
+`K`.  Then every such `M` has `H^{m+1} ⌞ {π(y) ∈ M, y₀ ∈ (0,1)} = Φ_# ((L¹ ⌞ (0,1)) ⊗ Hᵐ ⌞ M)`:
+restrict `(MP)` for `A = M` to the open slab `O = {y₀ ∈ (0,1)}`, use `Φ⁻¹(O) = (0,1) × ℝ^P`, and
+split the restricted product, `Hᵐ ⌞ M` being finite on compact sets, hence σ-finite. -/
+theorem Submission.iwl_cr_ip_wt_product_measure :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ M : Set (Eucl P), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} = Measure.map (fun p : ℝ × Eucl P => ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))) (((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod ((μHE[m] : Measure (Eucl P)).restrict M)) := by
+  intro P m hMP M hMmeas hMrect hMfin
+  -- `Φ′(s, u) = (s, u)` is continuous, hence measurable.
+  have hΦc : Continuous fun p : ℝ × Eucl P =>
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)) :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  -- The open slab `O = {y₀ ∈ (0,1)}`: `M̃ = O ∩ π⁻¹(M)` and `Φ′⁻¹(O) = (0,1) × ℝ^P`.
+  let O : Set (Eucl (P + 1)) := {y | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}
+  have hO : MeasurableSet O :=
+    (isOpen_Ioo.preimage ((continuous_apply 0).comp
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous)).measurableSet
+  have hset : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} =
+      O ∩ {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} := by
+    ext y
+    exact and_comm
+  have hpre : (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ⁻¹' O =
+      Ioo (0 : ℝ) 1 ×ˢ (univ : Set (Eucl P)) := by
+    ext p
+    simp [O]
+  -- `Hᵐ ⌞ M` is finite on compact sets, hence σ-finite.
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict M) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hMfin K hK⟩
+  -- Restrict `(MP)` for `A = M` to `O`, pull back along `Φ′` and split the restricted product.
+  rw [hset, ← Measure.restrict_restrict hO, hMP M hMmeas hMrect hMfin,
+    Measure.restrict_map hΦc.measurable hO, hpre, ← Measure.prod_restrict, Measure.restrict_univ]
+/-- Change of variables under Simon's blow-up `η = η_{x,r}`, `η(z) = r⁻¹(z − x)` (Ch. 3, §1, p. 71),
+as used for the locality of approximate tangent spaces (Ch. 3, Remarks 1.5(2), 1.8(1)): for
+`r > 0`, every set `S` and every real function `g`, `∫_{η(S)} g dHⁿ = r⁻ⁿ ∫_S g ∘ η dHⁿ`.
+`η` is a homeomorphism (inverse `w ↦ x + r w`) and `η⁻¹(F) = x + r F`, so `Hⁿ(η⁻¹ F) = rⁿ Hⁿ(F)`
+by translation invariance and `n`-homogeneity of `Hⁿ`.  Hence `η_# Hⁿ = rⁿ Hⁿ`, and the change of
+variables along the measurable embedding `η` needs no integrability. -/
+theorem Submission.fiw_tl_blowup_setIntegral :
+    ∀ (P n : ℕ) (x : Eucl P) (r : ℝ) (S : Set (Eucl P)) (g : Eucl P → ℝ), 0 < r → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) = (r ^ n)⁻¹ * ∫ z in S, g (Poincare.SimonGMT.Chapter03.blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P n x r S g hr
+  set η : Eucl P → Eucl P := Poincare.SimonGMT.Chapter03.blowUpMap x r
+  have hηapp : ∀ z, η z = r⁻¹ • (z - x) := fun _ => rfl
+  -- `η` is a homeomorphism with inverse `w ↦ x + r • w`.
+  let e : Eucl P ≃ₜ Eucl P :=
+    { toFun := η
+      invFun := fun w => x + r • w
+      left_inv := fun z => by simp [hηapp, smul_smul, hr.ne']
+      right_inv := fun w => by simp [hηapp, smul_smul, hr.ne']
+      continuous_toFun := by
+        show Continuous fun z : Eucl P => r⁻¹ • (z - x)
+        fun_prop
+      continuous_invFun := by fun_prop }
+  have hemb : MeasurableEmbedding η := e.measurableEmbedding
+  have hinj : Function.Injective η := e.injective
+  -- `η⁻¹(F) = x + r • F`, so `Hⁿ(η⁻¹ F) = ‖r‖₊ⁿ Hⁿ(F)` for every set `F`.
+  have hpre : ∀ F : Set (Eucl P), (μHE[n] : Measure (Eucl P)) (η ⁻¹' F) =
+      ‖r‖₊ ^ n • (μHE[n] : Measure (Eucl P)) F := by
+    intro F
+    have hF : η ⁻¹' F = (fun z => z + -x) ⁻¹' ((fun w => r⁻¹ • w) ⁻¹' F) := by
+      ext z
+      simp only [mem_preimage, hηapp, sub_eq_add_neg]
+    rw [hF, measure_preimage_add_right, preimage_smul_inv₀ hr.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n hr.ne']
+  -- Push-forward: `η_# Hⁿ = ‖r‖₊ⁿ Hⁿ`.
+  have hmap : Measure.map η (μHE[n] : Measure (Eucl P)) =
+      (‖r‖₊ ^ n) • (μHE[n] : Measure (Eucl P)) := by
+    ext F hF
+    rw [Measure.map_apply hemb.measurable hF, Measure.smul_apply, hpre]
+  -- Change of variables along the measurable embedding `η` (no integrability needed).
+  have h := hemb.setIntegral_map (μ := (μHE[n] : Measure (Eucl P))) g (η '' S)
+  rw [hmap, Measure.restrict_smul, integral_smul_nnreal_measure, preimage_image_eq S hinj,
+    NNReal.smul_def, smul_eq_mul] at h
+  have hc : ((‖r‖₊ ^ n : ℝ≥0) : ℝ) = r ^ n := by
+    rw [NNReal.coe_pow, coe_nnnorm, Real.norm_of_nonneg hr.le]
+  rw [hc] at h
+  rw [← h, inv_mul_cancel_left₀ (pow_ne_zero n hr.ne')]
+
+/-- Uniform mass bound for the blow-ups `η_r(M)`, `η_r = η_{x,r}` (Ch. 3, §1, p. 71), at a point `x`
+with a weighted approximate tangent plane `T` (Ch. 3, 1.7), as used for the product with an interval
+(Ch. 6, 3.2(2)): for every `R` there is `B` such that for all small `r > 0`, every `g` with `|g| ≤ C`
+vanishing off `B̄(0, R)` satisfies `|∫_{η_r(M)} g(w) θ(x + r w) dHᵐ(w)| ≤ C B`.  Compare with the
+cut-off `g₀ = max(0, min(1, R + 1 − ‖w‖)) ∈ C_c`: `|g| ≤ C g₀`, `θ ≥ 0` on `M`, and by the change of
+variables `fiw_tl_blowup_setIntegral` the `g₀`-integral tends to `θ(x) ∫_T g₀ dHᵐ < B`. -/
+theorem Submission.iwl_cr_ip_wt_blowup_mass_bound :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (T : Submodule ℝ (Eucl P)), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → HasWeightedApproximateTangentSpaceAt m M θ x T → ∀ R : ℝ, ∃ B : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ (C : ℝ) (g : Eucl P → ℝ), (∀ w, |g w| ≤ C) → (∀ w, R < ‖w‖ → g w = 0) → |∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))| ≤ C * B := by
+  intro P m M θ x T hMmeas hθnn hθint hTan R
+  -- The cut-off `g₀ = max 0 (min 1 (R + 1 - ‖w‖))`.
+  let g₀ : Eucl P → ℝ := fun w => max 0 (min 1 (R + 1 - ‖w‖))
+  have hg₀c : Continuous g₀ :=
+    continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  have hg₀0 : ∀ w, R + 1 < ‖w‖ → g₀ w = 0 := by
+    intro w hw
+    exact max_eq_left ((min_le_right _ _).trans (by linarith))
+  have hg₀cs : HasCompactSupport g₀ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Eucl P) (R + 1)) (fun w hw => ?_)
+    rw [mem_closedBall, dist_zero_right, not_le] at hw
+    exact hg₀0 w hw
+  have hg₀nn : ∀ w, 0 ≤ g₀ w := fun w => le_max_left _ _
+  have hg₀le : ∀ w, g₀ w ≤ 1 := fun w => max_le zero_le_one (min_le_left _ _)
+  have hg₀1 : ∀ w, ‖w‖ ≤ R → g₀ w = 1 := by
+    intro w hw
+    show max 0 (min 1 (R + 1 - ‖w‖)) = 1
+    rw [min_eq_left (by linarith)]
+    exact max_eq_right zero_le_one
+  let G₀ : CompactlySupportedContinuousMap (Eucl P) ℝ := ⟨⟨g₀, hg₀c⟩, hg₀cs⟩
+  have hlim := hTan.2 G₀
+  refine ⟨θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1, ?_⟩
+  filter_upwards [hlim.eventually_lt_const (lt_add_one _), self_mem_nhdsWithin] with r hrB hr C g hgC hg0
+  have hr0 : (0 : ℝ) < r := hr
+  -- `θ` is a.e. strongly measurable and a.e. nonnegative for `Hᵐ ⌞ M`.
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  have hθpos : ∀ᵐ u ∂((μHE[m] : Measure (Eucl P)).restrict M), 0 ≤ θ u :=
+    (ae_restrict_mem₀ hMmeas).mono fun u hu => hθnn u hu
+  -- Undo the blow-up for any integrand.
+  have hcov : ∀ h : Eucl P → ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+      h w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
+        h (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
+    intro h
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => h w * θ (x + r • w)) hr0]
+    congr 1
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr0.ne', one_smul,
+      add_sub_cancel]
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  have hηnorm : ∀ u, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r u‖ = r⁻¹ * ‖u - x‖ := by
+    intro u
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr0]
+  -- Integrability of `u ↦ g₀(η u) θ(u)` on `M`.
+  have hint₀ : Integrable (fun u => g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u)
+      ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    refine Integrable.mono' (g := (closedBall x (r * (R + 1))).indicator fun u => |θ u|) ?_
+      ((hg₀c.comp hηc).aestronglyMeasurable.mul hθae) (Filter.Eventually.of_forall fun u => ?_)
+    · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact (hθint _ (isCompact_closedBall x (r * (R + 1)))).norm.congr
+        (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+    · by_cases hu : u ∈ closedBall x (r * (R + 1))
+      · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u), Real.norm_eq_abs]
+        exact mul_le_of_le_one_left (abs_nonneg _)
+          ((abs_of_nonneg (hg₀nn _)).trans_le (hg₀le _))
+      · rw [indicator_of_notMem hu, hg₀0, zero_mul, norm_zero]
+        rw [mem_closedBall, dist_eq_norm, not_le] at hu
+        rw [hηnorm, lt_inv_mul_iff₀ hr0]
+        exact hu
+  -- `C ≥ 0`, and `|g(η u)| θ(u) ≤ C g₀(η u) θ(u)` on `M`.
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hgC 0)
+  have hpt : ∀ w, |g w| ≤ C * g₀ w := by
+    intro w
+    by_cases hw : ‖w‖ ≤ R
+    · rw [hg₀1 w hw, mul_one]
+      exact hgC w
+    · rw [hg0 w (not_le.1 hw), abs_zero]
+      exact mul_nonneg hC (hg₀nn w)
+  have hkey : |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+      ∂(μHE[m] : Measure (Eucl P))| ≤
+      C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P)) := by
+    rw [← integral_const_mul]
+    refine (Real.norm_eq_abs _ ▸ norm_integral_le_integral_norm _).trans ?_
+    refine integral_mono_of_nonneg (Filter.Eventually.of_forall fun u => norm_nonneg _)
+      (hint₀.const_mul C) ?_
+    filter_upwards [hθpos] with u hu
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hu, ← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (hpt _) hu
+  rw [hcov g, abs_mul, abs_of_pos (inv_pos.2 (pow_pos hr0 m))]
+  have hb := hcov g₀
+  calc (r ^ m)⁻¹ * |∫ u in M, g (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))|
+      ≤ (r ^ m)⁻¹ * (C * ∫ u in M, g₀ (Poincare.SimonGMT.Chapter03.blowUpMap x r u) * θ u
+        ∂(μHE[m] : Measure (Eucl P))) :=
+        mul_le_mul_of_nonneg_left hkey (inv_nonneg.2 (pow_nonneg hr0.le m))
+    _ = C * ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g₀ w * θ (x + r • w)
+        ∂(μHE[m] : Measure (Eucl P)) := by rw [hb]; ring
+    _ ≤ C * (θ x * ∫ y in (T : Set (Eucl P)), g₀ y ∂(μHE[m] : Measure (Eucl P)) + 1) :=
+        mul_le_mul_of_nonneg_left hrB.le hC
+/-- Blow-ups of the product `(0, 1) × M ⊆ ℝ^{P+1}` slice into blow-ups of `M` (Simon Ch. 6, 3.2(2)).
+With `Φ(s, u) = (s, u)`, `π(y) = (y₁, …, y_P)`, `y* = Φ(s₀, x)` and `r > 0`, and assuming the
+product formula `H^{m+1}⌞π⁻¹(A) = Φ_#(L¹ ⊗ Hᵐ⌞A)` for countably `m`-rectifiable `A`:
+`∫_{η_{y*,r}((0,1) × M)} f(z) θ(π(y* + r z)) dH^{m+1}(z)
+  = ∫_{(−s₀/r, (1−s₀)/r]} ∫_{η_{x,r}(M)} f(Φ(σ, w)) θ(x + r w) dHᵐ(w) dσ`.
+Undo both blow-ups (`fiw_tl_blowup_setIntegral`), pass to `(L¹⌞(0,1)) ⊗ Hᵐ⌞M`
+(`iwl_cr_ip_wt_product_measure`), apply Fubini and substitute `s = s₀ + r σ`. -/
+theorem Submission.iwl_cr_ip_wt_slice_identity :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (s₀ : ℝ), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) r '' {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}, f z * θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ (((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) + r • z)))) ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫ σ : ℝ, (Ioc (-s₀ / r) ((1 - s₀) / r)).indicator (fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) σ := by
+  intro P m hMP M θ x s₀ hMmeas hMrect hMfin hθint f hfc hfcs r hr
+  -- Coordinates.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  let π : Eucl (P + 1) → Eucl P := fun y =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))
+  have hπΦ : ∀ s u, π (Φ s u) = u := by
+    intro s u
+    simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  have hΦsub : ∀ s u s' u', Φ s u - Φ s' u' = Φ (s - s') (u - u') := by
+    intro s u s' u'
+    simp only [Φ, ← map_sub]
+    congr 1
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  have hΦsmul : ∀ (c s : ℝ) (u : Eucl P), c • Φ s u = Φ (c * s) (c • u) := by
+    intro c s u
+    simp only [Φ, ← map_smul]
+    congr 1
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  have hnorm : ∀ (s : ℝ) (u : Eucl P), ‖u‖ ≤ ‖Φ s u‖ := by
+    intro s u
+    have h : ‖Φ s u‖ ^ 2 = s ^ 2 + ‖u‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+      rfl
+    exact le_of_sq_le_sq (by rw [h]; nlinarith [sq_nonneg s]) (norm_nonneg _)
+  have hΦc : Continuous fun p : ℝ × Eucl P => Φ p.1 p.2 :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  let e : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => Φ p.1 p.2
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0, π y)
+      left_inv := fun p => by
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+        simp only [Φ, π, ContinuousLinearEquiv.apply_symm_apply]
+        exact Fin.cons_self_tail _
+      continuous_toFun := hΦc
+      continuous_invFun := by
+        refine Continuous.prodMk ((continuous_apply 0).comp
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) ?_
+        exact (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp
+          (continuous_pi fun i : Fin P => (continuous_apply i.succ).comp
+            (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous) }
+  have hemb : MeasurableEmbedding (fun p : ℝ × Eucl P => Φ p.1 p.2) := e.measurableEmbedding
+  -- Support radius and sup bound of `f`.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ z : Eucl (P + 1), f z ≠ 0 → ‖z‖ ≤ R := by
+    obtain ⟨R, hR⟩ := hfcs.isCompact.isBounded.subset_closedBall 0
+    refine ⟨R, fun z hz => ?_⟩
+    simpa using hR (subset_tsupport _ hz)
+  obtain ⟨Cf, hCf⟩ : ∃ C : ℝ, ∀ z, ‖f z‖ ≤ C := hfc.bounded_above_of_compact_support hfcs
+  -- `ν = Hᵐ ⌞ M` is finite on compacts (so σ-finite) and `θ` is a.e. strongly measurable for it.
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict M) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hMfin K hK⟩
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  -- Blow-up maps.
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  have hηnorm : ∀ u, ‖Poincare.SimonGMT.Chapter03.blowUpMap x r u‖ = r⁻¹ * ‖u - x‖ := by
+    intro u
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv,
+      abs_of_pos hr]
+  -- Blow-ups of the product are products of blow-ups.
+  have hprod : ∀ s u, Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r (Φ s u) =
+      Φ (r⁻¹ * (s - s₀)) (Poincare.SimonGMT.Chapter03.blowUpMap x r u) := by
+    intro s u
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, hΦsub, hΦsmul]
+  -- The integrand on the product and its integrability.
+  let G : ℝ × Eucl P → ℝ := fun p =>
+    f (Φ (r⁻¹ * (p.1 - s₀)) (Poincare.SimonGMT.Chapter03.blowUpMap x r p.2)) * θ p.2
+  have hGint : Integrable G (((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+      ((μHE[m] : Measure (Eucl P)).restrict M)) := by
+    have hbint : Integrable ((closedBall x (r * R)).indicator fun u => Cf * |θ u|)
+        ((μHE[m] : Measure (Eucl P)).restrict M) := by
+      rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact ((hθint _ (isCompact_closedBall x (r * R))).norm.const_mul Cf).congr
+        (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+    refine Integrable.mono' (hbint.comp_snd _) ?_ (Filter.Eventually.of_forall fun p => ?_)
+    · refine AEStronglyMeasurable.mul ?_ hθae.comp_snd
+      refine Continuous.aestronglyMeasurable ?_
+      exact hfc.comp (hΦc.comp
+        ((continuous_const.mul (continuous_fst.sub continuous_const)).prodMk
+          (hηc.comp continuous_snd)))
+    · show ‖G p‖ ≤ (closedBall x (r * R)).indicator (fun u => Cf * |θ u|) p.2
+      by_cases hu : p.2 ∈ closedBall x (r * R)
+      · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ p.2)]
+        exact mul_le_mul_of_nonneg_right (hCf _) (abs_nonneg _)
+      · rw [indicator_of_notMem hu]
+        have hf0 :
+            f (Φ (r⁻¹ * (p.1 - s₀)) (Poincare.SimonGMT.Chapter03.blowUpMap x r p.2)) = 0 := by
+          by_contra h
+          apply hu
+          have h1 := (hnorm _ _).trans (hR _ h)
+          rw [hηnorm, inv_mul_le_iff₀ hr] at h1
+          rw [mem_closedBall, dist_eq_norm]
+          exact h1
+        show ‖f (Φ (r⁻¹ * (p.1 - s₀)) (Poincare.SimonGMT.Chapter03.blowUpMap x r p.2)) * θ p.2‖ ≤ 0
+        rw [hf0, zero_mul, norm_zero]
+  -- Undo the blow-up in `ℝ^{P+1}` and pass to the product measure.
+  have hL1 : ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r ''
+        {y : Eucl (P + 1) | π y ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1},
+        f z * θ (π (Φ s₀ x + r • z)) ∂(μHE[m + 1] : Measure (Eucl (P + 1))) =
+      (r ^ (m + 1))⁻¹ * ∫ p, G p ∂(((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+        ((μHE[m] : Measure (Eucl P)).restrict M)) := by
+    rw [Submission.fiw_tl_blowup_setIntegral (P + 1) (m + 1) (Φ s₀ x) r _
+      (fun z => f z * θ (π (Φ s₀ x + r • z))) hr]
+    congr 1
+    have hmeas := Submission.iwl_cr_ip_wt_product_measure P m hMP M hMmeas hMrect hMfin
+    show ∫ w, f (Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r w) *
+        θ (π (Φ s₀ x + r • Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r w))
+        ∂((μHE[m + 1] : Measure (Eucl (P + 1))).restrict
+          {y : Eucl (P + 1) | π y ∈ M ∧
+            EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}) = _
+    rw [hmeas, hemb.integral_map]
+    have hback : ∀ w, Φ s₀ x + r • Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r w = w := by
+      intro w
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
+        one_smul, add_sub_cancel]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun p => ?_)
+    show f (Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r (Φ p.1 p.2)) *
+      θ (π (Φ s₀ x + r • Poincare.SimonGMT.Chapter03.blowUpMap (Φ s₀ x) r (Φ p.1 p.2))) = G p
+    rw [hback, hπΦ, hprod]
+  -- Fubini and the interval.
+  let H : ℝ → ℝ := fun s => ∫ u in M, G (s, u) ∂(μHE[m] : Measure (Eucl P))
+  have hL2 : ∫ p, G p ∂(((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1)).prod
+        ((μHE[m] : Measure (Eucl P)).restrict M)) = ∫ s in (0 : ℝ)..1, H s := by
+    rw [integral_prod _ hGint, intervalIntegral.integral_of_le zero_le_one,
+      integral_Ioc_eq_integral_Ioo]
+  -- Substitution `s = r σ + s₀`.
+  have hsub : ∫ σ in (-s₀ / r)..((1 - s₀) / r), H (r * σ + s₀) = r⁻¹ * ∫ s in (0 : ℝ)..1, H s := by
+    rw [intervalIntegral.integral_comp_mul_add H hr.ne' s₀, smul_eq_mul]
+    congr 3
+    · field_simp
+      ring
+    · field_simp
+      ring
+  -- The slices: `H (r σ + s₀) = rᵐ · a σ`.
+  have hslice : ∀ σ : ℝ, H (r * σ + s₀) =
+      r ^ m * ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+        f (Φ σ w) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)) := by
+    intro σ
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => f (Φ σ w) * θ (x + r • w)) hr,
+      ← mul_assoc, mul_inv_cancel₀ (pow_ne_zero m hr.ne'), one_mul]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    have hσ : r⁻¹ * (r * σ + s₀ - s₀) = σ := by
+      rw [add_sub_cancel_right, ← mul_assoc, inv_mul_cancel₀ hr.ne', one_mul]
+    simp only [G, hσ, Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne',
+      one_smul, add_sub_cancel]
+  -- Assemble.
+  have hab : -s₀ / r ≤ (1 - s₀) / r := div_le_div_of_nonneg_right (by linarith) hr.le
+  rw [hL1, hL2, integral_indicator measurableSet_Ioc, ← intervalIntegral.integral_of_le hab]
+  have hsub' := hsub
+  simp only [hslice, intervalIntegral.integral_const_mul] at hsub'
+  -- `hsub' : r ^ m * ∫ a = r⁻¹ * ∫₀¹ H`
+  have hrm : (r ^ (m + 1))⁻¹ = (r ^ m)⁻¹ * r⁻¹ := by rw [pow_succ, mul_inv]
+  rw [hrm, mul_assoc, ← hsub', ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero m hr.ne'), one_mul]
+/-- Continuity in `σ` of the blown-up slice integrals (Simon Ch. 6, 3.2(2), product with an
+interval): if `θ` is `Hᵐ`-integrable on `M ∩ K` for every compact `K`, `f ∈ C_c(ℝ^{P+1})` and
+`r > 0`, then `σ ↦ ∫_{η(M)} f(σ, w) θ(x + r w) dHᵐ(w)` is continuous, `η = η_{x,r}`.  Undoing the
+blow-up (`fiw_tl_blowup_setIntegral`) gives `r⁻ᵐ ∫_M f(σ, η u) θ(u) dHᵐ(u)`, continuous by dominated
+convergence with the `σ`-independent bound `sup |f| · |θ| · 1_{B̄(x, r R)}`, `spt f ⊆ B̄(0, R)`. -/
+theorem Submission.iwl_cr_ip_wt_slice_continuous :
+    ∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P), (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) := by
+  intro P m M θ x hθint f hfc hfcs r hr
+  -- Coordinates `Φ(s, u) = (s, u₁, …, u_P)`, with `‖u‖ ≤ ‖Φ(s, u)‖`.
+  let Φ : ℝ → Eucl P → Eucl (P + 1) := fun s u =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))
+  have hnorm : ∀ (s : ℝ) (u : Eucl P), ‖u‖ ≤ ‖Φ s u‖ := by
+    intro s u
+    have h : ‖Φ s u‖ ^ 2 = s ^ 2 + ‖u‖ ^ 2 := by
+      rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+      rfl
+    exact le_of_sq_le_sq (by rw [h]; nlinarith [sq_nonneg s]) (norm_nonneg _)
+  have hΦc : Continuous fun p : ℝ × Eucl P => Φ p.1 p.2 :=
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp
+      (Continuous.finCons (A := fun _ : Fin (P + 1) => ℝ) continuous_fst
+        ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd))
+  -- Support radius and sup bound of `f`.
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, ∀ z : Eucl (P + 1), f z ≠ 0 → ‖z‖ ≤ R := by
+    obtain ⟨R, hR⟩ := hfcs.isCompact.isBounded.subset_closedBall 0
+    refine ⟨R, fun z hz => ?_⟩
+    simpa using hR (subset_tsupport _ hz)
+  obtain ⟨Cf, hCf⟩ : ∃ C : ℝ, ∀ z, ‖f z‖ ≤ C := hfc.bounded_above_of_compact_support hfcs
+  -- `θ` is a.e. strongly measurable for `Hᵐ ⌞ M` (exhaust `M` by the compact balls `B̄(0, n)`).
+  have hθae : AEStronglyMeasurable θ ((μHE[m] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ n : ℕ, M ∩ closedBall (0 : Eucl P) n := by
+      ext u
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      exact ⟨fun hu => ⟨⌈‖u‖⌉₊, hu, Nat.le_ceil _⟩, fun ⟨_, hu, _⟩ => hu⟩
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro n
+    exact (hθint _ (isCompact_closedBall _ _)).aestronglyMeasurable
+  -- Undo the blow-up: the slice integral is `r⁻ᵐ ∫_M f(Φ(σ, η u)) θ(u) dHᵐ(u)`.
+  have hcov : ∀ σ : ℝ, ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f (Φ σ w) * θ (x + r • w)
+      ∂(μHE[m] : Measure (Eucl P)) = (r ^ m)⁻¹ * ∫ u in M,
+        f (Φ σ (Poincare.SimonGMT.Chapter03.blowUpMap x r u)) * θ u ∂(μHE[m] : Measure (Eucl P)) := by
+    intro σ
+    rw [Submission.fiw_tl_blowup_setIntegral P m x r M (fun w => f (Φ σ w) * θ (x + r • w)) hr]
+    congr 1
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne', one_smul,
+      add_sub_cancel]
+  show Continuous fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+    f (Φ σ w) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))
+  simp_rw [hcov]
+  refine continuous_const.mul ?_
+  have hηc : Continuous (Poincare.SimonGMT.Chapter03.blowUpMap x r) := by
+    show Continuous fun u : Eucl P => r⁻¹ • (u - x)
+    fun_prop
+  -- Dominated convergence with the `σ`-independent bound `1_{B̄(x, r R)} · Cf · |θ|`.
+  refine continuous_of_dominated
+    (bound := (closedBall x (r * R)).indicator fun u => Cf * |θ u|) (fun σ => ?_) (fun σ => ?_) ?_ ?_
+  · exact ((hfc.comp (hΦc.comp (continuous_const.prodMk hηc))).aestronglyMeasurable).mul hθae
+  · refine Filter.Eventually.of_forall fun u => ?_
+    by_cases hu : u ∈ closedBall x (r * R)
+    · rw [indicator_of_mem hu, norm_mul, Real.norm_eq_abs (θ u)]
+      exact mul_le_mul_of_nonneg_right (hCf _) (abs_nonneg _)
+    · rw [indicator_of_notMem hu]
+      have hf0 : f (Φ σ (Poincare.SimonGMT.Chapter03.blowUpMap x r u)) = 0 := by
+        by_contra h
+        apply hu
+        have h1 := (hnorm σ _).trans (hR _ h)
+        rw [mem_closedBall, dist_eq_norm]
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+          abs_inv, abs_of_pos hr] at h1
+        rw [inv_mul_le_iff₀ hr] at h1
+        exact h1
+      rw [hf0, zero_mul, norm_zero]
+  · rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact ((hθint _ (isCompact_closedBall x (r * R))).norm.const_mul Cf).congr
+      (Filter.Eventually.of_forall fun u => by simp [Real.norm_eq_abs])
+  · refine Filter.Eventually.of_forall fun u => ?_
+    exact (hfc.comp (hΦc.comp (continuous_id.prodMk continuous_const))).mul continuous_const
+
+/-- Simon Ch. 3, 1.7 for the product of the unit interval with `(M, θ)`: if `span τ` is a weighted
+approximate tangent space of `(M, θ)` at `x`, then `span (e₀, ιτ)` is one of
+`(M̃, θ ∘ π)`, `M̃ = {y : π y ∈ M, y₀ ∈ (0, 1)}`, at `Φ(s₀, x)` for `0 < s₀ < 1`.
+By the slice identity the blow-up integrals at `Φ(s₀, x)` are
+`∫_ℝ 1_{(-s₀/r, (1-s₀)/r]}(σ) a_r(σ) dσ`, where `a_r(σ)` is the blow-up integral of `(M, θ)` at `x`
+against `f(Φ(σ, ·))`.  Dominated convergence in `σ` (uniform blow-up mass bound, continuity in
+`σ`) and Fubini on the plane `π⁻¹(span τ) = span (e₀, ιτ)` give the limit
+`θ(x) ∫_{span (e₀, ιτ)} f dH^{m+1}`. -/
+theorem Submission.iwl_cr_ip_product_weighted_tangent :
+    ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (τ : Fin m → Eucl P) (s₀ : ℝ), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → Orthonormal ℝ τ → HasWeightedApproximateTangentSpaceAt m M θ x (Submodule.span ℝ (range τ)) → s₀ ∈ Ioo (0 : ℝ) 1 → HasWeightedApproximateTangentSpaceAt (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)))) := by
+  have h_plane := Submission.iwl_cr_ip_wt_product_plane
+  have h_fubini := Submission.iwl_cr_ip_wt_plane_fubini
+  have h_bound := Submission.iwl_cr_ip_wt_blowup_mass_bound
+  have h_slice := Submission.iwl_cr_ip_wt_slice_identity
+  have h_cont := Submission.iwl_cr_ip_wt_slice_continuous
+  intro P m hMP M θ x τ s₀ hMmeas hMrect hMfin hθnn hθint hτ hT hs₀
+  -- Steps 1–2 (`product_plane`): `finrank Q = m + 1` and `Q = π⁻¹(span τ)` as sets.
+  obtain ⟨-, hQrank, hQset⟩ := h_plane P m τ hτ
+  refine And.intro hQrank (fun f => ?_)
+  have hfc : Continuous f := f.continuous
+  have hfs : HasCompactSupport f := f.hasCompactSupport
+  -- Coordinates: `‖Φ(σ, w)‖² = σ² + ‖w‖²`, hence `|σ| ≤ ‖Φ(σ, w)‖` and `‖w‖ ≤ ‖Φ(σ, w)‖`.
+  have hnsq : ∀ (σ : ℝ) (w : Eucl P), ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ ^ 2 = σ ^ 2 + ‖w‖ ^ 2 := by
+    intro σ w
+    rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_succ]
+    simp
+  have hN0 : ∀ (σ : ℝ) (w : Eucl P), |σ| ≤ ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ := fun σ w =>
+    le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _)
+      (by rw [hnsq, sq_abs]; nlinarith [sq_nonneg ‖w‖])
+  have hN1 : ∀ (σ : ℝ) (w : Eucl P), ‖w‖ ≤ ‖(EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))‖ := fun σ w =>
+    le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _) (by rw [hnsq]; nlinarith [sq_nonneg σ])
+  -- Step 5: `f` vanishes outside `B̄(0, R)` and `|f| ≤ C`.
+  obtain ⟨R, hR⟩ := hfs.isCompact.isBounded.subset_closedBall (0 : Eucl (P + 1))
+  have hfz : ∀ z : Eucl (P + 1), R < ‖z‖ → f z = 0 := fun z hz =>
+    image_eq_zero_of_notMem_tsupport fun h => (not_le.2 hz) (mem_closedBall_zero_iff.1 (hR h))
+  obtain ⟨C, hC⟩ := hfc.bounded_above_of_compact_support hfs
+  -- Step 15: the limit is `θ(x) ∫_ℝ ∫_{span τ} f(Φ(σ, w)) dHᵐ(w) dσ`, since
+  -- `θ̃(Φ(s₀, x)) = θ(x)`, `Q = π⁻¹(span τ)` and by `plane_fubini`.
+  have hθc : θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ
+      ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x)))))) = θ x := by
+    rw [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  beta_reduce
+  rw [hθc, hQset, h_fubini P m hMP τ hτ f hfc hfs, ← integral_const_mul]
+  -- Steps 7–10 (`slice_identity`): for `r > 0` the blow-up integral equals
+  -- `∫_ℝ 1_{(-s₀/r, (1-s₀)/r]}(σ) a_r(σ) dσ`.
+  refine Tendsto.congr' ?_ (?_ : Tendsto (fun r : ℝ => ∫ σ : ℝ,
+    (Ioc (-s₀ / r) ((1 - s₀) / r)).indicator (fun σ : ℝ =>
+      ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+        f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) *
+          θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) σ) (𝓝[>] 0) _)
+  · filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (h_slice P m hMP M θ x s₀ hMmeas hMrect hMfin hθint f hfc hfs r hr).symm
+  -- Step 14: dominated convergence in the interval variable.
+  obtain ⟨B, hB⟩ := h_bound P m M θ x (Submodule.span ℝ (range τ)) hMmeas hθnn hθint hT R
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun σ => (Icc (-R) R).indicator (fun _ => C * B) σ) ?_ ?_ ?_ ?_
+  · -- Step 13 (`slice_continuous`): measurability in `σ`.
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact (h_cont P m M θ x hθint f hfc hfs r hr).aestronglyMeasurable.indicator measurableSet_Ioc
+  · -- Step 12 (`blowup_mass_bound`): `|a_r(σ)| ≤ C B`, and `a_r(σ) = 0` for `|σ| > R`.
+    filter_upwards [hB] with r hr
+    refine ae_of_all _ fun σ => (norm_indicator_le_norm_self _ _).trans ?_
+    rw [Real.norm_eq_abs]
+    by_cases hσ : σ ∈ Icc (-R) R
+    · rw [indicator_of_mem hσ]
+      exact hr C (fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))))
+        (fun w => by rw [← Real.norm_eq_abs]; exact hC _)
+        (fun w hw => hfz _ (hw.trans_le (hN1 σ w)))
+    · rw [indicator_of_notMem hσ]
+      have hRσ : R < |σ| := not_le.1 fun h => hσ (abs_le.1 h)
+      have h0 : ∀ w : Eucl P, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) = 0 :=
+        fun w => hfz _ (hRσ.trans_le (hN0 σ w))
+      simpa using hr 0 (fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))))
+        (fun w => by rw [h0]; simp) (fun w _ => h0 w)
+  · exact (integrableOn_const measure_Icc_lt_top.ne).integrable_indicator measurableSet_Icc
+  · -- Step 11: pointwise convergence from the tangent hypothesis for `f(Φ(σ, ·))`.
+    refine ae_of_all _ fun σ => ?_
+    have hmem : ∀ᶠ r in 𝓝[>] (0 : ℝ), σ ∈ Ioc (-s₀ / r) ((1 - s₀) / r) := by
+      have hε : 0 < min s₀ (1 - s₀) / (|σ| + 1) :=
+        div_pos (lt_min hs₀.1 (sub_pos.2 hs₀.2)) (by positivity)
+      filter_upwards [Ioo_mem_nhdsGT hε] with r hr
+      obtain ⟨hr0, hrε⟩ := hr
+      have h1 : r * (|σ| + 1) < min s₀ (1 - s₀) := (lt_div_iff₀ (by positivity)).1 hrε
+      have h2 := min_le_left s₀ (1 - s₀)
+      have h3 := min_le_right s₀ (1 - s₀)
+      constructor
+      · rw [div_lt_iff₀ hr0]
+        nlinarith [neg_abs_le σ, abs_nonneg σ]
+      · rw [le_div_iff₀ hr0]
+        nlinarith [le_abs_self σ, abs_nonneg σ]
+    let fσ : CompactlySupportedContinuousMap (Eucl P) ℝ :=
+      ⟨⟨fun w => f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))), by fun_prop⟩,
+        HasCompactSupport.intro (isCompact_closedBall (0 : Eucl P) R) fun w hw =>
+          hfz _ ((not_le.1 fun h => hw (mem_closedBall_zero_iff.2 h)).trans_le (hN1 σ w))⟩
+    refine (hT.2 fσ).congr' ?_
+    filter_upwards [hmem] with r hr
+    refine Eq.symm ?_
+    exact indicator_of_mem hr _
+
+/-- **The product triple `(0, 1) × (M, θ, ξ)` (Simon Ch. 6, 3.2(2)).**  Write
+`Φ(s, x) = (s, x)`, `π(y) = (y₁, …, y_P)`, `e₀ = (1, 0)` and `ι(v) = Φ(0, v)`, and assume the
+product formula (MP) `H^{m+1}⌞{π ∈ A} = Φ_*(L¹ ⊗ Hᵐ⌞A)` for every `Hᵐ`-measurable countably
+`m`-rectifiable `A ⊆ ℝ^P` with `Hᵐ(A ∩ K) < ∞` for compact `K`.  If `(M, θ, ξ)` is a rectifiable
+`m`-triple in `ℝ^P` with `θ ≥ 1` on `M`, then `((0, 1) × M, θ ∘ π, e₀ ∧ ξ ∘ π)` is a rectifiable
+`(m + 1)`-triple in `ℝ^{P+1}`; here `e₀ ∧ ξ ∘ π` is characterized by
+`⟨α, ξ′(Φ(s, x))⟩ = ⟨β, ξ(x)⟩` whenever `β(v) = α(e₀, ιv₁, …, ιvₘ)`. -/
+theorem Submission.iwl_cr_ip_product_triple : ∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) m), IsRectifiableTriple (univ : Set (Eucl P)) m M θ ξ → (∀ x ∈ M, 1 ≤ θ x) → ∃ ξ' : Eucl (P + 1) → NVector (Eucl (P + 1)) (m + 1), IsRectifiableTriple (univ : Set (Eucl (P + 1))) (m + 1) {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} (fun y : Eucl (P + 1) => θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ξ' ∧ ∀ (s : ℝ) (x : Eucl P) (α : Covector (Eucl (P + 1)) (m + 1)) (β : Covector (Eucl P) m), (∀ v : Fin m → Eucl P, β v = α (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → ξ' ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) α = ξ x β := by
+  intro P m hMP M θ ξ hT hθ1
+  -- (D1): cylinders over `Hᵐ`-null sets are `H^{m+1}`-null ((MP) with `Hᵐ⌞N = 0`).
+  have hNT : ∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 →
+      (μHE[m + 1] : Measure (Eucl (P + 1)))
+        {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0 := by
+    intro N hN
+    have h := hMP N (NullMeasurableSet.of_null hN)
+      (Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero hN)
+      (fun K _ => (measure_mono_null inter_subset_left hN).trans_lt ENNReal.zero_lt_top)
+    rw [Measure.restrict_eq_zero.mpr hN, Measure.prod_zero, Measure.map_zero] at h
+    exact Measure.restrict_eq_zero.mp h
+  -- Step 1: `Hᵐ(M ∩ K) ≤ ∫_{M ∩ K} |θ| dHᵐ < ∞` for compact `K`, since `θ ≥ 1` on `M`.
+  have hlf : ∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞ := by
+    intro K hK
+    have hI := hT.integrableOn K hK (subset_univ K)
+    have hnm : NullMeasurableSet (M ∩ K) (μHE[m] : Measure (Eucl P)) :=
+      hT.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet
+    calc (μHE[m] : Measure (Eucl P)) (M ∩ K)
+        = ∫⁻ _ in M ∩ K, 1 ∂(μHE[m] : Measure (Eucl P)) := by
+          rw [setLIntegral_const, one_mul]
+      _ ≤ ∫⁻ x in M ∩ K, ‖θ x‖ₑ ∂(μHE[m] : Measure (Eucl P)) := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem₀ hnm] with x hx
+          rw [← ofReal_norm, ENNReal.one_le_ofReal, Real.norm_eq_abs]
+          exact (hθ1 x hx.1).trans (le_abs_self _)
+      _ < ∞ := hI.2
+  -- Step 2: the contraction `ℒ α = α(e₀, ι ·)`, a continuous linear map `Λ^{m+1} → Λ^m`.
+  obtain ⟨L, hL⟩ : ∃ L : Covector (Eucl (P + 1)) (m + 1) →L[ℝ] Covector (Eucl P) m,
+      ∀ (α : Covector (Eucl (P + 1)) (m + 1)) (v : Fin m → Eucl P),
+        L α v = α (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) := by
+    let ι : Eucl P →L[ℝ] Eucl (P + 1) := LinearMap.toContinuousLinearMap
+      { toFun := fun v => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ v))
+        map_add' := by
+          intro v w
+          apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+          simp only [map_add, ContinuousLinearEquiv.apply_symm_apply]
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        map_smul' := by
+          intro c v
+          apply (EuclideanSpace.equiv (Fin (P + 1)) ℝ).injective
+          simp only [map_smul, ContinuousLinearEquiv.apply_symm_apply, RingHom.id_apply]
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+    exact ⟨(ContinuousAlternatingMap.compContinuousLinearMapCLM ι).comp
+      ((ContinuousLinearMap.apply ℝ _ (EuclideanSpace.single 0 1 : Eucl (P + 1))).comp
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Eucl (P + 1)) (F := ℝ)
+          (n := m)).toContinuousLinearMap), fun α v => rfl⟩
+  -- `ξ′(y) := ξ(π y) ∘ ℒ`, i.e. `⟨α, ξ′(y)⟩ = ⟨ℒ α, ξ(π y)⟩`.
+  refine ⟨fun y => (ξ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))).comp L, ?_, ?_⟩
+  swap
+  · -- Step 3: `ξ′(Φ(s, x))(α) = ξ(x)(ℒ α) = ξ(x)(β)`, as `π(Φ(s, x)) = x` and `ℒ α = β`.
+    intro s x α β hβ
+    have hLβ : L α = β := by
+      ext v
+      rw [hL α v, hβ v]
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.apply_symm_apply,
+      Fin.tail_cons, ContinuousLinearEquiv.symm_apply_apply, hLβ]
+  -- The slab `O = {y₀ ∈ (0, 1)}` is Borel, `π` is continuous, and `M̃ = {π ∈ M} ∩ O` is
+  -- `H^{m+1}`-null-measurable (Step 5, child `cylinder_null_measurable`).
+  have hOm : MeasurableSet
+      {y : Eucl (P + 1) | EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1} :=
+    measurableSet_Ioo.preimage
+      ((continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous).measurable
+  have hπc : Continuous (fun y : Eucl (P + 1) => (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) := by
+    refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+    exact continuous_pi fun i =>
+      (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+  have hMt_nm : NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}
+      (μHE[m + 1] : Measure (Eucl (P + 1))) :=
+    (Submission.iwl_cr_ip_pt_cylinder_nullMeasurableSet P m hNT M hT.nullMeasurableSet).inter
+      hOm.nullMeasurableSet
+  -- Step 4 (`subset`) and Step 5 (`nullMeasurableSet`).
+  refine ⟨subset_univ _, hMt_nm, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Step 6: `M̃ ⊆ {π ∈ M}`, countably `(m + 1)`-rectifiable (child `cylinder_rectifiable`).
+    exact (Submission.iwl_cr_ip_pt_cylinder_countablyRectifiable P m hNT M
+      hT.countablyRectifiable).mono (fun y hy => hy.1)
+  · -- Step 7: `θ̃(y) = θ(π y) > 0` on `M̃`.
+    exact fun y hy => hT.pos _ hy.1
+  · -- Step 8: `M̃ ∩ K′` lies in the slab over `M ∩ π(K′)`, on which `θ ∘ π` is integrable
+    -- (child `slab_transfer` (a); `π(K′)` is compact).
+    intro K' hK' _
+    have hK : IsCompact ((fun y : Eucl (P + 1) => (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) '' K') := hK'.image hπc
+    have hA := (Submission.iwl_cr_ip_pt_slab_transfer P m hMP (M ∩ _)
+      (hT.nullMeasurableSet.inter hK.measurableSet.nullMeasurableSet)
+      (hT.countablyRectifiable.mono inter_subset_left)
+      (fun K'' hK'' => (measure_mono (inter_subset_inter_left _ inter_subset_left)).trans_lt
+        (hlf K'' hK''))).1 θ (hT.integrableOn _ hK (subset_univ _))
+    refine hA.mono_set ?_
+    rintro y ⟨⟨hyM, hy0⟩, hyK'⟩
+    exact ⟨⟨hyM, ⟨y, hyK', rfl⟩⟩, hy0⟩
+  · -- Step 9: `ξ ∘ π` is a.e. strongly measurable on `M̃` (child `slab_transfer` (b)), and
+    -- `T ↦ T ∘ ℒ` is continuous.
+    have hξ := (Submission.iwl_cr_ip_pt_slab_transfer P m hMP M hT.nullMeasurableSet
+      hT.countablyRectifiable hlf).2 ξ hT.aestronglyMeasurable
+    exact (continuous_id.clm_comp continuous_const).comp_aestronglyMeasurable hξ
+  · -- Step 10: the orientation fails at most on the cylinder over the `Hᵐ`-null set `N` of bad
+    -- points of `M`, which is `H^{m+1}`-null by (D1).
+    have hgood := hT.orients
+    rw [ae_iff, Measure.restrict_apply₀' hT.nullMeasurableSet] at hgood
+    have hNπ := hNT _ hgood
+    rw [ae_iff, Measure.restrict_apply₀' hMt_nm]
+    refine measure_mono_null ?_ hNπ
+    rintro y ⟨hyQ, hyM, hy0⟩
+    refine ⟨fun hgx => hyQ ?_, hyM⟩
+    obtain ⟨τ, hτ, htan, hsign⟩ := hgx
+    -- `y = Φ(y₀, π y)` with `y₀ ∈ (0, 1)`; the frame `τ̃ = (e₀, ιτ₁, …, ιτₘ)` is orthonormal
+    -- (child `frame_orthonormal`) and spans the weighted tangent plane of `(M̃, θ̃)` at `y`
+    -- (sibling `product_tangent`).
+    have hy : (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+          (EuclideanSpace.equiv (Fin P) ℝ ((EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))) = y := by
+      simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+        ContinuousLinearEquiv.symm_apply_apply]
+    have htan' := Submission.iwl_cr_ip_product_weighted_tangent P m hMP M θ _ τ _
+      hT.nullMeasurableSet hT.countablyRectifiable hlf (fun z hz => (hT.pos z hz).le)
+      (fun K hK => hT.integrableOn K hK (subset_univ K)) hτ htan hy0
+    rw [hy] at htan'
+    -- `(τ₁ ∧ ⋯ ∧ τₘ) ∘ ℒ = e₀ ∧ ιτ₁ ∧ ⋯ ∧ ιτₘ`, so `ξ′(y) = ±τ̃₀ ∧ ⋯ ∧ τ̃ₘ`.
+    have hsimple : (simpleNVector τ).comp L = simpleNVector
+        (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i =>
+          (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) := by
+      ext α
+      simp only [ContinuousLinearMap.comp_apply, simpleNVector_apply]
+      exact hL α τ
+    refine ⟨_, Submission.iwl_cr_ip_pt_frame_orthonormal P m τ hτ, htan', ?_⟩
+    rcases hsign with h | h
+    · left
+      rw [h, hsimple]
+    · right
+      rw [h, ContinuousLinearMap.neg_comp, hsimple]
+/-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
+rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
+every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
+for every continuous compactly supported `ω` with `spt ω ⊆ U`.  Since `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` with `τ`
+orthonormal, `|⟨α, ξ⟩| ≤ ‖α‖` `Hᵏ⌞M`-a.e.; `θ` is integrable on `M ∩ K`, and the integrand of
+(b) vanishes on `M \ spt ω`. -/
+theorem Submission.ltg_tau_integrable : ∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple U k M θ ξ → (∀ (K : Set (Eucl P)) (b : Covector (Eucl P) k), IsCompact K → K ⊆ U → IntegrableOn (fun x => θ x * ξ x b) (M ∩ K) (μHE[k] : Measure (Eucl P))) ∧ ∀ ω : Eucl P → Covector (Eucl P) k, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → IntegrableOn (fun x => θ x * ξ x (ω x)) M (μHE[k] : Measure (Eucl P)) := by
+  intro P k U M θ ξ hT
+  -- Step 1: for `Hᵏ⌞M`-a.e. `x`, `|ξ(x)(α)| ≤ ‖α‖` for every covector `α`
+  -- (`|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`; the empty product for `k = 0`).
+  have hunit : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) k, ‖ξ x α‖ ≤ ‖α‖ := by
+    filter_upwards [hT.orients] with x hx α
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ α‖ ≤ ‖α‖ :=
+      calc ‖simpleNVector τ α‖ = ‖α τ‖ := rfl
+        _ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+        _ = ‖α‖ := by simp [hτ.norm_eq_one]
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 2: `x ↦ ξ(x)(ω(x))` is a.e.-strongly measurable for `Hᵏ⌞M` whenever `ω` is
+  -- (continuous evaluation `(w, α) ↦ w(α)` composed with `(ξ, ω)`).
+  have hmeas : ∀ ω : Eucl P → Covector (Eucl P) k,
+      AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      AEStronglyMeasurable (fun x => ξ x (ω x)) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+    intro ω hω
+    have hev : Continuous fun p : NVector (Eucl P) k × Covector (Eucl P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable (hT.aestronglyMeasurable.prodMk hω)
+  -- Steps 3–4: for compact `K ⊆ U` and `‖ω‖ ≤ C`, `θ` is integrable on `M ∩ K` and
+  -- `ξ(·)(ω(·))` is measurable and a.e. bounded by `C` there, so the product is integrable.
+  have hK : ∀ (K : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) k) (C : ℝ), IsCompact K →
+      K ⊆ U → AEStronglyMeasurable ω ((μHE[k] : Measure (Eucl P)).restrict M) →
+      (∀ x, ‖ω x‖ ≤ C) →
+      IntegrableOn (fun x => θ x * ξ x (ω x)) (M ∩ K) (μHE[k] : Measure (Eucl P)) := by
+    intro K ω C hKc hKU hω hC
+    have hle : (μHE[k] : Measure (Eucl P)).restrict (M ∩ K) ≤
+        (μHE[k] : Measure (Eucl P)).restrict M :=
+      Measure.restrict_mono Set.inter_subset_left le_rfl
+    have hθ : Integrable θ ((μHE[k] : Measure (Eucl P)).restrict (M ∩ K)) :=
+      hT.integrableOn K hKc hKU
+    refine hθ.mul_bdd (c := C) ((hmeas ω hω).mono_measure hle) ?_
+    filter_upwards [ae_mono hle hunit] with x hx
+    exact (hx (ω x)).trans (hC x)
+  -- Part (a): the constant field `b`, bounded by `‖b‖`.
+  refine ⟨fun K b hKc hKU => hK K (fun _ => b) ‖b‖ hKc hKU aestronglyMeasurable_const
+    (fun _ => le_rfl), ?_⟩
+  -- Part (b): integrable on `M ∩ spt ω` (Step 4) and zero on `M \ spt ω` (Step 5), with `M`
+  -- null-measurable.
+  intro ω hωc hωs hωU
+  obtain ⟨C, hC⟩ := hωc.bounded_above_of_compact_support hωs
+  refine (hK (tsupport ω) ω C hωs hωU hωc.aestronglyMeasurable hC).of_ae_sdiff_eq_zero
+    hT.nullMeasurableSet (Filter.Eventually.of_forall fun x hx => ?_)
+  have hx' : x ∉ tsupport ω := fun h => hx.2 ⟨hx.1, h⟩
+  rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+/-- **Unit bound for the orientation `±τ₁ ∧ ⋯ ∧ τₙ` (Simon Ch. 6, 3.1).**  If `τ` is an
+orthonormal family in `ℝ^P` and `w = ±simpleNVector τ`, then `|w(α)| ≤ ‖α‖` for every
+`n`-covector `α`: `simpleNVector τ α = α(τ₁, …, τₙ)` and `‖α(τ)‖ ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+(`ContinuousAlternatingMap.le_opNorm`, each `τᵢ` a unit vector). -/
+theorem Submission.fiw_ims_tt_unit_bound : ∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖ := by
+  intro P n τ w hτ hw α
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`.
+  have h1 : |simpleNVector τ α| ≤ ‖α‖ := by
+    rw [simpleNVector_apply, ← Real.norm_eq_abs]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
+      _ = ‖α‖ := by simp [hτ.1]
+  -- `w = ±simpleNVector τ`, and `|-a| = |a|`.
+  rcases hw with rfl | rfl
+  · exact h1
+  · simpa [abs_neg] using h1
+
+/-- **`τ(M, θ, ξ)` is a current (Simon Ch. 6, 3.1, p. 146).**  For a rectifiable triple `(M, θ, ξ)`
+in `V` (`V` need not be open), `ω ↦ τ(M, θ, ξ)(ω) = ∫_M θ(x) ⟨ω(x), ξ(x)⟩ dHⁿ(x)` is a current
+`X ∈ 𝒟ₙ(V)`.  It is linear since the integrands are `Hⁿ`-integrable on `M` (`ltg_tau_integrable`).
+It is sequentially continuous: if `ω_j → 0` in `𝒟ⁿ(V)`, all supports lie in one compact `K ⊆ V`
+and `sup_K ‖ω_j‖ → 0`; as `|⟨α, ξ(x)⟩| ≤ ‖α‖` for `Hⁿ⌞M`-a.e. `x` (`fiw_ims_tt_unit_bound`) and
+`θ > 0` on `M`, `|τ(ω_j)| ≤ (sup_K ‖ω_j‖) ∫_{M ∩ K} θ dHⁿ → 0`. -/
+theorem Submission.br_loc_tauAction_current : ∀ (P n : ℕ) (V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple V n M θ ξ → ∃ X : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, X ω = tauAction n M θ ξ ω := by
+  intro P n V M θ ξ hTr
+  -- Step 1: for every test form `ω` (smooth, hence continuous, with compact support in `V`),
+  -- `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hⁿ`-integrable on `M`.
+  have hint : ∀ ω : TestFormOn V n, IntegrableOn
+      (fun x => θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)) M (μHE[n] : Measure (Eucl P)) :=
+    fun ω => (Submission.ltg_tau_integrable P n V M θ ξ hTr).2 _
+      ω.property.1.1.continuous ω.property.1.2 ω.property.2
+  -- Step 2: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so `|⟨α, ξ(x)⟩| ≤ ‖α‖` for every
+  -- covector `α`, for `Hⁿ⌞M`-a.e. `x`.
+  have hub : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      ∀ α : Covector (Eucl P) n, |ξ x α| ≤ ‖α‖ := by
+    filter_upwards [hTr.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact Submission.fiw_ims_tt_unit_bound P n τ (ξ x) hτ hξ
+  -- Step 3: `ω ↦ τ(M, θ, ξ)(ω)` is linear (additivity of the integral of integrable functions;
+  -- constants factor out of the integral).
+  let L : CurrentOn V n :=
+    { toFun := fun ω => tauAction n M θ ξ ω
+      map_add' := by
+        intro ω η
+        simp only [tauAction]
+        rw [← integral_add (hint ω) (hint η)]
+        refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+        simp only [Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+      map_smul' := by
+        intro c ω
+        simp only [tauAction, RingHom.id_apply, smul_eq_mul]
+        rw [← integral_const_mul]
+        refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul]
+        ring }
+  refine ⟨⟨L, ?_⟩, fun ω => rfl⟩
+  -- Sequential continuity: let `ω_j → 0` in `𝒟ⁿ(V)`, all supported in the compact `K ⊆ V`.
+  intro ωs hconv
+  obtain ⟨K, hK, hKV, hsupp, -, hderiv⟩ := hconv
+  -- Step 4: `sup_K ‖ω_j‖ → 0` (uniform convergence of order `0`, `‖D⁰ω(x)‖ = ‖ω(x)‖`).
+  have hsmall : ∀ δ > 0, ∀ᶠ j in atTop, ∀ x ∈ K,
+      ‖(ωs j : DifferentialForm (Eucl P) n) x‖ < δ := by
+    intro δ hδ
+    have h0 := (Metric.tendstoUniformlyOn_iff.mp (hderiv 0)) δ hδ
+    filter_upwards [h0] with j hj x hx
+    have := hj x hx
+    rw [dist_comm, dist_eq_norm] at this
+    simpa [norm_iteratedFDeriv_zero] using this
+  -- Step 5: the majorant `1_K θ` is `Hⁿ⌞M`-integrable, with integral `C = ∫_{M ∩ K} θ dHⁿ`.
+  have hIK : IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P)) :=
+    hTr.integrableOn K hK hKV
+  set C : ℝ := ∫ x in M ∩ K, θ x ∂(μHE[n] : Measure (Eucl P))
+  have hgint : Integrable (K.indicator θ) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    rw [integrable_indicator_iff hK.measurableSet, IntegrableOn,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact hIK
+  have hgC : ∫ x, K.indicator θ x ∂((μHE[n] : Measure (Eucl P)).restrict M) = C := by
+    rw [integral_indicator hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+      inter_comm]
+  -- Step 6: with `δ = ε / (|C| + 1)` and `j` large, `|θ ⟨ω_j, ξ⟩| ≤ δ 1_K θ` `Hⁿ⌞M`-a.e. (on `K`
+  -- by Steps 2 and 4 and `θ > 0` on `M`; off `K` since `ω_j = 0` there), so
+  -- `|τ(ω_j)| ≤ δ C ≤ δ |C| < ε`.
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (|C| + 1) := by positivity
+  filter_upwards [hsmall _ hδ] with j hj
+  rw [Real.dist_eq, sub_zero]
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      ‖θ x * ξ x ((ωs j : DifferentialForm (Eucl P) n) x)‖ ≤
+        (ε / (|C| + 1)) * K.indicator θ x := by
+    filter_upwards [hub, ae_restrict_mem₀ hTr.nullMeasurableSet] with x hx hxM
+    have hθ := hTr.pos x hxM
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, Real.norm_eq_abs, abs_mul, abs_of_pos hθ]
+      calc θ x * |ξ x ((ωs j : DifferentialForm (Eucl P) n) x)|
+          ≤ θ x * ‖(ωs j : DifferentialForm (Eucl P) n) x‖ :=
+            mul_le_mul_of_nonneg_left (hx _) hθ.le
+        _ ≤ θ x * (ε / (|C| + 1)) := mul_le_mul_of_nonneg_left (hj x hxK).le hθ.le
+        _ = ε / (|C| + 1) * θ x := mul_comm _ _
+    · have hz : (ωs j : DifferentialForm (Eucl P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h))
+      rw [indicator_of_notMem hxK, hz, map_zero, mul_zero, norm_zero, mul_zero]
+  have hle := norm_integral_le_of_norm_le (hgint.const_mul (ε / (|C| + 1))) hbound
+  rw [integral_const_mul, hgC, Real.norm_eq_abs] at hle
+  change |∫ x in M, θ x * ξ x ((ωs j : DifferentialForm (Eucl P) n) x)
+    ∂(μHE[n] : Measure (Eucl P))| < ε
+  calc _ ≤ ε / (|C| + 1) * C := hle
+    _ ≤ ε / (|C| + 1) * |C| := mul_le_mul_of_nonneg_left (le_abs_self C) hδ.le
+    _ < ε := by
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [abs_nonneg C]
 /-- Cylinders over `Hᵐ`-null sets are `Hᵐ⁺¹`-null: if `N ⊆ ℝ^P` has `μHE[m] N = 0`, then the
 cylinder `{y ∈ ℝ^{P+1} | π y ∈ N} = ℝ × N`, `π y = (y₁, …, y_P)`, has `μHE[m + 1]`-measure zero.
 For `m = 0` the set `N` is empty.  For `m ≥ 1`, each strip `{y | π y ∈ N, a ≤ y₀ ≤ a + 1}`
@@ -3315,6 +4751,53 @@ theorem Submission.iwl_cr_hausdorff_product_formula : (∀ (P m : ℕ) (N : Set 
     lintegral_iUnion (fun p => hpr (hGBm p)) (fun p q hpq => (hdisj hpq).preimage pr),
     lintegral_congr hR, lintegral_tsum fun p => (hpiece p).1.aemeasurable]
   exact tsum_congr fun p => (hpiece p).2
+
+/-- **The product `[[(0,1)]] × X` of an integer multiplicity current (Simon Ch. 6, 3.2(2)).**
+Write `Φ(s, x) = (s, x)`, `π(Φ(s, x)) = x`, `e₀ = Φ(1, 0)` and `X = τ(M, θ, ξ)` with `θ ∈ ℕ` on
+`M`, so `θ ≥ 1` on `M`.  The product formula for Hausdorff measure (Federer 3.2.23), in the
+measure form `H^{m+1}⌞π⁻¹(A) = Φ_#(L¹ ⊗ Hᵐ⌞A)`, makes `((0,1) × M, θ ∘ π, e₀ ∧ ξ ∘ π)` a
+rectifiable triple; `Z := τ((0,1) × M, θ ∘ π, e₀ ∧ ξ ∘ π)` is a current (integrable,
+sequentially continuous), integer multiplicity since `θ ∘ π ∈ ℕ`, and Fubini gives
+`Z(η) = ∫₀¹ τ(M, θ, ξ)(φ(s)) ds = ∫₀¹ X(φ(s)) ds`. -/
+theorem Submission.iwl_cr_interval_product_im : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m), IsIntegerMultiplicity X → ∃ Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1), IsIntegerMultiplicity Z ∧ ∀ (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl P)) m), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl P) (v : Fin m → Eucl P), (φ s : DifferentialForm (Eucl P) m) x v = (η : DifferentialForm (Eucl (P + 1)) (m + 1)) ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s) := by
+  intro P m X hX
+  -- Step 1: `X = τ(M, θ, ξ)` with `θ` positive and integer-valued on `M`, hence `θ ≥ 1` on `M`.
+  obtain ⟨M, θ, ξ, hT, hθN, hXτ⟩ := hX
+  have hθ1 : ∀ x ∈ M, 1 ≤ θ x := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hθN x hx
+    have hpos := hT.pos x hx
+    rw [hk] at hpos ⊢
+    exact_mod_cast Nat.succ_le_of_lt (by exact_mod_cast hpos)
+  -- Step 2: the product formula in measure form, `H^{m+1}⌞π⁻¹(A) = Φ_#(L¹ ⊗ Hᵐ⌞A)` for every
+  -- `Hᵐ`-measurable, countably `m`-rectifiable `A` with `Hᵐ⌞A` locally finite.
+  have hMP : ∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) →
+      CountablyRectifiable m A →
+      (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) →
+      (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} =
+      Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2)))
+        ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A)) :=
+    fun A hA hAr hAK => Submission.iwl_cr_ip_restrict_preimage_eq_map P m A hAK
+      (Submission.iwl_cr_hausdorff_product_formula.2 P m A hA hAr hAK)
+  -- Step 3: the product triple `((0,1) × M, θ ∘ π, ξ')`, with `ξ'(Φ(s, x))(α) = ξ(x)(ℒα)` for
+  -- the contraction `ℒα = α(e₀, ι ·)`.
+  obtain ⟨ξ', hT', hξ'⟩ := Submission.iwl_cr_ip_product_triple P m hMP M θ ξ hT hθ1
+  -- Step 4: `Z := τ((0,1) × M, θ ∘ π, ξ')` is a current.
+  obtain ⟨Z, hZ⟩ := Submission.br_loc_tauAction_current (P + 1) (m + 1) univ _ _ ξ' hT'
+  -- Step 5: `Z` is integer multiplicity, since `θ(π y) ∈ ℕ` for `y ∈ (0,1) × M`.
+  refine ⟨Z, ⟨_, _, ξ', hT', fun y hy => hθN _ hy.1, hZ⟩, ?_⟩
+  -- Step 6: the slice formula (Fubini for `H^{m+1}⌞((0,1) × M) = Φ_#(L¹⌞(0,1) ⊗ Hᵐ⌞M)`), whose
+  -- integrability hypothesis holds as `η` is continuous with compact support; then use
+  -- `X = τ(M, θ, ξ)`.
+  intro η φ hφ
+  have hint := (Submission.ltg_tau_integrable (P + 1) (m + 1) univ _ _ ξ' hT').2
+    (η : DifferentialForm (Eucl (P + 1)) (m + 1)) η.property.1.1.continuous η.property.1.2
+    η.property.2
+  rw [hZ η, Submission.iwl_cr_ip_slice_formula P m hMP M θ ξ ξ' hT hθ1 hξ' η
+    (fun s => (φ s : DifferentialForm (Eucl P) m)) hint hφ]
+  exact intervalIntegral.integral_congr fun s _ => (hXτ (φ s)).symm
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.frame_orthonormal-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1",
+  "depth": 5,
+  "title": "The extended frame (e₀, ιτ_1, …, ιτ_m) is orthonormal",
+  "statement": "Let P, m ∈ ℕ, e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{P+1} and ι(v) := (0, v_1, …, v_P) ∈ ℝ^{P+1} for v ∈ ℝ^P (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ v))). If τ = (τ_1, …, τ_m) is an orthonormal family in ℝ^P, then τ̃ := (e₀, ιτ_1, …, ιτ_m) (Lean: Fin.cons e₀ (fun i => ι (τ i)) : Fin (m+1) → ℝ^{P+1}) is an orthonormal family in ℝ^{P+1}.",
+  "lean_statement": "∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))",
+  "lean_name": "iwl_cr_ip_pt_frame_orthonormal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-8df05ea64f-a1"
+}
