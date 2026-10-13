@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1.fderiv_sum_prod-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1",
+  "depth": 5,
+  "title": "Product rule for a weighted sum of finite products of differentiable functions (parent Step 3, product rule and linearity)",
+  "statement": "Let k, r ∈ ℕ, let ι be a finite type (ι : Type with a Fintype instance), let a : ι → ℝ, g : ι → Fin r → (ℝ^k → ℝ) (ℝ^k = Eucl k) and w, v ∈ ℝ^k, and assume every g_{i,t} is Fréchet differentiable at w. Let F(x) := Σ_{i ∈ ι} a_i · Π_{t ∈ Fin r} g_{i,t}(x). Then fderiv ℝ F w v = Σ_{i ∈ ι} a_i · Σ_{u ∈ Fin r} (fderiv ℝ g_{i,u} w v) · Π_{t ∈ Fin r, t ≠ u} g_{i,t}(w), where the last product runs over Finset.univ.erase u.",
+  "lean_statement": "∀ (k r : ℕ) (ι : Type) [Fintype ι] (a : ι → ℝ) (g : ι → Fin r → Eucl k → ℝ) (w v : Eucl k), (∀ i t, DifferentiableAt ℝ (g i t) w) → fderiv ℝ (fun x : Eucl k => ∑ i, a i * ∏ t, g i t x) w v = ∑ i, a i * ∑ u, fderiv ℝ (g i u) w v * ∏ t ∈ Finset.univ.erase u, g i t w",
+  "lean_name": "deformation_ipl_mwc_pi_fderiv_sum_prod",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-ec5042b895-a1"
+}
