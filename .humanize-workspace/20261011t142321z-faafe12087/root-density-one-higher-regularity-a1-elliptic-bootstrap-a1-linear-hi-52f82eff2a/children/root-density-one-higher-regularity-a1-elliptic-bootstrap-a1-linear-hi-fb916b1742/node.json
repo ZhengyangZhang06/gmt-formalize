@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.forcing_holder-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1",
+  "depth": 5,
+  "title": "d-uniform Hölder bound for the forcing term F_d of the difference-quotient system",
+  "statement": "Let n, ℓ be natural numbers, α a real number, L := L(ℝ^n, ℝ^ℓ), U ⊆ ℝ^n open, a : ℝ^n → (continuous bilinear forms on L), Φ : ℝ^n → (continuous linear forms on L), v : ℝ^n → ℝ^ℓ, and xb, e ∈ ℝ^n, R > 0 with closedBall(xb, 4R) ⊆ U and ‖e‖ ≤ 1. Assume: for all P, Q ∈ L, x ↦ a(x)[P][Q] is C^1 on U and its iteratedFDeriv ℝ 1 is α-Hölder on every compact subset of U; for all P ∈ L, x ↦ Φ(x)[P] has the same property; and IsLocallyHolderCkα 1 α v U. Write Dv = fderiv ℝ v and F_d(x, P) := d⁻¹(Φ(x + d e)[P] − Φ(x)[P]) − d⁻¹(a(x + d e)[Dv(x + d e)][P] − a(x)[Dv(x + d e)][P]). Then there is a real M such that |F_d(x, P) − F_d(y, P)| ≤ M‖x − y‖^α‖P‖ for every real d with d ≠ 0 and |d| < R, all x, y ∈ ball(xb, 2R) and all P ∈ L.",
+  "lean_statement": "∀ (n ℓ : ℕ) (α : ℝ) (U : Set (Rn n)) (a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Φ : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (v : Rn n → Rn ℓ) (xb e : Rn n) (R : ℝ), IsOpen U → 0 < R → closedBall xb (4 * R) ⊆ U → ‖e‖ ≤ 1 → (∀ P Q : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => a x P Q) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 (fun z => a z P Q) x - iteratedFDeriv ℝ 1 (fun z => a z P Q) y‖ ≤ C * ‖x - y‖ ^ α) → (∀ P : Rn n →L[ℝ] Rn ℓ, ContDiffOn ℝ 1 (fun x => Φ x P) U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 (fun z => Φ z P) x - iteratedFDeriv ℝ 1 (fun z => Φ z P) y‖ ≤ C * ‖x - y‖ ^ α) → IsLocallyHolderCkα 1 α v U → ∃ M : ℝ, ∀ d : ℝ, d ≠ 0 → |d| < R → ∀ x ∈ ball xb (2 * R), ∀ y ∈ ball xb (2 * R), ∀ P : Rn n →L[ℝ] Rn ℓ, |(d⁻¹ * (Φ (x + d • e) P - Φ x P) - d⁻¹ * (a (x + d • e) (fderiv ℝ v (x + d • e)) P - a x (fderiv ℝ v (x + d • e)) P)) - (d⁻¹ * (Φ (y + d • e) P - Φ y P) - d⁻¹ * (a (y + d • e) (fderiv ℝ v (y + d • e)) P - a y (fderiv ℝ v (y + d • e)) P))| ≤ M * ‖x - y‖ ^ α * ‖P‖",
+  "lean_name": "dohr_eb_lhr_dqub_forcing_holder",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.fderiv_consts-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.dq_mean_value-a1",
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.form_coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.fderiv_consts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.dq_mean_value-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.linear_higher_regularity-a1.dq_uniform_bounds-a1.form_coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-linear-hi-fb916b1742-a1"
+}
