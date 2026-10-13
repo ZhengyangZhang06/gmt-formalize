@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.translation_estimate-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "depth": 3,
+  "title": "BV translation estimate for a set with bounded perimeter in B_{R+1}(0)",
+  "statement": "Let N ∈ ℕ, R, C ∈ ℝ, and let F ⊆ ℝ^N be L^N-null-measurable. Suppose ∫_F div g dL^N ≤ C for every C¹ vector field g : ℝ^N → ℝ^N that has compact support, satisfies tsupport g ⊆ B_{R+1}(0), and has |g(y)| ≤ 1 for all y; here div g = trace Dg (euclideanDivergence). Then, for every h ∈ ℝ^N with |h| ≤ 1, L^N(B_R(0) ∩ (F_h Δ F)) ≤ ofReal(C|h|), where F_h := {y : y + h ∈ F}. Equivalently, ∫_{B_R(0)} |1_F(y+h) − 1_F(y)| dy ≤ C|h|. (Taking g = 0 in the hypothesis forces C ≥ 0.)",
+  "lean_statement": "∀ (N : ℕ) (F : Set (Rn N)) (R C : ℝ), NullMeasurableSet F volume → (∀ g : Rn N → Rn N, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ Metric.ball (0 : Rn N) (R + 1) → (∀ y, ‖g y‖ ≤ 1) → ∫ y in F, Poincare.SimonGMT.Chapter02.euclideanDivergence g y ≤ C) → ∀ h : Rn N, ‖h‖ ≤ 1 → volume (Metric.ball (0 : Rn N) R ∩ symmDiff ((fun y ↦ y + h) ⁻¹' F) F) ≤ ENNReal.ofReal (C * ‖h‖)",
+  "lean_name": "indCompact_translation_estimate",
+  "depends_on": [
+    "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.de_giorgi-a1.indicator_compactness-a1.l1_duality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-translation-estimate-a1-a1"
+}

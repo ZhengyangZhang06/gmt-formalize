@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.indicator_compactness-a1.local_cauchy_limit-a1",
+  "parent_id": "root.de_giorgi-a1.indicator_compactness-a1",
+  "depth": 3,
+  "title": "A locally Cauchy sequence of sets converges locally in measure to a measurable set",
+  "statement": "Let N ∈ ℕ and let (F_k)_{k∈ℕ} be L^N-null-measurable subsets of ℝ^N. Suppose that for every R ∈ ℕ and every ε ∈ (0, ∞] there is k₀ such that L^N(B_R(0) ∩ (F_k Δ F_l)) ≤ ε for all k, l ≥ k₀. Then there is a measurable G ⊆ ℝ^N such that L^N(K ∩ (F_k Δ G)) → 0 as k → ∞ for every compact K ⊆ ℝ^N.",
+  "lean_statement": "∀ (N : ℕ) (F : ℕ → Set (Rn N)), (∀ k, NullMeasurableSet (F k) volume) → (∀ (R : ℕ) (ε : ℝ≥0∞), 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ l ≥ k₀, volume (Metric.ball (0 : Rn N) R ∩ symmDiff (F k) (F l)) ≤ ε) → ∃ G : Set (Rn N), MeasurableSet G ∧ ∀ K : Set (Rn N), IsCompact K → Tendsto (fun k ↦ volume (K ∩ symmDiff (F k) G)) atTop (𝓝 0)",
+  "lean_name": "indCompact_limit_of_local_cauchy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-indicator-compactness-a1-local-cauchy-limit-a1-a1"
+}
