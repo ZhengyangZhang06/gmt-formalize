@@ -605,6 +605,104 @@ theorem Submission.iwl_sp_exists_compatible_testForm :
     intro x hx
     by_contra hfx
     exact hx (show ζ x • p x = 0 by rw [hp0 x hfx, smul_zero])
+/-- Slices of a test form `η` on `ℝ^{P+1} = ℝ × ℝ^P` across the first coordinate: with
+`e₀ = (1, 0)` and `ι w = (0, w)`, the form `φ s x = η(s, x)(e₀, ι ·)` is the continuous linear
+contraction `α ↦ α(e₀, ι ·)` applied to `η` along the affine map `x ↦ (s, x) = s • e₀ + ι x`, hence
+smooth; it vanishes off the preimage of `tsupport η`, which is compact as `‖x‖ ≤ ‖(s, x)‖`; and it
+depends jointly continuously on `(s, x)`. -/
+theorem Submission.iwl_cr_ci_slice_testForm :
+    ∀ (P m : ℕ) (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)),
+      ∃ φ : ℝ → TestFormOn (univ : Set (Eucl P)) m,
+        Continuous (fun p : ℝ × Eucl P => (φ p.1 : DifferentialForm (Eucl P) m) p.2) ∧
+        ∀ (s : ℝ) (x : Eucl P) (v : Fin m → Eucl P),
+          (φ s : DifferentialForm (Eucl P) m) x v =
+            (η : DifferentialForm (Eucl (P + 1)) (m + 1))
+              ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (v i)))) := by
+  intro P m η
+  -- The linear inclusion `ι w = (0, w)`, the splitting `(s, x) = s • e₀ + ι x`, and
+  -- `‖x‖ ≤ ‖(s, x)‖`.
+  obtain ⟨ι, hι⟩ : ∃ ι : Eucl P →L[ℝ] Eucl (P + 1), ∀ w : Eucl P,
+      ι w = (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ w)) := by
+    let ιₗ : Eucl P →ₗ[ℝ] Eucl (P + 1) :=
+      { toFun := fun w => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ w))
+        map_add' := fun a b => by
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        map_smul' := fun c a => by
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+    exact ⟨LinearMap.toContinuousLinearMap ιₗ, fun w => rfl⟩
+  have hΦ : ∀ (s : ℝ) (x : Eucl P),
+      (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))
+        = s • (EuclideanSpace.single 0 1 : Eucl (P + 1)) + ι x := by
+    intro s x
+    rw [hι]
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp
+    · simp [Fin.succ_ne_zero]
+  have hnorm : ∀ (s : ℝ) (x : Eucl P),
+      ‖x‖ ≤ ‖s • (EuclideanSpace.single 0 1 : Eucl (P + 1)) + ι x‖ := by
+    intro s x
+    rw [← hΦ, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fin.sum_univ_succ]
+    apply Real.sqrt_le_sqrt
+    simp only [PiLp.continuousLinearEquiv_symm_apply, PiLp.toLp_apply, Fin.cons_zero,
+      Fin.cons_succ, PiLp.continuousLinearEquiv_apply]
+    exact le_add_of_nonneg_left (sq_nonneg _)
+  set e₀ : Eucl (P + 1) := EuclideanSpace.single 0 1
+  -- The continuous linear contraction `L α = α(e₀, ι ·)` of covectors.
+  obtain ⟨L, hL⟩ : ∃ L : Covector (Eucl (P + 1)) (m + 1) →L[ℝ] Covector (Eucl P) m,
+      ∀ (α : Covector (Eucl (P + 1)) (m + 1)) (v : Fin m → Eucl P),
+        L α v = α (Fin.cons e₀ fun i => ι (v i)) := by
+    refine ⟨(ContinuousAlternatingMap.compContinuousLinearMapCLM ι).comp
+      ((ContinuousLinearMap.apply ℝ (Covector (Eucl (P + 1)) m) e₀).comp
+        (ContinuousAlternatingMap.curryLeftLI :
+          Covector (Eucl (P + 1)) (m + 1) →ₗᵢ[ℝ] _).toContinuousLinearMap), ?_⟩
+    intro α v
+    simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
+      LinearIsometry.coe_toContinuousLinearMap, ContinuousAlternatingMap.curryLeftLI_apply,
+      ContinuousLinearMap.apply_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply,
+      ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply]
+    rfl
+  have hηs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (η : DifferentialForm (Eucl (P + 1)) (m + 1)) :=
+    η.2.1.1
+  have hηc : HasCompactSupport (η : DifferentialForm (Eucl (P + 1)) (m + 1)) := η.2.1.2
+  have hΦc : ∀ s : ℝ, Continuous fun x : Eucl P => s • e₀ + ι x := fun s =>
+    continuous_const.add ι.continuous
+  -- Each slice `x ↦ L (η (s • e₀ + ι x))` is a test form on `ℝ^P`.
+  have htest : ∀ s : ℝ, (fun x : Eucl P => L ((η : DifferentialForm (Eucl (P + 1)) (m + 1))
+      (s • e₀ + ι x))) ∈ TestFormOn (univ : Set (Eucl P)) m := by
+    intro s
+    refine ⟨⟨?_, ?_⟩, subset_univ _⟩
+    · exact L.contDiff.comp (hηs.comp (contDiff_const.add ι.contDiff))
+    · obtain ⟨ρ, hρ⟩ := hηc.isCompact.isBounded.subset_closedBall 0
+      have hK : IsCompact ((fun x : Eucl P => s • e₀ + ι x) ⁻¹'
+          tsupport (η : DifferentialForm (Eucl (P + 1)) (m + 1))) := by
+        refine (isCompact_closedBall (0 : Eucl P) ρ).of_isClosed_subset
+          ((isClosed_tsupport _).preimage (hΦc s)) ?_
+        intro x hx
+        have hx' := hρ hx
+        rw [mem_closedBall, dist_zero_right] at hx' ⊢
+        exact (hnorm s x).trans hx'
+      refine hK.of_isClosed_subset (isClosed_tsupport _) ?_
+      exact (tsupport_comp_subset (g := L) (map_zero L) _).trans
+        (tsupport_comp_subset_preimage _ (hΦc s))
+  refine ⟨fun s => ⟨_, htest s⟩, ?_, ?_⟩
+  · change Continuous fun p : ℝ × Eucl P =>
+      L ((η : DifferentialForm (Eucl (P + 1)) (m + 1)) (p.1 • e₀ + ι p.2))
+    exact L.continuous.comp (hηs.continuous.comp
+      ((continuous_fst.smul continuous_const).add (ι.continuous.comp continuous_snd)))
+  · intro s x v
+    change L ((η : DifferentialForm (Eucl (P + 1)) (m + 1)) (s • e₀ + ι x)) v = _
+    rw [hL, hΦ s x]
+    simp only [hι]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
