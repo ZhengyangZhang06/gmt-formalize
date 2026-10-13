@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6a3f64cce3ae74ee48f886287ed211458b655bf8db657109d3e2539cd2d50c43",
+  "git_delta": {
+    "base_commit": "c82a112ecd0a2b66ca49d981e2d79690d2126eda",
+    "candidate_commit": "118dda5c26a56d84828bec8f9cbe05781d627569",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cdg_eq_zero_of_lt_degree",
+    "diff_sha256": "ac1d53377224ad6e9eb6da442c66523385abb6e1da4a26f2576728ddd08608b8",
+    "source_sha256": "3a5106ede53f0cf79038d823005379a97fc06281e193fc3df4f52e5c93dee6f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cdg_eq_zero_of_lt_degree",
+      "statement": "∀ (P j : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U j), P < j → T = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

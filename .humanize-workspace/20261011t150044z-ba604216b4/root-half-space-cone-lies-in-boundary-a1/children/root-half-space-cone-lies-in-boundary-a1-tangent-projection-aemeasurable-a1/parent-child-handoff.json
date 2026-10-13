@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "sed -n 680,745p book/chapter-07.txt (7.4.5 and proof); sed -n 560,640p and 290,335p book/chapter-04.txt (5.1, 3.6); sed -n 290,305p, 400,415p, 730,830p book/chapter-06.txt (2.11-2.12, 2.23, 3.1-3.6); sed -n 75,100p book/chapter-03.txt (1.4-1.5)",
+        "grep -n '^theorem \\|^def ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean; sed -n 60,620p and 1130,1331p FirstVariation.lean",
+        "sed -n 1,227p simongmt/Poincare/SimonGMT/Chapter04/Basic.lean; cat simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+        "sed -n 1,365p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n 1,160p and 460,560p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; cat Chapter06/Mass.lean Chapter06/CurrentLocalEquality.lean Chapter06/AffineCurrentPushforward.lean",
+        "grep -rn 'ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib; sed -n 1,60p and 150,240p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "grep -n 'lemma\\|theorem' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; sed -n 186,205p Support.lean",
+        "grep -rln 'Hadamard\\|Binet' mathlib/Mathlib; grep -rn 'abs_det_le\\|det_le_prod' mathlib/Mathlib/LinearAlgebra mathlib/Mathlib/Analysis",
+        "grep -rn 'hausdorffMeasure_smul₀\\|euclideanHausdorffMeasure_homothety_image\\|det_to_matrix_orthonormalBasis_real\\|aemeasurable_of_tendsto_metrizable_ae\\|integral_withDensity_eq_integral_smul\\|euclideanHausdorffMeasure_eq_volume\\|eq_smul_basis_det' mathlib/Mathlib; sed -n 60,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "grep -rhoE '\"lean_name\": *\"[^\"]+\"' nodes dag.json problem.json (reserved DAG names)",
+        "lake env lean /tmp/hs-decomp/Stmts.lean and /tmp/hs-decomp/Final.lean (six child types, #synth MeasurableSpace/BorelSpace on Euclid P →L[ℝ] Euclid P, conditional parent assembly, #print axioms)",
+        "lake env lean /tmp/hs-decomp-review/Child4Check.lean, Child5Check.lean, Child2StepCheck.lean (#print axioms)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Hadamard.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/tmp/hs-decomp/Stmts.lean",
+        "/tmp/hs-decomp/Final.lean",
+        "/tmp/hs-decomp-review/Child4Check.lean",
+        "/tmp/hs-decomp-review/Child5Check.lean",
+        "/tmp/hs-decomp-review/Child2StepCheck.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. All six child Lean types elaborate in namespace GMT.Ch07 with the contract's opens; the measurable space on Euclid P →L[ℝ] Euclid P is the Borel instance (ContinuousLinearMap.instMeasurableSpace / instBorelSpace) that SimonGMT also uses; the conditional parent assembly from the six children and the sibling MinimizingImpliesStationary compiles with axioms propext, sorryAx, Classical.choice, Quot.sound. Library support: SimonGMT Chapter04/FirstVariation.lean proves Simon 4.3.6 (IsStationaryIn.satisfiesStationaryMonotonicity, monotonicityDefect_eq_zero, closed balls, all n) for Chapter04.RectifiableVarifold, whose fields (Basic.lean) include an a.e.-measurable tangent projection — hence the separate measurability child; Chapter03/Rectifiable.lean gives HasApproximateTangentSpaceAt (Simon 3.1.4 blow-up definition) and HasApproximateTangentSpaceAt.unique; Chapter06 gives support = U \\ zeroRegion, massOn with the Euclidean coefficient norm and the proper affine push-forward used by blowUp. Mathlib (snapshot) supplies IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (Banach-valued, no local finiteness needed), Measure.support with measure_compl_support and mem_support_iff_forall, euclideanHausdorffMeasure_smul₀ / euclideanHausdorffMeasure_homothety_image / Isometry.euclideanHausdorffMeasure_image / EuclideanSpace.euclideanHausdorffMeasure_eq_volume, OrthonormalBasis.det_to_matrix_orthonormalBasis_real, aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul. There is no Hadamard determinant inequality or Cauchy–Binet formula (Matrix/Hadamard.lean is the Hadamard product), so Simon 6.3.2(3) (M_W(T) = μ(W)) is bypassed by fundamental-lemma arguments in the support and uniqueness children. Reviewer scratch proofs of radial_tangency_of_ball_ratio and radial_moment_vanishes (exact frozen types) and of the cone pull-back step compile with only propext, Classical.choice, Quot.sound. No other DAG branch has reserved names below depth 1; the six proposed names are new."
+    }
+  ],
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "child_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1",
+  "subproblem": {
+    "key": "tangent_projection_aemeasurable",
+    "title": "The approximate tangent plane field of an integer multiplicity triple is measurable",
+    "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) with weight μ = θH^n⌞M (R.measure). For x ∈ ℝ^P let T_x = approxTangentPlane n M x (the approximate tangent n-plane of M at x where it exists, {0} otherwise) and p_x the orthogonal projection onto T_x. Then x ↦ p_x is μ-a.e. measurable as a map ℝ^P → L(ℝ^P, ℝ^P) (Borel σ-algebra).",
+    "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure",
+    "lean_name": "imrep_univ_tangent_starProjection_aemeasurable",
+    "depends_on": [],
+    "natural_proof": "Source: Simon uses the approximate tangent planes T_xV of V = v(M,θ) as measurable data in all integrands of Ch. 4 (e.g. |D^⊥r|² in the monotonicity identity Ch. 4, 3.6, chapter-04.txt lines 290–312, used in parent step 3), and Ch. 6, 3.1 (chapter-06.txt lines 733–753) requires ξ to orient the approximate tangent spaces \"in an H^n-measurable way\". This measurability is implicit in the parent's step 3; it is proved here from Definition Ch. 3, 1.4 (chapter-03.txt lines 77–86).\n\nNotation. M = R.carrier, θ = R.mult, μ = R.measure, H^n = μHE[n], ν := H^n⌞M, T_x := approxTangentPlane n M x, p_x := orthogonal projection onto T_x (starProjection), b_{x,r}(y) := r^{-1}(y − x) (blowUpMap x r).\n0. Degenerate case n = 0. In the definition of approxTangentPlane, the chosen subspace in the \"if\" branch has finrank n = 0 (HasApproximateTangentSpaceAt includes finrank Q = n), hence equals ⊥, and the \"else\" branch is ⊥. So x ↦ p_x is constant and measurable. Assume n ≥ 1 from now on.\n1. Local finiteness. θ ≥ 1 on M, so ν(K) ≤ μ(K) < ∞ for every compact K (R.locallyIntegrable_mult with U = ℝ^P).\n2. Tangent planes exist a.e. By R.orients there is, for H^n-a.e. x ∈ M (hence, as μ ≪ ν, for μ-a.e. x), an n-plane Q with HasApproximateTangentSpaceAt n M x Q; at such x the defining \"if\" of approxTangentPlane holds, so HasApproximateTangentSpaceAt n M x T_x and dim T_x = n. Let G be the set of these x; μ-a.e. x lies in G.\n3. Test functions. χ(t) := max(1 − t, 0); for u ∈ ℝ^P let f_u(y) := χ(|y|²)⟨u, y⟩². f_u is continuous with support in the closed unit ball, i.e. f_u ∈ C_c(ℝ^P).\n4. Integrals over planes. For every n-plane Q: ∫_Q f_u dH^n = c_n |p_Q u|², with c_n := ∫_{ℝ^n} χ(|z|²) z_1² dz ∈ (0, ∞).\n Proof. Choose an orthonormal basis τ_1,…,τ_n of Q and the linear isometry ι : ℝ^n → ℝ^P, ι(z) = Σ z_iτ_i, with range Q. Then H^n⌞Q is the push-forward of H^n on ℝ^n, which is Lebesgue measure L^n (Mathlib Isometry.map_euclideanHausdorffMeasure and EuclideanSpace.euclideanHausdorffMeasure_eq_volume). Hence, with a_i := ⟨u, τ_i⟩,\n ∫_Q f_u dH^n = ∫ χ(|z|²)(Σ_i a_i z_i)² dL^n(z) = Σ_{i,j} a_i a_j ∫ χ(|z|²) z_i z_j dL^n(z).\n For i ≠ j the reflection z_i ↦ −z_i is a linear isometry of ℝ^n, preserves L^n and |z|, and changes the sign of z_iz_j, so the integral vanishes; for i = j the coordinate swap z_i ↔ z_1 shows ∫ χ(|z|²) z_i² dL^n = c_n. So the integral equals c_n Σ_i a_i² = c_n|p_Q u|². Finally c_n < ∞ (continuous integrand with compact support) and c_n > 0 (the integrand is continuous, ≥ 0 and positive at (1/2, 0, …, 0)).\n5. Blow-up integrals are continuous in x. Fix f ∈ C_c(ℝ^P) and r > 0, and let Φ_{f,r}(x) := ∫_{b_{x,r}(M)} f dH^n (the integral occurring in HasApproximateTangentSpaceAt). Since b_{x,r} is a translation followed by the dilation by r^{-1}, H^n(b_{x,r}(B)) = r^{-n}H^n(B) for all B (translation invariance and Mathlib euclideanHausdorffMeasure_smul₀), and as in a change of variables Φ_{f,r}(x) = r^{-n} ∫_M f(r^{-1}(y − x)) dH^n(y). Let spt f ⊆ closedBall(0, R_f). For x in ball(x_0, 1) the integrand is bounded by sup|f| and vanishes unless y ∈ closedBall(x_0, 1 + rR_f), a set of finite ν-measure; it is continuous in x for each y. By dominated convergence Φ_{f,r} is continuous, hence Borel measurable.\n6. Limits. For x ∈ G, HasApproximateTangentSpaceAt n M x T_x applied to f_u along r_k := 1/(k+1) → 0⁺ gives Φ_{f_u, r_k}(x) → ∫_{T_x} f_u dH^n = c_n|p_x u|² (step 4). Since μ-a.e. x lies in G, the function x ↦ c_n|p_x u|² is the μ-a.e. limit of the measurable functions Φ_{f_u, r_k}, hence μ-AEMeasurable (Mathlib aemeasurable_of_tendsto_metrizable_ae'); dividing by c_n > 0, x ↦ |p_x u|² is μ-AEMeasurable for every u ∈ ℝ^P.\n7. Polarization. p_x is self-adjoint and idempotent, so ⟨p_x u, w⟩ = ⟨p_x u, p_x w⟩ = (|p_x(u + w)|² − |p_x(u − w)|²)/4. Hence x ↦ ⟨p_x u, w⟩ is μ-AEMeasurable for all u, w.\n8. Assembly. With the standard orthonormal basis e_1,…,e_P, p_x = Σ_{a,b} ⟨p_x e_a, e_b⟩ · L_{ab}, where L_{ab} ∈ L(ℝ^P, ℝ^P), L_{ab}(v) := ⟨e_a, v⟩e_b (indeed p_x v = Σ_b ⟨p_x v, e_b⟩e_b and v = Σ_a ⟨e_a, v⟩e_a). A finite sum of μ-AEMeasurable scalar functions times constant continuous linear maps is μ-AEMeasurable for the Borel σ-algebra of L(ℝ^P, ℝ^P); hence x ↦ p_x = (approxTangentPlane n R.carrier x).starProjection is AEMeasurable with respect to R.measure.",
+    "proof_key_steps": [
+      "n = 0: the tangent-plane field is identically ⊥; assume n ≥ 1.",
+      "For f_u(y) = max(1 − |y|², 0)⟨u,y⟩², ∫_Q f_u dH^n = c_n|p_Q u|² with c_n > 0 (isometry to ℝ^n and coordinate symmetries).",
+      "x ↦ ∫_{b_{x,r}(M)} f dH^n is continuous (rescaling + dominated convergence); at a.e. x it tends to ∫_{T_x} f dH^n as r = 1/(k+1) → 0.",
+      "Hence x ↦ |p_x u|² is a.e.-measurable; polarization and a basis expansion give AEMeasurable x ↦ p_x."
+    ]
+  },
+  "audit": {
+    "key": "tangent_projection_aemeasurable",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof supplies measurable approximants through continuous blow-up integrals, with local finiteness providing the required domination. Plane moments recover projection norms with a positive constant; polarization and finite basis expansion recover the Borel-measurable operator field. The separate degree-zero argument handles the degenerate case."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.json"
+}
