@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f8ba88ff197214d9d11adedc8ce77bf0b41d145af88bbb136269d8121a472569",
+  "git_delta": {
+    "base_commit": "74a4e64c5b6ad5ba2e3176fb70ed6b10b9e1fa4a",
+    "candidate_commit": "ffe936de9743c7463af27c4f11a06e2111bf8d70",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cttp_bti_rescaled_tests_tendsto",
+    "diff_sha256": "3ecbc9a63210e3d2e6f7f4e960d887d062538267eadfbb093bd0b2e6c3074a10",
+    "source_sha256": "c69c872a9ab5bd141b4b4c1e8246b78b337a65950b156a3d218b8fe94c1648a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_bti_rescaled_tests_tendsto",
+      "statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (s : ℕ → ℝ) (f : Euclid P → ℝ), (∀ j, ∀ K : Set (Euclid P), IsCompact K → μs j K < ∞) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ))) → Tendsto s atTop (𝓝 1) → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ y, f (s j • y) ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
