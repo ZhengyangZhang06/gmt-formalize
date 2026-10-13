@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "53267d55b53d0822d8da4a59ee87d184d7d54b2c75db8ba32b46711b4d2b38e3",
+  "git_delta": {
+    "base_commit": "576e12e48643a999c4845dcadbb1c33b4f186b12",
+    "candidate_commit": "59087e685cafb3318b0eaca2fa362894c6e869c3",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "adefecb624e9169d52f41f197d3b9e212279ebafd09a1f14c2be429774d6e33c",
+    "source_sha256": "2170a46fab08c803d5a24d526706ddcdad7f8115d75cb03574323c014abf70f5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.rsod_ae_exists_approxTangent",
+      "statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U), (∀ᵐ x ∂V.weight, 1 ≤ V.mult x) → ∀ᵐ x ∂V.weight, ∃ P : Submodule ℝ (Amb n ℓ), Poincare.SimonGMT.Chapter03.HasWeightedApproximateTangentSpaceAt n V.carrier V.mult x P",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
