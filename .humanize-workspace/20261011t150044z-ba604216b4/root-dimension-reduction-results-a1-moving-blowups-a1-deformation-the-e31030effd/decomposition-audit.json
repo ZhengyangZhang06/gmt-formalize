@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cmcdt_ims_|rsdic_ae_tangent_iff_of_subset|rsdic_imrep_ae_tangent_orient_of_subset|rsdic_unitOrientation_eq_or_eq_neg|unit_orientation_norm_le_one|rsd_mw_tfa_norm_props|dpf_pfc_testFormOnConverges_zero_uniform|dimred_mbl_dt_im_series",
+        "mass-summable|series of currents",
+        "Measurable.tsum",
+        "theorem hasSum_integral_of_dominated_convergence|theorem ae_tendsto_measure_inter_div|theorem det_to_matrix_orthonormalBasis_real|theorem measurableSet_eq_fun|theorem summable_toReal|theorem euclideanHausdorffMeasure_smul₀|theorem enorm_tsum_le_tsum_enorm|theorem lintegral_tsum|theorem setIntegral_indicator|theorem exists_bound_of_continuous|eq_smul_basis_det|stronglyMeasurable_of_tendsto|theorem Measurable.tsum|theorem ae_lt_top",
+        "git show 9b823b56965f653716675d2e458c314229939386:GMT/Ch07/Submission.lean",
+        "git diff --numstat b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 9b823b56965f653716675d2e458c314229939386 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/im_series_independent_audit_05o7o1gm/TypesAndAssembly.lean > /tmp/im_series_independent_audit_05o7o1gm/TypesAndAssembly.out 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/im_series_independent_audit_05o7o1gm/Full.lean > /tmp/im_series_independent_audit_05o7o1gm/Full.out 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-e31030effd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-e31030effd/decomposition-v1.json",
+        "/tmp/im_series_independent_audit_05o7o1gm/TypesAndAssembly.lean",
+        "/tmp/im_series_independent_audit_05o7o1gm/TypesAndAssembly.out",
+        "/tmp/im_series_independent_audit_05o7o1gm/Full.lean",
+        "/tmp/im_series_independent_audit_05o7o1gm/Full.out"
+      ],
+      "conclusion": "The checked contract and Mathlib revision match the manifest. No proposed declaration occurs in the pinned snapshot; reuse comes from this run's accepted candidates. All ten bare names have unique comparator-accepted owners and byte-identical frozen types. Both the proposed graph and the actual accepted dependency closure are acyclic and exclude the selected parent. Tangent locality retains five accepted internal prerequisites. Both statement validators pass. Independently compiled all eleven proposition targets before introducing child declarations, then verified the exact parent assembly. Compilation with the accepted proofs also succeeds; every child and the selected parent depend only on propext, Classical.choice and Quot.sound. The unrelated frozen main_theorem's sorry is not used. No matrix-unit construction occurs. The ten-child split is appropriate and establishes the selected contract through series_current, MR, imrep_tsum and HasSum uniqueness; leaving IMC unused is sound. The required contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. The coefficient-vector identity proves triangle inequality and homogeneity; the finite coordinate bound supplies the stated nonnegative constant and Lipschitz continuity. The argument includes empty-index cases and is complete and non-circular."
+    },
+    {
+      "key": "uniform_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact witness and derivative-order-zero convergence give uniform smallness on the compact set; support containment gives vanishing outside it. This proves every quantified conclusion without requiring U to be open."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit VO hypothesis and finite mass sum yield absolute evaluation summability. The two dependencies establish exactly the sequential continuity required by GeometricCurrentOn. Admissible-form bounds and relatively compact zero neighborhoods prove the mass and support conclusions for arbitrary open U."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive multiplicity gives local Hausdorff finiteness of the IMRep carrier. Applying tangent_locality to B inside the carrier and to B inside C transfers the carrier's orientation witness to C, with the equivalences and restricted almost-everywhere statements used in the correct directions."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orientation hypotheses provide orthonormal bases of the same subspace. Their change-of-basis determinant is ±1, independent of the covector, yielding precisely w = v or w = -v. The proof also covers degree zero."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite compact restrictions justify Besicovitch differentiation and a common exceptional null set. The supplied growth argument makes the excess o(ρ^n); scaling and comparison of compactly supported test integrals prove both tangent implications. This proves the unconditional child type without assuming IMC or the parent."
+    },
+    {
+      "key": "orient_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on an orthonormal frame is bounded by the covector operator norm. Either permitted orientation sign preserves that bound, and the continuous-dual operator-norm criterion gives exactly ‖ξ‖ ≤ 1, including degree zero."
+    },
+    {
+      "key": "common_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Strongly measurable versions and disjointified carriers construct the required globally strongly measurable reference field. Countable almost-everywhere transfer, tangent uniqueness and orientation_sign justify measurable equality-based signs and the stated identities on each original carrier."
+    },
+    {
+      "key": "density_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The nonzero-density carrier, natural floor of |m| and piecewise signed orientation satisfy all IMRep fields. Tangent locality applies with the stated local finiteness hypothesis. The pointwise indicator identity proves the action formula for arbitrary forms; no unstated regularity or integrability assumption is needed."
+    },
+    {
+      "key": "imrep_tsum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite integral of the total multiplicity controls the union and density. The proof correctly establishes measurability and everywhere integer-valuedness of the real tsum, including its nonsummable case. All hypotheses of dominated convergence for series are supplied, and term identification proves the exact HasSum conclusion."
+    }
+  ],
+  "required_changes": []
+}
