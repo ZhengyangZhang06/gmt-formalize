@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.constants-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+  "depth": 5,
+  "title": "Explicit constants for the standing density bounds",
+  "statement": "For every n ∈ ℕ there exist real numbers δ₁ and C₁ with 0 < δ₁ ≤ 1/8, C₁ > 0 and C₁δ₁ ≤ 1/2 such that e^δ(1 + δ)/(1 − 4δ)ⁿ ≤ 1 + C₁δ for every real δ with 0 ≤ δ ≤ δ₁.",
+  "lean_statement": "∀ n : ℕ, ∃ δ₁ C₁ : ℝ, 0 < δ₁ ∧ δ₁ ≤ 1 / 8 ∧ 0 < C₁ ∧ C₁ * δ₁ ≤ 1 / 2 ∧ ∀ δ : ℝ, 0 ≤ δ → δ ≤ δ₁ → Real.exp δ * (1 + δ) / (1 - 4 * δ) ^ n ≤ 1 + C₁ * δ",
+  "lean_name": "dorag_dbs_density_constants",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-58d1fe3caf-a1"
+}

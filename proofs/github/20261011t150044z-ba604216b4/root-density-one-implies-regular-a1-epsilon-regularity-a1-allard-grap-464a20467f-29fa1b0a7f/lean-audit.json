@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e84ae09cdd411fe3f4ae13baf221420c912450fd3a44369ce448231eb913ecb3",
+  "git_delta": {
+    "base_commit": "062b0551c75882ed6d6883d7aa83b8611af2a797",
+    "candidate_commit": "a9df5b2a496f7241b283a1f24f9dfc1240166d17",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7630cf22644c3cdc37f18cb3a9e0d97074786ef89ffb1a868de9ab361af5d689",
+    "source_sha256": "d9d396606e9214a370bd40d5e35aa8081938c9e9577f7aa7b3a6438ee107514f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dorag_lipschitz_approximation",
+      "statement": "∀ (n k : ℕ), 0 < n → ∀ C₆ : ℝ, 1 ≤ C₆ → ∃ δ₅ β β' C₇ : ℝ, 0 < δ₅ ∧ δ₅ ≤ 1 / 8 ∧ 0 < β' ∧ β' ≤ β ∧ β ≤ 1 / 4 ∧ 0 < C₇ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₅ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (δ * ρ), ∀ (σ₀ L : ℝ) (T₀ : Submodule ℝ (Euclid (n + k))), 0 < σ₀ → σ₀ ≤ δ * ρ → Module.finrank ℝ T₀ = n → 0 < L → L ≤ 1 → δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ≤ β * L → ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C₆ * (δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * σ₀ ^ n) → (∀ x ∈ R.measure.support ∩ closedBall ξ σ₀, ‖(x - ξ) - T₀.starProjection (x - ξ)‖ ≤ C₆ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ v w, ‖f v - f w‖ ≤ L * ‖v - w‖) ∧ (∀ v, ‖f v‖ ≤ C₇ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) ∧ R.measure (closedBall ξ (σ₀ / 2) \\ range (fun v => ξ + ι v + ι' (f v))) + μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \\ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) ≤ ENNReal.ofReal (C₇ / L ^ 2) * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ∧ ((∀ y ∈ R.measure.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y t, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (β' ^ 2 * L ^ 2 * t ^ n)) → R.measure.support ∩ closedBall ξ (σ₀ / 8) = range (fun v => ξ + ι v + ι' (f v)) ∩ closedBall ξ (σ₀ / 8))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

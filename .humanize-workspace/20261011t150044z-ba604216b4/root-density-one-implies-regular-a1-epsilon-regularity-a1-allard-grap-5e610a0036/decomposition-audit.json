@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "HasApproximateTangentSpaceAt|def blowUpMap",
+        "monoton|radial|cutoff|density|sorry|doragm_",
+        "theorem (tendsto_measure_iInter_atTop|tendsto_measure_iUnion_atTop)|withDensity_apply|euclideanHausdorffMeasure_homothety_image",
+        "cutoffMass_deriv_identity|exp_normalizedBallMass_monotoneOn|one_le_density_of_approximateTangent|IsStationaryIn.cutoff_squeeze",
+        "doragm_",
+        "python3 -I /tmp/monotonicity-independent-audit-azi0fshx/run.py /tmp/monotonicity-independent-audit-azi0fshx/Contracts.lean /tmp/monotonicity-independent-audit-azi0fshx/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5e610a0036/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5e610a0036/decomposition-review-retry.json",
+        "/tmp/mono-review/Full2.lean",
+        "/tmp/monotonicity-independent-audit-azi0fshx/Contracts.lean",
+        "/tmp/monotonicity-independent-audit-azi0fshx/EndToEnd.lean",
+        "/tmp/monotonicity-independent-audit-azi0fshx/EndToEnd.log"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract/compiler definitions. Relevant differentiation, weighted-integral, measure-continuity and Hausdorff-scaling APIs support the proofs. No doragm_ declaration exists in the snapshot; Chapter04's analogous results do not directly discharge these IMRep contracts. All six exact one-line propositions elaborate independently of their implementations. An independent recompilation of the supplied complete proofs and exact parent assembly succeeded; axiom reports contain only propext, Classical.choice and Quot.sound, with the parent's existing tangent-projection prerequisite passed explicitly. All names are bare identifiers, and scans of eight DAGs (1691 nodes), 2313 other-branch JSON files and 1310 source/wiki files found no collisions. The six-child split is appropriate, dependencies are correctly directed and acyclic, and the conclusions establish this selected parent. Projection expressions infer continuous linear maps; no matrix-instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. The explicit scale neighbourhood, compact-support domination, measurability and chain rule establish both integrability claims and the stated derivative for an arbitrary measure. No additional finiteness hypothesis or circular dependency is needed."
+    },
+    {
+      "key": "radial_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact identity follows from the admissible radial field, weighted-integral formula, almost-everywhere tangent dimension, trace calculation and justified integral splitting. The centre is handled directly. Omitting measurability and integrability assumptions on H is valid for the stated Bochner-integral equality."
+    },
+    {
+      "key": "smoothed_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both inequalities, exponential signs and A^n factor match the prose. The bounded truncated weight justifies differentiation and derivative comparison; the cutoff comparisons and finite nonnegative integral conversions complete the proof using exactly the two declared dependencies."
+    },
+    {
+      "key": "annular_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The shrinking closed balls and increasing/decreasing annuli have the claimed limits. The bound F_y ≤ s^{-n} supplies the finiteness required for continuity from above. Passing to the limit in smoothed_bounds proves exactly M1 and M2, supplying the parent's first conclusion."
+    },
+    {
+      "key": "tangent_lower_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The filter statement matches the prose, including arbitrary M and extended-real c. The plane-volume calculation, explicit compactly supported test function, nonnegative Bochner-to-lintegral inequality, Hausdorff scaling and positive reparametrization prove the lower bound without hidden measurability or local-finiteness assumptions on M."
+    },
+    {
+      "key": "support_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The monotonicity assumption is explicit and is supplied by dropping M1's nonnegative annular term. Tangent lower density, measure domination, continuity from above and the support contradiction prove the exact bound non-circularly. Combining it with M1 and exhausting the punctured ball, using F_y(y)=0, establishes the parent's density conclusion."
+    }
+  ],
+  "required_changes": []
+}
