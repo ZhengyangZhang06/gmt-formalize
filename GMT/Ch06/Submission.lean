@@ -712,6 +712,29 @@ theorem Submission.slicing_ru_covector_expansion : ∀ (P k : ℕ) (α : Covecto
         simp [e, PiLp.single_apply, (hj₀ i).symm]
   -- Step 3: agreement on increasing basis tuples.
   have h1 : ∀ γ : SimonMultiIndex k P, R (e γ) = α (e γ) := by
+    intro γ
+    rw [hR, ContinuousAlternatingMap.sum_apply]
+    simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    rfl
+  -- Step 4: agreement on injective basis tuples, by sorting and the sign rule.
+  have h2 : ∀ v : Fin k → Fin P, Function.Injective v → R (e v) = α (e v) := by
+    intro v hv
+    have hsm : StrictMono (v ∘ Tuple.sort v) :=
+      (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+    have hγ := h1 (OrderEmbedding.ofStrictMono _ hsm)
+    have heq : e (OrderEmbedding.ofStrictMono _ hsm) = e v ∘ Tuple.sort v := rfl
+    rw [heq, ← ContinuousAlternatingMap.coe_toAlternatingMap R,
+      ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
+      AlternatingMap.map_perm] at hγ
+    exact smul_left_cancel _ hγ
+  -- Step 5: an alternating map is determined by its values on injective basis tuples.
+  symm
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap]
+  exact h2 v hv
 /-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
 lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
 theorem Submission.cmb_exists_compactly_contained_exhaustion :
@@ -946,8 +969,6 @@ theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
     simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
       Finset.sum_ite_eq', Finset.mem_univ, ite_true]
     rfl
-  -- Step 4: agreement on injective basis tuples, by sorting and the sign rule.
-  have h2 : ∀ v : Fin k → Fin P, Function.Injective v → R (e v) = α (e v) := by
   -- `R` agrees with `α` on injective tuples: sort them and use `map_perm`.
   have h2 : ∀ v : Fin n → Fin P, Function.Injective v → R (e v) = α (e v) := by
     intro v hv
@@ -959,7 +980,6 @@ theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
       ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
       AlternatingMap.map_perm] at hγ
     exact smul_left_cancel _ hγ
-  -- Step 5: an alternating map is determined by its values on injective basis tuples.
   -- Conclude by extensionality on the standard basis.
   symm
   apply ContinuousAlternatingMap.toAlternatingMap_injective
