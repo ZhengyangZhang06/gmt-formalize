@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Tilt-excess decay theorem (Simon 5.4.5)",
+  "statement": "For n >= 1, l, p > n there are eta, delta_0 in (0,1/4] depending only on n,l,p such that: if U is open, V has generalized mean curvature H, AllardHypotheses H p delta rho hold with 0 < delta <= delta_0, sigma in (0, delta rho/2], xi in spt V cap B_{delta rho}(0) and T is an n-dimensional subspace, then there is an n-dimensional subspace S with E_*(xi, eta sigma, S) <= eta^(2(1 - n/p)) E_*(xi, sigma, T), where E_*(xi,sigma,T) = max{E(xi,sigma,T), delta^-1 (sigma^(p-n) integral_{B_sigma(xi)} |H|^p dmu_V)^(2/p)} (contract tiltExcessStar).",
+  "lean_statement": "TiltExcessDecayTheorem",
+  "lean_name": "tilt_excess_decay_theorem",
+  "depends_on": [
+    "root.tilt_excess_height_estimate-a1",
+    "root.affine_approximation-a1",
+    "root.lipschitz_approximation-a1",
+    "root.harmonic_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_height_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.affine_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.harmonic_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-a1"
+}

@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "TiltExcessHeightEstimate|AffineApproximationLemma|LipschitzApproximationLemma|LipschitzGraphCorollary|HarmonicApproximationLemma|TiltExcessDecayTheorem|AllardRegularityTheorem|AllardRegularityAnyRadius|ConicalApproximationTheorem|DensityOneRegularity|DensityOneHigherRegularity|RegularSetOpenDense",
+        "Rellich|Kondrachov|Campanato|Kirszbraun|[Cc]oarea|[Vv]arifold|Allard|[Pp]oincare_inequality",
+        "def HarmonicAt|def HarmonicOnNhd|theorem.*mk|ContDiff",
+        "lpMeanCurvatureKappa|structure LpAnnularCorrection|theorem exists_lpAnnularCorrection|F_close|exp",
+        "rg -n '\\b(axiom|sorry|sorryAx)\\b' .lake/packages/simongmt/Poincare/SimonGMT --glob '*.lean'",
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 1 /tmp/gmt-ch05-independent-audit/Check.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j 1 /tmp/gmt-ch05-independent-audit/Axioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/Harmonic/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpMeanCurvature.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpAnnular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/LpLowerDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/tmp/gmt-ch05-independent-audit/Check.lean",
+        "/tmp/gmt-ch05-independent-audit/Axioms.lean"
+      ],
+      "conclusion": "The manifest confirms the pinned project and Mathlib revisions. All twelve lean_statement strings elaborate independently as the pre-existing frozen Props; their conditional constructor assembly proves exactly the selected conjunction. This check contains no placeholder child proofs. The DAG contains only root, so no other active branch reserves the proposed names; all twelve names are distinct bare identifiers and the proposed dependencies are acyclic. No prohibited matrix-unit construction occurs. The corrected monotonicity coefficient and factor estimates agree with the inspected library. Kernel axiom checks for the assembly, weighted tangent uniqueness, annular correction, and support lower density report only propext, Classical.choice, and Quot.sound. Chapter 4 library varifolds have stronger premises, which must be respected when adapting those lemmas. The listed analysis search found no matching Mathlib infrastructure for Rellich, Campanato, coarea, or Allard. Public bibliographic corroboration: [Giaquinta–Martinazzi, Schauder estimates](https://link.springer.com/chapter/10.1007/978-88-7642-443-4_5); the accessible preview does not expose the cited theorem statements."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tilt_excess_height_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the frozen conjunct, including the extended curvature integral and codimension-independent constant. The cutoff, trace identity, integrability checks, Young estimates, and normalization prove the stated inequality without circular dependence."
+    },
+    {
+      "key": "affine_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract includes the corrected curvature term. The proof supplies an all-delta mass bound, separates the large-delta case, and uses pinched monotonicity only within its smallness range. Lemma A, packing, and the good-tangent selection establish both inequalities for every p > n."
+    },
+    {
+      "key": "lipschitz_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement preserves arbitrary K and constants independent of K. The tilt dichotomy, short/long pair estimates, extension and retraction, and near/far hole arguments establish the exact Lipschitz, height, and measure bounds using the declared affine dependency."
+    },
+    {
+      "key": "lipschitz_graph_corollary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof reproduces the needed graph construction, so no undeclared Lipschitz-approximation dependency is required. The hole estimate applies within the controlled region, and the uniform tilt hypothesis forces the reverse inclusion. Both closed-ball inclusions and the exact height bound follow."
+    },
+    {
+      "key": "harmonic_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weak-gradient and test-function hypotheses match the contract. Mean subtraction, Rellich compactness, weak convergence, lower semicontinuity, and the supplied Weyl argument produce a harmonic representative with the required energy and approximation bounds."
+    },
+    {
+      "key": "tilt_excess_decay",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Recentring verifies the sibling hypotheses at the required scale. The localized weak equation, dimension-correct Jacobian estimates, harmonic comparison, and separate n = 1, p < 2 argument justify the decay estimate. The original star-excess parameter and final contraction factor are preserved."
+    },
+    {
+      "key": "allard_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The iteration and graph argument use only the declared dependencies. Taking T_0 = S(0) establishes the zero derivative. The additional radial height argument and restarted decay yield the required delta-rate at a radius independent of delta, including the closed-ball norm conclusion."
+    },
+    {
+      "key": "allard_any_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof establishes the announced extension rather than assuming it. Conical approximation gives uniform local pinching and the cone condition; local inversion, injectivity, and connectedness produce one graph. The subsequent estimates give the exact conclusion with constants allowed to depend on gamma."
+    },
+    {
+      "key": "conical_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and both inequalities match the frozen conjunct. The large-error case, annular bounds, homogeneous cutoffs, averaged first-variation limits, and coarea calculation control both directions uniformly for tau in [2 lambda,1]. No multiplicity lower bound is introduced."
+    },
+    {
+      "key": "density_one_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density and local Lp integrability supply the sibling's smallness hypotheses. The chosen open domain gives the exact rotated graph, the quantitative norm implies the specified Hölder class, and the carrier/support argument proves the required Hausdorff-null symmetric difference."
+    },
+    {
+      "key": "density_one_higher_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized density estimate correctly forces multiplicity one near xi. The vertical first variation gives the stated elliptic system; small-gradient ellipticity, difference quotients, and the explicitly stated interior Schauder input justify the bootstrap. Shrinking supplies global Hölder bounds and density one on the support."
+    },
+    {
+      "key": "regular_set_open_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The least integer density exists in every support ball. Localization and multiplicity rescaling satisfy the declared Allard dependency, and the supplied graph-chart construction establishes a regular point. The union of regular balls proves relative openness, while localization proves the exact closure identity."
+    }
+  ],
+  "required_changes": []
+}

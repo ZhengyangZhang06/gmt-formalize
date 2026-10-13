@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.affine_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Affine approximation lemma (Simon 5.2.5, corrected)",
+  "statement": "For n >= 1, l and p > n there is C = C(n,l,p) > 0 such that: if U is open, V has generalized mean curvature H in U, 0 < delta <= 1/4 and AllardHypotheses H p delta rho hold (rho > 0, theta >= 1 mu_V-a.e., 0 in spt V, B_rho(0) in U, omega_n^-1 rho^-n mu_V(B_rho(0)) <= 1 + delta, (rho^(p-n) integral_{B_rho(0)} |H|^p)^(1/p) <= delta), then for every xi in spt V cap B_{delta rho}(0) and sigma in (0, 2 delta rho] there is an n-dimensional subspace T with C^-1 (sigma^-n integral_{B_{sigma/2}(xi)} |p_{T_xM} - p_T|^2 dmu_V)^(1/2) <= sigma^-1 h + (sigma^(p-n) integral_{B_sigma(xi)} |H|^p)^(1/p) and sigma^-1 h <= C delta^(1/(2n+2)), where h = sup{dist(x - xi, T) : x in spt V cap B_sigma(xi)} (all in [0,inf]).",
+  "lean_statement": "AffineApproximationLemma",
+  "lean_name": "affine_approximation_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-affine-approximation-a1-a1"
+}

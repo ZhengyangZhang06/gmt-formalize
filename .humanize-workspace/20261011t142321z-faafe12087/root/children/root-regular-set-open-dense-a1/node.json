@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_open_dense-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Regular set is open and dense (Simon 5.7.3)",
+  "statement": "If n >= 1, U is open, V = v(M,theta) has generalized mean curvature H in U with H locally in L^p(mu_V), p > n, and theta is a positive integer for mu_V-a.e. x in spt V, then there is an open O with reg V = O cap spt V, and spt V = closure(reg V) cap U, where reg V is the set of xi in spt V such that open B_rho(xi) cap spt V is an n-dimensional C^1 submanifold (IsC1Submanifold n) for some rho > 0.",
+  "lean_statement": "RegularSetOpenDense",
+  "lean_name": "regular_set_open_dense",
+  "depends_on": [
+    "root.allard_regularity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.allard_regularity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-regular-set-open-dense-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_approximation-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lipschitz approximation lemma (Simon 5.2.6, contract normalization)",
+  "statement": "For n >= 1, l, p > n there are beta in (0,1/4] and C, depending only on n,l,p, such that for all L in (0,1], K >= 0, open U, V with generalized mean curvature H, delta, rho with 0 < delta <= (beta L)^(2n+2) and AllardHypotheses H p delta rho, and every linear isometry q of R^(n+l) such that dist(x, T_0) <= K delta^(1/(2n+2)) delta rho for all x in spt V cap B_{2 delta rho}(0), where T_0 := q(R^n x {0}), there is f: R^n -> R^l, L-Lipschitz on B^n_{delta rho/2}(0), with |f| <= K delta^(1/(2n+2)) delta rho there and mu_V(B_{delta rho/2}(0) cap (spt V minus q(graph f over B^n_{delta rho/2}))) + H^n(B_{delta rho/2}(0) cap (q(graph f over B^n_{delta rho/2}) minus spt V)) <= C L^-2 integral_{B_{delta rho}(0)} |p_{T_xM} - p_{T_0}|^2 dmu_V.",
+  "lean_statement": "LipschitzApproximationLemma",
+  "lean_name": "lipschitz_approximation_lemma",
+  "depends_on": [
+    "root.affine_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.affine_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-lipschitz-approximation-a1-a1"
+}
