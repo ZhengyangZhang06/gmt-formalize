@@ -360,6 +360,180 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (3.6): an `n`-vector density `w` that is dominated by an integrable function on
+`g⁻¹(K)` for every compact `K ⊆ V` defines a current `ω ↦ ∫ ⟨ω(g x), w x⟩ dμ(x)` in `𝒟ₙ(V)`. -/
+theorem Submission.lpf_pic_current_of_dominated_density :
+    ∀ (P Q n : ℕ) (V : Set (Eucl Q)) (μ : Measure (Eucl P)) (g : Eucl P → Eucl Q) (w : Eucl P → NVector (Eucl Q) n), AEMeasurable g μ → AEStronglyMeasurable w μ → (∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ, Integrable h μ ∧ ∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ := by
+  intro P Q n V μ g w hg hw hdom
+  -- Step 1: `x ↦ ⟨η (g x), w x⟩` is a.e. strongly measurable for continuous `η`.
+  have hmeas : ∀ η : Eucl Q → Covector (Eucl Q) n, Continuous η →
+      AEStronglyMeasurable (fun x => w x (η (g x))) μ := by
+    intro η hη
+    have hηg : AEStronglyMeasurable (fun x => η (g x)) μ :=
+      hη.comp_aestronglyMeasurable hg.aestronglyMeasurable
+    have hev : Continuous (Function.uncurry
+        fun (φ : NVector (Eucl Q) n) (v : Covector (Eucl Q) n) => φ v) :=
+      continuous_fst.clm_apply continuous_snd
+    exact hev.comp_aestronglyMeasurable₂ hw hηg
+  -- Step 2: if `tsupport η ⊆ K` and `‖η‖ ≤ B`, then `|⟨η ∘ g, w⟩| ≤ B |h|` a.e.
+  have hkey : ∀ (η : Eucl Q → Covector (Eucl Q) n) (K : Set (Eucl Q)) (h : Eucl P → ℝ) (B : ℝ),
+      Continuous η → tsupport η ⊆ K → Integrable h μ → (∀ᵐ x ∂μ, g x ∈ K → ‖w x‖ ≤ h x) →
+      (∀ y, ‖η y‖ ≤ B) →
+      Integrable (fun x => w x (η (g x))) μ ∧
+        ‖∫ x, w x (η (g x)) ∂μ‖ ≤ B * ∫ x, ‖h x‖ ∂μ := by
+    intro η K h B hη hK hh hwh hB
+    have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+    have hbound : ∀ᵐ x ∂μ, ‖w x (η (g x))‖ ≤ B * ‖h x‖ := by
+      filter_upwards [hwh] with x hx
+      by_cases hgx : g x ∈ K
+      · calc ‖w x (η (g x))‖ ≤ ‖w x‖ * ‖η (g x)‖ := (w x).le_opNorm _
+          _ ≤ ‖h x‖ * B :=
+            mul_le_mul ((hx hgx).trans (Real.le_norm_self _)) (hB _) (norm_nonneg _)
+              (norm_nonneg _)
+          _ = B * ‖h x‖ := mul_comm _ _
+      · rw [image_eq_zero_of_notMem_tsupport fun hx' => hgx (hK hx'), map_zero, norm_zero]
+        exact mul_nonneg hB0 (norm_nonneg _)
+    have hint : Integrable (fun x => B * ‖h x‖) μ := hh.norm.const_mul B
+    refine ⟨hint.mono' (hmeas η hη) hbound, ?_⟩
+    calc ‖∫ x, w x (η (g x)) ∂μ‖ ≤ ∫ x, B * ‖h x‖ ∂μ := norm_integral_le_of_norm_le hint hbound
+      _ = B * ∫ x, ‖h x‖ ∂μ := integral_const_mul B _
+  -- Step 3: the integrand of every test form is integrable.
+  have hintω : ∀ ω : TestFormOn V n,
+      Integrable (fun x => w x ((ω : DifferentialForm (Eucl Q) n) (g x))) μ := by
+    intro ω
+    have hcont : Continuous (ω : DifferentialForm (Eucl Q) n) := ContDiff.continuous ω.property.1.1
+    have hcs : HasCompactSupport (ω : DifferentialForm (Eucl Q) n) := ω.property.1.2
+    obtain ⟨h, hh, hwh⟩ := hdom (tsupport (ω : DifferentialForm (Eucl Q) n)) hcs ω.property.2
+    obtain ⟨B, hB⟩ := hcont.bounded_above_of_compact_support hcs
+    exact (hkey _ _ h B hcont subset_rfl hh hwh hB).1
+  -- Step 4: the linear functional `ω ↦ ∫ ⟨ω (g x), w x⟩ dμ`.
+  let S₀ : TestFormOn V n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x, w x ((ω : DifferentialForm (Eucl Q) n) (g x)) ∂μ
+      map_add' := by
+        intro ω₁ ω₂
+        simp only [Submodule.coe_add, Pi.add_apply, map_add]
+        exact integral_add (hintω ω₁) (hintω ω₂)
+      map_smul' := by
+        intro c ω
+        simp only [Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul, RingHom.id_apply]
+        exact integral_const_mul c _ }
+  -- Step 5: sequential continuity at `0`, from uniform convergence of the forms themselves.
+  refine ⟨⟨S₀, ?_⟩, fun ω => rfl⟩
+  intro ωs hconv
+  obtain ⟨K, hKc, hKV, hsupp, -, hunif⟩ := hconv
+  obtain ⟨h, hh, hwh⟩ := hdom K hKc hKV
+  set I := ∫ x, ‖h x‖ ∂μ
+  have hI0 : 0 ≤ I := integral_nonneg fun x => norm_nonneg _
+  have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (I + 1) := div_pos hε (by linarith)
+  filter_upwards [h0 _ hδ] with j hj
+  have hBj : ∀ y, ‖(ωs j : DifferentialForm (Eucl Q) n) y‖ ≤ ε / (I + 1) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have h1 := hj y hy
+      have h2 : iteratedFDeriv ℝ 0 ((0 : TestFormOn V n) : DifferentialForm (Eucl Q) n) y = 0 := by
+        rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+        simp
+      rw [h2, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+      exact h1.le
+    · rw [image_eq_zero_of_notMem_tsupport fun hy' => hy (hsupp j hy'), norm_zero]
+      exact hδ.le
+  have hcont : Continuous (ωs j : DifferentialForm (Eucl Q) n) :=
+    ContDiff.continuous (ωs j).property.1.1
+  have hle := (hkey _ K h _ hcont (hsupp j) hh hwh hBj).2
+  rw [Real.dist_eq, sub_zero, ← Real.norm_eq_abs]
+  refine lt_of_le_of_lt hle ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
+/-- Measurability of the push-forward density in Simon Ch. 6, (3.6) (p. 147): for a rectifiable
+triple `(M, θ, ξ)` in an open `U` and an `Hⁿ⌞M`-a.e. strongly measurable `L`, the density
+`x ↦ θ(x) L(x)_# ξ(x)` is `Hⁿ⌞M`-a.e. strongly measurable. -/
+theorem Submission.lpf_pic_density_aestronglyMeasurable : ∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEStronglyMeasurable (fun x => θ x • nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+  intro P Q n U M θ ξ L hU hT hL
+  -- `θ` is locally `Hⁿ`-integrable on `M` (compact neighbourhoods inside the open `U`), hence
+  -- `Hⁿ⌞M`-a.e. strongly measurable since `ℝ^P` is second countable.
+  have hloc : LocallyIntegrableOn θ M (μHE[n] : Measure (Eucl P)) := by
+    intro x hx
+    obtain ⟨K, hK, hxK, hKU⟩ := exists_compact_subset hU (hT.subset hx)
+    exact ⟨M ∩ K, inter_mem_nhdsWithin M (mem_interior_iff_mem_nhds.mp hxK),
+      hT.integrableOn K hK hKU⟩
+  have hθ : AEStronglyMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    hloc.aestronglyMeasurable
+  -- `(A, v) ↦ A_# v = v ∘ A^#` is continuous, as `A ↦ A^#` and composition are.
+  have hΦ : Continuous fun p : (Eucl P →L[ℝ] Eucl Q) × NVector (Eucl P) n =>
+      nVectorPushforward n p.1 p.2 :=
+    continuous_snd.clm_comp
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_fst)
+  -- Compose with `x ↦ (L x, ξ x)` and multiply by `θ`.
+  exact hθ.smul (hΦ.comp_aestronglyMeasurable (hL.prodMk hT.aestronglyMeasurable))
+/-- **Domination of the push-forward density on a compact preimage (Simon Ch. 6, (3.6)).**  Let
+`(M, θ, ξ)` be a rectifiable triple in `U`, `Z ⊆ U` with `Hⁿ(M \ Z) = 0`, `K' = f⁻¹(K) ∩ Z`
+compact and `‖L x‖ ≤ C` on `M ∩ K'`.  Then `h = 1_{K'} Cⁿ θ` is `Hⁿ ⌞ M`-integrable (`θ` is
+integrable on `M ∩ K'`, as `K' ⊆ U` is compact) and `‖θ(x) L(x)_# ξ(x)‖ ≤ h(x)` for `Hⁿ ⌞ M`-a.e.
+`x` with `f x ∈ K`: a.e. such `x` lies in `M ∩ K'`; `‖A_# v‖ ≤ ‖A‖ⁿ ‖v‖` because `A_# v = v ∘ A^#`
+and `‖A^# β‖ ≤ ‖A‖ⁿ ‖β‖`; and `‖ξ(x)‖ ≤ 1` because `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal. -/
+theorem Submission.lpf_pic_density_dominated : ∀ (P Q n : ℕ) (U Z M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (K : Set (Eucl Q)), IsRectifiableTriple U n M θ ξ → Z ⊆ U → (μHE[n] : Measure (Eucl P)) (M \ Z) = 0 → IsCompact (f ⁻¹' K ∩ Z) → (∃ C : ℝ, ∀ x ∈ M ∩ (f ⁻¹' K ∩ Z), ‖L x‖ ≤ C) → ∃ h : Eucl P → ℝ, Integrable h ((μHE[n] : Measure (Eucl P)).restrict M) ∧ ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), f x ∈ K → ‖θ x • nVectorPushforward n (L x) (ξ x)‖ ≤ h x := by
+  rintro P Q n U Z M θ ξ f L K hR hZU hMZ hK ⟨C, hC⟩
+  -- (1) `‖A_# v‖ ≤ ‖A‖ⁿ ‖v‖`, from `A_# v = v ∘ A^#` and `‖A^# β‖ ≤ ‖A‖ⁿ ‖β‖`.
+  have hpush : ∀ (A : Eucl P →L[ℝ] Eucl Q) (v : NVector (Eucl P) n),
+      ‖nVectorPushforward n A v‖ ≤ ‖A‖ ^ n * ‖v‖ := by
+    intro A v
+    have hA : ‖covectorPullback n A‖ ≤ ‖A‖ ^ n := by
+      refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun β => ?_
+      simpa [covectorPullback, Fintype.card_fin, mul_comm] using
+        ContinuousAlternatingMap.norm_compContinuousLinearMap_le β A
+    calc ‖nVectorPushforward n A v‖ = ‖v.comp (covectorPullback n A)‖ := rfl
+      _ ≤ ‖v‖ * ‖covectorPullback n A‖ := ContinuousLinearMap.opNorm_comp_le _ _
+      _ ≤ ‖v‖ * ‖A‖ ^ n := by gcongr
+      _ = ‖A‖ ^ n * ‖v‖ := mul_comm _ _
+  -- (2) `‖ξ(x)‖ ≤ 1` a.e., since `ξ(x) = ±simpleNVector τ` with `τ` orthonormal.
+  have hξ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ ≤ 1 := by
+    filter_upwards [hR.orients] with x hx
+    obtain ⟨τ, hτ, -, hx⟩ := hx
+    have hs : ‖simpleNVector τ‖ ≤ 1 :=
+      calc ‖simpleNVector τ‖ ≤ ∏ i, ‖τ i‖ :=
+            LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+        _ = 1 := Finset.prod_eq_one fun i _ => hτ.1 i
+    rcases hx with hx | hx
+    · rw [hx]
+      exact hs
+    · rw [hx, norm_neg (simpleNVector τ)]
+      exact hs
+  -- (3) `Hⁿ ⌞ M`-a.e. point lies in `M ∩ Z`, as `M` is null measurable and `Hⁿ(M \ Z) = 0`.
+  have hM : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ M :=
+    ae_restrict_mem₀ hR.nullMeasurableSet
+  have hZ : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ Z := by
+    rw [ae_iff, Measure.restrict_apply₀' hR.nullMeasurableSet]
+    have hset : {a | ¬a ∈ Z} ∩ M = M \ Z := by
+      ext a
+      simp [and_comm]
+    rw [hset, hMZ]
+  -- (4) `h = 1_{K'} Cⁿ θ` is `Hⁿ ⌞ M`-integrable: `K'` is compact (so measurable) and `K' ⊆ U`.
+  have hKm : MeasurableSet (f ⁻¹' K ∩ Z) := hK.isClosed.measurableSet
+  have hθK : IntegrableOn (fun x => C ^ n * θ x) (f ⁻¹' K ∩ Z)
+      ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    rw [IntegrableOn, Measure.restrict_restrict hKm, inter_comm]
+    exact (hR.integrableOn _ hK fun x hx => hZU hx.2).const_mul _
+  refine ⟨(f ⁻¹' K ∩ Z).indicator fun x => C ^ n * θ x, hθK.integrable_indicator hKm, ?_⟩
+  -- (5) For a.e. `x` with `f x ∈ K`: `x ∈ M ∩ K'`, so `‖L x‖ ≤ C`, `0 < θ x` and `‖ξ x‖ ≤ 1`.
+  filter_upwards [hξ, hM, hZ] with x hξx hxM hxZ hfx
+  have hxK : x ∈ f ⁻¹' K ∩ Z := ⟨hfx, hxZ⟩
+  have hLC : ‖L x‖ ≤ C := hC x ⟨hxM, hxK⟩
+  have hθx : 0 < θ x := hR.pos x hxM
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans hLC
+  rw [indicator_of_mem hxK]
+  calc ‖θ x • nVectorPushforward n (L x) (ξ x)‖
+      = ‖θ x‖ * ‖nVectorPushforward n (L x) (ξ x)‖ :=
+        (NormedSpace.toNormSMulClass).norm_smul (θ x) (nVectorPushforward n (L x) (ξ x))
+    _ = θ x * ‖nVectorPushforward n (L x) (ξ x)‖ := by
+        rw [Real.norm_eq_abs, abs_of_pos hθx]
+    _ ≤ θ x * (‖L x‖ ^ n * ‖ξ x‖) := by
+        gcongr
+        exact hpush _ _
+    _ ≤ θ x * (C ^ n * 1) := by gcongr
+    _ = C ^ n * θ x := by ring
 /-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
 `M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
 theorem Submission.lpf_rsn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
@@ -5700,6 +5874,35 @@ theorem Submission.lpf_chart_chain_rule : ∀ (P Q n : ℕ) (U M : Set (Eucl P))
     ext1 s
     exact (hline s).unique (hw₂ _ hTw _ (LinearMap.mem_range_self _ s))
   exact heq ▸ hdiff.hasFDerivAt
+
+/-- **Simon Ch. 6, (3.6) (p. 147): the push-forward formula defines a current.**  Let
+`T = τ(M, θ, ξ)` in the open `U`, `f` continuous on `U` with `f⁻¹(K) ∩ spt T` compact for every
+compact `K ⊆ V`, and `L` an `Hⁿ ⌞ M`-a.e. strongly measurable field of linear maps bounded on
+`M ∩ K` for every compact `K ⊆ U`.  Then `ω ↦ ∫_M θ(x) ⟨ω(f(x)), L(x)_# ξ(x)⟩ dHⁿ(x)` is a current
+in `𝒟ₙ(V)`: the density `θ L_# ξ` is `Hⁿ ⌞ M`-a.e. strongly measurable, and on `{f ∈ K}` it is
+dominated by `1_{K'} Cⁿ θ` with `K' = f⁻¹(K) ∩ spt T`, because `Hⁿ(M \ spt T) = 0`. -/
+theorem Submission.lpf_pushforward_is_current : ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)), IsOpen U → IsOpen V → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ContinuousOn f U → (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ M ∩ K, ‖L x‖ ≤ C) → ∃ S : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, S ω = ∫ x in M, θ x * nVectorPushforward n (L x) (ξ x) ((ω : DifferentialForm (Eucl Q) n) (f x)) ∂(μHE[n] : Measure (Eucl P)) := by
+  intro P Q n U V hU hV T M θ ξ f L hT hTrep hf hprop hLm hLb
+  -- `Hⁿ`-almost every point of `M` lies in `spt T`.
+  have hnull := Submission.lpf_rectifiable_support_null P n U T M θ ξ hT hTrep
+  -- `f` is `Hⁿ ⌞ M`-a.e. measurable, being continuous on the open set `U ⊇ M`.
+  have hfm : AEMeasurable f ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    (hf.aemeasurable hU.measurableSet).mono_set hT.subset
+  -- The density `θ L_# ξ` is `Hⁿ ⌞ M`-a.e. strongly measurable ...
+  have hwm := Submission.lpf_pic_density_aestronglyMeasurable P Q n U M θ ξ L hU hT hLm
+  -- ... and, for compact `K ⊆ V`, dominated on `{f ∈ K}` via the compact `f⁻¹(K) ∩ spt T ⊆ U`.
+  have hdom : ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∃ h : Eucl P → ℝ,
+      Integrable h ((μHE[n] : Measure (Eucl P)).restrict M) ∧
+        ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), f x ∈ K →
+          ‖θ x • nVectorPushforward n (L x) (ξ x)‖ ≤ h x := fun K hK hKV =>
+    Submission.lpf_pic_density_dominated P Q n U T.support M θ ξ f L K hT
+      T.support_subset_domain hnull (hprop K hK hKV)
+      (hLb _ (hprop K hK hKV) (inter_subset_right.trans T.support_subset_domain))
+  -- The current of this density is the claimed one, as `(θ • A_# ξ) β = θ * (A_# ξ) β`.
+  obtain ⟨S, hS⟩ := Submission.lpf_pic_current_of_dominated_density P Q n V
+    ((μHE[n] : Measure (Eucl P)).restrict M) f
+    (fun x => θ x • nVectorPushforward n (L x) (ξ x)) hfm hwm hdom
+  exact ⟨S, hS⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

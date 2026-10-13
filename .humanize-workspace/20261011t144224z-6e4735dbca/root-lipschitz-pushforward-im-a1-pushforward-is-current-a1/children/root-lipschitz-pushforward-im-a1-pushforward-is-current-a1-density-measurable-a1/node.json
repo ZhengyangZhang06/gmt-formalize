@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.density_measurable-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_is_current-a1",
+  "depth": 3,
+  "title": "The push-forward density θ·L_#ξ is Hⁿ⌞M-a.e. strongly measurable",
+  "statement": "Let P, Q, n ∈ ℕ and let U ⊆ ℝ^P be open. Let M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_n(ℝ^P) satisfy IsRectifiableTriple U n M θ ξ. Let L : ℝ^P → L(ℝ^P, ℝ^Q) be Hⁿ⌞M-a.e. strongly measurable, where Hⁿ = μHE[n]. Then x ↦ θ(x)·L(x)_#ξ(x) = θ(x) • nVectorPushforward n (L x) (ξ x) ∈ Λ_n(ℝ^Q) is Hⁿ⌞M-a.e. strongly measurable.",
+  "lean_statement": "∀ (P Q n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → AEStronglyMeasurable L ((μHE[n] : Measure (Eucl P)).restrict M) → AEStronglyMeasurable (fun x => θ x • nVectorPushforward n (L x) (ξ x)) ((μHE[n] : Measure (Eucl P)).restrict M)",
+  "lean_name": "lpf_pic_density_aestronglyMeasurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-is-current-a1-density-measurable-a1-a1"
+}
