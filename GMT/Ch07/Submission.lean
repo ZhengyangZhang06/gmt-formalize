@@ -451,6 +451,26 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Closed-ball masses at points of the spine** (step 1 of the parent proof: the scaling
+`(ωₙρⁿ)⁻¹μ_C(B_ρ(0)) = Θⁿ(T, x)` for each `ρ > 0` in Simon's proof of 7.3.1, moved to centres `z`
+in the subspace `L` of Lemma 7.3.5).  Let `μ` be invariant under translations by vectors of `L`
+and satisfy `μ(λA) = λⁿμ(A)` for `λ > 0`, both on Borel sets.  Then `μ(B̄_ρ(z)) = ρⁿμ(B̄_1(z))`
+for `z ∈ L` and `ρ > 0`.  Translation by `-z ∈ L` maps `B̄_r(z)` onto `B̄_r(0)`, and
+`B̄_ρ(0) = ρB̄_1(0)`. -/
+theorem Submission.dimred_cs_st_closedBall_measure_scaling : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (L : Submodule ℝ (Euclid P)), (∀ y ∈ L, ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => y + x) ⁻¹' A) = μ A) → (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * μ A) → ∀ z ∈ L, ∀ ρ : ℝ, 0 < ρ → μ (closedBall z ρ) = ENNReal.ofReal (ρ ^ n) * μ (closedBall z 1) := by
+  intro P n μ L htrans hhom z hz ρ hρ
+  -- translation by `-z ∈ L`: `B̄_r(z) = (x ↦ -z + x)⁻¹' B̄_r(0)`
+  have htr : ∀ r : ℝ, μ (closedBall z r) = μ (closedBall 0 r) := by
+    intro r
+    rw [← htrans (-z) (L.neg_mem hz) (closedBall 0 r) measurableSet_closedBall]
+    congr 1
+    ext x
+    simp only [mem_closedBall, mem_preimage, dist_eq_norm, sub_zero, neg_add_eq_sub]
+  -- dilation by `ρ`: `B̄_ρ(0) = (x ↦ ρ • x) '' B̄_1(0)`
+  have hsc : (fun x => ρ • x) '' closedBall (0 : Euclid P) 1 = closedBall 0 ρ := by
+    rw [Set.image_smul, smul_unitClosedBall_of_nonneg hρ.le]
+  rw [htr ρ, htr 1, ← hsc, hhom ρ hρ _ measurableSet_closedBall]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
