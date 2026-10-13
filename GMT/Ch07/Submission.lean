@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- For the closure theorem (Simon 6.8.2): the integer slice property (for a.e. `t` the slice
+`∂(T⌞{f < t}) − (∂T)⌞{f < t}`, Simon 6.4.6, is integer multiplicity) passes from `T`, `Y` to
+`T − Y`.  Representations of `T, ∂T, Y, ∂Y` (REP) and their slices (SL) give, off a null set of
+`t`, `∂A − B = (∂A^T_t − B^T_t) − (∂A^Y_t − B^Y_t)` by linearity of restrictions (RU); (IMC)(c). -/
+theorem Submission.cbr_cc_slice_property_sub : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (d P : ℕ) (T Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → T.massOn W < ∞) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → T.boundary.massOn W < ∞) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → Y.massOn W < ∞) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → Y.boundary.massOn W < ∞) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Y ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, Y.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), (T - Y) ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (T - Y).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) := by
+  intro hREP hSL hIMC hRU d P T Y hTm hTbm hYm hYbm hispT hispY μ μ' ξ ξ' hμK hμ'K hξm hξ'm hξb hξ'b
+    hrep hrep' f L hf
+  -- Step 1: (REP) gives representations of `T`, `∂T`, `Y`, `∂Y` (bounded fields, all `x`)
+  obtain ⟨μT, ξT, -, hμTK, -, hξTm, hξTb, hTrep, -⟩ := hREP P (d + 1) univ T isOpen_univ hTm
+  obtain ⟨μdT, ξdT, -, hμdTK, -, hξdTm, hξdTb, hdTrep, -⟩ :=
+    hREP P d univ T.boundary isOpen_univ hTbm
+  obtain ⟨μY, ξY, -, hμYK, -, hξYm, hξYb, hYrep, -⟩ := hREP P (d + 1) univ Y isOpen_univ hYm
+  obtain ⟨μdY, ξdY, -, hμdYK, -, hξdYm, hξdYb, hdYrep, -⟩ :=
+    hREP P d univ Y.boundary isOpen_univ hYbm
+  -- Step 3: the integer slice properties of `T` and `Y` at these representations
+  have hT_ae := hispT μT μdT ξT ξdT (fun K hK => hμTK K hK (subset_univ K))
+    (fun K hK => hμdTK K hK (subset_univ K)) hξTm hξdTm (Eventually.of_forall hξTb)
+    (Eventually.of_forall hξdTb) hTrep hdTrep f L hf
+  have hY_ae := hispY μY μdY ξY ξdY (fun K hK => hμYK K hK (subset_univ K))
+    (fun K hK => hμdYK K hK (subset_univ K)) hξYm hξdYm (Eventually.of_forall hξYb)
+    (Eventually.of_forall hξdYb) hYrep hdYrep f L hf
+  -- Step 4: (SL) gives the slice currents `A^T_t, B^T_t` and `A^Y_t, B^Y_t` for every `t`
+  obtain ⟨AT, BT, hAT, hBT, -, -, -⟩ := hSL P d univ T μT μdT ξT ξdT f L isOpen_univ hμTK hμdTK
+    hξTm hξdTm (Eventually.of_forall hξTb) (Eventually.of_forall hξdTb) hTrep hdTrep hf
+  obtain ⟨AY, BY, hAY, hBY, -, -, -⟩ := hSL P d univ Y μY μdY ξY ξdY f L isOpen_univ hμYK hμdYK
+    hξYm hξdYm (Eventually.of_forall hξYb) (Eventually.of_forall hξdYb) hYrep hdYrep hf
+  -- Step 5: `T = (T − Y) + Y` and `∂T = ∂(T − Y) + ∂Y`, restricted to `{f < t}` by (RU)
+  have hsum : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      ∫ x, ξT x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μT =
+        ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ +
+          ∫ x, ξY x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μY := by
+    intro ω
+    rw [← hTrep ω, ← hrep ω, ← hYrep ω]
+    change T ω = T ω - Y ω + Y ω
+    ring
+  have hsum' : ∀ η : TestFormOn (univ : Set (Euclid P)) d,
+      ∫ x, ξdT x ((η : DifferentialForm (Euclid P) d) x) ∂μdT =
+        ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ' +
+          ∫ x, ξdY x ((η : DifferentialForm (Euclid P) d) x) ∂μdY := by
+    intro η
+    rw [← hdTrep η, ← hrep' η, ← hdYrep η]
+    change T.boundary η = T.boundary η - Y.boundary η + Y.boundary η
+    ring
+  have hRU1 := hRU P (d + 1) univ μT μ μY ξT ξ ξY isOpen_univ hμTK (fun K hK _ => hμK K hK) hμYK
+    hξTm hξm hξYm (Eventually.of_forall hξTb) hξb (Eventually.of_forall hξYb) hsum
+  have hRU2 := hRU P d univ μdT μ' μdY ξdT ξ' ξdY isOpen_univ hμdTK (fun K hK _ => hμ'K K hK)
+    hμdYK hξdTm hξ'm hξdYm (Eventually.of_forall hξdTb) hξ'b (Eventually.of_forall hξdYb) hsum'
+  -- Steps 6–7: off the null set, `∂A − B = (∂A^T_t − B^T_t) − (∂A^Y_t − B^Y_t)`, use (IMC)(c)
+  filter_upwards [hT_ae, hY_ae] with t htT htY
+  intro A B hA hB
+  have hmeas : MeasurableSet {x : Euclid P | f x < t} :=
+    measurableSet_lt hf.continuous.measurable measurable_const
+  have key : A.boundary - B = ((AT t).boundary - BT t) - ((AY t).boundary - BY t) := by
+    ext η
+    change A (exteriorDerivativeTestOn univ d η) - B η =
+      (AT t (exteriorDerivativeTestOn univ d η) - BT t η) -
+        (AY t (exteriorDerivativeTestOn univ d η) - BY t η)
+    rw [hA, hB, hAT, hBT, hAY, hBY, hRU1 _ _ hmeas, hRU2 _ _ hmeas]
+    ring
+  rw [key]
+  exact hIMC P d univ _ _ isOpen_univ (htT (AT t) (BT t) (hAT t) (hBT t))
+    (htY (AY t) (BY t) (hAY t) (hBY t))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
