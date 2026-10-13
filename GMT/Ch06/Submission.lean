@@ -992,6 +992,136 @@ theorem Submission.deformation_ipl_mwc_minor_ibp_smooth :
         simp only [hC q w]
         ring
 
+/-- **Smooth approximation of a Lipschitz function with a.e. convergent derivatives**
+(mollification).  Let `ψ_m` be the kernels of `constancy_mdc_smooth_approx_identity_ae_tendsto`
+and `G_m(x) = ∫ ψ_m(y) g(x − y) dy = (ψ_m ⋆ g)(x)`.  Then `G_m` is `C^∞`, `L`-Lipschitz (an
+average of translates of `g`), and `|G_m − g| ≤ 2L/(m+1)` by
+`slicing_mb_sa_mollify_lipschitz_close`.  Differentiating under the integral sign
+(`slicing_mb_sa_mollify_lipschitz_hasFDerivAt`), `DG_m(x) e_b = (∂_b g ∗ ψ_m)(x)`, which tends to
+`∂_b g(x)` for a.e. `x` because `∂_b g` is bounded and measurable; as `‖T‖ ≤ Σ_b |T e_b|` for
+`T : ℝ^k →L[ℝ] ℝ`, `DG_m(x) → Dg(x)` for a.e. `x`. -/
+theorem Submission.deformation_ipl_mwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : ℝ≥0) (g : Eucl k → ℝ), LipschitzWith L g → ∃ G : ℕ → Eucl k → ℝ, (∀ m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (G m)) ∧ (∀ m, LipschitzWith L (G m)) ∧ TendstoUniformly G g atTop ∧ ∀ᵐ w ∂(volume : Measure (Eucl k)), Tendsto (fun m => fderiv ℝ (G m) w) atTop (𝓝 (fderiv ℝ g w)) := by
+  intro k L g hg
+  -- The kernels `ψ_m`: `C^∞`, `≥ 0`, `∫ ψ_m = 1`, `spt ψ_m ⊆ B̄_{1/(m+1)}(0)`.
+  obtain ⟨ψ, hψs, hψc, hψsupp, hψnn, hψone, hψae⟩ :=
+    Submission.constancy_mdc_smooth_approx_identity_ae_tendsto k
+  have hψcont : ∀ m, Continuous (ψ m) := fun m => (hψs m).continuous
+  have hψint : ∀ m, Integrable (ψ m) volume := fun m =>
+    (hψcont m).integrable_of_hasCompactSupport (hψc m)
+  -- `ψ_m(y) = 0` for `|y| ≥ 2/(m+1)`.
+  have hψzero : ∀ (m : ℕ) (y : Eucl k), 2 / ((m : ℝ) + 1) ≤ ‖y‖ → ψ m y = 0 := by
+    intro m y hy
+    apply image_eq_zero_of_notMem_tsupport
+    intro hy'
+    have h1 := hψsupp m hy'
+    rw [mem_closedBall, dist_zero_right] at h1
+    have h2 : 1 / ((m : ℝ) + 1) < 2 / ((m : ℝ) + 1) :=
+      div_lt_div_of_pos_right (by norm_num) (by positivity)
+    linarith
+  -- `G_m(x) = ∫ ψ_m(y) g(x − y) dy`.
+  set G : ℕ → Eucl k → ℝ := fun m x => ∫ y, ψ m y * g (x - y) with hG
+  refine ⟨G, fun m => ?_, fun m => ?_, ?_, ?_⟩
+  · -- `G_m = ψ_m ⋆ g` is `C^∞`.
+    have hconv : convolution (ψ m) g (ContinuousLinearMap.lsmul ℝ ℝ) volume = G m := by
+      funext x
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul, hG]
+    rw [← hconv]
+    exact (hψc m).contDiff_convolution_left _ (hψs m) hg.continuous.locallyIntegrable
+  · -- `|G_m(x) − G_m(x')| ≤ ∫ ψ_m(y) |g(x − y) − g(x' − y)| dy ≤ L |x − x'|`.
+    refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+    have hi : ∀ z, Integrable (fun y => ψ m y * g (z - y)) volume := fun z =>
+      Continuous.integrable_of_hasCompactSupport
+        ((hψcont m).mul (hg.continuous.comp (continuous_const.sub continuous_id))) (hψc m).mul_right
+    have hpt : ∀ y, ‖ψ m y * g (x - y) - ψ m y * g (x' - y)‖ ≤ ψ m y * ((L : ℝ) * dist x x') := by
+      intro y
+      rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψnn m y)]
+      refine mul_le_mul_of_nonneg_left ?_ (hψnn m y)
+      rw [← Real.dist_eq]
+      calc dist (g (x - y)) (g (x' - y)) ≤ L * dist (x - y) (x' - y) := hg.dist_le_mul _ _
+        _ = L * dist x x' := by rw [dist_sub_right]
+    rw [Real.dist_eq]
+    simp only [hG]
+    rw [← integral_sub (hi x) (hi x'), ← Real.norm_eq_abs]
+    calc ‖∫ y, ψ m y * g (x - y) - ψ m y * g (x' - y)‖ ≤ ∫ y, ψ m y * ((L : ℝ) * dist x x') :=
+          norm_integral_le_of_norm_le ((hψint m).mul_const _) (Eventually.of_forall hpt)
+      _ = L * dist x x' := by rw [integral_mul_const, hψone m, one_mul]
+  · -- `|G_m − g| ≤ 2L/(m+1) → 0`.
+    have hclose : ∀ m x, |G m x - g x| ≤ (L : ℝ) * (2 / ((m : ℝ) + 1)) := fun m x =>
+      Submission.slicing_mb_sa_mollify_lipschitz_close k g L hg (ψ m) (2 / ((m : ℝ) + 1))
+        (hψcont m) (hψc m) (hψnn m) (hψzero m) (hψone m) x
+    have hlim : Tendsto (fun m : ℕ => (L : ℝ) * (2 / ((m : ℝ) + 1))) atTop (𝓝 0) := by
+      have := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (2 * (L : ℝ))
+      rw [mul_zero] at this
+      exact this.congr fun m => by ring
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [(tendsto_order.1 hlim).2 ε hε] with m hm x
+    rw [dist_comm, Real.dist_eq]
+    exact (hclose m x).trans_lt hm
+  · set e : Fin k → Eucl k := fun b => EuclideanSpace.basisFun (Fin k) ℝ b with he
+    have hDg : ∀ z, ‖fderiv ℝ g z‖ ≤ L := fun z => norm_fderiv_le_of_lipschitz ℝ hg
+    -- `DG_m(x) = ∫ ψ_m(y) Dg(x − y) dy`, a Bochner integral of an integrable integrand.
+    have hfd : ∀ m x, fderiv ℝ (G m) x = ∫ y, ψ m y • fderiv ℝ g (x - y) := fun m x =>
+      (Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt k g L hg (ψ m) (hψcont m)
+        (hψc m) x).fderiv
+    have hint : ∀ m x, Integrable (fun y => ψ m y • fderiv ℝ g (x - y)) volume := by
+      intro m x
+      refine ((hψint m).mul_const (L : ℝ)).mono' ?_ (Eventually.of_forall fun y => ?_)
+      · exact ((hψcont m).measurable.smul ((measurable_fderiv ℝ g).comp
+          (measurable_const.sub measurable_id))).aestronglyMeasurable
+      · rw [norm_smul, Real.norm_of_nonneg (hψnn m y)]
+        exact mul_le_mul_of_nonneg_left (hDg _) (hψnn m y)
+    -- Hence `DG_m(x) v = (Dg(·) v ∗ ψ_m)(x)`.
+    have happly : ∀ m x v, fderiv ℝ (G m) x v =
+        convolution (fun t => fderiv ℝ g t v) (ψ m) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+      intro m x v
+      rw [hfd, ContinuousLinearMap.integral_apply (hint m x), convolution_lsmul_swap]
+      congr 1
+      funext t
+      simp only [smul_apply, smul_eq_mul, mul_comm]
+    -- `Dg(·) v` is measurable and bounded by `L |v|`, hence locally integrable.
+    have hloc : ∀ v, LocallyIntegrable (fun t => fderiv ℝ g t v) volume := by
+      intro v
+      refine (locallyIntegrable_const ((L : ℝ) * ‖v‖)).mono
+        (measurable_fderiv_apply_const ℝ g v).aestronglyMeasurable
+        (Eventually.of_forall fun t => ?_)
+      rw [Real.norm_of_nonneg (mul_nonneg L.coe_nonneg (norm_nonneg v))]
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hDg t) (norm_nonneg _))
+    -- For a.e. `x`: `DG_m(x) e_b → Dg(x) e_b` for every `b`.
+    have hae : ∀ᵐ x ∂(volume : Measure (Eucl k)), ∀ b,
+        Tendsto (fun m => fderiv ℝ (G m) x (e b)) atTop (𝓝 (fderiv ℝ g x (e b))) := by
+      rw [ae_all_iff]
+      intro b
+      filter_upwards [hψae _ (hloc (e b))] with x hx
+      simp_rw [happly]
+      exact hx
+    -- `‖T‖ ≤ Σ_b |T e_b|`, writing `z = Σ_b z_b e_b` with `|z_b| ≤ |z|`.
+    have hnorm : ∀ T : Eucl k →L[ℝ] ℝ, ‖T‖ ≤ ∑ b, |T (e b)| := by
+      intro T
+      refine ContinuousLinearMap.opNorm_le_bound _
+        (Finset.sum_nonneg fun b _ => abs_nonneg _) fun z => ?_
+      have hz : z = ∑ b, z b • e b := by
+        simpa [he] using ((EuclideanSpace.basisFun (Fin k) ℝ).sum_repr z).symm
+      calc ‖T z‖ = ‖∑ b, z b * T (e b)‖ := by
+            conv_lhs => rw [hz]
+            simp [map_sum, map_smul]
+        _ ≤ ∑ b, ‖z b * T (e b)‖ := norm_sum_le _ _
+        _ = ∑ b, ‖z b‖ * |T (e b)| := by simp [norm_mul]
+        _ ≤ ∑ b, ‖z‖ * |T (e b)| := Finset.sum_le_sum fun b _ =>
+            mul_le_mul_of_nonneg_right (PiLp.norm_apply_le z b) (abs_nonneg _)
+        _ = (∑ b, |T (e b)|) * ‖z‖ := by rw [← Finset.mul_sum, mul_comm]
+    -- Squeeze: `‖DG_m(x) − Dg(x)‖ ≤ Σ_b |DG_m(x) e_b − Dg(x) e_b| → 0`.
+    filter_upwards [hae] with x hx
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun m => norm_nonneg _) (fun m => hnorm _) ?_
+    have hsum : Tendsto (fun m => ∑ b, |(fderiv ℝ (G m) x - fderiv ℝ g x) (e b)|) atTop
+        (𝓝 (∑ b, |fderiv ℝ g x (e b) - fderiv ℝ g x (e b)|)) := by
+      refine tendsto_finsetSum _ fun b _ => ?_
+      simp only [sub_apply]
+      exact ((hx b).sub_const _).abs
+    simpa using hsum
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
