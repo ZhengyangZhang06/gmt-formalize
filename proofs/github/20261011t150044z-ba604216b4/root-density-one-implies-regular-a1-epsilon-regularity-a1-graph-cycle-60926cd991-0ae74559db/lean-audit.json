@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "27c71b805fa1fd5ffe388b331a1f153d3ce408c9c254c1722a5fffee361ce6fd",
+  "git_delta": {
+    "base_commit": "6aa625ae4f1d4caf4e3050182ddee48c1bd98202",
+    "candidate_commit": "b481398838284784de357885d0dcb4166d11434a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dgce_left_inverse_chart_embedded",
+    "diff_sha256": "61fb5c95170255df35c7dd02623173083633b8ba53607f875dec8ca940f52845",
+    "source_sha256": "67a8e11449d0e72684bdf2534608492907df71bf816ba2703a18abb8e33c4065",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dgce_left_inverse_chart_embedded",
+      "statement": "∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → InjOn Φ (ball (0 : Euclid d) s) ∧ (∀ v ∈ ball (0 : Euclid d) s, DifferentiableAt ℝ Φ v ∧ Injective (fderiv ℝ Φ v)) ∧ IsEmbeddedSubmanifold 1 d (Φ '' ball (0 : Euclid d) s)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
