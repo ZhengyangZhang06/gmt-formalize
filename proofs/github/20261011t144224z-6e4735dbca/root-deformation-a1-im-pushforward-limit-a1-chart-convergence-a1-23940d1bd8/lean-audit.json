@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4a02d6da141e42e405ff099568d7b013912a550875b8cc08284842d122f91593",
+  "git_delta": {
+    "base_commit": "f6a63002080fd1ac274f0a2d5c2ffa18b87b3709",
+    "candidate_commit": "9aac4fc5a3d2d4f9b6a12fc32a2622a605183aab",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "c65b8940631746fe0e545a8e0d204031a6f4ae5b78a8ea290ec4bc3ba6851795",
+    "source_sha256": "4dcef7b542a1d044671c854c75c75c29909e13e37266824a6fa2f742592eba81",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_ipl_chart_convergence",
+      "statement": "∀ (P Q k : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (g : Eucl P → Eucl Q) (Λ : ℝ≥0) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → LipschitzWith Λ g → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => g (x + t • v)) (L x v) 0) → (∀ K : Set (Eucl Q), IsCompact K → IntegrableOn θ (M ∩ g ⁻¹' K) (μHE[k] : Measure (Eucl P))) → ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : Eucl Q → Covector (Eucl Q) k, Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (∫ x in M, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x)) ∂(μHE[k] : Measure (Eucl P))))",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
