@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "096e0933ffa8d59c53ea1118992ab15a657993c6fe0696de44a458928f1d248d",
+  "git_delta": {
+    "base_commit": "9a72e92cbf93d7793fa979016a274b6a397def8f",
+    "candidate_commit": "02defef5b53bfa87bc46ab6e0aae2209a00287d9",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_imc_quotient_rescale_tendsto_zero",
+    "diff_sha256": "483997789c2d32257bb775414291e5e736c0958cbced7d607cb90d4e175bce75",
+    "source_sha256": "3ca754c651147998c887bb379409ab10d04de6e11c5588b61d52f353f2b8a967",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_imc_quotient_rescale_tendsto_zero",
+      "statement": "∀ (k : ℕ) (F : ℝ → ℝ≥0∞), Tendsto (fun ρ : ℝ => F ρ / ENNReal.ofReal (ρ ^ k)) (𝓝[>] 0) (𝓝 0) → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * F (R * r)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
