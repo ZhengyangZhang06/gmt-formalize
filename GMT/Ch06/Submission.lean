@@ -359,6 +359,39 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Fatou selection of a good level (the "selection argument as in 6.7(2) of Ch. 2" in the proof
+of Simon Ch. 6, 8.2): if `∫⁻_{(a,b)} g_k ≤ C < ∞` for all `k` and `E` is countable, there are
+`γ ∈ (a, b) \ E`, a subsequence `σ` and `G < ∞` with `g_{σ(k)}(γ) ≤ G` for all `k`.  By Fatou,
+`∫⁻_{(a,b)} liminf_k g_k ≤ C`, so `liminf_k g_k(γ) < ∞` for some `γ ∈ (a, b) \ E` (`E` is
+Lebesgue-null); with `G = liminf_k g_k(γ) + 1`, `g_k(γ) < G` for infinitely many `k`. -/
+theorem Submission.ind_pi_ss_fatou_level_selection :
+    ∀ (g : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (C : ℝ≥0∞) (E : Set ℝ), a < b → (∀ k, Measurable (g k)) →
+      C < ∞ → (∀ k, ∫⁻ t in Ioo a b, g k t ≤ C) → E.Countable →
+      ∃ (γ : ℝ) (σ : ℕ → ℕ) (G : ℝ≥0∞), γ ∈ Ioo a b ∧ γ ∉ E ∧ StrictMono σ ∧ G < ∞ ∧
+        ∀ k, g (σ k) γ ≤ G := by
+  intro g a b C E hab hg hC hgC hE
+  -- Fatou: `F = liminf_k g_k` is measurable and `∫⁻_{(a,b)} F ≤ liminf_k ∫⁻_{(a,b)} g_k ≤ C`.
+  have hF : Measurable fun t => liminf (fun k => g k t) atTop := Measurable.liminf hg
+  have hFC : ∫⁻ t in Ioo a b, liminf (fun k => g k t) atTop ≤ C :=
+    (lintegral_liminf_le hg).trans (liminf_le_of_frequently_le' (Frequently.of_forall hgC))
+  -- For a.e. `t` w.r.t. `volume⌞(a, b)`: `F t < ∞`, `t ∉ E` (`E` is Lebesgue-null), `t ∈ (a, b)`.
+  have h₁ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), liminf (fun k => g k t) atTop < ∞ :=
+    ae_lt_top hF (hFC.trans_lt hC).ne
+  have h₂ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), t ∉ E :=
+    ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.1 (hE.measure_zero volume))
+  have h₃ : ∀ᵐ t ∂(volume.restrict (Ioo a b)), t ∈ Ioo a b := ae_restrict_mem measurableSet_Ioo
+  -- `volume (a, b) = b - a > 0`, so the a.e. filter is nontrivial and a good `γ` exists.
+  have hne : (ae (volume.restrict (Ioo a b))).NeBot := by
+    rw [ae_neBot, Ne, Measure.restrict_eq_zero, Real.volume_Ioo, ENNReal.ofReal_eq_zero, not_le]
+    exact sub_pos.2 hab
+  obtain ⟨γ, hγF, hγE, hγ⟩ := (h₁.and (h₂.and h₃)).exists
+  -- `G = F(γ) + 1 > liminf_k g_k(γ)`, so `g_k(γ) < G` frequently: extract `σ`.
+  have hG : liminf (fun k => g k γ) atTop < liminf (fun k => g k γ) atTop + 1 :=
+    ENNReal.lt_add_right hγF.ne one_ne_zero
+  obtain ⟨σ, hσ, hσG⟩ := extraction_of_frequently_atTop (frequently_lt_of_liminf_lt (h := hG))
+  exact ⟨γ, σ, _, hγ, hγE, hσ, ENNReal.add_lt_top.2 ⟨hγF, ENNReal.one_lt_top⟩,
+    fun k => (hσG k).le⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
