@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.rotation_divergence-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1",
+  "depth": 5,
+  "title": "Tangential divergence of the rotation field g·A of a plane",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, a, e, x ∈ ℝ^P, and let g : ℝ^P → ℝ be differentiable at x. Put A y := ⟨y,a⟩e − ⟨y,e⟩a and X(y) := g(y)·A y. Let T := approxTangentPlane n M x and let p := T.starProjection be the orthogonal projection onto T. Then tangentialDivergence n M X x = trace(p ∘ DX(x)) equals Dg(x)(p(A x)).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (a e x : Euclid P) (g : Euclid P → ℝ), DifferentiableAt ℝ g x → tangentialDivergence n M (fun y : Euclid P => g y • (inner ℝ y a • e - inner ℝ y e • a)) x = fderiv ℝ g x ((approxTangentPlane n M x).starProjection (inner ℝ x a • e - inner ℝ x e • a))",
+  "lean_name": "idtp_cse_rc_rotation_divergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5b2c84852d-a1"
+}

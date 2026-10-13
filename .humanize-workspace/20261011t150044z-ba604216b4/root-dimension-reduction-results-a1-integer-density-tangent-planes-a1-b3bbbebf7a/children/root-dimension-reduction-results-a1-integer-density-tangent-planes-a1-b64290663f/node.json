@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.angle_fderiv-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1",
+  "depth": 5,
+  "title": "Projection norm and differential of the polar angle in Q",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a 2-dimensional linear subspace with orthogonal projection π := Q.starProjection, and let a, e ∈ Q with |a| = |e| = 1 and ⟨a,e⟩ = 0. Put f(y) := arctan(⟨y,e⟩/⟨y,a⟩). Then (i) |πy|² = ⟨y,a⟩² + ⟨y,e⟩² for every y ∈ ℝ^P. (ii) For every x with ⟨x,a⟩ > 0, f is C¹ on a neighbourhood of x and Df(x)v = ⟨⟨x,a⟩e − ⟨x,e⟩a, v⟩/|πx|² for every v ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ y : Euclid P, ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ContDiffAt ℝ 1 (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x ∧ ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x v = inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2",
+  "lean_name": "idtp_cse_rc_angle_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b64290663f-a1"
+}

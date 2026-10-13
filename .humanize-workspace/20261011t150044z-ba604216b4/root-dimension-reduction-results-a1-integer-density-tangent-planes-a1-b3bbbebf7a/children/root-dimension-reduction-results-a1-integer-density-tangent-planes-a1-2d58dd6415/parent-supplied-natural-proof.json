@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of dag.json: selected node rotation_conservation-a1 (depth 4, depends_on []), parent cone_sector_endpoint_density-a1 and its 11 children (lean_name/status/depends_on/lean_statement)",
+        "python3 scan of dag.json for lean_name in {imrep_approxTangent_starProjection_aesm, dsmc_firstVariation_eq_integral} (both accepted) and for lean_statements containing tangentialDivergence, smoothTransition, fderiv or LinearMap.trace",
+        "grep -c idtp_cse_rc_ dag.json; grep -rl idtp_cse_rc_ nodes/ local-references/123e8435b4a2469b/project; grep -rl --include=*.lean idtp_cse_rc_ .swarm-worktrees/*/gmt-ch07/GMT (all no match)",
+        "git show 1d65cf6d4d473fe727cd0ad43b45f3adfea87280:GMT/Ch07/Submission.lean (proof base = bare contract); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+        "grep -rn 'trace_smulRight|trace_comp_comm|trace_eq_sum_inner' Mathlib; grep smoothTransition Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "grep -rn 'inner_starProjection_left_eq_right|eq_starProjection_of_mem_of_inner_eq_zero|norm_sq_eq_add_norm_sq_starProjection|starProjection_orthogonal_val|starProjection_eq_sum_rankOne' Mathlib/Analysis/InnerProductSpace",
+        "grep -rn 'HasFDerivAt.smul|HasFDerivAt.mul|HasFDerivAt.pow|hasDerivAt_inv|HasFDerivAt.div|hasStrictFDerivAt_norm_sq|contDiffAt_norm|arctan_strictMono|arctan_one|hasDerivAt_arctan|contDiff_arctan|support_deriv_subset|notMem_tsupport_iff_eventuallyEq|pi_gt_three|two_le_pi|eq_of_le_of_finrank_eq|finrank_span_eq_card' Mathlib",
+        "grep -rl 'theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner' .swarm-worktrees/*/gmt-ch07/GMT/Ch07 (accepted helper; Mathlib's trace_eq_sum_inner suffices instead)",
+        "cmp of every cited Mathlib file between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical)",
+        "lake env lean /tmp/rc_decomp/Stmts.lean (4 child types elaborate; hypothesis-only parent assembly; #print axioms parent_from_children: propext, Classical.choice, Quot.sound)",
+        "lake env lean /tmp/rc_decomp/Full.lean (all 4 children proved without sorry; parent_given_external from children + external lemma types; #print axioms: propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Pow.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/680526641c473b4bafe0/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/tmp/rc_decomp/Stmts.lean",
+        "/tmp/rc_decomp/Small.lean",
+        "/tmp/rc_decomp/Test.lean",
+        "/tmp/rc_decomp/Full.lean"
+      ],
+      "conclusion": "The frozen opens and definitions of the snapshot and workspace Submission.lean (GMT.Ch07) are the compiler authority, with mathlib 25730c7c; the snapshot's Mathlib files equal .lake/packages/mathlib byte for byte. The proof base 1d65cf6 holds only the contract. The external lemmas imrep_approxTangent_starProjection_aesm and dsmc_firstVariation_eq_integral are accepted DAG nodes whose types match their use in the parent assembly. The children need no external lemma: they use only Mathlib. Relevant declarations exist at this pin: LinearMap.trace_smulRight, trace_comp_comm', trace_eq_sum_inner, Real.smoothTransition.{contDiffAt,one_of_one_le,zero_of_nonpos}, Submodule.{eq_starProjection_of_mem_of_inner_eq_zero,inner_starProjection_left_eq_right,norm_sq_eq_add_norm_sq_starProjection,starProjection_orthogonal_val}, HasFDerivAt.{fun_smul,fun_mul,pow}, hasDerivAt_inv, hasStrictFDerivAt_norm_sq, contDiffAt_norm, Real.{arctan_strictMono,arctan_one,arctan_neg,hasDerivAt_arctan,contDiff_arctan,two_le_pi}, support_deriv_subset and notMem_tsupport_iff_eventuallyEq. Some names are absent at this pin: HasFDerivAt.div for E -> R, HasFDerivAt.norm and an imported Real.pi_gt_three; the child proofs avoid them. The accepted helper fvmb_trace_starProjection_comp_eq_sum_inner is not needed. The four idtp_cse_rc_* names are unreserved. All four types elaborate. All four children are kernel-checked, and the exact parent type follows from them plus the two external lemma types with standard axioms only."
+    }
+  ],
+  "proof": "Source: step 4 of the parent proof.\nNotation: π := Q.starProjection and q(y) := y − πy.\n1. (Definition.) Let u(y) := |q(y)|²/(s²|y|²) and ζ(y) := smoothTransition((4/3)(1 − u(y))). Here Real.smoothTransition is Mathlib's C^∞ function with smoothTransition(t) = 0 for t ≤ 0 and smoothTransition(t) = 1 for t ≥ 1. The value at y = 0 plays no role.\n2. ((a) Smoothness off 0.) q is a continuous linear map, so y ↦ |q(y)|² is C^∞ (ContDiff.norm_sq). The map y ↦ s²|y|² is C^∞ (contDiff_norm_sq), and at x ≠ 0 its value s²|x|² is nonzero because s > 0. Hence u is C^∞ at x (ContDiffAt.div), and so is y ↦ (4/3)(1 − u(y)). Since smoothTransition is C^∞ (Real.smoothTransition.contDiffAt), ζ is C^∞, in particular C¹, at x.\n3. ((b)) Let x ≠ 0 with |q(x)| ≤ (s/2)|x|. Both sides are ≥ 0, so |q(x)|² ≤ (s²/4)|x|². Dividing by s²|x|² > 0 gives u(x) ≤ 1/4. Then (4/3)(1 − u(x)) ≥ (4/3)(3/4) = 1, so ζ(x) = 1 (Real.smoothTransition.one_of_one_le).\n4. ((c)) Let x ≠ 0 with s|x| ≤ |q(x)|. Then s²|x|² ≤ |q(x)|², so u(x) ≥ 1 and (4/3)(1 − u(x)) ≤ 0. Hence ζ(x) = 0 (Real.smoothTransition.zero_of_nonpos).\n5. ((d), first case.) Let x ≠ 0 with |q(x)| < (s/2)|x|. Let V := {y : y ≠ 0 and |q(y)| < (s/2)|y|}. V is open: it is the intersection of the open set {y ≠ 0} with a strict inequality between the continuous functions y ↦ |q(y)| and y ↦ (s/2)|y|. V contains x, and ζ = 1 on V by (b). So ζ agrees with the constant 1 on a neighbourhood of x, and Dζ(x) = 0 (Filter.EventuallyEq.fderiv_eq, fderiv_const_apply).\n6. ((d), second case.) Let x ≠ 0 with s|x| < |q(x)|. The set V' := {y : s|y| < |q(y)|} is open and contains x. Every y ∈ V' is nonzero, because at y = 0 both sides equal 0. So ζ = 0 on V' by (c), and Dζ(x) = 0.\n7. Hence ζ satisfies (a)–(d). ∎",
+  "key_steps": [
+    "Define ζ := smoothTransition((4/3)(1 − |q|²/(s²|y|²))) with q = id − π.",
+    "u = |q|²/(s²|y|²) is C^∞ away from 0, so ζ is C¹ at every x ≠ 0.",
+    "|q| ≤ (s/2)|x| gives u ≤ 1/4 and ζ = 1; |q| ≥ s|x| gives u ≥ 1 and ζ = 0.",
+    "ζ is constant on the open sets {y ≠ 0, |q(y)| < (s/2)|y|} and {s|y| < |q(y)|}, so Dζ(x) = 0 there."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
