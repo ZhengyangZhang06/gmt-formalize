@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "70b6df8daa414b7aaf6b11936a20287d7fc1c45800a982543432f7aa108bae08",
+  "git_delta": {
+    "base_commit": "85738094fd3af737a0d86bbb447b1e6970c592e1",
+    "candidate_commit": "e7e69ec54f3d6b2477c0ae8c9bd09ce9eee5b343",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_dsp_testForm_comp_dilation",
+    "diff_sha256": "fdf458b84d1876bfb074a8953e142ec24956dcd90a5804c39ea274f9fb0b50cf",
+    "source_sha256": "9a6fe70662ba1fdb92b34ca82cf4f45d8d7b020e2b93cd065b853b67aa6c4000",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_dsp_testForm_comp_dilation",
+      "statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ φ : TestFormOn (univ : Set (Euclid P)) m, ∃ φ' : TestFormOn (univ : Set (Euclid P)) m, ∀ y : Euclid P, (φ' : DifferentialForm (Euclid P) m) y = (φ : DifferentialForm (Euclid P) m) (dilation a lam y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
