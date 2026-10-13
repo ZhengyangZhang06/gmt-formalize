@@ -732,6 +732,125 @@ theorem Submission.codim1_rdo_dg_hr_ae_translate_monotone : ∀ (n : ℕ) (F : S
     with z hz hzF
   by_contra hzt
   norm_num [u, hzF, hzt] at hz
+/-- **Simon, Ch. 3, 4.3, the step to (9)** (a monotone set is null, co-null or a half-space): if a
+Borel `F ⊆ ℝⁿ` has `z ∈ F ⇒ z + a ∈ F` for a.e. `z`, for each `a` with `⟨a, v⟩ ≥ 0`, then `F` is
+null, co-null, or a.e. equal to `{⟨z, v⟩ > c}`.  Translating `B̄_r(z₁)` onto `B̄_r(z₀)` shows that a
+point `z₁` of density `1` lies strictly further along `v` than a point `z₀` of density `0`.  With
+`c = sup ⟨z₀, v⟩`, the Lebesgue density theorem puts `F Δ {⟨z, v⟩ > c}` inside a null set and the
+null hyperplane `{⟨z, v⟩ = c}`. -/
+theorem Submission.codim1_rdo_dg_hr_monotone_set_trichotomy : ∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ a : EuclideanSpace ℝ (Fin n), 0 ≤ inner ℝ a v → ∀ᵐ z ∂volume, z ∈ F → z + a ∈ F) → volume F = 0 ∨ volume Fᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F {z | c < inner ℝ z v}) = 0 := by
+  intro n F v hF hmono
+  -- a point of density `1` lies strictly further along `v` than a point of density `0`
+  have hord : ∀ z₁ z₀ : EuclideanSpace ℝ (Fin n),
+      Tendsto (fun r => volume (F ∩ closedBall z₁ r) / volume (closedBall z₁ r)) (𝓝[>] 0) (𝓝 1) →
+      Tendsto (fun r => volume (F ∩ closedBall z₀ r) / volume (closedBall z₀ r)) (𝓝[>] 0) (𝓝 0) →
+      inner ℝ z₀ v < inner ℝ z₁ v := by
+    intro z₁ z₀ h₁ h₀
+    by_contra hlt
+    rw [not_lt] at hlt
+    -- `z ↦ z + (z₀ - z₁)` keeps `F` a.e. and maps `B̄_r(z₁)` onto `B̄_r(z₀)`
+    have hnull : volume {z | ¬(z ∈ F → z + (z₀ - z₁) ∈ F)} = 0 :=
+      ae_iff.mp (hmono (z₀ - z₁) (by rw [inner_sub_left]; linarith))
+    have hball : ∀ r : ℝ, (fun z => z + (z₀ - z₁)) ⁻¹' closedBall z₀ r = closedBall z₁ r := by
+      intro r
+      ext z
+      simp only [mem_preimage, mem_closedBall, dist_eq_norm]
+      rw [show z + (z₀ - z₁) - z₀ = z - z₁ by abel]
+    have hle : ∀ r : ℝ, volume (F ∩ closedBall z₁ r) / volume (closedBall z₁ r) ≤
+        volume (F ∩ closedBall z₀ r) / volume (closedBall z₀ r) := by
+      intro r
+      have hsub : F ∩ closedBall z₁ r ⊆ (fun z => z + (z₀ - z₁)) ⁻¹' (F ∩ closedBall z₀ r) ∪
+          {z | ¬(z ∈ F → z + (z₀ - z₁) ∈ F)} := by
+        rintro z ⟨hzF, hzB⟩
+        by_cases h : z + (z₀ - z₁) ∈ F
+        · rw [← hball r] at hzB
+          exact Or.inl (show z + (z₀ - z₁) ∈ F ∩ closedBall z₀ r from ⟨h, hzB⟩)
+        · exact Or.inr fun himp => h (himp hzF)
+      have hden : volume (closedBall z₁ r) = volume (closedBall z₀ r) := by
+        rw [← hball r, measure_preimage_add_right]
+      rw [hden]
+      refine ENNReal.div_le_div_right ?_ _
+      calc volume (F ∩ closedBall z₁ r)
+          ≤ volume ((fun z => z + (z₀ - z₁)) ⁻¹' (F ∩ closedBall z₀ r) ∪
+              {z | ¬(z ∈ F → z + (z₀ - z₁) ∈ F)}) := measure_mono hsub
+        _ ≤ volume ((fun z => z + (z₀ - z₁)) ⁻¹' (F ∩ closedBall z₀ r)) +
+              volume {z | ¬(z ∈ F → z + (z₀ - z₁) ∈ F)} := measure_union_le _ _
+        _ = volume (F ∩ closedBall z₀ r) := by rw [hnull, add_zero, measure_preimage_add_right]
+    exact absurd (le_of_tendsto_of_tendsto' h₁ h₀ hle) (by simp)
+  -- Lebesgue density theorem: off a null set `N`, points of `F` have density `1` and points of
+  -- `Fᶜ` have density `0`
+  obtain ⟨N, hN0, hN⟩ : ∃ N : Set (EuclideanSpace ℝ (Fin n)), volume N = 0 ∧ ∀ x ∉ N,
+      Tendsto (fun r => volume (F ∩ closedBall x r) / volume (closedBall x r)) (𝓝[>] 0)
+        (𝓝 (F.indicator 1 x)) :=
+    ⟨_, ae_iff.mp (Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet volume hF),
+      fun x hx => not_not.mp hx⟩
+  have hA₁ : ∀ x ∈ F, x ∉ N →
+      Tendsto (fun r => volume (F ∩ closedBall x r) / volume (closedBall x r)) (𝓝[>] 0) (𝓝 1) := by
+    intro x hx hxN
+    simpa [indicator_of_mem hx] using hN x hxN
+  have hA₀ : ∀ x ∉ F, x ∉ N →
+      Tendsto (fun r => volume (F ∩ closedBall x r) / volume (closedBall x r)) (𝓝[>] 0) (𝓝 0) := by
+    intro x hx hxN
+    simpa [indicator_of_notMem hx] using hN x hxN
+  -- no point of density `1`: `F` is null
+  by_cases h₁ : ∃ z₁, Tendsto (fun r => volume (F ∩ closedBall z₁ r) / volume (closedBall z₁ r))
+      (𝓝[>] 0) (𝓝 1)
+  swap
+  · refine Or.inl (measure_mono_null (fun x hx => ?_) hN0)
+    by_contra hxN
+    exact h₁ ⟨x, hA₁ x hx hxN⟩
+  -- no point of density `0`: `Fᶜ` is null
+  by_cases h₀ : ∃ z₀, Tendsto (fun r => volume (F ∩ closedBall z₀ r) / volume (closedBall z₀ r))
+      (𝓝[>] 0) (𝓝 0)
+  swap
+  · refine Or.inr (Or.inl (measure_mono_null (fun x hx => ?_) hN0))
+    by_contra hxN
+    exact h₀ ⟨x, hA₀ x hx hxN⟩
+  obtain ⟨z₁, hz₁⟩ := h₁
+  obtain ⟨z₀, hz₀⟩ := h₀
+  -- `c = sup {⟨z₀, v⟩ : z₀ has density 0}` separates the two kinds of density points
+  obtain ⟨c, hc₀, hc₁⟩ : ∃ c : ℝ,
+      (∀ z, Tendsto (fun r => volume (F ∩ closedBall z r) / volume (closedBall z r)) (𝓝[>] 0)
+        (𝓝 0) → inner ℝ z v ≤ c) ∧
+      (∀ z, Tendsto (fun r => volume (F ∩ closedBall z r) / volume (closedBall z r)) (𝓝[>] 0)
+        (𝓝 1) → c ≤ inner ℝ z v) := by
+    refine ⟨sSup ((fun z => inner ℝ z v) '' {z | Tendsto (fun r => volume (F ∩ closedBall z r) /
+      volume (closedBall z r)) (𝓝[>] 0) (𝓝 0)}), fun z hz => le_csSup ⟨inner ℝ z₁ v, ?_⟩
+      ⟨z, hz, rfl⟩, fun z hz => csSup_le ⟨_, z₀, hz₀, rfl⟩ ?_⟩
+    · rintro _ ⟨w, hw, rfl⟩
+      exact (hord z₁ w hz₁ hw).le
+    · rintro _ ⟨w, hw, rfl⟩
+      exact (hord z w hz hw).le
+  -- the hyperplane `{⟨z, v⟩ = c}` is null, since `v ≠ 0`
+  have hv : v ≠ 0 := by
+    rintro rfl
+    simpa using hord z₁ z₀ hz₁ hz₀
+  have hP : volume {z : EuclideanSpace ℝ (Fin n) | inner ℝ z v = c} = 0 := by
+    have hvv : inner ℝ v v ≠ 0 := inner_self_ne_zero.mpr hv
+    refine measure_mono_null (t := (AffineSubspace.mk' ((c / inner ℝ v v) • v)
+      (LinearMap.ker (innerₛₗ ℝ v)) : Set (EuclideanSpace ℝ (Fin n)))) (fun z hz => ?_)
+      (Measure.addHaar_affineSubspace _ _ fun h => ?_)
+    · replace hz : inner ℝ z v = c := hz
+      rw [SetLike.mem_coe, AffineSubspace.mem_mk', vsub_eq_sub, LinearMap.mem_ker,
+        innerₛₗ_apply_apply, inner_sub_right, real_inner_smul_right, div_mul_cancel₀ c hvv,
+        real_inner_comm z v, hz, sub_self]
+    · have hmem : (c / inner ℝ v v) • v + v ∈ AffineSubspace.mk' ((c / inner ℝ v v) • v)
+          (LinearMap.ker (innerₛₗ ℝ v)) := by
+        rw [h]
+        exact AffineSubspace.mem_top _ _ _
+      rw [AffineSubspace.mem_mk', vsub_eq_sub, add_sub_cancel_left, LinearMap.mem_ker,
+        innerₛₗ_apply_apply] at hmem
+      exact hvv hmem
+  -- `F Δ {⟨z, v⟩ > c} ⊆ N ∪ {⟨z, v⟩ = c}`
+  refine Or.inr (Or.inr ⟨c, measure_mono_null (fun z hz => ?_) (measure_union_null hN0 hP)⟩)
+  rcases mem_symmDiff.mp hz with ⟨hzF, hzH⟩ | ⟨hzH, hzF⟩
+  · by_cases hzN : z ∈ N
+    · exact Or.inl hzN
+    · exact Or.inr (le_antisymm (not_lt.mp (show ¬c < inner ℝ z v from hzH))
+        (hc₁ z (hA₁ z hzF hzN)))
+  · by_cases hzN : z ∈ N
+    · exact Or.inl hzN
+    · exact absurd (show c < inner ℝ z v from hzH) (not_lt.mpr (hc₀ z (hA₀ z hzF hzN)))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
