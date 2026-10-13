@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8593ede9b3064955b552670aa92b6d528db50911c4cd785e262d6f4c97ba0f6e",
+  "git_delta": {
+    "base_commit": "a3bbb630c941ddddb755839454e9c9758e3c91ef",
+    "candidate_commit": "c094590ca5c1ade4e8dddd88e60bb84c5623209c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_vdl_integral_divergence_eq_zero",
+    "diff_sha256": "d05de99d57d11a007ac530d7bf5c15c1c7263f41819ba76434e3f738adf487ae",
+    "source_sha256": "3ac29f9543460b3da8da8d0a5fe9667867e4f393b21b96f6eb952292c83501b2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_vdl_integral_divergence_eq_zero",
+      "statement": "∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
