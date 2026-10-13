@@ -451,6 +451,61 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Co-area formula for real-valued integrands (Simon Ch. 6, 4.1 applied to `q⁺` and `q⁻`).
+Assume the co-area identity (CF) for every Borel `g ≥ 0` on the slices `M ∩ f⁻¹(t)`, and let
+`q` be Borel with `∫_M |G| |q| dHⁿ⁺¹ < ∞`.  Then `q` is `Hⁿ`-integrable on a.e. slice, the slice
+integral `F(t) = ∫_{M ∩ f⁻¹(t)} q dHⁿ` is integrable on `ℝ`, and `∫ F dt = ∫_M |G| q dHⁿ⁺¹`.
+
+Proof sketch:
+* (CF) for `|q|`, `q⁺`, `q⁻` gives a.e.-measurable slice integrals `A`, `A⁺`, `A⁻` with
+  `∫ A dt = ∫_M |G| |q| dHⁿ⁺¹ < ∞` and `A⁺, A⁻ ≤ A`.
+* `A(t) < ∞` for a.e. `t`, so `q` is integrable on a.e. slice and there
+  `F(t) = A⁺(t).toReal - A⁻(t).toReal`; with `|F| ≤ A` this makes `F` integrable.
+* `∫ F = (∫ A⁺).toReal - (∫ A⁻).toReal = (∫_M |G| q⁺).toReal - (∫_M |G| q⁻).toReal`, which is
+  `∫_M |G| q dHⁿ⁺¹` by the same positive/negative part decomposition. -/
+theorem Submission.dtc_bc_lc_sl_sf_coarea_signed : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), MeasurableSet M → Measurable f → Measurable G → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → ∀ q : Euclid P → ℝ, Measurable q → ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * ENNReal.ofReal |q x| ∂μHE[n + 1] ≠ ∞ → (∀ᵐ t, IntegrableOn q (M ∩ f ⁻¹' {t}) μHE[n]) ∧ Integrable (fun t => ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n]) ∧ ∫ t, ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n] = ∫ x in M, ‖G x‖ * q x ∂μHE[n + 1] := by
+  intro P n M f G hM hf hG hCF q hq hfin
+  -- Step 1: (CF) for `|q|`, `q⁺ = ofReal q` and `q⁻ = ofReal (-q)`
+  obtain ⟨hAm, hA⟩ := hCF (fun x => ENNReal.ofReal |q x|) hq.norm.ennreal_ofReal
+  obtain ⟨hAmP, hAP⟩ := hCF (fun x => ENNReal.ofReal (q x)) hq.ennreal_ofReal
+  obtain ⟨hAmN, hAN⟩ := hCF (fun x => ENNReal.ofReal (-q x)) hq.neg.ennreal_ofReal
+  have hAfin : ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal |q x| ∂μHE[n] ≠ ∞ := by
+    rw [hA]; exact hfin
+  have hAfinP : ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (q x) ∂μHE[n] ≠ ∞ :=
+    ne_top_of_le_ne_top hAfin <| lintegral_mono fun t =>
+      lintegral_mono fun x => ENNReal.ofReal_le_ofReal (le_abs_self _)
+  have hAfinN : ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (-q x) ∂μHE[n] ≠ ∞ :=
+    ne_top_of_le_ne_top hAfin <| lintegral_mono fun t =>
+      lintegral_mono fun x => ENNReal.ofReal_le_ofReal (neg_le_abs _)
+  -- Step 2: `q` is integrable on almost every slice
+  have h1 : ∀ᵐ t, IntegrableOn q (M ∩ f ⁻¹' {t}) μHE[n] := by
+    filter_upwards [ae_lt_top' hAm hAfin] with t ht
+    refine ⟨hq.aestronglyMeasurable, ?_⟩
+    simpa only [HasFiniteIntegral, Real.enorm_eq_ofReal_abs] using ht
+  -- Step 3: the slice integral is a.e. the difference of the real parts of `A⁺` and `A⁻`
+  have hF : (fun t => ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n]) =ᵐ[volume] fun t =>
+      (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (q x) ∂μHE[n]).toReal -
+        (∫⁻ x in M ∩ f ⁻¹' {t}, ENNReal.ofReal (-q x) ∂μHE[n]).toReal := by
+    filter_upwards [h1] with t ht
+    exact integral_eq_lintegral_pos_part_sub_lintegral_neg_part ht
+  have hiP := integrable_toReal_of_lintegral_ne_top hAmP hAfinP
+  have hiN := integrable_toReal_of_lintegral_ne_top hAmN hAfinN
+  -- Step 4: `|F| ≤ A`, hence `F` is integrable
+  have h2 : Integrable (fun t => ∫ x in M ∩ f ⁻¹' {t}, q x ∂μHE[n]) := by
+    refine ⟨(hiP.sub hiN).aestronglyMeasurable.congr hF.symm, ?_⟩
+    refine lt_of_le_of_lt (lintegral_mono fun t => ?_) hAfin.lt_top
+    simpa only [Real.enorm_eq_ofReal_abs] using enorm_integral_le_lintegral_enorm q
+  refine ⟨h1, h2, ?_⟩
+  -- Steps 5–8: compare both sides through positive and negative parts
+  have hint : IntegrableOn (fun x => ‖G x‖ * q x) M μHE[n + 1] := by
+    refine ⟨(hG.norm.mul hq).aestronglyMeasurable, ?_⟩
+    refine lt_of_le_of_lt (le_of_eq (lintegral_congr fun x => ?_)) hfin.lt_top
+    rw [Real.enorm_eq_ofReal_abs, abs_mul, abs_norm, ENNReal.ofReal_mul (norm_nonneg _)]
+  rw [integral_congr_ae hF, integral_sub hiP hiN, integral_toReal hAmP (ae_lt_top' hAmP hAfinP),
+    integral_toReal hAmN (ae_lt_top' hAmN hAfinN), hAP, hAN,
+    integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint]
+  simp_rw [← mul_neg, ENNReal.ofReal_mul (norm_nonneg _)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
