@@ -1175,6 +1175,20 @@ theorem Submission.rectifiability_density_comparison : ∀ (P n : ℕ) (ν : Mea
       gcongr
     _ ≤ ν V := hsum
 
+/-- Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if
+`∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every
+`R > 0`, `r⁻ᵏ ∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0` as `r → 0+`.  The unit-scale case
+`ρ⁻ᵏ ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ → 0` is `lpf_wtc_ae_zero_density_off_set`; the change of scale
+`ρ = Rr` is `iwl_imc_quotient_rescale_tendsto_zero`. -/
+theorem Submission.iwl_imc_density_zero_off_set : ∀ (P k : ℕ) (U S : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen U → NullMeasurableSet S (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∫⁻ y in S ∩ K, g y ∂(μHE[k] : Measure (Eucl P)) < ∞) → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ U → x ∉ S → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in S ∩ closedBall x (R * r), g y ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0) := by
+  intro P k U S g hU hS hg
+  -- Unit scale: for `Hᵏ`-a.e. `x ∈ U \ S`, `F_x(ρ) / ρᵏ → 0`, `F_x(ρ) = ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ`.
+  filter_upwards [Submission.lpf_wtc_ae_zero_density_off_set P k U S g hU hS hg]
+    with x hx hxU hxS R hR
+  -- Change of scale `ρ = Rr`: `r⁻ᵏ F_x(Rr) → 0`.
+  exact Submission.iwl_imc_quotient_rescale_tendsto_zero k
+    (fun ρ => ∫⁻ y in S ∩ closedBall x ρ, g y ∂(μHE[k] : Measure (Eucl P))) (hx hxU hxS) R hR
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
