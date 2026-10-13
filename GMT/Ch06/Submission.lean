@@ -359,6 +359,57 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Pointwise integrand identity of the radial homotopy formula: for `L : E →L[ℝ] Λ^{k+1}(E)`,
+`α ∈ Λ^{k+1}(E)`, `x ∈ E`, `u ∈ E^{k+1}`, `t ∈ ℝ` and `û_j = removeNth j u`,
+`t^{k+1} Alt(L)(x, u) + ∑_j (-1)^j t^k (t L(u_j)(x, û_j) + α(u_j, û_j))
+  = t^{k+1} L(x)(u) + (k + 1) t^k α(u)`.
+Expanding `Alt(L)(x, u) = L(x)(u) - ∑_j (-1)^j L(u_j)(x, û_j)` cancels the `t^{k+1}` cross
+terms, and `alternatizeUncurryFin (curryLeft α) = (k + 1) • α` evaluates the `α`-sum. -/
+theorem Submission.iwl_cr_rh_integrand_identity :
+    ∀ (P k : ℕ) (L : Eucl P →L[ℝ] Covector (Eucl P) (k + 1)) (α : Covector (Eucl P) (k + 1))
+      (x : Eucl P) (u : Fin (k + 1) → Eucl P) (t : ℝ),
+      t ^ (k + 1) * ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) +
+          ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+            (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) +
+              α (Fin.cons (u j) (Fin.removeNth j u)))) =
+        t ^ (k + 1) * L x u + ((k : ℝ) + 1) * t ^ k * α u := by
+  intro P k L α x u t
+  -- `removeNth (j + 1) (x, u) = (x, removeNth j u)`.
+  have hrem : ∀ j : Fin (k + 1),
+      Fin.removeNth j.succ (Fin.cons x u : Fin (k + 2) → Eucl P) =
+        Fin.cons x (Fin.removeNth j u) :=
+    fun j => Fin.cons_comp_succ_succAbove x u j
+  -- Split `Alt(L)(x, u)` into the index `0` and the indices `j.succ`.
+  have hA : ContinuousAlternatingMap.alternatizeUncurryFin L (Fin.cons x u) =
+      L x u - ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+        L (u j) (Fin.cons x (Fin.removeNth j u)) := by
+    rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero, Fin.removeNth_zero, Fin.tail_cons,
+      Fin.val_succ, Fin.cons_succ, hrem, zsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one,
+      pow_succ, mul_neg, mul_one, neg_mul, Finset.sum_neg_distrib, sub_eq_add_neg]
+  -- `∑_j (-1)^j α(u_j, û_j) = (k + 1) α(u)`: evaluate `Alt(curryLeft α) = (k + 1) • α` at `u`.
+  have hB : ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) * α (Fin.cons (u j) (Fin.removeNth j u)) =
+      ((k : ℝ) + 1) * α u := by
+    have h := congrArg (fun f => f u) (ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft α)
+    simp only [ContinuousAlternatingMap.alternatizeUncurryFin_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply, ContinuousAlternatingMap.smul_apply,
+      zsmul_eq_mul, nsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one, Nat.cast_add,
+      Nat.cast_one] at h
+    exact h
+  -- Distribute `(-1)^j t^k (t a_j + b_j) = t^{k+1} (-1)^j a_j + t^k (-1)^j b_j` over the sum.
+  have hsum : ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+        (t ^ k * (t * L (u j) (Fin.cons x (Fin.removeNth j u)) +
+          α (Fin.cons (u j) (Fin.removeNth j u)))) =
+      t ^ (k + 1) * ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+          L (u j) (Fin.cons x (Fin.removeNth j u)) +
+        t ^ k * ∑ j : Fin (k + 1), (-1 : ℝ) ^ (j : ℕ) *
+          α (Fin.cons (u j) (Fin.removeNth j u)) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  rw [hA, hsum, hB]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
