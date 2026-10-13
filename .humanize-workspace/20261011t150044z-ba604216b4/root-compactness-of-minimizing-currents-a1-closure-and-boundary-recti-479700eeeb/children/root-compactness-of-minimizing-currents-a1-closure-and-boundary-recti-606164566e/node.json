@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1.weighted_field-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1",
+  "depth": 5,
+  "title": "θζ is strongly measurable with finite ∫_M‖θζ‖ when |ζ(x)(α)| ≤ |α|_E",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on ℝ^P and M ⊆ ℝ^P measurable. Let θ : ℝ^P → ℝ be measurable with θ > 0 on M and ∫⁻_M ofReal(θ) dμ < ∞. Let ζ : ℝ^P → MultiVector P n be strongly measurable with |ζ(x)(α)| ≤ covectorEuclideanNorm(α) for every x ∈ ℝ^P and every n-covector α. Then x ↦ θ(x)•ζ(x) is strongly measurable and ∫⁻_M ‖θ(x)•ζ(x)‖ₑ dμ(x) < ∞, where ‖·‖ is the operator norm on MultiVector P n.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μ < ∞ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → StronglyMeasurable (fun x => θ x • ζ x) ∧ ∫⁻ x in M, ‖θ x • ζ x‖ₑ ∂μ < ∞",
+  "lean_name": "cbr_ci_gp_weighted_field_l1",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-606164566e-a1"
+}

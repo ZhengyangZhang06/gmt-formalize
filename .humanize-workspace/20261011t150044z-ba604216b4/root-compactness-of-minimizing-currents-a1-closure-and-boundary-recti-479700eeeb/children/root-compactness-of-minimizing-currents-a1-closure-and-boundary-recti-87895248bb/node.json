@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1.upper_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1",
+  "depth": 5,
+  "title": "Hⁿ⌞M has upper density at most 1 at almost every point (Simon 1.3.26(1))",
+  "statement": "Let P, n ∈ ℕ and assume (IB): μHE[n] ≤ (ω_n/2ⁿ)·μH[n] as measures on ℝ^P, where ω_n = unitBallVolume n. Let M ⊆ ℝ^P be Borel with μHE[n](M) < ∞. Then for μHE[n]⌞M-almost every a ∈ ℝ^P, limsup_{r→0+} μHE[n](M ∩ B̄_r(a))/(ω_n·rⁿ) ≤ 1. The quotients are taken in [0, ∞], with ω_n·rⁿ written unitBallVolume n * ofReal(rⁿ).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P)) → MeasurableSet M → μHE[n] M < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1",
+  "lean_name": "cbr_ci_gp_upper_density_le_one",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1.density_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1.density_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-87895248bb-a1"
+}
