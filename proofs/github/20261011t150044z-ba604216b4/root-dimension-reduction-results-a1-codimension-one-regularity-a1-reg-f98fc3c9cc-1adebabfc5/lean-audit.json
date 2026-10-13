@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1d93460d3616a4c9bd8b220e3c9c669e82b99e809d2f4eeed9c21e29a3e4291d",
+  "git_delta": {
+    "base_commit": "aee78704199e04371a8bb7d8442eea61a7f1696c",
+    "candidate_commit": "756999fdc8c639d43194eff3f9153ab20893808e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1a_whitney_remainder",
+    "diff_sha256": "87591c93d1f8e02f2632c3c12f525c64aa9ea769099d6b3cad7fae744b3abb11",
+    "source_sha256": "d6335a976b3a23cd0ffda77953aa3c02fa41a9a7b8670897a817ce4fdfb39fe9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1a_whitney_remainder",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (L : NNReal) (C : Set (Euclid n)), LipschitzWith L f → IsClosed C → (∀ x ∈ C, DifferentiableAt ℝ f x) → ContinuousOn (fderiv ℝ f) C → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Euclid n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < ε ∧ ∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → ∀ ε' : ℝ, 0 < ε' → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖f y - f x - fderiv ℝ f x (y - x)‖ ≤ ε' * ‖y - x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
