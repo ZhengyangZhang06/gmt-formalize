@@ -474,6 +474,56 @@ theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodu
     Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
   rfl
 
+/-- `ν(B_r(x)) ≤ ωₙrⁿ σ(B_r(x − p_V x))` when `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)` for a
+subspace `V` with `dim V = n` and a measure `σ` carried by `Vᗮ`.  Write `x = p₀ + q₀` with
+`p₀ = p_V x ∈ V` and `q₀ = x − p_V x ∈ Vᗮ`.  For `t ∈ V` and `z ∈ Vᗮ`, Pythagoras gives
+`|t + z − x|² = |t − p₀|² + |z − q₀|²`, so `t + z ∈ B_r(x)` forces `t ∈ B_r(p₀)` and
+`z ∈ B_r(q₀)`.  Hence `σ({y : t + y ∈ B_r(x)}) ≤ 1_{B_r(p₀)}(t) σ(B_r(q₀))`, and integrating over
+`V` gives `ν(B_r(x)) ≤ σ(B_r(q₀)) Hⁿ(V ∩ B_r(p₀)) = ωₙrⁿ σ(B_r(q₀))`. -/
+theorem Submission.cbr_ci_cp_atm_ball_le_transversal_ball : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ∀ (x : Euclid P) (r : ℝ), 0 < r → ν (ball x r) ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball (x - V.starProjection x) r) := by
+  intro P n ν σ V hn hσ hν x r hr
+  -- `x = p₀ + q₀` with `p₀ = p_V x ∈ V` and `q₀ = x − p₀ ∈ Vᗮ`
+  set p₀ := V.starProjection x
+  have hp₀ : p₀ ∈ V := V.starProjection_apply_mem x
+  have hq₀ : x - p₀ ∈ Vᗮ := V.sub_starProjection_mem_orthogonal x
+  -- Pythagoras: for `t ∈ V` and `z ∈ Vᗮ`, `t + z ∈ B_r(x)` forces `t ∈ B_r(p₀)`, `z ∈ B_r(q₀)`
+  have hpyth : ∀ t ∈ V, ∀ z ∈ Vᗮ, t + z ∈ ball x r →
+      t ∈ ball p₀ r ∧ z ∈ ball (x - p₀) r := by
+    intro t ht z hz htz
+    have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_real
+      (V.inner_right_of_mem_orthogonal (V.sub_mem ht hp₀) (Vᗮ.sub_mem hz hq₀))
+    rw [show t - p₀ + (z - (x - p₀)) = t + z - x by abel] at hpy
+    simp only [mem_ball, dist_eq_norm] at htz ⊢
+    have hlt : ‖t + z - x‖ * ‖t + z - x‖ < r * r := mul_self_lt_mul_self (norm_nonneg _) htz
+    constructor
+    · exact (mul_self_lt_mul_self_iff (norm_nonneg _) hr.le).2
+        (by linarith [mul_self_nonneg ‖z - (x - p₀)‖])
+    · exact (mul_self_lt_mul_self_iff (norm_nonneg _) hr.le).2
+        (by linarith [mul_self_nonneg ‖t - p₀‖])
+  -- `σ` is carried by `Vᗮ`, so `σ({y : t + y ∈ B_r(x)}) ≤ 1_{B_r(p₀)}(t) σ(B_r(q₀))` on `V`
+  have hslice : ∀ t ∈ (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' ball x r) ≤
+      (ball p₀ r).indicator (fun _ => σ (ball (x - p₀) r)) t := by
+    intro t ht
+    rw [← measure_inter_conull (s := (fun y => t + y) ⁻¹' ball x r) hσ]
+    by_cases htp : t ∈ ball p₀ r
+    · rw [indicator_of_mem htp]
+      exact measure_mono fun z hz => (hpyth t ht z hz.2 hz.1).2
+    · have hempty : (fun y => t + y) ⁻¹' ball x r ∩ (Vᗮ : Set (Euclid P)) = ∅ :=
+        eq_empty_of_forall_notMem fun z hz => htp (hpyth t ht z hz.2 hz.1).1
+      rw [indicator_of_notMem htp, hempty, measure_empty]
+  -- integrate over `V` and use `Hⁿ(V ∩ B_r(p₀)) = ωₙrⁿ`
+  calc ν (ball x r)
+      = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' ball x r) ∂μHE[n] :=
+        hν _ measurableSet_ball
+    _ ≤ ∫⁻ t in (V : Set (Euclid P)),
+          (ball p₀ r).indicator (fun _ => σ (ball (x - p₀) r)) t ∂μHE[n] :=
+        setLIntegral_mono' V.closed_of_finiteDimensional.measurableSet hslice
+    _ = σ (ball (x - p₀) r) * μHE[n] ((V : Set (Euclid P)) ∩ ball p₀ r) := by
+        rw [lintegral_indicator_const measurableSet_ball, Measure.restrict_apply measurableSet_ball,
+          inter_comm]
+    _ = unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball (x - p₀) r) := by
+        rw [Submission.idtp_tdc_subspace_ball_measure P n V p₀ r hn hp₀ hr, mul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
