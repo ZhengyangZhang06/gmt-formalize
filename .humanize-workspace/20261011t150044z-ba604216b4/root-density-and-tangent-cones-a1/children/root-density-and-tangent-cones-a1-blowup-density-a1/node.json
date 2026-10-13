@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_density-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Density of blow-up limits (Simon 7.3.1 proof (1)–(4)): μ_C(B_ρ(0)) = ω_nρⁿΘ for every ρ",
+  "statement": "Let P ∈ ℕ, n ≥ 1, U ⊆ ℝ^P open, x ∈ U, T ∈ 𝒟_n(U) and C ∈ 𝒟_n(ℝ^P) both integer multiplicity, θ ∈ ℝ with HasMassDensity T x θ, and λ_j > 0 with λ_j → 0 such that μ_{η_{x,λ_j#}T} → μ_C for all integer multiplicity representations (MassMeasuresConverge (fun j ↦ blowUp T x λ_j) C). Then M_{B_ρ(0)}(C) = ω_n·ρⁿ·θ for every ρ > 0 (ω_n = unitBallVolume n; in [0, ∞] as unitBallVolume n · ofReal(ρⁿ) · ofReal θ), and HasMassDensity C 0 θ.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (θ : ℝ) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), IsOpen U → 0 < n → x ∈ U → IsIntegerMultiplicity T → IsIntegerMultiplicity C → Tendsto lams atTop (𝓝 0) → HasMassDensity T x θ → MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) * ENNReal.ofReal θ) ∧ HasMassDensity C 0 θ",
+  "lean_name": "dtc_blowUp_density",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-density-a1-a1"
+}
