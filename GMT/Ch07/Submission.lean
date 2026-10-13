@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Pointwise convergence to a constant plus an eventual uniform Lipschitz bound on a compact set
+gives uniform convergence (the ε/3 argument): cover `K` by finitely many `η`-balls centred in `K`,
+with `max L 0 * η < ε / 3`; eventually every centre is `ε / 3`-close to `a`, and each `x ∈ K` lies
+within `η` of a centre. -/
+theorem Submission.cbr_ci_pw_mu_uniform_of_equilipschitz : ∀ (n : ℕ) (K : Set (Euclid n)) (F : ℕ → Euclid n → ℝ) (a L : ℝ), IsCompact K → (∀ x ∈ K, Tendsto (fun k => F k x) atTop (𝓝 a)) → (∀ᶠ k in atTop, ∀ x ∈ K, ∀ x' ∈ K, |F k x - F k x'| ≤ L * dist x x') → TendstoUniformlyOn F (fun _ => a) atTop K := by
+  intro n K F a L hK hpt hL
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hM0 : 0 ≤ max L 0 := le_max_right L 0
+  have hη : 0 < ε / (3 * (max L 0 + 1)) := by positivity
+  have hMη : max L 0 * (ε / (3 * (max L 0 + 1))) < ε / 3 := by
+    rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  obtain ⟨t, htK, ht, hcover⟩ := hK.finite_cover_balls hη
+  have hnet : ∀ᶠ k in atTop, ∀ z ∈ t, |F k z - a| < ε / 3 :=
+    ht.eventually_all.2 fun z hz => by
+      simpa only [Real.dist_eq] using Metric.tendsto_nhds.1 (hpt z (htK hz)) (ε / 3) (by positivity)
+  filter_upwards [hnet, hL] with k hk hkL x hx
+  obtain ⟨z, hz, hxz⟩ := mem_iUnion₂.1 (hcover hx)
+  have hzx : |F k z - F k x| < ε / 3 :=
+    calc |F k z - F k x| ≤ L * dist z x := hkL z (htK hz) x hx
+      _ ≤ max L 0 * dist z x := mul_le_mul_of_nonneg_right (le_max_left L 0) dist_nonneg
+      _ ≤ max L 0 * (ε / (3 * (max L 0 + 1))) :=
+        mul_le_mul_of_nonneg_left (mem_ball'.1 hxz).le hM0
+      _ < ε / 3 := hMη
+  rw [Real.dist_eq]
+  have htri := abs_sub_le a (F k z) (F k x)
+  rw [abs_sub_comm a (F k z)] at htri
+  linarith [hk z hz]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
