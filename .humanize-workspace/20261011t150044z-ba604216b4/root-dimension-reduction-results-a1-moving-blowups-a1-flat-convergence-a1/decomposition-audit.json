@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure IMRep|def IMRep.measure|def CompactlyContained|instance : Sub|def boundaryMassOn|theorem main_theorem|dimred_mbl_fc_|dtc_vanish_off_support|flat_convergence' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "isCompact_univ_pi; IsCompact.tendsto_subseq; Monotone.countable_not_continuousAt; measurable_measure_prodMk_left; lintegral_liminf_le; Filter.Tendsto.liminf_le_liminf_comp",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 44ef61f79e2168134f8a5a6d6520baba56052d67 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j 2 /tmp/flat-convergence-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j 2 /tmp/flat-convergence-independent-audit/AcceptedSupport.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j 2 /tmp/flat-convergence-independent-audit/LibraryChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergence-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergence-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/flat-convergence-independent-audit/Assembly.lean",
+        "/tmp/flat-convergence-independent-audit/AcceptedSupport.lean",
+        "/tmp/flat-convergence-independent-audit/LibraryChecks.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match the pins; the working contract and submission match the snapshot byte-for-byte. All eight exact child propositions independently elaborate in comparator scope without child implementations. The seven new names have no DAG reservations; dtc_vanish_off_support has a comparator-accepted, identical frozen type, and its independently rechecked proof uses only propext, Classical.choice and Quot.sound. The supplied child edges and reachable prerequisite graph are acyclic. The split is appropriate: every child contributes to the selected flat-convergence proof. Rechecking the conditional assembly with exact prerequisite and child types proves the exact selected parent type using only the permitted axioms. The contracts contain no implementation-dependent aliases, placeholders, or problematic matrix constructions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U. Compactness and a subordinate smooth partition split the form into finitely many forms annihilated by S. Reuse has the identical accepted type and passes the independent axiom check."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mass bounds give absolute convergence of evaluations, linearity, and sequential continuity through the order-zero derivative bound. Taking the supremum over admissible forms proves the exact mass estimate. No openness or integer-multiplicity hypothesis is silently required."
+    },
+    {
+      "key": "good_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction makes the measures finite before Helly selection and Tonelli are used. Continuity of the limit distribution gives nonconcentration; two Fatou applications and extraction give a uniform finite slice bound. The filter-liminf comparison has the correct direction, and both conclusions transfer back to the original measures."
+    },
+    {
+      "key": "extend_to_univ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Support vanishing and ME make the carrier outside K Hausdorff-null. IR supplies the compact-carrier representation and its ambient current. The cutoff argument, including coefficient-norm homogeneity, proves boundary-mass control. All hypotheses and conclusions match the frozen type."
+    },
+    {
+      "key": "total_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Extension permits applying DF with uniform bounds. Finite boundary mass of the deformation filling permits BR, and IS then proves the remainder is integer multiplicity. Restriction preserves the identity and mass estimates, yielding the stated finite family without additional support assumptions."
+    },
+    {
+      "key": "cauchy_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Subtracting decompositions against one Q gives the claimed doubled error and integer-multiplicity differences. Infinite pigeonhole, nested index sets, and the stated diagonal indexing yield a strictly increasing subsequence with exactly the required geometric bound."
+    },
+    {
+      "key": "series_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The partial sums telescope with the correct indices. Both partial-sum sequences have uniformly bounded mass and boundary mass, justifying CL after applying series_current. Passing to the weak limit proves the identity, and the combined tail estimate gives exactly 2·2^(-ℓ)."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation facts discharge SL's measurability, orientation, and local-finiteness hypotheses. good_slice supplies both boundary-mass control and the concentration estimate needed for cutoff convergence. Compact support, integer multiplicity, agreement on W, and weak convergence are all proved, including the empty-W case; openness of W is unnecessary."
+    }
+  ],
+  "required_changes": []
+}
