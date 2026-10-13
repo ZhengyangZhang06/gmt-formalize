@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d00c19448b38be72794346c4d18ed1baf6153fbb6b878ed47d2403777770d2b2",
+  "git_delta": {
+    "base_commit": "46d914533103f27dd22b30eac9dc15f7ef08341c",
+    "candidate_commit": "c8a45015ae89460d63183d6cc075b0b57fea553e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmrc_measure_le_massOn_of_norming",
+    "diff_sha256": "a7d30a75e5a87189ba7b959f8e639d462e999be6af63621f0545054b271fabd4",
+    "source_sha256": "35316a3cf1b14d89e9cd25967f025aba354e80cb2ad8d68e33cb6ddfcee75d57",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmrc_measure_le_massOn_of_norming",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → AEStronglyMeasurable β μ → (∃ C : ℝ, ∀ x, ‖β x‖ ≤ C) → (∀ x, covectorEuclideanNorm (β x) ≤ 1) → (∀ᵐ x ∂μ, ξ x (β x) = 1) → ∀ W W' : Set (Euclid P), IsOpen W' → CompactlyContained W' U → W' ⊆ W → μ W' ≤ T.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
