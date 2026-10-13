@@ -451,6 +451,103 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+namespace Submission
+
+/-- Fundamental theorem of calculus for a Lipschitz `u` along the line `τ ↦ p + τ v`: if `u` is
+differentiable at `p + τ v` for a.e. `τ ∈ [a, b]`, then
+`u(p + b v) − u(p + a v) = ∫_a^b Du(p + τ v) v dτ`.  The difference quotients of
+`φ(τ) = u(p + τ v)` are bounded by `L ‖v‖`, so dominated convergence takes their integrals to
+`∫_a^b Du(p + τ v) v`; the same integrals are boundary averages of `φ`, which tend to
+`φ(b) − φ(a)`. -/
+theorem dorag_ha_rb_line_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (p v : Euclid n) (a b : ℝ), LipschitzWith L u → (∀ᵐ τ : ℝ, τ ∈ Set.uIcc a b → DifferentiableAt ℝ u (p + τ • v)) → u (p + b • v) - u (p + a • v) = ∫ τ in a..b, fderiv ℝ u (p + τ • v) v := by
+  intro n u L p v a b hu hdiff
+  -- `φ τ = u (p + τ • v)` is continuous and `L ‖v‖`-Lipschitz
+  set φ : ℝ → ℝ := fun τ => u (p + τ • v) with hφ
+  have hφcont : Continuous φ :=
+    hu.continuous.comp (continuous_const.add (continuous_id.smul continuous_const))
+  have hφlip : ∀ s t : ℝ, |φ s - φ t| ≤ L * ‖v‖ * |s - t| := by
+    intro s t
+    have h := hu.dist_le_mul (p + s • v) (p + t • v)
+    rw [Real.dist_eq, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul,
+      Real.norm_eq_abs] at h
+    calc |φ s - φ t| ≤ L * (|s - t| * ‖v‖) := h
+      _ = L * ‖v‖ * |s - t| := by ring
+  -- chain rule along the line
+  have hderiv : ∀ τ : ℝ, DifferentiableAt ℝ u (p + τ • v) →
+      HasDerivAt φ (fderiv ℝ u (p + τ • v) v) τ := by
+    intro τ hτ
+    have hγ : HasDerivAt (fun t : ℝ => p + t • v) v τ := by
+      simpa using ((hasDerivAt_id τ).smul_const v).const_add p
+    exact hτ.hasFDerivAt.comp_hasDerivAt τ hγ
+  -- dominated convergence for the difference quotients
+  have hlim1 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (∫ τ in a..b, fderiv ℝ u (p + τ • v) v)) := by
+    refine intervalIntegral.tendsto_integral_filter_of_dominated_convergence
+      (fun _ => (L : ℝ) * ‖v‖) ?_ ?_ intervalIntegrable_const ?_
+    · filter_upwards with h
+      exact (((hφcont.comp (continuous_id.add continuous_const)).sub hφcont).const_smul
+        h⁻¹).aestronglyMeasurable
+    · filter_upwards [self_mem_nhdsWithin] with h hh
+      filter_upwards with τ _
+      have hh' : (0 : ℝ) < h := hh
+      rw [norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_inv, abs_of_pos hh']
+      have := hφlip (τ + h) τ
+      rw [add_sub_cancel_left, abs_of_pos hh'] at this
+      calc h⁻¹ * |φ (τ + h) - φ τ| ≤ h⁻¹ * (L * ‖v‖ * h) :=
+            mul_le_mul_of_nonneg_left this (inv_nonneg.2 hh'.le)
+        _ = L * ‖v‖ := by field_simp
+    · filter_upwards [hdiff] with τ hτ hτ'
+      exact (hderiv τ (hτ (uIoc_subset_uIcc hτ'))).tendsto_slope_zero_right
+  -- the difference quotients integrate to boundary averages
+  set F : ℝ → ℝ := fun x => ∫ τ in (0 : ℝ)..x, φ τ with hF
+  have hFint : ∀ s t : ℝ, ∫ τ in s..t, φ τ = F t - F s := by
+    intro s t
+    exact (intervalIntegral.integral_interval_sub_left (hφcont.intervalIntegrable _ _)
+      (hφcont.intervalIntegrable _ _)).symm
+  have hkey : ∀ h : ℝ, ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)
+      = h⁻¹ • (F (b + h) - F b) - h⁻¹ • (F (a + h) - F a) := by
+    intro h
+    have hi : IntervalIntegrable (fun τ => φ (τ + h)) volume a b :=
+      (hφcont.comp (continuous_id.add continuous_const)).intervalIntegrable a b
+    rw [intervalIntegral.integral_smul, intervalIntegral.integral_sub hi
+      (hφcont.intervalIntegrable a b), intervalIntegral.integral_comp_add_right (fun τ => φ τ) h,
+      hFint, hFint]
+    simp only [smul_eq_mul]
+    ring
+  have hFd : ∀ x : ℝ, HasDerivAt F (φ x) x := fun x =>
+    (hφcont.integral_hasStrictDerivAt 0 x).hasDerivAt
+  have hlim2 : Tendsto (fun h : ℝ => ∫ τ in a..b, h⁻¹ • (φ (τ + h) - φ τ)) (𝓝[>] 0)
+      (𝓝 (φ b - φ a)) := by
+    simp_rw [hkey]
+    exact (hFd b).tendsto_slope_zero_right.sub (hFd a).tendsto_slope_zero_right
+  exact tendsto_nhds_unique hlim2 hlim1
+
+end Submission
+
+/-- FTC along rays through the origin: for an `L`-Lipschitz `u` and a.e. `x`,
+`u(x) − u(tx) = ∫_t^1 Du(σx)x dσ` for every `t`.  By Rademacher the differentiability set `D` of
+`u` is measurable and conull.  For `σ ≠ 0` the dilation `x ↦ σx` pulls null sets back to null sets
+(Haar scaling), so a.e. `x` has `σx ∈ D`; `σ = 0` is a null exception in `ℝ`.  Swapping the two
+a.e. quantifiers (`Measure.ae_ae_comm`, `{(σ, x) : σx ∈ D}` being measurable) gives a.e. `x` with
+`σx ∈ D` for a.e. `σ`, and for such `x` the line FTC `Submission.dorag_ha_rb_line_ftc` with
+`p = 0`, `v = x` applies for every `t`. -/
+theorem Submission.dorag_ha_rb_ray_ftc : ∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal), LipschitzWith L u → ∀ᵐ x : Euclid n, ∀ t : ℝ, u x - u (t • x) = ∫ σ in t..1, fderiv ℝ u (σ • x) x := by
+  intro n u L hu
+  -- for `σ ≠ 0`, a.e. `x` has `σ • x` in the (conull) differentiability set
+  have hσ : ∀ᵐ σ : ℝ, ∀ᵐ x : Euclid n, DifferentiableAt ℝ u (σ • x) := by
+    filter_upwards [Measure.ae_ne volume (0 : ℝ)] with σ hσ
+    exact (Measure.quasiMeasurePreserving_smul volume hσ).ae hu.ae_differentiableAt
+  -- swap the quantifiers: `{(σ, x) | DifferentiableAt ℝ u (σ • x)}` is measurable
+  have hx : ∀ᵐ x : Euclid n, ∀ᵐ σ : ℝ, DifferentiableAt ℝ u (σ • x) :=
+    (Measure.ae_ae_comm (p := fun (σ : ℝ) (x : Euclid n) => DifferentiableAt ℝ u (σ • x))
+      ((continuous_smul (M := ℝ) (X := Euclid n)).measurable
+        (measurableSet_of_differentiableAt ℝ u))).1 hσ
+  filter_upwards [hx] with x hx t
+  have h := Submission.dorag_ha_rb_line_ftc n u L 0 x t 1 hu (by
+    filter_upwards [hx] with σ hσ _
+    rwa [zero_add])
+  simpa only [zero_add, one_smul] using h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
