@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.tangent_locality-a1`
+- Child DAG node: `root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent-supplied proof (Simon Ch. 3, Remark 1.5(2) and 1.8(1)), where η_{x,r} = blowUpMap x r and Hⁿ = μHE[n] is translation invariant and n-homogeneous. Notation: H := μHE[n] and η := blowUpMap x r, η(z) = r⁻¹ • (z − x), with r > 0.
+
+1. η is a homeomorphism of ℝ^P. It is continuous, and w ↦ x + r • w is a continuous two-sided inverse: r⁻¹ • ((x + r•w) − x) = w and x + r • (r⁻¹ • (z − x)) = z, using r ≠ 0. Hence η is a bijection and a measurable embedding (Homeomorph.measurableEmbedding).
+
+2. Scaling of preimages. For every set F ⊆ ℝ^P, η⁻¹(F) = τ_x(r • F), where τ_x(w) = x + w (IsometryEquiv.addLeft x) and r • F = {r•w : w ∈ F}. Indeed z ∈ η⁻¹(F) iff w := r⁻¹ • (z − x) ∈ F, and then z = x + r • w. Translation is an isometry, so H(τ_x(E)) = H(E) for every set E (Isometry.euclideanHausdorffMeasure_image). Also H(r • F) = ‖r‖₊ⁿ · H(F) = rⁿ · H(F) for every set F (Measure.euclideanHausdorffMeasure_smul₀, r ≠ 0). Therefore H(η⁻¹(F)) = rⁿ · H(F) for every F ⊆ ℝ^P.
+
+3. Push-forward identity: map η (H⌞S) = rⁿ · H⌞η(S). Let E be measurable. Then η⁻¹(E) is measurable, and (map η (H⌞S))(E) = (H⌞S)(η⁻¹(E)) = H(η⁻¹(E) ∩ S) by Measure.map_apply and Measure.restrict_apply. Since η is a bijection, η⁻¹(E) ∩ S = η⁻¹(E ∩ η(S)). By step 2 this is rⁿ · H(E ∩ η(S)) = rⁿ · (H⌞η(S))(E). Measures agreeing on all measurable sets are equal (Measure.ext).
+
+4. Change of variables along a measurable embedding needs no integrability (MeasurableEmbedding.integral_map). It gives ∫_S g(η(z)) dH(z) = ∫ (g ∘ η) d(H⌞S) = ∫ g d(map η (H⌞S)).
+
+5. By step 3 and integral_smul_measure (∫ g d(c·μ) = c.toReal · ∫ g dμ for every g and c ∈ [0,∞]): ∫ g d(map η (H⌞S)) = rⁿ · ∫ g d(H⌞η(S)) = rⁿ · ∫_{η(S)} g dH. Here the scalar (‖r‖₊ⁿ : ℝ≥0∞) has toReal equal to rⁿ.
+
+6. Steps 4 and 5 give rⁿ · ∫_{η(S)} g dH = ∫_S g(η(z)) dH(z). Since rⁿ > 0, multiplying by (rⁿ)⁻¹ yields ∫_{η(S)} g dH = (rⁿ)⁻¹ · ∫_S g(η(z)) dH(z). ∎
+
+## Key steps
+
+1. η = blowUpMap x r is a homeomorphism with inverse w ↦ x + r•w, hence a bijective measurable embedding.
+2. For every set F, η⁻¹(F) = x + r•F, so H(η⁻¹F) = rⁿH(F) by isometry invariance and euclideanHausdorffMeasure_smul₀.
+3. map η (H⌞S) = rⁿ • H⌞η(S), checked on measurable E via η⁻¹(E) ∩ S = η⁻¹(E ∩ η(S)).
+4. MeasurableEmbedding.integral_map and integral_smul_measure give rⁿ∫_{η(S)} g dH = ∫_S g∘η dH; divide by rⁿ > 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `grep -n 'blowUpMap\|HasWeightedApproximateTangentSpaceAt\|^import\|^namespace\|^open' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'μHE\|theorem\|lemma\|def \|notation' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_smul₀, Isometry.euclideanHausdorffMeasure_image, IsometryEquiv.measurePreserving_euclideanHausdorffMeasure)`
+- `grep -n -A6 'theorem ae_tendsto_measure_inter_div\b\|theorem tendsto_filterAt\|protected def vitaliFamily' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div\b' mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `grep -rn 'theorem ae_restrict_biUnion_iff\|theorem isOpen_iUnion_countable\|withDensity_apply'\|withDensity_absolutelyContinuous'\|setLIntegral_withDensity_eq_lintegral_mul₀\|lintegral_withDensity_eq_lintegral_mul₀\|of_ae_diff_eq_zero\|theorem integral_smul_measure\|theorem integral_map' mathlib/Mathlib`
+- `python3 -I scan of dag.json (220 nodes) and nodes/*/decomposition-v*.json (223 files) for fiw_tl_blowup_setIntegral|fiw_tl_growth_bound|fiw_tl_transfer|fiw_tl_ae_l1_density and for related blow/tangent/growth/transfer/density lean_names`
+- `for r in $(git for-each-ref): git grep -E 'fiw_tl_(blowup_setIntegral|growth_bound|transfer|ae_l1_density)' $r -- '*.lean' (626 refs, no match)`
+- `git archive d8d46c9587747dee0751a1f780fcafdba16a3886 | tar -x -C /tmp/fiw_tl_a3_wb2ctk; LEAN_PATH=... lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (exit 0)`
+- `python3 -I /tmp/fiw_tl_a3_scripts/gen.py: lean_contract.validate_lean_statement + gmt-compare.py child_modules(mode='contract') for the 4 child types and the frozen parent; lean Cmp/*_Challenge.lean (5 files, exit 0)`
+- `lean Audit/Assembly.lean (#print axioms FiwTlAudit.assembly_exact: [propext, Classical.choice, Quot.sound])`
+- `lean Audit/Names.lean, Audit/Names2.lean, Audit/Names3.lean (#check of every lemma cited in the child proofs; 0 errors)`
+- `read nodes/root-flat-iff-weak-a1-tangent-locality-a1/{parent-child-handoff,decomposition-v1,decomposition-v2,decomposition-audit-v1,decomposition-audit-v2,decomposition-review-receipt-v2}.json and issue-workers.json entries for issue 809`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-audit-v2.json`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tangent_locality_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tl_transfer_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Cmp/fiw_tl_ae_l1_density_Challenge.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Assembly.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Names.lean`
+- `/tmp/fiw_tl_a3_wb2ctk/Audit/Names3.lean`
+
+The snapshot is project d8d46c9587747dee0751a1f780fcafdba16a3886 with Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. Contract.lean and Submission.lean are byte-identical at that commit.
+
+SimonGMT Chapter03 defines blowUpMap x r y = r⁻¹ • (y − x) and HasWeightedApproximateTangentSpaceAt as finrank Q = n together with convergence, for every f ∈ C_c, of ∫_{blowUpMap x r '' M} f(y)·θ(x + r•y) dμHE[n] to θ(x)·∫_Q f dμHE[n] as r → 0⁺. These definitions match the supplied proof.
+
+Mathlib supplies every tool the children use:
+- euclideanHausdorffMeasure_smul₀ (arbitrary sets) and Isometry.euclideanHausdorffMeasure_image;
+- MeasurableEmbedding.integral_map and integral_smul_measure;
+- Besicovitch.ae_tendsto_measure_inter_div, Besicovitch.vitaliFamily and Besicovitch.tendsto_filterAt;
+- VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (LocallyIntegrable);
+- withDensity_absolutelyContinuous', withDensity_apply₀ and setLIntegral_withDensity_eq_lintegral_mul₀;
+- ae_restrict_biUnion_iff and TopologicalSpace.isOpen_iUnion_countable;
+- ENNReal.div_lt_iff and ENNReal.lt_div_iff_mul_lt, with the side conditions used.
+
+There is no reusable accepted declaration. SimonGMT's Chapter04 blow-up lemmas are outside the frozen import closure. lpf_wtc_blowup_setIntegral_image is only alpha-equivalent to fiw_tl_blowup_setIntegral, belongs to another branch and is not accepted (rlcr-lean).
+
+The fiw_tl_* names are reserved nowhere else: not in the DAG, not in other decompositions, not in any of the 626 git refs.
+
+In a fresh build of the frozen commit, all four child types and the parent type elaborate in the comparator's exact challenge layout. FiwTlAudit.assembly_exact derives the byte-exact frozen parent type from the verbatim fiw_tl_transfer and fiw_tl_ae_l1_density types, using only propext, Classical.choice and Quot.sound.
