@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "theorem MemLp.induction_dense|theorem exists_Lp_half|theorem exists_eLpNorm_indicator_le|setLIntegral_iUnion_of_directed|theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le|imc_mlb_exists_unit_field_integral_ge|imc_mlb_exists_form_lintegral_coordNorm_le",
+        "git show 3cd72266f61ab742c78938b6d509fa0d10824f42:GMT/Ch06/Submission.lean",
+        "git show 5caba5008111b6f1310f7297a0f5348f86a1f522:GMT/Ch06/Submission.lean",
+        "git show 1b431e814455a6f8f989a42a9eeadf656a7073fa:GMT/Ch06/Submission.lean",
+        "git show a1716c42aeab9df87edfc4f71e693c99790858a0:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mlb_independent_audit/Types.lean > /tmp/mlb_independent_audit/types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mlb_independent_audit/AllChecked.lean > /tmp/mlb_independent_audit/all-checked.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-repr-bound-a1-coeff-integrable-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-covector-isometry-a1-norm-coord-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/tmp/mlb_independent_audit/Types.lean",
+        "/tmp/mlb_independent_audit/AllChecked.lean",
+        "/tmp/mlb_independent_audit/types.log",
+        "/tmp/mlb_independent_audit/all-checked.log"
+      ],
+      "conclusion": "The split is appropriate for the selected mass lower bound. The parent digest was independently reproduced. Snapshot compatibility, all four accepted checkpoints and byte-identical reused frozen types were verified. No new-name collisions were found. Preserving the reused nodes' existing dependencies gives an acyclic graph. All seven names are bare identifiers, and all seven one-line propositions elaborate independently without their implementations. Independently recompiling the supplied proof supplement with exact frozen-type assignments succeeded; every child and the selected parent depend only on propext, Classical.choice and Quot.sound. The density theorem is outside the frozen import closure, while its regularity, Urysohn and simple-function ingredients are available. The children establish the parent by the continuous mass bound, the epsilon limit on each ball, and directed ball exhaustion. No child assumes the parent, and no unsafe matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coeff_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The compactly supported smooth cutoff produces a valid test form whose represented pairing equals the coefficient on K. This proves integrability without assuming μ locally finite. Reuse has an identical accepted frozen type."
+    },
+    {
+      "key": "continuous_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All support, representation and mass hypotheses match the type. Compact containment supplies compact support; cutoff coefficients establish integrability, and mollification plus the explicit error estimate proves the bound. C ≥ 0 follows from the stated pointwise hypothesis. Existing accepted dependencies are preserved and non-circular."
+    },
+    {
+      "key": "coord_sum_wedge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant calculation proves the Kronecker identity: unequal increasing embeddings have differing ranges and yield a zero row. Linearity then gives the exact coordinate sum. Empty and degree-zero cases are covered. The reused frozen type is identical."
+    },
+    {
+      "key": "norm_coord",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly identifies the basis vectors, discards zero summands and reindexes strictly increasing functions by order embeddings. Taking square roots proves precisely the stated norm identity, including the boundary degrees. Reuse is type-identical."
+    },
+    {
+      "key": "l1_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite Borel regularity, Urysohn approximation of indicators, compact neighborhoods and MemLp.induction_dense give every requested conclusion. The proof works for the stated general real normed space without completeness, and covers every nonzero ENNReal tolerance. It supplies a complete construction rather than a future proof plan."
+    },
+    {
+      "key": "polar_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles R ≤ 0, constructs a strongly measurable modification and finite weighted measure, and applies only l1_density as its new dependency. Support and global pairing integrability are justified. The cutoff error ≤ ε/4 and retraction error ≤ ε/2 establish the exact inequality without extra assumptions on μ or E."
+    },
+    {
+      "key": "polar_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite coordinate field is integrable under exactly the stated coefficient hypotheses. WithLp.toLp 2 selects the Euclidean norm, and the two coordinate lemmas give the covector norm bound. Linearity identifies the pairing; nonnegative integrability justifies conversion to the lower integral. The three declared dependencies suffice and are correctly directed."
+    }
+  ],
+  "required_changes": []
+}

@@ -830,6 +830,117 @@ theorem Submission.smr_ci_norm_eq_sqrt_sum_coord_sq :
   · exact OrderEmbedding.coe_ofStrictMono _
   · -- Matching summands: `basisFun i = EuclideanSpace.single i 1`.
     simp only [euclideanCovectorCoordinate, EuclideanSpace.basisFun_apply]
+/-- **`L¹` density of continuous compactly supported maps for a finite measure on `ℝ^N`.**  For a
+finite Borel measure `ν` on `ℝ^N` and `f ∈ L¹(ν)` with values in a real normed space `E`, every
+`ε ≠ 0` admits a continuous compactly supported `g ∈ L¹(ν)` with `‖f - g‖_{L¹(ν)} ≤ ε` (the case
+`p = 1` of Mathlib's `MemLp.exists_hasCompactSupport_eLpNorm_sub_le`, whose file is not imported
+here; its proof is reproduced).  Urysohn's lemma and outer regularity approximate `c • 1_s` (`s`
+closed, `s ⊆ u` open, `ν s < ∞`) by a continuous `L¹` map supported in `u`; inner regularity by
+compact closed sets treats `c • 1_t` for measurable `t` with `ν t < ∞`; and `MemLp.induction_dense`
+(density of simple functions) extends this to all of `L¹(ν)`, the class being closed under `+`. -/
+theorem Submission.imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le : ∀ (N : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (ν : Measure (Eucl N)) [IsFiniteMeasure ν] (f : Eucl N → E), MemLp f 1 ν → ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ g : Eucl N → E, HasCompactSupport g ∧ eLpNorm (f - g) 1 ν ≤ ε ∧ Continuous g ∧ MemLp g 1 ν := by
+  intro N E _ _ ν _ f hf ε hε
+  -- Urysohn approximation of `c • 1_s` for `s` closed, `s ⊆ u` open, `ν s < ∞` (Mathlib's
+  -- `exists_continuous_eLpNorm_sub_le_of_closed` with `p = 1`).
+  have hury : ∀ {s u : Set (Eucl N)}, IsClosed s → IsOpen u → s ⊆ u → ν s ≠ ∞ →
+      ∀ (c : E) {δ : ℝ≥0∞}, δ ≠ 0 → ∃ h : Eucl N → E,
+        Continuous h ∧ eLpNorm (fun x => h x - s.indicator (fun _y => c) x) 1 ν ≤ δ ∧
+          (∀ x, ‖h x‖ ≤ ‖c‖) ∧ Function.support h ⊆ u ∧ MemLp h 1 ν := by
+    intro s u s_closed u_open hsu hs c δ hδ
+    -- `‖c • 1_r‖₁ ≤ δ` whenever `ν r ≤ η`.
+    obtain ⟨η, η_pos, hη⟩ :
+        ∃ η : ℝ≥0, 0 < η ∧ ∀ r : Set (Eucl N), ν r ≤ η → NullMeasurableSet r ν →
+            eLpNorm (r.indicator fun _x => c) 1 ν ≤ δ :=
+      exists_eLpNorm_indicator_le ENNReal.one_ne_top c hδ
+    have ηpos : (0 : ℝ≥0∞) < η := ENNReal.coe_lt_coe.2 η_pos
+    -- Outer regularity: an open `V ⊇ s` with `ν (V \ s) < η`.
+    obtain ⟨V, sV, V_open, h'V, hV⟩ :
+        ∃ (V : Set (Eucl N)), V ⊇ s ∧ IsOpen V ∧ ν V < ∞ ∧ ν (V \ s) < η :=
+      s_closed.measurableSet.exists_isOpen_sdiff_lt hs ηpos.ne'
+    let v := u ∩ V
+    have hsv : s ⊆ v := subset_inter hsu sV
+    have hνv : ν v < ∞ := (measure_mono inter_subset_right).trans_lt h'V
+    -- Urysohn's lemma: `φ = 0` off `v`, `φ = 1` on `s`, `0 ≤ φ ≤ 1`.
+    obtain ⟨φ, hφv, hφs, hφ_range⟩ :=
+      exists_continuous_zero_one_of_isClosed (u_open.inter V_open).isClosed_compl s_closed
+        (disjoint_compl_left_iff.2 hsv)
+    have φ_norm : ∀ x, ‖φ x‖ = φ x := fun x => by
+      rw [Real.norm_eq_abs, abs_of_nonneg (hφ_range x).1]
+    have φc_bd0 : ∀ x, ‖φ x • c‖ ≤ ‖c‖ := by
+      intro x
+      simp only [norm_smul, φ_norm x]
+      apply mul_le_of_le_one_left (norm_nonneg _)
+      exact (hφ_range x).2
+    -- Pointwise `‖φ c - c 1_s‖ ≤ ‖c 1_{v \ s}‖`.
+    have φc_bd :
+        ∀ x, ‖φ x • c - s.indicator (fun _x => c) x‖ ≤ ‖(v \ s).indicator (fun _x => c) x‖ := by
+      intro x
+      by_cases hv : x ∈ v
+      · rw [← Set.sdiff_union_of_subset hsv] at hv
+        rcases hv with hxvs | hxs
+        · simpa only [hxvs.2, Set.indicator_of_notMem, not_false_iff, sub_zero, hxvs,
+            Set.indicator_of_mem] using φc_bd0 x
+        · simp [hφs hxs, hxs]
+      · simp [hφv hv, show x ∉ s from fun h => hv (hsv h)]
+    have φc_support : (Function.support fun x : Eucl N => φ x • c) ⊆ v := by
+      refine Function.support_subset_iff'.2 fun x hx => ?_
+      simp only [hφv hx, Pi.zero_apply, zero_smul]
+    -- `φ c ∈ L¹(ν)`: `φ ≤ 1_v` and `ν v < ∞`.
+    have φc_mem : MemLp (fun x => φ x • c) 1 ν := by
+      refine MemLp.smul ?_ (memLp_top_const (μ := ν) c) (p := 1) (q := ∞) (r := 1)
+      have hv : MeasurableSet v := u_open.measurableSet.inter V_open.measurableSet
+      have : eLpNorm (v.indicator fun _x => (1 : ℝ)) 1 ν < ∞ :=
+        (eLpNorm_indicator_const_le _ _ hv.nullMeasurableSet).trans_lt <| by
+          simp [lt_top_iff_ne_top, hνv.ne]
+      refine (eLpNorm_mono φ.continuous.aestronglyMeasurable fun x => ?_).trans_lt this
+      by_cases hx : x ∈ v
+      · simp only [hx, abs_of_nonneg (hφ_range x).1, (hφ_range x).2, Real.norm_eq_abs,
+          indicator_of_mem, CStarRing.norm_one]
+      · simp only [hφv hx, Pi.zero_apply, Real.norm_eq_abs, abs_zero, abs_nonneg]
+    refine ⟨fun x ↦ φ x • c, by fun_prop,
+      (eLpNorm_mono (φc_mem.aestronglyMeasurable.sub
+        (aestronglyMeasurable_const.indicator s_closed.measurableSet)) φc_bd).trans ?_, φc_bd0,
+        φc_support.trans inter_subset_left, φc_mem⟩
+    exact hη _ ((measure_mono (sdiff_subset_sdiff inter_subset_right Subset.rfl)).trans hV.le)
+      ((u_open.measurableSet.inter V_open.measurableSet).diff
+        s_closed.measurableSet).nullMeasurableSet
+  suffices hex : ∃ g : Eucl N → E,
+      eLpNorm (f - g) 1 ν ≤ ε ∧ Continuous g ∧ MemLp g 1 ν ∧ HasCompactSupport g by
+    rcases hex with ⟨g, hg, g_cont, g_mem, g_support⟩
+    exact ⟨g, g_support, hg, g_cont, g_mem⟩
+  -- Density of simple functions: approximate indicator-constants, and close under addition.
+  apply hf.induction_dense ENNReal.one_ne_top _ _ _ hε
+  rotate_left
+  · rintro g₁ g₂ ⟨g₁_cont, g₁_mem, hg₁⟩ ⟨g₂_cont, g₂_mem, hg₂⟩
+    exact ⟨g₁_cont.add g₂_cont, g₁_mem.add g₂_mem, hg₁.add hg₂⟩
+  intro c t ht htν δ hδ
+  rcases exists_Lp_half E ν 1 hδ with ⟨δ', δ'pos, hδ'⟩
+  obtain ⟨η, ηpos, hη⟩ :
+      ∃ η : ℝ≥0, 0 < η ∧ ∀ r : Set (Eucl N), ν r ≤ η → NullMeasurableSet r ν →
+          eLpNorm (r.indicator fun _x => c) 1 ν ≤ δ' :=
+    exists_eLpNorm_indicator_le ENNReal.one_ne_top c δ'pos.ne'
+  have hη_pos' : (0 : ℝ≥0∞) < η := ENNReal.coe_pos.2 ηpos
+  -- Inner regularity: a compact closed `s ⊆ t` with `ν (t \ s) < η`.
+  obtain ⟨s, st, s_compact, s_closed, νs⟩ :
+      ∃ s, s ⊆ t ∧ IsCompact s ∧ IsClosed s ∧ ν (t \ s) < η :=
+    ht.exists_isCompact_isClosed_sdiff_lt htν.ne hη_pos'.ne'
+  have hsν : ν s < ∞ := (measure_mono st).trans_lt htν
+  have I1 : eLpNorm ((s.indicator fun _y => c) - t.indicator fun _y => c) 1 ν ≤ δ' := by
+    rw [← eLpNorm_neg, neg_sub, ← indicator_sdiff st]
+    exact hη _ νs.le (ht.diff s_closed.measurableSet).nullMeasurableSet
+  -- A compact `k` with `s ⊆ interior k`, and the Urysohn approximation for `(s, interior k)`.
+  obtain ⟨k, k_compact, sk⟩ : ∃ k : Set (Eucl N), IsCompact k ∧ s ⊆ interior k :=
+    exists_compact_superset s_compact
+  rcases hury s_closed isOpen_interior sk hsν.ne c δ'pos.ne'
+    with ⟨h, h_cont, I2, _h_bound, h_support, h_mem⟩
+  have I3 : eLpNorm (h - t.indicator fun _y => c) 1 ν ≤ δ := by
+    convert (hδ' _ _ I2 I1).le using 2
+    ext x
+    simp
+  refine ⟨h, I3, h_cont, h_mem, HasCompactSupport.intro k_compact fun x hx => ?_⟩
+  rw [← Function.notMem_support]
+  contrapose hx
+  exact interior_subset (h_support hx)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
