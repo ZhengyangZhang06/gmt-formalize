@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "561ff74921b810caa294e1cfda2e59f5eeb012a9f161265cf015c5d3849ac7e9",
+  "git_delta": {
+    "base_commit": "7845d559654c6ce85d2289ea56d3b739bf673abf",
+    "candidate_commit": "84f8d2059dd172c2b5850ffd310415bfbb83c350",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "dmr_massMeasure_support_finite",
+    "diff_sha256": "3ad6dd1304a6b5da119f4103bee10ce912b074d7c95840308e275468ef3a6a53",
+    "source_sha256": "fa2649ba597a4644eee81c96c34a2b21dc569a17ff9fb2d4f29a0d1500c4e9a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmr_massMeasure_support_finite",
+      "statement": "∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ : Measure (Eucl N)), IsMassMeasure X μ → μ X.supportᶜ = 0 ∧ (X.mass < ∞ → IsFiniteMeasure μ)",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
