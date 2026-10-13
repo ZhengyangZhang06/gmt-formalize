@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e023c6a3722e1d2e94323c32cb090981385b9e174c66e258f24b69244d694ebb",
+  "git_delta": {
+    "base_commit": "526e969d846ac441610902de957b9b8678de7b0f",
+    "candidate_commit": "68abd14a60dac7a76bdb0f37e3bae97d027a5362",
+    "target": "GMT/Ch05/Submission.lean",
+    "declaration": "dohr_eb_lhr_dqwe_integrable_of_continuousAt",
+    "diff_sha256": "33bdf3e9d7958b5d0c4f51897bbbc3a5e7db99b273478493edacf79480f188e9",
+    "source_sha256": "a6f94bc6eb2aea5925bef25223773695998e34fa2cdb77e3294ee46bf2cf2e92",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dohr_eb_lhr_dqwe_integrable_of_continuousAt",
+      "statement": "∀ (n : ℕ) (F : Rn n → ℝ) (K : Set (Rn n)), IsCompact K → (∀ x ∈ K, ContinuousAt F x) → (∀ x, x ∉ K → F x = 0) → Integrable F",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
