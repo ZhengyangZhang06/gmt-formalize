@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb13997b82f4f9b97c67d61da1882efbe223133c6e22e8300f8eae20fdf1466a",
+  "git_delta": {
+    "base_commit": "b91e0c1538ec9d10d4275f36593251683d51732a",
+    "candidate_commit": "25b83efeb23f5702ec476457623e2188ce1cc3af",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fcl_weakConverges_sublevel",
+    "diff_sha256": "c8f82a5d10b38dfea2b3e9757b4ae0ea313a37fd1cc2dd348b4f39259f4d2763",
+    "source_sha256": "f673e34bcd3ccc0bf5660037779c46647847dbaf3349f3318f5065ae1b4196f1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fcl_weakConverges_sublevel",
+      "statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (g : Euclid P → ℝ) (s : ℝ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P d) (ξ : Euclid P → MultiVector P d) (Ts Ts' : ℕ → GeometricCurrentOn U d) (T T' : GeometricCurrentOn U d), Continuous g → (∀ j, μs j {x | g x < s} < ∞) → μ {x | g x < s} < ∞ → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → AEStronglyMeasurable ξ μ → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) d, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ (j : ℕ) (ω : TestFormOn U d), Ts j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) d) x) ∂(μs j)) → (∀ ω : TestFormOn U d, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → (∀ (j : ℕ) (ω : TestFormOn U d), Ts' j ω = ∫ x in {x | g x < s}, ξs j x ((ω : DifferentialForm (Euclid P) d) x) ∂(μs j)) → (∀ ω : TestFormOn U d, T' ω = ∫ x in {x | g x < s}, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → WeaklyConvergesOn Ts T → (∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μs j {x | s - δ ≤ g x ∧ g x ≤ s} ≤ ε) → WeaklyConvergesOn Ts' T'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
