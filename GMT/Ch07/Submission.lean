@@ -1225,6 +1225,22 @@ theorem Submission.codim1_oriented_rep_lintegral_le_massOn : ∀ (P k : ℕ) (U 
     _ ≤ ENNReal.ofReal (T ω) := ENNReal.ofReal_le_ofReal (by linarith)
     _ ≤ T.massOn W := T.le_massOn hω
 
+/-- **Mass of a current given on `V` by an oriented weighted set** (Simon Ch. 6, 2.5 and 3.2(3):
+`M_W(T) = ∫_{M ∩ W} θ dHᵏ` for `T = τ(M, θ, ξ)`, with a general weight `θ' ≥ 0`).  Let
+`I(W) = ∫⁻_{M' ∩ W} θ' dHᵏ` for an open `W ⊆ V`.  Step 2: `|θ' ξ'(ω)| ≤ θ' 1_W` a.e. on `M'` for
+every admissible `ω`, so `M_W(T) ≤ I(W)`.  Step 3: if `I(W) < ∞`, a smooth admissible form close
+to `L ∘ ξ'` on a compact `K ⊆ M' ∩ W` of almost full `θ' Hᵏ`-measure gives `I(W) ≤ M_W(T)`, and
+equality follows by antisymmetry. -/
+theorem Submission.codim1_massOn_eq_lintegral_of_oriented_rep : ∀ (P k : ℕ) (U V M' : Set (Euclid P)) (T : GeometricCurrentOn U k) (θ' : Euclid P → ℝ) (ξ' : Euclid P → MultiVector P k), IsOpen V → V ⊆ U → MeasurableSet M' → M' ⊆ V → Measurable θ' → (∀ x, 0 ≤ θ' x) → AEStronglyMeasurable ξ' (μHE[k].restrict M') → (∀ᵐ x ∂(μHE[k].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' x) Q) → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ V → T ω = ∫ x in M', θ' x * ξ' x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) → ∀ W : Set (Euclid P), IsOpen W → W ⊆ V → T.massOn W ≤ ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ∧ (∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k] ≠ ∞ → T.massOn W = ∫⁻ x in M' ∩ W, ENNReal.ofReal (θ' x) ∂μHE[k]) := by
+  intro P k U V M' T θ' ξ' _hV hVU _hM' _hM'V hθ hθ0 hξ hξQ hT W hW hWV
+  -- Step 2: `M_W(T) ≤ I(W)`; the open set `W` is Borel
+  have hle := Submission.codim1_oriented_rep_massOn_le_lintegral P k U V M' T θ' ξ' hθ0 hξQ hT W
+    hW.measurableSet hWV
+  -- Step 3: `I(W) ≤ M_W(T)` when `I(W) < ∞`, hence `M_W(T) = I(W)`
+  exact ⟨hle, fun hI => le_antisymm hle
+    (Submission.codim1_oriented_rep_lintegral_le_massOn P k U V M' T θ' ξ' hVU hθ hθ0 hξ hξQ hT W hW
+      hWV hI)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
