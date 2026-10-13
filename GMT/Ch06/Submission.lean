@@ -359,6 +359,290 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Cylinders over `Hᵐ`-null sets are `Hᵐ⁺¹`-null: if `N ⊆ ℝ^P` has `μHE[m] N = 0`, then the
+cylinder `{y ∈ ℝ^{P+1} | π y ∈ N} = ℝ × N`, `π y = (y₁, …, y_P)`, has `μHE[m + 1]`-measure zero.
+For `m = 0` the set `N` is empty.  For `m ≥ 1`, each strip `{y | π y ∈ N, a ≤ y₀ ≤ a + 1}`
+(`a ∈ ℤ`) is covered by the boxes `{y | π y ∈ C i, a + j dᵢ ≤ y₀ ≤ a + (j + 1) dᵢ}`,
+`j ≤ ⌊1 / dᵢ⌋₊`, where the `C i` cover `N` with `∑ ediam (C i) ^ m` small and
+`dᵢ ≥ ediam (C i)` is slightly inflated.  The boxes have diameter `≤ 2 dᵢ`, so the sum of
+`ediam ^ (m + 1)` over them is at most `2 ^ (m + 2) ∑ dᵢ ^ m`, which is arbitrarily small. -/
+theorem Submission.iwl_cr_hp_cylinder_null : ∀ (P m : ℕ) (N : Set (Eucl P)), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0 := by
+  intro P m N hN
+  have hE : ∀ (k : ℕ) {X : Type} [NormedAddCommGroup X] [InnerProductSpace ℝ X]
+      [MeasurableSpace X] [BorelSpace X] (S : Set X), (μHE[k] : Measure X) S =
+        (Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin k))) μH[k] : ℝ≥0∞) *
+          μH[k] S := by
+    intro k X _ _ _ _ S
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · -- `m = 0`: a `μH[0]`-null set is empty
+    have hNe : N = ∅ := by
+      by_contra hne
+      obtain ⟨x, hx⟩ := Set.nonempty_iff_ne_empty.mpr hne
+      have h1 : μH[0] ({x} : Set (Eucl P)) ≤ μH[0] N := measure_mono (singleton_subset_iff.mpr hx)
+      rw [Measure.hausdorffMeasure_zero_singleton] at h1
+      rw [Measure.euclideanHausdorffMeasure_zero] at hN
+      rw [hN] at h1
+      exact absurd h1 (by simp)
+    subst hNe
+    simp
+  · have hcm : (Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin m)))
+        μH[m] : ℝ≥0∞) ≠ 0 := by
+      exact_mod_cast Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero m
+    have hNm : μH[(m : ℝ)] N = 0 := by
+      rw [hE m N] at hN
+      exact (mul_eq_zero.mp hN).resolve_left hcm
+    rw [hE (m + 1)]
+    suffices h : μH[((m + 1 : ℕ) : ℝ)] {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0 by rw [h, mul_zero]
+    have hsub : {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} ⊆ ⋃ a : ℤ, {y : Eucl (P + 1) |
+          (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N ∧
+          (a : ℝ) ≤ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∧
+          EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ≤ a + 1} := by
+      intro y hy
+      exact mem_iUnion.2 ⟨⌊EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0⌋, hy, Int.floor_le _,
+        (Int.lt_floor_add_one _).le⟩
+    have hstrip : ∀ a : ℤ, μH[((m + 1 : ℕ) : ℝ)] {y : Eucl (P + 1) |
+        (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N ∧
+        (a : ℝ) ≤ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∧
+        EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ≤ a + 1} = 0 := by
+      intro a
+      set π : Eucl (P + 1) → Eucl P := fun y =>
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))
+        with hπdef
+      set y0 : Eucl (P + 1) → ℝ := fun y => EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 with hy0def
+      have hdist : ∀ y y' : Eucl (P + 1),
+          dist y y' ^ 2 = (y0 y - y0 y') ^ 2 + dist (π y) (π y') ^ 2 := by
+        intro y y'
+        rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq, Real.sq_sqrt (by positivity),
+          Real.sq_sqrt (by positivity), Fin.sum_univ_succ]
+        simp [hπdef, hy0def, Fin.tail, Real.dist_eq, sq_abs]
+      have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+      apply le_antisymm _ zero_le
+      rw [Measure.hausdorffMeasure_apply]
+      refine iSup₂_le fun r hr => ?_
+      refine ENNReal.le_of_forall_pos_le_add fun η hη _ => ?_
+      rw [zero_add]
+      -- the radius
+      obtain ⟨δ, hδ0, hδ1, hδr⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 2 ∧ ENNReal.ofReal δ ≤ r := by
+        rcases eq_or_ne r ⊤ with rfl | hrt
+        · exact ⟨1 / 2, by norm_num, le_rfl, le_top⟩
+        · have hr' : 0 < r.toReal := ENNReal.toReal_pos hr.ne' hrt
+          refine ⟨min (1 / 2) (r.toReal / 2), by positivity, min_le_left _ _, ?_⟩
+          calc ENNReal.ofReal (min (1 / 2) (r.toReal / 2)) ≤ ENNReal.ofReal r.toReal :=
+                ENNReal.ofReal_le_ofReal ((min_le_right _ _).trans (by linarith))
+            _ = r := ENNReal.ofReal_toReal hrt
+      -- the smallness parameter
+      have hη0 : (0 : ℝ) < η := hη
+      set ε : ℝ := min ((δ / 2) ^ m / 2) (η / 2 ^ (m + 3)) with hεdef
+      have hε0 : 0 < ε := by positivity
+      have hεδ : ε < (δ / 2) ^ m := by
+        have : 0 < (δ / 2) ^ m := by positivity
+        exact (min_le_left _ _).trans_lt (by linarith)
+      have hεη : 2 ^ (m + 3) * ε ≤ η := by
+        have h := min_le_right ((δ / 2) ^ m / 2) (η / 2 ^ (m + 3))
+        rw [← hεdef] at h
+        have h2 : (0 : ℝ) < 2 ^ (m + 3) := by positivity
+        calc 2 ^ (m + 3) * ε ≤ 2 ^ (m + 3) * (η / 2 ^ (m + 3)) := by gcongr
+          _ = η := by field_simp
+      -- a cover of `N`
+      have hNa := hNm
+      rw [Measure.hausdorffMeasure_apply] at hNa
+      have hδ2 : (0 : ℝ≥0∞) < ENNReal.ofReal (δ / 2) := ENNReal.ofReal_pos.mpr (by positivity)
+      have hF := (iSup₂_eq_bot.mp hNa) (ENNReal.ofReal (δ / 2)) hδ2
+      have hlt : (⨅ (t : ℕ → Set (Eucl P)) (_ : N ⊆ ⋃ n, t n)
+          (_ : ∀ n, ediam (t n) ≤ ENNReal.ofReal (δ / 2)),
+            ∑' n, ⨆ _ : (t n).Nonempty, ediam (t n) ^ (m : ℝ)) < ENNReal.ofReal ε := by
+        rw [hF]; exact ENNReal.ofReal_pos.mpr hε0
+      obtain ⟨C, hC⟩ := iInf_lt_iff.mp hlt
+      obtain ⟨hCcov, hC⟩ := iInf_lt_iff.mp hC
+      obtain ⟨hCdiam, hCsum⟩ := iInf_lt_iff.mp hC
+      have hCsum' : ∑' i, ediam (C i) ^ m < ENNReal.ofReal ε := by
+        refine lt_of_le_of_lt (le_of_eq ?_) hCsum
+        refine tsum_congr fun i => ?_
+        rcases (C i).eq_empty_or_nonempty with he | hne
+        · have : ¬ (C i).Nonempty := by rw [he]; exact not_nonempty_empty
+          rw [iSup_neg this, he, ediam_empty, zero_pow (by omega)]
+          rfl
+        · rw [iSup_pos hne, ENNReal.rpow_natCast]
+      -- real diameters
+      set D : ℕ → ℝ := fun i => (ediam (C i)).toReal with hDdef
+      have hCfin : ∀ i, ediam (C i) ≠ ⊤ := fun i =>
+        ne_top_of_le_ne_top ENNReal.ofReal_ne_top (hCdiam i)
+      have hCeq : ∀ i, ediam (C i) = ENNReal.ofReal (D i) := fun i =>
+        (ENNReal.ofReal_toReal (hCfin i)).symm
+      have hD0 : ∀ i, 0 ≤ D i := fun i => ENNReal.toReal_nonneg
+      have hDδ : ∀ i, D i ≤ δ / 2 := fun i =>
+        ENNReal.toReal_le_of_le_ofReal (by positivity) (hCdiam i)
+      have hCdist : ∀ i, ∀ x ∈ C i, ∀ x' ∈ C i, dist x x' ≤ D i := by
+        intro i x hx x' hx'
+        have h := edist_le_ediam_of_mem hx hx'
+        rw [hCeq i, edist_dist] at h
+        exact (ENNReal.ofReal_le_ofReal_iff (hD0 i)).mp h
+      -- inflated diameters
+      set lam : ℕ → ℝ := fun i => ε / 2 / 2 ^ i / (δ / 2) ^ m with hlamdef
+      have hδm : 0 < (δ / 2) ^ m := by positivity
+      have hlam0 : ∀ i, 0 < lam i := fun i => by positivity
+      have hlam1 : ∀ i, lam i ≤ 1 := by
+        intro i
+        rw [hlamdef, div_le_one hδm]
+        have h1 : ε / 2 / 2 ^ i ≤ ε := by
+          rw [div_div]
+          exact div_le_self hε0.le (by
+            have : (1 : ℝ) ≤ 2 ^ i := one_le_pow₀ (by norm_num)
+            linarith)
+        linarith
+      set ρ : ℕ → ℝ := fun i => δ / 2 * lam i with hρdef
+      have hρ0 : ∀ i, 0 < ρ i := fun i => mul_pos (by positivity) (hlam0 i)
+      have hρδ : ∀ i, ρ i ≤ δ / 2 := fun i => by
+        have := hlam1 i
+        have h2 : 0 < δ / 2 := by positivity
+        calc ρ i = δ / 2 * lam i := rfl
+          _ ≤ δ / 2 * 1 := by gcongr
+          _ = δ / 2 := mul_one _
+      have hρm : ∀ i, ρ i ^ m ≤ ε / 2 / 2 ^ i := by
+        intro i
+        have hl := pow_le_of_le_one (hlam0 i).le (hlam1 i) (by omega : m ≠ 0)
+        calc ρ i ^ m = (δ / 2) ^ m * lam i ^ m := by rw [hρdef, mul_pow]
+          _ ≤ (δ / 2) ^ m * lam i := by gcongr
+          _ = ε / 2 / 2 ^ i := by rw [hlamdef]; field_simp
+      set d : ℕ → ℝ := fun i => max (D i) (ρ i) with hddef
+      have hd0 : ∀ i, 0 < d i := fun i => lt_max_of_lt_right (hρ0 i)
+      have hdδ : ∀ i, d i ≤ δ / 2 := fun i => max_le (hDδ i) (hρδ i)
+      have hd1 : ∀ i, d i ≤ 1 := fun i => (hdδ i).trans (by linarith)
+      have hDd : ∀ i, D i ≤ d i := fun i => le_max_left _ _
+      have hdm : ∀ i, d i ^ m ≤ D i ^ m + ε / 2 / 2 ^ i := by
+        intro i
+        rcases le_total (D i) (ρ i) with h | h
+        · rw [hddef]; simp only [max_eq_right h]
+          have := hρm i
+          have : 0 ≤ D i ^ m := pow_nonneg (hD0 i) m
+          linarith
+        · rw [hddef]; simp only [max_eq_left h]
+          have : 0 ≤ ε / 2 / 2 ^ i := by positivity
+          linarith
+      -- number of intervals
+      set k : ℕ → ℕ := fun i => ⌊1 / d i⌋₊ + 1 with hkdef
+      have hk : ∀ i, (k i : ℝ) ≤ 2 / d i := by
+        intro i
+        have h1 : (⌊1 / d i⌋₊ : ℝ) ≤ 1 / d i := Nat.floor_le (by have := hd0 i; positivity)
+        have h2 : (1 : ℝ) ≤ 1 / d i := by rw [le_div_iff₀ (hd0 i)]; linarith [hd1 i]
+        simp only [hkdef, Nat.cast_add, Nat.cast_one]
+        calc (⌊1 / d i⌋₊ : ℝ) + 1 ≤ 1 / d i + 1 / d i := by linarith
+          _ = 2 / d i := by ring
+      -- the boxes
+      set Q : ℕ → ℕ → Set (Eucl (P + 1)) := fun i j =>
+        {y | π y ∈ C i ∧ (a : ℝ) + j * d i ≤ y0 y ∧ y0 y ≤ a + (j + 1) * d i} with hQdef
+      have hQdiam : ∀ i j, ediam (Q i j) ≤ ENNReal.ofReal (2 * d i) := by
+        intro i j
+        refine ediam_le_of_forall_dist_le fun y hy y' hy' => ?_
+        have h1 : |y0 y - y0 y'| ≤ d i := by
+          rw [abs_le]; constructor <;> nlinarith [hy.2.1, hy.2.2, hy'.2.1, hy'.2.2]
+        have h2 : dist (π y) (π y') ≤ d i := (hCdist i _ hy.1 _ hy'.1).trans (hDd i)
+        have h3 : dist y y' ^ 2 ≤ (2 * d i) ^ 2 := by
+          rw [hdist]
+          have : (y0 y - y0 y') ^ 2 ≤ d i ^ 2 := by
+            rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h1 2
+          have : dist (π y) (π y') ^ 2 ≤ d i ^ 2 := pow_le_pow_left₀ dist_nonneg h2 2
+          nlinarith
+        have h4 : 0 ≤ 2 * d i := by have := hd0 i; positivity
+        exact (pow_le_pow_iff_left₀ dist_nonneg h4 two_ne_zero).mp h3
+      -- the indexed cover
+      set t : ℕ → Set (Eucl (P + 1)) := fun n =>
+        if n.unpair.2 < k n.unpair.1 then Q n.unpair.1 n.unpair.2 else ∅ with htdef
+      have htpair : ∀ i j, t (Nat.pair i j) = if j < k i then Q i j else ∅ := by
+        intro i j; simp only [htdef, Nat.unpair_pair]
+      have htcov : {y : Eucl (P + 1) | π y ∈ N ∧ (a : ℝ) ≤ y0 y ∧ y0 y ≤ a + 1} ⊆ ⋃ n, t n := by
+        intro y hy
+        obtain ⟨i, hi⟩ := mem_iUnion.mp (hCcov hy.1)
+        set u : ℝ := (y0 y - a) / d i with hudef
+        have hu0 : 0 ≤ u := div_nonneg (by linarith [hy.2.1]) (hd0 i).le
+        have hu1 : u ≤ 1 / d i := div_le_div_of_nonneg_right (by linarith [hy.2.2]) (hd0 i).le
+        set j := ⌊u⌋₊ with hjdef
+        have hjk : j < k i := by
+          have : ⌊u⌋₊ ≤ ⌊1 / d i⌋₊ := Nat.floor_le_floor hu1
+          simp only [hkdef]; omega
+        refine mem_iUnion.mpr ⟨Nat.pair i j, ?_⟩
+        rw [htpair, ite_eq_left hjk]
+        refine ⟨hi, ?_, ?_⟩
+        · have h1 : (j : ℝ) ≤ u := Nat.floor_le hu0
+          have h2 : (j : ℝ) * d i ≤ y0 y - a := by
+            rw [hudef, le_div_iff₀ (hd0 i)] at h1; exact h1
+          linarith
+        · have h1 : u < j + 1 := Nat.lt_floor_add_one u
+          have h2 : y0 y - a < (j + 1) * d i := by
+            rw [hudef, div_lt_iff₀ (hd0 i)] at h1; exact h1
+          linarith
+      have htdiam : ∀ n, ediam (t n) ≤ r := by
+        intro n
+        simp only [htdef]
+        split_ifs
+        · exact (hQdiam _ _).trans
+            ((ENNReal.ofReal_le_ofReal (by linarith [hdδ n.unpair.1])).trans hδr)
+        · rw [ediam_empty]; exact zero_le
+      refine iInf_le_of_le t (iInf_le_of_le htcov (iInf_le_of_le htdiam ?_))
+      -- the sum estimate
+      have hterm : ∀ n, (⨆ _ : (t n).Nonempty, ediam (t n) ^ ((m + 1 : ℕ) : ℝ)) ≤
+          ediam (t n) ^ (m + 1) := fun n => by
+        rw [ENNReal.rpow_natCast]; exact iSup_le fun _ => le_rfl
+      have hinner : ∀ i, ∑' j, ediam (t (Nat.pair i j)) ^ (m + 1) ≤
+          ENNReal.ofReal (2 ^ (m + 2)) * (ediam (C i) ^ m + ENNReal.ofReal (ε / 2 / 2 ^ i)) := by
+        intro i
+        have hsupp : ∀ j ∉ Finset.range (k i), ediam (t (Nat.pair i j)) ^ (m + 1) = 0 := by
+          intro j hj
+          rw [Finset.mem_range, not_lt] at hj
+          rw [htpair, ite_eq_right (by omega), ediam_empty, zero_pow (by omega)]
+        rw [tsum_eq_sum hsupp]
+        calc ∑ j ∈ Finset.range (k i), ediam (t (Nat.pair i j)) ^ (m + 1)
+            ≤ ∑ j ∈ Finset.range (k i), ENNReal.ofReal (2 * d i) ^ (m + 1) := by
+              refine Finset.sum_le_sum fun j hj => ?_
+              rw [Finset.mem_range] at hj
+              rw [htpair, ite_eq_left hj]
+              exact pow_le_pow_left₀ zero_le (hQdiam i j) _
+          _ = ENNReal.ofReal ((k i : ℝ) * (2 * d i) ^ (m + 1)) := by
+              rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul,
+                ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast,
+                ENNReal.ofReal_pow (by have := hd0 i; positivity)]
+          _ ≤ ENNReal.ofReal (2 ^ (m + 2) * (D i ^ m + ε / 2 / 2 ^ i)) := by
+              refine ENNReal.ofReal_le_ofReal ?_
+              have hdi := hd0 i
+              calc (k i : ℝ) * (2 * d i) ^ (m + 1) ≤ 2 / d i * (2 * d i) ^ (m + 1) := by
+                    gcongr; exact hk i
+                _ = 2 ^ (m + 2) * d i ^ m := by
+                    field_simp; ring
+                _ ≤ 2 ^ (m + 2) * (D i ^ m + ε / 2 / 2 ^ i) := by gcongr; exact hdm i
+          _ = ENNReal.ofReal (2 ^ (m + 2)) *
+                (ediam (C i) ^ m + ENNReal.ofReal (ε / 2 / 2 ^ i)) := by
+              rw [ENNReal.ofReal_mul (by positivity), hCeq i,
+                ← ENNReal.ofReal_pow (hD0 i), ← ENNReal.ofReal_add (pow_nonneg (hD0 i) _)
+                  (by positivity)]
+      have hgeom : ∑' i : ℕ, ENNReal.ofReal (ε / 2 / 2 ^ i) = ENNReal.ofReal ε := by
+        rw [← ENNReal.ofReal_tsum_of_nonneg (fun i => by positivity) (summable_geometric_two' ε),
+          tsum_geometric_two']
+      calc ∑' n, (⨆ _ : (t n).Nonempty, ediam (t n) ^ ((m + 1 : ℕ) : ℝ))
+          ≤ ∑' n, ediam (t n) ^ (m + 1) := ENNReal.tsum_le_tsum hterm
+        _ = ∑' p : ℕ × ℕ, ediam (t (Nat.pair p.1 p.2)) ^ (m + 1) :=
+            (Nat.pairEquiv.tsum_eq (fun n => ediam (t n) ^ (m + 1))).symm
+        _ = ∑' i, ∑' j, ediam (t (Nat.pair i j)) ^ (m + 1) :=
+            ENNReal.tsum_prod (f := fun i j => ediam (t (Nat.pair i j)) ^ (m + 1))
+        _ ≤ ∑' i, ENNReal.ofReal (2 ^ (m + 2)) *
+              (ediam (C i) ^ m + ENNReal.ofReal (ε / 2 / 2 ^ i)) :=
+            ENNReal.tsum_le_tsum hinner
+        _ = ENNReal.ofReal (2 ^ (m + 2)) * (∑' i, ediam (C i) ^ m +
+              ∑' i : ℕ, ENNReal.ofReal (ε / 2 / 2 ^ i)) := by
+            rw [ENNReal.tsum_mul_left, ENNReal.tsum_add]
+        _ ≤ ENNReal.ofReal (2 ^ (m + 2)) * (ENNReal.ofReal ε + ENNReal.ofReal ε) := by
+            rw [hgeom]; gcongr
+        _ = ENNReal.ofReal (2 ^ (m + 3) * ε) := by
+            rw [← ENNReal.ofReal_add hε0.le hε0.le, ← ENNReal.ofReal_mul (by positivity)]
+            congr 1; ring
+        _ ≤ ENNReal.ofReal η := ENNReal.ofReal_le_ofReal hεη
+        _ = (η : ℝ≥0∞) := ENNReal.ofReal_coe_nnreal
+    exact measure_mono_null hsub (measure_iUnion_null hstrip)
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

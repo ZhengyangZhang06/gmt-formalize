@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_apply|hausdorffMeasure_zero_singleton|hausdorffMeasure_.*prod|hausdorffMeasure_.*pi_real",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_zero|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "measurable_areaJacobianAt|areaJacobianAt_eq_normDet|areaJacobianAt_nonneg",
+        "hausdorff.*[Pp]roduct|[Pp]roduct.*hausdorff|hausdorffMeasure.*prod|euclideanHausdorffMeasure.*prod",
+        "iwl_cr_hp_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/hp_independent_audit_wj1haggl/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/hp_independent_audit_wj1haggl/FrozenTypesAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-hausdorff-product-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/tmp/hp_independent_audit_wj1haggl/All.lean",
+        "/tmp/hp_independent_audit_wj1haggl/FrozenTypesAndAssembly.lean",
+        "/tmp/hp_independent_audit_wj1haggl/FrozenTypesAndAssembly.log"
+      ],
+      "conclusion": "Verified project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. Inspected library inputs support the stated normalization, regular-set partition, area formulas, Gram identity and integration steps. No general rectifiable Hausdorff product theorem appeared in the searched sources. Independently extracted and compiled all four supplied appendix proofs and the exact selected parent theorem; every axiom report contained only propext, Classical.choice and Quot.sound. Separately compiled all four frozen propositions under the frozen imports without child implementations, and compiled the parent assembly using only child-contract hypotheses. The four-child split is appropriate and sufficient. All names are bare, distinct and unreserved in the DAG and other proposed decompositions. The sole dependency, piece_product → lift_gram_det, matches actual proof usage and is acyclic. The parent’s local-finiteness assumption may remain unused because piece_product supplies the required measurability directly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type match the parent’s first conjunct without extra assumptions. The proof correctly handles m = 0, normalization, positive diameter inflation, strip coverage, countable indexing and the arbitrarily small content estimate. It is complete and non-circular."
+    },
+    {
+      "key": "injective_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and output properties match the Lean type. The regular-set partition and quantitative lower bounds establish injectivity; null exceptional images, Borel image measurability and disjointification establish the claimed covering and null remainder. Zero dimension is covered. Reusing the supplied construction introduces no undeclared DAG dependency."
+    },
+    {
+      "key": "lift_gram_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The global lift identity, evaluation-point equality and differentiability hypothesis are explicit in both statements. The chain rule, basis-vector calculations and first-row determinant expansion prove the exact identity, including m = 0. Matrix.of constructs ordinary real matrices. The type is independently usable and the proof has no circular reliance."
+    },
+    {
+      "key": "piece_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both measurability and integral equality match the stated hypotheses and Lean type. The proof establishes the lift’s Lipschitz bound, injectivity and image, converts the declared sibling’s Gram identity to Jacobian equality, and applies normalized area formulas, measure-preserving coordinate splitting and Tonelli. Restricted Lebesgue measure supplies the needed s-finiteness. The sole child dependency is correctly declared."
+    }
+  ],
+  "required_changes": []
+}
