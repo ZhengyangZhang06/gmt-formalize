@@ -613,6 +613,90 @@ theorem Submission.idtp_convergesWeakly_massOn_le : ∀ (P n : ℕ) (Us : ℕ �
   rw [heval]
   exact ((Ts j).le_massOn (W := W) (omega := ⟨_, h⟩) hω).trans hB
 
+/-- **Small-ball mass bounds pass to weak limits of blow-ups at moving centres** (Simon 7.3.3,
+proof of (1), displays (6) and (11), chapter-07.txt lines 444–476).  If
+`M_{B_ρ(y)}(T) ≤ θ₂ ωₙ ρⁿ` for `y ∈ B_{3r/2}(z)` and `0 < ρ < ρ₀`, `xᵢ ∈ B_r(z)`, `λᵢ → 0` and
+`η_{xᵢ,λᵢ#}T ⇀ S`, then `M_{B_ρ(w)}(S) ≤ θ₂ ωₙ ρⁿ` for all `w` and `ρ > 0`, so `Θⁿ(μ_S, w) ≤ θ₂`.
+For large `i`, `yᵢ = xᵢ + λᵢw ∈ B_{3r/2}(z)`, `B_{λᵢρ}(yᵢ) ⊆ B_{2r}(z) ⊆ U` and
+`η_{xᵢ,λᵢ}(B_{λᵢρ}(yᵢ)) = B_ρ(w)`; by `Submission.dtc_blowUp_massOn_image`,
+`M_{B_ρ(w)}(η_{xᵢ,λᵢ#}T) = λᵢ⁻ⁿ M_{B_{λᵢρ}(yᵢ)}(T) ≤ θ₂ ωₙ ρⁿ`, and
+`Submission.idtp_convergesWeakly_massOn_le` passes this bound to `S`. -/
+theorem Submission.idod_blowUp_limit_mass_density_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (z : Euclid P) (r θ₂ ρ₀ : ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), 0 < r → 0 ≤ θ₂ → 0 < ρ₀ → ball z (2 * r) ⊆ U → (∀ y ∈ ball z (3 * r / 2), ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) → (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ (w : Euclid P) (ρ : ℝ), 0 < ρ → S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → θ ≤ θ₂ := by
+  intro P n U T S z r θ₂ ρ₀ xs lams hlams hr hθ₂ hρ₀ hU hT hxs hlim hconv
+  -- Step 1: `η_{x,λ}(B_{λρ}(x + λw)) = B_ρ(w)` for `λ > 0`, since `η_{x,λ}(x + λu) = u`,
+  -- `x + λ η_{x,λ}(v) = v` and `|(x + λu) − (x + λw)| = λ|u − w|`.
+  have hball : ∀ (x w : Euclid P) (lam ρ : ℝ), 0 < lam →
+      dilation x lam '' ball (x + lam • w) (lam * ρ) = ball w ρ := by
+    intro x w lam ρ hlam
+    have hne : lam ≠ 0 := hlam.ne'
+    have hηι : ∀ u, dilation x lam (x + lam • u) = u := by
+      intro u
+      simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+    have hιη : ∀ v, x + lam • dilation x lam v = v := by
+      intro v
+      simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+    have hdist : ∀ u, dist (x + lam • u) (x + lam • w) = lam * dist u w := by
+      intro u
+      rw [dist_add_left, dist_smul₀, Real.norm_of_nonneg hlam.le]
+    ext u
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      rw [mem_ball, ← hιη v, hdist] at hv
+      exact mem_ball.mpr (lt_of_mul_lt_mul_left hv hlam.le)
+    · intro hu
+      refine ⟨x + lam • u, ?_, hηι u⟩
+      rw [mem_ball, hdist]
+      exact mul_lt_mul_of_pos_left (mem_ball.mp hu) hlam
+  -- Steps 2–3: the bound for the blow-ups at large `i`, passed to the weak limit `S`.
+  have h1 : ∀ (w : Euclid P) (ρ : ℝ), 0 < ρ →
+      S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+    intro w ρ hρ
+    refine Submission.idtp_convergesWeakly_massOn_le P n (fun i => dilation (xs i) (lams i) '' U)
+      univ (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S (ball w ρ) _ hconv ?_
+    -- for large `i`: `λᵢ(|w| + ρ) < r/2` and `λᵢρ < ρ₀`
+    have hwρ : 0 < ‖w‖ + ρ := by positivity
+    filter_upwards [hlim.eventually (gt_mem_nhds (div_pos (half_pos hr) hwρ)),
+      hlim.eventually (gt_mem_nhds (div_pos hρ₀ hρ))] with i hi1 hi2
+    have hlam : 0 < lams i := hlams i
+    rw [lt_div_iff₀ hwρ] at hi1
+    rw [lt_div_iff₀ hρ] at hi2
+    -- `yᵢ = xᵢ + λᵢw ∈ B_{3r/2}(z)` and `B_{λᵢρ}(yᵢ) ⊆ B_{2r}(z) ⊆ U`
+    have hxz : dist (xs i) z < r := mem_ball.mp (hxs i)
+    have hyx : dist (xs i + lams i • w) (xs i) = lams i * ‖w‖ := by
+      rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    have hyz : dist (xs i + lams i • w) z < lams i * ‖w‖ + r :=
+      (dist_triangle _ (xs i) z).trans_lt (by rw [hyx]; linarith)
+    have hlw : 0 ≤ lams i * ‖w‖ := mul_nonneg hlam.le (norm_nonneg w)
+    have hlρ : 0 < lams i * ρ := mul_pos hlam hρ
+    have hy : xs i + lams i • w ∈ ball z (3 * r / 2) := by
+      rw [mem_ball]
+      nlinarith
+    have hsub : ball (xs i + lams i • w) (lams i * ρ) ⊆ U :=
+      (ball_subset_ball' (by nlinarith)).trans hU
+    rw [← hball (xs i) w (lams i) ρ hlam]
+    refine ⟨image_mono hsub, ?_⟩
+    -- mass scaling `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)` and the hypothesis at `yᵢ`, radius `λᵢρ`
+    rw [Submission.dtc_blowUp_massOn_image P n U T (xs i) (lams i) hlam]
+    calc ENNReal.ofReal ((lams i)⁻¹ ^ n) * T.massOn (ball (xs i + lams i • w) (lams i * ρ))
+        ≤ ENNReal.ofReal ((lams i)⁻¹ ^ n) *
+            (ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal ((lams i * ρ) ^ n)) := by
+          gcongr
+          exact hT _ hy _ hlρ hi2
+      _ = ENNReal.ofReal θ₂ * unitBallVolume n *
+            ENNReal.ofReal ((lams i)⁻¹ ^ n * (lams i * ρ) ^ n) := by
+          rw [ENNReal.ofReal_mul (by positivity)]
+          ring
+      _ = ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+          rw [← mul_pow, inv_mul_cancel_left₀ hlam.ne']
+  refine ⟨h1, ?_⟩
+  -- Step 4: the density ratio of `S` at `w` is `≤ θ₂` for every `ρ > 0`, hence so is its limit.
+  rintro w θ ⟨-, hθ⟩
+  refine (ENNReal.ofReal_le_ofReal_iff hθ₂).mp (le_of_tendsto hθ ?_)
+  filter_upwards [self_mem_nhdsWithin] with ρ hρ
+  refine ENNReal.div_le_of_le_mul ?_
+  rw [← mul_assoc]
+  exact h1 w ρ hρ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
