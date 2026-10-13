@@ -514,6 +514,47 @@ theorem Submission.cmr_tdn_null_set_cutoffs : ∀ (n : ℕ) (K : Set (Euclid n))
           rw [integral_indicator_const _ hCm]
           simp [measureReal_def]
 
+/-- **Vanishing on compact null sets from an `ε + C ∫ a` bound** (steps 5(i) and 6 of the
+top-dimensional null-set argument): let `q : X → ℝⁿ` be measurable and `h ∈ L¹(ν)` (`ν` need not
+be finite), and suppose that for every `ε > 0` there is `C` with `|∫ h · a(q) dν| ≤ ε + C ∫ a`
+for all smooth compactly supported `0 ≤ a ≤ 1`.  Then `∫_{q⁻¹K} h dν = 0` for every compact
+Lebesgue-null `K ⊆ ℝⁿ`.  Along the cut-offs `a_k` of `K` given by
+`Submission.cmr_tdn_null_set_cutoffs`, dominated convergence (majorant `|h|`) gives
+`∫ h · a_k(q) dν → ∫_{q⁻¹K} h dν`, while `ε + C ∫ a_k → ε`; so `|∫_{q⁻¹K} h dν| ≤ ε` for every
+`ε > 0`. -/
+theorem Submission.cmr_tdn_null_of_average_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ), Measurable q → Integrable h ν → (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → |∫ x, h x * a (q x) ∂ν| ≤ ε + C * ∫ y, a y) → ∀ K : Set (Euclid n), IsCompact K → volume K = 0 → ∫ x in q ⁻¹' K, h x ∂ν = 0 := by
+  intro n X _ ν q h hq hh hbd K hK hK0
+  -- smooth cut-offs `a k` of `K`: `a k = 1` on `K`, `a k → 0` pointwise off `K`, `∫ a k → 0`
+  obtain ⟨a, ha, hac, ha0, ha1, haK, haoff, haint⟩ :=
+    Submission.cmr_tdn_null_set_cutoffs n K hK hK0
+  -- dominated convergence with majorant `|h|`: `∫ h (a k ∘ q) dν → ∫ 1_{q⁻¹K} h dν`
+  have hE : MeasurableSet (q ⁻¹' K) := hq hK.isClosed.measurableSet
+  have hlim : Tendsto (fun k => ∫ x, h x * a k (q x) ∂ν) atTop
+      (𝓝 (∫ x in q ⁻¹' K, h x ∂ν)) := by
+    rw [← integral_indicator hE]
+    refine tendsto_integral_of_dominated_convergence (fun x => |h x|)
+      (fun k => hh.aestronglyMeasurable.mul
+        ((ha k).continuous.measurable.comp hq).aestronglyMeasurable)
+      hh.abs (fun k => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+    · rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (ha0 k (q x))]
+      exact mul_le_of_le_one_right (abs_nonneg _) (ha1 k (q x))
+    · by_cases hx : q x ∈ K
+      · have h1 : ∀ k, a k (q x) = 1 := fun k => haK k (q x) hx
+        simp only [indicator_of_mem (show x ∈ q ⁻¹' K from hx), h1, mul_one]
+        exact tendsto_const_nhds
+      · rw [indicator_of_notMem (show x ∉ q ⁻¹' K from hx)]
+        refine tendsto_nhds_of_eventually_eq ?_
+        filter_upwards [haoff (q x) hx] with k hk
+        rw [hk, mul_zero]
+  -- for `ε > 0`: `|∫ h (a k ∘ q) dν| ≤ ε + C ∫ a k → ε`, so `|∫_{q⁻¹K} h dν| ≤ ε`
+  refine abs_nonpos_iff.1 (le_of_forall_pos_le_add fun ε hε => ?_)
+  obtain ⟨C, hC⟩ := hbd ε hε
+  have hR : Tendsto (fun k => ε + C * ∫ y, a k y) atTop (𝓝 (ε + C * 0)) :=
+    tendsto_const_nhds.add (haint.const_mul C)
+  rw [mul_zero, add_zero] at hR
+  rw [zero_add]
+  exact le_of_tendsto_of_tendsto' hlim.abs hR fun k => hC (a k) (ha k) (hac k) (ha0 k) (ha1 k)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
