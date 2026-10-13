@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.36** (`μ_T ≪ Hⁿ` for locally normal `T`; mass bound for the divergence
+integral): let `T ∈ 𝒟_{m+1}(U)` satisfy `T(ω) = ∫ ⟨ω, ξ⟩ dμ`, and let `η`, `ζ` be test forms
+supported in `spt b ⊆ W ⊆ U` with `|η|, |ζ| ≤ K` and `dη = b D θ + ζ`.  Then `ω = dη − ζ` is
+a test form in `U` with `ω(x) = b(x) D(x) θ`, so `∫_W b ⟨θ, ξ⟩ D dμ = T(ω) = ∂T(η) − T(ζ)`,
+and the evaluation bound gives `|∫_W b ⟨θ, ξ⟩ D dμ| ≤ K (M_W(∂T) + M_W(T))`. -/
+theorem Submission.cmr_abs_integral_div_le_mass : ∀ (P m : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (m + 1)) (θ : Covector (Euclid P) (m + 1)) (b D : Euclid P → ℝ) (η : DifferentialForm (Euclid P) m) (ζ : DifferentialForm (Euclid P) (m + 1)) (K : ℝ), W ⊆ U → T.massOn W ≠ ∞ → T.boundary.massOn W ≠ ∞ → (∀ ω : TestFormOn U (m + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μ) → (∀ (k : ℕ) (S : GeometricCurrentOn U k) (ω : TestFormOn U k) (r : ℝ), S.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) k) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ r) → |S ω| ≤ r * (S.massOn W).toReal) → tsupport b ⊆ W → IsTestForm η → IsTestForm ζ → tsupport η ⊆ tsupport b → tsupport ζ ⊆ tsupport b → (∀ x, covectorEuclideanNorm (η x) ≤ K) → (∀ x, covectorEuclideanNorm (ζ x) ≤ K) → (∀ x, exteriorDerivative η x = (b x * D x) • θ + ζ x) → |∫ x, b x * ξ x θ * D x ∂(μ.restrict W)| ≤ K * ((T.boundary.massOn W).toReal + (T.massOn W).toReal) := by
+  intro P m U W T μ ξ θ b D η ζ K hWU hT hbT hrep hEB hb hη hζ hηb hζb hηK hζK hd
+  -- `η`, `ζ` are test forms in `U`, supported in `spt b ⊆ W`
+  have hηW : tsupport η ⊆ W := hηb.trans hb
+  have hζW : tsupport ζ ⊆ W := hζb.trans hb
+  let η' : TestFormOn U m := ⟨η, hη, hηW.trans hWU⟩
+  let ζ' : TestFormOn U (m + 1) := ⟨ζ, hζ, hζW.trans hWU⟩
+  -- `ω = dη − ζ` has `ω(x) = b(x) D(x) θ`
+  have hω : ∀ x, ((exteriorDerivativeTestOn U m η' - ζ' : TestFormOn U (m + 1)) :
+      DifferentialForm (Euclid P) (m + 1)) x = (b x * D x) • θ := by
+    intro x
+    change exteriorDerivative η x - ζ x = _
+    rw [hd x, add_sub_cancel_right]
+  -- `T(ω) = ∂T(η) − T(ζ)`, and the evaluation bound controls both terms
+  have hTω : T (exteriorDerivativeTestOn U m η' - ζ') = T.boundary η' - T ζ' := by
+    rw [GeometricCurrentOn.boundary_apply]
+    exact map_sub T.toCurrent _ _
+  have h1 : |T.boundary η'| ≤ K * (T.boundary.massOn W).toReal :=
+    hEB m T.boundary η' K hbT hηW hηK
+  have h2 : |T ζ'| ≤ K * (T.massOn W).toReal := hEB (m + 1) T ζ' K hT hζW hζK
+  -- `b = 0` off `W`, so the integral over `W` is `T(ω)`
+  have hint : ∫ x, b x * ξ x θ * D x ∂(μ.restrict W) =
+      T (exteriorDerivativeTestOn U m η' - ζ') := by
+    rw [hrep, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    · congr 1
+      funext x
+      rw [hω x, map_smul, smul_eq_mul]
+      ring
+    · intro x hx
+      have hbx : b x = 0 := image_eq_zero_of_notMem_tsupport fun h => hx (hb h)
+      rw [hbx, zero_mul, zero_mul]
+  rw [hint, hTω, mul_add]
+  exact (abs_sub _ _).trans (add_le_add h1 h2)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
