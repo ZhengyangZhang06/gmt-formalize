@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "continuousOn_fderiv_of_isOpen|norm_image_sub_le_of_norm_fderiv_le|ofReal_mul\\x27|norm_add_sq_real|continuous_det|def adjoint",
+        "ofReal_mul|theorem.*clm_comp|theorem.*fderiv_fun_sub|protected theorem.*fderiv|pow_le_pow_iff_left₀",
+        "rg -n 'codim1_zsl_ga_lc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "sed -n '72,115p' /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/tmp/lc-dec-a1/Split.lean",
+        "/tmp/lc-dec-a1/SubmissionCheck.lean"
+      ],
+      "conclusion": "The pinned sources support the derivative, mean-value, Jacobian-continuity and ENNReal arguments; relevant files match the workspace sources and belong to the frozen import closure. The split appropriately isolates five genuine obligations. Together with the selected node's declared linear_area and relative_lipschitz prerequisites, their conclusions establish its exact frozen contract. The sole child dependency, local_bilipschitz → graph_fderiv, is correctly directed and acyclic. All five names are unused bare identifiers; no identical-type DAG reuse was found. All contracts are standalone, one-line propositions matching their prose, without implementation-dependent aliases or problematic Matrix/IsUnit constructions. The supplied Lean source contains byte-identical types, and independent source-delta checks passed for every child. Compilation was attempted but unavailable because lake was not found; the reported compiler, axiom and heartbeat results were not independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and both conclusions match exactly. Sum and chain rules identify the derivative; orthogonality and the isometry hypotheses give the squared-norm identity. Comparing nonnegative squares proves the lower bound without circularity, including zero-dimensional cases."
+    },
+    {
+      "key": "eps_choice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity at zero supplies a positive tolerance below one. The two comparisons with q and multiplication by explicitly positive denominators prove precisely the requested inequalities, including m = 0. No additional hypothesis or unproved construction is needed."
+    },
+    {
+      "key": "local_bilipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness and C¹ regularity justify ordinary differentiability and derivative continuity. The convex-ball mean-value estimate, declared graph_fderiv dependency and triangle inequalities prove both bounds. The proof requires only ε > 0, as stated; ε < 1 is unnecessary."
+    },
+    {
+      "key": "jacobian_continuous_on",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly composes derivative continuity with continuous adjoint, continuous-linear-map composition, determinant and Real.sqrt. The expression is the intended Gram endomorphism determinant. Neither injectivity nor determinant positivity is required."
+    },
+    {
+      "key": "sandwich",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both inequality chains use exactly the stated bounds. ENNReal.ofReal_mul' requires only the verified nonnegative right factors, so no hidden positivity assumption on t or 1 + ε is introduced. Monotonicity and associativity remain valid for infinite values and c = 0."
+    }
+  ],
+  "required_changes": []
+}
