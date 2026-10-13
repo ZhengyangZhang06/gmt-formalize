@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f9b4083deda1f8fc20c3c2e0e9cd871900943487464733a2da2bf7b3bf86de7d",
+  "git_delta": {
+    "base_commit": "02d864531fc484ef0cc72e01b543965a97b2f55c",
+    "candidate_commit": "1ce45c2246fb9da6d0e2cc31bef174ad5f37762f",
+    "target": "GMT/Ch06/Submission.lean",
+    "declaration": "iwl_cr_ce_cutoff_converges_zero",
+    "diff_sha256": "8ab1ca7a2157cb3ffe37eb535fe860cbeafd7c769377db6aadd49769a161a8a9",
+    "source_sha256": "b255bd200393bdfa22b51d7bb6d47f26633f9877e7c71c55ffd4a55bed684cef",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.iwl_cr_ce_cutoff_converges_zero",
+      "statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (ζ : Eucl P → ℝ) (ψs : ℕ → DifferentialForm (Eucl P) k) (φs : ℕ → TestFormOn U k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → (∀ l, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψs l)) → (∀ l x, (φs l : DifferentialForm (Eucl P) k) x = ζ x • ψs l x) → (∀ (j : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ l in atTop, ∀ x ∈ tsupport ζ, ‖iteratedFDeriv ℝ j (ψs l) x‖ ≤ ε) → TestFormOnConverges φs 0",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
