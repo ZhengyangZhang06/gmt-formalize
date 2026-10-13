@@ -2303,6 +2303,139 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   push_cast
   ring
 
+/-- **Localization away from `spt ∂T`** (proof of Simon 7.3.1, chapter-07.txt lines 335–337:
+`∂η_{x,λⱼ #} T = 0` in `B_R(0)` because `x ∉ spt ∂T`).  Let `T ∈ 𝒟ₙ(U)`, `n ≥ 1`, be minimizing in
+`A`, `U' = U \ spt ∂T` and `T' = T⌞U'`.  `U' = U ∩ Z_∂` with `Z_∂` the open zero region of `∂T`.
+`T'` and `T` agree on forms supported in `U'`, so `M_W(T') = M_W(T)` for `W ⊆ U'`, `spt T' ⊆ spt T`,
+and `∂T'(ω) = ∂T(ω) = 0` since `spt ω` misses `spt ∂T` (`dtc_vanish_off_support`).  `T'` is integer
+multiplicity.  Given a competitor `S'` for `T'` in `W ⊂⊂ U'`, `X = S' − T'` is integer multiplicity
+with `∂X = 0`, and `M_{U' \ K}(X) = 0` for the compact `K = spt X`, so by `dtc_mass_eq_measure` the
+carrier of `X` is `Hⁿ`-null off `K`.  Hence `X` extends by zero to `Y ∈ 𝒟ₙ(U)` with `spt Y ⊆ K` and
+`∂Y = 0`, and `S = T − ((T − T) − Y) = T + Y` is an integer multiplicity competitor for `T` that
+agrees with `S'` on forms supported in `W`: `M_W(T') = M_W(T) ≤ M_W(S) = M_W(S')`. -/
+theorem Submission.dtc_localize : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsMinimizingIn T A → IsOpen (U \ boundarySupport T) ∧ IsMinimizingIn (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U)) A ∧ BoundaryVanishes (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U)) ∧ (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U)).support ⊆ T.support ∧ ∀ W : Set (Euclid P), W ⊆ U \ boundarySupport T → (T.restrictDomain (Set.sdiff_subset : U \ boundarySupport T ⊆ U)).massOn W = T.massOn W := by
+  intro P n U A T hU hn hT
+  -- `n = m + 1`, so `spt ∂T = spt (T.boundary)` and `∂T' = 0` means `T'.boundary = 0`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  set U' := U \ boundarySupport T
+  have hU'U : U' ⊆ U := Set.sdiff_subset
+  set T' := T.restrictDomain hU'U
+  -- Step 1 (a): `U' = U \ (U \ Z_∂) = U ∩ Z_∂` is open
+  have hU'o : IsOpen U' := by
+    show IsOpen (U \ (U \ T.boundary.zeroRegion))
+    rw [Set.sdiff_sdiff_right_self]
+    exact hU.inter T.boundary.isOpen_zeroRegion
+  -- `T'(ω) = T(ω)` for `ω ∈ 𝒟ⁿ(U')`
+  have hagree : ∀ ω : TestFormOn U' (m + 1), T (testFormOnInclusion hU'U (m + 1) ω) = T' ω :=
+    fun ω => rfl
+  -- Step 2 (e): `M_W(T') = M_W(T)` for `W ⊆ U'`
+  have hmass : ∀ W : Set (Euclid P), W ⊆ U' → T'.massOn W = T.massOn W := fun W hW =>
+    (Submission.dtc_massOn_eq_of_agreeOn P (m + 1) U U' W hU'U T T' hW fun ω _ => hagree ω).symm
+  -- Step 5: `T' = τ(M ∩ U', θ, ξ)` is integer multiplicity
+  have hT'IM : IsIntegerMultiplicity T' :=
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) U U' hU'U T hU'o hT.1
+  refine ⟨hU'o, ⟨hT'IM, ?_⟩, ?_, ?_, hmass⟩
+  · -- Step 6 (b): a competitor `S'` for `T'` yields a competitor `S` for `T`
+    intro W S' hWo hWcc hS' hSB hKc hKAW
+    have hWU' : W ⊆ U' := subset_closure.trans hWcc.2
+    set X := S' - T'
+    set K := X.support
+    have hKU' : K ⊆ U' := X.support_subset_domain
+    -- Step 6.1: `X` is integer multiplicity, with `∂X = ∂S' − ∂T' = 0`
+    obtain ⟨R, hR⟩ :=
+      Submission.dtc_isIntegerMultiplicity_sub P (m + 1) U' S' T' hU'o hn hS' hT'IM
+    have hXb : BoundaryVanishes X := by
+      have hSB' : S'.boundary = T'.boundary := hSB
+      show X.boundary = 0
+      ext ω
+      show S'.boundary ω - T'.boundary ω = 0
+      rw [hSB', sub_self]
+    -- Step 6.6: `M_{U' \ K}(X) = 0`, as `X` kills every form supported off `K = spt X`
+    have hUKo : IsOpen (U' \ K) := hU'o.sdiff hKc.isClosed
+    have hX0 : X.massOn (U' \ K) = 0 := by
+      unfold GeometricCurrentOn.massOn
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, hω, rfl⟩
+      have h0 : X ω = 0 := Submission.dtc_vanish_off_support P (m + 1) U' X ω
+        (Set.disjoint_left.mpr fun x hx hxK => (hω.1 hx).2 hxK)
+      simp [h0]
+    -- so `∫_{M_X \ K} θ_X dHⁿ = μ_X(U' \ K) = M_{U' \ K}(X) = 0`, and `θ_X ≥ 1` gives
+    -- `Hⁿ(M_X \ K) = 0`
+    have hμ := Submission.dtc_mass_eq_measure P (m + 1) U' (U' \ K) X R hU'o hUKo
+      Set.sdiff_subset hR
+    rw [hX0, IMRep.measure, withDensity_apply _ hUKo.measurableSet,
+      Measure.restrict_restrict hUKo.measurableSet] at hμ
+    have hnull : μHE[m + 1] (R.carrier \ K) = 0 := by
+      have hset : R.carrier \ K = (U' \ K) ∩ R.carrier := by
+        ext x
+        exact ⟨fun hx => ⟨⟨R.carrier_subset hx.1, hx.2⟩, hx.1⟩, fun hx => ⟨hx.2, hx.1.2⟩⟩
+      have hle : ∫⁻ _ in (U' \ K) ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[m + 1] ≤
+          ∫⁻ x in (U' \ K) ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[m + 1] :=
+        setLIntegral_mono' (hUKo.measurableSet.inter R.measurableSet_carrier) fun x hx => by
+          exact_mod_cast Nat.one_le_iff_ne_zero.2 (Nat.pos_iff_ne_zero.1 (R.mult_pos x hx.2))
+      rw [hset, ← setLIntegral_one]
+      exact le_antisymm (hle.trans hμ.symm.le) zero_le
+    -- Steps 6.2–6.6: extend `X` by zero to `Y ∈ 𝒟ₙ(U)` with `spt Y ⊆ K` and `∂Y = 0`
+    obtain ⟨Y, hYX, hYK, hYc, hYb, hYIM⟩ :=
+      Submission.dtc_extend_by_zero P (m + 1) U U' K hU'U X R hU hU'o hKc hKU' hR hnull
+    have hYb' : Y.boundary = 0 := hYb hXb
+    -- Step 6.7: `T − T`, `(T − T) − Y` and `S = T − ((T − T) − Y) = T + Y` are integer
+    -- multiplicity (`T − T` replaces the zero current of the text)
+    set S := T - ((T - T) - Y)
+    have hSIM : IsIntegerMultiplicity S :=
+      Submission.dtc_isIntegerMultiplicity_sub P (m + 1) U T _ hU hn hT.1
+        (Submission.dtc_isIntegerMultiplicity_sub P (m + 1) U (T - T) Y hU hn
+          (Submission.dtc_isIntegerMultiplicity_sub P (m + 1) U T T hU hn hT.1 hT.1) hYIM)
+    have hSapp : ∀ ω : TestFormOn U (m + 1), S ω = T ω + Y ω := fun ω => by
+      show T ω - ((T ω - T ω) - Y ω) = T ω + Y ω
+      ring
+    -- Step 6.8: `∂S = ∂T` and `S − T = Y`, so `spt(S − T) = spt Y ⊆ K ⊆ A ∩ W` is compact
+    have hSB2 : SameBoundary S T := by
+      show S.boundary = T.boundary
+      ext ω
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hSapp,
+        ← GeometricCurrentOn.boundary_apply Y, hYb', GeometricCurrentOn.zero_apply, add_zero]
+    have hST : S - T = Y := by
+      ext ω
+      show S ω - T ω = Y ω
+      rw [hSapp]
+      ring
+    have hmin := hT.2 W S hWo ⟨hWcc.1, hWcc.2.trans hU'U⟩ hSIM hSB2
+      (by rw [hST]; exact hYc) (by rw [hST]; exact hYK.trans hKAW)
+    -- Step 6.9: `S = T + X = S'` on forms supported in `W ⊆ U'`, so
+    -- `M_W(T') = M_W(T) ≤ M_W(S) = M_W(S')`
+    have hSW : S.massOn W = S'.massOn W :=
+      Submission.dtc_massOn_eq_of_agreeOn P (m + 1) U U' W hU'U S S' hWU' fun ω _ => by
+        have hY : Y (testFormOnInclusion hU'U (m + 1) ω) = X ω :=
+          congrArg (fun Z : GeometricCurrentOn U' (m + 1) => Z ω) hYX
+        rw [hSapp, hY, hagree]
+        show T' ω + (S' ω - T' ω) = S' ω
+        ring
+    rw [hmass W hWU', ← hSW]
+    exact hmin
+  · -- Step 4 (c): `∂T'(ω) = ∂T(ω) = 0`, as `spt ω ⊆ U'` misses `spt ∂T`
+    show T'.boundary = 0
+    ext ω
+    rw [GeometricCurrentOn.zero_apply, GeometricCurrentOn.boundary_apply, ← hagree]
+    have hd : testFormOnInclusion hU'U (m + 1) (exteriorDerivativeTestOn U' m ω) =
+        exteriorDerivativeTestOn U m (testFormOnInclusion hU'U m ω) := Subtype.ext rfl
+    rw [hd, ← GeometricCurrentOn.boundary_apply]
+    exact Submission.dtc_vanish_off_support P m U T.boundary _
+      (Set.disjoint_left.mpr fun x hx hxb => (ω.property.2 hx).2 hxb)
+  · -- Step 3 (d): a point of `U' \ spt T` has a neighbourhood `V ∩ B_{r/2}(y) ⊂⊂ U'` on which
+    -- `T'` vanishes
+    rintro y ⟨hyU', hyZ'⟩
+    refine ⟨hU'U hyU', fun hyZ => hyZ' ?_⟩
+    obtain ⟨V, ⟨hVo, -, -, hTV⟩, hyV⟩ := Set.mem_sUnion.mp hyZ
+    obtain ⟨r, hr, hrU'⟩ := Metric.isOpen_iff.mp hU'o y hyU'
+    have hcl : closure (V ∩ ball y (r / 2)) ⊆ closedBall y (r / 2) :=
+      (closure_mono Set.inter_subset_right).trans closure_ball_subset_closedBall
+    exact Set.mem_sUnion.mpr ⟨V ∩ ball y (r / 2), ⟨hVo.inter isOpen_ball,
+      (isCompact_closedBall y (r / 2)).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball (half_lt_self hr)).trans hrU'),
+      fun ω hω => hTV (testFormOnInclusion hU'U (m + 1) ω) (hω.trans Set.inter_subset_left)⟩,
+      hyV, mem_ball_self (half_pos hr)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
