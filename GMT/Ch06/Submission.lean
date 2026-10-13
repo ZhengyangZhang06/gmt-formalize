@@ -471,6 +471,86 @@ theorem Submission.dgc_pm_vitali_volume_bound :
     _ ≤ ENNReal.ofReal (10 ^ Fintype.card ι) * ENNReal.ofReal M := by gcongr
     _ = ENNReal.ofReal (10 ^ Fintype.card ι * M) := (ENNReal.ofReal_mul (by positivity)).symm
 
+/-- Periodic maximal estimate (Simon Ch. 6, §5, proof of the Deformation Theorem, printed (3),
+(4) and `L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1}`, pp. 163–164), for a finite measure `μ` on `X` and a
+measurable `p : X → ℝ^ι`, `k = card ι`: the centres `g` with `|g − g₀| < 1/4` at which some
+`σ ∈ (0, 1/4)` has `μ(p⁻¹ ⋃_{z ∈ ℤ^ι} B_σ(g + z)) > βσ^k μ(X)` have outer Lebesgue measure at
+most `10^k/β`.  Choosing such a `σ_b` for every bad centre `b`, the periodic tubes of a subfamily
+with disjoint balls `B̄_{σ_b}(b)` are disjoint, so the subfamily is countable and
+`Σ σ_b^k ≤ 1/β`; the `5`-times covering bound then gives `10^k/β`. -/
+theorem Submission.dgc_periodic_maximal :
+    ∀ (ι : Type) [Fintype ι] (X : Type) [MeasurableSpace X] (μ : Measure X), IsFiniteMeasure μ →
+      ∀ p : X → EuclideanSpace ℝ ι, Measurable p → ∀ (g₀ : EuclideanSpace ℝ ι) (β : ℝ), 0 < β →
+        volume {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧
+          ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+            μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}} ≤
+          ENNReal.ofReal (10 ^ Fintype.card ι / β) := by
+  intro ι _ X _ μ hμ p hp g₀ β hβ
+  set Bad := {g : EuclideanSpace ℝ ι | dist g g₀ < 1 / 4 ∧ ∃ σ : ℝ, 0 < σ ∧ σ < 1 / 4 ∧
+    ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+      μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2}}
+  -- The tubes `T(g, σ) = p⁻¹ ⋃_z B_σ(g + z)` are measurable.
+  have hmeas : ∀ (g : EuclideanSpace ℝ ι) (σ : ℝ),
+      MeasurableSet {x | ∃ z : ι → ℤ, ∑ i, (p x i - g i - z i) ^ 2 < σ ^ 2} := by
+    intro g σ
+    have hopen : IsOpen
+        {y : EuclideanSpace ℝ ι | ∃ z : ι → ℤ, ∑ i, (y i - g i - z i) ^ 2 < σ ^ 2} := by
+      simp only [ofPred_exists]
+      exact isOpen_iUnion fun z => isOpen_lt (continuous_finsetSum _ fun i _ =>
+        (((PiLp.continuous_apply 2 _ i).sub continuous_const).sub continuous_const).pow 2)
+        continuous_const
+    exact hp hopen.measurableSet
+  -- If `μ(X) = 0`, no centre is bad.
+  rcases eq_or_ne (μ univ) 0 with h0 | h0
+  · have hempty : Bad = ∅ := by
+      refine eq_empty_iff_forall_notMem.2 fun g hg => ?_
+      obtain ⟨σ, -, -, hlt⟩ := hg.2
+      rw [h0, mul_zero] at hlt
+      exact hlt.ne' (measure_mono_null (subset_univ _) h0)
+    rw [hempty, measure_empty]
+    exact zero_le
+  -- Choose a radius `σ_b` for every bad centre `b` (printed (3)).
+  have hex : ∀ b : EuclideanSpace ℝ ι, ∃ σ : ℝ, b ∈ Bad → 0 < σ ∧ σ < 1 / 4 ∧
+      ENNReal.ofReal (β * σ ^ Fintype.card ι) * μ univ <
+        μ {x | ∃ z : ι → ℤ, ∑ i, (p x i - b i - z i) ^ 2 < σ ^ 2} := by
+    intro b
+    by_cases hb : b ∈ Bad
+    · obtain ⟨σ, hσ⟩ := hb.2
+      exact ⟨σ, fun _ => hσ⟩
+    · exact ⟨0, fun h => absurd h hb⟩
+  choose r hr using hex
+  have key := Submission.dgc_pm_vitali_volume_bound ι Bad r (1 / 4) (1 / β)
+    (fun b hb => ⟨(hr b hb).1, (hr b hb).2.1.le⟩) ?_
+  · rwa [mul_one_div] at key
+  -- Packing: a subfamily `u` with disjoint balls `B̄_{σ_b}(b)` has disjoint tubes.
+  intro u hu hdisj
+  set A : u → Set X := fun b =>
+    {x | ∃ z : ι → ℤ, ∑ i, (p x i - (b : EuclideanSpace ℝ ι) i - z i) ^ 2 < r b ^ 2}
+  have hAm : ∀ b, MeasurableSet (A b) := fun b => hmeas _ _
+  have hAd : Pairwise (Function.onFun Disjoint A) := by
+    intro b b' hne
+    exact (Submission.dgc_pm_lattice_tubes_disjoint ι g₀ b b' (r b) (r b') (hu b.2).1 (hu b'.2).1
+      (hr b (hu b.2)).1 (hr b (hu b.2)).2.1 (hr b' (hu b'.2)).1 (hr b' (hu b'.2)).2.1
+      (hdisj b.2 b'.2 (Subtype.coe_injective.ne hne))).preimage p
+  have hApos : ∀ b : u, 0 < μ (A b) := fun b => zero_le.trans_lt (hr b (hu b.2)).2.2
+  -- Disjoint sets of positive measure: `u` is countable.
+  have hcount : u.Countable := by
+    have h : (univ : Set u).Countable :=
+      (Measure.countable_meas_pos_of_disjoint_iUnion hAm hAd).mono fun b _ => hApos b
+    exact countable_coe_iff.1 (countable_univ_iff.1 h)
+  refine ⟨hcount, ?_⟩
+  -- Summing (3): `β Σ σ_b^k μ(X) ≤ Σ μ(T(b, σ_b)) ≤ μ(X)`.
+  have hsum : (∑' b : u, ENNReal.ofReal (β * r b ^ Fintype.card ι)) * μ univ ≤ 1 * μ univ := by
+    rw [← ENNReal.tsum_mul_right, one_mul]
+    calc ∑' b : u, ENNReal.ofReal (β * r b ^ Fintype.card ι) * μ univ
+        ≤ ∑' b : u, μ (A b) := ENNReal.tsum_le_tsum fun b => (hr b (hu b.2)).2.2.le
+      _ ≤ μ (⋃ b, A b) := tsum_meas_le_meas_iUnion_of_disjoint μ hAm hAd
+      _ ≤ μ univ := measure_mono (subset_univ _)
+  have h1 := (ENNReal.mul_le_mul_iff_left h0 (measure_ne_top μ univ)).1 hsum
+  simp_rw [ENNReal.ofReal_mul hβ.le, ENNReal.tsum_mul_left] at h1
+  rw [one_div, ENNReal.ofReal_inv_of_pos hβ, ENNReal.le_inv_iff_mul_le, mul_comm]
+  exact h1
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
