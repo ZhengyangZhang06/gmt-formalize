@@ -559,6 +559,428 @@ theorem Submission.deformation_ipl_mwc_td_scalar_smooth_dense :
     calc ∫ w in Ω, |η w - (p ∘ b) w| ≤ ∫ w in Ω, ‖η w • e - b w‖ :=
           setIntegral_mono (hη.sub hφi.integrableOn).abs (hc.sub hbi.integrableOn).norm hptw
       _ < ε := hbε
+/-- Leibniz bound for determinants: if every entry of a real `n × n` matrix satisfies
+`|A i j| ≤ c`, then `|det A| ≤ n! · cⁿ`.  Expand `det A = ∑_σ sgn(σ) • ∏_i A (σ i) i`, apply the
+triangle inequality, drop the sign `±1`, bound each product of `n` entries by `cⁿ`, and count the
+`n!` permutations of `Fin n`. -/
+theorem Submission.deformation_ipl_mwc_mil_abs_det_le :
+    ∀ (n : ℕ) (c : ℝ) (A : Matrix (Fin n) (Fin n) ℝ), (∀ i j, |A i j| ≤ c) →
+      |Matrix.det A| ≤ (n.factorial : ℝ) * c ^ n := by
+  intro n c A hA
+  rw [Matrix.det_apply]
+  calc |∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ i, A (σ i) i|
+      ≤ ∑ σ : Equiv.Perm (Fin n), |Equiv.Perm.sign σ • ∏ i, A (σ i) i| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ = ∑ σ : Equiv.Perm (Fin n), ∏ i, |A (σ i) i| := by
+        -- `sgn σ = ±1`, and `|·|` is multiplicative on finite products.
+        refine Finset.sum_congr rfl fun σ _ => ?_
+        rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+          simp [h, Finset.abs_prod]
+    _ ≤ ∑ _σ : Equiv.Perm (Fin n), c ^ n := by
+        refine Finset.sum_le_sum fun σ _ => ?_
+        calc ∏ i, |A (σ i) i| ≤ ∏ _i : Fin n, c :=
+              Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) (fun i _ => hA _ _)
+          _ = c ^ n := by simp
+    _ = (n.factorial : ℝ) * c ^ n := by
+        simp [Fintype.card_perm]
+
+/-- **Dominated convergence for `h_m · det A_m`.**  If the entries of `A_m(x)` are bounded by
+`C`, `|h_m| ≤ H` with `H` integrable for all large `m`, and `h_m → h₀`, `A_m → A₀` entrywise
+`μ`-a.e., then `∫ h_m det A_m dμ → ∫ h₀ det A₀ dμ`.  Dominated convergence with the bound
+`H · n! Cⁿ` (`deformation_ipl_mwc_mil_abs_det_le`); `det A_m` is a.e.-strongly measurable by
+the Leibniz formula and `det` is continuous in the entries. -/
+theorem Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (n : ℕ) (C : ℝ) (A : ℕ → Fin n → Fin n → α → ℝ) (A₀ : Fin n → Fin n → α → ℝ) (h : ℕ → α → ℝ) (h₀ H : α → ℝ), (∀ m t s, AEStronglyMeasurable (A m t s) μ) → (∀ m, AEStronglyMeasurable (h m) μ) → Integrable H μ → (∀ m t s x, |A m t s x| ≤ C) → (∀ᶠ m in atTop, ∀ x, |h m x| ≤ H x) → (∀ᵐ x ∂μ, Tendsto (fun m => h m x) atTop (𝓝 (h₀ x))) → (∀ᵐ x ∂μ, ∀ t s, Tendsto (fun m => A m t s x) atTop (𝓝 (A₀ t s x))) → Tendsto (fun m => ∫ x, h m x * Matrix.det (Matrix.of fun t s => A m t s x) ∂μ) atTop (𝓝 (∫ x, h₀ x * Matrix.det (Matrix.of fun t s => A₀ t s x) ∂μ)) := by
+  intro α _ μ n C A A₀ h h₀ H hAm hhm hH hAb hhb hhl hAl
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun x => H x * ((n.factorial : ℝ) * C ^ n)) ?_ ?_ (hH.mul_const _) ?_
+  · -- Leibniz: `det A_m(x) = ∑_σ sgn σ ∏_i A_m(σ i, i, x)`, finite sums and products of
+    -- a.e.-strongly measurable functions.
+    refine Eventually.of_forall fun m => (hhm m).mul ?_
+    have hdet : (fun x => Matrix.det (Matrix.of fun t s => A m t s x)) =
+        fun x => ∑ σ : Equiv.Perm (Fin n), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, A m (σ i) i x := by
+      funext x
+      rw [Matrix.det_apply]
+      refine Finset.sum_congr rfl fun σ _ => ?_
+      rw [Units.smul_def, zsmul_eq_mul]
+      rfl
+    rw [hdet]
+    refine Finset.aestronglyMeasurable_fun_sum _ fun σ _ => ?_
+    exact aestronglyMeasurable_const.mul
+      (Finset.aestronglyMeasurable_fun_prod _ fun i _ => hAm m _ _)
+  · -- `|h_m(x) det A_m(x)| ≤ H(x) · n! Cⁿ` for every `x`, once `|h_m| ≤ H`.
+    filter_upwards [hhb] with m hm
+    refine Eventually.of_forall fun x => ?_
+    rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul (hm x)
+      (Submission.deformation_ipl_mwc_mil_abs_det_le n C _ fun t s => hAb m t s x)
+      (abs_nonneg _) ((abs_nonneg _).trans (hm x))
+  · -- Entrywise convergence gives `A_m(x) → A₀(x)` in the product topology; `det` is continuous.
+    filter_upwards [hhl, hAl] with x hx1 hx2
+    refine hx1.mul ?_
+    have hc : Continuous (Matrix.det : Matrix (Fin n) (Fin n) ℝ → ℝ) := continuous_id.matrix_det
+    exact (hc.tendsto _).comp (tendsto_pi_nhds.2 fun t => tendsto_pi_nhds.2 fun s => hx2 t s)
+/-- A.e. derivative of a coordinate of a Lipschitz map (the Rademacher step of the Lipschitz
+minor integration by parts in the proof of Simon Ch. 6, 3.9): if `v : ℝᵏ → ℝ^Q` is `C`-Lipschitz
+on an open `Ω` and `g = v^c := proj_c ∘ v` on `Ω`, then for Lebesgue-a.e. `w ∈ Ω`,
+`Dg(w) x = proj_c (Dv(w) x)` for every `x`.  By Rademacher's theorem `v` is differentiable within
+`Ω` at a.e. `w ∈ Ω`, hence at `w` as `Ω` is open; `g` and `v^c` agree near `w`, so they have the
+same `fderiv`, which is `proj_c ∘L Dv(w)` by the chain rule.  No regularity of `g` is needed. -/
+theorem Submission.deformation_ipl_mwc_mil_ae_fderiv_eq_proj :
+    ∀ (k Q : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (v : Eucl k → Eucl Q) (c : Fin Q)
+      (g : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω →
+      EqOn g (fun w => EuclideanSpace.proj c (v w)) Ω →
+      ∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → ∀ x : Eucl k,
+        fderiv ℝ g w x = EuclideanSpace.proj c (fderiv ℝ v w x) := by
+  intro k Q Ω C v c g hΩ hv hg
+  -- Rademacher's theorem on `Ω`: `v` is differentiable within `Ω` at a.e. `w ∈ Ω`.
+  filter_upwards [hv.ae_differentiableWithinAt_of_mem (μ := volume)] with w hw hwΩ x
+  -- `Ω` is a neighbourhood of `w`, so `v` is differentiable at `w` and `g = proj_c ∘ v` near `w`.
+  have hd : DifferentiableAt ℝ v w := (hw hwΩ).differentiableAt (hΩ.mem_nhds hwΩ)
+  have heq : g =ᶠ[𝓝 w] (fun w => EuclideanSpace.proj c (v w)) :=
+    eventuallyEq_of_mem (hΩ.mem_nhds hwΩ) hg
+  -- Chain rule for the continuous linear map `proj_c`.
+  have hcomp : HasFDerivAt (fun w => EuclideanSpace.proj c (v w))
+      ((EuclideanSpace.proj c).comp (fderiv ℝ v w)) w :=
+    (EuclideanSpace.proj c : Eucl Q →L[ℝ] ℝ).hasFDerivAt.comp w hd.hasFDerivAt
+  -- Locality of `fderiv`: `Dg(w) = D(proj_c ∘ v)(w) = proj_c ∘L Dv(w)`.
+  rw [heq.fderiv_eq, hcomp.fderiv]
+  rfl
+/-- **A directional derivative of a compactly supported `C¹` function has integral `0`.**  For
+`h : ℝᵏ → ℝ` of class `C¹` with compact support and `e ∈ ℝᵏ`, `∫ Dh(w)(e) dw = 0`, where
+`Dh(w) = fderiv ℝ h w`.  `h` is Lipschitz, so integration by parts for Lipschitz functions against
+the constant function `1` gives `∫ ∂ₑ1 · h = ∫ ∂₋ₑh · 1`.  The left side vanishes and, `h` being
+differentiable, `∂₋ₑh(w) = Dh(w)(-e) = -Dh(w)(e)`, so the right side is `-∫ Dh(w)(e) dw`. -/
+theorem Submission.deformation_ipl_mwc_mis_integral_fderiv_eq_zero :
+    ∀ (k : ℕ) (h : Eucl k → ℝ) (e : Eucl k), ContDiff ℝ 1 h → HasCompactSupport h →
+      ∫ w, fderiv ℝ h w e ∂(volume : Measure (Eucl k)) = 0 := by
+  intro k h e hh hcs
+  -- `h` is Lipschitz; integrate by parts against the constant function `1`.
+  obtain ⟨D, hD⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hcs hh one_ne_zero
+  have key := LipschitzWith.integral_lineDeriv_mul_eq (μ := (volume : Measure (Eucl k)))
+    (LipschitzWith.const (α := Eucl k) (1 : ℝ)) hD hcs e
+  -- Both functions are differentiable, so their line derivatives are Fréchet derivatives.
+  have h1 : ∀ w, lineDeriv ℝ (fun _ : Eucl k => (1 : ℝ)) w e = 0 := fun w => by
+    rw [(differentiableAt_const (1 : ℝ)).lineDeriv_eq_fderiv]
+    simp
+  have h2 : ∀ w, lineDeriv ℝ h w (-e) = -fderiv ℝ h w e := fun w => by
+    rw [((hh.differentiable one_ne_zero) w).lineDeriv_eq_fderiv]
+    simp
+  simp only [h1, h2, zero_mul, integral_zero, mul_one, integral_neg] at key
+  linarith
+/-- **The determinant of a matrix of `C^m` functions is `C^m`.**  Let `M t s : ℝᵏ → ℝ`
+(`t, s : Fin n`) be `C^m` for some `m : WithTop ℕ∞` (finite, `∞` or `ω`).  Then
+`w ↦ det (M t s w)ₜₛ` is `C^m`.  By the Leibniz formula `det A = ∑_σ sign σ · ∏ᵢ A (σ i) i`, this
+function is a finite sum, over the permutations `σ` of `Fin n`, of constant multiples of finite
+products of entries (for `n = 0` it is the constant `1`). -/
+theorem Submission.deformation_ipl_mwc_mis_det_contDiff :
+    ∀ (k n : ℕ) (m : WithTop ℕ∞) (M : Fin n → Fin n → Eucl k → ℝ),
+      (∀ t s, ContDiff ℝ m (M t s)) →
+        ContDiff ℝ m (fun w => Matrix.det (Matrix.of fun t s : Fin n => M t s w)) := by
+  intro k n m M hM
+  -- Leibniz formula: `det (M t s w)ₜₛ = ∑_σ sign σ * ∏ᵢ M (σ i) i w`.
+  simp only [Matrix.det_apply', Matrix.of_apply]
+  -- Each summand is a constant times a finite product of `C^m` entries.
+  apply ContDiff.sum
+  intro σ _
+  apply contDiff_const.mul
+  apply contDiff_prod
+  intro i _
+  exact hM _ _
+/-- Signed first-row cofactors as restricted Leibniz sums: `(-1)^q` times the minor of the
+`r × (r + 1)` array `N` with column `q` deleted is the sum of `sgn σ * ∏ t, N t (σ t.succ)` over
+the permutations `σ` of `Fin (r + 1)` with `σ 0 = q`.  Both sides are the determinant of the
+matrix with row `0` equal to `Pi.single q 1` and row `t.succ` equal to `N t`. -/
+theorem Submission.deformation_ipl_mwc_pi_cofactor_leibniz : ∀ (r : ℕ) (N : Fin r → Fin (r + 1) → ℝ) (q : Fin (r + 1)), (-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => N t (q.succAbove s)) = ∑ σ : Equiv.Perm (Fin (r + 1)), (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, N t (σ t.succ) := by
+  intro r N q
+  let A : Matrix (Fin (r + 1)) (Fin (r + 1)) ℝ := Matrix.of (Matrix.vecCons (Pi.single q 1) N)
+  -- Laplace expansion along row `0`: only the column `j = q` survives.
+  have h1 : A.det = (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r => N t (q.succAbove s)) := by
+    rw [Matrix.det_succ_row_zero, Finset.sum_eq_single q]
+    · have hsub : A.submatrix Fin.succ q.succAbove =
+          Matrix.of fun t s : Fin r => N t (q.succAbove s) := by
+        ext t s
+        simp [A]
+      rw [hsub]
+      simp [A]
+    · intro j _ hj
+      simp [A, hj]
+    · intro h
+      exact absurd (Finset.mem_univ q) h
+  -- Leibniz formula for `Aᵀ`: the row-`0` factor `Pi.single q 1 (σ 0)` selects `σ 0 = q`.
+  have h2 : A.det = ∑ σ : Equiv.Perm (Fin (r + 1)),
+      (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, N t (σ t.succ) := by
+    rw [← Matrix.det_transpose, Matrix.det_apply']
+    refine Finset.sum_congr rfl (fun σ _ => ?_)
+    rw [Fin.prod_univ_succ]
+    simp only [A, Matrix.transpose_apply, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_succ, Pi.single_apply]
+    split_ifs <;> ring
+  rw [← h1, h2]
+/-- Schwarz symmetry of mixed directional second derivatives of a `C²` function on `ℝ^k`:
+`∂_v (∂_u f)(x) = ∂_u (∂_v f)(x)`. -/
+theorem Submission.deformation_ipl_mwc_pi_hessian_symm :
+    ∀ (k : ℕ) (f : Eucl k → ℝ), ContDiff ℝ 2 f → ∀ x u v : Eucl k,
+      fderiv ℝ (fun y : Eucl k => fderiv ℝ f y u) x v =
+        fderiv ℝ (fun y : Eucl k => fderiv ℝ f y v) x u := by
+  intro k f hf x u v
+  -- `Df` is `C¹`, hence differentiable at `x`; by Schwarz, `D²f(x)` is symmetric.
+  have h1 : ContDiff ℝ 1 (fderiv ℝ f) := hf.fderiv_right (by norm_num)
+  have hd : DifferentiableAt ℝ (fderiv ℝ f) x := (h1.differentiable (by norm_num)) x
+  have hs : IsSymmSndFDerivAt ℝ f x := hf.contDiffAt.isSymmSndFDerivAt (by simp)
+  -- Differentiating `y ↦ Df(y) u` at `x` in direction `v` gives `D²f(x) v u`.
+  rw [fderiv_clm_apply hd (differentiableAt_const u),
+    fderiv_clm_apply hd (differentiableAt_const v)]
+  simpa using hs v u
+/-- Product rule for a weighted sum of finite products: if every `g i t` is differentiable at
+`w`, the derivative of `x ↦ ∑ i, a i * ∏ t, g i t x` at `w` in direction `v` is
+`∑ i, a i * ∑ u, fderiv ℝ (g i u) w v * ∏ t ≠ u, g i t w`. -/
+theorem Submission.deformation_ipl_mwc_pi_fderiv_sum_prod : ∀ (k r : ℕ) (ι : Type) [Fintype ι] (a : ι → ℝ) (g : ι → Fin r → Eucl k → ℝ) (w v : Eucl k), (∀ i t, DifferentiableAt ℝ (g i t) w) → fderiv ℝ (fun x : Eucl k => ∑ i, a i * ∏ t, g i t x) w v = ∑ i, a i * ∑ u, fderiv ℝ (g i u) w v * ∏ t ∈ Finset.univ.erase u, g i t w := by
+  intro k r ι _ a g w v hg
+  -- Product rule for each `∏ t, g i t`, then the constant factor `a i` and the sum over `ι`.
+  have hs : HasFDerivAt (fun x => ∑ i, a i * ∏ t, g i t x)
+      (∑ i, a i • ∑ u, (∏ t ∈ Finset.univ.erase u, g i t w) • fderiv ℝ (g i u) w) w :=
+    HasFDerivAt.fun_sum fun i _ =>
+      (HasFDerivAt.finsetProd fun t _ => (hg i t).hasFDerivAt).const_mul (a i)
+  -- Evaluate the derivative at `v` termwise and commute the real factors.
+  rw [hs.fderiv]
+  simp only [sum_apply, smul_apply, smul_eq_mul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  congr 1
+  refine Finset.sum_congr rfl fun u _ => ?_
+  ring
+/-- Algebraic core of the Piola identity: an alternating sum over permutations against a kernel
+`H u` symmetric in its two arguments vanishes, since `σ ↦ σ * swap 0 u.succ` reverses the sign,
+exchanges the two arguments of `H u` and fixes every other factor. -/
+theorem Submission.deformation_ipl_mwc_pi_swap_cancel : ∀ (r : ℕ) (H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ) (N : Fin r → Fin (r + 1) → ℝ), (∀ u i j, H u i j = H u j i) → ∑ σ : Equiv.Perm (Fin (r + 1)), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∑ u : Fin r, H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) = 0 := by
+  intro r H N hH
+  simp_rw [Finset.mul_sum]
+  rw [Finset.sum_comm]
+  refine Finset.sum_eq_zero (fun u _ => ?_)
+  -- Pair `σ` with `σ * τ`, `τ = (0 u.succ)`; the terms `T σ` and `T (σ * τ)` cancel.
+  let τ : Equiv.Perm (Fin (r + 1)) := Equiv.swap 0 u.succ
+  have hτne : (0 : Fin (r + 1)) ≠ u.succ := (Fin.succ_ne_zero u).symm
+  let T : Equiv.Perm (Fin (r + 1)) → ℝ := fun σ =>
+    ((Equiv.Perm.sign σ : ℤ) : ℝ) * (H u (σ 0) (σ u.succ) * ∏ t ∈ Finset.univ.erase u, N t (σ t.succ))
+  have hT : ∀ σ : Equiv.Perm (Fin (r + 1)), T (σ * τ) = - T σ := by
+    intro σ
+    have h0 : (σ * τ) 0 = σ u.succ := by simp [τ, Equiv.Perm.mul_apply]
+    have h1 : (σ * τ) u.succ = σ 0 := by simp [τ, Equiv.Perm.mul_apply]
+    have hprod : ∏ t ∈ Finset.univ.erase u, N t ((σ * τ) t.succ) =
+        ∏ t ∈ Finset.univ.erase u, N t (σ t.succ) := by
+      refine Finset.prod_congr rfl (fun t ht => ?_)
+      have htu : t ≠ u := Finset.ne_of_mem_erase ht
+      rw [Equiv.Perm.mul_apply, Equiv.swap_apply_of_ne_of_ne (Fin.succ_ne_zero t)
+        (fun h => htu (Fin.succ_injective _ h))]
+    have hsign : ((Equiv.Perm.sign (σ * τ) : ℤ) : ℝ) = - ((Equiv.Perm.sign σ : ℤ) : ℝ) := by
+      rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hτne]
+      push_cast
+      ring
+    simp only [T]
+    rw [h0, h1, hprod, hsign, hH u (σ u.succ) (σ 0)]
+    ring
+  have hS : ∑ σ, T σ = - ∑ σ, T σ :=
+    calc ∑ σ, T σ = ∑ σ, T (σ * τ) := (Equiv.sum_comp (Equiv.mulRight τ) T).symm
+      _ = ∑ σ, - T σ := Finset.sum_congr rfl (fun σ _ => hT σ)
+      _ = - ∑ σ, T σ := Finset.sum_neg_distrib _
+  linarith
+
+/-- Piola identity (step (3.2)(i) of the proof of `minor_weak_continuity`; Evans, PDE, §8.1.4(b),
+Lemma 1): for `C²` functions `W_0, …, W_{r-1}` on `ℝ^k` and `b : Fin (r + 1) → Fin k`, the signed
+minors `c_q = (-1)^q det (∂_{b (q.succAbove s)} W_t)_{t,s}` satisfy `∑_q ∂_{b q} c_q = 0`.
+By the cofactor formula `c_q = ∑_{σ 0 = q} sgn σ ∏_t ∂_{b (σ t.succ)} W_t` and the product rule,
+`∑_q ∂_{b q} c_q = ∑_σ sgn σ ∑_u H_u(σ 0, σ u.succ) ∏_{t ≠ u} ∂_{b (σ t.succ)} W_t` with
+`H_u(i, j) = ∂_{b i} ∂_{b j} W_u`; this vanishes since `H_u` is symmetric (Schwarz) and
+`σ ↦ σ * swap 0 u.succ` changes the sign. -/
+theorem Submission.deformation_ipl_mwc_piola_identity :
+    ∀ (k r : ℕ) (W : Fin r → Eucl k → ℝ) (b : Fin (r + 1) → Fin k), (∀ t, ContDiff ℝ 2 (W t)) →
+      ∀ w : Eucl k, ∑ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w
+          (EuclideanSpace.single (b q) 1) = 0 := by
+  intro k r W b hW w
+  -- `D t i x = ∂_{b i} W_t (x)`, the entries of the minors; `C¹` since `W_t` is `C²`.
+  let D : Fin r → Fin (r + 1) → Eucl k → ℝ := fun t i x =>
+    fderiv ℝ (W t) x (EuclideanSpace.single (b i) 1)
+  have hD : ∀ t i, DifferentiableAt ℝ (D t i) w := fun t i =>
+    (((hW t).fderiv_right (m := 1) (by norm_num)).differentiable one_ne_zero w).clm_apply
+      (differentiableAt_const _)
+  -- `H u i j = ∂_{b i} ∂_{b j} W_u (w)` is symmetric in `(i, j)`.
+  let H : Fin r → Fin (r + 1) → Fin (r + 1) → ℝ := fun u i j =>
+    fderiv ℝ (D u j) w (EuclideanSpace.single (b i) 1)
+  have hH : ∀ u i j, H u i j = H u j i := fun u i j =>
+    Submission.deformation_ipl_mwc_pi_hessian_symm k (W u) (hW u) w
+      (EuclideanSpace.single (b j) 1) (EuclideanSpace.single (b i) 1)
+  -- Cofactor formula and product rule: `∂_{b q} c_q = ∑_{σ 0 = q} sgn σ ∂_{b q} ∏_t D t (σ t.succ)`
+  have hc : ∀ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r =>
+        fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w
+        (EuclideanSpace.single (b q) 1) =
+      ∑ σ : Equiv.Perm (Fin (r + 1)), (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) *
+        ∑ u : Fin r, H u q (σ u.succ) * ∏ t ∈ Finset.univ.erase u, D t (σ t.succ) w := by
+    intro q
+    have hcof : (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) =
+        fun x => ∑ σ : Equiv.Perm (Fin (r + 1)),
+          (if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0) * ∏ t : Fin r, D t (σ t.succ) x :=
+      funext fun x => Submission.deformation_ipl_mwc_pi_cofactor_leibniz r (fun t i => D t i x) q
+    rw [hcof]
+    exact Submission.deformation_ipl_mwc_pi_fderiv_sum_prod k r (Equiv.Perm (Fin (r + 1)))
+      (fun σ => if σ 0 = q then ((Equiv.Perm.sign σ : ℤ) : ℝ) else 0)
+      (fun σ t => D t (σ t.succ)) w _ fun σ t => hD t (σ t.succ)
+  -- Sum over `q`: only `q = σ 0` survives, and the sum cancels in pairs `σ, σ * swap 0 u.succ`.
+  refine Eq.trans ?_
+    (Submission.deformation_ipl_mwc_pi_swap_cancel r H (fun t i => D t i w) hH)
+  rw [Fintype.sum_congr _ _ hc, Finset.sum_comm]
+  refine Fintype.sum_congr _ _ fun σ => ?_
+  rw [Finset.sum_eq_single (σ 0) (fun q _ hq => by rw [ite_eq_right (Ne.symm hq), zero_mul])
+    (fun h => absurd (Finset.mem_univ _) h), ite_eq_left rfl]
+
+/-- Integration by parts for Jacobian minors of `C²` functions (step (3.2)(ii) of the weak
+continuity of Jacobian minors behind the Lipschitz push-forward limits in the proof of the
+Deformation Theorem, Simon Ch. 6, 5.1): for `C²` functions `V₀, …, V_r : ℝᵏ → ℝ`, directions
+`b : Fin (r + 1) → Fin k` and `φ ∈ C¹_c(ℝᵏ)`, with
+`A = (∂_{b(s)} V_t)_{t,s}` and the signed first-row cofactors
+`C_q = (-1)^q det(∂_{b(q.succAbove s)} V_{t+1})_{t,s}`, `∫ φ det A = -∑_q ∫ V₀ C_q ∂_{b(q)} φ`.
+Laplace expansion along row `0` gives `det A = ∑_q ∂_{b(q)} V₀ · C_q`.  The directional derivative
+`∂_{b(q)}(V₀ φ C_q)` of the compactly supported `C¹` function `V₀ φ C_q` has integral `0`, and the
+product rule turns this into `∫ ∂_{b(q)} V₀ φ C_q = -∫ V₀ ∂_{b(q)} φ C_q - ∫ V₀ φ ∂_{b(q)} C_q`.
+Summing over `q`, the last terms cancel by the Piola identity `∑_q ∂_{b(q)} C_q = 0`. -/
+theorem Submission.deformation_ipl_mwc_minor_ibp_smooth :
+    ∀ (k r : ℕ) (V : Fin (r + 1) → Eucl k → ℝ) (b : Fin (r + 1) → Fin k) (φ : Eucl k → ℝ),
+      (∀ t, ContDiff ℝ 2 (V t)) → ContDiff ℝ 1 φ → HasCompactSupport φ →
+      ∫ w, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) =>
+          fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)) ∂(volume : Measure (Eucl k)) =
+        -∑ q : Fin (r + 1), ∫ w, V 0 w * ((-1 : ℝ) ^ (q : ℕ) *
+          Matrix.det (Matrix.of fun t s : Fin r =>
+            fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1))) *
+          fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k)) := by
+  intro k r V b φ hV hφ hφc
+  -- `C q w = (-1)^q det(∂_{b(q.succAbove s)} V_{t+1}(w))_{t,s}`: the signed first-row cofactors.
+  obtain ⟨C, hC⟩ : ∃ C : Fin (r + 1) → Eucl k → ℝ, ∀ q w, C q w = (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r =>
+        fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1)) :=
+    ⟨_, fun _ _ => rfl⟩
+  have hCf : ∀ q, C q = fun w => (-1 : ℝ) ^ (q : ℕ) *
+      Matrix.det (Matrix.of fun t s : Fin r =>
+        fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1)) :=
+    fun q => funext (hC q)
+  -- Step 1 (Laplace expansion along row `0`): `det A = ∑_q ∂_{b(q)} V₀ · C_q`.
+  have hLap : ∀ w, Matrix.det (Matrix.of fun t s : Fin (r + 1) =>
+      fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)) =
+      ∑ q, fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * C q w := by
+    intro w
+    rw [Matrix.det_succ_row_zero]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [hC q w, Matrix.of_apply]
+    have hsub : (Matrix.of fun t s : Fin (r + 1) =>
+        fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)).submatrix Fin.succ q.succAbove =
+        Matrix.of fun t s : Fin r =>
+          fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1) := rfl
+    rw [hsub]
+    ring
+  -- Step 2 (regularity): the entries `∂_i V_t` and, by the Leibniz formula, the cofactors `C_q`
+  -- are `C¹`.
+  have hDV : ∀ t i, ContDiff ℝ 1 fun w => fderiv ℝ (V t) w (EuclideanSpace.single i 1) :=
+    fun t i => ((hV t).fderiv_right (m := 1) one_add_one_eq_two.le).clm_apply contDiff_const
+  have hV0 : ContDiff ℝ 1 (V 0) := (hV 0).of_le one_le_two
+  have hCd : ∀ q, ContDiff ℝ 1 (C q) := by
+    intro q
+    rw [hCf q]
+    exact contDiff_const.mul (Submission.deformation_ipl_mwc_mis_det_contDiff k r 1
+      (fun t s w => fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1))
+      fun t s => hDV t.succ _)
+  -- Step 3 (supports and integrability): `φ` and `Dφ` vanish off the compact set `tsupport φ`,
+  -- so every continuous integrand below with a factor `φ` or `∂_i φ` is integrable.
+  have hφ0 : ∀ w, w ∉ tsupport φ → φ w = 0 := fun w hw => image_eq_zero_of_notMem_tsupport hw
+  have hdφ0 : ∀ w, w ∉ tsupport φ → fderiv ℝ φ w = 0 :=
+    fun w hw => fderiv_of_notMem_tsupport ℝ hw
+  have hcs : ∀ g : Eucl k → ℝ, (∀ w, w ∉ tsupport φ → g w = 0) → HasCompactSupport g := by
+    intro g hg0
+    refine hφc.mono' fun w hw => ?_
+    by_contra hw'
+    exact (Function.mem_support.mp hw) (hg0 w hw')
+  have hint : ∀ g : Eucl k → ℝ, Continuous g → (∀ w, w ∉ tsupport φ → g w = 0) →
+      Integrable g (volume : Measure (Eucl k)) :=
+    fun g hg hg0 => hg.integrable_of_hasCompactSupport (hcs g hg0)
+  have hcDφ : ∀ i, Continuous fun w => fderiv ℝ φ w (EuclideanSpace.single i 1) :=
+    fun i => (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hcDC : ∀ q i, Continuous fun w => fderiv ℝ (C q) w (EuclideanSpace.single i 1) :=
+    fun q i => ((hCd q).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hT1 : ∀ q, Integrable (fun w => fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) *
+      φ w * C q w) (volume : Measure (Eucl k)) := fun q =>
+    hint _ (((hDV 0 _).continuous.mul hφ.continuous).mul (hCd q).continuous)
+      fun w hw => by rw [hφ0 w hw, mul_zero, zero_mul]
+  have hT2 : ∀ q, Integrable (fun w => V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) *
+      C q w) (volume : Measure (Eucl k)) := fun q =>
+    hint _ ((hV0.continuous.mul (hcDφ _)).mul (hCd q).continuous)
+      fun w hw => by rw [hdφ0 w hw, zero_apply, mul_zero, zero_mul]
+  have hT3 : ∀ q, Integrable (fun w => V 0 w * φ w *
+      fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1)) (volume : Measure (Eucl k)) := fun q =>
+    hint _ ((hV0.continuous.mul hφ.continuous).mul (hcDC q _))
+      fun w hw => by rw [hφ0 w hw, mul_zero, zero_mul]
+  -- Product rule for `V₀ φ C_q` in the direction `e_{b(q)}`.
+  have hprod : ∀ q w, fderiv ℝ (fun y => V 0 y * φ y * C q y) w (EuclideanSpace.single (b q) 1) =
+      fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * φ w * C q w +
+        V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w +
+        V 0 w * φ w * fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1) := by
+    intro q w
+    have hd : HasFDerivAt (fun y => V 0 y * φ y * C q y)
+        ((V 0 w * φ w) • fderiv ℝ (C q) w +
+          C q w • (V 0 w • fderiv ℝ φ w + φ w • fderiv ℝ (V 0) w)) w :=
+      ((hV0.differentiable one_ne_zero w).hasFDerivAt.mul
+        (hφ.differentiable one_ne_zero w).hasFDerivAt).mul
+        ((hCd q).differentiable one_ne_zero w).hasFDerivAt
+    rw [hd.fderiv]
+    simp only [add_apply, smul_apply, smul_eq_mul]
+    ring
+  -- Steps 4–5 (one integration by parts for each `q`): `∫ ∂_{b(q)}(V₀ φ C_q) = 0`, so
+  -- `∫ ∂_{b(q)} V₀ φ C_q = -∫ V₀ ∂_{b(q)} φ C_q - ∫ V₀ φ ∂_{b(q)} C_q`.
+  have hq : ∀ q, ∫ w, fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * φ w * C q w =
+      -(∫ w, V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w) -
+        ∫ w, V 0 w * φ w * fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1) := by
+    intro q
+    have h0 := Submission.deformation_ipl_mwc_mis_integral_fderiv_eq_zero k
+      (fun y => V 0 y * φ y * C q y) (EuclideanSpace.single (b q) 1) ((hV0.mul hφ).mul (hCd q))
+      (hcs _ fun w hw => by rw [hφ0 w hw, mul_zero, zero_mul])
+    simp only [hprod q] at h0
+    have h12 : Integrable (fun w => fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * φ w * C q w +
+        V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w)
+        (volume : Measure (Eucl k)) := (hT1 q).add (hT2 q)
+    rw [integral_add h12 (hT3 q), integral_add (hT1 q) (hT2 q)] at h0
+    linarith
+  -- Step 6 (Piola identity for the rows `W_t = V_{t+1}`): `∑_q ∂_{b(q)} C_q = 0`.
+  have hdivC : ∀ w, ∑ q, fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1) = 0 := by
+    intro w
+    simp only [hCf]
+    exact Submission.deformation_ipl_mwc_piola_identity k r (fun t => V t.succ) b
+      (fun t => hV t.succ) w
+  calc ∫ w, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) =>
+          fderiv ℝ (V t) w (EuclideanSpace.single (b s) 1)) ∂(volume : Measure (Eucl k))
+      = ∫ w, ∑ q, fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * φ w * C q w := by
+        refine integral_congr_ae (ae_of_all _ fun w => ?_)
+        simp only [hLap w, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        ring
+    _ = ∑ q, ∫ w, fderiv ℝ (V 0) w (EuclideanSpace.single (b q) 1) * φ w * C q w :=
+        integral_finsetSum _ fun q _ => hT1 q
+    _ = ∑ q, (-(∫ w, V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w) -
+          ∫ w, V 0 w * φ w * fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1)) :=
+        Finset.sum_congr rfl fun q _ => hq q
+    _ = -(∑ q, ∫ w, V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w) -
+          ∫ w, ∑ q, V 0 w * φ w * fderiv ℝ (C q) w (EuclideanSpace.single (b q) 1) := by
+        rw [integral_finsetSum _ fun q _ => hT3 q, Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+    _ = -∑ q, ∫ w, V 0 w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) * C q w := by
+        simp only [← Finset.mul_sum, hdivC, mul_zero, integral_zero, sub_zero]
+    _ = -∑ q : Fin (r + 1), ∫ w, V 0 w * ((-1 : ℝ) ^ (q : ℕ) *
+          Matrix.det (Matrix.of fun t s : Fin r =>
+            fderiv ℝ (V t.succ) w (EuclideanSpace.single (b (q.succAbove s)) 1))) *
+          fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k)) := by
+        congr 1
+        refine Finset.sum_congr rfl fun q _ => integral_congr_ae (ae_of_all _ fun w => ?_)
+        simp only [hC q w]
+        ring
 /-- A smooth approximate identity on `ℝⁿ` (Simon Ch. 6, proof of 2.34, p. 143; Ch. 2, §2):
 `ψ_k(y) = (k+1)ⁿ I⁻¹ h((k+1) y)` for a smooth bump `0 ≤ h ≤ 1` with `h(0) = 1`,
 `spt h ⊆ B_1(0)` and `I = ∫ h > 0`.  Each `ψ_k` is `C^∞`, nonnegative, of integral `1` and
@@ -719,6 +1141,347 @@ theorem Submission.constancy_mdc_smooth_approx_identity_ae_tendsto :
   rw [tendsto_iff_norm_sub_tendsto_zero]
   refine squeeze_zero (fun k => norm_nonneg _) hbound ?_
   simpa using havg.const_mul C
+/-- Differentiation under the integral sign for the mollification of a globally Lipschitz `F`
+by a continuous compactly supported `ρ`: `D(∫ ρ(y) F(· - y) dy)(x) = ∫ ρ(y) DF(x - y) dy`.
+By Rademacher's theorem and the invariance of Lebesgue measure under `y ↦ x - y`, `F` is
+differentiable at `x - y` for a.e. `y`; `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz on `ℝ^P`
+with integrable majorant `L |ρ|`, so `hasFDerivAt_integral_of_dominated_loc_of_lip` applies
+with `s = ℝ^P`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt :
+    ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ ρ : Eucl P → ℝ, Continuous ρ →
+      HasCompactSupport ρ → ∀ x : Eucl P,
+        HasFDerivAt (fun x' : Eucl P => ∫ y, ρ y * F (x' - y))
+          (∫ y, ρ y • fderiv ℝ F (x - y)) x := by
+  intro P F L hF ρ hρc hρs x
+  -- Rademacher, pulled back along the measure-preserving map `y ↦ x - y`.
+  have hae : ∀ᵐ y : Eucl P, DifferentiableAt ℝ F (x - y) :=
+    (Measure.measurePreserving_sub_left volume x).quasiMeasurePreserving.ae
+      hF.ae_differentiableAt
+  -- `y ↦ ρ(y) F(x' - y)` is continuous for every `x'`.
+  have hcont : ∀ x' : Eucl P, Continuous fun y : Eucl P => ρ y * F (x' - y) := fun x' =>
+    hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))
+  -- `x' ↦ ρ(y) F(x' - y)` is `L |ρ(y)|`-Lipschitz for every `y`.
+  have hlip : ∀ y : Eucl P,
+      LipschitzOnWith (Real.nnabs (L * |ρ y|)) (fun x' : Eucl P => ρ y * F (x' - y)) univ := by
+    refine fun y => (LipschitzWith.of_dist_le_mul fun a b => ?_).lipschitzOnWith
+    calc dist (ρ y * F (a - y)) (ρ y * F (b - y)) = |ρ y| * dist (F (a - y)) (F (b - y)) := by
+          rw [Real.dist_eq, Real.dist_eq, ← mul_sub, abs_mul]
+      _ ≤ |ρ y| * (L * dist (a - y) (b - y)) := by gcongr; exact hF.dist_le_mul _ _
+      _ = Real.nnabs (L * |ρ y|) * dist a b := by
+          rw [dist_sub_right, Real.coe_nnabs, abs_mul, abs_abs, NNReal.abs_eq]; ring
+  -- For a.e. `y`, the chain rule gives the derivative `ρ(y) DF(x - y)` at `x`.
+  have hderiv : ∀ᵐ y : Eucl P,
+      HasFDerivAt (fun x' : Eucl P => ρ y * F (x' - y)) (ρ y • fderiv ℝ F (x - y)) x := by
+    filter_upwards [hae] with y hy
+    have h := hy.hasFDerivAt.comp x (hasFDerivAt_sub_const (𝕜 := ℝ) (x := x) y)
+    rw [ContinuousLinearMap.comp_id] at h
+    exact h.const_mul (ρ y)
+  exact (hasFDerivAt_integral_of_dominated_loc_of_lip univ_mem
+    (Eventually.of_forall fun x' => (hcont x').aestronglyMeasurable)
+    ((hcont x).integrable_of_hasCompactSupport hρs.mul_right)
+    (hρc.measurable.smul ((measurable_fderiv ℝ F).comp
+      (measurable_const.sub measurable_id))).aestronglyMeasurable
+    (Eventually.of_forall hlip)
+    ((hρc.abs.integrable_of_hasCompactSupport hρs.abs).const_mul _) hderiv).2
+/-- **Uniform error of a mollified Lipschitz function** (Simon Ch. 6, 4.11, p. 158: "use
+`f^{(σ)}` in place of `f`").  If `F` is `L`-Lipschitz and `ρ ≥ 0` is continuous with compact
+support, `ρ(y) = 0` for `|y| ≥ σ` and `∫ ρ = 1`, then `|∫ ρ(y) F(x − y) dy − F(x)| ≤ L σ`.
+As `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`, and pointwise
+`|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L |y| ≤ ρ(y) L σ`, since `ρ(y) ≠ 0` forces `|y| < σ`. -/
+theorem Submission.slicing_mb_sa_mollify_lipschitz_close : ∀ (P : ℕ) (F : Eucl P → ℝ) (L : ℝ≥0), LipschitzWith L F → ∀ (ρ : Eucl P → ℝ) (σ : ℝ), Continuous ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → (∀ y : Eucl P, σ ≤ ‖y‖ → ρ y = 0) → ∫ y, ρ y = 1 → ∀ x : Eucl P, |(∫ y, ρ y * F (x - y)) - F x| ≤ (L : ℝ) * σ := by
+  intro P F L hF ρ σ hρc hρs hρ0 hρσ hρ1 x
+  -- `ρ` and `y ↦ ρ(y) F(x − y)` are continuous with compact support, hence integrable.
+  have hρi : Integrable ρ := hρc.integrable_of_hasCompactSupport hρs
+  have hgi : Integrable fun y => ρ y * F (x - y) :=
+    (hρc.mul (hF.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hρs.mul_right
+  -- Since `∫ ρ = 1`, the error is `∫ ρ(y) (F(x − y) − F(x)) dy`.
+  have herr : (∫ y, ρ y * F (x - y)) - F x = ∫ y, ρ y * (F (x - y) - F x) := by
+    simp_rw [mul_sub]
+    rw [integral_sub hgi (hρi.mul_const (F x)), integral_mul_const, hρ1, one_mul]
+  -- Pointwise `|ρ(y) (F(x − y) − F(x))| ≤ ρ(y) L σ`.
+  have hpt : ∀ y, ‖ρ y * (F (x - y) - F x)‖ ≤ ρ y * ((L : ℝ) * σ) := by
+    intro y
+    by_cases hy : ρ y = 0
+    · simp [hy]
+    -- `ρ(y) ≠ 0` forces `|y| < σ`.
+    have hyσ : ‖y‖ ≤ σ := (not_le.mp fun h => hy (hρσ y h)).le
+    have hlip : |F (x - y) - F x| ≤ (L : ℝ) * σ := by
+      rw [← Real.dist_eq]
+      calc dist (F (x - y)) (F x) ≤ (L : ℝ) * dist (x - y) x := hF.dist_le_mul _ _
+        _ = (L : ℝ) * ‖y‖ := by rw [dist_self_sub_left]
+        _ ≤ (L : ℝ) * σ := mul_le_mul_of_nonneg_left hyσ L.coe_nonneg
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hρ0 y)]
+    exact mul_le_mul_of_nonneg_left hlip (hρ0 y)
+  -- Integrate the pointwise bound, using `∫ ρ = 1` once more.
+  rw [herr, ← Real.norm_eq_abs]
+  calc ‖∫ y, ρ y * (F (x - y) - F x)‖ ≤ ∫ y, ρ y * ((L : ℝ) * σ) :=
+        norm_integral_le_of_norm_le (hρi.mul_const _) (Eventually.of_forall hpt)
+    _ = (L : ℝ) * σ := by rw [integral_mul_const, hρ1, one_mul]
+
+/-- **Smooth approximation of a Lipschitz function with a.e. convergent derivatives**
+(mollification).  Let `ψ_m` be the kernels of `constancy_mdc_smooth_approx_identity_ae_tendsto`
+and `G_m(x) = ∫ ψ_m(y) g(x − y) dy = (ψ_m ⋆ g)(x)`.  Then `G_m` is `C^∞`, `L`-Lipschitz (an
+average of translates of `g`), and `|G_m − g| ≤ 2L/(m+1)` by
+`slicing_mb_sa_mollify_lipschitz_close`.  Differentiating under the integral sign
+(`slicing_mb_sa_mollify_lipschitz_hasFDerivAt`), `DG_m(x) e_b = (∂_b g ∗ ψ_m)(x)`, which tends to
+`∂_b g(x)` for a.e. `x` because `∂_b g` is bounded and measurable; as `‖T‖ ≤ Σ_b |T e_b|` for
+`T : ℝ^k →L[ℝ] ℝ`, `DG_m(x) → Dg(x)` for a.e. `x`. -/
+theorem Submission.deformation_ipl_mwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : ℝ≥0) (g : Eucl k → ℝ), LipschitzWith L g → ∃ G : ℕ → Eucl k → ℝ, (∀ m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (G m)) ∧ (∀ m, LipschitzWith L (G m)) ∧ TendstoUniformly G g atTop ∧ ∀ᵐ w ∂(volume : Measure (Eucl k)), Tendsto (fun m => fderiv ℝ (G m) w) atTop (𝓝 (fderiv ℝ g w)) := by
+  intro k L g hg
+  -- The kernels `ψ_m`: `C^∞`, `≥ 0`, `∫ ψ_m = 1`, `spt ψ_m ⊆ B̄_{1/(m+1)}(0)`.
+  obtain ⟨ψ, hψs, hψc, hψsupp, hψnn, hψone, hψae⟩ :=
+    Submission.constancy_mdc_smooth_approx_identity_ae_tendsto k
+  have hψcont : ∀ m, Continuous (ψ m) := fun m => (hψs m).continuous
+  have hψint : ∀ m, Integrable (ψ m) volume := fun m =>
+    (hψcont m).integrable_of_hasCompactSupport (hψc m)
+  -- `ψ_m(y) = 0` for `|y| ≥ 2/(m+1)`.
+  have hψzero : ∀ (m : ℕ) (y : Eucl k), 2 / ((m : ℝ) + 1) ≤ ‖y‖ → ψ m y = 0 := by
+    intro m y hy
+    apply image_eq_zero_of_notMem_tsupport
+    intro hy'
+    have h1 := hψsupp m hy'
+    rw [mem_closedBall, dist_zero_right] at h1
+    have h2 : 1 / ((m : ℝ) + 1) < 2 / ((m : ℝ) + 1) :=
+      div_lt_div_of_pos_right (by norm_num) (by positivity)
+    linarith
+  -- `G_m(x) = ∫ ψ_m(y) g(x − y) dy`.
+  set G : ℕ → Eucl k → ℝ := fun m x => ∫ y, ψ m y * g (x - y) with hG
+  refine ⟨G, fun m => ?_, fun m => ?_, ?_, ?_⟩
+  · -- `G_m = ψ_m ⋆ g` is `C^∞`.
+    have hconv : convolution (ψ m) g (ContinuousLinearMap.lsmul ℝ ℝ) volume = G m := by
+      funext x
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul, hG]
+    rw [← hconv]
+    exact (hψc m).contDiff_convolution_left _ (hψs m) hg.continuous.locallyIntegrable
+  · -- `|G_m(x) − G_m(x')| ≤ ∫ ψ_m(y) |g(x − y) − g(x' − y)| dy ≤ L |x − x'|`.
+    refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+    have hi : ∀ z, Integrable (fun y => ψ m y * g (z - y)) volume := fun z =>
+      Continuous.integrable_of_hasCompactSupport
+        ((hψcont m).mul (hg.continuous.comp (continuous_const.sub continuous_id))) (hψc m).mul_right
+    have hpt : ∀ y, ‖ψ m y * g (x - y) - ψ m y * g (x' - y)‖ ≤ ψ m y * ((L : ℝ) * dist x x') := by
+      intro y
+      rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψnn m y)]
+      refine mul_le_mul_of_nonneg_left ?_ (hψnn m y)
+      rw [← Real.dist_eq]
+      calc dist (g (x - y)) (g (x' - y)) ≤ L * dist (x - y) (x' - y) := hg.dist_le_mul _ _
+        _ = L * dist x x' := by rw [dist_sub_right]
+    rw [Real.dist_eq]
+    simp only [hG]
+    rw [← integral_sub (hi x) (hi x'), ← Real.norm_eq_abs]
+    calc ‖∫ y, ψ m y * g (x - y) - ψ m y * g (x' - y)‖ ≤ ∫ y, ψ m y * ((L : ℝ) * dist x x') :=
+          norm_integral_le_of_norm_le ((hψint m).mul_const _) (Eventually.of_forall hpt)
+      _ = L * dist x x' := by rw [integral_mul_const, hψone m, one_mul]
+  · -- `|G_m − g| ≤ 2L/(m+1) → 0`.
+    have hclose : ∀ m x, |G m x - g x| ≤ (L : ℝ) * (2 / ((m : ℝ) + 1)) := fun m x =>
+      Submission.slicing_mb_sa_mollify_lipschitz_close k g L hg (ψ m) (2 / ((m : ℝ) + 1))
+        (hψcont m) (hψc m) (hψnn m) (hψzero m) (hψone m) x
+    have hlim : Tendsto (fun m : ℕ => (L : ℝ) * (2 / ((m : ℝ) + 1))) atTop (𝓝 0) := by
+      have := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (2 * (L : ℝ))
+      rw [mul_zero] at this
+      exact this.congr fun m => by ring
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [(tendsto_order.1 hlim).2 ε hε] with m hm x
+    rw [dist_comm, Real.dist_eq]
+    exact (hclose m x).trans_lt hm
+  · set e : Fin k → Eucl k := fun b => EuclideanSpace.basisFun (Fin k) ℝ b with he
+    have hDg : ∀ z, ‖fderiv ℝ g z‖ ≤ L := fun z => norm_fderiv_le_of_lipschitz ℝ hg
+    -- `DG_m(x) = ∫ ψ_m(y) Dg(x − y) dy`, a Bochner integral of an integrable integrand.
+    have hfd : ∀ m x, fderiv ℝ (G m) x = ∫ y, ψ m y • fderiv ℝ g (x - y) := fun m x =>
+      (Submission.slicing_mb_sa_mollify_lipschitz_hasFDerivAt k g L hg (ψ m) (hψcont m)
+        (hψc m) x).fderiv
+    have hint : ∀ m x, Integrable (fun y => ψ m y • fderiv ℝ g (x - y)) volume := by
+      intro m x
+      refine ((hψint m).mul_const (L : ℝ)).mono' ?_ (Eventually.of_forall fun y => ?_)
+      · exact ((hψcont m).measurable.smul ((measurable_fderiv ℝ g).comp
+          (measurable_const.sub measurable_id))).aestronglyMeasurable
+      · rw [norm_smul, Real.norm_of_nonneg (hψnn m y)]
+        exact mul_le_mul_of_nonneg_left (hDg _) (hψnn m y)
+    -- Hence `DG_m(x) v = (Dg(·) v ∗ ψ_m)(x)`.
+    have happly : ∀ m x v, fderiv ℝ (G m) x v =
+        convolution (fun t => fderiv ℝ g t v) (ψ m) (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+      intro m x v
+      rw [hfd, ContinuousLinearMap.integral_apply (hint m x), convolution_lsmul_swap]
+      congr 1
+      funext t
+      simp only [smul_apply, smul_eq_mul, mul_comm]
+    -- `Dg(·) v` is measurable and bounded by `L |v|`, hence locally integrable.
+    have hloc : ∀ v, LocallyIntegrable (fun t => fderiv ℝ g t v) volume := by
+      intro v
+      refine (locallyIntegrable_const ((L : ℝ) * ‖v‖)).mono
+        (measurable_fderiv_apply_const ℝ g v).aestronglyMeasurable
+        (Eventually.of_forall fun t => ?_)
+      rw [Real.norm_of_nonneg (mul_nonneg L.coe_nonneg (norm_nonneg v))]
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (hDg t) (norm_nonneg _))
+    -- For a.e. `x`: `DG_m(x) e_b → Dg(x) e_b` for every `b`.
+    have hae : ∀ᵐ x ∂(volume : Measure (Eucl k)), ∀ b,
+        Tendsto (fun m => fderiv ℝ (G m) x (e b)) atTop (𝓝 (fderiv ℝ g x (e b))) := by
+      rw [ae_all_iff]
+      intro b
+      filter_upwards [hψae _ (hloc (e b))] with x hx
+      simp_rw [happly]
+      exact hx
+    -- `‖T‖ ≤ Σ_b |T e_b|`, writing `z = Σ_b z_b e_b` with `|z_b| ≤ |z|`.
+    have hnorm : ∀ T : Eucl k →L[ℝ] ℝ, ‖T‖ ≤ ∑ b, |T (e b)| := by
+      intro T
+      refine ContinuousLinearMap.opNorm_le_bound _
+        (Finset.sum_nonneg fun b _ => abs_nonneg _) fun z => ?_
+      have hz : z = ∑ b, z b • e b := by
+        simpa [he] using ((EuclideanSpace.basisFun (Fin k) ℝ).sum_repr z).symm
+      calc ‖T z‖ = ‖∑ b, z b * T (e b)‖ := by
+            conv_lhs => rw [hz]
+            simp [map_sum, map_smul]
+        _ ≤ ∑ b, ‖z b * T (e b)‖ := norm_sum_le _ _
+        _ = ∑ b, ‖z b‖ * |T (e b)| := by simp [norm_mul]
+        _ ≤ ∑ b, ‖z‖ * |T (e b)| := Finset.sum_le_sum fun b _ =>
+            mul_le_mul_of_nonneg_right (PiLp.norm_apply_le z b) (abs_nonneg _)
+        _ = (∑ b, |T (e b)|) * ‖z‖ := by rw [← Finset.mul_sum, mul_comm]
+    -- Squeeze: `‖DG_m(x) − Dg(x)‖ ≤ Σ_b |DG_m(x) e_b − Dg(x) e_b| → 0`.
+    filter_upwards [hae] with x hx
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun m => norm_nonneg _) (fun m => hnorm _) ?_
+    have hsum : Tendsto (fun m => ∑ b, |(fderiv ℝ (G m) x - fderiv ℝ g x) (e b)|) atTop
+        (𝓝 (∑ b, |fderiv ℝ g x (e b) - fderiv ℝ g x (e b)|)) := by
+      refine tendsto_finsetSum _ fun b _ => ?_
+      simp only [sub_apply]
+      exact ((hx b).sub_const _).abs
+    simpa using hsum
+
+/-- **Integration by parts for the Jacobian minors of a Lipschitz map** (the divergence form of
+the minors; cf. J. M. Ball, ARMA 63 (1977)).  Let `v` be `C`-Lipschitz on the open set `Ω`,
+`φ ∈ C¹_c(Ω)`, `M = det (∂_{b s} v^{a t})_{t,s}` the `(r+1) × (r+1)` minor with rows `a` and
+columns `b`, and `C_q = (-1)^q det (∂_{b (q.succAbove s)} v^{a t.succ})_{t,s}` its cofactors
+along the first row.  Then `∫_Ω φ M = -∑_q ∫_Ω v^{a 0} C_q ∂_{b q} φ`.
+
+Extend each coordinate `v^c|_Ω` to a `C`-Lipschitz `ṽ^c` on `ℝ^k` (McShane) and mollify it
+(`lipschitz_smooth_approx`): `G^c_m` is `C^∞` and `C`-Lipschitz, `G^c_m → ṽ^c` uniformly and
+`DG^c_m → Dṽ^c` a.e.  The identity holds on `ℝ^k` for the rows `G^{a t}_m` (`minor_ibp_smooth`);
+the matrix entries are bounded by `C` and converge a.e., and the scalar factors are dominated by
+`|φ|` resp. `(|ṽ^{a 0}| + 1) |∂_{b q} φ|` for large `m`, so it passes to the limit
+(`mil_tendsto_integral_mul_det`).  Finally `Dṽ^c = proj_c ∘ Dv` a.e. on `Ω`
+(`mil_ae_fderiv_eq_proj`), `ṽ^c = v^c` on `Ω`, and every integrand vanishes off
+`tsupport φ ⊆ Ω`. -/
+theorem Submission.deformation_ipl_mwc_minor_ibp_lipschitz : ∀ (k Q r : ℕ) (Ω : Set (Eucl k)) (C : ℝ≥0) (a : Fin (r + 1) → Fin Q) (b : Fin (r + 1) → Fin k) (v : Eucl k → Eucl Q) (φ : Eucl k → ℝ), IsOpen Ω → LipschitzOnWith C v Ω → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ω → ∫ w in Ω, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) => EuclideanSpace.proj (a t) (fderiv ℝ v w (EuclideanSpace.single (b s) 1))) ∂(volume : Measure (Eucl k)) = -∑ q : Fin (r + 1), ∫ w in Ω, EuclideanSpace.proj (a 0) (v w) * ((-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => EuclideanSpace.proj (a t.succ) (fderiv ℝ v w (EuclideanSpace.single (b (q.succAbove s)) 1)))) * fderiv ℝ φ w (EuclideanSpace.single (b q) 1) ∂(volume : Measure (Eucl k)) := by
+  intro k Q r Ω C a b v φ hΩ hv hφ hφc hφΩ
+  -- Step 1 (McShane): `v^c = proj_c ∘ v` is `C`-Lipschitz on `Ω`, so it extends to a
+  -- `C`-Lipschitz `ṽ^c` on `ℝ^k` with `ṽ^c = v^c` on `Ω`.
+  have hvc : ∀ c : Fin Q, LipschitzOnWith C (fun w => EuclideanSpace.proj c (v w)) Ω := by
+    intro c
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    calc dist (EuclideanSpace.proj c (v x)) (EuclideanSpace.proj c (v y))
+          = ‖(v x - v y) c‖ := by simp [dist_eq_norm]
+      _ ≤ ‖v x - v y‖ := PiLp.norm_apply_le _ _
+      _ = dist (v x) (v y) := (dist_eq_norm _ _).symm
+      _ ≤ C * dist x y := hv.dist_le_mul x hx y hy
+  choose vt hvtl hvteq using fun c => (hvc c).extend_real
+  -- Step 2: `C^∞`, `C`-Lipschitz `G^c_m → ṽ^c` uniformly, with `DG^c_m → Dṽ^c` a.e.
+  choose G hGs hGl hGu hGd using fun c =>
+    Submission.deformation_ipl_mwc_lipschitz_smooth_approx k C (vt c) (hvtl c)
+  -- Step 3: the smooth identity `(S_m)` for the rows `V^m_t = G^{a t}_m`.
+  have hS : ∀ m : ℕ, ∫ w, φ w * Matrix.det (Matrix.of fun t s : Fin (r + 1) =>
+        fderiv ℝ (G (a t) m) w (EuclideanSpace.single (b s) 1)) =
+      -∑ q : Fin (r + 1), ∫ w, G (a 0) m w * ((-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (G (a t.succ) m) w (EuclideanSpace.single (b (q.succAbove s)) 1))) *
+        fderiv ℝ φ w (EuclideanSpace.single (b q) 1) := fun m =>
+    Submission.deformation_ipl_mwc_minor_ibp_smooth k r (fun t => G (a t) m) b φ
+      (fun t => (hGs (a t) m).of_le (WithTop.coe_le_coe.2 le_top)) hφ hφc
+  -- Step 4: the entries `∂_i g` of a `C`-Lipschitz `g` are bounded by `C`, and those of `G^c_m`
+  -- converge a.e. to those of `ṽ^c`.
+  have hent : ∀ g : Eucl k → ℝ, LipschitzWith C g → ∀ (i : Fin k) (w : Eucl k),
+      |fderiv ℝ g w (EuclideanSpace.single i 1)| ≤ C := by
+    intro g hg i w
+    calc |fderiv ℝ g w (EuclideanSpace.single i 1)|
+        ≤ ‖fderiv ℝ g w‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+          (fderiv ℝ g w).le_opNorm _
+      _ ≤ C := by simpa using norm_fderiv_le_of_lipschitz ℝ hg (x₀ := w)
+  have hconv : ∀ᵐ w ∂(volume : Measure (Eucl k)), ∀ (c : Fin Q) (i : Fin k),
+      Tendsto (fun m => fderiv ℝ (G c m) w (EuclideanSpace.single i 1)) atTop
+        (𝓝 (fderiv ℝ (vt c) w (EuclideanSpace.single i 1))) := by
+    filter_upwards [ae_all_iff.2 hGd] with w hw c i
+    exact ((continuous_id.clm_apply continuous_const).tendsto _).comp (hw c)
+  -- Step 5: dominated convergence on both sides of `(S_m)`.
+  have hφcont : Continuous φ := hφ.continuous
+  have hL := Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det (Eucl k) volume (r + 1)
+    C (fun m t s w => fderiv ℝ (G (a t) m) w (EuclideanSpace.single (b s) 1))
+    (fun t s w => fderiv ℝ (vt (a t)) w (EuclideanSpace.single (b s) 1)) (fun _ => φ) φ
+    (fun w => |φ w|) (fun m t s => (measurable_fderiv_apply_const ℝ _ _).aestronglyMeasurable)
+    (fun _ => hφcont.aestronglyMeasurable) (hφcont.integrable_of_hasCompactSupport hφc).abs
+    (fun m t s w => hent _ (hGl _ m) _ w) (Eventually.of_forall fun _ _ => le_rfl)
+    (ae_of_all _ fun _ => tendsto_const_nhds) (hconv.mono fun w hw t s => hw _ _)
+  have hR : ∀ q : Fin (r + 1), Tendsto (fun m => ∫ w, G (a 0) m w * ((-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (G (a t.succ) m) w (EuclideanSpace.single (b (q.succAbove s)) 1))) *
+        fderiv ℝ φ w (EuclideanSpace.single (b q) 1)) atTop
+      (𝓝 (∫ w, vt (a 0) w * ((-1 : ℝ) ^ (q : ℕ) *
+        Matrix.det (Matrix.of fun t s : Fin r =>
+          fderiv ℝ (vt (a t.succ)) w (EuclideanSpace.single (b (q.succAbove s)) 1))) *
+        fderiv ℝ φ w (EuclideanSpace.single (b q) 1))) := by
+    intro q
+    have hdφ : Continuous fun w => fderiv ℝ φ w (EuclideanSpace.single (b q) 1) :=
+      (hφ.continuous_fderiv one_ne_zero).clm_apply continuous_const
+    have hdφs : HasCompactSupport fun w => fderiv ℝ φ w (EuclideanSpace.single (b q) 1) :=
+      hφc.fderiv_apply ℝ _
+    -- The majorant `(|ṽ^{a 0}| + 1) |∂_{b q} φ|` is continuous with compact support.
+    have hH : Integrable (fun w => (|vt (a 0) w| + 1) *
+        |fderiv ℝ φ w (EuclideanSpace.single (b q) 1)|) (volume : Measure (Eucl k)) :=
+      (((hvtl (a 0)).continuous.abs.add continuous_const).mul
+        hdφ.abs).integrable_of_hasCompactSupport hdφs.abs.mul_left
+    -- `|G^{a 0}_m| ≤ |ṽ^{a 0}| + 1` as soon as `sup |G^{a 0}_m − ṽ^{a 0}| < 1`.
+    have hbd : ∀ᶠ m in atTop, ∀ w, |(-1 : ℝ) ^ (q : ℕ) * G (a 0) m w *
+        fderiv ℝ φ w (EuclideanSpace.single (b q) 1)| ≤
+        (|vt (a 0) w| + 1) * |fderiv ℝ φ w (EuclideanSpace.single (b q) 1)| := by
+      filter_upwards [Metric.tendstoUniformly_iff.1 (hGu (a 0)) 1 one_pos] with m hm w
+      have hd := hm w
+      rw [Real.dist_eq, abs_sub_comm] at hd
+      have h1 : |G (a 0) m w| ≤ |vt (a 0) w| + 1 := by
+        linarith [abs_sub_abs_le_abs_sub (G (a 0) m w) (vt (a 0) w)]
+      rw [abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
+      exact mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
+    have key := Submission.deformation_ipl_mwc_mil_tendsto_integral_mul_det (Eucl k) volume r C
+      (fun m t s w => fderiv ℝ (G (a t.succ) m) w (EuclideanSpace.single (b (q.succAbove s)) 1))
+      (fun t s w => fderiv ℝ (vt (a t.succ)) w (EuclideanSpace.single (b (q.succAbove s)) 1))
+      (fun m w => (-1 : ℝ) ^ (q : ℕ) * G (a 0) m w *
+        fderiv ℝ φ w (EuclideanSpace.single (b q) 1))
+      (fun w => (-1 : ℝ) ^ (q : ℕ) * vt (a 0) w * fderiv ℝ φ w (EuclideanSpace.single (b q) 1))
+      _ (fun m t s => (measurable_fderiv_apply_const ℝ _ _).aestronglyMeasurable)
+      (fun m => ((continuous_const.mul (hGs (a 0) m).continuous).mul hdφ).aestronglyMeasurable)
+      hH (fun m t s w => hent _ (hGl _ m) _ w) hbd
+      (ae_of_all _ fun w => (tendsto_const_nhds.mul ((hGu (a 0)).tendsto_at w)).mul
+        tendsto_const_nhds)
+      (hconv.mono fun w hw t s => hw _ _)
+    convert key using 2 with m <;>
+      exact integral_congr_ae (Eventually.of_forall fun w => by beta_reduce; ring)
+  -- `(S)`: by uniqueness of limits, `(S_m)` passes to the limit `m → ∞`.
+  have hlim := tendsto_nhds_unique hL
+    (((tendsto_finsetSum _ fun q _ => hR q).neg).congr fun m => (hS m).symm)
+  -- Step 6: back to `v` on `Ω`.  For a.e. `w ∈ Ω`, `Dṽ^c(w) = proj_c ∘ Dv(w)`.
+  have hae : ∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → ∀ (c : Fin Q) (x : Eucl k),
+      fderiv ℝ (vt c) w x = EuclideanSpace.proj c (fderiv ℝ v w x) := by
+    filter_upwards [ae_all_iff.2 fun c => Submission.deformation_ipl_mwc_mil_ae_fderiv_eq_proj
+      k Q Ω C v c (vt c) hΩ hv (hvteq c).symm] with w hw hwΩ c x
+    exact hw c hwΩ x
+  -- `φ` and `Dφ` vanish off `tsupport φ ⊆ Ω`, so the integrals over `ℝ^k` are over `Ω`.
+  have hφ0 : ∀ w, w ∉ Ω → φ w = 0 := fun w hw =>
+    image_eq_zero_of_notMem_tsupport fun h => hw (hφΩ h)
+  have hdφ0 : ∀ w, w ∉ Ω → fderiv ℝ φ w = 0 := fun w hw =>
+    fderiv_of_notMem_tsupport ℝ fun h => hw (hφΩ h)
+  have hΩint : ∀ F F' : Eucl k → ℝ, (∀ w, w ∉ Ω → F' w = 0) →
+      (∀ᵐ w ∂(volume : Measure (Eucl k)), w ∈ Ω → F w = F' w) → ∫ w in Ω, F w = ∫ w, F' w :=
+    fun F F' h0 hFF' => (setIntegral_congr_ae hΩ.measurableSet hFF').trans
+      (setIntegral_eq_integral_of_forall_compl_eq_zero h0)
+  refine (hΩint _ _ (fun w hw => ?_) ?_).trans (hlim.trans ?_)
+  · simp [hφ0 w hw]
+  · filter_upwards [hae] with w hw hwΩ
+    simp only [hw hwΩ]
+  · congr 1
+    refine Finset.sum_congr rfl fun q _ => (hΩint _ _ (fun w hw => ?_) ?_).symm
+    · simp [hdφ0 w hw]
+    · filter_upwards [hae] with w hw hwΩ
+      have h0 : vt (a 0) w = EuclideanSpace.proj (a 0) (v w) := (hvteq (a 0) hwΩ).symm
+      simp only [hw hwΩ, h0]
 
 /-- Smooth test functions suffice (step (3.0) of the proof of `minor_weak_continuity`): if
 `Ω ⊆ ℝᵏ` is open, `|f_j|, |f₀| ≤ B` on `Ω` and `∫_Ω φ f_j → ∫_Ω φ f₀` for every `φ ∈ C¹_c(Ω)`, then
