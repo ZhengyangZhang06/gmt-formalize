@@ -3047,6 +3047,42 @@ theorem Submission.dimred_cs_mi_density_eq_mult_ae : ∀ (P n : ℕ) (S : Geomet
   exact (withDensity_absolutelyContinuous'
     (measurable_from_nat.comp R.measurable_mult).aemeasurable hθ).ae_le hμ
 
+/-- **Simon 7.3.3, proof of (1)**: the `n`-plane case of the dimension-reducing argument, where
+densities of integer multiplicity currents are integers `Hⁿ`-a.e. on their carrier (Simon Ch. 6,
+3.1).  Let `S = τ(M, θ, ξ)` in `ℝᴾ` have density `c'·1_Q` at every point, with `Q` a subspace and
+`c' > 0`.  If `Hⁿ(M) = 0` then `μ_S = θHⁿ⌞M = 0`, so `M_{B_ρ(0)}(S) = μ_S(B_ρ(0)) = 0`
+(`Submission.dimred_im_mass_measure`) and the density of `S` at `0 ∈ Q` is `0 ≠ c'`.  Otherwise
+`c'·1_Q = θ` at `Hⁿ`-a.e. point of `M` (`Submission.dimred_cs_mi_density_eq_mult_ae`), so some
+`y ∈ M` has `c'·1_Q(y) = θ(y) ≥ 1`; then `y ∈ Q` and `c' = θ(y) ∈ ℕ`. -/
+theorem Submission.idod_planar_density_const_nat : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (c' : ℝ), 1 ≤ n → IsIntegerMultiplicity S → 0 < c' → (∀ y : Euclid P, HasMassDensity S y (Set.indicator (Q : Set (Euclid P)) (fun _ => c') y)) → ∃ m : ℕ, c' = m := by
+  intro P n S Q c' _ hS hc hden
+  -- `S = τ(M, θ, ξ)`, and `M_W(S) = μ_S(W)` for every open `W`
+  obtain ⟨R, hR⟩ := hS
+  have hmass := (Submission.dimred_im_mass_measure P n univ S R isOpen_univ hR).1
+  by_cases hM : (μHE[n] : Measure (Euclid P)).restrict R.carrier = 0
+  · -- `Hⁿ(M) = 0`: `μ_S = 0`, so the density ratio of `S` at `0` vanishes identically
+    have hμ : R.measure = 0 := by
+      rw [IMRep.measure, hM, withDensity_zero_left]
+    have h0 : Tendsto (fun ρ : ℝ => S.massOn (ball 0 ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) := by
+      refine tendsto_const_nhds.congr fun ρ => ?_
+      rw [hmass _ isOpen_ball (subset_univ _), hμ, Measure.coe_zero, Pi.zero_apply,
+        ENNReal.zero_div]
+    -- but `0 ∈ Q`, so the density of `S` at `0` is `c' > 0`; limits along `𝓝[>] 0` are unique
+    have hc0 := (hden 0).2
+    rw [indicator_of_mem Q.zero_mem] at hc0
+    exact absurd (ENNReal.ofReal_eq_zero.1 (tendsto_nhds_unique hc0 h0)) hc.not_ge
+  · -- `Hⁿ(M) > 0`: some `y ∈ M` has `c'·1_Q(y) = θ(y)`
+    have : (ae ((μHE[n] : Measure (Euclid P)).restrict R.carrier)).NeBot := ae_neBot.2 hM
+    obtain ⟨y, hyM, hy⟩ := ((ae_restrict_mem R.measurableSet_carrier).and
+      (Submission.dimred_cs_mi_density_eq_mult_ae P n S R _ hR hden)).exists
+    -- `θ(y) ≥ 1` forces `y ∈ Q`, and then `c' = θ(y)`
+    by_cases hyQ : y ∈ (Q : Set (Euclid P))
+    · rw [indicator_of_mem hyQ] at hy
+      exact ⟨R.mult y, hy⟩
+    · rw [indicator_of_notMem hyQ] at hy
+      exact absurd (Nat.cast_eq_zero.1 hy.symm) (R.mult_pos y hyM).ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
