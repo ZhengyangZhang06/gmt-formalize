@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1.support_diff_carrier_null-a1",
+  "parent_id": "root.tilt_excess_decay-a1.allard_density_bounds-a1",
+  "depth": 3,
+  "title": "Support points with positive lower density lie in the carrier up to an H^n-null set (step 7 of the parent)",
+  "statement": "Let n, l be natural numbers, U any subset of R^(n+l), and V a RectifiableVarifold n l U with weight mu = V.weight, carrier M = V.carrier and support spt V = V.support. Let W be an open subset of R^(n+l) with mu(W) < infinity. Suppose every y in spt V ∩ W has a positive lower mass bound at small scales: there is a real c > 0 such that ofReal(c (omega_n s^n)) <= mu(B_s(y)) for all sufficiently small s > 0 (eventually as s -> 0+). Then H^n((spt V ∩ W) \\ M) = 0. Here B_s(y) is the closed ball, omega_n = unitBallVolume n and H^n = μHE[n].",
+  "lean_statement": "∀ (n ℓ : ℕ) (U : Set (Amb n ℓ)) (V : RectifiableVarifold n ℓ U) (W : Set (Amb n ℓ)), IsOpen W → V.weight W < ⊤ → (∀ y ∈ V.support ∩ W, ∃ c : ℝ, 0 < c ∧ ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal (c * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)) → (μHE[n] : Measure (Amb n ℓ)) ((V.support ∩ W) \\ V.carrier) = 0",
+  "lean_name": "ted_adb_support_diff_carrier_null",
+  "depends_on": [
+    "root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_regularity-a1.carrier_support_null-a1.upper_density_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-regularity-a1-carrier-support-null-a1-upper-density-null-a1-a1",
+      "result_commit": "cfc18a0cf91fdfb9fd76e7bf19262ed872cbe8bb",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-allard-density-bounds-a1-support-diff-carrier-null-a1-a1"
+}

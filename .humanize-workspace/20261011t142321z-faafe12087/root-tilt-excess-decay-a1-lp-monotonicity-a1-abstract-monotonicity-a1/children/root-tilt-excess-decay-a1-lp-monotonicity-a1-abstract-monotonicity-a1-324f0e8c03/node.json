@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1.coefficient_bound-a1",
+  "parent_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1.abstract_monotonicity-a1",
+  "depth": 4,
+  "title": "Hoelder-coefficient algebra: |L| <= t K I^(1-1/p) implies |L/t^(n+1)/(1 + I/t^n)| <= K t^(-n/p) (parent step 3)",
+  "statement": "Let n be a natural number and p, t, K, I, L real numbers with p > 1, t > 0, K >= 0 and I >= 0. If |L| <= t K I^(1 - 1/p) (real power), then |L / t^(n+1) / (1 + I/t^n)| <= K t^(-(n/p)) (real power), where t^(n+1) and t^n are natural-number powers.",
+  "lean_statement": "∀ (n : ℕ) (p t K I L : ℝ), 1 < p → 0 < t → 0 ≤ K → 0 ≤ I → |L| ≤ t * K * I ^ (1 - 1 / p) → |L / t ^ (n + 1) / (1 + I / t ^ n)| ≤ K * t ^ (-((n : ℝ) / p))",
+  "lean_name": "ted_lpm_am_coefficient_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-lp-monotonicity-a1-abstract-monotonicity-a1-324f0e8c03-a1"
+}
