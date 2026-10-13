@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1.kernel_gauss_green-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.sobolev_indicator-a1.mollified_fderiv_le-a1",
+  "depth": 5,
+  "title": "Gauss–Green identity for a translated reflected kernel: ∫_G Dρ(y − z)w dz = ∫ρ(y − z)⟨w, ν(z)⟩dμ(z) when B̄_r(y) ⊆ U",
+  "statement": "Let N ∈ ℕ, U ⊆ ℝ^N open, G ⊆ ℝ^N any set, and (μ, ν) a Gauss–Green pair for (U, G) (IsGaussGreenPair U G μ ν: μ(ℝ^N ∖ U) = 0, μ(C) < ∞ for compact C ⊆ U, ν μ-a.e. strongly measurable with |ν| = 1 μ-a.e., and ∫_{G∩U} div g dL^N = −∫⟨g, ν⟩ dμ for every C¹ field g : ℝ^N → ℝ^N with compact support and tsupport g ⊆ U, where div g = trace Dg). Let ρ : ℝ^N → ℝ be C¹ with compact support, let r ∈ ℝ with tsupport ρ ⊆ B̄_r(0), and let y, w ∈ ℝ^N with B̄_r(y) ⊆ U. Then ∫_G Dρ(y − z)w dL^N(z) = ∫ ρ(y − z)⟨w, ν(z)⟩ dμ(z), where Dρ(t) = fderiv ℝ ρ t.",
+  "lean_statement": "∀ (N : ℕ) (U G : Set (Rn N)) (μ : Measure (Rn N)) (ν : Rn N → Rn N), IsOpen U → IsGaussGreenPair U G μ ν → ∀ (ρ : Rn N → ℝ) (r : ℝ) (y w : Rn N), ContDiff ℝ 1 ρ → HasCompactSupport ρ → tsupport ρ ⊆ Metric.closedBall (0 : Rn N) r → Metric.closedBall y r ⊆ U → ∫ z in G, fderiv ℝ ρ (y - z) w = ∫ z, ρ (y - z) * inner ℝ w (ν z) ∂μ",
+  "lean_name": "deGiorgiSobIndMFL_setIntegral_fderiv_kernel_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-sobolev-indicator-a1-mollified-bb42c50d6d-a1"
+}

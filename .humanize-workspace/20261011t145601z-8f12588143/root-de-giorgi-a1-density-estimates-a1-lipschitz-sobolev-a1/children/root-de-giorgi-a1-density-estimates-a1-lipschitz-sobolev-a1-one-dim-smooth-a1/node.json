@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1.one_dim_smooth-a1",
+  "parent_id": "root.de_giorgi-a1.density_estimates-a1.lipschitz_sobolev-a1",
+  "depth": 4,
+  "title": "One-dimensional endpoint Sobolev inequality sup|v| ≤ ½∫|Dv| for C¹ compactly supported functions on ℝ^1 (erratum E6)",
+  "statement": "Let ℝ^1 = EuclideanSpace ℝ (Fin 1) carry its volume L^1. Every C¹ function v : ℝ^1 → ℝ with compact support satisfies eLpNorm(v, ∞, L^1) ≤ ENNReal.ofReal(½ ∫ ‖Dv(y)‖ dL^1(y)). Here Dv(y) = fderiv ℝ v y, ‖·‖ is the operator norm, and eLpNorm(·, ∞) is the essential supremum.",
+  "lean_statement": "∀ v : Rn 1 → ℝ, ContDiff ℝ 1 v → HasCompactSupport v → eLpNorm v ∞ volume ≤ ENNReal.ofReal (1 / 2 * ∫ y, ‖fderiv ℝ v y‖)",
+  "lean_name": "deGiorgiDensSob_one_dim_contDiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch03/20261011t145601z-8f12588143/root-de-giorgi-a1-density-estimates-a1-lipschitz-sobolev-a1-one-dim-smooth-a1-a1"
+}
