@@ -861,6 +861,64 @@ theorem Submission.codim1_rdo_dg_rc_compact_cover : ∀ (m : ℕ) (μ : Measure 
     obtain ⟨c, hc, hxc⟩ := mem_iUnion₂.1 (hCcov hxK)
     exact mem_iUnion₂.2 ⟨v, hv, mem_iUnion₂.2 ⟨c, hc, hΓS v hv c hc ⟨⟨hxK, mem_ball.1 hxv⟩, hxc⟩⟩⟩
 
+/-- **Halving step (★)** of Simon Ch. 3, proof of Theorem 1.6 "⇐":
+`μ(ℝ^{n+ℓ} \ ⋃ⱼ Qⱼ(graph fⱼ)) ≤ ½ μ(ℝ^{n+ℓ})`, obtained there from (4) and (8).  If `Ū` is a
+compact subset of `D`, then `λ = μ⌞U` is finite and, since `λ = μ` on closed balls inside the open
+set `U`, inherits the a.e. density and cone limits.  `codim1_rdo_dg_rc_uniform_compact` with
+`ε = 1/(2(1 + 16ᵐ))` and `η = μ(U)/2` gives a compact `K` with `λ(Kᶜ) ≤ μ(U)/2` and uniform bounds
+on `K`, and `codim1_rdo_dg_rc_compact_cover` gives a closed countably `m`-rectifiable `Γ ⊇ K`; then
+`μ(U \ Γ) = λ(U \ Γ) ≤ λ(Kᶜ) ≤ μ(U)/2`. -/
+theorem Submission.codim1_rdo_dg_rc_halving_step : ∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \ Γ) ≤ μ U / 2 := by
+  intro m D μ ν hfin hν hν1 hae U hU hUc hUD
+  -- step 1: `μ(U) ≤ μ(Ū) < ∞`; if `μ(U) = 0`, then `Γ = ∅` works
+  have hUfin : μ U ≠ ∞ := ne_top_of_le_ne_top (hfin _ hUc hUD) (measure_mono subset_closure)
+  by_cases h0 : μ U = 0
+  · refine ⟨∅, isClosed_empty,
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero (by simp), ?_⟩
+    simp [h0]
+  -- step 2: `λ = μ⌞U` is finite and has the same limits as `μ` at every `y ∈ U`, because the two
+  -- functions of `r` agree for `0 < r < r_y`, where `B_{r_y}(y) ⊆ U`
+  set lam := μ.restrict U with hlam
+  have : IsFiniteMeasure lam := isFiniteMeasure_restrict.2 hUfin
+  have haeL : ∀ᵐ y ∂lam,
+      Tendsto (fun r : ℝ => lam (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m)))
+        (𝓝[>] 0) (𝓝 1) ∧
+      Tendsto (fun r : ℝ => lam ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩
+        closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0) := by
+    filter_upwards [ae_restrict_mem hU.measurableSet, ae_restrict_of_ae hae] with y hyU hy
+    obtain ⟨h1, h2⟩ := hy
+    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU y hyU
+    have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ), s < r := by
+      filter_upwards [Ioo_mem_nhdsGT hr] with s hs using hs.2
+    constructor
+    · refine h1.congr' ?_
+      filter_upwards [hev] with s hs
+      rw [hlam, Measure.restrict_apply' hU.measurableSet,
+        inter_eq_left.2 ((closedBall_subset_ball hs).trans hrU)]
+    · refine h2.congr' ?_
+      filter_upwards [hev] with s hs
+      rw [hlam, Measure.restrict_apply' hU.measurableSet,
+        inter_eq_left.2 (inter_subset_right.trans ((closedBall_subset_ball hs).trans hrU))]
+  -- step 3: `ε = 1/(2(1 + 16ᵐ)) > 0` with `(1 + 16ᵐ)ε = 1/2 < 1`, and `η = μ(U)/2 > 0`
+  set ε : ℝ := 1 / (2 * (1 + 16 ^ m)) with hε
+  have hεpos : 0 < ε := by positivity
+  have hε1 : (1 + 16 ^ m) * ε < 1 := by
+    have : (0 : ℝ) < 1 + 16 ^ m := by positivity
+    rw [hε, mul_one_div, div_lt_one (by positivity)]
+    linarith
+  -- step 4: a compact `K` with `λ(Kᶜ) ≤ η` on which the density and cone bounds are uniform
+  obtain ⟨K, δ, hK, hδ, hKc, hlow, hup⟩ := Submission.codim1_rdo_dg_rc_uniform_compact m lam ν ε
+    (μ U / 2) inferInstance hν hεpos (ENNReal.half_pos h0) haeL
+  -- step 5: a closed countably `m`-rectifiable `Γ ⊇ K`
+  obtain ⟨Γ, hΓc, hΓr, hKΓ⟩ :=
+    Submission.codim1_rdo_dg_rc_compact_cover m lam ν K δ ε hν1 hK hδ hεpos.le hε1 hlow hup
+  -- step 6: `μ(U \ Γ) = λ(U \ Γ) ≤ λ(Kᶜ) ≤ μ(U)/2`, as `U \ Γ ⊆ U` and `U \ Γ ⊆ Kᶜ`
+  refine ⟨Γ, hΓc, hΓr, ?_⟩
+  calc μ (U \ Γ) = lam (U \ Γ) := by
+        rw [hlam, Measure.restrict_apply' hU.measurableSet, inter_eq_left.2 sdiff_subset]
+    _ ≤ lam Kᶜ := measure_mono fun x hx hxK => hx.2 (hKΓ hxK)
+    _ ≤ μ U / 2 := hKc
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
