@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1.inner_det_covector-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1",
+  "depth": 6,
+  "title": "Inner-product determinant covectors exist for every frame",
+  "statement": "Let P, n ∈ ℕ and let w = (w_1, …, w_n) be any family of n vectors in ℝ^P (w : Fin n → Euclid P). Then there is an n-covector β on ℝ^P, i.e. a continuous alternating n-linear form β : (ℝ^P)^n → ℝ (β ∈ Covector (Euclid P) n), such that for every u = (u_1, …, u_n) ∈ (ℝ^P)^n, β(u_1, …, u_n) = det(⟨u_a, w_b⟩)_{a,b}. Here (⟨u_a, w_b⟩)_{a,b} is the n×n real matrix whose entry in row a and column b is the Euclidean inner product ⟨u_a, w_b⟩, i.e. Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)).",
+  "lean_statement": "∀ (P n : ℕ) (w : Fin n → Euclid P), ∃ β : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b))",
+  "lean_name": "cbr_ci_pw_pu_inner_det_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0a389bb9c9-a1"
+}
