@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.series_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1",
+  "depth": 4,
+  "title": "Integer-weighted series estimate in [0, ∞]: summability and |Σ c_r a_r| ≤ C·Σ|c_r| m_r",
+  "statement": "Let a : ℕ → ℝ, c : ℕ → ℤ, m : ℕ → [0, ∞] and C ∈ ℝ. Write |c_r| := ((c_r).natAbs : [0, ∞]). Assume ENNReal.ofReal|a_r| ≤ m_r·ENNReal.ofReal C for every r ∈ ℕ, and Σ'_r |c_r|·m_r < ∞ in [0, ∞]. Then r ↦ c_r·a_r (with c_r cast to ℝ) is summable in ℝ, and ENNReal.ofReal|Σ'_r c_r·a_r| ≤ ENNReal.ofReal C·Σ'_r |c_r|·m_r.",
+  "lean_statement": "∀ (a : ℕ → ℝ) (c : ℕ → ℤ) (m : ℕ → ℝ≥0∞) (C : ℝ), (∀ r, ENNReal.ofReal |a r| ≤ m r * ENNReal.ofReal C) → (∑' r, ((c r).natAbs : ℝ≥0∞) * m r) < ∞ → Summable (fun r => (c r : ℝ) * a r) ∧ ENNReal.ofReal |∑' r, (c r : ℝ) * a r| ≤ ENNReal.ofReal C * ∑' r, ((c r).natAbs : ℝ≥0∞) * m r",
+  "lean_name": "fiw_ims_sc_series_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-series-bound-a1-a1"
+}
