@@ -1085,6 +1085,86 @@ theorem allard52_campanato_ae_center : ∀ (n m k : ℕ) (G c : Rn n → (Rn m �
   filter_upwards [Submission.allard52_cae_hsNormSq_lebesgue_ae n m k G B hG hB] with z hz hzR
   exact Submission.allard52_cae_center_eq_at_lebesgue_point n m k G z (c z) A R α (R / 4) hR hα
     (by positivity) hG hz (hcamp z (ball_subset_closedBall hzR))
+/-- Linear algebra for the `C¹` extension step in the proof of Simon Ch. 5, Theorem 5.2 (p. 121):
+the operator norm of a linear map `A : ℝᵐ → ℝᵏ` is at most its Hilbert–Schmidt norm `|A|`, and
+`A ↦ |A|` is continuous for the operator-norm topology. -/
+theorem allard52_c1h_opNorm_le_hsNorm_continuous : ∀ (m k : ℕ), (∀ A : Rn m →L[ℝ] Rn k, ‖A‖ ≤ hsNorm A) ∧ Continuous (fun A : Rn m →L[ℝ] Rn k => hsNorm A) := by
+  intro m k
+  refine ⟨fun A => ?_, ?_⟩
+  · -- `‖A v‖ ≤ Σᵢ |vᵢ| ‖A eᵢ‖ ≤ ‖v‖ |A|` by the triangle and Cauchy–Schwarz inequalities.
+    refine A.opNorm_le_bound (Real.sqrt_nonneg _) fun v => ?_
+    have hv : ∑ i, v i • EuclideanSpace.single i (1 : ℝ) = v := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr v
+    calc ‖A v‖ = ‖A (∑ i, v i • EuclideanSpace.single i (1 : ℝ))‖ := by rw [hv]
+      _ = ‖∑ i, v i • A (EuclideanSpace.single i 1)‖ := by simp only [map_sum, map_smul]
+      _ ≤ ∑ i, ‖v i‖ * ‖A (EuclideanSpace.single i 1)‖ :=
+          (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun i _ => norm_smul _ _)
+      _ ≤ √(∑ i, ‖v i‖ ^ 2) * √(∑ i, ‖A (EuclideanSpace.single i 1)‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = hsNorm A * ‖v‖ := by rw [EuclideanSpace.norm_eq v, mul_comm (hsNorm A)]; rfl
+  · -- `|A| = √(Σᵢ ‖A eᵢ‖²)`, and each evaluation `A ↦ A eᵢ` is continuous.
+    exact (continuous_finsetSum _ fun i _ =>
+      (continuous_id.clm_apply continuous_const).norm.pow 2).sqrt
+/-- Continuous extension from a dense set with the same Hölder modulus, used for the `C^{1,α}`
+conclusion in the proof of Simon Ch. 5, Theorem 5.2 (pp. 121–123).  Let `F : ℝⁿ → L(ℝᵐ, ℝᵏ)`
+satisfy `|F(x) − F(y)| ≤ M (‖x − y‖/R)^α` on `Z` (Hilbert–Schmidt norm, `α > 0`), and let
+`S ⊆ closure Z`.  Then `g = extendFrom Z F`, the limit of `F` along `Z`, is continuous on `S`,
+agrees with `F` on `Z`, and satisfies the same bound on `S`.  Since `‖·‖ ≤ |·|` and
+`κ(t) = M (t/R)^α` is continuous with `κ(0) = 0`, the image of `𝓝[Z] x` under `F` is Cauchy, so
+it converges in the complete space `L(ℝᵐ, ℝᵏ)`; the bound passes to the limit along
+`𝓝[Z] x ×ˢ 𝓝[Z] y` because `|·|` is continuous. -/
+theorem allard52_c1h_holder_extension : ∀ (n m k : ℕ) (F : Rn n → (Rn m →L[ℝ] Rn k)) (S Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → S ⊆ closure Z → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (F x - F y) ≤ M * (‖x - y‖ / R) ^ α) → ∃ g : Rn n → (Rn m →L[ℝ] Rn k), ContinuousOn g S ∧ (∀ x ∈ Z, g x = F x) ∧ ∀ x ∈ S, ∀ y ∈ S, hsNorm (g x - g y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n m k F S Z M R α _hM _hR hα hSZ hF
+  obtain ⟨hop, hcont⟩ := Submission.allard52_c1h_opNorm_le_hsNorm_continuous m k
+  -- The modulus `κ(t) = M (t/R)^α` is continuous, and `κ(0) = 0` since `α ≠ 0`.
+  have hκc : Continuous fun t : ℝ => M * (t / R) ^ α :=
+    continuous_const.mul ((Real.continuous_rpow_const hα.le).comp (continuous_id.div_const R))
+  have hκ0 : M * ((0 : ℝ) / R) ^ α = 0 := by rw [zero_div, Real.zero_rpow hα.ne', mul_zero]
+  -- `κ(‖p₁ − p₂‖) → κ(‖x − y‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y = 𝓝[Z ×ˢ Z] (x, y)`.
+  have hmod : ∀ x y : Rn n, Tendsto (fun p : Rn n × Rn n => M * (‖p.1 - p.2‖ / R) ^ α)
+      (𝓝[Z] x ×ˢ 𝓝[Z] y) (𝓝 (M * (‖x - y‖ / R) ^ α)) := by
+    intro x y
+    rw [← nhdsWithin_prod_eq]
+    exact ((hκc.comp (continuous_fst.sub continuous_snd).norm).tendsto (x, y)).mono_left
+      nhdsWithin_le_nhds
+  -- The hypothesis holds eventually along `𝓝[Z] x ×ˢ 𝓝[Z] y`, as `Z ×ˢ Z` belongs to it.
+  have hZ : ∀ x y : Rn n, ∀ᶠ p in 𝓝[Z] x ×ˢ 𝓝[Z] y,
+      hsNorm (F p.1 - F p.2) ≤ M * (‖p.1 - p.2‖ / R) ^ α := by
+    intro x y
+    filter_upwards [prod_mem_prod self_mem_nhdsWithin self_mem_nhdsWithin] with p hp
+    exact hF p.1 hp.1 p.2 hp.2
+  -- At `x ∈ closure Z`, `dist (F p₁) (F p₂) ≤ |F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖) → κ(0) = 0` along
+  -- `𝓝[Z] x ×ˢ 𝓝[Z] x`, so `map F (𝓝[Z] x)` is Cauchy and converges.
+  have hlim : ∀ x ∈ closure Z, ∃ A, Tendsto F (𝓝[Z] x) (𝓝 A) := by
+    intro x hx
+    have := mem_closure_iff_nhdsWithin_neBot.1 hx
+    refine cauchy_map_iff_exists_tendsto.1 (cauchy_map_iff.2 ⟨inferInstance, ?_⟩)
+    have h0 := hmod x x
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine tendsto_uniformity_iff_dist_tendsto_zero.2
+      (squeeze_zero' (Eventually.of_forall fun _ => dist_nonneg) ?_ h0)
+    filter_upwards [hZ x x] with p hp
+    exact (dist_eq_norm _ _).trans_le ((hop _).trans hp)
+  have hg : ∀ x ∈ closure Z, Tendsto F (𝓝[Z] x) (𝓝 (extendFrom Z F x)) := fun x hx =>
+    tendsto_extendFrom (hlim x hx)
+  refine ⟨extendFrom Z F, continuousOn_extendFrom hSZ fun x hx => hlim x (hSZ hx),
+    fun x hx => ?_, fun x hx y hy => ?_⟩
+  · -- On `Z`, `‖F z − F x‖ ≤ κ(‖z − x‖) → 0`, so `F → F x` along `𝓝[Z] x`.
+    refine extendFrom_eq (subset_closure hx) (tendsto_iff_norm_sub_tendsto_zero.2 ?_)
+    have h0 : Tendsto (fun z : Rn n => M * (‖z - x‖ / R) ^ α) (𝓝[Z] x)
+        (𝓝 (M * (‖x - x‖ / R) ^ α)) :=
+      ((hκc.comp (continuous_id.sub continuous_const).norm).tendsto x).mono_left
+        nhdsWithin_le_nhds
+    rw [sub_self, norm_zero, hκ0] at h0
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ h0
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact (hop _).trans (hF z hz x hx)
+  · -- Pass to the limit in `|F p₁ − F p₂| ≤ κ(‖p₁ − p₂‖)` along `𝓝[Z] x ×ˢ 𝓝[Z] y`.
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hx)
+    have := mem_closure_iff_nhdsWithin_neBot.1 (hSZ hy)
+    exact le_of_tendsto_of_tendsto ((hcont.tendsto _).comp
+      (((hg x (hSZ hx)).comp tendsto_fst).sub ((hg y (hSZ hy)).comp tendsto_snd)))
+      (hmod x y) (hZ x y)
 /-- Simon Ch. 5, proof of Theorem 5.2 (p. 124, "since `f` is Lipschitz it follows from this that
 `f ∈ C^{1,1−n/p}`"), Fubini on lines: if `Lⁿ(N) = 0`, then for all `x, h ∈ ℝⁿ` and `Lⁿ`-a.e. `w`
 the line `t ↦ x + w + t h` meets `N` in an `L¹`-null set.  Enclose `N` in a measurable null set
@@ -1422,6 +1502,34 @@ theorem allard52_lipschitz_hasFDerivAt_of_ae : ∀ (n ℓ : ℕ) (f : Rn n → R
   -- Step 4: continuity of `g` at `x` upgrades the formula to the Fréchet derivative `g x` at `x`.
   exact Submission.allard52_lad_hasFDerivAt_of_line_integral n ℓ f g (ball c r) x isOpen_ball hx
     hg hrep
+/-- **A Lipschitz map whose derivative is Hölder on a full-measure set is `C¹` with the same
+Hölder bound** (Simon Ch. 5, proof of Theorem 5.2: regularity of the graph function `u`).
+Let `f` be `K`-Lipschitz on `B = B̆_r(c)`, differentiable at every point of `Z ⊆ B` with
+`Lⁿ(B \ Z) = 0`, and `|Df(x) − Df(y)| ≤ M (|x − y|/R)^α` for `x, y ∈ Z` (Hilbert–Schmidt norm,
+`M ≥ 0`, `R, α > 0`).  Then `f ∈ C¹(B)` and the same bound holds for all `x, y ∈ B`.
+`B \ closure Z` is an open null set, hence empty, so `allard52_c1h_holder_extension` extends
+`Df|_Z` to a map `g` which is continuous and satisfies the bound on `B`.  `f` has derivative
+`g x` at every `x ∈ Z`, i.e. at a.e. `x ∈ B`, hence at every `x ∈ B` by
+`allard52_lipschitz_hasFDerivAt_of_ae`; so `Df = g` on `B`. -/
+theorem allard52_c1_holder_of_ae_fderiv : ∀ (n ℓ : ℕ) (f : Rn n → Rn ℓ) (c : Rn n) (r : ℝ) (K : ℝ≥0) (Z : Set (Rn n)) (M R α : ℝ), 0 ≤ M → 0 < R → 0 < α → LipschitzOnWith K f (ball c r) → Z ⊆ ball c r → volume (ball c r \ Z) = 0 → (∀ x ∈ Z, DifferentiableAt ℝ f x) → (∀ x ∈ Z, ∀ y ∈ Z, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α) → ContDiffOn ℝ 1 f (ball c r) ∧ ∀ x ∈ ball c r, ∀ y ∈ ball c r, hsNorm (fderiv ℝ f x - fderiv ℝ f y) ≤ M * (‖x - y‖ / R) ^ α := by
+  intro n ℓ f c r K Z M R α hM hR hα hf _hZ hnull hdiff hhol
+  -- `Z` is dense in `B`: `B \ closure Z` is open and null, hence empty.
+  have hdense : ball c r ⊆ closure Z :=
+    sdiff_eq_empty.mp <| (isOpen_ball.sdiff isClosed_closure).eq_empty_of_measure_zero <|
+      measure_mono_null (sdiff_subset_sdiff_right subset_closure) hnull
+  obtain ⟨g, hg, hgZ, hgB⟩ := Submission.allard52_c1h_holder_extension n n ℓ (fderiv ℝ f)
+    (ball c r) Z M R α hM hR hα hdense hhol
+  -- `f` has derivative `g x` at every `x ∈ Z`, hence at a.e. `x ∈ B`.
+  have hae : ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball c r → HasFDerivAt f (g x) x := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxB
+    have hxZ : x ∈ Z := not_not.mp fun h => hx ⟨hxB, h⟩
+    exact hgZ x hxZ ▸ (hdiff x hxZ).hasFDerivAt
+  have hfd := Submission.allard52_lipschitz_hasFDerivAt_of_ae n ℓ f g c r K hf hg hae
+  have hfg : EqOn (fderiv ℝ f) g (ball c r) := fun x hx => (hfd x hx).fderiv
+  refine ⟨?_, fun x hx y hy => hfg hx ▸ hfg hy ▸ hgB x hx y hy⟩
+  rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_fderiv_of_isOpen isOpen_ball]
+  exact ⟨fun x hx => (hfd x hx).differentiableAt.differentiableWithinAt,
+    fun h => absurd h WithTop.coe_ne_top, contDiffOn_zero.mpr (hg.congr hfg)⟩
 
 end Submission
 
