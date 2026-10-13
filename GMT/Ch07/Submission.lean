@@ -819,6 +819,101 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Simon Ch. 2, 5.1–5.2**: the deformations `Φ(x) = x + tZ(x)` by a `C¹` vector field `Z` with
+compact support are bi-Lipschitz bijections with injective derivative for small `|t|`.  `DZ` is
+continuous and vanishes off the compact set `tsupport Z`, so `|DZ| ≤ L` and `Z` is `L`-Lipschitz.
+For `|t| < t₀ = 1/(1 + L)`, `κ = |t|L < 1` and `(1 − κ)|a − b| ≤ |Φ(a) − Φ(b)| ≤ (1 + κ)|a − b|`;
+thus `Φ` is `Λ`-Lipschitz and `Λ`-antilipschitz with `Λ = max(1 + κ, (1 − κ)⁻¹)`, hence
+injective.  Given `y`, the Picard iterates of the contraction `x ↦ y − tZ(x)` converge to a
+solution of `Φ(x) = y`.  Finally `DΦ(x) = I + tDZ(x)` with `|tDZ(x)| ≤ κ < 1` is injective. -/
+theorem Submission.codim1_ac_perturbation_diffeo : ∀ (P : ℕ) (Z : Euclid P → Euclid P), ContDiff ℝ 1 Z → HasCompactSupport Z → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → Bijective (fun x => x + t • Z x) ∧ (∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x)) ∧ ∃ Λ : NNReal, LipschitzWith Λ (fun x => x + t • Z x) ∧ AntilipschitzWith Λ (fun x => x + t • Z x) := by
+  intro P Z hZ hZc
+  -- Step 1: `DZ` is continuous and vanishes off the compact set `tsupport Z`, so `‖DZ‖ ≤ L`
+  obtain ⟨C, hC⟩ := (hZ.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv ℝ)
+  set L : NNReal := C.toNNReal with hL_def
+  have hDZ : ∀ x, ‖fderiv ℝ Z x‖ ≤ L := fun x =>
+    (hC x).trans (by rw [hL_def, Real.coe_toNNReal']; exact le_max_left _ _)
+  -- Step 2: `Z` is `L`-Lipschitz (mean value inequality)
+  have hZd : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  have hZL : LipschitzWith L Z := lipschitzWith_of_nnnorm_fderiv_le hZd fun x => by
+    rw [← NNReal.coe_le_coe, coe_nnnorm]
+    exact hDZ x
+  -- Step 3: `t₀ = 1/(1 + L)`; for `|t| < t₀`, `κ = |t| L < 1`
+  refine ⟨1 / (1 + L), by positivity, fun t ht => ?_⟩
+  set κ : NNReal := ‖t‖₊ * L with hκ_def
+  have hκ : (κ : ℝ) = |t| * L := by
+    rw [hκ_def, NNReal.coe_mul, coe_nnnorm, Real.norm_eq_abs]
+  have hκ1 : (κ : ℝ) < 1 := by
+    have h1 : |t| * (1 + L) < 1 := (lt_div_iff₀ (by positivity)).mp ht
+    rw [hκ]
+    nlinarith [abs_nonneg t]
+  have hZt : ∀ a b, ‖t • (Z a - Z b)‖ ≤ κ * ‖a - b‖ := fun a b => by
+    rw [norm_smul, Real.norm_eq_abs, hκ, mul_assoc, ← dist_eq_norm, ← dist_eq_norm]
+    exact mul_le_mul_of_nonneg_left (hZL.dist_le_mul a b) (abs_nonneg t)
+  -- Step 4: `(1 − κ)|a − b| ≤ |Φ(a) − Φ(b)| ≤ (1 + κ)|a − b|`
+  have hΦ : ∀ a b, (a + t • Z a) - (b + t • Z b) = (a - b) + t • (Z a - Z b) := fun a b => by
+    rw [smul_sub]
+    abel
+  have hup : ∀ a b, ‖(a + t • Z a) - (b + t • Z b)‖ ≤ (1 + κ) * ‖a - b‖ := fun a b => by
+    rw [hΦ]
+    linarith [norm_add_le (a - b) (t • (Z a - Z b)), hZt a b]
+  have hlow : ∀ a b, (1 - κ) * ‖a - b‖ ≤ ‖(a + t • Z a) - (b + t • Z b)‖ := fun a b => by
+    have h := norm_sub_le ((a - b) + t • (Z a - Z b)) (t • (Z a - Z b))
+    rw [add_sub_cancel_right] at h
+    rw [hΦ]
+    linarith [hZt a b]
+  -- Step 5: `Λ = max(1 + κ, (1 − κ)⁻¹)`; `Φ` is `Λ`-Lipschitz and `Λ`-antilipschitz
+  have h1κ : (0 : ℝ) < 1 - κ := sub_pos.mpr hκ1
+  set Λ : NNReal := (max (1 + (κ : ℝ)) (1 - (κ : ℝ))⁻¹).toNNReal with hΛ_def
+  have hΛ : (Λ : ℝ) = max (1 + (κ : ℝ)) (1 - (κ : ℝ))⁻¹ :=
+    Real.coe_toNNReal _ ((by positivity : (0 : ℝ) ≤ 1 + κ).trans (le_max_left _ _))
+  have hlip : LipschitzWith Λ (fun x => x + t • Z x) :=
+    LipschitzWith.of_dist_le_mul fun a b => by
+      rw [dist_eq_norm, dist_eq_norm, hΛ]
+      exact (hup a b).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _))
+  have hanti : AntilipschitzWith Λ (fun x => x + t • Z x) :=
+    AntilipschitzWith.of_le_mul_dist fun a b => by
+      rw [dist_eq_norm, dist_eq_norm, hΛ]
+      calc ‖a - b‖ ≤ (1 - (κ : ℝ))⁻¹ * ‖(a + t • Z a) - (b + t • Z b)‖ :=
+            (le_inv_mul_iff₀ h1κ).mpr (hlow a b)
+        _ ≤ _ := mul_le_mul_of_nonneg_right (le_max_right _ _) (norm_nonneg _)
+  -- Step 6: injectivity, from the antilipschitz bound
+  refine ⟨⟨hanti.injective, fun y => ?_⟩, fun x => ?_, Λ, hlip, hanti⟩
+  · -- Step 7: surjectivity, via the Banach fixed point of the contraction `T(x) = y − tZ(x)`
+    set T : Euclid P → Euclid P := fun x => y - t • Z x with hT_def
+    have hT : LipschitzWith κ T := LipschitzWith.of_dist_le_mul fun a b => by
+      rw [dist_eq_norm, dist_eq_norm, hT_def, sub_sub_sub_cancel_left, ← smul_sub,
+        norm_sub_rev a b]
+      exact hZt b a
+    -- the Picard iterates `Tⁿ(0)`, with `|Tⁿ(0) − Tⁿ⁺¹(0)| ≤ κⁿ|0 − T(0)|`, are Cauchy
+    have hu : ∀ n : ℕ, dist (T^[n] 0) (T^[n + 1] 0) ≤ dist (0 : Euclid P) (T 0) * κ ^ n := by
+      intro n
+      rw [Function.iterate_succ_apply, mul_comm, ← NNReal.coe_pow]
+      exact (hT.iterate n).dist_le_mul 0 (T 0)
+    obtain ⟨x, hx⟩ := cauchySeq_tendsto_of_complete
+      (cauchySeq_of_le_geometric (f := fun n => T^[n] 0) _ _ hκ1 hu)
+    -- the limit `x` is a fixed point: `T(Tⁿ(0)) = Tⁿ⁺¹(0)` tends to both `T(x)` and `x`
+    have hTx : T x = x := tendsto_nhds_unique ((hT.continuous.tendsto x).comp hx)
+      ((hx.comp (tendsto_add_atTop_nat 1)).congr fun n => Function.iterate_succ_apply' T n 0)
+    exact ⟨x, eq_sub_iff_add_eq.mp hTx.symm⟩
+  · -- Step 8: `DΦ(x) = I + tDZ(x)` is injective, since `‖tDZ(x)‖ ≤ κ < 1`
+    have hDΦ : HasFDerivAt (fun x => x + t • Z x)
+        (ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x) x :=
+      (hasFDerivAt_id x).add ((hZd x).hasFDerivAt.const_smul t)
+    rw [hDΦ.fderiv]
+    refine (injective_iff_map_eq_zero _).2 fun v hv => ?_
+    rw [add_apply, ContinuousLinearMap.id_apply, smul_apply] at hv
+    have h1 : ‖v‖ ≤ κ * ‖v‖ :=
+      calc ‖v‖ = ‖t • fderiv ℝ Z x v‖ :=
+            (congrArg norm (eq_neg_of_add_eq_zero_left hv)).trans (norm_neg _)
+        _ = |t| * ‖fderiv ℝ Z x v‖ := by rw [norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (L * ‖v‖) := mul_le_mul_of_nonneg_left
+            (((fderiv ℝ Z x).le_opNorm v).trans
+              (mul_le_mul_of_nonneg_right (hDZ x) (norm_nonneg v))) (abs_nonneg t)
+        _ = κ * ‖v‖ := by rw [hκ, mul_assoc]
+    have h2 : ‖v‖ ≤ 0 := by nlinarith [norm_nonneg v]
+    exact norm_le_zero_iff.mp h2
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
