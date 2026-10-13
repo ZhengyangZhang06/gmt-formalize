@@ -661,6 +661,62 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **A `C¹` immersion into a subspace of the same dimension has relatively open image** (Simon,
+App. B, Theorem B.2, the passage from `|A| ≡ 0` to a hyperplane).  Let `dim H = m`, `B ⊆ ℝᵐ` open,
+`ψ` `C¹` on `B` with every `Dψ(v)` injective and `ψ(B) ⊆ H`.  With `π` the orthogonal projection
+onto `H`, `g = π ∘ ψ : ℝᵐ → H` agrees with `ψ` on `B`, so `Dψ(v)` maps into `H` and `π ∘ Dψ(v)` is
+an injective, hence bijective, linear map `ℝᵐ → H`.  By the inverse function theorem `g(B)` is a
+neighbourhood of each `g(v)`, so `g(B)` is open in `H`, i.e. `ψ(B) = O ∩ H` with `O` open. -/
+theorem Submission.codim1_hcp_fcp_immersion_image_open_in_subspace : ∀ (P m : ℕ) (H : Submodule ℝ (Euclid P)) (B : Set (Euclid m)) (ψ : Euclid m → Euclid P), Module.finrank ℝ H = m → IsOpen B → ContDiffOn ℝ 1 ψ B → (∀ v ∈ B, Injective (fderiv ℝ ψ v)) → ψ '' B ⊆ (H : Set (Euclid P)) → ∃ O : Set (Euclid P), IsOpen O ∧ O ∩ (H : Set (Euclid P)) = ψ '' B := by
+  intro P m H B ψ hdim hB hψ hDψ hψH
+  -- step 1: `π : ℝᴾ → H` is the orthogonal projection, `π(y) = y` on `H`, so `g = π ∘ ψ = ψ` on `B`
+  set π : Euclid P →L[ℝ] H := H.orthogonalProjectionOnto
+  have hπH : ∀ y ∈ H, (π y : Euclid P) = y := fun y hy =>
+    congrArg Subtype.val (H.orthogonalProjectionOnto_mem_subspace_eq_self ⟨y, hy⟩)
+  set g : Euclid m → H := fun w => π (ψ w)
+  have hgψ : ∀ w ∈ B, (g w : Euclid P) = ψ w := fun w hw => hπH _ (hψH (mem_image_of_mem ψ hw))
+  -- steps 2–5: `g(B)` is a neighbourhood of each of its points `g(v)`, `v ∈ B`
+  have hopen : IsOpen (g '' B) := by
+    rw [isOpen_iff_mem_nhds]
+    rintro _ ⟨v, hv, rfl⟩
+    -- step 2: `ψ` has strict derivative `L = Dψ(v)` at `v`, so `g` has strict derivative `π ∘ L`
+    have hψv : HasStrictFDerivAt ψ (fderiv ℝ ψ v) v :=
+      (hψ.contDiffAt (hB.mem_nhds hv)).hasStrictFDerivAt one_ne_zero
+    set L := fderiv ℝ ψ v
+    have hgv : HasStrictFDerivAt g (π.comp L) v := π.hasStrictFDerivAt.comp v hψv
+    -- step 3: `ι ∘ π ∘ ψ = ψ` near `v`, so `L = ι ∘ π ∘ L`, i.e. `L` takes values in `H`
+    have hιπψ : HasFDerivAt (fun w => (H.subtypeL.comp π) (ψ w)) ((H.subtypeL.comp π).comp L) v :=
+      (H.subtypeL.comp π).hasFDerivAt.comp v hψv.hasFDerivAt
+    have heq : ψ =ᶠ[𝓝 v] fun w => (H.subtypeL.comp π) (ψ w) :=
+      Filter.eventually_of_mem (hB.mem_nhds hv) fun w hw => (hgψ w hw).symm
+    have hLπ : L = (H.subtypeL.comp π).comp L :=
+      hψv.hasFDerivAt.unique (hιπψ.congr_of_eventuallyEq heq)
+    have hLH : ∀ a, (π (L a) : Euclid P) = L a := fun a => (DFunLike.congr_fun hLπ a).symm
+    -- step 4: `π ∘ L` is injective, hence bijective as `dim ℝᵐ = m = dim H`: an isomorphism `E`
+    have hinj : Injective (π.comp L) := fun a b hab => hDψ v hv <|
+      calc L a = π (L a) := (hLH a).symm
+        _ = π (L b) := congrArg Subtype.val hab
+        _ = L b := hLH b
+    have hsurj : Surjective (π.comp L) :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (f := (π.comp L : Euclid m →ₗ[ℝ] H))
+        (by rw [finrank_euclideanSpace_fin, hdim])).mp hinj
+    let E : Euclid m ≃L[ℝ] H :=
+      (LinearEquiv.ofBijective (π.comp L : Euclid m →ₗ[ℝ] H) ⟨hinj, hsurj⟩).toContinuousLinearEquiv
+    have hgE : HasStrictFDerivAt g (E : Euclid m →L[ℝ] H) v := hgv
+    -- step 5: inverse function theorem: `g` maps `𝓝 v` onto `𝓝 (g v)`, and `B ∈ 𝓝 v`
+    rw [← hgE.map_nhds_eq_of_equiv]
+    exact image_mem_map (hB.mem_nhds hv)
+  -- step 6: `g(B)` is open in `H`, so `g(B) = {h ∈ H | h ∈ O}` for an open `O ⊆ ℝᴾ`
+  obtain ⟨O, hO, hOg⟩ := isOpen_induced_iff.mp hopen
+  -- step 7: `O ∩ H = ψ(B)`
+  refine ⟨O, hO, Subset.antisymm ?_ ?_⟩
+  · rintro y ⟨hyO, hyH⟩
+    obtain ⟨w, hw, hgw⟩ : (⟨y, hyH⟩ : H) ∈ g '' B := hOg ▸ hyO
+    exact ⟨w, hw, (hgψ w hw).symm.trans (congrArg Subtype.val hgw)⟩
+  · rintro _ ⟨w, hw, rfl⟩
+    refine ⟨?_, hψH (mem_image_of_mem ψ hw)⟩
+    have hgwO : g w ∈ Subtype.val ⁻¹' O := hOg ▸ mem_image_of_mem g hw
+    exact hgψ w hw ▸ hgwO
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
