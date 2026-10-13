@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6046d3074c9ab357eb953ebf5f4fc8febef6493dfa0cd361fb9264826a78f894",
+  "git_delta": {
+    "base_commit": "d76b30dc37c59cec38cb2daca59f81993606a6b2",
+    "candidate_commit": "bf2a11794761686e671b8dbbb929aa5a6f892134",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_cit_c1_local_extension",
+    "diff_sha256": "9e6ba85f61d7247115865f2b436143a1cc5d91663b250c48590140b07fba7e49",
+    "source_sha256": "46814de6a736c69344965fbcd6794977f7487319bc7d18dfda90aa3e41d72ae8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_cit_c1_local_extension",
+      "statement": "∀ (P k : ℕ) (W : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen W → ContDiffOn ℝ 1 χ W → y ∈ W → ∃ (g : Euclid k → Euclid P) (ε : ℝ), 0 < ε ∧ ball y ε ⊆ W ∧ ContDiff ℝ 1 g ∧ EqOn g χ (ball y ε)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
