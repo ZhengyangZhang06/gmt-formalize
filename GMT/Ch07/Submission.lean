@@ -525,6 +525,109 @@ theorem Submission.pit_blowUp_image_setIntegral_eq_rescaled : ∀ (P n : ℕ) (F
       integral_add_left_eq_self (fun x => G x) b, finrank_euclideanSpace_fin, smul_eq_mul,
       ← inv_pow, abs_of_pos (pow_pos (inv_pos.2 hr) n)]
   exact hsubst.symm
+/-- Co-Lipschitz bounds pass to the derivative at density points: if `m > 0`,
+`m‖a − b‖ ≤ ‖F(a) − F(b)‖` for every `a ∈ B` (`B` arbitrary), `F` is differentiable at `b` and
+`λ(B ∩ B̄_ρ(b)) / λ(B̄_ρ(b)) → 1` as `ρ ↓ 0`, then `m‖c‖ ≤ ‖DF(b)c‖` for every `c`.
+For small `r > 0` the ball `B_{rδ}(b + rc)`, a fixed fraction `(δ / (‖c‖ + δ))ⁿ` of
+`B̄_{r(‖c‖+δ)}(b)`, must meet `B`; the bound at such a point and differentiability give
+`m‖c‖ ≤ ‖DF(b)c‖ + δ(m + ‖DF(b)‖ + ‖c‖ + δ)`, and `δ ↓ 0`. -/
+theorem Submission.pit_fderiv_lower_bound_of_density : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (m : ℝ) (b : Euclid n), 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → DifferentiableAt ℝ F b → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → ∀ c : Euclid n, m * ‖c‖ ≤ ‖fderiv ℝ F b c‖ := by
+  intro P n F B m b hm hB hF hdens c
+  set L := fderiv ℝ F b with hL
+  have hFL : HasFDerivAt F L b := hF.hasFDerivAt
+  -- main estimate: for every `δ > 0`, `m‖c‖ ≤ ‖Lc‖ + δ (m + ‖L‖ + ‖c‖ + δ)`
+  have key : ∀ δ : ℝ, 0 < δ → m * ‖c‖ ≤ ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ) := by
+    intro δ hδ
+    have hK : 0 < ‖c‖ + δ := by positivity
+    -- differentiability: `‖F a - F b - L (a - b)‖ ≤ δ ‖a - b‖` near `b`
+    obtain ⟨ε, hε, hεF⟩ := Metric.eventually_nhds_iff.1 (hFL.isLittleO.bound hδ)
+    -- density: the ratio exceeds `1 - q`, `q = (δ / (‖c‖ + δ)) ^ n`, on some `(0, ρ₀)`
+    obtain ⟨q, hq_def⟩ : ∃ q : ℝ≥0∞, q = ENNReal.ofReal ((δ / (‖c‖ + δ)) ^ n) := ⟨_, rfl⟩
+    have hq : q ≠ 0 := by
+      rw [hq_def, Ne, ENNReal.ofReal_eq_zero, not_le]
+      positivity
+    have hlt : 1 - q < 1 := ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero hq
+    obtain ⟨ρ₀, hρ₀, hρ₀sub⟩ :=
+      mem_nhdsGT_iff_exists_Ioo_subset.1 (hdens.eventually_const_lt hlt)
+    have hρ₀' : 0 < ρ₀ := hρ₀
+    -- the radius `ρ = r (‖c‖ + δ)`
+    obtain ⟨ρ, hρ, hρε, hρρ₀⟩ : ∃ ρ : ℝ, 0 < ρ ∧ ρ < ε ∧ ρ < ρ₀ :=
+      ⟨min ε ρ₀ / 2, by positivity, by linarith [min_le_left ε ρ₀, lt_min hε hρ₀'],
+        by linarith [min_le_right ε ρ₀, lt_min hε hρ₀']⟩
+    obtain ⟨r, hr_def⟩ : ∃ r : ℝ, r = ρ / (‖c‖ + δ) := ⟨_, rfl⟩
+    have hr : 0 < r := by rw [hr_def]; positivity
+    have hrK : r * (‖c‖ + δ) = ρ := by rw [hr_def]; field_simp
+    -- some point of `B` lies in `B_{rδ}(b + r c)`, else the ratio at `ρ` is `≤ 1 - q`
+    obtain ⟨a, haB, ha⟩ : ∃ a ∈ B, ‖a - (b + r • c)‖ < r * δ := by
+      by_contra! hcon
+      have hsub : ball (b + r • c) (r * δ) ⊆ closedBall b ρ := by
+        intro x hx
+        rw [mem_ball, dist_eq_norm] at hx
+        rw [mem_closedBall, dist_eq_norm]
+        calc ‖x - b‖ = ‖(x - (b + r • c)) + r • c‖ := by congr 1; abel
+          _ ≤ ‖x - (b + r • c)‖ + ‖r • c‖ := norm_add_le _ _
+          _ = ‖x - (b + r • c)‖ + r * ‖c‖ := by rw [norm_smul, Real.norm_of_nonneg hr.le]
+          _ ≤ ρ := by rw [← hrK]; linarith
+      have hBsub : B ∩ closedBall b ρ ⊆ closedBall b ρ \ ball (b + r • c) (r * δ) := by
+        rintro x ⟨hxB, hx⟩
+        refine ⟨hx, fun hxW => ?_⟩
+        rw [mem_ball, dist_eq_norm] at hxW
+        exact (hcon x hxB).not_gt hxW
+      have hVfin : volume (closedBall b ρ) ≠ ∞ := measure_closedBall_lt_top.ne
+      have hball : volume (ball (b + r • c) (r * δ)) = q * volume (closedBall b ρ) := by
+        rw [Measure.addHaar_ball_of_pos volume _ (mul_pos hr hδ),
+          Measure.addHaar_closedBall volume _ hρ.le, finrank_euclideanSpace_fin, ← mul_assoc,
+          hq_def, ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ (δ / (‖c‖ + δ)) ^ n), ← mul_pow,
+          ← hrK]
+        congr 3
+        field_simp
+      have hle : volume (B ∩ closedBall b ρ) ≤ (1 - q) * volume (closedBall b ρ) := by
+        calc volume (B ∩ closedBall b ρ)
+            ≤ volume (closedBall b ρ \ ball (b + r • c) (r * δ)) := measure_mono hBsub
+          _ = volume (closedBall b ρ) - volume (ball (b + r • c) (r * δ)) :=
+            measure_sdiff hsub measurableSet_ball.nullMeasurableSet measure_ball_lt_top.ne
+          _ = (1 - q) * volume (closedBall b ρ) := by
+            rw [hball, ENNReal.sub_mul (fun _ _ => hVfin), one_mul]
+      have hgt : 1 - q < volume (B ∩ closedBall b ρ) / volume (closedBall b ρ) :=
+        hρ₀sub ⟨hρ, hρρ₀⟩
+      exact lt_irrefl _ (hgt.trans_le (ENNReal.div_le_of_le_mul hle))
+    -- the estimate at `a`, with `a - b = r c + e`, `‖e‖ < r δ`
+    obtain ⟨e, he_def⟩ : ∃ e : Euclid n, e = a - (b + r • c) := ⟨_, rfl⟩
+    rw [← he_def] at ha
+    have hab : a - b = r • c + e := by rw [he_def]; abel
+    have hab_le : ‖a - b‖ ≤ r * ‖c‖ + ‖e‖ := by
+      rw [hab]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_smul, Real.norm_of_nonneg hr.le]
+    have hab_lt : ‖a - b‖ < r * (‖c‖ + δ) := by rw [mul_add]; linarith
+    have hdist : dist a b < ε := by rw [dist_eq_norm]; linarith
+    have h1 : m * ‖a - b‖ ≤ ‖F a - F b‖ := hB a haB
+    have h2 : ‖F a - F b‖ ≤ ‖L (a - b)‖ + δ * ‖a - b‖ := by
+      have h := hεF hdist
+      have h' := norm_sub_norm_le (F a - F b) (L (a - b))
+      linarith
+    have h3 : ‖L (a - b)‖ ≤ r * ‖L c‖ + ‖L‖ * ‖e‖ := by
+      rw [hab, map_add, map_smul]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_smul, Real.norm_of_nonneg hr.le]
+      linarith [L.le_opNorm e]
+    have h4 : r * ‖c‖ ≤ ‖a - b‖ + ‖e‖ := by
+      have : r • c = (a - b) - e := by rw [hab]; abel
+      calc r * ‖c‖ = ‖r • c‖ := by rw [norm_smul, Real.norm_of_nonneg hr.le]
+        _ = ‖(a - b) - e‖ := by rw [this]
+        _ ≤ ‖a - b‖ + ‖e‖ := norm_sub_le _ _
+    have h5 : ‖L‖ * ‖e‖ ≤ ‖L‖ * (r * δ) := mul_le_mul_of_nonneg_left ha.le (norm_nonneg _)
+    have h6 : m * ‖e‖ ≤ m * (r * δ) := mul_le_mul_of_nonneg_left ha.le hm.le
+    have h7 : δ * ‖a - b‖ ≤ δ * (r * (‖c‖ + δ)) := mul_le_mul_of_nonneg_left hab_lt.le hδ.le
+    have h8 : m * (r * ‖c‖) ≤ m * (‖a - b‖ + ‖e‖) := mul_le_mul_of_nonneg_left h4 hm.le
+    have hfin : r * (m * ‖c‖) ≤ r * (‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) := by
+      linarith
+    exact le_of_mul_le_mul_left hfin hr
+  -- let `δ → 0⁺`
+  have hlim : Tendsto (fun δ : ℝ => ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) (𝓝[>] 0) (𝓝 ‖L c‖) := by
+    have hcont : Continuous (fun δ : ℝ => ‖L c‖ + δ * (m + ‖L‖ + ‖c‖ + δ)) := by fun_prop
+    simpa using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun δ hδ => key δ hδ)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
