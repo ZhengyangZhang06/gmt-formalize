@@ -927,6 +927,100 @@ theorem Submission.codim1_rdo_dg_bvc_mollify_l1_le : ∀ (n : ℕ) (F : Set (Euc
     _ = ∫ y, ∫ z in ball (0 : Euclid n) R, H z y := integral_integral_swap hHint
     _ ≤ ∫ y, ρ y * (ε * C) := integral_mono hHint.integral_prod_right (hρint.mul_const _) hinner
     _ = ε * C := by rw [integral_mul_const, hρ1, one_mul]
+/-- **Mollified indicators are uniformly bounded and uniformly Lipschitz** (step 2 of the `BV`
+compactness theorem, Simon Ch. 2, 2.6, for indicators).  Let `ρ ≥ 0` be `C¹` with compact
+support and `∫ ρ = 1`, and `v_F(x) = ∫ ρ(y) 1_F(x − y) dy`.  Then `|v_F| ≤ ∫ ρ = 1`.  `ρ` is
+`L_ρ`-Lipschitz; after `y ↦ x − y`, `v_F(x) − v_F(x') = ∫ (ρ(x − z) − ρ(x' − z)) 1_F(z) dz`,
+whose integrand is at most `L_ρ|x − x'| (1_K(x − z) + 1_K(x' − z))` with `K = spt ρ`, so
+`|v_F(x) − v_F(x')| ≤ 2L_ρ|K| |x − x'|`.  Hence `L = max 1 (2L_ρ|K|)` serves every measurable
+`F`. -/
+theorem Submission.codim1_rdo_dg_bvc_mollified_lipschitz : ∀ (n : ℕ) (ρ : Euclid n → ℝ), ContDiff ℝ 1 ρ → HasCompactSupport ρ → (∀ y, 0 ≤ ρ y) → ∫ y, ρ y = 1 → ∃ L : ℝ, ∀ F : Set (Euclid n), MeasurableSet F → (∀ x, |∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)| ≤ L) ∧ ∀ x x', |(∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)) - ∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x' - y)| ≤ L * ‖x - x'‖ := by
+  intro n ρ hρ hρc hρ0 hρ1
+  -- `ρ` is `Lρ`-Lipschitz, and `K = spt ρ` is compact with finite measure `V`
+  obtain ⟨Lρ, hLρ⟩ := hρ.lipschitzWith_of_hasCompactSupport hρc (by norm_num)
+  set K := tsupport ρ
+  have hKc : IsCompact K := hρc
+  have hKm : MeasurableSet K := (isClosed_tsupport ρ).measurableSet
+  have hKfin : volume K ≠ ∞ := hKc.measure_lt_top.ne
+  set V : ℝ := (volume K).toReal with hV
+  have hρint : Integrable ρ := hρ.continuous.integrable_of_hasCompactSupport hρc
+  have hind : ∀ (s : Set (Euclid n)) (z : Euclid n), |s.indicator (fun _ => (1 : ℝ)) z| ≤ 1 := by
+    intro s z
+    simp only [Set.indicator]; split_ifs <;> norm_num
+  have hK0 : ∀ w, 0 ≤ K.indicator (fun _ => (1 : ℝ)) w :=
+    fun w => indicator_nonneg (fun _ _ => zero_le_one) w
+  refine ⟨max 1 (2 * Lρ * V), fun F hF => ⟨fun x => ?_, fun x x' => ?_⟩⟩
+  · -- `|v_F(x)| ≤ ∫ ρ = 1`
+    have hu : ∀ y, |ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)| ≤ ρ y := by
+      intro y
+      rw [abs_mul, abs_of_nonneg (hρ0 y)]
+      exact mul_le_of_le_one_right (hρ0 y) (hind F (x - y))
+    calc |∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)|
+        ≤ ∫ y, |ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y)| := abs_integral_le_integral_abs
+      _ ≤ ∫ y, ρ y := integral_mono_of_nonneg (Filter.Eventually.of_forall fun y => abs_nonneg _)
+          hρint (Filter.Eventually.of_forall hu)
+      _ = 1 := hρ1
+      _ ≤ max 1 (2 * Lρ * V) := le_max_left _ _
+  · -- `v_F(x) = ∫ ρ(x − z) 1_F(z) dz` (Lebesgue measure is invariant under `y ↦ x − y`)
+    have hsub : ∀ x : Euclid n, ∫ y, ρ y * F.indicator (fun _ => (1 : ℝ)) (x - y) =
+        ∫ z, ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z := by
+      intro x
+      rw [← integral_sub_left_eq_self (fun z => ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z)
+        volume x]
+      simp
+    have hi : ∀ x : Euclid n,
+        Integrable (fun z => ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z) := by
+      intro x
+      refine Integrable.mul_bdd (c := 1) (hρint.comp_sub_left x) ?_ ?_
+      · exact (measurable_const.indicator hF).aestronglyMeasurable
+      · exact Filter.Eventually.of_forall fun z => by rw [Real.norm_eq_abs]; exact hind F z
+    rw [hsub x, hsub x', ← integral_sub (hi x) (hi x')]
+    -- pointwise, `|(ρ(x − z) − ρ(x' − z)) 1_F(z)| ≤ Lρ|x − x'| (1_K(x − z) + 1_K(x' − z))`
+    have hpt : ∀ z, |ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z -
+        ρ (x' - z) * F.indicator (fun _ => (1 : ℝ)) z| ≤
+        Lρ * ‖x - x'‖ * (K.indicator (fun _ => (1 : ℝ)) (x - z) +
+          K.indicator (fun _ => (1 : ℝ)) (x' - z)) := by
+      intro z
+      rw [← sub_mul, abs_mul]
+      have hlip : |ρ (x - z) - ρ (x' - z)| ≤ Lρ * ‖x - x'‖ := by
+        have := hLρ.dist_le_mul (x - z) (x' - z)
+        rw [Real.dist_eq, dist_eq_norm] at this
+        simpa using this
+      by_cases h : x - z ∈ K ∨ x' - z ∈ K
+      · have hs : 1 ≤ K.indicator (fun _ => (1 : ℝ)) (x - z) +
+            K.indicator (fun _ => (1 : ℝ)) (x' - z) := by
+          rcases h with h | h
+          · rw [indicator_of_mem h]; linarith [hK0 (x' - z)]
+          · rw [indicator_of_mem h (f := fun _ => (1 : ℝ))]; linarith [hK0 (x - z)]
+        calc |ρ (x - z) - ρ (x' - z)| * |F.indicator (fun _ => (1 : ℝ)) z|
+            ≤ Lρ * ‖x - x'‖ * 1 := mul_le_mul hlip (hind F z) (abs_nonneg _) (by positivity)
+          _ ≤ _ := mul_le_mul_of_nonneg_left hs (by positivity)
+      · push Not at h
+        have h1 : ρ (x - z) = 0 := image_eq_zero_of_notMem_tsupport h.1
+        have h2 : ρ (x' - z) = 0 := image_eq_zero_of_notMem_tsupport h.2
+        rw [h1, h2, sub_zero, abs_zero, zero_mul]
+        exact mul_nonneg (by positivity) (add_nonneg (hK0 _) (hK0 _))
+    -- `∫ 1_K(x − z) dz = |K| = V`
+    have hKi : ∀ x : Euclid n, Integrable (fun z => K.indicator (fun _ => (1 : ℝ)) (x - z)) :=
+      fun x => ((integrableOn_const hKfin).integrable_indicator hKm).comp_sub_left x
+    have hKint : ∀ x : Euclid n, ∫ z, K.indicator (fun _ => (1 : ℝ)) (x - z) = V := by
+      intro x
+      rw [integral_sub_left_eq_self (fun z => K.indicator (fun _ => (1 : ℝ)) z) volume x,
+        integral_indicator_const _ hKm]
+      simp [hV, Measure.real]
+    calc |∫ z, (ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z -
+          ρ (x' - z) * F.indicator (fun _ => (1 : ℝ)) z)|
+        ≤ ∫ z, |ρ (x - z) * F.indicator (fun _ => (1 : ℝ)) z -
+          ρ (x' - z) * F.indicator (fun _ => (1 : ℝ)) z| := abs_integral_le_integral_abs
+      _ ≤ ∫ z, Lρ * ‖x - x'‖ * (K.indicator (fun _ => (1 : ℝ)) (x - z) +
+          K.indicator (fun _ => (1 : ℝ)) (x' - z)) :=
+          integral_mono_of_nonneg (Filter.Eventually.of_forall fun z => abs_nonneg _)
+            (((hKi x).add (hKi x')).const_mul _) (Filter.Eventually.of_forall hpt)
+      _ = Lρ * ‖x - x'‖ * (V + V) := by
+          rw [integral_const_mul, integral_add (hKi x) (hKi x'), hKint x, hKint x']
+      _ = 2 * Lρ * V * ‖x - x'‖ := by ring
+      _ ≤ max 1 (2 * Lρ * V) * ‖x - x'‖ :=
+          mul_le_mul_of_nonneg_right (le_max_right _ _) (norm_nonneg _)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
