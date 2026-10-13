@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.unit_deformation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "Deformation Theorem 5.1 (unscaled) for IM T with IM ∂T vanishing off a compact set, with an explicit unit lattice chain",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω)); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure and R.action(β) = ∫_M θ ξ(β) dHᵈ for any d-form β; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. X vanishes off a set E if X(ω) = 0 for every ω whose tsupport is disjoint from E. Assume (SL) the exact frozen statement of dor_lmb_slicing_lipschitz (the antecedent of the parent statement dor_lmb_fc_deformation), taken as an antecedent: assuming (C1) [for open U, X ∈ 𝒟_d(U) and an IMRep R in U representing X: M_W(X) = μ_R(W) for every open W and spt X = U ∩ spt μ_R], for every open U ⊆ ℝ^P, every T ∈ 𝒟_{k+1}(U) represented by an IMRep RT = (M, θ, ξ), every IMRep RB = (M', θ', ξ') representing ∂T and every L-Lipschitz f : ℝ^P → ℝ, there are P_t ∈ 𝒟_k(U) (t ∈ ℝ) such that (1) for every open W, t ↦ M_W(P_t) is a.e.-measurable and ∫_ℝ M_W(P_t) dt ≤ L·M_W(T); (2) for L¹-a.e. t: P_t is IM, P_t(ω) = 0 for every ω whose tsupport is disjoint from f⁻¹(t), and P_t(ω) = ∫_{M∩{f<t}} θ⟨dω, ξ⟩ dH^{k+1} − ∫_{M'∩{f<t}} θ'⟨ω, ξ'⟩ dH^k for every ω ∈ 𝒟^k(U). Assume (IMS) the exact frozen statement of dor_lmb_fc_im_series (a resolved dependency of the parent node, not yet accepted, hence taken as an antecedent): for all P, m, every open U ⊆ ℝ^P and IM currents X_r ∈ 𝒟_{m+1}(U) (r ∈ ℕ) with Σ_r M(X_r) ≠ ∞ there is an IM Y ∈ 𝒟_{m+1}(U) with Σ_r X_r(ω) = Y(ω) (HasSum) for every ω ∈ 𝒟^{m+1}(U) and M(Y) ≤ Σ_r M(X_r). Let P, m ∈ ℕ with n := m + 1 < P. There is c ≥ 0 such that for every compact K ⊆ ℝ^P and every IM T ∈ 𝒟_n(ℝ^P) (domain univ) with ∂T IM and T vanishing off K, there are a finite set s of pairs p = (z_p, ι_p) ∈ ℤ^P × (Fin n → Fin P), integers β_p (a function β) and currents Pc ∈ 𝒟_n(ℝ^P), R ∈ 𝒟_{n+1}(ℝ^P), S ∈ 𝒟_n(ℝ^P) such that: ι_p is strictly increasing for p ∈ s; Pc(ω) = Σ_{p∈s} β_p ∫_{F_p} ω(x)(e_{ι_p(0)}, …, e_{ι_p(m)}) dHⁿ(x) for every ω, where F_p := {x : z_{p,i} ≤ x_i ≤ z_{p,i} + 1 for i ∈ range ι_p, x_i = z_{p,i} otherwise} is the closed unit n-face of p = (z_p, ι_p) ∈ ℤ^P × (Fin n → Fin P) (the cell latticeFace 1 p of the project's GMT/Ch06/Contract.lean), oriented by e_{ι_p(0)} ∧ ⋯ ∧ e_{ι_p(m)}, e_i = EuclideanSpace.single i 1; R and S are IM; T(ω) − Pc(ω) = ∂R(ω) + S(ω) for every ω; Σ_{p∈s}|β_p| ≤ c·M(T), M(R) ≤ c·M(T) and M(S) ≤ c·M(∂T) (in [0, ∞]); F_p ⊆ cthickening(2√P, K) for p ∈ s; and R and S vanish off cthickening(2√P, K).",
+  "lean_statement": "((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (K : Set (Euclid P)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Pc ω = R.boundary ω + S ω) ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) ≤ ENNReal.ofReal c * T.mass ∧ R.mass ≤ ENNReal.ofReal c * T.mass ∧ S.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (2 * Real.sqrt P) K) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (cthickening (2 * Real.sqrt P) K) → R ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (2 * Real.sqrt P) K) → S ω = 0",
+  "lean_name": "dor_lmb_fcd_unit_deformation",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-9b96e36ed1-a1"
+}

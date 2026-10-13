@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "Weak continuity of pulled-back k-forms under uniform convergence of uniformly Lipschitz maps (identification of Simon 2.29 with 3.6)",
+  "statement": "Let k, N' ∈ ℕ, A ⊆ ℝᵏ (Euclid k, Lebesgue measure) measurable, w : ℝᵏ → ℝ integrable on A, L ∈ ℝ≥0, H_j, H : ℝᵏ → ℝ^{N'} (Euclid N') L-Lipschitz maps with H_j → H uniformly on ℝᵏ, and ω ∈ 𝒟ᵏ(ℝ^{N'}) (TestFormOn univ k). Then ∫_A w(u)·ω(H_j(u))(DH_j(u)e_1, …, DH_j(u)e_k) du → ∫_A w(u)·ω(H(u))(DH(u)e_1, …, DH(u)e_k) du as j → ∞, where DH(u) := fderiv ℝ H u (it exists for a.e. u by Rademacher) and e_i = EuclideanSpace.single i 1. (This is the weak continuity of Jacobian minors; it identifies the limit of smooth push-forwards of Simon 2.29 with the area-formula push-forward 3.6 for integer multiplicity currents.)",
+  "lean_statement": "∀ (k N' : ℕ) (A : Set (Euclid k)) (w : Euclid k → ℝ) (L : NNReal) (Hs : ℕ → Euclid k → Euclid N') (H : Euclid k → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k), MeasurableSet A → IntegrableOn w A → (∀ j, LipschitzWith L (Hs j)) → LipschitzWith L H → TendstoUniformly Hs H atTop → Tendsto (fun j => ∫ u in A, w u * (ω : DifferentialForm (Euclid N') k) (Hs j u) (fun i => fderiv ℝ (Hs j) u (EuclideanSpace.single i (1 : ℝ)))) atTop (𝓝 (∫ u in A, w u * (ω : DifferentialForm (Euclid N') k) (H u) (fun i => fderiv ℝ H u (EuclideanSpace.single i (1 : ℝ)))))",
+  "lean_name": "dor_lmb_fcd_jacobian_weak_continuity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.good_center-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "Choice of a good centre a for the dual skeleton by averaging (Simon 6.5.1, (1)–(7))",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P. There is C ∈ ℝ≥0 (depending only on P and m) such that for any two finite Borel measures μ, μ' on ℝ^P (Euclid P) there is a ∈ ℝ^P with |a_i − 1/2| < 1/4 for every i such that, with L*(a) := {w : there is a finset s of coordinate indices with |s| ≥ m + 2 and w_i − a_i ∈ ℤ for all i ∈ s} (Simon's L_{ℓ−1}(a), ℓ = P − m − 1) and d := infDist(·, L*(a)), for every r with 0 < r ≤ 1/4: μ({x : d(x) < r}) ≤ C·r^{m+2}·μ(ℝ^P) and μ'({x : d(x) < r}) ≤ C·r^{m+2}·μ'(ℝ^P) (inequalities in [0, ∞], r^{m+2} via ENNReal.ofReal). These are Simon's displays (6), (7) for μ = μ_T, μ' = μ_∂T.",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∃ C : NNReal, ∀ μ μ' : Measure (Euclid P), IsFiniteMeasure μ → IsFiniteMeasure μ' → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → μ {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ univ ∧ μ' {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ' univ",
+  "lean_name": "dor_lmb_fcd_good_center",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-21ffbad658-a1"
+}

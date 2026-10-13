@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "BV Poincaré inequality on the unit cube with an integer median (Simon Ch. 2, 2.7; (31), (32), (35) of 6.5.1)",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} (Euclid (m + 1), Lebesgue measure) and div g := trace of Dg (LinearMap.trace of fderiv). There is c > 0 (depending only on m) such that for every integer-valued u : ℝⁿ → ℝ (u(y) ∈ ℤ for every y) integrable on Q₁ and every V ∈ ℝ with ∫_{Q₁} u·div g ≤ V for every C^∞ map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g(y)| ≤ 1 for all y, there is β ∈ ℤ with ∫_{Q₁}|u − β| ≤ cV and |β| ≤ 2∫_{Q₁}|u|.",
+  "lean_statement": "∀ m : ℕ, ∃ c : ℝ, 0 < c ∧ ∀ (u : Euclid (m + 1) → ℝ) (V : ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ β : ℤ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ c * V ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y|",
+  "lean_name": "dor_lmb_fcd_cube_poincare",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-24998c59c0-a1"
+}

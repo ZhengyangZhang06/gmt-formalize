@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1",
+  "depth": 5,
+  "title": "Replacement of an IM current carried by the n-skeleton by an integer lattice chain (Simon 6.5.1, displays (26)–(37))",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω)); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure and R.action(β) = ∫_M θ ξ(β) dHᵈ for any d-form β; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. X vanishes off a set E if X(ω) = 0 for every ω whose tsupport is disjoint from E. Let P, m ∈ ℕ with n := m + 1 < P and L_n := {x : there is a finset s of coordinate indices with P ≤ m + 1 + |s| and x_i ∈ ℤ for i ∈ s} (the n-skeleton of the unit cubical grid). There is c ≥ 0 such that for every compact K ⊆ ℝ^P and every IM Q ∈ 𝒟_n(ℝ^P) (domain univ) that vanishes off L_n ∩ K and has M(∂Q) ≠ ∞, there are a finite set s of pairs p = (z_p, ι_p) ∈ ℤ^P × (Fin n → Fin P), integers β_p (a function β) and Pc ∈ 𝒟_n(ℝ^P) such that: ι_p is strictly increasing for p ∈ s; Pc(ω) = Σ_{p∈s} β_p ∫_{F_p} ω(x)(e_{ι_p(0)}, …, e_{ι_p(m)}) dHⁿ(x) for every ω ∈ 𝒟ⁿ(ℝ^P), where F_p := {x : z_{p,i} ≤ x_i ≤ z_{p,i} + 1 for i ∈ range ι_p, x_i = z_{p,i} otherwise} is the closed unit n-face of p = (z_p, ι_p) ∈ ℤ^P × (Fin n → Fin P) (the cell latticeFace 1 p of the project's GMT/Ch06/Contract.lean), oriented by e_{ι_p(0)} ∧ ⋯ ∧ e_{ι_p(m)}, e_i = EuclideanSpace.single i 1; Q − Pc is IM; M(Q − Pc) ≤ c·M(∂Q); Σ_{p∈s}|β_p| ≤ c·M(Q); F_p ⊆ cthickening(√P, K) for p ∈ s; and Q − Pc vanishes off cthickening(√P, K).",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (K : Set (Euclid P)) (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity Q → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) ({x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∩ K) → Q ω = 0) → Q.boundary.mass ≠ ∞ → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (Q - Pc) ∧ (Q - Pc).mass ≤ ENNReal.ofReal c * Q.boundary.mass ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) ≤ ENNReal.ofReal c * Q.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (Real.sqrt P) K) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (Real.sqrt P) K) → (Q - Pc) ω = 0",
+  "lean_name": "dor_lmb_fcd_face_replacement",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ab5ee960d0-a1"
+}
