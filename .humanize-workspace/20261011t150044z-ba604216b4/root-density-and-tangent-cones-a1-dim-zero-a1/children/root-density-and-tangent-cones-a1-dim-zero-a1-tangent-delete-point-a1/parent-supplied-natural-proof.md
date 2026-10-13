@@ -1,0 +1,116 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.dim_zero-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.dim_zero-a1.tangent_delete_point-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the orientation clause of step 6 of the parent proof ("the blow-ups η_{x,ρ}(M) and η_{x,ρ}(M ∖ {p}) differ only by the point (p − x)/ρ, which leaves every bounded set as ρ ↓ 0 (|p − x| > 0), so for f ∈ C_c the two blow-up integrals coincide for small ρ"). The argument does not use the dimension, so it is stated for every n.
+
+Notation: η_r := blowUpMap x r, so η_r(y) = r⁻¹(y − x); Hⁿ := μHE[n]. HasApproximateTangentSpaceAt n N x Q means: finrank Q = n, and for every f ∈ C_c(ℝ^P, ℝ) the function r ↦ ∫_{η_r(N)} f dHⁿ tends to ∫_Q f dHⁿ along 𝓝[>] 0.
+
+1. The dimension clause finrank Q = n is part of the hypothesis, and it is the same for M ∖ {p}.
+2. Fix f ∈ C_c(ℝ^P, ℝ). Its topological support is compact, hence bounded, so there is a ∈ ℝ with tsupport f ⊆ closedBall(0, a). Put d := ‖p − x‖, which is > 0 because x ≠ p, and r₁ := d/(|a| + 1) > 0.
+3. For 0 < r < r₁ we have f(η_r(p)) = 0.
+   - Suppose η_r(p) ∈ tsupport f. Then ‖η_r(p)‖ = r⁻¹d ≤ a ≤ |a|, i.e. d ≤ r|a|.
+   - On the other hand r < r₁ means r(|a| + 1) < d, i.e. r|a| + r < d ≤ r|a|. So r < 0, a contradiction.
+   - Hence η_r(p) ∉ tsupport f, and f vanishes there.
+4. For r ≠ 0, the set η_r(M) is Borel.
+   - η_r(M) = {y : x + r·y ∈ M}: if y = r⁻¹(z − x) with z ∈ M then x + r·y = z; conversely, if z := x + r·y ∈ M then η_r(z) = y.
+   - So η_r(M) is the preimage of the Borel set M under the continuous map y ↦ x + r·y.
+5. Let 0 < r < r₁.
+   - η_r(M ∖ {p}) ⊆ η_r(M).
+   - Let y ∈ η_r(M) ∖ η_r(M ∖ {p}) and write y = η_r(z) with z ∈ M. If z ≠ p, then y ∈ η_r(M ∖ {p}), which is impossible. So z = p, and f(y) = f(η_r(p)) = 0 by step 3.
+   - η_r(M) is measurable (step 4) and f vanishes on η_r(M) ∖ η_r(M ∖ {p}). Hence ∫_{η_r(M)} f dHⁿ = ∫_{η_r(M∖{p})} f dHⁿ (Mathlib setIntegral_eq_of_subset_of_forall_sdiff_eq_zero).
+6. The interval (0, r₁) belongs to 𝓝[>] 0 (Ioo_mem_nhdsGT).
+   - By step 5, the functions r ↦ ∫_{η_r(M)} f dHⁿ and r ↦ ∫_{η_r(M∖{p})} f dHⁿ are eventually equal along 𝓝[>] 0.
+   - The first tends to ∫_Q f dHⁿ by hypothesis, so the second has the same limit (Tendsto.congr').
+   - Since f ∈ C_c(ℝ^P, ℝ) was arbitrary, this together with step 1 proves HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.
+
+## Key steps
+
+1. Choose a with tsupport f ⊆ closedBall(0, a); for 0 < r < |p − x|/(|a| + 1) the blown-up point η_r(p) lies outside tsupport f.
+2. η_r(M) is Borel (a preimage under y ↦ x + r·y), and η_r(M) ∖ η_r(M ∖ {p}) ⊆ {η_r(p)}, where f vanishes. So the two blow-up integrals coincide for all small r.
+3. Functions that are eventually equal along 𝓝[>] 0 have the same limit, and the dimension clause is unchanged.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (both identical; snapshot project b4d606d, mathlib 25730c7c)`
+- `rg -n 'structure GeometricCurrentOn|GeometricCurrentOn.ext|instance .*Zero|zero_apply|TestFormOnConverges|abbrev TestFormOn' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `rg -n 'GeometricCurrentOn.VanishesOn|GeometricCurrentOn.zeroRegion|GeometricCurrentOn.support|restrictDomain' simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `rg -n 'massAdmissibleOn|GeometricCurrentOn.massOn|le_massOn|covectorEuclideanNorm' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `rg -n 'abbrev Covector|abbrev DifferentialForm|def IsTestForm' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `rg -n 'pointCurrent|Dirac' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `rg -n 'def CountablyRectifiable|CountablyRectifiable.mono|def blowUpMap|def HasApproximateTangentSpaceAt' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n 'euclideanHausdorffMeasure_zero' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; rg -n 'hausdorffMeasure_zero_singleton' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'sum_measure_singleton|Infinite.exists_subset_card_eq|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|IntegrableOn.of_forall_sdiff_eq_zero|integrableOn_singleton_iff|integrableOn_finite_biUnion|theorem setIntegral_union|theorem integral_singleton|theorem restrict_singleton|theorem restrict_union|dirac_withDensity|withDensity_add_measure|iteratedFDeriv_zero_eq_comp|TendstoUniformlyOn.tendsto_at|set_biUnion_coe' mathlib/Mathlib`
+- `lean_name inventory: rg over runs/20261011T150044Z-ba604216b4 (dag.json, all node JSON/markdown), GMT/Ch07/Submission.lean and git log --all -S for dtc_dim_zero_carrier_finite, dtc_approxTangent_sdiff_singleton, dtc_dim_zero_erase_point, dtc_point_current (no match)`
+- `contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on the four child types`
+- `lake build GMT.Ch07.Submission in /tmp/dz-decomp-7f3a/proj; lake env lean Check/Assembly.lean, Check/ChildA.lean, Check/ChildB.lean, Check/ChildC.lean, Check/ChildD.lean, Check/All.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-dim-zero-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Dirac/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/dz-decomp-7f3a/proj/Check/Assembly.lean`
+- `/tmp/dz-decomp-7f3a/proj/Check/ChildA.lean`
+- `/tmp/dz-decomp-7f3a/proj/Check/ChildB.lean`
+- `/tmp/dz-decomp-7f3a/proj/Check/ChildC.lean`
+- `/tmp/dz-decomp-7f3a/proj/Check/ChildD.lean`
+- `/tmp/dz-decomp-7f3a/proj/Check/All.lean`
+- `/tmp/dz-decomp-7f3a/scripts/stmts.py`
+
+The snapshot contract and submission (project b4d606d, mathlib 25730c7c) are byte-identical to the workspace copies.
+
+The frozen objects the children use come from SimonGMT:
+- GeometricCurrentOn, its ext and Zero instance, and TestFormOnConverges (Chapter06/Currents.lean).
+- VanishesOn, zeroRegion and support (Chapter06/CurrentLocalEquality.lean).
+- massAdmissibleOn and massOn (Chapter06/Mass.lean).
+- CountablyRectifiable.mono, blowUpMap and HasApproximateTangentSpaceAt (Chapter03/Rectifiable.lean).
+
+The library's only point current is the algebraic whole-space degree-0 `pointCurrent` in Chapter06/Product.lean. It has no domain, continuity or support lemma, so the child dtc_point_current is needed.
+
+The library has no lemma on deleting a point from a carrier, on 0-dimensional local finiteness, or on locality of approximate tangent spaces under point deletion. These are the remaining three children.
+
+Mathlib supplies the required facts: μHE[0] = μH[0] with μH[0]{x} = 1, sum_measure_singleton, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, IntegrableOn.of_forall_sdiff_eq_zero, integrableOn_singleton(_iff), integrableOn_finite_biUnion, setIntegral_union, integral_singleton, Measure.restrict_union, Measure.restrict_singleton, withDensity_add_measure, dirac_withDensity, and iteratedFDeriv_zero_eq_comp. Set.diff_subset is deprecated in favour of sdiff_subset.
+
+Verification results:
+- All four child types elaborate in the comparator scope and pass validate_lean_statement.
+- All four children were proved in the scratch project using only propext, Classical.choice and Quot.sound.
+- The parent's frozen type is proved from the exact child strings plus the stubbed resolved sibling dtc_mass_eq_measure.
+- None of the four names occurs anywhere else in the run or in the repository.
