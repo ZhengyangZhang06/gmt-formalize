@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d457711a80ad4f3b37121526dfc1052ac1cf20aae3dc39078095fb8e8e1b7c03",
+  "git_delta": {
+    "base_commit": "248ba11c23407ff1f1c9ea39a689b1a17482f0cc",
+    "candidate_commit": "fd93b267293caeaca3034705eea36b200ec0845c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtsr_dual_dist_count",
+    "diff_sha256": "61e24cd82e86326debfca579f460e1c1a12bc1edbf0b8df79c212d94482e9b31",
+    "source_sha256": "89e0f72bff7449abf694771cbffa011a6bcff75084665999364d93456ee6dfe1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtsr_dual_dist_count",
+      "statement": "∀ (P m : ℕ) (a x : Euclid P) (b : Fin P → ℤ), (Finset.univ.filter (fun i => |x i - b i - a i| < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} / Real.sqrt (m + 2))).card ≤ m + 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
