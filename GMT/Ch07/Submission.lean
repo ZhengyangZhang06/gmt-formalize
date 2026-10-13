@@ -858,6 +858,21 @@ theorem Submission.dtc_bc_lc_fderiv_apply_eq_of_approxTangent : ∀ (P n : ℕ) 
     _ = K * ‖u - v‖ + ε / 2 := by rw [hK]; ring
     _ ≤ K * s + ε / 2 := by linarith [mul_le_mul_of_nonneg_left huv.le hKpos.le]
     _ ≤ ε := by linarith
+/-- **Simon 6.1.1, 6.1.7** (step 7 of the local comparison in the proof of 7.3.1): if `ξ` is a unit
+orientation of `Q` and the continuous linear map `L` fixes `Q` pointwise, then
+`⟨α ∘ ΛⁿL, ξ⟩ = ⟨α, ξ⟩` for every `n`-covector `α`.  Write `⟨β, ξ⟩ = ±β(τ₁, …, τₙ)` with `τ`
+spanning `Q`; each `τᵢ ∈ Q`, so `L ∘ τ = τ` and `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`. -/
+theorem Submission.dtc_bc_lc_unitOrientation_comp_eq : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α := by
+  intro P n ξ Q L hξ hL α
+  obtain ⟨τ, -, hspan, hsign⟩ := hξ
+  -- each `τᵢ` lies in `Q = span (range τ)`, so `L ∘ τ = τ`
+  have hLτ : ⇑L ∘ τ = τ := by
+    funext i
+    exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
+  -- `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`
+  have hτ : α.compContinuousLinearMap L τ = α τ := by
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+  rcases hsign with h | h <;> rw [h, h, hτ]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
