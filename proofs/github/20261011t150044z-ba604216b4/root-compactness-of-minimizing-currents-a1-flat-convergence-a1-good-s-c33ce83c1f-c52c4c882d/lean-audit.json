@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3d5fc8656f966e87b15582b27871abf9044b862c91d8ea48064c0efd21275693",
+  "git_delta": {
+    "base_commit": "519ed9eeaa82053efed1197c2cd2bbbcda5cd442",
+    "candidate_commit": "38d550ecf9f29a3bf5ff9054e69a18f826a3fc3b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_gs_helly_no_concentration",
+    "diff_sha256": "99d13d658989b4b13d69104a789bb32ac6af2bb620b9d590365c8c87a1ab46bf",
+    "source_sha256": "a93190a9452dbcacce1e209c871d37d53c6828c93565da35783c5cc7af753a45",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_gs_helly_no_concentration",
+      "statement": "∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (φ : ℕ → ℕ) (N : Set ℝ), StrictMono φ ∧ N.Countable ∧ ∀ s ∈ Ioo a b, s ∉ N → ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
