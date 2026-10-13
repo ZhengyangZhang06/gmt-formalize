@@ -649,6 +649,41 @@ theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Eu
       _ < _ := hρ
   · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
 
+/-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in `U`** (Simon
+Ch. 1, Remark 3.7(2); chapter-01.txt lines 705–711).  If `U ⊆ ℝᴾ` is open and `S` is Borel with
+`Hⁿ(S ∩ K) < ∞` for every compact `K ⊆ U`, then for `Hⁿ`-a.e. `x ∈ U ∖ S`,
+`Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  Countably many balls `B_{r_y}(y)` with
+`B̄_{r_y}(y) ⊆ U` cover `U` (Lindelöf); the finite-measure version applies to each piece
+`S ∩ B_{r_y}(y)`, and near `x ∈ B_{r_y}(y)` the piece agrees with `S`. -/
+theorem Submission.regcomp_atl_local_density_zero : ∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+  intro P n U S hU hS hfin
+  -- Step 1, a countable cover of `U` by balls `B(y, r y)` with `B̄(y, r y) ⊆ U`.
+  have hr : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
+    intro x hx
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU x hx
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
+  choose! r hr0 hrU using hr
+  obtain ⟨D, hDU, hDc, hcov⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun y => ball y (r y)) (s := U)
+    fun x hx => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x (hr0 x hx))
+  -- Steps 2 and 3, the finite-measure theorem on each piece `S ∩ B(y, r y)`, simultaneously
+  -- for the countably many `y ∈ D`.
+  have hpiece : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
+      Tendsto (fun ρ : ℝ => μHE[n] (S ∩ ball y (r y) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
+        (𝓝[>] 0) (𝓝 0) := by
+    rw [ae_ball_iff hDc]
+    intro y hy
+    apply Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball)
+    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
+      (measure_mono (inter_subset_inter_right S ball_subset_closedBall))
+  -- Step 4, localization: for small `ρ`, `B̄(x, ρ) ⊆ B(y, r y)`, so the piece agrees with `S`.
+  filter_upwards [hpiece] with x hx hxU hxS
+  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcov hxU)
+  obtain ⟨ε, hε, hεy⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
+  refine (hx y hyD fun h => hxS h.1).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεy)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
