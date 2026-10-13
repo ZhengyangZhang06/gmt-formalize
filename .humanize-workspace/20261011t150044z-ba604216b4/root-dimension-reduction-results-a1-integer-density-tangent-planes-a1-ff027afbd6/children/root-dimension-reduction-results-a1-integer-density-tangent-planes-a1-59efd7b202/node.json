@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_measurable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "The upper n-density ratio limsup of an arbitrary measure is Borel measurable (supplied proof, step 1)",
+  "statement": "Let P, n ∈ ℕ and let μ be any measure on ℝ^P (Borel σ-algebra). For x ∈ ℝ^P let Θ*(x) := limsup_{ρ→0⁺} μ(B_ρ(x))/(ω_n ρ^n), the limsup taken in [0, ∞] along the filter 𝓝[>]0, where B_ρ(x) is the open ball and ω_n = unitBallVolume n is the Lebesgue measure of the unit ball of ℝ^n (the quotient is ENNReal division by ω_n·ofReal(ρ^n)). Then x ↦ Θ*(x).toReal is Borel measurable on ℝ^P. No finiteness assumption on μ is made.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)), Measurable (fun x : Euclid P => (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)",
+  "lean_name": "idtp_fons_cr_density_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-59efd7b202-a1"
+}

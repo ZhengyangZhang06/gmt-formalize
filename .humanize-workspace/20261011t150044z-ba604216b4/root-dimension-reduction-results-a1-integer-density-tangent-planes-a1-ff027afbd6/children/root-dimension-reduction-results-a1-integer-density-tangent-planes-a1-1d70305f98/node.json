@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.support_limit-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "Support semicontinuity under vague convergence with a uniform lower mass bound on exhausting domains (supplied proof, step 8; (T3s))",
+  "statement": "Let P, n ∈ ℕ, Λ ∈ ℝ, let μ and μ_k (k ∈ ℕ) be measures on ℝ^P, U ⊆ ℝ^P, D_k ⊆ ℝ^P (k ∈ ℕ), y_k, y ∈ ℝ^P. Write spt ν := {z : ν(B_ε(z)) ≠ 0 for every ε > 0}. Assume: every μ_k is finite on compact sets; U is open; every compact K ⊆ U satisfies K ⊆ D_k for all sufficiently large k; for every k, every z ∈ spt μ_k and every ρ > 0 with closedBall z ρ ⊆ D_k, ofReal(e^{−Λρ})·ω_n·ofReal(ρ^n) ≤ μ_k(B_ρ(z)) (ω_n = unitBallVolume n); ∫ f dμ_k → ∫ f dμ for every continuous compactly supported f : ℝ^P → ℝ; y_k ∈ spt μ_k for every k; y_k → y and y ∈ U. Then y ∈ spt μ, i.e. μ(B_ε(y)) ≠ 0 for every ε > 0.",
+  "lean_statement": "∀ (P n : ℕ) (Λ : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (U : Set (Euclid P)) (Ds : ℕ → Set (Euclid P)) (ys : ℕ → Euclid P) (y : Euclid P), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → μs k K ≠ ∞) → IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (k : ℕ) (z : Euclid P) (ρ : ℝ), 0 < ρ → closedBall z ρ ⊆ Ds k → (∀ ε : ℝ, 0 < ε → μs k (ball z ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ μs k (ball z ρ)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(μs k)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ (k : ℕ) (ε : ℝ), 0 < ε → μs k (ball (ys k) ε) ≠ 0) → Tendsto ys atTop (𝓝 y) → y ∈ U → ∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0",
+  "lean_name": "idtp_fons_cr_support_limit",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1d70305f98-a1"
+}

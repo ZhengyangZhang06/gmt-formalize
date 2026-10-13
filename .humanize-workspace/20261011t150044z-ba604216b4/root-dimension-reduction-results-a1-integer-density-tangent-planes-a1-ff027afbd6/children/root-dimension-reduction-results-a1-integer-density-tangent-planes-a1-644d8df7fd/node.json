@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_normalization-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "Normalization μHE[n] = a·μH[n]: local integrability of g·e and ∫ f(g·e) dμH[n] = (c∫f dμ)·e for μ = Hⁿ⌞g (supplied proof, steps 2 and 5)",
+  "statement": "Let P, n ∈ ℕ. There is a real constant c > 0 with the following property. Let Q ∈ ℕ, let μ be a measure on ℝ^P, let g : ℝ^P → ℝ be Borel measurable with g ≥ 0, and let e ∈ ℝ^Q. Assume μ(K) < ∞ for every compact K and μ = μHE[n].withDensity(x ↦ ofReal(g(x))). Then (i) x ↦ g(x)e is locally integrable with respect to the Hausdorff measure μH[n] on ℝ^P; and (ii) for every continuous compactly supported f : ℝ^P → ℝ, ∫ f(x)·(g(x)e) dμH[n](x) = (c·∫ f dμ)·e.",
+  "lean_statement": "∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (Q : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (e : Euclid Q), Measurable g → (∀ x, 0 ≤ g x) → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → LocallyIntegrable (fun x => g x • e) μH[(n : ℝ)] ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x • (g x • e) ∂μH[(n : ℝ)] = (c * ∫ x, f x ∂μ) • e",
+  "lean_name": "idtp_fons_cr_density_normalization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-644d8df7fd-a1"
+}

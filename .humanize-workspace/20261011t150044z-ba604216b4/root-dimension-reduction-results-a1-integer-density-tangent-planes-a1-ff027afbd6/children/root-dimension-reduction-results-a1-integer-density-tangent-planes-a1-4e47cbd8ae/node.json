@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "The non-β-flat set ((S ∩ D) ∖ R_β) ∪ Dᶜ is closed for closed S and open D (supplied proof, step 9)",
+  "statement": "Let P, n ∈ ℕ, β > 0, S ⊆ ℝ^P closed and D ⊆ ℝ^P open. Notation for this statement: for S, D ⊆ ℝ^P and β ∈ ℝ let R(S, D) be the set of w ∈ ℝ^P for which there are ρ > 0 with B_ρ(w) ⊆ D, a linear subspace Q ⊆ ℝ^P with dim Q = n, and s < βρ such that |(y − w) − p_Q(y − w)| ≤ s for every y ∈ S ∩ B_ρ(w) (p_Q = Q.starProjection, the orthogonal projection onto Q); and let N(S, D) := ((S ∩ D) ∖ R(S, D)) ∪ (ℝ^P ∖ D). (N(spt μ, D μ) is the set sing'(μ) of the parent proof; in the Lean statement R and N are written out.) Then N(S, D) is closed.",
+  "lean_statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)), 0 < β → IsClosed S → IsOpen Dset → IsClosed (((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ)",
+  "lean_name": "idtp_fons_cr_nonflat_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4e47cbd8ae-a1"
+}

@@ -1,0 +1,73 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.support_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the selected node's supplied proof (class_reduction), which follows Simon 7.3.3, Remark 3.4 and the proof of 3.3(2) (chapter-07.txt lines 380–398 and 512–583) and Appendix A, A.1–A.4 (chapter-A.txt lines 18–45). This child is step 8 of that proof (support semicontinuity, the parent's (T3s)), stated for an arbitrary sequence of measures, with the domains D(μ_k) written as D_k and D(μ) as U.
+1. (The lower bound is positive and finite.) For r > 0 put m(r) := ofReal(e^{−Λr})·(ω_n·ofReal(r^n)). e^{−Λr} > 0 and r^n > 0. ω_n = volume(B_1(0) ⊆ Euclid n) ∈ (0, ∞), since the Haar volume of a nonempty open bounded set is positive and finite (n = 0 included). Hence m(r) ∈ (0, ∞) and m(r).toReal > 0.
+2. (A compact neighbourhood inside the domains.) U is open and y ∈ U, so choose r₀ > 0 with B_{r₀}(y) ⊆ U and set ρ₁ := r₀/4. Then K₀ := closedBall y (2ρ₁) ⊆ B_{r₀}(y) ⊆ U, and K₀ is compact (ℝ^P is proper). By hypothesis there is k₁ with K₀ ⊆ D_k for all k ≥ k₁.
+3. (Reduction.) Fix ε > 0 and let ε' := min(ε, ρ₁) > 0. Since B_{ε'}(y) ⊆ B_ε(y), μ(B_{ε'}(y)) ≤ μ(B_ε(y)), so it suffices to prove μ(B_{ε'}(y)) ≠ 0.
+4. (A bump function.) Choose f : ℝ^P → ℝ continuous with compact support such that 0 ≤ f ≤ 1, f = 1 on closedBall y (ε'/2), and tsupport f ⊆ closedBall y (3ε'/4) ⊆ B_{ε'}(y). For example, take a ContDiffBump centred at y with rIn = ε'/2 < rOut = 3ε'/4: it equals 1 on closedBall y rIn, takes values in [0, 1], and its tsupport is closedBall y rOut. Alternatively take f(x) = min(1, max(0, (3ε'/4 − |x − y|)/(ε'/4))).
+5. (Large k.) Since y_k → y there is k₂ with |y_k − y| < ε'/4 for k ≥ k₂. Let k ≥ max(k₁, k₂). (a) closedBall y_k (ε'/4) ⊆ closedBall y (ε'/2) ⊆ closedBall y (2ρ₁) = K₀ ⊆ D_k, using ε' ≤ ρ₁. (b) B_{ε'/4}(y_k) ⊆ B_{ε'/2}(y) ⊆ {f = 1}. By (a), y_k ∈ spt μ_k and the lower-bound hypothesis at radius ρ = ε'/4 > 0, m(ε'/4) ≤ μ_k(B_{ε'/4}(y_k)).
+6. (Integral lower bound.) f is μ_k-integrable: it is continuous with compact support, and μ_k is finite on the compact set tsupport f (Continuous.integrable_of_hasCompactSupport with the IsFiniteMeasureOnCompacts instance built from the hypothesis). By (b) and f ≥ 0, 0 ≤ 1_{B_{ε'/4}(y_k)} ≤ f pointwise. Also μ_k(B_{ε'/4}(y_k)) ≤ μ_k(tsupport f) < ∞, so the indicator is integrable. Hence ∫ f dμ_k ≥ ∫ 1_{B_{ε'/4}(y_k)} dμ_k = μ_k(B_{ε'/4}(y_k)).toReal ≥ m(ε'/4).toReal =: m₀ > 0. The last inequality uses step 5, toReal monotone on finite values, and m(ε'/4) < ∞. Equivalently, ∫ f dμ_k ≥ ∫_{B_{ε'/4}(y_k)} f dμ_k (setIntegral_le_integral, f ≥ 0) and that set integral equals μ_k(B_{ε'/4}(y_k)).toReal (setIntegral_congr_fun with f = 1 there). This holds for all k ≥ max(k₁, k₂).
+7. (Passing to the limit.) By vague convergence, ∫ f dμ_k → ∫ f dμ. Since ∫ f dμ_k ≥ m₀ eventually, ∫ f dμ ≥ m₀ > 0 (ge_of_tendsto).
+8. (Conclusion.) Suppose μ(B_{ε'}(y)) = 0. The set {f ≠ 0} is contained in tsupport f ⊆ B_{ε'}(y), so f = 0 μ-almost everywhere and ∫ f dμ = 0 (integral_eq_zero_of_ae). This contradicts step 7. Hence μ(B_{ε'}(y)) ≠ 0, and by step 3 μ(B_ε(y)) ≠ 0. Since ε > 0 was arbitrary, y ∈ spt μ. No finiteness of μ is needed. ∎
+
+## Key steps
+
+1. Pick ρ₁ with closedBall y (2ρ₁) ⊆ U; it lies in D_k for large k, so closedBall y_k (ε'/4) ⊆ D_k when |y_k − y| < ε'/4 and ε' ≤ ρ₁.
+2. The lower mass bound at y_k ∈ spt μ_k gives ∫ f dμ_k ≥ μ_k(B_{ε'/4}(y_k)) ≥ e^{−Λε'/4}ω_n(ε'/4)^n > 0 for a bump f = 1 on closedBall y (ε'/2), supported in B_{ε'}(y).
+3. Vague convergence gives ∫ f dμ > 0, which is impossible if μ(B_{ε'}(y)) = 0; monotonicity in ε finishes.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I json.load of nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/parent-child-handoff.json (subproblem, audit, resolved_dependencies)`
+- `python3 -I scan of dag.json: selected node, parent root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1 and its children, root.abstract_dimension_reduction-a1 (status, candidate_commit, lean_statement)`
+- `grep -iE 'measurab|semicont|lsc|rescal|support.*(closed|limit|semicont)|spt|vague|limsup|flat|bump|urysohn' over accepted DAG lean_name | title list`
+- `grep -c 'idtp_fons_cr_' dag.json; grep -rl 'idtp_fons_cr_' nodes; grep -l 'idtp_fons_cr_' .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `grep -rn 'theorem HasBasis.limsup_eq_iInf_iSup|def support|theorem LowerSemicontinuous.measurable|theorem lowerSemicontinuous_iSup|theorem lowerSemicontinuous_biSup' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `sed -n 1,150p local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero)`
+- `sed -n 1,140p local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean (HasBasis.mem_measureSupport, isClosed_support)`
+- `sed -n 380,600p book/chapter-07.txt; sed -n 1,80p book/chapter-A.txt`
+- `lake env lean /tmp/cr_split/check/Probe.lean; lake env lean /tmp/cr_split/check/Types.lean; lake env lean /tmp/cr_split/check/TypesPP.lean; lake env lean /tmp/cr_split/check/Assembly.lean; lake env lean /tmp/cr_split/check/Full.lean`
+- `python3 byte comparison of the frozen abstract_dimension_reduction type with 'theorem Submission.abstract_dimension_reduction' in .swarm-worktrees/388d25a471022ad57489/gmt-ch07/GMT/Ch07/Submission.lean (HEAD 9ab8e5d6)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/388d25a471022ad57489/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/tmp/cr_split/check/Types.lean`
+- `/tmp/cr_split/check/TypesPP.lean`
+- `/tmp/cr_split/check/Assembly.lean`
+- `/tmp/cr_split/check/Full.lean`
+
+Pins match: the snapshot manifest records project b4d606d (= workspace HEAD) and Mathlib 25730c7c; simongmt is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The only declaration reused is the registered dependency abstract_dimension_reduction (root.abstract_dimension_reduction-a1, accepted). Its frozen type is byte-identical to Submission.abstract_dimension_reduction in the accepted worktree (9ab8e5d6). No accepted DAG declaration has the type of any proposed child; there are related but different facts, e.g. dtc_density_usc, dimred_mono_density_usc_of_monotone, cmcdt_dil_support_eq. Hence all children get fresh names. The prefix idtp_fons_cr_ has zero occurrences in dag.json, nodes/ and every .swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean. Library facts the children use, found in the snapshot Mathlib:
+- euclideanHausdorffMeasure_def (μHE[d] = addHaarScalarFactor(volume_{ℝ^d}, μH[d])•μH[d]) and addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (Geometry/Euclidean/Volume/Measure.lean);
+- Filter.HasBasis.limsup_eq_iInf_iSup (Order/LiminfLimsup.lean:308);
+- Measure.support with HasBasis.mem_measureSupport and isClosed_support (MeasureTheory/Measure/Support.lean);
+- LowerSemicontinuous.measurable (BorelSpace/Order.lean:686);
+- lowerSemicontinuous_iSup/biSup (Topology/Semicontinuity/Basic.lean:688–692).
+There is no library lemma for lower semicontinuity of x ↦ μ(B_ρ(x)); density_measurable proves it. The cited book passages are Simon 7.3.3 proof of 3.3(2) (chapter-07.txt lines 512–583, with R_β at 524–530 and the A.3(3) claim at 539–541), Remark 3.4 (380–398) and Appendix A.1–A.4 (chapter-A.txt lines 18–45). Lean results:
+- all 7 child types elaborate (Types.lean, exit 0), and TypesPP confirms their parse;
+- the frozen parent type is kernel-checked from the child types plus the frozen dependency type taken as axioms (Assembly.lean, exit 0);
+- the parent is also kernel-checked from scratch Lean proofs of all 7 children, each using only propext, Classical.choice and Quot.sound (Full.lean, exit 0, 0 errors).
