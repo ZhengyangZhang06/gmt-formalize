@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f37c65009c226aabc5db47a75b9b4047c4560a1d891ee9bd791981c586cb321",
+  "git_delta": {
+    "base_commit": "a410a20ffb7bc5591f3ea3c1fce7dad716972708",
+    "candidate_commit": "f5e12ddd953bcf2ff1444fc9166fa67cfe4d9d6e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_tma_hyperplane_param",
+    "diff_sha256": "10a79c55ec5bff84aec53fce1cb1db247857d923fb1c57148d8027e92f6b0af8",
+    "source_sha256": "b82d9350a978507ef7a8095809e02f0057d23acfaf4c5be0d630ffe53c79ed3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_tma_hyperplane_param",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1)), v ≠ 0 → ∃ ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1), (∀ x, inner ℝ (ι x) v = 0) ∧ (μHE[m] : Measure (Euclid (m + 1))).restrict ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))) = Measure.map ι volume",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
