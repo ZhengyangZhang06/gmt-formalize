@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "^(def|structure|abbrev) (IsEmbeddedSubmanifold|tangentSpace|IsOrientation|IsConeCurrent|blowUp|dilation|currentEval)|sorry|axiom",
+        "euclideanHausdorffMeasure_smul₀|nullSingletonClass_hausdorff|exists_isSubordinate|tendsto_integral_of_dominated_convergence|exists_nat_pow_near|tsum_geometric",
+        "codim1_ovr_",
+        "git show 52115c22ec2d028a20c63361e75b9f6ee1c485bd:GMT/Ch07/Submission.lean",
+        "git show d626082a69a01ae54fab73c0d6072850ddfab6ae:GMT/Ch07/Submission.lean",
+        "git show 9c8432cb0101c6d41f824c0d8191b92a92dbdd80:GMT/Ch07/Submission.lean",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show e8842d90b78f15ebdbe728429ce98fccfaa6665c:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/offvertex-independent-audit-plwi98_1/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/offvertex-independent-audit-plwi98_1/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b7ab3fcecc/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b7ab3fcecc/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py",
+        "/tmp/offvertex-independent-audit-plwi98_1/Types.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Full.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Reuse_cone_pullback_identity.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Reuse_chart_tangent_space.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Reuse_unit_orientation_dual.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Reuse_orientation_sign.lean",
+        "/tmp/offvertex-independent-audit-plwi98_1/Reuse_submanifold_density_one.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; snapshot Contract.lean and workspace Contract.lean/Submission.lean are byte-identical. The inspected definitions and library lemmas support the stated support, orientation, scaling, partition, and dominated-convergence arguments. No codim1_ovr_ matches occurred in the searched snapshot GMT, Mathlib, or SimonGMT sources; all seven new names are unreserved in the DAG. All names are bare identifiers. The five reused declarations have identical comparator-accepted frozen types, preserve their existing dependencies, and independently recompile with only propext, Classical.choice, and Quot.sound. All 12 challenge types elaborate before child implementations are declared. The seven supplied new proofs and parent assembly independently compile; their axiom closures contain only standard axioms and the explicitly supplied prerequisite interfaces, with no sorryAx. Dependencies are correctly directed and acyclic, including existing reuse dependencies. No matrix-unit instance ambiguity occurs. Splitting is appropriate: the seven substantive obligations and five accepted reuses establish every conclusion of the exact selected parent, using its inherited local-representation and off-support prerequisites."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_pullback_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Unfolding blowUp produces the proper affine pullback test form; multilinearity supplies the reciprocal dilation factor, and the cone hypothesis gives equality of evaluations. The proof covers every degree."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Bounded parameter curves prove one inclusion. Properness and injectivity give inverse continuity; the derivative lower bound and closedness of its range prove the reverse inclusion. All chart hypotheses match the type."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. Coordinate expansion proves the squared-minor identity; Cauchy–Schwarz and the explicit finite-sum continuous linear map establish all three conclusions. Zero degree and degrees exceeding ambient dimension are handled."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse. The two frames give orthonormal bases of the same subspace. Their change-of-basis determinant is a covector-independent sign, yielding equality or negation, including degree zero."
+    },
+    {
+      "key": "submanifold_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted-type reuse with preserved accepted dependencies. Near-isometric charts and the two image-measure bounds squeeze the correctly normalized ratio to one. The proof covers degree zero and has no dependency path back to the selected parent."
+    },
+    {
+      "key": "cone_support_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Pullback transfers vanishing from W to tW while preserving the required open and compact-closure conditions. Applying zero-region invariance at the inverse dilation proves support invariance without assuming it."
+    },
+    {
+      "key": "submanifold_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof globalizes local charts and restricts charts to open subsets, explicitly preserving properness and derivative injectivity. The listed chart-tangent theorem computes both tangent spaces from the same derivative. Both conclusions match the frozen proposition."
+    },
+    {
+      "key": "orientation_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Common tangent subspaces justify the sign dichotomy. Density gives positive measure, and integrable bump-form tests exclude opposite orientations. The diagonal choice agrees locally with each orientation, proving continuity, orientation, and every claimed local integral identity."
+    },
+    {
+      "key": "cone_local_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The closure hypothesis makes compact slices away from zero compact. Finite covers bound annular measure; dilation invariance and Hausdorff scaling give a convergent dyadic series because m ≥ 1. No unstated measurability assumption is required."
+    },
+    {
+      "key": "partition_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A finite smooth partition splits the test form into admissible local pieces. Continuity, the coefficient bound, Borel measurability, and finite measure on compact intersections justify integrability and summation. The proof establishes the exact general local-to-global statement."
+    },
+    {
+      "key": "vertex_negligible",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The IMRep supplies measurable integrands and locally integrable multiplicity. Bounded radii and coefficients give one integrable dominator; integrands eventually vanish off zero, whose measure is zero for m ≥ 1. No positivity assumption on the radii is missing."
+    },
+    {
+      "key": "vertex_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff decomposition produces an inner sequence covered by vertex_negligible and outer test forms supported away from zero. The explicit compact-support dominator justifies convergence of the outer integrals; linearity and uniqueness of limits establish the full representation."
+    }
+  ],
+  "required_changes": []
+}

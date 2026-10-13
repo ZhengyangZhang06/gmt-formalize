@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.cone_local_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "depth": 5,
+  "title": "A dilation-invariant set that is locally H^m-finite away from the origin is H^m-finite on compact sets (parent step 6)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1 and M ⊆ ℝ^P. Assume: 0 ∉ M; closure M ⊆ M ∪ {0}; tx ∈ M for all t > 0 and x ∈ M; and every y ∈ M has an open B ∋ y with H^m(M ∩ B) < ∞ (H^m = μHE[m]). Then H^m(M ∩ K) < ∞ for every compact K ⊆ ℝ^P.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), 1 ≤ m → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ y ∈ M, ∃ B : Set (Euclid P), IsOpen B ∧ y ∈ B ∧ μHE[m] (M ∩ B) ≠ ∞) → ∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞",
+  "lean_name": "codim1_ovr_cone_locally_finite_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-97caba2449-a1"
+}

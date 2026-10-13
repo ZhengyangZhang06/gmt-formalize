@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.cone_support_smul-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "depth": 5,
+  "title": "The support of a cone current is invariant under positive dilations (parent step 3, B4)",
+  "statement": "Let P, n ∈ ℕ and let C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be a cone current (IsConeCurrent C: η_{0,λ#}C = C for every λ > 0). Then t·x ∈ spt C for every t > 0 and every x ∈ spt C. Here spt C = ℝ^P ∖ Z(C), where the zero region Z(C) is the union of all open W ⊆ ℝ^P with compact closure on which C vanishes, i.e. C(ω) = 0 for every test form ω with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsConeCurrent C → ∀ t : ℝ, 0 < t → ∀ x ∈ C.support, t • x ∈ C.support",
+  "lean_name": "codim1_ovr_cone_support_smul",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-27e5a07a68-a1",
+      "result_commit": "52115c22ec2d028a20c63361e75b9f6ee1c485bd",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6091552d4b-a1"
+}
