@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.continuous_approx-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "depth": 4,
+  "title": "L¹(ν) approximation of a unit-bounded integrable covector field by continuous compactly supported unit-bounded fields",
+  "statement": "Let P, n ∈ ℕ, let ν be a finite Borel measure on ℝ^P, let β : ℝ^P → Covector (Euclid P) n be ν-integrable with covectorEuclideanNorm (β x) ≤ 1 for ν-a.e. x, and let δ > 0. Then there is a continuous, compactly supported g : ℝ^P → Covector (Euclid P) n with covectorEuclideanNorm (g x) ≤ 1 for every x and ∫⁻ ofReal(covectorEuclideanNorm (g x − β x)) dν(x) < ofReal δ.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g x - β x)) ∂ν < ENNReal.ofReal δ",
+  "lean_name": "rsd_mw_tfa_continuous_approx",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.retraction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-conti-5ffdef89d7-a1"
+}

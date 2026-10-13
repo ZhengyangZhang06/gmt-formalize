@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.left_dini-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+  "depth": 4,
+  "title": "Integrated lower left Dini derivative of a monotone function",
+  "statement": "Let F : ℝ → ℝ be monotone and a, b ∈ ℝ. For t ∈ ℝ let D(t) := liminf_{h→0+} ofReal((F(t) − F(t − h))/h) ∈ [0, ∞], the liminf along the filter 𝓝[>] 0. Then the lower Lebesgue integral over (a, b) with respect to Lebesgue measure satisfies ∫⁻_{(a,b)} D(t) dt ≤ ofReal(F(b) − F(a)), where ofReal : ℝ → [0, ∞] is ENNReal.ofReal. No measurability of D is assumed.",
+  "lean_statement": "∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal ((F t - F (t - h)) / h)) (𝓝[>] 0) ≤ ENNReal.ofReal (F b - F a)",
+  "lean_name": "cmcs_smi_lintegral_left_dini_le",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-d6a2e667fc-a1"
+}
