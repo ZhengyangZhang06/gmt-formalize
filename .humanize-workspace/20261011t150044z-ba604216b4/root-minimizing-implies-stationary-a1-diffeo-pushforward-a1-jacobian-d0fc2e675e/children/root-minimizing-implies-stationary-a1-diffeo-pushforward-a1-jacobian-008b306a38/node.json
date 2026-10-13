@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1.gram_det_identity-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1",
+  "depth": 4,
+  "title": "Gram determinant on a subspace equals the determinant of the compressed operator p A* A p + (I − p)",
+  "statement": "Let P ∈ ℕ and E := ℝ^P (Euclid P) with its standard inner product ⟨·,·⟩. Let V be a linear subspace of E, p := V.starProjection the orthogonal projection of E onto V, I the identity of E, ι a finite type with decidable equality, e = (e_i)_{i∈ι} an orthonormal basis of V, and A : E → E a continuous linear map with adjoint A*. Then det(⟨A e_i, A e_j⟩)_{i,j∈ι} = det(p ∘ (A* ∘ A) ∘ p + (I − p)), where the right-hand side is the determinant of this endomorphism of E.",
+  "lean_statement": "∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) {ι : Type} [Fintype ι] [DecidableEq ι] (e : OrthonormalBasis ι ℝ V) (A : Euclid P →L[ℝ] Euclid P), Matrix.det (Matrix.of fun i j : ι => inner ℝ (A (e i)) (A (e j))) = (V.starProjection ∘L (A.adjoint ∘L A) ∘L V.starProjection + (ContinuousLinearMap.id ℝ (Euclid P) - V.starProjection)).det",
+  "lean_name": "dpf_jm_gram_det_eq_det_compression",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-jacobian-008b306a38-a1"
+}

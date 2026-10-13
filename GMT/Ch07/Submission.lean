@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gram determinant = determinant of the compression** (Simon Ch. 3, (2.3)).  If `e` is an
+orthonormal basis of a subspace `V ⊆ ℝᴾ`, `p = p_V` and `A : ℝᴾ → ℝᴾ` is linear, then
+`det(⟨A eᵢ, A eⱼ⟩) = det(p A* A p + (I − p))`.  `T := p A* A p + (I − p)` maps `V` into `V` and
+induces the identity on `ℝᴾ/V` (`T x − x = p A* A p x − p x ∈ V`), so `det T = det(T|_V)`
+(`LinearMap.det_eq_det_mul_det`); the matrix of `T|_V` in `e` has entries
+`⟨eᵢ, p A* A eⱼ⟩ = ⟨p eᵢ, A* A eⱼ⟩ = ⟨A eᵢ, A eⱼ⟩`, i.e. it is the Gram matrix. -/
+theorem Submission.dpf_jm_gram_det_eq_det_compression : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) {ι : Type} [Fintype ι] [DecidableEq ι] (e : OrthonormalBasis ι ℝ V) (A : Euclid P →L[ℝ] Euclid P), Matrix.det (Matrix.of fun i j : ι => inner ℝ (A (e i)) (A (e j))) = (V.starProjection ∘L (A.adjoint ∘L A) ∘L V.starProjection + (ContinuousLinearMap.id ℝ (Euclid P) - V.starProjection)).det := by
+  intro P V ι _ _ e A
+  set p := V.starProjection with hp_def
+  set T : Euclid P →L[ℝ] Euclid P :=
+    p ∘L (A.adjoint ∘L A) ∘L p + (ContinuousLinearMap.id ℝ (Euclid P) - p) with hT_def
+  -- `V` is `T`-invariant: `T v = p (A* A v)` for `v ∈ V`
+  have hT : V ≤ V.comap (T : Euclid P →ₗ[ℝ] Euclid P) := by
+    intro v hv
+    have hpv : p v = v := Submodule.starProjection_eq_self_iff.mpr hv
+    simp only [Submodule.mem_comap, ContinuousLinearMap.coe_coe, hT_def,
+      add_apply, ContinuousLinearMap.comp_apply,
+      sub_apply, ContinuousLinearMap.id_apply, hpv, sub_self, add_zero]
+    exact V.starProjection_apply_mem _
+  -- `T` induces the identity on `ℝᴾ/V`: `T x - x = p (A* A p x) - p x ∈ V`
+  have hQ : V.mapQ V (T : Euclid P →ₗ[ℝ] Euclid P) hT = LinearMap.id := by
+    apply Submodule.linearMap_qext
+    ext x
+    simp only [LinearMap.coe_comp, Function.comp_apply, Submodule.mkQ_apply,
+      Submodule.mapQ_apply, LinearMap.id_comp]
+    rw [Submodule.Quotient.eq]
+    have : (T : Euclid P →ₗ[ℝ] Euclid P) x - x = p ((A.adjoint ∘L A) (p x)) - p x := by
+      simp only [ContinuousLinearMap.coe_coe, hT_def, add_apply,
+        ContinuousLinearMap.comp_apply, sub_apply,
+        ContinuousLinearMap.id_apply]
+      abel
+    rw [this]
+    exact V.sub_mem (V.starProjection_apply_mem _) (V.starProjection_apply_mem _)
+  -- block-triangular determinant: `det T = det (T|_V) * det id`
+  have hsplit := LinearMap.det_eq_det_mul_det V (T : Euclid P →ₗ[ℝ] Euclid P) hT
+  rw [hQ, LinearMap.det_id, mul_one] at hsplit
+  rw [ContinuousLinearMap.det, hsplit, ← LinearMap.det_toMatrix e.toBasis]
+  -- the matrix of `T|_V` in `e` is the Gram matrix
+  congr 1
+  ext i j
+  rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+    OrthonormalBasis.coe_toBasis_repr_apply, OrthonormalBasis.repr_apply_apply, Matrix.of_apply]
+  have hpj : p (e j) = e j := Submodule.starProjection_eq_self_iff.mpr (e j).2
+  have hpi : p (e i) = e i := Submodule.starProjection_eq_self_iff.mpr (e i).2
+  rw [Submodule.coe_inner, LinearMap.coe_restrict_apply]
+  simp only [ContinuousLinearMap.coe_coe, hT_def, add_apply,
+    ContinuousLinearMap.comp_apply, sub_apply,
+    ContinuousLinearMap.id_apply, hpj, sub_self, add_zero]
+  rw [← Submodule.inner_starProjection_left_eq_right, hpi,
+    ContinuousLinearMap.adjoint_inner_right]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
