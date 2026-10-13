@@ -560,6 +560,148 @@ theorem Submission.codim1_rdo_dg_tma_tangential_halfspace : ∀ (P : ℕ) (v u :
     exact hasDerivAt_const _ _
   have := key.2.unique h0
   simpa using this
+/-- **Orthogonal Fubini: `(x, s) ↦ ι x + s v` preserves Lebesgue measure** (Simon Ch. 3, 4.3 (†),
+step 2 of the proof).  Let `ι : ℝᵐ → ℝᵐ⁺¹` be a linear isometry and `v` a unit vector orthogonal
+to its range.  The vectors `b_j = ι(e_j)` (`j < m`) and `b_m = v` are orthonormal, so they form an
+orthonormal basis `B` of `ℝᵐ⁺¹`, and `B.repr⁻¹ : c ↦ Σⱼ cⱼ bⱼ` preserves Lebesgue measure.  The
+coordinate map `S(x, s) = (x₀, …, x_{m-1}, s)` sends `Lᵐ ⊗ L¹` to `Lᵐ⁺¹` (`ofLp × id`, swap, the
+inverse of `piFinSuccAbove` at the last index, `toLp`).  Finally `B.repr⁻¹ (S(x, s)) =
+Σ_{j<m} xⱼ ι(eⱼ) + s v = ι x + s v`, so the map is the composition `B.repr⁻¹ ∘ S`. -/
+theorem Submission.codim1_rdo_dg_tma_orthogonal_fubini : ∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → MeasurePreserving (fun p : Euclid m × ℝ => ι p.1 + p.2 • v) volume volume := by
+  intro m ι v hv hιv
+  -- Step 1: the adapted orthonormal basis `(ι e₀, …, ι e_{m-1}, v)`
+  let b : Fin (m + 1) → Euclid (m + 1) :=
+    Fin.lastCases v (fun i => ι (EuclideanSpace.single i (1 : ℝ)))
+  have hb_last : b (Fin.last m) = v := by simp [b]
+  have hb_cs : ∀ i : Fin m, b (Fin.castSucc i) = ι (EuclideanSpace.single i (1 : ℝ)) := by
+    intro i
+    simp [b]
+  have hb : Orthonormal ℝ b := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    induction i using Fin.lastCases with
+    | last =>
+      induction j using Fin.lastCases with
+      | last => simp [hb_last, hv]
+      | cast j =>
+        rw [hb_last, hb_cs, real_inner_comm, hιv]
+        simp only [Fin.ext_iff, Fin.val_last, Fin.val_castSucc]
+        have := j.isLt
+        simp
+        omega
+    | cast i =>
+      induction j using Fin.lastCases with
+      | last =>
+        rw [hb_last, hb_cs, hιv]
+        simp only [Fin.ext_iff, Fin.val_last, Fin.val_castSucc]
+        have := i.isLt
+        simp
+        omega
+      | cast j =>
+        rw [hb_cs, hb_cs, LinearIsometry.inner_map_map, EuclideanSpace.inner_single_left]
+        by_cases hij : i = j
+        · subst hij
+          simp
+        · simp [hij, Fin.castSucc_inj]
+  have hcard : Fintype.card (Fin (m + 1)) = Module.finrank ℝ (Euclid (m + 1)) := by simp
+  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range b) := by
+    rw [← coe_basisOfOrthonormalOfCardEqFinrank hb hcard,
+      (basisOfOrthonormalOfCardEqFinrank hb hcard).span_eq]
+  let B : OrthonormalBasis (Fin (m + 1)) ℝ (Euclid (m + 1)) := OrthonormalBasis.mk hb hsp
+  have hB : ∀ i, B i = b i := by
+    intro i
+    simp [B]
+  -- Step 2: the coordinate map `S(x, s) = (x₀, …, x_{m-1}, s)` preserves Lebesgue measure
+  let S : Euclid m × ℝ → EuclideanSpace ℝ (Fin (m + 1)) :=
+    fun p => WithLp.toLp 2 (Fin.snoc (WithLp.ofLp p.1) p.2)
+  have hS : MeasurePreserving S volume volume := by
+    have h1 : MeasurePreserving (fun p : Euclid m × ℝ => (WithLp.ofLp p.1, p.2))
+        ((volume : Measure (Euclid m)).prod (volume : Measure ℝ))
+        ((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ)) :=
+      (PiLp.volume_preserving_ofLp (Fin m)).prod (MeasurePreserving.id volume)
+    have h2 : MeasurePreserving (Prod.swap : (Fin m → ℝ) × ℝ → ℝ × (Fin m → ℝ))
+        ((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ))
+        ((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))) :=
+      Measure.measurePreserving_swap
+    have h3 := (volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) (Fin.last m)).symm
+    have h4 := PiLp.volume_preserving_toLp (Fin (m + 1))
+    have := h4.comp (h3.comp (h2.comp h1))
+    convert this using 1
+    funext p
+    simp [S, MeasurableEquiv.piFinSuccAbove]
+    rfl
+  -- Step 3: `B.repr⁻¹` preserves Lebesgue measure and `B.repr⁻¹ ∘ S = (x, s) ↦ ι x + s v`
+  have hΦ : MeasurePreserving (B.repr.symm : EuclideanSpace ℝ (Fin (m + 1)) → Euclid (m + 1))
+      volume volume := B.measurePreserving_repr_symm
+  have := hΦ.comp hS
+  convert this using 1
+  funext p
+  simp only [comp_apply, S]
+  rw [← OrthonormalBasis.sum_repr_symm, Fin.sum_univ_castSucc]
+  simp only [hB, hb_last, hb_cs, Fin.snoc_castSucc, Fin.snoc_last]
+  congr 1
+  conv_lhs => rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr p.1]
+  simp [map_sum, map_smul]
+
+/-- **Normal derivative over a half-space** (Simon Ch. 3, proof of Theorem 4.3, p. 82: the
+integration `∫_{ℝⁿ} ∫_H ∂_{n+1} φ(x′, x^{n+1}) dx^{n+1} dx′` in the normal variable).  If
+`ι : ℝ^m → ℝ^{m+1}` is a linear isometry, `v` is a unit vector normal to its range and `h` is `C¹`
+with compact support, then `∫_{⟨w, v⟩ > 0} Dh(w)(v) dw = -∫_{ℝ^m} h(ι x) dx`.  The coordinates
+`Θ(x, s) = ι x + s v` preserve Lebesgue measure (`codim1_rdo_dg_tma_orthogonal_fubini`) and satisfy
+`⟨Θ(x, s), v⟩ = s`, so Fubini turns the left side into `∫ dx ∫_{s > 0} ∂ₛ h(ι x + s v) ds`; the
+fundamental theorem of calculus on `(0, ∞)` for the compactly supported `C¹` function
+`s ↦ h(ι x + s v)` gives `-h(ι x)`. -/
+theorem Submission.codim1_rdo_dg_tma_normal_halfspace : ∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)) (h : Euclid (m + 1) → ℝ), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, fderiv ℝ h w v = -∫ x, h (ι x) := by
+  intro m ι v h hv hιv hh hhc
+  -- `Θ(x, s) = ι x + s v` is measure preserving, and `⟨Θ(x, s), v⟩ = s`
+  have hMP := Submission.codim1_rdo_dg_tma_orthogonal_fubini m ι v hv hιv
+  set Θ : Euclid m × ℝ → Euclid (m + 1) := fun p => ι p.1 + p.2 • v with hΘdef
+  set H : Set (Euclid (m + 1)) := {w | 0 < inner ℝ w v} with hHdef
+  have hHmeas : MeasurableSet H :=
+    (isOpen_lt continuous_const (continuous_id.inner continuous_const)).measurableSet
+  have hΘv : ∀ p, inner ℝ (Θ p) v = p.2 := by
+    intro p
+    simp [hΘdef, inner_add_left, real_inner_smul_left, hιv, hv]
+  -- the integrand `G = 1_H · Dh(·)(v)` is integrable
+  set G : Euclid (m + 1) → ℝ := H.indicator (fun w => fderiv ℝ h w v) with hGdef
+  have hdc : Continuous (fun w => fderiv ℝ h w v) :=
+    (hh.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hGint : Integrable G :=
+    (hdc.integrable_of_hasCompactSupport (hhc.fderiv_apply ℝ v)).indicator hHmeas
+  -- change of variables `w = Θ(x, s)` and Fubini
+  rw [← integral_indicator hHmeas]
+  change ∫ w, G w = _
+  have hGae : AEStronglyMeasurable G (Measure.map Θ volume) := by
+    rw [hMP.map_eq]
+    exact hGint.aestronglyMeasurable
+  rw [← hMP.map_eq, integral_map hMP.measurable.aemeasurable hGae]
+  have hGΘint : Integrable (fun p => G (Θ p)) ((volume : Measure (Euclid m)).prod volume) :=
+    (integrable_map_measure hGae hMP.measurable.aemeasurable).1 (by rwa [hMP.map_eq])
+  rw [Measure.volume_eq_prod, integral_prod _ hGΘint, ← integral_neg]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  show ∫ s, G (Θ (x, s)) = -h (ι x)
+  -- for fixed `x`, the fundamental theorem of calculus for `k(s) = h(ι x + s v)` on `(0, ∞)`
+  set k : ℝ → ℝ := fun s => h (ι x + s • v) with hkdef
+  have hk : ContDiff ℝ 1 k := hh.comp (contDiff_const.add (contDiff_id.smul contDiff_const))
+  have hiso : Isometry (fun s : ℝ => ι x + s • v) := by
+    refine Isometry.of_dist_eq fun s t => ?_
+    rw [dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hv, mul_one]
+  have hkc : HasCompactSupport k := hhc.comp_isClosedEmbedding hiso.isClosedEmbedding
+  have hderiv : ∀ s, deriv k s = fderiv ℝ h (ι x + s • v) v := by
+    intro s
+    have h1 : HasDerivAt (fun s : ℝ => ι x + s • v) v s := by
+      simpa using ((hasDerivAt_id s).smul_const v).const_add (ι x)
+    exact (((hh.differentiable one_ne_zero) (ι x + s • v)).hasFDerivAt.comp_hasDerivAt s h1).deriv
+  have hFTC : ∫ s in Ioi 0, deriv k s = -h (ι x) := by
+    rw [hkc.integral_Ioi_deriv_eq hk 0]
+    simp [hkdef]
+  -- compare the integrands: `Θ(x, s) ∈ H` exactly when `s > 0`
+  rw [← hFTC, ← integral_indicator measurableSet_Ioi]
+  refine integral_congr_ae (Eventually.of_forall fun s => ?_)
+  simp only [hGdef, hHdef, indicator_apply, mem_ofPred_eq, hΘv, mem_Ioi]
+  split_ifs
+  · rw [hderiv]
+  · rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
