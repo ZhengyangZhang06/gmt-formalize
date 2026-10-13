@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "848d72389361dfd6d57f05ffc43c7a4ec80dfb675fc02cf1b25b0359de690d03",
+  "git_delta": {
+    "base_commit": "7669b9158ce9f226c1f8dbd35a350d8015aba57f",
+    "candidate_commit": "e52f9ef0aa5396776482b947274db0763e9772df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrldvc_exists_disjoint_closedBall_cover",
+    "diff_sha256": "2edd15666550953b8ac5769c897d665624be941e44366c65db16f6807be6bfe1",
+    "source_sha256": "e77f607025fbdbcf3d3d0bfb1a829511df7282b9fd8d9cbe39d39b47b7b30a44",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrldvc_exists_disjoint_closedBall_cover",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → ℝ → Prop) (E W : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → IsOpen W → E ⊆ W → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q x ρ) → ∃ (t : Set (Euclid P)) (r : Euclid P → ℝ), t.Countable ∧ t ⊆ E ∧ (∀ x ∈ t, 0 < r x ∧ closedBall x (r x) ⊆ W ∧ Q x (r x)) ∧ t.PairwiseDisjoint (fun x => closedBall x (r x)) ∧ μ (E \\ ⋃ x ∈ t, closedBall x (r x)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
