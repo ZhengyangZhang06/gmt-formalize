@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1.blowup_integral_comparison-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1",
+  "depth": 4,
+  "title": "Fixed-scale comparison of the blow-up integrals of A ⊆ B (Simon Ch. 3, proof of 1.6 \"⇒\")",
+  "statement": "Let P, n ∈ ℕ, let A ⊆ B ⊆ ℝ^P be Borel sets, x ∈ ℝ^P, r > 0 and R, C ∈ ℝ. Let f : ℝ^P → ℝ be continuous with |f(y)| ≤ C for every y and f(y) = 0 for every y ∉ closedBall(0, R). Write η = blowUpMap x r, so η(z) = r⁻¹·(z − x) (SimonGMT Chapter03), and μ = μHE[n]. If μ(η(B) ∩ closedBall(0, R)) < ∞, then |∫_{η(B)} f dμ − ∫_{η(A)} f dμ| ≤ C · μ(η(B ∖ A) ∩ closedBall(0, R)). The measure on the right is finite and is converted to a real number by ENNReal.toReal.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \\ A) ∩ closedBall 0 R)).toReal",
+  "lean_name": "regcomp_atl_pc_blowUp_setIntegral_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-6b9451c8f1-a1"
+}
