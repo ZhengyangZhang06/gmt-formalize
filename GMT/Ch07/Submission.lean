@@ -1804,6 +1804,55 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Cut-off of the pulled-back form** (Simon Ch. 6, 2.23 and Remark 2.24(2)).  Let `O ⊆ ℝᴾ` be
+open, `K ⊆ O` compact, `f : ℝᴾ → ℝ^Q` of class `C¹` on `O` and `ω` a continuous `n`-form on `ℝ^Q`.
+Some continuous, compactly supported `h : ℝᴾ → Λⁿ(ℝᴾ)` equals `ω(f(x)) ∘ Df(x)` on `K`.
+
+Proof sketch:
+* `f` and `Df` are continuous on `O`, and `(β, A) ↦ β ∘ A` is continuous (it has a strict
+  derivative everywhere), so `γ(x) = ω(f(x)) ∘ Df(x)` is continuous on `O`.
+* Take `ρ > 0` with `cthickening ρ K ⊆ O`, and a Urysohn cut-off `χ` with
+  `support χ = thickening ρ K` and `χ = 1` on `cthickening (ρ/2) K ⊇ K`.
+* `h = χ • γ` has `tsupport h ⊆ tsupport χ ⊆ cthickening ρ K`, a compact subset of `O`: so `h` has
+  compact support, is continuous (being continuous on the open `O ⊇ tsupport h`), and `h = γ`
+  on `K`. -/
+theorem Submission.dtc_bc_lc_pf_ext_pullback_cutoff : ∀ (P Q n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid Q) (ω : DifferentialForm (Euclid Q) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → Continuous ω → ∃ h : Euclid P → Covector (Euclid P) n, Continuous h ∧ HasCompactSupport h ∧ ∀ x ∈ K, h x = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) := by
+  intro P Q n O K f ω hO hf hK hKO hω
+  -- `f` and `Df` are continuous on `O`
+  have hfc : ContinuousOn f O := hf.continuousOn
+  have hDf : ContinuousOn (fderiv ℝ f) O := hf.continuousOn_fderiv_of_isOpen hO le_rfl
+  -- `(β, A) ↦ β ∘ A` is continuous, having a strict derivative everywhere
+  have hΦ : Continuous fun βA : Covector (Euclid Q) n × (Euclid P →L[ℝ] Euclid Q) =>
+      βA.1.compContinuousLinearMap βA.2 :=
+    continuous_iff_continuousAt.2 fun βA =>
+      (ContinuousAlternatingMap.hasStrictFDerivAt_compContinuousLinearMap βA).continuousAt
+  -- `γ(x) = ω(f(x)) ∘ Df(x)` is continuous on `O`
+  have hγ : ContinuousOn (fun x => (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)) O :=
+    hΦ.comp_continuousOn ((hω.comp_continuousOn hfc).prodMk hDf)
+  -- a margin `cthickening ρ K ⊆ O`, a compact set
+  obtain ⟨ρ, hρ, hρO⟩ := hK.exists_cthickening_subset_open hO hKO
+  have hρK : IsCompact (cthickening ρ K) := hK.cthickening
+  -- a cut-off `χ` with `support χ = thickening ρ K` and `χ = 1` on `cthickening (ρ/2) K`
+  obtain ⟨χ, hχ, -, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 0)
+    (isOpen_thickening (δ := ρ) (E := K)) (isClosed_cthickening (δ := ρ / 2) (E := K))
+    (cthickening_subset_thickening' hρ (half_lt_self hρ) K)
+  have hχK : ∀ x ∈ K, χ x = 1 := fun x hx => (hχ1 x).1 (self_subset_cthickening K hx)
+  have hχt : tsupport χ ⊆ cthickening ρ K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening ρ K
+  -- `h = χ • γ`, whose support lies in `tsupport χ`
+  have hts := tsupport_smul_subset_left χ
+    fun x => (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  refine ⟨fun x => χ x • (ω (f x)).compContinuousLinearMap (fderiv ℝ f x), ?_, ?_, ?_⟩
+  · -- continuous on the open `O ⊇ tsupport h`, hence continuous
+    exact (hχ.continuous.continuousOn.smul hγ).continuous_of_tsupport_subset hO
+      (hts.trans (hχt.trans hρO))
+  · -- `tsupport h ⊆ tsupport χ ⊆ cthickening ρ K`, a compact set
+    exact hρK.of_isClosed_subset (isClosed_tsupport _) (hts.trans hχt)
+  · -- `χ = 1` on `K`
+    intro x hx
+    simp only [hχK x hx, one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
