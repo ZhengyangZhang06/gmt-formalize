@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.sector_open-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "depth": 5,
+  "title": "An open polar sector of angle at most π in the plane Q is relatively open in Q",
+  "statement": "Let P ∈ ℕ, Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, and δ, t, φ ∈ ℝ with δ ≤ π, t > 0 and 0 < φ < δ. Then there is r > 0 such that every y ∈ Q with |y − t(cos φ·a + sin φ·e)| < r can be written y = t'(cos φ'·a + sin φ'·e) with t' > 0 and 0 < φ' < δ.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ t φ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → δ ≤ Real.pi → 0 < t → 0 < φ → φ < δ → ∃ r : ℝ, 0 < r ∧ ∀ y : Euclid P, y ∈ Q → dist y (t • (Real.cos φ • a + Real.sin φ • e)) < r → ∃ t' φ' : ℝ, 0 < t' ∧ 0 < φ' ∧ φ' < δ ∧ y = t' • (Real.cos φ' • a + Real.sin φ' • e)",
+  "lean_name": "idtp_cse_sp_sector_rel_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e-a1"
+}

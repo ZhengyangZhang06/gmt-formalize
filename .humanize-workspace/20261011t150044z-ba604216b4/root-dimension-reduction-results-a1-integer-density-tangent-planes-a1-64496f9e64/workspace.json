@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.polar_null-a1",
+      "key": "polar_null",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scans of dag.json: selected node; parent idtp_cone_sector_endpoint_density and its 11 children; statuses, types and candidate commits of dimred_im_mass_measure, imrep_represents_support_eq_inter_measure_support, idtp_imrep_measure_density_ae (decomposing), dtc_approxTangent_of_null_diff, dpf_itt_approxTangentPlane_eq, imrep_carrier_sdiff_support_null, rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, dimred_cs_mi_*, regcomp_atl_upper_density_zero, idtp_ccd_planar_support_mass",
+              "regex scans of accepted DAG statements for polar|isometr|approxTangent|null_diff|plane, 'polarCoord'/'Real.cos', 'HasMassDensity' with 'R.mult'/'R.carrier', and '∉ R.carrier'",
+              "git show <candidate_commit>:GMT/Ch07/Submission.lean for the 6 reused declarations (type byte-identity, sorry/axiom count); git merge-base --is-ancestor 591230fd 71a35e92",
+              "precedent records: nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json and nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "name checks: dag.json lean_names; grep -rl idtp_cse_sp_ nodes/ local-references/; git log --all -S idtp_cse_sp_",
+              "rg -n 'theorem lintegral_comp_polarCoord_symm|lemma isOpen_image_of_subset_source|theorem Isometry.euclideanHausdorffMeasure_preimage|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem volume_preserving_finTwoArrow|theorem PiLp.volume_preserving_toLp|theorem preimage_null|theorem exists_measurable_superset_of_null|theorem lintegral_eq_zero_iff |theorem finrank_span_eq_card|theorem eq_of_le_of_finrank_eq|theorem two_le_pi|theorem pi_gt_three' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'idtp_cse_sp_|polarCoord|HasApproximateTangentSpaceAt|approxTangentPlane|HasMassDensity' local-references/123e8435b4a2469b/project",
+              "grep -n 'def HasApproximateTangentSpaceAt|theorem hasApproximateTangentSpaceAt_submodule|theorem HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "lake env lean /tmp/sp_check/v2/All_axiom.lean; lake env lean /tmp/sp_check/v2/All_sorry.lean; earlier probes /tmp/sp_check/Stmts.lean, Region.lean, Polar.lean, Sector.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Pi/Bounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "/tmp/sp_check/v2/All_axiom.lean",
+              "/tmp/sp_check/v2/All_sorry.lean",
+              "/tmp/sp_check/v2/subproblems.json"
+            ],
+            "conclusion": "Pins match: project b4d606db and mathlib 25730c7c. Every Mathlib and SimonGMT name cited by the new children exists at these pins. Real.pi_gt_three exists but GMT.Ch07.Submission does not import it, so Real.two_le_pi is used. No accepted DAG lemma covers polar-coordinate null sets, relative openness of the sector, or the flat-region statement, so those become new children. The external facts the supplied proof needs are supplied by six accepted declarations, reused at byte-identical types: rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, imrep_carrier_sdiff_support_null and dtc_approxTangent_of_null_diff. These replace the pending idtp_imrep_measure_density_ae (status decomposing, an ancestor dependency not exposed to this node), and dimred_im_mass_measure and dpf_itt_approxTangentPlane_eq are no longer needed. The four new names are unreserved. The v2 Lean check proves the four new children, and the parent at its exact frozen type, from these six declarations with standard axioms only."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.polar_null-a1",
+        "subproblem": {
+          "key": "polar_null",
+          "title": "The polar parametrization of an orthonormal pair pulls μHE[2]-null sets back to Lebesgue-null sets",
+          "statement": "Let P ∈ ℕ, a, e ∈ ℝ^P with |a| = |e| = 1 and ⟨a, e⟩ = 0, and let N ⊆ ℝ^P be an arbitrary set with μHE[2](N) = 0. Then for Lebesgue-almost every p = (t, α) ∈ ℝ × ℝ: if t > 0 and −π < α < π, then t(cos α·a + sin α·e) ∉ N.",
+          "lean_statement": "∀ (P : ℕ) (a e : Euclid P) (N : Set (Euclid P)), ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → μHE[2] N = 0 → ∀ᵐ p : ℝ × ℝ, 0 < p.1 → -Real.pi < p.2 → p.2 < Real.pi → p.1 • (Real.cos p.2 • a + Real.sin p.2 • e) ∉ N",
+          "lean_name": "idtp_cse_sp_polar_null_preimage",
+          "depends_on": [],
+          "natural_proof": "1. (Isometric parametrization.) Define the ℝ-linear map ι : Euclid 2 →ₗ[ℝ] Euclid P, ι v := v 0 • a + v 1 • e. For v ∈ Euclid 2: ‖ι v‖² = (v 0)²‖a‖² + 2 (v 0)(v 1)⟨a, e⟩ + (v 1)²‖e‖² = (v 0)² + (v 1)² (`norm_add_sq_real`, `norm_smul`, `real_inner_smul_left`, `real_inner_smul_right`, ⟨a, e⟩ = 0, ‖a‖ = ‖e‖ = 1), and ‖v‖² = (v 0)² + (v 1)² (`EuclideanSpace.norm_eq`, `Real.sq_sqrt`, `Fin.sum_univ_two`). Both norms are ≥ 0, so ‖ι v‖ = ‖v‖ (`pow_left_inj₀`), and an additive norm-preserving map is an isometry (`AddMonoidHomClass.isometry_of_norm`).\n2. (ι⁻¹ N is Lebesgue-null.) `Isometry.euclideanHausdorffMeasure_preimage` gives μHE[2] (ι ⁻¹' N) = μHE[2] (N ∩ range ι) ≤ μHE[2] N = 0 (`measure_mono_null`, `Set.inter_subset_left`), and μHE[2] = volume on Euclid 2 (`EuclideanSpace.euclideanHausdorffMeasure_eq_volume 2`). So volume (ι ⁻¹' N) = 0.\n3. (Pass to ℝ × ℝ.) Let κ : ℝ × ℝ → Euclid 2, κ p := WithLp.toLp 2 (MeasurableEquiv.finTwoArrow.symm p); then κ p 0 = p.1 and κ p 1 = p.2 (`MeasurableEquiv.finTwoArrow_symm_apply`). κ is measure preserving volume → volume, as the composition of `(volume_preserving_finTwoArrow ℝ).symm` and `PiLp.volume_preserving_toLp (Fin 2)`. Hence (`MeasurePreserving.quasiMeasurePreserving`, `QuasiMeasurePreserving.preimage_null`) N₃ := κ ⁻¹' (ι ⁻¹' N) has volume 0. Choose a measurable N₃' ⊇ N₃ with volume N₃' = 0 (`exists_measurable_superset_of_null`).\n4. (Polar coordinates.) `lintegral_comp_polarCoord_symm` applied to f := N₃'.indicator 1 gives ∫⁻ p in polarCoord.target, ENNReal.ofReal p.1 • f (polarCoord.symm p) = ∫⁻ p, f p = volume N₃' = 0 (`lintegral_indicator_one`, N₃' measurable). The integrand is measurable (`ENNReal.measurable_ofReal.comp measurable_fst`, times the measurable indicator of N₃' composed with the continuous map polarCoord.symm, `continuous_polarCoord_symm`). By `lintegral_eq_zero_iff` it vanishes (volume.restrict polarCoord.target)-a.e.; polarCoord.target = Ioi 0 ×ˢ Ioo (−π) π is open, hence measurable, so `ae_restrict_iff'` gives: for volume-a.e. p, p ∈ polarCoord.target → ENNReal.ofReal p.1 • f (polarCoord.symm p) = 0.\n5. (Conclusion.) Fix p as in Step 4 with 0 < p.1, −π < p.2 < π, so p ∈ polarCoord.target, and suppose p.1 • (cos p.2 • a + sin p.2 • e) ∈ N. Since polarCoord.symm p = (p.1 * cos p.2, p.1 * sin p.2) (`polarCoord_symm_apply`), ι (κ (polarCoord.symm p)) = (p.1 * cos p.2) • a + (p.1 * sin p.2) • e = p.1 • (cos p.2 • a + sin p.2 • e) (`smul_add`, `smul_smul`), so polarCoord.symm p ∈ N₃ ⊆ N₃'. Then the integrand at p is ENNReal.ofReal p.1 • 1 = ENNReal.ofReal p.1, which vanishes only if p.1 ≤ 0 (`ENNReal.ofReal_eq_zero`), contradicting 0 < p.1. Hence p.1 • (cos p.2 • a + sin p.2 • e) ∉ N. ∎",
+          "proof_key_steps": [
+            "ι(v) = v₀a + v₁e is a linear isometry Euclid 2 → ℝ^P, so volume(ι⁻¹N) = μHE[2](N ∩ range ι) = 0.",
+            "κ : ℝ × ℝ → Euclid 2 (toLp ∘ finTwoArrow.symm) is measure preserving, so N₃ := κ⁻¹ι⁻¹N is Lebesgue-null; take a measurable null superset N₃'.",
+            "lintegral_comp_polarCoord_symm with the indicator of N₃': ∫_{target} ofReal(p₁)·1_{N₃'}(polarCoord.symm p) dp = 0, so the integrand vanishes a.e. on polarCoord.target.",
+            "On the target p₁ > 0, so polarCoord.symm p ∉ N₃', i.e. p₁(cos p₂·a + sin p₂·e) = ι(κ(polarCoord.symm p)) ∉ N."
+          ]
+        },
+        "audit": {
+          "key": "polar_null",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The isometry and measure-preserving coordinate conversion use the intended Euclidean and product measures. A measurable null superset handles arbitrary N, and the positive radial Jacobian yields precisely the stated conditional Lebesgue-a.e. conclusion."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.sector_open-a1",
+      "key": "sector_open",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scans of dag.json: selected node; parent idtp_cone_sector_endpoint_density and its 11 children; statuses, types and candidate commits of dimred_im_mass_measure, imrep_represents_support_eq_inter_measure_support, idtp_imrep_measure_density_ae (decomposing), dtc_approxTangent_of_null_diff, dpf_itt_approxTangentPlane_eq, imrep_carrier_sdiff_support_null, rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, dimred_cs_mi_*, regcomp_atl_upper_density_zero, idtp_ccd_planar_support_mass",
+              "regex scans of accepted DAG statements for polar|isometr|approxTangent|null_diff|plane, 'polarCoord'/'Real.cos', 'HasMassDensity' with 'R.mult'/'R.carrier', and '∉ R.carrier'",
+              "git show <candidate_commit>:GMT/Ch07/Submission.lean for the 6 reused declarations (type byte-identity, sorry/axiom count); git merge-base --is-ancestor 591230fd 71a35e92",
+              "precedent records: nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json and nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "name checks: dag.json lean_names; grep -rl idtp_cse_sp_ nodes/ local-references/; git log --all -S idtp_cse_sp_",
+              "rg -n 'theorem lintegral_comp_polarCoord_symm|lemma isOpen_image_of_subset_source|theorem Isometry.euclideanHausdorffMeasure_preimage|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem volume_preserving_finTwoArrow|theorem PiLp.volume_preserving_toLp|theorem preimage_null|theorem exists_measurable_superset_of_null|theorem lintegral_eq_zero_iff |theorem finrank_span_eq_card|theorem eq_of_le_of_finrank_eq|theorem two_le_pi|theorem pi_gt_three' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'idtp_cse_sp_|polarCoord|HasApproximateTangentSpaceAt|approxTangentPlane|HasMassDensity' local-references/123e8435b4a2469b/project",
+              "grep -n 'def HasApproximateTangentSpaceAt|theorem hasApproximateTangentSpaceAt_submodule|theorem HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "lake env lean /tmp/sp_check/v2/All_axiom.lean; lake env lean /tmp/sp_check/v2/All_sorry.lean; earlier probes /tmp/sp_check/Stmts.lean, Region.lean, Polar.lean, Sector.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Pi/Bounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "/tmp/sp_check/v2/All_axiom.lean",
+              "/tmp/sp_check/v2/All_sorry.lean",
+              "/tmp/sp_check/v2/subproblems.json"
+            ],
+            "conclusion": "Pins match: project b4d606db and mathlib 25730c7c. Every Mathlib and SimonGMT name cited by the new children exists at these pins. Real.pi_gt_three exists but GMT.Ch07.Submission does not import it, so Real.two_le_pi is used. No accepted DAG lemma covers polar-coordinate null sets, relative openness of the sector, or the flat-region statement, so those become new children. The external facts the supplied proof needs are supplied by six accepted declarations, reused at byte-identical types: rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, imrep_carrier_sdiff_support_null and dtc_approxTangent_of_null_diff. These replace the pending idtp_imrep_measure_density_ae (status decomposing, an ancestor dependency not exposed to this node), and dimred_im_mass_measure and dpf_itt_approxTangentPlane_eq are no longer needed. The four new names are unreserved. The v2 Lean check proves the four new children, and the parent at its exact frozen type, from these six declarations with standard axioms only."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.sector_open-a1",
+        "subproblem": {
+          "key": "sector_open",
+          "title": "An open polar sector of angle at most π in the plane Q is relatively open in Q",
+          "statement": "Let P ∈ ℕ, Q a 2-dimensional linear subspace of ℝ^P, a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0, and δ, t, φ ∈ ℝ with δ ≤ π, t > 0 and 0 < φ < δ. Then there is r > 0 such that every y ∈ Q with |y − t(cos φ·a + sin φ·e)| < r can be written y = t'(cos φ'·a + sin φ'·e) with t' > 0 and 0 < φ' < δ.",
+          "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ t φ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → δ ≤ Real.pi → 0 < t → 0 < φ → φ < δ → ∃ r : ℝ, 0 < r ∧ ∀ y : Euclid P, y ∈ Q → dist y (t • (Real.cos φ • a + Real.sin φ • e)) < r → ∃ t' φ' : ℝ, 0 < t' ∧ 0 < φ' ∧ φ' < δ ∧ y = t' • (Real.cos φ' • a + Real.sin φ' • e)",
+          "lean_name": "idtp_cse_sp_sector_rel_open",
+          "depends_on": [],
+          "natural_proof": "1. (Coordinates in Q.) The family ![a, e] is orthonormal (`orthonormal_iff_ite`, using ⟨a, a⟩ = ‖a‖² = 1, ⟨e, e⟩ = 1, ⟨a, e⟩ = ⟨e, a⟩ = 0), hence linearly independent. Its span is ≤ Q (`Submodule.span_le`; a, e ∈ Q) and has finrank 2 = finrank Q (`finrank_span_eq_card`), so Submodule.span ℝ (range ![a, e]) = Q (`Submodule.eq_of_le_of_finrank_eq`). For y ∈ Q, `Submodule.mem_span_range_iff_exists_fun` and `Fin.sum_univ_two` give y = c 0 • a + c 1 • e; taking inner products with a and e gives ⟨y, a⟩ = c 0, ⟨y, e⟩ = c 1. Hence y = ⟨y, a⟩ • a + ⟨y, e⟩ • e for every y ∈ Q.\n2. (An open set of coordinates.) Let W := Ioi 0 ×ˢ Ioo 0 δ ⊆ ℝ × ℝ (open). Since δ ≤ π and 0 < π, Ioo 0 δ ⊆ Ioo (−π) π, so W ⊆ polarCoord.target = Ioi 0 ×ˢ Ioo (−π) π. polarCoord.symm is an OpenPartialHomeomorph with source polarCoord.target, so O := polarCoord.symm '' W is open (`OpenPartialHomeomorph.isOpen_image_of_subset_source`).\n3. (Continuous coordinates.) Let c : Euclid P → ℝ × ℝ, c y := (⟨y, a⟩, ⟨y, e⟩); it is continuous. For x₀ := t • (cos φ • a + sin φ • e), expanding with `inner_add_left`, `real_inner_smul_left` and the orthonormality relations gives c x₀ = (t * cos φ, t * sin φ) = polarCoord.symm (t, φ) with (t, φ) ∈ W (0 < t, 0 < φ < δ). So x₀ ∈ c ⁻¹' O, which is open, and `Metric.isOpen_iff` gives r > 0 with ball x₀ r ⊆ c ⁻¹' O.\n4. (Conclusion.) Let y ∈ Q with dist y x₀ < r. Then c y ∈ O: there is (t', φ') ∈ W, i.e. 0 < t' and 0 < φ' < δ, with (t' * cos φ', t' * sin φ') = polarCoord.symm (t', φ') = c y, i.e. ⟨y, a⟩ = t' cos φ' and ⟨y, e⟩ = t' sin φ'. By Step 1, y = ⟨y, a⟩ • a + ⟨y, e⟩ • e = (t' * cos φ') • a + (t' * sin φ') • e = t' • (cos φ' • a + sin φ' • e) (`smul_add`, `smul_smul`). ∎",
+          "proof_key_steps": [
+            "(a, e) is an orthonormal basis of Q, so y = ⟨y, a⟩a + ⟨y, e⟩e for every y ∈ Q.",
+            "W = (0, ∞) × (0, δ) ⊆ polarCoord.target (δ ≤ π), so O := polarCoord.symm '' W is open.",
+            "c(y) = (⟨y, a⟩, ⟨y, e⟩) is continuous and c(x₀) = polarCoord.symm (t, φ) ∈ O, giving a ball B_r(x₀) ⊆ c⁻¹(O).",
+            "For y ∈ Q ∩ B_r(x₀), c(y) = (t' cos φ', t' sin φ') with (t', φ') ∈ W, hence y = t'(cos φ'·a + sin φ'·e)."
+          ]
+        },
+        "audit": {
+          "key": "sector_open",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Orthonormality and finrank give coordinates on Q. The polar image is open on the stated angular interval, and continuous coordinate pullback supplies the required radius. Positivity of δ follows from 0 < φ < δ; no hypothesis is missing."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+      "key": "density_mult",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scans of dag.json: selected node; parent idtp_cone_sector_endpoint_density and its 11 children; statuses, types and candidate commits of dimred_im_mass_measure, imrep_represents_support_eq_inter_measure_support, idtp_imrep_measure_density_ae (decomposing), dtc_approxTangent_of_null_diff, dpf_itt_approxTangentPlane_eq, imrep_carrier_sdiff_support_null, rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, dimred_cs_mi_*, regcomp_atl_upper_density_zero, idtp_ccd_planar_support_mass",
+              "regex scans of accepted DAG statements for polar|isometr|approxTangent|null_diff|plane, 'polarCoord'/'Real.cos', 'HasMassDensity' with 'R.mult'/'R.carrier', and '∉ R.carrier'",
+              "git show <candidate_commit>:GMT/Ch07/Submission.lean for the 6 reused declarations (type byte-identity, sorry/axiom count); git merge-base --is-ancestor 591230fd 71a35e92",
+              "precedent records: nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json and nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "name checks: dag.json lean_names; grep -rl idtp_cse_sp_ nodes/ local-references/; git log --all -S idtp_cse_sp_",
+              "rg -n 'theorem lintegral_comp_polarCoord_symm|lemma isOpen_image_of_subset_source|theorem Isometry.euclideanHausdorffMeasure_preimage|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem volume_preserving_finTwoArrow|theorem PiLp.volume_preserving_toLp|theorem preimage_null|theorem exists_measurable_superset_of_null|theorem lintegral_eq_zero_iff |theorem finrank_span_eq_card|theorem eq_of_le_of_finrank_eq|theorem two_le_pi|theorem pi_gt_three' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'idtp_cse_sp_|polarCoord|HasApproximateTangentSpaceAt|approxTangentPlane|HasMassDensity' local-references/123e8435b4a2469b/project",
+              "grep -n 'def HasApproximateTangentSpaceAt|theorem hasApproximateTangentSpaceAt_submodule|theorem HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "lake env lean /tmp/sp_check/v2/All_axiom.lean; lake env lean /tmp/sp_check/v2/All_sorry.lean; earlier probes /tmp/sp_check/Stmts.lean, Region.lean, Polar.lean, Sector.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Pi/Bounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "/tmp/sp_check/v2/All_axiom.lean",
+              "/tmp/sp_check/v2/All_sorry.lean",
+              "/tmp/sp_check/v2/subproblems.json"
+            ],
+            "conclusion": "Pins match: project b4d606db and mathlib 25730c7c. Every Mathlib and SimonGMT name cited by the new children exists at these pins. Real.pi_gt_three exists but GMT.Ch07.Submission does not import it, so Real.two_le_pi is used. No accepted DAG lemma covers polar-coordinate null sets, relative openness of the sector, or the flat-region statement, so those become new children. The external facts the supplied proof needs are supplied by six accepted declarations, reused at byte-identical types: rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, imrep_carrier_sdiff_support_null and dtc_approxTangent_of_null_diff. These replace the pending idtp_imrep_measure_density_ae (status decomposing, an ancestor dependency not exposed to this node), and dimred_im_mass_measure and dpf_itt_approxTangentPlane_eq are no longer needed. The four new names are unreserved. The v2 Lean check proves the four new children, and the parent at its exact frozen type, from these six declarations with standard axioms only."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+        "subproblem": {
+          "key": "density_mult",
+          "title": "At Hⁿ-a.e. point, a positive integer mass density k forces carrier membership with multiplicity k",
+          "statement": "Let P, n ∈ ℕ, let C ∈ 𝒟_n(ℝ^P) be a current on U = ℝ^P (GeometricCurrentOn univ n) and let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) represent C (R.Represents C). Then for μHE[n]-almost every y ∈ ℝ^P the following holds: for every k ∈ ℕ with k ≥ 1, if HasMassDensity C y k (i.e. M_{B_ρ(y)}(C)/(ω_n ρ^n) → k as ρ ↓ 0), then y ∈ M and θ(y) = k.",
+          "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, 1 ≤ k → HasMassDensity C y k → y ∈ R.carrier ∧ R.mult y = k",
+          "lean_name": "idtp_cse_sp_density_mult_ae",
+          "depends_on": [
+            "mass_eq_measure",
+            "ae_density_mult",
+            "lower_density_comparison",
+            "null_open_superset"
+          ],
+          "natural_proof": "Notation and used results. H^n := μHE[n] on ℝ^P = Euclid P; M := R.carrier; θ := R.mult; μ := R.measure = (H^n.restrict M).withDensity (fun x => (θ x : ℝ≥0∞)); ω_n := unitBallVolume n; B_s(x) := ball x s and B̄_s(x) := closedBall x s. Sibling reuse children (comparator-accepted declarations, used at their frozen types): mass_eq_measure = Submission.rsd_massOn_eq_measure (IsOpen U → R.Represents T → ∀ W, IsOpen W → W ⊆ U → T.massOn W = R.measure W); ae_density_mult = Submission.rsd_ae_hasMassDensity_mult (IsOpen U → R.Represents T → ∀ᵐ x ∂R.measure, HasMassDensity T x (R.mult x)); lower_density_comparison = Submission.dorag_sn_hausdorff_le_mul_of_lower_density (∀ (N n : ℕ) (c : ℝ), 0 < c → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ (ν : Measure (Euclid N)) (A O : Set (Euclid N)), IsOpen O → A ⊆ O → (∀ x ∈ A, ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, 0 < t → t < t₀ → ENNReal.ofReal (c * t ^ n) ≤ ν (closedBall x t)) → μHE[n] A ≤ C * ν O); null_open_superset = Submission.dorag_sn_open_superset_measure_lt (∀ (N : ℕ) (μ : Measure (Euclid N)) (A : Set (Euclid N)), μ A = 0 → (∀ x ∈ A, ∃ r : ℝ, 0 < r ∧ μ (ball x r) ≠ ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ O : Set (Euclid N), IsOpen O ∧ A ⊆ O ∧ μ O < ε). This is the classical argument behind Θ^n(μ_T, ·) = θ·1_M H^n-a.e. (Simon, Ch. 3, Remark 1.8; Ch. 1, Theorem 3.3).\n1. (Mass equals weight.) mass_eq_measure with U := univ (isOpen_univ, hR) gives C.massOn W = μ W for every open W; in particular C.massOn (B_s(x)) = μ (B_s(x)) for all x and s.\n2. (Density on the carrier.) ae_density_mult with U := univ gives: for μ-a.e. x, HasMassDensity C x θ(x). The density fun x => (θ x : ℝ≥0∞) is measurable (R.measurable_mult composed with the cast, `measurable_from_nat`), so `ae_withDensity_iff` rewrites this as: for (H^n.restrict M)-a.e. x, (θ x : ℝ≥0∞) ≠ 0 → HasMassDensity C x θ(x); and `ae_restrict_iff'` (R.measurableSet_carrier) as: for H^n-a.e. x, x ∈ M → (θ x : ℝ≥0∞) ≠ 0 → HasMassDensity C x θ(x). For x ∈ M we have θ x > 0 (R.mult_pos), so (θ x : ℝ≥0∞) ≠ 0. Hence (E_on): for H^n-a.e. y, y ∈ M → HasMassDensity C y θ(y).\n3. (Constants and local finiteness.) ω_n ≠ 0 (`measure_ball_pos volume (0 : Euclid n) one_pos`) and ω_n ≠ ∞ (`measure_ball_ne_top`). For every x, μ(B_1(x)) ≤ μ(B̄_1(x)) = ∫⁻ z in M ∩ B̄_1(x), (θ z : ℝ≥0∞) ∂H^n (`withDensity_apply` and `Measure.restrict_restrict` for the closed ball, then `Set.inter_comm`), which is ≠ ∞ by R.locallyIntegrable_mult applied to the compact set B̄_1(x) ⊆ univ.\n4. (The off-carrier set is μ-null.) Let A := {y | y ∉ M ∧ ∃ k : ℕ, 1 ≤ k ∧ HasMassDensity C y k}. Then (H^n.restrict M)(A) = H^n(A ∩ M) (`Measure.restrict_apply'`, M measurable) = H^n(∅) = 0, because A ∩ M = ∅. Since μ ≪ H^n.restrict M (`withDensity_absolutelyContinuous`), μ(A) = 0.\n5. (Uniform lower density on A.) Put t := 1/2 and c := t · ω_n.toReal; then c > 0 by Step 3 (`ENNReal.toReal_pos`). Let x ∈ A, with k ≥ 1 and HasMassDensity C x k. Since t < 1 ≤ k we have ofReal t < ofReal k, so Ioi (ofReal t) is a neighbourhood of ofReal k; the second component of HasMassDensity C x k and `mem_nhdsGT_iff_exists_Ioo_subset` give t₀ > 0 with ofReal t < C.massOn (B_s(x)) / (ω_n · ofReal (s^n)) for every s ∈ (0, t₀). For such s the denominator d := ω_n · ofReal (s^n) is ≠ 0 (s^n > 0) and ≠ ∞, so `ENNReal.le_div_iff_mul_le` gives ofReal (c · s^n) = ofReal t · d ≤ C.massOn (B_s(x)) (the equality by `ENNReal.ofReal_mul` and `ENNReal.ofReal_toReal`). By Step 1 and monotonicity, C.massOn (B_s(x)) = μ(B_s(x)) ≤ μ(B̄_s(x)). So every x ∈ A has t₀ > 0 with ofReal (c · s^n) ≤ μ(B̄_s(x)) for all s ∈ (0, t₀).\n6. (Comparison.) lower_density_comparison with (N := P, n, c) gives K : ℝ≥0∞ with K ≠ ∞ such that, applied with ν := μ, any open O ⊇ A and the lower bound of Step 5, H^n(A) ≤ K · μ(O).\n7. (Small open neighbourhoods.) Let ε > 0. null_open_superset applied to μ and A (μ(A) = 0 by Step 4; each x ∈ A has μ(B_1(x)) ≠ ∞ by Step 3, take r := 1) gives an open O ⊇ A with μ(O) < ε. By Step 6, H^n(A) ≤ K · μ(O) ≤ K · ε.\n8. (A is H^n-null.) For j ∈ ℕ, ε := (j : ℝ≥0∞)⁻¹ > 0 (`ENNReal.inv_pos`, (j : ℝ≥0∞) ≠ ∞), so H^n(A) ≤ K · (j : ℝ≥0∞)⁻¹; and K · (j : ℝ≥0∞)⁻¹ → 0 as j → ∞ because K ≠ ∞ (`ENNReal.Tendsto.const_mul` with `ENNReal.tendsto_inv_nat_nhds_zero`). Hence H^n(A) = 0 (`ge_of_tendsto'`), i.e. (E_off): for H^n-a.e. y, y ∉ A (`measure_eq_zero_iff_ae_notMem`).\n9. (Conclusion.) Fix y satisfying E_on and E_off, and k ∈ ℕ with 1 ≤ k and HasMassDensity C y k. If y ∉ M, then y ∈ A (witness k), contradicting E_off; so y ∈ M. By E_on, HasMassDensity C y θ(y). Both density statements are limits of the same function ρ ↦ C.massOn (B_ρ(y)) / (ω_n · ofReal (ρ^n)) along the nontrivial filter 𝓝[>] 0, so `tendsto_nhds_unique` gives ofReal (k : ℝ) = ofReal (θ(y) : ℝ). Both reals are ≥ 0, so (k : ℝ) = θ(y) (`ENNReal.ofReal_eq_ofReal_iff`), hence θ(y) = k (cast injectivity, `exact_mod_cast`). Thus y ∈ R.carrier ∧ R.mult y = k, for H^n-a.e. y and every such k. ∎",
+          "proof_key_steps": [
+            "mass_eq_measure gives C.massOn(B_s(x)) = μ(B_s(x)); ae_density_mult, ae_withDensity_iff, ae_restrict_iff' and θ ≥ 1 on M give HasMassDensity C y θ(y) for Hⁿ-a.e. y ∈ M.",
+            "The off-carrier set A := {y ∉ M : ∃ k ≥ 1, HasMassDensity C y k} is μ-null (A ∩ M = ∅, μ ≪ Hⁿ⌞M) and satisfies ofReal(ω_n s^n/2) ≤ μ(B̄_s(x)) for small s at each x ∈ A.",
+            "lower_density_comparison gives Hⁿ(A) ≤ K·μ(O) for every open O ⊇ A; null_open_superset makes μ(O) < ε, so Hⁿ(A) = 0.",
+            "Off A, density k ≥ 1 forces y ∈ M, and uniqueness of limits along 𝓝[>] 0 gives θ(y) = k."
+          ]
+        },
+        "audit": {
+          "key": "density_mult",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact type includes representation and positive integer density. The proof correctly transfers the carrier a.e. statement, establishes local finiteness, eliminates off-carrier positive-density points by comparison and outer regularity, and identifies multiplicity by uniqueness of limits. Its four prerequisites are explicitly registered."
+        },
+        "resolved_dependencies": [
+          "root.regular_set_dense-a1.mass_eq_weight-a1",
+          "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+          "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.flat_region-a1",
+      "key": "flat_region",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "python3 scans of dag.json: selected node; parent idtp_cone_sector_endpoint_density and its 11 children; statuses, types and candidate commits of dimred_im_mass_measure, imrep_represents_support_eq_inter_measure_support, idtp_imrep_measure_density_ae (decomposing), dtc_approxTangent_of_null_diff, dpf_itt_approxTangentPlane_eq, imrep_carrier_sdiff_support_null, rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, dimred_cs_mi_*, regcomp_atl_upper_density_zero, idtp_ccd_planar_support_mass",
+              "regex scans of accepted DAG statements for polar|isometr|approxTangent|null_diff|plane, 'polarCoord'/'Real.cos', 'HasMassDensity' with 'R.mult'/'R.carrier', and '∉ R.carrier'",
+              "git show <candidate_commit>:GMT/Ch07/Submission.lean for the 6 reused declarations (type byte-identity, sorry/axiom count); git merge-base --is-ancestor 591230fd 71a35e92",
+              "precedent records: nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json and nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "name checks: dag.json lean_names; grep -rl idtp_cse_sp_ nodes/ local-references/; git log --all -S idtp_cse_sp_",
+              "rg -n 'theorem lintegral_comp_polarCoord_symm|lemma isOpen_image_of_subset_source|theorem Isometry.euclideanHausdorffMeasure_preimage|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem volume_preserving_finTwoArrow|theorem PiLp.volume_preserving_toLp|theorem preimage_null|theorem exists_measurable_superset_of_null|theorem lintegral_eq_zero_iff |theorem finrank_span_eq_card|theorem eq_of_le_of_finrank_eq|theorem two_le_pi|theorem pi_gt_three' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'idtp_cse_sp_|polarCoord|HasApproximateTangentSpaceAt|approxTangentPlane|HasMassDensity' local-references/123e8435b4a2469b/project",
+              "grep -n 'def HasApproximateTangentSpaceAt|theorem hasApproximateTangentSpaceAt_submodule|theorem HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "lake env lean /tmp/sp_check/v2/All_axiom.lean; lake env lean /tmp/sp_check/v2/All_sorry.lean; earlier probes /tmp/sp_check/Stmts.lean, Region.lean, Polar.lean, Sector.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/PolarCoord.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Pi/Bounds.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-18ac87081c/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1/decomposition-audit-v3.json",
+              "/tmp/sp_check/v2/All_axiom.lean",
+              "/tmp/sp_check/v2/All_sorry.lean",
+              "/tmp/sp_check/v2/subproblems.json"
+            ],
+            "conclusion": "Pins match: project b4d606db and mathlib 25730c7c. Every Mathlib and SimonGMT name cited by the new children exists at these pins. Real.pi_gt_three exists but GMT.Ch07.Submission does not import it, so Real.two_le_pi is used. No accepted DAG lemma covers polar-coordinate null sets, relative openness of the sector, or the flat-region statement, so those become new children. The external facts the supplied proof needs are supplied by six accepted declarations, reused at byte-identical types: rsd_massOn_eq_measure, rsd_ae_hasMassDensity_mult, dorag_sn_hausdorff_le_mul_of_lower_density, dorag_sn_open_superset_measure_lt, imrep_carrier_sdiff_support_null and dtc_approxTangent_of_null_diff. These replace the pending idtp_imrep_measure_density_ae (status decomposing, an ancestor dependency not exposed to this node), and dimred_im_mass_measure and dpf_itt_approxTangentPlane_eq are no longer needed. The four new names are unreserved. The v2 Lean check proves the four new children, and the parent at its exact frozen type, from these six declarations with standard axioms only."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+        "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.flat_region-a1",
+        "subproblem": {
+          "key": "flat_region",
+          "title": "On a relatively open flat region of density k, almost every point is a carrier point with multiplicity k and approximate tangent plane Q",
+          "statement": "Let P, n ∈ ℕ, C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), Q ⊆ ℝ^P a linear subspace with dim Q = n, G ⊆ ℝ^P an arbitrary set, k ∈ ℕ with k ≥ 1, and R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with R.Represents C. Assume every y ∈ G satisfies: y ∈ Q, HasMassDensity C y k, and there is r > 0 with Q ∩ B_r(y) ⊆ G and spt C ∩ B_r(y) ⊆ Q. Then for μHE[n]-a.e. y ∈ ℝ^P: if y ∈ G, then y ∈ M, θ(y) = k and approxTangentPlane n M y = Q.",
+          "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (G : Set (Euclid P)) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) n), Module.finrank ℝ Q = n → 1 ≤ k → (∀ y ∈ G, y ∈ Q ∧ HasMassDensity C y k ∧ ∃ r : ℝ, 0 < r ∧ (Q : Set (Euclid P)) ∩ ball y r ⊆ G ∧ C.support ∩ ball y r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ G → y ∈ R.carrier ∧ R.mult y = k ∧ approxTangentPlane n R.carrier y = Q",
+          "lean_name": "idtp_cse_sp_flat_region_ae",
+          "depends_on": [
+            "density_mult",
+            "carrier_support_null",
+            "approx_tangent_null_diff"
+          ],
+          "natural_proof": "Notation and used results. H^n := μHE[n]; M := R.carrier; θ := R.mult; spt C := C.support; (hG) is the hypothesis on G. Siblings: density_mult = Submission.idtp_cse_sp_density_mult_ae (R.Represents C → ∀ᵐ y ∂μHE[n], ∀ k : ℕ, 1 ≤ k → HasMassDensity C y k → y ∈ R.carrier ∧ R.mult y = k); reuse child carrier_support_null = Submission.imrep_carrier_sdiff_support_null (IsOpen U → R.Represents T → μHE[n] (R.carrier \\ T.support) = 0); reuse child approx_tangent_null_diff = Submission.dtc_approxTangent_of_null_diff (M' ⊆ M → IsOpen V → x ∈ V → μHE[n] ((M \\ M') ∩ V) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q). From the SimonGMT library of the frozen contract: `Poincare.SimonGMT.Chapter03.hasApproximateTangentSpaceAt_submodule` (finrank ℝ Q = n → x ∈ Q → HasApproximateTangentSpaceAt n (Q : Set _) x Q) and `HasApproximateTangentSpaceAt.unique` (Simon Ch. 3, Remark 1.5(1)).\n1. (Membership and multiplicity a.e. on G.) density_mult applied to (P, n, C, R, hR) gives: for H^n-a.e. y, every k' ≥ 1 with HasMassDensity C y k' satisfies y ∈ M ∧ θ y = k'. For y ∈ G, (hG) gives HasMassDensity C y k with 1 ≤ k. Hence (E1): for H^n-a.e. y, y ∈ G → (y ∈ M ∧ θ y = k).\n2. (G \\ M is H^n-null.) By `ae_iff`, E1 says H^n {y | ¬(y ∈ G → y ∈ M ∧ θ y = k)} = 0. Every y ∈ G \\ M lies in this set (y ∈ G but y ∉ M). By `measure_mono_null`, (E2): H^n (G \\ M) = 0.\n3. (Approximate tangent planes a.e. on M.) The structure field R.orients says: for (H^n.restrict M)-a.e. y there is T with HasApproximateTangentSpaceAt n M y T (and an orientation property, which is discarded). As M is measurable (R.measurableSet_carrier), `ae_restrict_iff'` turns this into (E3): for H^n-a.e. y, y ∈ M → ∃ T, HasApproximateTangentSpaceAt n M y T.\n4. (M lies a.e. in spt C.) carrier_support_null applied to (P, n, univ, C, R, isOpen_univ, hR) gives (E4): H^n (M \\ spt C) = 0.\n5. (Pointwise argument.) Combine E1 and E3 (filter_upwards), fix y satisfying both, and assume y ∈ G. By E1, y ∈ M and θ y = k; by E3 choose T with HasApproximateTangentSpaceAt n M y T. By (hG), y ∈ Q and there is r > 0 with Q ∩ ball y r ⊆ G and spt C ∩ ball y r ⊆ Q. Let V := ball y r (open, and y ∈ V because r > 0) and M' := M ∩ Q.\n   (i) (M \\ M') ∩ V ⊆ M \\ spt C: if z ∈ M, z ∉ M ∩ Q, z ∈ V and z ∈ spt C, then z ∈ spt C ∩ ball y r ⊆ Q, so z ∈ M ∩ Q, a contradiction. By E4 and `measure_mono_null`, H^n ((M \\ M') ∩ V) = 0. approx_tangent_null_diff applied to (P, n, M, M', V, y, T) with M' ⊆ M (`Set.inter_subset_left`), V open and y ∈ V yields HasApproximateTangentSpaceAt n M' y T.\n   (ii) (Q \\ M') ∩ V ⊆ G \\ M: if z ∈ Q, z ∉ M ∩ Q and z ∈ V, then z ∈ Q ∩ ball y r ⊆ G, and z ∉ M (otherwise z ∈ M ∩ Q). By E2, H^n ((Q \\ M') ∩ V) = 0. `hasApproximateTangentSpaceAt_submodule` (finrank ℝ Q = n, y ∈ Q) gives HasApproximateTangentSpaceAt n (Q : Set (Euclid P)) y Q, and approx_tangent_null_diff applied to (P, n, Q, M', V, y, Q) with M' ⊆ Q (`Set.inter_subset_right`) yields HasApproximateTangentSpaceAt n M' y Q.\n   (iii) `HasApproximateTangentSpaceAt.unique` applied to (i) and (ii) gives T = Q, so HasApproximateTangentSpaceAt n M y Q. By definition approxTangentPlane n M y = if h : ∃ Q', HasApproximateTangentSpaceAt n M y Q' then h.choose else ⊥; the condition holds (witness Q), so approxTangentPlane n M y = h.choose (`dite_eq_left`, the non-deprecated name of `dif_pos` on this toolchain), and h.choose_spec with `HasApproximateTangentSpaceAt.unique` gives h.choose = Q.\n   Hence y ∈ M ∧ θ y = k ∧ approxTangentPlane n M y = Q for H^n-a.e. y ∈ G. ∎",
+          "proof_key_steps": [
+            "density_mult and the density hypothesis: Hⁿ-a.e. y ∈ G lies in M with θ(y) = k; hence Hⁿ(G ∖ M) = 0.",
+            "R.orients (via ae_restrict_iff'): Hⁿ-a.e. y ∈ M has an approximate tangent plane T; carrier_support_null: Hⁿ(M ∖ spt C) = 0.",
+            "Near such y, (M ∖ (M ∩ Q)) ∩ B_r(y) ⊆ M ∖ spt C and (Q ∖ (M ∩ Q)) ∩ B_r(y) ⊆ G ∖ M are null; approx_tangent_null_diff transfers T (from M) and Q (from Q, hasApproximateTangentSpaceAt_submodule) to M ∩ Q.",
+            "Uniqueness gives T = Q, and unfolding approxTangentPlane gives approxTangentPlane n M y = Q."
+          ]
+        },
+        "audit": {
+          "key": "flat_region",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "All local planarity, relative-neighbourhood, dimension and density hypotheses match. The two null-difference inclusions transfer both tangent planes to the same intersection; uniqueness and the definition of approxTangentPlane finish. No measurability assumption on G is silently required."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+          "root.minimizing_implies_stationary-a1.support_null-a1",
+          "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/decomposition.json": "c34aec108ec58a9a3eaccea407a8ab6ff74ee1c289c6257a5294fc52a6426de3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/decomposition-audit.json": "f8c77a94dd38e1987c34024a8ffc8c8c1721a5f5d4627d11bce1ceb78829bd16",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-child-handoff.json": "01391bacf8cf646228087101756cf845192118492ce63eee7e9755b73bf7efd7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-plan.md": "0f97bd33775c6e6e7f3eba2123f0a36af2ebd8fdcae73c5c3972c289c6c79a43",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-natural-proof.md": "958ea59746d2bd230352b4cd68dde5c609f06e333c8aace7aa6df4114df616df",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/parent-supplied-natural-proof.json": "f3ff3abf0697bb1f0a20ce5bdf9c1d2224c23d3fba2718b305fb070dbed83c54",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-046a94e391/node.json": "1781ee946637d77311c09dffd70814ece7f157d6a8add3341c0692c00e393961",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-child-handoff.json": "70dc12ca899271b0091a8aa154ffd623ce184e165380bfe6a498dbf6d46eae5a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-plan.md": "b0c2bf7746f0cf04619b702a1940eca57b4a5ce011a605221295049cdb220f6f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-natural-proof.md": "e297e87ad9c139b394e8c24cf5258fce8839821a2daddb1a7c861483c99bb194",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/parent-supplied-natural-proof.json": "145d342ff27bd4cf1838f38d34f316897839d18c99f80f58dad4da104152d0d6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-72cfdfdc1e/node.json": "3521bcad45b0dd0219472b574713d0e07c9cc362b4d847f11d0e31c37c861289",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-child-handoff.json": "80ebf2bd67293dbc2f9d2b77aaa7544fe407eb5da1a820e53d336d19fbc12427",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-plan.md": "00eaeab548183a7954c8f23428d247fae8e12084f266083e2237472e48551c9f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-natural-proof.md": "98bd3bc953576b5086d9fd18d1e70b9ced23e841d790f5e29264a418fe958604",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/parent-supplied-natural-proof.json": "693faded7af09fee5d42a2b5d7e8beb1e49d84d235c074213539d86e2ceaa409",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1/node.json": "6ba573f881c76f52ff5cb047c20cc82f010bde8aae510ee2022aa5f8cde2083e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-child-handoff.json": "6e507c1fb06b448dd30bbb3f4b24115b479612633df431a76d4736730199e637",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-plan.md": "bde74aafa4ea7483571aca08017e2188e0b47d5fcbe818c529bb126358f6dedb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-natural-proof.md": "5cbaf42a5a7f4ab438d98af7aae9be3d590ce60d37d6562b1129b8db9a7d7d1c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/parent-supplied-natural-proof.json": "a66e3fc1c7f3a41b20812c908d4870aa52f424fb73870c9c05bbcf87a75c6203",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-64496f9e64/children/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7b45d6c222/node.json": "296ea99627a2f8d2d04f71ba70c998a62b34227b2cabd73925a8aba461b7dba6"
+  }
+}

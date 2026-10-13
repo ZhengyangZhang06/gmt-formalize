@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1.density_mult-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.sector_points-a1",
+  "depth": 5,
+  "title": "At Hⁿ-a.e. point, a positive integer mass density k forces carrier membership with multiplicity k",
+  "statement": "Let P, n ∈ ℕ, let C ∈ 𝒟_n(ℝ^P) be a current on U = ℝ^P (GeometricCurrentOn univ n) and let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) represent C (R.Represents C). Then for μHE[n]-almost every y ∈ ℝ^P the following holds: for every k ∈ ℕ with k ≥ 1, if HasMassDensity C y k (i.e. M_{B_ρ(y)}(C)/(ω_n ρ^n) → k as ρ ↓ 0), then y ∈ M and θ(y) = k.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, 1 ≤ k → HasMassDensity C y k → y ∈ R.carrier ∧ R.mult y = k",
+  "lean_name": "idtp_cse_sp_density_mult_ae",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-a1",
+      "result_commit": "591230fd256e4a25aea8a8a57e9508ced7f5c9db",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-a1",
+      "result_commit": "71a35e92ff3a966996363e5040ecd37921ba6cb9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.density_comparison-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4410d992f1-a1",
+      "result_commit": "72f84801892257a4f5ffbe3e0c463530ff1d93aa",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.support_null-a1.null_open_nbhd-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e3e222819e-a1",
+      "result_commit": "9e9ed91039d2cf6387a1cce74c9551d973e487c3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c5c5de85a1-a1"
+}
