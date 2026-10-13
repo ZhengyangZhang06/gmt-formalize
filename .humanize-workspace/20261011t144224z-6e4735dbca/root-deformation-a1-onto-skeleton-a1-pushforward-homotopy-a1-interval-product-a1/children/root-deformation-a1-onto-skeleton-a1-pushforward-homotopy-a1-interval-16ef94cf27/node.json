@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.current_criterion-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "depth": 5,
+  "title": "A linear functional on test forms bounded by B·sup|ω| is a current of mass ≤ B (supplied step 4)",
+  "statement": "Let P, q ∈ ℕ, U ⊆ ℝ^P, T₀ : TestFormOn U q →ₗ[ℝ] ℝ a linear functional and B ≥ 0 such that |T₀(ω)| ≤ B·C for every ω ∈ TestFormOn U q and every C ∈ ℝ with covectorEuclideanNorm(ω(x)) ≤ C for all x ∈ ℝ^P. Then there is T ∈ GeometricCurrentOn U q with T(ω) = T₀(ω) for every ω and T.mass ≤ ENNReal.ofReal B.",
+  "lean_statement": "∀ (P q : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U q →ₗ[ℝ] ℝ) (B : ℝ), 0 ≤ B → (∀ (ω : TestFormOn U q) (C : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) q) x) ≤ C) → |T₀ ω| ≤ B * C) → ∃ T : GeometricCurrentOn U q, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal B",
+  "lean_name": "dph_iprod_current_of_bound",
+  "depends_on": [
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-16ef94cf27-a1"
+}
