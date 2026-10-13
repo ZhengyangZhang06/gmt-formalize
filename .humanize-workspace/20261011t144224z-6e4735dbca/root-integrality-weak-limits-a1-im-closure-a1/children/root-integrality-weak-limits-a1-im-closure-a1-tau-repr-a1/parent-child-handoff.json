@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical); cmp workspace Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (identical)",
+        "python3 dag.json scans (re-run just before submission): status/candidate_commit/lean_statement/title/statement of rectifiability_density_comparison, slicing_representation_unique, ltg_tau_integrable, fiw_ims_frame_sign, fiw_ims_orientation_sign, iwl_restriction_theory, iwl_weighted_tangent_locality, lpf_wtc_ae_zero_density_off_set, br_weightedTangent_congr; regex scan of all accepted nodes for Lebesgue|IsMeasureRepresentation|tauAction|HasWeightedApproximateTangentSpaceAt|density; reserved names (no iwl_imc_*)",
+        "sed -n 6532,6575p and 2364,2368p /runtime/flows/gmt-claude-dce97d36d07f/_recursive_lean/runtime.py (_existing_lean_name_problem / _accepted_checkpoint: why attempt 1's lpf reuse was rejected)",
+        "grep -n 'def HasWeightedApproximateTangentSpaceAt|def blowUpMap|theorem HasWeightedApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "grep -n 'def dimensionalDensityQuotient|def dimensionalUpperDensity|realUnitBallVolume' simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "grep -n 'theorem ae_tendsto_lintegral_enorm_sub_div|theorem tendsto_filterAt|protected def vitaliFamily' mathlib/Mathlib/MeasureTheory/Covering/{Differentiation,Besicovitch}.lean (Differentiation.lean:818, Besicovitch.lean:1021 and 1060)",
+        "grep -rn 'theorem withDensity_apply |theorem setLIntegral_measure_zero|theorem _root_.Set.measure_eq_iInf_isOpen|theorem nullMeasurableSet_eq_fun' mathlib/Mathlib/MeasureTheory (found in Measure/WithDensity.lean:44, Integral/Lebesgue/Basic.lean:478, Measure/Regular.lean:368, Function/StronglyMeasurable/AEStronglyMeasurable.lean:575)",
+        "sed -n 724,770p book/chapter-06.txt (Simon Ch. 6, 3.1 and 3.2 Remarks (1)-(3)); grep -n \"3.3 Theorem|3.6 Theorem|3.7 Remarks\" book/chapter-01.txt",
+        "verifier/gmt-compare.py child_modules (contract mode) + verifier/lean_contract.validate_lean_statement on all 11 child types and the parent",
+        "lean v4.35.0-rc3 (LEAN_PATH scratch build + lake-packages-25730c7c): lean -o build3/GMT/Ch06/Submission.olean src3/Submission.lean; lean checks/NodeChallenge_00..11.lean (frozen build) and checks/NodeSolution_00..11.lean (build3) with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/imc-decomp-v2/src3/Submission.lean",
+        "/tmp/imc-decomp-v2/logs/src3.out",
+        "/tmp/imc-decomp-v2/checks/NodeSolution_11.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract, and Submission is byte-identical to it.\n\nAvailable tools:\n- SimonGMT: HasWeightedApproximateTangentSpaceAt (Ch. 3, 1.7, a limit over blow-ups, so it is invariant under a nonzero constant factor), its uniqueness lemma, CountablyRectifiable.mono / countablyRectifiable_iUnion, dimensionalUpperDensity and realUnitBallVolume.\n- Mathlib (imported via Covering.DensityTheorem): Lebesgue–Besicovitch differentiation (VitaliFamily.ae_tendsto_lintegral_enorm_sub_div with Besicovitch.vitaliFamily / tendsto_filterAt), withDensity, outer regularity of finite measures, and AEStronglyMeasurable.nullMeasurableSet_eq_fun.\n- The contract does not import SimonGMT's Chapter01.DensityComparison. Density comparison is therefore taken from the accepted Submission theorem rectifiability_density_comparison, and the Upper Density Theorem is the new child iwl_imc_density_zero_off_set.\n\nController code (runtime.py) explains the rejected attempt: reuse requires an accepted checkpoint in the controller's view. The replacement child sidesteps the reservation on lpf_wtc_ae_zero_density_off_set.\n\nScratch Lean results (/tmp/imc-decomp-v2):\n- All 11 child types and the parent elaborate in the exact comparator child scope.\n- Complete single-theorem proofs of the 6 new children compile.\n- The parent assembles from the children plus iwl_weighted_tangent_locality and iwl_restriction_theory.\n- Axiom footprints are [propext, Classical.choice, Quot.sound] plus the intended stubs."
+    }
+  ],
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "child_id": "root.integrality_weak_limits-a1.im_closure-a1.tau_repr-a1",
+  "subproblem": {
+    "key": "tau_repr",
+    "title": "τ(M, θ, ξ) has the measure representation (Hᵏ⌞M, θξ)",
+    "statement": "Let P, k ∈ ℕ, Hᵏ := μHE[k] on ℝ^P = Eucl P, and let U ⊆ ℝ^P be any set. Let M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_k(ℝ^P) (k-vectors, NVector (Eucl P) k) satisfy IsRectifiableTriple U k M θ ξ, and let X ∈ D_k(U) (GeometricCurrentOn U k) satisfy X(ω) = τ(M, θ, ξ)(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHᵏ(x) (tauAction k M θ ξ ω) for every test form ω ∈ D^k(U) (TestFormOn U k). Then (Hᵏ⌞M, θξ) is a measure representation of X, i.e. IsMeasureRepresentation X (μHE[k].restrict M) (x ↦ θ(x) • ξ(x)): for every ω ∈ D^k(U) the function x ↦ (θ(x) • ξ(x))(ω(x)) is Hᵏ⌞M-integrable and X(ω) = ∫ (θ(x) • ξ(x))(ω(x)) d(Hᵏ⌞M)(x).",
+    "lean_statement": "∀ (P k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (X : GeometricCurrentOn U k), IsRectifiableTriple U k M θ ξ → (∀ ω : TestFormOn U k, X ω = tauAction k M θ ξ ω) → IsMeasureRepresentation X ((μHE[k] : Measure (Eucl P)).restrict M) (fun x => θ x • ξ x)",
+    "lean_name": "iwl_imc_tau_measure_representation",
+    "depends_on": [
+      "tau_integrable"
+    ],
+    "natural_proof": "Conventions. ℝ^P := Eucl P. H := Hᵏ := μHE[k]. D_k(U) := GeometricCurrentOn U k and D^k(U) := TestFormOn U k: smooth k-forms on ℝ^P with compact support and tsupport ⊆ U. τ(M, θ, ξ)(ω) := tauAction k M θ ξ ω = ∫_M θ(x)·ξ(x)(ω(x)) dH(x). k-vectors are elements of NVector (Eucl P) k, the continuous linear functionals on k-covectors. For t ∈ ℝ and a k-vector w, (t • w)(α) = t·w(α).\n\nSource. This is preliminary (ii) of the parent proof: (H⌞M, θξ) is a measure representation of τ(M, θ, ξ).\n\nStatement. Let U ⊆ ℝ^P be any set, let IsRectifiableTriple U k M θ ξ hold, and let X ∈ D_k(U) satisfy X(ω) = τ(M, θ, ξ)(ω) for every ω ∈ D^k(U). Then IsMeasureRepresentation X (H⌞M) (x ↦ θ(x) • ξ(x)). That is, for every ω ∈ D^k(U):\n- x ↦ (θ(x) • ξ(x))(ω(x)) is H⌞M-integrable; and\n- X(ω) = ∫ (θ(x) • ξ(x))(ω(x)) d(H⌞M)(x).\n\n1. (The test form.) Fix ω ∈ D^k(U) and write ω also for its underlying form ℝ^P → Λᵏ(ℝ^P).\n   - Membership in TestFormOn U k means ω is C^∞ with compact support and tsupport ω ⊆ U.\n   - In particular ω is continuous (C^∞ ⇒ continuous) and HasCompactSupport ω.\n\n2. (Integrability.) The sibling `ltg_tau_integrable`, second conjunct, applies to the continuous, compactly supported covector field ω with tsupport ω ⊆ U and the rectifiable triple (M, θ, ξ). It shows that h(x) := θ(x)·ξ(x)(ω(x)) is H-integrable on M, i.e. H⌞M-integrable.\n\n3. (Pointwise identity.) For every x, (θ(x) • ξ(x))(ω(x)) = θ(x)·ξ(x)(ω(x)) = h(x). This holds because scalar multiplication of continuous linear functionals is pointwise (`smul_apply`, `smul_eq_mul`). So the two functions of x are equal (funext), and the integrability in the first bullet of the statement is step 2.\n\n4. (Integral formula.) By the hypothesis on X and the definition of tauAction, X(ω) = τ(M, θ, ξ)(ω) = ∫_M h dH = ∫ h d(H⌞M). By step 3 this equals ∫ (θ(x) • ξ(x))(ω(x)) d(H⌞M)(x).\n\n5. Since ω was arbitrary, steps 2–4 give both conjuncts of IsMeasureRepresentation for every ω ∈ D^k(U). ∎\n\nFormalization notes (a complete Lean proof of exactly this statement compiled in a scratch build of frozen commit d8d46c9, with the sibling as a stub): `ω.2 : (IsSmoothForm ω ∧ HasCompactSupport ω) ∧ tsupport ω ⊆ U`; continuity is `ω.2.1.1.continuous`. Use `(Submission.ltg_tau_integrable P k U M θ ξ htr).2 ω hcont ω.2.1.2 ω.2.2`. Rewrite the integrand with `funext x; simp only [smul_apply, smul_eq_mul]`; `ContinuousLinearMap.smul_apply` is deprecated in favour of `smul_apply`. The integral formula is then `rfl` after `rw [hrep ω]`.\n",
+    "proof_key_steps": [
+      "A test form ω ∈ D^k(U) is continuous, has compact support and tsupport ω ⊆ U.",
+      "The sibling ltg_tau_integrable (second conjunct) gives Hᵏ-integrability of x ↦ θ(x)·ξ(x)(ω(x)) on M.",
+      "(θ(x) • ξ(x))(ω(x)) = θ(x)·ξ(x)(ω(x)) pointwise, so the integrability transfers to x ↦ (θ(x) • ξ(x))(ω(x)) for Hᵏ⌞M, and X(ω) = τ(M, θ, ξ)(ω) = ∫ (θ • ξ)(ω) d(Hᵏ⌞M)."
+    ]
+  },
+  "audit": {
+    "key": "tau_repr",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof directly establishes both fields of IsMeasureRepresentation using tau_integrable and the pointwise identity (θ • ξ)(ω) = θ·ξ(ω). No existence, openness or measurability hypothesis is silently added."
+  },
+  "resolved_dependencies": [
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-tau-repr-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-tau-repr-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-tau-repr-a1/parent-supplied-natural-proof.json"
+}

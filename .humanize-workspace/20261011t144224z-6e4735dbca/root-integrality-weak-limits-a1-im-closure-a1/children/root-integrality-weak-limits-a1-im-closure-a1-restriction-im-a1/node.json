@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1.restriction_im-a1",
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "depth": 3,
+  "title": "Restrictions of integer multiplicity currents are integer multiplicity, given tangent comparison",
+  "statement": "Let P, k ∈ ℕ, Hᵏ := μHE[k] on ℝ^P = Eucl P, U ⊆ ℝ^P open, and assume the tangent comparison principle (T) in U: for all Hᵏ-null-measurable M₁, M₂ ⊆ U and all θ₁, θ₂ : ℝ^P → ℝ with θ_l(x) ≥ 1 for x ∈ M_l and θ_l Hᵏ-integrable on M_l ∩ K for every compact K ⊆ U (l = 1, 2), for Hᵏ⌞(M₁ ∩ M₂)-almost every x, every linear subspace Q of ℝ^P that is a weighted approximate tangent space of (M₁, θ₁) at x (HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q, Simon Ch. 3, 1.7) is also one of (M₂, θ₂) at x (the parent obtains (T) from the sibling iwl_imc_tangent_overlap applied to iwl_weighted_tangent_locality P k and U; this child takes (T) as a hypothesis and does not use that sibling). Then for every integer multiplicity X ∈ D_k(U) (IsIntegerMultiplicity X), every A ⊆ ℝ^P and every S ∈ D_k(U) with IsRestriction X A S (S = X⌞A, Simon Ch. 6, 2.9), S is integer multiplicity.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → (∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[k] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[k] : Measure (Eucl P)) → (∀ x ∈ M₁, 1 ≤ θ₁ x) → (∀ x ∈ M₂, 1 ≤ θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q) → ∀ (X : GeometricCurrentOn U k) (A : Set (Eucl P)) (S : GeometricCurrentOn U k), IsIntegerMultiplicity X → IsRestriction X A S → IsIntegerMultiplicity S",
+  "lean_name": "iwl_imc_restriction_im",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.im_closure-a1.tau_repr-a1",
+    "root.slicing-a1.representation_unique-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1.tau_repr-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.representation_unique-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-a1",
+      "result_commit": "48beb763c9e51aafa51490411902729988f41445",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-restriction-im-a1-a1"
+}

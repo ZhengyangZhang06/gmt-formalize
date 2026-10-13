@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1.tangent_overlap-a1",
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent spaces transfer between two weighted carriers a.e. on their overlap (one-directional, given tangent locality)",
+  "statement": "Let P, k ∈ ℕ and Hᵏ := μHE[k] on ℝ^P = Eucl P. Assume (TL), the frozen statement of iwl_weighted_tangent_locality specialized to P and k: for all Hᵏ-null-measurable M, M′ ⊆ ℝ^P, all θ, θ′ : ℝ^P → ℝ and every x with θ(x) = θ′(x), if for some ρ > 0 θ is Hᵏ-integrable on M ∩ B̄_ρ(x) and θ′ on M′ ∩ B̄_ρ(x), and r^{−k}·∫⁻_{B̄_{Rr}(x)} |1_Mθ − 1_{M′}θ′| dHᵏ → 0 as r ↓ 0 for every R > 0, then for every linear subspace Q of ℝ^P, HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k M′ θ′ x Q (Simon Ch. 3, 1.7). Then for every open U ⊆ ℝ^P, all Hᵏ-null-measurable M₁, M₂ ⊆ U and all θ₁, θ₂ : ℝ^P → ℝ with θ_l(x) ≥ 1 for x ∈ M_l and θ_l Hᵏ-integrable on M_l ∩ K for every compact K ⊆ U (l = 1, 2): for Hᵏ⌞(M₁ ∩ M₂)-almost every x, every Q with HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q also satisfies HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q.",
+  "lean_statement": "∀ (P k : ℕ), (∀ (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P), NullMeasurableSet M (μHE[k] : Measure (Eucl P)) → NullMeasurableSet M' (μHE[k] : Measure (Eucl P)) → θ x = θ' x → (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[k] : Measure (Eucl P)) ∧ IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[k] : Measure (Eucl P))) → (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k M' θ' x Q) → ∀ U : Set (Eucl P), IsOpen U → ∀ (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ : Eucl P → ℝ), M₁ ⊆ U → M₂ ⊆ U → NullMeasurableSet M₁ (μHE[k] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[k] : Measure (Eucl P)) → (∀ x ∈ M₁, 1 ≤ θ₁ x) → (∀ x ∈ M₂, 1 ≤ θ₂ x) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl P))) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl P))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q",
+  "lean_name": "iwl_imc_tangent_overlap",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1",
+    "root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-tangent-overlap-a1-a1"
+}

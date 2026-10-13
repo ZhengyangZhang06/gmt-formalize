@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lpf_wtc_ae_zero_density_off_set|iwl_imc_quotient_rescale_tendsto_zero|iwl_imc_density_zero_off_set",
+        "theorem withDensity_apply|def withDensity",
+        "measure_eq_iInf_isOpen|of_pseudoMetrizableSpace_of_isFiniteMeasure",
+        "theorem exists_inv_nat_lt|protected theorem mul_inv |protected theorem mul_inv_cancel |theorem ofReal_inv_of_pos|protected theorem div_eq_inv_mul",
+        "theorem ofReal_mul |theorem ofReal_pow |protected theorem Tendsto.const_mul|theorem tendsto_of_le_liminf_of_limsup_le",
+        "def dimensionalDensityQuotient|def dimensionalUpperDensity",
+        "git show 12d217bba2a42bdf5072eede11b18f9349b61094:GMT/Ch06/Submission.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-density-zero-off-set-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-density-zero-off-set-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/isolated-comparator-result.json",
+        "/tmp/dzos-independent-audit-qrs3_d_9/solution/GMT/Ch06/Submission.lean",
+        "/tmp/dzos-independent-audit-qrs3_d_9/checks/CombinedChallenge.lean",
+        "/tmp/dzos-independent-audit-qrs3_d_9/checks/CombinedSolution.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and compatibility of inspected sources. The proposed names have no matches in the frozen project; the DAG separately records the unit-scale declaration as comparator-accepted with an identical frozen type, and reserves no occurrence of the new name. Independently compiled both child types and the exact parent type against the frozen environment before installing children, including Euclidean Borel, properness, second-countability and finite-measure outer-regularity instance checks. Independently compiled the accepted unit-scale implementation, the verbatim supplied rescaling proof, and the parent assembly; all three audited declarations and their comparator solution wrappers use only propext, Classical.choice and Quot.sound. The split appropriately reuses the substantial analytic result and isolates rescaling. Dependency edges are acyclic, and the children establish precisely the selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_scale_zero_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition include exactly the same hypotheses. The supplied proof correctly establishes compact localization, a finite withDensity measure for arbitrary g, a measurable null carrier complement, zero upper density through outer regularity and the independent accepted density comparison, and the quotient limit. Countable localization and threshold unions require no σ-finiteness. There is no reliance on the selected parent. The bare identifier legally reuses comparator-accepted commit 12d217bba2a42bdf5072eede11b18f9349b61094 with byte-identical frozen type."
+    },
+    {
+      "key": "quotient_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact standalone one-line proposition, and the bare name is unreserved. Each proof step is valid: positive scaling preserves the one-sided filter; composition gives the quotient limit; the finite nonzero constant ofReal(R^k) permits multiplication and inverse cancellation; eventual positivity gives the required identity. This includes k = 0 and arbitrary ENNReal-valued F. The supplied Lean proof compiles unchanged. Applying it pointwise to the unit-scale child establishes every R > 0 outside the same null exceptional set, exactly yielding the selected parent."
+    }
+  ],
+  "required_changes": []
+}

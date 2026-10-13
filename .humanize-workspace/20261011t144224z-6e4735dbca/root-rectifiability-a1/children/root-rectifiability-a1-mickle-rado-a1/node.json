@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mickle_rado-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Mickle-Radó density dichotomy (Mattila 18.5)",
+  "statement": "Let m ∈ ℕ, k := m + 1, and let ψ be an outer measure on ℝᵏ (ψ(∅) = 0, monotone, countably subadditive) with ψ(B(c,τ)) = sup_{0<τ′<τ}ψ(B(c,τ′)) for all c ∈ ℝᵏ and τ ∈ ℝ (B open balls). Let D ⊆ ℝᵏ be a Borel set with ψ(D) = 0, and for c ∈ ℝᵏ let ϑ(c) := limsup_{t↓0}ψ(B(c,t))/tᵏ ∈ [0,∞]. Then the set {c ∈ D : 0 < ϑ(c) < ∞} has Lebesgue measure zero.",
+  "lean_statement": "∀ (m : ℕ) (ψ : OuterMeasure (Eucl (m + 1))) (D : Set (Eucl (m + 1))), (∀ (c : Eucl (m + 1)) (τ : ℝ), ψ (ball c τ) = ⨆ τ' ∈ Ioo (0 : ℝ) τ, ψ (ball c τ')) → MeasurableSet D → ψ D = 0 → (volume : Measure (Eucl (m + 1))) {c | c ∈ D ∧ 0 < limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) ∧ limsup (fun t : ℝ => ψ (ball c t) / ENNReal.ofReal (t ^ (m + 1))) (𝓝[>] 0) < ⊤} = 0",
+  "lean_name": "rectifiability_mickle_rado",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mickle-rado-a1-a1"
+}
