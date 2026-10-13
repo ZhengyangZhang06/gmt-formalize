@@ -458,6 +458,102 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+/-- **Uniform limits of the perturbed pairings and of the error forms** (steps 4 and 5a–c of the
+weak-equation limit in the Schauder blow-up estimate for Simon 7.1).  Let `A` be a continuous
+bilinear form on `L = L(ℝⁿ, ℝ^ℓ)`, let `U_k → V` uniformly on `K`, and let `‖z‖ ≤ r`, `‖Q z‖ ≤ Z`
+and `‖V z‖ ≤ N` on `K`.  If `c_k → 0`, `d_k → 0` and, for all large `k` and all `z ∈ K`,
+`|ah_k(z)[P][P'] − A[P][P']| ≤ c_k (1 + ‖z‖^α) ‖P‖ ‖P'‖` and `|Ψ_k(z)[P]| ≤ d_k ‖z‖^α ‖P‖`, then
+`ah_k(z)[U_k(z)][Q(z)] → A[V(z)][Q(z)]` and `Ψ_k(z)[Q(z)] → 0` uniformly on `K`.  The bound
+`|A[P][P']| ≤ C_A ‖P‖ ‖P'‖` comes from `ContinuousLinearMap.isBoundedBilinearMap`. -/
+theorem Submission.dohr_eb_sch_bu_wel_pairing_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (α r Z N : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (ah : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (Ψ : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : ℕ → Rn n → (Rn n →L[ℝ] Rn ℓ)) (V Q : Rn n → (Rn n →L[ℝ] Rn ℓ)) (K : Set (Rn n)) (c d : ℕ → ℝ), 0 ≤ α → Tendsto c atTop (𝓝 0) → Tendsto d atTop (𝓝 0) → TendstoUniformlyOn U V atTop K → (∀ z ∈ K, ‖z‖ ≤ r) → (∀ z ∈ K, ‖Q z‖ ≤ Z) → (∀ z ∈ K, ‖V z‖ ≤ N) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P P' : Rn n →L[ℝ] Rn ℓ, |ah k z P P' - A P P'| ≤ c k * (1 + ‖z‖ ^ α) * ‖P‖ * ‖P'‖) → (∀ᶠ k in atTop, ∀ z ∈ K, ∀ P : Rn n →L[ℝ] Rn ℓ, |Ψ k z P| ≤ d k * ‖z‖ ^ α * ‖P‖) → TendstoUniformlyOn (fun k z => ah k z (U k z) (Q z)) (fun z => A (V z) (Q z)) atTop K ∧ TendstoUniformlyOn (fun k z => Ψ k z (Q z)) (fun _ => (0 : ℝ)) atTop K := by
+  intro n ℓ α r Z N A ah Ψ U V Q K c d hα hc hd hUV hr hZ hN hah hΨ
+  -- Step 1: nonnegative bounds on `K`: `‖z‖ ^ α ≤ R := (max r 0) ^ α`, `‖Q z‖ ≤ Z₀ := max Z 0`
+  -- and `‖V z‖ ≤ N₀ := max N 0` (no case split when `K` is empty).
+  obtain ⟨R, hR0, hR⟩ : ∃ R : ℝ, 0 ≤ R ∧ ∀ z ∈ K, ‖z‖ ^ α ≤ R :=
+    ⟨max r 0 ^ α, Real.rpow_nonneg (le_max_right r 0) α, fun z hz =>
+      Real.rpow_le_rpow (norm_nonneg z) ((hr z hz).trans (le_max_left r 0)) hα⟩
+  obtain ⟨Z₀, hZ₀0, hZ₀⟩ : ∃ Z₀ : ℝ, 0 ≤ Z₀ ∧ ∀ z ∈ K, ‖Q z‖ ≤ Z₀ :=
+    ⟨max Z 0, le_max_right Z 0, fun z hz => (hZ z hz).trans (le_max_left Z 0)⟩
+  obtain ⟨N₀, hN₀0, hN₀⟩ : ∃ N₀ : ℝ, 0 ≤ N₀ ∧ ∀ z ∈ K, ‖V z‖ ≤ N₀ :=
+    ⟨max N 0, le_max_right N 0, fun z hz => (hN z hz).trans (le_max_left N 0)⟩
+  -- Step 2: the bilinear bound `‖A P P'‖ ≤ C_A ‖P‖ ‖P'‖`.
+  obtain ⟨CA, hCA0, hCA⟩ : ∃ CA > 0, ∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖A P P'‖ ≤ CA * ‖P‖ * ‖P'‖ :=
+    A.isBoundedBilinearMap.bound
+  refine ⟨?_, ?_⟩
+  · -- Claim (i).  Step 3: with `C₁ = (1 + R)(N₀ + 1) Z₀` and `C₂ = C_A Z₀`, eventually
+    -- `|c_k| < (ε/2)/(C₁ + 1)`, `‖U_k z − V z‖ < min 1 ((ε/2)/(C₂ + 1))` on `K`, and the
+    -- coefficient bound holds on `K`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₁ : 0 < (1 + R) * (N₀ + 1) * Z₀ + 1 := by positivity
+    have hC₂ : 0 < CA * Z₀ + 1 := by positivity
+    have hδ₁ : 0 < ε / 2 / ((1 + R) * (N₀ + 1) * Z₀ + 1) := by positivity
+    have hδ₂ : 0 < min 1 (ε / 2 / (CA * Z₀ + 1)) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hc _ hδ₁, Metric.tendstoUniformlyOn_iff.mp hUV _ hδ₂,
+      hah] with k hck hUk hahk z hz
+    rw [Real.dist_eq, sub_zero] at hck
+    have hP : ‖U k z - V z‖ < min 1 (ε / 2 / (CA * Z₀ + 1)) := by
+      rw [← dist_eq_norm, dist_comm]
+      exact hUk z hz
+    have hP₁ : ‖U k z - V z‖ ≤ 1 := hP.le.trans (min_le_left _ _)
+    have hP₂ : ‖U k z - V z‖ < ε / 2 / (CA * Z₀ + 1) := hP.trans_le (min_le_right _ _)
+    -- Step 4: `‖U_k z‖ ≤ ‖V z‖ + ‖U_k z − V z‖ ≤ N₀ + 1`.
+    have hUn : ‖U k z‖ ≤ N₀ + 1 :=
+      calc ‖U k z‖ = ‖V z + (U k z - V z)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖V z‖ + ‖U k z - V z‖ := norm_add_le _ _
+        _ ≤ N₀ + 1 := add_le_add (hN₀ z hz) hP₁
+    -- Step 5: `A[V][Q] − ah_k[U_k][Q] = −((ah_k − A)[U_k][Q] + A[U_k − V][Q])`.
+    have hdec : A (V z) (Q z) - ah k z (U k z) (Q z) =
+        -((ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)) := by
+      rw [map_sub, sub_apply]
+      ring
+    -- Step 6: the first term is `≤ |c_k| C₁ < ε/2`.
+    have h₁ : |ah k z (U k z) (Q z) - A (U k z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      have hRz := hR z hz
+      calc |ah k z (U k z) (Q z) - A (U k z) (Q z)|
+          ≤ c k * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := hahk z hz _ _
+        _ ≤ |c k| * (1 + ‖z‖ ^ α) * ‖U k z‖ * ‖Q z‖ := by
+            gcongr
+            exact le_abs_self (c k)
+        _ ≤ |c k| * (1 + R) * (N₀ + 1) * Z₀ := by gcongr
+        _ ≤ |c k| * ((1 + R) * (N₀ + 1) * Z₀ + 1) := by
+            nlinarith [abs_nonneg (c k)]
+        _ < ε / 2 := (lt_div_iff₀ hC₁).mp hck
+    -- Step 7: the second term is `≤ ‖U_k z − V z‖ C₂ < ε/2`.
+    have h₂ : |A (U k z - V z) (Q z)| < ε / 2 := by
+      have hQ := hZ₀ z hz
+      calc |A (U k z - V z) (Q z)| = ‖A (U k z - V z) (Q z)‖ := (Real.norm_eq_abs _).symm
+        _ ≤ CA * ‖U k z - V z‖ * ‖Q z‖ := hCA _ _
+        _ ≤ CA * ‖U k z - V z‖ * Z₀ := by gcongr
+        _ ≤ ‖U k z - V z‖ * (CA * Z₀ + 1) := by
+            nlinarith [norm_nonneg (U k z - V z)]
+        _ < ε / 2 := (lt_div_iff₀ hC₂).mp hP₂
+    -- Step 8: the triangle inequality.
+    rw [Real.dist_eq, hdec, abs_neg]
+    calc |(ah k z (U k z) (Q z) - A (U k z) (Q z)) + A (U k z - V z) (Q z)|
+        ≤ |ah k z (U k z) (Q z) - A (U k z) (Q z)| + |A (U k z - V z) (Q z)| := abs_add_le _ _
+      _ < ε / 2 + ε / 2 := add_lt_add h₁ h₂
+      _ = ε := add_halves ε
+  · -- Claim (ii), Step 9: with `C₃ = R Z₀`, eventually `|d_k| < ε/(C₃ + 1)` and the error bound
+    -- holds on `K`, so `|Ψ_k z (Q z)| ≤ |d_k| C₃ < ε`.
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have hC₃ : 0 < R * Z₀ + 1 := by positivity
+    have hδ : 0 < ε / (R * Z₀ + 1) := by positivity
+    filter_upwards [Metric.tendsto_nhds.mp hd _ hδ, hΨ] with k hdk hΨk z hz
+    rw [Real.dist_eq, sub_zero] at hdk
+    have hQ := hZ₀ z hz
+    have hRz := hR z hz
+    rw [Real.dist_eq, zero_sub, abs_neg]
+    calc |Ψ k z (Q z)| ≤ d k * ‖z‖ ^ α * ‖Q z‖ := hΨk z hz _
+      _ ≤ |d k| * ‖z‖ ^ α * ‖Q z‖ := by
+          gcongr
+          exact le_abs_self (d k)
+      _ ≤ |d k| * R * Z₀ := by gcongr
+      _ ≤ |d k| * (R * Z₀ + 1) := by nlinarith [abs_nonneg (d k)]
+      _ < ε := (lt_div_iff₀ hC₃).mp hdk
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
