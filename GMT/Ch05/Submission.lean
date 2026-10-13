@@ -458,6 +458,85 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- **Derivative bounds for a map that is `1`-Lipschitz on a closed ball** (Simon Ch. 5, proof of
+4.5, (14)–(16), first step).  Let `f : ℝⁿ → ℝ^ℓ` be `1`-Lipschitz on `B_r(0)`, `|Df|² = hsNormSq Df`
+and `fʲ = (f ·)_j`.  `x ↦ Df(x)` is measurable (`measurable_fderiv`) and `A ↦ |A|²` is continuous,
+so `|Df|²` is measurable; so is `∇fʲ = (toDual)⁻¹ ∘ Dfʲ`.  `B_r(0)` is a neighbourhood of each point
+of `B̆_r(0)`, so `‖Df‖ ≤ 1` there (`norm_fderiv_le_of_lipschitzOn`) and `|Df|² ≤ n`; each `fʲ` is
+`1`-Lipschitz on `B_r(0)` as well (`|w_j| ≤ |w|`), so `|∇fʲ| = ‖Dfʲ‖ ≤ 1` on `B̆_r(0)`.  By
+Rademacher's theorem `f` is differentiable at a.e. `x ∈ B̆_r(0)`; there `Dfʲ(x) = π_j ∘ Df(x)`, so
+`|∇fʲ(x)|² = Σᵢ ((Df(x) eᵢ)_j)² ≤ Σᵢ |Df(x) eᵢ|² = |Df(x)|²`. -/
+theorem gwe_wewe_lipschitz_fderiv_facts : ∀ (n ℓ : ℕ) (r : ℝ) (f : Rn n → Rn ℓ), LipschitzOnWith 1 f (closedBall 0 r) → Measurable (fun x => hsNormSq (fderiv ℝ f x)) ∧ (∀ j : Fin ℓ, Measurable (gradient (fun y => f y j))) ∧ (∀ x, 0 ≤ hsNormSq (fderiv ℝ f x)) ∧ (∀ x ∈ ball (0 : Rn n) r, hsNormSq (fderiv ℝ f x) ≤ n ∧ ∀ j : Fin ℓ, ‖gradient (fun y => f y j) x‖ ≤ 1) ∧ ∀ᵐ x ∂(volume : Measure (Rn n)), x ∈ ball 0 r → ∀ j : Fin ℓ, ‖gradient (fun y => f y j) x‖ ^ 2 ≤ hsNormSq (fderiv ℝ f x) := by
+  intro n ℓ r f hf
+  -- `B_r(0)` is a neighbourhood of every point of the open ball.
+  have hnhds : ∀ x ∈ ball (0 : Rn n) r, closedBall (0 : Rn n) r ∈ 𝓝 x := fun x hx =>
+    Filter.mem_of_superset (isOpen_ball.mem_nhds hx) ball_subset_closedBall
+  -- Each coordinate `fʲ` is `1`-Lipschitz on `B_r(0)`, since `|w_j| ≤ |w|`.
+  have hfj : ∀ j : Fin ℓ, LipschitzOnWith 1 (fun y => f y j) (closedBall 0 r) := by
+    intro j
+    refine LipschitzOnWith.of_dist_le_mul fun y hy z hz => ?_
+    calc dist (f y j) (f z j) ≤ dist (f y) (f z) := PiLp.dist_apply_le _ _ _
+      _ ≤ (1 : ℝ≥0) * dist y z := hf.dist_le_mul y hy z hz
+  -- `|∇g(x)|² = Σᵢ (Dg(x) eᵢ)²`, since `(∇g(x))ᵢ = ⟪∇g(x), eᵢ⟫ = Dg(x) eᵢ`.
+  have hgrad : ∀ (g : Rn n → ℝ) (x : Rn n),
+      ‖gradient g x‖ ^ 2 = ∑ i, (fderiv ℝ g x (EuclideanSpace.single i 1)) ^ 2 := by
+    intro g x
+    rw [EuclideanSpace.norm_sq_eq]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have h := InnerProductSpace.toDual_symm_apply (𝕜 := ℝ) (E := Rn n)
+      (x := EuclideanSpace.single i 1) (y := fderiv ℝ g x)
+    rw [EuclideanSpace.inner_single_right] at h
+    rw [Real.norm_eq_abs, sq_abs]
+    simpa [gradient] using congrArg (· ^ 2) h
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- `|Df|²` is a continuous function of the measurable map `x ↦ Df(x)`.
+    have hcont : Continuous fun A : Rn n →L[ℝ] Rn ℓ => hsNormSq A := by
+      unfold hsNormSq
+      fun_prop
+    exact hcont.measurable.comp (measurable_fderiv ℝ f)
+  · intro j
+    exact (InnerProductSpace.toDual ℝ (Rn n)).symm.continuous.measurable.comp
+      (measurable_fderiv ℝ (fun y => f y j))
+  · intro x
+    unfold hsNormSq
+    positivity
+  · intro x hx
+    refine ⟨?_, fun j => ?_⟩
+    · -- `‖Df(x) eᵢ‖ ≤ ‖Df(x)‖ ‖eᵢ‖ ≤ 1` for each of the `n` summands.
+      have h1 : ‖fderiv ℝ f x‖ ≤ 1 := by
+        simpa using norm_fderiv_le_of_lipschitzOn ℝ (hnhds x hx) hf
+      unfold hsNormSq
+      calc ∑ i : Fin n, ‖fderiv ℝ f x (EuclideanSpace.single i 1)‖ ^ 2
+          ≤ ∑ _i : Fin n, (1 : ℝ) := by
+            refine Finset.sum_le_sum fun i _ => ?_
+            have : ‖fderiv ℝ f x (EuclideanSpace.single i 1)‖ ≤ 1 := by
+              calc _ ≤ ‖fderiv ℝ f x‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
+                    (fderiv ℝ f x).le_opNorm _
+                _ ≤ 1 := by simpa using h1
+            exact pow_le_one₀ (norm_nonneg _) this
+        _ = n := by simp
+    · -- The Riesz map `toDual` is an isometry, so `|∇fʲ(x)| = ‖Dfʲ(x)‖ ≤ 1`.
+      have h1 : ‖fderiv ℝ (fun y => f y j) x‖ ≤ 1 := by
+        simpa using norm_fderiv_le_of_lipschitzOn ℝ (hnhds x hx) (hfj j)
+      simpa [gradient] using h1
+  · -- Rademacher: `f` is differentiable within `B_r(0)`, hence at `x`, for a.e. `x ∈ B̆_r(0)`.
+    filter_upwards [hf.ae_differentiableWithinAt_of_mem (μ := volume)] with x hx hxb j
+    have hd : DifferentiableAt ℝ f x :=
+      (hx (ball_subset_closedBall hxb)).differentiableAt (hnhds x hxb)
+    have hfd : fderiv ℝ (fun y => f y j) x =
+        (EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).comp (fderiv ℝ f x) :=
+      ((EuclideanSpace.proj j : Rn ℓ →L[ℝ] ℝ).hasFDerivAt.comp x hd.hasFDerivAt).fderiv
+    rw [hgrad, hfd]
+    unfold hsNormSq
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [ContinuousLinearMap.comp_apply, ← sq_abs]
+    have h := PiLp.norm_apply_le (fderiv ℝ f x (EuclideanSpace.single i 1)) j
+    exact pow_le_pow_left₀ (abs_nonneg _) h 2
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

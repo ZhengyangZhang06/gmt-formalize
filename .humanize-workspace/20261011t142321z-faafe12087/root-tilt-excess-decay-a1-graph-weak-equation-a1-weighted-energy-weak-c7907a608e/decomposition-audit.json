@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "theorem (ae_differentiableWithinAt_of_mem|norm_fderiv_le_of_lipschitzOn|measurable_fderiv)|def gradient|theorem toDual_gradient",
+        "theorem integral_mul_le_Lp_mul_Lq_of_nonneg|theorem integral_eq_lintegral_of_nonneg_ae|theorem abs_integral_le_integral_abs",
+        "integrable_norm_rpow_iff|integrableOn_of_bounded|toReal_le_of_le_ofReal",
+        "theorem integrable_norm_rpow_iff|theorem Measure.integrableOn_of_bounded|theorem setIntegral_mono_set|theorem addHaar_ball_of_pos|theorem volume_ball|theorem toReal_le_of_le_ofReal",
+        "gwe_wewe_(lipschitz_fderiv_facts|energy_bound|setIntegral_le_sqrt_mul_sqrt|weight_error_bound)",
+        "python3 /tmp/wewe-independent-audit-ipx5e54_/run_checks.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/Gradient/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-c7907a608e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-tilt-excess-decay-a1-graph-weak-equation-a1-weighted-energy-weak-c7907a608e/decomposition-v1.json",
+        "/tmp/wewe-independent-audit-ipx5e54_/AllChecks.lean",
+        "/tmp/wewe-independent-audit-ipx5e54_/AllChecks.log"
+      ],
+      "conclusion": "The four-way split is appropriate for the selected weighted-energy/weak-equation theorem. The snapshot pins project ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the frozen Contract is byte-identical to the workspace Contract and Submission. Pinned sources confirm the derivative, measurability, integrability, Hölder, and ball-scaling facts used. No proposed name matches an existing DAG reservation or another branch's contract; all four are bare identifiers, and no accepted declaration is reused. Dependencies are correctly directed and acyclic: energy_bound and weight_error_bound depend only on lipschitz_fderiv_facts; Cauchy–Schwarz is independent. Every frozen type is a standalone one-line proposition, with no implementation-dependent alias or matrix-unit construction. Against a freshly compiled contract-only baseline, all five exact types elaborated before child implementations. The four supplied proof certificates, assembly from the child propositions, and exact selected parent target passed Lean with only propext, Classical.choice, and Quot.sound. The assembly preserves the frozen hypotheses and constant quantifier order."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_fderiv_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary dimensions and radius. Each conjunct follows from the supplied steps: measurable_fderiv and the Riesz isometry give measurability; interior Lipschitz bounds control both derivatives; Rademacher and the coordinate chain rule give the squared-gradient comparison on a common full-measure set. The comparison is correctly restricted to almost every point. The proof is complete and non-circular."
+    },
+    {
+      "key": "energy_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The declared derivative dependency supplies boundedness and integrability. The zero-weight case split, measurable indicator integral, H2, and H3 establish the finite lintegral bound; nonnegativity justifies conversion to the stated Bochner bound. No upper bound on W is silently assumed. The proof establishes exactly the energy estimate needed by the parent."
+    },
+    {
+      "key": "set_integral_cauchy_schwarz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract finite-measure statement matches its Lean proposition. Restriction is finite without requiring S measurable. Domination by integrable D gives integrability of g², hence L² membership; Hölder applied to g and 1, followed by integral and square-root monotonicity, proves the conclusion. Measurability and sign requirements are supplied, with no circular dependency or deferred proof construction."
+    },
+    {
+      "key": "weight_error_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary ζ. Measurability of its gradient follows from measurable_fderiv, and the global gradient bound implies M ≥ 0. The proof establishes integrability before subtracting integrals, derives the precise error terms in both weight cases, and bounds the indicator contribution using finite-measure toReal monotonicity. Only the declared derivative dependency is used. Its conclusion supplies the parent's weighted-to-unweighted estimate."
+    }
+  ],
+  "required_changes": []
+}
