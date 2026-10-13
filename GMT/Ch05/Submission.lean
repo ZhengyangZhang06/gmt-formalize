@@ -15787,7 +15787,7 @@ theorem tdo_ods_hsNormSq_fderiv_single : ∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (
 `[-a, a]`, then `r ↦ ‖deriv W r‖` is integrable on `(-a, a)`: it is measurable
 (`measurable_deriv`), bounded by `K` on `(-a, a)` because `[-a, a]` is a neighbourhood of each
 point there (`norm_deriv_le_of_lipschitzOn`), and `(-a, a)` has finite measure. -/
-theorem Submission.tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a) := by
+theorem tdo_ods_integrableOn_norm_deriv : ∀ (ℓ : ℕ) (W : ℝ → Rn ℓ) (a : ℝ) (K : ℝ≥0), LipschitzOnWith K W (Icc (-a) a) → IntegrableOn (fun r => ‖deriv W r‖) (Ioo (-a) a) := by
   intro ℓ W a K hW
   -- (1) measurability of `‖W'‖`, (4) finite measure of `(-a, a)`
   refine Measure.integrableOn_of_bounded (M := K) measure_Ioo_lt_top.ne
@@ -18186,36 +18186,6 @@ theorem ted_tangent_plane_facts : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (U : Set (Amb
       funext v
       rw [ContinuousLinearMap.coe_coe, hDGv]
     rw [hfun, ← LinearMap.coe_range, Submodule.span_eq]
-
-/-- **Simon Ch. 3, Lemma 1.2 ("only if"), Remark 1.3 and Theorem 1.6 for `C¹` pieces.**  A
-countably `n`-rectifiable `M ⊆ ℝ^{n+ℓ}` is covered, up to an `Hⁿ`-null set, by countably many Borel
-sets `N_k` of finite `Hⁿ`-measure, each carrying approximate tangent planes `T_k(x)`, `x ∈ N_k`,
-with `x ↦ p_{T_k(x)}` continuous on `N_k`.  Proof: the `C¹` piece cover (C¹ approximation of the
-Lipschitz pieces, null critical images, Lindelöf) gives an `Hⁿ`-null `Z₀` and `C¹` charts `G_k`
-with injective differential and a lower Lipschitz bound on balls `B_k`, with
-`M ⊆ Z₀ ∪ ⋃_k G_k(B_k)`; take `N_k = G_k(B_k)` with the tangent field of each chart image, so
-`M \ ⋃_k N_k ⊆ Z₀`. -/
-theorem lipts_rectifiable_tangent_chart_cover : ∀ (n ℓ : ℕ), 1 ≤ n → ∀ (M : Set (Amb n ℓ)), Poincare.SimonGMT.Chapter03.CountablyRectifiable n M → ∃ (N : ℕ → Set (Amb n ℓ)) (T : ℕ → Amb n ℓ → Submodule ℝ (Amb n ℓ)), (∀ k, MeasurableSet (N k)) ∧ (∀ k, (μHE[n] : Measure (Amb n ℓ)) (N k) < ⊤) ∧ (∀ k, ContinuousOn (fun x => (T k x).starProjection) (N k)) ∧ (∀ k, ∀ x ∈ N k, Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n (N k) x (T k x)) ∧ (μHE[n] : Measure (Amb n ℓ)) (M \ ⋃ k, N k) = 0 := by
-  intro n ℓ hn M hM
-  obtain ⟨Z₀, -, hZ₀, G, c, r, σ, hG, -, hσ, hinj, hlow, hcov⟩ :=
-    aetp_rectifiable_c1_piece_cover n ℓ hn M hM
-  have hchart := fun k => tae_c1_chart_image_approxTangent (G k) (c k) (r k) (σ k) hn (hG k)
-    (hσ k) (hinj k) (hlow k)
-  choose T hT using fun k => (hchart k).2.2
-  refine ⟨fun k => G k '' ball (c k) (r k), T, fun k => (hchart k).1, fun k => (hchart k).2.1,
-    fun k => (hT k).1, fun k => (hT k).2, measure_mono_null (fun x hx => ?_) hZ₀⟩
-  rcases hcov hx.1 with h | h
-  · exact h
-  · exact absurd h hx.2
-
-/-! ### `lip_approx_tangent_structure`: tangent planes, measurability and density of `V`
-
-Parts D–H of the accepted natural proof (Simon Ch. 3, 1.6 "⇒", Remarks 1.8(1),(2), Theorem 1.9),
-on top of the chart cover `lipts_rectifiable_tangent_chart_cover` (Parts A–C).  At `Hⁿ`-a.e. point
-`y` of `M ∩ N_k`, the weighted blow-ups of `(M, θ)` are compared with `θ(y)` times the blow-ups of
-`N_k`; the error is controlled by the Lebesgue differentiation theorem for `θ 1_{M ∩ K}` with
-respect to `Hⁿ ⌞ N_k` (Besicovitch) and by the Upper Density Theorem
-(`upperDensity_ne_zero_outside_hausdorff_null`) for `|θ| Hⁿ ⌞ (M ∩ K)` on `N_kᶜ`. -/
 
 set_option maxHeartbeats 10000000 in
 /-- **Simon Ch. 3, Theorem 1.9 (⇒) with Remark 1.8(1)** (fact (F1) of the proof of Corollary 2.7):
@@ -57528,7 +57498,7 @@ coercive, bounded by `M_B` and `L_B H`-Hölder in `x` on `S`.
 Proof: `P_t(x) = (1 - t)P₀(x) + tP₁(x)` stays in the `ε`-ball, so the bounds on `B` hold for each
 `t ∈ [0, 1]` and pass to the integral.  For the Hölder bound, `‖P_t(x) - P_t(y)‖ ≤ H‖x - y‖^α` as a
 convex combination of the two Hölder bounds. -/
-theorem Submission.dohr_eb_elc2_averaged_hessian : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε MB LB H α : ℝ) (S : Set (Rn n)) (P₀ P₁ : Rn n → Rn n →L[ℝ] Rn ℓ), ContDiff ℝ 2 Ψ → 0 ≤ LB → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) → (∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖) → (∀ x ∈ S, ‖P₀ x‖ ≤ ε) → (∀ x ∈ S, ‖P₁ x‖ ≤ ε) → (∀ x ∈ S, ∀ y ∈ S, ‖P₀ x - P₀ y‖ ≤ H * ‖x - y‖ ^ α) → (∀ x ∈ S, ∀ y ∈ S, ‖P₁ x - P₁ y‖ ≤ H * ‖x - y‖ ^ α) → ∃ a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ), a x P Q = ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (P₀ x + t • (P₁ x - P₀ x)) P Q) ∧ (∀ x ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) ∧ (∀ x ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ MB * ‖P‖ * ‖Q‖) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
+theorem dohr_eb_elc2_averaged_hessian : ∀ (n ℓ : ℕ) (Ψ : (Rn n →L[ℝ] Rn ℓ) → ℝ) (lam ε MB LB H α : ℝ) (S : Set (Rn n)) (P₀ P₁ : Rn n → Rn n →L[ℝ] Rn ℓ), ContDiff ℝ 2 Ψ → 0 ≤ LB → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, lam * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ Ψ) P Q Q) → (∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q'| ≤ MB * ‖Q‖ * ‖Q'‖) → (∀ P P' : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ‖P'‖ ≤ ε → ∀ Q Q' : Rn n →L[ℝ] Rn ℓ, |fderiv ℝ (fderiv ℝ Ψ) P Q Q' - fderiv ℝ (fderiv ℝ Ψ) P' Q Q'| ≤ LB * ‖P - P'‖ * ‖Q‖ * ‖Q'‖) → (∀ x ∈ S, ‖P₀ x‖ ≤ ε) → (∀ x ∈ S, ‖P₁ x‖ ≤ ε) → (∀ x ∈ S, ∀ y ∈ S, ‖P₀ x - P₀ y‖ ≤ H * ‖x - y‖ ^ α) → (∀ x ∈ S, ∀ y ∈ S, ‖P₁ x - P₁ y‖ ≤ H * ‖x - y‖ ^ α) → ∃ a : Rn n → (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ, (∀ (x : Rn n) (P Q : Rn n →L[ℝ] Rn ℓ), a x P Q = ∫ t in (0 : ℝ)..1, fderiv ℝ (fderiv ℝ Ψ) (P₀ x + t • (P₁ x - P₀ x)) P Q) ∧ (∀ x ∈ S, ∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ a x P P) ∧ (∀ x ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q| ≤ MB * ‖P‖ * ‖Q‖) ∧ ∀ x ∈ S, ∀ y ∈ S, ∀ P Q : Rn n →L[ℝ] Rn ℓ, |a x P Q - a y P Q| ≤ LB * H * ‖x - y‖ ^ α * ‖P‖ * ‖Q‖ := by
   intro n ℓ Ψ lam ε MB LB H α S P₀ P₁ hΨ hLB hLeg hMB hLip hP₀ hP₁ hH₀ hH₁
   -- Step 1: `B = D²Ψ` is continuous since `Ψ` is `C²`, so each scalar integrand
   -- `t ↦ B(P_t(x))[P][Q]` is continuous, hence interval integrable on `[0, 1]`.
