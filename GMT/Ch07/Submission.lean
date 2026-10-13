@@ -451,6 +451,22 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The derivative bound behind Simon 6.2.24(2)–(3) (push-forward by a `C¹` map): if `φ` is `C¹`
+on `ℝᴾ` and `φ(x) = x` off a compact set `K`, then `‖Dφ(x)‖ ≤ Λ` for some `Λ ≥ 0` and all `x`.
+`Dφ` is continuous, hence bounded by some `c` on `K`; off the closed set `K`, `φ = id` near `x`,
+so `Dφ(x) = id` has norm `≤ 1`.  Take `Λ = max(1, c)`. -/
+theorem Submission.dpf_pfc_fderiv_norm_le_of_eq_id_off_compact : ∀ (P : ℕ) (K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ φ x‖ ≤ Λ := by
+  intro P K φ hK hφ hid
+  -- `Dφ` is continuous, so it is bounded by some `c` on the compact set `K`
+  obtain ⟨c, hc⟩ := hK.exists_bound_of_continuousOn (hφ.continuous_fderiv one_ne_zero).continuousOn
+  refine ⟨max 1 c, zero_le_one.trans (le_max_left _ _), fun x => ?_⟩
+  by_cases hx : x ∈ K
+  · exact (hc x hx).trans (le_max_right _ _)
+  · -- off the closed set `K`, `φ = id` near `x`, so `Dφ(x) = id` has norm `≤ 1`
+    have h : φ =ᶠ[𝓝 x] id := eventually_of_mem (hK.isClosed.isOpen_compl.mem_nhds hx) hid
+    rw [h.fderiv_eq, fderiv_id]
+    exact ContinuousLinearMap.norm_id_le.trans (le_max_left _ _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
