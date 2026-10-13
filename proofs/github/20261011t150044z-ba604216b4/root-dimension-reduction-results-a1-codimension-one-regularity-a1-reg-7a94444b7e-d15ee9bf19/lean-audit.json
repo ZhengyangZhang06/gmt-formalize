@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f69a58f6a455d8740aadd49235edb4094ffa52453622a646204e1b4af54b46b",
+  "git_delta": {
+    "base_commit": "f1fc23add061634b5d44716dd5b51910cd4ff42a",
+    "candidate_commit": "3c58a149ea2b04fd6a9ebd293d696df87f43e590",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_c1a_whitney_extension",
+    "diff_sha256": "6d286f7c0a539d726eca0f339e02b1f84b1db589b76014b98338fbabaed00ebd",
+    "source_sha256": "7f961133b292fa30157e8836a1358c0960f9f614eb903f0983507acd42fc3ab1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1a_whitney_extension",
+      "statement": "∀ (n : ℕ) (A : Set (Euclid n)) (h : Euclid n → ℝ) (D : Euclid n → (Euclid n →L[ℝ] ℝ)), IsClosed A → ContinuousOn h A → ContinuousOn D A → (∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖h y - h x - D x (y - x)‖ ≤ ε * ‖y - x‖) → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ EqOn g h A ∧ ∀ a ∈ A, HasFDerivAt g (D a) a",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
