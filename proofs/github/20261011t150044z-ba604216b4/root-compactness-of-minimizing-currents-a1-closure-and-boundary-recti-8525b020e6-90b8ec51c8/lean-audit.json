@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "92fd48efbbb52679581084a4dc114e5fcc2db79d0bd10d311cf1bd9698232204",
+  "git_delta": {
+    "base_commit": "2403b571f53104dfe54a85d78ca996335db6ee77",
+    "candidate_commit": "d57ff8dadd2514897baeb94fa067c84c914df86e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrld_im_degree_zero_eq_zero_of_mass_lt_one",
+    "diff_sha256": "3eb1b21a3ba842c34bf53cfe1f5f21cf48af11ef612a7334a9696828b271ea16",
+    "source_sha256": "c2c798f2a7d48ff66629dcf1dc7341aaa7c9f46dc0d49ba7364b191191004e37",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrld_im_degree_zero_eq_zero_of_mass_lt_one",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P : ℕ) (Z : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity Z → Z.mass < 1 → Z = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
