@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2346b611dc667f9e5f1520358d9a6fdfad0182b7e2df8d2fd63c9429668e07ea",
+  "git_delta": {
+    "base_commit": "c4a77966446510ea21fad5ba713d9d730cb9fef4",
+    "candidate_commit": "0501e07ced47186792005c0a22c976aafdb0ebdf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_rpd_bilipschitz_image_measure",
+    "diff_sha256": "ec11499b56a1669f2667f9eb498d9109b2eea56e6df3dfcd890fd30251e8a951",
+    "source_sha256": "39fb4dd154d3940830253a8d2029cf4400347ddbdab8ed1664b48d0a59dfd3b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_rpd_bilipschitz_image_measure",
+      "statement": "∀ (P n : ℕ) (χ : Euclid n → Euclid P) (E : Set (Euclid n)) (c₁ c₂ : ℝ), 0 < c₁ → 0 ≤ c₂ → (∀ a ∈ E, ∀ b ∈ E, c₁ * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ c₂ * ‖a - b‖) → ENNReal.ofReal (c₁ ^ n) * volume E ≤ μHE[n] (χ '' E) ∧ μHE[n] (χ '' E) ≤ ENNReal.ofReal (c₂ ^ n) * volume E",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
