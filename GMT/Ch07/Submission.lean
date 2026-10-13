@@ -1506,38 +1506,6 @@ theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (
         refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
         intro x hx
         exact_mod_cast R.mult_pos x hx.1
-/-- Lower semicontinuity of mass under weak convergence on exhausting domains (Simon 6.2.14, as
-used in 7.2.4 and 7.3.1): if every closed ball `B̄_R(0)` lies in `Uⱼ` for all large `j` and
-`Sⱼ ⇀ C` in `ℝᴾ`, then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})` for every subsequence `φ` and every `O`.
-An `ω` admissible for `M_O(C)` has compact support, so it lies in some `B̄_R(0)` and is admissible
-for `S_{φ(i)}` for all large `i`; hence `ofReal(C(ω)) = liminf_i ofReal(S_{φ(i)}(ω))` is at most
-`liminf_i M_O(S_{φ(i)})`. -/
-theorem Submission.dtc_bc_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-  intro P n Us Ss C hUs hconv φ hφ O
-  -- `M_O(C)` is a supremum: bound each admissible evaluation `ofReal(C(ω))`.
-  refine sSup_le ?_
-  rintro r ⟨ω, hω, rfl⟩
-  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
-  have hwt : IsTestForm w := ω.property.1
-  -- `tsupport ω` is compact, so it lies in a closed ball, eventually contained in `U_{φ(i)}`.
-  obtain ⟨R, hR⟩ := hwt.2.isCompact.isBounded.subset_closedBall (0 : Euclid P)
-  have hev : ∀ᶠ i in atTop, closedBall (0 : Euclid P) R ⊆ Us (φ i) :=
-    hφ.tendsto_atTop.eventually (hUs R)
-  -- There `ω` is admissible for `S_{φ(i)}`, and `currentEval` is its evaluation.
-  have hle : ∀ᶠ i in atTop,
-      ENNReal.ofReal (currentEval (Ss (φ i)) w) ≤ (Ss (φ i)).massOn O := by
-    filter_upwards [hev] with i hi
-    have hmem : IsTestForm w ∧ tsupport w ⊆ Us (φ i) := ⟨hwt, hR.trans hi⟩
-    have heval : currentEval (Ss (φ i)) w = Ss (φ i) ⟨w, hmem⟩ := by
-      unfold currentEval
-      exact dite_eq_left hmem
-    rw [heval]
-    exact (Ss (φ i)).le_massOn (omega := ⟨w, hmem⟩) ⟨hω.1, hω.2⟩
-  -- `currentEval (S_{φ(i)}) ω → C(ω)`, so `ofReal(C(ω))` is the liminf of `ofReal` of these values.
-  calc ENNReal.ofReal (C ω)
-      = liminf (fun i => ENNReal.ofReal (currentEval (Ss (φ i)) w)) atTop :=
-        (ENNReal.tendsto_ofReal ((hconv ω).comp hφ.tendsto_atTop)).liminf_eq.symm
-    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := liminf_le_liminf hle
 /-- **Simon 7.2.4, (12)–(13)** (upper bound on compact sets): let `μ` be finite on compact
 subsets of `ℝᴾ`, and suppose that for every compact `K`, `ε > 0` and subsequence `ψ` there are
 `K ⊆ W ⊆ thickening ε K` and a further subsequence `φ'` with `limsup_i μ_{ψ(φ'(i))}(W) ≤ μ(W)`.
