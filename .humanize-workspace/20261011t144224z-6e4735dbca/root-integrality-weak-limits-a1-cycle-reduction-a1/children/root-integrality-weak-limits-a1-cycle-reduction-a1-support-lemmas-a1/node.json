@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.support_lemmas-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Supports of boundaries, weak limits and linear combinations",
+  "statement": "(1) For P, m ∈ ℕ, any U ⊆ ℝ^P and Z ∈ D_{m+1}(U) (GeometricCurrentOn U (m+1)): spt ∂Z ⊆ spt Z. (2) For P, n ∈ ℕ, open U ⊆ ℝ^P, closed K ⊆ ℝ^P and Z_j, Z ∈ D_n(U) with spt Z_j ⊆ K for all j and Z_j ⇀ Z: spt Z ⊆ K. (3) For P, n ∈ ℕ, open U ⊆ ℝ^P, Z_1, Z_2, Z ∈ D_n(U) and a, b ∈ ℝ with Z(ω) = a·Z_1(ω) + b·Z_2(ω) for all ω ∈ D^n(U): spt Z ⊆ spt Z_1 ∪ spt Z_2.",
+  "lean_statement": "(∀ (P m : ℕ) (U : Set (Eucl P)) (Z : GeometricCurrentOn U (m + 1)), Z.boundary.support ⊆ Z.support) ∧ (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (K : Set (Eucl P)) (Zj : ℕ → GeometricCurrentOn U n) (Z : GeometricCurrentOn U n), IsClosed K → (∀ j, (Zj j).support ⊆ K) → WeaklyConvergesOn Zj Z → Z.support ⊆ K) ∧ (∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Z₁ Z₂ Z : GeometricCurrentOn U n) (a b : ℝ), (∀ ω : TestFormOn U n, Z ω = a * Z₁ ω + b * Z₂ ω) → Z.support ⊆ Z₁.support ∪ Z₂.support)",
+  "lean_name": "iwl_cr_support_lemmas",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1-a1"
+}

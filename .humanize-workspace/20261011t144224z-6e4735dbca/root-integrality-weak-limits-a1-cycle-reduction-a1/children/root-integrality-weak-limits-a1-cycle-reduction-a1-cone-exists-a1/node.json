@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Existence of the cone 0⨯X over a compactly supported current",
+  "statement": "Let P, m ∈ ℕ, R ∈ ℝ and X ∈ D_m(ℝ^P) with spt X ⊆ B̄_R(0). Then there is C ∈ D_{m+1}(ℝ^P) (a cone 0⨯X over X) such that, for all ω ∈ D^{m+1}(ℝ^P) and ψ ∈ D^m(ℝ^P): if there is an open N ⊇ spt X with ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x ∈ N and v ∈ (ℝ^P)^m, then C(ω) = X(ψ). [Cone(X, C)]",
+  "lean_statement": "∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m), X.support ⊆ closedBall 0 R → ∃ C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ)",
+  "lean_name": "iwl_cr_cone_exists",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-a1"
+}
