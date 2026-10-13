@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0a67ca6eb4699026468d2da873df69a328af104c4791eb4f33a7df7a21b44f34",
+  "git_delta": {
+    "base_commit": "032d13306d81014f7392f9d096bfdec9b8815f46",
+    "candidate_commit": "5819ca3156e41267963b8bd5b240b0816d90936c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_scsp_dbr_antiderivative",
+    "diff_sha256": "53b08416b2a89c7c8d29054dacaf79f07176b4db83cc164480ccbe37fa1806a8",
+    "source_sha256": "19a7d191d7c23449f497d47b8a42c9e3f5442234f87cb85a0af5b8edf3b56c05",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_scsp_dbr_antiderivative",
+      "statement": "∀ (a b : ℝ) (g : ℝ → ℝ), Continuous g → HasCompactSupport g → tsupport g ⊆ Ioo a b → ∫ x, g x = 0 → ∃ Φ : ℝ → ℝ, ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ Ioo a b ∧ deriv Φ = g",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
