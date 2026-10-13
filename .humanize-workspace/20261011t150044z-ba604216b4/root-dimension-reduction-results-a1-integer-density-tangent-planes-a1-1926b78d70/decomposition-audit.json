@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "MinimizingImpliesStationary|IsStationaryAlong|HasLocallyBoundedMeanCurvature|def firstVariation|tangentialDivergence",
+        "imrep_carrier_sdiff_support_null|stationaryAlong_of_minimizing_in_submanifold|meanCurvature_bounded_of_stationaryAlong",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|measurable_fderiv",
+        "git show 367a1edc:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ims_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ims_independent_audit/AcceptedChildren.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1926b78d70/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1926b78d70/decomposition-v2.json",
+        "/tmp/ims_independent_audit/Assembly.lean",
+        "/tmp/ims_independent_audit/Assembly.out",
+        "/tmp/ims_independent_audit/AcceptedChildren.lean",
+        "/tmp/ims_independent_audit/AcceptedChildren.out"
+      ],
+      "conclusion": "The snapshot definitions match the selected contract; the three proposed declarations have no matches in the snapshot project. Reuse is justified by their unique comparator-accepted DAG owners, identical frozen types, and unchanged accepted proof bodies. Project, Mathlib and SimonGMT revisions match the pins. All three dependency closures are accepted and acyclic, without the selected parent. Independent Lean checks passed: the child propositions imply exactly MinimizingImpliesStationary, and recompiling their accepted proofs plus the selected assembly uses only propext, Classical.choice and Quot.sound. The equivalent previously proved parent theorem was excluded from this compilation. The split is appropriate; empty proposed dependency lists are correct because the parent supplies the linking hypotheses. No inline matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the independently usable one-line proposition. The bare name validly reuses accepted commit d15b5cf4 at its identical type. Countable reduction, finite restricted measure, covector tests, the fundamental lemma, and nonzero unit orientations establish the precise unweighted Hausdorff-null conclusion, including degree zero. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "stationary_of_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, and the bare name validly reuses accepted commit c2d6ad3e. The proof handles degree zero and zero local mass, verifies boundary and compact-support admissibility of competitors, and uses the accepted two-sided first-variation bound to force stationarity. Its cited prerequisites are available and non-circular. Carrier-nullness is an explicit hypothesis, so no dependency on support_null is missing."
+    },
+    {
+      "key": "mean_curvature_of_stationary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independently usable one-line type match; the bare name validly reuses accepted commit d4e6209b. The proof explicitly constructs H, proves measurability and compactwise bounds, establishes tangent inclusion and the normal trace identity, and justifies integration against the multiplicity density. Its pointwise compact bounds imply the frozen essential bounds. Stationarity is an explicit hypothesis; neither another proposed child nor the parent is invoked circularly."
+    }
+  ],
+  "required_changes": []
+}
