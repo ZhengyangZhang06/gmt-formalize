@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.radial_variation-a1.radial_field_trace-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.radial_variation-a1",
+  "depth": 6,
+  "title": "Tangential divergence of the radial test field relative to a subspace (Simon Ch. 4, 3.2)",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace with orthogonal projection p := Q.starProjection : ℝ^P → ℝ^P, let y, x ∈ ℝ^P, τ ∈ ℝ with τ > 0, and let φ : ℝ → ℝ be a C¹ function with φ(u) = 1 for every u ≤ 1. Write φ' := deriv φ, X(z) := φ(|z − y|/τ)·(z − y) and DX(x) := fderiv ℝ X x. Then trace(p ∘ DX(x)) = (dim Q)·φ(|x − y|/τ) + (|x − y|/τ)·φ'(|x − y|/τ)·(1 − |(x − y) − p(x − y)|²/|x − y|²), with Lean's convention a/0 = 0 (at x = y the second summand vanishes since |x − y|/τ = 0). Here trace is the trace of a linear endomorphism of ℝ^P and dim Q = Module.finrank ℝ Q.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (y x : Euclid P) (φ : ℝ → ℝ) (τ : ℝ), ContDiff ℝ 1 φ → (∀ u, u ≤ 1 → φ u = 1) → 0 < τ → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun z : Euclid P => φ (‖z - y‖ / τ) • (z - y)) x).toLinearMap) = (Module.finrank ℝ Q : ℝ) * φ (‖x - y‖ / τ) + ‖x - y‖ / τ * deriv φ (‖x - y‖ / τ) * (1 - ‖(x - y) - Q.starProjection (x - y)‖ ^ 2 / ‖x - y‖ ^ 2)",
+  "lean_name": "doragm_rfv_trace_radial_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4db9533223-a1"
+}

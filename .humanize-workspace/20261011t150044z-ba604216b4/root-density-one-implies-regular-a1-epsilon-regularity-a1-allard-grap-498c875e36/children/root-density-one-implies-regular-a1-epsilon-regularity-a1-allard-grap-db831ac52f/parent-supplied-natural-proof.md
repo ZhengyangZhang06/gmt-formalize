@@ -1,0 +1,168 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1.localized_density-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 1, Theorem 3.16 (chapter-01.txt lines 905–925). For an open σ-finite Borel regular measure with the Symmetric Vitali Property and a measurable A, μ(A ∩ B_ρ(x))/μ(B_ρ(x)) → 1 for μ-a.e. x ∈ A. By Remark 3.11(3) and the Besicovitch Covering Lemma 3.12 (lines 799–854), every Borel measure on ℝ^P that is finite on compact sets has that property. The localization to W by countably many open sets is Remark 3.7(2) (lines 706–711) and the first sentence of the proof of 3.16. Mathlib's version is Besicovitch.ae_tendsto_measure_inter_div (Mathlib/MeasureTheory/Covering/Besicovitch.lean). It lies inside the import closure of GMT.Ch07.Submission, and Euclid P carries the HasBesicovitchCovering instance of BesicovitchVectorSpace.lean. In the parent proof this lemma replaces Step 5b, whose library pointer simon_theorem_3_6 lies outside that import closure.
+
+Notation: E := ℝ^P; B_t(x) is the closed ball and B̆_t(x) the open ball; a⁺ := ENNReal.ofReal a; ν⌞T := ν.restrict T.
+
+1. Countable cover.
+ (a) For each w ∈ W choose ε_w > 0 with B̆_{ε_w}(w) ⊆ W (W is open) and put r_w := ε_w/3. Then B_{2r_w}(w) ⊆ W.
+ (b) The open balls B̆_{r_w}(w), w ∈ W, cover W. E is second countable, so a countable subfamily indexed by T ⊆ W already covers W (TopologicalSpace.isOpen_iUnion_countable).
+ (c) For w ∈ T put K_w := B_{2r_w}(w), a compact Borel subset of W. By hypothesis ν(K_w) < ∞.
+2. Density theorem on one ball. Fix w ∈ T.
+ (a) ν_w := ν⌞K_w is a finite, hence locally finite, Borel measure.
+ (b) Besicovitch's density theorem for ν_w and s: for ν_w⌞s-a.e. x, q(x, t) := ν_w(s ∩ B_t(x))/ν_w(B_t(x)) → 1 in [0, ∞] as t ↓ 0.
+ (c) s and K_w are measurable, so ν_w⌞s = ν⌞(s ∩ K_w) = (ν⌞s)⌞K_w (Measure.restrict_restrict). By ae_restrict_iff': for ν⌞s-a.e. x, x ∈ K_w implies q(x, t) → 1.
+3. Pointwise conclusion on B̆_{r_w}(w). Let x be such a point with |x − w| < r_w (then x ∈ K_w), and let a < 1.
+ (a) If a ≤ 0, then a⁺ = 0 and the claim is trivial. Let 0 < a < 1.
+ (b) Put t₀ := r_w − |x − w| > 0. For 0 < t < t₀, B_t(x) ⊆ K_w, because |p − w| ≤ |p − x| + |x − w| < r_w.
+ (c) Hence, by Measure.restrict_apply' with K_w measurable, ν_w(B_t(x)) = ν(B_t(x)) ≤ ν(K_w) < ∞ and ν_w(s ∩ B_t(x)) = ν(s ∩ B_t(x)).
+ (d) Since a⁺ < 1 and q(x, t) → 1, eventually q(x, t) > a⁺. Take t ∈ (0, t₀) with q(x, t) > a⁺. If ν(B_t(x)) = 0, then a⁺ν(B_t(x)) = 0 ≤ ν(s ∩ B_t(x)). Otherwise ν(B_t(x)) ∈ (0, ∞), and a⁺ < ν(s ∩ B_t(x))/ν(B_t(x)) gives a⁺ν(B_t(x)) < ν(s ∩ B_t(x)) (ENNReal.lt_div_iff_mul_lt).
+ (e) As (0, t₀) ∈ 𝓝[>]0, a⁺ν(B_t(x)) ≤ ν(s ∩ B_t(x)) for all sufficiently small t > 0.
+4. Countable union.
+ (a) By Steps 2–3, for each w ∈ T, ν⌞s-a.e. x satisfies: x ∈ B̆_{r_w}(w) implies the conclusion.
+ (b) T is countable, so ν⌞s-a.e. x satisfies this for all w ∈ T simultaneously (ae_ball_iff).
+ (c) For such an x with x ∈ W, pick w ∈ T with x ∈ B̆_{r_w}(w) (Step 1). The conclusion holds at x. ∎
+
+Appendix: Lean proof of exactly this statement, following Steps 1–4. It was kernel-checked (lean-4.35.0-rc3, Mathlib 25730c7c, after import GMT.Ch07.Submission in the contract scope); #print axioms gives propext, Classical.choice, Quot.sound.
+theorem Submission.dorag_dbs_localized_density_point : ∀ (P : ℕ) (W s : Set (Euclid P)) (ν : Measure (Euclid P)), IsOpen W → MeasurableSet s → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → ν K ≠ ∞) → ∀ᵐ x ∂ν.restrict s, x ∈ W → ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ), ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) := by
+  intro P W s ν hW hs hfin
+  -- radii: closedBall x (2 r) ⊆ W
+  have hr : ∀ x : W, ∃ r : ℝ, 0 < r ∧ closedBall (x : Euclid P) (2 * r) ⊆ W := by
+    intro x
+    obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.mp hW x x.2
+    exact ⟨ε / 3, by positivity, (closedBall_subset_ball (by linarith)).trans hεW⟩
+  choose r hr0 hrW using hr
+  -- countable subcover of W by the balls ball x (r x)
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun x : W => ball (x : Euclid P) (r x)) (fun _ => isOpen_ball)
+  have hcover : ∀ x ∈ W, ∃ i ∈ T, x ∈ ball (i : Euclid P) (r i) := by
+    intro x hx
+    have hmem : x ∈ ⋃ i : W, ball (i : Euclid P) (r i) :=
+      mem_iUnion.mpr ⟨⟨x, hx⟩, mem_ball_self (hr0 _)⟩
+    rw [← hTU] at hmem
+    simpa only [mem_iUnion, exists_prop] using hmem
+  -- the local statement on each ball
+  have hloc : ∀ i : W, ∀ᵐ x ∂ν.restrict s, x ∈ ball (i : Euclid P) (r i) →
+      ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) := by
+    intro i
+    have hKm : MeasurableSet (closedBall (i : Euclid P) (2 * r i)) := measurableSet_closedBall
+    have hKfin : ν (closedBall (i : Euclid P) (2 * r i)) ≠ ∞ :=
+      hfin _ (isCompact_closedBall _ _) (hrW i)
+    have : IsFiniteMeasure (ν.restrict (closedBall (i : Euclid P) (2 * r i))) :=
+      isFiniteMeasure_restrict.mpr hKfin
+    have hB := Besicovitch.ae_tendsto_measure_inter_div
+      (ν.restrict (closedBall (i : Euclid P) (2 * r i))) s
+    have heq : (ν.restrict (closedBall (i : Euclid P) (2 * r i))).restrict s =
+        (ν.restrict s).restrict (closedBall (i : Euclid P) (2 * r i)) := by
+      rw [Measure.restrict_restrict hs, Measure.restrict_restrict hKm, inter_comm]
+    rw [heq, ae_restrict_iff' hKm] at hB
+    filter_upwards [hB] with x hx hxV a ha
+    have hxd : dist x i < r i := mem_ball.mp hxV
+    have hxK : x ∈ closedBall (i : Euclid P) (2 * r i) := by
+      rw [mem_closedBall]; linarith [hr0 i]
+    have hlim := hx hxK
+    by_cases ha0 : a ≤ 0
+    · filter_upwards with t
+      simp [ENNReal.ofReal_of_nonpos ha0]
+    have hlt : ENNReal.ofReal a < 1 := ENNReal.ofReal_lt_one.mpr ha
+    have ht0 : (0 : ℝ) < r i - dist x i := by linarith
+    filter_upwards [hlim.eventually (lt_mem_nhds hlt), Ioo_mem_nhdsGT ht0] with t ht hti
+    have hBK : closedBall x t ⊆ closedBall (i : Euclid P) (2 * r i) := by
+      intro p hp
+      rw [mem_closedBall] at hp ⊢
+      calc dist p i ≤ dist p x + dist x i := dist_triangle _ _ _
+        _ ≤ 2 * r i := by linarith [hti.2, hr0 i]
+    rw [Measure.restrict_apply' hKm, Measure.restrict_apply' hKm,
+      inter_eq_left.mpr hBK, inter_eq_left.mpr (inter_subset_right.trans hBK)] at ht
+    by_cases hB0 : ν (closedBall x t) = 0
+    · simp [hB0]
+    have hBtop : ν (closedBall x t) ≠ ∞ := ne_top_of_le_ne_top hKfin (measure_mono hBK)
+    exact ((ENNReal.lt_div_iff_mul_lt (Or.inl hB0) (Or.inl hBtop)).mp ht).le
+  -- countably many balls
+  have hall : ∀ᵐ x ∂ν.restrict s, ∀ i ∈ T, x ∈ ball (i : Euclid P) (r i) →
+      ∀ a : ℝ, a < 1 → ∀ᶠ t in 𝓝[>] (0 : ℝ),
+        ENNReal.ofReal a * ν (closedBall x t) ≤ ν (s ∩ closedBall x t) :=
+    (ae_ball_iff hTc).mpr (fun i _ => hloc i)
+  filter_upwards [hall] with x hx hxW
+  obtain ⟨i, hiT, hxi⟩ := hcover x hxW
+  exact hx i hiT hxi
+
+## Key steps
+
+1. Cover W by countably many open balls B̆_{r_w}(w) with compact B_{2r_w}(w) ⊆ W (second countability).
+2. ν⌞B_{2r_w}(w) is finite, and Besicovitch’s density theorem gives the ratio → 1 for ν⌞s-a.e. x ∈ B_{2r_w}(w).
+3. For x ∈ B̆_{r_w}(w) and small t, the restricted ratio equals ν(s ∩ B_t(x))/ν(B_t(x)) with a finite denominator, so a·ν(B_t(x)) ≤ ν(s ∩ B_t(x)) for a < 1.
+4. Take the countable union over the balls.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical; HEAD b4d606d)`
+- `rg -n '^def unitBallVolume|^structure IMRep|^def IMRep.measure' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean  (lines 143, 61, 88)`
+- `rg -n 'dorag_dbs|dorag_standing' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project  (no match)`
+- `rg -n 'theorem ae_tendsto_measure_inter_div|instance.*HasBesicovitchCovering|theorem ae_tendsto_rnDeriv' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/`
+- `rg -n 'euclideanHausdorffMeasure_homothety_image|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem Isometry.euclideanHausdorffMeasure_image' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; rg -n 'theorem addHaar_closedBall_eq_addHaar_ball' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean; rg -n 'one_add_mul_le_pow' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order; rg -n 'theorem add_one_le_exp' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'def HasApproximateTangentSpaceAt' -A 25 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; sed -n 123,260p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean  (blowUpMap, regular_euclideanHausdorffMeasure_restrict_submodule, planeMeasure_eq)`
+- `grep -rn 'simon_theorem_3_6|measure_toOuterMeasure_isBorelRegular|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT; sed -n 300,420p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `sed -n 25,260p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean; sed -n 25,200p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LowerDensityTangents.lean; sed -n 25,200p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PositiveMultiplicityScale.lean  (proof patterns only)`
+- `lean Avail.lean / Avail2.lean after import GMT.Ch07.Submission: #check Besicovitch.ae_tendsto_measure_inter_div (ok), Poincare.SimonGMT.Chapter01.simon_theorem_3_6 / Chapter04.planeMeasure_unit_closedBall / Chapter04.hausdorff_blowUp_image (unknown identifier), example : HasBesicovitchCovering (EuclideanSpace ℝ (Fin P)) := inferInstance (ok)`
+- `python3: scan of dag.json for related lean_statements (HasApproximateTangentSpaceAt|unitBallVolume|withDensity|densit) and collision scan of the six dorag_dbs_* names over all 8 workspaces' dag.json (no collision); math-wiki page submission-regcomp-atl-upper-density-zero.md`
+- `python3 -I: gmt-compare.py child_modules (contract mode) + lean_contract.validate_lean_statement on the six statements; lean on the six Challenge_*.lean (only the sorry warning)`
+- `lean Integrated.lean (six complete child proofs + parent assembly, uncle as axiom; #print axioms)`
+- `grep/sed in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt (2.3–2.4, lines 266–288), chapter-03.txt (1.4–1.5, lines 77–96), chapter-01.txt (3.6–3.7 lines 700–711, 3.11–3.12 lines 773–854, 3.16 lines 905–925), chapter-04.txt (4.7–4.8, lines 536–546)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Ring/Pow.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/LowerDensityTangents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/PositiveMultiplicityScale.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-498c875e36/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/math-wiki/submission-regcomp-atl-upper-density-zero.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace contract and to GMT/Ch07/Submission.lean, the compiler context of every child type.
+
+No declaration in the snapshot proves this node or any child; dorag_dbs_*/dorag_standing have no match.
+
+What is importable after import GMT.Ch07.Submission (checked with lean):
+- Not importable: the parent’s Step 5b library pointer simon_theorem_3_6 (Chapter01/DensityComparison.lean) and the SimonGMT Chapter04 tangent-density lemmas; these are used only as proof patterns.
+- Importable: Mathlib’s Besicovitch.ae_tendsto_measure_inter_div (Covering/Besicovitch.lean:1105) with the HasBesicovitchCovering instance (BesicovitchVectorSpace.lean:499), euclideanHausdorffMeasure_homothety_image (Volume/Measure.lean:164), EuclideanSpace.euclideanHausdorffMeasure_eq_volume (:187), Isometry.euclideanHausdorffMeasure_image (:131), addHaar_closedBall_eq_addHaar_ball (EqHaar.lean:509), one_add_mul_le_pow (Ring/Pow.lean:99), add_one_le_exp (Complex/Exponential.lean:632), and SimonGMT Chapter03 regular_euclideanHausdorffMeasure_restrict_submodule. The children use these.
+
+Related nodes in other branches:
+- rsd_tendsto_closedBall_density_of_approxTangent (full limit, needs finiteness), rsd_ae_tendsto_withDensity_div_closedBall and rsd_imrep_compact_measure_ne_top are still decomposing, so they are not reusable.
+- regcomp_atl_upper_density_zero is accepted, but no child needs it.
+The six dorag_dbs_* names collide with nothing in any workspace DAG.
+
+Lean checks:
+- All six statements elaborate in comparator scope.
+- Complete proofs of all six compile with only propext, Classical.choice and Quot.sound.
+- The exact parent type compiles from them plus the sibling monotonicity type.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.tangent_lower_density-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+  "depth": 5,
+  "title": "Lower density bound at a point with an approximate tangent plane",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, M ⊆ ℝ^P any set, x ∈ ℝ^P, and Q a linear subspace of ℝ^P that is an approximate tangent space of M at x in the sense of Simon Ch. 3, Def. 1.4 (HasApproximateTangentSpaceAt n M x Q: dim Q = n and ∫_{η_{x,ρ}(M)} f dHⁿ → ∫_Q f dHⁿ as ρ ↓ 0 for every f ∈ C_c(ℝ^P, ℝ), where η_{x,ρ}(z) = ρ⁻¹(z − x), Hⁿ = μHE[n], and the integrals are Bochner integrals for Hⁿ restricted to the indicated sets). Let ω_n := unitBallVolume n, the Lebesgue measure of the open unit ball of ℝⁿ. Then for every c ∈ [0, ∞] with c < ω_n there is ρ₀ > 0 such that c·ρⁿ ≤ Hⁿ(M ∩ B̄_ρ(x)) for every ρ ∈ (0, ρ₀), where B̄_ρ(x) is the closed ball (Lean: ∀ᶠ ρ in 𝓝[>] 0, c * ENNReal.ofReal (ρ ^ n) ≤ μHE[n] (M ∩ closedBall x ρ)).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → HasApproximateTangentSpaceAt n M x Q → ∀ c : ℝ≥0∞, c < unitBallVolume n → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), c * ENNReal.ofReal (ρ ^ n) ≤ μHE[n] (M ∩ closedBall x ρ)",
+  "lean_name": "doragm_approxTangent_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8e1dc92fc2-a1"
+}
