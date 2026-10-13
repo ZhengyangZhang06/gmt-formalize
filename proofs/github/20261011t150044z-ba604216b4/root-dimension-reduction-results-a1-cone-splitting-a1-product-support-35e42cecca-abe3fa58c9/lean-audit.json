@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e328b285358aeece912ff28d0d8ff9952a9cf2f063c0ff1c3fa2ea933a8b583",
+  "git_delta": {
+    "base_commit": "4cbff0f7aedf9a69292f3a299bb8a94148f1761a",
+    "candidate_commit": "0a352835d3e72200e0b07ed38e29f69bccd611ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_psd_radial_support",
+    "diff_sha256": "74e07a86c02ff20d05ca81a7fc25f4cdde3629c38da3444295f4cce9b312422f",
+    "source_sha256": "85a7a0af55813ebe3dd276f9f532355bfc5f71690e804c16b3b4ac811500fd2e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_psd_radial_support",
+      "statement": "∀ (d : ℕ) (f : ℝ → ℝ≥0∞), Monotone f → ((∀ ε : ℝ, 0 < ε → (∫⁻ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2))) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → f ε ≠ 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
