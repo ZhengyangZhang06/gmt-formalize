@@ -1485,6 +1485,130 @@ theorem Submission.codim1_zsl_pc_diagonal_subseq : ∀ (ι : Type) [Countable ι
     exact Set.mem_Icc.mpr (abs_le.mp (hb k i))
   obtain ⟨a, -, σ, hσ, hlim⟩ := hS.tendsto_subseq hx
   exact ⟨σ, hσ, fun k => ⟨a k, ((continuous_apply k).tendsto a).comp hlim⟩⟩
+/-- Sets that are Cauchy in measure on every ball have a subsequence converging in measure on
+every ball to a measurable set.  With `N_l` chosen for `R = l + 1`, `η = 2⁻ˡ`, the subsequence
+`σ(l) = l + Σ_{k ≤ l} N_k` makes `E_l = (F_{σ(l+1)} Δ F_{σ(l)}) ∩ B_{l+1}(0)` summable in measure,
+so by Borel–Cantelli (`ae_eventually_notMem`) a.e. `v` lies in only finitely many `E_l`.  For such
+`v`, membership in `F_{σ(l)}` is eventually constant and equals membership in the liminf
+`F' = ⋃_{l₀} ⋂_{l ≥ l₀} F_{σ(l)}`.  Continuity from above (`tendsto_measure_iInter_atTop`) on the
+finite-measure ball `B_R(0)`, applied to `⋃_{l ≥ l₀} (F_{σ(l)} Δ F') ∩ B_R(0)`, concludes. -/
+theorem Submission.codim1_zsl_pc_cauchy_limit_set : ∀ (m : ℕ) (F : ℕ → Set (Euclid m)), (∀ i, MeasurableSet (F i)) → (∀ R : ℝ, 0 < R → ∀ η : ℝ, 0 < η → ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → volume (symmDiff (F i) (F j) ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal η) → ∃ (σ : ℕ → ℕ) (F' : Set (Euclid m)), StrictMono σ ∧ MeasurableSet F' ∧ ∀ R : ℝ, Tendsto (fun i => volume (symmDiff (F (σ i)) F' ∩ ball (0 : Euclid m) R)) atTop (𝓝 0) := by
+  intro m F hF hC
+  -- Fast subsequence: `N l` works for `R = l + 1`, `η = 2⁻ˡ`, and `N l ≤ σ l'` for `l ≤ l'`.
+  have hN : ∀ l : ℕ, ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j →
+      volume (symmDiff (F i) (F j) ∩ ball (0 : Euclid m) ((l : ℝ) + 1)) ≤
+        ENNReal.ofReal ((1 / 2 : ℝ) ^ l) :=
+    fun l => hC ((l : ℝ) + 1) (by positivity) ((1 / 2 : ℝ) ^ l) (by positivity)
+  choose N hN using hN
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℕ → ℕ, ∀ l, σ l = l + ∑ k ∈ Finset.range (l + 1), N k :=
+    ⟨_, fun _ => rfl⟩
+  have hσmono : StrictMono σ := by
+    apply strictMono_nat_of_lt_succ
+    intro l
+    simp only [hσ, Finset.sum_range_succ]
+    omega
+  have hσge : ∀ l l', l ≤ l' → N l ≤ σ l' := by
+    intro l l' h
+    have h1 : N l ≤ ∑ k ∈ Finset.range (l' + 1), N k :=
+      Finset.single_le_sum (f := N) (fun _ _ => Nat.zero_le _) (Finset.mem_range.mpr (by omega))
+    rw [hσ]
+    omega
+  -- The limit set: the points lying in `F (σ l)` for all large `l`.
+  obtain ⟨F', hF'eq⟩ : ∃ F' : Set (Euclid m), F' = ⋃ l₀ : ℕ, ⋂ l : ℕ, ⋂ (_ : l₀ ≤ l), F (σ l) :=
+    ⟨_, rfl⟩
+  have hF'meas : MeasurableSet F' := by
+    rw [hF'eq]
+    exact MeasurableSet.iUnion fun l₀ => MeasurableSet.iInter fun l =>
+      MeasurableSet.iInter fun _ => hF _
+  have hF'mem : ∀ v, v ∈ F' ↔ ∃ l₀, ∀ l, l₀ ≤ l → v ∈ F (σ l) := by
+    intro v
+    rw [hF'eq]
+    simp only [mem_iUnion, mem_iInter]
+  -- The transition sets `E l` have summable measures.
+  obtain ⟨E, hE⟩ : ∃ E : ℕ → Set (Euclid m), ∀ l,
+      E l = symmDiff (F (σ (l + 1))) (F (σ l)) ∩ ball (0 : Euclid m) ((l : ℝ) + 1) :=
+    ⟨_, fun _ => rfl⟩
+  have hEle : ∀ l, volume (E l) ≤ ENNReal.ofReal ((1 / 2 : ℝ) ^ l) := by
+    intro l
+    rw [hE]
+    exact hN l _ _ (hσge l (l + 1) (Nat.le_succ l)) (hσge l l le_rfl)
+  have hsum : ∑' l, volume (E l) ≠ ∞ := by
+    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hEle)
+    rw [← ENNReal.ofReal_tsum_of_nonneg (fun n => by positivity) summable_geometric_two]
+    exact ENNReal.ofReal_ne_top
+  -- Borel–Cantelli: a.e. `v` is eventually outside `F (σ l) Δ F'`.
+  have hae : ∀ᵐ v ∂(volume : Measure (Euclid m)),
+      ∀ᶠ l in atTop, v ∉ symmDiff (F (σ l)) F' := by
+    filter_upwards [ae_eventually_notMem hsum] with v hv
+    have hball : ∀ᶠ l : ℕ in atTop, v ∈ ball (0 : Euclid m) ((l : ℝ) + 1) := by
+      obtain ⟨n, hn⟩ := exists_nat_gt ‖v‖
+      filter_upwards [eventually_ge_atTop n] with l hl
+      rw [mem_ball_zero_iff]
+      have : (n : ℝ) ≤ l := Nat.cast_le.mpr hl
+      linarith
+    obtain ⟨l₁, hl₁⟩ := eventually_atTop.mp (hv.and hball)
+    have hstep : ∀ l, l₁ ≤ l → (v ∈ F (σ (l + 1)) ↔ v ∈ F (σ l)) := by
+      intro l hl
+      obtain ⟨h1, h2⟩ := hl₁ l hl
+      rw [hE] at h1
+      have h3 : v ∉ symmDiff (F (σ (l + 1))) (F (σ l)) := fun h => h1 (Set.mem_inter h h2)
+      rw [Set.mem_symmDiff] at h3
+      tauto
+    have hconst : ∀ l, l₁ ≤ l → (v ∈ F (σ l) ↔ v ∈ F (σ l₁)) := by
+      intro l hl
+      induction l, hl using Nat.le_induction with
+      | base => exact Iff.rfl
+      | succ l hl ih => exact (hstep l hl).trans ih
+    have hF'iff : v ∈ F' ↔ v ∈ F (σ l₁) := by
+      rw [hF'mem]
+      constructor
+      · rintro ⟨l₀, hl₀⟩
+        exact (hconst (max l₀ l₁) (le_max_right _ _)).mp (hl₀ _ (le_max_left _ _))
+      · intro h
+        exact ⟨l₁, fun l hl => (hconst l hl).mpr h⟩
+    filter_upwards [eventually_ge_atTop l₁] with l hl
+    rw [Set.mem_symmDiff]
+    have := hconst l hl
+    tauto
+  refine ⟨σ, F', hσmono, hF'meas, fun R => ?_⟩
+  -- Continuity from above for the tails `G l₀` inside the finite-measure ball `B_R(0)`.
+  obtain ⟨G, hG⟩ : ∃ G : ℕ → Set (Euclid m), ∀ l₀,
+      G l₀ = ⋃ l : ℕ, ⋃ (_ : l₀ ≤ l), symmDiff (F (σ l)) F' ∩ ball (0 : Euclid m) R :=
+    ⟨_, fun _ => rfl⟩
+  have hGmem : ∀ l₀ v, v ∈ G l₀ ↔ ∃ l, l₀ ≤ l ∧ v ∈ symmDiff (F (σ l)) F' ∩ ball (0 : Euclid m) R := by
+    intro l₀ v
+    rw [hG]
+    simp only [mem_iUnion, exists_prop]
+  have hGmeas : ∀ l₀, NullMeasurableSet (G l₀) volume := by
+    intro l₀
+    rw [hG]
+    exact (MeasurableSet.iUnion fun l => MeasurableSet.iUnion fun _ =>
+      ((hF _).symmDiff hF'meas).inter measurableSet_ball).nullMeasurableSet
+  have hGanti : Antitone G := by
+    intro a b hab v hv
+    rw [hGmem] at hv ⊢
+    obtain ⟨l, hl, hv⟩ := hv
+    exact ⟨l, hab.trans hl, hv⟩
+  have hGfin : ∃ i, volume (G i) ≠ ∞ := by
+    refine ⟨0, ne_top_of_le_ne_top
+      (measure_ball_lt_top (μ := volume) (x := (0 : Euclid m)) (r := R)).ne (measure_mono ?_)⟩
+    intro v hv
+    rw [hGmem] at hv
+    obtain ⟨l, _, hv⟩ := hv
+    exact hv.2
+  have hGnull : volume (⋂ l₀, G l₀) = 0 := by
+    refine measure_mono_null ?_ (ae_iff.mp hae)
+    intro v hv
+    rw [mem_iInter] at hv
+    intro hev
+    obtain ⟨l₁, hl₁⟩ := eventually_atTop.mp hev
+    obtain ⟨l, hl, hvl⟩ := (hGmem l₁ v).mp (hv l₁)
+    exact hl₁ l hl hvl.1
+  have hGlim := tendsto_measure_iInter_atTop hGmeas hGanti hGfin
+  rw [hGnull] at hGlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hGlim (fun _ => zero_le) ?_
+  intro l
+  exact measure_mono (fun v hv => (hGmem l v).mpr ⟨l, le_rfl, hv⟩)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
