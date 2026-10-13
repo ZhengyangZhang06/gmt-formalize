@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ec8529645162b19ebc9cb66b2b581e60274dd9ca8baa2da343ae666c207be738",
+  "git_delta": {
+    "base_commit": "804aa037045fa314f3029830daa12e8359a0d7f4",
+    "candidate_commit": "f794699b4a019475f7540137401f3ded45d14103",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4635d57f376f11f633f7081ae771e99a21ef94acd016cf3ea49812584e282b67",
+    "source_sha256": "634231a953abe6cff4682876a29e3667557e7658bf6dff0d325835faf9050a6a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_fc_series_current",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
