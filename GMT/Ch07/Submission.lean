@@ -531,6 +531,94 @@ theorem Submission.cmcs_lipschitz_smoothing : ∀ (P : ℕ) (g : Euclid P → �
     rw [← hconv] at h
     exact dist_le_zero.1 h
 
+/-- **Smooth cut-off between two levels of a Lipschitz function** (Simon Ch. 6, proof of 4.9, with
+`f^{(σ)}` in place of `f`).  If `f : ℝᴾ → ℝ` is `L`-Lipschitz, `t ∈ ℝ` and `0 < h < 1`, there is a
+`C^∞` function `g` with `|g| ≤ 2`, `‖Dg‖ ≤ L/(h(1 − h/2))`, `g = 1` on `{f ≤ t − h}`, `g = 0` on
+`{f ≥ t}` and `Dg = 0` off the strip `{t − h < f < t}`.  With `δ = h²/4` and
+`w = h − 2δ = h(1 − h/2)`, the clamp `G = max 0 (min 1 ((t − δ − f)/w))` is `(L/w)`-Lipschitz,
+`G = 1` on `{f < t − h + δ}` and `G = 0` on `{f > t − δ}`; `g` is its smoothing at scale
+`σ = δ/(2(L + 1))` (`cmcs_lipschitz_smoothing`), so `|g − G| ≤ Lσ/w ≤ 1`.  As `2Lσ < δ`, `G` is
+constant on `B_{2σ}(x)` when `f x ≤ t − h` or `t ≤ f x`; by locality `g` is then constant on
+`B_σ(x)`, so `Dg(x) = 0`. -/
+theorem Submission.cmcs_level_cutoff : ∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (t h : ℝ), LipschitzWith L f → 0 < h → h < 1 → ∃ g : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g ∧ (∀ x, |g x| ≤ 2) ∧ (∀ x, ‖fderiv ℝ g x‖ ≤ L / (h * (1 - h / 2))) ∧ (∀ x, fderiv ℝ g x ≠ 0 → t - h < f x ∧ f x < t) ∧ (∀ x, f x ≤ t - h → g x = 1) ∧ (∀ x, t ≤ f x → g x = 0) := by
+  intro P f L t h hf h0 h1
+  -- parameters `δ = h²/4`, `w = h − 2δ = h(1 − h/2)` and `σ = δ/(2(L + 1))`, so `2Lσ < δ`
+  set δ : ℝ := h ^ 2 / 4 with hδ
+  set w : ℝ := h * (1 - h / 2) with hw
+  have hw0 : 0 < w := mul_pos h0 (by linarith)
+  have hδ0 : 0 < δ := by positivity
+  have hL0 : (0 : ℝ) ≤ L := L.2
+  set σ : ℝ := δ / (2 * ((L : ℝ) + 1)) with hσ
+  have hσ0 : 0 < σ := by positivity
+  have h2Lσ : 2 * (L : ℝ) * σ < δ := by
+    rw [hσ, mul_div_assoc', div_lt_iff₀ (by positivity)]
+    nlinarith
+  -- the clamped profile `G = max 0 (min 1 ((t − δ − f)/w))`: `(L/w)`-Lipschitz, `|G| ≤ 1`,
+  -- `G = 1` on `{f < t − h + δ}` and `G = 0` on `{f > t − δ}`
+  set G : Euclid P → ℝ := fun x => max 0 (min 1 ((t - δ - f x) / w)) with hGdef
+  set K : NNReal := L * Real.toNNReal w⁻¹ with hK
+  have hKr : (K : ℝ) = L / w := by
+    rw [hK, NNReal.coe_mul, Real.coe_toNNReal _ (inv_pos.2 hw0).le, div_eq_mul_inv]
+  have hG : LipschitzWith K G := by
+    have hlin : LipschitzWith K fun x => (t - δ - f x) / w := by
+      refine LipschitzWith.of_dist_le_mul fun x y => ?_
+      have hxy := hf.dist_le_mul x y
+      rw [Real.dist_eq] at hxy
+      rw [Real.dist_eq, hKr, show (t - δ - f x) / w - (t - δ - f y) / w = (f y - f x) / w by ring,
+        abs_div, abs_of_pos hw0, abs_sub_comm, div_mul_eq_mul_div]
+      exact div_le_div_of_nonneg_right hxy hw0.le
+    exact (hlin.const_min 1).const_max 0
+  have hG01 : ∀ y, |G y| ≤ 1 := by
+    intro y
+    simp only [hGdef]
+    rw [abs_le]
+    exact ⟨by linarith [le_max_left 0 (min 1 ((t - δ - f y) / w))],
+      max_le zero_le_one (min_le_left _ _)⟩
+  have hG1 : ∀ y, f y < t - h + δ → G y = 1 := by
+    intro y hy
+    have : 1 ≤ (t - δ - f y) / w := by rw [le_div_iff₀ hw0]; linarith
+    simp [hGdef, min_eq_left this]
+  have hG0 : ∀ y, t - δ < f y → G y = 0 := by
+    intro y hy
+    have : (t - δ - f y) / w ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hw0.le
+    simp only [hGdef]
+    exact max_eq_left ((min_le_right _ _).trans this)
+  -- smoothing of `G` at scale `σ`
+  obtain ⟨g, hgs, hgd, hga, hgl⟩ := Submission.cmcs_lipschitz_smoothing P G K σ hG hσ0
+  -- plateaus: if `G = c` on `B_{2σ}(x)`, then `g = c` on `B_σ(x)`, so `g x = c` and `Dg(x) = 0`
+  have hnear : ∀ x, ∀ c : ℝ, (∀ y ∈ ball x (2 * σ), G y = c) → g x = c ∧ fderiv ℝ g x = 0 := by
+    intro x c hc
+    have hball : ∀ x' ∈ ball x σ, g x' = c := fun x' hx' => hgl x' c fun y hy => hc y (by
+      rw [mem_ball] at hx' hy ⊢
+      linarith [dist_triangle y x' x])
+    have hev : g =ᶠ[𝓝 x] fun _ => c := Filter.eventually_of_mem (ball_mem_nhds x hσ0) hball
+    exact ⟨hball x (mem_ball_self hσ0), hev.fderiv_eq.trans (fderiv_const_apply c)⟩
+  -- on `B_{2σ}(x)`, `|f y − f x| ≤ L |y − x| < 2Lσ < δ`
+  have hclose : ∀ x, ∀ y ∈ ball x (2 * σ), |f y - f x| < δ := by
+    intro x y hy
+    have hd := hf.dist_le_mul y x
+    rw [Real.dist_eq] at hd
+    rw [mem_ball] at hy
+    have : (L : ℝ) * dist y x ≤ L * (2 * σ) := mul_le_mul_of_nonneg_left hy.le hL0
+    linarith
+  have hlow : ∀ x, f x ≤ t - h → g x = 1 ∧ fderiv ℝ g x = 0 := fun x hx =>
+    hnear x 1 fun y hy => hG1 y (by linarith [(abs_lt.1 (hclose x y hy)).2])
+  have hup : ∀ x, t ≤ f x → g x = 0 ∧ fderiv ℝ g x = 0 := fun x hx =>
+    hnear x 0 fun y hy => hG0 y (by linarith [(abs_lt.1 (hclose x y hy)).1])
+  refine ⟨g, hgs, fun x => ?_, fun x => (hgd x).trans_eq hKr, fun x hx => ?_,
+    fun x hx => (hlow x hx).1, fun x hx => (hup x hx).1⟩
+  · -- `|g| ≤ |G| + Kσ ≤ 2`, as `Kσ = Lδ/(2(L + 1)w) ≤ 1` (`δ ≤ 2w`)
+    have hKσ : (K : ℝ) * σ ≤ 1 := by
+      rw [hKr, hσ, div_mul_div_comm, div_le_one (by positivity)]
+      have hδw : δ ≤ 2 * w := by rw [hδ, hw]; nlinarith
+      nlinarith
+    linarith [abs_sub_abs_le_abs_sub (g x) (G x), hga x, hG01 x]
+  · -- `Dg = 0` on both plateaus, so `Dg(x) ≠ 0` forces `t − h < f x < t`
+    by_contra hcon
+    rcases not_and_or.1 hcon with hc | hc
+    · exact hx (hlow x (not_lt.1 hc)).2
+    · exact hx (hup x (not_lt.1 hc)).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
