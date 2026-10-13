@@ -6,6 +6,9 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.FormsDuality
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
+import Poincare.SimonGMT.Chapter02.AreaApproximation
+import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
@@ -447,6 +450,212 @@ theorem Submission.iwl_cr_hp_lift_gram_det : ∀ (P m : ℕ) (G : Eucl m → Euc
   simp only [Matrix.submatrix_apply, Matrix.of_apply]
   rw [hentry, hpr0_succ, hpr0_succ, htl_succ, htl_succ]
   ring
+/-- Product formula `Hᵐ⁺¹ ⌞ (ℝ × G(B)) = L¹ ⊗ Hᵐ ⌞ G(B)` for one injective Lipschitz piece
+`G : ℝᵐ → ℝ^P` on a Borel set `B`, with `Φ(s, x) = (s, x)` and `π(s, x) = x`: for Borel `g ≥ 0`,
+`φ(s) = ∫_{G(B)} g(Φ(s, x)) dHᵐ(x)` is measurable and `∫_{π⁻¹(G(B))} g dHᵐ⁺¹ = ∫_ℝ φ(s) ds`.
+Both sides come from the injective Lipschitz area formula: in dimension `m` for `G` on `B`, and
+in dimension `m + 1` for the lift `G̃(v) = Φ(v₀, G(v₁, …, v_m))` on `ℝ × B`, whose Jacobian
+equals that of `G` (`iwl_cr_hp_lift_gram_det`); Tonelli in `v = (v₀, (v₁, …, v_m))` finishes. -/
+theorem Submission.iwl_cr_hp_piece_product :
+    ∀ (P m : ℕ) (G : Eucl m → Eucl P) (K : ℝ≥0) (B : Set (Eucl m)), LipschitzWith K G →
+      MeasurableSet B → InjOn G B → (∀ b ∈ B, DifferentiableAt ℝ G b) →
+      ∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g →
+        Measurable (fun s : ℝ => ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))) ∧
+        ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ G '' B},
+            g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) =
+          ∫⁻ s : ℝ, ∫⁻ x in G '' B, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+            (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P)) := by
+  intro P m G K B hG hB hinj hdiff g hg
+  have hgram : ∀ {k Q : ℕ} (f : Eucl k → Eucl Q) (x : Eucl k),
+      Poincare.SimonGMT.Chapter02.areaJacobianAt f x ^ 2 =
+        (Matrix.of fun i j : Fin k => inner ℝ (fderiv ℝ f x (EuclideanSpace.single i 1))
+          (fderiv ℝ f x (EuclideanSpace.single j 1))).det := by
+    intro k Q f x
+    rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet]
+    have h := LinearMap.normDet_sq_eq_det_gram (fderiv ℝ f x).toLinearMap
+      (EuclideanSpace.basisFun (Fin k) ℝ)
+    simp only [RCLike.ofReal_real_eq_id, id_eq] at h
+    rw [h]
+    congr 1
+    ext i j
+    simp [Matrix.gram]
+  -- notation
+  set Φ : ℝ → Eucl P → Eucl (P + 1) := fun s x =>
+    (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))
+    with hΦdef
+  have hΦc : Continuous fun q : ℝ × Eucl P => Φ q.1 q.2 := by
+    have : Continuous fun q : ℝ × Eucl P =>
+        (Fin.cons q.1 (EuclideanSpace.equiv (Fin P) ℝ q.2) : Fin (P + 1) → ℝ) := by
+      refine continuous_pi fun k => ?_
+      refine Fin.cases ?_ (fun j => ?_) k
+      · simpa using continuous_fst
+      · simp only [Fin.cons_succ]
+        exact (continuous_apply j).comp
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+    exact (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp this
+  have hfinm : Module.finrank ℝ (Eucl m) = m := finrank_euclideanSpace_fin
+  have hfinm1 : Module.finrank ℝ (Eucl (m + 1)) = m + 1 := finrank_euclideanSpace_fin
+  -- (8.1): the area formula in dimension m
+  set J : Eucl m → ℝ≥0∞ := fun b =>
+    ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt G b) with hJdef
+  have harea_m : ∀ u : Eucl P → ℝ≥0∞,
+      ∫⁻ x in G '' B, u x ∂(μHE[m] : Measure (Eucl P)) = ∫⁻ b in B, J b * u (G b) := by
+    intro u
+    have := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hG hB hinj u
+    rwa [hfinm] at this
+  have hJm : Measurable J :=
+    ENNReal.measurable_ofReal.comp (Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt G)
+  set H : ℝ × Eucl m → ℝ≥0∞ := fun q => J q.2 * g (Φ q.1 (G q.2)) with hHdef
+  have hHm : Measurable H := by
+    refine (hJm.comp measurable_snd).mul (hg.comp ?_)
+    exact (hΦc.comp (continuous_fst.prodMk (hG.continuous.comp continuous_snd))).measurable
+  have hinner : ∀ s : ℝ, ∫⁻ b in B, H (s, b) =
+      ∫⁻ x in G '' B, g (Φ s x) ∂(μHE[m] : Measure (Eucl P)) := fun s =>
+    (harea_m (fun x => g (Φ s x))).symm
+  refine ⟨?_, ?_⟩
+  · -- measurability of the inner integral
+    have hmeas : Measurable fun s : ℝ => ∫⁻ b, H (s, b) ∂((volume : Measure (Eucl m)).restrict B) :=
+      hHm.lintegral_prod_right'
+    have heq : (fun s : ℝ => ∫⁻ b, H (s, b) ∂((volume : Measure (Eucl m)).restrict B)) =
+        fun s => ∫⁻ x in G '' B, g (Φ s x) ∂(μHE[m] : Measure (Eucl P)) := funext hinner
+    rw [heq] at hmeas
+    exact hmeas
+  · -- the lift
+    set e1 := EuclideanSpace.equiv (Fin (m + 1)) ℝ with he1
+    set tl : Eucl (m + 1) → Eucl m := fun v =>
+      (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (e1 v)) with htldef
+    have htlc : Continuous tl := by
+      have : Continuous fun v : Eucl (m + 1) => Fin.tail (e1 v) :=
+        continuous_pi fun i => (continuous_apply i.succ).comp e1.continuous
+      exact (EuclideanSpace.equiv (Fin m) ℝ).symm.continuous.comp this
+    set Gt : Eucl (m + 1) → Eucl (P + 1) := fun v => Φ (e1 v 0) (G (tl v)) with hGtdef
+    set Bt : Set (Eucl (m + 1)) := tl ⁻¹' B with hBtdef
+    have hBt : MeasurableSet Bt := hB.preimage htlc.measurable
+    -- norm identities
+    have hnormΦ : ∀ (s : ℝ) (x : Eucl P), ‖Φ s x‖ ^ 2 = s ^ 2 + ‖x‖ ^ 2 := by
+      intro s x
+      rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+      simp [hΦdef]
+    have hΦsub : ∀ (s s' : ℝ) (x x' : Eucl P), Φ s x - Φ s' x' = Φ (s - s') (x - x') := by
+      intro s s' x x'
+      ext k
+      refine Fin.cases ?_ (fun j => ?_) k <;> simp [hΦdef]
+    have hnormw : ∀ v : Eucl (m + 1), ‖v‖ ^ 2 = (e1 v 0) ^ 2 + ‖tl v‖ ^ 2 := by
+      intro v
+      rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+      simp [htldef, he1, Fin.tail]
+    have htlsub : ∀ v v' : Eucl (m + 1), tl v - tl v' = tl (v - v') := by
+      intro v v'; ext k; simp [htldef, he1, Fin.tail]
+    -- (i) Lipschitz
+    have hGtL : LipschitzWith (max 1 K) Gt := by
+      refine LipschitzWith.of_dist_le_mul fun v v' => ?_
+      rw [dist_eq_norm, dist_eq_norm]
+      have h1 : ‖Gt v - Gt v'‖ ^ 2 ≤ ((max 1 K : ℝ≥0) * ‖v - v'‖) ^ 2 := by
+        simp only [hGtdef]
+        rw [hΦsub, hnormΦ, mul_pow, hnormw (v - v')]
+        have hK : ‖G (tl v) - G (tl v')‖ ≤ K * ‖tl v - tl v'‖ := by
+          have := hG.dist_le_mul (tl v) (tl v')
+          rwa [dist_eq_norm, dist_eq_norm] at this
+        have hKm : (K : ℝ) ≤ (max 1 K : ℝ≥0) := by exact_mod_cast le_max_right 1 K
+        have h1m : (1 : ℝ) ≤ (max 1 K : ℝ≥0) := by exact_mod_cast le_max_left 1 K
+        have he0 : e1 v 0 - e1 v' 0 = e1 (v - v') 0 := by simp
+        rw [he0, ← htlsub]
+        have hA : (e1 (v - v') 0) ^ 2 ≤ ((max 1 K : ℝ≥0) : ℝ) ^ 2 * (e1 (v - v') 0) ^ 2 := by
+          have : (1 : ℝ) ≤ ((max 1 K : ℝ≥0) : ℝ) ^ 2 := by nlinarith
+          nlinarith [sq_nonneg (e1 (v - v') 0)]
+        have hB2 : ‖G (tl v) - G (tl v')‖ ^ 2 ≤ ((max 1 K : ℝ≥0) : ℝ) ^ 2 * ‖tl v - tl v'‖ ^ 2 := by
+          have h0 : 0 ≤ ‖G (tl v) - G (tl v')‖ := norm_nonneg _
+          have h2 : ‖G (tl v) - G (tl v')‖ ≤ ((max 1 K : ℝ≥0) : ℝ) * ‖tl v - tl v'‖ :=
+            hK.trans (mul_le_mul_of_nonneg_right hKm (norm_nonneg _))
+          calc ‖G (tl v) - G (tl v')‖ ^ 2 ≤ (((max 1 K : ℝ≥0) : ℝ) * ‖tl v - tl v'‖) ^ 2 :=
+                pow_le_pow_left₀ h0 h2 2
+            _ = _ := by ring
+        nlinarith
+      have h0 : 0 ≤ ((max 1 K : ℝ≥0) : ℝ) * ‖v - v'‖ := by positivity
+      exact (pow_le_pow_iff_left₀ (norm_nonneg _) h0 two_ne_zero).mp h1
+    -- coordinates of Gt
+    have hπGt : ∀ v, (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ (Gt v))) = G (tl v) := by
+      intro v; ext k; simp [hGtdef, hΦdef, Fin.tail]
+    -- (ii) injectivity
+    have hinjt : InjOn Gt Bt := by
+      intro v hv v' hv' hvv
+      have h0 : e1 v 0 = e1 v' 0 := by
+        have := congrArg (fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ) y 0) hvv
+        simpa [hGtdef, hΦdef] using this
+      have htl : tl v = tl v' := by
+        have := congrArg (fun y => (EuclideanSpace.equiv (Fin P) ℝ).symm
+          (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))) hvv
+        simp only [hπGt] at this
+        exact hinj hv hv' this
+      ext k
+      refine Fin.cases ?_ (fun j => ?_) k
+      · simpa [he1] using h0
+      · have := congrArg (fun z => z j) htl
+        simpa [htldef, he1, Fin.tail] using this
+    -- (iii) image
+    have himg : Gt '' Bt = {y | (EuclideanSpace.equiv (Fin P) ℝ).symm
+        (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ G '' B} := by
+      ext y
+      constructor
+      · rintro ⟨v, hv, rfl⟩
+        simp only [mem_ofPred_eq, hπGt]
+        exact ⟨tl v, hv, rfl⟩
+      · rintro ⟨b, hb, hby⟩
+        refine ⟨e1.symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+          (EuclideanSpace.equiv (Fin m) ℝ b)), ?_, ?_⟩
+        · have : tl (e1.symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+              (EuclideanSpace.equiv (Fin m) ℝ b))) = b := by
+            ext k; simp [htldef, he1, Fin.tail]
+          simp only [hBtdef, mem_preimage, this]
+          exact hb
+        · have htlb : tl (e1.symm (Fin.cons (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0)
+              (EuclideanSpace.equiv (Fin m) ℝ b))) = b := by
+            ext k; simp [htldef, he1, Fin.tail]
+          simp only [hGtdef, htlb, hby]
+          ext k
+          refine Fin.cases ?_ (fun j => ?_) k
+          · simp [hΦdef, he1]
+          · simp [hΦdef, Fin.tail]
+    -- (iv) Jacobians
+    have hjac : ∀ v ∈ Bt, Poincare.SimonGMT.Chapter02.areaJacobianAt Gt v =
+        Poincare.SimonGMT.Chapter02.areaJacobianAt G (tl v) := by
+      intro v hv
+      have h := Submission.iwl_cr_hp_lift_gram_det P m G Gt v (tl v) (fun v => rfl) rfl (hdiff _ hv)
+      rw [← hgram, ← hgram] at h
+      exact (pow_left_inj₀ (Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg _ _)
+        (Poincare.SimonGMT.Chapter02.areaJacobianAt_nonneg _ _) two_ne_zero).mp h
+    -- area formula in dimension m + 1
+    have harea1 := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hGtL hBt
+      hinjt g
+    rw [hfinm1, himg] at harea1
+    rw [harea1]
+    have hcongr : ∫⁻ v in Bt, ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt Gt v) *
+        g (Gt v) = ∫⁻ v in Bt, H (e1 v 0, tl v) := by
+      refine setLIntegral_congr_fun hBt (fun v hv => ?_)
+      rw [hjac v hv]
+    rw [hcongr]
+    -- the coordinate split
+    set Ψ : Eucl (m + 1) → ℝ × Eucl m := fun v => (e1 v 0, tl v) with hΨdef
+    have hΨ : MeasurePreserving Ψ (volume : Measure (Eucl (m + 1)))
+        ((volume : Measure ℝ).prod (volume : Measure (Eucl m))) := by
+      have h1 := PiLp.volume_preserving_ofLp (ι := Fin (m + 1))
+      have h2 := measurePreserving_piFinSuccAbove (fun _ : Fin (m + 1) => (volume : Measure ℝ)) 0
+      have h3 := (MeasurePreserving.id (volume : Measure ℝ)).prod
+        (PiLp.volume_preserving_toLp (ι := Fin m))
+      have h := h3.comp (h2.comp h1)
+      convert h using 1
+      funext v
+      simp only [Function.comp_apply, hΨdef, htldef, he1]
+      ext <;> simp [MeasurableEquiv.piFinSuccAbove, Fin.tail]
+    have hpre : Bt = Ψ ⁻¹' (univ ×ˢ B) := by
+      ext v; simp [hBtdef, hΨdef]
+    rw [hpre, hΨ.setLIntegral_comp_preimage (MeasurableSet.univ.prod hB) hHm,
+      ← Measure.prod_restrict, Measure.restrict_univ,
+      lintegral_prod H hHm.aemeasurable]
+    exact lintegral_congr fun s => hinner s
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
