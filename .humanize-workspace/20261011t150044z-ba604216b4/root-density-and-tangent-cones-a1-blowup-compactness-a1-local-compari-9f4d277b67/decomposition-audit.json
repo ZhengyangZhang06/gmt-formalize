@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "IsUnitOrientationOf|abbrev Euclid|def MultiVector|abbrev MultiVector|covectorEuclideanNorm|^import|^open",
+        "abbrev Covector|def covectorEuclideanNorm|covectorEuclideanNorm_nonneg|compContinuousLinearMap",
+        "gramSchmidtOrthonormalBasis(_det|_inv_triangular)?|sum_inner_mul_inner|is_basis_iff_det",
+        "exists_mulVec_eq_zero_iff|not_linearIndependent_iff",
+        "Hadamard.s inequality|Hadamard inequality|det_le_prod|gram_det_le",
+        "git show 2fd8f6ff9db8d5c94835632a4abd3e7d37106715:GMT/Ch07/Submission.lean",
+        "git show 93ec31ab686fa25a7af150db4f17b9bcc26da7df:GMT/Ch07/Submission.lean",
+        "covectorEuclideanNorm_gram_bounds",
+        "dpf_exists_orthonormal_frame_det_gram",
+        "dtc_bc_lc_pf_gram_det_le_prod_norm_sq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/orient-comp-independent-audit-4a61j2th/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/orient-comp-independent-audit-4a61j2th/AcceptedAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/LinearIndependent/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/ToLinearEquiv.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/isolated-comparator-result.json",
+        "/tmp/orient-comp-independent-audit-4a61j2th/Types.lean",
+        "/tmp/orient-comp-independent-audit-4a61j2th/AcceptedAndAssembly.lean"
+      ],
+      "conclusion": "The snapshot fixes project b4d606d and Mathlib 25730c7c; the live contract, package manifest, toolchain and relevant package revisions match. The sources confirm the coefficient norm, Gram–Schmidt determinant formula, Parseval identity and kernel characterization of zero determinant. The targeted Hadamard search returned no matching inequality. Both reused declarations have passing comparator receipts and types byte-identical to the proposed contracts and accepted commits. The new name has no DAG reservation or occurrence in another proposed decomposition. All child types independently elaborate as Prop in the comparator scope with autoImplicit disabled; explicit multiplication checks confirm ordinary matrix multiplication for the Matrix.of constructions. Recompiling the accepted proofs and the assembly proves the exact selected parent, including both conjuncts, using only propext, Classical.choice and Quot.sound. The split is appropriate, and its sole child dependency, gs_frame → hadamard, is acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition agree, and the bare name validly reuses the identical accepted type. The alternating expansion, permutation grouping, Cauchy–Binet calculation and Cauchy–Schwarz prove part (1). The continuous determinant covector proves part (2), with degree zero and excessive degree addressed. Neither argument depends on this child or the selected parent. Part (1) supplies the parent's evaluation bound; retaining the unused second conjunct preserves the accepted contract."
+    },
+    {
+      "key": "gs_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes linear independence and matches every conjunct of the standalone Lean type. The bare name reuses an identical comparator-accepted declaration. Independence makes the lifted family a basis of its span; Gram–Schmidt gives triangular coefficients, Parseval gives G = AᵀA, the basis determinant is nonzero, and diagonal Cauchy–Schwarz gives the product bound. The proof covers n = 0 without a nonempty-index assumption and has no circular dependency."
+    },
+    {
+      "key": "hadamard",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-family prose exactly matches the standalone one-line proposition; the bare name is unreserved. In the dependent case, the supplied nonzero coefficient vector lies in the Gram matrix's kernel, giving determinant zero and the required inequality. In the independent case, gs_frame gives the determinant-square identity and absolute determinant bound; squaring and distributing the product proves the conclusion. Nonnegativity and empty-family cases are justified. The declared gs_frame dependency is sufficient, correctly directed and non-circular."
+    }
+  ],
+  "required_changes": []
+}
