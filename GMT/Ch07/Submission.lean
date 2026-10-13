@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.3(1)**, display (15) and Lemma 3.5: if `S` is minimizing in `ℝᴾ`, `∂S = 0`, and
+the density of `S` is invariant under `w ↦ y + λw` (`y ∈ L`, `λ > 0`) for a subspace `L` with
+`dim L < n ≤ dim L + 2`, then `Θⁿ(μ_S, 0) ∈ ℕ`.  Splitting off the spine (Lemma 3.5) gives a
+minimizing cone `S₀` of degree `n − dim L ∈ {1, 2}` with `∂S₀ = 0` and `Θ(μ_{S₀}, 0) = Θ(μ_S, 0)`;
+its density at `0` is an integer by the classification of one- and two-dimensional minimizing
+cones, and densities are unique. -/
+theorem Submission.idod_spine_invariant_density_nat : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (θ₀ : ℝ), Module.finrank ℝ L < n → n ≤ Module.finrank ℝ L + 2 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → HasMassDensity S 0 θ₀ → ∃ m : ℕ, θ₀ = m := by
+  intro P n S L θ₀ hlt hle hmin hbd hinv hθ₀
+  -- densities are unique: both limits live in the Hausdorff space `[0, ∞]`
+  have huniq : ∀ (j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (a b : ℝ),
+      HasMassDensity C 0 a → HasMassDensity C 0 b → a = b := fun _ _ _ _ ha hb =>
+    (ENNReal.ofReal_eq_ofReal_iff ha.1 hb.1).1 (tendsto_nhds_unique ha.2 hb.2)
+  -- Lemma 3.5: `S` splits as `L × S₀`, `S₀` a minimizing cone with `∂S₀ = 0`
+  obtain ⟨-, -, S₀, hmin₀, hbd₀, hcone₀, -, -, hdens⟩ :=
+    Submission.dimred_invariant_cone_splitting P n S L hlt hmin hbd hinv
+  -- `Θ(μ_{S₀}, 0) = Θ(μ_S, 0 + 0) = θ₀`
+  have h₀ : HasMassDensity S₀ 0 θ₀ :=
+    (hdens 0 L.zero_mem 0 Lᗮ.zero_mem θ₀).1 (by rwa [add_zero])
+  -- the degree `n − dim L` of `S₀` is `1` or `2`
+  suffices key : ∀ (j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j), (j = 1 ∨ j = 2) →
+      IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → HasMassDensity C 0 θ₀ →
+      ∃ m : ℕ, θ₀ = m from
+    key _ S₀ (by omega) hmin₀ hbd₀ hcone₀ h₀
+  rintro j C (rfl | rfl) hminC hbdC hconeC hC
+  · -- a one-dimensional minimizing cone has density `m ∈ ℕ` along its line, in particular at `0`
+    obtain ⟨e, m, -, -, hm⟩ := Submission.dimred_one_dim_minimizing_cone P C hminC hbdC hconeC
+    exact ⟨m, huniq 1 C θ₀ m hC (hm 0 (Submodule.zero_mem _))⟩
+  · -- a two-dimensional minimizing cone has density `m ∈ ℕ` at `0` ([Whi82])
+    obtain ⟨m, hm⟩ := Submission.idtp_two_dim_cone_integer_density P C hminC hbdC hconeC
+    exact ⟨m, huniq 2 C θ₀ m hC hm⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
