@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}",
+        "python3 -I: list dag.json node ids and lean_name (56 nodes; no collision with the twelve child names)",
+        "grep -n 'exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' -A 25 mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "grep -rn 'theorem LinearMap.exists_antilipschitzWith' mathlib/Mathlib",
+        "grep -n 'def normDet\\|normDet_of_subsingleton\\|normDet_comp\\|normDet_sq_eq_det_gram\\|euclideanHausdorffMeasure_image' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "sed -n 1,100p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n hausdorffMeasure_zero_singleton mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "grep -rn 'MeasurableSet.image_of_continuousOn_injOn\\|ae_tendsto_measure_inter_div\\|hausdorffMeasure_image_le\\|measurable_fderiv\\|measurableSet_of_differentiableAt\\|extDerivWithin_pullback\\|det_isEmpty\\|lintegral_iUnion\\|to_localInverse\\|toHomeomorph\\|exists_isSubordinate' mathlib/Mathlib",
+        "sed -n 1,420p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n areaJacobianAt simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "sed -n 60,110p simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean; sed -n 30,70p simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,140p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 110,360p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 25,125p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "sed -n 1,75p book/chapter-07.txt; sed -n 400,440p book/chapter-06.txt; sed -n 760,880p book/chapter-06.txt",
+        "lake env lean /tmp/mis-decomp-v2/Check.lean (import GMT.Ch07.Submission; 12 child types in namespace GMT.Ch07.Submission, minimizing_implies_stationary and a conditional assembly_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Standalone.lean (same with the frozen contract inlined)",
+        "lake env lean /tmp/mis-decomp-v2/Radius.lean (radius_check, pieces_check; #print axioms)",
+        "lake env lean /tmp/mis-decomp-v2/Instances.lean (Gram Matrix.of, HasOrthogonalProjection instances, operator norm, μHE[0] singleton, normDet out of ℝ^0)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/mis-decomp-v2/Check.lean",
+        "/tmp/mis-decomp-v2/Standalone.lean",
+        "/tmp/mis-decomp-v2/Radius.lean",
+        "/tmp/mis-decomp-v2/Instances.lean"
+      ],
+      "conclusion": "The local snapshot (project b4d606d, Mathlib 25730c7c) has no counterpart for the contract's IMRep push-forward, first variation or mean curvature, so the twelve children are new. The library facts they reuse are the ones cited in the child proofs. The only blocking defect from v1 is confirmed and repaired. Mathlib's exists_partition_approximatesLinearOn_of_hasFDerivWithinAt takes r : (E →L[ℝ] F) → ℝ≥0 with rpos : ∀ A, r A ≠ 0, and the unit-sphere minimum used in v1 does not exist for n = 0. The fix sets m(A) = 1 for n = 0 (alternatively 1/K from LinearMap.exists_antilipschitzWith, which also covers subsingleton domains) and r = 1 on non-injective maps; rpos then holds for every A. pieces_check compiles the resulting bi-Lipschitz partition for all n and P using only propext, Classical.choice and Quot.sound. The n = 0 facts used in the new step 10 exist: Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, LinearMap.normDet_of_subsingleton and Matrix.det_isEmpty. The upper-density lemma needs only real n ≥ 0, and the SimonGMT area lemmas have no rank hypothesis and accept arbitrary weights. All twelve child types (eleven identical to v1) elaborate after import GMT.Ch07.Submission and also with the contract inlined. minimizing_implies_stationary compiles from them, and the conditional assembly uses only standard axioms. Inferred instances were verified: Matrix.of Gram matrix, Submodule.HasOrthogonalProjection.ofCompleteSpace and ContinuousLinearMap.hasOpNorm. No child name collides with any of the 56 DAG nodes."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+  "subproblem": {
+    "key": "stationary_of_minimizing",
+    "title": "Simon 7.1.2, first claim: a minimizing current in N ∩ U has varifold stationary in N ∩ U",
+    "statement": "Let U ⊆ ℝ^P be open, N an embedded C² d-dimensional submanifold with (N̄ ∖ N) ∩ U = ∅, T ∈ 𝒟_n(U) minimizing in N ∩ U (Simon 7.1.1, integer multiplicity competitors) with ∂T = 0 in U (vacuous for n = 0), and R = (M, θ, ξ) an integer multiplicity representation of T with H^n(M ∖ N) = 0. Then v(M, θ) is stationary in N ∩ U: ∫_M θ div_M X dH^n = 0 for every X ∈ C¹_c(U; ℝ^P) with X(x) ∈ T_xN for all x ∈ N ∩ U (R.IsStationaryAlong N).",
+    "lean_statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (N ∩ U) → BoundaryVanishes T → R.Represents T → μHE[n] (R.carrier \\ N) = 0 → R.IsStationaryAlong N",
+    "lean_name": "stationaryAlong_of_minimizing_in_submanifold",
+    "depends_on": [
+      "mass_equals_measure",
+      "diffeo_pushforward",
+      "tangential_deformation",
+      "first_variation_mass_bound"
+    ],
+    "natural_proof": "Source: Simon 7.1.2 and its proof (chapter-07.txt lines 29–60) with README erratum 1, i.e. steps 1 and 3–5 of the parent proof; the hypothesis H^n(M ∖ N) = 0 is the consequence of spt T ⊆ N established in step 2 of the parent proof (sibling imrep_carrier_sdiff_support_null). Siblings used: imrep_represents_massOn_eq_measure (MASS), imrep_c1_diffeo_pushforward_im (PUSH), tangential_c1_deformation_exists (DEFORM), pushforward_action_massOn_le_first_variation (EXPAND).\n1. Fix X ∈ C¹(ℝ^P; ℝ^P) with compact support, tsupport X ⊆ U and X(x) ∈ tangentSpace N x for x ∈ N ∩ U. Put K := tsupport X (compact, ⊆ U) and δV(X) := R.firstVariation X = ∫_M θ div_M X dH^n. We show δV(X) = 0.\n2. Case n = 0. approxTangentPlane 0 M x has finrank 0, hence equals ⊥, for every x (in both branches of its definition), so its projection is 0 and tangentialDivergence 0 M X x = trace 0 = 0; thus δV(X) = 0. (This is consistent with step 1 of the parent proof, which shows moreover M = ∅.) Assume n ≥ 1 from now on.\n3. Choice of W. As K is compact in the open U, there is an open W with K ⊆ W, closure W compact and closure W ⊆ U (a small open thickening of K). Then R.measure W ≤ ∫_{M∩closure W} θ dH^n < ∞ (R.locallyIntegrable_mult), and by MASS, T.massOn W = R.measure W. Put m := (R.measure W).toReal, so R.measure W = ofReal m.\n4. Degenerate case m = 0. Then H^n(M ∩ W) = 0 (θ ≥ 1 on M). For x ∉ K, DX(x) = 0 (X vanishes on the open set ℝ^P ∖ K), so tangentialDivergence n M X x = 0. Hence the integrand of δV(X) vanishes H^n⌞M-a.e. and δV(X) = 0. Assume m > 0.\n5. Deformations. DEFORM (applied to U, N, X) gives φ : ℝ → ℝ^P → ℝ^P such that for every t: φ_t is C¹, bijective, with injective derivative, φ_t = id off K and φ_t(N ∩ U) ⊆ N ∩ U; and (D): for every ε > 0 there is δ > 0 with ‖Dφ_t(x) − I − tDX(x)‖ ≤ ε|t| for all |t| < δ and all x. Since φ_t is a bijection fixing every point of ℝ^P ∖ K, it maps ℝ^P ∖ K onto itself and hence K onto K.\n6. Competitors. For each t, PUSH (with U, T, R, K and φ_t) gives an integer multiplicity S_t ∈ 𝒟_n(U) with BoundaryVanishes S_t (because BoundaryVanishes T) and S_t(ω) = ∫_M θ ξ(ω(φ_t x)∘Dφ_t(x)) dH^n for all ω ∈ 𝒟^n(U).\n7. S_t is admissible in 7.1.1 with this W. (a) W is open and CompactlyContained W U; S_t is integer multiplicity. (b) SameBoundary S_t T: n ≥ 1 and S_t.boundary = 0 = T.boundary. (c) spt(S_t − T) ⊆ K ∩ N. K ∩ N is compact: N ∩ U = N̄ ∩ U by (N̄ ∖ N) ∩ U = ∅, so K ∩ N = K ∩ N̄ is closed in the compact K. Let y ∈ U ∖ (K ∩ N); choose r > 0 with closedBall(y, r) ⊆ U and closedBall(y, r) ∩ K ∩ N = ∅, and W_y := ball(y, r) (open, closure compact ⊆ U). For ω ∈ 𝒟^n(U) with tsupport ω ⊆ W_y, using T ω = R.action ω: (S_t − T)(ω) = ∫_M θ(x)[ξ(x)(ω(φ_t x)∘Dφ_t(x)) − ξ(x)(ω(x))] dH^n; the two integrals may be merged because both integrands are integrable (each is a.e. strongly measurable and bounded by C·θ on a compact subset of U — φ_t^{-1}(tsupport ω), resp. tsupport ω — and vanishes elsewhere, |ξ(x)(β)| ≤ ‖β‖ a.e.; R.locallyIntegrable_mult). The bracket vanishes for x ∈ M ∖ K (φ_t = id on the open set ℝ^P ∖ K, so φ_t x = x and Dφ_t(x) = I); it vanishes for x ∈ M ∩ K ∩ N, because x and φ_t(x) both lie in K ∩ N (step 5: φ_t(K) = K, φ_t(N ∩ U) ⊆ N ∩ U) where ω vanishes; and M ∩ K ∖ N is H^n-null by hypothesis. So S_t − T vanishes on W_y and y ∈ zeroRegion(S_t − T). Hence spt(S_t − T) ⊆ K ∩ N ⊆ (N ∩ U) ∩ W. (d) spt(S_t − T) is compact: it is relatively closed in U (complement of the open zeroRegion) and contained in the compact set K ∩ N ⊆ U, so it equals (K ∩ N) ∩ F for a closed F.\n   Therefore IsMinimizingIn T (N ∩ U) gives T.massOn W ≤ S_t.massOn W, i.e. ofReal m ≤ S_t.massOn W, for every t ∈ ℝ.\n8. First variation bound. EXPAND (with W open, R.measure W ≠ ∞, X C¹ with compact support, K ⊆ W, φ_t C¹, φ_t = id off K, and (D)) gives: for every ε > 0 there is δ > 0 such that S_t.massOn W ≤ ofReal(m + t·δV(X) + ε|t|) for all |t| < δ (S_t satisfies the action formula required there).\n9. Conclusion. Suppose a := δV(X) ≠ 0. Take ε := |a|/2, δ from step 8, and t := −s·sign(a) with 0 < s < δ and s|a|/2 < m. Then m + ta + ε|t| = m − s|a|/2 ∈ (0, m), and steps 7–8 give ofReal m ≤ S_t.massOn W ≤ ofReal(m − s|a|/2) < ofReal m, a contradiction. Hence δV(X) = R.firstVariation X = 0. As X was arbitrary, R.IsStationaryAlong N.",
+    "proof_key_steps": [
+      "n = 0 is trivial (0-dimensional approximate tangent planes); otherwise fix X tangent to N and W ⊂⊂ U containing spt X, with M_W(T) = μ_V(W).",
+      "The deformations φ_t (DEFORM) push T forward to integer multiplicity competitors S_t (PUSH) with ∂S_t = 0 and spt(S_t − T) ⊆ spt X ∩ N compact, using H^n(M ∖ N) = 0.",
+      "Minimality gives μ_V(W) ≤ M_W(S_t) ≤ μ_V(W) + tδV(X) + ε|t| (EXPAND) for all small t of both signs, forcing δV(X) = 0."
+    ]
+  },
+  "audit": {
+    "key": "stationary_of_minimizing",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof verifies integer multiplicity, equal boundary and compact competitor support inside (N ∩ U) ∩ W. Minimality and the two-sided parameter estimate force vanishing first variation. The zero-dimensional and zero-mass cases are handled separately."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1.mass_equals_measure-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+    "root.minimizing_implies_stationary-a1.tangential_deformation-a1",
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1/parent-supplied-natural-proof.json"
+}
