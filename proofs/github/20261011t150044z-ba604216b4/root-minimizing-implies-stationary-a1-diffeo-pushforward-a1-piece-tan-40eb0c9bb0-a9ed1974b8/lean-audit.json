@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97ac1ce968f886d62854ac233f03f17395f34ae2268acbd54d29d14f3fa926ac",
+  "git_delta": {
+    "base_commit": "f85c931737747312e34496c958e3d23f8dea4786",
+    "candidate_commit": "c219652b33929e3f0f610d3dccd642393580fcc2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "pit_integral_closedBall_rescale_tendsto",
+    "diff_sha256": "93223c51e9fac5d570d5de954434e6e5893f090e5c33a9c72c4a12290b91275b",
+    "source_sha256": "3106752a773cb71512130cdf910c720c970dedba610d606f2dda612e0d4c8097",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.pit_integral_closedBall_rescale_tendsto",
+      "statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (b : Euclid n) (R : ℝ), 0 < R → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, h a ∂volume) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
