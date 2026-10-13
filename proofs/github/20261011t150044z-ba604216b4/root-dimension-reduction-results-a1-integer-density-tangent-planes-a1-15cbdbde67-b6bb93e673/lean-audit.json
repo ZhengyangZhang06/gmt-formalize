@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf1dc3b79d60fdd802bedbe1d9b648d62691ea6837cdd1a416955f5af89cf5f3",
+  "git_delta": {
+    "base_commit": "9331237bfc86e1163c532c52d5c8d17f83f24adf",
+    "candidate_commit": "9a120460ca35c6960e1f7e14561a13f79bbda033",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_planar_support_mass",
+    "diff_sha256": "50e9809a6329a0eb9f6e9a4c5f3252bf8fcccfd7d02ac9ec08da4e2ec5591b46",
+    "source_sha256": "3711190651f445d72dcc9a2867a411852e07ba31c5c56b019ec520ba73dde314",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_planar_support_mass",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (Q : Submodule ℝ (Euclid P)) (p : Euclid P) (r : ℝ) (k : ℕ), 1 ≤ n → IsOpen U → IsIntegerMultiplicity T → BoundaryVanishes T → Module.finrank ℝ Q = n → p ∈ Q → 0 < r → ball p r ⊆ U → T.support ∩ ball p r ⊆ (Q : Set (Euclid P)) → HasMassDensity T p k → ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball p r → T.massOn W = (k : ℝ≥0∞) * μHE[n] (W ∩ (Q : Set (Euclid P)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
