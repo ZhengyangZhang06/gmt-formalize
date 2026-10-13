@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure IMRep|def BoundaryVanishes|def IsIntegerMultiplicity|def IsUnitOrientationOf|namespace Submission|^import|^open |^namespace'",
+        "rg -n 'lcmp_massOn_le_of_vanish_off_compact|dtc_massOn_eq_of_agreeOn|dtc_extend_by_zero|imrep_carrier_sdiff_support_null|dtc_vanish_off_support|dimred_mbl_fc_extend_to_univ'",
+        "rg -n 'exists_isSubordinate|exists_contMDiffMap_one_nhds_of_subset_interior|ae_eq_zero_of_integral_contDiff_smul_eq_zero|exists_cthickening_subset_open|exists_contDiff_support_eq'",
+        "rg -n 'structure GeometricCurrentOn|def TestFormOn|TestFormOnConverges|tsupport_exteriorDerivative_subset|boundary_apply'",
+        "rg -n 'def HasApproximateTangentSpaceAt|def CountablyRectifiable|theorem CountablyRectifiable.mono|blowUpMap'",
+        "rg -l 'dtc_vanish_off_support|imrep_carrier_sdiff_support_null|dtc_extend_by_zero|lcmp_massOn_le_of_vanish_off_compact|dtc_massOn_eq_of_agreeOn'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred_eu_check/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dimred_eu_independent_audit/IndependentAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-e077b41520/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-flat-convergenc-e077b41520/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/5e3f61dccb60d698e8701e19e8ee43571c61aedf91724abbc5ccc852460e8c68.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/5f24127a8cf59332d64d4aef47fef1e26c9cfc0a48f6e0097207cd5c358be566.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/bb05899bf4351af4bb0e3d8f6cbb0097a29ca1b3bea39205cdde18077c8ebfdd.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/verdicts/f4d6a976b938bacf160f0b5758e1ecc00904e090f4e271b4980c3a4ba0ac2d13.json",
+        "/tmp/dimred_eu_check/Combined.lean",
+        "/tmp/dimred_eu_independent_audit/IndependentAudit.lean"
+      ],
+      "conclusion": "The split is appropriate and proves this selected contract. Project, Mathlib and SimonGMT revisions match the pins. The snapshot contract and workspace baseline are byte-identical; the searched snapshot project contains none of the five reused declarations. All five names uniquely identify comparator-accepted nodes with identical frozen types and matching candidate-source hashes. Their dependency closures are accepted, acyclic and exclude the selected node and its ancestors. All child types are closed one-line propositions, independently elaborate without child implementations, and contain no problematic matrix-unit construction. Both the assembly from abstract child hypotheses and the combined verbatim accepted proofs compile against the exact parent type, with only propext, Classical.choice and Quot.sound. Leaving IR and ME unused is legitimate: the reused lemmas establish the conclusion without them."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match, including arbitrary U. Compactness gives a finite cover by zero-region witnesses; the subordinate smooth partition splits the form into supported test forms annihilated by S. Linearity completes the proof without circularity. The bare name validly reuses the identical accepted declaration."
+    },
+    {
+      "key": "carrier_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from the supplied argument: countably reduce the zero region, use local multiplicity integrability to control covector components, apply the fundamental lemma to smooth scalar tests, and intersect the finitely many basis-component conclusions. Positivity of multiplicity and nonzero unit orientations force carrier nullity. Neither ME nor the parent theorem is assumed."
+    },
+    {
+      "key": "extend_by_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and five conclusions match the frozen type. The proof establishes tangent invariance under null modification, every transferred IMRep field, integrability and sequential continuity of its action, restriction equality, support containment and compactness. The cutoff argument proves boundary preservation, including the vacuous degree-zero case. Existing helper dependencies are accepted and non-circular."
+    },
+    {
+      "key": "mass_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly allows arbitrary U and G without requiring C ⊆ U. The proof handles empty C, constructs a smooth cutoff equal to one near C, proves homogeneity of the actual Euclidean coefficient norm, and shows the discarded form has support disjoint from C. Comparing admissible evaluations and taking suprema proves the exact inequality."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inclusions and agreement hypothesis exactly match the frozen type. Both directions of the admissible-value-set equality preserve the underlying form, support and coefficient bound. Thus the mass suprema agree without openness assumptions. Applied to Y and its boundary, this supplies precisely the equalities needed for the parent's two mass bounds."
+    }
+  ],
+  "required_changes": []
+}
