@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_ball_average-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Rescaled integrals over a fixed ball at a point of vanishing averages",
+  "statement": "Let n ∈ ℕ, h : ℝ^n → ℝ an arbitrary function, b ∈ ℝ^n and R > 0. If the averages ⨍_{B̄_s(b)} h dλ tend to 0 as s → 0⁺, then ∫_{B̄_R(0)} h(b + rc) dλ(c) → 0 as r → 0⁺. Here λ is Lebesgue measure on ℝ^n, and the integrals and averages are Bochner integrals.",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (b : Euclid n) (R : ℝ), 0 < R → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, h a ∂volume) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, h (b + r • c) ∂volume) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "pit_integral_closedBall_rescale_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-40eb0c9bb0-a1"
+}
