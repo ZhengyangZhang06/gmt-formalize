@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c03c2d6a5db8f00662b8660f96f462f80c2a0127c4e8436907d392b100845b4",
+  "git_delta": {
+    "base_commit": "10a707be75030786494d45b9e8f7bfadd6849520",
+    "candidate_commit": "f698d20b55c59ca8d801b146664567adf8a067b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_rps_support_subset_closure",
+    "diff_sha256": "7a5b09f68c4e4cd7e163f4c85514aa845c36fc90e600e08f177c0b2e3ee6481f",
+    "source_sha256": "fcf63b6cd2ead04a4db16492215f4071a4c1c0759d4d0953d75bb58c1fc769ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_rps_support_subset_closure",
+      "statement": "∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.support ∩ G ⊆ closure M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

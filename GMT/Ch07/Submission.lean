@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Support of a current equal to `m[[M]]` on an open set** (Simon 6.2.11; step 4 of the
+support computation at regular points).  Let `G ⊆ U` be open, and let `T(ω) = m ∫_M ⟨ω, ξ⟩ dHⁿ`
+for every test form `ω` with `spt ω ⊆ G`.  Then `spt T ∩ G ⊆ closure M`.  A point
+`x ∈ G \ closure M` has a ball `B_ε(x) ⊆ G` missing `M`.  Every test form supported in
+`W = B_{ε/2}(x)` vanishes on `M`, so `T` vanishes on `W`.  Since `closure W` is a compact subset
+of `U`, `x ∈ W ⊆ zeroRegion T`. -/
+theorem Submission.idtp_ccd_rps_support_subset_closure : ∀ (P n : ℕ) (U G M : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : ℤ) (ξ : Euclid P → MultiVector P n), IsOpen G → G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → T ω = m * ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → T.support ∩ G ⊆ closure M := by
+  intro P n U G M T m ξ hG hGU hrep x hx
+  -- step 1: `x ∈ spt T ∩ G`, so `x ∉ zeroRegion T`; suppose `x ∉ closure M`
+  obtain ⟨hxT, hxG⟩ := hx
+  by_contra hxcl
+  -- step 2: the open set `G \ closure M` contains a ball `B_ε(x)`, which misses `M`
+  obtain ⟨ε, hε, hball⟩ :=
+    Metric.isOpen_iff.1 (hG.inter isClosed_closure.isOpen_compl) x ⟨hxG, hxcl⟩
+  -- step 3: `W = B_{ε/2}(x)` has `closure W ⊆ closedBall x (ε/2) ⊆ B_ε(x) ⊆ G ⊆ U`
+  have hhalf : ball x (ε / 2) ⊆ ball x ε := ball_subset_ball (by linarith)
+  have hclo : closure (ball x (ε / 2)) ⊆ ball x ε :=
+    closure_ball_subset_closedBall.trans (closedBall_subset_ball (by linarith))
+  -- step 5: `W` is one of the sets whose union is `zeroRegion T`, and `x ∈ W`
+  apply hxT.2
+  refine Set.mem_sUnion.2 ⟨ball x (ε / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by linarith)⟩
+  · exact (isCompact_closedBall x (ε / 2)).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  · exact hclo.trans fun z hz => hGU (hball hz).1
+  · -- step 4: `T` vanishes on `W`, as every test form supported in `W` vanishes on `M`
+    intro ω hω
+    rw [hrep ω (hω.trans (hhalf.trans fun z hz => (hball hz).1))]
+    have h0 : ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) n) z) ∂μHE[n] = 0 := by
+      apply setIntegral_eq_zero_of_forall_eq_zero
+      intro z hzM
+      have hz : z ∉ tsupport (ω : DifferentialForm (Euclid P) n) := fun hzt =>
+        (hball (hhalf (hω hzt))).2 (subset_closure hzM)
+      rw [image_eq_zero_of_notMem_tsupport hz, map_zero]
+    rw [h0, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
