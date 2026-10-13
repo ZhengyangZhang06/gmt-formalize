@@ -359,6 +359,67 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
+(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
+theorem Submission.cmb_abs_apply_le_of_massOn_le :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      |T ω| ≤ B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
 /-- Euclidean coefficient norms `|γ| = covectorEuclideanNorm γ` of slices of covectors, with
 `ι(v) = (0, v) ∈ ℝ^{m+1}` and `e₀ = EuclideanSpace.single 0 1`: (C1) if `γ'(v) = γ(e₀, ι ∘ v)`
 then `|γ'| ≤ |γ|`; (C2) if `γ'(v) = γ(ι ∘ v)` then `|γ'| ≤ |γ|`; (C3) `|α| ≤ √(P^n) · ‖α‖`.
@@ -731,6 +792,119 @@ theorem Submission.dph_iprod_current_of_bound :
     have h6 : T₀ ω ≤ |T₀ ω| := le_abs_self _
     show T₀ ω ≤ B
     linarith
+
+/-- **Continuity along slices** (step 3 of the interval product).  Let `X` be a current in `ℝ^m`
+with `M(X) < ∞`; write `(s, x) ∈ ℝ^{m+1}` for `Fin.cons s x`, `ι(w) = (0, w)`, `e₀ = (1, 0)`.
+(D1) If `X ∈ 𝒟_k`, `η ∈ 𝒟^{k+1}(ℝ^{m+1})` and `φ(s)(x)(v) = η(s, x)(e₀, ι ∘ v)` for
+`s ∈ [0, 1]`, then `s ↦ X(φ(s))` is continuous on `[0, 1]` and `|X(φ(s))| ≤ M(X) · sup |η|`.
+(D2) If `X ∈ 𝒟_q`, `ω` is a continuous compactly supported `q`-form on `ℝ^{m+1}` and
+`Ψ(s)(x)(v) = ω(s, x)(ι ∘ v)` for all `s`, then `s ↦ X(Ψ(s))` is continuous and
+`|X(Ψ(s))| ≤ M(X) · sup |ω|`.  By the mass bound, `X` is `M(X)`-Lipschitz for the sup of the
+Euclidean covector norm; slices are bounded by the sliced covector
+(`dph_iprod_slice_covector_norm_le`), and `η`, `ω` are uniformly continuous. -/
+theorem Submission.dph_iprod_slice_continuity : (∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k), X.mass < ∞ → ∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → ContinuousOn (fun s => X (φ s)) (Icc (0 : ℝ) 1) ∧ ∀ C : ℝ, (∀ y, covectorEuclideanNorm ((η : DifferentialForm (Eucl (m + 1)) (k + 1)) y) ≤ C) → ∀ s ∈ Icc (0 : ℝ) 1, |X (φ s)| ≤ X.mass.toReal * C) ∧ (∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q), X.mass < ∞ → ∀ (ω : DifferentialForm (Eucl (m + 1)) q) (Ψ : ℝ → TestFormOn (univ : Set (Eucl m)) q), Continuous ω → HasCompactSupport ω → (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ s : DifferentialForm (Eucl m) q) x v = ω ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Continuous (fun s => X (Ψ s)) ∧ ∀ C : ℝ, (∀ y, covectorEuclideanNorm (ω y) ≤ C) → ∀ s : ℝ, |X (Ψ s)| ≤ X.mass.toReal * C) := by
+  have hSN := Submission.dph_iprod_slice_covector_norm_le
+  -- (MB) If `|ω(x)| ≤ C` for all `x`, then `|X(ω)| ≤ M(X) · C` (mass bound with `U = W = univ`).
+  have hMB : ∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q), X.mass < ∞ →
+      ∀ (ω : TestFormOn (univ : Set (Eucl m)) q) (C : ℝ),
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl m) q) x) ≤ C) →
+          |X ω| ≤ X.mass.toReal * C := by
+    intro m q X hX ω C hC
+    refine Submission.cmb_abs_apply_le_of_massOn_le m q univ univ X ω X.mass.toReal C
+      ENNReal.toReal_nonneg ?_ (subset_univ _) hC
+    rw [ENNReal.ofReal_toReal hX.ne]
+    exact le_rfl
+  -- If `F(s) - F(s₀)` is uniformly small for close `s, s₀ ∈ S`, then `s ↦ X(F(s))` is
+  -- continuous on `S`, by (MB) and linearity of `X`.
+  have hcont : ∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q), X.mass < ∞ →
+      ∀ (F : ℝ → TestFormOn (univ : Set (Eucl m)) q) (S : Set ℝ),
+        (∀ ε > 0, ∃ δ > 0, ∀ s ∈ S, ∀ s₀ ∈ S, |s - s₀| < δ → ∀ x,
+          covectorEuclideanNorm (((F s - F s₀ : TestFormOn (univ : Set (Eucl m)) q) :
+            DifferentialForm (Eucl m) q) x) ≤ ε) →
+        ContinuousOn (fun s => X (F s)) S := by
+    intro m q X hX F S hF s₀ hs₀
+    rw [Metric.continuousWithinAt_iff]
+    intro ε hε
+    have hB : 0 ≤ X.mass.toReal := ENNReal.toReal_nonneg
+    have hB1 : 0 < X.mass.toReal + 1 := by linarith
+    obtain ⟨δ, hδ, hFδ⟩ := hF (ε / (X.mass.toReal + 1)) (div_pos hε hB1)
+    refine ⟨δ, hδ, fun {s} hs hss₀ => ?_⟩
+    rw [Real.dist_eq] at hss₀ ⊢
+    have hsub : X (F s - F s₀) = X (F s) - X (F s₀) := map_sub X.toCurrent _ _
+    rw [← hsub]
+    calc |X (F s - F s₀)| ≤ X.mass.toReal * (ε / (X.mass.toReal + 1)) :=
+          hMB m q X hX _ _ (hFδ s hs s₀ hs₀ hss₀)
+      _ < (X.mass.toReal + 1) * (ε / (X.mass.toReal + 1)) :=
+          mul_lt_mul_of_pos_right (by linarith) (div_pos hε hB1)
+      _ = ε := by field_simp
+  -- `dist ((s, x), (s₀, x)) = |s - s₀|`: only the `0`-th coordinates differ.
+  have hdist : ∀ (m : ℕ) (s s₀ : ℝ) (x : Eucl m),
+      dist ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+        ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x))) = |s - s₀| := by
+    intro m s s₀ x
+    rw [EuclideanSpace.dist_eq, Fin.sum_univ_succ]
+    simp [Real.dist_eq, Real.sqrt_sq_eq_abs]
+  have hfrac : ∀ c ε : ℝ, 0 ≤ c → 0 < ε → c * (ε / (c + 1)) ≤ ε := by
+    intro c ε hc hε
+    have hc1 : 0 < c + 1 := by linarith
+    calc c * (ε / (c + 1)) ≤ (c + 1) * (ε / (c + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) (div_pos hε hc1).le
+      _ = ε := by field_simp
+  refine ⟨?_, ?_⟩
+  · -- (D1) `dt`-slices of `η`: (C1) and (C3).
+    intro m k X hX η φ hφ
+    have hC1 := hSN.1 m k
+    have hC3 := hSN.2.2 (m + 1) (k + 1)
+    have hc0 : 0 ≤ Real.sqrt (((m + 1 : ℕ) : ℝ) ^ (k + 1)) := Real.sqrt_nonneg _
+    have huc : UniformContinuous (η : DifferentialForm (Eucl (m + 1)) (k + 1)) :=
+      η.property.1.2.uniformContinuous_of_continuous η.property.1.1.continuous
+    refine ⟨hcont m k X hX φ (Icc 0 1) fun ε hε => ?_, fun C hC s hs =>
+      hMB m k X hX (φ s) C fun x => (hC1 _ _ fun v => hφ s hs x v).trans (hC _)⟩
+    obtain ⟨δ, hδ, hηδ⟩ := Metric.uniformContinuous_iff.mp huc
+      (ε / (Real.sqrt (((m + 1 : ℕ) : ℝ) ^ (k + 1)) + 1)) (by positivity)
+    refine ⟨δ, hδ, fun s hs s₀ hs₀ hss₀ x => ?_⟩
+    -- `(φ s - φ s₀)(x)` is the `dt`-slice of `η(s, x) - η(s₀, x)`.
+    have h1 := hC1 ((η : DifferentialForm (Eucl (m + 1)) (k + 1))
+        ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) -
+      (η : DifferentialForm (Eucl (m + 1)) (k + 1))
+        ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x))))
+      (((φ s - φ s₀ : TestFormOn (univ : Set (Eucl m)) k) : DifferentialForm (Eucl m) k) x) (by
+        intro v
+        show ((φ s : DifferentialForm (Eucl m) k) - (φ s₀ : DifferentialForm (Eucl m) k)) x v = _
+        rw [Pi.sub_apply, ContinuousAlternatingMap.sub_apply, hφ s hs x v, hφ s₀ hs₀ x v]
+        rfl)
+    refine h1.trans ((hC3 _).trans ((mul_le_mul_of_nonneg_left ?_ hc0).trans (hfrac _ ε hc0 hε)))
+    rw [← dist_eq_norm]
+    exact (hηδ (by rwa [hdist])).le
+  · -- (D2) horizontal slices of `ω`: (C2) and (C3).
+    intro m q X hX ω Ψ hωc hωs hΨ
+    have hC2 := hSN.2.1 m q
+    have hC3 := hSN.2.2 (m + 1) q
+    have hc0 : 0 ≤ Real.sqrt (((m + 1 : ℕ) : ℝ) ^ q) := Real.sqrt_nonneg _
+    have huc : UniformContinuous ω := hωs.uniformContinuous_of_continuous hωc
+    refine ⟨continuousOn_univ.mp (hcont m q X hX Ψ univ fun ε hε => ?_), fun C hC s =>
+      hMB m q X hX (Ψ s) C fun x => (hC2 _ _ fun v => hΨ s x v).trans (hC _)⟩
+    obtain ⟨δ, hδ, hωδ⟩ := Metric.uniformContinuous_iff.mp huc
+      (ε / (Real.sqrt (((m + 1 : ℕ) : ℝ) ^ q) + 1)) (by positivity)
+    refine ⟨δ, hδ, fun s _ s₀ _ hss₀ x => ?_⟩
+    -- `(Ψ s - Ψ s₀)(x)` is the horizontal slice of `ω(s, x) - ω(s₀, x)`.
+    have h1 := hC2
+      (ω ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) -
+        ω ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+          (Fin.cons s₀ (EuclideanSpace.equiv (Fin m) ℝ x))))
+      (((Ψ s - Ψ s₀ : TestFormOn (univ : Set (Eucl m)) q) : DifferentialForm (Eucl m) q) x) (by
+        intro v
+        show ((Ψ s : DifferentialForm (Eucl m) q) - (Ψ s₀ : DifferentialForm (Eucl m) q)) x v = _
+        rw [Pi.sub_apply, ContinuousAlternatingMap.sub_apply, hΨ s x v, hΨ s₀ x v]
+        rfl)
+    refine h1.trans ((hC3 _).trans ((mul_le_mul_of_nonneg_left ?_ hc0).trans (hfrac _ ε hc0 hε)))
+    rw [← dist_eq_norm]
+    exact (hωδ (by rwa [hdist])).le
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
