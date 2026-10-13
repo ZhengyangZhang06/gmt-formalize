@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f951302be670a116e99984d5780ea40487a3527e3c49424050f3421b7d94ac08",
+  "git_delta": {
+    "base_commit": "d51a47cd7a86e5ed6bd9d1b55ed487265f9ad0b5",
+    "candidate_commit": "3c4f763265d817512375837594432341d443b9ef",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmc_fc_sc_current_of_coeff_bound",
+    "diff_sha256": "89de791858ca70f03c3dce579f72cf5d7e1aeb40562462b3612f35bf580389fa",
+    "source_sha256": "5fba8db2285c3961ee6656c5b651f470b27c00795a9ebb746b4b77ee6c0bf380",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmc_fc_sc_current_of_coeff_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ) (A : ℝ), (∀ (ω : TestFormOn U n) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |L ω| ≤ c * A) → ∃ Y : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, Y ω = L ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
