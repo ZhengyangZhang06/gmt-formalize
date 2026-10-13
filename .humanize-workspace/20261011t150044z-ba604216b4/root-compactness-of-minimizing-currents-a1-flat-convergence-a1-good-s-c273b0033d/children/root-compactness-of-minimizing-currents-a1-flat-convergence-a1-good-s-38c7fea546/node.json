@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1.window_lintegral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.ae_quotient_finite-a1",
+  "depth": 5,
+  "title": "Tonelli sliding-window identity for left intervals",
+  "statement": "Let ν be an s-finite Borel measure on ℝ (for example any finite Borel measure) and let h ∈ ℝ. Then the function t ↦ ν((t − h, t)) from ℝ to [0, ∞] is Borel measurable. Its [0, ∞]-valued Lebesgue integral with respect to Lebesgue measure on ℝ is ∫⁻ ν((t − h, t)) dt = ENNReal.ofReal(h)·ν(ℝ). Here (t − h, t) = {x : t − h < x < t} is the open interval, which is empty when h ≤ 0, and ENNReal.ofReal(h) = max(h, 0) ∈ [0, ∞).",
+  "lean_statement": "∀ (ν : Measure ℝ) [SFinite ν] (h : ℝ), Measurable (fun t : ℝ => ν (Ioo (t - h) t)) ∧ ∫⁻ t, ν (Ioo (t - h) t) ∂volume = ENNReal.ofReal h * ν univ",
+  "lean_name": "cmc_fc_gs_aqf_window_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-38c7fea546-a1"
+}
