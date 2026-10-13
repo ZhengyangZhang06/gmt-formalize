@@ -494,6 +494,7 @@ theorem dohr_eb_hsif_succ_iff_curry : ∀ (n : ℕ) (E : Type) [NormedAddCommGro
     exact hsucc.2 ⟨h.1.differentiableOn one_ne_zero, by simp, h.2⟩
   -- Step 7: combine.
   rw [hreg, hhol, and_assoc]
+
 /-- Columns of an operator-valued map (step 1 of the proof that `f` is `C^{m+1,α}` iff `Df` is
 `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): `g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on a set `U` iff
 every column `g_k = g(·) e_k` is.  Indeed `g_k = ev_k ∘ g` for the evaluation `ev_k T = T e_k`, and
@@ -506,6 +507,18 @@ theorem dohr_eb_hsif_contDiffOn_clm_iff_columns : ∀ (n : ℕ) (E : Type) [Norm
   -- Step 2: the reconstruction `g = ∑ k, ι k ∘ g_k`, from `h = ∑ k, h_k • e_k`.
   have hrec : g = fun x => ∑ k, ι k (g x (EuclideanSpace.single k (1 : ℝ))) := by
     funext x
+    ext h
+    have hh : ∑ k, h k • EuclideanSpace.single k (1 : ℝ) = h := by
+      simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
+    conv_lhs => rw [← hh]
+    simp [ι, map_sum, map_smul]
+  refine ⟨fun hg k => ?_, fun hk => ?_⟩
+  -- Step 3: each column `g_k = ev_k ∘ g` is `C^m` on `U`.
+  · exact hg.clm_apply contDiffOn_const
+  -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
+  · rw [hrec]
+    exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
+
 /-- Columns of an operator-valued map (step 3, "Components", of the proof that `f` is
 `C^{m+1,α}` iff `Df` is `C^{m,α}`, in the elliptic bootstrap for Simon 7.1): if
 `g : ℝⁿ → L(ℝⁿ, E)` is `C^m` on the open set `U` and `g_k = g(·) e_k`, then on `U` the differences
@@ -562,12 +575,6 @@ theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [No
       simpa [EuclideanSpace.basisFun_apply] using (EuclideanSpace.basisFun (Fin n) ℝ).sum_repr h
     conv_lhs => rw [← hh]
     simp [ι, map_sum, map_smul]
-  refine ⟨fun hg k => ?_, fun hk => ?_⟩
-  -- Step 3: each column `g_k = ev_k ∘ g` is `C^m` on `U`.
-  · exact hg.clm_apply contDiffOn_const
-  -- Step 4: `g = ∑ k, ι k ∘ g_k` is a finite sum of `C^m` maps on `U`.
-  · rw [hrec]
-    exact ContDiffOn.sum fun k _ => (ι k).contDiff.comp_contDiffOn (hk k)
   -- Step 8: the sum formula `D^m g(z) = ∑ k, ι k ∘ D^m g_k(z)`.
   have hsum : ∀ z ∈ U, iteratedFDeriv ℝ m g z = ∑ k, (ι k).compContinuousMultilinearMap
       (iteratedFDeriv ℝ m (fun z => g z (EuclideanSpace.single k (1 : ℝ))) z) := by
@@ -587,6 +594,7 @@ theorem dohr_eb_hsif_iteratedFDeriv_column_bounds : ∀ (n : ℕ) (E : Type) [No
   -- Step 9: bound (ii).
   · rw [hsum x hx, hsum y hy, ← Finset.sum_sub_distrib]
     exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => hcomp (ι k) (hι k) _ _)
+
 /-- **`C^{m+1,α}_loc` through first derivatives**: `u ∈ C^{m+1,α}_loc` iff `Du ∈ C^{m,α}_loc` iff
 every `D_k u ∈ C^{m,α}_loc`, the bookkeeping of the Schauder bootstrap in the proof of Simon Ch. 5,
 Theorem 7.1 (p. 128).  For `f : ℝⁿ → E` and open `U ⊆ ℝⁿ`, write
