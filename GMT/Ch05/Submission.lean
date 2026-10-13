@@ -521,6 +521,112 @@ theorem dohr_eb_sch_cacc_test_function : ∀ (n ℓ : ℕ) (U : Set (Rn n)) (V :
       image_eq_zero_of_notMem_tsupport hx']
     ext v
     simp
+/-- Energy (Caccioppoli) estimate for a constant-coefficient elliptic system.  Let `A` satisfy the
+Legendre condition `A[P][P] ≥ λ‖P‖²` and the bound `|A[P][Q]| ≤ Λ‖P‖‖Q‖`, let `V` be `C¹` on the open
+set `U` with `∫ A[DV][Dζ] = 0` for every `ζ ∈ C¹_c(U; ℝ^ℓ)`, and let `η ≥ 0` be a `C¹_c` cutoff with
+`tsupport η ⊆ U`.  Then `∫ η²‖DV‖² ≤ (4Λ²/λ²) ∫ ‖V − c‖²‖Dη‖²` (lower integrals, in `[0, ∞]`).
+Test with `ζ = η²(V − c)` and absorb the cross term by Young's inequality. -/
+theorem dohr_eb_sch_cacc_energy_estimate :
+    ∀ (n ℓ : ℕ) (lam Lam : ℝ) (A : (Rn n →L[ℝ] Rn ℓ) →L[ℝ] (Rn n →L[ℝ] Rn ℓ) →L[ℝ] ℝ) (U : Set (Rn n)) (V : Rn n → Rn ℓ) (η : Rn n → ℝ) (c : Rn ℓ), 0 < lam → (∀ P : Rn n →L[ℝ] Rn ℓ, lam * ‖P‖ ^ 2 ≤ A P P) → (∀ P Q : Rn n →L[ℝ] Rn ℓ, |A P Q| ≤ Lam * ‖P‖ * ‖Q‖) → IsOpen U → ContDiffOn ℝ 1 V U → ContDiff ℝ 1 η → HasCompactSupport η → tsupport η ⊆ U → (∀ x, 0 ≤ η x) → (∀ ζ : Rn n → Rn ℓ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∫ x, A (fderiv ℝ V x) (fderiv ℝ ζ x) = 0) → ∫⁻ x, ENNReal.ofReal (η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2) ≤ ENNReal.ofReal (4 * Lam ^ 2 / lam ^ 2) * ∫⁻ x, ENNReal.ofReal (‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2) := by
+  intro n ℓ lam Lam A U V η c hlam hcoer hbdd hU hV hη hηc hηU hη0 hweak
+  -- the test function `ζ = η² (V - c)` is admissible
+  obtain ⟨hζ1, hζc, hζU, hζd⟩ :=
+    Submission.dohr_eb_sch_cacc_test_function n ℓ U V η c hU hV hη hηc hηU
+  have h0 := hweak _ hζ1 hζc hζU
+  -- continuity of the ingredients
+  have hDVc : ContinuousOn (fderiv ℝ V) U := hV.continuousOn_fderiv_of_isOpen hU le_rfl
+  have hVc : ContinuousOn V U := hV.continuousOn
+  have hDη : Continuous (fderiv ℝ η) := hη.continuous_fderiv one_ne_zero
+  have hDζ : Continuous (fderiv ℝ (fun x => η x ^ 2 • (V x - c))) :=
+    hζ1.continuous_fderiv one_ne_zero
+  -- the three integrands
+  set h : Rn n → ℝ := fun x => A (fderiv ℝ V x) (fderiv ℝ (fun x => η x ^ 2 • (V x - c)) x)
+    with hh
+  set g1 : Rn n → ℝ := fun x => η x ^ 2 * ‖fderiv ℝ V x‖ ^ 2 with hg1
+  set g3 : Rn n → ℝ := fun x => ‖V x - c‖ ^ 2 * ‖fderiv ℝ η x‖ ^ 2 with hg3
+  have hsupp_h : Function.support h ⊆ tsupport (fun x => η x ^ 2 • (V x - c)) := by
+    intro x hx
+    by_contra hxs
+    apply hx
+    simp only [hh, fderiv_of_notMem_tsupport ℝ hxs, map_zero]
+  have hsupp_g1 : Function.support g1 ⊆ tsupport η := by
+    intro x hx
+    by_contra hxs
+    apply hx
+    simp [hg1, image_eq_zero_of_notMem_tsupport hxs]
+  have hsupp_g3 : Function.support g3 ⊆ tsupport η := by
+    intro x hx
+    by_contra hxs
+    apply hx
+    simp [hg3, fderiv_of_notMem_tsupport ℝ hxs]
+  -- continuous on `U` with `tsupport ⊆ U`, hence continuous with compact support
+  have hcont_h : Continuous h := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_h (isClosed_tsupport _)).trans hζU)
+    exact (A.continuous.comp_continuousOn hDVc).clm_apply hDζ.continuousOn
+  have hcont_g1 : Continuous g1 := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_g1 (isClosed_tsupport _)).trans hηU)
+    exact (hη.continuous.pow 2).continuousOn.mul (hDVc.norm.pow 2)
+  have hcont_g3 : Continuous g3 := by
+    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
+      ((closure_minimal hsupp_g3 (isClosed_tsupport _)).trans hηU)
+    exact ((hVc.sub continuousOn_const).norm.pow 2).mul (hDη.norm.pow 2).continuousOn
+  have hint_h : Integrable h := hcont_h.integrable_of_hasCompactSupport (hζc.mono' hsupp_h)
+  have hint_g1 : Integrable g1 := hcont_g1.integrable_of_hasCompactSupport (hηc.mono' hsupp_g1)
+  have hint_g3 : Integrable g3 := hcont_g3.integrable_of_hasCompactSupport (hηc.mono' hsupp_g3)
+  -- pointwise lower bound: Legendre condition, bound on `A`, and Young's inequality
+  have hpt : ∀ x, lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x ≤ h x := by
+    intro x
+    have hid : h x = η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) +
+        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
+      simp only [hh, hζd x, map_add, map_smul, smul_eq_mul]
+    rw [hid]
+    have hc := hcoer (fderiv ℝ V x)
+    have hb := hbdd (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c))
+    rw [ContinuousLinearMap.norm_smulRight_apply] at hb
+    have hb' := (abs_le.mp hb).1
+    set a := η x * ‖fderiv ℝ V x‖ with ha
+    set b := ‖V x - c‖ * ‖fderiv ℝ η x‖ with hb_def
+    have e1 : lam * a ^ 2 ≤ η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) := by
+      rw [ha, mul_pow]
+      nlinarith [mul_le_mul_of_nonneg_left hc (sq_nonneg (η x))]
+    have e2 : -(2 * Lam * (a * b)) ≤
+        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
+      have h2η : 0 ≤ 2 * η x := by linarith [hη0 x]
+      have := mul_le_mul_of_nonneg_left hb' h2η
+      rw [ha, hb_def]
+      linarith [this]
+    have e3 : 2 * Lam * (a * b) ≤ lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 := by
+      have key : lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 - 2 * Lam * (a * b) =
+          (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by
+        field_simp
+        ring
+      have : 0 ≤ (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by positivity
+      linarith
+    have hg1x : g1 x = a ^ 2 := by rw [hg1, ha, mul_pow]
+    have hg3x : g3 x = b ^ 2 := by rw [hg3, hb_def, mul_pow]
+    rw [hg1x, hg3x]
+    linarith
+  -- integrate (`∫ h = 0`) and absorb
+  have hint_lhs : Integrable (fun x => lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x) :=
+    (hint_g1.const_mul _).sub (hint_g3.const_mul _)
+  have hmono := integral_mono hint_lhs hint_h hpt
+  rw [h0, integral_sub (hint_g1.const_mul _) (hint_g3.const_mul _), integral_const_mul,
+    integral_const_mul] at hmono
+  have key : ∫ x, g1 x ≤ 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by
+    have h2 : lam / 2 * ∫ x, g1 x ≤ 2 * Lam ^ 2 / lam * ∫ x, g3 x := by linarith
+    have hlam2 : 0 < lam / 2 := by positivity
+    calc ∫ x, g1 x = (lam / 2)⁻¹ * (lam / 2 * ∫ x, g1 x) := by field_simp
+      _ ≤ (lam / 2)⁻¹ * (2 * Lam ^ 2 / lam * ∫ x, g3 x) :=
+          mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr hlam2.le)
+      _ = 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by field_simp; ring
+  -- pass to lower integrals
+  have hg1n : 0 ≤ᵐ[volume] g1 := ae_of_all _ (fun x => by positivity)
+  have hg3n : 0 ≤ᵐ[volume] g3 := ae_of_all _ (fun x => by positivity)
+  rw [← ofReal_integral_eq_lintegral_ofReal hint_g1 hg1n,
+    ← ofReal_integral_eq_lintegral_ofReal hint_g3 hg3n, ← ENNReal.ofReal_mul (by positivity)]
+  exact ENNReal.ofReal_le_ofReal key
 
 end Submission
 
