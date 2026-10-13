@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Divergence identity d(b·p_I^#γ) = (b·div g∘p_I)·dx^I + db∧p_I^#γ, with bounds (parent step 9)",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, I : Fin n → Fin P strictly increasing, θ an n-covector on ℝ^P with θ(v) = det(v_j(I k))_{k,j} for all v (θ = dx^I), and b : ℝ^P → ℝ C^∞ with compact support. Then there is K ∈ ℝ such that the following holds for every C^∞ map g : ℝⁿ → ℝⁿ with ‖g(y)‖ ≤ 1 for all y. There are C^∞ compactly supported forms η of degree m and ζ of degree n on ℝ^P (IsTestForm) such that:\n- tsupport η ⊆ tsupport b and tsupport ζ ⊆ tsupport b;\n- covectorEuclideanNorm(η(x)) ≤ K and covectorEuclideanNorm(ζ(x)) ≤ K for all x;\n- dη(x) = (b(x)·div g(p_I x))•θ + ζ(x) for all x (exteriorDerivative).\nHere p_I(x) := WithLp.toLp 2 (fun k => x (I k)) ∈ ℝⁿ, and div g(y) is the trace of Dg(y).",
+  "lean_statement": "∀ (P m : ℕ) (I : Fin (m + 1) → Fin P) (θ : Covector (Euclid P) (m + 1)) (b : Euclid P → ℝ), StrictMono I → (∀ v : Fin (m + 1) → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → ∃ K : ℝ, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → (∀ y, ‖g y‖ ≤ 1) → ∃ (η : DifferentialForm (Euclid P) m) (ζ : DifferentialForm (Euclid P) (m + 1)), IsTestForm η ∧ IsTestForm ζ ∧ tsupport η ⊆ tsupport b ∧ tsupport ζ ⊆ tsupport b ∧ (∀ x, covectorEuclideanNorm (η x) ≤ K) ∧ (∀ x, covectorEuclideanNorm (ζ x) ≤ K) ∧ ∀ x, exteriorDerivative η x = (b x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g (WithLp.toLp 2 (fun k => x (I k)))).toLinearMap) • θ + ζ x",
+  "lean_name": "cmr_coordinate_divergence_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-abe89aabd1-a1"
+}
