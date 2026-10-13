@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|IsRectifiableTriple|slicing_im_st_cd_|lpf_(c1_approximation_real|lipschitz_c1_immersion_pieces|ccr_hasDerivAt_line_of_comp)",
+        "CountablyRectifiable|area_image_compl_regularSet_eq_zero|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility|axiom|sorry",
+        "slicing_im_st_cd_c1_cover|slicing_im_st_cd_c1_pieces_of_lipschitzOn|lpf_c1_approximation_real|lpf_lipschitz_c1_immersion_pieces|lpf_ccr_hasDerivAt_line_of_comp",
+        "sed -n '120,300p' /tmp/cdv2-k9q4/src/Final2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-data-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-data-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-line-deriv-comp-a1/accepted-candidate.json",
+        "/tmp/chart-data-audit-kwefl9u1/Types.lean",
+        "/tmp/chart-data-audit-kwefl9u1/Assembly.lean",
+        "/tmp/chart-data-audit-kwefl9u1/Assembly.log"
+      ],
+      "conclusion": "The split appropriately isolates analytic obligations for the selected chart-data theorem. Verified the pinned project and Mathlib revisions, supporting library declarations, and all three reuse acceptance records and comparator axiom exports. Their frozen types are byte-identical; both new names are unreserved. No proposed declaration names occur in the searched reference snapshot. All five types independently elaborate in the frozen comparator scope without child implementations. Fresh Lean checks establish both new children from their declared prerequisites and the exact selected parent from the child contracts plus its existing weighted_tangent_chart prerequisite, using only propext, Classical.choice and Quot.sound. Dependencies, including accepted reuse histories, are acyclic. Inline constructions have the intended Euclidean and continuous-linear-map types; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_c1_immersion_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including Borel disjoint pieces and almost-everywhere coverage of regular points. The supplied proof establishes these through localization, C¹ approximation, local antilipschitz estimates and disjointification, including zero-dimensional cases. Reuse matches the comparator-accepted declaration at 682c558f0382c92319fcedd70ec51dfdb1a38822 and introduces no circular dependency."
+    },
+    {
+      "key": "c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and standalone proposition are valid. The proof correctly applies immersion pieces to each Lipschitz parametrization, removes null nonregular and uncovered regular images, then intersects chart domains with balls to obtain Lipschitz bounds and countable coverage. Its sole declared child dependency suffices; the corresponding conditional Lean proof passes."
+    },
+    {
+      "key": "c1_approximation_real",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the type, including positive extended-real tolerance and differentiability on the closed agreement set. Annular Lusin and Egoroff arguments provide closed compatible Whitney data with the required measure bound; extension and derivative uniqueness give the exact conclusion. Infinite tolerance and zero-dimensional cases are covered. Reuse matches accepted commit f7a35d70d995337ed144dac4f6ad64b3dd527871."
+    },
+    {
+      "key": "lipschitz_on_c1_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and type exactly express the stated localized approximation. McShane extension preserves the Lipschitz constant; openness supplies neighborhood equality for transferring full Fréchet derivatives. Exceptional-measure bounds tending to zero prove coverage. The declared approximation dependency suffices, and the conditional Lean proof passes."
+    },
+    {
+      "key": "line_deriv_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The neighborhood Lipschitz and two differentiability hypotheses match exactly. The proof establishes the line expansions, eventual membership in the neighborhood, and a little-o comparison yielding the claimed derivative without assuming differentiability of f. Reuse matches accepted commit 32fbf107157ca3b51c06f62670856410738101f5. The parent's real-to-Eucl-1 embedding and projection adaptation also passes Lean checking."
+    }
+  ],
+  "required_changes": []
+}
