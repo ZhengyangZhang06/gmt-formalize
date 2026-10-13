@@ -1146,6 +1146,43 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Area formula for a `C¹` graph over an `m`-plane** (Simon Ch. 2, 3.1–3.3).  Let
+`G(w) = ιw + ι'g(w)` with `ι`, `ι'` isometries onto orthogonal subspaces and `g` of class `C¹` on
+the open set `D ⊇ A`, and `J(w) = √det(DG(w)* ∘ DG(w))`.  Then
+`∫_{G(A)} f dHᵐ = ∫_A J(w) f(G(w)) dw` for every `f`.  `G` is continuous on `A` and injective
+(`ι(w - w') = ι'(g w' - g w)` is orthogonal to itself), `J` is Borel as a continuous function of
+`fderiv ℝ G`, and `Hᵐ(G(B)) = ∫_B J` for every measurable `B ⊆ A` (`codim1_zsl_ga_set_identity`);
+`codim1_zsl_ga_integral_transfer` turns this weighted set identity into the Bochner identity. -/
+theorem Submission.codim1_zsl_graph_area_formula : ∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D A : Set (Euclid m)) (f : Euclid (m + k) → ℝ), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → MeasurableSet A → A ⊆ D → ∫ y in (fun w => ι w + ι' (g w)) '' A, f y ∂μHE[m] = ∫ w in A, Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det) * f (ι w + ι' (g w)) := by
+  intro m k ι ι' g D A f horth hD hg hA hAD
+  -- `G` is continuous on `A ⊆ D`, where `g` is `C¹`
+  have hGc : ContinuousOn (fun w => ι w + ι' (g w)) A :=
+    ι.continuous.continuousOn.add (ι'.continuous.comp_continuousOn (hg.continuousOn.mono hAD))
+  -- `G` is injective: `ι (w - w') = ι' (g w' - g w)` is orthogonal to itself
+  have hGi : Injective fun w => ι w + ι' (g w) := by
+    intro w w' h
+    have h1 : ι (w - w') = ι' (g w' - g w) := by
+      rw [map_sub, map_sub, sub_eq_sub_iff_add_eq_add, add_comm (ι' (g w'))]
+      exact h
+    have h2 := horth (w - w') (g w' - g w)
+    rw [← h1, inner_self_eq_zero] at h2
+    exact sub_eq_zero.1 (ι.injective (h2.trans (map_zero ι).symm))
+  -- `J = √det(DG* ∘ DG)` is Borel: a continuous function of the Borel map `fderiv ℝ G`
+  have hJm : Measurable fun w => Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L
+      fderiv ℝ (fun w => ι w + ι' (g w)) w).det) := by
+    have hc : Continuous fun T : Euclid m →L[ℝ] Euclid (m + k) =>
+        Real.sqrt ((T.adjoint ∘L T).det) :=
+      Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+        ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid m)
+          (F := Euclid (m + k))).continuous.clm_comp continuous_id))
+    exact hc.measurable.comp (measurable_fderiv ℝ fun w => ι w + ι' (g w))
+  -- `Hᵐ(G(B)) = ∫_B J` for measurable `B ⊆ A ⊆ D`; transfer to Bochner integrals
+  exact Submission.codim1_zsl_ga_integral_transfer m (m + k) μHE[m] (fun w => ι w + ι' (g w))
+    (fun w => Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L
+      fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) A f hA hGc hGi.injOn hJm
+    (fun w _ => Real.sqrt_nonneg _) fun B hB hBA =>
+      Submission.codim1_zsl_ga_set_identity m k ι ι' g D B horth hD hg hB (hBA.trans hAD)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
