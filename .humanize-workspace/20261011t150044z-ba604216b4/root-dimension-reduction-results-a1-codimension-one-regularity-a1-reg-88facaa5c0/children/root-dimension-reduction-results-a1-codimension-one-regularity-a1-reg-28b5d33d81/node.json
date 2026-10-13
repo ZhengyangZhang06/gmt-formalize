@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.gns_real_of_lintegral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+  "depth": 6,
+  "title": "Real-integral form of a lower-integral Gagliardo–Nirenberg–Sobolev inequality (parent step 0)",
+  "statement": "Let P be a natural number, p > 0 a real number and C ≥ 0 a real constant (an element of NNReal, viewed in [0, ∞] in the hypothesis). Write L^P = volume on R^P = EuclideanSpace ℝ (Fin P), ∫⁻ for the lower Lebesgue integral with values in [0, ∞], ‖t‖ₑ ∈ [0, ∞] for the extended norm and |Dw(x)| for the operator norm of the derivative. Assume (H): every C¹ function w : R^P → R with compact support satisfies ∫⁻ ‖w(x)‖ₑ^p dL^P(x) ≤ C · (∫⁻ ‖Dw(x)‖ₑ dL^P(x))^p. Then there is a real number c > 0 such that every C¹ function w : R^P → R with compact support satisfies (∫ |w|^p dL^P)^{1/p} ≤ c ∫ |Dw| dL^P, with Bochner integrals and real powers (the power 1/p is written p⁻¹).",
+  "lean_statement": "∀ (P : ℕ) (p : ℝ) (C : NNReal), 0 < p → (∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → ∫⁻ x, ‖w x‖ₑ ^ p ≤ (C : ℝ≥0∞) * (∫⁻ x, ‖fderiv ℝ w x‖ₑ) ^ p) → ∃ c : ℝ, 0 < c ∧ ∀ w : Euclid P → ℝ, ContDiff ℝ 1 w → HasCompactSupport w → (∫ z, |w z| ^ p) ^ p⁻¹ ≤ c * ∫ z, ‖fderiv ℝ w z‖",
+  "lean_name": "codim1_rdo_dg_sp_gns_real_of_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-28b5d33d81-a1"
+}
