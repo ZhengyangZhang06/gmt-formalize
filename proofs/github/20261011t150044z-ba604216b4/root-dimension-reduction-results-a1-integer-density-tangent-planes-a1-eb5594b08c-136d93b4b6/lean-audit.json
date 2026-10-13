@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e40a218ff04680c777fe202cfb05fb72260e2222fc61fc7fc56250f863ee791e",
+  "git_delta": {
+    "base_commit": "193407393ef050cb093f9bbe0cab17e1572ce1e3",
+    "candidate_commit": "641e3fb7c8d4712a4d6e0ff9b3acd45b6f0ac9a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5497ebdd555ebde43409d7164f5f582ac824ec0c82988ae0d4800fd8ec6e49b4",
+    "source_sha256": "0724f440789b978b62a2cfaa53189adb613533a8cd5b6822389ffe9fff7231c5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_blowUp_support_slab",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (σ β : ℝ) (hσ : 0 < σ) (Q : Submodule ℝ (Euclid P)), (∀ y ∈ T.support, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ (blowUp T x σ hσ.ne').support, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
