@@ -1043,101 +1043,6 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
     · exact (hCA k hxC).2
     · exact absurd hxD' hxD
 
-/-- **Simon Ch. 6, 3.2(3)** (chapter-06.txt lines 763–768): the weight `θHⁿ⌞M` of an integer
-multiplicity current does not depend on the representation `T = τ(M, θ, ξ)`.  By the fundamental
-lemma, `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂` `Hⁿ`-a.e. on `M₁ ∪ M₂`.  A unit orientation is nonzero, so
-`Hⁿ(M₁ ∖ M₂) = Hⁿ(M₂ ∖ M₁) = 0`; then `M₁`, `M₂` have the same approximate tangent planes, and
-evaluating at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂` a.e. on `M₁ ∩ M₂`. -/
-theorem Submission.imrep_measure_eq_of_represents_same_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure := by
-  intro P n U T R₁ R₂ hU h₁ h₂
-  -- (★) `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂`, `Hⁿ`-a.e. on `M₁ ∪ M₂`
-  have hstar := Submission.imrep_weighted_orient_indicator_ae_eq P n U T R₁ R₂ hU h₁ h₂
-  -- `Hⁿ(M ∖ M') = 0`: for a.e. `x ∈ M ∖ M'`, (★) reads `θ(x)ξ(x) = 0`, but `θ(x) ≥ 1` and
-  -- `|ξ(x)(α)| = 1` for some `α` (the common covector of `ξ(x)` with itself)
-  have hnull : ∀ R R' : IMRep U n,
-      (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∪ R'.carrier)),
-        R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
-          R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x) →
-      μHE[n] (R.carrier \ R'.carrier) = 0 := by
-    intro R R' h
-    have hmem : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ R'.carrier := by
-      filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left h, R.orients,
-        ae_restrict_mem R.measurableSet_carrier] with x hx hxo hxM
-      by_contra hxM'
-      obtain ⟨Q, -, hQ⟩ := hxo
-      obtain ⟨α, hα, -⟩ :=
-        Submission.unit_orientations_common_unit_covector P n Q (R.orient x) (R.orient x) hQ hQ
-      rw [indicator_of_mem hxM, indicator_of_notMem hxM'] at hx
-      have hev := congrArg (fun L : MultiVector P n => |L α|) hx
-      simp only [smul_apply, zero_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα, mul_one,
-        abs_zero, Nat.cast_eq_zero] at hev
-      exact (R.mult_pos x hxM).ne' hev
-    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at hmem
-    have hsub : R.carrier \ R'.carrier ⊆ {x | ¬(x ∈ R.carrier → x ∈ R'.carrier)} :=
-      fun x hx h => hx.2 (h hx.1)
-    exact measure_mono_null hsub hmem
-  have h12 := hnull R₁ R₂ hstar
-  have h21 := hnull R₂ R₁ (by
-    rw [union_comm]
-    filter_upwards [hstar] with x hx using hx.symm)
-  -- hence `Hⁿ⌞M₁ = Hⁿ⌞M₂`
-  have hrestr : μHE[n].restrict R₁.carrier = μHE[n].restrict R₂.carrier :=
-    Measure.restrict_congr_set (ae_eq_set.2 ⟨h12, h21⟩)
-  -- `θ₁ = θ₂` a.e. on `M₁`: the approximate tangent planes `Q₁` of `M₁` and `Q₂` of `M₂` agree,
-  -- and (★) evaluated at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂`
-  have hmult : ∀ᵐ x ∂(μHE[n].restrict R₁.carrier), (R₁.mult x : ℝ≥0∞) = R₂.mult x := by
-    have hor₂ := R₂.orients
-    have hmem₂ := ae_restrict_mem (μ := μHE[n]) R₂.measurableSet_carrier
-    rw [← hrestr] at hor₂ hmem₂
-    filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left hstar, R₁.orients, hor₂,
-      ae_restrict_mem R₁.measurableSet_carrier, hmem₂] with x hx ho₁ ho₂ hx₁ hx₂
-    obtain ⟨Q₁, hT₁, hQ₁⟩ := ho₁
-    obtain ⟨Q₂, hT₂, hQ₂⟩ := ho₂
-    have hQ : Q₁ = Q₂ :=
-      ((Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n R₁.carrier R₂.carrier x Q₁
-        h12 h21).1 hT₁).unique hT₂
-    subst hQ
-    obtain ⟨α, hα₁, hα₂⟩ :=
-      Submission.unit_orientations_common_unit_covector P n Q₁ (R₁.orient x) (R₂.orient x) hQ₁ hQ₂
-    rw [indicator_of_mem hx₁, indicator_of_mem hx₂] at hx
-    have hev := congrArg (fun L : MultiVector P n => |L α|) hx
-    simp only [smul_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα₁, hα₂, mul_one] at hev
-    exact_mod_cast hev
-  -- `θ₁Hⁿ⌞M₁ = θ₂Hⁿ⌞M₁ = θ₂Hⁿ⌞M₂`
-  unfold IMRep.measure
-  rw [withDensity_congr_ae hmult, hrestr]
-
-/-- **The weight of a cone is homogeneous of degree `n`** (proof of Simon 7.4.5,
-chapter-07.txt lines 697–699, "by virtue of the fact that `C` is a cone").  If the cone `C` is
-represented by `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` and `λ > 0`, then `μ(λA) = λⁿ μ(A)` for
-every Borel `A`.  The dilated triple `R_λ = (λ⁻¹M, θ(λ·), ξ(λ·))` is integer multiplicity, and
-`R_λ(ω) = R(λ⁻ⁿ ω(λ⁻¹·)) = C(λ⁻ⁿ ω(λ⁻¹·)) = C(ω)` as `η_{0,λ#}C = C`, so `R_λ` represents `C`.
-By the uniqueness of the weight (Simon Ch. 6, 3.2(3)), `μ(A) = μ_{R_λ}(A) = λ⁻ⁿ μ(λA)`. -/
-theorem Submission.cone_current_imrep_measure_smul_image : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A := by
-  intro P n C R hC hR lam hlam A hA
-  -- Step 1: the dilated triple `R_λ = (λ⁻¹M, θ(λ·), ξ(λ·))` is integer multiplicity, with
-  -- `R_λ(ω) = R(λ⁻ⁿ ω(λ⁻¹·))` for every form `ω` and `μ_{R_λ}(A) = λ⁻ⁿ μ(λA)` for Borel `A`
-  obtain ⟨Rl, hcar, hmult, horient⟩ := Submission.imrep_univ_smul_rescale_exists P n R lam hlam
-  obtain ⟨haction, hmeasure⟩ :=
-    Submission.imrep_smul_rescale_action_measure P n R Rl lam hlam hcar hmult horient
-  -- Step 2: `R_λ` represents `C`: `C(ω) = C(ω') = R(ω') = R_λ(ω)` for `ω' = λ⁻ⁿ ω(λ⁻¹·)`
-  have hRl : Rl.Represents C := by
-    intro ω
-    obtain ⟨ω', hω', hCω'⟩ := Submission.cone_current_apply_dilation_pullback P n C hC lam hlam ω
-    rw [← hCω', hR ω', haction]
-    congr 1
-    funext y
-    exact hω' y
-  -- Step 3: the weight does not depend on the representation, so `μ_{R_λ} = μ` and
-  -- `μ(A) = λ⁻ⁿ μ(λA)`
-  have hA' := hmeasure A hA
-  rw [Submission.imrep_measure_eq_of_represents_same_current P n univ C Rl R isOpen_univ hRl hR]
-    at hA'
-  -- Step 4: multiply by `λⁿ`, using `λⁿ λ⁻ⁿ = 1`
-  have hpow : ENNReal.ofReal (lam ^ n) * ENNReal.ofReal (lam⁻¹ ^ n) = 1 := by
-    rw [← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
-      ENNReal.ofReal_one]
-  rw [hA', ← mul_assoc, hpow, one_mul]
 /-- **Lusin's theorem** (Simon 1.17) for a `μ`-a.e. strongly measurable covector field
 `f : ℝᴾ → Λⁿ(ℝᴾ)`.  `Λⁿ(ℝᴾ)` is finite-dimensional, hence second countable; give it the Borel
 σ-algebra.  `f` agrees with the Borel modification `f' = hf.mk f` off a measurable `μ`-null set
@@ -2012,6 +1917,101 @@ theorem Submission.imrep_weighted_orient_indicator_ae_eq : ∀ (P n : ℕ) (U : 
       hscal R₂ h₂ subset_union_right α, sub_self]
     rfl
 
+/-- **Simon Ch. 6, 3.2(3)** (chapter-06.txt lines 763–768): the weight `θHⁿ⌞M` of an integer
+multiplicity current does not depend on the representation `T = τ(M, θ, ξ)`.  By the fundamental
+lemma, `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂` `Hⁿ`-a.e. on `M₁ ∪ M₂`.  A unit orientation is nonzero, so
+`Hⁿ(M₁ ∖ M₂) = Hⁿ(M₂ ∖ M₁) = 0`; then `M₁`, `M₂` have the same approximate tangent planes, and
+evaluating at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂` a.e. on `M₁ ∩ M₂`. -/
+theorem Submission.imrep_measure_eq_of_represents_same_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → R₁.measure = R₂.measure := by
+  intro P n U T R₁ R₂ hU h₁ h₂
+  -- (★) `1_{M₁}θ₁ξ₁ = 1_{M₂}θ₂ξ₂`, `Hⁿ`-a.e. on `M₁ ∪ M₂`
+  have hstar := Submission.imrep_weighted_orient_indicator_ae_eq P n U T R₁ R₂ hU h₁ h₂
+  -- `Hⁿ(M ∖ M') = 0`: for a.e. `x ∈ M ∖ M'`, (★) reads `θ(x)ξ(x) = 0`, but `θ(x) ≥ 1` and
+  -- `|ξ(x)(α)| = 1` for some `α` (the common covector of `ξ(x)` with itself)
+  have hnull : ∀ R R' : IMRep U n,
+      (∀ᵐ x ∂(μHE[n].restrict (R.carrier ∪ R'.carrier)),
+        R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
+          R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x) →
+      μHE[n] (R.carrier \ R'.carrier) = 0 := by
+    intro R R' h
+    have hmem : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ R'.carrier := by
+      filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left h, R.orients,
+        ae_restrict_mem R.measurableSet_carrier] with x hx hxo hxM
+      by_contra hxM'
+      obtain ⟨Q, -, hQ⟩ := hxo
+      obtain ⟨α, hα, -⟩ :=
+        Submission.unit_orientations_common_unit_covector P n Q (R.orient x) (R.orient x) hQ hQ
+      rw [indicator_of_mem hxM, indicator_of_notMem hxM'] at hx
+      have hev := congrArg (fun L : MultiVector P n => |L α|) hx
+      simp only [smul_apply, zero_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα, mul_one,
+        abs_zero, Nat.cast_eq_zero] at hev
+      exact (R.mult_pos x hxM).ne' hev
+    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff] at hmem
+    have hsub : R.carrier \ R'.carrier ⊆ {x | ¬(x ∈ R.carrier → x ∈ R'.carrier)} :=
+      fun x hx h => hx.2 (h hx.1)
+    exact measure_mono_null hsub hmem
+  have h12 := hnull R₁ R₂ hstar
+  have h21 := hnull R₂ R₁ (by
+    rw [union_comm]
+    filter_upwards [hstar] with x hx using hx.symm)
+  -- hence `Hⁿ⌞M₁ = Hⁿ⌞M₂`
+  have hrestr : μHE[n].restrict R₁.carrier = μHE[n].restrict R₂.carrier :=
+    Measure.restrict_congr_set (ae_eq_set.2 ⟨h12, h21⟩)
+  -- `θ₁ = θ₂` a.e. on `M₁`: the approximate tangent planes `Q₁` of `M₁` and `Q₂` of `M₂` agree,
+  -- and (★) evaluated at a covector `α` with `|ξ₁(α)| = |ξ₂(α)| = 1` gives `θ₁ = θ₂`
+  have hmult : ∀ᵐ x ∂(μHE[n].restrict R₁.carrier), (R₁.mult x : ℝ≥0∞) = R₂.mult x := by
+    have hor₂ := R₂.orients
+    have hmem₂ := ae_restrict_mem (μ := μHE[n]) R₂.measurableSet_carrier
+    rw [← hrestr] at hor₂ hmem₂
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset subset_union_left hstar, R₁.orients, hor₂,
+      ae_restrict_mem R₁.measurableSet_carrier, hmem₂] with x hx ho₁ ho₂ hx₁ hx₂
+    obtain ⟨Q₁, hT₁, hQ₁⟩ := ho₁
+    obtain ⟨Q₂, hT₂, hQ₂⟩ := ho₂
+    have hQ : Q₁ = Q₂ :=
+      ((Submission.hasApproximateTangentSpaceAt_iff_of_null_sdiff P n R₁.carrier R₂.carrier x Q₁
+        h12 h21).1 hT₁).unique hT₂
+    subst hQ
+    obtain ⟨α, hα₁, hα₂⟩ :=
+      Submission.unit_orientations_common_unit_covector P n Q₁ (R₁.orient x) (R₂.orient x) hQ₁ hQ₂
+    rw [indicator_of_mem hx₁, indicator_of_mem hx₂] at hx
+    have hev := congrArg (fun L : MultiVector P n => |L α|) hx
+    simp only [smul_apply, smul_eq_mul, abs_mul, Nat.abs_cast, hα₁, hα₂, mul_one] at hev
+    exact_mod_cast hev
+  -- `θ₁Hⁿ⌞M₁ = θ₂Hⁿ⌞M₁ = θ₂Hⁿ⌞M₂`
+  unfold IMRep.measure
+  rw [withDensity_congr_ae hmult, hrestr]
+
+/-- **The weight of a cone is homogeneous of degree `n`** (proof of Simon 7.4.5,
+chapter-07.txt lines 697–699, "by virtue of the fact that `C` is a cone").  If the cone `C` is
+represented by `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` and `λ > 0`, then `μ(λA) = λⁿ μ(A)` for
+every Borel `A`.  The dilated triple `R_λ = (λ⁻¹M, θ(λ·), ξ(λ·))` is integer multiplicity, and
+`R_λ(ω) = R(λ⁻ⁿ ω(λ⁻¹·)) = C(λ⁻ⁿ ω(λ⁻¹·)) = C(ω)` as `η_{0,λ#}C = C`, so `R_λ` represents `C`.
+By the uniqueness of the weight (Simon Ch. 6, 3.2(3)), `μ(A) = μ_{R_λ}(A) = λ⁻ⁿ μ(λA)`. -/
+theorem Submission.cone_current_imrep_measure_smul_image : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A := by
+  intro P n C R hC hR lam hlam A hA
+  -- Step 1: the dilated triple `R_λ = (λ⁻¹M, θ(λ·), ξ(λ·))` is integer multiplicity, with
+  -- `R_λ(ω) = R(λ⁻ⁿ ω(λ⁻¹·))` for every form `ω` and `μ_{R_λ}(A) = λ⁻ⁿ μ(λA)` for Borel `A`
+  obtain ⟨Rl, hcar, hmult, horient⟩ := Submission.imrep_univ_smul_rescale_exists P n R lam hlam
+  obtain ⟨haction, hmeasure⟩ :=
+    Submission.imrep_smul_rescale_action_measure P n R Rl lam hlam hcar hmult horient
+  -- Step 2: `R_λ` represents `C`: `C(ω) = C(ω') = R(ω') = R_λ(ω)` for `ω' = λ⁻ⁿ ω(λ⁻¹·)`
+  have hRl : Rl.Represents C := by
+    intro ω
+    obtain ⟨ω', hω', hCω'⟩ := Submission.cone_current_apply_dilation_pullback P n C hC lam hlam ω
+    rw [← hCω', hR ω', haction]
+    congr 1
+    funext y
+    exact hω' y
+  -- Step 3: the weight does not depend on the representation, so `μ_{R_λ} = μ` and
+  -- `μ(A) = λ⁻ⁿ μ(λA)`
+  have hA' := hmeasure A hA
+  rw [Submission.imrep_measure_eq_of_represents_same_current P n univ C Rl R isOpen_univ hRl hR]
+    at hA'
+  -- Step 4: multiply by `λⁿ`, using `λⁿ λ⁻ⁿ = 1`
+  have hpow : ENNReal.ofReal (lam ^ n) * ENNReal.ofReal (lam⁻¹ ^ n) = 1 := by
+    rw [← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
+      ENNReal.ofReal_one]
+  rw [hA', ← mul_assoc, hpow, one_mul]
 /-- **Simon Ch. 6, 3.2(3) and 2.11–2.12**: if `T = τ(M, θ, ξ)` in the open set `U`, then
 (i) `M_W(T) = μ_R(W)` for every open `W`, where `μ_R = θ Hⁿ⌞M`, and (ii) `spt T = U ∩ spt μ_R`.
 `M_W(T) ≤ μ_R(W)` because admissible forms pair with `ξ` to at most `1`; `μ_R(W) ≤ M_W(T)` by
@@ -2656,59 +2656,6 @@ theorem Submission.dimred_regular_point_density : ∀ (P n : ℕ) (U : Set (Eucl
   refine hlim.congr' ?_
   filter_upwards [Ioo_mem_nhdsGT hρ] with s hs
   rw [hmass s hs, mul_div_assoc]
-
-/-- **Ball masses, vertex density and vertex support of an integer multiplicity cone** (proof of
-Simon 7.3.1, chapter-07.txt line 355: `(ωⱼρʲ)⁻¹ μ_C(B_ρ(0))` does not depend on `ρ > 0`).  Let the
-cone `C` be represented by `R = (M, θ, ξ)` in `ℝᴾ` with weight `μ = θHʲ⌞M`.  (i) For `ρ > 0`,
-`M_{B_ρ(0)}(C) = μ(ρB₁(0)) = ρʲ μ(B₁(0)) = ρʲ M_{B₁(0)}(C)`, as `M_W(C) = μ(W)` for open `W` and
-`μ(λA) = λʲ μ(A)`.  (ii) So the density quotient `M_{B_ρ(0)}(C)/(ωⱼρʲ)` is the constant
-`M_{B₁(0)}(C)/ωⱼ` with `0 < ωⱼ < ∞`.  (iii) If `θ > 0` then `μ(B_ε(0)) = εʲωⱼθ > 0` for every
-`ε > 0`, so `0 ∈ spt μ = spt C`. -/
-theorem Submission.dimred_cdg_im_cone_ball_mass : ∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j), IsConeCurrent C → IsIntegerMultiplicity C → (∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) = ENNReal.ofReal (ρ ^ j) * C.massOn (ball 0 1)) ∧ (∀ θ : ℝ, HasMassDensity C 0 θ ↔ 0 ≤ θ ∧ C.massOn (ball 0 1) = unitBallVolume j * ENNReal.ofReal θ) ∧ ∀ θ : ℝ, 0 < θ → HasMassDensity C 0 θ → (0 : Euclid P) ∈ C.support := by
-  intro P j C hC hIM
-  -- Step 1: a representation `R` of `C` with weight `μ = μ_R`; `M_W(C) = μ(W)` for open `W` and
-  -- `spt C = ℝᴾ ∩ spt μ`
-  obtain ⟨R, hR⟩ := hIM
-  obtain ⟨hmass, hsupp⟩ :=
-    Submission.dor_imrep_massOn_eq_measure_and_support P j univ C R isOpen_univ hR
-  -- Step 2: `B_ρ(0) = ρ B₁(0)` for `ρ > 0`
-  have hball : ∀ ρ : ℝ, 0 < ρ → (fun x : Euclid P => ρ • x) '' ball 0 1 = ball 0 ρ := by
-    intro ρ hρ
-    rw [image_smul, smul_ball hρ.ne', smul_zero, Real.norm_eq_abs, abs_of_pos hρ, mul_one]
-  -- Step 3 (i): `M_{B_ρ(0)}(C) = μ(ρ B₁(0)) = ρʲ μ(B₁(0)) = ρʲ M_{B₁(0)}(C)`
-  have hi : ∀ ρ : ℝ, 0 < ρ →
-      C.massOn (ball 0 ρ) = ENNReal.ofReal (ρ ^ j) * C.massOn (ball 0 1) := by
-    intro ρ hρ
-    rw [hmass _ isOpen_ball, hmass _ isOpen_ball, ← hball ρ hρ]
-    exact Submission.cone_current_imrep_measure_smul_image P j C R hC hR ρ hρ _ measurableSet_ball
-  -- Step 4: `0 < ωⱼ < ∞`
-  have hω0 : unitBallVolume j ≠ 0 := (measure_ball_pos volume (0 : Euclid j) one_pos).ne'
-  have hωtop : unitBallVolume j ≠ ∞ := measure_ball_lt_top.ne
-  -- Step 5 (ii): for `ρ > 0` the density quotient is the constant `M_{B₁(0)}(C)/ωⱼ`
-  have hii : ∀ θ : ℝ, HasMassDensity C 0 θ ↔
-      0 ≤ θ ∧ C.massOn (ball 0 1) = unitBallVolume j * ENNReal.ofReal θ := by
-    intro θ
-    have hconst : (fun ρ : ℝ => C.massOn (ball 0 ρ) / (unitBallVolume j * ENNReal.ofReal (ρ ^ j)))
-        =ᶠ[𝓝[>] 0] fun _ => C.massOn (ball 0 1) / unitBallVolume j := by
-      filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
-      rw [hi ρ hρ, mul_comm (unitBallVolume j), ENNReal.mul_div_mul_left _ _
-        (ENNReal.ofReal_ne_zero_iff.mpr (pow_pos hρ j)) ENNReal.ofReal_ne_top]
-    unfold HasMassDensity
-    rw [tendsto_congr' hconst, tendsto_const_nhds_iff, eq_comm, ENNReal.eq_div_iff hω0 hωtop,
-      eq_comm]
-  refine ⟨hi, hii, fun θ hθ hden => ?_⟩
-  -- Step 6 (iii): `M_{B₁(0)}(C) = ωⱼθ ≠ 0`, so `μ(B_ε(0)) = εʲ M_{B₁(0)}(C) > 0` for every `ε > 0`
-  -- and `0 ∈ spt μ`
-  have hM0 : C.massOn (ball 0 1) ≠ 0 := by
-    rw [((hii θ).1 hden).2]
-    exact mul_ne_zero hω0 (ENNReal.ofReal_ne_zero_iff.mpr hθ)
-  rw [hsupp, univ_inter, Measure.mem_support_iff_forall]
-  intro s hs
-  obtain ⟨ε, hε, hεs⟩ := Metric.mem_nhds_iff.1 hs
-  have hpos : R.measure (ball 0 ε) ≠ 0 := by
-    rw [← hmass _ isOpen_ball, hi ε hε]
-    exact mul_ne_zero (ENNReal.ofReal_ne_zero_iff.mpr (pow_pos hε j)) hM0
-  exact (pos_iff_ne_zero.2 hpos).trans_le (measure_mono hεs)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
