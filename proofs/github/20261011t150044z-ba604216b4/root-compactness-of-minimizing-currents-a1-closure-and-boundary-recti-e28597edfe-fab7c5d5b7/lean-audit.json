@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5c75d317a3ac9830a5fc5b8ca37567323b2660888ef00329ba55a95cca509a2b",
+  "git_delta": {
+    "base_commit": "55741579b3715c4bd4288711333cabeebf86e3c4",
+    "candidate_commit": "d106644981a0636f4706ed0160b48fc526ae6fd8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_steiner_ediam_le",
+    "diff_sha256": "e1faad779a4713cb5d7c1e60af91a8853137dc50dd6becbc26af59d4478bfc3f",
+    "source_sha256": "a25feec8e258353475b8d7d53ca3852439122072970c6148112aaaea4115c2e5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_steiner_ediam_le",
+      "statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ediam {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} ≤ ediam A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
