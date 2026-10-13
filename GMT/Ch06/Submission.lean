@@ -1019,6 +1019,180 @@ theorem Submission.rectifiability_bf_cone_ratio_reduction :
       (Or.inl ENNReal.ofReal_ne_top)] at hrs
     rw [← mul_assoc]
     exact hrs.le
+/-- Cones versus unions of coordinate fibres (step 4 of the Besicovitch–Federer trichotomy,
+Mattila 18.9, used for Simon Ch. 6, 8.1).  Let `k = m + 1`, `L_u(y) = (⟨u₁, y⟩, …, ⟨u_k, y⟩)`,
+`X_u(a, r, s) = {x : |x − a| < r, |L_u(x − a)| < s|x − a|}`, `u ⊕_j c = (uᵢ + cᵢ e_j)ᵢ` and
+`K_j(t) = {x ≠ a : L_{u ⊕_j c}(x − a) = 0 for some |c| < t}`.  With
+`Φ = limsup_{s → 0⁺} sup_{0<r<δ} μ(X_u(a, r, s))/(rs)ᵏ` and
+`ϑ_j = limsup_{t → 0⁺} sup_{0<r<δ} μ(B(a, r) ∩ K_j(t))/(rt)ᵏ`, we have `ϑ_j ≤ Φ` for every `j`
+and `Φ ≤ (√N)ᵏ Σ_j ϑ_j`.  Since `L_{u ⊕_j c}(y) = L_u(y) + y_j c`,
+`B(a, r) ∩ K_j(t) ⊆ X_u(a, r, t)` and `X_u(a, r, s) ⊆ ⋃_j B(a, r) ∩ K_j(√N s)`. -/
+theorem Submission.rectifiability_bf_fibre_cone_comparison :
+    ∀ (N m : ℕ) (μ : Measure (Eucl N)) (δ : ℝ) (a : Eucl N) (u : Fin (m + 1) → Eucl N), (∀ j : Fin N, limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) ≤ limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0)) ∧ limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x a < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) (x - a)) : Eucl (m + 1))‖ < s * ‖x - a‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (N : ℝ) ^ (m + 1)) * ∑ j : Fin N, limsup (fun t : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t, (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}) / ENNReal.ofReal ((r * t) ^ (m + 1))) (𝓝[>] 0) := by
+  intro N m μ δ a u
+  -- `L = L_u`, `K j t = K_j(t)`, `X r s = X_u(a, r, s)`, `F = F`, `Fj j = F_j`.
+  let L : Eucl N → Eucl (m + 1) := fun y => (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i) y) : Eucl (m + 1))
+  let K : Fin N → ℝ → Set (Eucl N) := fun j t => {x | x ≠ a ∧ ∃ c ∈ ball (0 : Eucl (m + 1)) t,
+    (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) (x - a)) : Eucl (m + 1)) = 0}
+  let X : ℝ → ℝ → Set (Eucl N) := fun r s => {x | dist x a < r ∧ ‖L (x - a)‖ < s * ‖x - a‖}
+  let F : ℝ → ℝ≥0∞ := fun s => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (X r s) / ENNReal.ofReal ((r * s) ^ (m + 1))
+  let Fj : Fin N → ℝ → ℝ≥0∞ := fun j t => ⨆ r ∈ Ioo (0 : ℝ) δ, μ (ball a r ∩ K j t) / ENNReal.ofReal ((r * t) ^ (m + 1))
+  show (∀ j, limsup (Fj j) (𝓝[>] 0) ≤ limsup F (𝓝[>] 0)) ∧
+    limsup F (𝓝[>] 0) ≤ ENNReal.ofReal (Real.sqrt (N : ℝ) ^ (m + 1)) * ∑ j : Fin N, limsup (Fj j) (𝓝[>] 0)
+  -- Step 1, fibre identity: `L_{u ⊕_j c}(y) = L_u(y) + y_j c`.
+  have hfib : ∀ (j : Fin N) (c : Eucl (m + 1)) (y : Eucl N),
+      (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (u i + c i • EuclideanSpace.single j (1 : ℝ)) y) : Eucl (m + 1)) =
+        L y + (y j) • c := by
+    intro j c y
+    ext i
+    simp [L, inner_add_left, real_inner_smul_left, EuclideanSpace.inner_single_left, mul_comm]
+  -- Step 2, inclusion (ii): `B(a, r) ∩ K_j(t) ⊆ X_u(a, r, t)` for `t > 0`.
+  have hincl2 : ∀ (j : Fin N) (r t : ℝ), 0 < t → ball a r ∩ K j t ⊆ X r t := by
+    rintro j r t ht x ⟨hxr, hxa, c, hc, hx0⟩
+    refine ⟨hxr, ?_⟩
+    rw [hfib] at hx0
+    have hL : L (x - a) = -((x - a) j • c) := eq_neg_of_add_eq_zero_left hx0
+    rw [hL, norm_neg, norm_smul]
+    have hy : 0 < ‖x - a‖ := norm_pos_iff.2 (sub_ne_zero.2 hxa)
+    have hc' : ‖c‖ < t := by simpa using hc
+    have hyj : ‖(x - a) j‖ ≤ ‖x - a‖ := PiLp.norm_apply_le _ _
+    calc ‖(x - a) j‖ * ‖c‖ ≤ ‖x - a‖ * ‖c‖ := by gcongr
+      _ < ‖x - a‖ * t := mul_lt_mul_of_pos_left hc' hy
+      _ = t * ‖x - a‖ := mul_comm _ _
+  refine ⟨fun j => ?_, ?_⟩
+  -- Step 3: `F_j ≤ F` on `(0, ∞)`, hence `ϑ_j ≤ Φ`.
+  · refine limsup_le_limsup ?_ (by isBoundedDefault) (by isBoundedDefault)
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    refine iSup₂_mono fun r hr => ?_
+    exact ENNReal.div_le_div_right (measure_mono (hincl2 j r t ht)) _
+  · rcases Nat.eq_zero_or_pos N with hN | hN
+    -- Step 4: for `N = 0` every cone is empty, so `Φ = 0`.
+    · subst hN
+      have hF0 : F = fun _ => 0 := by
+        funext s
+        have hX : ∀ r, X r s = ∅ := by
+          intro r
+          ext x
+          have hxa : x - a = 0 := Subsingleton.elim _ _
+          simp [X, hxa]
+        simp [F, hX]
+      rw [hF0, limsup_const]
+      exact zero_le
+    · set σ : ℝ := Real.sqrt (N : ℝ) with hσdef
+      have hσ : 0 < σ := Real.sqrt_pos.2 (by exact_mod_cast hN)
+      have hσsq : σ ^ 2 = (N : ℝ) := Real.sq_sqrt (Nat.cast_nonneg N)
+      -- Step 5, inclusion (i): `X_u(a, r, s) ⊆ ⋃_j B(a, r) ∩ K_j(σ s)` for `s > 0`.
+      have hincl1 : ∀ r s, 0 < s → X r s ⊆ ⋃ j, ball a r ∩ K j (σ * s) := by
+        rintro r s hs x ⟨hxr, hx⟩
+        set y := x - a with hydef
+        have hy : 0 < ‖y‖ := by
+          rcases (norm_nonneg y).lt_or_eq with h | h
+          · exact h
+          · exfalso
+            rw [← h, mul_zero] at hx
+            exact (norm_nonneg _).not_gt hx
+        obtain ⟨j, -, hj⟩ := Finset.exists_max_image Finset.univ (fun j => ‖y j‖)
+          (Finset.univ_nonempty_iff.2 ⟨⟨0, hN⟩⟩)
+        have hsq : ‖y‖ ^ 2 ≤ (σ * ‖y j‖) ^ 2 := by
+          rw [PiLp.norm_sq_eq_of_L2, mul_pow, hσsq]
+          calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin N, ‖y j‖ ^ 2 :=
+                Finset.sum_le_sum fun i _ => pow_le_pow_left₀ (norm_nonneg _) (hj i (Finset.mem_univ i)) 2
+            _ = (N : ℝ) * ‖y j‖ ^ 2 := by simp
+        have hle : ‖y‖ ≤ σ * ‖y j‖ :=
+          (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 hsq
+        have hyj : 0 < ‖y j‖ := by
+          by_contra hcon
+          have : ‖y j‖ = 0 := le_antisymm (not_lt.1 hcon) (norm_nonneg _)
+          rw [this, mul_zero] at hle
+          linarith
+        have hyj0 : y j ≠ 0 := norm_pos_iff.1 hyj
+        refine mem_iUnion.2 ⟨j, mem_ball.2 hxr, ?_, (-(y j)⁻¹) • L y, ?_, ?_⟩
+        · intro h
+          rw [hydef, h, sub_self, norm_zero] at hy
+          exact lt_irrefl _ hy
+        · rw [mem_ball_zero_iff, norm_smul, norm_neg, norm_inv]
+          rw [inv_mul_lt_iff₀ hyj]
+          calc ‖L y‖ < s * ‖y‖ := hx
+            _ ≤ s * (σ * ‖y j‖) := by gcongr
+            _ = ‖y j‖ * (σ * s) := by ring
+        · rw [hfib, smul_smul, mul_neg, mul_inv_cancel₀ hyj0, neg_smul, one_smul, add_neg_cancel]
+      -- Step 6, pointwise bound: `F(s) ≤ σᵏ Σ_j F_j(σ s)` for `s > 0`.
+      have hpt : ∀ s, 0 < s → F s ≤ ENNReal.ofReal (σ ^ (m + 1)) * ∑ j, Fj j (σ * s) := by
+        intro s hs
+        refine iSup₂_le fun r hr => ?_
+        have hc0 : ENNReal.ofReal (σ ^ (m + 1)) ≠ 0 := (ENNReal.ofReal_pos.2 (by positivity)).ne'
+        have hA : ENNReal.ofReal ((r * (σ * s)) ^ (m + 1)) =
+            ENNReal.ofReal (σ ^ (m + 1)) * ENNReal.ofReal ((r * s) ^ (m + 1)) := by
+          rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+          congr 2
+          ring
+        calc μ (X r s) / ENNReal.ofReal ((r * s) ^ (m + 1))
+            ≤ (∑ j, μ (ball a r ∩ K j (σ * s))) / ENNReal.ofReal ((r * s) ^ (m + 1)) := by
+              refine ENNReal.div_le_div_right ?_ _
+              exact (measure_mono (hincl1 r s hs)).trans (measure_iUnion_fintype_le μ _)
+          _ = ∑ j, ENNReal.ofReal (σ ^ (m + 1)) *
+                (μ (ball a r ∩ K j (σ * s)) / ENNReal.ofReal ((r * (σ * s)) ^ (m + 1))) := by
+              rw [ENNReal.sum_div]
+              refine Finset.sum_congr rfl fun j _ => ?_
+              rw [hA, ← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hc0 ENNReal.ofReal_ne_top]
+          _ ≤ ∑ j, ENNReal.ofReal (σ ^ (m + 1)) * Fj j (σ * s) := by
+              refine Finset.sum_le_sum fun j _ => ?_
+              gcongr
+              exact le_iSup₂ (f := fun r (_ : r ∈ Ioo (0 : ℝ) δ) =>
+                μ (ball a r ∩ K j (σ * s)) / ENNReal.ofReal ((r * (σ * s)) ^ (m + 1))) r hr
+          _ = ENNReal.ofReal (σ ^ (m + 1)) * ∑ j, Fj j (σ * s) := by rw [Finset.mul_sum]
+      -- Step 8: `limsup` is subadditive along `𝓝[>] 0` (direct `ε`-argument).
+      have hadd : ∀ (v w : ℝ → ℝ≥0∞), limsup (fun s => v s + w s) (𝓝[>] (0 : ℝ)) ≤
+          limsup v (𝓝[>] 0) + limsup w (𝓝[>] 0) := by
+        intro v w
+        refine ENNReal.le_of_forall_pos_le_add fun ε hε hlt => ?_
+        have hv : limsup v (𝓝[>] (0 : ℝ)) < ⊤ := lt_of_le_of_lt le_self_add hlt
+        have hw : limsup w (𝓝[>] (0 : ℝ)) < ⊤ := lt_of_le_of_lt le_add_self hlt
+        have hε2 : (ε : ℝ≥0∞) / 2 ≠ 0 := by
+          simp [ENNReal.div_eq_zero_iff, hε.ne']
+        refine limsup_le_of_le (by isBoundedDefault) ?_
+        filter_upwards [eventually_lt_of_limsup_lt (ENNReal.lt_add_right hv.ne hε2),
+          eventually_lt_of_limsup_lt (ENNReal.lt_add_right hw.ne hε2)] with x h1 h2
+        calc v x + w x ≤ (limsup v (𝓝[>] 0) + (ε : ℝ≥0∞) / 2) + (limsup w (𝓝[>] 0) + (ε : ℝ≥0∞) / 2) :=
+              add_le_add h1.le h2.le
+          _ = limsup v (𝓝[>] 0) + limsup w (𝓝[>] 0) + ε := by
+              rw [add_add_add_comm, ENNReal.add_halves]
+      have hsum : ∀ (S : Finset (Fin N)) (h : Fin N → ℝ → ℝ≥0∞),
+          limsup (fun s => ∑ j ∈ S, h j s) (𝓝[>] (0 : ℝ)) ≤ ∑ j ∈ S, limsup (h j) (𝓝[>] 0) := by
+        intro S h
+        induction S using Finset.induction_on with
+        | empty => simp
+        | insert j S hj ih =>
+          simp only [Finset.sum_insert hj]
+          exact (hadd (h j) (fun s => ∑ i ∈ S, h i s)).trans (add_le_add le_rfl ih)
+      -- Step 9, change of variable `t = σ s`: `s ↦ σ s` maps `𝓝[>] 0` into `𝓝[>] 0`.
+      have hT : Tendsto (fun s : ℝ => σ * s) (𝓝[>] 0) (𝓝[>] 0) := by
+        rw [tendsto_nhdsWithin_iff]
+        refine ⟨?_, ?_⟩
+        · have : Tendsto (fun s : ℝ => σ * s) (𝓝 0) (𝓝 (σ * 0)) :=
+            ((continuous_const.mul continuous_id).tendsto 0)
+          rw [mul_zero] at this
+          exact this.mono_left nhdsWithin_le_nhds
+        · filter_upwards [self_mem_nhdsWithin] with s hs
+          exact mul_pos hσ hs
+      have hcv : ∀ j, limsup (fun s => Fj j (σ * s)) (𝓝[>] (0 : ℝ)) ≤ limsup (Fj j) (𝓝[>] 0) := by
+        intro j
+        calc limsup (fun s => Fj j (σ * s)) (𝓝[>] (0 : ℝ))
+            = limsup (Fj j) (map (fun s : ℝ => σ * s) (𝓝[>] 0)) := Filter.limsup_comp (Fj j) _ _
+          _ ≤ limsup (Fj j) (𝓝[>] 0) := limsup_le_limsup_of_le hT (by isBoundedDefault) (by isBoundedDefault)
+      -- Steps 7 and 10: pull out the constant `σᵏ`, then apply steps 8 and 9.
+      calc limsup F (𝓝[>] 0) ≤ limsup (fun s => ENNReal.ofReal (σ ^ (m + 1)) * ∑ j, Fj j (σ * s)) (𝓝[>] 0) := by
+            refine limsup_le_limsup ?_ (by isBoundedDefault) (by isBoundedDefault)
+            filter_upwards [self_mem_nhdsWithin] with s hs
+            exact hpt s hs
+        _ = ENNReal.ofReal (σ ^ (m + 1)) * limsup (fun s => ∑ j, Fj j (σ * s)) (𝓝[>] 0) :=
+            ENNReal.limsup_const_mul_of_ne_top ENNReal.ofReal_ne_top
+        _ ≤ ENNReal.ofReal (σ ^ (m + 1)) * ∑ j, limsup (fun s => Fj j (σ * s)) (𝓝[>] 0) := by
+            gcongr
+            exact hsum Finset.univ (fun j s => Fj j (σ * s))
+        _ ≤ ENNReal.ofReal (σ ^ (m + 1)) * ∑ j, limsup (Fj j) (𝓝[>] 0) := by
+            gcongr with j
+            exact hcv j
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
