@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "564d646316a2dcacff9bcf0e41efac179f63fe27b983b1fb21dc5c5f6ab8302b",
+  "git_delta": {
+    "base_commit": "70ea3e0da35992280a413d39bf1aad6a02290c27",
+    "candidate_commit": "2c2999d19e0b1ee4e3a506ff7591483386d128cb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_glc_cut_cycle",
+    "diff_sha256": "0fea373e18e6fa660f8a2014e67f68b6b7a5be974bf5b98a4b8a7c68b92792a9",
+    "source_sha256": "58d5150e1c4b5c3863498a9cc625d469e50df28c00b21c5a88caca39ad026a4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_glc_cut_cycle",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (n + 1)) (RR : IMRep U (n + 1)) (RB : IMRep U n) (D Q : GeometricCurrentOn U n) (y : Euclid P) (t : ℝ), RR.Represents R → (∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ ω : TestFormOn U n, Q ω = (∫ x in RR.carrier ∩ ball y t, (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = D ω + Q ω) ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t → X ω = R.boundary ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
