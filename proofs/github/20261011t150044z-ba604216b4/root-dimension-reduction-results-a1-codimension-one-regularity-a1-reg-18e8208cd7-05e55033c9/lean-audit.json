@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2f92a9a272f1397e9935454ef6f09667a293e2617a3705da641f6cd34f8bb57f",
+  "git_delta": {
+    "base_commit": "ba8587b51c79767075c4db9978d5cfecb37c6b0d",
+    "candidate_commit": "9ff76906722dcb8bcc007644718f45ab2b7ad407",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "13f800df82f2cd337460e6f70d46913803a377be24419d55204f4d7749ef0ea3",
+    "source_sha256": "5e51c7e84d9ac6c8bb7a4c143837561bacd09772e56f5819f61bd37b0d3c0bda",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_c1_piece_approxTangent",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r m : ℝ), ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt n (g '' ball c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
