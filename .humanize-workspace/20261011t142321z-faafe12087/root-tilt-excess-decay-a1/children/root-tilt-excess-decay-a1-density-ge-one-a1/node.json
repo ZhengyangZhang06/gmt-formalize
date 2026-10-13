@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.tilt_excess_decay-a1.density_ge_one-a1",
+  "parent_id": "root.tilt_excess_decay-a1",
+  "depth": 2,
+  "title": "Density at least one on the support inside B_rho(0) under the Allard hypotheses (Simon Ch. 4, 4.9-4.10)",
+  "statement": "Let n >= 1, l >= 0, p > n, U open in R^{n+l}, V a contract rectifiable n-varifold in U, H : R^{n+l} -> R^{n+l}, and delta, rho real numbers with AllardHypotheses H p delta rho (rho > 0, V has generalized mean curvature H in U, theta >= 1 mu-a.e., 0 in spt V, B_rho(0) contained in U, mu(B_rho(0)) <= (1+delta) omega_n rho^n, (rho^{p-n} integral_{B_rho(0)} |H|^p dmu)^{1/p} <= delta). Then for every y in spt V with |y| < rho and every eps > 0 there is s_0 > 0 such that mu(B_s(y)) >= (1 - eps) omega_n s^n for all s in (0, s_0) (stated as the eventual inequality ofReal((1 - eps) omega_n s^n) <= mu(B_s(y)) along s -> 0+; B_s(y) closed, omega_n = unitBallVolume n).",
+  "lean_statement": "∀ (n ℓ : ℕ), 1 ≤ n → ∀ p : ℝ, (n : ℝ) < p → ∀ (U : Set (Amb n ℓ)), IsOpen U → ∀ (V : RectifiableVarifold n ℓ U) (H : Amb n ℓ → Amb n ℓ) (δ ρ : ℝ), V.AllardHypotheses H p δ ρ → ∀ y ∈ V.support ∩ ball (0 : Amb n ℓ) ρ, ∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((1 - ε) * (unitBallVolume n * s ^ n)) ≤ V.weight (closedBall y s)",
+  "lean_name": "ted_density_ge_one",
+  "depends_on": [
+    "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+    "root.tilt_excess_decay-a1.tangent_plane_facts-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.tilt_excess_decay-a1.lp_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.tilt_excess_decay-a1.tangent_plane_facts-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-tilt-excess-decay-a1-density-ge-one-a1-a1"
+}
