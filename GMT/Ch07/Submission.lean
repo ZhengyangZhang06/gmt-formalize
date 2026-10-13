@@ -1298,6 +1298,33 @@ theorem Submission.doraggt_approxTangent_iff_of_density_zero : ∀ (P n : ℕ) (
   rw [add_zero] at hlim
   exact squeeze_zero_norm' hle hlim
 
+/-- **Approximate tangent planes of two locally finite sets agree a.e. on their overlap** (Simon
+Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6 "⇒", chapter-03.txt lines 86–90 and 113–146,
+stated symmetrically for two sets).  Let `W ⊆ ℝᴾ` be open and `A`, `B` Borel with `Hⁿ(A ∩ K)` and
+`Hⁿ(B ∩ K)` finite for every compact `K ⊆ W`.  By the upper density theorem the densities of
+`A ∖ B` and `B ∖ A` vanish at `Hⁿ`-a.e. `x ∈ W ∩ A ∩ B`; a closed ball about such `x` inside `W`
+has finite measure in `A` and in `B`, so `A` and `B` have the same approximate tangent planes at
+`x`. -/
+theorem Submission.doraggt_ae_approxTangent_transfer : ∀ (P n : ℕ) (W A B : Set (Euclid P)), IsOpen W → MeasurableSet A → MeasurableSet B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (A ∩ K) ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ W → x ∈ A → x ∈ B → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q := by
+  intro P n W A B hW hA hB hAfin hBfin
+  -- Step 1, the densities of `A ∖ B` and `B ∖ A` vanish `Hⁿ`-a.e. on `W` off these sets.
+  have hAB := Submission.doraggt_local_density_zero P n W (A \ B) hW (hA.diff hB)
+    fun K hK hKW => ne_top_of_le_ne_top (hAfin K hK hKW)
+      (measure_mono (inter_subset_inter_left K sdiff_subset))
+  have hBA := Submission.doraggt_local_density_zero P n W (B \ A) hW (hB.diff hA)
+    fun K hK hKW => ne_top_of_le_ne_top (hBfin K hK hKW)
+      (measure_mono (inter_subset_inter_left K sdiff_subset))
+  -- Step 2, at such `x ∈ W ∩ A ∩ B`, `x ∉ A ∖ B` and `x ∉ B ∖ A`, so both densities vanish.
+  filter_upwards [hAB, hBA] with x hxAB hxBA hxW hxA hxB
+  -- Step 3, `B̄(x, ε/2) ⊆ B(x, ε) ⊆ W` is compact, so `A` and `B` have finite measure in it.
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hW x hxW
+  have hsub : closedBall x (ε / 2) ⊆ W := (closedBall_subset_ball (half_lt_self hε)).trans hball
+  -- Step 4, the approximate tangent planes of `A` and `B` at `x` agree.
+  exact Submission.doraggt_approxTangent_iff_of_density_zero P n A B x (ε / 2) hA hB
+    (half_pos hε) (hAfin _ (isCompact_closedBall x (ε / 2)) hsub)
+    (hBfin _ (isCompact_closedBall x (ε / 2)) hsub) (hxAB hxW fun h => h.2 hxB)
+    (hxBA hxW fun h => h.2 hxA)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
