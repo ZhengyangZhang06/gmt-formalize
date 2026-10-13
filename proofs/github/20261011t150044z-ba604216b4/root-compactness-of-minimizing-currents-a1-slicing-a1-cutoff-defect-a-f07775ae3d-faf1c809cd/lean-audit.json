@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "443f3e5c8886dae43321e784712a900c0f509b490b28727e9a5ff47a006b068a",
+  "git_delta": {
+    "base_commit": "e049e60a72cd31e63b0a897588b668ab2087ccbc",
+    "candidate_commit": "9dd5e7c3e566495fe8f919a4dda05e287c875697",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcs_cd_smul_mem_testFormOn",
+    "diff_sha256": "a80d24003f08b5ea9c4c53ed9c3665d7a3a757d2e688f99297bf4cf3593f9f6f",
+    "source_sha256": "ee3e9bed82b8963537f3a599787a4a1eabad1c708240dc16f17f44126758e4b4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcs_cd_smul_mem_testFormOn",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (g : Euclid P → ℝ) (ω : TestFormOn U n), ContDiff ℝ (⊤ : ℕ∞) g → (fun x => g x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
