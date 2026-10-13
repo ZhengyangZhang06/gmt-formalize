@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d3abe403498edbb361fd2a3fa16668cca7a2cde9512f68336bf27595209d54b",
+  "git_delta": {
+    "base_commit": "aea400db1c3978ff3779c28685383fa5cbd96457",
+    "candidate_commit": "bd22aa4d38c2facbe01ba12b9617ec53cd429b65",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_td_top_covector_spans",
+    "diff_sha256": "1844b11b90db18a5f3ab09da46293fccefb7472463786c77548ca69316df1228",
+    "source_sha256": "8049c2d86825b5ec7dda0bda33035f87a99574fcc5614beddbe0c9472d7b24ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_td_top_covector_spans",
+      "statement": "∀ (n : ℕ) (δ : Covector (Euclid n) n), δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 → covectorEuclideanNorm δ = 1 ∧ ∀ α : Covector (Euclid n) n, α = α (fun i => EuclideanSpace.single i (1 : ℝ)) • δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
