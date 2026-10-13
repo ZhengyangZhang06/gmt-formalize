@@ -654,6 +654,128 @@ theorem Submission.lpf_raf_chart_change_of_variables : ∀ (P n : ℕ) (Φ : Euc
   rw [harea, ← lintegral_indicator₀ hA]
   exact lintegral_congr fun y => (hfib y).symm
 
+/-- Area formula on the slices `{y₀ = t}` of a straightened chart `(B, χ)` (Simon Ch. 3, 2.6 on
+each slice; used for the co-area formula of Ch. 6, 4.1): with `[t, v] = (t, v₀, …, v_{m-1})`, the
+slice map `σ_t(v) = Φ(χ[t, v])` is Lipschitz and `c`-antilipschitz on the open slice
+`B_t = {v | [t, v] ∈ B}`, so the chart change of variables gives
+`∫_{σ_t(S′_t)} g dHᵐ = ∫_{S′_t} g(σ_t(v)) Jσ_t(v) dLᵐ(v)` with `S′ = B ∩ χ⁻¹(S)`, and by the chain
+rule `Dσ_t(v) eᵢ = DΦ(χ[t, v]) (Dχ([t, v]) eᵢ₊₁)`, i.e. `Jσ_t(v) = 𝒥([t, v])`. -/
+theorem Submission.slicing_im_creg_box_slice_area : ∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (B : Set (Eucl (m + 1))) (χ : Eucl (m + 1) → Eucl (m + 1)) (S : Set (Eucl (m + 1))) (g : Eucl P → ℝ≥0∞), ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → IsOpen B → ContDiffOn ℝ 1 χ B → χ '' B ⊆ Ω → (∃ Λ : ℝ≥0, LipschitzOnWith Λ χ B) → (∀ (t : ℝ) (v v' : Eucl m), (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B → (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')) ∈ B → ‖v - v'‖ ≤ ‖χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) - χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v')))‖) → MeasurableSet S → Measurable g → ∀ t : ℝ, ∫⁻ x in (fun v : Eucl m => Φ (χ ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))))) '' {v : Eucl m | (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v)) ∈ B ∩ χ ⁻¹' S}, g x ∂(μHE[m] : Measure (Eucl P)) = ∫⁻ v : Eucl m, (B ∩ χ ⁻¹' S).indicator (fun y => g (Φ (χ y)) * ENNReal.ofReal (Real.sqrt (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single i.succ 1))) (fderiv ℝ Φ (χ y) (fderiv ℝ χ y (EuclideanSpace.single j.succ 1)))).det)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))) ∂(volume : Measure (Eucl m)) := by
+  intro P m Φ Ω B χ S g hΦ ⟨K, hK⟩ ⟨c, hc, hΦc⟩ hB hχ hχΩ ⟨Λ, hΛ⟩ hslice hS hg t
+  classical
+  -- `ι z = [0, z]` is a linear isometry with `ι eᵢ = eᵢ₊₁`, and `e v = [t, v] = e 0 + ι v`.
+  let ιl : Eucl m →ₗ[ℝ] Eucl (m + 1) :=
+    { toFun := fun z => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+        (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ z))
+      map_add' := fun z w => by
+        ext j
+        refine Fin.cases ?_ (fun j => ?_) j <;> simp
+      map_smul' := fun a z => by
+        ext j
+        refine Fin.cases ?_ (fun j => ?_) j <;> simp }
+  let ι : Eucl m →L[ℝ] Eucl (m + 1) := LinearMap.toContinuousLinearMap ιl
+  let e : Eucl m → Eucl (m + 1) := fun v =>
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons t (EuclideanSpace.equiv (Fin m) ℝ v))
+  have he_split : ∀ v, e v = e 0 + ι v := by
+    intro v
+    ext j
+    refine Fin.cases ?_ (fun j => ?_) j <;> simp [e, ι, ιl]
+  have hι_single : ∀ i : Fin m,
+      ι (EuclideanSpace.single i 1) = EuclideanSpace.single i.succ 1 := by
+    intro i
+    ext j
+    refine Fin.cases ?_ (fun j => ?_) j <;> simp [ι, ιl]
+  have hι_norm : ∀ z, ‖ι z‖ = ‖z‖ := by
+    intro z
+    rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fin.sum_univ_succ]
+    simp [ι, ιl]
+  have he_iso : Isometry e := by
+    refine Isometry.of_dist_eq fun v w => ?_
+    rw [dist_eq_norm, dist_eq_norm, he_split v, he_split w, add_sub_add_left_eq_sub, ← map_sub,
+      hι_norm]
+  have he_cont : Continuous e := he_iso.continuous
+  have he_d : ∀ v, HasFDerivAt e ι v := fun v =>
+    (ι.hasFDerivAt.const_add (e 0)).congr_of_eventuallyEq (Eventually.of_forall he_split)
+  -- The slices `B_t = e⁻¹(B)` (open) and `S′_t = e⁻¹(B ∩ χ⁻¹(S)) ⊆ B_t` (Borel: replace `χ` by
+  -- its Borel extension `B.piecewise χ 0`).
+  let Bt : Set (Eucl m) := e ⁻¹' B
+  let St : Set (Eucl m) := {v | e v ∈ B ∩ χ ⁻¹' S}
+  have hBt : IsOpen Bt := hB.preimage he_cont
+  have hSt_sub : St ⊆ Bt := fun v hv => hv.1
+  have hS' : MeasurableSet (B ∩ χ ⁻¹' S) := by
+    have hm : Measurable (B.piecewise χ (fun _ => (0 : Eucl (m + 1)))) :=
+      hχ.continuousOn.measurable_piecewise continuousOn_const hB.measurableSet
+    have heq : B ∩ χ ⁻¹' S = B ∩ (B.piecewise χ (fun _ => (0 : Eucl (m + 1)))) ⁻¹' S := by
+      ext y
+      simp only [mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy]⟩
+      · rintro ⟨hy, hyS⟩
+        exact ⟨hy, by rwa [Set.piecewise_eq_of_mem _ _ _ hy] at hyS⟩
+    rw [heq]
+    exact hB.measurableSet.inter (hm hS)
+  have hSt : MeasurableSet St := he_cont.measurable hS'
+  -- `σ = Φ ∘ χ ∘ e` is `K Λ`-Lipschitz on `B_t`, and `c`-antilipschitz there by the slice
+  -- hypothesis and the antilipschitz bound of `Φ` on `χ(B) ⊆ Ω`; hence injective on `B_t`.
+  let σ : Eucl m → Eucl P := fun v => Φ (χ (e v))
+  have hχe : LipschitzOnWith (Λ * 1) (χ ∘ e) Bt :=
+    hΛ.comp he_iso.lipschitzWith.lipschitzOnWith (fun v hv => hv)
+  have hσlip : LipschitzOnWith (K * (Λ * 1)) σ Bt :=
+    hK.comp hχe (fun v hv => hχΩ ⟨e v, hv, rfl⟩)
+  have hσanti : ∀ w ∈ Bt, ∀ w' ∈ Bt, c * ‖w - w'‖ ≤ ‖σ w - σ w'‖ := by
+    intro w hw w' hw'
+    calc c * ‖w - w'‖ ≤ c * ‖χ (e w) - χ (e w')‖ :=
+          mul_le_mul_of_nonneg_left (hslice t w w' hw hw') hc.le
+      _ ≤ ‖σ w - σ w'‖ := hΦc _ (hχΩ ⟨e w, hw, rfl⟩) _ (hχΩ ⟨e w', hw', rfl⟩)
+  have hinj : InjOn σ Bt := by
+    intro w hw w' hw' h
+    have h1 := hσanti w hw w' hw'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖w - w'‖ ≤ 0 := by
+      by_contra h3
+      exact absurd h1 (not_le.mpr (mul_pos hc (lt_of_not_ge h3)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- `σ(S′_t)` is Borel (Lusin–Souslin) and `B_t ∩ σ⁻¹(σ(S′_t)) = S′_t` by injectivity.
+  have hAt : MeasurableSet (σ '' St) :=
+    hSt.image_of_continuousOn_injOn (hσlip.continuousOn.mono hSt_sub) (hinj.mono hSt_sub)
+  have hpre : Bt ∩ σ ⁻¹' (σ '' St) = St := by
+    ext v
+    constructor
+    · rintro ⟨hv, w, hw, hwv⟩
+      rwa [← hinj (hSt_sub hw) hv hwv]
+    · intro hv
+      exact ⟨hSt_sub hv, v, hv, rfl⟩
+  -- The chart change of variables for `σ` on `B_t` with `A := σ(S′_t)`.
+  obtain ⟨-, -, harea⟩ := Submission.lpf_raf_chart_change_of_variables P m σ Bt (σ '' St) g hBt
+    ⟨_, hσlip⟩ ⟨c, hc, hσanti⟩ (image_mono hSt_sub) hAt.nullMeasurableSet hg.aemeasurable
+  rw [hpre] at harea
+  -- Chain rule: `Dσ(v) = DΦ(χ(e v)) ∘ Dχ(e v) ∘ ι` on `B_t`, so
+  -- `Dσ(v) eᵢ = DΦ(χ(e v)) (Dχ(e v) eᵢ₊₁)`.
+  have hderiv : ∀ v ∈ Bt, ∀ i : Fin m, fderiv ℝ σ v (EuclideanSpace.single i 1) =
+      fderiv ℝ Φ (χ (e v)) (fderiv ℝ χ (e v) (EuclideanSpace.single i.succ 1)) := by
+    intro v hv i
+    have hev : e v ∈ B := hv
+    have hχd : HasFDerivAt χ (fderiv ℝ χ (e v)) (e v) :=
+      ((hχ.differentiableOn_one (e v) hev).differentiableAt (hB.mem_nhds hev)).hasFDerivAt
+    have hΦd : HasFDerivAt Φ (fderiv ℝ Φ (χ (e v))) (χ (e v)) :=
+      (hΦ.differentiable_one (χ (e v))).hasFDerivAt
+    have hσd : HasFDerivAt σ ((fderiv ℝ Φ (χ (e v))).comp ((fderiv ℝ χ (e v)).comp ι)) v :=
+      hΦd.comp v (hχd.comp v (he_d v))
+    rw [hσd.fderiv, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hι_single]
+  -- Compare the integrands pointwise: both vanish off `S′_t`, and agree on it by `hderiv`.
+  show ∫⁻ x in σ '' St, g x ∂(μHE[m] : Measure (Eucl P)) =
+    ∫⁻ v, (B ∩ χ ⁻¹' S).indicator _ (e v) ∂(volume : Measure (Eucl m))
+  rw [harea, ← lintegral_indicator hSt]
+  refine lintegral_congr fun v => ?_
+  by_cases hv : v ∈ St
+  · have hev : e v ∈ B ∩ χ ⁻¹' S := hv
+    rw [indicator_of_mem hv, indicator_of_mem hev]
+    show g (Φ (χ (e v))) * _ = _
+    simp only [hderiv v hv.1]
+  · have hev : e v ∉ B ∩ χ ⁻¹' S := hv
+    rw [indicator_of_notMem hv, indicator_of_notMem hev]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
