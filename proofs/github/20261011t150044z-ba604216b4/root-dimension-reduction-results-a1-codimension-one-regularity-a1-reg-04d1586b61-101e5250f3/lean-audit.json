@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "19c5b36e946d47ad19091ae4df4d9048a94f273894befb0e458620b71e6b3a5f",
+  "git_delta": {
+    "base_commit": "3ca57279850b7e589c0c58251212b5f13b57b74d",
+    "candidate_commit": "49deeef0ad77d88868c9d9a6b3bfadfa13375550",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_ce_radial_cutoff",
+    "diff_sha256": "eb0bae588349c1276f1e54617af75f1222bd4395400c0f64cc18c7cdf0e1b6b5",
+    "source_sha256": "894350800817a264d9ad7777604680c149921c63d565c177a903ba9aae832d06",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_ce_radial_cutoff",
+      "statement": "∀ (P : ℕ) (y : Euclid P) (ρ δ : ℝ), 0 < ρ → 0 < δ → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ (∀ z, 0 ≤ ζ z ∧ ζ z ≤ 1) ∧ (∀ z ∈ closedBall y ρ, ζ z = 1) ∧ tsupport ζ ⊆ closedBall y (ρ + δ) ∧ (∀ z, ‖fderiv ℝ ζ z‖ ≤ 3 / (2 * δ)) ∧ (∀ z, z ∉ ball y (ρ + δ) \\ closedBall y ρ → fderiv ℝ ζ z = 0) ∧ ∀ t : ℝ, 0 < t → t ≤ 1 → ∃ r : ℝ, ρ ≤ r ∧ r < ρ + δ ∧ {z | t ≤ ζ z} = closedBall y r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
