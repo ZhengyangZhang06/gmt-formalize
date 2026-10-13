@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsMinimizingIn|HasMassDensity|RegularSetDense|DensityOneImpliesRegular|DensityAndTangentCones|^import|^open|^namespace|^end",
+        "massOn.*measure|measure.*massOn|HasMassDensity|IMRep",
+        "ae_tendsto_rnDeriv|ae_tendsto_measure_inter_div_of_measurableSet",
+        "euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_zero|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_eq_zero",
+        "lean_name.*rsd_|(theorem|lemma|def) rsd_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-independent-audit-d3be4oaz/AuditModule.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/rsd-independent-audit-d3be4oaz/AuditModule.lean"
+      ],
+      "conclusion": "Confirmed the pinned project/mathlib revisions and manifest-pinned SimonGMT revision. The inspected sources supply the stated mass, support, tangent and differentiation definitions/tools, but no proved bridge for these exact GMT.Ch07.IMRep obligations. A scratch public-module replay of the frozen definitions independently elaborated all five standalone proposition types and kernel-checked the conditional assembly of RegularSetDense from children 1, 2, 3, 5 and the two declared siblings. The assembly and checked differentiation, Hausdorff-measure, rectifiability and current lemmas use only propext, Classical.choice and Quot.sound. Splitting is appropriate: every child contributes directly or through the reduction lemma. Dependencies, including active sibling children, are acyclic. All proposed names are bare, unreserved identifiers; no accepted declaration is being reused under a changed type. No matrix-instance-sensitive construction occurs. The cited mathematical provenance agrees with [Simon's 2014 notes](https://web.stanford.edu/class/math285/ts-gmt.pdf), Chapters 5–7."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_eq_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the open-set mass/weight statement and its hypotheses. Cauchy–Binet supplies the correct Euclidean coefficient-norm bound and saturating covector. Compact localization, L¹ approximation, radial projection, mollification and cutoff justify the lower bound; the representation gives the upper bound. Infinite mass and degenerate dimensions are covered without circular reliance."
+    },
+    {
+      "key": "density_eq_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly expresses the weight-measure-a.e. conclusion, with multiplicity coerced to ℝ. Tangent convergence establishes normalized unweighted density; compact localization supplies finite measures for Besicovitch differentiation. The closed/open-ball sandwich and mass_eq_weight yield the exact HasMassDensity predicate. Exceptional sets transfer correctly to the weight measure."
+    },
+    {
+      "key": "support_iff_weight_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type both include x ∈ U, correctly preserving relative support. A zero-weight ball gives vanishing on a smaller relatively compact neighborhood. Conversely, membership in the zero region gives zero local mass, and mass_eq_weight gives zero weight. Both implications are complete and use only the declared dependency."
+    },
+    {
+      "key": "integer_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the integer linear-combination statement. The proof independently establishes tangent locality using differentiation and tangent growth bounds. The Borel sign and coefficient formula handle overlap, opposite orientations and cancellation correctly. The constructed carrier, multiplicity and orientation satisfy every IMRep field, and integrable domination justifies the representation identity."
+    },
+    {
+      "key": "constant_multiplicity_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The existential type matches all seven asserted properties for arbitrary N. The supplied scaled restriction has the required representation, boundary, support, finite local mass and density. The competitor argument verifies integer multiplicity, carrier concentration on compact K, continuous zero extension, boundary preservation and compact difference support before applying minimality. Positive finite scaling permits cancellation, and regularity transfers with nonzero integer multiplicity. Dependencies are sufficient and correctly directed."
+    }
+  ],
+  "required_changes": []
+}
