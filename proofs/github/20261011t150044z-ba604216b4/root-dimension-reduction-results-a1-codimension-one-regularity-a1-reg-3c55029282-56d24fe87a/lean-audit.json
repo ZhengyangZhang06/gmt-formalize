@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b2a37148f242167ab45f0325a81b9d13dfc0b40d2d6c00be191dbca7d6db90a9",
+  "git_delta": {
+    "base_commit": "2408ff2335cf5b7fcae586bcea182d8e961174a6",
+    "candidate_commit": "9f12f9f7fae8525aa7c5de016abee943276b8c08",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_rdo_dg_rc_closed_graph_cover",
+    "diff_sha256": "b95a9e2b1ae55f6a6b311bca91c25cb47cb5f5805fdb0ef251e4f87d86895667",
+    "source_sha256": "75ae5400f55c5d483a4c9139059660ccb0c50633f62363a4b038e67256a47864",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_dg_rc_closed_graph_cover",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1)) (S : Set (Euclid (m + 1))), ‖v‖ = 1 → (∀ x ∈ S, ∀ x' ∈ S, |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ S ⊆ Γ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
