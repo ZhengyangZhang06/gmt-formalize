@@ -458,6 +458,43 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- Convergence of integrals under uniform convergence on a compact set containing the supports
+(steps 4 and 5d of the weak-equation limit in the blow-up argument for the Schauder estimate): if
+`K ⊆ ℝⁿ` is compact, `g` and eventually every `f k` are integrable and vanish off `K`, and
+`f k → g` uniformly on `K`, then `∫ f k → ∫ g`.  For `ε > 0` put `M = 𝓛ⁿ(K) < ∞` and
+`δ = ε / (M + 1)`; for large `k`, `|∫ f k - ∫ g| = |∫_K (f k - g)| ≤ δ M < ε`. -/
+theorem dohr_eb_sch_bu_wel_tendsto_integral_of_tendstoUniformlyOn : ∀ (n : ℕ) (K : Set (Rn n)) (f : ℕ → Rn n → ℝ) (g : Rn n → ℝ), IsCompact K → (∀ᶠ k in atTop, Integrable (f k)) → Integrable g → (∀ᶠ k in atTop, ∀ z, z ∉ K → f k z = 0) → (∀ z, z ∉ K → g z = 0) → TendstoUniformlyOn f g atTop K → Tendsto (fun k => ∫ z, f k z) atTop (𝓝 (∫ z, g z)) := by
+  intro n K f g hK hfi hgi hfK hgK hfg
+  -- Step 1: `K` is compact, so `M = 𝓛ⁿ(K)` is finite (and `M ≥ 0`).
+  have hKfin : (volume : Measure (Rn n)) K < ∞ := hK.measure_lt_top
+  have hM : 0 ≤ (volume : Measure (Rn n)).real K := measureReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  -- Step 2: with `δ = ε / (M + 1) > 0`, for all large `k` the function `f k` is integrable,
+  -- vanishes off `K`, and `|g - f k| < δ` on `K`.
+  have hδ : 0 < ε / ((volume : Measure (Rn n)).real K + 1) := div_pos hε (by linarith)
+  filter_upwards [hfi, hfK, Metric.tendstoUniformlyOn_iff.1 hfg _ hδ] with k hk1 hk2 hk3
+  -- Steps 3–4: `∫ f k - ∫ g = ∫ (f k - g) = ∫_K (f k - g)`, as `f k - g` vanishes off `K`.
+  have h4 : ∫ z in K, (f k z - g z) = ∫ z, (f k z - g z) :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz => by
+      rw [hk2 z hz, hgK z hz, sub_zero]
+  rw [dist_eq_norm, ← integral_sub hk1 hgi, ← h4]
+  -- Step 5: `|∫_K (f k - g)| ≤ δ M`.
+  have h5 : ‖∫ z in K, (f k z - g z)‖ ≤
+      ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K :=
+    norm_setIntegral_le_of_norm_le_const hKfin fun z hz => by
+      rw [← dist_eq_norm, dist_comm]
+      exact (hk3 z hz).le
+  -- Step 6: `δ M = ε M / (M + 1) < ε`.
+  have h6 : ε / ((volume : Measure (Rn n)).real K + 1) * (volume : Measure (Rn n)).real K < ε := by
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+    linarith
+  exact h5.trans_lt h6
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05
