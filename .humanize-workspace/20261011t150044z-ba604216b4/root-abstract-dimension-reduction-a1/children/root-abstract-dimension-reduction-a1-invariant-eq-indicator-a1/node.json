@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.invariant_eq_indicator-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Remark A.5: invariance under a subspace of dimension ≥ n forces a plane indicator",
+  "statement": "Let P, n, Q ∈ ℕ, let ψ : ℝ^P → ℝ^Q be locally μH[n]-integrable, and let L ⊆ ℝ^P be a linear subspace with dim L ≥ n such that ψ(y + λx) = ψ(x) for all y ∈ L, λ > 0 and x ∈ ℝ^P. Then there is an n-dimensional linear subspace L' ⊆ ℝ^P with ψ = ψ(0)·1_{L'} everywhere on ℝ^P.",
+  "lean_statement": "∀ (P n Q : ℕ) (ψ : Euclid P → Euclid Q) (L : Submodule ℝ (Euclid P)), LocallyIntegrable ψ μH[(n : ℝ)] → n ≤ Module.finrank ℝ L → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) → ∃ L' : Submodule ℝ (Euclid P), Module.finrank ℝ L' = n ∧ ψ = Set.indicator (L' : Set (Euclid P)) (fun _ => ψ 0)",
+  "lean_name": "adr_invariant_eq_indicator",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-invariant-eq-indicator-a1-a1"
+}

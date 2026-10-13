@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "grep -n 'theorem ae_eq_zero_of_integral|theorem ae_eq_of_integral' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "grep -n '^theorem|^lemma|^instance|^def' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean (hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, hausdorffMeasure_segment, IsAddLeftInvariant instance)",
+        "grep -n '^theorem|^lemma' mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean (Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH)",
+        "grep -n 'theorem banach_steinhaus' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+        "grep -rn 'finrank_sup_span_singleton|disjoint_span_singleton|finrank_span_singleton' mathlib/Mathlib/LinearAlgebra/",
+        "grep -rn 'def ediam' mathlib/Mathlib/Topology/EMetricSpace/ mathlib/Mathlib/Topology/MetricSpace/",
+        "grep -n '^theorem|^def' simongmt/Poincare/SimonGMT/Chapter01/{HausdorffContentDensity,HausdorffOpenCovers,HausdorffDensityBounds,Hausdorff}.lean",
+        "grep -n 'def dimensionalUpperDensity|def dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/*.lean",
+        "cat simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        "grep -n '3.26|3.27' book/chapter-01.txt; cat -n book/chapter-A.txt",
+        "lake env lean /tmp/adr-decomp/Check.lean (ten child types + assembly of Submission.abstract_dimension_reduction + #print axioms)",
+        "lake env lean /tmp/adr-decomp/Check2.lean (adr_dimension_bound, adr_extremal_sing_eq proved from stubs of siblings)",
+        "lake env lean /tmp/adr-decomp/Check3.lean (adr_tangent_invariance proved from stub of adr_weak_tendsto_comp_affine)",
+        "lake env lean /tmp/adr-decomp/Check4.lean (pp.parens #check of child types)",
+        "lake env lean /tmp/adr-decomp/Lib.lean (#print axioms simon_theorem_3_26_ii_of_totallyBounded, hausdorff_eq_zero_of_uniform_content_ball_bound, exists_isOpen_superset_ediam_rpow_lt, simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure, AppendixA.rescale_rescale)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffContentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffOpenCovers.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+        "/tmp/adr-decomp/Check.lean",
+        "/tmp/adr-decomp/Check2.lean",
+        "/tmp/adr-decomp/Check3.lean",
+        "/tmp/adr-decomp/Check4.lean",
+        "/tmp/adr-decomp/Lib.lean"
+      ],
+      "conclusion": "The snapshot Contract.lean (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to the build packages.\n\nMathlib supplies:\n- fact (a): ae_eq_of_integral_contDiff_smul_eq, for any Borel measure and locally integrable functions;\n- Hausdorff scaling and translation: hausdorffMeasure_smul₀, map_homothety_hausdorffMeasure, and an IsAddLeftInvariant instance;\n- hausdorffMeasure_segment;\n- dimension facts: Real.hausdorffMeasure_of_finrank_lt, Convex.dimH_eq_finrank_vectorSpan, hausdorffMeasure_of_lt_dimH;\n- banach_steinhaus;\n- Submodule.finrank_sup_span_singleton;\n- Metric.ediam.\n\nThe simongmt library proves Simon Ch.1 3.26(2) as simon_theorem_3_26_ii_of_totallyBounded, together with the open-cover enlargement exists_isOpen_superset_ediam_rpow_lt and the normalization bridge to μH. All of these use only propext, Classical.choice and Quot.sound, so they may back adr_content_density and adr_tangent_keeps_measure. simongmt AppendixA/Foundations.lean has only rescaling and data definitions and leaves A.4 open, so A.4 itself is not in the library.\n\nAll ten child types elaborate in the contract context. The parent assembly from the ten stubs compiles, and its only non-standard axiom is sorryAx from the stubs. adr_dimension_bound and adr_extremal_sing_eq compile from sibling stubs, and adr_tangent_invariance compiles from the adr_weak_tendsto_comp_affine stub plus Mathlib. The only reserved DAG names are the ten depth-1 names, so the adr_* names do not collide."
+    }
+  ],
+  "proof": "Source: Simon Ch. 1, Theorem 3.26(2) (chapter-01.txt lines 1197–1240): Θ^{*n}(H^n_∞, A, x) ≥ 2^{−n} for H^n-a.e. x ∈ A. This is the bound Simon cites as '3.6(2) of Ch. 1' at chapter-A.txt line 72, and it is used in step 0(d) and step 5 of the parent. Here it is stated in unnormalized cover form.\nThe pinned library proves it as Poincare.SimonGMT.Chapter01.simon_theorem_3_26_ii_of_totallyBounded (axioms propext, Classical.choice, Quot.sound). That lemma needs Carathéodory measurability, which follows from MeasurableSet A, and its normalized outer measure has the same null sets as μH[ℓ] by simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure. A self-contained proof follows.\nNotation: for E ⊆ ℝ^P and τ ∈ (0, ∞] let h_τ(E) := inf{Σ_j (diam C_j)^ℓ : E ⊆ ∪_{j∈ℕ} C_j, diam C_j < τ for all j}. Here diam ∅ = 0 and 0^ℓ = 0 since ℓ > 0.\nFacts:\n(a) h_τ is monotone and countably subadditive.\n(b) h_∞ ≤ h_τ.\n(c) If diam E < τ then h_τ(E) = h_∞(E): any cover {D_i} of E can be replaced by {D_i ∩ E}, whose diameters are ≤ diam E < τ and whose sum is no larger.\n(d) μH[ℓ](E) = sup_{τ>0} h_τ(E). Mathlib's definition uses diam ≤ τ, which gives the same supremum, because the families with diam < τ lie between those with diam ≤ τ/2 and those with diam ≤ τ.\n(e) For bounded A, h_τ(A) < ∞ for every τ > 0: cover the compact closure of A by finitely many balls of radius τ/3.\n1. A point x ∈ A fails the property iff there is δ > 0 with h_∞(A ∩ B_ρ(x)) < ρ^ℓ/2 for every ρ ∈ (0, δ). (A cover with 2Σ(diam C_j)^ℓ < ρ^ℓ exists iff h_∞ < ρ^ℓ/2.) For m ≥ 1 let N_m := {x ∈ A : h_∞(A ∩ B_ρ(x)) < ρ^ℓ/2 for all ρ ∈ (0, 1/m)}. The exceptional set is ∪_m N_m, so it suffices to show μH[ℓ](N_m) = 0 for every m.\n2. Fix m, put δ := 1/m, and fix τ ∈ (0, δ). By (e), h_τ(N_m) ≤ h_τ(A) < ∞. Let ε > 0. Choose a cover {C_j} of N_m with diam C_j < τ and Σ_j (diam C_j)^ℓ ≤ h_τ(N_m) + ε. Drop the C_j that do not meet N_m, and pick x_j ∈ C_j ∩ N_m. Let d_j := diam C_j ∈ [0, τ).\n3. By continuity of t ↦ t^ℓ, choose ρ_j ∈ (d_j, δ) with ρ_j^ℓ ≤ d_j^ℓ + ε2^{−j−1}. Then E_j := C_j ∩ N_m ⊆ B̄_{d_j}(x_j) ∩ A ⊆ A ∩ B_{ρ_j}(x_j).\n4. Since x_j ∈ N_m and 0 < ρ_j < δ, h_∞(A ∩ B_{ρ_j}(x_j)) < ρ_j^ℓ/2. As diam E_j ≤ d_j < τ, fact (c) and monotonicity give h_τ(E_j) = h_∞(E_j) ≤ h_∞(A ∩ B_{ρ_j}(x_j)) < ρ_j^ℓ/2 ≤ (d_j^ℓ + ε2^{−j−1})/2.\n5. N_m = ∪_j E_j, so by (a), h_τ(N_m) ≤ Σ_j h_τ(E_j) ≤ (1/2)Σ_j d_j^ℓ + ε/2 ≤ (1/2)(h_τ(N_m) + ε) + ε/2. Since h_τ(N_m) < ∞, this gives h_τ(N_m) ≤ 2ε. As ε is arbitrary, h_τ(N_m) = 0.\n6. This holds for every τ ∈ (0, δ), and h_τ increases as τ decreases. So by (d), μH[ℓ](N_m) = sup_{0<τ<δ} h_τ(N_m) = 0. By countable subadditivity, the exceptional set ∪_m N_m is μH[ℓ]-null. ∎",
+  "key_steps": [
+    "exceptional points satisfy h_∞(A∩B_ρ(x)) < ρ^ℓ/2 for all small ρ; group them by the scale 1/m into sets N_m",
+    "cover N_m by sets C_j of diameter < τ that meet N_m, and enlarge each to a ball B_{ρ_j}(x_j) with ρ_j^ℓ ≈ (diam C_j)^ℓ",
+    "for sets of diameter < τ, h_τ = h_∞; hence h_τ(N_m) ≤ ½(h_τ(N_m)+ε)+ε/2, which forces h_τ(N_m)=0",
+    "taking the supremum over τ gives μH[ℓ](N_m)=0"
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

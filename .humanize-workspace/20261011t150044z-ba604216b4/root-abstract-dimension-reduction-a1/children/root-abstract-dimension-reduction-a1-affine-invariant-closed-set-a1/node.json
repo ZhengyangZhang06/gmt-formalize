@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.affine_invariant_closed_set-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Lemma S: closed sets invariant under small affine maps along a subspace",
+  "statement": "Let P ∈ ℕ, let S ⊆ ℝ^P be closed and let L ⊆ ℝ^P be a linear subspace such that {x : y + λx ∈ S} = S whenever y ∈ L, 0 < λ < 1 and |y| ≤ 1 − λ. Then (i) y + λz ∈ S ⇔ z ∈ S for all y ∈ L, all λ > 0 and all z ∈ ℝ^P; and (ii) if S ≠ ∅ then L ⊆ S.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (L : Submodule ℝ (Euclid P)), IsClosed S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => y + lam • x) ⁻¹' S = S) → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ z, y + lam • z ∈ S ↔ z ∈ S) ∧ (S.Nonempty → (L : Set (Euclid P)) ⊆ S)",
+  "lean_name": "adr_affine_invariant_closed_set",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-affine-invariant-closed-set-a1-a1"
+}
