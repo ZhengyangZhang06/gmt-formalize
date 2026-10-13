@@ -6365,6 +6365,242 @@ theorem Submission.deformation_ipl_minor_weak_continuity : ∀ (k Q : ℕ) (Ω :
       (fun y => euclideanCovectorCoordinate (α y) γ) C u u₀ k γ (fun s => s)
       hΩ hψ (hgc γ) (hgs γ) hu hu₀ hlim
 
+/-- Convergence of push-forward integrals under `C¹` approximation (Simon Ch. 6, proof of the
+Deformation Theorem, §5, p. 166: the push-forward limit behind "Q, R₁ are integer multiplicity by
+(19), 4.4, 4.5 and 3.13", part (I)).  Let `(M, θ, ξ)` be a rectifiable triple in `ℝ^P`, `g` be
+`Λ`-Lipschitz, `L(x)v` the derivative of `t ↦ g(x + tv)` at `0` along the weighted approximate
+tangent spaces `TₓM`, `θ` integrable on `M ∩ g⁻¹(K)` for compact `K`, and `C¹` maps `g_j` with a
+common Lipschitz constant `Λ'` converge uniformly to `g`.  Then for every continuous compactly
+supported `ω`, `∫_M θ ⟨ω(g_j), (Dg_j)_# ξ⟩ dHᵏ → ∫_M θ ⟨ω(g), L_# ξ⟩ dHᵏ`.  Once `|g_j - g| < 1`,
+both integrands vanish off `g⁻¹(K)`, `K` the closed `1`-neighbourhood of `spt ω`, and are bounded
+by `max(Λ, Λ')ᵏ ‖ω‖_∞ θ 1_{g⁻¹(K)}`.  On the disjointed `C¹` chart pieces `E_i` of `M`, one
+`ψ ∈ L¹(Ω_i)` gives `∫_{E_i} = ∫_{Ω_i} ψ ⟨ω(u), ∂u⟩` for `u = g_j ∘ Φ_i` and `u = g ∘ Φ_i`; these
+converge by weak continuity of minors, and dominated convergence over the pieces sums them. -/
+theorem Submission.deformation_ipl_chart_convergence : ∀ (P Q k : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (g : Eucl P → Eucl Q) (Λ : ℝ≥0) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → LipschitzWith Λ g → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => g (x + t • v)) (L x v) 0) → (∀ K : Set (Eucl Q), IsCompact K → IntegrableOn θ (M ∩ g ⁻¹' K) (μHE[k] : Measure (Eucl P))) → ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : Eucl Q → Covector (Eucl Q) k, Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (∫ x in M, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x)) ∂(μHE[k] : Measure (Eucl P)))) := by
+  intro P Q k M θ ξ g Λ L hT hg hL hθK gj Λ' hgjC1 hgjLip hconv ω hωc hωs
+  -- Step 1: a fixed compact target set
+  have hK₀ : IsCompact (tsupport ω) := hωs
+  set K : Set (Eucl Q) := Metric.cthickening 1 (tsupport ω) with hKdef
+  have hK : IsCompact K := hK₀.cthickening
+  have hKm : MeasurableSet (g ⁻¹' K) := hg.continuous.measurable hK.isClosed.measurableSet
+  have hev : ∀ᶠ j in atTop, ∀ x, dist (g x) (gj j x) < 1 :=
+    Metric.tendstoUniformly_iff.mp hconv 1 one_pos
+  have hvan_j : ∀ j, (∀ x, dist (g x) (gj j x) < 1) → ∀ x, g x ∉ K → ω (gj j x) = 0 := by
+    intro j hj x hx
+    by_contra hne
+    apply hx
+    have hmem : gj j x ∈ tsupport ω := subset_tsupport _ hne
+    exact Metric.mem_cthickening_of_dist_le (g x) (gj j x) 1 (tsupport ω) hmem (hj x).le
+  have hvan : ∀ x, g x ∉ K → ω (g x) = 0 := by
+    intro x hx
+    by_contra hne
+    exact hx (Metric.self_subset_cthickening _ (subset_tsupport _ hne))
+  -- Step 2: measurability and domination of both integrands
+  have hgjloc : ∀ j, LocallyLipschitzOn univ (gj j) :=
+    fun j => (hgjLip j).locallyLipschitz.locallyLipschitzOn
+  have hgloc : LocallyLipschitzOn univ g := hg.locallyLipschitz.locallyLipschitzOn
+  have hgjdiff : ∀ j, Differentiable ℝ (gj j) := fun j => (hgjC1 j).differentiable one_ne_zero
+  have hgjderiv : ∀ j x (v : Eucl P),
+      HasDerivAt (fun t : ℝ => gj j (x + t • v)) (fderiv ℝ (gj j) x v) 0 := by
+    intro j x v
+    have h1 : HasDerivAt (fun t : ℝ => x + t • v) v 0 := by
+      simpa using ((hasDerivAt_id (0:ℝ)).smul_const v).const_add x
+    have h2 : HasFDerivAt (gj j) (fderiv ℝ (gj j) x) (x + (0:ℝ) • v) := by
+      simpa using (hgjdiff j x).hasFDerivAt
+    exact h2.comp_hasDerivAt (0:ℝ) h1
+  have hEj : ∀ j, AEStronglyMeasurable
+      (fun x => θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)))
+        ((μHE[k] : Measure (Eucl P)).restrict M) ∧
+      ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+        |θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))| ≤
+          (Λ' : ℝ) ^ k * ‖ω (gj j x)‖ * θ x := by
+    intro j
+    refine Submission.deformation_ipl_cc_pushforward_integrand_bound P Q k univ M θ ξ
+      (fun x => fderiv ℝ (gj j) x) (fun x => ω (gj j x)) Λ' isOpen_univ hT ?_ ?_ ?_
+    · exact Submission.deformation_ipl_tangential_pushforward_aestronglyMeasurable P Q k univ M θ ξ
+        (gj j) (fun x => fderiv ℝ (gj j) x) isOpen_univ hT (hgjloc j)
+        (Filter.Eventually.of_forall fun x Tx _ v _ => hgjderiv j x v)
+    · exact (hωc.comp (hgjC1 j).continuous).aestronglyMeasurable
+    · refine Filter.Eventually.of_forall fun x Tx _ v _ => ?_
+      exact (fderiv ℝ (gj j) x).le_of_opNorm_le (norm_fderiv_le_of_lipschitz ℝ (hgjLip j)) v
+  have hLbound : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P),
+      HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, ‖L x v‖ ≤ (Λ : ℝ) * ‖v‖ := by
+    filter_upwards [hL] with x hx Tx hTx v hv
+    have hd := hx Tx hTx v hv
+    have hlip : LipschitzWith (Λ * ‖v‖₊) (fun t : ℝ => g (x + t • v)) := by
+      refine LipschitzWith.of_dist_le_mul fun s t => ?_
+      calc dist (g (x + s • v)) (g (x + t • v)) ≤ Λ * dist (x + s • v) (x + t • v) :=
+            hg.dist_le_mul _ _
+        _ = (Λ * ‖v‖₊ : ℝ≥0) * dist s t := by
+            rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, Real.dist_eq]
+            push_cast
+            rw [Real.norm_eq_abs]
+            ring
+    have := hd.le_of_lipschitz hlip
+    simpa using this
+  have hE0 := Submission.deformation_ipl_cc_pushforward_integrand_bound P Q k univ M θ ξ L
+    (fun x => ω (g x)) Λ isOpen_univ hT
+    (Submission.deformation_ipl_tangential_pushforward_aestronglyMeasurable P Q k univ M θ ξ g L
+      isOpen_univ hT hgloc hL)
+    (hωc.comp hg.continuous).aestronglyMeasurable hLbound
+  -- Step 3: one integrable dominator
+  obtain ⟨W, hW⟩ : ∃ W, ∀ y, ‖ω y‖ ≤ W := hωs.exists_bound_of_continuous hωc
+  have hW0 : 0 ≤ W := (norm_nonneg _).trans (hW 0)
+  set C₀ : ℝ := (max (Λ : ℝ) (Λ' : ℝ)) ^ k * W with hC₀
+  set Gd : Eucl P → ℝ := fun x => C₀ * (g ⁻¹' K).indicator θ x with hGd_def
+  have hGd : IntegrableOn Gd M (μHE[k] : Measure (Eucl P)) := by
+    have h1 : IntegrableOn θ (M ∩ g ⁻¹' K) (μHE[k] : Measure (Eucl P)) := hθK K hK
+    have h2 : Integrable ((g ⁻¹' K).indicator θ) ((μHE[k] : Measure (Eucl P)).restrict M) := by
+      rw [integrable_indicator_iff hKm, IntegrableOn, Measure.restrict_restrict hKm,
+        Set.inter_comm]
+      exact h1
+    exact h2.const_mul C₀
+  have hmemM : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), x ∈ M :=
+    ae_restrict_mem₀ hT.nullMeasurableSet
+  have hmaxΛ : (Λ : ℝ) ≤ max (Λ : ℝ) (Λ' : ℝ) := le_max_left _ _
+  have hmaxΛ' : (Λ' : ℝ) ≤ max (Λ : ℝ) (Λ' : ℝ) := le_max_right _ _
+  have hboundj : ∀ᶠ j in atTop, ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      |θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))| ≤ Gd x := by
+    filter_upwards [hev] with j hj
+    filter_upwards [(hEj j).2, hmemM] with x hx hxM
+    have hθ : 0 < θ x := hT.pos x hxM
+    by_cases hgx : g x ∈ K
+    · have hind : (g ⁻¹' K).indicator θ x = θ x :=
+        Set.indicator_of_mem (show x ∈ g ⁻¹' K from hgx) _
+      simp only [hGd_def, hind, hC₀]
+      calc _ ≤ (Λ' : ℝ) ^ k * ‖ω (gj j x)‖ * θ x := hx
+        _ ≤ (max (Λ : ℝ) (Λ' : ℝ)) ^ k * W * θ x := by
+            gcongr
+            · exact hW _
+    · have h0 := hvan_j j hj x hgx
+      have hind : (g ⁻¹' K).indicator θ x = 0 :=
+        Set.indicator_of_notMem (show x ∉ g ⁻¹' K from hgx) _
+      simp [hGd_def, hind, h0]
+  have hbound0 : ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M),
+      |θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))| ≤ Gd x := by
+    filter_upwards [hE0.2, hmemM] with x hx hxM
+    have hθ : 0 < θ x := hT.pos x hxM
+    by_cases hgx : g x ∈ K
+    · have hind : (g ⁻¹' K).indicator θ x = θ x :=
+        Set.indicator_of_mem (show x ∈ g ⁻¹' K from hgx) _
+      simp only [hGd_def, hind, hC₀]
+      calc _ ≤ (Λ : ℝ) ^ k * ‖ω (g x)‖ * θ x := hx
+        _ ≤ (max (Λ : ℝ) (Λ' : ℝ)) ^ k * W * θ x := by
+            gcongr
+            · exact hW _
+    · have h0 := hvan x hgx
+      have hind : (g ⁻¹' K).indicator θ x = 0 :=
+        Set.indicator_of_notMem (show x ∉ g ⁻¹' K from hgx) _
+      simp [hGd_def, hind, h0]
+  -- integrability of the integrands on M (eventually) and of the limit integrand
+  have hintj : ∀ᶠ j in atTop, IntegrableOn
+      (fun x => θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))) M
+        (μHE[k] : Measure (Eucl P)) := by
+    filter_upwards [hboundj] with j hj
+    exact Integrable.mono' hGd (hEj j).1 (by simpa [Real.norm_eq_abs] using hj)
+  have hint0 : IntegrableOn (fun x => θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))) M
+      (μHE[k] : Measure (Eucl P)) :=
+    Integrable.mono' hGd hE0.1 (by simpa [Real.norm_eq_abs] using hbound0)
+  -- Step 4: chart pieces
+  obtain ⟨Φ, Ω, hΩo, hΦC1, hΦLip, hΦanti, hcov⟩ :=
+    Submission.lpf_countably_rectifiable_c1_cover P k M hT.countablyRectifiable
+  set Ep : ℕ → Set (Eucl P) := disjointed (fun i => M ∩ Φ i '' Ω i) with hEp
+  have hEsub : ∀ i, Ep i ⊆ M ∩ Φ i '' Ω i := fun i => disjointed_subset _ i
+  have himgm : ∀ i, MeasurableSet (Φ i '' Ω i) :=
+    fun i => (Submission.lpf_wtc_chart_image_measurable_locally_finite P k (Φ i) (Ω i) (hΩo i)
+      (hΦC1 i) (hΦanti i)).1
+  have hEm : ∀ i, NullMeasurableSet (Ep i) (μHE[k] : Measure (Eucl P)) :=
+    NullMeasurableSet.disjointed fun i => hT.nullMeasurableSet.inter (himgm i).nullMeasurableSet
+  have hEdisj : Pairwise (Function.onFun Disjoint Ep) := disjoint_disjointed _
+  have hMeq : M =ᵐ[(μHE[k] : Measure (Eucl P))] (⋃ i, Ep i) := by
+    rw [hEp, iUnion_disjointed, ← Set.inter_iUnion]
+    refine ae_eq_set.mpr ⟨?_, ?_⟩
+    · rw [Set.sdiff_self_inter]; exact hcov
+    · rw [Set.sdiff_eq_empty.mpr Set.inter_subset_left]; exact measure_empty
+  -- Step 5/6: convergence on each piece
+  have hpiece : ∀ i, Tendsto
+      (fun j => ∫ x in Ep i, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))
+        ∂(μHE[k] : Measure (Eucl P))) atTop
+      (𝓝 (∫ x in Ep i, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))
+        ∂(μHE[k] : Measure (Eucl P)))) := by
+    intro i
+    set G' : Set (Eucl P) := Ep i ∩ g ⁻¹' K with hG'
+    have hG'M : G' ⊆ M := fun x hx => (hEsub i hx.1).1
+    have hG'Φ : G' ⊆ Φ i '' Ω i := fun x hx => (hEsub i hx.1).2
+    have hG'm : NullMeasurableSet G' (μHE[k] : Measure (Eucl P)) :=
+      (hEm i).inter hKm.nullMeasurableSet
+    have hθG' : IntegrableOn θ G' (μHE[k] : Measure (Eucl P)) :=
+      (hθK K hK).mono_set (fun x hx => ⟨hG'M hx, hx.2⟩)
+    obtain ⟨ψ, hψ, hrep⟩ :=
+      Submission.deformation_ipl_cc_chart_integral_representation P Q k univ M θ ξ (Φ i) (Ω i) G'
+        isOpen_univ hT (hΩo i) (hΦC1 i) (hΦLip i) (hΦanti i) hG'M hG'Φ hG'm hθG'
+    obtain ⟨KΦ, hKΦ⟩ := hΦLip i
+    -- the C¹ integrands
+    have hrepj : ∀ᶠ j in atTop,
+        ∫ x in Ep i, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))
+          ∂(μHE[k] : Measure (Eucl P)) =
+        ∫ w in Ω i, ψ w * ω ((gj j ∘ Φ i) w)
+          (fun b => fderiv ℝ (gj j ∘ Φ i) w (EuclideanSpace.single b 1)) := by
+      filter_upwards [hev, hintj] with j hj hintMj
+      have hzero : ∀ x, x ∉ g ⁻¹' K →
+          θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)) = 0 := by
+        intro x hx
+        simp [hvan_j j hj x hx]
+      have hcut : ∫ x in Ep i, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))
+            ∂(μHE[k] : Measure (Eucl P)) =
+          ∫ x in G', θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x))
+            ∂(μHE[k] : Measure (Eucl P)) := by
+        rw [hG', ← setIntegral_indicator hKm]
+        refine setIntegral_congr_fun₀ (hEm i) fun x _ => ?_
+        by_cases hx : x ∈ g ⁻¹' K
+        · rw [Set.indicator_of_mem hx]
+        · rw [Set.indicator_of_notMem hx, hzero x hx]
+      rw [hcut]
+      refine hrep (gj j) (fun x => fderiv ℝ (gj j) x) ω ?_ (hintMj.mono_set hG'M)
+      refine Filter.Eventually.of_forall fun w => ?_
+      exact (hgjdiff j (Φ i w)).hasFDerivAt.comp w
+        (((hΦC1 i).differentiable one_ne_zero) w).hasFDerivAt
+    -- the limit integrand
+    have hrep0 : ∫ x in Ep i, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))
+          ∂(μHE[k] : Measure (Eucl P)) =
+        ∫ w in Ω i, ψ w * ω ((g ∘ Φ i) w)
+          (fun b => fderiv ℝ (g ∘ Φ i) w (EuclideanSpace.single b 1)) := by
+      have hzero : ∀ x, x ∉ g ⁻¹' K → θ x * nVectorPushforward k (L x) (ξ x) (ω (g x)) = 0 := by
+        intro x hx
+        simp [hvan x hx]
+      have hcut : ∫ x in Ep i, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))
+            ∂(μHE[k] : Measure (Eucl P)) =
+          ∫ x in G', θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))
+            ∂(μHE[k] : Measure (Eucl P)) := by
+        rw [hG', ← setIntegral_indicator hKm]
+        refine setIntegral_congr_fun₀ (hEm i) fun x _ => ?_
+        by_cases hx : x ∈ g ⁻¹' K
+        · rw [Set.indicator_of_mem hx]
+        · rw [Set.indicator_of_notMem hx, hzero x hx]
+      rw [hcut]
+      refine hrep g L ω ?_ (hint0.mono_set hG'M)
+      have hcc := Submission.lpf_chart_chain_rule P Q k univ M θ ξ g L (Φ i) (Ω i) isOpen_univ hT
+        hgloc hL (hΩo i) (hΦC1 i) (hΦanti i)
+      have hsub : Ω i ∩ Φ i ⁻¹' G' ⊆ Ω i ∩ Φ i ⁻¹' M :=
+        fun w hw => ⟨hw.1, hG'M hw.2⟩
+      exact (ae_restrict_of_ae_restrict_of_subset hsub hcc).mono fun w hw => hw.2
+    -- weak continuity of minors on this chart
+    have hlim := Submission.deformation_ipl_minor_weak_continuity k Q (Ω i) ψ ω ((max Λ Λ') * KΦ)
+      (fun j => gj j ∘ Φ i) (g ∘ Φ i) (hΩo i) hψ hωc hωs
+      (fun j => ((hgjLip j).comp_lipschitzOnWith hKΦ).weaken
+        (mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity)))
+      ((hg.comp_lipschitzOnWith hKΦ).weaken
+        (mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity)))
+      ((hconv.comp (Φ i)).tendstoUniformlyOn)
+    rw [hrep0]
+    exact hlim.congr' (hrepj.mono fun j hj => hj.symm)
+  -- Step 7: summation
+  exact Submission.deformation_ipl_cc_tendsto_setIntegral_of_partition (Eucl P)
+    (μHE[k] : Measure (Eucl P)) M Ep
+    (fun j x => θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)))
+    (fun x => θ x * nVectorPushforward k (L x) (ξ x) (ω (g x))) Gd
+    hEm hEdisj hMeq hGd (fun j => (hEj j).1) hE0.1 hboundj hbound0 hpiece
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
