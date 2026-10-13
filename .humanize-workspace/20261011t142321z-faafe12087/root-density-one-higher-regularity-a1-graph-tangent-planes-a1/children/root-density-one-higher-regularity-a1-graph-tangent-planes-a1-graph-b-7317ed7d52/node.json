@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_ball_growth-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "n-dimensional growth of the Hausdorff measure of a compactly contained C^1 graph piece",
+  "statement": "Let n >= 1, l >= 0, 0 < rho < R, and u : R^n -> R^l C^1 on the open ball Bo_R(0). Then there is a constant C >= 0 such that for every z in R^(n+l) and every r > 0, H^n(graphOver u (Bo_rho(0)) cap B_r(z)) <= C r^n, where H^n = muHE[n], Bo is the open and B_r(z) the closed ball.",
+  "lean_statement": "∀ n ℓ : ℕ, 1 ≤ n → ∀ (R ρ : ℝ) (u : Rn n → Rn ℓ), 0 < ρ → ρ < R → ContDiffOn ℝ 1 u (ball 0 R) → ∃ C : ℝ, 0 ≤ C ∧ ∀ (z : Amb n ℓ) (r : ℝ), 0 < r → (μHE[n] : Measure (Amb n ℓ)) (graphOver u (ball 0 ρ) ∩ closedBall z r) ≤ ENNReal.ofReal (C * r ^ n)",
+  "lean_name": "dohr_tp_graph_ball_growth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-b-7317ed7d52-a1"
+}

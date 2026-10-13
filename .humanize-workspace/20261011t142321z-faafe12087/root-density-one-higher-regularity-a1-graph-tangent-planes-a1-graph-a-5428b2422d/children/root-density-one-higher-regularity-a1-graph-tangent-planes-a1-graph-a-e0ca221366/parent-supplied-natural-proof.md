@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1`
+- Child DAG node: `root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+This is the measure-theoretic core of the parent proof: the finiteness of V0 (step 5), the bi-Lipschitz measure comparison and the integral estimate (steps 7-10) and the ε-argument of step 12, for a general compact K, left inverse pr and family F_t. The comparison is carried out on E with the map Φ := F_t ∘ pr (which carries H⌞L(K) onto H⌞F_t(K) up to the factors (1 ± δ)ⁿ), instead of pushing both measures to ℝⁿ by pr as in the parent's step 8; the estimates are the same. Notation: H := μHE[n] on E, H⌞X := H restricted to X, V := H(L(K)).toReal.
+1. Lower bound for L. Put C := ‖pr‖ + 1 > 0 (operator norm). For every v ∈ ℝⁿ: ‖v‖ = ‖pr(L v)‖ ≤ ‖pr‖‖L v‖ ≤ C‖L v‖.
+2. The plane piece. A := L(K) is compact (continuous image of a compact set), hence closed and measurable. H(A) < ∞: L is ‖L‖-Lipschitz, so the Lipschitz image bound for μHE (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n, available under the frozen imports; equivalently LipschitzOnWith.hausdorffMeasure_image_le multiplied by the constant of euclideanHausdorffMeasure_def) gives H(A) ≤ ‖L‖ⁿ μHE[n](K); on ℝⁿ, μHE[n] = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume), and volume(K) < ∞ because K is compact. So V = H(A).toReal ≥ 0 is the real value of H(A).
+3. The test function. Choose M ≥ 0 with |φ| ≤ M everywhere (Continuous.bounded_above_of_compact_support); φ is uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous).
+4. Parameters. Let θ > 0. By uniform continuity choose τ > 0 with |φ(a) − φ(b)| < θ/(2(V + 1)) whenever ‖a − b‖ < τ. The function d ↦ ((1 − d)⁻ⁿ − 1)(1 − d)⁻ⁿ is continuous at 0 with value 0, so we can choose δ ∈ (0, 1/2] such that κ := (1 − δ)⁻ⁿ satisfies (κ − 1)κ < θ/(4(M + 1)(V + 1)); note κ ≥ 1 and (1 + δ)ⁿ ≤ κ because (1 + δ)(1 − δ) ≤ 1.
+5. The scale. The sets on which (H1) holds, on which (H2) holds with ε := δ/C, and on which (H3) holds with ε := τ/2, belong to 𝓝[>] 0, hence so does their intersection. Fix t in it. It suffices to show |∫_{F_t(K)} φ dH − ∫_{L(K)} φ dH| < θ (then Metric.tendsto_nhds gives the claim).
+6. The comparison map. Define Φ : E → E by Φ(y) := F_t(pr y). Since pr(L z) = z, Φ(L z) = F_t z for every z, hence Φ(A) = F_t(K). Define Ψ : E → E by Ψ(y) := L(pr y). For z ∈ K, Ψ(Φ(L z)) = L(pr(F_t z)) = L z by (H1); so Ψ is a left inverse of Φ on A.
+7. Continuity. For v, v' ∈ K, ‖F_t v − F_t v'‖ ≤ ‖F_t v − F_t v' − L(v − v')‖ + ‖L(v − v')‖ ≤ (δ/C + ‖L‖)‖v − v'‖, so F_t is Lipschitz, hence continuous, on K. Since pr is continuous and maps A into K (pr(L z) = z), Φ is continuous on A; consequently Φ is a.e.-measurable for H⌞A (ContinuousOn.aemeasurable, A measurable), and y ↦ φ(Φ y) is a.e.-strongly measurable for H⌞A (ContinuousOn.aestronglyMeasurable).
+8. Bi-Lipschitz bounds. Let p = L z and q = L w with z, w ∈ K. Then Φ p − Φ q − (p − q) = F_t z − F_t w − L(z − w), so by (H2) and step 1, ‖Φ p − Φ q − (p − q)‖ ≤ (δ/C)‖z − w‖ ≤ δ‖L(z − w)‖ = δ‖p − q‖. By the triangle inequality, (1 − δ)‖p − q‖ ≤ ‖Φ p − Φ q‖ ≤ (1 + δ)‖p − q‖. Hence Φ is (1 + δ)-Lipschitz on A, and Ψ is (1 − δ)⁻¹-Lipschitz on Φ(A): for a = Φ p, b = Φ q we have Ψ a = p, Ψ b = q and ‖p − q‖ ≤ (1 − δ)⁻¹‖a − b‖.
+9. Three finite measures. Let μ₃ := H⌞A, μ₂ := Φ_#μ₃ (Measure.map Φ μ₃) and μ₁ := H⌞Φ(A) = H⌞F_t(K). For a measurable S ⊆ E: μ₂(S) = H(Φ⁻¹(S) ∩ A) (Measure.map_apply_of_aemeasurable and Measure.restrict_apply' with A measurable), μ₁(S) = H(S ∩ Φ(A)), and S ∩ Φ(A) = Φ(Φ⁻¹(S) ∩ A) (Set.image_preimage_inter). (a) By the Lipschitz image bound for Φ on Φ⁻¹(S) ∩ A ⊆ A: μ₁(S) ≤ (1 + δ)ⁿ μ₂(S). (b) Since Ψ is a left inverse of Φ on A, Φ⁻¹(S) ∩ A = Ψ(Φ(Φ⁻¹(S) ∩ A)); by the Lipschitz image bound for Ψ on Φ(Φ⁻¹(S) ∩ A) ⊆ Φ(A): μ₂(S) ≤ κ μ₁(S). Hence μ₁ ≤ (1 + δ)ⁿ·μ₂ and μ₂ ≤ κ·μ₁ as measures (Measure.le_iff). Moreover μ₃(E) = μ₂(E) = H(A) < ∞ and μ₁(E) ≤ (1 + δ)ⁿ μ₂(E) < ∞, so μ₁, μ₂, μ₃ are finite, and the real value of μ₂(E) and of μ₃(E) is V.
+10. Sandwich. Let g : E → ℝ be continuous with 0 ≤ g ≤ M. Then g is integrable for the finite measures μ₁, μ₂ (bounded and continuous), 0 ≤ ∫ g dμ₂ ≤ M V (norm_integral_le_of_norm_le_const), and by monotonicity of the integral of a nonnegative function in the measure (integral_mono_measure) together with integral_smul_measure and step 4: ∫ g dμ₁ ≤ (1 + δ)ⁿ ∫ g dμ₂ ≤ κ ∫ g dμ₂ and ∫ g dμ₂ ≤ κ ∫ g dμ₁. Therefore ∫ g dμ₁ − ∫ g dμ₂ ≤ (κ − 1)∫ g dμ₂ ≤ (κ − 1)κ M V and ∫ g dμ₂ − ∫ g dμ₁ ≤ (κ − 1)∫ g dμ₁ ≤ (κ − 1)κ ∫ g dμ₂ ≤ (κ − 1)κ M V, i.e. |∫ g dμ₁ − ∫ g dμ₂| ≤ (κ − 1)κ M V.
+11. Positive and negative parts. φ = max(φ, 0) − max(−φ, 0), both parts are continuous with values in [0, M] and integrable for the finite measures μ₁, μ₂. Applying step 10 to each part: |∫ φ dμ₁ − ∫ φ dμ₂| ≤ 2(κ − 1)κ M V ≤ 2(κ − 1)κ(M + 1)(V + 1) ≤ θ/2 by step 4.
+12. Change of variables. ∫ φ dμ₂ = ∫ φ(Φ y) dμ₃(y) (integral_map: Φ is a.e.-measurable for μ₃ by step 7 and φ is continuous).
+13. Uniform closeness. For y = L z ∈ A (z ∈ K), ‖Φ y − y‖ = ‖F_t z − L z‖ ≤ τ/2 < τ by (H3), so |φ(Φ y) − φ(y)| < θ/(2(V + 1)). The functions y ↦ φ(Φ y) and φ are bounded by M and a.e.-strongly measurable for μ₃ (step 7), hence integrable for the finite measure μ₃, and the pointwise bound holds μ₃-a.e. because μ₃ is carried by A (ae_restrict_iff'). Therefore |∫ φ∘Φ dμ₃ − ∫ φ dμ₃| = |∫ (φ∘Φ − φ) dμ₃| ≤ θ/(2(V + 1))·V < θ/2.
+14. Conclusion. ∫_{F_t(K)} φ dH = ∫ φ dμ₁ because F_t(K) = Φ(A) (step 6), and ∫_{L(K)} φ dH = ∫ φ dμ₃. Hence |∫_{F_t(K)} φ dH − ∫_{L(K)} φ dH| ≤ |∫ φ dμ₁ − ∫ φ dμ₂| + |∫ φ∘Φ dμ₃ − ∫ φ dμ₃| < θ/2 + θ/2 = θ by steps 11-13. This holds for every t in a member of 𝓝[>] 0 (step 5) and θ > 0 was arbitrary, so ∫_{F_t(K)} φ dH → ∫_{L(K)} φ dH as t → 0+.
+
+## Key steps
+
+1. ‖v‖ ≤ C‖L v‖ with C = ‖pr‖ + 1; A := L(K) is compact and H(A) ≤ ‖L‖ⁿ·vol(K) < ∞
+2. fix θ > 0; choose τ from uniform continuity of φ and δ ∈ (0, 1/2] with κ = (1 − δ)⁻ⁿ and (κ − 1)κ small; take t in the eventual sets of (H1), of (H2) with ε = δ/C and of (H3) with ε = τ/2
+3. Φ := F_t ∘ pr: Φ(L z) = F_t z, Φ(A) = F_t(K), Φ continuous and (1 ± δ)-bi-Lipschitz on A, with left inverse Ψ := L ∘ pr on A
+4. Lipschitz image bounds: H⌞F_t(K) ≤ (1 + δ)ⁿ·Φ_#(H⌞A) and Φ_#(H⌞A) ≤ κ·H⌞F_t(K); all three measures are finite
+5. sandwich for 0 ≤ g ≤ M and φ = φ⁺ − φ⁻: |∫ φ d(H⌞F_t(K)) − ∫ φ dΦ_#(H⌞A)| ≤ 2(κ − 1)κ M V ≤ θ/2
+6. ∫ φ dΦ_#(H⌞A) = ∫_A φ∘Φ dH and |φ∘Φ − φ| < θ/(2(V + 1)) on A by (H3), so the remaining difference is < θ/2; conclude with Metric.tendsto_nhds
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json (project ea5607598f31, mathlib 25730c7c759d)`
+- `diff GMT/Ch05/Submission.lean GMT/Ch05/Contract.lean (identical frozen contract); verifier gmt-compare.contract_scope replay -> namespace GMT.Ch05 + opens`
+- `python3 scan of dag.json lean_statements for LipschitzOnWith|graphPoint|HasApproximateTangentSpaceAt|blowUpMap|fderiv; candidate commits of accepted rsod_graphPoint_eq_finAddEquivProd_symm, rsod_norm_graphPoint_sq, aetp_c1_piece_approxTangent, tae_c1_chart_image_approxTangent`
+- `rg -n 'dohr_tp_gat_' <snapshot> <run>/nodes <worktrees>/*/gmt-ch05/GMT (no match); python3 name scan of dag.json (names free)`
+- `rg -n 'theorem norm_image_sub_le_of_norm_hasFDerivWithin_le' mathlib/Mathlib`
+- `rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen' mathlib/Mathlib`
+- `rg -n 'theorem integral_indicator (' mathlib/Mathlib; rg -n 'theorem restrict_restrict (' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n 'theorem map_apply_of_aemeasurable' mathlib/Mathlib; rg -n 'integral_mono_measure' mathlib/Mathlib; rg -n '^theorem integral_map' mathlib/Mathlib`
+- `rg -n 'uniformContinuous_of_continuous|bounded_above_of_compact_support|finAddEquivProd|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_def' mathlib/Mathlib`
+- `rg -n 'theorem hausdorffMeasure_image_le' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean; rg -n 'euclideanHausdorffMeasure_image_le_of_lipschitzOn' <snapshot> (no match; found in .lake/packages/simongmt Chapter02/Lipschitz.lean:216)`
+- `grep -n 'def HasApproximateTangentSpaceAt|def blowUpMap' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `lean Probe.lean (#check of every cited lemma under import GMT.Ch05.Submission)`
+- `lean Assembly.lean / ChildSmall.lean / ChildBig.lean; #print axioms of the three new children and of Submission.dohr_tp_graph_approx_tangent`
+- `python3 -I gen_children.py (lean_contract.validate_lean_statement + gmt-compare.child_modules contract mode) then lean on 6 NodeChallenge and 6 NodeSolution modules`
+- `grep -n -i 'approximate tangent' book/chapter-03.txt; WebSearch 'approximate tangent space C^1 submanifold blow-up'`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/GMT/Ch05/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-5428b2422d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch05/.humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-graph-tangent-planes-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/4be3fb780add150d6ac3/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/dd296547b28b08453dda/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/1c8e05c936b9e4edfb8d/gmt-ch05/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/lean_contract.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-6e6a457c9391/_recursive_lean/models.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/gat-7YzI2v/src/Probe.lean`
+- `/tmp/gat-7YzI2v/src/Assembly.lean`
+- `/tmp/gat-7YzI2v/src/ChildSmall.lean`
+- `/tmp/gat-7YzI2v/src/ChildBig.lean`
+- `/tmp/gat-full/GMT/Ch05/Submission.lean`
+
+Pinned revisions match the workspace (project ea56075, Mathlib 25730c7c, simongmt 2b366308). The frozen Submission is byte-identical to the Contract.
+The snapshot's pinned Mathlib supplies every cited tool:
+- Convex.norm_image_sub_le_of_norm_hasFDerivWithin_le (MeanValue.lean:422)
+- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)
+- integral_indicator (Bochner/Set.lean:185) and Measure.restrict_restrict (Restrict.lean:205)
+- Measure.map_apply_of_aemeasurable (Map.lean:166)
+- integral_mono_measure (Bochner/Basic.lean:623) and integral_map (Bochner/Basic.lean:1081)
+- LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733)
+- euclideanHausdorffMeasure_def / EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Volume/Measure.lean:74/187)
+- HasCompactSupport.uniformContinuous_of_continuous (to_additive of HeineCantor.lean:91)
+- Continuous.bounded_above_of_compact_support (Normed/Group/Bounded.lean:153)
+- EuclideanSpace.finAddEquivProd (PiL2.lean:378)
+The convenient μHE Lipschitz image bound Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (simongmt Chapter02/Lipschitz.lean:216) is under the frozen imports, though not in the snapshot.
+Reuse:
+- Accepted checkpoints Submission.rsod_graphPoint_eq_finAddEquivProd_symm (candidate 18a457c4) and Submission.rsod_norm_graphPoint_sq (candidate a2b47723) have exactly the frozen types used for children (1) and (2). Their 4-6 line simp proofs recompile with standard axioms.
+- The accepted Submission.aetp_c1_piece_approxTangent (candidate 94f10688) proves the analogous statement only for globally C^1 G, so it is not an ingredient of the supplied proof. Its bi-Lipschitz pattern was adapted for child (4).
+- No accepted node duplicates children (3)-(5), and the names dohr_tp_gat_* are unused.
+Lean checks:
+- All cited lemmas resolve under import GMT.Ch05.Submission.
+- Complete scratch proofs of children (3), (4) and (5) compile with axioms {propext, Classical.choice, Quot.sound}.
+- The exact frozen parent type is proved from the five children with the same axioms (scratch Submission plus the verifier-generated NodeSolution modules).
+- All five child statements pass validate_lean_statement and elaborate in the verifier-generated NodeChallenge modules.

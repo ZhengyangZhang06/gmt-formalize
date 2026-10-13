@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1.bilip_measure_comparison-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.graph_approx_tangent-a1.bilip_integral_tendsto-a1",
+  "depth": 5,
+  "title": "Near-isometries change n-dimensional Hausdorff measure by at most the factor (1 − δ)⁻ⁿ",
+  "statement": "Let n, ℓ ∈ ℕ, E := ℝ^{n+ℓ} (Amb n ℓ) and H := μHE[n], the n-dimensional Euclidean Hausdorff measure on E.\nLet A ⊆ E be a measurable set and Φ : E → E an arbitrary map (no measurability or continuity assumed). Let δ be real with 0 ≤ δ < 1, such that ‖Φ p − Φ q − (p − q)‖ ≤ δ‖p − q‖ for all p, q ∈ A.\nPut κ := ((1 − δ)⁻¹)ⁿ, taken in [0, ∞] as ENNReal.ofReal κ.\nThen, as measures on E, H⌞Φ(A) ≤ κ · Φ_#(H⌞A) and Φ_#(H⌞A) ≤ κ · H⌞Φ(A). Here H⌞X := H.restrict X and Φ_#(H⌞A) := Measure.map Φ (H⌞A) is the push-forward.",
+  "lean_statement": "∀ (n ℓ : ℕ) (A : Set (Amb n ℓ)) (Φ : Amb n ℓ → Amb n ℓ) (δ : ℝ), MeasurableSet A → 0 ≤ δ → δ < 1 → (∀ p ∈ A, ∀ q ∈ A, ‖Φ p - Φ q - (p - q)‖ ≤ δ * ‖p - q‖) → (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ∧ Measure.map Φ ((μHE[n] : Measure (Amb n ℓ)).restrict A) ≤ ENNReal.ofReal (((1 - δ)⁻¹) ^ n) • (μHE[n] : Measure (Amb n ℓ)).restrict (Φ '' A)",
+  "lean_name": "dohr_tp_gat_bilip_measure_comparison",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-graph-a-ea1269d719-a1"
+}

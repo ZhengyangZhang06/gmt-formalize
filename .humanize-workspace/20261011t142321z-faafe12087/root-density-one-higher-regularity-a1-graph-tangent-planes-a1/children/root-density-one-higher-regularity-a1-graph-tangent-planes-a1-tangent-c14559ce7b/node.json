@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1.tangent_projection_continuous-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.graph_tangent_planes-a1",
+  "depth": 3,
+  "title": "Continuity of the orthogonal projections onto the rotated tangent planes of a C^1 graph",
+  "statement": "Let n, l be natural numbers, R real, u : R^n -> R^l C^1 on the open ball Bo_R(0), G(z) := graphPoint z (u z), and Q a linear isometry equivalence of R^(n+l). Then the map x -> orthogonal projection onto Q(range DG(x)), as a continuous linear endomorphism of R^(n+l) (i.e. (Submodule.map Q (range (fderiv R G x))).starProjection), is continuous on Bo_R(0).",
+  "lean_statement": "∀ (n ℓ : ℕ) (R : ℝ) (u : Rn n → Rn ℓ) (Q : Amb n ℓ ≃ₗᵢ[ℝ] Amb n ℓ), ContDiffOn ℝ 1 u (ball 0 R) → ContinuousOn (fun x : Rn n => (Submodule.map Q.toLinearEquiv.toLinearMap (LinearMap.range (fderiv ℝ (fun z : Rn n => graphPoint z (u z)) x).toLinearMap)).starProjection) (ball 0 R)",
+  "lean_name": "dohr_tp_projection_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-graph-tangent-planes-a1-tangent-c14559ce7b-a1"
+}
