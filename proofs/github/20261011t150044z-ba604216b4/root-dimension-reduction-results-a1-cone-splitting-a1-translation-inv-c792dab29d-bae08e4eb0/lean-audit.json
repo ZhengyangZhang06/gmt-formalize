@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "57e332d67bf17ed6f1f5210f1d5181892887753a57673845fadb08706e2c91d3",
+  "git_delta": {
+    "base_commit": "a42d42af8789b7b1f8ed807e9ef5b96f351faac9",
+    "candidate_commit": "f1f4554a9615352b59e8f1726f2d3451b230fcdc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_blowUp_translate_eval",
+    "diff_sha256": "6993c71c73d539f608c4dd19b067ebdb3fac758022be5825697c7aa969f0b83b",
+    "source_sha256": "7876f35ec51a765a9b941399c43c9ba1582519cd221499e22abdea1a75131d1d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_blowUp_translate_eval",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (v : Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), ∃ ω' : TestFormOn (univ : Set (Euclid P)) n, (∀ y, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (v + y)) ∧ currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
