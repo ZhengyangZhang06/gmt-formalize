@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3f755978f25f572eeff5acf307b879515df4535eb3d7d043f718b12c829ed466",
+  "git_delta": {
+    "base_commit": "8ebd0b397ae172aa7b509a44f2f8a310f281c7e9",
+    "candidate_commit": "533617d27b3abcf7aac464798fdc2118b21e9d82",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "fvmb_imrep_ae_unitOrientation_approxTangentPlane",
+    "diff_sha256": "264315a9bc7d514222a89b544e13072075d817db8e1caa223946e58ff82bd637",
+    "source_sha256": "dfeb08262af0ca0794e44212ef5a16c68acfb8ce76aeba0921c357fcfd617866",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
