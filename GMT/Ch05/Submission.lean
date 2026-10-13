@@ -869,37 +869,6 @@ theorem dohr_eb_holder_comp : ∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E�
   refine (hc (x, y) ⟨hx, hy⟩).trans_eq ?_
   congr 1
   exact Real.norm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _)
-/-- **Bilinear products preserve `C^{m,α}_loc`** (node `holder_bilinear` of the elliptic bootstrap
-for Simon Ch. 5, Theorem 7.1).  Let `B : E₂ →L E₃ →L E₄` be continuous bilinear and let
-`f : E₁ → E₂`, `g : E₁ → E₃` be `C^m` on the open set `U` with `D^m f`, `D^m g` `α`-Hölder on every
-compact `K ⊆ U`.  Then `x ↦ B (f x) (g x)` is `C^m` on `U` and its `m`-th derivative is `α`-Hölder
-on every compact `K ⊆ U`.  The evaluation `β (y, z) = B y z` is a bounded bilinear map, hence
-smooth, so `D^m β` is `α`-Hölder on compacts (`dohr_eb_holder_of_contDiffOn_succ`).  The pair
-`p = (f, g)` is `C^m` on `U` with `D^m p = (D^m f).prod (D^m g)`, whose norm is the max of the two
-norms, so `D^m p` is `α`-Hölder on compacts.  The composition lemma `dohr_eb_holder_comp`, with
-`V = univ` and the `C¹` outer map `β` (valid also for `m = 0`), applies to
-`β ∘ p = fun x => B (f x) (g x)`. -/
-theorem dohr_eb_holder_bilinear : ∀ (E₁ E₂ E₃ E₄ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] [NormedAddCommGroup E₄] [NormedSpace ℝ E₄] (m : ℕ) (α : ℝ) (B : E₂ →L[ℝ] E₃ →L[ℝ] E₄) (f : E₁ → E₂) (g : E₁ → E₃) (U : Set E₁), 0 < α → α ≤ 1 → IsOpen U → ContDiffOn ℝ m f U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m f x - iteratedFDeriv ℝ m f y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m g U → (∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m g x - iteratedFDeriv ℝ m g y‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ m (fun x => B (f x) (g x)) U ∧ ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m (fun x => B (f x) (g x)) x - iteratedFDeriv ℝ m (fun x => B (f x) (g x)) y‖ ≤ C * ‖x - y‖ ^ α := by
-  intro E₁ E₂ E₃ E₄ _ _ _ _ _ _ _ _ m α B f g U hα hα1 hU hf hfH hg hgH
-  -- Step 1: `β (y, z) = B y z` is a bounded bilinear map, hence `C^k` on `E₂ × E₃` for every `k`;
-  -- as it is `C^{m+1}`, its `m`-th derivative is `α`-Hölder on compact sets.
-  have hβ : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k (fun q : E₂ × E₃ => B q.1 q.2) univ := fun _ =>
-    B.isBoundedBilinearMap.contDiff.contDiffOn
-  have hβH := Submission.dohr_eb_holder_of_contDiffOn_succ (E₂ × E₃) E₄ m α
-    (fun q : E₂ × E₃ => B q.1 q.2) univ hα hα1 isOpen_univ (hβ _)
-  -- Step 2: the pair `p = (f, g)` is `C^m` on `U`, and `D^m p = (D^m f).prod (D^m g)` has norm
-  -- `max ‖D^m f‖ ‖D^m g‖`, so `D^m p` is `α`-Hölder on compact subsets of `U`.
-  have hpH : ∀ K : Set E₁, IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
-      ‖iteratedFDeriv ℝ m (fun x => (f x, g x)) x - iteratedFDeriv ℝ m (fun x => (f x, g x)) y‖ ≤
-        C * ‖x - y‖ ^ α := by
-    intro K hK hKU
-    obtain ⟨Cf, hCf⟩ := hfH K hK hKU
-    obtain ⟨Cg, hCg⟩ := hgH K hK hKU
-    have hD : ∀ x ∈ K, iteratedFDeriv ℝ m (fun x => (f x, g x)) x =
-        (iteratedFDeriv ℝ m f x).prod (iteratedFDeriv ℝ m g x) := fun x hx =>
-      iteratedFDeriv_prodMk (hf.contDiffAt (hU.mem_nhds (hKU hx)))
-        (hg.contDiffAt (hU.mem_nhds (hKU hx))) le_rfl
-    refine ⟨max Cf Cg, fun x hx y hy => ?_⟩
 /-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): chain rule and Schwarz symmetry.**
 If `Ψ : L(ℝⁿ, ℝ^ℓ) → ℝ` is `C²` and `u` is `C²` on the open set `U ⊆ ℝⁿ`, then for every direction
 `e` and every `y ∈ U`, `D(DΨ ∘ Du)(y) e = D²Ψ(Du(y))[Dv_e(y)]`, where `v_e(z) = Du(z) e`.
@@ -1119,49 +1088,6 @@ theorem dohr_eb_ehs_del_diffquot_uniform : ∀ (n : ℕ) (E : Type) [NormedAddCo
       gcongr
       rw [div_lt_one he1]; linarith
     _ = η := mul_one η
-/-- Covering step in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if every
-point of the open set `U` has a ball in `U` on which `F` is `C¹` with `α`-Hölder derivative, then
-`F` is `C¹` on `U` and `D¹F` is `α`-Hölder on every compact `K ⊆ U`.  Pairs of points of `K` closer
-than a Lebesgue number `δ` of a finite subcover lie in one ball; for the other pairs,
-`‖DF(x) - DF(y)‖ ≤ 2 sup_K ‖DF‖ ≤ 2 sup_K ‖DF‖ δ^{-α} ‖x - y‖^α`. -/
-theorem dohr_eb_lhr_cover_holder_one : ∀ (n : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (α : ℝ) (U : Set (Rn n)) (F : Rn n → E), 0 < α → IsOpen U → (∀ x ∈ U, ∃ R : ℝ, 0 < R ∧ ball x R ⊆ U ∧ ContDiffOn ℝ 1 F (ball x R) ∧ ∃ C : ℝ, ∀ y ∈ ball x R, ∀ z ∈ ball x R, ‖fderiv ℝ F y - fderiv ℝ F z‖ ≤ C * ‖y - z‖ ^ α) → ContDiffOn ℝ 1 F U ∧ ∀ K : Set (Rn n), IsCompact K → K ⊆ U → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ 1 F x - iteratedFDeriv ℝ 1 F y‖ ≤ C * ‖x - y‖ ^ α := by
-  intro n E _ _ α U F hα hU hloc
-  choose! R hR hRU hRF C hC using hloc
-  -- Step 1: `F` is `C¹` on `U` by locality.
-  have hF : ContDiffOn ℝ 1 F U := by
-    refine contDiffOn_of_locally_contDiffOn fun x hx =>
-      ⟨ball x (R x), isOpen_ball, mem_ball_self (hR x hx), ?_⟩
-    rw [inter_eq_right.2 (hRU x hx)]
-    exact hRF x hx
-  refine ⟨hF, fun K hK hKU => ?_⟩
-  -- Steps 2–3: `DF` is continuous on `U`, hence bounded by `S` on `K`.
-  obtain ⟨S, hS⟩ := hK.exists_bound_of_continuousOn
-    ((hF.continuousOn_fderiv_of_isOpen hU le_rfl).mono hKU)
-  -- Step 4: finitely many hypothesis balls cover `K`; `Cs` bounds their Hölder constants.
-  obtain ⟨t, htK, hKt⟩ := hK.elim_nhds_subcover (fun x => ball x (R x))
-    fun x hx => ball_mem_nhds x (hR x (hKU hx))
-  obtain ⟨Cs, hCs⟩ : ∃ Cs : ℝ, ∀ i ∈ t, C i ≤ Cs :=
-    ⟨∑ i ∈ t, |C i|, fun i hi => (le_abs_self _).trans
-      (Finset.single_le_sum (f := fun j => |C j|) (fun j _ => abs_nonneg _) hi)⟩
-  -- Step 5: a Lebesgue number `δ` of this finite cover.
-  obtain ⟨δ, hδ, hδK⟩ := lebesgue_number_lemma_of_metric hK
-    (c := fun i : t => ball (i : Rn n) (R i)) (fun _ => isOpen_ball) fun x hx => by
-      obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.1 (hKt hx)
-      exact mem_iUnion.2 ⟨⟨i, hi⟩, hxi⟩
-  -- Steps 6–8: the Hölder bound for `DF` on `K`.
-  have hD : ∀ x ∈ K, ∀ y ∈ K, ‖fderiv ℝ F x - fderiv ℝ F y‖ ≤
-      max Cs (2 * S * (δ ^ α)⁻¹) * ‖x - y‖ ^ α := by
-    intro x hx y hy
-    have hxy : 0 ≤ ‖x - y‖ ^ α := Real.rpow_nonneg (norm_nonneg _) α
-    rw [hD x hx, hD y hy, ← ContinuousMultilinearMap.sub_prod_sub,
-      ContinuousMultilinearMap.opNorm_prod]
-    exact max_le ((hCf x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hxy))
-      ((hCg x hx y hy).trans (mul_le_mul_of_nonneg_right (le_max_right _ _) hxy))
-  -- Step 3: the composition lemma with inner map `p`, open sets `U` and `univ`, and the `C¹` outer
-  -- map `β`; here `β ∘ p = fun x => B (f x) (g x)`.
-  exact Submission.dohr_eb_holder_comp E₁ (E₂ × E₃) E₄ m α (fun x => (f x, g x))
-    (fun q : E₂ × E₃ => B q.1 q.2) U univ hα hα1 hU isOpen_univ (mapsTo_univ _ _)
-    (Or.inr (Or.inr (hβ _))) (hf.prodMk hg) hpH (hβ _) hβH
 /-- Currying step of the proof that `f` is `C^{m+1,α}` iff `Df` is `C^{m,α}` (elliptic bootstrap
 for Simon 7.1): on an open `U`, `f` is `C^{m+1}` with `D^{m+1}f` locally `α`-Hölder iff `f` is `C¹`,
 `Df` is `C^m` and `D^m(Df)` is locally `α`-Hölder, with the same constants.  Indeed
@@ -1945,51 +1871,6 @@ theorem dohr_eb_elc2_local_to_global_holder : ∀ (n ℓ : ℕ) (α : ℝ) (f : 
       _ ≤ (∑ j ∈ t, |C j| + 2 * max B 0 / δ ^ α) * ‖y - z‖ ^ α :=
         mul_le_mul_of_nonneg_right
           (le_add_of_nonneg_left (Finset.sum_nonneg fun j _ => abs_nonneg (C j))) hpow
-/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
-(p. 127): under the change of variables `x = y + ρ z` with `ρ > 0`, which maps `B̆_r(0)` onto
-`B̆_{ρr}(y)`, the Hölder bound `‖ρ g(y + ρ z) − ρ g(y + ρ z')‖ ≤ c ‖z − z'‖^α` on `B̆_r(0)` is
-equivalent to the scale-weighted bound `ρ^{1+α} ‖g(x) − g(x')‖ ≤ c ‖x − x'‖^α` on `B̆_{ρr}(y)`,
-because `ρ^{1+α} = ρ ρ^α` and `‖x − x'‖^α = ρ^α ‖z − z'‖^α`. -/
-theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
-  intro n ℓ g y ρ r α c hρ
-  -- Step 1: `ρ^α > 0`, `ρ^{1+α} = ρ ρ^α`, `‖(y + ρ z) − (y + ρ z')‖^α = ρ^α ‖z − z'‖^α` and
-  -- `‖ρ A − ρ B‖ = ρ ‖A − B‖`.
-  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
-  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
-  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
-    intro z z'
-    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
-      Real.mul_rpow hρ.le (norm_nonneg _)]
-  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
-    intro u v
-    rw [show ρ • u - ρ • v = ρ • (u - v) from (smul_sub ρ u v).symm, norm_smul, Real.norm_eq_abs,
-      abs_of_pos hρ]
-  -- Step 2: `z(x) = ρ⁻¹ (x − y)` satisfies `y + ρ z(x) = x` and maps `B̆_{ρr}(y)` into `B̆_r(0)`.
-  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
-    intro x
-    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
-  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
-    intro x hx
-    rw [mem_ball, dist_eq_norm] at hx
-    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ,
-      inv_mul_lt_iff₀ hρ]
-    exact hx
-  constructor
-  · rintro ⟨hm, hH⟩ k
-    refine ⟨hcols.1 hm k, fun K hK hKU => ?_⟩
-    obtain ⟨C, hC⟩ := hH K hK hKU
-    exact ⟨C, fun x hx y hy => ((hbds hm x (hKU hx) y (hKU hy)).1 k).trans (hC x hx y hy)⟩
-  · intro hk
-    have hm : ContDiffOn ℝ m (fderiv ℝ f) U := hcols.2 fun k => (hk k).1
-    refine ⟨hm, fun K hK hKU => ?_⟩
-    choose C hC using fun k => (hk k).2 K hK hKU
-    refine ⟨∑ k, C k, fun x hx y hy => ?_⟩
-    calc _ ≤ ∑ k : Fin n,
-          ‖iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) x -
-            iteratedFDeriv ℝ m (fun z => fderiv ℝ f z (EuclideanSpace.single k (1 : ℝ))) y‖ :=
-          (hbds hm x (hKU hx) y (hKU hy)).2
-      _ ≤ ∑ k : Fin n, C k * ‖x - y‖ ^ α := Finset.sum_le_sum fun k _ => hC k x hx y hy
-      _ = (∑ k : Fin n, C k) * ‖x - y‖ ^ α := (Finset.sum_mul _ _ _).symm
 /-- Simon Ch. 5, proof of Theorem 7.1, second assertion (p. 127): a function that is `C^{j,α}`
 locally in the open ball `B̆_r(x₀)` is `C^{j,α}`, with global constants, on `B̆_{r/2}(x₀)`.  For
 `r ≤ 0` the half ball is empty.  Otherwise the closed half ball `B_{r/2}(x₀)` is a compact subset of
@@ -2027,31 +1908,6 @@ theorem dohr_eb_isHolderCk_half_ball : ∀ (m k j : ℕ) (α : ℝ) (u : Rn m �
   · -- The Hölder constant on the compact closed half ball serves on the open half ball.
     obtain ⟨C, hC⟩ := hu.2 _ hKc hK
     exact ⟨C, fun x hx y hy => hC x (hsub hx) y (hsub hy)⟩
-/-- Schauder estimate in the elliptic bootstrap for Simon Ch. 5, Theorem 7.1, second assertion
-(p. 127): under the change of variables `x = y + ρ z` with `ρ > 0`, which maps `B̆_r(0)` onto
-`B̆_{ρr}(y)`, the Hölder bound `‖ρ g(y + ρ z) − ρ g(y + ρ z')‖ ≤ c ‖z − z'‖^α` on `B̆_r(0)` is
-equivalent to the scale-weighted bound `ρ^{1+α} ‖g(x) − g(x')‖ ≤ c ‖x − x'‖^α` on `B̆_{ρr}(y)`,
-because `ρ^{1+α} = ρ ρ^α` and `‖x − x'‖^α = ρ^α ‖z − z'‖^α`. -/
-theorem dohr_eb_sch_ube_holder_rescale : ∀ (n ℓ : ℕ) (g : Rn n → (Rn n →L[ℝ] Rn ℓ)) (y : Rn n) (ρ r α c : ℝ), 0 < ρ → ((∀ z ∈ ball (0 : Rn n) r, ∀ z' ∈ ball (0 : Rn n) r, ‖ρ • g (y + ρ • z) - ρ • g (y + ρ • z')‖ ≤ c * ‖z - z'‖ ^ α) ↔ ∀ x ∈ ball y (ρ * r), ∀ x' ∈ ball y (ρ * r), ρ ^ (1 + α) * ‖g x - g x'‖ ≤ c * ‖x - x'‖ ^ α) := by
-  intro n ℓ g y ρ r α c hρ
-  -- Step 1: `ρ^α > 0`, `ρ^{1+α} = ρ ρ^α`, `‖(y + ρ z) − (y + ρ z')‖^α = ρ^α ‖z − z'‖^α` and
-  -- `‖ρ A − ρ B‖ = ρ ‖A − B‖`.
-  have hρα : 0 < ρ ^ α := Real.rpow_pos_of_pos hρ α
-  have hsplit : ρ ^ (1 + α) = ρ * ρ ^ α := by rw [Real.rpow_add hρ, Real.rpow_one]
-  have hnorm : ∀ z z' : Rn n, ‖(y + ρ • z) - (y + ρ • z')‖ ^ α = ρ ^ α * ‖z - z'‖ ^ α := by
-    intro z z'
-    rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_eq_abs, abs_of_pos hρ,
-      Real.mul_rpow hρ.le (norm_nonneg _)]
-  have hsm : ∀ u v : Rn n →L[ℝ] Rn ℓ, ‖ρ • u - ρ • v‖ = ρ * ‖u - v‖ := by
-    intro u v
-    rw [show ρ • u - ρ • v = ρ • (u - v) from (smul_sub ρ u v).symm, norm_smul, Real.norm_eq_abs,
-      abs_of_pos hρ]
-  -- Step 2: `z(x) = ρ⁻¹ (x − y)` satisfies `y + ρ z(x) = x` and maps `B̆_{ρr}(y)` into `B̆_r(0)`.
-  have hback : ∀ x : Rn n, y + ρ • (ρ⁻¹ • (x - y)) = x := by
-    intro x
-    rw [smul_smul, mul_inv_cancel₀ hρ.ne', one_smul, add_sub_cancel]
-  have hinball : ∀ x ∈ ball y (ρ * r), ρ⁻¹ • (x - y) ∈ ball (0 : Rn n) r := by
-    intro x hx
 /-- Covering step in the proof of Simon Ch. 5, Theorem 7.1, second assertion (p. 127): if every
 point of the open set `U` has a ball in `U` on which `F` is `C¹` with `α`-Hölder derivative, then
 `F` is `C¹` on `U` and `D¹F` is `α`-Hölder on every compact `K ⊆ U`.  Pairs of points of `K` closer
@@ -5964,182 +5820,6 @@ theorem dohr_eb_dql_c1Holder_of_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (ι : Typ
   -- Step 5: the uniform-limit theorem for derivatives gives `DG = V` on `B`.
   have hG : ∀ x ∈ ball x₀ ρ, HasFDerivAt G (V x) x := by
     intro x hx
-    by_contra hxs
-    apply hx
-    simp [hg3, fderiv_of_notMem_tsupport ℝ hxs]
-  -- continuous on `U` with `tsupport ⊆ U`, hence continuous with compact support
-  have hcont_h : Continuous h := by
-    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
-      ((closure_minimal hsupp_h (isClosed_tsupport _)).trans hζU)
-    exact (A.continuous.comp_continuousOn hDVc).clm_apply hDζ.continuousOn
-  have hcont_g1 : Continuous g1 := by
-    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
-      ((closure_minimal hsupp_g1 (isClosed_tsupport _)).trans hηU)
-    exact (hη.continuous.pow 2).continuousOn.mul (hDVc.norm.pow 2)
-  have hcont_g3 : Continuous g3 := by
-    refine ContinuousOn.continuous_of_tsupport_subset ?_ hU
-      ((closure_minimal hsupp_g3 (isClosed_tsupport _)).trans hηU)
-    exact ((hVc.sub continuousOn_const).norm.pow 2).mul (hDη.norm.pow 2).continuousOn
-  have hint_h : Integrable h := hcont_h.integrable_of_hasCompactSupport (hζc.mono' hsupp_h)
-  have hint_g1 : Integrable g1 := hcont_g1.integrable_of_hasCompactSupport (hηc.mono' hsupp_g1)
-  have hint_g3 : Integrable g3 := hcont_g3.integrable_of_hasCompactSupport (hηc.mono' hsupp_g3)
-  -- pointwise lower bound: Legendre condition, bound on `A`, and Young's inequality
-  have hpt : ∀ x, lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x ≤ h x := by
-    intro x
-    have hid : h x = η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) +
-        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
-      simp only [hh, hζd x, map_add, map_smul, smul_eq_mul]
-    rw [hid]
-    have hc := hcoer (fderiv ℝ V x)
-    have hb := hbdd (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c))
-    rw [ContinuousLinearMap.norm_smulRight_apply] at hb
-    have hb' := (abs_le.mp hb).1
-    set a := η x * ‖fderiv ℝ V x‖ with ha
-    set b := ‖V x - c‖ * ‖fderiv ℝ η x‖ with hb_def
-    have e1 : lam * a ^ 2 ≤ η x ^ 2 * A (fderiv ℝ V x) (fderiv ℝ V x) := by
-      rw [ha, mul_pow]
-      nlinarith [mul_le_mul_of_nonneg_left hc (sq_nonneg (η x))]
-    have e2 : -(2 * Lam * (a * b)) ≤
-        2 * η x * A (fderiv ℝ V x) ((fderiv ℝ η x).smulRight (V x - c)) := by
-      have h2η : 0 ≤ 2 * η x := by linarith [hη0 x]
-      have := mul_le_mul_of_nonneg_left hb' h2η
-      rw [ha, hb_def]
-      linarith [this]
-    have e3 : 2 * Lam * (a * b) ≤ lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 := by
-      have key : lam / 2 * a ^ 2 + 2 * Lam ^ 2 / lam * b ^ 2 - 2 * Lam * (a * b) =
-          (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by
-        field_simp
-        ring
-      have : 0 ≤ (lam * a - 2 * Lam * b) ^ 2 / (2 * lam) := by positivity
-      linarith
-    have hg1x : g1 x = a ^ 2 := by rw [hg1, ha, mul_pow]
-    have hg3x : g3 x = b ^ 2 := by rw [hg3, hb_def, mul_pow]
-    rw [hg1x, hg3x]
-    linarith
-  -- integrate (`∫ h = 0`) and absorb
-  have hint_lhs : Integrable (fun x => lam / 2 * g1 x - 2 * Lam ^ 2 / lam * g3 x) :=
-    (hint_g1.const_mul _).sub (hint_g3.const_mul _)
-  have hmono := integral_mono hint_lhs hint_h hpt
-  rw [h0, integral_sub (hint_g1.const_mul _) (hint_g3.const_mul _), integral_const_mul,
-    integral_const_mul] at hmono
-  have key : ∫ x, g1 x ≤ 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by
-    have h2 : lam / 2 * ∫ x, g1 x ≤ 2 * Lam ^ 2 / lam * ∫ x, g3 x := by linarith
-    have hlam2 : 0 < lam / 2 := by positivity
-    calc ∫ x, g1 x = (lam / 2)⁻¹ * (lam / 2 * ∫ x, g1 x) := by field_simp
-      _ ≤ (lam / 2)⁻¹ * (2 * Lam ^ 2 / lam * ∫ x, g3 x) :=
-          mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr hlam2.le)
-      _ = 4 * Lam ^ 2 / lam ^ 2 * ∫ x, g3 x := by field_simp; ring
-  -- pass to lower integrals
-  have hg1n : 0 ≤ᵐ[volume] g1 := ae_of_all _ (fun x => by positivity)
-  have hg3n : 0 ≤ᵐ[volume] g3 := ae_of_all _ (fun x => by positivity)
-  rw [← ofReal_integral_eq_lintegral_ofReal hint_g1 hg1n,
-    ← ofReal_integral_eq_lintegral_ofReal hint_g3 hg3n, ← ENNReal.ofReal_mul (by positivity)]
-  exact ENNReal.ofReal_le_ofReal key
-/-- **Simon Ch. 5, proof of Theorem 7.1 (elliptic bootstrap): `C^{1,α}` bounds pass to limits.**
-Let `B = B̆_ρ(x₀)` and let `F_i → G` uniformly on every compact `K ⊆ B` along a filter `l ≠ ⊥`.
-If eventually in `l` each `F_i` is differentiable on `B` with `‖DF_i‖ ≤ M` and
-`‖DF_i(x) − DF_i(y)‖ ≤ M ‖x − y‖^α` on `B` (`α > 0`), then `G` is `C¹` on `B` with the same bounds.
-Proof: for `x ∈ B` choose `r > 0` with `B_{2r}(x) ⊆ B`.  Given `η > 0`, pick `t ∈ (0, r]` with
-`2M t^α < η/2`; once `‖G − F_i‖ < ηt/8` on `B_{2r}(x)`, the interpolation inequality
-(`dohr_eb_dql_interpolation_fderiv_bound`) applied to `F_i − F_j` (Hölder constant `2M`, sup bound
-`ηt/4`) gives `‖DF_i − DF_j‖ ≤ η/2 + 2M t^α < η` on `B_r(x)`.  So `DF_i` is uniformly Cauchy on
-`B_r(x)` and, `L(ℝⁿ, ℝ^ℓ)` being complete, converges uniformly there to `V := lim DF_i`.  The limit
-`V` inherits the bound `M` and the Hölder constant `M`, hence is continuous on `B`, and the theorem
-on uniform limits of derivatives gives `DG = V` on `B`; thus `G` is `C¹` on `B`. -/
-theorem dohr_eb_dql_c1Holder_of_tendstoUniformlyOn : ∀ (n ℓ : ℕ) (ι : Type) (l : Filter ι), l.NeBot → ∀ (F : ι → Rn n → Rn ℓ) (G : Rn n → Rn ℓ) (x₀ : Rn n) (ρ α M : ℝ), 0 < α → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, DifferentiableAt ℝ (F i) x) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x‖ ≤ M) → (∀ᶠ i in l, ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ (F i) x - fderiv ℝ (F i) y‖ ≤ M * ‖x - y‖ ^ α) → (∀ K : Set (Rn n), IsCompact K → K ⊆ ball x₀ ρ → TendstoUniformlyOn F G l K) → ContDiffOn ℝ 1 G (ball x₀ ρ) ∧ (∀ x ∈ ball x₀ ρ, ‖fderiv ℝ G x‖ ≤ M) ∧ ∀ x ∈ ball x₀ ρ, ∀ y ∈ ball x₀ ρ, ‖fderiv ℝ G x - fderiv ℝ G y‖ ≤ M * ‖x - y‖ ^ α := by
-  intro n ℓ ι l hl F G x₀ ρ α M hα hD hB hH hU
-  have := hl
-  -- The good indices: eventually all three hypotheses hold at once.
-  have hE := hD.and (hB.and hH)
-  -- The candidate derivative of `G`: the (chosen) pointwise limit of the `DF_i`.
-  set V : Rn n → (Rn n →L[ℝ] Rn ℓ) := fun y => limUnder l (fun i => fderiv ℝ (F i) y)
-  -- Step 1: radii with `B_{2r}(x) ⊆ B`, and `M ≥ 0`.
-  have hrad : ∀ x ∈ ball x₀ ρ, ∃ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ := by
-    intro x hx
-    rw [mem_ball] at hx
-    refine ⟨(ρ - dist x x₀) / 4, by linarith, fun z hz => ?_⟩
-    rw [mem_closedBall] at hz
-    rw [mem_ball]
-    calc dist z x₀ ≤ dist z x + dist x x₀ := dist_triangle _ _ _
-      _ < ρ := by linarith
-  have hM : ∀ x ∈ ball x₀ ρ, 0 ≤ M := by
-    intro x hx
-    obtain ⟨i, hi⟩ := hB.exists
-    exact (norm_nonneg _).trans (hi x hx)
-  -- Steps 2–3: on `B_r(x)` the `DF_i` are uniformly Cauchy, hence converge uniformly to `V`.
-  have hconv : ∀ x ∈ ball x₀ ρ, ∀ r > 0, closedBall x (2 * r) ⊆ ball x₀ ρ →
-      TendstoUniformlyOn (fun i => fderiv ℝ (F i)) V l (closedBall x r) := by
-    intro x hx r hr hsub
-    have hM0 := hM x hx
-    have hUC : UniformCauchySeqOn (fun i => fderiv ℝ (F i)) l (closedBall x r) := by
-      intro u hu
-      obtain ⟨η, hη, hηu⟩ := Metric.mem_uniformity_dist.1 hu
-      -- (a) a scale `t ∈ (0, r]` with `2M t^α < η/2`.
-      have ht_ev : ∀ᶠ t in 𝓝[>] (0 : ℝ), 2 * M * t ^ α < η / 2 := by
-        have hc : Tendsto (fun t : ℝ => 2 * M * t ^ α) (𝓝 0) (𝓝 (2 * M * (0 : ℝ) ^ α)) :=
-          ((continuousAt_id.rpow_const (Or.inr hα.le)).tendsto).const_mul _
-        rw [Real.zero_rpow hα.ne', mul_zero] at hc
-        exact nhdsWithin_le_nhds (hc.eventually (gt_mem_nhds (by linarith)))
-      have hIoc : ∀ᶠ t in 𝓝[>] (0 : ℝ), t ∈ Ioc 0 r := Ioc_mem_nhdsGT hr
-      obtain ⟨t, ht1, ht2⟩ := (ht_ev.and hIoc).exists
-      have htpos : 0 < t := ht2.1
-      have htr : t ≤ r := ht2.2
-      -- (b) eventually `‖G − F_i‖ < ηt/8` on the compact set `B_{2r}(x) ⊆ B`.
-      have hTU := hU (closedBall x (2 * r)) (isCompact_closedBall x _) hsub
-      rw [Metric.tendstoUniformlyOn_iff] at hTU
-      have hP := hE.and (hTU (η * t / 8) (by positivity))
-      filter_upwards [hP.prod_mk hP] with ij hij y hy
-      obtain ⟨⟨hDi, hBi, hHi⟩, hGi⟩ := hij.1
-      obtain ⟨⟨hDj, hBj, hHj⟩, hGj⟩ := hij.2
-      apply hηu
-      rw [dist_eq_norm]
-      have hyB : y ∈ closedBall x (2 * r) := closedBall_subset_closedBall (by linarith) hy
-      -- (c) `h = F_i − F_j` has Hölder constant `2M` and sup bound `ηt/4` on `B_{2r}(x)`.
-      set h : Rn n → Rn ℓ := fun z => F ij.1 z - F ij.2 z
-      have hdh : ∀ z ∈ closedBall x (2 * r), DifferentiableAt ℝ h z := fun z hz =>
-        (hDi z (hsub hz)).sub (hDj z (hsub hz))
-      have hfd : ∀ z ∈ closedBall x (2 * r),
-          fderiv ℝ h z = fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z := fun z hz =>
-        fderiv_sub (hDi z (hsub hz)) (hDj z (hsub hz))
-      -- (d) the interpolation inequality on `B_r(x)`.
-      have hbd := Submission.dohr_eb_dql_interpolation_fderiv_bound n ℓ h x r t α (2 * M)
-        (η * t / 4) htpos htr hα (by linarith) hdh
-        (fun z hz z' hz' => by
-          rw [hfd z hz, hfd z' hz']
-          calc ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.2) z -
-                (fderiv ℝ (F ij.1) z' - fderiv ℝ (F ij.2) z')‖
-              = ‖(fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z') -
-                  (fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z')‖ := by congr 1; abel
-            _ ≤ ‖fderiv ℝ (F ij.1) z - fderiv ℝ (F ij.1) z'‖ +
-                  ‖fderiv ℝ (F ij.2) z - fderiv ℝ (F ij.2) z'‖ := norm_sub_le _ _
-            _ ≤ M * ‖z - z'‖ ^ α + M * ‖z - z'‖ ^ α :=
-                add_le_add (hHi z (hsub hz) z' (hsub hz')) (hHj z (hsub hz) z' (hsub hz'))
-            _ = 2 * M * ‖z - z'‖ ^ α := by ring)
-        (fun z hz => by
-          have h1 := hGi z hz
-          have h2 := hGj z hz
-          rw [dist_eq_norm] at h1 h2
-          calc ‖h z‖ = ‖(G z - F ij.2 z) - (G z - F ij.1 z)‖ := by
-                show ‖F ij.1 z - F ij.2 z‖ = _; congr 1; abel
-            _ ≤ ‖G z - F ij.2 z‖ + ‖G z - F ij.1 z‖ := norm_sub_le _ _
-            _ ≤ η * t / 4 := by linarith)
-        y hy
-      rw [hfd y hyB] at hbd
-      calc ‖fderiv ℝ (F ij.1) y - fderiv ℝ (F ij.2) y‖
-          ≤ 2 * (η * t / 4) / t + 2 * M * t ^ α := hbd
-        _ = η / 2 + 2 * M * t ^ α := by field_simp; ring
-        _ < η := by linarith
-    -- (e)/(3) completeness: pointwise limits exist, and the convergence is uniform.
-    refine hUC.tendstoUniformlyOn_of_tendsto (fun y hy => ?_)
-    obtain ⟨L, hL⟩ := cauchy_map_iff_exists_tendsto.1 (hUC.cauchy_map hy)
-    exact tendsto_nhds_limUnder ⟨L, hL⟩
-  have hpt : ∀ y ∈ ball x₀ ρ, Tendsto (fun i => fderiv ℝ (F i) y) l (𝓝 (V y)) := by
-    intro y hy
-    obtain ⟨r, hr, hsub⟩ := hrad y hy
-    exact (hconv y hy r hr hsub).tendsto_at (mem_closedBall_self hr.le)
-  -- Step 5: the uniform-limit theorem for derivatives gives `DG = V` on `B`.
-  have hG : ∀ x ∈ ball x₀ ρ, HasFDerivAt G (V x) x := by
-    intro x hx
     obtain ⟨r, hr, hsub⟩ := hrad x hx
     refine hasFDerivAt_of_tendstoUniformlyOnFilter (l := l) (f := F)
       (f' := fun i => fderiv ℝ (F i)) ?_ ?_ ?_
@@ -6384,163 +6064,6 @@ theorem dohr_eb_holder_bilinear : ∀ (E₁ E₂ E₃ E₄ : Type) [NormedAddCom
   exact Submission.dohr_eb_holder_comp E₁ (E₂ × E₃) E₄ m α (fun x => (f x, g x))
     (fun q : E₂ × E₃ => B q.1 q.2) U univ hα hα1 hU isOpen_univ (mapsTo_univ _ _)
     (Or.inr (Or.inr (hβ _))) (hf.prodMk hg) hpH (hβ _) hβH
-/-- **Schauder bootstrap for the prescribed-mean-curvature graph system** (Simon Ch. 5, proof of
-Theorem 7.1, p. 128: "by the Schauder theory for elliptic equations we see that `h ∈ C^{q,α}`
-implies `u ∈ C^{q+2,α}`").  Let `J(P) = det(I + (⟨Pe_a, Pe_b⟩)_{ab})^{1/2}` be the area integrand.
-If `u` is `C^{1,β}` on `B̆_r(0)` (`α ≤ β ≤ 1`) with `Du(0) = 0`, `(x, u(x)) ∈ O` there, and `u`
-weakly solves `∫ DJ(Du)[Dφ] = −∫ J(Du) ⟨(0, φ), F(x, u(x))⟩` for `F ∈ C^{q,α}_loc(O)`, then `u` is
-`C^{q+2,α}` (`IsHolderCkα`) on some ball `B̆_{r'}(0)`, `0 < r' ≤ r`.  On a small-gradient ball the
-system is Legendre-elliptic; its right side `J(Du) pv(F(x, u))` (`pv` = last `ℓ` coordinates) is
-`C^{m,α}_loc` once `u` is `C^{m+1,α}_loc` (`m ≤ q`); Schauder theory then gives `C^{2,α}_loc` and,
-inductively, `C^{q+2,α}_loc`, and global bounds follow on the half ball. -/
-theorem dohr_elliptic_bootstrap : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : ℕ) (α β : ℝ), 0 < α → α < 1 → α ≤ β → β ≤ 1 → ∀ (r : ℝ) (u : Rn n → Rn ℓ) (F : Amb n ℓ → Amb n ℓ) (O : Set (Amb n ℓ)), 0 < r → IsOpen O → IsLocallyHolderCkα q α F O → (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ O) → ContDiffOn ℝ 1 u (ball 0 r) → fderiv ℝ u 0 = 0 → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) r, ∀ y ∈ ball (0 : Rn n) r, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ β) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (F (graphPoint x (u x)))) → ∃ r' > 0, r' ≤ r ∧ IsHolderCkα (q + 2) α u (ball 0 r') := by
-  intro n ℓ hn q α β hα0 hα1 hαβ hβ1 r u F O hr hO hF hGO hu hDu0 hβ hweak
-  -- Step 1: the area integrand `J` is smooth and Legendre-elliptic (constant `1/2`) for `‖P‖ ≤ ε`.
-  obtain ⟨hJs, ε, hε, hJleg⟩ := Submission.dohr_eb_area_integrand_legendre n ℓ
-  set J : (Rn n →L[ℝ] Rn ℓ) → ℝ := fun P => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
-    Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
-      (P (EuclideanSpace.single b (1 : ℝ)))))
-  -- A small-gradient ball `U = B̆_{r₁}(0)`, `r₁ ≤ r`, with `‖Du‖ ≤ ε` on `U` (`Du` is continuous
-  -- at `0` and `Du(0) = 0`).
-  have hcont : ContinuousAt (fderiv ℝ u) 0 :=
-    (hu.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).continuousAt
-      (isOpen_ball.mem_nhds (mem_ball_self hr))
-  obtain ⟨δ, hδ, hδε⟩ := Metric.continuousAt_iff.mp hcont ε hε
-  set r₁ := min δ r
-  have hr₁0 : 0 < r₁ := lt_min hδ hr
-  have hr₁r : r₁ ≤ r := min_le_right _ _
-  set U := ball (0 : Rn n) r₁
-  have hUo : IsOpen U := isOpen_ball
-  have hUr : U ⊆ ball 0 r := ball_subset_ball hr₁r
-  have hDuε : ∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε := by
-    intro x hx
-    have h := hδε (lt_of_lt_of_le (mem_ball.mp hx) (min_le_left δ r))
-    rw [hDu0, dist_zero_right] at h
-    exact h.le
-  have hu1 : ContDiffOn ℝ 1 u U := hu.mono hUr
-  -- Step 2a: `u ∈ C^{1,α}_loc(U)`: `‖x − y‖^β ≤ (2r₁)^{β−α} ‖x − y‖^α` on `U`.
-  obtain ⟨K₀, hK₀⟩ := hβ
-  have hu1α : IsLocallyHolderCkα 1 α u U := by
-    refine (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 0 α u U hUo).1.mpr ⟨hu1, ?_, ?_⟩
-    · rw [Nat.cast_zero, contDiffOn_zero]
-      exact hu1.continuousOn_fderiv_of_isOpen hUo le_rfl
-    · intro K _ hKU
-      refine ⟨max K₀ 0 * (2 * r₁) ^ (β - α), fun x hx y hy => ?_⟩
-      have hxU := hKU hx
-      have hyU := hKU hy
-      rw [iteratedFDeriv_zero_eq_comp, Function.comp_apply, Function.comp_apply, ← map_sub,
-        LinearIsometryEquiv.norm_map]
-      have hxy : ‖x - y‖ ≤ 2 * r₁ := by
-        have h1 := mem_ball_zero_iff.mp hxU
-        have h2 := mem_ball_zero_iff.mp hyU
-        linarith [norm_sub_le x y]
-      have hsplit : ‖x - y‖ ^ β = ‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α := by
-        rw [← Real.rpow_add' (norm_nonneg _) (by linarith : (0 : ℝ) < β - α + α).ne',
-          sub_add_cancel]
-      have hpow : ‖x - y‖ ^ (β - α) ≤ (2 * r₁) ^ (β - α) :=
-        Real.rpow_le_rpow (norm_nonneg _) hxy (sub_nonneg.mpr hαβ)
-      calc ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K₀ * ‖x - y‖ ^ β := hK₀ x (hUr hxU) y (hUr hyU)
-        _ ≤ max K₀ 0 * ‖x - y‖ ^ β :=
-          mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (norm_nonneg _) _)
-        _ = max K₀ 0 * (‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α) := by rw [hsplit]
-        _ ≤ max K₀ 0 * ((2 * r₁) ^ (β - α) * ‖x - y‖ ^ α) :=
-          mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_right hpow (Real.rpow_nonneg (norm_nonneg _) _))
-            (le_max_right _ _)
-        _ = max K₀ 0 * (2 * r₁) ^ (β - α) * ‖x - y‖ ^ α := by ring
-  -- Step 2b: the vertical projection `pv` with `⟨(0, w), z⟩ = ⟨w, pv z⟩`.
-  obtain ⟨pv, hpv⟩ : ∃ pv : Amb n ℓ →L[ℝ] Rn ℓ, ∀ (w : Rn ℓ) (z : Amb n ℓ),
-      inner ℝ (graphPoint 0 w) z = inner ℝ w (pv z) := by
-    let pvₗ : Amb n ℓ →ₗ[ℝ] Rn ℓ :=
-      { toFun := fun z => WithLp.toLp 2 (fun j : Fin ℓ => z (Fin.natAdd n j))
-        map_add' := fun a b => rfl
-        map_smul' := fun c a => rfl }
-    refine ⟨LinearMap.toContinuousLinearMap pvₗ, fun w z => ?_⟩
-    simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right,
-      WithLp.ofLp_zero, Pi.zero_apply, inner_zero_left, Finset.sum_const_zero, zero_add,
-      LinearMap.coe_toContinuousLinearMap', pvₗ]
-    rfl
-  -- Step 2c: the graph map `G(x) = (x, u(x))` is as smooth as `u`.
-  set G : Rn n → Amb n ℓ := fun x => graphPoint x (u x)
-  have hGU : MapsTo G U O := fun x hx => hGO x (hUr hx)
-  have hGcd : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k u U → ContDiffOn ℝ k G U := by
-    intro k hk
-    refine (contDiffOn_piLp 2).2 fun i => ?_
-    induction i using Fin.addCases with
-    | left j =>
-      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_left]
-      exact (contDiff_piLp_apply 2).contDiffOn
-    | right j =>
-      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_right]
-      exact (contDiff_piLp_apply 2).comp_contDiffOn hk
-  -- The right-hand side `g(x) = J(Du(x)) pv(F(x, u(x)))` of the weak system.
-  set g : Rn n → Rn ℓ := fun x => (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Rn ℓ →L[ℝ] Rn ℓ)
-    ((J ∘ fderiv ℝ u) x) (((pv ∘ F) ∘ G) x)
-  -- Step 2d / 5: `g ∈ C^{m,α}_loc(U)` whenever `m ≤ q` and `u ∈ C^{m+1,α}_loc(U)`.
-  obtain ⟨hFc, hFh⟩ := hF
-  have hgreg : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 1) α u U → IsLocallyHolderCkα m α g U := by
-    intro m hmq hum
-    obtain ⟨-, hDum, hDuh⟩ :=
-      (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α u U hUo).1.mp hum
-    have hJm : ∀ k : ℕ, ContDiffOn ℝ k J univ := fun k => (contDiff_infty.mp hJs k).contDiffOn
-    have hJ1 : ContDiffOn ℝ 1 J univ := by exact_mod_cast hJm 1
-    have h1 := Submission.dohr_eb_holder_comp (Rn n) (Rn n →L[ℝ] Rn ℓ) ℝ m α (fderiv ℝ u) J U univ
-      hα0 hα1.le hUo isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr hJ1)) hDum hDuh (hJm m)
-      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n →L[ℝ] Rn ℓ) ℝ m α J univ hα0 hα1.le
-        isOpen_univ (hJm (m + 1)))
-    have hFm : ContDiffOn ℝ m F O := hFc.of_le (by exact_mod_cast hmq)
-    have hFmh : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ O → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
-        ‖iteratedFDeriv ℝ m F x - iteratedFDeriv ℝ m F y‖ ≤ C * ‖x - y‖ ^ α := by
-      rcases Nat.lt_or_eq_of_le hmq with hlt | heq
-      · exact Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Amb n ℓ) m α F O hα0 hα1.le
-          hO (hFc.of_le (by exact_mod_cast Nat.succ_le_of_lt hlt))
-      · rw [heq]
-        exact hFh
-    have hpv : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k pv univ := fun k => pv.contDiff.contDiffOn
-    have h2 := Submission.dohr_eb_holder_comp (Amb n ℓ) (Amb n ℓ) (Rn ℓ) m α F pv O univ hα0 hα1.le
-      hO isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr (hpv 1))) hFm hFmh (hpv m)
-      (Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Rn ℓ) m α pv univ hα0 hα1.le
-        isOpen_univ (hpv _))
-    have hGm1 : ContDiffOn ℝ (m + 1 : ℕ) G U := hGcd _ hum.1
-    have h3 := Submission.dohr_eb_holder_comp (Rn n) (Amb n ℓ) (Rn ℓ) m α G (pv ∘ F) U O hα0
-      hα1.le hUo hO hGU (Or.inr (Or.inl (hGcd 1 hu1)))
-      (hGm1.of_le (by exact_mod_cast Nat.le_succ m))
-      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n) (Amb n ℓ) m α G U hα0 hα1.le hUo hGm1)
-      h2.1 h2.2
-    exact Submission.dohr_eb_holder_bilinear (Rn n) ℝ (Rn ℓ) (Rn ℓ) m α
-      (ContinuousLinearMap.lsmul ℝ ℝ) (J ∘ fderiv ℝ u) ((pv ∘ F) ∘ G) U hα0 hα1.le hUo h1.1 h1.2
-      h3.1 h3.2
-  -- Step 3: the weak system on `U`, with right-hand side `g`.
-  have hweakU : ∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U →
-      ∫ x in U, fderiv ℝ J (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x) := by
-    intro φ hφ hφc hφU
-    have hout : ∀ x ∈ ball (0 : Rn n) r \ U, x ∉ tsupport φ := fun x hx h' => hx.2 (hφU h')
-    have h := hweak φ hφ hφc (hφU.trans hUr)
-    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
-      rw [fderiv_of_notMem_tsupport ℝ (hout x hx), map_zero]] at h
-    rw [h, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
-      rw [hpv, image_eq_zero_of_notMem_tsupport (hout x hx), inner_zero_left, mul_zero]]
-    congr 1
-    refine setIntegral_congr_fun hUo.measurableSet fun x _ => ?_
-    simp only [g, Function.comp_apply, ContinuousLinearMap.lsmul_apply, real_inner_smul_right,
-      ← hpv, G, J]
-  -- Steps 4–5: `C^{2,α}_loc` (Schauder) and the bootstrap up to `C^{q+2,α}_loc` on `U`.
-  have hmain : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 2) α u U := by
-    intro m
-    induction m with
-    | zero =>
-      intro _
-      exact Submission.dohr_eb_el_c2alpha_regularity n ℓ hn α hα0 hα1 J (1 / 2) ε U u g
-        (by norm_num) hUo hJs hJleg hu1α hDuε (hgreg 0 (Nat.zero_le q) hu1α) hweakU
-    | succ k ih =>
-      intro hk
-      have hk2 : IsLocallyHolderCkα (k + 2) α u U := ih (Nat.le_of_succ_le hk)
-      exact Submission.dohr_eb_el_higher_regularity_step n ℓ hn α hα0 hα1 (k + 1) (Nat.succ_pos k)
-        J (1 / 2) ε U u g (by norm_num) hUo hJs hJleg hk2 hDuε (hgreg (k + 1) hk hk2) hweakU
-  -- Step 6: global `C^{q+2,α}` bounds on the half ball `B̆_{r₁/2}(0)`.
-  exact ⟨r₁ / 2, half_pos hr₁0, (half_le_self hr₁0.le).trans hr₁r,
-    Submission.dohr_eb_isHolderCk_half_ball n ℓ (q + 2) α u 0 r₁ (hmain q le_rfl)⟩
-
 end Submission
 
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
@@ -8302,6 +7825,163 @@ theorem dohr_eb_el_higher_regularity_step : ∀ n ℓ : ℕ, 1 ≤ n → ∀ α 
       simpa using hD (EuclideanSpace.single k (1 : ℝ)) ζ hζ1 hζc hζU
   -- Step 7: `u` is `C¹` on `U` and every `v_k` is `C^{m+1,α}_loc`, so `u` is `C^{m+2,α}_loc`.
   exact (dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) (m + 1) α u U hU).2.2 ⟨hu1, hk⟩
+
+/-- **Schauder bootstrap for the prescribed-mean-curvature graph system** (Simon Ch. 5, proof of
+Theorem 7.1, p. 128: "by the Schauder theory for elliptic equations we see that `h ∈ C^{q,α}`
+implies `u ∈ C^{q+2,α}`").  Let `J(P) = det(I + (⟨Pe_a, Pe_b⟩)_{ab})^{1/2}` be the area integrand.
+If `u` is `C^{1,β}` on `B̆_r(0)` (`α ≤ β ≤ 1`) with `Du(0) = 0`, `(x, u(x)) ∈ O` there, and `u`
+weakly solves `∫ DJ(Du)[Dφ] = −∫ J(Du) ⟨(0, φ), F(x, u(x))⟩` for `F ∈ C^{q,α}_loc(O)`, then `u` is
+`C^{q+2,α}` (`IsHolderCkα`) on some ball `B̆_{r'}(0)`, `0 < r' ≤ r`.  On a small-gradient ball the
+system is Legendre-elliptic; its right side `J(Du) pv(F(x, u))` (`pv` = last `ℓ` coordinates) is
+`C^{m,α}_loc` once `u` is `C^{m+1,α}_loc` (`m ≤ q`); Schauder theory then gives `C^{2,α}_loc` and,
+inductively, `C^{q+2,α}_loc`, and global bounds follow on the half ball. -/
+theorem dohr_elliptic_bootstrap : ∀ n ℓ : ℕ, 1 ≤ n → ∀ (q : ℕ) (α β : ℝ), 0 < α → α < 1 → α ≤ β → β ≤ 1 → ∀ (r : ℝ) (u : Rn n → Rn ℓ) (F : Amb n ℓ → Amb n ℓ) (O : Set (Amb n ℓ)), 0 < r → IsOpen O → IsLocallyHolderCkα q α F O → (∀ x ∈ ball (0 : Rn n) r, graphPoint x (u x) ∈ O) → ContDiffOn ℝ 1 u (ball 0 r) → fderiv ℝ u 0 = 0 → (∃ K : ℝ, ∀ x ∈ ball (0 : Rn n) r, ∀ y ∈ ball (0 : Rn n) r, ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K * ‖x - y‖ ^ β) → (∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 r → ∫ x in ball (0 : Rn n) r, fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in ball (0 : Rn n) r, Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ u x (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ u x (EuclideanSpace.single b (1 : ℝ))))) * inner ℝ (graphPoint 0 (φ x)) (F (graphPoint x (u x)))) → ∃ r' > 0, r' ≤ r ∧ IsHolderCkα (q + 2) α u (ball 0 r') := by
+  intro n ℓ hn q α β hα0 hα1 hαβ hβ1 r u F O hr hO hF hGO hu hDu0 hβ hweak
+  -- Step 1: the area integrand `J` is smooth and Legendre-elliptic (constant `1/2`) for `‖P‖ ≤ ε`.
+  obtain ⟨hJs, ε, hε, hJleg⟩ := Submission.dohr_eb_area_integrand_legendre n ℓ
+  set J : (Rn n →L[ℝ] Rn ℓ) → ℝ := fun P => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+    Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ)))
+      (P (EuclideanSpace.single b (1 : ℝ)))))
+  -- A small-gradient ball `U = B̆_{r₁}(0)`, `r₁ ≤ r`, with `‖Du‖ ≤ ε` on `U` (`Du` is continuous
+  -- at `0` and `Du(0) = 0`).
+  have hcont : ContinuousAt (fderiv ℝ u) 0 :=
+    (hu.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl).continuousAt
+      (isOpen_ball.mem_nhds (mem_ball_self hr))
+  obtain ⟨δ, hδ, hδε⟩ := Metric.continuousAt_iff.mp hcont ε hε
+  set r₁ := min δ r
+  have hr₁0 : 0 < r₁ := lt_min hδ hr
+  have hr₁r : r₁ ≤ r := min_le_right _ _
+  set U := ball (0 : Rn n) r₁
+  have hUo : IsOpen U := isOpen_ball
+  have hUr : U ⊆ ball 0 r := ball_subset_ball hr₁r
+  have hDuε : ∀ x ∈ U, ‖fderiv ℝ u x‖ ≤ ε := by
+    intro x hx
+    have h := hδε (lt_of_lt_of_le (mem_ball.mp hx) (min_le_left δ r))
+    rw [hDu0, dist_zero_right] at h
+    exact h.le
+  have hu1 : ContDiffOn ℝ 1 u U := hu.mono hUr
+  -- Step 2a: `u ∈ C^{1,α}_loc(U)`: `‖x − y‖^β ≤ (2r₁)^{β−α} ‖x − y‖^α` on `U`.
+  obtain ⟨K₀, hK₀⟩ := hβ
+  have hu1α : IsLocallyHolderCkα 1 α u U := by
+    refine (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) 0 α u U hUo).1.mpr ⟨hu1, ?_, ?_⟩
+    · rw [Nat.cast_zero, contDiffOn_zero]
+      exact hu1.continuousOn_fderiv_of_isOpen hUo le_rfl
+    · intro K _ hKU
+      refine ⟨max K₀ 0 * (2 * r₁) ^ (β - α), fun x hx y hy => ?_⟩
+      have hxU := hKU hx
+      have hyU := hKU hy
+      rw [iteratedFDeriv_zero_eq_comp, Function.comp_apply, Function.comp_apply, ← map_sub,
+        LinearIsometryEquiv.norm_map]
+      have hxy : ‖x - y‖ ≤ 2 * r₁ := by
+        have h1 := mem_ball_zero_iff.mp hxU
+        have h2 := mem_ball_zero_iff.mp hyU
+        linarith [norm_sub_le x y]
+      have hsplit : ‖x - y‖ ^ β = ‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α := by
+        rw [← Real.rpow_add' (norm_nonneg _) (by linarith : (0 : ℝ) < β - α + α).ne',
+          sub_add_cancel]
+      have hpow : ‖x - y‖ ^ (β - α) ≤ (2 * r₁) ^ (β - α) :=
+        Real.rpow_le_rpow (norm_nonneg _) hxy (sub_nonneg.mpr hαβ)
+      calc ‖fderiv ℝ u x - fderiv ℝ u y‖ ≤ K₀ * ‖x - y‖ ^ β := hK₀ x (hUr hxU) y (hUr hyU)
+        _ ≤ max K₀ 0 * ‖x - y‖ ^ β :=
+          mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg (norm_nonneg _) _)
+        _ = max K₀ 0 * (‖x - y‖ ^ (β - α) * ‖x - y‖ ^ α) := by rw [hsplit]
+        _ ≤ max K₀ 0 * ((2 * r₁) ^ (β - α) * ‖x - y‖ ^ α) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right hpow (Real.rpow_nonneg (norm_nonneg _) _))
+            (le_max_right _ _)
+        _ = max K₀ 0 * (2 * r₁) ^ (β - α) * ‖x - y‖ ^ α := by ring
+  -- Step 2b: the vertical projection `pv` with `⟨(0, w), z⟩ = ⟨w, pv z⟩`.
+  obtain ⟨pv, hpv⟩ : ∃ pv : Amb n ℓ →L[ℝ] Rn ℓ, ∀ (w : Rn ℓ) (z : Amb n ℓ),
+      inner ℝ (graphPoint 0 w) z = inner ℝ w (pv z) := by
+    let pvₗ : Amb n ℓ →ₗ[ℝ] Rn ℓ :=
+      { toFun := fun z => WithLp.toLp 2 (fun j : Fin ℓ => z (Fin.natAdd n j))
+        map_add' := fun a b => rfl
+        map_smul' := fun c a => rfl }
+    refine ⟨LinearMap.toContinuousLinearMap pvₗ, fun w z => ?_⟩
+    simp only [graphPoint, PiLp.inner_apply, Fin.sum_univ_add, Fin.append_left, Fin.append_right,
+      WithLp.ofLp_zero, Pi.zero_apply, inner_zero_left, Finset.sum_const_zero, zero_add,
+      LinearMap.coe_toContinuousLinearMap', pvₗ]
+    rfl
+  -- Step 2c: the graph map `G(x) = (x, u(x))` is as smooth as `u`.
+  set G : Rn n → Amb n ℓ := fun x => graphPoint x (u x)
+  have hGU : MapsTo G U O := fun x hx => hGO x (hUr hx)
+  have hGcd : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k u U → ContDiffOn ℝ k G U := by
+    intro k hk
+    refine (contDiffOn_piLp 2).2 fun i => ?_
+    induction i using Fin.addCases with
+    | left j =>
+      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_left]
+      exact (contDiff_piLp_apply 2).contDiffOn
+    | right j =>
+      simp only [G, graphPoint, WithLp.ofLp_toLp, Fin.append_right]
+      exact (contDiff_piLp_apply 2).comp_contDiffOn hk
+  -- The right-hand side `g(x) = J(Du(x)) pv(F(x, u(x)))` of the weak system.
+  set g : Rn n → Rn ℓ := fun x => (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Rn ℓ →L[ℝ] Rn ℓ)
+    ((J ∘ fderiv ℝ u) x) (((pv ∘ F) ∘ G) x)
+  -- Step 2d / 5: `g ∈ C^{m,α}_loc(U)` whenever `m ≤ q` and `u ∈ C^{m+1,α}_loc(U)`.
+  obtain ⟨hFc, hFh⟩ := hF
+  have hgreg : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 1) α u U → IsLocallyHolderCkα m α g U := by
+    intro m hmq hum
+    obtain ⟨-, hDum, hDuh⟩ :=
+      (Submission.dohr_eb_holder_succ_iff_fderiv n (Rn ℓ) m α u U hUo).1.mp hum
+    have hJm : ∀ k : ℕ, ContDiffOn ℝ k J univ := fun k => (contDiff_infty.mp hJs k).contDiffOn
+    have hJ1 : ContDiffOn ℝ 1 J univ := by exact_mod_cast hJm 1
+    have h1 := Submission.dohr_eb_holder_comp (Rn n) (Rn n →L[ℝ] Rn ℓ) ℝ m α (fderiv ℝ u) J U univ
+      hα0 hα1.le hUo isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr hJ1)) hDum hDuh (hJm m)
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n →L[ℝ] Rn ℓ) ℝ m α J univ hα0 hα1.le
+        isOpen_univ (hJm (m + 1)))
+    have hFm : ContDiffOn ℝ m F O := hFc.of_le (by exact_mod_cast hmq)
+    have hFmh : ∀ K : Set (Amb n ℓ), IsCompact K → K ⊆ O → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ m F x - iteratedFDeriv ℝ m F y‖ ≤ C * ‖x - y‖ ^ α := by
+      rcases Nat.lt_or_eq_of_le hmq with hlt | heq
+      · exact Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Amb n ℓ) m α F O hα0 hα1.le
+          hO (hFc.of_le (by exact_mod_cast Nat.succ_le_of_lt hlt))
+      · rw [heq]
+        exact hFh
+    have hpv : ∀ k : WithTop ℕ∞, ContDiffOn ℝ k pv univ := fun k => pv.contDiff.contDiffOn
+    have h2 := Submission.dohr_eb_holder_comp (Amb n ℓ) (Amb n ℓ) (Rn ℓ) m α F pv O univ hα0 hα1.le
+      hO isOpen_univ (mapsTo_univ _ _) (Or.inr (Or.inr (hpv 1))) hFm hFmh (hpv m)
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Amb n ℓ) (Rn ℓ) m α pv univ hα0 hα1.le
+        isOpen_univ (hpv _))
+    have hGm1 : ContDiffOn ℝ (m + 1 : ℕ) G U := hGcd _ hum.1
+    have h3 := Submission.dohr_eb_holder_comp (Rn n) (Amb n ℓ) (Rn ℓ) m α G (pv ∘ F) U O hα0
+      hα1.le hUo hO hGU (Or.inr (Or.inl (hGcd 1 hu1)))
+      (hGm1.of_le (by exact_mod_cast Nat.le_succ m))
+      (Submission.dohr_eb_holder_of_contDiffOn_succ (Rn n) (Amb n ℓ) m α G U hα0 hα1.le hUo hGm1)
+      h2.1 h2.2
+    exact Submission.dohr_eb_holder_bilinear (Rn n) ℝ (Rn ℓ) (Rn ℓ) m α
+      (ContinuousLinearMap.lsmul ℝ ℝ) (J ∘ fderiv ℝ u) ((pv ∘ F) ∘ G) U hα0 hα1.le hUo h1.1 h1.2
+      h3.1 h3.2
+  -- Step 3: the weak system on `U`, with right-hand side `g`.
+  have hweakU : ∀ φ : Rn n → Rn ℓ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ U →
+      ∫ x in U, fderiv ℝ J (fderiv ℝ u x) (fderiv ℝ φ x) = -∫ x in U, inner ℝ (φ x) (g x) := by
+    intro φ hφ hφc hφU
+    have hout : ∀ x ∈ ball (0 : Rn n) r \ U, x ∉ tsupport φ := fun x hx h' => hx.2 (hφU h')
+    have h := hweak φ hφ hφc (hφU.trans hUr)
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
+      rw [fderiv_of_notMem_tsupport ℝ (hout x hx), map_zero]] at h
+    rw [h, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hUr fun x hx => by
+      rw [hpv, image_eq_zero_of_notMem_tsupport (hout x hx), inner_zero_left, mul_zero]]
+    congr 1
+    refine setIntegral_congr_fun hUo.measurableSet fun x _ => ?_
+    simp only [g, Function.comp_apply, ContinuousLinearMap.lsmul_apply, real_inner_smul_right,
+      ← hpv, G, J]
+  -- Steps 4–5: `C^{2,α}_loc` (Schauder) and the bootstrap up to `C^{q+2,α}_loc` on `U`.
+  have hmain : ∀ m : ℕ, m ≤ q → IsLocallyHolderCkα (m + 2) α u U := by
+    intro m
+    induction m with
+    | zero =>
+      intro _
+      exact Submission.dohr_eb_el_c2alpha_regularity n ℓ hn α hα0 hα1 J (1 / 2) ε U u g
+        (by norm_num) hUo hJs hJleg hu1α hDuε (hgreg 0 (Nat.zero_le q) hu1α) hweakU
+    | succ k ih =>
+      intro hk
+      have hk2 : IsLocallyHolderCkα (k + 2) α u U := ih (Nat.le_of_succ_le hk)
+      exact Submission.dohr_eb_el_higher_regularity_step n ℓ hn α hα0 hα1 (k + 1) (Nat.succ_pos k)
+        J (1 / 2) ε U u g (by norm_num) hUo hJs hJleg hk2 hDuε (hgreg (k + 1) hk hk2) hweakU
+  -- Step 6: global `C^{q+2,α}` bounds on the half ball `B̆_{r₁/2}(0)`.
+  exact ⟨r₁ / 2, half_pos hr₁0, (half_le_self hr₁0.le).trans hr₁r,
+    Submission.dohr_eb_isHolderCk_half_ball n ℓ (q + 2) α u 0 r₁ (hmain q le_rfl)⟩
 
 end Submission
 
