@@ -833,6 +833,92 @@ theorem Submission.dimred_mbl_fnd_tfe_ambient_extension : ∀ (P n d : ℕ) (c :
       simpa only [add_zero] using ((tendsto_const_nhds (x := r)).add hlim).mul_const (m W)
     exact le_of_tendsto_of_tendsto' (hΦ G W ωs _ hWo hWU hωW hωe hlim).abs hmW hb
 
+/-- **Extension of a current of locally finite mass to compactly supported continuous fields**
+(selected proof, steps 1 and 6–8).  Let `U` be open, `T ∈ 𝒟ₙ(U)` with `M_W(T) < ∞` for every open
+`W ⊂⊂ U`, and `c : Λⁿ(ℝᴾ) ≃ ℝᵈ` a continuous linear equivalence with `|α| = ‖c α‖` for the
+Euclidean coefficient norm.  Then there is a linear functional `L` on `C_c(U, ℝᵈ)` with
+`L(g) = T(ω)` whenever `g = c ∘ ω`, `ω ∈ 𝒟ⁿ(U)`, and for each compact `K ⊆ U` a bound for `|L(g)|`
+over all `g` with `spt g ⊆ K` and `‖g‖ ≤ 1`.
+
+By `cmr_abs_apply_le_massOn`, `|T(ω)| ≤ r M_W(T)` when `spt ω ⊆ W` and `|ω| ≤ r`; so
+`dimred_mbl_fnd_tfe_ambient_extension` with `m(W) = M_W(T)` gives `Φ` on continuous compactly
+supported fields `G` with `spt G ⊆ U`: additive, homogeneous, `Φ(ω) = T(ω)`, and
+`|Φ(G)| ≤ r M_W(T)` when `spt G ⊆ W` and `|G| ≤ r`.  For `g ∈ C_c(U, ℝᵈ)` let `g̃ = c⁻¹ ∘ g` on `U`
+and `g̃ = 0` off `U`; as `U` is open, `g̃` is continuous with compact support and
+`spt g̃ ⊆ spt g ⊆ U`.  Put `L(g) = Φ(g̃)`.  As `g ↦ g̃` is linear, so is `L`.  If `g = c ∘ ω`, then
+`g̃ = ω` and `L(g) = T(ω)`.  For compact `K ⊆ U` choose an open `W ⊂⊂ U` with `K ⊆ W`; if
+`spt g ⊆ K` and `‖g‖ ≤ 1`, then `spt g̃ ⊆ W` and `|g̃| ≤ 1`, so `|L(g)| ≤ M_W(T)`. -/
+theorem Submission.dimred_mbl_fnd_testForm_extension_functional : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → ∃ L : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ, (∀ (ω : TestFormOn U n) (g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d))), (∀ x : U, g x = c ((ω : DifferentialForm (Euclid P) n) x)) → L g = T ω) ∧ ∀ K : Set U, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M := by
+  intro P n U T d c hU hfin hc
+  -- (a) the extension `Φ` with `m(W) = M_W(T)`, finite for open `W ⊂⊂ U`
+  obtain ⟨Φ, hΦadd, hΦsmul, hΦT, hΦbd⟩ := Submission.dimred_mbl_fnd_tfe_ambient_extension P n d c
+    U T (fun W => (T.massOn W).toReal) hU hc fun W ω r hW hWU hωW hωr =>
+      Submission.cmr_abs_apply_le_massOn P n U W T ω r (hfin W hW hWU).ne hωW hωr
+  -- (b) the zero extension `g̃ = c⁻¹ ∘ g` on `U`, `0` off `U`
+  obtain ⟨ext, hin, hout, hcont, hcpt, hspt⟩ : ∃ ext : CompactlySupportedContinuousMap U
+      (EuclideanSpace ℝ (Fin d)) → Euclid P → Covector (Euclid P) n,
+      (∀ g y (hy : y ∈ U), ext g y = c.symm (g ⟨y, hy⟩)) ∧ (∀ g y, y ∉ U → ext g y = 0) ∧
+      (∀ g, Continuous (ext g)) ∧ (∀ g, HasCompactSupport (ext g)) ∧
+      ∀ g, tsupport (ext g) ⊆ Subtype.val '' tsupport g := by
+    have hcs : ∀ g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)),
+        HasCompactSupport (c.symm ∘ g) := fun g => g.hasCompactSupport.comp_left (map_zero _)
+    exact ⟨fun g => Function.extend Subtype.val (c.symm ∘ g) 0,
+      fun g y hy => Subtype.val_injective.extend_apply _ _ (⟨y, hy⟩ : U),
+      fun g y hy => Function.extend_apply' _ _ y fun ⟨x, hx⟩ => hy (hx ▸ x.2),
+      fun g => HasCompactSupport.continuous_extend_zero hU (c.symm.continuous.comp g.continuous)
+        (hcs g),
+      fun g => (hcs g).extend_zero continuous_subtype_val,
+      fun g => ((hcs g).tsupport_extend_zero_subset continuous_subtype_val).trans
+        (image_mono (tsupport_comp_subset (map_zero _) g))⟩
+  have hsptU : ∀ g, tsupport (ext g) ⊆ U := fun g => (hspt g).trans (Subtype.coe_image_subset _ _)
+  -- `g ↦ g̃` is linear
+  have hext_add : ∀ g₁ g₂, ext (g₁ + g₂) = ext g₁ + ext g₂ := by
+    intro g₁ g₂
+    funext y
+    by_cases hy : y ∈ U
+    · rw [Pi.add_apply, hin _ y hy, hin _ y hy, hin _ y hy,
+        CompactlySupportedContinuousMap.add_apply, map_add]
+    · rw [Pi.add_apply, hout _ y hy, hout _ y hy, hout _ y hy, add_zero]
+  have hext_smul : ∀ (t : ℝ) g, ext (t • g) = t • ext g := by
+    intro t g
+    funext y
+    by_cases hy : y ∈ U
+    · rw [Pi.smul_apply, hin _ y hy, hin _ y hy, CompactlySupportedContinuousMap.smul_apply,
+        map_smul]
+    · rw [Pi.smul_apply, hout _ y hy, hout _ y hy, smul_zero]
+  -- (c) `L g = Φ g̃`
+  refine ⟨{ toFun := fun g => Φ (ext g)
+            map_add' := fun g₁ g₂ => by
+              simp only [hext_add]
+              exact hΦadd _ _ (hcont g₁) (hcpt g₁) (hsptU g₁) (hcont g₂) (hcpt g₂) (hsptU g₂)
+            map_smul' := fun t g => by
+              simp only [hext_smul, RingHom.id_apply, smul_eq_mul]
+              exact hΦsmul t _ (hcont g) (hcpt g) (hsptU g) }, ?_, ?_⟩
+  · -- (i) `g = c ∘ ω` gives `g̃ = ω`
+    intro ω g hg
+    have hω : ext g = (ω : DifferentialForm (Euclid P) n) := by
+      funext y
+      by_cases hy : y ∈ U
+      · rw [hin g y hy, hg ⟨y, hy⟩, c.symm_apply_apply]
+      · rw [hout g y hy, image_eq_zero_of_notMem_tsupport fun h => hy (ω.2.2 h)]
+    show Φ (ext g) = T ω
+    rw [hω, hΦT]
+  · -- (ii) `|L g| ≤ M_W(T)` for an open `W ⊂⊂ U` containing `K`
+    intro K hK
+    obtain ⟨W, hW, hKW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure
+      (hK.image continuous_subtype_val) hU (Subtype.coe_image_subset U K)
+    refine ⟨(T.massOn W).toReal, fun g hgK hg1 => ?_⟩
+    have hg1' : ∀ y, covectorEuclideanNorm (ext g y) ≤ 1 := by
+      intro y
+      by_cases hy : y ∈ U
+      · rw [hin g y hy, hc, c.apply_symm_apply]
+        exact hg1 _
+      · rw [hout g y hy, covectorEuclideanNorm_zero]
+        exact zero_le_one
+    show |Φ (ext g)| ≤ (T.massOn W).toReal
+    simpa only [one_mul] using hΦbd W (ext g) 1 hW ⟨hWc, hWU⟩ (hcont g) (hcpt g)
+      ((hspt g).trans ((image_mono hgK).trans hKW)) hg1'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
