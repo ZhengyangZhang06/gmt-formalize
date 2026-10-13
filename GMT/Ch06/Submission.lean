@@ -359,6 +359,29 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- `τ(M, θ, ξ)` tested against `x ↦ ρᵏ ω(ρx)` equals `τ(φ(M), θ ∘ φ⁻¹, ξ ∘ φ⁻¹)` tested against
+`ω`, `φ(x) = ρx`, `ρ > 0`, when `φ` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`:
+change variables and pull `ρᵏ` out of the linear `ξ(x)`. -/
+theorem Submission.deformation_dilation_im_tauAction :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k)
+      (ω : DifferentialForm (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) →
+      MeasurePreserving (fun x : Eucl N => ρ • x)
+        (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) →
+      tauAction k M θ ξ (fun x : Eucl N => ρ ^ k • ω (ρ • x)) =
+        tauAction k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y))
+          (fun y : Eucl N => ξ (ρ⁻¹ • y)) ω := by
+  intro N k ρ M θ ξ ω hρ hemb hmp
+  -- Change variables `y = ρx` on the right: `∫_{φ(M)} g dHᵏ = ∫_M g ∘ φ d(ρᵏ Hᵏ)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun y => θ (ρ⁻¹ • y) * ξ (ρ⁻¹ • y) (ω y)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
+  -- Pointwise, `ρ⁻¹ • ρx = x`, and `ξ(x)` is linear.
+  congr 1
+  funext x
+  simp only [inv_smul_smul₀ hρ.ne', map_smul, smul_eq_mul]
+  ring
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
