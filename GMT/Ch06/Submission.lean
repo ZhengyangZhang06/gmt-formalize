@@ -867,6 +867,47 @@ theorem Submission.rectifiability_bf_witness_set_measurable : (∀ (N m : ℕ) (
   exact MeasurableSet.iUnion fun n => MeasurableSet.iUnion fun l =>
     ((hCc n l).image continuous_snd).measurableSet
 
+/-- **Borel measurability of the cone ratio** (step 2(a)–(c) of the Besicovitch–Federer
+trichotomy, Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Lemma 18.9).  For
+`v ∈ (ℝ^N)^k`, `k = m + 1`, let `L_v y = (⟨v₁, y⟩, …, ⟨v_k, y⟩)` and
+`X_v(a, r, s) = {x : |x - a| < r, |L_v (x - a)| < s |x - a|}`.  Then
+`Φ(a, v) = limsup_{s → 0⁺} sup_{0 < r < δ} μ(X_v(a, r, s)) / (rs)ᵏ` is measurable in `(a, v)`:
+the cones are the sections of `G(r, s) = {((a, v), x) : |x - a| < r, |L_v (x - a)| < s |x - a|}`,
+which is open, monotone in `s` and left continuous in `r`, so `limsup_sup_measurable` applies. -/
+theorem Submission.rectifiability_bf_cone_ratio_measurable : ∀ (N m : ℕ) (μ : Measure (Eucl N)) (δ : ℝ), SFinite μ → Measurable (fun p : Eucl N × (Fin (m + 1) → Eucl N) => limsup (fun s : ℝ => ⨆ r ∈ Ioo (0 : ℝ) δ, μ {x | dist x p.1 < r ∧ ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) (x - p.1)) : Eucl (m + 1))‖ < s * ‖x - p.1‖} / ENNReal.ofReal ((r * s) ^ (m + 1))) (𝓝[>] 0)) := by
+  intro N m μ δ hμ
+  -- Step 1: the cone `X_v(a, r, s)` is the section of `G(r, s)` at `z = (a, v)`.
+  refine Submission.rectifiability_bf_limsup_sup_measurable (Eucl N × (Fin (m + 1) → Eucl N))
+    (Eucl N) (m + 1) μ δ (fun r s => {q | dist q.2 q.1.1 < r ∧
+      ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.1.2 i) (q.2 - q.1.1)) : Eucl (m + 1))‖ <
+        s * ‖q.2 - q.1.1‖}) hμ ?_ ?_ ?_
+  -- Step 2: `G(r, s)` is open (strict inequalities between continuous functions), hence
+  -- measurable in the second-countable product.
+  · intro r s
+    have hL : Continuous fun q : (Eucl N × (Fin (m + 1) → Eucl N)) × Eucl N =>
+        ‖(WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (q.1.2 i) (q.2 - q.1.1)) :
+          Eucl (m + 1))‖ :=
+      continuous_norm.comp ((PiLp.continuous_toLp 2 _).comp (continuous_pi fun i =>
+        ((continuous_apply i).comp (continuous_snd.comp continuous_fst)).inner
+          (continuous_snd.sub (continuous_fst.comp continuous_fst))))
+    have hd : Continuous fun q : (Eucl N × (Fin (m + 1) → Eucl N)) × Eucl N => dist q.2 q.1.1 :=
+      by fun_prop
+    have hn : Continuous fun q : (Eucl N × (Fin (m + 1) → Eucl N)) × Eucl N =>
+        s * ‖q.2 - q.1.1‖ := by fun_prop
+    exact ((isOpen_lt hd continuous_const).inter (isOpen_lt hL hn)).measurableSet
+  -- Step 3: `G(r, s)` is monotone in `s`, as `s |x - a| ≤ s' |x - a|` for `s ≤ s'`.
+  · intro r s s' hss' q hq
+    exact ⟨hq.1, hq.2.trans_le (by gcongr)⟩
+  -- Step 4: `G(r, s) = ⋃_{0 < r' < r} G(r', s)`; for `|x - a| < r` take `r' = (|x - a| + r) / 2`.
+  · intro r s hr
+    ext q
+    simp only [mem_iUnion, mem_ofPred_eq, mem_Ioo]
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨(dist q.2 q.1.1 + r) / 2, ⟨by positivity, by linarith⟩, by linarith, h2⟩
+    · rintro ⟨r', ⟨-, hr'r⟩, h1, h2⟩
+      exact ⟨h1.trans hr'r, h2⟩
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
