@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Lower semicontinuity of mass under weak convergence on exhausting domains (Simon 6.2.14, as
+used in 7.2.4 and 7.3.1): if every closed ball `B̄_R(0)` lies in `Uⱼ` for all large `j` and
+`Sⱼ ⇀ C` in `ℝᴾ`, then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})` for every subsequence `φ` and every `O`.
+An `ω` admissible for `M_O(C)` has compact support, so it lies in some `B̄_R(0)` and is admissible
+for `S_{φ(i)}` for all large `i`; hence `ofReal(C(ω)) = liminf_i ofReal(S_{φ(i)}(ω))` is at most
+`liminf_i M_O(S_{φ(i)})`. -/
+theorem Submission.dtc_bc_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
+  intro P n Us Ss C hUs hconv φ hφ O
+  -- `M_O(C)` is a supremum: bound each admissible evaluation `ofReal(C(ω))`.
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+  have hwt : IsTestForm w := ω.property.1
+  -- `tsupport ω` is compact, so it lies in a closed ball, eventually contained in `U_{φ(i)}`.
+  obtain ⟨R, hR⟩ := hwt.2.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  have hev : ∀ᶠ i in atTop, closedBall (0 : Euclid P) R ⊆ Us (φ i) :=
+    hφ.tendsto_atTop.eventually (hUs R)
+  -- There `ω` is admissible for `S_{φ(i)}`, and `currentEval` is its evaluation.
+  have hle : ∀ᶠ i in atTop,
+      ENNReal.ofReal (currentEval (Ss (φ i)) w) ≤ (Ss (φ i)).massOn O := by
+    filter_upwards [hev] with i hi
+    have hmem : IsTestForm w ∧ tsupport w ⊆ Us (φ i) := ⟨hwt, hR.trans hi⟩
+    have heval : currentEval (Ss (φ i)) w = Ss (φ i) ⟨w, hmem⟩ := by
+      unfold currentEval
+      exact dite_eq_left hmem
+    rw [heval]
+    exact (Ss (φ i)).le_massOn (omega := ⟨w, hmem⟩) ⟨hω.1, hω.2⟩
+  -- `currentEval (S_{φ(i)}) ω → C(ω)`, so `ofReal(C(ω))` is the liminf of `ofReal` of these values.
+  calc ENNReal.ofReal (C ω)
+      = liminf (fun i => ENNReal.ofReal (currentEval (Ss (φ i)) w)) atTop :=
+        (ENNReal.tendsto_ofReal ((hconv ω).comp hφ.tendsto_atTop)).liminf_eq.symm
+    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := liminf_le_liminf hle
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -1533,6 +1565,52 @@ theorem Submission.dtc_bc_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ → 
     tendsto_measure_thickening_of_isClosed ⟨1, one_pos, ((measure_mono
       (thickening_subset_cthickening 1 K)).trans_lt (hfin _ hK.cthickening)).ne⟩ hK.isClosed
   exact ge_of_tendsto hT (eventually_nhdsWithin_of_forall hthick)
+
+/-- **Simon 7.2.4, (8)**, localized (minimality of the limit `C`).  For a competitor `S` with
+`K = spt(S − C)` compact and `K ⊆ W`, pick `ε > 0` with `thickening ε K ⊆ W`; the local comparison
+with `ψ = id` gives an open `W'`, `K ⊆ W' ⊆ W`, and `φ'` with `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`,
+so `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)` by lower semicontinuity of mass.  Off `K` the
+currents `S` and `C` agree, so their weights `μ_S, μ_C` agree on the Borel set `W \ W' ⊆ ℝᴾ \ K`,
+and `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`. -/
+theorem Submission.dtc_bc_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
+  intro P n Us Ss C hUs hC hconv hcomp
+  refine ⟨hC, fun W S hW _ hS hbd hKc hsub => ?_⟩
+  -- `K = spt(S − C)` is a compact subset of `W`; pick `ε > 0` with `thickening ε K ⊆ W`
+  set K := (S - C).support
+  have hKW : K ⊆ W := fun x hx => (hsub hx).2
+  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW
+  -- the local comparison with `ψ = id`: `K ⊆ W' ⊆ W`, `limsup M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
+  obtain ⟨W', hW'o, hKW', hW'ε, φ', hφ', hcmp⟩ := hcomp K ε hKc hε id strictMono_id
+  have hW'W : W' ⊆ W := hW'ε.trans hεW
+  -- lower semicontinuity: `M_{W'}(C) ≤ liminf M_{W'}(S_{φ'(i)}) ≤ limsup ≤ M_{W'}(S)`
+  have hCS : C.massOn W' ≤ S.massOn W' :=
+    le_trans (Submission.dtc_bc_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W')
+      (le_trans liminf_le_limsup (hcmp S hS hbd subset_rfl))
+  -- on open sets the masses are the weights `μ_C = μ_{R_C}` and `μ_S = μ_{R_S}`
+  obtain ⟨RC, hRC⟩ := hC
+  obtain ⟨RS, hRS⟩ := hS
+  have hmC := Submission.cmc_massOn_eq_imRep_measure P n univ C RC isOpen_univ hRC
+  have hmS := Submission.cmc_massOn_eq_imRep_measure P n univ S RS isOpen_univ hRS
+  -- `μ_S = μ_C` on the open subsets of `ℝᴾ \ K` (there `S = C`), hence on its Borel subsets
+  have hagree : ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ Kᶜ → RS.measure A = RC.measure A :=
+    Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P Kᶜ RS.measure RC.measure
+      hKc.isClosed.isOpen_compl
+      (fun K' hK' _ =>
+        (Submission.rsd_imrep_compact_measure_ne_top P n univ RS K' hK' (subset_univ _)).2)
+      (fun G hG hGK => by
+        rw [← hmS G hG, ← hmC G hG]
+        exact Submission.cmc_ml_massOn_eq_of_disjoint_sub_support P n univ S C K G subset_rfl
+          (subset_compl_iff_disjoint_right.mp hGK))
+  have hdiff : RS.measure (W \ W') = RC.measure (W \ W') :=
+    hagree _ (hW.measurableSet.diff hW'o.measurableSet) fun x hx hxK => hx.2 (hKW' hxK)
+  -- additivity: `M_W(C) = μ_C(W') + μ_C(W \ W') ≤ μ_S(W') + μ_S(W \ W') = M_W(S)`
+  have hsplit : ∀ μ : Measure (Euclid P), μ W' + μ (W \ W') = μ W := fun μ => by
+    rw [← measure_inter_add_sdiff W hW'o.measurableSet, inter_eq_right.mpr hW'W]
+  calc C.massOn W = RC.measure W' + RC.measure (W \ W') := by rw [hmC W hW, hsplit]
+    _ ≤ RS.measure W' + RS.measure (W \ W') := by
+        rw [← hmC W' hW'o, ← hmS W' hW'o, hdiff]
+        exact add_le_add hCS le_rfl
+    _ = S.massOn W := by rw [hmS W hW, hsplit]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
