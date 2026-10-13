@@ -1076,6 +1076,183 @@ theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **First variation bound for the mass of a deformation** (Simon Ch. 4, 2.2; Ch. 2, 5.2–5.3).
+Let `R = (M, θ, ξ)`, `μ_V(W) = ∫_{M ∩ W} θ dHⁿ < ∞`, `X ∈ C¹_c` with `spt X ⊆ W`, and let `φₜ` be
+`C¹` maps with `φₜ = id` off `spt X` and `‖Dφₜ − I − t DX‖ ≤ ε|t|` for small `|t|`.  If `S` acts by
+`S(ω) = ∫_M θ ⟨ω(φₜx) ∘ Dφₜ(x), ξ(x)⟩ dHⁿ`, then `M_W(S) ≤ μ_V(W) + t δV(X) + ε|t|` for small `|t|`.
+At a.e. `x ∈ M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal basis `τ` of `TₓM` and
+`div_M X(x) = Σₐ τₐ · DX(x)τₐ`, so on `W` the integrand is at most
+`θ |ω|_E det(Dφₜτᵢ · Dφₜτⱼ)^{1/2} ≤ θ (1 + t div_M X + ε'|t|)`, `ε' = ε/(μ_V(W) + 1)`; off `W`,
+`φₜ x = x ∉ spt ω` and the integrand vanishes.  Integrate (a non-integrable integrand has integral
+`0` and the bound is nonnegative) and take the supremum over admissible `ω`. -/
+theorem Submission.codim1_ldr_pushforward_massOn_le_first_variation : ∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P) (φ : ℝ → Euclid P → Euclid P), IsOpen W → R.measure W ≠ ∞ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → (∀ t, ContDiff ℝ 1 (φ t)) → (∀ t x, x ∉ tsupport X → φ t x = x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ S : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap (fderiv ℝ (φ t) x)) ∂μHE[n]) → S.massOn W ≤ ENNReal.ofReal ((R.measure W).toReal + t * R.firstVariation X + ε * |t|) := by
+  intro P n U W R X φ hWo hRW hX hXc hXW _hφ hφid hφD ε hε
+  classical
+  have hDXc : Continuous (fderiv ℝ X) := hX.continuous_fderiv one_ne_zero
+  -- `div_M X = trace(p_{TₓM} ∘ DX)` is a.e. strongly measurable: `p_{TₓM}` is (TM) and the trace
+  -- of a composition is continuous
+  have hdvm : AEStronglyMeasurable (tangentialDivergence n R.carrier X)
+      (μHE[n].restrict R.carrier) := by
+    have h1 : Continuous fun L : Euclid P →L[ℝ] Euclid P =>
+        LinearMap.trace ℝ (Euclid P) L.toLinearMap :=
+      ((LinearMap.trace ℝ (Euclid P)).comp
+        (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional
+    have h2 : Continuous fun pL : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
+        LinearMap.trace ℝ (Euclid P) (pL.1.comp pL.2).toLinearMap :=
+      h1.comp (continuous_fst.clm_comp continuous_snd)
+    have h3 : Continuous fun pL : (Euclid P →L[ℝ] Euclid P) × (Euclid P →L[ℝ] Euclid P) =>
+        LinearMap.trace ℝ (Euclid P) (pL.1.toLinearMap ∘ₗ pL.2.toLinearMap) := by
+      simpa only [ContinuousLinearMap.toLinearMap_comp] using h2
+    have hq := (Submission.imrep_approxTangent_starProjection_aesm P n U R).prodMk
+      hDXc.aestronglyMeasurable
+    have hr := h3.comp_aestronglyMeasurable hq
+    exact hr
+  set μ : Measure (Euclid P) := μHE[n].restrict R.carrier
+  set θ : Euclid P → ℝ := fun x => (R.mult x : ℝ) with hθ
+  set dv : Euclid P → ℝ := tangentialDivergence n R.carrier X
+  set m : ℝ := (R.measure W).toReal with hm
+  have hθ0 : ∀ x, 0 ≤ θ x := fun x => Nat.cast_nonneg _
+  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+  -- `A` bounds `‖DX‖`: `DX` is continuous with compact support
+  obtain ⟨C, hC⟩ := hDXc.bounded_above_of_compact_support (hXc.fderiv ℝ)
+  set A : ℝ := max C 0
+  have hA0 : 0 ≤ A := le_max_right _ _
+  have hDXA : ∀ x, ‖fderiv ℝ X x‖ ≤ A := fun x => (hC x).trans (le_max_left _ _)
+  -- constants: `ε' = ε / (m + 1)`; `η, δ₁` from the Jacobian bound at `(A, ε')`; `δ₂` from the
+  -- hypothesis on `Dφₜ` at `η`
+  set ε' : ℝ := ε / (m + 1) with hε'
+  have hε'0 : 0 < ε' := div_pos hε (by linarith)
+  obtain ⟨η, hη, δ₁, hδ₁, hJ⟩ :=
+    Submission.fvmb_orthonormal_gram_sqrt_det_le_first_order P n A ε' hA0 hε'0
+  obtain ⟨δ₂, hδ₂, hD⟩ := hφD η hη
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun t ht S hS => ?_⟩
+  have ht₁ : |t| < δ₁ := ht.trans_le (min_le_left _ _)
+  have ht₂ : |t| < δ₂ := ht.trans_le (min_le_right _ _)
+  -- `θ 1_W` is integrable with integral `m`: `∫_{M ∩ W} θ dHⁿ = μ_V(W) < ∞`
+  have hWm : MeasurableSet W := hWo.measurableSet
+  have hθm : Measurable θ :=
+    (measurable_from_nat (f := (Nat.cast : ℕ → ℝ))).comp R.measurable_mult
+  have hRW' : R.measure W = ∫⁻ x in W, (R.mult x : ℝ≥0∞) ∂μ := withDensity_apply _ hWm
+  have hθW : Integrable (W.indicator θ) μ := by
+    rw [integrable_indicator_iff hWm]
+    have := integrable_toReal_of_lintegral_ne_top (μ := μ.restrict W)
+      (f := fun x => (R.mult x : ℝ≥0∞))
+      ((measurable_from_nat (f := (Nat.cast : ℕ → ℝ≥0∞))).comp R.measurable_mult).aemeasurable
+      (hRW' ▸ hRW)
+    simpa [IntegrableOn, hθ] using this
+  have hmW : ∫ x, W.indicator θ x ∂μ = m := by
+    rw [integral_indicator hWm, integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hθ0)
+      hθm.aestronglyMeasurable, hm, hRW']
+    simp only [hθ, ENNReal.ofReal_natCast]
+  -- fix an admissible form `ω`; `g` is the integrand of `S(ω)` and `h` its majorant
+  apply sSup_le
+  rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
+  apply ENNReal.ofReal_le_ofReal
+  rw [hS ω]
+  obtain ⟨g, hg⟩ : ∃ g : Euclid P → ℝ, g = fun x => (R.mult x : ℝ) * R.orient x
+      (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+        (fderiv ℝ (φ t) x)) := ⟨_, rfl⟩
+  obtain ⟨h, hh⟩ : ∃ h : Euclid P → ℝ,
+      h = fun x => W.indicator θ x * (1 + ε' * |t|) + t * (θ x * dv x) := ⟨_, rfl⟩
+  -- pointwise bounds at the a.e. points where `ξ(x)` orients `TₓM`
+  have key : ∀ᵐ x ∂μ,
+      g x ≤ h x ∧ 0 ≤ h x ∧ ‖θ x * dv x‖ ≤ ((n : ℝ) * A) * W.indicator θ x := by
+    filter_upwards [Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane P n U R]
+      with x hx
+    obtain ⟨τ, hτ, hspan, hsign⟩ := hx
+    -- `div_M X(x) = Σₐ τₐ · DX(x)τₐ`, hence `|div_M X(x)| ≤ nA`
+    have hdvx : dv x = ∑ a, inner ℝ (τ a) (fderiv ℝ X x (τ a)) :=
+      Submission.fvmb_trace_starProjection_comp_eq_sum_inner P n _ τ (fderiv ℝ X x) hτ hspan
+    have hdvA : |dv x| ≤ n * A := by
+      rw [hdvx]
+      calc |∑ a, inner ℝ (τ a) (fderiv ℝ X x (τ a))|
+          ≤ ∑ a, |inner ℝ (τ a) (fderiv ℝ X x (τ a))| := Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ _a : Fin n, A := Finset.sum_le_sum fun a _ => by
+          calc |inner ℝ (τ a) (fderiv ℝ X x (τ a))|
+              ≤ ‖τ a‖ * ‖fderiv ℝ X x (τ a)‖ := abs_real_inner_le_norm _ _
+            _ ≤ ‖τ a‖ * (‖fderiv ℝ X x‖ * ‖τ a‖) :=
+              mul_le_mul_of_nonneg_left (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
+            _ ≤ A := by rw [hτ.1 a, one_mul, mul_one]; exact hDXA x
+        _ = n * A := by simp
+    by_cases hxW : x ∈ W
+    · -- in `W`, with `β = ω(φₜx) ∘ Dφₜ(x)`:
+      -- `|ξ(x)(β)| = |ω(φₜx)(Dφₜτ)| ≤ |ω|_E det(Dφₜτᵢ · Dφₜτⱼ)^{1/2} ≤ 1 + t div_M X + ε'|t|`
+      obtain ⟨β, hβ⟩ : ∃ β : Covector (Euclid P) n,
+          β = ((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+            (fderiv ℝ (φ t) x) := ⟨_, rfl⟩
+      have hξ : |R.orient x β| =
+          |(ω : DifferentialForm (Euclid P) n) (φ t x) fun i => fderiv ℝ (φ t) x (τ i)| := by
+        rcases hsign with hs | hs
+        · rw [hs, hβ, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+          rfl
+        · rw [hs, abs_neg, hβ, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+          rfl
+      have hJx := hJ t ht₁ (fderiv ℝ X x) (fderiv ℝ (φ t) x) (hDXA x) (hD t ht₂ x) τ hτ
+      rw [← hdvx] at hJx
+      have hbound : |R.orient x β| ≤ 1 + t * dv x + ε' * |t| := by
+        rw [hξ]
+        refine ((Submission.covectorEuclideanNorm_gram_bounds P n).1 _ _).trans ?_
+        exact (mul_le_of_le_one_left (Real.sqrt_nonneg _) (hω1 _)).trans hJx
+      have hgx : g x = θ x * R.orient x β := by
+        rw [hg, hβ]
+      have hhx : h x = θ x * (1 + t * dv x + ε' * |t|) := by
+        simp only [hh, Set.indicator_of_mem hxW]
+        ring
+      refine ⟨?_, ?_, ?_⟩
+      · rw [hgx, hhx]
+        exact mul_le_mul_of_nonneg_left ((le_abs_self _).trans hbound) (hθ0 x)
+      · rw [hhx]
+        exact mul_nonneg (hθ0 x) ((abs_nonneg _).trans hbound)
+      · rw [Set.indicator_of_mem hxW, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hθ0 x)]
+        calc θ x * |dv x| ≤ θ x * (n * A) := mul_le_mul_of_nonneg_left hdvA (hθ0 x)
+          _ = n * A * θ x := by ring
+    · -- off `W`: `x ∉ spt X`, so `DX(x) = 0` and `φₜ x = x ∉ spt ω`
+      have hxX : x ∉ tsupport X := fun hx => hxW (hXW hx)
+      have hdv0 : dv x = 0 := by
+        rw [hdvx, fderiv_of_notMem_tsupport ℝ hxX]
+        simp
+      have hω0 : (ω : DifferentialForm (Euclid P) n) (φ t x) = 0 := by
+        rw [hφid t x hxX]
+        exact image_eq_zero_of_notMem_tsupport fun hx => hxW (hωW hx)
+      have hz : (0 : Covector (Euclid P) n).compContinuousLinearMap (fderiv ℝ (φ t) x) = 0 := by
+        ext v
+        simp
+      have hg0 : g x = 0 := by
+        simp only [hg, hω0, hz, map_zero, mul_zero]
+      have hh0 : h x = 0 := by
+        simp only [hh, Set.indicator_of_notMem hxW, hdv0, zero_mul, mul_zero, add_zero]
+      refine ⟨by rw [hg0, hh0], by rw [hh0], ?_⟩
+      rw [hdv0, Set.indicator_of_notMem hxW]
+      simp
+  -- integrate: `∫ g ≤ ∫ h = m (1 + ε'|t|) + t δV(X)` and `m ε' ≤ ε`
+  have hθdv : Integrable (fun x => θ x * dv x) μ :=
+    (hθW.const_mul ((n : ℝ) * A)).mono' (hθm.aestronglyMeasurable.mul hdvm)
+      (key.mono fun x hx => hx.2.2)
+  have hhint : Integrable h μ := by
+    rw [hh]
+    exact (hθW.mul_const _).add (hθdv.const_mul t)
+  have hint_h : ∫ x, h x ∂μ = m * (1 + ε' * |t|) + t * R.firstVariation X := by
+    simp only [hh]
+    rw [integral_add (hθW.mul_const _) (hθdv.const_mul t), integral_mul_const,
+      integral_const_mul, hmW]
+    rfl
+  have hgh : ∫ x, g x ∂μ ≤ ∫ x, h x ∂μ := by
+    by_cases hgi : Integrable g μ
+    · exact integral_mono_ae hgi hhint (key.mono fun x hx => hx.1)
+    · rw [integral_undef hgi]
+      exact integral_nonneg_of_ae (key.mono fun x hx => hx.2.1)
+  have hεm : m * ε' ≤ ε := by
+    rw [hε', mul_div_assoc', div_le_iff₀ (by linarith)]
+    nlinarith
+  have hεm' : m * ε' * |t| ≤ ε * |t| := mul_le_mul_of_nonneg_right hεm (abs_nonneg t)
+  calc ∫ x, (R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap
+          (fderiv ℝ (φ t) x)) ∂μ = ∫ x, g x ∂μ := by rw [hg]
+    _ ≤ ∫ x, h x ∂μ := hgh
+    _ = m * (1 + ε' * |t|) + t * R.firstVariation X := hint_h
+    _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
+    _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
