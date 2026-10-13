@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f7791b0dca3c314684c5fa487a6a04f91eb93099be3bb7760db72e7cd0dbe824",
+  "git_delta": {
+    "base_commit": "ced5a923054d78cb01b1923e8b3a6152b58b64bf",
+    "candidate_commit": "27dad491113bc691ed1b533f84b66801290ac818",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_sf_coarea_ae",
+    "diff_sha256": "812182f29ad1432651ae75fd2885c921165e4b408bc0caa1b371f18dd5a006bd",
+    "source_sha256": "53130fcd9b18a857d387495d32857997eb8c4feb89369806a20195932bf51180",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_sf_coarea_ae",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), MeasurableSet M → Measurable f → Measurable G → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ p : Euclid P → Prop, (∀ᵐ x ∂(μHE[n + 1].restrict M), p x) → ∀ᵐ t, ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), p x) ∧ (∀ c : ℝ, ∀ᵐ x ∂(μHE[n + 1].restrict M), f x = c → G x = 0) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ K, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ f ⁻¹' {t} ∩ K, g x ∂μHE[n] ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
