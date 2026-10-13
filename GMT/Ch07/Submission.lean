@@ -656,6 +656,21 @@ theorem Submission.codim1_lur_no_det_cons_normal_decomp : ∀ (n : ℕ) (ν w : 
   rw [hD, hD, hw, AlternatingMap.map_vecCons_add, h0, zero_add, AlternatingMap.map_vecCons_smul,
     smul_eq_mul]
 
+/-- **Orienting `∂[[E]]` by the unit normal** (Simon 7.5.2 (∗), the orientation computation of
+the local unit representation).  For a unit vector `ν ∈ ℝ^{n+1}`, `n ≥ 1`, some orthonormal frame
+`σ` of `ν^⊥` has `β(σ) = −⟨φ_β, ν⟩` for every `n`-covector `β`, where
+`φ_β = Σⱼ (−1)ʲ β(e_{j.succAbove 0}, …, e_{j.succAbove (n−1)}) eⱼ`: take `σ` with
+`det[ν, σ] = −1`; then `β(σ) = det[φ_β, σ] = ⟨φ_β, ν⟩ det[ν, σ]`. -/
+theorem Submission.codim1_lur_normal_covector_orientation : ∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ ∀ β : Covector (Euclid (n + 1)) n, β σ = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) ν := by
+  intro n ν hn hν
+  obtain ⟨σ, hσ, hspan, hdet⟩ := Submission.codim1_lur_no_oriented_normal_frame n ν hn hν
+  refine ⟨σ, hσ, hspan, fun β => ?_⟩
+  -- `β(σ) = det[φ_β, σ] = ⟨φ_β, ν⟩ det[ν, σ] = −⟨φ_β, ν⟩`, then expand `⟨φ_β, ν⟩` linearly
+  rw [Submission.codim1_lur_no_covector_eq_det_cons n β σ,
+    Submission.codim1_lur_no_det_cons_normal_decomp n ν _ σ hν hspan, hdet, sum_inner]
+  simp only [real_inner_smul_left]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
