@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a8fbfe32137f9af85fd757814e828e4164f1dd1bc0694e2d86b92d4ea34517fc",
+  "git_delta": {
+    "base_commit": "ae2e98a4f1fb89968cba5fc89cf4a70d3a4c0f7b",
+    "candidate_commit": "d37eb4dfabd4fb449ac71a0682db55be0cc13023",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_imRep_measure_basic",
+    "diff_sha256": "0b3173f97ceb62d931b563254790b70e6cdcb1a71729b3eb44dc9764d372b63d",
+    "source_sha256": "e0d87f0698fcf55de6edda58a9896d7ed8722f566d83a956970366deef127342",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_imRep_measure_basic",
+      "statement": "∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
