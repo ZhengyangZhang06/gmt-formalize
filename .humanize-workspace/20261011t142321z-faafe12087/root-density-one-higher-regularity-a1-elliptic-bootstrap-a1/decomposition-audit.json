@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "schauder|campanato|caccioppoli|legendre.hadamard|difference quotient",
+        "dohr_eb_",
+        "iteratedFDeriv_succ_eq_comp_right|iteratedFDeriv_succ_eq_comp_left|iteratedFDerivWithin_of_isOpen",
+        "theorem hasFDerivAt_of_tendstoUniformlyOn|theorem hasFDerivAt_of_tendstoUniformlyOnFilter",
+        "contDiff_convolution_left|lebesgue_number_lemma_of_metric|norm_iteratedFDeriv_zero|iteratedFDeriv_succ_eq_comp_left",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Binding.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Instances.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/project/GMT/Ch05/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/FaaDiBruno.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiffHolder/Pointwise.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/UniformLimitsDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/local-references/a7f8fcd21d5c8fc7/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/nodes/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T142321Z-faafe12087/dag.json",
+        "/tmp/gmt-elliptic-audit-pno0wx45/Types.lean",
+        "/tmp/gmt-elliptic-audit-pno0wx45/Binding.lean",
+        "/tmp/gmt-elliptic-audit-pno0wx45/Assembly.lean",
+        "/tmp/gmt-elliptic-audit-pno0wx45/Instances.lean"
+      ],
+      "conclusion": "Verified project pin ea5607598f3133b40a13241f2e51517a8c6423cd and Mathlib pin 25730c7c759d108ef87ab70af2342a196760f79d. The Hölder definitions match the selected contract. Searches found Schauder bases and calculus difference-quotient material, but no matching elliptic Schauder, Campanato, Caccioppoli, or Legendre–Hadamard theory. The split appropriately isolates the missing analysis and its supporting calculus. Fresh Lean checks in /tmp/gmt-elliptic-audit-pno0wx45 validate all 11 independent one-line propositions, the frozen parent proposition, Submission bindings, matrix identity entries, and bilinear-form instances with the documented option. The conditional parent assembly compiles with only standard axioms and eight intended child assumptions, without sorryAx. All children contribute directly or through declared dependencies; those dependencies match proof citations and are acyclic. All names are bare identifiers, with no reservations in the current 263-node DAG. No previously accepted declaration is reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "area_integrand_legendre",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including operator norms and arbitrary dimensions. Gram positivity proves smoothness; the line calculation identifies the Hessian at zero; the operator-norm comparison and uniform continuity estimate yield the stated coercivity. The inline matrix uses the ordinary identity matrix."
+    },
+    {
+      "key": "holder_of_contdiff_succ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Local mean-value bounds, a finite compact cover, and the separate estimate for distant pairs establish Lipschitz continuity on the compact set; bounded diameter then gives the exact Hölder exponent. No finite-dimensionality or completeness assumption is silently required."
+    },
+    {
+      "key": "holder_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves the essential disjunctive hypothesis. The order-zero cases correctly use a Lipschitz factor; higher orders use bounded derivative factors and a finite Faà di Bruno telescoping estimate. The sole sibling dependency supplies precisely the lower-order compact-set estimates used."
+    },
+    {
+      "key": "holder_bilinear",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type and prose agree. The pair-map derivative estimate and smoothness of the bilinear evaluation map satisfy the composition child's hypotheses, including at order zero. Both declared dependencies are used without circularity."
+    },
+    {
+      "key": "holder_succ_iff_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both equivalences match the prose. The currying isometry transfers derivative differences exactly, while evaluation and finite-basis reconstruction transfer component Hölder bounds in both directions. Arbitrary alpha and the zero-dimensional case are covered."
+    },
+    {
+      "key": "holder_half_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The unrestricted-radius statement is correctly handled: nonpositive radii give an empty ball, and positive radii give a compact closed half ball inside the original ball. Continuity supplies one bound for all finitely many derivative orders, and the local hypothesis supplies the Hölder constant."
+    },
+    {
+      "key": "schauder_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All eight hypotheses and the uniform dependence of C match. The supplied system Caccioppoli and Liouville proofs justify the blow-up contradiction; the absorption inequality Q ≤ Q/2 + CΓ removes dependence on the initial derivative seminorm. Scaling gives the stated radius dependence. The scalar methodological reference is consistent with [Vita, Section 5.2](https://arxiv.org/html/2510.01765v2); the systems argument is supplied explicitly."
+    },
+    {
+      "key": "difference_quotient_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The enlarged-ball hypothesis and both uniform estimates match exactly. Local uniform convergence of the quotients, the interpolation estimate, completeness of the finite-dimensional derivative space, and the uniform-limit theorem identify a continuous derivative inheriting both bounds with the same M."
+    },
+    {
+      "key": "el_c2alpha",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The averaged coefficient remains coercive on the convex gradient ball. The translated weak equations produce the stated averaged forcing with the correct sign, and all Schauder bounds are uniform in the difference step. The limit and covering arguments prove the exact local C^{2,alpha} conclusion using only declared siblings."
+    },
+    {
+      "key": "linear_higher_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The componentwise hypotheses match the type and give uniform coefficient bounds through a finite basis. The m=1 quotient argument supplies the base case. For m≥2, classical differentiation gives D_s Phi − (D_s a)[Dv]; its regularity permits induction strictly at m−1. This is well-founded induction, not circular invocation."
+    },
+    {
+      "key": "el_higher_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree. The assumed m+1 regularity already gives C², validating differentiation of the weak equation. Smooth composition supplies coefficient regularity, linear evaluation supplies forcing regularity, and the declared linear theorem followed by the derivative equivalence yields exactly m+2 derivatives."
+    }
+  ],
+  "required_changes": []
+}

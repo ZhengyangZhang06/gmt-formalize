@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.integrand_smooth-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "The area integrand J is C^infinity",
+  "statement": "For all natural numbers n, l, with e_a = EuclideanSpace.single a 1 and G(P)_{ab} = <P e_a, P e_b>, the function J(P) = sqrt(det(I_n + G(P))) on the normed space L = L(R^n, R^l) (Rn n →L[ℝ] Rn ℓ with the operator norm) is C^infinity (ContDiff ℝ (⊤ : ℕ∞)).",
+  "lean_statement": "∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))",
+  "lean_name": "dohr_eb_ail_contDiff",
+  "depends_on": [
+    "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.gram_det_pos-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.gram_det_pos-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-ef5a724f76-a1"
+}

@@ -458,6 +458,269 @@ def RegularSetOpenDense : Prop :=
     (∃ O : Set (Amb n ℓ), IsOpen O ∧ V.regularSet = O ∩ V.support) ∧
       V.support = closure V.regularSet ∩ U
 
+namespace Submission
+
+/-- `det(I + G) > 0` for the Gram matrix `G = (⟨P eₐ, P e_b⟩)_{a,b}` of a linear map
+`P : ℝⁿ → ℝ^ℓ`.  Since `ξ ⬝ᵥ G ξ = ‖P (Σₐ ξₐ eₐ)‖² ≥ 0`, the matrix `I + s G` has trivial kernel
+for every `s ≥ 0` (`Matrix.exists_mulVec_eq_zero_iff`), so the continuous function
+`s ↦ det(I + s G)` does not vanish on `[0, 1]`.  It equals `1` at `s = 0`, hence is positive at
+`s = 1` by the intermediate value theorem (`intermediate_value_Icc'`). -/
+theorem dohr_eb_ail_gram_det_pos : ∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) := by
+  intro n ℓ P
+  set G : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun a b : Fin n =>
+    inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))) with hG
+  have hquad : ∀ ξ : Fin n → ℝ, dotProduct ξ (G.mulVec ξ) =
+      ‖P (∑ a, ξ a • EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+    intro ξ
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [map_sum, map_smul, inner_sum, sum_inner, inner_smul_left, inner_smul_right,
+      dotProduct, Matrix.mulVec, Matrix.of_apply, Finset.mul_sum, conj_trivial, hG]
+    refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
+    rw [real_inner_comm]
+    ring
+  have hne : ∀ s : ℝ, 0 ≤ s → Matrix.det (1 + s • G) ≠ 0 := by
+    intro s hs hdet
+    obtain ⟨ξ, hξ, hker⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
+    have h0 : dotProduct ξ ((1 + s • G).mulVec ξ) = 0 := by rw [hker, dotProduct_zero]
+    rw [Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec, dotProduct_add, dotProduct_smul,
+      smul_eq_mul, hquad] at h0
+    have hsq : 0 ≤ dotProduct ξ ξ := Finset.sum_nonneg fun i _ => mul_self_nonneg (ξ i)
+    have hξξ : dotProduct ξ ξ = 0 := by
+      linarith [mul_nonneg hs (sq_nonneg ‖P (∑ a, ξ a • EuclideanSpace.single a (1 : ℝ))‖)]
+    apply hξ
+    funext i
+    exact mul_self_eq_zero.mp ((Finset.sum_eq_zero_iff_of_nonneg
+      fun j _ => mul_self_nonneg (ξ j)).mp hξξ i (Finset.mem_univ i))
+  have hcont : Continuous fun s : ℝ => Matrix.det (1 + s • G) :=
+    (continuous_const.add (continuous_id.smul continuous_const)).matrix_det
+  by_contra hneg
+  have h1 : Matrix.det (1 + (1 : ℝ) • G) ≤ 0 := by
+    rw [one_smul]
+    exact not_lt.mp hneg
+  have h0 : (0 : ℝ) ≤ Matrix.det (1 + (0 : ℝ) • G) := by
+    rw [zero_smul, add_zero, Matrix.det_one]
+    exact zero_le_one
+  obtain ⟨s, ⟨hs0, -⟩, hs⟩ := intermediate_value_Icc' zero_le_one hcont.continuousOn ⟨h1, h0⟩
+  exact hne s hs0 hs
+/-- Smoothness of the graph area integrand.  For `P ∈ L(ℝⁿ, ℝ^ℓ)` put
+`G(P) = (⟨P eₐ, P e_b⟩)_{a,b}`; then `J(P) = √(det(I + G(P)))` is `C^∞` on `L(ℝⁿ, ℝ^ℓ)`.
+Each entry `P ↦ δ_{ab} + ⟨P eₐ, P e_b⟩` is smooth (evaluation at `eₐ` is continuous linear and
+the inner product is bilinear), so `det(I + G(P))` is smooth by the Leibniz formula
+(`Matrix.det_apply`, `ContDiff.sum`, `contDiff_prod`).  It is positive
+(`dohr_eb_ail_gram_det_pos`), and `√` is smooth away from `0` (`ContDiff.sqrt`). -/
+theorem dohr_eb_ail_contDiff : ∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) := by
+  intro n ℓ
+  have hentry : ∀ i j : Fin n, ContDiff ℝ (⊤ : ℕ∞) fun P : Rn n →L[ℝ] Rn ℓ =>
+      ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+        inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) i j := by
+    intro i j
+    simp only [Matrix.add_apply, Matrix.of_apply]
+    exact contDiff_const.add (ContDiff.inner ℝ
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single i (1 : ℝ))).contDiff
+      (ContinuousLinearMap.apply ℝ (Rn ℓ) (EuclideanSpace.single j (1 : ℝ))).contDiff)
+  have hdet : ContDiff ℝ (⊤ : ℕ∞) fun P : Rn n →L[ℝ] Rn ℓ =>
+      Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n =>
+        inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))) := by
+    simp only [Matrix.det_apply, Units.smul_def, zsmul_eq_mul]
+    exact ContDiff.sum fun σ _ => contDiff_const.mul (contDiff_prod fun i _ => hentry (σ i) i)
+  exact hdet.sqrt fun P => (Submission.dohr_eb_ail_gram_det_pos n ℓ P).ne'
+/-- Second derivative of a `C²` function along a line (the chain-rule step used for the Legendre
+condition of the area integrand in the elliptic bootstrap, Simon Ch. 5, Theorem 7.1): if
+`F : E → ℝ` is `C²`, then `g(t) = F(x + t v)` satisfies `g''(0) = D²F(x)[v][v]`.  By the chain
+rule `g'(t) = DF(x + t v)[v]` for every `t`; the chain rule for `t ↦ DF(x + t v)` at `t = 0` and
+evaluation at the constant vector `v` give `g''(0) = D(DF)(x)[v][v]`. -/
+theorem dohr_eb_ail_line_second_deriv : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x v : E, deriv (deriv (fun t : ℝ => F (x + t • v))) 0 = fderiv ℝ (fderiv ℝ F) x v v := by
+  intro E _ _ F hF x v
+  -- Step 1 (regularity): `F` is differentiable and `DF = fderiv ℝ F` is `C¹`, hence differentiable.
+  have hF1 : Differentiable ℝ F := hF.differentiable (by norm_num)
+  have hD : Differentiable ℝ (fderiv ℝ F) :=
+    (hF.fderiv_right (m := 1) (by norm_num)).differentiable (by norm_num)
+  -- Step 2: the line `γ(t) = x + t v` has derivative `v` at every `t`.
+  have hline : ∀ t : ℝ, HasDerivAt (fun s : ℝ => x + s • v) v t := fun t => by
+    simpa using ((hasDerivAt_id t).smul_const v).const_add x
+  -- Step 3 (chain rule): `deriv g` is `t ↦ DF(x + t v)[v]`.
+  have hg : deriv (fun t : ℝ => F (x + t • v)) = fun t => fderiv ℝ F (x + t • v) v := by
+    funext t
+    exact ((hF1 _).hasFDerivAt.comp_hasDerivAt t (hline t)).deriv
+  rw [hg]
+  -- Step 4 (chain rule for `t ↦ DF(x + t v)` at `0`, then evaluation at the constant `v`):
+  -- the derivative at `0` is `D(DF)(x)[v][v] + DF(x)[0] = D(DF)(x)[v][v]`.
+  have h0 := (hD _).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (hline 0)
+  have h2 := h0.clm_apply (hasDerivAt_const (0 : ℝ) v)
+  simp only [zero_smul, add_zero, map_zero] at h2
+  -- Step 5: conclude.
+  exact h2.deriv
+/-- Second derivative of `t ↦ √(det(I + t² S))` at `0`.  By `Matrix.det_one_add_smul`,
+`p(t) = det(I + t² S) = 1 + τ t² + R(t²) t⁴` with `τ = tr S` and a fixed polynomial `R`, so
+`p(0) = 1`, `p'(0) = 0` and `p''(0) = 2τ`.  Near `0` we have `p > 0`, hence
+`(√p)' = p' / (2√p)` there, and the quotient rule at `0` gives `(√p)''(0) = p''(0) / 2 = τ`. -/
+theorem dohr_eb_ail_sqrt_det_second_deriv : ∀ n : ℕ, ∀ S : Matrix (Fin n) (Fin n) ℝ, deriv (deriv (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S)))) 0 = Matrix.trace S := by
+  intro n S
+  -- `p(t) = 1 + τ t² + R(t²) t⁴` (Taylor expansion of the determinant).
+  obtain ⟨R, hR⟩ : ∃ R : Polynomial ℝ, ∀ r : ℝ,
+      Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + r • S) =
+        1 + Matrix.trace S * r + R.eval r * r ^ 2 :=
+    ⟨_, fun r => Matrix.det_one_add_smul r S⟩
+  have hf : (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + t ^ 2 • S))) =
+      fun t => Real.sqrt (1 + Matrix.trace S * t ^ 2 + R.eval (t ^ 2) * t ^ 4) := by
+    funext t
+    rw [hR (t ^ 2)]
+    ring_nf
+  rw [hf]
+  -- It suffices to know `p(0) = 1`, `p'(0) = 0` and `p''(0) = 2τ`.
+  suffices H : ∀ p p' : ℝ → ℝ, (∀ t, HasDerivAt p (p' t) t) → p 0 = 1 → p' 0 = 0 →
+      HasDerivAt p' (2 * Matrix.trace S) 0 →
+      deriv (deriv (fun t => Real.sqrt (p t))) 0 = Matrix.trace S by
+    have h2 : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t ^ 2) (2 * t) t := fun t => by
+      simpa using hasDerivAt_pow 2 t
+    have hR2 : ∀ t : ℝ, HasDerivAt (fun t : ℝ => R.eval (t ^ 2))
+        (R.derivative.eval (t ^ 2) * (2 * t)) t := fun t => by
+      have := (R.hasDerivAt (t ^ 2)).comp t (h2 t)
+      simpa [Function.comp_def] using this
+    have hR2' : ∀ t : ℝ, HasDerivAt (fun t : ℝ => R.derivative.eval (t ^ 2) * (2 * t))
+        (R.derivative.derivative.eval (t ^ 2) * (2 * t) * (2 * t) +
+          R.derivative.eval (t ^ 2) * 2) t := fun t => by
+      have hR'2 : HasDerivAt (fun t : ℝ => R.derivative.eval (t ^ 2))
+          (R.derivative.derivative.eval (t ^ 2) * (2 * t)) t := by
+        have := (R.derivative.hasDerivAt (t ^ 2)).comp t (h2 t)
+        simpa [Function.comp_def] using this
+      have := hR'2.fun_mul ((hasDerivAt_id' t).const_mul 2)
+      convert this using 1
+      ring
+    refine H (fun t => 1 + Matrix.trace S * t ^ 2 + R.eval (t ^ 2) * t ^ 4)
+      (fun t => 2 * Matrix.trace S * t + R.derivative.eval (t ^ 2) * (2 * t) * t ^ 4 +
+        R.eval (t ^ 2) * (4 * t ^ 3)) (fun t => ?_) (by simp) (by simp) ?_
+    · have := (((hasDerivAt_const t (1 : ℝ)).fun_add ((h2 t).const_mul (Matrix.trace S))).fun_add
+        ((hR2 t).fun_mul (hasDerivAt_pow 4 t)))
+      convert this using 1
+      push_cast
+      ring
+    · have := ((((hasDerivAt_id' (0 : ℝ)).const_mul (2 * Matrix.trace S)).fun_add
+        ((hR2' 0).fun_mul (hasDerivAt_pow 4 (0 : ℝ)))).fun_add
+        ((hR2 0).fun_mul ((hasDerivAt_pow 3 (0 : ℝ)).const_mul 4)))
+      convert this using 1
+      simp
+  intro p p' hp hp0 hp'0 hp''
+  -- Near `0`, `p > 0`, so `(√p)' = p' / (2√p)` there.
+  have hpos : ∀ᶠ t in 𝓝 (0 : ℝ), 0 < p t :=
+    continuousAt_const.eventually_lt (hp 0).continuousAt (by rw [hp0]; norm_num)
+  have hderiv : deriv (fun t => Real.sqrt (p t)) =ᶠ[𝓝 0]
+      fun t => p' t / (2 * Real.sqrt (p t)) := by
+    filter_upwards [hpos] with t ht
+    exact ((hp t).sqrt ht.ne').deriv
+  rw [hderiv.deriv_eq]
+  -- Quotient rule at `0`.
+  have hd : HasDerivAt (fun t => 2 * Real.sqrt (p t)) (2 * (p' 0 / (2 * Real.sqrt (p 0)))) 0 :=
+    ((hp 0).sqrt (by rw [hp0]; norm_num)).const_mul 2
+  rw [(hp''.fun_div hd (by rw [hp0]; norm_num)).deriv, hp'0, hp0]
+  simp
+  ring
+/-- Hessian at the origin of the area integrand (Legendre condition for the elliptic bootstrap
+of Simon 7.1): for `J(P) = √det(I + G(P))` with Gram matrix `G(P)_{ab} = ⟨P e_a, P e_b⟩`,
+`D²J(0)[Q, Q] = Σ_a |Q e_a|²`.  Along the line `t ↦ t • Q` the Gram matrix scales as
+`G(t • Q) = t² G(Q)`, so `D²J(0)[Q, Q]` is the second derivative at `0` of
+`t ↦ √det(I + t² G(Q))`, which is `trace G(Q) = Σ_a |Q e_a|²`. -/
+theorem dohr_eb_ail_hessian_zero : ∀ n ℓ : ℕ, ∀ Q : Rn n →L[ℝ] Rn ℓ, fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) 0 Q Q = ∑ a : Fin n, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+  intro n ℓ Q
+  -- Step 1: `J` is `C^∞`, hence `C²`.
+  have hC2 := (Submission.dohr_eb_ail_contDiff n ℓ).of_le (m := 2) (by norm_cast)
+  -- Step 2: `D²J(0)[Q, Q]` is the second derivative at `0` of `t ↦ J(0 + t • Q)`.
+  rw [← Submission.dohr_eb_ail_line_second_deriv _ hC2 0 Q]
+  -- Step 3: `G(0 + t • Q) = t² G(Q)`, so `J(0 + t • Q) = √det(I + t² G(Q))` for every `t`.
+  have hfun : (fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+      Matrix.of fun a b : Fin n => inner ℝ ((0 + t • Q) (EuclideanSpace.single a (1 : ℝ)))
+        ((0 + t • Q) (EuclideanSpace.single b (1 : ℝ)))))) =
+      fun t : ℝ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) +
+        t ^ 2 • Matrix.of fun a b : Fin n => inner ℝ (Q (EuclideanSpace.single a (1 : ℝ)))
+          (Q (EuclideanSpace.single b (1 : ℝ))))) := by
+    funext t
+    congr 3
+    ext a b
+    simp [inner_smul_left, inner_smul_right, pow_two, mul_assoc]
+  -- Steps 4–5: the one-variable second derivative is `trace G(Q) = Σ_a ‖Q e_a‖²`.
+  rw [hfun, Submission.dohr_eb_ail_sqrt_det_second_deriv]
+  simp [Matrix.trace]
+/-- The operator norm is at most the Hilbert–Schmidt norm: `‖Q‖² ≤ Σₐ ‖Q eₐ‖²` for every linear
+`Q : ℝᵐ → ℝᵏ`.  Expanding `h = Σₐ hₐ eₐ` gives `‖Q h‖ ≤ Σₐ |hₐ| ‖Q eₐ‖ ≤ ‖h‖ (Σₐ ‖Q eₐ‖²)^{1/2}`
+(triangle inequality, then Cauchy–Schwarz), so `‖Q‖ ≤ (Σₐ ‖Q eₐ‖²)^{1/2}` by
+`ContinuousLinearMap.opNorm_le_bound`; square both sides. -/
+theorem dohr_eb_ail_opNorm_sq_le : ∀ m k : ℕ, ∀ Q : Rn m →L[ℝ] Rn k, ‖Q‖ ^ 2 ≤ ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 := by
+  intro m k Q
+  have hQ : ‖Q‖ ≤ Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) := by
+    refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) (fun h => ?_)
+    have hexp : h = ∑ a : Fin m, h a • EuclideanSpace.single a (1 : ℝ) := by
+      ext i
+      simp [Finset.sum_apply, Pi.single_apply]
+    have hQh : Q h = ∑ a : Fin m, h a • Q (EuclideanSpace.single a (1 : ℝ)) := by
+      conv_lhs => rw [hexp]
+      simp [map_sum, map_smul]
+    calc ‖Q h‖ = ‖∑ a : Fin m, h a • Q (EuclideanSpace.single a (1 : ℝ))‖ := by rw [hQh]
+      _ ≤ ∑ a : Fin m, ‖h a • Q (EuclideanSpace.single a (1 : ℝ))‖ := norm_sum_le _ _
+      _ = ∑ a : Fin m, ‖h a‖ * ‖Q (EuclideanSpace.single a (1 : ℝ))‖ := by simp_rw [norm_smul]
+      _ ≤ Real.sqrt (∑ a : Fin m, ‖h a‖ ^ 2) *
+            Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) :=
+          Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+      _ = Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2) * ‖h‖ := by
+          rw [EuclideanSpace.norm_eq h, mul_comm]
+  calc ‖Q‖ ^ 2 ≤ (Real.sqrt (∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2)) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) hQ 2
+    _ = ∑ a : Fin m, ‖Q (EuclideanSpace.single a (1 : ℝ))‖ ^ 2 :=
+        Real.sq_sqrt (Finset.sum_nonneg (fun a _ => sq_nonneg _))
+/-- Local uniform continuity of the Hessian.  For a `C²` function `F : E → ℝ` and `δ > 0` there is
+`ε > 0` with `|D²F(x)(Q, Q') - D²F(x₀)(Q, Q')| ≤ δ ‖Q‖ ‖Q'‖` whenever `‖x - x₀‖ ≤ ε`.
+`D²F = fderiv ℝ (fderiv ℝ F)` is continuous (`ContDiff.fderiv_right`, `ContDiff.continuous_fderiv`),
+so `‖D²F(x) - D²F(x₀)‖ < δ` near `x₀`, and the bilinear bound `ContinuousLinearMap.le_opNorm₂`
+finishes. -/
+theorem dohr_eb_ail_hessian_local_unif : ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (F : E → ℝ), ContDiff ℝ 2 F → ∀ x₀ : E, ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ∀ x : E, ‖x - x₀‖ ≤ ε → ∀ Q Q' : E, |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'| ≤ δ * (‖Q‖ * ‖Q'‖) := by
+  intro E _ _ F hF x₀ δ hδ
+  have hc : Continuous (fderiv ℝ (fderiv ℝ F)) :=
+    (hF.fderiv_right (m := 1) (by norm_num)).continuous_fderiv one_ne_zero
+  obtain ⟨r, hr, hball⟩ :=
+    (Metric.continuousAt_iff (f := fderiv ℝ (fderiv ℝ F)) (a := x₀)).mp hc.continuousAt δ hδ
+  refine ⟨r / 2, half_pos hr, fun x hx Q Q' => ?_⟩
+  have hdist : dist x x₀ < r := by
+    rw [dist_eq_norm]
+    linarith
+  have hlt : ‖fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀‖ < δ :=
+    lt_of_eq_of_lt (@dist_eq_norm (E →L[ℝ] E →L[ℝ] ℝ) _ _ _).symm (hball hdist)
+  have key := (fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀).le_opNorm₂ Q Q'
+  simp only [sub_apply, Real.norm_eq_abs] at key
+  calc |fderiv ℝ (fderiv ℝ F) x Q Q' - fderiv ℝ (fderiv ℝ F) x₀ Q Q'|
+      ≤ ‖fderiv ℝ (fderiv ℝ F) x - fderiv ℝ (fderiv ℝ F) x₀‖ * ‖Q‖ * ‖Q'‖ := key
+    _ ≤ δ * (‖Q‖ * ‖Q'‖) := by
+      rw [mul_assoc]
+      exact mul_le_mul_of_nonneg_right hlt.le (by positivity)
+/-- Smoothness and Legendre ellipticity of the area integrand (Step 1 of the elliptic bootstrap for
+Simon Ch. 5, Theorem 7.1, second assertion).  For a linear `P : ℝⁿ → ℝ^ℓ` put
+`G(P)_{ab} = ⟨P eₐ, P e_b⟩` and `J(P) = √(det(I + G(P)))`.  Then
+(i) `J` is `C^∞` on `L(ℝⁿ, ℝ^ℓ)`, and
+(ii) there is `ε > 0` with `½ ‖Q‖² ≤ D²J(P)[Q][Q]` for every `Q` whenever `‖P‖ ≤ ε`
+(operator norms, `D²J(P)[Q][Q] = fderiv ℝ (fderiv ℝ J) P Q Q`).
+Since `J` is `C²`, continuity of `D²J` at `0` gives `ε` with
+`|D²J(P)[Q][Q] − D²J(0)[Q][Q]| ≤ ½ ‖Q‖²` for `‖P‖ ≤ ε`, while
+`D²J(0)[Q][Q] = Σₐ |Q eₐ|² ≥ ‖Q‖²` (Cauchy–Schwarz). -/
+theorem dohr_eb_area_integrand_legendre : ∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∃ ε : ℝ, 0 < ε ∧ ∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, 1 / 2 * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) P Q Q := by
+  intro n ℓ
+  -- (i) `J` is `C^∞`
+  refine ⟨Submission.dohr_eb_ail_contDiff n ℓ, ?_⟩
+  -- (ii) `J` is in particular `C²`
+  have hC2 := (Submission.dohr_eb_ail_contDiff n ℓ).of_le (m := 2) (by norm_cast)
+  -- continuity of `D²J` at `0` with `δ = 1/2`:
+  -- `|D²J(P)[Q][Q'] − D²J(0)[Q][Q']| ≤ ½ ‖Q‖ ‖Q'‖` whenever `‖P − 0‖ ≤ ε`
+  obtain ⟨ε, hε, hunif⟩ :=
+    Submission.dohr_eb_ail_hessian_local_unif _ hC2 0 (1 / 2) (by norm_num)
+  refine ⟨ε, hε, fun P hP Q => ?_⟩
+  have hclose := hunif P (by simpa using hP) Q Q
+  -- `D²J(0)[Q][Q] = Σₐ |Q eₐ|²`
+  rw [Submission.dohr_eb_ail_hessian_zero n ℓ Q] at hclose
+  -- `‖Q‖² ≤ Σₐ |Q eₐ|²`
+  have hHS := Submission.dohr_eb_ail_opNorm_sq_le n ℓ Q
+  -- `D²J(P)[Q][Q] ≥ Σₐ |Q eₐ|² − ½ ‖Q‖² ≥ ‖Q‖² − ½ ‖Q‖²`
+  have hlow := (abs_le.mp hclose).1
+  nlinarith [hlow, hHS]
+
+end Submission
+
 theorem main_theorem : TiltExcessHeightEstimate ∧ AffineApproximationLemma ∧ LipschitzApproximationLemma ∧ LipschitzGraphCorollary ∧ HarmonicApproximationLemma ∧ TiltExcessDecayTheorem ∧ AllardRegularityTheorem ∧ AllardRegularityAnyRadius ∧ ConicalApproximationTheorem ∧ DensityOneRegularity ∧ DensityOneHigherRegularity ∧ RegularSetOpenDense := by sorry
 
 end GMT.Ch05

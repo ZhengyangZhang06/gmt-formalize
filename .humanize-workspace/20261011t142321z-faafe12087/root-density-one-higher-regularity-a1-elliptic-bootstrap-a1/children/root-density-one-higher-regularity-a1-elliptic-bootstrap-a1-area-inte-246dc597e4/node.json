@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "Area integrand J is smooth and uniformly Legendre-elliptic near P = 0",
+  "statement": "For all n, l in N let L = L(R^n, R^l) with the operator norm and J(P) := sqrt(det(I_n + G(P))), G(P)_{ab} := <P e_a, P e_b> (the area integrand of the frozen parent statement). Then (i) J is C^infinity on L (ContDiff R (top : N∞)), and (ii) there is eps > 0 such that for every P in L with ||P|| <= eps and every Q in L, (1/2)||Q||^2 <= D^2J(P)[Q][Q], where D^2J(P)[Q][Q] = fderiv R (fderiv R J) P Q Q.",
+  "lean_statement": "∀ n ℓ : ℕ, ContDiff ℝ (⊤ : ℕ∞) (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∃ ε : ℝ, 0 < ε ∧ ∀ P : Rn n →L[ℝ] Rn ℓ, ‖P‖ ≤ ε → ∀ Q : Rn n →L[ℝ] Rn ℓ, 1 / 2 * ‖Q‖ ^ 2 ≤ fderiv ℝ (fderiv ℝ (fun P : Rn n →L[ℝ] Rn ℓ => Real.sqrt (Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))))) P Q Q",
+  "lean_name": "dohr_eb_area_integrand_legendre",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-246dc597e4-a1"
+}

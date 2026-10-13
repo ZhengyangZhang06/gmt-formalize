@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1.gram_det_pos-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.area_integrand_legendre-a1",
+  "depth": 4,
+  "title": "Positivity of det(I + Gram matrix of P e_a)",
+  "statement": "For all natural numbers n, l and every continuous linear map P : R^n -> R^l (P : Rn n →L[ℝ] Rn ℓ), let e_a = EuclideanSpace.single a 1 (a in Fin n) be the standard basis of R^n and G = G(P) the real n x n matrix G_{ab} = <P e_a, P e_b>. Then det(I_n + G) > 0, where I_n is the identity matrix.",
+  "lean_statement": "∀ n ℓ : ℕ, ∀ P : Rn n →L[ℝ] Rn ℓ, 0 < Matrix.det ((1 : Matrix (Fin n) (Fin n) ℝ) + Matrix.of fun a b : Fin n => inner ℝ (P (EuclideanSpace.single a (1 : ℝ))) (P (EuclideanSpace.single b (1 : ℝ))))",
+  "lean_name": "dohr_eb_ail_gram_det_pos",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-area-inte-9f9d159c46-a1"
+}

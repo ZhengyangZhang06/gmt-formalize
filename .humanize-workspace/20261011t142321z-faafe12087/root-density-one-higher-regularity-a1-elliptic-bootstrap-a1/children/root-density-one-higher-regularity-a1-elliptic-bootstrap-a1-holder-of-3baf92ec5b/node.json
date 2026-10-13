@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1.holder_of_contdiff_succ-a1",
+  "parent_id": "root.density_one_higher_regularity-a1.elliptic_bootstrap-a1",
+  "depth": 3,
+  "title": "C^{m+1} on an open set implies D^m is alpha-Hoelder on compact subsets",
+  "statement": "Let E1, E2 be real normed spaces, m in N, 0 < alpha <= 1, V an open subset of E1 and h : E1 -> E2 with ContDiffOn R (m+1) h V. Then for every compact K contained in V there is C such that ||D^m h(x) - D^m h(y)|| <= C ||x - y||^alpha for all x, y in K, where D^m h = iteratedFDeriv R m h.",
+  "lean_statement": "∀ (E₁ E₂ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (m : ℕ) (α : ℝ) (h : E₁ → E₂) (V : Set E₁), 0 < α → α ≤ 1 → IsOpen V → ContDiffOn ℝ (m + 1 : ℕ) h V → ∀ K : Set E₁, IsCompact K → K ⊆ V → ∃ C : ℝ, ∀ x ∈ K, ∀ y ∈ K, ‖iteratedFDeriv ℝ m h x - iteratedFDeriv ℝ m h y‖ ≤ C * ‖x - y‖ ^ α",
+  "lean_name": "dohr_eb_holder_of_contDiffOn_succ",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-density-one-higher-regularity-a1-elliptic-bootstrap-a1-holder-of-3baf92ec5b-a1"
+}
