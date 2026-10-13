@@ -359,6 +359,169 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Locality of weighted approximate tangent spaces (Simon Ch. 3, 1.7), in the quantitative form
+used in the proof of Ch. 6, 8.2.  For `r > 0`, the blow-up `η_{x,r}(z) = r⁻¹(z - x)` pushes
+`(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`, so the blow-up integral of `(M, θ)` against `f` is
+`(rⁿ)⁻¹ ∫ f(η_{x,r} z) 1_M θ(z) dHⁿ(z)` (`M` is `Hⁿ`-null-measurable).  If `f = 0` off
+`B_R(0)` and `|f| ≤ C`, then for `R r ≤ ρ` these integrals exist and those of `(M, θ)` and
+`(M', θ')` differ by at most `C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'| dHⁿ → 0`; as
+`θ x = θ' x`, the two tangent-space conditions are equivalent. -/
+theorem Submission.iwl_weighted_tangent_locality :
+    ∀ (P n : ℕ) (M M' : Set (Eucl P)) (θ θ' : Eucl P → ℝ) (x : Eucl P),
+      NullMeasurableSet M (μHE[n] : Measure (Eucl P)) →
+      NullMeasurableSet M' (μHE[n] : Measure (Eucl P)) → θ x = θ' x →
+      (∃ ρ : ℝ, 0 < ρ ∧ IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) ∧
+        IntegrableOn θ' (M' ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P))) →
+      (∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ n)⁻¹) *
+        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+          ∂(μHE[n] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)) →
+      ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q ↔
+        HasWeightedApproximateTangentSpaceAt n M' θ' x Q := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  intro P n M M' θ θ' x hM hM' hθx ⟨ρ, hρ, hθρ, hθ'ρ⟩ hlim Q
+  -- Change of variables under `η_r = blowUpMap x r`: `∫_{η_r(S)} g dHⁿ = (rⁿ)⁻¹ ∫_S g ∘ η_r dHⁿ`.
+  have hcov : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (g : Eucl P → ℝ),
+      ∫ y in blowUpMap x r '' S, g y ∂(μHE[n] : Measure (Eucl P)) =
+        (r ^ n)⁻¹ * ∫ z in S, g (blowUpMap x r z) ∂(μHE[n] : Measure (Eucl P)) := by
+    intro r hr S g
+    let e : Eucl P ≃ₜ Eucl P :=
+      (Homeomorph.addRight (-x)).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr.ne'))
+    have he : (e : Eucl P → Eucl P) = blowUpMap x r := by
+      funext z
+      simp [e, blowUpMap, sub_eq_add_neg]
+    have hemb : MeasurableEmbedding (blowUpMap x r) := he ▸ e.measurableEmbedding
+    -- `η_r` pushes `(rⁿ)⁻¹ Hⁿ` forward to `Hⁿ`: `η_r⁻¹(B) = x + r • B`.
+    have hmp : MeasurePreserving (blowUpMap x r)
+        (ENNReal.ofReal ((r ^ n)⁻¹) • (μHE[n] : Measure (Eucl P))) μHE[n] := by
+      refine ⟨hemb.measurable, ?_⟩
+      ext B hB
+      rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply]
+      have hpre : blowUpMap x r ⁻¹' B = (fun z => x + z) '' ((fun z => r • z) '' B) := by
+        ext z
+        simp only [mem_preimage, mem_image, blowUpMap]
+        constructor
+        · intro hz
+          exact ⟨r • r⁻¹ • (z - x), ⟨r⁻¹ • (z - x), hz, rfl⟩, by
+            rw [smul_inv_smul₀ hr.ne', add_sub_cancel]⟩
+        · rintro ⟨w, ⟨b, hb, rfl⟩, rfl⟩
+          rwa [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+      rw [hpre, Isometry.euclideanHausdorffMeasure_image (isometry_add_left x), Set.image_smul,
+        Measure.euclideanHausdorffMeasure_smul₀ n hr.ne' B, ENNReal.smul_def, smul_eq_mul,
+        smul_eq_mul, ← mul_assoc]
+      have hc : ENNReal.ofReal ((r ^ n)⁻¹) * ((‖r‖₊ ^ n : ℝ≥0) : ℝ≥0∞) = 1 := by
+        rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity), NNReal.coe_pow,
+          coe_nnnorm, Real.norm_of_nonneg hr.le, inv_mul_cancel₀ (pow_ne_zero n hr.ne'),
+          ENNReal.ofReal_one]
+      rw [hc, one_mul]
+    rw [hmp.setIntegral_image_emb hemb g S, Measure.restrict_smul, integral_smul_measure,
+      ENNReal.toReal_ofReal (by positivity), smul_eq_mul]
+  -- `y ↦ x + r • y` inverts `η_r`.
+  have hinv : ∀ r : ℝ, r ≠ 0 → ∀ z : Eucl P, x + r • blowUpMap x r z = z := by
+    intro r hr z
+    simp only [blowUpMap, smul_smul, mul_inv_cancel₀ hr, one_smul, add_sub_cancel]
+  -- The blow-up integrals of `(M, θ)` and `(M', θ')` against `f` differ by `o(1)` as `r ↓ 0`.
+  have hkey : ∀ f : CompactlySupportedContinuousMap (Eucl P) ℝ, Tendsto (fun r : ℝ =>
+      (∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
+        ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P)))
+      (𝓝[>] 0) (𝓝 0) := by
+    intro f
+    -- `f = 0` off `B_R(0)` and `|f| ≤ C`.
+    obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+    obtain ⟨C, hC⟩ := f.continuous.bounded_above_of_compact_support f.hasCompactSupport
+    -- `f ∘ η_r` vanishes off `B̄_{R r}(x)`.
+    have hvan : ∀ r : ℝ, 0 < r → ∀ z : Eucl P, z ∉ closedBall x (R * r) →
+        f (blowUpMap x r z) = 0 := by
+      intro r hr z hz
+      apply hfR
+      rw [mem_closedBall, not_le, dist_eq_norm] at hz
+      rw [blowUpMap, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_eq_div,
+        le_div_iff₀ hr]
+      exact hz.le
+    -- For `R r ≤ ρ`, `(f ∘ η_r) · 1_S ϑ` is integrable when `ϑ` is integrable on `S ∩ B̄_ρ(x)`.
+    have hint : ∀ r : ℝ, 0 < r → R * r ≤ ρ → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
+        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
+        IntegrableOn ϑ (S ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) →
+        Integrable (fun z => f (blowUpMap x r z) * S.indicator ϑ z)
+          (μHE[n] : Measure (Eucl P)) := by
+      intro r hr hRr S ϑ hS hϑ
+      have hcont : Continuous fun z => f (blowUpMap x r z) :=
+        f.continuous.comp ((continuous_const_smul _).comp (continuous_id.sub continuous_const))
+      have h1 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) (S ∩ closedBall x ρ)
+          (μHE[n] : Measure (Eucl P)) :=
+        Integrable.bdd_mul hϑ hcont.aestronglyMeasurable (ae_of_all _ fun z => hC _)
+      have h2 : IntegrableOn (fun z => f (blowUpMap x r z) * ϑ z) S
+          (μHE[n] : Measure (Eucl P)) := by
+        refine h1.of_ae_sdiff_eq_zero hS (ae_of_all _ fun z hz => ?_)
+        have hz' : z ∉ closedBall x (R * r) := fun h =>
+          hz.2 ⟨hz.1, closedBall_subset_closedBall hRr h⟩
+        rw [hvan r hr z hz', zero_mul]
+      refine (h2.integrable_indicator₀ hS).congr (ae_of_all _ fun z => ?_)
+      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
+    -- `∫_{η_r(S)} f(y) ϑ(x + r y) dHⁿ(y) = (rⁿ)⁻¹ ∫ f(η_r z) 1_S ϑ(z) dHⁿ(z)`.
+    have hI : ∀ r : ℝ, 0 < r → ∀ (S : Set (Eucl P)) (ϑ : Eucl P → ℝ),
+        NullMeasurableSet S (μHE[n] : Measure (Eucl P)) →
+        ∫ y in blowUpMap x r '' S, f y * ϑ (x + r • y) ∂(μHE[n] : Measure (Eucl P)) =
+          (r ^ n)⁻¹ * ∫ z, f (blowUpMap x r z) * S.indicator ϑ z
+            ∂(μHE[n] : Measure (Eucl P)) := by
+      intro r hr S ϑ hS
+      rw [hcov r hr S]
+      simp only [hinv r hr.ne']
+      rw [← integral_indicator₀ hS]
+      congr 2
+      funext z
+      exact Set.indicator_mul_right S (fun z => f (blowUpMap x r z)) ϑ
+    -- The estimate `|I_{M,θ}(r) - I_{M',θ'}(r)| ≤ C (rⁿ)⁻¹ ∫_{B̄_{R r}(x)} |1_M θ - 1_{M'} θ'|`.
+    have hbound : ∀ r : ℝ, 0 < r → R * r ≤ ρ →
+        ‖(∫ y in blowUpMap x r '' M, f y * θ (x + r • y) ∂(μHE[n] : Measure (Eucl P))) -
+          ∫ y in blowUpMap x r '' M', f y * θ' (x + r • y) ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤
+        ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
+          ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+            ∂(μHE[n] : Measure (Eucl P))) := by
+      intro r hr hRr
+      rw [hI r hr M θ hM, hI r hr M' θ' hM', ← mul_sub,
+        ← integral_sub (hint r hr hRr M θ hM hθρ) (hint r hr hRr M' θ' hM' hθ'ρ), enorm_mul,
+        Real.enorm_of_nonneg (by positivity), mul_left_comm]
+      gcongr
+      calc ‖∫ z, f (blowUpMap x r z) * M.indicator θ z - f (blowUpMap x r z) * M'.indicator θ' z
+              ∂(μHE[n] : Measure (Eucl P))‖ₑ
+          ≤ ∫⁻ z, ‖f (blowUpMap x r z) * M.indicator θ z -
+              f (blowUpMap x r z) * M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) :=
+            enorm_integral_le_lintegral_enorm _
+        _ ≤ ∫⁻ z, (closedBall x (R * r)).indicator
+              (fun z => ENNReal.ofReal C * ‖M.indicator θ z - M'.indicator θ' z‖ₑ) z
+              ∂(μHE[n] : Measure (Eucl P)) := by
+            refine lintegral_mono fun z => ?_
+            by_cases hz : z ∈ closedBall x (R * r)
+            · rw [Set.indicator_of_mem hz, ← mul_sub, enorm_mul, ← ofReal_norm]
+              gcongr
+              exact hC _
+            · rw [hvan r hr z hz, zero_mul, zero_mul, sub_zero, enorm_zero]
+              exact zero_le
+        _ = ENNReal.ofReal C * ∫⁻ z in closedBall x (R * r),
+              ‖M.indicator θ z - M'.indicator θ' z‖ₑ ∂(μHE[n] : Measure (Eucl P)) := by
+            rw [lintegral_indicator measurableSet_closedBall,
+              lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    rw [tendsto_zero_iff_enorm_tendsto_zero]
+    have hupper : Tendsto (fun r : ℝ => ENNReal.ofReal C * (ENNReal.ofReal ((r ^ n)⁻¹) *
+        ∫⁻ z in closedBall x (R * r), ‖M.indicator θ z - M'.indicator θ' z‖ₑ
+          ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_mul (hlim R hR) (Or.inr ENNReal.ofReal_ne_top)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hupper
+      (Eventually.of_forall fun _ => zero_le) ?_
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hρ hR)] with r hr
+    refine hbound r hr.1 ?_
+    have := hr.2
+    rw [lt_div_iff₀ hR] at this
+    linarith
+  constructor
+  · rintro ⟨hQ, hf⟩
+    refine ⟨hQ, fun f => ?_⟩
+    rw [← hθx]
+    simpa using (hf f).sub (hkey f)
+  · rintro ⟨hQ, hf⟩
+    refine ⟨hQ, fun f => ?_⟩
+    rw [hθx]
+    simpa using (hf f).add (hkey f)
 /-- Simon Ch. 1, Theorem 3.3 (with `A₁ = A`, `A₂ = V`): if `Θ*ⁿ(ν, x) ≥ t` on `A ⊆ V`, `V` open,
 then `t Hⁿ(A) ≤ ν(V)`.  The isodiametric inequality (coordinate Steiner symmetrization)
 shows that a closed ball of radius `r` has `μHE[n]`-cost at most `ωₙ rⁿ`, and the five-times
@@ -2144,6 +2307,75 @@ theorem Submission.deformation_imcomb_subset_locality :
     ← ENNReal.ofReal_inv_of_pos (by positivity), ← mul_assoc,
     ← ENNReal.ofReal_mul (by positivity), mul_pow, mul_inv, ← mul_assoc,
     mul_inv_cancel₀ (pow_ne_zero k hR.ne'), one_mul]
+
+/-- Simon Ch. 3, Remark 1.8(1): on a set `E` of locally finite `Hᵏ`-measure, weighted approximate
+tangent spaces do not depend on the positive multiplicity.  At `Hᵏ⌞E`-a.e. `x`, both `θ` and
+`θ'` have normalized Lebesgue points.  With `c θ(x) = θ'(x)`, Definition 1.7 is homogeneous in
+the weight, so `Q` is tangent for `(E, c θ)`; and `|c θ - θ'| ≤ |c| |θ - θ(x)| + |θ' - θ'(x)|`
+lets tangent locality pass from `(E, c θ)` to `(E, θ')`. -/
+theorem Submission.deformation_imcomb_weight_change : ∀ (N k : ℕ) (E : Set (Eucl N)) (θ θ' : Eucl N → ℝ), NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → (μHE[k] : Measure (Eucl N)) (E ∩ K) < ∞) → (∀ x ∈ E, 0 < θ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (E ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ' (E ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k E θ x Q → HasWeightedApproximateTangentSpaceAt k E θ' x Q := by
+  intro N k E θ θ' hE hfin hpos hθ hθ'
+  set H : Measure (Eucl N) := (μHE[k] : Measure (Eucl N))
+  -- Normalized Lebesgue points of `θ` and `θ'` on `E` (with `U = ℝ^N`).
+  have hleb : ∀ f : Eucl N → ℝ, (∀ K : Set (Eucl N), IsCompact K → IntegrableOn f (E ∩ K) H) →
+      ∀ᵐ x ∂(H.restrict E), ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) *
+        ∫⁻ y in E ∩ closedBall x (R * r), ‖f y - f x‖ₑ ∂H) (𝓝[>] 0) (𝓝 0) := fun f hf =>
+    Submission.iwl_imc_normalized_lebesgue_points N k univ E f isOpen_univ (subset_univ E) hE
+      (fun K hK _ => hfin K hK) (fun K hK _ => hf K hK)
+  filter_upwards [hleb θ hθ, hleb θ' hθ', ae_restrict_mem₀ hE] with x hx hx' hxE Q hQ
+  obtain ⟨c, hcx⟩ : ∃ c : ℝ, c * θ x = θ' x :=
+    ⟨θ' x / θ x, div_mul_cancel₀ _ (hpos x hxE).ne'⟩
+  -- Definition 1.7 is homogeneous in the multiplicity: `Q` is tangent for `(E, c θ)`.
+  have hQc : HasWeightedApproximateTangentSpaceAt k E (fun y => c * θ y) x Q := by
+    obtain ⟨hQk, hf⟩ := hQ
+    refine ⟨hQk, fun f => ?_⟩
+    have h := (hf f).const_mul c
+    rw [← mul_assoc] at h
+    refine h.congr fun r => ?_
+    rw [← integral_const_mul]
+    congr 1
+    funext y
+    dsimp only
+    ring
+  -- `c θ(x) = θ'(x)`, so tangent locality applies to `(E, c θ)` and `(E, θ')`.
+  refine (Submission.iwl_weighted_tangent_locality N k E E (fun y => c * θ y) θ' x hE hE hcx
+    ⟨1, one_pos, Integrable.const_mul (hθ _ (isCompact_closedBall x 1)) c,
+      hθ' _ (isCompact_closedBall x 1)⟩ (fun R hR => ?_) Q).1 hQc
+  have hupper := (ENNReal.Tendsto.const_mul (hx R hR) (Or.inr (enorm_ne_top (x := c)))).add
+    (hx' R hR)
+  rw [mul_zero, zero_add] at hupper
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hupper
+    (fun _ => zero_le) (fun r => ?_)
+  -- `r⁻ᵏ ∫_{B̄_{Rr}(x)} |1_E c θ - 1_E θ'| ≤ |c| r⁻ᵏ ∫_{E ∩ B̄_{Rr}(x)} |θ - θ(x)| +
+  -- r⁻ᵏ ∫_{E ∩ B̄_{Rr}(x)} |θ' - θ'(x)|`.
+  have hEB : NullMeasurableSet E (H.restrict (closedBall x (R * r))) :=
+    hE.mono Measure.restrict_le_self
+  have hmeas : AEMeasurable (fun y => ‖c‖ₑ * ‖θ y - θ x‖ₑ)
+      (H.restrict (E ∩ closedBall x (R * r))) :=
+    ((hθ _ (isCompact_closedBall x (R * r))).aestronglyMeasurable.sub
+      aestronglyMeasurable_const).enorm.const_mul _
+  calc ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in closedBall x (R * r),
+        ‖E.indicator (fun y => c * θ y) z - E.indicator θ' z‖ₑ ∂H
+      = ENNReal.ofReal ((r ^ k)⁻¹) *
+          ∫⁻ z in E ∩ closedBall x (R * r), ‖c * θ z - θ' z‖ₑ ∂H := by
+        rw [← setLIntegral_indicator₀ _ hEB]
+        congr 1
+        refine lintegral_congr fun z => ?_
+        by_cases hz : z ∈ E <;> simp [hz]
+    _ ≤ ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ z in E ∩ closedBall x (R * r),
+          (‖c‖ₑ * ‖θ z - θ x‖ₑ + ‖θ' z - θ' x‖ₑ) ∂H := by
+        gcongr with z
+        calc ‖c * θ z - θ' z‖ₑ = ‖c * (θ z - θ x) - (θ' z - θ' x)‖ₑ := by
+              rw [mul_sub, hcx]
+              ring_nf
+          _ ≤ ‖c * (θ z - θ x)‖ₑ + ‖θ' z - θ' x‖ₑ := enorm_sub_le
+          _ = ‖c‖ₑ * ‖θ z - θ x‖ₑ + ‖θ' z - θ' x‖ₑ := by rw [enorm_mul]
+    _ = ‖c‖ₑ * (ENNReal.ofReal ((r ^ k)⁻¹) *
+            ∫⁻ y in E ∩ closedBall x (R * r), ‖θ y - θ x‖ₑ ∂H) +
+          ENNReal.ofReal ((r ^ k)⁻¹) *
+            ∫⁻ y in E ∩ closedBall x (R * r), ‖θ' y - θ' x‖ₑ ∂H := by
+        rw [lintegral_add_left' hmeas, lintegral_const_mul' _ _ enorm_ne_top]
+        ring
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
