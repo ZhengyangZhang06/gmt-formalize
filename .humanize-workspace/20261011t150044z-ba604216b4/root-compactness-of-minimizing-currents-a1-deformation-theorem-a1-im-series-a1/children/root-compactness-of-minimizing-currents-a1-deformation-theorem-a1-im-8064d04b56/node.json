@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.series_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+  "depth": 4,
+  "title": "A mass-summable series of currents: the sum current with mass and support bounds",
+  "statement": "Assume (VO): for all P, n ∈ ℕ, every U ⊆ ℝ^P, every S ∈ 𝒟_n(U) and every ω ∈ 𝒟ⁿ(U) with tsupport ω disjoint from spt S, S(ω) = 0. Let P, n ∈ ℕ, U ⊆ ℝ^P open, and X_r ∈ 𝒟_n(U) (r ∈ ℕ) with Σ_r M(X_r) ≠ ∞ (sum in [0, ∞]). Then there is Y ∈ 𝒟_n(U) such that: (i) for every ω ∈ 𝒟ⁿ(U) the real series Σ_r X_r(ω) has sum Y(ω) (HasSum); (ii) M(Y) ≤ Σ_r M(X_r); (iii) spt Y ⊆ closure(⋃_r spt X_r). The notions are as follows. 𝒟_n(U) is GeometricCurrentOn U n and 𝒟ⁿ(U) is TestFormOn U n. M(X) = X.mass = M_U(X) is the supremum of ofReal(X(ω)) over ω ∈ 𝒟ⁿ(U) with covectorEuclideanNorm(ω(x)) ≤ 1 for all x. spt X = U ∖ zeroRegion X, where zeroRegion X is the union of the open W with closure W compact, closure W ⊆ U, and X(ω) = 0 whenever tsupport ω ⊆ W.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), IsOpen U → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass ∧ Y.support ⊆ closure (⋃ r, (X r).support)",
+  "lean_name": "cmcdt_ims_series_current",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.uniform_small-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.uniform_small-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b-a1",
+      "result_commit": "8d68dfd93a5a51671384c6648f0ebabf56bd95bd",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-8064d04b56-a1"
+}
