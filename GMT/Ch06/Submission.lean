@@ -359,6 +359,22 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, (2.8) (p. 136) for `U = ℝ^P`: a mass measure `μ` of `T` satisfies
+`μ(B_r(x)) = M_{B_r(x)}(T)` on every open ball, as `B_r(x) ⊂⊂ ℝ^P`; and `μ(ℝ^P) ≤ M(T)`, by
+continuity from below along `ℝ^P = ⋃_k B_k(0)` and `M_{B_k(0)}(T) ≤ M(T)`. -/
+theorem Submission.ind_md_mmb_massMeasure_balls : ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n) (μ : Measure (Eucl P)), IsMassMeasure T μ → μ univ ≤ T.mass ∧ ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r) := by
+  intro P n T μ hμ
+  -- Every open ball is `⊂⊂ ℝ^P`: its closure is a closed subset of a compact closed ball.
+  have hball : ∀ (x : Eucl P) (r : ℝ), μ (ball x r) = T.massOn (ball x r) := fun x r =>
+    hμ.2 _ ⟨isOpen_ball, (isCompact_closedBall x r).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, subset_univ _⟩
+  refine ⟨?_, hball⟩
+  -- Continuity from below along the increasing balls `B_k(0)`, which exhaust `ℝ^P`.
+  calc μ univ = μ (⋃ k : ℕ, ball (0 : Eucl P) k) := by rw [iUnion_ball_nat]
+    _ = ⨆ k : ℕ, μ (ball (0 : Eucl P) k) :=
+      Monotone.measure_iUnion fun _ _ hk => ball_subset_ball (Nat.cast_le.2 hk)
+    _ ≤ T.mass := iSup_le fun k => (hball 0 k).trans_le (T.massOn_mono (subset_univ _))
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
