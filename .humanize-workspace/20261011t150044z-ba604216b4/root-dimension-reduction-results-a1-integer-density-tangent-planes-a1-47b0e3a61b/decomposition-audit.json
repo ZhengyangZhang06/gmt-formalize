@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_etp_loc_frame_projection|idtp_cse_etp_loc_dist_bound",
+        "eq_starProjection_of_mem_of_inner_eq_zero",
+        "starProjection_inner_eq_zero",
+        "Orthonormal.linearIndependent",
+        "eq_of_le_of_finrank_eq",
+        "finrank_span_eq_card",
+        "cos_arctan",
+        "one_sub_sq_div_two_le_cos",
+        "sqrt_eq_iff_mul_self_eq_of_pos",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/localization_independent_audit_jgmug9i9/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-47b0e3a61b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-47b0e3a61b/decomposition-v1.json",
+        "/tmp/localization_independent_audit_jgmug9i9/Challenge.lean",
+        "/tmp/localization_independent_audit_jgmug9i9/Full.lean",
+        "/tmp/localization_independent_audit_jgmug9i9/BoundFromFrame.lean",
+        "/tmp/localization_independent_audit_jgmug9i9/ParentFromBound.lean"
+      ],
+      "conclusion": "Verified the project and mathlib pins and byte-identical Submission source. The cited library declarations support the supplied proofs. No competing name reservations were found in the DAG, other node records, or 1512 worktree Submission files. Both exact child propositions elaborate independently, including the required projection instances. Independently reran the complete formal proofs: both children and the exact selected parent use only propext, Classical.choice, and Quot.sound. Isolated checks confirm that dist_bound requires only frame_projection and the parent requires only dist_bound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "frame_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match, with every hypothesis included. The bare declaration name is unreserved. Each proof step is valid: orthonormality gives independence, the dimension comparison gives span{a,e}=Q, and the candidate lies in Q with orthogonal residual. Projection uniqueness proves the exact conclusion without circular dependence. This is a genuine linear-algebra obligation."
+    },
+    {
+      "key": "dist_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match; the bare name is unreserved. Positivity establishes both denominators are nonzero. Pythagoras gives 1−ρ/r≤η², the arctangent identity and cosine bound give the angular estimate, and the explicit decomposition and triangle inequality prove the stated bound. No small-η assumption is hidden. Its sole dependency is frame_projection. The split is appropriate and acyclic: with s₀=min(1/4,s₁/6), the parent obtains dist x a<s₁, then η<4s′/27 from the cusp hypothesis, yielding both exact strict conclusions. Both supplied proofs are complete enough for direct formalization."
+    }
+  ],
+  "required_changes": []
+}

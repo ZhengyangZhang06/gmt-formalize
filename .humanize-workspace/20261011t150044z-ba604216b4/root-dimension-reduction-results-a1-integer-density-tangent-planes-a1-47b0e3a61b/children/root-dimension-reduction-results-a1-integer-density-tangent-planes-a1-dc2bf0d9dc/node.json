@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.localization-a1.frame_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.localization-a1",
+  "depth": 6,
+  "title": "Orthogonal projection onto a 2-plane in an orthonormal frame",
+  "statement": "Let P ∈ ℕ, Q a linear subspace of ℝ^P with Module.finrank ℝ Q = 2, and a, e ∈ Q with |a| = |e| = 1 and ⟨a, e⟩ = 0. Then for every x ∈ ℝ^P the orthogonal projection of x onto Q is Q.starProjection x = ⟨x, a⟩a + ⟨x, e⟩e.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e",
+  "lean_name": "idtp_cse_etp_loc_frame_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-dc2bf0d9dc-a1"
+}
