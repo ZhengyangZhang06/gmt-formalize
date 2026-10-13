@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b4cc74d446358936b8039dbc4fdd2f66dc932596a9bef2559e613f793e5fe075",
+  "git_delta": {
+    "base_commit": "a42d42af8789b7b1f8ed807e9ef5b96f351faac9",
+    "candidate_commit": "4d23ffa1e2960241f87f017da9ea606656ef4e0d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_ti_wedge_vanishes",
+    "diff_sha256": "de47d746ff94fb86e0cb31bb9a7c354bca6fa6275938f2bb7fbddbcc6ae8bcb1",
+    "source_sha256": "3bfa1e1e6bd491f2132eedcd73d078fa440c0dcc533eca95ffae80b994bee7e0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_ti_wedge_vanishes",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (v : Euclid P), (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection v = v) → ∀ᵐ x ∂R.measure, ∀ β : Covector (Euclid P) (n + 1), R.orient x (ContinuousAlternatingMap.curryLeft β v) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
