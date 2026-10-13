@@ -712,6 +712,213 @@ theorem aal_curvature_pairing_holder_bound : ∀ (n ℓ : ℕ) (p : ℝ), 1 < p 
     Real.norm_eq_abs] at h
   rw [hq1, mul_assoc]
   exact h
+/-- Continuity in the scale of a radial-profile integral (step 2(c) of the annular monotonicity
+proof, parts (a) and (b) of `allard52_am_cutoff_integral_calculus`): if `f` is `μ`-integrable on
+`B_S(y)`, `g` is continuous with `g = 0` on `(T, ∞)`, `T > 0`, `t > 0` and `T t < S`, then
+`s ↦ ∫ g(‖x − y‖/s) f(x) dμ` is continuous at `t`.  For `0 < s < S/T` the integrand vanishes off
+`B_S(y)`, so the integral is taken against `μ ⌞ B_S(y)`; there `|g| ≤ C` on `[0, ∞)` gives the
+dominating function `C |f|`, and dominated convergence applies. -/
+theorem allard52_am_cc_profile_integral_continuousAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (g : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → Continuous g → 0 < T → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, g (‖x - y‖ / s) * f x ∂μ) t := by
+  intro n ℓ μ y f g S T t hf hg hT hg0 ht htS
+  have hfν : Integrable f (μ.restrict (closedBall y S)) := hf
+  -- Step 1: `t < S/T`, so `(0, S/T)` is a neighbourhood of `t`.
+  have htR : t < S / T := by
+    rw [lt_div_iff₀ hT]
+    linarith
+  -- Step 2: for `s ∈ (0, S/T)` and `x ∉ B_S(y)`, `‖x − y‖/s > T`, so the integrand vanishes
+  -- off `B_S(y)` and the `μ`-integral is the `μ ⌞ B_S(y)`-integral.
+  have hconv : ∀ s ∈ Ioo 0 (S / T),
+      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S)) =
+        ∫ x, g (‖x - y‖ / s) * f x ∂μ := by
+    rintro s ⟨hs, hsR⟩
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    rw [mem_closedBall, dist_eq_norm, not_le] at hx
+    rw [lt_div_iff₀ hT] at hsR
+    have h1 : T < ‖x - y‖ / s := by
+      rw [lt_div_iff₀ hs]
+      nlinarith
+    rw [hg0 _ h1, zero_mul]
+  -- Step 3: `|g u| ≤ C` for `u ≥ 0`, with `C` a bound for `|g|` on `[0, T]`.
+  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |g u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hg.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hg0 u h, abs_zero]
+      exact le_max_right _ _
+  -- Steps 4-6: dominated convergence for `μ ⌞ B_S(y)` at `t`, with bound `C ‖f‖`.
+  have hmain : ContinuousAt (fun s =>
+      ∫ x, g (‖x - y‖ / s) * f x ∂(μ.restrict (closedBall y S))) t := by
+    refine continuousAt_of_dominated (bound := fun x => C * ‖f x‖) ?_ ?_
+      (hfν.norm.const_mul C) ?_
+    · -- Step 4: `x ↦ g(‖x − y‖/s)` is continuous and `f` is a.e. strongly measurable.
+      refine Eventually.of_forall fun s => ?_
+      exact (hg.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)
+        ).aestronglyMeasurable.mul hfν.aestronglyMeasurable
+    · -- Step 3: for `s > 0`, `‖x − y‖/s ≥ 0`, so `|g(‖x − y‖/s) f(x)| ≤ C ‖f(x)‖`.
+      filter_upwards [lt_mem_nhds ht] with s hs
+      refine Eventually.of_forall fun x => ?_
+      rw [norm_mul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right (hC _ (div_nonneg (norm_nonneg _) hs.le)) (norm_nonneg _)
+    · -- Step 5: `s ↦ g(‖x − y‖/s) f(x)` is continuous at `t ≠ 0`.
+      refine Eventually.of_forall fun x => ?_
+      exact (hg.continuousAt.comp (continuousAt_const.div continuousAt_id ht.ne')).mul
+        continuousAt_const
+  -- Step 7: both functions agree on the neighbourhood `(0, S/T)` of `t`.
+  exact hmain.congr (Filter.eventually_of_mem (Ioo_mem_nhds ht htR) hconv)
+
+/-- Differentiation in the scale of a radial cutoff integral (step 2(c) of the annular
+monotonicity proof, part (c) of `allard52_am_cutoff_integral_calculus`): if `f` is
+`μ`-integrable on `B_S(y)`, `φ` is `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, `t > 0` and `T t < S`,
+then `s ↦ ∫ φ(‖x − y‖/s) f(x) dμ` has derivative `-(∫ (‖x − y‖/t) φ'(‖x − y‖/t) f(x) dμ)/t` at `t`.
+For `0 < s < S/T` the integrands vanish off `B_S(y)`; on `(t/2, S/T)` the `s`-derivatives are
+bounded by `(2 C₁/t) |f|` with `C₁ = max_{[0,T]} |u φ'(u)|`, and one differentiates under the
+integral sign against `μ ⌞ B_S(y)`. -/
+theorem allard52_am_cc_cutoff_integral_hasDerivAt : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t := by
+  intro n ℓ μ y f φ S T t hf hφ hT hφ0 ht htS
+  set K : Set (Amb n ℓ) := closedBall y S with hK
+  set ν : Measure (Amb n ℓ) := μ.restrict K with hν
+  have hfν : Integrable f ν := hf
+  have hφc : Continuous φ := hφ.continuous
+  have hdφc : Continuous (deriv φ) := hφ.continuous_deriv_one
+  -- Step 2: `φ' = 0` on `(T, ∞)`.
+  have hdzero : ∀ u, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφ0 v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  -- Step 3: `|φ u| ≤ C₀` and `|u φ'(u)| ≤ C₁` for `u ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → |φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      hφc.continuousOn
+    refine ⟨max C 0, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hφ0 u h.le, abs_zero]
+      exact le_max_right _ _
+  obtain ⟨C₁, hC₁0, hC₁⟩ : ∃ C : ℝ, 0 ≤ C ∧ ∀ u : ℝ, 0 ≤ u → |u * deriv φ u| ≤ C := by
+    obtain ⟨C, hC⟩ := (isCompact_Icc (a := (0 : ℝ)) (b := T)).exists_bound_of_continuousOn
+      (continuous_id.mul hdφc).continuousOn
+    refine ⟨max C 0, le_max_right _ _, fun u hu => ?_⟩
+    rcases le_or_gt u T with h | h
+    · have h' := hC u ⟨hu, h⟩
+      rw [Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    · rw [hdzero u h, mul_zero, abs_zero]
+      exact le_max_right _ _
+  -- Step 5: `d/ds φ(r/s) = -(r/s) φ'(r/s) / s` for `s ≠ 0`.
+  have hderiv : ∀ (r s : ℝ), s ≠ 0 →
+      HasDerivAt (fun u => φ (r / u)) (-(r / s * deriv φ (r / s)) / s) s := by
+    intro r s hs
+    have h1 : HasDerivAt (fun u : ℝ => r / u) (r * -(s ^ 2)⁻¹) s := by
+      have := (hasDerivAt_inv hs).const_mul r
+      convert this using 1
+      funext u
+      exact div_eq_mul_inv r u
+    have h2 := ((hφ.differentiable (by simp) (r / s)).hasDerivAt).comp s h1
+    have heq : -(r / s * deriv φ (r / s)) / s = deriv φ (r / s) * (r * -(s ^ 2)⁻¹) := by
+      rw [sq, mul_inv]
+      ring
+    rw [heq]
+    exact h2
+  -- Step 1: `t < R := S / T`; we work on the neighbourhood `(t/2, R)` of `t`.
+  set R : ℝ := S / T with hR
+  have hRiff : ∀ s : ℝ, s < R ↔ T * s < S := fun s => by
+    rw [hR, lt_div_iff₀ hT, mul_comm]
+  have htR : t < R := (hRiff t).2 htS
+  -- Step 2: for `0 < s < R` the integrands vanish off `K = B_S(y)`.
+  have hout : ∀ s, 0 < s → s < R → ∀ x, x ∉ K → T < ‖x - y‖ / s := by
+    intro s hs hsR x hx
+    have hxS : S < ‖x - y‖ := by
+      simpa [hK, mem_closedBall, dist_eq_norm, not_le] using hx
+    rw [lt_div_iff₀ hs]
+    linarith [(hRiff s).1 hsR]
+  have hconv : ∀ s, 0 < s → s < R →
+      ∫ x, φ (‖x - y‖ / s) * f x ∂μ = ∫ x, φ (‖x - y‖ / s) * f x ∂ν := by
+    intro s hs hsR
+    rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hφ0 _ (hout s hs hsR x hx).le, zero_mul]
+  have hconv' : ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ =
+      ∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂ν := by
+    rw [hν, setIntegral_eq_integral_of_forall_compl_eq_zero]
+    intro x hx
+    rw [hdzero _ (hout t ht htR x hx), mul_zero, zero_mul]
+  -- Step 4: measurability, and integrability of the integrand at `t`, for `ν`.
+  have hmeas : ∀ s, AEStronglyMeasurable (fun x => φ (‖x - y‖ / s) * f x) ν := fun s =>
+    (hφc.comp (by fun_prop : Continuous fun x : Amb n ℓ => ‖x - y‖ / s)).aestronglyMeasurable.mul
+      hfν.aestronglyMeasurable
+  have hint : Integrable (fun x => φ (‖x - y‖ / t) * f x) ν := by
+    refine Integrable.mono' (hfν.norm.const_mul C₀) (hmeas t) ?_
+    refine Eventually.of_forall fun x => ?_
+    rw [norm_mul, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_right (hC₀ _ (div_nonneg (norm_nonneg _) ht.le)) (norm_nonneg _)
+  -- Step 6: differentiation under the integral sign for `ν` on `(t/2, R)`, bound `(2C₁/t)‖f‖`.
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+    (F := fun s x => φ (‖x - y‖ / s) * f x)
+    (F' := fun s x => -(‖x - y‖ / s * deriv φ (‖x - y‖ / s)) / s * f x)
+    (x₀ := t) (bound := fun x => 2 * C₁ / t * ‖f x‖) (s := Ioo (t / 2) R)
+    (Ioo_mem_nhds (half_lt_self ht) htR) (Eventually.of_forall hmeas) hint ?_ ?_
+    (hfν.norm.const_mul _) ?_
+  -- Step 7: evaluate the derivative and transfer from `ν` back to `μ` near `t`.
+  · have hderivν := key.2
+    have heq : (∫ x, -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t * f x ∂ν) =
+        -(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t := by
+      rw [hconv', ← integral_neg, ← integral_div]
+      congr 1
+      funext x
+      ring
+    rw [heq] at hderivν
+    refine hderivν.congr_of_eventuallyEq ?_
+    filter_upwards [Ioo_mem_nhds ht htR] with s hs
+    exact hconv s hs.1 hs.2
+  · exact (by fun_prop : Continuous fun x : Amb n ℓ =>
+      -(‖x - y‖ / t * deriv φ (‖x - y‖ / t)) / t).aestronglyMeasurable.mul hfν.aestronglyMeasurable
+  · refine Eventually.of_forall fun x s hs => ?_
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_div, abs_neg, abs_of_pos hs0]
+    have h1 : |‖x - y‖ / s * deriv φ (‖x - y‖ / s)| / s ≤ 2 * C₁ / t := by
+      rw [div_le_div_iff₀ hs0 ht]
+      have := hC₁ _ (div_nonneg (norm_nonneg (x - y)) hs0.le)
+      nlinarith [hs.1]
+    exact mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
+  · refine Eventually.of_forall fun x s hs => ?_
+    have hs0 : 0 < s := lt_trans (half_pos ht) hs.1
+    exact (hderiv ‖x - y‖ s hs0.ne').mul_const (f x)
+
+/-- **Simon Ch. 4, 3.3–3.4 and 4.1** (step 2(c) of the annular monotonicity argument: calculus in
+the scale of radial cutoff integrals, where `s ∂ₛ φ(r/s) = -(r/s) φ'(r/s)`).  Let `f` be
+`μ`-integrable on `B_S(y)`, let `φ` be `C¹` with `φ = 0` on `[T, ∞)`, `T > 0`, and let `t > 0`
+with `T t < S`; write `r = ‖x − y‖`.  Then
+(a) `s ↦ ∫ φ(r/s) f dμ` and (b) `s ↦ ∫ (r/s) φ'(r/s) f dμ` are continuous at `t`, and
+(c) `s ↦ ∫ φ(r/s) f dμ` has derivative `-(∫ (r/t) φ'(r/t) f dμ)/t` at `t`.
+(a) and (b) are `allard52_am_cc_profile_integral_continuousAt` for the continuous profiles
+`g = φ` and `g(u) = u φ'(u)`, both zero on `(T, ∞)` (`φ'` vanishes there because `φ` vanishes on
+that open set); (c) is `allard52_am_cc_cutoff_integral_hasDerivAt`. -/
+theorem allard52_am_cutoff_integral_calculus : ∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (φ : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → ContDiff ℝ 1 φ → 0 < T → (∀ u : ℝ, T ≤ u → φ u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) t ∧ ContinuousAt (fun s => ∫ x, ‖x - y‖ / s * deriv φ (‖x - y‖ / s) * f x ∂μ) t ∧ HasDerivAt (fun s => ∫ x, φ (‖x - y‖ / s) * f x ∂μ) (-(∫ x, ‖x - y‖ / t * deriv φ (‖x - y‖ / t) * f x ∂μ) / t) t := by
+  intro n ℓ μ y f φ S T t hf hφ hT hφT ht hTt
+  -- `φ' = 0` on `(T, ∞)`: near each `u > T`, `φ` agrees with the zero function.
+  have hdφT : ∀ u : ℝ, T < u → deriv φ u = 0 := fun u hu => by
+    have h : φ =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+      filter_upwards [lt_mem_nhds hu] with v hv
+      exact hφT v hv.le
+    exact h.deriv_eq.trans (deriv_const u 0)
+  refine ⟨?_, ?_, ?_⟩
+  -- (a): the profile `g = φ`, continuous as `φ` is `C¹`, and zero on `(T, ∞) ⊆ [T, ∞)`.
+  · exact Submission.allard52_am_cc_profile_integral_continuousAt n ℓ μ y f φ S T t hf
+      hφ.continuous hT (fun u hu => hφT u hu.le) ht hTt
+  -- (b): the profile `g(u) = u φ'(u)`, continuous as `φ'` is; `g(r/s) f` is the integrand.
+  · exact Submission.allard52_am_cc_profile_integral_continuousAt n ℓ μ y f
+      (fun u => u * deriv φ u) S T t hf (continuous_id.mul hφ.continuous_deriv_one) hT
+      (fun u hu => (congrArg (u * ·) (hdφT u hu)).trans (mul_zero u)) ht hTt
+  -- (c): differentiation in the scale under the integral sign.
+  · exact Submission.allard52_am_cc_cutoff_integral_hasDerivAt n ℓ μ y f φ S T t hf hφ hT hφT
+      ht hTt
 
 end Submission
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1.profile_continuity-a1",
+  "parent_id": "root.allard_regularity-a1.density_bounds-a1.annular_monotonicity-a1.cutoff_calculus-a1",
+  "depth": 5,
+  "title": "Continuity in the scale of radial-profile integrals",
+  "statement": "Let n and l be natural numbers, mu a measure on R^(n+l), y in R^(n+l), and f : R^(n+l) -> R mu-integrable on the closed ball B_S(y). Let g : R -> R be continuous with g(u) = 0 for all u > T, where T > 0, and let t > 0 with T t < S. Write r_x := |x - y|; the integral is a Bochner integral over R^(n+l). Then s -> integral g(r_x/s) f(x) dmu is continuous at t.",
+  "lean_statement": "∀ (n ℓ : ℕ) (μ : Measure (Amb n ℓ)) (y : Amb n ℓ) (f : Amb n ℓ → ℝ) (g : ℝ → ℝ) (S T t : ℝ), IntegrableOn f (closedBall y S) μ → Continuous g → 0 < T → (∀ u : ℝ, T < u → g u = 0) → 0 < t → T * t < S → ContinuousAt (fun s => ∫ x, g (‖x - y‖ / s) * f x ∂μ) t",
+  "lean_name": "allard52_am_cc_profile_integral_continuousAt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch05/20261011t142321z-faafe12087/root-allard-regularity-a1-density-bounds-a1-annular-monotonicity-a1-c-36195ffba0-a1"
+}
