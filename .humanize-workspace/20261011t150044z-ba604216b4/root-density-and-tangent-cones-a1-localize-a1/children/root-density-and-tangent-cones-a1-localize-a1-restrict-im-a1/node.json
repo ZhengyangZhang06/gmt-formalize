@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.localize-a1",
+  "depth": 3,
+  "title": "The restriction of an integer multiplicity current to an open subdomain is integer multiplicity",
+  "statement": "Let P, n ∈ ℕ and V ⊆ U ⊆ ℝ^P with V open. Let T ∈ 𝒟_n(U) be integer multiplicity, i.e. T = τ(M, θ, ξ) for some IMRep R = (M, θ, ξ) of U (Simon 6.3.1). Then the restriction T⌞V ∈ 𝒟_n(V) is integer multiplicity in V. Here T⌞V = T.restrictDomain, T⌞V(ω) = T(ιω) with ι = testFormOnInclusion. Explicitly, T⌞V is represented by (M ∩ V, θ, ξ).",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n), IsOpen V → IsIntegerMultiplicity T → IsIntegerMultiplicity (T.restrictDomain hVU)",
+  "lean_name": "dtc_restrictDomain_isIntegerMultiplicity",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.approx_tangent_local-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1-a1"
+}
