@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f4a34f977def904eb33d7c9ab6c8e98bdee64b264a3267178660026a0d4ad4d",
+  "git_delta": {
+    "base_commit": "12109df833ff2617a5885984291ddf40eb23621d",
+    "candidate_commit": "c8b35d0f9cf3f81e9c02166bd291b1f5cd126a37",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "lcmp_exists_lipschitz_cutoff",
+    "diff_sha256": "dfb66b8f4f416fbdaebd353f10eba35b8ae4031e591679d9e2e30306fe65583d",
+    "source_sha256": "120cf3130c0e09e7d919c1fc9189f1355d123e1b7d93549a438ab2fab407630c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.lcmp_exists_lipschitz_cutoff",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (ε : ℝ), IsOpen U → IsCompact K → K ⊆ U → 0 < ε → ∃ (ψ : Euclid P → ℝ) (L : NNReal), LipschitzWith L ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x ∈ K, ψ x = 1) ∧ {x | 0 < ψ x} ⊆ thickening ε K ∧ CompactlyContained {x | 0 < ψ x} U",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
