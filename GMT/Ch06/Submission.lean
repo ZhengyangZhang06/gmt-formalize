@@ -541,6 +541,55 @@ theorem Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support :
   rw [← sub_eq_zero, ← hsub]
   exact hzero
 
+/-- Locality of an interval product: if `Z η = ∫₀¹ X (φ s) ds` for the slices
+`φ s x = η(s, x)(e₀, ι ·)` of every `η`, then `Z η = Z η'` whenever `η = η'` on an open
+`N ⊇ [0, 1] × spt X`, since for `s ∈ [0, 1]` the slices of `η` and `η'` agree on the open
+neighbourhood `j_s⁻¹ N` of `spt X`, where `j_s x = (s, x)`, so locality of `X` makes the two
+integrands agree on `[0, 1]`. -/
+theorem Submission.dph_sh_apply_eq_of_eqOn_nhds_cyl :
+    ∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q)
+      (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (q + 1)),
+      (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1))
+        (φ : ℝ → TestFormOn (univ : Set (Eucl m)) q),
+        (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin q → Eucl m),
+          (φ s : DifferentialForm (Eucl m) q) x v =
+            (η : DifferentialForm (Eucl (m + 1)) (q + 1))
+              ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)))
+              (Fin.cons (EuclideanSpace.single 0 1) fun i =>
+                (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+                  (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) →
+        Z η = ∫ s in (0 : ℝ)..1, X (φ s)) →
+      ∀ (η η' : TestFormOn (univ : Set (Eucl (m + 1))) (q + 1)) (N : Set (Eucl (m + 1))),
+        IsOpen N →
+        {y : Eucl (m + 1) | EuclideanSpace.equiv (Fin (m + 1)) ℝ y 0 ∈ Icc (0 : ℝ) 1 ∧
+          (EuclideanSpace.equiv (Fin m) ℝ).symm
+            (Fin.tail (EuclideanSpace.equiv (Fin (m + 1)) ℝ y)) ∈ X.support} ⊆ N →
+        (∀ y ∈ N, (η : DifferentialForm (Eucl (m + 1)) (q + 1)) y =
+          (η' : DifferentialForm (Eucl (m + 1)) (q + 1)) y) →
+        Z η = Z η' := by
+  intro m q X Z hZ η η' N hN hcyl hηη'
+  -- Slice families `φ s x = η(s, x)(e₀, ι ·)` and `φ' s x = η'(s, x)(e₀, ι ·)`, and the
+  -- product characterization of `Z`.
+  obtain ⟨φ, -, hφ⟩ := Submission.iwl_cr_ci_slice_testForm m q η
+  obtain ⟨φ', -, hφ'⟩ := Submission.iwl_cr_ci_slice_testForm m q η'
+  rw [hZ η φ fun s _ => hφ s, hZ η' φ' fun s _ => hφ' s]
+  refine intervalIntegral.integral_congr fun s hs => ?_
+  rw [uIcc_of_le zero_le_one] at hs
+  -- The slice map `j_s x = (s, x)` is continuous and sends `spt X` into the cylinder, so
+  -- `j_s⁻¹ N` is an open neighbourhood of `spt X` on which `φ s = φ' s`.
+  have hj : Continuous fun x : Eucl m => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm
+      (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) :=
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.continuous.comp
+      (continuous_const.finCons (EuclideanSpace.equiv (Fin m) ℝ).continuous)
+  refine Submission.iwl_cr_ce_apply_eq_of_eqOn_nhds_support m q univ X (φ s) (φ' s) _
+    (hN.preimage hj) (fun x hx => hcyl ?_) fun x hx => ?_
+  · simp only [mem_ofPred_eq, ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero,
+      Fin.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
+    exact ⟨hs, hx⟩
+  · ext v
+    rw [hφ, hφ', hηη' _ hx]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
