@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0b31c3778e891a78e0ff8c92953d0f4e7a5baa4328a26e294df7e14aee13a9c9",
+  "git_delta": {
+    "base_commit": "baf525547f616634877feb411e29e1bcbeb11842",
+    "candidate_commit": "b1a485ffc449d12027a5f9c0e2b40aa990244db3",
+    "target": "GMT/Ch05/Submission.lean",
+    "changed_files": [
+      "GMT/Ch05/Submission.lean"
+    ],
+    "diff_sha256": "e8d375f4cdf0099afc1797fd36f2bc8f6c8e7b82adb7996d13b96a09e5b10720",
+    "source_sha256": "566580c011d3423623a56ee53430df8f2bd5e155b89ad5bbd73ce074277efdfd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.tdo_one_dim_sup_le",
+      "statement": "∀ (ℓ : ℕ) (w : Rn 1 → Rn ℓ) (a : ℝ) (K : ℝ≥0), 0 < a → LipschitzOnWith K w (closedBall 0 a) → ∀ x ∈ closedBall (0 : Rn 1) a, ‖w x‖ ≤ Real.sqrt ((2 * a)⁻¹ * ∫ y in ball (0 : Rn 1) a, ‖w y‖ ^ 2) + Real.sqrt (2 * a * ∫ y in ball (0 : Rn 1) a, hsNormSq (fderiv ℝ w y))",
+      "lean_file": "GMT/Ch05/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
