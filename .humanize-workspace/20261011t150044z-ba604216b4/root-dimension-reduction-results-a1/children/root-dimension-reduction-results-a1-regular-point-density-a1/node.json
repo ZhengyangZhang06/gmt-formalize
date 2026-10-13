@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Near a regular point the density is a constant positive integer on the support",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let T ∈ 𝒟_n(U) and let y ∈ reg T (regularSet T, Simon 7.4.1 as in the contract: y ∈ spt T and for some ρ₀ > 0 with B_{ρ₀}(y) ⊆ U, some m₀ ∈ ℤ ∖ {0} and some embedded C¹ n-dimensional submanifold M ∋ y with a continuous orientation ξ (IsOrientation) and H^n(M ∩ K) < ∞ for compact K ⊆ B_{ρ₀}(y), T(ω) = m₀∫_M ξ(x)(ω(x)) dH^n(x) for all ω ∈ 𝒟^n(U) with tsupport ω ⊆ B_{ρ₀}(y)). Then there are m ∈ ℕ with m ≥ 1 and ρ > 0 such that HasMassDensity T z m (Θ^n(μ_T, z) = m) for every z ∈ spt T ∩ B_ρ(y).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P), IsOpen U → y ∈ regularSet T → ∃ (m : ℕ) (ρ : ℝ), 1 ≤ m ∧ 0 < ρ ∧ ∀ z ∈ T.support ∩ ball y ρ, HasMassDensity T z m",
+  "lean_name": "dimred_regular_point_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-a1"
+}

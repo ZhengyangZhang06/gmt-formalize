@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Simon 7.5.8: regularity of codimension-one minimizing boundaries",
+  "statement": "CodimensionOneRegularity of the frozen contract (Simon 7.5.8, with README erratum 7). For all n, k ∈ ℕ, all sets U, N, E ⊆ ℝ^{n+k}, every map ξ_N : ℝ^{n+k} → Λ_{n+1}(ℝ^{n+k}) (MultiVector (n+k) (n+1)) and every T ∈ 𝒟_n(U): if U is open, InClassO n U N ξ_N (N an embedded C² (n+1)-dimensional submanifold, ξ_N a continuous orientation of N, (closure N ∖ N) ∩ U = ∅, N ∩ U ≠ ∅), E is a measurable set with E ⊆ N ∩ U, T(ω) = ∫_E ξ_N(x)(dω(x)) dH^{n+1}(x) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N), and T is minimizing in N ∩ U, then: (a) singularSet T = ∅ if n ≤ 6; (b) singularSet T ∩ K is finite for every compact K ⊆ U if n = 7; (c) μH[n − 7 + α](singularSet T) = 0 for every real α > 0 if n > 7.",
+  "lean_statement": "CodimensionOneRegularity",
+  "lean_name": "dimred_codimension_one_regularity",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1",
+    "root.dimension_reduction_results-a1.one_dim_cones-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1",
+    "root.dimension_reduction_results-a1.density_gap-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.one_dim_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.density_gap-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-a1"
+}

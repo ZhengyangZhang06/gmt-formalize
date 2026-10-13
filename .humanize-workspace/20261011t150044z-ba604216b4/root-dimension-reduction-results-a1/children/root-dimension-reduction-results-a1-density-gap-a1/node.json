@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Density gap for minimizing cones",
+  "statement": "For all P, j ∈ ℕ with j ≥ 1 there is δ > 0 with the following property: if C ∈ 𝒟_j(ℝ^P) is minimizing in ℝ^P (IsMinimizingIn C univ), ∂C = 0, C is a cone (IsConeCurrent C) and HasMassDensity C 0 θ (Θ^j(μ_C, 0) = θ) with θ < 1 + δ, then θ ≤ 1.",
+  "lean_statement": "∀ (P j : ℕ), 1 ≤ j → ∃ δ : ℝ, 0 < δ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (θ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → HasMassDensity C 0 θ → θ < 1 + δ → θ ≤ 1",
+  "lean_name": "dimred_cone_density_gap",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-a1"
+}
