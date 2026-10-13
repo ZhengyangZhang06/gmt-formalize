@@ -607,6 +607,211 @@ theorem dohr_eb_sch_liou_chain_vanish : ∀ (n ℓ : ℕ) (α K C : ℝ) (S : Se
   simp only [Pi.zero_apply, pow_eq_zero_iff two_ne_zero] at this
   rw [← ofReal_norm, ENNReal.ofReal_eq_zero, norm_le_zero_iff] at this
   exact this
+/-- 1-D lemma: a function with an explicit derivative chain ending in `0` (a polynomial of
+degree `< m`) and sublinear growth `‖G₀ t − G₀ 0‖ ≤ C |t|^α`, `α < 1`, is constant. -/
+theorem dohr_eb_sch_liou_poly_sublinear_const : ∀ (ℓ m : ℕ) (α C : ℝ) (G : ℕ → ℝ → Rn ℓ), α < 1 → (∀ j < m, ∀ t : ℝ, HasDerivAt (G j) (G (j + 1) t) t) → (∀ t : ℝ, G m t = 0) → (∀ t : ℝ, ‖G 0 t - G 0 0‖ ≤ C * |t| ^ α) → ∀ t : ℝ, G 0 t = G 0 0 := by
+  intro ℓ m α C G hα hder hm hgrow
+  -- Step 1: Taylor formula with zero remainder, by downward induction.
+  have taylor : ∀ k i, i + k = m → ∀ t : ℝ,
+      G i t = ∑ j ∈ Finset.range k, (t ^ j / (j.factorial : ℝ)) • G (i + j) 0 := by
+    intro k
+    induction k with
+    | zero =>
+      intro i hi t
+      simp only [add_zero] at hi
+      subst hi
+      simp [hm]
+    | succ k ih =>
+      intro i hi t
+      have hIH : ∀ s : ℝ, G (i + 1) s =
+          ∑ j ∈ Finset.range k, (s ^ j / (j.factorial : ℝ)) • G (i + 1 + j) 0 :=
+        fun s => ih (i + 1) (by omega) s
+      set P : ℝ → Rn ℓ := fun s =>
+        ∑ j ∈ Finset.range (k + 1), (s ^ j / (j.factorial : ℝ)) • G (i + j) 0 with hP_def
+      have hP : ∀ s : ℝ, HasDerivAt P (G (i + 1) s) s := by
+        intro s
+        rw [hIH s]
+        have hsplit : P = fun s => (∑ j ∈ Finset.range k,
+            (s ^ (j + 1) / ((j + 1).factorial : ℝ)) • G (i + (j + 1)) 0) + G i 0 := by
+          funext s
+          simp only [hP_def]
+          rw [Finset.sum_range_succ']
+          simp
+        rw [hsplit]
+        apply HasDerivAt.add_const
+        apply HasDerivAt.fun_sum
+        intro j _
+        have h1 : HasDerivAt (fun s : ℝ => s ^ (j + 1) / ((j + 1).factorial : ℝ))
+            (((j + 1 : ℕ) : ℝ) * s ^ j / ((j + 1).factorial : ℝ)) s := by
+          have := (hasDerivAt_pow (j + 1) s).div_const ((j + 1).factorial : ℝ)
+          simpa using this
+        have h2 := h1.smul_const (G (i + (j + 1)) 0)
+        have heq : (((j + 1 : ℕ) : ℝ) * s ^ j / ((j + 1).factorial : ℝ)) • G (i + (j + 1)) 0 =
+            (s ^ j / (j.factorial : ℝ)) • G (i + 1 + j) 0 := by
+          have hidx : i + (j + 1) = i + 1 + j := by omega
+          rw [hidx]
+          congr 1
+          rw [Nat.factorial_succ]
+          push_cast
+          have : (j.factorial : ℝ) ≠ 0 := by positivity
+          field_simp
+        rw [← heq]
+        exact h2
+      have hGi : ∀ s : ℝ, HasDerivAt (G i) (G (i + 1) s) s := hder i (by omega)
+      have hD : ∀ s : ℝ, HasDerivAt (fun s => G i s - P s) 0 s := by
+        intro s
+        have := (hGi s).sub (hP s)
+        rwa [sub_self] at this
+      have hconst := is_const_of_deriv_eq_zero (f := fun s => G i s - P s)
+        (fun s => (hD s).differentiableAt) (fun s => (hD s).deriv) t 0
+      have hP0 : P 0 = G i 0 := by
+        simp only [hP_def]
+        rw [Finset.sum_range_succ']
+        simp
+      simp only [hP0, sub_self] at hconst
+      exact sub_eq_zero.mp hconst
+  have hT : ∀ t : ℝ, G 0 t = ∑ j ∈ Finset.range m, (t ^ j / (j.factorial : ℝ)) • G j 0 := by
+    intro t
+    simpa using taylor m 0 (by omega) t
+  set a : ℕ → Rn ℓ := fun j => G j 0 with ha
+  set β : ℝ := max α 0 with hβ
+  have hβ1 : β < 1 := max_lt hα one_pos
+  have hβ0 : 0 ≤ β := le_max_right _ _
+  set Cp : ℝ := max C 0 with hCp
+  -- Step 2: the top coefficient vanishes when all higher ones do.
+  have core : ∀ J, 1 ≤ J → J < m → (∀ j, J < j → j < m → a j = 0) → a J = 0 := by
+    intro J hJ1 hJm hhigh
+    have hT' : ∀ t : ℝ, G 0 t =
+        ∑ j ∈ Finset.range (J + 1), (t ^ j / (j.factorial : ℝ)) • a j := by
+      intro t
+      rw [hT t]
+      symm
+      apply Finset.sum_subset
+      · intro j hj
+        simp only [Finset.mem_range] at hj ⊢
+        omega
+      · intro j hj hj'
+        simp only [Finset.mem_range, not_lt] at hj hj'
+        rw [show a j = 0 from hhigh j (by omega) hj, smul_zero]
+    set B : ℝ := ∑ j ∈ Finset.range J, ‖a j‖ with hB
+    have hB0 : 0 ≤ B := Finset.sum_nonneg (fun j _ => norm_nonneg _)
+    set M : ℝ := (J.factorial : ℝ) * (Cp + ‖G 0 0‖ + B) with hM
+    have hbound : ∀ t : ℝ, 1 ≤ t → ‖a J‖ ≤ M * t ^ (β - 1) := by
+      intro t ht
+      have ht0 : 0 < t := lt_of_lt_of_le one_pos ht
+      have hrest : ‖∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j‖ ≤
+          t ^ (J - 1) * B := by
+        calc ‖∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j‖
+            ≤ ∑ j ∈ Finset.range J, ‖(t ^ j / (j.factorial : ℝ)) • a j‖ := norm_sum_le _ _
+          _ ≤ ∑ j ∈ Finset.range J, t ^ (J - 1) * ‖a j‖ := by
+            apply Finset.sum_le_sum
+            intro j hj
+            simp only [Finset.mem_range] at hj
+            rw [norm_smul]
+            gcongr
+            rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+            calc t ^ j / (j.factorial : ℝ) ≤ t ^ j := by
+                  apply div_le_self (by positivity)
+                  exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero j)
+              _ ≤ t ^ (J - 1) := pow_le_pow_right₀ ht (by omega)
+          _ = t ^ (J - 1) * B := by rw [hB, Finset.mul_sum]
+      have hsplit : G 0 t = (t ^ J / (J.factorial : ℝ)) • a J +
+          ∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j := by
+        rw [hT' t, Finset.sum_range_succ, add_comm]
+      have hgrow' : ‖G 0 t - G 0 0‖ ≤ Cp * t ^ β := by
+        calc ‖G 0 t - G 0 0‖ ≤ C * |t| ^ α := hgrow t
+          _ ≤ Cp * t ^ α := by
+            rw [abs_of_pos ht0]
+            exact mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.rpow_nonneg ht0.le _)
+          _ ≤ Cp * t ^ β :=
+            mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ht (le_max_left _ _))
+              (le_max_right _ _)
+      have hmain : (t ^ J / (J.factorial : ℝ)) * ‖a J‖ ≤
+          Cp * t ^ β + ‖G 0 0‖ + t ^ (J - 1) * B := by
+        have h1 : (t ^ J / (J.factorial : ℝ)) * ‖a J‖ = ‖(t ^ J / (J.factorial : ℝ)) • a J‖ := by
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+        rw [h1]
+        have h2 : (t ^ J / (J.factorial : ℝ)) • a J =
+            (G 0 t - G 0 0) + G 0 0 -
+              ∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j := by
+          rw [hsplit]; abel
+        rw [h2]
+        calc ‖(G 0 t - G 0 0) + G 0 0 -
+              ∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j‖
+            ≤ ‖(G 0 t - G 0 0) + G 0 0‖ +
+                ‖∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j‖ := norm_sub_le _ _
+          _ ≤ ‖G 0 t - G 0 0‖ + ‖G 0 0‖ +
+                ‖∑ j ∈ Finset.range J, (t ^ j / (j.factorial : ℝ)) • a j‖ := by
+              gcongr; exact norm_add_le _ _
+          _ ≤ Cp * t ^ β + ‖G 0 0‖ + t ^ (J - 1) * B := by gcongr
+      have htJ1 : (t ^ (J - 1) : ℝ) = t ^ ((J : ℝ) - 1) := by
+        rw [← Real.rpow_natCast]; congr 1; push_cast [Nat.cast_sub hJ1]; ring
+      have hpowJ : (t ^ J : ℝ) = t ^ ((J : ℝ) - 1 + β) * t ^ (1 - β) := by
+        rw [← Real.rpow_add ht0, ← Real.rpow_natCast]; congr 1; ring
+      have hA : Cp * t ^ β ≤ Cp * t ^ ((J : ℝ) - 1 + β) := by
+        have : (1 : ℝ) ≤ J := by exact_mod_cast hJ1
+        exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ht (by linarith))
+          (le_max_right _ _)
+      have hB' : ‖G 0 0‖ ≤ ‖G 0 0‖ * t ^ ((J : ℝ) - 1 + β) := by
+        have : 1 ≤ t ^ ((J : ℝ) - 1 + β) := Real.one_le_rpow ht (by
+          have : (1 : ℝ) ≤ J := by exact_mod_cast hJ1
+          linarith)
+        nlinarith [norm_nonneg (G 0 0)]
+      have hC' : t ^ (J - 1) * B ≤ t ^ ((J : ℝ) - 1 + β) * B := by
+        rw [htJ1]
+        exact mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le ht (by linarith)) hB0
+      have hsum : (t ^ J / (J.factorial : ℝ)) * ‖a J‖ ≤
+          (Cp + ‖G 0 0‖ + B) * t ^ ((J : ℝ) - 1 + β) := by
+        nlinarith [hmain, hA, hB', hC']
+      have hfact : (0 : ℝ) < J.factorial := by positivity
+      have htpos : 0 < t ^ ((J : ℝ) - 1 + β) := Real.rpow_pos_of_pos ht0 _
+      have hneg : t ^ (β - 1) * t ^ (1 - β) = 1 := by
+        rw [← Real.rpow_add ht0]; simp
+      rw [hpowJ] at hsum
+      have : t ^ (1 - β) * ‖a J‖ ≤ (J.factorial : ℝ) * (Cp + ‖G 0 0‖ + B) := by
+        have h3 : t ^ ((J : ℝ) - 1 + β) * (t ^ (1 - β) * ‖a J‖ / (J.factorial : ℝ)) ≤
+            t ^ ((J : ℝ) - 1 + β) * (Cp + ‖G 0 0‖ + B) := by
+          calc t ^ ((J : ℝ) - 1 + β) * (t ^ (1 - β) * ‖a J‖ / (J.factorial : ℝ))
+              = t ^ ((J : ℝ) - 1 + β) * t ^ (1 - β) / (J.factorial : ℝ) * ‖a J‖ := by ring
+            _ ≤ (Cp + ‖G 0 0‖ + B) * t ^ ((J : ℝ) - 1 + β) := hsum
+            _ = t ^ ((J : ℝ) - 1 + β) * (Cp + ‖G 0 0‖ + B) := by ring
+        have h4 := le_of_mul_le_mul_left h3 htpos
+        rw [div_le_iff₀ hfact] at h4
+        linarith
+      calc ‖a J‖ = t ^ (β - 1) * (t ^ (1 - β) * ‖a J‖) := by
+            rw [← mul_assoc, hneg, one_mul]
+        _ ≤ t ^ (β - 1) * ((J.factorial : ℝ) * (Cp + ‖G 0 0‖ + B)) := by
+            gcongr
+        _ = M * t ^ (β - 1) := by rw [hM]; ring
+    have hlim : Tendsto (fun t : ℝ => M * t ^ (β - 1)) atTop (𝓝 0) := by
+      have h := tendsto_rpow_neg_atTop (y := 1 - β) (by linarith)
+      have h' : (fun t : ℝ => t ^ (-(1 - β))) = fun t => t ^ (β - 1) := by
+        funext t; congr 1; ring
+      rw [h'] at h
+      simpa using h.const_mul M
+    have hle : ‖a J‖ ≤ 0 :=
+      ge_of_tendsto hlim (eventually_atTop.2 ⟨1, fun t ht => hbound t ht⟩)
+    exact norm_le_zero_iff.mp hle
+  -- Step 3: downward induction, all coefficients of positive degree vanish.
+  have hall : ∀ d, ∀ j, m - d ≤ j → 1 ≤ j → j < m → a j = 0 := by
+    intro d
+    induction d with
+    | zero => intro j hj _ hjm; omega
+    | succ d ih =>
+      intro j hj hj1 hjm
+      by_cases hjd : m - d ≤ j
+      · exact ih j hjd hj1 hjm
+      · exact core j hj1 hjm (fun j' hj' hj'm => ih j' (by omega) (by omega) hj'm)
+  intro t
+  rw [hT t, hT 0]
+  apply Finset.sum_congr rfl
+  intro j hj
+  simp only [Finset.mem_range] at hj
+  rcases Nat.eq_zero_or_pos j with h0 | hpos
+  · subst h0; simp
+  · have := hall m j (by omega) hpos hj
+    simp only [ha] at this
+    simp [this]
 
 end Submission
 
