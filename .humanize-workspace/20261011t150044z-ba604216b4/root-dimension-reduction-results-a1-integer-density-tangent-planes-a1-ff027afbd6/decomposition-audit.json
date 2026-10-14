@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|HasBasis.limsup_eq_iInf_iSup|LowerSemicontinuous.measurable|lowerSemicontinuous_iSup|lowerSemicontinuous_biSup|HasBasis.mem_measureSupport|isClosed_support|integral_withDensity_eq_integral_smul|starProjection_orthogonal_val|norm_starProjection_apply_le|comap_mulLeft_nhdsGT_zero",
+        "instance|class HasOrthogonalProjection|def starProjection|starProjection_orthogonal_val|norm_starProjection_apply_le",
+        "rg -n 'idtp_fons_cr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "rg -l 'idtp_fons_cr_' ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/*.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/class_reduction_independent_audit_p_h9t802/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cr_split/check/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cr_split/check/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/class_reduction_independent_audit_p_h9t802/AcceptedSource.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff027afbd6/decomposition-v1.json",
+        "../.swarm-worktrees/388d25a471022ad57489/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/tmp/class_reduction_independent_audit_p_h9t802/Contracts.lean",
+        "/tmp/class_reduction_independent_audit_p_h9t802/AcceptedSource.lean",
+        "/tmp/cr_split/check/Full.lean",
+        "/tmp/cr_split/check/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt"
+      ],
+      "conclusion": "The seven-way split is appropriate for the selected class_reduction theorem. Each child isolates an analytic or geometric obligation used by its supplied proof. All names are fresh bare identifiers; DAG and worktree searches found no reservations. The dependency graph is acyclic. All seven frozen types are self-contained one-line propositions matching their prose, and independently elaborate without child implementations. Projection instances were verified from the pinned library and by Lean. Project and Mathlib revisions match the manifest. Independently rerunning Full.lean and Assembly.lean succeeded: their types match the seven proposed children and the exact frozen parent, and the assembly uses all seven children plus only the registered abstract_dimension_reduction dependency. Each child uses only propext, Classical.choice and Quot.sound. The reused dependency at commit 9ab8e5d6 has the identical frozen type and matches its comparator input hash; recompiling its accepted source confirms the same three axioms. The supplied parent argument establishes the Appendix A hypotheses, excludes d + 1 = n using M8–M9, and obtains precisely the required null set and flatness conclusion. Simon chapter-07 lines 512–583 and Appendix A support this proof structure."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree for arbitrary measures and all natural dimensions. Continuity from below proves lower semicontinuity of ball masses; positive normalization, suprema, a countable neighbourhood-basis infimum, and measurable toReal establish the conclusion. No finiteness assumption or circular reliance is hidden."
+    },
+    {
+      "key": "density_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both quantified conclusions match the prose. The proof correctly computes dilation preimages and mapped ball masses, handles finite nonzero ENNReal factors, proves preservation of the right-neighbourhood filter, and transports all positive support radii. It applies to arbitrary measures, including n = 0."
+    },
+    {
+      "key": "density_normalization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive normalization constant is chosen uniformly before Q, μ, g and e, as required. Compact finiteness and the withDensity formula prove local integrability; the stated unconditional Bochner identities prove the integral equality. All hypotheses are correctly stated and handled; the test-function restrictions are harmlessly stronger than necessary."
+    },
+    {
+      "key": "support_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-domain and bump-function constructions justify the uniform positive integral bound. Compact finiteness is used for the approximating measures and toReal comparisons. Vague convergence and the zero-ball contradiction prove the exact support conclusion without assuming finiteness of the limiting measure."
+    },
+    {
+      "key": "nonflat_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The expanded Lean set matches N(S,D). Outside S, closedness of S and openness of D give the required neighbourhood. At a flat point in S, the witness forces s ≥ 0, and the explicit radius margin makes the shifted witnesses valid using projection contraction. The argument is complete and independent."
+    },
+    {
+      "key": "nonflat_affine_preimage",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes both directions by scaling radii and error bounds through the bijective positive dilation, then applies preimage identities. It correctly permits arbitrary real β and requires only λ > 0. The exact Lean equality matches the prose and introduces no undeclared dependencies."
+    },
+    {
+      "key": "nonflat_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof tracks strictly increasing subsequences and their compositions correctly. The closed unit ball lies in D, compact exhaustion supplies the smaller domain balls, and support convergence plus the strict flatness margin excludes escaping support points. This proves the stated eventual inclusion without additional openness or closedness assumptions."
+    }
+  ],
+  "required_changes": []
+}

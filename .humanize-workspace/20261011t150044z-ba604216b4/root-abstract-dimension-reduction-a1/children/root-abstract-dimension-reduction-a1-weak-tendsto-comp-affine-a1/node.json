@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1",
+  "depth": 2,
+  "title": "Weak convergence survives translations and dilations with factors tending to 1",
+  "statement": "Let P, n, Q ∈ ℕ and μ := μH[n] on ℝ^P. Let g_k : ℝ^P → ℝ^Q (k ∈ ℕ) be locally μ-integrable, let g : ℝ^P → ℝ^Q be arbitrary, let y ∈ ℝ^P, and let c_k > 0 with c_k → 1. Suppose ∫ f g_k dμ → ∫ f g dμ for every continuous compactly supported f : ℝ^P → ℝ. Then for every such f, ∫ f(x) g_k(y + c_k x) dμ(x) → ∫ f(x) g(y + x) dμ(x).",
+  "lean_statement": "∀ (P n Q : ℕ) (gs : ℕ → Euclid P → Euclid Q) (g : Euclid P → Euclid Q) (y : Euclid P) (mus : ℕ → ℝ), (∀ k, LocallyIntegrable (gs k) μH[(n : ℝ)]) → (∀ k, 0 < mus k) → Tendsto mus atTop (𝓝 1) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g x ∂μH[(n : ℝ)]))) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • gs k (y + mus k • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • g (y + x) ∂μH[(n : ℝ)]))",
+  "lean_name": "adr_weak_tendsto_comp_affine",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-a1"
+}

@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1`
+- Child DAG node: `root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1.radial_segment_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the parent-supplied proof, i.e. Simon's "Then H^1(sing ψ ∩ B_1(0)) > 0" in the last paragraph of the proof of A.4 (chapter-A.txt lines 151–153). It is stated for an arbitrary set S containing the radial segment (0, z]. The parent applies it with S = sing ψ and z = ξ/2, |ξ| = 1. Then the segment below is {tξ : 1/4 ≤ t ≤ 1/2}, of length 1/4, as in step 7.
+1. Let a := (1/2)·z and b := z. Let [a, b] := {αa + βb : α, β ≥ 0, α + β = 1} be the closed segment (Mathlib segment ℝ a b).
+2. [a, b] ⊆ S ∩ B_1(0). Let w = αa + βb with α, β ≥ 0 and α + β = 1. Then w = t·z with t := α/2 + β.
+(a) t ≤ α + β = 1.
+(b) t > 0: if α = 0 then β = 1 and t = 1; if α > 0 then t ≥ α/2 > 0.
+(c) Hence w = t·z ∈ S by hypothesis.
+(d) |w| = t|z| ≤ |z| < 1, so w ∈ B_1(0).
+3. a ≠ b. Otherwise (1/2)·z = z, so (1/2 − 1)·z = 0. Since 1/2 − 1 ≠ 0, this gives z = 0, contrary to the hypothesis z ≠ 0. Hence edist(a, b) > 0 (Mathlib edist_pos).
+4. By Mathlib hausdorffMeasure_segment, μH[1]([a, b]) = edist(a, b), which here equals |z|/2.
+5. By monotonicity of the measure μH[1] and steps 2–4, μH[1](S ∩ B_1(0)) ≥ μH[1]([a, b]) = edist(a, b) > 0. ∎
+
+## Key steps
+
+1. every point of the segment [z/2, z] has the form t·z with 1/2 ≤ t ≤ 1, so it lies in S and, since |t·z| ≤ |z| < 1, in B_1(0)
+2. z ≠ 0 gives z/2 ≠ z, so edist(z/2, z) > 0
+3. hausdorffMeasure_segment gives μH[1]([z/2, z]) = edist(z/2, z) > 0, and monotonicity finishes
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `cmp of snapshot mathlib/Mathlib/{MeasureTheory/Measure/Hausdorff.lean,Order/Filter/AtTopBot/Basic.lean,Topology/Sequences.lean} against .lake/packages/mathlib`
+- `grep -rn 'hausdorffMeasure_segment|theorem hausdorffMeasure_lineMap_image|hausdorffMeasure_affineSegment' mathlib/Mathlib`
+- `grep -rn 'theorem extraction_forall_of_eventually|theorem extraction_of_frequently_atTop|theorem extraction_of_eventually_atTop|theorem extraction_forall_of_frequently' mathlib/Mathlib`
+- `grep -rn 'theorem tendsto_subseq_of_bounded|theorem IsCompact.tendsto_subseq|theorem tendsto_subseq_of_frequently_bounded' mathlib/Mathlib`
+- `grep -rn 'exists_accPt_of_subset_isCompact|Infinite.exists_accPt|exists_accPt_of_infinite' mathlib/Mathlib; grep -rn 'theorem accPt_iff_frequently|theorem accPt_iff_nhds' mathlib/Mathlib/Topology`
+- `grep -rn 'def Infinite.natEmbedding|theorem isCompact_sphere|theorem strictMono_nat_of_lt_succ|theorem strictAnti_nat_of_succ_lt|theorem edist_pos' mathlib/Mathlib`
+- `grep -rln 'hausdorffMeasure_segment|natEmbedding|tendsto_subseq|exists_accPt' simongmt/Poincare; grep -n '^theorem|^lemma|^def|^structure|obligation' simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean`
+- `sed -n 100,160p book/chapter-A.txt`
+- `python3 -I /tmp/fodz-tools/scope.py verifier/gmt-compare.py GMT/Ch07/Contract.lean (contract_scope replay at GMT.Ch07.main_theorem)`
+- `python3 dag.json lean_name listing (reserved names); decomposition-v1.json of root.abstract_dimension_reduction-a1 (sibling frozen types)`
+- `lake build GMT.Ch07.Submission; lake env lean /tmp/fodz-decomp/Check.lean (parent assembled from child and sibling stubs, #print axioms)`
+- `lake env lean /tmp/fodz-decomp/Child1.lean; lake env lean /tmp/fodz-decomp/Child2.lean (full child proofs, #print axioms)`
+- `lake env lean /tmp/fodz-decomp/All.lean (real child proofs + comparator-style wrappers + parent assembly, #print axioms)`
+- `lake env lean /tmp/fodz-decomp/Inst.lean (set_option pp.explicit true: instances of norm, smul, ball, μH[1])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ClusterPt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Monotone/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-prompt-v1.md`
+- `/tmp/fodz-decomp/Check.lean`
+- `/tmp/fodz-decomp/Child1.lean`
+- `/tmp/fodz-decomp/Child2.lean`
+- `/tmp/fodz-decomp/All.lean`
+- `/tmp/fodz-decomp/Inst.lean`
+
+The snapshot (project b4d606d, mathlib 25730c7c) Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The cited snapshot Mathlib files are byte-identical to .lake/packages/mathlib.
+
+Mathlib supplies everything both children need:
+- Hausdorff.lean:1112 hausdorffMeasure_segment (μH[1] (segment ℝ x y) = edist x y);
+- EMetricSpace/Defs.lean:833 edist_pos;
+- Data/Set/Finite/Basic.lean:859 Set.Infinite.natEmbedding (distinct points);
+- Topology/Sequences.lean:298 IsCompact.tendsto_subseq, with isCompact_closedBall and ProperSpace.lean:46 isCompact_sphere;
+- AtTopBot/Basic.lean:119 extraction_of_eventually_atTop (deleting the term equal to the limit);
+- Order/Monotone/Basic.lean:569/572 strictMono_nat_of_lt_succ and strictAnti_nat_of_succ_lt (inductive index choice);
+- Compact.lean:919 Set.Infinite.exists_accPt_of_subset_isCompact and ClusterPt.lean:206 accPt_iff_nhds, an alternative route.
+
+simongmt has no reusable step-9 lemma. AppendixA/Foundations.lean has only rescaling and data definitions plus finite-set dimension facts in the opposite direction, and it calls A.4 an open obligation.
+
+Book chapter-A.txt lines 142–153 confirm the argument: choose x and λ_k = 2|x_k − x|, take ω/2 ∈ sing ψ, use the ray, and conclude H^1 > 0.
+
+Compiled in the verifier-derived contract scope:
+- the parent compiles from child and sibling stubs;
+- both child types are fully proved with only propext, Classical.choice and Quot.sound;
+- the comparator-style wrappers `exact Submission.X` elaborate;
+- the inferred instances (PiLp.instNorm, WithLp.instSMul, PiLp.instEMetricSpace, WithLp.measurableSpace) match the parent type.
+
+The names adr_secant_rescaling_of_infinite and adr_radial_segment_hausdorff_pos are not reserved in dag.json.

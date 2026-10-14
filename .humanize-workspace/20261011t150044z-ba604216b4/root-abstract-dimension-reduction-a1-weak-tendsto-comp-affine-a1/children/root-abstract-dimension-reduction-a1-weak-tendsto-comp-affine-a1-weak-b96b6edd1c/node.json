@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.weak_uniform_bound-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1",
+  "depth": 3,
+  "title": "Banach–Steinhaus bound for weakly bounded sequences of locally integrable functions",
+  "statement": "Let P, Q ∈ ℕ, let μ be a measure on (the Borel σ-algebra of) ℝ^P, and let g_k : ℝ^P → ℝ^Q (k ∈ ℕ) be locally μ-integrable. Assume that for every continuous compactly supported f : ℝ^P → ℝ there is C_f with ‖∫ f g_k dμ‖ ≤ C_f for all k. Then for every compact K ⊆ ℝ^P there is a real M such that ‖∫ h g_k dμ‖ ≤ M·C for every k ∈ ℕ, every continuous h : ℝ^P → ℝ with h = 0 outside K, and every real C with |h(x)| ≤ C for all x ∈ ℝ^P.",
+  "lean_statement": "∀ (P Q : ℕ) (μ : Measure (Euclid P)) (gs : ℕ → Euclid P → Euclid Q) (K : Set (Euclid P)), (∀ k, LocallyIntegrable (gs k) μ) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∃ C, ∀ k, ‖∫ x, f x • gs k x ∂μ‖ ≤ C) → IsCompact K → ∃ M, ∀ (k : ℕ) (h : Euclid P → ℝ) (C : ℝ), Continuous h → (∀ x ∉ K, h x = 0) → (∀ x, |h x| ≤ C) → ‖∫ x, h x • gs k x ∂μ‖ ≤ M * C",
+  "lean_name": "adr_uniform_bound_of_weak_bounded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-weak-b96b6edd1c-a1"
+}

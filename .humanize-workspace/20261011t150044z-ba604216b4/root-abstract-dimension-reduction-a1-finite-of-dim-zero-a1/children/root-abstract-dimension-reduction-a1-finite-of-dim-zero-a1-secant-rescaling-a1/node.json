@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1.secant_rescaling-a1",
+  "parent_id": "root.abstract_dimension_reduction-a1.finite_of_dim_zero-a1",
+  "depth": 3,
+  "title": "Steps 1–3 of step 9: an accumulation point with admissible scales and convergent rescaled secants",
+  "statement": "Let P ∈ ℕ, let S ⊆ ℝ^P be any set, and let σ < 1 be a real number such that S ∩ B_σ(0) is infinite (|·| the Euclidean norm, B_σ(0) the open ball). Then there exist x ∈ ℝ^P, real numbers λ_k (k ∈ ℕ), points z_k ∈ ℝ^P (k ∈ ℕ) and z ∈ ℝ^P with the following properties:\n- |x| < 1;\n- λ_k > 0 for every k;\n- (λ_k) is strictly decreasing and λ_k → 0;\n- λ_k < 1 and |x| ≤ 1 − λ_k for every k;\n- x + λ_k z_k ∈ S for every k;\n- |z_k| = 1/2 for every k;\n- z_k → z and |z| = 1/2.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (σ : ℝ), σ < 1 → (S ∩ ball (0 : Euclid P) σ).Infinite → ∃ (x : Euclid P) (lams : ℕ → ℝ) (zs : ℕ → Euclid P) (z : Euclid P), ‖x‖ < 1 ∧ (∀ k, 0 < lams k) ∧ StrictAnti lams ∧ Tendsto lams atTop (𝓝 0) ∧ (∀ k, lams k < 1) ∧ (∀ k, ‖x‖ ≤ 1 - lams k) ∧ (∀ k, x + lams k • zs k ∈ S) ∧ (∀ k, ‖zs k‖ = 1 / 2) ∧ Tendsto zs atTop (𝓝 z) ∧ ‖z‖ = 1 / 2",
+  "lean_name": "adr_secant_rescaling_of_infinite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1-secant-rescaling-a1-a1"
+}

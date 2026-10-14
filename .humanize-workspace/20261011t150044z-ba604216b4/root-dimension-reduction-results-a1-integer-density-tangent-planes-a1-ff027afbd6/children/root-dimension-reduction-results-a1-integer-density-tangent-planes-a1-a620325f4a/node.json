@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_affine_preimage-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "The non-β-flat set commutes with preimages under x ↦ y₀ + λx, λ > 0 (supplied proof, step 11; Simon 3.3(2) proof, (5))",
+  "statement": "Let P, n ∈ ℕ, β ∈ ℝ, S, D ⊆ ℝ^P, y₀ ∈ ℝ^P, λ > 0 and g(x) := y₀ + λx. Notation for this statement: for S, D ⊆ ℝ^P and β ∈ ℝ let R(S, D) be the set of w ∈ ℝ^P for which there are ρ > 0 with B_ρ(w) ⊆ D, a linear subspace Q ⊆ ℝ^P with dim Q = n, and s < βρ such that |(y − w) − p_Q(y − w)| ≤ s for every y ∈ S ∩ B_ρ(w) (p_Q = Q.starProjection, the orthogonal projection onto Q); and let N(S, D) := ((S ∩ D) ∖ R(S, D)) ∪ (ℝ^P ∖ D). (N(spt μ, D μ) is the set sing'(μ) of the parent proof; in the Lean statement R and N are written out.) Then N(g⁻¹(S), g⁻¹(D)) = g⁻¹(N(S, D)).",
+  "lean_statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (y₀ : Euclid P) (lam : ℝ), 0 < lam → ((((fun x => y₀ + lam • x) ⁻¹' S) ∩ ((fun x => y₀ + lam • x) ⁻¹' Dset)) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ ((fun x => y₀ + lam • x) ⁻¹' Dset) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ ((fun x => y₀ + lam • x) ⁻¹' S), y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ ((fun x => y₀ + lam • x) ⁻¹' Dset)ᶜ = (fun x => y₀ + lam • x) ⁻¹' (((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ)",
+  "lean_name": "idtp_fons_cr_nonflat_affine_preimage",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a620325f4a-a1"
+}

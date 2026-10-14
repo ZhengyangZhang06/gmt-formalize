@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1`
+- Child DAG node: `root.abstract_dimension_reduction-a1.weak_tendsto_comp_affine-a1.weak_tendsto_moving_tests-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 5–6 of the parent proof of `adr_weak_tendsto_comp_affine`. This is the passage to the weak limit with test functions that move with k, as in Simon's 'all limits in the weak sense' (chapter-A.txt lines 125–133; departure [D2]), stated for an arbitrary measure μ. It uses the sibling lemma weak_uniform_bound (`Submission.adr_uniform_bound_of_weak_bounded`).
+1. Uniform bound. For every continuous compactly supported f, the sequence (∫ f·g_k dμ)_k converges in ℝ^Q, so it is bounded: there is C_f with ‖∫ f·g_k dμ‖ ≤ C_f for all k. Hence weak_uniform_bound applies to μ, (g_k) and the compact set K. It yields M ∈ ℝ such that ‖∫ u·g_k dμ‖ ≤ M·C for every k, every continuous u : ℝ^P → ℝ vanishing outside K and every real C with |u| ≤ C everywhere.
+2. The limit test function. h is continuous and vanishes outside K. K is compact, hence closed, so tsupport h ⊆ K and h has compact support. By hypothesis ∫ h·g_k dμ → ∫ h·g dμ.
+3. Splitting the integral. Choose k₀ with h_k = 0 outside K for all k ≥ k₀. For k ≥ k₀, h_k has compact support (as in step 2). So h_k·g_k and h·g_k are μ-integrable: each vanishes outside the compact set K, on which g_k is integrable, and the scalar factor is continuous and bounded. Hence ∫ h_k·g_k dμ − ∫ h·g_k dμ = ∫ (h_k − h)·g_k dμ, where u_k := h_k − h is continuous and vanishes outside K.
+4. The difference tends to 0. Let ε > 0 and δ := ε / (2(|M| + 1)) > 0. By uniform convergence there is k₁ with |h_k(x) − h(x)| < δ for all x ∈ ℝ^P and all k ≥ k₁. For k ≥ max(k₀, k₁), step 1 applied to u_k with C := δ gives
+‖∫ h_k·g_k dμ − ∫ h·g_k dμ‖ = ‖∫ u_k·g_k dμ‖ ≤ M·δ ≤ |M|·δ = ε·|M| / (2(|M| + 1)) < ε.
+Hence ∫ h_k·g_k dμ − ∫ h·g_k dμ → 0.
+5. Conclusion. ∫ h_k·g_k dμ = (∫ h_k·g_k dμ − ∫ h·g_k dμ) + ∫ h·g_k dμ → 0 + ∫ h·g dμ by steps 4 and 2. ∎
+Formalization notes (verified in a scratch build of exactly this statement from a stub of the sibling; standard axioms only):
+- Step 1: `isBounded_iff_forall_norm_le.1 (Metric.isBounded_range_of_tendsto _ (hweak f hf hfc))`.
+- Compact support: `HasCompactSupport.intro hK`.
+- Integrability: `LocallyIntegrable.integrable_smul_left_of_hasCompactSupport`.
+- Step 3: `integral_sub` and `sub_smul`.
+- Step 4: `Metric.tendsto_nhds`, with `filter_upwards` over `Metric.tendstoUniformly_iff`.
+- Step 5: `simpa using hdiff.add (hweak h hhc hh)`.
+
+## Key steps
+
+1. convergent sequences are bounded, so weak_uniform_bound yields M for the compact set K
+2. h has compact support, hence ∫ h g_k dμ → ∫ h g dμ by hypothesis
+3. for large k, h_k g_k and h g_k are integrable and ∫ h_k g_k − ∫ h g_k = ∫ (h_k − h) g_k with h_k − h continuous and vanishing off K
+4. uniform convergence and the bound give ‖∫ (h_k − h) g_k dμ‖ ≤ M·δ eventually for every δ > 0, so the difference tends to 0
+5. add the two limits
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; cmp of the 11 cited snapshot Mathlib files against lake-packages-25730c7c/mathlib (all byte-identical)`
+- `grep -n 'hausdorffMeasure_smul|map_homothety|IsAddLeftInvariant|hausdorffMeasure_image|map_hausdorffMeasure|hausdorffMeasure_preimage|isometry' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -n 'theorem|lemma' mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean`
+- `grep -rn 'integrable_smul_left_of_hasCompactSupport|integrableOn_isCompact' mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `grep -rn 'uniformContinuous_of_continuous' mathlib/Mathlib --include=*.lean`
+- `grep -rn 'MeasurableEmbedding.integral_map|integral_smul_measure|integral_add_left_eq_self|completeSpace_coe|isBounded_range_of_tendsto|tendstoUniformly_iff|mkContinuous_norm_le|def mkOfBound|norm_le' mathlib/Mathlib --include=*.lean`
+- `grep -rn 'def LinearMap.mkContinuous' mathlib/Mathlib --include=*.lean (variable context in Analysis/Normed/Operator/ContinuousLinearMap.lean)`
+- `grep -n 'continuous_eval_const|theorem continuous_coe' mathlib/Mathlib/Topology/ContinuousMap/Bounded/*.lean`
+- `grep -rln 'banach_steinhaus|hausdorffMeasure_smul₀|map_homothety_hausdorffMeasure|TendstoUniformly' lake-packages-25730c7c/simongmt --include=*.lean`
+- `grep -c <each proposed lean_name> runs/20261011T150044Z-ba604216b4/dag.json; grep -rl <name> gmt-ch07/GMT .swarm-worktrees/*/gmt-ch07/GMT`
+- `grep -n 'byte|Submission|candidate_inputs' verifier/gmt-compare.py; grep '^import' .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean`
+- `sed -n 110,140p book/chapter-A.txt`
+- `lake env lean /tmp/wtca-decomp/Final.lean (four exact child types + parent proved from their stubs + #print axioms)`
+- `lake env lean /tmp/wtca-decomp/AllFinal.lean (complete proofs of the four children and of the parent; #print axioms each)`
+- `lake env lean /tmp/wtca-decomp/Exp4.lean, Exp7.lean (trace.Meta.synthInstance), Exp8.lean, Exp9.lean (Submodule ℝ (Euclid P →ᵇ ℝ) instance probes; BaireSpace availability without extra imports)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BanachSteinhaus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Bounded/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt`
+- `/tmp/wtca-decomp/Final.lean`
+- `/tmp/wtca-decomp/AllFinal.lean`
+- `/tmp/wtca-decomp/ChildA.lean`
+- `/tmp/wtca-decomp/ChildBC.lean`
+- `/tmp/wtca-decomp/ChildD.lean`
+- `/tmp/wtca-decomp/Exp7.lean`
+- `/tmp/wtca-decomp/Exp9.lean`
+
+The snapshot Contract.lean is byte-identical to the workspace Submission.lean, and the 11 cited snapshot Mathlib files are byte-identical to the build packages.
+
+Mathlib supplies every tool the children need:
+- integral_comp_affine: map_homothety_hausdorffMeasure, hausdorffMeasure_smul₀ and the IsAddLeftInvariant instance for μH[d] (Hausdorff.lean); MeasurableEmbedding.integral_map, integral_smul_nnreal_measure, integral_add_left_eq_self.
+- weak_uniform_bound: banach_steinhaus (BanachSteinhaus.lean); IsClosed.completeSpace_coe, BoundedContinuousFunction.continuous_coe/mkOfBound/norm_le/norm_coe_le_norm, LinearMap.mkContinuous, ContinuousLinearMap.le_of_opNorm_le; LocallyIntegrable.integrable_smul_left_of_hasCompactSupport and integrableOn_isCompact.
+- weak_tendsto_moving_tests: Metric.isBounded_range_of_tendsto, Metric.tendstoUniformly_iff.
+- rescaled_translate_converge: HasCompactSupport.uniformContinuous_of_continuous (HeineCantor.lean).
+
+BanachSteinhaus.lean is not imported by the contract header. Its olean exists in the package tree, and adding the import to Submission.lean compiles and is allowed by gmt-compare.py, which byte-checks only frozen inputs other than Submission.lean. Baire's nonempty_interior_of_iUnion_of_closed and BaireSpace for complete metric spaces are available without it.
+
+Instance pitfall: for X : Submodule ℝ (Euclid P →ᵇ ℝ), typeclass search does not find SeminormedAddCommGroup ↥X inside Norm (↥X →L[ℝ] Euclid Q). letI Submodule.seminormedAddCommGroup X and Submodule.normedSpace X fix this, together with explicit (E := X) arguments to mkContinuous and banach_steinhaus.
+
+simongmt has no Banach–Steinhaus or Hausdorff change-of-variables lemma; its only TendstoUniformly hits are test-form topology for currents in Chapter06, so it has no relevant match.
+
+The four exact child types elaborate in the contract scope, and the parent compiles from their stubs. Complete scratch proofs of all four children and of the parent use only propext, Classical.choice and Quot.sound. The proposed names collide with nothing in dag.json or any worktree.

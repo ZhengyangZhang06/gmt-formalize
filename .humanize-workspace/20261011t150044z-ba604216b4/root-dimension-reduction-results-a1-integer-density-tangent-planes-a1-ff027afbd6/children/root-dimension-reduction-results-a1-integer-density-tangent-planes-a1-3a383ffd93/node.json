@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_rescale-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "Density ratios and supports under the rescaling μ ↦ λ^{−n}(η_{y,λ})_#μ (supplied proof, step 3)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, y ∈ ℝ^P and t > 0. Put μ^{y,t} := ofReal(t⁻¹^n)•μ.map(η_{y,t}), where η_{y,t} = dilation y t, η_{y,t}(z) = −t⁻¹y + t⁻¹z = t⁻¹(z − y). Then for every w ∈ ℝ^P: (a) limsup_{ρ→0⁺} μ^{y,t}(B_ρ(w))/(ω_nρ^n) = limsup_{ρ→0⁺} μ(B_ρ(y + tw))/(ω_nρ^n) (limsups in [0, ∞] along 𝓝[>]0, ω_n = unitBallVolume n, ENNReal division by ω_n·ofReal(ρ^n)); and (b) μ^{y,t}(B_ε(w)) ≠ 0 for every ε > 0 if and only if μ(B_ε(y + tw)) ≠ 0 for every ε > 0.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (t : ℝ), 0 < t → (∀ w : Euclid P, limsup (fun ρ : ℝ => (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => μ (ball (y + t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (y + t • w) ε) ≠ 0",
+  "lean_name": "idtp_fons_cr_density_rescale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3a383ffd93-a1"
+}

@@ -1,0 +1,49 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hausdorffMeasure_segment|hausdorffMeasure_lineMap_image|def Euclid|abbrev Euclid|IsCompact.tendsto_subseq|def Infinite.natEmbedding|isCompact_sphere|extraction_of_eventually_atTop|strictAnti_nat_of_succ_lt|strictMono_nat_of_lt_succ",
+        "secant|finite_of_dim_zero|sing.*Finite|adr_secant_rescaling_of_infinite|adr_radial_segment_hausdorff_pos",
+        "python3 /tmp/fodz-audit-generate.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fodz-independent-audit-grcc84l_/Audit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fodz-decomp/Inst.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-finite-of-dim-zero-a1/decomposition-v1.json",
+        "/tmp/fodz-decomp/Child1.lean",
+        "/tmp/fodz-decomp/Child2.lean",
+        "/tmp/fodz-decomp/Check.lean",
+        "/tmp/fodz-decomp/Inst.lean",
+        "/tmp/fodz-audit-generate.py",
+        "/tmp/fodz-independent-audit-grcc84l_/Audit.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte compatibility of the relevant snapshot sources with the build sources. The snapshot supplies the required compactness, subsequence extraction and segment-measure results. Both frozen child propositions elaborate before their declarations, and both comparator-style wrappers compile. Explicit instance inspection confirms Euclidean norms, scalar multiplication, balls and Hausdorff measure. Both child proofs compile using only propext, Classical.choice and Quot.sound. The selected parent's exact frozen conclusion also compiles from these children with precisely its two frozen sibling contracts supplied as hypotheses, using only those standard axioms. The augmented dependency graph is acyclic, and both proposed names are bare and unreserved. The split appropriately isolates the extraction and measure arguments needed for this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "secant_rescaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition matches every hypothesis and all ten conclusions. Independently checked the distinct-point selection, compactness extraction, deletion of the possible limit term, recursive choice of decreasing admissible scales, sphere subsequence, and final normalization identities. Subsequences preserve all required inequalities and convergence. Neither closedness of S nor membership x ∈ S is needed. The proof is complete, non-circular and directly usable by the parent; the child has no dependencies."
+    },
+    {
+      "key": "radial_segment_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the stated radial hypothesis and positivity conclusion. The supplied proof establishes that [z/2,z] lies in S and the open unit ball, uses z ≠ 0 to distinguish its endpoints, and applies hausdorffMeasure_segment and measure monotonicity. No measurability or closedness assumption on S is required. Every hypothesis is used correctly, and the complete proof has no circular reliance or child dependencies."
+    }
+  ],
+  "required_changes": []
+}
