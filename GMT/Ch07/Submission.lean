@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.5, proof (measure of a projection box)**: let `G ⊆ ℝᴾ` be a subspace with
+orthogonal projections `p = p_G` and `q = p_{G^⊥}`, let `σ` be carried by `G^⊥`, let `E ⊆ G` be
+Borel and let `ν(A) = ∫_E σ(A − t) dHᵏ(t)` for every Borel `A`.  Then
+`ν(p⁻¹(C) ∩ q⁻¹(B)) = Hᵏ(E ∩ C) σ(B)` for all Borel `C`, `B`.  For `t ∈ G` and `y ∈ G^⊥`,
+`p(t + y) = t` and `q(t + y) = y`, so the section `A − t` of `A = p⁻¹(C) ∩ q⁻¹(B)` meets `G^⊥` in
+`B ∩ G^⊥` if `t ∈ C` and in `∅` otherwise; as `σ` is carried by `G^⊥`, `σ(A − t) = 1_C(t) σ(B)`
+for `t ∈ E`, and integrating over `E` gives `Hᵏ(E ∩ C) σ(B)`. -/
+theorem Submission.dimred_cs_sos_mt_product_box_measure : ∀ (P k : ℕ) (G : Submodule ℝ (Euclid P)) (ν σ : Measure (Euclid P)) (E : Set (Euclid P)), σ (Gᗮ : Set (Euclid P))ᶜ = 0 → MeasurableSet E → E ⊆ (G : Set (Euclid P)) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in E, σ ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → ∀ C B : Set (Euclid P), MeasurableSet C → MeasurableSet B → ν (G.starProjection ⁻¹' C ∩ Gᗮ.starProjection ⁻¹' B) = μHE[k] (E ∩ C) * σ B := by
+  intro P k G ν σ E hσ hE hEG hν C B hC hB
+  -- for `t ∈ G` and `y ∈ G^⊥`: `p(t + y) = t` and `q(t + y) = y`
+  have hpq : ∀ t ∈ G, ∀ y ∈ Gᗮ,
+      G.starProjection (t + y) = t ∧ Gᗮ.starProjection (t + y) = y := by
+    intro t ht y hy
+    have hp : G.starProjection (t + y) = t := by
+      rw [map_add, Submodule.starProjection_eq_self_iff.2 ht,
+        (Submodule.starProjection_apply_eq_zero_iff G).2 hy, add_zero]
+    exact ⟨hp, by rw [Submodule.starProjection_orthogonal_val, hp, add_sub_cancel_left]⟩
+  -- `σ` is carried by `G^⊥`, so `σ(A − t) = 1_C(t) σ(B)` for `t ∈ E`
+  have hsec : ∀ t ∈ E, σ ((fun y => t + y) ⁻¹' (G.starProjection ⁻¹' C ∩
+      Gᗮ.starProjection ⁻¹' B)) = C.indicator (fun _ => σ B) t := by
+    intro t ht
+    rw [← measure_inter_conull (s := (fun y => t + y) ⁻¹' _) hσ]
+    by_cases htC : t ∈ C
+    · rw [indicator_of_mem htC, ← measure_inter_conull (s := B) hσ]
+      congr 1
+      ext y
+      simp only [mem_inter_iff, mem_preimage, SetLike.mem_coe]
+      constructor
+      · rintro ⟨⟨-, hyB⟩, hy⟩
+        rw [(hpq t (hEG ht) y hy).2] at hyB
+        exact ⟨hyB, hy⟩
+      · rintro ⟨hyB, hy⟩
+        rw [(hpq t (hEG ht) y hy).1, (hpq t (hEG ht) y hy).2]
+        exact ⟨⟨htC, hyB⟩, hy⟩
+    · rw [indicator_of_notMem htC]
+      refine measure_mono_null (fun y hy => ?_) measure_empty
+      have h1 : G.starProjection (t + y) ∈ C := hy.1.1
+      rw [(hpq t (hEG ht) y hy.2).1] at h1
+      exact (htC h1).elim
+  -- integrating `1_C σ(B)` over `E` gives `σ(B) Hᵏ(C ∩ E)`
+  rw [hν _ ((G.starProjection.continuous.measurable hC).inter
+      (Gᗮ.starProjection.continuous.measurable hB)), setLIntegral_congr_fun hE hsec,
+    lintegral_indicator_const hC, Measure.restrict_apply hC, inter_comm C E, mul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
