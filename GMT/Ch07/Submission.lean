@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A smooth cut-off in `V` that equals `1` off a set of small measure** (smooth cut-off step
+of the approximation of the mass of `τ(M, θ, ξ)` by test forms).  `ν` is finite, so it is inner
+regular by compact sets: there is a compact `K ⊆ V` with `ν(V \ K) < δ`.  Choose an open `V₀`
+with `K ⊆ V₀` and `closure V₀` compact and contained in `V`.  The smooth Urysohn lemma gives a
+`C^∞` function `χ` with values in `[0, 1]`, `support χ = V₀` and `χ = 1` exactly on `K`.  Then
+`tsupport χ = closure V₀` is compact and contained in `V`, and
+`ν{χ ≠ 1} = ν(Kᶜ) ≤ ν(Vᶜ) + ν(V \ K) = ν(V \ K) < δ`. -/
+theorem Submission.rsd_mw_tfa_smooth_cutoff : ∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → ∀ δ : ℝ, 0 < δ → ∃ χ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ V ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ ν {x | χ x ≠ 1} < ENNReal.ofReal δ := by
+  intro P ν V hν hV hVc δ hδ
+  -- Step 1: a compact core `K ⊆ V` with `ν (V \ K) < δ`, by inner regularity of finite `ν`
+  obtain ⟨K, hKV, hKc, hVK⟩ := hV.measurableSet.exists_isCompact_sdiff_lt (measure_ne_top ν V)
+    (ENNReal.ofReal_pos.mpr hδ).ne'
+  -- Step 2: an open `V₀ ⊇ K` whose closure is compact and contained in `V`
+  obtain ⟨V₀, hV₀o, hKV₀, hV₀V, hV₀c⟩ := exists_open_between_and_isCompact_closure hKc hV hKV
+  -- Step 3: smooth Urysohn: `χ` is `C^∞`, `[0, 1]`-valued, `support χ = V₀`, `χ = 1` exactly on `K`
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hV₀o hKc.isClosed hKV₀
+  -- Step 4: `tsupport χ = closure V₀`
+  have hts : tsupport χ = closure V₀ := by rw [tsupport, hχs]
+  refine ⟨χ, hχ, ?_, hts ▸ hV₀V, fun x => hχr (mem_range_self x), ?_⟩
+  · rw [HasCompactSupport, hts]
+    exact hV₀c
+  -- Step 5: `{χ ≠ 1} = Kᶜ ⊆ Vᶜ ∪ (V \ K)` and `ν Vᶜ = 0`
+  have hset : {x | χ x ≠ 1} = Kᶜ := by
+    ext x
+    exact (hχ1 x).not.symm
+  calc ν {x | χ x ≠ 1} = ν Kᶜ := by rw [hset]
+    _ ≤ ν (Vᶜ ∪ V \ K) := measure_mono fun x hx => by
+        by_cases h : x ∈ V
+        · exact Or.inr ⟨h, hx⟩
+        · exact Or.inl h
+    _ ≤ ν Vᶜ + ν (V \ K) := measure_union_le _ _
+    _ = ν (V \ K) := by rw [hVc, zero_add]
+    _ < ENNReal.ofReal δ := hVK
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
