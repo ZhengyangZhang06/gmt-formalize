@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fa27f49193de9fc19ddb67458b50058618675c393050b4bd6b13770ad7b5e5bd",
+  "git_delta": {
+    "base_commit": "7c220cee33c440b56708a848e67aa47ec66a2016",
+    "candidate_commit": "ebe49e2031b57d0c024fe300cd53653504e90a88",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_psf_total_mass",
+    "diff_sha256": "e9960f1588d009e32194e8d38e5dbbbb50b988933840ab3e1955a6e9be94d099",
+    "source_sha256": "e11d63520cca7c4ba41722256f5c3f56afab373a7d2b39192eb8f0231a13f471",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_psf_total_mass",
+      "statement": "∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ (ball z (2 * r)) ≠ 0 → μ (ball z (2 * r)) ≠ ∞ → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → μ₀ univ ≠ 0 ∧ μ₀ univ ≠ ∞ ∧ μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 ∧ ∀ (x : Euclid P) (lam : ℝ), 0 < lam → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ 0 ∧ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
