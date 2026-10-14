@@ -2571,6 +2571,66 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Monotonicity gives a lower mass bound** (Simon 7.3.1 and 7.3.3(1), chapter-07.txt
+lines 326–330 and 420–430, via the monotonicity formula 4.7 of Ch. 4): if
+`f(τ) = e^{Λτ}τ⁻ⁿ m(τ)` is nondecreasing on `(0, ρ)` and `m(τ)/(ωₙτⁿ) → θ ≥ 1` as `τ ↓ 0`, then
+`m(σ) ≥ e^{-Λσ}ωₙσⁿ` for `0 < σ < ρ`.  As `0 < ωₙ < ∞`, `f(τ) = e^{Λτ} · ωₙ(m(τ)/(ωₙτⁿ))` tends
+to `ωₙθ` as `τ ↓ 0`, so `ωₙ ≤ ωₙθ ≤ f(σ)`; multiplying by `e^{-Λσ}σⁿ` gives the bound. -/
+theorem Submission.idtp_fons_cc_mb_monotone_lower_bound : ∀ (n : ℕ) (Λ ρ σ θ : ℝ) (m : ℝ → ℝ≥0∞), 1 ≤ θ → 0 < σ → σ < ρ → MonotoneOn (fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ) / τ ^ n) * m τ) (Ioo 0 ρ) → Tendsto (fun τ : ℝ => m τ / (unitBallVolume n * ENNReal.ofReal (τ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ m σ := by
+  intro n Λ ρ σ θ m hθ hσ hσρ hmono hlim
+  -- Step 1: `0 < ω_n < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : Euclid n)) (r := 1)).ne
+  -- Step 2: factorization `f(τ) = ofReal(e^{Λτ}) · (ω_n · q(τ))` for `τ > 0`
+  have hfac : ∀ τ : ℝ, 0 < τ → ENNReal.ofReal (Real.exp (Λ * τ) / τ ^ n) * m τ =
+      ENNReal.ofReal (Real.exp (Λ * τ)) *
+        (unitBallVolume n * (m τ / (unitBallVolume n * ENNReal.ofReal (τ ^ n)))) := by
+    intro τ hτ
+    rw [ENNReal.ofReal_div_of_pos (pow_pos hτ n), ← mul_div_assoc,
+      ENNReal.mul_div_mul_left _ _ hω0 hωtop, div_eq_mul_inv, div_eq_mul_inv]
+    ring
+  -- Step 3: `f(τ) → ω_n · ofReal θ` as `τ → 0⁺`
+  have hexp : Tendsto (fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ))) (𝓝[>] 0) (𝓝 1) := by
+    have hc : Continuous fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ)) :=
+      ENNReal.continuous_ofReal.comp (Real.continuous_exp.comp (continuous_const_mul Λ))
+    have h := (hc.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+    simpa only [mul_zero, Real.exp_zero, ENNReal.ofReal_one] using h
+  have hf : Tendsto (fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ) / τ ^ n) * m τ) (𝓝[>] 0)
+      (𝓝 (unitBallVolume n * ENNReal.ofReal θ)) := by
+    have h := ENNReal.Tendsto.mul hexp (Or.inl one_ne_zero)
+      (ENNReal.Tendsto.const_mul hlim (Or.inr hωtop)) (Or.inr ENNReal.one_ne_top)
+    rw [one_mul] at h
+    refine h.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with τ hτ
+    exact (hfac τ hτ).symm
+  -- Step 4: monotonicity on `(0, σ] ⊆ (0, ρ)` gives `ω_n · ofReal θ ≤ f(σ)`
+  have hle : unitBallVolume n * ENNReal.ofReal θ ≤
+      ENNReal.ofReal (Real.exp (Λ * σ) / σ ^ n) * m σ := by
+    refine le_of_tendsto hf ?_
+    filter_upwards [Ioc_mem_nhdsGT hσ] with τ hτ
+    exact hmono ⟨hτ.1, hτ.2.trans_lt hσρ⟩ ⟨hσ, hσρ⟩ hτ.2
+  -- Step 5: `θ ≥ 1` gives `ω_n ≤ f(σ)`
+  have hω : unitBallVolume n ≤ ENNReal.ofReal (Real.exp (Λ * σ) / σ ^ n) * m σ :=
+    calc unitBallVolume n = unitBallVolume n * 1 := (mul_one _).symm
+      _ ≤ unitBallVolume n * ENNReal.ofReal θ := by gcongr; exact ENNReal.one_le_ofReal.2 hθ
+      _ ≤ _ := hle
+  -- Step 6: multiply by `ofReal(e^{-Λσ}) · ofReal(σⁿ)`; the real weight
+  -- `e^{-Λσ} · (e^{Λσ}/σⁿ) · σⁿ` equals `1`
+  have hreal : Real.exp (-(Λ * σ)) * (Real.exp (Λ * σ) / σ ^ n) * σ ^ n = 1 := by
+    rw [mul_assoc, div_mul_cancel₀ _ (pow_pos hσ n).ne', ← Real.exp_add, neg_add_cancel,
+      Real.exp_zero]
+  calc ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n))
+      ≤ ENNReal.ofReal (Real.exp (-(Λ * σ))) *
+          (ENNReal.ofReal (Real.exp (Λ * σ) / σ ^ n) * m σ * ENNReal.ofReal (σ ^ n)) := by
+        gcongr
+    _ = ENNReal.ofReal (Real.exp (-(Λ * σ)) * (Real.exp (Λ * σ) / σ ^ n) * σ ^ n) * m σ := by
+        rw [ENNReal.ofReal_mul (mul_nonneg (Real.exp_pos _).le
+            (div_nonneg (Real.exp_pos _).le (pow_pos hσ n).le)),
+          ENNReal.ofReal_mul (Real.exp_pos _).le]
+        ring
+    _ = m σ := by rw [hreal, ENNReal.ofReal_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
