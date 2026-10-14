@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "862f9570751a414b54d4b74235f600d139c316d166dc52942e31733a8a22d9c2",
+  "git_delta": {
+    "base_commit": "59636c599c61d3496a78674250fe1301c9d17d86",
+    "candidate_commit": "e4740ba2bbdc4a8328c80e001891e231d7ed5579",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_acont_great_circle",
+    "diff_sha256": "3973b9ce564eff1ea30b0245317d7836cae8a8b50f4cff5798c790ed0a185297",
+    "source_sha256": "d348751ed483cfc784514d1a6cff319e20e298d6a173773b15f7dba7655905cc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_acont_great_circle",
+      "statement": "∀ (P : ℕ) (z e : Euclid P), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → (∀ φ : ℝ, ‖Real.cos φ • z + Real.sin φ • e‖ = 1) ∧ (∀ φ ψ : ℝ, ‖(Real.cos φ • z + Real.sin φ • e) - (Real.cos ψ • z + Real.sin ψ • e)‖ ≤ |φ - ψ|) ∧ ∀ φ : ℝ, ‖Real.sin φ • z - Real.cos φ • e‖ = 1 ∧ inner ℝ (Real.cos φ • z + Real.sin φ • e) (Real.sin φ • z - Real.cos φ • e) = 0 ∧ ∀ ψ : ℝ, Real.cos ψ • (Real.cos φ • z + Real.sin φ • e) + Real.sin ψ • (Real.sin φ • z - Real.cos φ • e) = Real.cos (φ - ψ) • z + Real.sin (φ - ψ) • e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
