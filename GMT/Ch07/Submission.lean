@@ -7873,6 +7873,136 @@ theorem Submission.dtc_bc_lc_sl_chart_coarea : ∀ (P n : ℕ) (ψ : Euclid (n +
     rw [hwx] at h3
     exact (h2 _).1 ((h1 _).2 h3)
 
+/-- **Simon Ch. 6, Lemma 4.1 on a countably `(n+1)`-rectifiable set** (with Ch. 3, 2.1 and
+2.8–2.10(2)): tangential gradient, co-area formula and slices of a Lipschitz function.  Let
+`M ⊆ ℝᴾ` be Borel, countably `(n+1)`-rectifiable and locally `H^{n+1}`-finite, and let `f` be
+`L`-Lipschitz.  There is a Borel `G = ∇^M f` with `|G| ≤ L` such that
+(1) at `H^{n+1}`-a.e. `x ∈ M`, `TₓM` exists, `G(x) ∈ TₓM`, and for every `ε > 0` the set of
+`y ∈ M ∩ B_r(x)` with `|f(y) − f(x) − ⟨G(x), y − x⟩| > ε|y − x|` has `H^{n+1}`-measure `o(r^{n+1})`;
+(2) `∫_ℝ ∫_{M ∩ f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}` for every Borel `g ≥ 0`;
+(3) for a.e. `t`, `M ∩ f⁻¹(t)` is countably `n`-rectifiable and, at `Hⁿ`-a.e. `x` of it,
+`G(x) ≠ 0` and its approximate tangent space is `TₓM ∩ G(x)^⊥`.
+
+Proof sketch:
+* Cover `M` up to an `H^{n+1}`-null set by disjoint Borel pieces `ψ_j(Y_j)`, where `ψ_j` is a
+  `C¹` immersion, injective on an open `V_j ⊇ closure Y_j`, `f ∘ ψ_j = F_j` is `C¹` on `Y_j`, and
+  `T_{ψ_j y}M = Dψ_j(y)ℝ^{n+1}`.
+* Let `G(ψ_j y)` be the vector of `Dψ_j(y)ℝ^{n+1}` with `⟨G(ψ_j y), Dψ_j(y)e⟩ = DF_j(y)e`, and
+  `G = 0` off the pieces, after trimming each `Y_j` by a null set so that `|G| ≤ L`.
+* (1) holds on each piece, by the first-order expansion of `F_j` and the density zero of
+  `M \ ψ_j(Y_j)` at a.e. point of `ψ_j(Y_j)`.
+* By Eilenberg's inequality, the slices of the null remainder are `Hⁿ`-null for a.e. `t`.  The
+  `C¹` co-area formula on each piece, summed over `j`, gives (2).
+* For a.e. `t`, the `C¹` slices of the pieces are countably `n`-rectifiable with approximate
+  tangent planes `Dψ_j(y)ℝ^{n+1} ∩ G^⊥ = TₓM ∩ G^⊥`; they glue to (3) by tangent locality. -/
+theorem Submission.dtc_bc_lc_sl_coarea : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet M → CountablyRectifiable (n + 1) M → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → LipschitzWith L f → ∃ G : Euclid P → Euclid P, Measurable G ∧ (∀ x, ‖G x‖ ≤ L) ∧ (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ G x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) ∧ (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) ∧ ∀ᵐ t, CountablyRectifiable n (M ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (M ∩ f ⁻¹' {t}) x (approxTangentPlane (n + 1) M x ⊓ (ℝ ∙ G x)ᗮ) := by
+  -- the children and sibling results assembled below
+  have h_pieces := Submission.dtc_bc_lc_sl_chart_pieces
+  have h_chart := Submission.dtc_bc_lc_sl_chart_coarea
+  have h_eil := Submission.dtc_bc_lc_sl_eilenberg
+  have h_grad := Submission.dtc_bc_lc_sl_co_gradient_field
+  have h_adiff := Submission.dtc_bc_lc_sl_co_approx_differentiable
+  have h_cglue := Submission.dtc_bc_lc_sl_co_coarea_glue
+  have h_sglue := Submission.dtc_bc_lc_sl_co_slice_glue
+  intro P n M f L hM hrect hfin hf
+  -- `TₓM` is the approximate tangent plane of `M` at `x` whenever one exists (uniqueness)
+  have hplane : ∀ {x : Euclid P} {Q : Submodule ℝ (Euclid P)},
+      HasApproximateTangentSpaceAt (n + 1) M x Q → approxTangentPlane (n + 1) M x = Q := by
+    intro x Q h
+    have hex : ∃ Q', HasApproximateTangentSpaceAt (n + 1) M x Q' := ⟨Q, h⟩
+    rw [approxTangentPlane, dite_eq_left hex]
+    exact hex.choose_spec.unique h
+  have hfm : Measurable f := hf.continuous.measurable
+  -- Step 1: `C¹` chart pieces `ψ_j(Y_j)` of `M`, with `f ∘ ψ_j = F_j` on `Y_j` and
+  -- `T_{ψ_j y}M = Dψ_j(y)ℝ^{n+1}`, covering `M` up to an `H^{n+1}`-null set
+  obtain ⟨ψ, V, Y, F, hch, hdisj, hnull⟩ := h_pieces P n M f L hM hrect hfin hf
+  have hO : ∀ j, IsOpen (V j) := fun j => (hch j).1
+  have hψC : ∀ j, ContDiff ℝ 1 (ψ j) := fun j => (hch j).2.1
+  have hinj : ∀ j, InjOn (ψ j) (V j) := fun j => (hch j).2.2.1
+  have hdinj : ∀ j, ∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y) := fun j => (hch j).2.2.2.1
+  have hFC : ∀ j, ContDiff ℝ 1 (F j) := fun j => (hch j).2.2.2.2.1
+  have hYm : ∀ j, MeasurableSet (Y j) := fun j => (hch j).2.2.2.2.2.1
+  have hYc : ∀ j, IsCompact (closure (Y j)) := fun j => (hch j).2.2.2.2.2.2.1
+  have hYV : ∀ j, closure (Y j) ⊆ V j := fun j => (hch j).2.2.2.2.2.2.2.1
+  have hYM : ∀ j, ψ j '' Y j ⊆ M := fun j => (hch j).2.2.2.2.2.2.2.2.1
+  have hfF : ∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y := fun j => (hch j).2.2.2.2.2.2.2.2.2.1
+  have htan : ∀ j, ∀ y ∈ Y j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y)
+      (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) :=
+    fun j => (hch j).2.2.2.2.2.2.2.2.2.2
+  -- Step 2: `G = ∇^M f` (Simon Ch. 3, 2.1) on trimmed pieces `ψ_j(Y'_j)`, Borel, `|G| ≤ L`
+  obtain ⟨Y', G, hY'sub, hY'meas, hA'meas, hnull', hGm, hGb, hGc⟩ :=
+    h_grad P (n + 1) M f L ψ V Y F hf hψC hinj hdinj hFC hYm hYc hYV hfF hdisj hnull
+  -- the trimmed pieces keep the chart properties of step 1
+  have hY'c : ∀ j, IsCompact (closure (Y' j)) := fun j =>
+    (hYc j).of_isClosed_subset isClosed_closure (closure_mono (hY'sub j))
+  have hY'V : ∀ j, closure (Y' j) ⊆ V j := fun j => (closure_mono (hY'sub j)).trans (hYV j)
+  have hY'M : ∀ j, ψ j '' Y' j ⊆ M := fun j => (image_mono (hY'sub j)).trans (hYM j)
+  have hfF' : ∀ j, ∀ y ∈ Y' j, f (ψ j y) = F j y := fun j y hy => hfF j y (hY'sub j hy)
+  have htan' : ∀ j, ∀ y ∈ Y' j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y)
+      (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) :=
+    fun j y hy => htan j y (hY'sub j hy)
+  have hdisj' : Pairwise (fun i j => Disjoint (ψ i '' Y' i) (ψ j '' Y' j)) := fun i j hij =>
+    (hdisj hij).mono (image_mono (hY'sub i)) (image_mono (hY'sub j))
+  -- Step 3, conclusion (1): approximate differentiability along the charts
+  have h1 := h_adiff P (n + 1) M f G ψ V Y' F hM hfin hψC hinj hdinj hFC hY'c hY'V hA'meas hY'M
+    hfF' htan' hGc hnull'
+  -- the remainder `M₀ = M \ ⋃ⱼ ψ_j(Y'_j)` is `H^{n+1}`-null, so by Eilenberg's inequality
+  -- `Hⁿ(M₀ ∩ f⁻¹(t)) = 0` for a.e. `t`
+  have hM0 : ∀ᵐ t, μHE[n] ((M \ ⋃ j, ψ j '' Y' j) ∩ f ⁻¹' {t}) = 0 := by
+    obtain ⟨C, hC⟩ := h_eil n
+    obtain ⟨φ, hφm, hφle, hφint⟩ := hC P (M \ ⋃ j, ψ j '' Y' j) f L hf.lipschitzOnWith
+    rw [hnull', mul_zero] at hφint
+    have h0 : ∫⁻ t, φ t = 0 := le_antisymm hφint zero_le
+    filter_upwards [(lintegral_eq_zero_iff hφm).1 h0] with t ht
+    exact le_antisymm ((hφle t).trans (le_of_eq ht)) zero_le
+  -- the `C¹` co-area formula and slices on each trimmed piece
+  have hchart := fun j => h_chart P n (ψ j) (V j) (Y' j) (F j) G (hO j) (hψC j) (hinj j)
+    (hdinj j) (hFC j) (hY'meas j) (hY'c j) (hY'V j) (hGc j)
+  -- `ψ_j(Y'_j ∩ F_j⁻¹(t)) = ψ_j(Y'_j) ∩ f⁻¹(t)`, as `f ∘ ψ_j = F_j` on `Y'_j`
+  have hset : ∀ j t, ψ j '' (Y' j ∩ F j ⁻¹' {t}) = ψ j '' Y' j ∩ f ⁻¹' {t} := by
+    intro j t
+    ext x
+    constructor
+    · rintro ⟨y, ⟨hy, hFy⟩, rfl⟩
+      refine ⟨⟨y, hy, rfl⟩, ?_⟩
+      simp only [mem_preimage, mem_singleton_iff] at hFy ⊢
+      rw [hfF' j y hy]
+      exact hFy
+    · rintro ⟨⟨y, hy, rfl⟩, hfy⟩
+      refine ⟨y, ⟨hy, ?_⟩, rfl⟩
+      simp only [mem_preimage, mem_singleton_iff] at hfy ⊢
+      rw [← hfF' j y hy]
+      exact hfy
+  -- Step 4, conclusion (2): sum the co-area formulas of the pieces
+  have h2 := h_cglue P n M f G (fun j => ψ j '' Y' j) hM hfm hA'meas hY'M hdisj' hnull' hM0
+    (fun j g hg => by
+      have := (hchart j).1 g hg
+      simp only [hset j] at this
+      exact this)
+  -- Step 5, conclusion (3): for a.e. `t`, the slice of each piece is countably `n`-rectifiable
+  -- with approximate tangent plane `T_xM ⊓ G(x)^⊥` at a.e. point, `T_{ψ_j y}M = Dψ_j(y)ℝ^{n+1}`
+  have hpiece : ∀ j, ∀ᵐ t, CountablyRectifiable n (ψ j '' Y' j ∩ f ⁻¹' {t}) ∧
+      ∀ᵐ x ∂(μHE[n].restrict (ψ j '' Y' j ∩ f ⁻¹' {t})), G x ≠ 0 ∧
+        HasApproximateTangentSpaceAt n (ψ j '' Y' j ∩ f ⁻¹' {t}) x
+          (approxTangentPlane (n + 1) M x ⊓ (ℝ ∙ G x)ᗮ) := by
+    intro j
+    filter_upwards [(hchart j).2] with t ht
+    obtain ⟨hcr, hae⟩ := ht
+    rw [hset j t] at hcr hae
+    refine ⟨hcr, ?_⟩
+    have hmeas : MeasurableSet (ψ j '' Y' j ∩ f ⁻¹' {t}) :=
+      (hA'meas j).inter (hfm (measurableSet_singleton t))
+    filter_upwards [hae, ae_restrict_mem hmeas] with x hx hxS
+    obtain ⟨hG0, htx⟩ := hx
+    obtain ⟨⟨y, hy, rfl⟩, -⟩ := hxS
+    refine ⟨hG0, ?_⟩
+    rw [hplane (htan' j y hy)]
+    exact htx y hy rfl
+  -- the slices of the pieces glue to the slices of `M`
+  have h3 := h_sglue P n M f G (approxTangentPlane (n + 1) M) (fun j => ψ j '' Y' j) L hM hfm
+    hfin hGb h2 hA'meas hY'M hM0 hpiece
+  exact ⟨G, hGm, hGb, h1, h2, h3⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
