@@ -7,6 +7,7 @@ import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Poincare.SimonGMT.Chapter02.AreaLipschitz
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -7854,6 +7855,189 @@ theorem Submission.cmcdt_lpi_lipschitz_piece_im : ((∀ (N N' k : ℕ) (A : Eucl
   rw [← hCU]
   exact hasSum_integral_iUnion hCm hCd
     (hint.mono_set (iUnion_subset fun l => (hCA l).trans fun u hu => hu.1))
+
+/-- **Integrality of the Lipschitz push-forward** (Simon Ch. 6, 2.29 and 3.6–3.9; step 7 of the
+proof of the Lipschitz push-forward used by the deformation theorem 6.5.1).  Assume (CB), (VO),
+(MR), (IMC) and (IMS).  Let `X ∈ 𝒟ₖ₊₁(ℝᴺ)` be integer multiplicity with `M(X) < ∞`, `F`
+`Λ`-Lipschitz, and `S ∈ 𝒟ₖ₊₁(ℝᴺ')` with `X(ηⱼ) → S(ω)`, where `ηⱼ = Fⱼ^#ω` near `spt X` for
+smooth `Λ`-Lipschitz `Fⱼ → F` uniformly.  Then `S` is integer multiplicity.
+* piece_representation: `X(η) = Σᵢ ∫_{Aᵢ} wᵢ η(Gᵢ)(DGᵢ e)` with `Σᵢ ∫_{Aᵢ} |wᵢ| cᵢ ≤ M(X)`.
+* On `Aᵢ ⊆ Gᵢ⁻¹(spt X)` the chain rule turns the `i`-th term of `X(ηⱼ)` into
+  `Tᵢⱼ(ω) = ∫_{Aᵢ} wᵢ ω(Fⱼ ∘ Gᵢ)(D(Fⱼ ∘ Gᵢ) e)`, and (L1) bounds it by `Λⁿ C ∫_{Aᵢ} |wᵢ| cᵢ`
+  when `|ω| ≤ C`.
+* pullback_continuity gives `Tᵢⱼ(ω) → Tᵢ(ω) = ∫_{Aᵢ} wᵢ ω(F ∘ Gᵢ)(D(F ∘ Gᵢ) e)`, and Tannery's
+  theorem gives `S(ω) = Σᵢ Tᵢ(ω)`.
+* piece_current makes each `Tᵢ` an integer multiplicity `Sᵢ` with `M(Sᵢ) ≤ Λⁿ ∫_{Aᵢ} |wᵢ| cᵢ`;
+  (IMS) sums the `Sᵢ` to an integer multiplicity current, which equals `S`. -/
+theorem Submission.cmcdt_lpi_pushforward_im : ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ((∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)) (S : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1)), LipschitzWith Λ F → IsIntegerMultiplicity X → IsCompact X.support → X.mass < ∞ → (∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ TendstoUniformly Fs F atTop ∧ ∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), ∃ ηs : ℕ → TestFormOn (univ : Set (Euclid N)) (k + 1), (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) (k + 1)) x = ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) ∧ Tendsto (fun j => X (ηs j)) atTop (𝓝 (S ω))) → IsIntegerMultiplicity S := by
+  intro hCB hVO hMR hIMC hIMS N N' k Λ F X S hF hX _hXc hXm hFs
+  obtain ⟨Fs, hFs_smooth, hFs_lip, hFs_tend, hη⟩ := hFs
+  -- (IMSc): (IMS) applied to (VO), (MR) and (IMC)
+  have hIMSc := hIMS hVO hMR hIMC
+  -- Step 1: `X(η) = Σᵢ ∫_{Aᵢ} wᵢ η(Gᵢ)(DGᵢ e)`, with `Bᵢ = ∫_{Aᵢ} |wᵢ| cᵢ` and `Σᵢ Bᵢ ≤ M(X) < ∞`
+  obtain ⟨G, A, w, c, hG_lip, hA, hw, -, hG_diff, hG_spt, hw_int, hc, hB, hXsum⟩ :=
+    Submission.cmcdt_lpi_piece_representation hCB hVO hMR hIMC N k X hX hXm
+  choose L hL using hG_lip
+  obtain ⟨B, hBeq⟩ : ∃ B : ℕ → ℝ≥0∞,
+      ∀ i, B i = ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) := ⟨_, fun _ => rfl⟩
+  have hBsum : ∑' i, B i ≠ ∞ := by
+    simp only [hBeq]
+    exact (hB.trans_lt hXm).ne
+  have hBi : ∀ i, B i ≠ ∞ := fun i => ne_top_of_le_ne_top hBsum (ENNReal.le_tsum i)
+  -- Step 2: the `Fⱼ` are differentiable everywhere
+  have hFs_diff : ∀ j, Differentiable ℝ (Fs j) := fun j =>
+    (hFs_smooth j).differentiable (by simp)
+  -- Step 3 (chain rule): on `Aᵢ`, `ω(Fⱼ ∘ Gᵢ)(D(Fⱼ ∘ Gᵢ) e) = βᵢⱼ(DGᵢ e)`,
+  -- where `βᵢⱼ = ω(Fⱼ ∘ Gᵢ) ∘ DFⱼ(Gᵢ)`
+  have hchain : ∀ i j, ∀ u ∈ A i, ∀ ω : DifferentialForm (Euclid N') (k + 1),
+      ω (Fs j (G i u)) (fun a => fderiv ℝ (fun v => Fs j (G i v)) u (EuclideanSpace.single a 1)) =
+        ((ω (Fs j (G i u))).compContinuousLinearMap (fderiv ℝ (Fs j) (G i u)))
+          (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1)) := by
+    intro i j u hu ω
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      fderiv_fun_comp u (hFs_diff j (G i u)) (hG_diff i u hu)]
+    rfl
+  -- Step 6 (pointwise): if `|ω| ≤ C`, then `|ω(Fⱼ ∘ Gᵢ)(D(Fⱼ ∘ Gᵢ) e)| ≤ cᵢ Λⁿ C` on `Aᵢ`, by (L1)
+  have hpt : ∀ i j, ∀ u ∈ A i, ∀ (ω : DifferentialForm (Euclid N') (k + 1)) (C : ℝ),
+      (∀ y, covectorEuclideanNorm (ω y) ≤ C) →
+      |ω (Fs j (G i u)) (fun a => fderiv ℝ (fun v => Fs j (G i v)) u (EuclideanSpace.single a 1))|
+        ≤ c i u * ((Λ : ℝ) ^ (k + 1) * C) := by
+    intro i j u hu ω C hC
+    rw [hchain i j u hu ω]
+    obtain ⟨hc0, hcα⟩ := hc i u hu
+    refine (hcα _).trans (mul_le_mul_of_nonneg_left ?_ hc0)
+    refine (hCB.1 N N' (k + 1) (fderiv ℝ (Fs j) (G i u)) (ω (Fs j (G i u)))).trans ?_
+    exact mul_le_mul
+      (pow_le_pow_left₀ (norm_nonneg _) (norm_fderiv_le_of_lipschitz ℝ (hFs_lip j)) _) (hC _)
+      (covectorEuclideanNorm_nonneg _) (by positivity)
+  -- Step 6 (integrated): `|Tᵢⱼ(ω)| ≤ Bᵢ Λⁿ C`, uniformly in `j`
+  have hTij : ∀ i j (ω : DifferentialForm (Euclid N') (k + 1)) (C : ℝ), 0 ≤ C →
+      (∀ y, covectorEuclideanNorm (ω y) ≤ C) →
+      ‖∫ u in A i, (w i u : ℝ) * ω (Fs j (G i u))
+          (fun a => fderiv ℝ (fun v => Fs j (G i v)) u (EuclideanSpace.single a 1))‖ ≤
+        (B i).toReal * ((Λ : ℝ) ^ (k + 1) * C) := by
+    intro i j ω C hC0 hC
+    have hK : 0 ≤ (Λ : ℝ) ^ (k + 1) * C := by positivity
+    have hfin : B i * ENNReal.ofReal ((Λ : ℝ) ^ (k + 1) * C) ≠ ∞ :=
+      ENNReal.mul_ne_top (hBi i) ENNReal.ofReal_ne_top
+    have hval : (B i * ENNReal.ofReal ((Λ : ℝ) ^ (k + 1) * C)).toReal =
+        (B i).toReal * ((Λ : ℝ) ^ (k + 1) * C) := by
+      rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hK]
+    refine (norm_integral_le_lintegral_norm _).trans ((ENNReal.toReal_mono hfin ?_).trans_eq hval)
+    rw [hBeq i, ← lintegral_mul_const' _ _ ENNReal.ofReal_ne_top]
+    refine setLIntegral_mono' (hA i) fun u hu => ?_
+    rw [← ENNReal.ofReal_mul (mul_nonneg (abs_nonneg _) (hc i u hu).1)]
+    refine ENNReal.ofReal_le_ofReal ?_
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, mul_assoc]
+    exact mul_le_mul_of_nonneg_left (hpt i j u hu ω C hC) (abs_nonneg _)
+  -- Step 7 (termwise limit): `Tᵢⱼ(ω) → Tᵢ(ω)`, by pullback_continuity with the weight `1_{Aᵢ} wᵢ`
+  have hlim : ∀ i (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)),
+      Tendsto (fun j => ∫ u in A i, (w i u : ℝ) *
+          (ω : DifferentialForm (Euclid N') (k + 1)) (Fs j (G i u))
+            (fun a => fderiv ℝ (fun v => Fs j (G i v)) u (EuclideanSpace.single a 1))) atTop
+        (𝓝 (∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid N') (k + 1)) (F (G i u))
+          (fun a => fderiv ℝ (fun v => F (G i v)) u (EuclideanSpace.single a 1)))) := by
+    intro i ω
+    have hind : ∀ f : Euclid (k + 1) → ℝ,
+        ∫ u, (A i).indicator (fun u => (w i u : ℝ)) u * f u = ∫ u in A i, (w i u : ℝ) * f u := by
+      intro f
+      rw [← integral_indicator (hA i)]
+      congr 1
+      funext u
+      exact (Set.indicator_mul_left _ _ _).symm
+    have h := Submission.cmcdt_lpi_pullback_weak_continuity (k + 1) N' (Λ * L i)
+      (fun j v => Fs j (G i v)) (fun v => F (G i v)) ((A i).indicator fun u => (w i u : ℝ))
+      (ω : DifferentialForm (Euclid N') (k + 1)) (fun j => (hFs_lip j).comp (hL i))
+      (hF.comp (hL i)) (hFs_tend.comp (G i)) ((hw_int i).integrable_indicator (hA i))
+      (ContDiff.continuous ω.property.1.1) ω.property.1.2
+    simpa only [hind] using h
+  -- every test form has bounded coefficient norm: `|·|` is continuous and `ω` has compact support
+  have hNcont : Continuous fun α : Covector (Euclid N') (k + 1) => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+    by_cases hI : StrictMono I
+    · simp only [hI, ↓reduceIte]
+      exact (continuous_eval_const _).pow 2
+    · simp only [hI, ↓reduceIte]
+      exact continuous_const
+  have hbound : ∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), ∃ C : ℝ, 0 ≤ C ∧
+      ∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) y) ≤ C := by
+    intro ω
+    have hcs : HasCompactSupport fun y =>
+        covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) y) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) ω.property.1.2
+        (covectorEuclideanNorm_zero N' (k + 1))
+    obtain ⟨C, hC⟩ :=
+      (hNcont.comp (ContDiff.continuous ω.property.1.1)).bounded_above_of_compact_support hcs
+    exact ⟨max C 0, le_max_right _ _, fun y =>
+      ((Real.le_norm_self _).trans (hC y)).trans (le_max_left _ _)⟩
+  -- Step 8 (☆): `S(ω) = Σᵢ Tᵢ(ω)`, and `|Tᵢ(ω)| ≤ Bᵢ Λⁿ C` when `|ω| ≤ C`
+  have hstar : ∀ (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)) (C : ℝ), 0 ≤ C →
+      (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) y) ≤ C) →
+      HasSum (fun i => ∫ u in A i, (w i u : ℝ) *
+          (ω : DifferentialForm (Euclid N') (k + 1)) (F (G i u))
+            (fun a => fderiv ℝ (fun v => F (G i v)) u (EuclideanSpace.single a 1))) (S ω) ∧
+      ∀ i, ‖∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid N') (k + 1)) (F (G i u))
+          (fun a => fderiv ℝ (fun v => F (G i v)) u (EuclideanSpace.single a 1))‖ ≤
+        (B i).toReal * ((Λ : ℝ) ^ (k + 1) * C) := by
+    intro ω C hC0 hC
+    -- the limits `Tᵢ(ω)` inherit the bound of the `Tᵢⱼ(ω)`
+    have hTi : ∀ i, ‖∫ u in A i, (w i u : ℝ) *
+        (ω : DifferentialForm (Euclid N') (k + 1)) (F (G i u))
+          (fun a => fderiv ℝ (fun v => F (G i v)) u (EuclideanSpace.single a 1))‖ ≤
+        (B i).toReal * ((Λ : ℝ) ^ (k + 1) * C) := fun i =>
+      le_of_tendsto' (hlim i ω).norm fun j => hTij i j ω C hC0 hC
+    have hbsum : Summable fun i => (B i).toReal * ((Λ : ℝ) ^ (k + 1) * C) :=
+      (ENNReal.summable_toReal hBsum).mul_right _
+    refine ⟨?_, hTi⟩
+    obtain ⟨ηs, hηW, hηlim⟩ := hη ω
+    -- Step 5: `X(ηⱼ) = Σᵢ Tᵢⱼ(ω)`, since `ηⱼ = Fⱼ^#ω` on a neighbourhood of `Gᵢ(Aᵢ) ⊆ spt X`
+    have hXj : ∀ j, HasSum (fun i => ∫ u in A i, (w i u : ℝ) *
+        (ω : DifferentialForm (Euclid N') (k + 1)) (Fs j (G i u))
+          (fun a => fderiv ℝ (fun v => Fs j (G i v)) u (EuclideanSpace.single a 1)))
+        (X (ηs j)) := by
+      intro j
+      obtain ⟨W, -, hXW, hW⟩ := hηW j
+      convert hXsum (ηs j) using 1
+      funext i
+      refine setIntegral_congr_fun (hA i) fun u hu => ?_
+      rw [hW (G i u) (hXW (hG_spt i (mem_image_of_mem (G i) hu))),
+        hchain i j u hu (ω : DifferentialForm (Euclid N') (k + 1))]
+    -- Step 8: Tannery's theorem, `X(ηⱼ) = Σᵢ Tᵢⱼ(ω) → Σᵢ Tᵢ(ω)`; also `X(ηⱼ) → S(ω)`
+    have htan := tendsto_tsum_of_dominated_convergence hbsum (fun i => hlim i ω)
+      (Eventually.of_forall fun j i =>
+        hTij i j (ω : DifferentialForm (Euclid N') (k + 1)) C hC0 hC)
+    rw [tendsto_nhds_unique hηlim (Tendsto.congr (fun j => (hXj j).tsum_eq) htan)]
+    exact (hbsum.of_norm_bounded hTi).hasSum
+  -- Step 9: integer multiplicity pieces `Sᵢ` with `Sᵢ(ω) = Tᵢ(ω)`
+  choose Sp hSp_im hSp using fun i => Submission.cmcdt_lpi_lipschitz_piece_im hCB hIMC hIMSc N'
+    k (Λ * L i) (fun v => F (G i v)) (A i) (w i) (hF.comp (hL i)) (hA i) (hw i) (hw_int i)
+  -- Step 10: `M(Sᵢ) ≤ Λⁿ Bᵢ`, so `Σᵢ M(Sᵢ) < ∞`
+  have hSp_mass : ∀ i,
+      (Sp i).mass ≤ ENNReal.ofReal ((B i).toReal * ((Λ : ℝ) ^ (k + 1) * 1)) := by
+    intro i
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    refine ENNReal.ofReal_le_ofReal ?_
+    rw [hSp i ω]
+    exact (Real.le_norm_self _).trans ((hstar ω 1 zero_le_one hω.2).2 i)
+  have hSp_sum : ∑' i, (Sp i).mass < ∞ := by
+    have hbsum1 : Summable fun i => (B i).toReal * ((Λ : ℝ) ^ (k + 1) * 1) :=
+      (ENNReal.summable_toReal hBsum).mul_right _
+    calc ∑' i, (Sp i).mass
+        ≤ ∑' i, ENNReal.ofReal ((B i).toReal * ((Λ : ℝ) ^ (k + 1) * 1)) :=
+          ENNReal.tsum_le_tsum hSp_mass
+      _ = ENNReal.ofReal (∑' i, (B i).toReal * ((Λ : ℝ) ^ (k + 1) * 1)) :=
+          (ENNReal.ofReal_tsum_of_nonneg (fun i => by positivity) hbsum1).symm
+      _ < ∞ := ENNReal.ofReal_lt_top
+  -- Step 11: `Ŝ = Σᵢ Sᵢ` is integer multiplicity, and `Ŝ(ω) = Σᵢ Tᵢ(ω) = S(ω)`
+  obtain ⟨Shat, hShat, -, -, hShat_im⟩ := hIMSc N' k Sp hSp_sum
+  obtain ⟨R, hR⟩ := hShat_im hSp_im
+  refine ⟨R, fun ω => ?_⟩
+  rw [← hR ω]
+  obtain ⟨C, hC0, hC⟩ := hbound ω
+  refine (hstar ω C hC0 hC).1.unique ?_
+  simpa only [hSp] using hShat ω
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
