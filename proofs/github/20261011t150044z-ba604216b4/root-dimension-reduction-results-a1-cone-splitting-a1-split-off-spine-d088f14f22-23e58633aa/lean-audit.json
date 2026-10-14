@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ac8bca04ab5d807c68b2948989cf4a2246c2314dea7bf93ed62799f53f70d23a",
+  "git_delta": {
+    "base_commit": "794c2310dfe84efb6e9efb50f0d202b390e8d0cc",
+    "candidate_commit": "aa25f72cb7b189dfccc729f751b3877133bd73a9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_cc_cutoff_cone_operator",
+    "diff_sha256": "71ea687b69b83f7fdd7ad2f1e1285a16b5897cceeb65c14b1b00f21f0583f21f",
+    "source_sha256": "25380fe9d7654a487c68b74856e3c64dbd3076f2d98b70bf907162a5bed17122",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_cc_cutoff_cone_operator",
+      "statement": "∀ (P q : ℕ) (ρ : ℝ), 0 < ρ → (∀ β : DifferentialForm (Euclid P) (q + 1 + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x)) → ∃ Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (x : Euclid P), ‖x‖ < ρ → (Φ ω : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (b : ℝ), (∀ y, ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) y‖ ≤ b) → ∀ x, ‖(Φ ω : DifferentialForm (Euclid P) (q + 1)) x‖ ≤ (ρ + 1) * b",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
