@@ -17686,6 +17686,285 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
+/-- Balls of a product measure `μ = Hᵈ⌞L ⊗ μ₀` (`d = dim L`, `μ₀` concentrated on `L^⊥`):
+`μ(B_ρ(t + y)) = ∫_{ℝᵈ} μ₀(B_{√(ρ² − |σ|²)}(y)) dLᵈ(σ)` for `t ∈ L`, `y ∈ L^⊥` and `ρ > 0`.  For
+`s ∈ L` and `y' ∈ L^⊥`, Pythagoras gives `s + y' ∈ B_ρ(t + y)` iff `y' ∈ B_{√(ρ² − |t − s|²)}(y)`;
+an isometric parametrization of `L` by `ℝᵈ` carries `Lᵈ` to `Hᵈ⌞L`, and a translation centres the
+integral at `t`. -/
+theorem Submission.dimred_cs_psd_ball_formula : ∀ (P : ℕ) (L : Submodule ℝ (Euclid P)) (μ μ₀ : Measure (Euclid P)), μ₀ (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → μ A = ∫⁻ t in (L : Set (Euclid P)), μ₀ ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ ρ : ℝ, 0 < ρ → μ (ball (t + y) ρ) = ∫⁻ σ : Euclid (Module.finrank ℝ L), μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) := by
+  intro P L μ μ₀ hconc hprod t ht y hy ρ hρ
+  -- concentration of `μ₀` on `Lᗮ`
+  have hconc' : ∀ X : Set (Euclid P), μ₀ X = μ₀ (X ∩ (Lᗮ : Set (Euclid P))) := by
+    intro X
+    refine le_antisymm ?_ (measure_mono inter_subset_left)
+    calc μ₀ X ≤ μ₀ (X ∩ (Lᗮ : Set (Euclid P))) + μ₀ (X \ (Lᗮ : Set (Euclid P))) :=
+          measure_le_inter_add_sdiff μ₀ X _
+      _ ≤ μ₀ (X ∩ (Lᗮ : Set (Euclid P))) + μ₀ (Lᗮ : Set (Euclid P))ᶜ := by
+          gcongr
+          exact fun z hz => hz.2
+      _ = μ₀ (X ∩ (Lᗮ : Set (Euclid P))) := by rw [hconc, add_zero]
+  -- slicing the ball over a point `s ∈ L`
+  have hslice : ∀ s ∈ L, μ₀ ((fun y' => s + y') ⁻¹' ball (t + y) ρ) =
+      μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖t - s‖ ^ 2))) := by
+    intro s hs
+    rw [hconc' ((fun y' => s + y') ⁻¹' ball (t + y) ρ), hconc' (ball y _)]
+    congr 1
+    ext y'
+    simp only [mem_inter_iff, mem_preimage, mem_ball, SetLike.mem_coe]
+    refine and_congr_left fun hy' => ?_
+    have horth : inner ℝ (s - t) (y' - y) = 0 :=
+      Submodule.inner_right_of_mem_orthogonal (L.sub_mem hs ht) (Lᗮ.sub_mem hy' hy)
+    have hpyth : ‖s + y' - (t + y)‖ ^ 2 = ‖t - s‖ ^ 2 + ‖y' - y‖ ^ 2 := by
+      have h1 : s + y' - (t + y) = (s - t) + (y' - y) := by abel
+      rw [h1, ← norm_neg (t - s), neg_sub]
+      have := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+      nlinarith [this]
+    rw [dist_eq_norm, dist_eq_norm, Real.lt_sqrt (norm_nonneg _)]
+    rw [← sq_lt_sq₀ (norm_nonneg _) hρ.le, hpyth]
+    constructor <;> intro h <;> linarith
+  rw [hprod _ measurableSet_ball,
+    setLIntegral_congr_fun (Submodule.closed_of_finiteDimensional L).measurableSet hslice]
+  -- an isometric parametrization of `L` by `ℝᵈ`
+  set d := Module.finrank ℝ L
+  let b := stdOrthonormalBasis ℝ L
+  let ι : Euclid d → Euclid P := fun σ => ((b.repr.symm σ : L) : Euclid P)
+  have hι : Isometry ι := L.subtypeₗᵢ.isometry.comp b.repr.symm.isometry
+  have hrange : range ι = (L : Set (Euclid P)) := by
+    ext z
+    constructor
+    · rintro ⟨σ, rfl⟩
+      exact (b.repr.symm σ).2
+    · intro hz
+      exact ⟨b.repr ⟨z, hz⟩, by simp [ι]⟩
+  have hmap : (volume : Measure (Euclid d)).map ι = μHE[d].restrict (L : Set (Euclid P)) := by
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hι.map_euclideanHausdorffMeasure,
+      hrange]
+  rw [← hmap, hι.isClosedEmbedding.measurableEmbedding.lintegral_map]
+  -- translate
+  set σt : Euclid d := b.repr ⟨t, ht⟩
+  have hnorm : ∀ σ : Euclid d, ‖t - ι σ‖ = ‖σ - σt‖ := by
+    intro σ
+    have ht' : t = ι σt := by simp [ι, σt]
+    rw [ht', ← dist_eq_norm, hι.dist_eq, dist_eq_norm, norm_sub_rev]
+  simp_rw [hnorm]
+  exact lintegral_sub_right_eq_self (fun σ => μ₀ (ball y (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)))) σt
+/-- **Cavalieri slicing of Euclidean balls**: for `ρ ≥ 0`,
+`L^{d+m}(B_ρ(0)) = ∫_{ℝᵈ} Lᵐ(B_{√(ρ² − ‖σ‖²)}(0)) dLᵈ(σ)`.  Reindexing along
+`Fin d ⊕ Fin m ≃ Fin (d + m)` and splitting the blocks is a linear isometry
+`ℝ^{d+m} ≃ ℝᵈ × ℝᵐ` (L² product norm), hence carries `L^{d+m}` to `Lᵈ ⊗ Lᵐ`; it maps `B_ρ(0)`
+onto `Q = {(u, v) : ‖u‖² + ‖v‖² < ρ²}`, whose slice over `σ` is `B_{√(ρ² − ‖σ‖²)}(0)`, and Tonelli
+gives the formula. -/
+theorem Submission.dimred_cs_psd_ball_volume_slice : ∀ (d m : ℕ) (ρ : ℝ), 0 ≤ ρ → volume (ball (0 : Euclid (d + m)) ρ) = ∫⁻ σ : Euclid d, volume (ball (0 : Euclid m) (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) := by
+  intro d m ρ hρ
+  -- `Φ = ofLp ∘ e : ℝ^{d+m} → ℝᵈ × ℝᵐ` is volume preserving onto `Lᵈ ⊗ Lᵐ`
+  let e : Euclid (d + m) ≃ₗᵢ[ℝ] WithLp 2 (Euclid d × Euclid m) :=
+    (LinearIsometryEquiv.piLpCongrLeft 2 ℝ ℝ finSumFinEquiv.symm).trans
+      (PiLp.sumPiLpEquivProdLpPiLp 2 (fun _ => ℝ))
+  have hΦ : MeasurePreserving (fun x => WithLp.ofLp (e x)) volume
+      ((volume : Measure (Euclid d)).prod (volume : Measure (Euclid m))) := by
+    have h := (WithLp.volume_preserving_ofLp (Euclid d) (Euclid m)).comp e.measurePreserving
+    rw [← Measure.volume_eq_prod]
+    exact h
+  -- `B_ρ(0) = Φ⁻¹(Q)`, since `‖x‖² = ‖Φ(x).1‖² + ‖Φ(x).2‖²`
+  set Q : Set (Euclid d × Euclid m) := {p | ‖p.1‖ ^ 2 + ‖p.2‖ ^ 2 < ρ ^ 2}
+  have hQ : MeasurableSet Q :=
+    (isOpen_lt (by fun_prop) (by fun_prop)).measurableSet
+  have hpre : (fun x => WithLp.ofLp (e x)) ⁻¹' Q = ball (0 : Euclid (d + m)) ρ := by
+    ext x
+    simp only [mem_preimage, mem_ofPred_eq, mem_ball_zero_iff, Q]
+    have hn : ‖x‖ ^ 2 = ‖(WithLp.ofLp (e x)).1‖ ^ 2 + ‖(WithLp.ofLp (e x)).2‖ ^ 2 := by
+      rw [← e.norm_map x, WithLp.prod_norm_sq_eq_of_L2]
+      rfl
+    rw [← hn]
+    exact sq_lt_sq₀ (norm_nonneg x) hρ
+  -- Tonelli, and the slice of `Q` over `σ` is `B_{√(ρ² − ‖σ‖²)}(0)`
+  rw [← hpre, hΦ.measure_preimage hQ.nullMeasurableSet, Measure.prod_apply hQ]
+  refine lintegral_congr fun σ => ?_
+  congr 1
+  ext v
+  simp only [mem_preimage, mem_ofPred_eq, mem_ball_zero_iff, Q]
+  rw [Real.lt_sqrt (norm_nonneg v)]
+  constructor <;> intro h <;> linarith
+
+/-- **Simon 7.3.5** (chapter-07.txt lines 407–417, proof left to the reader): the density step
+for a product `[[L]] × S₀`, with `d = dim L`.  If `f(0) = 0` and `f(r)/(ωₘrᵐ) → θ` as `r ↓ 0`, then
+`(ω_{d+m}ρ^{d+m})⁻¹ ∫_{ℝᵈ} f(√(ρ² − |σ|²)) dσ → θ` as `ρ ↓ 0`.  Every radius `√(ρ² − |σ|²)`
+lies in `[0, ρ]`, so for `a' < θ < b'` the hypothesis gives `a'·Lᵐ(B_r) ≤ f(r) ≤ b'·Lᵐ(B_r)` for
+all small `r ≥ 0`.  Integrating in `σ` and using the slice identity
+`∫_{ℝᵈ} Lᵐ(B_{√(ρ² − |σ|²)}) dσ = L^{d+m}(B_ρ) = ω_{d+m}ρ^{d+m}` bounds the ratio between `a'`
+and `b'` for all small `ρ > 0`; no measurability of `f` is needed. -/
+theorem Submission.dimred_cs_psd_radial_density : ∀ (d m : ℕ) (f : ℝ → ℝ≥0∞) (θ : ℝ≥0∞), f 0 = 0 → Tendsto (fun r : ℝ => f r / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => (∫⁻ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2))) / (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)))) (𝓝[>] 0) (𝓝 θ) := by
+  intro d m f θ hf0 hlim
+  -- `Lᵏ(B_r(0)) = ωₖrᵏ` for `r > 0`, with `0 < ωₖ < ∞`
+  have hvol : ∀ (k : ℕ) (r : ℝ), 0 < r →
+      volume (ball (0 : Euclid k) r) = unitBallVolume k * ENNReal.ofReal (r ^ k) := by
+    intro k r hr
+    rw [Measure.addHaar_ball_of_pos volume (0 : Euclid k) hr, finrank_euclideanSpace_fin, mul_comm]
+    rfl
+  have hω0 : ∀ k : ℕ, unitBallVolume k ≠ 0 := fun k =>
+    (measure_ball_pos volume (0 : Euclid k) one_pos).ne'
+  have hωt : ∀ k : ℕ, unitBallVolume k ≠ ⊤ := fun k => measure_ball_lt_top.ne
+  have hc0 : ∀ (k : ℕ) (r : ℝ), 0 < r → unitBallVolume k * ENNReal.ofReal (r ^ k) ≠ 0 := by
+    intro k r hr
+    exact mul_ne_zero (hω0 k) (ENNReal.ofReal_pos.2 (pow_pos hr k)).ne'
+  have hct : ∀ (k : ℕ) (r : ℝ), unitBallVolume k * ENNReal.ofReal (r ^ k) ≠ ⊤ := fun k r =>
+    ENNReal.mul_ne_top (hωt k) ENNReal.ofReal_ne_top
+  -- the comparison profile `v(r) = Lᵐ(B_r(0))`, with `v(0) = 0 = f(0)`
+  set v : ℝ → ℝ≥0∞ := fun r => volume (ball (0 : Euclid m) r) with hv
+  have hv0 : v 0 = 0 := by simp [hv]
+  -- slice identity: `∫_{ℝᵈ} v(√(ρ² − |σ|²)) dσ = ω_{d+m}ρ^{d+m}`
+  have hslice : ∀ ρ : ℝ, 0 < ρ → ∫⁻ σ : Euclid d, v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) =
+      unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m)) := by
+    intro ρ hρ
+    rw [← hvol _ _ hρ, Submission.dimred_cs_psd_ball_volume_slice d m ρ hρ.le]
+  -- every radius `√(ρ² − |σ|²)` lies in `[0, ρ]`
+  have hsq_le : ∀ ρ : ℝ, 0 < ρ → ∀ σ : Euclid d, Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ≤ ρ := by
+    intro ρ hρ σ
+    calc Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ≤ Real.sqrt (ρ ^ 2) :=
+          Real.sqrt_le_sqrt (by nlinarith [norm_nonneg σ])
+      _ = ρ := Real.sqrt_sq hρ.le
+  refine tendsto_order.2 ⟨fun a ha => ?_, fun b hb => ?_⟩
+  · -- lower bound: `a'·v ≤ f` on `[0, s)` integrates to `a' ≤` the ratio for `ρ ∈ (0, s)`
+    obtain ⟨a', haa', ha'θ⟩ := exists_between ha
+    have h1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), a' < f r / (unitBallVolume m * ENNReal.ofReal (r ^ m)) :=
+      (tendsto_order.1 hlim).1 a' ha'θ
+    obtain ⟨s, hs, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 h1
+    filter_upwards [Ioo_mem_nhdsGT hs] with ρ hρ
+    have hbound : ∀ σ : Euclid d, a' * v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) ≤
+        f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      rcases (Real.sqrt_nonneg (ρ ^ 2 - ‖σ‖ ^ 2)).eq_or_lt with h | h
+      · rw [← h, hv0, mul_zero]
+        exact zero_le
+      · have hr : Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ∈ Ioo 0 s :=
+          ⟨h, lt_of_le_of_lt (hsq_le ρ hρ.1 σ) hρ.2⟩
+        have h2 := hsub hr
+        simp only [mem_ofPred_eq] at h2
+        rw [ENNReal.lt_div_iff_mul_lt (Or.inl (hc0 m _ h)) (Or.inl (hct m _))] at h2
+        rw [hv]
+        simp only
+        rw [hvol m _ h]
+        exact h2.le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hbound
+    rw [lintegral_const_mul' _ _ (ne_top_of_lt ha'θ), hslice ρ hρ.1] at hint
+    calc a < a' := haa'
+      _ = a' * (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) /
+            (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) :=
+          (ENNReal.mul_div_cancel_right (hc0 _ _ hρ.1) (hct _ _)).symm
+      _ ≤ _ := ENNReal.div_le_div_right hint _
+  · -- upper bound: `f ≤ b'·v` on `[0, s)` integrates to the ratio `≤ b'` for `ρ ∈ (0, s)`
+    obtain ⟨b', hθb', hb'b⟩ := exists_between hb
+    have h1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), f r / (unitBallVolume m * ENNReal.ofReal (r ^ m)) < b' :=
+      (tendsto_order.1 hlim).2 b' hθb'
+    obtain ⟨s, hs, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 h1
+    filter_upwards [Ioo_mem_nhdsGT hs] with ρ hρ
+    have hbound : ∀ σ : Euclid d, f (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) ≤
+        b' * v (Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      rcases (Real.sqrt_nonneg (ρ ^ 2 - ‖σ‖ ^ 2)).eq_or_lt with h | h
+      · rw [← h, hf0]
+        exact zero_le
+      · have hr : Real.sqrt (ρ ^ 2 - ‖σ‖ ^ 2) ∈ Ioo 0 s :=
+          ⟨h, lt_of_le_of_lt (hsq_le ρ hρ.1 σ) hρ.2⟩
+        have h2 := hsub hr
+        simp only [mem_ofPred_eq] at h2
+        rw [ENNReal.div_lt_iff (Or.inl (hc0 m _ h)) (Or.inl (hct m _))] at h2
+        rw [hv]
+        simp only
+        rw [hvol m _ h]
+        exact h2.le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hbound
+    rw [lintegral_const_mul' _ _ (ne_top_of_lt hb'b), hslice ρ hρ.1] at hint
+    calc _ ≤ b' * (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) /
+            (unitBallVolume (d + m) * ENNReal.ofReal (ρ ^ (d + m))) :=
+          ENNReal.div_le_div_right hint _
+      _ = b' := ENNReal.mul_div_cancel_right (hc0 _ _ hρ.1) (hct _ _)
+      _ < b := hb'b
+/-- For a nondecreasing `f : ℝ → [0, ∞]`, `∫_{ℝᵈ} f(√(ε² − |σ|²)) dσ ≠ 0` for every `ε > 0` iff
+`f(ε) ≠ 0` for every `ε > 0`.  Every radius `√(ε² − |σ|²)` lies in `[0, ε]`, so `f(ε) = 0` kills
+the integrand; conversely the integrand is `≥ f(ε/2)` on `B_{ε/2}(0)`, a ball of positive
+Lebesgue measure. -/
+theorem Submission.dimred_cs_psd_radial_support : ∀ (d : ℕ) (f : ℝ → ℝ≥0∞), Monotone f → ((∀ ε : ℝ, 0 < ε → (∫⁻ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2))) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → f ε ≠ 0) := by
+  intro d f hf
+  constructor
+  · -- (⇒) if `f(ε) = 0`, then `0 ≤ f(√(ε² − |σ|²)) ≤ f(ε) = 0` for every `σ`
+    intro h ε hε hfε
+    apply h ε hε
+    have hz : ∀ σ : Euclid d, f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) = 0 := by
+      intro σ
+      refine le_antisymm ?_ zero_le
+      calc f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) ≤ f ε := by
+            apply hf
+            calc Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2) ≤ Real.sqrt (ε ^ 2) :=
+                  Real.sqrt_le_sqrt (by nlinarith [norm_nonneg σ])
+              _ = ε := Real.sqrt_sq hε.le
+        _ = 0 := hfε
+    simp [hz]
+  · -- (⇐) the integral is `≥ f(ε/2) · Lᵈ(B_{ε/2}(0))`, a product of nonzero factors
+    intro h ε hε h0
+    have hε2 : 0 < ε / 2 := by linarith
+    have hle : ∀ σ : Euclid d, (ball (0 : Euclid d) (ε / 2)).indicator (fun _ => f (ε / 2)) σ ≤
+        f (Real.sqrt (ε ^ 2 - ‖σ‖ ^ 2)) := by
+      intro σ
+      by_cases hσ : σ ∈ ball (0 : Euclid d) (ε / 2)
+      · rw [indicator_of_mem hσ]
+        apply hf
+        rw [mem_ball_zero_iff] at hσ
+        rw [Real.le_sqrt hε2.le (by nlinarith [norm_nonneg σ])]
+        nlinarith [norm_nonneg σ]
+      · rw [indicator_of_notMem hσ]
+        exact zero_le
+    have hint := lintegral_mono (μ := (volume : Measure (Euclid d))) hle
+    rw [h0, lintegral_indicator_const measurableSet_ball] at hint
+    have hprod : f (ε / 2) * volume (ball (0 : Euclid d) (ε / 2)) = 0 := le_antisymm hint zero_le
+    rcases mul_eq_zero.1 hprod with hf0 | hv0
+    · exact h _ hε2 hf0
+    · exact (measure_ball_pos volume (0 : Euclid d) hε2).ne' hv0
+
+/-- Supports and densities of `[[L]] × S₀` (in the proof of **Simon 7.3.5**, chapter-07.txt
+lines 410–418, which the book leaves to the reader): let `d = dim L < n`, let `R`, `R₀` represent
+`S`, `S₀` in `ℝᴾ`, and put `μ = μ_R`, `μ₀ = μ_{R₀}`.  If `μ₀(ℝᴾ ∖ L^⊥) = 0` and
+`μ(A) = ∫_L μ₀(A − t) dHᵈ(t)` for Borel `A`, then for `t ∈ L`, `y ∈ L^⊥` and `ρ > 0`,
+`μ(B_ρ(t + y)) = ∫_{ℝᵈ} f(√(ρ² − |σ|²)) dσ` with `f(r) = μ₀(B_r(y))`.  As `f` is nondecreasing,
+`μ` charges every ball about `t + y` iff `μ₀` charges every ball about `y`, i.e.
+`t + y ∈ spt S ⟺ y ∈ spt S₀`.  If `(ω_{n−d} r^{n−d})⁻¹ f(r) → θ` as `r ↓ 0`, then
+`(ωₙρⁿ)⁻¹ μ(B_ρ(t + y)) → θ`, as `d + (n − d) = n`; so a density of `S₀` at `y` is one of `S`
+at `t + y`, and, densities being unique, `S₀` having a density at `y` gives the converse. -/
+theorem Submission.dimred_cs_product_support_density : ∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R : IMRep (univ : Set (Euclid P)) n) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), Module.finrank ℝ L < n → R.Represents S → R₀.Represents S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ y ∈ Lᗮ, ∃ θ : ℝ, HasMassDensity S₀ y θ) → (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ) := by
+  intro P n L S S₀ R R₀ hdn hR hR₀ hconc hprod hdens
+  -- `M_W(S) = μ(W)` and `M_W(S₀) = μ₀(W)` for open `W`; supports are read off from balls
+  obtain ⟨hmS, hsS, -⟩ := Submission.dimred_im_mass_measure P n univ S R isOpen_univ hR
+  obtain ⟨hmS₀, hsS₀, -⟩ :=
+    Submission.dimred_im_mass_measure P (n - Module.finrank ℝ L) univ S₀ R₀ isOpen_univ hR₀
+  -- slicing: `μ(B_ρ(t + y)) = ∫_{ℝᵈ} μ₀(B_{√(ρ² − |σ|²)}(y)) dσ`
+  have hball := Submission.dimred_cs_psd_ball_formula P L R.measure R₀.measure hconc hprod
+  refine ⟨fun t ht y hy => ?_, fun t ht y hy θ => ?_⟩
+  · -- supports, via the nondecreasing profile `r ↦ μ₀(B_r(y))`
+    have hmono : Monotone fun r : ℝ => R₀.measure (ball y r) :=
+      fun a b hab => measure_mono (ball_subset_ball hab)
+    rw [hsS _ (mem_univ _), hsS₀ _ (mem_univ _),
+      ← Submission.dimred_cs_psd_radial_support (Module.finrank ℝ L) _ hmono]
+    exact forall₂_congr fun ε hε => by rw [hball t ht y hy ε hε]
+  · -- a density `a` of `S₀` at `y` is a density of `S` at `t + y`
+    have key : ∀ a : ℝ, HasMassDensity S₀ y a → HasMassDensity S (t + y) a := by
+      rintro a ⟨ha, hlim⟩
+      refine ⟨ha, ?_⟩
+      have h0 : Tendsto (fun r : ℝ => R₀.measure (ball y r) /
+          (unitBallVolume (n - Module.finrank ℝ L) *
+            ENNReal.ofReal (r ^ (n - Module.finrank ℝ L)))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal a)) :=
+        hlim.congr fun r => by rw [hmS₀ _ isOpen_ball (subset_univ _)]
+      have h1 := Submission.dimred_cs_psd_radial_density (Module.finrank ℝ L)
+        (n - Module.finrank ℝ L) (fun r => R₀.measure (ball y r)) _ (by simp) h0
+      rw [Nat.add_sub_of_le hdn.le] at h1
+      refine h1.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with ρ hρ
+      rw [hmS _ isOpen_ball (subset_univ _), hball t ht y hy ρ hρ]
+    refine ⟨fun h => ?_, key θ⟩
+    -- `S₀` has a density `Θ₀` at `y`, which is also one of `S` at `t + y`; densities are unique,
+    -- as limits along `𝓝[>] 0` are unique and `ofReal` is injective on `[0, ∞)`
+    obtain ⟨Θ₀, hΘ₀⟩ := hdens y hy
+    have hS := key Θ₀ hΘ₀
+    rwa [(ENNReal.ofReal_eq_ofReal_iff h.1 hS.1).1 (tendsto_nhds_unique h.2 hS.2)]
 
 /-- **Simon 7.3.5** (proof left to the reader, chapter-07.txt lines 407–417), the carrier of a
 competitor: let `S₁ = τ(M₁, θ₁, ξ₁)` and `S₂ = τ(M₂, θ₂, ξ₂)` in `ℝᴾ`, `μᵢ = θᵢHʲ⌞Mᵢ`, and let
