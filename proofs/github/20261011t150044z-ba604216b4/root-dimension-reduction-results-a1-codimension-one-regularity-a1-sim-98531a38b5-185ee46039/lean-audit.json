@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "803ea1381626d0d44313375c2447349c228437cf62b009f722b072236963a966",
+  "git_delta": {
+    "base_commit": "0867d6819b146c307795ac90335c0b0a04cdcc09",
+    "candidate_commit": "7bbc42b2744f7e59b1dc5850afeb0c8cdb302663",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_smooth_glue",
+    "diff_sha256": "63137e35914f0bfa4fddfc58bd14b37e0900c8dd485f73c6f0cee9545bdf06f9",
+    "source_sha256": "e4ee95ee3b6772b44f146f07bd59d71c482e1eb77ff8cb4f3ddb3cb457f08a75",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_smooth_glue",
+      "statement": "∀ (P : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (M : Set (Euclid P)) (f : Euclid P → F), (∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → F), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = f z) → ∃ (ν : Euclid P → F) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ ∀ x ∈ M, ν x = f x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
