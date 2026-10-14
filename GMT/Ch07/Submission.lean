@@ -11027,6 +11027,33 @@ theorem Submission.codim1_rdo_dg_measure_eq_hausdorff : ∀ (m : ℕ) (D : Set (
     rw [hcov_gen (m + 1) m B y r hr f, inv_pow]
     rfl
 
+/-- **De Giorgi's structure theorem**, Gauss–Green form (Simon Ch. 3, 4.1–4.3).  Let `m ≥ 1`,
+`D ⊆ ℝ^{m+1}` open and `F` Borel with locally finite perimeter in `D`.  Then there are a
+countably `m`-rectifiable Borel set `B ⊆ D`, with `Hᵐ(B ∩ K) < ∞` for compact `K ⊆ D`, and a
+Borel `ν`, with `|ν| = 1` on `B` and approximate tangent space `ν(y)^⊥` at `Hᵐ`-a.e. `y ∈ B`,
+such that `∫_F div φ = −∫_B ⟨φ, ν⟩ dHᵐ` for `φ ∈ C¹_c(D; ℝ^{m+1})`.  The Riesz representation
+of the perimeter functional gives a Gauss–Green pair `(μ, ν)` (4.1).  At `μ`-a.e. `y` the
+blow-ups of `μ` converge to `Hᵐ⌞ν(y)^⊥` (4.3 (†)).  Since countably `m`-rectifiable sets of finite
+measure have `Hᵐ`-density one a.e., this gives `μ = Hᵐ⌞B`, with approximate tangent planes
+`ν^⊥`, and then (4.1) is the Gauss–Green formula over `B`. -/
+theorem Submission.codim1_rdo_de_giorgi_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))), 1 ≤ m → IsOpen D → MeasurableSet F → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → ∃ C : ℝ, ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (B : Set (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), MeasurableSet B ∧ B ⊆ D ∧ CountablyRectifiable m B ∧ (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μHE[m] (B ∩ K) ≠ ∞) ∧ Measurable ν ∧ (∀ y ∈ B, ‖ν y‖ = 1) ∧ (∀ᵐ y ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B y (Submodule.span ℝ {ν y})ᗮ) ∧ ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ y in B, inner ℝ (φ y) (ν y) ∂μHE[m] := by
+  intro m D F hm hD hF hper
+  -- Steps 1–2: the Gauss–Green pair `(μ, ν)` of (4.1), `|ν| ≡ 1`
+  obtain ⟨μ, ν, hμD, hμK, hν, hν1, hGG⟩ :=
+    Submission.codim1_rdo_dg_gauss_green_measure m D F hD hF hper
+  -- Steps 3–4: at `μ`-a.e. `y` the blow-ups of `μ` converge to `Hᵐ⌞ν(y)^⊥` (4.3 (†))
+  have htan :=
+    Submission.codim1_rdo_dg_tangent_measure_ae m D F μ ν hm hD hF hμD hμK hν hν1 hGG
+  -- Steps 5–8: `μ = Hᵐ⌞B`, using `Hᵐ`-density one of rectifiable sets (`P = m + 1`, `n = m`)
+  obtain ⟨B, hB, hBD, hBrect, rfl, hBtan⟩ :=
+    Submission.codim1_rdo_dg_measure_eq_hausdorff m D μ ν hm hD hμD hμK hν hν1 htan
+      fun S hS hSrect hSfin =>
+        Submission.codim1_rdo_rectifiable_ae_density_one (m + 1) m S hm hS hSrect hSfin
+  -- Step 9: `Hᵐ(B ∩ K) = μ(K) < ∞`, and (4.1) for `μ = Hᵐ⌞B` is the Gauss–Green formula
+  refine ⟨B, ν, hB, hBD, hBrect, fun K hK hKD => ?_, hν, fun y _ => hν1 y, hBtan, hGG⟩
+  rw [inter_comm, ← Measure.restrict_apply' hB]
+  exact hμK K hK hKD
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
