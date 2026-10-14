@@ -1247,6 +1247,196 @@ theorem Submission.cbr_cipi_halfspace_partial_integral : ∀ (d : ℕ) (g : (Fin
     funext s
     simp [Set.indicator, Fin.insertNth_zero']
 
+/-- **Exterior derivative of a test form along an orthonormally parametrised plane, in
+coordinates** (Simon 6.1.11; used for the boundary of a half-plane current in the
+integer-multiplicity criterion for plane cycles).  Let `v = (v₀, …, v_d)` be orthonormal in `ℝᴾ`,
+`ω = φ` a test `d`-form, `ι(x) = Σⱼ xⱼ vⱼ`, `Gᵢ(y) = ω(y)(v₀, …, v̂ᵢ, …, v_d)` and `gᵢ = Gᵢ ∘ ι`.
+`ι` is linear and injective (`v` is linearly independent) with finite-dimensional domain, hence
+a continuous closed embedding.  `Gᵢ` is evaluation at a fixed tuple composed with `ω`, so it is
+`C^∞` with compact support; hence `gᵢ` is `C¹` with compact support.  The chain rule gives
+`Dgᵢ(z)(eᵢ) = DGᵢ(ι z)(ι eᵢ) = DGᵢ(ι z)(vᵢ)`, and the coordinate formula
+`dω(y)(v) = Σᵢ (−1)ⁱ DGᵢ(y)(vᵢ)` at `y = ι z` gives (ii). -/
+theorem Submission.cbr_cipi_plane_extDeriv_coords : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ i : Fin (d + 1), ContDiff ℝ 1 (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) ∧ HasCompactSupport (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v))) ∧ ∀ z : Fin (d + 1) → ℝ, exteriorDerivative (φ : DifferentialForm (Euclid P) d) (∑ j, z j • v j) v = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) z (Pi.single i 1) := by
+  intro P d v hv φ
+  set ω : DifferentialForm (Euclid P) d := (φ : DifferentialForm (Euclid P) d)
+  -- Step 1: `ω` is `C^∞` with compact support
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) ω := φ.property.1.1
+  have hωc : HasCompactSupport ω := φ.property.1.2
+  -- Step 2: `ι(x) = Σⱼ xⱼ vⱼ` is a continuous linear closed embedding
+  let ι : (Fin (d + 1) → ℝ) →L[ℝ] Euclid P :=
+    LinearMap.toContinuousLinearMap (Fintype.linearCombination ℝ v)
+  have hι : ∀ x : Fin (d + 1) → ℝ, ι x = ∑ j, x j • v j := fun x =>
+    Fintype.linearCombination_apply ℝ v x
+  have hιemb : Topology.IsClosedEmbedding ι := LinearMap.isClosedEmbedding_of_injective
+    (LinearMap.ker_eq_bot.mpr hv.linearIndependent.fintypeLinearCombination_injective)
+  -- Step 3: `Gᵢ(y) = ω(y)(removeNth i v)` is `C^∞` with compact support, and `gᵢ = Gᵢ ∘ ι`
+  have hG : ∀ i : Fin (d + 1), ContDiff ℝ (⊤ : ℕ∞) (fun y => ω y (i.removeNth v)) ∧
+      HasCompactSupport (fun y => ω y (i.removeNth v)) := fun i =>
+    ⟨(ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (i.removeNth v)).contDiff.comp hωs,
+      hωc.comp_left (g := fun α : Covector (Euclid P) d => α (i.removeNth v)) rfl⟩
+  have hg : ∀ i : Fin (d + 1), (fun x : Fin (d + 1) → ℝ => ω (∑ j, x j • v j) (i.removeNth v)) =
+      (fun y => ω y (i.removeNth v)) ∘ ι := fun i =>
+    funext fun x => by simp only [Function.comp_apply, hι]
+  refine ⟨fun i => ?_, fun z => ?_⟩
+  -- Step 4: (i), as `Gᵢ` is `C^∞` with compact support and `ι` is a closed embedding
+  · rw [hg i]
+    exact ⟨((hG i).1.comp ι.contDiff).of_le (by simp), (hG i).2.comp_isClosedEmbedding hιemb⟩
+  -- Step 5: the chain rule, `Dgᵢ(z)(eᵢ) = DGᵢ(ι z)(ι eᵢ) = DGᵢ(ι z)(vᵢ)`
+  · have hderiv : ∀ i : Fin (d + 1),
+        fderiv ℝ (fun x : Fin (d + 1) → ℝ => ω (∑ j, x j • v j) (i.removeNth v)) z
+          (Pi.single i 1) = fderiv ℝ (fun y => ω y (i.removeNth v)) (ι z) (v i) := by
+      intro i
+      rw [hg i, fderiv_comp z ((hG i).1.differentiable (by simp) _) ι.differentiableAt, ι.fderiv,
+        ContinuousLinearMap.comp_apply]
+      congr 1
+      simp [ι]
+    -- Step 6: (ii), from `dω(ι z)(v) = Σᵢ (−1)ⁱ DGᵢ(ι z)(vᵢ)`
+    rw [← hι z, exteriorDerivative_apply (hωs.differentiable (by simp) _)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hderiv i, zsmul_eq_mul]
+    push_cast
+    rfl
+
+/-- **Stokes' formula on a half-plane of an oriented plane** (Simon 6.1.11 and 6.2.3: the boundary
+of the half-plane current via Stokes' theorem; used for the integer-multiplicity criterion for plane
+cycles).  Assume (PM), the statement of `cbr_cipi_affine_plane_measure`, and (FTC), that of
+`cbr_cipi_halfspace_partial_integral`.  Let `v` be orthonormal, `V₀ = span v`, `ω = φ`,
+`H_t = {y | ⟨y, v₀⟩ < t}`, `ι(z) = Σⱼ zⱼvⱼ` and `gᵢ(x) = ω(ι(x))(removeNth i v)`.  By (PM) with
+`a = 0`, `ι_*Lᵈ⁺¹ = Hᵈ⁺¹⌞V₀`, and `⟨ι(z), v₀⟩ = z₀`, so the left side is `∫_{z₀<t} dω(ι(z))(v) dz`,
+which is `Σᵢ (−1)ⁱ ∫_{z₀<t} ∂ᵢgᵢ` by the coordinate formula for `dω`
+(`cbr_cipi_plane_extDeriv_coords`).  By (FTC) the terms with `i ≠ 0` vanish and the `i = 0` term is
+`∫ g₀(t, z′) dz′ = ∫ ω(t v₀ + Σₖ z′ₖ vₖ₊₁)(tail v) dz′`, the right side by (PM) with `a = t v₀` and
+`w = tail v`. -/
+theorem Submission.cbr_cipi_plane_halfspace_boundary : (∀ (P m : ℕ) (w : Fin m → Euclid P) (a : Euclid P), Orthonormal ℝ w → Measure.map (fun z : Fin m → ℝ => a + ∑ i, z i • w i) volume = (μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ IsClosed {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)} ∧ (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) K < ∞) ∧ ∀ r : ℝ, 0 < r → 0 < ((μHE[m] : Measure (Euclid P)).restrict {y : Euclid P | y - a ∈ Submodule.span ℝ (Set.range w)}) (ball a r)) → (∀ (d : ℕ) (g : (Fin (d + 1) → ℝ) → ℝ) (t : ℝ), ContDiff ℝ 1 g → HasCompactSupport g → (∀ i : Fin (d + 1), i ≠ 0 → ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single i 1) = 0) ∧ ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single 0 1) = ∫ z' : Fin d → ℝ, g (Fin.cons t z')) → ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, ∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d] := by
+  intro hPM hFTC P d v hv φ t
+  -- Step 1: the sibling `extderiv_coords`: each `gᵢ(x) = ω(Σⱼ xⱼvⱼ)(removeNth i v)` is `C¹` with
+  -- compact support, and `dω(Σⱼ zⱼvⱼ)(v) = Σᵢ (−1)ⁱ ∂ᵢgᵢ(z)`
+  obtain ⟨hg, hdω⟩ := Submission.cbr_cipi_plane_extDeriv_coords P d v hv φ
+  -- Step 2: `y ↦ dω(y)(v)` and `y ↦ ω(y)(tail v)` are continuous, `ω` and `dω` being smooth
+  have hF : Continuous fun y => exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v :=
+    (exteriorDerivative_isTestForm φ.property.1).1.continuous.eval_const v
+  have hG : Continuous fun y => (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) :=
+    φ.property.1.1.continuous.eval_const (Fin.tail v)
+  -- Step 3: `ι(z) = Σⱼ zⱼvⱼ` pushes `Lᵈ⁺¹` forward to `Hᵈ⁺¹⌞V₀` ((PM) with `w = v`, `a = 0`)
+  have hι : Continuous fun z : Fin (d + 1) → ℝ => ∑ j, z j • v j :=
+    continuous_finsetSum _ fun j _ => (continuous_apply j).smul continuous_const
+  have hmap₀ : Measure.map (fun z : Fin (d + 1) → ℝ => ∑ j, z j • v j) volume =
+      (μHE[(d + 1)] : Measure (Euclid P)).restrict
+        (Submodule.span ℝ (Set.range v) : Set (Euclid P)) := by
+    have h := (hPM P (d + 1) v 0 hv).1
+    simp only [zero_add, sub_zero] at h
+    exact h
+  -- Step 4: the left side in coordinates: `H_t` is open and `⟨ι(z), v₀⟩ = z₀` by orthonormality
+  have hH : MeasurableSet {y : Euclid P | inner ℝ y (v 0) < t} :=
+    (isOpen_lt (continuous_id.inner continuous_const) continuous_const).measurableSet
+  have hpre : (fun z : Fin (d + 1) → ℝ => ∑ j, z j • v j) ⁻¹'
+      {y : Euclid P | inner ℝ y (v 0) < t} = {z | z 0 < t} := by
+    ext z
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, hv.inner_left_fintype, conj_trivial]
+  rw [Set.inter_comm, ← Measure.restrict_restrict hH, ← hmap₀,
+    setIntegral_map hH hF.aestronglyMeasurable hι.aemeasurable, hpre]
+  -- Step 5: integrate termwise; each `∂ᵢgᵢ` is continuous with compact support
+  have hint : ∀ i : Fin (d + 1), Integrable (fun z => (-1 : ℝ) ^ (i : ℕ) *
+      fderiv ℝ (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j)
+        (i.removeNth v)) z (Pi.single i 1)) (volume.restrict {z : Fin (d + 1) → ℝ | z 0 < t}) :=
+    fun i => (((((hg i).1.continuous_fderiv one_ne_zero).clm_apply
+      continuous_const).integrable_of_hasCompactSupport
+        ((hg i).2.fderiv_apply (𝕜 := ℝ) _)).const_mul _).integrableOn
+  simp only [hdω]
+  rw [integral_finsetSum _ fun i _ => hint i]
+  simp only [integral_const_mul]
+  -- Step 6: by (FTC) the terms `i = k + 1` vanish and the `i = 0` term is `∫ g₀(t, z′) dz′`
+  have hvanish : ∀ k : Fin d, (-1 : ℝ) ^ ((k.succ : Fin (d + 1)) : ℕ) *
+      ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ (fun x : Fin (d + 1) → ℝ =>
+        (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (k.succ.removeNth v)) z
+          (Pi.single k.succ 1) = 0 := fun k => by
+    rw [(hFTC d _ t (hg k.succ).1 (hg k.succ).2).1 k.succ (Fin.succ_ne_zero k), mul_zero]
+  rw [Fin.sum_univ_succ, Finset.sum_eq_zero fun k _ => hvanish k, add_zero, Fin.val_zero,
+    pow_zero, one_mul, (hFTC d _ t (hg 0).1 (hg 0).2).2]
+  -- Step 7: the right side in coordinates ((PM) with `w = tail v`, `a = t v₀`)
+  have hvt : Orthonormal ℝ (Fin.tail v) := hv.comp _ (Fin.succ_injective d)
+  have hj : Continuous fun z' : Fin d → ℝ => t • v 0 + ∑ k, z' k • Fin.tail v k :=
+    continuous_const.add
+      (continuous_finsetSum _ fun k _ => (continuous_apply k).smul continuous_const)
+  rw [← (hPM P d (Fin.tail v) (t • v 0) hvt).1,
+    integral_map hj.aemeasurable hG.aestronglyMeasurable]
+  -- Step 8: `Σⱼ (t, z′)ⱼ vⱼ = t v₀ + Σₖ z′ₖ vₖ₊₁` and `removeNth 0 v = tail v`
+  congr 1 with z'
+  rw [Fin.sum_univ_succ, Fin.cons_zero, Fin.removeNth_zero]
+  simp only [Fin.cons_succ]
+  rfl
+/-- **The plane integral of `dφ` vanishes, given the half-plane boundary formula at every level**
+(the last step of Stokes' theorem on a plane, used for the boundary of a plane current in the
+integer-multiplicity criterion for cycles).  Let `v₀, …, v_d` be orthonormal, `φ` a test form,
+`V₀ = span(v₀, …, v_d)`, `H_t = {y | ⟨y, v₀⟩ < t}` and `L_t = t v₀ + span(v₁, …, v_d)`, and assume
+`∫_{V₀ ∩ H_t} dφ(v) dH^{d+1} = ∫_{L_t} φ(v₁, …, v_d) dH^d` for every `t`.  Since `tsupport φ` is
+compact, `|⟨y, v₀⟩| ≤ C` on it; put `T = C + 1`.  As `tsupport dφ ⊆ tsupport φ`, `dφ` vanishes on
+`V₀ \ H_T`, so `∫_{V₀} dφ(v) = ∫_{V₀ ∩ H_T} dφ(v) = ∫_{L_T} φ(v₁, …, v_d)`.  Every `y ∈ L_T` is
+`T v₀ + Σₖ cₖ vₖ₊₁`, so `⟨y, v₀⟩ = T` by orthonormality and `φ(y) = 0`; the last integral is `0`. -/
+theorem Submission.cbr_cipi_plane_boundary_zero : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]) → ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0 := by
+  intro P d v hv φ hHS
+  -- Step 1: `tsupport φ` is compact, so `|⟨y, v₀⟩| ≤ C` on it; with `T = C + 1`, `T ≤ ⟨y, v₀⟩`
+  -- forces `y ∉ tsupport φ`
+  have hcs : HasCompactSupport (φ : DifferentialForm (Euclid P) d) := φ.2.1.2
+  obtain ⟨C, hC⟩ := hcs.isCompact.exists_bound_of_continuousOn
+    (f := fun y : Euclid P => inner ℝ y (v 0)) (continuous_id.inner continuous_const).continuousOn
+  have hT : ∀ y : Euclid P, C + 1 ≤ inner ℝ y (v 0) →
+      y ∉ tsupport (φ : DifferentialForm (Euclid P) d) := by
+    intro y hy hmem
+    have h1 := hC y hmem
+    rw [Real.norm_eq_abs] at h1
+    linarith [le_abs_self (inner ℝ y (v 0))]
+  -- Step 2: `V₀` is closed, and `dφ` vanishes on `V₀ \ H_T` since `tsupport dφ ⊆ tsupport φ`, so
+  -- `∫_{V₀} dφ(v) = ∫_{V₀ ∩ H_T} dφ(v)`
+  rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+    (s := (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩
+      {y : Euclid P | inner ℝ y (v 0) < C + 1})
+    (Submodule.closed_of_finiteDimensional _).measurableSet inter_subset_left fun y hy => ?_]
+  -- Step 3: the half-plane boundary formula at the level `T`
+  · rw [hHS (C + 1)]
+    -- Step 4: each `y ∈ L_T` is `T v₀ + Σₖ cₖ vₖ₊₁`, so `⟨y, v₀⟩ = T` and `φ(y) = 0`
+    refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+    have hy' : y = ∑ i, (Fin.cons (C + 1) c : Fin (d + 1) → ℝ) i • v i := by
+      rw [Fin.sum_univ_succ, Fin.cons_zero]
+      simp only [Fin.cons_succ]
+      rw [show (∑ k : Fin d, c k • v k.succ) = y - (C + 1) • v 0 from hc]
+      abel
+    have hinner : inner ℝ y (v 0) = C + 1 := by
+      rw [hy', hv.inner_left_fintype]
+      simp
+    rw [image_eq_zero_of_notMem_tsupport (hT y hinner.ge)]
+    rfl
+  · obtain ⟨hyV, hyH⟩ := hy
+    have hle : C + 1 ≤ inner ℝ y (v 0) := by
+      by_contra hlt
+      exact hyH ⟨hyV, lt_of_not_ge hlt⟩
+    have hy0 : y ∉ tsupport (exteriorDerivative (φ : DifferentialForm (Euclid P) d)) :=
+      fun h => hT y hle (tsupport_exteriorDerivative_subset _ h)
+    rw [image_eq_zero_of_notMem_tsupport hy0]
+    rfl
+
+/-- **Stokes' formula for an oriented plane and its coordinate half-planes** (Simon 6.2.3,
+`∂T(ω) = T(dω)`, for the plane currents `[[V₀]]` and `[[V₀ ∩ Hₜ]]`; steps 0, 1 and 3 of the
+integer multiplicity criterion for plane cycles).  Let `v = (v₀, …, v_d)` be orthonormal,
+`V₀ = span v`, `Hₜ = {y | ⟨y, v₀⟩ < t}` and `Lₜ = {y | y − t v₀ ∈ span (v₁, …, v_d)}`.
+(b) The parametrisation `ι(z) = Σᵢ zᵢ vᵢ` pushes `L^{d+1}` to `H^{d+1}⌞V₀`
+(`cbr_cipi_affine_plane_measure`), `⟨ι z, v₀⟩ = z₀`, and `dφ(ι z)(v) = Σᵢ (−1)ⁱ ∂ᵢgᵢ(z)` with
+`gᵢ = φ(ι ·)(v₀, …, v̂ᵢ, …, v_d)`.  Over `{z₀ < t}` only `∫ ∂₀g₀ = ∫ g₀(t, z′) dz′` survives
+(`cbr_cipi_halfspace_partial_integral`), and this is the integral of `φ(·)(v₁, …, v_d)` over `Lₜ`
+(`cbr_cipi_plane_halfspace_boundary`).  (a) For `T` beyond `⟨·, v₀⟩` on `spt φ`, `dφ = 0` on
+`V₀ \ H_T` and `φ = 0` on `L_T`, so (b) at `t = T` gives `∫_{V₀} dφ(v) dH^{d+1} = 0`
+(`cbr_cipi_plane_boundary_zero`). -/
+theorem Submission.cbr_cipi_plane_halfspace_stokes : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0) ∧ ∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d] := by
+  intro P d v hv φ
+  -- (b): parametrise `V₀` and `Lₜ` by `cbr_cipi_affine_plane_measure` and integrate the
+  -- coordinate partial derivatives over `{z₀ < t}` by `cbr_cipi_halfspace_partial_integral`
+  have hb := Submission.cbr_cipi_plane_halfspace_boundary Submission.cbr_cipi_affine_plane_measure
+    Submission.cbr_cipi_halfspace_partial_integral P d v hv φ
+  -- (a): cut `V₀` at a level `T` beyond `⟨·, v₀⟩` on `spt φ`; (b) at `t = T` leaves an integral
+  -- over `L_T`, where `φ = 0`
+  exact ⟨Submission.cbr_cipi_plane_boundary_zero P d v hv φ hb, hb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
