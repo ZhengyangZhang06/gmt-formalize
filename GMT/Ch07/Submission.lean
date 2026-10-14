@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -1705,6 +1706,122 @@ theorem dor_lmb_fcd_cp_shrinking : ∀ (m : ℕ) (f : Euclid (m + 1) → ℝ), I
   -- Step 5: one `j` works for both bounds.
   obtain ⟨j, hj₁, hj₂⟩ := (hev₁.and hev₂).exists
   exact ⟨δ j, hδpos j, hδle j, (measure_mono (hsub _ (hδpos j).le)).trans hvol₁.le, hj₁.le, hj₂⟩
+
+/-- **Poincaré inequality with an integer median on the unit cube** (Simon Ch. 2, Lemma 2.7 with
+`θ = 1/4`, and the choice (31), (35) of `β_F` in the proof of the Deformation Theorem, Ch. 6, 5.1):
+there is `c = c(m) > 0` such that every integer-valued `u` integrable on `Q₁ = (0, 1)^{m+1}` with
+`∫_{Q₁} u div g ≤ V` for all smooth `g` with compact support in `Q₁` and `|g| ≤ 1` has an integer
+`β` with `∫_{Q₁} |u − β| ≤ c V` and `|β| ≤ 2 ∫_{Q₁} |u|`.  Take the integer median `β`
+(`dor_lmb_fcd_cp_integer_median`) and shrink `Q₁` to `Q_δ = (δ, 1 − δ)^{m+1}`, keeping half of
+`∫ |u − β|` with `Lⁿ(Q₁ \ Q_δ) ≤ 1/4` (`dor_lmb_fcd_cp_shrinking`), so `β` is a `¼`-median of `u`
+on `Q_δ`.  Normalized bumps of radius `δ/(k + 2)` give the BV Poincaré inequality on `Q_δ`
+(`dor_lmb_fcd_cp_bv_poincare`), and `dor_lmb_fcd_cp_median_deviation` gives
+`∫_{Q₁} |u − β| ≤ 2 ∫_{Q_δ} |u − β| ≤ 2 · 5 (m + 1)(1 − 2δ) V ≤ 10 (m + 1) V`. -/
+theorem dor_lmb_fcd_cube_poincare : ∀ m : ℕ, ∃ c : ℝ, 0 < c ∧ ∀ (u : Euclid (m + 1) → ℝ) (V : ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ β : ℤ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ c * V ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| := by
+  intro m
+  refine ⟨10 * ((m : ℝ) + 1), by positivity, ?_⟩
+  intro u V hZ hu hH
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1} with hQ₁
+  -- Step 0: `V ≥ 0` (test `g = 0`); `{a < yᵢ < b}` is the preimage of the box `(a, b)ⁿ`, so it is
+  -- measurable, and `Lⁿ(Q₁) = 1`
+  have hV : 0 ≤ V := by
+    have h0 := hH (fun _ => 0) contDiff_const HasCompactSupport.zero (by simp) (by simp)
+    simpa using h0
+  have hpre : ∀ a b : ℝ, {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} =
+      WithLp.ofLp ⁻¹' (univ.pi fun _ : Fin (m + 1) => Ioo a b) := fun a b => by
+    ext y
+    simp [Set.mem_pi]
+  have hmeas : ∀ a b : ℝ, MeasurableSet {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} :=
+    fun a b => by
+      rw [hpre]
+      exact (PiLp.volume_preserving_ofLp (Fin (m + 1))).measurable
+        (MeasurableSet.univ_pi fun _ => measurableSet_Ioo)
+  have hvol₁ : volume Q₁ = 1 := by
+    rw [hQ₁, hpre, (PiLp.volume_preserving_ofLp (Fin (m + 1))).measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+    simp
+  -- Step 1: the integer median `β` of `u` on `Q₁` (Simon (31), (35))
+  obtain ⟨β, hβge, hβle, hβbd⟩ := dor_lmb_fcd_cp_integer_median m u hZ hu
+  refine ⟨β, ?_, hβbd⟩
+  -- Step 2: shrink `Q₁` to `Q = Q_δ`, keeping half of `∫_{Q₁} |u − β|`
+  have hf : IntegrableOn (fun y => u y - β) Q₁ :=
+    hu.sub (integrableOn_const (by rw [hvol₁]; exact ENNReal.one_ne_top))
+  obtain ⟨δ, hδ0, hδ4, hQ1, hlayer, hhalf⟩ := dor_lmb_fcd_cp_shrinking m (fun y => u y - β) hf
+  set Q : Set (Euclid (m + 1)) := {y | ∀ i, δ < y i ∧ y i < 1 - δ}
+  have hQQ₁ : Q ⊆ Q₁ := fun y hy i => ⟨hδ0.trans (hy i).1, (hy i).2.trans (by linarith)⟩
+  have hQfin : volume Q ≠ ∞ := (hQ1.trans_lt ENNReal.one_lt_top).ne
+  -- Step 3: median transfer, `Lⁿ(Q ∩ A) ≥ Lⁿ(Q₁ ∩ A) − Lⁿ(Q₁ \ Q) ≥ 1/4 ≥ ¼ Lⁿ(Q)` for
+  -- `A = {β ≤ u}` and `A = {u ≤ β}`; in particular `Lⁿ(Q) > 0`
+  have hq1 : (volume Q).toReal ≤ 1 := by
+    have h := ENNReal.toReal_mono ENNReal.one_ne_top hQ1
+    rwa [ENNReal.toReal_one] at h
+  have htransfer : ∀ A : Set (Euclid (m + 1)), 1 / 2 ≤ volume (Q₁ ∩ A) →
+      1 / 4 ≤ (volume (Q ∩ A)).toReal := by
+    intro A hA
+    have hsub : Q₁ ∩ A ⊆ (Q ∩ A) ∪ (Q₁ \ Q) := fun y hy => by
+      by_cases hyQ : y ∈ Q
+      · exact Or.inl ⟨hyQ, hy.2⟩
+      · exact Or.inr ⟨hy.1, hyQ⟩
+    have h1 : 1 / 2 ≤ volume (Q ∩ A) + 1 / 4 :=
+      hA.trans ((measure_mono hsub).trans ((measure_union_le _ _).trans (add_le_add le_rfl hlayer)))
+    have hfinA : volume (Q ∩ A) ≠ ∞ :=
+      ((measure_mono inter_subset_left).trans_lt (hQ1.trans_lt ENNReal.one_lt_top)).ne
+    have h2 := ENNReal.toReal_mono (ENNReal.add_ne_top.2 ⟨hfinA, by norm_num⟩) h1
+    rw [ENNReal.toReal_add hfinA (by norm_num)] at h2
+    have h3 : ((1 : ℝ≥0∞) / 2).toReal = 1 / 2 := by norm_num
+    have h4 : ((1 : ℝ≥0∞) / 4).toReal = 1 / 4 := by norm_num
+    rw [h3, h4] at h2
+    linarith
+  have hge : 1 / 4 * (volume Q).toReal ≤ (volume (Q ∩ {y | (β : ℝ) ≤ u y})).toReal := by
+    linarith [htransfer _ hβge]
+  have hle : 1 / 4 * (volume Q).toReal ≤ (volume (Q ∩ {y | u y ≤ (β : ℝ)})).toReal := by
+    linarith [htransfer _ hβle]
+  have hqpos : 0 < (volume Q).toReal := by
+    have h : (volume (Q ∩ {y | (β : ℝ) ≤ u y})).toReal ≤ (volume Q).toReal :=
+      ENNReal.toReal_mono hQfin (measure_mono inter_subset_left)
+    linarith [htransfer _ hβge]
+  -- Step 4: deviation from the `¼`-median `β` on `Q` (Simon 2.7)
+  have hdev := dor_lmb_fcd_cp_median_deviation (m + 1) Q u β (1 / 4) (hmeas δ (1 - δ)) hQfin
+    (hu.mono_set hQQ₁) (by norm_num) hge hle
+  -- Step 5: normalized bumps `η_k` of radius `δ/(k + 2)`; their mollifications of `1_{Q₁} u`
+  -- converge a.e. (Lebesgue differentiation), so the BV Poincaré inequality holds on `Q`
+  let φ : ℕ → ContDiffBump (0 : Euclid (m + 1)) := fun k =>
+    { rIn := δ / ((k : ℝ) + 2) / 2
+      rOut := δ / ((k : ℝ) + 2)
+      rIn_pos := by positivity
+      rIn_lt_rOut := by
+        have : 0 < δ / ((k : ℝ) + 2) := by positivity
+        linarith }
+  have hφ0 : Tendsto (fun k => (φ k).rOut) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+  have hφK : ∀ᶠ k in atTop, (φ k).rOut ≤ 2 * (φ k).rIn :=
+    Eventually.of_forall fun k => by
+      change δ / ((k : ℝ) + 2) ≤ 2 * (δ / ((k : ℝ) + 2) / 2)
+      linarith
+  have hφs : ∀ k, support ((φ k).normed volume) ⊆ ball (0 : Euclid (m + 1)) δ := fun k => by
+    rw [(φ k).support_normed_eq]
+    exact ball_subset_ball (div_le_self hδ0.le (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]))
+  have hae := ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable (μ := volume)
+    hφ0 hφK (hu.integrable_indicator (hmeas 0 1)).locallyIntegrable
+  have hbv := dor_lmb_fcd_cp_bv_poincare m u V δ (fun k => (φ k).normed volume) hu hH hδ0
+    (by linarith) (fun k => (φ k).contDiff_normed) (fun k => (φ k).hasCompactSupport_normed)
+    (fun k => (φ k).nonneg_normed) (fun k => (φ k).normed_neg) (fun k => (φ k).integral_normed)
+    hφs hae
+  -- Step 6: `∫_{Q₁} |u − β| ≤ 2 ∫_Q |u − β| ≤ 2 · 5 (m + 1)(1 − 2δ) V ≤ 10 (m + 1) V`
+  have hQbd : ∫ y in Q, |u y - β| ≤ 5 * ((m : ℝ) + 1) * V := by
+    have hmδV : 0 ≤ ((m : ℝ) + 1) * δ * V := by positivity
+    calc ∫ y in Q, |u y - β|
+        ≤ (1 + (1 / 4 : ℝ)⁻¹) * ((volume Q).toReal)⁻¹ * ∫ x in Q, ∫ y in Q, |u x - u y| := hdev
+      _ ≤ (1 + (1 / 4 : ℝ)⁻¹) * ((volume Q).toReal)⁻¹ *
+            (((m : ℝ) + 1) * (1 - 2 * δ) * (volume Q).toReal * V) :=
+          mul_le_mul_of_nonneg_left hbv (by positivity)
+      _ = 5 * ((m : ℝ) + 1) * (1 - 2 * δ) * V * (((volume Q).toReal)⁻¹ * (volume Q).toReal) := by
+          ring
+      _ = 5 * ((m : ℝ) + 1) * (1 - 2 * δ) * V := by rw [inv_mul_cancel₀ hqpos.ne', mul_one]
+      _ ≤ 5 * ((m : ℝ) + 1) * V := by linarith
+  calc ∫ y in Q₁, |u y - β| ≤ 2 * ∫ y in Q, |u y - β| := hhalf
+    _ ≤ 2 * (5 * ((m : ℝ) + 1) * V) := by gcongr
+    _ = 10 * ((m : ℝ) + 1) * V := by ring
 
 end Submission
 
