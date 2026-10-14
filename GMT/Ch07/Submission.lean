@@ -497,6 +497,91 @@ theorem Submission.cbr_rlim_smooth_cutoff : ∀ (P k : ℕ) (U : Set (Euclid P))
   -- step 6: `t ≤ f x` puts `x` outside `support χ = {f < t}`
   rw [hχs] at hx'
   exact (not_lt.2 hx) hx'
+/-- Cut-off error estimate for an admissible pair `(μ, ξ)` (`|ξ(x)(α)| ≤ |α|_E` for `μ`-a.e. `x`):
+if `|ω|_E ≤ M`, `η = χ ω` with `0 ≤ χ ≤ 1`, `χ = 1` on `{f ≤ t − ε}` and `χ = 0` on `{f ≥ t}` (as
+for the cut-off `γ_ε ∘ f` in the proof of Simon Ch. 6, 4.5(2)), then `∫_{f<t} ξ(ω) dμ` and
+`∫ ξ(η) dμ` differ by at most `M μ(spt ω ∩ {t − ε < f < t})`.  Both integrands are bounded by
+`M 1_{spt ω}`, and `1_{f<t} ξ(ω) − ξ(η) = (1_{f<t} − χ) ξ(ω)` vanishes off
+`spt ω ∩ {t − ε < f < t}`. -/
+theorem Submission.cbr_rlim_cutoff_error_le : ∀ (P k : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k) (ω η : TestFormOn U k) (χ f : Euclid P → ℝ) (t ε M : ℝ), Continuous f → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) k, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ M) → (∀ x, (η : DifferentialForm (Euclid P) k) x = χ x • (ω : DifferentialForm (Euclid P) k) x) → (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) → (∀ x, f x ≤ t - ε → χ x = 1) → (∀ x, t ≤ f x → χ x = 0) → |(∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) - ∫ x, ξ x ((η : DifferentialForm (Euclid P) k) x) ∂μ| ≤ M * (μ (tsupport (ω : DifferentialForm (Euclid P) k) ∩ {x | t - ε < f x ∧ f x < t})).toReal := by
+  intro P k U μ ξ ω η χ f t ε M hf hμ hξm hξ hωM hη hχ hχ1 hχ0
+  obtain ⟨⟨hωs, hωc⟩, hωU⟩ := ω.2
+  have hηs := η.2.1.1
+  set w : DifferentialForm (Euclid P) k := (ω : DifferentialForm (Euclid P) k)
+  set v : DifferentialForm (Euclid P) k := (η : DifferentialForm (Euclid P) k)
+  set C := tsupport w
+  set S := {x | f x < t}
+  set B := {x | t - ε < f x ∧ f x < t}
+  -- Step 1: `M ≥ 0`.
+  have hM : 0 ≤ M := (covectorEuclideanNorm_nonneg _).trans (hωM 0)
+  -- Step 2: measurability and finiteness.
+  have hCm : MeasurableSet C := (isClosed_tsupport w).measurableSet
+  have hSm : MeasurableSet S := measurableSet_lt hf.measurable measurable_const
+  have hBm : MeasurableSet B :=
+    (measurableSet_lt measurable_const hf.measurable).inter
+      (measurableSet_lt hf.measurable measurable_const)
+  have hCf : μ C < ∞ := hμ C hωc hωU
+  have hCBf : μ (C ∩ B) < ∞ := (measure_mono inter_subset_left).trans_lt hCf
+  -- Step 3: `g = ξ(w)` and `h = ξ(v)` are a.e. strongly measurable.
+  have hgm : AEStronglyMeasurable (fun x => ξ x (w x)) μ :=
+    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂ hξm
+      (ContDiff.continuous hωs).aestronglyMeasurable
+  have hhm : AEStronglyMeasurable (fun x => ξ x (v x)) μ :=
+    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂ hξm
+      (ContDiff.continuous hηs).aestronglyMeasurable
+  -- Step 4: `|g| ≤ M` a.e., `g = 0` off `C`, so `g` is integrable.
+  have hg0 : ∀ x, x ∉ C → ξ x (w x) = 0 := fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, map_zero]
+  have hgM : ∀ᵐ x ∂μ, |ξ x (w x)| ≤ M := by
+    filter_upwards [hξ] with x hx
+    exact (hx _).trans (hωM x)
+  have hCi : Integrable (C.indicator fun _ => M) μ :=
+    (integrable_indicator_iff hCm).2 (integrableOn_const hCf.ne)
+  have hgi : Integrable (fun x => ξ x (w x)) μ := by
+    refine hCi.mono' hgm ?_
+    filter_upwards [hgM] with x hx
+    by_cases hxC : x ∈ C
+    · rw [indicator_of_mem hxC, Real.norm_eq_abs]
+      exact hx
+    · rw [indicator_of_notMem hxC, hg0 x hxC, norm_zero]
+  -- Step 5: `h = χ g`, so `h` is integrable.
+  have hhg : ∀ x, ξ x (v x) = χ x * ξ x (w x) := fun x => by
+    rw [hη x, map_smul, smul_eq_mul]
+  have hhi : Integrable (fun x => ξ x (v x)) μ := by
+    refine hgi.mono hhm (Eventually.of_forall fun x => ?_)
+    rw [hhg x, norm_mul, Real.norm_eq_abs (χ x), abs_of_nonneg (hχ x).1]
+    exact mul_le_of_le_one_left (norm_nonneg _) (hχ x).2
+  -- Step 6: rewrite the difference as one integral.
+  rw [← integral_indicator hSm, ← integral_sub (hgi.indicator hSm) hhi]
+  -- Step 7: pointwise bound by `M 1_{C ∩ B}`.
+  have hbd : ∀ᵐ x ∂μ, ‖S.indicator (fun x => ξ x (w x)) x - ξ x (v x)‖ ≤
+      (C ∩ B).indicator (fun _ => M) x := by
+    filter_upwards [hgM] with x hx
+    have hnn : 0 ≤ (C ∩ B).indicator (fun _ => M) x := indicator_nonneg (fun _ _ => hM) x
+    rw [hhg x]
+    by_cases hxS : f x < t
+    · rw [indicator_of_mem (show x ∈ S from hxS)]
+      by_cases hxε : f x ≤ t - ε
+      · rw [hχ1 x hxε, one_mul, sub_self, norm_zero]
+        exact hnn
+      · by_cases hxC : x ∈ C
+        · rw [indicator_of_mem (show x ∈ C ∩ B from ⟨hxC, not_le.1 hxε, hxS⟩)]
+          rw [← one_sub_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs,
+            abs_of_nonneg (sub_nonneg.2 (hχ x).2)]
+          exact (mul_le_of_le_one_left (abs_nonneg _) (sub_le_self 1 (hχ x).1)).trans hx
+        · rw [hg0 x hxC, mul_zero, sub_zero, norm_zero]
+          exact hnn
+    · rw [indicator_of_notMem (show x ∉ S from hxS), hχ0 x (not_lt.1 hxS), zero_mul, sub_zero,
+        norm_zero]
+      exact hnn
+  -- Step 8: integrate the majorant.
+  have hmi : Integrable ((C ∩ B).indicator fun _ => M) μ :=
+    (integrable_indicator_iff (hCm.inter hBm)).2 (integrableOn_const hCBf.ne)
+  calc |∫ x, S.indicator (fun x => ξ x (w x)) x - ξ x (v x) ∂μ|
+      = ‖∫ x, S.indicator (fun x => ξ x (w x)) x - ξ x (v x) ∂μ‖ := (Real.norm_eq_abs _).symm
+    _ ≤ ∫ x, (C ∩ B).indicator (fun _ => M) x ∂μ := norm_integral_le_of_norm_le hmi hbd
+    _ = M * (μ (C ∩ B)).toReal := by
+      rw [integral_indicator_const M (hCm.inter hBm), smul_eq_mul, measureReal_def, mul_comm]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
