@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "23f02f10518197042482e46ee4cb99e463526066c006f592f5d565c7beefb80a",
+  "git_delta": {
+    "base_commit": "7a5073546b3d8808dfc59f9c30d57e2084bc2aad",
+    "candidate_commit": "b163fa5b52f842ff309b897db9b89acb0df156dc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "14af69fe459e071f3af3c2648d0e7044339900a52ae394fe0615423117c324cc",
+    "source_sha256": "bebe4a6370d0b03fdef6d1724d5034e6e914e00b05f2fa14433c80de832e44fc",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_oriented_piece_pushforward",
+      "statement": "∀ (P m : ℕ) (N W : Set (Euclid P)) (ξ : Euclid P → MultiVector P m) (Φ : Euclid P → Euclid P) (Λ : NNReal), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOrientation m N ξ → IsOpen W → μHE[m] (N ∩ W) ≠ ∞ → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → LipschitzWith Λ Φ → AntilipschitzWith Λ Φ → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun x => ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x))) (μHE[m].restrict (N ∩ W)) ∧ D ω = ∫ x in N ∩ W, ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (Φ '' (N ∩ W) ∩ W')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
