@@ -5414,6 +5414,67 @@ theorem Submission.dimred_mbl_dt_lpip_lipschitz_piece_current : (∀ (P n : ℕ)
   rw [h2.unique h1, hunion]
   exact (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hA hApA (hzero ω)).symm
 
+/-- **A current given by a summable integer-weighted Lipschitz parametrization is integer
+multiplicity** (Simon Ch. 6, 3.10, in the form of step 9 of the cone filling in a subspace).
+Let `T ∈ 𝒟ₖ₊₁(ℝᴾ)`, and for `i ∈ ℕ` let `Gᵢ : ℝᵏ⁺¹ → ℝᴾ` be Lipschitz, `Aᵢ` Borel, `wᵢ` integer
+valued, measurable and integrable on `Aᵢ`, and `cᵢ ≥ 0` on `Aᵢ` measurable with
+`|α(DGᵢ(u)e)| ≤ cᵢ(u)|α|` there, where `Σᵢ ∫_{Aᵢ} |wᵢ| cᵢ < ∞` and
+`T(ω) = Σᵢ ∫_{Aᵢ} wᵢ ω(Gᵢ)(DGᵢ e)` for every test form `ω`.  Each term is an integer multiplicity
+current `Sᵢ` (`dimred_mbl_dt_lpip_lipschitz_piece_current`) with `M(Sᵢ) ≤ ∫_{Aᵢ} |wᵢ| cᵢ`, as
+`|ω(Gᵢ u)(DGᵢ(u)e)| ≤ cᵢ(u)|ω(Gᵢ u)| ≤ cᵢ(u)` for admissible `ω`; so `Σᵢ M(Sᵢ) < ∞`, and
+`cmcdt_im_series` sums the `Sᵢ` to an integer multiplicity `S`.  `T(ω)` and `S(ω)` are sums of the
+same series, so `T = S`. -/
+theorem Submission.dimred_cs_sos_cfs_param_series_im : ∀ (P k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (G : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (w : ℕ → Euclid (k + 1) → ℤ) (c : ℕ → Euclid (k + 1) → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (A i)) → (∀ i, Measurable (w i)) → (∀ i, Measurable (c i)) → (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) → (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) (k + 1), |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) → ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T := by
+  intro P k T G A w c hG hA hw hc hwi hcb hsum hT
+  -- step 1: (IMS), the integer multiplicity series statement, from (VO), (MR) and (IMC)
+  have hIMS := Submission.cmcdt_im_series Submission.dtc_vanish_off_support
+    Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub
+  -- step 2: the integer multiplicity pieces `Sᵢ(ω) = ∫_{Aᵢ} wᵢ ω(Gᵢ)(DGᵢ e)`
+  choose L hL using hG
+  choose S hSim hSeq using fun i =>
+    Submission.dimred_mbl_dt_lpip_lipschitz_piece_current Submission.cmc_massOn_eq_imRep_measure
+      Submission.cmc_imRep_locality_restrict_sub hIMS P k (L i) (G i) (A i) (w i) (hL i) (hA i)
+      (hw i) (hwi i)
+  -- step 3: `M(Sᵢ) ≤ ∫_{Aᵢ} |wᵢ| cᵢ`, since `|ω(Gᵢ u)(DGᵢ(u)e)| ≤ cᵢ(u)` for admissible `ω`
+  have hmass : ∀ i, (S i).mass ≤ ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) := by
+    intro i
+    have hm : Measurable fun u => ENNReal.ofReal (|(w i u : ℝ)| * c i u) := by
+      have := hw i
+      have := hc i
+      fun_prop
+    apply sSup_le
+    rintro _ ⟨ω, ⟨-, hω1⟩, rfl⟩
+    calc ENNReal.ofReal (S i ω)
+        ≤ ‖S i ω‖ₑ := Real.ofReal_le_enorm _
+      _ = ‖∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (G i u)
+            (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))‖ₑ := by
+          rw [hSeq i ω]
+      _ ≤ ∫⁻ u in A i, ‖(w i u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (G i u)
+            (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))‖ₑ :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) := by
+          refine setLIntegral_mono hm fun u hu => ?_
+          obtain ⟨hc0, hcα⟩ := hcb i u hu
+          rw [Real.enorm_eq_ofReal_abs, abs_mul]
+          refine ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ (abs_nonneg _))
+          calc |(ω : DifferentialForm (Euclid P) (k + 1)) (G i u)
+                (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))|
+              ≤ c i u *
+                  covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (k + 1)) (G i u)) :=
+                hcα _
+            _ ≤ c i u * 1 := mul_le_mul_of_nonneg_left (hω1 _) hc0
+            _ = c i u := mul_one _
+  -- step 4: `Σᵢ M(Sᵢ) ≤ Σᵢ ∫_{Aᵢ} |wᵢ| cᵢ < ∞`
+  have hfin : ∑' i, (S i).mass < ∞ :=
+    (ENNReal.tsum_le_tsum hmass).trans_lt (lt_top_iff_ne_top.2 hsum)
+  -- step 5: the integer multiplicity sum `S = Σᵢ Sᵢ`
+  obtain ⟨S', hS', -, -, hS'im⟩ := hIMS P k S hfin
+  -- step 6: `T(ω)` and `S(ω)` are sums of the same series, so `T = S`
+  have hTS : T = S' := GeometricCurrentOn.ext fun ω =>
+    (hT ω).unique (by simpa only [hSeq] using hS' ω)
+  rw [hTS]
+  exact hS'im hSim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
