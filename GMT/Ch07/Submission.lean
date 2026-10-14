@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.4** (the test-function argument of Remark 1.5(3)): if `A − x ⊆ V` for a
+subspace `V`, then every approximate tangent space `Q` of `A` at `x` lies in `V`.  Every blow-up
+`η_{x,r}(A) = r⁻¹(A − x)` lies in `V`.  At `q ∈ Q \ V`, `d = dist(q, V) > 0` (`V` is closed), and
+the bump `g = max(0, d/2 − |· − q|) ∈ C_c` vanishes on `V`, so all blow-up integrals of `g` vanish
+and the limit gives `∫_Q g dHⁿ = 0`.  But `Hⁿ⌞Q` is regular with support `Q ∋ q` (`dim Q = n`), and
+`g ≥ 0` has support `B_{d/2}(q)`, so `∫_Q g dHⁿ > 0`. -/
+theorem Submission.cmcdtfrpo_approxTangent_le_of_sub_mem : ∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V := by
+  intro P n A x Q V hAV hQ q hq
+  by_contra hqV
+  -- `d = dist(q, V) > 0`, as `V` is closed
+  have hd : 0 < infDist q (V : Set (Euclid P)) :=
+    (V.closed_of_finiteDimensional.notMem_iff_infDist_pos ⟨0, V.zero_mem⟩).mp hqV
+  set d := infDist q (V : Set (Euclid P))
+  -- the bump `g = max(0, d/2 − dist(·, q))`: continuous, `≥ 0`, support `B_{d/2}(q)`, zero on `V`
+  set g : Euclid P → ℝ := fun y => max 0 (d / 2 - dist y q)
+  have hg_cont : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.dist continuous_const))
+  have hg_nonneg : 0 ≤ g := fun y => le_max_left _ _
+  have hg_supp : support g = ball q (d / 2) := by
+    ext y
+    simp only [mem_support, mem_ball, g]
+    constructor
+    · intro h
+      by_contra h'
+      exact h (max_eq_left (by linarith [not_lt.mp h']))
+    · intro h
+      exact (lt_max_of_lt_right (by linarith : (0 : ℝ) < d / 2 - dist y q)).ne'
+  have hg_cpt : HasCompactSupport g := by
+    refine HasCompactSupport.intro (isCompact_closedBall q (d / 2)) fun y hy => ?_
+    simp only [mem_closedBall, not_le] at hy
+    exact max_eq_left (by linarith)
+  have hgV : ∀ v ∈ V, g v = 0 := by
+    intro v hv
+    have h1 : d ≤ dist q v := infDist_le_dist_of_mem (SetLike.mem_coe.mpr hv)
+    rw [dist_comm] at h1
+    exact max_eq_left (by linarith)
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_cpt⟩
+  -- every blow-up `η_{x,r}(A) = r⁻¹(A − x)` lies in `V`, so all blow-up integrals of `f` vanish
+  have hzero : ∀ r : ℝ,
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n] = 0 := by
+    intro r
+    apply setIntegral_eq_zero_of_forall_eq_zero
+    rintro _ ⟨a, ha, rfl⟩
+    exact hgV _ (V.smul_mem r⁻¹ (hAV a ha))
+  -- uniqueness of limits along `𝓝[>] 0` gives `∫_Q g dHⁿ = 0`
+  have hQint : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := by
+    refine tendsto_nhds_unique (hQ.2 f) ?_
+    simp only [hzero]
+    exact tendsto_const_nhds
+  -- `Hⁿ⌞Q` is regular with support `Q ∋ q` (`dim Q = n`), so `∫_Q g dHⁿ > 0`
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ.1
+  have hint : Integrable g (μHE[n].restrict (Q : Set (Euclid P))) :=
+    hg_cont.integrable_of_hasCompactSupport hg_cpt
+  have hqsupp : q ∈ (μHE[n].restrict (Q : Set (Euclid P))).support := by
+    rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ.1]
+    exact hq
+  have hball : 0 < μHE[n].restrict (Q : Set (Euclid P)) (ball q (d / 2)) :=
+    (Measure.mem_support_iff_forall q).mp hqsupp _ (ball_mem_nhds q (half_pos hd))
+  have hpos : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hg_nonneg hint, hg_supp]
+    exact hball
+  exact hpos.ne' hQint
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
