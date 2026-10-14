@@ -3465,6 +3465,81 @@ theorem Submission.dimred_mbl_pf_pullback_integral_extension : ∀ (P n : ℕ) (
   -- (6) `Y(ωⱼ) = τ(M, θ, ξ)(ωⱼ)`
   rw [← heq]
   exact hlim.congr fun j => (hR (ωs j)).symm
+/-- **A unit orientation paired with a pulled-back covector** (Simon Ch. 6, 1.8–1.10 and
+3.3–3.4: `⟨L^#α, ξ⟩ = ⟨α, L_#ξ⟩` with `L_#(τ₁ ∧ ⋯ ∧ τₙ) = Lτ₁ ∧ ⋯ ∧ Lτₙ`).  Write
+`ξ(β) = ±β(τ)` with `τ` an orthonormal basis of `Q`, and `α ∘ L = α.compContinuousLinearMap L`.
+(a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E` (`regcomp_covector_eval_orthonormal_le`,
+then `dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le`).  (b) If `L` fixes `Q` pointwise, then
+`Lτᵢ = τᵢ` since `τᵢ ∈ span τ = Q`, so `(α ∘ L)(τ) = α(Lτ₁, …, Lτₙ) = α(τ)` and
+`ξ(α ∘ L) = ξ(α)`. -/
+theorem Submission.dimred_mbl_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α) := by
+  intro P n ξ Q L hξ
+  -- `ξ(β) = ±β(τ)` with one sign, `τ` an orthonormal basis of `Q`; hence `|ξ(β)| = |β(τ)|`
+  obtain ⟨τ, hτ, hspan, hsign⟩ := hξ
+  have habs : ∀ β : Covector (Euclid P) n, |ξ β| = |β τ| := by
+    intro β
+    rcases hsign with h | h
+    · rw [h]
+    · rw [h, abs_neg]
+  refine ⟨fun α => ?_, fun hL α => ?_⟩
+  · -- (a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E`
+    rw [habs, mul_comm]
+    exact (Submission.regcomp_covector_eval_orthonormal_le P n (α.compContinuousLinearMap L) τ
+      hτ).trans (Submission.dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le P P n L α)
+  · -- (b) `τᵢ ∈ span τ = Q` is fixed by `L`, so `(α ∘ L)(τ) = α(L ∘ τ) = α(τ)`
+    have hLτ : ⇑L ∘ τ = τ := funext fun i =>
+      hL (τ i) (hspan ▸ Submodule.subset_span ⟨i, rfl⟩)
+    have hτα : (α.compContinuousLinearMap L) τ = α τ := by
+      rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+    rcases hsign with h | h <;> rw [h, h, hτα]
+
+/-- **Simon Ch. 6, 2.24(2) and 2.29, mass of a `C¹` push-forward**: let `Y = τ(M, θ, ξ)` have
+compact support `spt Y ⊆ O`, `‖Df‖ ≤ L` on `O`, and `Z(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ`.
+Then `M(Z) ≤ Lⁿ M(Y)`.  `Hⁿ`-a.e. on `M`, `x ∈ spt Y ⊆ O` (so `0 ≤ ‖Df(x)‖ ≤ L`) and `ξ(x)` is a
+unit orientation, so `|⟨ω(f(x)) ∘ Df(x), ξ(x)⟩| ≤ |ω(f(x))| ‖Df(x)‖ⁿ ≤ Lⁿ` for admissible `ω`;
+with `∫_M θ dHⁿ = μ_Y(ℝᴾ) = M(Y) < ∞` this gives `|Z(ω)| ≤ Lⁿ M(Y)`. -/
+theorem Submission.dimred_mbl_pf_pushforward_mass_le : ∀ (P n : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (L : ℝ) (Y Z : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → Z.mass ≤ ENNReal.ofReal (L ^ n) * Y.mass := by
+  intro P n O f L Y Z R hL hR hK hKO hZ
+  obtain ⟨hnull, hmass, hfin⟩ :=
+    (Submission.dimred_mbl_pf_imrep_carrier_mass_support P n).1 Y R hR
+  have hfin' : R.measure univ ≠ ∞ := hfin hK
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  -- `μ_Y(ℝᴾ) = ∫_M θ dHⁿ < ∞`: `θ` is `Hⁿ⌞M`-integrable and `∫_M θ dHⁿ = μ_Y(ℝᴾ)`
+  have hlin : R.measure univ = ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hθint : Integrable (fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) := by
+    simpa using integrable_toReal_of_lintegral_ne_top hθm.aemeasurable (hlin ▸ hfin')
+  have hθ : ∫ x in R.carrier, (R.mult x : ℝ) ∂μHE[n] = (R.measure univ).toReal := by
+    rw [hlin, ← integral_toReal hθm.aemeasurable (ae_of_all _ fun x => ENNReal.natCast_lt_top _)]
+    simp only [ENNReal.toReal_natCast]
+  -- `Hⁿ`-a.e. point of `M` lies in `spt Y ⊆ O`
+  have hO : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ O := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hx hxM
+    exact hKO (Classical.byContradiction fun h => hx ⟨hxM, h⟩)
+  rw [hmass]
+  apply sSup_le
+  rintro r ⟨ω, ⟨-, hω1⟩, rfl⟩
+  -- `|θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩| ≤ Lⁿ θ` `Hⁿ`-a.e. on `M`
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖(R.mult x : ℝ) * R.orient x
+      (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x))‖ ≤
+        L ^ n * (R.mult x : ℝ) := by
+    filter_upwards [hO, R.orients] with x hxO hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    have h1 := (Submission.dimred_mbl_pf_unitOrientation_comp P n (R.orient x) Q (fderiv ℝ f x)
+      hQ).1 ((ω : DifferentialForm (Euclid P) n) (f x))
+    have h2 : ‖fderiv ℝ f x‖ ^ n ≤ L ^ n := pow_le_pow_left₀ (norm_nonneg _) (hL x hxO) n
+    rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm (L ^ n)]
+    exact mul_le_mul_of_nonneg_left
+      (h1.trans ((mul_le_of_le_one_left (by positivity) (hω1 _)).trans h2)) (Nat.cast_nonneg _)
+  -- `|Z(ω)| ≤ Lⁿ ∫_M θ dHⁿ = Lⁿ μ_Y(ℝᴾ)`
+  have hZω : ‖Z ω‖ ≤ L ^ n * (R.measure univ).toReal := by
+    rw [hZ ω, ← hθ, ← integral_const_mul]
+    exact norm_integral_le_of_norm_le (hθint.const_mul _) hbound
+  calc ENNReal.ofReal (Z ω) ≤ ENNReal.ofReal (L ^ n * (R.measure univ).toReal) :=
+        ENNReal.ofReal_le_ofReal ((Real.le_norm_self _).trans hZω)
+    _ = ENNReal.ofReal (L ^ n) * R.measure univ := by
+        rw [ENNReal.ofReal_mul' ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hfin']
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
