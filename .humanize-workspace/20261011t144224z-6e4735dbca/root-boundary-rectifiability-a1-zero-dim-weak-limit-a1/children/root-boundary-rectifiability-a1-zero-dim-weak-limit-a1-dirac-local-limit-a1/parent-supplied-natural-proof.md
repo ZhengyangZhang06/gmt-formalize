@@ -1,0 +1,123 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.boundary_rectifiability-a1.zero_dim_weak_limit-a1`
+- Child DAG node: `root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.dirac_local_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–4 of the supplied proof of br_zero_dim_weak_limit_isIntegerMultiplicity (count and coefficient bounds, extraction of a subsequence, limit on W), stated for currents that are integer Dirac sums on W with uniformly bounded total coefficient. The supplied proof extracts three times in succession (constant number of points, constant coefficients, convergent positions). Here this is done as one extraction after padding every configuration to a fixed length; it is the same argument. Neither openness of U or W nor W ⊆ U is used.
+
+Conventions. ℝ^P := Eucl P and D⁰(U) := TestFormOn U 0. For ω ∈ D⁰(U) put ω°(x) := ω(x)(![]).
+ - ω° is continuous: ω is C^∞, hence continuous, and α ↦ α(![]) is a continuous linear map on 0-covectors.
+ - If x ∉ tsupport ω then ω(x) = 0 and ω°(x) = 0 (`image_eq_zero_of_notMem_tsupport`).
+ - ℤ carries its discrete topology.
+
+Proof.
+1. (Finite representation on W.) Fix j and ω ∈ D⁰(U) with tsupport ω ⊆ W. Let A_j := N_j ∩ W, which is finite by hypothesis (write A_j also for the Finset (N_j ∩ W).toFinset). For x ∈ N_j \ W we have x ∉ tsupport ω, so the summand c_j(x)·ω°(x) vanishes. Hence the summand of the finsum vanishes outside the finite set A_j ⊆ N_j, and X_j(ω) = Σ_{x∈A_j} c_j(x)·ω°(x) (`finsum_mem_eq_sum_of_subset`).
+2. (Bounds.)
+ - The hypothesis with S = ∅ gives 0 ≤ Λ.
+ - For x ∈ A_j, c_j(x) is a nonzero integer, so |c_j(x)| ≥ 1. The hypothesis with S = A_j then gives #A_j ≤ Σ_{x∈A_j} |c_j(x)| ≤ Λ.
+ - The hypothesis with S = {x} (x ∈ A_j) gives |c_j(x)| ≤ Λ.
+ Let Q := ⌊Λ⌋₊ ∈ ℕ and m := ⌊Λ⌋ ∈ ℤ. Since #A_j and c_j(x) are integers, #A_j ≤ Q, and c_j(x) ∈ [−m, m] ∩ ℤ for x ∈ A_j.
+3. (Padding to a fixed length.) Let A be a finite set with #A ≤ Q and c : ℝ^P → ℤ. List A = {x_1, …, x_k}, where k = #A ≤ Q. Put p_ℓ := x_ℓ and b_ℓ := c(x_ℓ) for ℓ ≤ k, and p_ℓ := 0, b_ℓ := 0 for k < ℓ ≤ Q. This gives p : Fin Q → ℝ^P and b : Fin Q → ℤ with:
+ - p_ℓ ∈ A ∪ {0} and b_ℓ ∈ {c(x) : x ∈ A} ∪ {0};
+ - Σ_{x∈A} c(x)·g(x) = Σ_{ℓ∈Fin Q} b_ℓ·g(p_ℓ) for every g : ℝ^P → ℝ (the padded terms are 0·g(0) = 0).
+ (In Lean this is proved by induction on the Finset A.)
+ Apply this to A_j and c_j for every j. We get p_j : Fin Q → ℝ^P and b_j : Fin Q → ℤ with p_{j,ℓ} ∈ A_j ∪ {0} ⊆ closure W ∪ {0} and b_{j,ℓ} ∈ [−m, m] ∩ ℤ (using 0 ≤ m). By step 1, X_j(ω) = Σ_ℓ b_{j,ℓ}·ω°(p_{j,ℓ}) for every ω ∈ D⁰(U) with tsupport ω ⊆ W.
+4. (Extraction.) The pairs (p_j, b_j) lie in K* := (closure W ∪ {0})^{Fin Q} × ([−m, m] ∩ ℤ)^{Fin Q}, a subset of the metrizable space (Fin Q → ℝ^P) × (Fin Q → ℤ). K* is compact: closure W ∪ {0} is compact (closure W is compact by hypothesis), a finite set of integers is compact, and finite products of compact sets are compact (`isCompact_univ_pi`, `IsCompact.prod`). By sequential compactness (`IsCompact.tendsto_subseq`) there are a strictly increasing ψ : ℕ → ℕ and (y, β) ∈ K* with (p_{ψ(i)}, b_{ψ(i)}) → (y, β) as i → ∞.
+5. (Passing to the limit.) Fix ω ∈ D⁰(U) with tsupport ω ⊆ W. The map Φ_ω(p, b) := Σ_ℓ (b_ℓ : ℝ)·ω°(p_ℓ) is continuous on (Fin Q → ℝ^P) × (Fin Q → ℤ): ω° is continuous, ℤ → ℝ is continuous for the discrete topology, coordinate projections are continuous, and finite sums and products of continuous functions are continuous.
+ Hence X_{ψ(i)}(ω) = Φ_ω(p_{ψ(i)}, b_{ψ(i)}) → Φ_ω(y, β) = Σ_ℓ β_ℓ·ω°(y_ℓ).
+ On the other hand X_j(ω) → X(ω) (WeaklyConvergesOn Xj X), hence X_{ψ(i)}(ω) → X(ω), since ψ is strictly increasing and so ψ(i) → ∞.
+ By uniqueness of limits in ℝ, X(ω) = Σ_ℓ β_ℓ·ω°(y_ℓ).
+6. (Limit points outside W.) If y_ℓ ∉ W then y_ℓ ∉ tsupport ω (⊆ W), so ω°(y_ℓ) = 0. Hence X(ω) = Σ_{ℓ : y_ℓ ∈ W} β_ℓ·ω°(y_ℓ).
+7. (Grouping equal points.) Let s := {ℓ ∈ Fin Q : y_ℓ ∈ W}, and let D be the Finset image of s under ℓ ↦ y_ℓ, so D ⊆ W. Define a(z) := Σ_{ℓ∈s, y_ℓ = z} β_ℓ ∈ ℤ for z ∈ ℝ^P. Grouping the terms of step 6 according to the value of y_ℓ (`Finset.sum_image'` / `Finset.sum_fiberwise`):
+ X(ω) = Σ_{z∈D} Σ_{ℓ∈s, y_ℓ = z} β_ℓ·ω°(z) = Σ_{z∈D} a(z)·ω°(z).
+ D and a were constructed from the sequences alone, before ω was fixed. So X(ω) = Σ_{x∈D} (a(x) : ℝ)·ω(x)(![]) for every ω ∈ D⁰(U) with tsupport ω ⊆ W, and D ⊆ W. ∎
+
+## Key steps
+
+1. On forms supported in W, X_j(ω) = Σ_{x∈N_j∩W} c_j(x)ω(x)(![]). Since |c_j| ≥ 1 on N_j, the bound gives #(N_j∩W) ≤ ⌊Λ⌋₊ and |c_j| ≤ ⌊Λ⌋.
+2. Pad each configuration to Q = ⌊Λ⌋₊ points: extra points are 0 with coefficient 0.
+3. Extract one subsequence converging in the compact set (closure W ∪ {0})^Q × ([−m,m]∩ℤ)^Q.
+4. Continuity of (p, b) ↦ Σ b_ℓ ω(p_ℓ)(![]) and uniqueness of limits give X(ω) = Σ β_ℓ ω(y_ℓ)(![]). Limit points outside W contribute 0.
+5. Group equal limit points: X(ω) = Σ_{y∈D} a(y)ω(y)(![]) with D ⊆ W finite and independent of ω.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp project/GMT/Ch06/Contract.lean <workspace>/GMT/Ch06/Submission.lean (identical)`
+- `rg -n 'theorem euclideanHausdorffMeasure_zero|def euclideanHausdorffMeasure|notation.*μHE' mathlib/Mathlib`
+- `rg -n 'theorem hausdorffMeasure_zero_singleton' mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `rg -n 'theorem setIntegral_finset|theorem integral_fintype|theorem integral_countable' mathlib/Mathlib/MeasureTheory`
+- `rg -n 'sum_measure_singleton|measure_biUnion_finset' mathlib/Mathlib/MeasureTheory/Measure/*.lean`
+- `rg -n 'theorem le_restrict_apply' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `rg -n 'integrableOn_singleton|integrableOn_finite_biUnion|integrableOn_finset_iUnion' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `rg -n 'theorem IsCompact.tendsto_subseq' mathlib/Mathlib/Topology/Sequences.lean`
+- `rg -n 'structure ContDiffBump|theorem one_of_mem_closedBall|theorem tsupport_eq' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'theorem closure_ball|theorem isCompact_closedBall' mathlib/Mathlib/Analysis/InnerProductSpace/EuclideanDist.lean`
+- `rg -n 'def constOfIsEmpty' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `rg -n 'theorem setIntegral_eq_integral_of_forall_compl_eq_zero' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `grep -n 'finprod_mem_eq_prod_of_subset|finprod_mem_eq_prod_of_inter_mulSupport_eq' mathlib/Mathlib/Algebra/BigOperators/Finprod.lean`
+- `grep -rn 'theorem norm_iteratedFDeriv_zero' mathlib/Mathlib/Analysis/Calculus/ContDiff`
+- `grep -n 'theorem countable_iff_exists_subset_range' mathlib/Mathlib/Data/Set/Countable.lean`
+- `inspect simongmt Chapter06/{Currents,Mass,Forms,FormsDuality,CurrentLocalEquality}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, TestFormOnConverges, WeaklyConvergesOn, massOn, massAdmissibleOn, le_massOn, covectorEuclideanNorm, simpleNVector, HasWeightedApproximateTangentSpaceAt, blowUpMap, CountablyRectifiable)`
+- `python3 scan of dag.json (sibling br_isIntegerMultiplicity_of_local frozen statement; no br_zd_* lean_name reserved; new node root.integrality_weak_limits-a1.zero_dim-a1 with identical type)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/zd_decomp from git archive d8d46c9, pinned packages)`
+- `lake env lean Scratch/Facts.lean, Scratch/Assembly.lean, Scratch/Combined.lean and NodeChallenge modules generated by gmt-compare.py child_modules after lean_contract.validate_lean_statement`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/EuclideanDist.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/BigOperators/Finprod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-zero-dim-a1/parent-child-handoff.json`
+- `/tmp/zd_decomp/Scratch/Facts.lean`
+- `/tmp/zd_decomp/Scratch/Assembly.lean`
+- `/tmp/zd_decomp/Scratch/Combined.lean`
+- `/tmp/zd_lean_A/Scratch/ChildA.lean`
+- `/tmp/zd_lean_B/Scratch/ChildB.lean`
+- `/tmp/zd_lean_C/Scratch/ChildC.lean`
+- `/tmp/zd_lean_D/Scratch/ChildD.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. Its Contract.lean is byte-identical to the frozen Submission.lean.
+
+The Mathlib and SimonGMT facts the children need are all present:
+- H⁰ = μHE[0] = μH[0] (euclideanHausdorffMeasure_zero), with H⁰{x} = 1 (hausdorffMeasure_zero_singleton) and sum_measure_singleton;
+- set integrals over a Finset are finite sums (setIntegral_finset, integrableOn_singleton, integrableOn_finite_biUnion);
+- le_restrict_apply, IsCompact.tendsto_subseq and isCompact_univ_pi;
+- ContDiffBump (one_of_mem_closedBall, tsupport_eq), closure_ball and isCompact_closedBall;
+- ContinuousAlternatingMap.constOfIsEmpty and the finprod/finsum subset lemmas;
+- norm_iteratedFDeriv_zero and countable_iff_exists_subset_range;
+- SimonGMT's massOn/le_massOn, covectorEuclideanNorm, simpleNVector, blowUpMap and HasWeightedApproximateTangentSpaceAt.
+
+The 0-dimensional conventions were checked in Lean: α = α(![]) • 𝟙, covectorEuclideanNorm α = |α(![])|, H⁰ of a Finset is its cardinality, finite H⁰ implies a finite set, H⁰-null implies empty, and the empty-frame facts.
+
+All four child statements elaborate in the comparator's child scope. Each is fully proved in Lean with axioms [propext, Classical.choice, Quot.sound] only. The parent assembly typechecks from them plus the DAG sibling br_isIntegerMultiplicity_of_local; its only sorryAx comes from that sibling.
+
+No br_zd_* name is reserved in the DAG. A separate DAG node, iwl_zero_dim_integrality, has the identical frozen type as this node.

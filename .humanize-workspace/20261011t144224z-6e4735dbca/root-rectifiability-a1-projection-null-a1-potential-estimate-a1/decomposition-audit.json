@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "toSphere_apply|volumeIoiPow|measurePreserving_homeomorphUnitSphereProd|integrableOn_fun_norm_addHaar|integral_fun_norm_addHaar",
+        "hasFDerivAt_convolution_right|contDiff_convolution_right",
+        "convolutionExists_right|convolution_precompR_apply|convolution_lsmul",
+        "norm_integral_le_of_norm_le|theorem integral_undef|integral_const",
+        "integrableOn_of_bounded",
+        "setIntegral_mono_set|setIntegral_mono_on|integral_inter_add_sdiff|integrable_indicator_iff|setIntegral_const",
+        "HasCompactSupport.fderiv|HasCompactSupport.fderiv_apply",
+        "norm_apply_le",
+        "sum_repr|basisFun_apply|basisFun_repr",
+        "measurePreserving_div_left|measurePreserving_sub_left",
+        "def validate_lean_statement|def contract_scope|def child_modules",
+        ". /tmp/pe-decomp-ch06/env.sh\nlean /tmp/pe-decomp-ch06/Solutions.lean",
+        ". /tmp/pe-decomp-ch06/env.sh\nlean /tmp/pe-independent-audit-oyecwc3i/IndependentChallenges.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/HaarToSphere.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Ball/RadialEquiv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-projection-null-a1-potential-estimate-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/pe-decomp-ch06/Solutions.lean",
+        "/tmp/pe-decomp-ch06/Assembly.lean",
+        "/tmp/pe-independent-audit-oyecwc3i/IndependentChallenges.lean"
+      ],
+      "conclusion": "Verified the pinned project d8d46c95 and Mathlib 25730c7c. The snapshot Contract and workspace Contract/Submission are byte-identical; Eucl is EuclideanSpace ℝ (Fin n). The inspected sources supply the polar measure transformation, radial integration, convolution calculus, compact-support FTC, and domination results used by the proofs. In particular, norm_integral_le_of_norm_le requires integrability only of the dominating function. Checked compatibility of the principal inspected Mathlib sources with the compiler package. All eight child types pass lexical validation and independently elaborate as Prop under the comparator's replayed header, before any child implementation is present. The supplied exact-type witnesses and selected-parent assembly recompile successfully; all nine checked targets use only propext, Classical.choice and Quot.sound. All lean_names are bare identifiers, with no collisions among 516 names reserved elsewhere. The split is appropriate: its dependencies are acyclic, correctly directed, and sufficient to prove precisely the selected frozen parent, with C chosen before a and M. Inline expressions use the intended Euclidean, real-scalar and measure instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "polar_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree. Removing the null origin, transporting integrability through the polar homeomorphism, applying Fubini, and unfolding the radial density prove the exact formula. The proof supplies the necessary measurability and integrability justifications without circular reliance."
+    },
+    {
+      "key": "radial_ball_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive-radius hypothesis and both conclusions match the type. The radial integrability criterion reduces the integrand to 1 on (0,ρ); the indicator calculation gives the stated integral. The argument correctly includes m = 0 and the specified value at the origin."
+    },
+    {
+      "key": "set_integral_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel measurability, finite measure, integrability, and the real-power bound match exactly. The proof establishes integrability before splitting the integral, handles zero measure, and justifies the optimized radius and power identities for positive measure. Its only sibling dependency is radial_ball_integral."
+    },
+    {
+      "key": "kernel_local_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary real constant c is handled correctly, including c = 0 and negative c. Borel measurability and the explicit domination bound, including t = 0, yield integrability on a neighbourhood of every point using radial_ball_integral."
+    },
+    {
+      "key": "convolution_smooth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes exactly the stated smoothness, derivative-integrand integrability, and derivative formula. The pinned convolution theorems apply with the supplied hypotheses; continuity and compact support of the derivative and its evaluations are justified. No sibling or parent conclusion is assumed."
+    },
+    {
+      "key": "ray_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C¹, compact-support, and nonzero-direction hypotheses match. The explicit escape-radius estimate proves compact support of the affine pullback. The chain-rule sign and compact-support FTC then give exactly the claimed positive-sign integral."
+    },
+    {
+      "key": "representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The kernel normalization and coordinate derivatives match the Lean type. The four declared dependencies justify termwise integrability, polar integration, and ray evaluation. The basis expansion holds also at zero, and the sphere's total mass cancels the positive normalization constant. This proves the exact representation without using the parent."
+    },
+    {
+      "key": "kernel_sup_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger compact-support-only statement explicitly matches Mathlib's totalized integral. The proof derives M ≥ 0, preserves support measure under reflection and translation, and constructs an integrable pointwise majorant using set_integral_bound. The cited domination theorem needs no measurability of a, and the chosen constant depends only on m."
+    }
+  ],
+  "required_changes": []
+}

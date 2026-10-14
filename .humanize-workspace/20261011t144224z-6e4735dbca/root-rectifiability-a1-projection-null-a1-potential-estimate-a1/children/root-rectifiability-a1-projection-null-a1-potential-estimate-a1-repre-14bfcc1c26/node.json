@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.representation-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Representation formula Σ_j ∫ K_j(t)·∂_j a(y − t) dt = a(y) (Step 4; Gilbarg–Trudinger, proof of Lemma 7.14)",
+  "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), as a real number. For j ∈ Fin n let K_j(t) := t_j/((m + 1)·ω·|t|^{m+1}) on ℝⁿ = Eucl n; K_j(0) = 0 because division by 0 gives 0. Let a : ℝⁿ → ℝ be C^∞ with compact support, and let y ∈ ℝⁿ. Then Σ_{j ∈ Fin n} ∫ K_j(t)·∂_j a(y − t) dt = a(y). Here ∂_j a(z) := Da(z)e_j, and e_j = EuclideanSpace.single j 1 is the j-th standard basis vector.",
+  "lean_statement": "∀ (m : ℕ) (a : Eucl (m + 1) → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → ∀ y : Eucl (m + 1), ∑ j : Fin (m + 1), ∫ t, t j / (((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ‖t‖ ^ (m + 1)) * fderiv ℝ a (y - t) (EuclideanSpace.single j (1 : ℝ)) = a y",
+  "lean_name": "rpn_pe_kernel_representation",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.convolution_smooth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-repre-14bfcc1c26-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.restriction_open_im-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1",
+  "depth": 4,
+  "title": "Restriction of an integer multiplicity current to an open set",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P and A ⊆ ℝ^P be open, and let X, R ∈ D_k(U) (GeometricCurrentOn U k) with X integer multiplicity and R a restriction of X to A (IsRestriction X A R). Then R is integer multiplicity.",
+  "lean_statement": "∀ (P k : ℕ) (U A : Set (Eucl P)) (X R : GeometricCurrentOn U k), IsOpen U → IsOpen A → IsIntegerMultiplicity X → IsRestriction X A R → IsIntegerMultiplicity R",
+  "lean_name": "ind_pi_restriction_open_im",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-r-eee2ea0d0e-a1"
+}
