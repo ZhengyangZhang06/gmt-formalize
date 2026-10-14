@@ -1303,6 +1303,583 @@ theorem Submission.dor_ims_measure_le_massOn : ∀ (P n : ℕ) (U : Set (Euclid 
   calc (r : ℝ≥0∞) = ENNReal.ofReal r := ENNReal.ofReal_coe_nnreal.symm
     _ ≤ ENNReal.ofReal (T ω) := ENNReal.ofReal_le_ofReal hrT.le
     _ ≤ T.massOn W := T.le_massOn hadm
+/-- **Test forms and the blow-up under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (Simon
+Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413; used for
+`η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).  `η = η_{x,λ}` is an affine
+homeomorphism of `ℝᴾ` with inverse `ι(z) = x + λz`, and `η⁻¹(η(U)) = U`.  (a) `ω ↦ ω ∘ η` maps
+`𝒟ⁿ(η(U))` to `𝒟ⁿ(U)`; (b) `ω' ↦ ω' ∘ ι` maps `𝒟ⁿ(U)` to `𝒟ⁿ(η(U))`, and `(ω' ∘ ι) ∘ η = ω'`;
+(c) if `ω' = ω ∘ η` then `η_{x,λ#}T(ω) = T(η^#ω) = λ⁻ⁿ T(ω')`, since by multilinearity
+`(η^#ω)(y) = ω(η(y)) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(η(y))`. -/
+theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω' := by
+  intro P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  -- Step 1: `η = η_{x,λ}` (`y ↦ −λ⁻¹x + λ⁻¹y`) and `ι(z) = x + λz` are mutually inverse affine
+  -- homeomorphisms, both `C^∞`.  (`∞` is `ℝ≥0∞`'s top under `open scoped ENNReal`.)
+  let η : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hne)).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • x)))
+  have hη : ⇑η = dilation x lam := by
+    funext y
+    simp [η, dilation, dilationCLM]
+  let ι : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam hne).trans (Homeomorph.addLeft x)
+  have hι : ⇑ι = fun z => x + lam • z := by
+    funext z
+    simp [ι]
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (dilation x lam) :=
+    contDiff_const.add (dilationCLM P lam).contDiff
+  have hιsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Euclid P => x + lam • z) :=
+    contDiff_const.add (contDiff_id.const_smul lam)
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `ω' := ω ∘ η`: smooth, compactly supported (`η` a homeomorphism), and
+    -- `tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U`.
+    intro ω
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω.property
+    refine ⟨⟨fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y), ?_⟩, fun y => rfl⟩
+    change IsTestForm (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧
+      tsupport (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ⊆ U
+    refine ⟨⟨hsmooth.comp hηsmooth, ?_⟩, ?_⟩
+    · have h := hcompact.comp_homeomorph η
+      rwa [hη] at h
+    · refine (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) n)
+        (hη ▸ η.continuous)).trans ((preimage_mono hsupp).trans ?_)
+      rw [preimage_image_eq U (hη ▸ η.injective)]
+  · -- (b) `ω := ω' ∘ ι`: a test form with `tsupport ω ⊆ ι⁻¹(U) ⊆ η(U)`, and `ω ∘ η = ω'`.
+    intro ω'
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω'.property
+    refine ⟨⟨fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z), ?_⟩, fun y => ?_⟩
+    · change IsTestForm (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ∧
+        tsupport (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ⊆ dilation x lam '' U
+      refine ⟨⟨hsmooth.comp hιsmooth, ?_⟩, ?_⟩
+      · have h := hcompact.comp_homeomorph ι
+        rwa [hι] at h
+      · refine (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
+          (hι ▸ ι.continuous)).trans fun z hz => ?_
+        exact ⟨x + lam • z, hsupp hz, hηι z⟩
+    · change (ω' : DifferentialForm (Euclid P) n) y =
+        (ω' : DifferentialForm (Euclid P) n) (x + lam • dilation x lam y)
+      rw [hιη]
+  · -- (c) `η_{x,λ#}T(ω) = T(η^#ω)`, and `η^#ω = λ⁻ⁿ ω'` by multilinearity; `T` is linear.
+    intro T ω ω' hω
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+      show lam⁻¹ ^ n * T ω' = T (lam⁻¹ ^ n • ω') by rw [map_smul, smul_eq_mul]]
+    congr 1
+    apply Subtype.ext
+    funext y
+    ext v
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
+      funext i
+      simp [dilationCLM]
+    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
+    simp
+/-- **`Hⁿ` under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`**: the scaling behind (1) in the
+proof of Simon 7.3.1 (chapter-07.txt lines 329–335).  (i) `Hⁿ(η_{x,λ}(s)) = λ⁻ⁿ Hⁿ(s)` for every
+`s ⊆ ℝᴾ`: `η_{x,λ}(s)` is the translate by `−λ⁻¹x` of `λ⁻¹s`, `Hⁿ` is invariant under isometries
+and `Hⁿ(r s) = |r|ⁿ Hⁿ(s)` for `r ≠ 0`.  (ii) `η_{x,λ#}Hⁿ = λⁿ Hⁿ`: `η_{x,λ}⁻¹(B) = η_{−λ⁻¹x,λ⁻¹}(B)`
+for every Borel `B`, so (i) for the inverse dilation gives `Hⁿ(η_{x,λ}⁻¹(B)) = λⁿ Hⁿ(B)`. -/
+theorem Submission.dtc_hausdorff_dilation : ∀ (P n : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ s : Set (Euclid P), μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s) ∧ Measure.map (dilation x lam) (μHE[n] : Measure (Euclid P)) = ENNReal.ofReal (lam ^ n) • (μHE[n] : Measure (Euclid P)) := by
+  intro P n
+  -- (i) for every centre and scale: `η_{x,λ}(s) = −λ⁻¹x + λ⁻¹s`; translation invariance and
+  -- `Hⁿ(rs) = ‖r‖ⁿ Hⁿ(s)` with `r = λ⁻¹ > 0`.
+  have himage : ∀ (x : Euclid P) (lam : ℝ), 0 < lam → ∀ s : Set (Euclid P),
+      μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s := by
+    intro x lam hlam s
+    have hs : dilation x lam '' s =
+        (fun z => -(lam⁻¹ • x) + z) '' ((fun y => lam⁻¹ • y) '' s) := by
+      rw [Set.image_image]
+      rfl
+    rw [hs, (isometry_add_left (-(lam⁻¹ • x))).euclideanHausdorffMeasure_image, Set.image_smul,
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam.ne') s, ENNReal.smul_def,
+      smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hlam]
+  intro x lam hlam
+  refine ⟨himage x lam hlam, ?_⟩
+  -- (ii): `η_{x,λ}` is continuous with inverse `η_{−λ⁻¹x,λ⁻¹}(z) = x + λz`, so
+  -- `(η_{x,λ#}Hⁿ)(B) = Hⁿ(η_{−λ⁻¹x,λ⁻¹}(B)) = λⁿ Hⁿ(B)` by (i) for every Borel `B`.
+  have hcont : Continuous (dilation x lam) := by
+    unfold dilation
+    fun_prop
+  ext B hB
+  have hpre : dilation x lam ⁻¹' B = dilation (-(lam⁻¹ • x)) lam⁻¹ '' B :=
+    (congrFun (Set.image_eq_preimage_of_inverse
+      (fun z => by simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne'])
+      (fun y => by simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne'])) B).symm
+  rw [Measure.map_apply hcont.measurable hB, hpre, himage _ _ (inv_pos.mpr hlam), inv_inv,
+    Measure.smul_apply, smul_eq_mul]
+/-- Approximate tangent spaces are invariant under the dilation `η = η_{x,λ}`, `λ > 0`
+(Simon Ch. 3, 1.4).  As `η(w) − η(y) = λ⁻¹(w − y)`, the rescaled set `η_{η(y),r}(η(M))` is
+`η_{y,λr}(M)`, and `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`; `dim Q = n` is unchanged. -/
+theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q := by
+  intro P n M x y lam Q hlam hT
+  refine ⟨hT.1, fun f => ?_⟩
+  -- `η_{η(y),r}(η(M)) = η_{y,λr}(M)`, since `η(w) − η(y) = λ⁻¹(w − y)`
+  have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap (dilation x lam y) r ''
+      (dilation x lam '' M) = Poincare.SimonGMT.Chapter03.blowUpMap y (lam * r) '' M := by
+    intro r
+    rw [image_image]
+    congr 1
+    funext w
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dilation, dilationCLM,
+      smul_apply, ContinuousLinearMap.id_apply, add_sub_add_left_eq_sub]
+    rw [← smul_sub, smul_smul, mul_inv, mul_comm]
+  simp_rw [hset]
+  -- `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`
+  have hlim : Tendsto (fun r : ℝ => lam * r) (𝓝[>] 0) (𝓝[>] 0) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+    · simpa using (tendsto_id.const_mul lam).mono_left (nhdsWithin_le_nhds (a := (0 : ℝ)))
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hlam hr
+  exact (hT.2 f).comp hlim
+
+/-- **Simon Ch. 6, 3.3–3.9 for the similarity `η = η_{x,λ}`** (used in the proof of 7.3.1(2)):
+if `R = (M, θ, ξ)` represents `T` in `U`, then `R' = (η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` represents
+`η_{x,λ#}T` in `η(U)` and `μ_{R'}(B) = λ⁻ⁿ μ_R(η⁻¹(B))` for Borel `B`.  The Jacobian of `η` is
+the constant `λ⁻ⁿ`, so the area formula reduces to `Hⁿ⌞η(s) = λ⁻ⁿ η_#(Hⁿ⌞s)`
+(`dtc_hausdorff_dilation`); `η(M)` is rectifiable as `η` is Lipschitz, `ξ ∘ η⁻¹` orients
+`T_{η(y)}η(M) = T_yM` (`dtc_approxTangent_dilation`), and `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`
+(`dtc_blowUp_testForm_corr`). -/
+theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s) := by
+  intro P n U T x lam hlam R hR
+  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  obtain ⟨himage, hmap⟩ := Submission.dtc_hausdorff_dilation P n x lam hlam
+  have htan : ∀ (y : Euclid P) (Q : Submodule ℝ (Euclid P)),
+      HasApproximateTangentSpaceAt n R.carrier y Q →
+        HasApproximateTangentSpaceAt n (dilation x lam '' R.carrier) (dilation x lam y) Q :=
+    fun y Q => Submission.dtc_approxTangent_dilation P n R.carrier x y lam Q hlam
+  -- `η = dilation x λ` is an affine homeomorphism with inverse `z ↦ x + λ • z`
+  have hηc : (((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x)))) : Euclid P → Euclid P) = dilation x lam := by
+    funext y
+    simp [dilation, dilationCLM]
+  have hme : MeasurableEmbedding (dilation x lam) := by
+    rw [← hηc]
+    exact Homeomorph.measurableEmbedding _
+  have hιη : ∀ y, x + lam • dilation x lam y = y := fun y => by
+    simp [dilation, dilationCLM, smul_add, smul_smul, mul_inv_cancel₀ hlam.ne']
+  have hc0 : 0 ≤ lam⁻¹ ^ n := by positivity
+  set c : ℝ≥0∞ := ENNReal.ofReal (lam⁻¹ ^ n) with hc
+  -- `Hⁿ⌞η(s) = c • η_#(Hⁿ⌞s)`, hence change of variables along `η`
+  have hkey : ∀ s : Set (Euclid P),
+      μHE[n].restrict (dilation x lam '' s) = c • (μHE[n].restrict s).map (dilation x lam) := by
+    intro s
+    have h1 : (μHE[n].restrict s).map (dilation x lam) =
+        ENNReal.ofReal (lam ^ n) • μHE[n].restrict (dilation x lam '' s) := by
+      rw [← hme.injective.preimage_image s, ← hme.restrict_map, hmap, Measure.restrict_smul,
+        hme.injective.preimage_image]
+    rw [h1, smul_smul, hc, ← ENNReal.ofReal_mul hc0, ← mul_pow, inv_mul_cancel₀ hlam.ne',
+      one_pow, ENNReal.ofReal_one, one_smul]
+  have hlint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ≥0∞),
+      ∫⁻ z in dilation x lam '' s, g z ∂μHE[n] = c * ∫⁻ y in s, g (dilation x lam y) ∂μHE[n] := by
+    intro s g
+    rw [hkey s, lintegral_smul_measure, hme.lintegral_map, smul_eq_mul]
+  have hint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ),
+      ∫ z in dilation x lam '' s, g z ∂μHE[n] =
+        lam⁻¹ ^ n * ∫ y in s, g (dilation x lam y) ∂μHE[n] := by
+    intro s g
+    rw [hkey s, integral_smul_measure, hme.integral_map, hc, ENNReal.toReal_ofReal hc0,
+      smul_eq_mul]
+  refine ⟨{ carrier := dilation x lam '' R.carrier
+            mult := fun z => R.mult (x + lam • z)
+            orient := fun z => R.orient (x + lam • z)
+            measurableSet_carrier := hme.measurableSet_image.mpr R.measurableSet_carrier
+            carrier_subset := image_mono R.carrier_subset
+            rectifiable := ?_
+            measurable_mult := R.measurable_mult.comp (by fun_prop)
+            mult_pos := ?_
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := ?_
+            orients := ?_ }, ?_, ?_⟩
+  · -- `η(M) ⊆ η(M₀) ∪ ⋃ⱼ range (η ∘ Fⱼ)` with `Hⁿ(η(M₀)) = 0` and `η ∘ Fⱼ` Lipschitz
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
+    refine ⟨dilation x lam '' M₀, by rw [himage, hM₀, mul_zero], fun j => dilation x lam ∘ F j,
+      fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨_, ((isometry_add_left (-(lam⁻¹ • x))).lipschitzWith.comp
+        (dilationCLM P lam).lipschitzWith).comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hcover hy with h0 | h1
+      · exact Or.inl ⟨y, h0, rfl⟩
+      · obtain ⟨j, v, rfl⟩ := mem_iUnion.mp h1
+        exact Or.inr (mem_iUnion.mpr ⟨j, v, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < R.mult (x + lam • dilation x lam y)
+    rw [hιη]
+    exact R.mult_pos y hy
+  · -- `η(M) ∩ K = η(M ∩ η⁻¹(K))`, and `η⁻¹(K)` is a compact subset of `U`
+    intro K hK hKU
+    rw [← image_inter_preimage, hlint]
+    simp only [hιη]
+    refine ENNReal.mul_ne_top ENNReal.ofReal_ne_top (R.locallyIntegrable_mult _ ?_ ?_)
+    · rw [← hηc]
+      exact (Homeomorph.isCompact_preimage _).mpr hK
+    · rw [← hme.injective.preimage_image U]
+      exact preimage_mono hKU
+  · rw [hkey]
+    refine (hme.aestronglyMeasurable_map_iff.mpr ?_).smul_measure c
+    simpa [Function.comp_def, hιη] using R.aestronglyMeasurable_orient
+  · rw [hkey]
+    refine Measure.ae_smul_measure (hme.ae_map_iff.mpr (R.orients.mono fun y hy => ?_)) c
+    obtain ⟨Q, hQ, hξ⟩ := hy
+    exact ⟨Q, htan y Q hQ, by simpa [hιη] using hξ⟩
+  · -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η) = λ⁻ⁿ ∫_M θ ⟨ω ∘ η, ξ⟩ dHⁿ = ∫_{η(M)} θ' ⟨ω, ξ'⟩ dHⁿ`
+    intro ω
+    obtain ⟨ω', hω'⟩ := hpull ω
+    rw [hblow T ω ω' hω', hR ω']
+    simp only [IMRep.action]
+    rw [hint]
+    congr 1
+    refine setIntegral_congr_fun R.measurableSet_carrier fun y _ => ?_
+    simp [hιη, hω']
+  · -- `μ_{R'}(B) = c ∫_{η⁻¹(B)} θ d(Hⁿ⌞M) = c μ_R(η⁻¹(B))`
+    intro s hs
+    simp only [IMRep.measure]
+    rw [withDensity_apply _ hs, withDensity_apply _ (hme.measurable hs), hkey,
+      Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
+    simp [hιη]
+/-- **Mass scaling of blow-ups: `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)`** for `λ > 0` and every
+`W ⊆ ℝᴾ` (scaling identity (1) in the proof of Simon 7.3.1, chapter-07.txt lines 329–331; mass
+`M_W` of 6.2.5 with the Euclidean coefficient norm).  By `Submission.dtc_blowUp_testForm_corr`,
+`ω ↦ ω ∘ η` and `ω' ↦ ω' ∘ ι` (`ι(z) = x + λz`) exchange the admissible forms for
+`M_{η(W)}(η_{x,λ#}T)` and `M_W(T)`, preserving the coefficient norm pointwise, and
+`η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`; multiplication by `λ⁻ⁿ ≥ 0` commutes with the suprema. -/
+theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W := by
+  intro P n U T x lam hlam W
+  obtain ⟨hA, hB, hC⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  have hc : 0 ≤ lam⁻¹ ^ n := pow_nonneg (inv_nonneg.mpr hlam.le) n
+  -- `η = η_{x,λ}` and `ι(z) = x + λz` are continuous and mutually inverse; so `η` is injective.
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηinj : Injective (dilation x lam) := fun y y' h => by
+    rw [← hιη y, ← hιη y', h]
+  have hηcont : Continuous (dilation x lam) :=
+    continuous_const.add (dilationCLM P lam).continuous
+  have hιcont : Continuous (fun z : Euclid P => x + lam • z) :=
+    continuous_const.add (continuous_const_smul lam)
+  unfold GeometricCurrentOn.massOn
+  apply le_antisymm
+  · -- Upper bound: an admissible `ω` for `η_{x,λ#}T` on `η(W)` gives the admissible
+    -- `ω' = ω ∘ η` for `T` on `W` (`tsupport ω' ⊆ η⁻¹(η(W)) = W`), and
+    -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω')`.
+    refine sSup_le ?_
+    rintro _ ⟨ω, ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω', hω'⟩ := hA ω
+    dsimp only
+    rw [hC T ω ω' hω', ENNReal.ofReal_mul hc]
+    gcongr
+    refine le_sSup ⟨ω', ⟨?_, fun y => ?_⟩, rfl⟩
+    · have hcomp : (ω' : DifferentialForm (Euclid P) n) =
+          (ω : DifferentialForm (Euclid P) n) ∘ dilation x lam := funext hω'
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hηcont).trans ((preimage_mono hωs).trans ?_)
+      rw [preimage_image_eq W hηinj]
+    · rw [hω' y]
+      exact hωn _
+  · -- Lower bound: an admissible `ω'` for `T` on `W` gives the admissible `ω = ω' ∘ ι` for
+    -- `η_{x,λ#}T` on `η(W)` (`tsupport ω ⊆ ι⁻¹(W) ⊆ η(W)`), and `λ⁻ⁿ T(ω') = η_{x,λ#}T(ω)`.
+    rw [ENNReal.mul_sSup]
+    refine iSup₂_le ?_
+    rintro _ ⟨ω', ⟨hωs, hωn⟩, rfl⟩
+    obtain ⟨ω, hω⟩ := hB ω'
+    dsimp only
+    rw [← ENNReal.ofReal_mul hc, ← hC T ω ω' hω]
+    refine le_sSup ⟨ω, ⟨?_, fun z => ?_⟩, rfl⟩
+    · have hcomp : (ω : DifferentialForm (Euclid P) n) =
+          (ω' : DifferentialForm (Euclid P) n) ∘ fun z => x + lam • z := by
+        funext z
+        rw [Function.comp_apply, hω, hηι]
+      rw [hcomp]
+      refine (tsupport_comp_subset_preimage _ hιcont).trans fun z hz => ?_
+      exact ⟨x + lam • z, hωs hz, hηι z⟩
+    · have h := hωn (x + lam • z)
+      rwa [hω, hηι] at h
+
+/-- **Blow-ups commute with the current operations** (Simon 6.2.11, 6.2.23–6.2.24(1) for
+`η = η_{x,λ}`, `λ > 0`): `η_#(S − T) = η_#S − η_#T`, `η_#` is injective,
+`spt(η_#T) = η(spt T)` and `∂(η_#T) = η_#(∂T)`.
+
+(i) Both sides evaluate `S − T` on the same pulled-back form.  (ii) Every `ω' ∈ 𝒟ⁿ(U)` is
+`ω ∘ η` for some `ω ∈ 𝒟ⁿ(η(U))`, and `η_#Y(ω) = λ⁻ⁿ Y(ω')` (`dtc_blowUp_testForm_corr`).
+(iii) `η` is an affine homeomorphism, and `η_#T` vanishes on `W₀ ⊂⊂ η(U)` iff `T` vanishes on
+`η⁻¹(W₀) ⊂⊂ U`; so the zero regions correspond, and `spt(η_#T) = η(spt T)` as `η` is injective.
+(iv) `d` commutes with affine pull-back (`GeometricCurrentOn.boundary_affinePushforward`). -/
+theorem Submission.dtc_blowUp_algebra : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne' := by
+  intro P U x lam hlam
+  have hc (n : ℕ) : lam⁻¹ ^ n ≠ 0 := pow_ne_zero n (inv_ne_zero hlam.ne')
+  -- `η = η_{x,λ}` as a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
+    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
+        funext y
+        simp [dilation, dilationCLM]⟩
+  refine ⟨fun n S T => GeometricCurrentOn.ext fun ω => rfl, fun n S T h => ?_, fun n T => ?_,
+    fun m T => ?_⟩
+  · -- (ii) `λ⁻ⁿ S(ω') = η_#S(ω) = η_#T(ω) = λ⁻ⁿ T(ω')`
+    obtain ⟨-, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    refine GeometricCurrentOn.ext fun ω' => ?_
+    obtain ⟨ω, hω⟩ := hb ω'
+    have hS := hval S ω ω' hω
+    rw [h, hval T ω ω' hω] at hS
+    exact mul_left_cancel₀ (hc n) hS.symm
+  · -- (iii) the zero regions correspond under `η`
+    obtain ⟨ha, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    have hzero : (blowUp T x lam hlam.ne').zeroRegion = dilation x lam '' T.zeroRegion := by
+      ext z
+      constructor
+      · rintro ⟨W₀, ⟨hW₀o, hW₀c, hW₀U, hW₀v⟩, hz⟩
+        rw [← he] at hW₀U
+        have hW : closure (e ⁻¹' W₀) = e ⁻¹' closure W₀ := (e.preimage_closure W₀).symm
+        refine ⟨e.symm z, ⟨e ⁻¹' W₀, ⟨hW₀o.preimage e.continuous, ?_, ?_, ?_⟩, ?_⟩, ?_⟩
+        · rw [hW]
+          exact e.isCompact_preimage.2 hW₀c
+        · rw [hW]
+          exact (preimage_mono hW₀U).trans (e.preimage_image U).subset
+        · intro ω' hω'
+          obtain ⟨ω, hω⟩ := hb ω'
+          have hsupp : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W₀ := by
+            have hfun : (ω : DifferentialForm (Euclid P) n) =
+                (ω' : DifferentialForm (Euclid P) n) ∘ e.symm := by
+              funext y
+              rw [Function.comp_apply, hω, ← congrFun he (e.symm y), e.apply_symm_apply]
+            rw [hfun]
+            refine (tsupport_comp_subset_preimage _ e.symm.continuous).trans fun y hy => ?_
+            have hy' := hω' (mem_preimage.1 hy)
+            rwa [mem_preimage, e.apply_symm_apply] at hy'
+          have h0 := hW₀v ω hsupp
+          rw [hval T ω ω' hω] at h0
+          exact (mul_eq_zero.1 h0).resolve_left (hc n)
+        · rwa [mem_preimage, e.apply_symm_apply]
+        · rw [← he]
+          exact e.apply_symm_apply z
+      · rintro ⟨w, ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hw⟩, rfl⟩
+        have hW : closure (e '' W) = e '' closure W := (e.image_closure W).symm
+        refine ⟨e '' W, ⟨e.isOpenMap W hWo, ?_, ?_, ?_⟩, ?_⟩
+        · rw [hW]
+          exact hWc.image e.continuous
+        · rw [hW, ← he]
+          exact image_mono hWU
+        · intro ω hω
+          obtain ⟨ω', hω'⟩ := ha ω
+          have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ W := by
+            have hfun : (ω' : DifferentialForm (Euclid P) n) =
+                (ω : DifferentialForm (Euclid P) n) ∘ e := by
+              funext y
+              rw [Function.comp_apply, hω', ← congrFun he y]
+            rw [hfun, ← e.preimage_image W]
+            exact (tsupport_comp_subset_preimage _ e.continuous).trans (preimage_mono hω)
+          rw [hval T ω ω' hω', hWv ω' hsupp, mul_zero]
+        · rw [← he]
+          exact mem_image_of_mem e hw
+    have hinj : Function.Injective (dilation x lam) := he ▸ e.injective
+    simp only [GeometricCurrentOn.support]
+    rw [hzero, image_sdiff hinj]
+  · -- (iv) `d` commutes with the affine pull-back
+    unfold blowUp
+    rw [GeometricCurrentOn.boundary_affinePushforward]
+    rfl
+/-- **Every current in `η(U)` is a blow-up**, `η = η_{x,λ}`, `λ > 0` (Simon Ch. 6, 2.23 and 3.9
+for `η⁻¹`; used for the minimality of `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt
+lines 326–338): every `S' ∈ 𝒟ₙ(η(U))` is `η_{x,λ#}S''` for some `S'' ∈ 𝒟ₙ(U)`, integer
+multiplicity whenever `S'` is.  `κ = η_{−λ⁻¹x,λ⁻¹}` inverts `η`, so `κ(η(U)) = U`, and `S''` is
+`κ_#S'` restricted to `U`: `dtc_blowUp_testForm_corr` for `η` and for `κ` gives
+`η_#S''(ω) = λ⁻ⁿ κ_#S'(ω ∘ η) = λ⁻ⁿ λⁿ S'(ω)`, and a representation of `κ_#S'` in
+`κ(η(U)) = U` (`dtc_blowUp_imrep`) represents `S''`. -/
+theorem Submission.dtc_blowUp_preimage : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'') := by
+  intro P n U x lam hlam S'
+  have hlam' : 0 < lam⁻¹ := inv_pos.mpr hlam
+  -- `κ = η_{−λ⁻¹x,λ⁻¹}`, `κ(z) = x + λz`, is a two-sided inverse of `η = η_{x,λ}`
+  have hκη : ∀ y, dilation (-(lam⁻¹ • x)) lam⁻¹ (dilation x lam y) = y := fun y => by
+    simp [dilation, dilationCLM, smul_smul, hlam.ne']
+  have hηκ : ∀ z, dilation x lam (dilation (-(lam⁻¹ • x)) lam⁻¹ z) = z := fun z => by
+    simp [dilation, dilationCLM, smul_smul, hlam.ne']
+  have hdom : dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) = U := by
+    rw [image_image]
+    simp only [hκη, image_id']
+  have hUV : U ⊆ dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) := hdom.superset
+  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  have hblow' := (Submission.dtc_blowUp_testForm_corr P n (dilation x lam '' U)
+    (-(lam⁻¹ • x)) lam⁻¹ hlam').2.2
+  -- `S'' := κ_#S'`, restricted from `κ(η(U)) = U` to `U`
+  refine ⟨(blowUp S' (-(lam⁻¹ • x)) lam⁻¹ hlam'.ne').restrictDomain hUV, ?_, ?_⟩
+  · -- `η_#S''(ω) = λ⁻ⁿ S''(ω ∘ η)` and `κ_#S'(ω ∘ η) = λⁿ S'(ω)`, as `ω ∘ η ∘ κ = ω`
+    ext ω
+    obtain ⟨ω', hω'⟩ := hpull ω
+    rw [hblow _ ω ω' hω', GeometricCurrentOn.restrictDomain_apply,
+      hblow' S' (testFormOnInclusion hUV n ω') ω fun z => by
+        rw [testFormOnInclusion_coe, hω', hηκ],
+      ← mul_assoc, ← mul_pow, inv_inv, inv_mul_cancel₀ hlam.ne', one_pow, one_mul]
+  · -- a representation of `κ_#S'` in `κ(η(U)) = U` is one in `U`, and it represents `S''`
+    rintro ⟨R₁, hR₁⟩
+    obtain ⟨R₂, hR₂, -⟩ := Submission.dtc_blowUp_imrep P n (dilation x lam '' U) S'
+      (-(lam⁻¹ • x)) lam⁻¹ hlam' R₁ hR₁
+    exact ⟨{ R₂ with
+        carrier_subset := R₂.carrier_subset.trans hdom.subset
+        locallyIntegrable_mult := fun K hK hKU =>
+          R₂.locallyIntegrable_mult K hK (hKU.trans hUV) },
+      fun ω => hR₂ (testFormOnInclusion hUV n ω)⟩
+
+/-- **Blow-ups preserve minimality** (Simon 7.1.1, chapter-07.txt lines 12–18, for `η = η_{x,λ}`,
+`λ > 0`; used for `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337): if `T` is
+minimizing in `A`, then `η_#T` is minimizing in `η(A)`.
+
+`η_#T` is integer multiplicity (`dtc_blowUp_imrep`).  A competitor `S'` for `η_#T` on
+`W' ⊂⊂ η(U)` is `η_#S''` with `S''` integer multiplicity (`dtc_blowUp_preimage`), and `S''` is a
+competitor for `T` on `W = η⁻¹(W') ⊂⊂ U`: `∂S'' = ∂T` and
+`spt(S'' − T) = η⁻¹(spt(S' − η_#T)) ⊆ A ∩ W` (`dtc_blowUp_algebra`).  So
+`M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')` (`dtc_blowUp_massOn_image`). -/
+theorem Submission.dtc_blowUp_isMinimizingIn : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A) := by
+  intro P n U A T x lam hlam hT
+  obtain ⟨⟨R, hR⟩, hmin⟩ := hT
+  obtain ⟨hsub, hinj, hspt, hbdry⟩ := Submission.dtc_blowUp_algebra P U x lam hlam
+  -- `η = η_{x,λ}` as a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
+    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
+        funext y
+        simp [dilation, dilationCLM]⟩
+  refine ⟨?_, fun W' S' hW'o hW'c hS'im hS'bd hS'c hS'A => ?_⟩
+  · -- `η_#T` is integer multiplicity
+    obtain ⟨R', hR', -⟩ := Submission.dtc_blowUp_imrep P n U T x lam hlam R hR
+    exact ⟨R', hR'⟩
+  -- `S' = η_#S''` with `S''` integer multiplicity
+  obtain ⟨S'', rfl, hS''im⟩ := Submission.dtc_blowUp_preimage P n U x lam hlam S'
+  -- `W = η⁻¹(W')` is open and `W ⊂⊂ U`, since `closure W = η⁻¹(closure W')` and `η⁻¹(η(U)) = U`
+  have hWo : IsOpen (dilation x lam ⁻¹' W') := by
+    rw [← he]
+    exact hW'o.preimage e.continuous
+  have hWc : CompactlyContained (dilation x lam ⁻¹' W') U := by
+    obtain ⟨hc, hsub'⟩ := hW'c
+    rw [← he] at hsub' ⊢
+    refine ⟨?_, ?_⟩ <;> rw [← e.preimage_closure]
+    · exact e.isCompact_preimage.2 hc
+    · exact (preimage_mono hsub').trans (e.preimage_image U).subset
+  -- `∂S'' = ∂T`: `η_#(∂S'') = ∂S' = ∂(η_#T) = η_#(∂T)` and `η_#` is injective
+  have hbd : SameBoundary S'' T := by
+    cases n with
+    | zero => trivial
+    | succ m =>
+      show S''.boundary = T.boundary
+      apply hinj
+      rw [← hbdry, ← hbdry]
+      exact hS'bd
+  -- `spt(S' − η_#T) = η(spt(S'' − T))`, so `spt(S'' − T)` is compact and lies in `A ∩ W`
+  have hspt' : (blowUp S'' x lam hlam.ne' - blowUp T x lam hlam.ne').support =
+      dilation x lam '' (S'' - T).support := by
+    rw [← hsub, hspt]
+  rw [hspt', ← he] at hS'c hS'A
+  have hc : IsCompact (S'' - T).support := e.isCompact_image.1 hS'c
+  have hA : (S'' - T).support ⊆ A ∩ dilation x lam ⁻¹' W' := by
+    intro y hy
+    obtain ⟨⟨a, ha, hay⟩, hyW'⟩ := hS'A (mem_image_of_mem e hy)
+    rw [← he]
+    exact ⟨e.injective hay ▸ ha, hyW'⟩
+  -- `M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')`, as `η(W) = W'`
+  have hle := hmin _ S'' hWo hWc (hS''im hS'im) hbd hc hA
+  have hW' : dilation x lam '' (dilation x lam ⁻¹' W') = W' := by
+    rw [← he]
+    exact e.image_preimage W'
+  have hmT := Submission.dtc_blowUp_massOn_image P n U T x lam hlam (dilation x lam ⁻¹' W')
+  have hmS := Submission.dtc_blowUp_massOn_image P n U S'' x lam hlam (dilation x lam ⁻¹' W')
+  rw [hW'] at hmT hmS
+  rw [hmT, hmS]
+  gcongr
+
+/-- **Scaling of blow-ups** `η_{x,λ#}T`, `η = η_{x,λ}`, `λ > 0` (proof of Simon 7.3.1,
+chapter-07.txt lines 326–338; push-forward 6.2.23 and 6.3.3–6.3.9): (1) the mass scaling
+`M_{η(W)}(η_#T) = λ⁻ⁿ M_W(T)` of (1) there (`dtc_blowUp_massOn_image`); (2) a representation
+`(M, θ, ξ)` of `T` pushes forward to one of `η_#T` with `μ_{η_#T}(B) = λ⁻ⁿ μ_T(η⁻¹(B))`
+(`dtc_blowUp_imrep`); (3) `η_#T` is minimizing in `η(A)` if `T` is minimizing in `A`
+(`dtc_blowUp_isMinimizingIn`).  The hypotheses `U` open and `n > 0` are not needed. -/
+theorem Submission.dtc_blowUp_scaling : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsOpen U → 0 < n → (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W) ∧ (∀ R : IMRep U n, R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) ∧ (IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A)) := by
+  intro P n U A T x lam hlam _ _
+  exact ⟨Submission.dtc_blowUp_massOn_image P n U T x lam hlam,
+    Submission.dtc_blowUp_imrep P n U T x lam hlam,
+    Submission.dtc_blowUp_isMinimizingIn P n U A T x lam hlam⟩
+/-- **Blow-up domains eventually contain bounded sets** (Simon 7.3.3(2), proof: the domain
+claims for `η_{x,σᵢ#}T`).  If `U` is open, `x ∈ U`, `λᵢ > 0` and `λᵢ → 0`, then every bounded `K`
+lies in `η_{x,λᵢ}(U)` for all large `i`: with `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`, eventually
+`λᵢ(|r| + 1) < δ`, and then each `w ∈ K` is `η_{x,λᵢ}(x + λᵢw)` with `x + λᵢw ∈ B_δ(x)`. -/
+theorem Submission.idtp_tpf_blowUp_domain_eventually : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lams : ℕ → ℝ), IsOpen U → x ∈ U → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∀ K : Set (Euclid P), Bornology.IsBounded K → ∀ᶠ i in atTop, K ⊆ dilation x (lams i) '' U := by
+  intro P U x lams hU hx hpos hlim K hK
+  -- `B_δ(x) ⊆ U` and `K ⊆ B̄_r(0)`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hU x hx
+  obtain ⟨r, hr⟩ := hK.subset_closedBall 0
+  -- `λᵢ(|r| + 1) → 0 < δ`, so `λᵢ(|r| + 1) < δ` for all large `i`
+  have hlim' : Tendsto (fun i => lams i * (|r| + 1)) atTop (𝓝 0) := by
+    simpa using hlim.mul_const (|r| + 1)
+  filter_upwards [hlim'.eventually (gt_mem_nhds hδ)] with i hi w hw
+  -- `y = x + λᵢw` lies in `B_δ(x) ⊆ U`, and `η_{x,λᵢ}(y) = w`
+  refine ⟨x + lams i • w, hball ?_, ?_⟩
+  · have hw : ‖w‖ ≤ |r| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hr hw), le_abs_self r]
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg (hpos i).le]
+    exact (mul_le_mul_of_nonneg_left hw (hpos i).le).trans_lt hi
+  · simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_smul, inv_mul_cancel₀ (hpos i).ne', one_smul, neg_add_cancel_left]
+
+/-- **Weak limits of blow-ups of a cycle are cycles** (`∂C = 0` for the blow-up limit `C` in the
+proof of Simon 7.3.3(2), chapter-07.txt line 512 ff.; cf. the proof of 7.3.1, lines 335–336,
+where `∂η_{x,λⱼ#}T = 0` in `B_{MR}(0)` for large `j`, and Ch. 6, 2.13 and 2.24(1)).  If
+`∂T = 0` in `U`, `λᵢ > 0`, `λᵢ → 0` and `η_{x,λᵢ#}T ⇀ C` in `ℝᴾ`, then `∂C = 0`: for
+`ω ∈ 𝒟ᵐ(ℝᴾ)`, the compact set `spt ω ⊇ spt dω` lies in `η_{x,λᵢ}(U)` for all large `i`
+(`idtp_tpf_blowUp_domain_eventually`), and there
+`η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`; hence
+`∂C(ω) = C(dω) = limᵢ η_{x,λᵢ#}T(dω) = 0`. -/
+theorem Submission.idtp_tpf_blowUp_limit_boundaryVanishes : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → BoundaryVanishes T → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T x (lams i) (hlams i).ne') C → BoundaryVanishes C := by
+  intro P n U T x lams hlams C hU hx hT hlim hconv
+  cases n with
+  | zero => trivial
+  | succ m =>
+    -- step 1: `∂T = 0`, and it suffices that `∂C(ω) = C(dω) = 0` for every `ω ∈ 𝒟ᵐ(ℝᴾ)`
+    change T.boundary = 0 at hT
+    change C.boundary = 0
+    ext ω
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    -- step 2: the compact set `spt ω` lies in `η_{x,λᵢ}(U)` for all large `i`
+    have hev := Submission.idtp_tpf_blowUp_domain_eventually P U x lams hU hx hlams hlim
+      (tsupport (ω : DifferentialForm (Euclid P) m)) ω.property.1.2.isCompact.isBounded
+    -- steps 3–4: for such `i`, `η_{x,λᵢ#}T(dω) = ∂(η_{x,λᵢ#}T)(ω) = η_{x,λᵢ#}(∂T)(ω) = 0`
+    have hzero : ∀ᶠ i in atTop, currentEval (blowUp T x (lams i) (hlams i).ne')
+        (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) = 0 := by
+      filter_upwards [hev] with i hi
+      -- `∂` commutes with the affine push-forward `η_{x,λᵢ#}` (Simon 6.2.24(1)) ...
+      have hB : (blowUp T x (lams i) (hlams i).ne').boundary =
+          blowUp T.boundary x (lams i) (hlams i).ne' := by
+        unfold blowUp
+        rw [GeometricCurrentOn.boundary_affinePushforward]
+        rfl
+      -- ... and the blow-up of the zero current is zero
+      have h0 : blowUp (0 : GeometricCurrentOn U m) x (lams i) (hlams i).ne' = 0 := by
+        ext η
+        unfold blowUp
+        rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+          GeometricCurrentOn.zero_apply, GeometricCurrentOn.zero_apply]
+      -- `ω` is a test form in `η_{x,λᵢ}(U)`, and `currentEval` evaluates the blow-up on `dω`
+      let ωi : TestFormOn (dilation x (lams i) '' U) m := ⟨ω, ω.property.1, hi⟩
+      have hd : IsTestForm (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ∧
+          tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) ⊆
+            dilation x (lams i) '' U :=
+        ⟨exteriorDerivative_isTestForm ω.property.1,
+          (tsupport_exteriorDerivative_subset _).trans hi⟩
+      rw [currentEval, dite_eq_left hd]
+      change (blowUp T x (lams i) (hlams i).ne').boundary ωi = 0
+      rw [hB, hT, h0, GeometricCurrentOn.zero_apply]
+    -- step 5: `C(dω)` is the limit of a sequence that is eventually `0`
+    exact tendsto_nhds_unique (hconv (exteriorDerivativeTestOn univ m ω))
+      (tendsto_const_nhds.congr' (hzero.mono fun i hi => hi.symm))
 /-- **Support from a mass–measure identity** (Simon 6.2.11–6.2.12).  If `U` is open and
 `M_W(T) = μ(W)` for every open `W`, then `spt T = U ∩ spt μ`.  First, `M_W(T) = 0` forces `T` to
 vanish on `W`: if `spt ω ⊆ W` and `|ω| ≤ C`, both `±(max C 0 + 1)⁻¹ ω` are admissible for
@@ -1943,512 +2520,6 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass, mem_inter_iff,
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
-/-- **Test forms and the blow-up under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (Simon
-Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413; used for
-`η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).  `η = η_{x,λ}` is an affine
-homeomorphism of `ℝᴾ` with inverse `ι(z) = x + λz`, and `η⁻¹(η(U)) = U`.  (a) `ω ↦ ω ∘ η` maps
-`𝒟ⁿ(η(U))` to `𝒟ⁿ(U)`; (b) `ω' ↦ ω' ∘ ι` maps `𝒟ⁿ(U)` to `𝒟ⁿ(η(U))`, and `(ω' ∘ ι) ∘ η = ω'`;
-(c) if `ω' = ω ∘ η` then `η_{x,λ#}T(ω) = T(η^#ω) = λ⁻ⁿ T(ω')`, since by multilinearity
-`(η^#ω)(y) = ω(η(y)) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(η(y))`. -/
-theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω' := by
-  intro P n U x lam hlam
-  have hne : lam ≠ 0 := hlam.ne'
-  -- Step 1: `η = η_{x,λ}` (`y ↦ −λ⁻¹x + λ⁻¹y`) and `ι(z) = x + λz` are mutually inverse affine
-  -- homeomorphisms, both `C^∞`.  (`∞` is `ℝ≥0∞`'s top under `open scoped ENNReal`.)
-  let η : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hne)).trans
-    (Homeomorph.addLeft (-(lam⁻¹ • x)))
-  have hη : ⇑η = dilation x lam := by
-    funext y
-    simp [η, dilation, dilationCLM]
-  let ι : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam hne).trans (Homeomorph.addLeft x)
-  have hι : ⇑ι = fun z => x + lam • z := by
-    funext z
-    simp [ι]
-  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
-    intro z
-    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
-  have hιη : ∀ y, x + lam • dilation x lam y = y := by
-    intro y
-    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
-  have hηsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (dilation x lam) :=
-    contDiff_const.add (dilationCLM P lam).contDiff
-  have hιsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Euclid P => x + lam • z) :=
-    contDiff_const.add (contDiff_id.const_smul lam)
-  refine ⟨?_, ?_, ?_⟩
-  · -- (a) `ω' := ω ∘ η`: smooth, compactly supported (`η` a homeomorphism), and
-    -- `tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U`.
-    intro ω
-    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω.property
-    refine ⟨⟨fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y), ?_⟩, fun y => rfl⟩
-    change IsTestForm (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧
-      tsupport (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ⊆ U
-    refine ⟨⟨hsmooth.comp hηsmooth, ?_⟩, ?_⟩
-    · have h := hcompact.comp_homeomorph η
-      rwa [hη] at h
-    · refine (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) n)
-        (hη ▸ η.continuous)).trans ((preimage_mono hsupp).trans ?_)
-      rw [preimage_image_eq U (hη ▸ η.injective)]
-  · -- (b) `ω := ω' ∘ ι`: a test form with `tsupport ω ⊆ ι⁻¹(U) ⊆ η(U)`, and `ω ∘ η = ω'`.
-    intro ω'
-    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω'.property
-    refine ⟨⟨fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z), ?_⟩, fun y => ?_⟩
-    · change IsTestForm (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ∧
-        tsupport (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ⊆ dilation x lam '' U
-      refine ⟨⟨hsmooth.comp hιsmooth, ?_⟩, ?_⟩
-      · have h := hcompact.comp_homeomorph ι
-        rwa [hι] at h
-      · refine (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
-          (hι ▸ ι.continuous)).trans fun z hz => ?_
-        exact ⟨x + lam • z, hsupp hz, hηι z⟩
-    · change (ω' : DifferentialForm (Euclid P) n) y =
-        (ω' : DifferentialForm (Euclid P) n) (x + lam • dilation x lam y)
-      rw [hιη]
-  · -- (c) `η_{x,λ#}T(ω) = T(η^#ω)`, and `η^#ω = λ⁻ⁿ ω'` by multilinearity; `T` is linear.
-    intro T ω ω' hω
-    unfold blowUp
-    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
-      show lam⁻¹ ^ n * T ω' = T (lam⁻¹ ^ n • ω') by rw [map_smul, smul_eq_mul]]
-    congr 1
-    apply Subtype.ext
-    funext y
-    ext v
-    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
-    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
-    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
-      funext i
-      simp [dilationCLM]
-    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
-      Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
-    simp
-/-- **`Hⁿ` under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`**: the scaling behind (1) in the
-proof of Simon 7.3.1 (chapter-07.txt lines 329–335).  (i) `Hⁿ(η_{x,λ}(s)) = λ⁻ⁿ Hⁿ(s)` for every
-`s ⊆ ℝᴾ`: `η_{x,λ}(s)` is the translate by `−λ⁻¹x` of `λ⁻¹s`, `Hⁿ` is invariant under isometries
-and `Hⁿ(r s) = |r|ⁿ Hⁿ(s)` for `r ≠ 0`.  (ii) `η_{x,λ#}Hⁿ = λⁿ Hⁿ`: `η_{x,λ}⁻¹(B) = η_{−λ⁻¹x,λ⁻¹}(B)`
-for every Borel `B`, so (i) for the inverse dilation gives `Hⁿ(η_{x,λ}⁻¹(B)) = λⁿ Hⁿ(B)`. -/
-theorem Submission.dtc_hausdorff_dilation : ∀ (P n : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ s : Set (Euclid P), μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s) ∧ Measure.map (dilation x lam) (μHE[n] : Measure (Euclid P)) = ENNReal.ofReal (lam ^ n) • (μHE[n] : Measure (Euclid P)) := by
-  intro P n
-  -- (i) for every centre and scale: `η_{x,λ}(s) = −λ⁻¹x + λ⁻¹s`; translation invariance and
-  -- `Hⁿ(rs) = ‖r‖ⁿ Hⁿ(s)` with `r = λ⁻¹ > 0`.
-  have himage : ∀ (x : Euclid P) (lam : ℝ), 0 < lam → ∀ s : Set (Euclid P),
-      μHE[n] (dilation x lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s := by
-    intro x lam hlam s
-    have hs : dilation x lam '' s =
-        (fun z => -(lam⁻¹ • x) + z) '' ((fun y => lam⁻¹ • y) '' s) := by
-      rw [Set.image_image]
-      rfl
-    rw [hs, (isometry_add_left (-(lam⁻¹ • x))).euclideanHausdorffMeasure_image, Set.image_smul,
-      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam.ne') s, ENNReal.smul_def,
-      smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
-    congr 2
-    simp [abs_of_pos hlam]
-  intro x lam hlam
-  refine ⟨himage x lam hlam, ?_⟩
-  -- (ii): `η_{x,λ}` is continuous with inverse `η_{−λ⁻¹x,λ⁻¹}(z) = x + λz`, so
-  -- `(η_{x,λ#}Hⁿ)(B) = Hⁿ(η_{−λ⁻¹x,λ⁻¹}(B)) = λⁿ Hⁿ(B)` by (i) for every Borel `B`.
-  have hcont : Continuous (dilation x lam) := by
-    unfold dilation
-    fun_prop
-  ext B hB
-  have hpre : dilation x lam ⁻¹' B = dilation (-(lam⁻¹ • x)) lam⁻¹ '' B :=
-    (congrFun (Set.image_eq_preimage_of_inverse
-      (fun z => by simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne'])
-      (fun y => by simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne'])) B).symm
-  rw [Measure.map_apply hcont.measurable hB, hpre, himage _ _ (inv_pos.mpr hlam), inv_inv,
-    Measure.smul_apply, smul_eq_mul]
-/-- Approximate tangent spaces are invariant under the dilation `η = η_{x,λ}`, `λ > 0`
-(Simon Ch. 3, 1.4).  As `η(w) − η(y) = λ⁻¹(w − y)`, the rescaled set `η_{η(y),r}(η(M))` is
-`η_{y,λr}(M)`, and `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`; `dim Q = n` is unchanged. -/
-theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid P)) (x y : Euclid P) (lam : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < lam → HasApproximateTangentSpaceAt n M y Q → HasApproximateTangentSpaceAt n (dilation x lam '' M) (dilation x lam y) Q := by
-  intro P n M x y lam Q hlam hT
-  refine ⟨hT.1, fun f => ?_⟩
-  -- `η_{η(y),r}(η(M)) = η_{y,λr}(M)`, since `η(w) − η(y) = λ⁻¹(w − y)`
-  have hset : ∀ r : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap (dilation x lam y) r ''
-      (dilation x lam '' M) = Poincare.SimonGMT.Chapter03.blowUpMap y (lam * r) '' M := by
-    intro r
-    rw [image_image]
-    congr 1
-    funext w
-    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dilation, dilationCLM,
-      smul_apply, ContinuousLinearMap.id_apply, add_sub_add_left_eq_sub]
-    rw [← smul_sub, smul_smul, mul_inv, mul_comm]
-  simp_rw [hset]
-  -- `r ↦ λr` maps `r ↓ 0` into `s ↓ 0`
-  have hlim : Tendsto (fun r : ℝ => lam * r) (𝓝[>] 0) (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · simpa using (tendsto_id.const_mul lam).mono_left (nhdsWithin_le_nhds (a := (0 : ℝ)))
-    · filter_upwards [self_mem_nhdsWithin] with r hr
-      exact mul_pos hlam hr
-  exact (hT.2 f).comp hlim
-
-/-- **Simon Ch. 6, 3.3–3.9 for the similarity `η = η_{x,λ}`** (used in the proof of 7.3.1(2)):
-if `R = (M, θ, ξ)` represents `T` in `U`, then `R' = (η(M), θ ∘ η⁻¹, ξ ∘ η⁻¹)` represents
-`η_{x,λ#}T` in `η(U)` and `μ_{R'}(B) = λ⁻ⁿ μ_R(η⁻¹(B))` for Borel `B`.  The Jacobian of `η` is
-the constant `λ⁻ⁿ`, so the area formula reduces to `Hⁿ⌞η(s) = λ⁻ⁿ η_#(Hⁿ⌞s)`
-(`dtc_hausdorff_dilation`); `η(M)` is rectifiable as `η` is Lipschitz, `ξ ∘ η⁻¹` orients
-`T_{η(y)}η(M) = T_yM` (`dtc_approxTangent_dilation`), and `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`
-(`dtc_blowUp_testForm_corr`). -/
-theorem Submission.dtc_blowUp_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s) := by
-  intro P n U T x lam hlam R hR
-  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
-  obtain ⟨himage, hmap⟩ := Submission.dtc_hausdorff_dilation P n x lam hlam
-  have htan : ∀ (y : Euclid P) (Q : Submodule ℝ (Euclid P)),
-      HasApproximateTangentSpaceAt n R.carrier y Q →
-        HasApproximateTangentSpaceAt n (dilation x lam '' R.carrier) (dilation x lam y) Q :=
-    fun y Q => Submission.dtc_approxTangent_dilation P n R.carrier x y lam Q hlam
-  -- `η = dilation x λ` is an affine homeomorphism with inverse `z ↦ x + λ • z`
-  have hηc : (((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
-      (Homeomorph.addLeft (-(lam⁻¹ • x)))) : Euclid P → Euclid P) = dilation x lam := by
-    funext y
-    simp [dilation, dilationCLM]
-  have hme : MeasurableEmbedding (dilation x lam) := by
-    rw [← hηc]
-    exact Homeomorph.measurableEmbedding _
-  have hιη : ∀ y, x + lam • dilation x lam y = y := fun y => by
-    simp [dilation, dilationCLM, smul_add, smul_smul, mul_inv_cancel₀ hlam.ne']
-  have hc0 : 0 ≤ lam⁻¹ ^ n := by positivity
-  set c : ℝ≥0∞ := ENNReal.ofReal (lam⁻¹ ^ n) with hc
-  -- `Hⁿ⌞η(s) = c • η_#(Hⁿ⌞s)`, hence change of variables along `η`
-  have hkey : ∀ s : Set (Euclid P),
-      μHE[n].restrict (dilation x lam '' s) = c • (μHE[n].restrict s).map (dilation x lam) := by
-    intro s
-    have h1 : (μHE[n].restrict s).map (dilation x lam) =
-        ENNReal.ofReal (lam ^ n) • μHE[n].restrict (dilation x lam '' s) := by
-      rw [← hme.injective.preimage_image s, ← hme.restrict_map, hmap, Measure.restrict_smul,
-        hme.injective.preimage_image]
-    rw [h1, smul_smul, hc, ← ENNReal.ofReal_mul hc0, ← mul_pow, inv_mul_cancel₀ hlam.ne',
-      one_pow, ENNReal.ofReal_one, one_smul]
-  have hlint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ≥0∞),
-      ∫⁻ z in dilation x lam '' s, g z ∂μHE[n] = c * ∫⁻ y in s, g (dilation x lam y) ∂μHE[n] := by
-    intro s g
-    rw [hkey s, lintegral_smul_measure, hme.lintegral_map, smul_eq_mul]
-  have hint : ∀ (s : Set (Euclid P)) (g : Euclid P → ℝ),
-      ∫ z in dilation x lam '' s, g z ∂μHE[n] =
-        lam⁻¹ ^ n * ∫ y in s, g (dilation x lam y) ∂μHE[n] := by
-    intro s g
-    rw [hkey s, integral_smul_measure, hme.integral_map, hc, ENNReal.toReal_ofReal hc0,
-      smul_eq_mul]
-  refine ⟨{ carrier := dilation x lam '' R.carrier
-            mult := fun z => R.mult (x + lam • z)
-            orient := fun z => R.orient (x + lam • z)
-            measurableSet_carrier := hme.measurableSet_image.mpr R.measurableSet_carrier
-            carrier_subset := image_mono R.carrier_subset
-            rectifiable := ?_
-            measurable_mult := R.measurable_mult.comp (by fun_prop)
-            mult_pos := ?_
-            locallyIntegrable_mult := ?_
-            aestronglyMeasurable_orient := ?_
-            orients := ?_ }, ?_, ?_⟩
-  · -- `η(M) ⊆ η(M₀) ∪ ⋃ⱼ range (η ∘ Fⱼ)` with `Hⁿ(η(M₀)) = 0` and `η ∘ Fⱼ` Lipschitz
-    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
-    refine ⟨dilation x lam '' M₀, by rw [himage, hM₀, mul_zero], fun j => dilation x lam ∘ F j,
-      fun j => ?_, ?_⟩
-    · obtain ⟨K, hK⟩ := hF j
-      exact ⟨_, ((isometry_add_left (-(lam⁻¹ • x))).lipschitzWith.comp
-        (dilationCLM P lam).lipschitzWith).comp hK⟩
-    · rintro _ ⟨y, hy, rfl⟩
-      rcases hcover hy with h0 | h1
-      · exact Or.inl ⟨y, h0, rfl⟩
-      · obtain ⟨j, v, rfl⟩ := mem_iUnion.mp h1
-        exact Or.inr (mem_iUnion.mpr ⟨j, v, rfl⟩)
-  · rintro _ ⟨y, hy, rfl⟩
-    show 0 < R.mult (x + lam • dilation x lam y)
-    rw [hιη]
-    exact R.mult_pos y hy
-  · -- `η(M) ∩ K = η(M ∩ η⁻¹(K))`, and `η⁻¹(K)` is a compact subset of `U`
-    intro K hK hKU
-    rw [← image_inter_preimage, hlint]
-    simp only [hιη]
-    refine ENNReal.mul_ne_top ENNReal.ofReal_ne_top (R.locallyIntegrable_mult _ ?_ ?_)
-    · rw [← hηc]
-      exact (Homeomorph.isCompact_preimage _).mpr hK
-    · rw [← hme.injective.preimage_image U]
-      exact preimage_mono hKU
-  · rw [hkey]
-    refine (hme.aestronglyMeasurable_map_iff.mpr ?_).smul_measure c
-    simpa [Function.comp_def, hιη] using R.aestronglyMeasurable_orient
-  · rw [hkey]
-    refine Measure.ae_smul_measure (hme.ae_map_iff.mpr (R.orients.mono fun y hy => ?_)) c
-    obtain ⟨Q, hQ, hξ⟩ := hy
-    exact ⟨Q, htan y Q hQ, by simpa [hιη] using hξ⟩
-  · -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η) = λ⁻ⁿ ∫_M θ ⟨ω ∘ η, ξ⟩ dHⁿ = ∫_{η(M)} θ' ⟨ω, ξ'⟩ dHⁿ`
-    intro ω
-    obtain ⟨ω', hω'⟩ := hpull ω
-    rw [hblow T ω ω' hω', hR ω']
-    simp only [IMRep.action]
-    rw [hint]
-    congr 1
-    refine setIntegral_congr_fun R.measurableSet_carrier fun y _ => ?_
-    simp [hιη, hω']
-  · -- `μ_{R'}(B) = c ∫_{η⁻¹(B)} θ d(Hⁿ⌞M) = c μ_R(η⁻¹(B))`
-    intro s hs
-    simp only [IMRep.measure]
-    rw [withDensity_apply _ hs, withDensity_apply _ (hme.measurable hs), hkey,
-      Measure.restrict_smul, hme.restrict_map, lintegral_smul_measure, hme.lintegral_map]
-    simp [hιη]
-
-/-- **Mass scaling of blow-ups: `M_{η(W)}(η_{x,λ#}T) = λ⁻ⁿ M_W(T)`** for `λ > 0` and every
-`W ⊆ ℝᴾ` (scaling identity (1) in the proof of Simon 7.3.1, chapter-07.txt lines 329–331; mass
-`M_W` of 6.2.5 with the Euclidean coefficient norm).  By `Submission.dtc_blowUp_testForm_corr`,
-`ω ↦ ω ∘ η` and `ω' ↦ ω' ∘ ι` (`ι(z) = x + λz`) exchange the admissible forms for
-`M_{η(W)}(η_{x,λ#}T)` and `M_W(T)`, preserving the coefficient norm pointwise, and
-`η_{x,λ#}T(ω) = λ⁻ⁿ T(ω ∘ η)`; multiplication by `λ⁻ⁿ ≥ 0` commutes with the suprema. -/
-theorem Submission.dtc_blowUp_massOn_image : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (W : Set (Euclid P)), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W := by
-  intro P n U T x lam hlam W
-  obtain ⟨hA, hB, hC⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
-  have hne : lam ≠ 0 := hlam.ne'
-  have hc : 0 ≤ lam⁻¹ ^ n := pow_nonneg (inv_nonneg.mpr hlam.le) n
-  -- `η = η_{x,λ}` and `ι(z) = x + λz` are continuous and mutually inverse; so `η` is injective.
-  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
-    intro z
-    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
-  have hιη : ∀ y, x + lam • dilation x lam y = y := by
-    intro y
-    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
-  have hηinj : Injective (dilation x lam) := fun y y' h => by
-    rw [← hιη y, ← hιη y', h]
-  have hηcont : Continuous (dilation x lam) :=
-    continuous_const.add (dilationCLM P lam).continuous
-  have hιcont : Continuous (fun z : Euclid P => x + lam • z) :=
-    continuous_const.add (continuous_const_smul lam)
-  unfold GeometricCurrentOn.massOn
-  apply le_antisymm
-  · -- Upper bound: an admissible `ω` for `η_{x,λ#}T` on `η(W)` gives the admissible
-    -- `ω' = ω ∘ η` for `T` on `W` (`tsupport ω' ⊆ η⁻¹(η(W)) = W`), and
-    -- `η_{x,λ#}T(ω) = λ⁻ⁿ T(ω')`.
-    refine sSup_le ?_
-    rintro _ ⟨ω, ⟨hωs, hωn⟩, rfl⟩
-    obtain ⟨ω', hω'⟩ := hA ω
-    dsimp only
-    rw [hC T ω ω' hω', ENNReal.ofReal_mul hc]
-    gcongr
-    refine le_sSup ⟨ω', ⟨?_, fun y => ?_⟩, rfl⟩
-    · have hcomp : (ω' : DifferentialForm (Euclid P) n) =
-          (ω : DifferentialForm (Euclid P) n) ∘ dilation x lam := funext hω'
-      rw [hcomp]
-      refine (tsupport_comp_subset_preimage _ hηcont).trans ((preimage_mono hωs).trans ?_)
-      rw [preimage_image_eq W hηinj]
-    · rw [hω' y]
-      exact hωn _
-  · -- Lower bound: an admissible `ω'` for `T` on `W` gives the admissible `ω = ω' ∘ ι` for
-    -- `η_{x,λ#}T` on `η(W)` (`tsupport ω ⊆ ι⁻¹(W) ⊆ η(W)`), and `λ⁻ⁿ T(ω') = η_{x,λ#}T(ω)`.
-    rw [ENNReal.mul_sSup]
-    refine iSup₂_le ?_
-    rintro _ ⟨ω', ⟨hωs, hωn⟩, rfl⟩
-    obtain ⟨ω, hω⟩ := hB ω'
-    dsimp only
-    rw [← ENNReal.ofReal_mul hc, ← hC T ω ω' hω]
-    refine le_sSup ⟨ω, ⟨?_, fun z => ?_⟩, rfl⟩
-    · have hcomp : (ω : DifferentialForm (Euclid P) n) =
-          (ω' : DifferentialForm (Euclid P) n) ∘ fun z => x + lam • z := by
-        funext z
-        rw [Function.comp_apply, hω, hηι]
-      rw [hcomp]
-      refine (tsupport_comp_subset_preimage _ hιcont).trans fun z hz => ?_
-      exact ⟨x + lam • z, hωs hz, hηι z⟩
-    · have h := hωn (x + lam • z)
-      rwa [hω, hηι] at h
-
-/-- **Blow-ups commute with the current operations** (Simon 6.2.11, 6.2.23–6.2.24(1) for
-`η = η_{x,λ}`, `λ > 0`): `η_#(S − T) = η_#S − η_#T`, `η_#` is injective,
-`spt(η_#T) = η(spt T)` and `∂(η_#T) = η_#(∂T)`.
-
-(i) Both sides evaluate `S − T` on the same pulled-back form.  (ii) Every `ω' ∈ 𝒟ⁿ(U)` is
-`ω ∘ η` for some `ω ∈ 𝒟ⁿ(η(U))`, and `η_#Y(ω) = λ⁻ⁿ Y(ω')` (`dtc_blowUp_testForm_corr`).
-(iii) `η` is an affine homeomorphism, and `η_#T` vanishes on `W₀ ⊂⊂ η(U)` iff `T` vanishes on
-`η⁻¹(W₀) ⊂⊂ U`; so the zero regions correspond, and `spt(η_#T) = η(spt T)` as `η` is injective.
-(iv) `d` commutes with affine pull-back (`GeometricCurrentOn.boundary_affinePushforward`). -/
-theorem Submission.dtc_blowUp_algebra : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne' := by
-  intro P U x lam hlam
-  have hc (n : ℕ) : lam⁻¹ ^ n ≠ 0 := pow_ne_zero n (inv_ne_zero hlam.ne')
-  -- `η = η_{x,λ}` as a homeomorphism
-  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
-    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
-      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
-        funext y
-        simp [dilation, dilationCLM]⟩
-  refine ⟨fun n S T => GeometricCurrentOn.ext fun ω => rfl, fun n S T h => ?_, fun n T => ?_,
-    fun m T => ?_⟩
-  · -- (ii) `λ⁻ⁿ S(ω') = η_#S(ω) = η_#T(ω) = λ⁻ⁿ T(ω')`
-    obtain ⟨-, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
-    refine GeometricCurrentOn.ext fun ω' => ?_
-    obtain ⟨ω, hω⟩ := hb ω'
-    have hS := hval S ω ω' hω
-    rw [h, hval T ω ω' hω] at hS
-    exact mul_left_cancel₀ (hc n) hS.symm
-  · -- (iii) the zero regions correspond under `η`
-    obtain ⟨ha, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
-    have hzero : (blowUp T x lam hlam.ne').zeroRegion = dilation x lam '' T.zeroRegion := by
-      ext z
-      constructor
-      · rintro ⟨W₀, ⟨hW₀o, hW₀c, hW₀U, hW₀v⟩, hz⟩
-        rw [← he] at hW₀U
-        have hW : closure (e ⁻¹' W₀) = e ⁻¹' closure W₀ := (e.preimage_closure W₀).symm
-        refine ⟨e.symm z, ⟨e ⁻¹' W₀, ⟨hW₀o.preimage e.continuous, ?_, ?_, ?_⟩, ?_⟩, ?_⟩
-        · rw [hW]
-          exact e.isCompact_preimage.2 hW₀c
-        · rw [hW]
-          exact (preimage_mono hW₀U).trans (e.preimage_image U).subset
-        · intro ω' hω'
-          obtain ⟨ω, hω⟩ := hb ω'
-          have hsupp : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W₀ := by
-            have hfun : (ω : DifferentialForm (Euclid P) n) =
-                (ω' : DifferentialForm (Euclid P) n) ∘ e.symm := by
-              funext y
-              rw [Function.comp_apply, hω, ← congrFun he (e.symm y), e.apply_symm_apply]
-            rw [hfun]
-            refine (tsupport_comp_subset_preimage _ e.symm.continuous).trans fun y hy => ?_
-            have hy' := hω' (mem_preimage.1 hy)
-            rwa [mem_preimage, e.apply_symm_apply] at hy'
-          have h0 := hW₀v ω hsupp
-          rw [hval T ω ω' hω] at h0
-          exact (mul_eq_zero.1 h0).resolve_left (hc n)
-        · rwa [mem_preimage, e.apply_symm_apply]
-        · rw [← he]
-          exact e.apply_symm_apply z
-      · rintro ⟨w, ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hw⟩, rfl⟩
-        have hW : closure (e '' W) = e '' closure W := (e.image_closure W).symm
-        refine ⟨e '' W, ⟨e.isOpenMap W hWo, ?_, ?_, ?_⟩, ?_⟩
-        · rw [hW]
-          exact hWc.image e.continuous
-        · rw [hW, ← he]
-          exact image_mono hWU
-        · intro ω hω
-          obtain ⟨ω', hω'⟩ := ha ω
-          have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ W := by
-            have hfun : (ω' : DifferentialForm (Euclid P) n) =
-                (ω : DifferentialForm (Euclid P) n) ∘ e := by
-              funext y
-              rw [Function.comp_apply, hω', ← congrFun he y]
-            rw [hfun, ← e.preimage_image W]
-            exact (tsupport_comp_subset_preimage _ e.continuous).trans (preimage_mono hω)
-          rw [hval T ω ω' hω', hWv ω' hsupp, mul_zero]
-        · rw [← he]
-          exact mem_image_of_mem e hw
-    have hinj : Function.Injective (dilation x lam) := he ▸ e.injective
-    simp only [GeometricCurrentOn.support]
-    rw [hzero, image_sdiff hinj]
-  · -- (iv) `d` commutes with the affine pull-back
-    unfold blowUp
-    rw [GeometricCurrentOn.boundary_affinePushforward]
-    rfl
-/-- **Every current in `η(U)` is a blow-up**, `η = η_{x,λ}`, `λ > 0` (Simon Ch. 6, 2.23 and 3.9
-for `η⁻¹`; used for the minimality of `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt
-lines 326–338): every `S' ∈ 𝒟ₙ(η(U))` is `η_{x,λ#}S''` for some `S'' ∈ 𝒟ₙ(U)`, integer
-multiplicity whenever `S'` is.  `κ = η_{−λ⁻¹x,λ⁻¹}` inverts `η`, so `κ(η(U)) = U`, and `S''` is
-`κ_#S'` restricted to `U`: `dtc_blowUp_testForm_corr` for `η` and for `κ` gives
-`η_#S''(ω) = λ⁻ⁿ κ_#S'(ω ∘ η) = λ⁻ⁿ λⁿ S'(ω)`, and a representation of `κ_#S'` in
-`κ(η(U)) = U` (`dtc_blowUp_imrep`) represents `S''`. -/
-theorem Submission.dtc_blowUp_preimage : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (S' : GeometricCurrentOn (dilation x lam '' U) n), ∃ S'' : GeometricCurrentOn U n, blowUp S'' x lam hlam.ne' = S' ∧ (IsIntegerMultiplicity S' → IsIntegerMultiplicity S'') := by
-  intro P n U x lam hlam S'
-  have hlam' : 0 < lam⁻¹ := inv_pos.mpr hlam
-  -- `κ = η_{−λ⁻¹x,λ⁻¹}`, `κ(z) = x + λz`, is a two-sided inverse of `η = η_{x,λ}`
-  have hκη : ∀ y, dilation (-(lam⁻¹ • x)) lam⁻¹ (dilation x lam y) = y := fun y => by
-    simp [dilation, dilationCLM, smul_smul, hlam.ne']
-  have hηκ : ∀ z, dilation x lam (dilation (-(lam⁻¹ • x)) lam⁻¹ z) = z := fun z => by
-    simp [dilation, dilationCLM, smul_smul, hlam.ne']
-  have hdom : dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) = U := by
-    rw [image_image]
-    simp only [hκη, image_id']
-  have hUV : U ⊆ dilation (-(lam⁻¹ • x)) lam⁻¹ '' (dilation x lam '' U) := hdom.superset
-  obtain ⟨hpull, -, hblow⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
-  have hblow' := (Submission.dtc_blowUp_testForm_corr P n (dilation x lam '' U)
-    (-(lam⁻¹ • x)) lam⁻¹ hlam').2.2
-  -- `S'' := κ_#S'`, restricted from `κ(η(U)) = U` to `U`
-  refine ⟨(blowUp S' (-(lam⁻¹ • x)) lam⁻¹ hlam'.ne').restrictDomain hUV, ?_, ?_⟩
-  · -- `η_#S''(ω) = λ⁻ⁿ S''(ω ∘ η)` and `κ_#S'(ω ∘ η) = λⁿ S'(ω)`, as `ω ∘ η ∘ κ = ω`
-    ext ω
-    obtain ⟨ω', hω'⟩ := hpull ω
-    rw [hblow _ ω ω' hω', GeometricCurrentOn.restrictDomain_apply,
-      hblow' S' (testFormOnInclusion hUV n ω') ω fun z => by
-        rw [testFormOnInclusion_coe, hω', hηκ],
-      ← mul_assoc, ← mul_pow, inv_inv, inv_mul_cancel₀ hlam.ne', one_pow, one_mul]
-  · -- a representation of `κ_#S'` in `κ(η(U)) = U` is one in `U`, and it represents `S''`
-    rintro ⟨R₁, hR₁⟩
-    obtain ⟨R₂, hR₂, -⟩ := Submission.dtc_blowUp_imrep P n (dilation x lam '' U) S'
-      (-(lam⁻¹ • x)) lam⁻¹ hlam' R₁ hR₁
-    exact ⟨{ R₂ with
-        carrier_subset := R₂.carrier_subset.trans hdom.subset
-        locallyIntegrable_mult := fun K hK hKU =>
-          R₂.locallyIntegrable_mult K hK (hKU.trans hUV) },
-      fun ω => hR₂ (testFormOnInclusion hUV n ω)⟩
-
-/-- **Blow-ups preserve minimality** (Simon 7.1.1, chapter-07.txt lines 12–18, for `η = η_{x,λ}`,
-`λ > 0`; used for `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337): if `T` is
-minimizing in `A`, then `η_#T` is minimizing in `η(A)`.
-
-`η_#T` is integer multiplicity (`dtc_blowUp_imrep`).  A competitor `S'` for `η_#T` on
-`W' ⊂⊂ η(U)` is `η_#S''` with `S''` integer multiplicity (`dtc_blowUp_preimage`), and `S''` is a
-competitor for `T` on `W = η⁻¹(W') ⊂⊂ U`: `∂S'' = ∂T` and
-`spt(S'' − T) = η⁻¹(spt(S' − η_#T)) ⊆ A ∩ W` (`dtc_blowUp_algebra`).  So
-`M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')` (`dtc_blowUp_massOn_image`). -/
-theorem Submission.dtc_blowUp_isMinimizingIn : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A) := by
-  intro P n U A T x lam hlam hT
-  obtain ⟨⟨R, hR⟩, hmin⟩ := hT
-  obtain ⟨hsub, hinj, hspt, hbdry⟩ := Submission.dtc_blowUp_algebra P U x lam hlam
-  -- `η = η_{x,λ}` as a homeomorphism
-  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
-    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
-      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
-        funext y
-        simp [dilation, dilationCLM]⟩
-  refine ⟨?_, fun W' S' hW'o hW'c hS'im hS'bd hS'c hS'A => ?_⟩
-  · -- `η_#T` is integer multiplicity
-    obtain ⟨R', hR', -⟩ := Submission.dtc_blowUp_imrep P n U T x lam hlam R hR
-    exact ⟨R', hR'⟩
-  -- `S' = η_#S''` with `S''` integer multiplicity
-  obtain ⟨S'', rfl, hS''im⟩ := Submission.dtc_blowUp_preimage P n U x lam hlam S'
-  -- `W = η⁻¹(W')` is open and `W ⊂⊂ U`, since `closure W = η⁻¹(closure W')` and `η⁻¹(η(U)) = U`
-  have hWo : IsOpen (dilation x lam ⁻¹' W') := by
-    rw [← he]
-    exact hW'o.preimage e.continuous
-  have hWc : CompactlyContained (dilation x lam ⁻¹' W') U := by
-    obtain ⟨hc, hsub'⟩ := hW'c
-    rw [← he] at hsub' ⊢
-    refine ⟨?_, ?_⟩ <;> rw [← e.preimage_closure]
-    · exact e.isCompact_preimage.2 hc
-    · exact (preimage_mono hsub').trans (e.preimage_image U).subset
-  -- `∂S'' = ∂T`: `η_#(∂S'') = ∂S' = ∂(η_#T) = η_#(∂T)` and `η_#` is injective
-  have hbd : SameBoundary S'' T := by
-    cases n with
-    | zero => trivial
-    | succ m =>
-      show S''.boundary = T.boundary
-      apply hinj
-      rw [← hbdry, ← hbdry]
-      exact hS'bd
-  -- `spt(S' − η_#T) = η(spt(S'' − T))`, so `spt(S'' − T)` is compact and lies in `A ∩ W`
-  have hspt' : (blowUp S'' x lam hlam.ne' - blowUp T x lam hlam.ne').support =
-      dilation x lam '' (S'' - T).support := by
-    rw [← hsub, hspt]
-  rw [hspt', ← he] at hS'c hS'A
-  have hc : IsCompact (S'' - T).support := e.isCompact_image.1 hS'c
-  have hA : (S'' - T).support ⊆ A ∩ dilation x lam ⁻¹' W' := by
-    intro y hy
-    obtain ⟨⟨a, ha, hay⟩, hyW'⟩ := hS'A (mem_image_of_mem e hy)
-    rw [← he]
-    exact ⟨e.injective hay ▸ ha, hyW'⟩
-  -- `M_{W'}(η_#T) = λ⁻ⁿ M_W(T) ≤ λ⁻ⁿ M_W(S'') = M_{W'}(S')`, as `η(W) = W'`
-  have hle := hmin _ S'' hWo hWc (hS''im hS'im) hbd hc hA
-  have hW' : dilation x lam '' (dilation x lam ⁻¹' W') = W' := by
-    rw [← he]
-    exact e.image_preimage W'
-  have hmT := Submission.dtc_blowUp_massOn_image P n U T x lam hlam (dilation x lam ⁻¹' W')
-  have hmS := Submission.dtc_blowUp_massOn_image P n U S'' x lam hlam (dilation x lam ⁻¹' W')
-  rw [hW'] at hmT hmS
-  rw [hmT, hmS]
-  gcongr
-
-/-- **Scaling of blow-ups** `η_{x,λ#}T`, `η = η_{x,λ}`, `λ > 0` (proof of Simon 7.3.1,
-chapter-07.txt lines 326–338; push-forward 6.2.23 and 6.3.3–6.3.9): (1) the mass scaling
-`M_{η(W)}(η_#T) = λ⁻ⁿ M_W(T)` of (1) there (`dtc_blowUp_massOn_image`); (2) a representation
-`(M, θ, ξ)` of `T` pushes forward to one of `η_#T` with `μ_{η_#T}(B) = λ⁻ⁿ μ_T(η⁻¹(B))`
-(`dtc_blowUp_imrep`); (3) `η_#T` is minimizing in `η(A)` if `T` is minimizing in `A`
-(`dtc_blowUp_isMinimizingIn`).  The hypotheses `U` open and `n > 0` are not needed. -/
-theorem Submission.dtc_blowUp_scaling : ∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsOpen U → 0 < n → (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W) ∧ (∀ R : IMRep U n, R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) ∧ (IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A)) := by
-  intro P n U A T x lam hlam _ _
-  exact ⟨Submission.dtc_blowUp_massOn_image P n U T x lam hlam,
-    Submission.dtc_blowUp_imrep P n U T x lam hlam,
-    Submission.dtc_blowUp_isMinimizingIn P n U A T x lam hlam⟩
 /-- **The weight of a cone is homogeneous of degree `n`** (proof of Simon 7.4.5,
 chapter-07.txt lines 697–699, "by virtue of the fact that `C` is a cone").  If the cone `C` is
 represented by `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` and `λ > 0`, then `μ(λA) = λⁿ μ(A)` for
@@ -2480,7 +2551,6 @@ theorem Submission.cone_current_imrep_measure_smul_image : ∀ (P n : ℕ) (C : 
     rw [← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
       ENNReal.ofReal_one]
   rw [hA', ← mul_assoc, hpow, one_mul]
-
 /-- **The ambient space and the calculus of the dilations** `η_{a,s}(v) = s⁻¹(v − a)`, `s > 0`,
 and of the rescaled measures `ν^{a,s} = s⁻ⁿ η_{a,s#}ν` (used tacitly by Simon in the proof of
 7.3.3(1), cf. (10) there, chapter-07.txt line 472): (1) `ℝᴾ` is an embedded `C²` submanifold of
@@ -2795,6 +2865,282 @@ theorem Submission.idtp_fons_cc_monotonicity_bounds : (∀ (P n d : ℕ) (U N : 
     refine ⟨hlim θ, fun h => ?_⟩
     rw [h, ← hlim (Θ w) (hΘ w (mem_univ w))]
     exact hΘ w (mem_univ w)
+/-- **The zero current is a minimizing cycle of zero weight** (proof of Simon 7.3.3, the case
+`p ∉ spt T` of the tangent measures; Simon Ch. 6, 3.1 and 7.1.1).  `C = 0 ∈ 𝒟ₙ(ℝᴾ)` is
+represented by the empty triple `R_C = (∅, 1, 0)`: every condition on a triple holds because
+`Hⁿ⌞∅ = 0`, so `R_C(ω) = 0 = C(ω)` and `μ_{R_C} = 0`.  `C` is minimizing in `ℝᴾ`, since
+`M_W(0) = sup{0} = 0 ≤ M_W(S)` for every competitor `S`, and `∂0 = 0`. -/
+theorem Submission.idtp_fons_cc_tm_zero_cycle : ∀ (P n : ℕ), ∃ (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ RC.measure = 0 := by
+  intro P n
+  -- Step 1 (cycle): `∂0 = 0`, trivially for `n = 0` and as `(∂0)(ω) = 0(dω) = 0` for `n = m + 1`
+  have hbdry : BoundaryVanishes (0 : GeometricCurrentOn (univ : Set (Euclid P)) n) := by
+    cases n with
+    | zero => trivial
+    | succ m =>
+      change (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)).boundary = 0
+      ext ω
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply,
+        GeometricCurrentOn.zero_apply]
+  -- Step 2: the empty triple `(∅, 1, 0)` is integer multiplicity in `ℝᴾ`, as `Hⁿ⌞∅ = 0`
+  let RC : IMRep (univ : Set (Euclid P)) n :=
+    { carrier := ∅
+      mult := fun _ => 1
+      orient := fun _ => 0
+      measurableSet_carrier := MeasurableSet.empty
+      carrier_subset := empty_subset _
+      rectifiable := Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+      measurable_mult := measurable_const
+      mult_pos := fun x hx => absurd hx (notMem_empty x)
+      locallyIntegrable_mult := fun K _ _ => by
+        rw [empty_inter, setLIntegral_empty]
+        exact ENNReal.zero_ne_top
+      aestronglyMeasurable_orient := aestronglyMeasurable_const
+      orients := ae_restrict_of_forall_mem MeasurableSet.empty fun x hx =>
+        absurd hx (notMem_empty x) }
+  -- Step 3: `R_C(ω)` is an integral over `∅`, so `R_C(ω) = 0 = C(ω)`
+  have hrep : RC.Represents 0 := by
+    intro ω
+    rw [GeometricCurrentOn.zero_apply]
+    exact setIntegral_empty.symm
+  -- Step 4 (minimality): `M_W(0) = sup{0} = 0 ≤ M_W(S)` for every competitor `S`
+  have hmass : ∀ W : Set (Euclid P),
+      (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).massOn W = 0 := by
+    intro W
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, -, rfl⟩
+    dsimp only
+    rw [GeometricCurrentOn.zero_apply, ENNReal.ofReal_zero]
+  refine ⟨0, RC, ⟨⟨RC, hrep⟩, fun W S _ _ _ _ _ _ => ?_⟩, hbdry, hrep, ?_⟩
+  · rw [hmass W]
+    exact zero_le
+  -- Step 5 (zero weight): `μ_{R_C} = (Hⁿ⌞∅).withDensity 1 = (0).withDensity 1 = 0`
+  · change (μHE[n].restrict (∅ : Set (Euclid P))).withDensity _ = 0
+    rw [Measure.restrict_empty, withDensity_zero_left]
+/-- **Blow-up integrals of compactly supported functions** (the rescaled weights
+`μ^{p,λ} = λ⁻ⁿ η_{p,λ#}μ` of the blow-ups `η_{p,λ#}T` of Simon 7.3.1(2), `η_{p,λ}(y) = λ⁻¹(y − p)`).
+Let `λⱼ > 0`, `λⱼ → 0`, and let `f : ℝᴾ → ℝ` have compact support (neither continuity nor
+integrability is needed).  (a) If `G` is open and `p ∈ G`, then `∫ f d(μ⌞G)^{p,λⱼ} = ∫ f dμ^{p,λⱼ}`
+for all large `j`: `(μ⌞G)^{p,s} = μ^{p,s}⌞η_{p,s}(G)` as `η_{p,s}` is a measurable embedding, and
+`η_{p,s}(G) ⊇ η_{p,s}(B_δ(p)) = B_{δ/s}(0) ⊇ spt f` once `λⱼ` is small.  (b) If `μ(B_ε(p)) = 0`,
+then `∫ f dμ^{p,λⱼ} = 0` for all large `j`: `μ^{p,s}(B_{ε/s}(0)) = s⁻ⁿ μ(B_ε(p)) = 0` and
+`spt f ⊆ B_{ε/λⱼ}(0)` once `λⱼ` is small, so `f = 0` `μ^{p,λⱼ}`-a.e. -/
+theorem Submission.idtp_fons_cc_tm_blowup_integrals : (∀ (P n : ℕ) (μ : Measure (Euclid P)) (G : Set (Euclid P)) (p : Euclid P) (lams : ℕ → ℝ) (f : Euclid P → ℝ), IsOpen G → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • (μ.restrict G).map (dilation p (lams j))) = ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j)))) ∧ ∀ (P n : ℕ) (μ : Measure (Euclid P)) (p : Euclid P) (ε : ℝ) (lams : ℕ → ℝ) (f : Euclid P → ℝ), 0 < ε → μ (ball p ε) = 0 → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j))) = 0 := by
+  -- Step 1: `η_{a,s}(y) = s⁻¹(y − a)`; for `s > 0`, `η_{a,s}` is the homeomorphism
+  -- `y ↦ −s⁻¹a + s⁻¹y`, hence a measurable embedding
+  have hdil : ∀ (P : ℕ) (a : Euclid P) (s : ℝ) (y : Euclid P), dilation a s y = s⁻¹ • (y - a) := by
+    intro P a s y
+    show -(s⁻¹ • a) + s⁻¹ • y = s⁻¹ • (y - a)
+    rw [smul_sub, neg_add_eq_sub]
+  have hemb : ∀ (P : ℕ) (a : Euclid P) (s : ℝ), 0 < s → MeasurableEmbedding (dilation a s) := by
+    intro P a s hs
+    have hh : ⇑((Homeomorph.smulOfNeZero s⁻¹ (inv_ne_zero hs.ne')).trans
+        (Homeomorph.addLeft (-(s⁻¹ • a)))) = dilation a s := by
+      funext y
+      simp [dilation, dilationCLM]
+    exact hh ▸ Homeomorph.measurableEmbedding _
+  -- Step 3: `tsupport f ⊆ B̄_M(0)` and `λⱼ(|M| + 1) → 0`, so for each `r > 0`, eventually
+  -- `λⱼ‖x‖ ≤ λⱼ(|M| + 1) < r` on `tsupport f`, i.e. `tsupport f ⊆ B_{r/λⱼ}(0)`
+  have hsupp : ∀ (P : ℕ) (f : Euclid P → ℝ) (lams : ℕ → ℝ) (r : ℝ), HasCompactSupport f →
+      (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → 0 < r →
+      ∀ᶠ j in atTop, tsupport f ⊆ ball 0 (r / lams j) := by
+    intro P f lams r hf hpos hlim hr
+    obtain ⟨M, hM⟩ := hf.isCompact.isBounded.subset_closedBall 0
+    have hlim' : Tendsto (fun j => lams j * (|M| + 1)) atTop (𝓝 0) := by
+      simpa using hlim.mul_const (|M| + 1)
+    filter_upwards [hlim'.eventually (gt_mem_nhds hr)] with j hj x hx
+    have hx' : ‖x‖ ≤ |M| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hM hx), le_abs_self M]
+    rw [mem_ball_zero_iff, lt_div_iff₀ (hpos j), mul_comm]
+    exact (mul_le_mul_of_nonneg_left hx' (hpos j).le).trans_lt hj
+  refine ⟨?_, ?_⟩
+  · -- Step 4 (a): `B_δ(p) ⊆ G`, and eventually `tsupport f ⊆ B_{δ/λⱼ}(0)`
+    intro P n μ G p lams f hG hp hpos hlim hf
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hG p hp
+    filter_upwards [hsupp P f lams δ hf hpos hlim hδ] with j hj
+    have hs := hpos j
+    -- (i) `(μ⌞G)^{p,s} = μ^{p,s}⌞η_{p,s}(G)`, as `η_{p,s}⁻¹(η_{p,s}(G)) = G`
+    rw [← (hemb P p (lams j) hs).injective.preimage_image G,
+      ← (hemb P p (lams j) hs).restrict_map, ← Measure.restrict_smul]
+    -- (ii)–(iii) `f` vanishes off `η_{p,s}(G)`: if `f(x) ≠ 0`, then `x ∈ B_{δ/s}(0)`, so
+    -- `x = η_{p,s}(p + sx)` with `‖(p + sx) − p‖ = s‖x‖ < δ` (step 2), and `p + sx ∈ G`
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    by_contra hfx
+    have hx' := hj (subset_tsupport f hfx)
+    rw [mem_ball_zero_iff, lt_div_iff₀ hs, mul_comm] at hx'
+    refine hx ⟨p + lams j • x, hball ?_, ?_⟩
+    · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le]
+      exact hx'
+    · rw [hdil, add_sub_cancel_left, inv_smul_smul₀ hs.ne']
+  · -- Step 5 (b): eventually `tsupport f ⊆ B_{ε/λⱼ}(0)`
+    intro P n μ p ε lams f hε hμ hpos hlim hf
+    filter_upwards [hsupp P f lams ε hf hpos hlim hε] with j hj
+    have hs := hpos j
+    -- (i) `μ^{p,s}(B_{ε/s}(0)) = s⁻ⁿ μ(η_{p,s}⁻¹(B_{ε/s}(0))) = 0`, as
+    -- `η_{p,s}⁻¹(B_{ε/s}(0)) ⊆ B_ε(p)`: `‖y − p‖ = s‖η_{p,s}(y)‖` (step 2)
+    have hnull : (ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j)))
+        (ball 0 (ε / lams j)) = 0 := by
+      rw [Measure.smul_apply, (hemb P p (lams j) hs).map_apply]
+      refine (congrArg _ (measure_mono_null (fun y hy => ?_) hμ)).trans (smul_zero _)
+      have hy' : y - p = lams j • dilation p (lams j) y := by
+        rw [hdil, smul_inv_smul₀ hs.ne']
+      rw [mem_preimage, mem_ball_zero_iff, lt_div_iff₀ hs] at hy
+      rw [mem_ball, dist_eq_norm, hy', norm_smul, Real.norm_of_nonneg hs.le, mul_comm]
+      exact hy
+    -- (ii) `{f ≠ 0} ⊆ tsupport f ⊆ B_{ε/s}(0)` is `μ^{p,s}`-null, so `∫ f dμ^{p,s} = 0`
+    exact integral_eq_zero_of_ae (ae_iff.2 (measure_mono_null
+      (fun x hx => hj (subset_tsupport f hx)) hnull))
+/-- **Homogeneous measures have dilation-invariant upper density ratios** (the weight of a
+tangent cone in the proof of Simon 7.3.3, homogeneous of degree `n` by
+`cone_current_imrep_measure_smul_image` since `η_{0,λ#}C = C`, 7.3.1(2)).  If `ν(λA) = λⁿ ν(A)`
+for every `λ > 0` and Borel `A`, then for `t > 0` the ratios `r_ν(y, ρ) = ν(B_ρ(y))/(ωₙρⁿ)` (in
+`[0, ∞]`, no finiteness of `ωₙ` used) satisfy `limsup_{ρ↓0} r_ν(tw, ρ) = limsup_{ρ↓0} r_ν(w, ρ)`:
+`B_ρ(tw) = t B_{ρ/t}(w)` and `ωₙρⁿ = tⁿ ωₙ(ρ/t)ⁿ`, so cancelling the finite nonzero factor `tⁿ`
+gives `r_ν(tw, ρ) = r_ν(w, ρ/t)` for `ρ > 0`, and `ρ ↦ ρ/t` maps `𝓝[>] 0` onto itself. -/
+theorem Submission.idtp_fons_cc_tm_density_homogeneous : ∀ (P n : ℕ) (ν : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * ν A) → ∀ t : ℝ, 0 < t → ∀ w : Euclid P, limsup (fun ρ : ℝ => ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) := by
+  intro P n ν hν t ht w
+  -- steps 1–4: `r_ν(tw, ρ) = r_ν(w, ρ/t)` for every `ρ > 0`
+  have hratio : ∀ ρ : ℝ, 0 < ρ →
+      ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) =
+        ν (ball w (ρ / t)) / (unitBallVolume n * ENNReal.ofReal ((ρ / t) ^ n)) := by
+    intro ρ _
+    -- step 1: `B_ρ(tw) = t • B_{ρ/t}(w)`, as `‖t‖ (ρ/t) = ρ`
+    have hball : ball (t • w) ρ = (fun x => t • x) '' ball w (ρ / t) := by
+      rw [image_smul, smul_ball ht.ne', Real.norm_of_nonneg ht.le, mul_div_cancel₀ ρ ht.ne']
+    -- step 3: `ωₙρⁿ = tⁿ (ωₙ(ρ/t)ⁿ)`, as `ρⁿ = tⁿ(ρ/t)ⁿ`
+    have hden : unitBallVolume n * ENNReal.ofReal (ρ ^ n) =
+        ENNReal.ofReal (t ^ n) * (unitBallVolume n * ENNReal.ofReal ((ρ / t) ^ n)) := by
+      rw [mul_left_comm, ← ENNReal.ofReal_mul (pow_nonneg ht.le n), ← mul_pow,
+        mul_div_cancel₀ ρ ht.ne']
+    -- steps 2 and 4: `ν(B_ρ(tw)) = tⁿ ν(B_{ρ/t}(w))`, and cancel the finite nonzero `tⁿ`
+    rw [hball, hν t ht _ measurableSet_ball, hden,
+      ENNReal.mul_div_mul_left _ _ (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne' ENNReal.ofReal_ne_top]
+  -- step 7: `ρ ↦ ρ/t` maps `𝓝[>] 0` onto itself, its inverse being `ρ ↦ tρ`
+  have hmap : map (fun ρ : ℝ => ρ / t) (𝓝[>] 0) = 𝓝[>] 0 := by
+    rw [map_eq_comap_of_inverse (m := fun ρ : ℝ => ρ / t) (n := fun ρ : ℝ => t * ρ)
+      (funext fun ρ => mul_div_cancel_left₀ ρ ht.ne') (funext fun ρ => mul_div_cancel₀ ρ ht.ne'),
+      comap_mulLeft_nhdsGT_zero ht]
+  -- steps 5, 6 and 8: eventual equality along `𝓝[>] 0`, then change variables `ρ ↦ ρ/t`
+  calc limsup (fun ρ : ℝ => ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+        (𝓝[>] 0)
+      = limsup ((fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) ∘
+          fun ρ => ρ / t) (𝓝[>] 0) :=
+        limsup_congr (eventually_nhdsWithin_of_forall fun ρ hρ => hratio ρ hρ)
+    _ = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+          (map (fun ρ => ρ / t) (𝓝[>] 0)) := limsup_comp _ _ _
+    _ = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+          (𝓝[>] 0) := by rw [hmap]
+/-- **Blow-ups of a minimizing cycle at a point of its support** (Simon 7.3.1(2),
+chapter-07.txt lines 302–310, proof from line 326; used in the proof of 7.3.3(1), (8), lines
+454–466).  Let `T` be minimizing in `U ∩ N` with `spt T ⊆ U ∩ N`, `∂T = 0`, `n ≥ 1`, let
+`T = τ(M, θ, ξ)` have weight `μ`, `p ∈ spt T`, `λⱼ > 0` and `λⱼ → 0`.  As `∂T = 0`, `spt ∂T = ∅`
+(`p` lies in a ball `W ⊂⊂ U` on which `0` vanishes), so (DTC)(2) applies at `p`: there are
+`λⱼ' = λ_{φ(j)}` and a minimizing cone `C` with `η_{p,λⱼ'#}T ⇀ C` and `μ_{η_{p,λⱼ'#}T} → μ_C`.
+Then `∂C = 0` (`idtp_tpf_blowUp_limit_boundaryVanishes`), `C` has a representation `R_C`, and the
+push-forwards of `R` (`dtc_blowUp_scaling`) represent the blow-ups with weights
+`λⱼ'⁻ⁿ η_{p,λⱼ'#}μ`, which therefore converge to `μ_{R_C}`. -/
+theorem Submission.idtp_fons_cc_tm_support_blowup : DensityAndTangentCones → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → p ∈ T.support → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ IsConeCurrent C ∧ RC.Represents C ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure)) := by
+  intro hDTC n k ℓ hℓk U N T R p lams hn hU hN hNU hTmin hTspt hT hR hp hlams hlim
+  -- Step 1: `p ∈ spt T ⊆ U`
+  have hpU : p ∈ U := T.support_subset_domain hp
+  -- Step 2: `spt ∂T = spt 0 = ∅`, as `p` lies in the ball `W = B_{ε/2}(p) ⊂⊂ U`, on which the
+  -- zero current vanishes
+  have hpx : p ∈ T.support \ boundarySupport T := by
+    refine ⟨hp, ?_⟩
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    change T.boundary = 0 at hT
+    change p ∉ T.boundary.support
+    rw [hT]
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU p hpU
+    have hcl : closure (ball p (ε / 2)) ⊆ closedBall p (ε / 2) := closure_ball_subset_closedBall
+    intro h0
+    refine h0.2 (Set.mem_sUnion_of_mem (mem_ball_self (half_pos hε)) ⟨isOpen_ball,
+      (isCompact_closedBall p (ε / 2)).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball (half_lt_self hε)).trans hball), fun ω _ => rfl⟩)
+  -- Step 3: (DTC)(2) at `p` gives `λⱼ' = λ_{φ(j)}` and a minimizing cone `C` with
+  -- `η_{p,λⱼ'#}T ⇀ C` and `μ_{η_{p,λⱼ'#}T} → μ_C`
+  obtain ⟨φ, C, hφ, hconv, hmass, hCmin, hCcone, -⟩ :=
+    (hDTC n k ℓ hℓk U N T hU hN hNU hTmin hTspt).2 p hpx lams hlams hlim
+  -- Step 4: `∂C = 0`, since `λⱼ' → 0` and `η_{p,λⱼ'#}T ⇀ C`
+  have hCb : BoundaryVanishes C :=
+    Submission.idtp_tpf_blowUp_limit_boundaryVanishes (n + k) n U T p (fun j => lams (φ j))
+      (fun j => hlams (φ j)) C hU hpU hT (hlim.comp hφ.tendsto_atTop) hconv
+  -- Step 5: `C` is integer multiplicity; fix a representation `R_C`
+  obtain ⟨RC, hRC⟩ := hCmin.1
+  -- Step 6: representations `R_j` of the blow-ups with `μ_{R_j}(s) = λⱼ'⁻ⁿ μ(η_{p,λⱼ'}⁻¹(s))`
+  choose Rs hRs hRsμ using fun j =>
+    (Submission.dtc_blowUp_scaling (n + k) n U U T p (lams (φ j)) (hlams (φ j)) hU
+      (by omega)).2.1 R hR
+  -- Step 7: hence `μ_{R_j} = λⱼ'⁻ⁿ η_{p,λⱼ'#}μ`
+  have hRsμ' : ∀ j, (Rs j).measure =
+      ENNReal.ofReal ((lams (φ j))⁻¹ ^ n) • R.measure.map (dilation p (lams (φ j))) := by
+    intro j
+    have hmeas : Measurable (dilation p (lams (φ j))) :=
+      (continuous_const.add (dilationCLM (n + k) _).continuous).measurable
+    ext s hs
+    rw [hRsμ j s hs, Measure.smul_apply, smul_eq_mul, Measure.map_apply hmeas hs]
+  -- Step 8: `μ_{η_{p,λⱼ'#}T} → μ_C` for the representations `R_j` and `R_C`
+  refine ⟨φ, C, RC, hφ, hCmin, hCb, hCcone, hRC, fun f hf hfc => ?_⟩
+  exact (hmass Rs hRs RC hRC f hf hfc (subset_univ _)).congr fun j => by rw [hRsμ' j]
+
+/-- **Tangent measures of minimizing cycles** (Simon 7.3.1(2) and the proof of 7.3.3(1),
+chapter-07.txt lines 302–310 and 454–466).  Assume (DTC) = `DensityAndTangentCones` and write
+`ν^{a,s} = s⁻ⁿ η_{a,s#}ν` and `r_ν(w, ρ) = ν(B_ρ(w))/(ωₙρⁿ)`.  (A) Let `T` be minimizing in
+`U ∩ N`, `spt T ⊆ U ∩ N`, `∂T = 0` in `U`, `R` represent `T` with weight `μ`, `p ∈ U ∩ G` with
+`G` open and `λⱼ > 0`, `λⱼ → 0`.  Then along a subsequence `(μ⌞G)^{p,λⱼ}` converges vaguely to
+the weight `μ_C` of a minimizing cycle `C` of `ℝ^{n+k}`, and
+`limsup_{ρ↓0} r_{μ_C}(tw, ρ) = limsup_{ρ↓0} r_{μ_C}(w, ρ)` for `t > 0`.  If `p ∉ spt T`, some ball
+`B_ε(p)` is `μ`-null, so the blow-up integrals are eventually `0` and `C = 0` (zero weight) works.
+If `p ∈ spt T`, (DTC) gives a minimizing cone cycle `C` with `μ^{p,λⱼ} → μ_C`; the weight of a
+cone is homogeneous of degree `n`, and `(μ⌞G)^{p,λ}` and `μ^{p,λ}` have the same integrals
+against a fixed `f ∈ C_c` for small `λ`.  (B) is the case `U = N = G = ℝ^{n+k}` of (A). -/
+theorem Submission.idtp_fons_cc_tangent_measures : DensityAndTangentCones → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N G : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsOpen G → p ∈ U → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • (R.measure.restrict G).map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))) ∧ ∀ (n k : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (R : IMRep (univ : Set (Euclid (n + k))) n) (y : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure)) := by
+  intro hDTC
+  -- Part (B) is the case `U = N = G = ℝ^{n+k}` of Part (A), so it suffices to prove (A)
+  refine (and_iff_left_of_imp fun hA => ?_).2 ?_
+  · -- (B) (step 8): apply (A) with `ℓ = k` and `U = N = G = ℝ^{n+k}`; `μ⌞ℝ^{n+k} = μ`
+    intro n k S R y lams hn hS hbd hR hlams hlim
+    obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, hconv⟩ :=
+      hA n k k le_rfl univ univ univ S R y lams hn isOpen_univ
+        (Submission.idtp_fons_cc_ambient_calculus.1 (n + k)) (by simp) (by rwa [inter_self])
+        (by simp) hbd hR isOpen_univ (mem_univ y) (mem_univ y) hlams hlim
+    refine ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, ?_⟩
+    simpa only [Measure.restrict_univ] using hconv
+  · -- (A)
+    intro n k ℓ hℓ U N G T R p lams hn hU hN hNU hT hspt hbd hR hG hpU hpG hlams hlim
+    by_cases hp : p ∈ T.support
+    · -- Case `p ∈ spt T` (steps 3–6): by (DTC) there are a minimizing cone cycle `C`, an
+      -- integer multiplicity representation `R_C` of `C` and `sub` with
+      -- `∫ f dμ^{p,λ_{sub(j)}} → ∫ f dμ_C`
+      obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hCcone, hRC, hconv⟩ :=
+        Submission.idtp_fons_cc_tm_support_blowup hDTC n k ℓ hℓ U N T R p lams hn hU hN hNU hT
+          hspt hbd hR hp hlams hlim
+      refine ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, ?_, fun f hf hfc => ?_⟩
+      · -- the weight of the cone `C` is homogeneous of degree `n` (step 6)
+        exact Submission.idtp_fons_cc_tm_density_homogeneous (n + k) n RC.measure
+          (Submission.cone_current_imrep_measure_smul_image (n + k) n C RC hCcone hRC)
+      · -- for large `j`, `(μ⌞G)^{p,λ_{sub(j)}}` and `μ^{p,λ_{sub(j)}}` have the same integral
+        -- against `f`, as `λ_{sub(j)} → 0` (step 1)
+        refine (hconv f hf hfc).congr' ?_
+        filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.1 (n + k) n R.measure G p
+          (lams ∘ sub) f hG hpG (fun j => hlams (sub j)) (hlim.comp hsub.tendsto_atTop) hfc]
+          with j hj
+        exact hj.symm
+    · -- Case `p ∉ spt T` (step 2): some ball `B_ε(p)` is `μ`-null, hence `μ⌞G`-null
+      obtain ⟨ε, hε, hball⟩ : ∃ ε : ℝ, 0 < ε ∧ R.measure (ball p ε) = 0 := by
+        by_contra! h
+        exact hp (((Submission.dimred_im_mass_measure (n + k) n U T R hU hR).2.1 p hpU).2 h)
+      have hballG : R.measure.restrict G (ball p ε) = 0 :=
+        nonpos_iff_eq_zero.1 ((Measure.restrict_apply_le G _).trans hball.le)
+      -- take `sub = id` and the zero cycle `C = 0` with zero weight: both density ratios
+      -- vanish, and the blow-up integrals are eventually `0 = ∫ f d0`
+      obtain ⟨C, RC, hCmin, hCbd, hRC, hRC0⟩ := Submission.idtp_fons_cc_tm_zero_cycle (n + k) n
+      refine ⟨id, C, RC, strictMono_id, hCmin, hCbd, hRC, fun t _ w => by simp [hRC0],
+        fun f _ hfc => ?_⟩
+      rw [hRC0, integral_zero_measure]
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.2 (n + k) n
+        (R.measure.restrict G) p ε lams f hε hballG hlams hlim hfc] with j hj
+      exact hj.symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

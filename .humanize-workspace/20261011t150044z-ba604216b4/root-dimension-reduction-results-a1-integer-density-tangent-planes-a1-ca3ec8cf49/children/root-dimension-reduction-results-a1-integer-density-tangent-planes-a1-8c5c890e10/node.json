@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.planar_support_eq-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "A nonzero integer multiplicity cycle supported in an n-plane has the whole plane as support",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, ℝ^P = Euclid P) and every orthonormal family τ = (τ_1, …, τ_n) in ℝ^P (Orthonormal ℝ τ), with Q := span{τ_1, …, τ_n} (Submodule.span ℝ (range τ)): if C is integer multiplicity, ∂C = 0 (BoundaryVanishes C), spt C ⊆ Q, and M_W(C) ≠ 0 for some open W ⊆ ℝ^P (C.massOn W ≠ 0), then spt C = Q.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P), 1 ≤ n → Orthonormal ℝ τ → IsIntegerMultiplicity C → BoundaryVanishes C → C.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → (∃ W : Set (Euclid P), IsOpen W ∧ C.massOn W ≠ 0) → C.support = (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+  "lean_name": "idtp_tpf_planar_support_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8c5c890e10-a1"
+}
