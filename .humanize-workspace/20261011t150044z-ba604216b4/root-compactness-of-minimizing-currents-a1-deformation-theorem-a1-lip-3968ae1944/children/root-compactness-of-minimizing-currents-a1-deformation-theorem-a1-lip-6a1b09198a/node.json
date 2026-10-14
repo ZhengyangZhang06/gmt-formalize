@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1",
+  "depth": 5,
+  "title": "Cut-off pull-back test forms agreeing with F^#ω and with F^#(dω) near a compact set",
+  "statement": "For all N, N', k ∈ ℕ, every C^∞ (ContDiff ℝ (⊤ : ℕ∞)) map F : ℝ^N → ℝ^{N'}, every ω ∈ 𝒟^k(ℝ^{N'}) (TestFormOn univ k) and every compact K ⊆ ℝ^N, there are η ∈ 𝒟^k(ℝ^N) and an open set W ⊇ K such that for every x ∈ W: η(x) = F^#ω(x) := (ω(F(x))).compContinuousLinearMap (fderiv ℝ F x), and dη(x) = (dω(F(x))).compContinuousLinearMap (fderiv ℝ F x), where d = exteriorDerivative.",
+  "lean_statement": "∀ (N N' k : ℕ) (F : Euclid N → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k) (K : Set (Euclid N)), ContDiff ℝ (⊤ : ℕ∞) F → IsCompact K → ∃ (η : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W ∧ K ⊆ W ∧ (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)) ∧ ∀ x ∈ W, exteriorDerivative (η : DifferentialForm (Euclid N) k) x = (exteriorDerivative (ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)",
+  "lean_name": "cmcdt_lpo_cutoff_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6a1b09198a-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+  "depth": 3,
+  "title": "Unit orientations of n-planes are nonzero n-vectors of operator norm at most one",
+  "statement": "Let P, n ∈ ℕ. Let ξ ∈ Λ_n(ℝ^P) = MultiVector P n, i.e. a continuous linear functional on the normed space Λ^n(ℝ^P) = Covector (Euclid P) n of continuous alternating n-linear forms on ℝ^P (with Mathlib's operator norm). Let Q be a linear subspace of ℝ^P. Suppose ξ is a unit orientation of Q (IsUnitOrientationOf ξ Q): there is an orthonormal family τ = (τ_1,…,τ_n) in ℝ^P spanning Q such that either ξ(α) = α(τ_1,…,τ_n) for every n-covector α, or ξ(α) = −α(τ_1,…,τ_n) for every α. Then ξ ≠ 0 and ‖ξ‖ ≤ 1 (operator norm on (Λ^n)*).",
+  "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 ∧ ‖ξ‖ ≤ 1",
+  "lean_name": "imsupp_unit_orientation_ne_zero_norm_le_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1"
+}

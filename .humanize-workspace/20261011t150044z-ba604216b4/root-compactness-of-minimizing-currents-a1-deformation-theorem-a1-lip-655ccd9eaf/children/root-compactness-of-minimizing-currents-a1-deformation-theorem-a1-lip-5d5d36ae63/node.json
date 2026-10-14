@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.oriented_piece_area-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1",
+  "depth": 6,
+  "title": "Area formulas for an integer-weighted oriented Lipschitz piece (supplied step 8)",
+  "statement": "Let N, n ∈ ℕ, G : ℝⁿ → ℝ^N and A ⊆ ℝⁿ Borel, such that G is differentiable at every u ∈ A, DG(u) := fderiv ℝ G u is injective for every u ∈ A, and G is injective on A. Let θ : ℝ^N → ℕ, ξ : ℝ^N → Λ_n(ℝ^N) (MultiVector N n) and s : ℝⁿ → ℤ with s(u) ∈ {1, −1} for every u (no measurability assumed). Write e_a := EuclideanSpace.single a 1, v(u) := (DG(u)e_a)_{a<n}, J(u) := √det(⟨DG(u)e_a, DG(u)e_b⟩)_{a,b}, Hⁿ := μHE[n] on ℝ^N and λ := volume on ℝⁿ, and assume J(u)·ξ(G(u))(α) = s(u)·α(v(u)) for λ⌞A-a.e. u and every n-covector α. Put w(u) := θ(G(u))·s(u) ∈ ℤ. Then (i) ∫_A ofReal(|w(u)|·J(u)) dλ(u) = ∫_{G(A)} θ dHⁿ in [0, ∞]; and (ii) for every n-form ω : ℝ^N → Λⁿ(ℝ^N) (DifferentialForm (Euclid N) n; no regularity required), ∫_A w(u)·ω(G(u))(v(u)) dλ(u) = ∫_{G(A)} θ(x)·ξ(x)(ω(x)) dHⁿ(x), as Bochner integrals (no integrability assumed).",
+  "lean_statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (θ : Euclid N → ℕ) (ξ : Euclid N → MultiVector N n) (s : Euclid n → ℤ), MeasurableSet A → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ u ∈ A, Injective (fderiv ℝ G u)) → InjOn G A → (∀ u, s u = 1 ∨ s u = -1) → (∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid N) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * ξ (G u) α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))) → ∫⁻ u in A, ENNReal.ofReal (|(((θ (G u) : ℤ) * s u : ℤ) : ℝ)| * Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1))))) = ∫⁻ x in G '' A, (θ x : ℝ≥0∞) ∂μHE[n] ∧ ∀ ω : DifferentialForm (Euclid N) n, ∫ u in A, (((θ (G u) : ℤ) * s u : ℤ) : ℝ) * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ x in G '' A, (θ x : ℝ) * ξ x (ω x) ∂μHE[n]",
+  "lean_name": "cmcdt_lpi_pr_oriented_piece_area",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-5d5d36ae63-a1"
+}
