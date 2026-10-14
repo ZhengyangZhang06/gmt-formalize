@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "60ba12545771df2a8e4870e142ef5cdc4e2da965163fbeace4f7dea80531cba8",
+  "git_delta": {
+    "base_commit": "47ac6b81a530c743fea838100d15af53475f0fb4",
+    "candidate_commit": "2afb21a22f974e15f208fae4f0c9e5f1e910e76f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "bb80826baca047aa4926b8583ea6928756164fcad74db9118c4d4d07677b5d8f",
+    "source_sha256": "4a01491387b23a0a7fdd1ced6989275b70f5959ac6926b358cfd1b8df9c0df16",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_action_starProjection_eq",
+      "statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
