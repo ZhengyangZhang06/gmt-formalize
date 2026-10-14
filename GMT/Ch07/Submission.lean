@@ -1402,6 +1402,28 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon Ch. 6, 2.11–2.12**: if `Y = τ(M, θ, ξ)` in `ℝᴾ` and `F ⊇ M` is closed, then
+`spt Y ⊆ F`.  The open set `ℝᴾ ∖ F` misses `M`, so `μ_R(ℝᴾ ∖ F) = ∫_{(ℝᴾ ∖ F) ∩ M} θ dHⁿ = 0`;
+an open `μ_R`-null set misses `spt μ_R`, and `spt Y = spt μ_R`. -/
+theorem Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset : ∀ (P n : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents Y → IsClosed F → R.carrier ⊆ F → Y.support ⊆ F := by
+  intro P n Y R F hR hF hMF
+  have hG : MeasurableSet Fᶜ := hF.isOpen_compl.measurableSet
+  -- Step 1: `μ_R(ℝᴾ ∖ F) = ∫_{(ℝᴾ ∖ F) ∩ M} θ dHⁿ = 0`, because `(ℝᴾ ∖ F) ∩ M = ∅`
+  have h0 : R.measure Fᶜ = 0 := by
+    rw [IMRep.measure, withDensity_apply _ hG, Measure.restrict_restrict hG,
+      (disjoint_compl_left_iff_subset.mpr hMF).inter_eq, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- Step 2: the open null set `ℝᴾ ∖ F` misses `spt μ_R`
+  have hsupp : Fᶜ ⊆ R.measure.supportᶜ :=
+    Measure.subset_compl_support_of_isOpen hF.isOpen_compl h0
+  -- Step 3: `spt Y = ℝᴾ ∩ spt μ_R`
+  have hY : Y.support = univ ∩ R.measure.support :=
+    (Submission.dor_imrep_massOn_eq_measure_and_support P n univ Y R isOpen_univ hR).2
+  intro x hx
+  rw [hY] at hx
+  by_contra hxF
+  exact hsupp hxF hx.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
