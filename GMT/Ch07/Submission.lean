@@ -2252,6 +2252,105 @@ theorem Submission.cmc_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Euclid P)) 
       (fun t => ((A t).boundary - B t).massOn W) a b hf.continuous.measurable hW.measurableSet
       fun t _ => hpt W t
 
+/-- **Simon Ch. 6, proof of 8.2, (2)–(4)**, with the lower density in place of `Θ^{*n}` and the
+in-range isoperimetric filling (Isor): small fillings of sphere slices at points of small lower
+density, for `d + 1 < P`.  For `n = d + 1` fix `a > 0` (`a = 1/4` if `n = 1`; for `n = m + 2`,
+`cbrldlf_exists_filling_constant` for the constant `c` of (Isor) at `(P, m)`, in range since
+`m + 1 = d < P`) and put `η₀ = aⁿ/ωₙ`.  A scale `s ∈ (0, δ)` with `μ(B_s(x₁)) < (as)ⁿ`
+(`cbrldlf_exists_small_scale_of_lower_density`) and the null set of
+`cbrld_sphere_slice_isIntegerMultiplicity` give a good radius `ρ ∈ (0, s)`
+(`cbrld_exists_good_slice_radius`): `A = C⌞B_ρ(x₁)` has an integer multiplicity boundary `Z = ∂A`
+with `spt Z ⊆ ∂B_ρ(x₁)` and `M(Z) ≤ 2naF^{(n−1)/n}`, `F = μ(B_ρ(x₁))`.  If `n = 1`, then
+`M(Z) ≤ 1/2`, so `Z = 0` (`cbrld_im_degree_zero_eq_zero_of_mass_lt_one`) and `S = 0`; if `n ≥ 2`,
+`S` is the filling of `Z` given by (Isor), with `M(S) ≤ F/2` and `spt S` within `3√P·s` of
+`∂B_ρ(x₁)`. -/
+theorem Submission.dtc_bc_tc_cl_ld_exists_small_filling : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d + 1 < P → ∃ η₀ : ℝ, 0 < η₀ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)), C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ x₁ : Euclid P, liminf (fun r : ℝ => μ (ball x₁ r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) < ENNReal.ofReal η₀ → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ μ (sphere x₁ ρ) = 0 ∧ ∃ (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in ball x₁ ρ, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ S.boundary = A.boundary ∧ S.mass ≤ ENNReal.ofReal (1 / 2) * μ (ball x₁ ρ) ∧ S.support ⊆ closedBall x₁ ((1 + 3 * Real.sqrt P) * δ) := by
+  intro hSL hMR hISO P d hdP
+  -- Steps 1, 4 and 5: the choice of `a` and the filling of the sphere slice
+  suffices H : ∃ a : ℝ, 0 < a ∧ ∀ (x₁ : Euclid P) (δ s ρ F : ℝ)
+      (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), 0 < s → ρ < s → s < δ → 0 ≤ F →
+      F ≤ (a * s) ^ (d + 1) → IsIntegerMultiplicity A.boundary →
+      A.boundary.support ⊆ sphere x₁ ρ →
+      A.boundary.mass ≤ ENNReal.ofReal (2 * ((d + 1 : ℕ) : ℝ) * a *
+        F ^ ((((d + 1 : ℕ) : ℝ) - 1) / ((d + 1 : ℕ) : ℝ))) →
+      ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), S.boundary = A.boundary ∧
+        S.mass ≤ ENNReal.ofReal (F / 2) ∧ S.support ⊆ closedBall x₁ ((1 + 3 * Real.sqrt P) * δ) by
+    obtain ⟨a, ha, H⟩ := H
+    -- Step 0: `ωₙ > 0`; Step 1: `η₀ = aⁿ/ωₙ`
+    obtain ⟨hw, hsmall⟩ := Submission.cbrldlf_exists_small_scale_of_lower_density (d + 1)
+    refine ⟨a ^ (d + 1) / (unitBallVolume (d + 1)).toReal, div_pos (pow_pos ha _) hw, ?_⟩
+    intro C μ ξ hCb hμ hξm hξb hC hISP x₁ hlim δ hδ
+    -- Step 2: a scale `s ∈ (0, δ)` with `μ(B_s(x₁)) < η₀ωₙsⁿ = (as)ⁿ`
+    obtain ⟨s, hs, hsδ, hμs⟩ := hsmall P μ x₁ _ δ hδ hlim
+    rw [div_mul_cancel₀ _ hw.ne', ← mul_pow] at hμs
+    -- Step 3: a good radius `ρ ∈ (0, s)` off the null set of the slices, and `A = C⌞B_ρ(x₁)`
+    obtain ⟨N, hN, hslice⟩ :=
+      Submission.cbrld_sphere_slice_isIntegerMultiplicity hSL P d C μ ξ x₁ hCb hμ hξm hξb hC hISP
+    obtain ⟨ρ, hρ, hρs, hρN, hsph, hlimρ⟩ :=
+      Submission.cbrld_exists_good_slice_radius P (d + 1) μ x₁ a s N hμ (by omega) ha hs hμs hN
+    obtain ⟨A, hA, hAim, hAspt, hAmass⟩ := hslice ρ hρ hρN
+    -- `F = μ(B_ρ(x₁)) ≤ μ(B_s(x₁)) < (as)ⁿ`
+    have hμρ : μ (ball x₁ ρ) ≤ μ (ball x₁ s) := measure_mono (ball_subset_ball hρs.le)
+    have hμρ_ne : μ (ball x₁ ρ) ≠ ∞ := (hμρ.trans_lt (hμs.trans ENNReal.ofReal_lt_top)).ne
+    have hF : (μ (ball x₁ ρ)).toReal ≤ (a * s) ^ (d + 1) :=
+      ENNReal.toReal_le_of_le_ofReal (by positivity) (hμρ.trans hμs.le)
+    obtain ⟨S, hSb, hSmass, hSspt⟩ := H x₁ δ s ρ (μ (ball x₁ ρ)).toReal A hs hρs hsδ
+      ENNReal.toReal_nonneg hF hAim hAspt (hAmass.trans hlimρ)
+    -- Step 6
+    refine ⟨ρ, hρ, hρs.trans hsδ, hsph, A, S, hA, hSb, ?_, hSspt⟩
+    calc S.mass ≤ ENNReal.ofReal ((μ (ball x₁ ρ)).toReal / 2) := hSmass
+      _ = ENNReal.ofReal (1 / 2) * μ (ball x₁ ρ) := by
+        rw [show (μ (ball x₁ ρ)).toReal / 2 = 1 / 2 * (μ (ball x₁ ρ)).toReal by ring,
+          ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 1 / 2), ENNReal.ofReal_toReal hμρ_ne]
+  cases d with
+  | zero =>
+    -- Step 4 (`n = 1`, `a = 1/4`): `M(∂A) ≤ 2a = 1/2 < 1`, so `∂A = 0` and `S = 0`
+    refine ⟨1 / 4, by norm_num, fun x₁ δ s ρ F A _ _ _ _ _ hAim _ hAmass => ?_⟩
+    have hZ : A.boundary = 0 := by
+      refine Submission.cbrld_im_degree_zero_eq_zero_of_mass_lt_one hMR P _ hAim
+        (hAmass.trans_lt ?_)
+      rw [ENNReal.ofReal_lt_one]
+      norm_num
+    refine ⟨0, ?_, ?_, ?_⟩
+    · rw [hZ]
+      exact GeometricCurrentOn.ext fun ω => rfl
+    · -- every value of the zero current is `0`
+      refine sSup_le ?_
+      rintro _ ⟨ω, -, rfl⟩
+      simp
+    · -- the zero current vanishes on every ball `B₁(y)`
+      intro y hy
+      exfalso
+      apply hy.2
+      exact Set.mem_sUnion_of_mem (mem_ball_self one_pos) ⟨isOpen_ball,
+        (isCompact_closedBall y 1).of_isClosed_subset isClosed_closure
+          closure_ball_subset_closedBall, subset_univ _, fun ω _ => rfl⟩
+  | succ m =>
+    -- Step 5 (`n = m + 2`): `S` is the filling of `Z = ∂A` given by (Isor) at `(P, m)`,
+    -- in range since `m + 1 < m + 2 < P`
+    obtain ⟨c, hc, hiso⟩ := hISO P m (by omega)
+    obtain ⟨a, ha, hconst⟩ := Submission.cbrldlf_exists_filling_constant m c hc
+    refine ⟨a, ha, fun x₁ δ s ρ F A hs hρs hsδ hF0 hF hAim hAspt hAmass => ?_⟩
+    -- `∂Z = ∂∂A = 0`, `spt Z` is a closed subset of the sphere `∂B_ρ(x₁)` and `M(Z) < ∞`
+    have hZb : A.boundary.boundary = 0 := GeometricCurrentOn.boundary_boundary A
+    have hZcpt : IsCompact A.boundary.support := by
+      refine (isCompact_sphere x₁ ρ).of_isClosed_subset ?_ hAspt
+      rw [GeometricCurrentOn.support, ← Set.compl_eq_univ_sdiff]
+      exact A.boundary.isOpen_zeroRegion.isClosed_compl
+    obtain ⟨Y, -, hYb, hYmass, hYspt⟩ :=
+      hiso A.boundary hAim hZcpt hZb (hAmass.trans_lt ENNReal.ofReal_lt_top)
+    -- (a) `M(Y) ≤ F/2` and (b) `(2cM(Z))^{1/(m+1)} ≤ s`
+    have hM := ENNReal.toReal_le_of_le_ofReal (by positivity) hAmass
+    obtain ⟨hmass, hrad⟩ := hconst s F _ hs.le hF0 hF ENNReal.toReal_nonneg hM
+    refine ⟨Y, hYb, hYmass.trans (ENNReal.ofReal_le_ofReal hmass), fun y hy => ?_⟩
+    -- `y` lies within `3√P·s` of a point `z` of `spt Z ⊆ ∂B_ρ(x₁)`, and `ρ < s < δ`
+    obtain ⟨z, hz, hyz⟩ := Metric.mem_thickening_iff.mp (hYspt hy)
+    have hzx : dist z x₁ = ρ := hAspt hz
+    have h3 := mul_le_mul_of_nonneg_left (hrad.trans hsδ.le)
+      (by positivity : (0 : ℝ) ≤ 3 * Real.sqrt P)
+    rw [Metric.mem_closedBall]
+    linarith [dist_triangle y z x₁]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
