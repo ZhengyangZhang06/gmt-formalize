@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Regular part of a Lipschitz parametrization (steps 1–2 of the proof that the Lipschitz
+push-forward of an integer multiplicity current is integer multiplicity, Simon 6.3.6–3.9).  Let
+`H : ℝⁿ → ℝᴾ` be `L`-Lipschitz, `A ⊆ ℝⁿ` Borel and `g : ℝⁿ → ℤ` measurable and integrable on `A`.
+Then `A⁺ = {u ∈ A : DH(u) exists and is injective, g(u) ≠ 0}` is Borel, and for every test form
+`ω` the function `Ψ_ω(u) = g(u) ω(H(u))(DH(u)e₁, …, DH(u)eₙ)` is integrable on `A` with
+`∫_A Ψ_ω = ∫_{A⁺} Ψ_ω`.  Injective linear maps form an open set, so `A⁺` is Borel;
+`|Ψ_ω| ≤ (sup ‖ω‖) Lⁿ |g|`; and by Rademacher `Ψ_ω = 0` a.e. on `A \ A⁺`: where `DH(u)` is not
+injective, `(DH(u)eₐ)ₐ` is linearly dependent and the alternating map `ω(H(u))` vanishes on it. -/
+theorem Submission.cmcdt_lpi_pc_regular_part_reduction : ∀ (P n : ℕ) (L : NNReal) (H : Euclid n → Euclid P) (A : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → MeasurableSet {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0} ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, IntegrableOn (fun u => (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) A ∧ ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) = ∫ u in {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0}, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+  intro P n L H A g hH hA hg hgi
+  -- `eₐ = EuclideanSpace.single a 1` spans `ℝⁿ`
+  have hspan :
+      Submodule.span ℝ (range fun a : Fin n => (EuclideanSpace.single a 1 : Euclid n)) = ⊤ := by
+    have he : (fun a : Fin n => (EuclideanSpace.single a 1 : Euclid n)) =
+        ⇑(EuclideanSpace.basisFun (Fin n) ℝ).toBasis := by
+      ext1 a
+      simp [EuclideanSpace.basisFun_apply]
+    rw [he]
+    exact (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq
+  -- step 1: `T` is injective if `(T eₐ)ₐ` is linearly independent
+  have hinj : ∀ T : Euclid n →L[ℝ] Euclid P,
+      LinearIndependent ℝ (fun a => T (EuclideanSpace.single a 1)) → Injective T := fun T h =>
+    LinearMap.injective_of_linearIndependent (f := T.toLinearMap) hspan h
+  -- step 2: injective maps form an open set, so `A⁺` is Borel
+  have hS : MeasurableSet
+      {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0} :=
+    hA.inter ((measurableSet_of_differentiableAt ℝ H).inter
+      ((measurable_fderiv ℝ H ContinuousLinearMap.isOpen_injective.measurableSet).inter
+        (hg (measurableSet_singleton 0).compl)))
+  refine ⟨hS, fun ω => ?_⟩
+  obtain ⟨⟨hsmooth, hcpt⟩, -⟩ := ω.2
+  have hwc : Continuous (ω : DifferentialForm (Euclid P) n) := hsmooth.continuous
+  obtain ⟨C, hC⟩ := hwc.bounded_above_of_compact_support hcpt
+  -- step 3: `u ↦ ω(H(u))(DH(u)e₁, …, DH(u)eₙ)` is Borel
+  have hF : StronglyMeasurable fun u => (ω : DifferentialForm (Euclid P) n) (H u)
+      (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+    have h1 : StronglyMeasurable fun u => (ω : DifferentialForm (Euclid P) n) (H u) :=
+      (hwc.comp hH.continuous).stronglyMeasurable
+    have h2 : StronglyMeasurable fun u => fun a : Fin n =>
+        fderiv ℝ H u (EuclideanSpace.single a 1) :=
+      (Measurable.of_eval fun a => measurable_fderiv_apply_const ℝ H _).stronglyMeasurable
+    exact continuous_eval.comp_stronglyMeasurable (h1.prodMk h2)
+  -- step 4: `|Ψ_ω| ≤ C Lⁿ |g|`, as `‖ω‖ ≤ C` and `‖DH‖ ≤ L`
+  have hbound : ∀ u, ‖(ω : DifferentialForm (Euclid P) n) (H u)
+      (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))‖ ≤ C * ∏ _a : Fin n, (L : ℝ) := by
+    intro u
+    refine ((ω : DifferentialForm (Euclid P) n) (H u)).le_mul_prod_of_opNorm_le_of_le (hC (H u))
+      fun a => ?_
+    calc ‖fderiv ℝ H u (EuclideanSpace.single a 1)‖
+        ≤ ‖fderiv ℝ H u‖ * ‖(EuclideanSpace.single a 1 : Euclid n)‖ := (fderiv ℝ H u).le_opNorm _
+      _ ≤ L * 1 := by
+        gcongr
+        · exact norm_fderiv_le_of_lipschitz ℝ hH
+        · simp
+      _ = L := mul_one _
+  refine ⟨hgi.mul_bdd hF.aestronglyMeasurable (Eventually.of_forall hbound), ?_⟩
+  -- steps 5–6: by Rademacher, `Ψ_ω = 0` a.e. on `A \ A⁺`
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero hA.nullMeasurableSet (fun u hu => hu.1) ?_
+  filter_upwards [hH.ae_differentiableAt (μ := volume)] with u hdiff hu
+  by_cases hgu : g u = 0
+  · simp [hgu]
+  · have hni : ¬LinearIndependent ℝ fun a => fderiv ℝ H u (EuclideanSpace.single a 1) :=
+      fun h => hu.2 ⟨hu.1, hdiff, hinj _ h, hgu⟩
+    rw [← ContinuousAlternatingMap.coe_toAlternatingMap,
+      AlternatingMap.map_linearDependent _ _ hni, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
