@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "464bf6a4a6eae02fee9bee8eb57b29ca50352e5da63db4654f8e6f2a4d14999a",
+  "git_delta": {
+    "base_commit": "8d6a8ea936d259286ac478f75fde5c2e9a4d2e64",
+    "candidate_commit": "6dfd297f92a15962178618a3e35f959c29d71be7",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "36595e3cfe80e8e20a292bdfc199ed7e7cea093863a83b1b78b794d034c0de65",
+    "source_sha256": "4f413c5c1bab26b907e05c9b4cb3c5381a2bcf7354009df1dcce5cede966a388",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_nonflat_usc",
+      "statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → closedBall (0 : Euclid P) 1 ⊆ Dset → (∀ k, ball (0 : Euclid P) 1 ⊆ Ds k) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ (((Ss k ∩ Ds k) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Ds k ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss k, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ (Ds k)ᶜ) ⊆ {x | ∃ z ∈ ((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ, dist x z < ε}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
