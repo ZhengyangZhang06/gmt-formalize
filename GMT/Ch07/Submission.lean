@@ -1102,6 +1102,46 @@ theorem Submission.ptd_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Eucli
     exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
       hJmeas hJnonneg harea hr f.continuous).symm
 
+/-- Orientation along a bi-Lipschitz piece: assume the locality (IMC a) of approximate tangent
+planes.  Let `M ⊆ ℝᴺ` be Borel with `Hⁿ(M ∩ K) < ∞` for compact `K`, and let `ξ` be
+`Hⁿ⌞M`-measurable and orient `TₓM` for `Hⁿ`-a.e. `x ∈ M` (Simon Ch. 6, 3.1).  If `G : ℝⁿ → ℝᴺ`
+is Lipschitz, `A ⊆ ℝⁿ` is Borel with `G(A) ⊆ M`, `m‖a − a'‖ ≤ ‖G a − G a'‖` on `A` (`m > 0`),
+and `DG(a)` exists and is injective for `a ∈ A`, then `ξ ∘ G` is `λ⌞A`-measurable and, for
+`λ`-a.e. `u ∈ A`, `ξ(G u)` orients `span{DG(u)e_a} = range DG(u)`: this plane is the approximate
+tangent plane of `G(A)` at `G u`, hence (by locality) of `M`, and approximate tangent planes are
+unique (Ch. 3, 1.5(1)). -/
+theorem Submission.cmcdt_lpi_pr_piece_orientation_ae : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (N n : ℕ) (M : Set (Euclid N)) (ξ : Euclid N → MultiVector N n) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), MeasurableSet M → (∀ K : Set (Euclid N), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → AEStronglyMeasurable ξ (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid N), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ξ x) Q) → LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ M → AEStronglyMeasurable (fun u => ξ (G u)) (volume.restrict A) ∧ ∀ᵐ u ∂(volume.restrict A), IsUnitOrientationOf (ξ (G u)) (Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)))) := by
+  intro hIMCa N n M ξ G A L m hM hloc hξ hor hL hA hm hlow hdiff hGAsub
+  obtain ⟨hGAm, hpull⟩ :=
+    Submission.ptd_piece_image_measurable_ae_pullback N n G A L m hL hA hm hlow
+  -- (a) the piece has tangent plane `range DG(u)`
+  have htan := Submission.ptd_piece_image_approxTangent_ae N n G A L m hL hA hm hlow hdiff
+  -- (b) locality of approximate tangent planes, pulled back
+  have hlocal := hIMCa N n univ (G '' A) M isOpen_univ hGAm hM hGAsub (subset_univ _)
+    (fun K hK _ => hloc K hK)
+  have hlocal' := hpull _ hlocal
+  -- (c) the orientation property, pulled back
+  have hor' := hpull _ (ae_restrict_of_ae_restrict_of_subset hGAsub hor)
+  -- (d) a strongly measurable version of `ξ`, pulled back
+  have hξ' := hpull _ (ae_restrict_of_ae_restrict_of_subset hGAsub hξ.ae_eq_mk)
+  refine ⟨⟨fun u => hξ.mk ξ (G u),
+    hξ.stronglyMeasurable_mk.comp_measurable hL.continuous.measurable, ?_⟩, ?_⟩
+  · filter_upwards [hξ'] with u hu using hu
+  · filter_upwards [htan, hlocal', hor'] with u h1 h2 h3
+    obtain ⟨Q, hQ, hQor⟩ := h3
+    -- uniqueness of approximate tangent planes: `Q = range DG(u)`
+    have hQeq := hQ.unique ((h2 _).mp h1)
+    -- `range DG(u) = span{DG(u)e_a}`, the `e_a` spanning `ℝⁿ`
+    have hrange : LinearMap.range (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid N) =
+        Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))) := by
+      rw [LinearMap.range_eq_map, ← (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq,
+        Submodule.map_span, ← Set.range_comp]
+      congr 2
+      funext a
+      simp
+    rw [← hrange, ← hQeq]
+    exact hQor
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
