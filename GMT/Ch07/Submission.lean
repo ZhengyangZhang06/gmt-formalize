@@ -622,6 +622,39 @@ theorem Submission.idtp_cse_rc_angle_fderiv : ∀ (P : ℕ) (Q : Submodule ℝ (
   obtain ⟨hf, hDf⟩ := Submission.idtp_cse_rc_af_polar_angle_fderiv P a e x hx.ne'
   exact ⟨hf, fun v => by rw [hDf v, hnorm x]⟩
 
+/-- **Derivative of `ψ(f) · l(|·|) · ζ` in a direction orthogonal to the position vector** (step 8,
+formula (★), of the test function for the rotation argument in Simon 7.3).  If `x ≠ 0`,
+`⟨x, v⟩ = 0`, `f` and `ζ` are differentiable at `x`, `ψ` at `f(x)` and `l` at `|x|`, then
+`h(y) = ψ(f(y)) l(|y|) ζ(y)` has `Dh(x)v = ψ(f(x)) l(|x|) Dζ(x)v + ζ(x) l(|x|) ψ'(f(x)) Df(x)v`:
+the radial term drops.
+* `N = |·|` is differentiable at `x ≠ 0`; `D(N²)(x)` is `2|x| DN(x)` by the chain rule and
+  `2⟨x, ·⟩` directly, so `2|x| DN(x)v = 2⟨x, v⟩ = 0` and `DN(x)v = 0`.
+* The chain and product rules for `((ψ ∘ f) · (l ∘ N)) · ζ` give
+  `Dh(x)v = ψ(f(x)) l(|x|) Dζ(x)v + ζ(x) (ψ(f(x)) l'(|x|) DN(x)v + l(|x|) ψ'(f(x)) Df(x)v)`. -/
+theorem Submission.idtp_cse_rc_tf_product_fderiv : ∀ (P : ℕ) (f ζ : Euclid P → ℝ) (ψ l : ℝ → ℝ) (x v : Euclid P), x ≠ 0 → inner ℝ x v = 0 → DifferentiableAt ℝ f x → DifferentiableAt ℝ ψ (f x) → DifferentiableAt ℝ l ‖x‖ → DifferentiableAt ℝ ζ x → fderiv ℝ (fun y : Euclid P => ψ (f y) * l ‖y‖ * ζ y) x v = ψ (f x) * l ‖x‖ * fderiv ℝ ζ x v + ζ x * l ‖x‖ * (deriv ψ (f x) * fderiv ℝ f x v) := by
+  intro P f ζ ψ l x v hx hxv hf hψ hl hζ
+  -- Step 1: the norm `N = ‖·‖` is differentiable at `x ≠ 0`
+  have hN : HasFDerivAt (fun y : Euclid P => ‖y‖) (fderiv ℝ (fun y : Euclid P => ‖y‖) x) x :=
+    ((contDiffAt_norm ℝ (n := 1) hx).differentiableAt one_ne_zero).hasFDerivAt
+  -- Step 2: `D(N²)(x) = 2‖x‖ DN(x)` (chain rule) and `D(‖·‖²)(x) = 2⟪x, ·⟫` agree; at `v` this
+  -- reads `2‖x‖ DN(x) v = 2⟪x, v⟫ = 0`, so `DN(x) v = 0` as `‖x‖ ≠ 0`
+  have hNv : fderiv ℝ (fun y : Euclid P => ‖y‖) x v = 0 := by
+    have h2 := DFunLike.congr_fun ((hN.pow 2).unique (hasStrictFDerivAt_norm_sq x).hasFDerivAt) v
+    simp only [smul_apply, smul_eq_mul, innerSL_apply_apply, hxv, smul_zero, nsmul_eq_mul,
+      Nat.cast_ofNat, Nat.reduceSub, pow_one] at h2
+    exact (mul_eq_zero.1 h2).resolve_left (mul_ne_zero two_ne_zero (norm_ne_zero_iff.2 hx))
+  -- Step 3: chain rules for `F = ψ ∘ f` and `L = l ∘ N`
+  have hF : HasFDerivAt (fun y : Euclid P => ψ (f y)) (deriv ψ (f x) • fderiv ℝ f x) x :=
+    hψ.hasDerivAt.comp_hasFDerivAt x hf.hasFDerivAt
+  have hL : HasFDerivAt (fun y : Euclid P => l ‖y‖)
+      (deriv l ‖x‖ • fderiv ℝ (fun y : Euclid P => ‖y‖) x) x :=
+    hl.hasDerivAt.comp_hasFDerivAt x hN
+  -- Step 4: the product rule, twice, for `h = (F ⬝ L) ⬝ ζ`
+  rw [((hF.fun_mul hL).fun_mul hζ.hasFDerivAt).fderiv]
+  -- Step 5: evaluate at `v`, drop the radial term `DL(x) v = l'(‖x‖) DN(x) v = 0`, rearrange
+  simp only [add_apply, smul_apply, smul_eq_mul, hNv]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
