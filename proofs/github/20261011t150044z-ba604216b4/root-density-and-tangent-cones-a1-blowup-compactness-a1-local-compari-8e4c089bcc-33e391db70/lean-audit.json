@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "41d343f54843395b6652af8f423980024fa0d3004861bf85756feafc9c6eb739",
+  "git_delta": {
+    "base_commit": "3a3e51e4f7ebbeb046dc2e91a3a17d3af493ddd2",
+    "candidate_commit": "45016c9e4c19e75797c3f0d4697262c40c79ddfc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c041f0b4ec7a13bfb2abb4db710a8c48a97669931ed538b65148779794337eb4",
+    "source_sha256": "c866b66662d6b2f57234faed627126215a1063adebb0944de7326920199beb7e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_boundary_im",
+      "statement": "∀ (P m : ℕ) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)), m + 1 < P → IsIntegerMultiplicity R → IsCompact R.support → R.mass < ∞ → R.boundary.mass < ∞ → IsIntegerMultiplicity R.boundary",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
