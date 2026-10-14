@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+  "parent_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+  "depth": 3,
+  "title": "An approximate tangent plane forces unit Hⁿ-density on closed balls",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, x ∈ ℝ^P, Q a linear subspace of ℝ^P, and s > 0 with H^n(M ∩ B̄_s(x)) < ∞, where H^n = μHE[n]. Suppose Q is an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4, as formalized by HasApproximateTangentSpaceAt n M x Q: dim Q = n, and for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(M)} f dH^n → ∫_Q f dH^n as r ↓ 0. Here η_{x,r}(y) = r^{-1}(y − x) (blowUpMap), and the integrals are Bochner integrals for H^n restricted to the indicated sets. Then H^n(M ∩ B̄_ρ(x))/(ω_nρ^n) → 1 in [0, ∞] as ρ ↓ 0. Here B̄_ρ(x) is the closed ball, ω_n = unitBallVolume n is the Lebesgue measure of the unit ball of ℝ^n, and the quotient is taken in [0, ∞] with ρ^n entered via ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → μHE[n] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → Tendsto (fun ρ : ℝ => μHE[n] (M ∩ closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "rsd_tendsto_closedBall_density_of_approxTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1-a1"
+}

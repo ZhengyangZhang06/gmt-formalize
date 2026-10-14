@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_growth-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "An approximate tangent plane forces Hⁿ(D ∩ B̄_ρ(x)) = O(ρⁿ) (Simon Ch. 3, Remark 1.5(3))",
+  "statement": "Let P, n ∈ ℕ, let D ⊆ ℝ^P be a Borel set, x ∈ ℝ^P, Q a linear subspace of ℝ^P and r₀ > 0 with Hⁿ(D ∩ B̄_{r₀}(x)) < ∞, where Hⁿ = μHE[n] (Mathlib's normalized n-dimensional Hausdorff measure) and B̄_r(z) is the closed ball. Suppose D has approximate tangent space Q at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n D x Q: dim Q = n and, for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,ρ}(D)} f dHⁿ → ∫_Q f dHⁿ as ρ ↓ 0, where η_{x,ρ}(y) = ρ⁻¹(y − x) and the integrals are Bochner integrals). Then there are C ∈ ℝ and r₁ > 0 such that Hⁿ(D ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(Cρⁿ) for every ρ with 0 < ρ < r₁.",
+  "lean_statement": "∀ (P n : ℕ) (D : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r₀ : ℝ), MeasurableSet D → 0 < r₀ → μHE[n] (D ∩ closedBall x r₀) ≠ ∞ → HasApproximateTangentSpaceAt n D x Q → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (D ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+  "lean_name": "rsdic_measure_closedBall_le_of_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-growth-a1-a1"
+}
