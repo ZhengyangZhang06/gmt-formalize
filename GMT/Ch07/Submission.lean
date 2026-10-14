@@ -890,6 +890,49 @@ theorem Submission.cmcdtfrsd_skeleton_point_on_open_face : ∀ (P m : ℕ) (x : 
         exact Finset.mem_coe.mpr (Finset.mem_compl.mpr hi)
       rw [Fintype.sum_eq_single j₀ fun j hj => ite_eq_right fun h => hj (ι.injective h).symm,
         ite_eq_left rfl, Int.floor_add_fract]
+/-- **Only finitely many unit lattice faces meet a compact set** (Simon Ch. 6, proof of the
+deformation theorem 5.1, after (33): the sum `P = Σ_{F ∈ 𝓛ₙ} β_F [[F]]` runs over the finitely many
+faces meeting the compact `spt Q`).  Let `p = (ι, b)`, `ι : Fin k → Fin P` arbitrary, `b ∈ ℤᴾ`,
+and `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)} ∈ K` for some `y ∈ [0,1]ᵏ`.  Then `Φ_p(y)ᵢ = bᵢ + Sᵢ` with
+`Sᵢ = Σⱼ [ι(j) = i] yⱼ ∈ [0, k]`, and `|Φ_p(y)ᵢ| ≤ ‖Φ_p(y)‖ ≤ ρ` on the bounded `K`, so
+`−⌈ρ⌉ − k ≤ bᵢ ≤ ⌈ρ⌉`.  Hence `p` lies in the finite set `(Fin k → Fin P) × [−N, N]ᴾ`,
+`N = ⌈ρ⌉ + k`. -/
+theorem Submission.cmcdtfrsd_faces_meeting_compact_finite : ∀ (P k : ℕ) (K : Set (Euclid P)), IsCompact K → {p : (Fin k → Fin P) × (Fin P → ℤ) | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ K}.Finite := by
+  intro P k K hK
+  -- step 1: `K` is bounded, `‖x‖ ≤ ρ` on `K`
+  obtain ⟨ρ, hρ⟩ := hK.isBounded.exists_norm_le
+  -- step 4: the set lies in `(Fin k → Fin P) × [−N, N]ᴾ`, `N = ⌈ρ⌉ + k`
+  refine (Set.finite_univ.prod (Set.Finite.pi fun _ : Fin P =>
+    Set.finite_Icc (-(⌈ρ⌉ + k)) (⌈ρ⌉ + k))).subset ?_
+  rintro p ⟨y, hy, hx⟩
+  refine ⟨Set.mem_univ p.1, Set.mem_univ_pi.mpr fun i => ?_⟩
+  -- the coordinate formula `Φ(y)ᵢ = bᵢ + Sᵢ`, `Sᵢ = Σⱼ [ι(j) = i] yⱼ`
+  have hcoord : (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) i =
+      (p.2 i : ℝ) + ∑ j, if p.1 j = i then y j else 0 := by
+    rw [PiLp.add_apply, PiLp.toLp_apply, WithLp.ofLp_sum, Finset.sum_apply]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    exact if_congr eq_comm rfl rfl
+  -- step 2: `0 ≤ Sᵢ ≤ k`
+  have hS₀ : 0 ≤ ∑ j, if p.1 j = i then y j else 0 :=
+    Finset.sum_nonneg fun j _ => by split_ifs; exacts [(hy j).1, le_rfl]
+  have hS₁ : ∑ j, (if p.1 j = i then y j else 0) ≤ k :=
+    calc ∑ j, (if p.1 j = i then y j else 0) ≤ ∑ _j : Fin k, (1 : ℝ) :=
+          Finset.sum_le_sum fun j _ => by split_ifs; exacts [(hy j).2, zero_le_one]
+      _ = k := by simp
+  -- step 3: `|bᵢ + Sᵢ| = |Φ(y)ᵢ| ≤ ‖Φ(y)‖ ≤ ρ ≤ ⌈ρ⌉`, so `−⌈ρ⌉ − k ≤ bᵢ ≤ ⌈ρ⌉`
+  have hxi : ‖(WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) i‖ ≤ ρ :=
+    le_trans (PiLp.norm_apply_le _ i) (hρ _ hx)
+  rw [hcoord, Real.norm_eq_abs, abs_le] at hxi
+  have hρc := Int.le_ceil ρ
+  constructor
+  · have h : ((-(⌈ρ⌉ + k) : ℤ) : ℝ) ≤ p.2 i := by push_cast; linarith [hxi.1]
+    exact_mod_cast h
+  · have h : (p.2 i : ℝ) ≤ ((⌈ρ⌉ + k : ℤ) : ℝ) := by push_cast; linarith [hxi.2]
+    exact_mod_cast h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
