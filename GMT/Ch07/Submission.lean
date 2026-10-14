@@ -595,6 +595,23 @@ theorem Submission.cmcdt_cbm_im_median_abs_le : ∀ (X : Type) [MeasurableSpace 
       rw [abs_of_neg hβ, abs_of_neg (hx.trans_lt hβ)]
       exact neg_le_neg hx
   linarith [mul_le_mul_of_nonneg_left hhalf (abs_nonneg β)]
+/-- **Simon, proof of Ch. 6, 5.1, (31) and (35)** (integer median on the unit cube): an
+integer-valued `u` integrable on `Q₁ = (0, 1)ⁿ` has an integer median `β`, which minimizes
+`c ↦ ∫_{Q₁} |u − c|` and satisfies `|β| ≤ 2 ∫_{Q₁} |u|`.  As `vol(Q₁) = 1`, `μ = vol⌞Q₁` is a
+probability measure; `β` is an integer median of `u` for `μ`, and a median minimizes the mean
+absolute deviation and is bounded by twice the mean of `|u|`. -/
+theorem Submission.cmcdt_cbm_integer_median : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, (∀ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c|) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| := by
+  intro m u hint hu
+  -- `μ = vol⌞Q₁` is a probability measure, since `vol(Q₁) = 1`
+  have hμ : IsProbabilityMeasure
+      (volume.restrict {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) :=
+    ⟨by rw [Measure.restrict_apply_univ, Submission.cmcdt_cbm_im_cube_volume]⟩
+  -- an integer median `β` of `u` for `μ`
+  obtain ⟨β, hge, hle⟩ := Submission.cmcdt_cbm_im_integer_median_exists _ _ u hμ
+    hu.integrable.aemeasurable hint
+  -- `β` minimizes `c ↦ ∫_{Q₁} |u − c|` and `|β| ≤ 2 ∫_{Q₁} |u|`
+  exact ⟨β, Submission.cmcdt_cbm_im_median_minimizes _ _ u β hμ hu hge hle,
+    Submission.cmcdt_cbm_im_median_abs_le _ _ u β hμ hu hge hle⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
