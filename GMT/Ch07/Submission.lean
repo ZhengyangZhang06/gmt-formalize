@@ -1032,6 +1032,35 @@ theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Ty
       (ENNReal.half_pos (hη k).ne').ne'
   -- `E_k = C_k ∪ D_k` misses less than `η_k` of `A`
   have hE : ∀ k, μ (A \ (C k ∪ D k)) < η k := by
+    intro k
+    calc μ (A \ (C k ∪ D k))
+        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxO : g x ∈ O k
+          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
+          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
+      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
+      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
+      _ = η k := ENNReal.add_halves _
+  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
+  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
+  · exact ((hC 0).union (hD 0)).of_isClosed_subset
+      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
+  · exact (iInter_subset _ 0).trans
+      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
+  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
+      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
+      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
+      _ < ε := hηε
+  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
+  · rw [hO.continuousOn_iff]
+    rintro _ ⟨k, rfl⟩
+    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
+    ext x
+    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
+    rcases mem_iInter.mp hxK k with hxC | hxD'
+    · exact (hCA k hxC).2
+    · exact absurd hxD' hxD
 /-- **Flat Fubini in product coordinates** (step 3(a) of the chart co-area argument).  Put
 `S = Ω ∩ Θ⁻¹(Y')` and `H = 𝟙_S |det DΘ| f ∘ Θ`, where `Θ` is `C¹` and injective on the open set
 `Ω` and `Y' ⊆ Θ(Ω)` is Borel.  `S` is Borel (`Θ` is continuous on `Ω`) and `Θ(S) = Y'`, so the
@@ -1165,51 +1194,6 @@ theorem Submission.dtc_bc_lc_sl_eil_limit : ∀ (P : ℕ) (d : ℝ) (S : ℝ →
           lintegral_liminf_le hψ
       _ ≤ liminf (fun k => B + ε k) atTop := liminf_le_liminf (Eventually.of_forall hint)
       _ = B := by rw [(tendsto_const_nhds.add hε).liminf_eq, add_zero]
-/-- A uniform lower Lipschitz bound for an injective `C¹` immersion on a compact set (step 2,
-"Lower", of the `C¹`-tangent argument): if `U` is open, `K ⊆ U` is compact, `g` is `C¹` on `U`,
-injective on `K`, and `Dg(z)` is injective for every `z ∈ K`, then `m|a − b| ≤ |g(a) − g(b)|` on
-`K` for some `m > 0`.  Otherwise `|g(a_k) − g(b_k)| < (k + 1)⁻¹|a_k − b_k|` for some `a_k ≠ b_k`
-in `K`; along a subsequence `a_k → a`, `b_k → b` and the unit vectors `e_k ∥ a_k − b_k` converge
-to some `e`.  If `a ≠ b` then `g(a) = g(b)`; if `a = b` then strict differentiability of `g` at `a`
-gives `Dg(a)e = 0` with `|e| = 1`. -/
-theorem Submission.dtc_bc_lc_sl_c1t_lower_lipschitz : ∀ (P d : ℕ) (g : Euclid d → Euclid P) (U K : Set (Euclid d)), IsOpen U → IsCompact K → K ⊆ U → ContDiffOn ℝ 1 g U → InjOn g K → (∀ z ∈ K, Injective (fderiv ℝ g z)) → ∃ m : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖g a - g b‖ := by
-  intro P d g U K hU hK hKU hg hinj hDinj
-  by_contra hcon
-  push Not at hcon
-  -- for each `k` there are `a_k, b_k ∈ K` with `|g a_k - g b_k| < (k + 1)⁻¹ |a_k - b_k|`
-  choose a ha b hb hab using fun k : ℕ => hcon (1 / ((k : ℝ) + 1)) (by positivity)
-  -- so `a_k ≠ b_k`
-  have hpos : ∀ k, 0 < ‖a k - b k‖ := by
-    intro k
-    calc μ (A \ (C k ∪ D k))
-        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
-          refine measure_mono fun x hx => ?_
-          by_cases hxO : g x ∈ O k
-          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
-          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
-      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
-      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
-      _ = η k := ENNReal.add_halves _
-  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
-  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
-  · exact ((hC 0).union (hD 0)).of_isClosed_subset
-      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
-  · exact (iInter_subset _ 0).trans
-      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
-  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
-      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
-      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
-      _ < ε := hηε
-  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
-  · rw [hO.continuousOn_iff]
-    rintro _ ⟨k, rfl⟩
-    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
-    ext x
-    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
-    rcases mem_iInter.mp hxK k with hxC | hxD'
-    · exact (hCA k hxC).2
-    · exact absurd hxD' hxD
-
 /-- **Lusin's theorem** for `Lⁿ` with a closed set, `Lⁿ(B) = ∞` allowed (Simon Ch. 2, proof of
 1.5, step 2, glued as in the infinite-measure case of Simon 1.15(2)).  On the bounded Borel shells
 `S_j = {j ≤ ‖x‖ < j + 1}`, the compact form `dor_ims_lusin_measurable_continuousOn` gives compact
