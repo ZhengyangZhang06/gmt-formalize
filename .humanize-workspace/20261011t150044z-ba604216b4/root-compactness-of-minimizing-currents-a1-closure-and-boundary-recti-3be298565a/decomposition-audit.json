@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbrsl_|restrictDomain|boundaryMassOn|CompactlyContained|def IsIntegerMultiplicity",
+        "liminf_eq_iSup_iInf|limsup_eq_iInf_iSup|frequently_lt_of_liminf_lt|frequently_lt_of_lt_limsup|liminf_le_of_frequently_le",
+        "biSup_add_biSup_le|theorem ae_lt_top|theorem extraction_of_frequently_atTop",
+        "isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|sigmaFinite_of_locallyFinite|ae_all_iff",
+        "\\b(axiom|sorry|admit)\\b",
+        "rg -n '\"lean_name\": \"(cbrsl_isIntegerMultiplicity_of_local_liminf_bounds|cbrsl_slice_boundary_mass_bound|cbrsl_ae_liminf_lt_top)\"' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "lake env lean /tmp/slice-limit-independent-audit-kdbja_pl/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3be298565a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3be298565a/decomposition-v1.json"
+      ],
+      "conclusion": "The split appropriately isolates three obligations of the selected slice-limit theorem. The snapshot contract matches the workspace, and package revisions match their pins. CL, LOC, SL and MM match the corresponding frozen hypotheses or dependency conclusions. All names are bare, with no competing reservation found; dependency directions are acyclic. The one-line types pass lexical validation and contain no implementation-dependent aliases or matrix-instance hazards. Source inspection supports the restriction, boundary, liminf and measure arguments; no proof holes or added axioms were found in the inspected SimonGMT foundations. Fresh kernel verification was unavailable: lake was not found and the cited earlier temporary proof files were absent. Their claimed compilation results were not treated as independent evidence."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including CL(d), both LOC clauses and finite liminf bounds on every ball. The proof supplies bounded subsequences, restriction inequalities and boundary compatibility, applies CL(d) on each ball, establishes locally finite mass by lower semicontinuity, and globalizes using LOC. Ball-dependent subsequences suffice. No circular reliance or missing obligation remains."
+    },
+    {
+      "key": "slice_boundary_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves every representation and slicing hypothesis and asserts the stated bound for every open W and every t. The proof correctly handles degree zero, applies SL to the boundary in positive degree using its zero second-boundary representation, identifies the resulting currents by extensionality, and proves the negation-mass inequality. Its ENNReal liminf argument is valid, including infinite values and L = 0."
+    },
+    {
+      "key": "good_parameters",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact MM hypothesis and all additional hypotheses appear in the prose and type. Uniform ball bounds make each measurable majorant integrable and hence almost everywhere finite. The two countable intersections give the required quantifier order without assuming measurability of Z. Together with the slice bound, the parent's T1/T2 convergence argument supplies local_closure with every hypothesis, proving the selected parent statement."
+    }
+  ],
+  "required_changes": []
+}
