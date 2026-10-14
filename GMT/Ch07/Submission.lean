@@ -3761,6 +3761,359 @@ theorem Submission.cbr_ci_bl_blowup_scale : ∀ (P d : ℕ) (Γ Γ' : GeometricC
     simp only [hηinv x, ENNReal.toReal_ofReal (hθpos x hx).le, _root_.smul_apply]
   exact ⟨hP0, hP7, hP1, hP2, (hζ.comp_measurable hAmeas).aestronglyMeasurable, hP5, hP6, hP8⟩
 
+/-- **Blow-ups of a cycle at a good point subconverge to a constant-orientation cycle with the
+integer slice property** (Simon Ch. 6, proof of 8.2, (7)–(9); cf. (10)–(13) in the proof of 8.1;
+`ω_n = unitBallVolume n`, `n = d + 1`, `η_i = dilation a λ_i = blowUpMap a λ_i`).  Let `Γ'_i` be
+a dilation of `Γ` by `η_i` (`Submission.cbr_ci_dilation_calculus` (1)); by parts (2), (4), (5)
+there, `Submission.cbr_ci_bl_blowup_scale` makes `Γ'_i` a cycle with mass measure
+`μ'_i = λ_i^{-n} η_{i#} μ`, admissible pair `(μ'_i, ζ(a + λ_i ·))`, `μ'_i(ℝᴾ ∖ η_i(M)) = 0` and
+`Γ'_i(ω) = ∫_{η_i(M)} ⟨ω, θζ(a + λ_i ·)⟩ dHⁿ`.  The rescaled bounds are proved in place (step 0):
+`ν_i = Hⁿ⌞η_i(M) = λ_i^{-n} η_{i#}(Hⁿ⌞M)` (`Submission.cbr_ci_bl_blowUp_restrict_scaling`) and
+`η_i⁻¹(B̄_R(0)) = B̄_{λ_iR}(a)`, so the density bounds of `Submission.cbr_ci_bl_density_bounds`
+and the hypotheses at `a` give, for every positive null sequence of scales, `supᵢ ν_i(K) < ∞` on
+compact sets, `limsup ν_i(B̄_R(0)) ≤ ω_n Rⁿ`, eventually `ν_i(B̄_R(0)) ≥ η₁/(4θ(a)) ω_n Rⁿ`, and
+`∫_{B̄_R(0)} ‖θζ(a + λ_i ·) − θ(a)ζ(a)‖ dν_i → 0`.  (T1) gives `φ` and a Radon limit `ν` of
+`ν_i`.  `C(ω) = ∫ ⟨ω, θ(a)ζ(a)⟩ dν` is a current (`Submission.cmcs_restrict_current`), and
+`Submission.cbr_ci_bl_constant_vector_limit` gives `Γ'_{φ(k)} ⇀ C` and
+`limsup μ'_{φ(k)}(K) ≤ θ(a)ν(K)`.  The bounds for `ν` follow from (T1), `∂C = 0` from
+`∂Γ'_{φ(k)} = 0`, `M_W(C) = θ(a)ν(W)` from `Submission.cbr_ci_const_vector_massOn`.  Finally each
+`Γ'_{φ(k)}` has the integer slice property (`Submission.cbr_ci_dilation_slice_property`), the
+masses `M_W(Γ'_{φ(k)}) + M_W(∂Γ'_{φ(k)}) ≤ μ'_{φ(k)}(closure W)` are bounded (each is finite and
+the `limsup` is at most `θ(a)ν(closure W) < ∞`), so `SLIM_{P,d}` gives the integer slice property
+of `C`. -/
+theorem Submission.dtc_bc_tc_cl_ci_blowup_limit : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ((∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ⨆ j, μs j K < ∞) → ∃ (φ : ℕ → ℕ) (μ : Measure (Euclid P)), StrictMono φ ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(μs (φ j))) atTop (𝓝 (∫ x, f x ∂μ))) ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs (φ j) K) atTop ≤ μ K) ∧ (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs (φ j) G) atTop)) ∧ (∀ (P k : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P k) (μX μ : Measure (Euclid P)) (ξX : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) k, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U k, Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) k, |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → μ {x | f x = t} = 0 → ∀ ω : TestFormOn U k, Tendsto (fun j => ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) atTop (𝓝 (∫ x in {x | f x < t}, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX))) ∧ (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop)) → ∀ (P d : ℕ), (∀ (Xs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ i, (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Xs i ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (Xs i).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B))) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → ⨆ i, ((Xs i).massOn W + (Xs i).boundary.massOn W) < ∞) → WeaklyConvergesOn Xs X → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (X).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B))) → ∀ (Γ : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P (d + 1)) (a : Euclid P) (η₁ : ℝ) (lams : ℕ → ℝ), Γ.boundary = 0 → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (Γ).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → μ univ < ∞ → (∀ W : Set (Euclid P), IsOpen W → Γ.massOn W = μ W) → MeasurableSet M → μHE[(d + 1)] M < ∞ → Measurable θ → StronglyMeasurable ζ → μ = (μHE[(d + 1)].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) (d + 1)), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) (d + 1), covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μHE[(d + 1)]) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[(d + 1)] (M ∩ closedBall a r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[(d + 1)]) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) (𝓝 0) → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (ν : Measure (Euclid P)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (Γs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P (d + 1)), StrictMono φ ∧ (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) ∧ (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume (d + 1) * ENNReal.ofReal (R ^ (d + 1))) ∧ (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ y, θ a * ζ a ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂ν) ∧ C.boundary = 0 ∧ (∀ W : Set (Euclid P), IsOpen W → C.massOn W = ENNReal.ofReal (θ a) * ν W) ∧ (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) ∧ WeaklyConvergesOn Γs C ∧ (∀ k, (Γs k).boundary = 0) ∧ (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → μs k K < ∞) ∧ (∀ (k : ℕ) (W : Set (Euclid P)), IsOpen W → (Γs k).massOn W = μs k W) ∧ (∀ k, AEStronglyMeasurable (ξs k) (μs k)) ∧ (∀ k, ∀ᵐ x ∂(μs k), ∀ α : Covector (Euclid P) (d + 1), |ξs k x α| ≤ covectorEuclideanNorm α) ∧ (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)), Γs k ω = ∫ x, ξs k x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs k)) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun k => μs k K) atTop ≤ ENNReal.ofReal (θ a) * ν K) ∧ (∀ k, μs k (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)ᶜ = 0) ∧ (∀ K : Set (Euclid P), IsCompact K → limsup (fun k => μHE[(d + 1)] (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M ∩ K)) atTop ≤ ν K) ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M, f y ∂μHE[(d + 1)]) atTop (𝓝 (∫ y, f y ∂ν))) := by
+  -- Step 0: the rescaled bounds for every positive null sequence of scales (steps 3(a)–(d)
+  -- of the proof): uniform bounds on compact sets, the upper and eventual lower bounds on
+  -- `B̄_R(0)`, and the vanishing deviation integral
+  have hrb : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ) (lams : ℕ → ℝ), μHE[n] M < ∞ → MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → (∀ K : Set (Euclid P), IsCompact K → ⨆ i, (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) K < ∞) ∧ (∀ R : ℝ, 0 < R → limsup (fun i => (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) atTop ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (R ^ n)) ≤ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) ∧ (∀ R : ℝ, 0 < R → Tendsto (fun i => ∫⁻ y in closedBall (0 : Euclid P) R, ‖θ (a + lams i • y) • ζ (a + lams i • y) - θ a • ζ a‖ₑ ∂(μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))) atTop (𝓝 0)) := by
+    -- (i) single-scale change of variables: `ν = Hⁿ⌞η_{a,λ}(M)` has `ν(S) = λ⁻ⁿ Hⁿ(M ∩ η⁻¹S)`;
+    -- on balls and for the deviation integral this is `ωₙRⁿ · (· / ωₙ(λR)ⁿ)`
+    have hscale : ∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (lam : ℝ), 0 < lam → μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) = ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) (μHE[n].restrict M) → (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)) univ = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] M ∧ ∀ R : ℝ, 0 < R → (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)) (closedBall 0 R) = unitBallVolume n * ENNReal.ofReal (R ^ n) * (μHE[n] (M ∩ closedBall a (lam * R)) / (unitBallVolume n * ENNReal.ofReal ((lam * R) ^ n))) ∧ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)) (ball 0 R) = unitBallVolume n * ENNReal.ofReal (R ^ n) * (μHE[n] (M ∩ ball a (lam * R)) / (unitBallVolume n * ENNReal.ofReal ((lam * R) ^ n))) ∧ ∫⁻ y in closedBall (0 : Euclid P) R, ‖θ (a + lam • y) • ζ (a + lam • y) - θ a • ζ a‖ₑ ∂(μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)) = unitBallVolume n * ENNReal.ofReal (R ^ n) * ((∫⁻ x in M ∩ closedBall a (lam * R), ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal ((lam * R) ^ n))) := by
+      intro P n M θ ζ a lam hlam hH
+      have hlam0 : lam ≠ 0 := hlam.ne'
+      -- Step 1: `D = dilation a lam` is `y ↦ lam⁻¹ (y - a)`, a homeomorphism (hence a measurable
+      -- embedding), and `a + lam D(x) = x`
+      have hD : ∀ y, dilation a lam y = lam⁻¹ • (y - a) := by
+        intro y
+        simp only [dilation, dilationCLM, _root_.smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      have hDemb : MeasurableEmbedding (dilation a lam) := by
+        have hDh : dilation a lam = ⇑((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam0)).trans
+            (Homeomorph.addLeft (-(lam⁻¹ • a)))) := by
+          funext y
+          simp [dilation, dilationCLM]
+        rw [hDh]
+        exact Homeomorph.measurableEmbedding _
+      have hinv : ∀ x, a + lam • dilation a lam x = x := by
+        intro x
+        rw [hD, smul_smul, mul_inv_cancel₀ hlam0, one_smul]
+        abel
+      -- Step 2: `‖D(y)‖ = lam⁻¹ dist(y, a)`, so `D⁻¹(B̄_R(0)) = B̄_{lam R}(a)` and
+      -- `D⁻¹(B_R(0)) = B_{lam R}(a)`
+      have hnorm : ∀ y, ‖dilation a lam y‖ = lam⁻¹ * dist y a := by
+        intro y
+        rw [hD, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hlam, dist_eq_norm]
+      have hpre_cb : ∀ R, dilation a lam ⁻¹' closedBall 0 R = closedBall a (lam * R) := by
+        intro R
+        ext y
+        rw [mem_preimage, mem_closedBall_zero_iff, hnorm, mem_closedBall, inv_mul_le_iff₀ hlam]
+      have hpre_b : ∀ R, dilation a lam ⁻¹' ball 0 R = ball a (lam * R) := by
+        intro R
+        ext y
+        rw [mem_preimage, mem_ball_zero_iff, hnorm, mem_ball, inv_mul_lt_iff₀ hlam]
+      -- Step 3: `ν(S) = c Hⁿ(M ∩ D⁻¹S)` whenever `D⁻¹S` is Borel
+      have hmass : ∀ S, MeasurableSet (dilation a lam ⁻¹' S) →
+          (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)) S =
+            ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] (M ∩ dilation a lam ⁻¹' S) := by
+        intro S hS
+        rw [hH, Measure.smul_apply, hDemb.map_apply, Measure.restrict_apply hS,
+          inter_comm (dilation a lam ⁻¹' S) M, smul_eq_mul]
+      -- Step 4: `0 < ωₙ < ∞`, so `c = V(R) / V(lam R)` and `c X = V(R) (X / V(lam R))`
+      have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+      have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+      have hconst : ∀ R : ℝ, 0 < R → ∀ X : ℝ≥0∞, ENNReal.ofReal (lam⁻¹ ^ n) * X =
+          unitBallVolume n * ENNReal.ofReal (R ^ n) *
+            (X / (unitBallVolume n * ENNReal.ofReal ((lam * R) ^ n))) := by
+        intro R hR X
+        have hratio : unitBallVolume n * ENNReal.ofReal (R ^ n) /
+            (unitBallVolume n * ENNReal.ofReal ((lam * R) ^ n)) = ENNReal.ofReal (lam⁻¹ ^ n) := by
+          rw [ENNReal.mul_div_mul_left _ _ hω0 hωtop,
+            ← ENNReal.ofReal_div_of_pos (pow_pos (mul_pos hlam hR) n)]
+          congr 1
+          rw [mul_pow, inv_pow]
+          field_simp
+        rw [← hratio, div_eq_mul_inv, div_eq_mul_inv]
+        ring
+      refine ⟨?_, fun R hR => ⟨?_, ?_, ?_⟩⟩
+      · -- Step 5: (i), the total mass
+        rw [hmass univ (hDemb.measurable MeasurableSet.univ), preimage_univ, inter_univ]
+      · -- Step 6: (ii), closed balls
+        rw [hmass (closedBall 0 R) (hDemb.measurable measurableSet_closedBall), hpre_cb]
+        exact hconst R hR _
+      · -- Step 6: (iii), open balls
+        rw [hmass (ball 0 R) (hDemb.measurable measurableSet_ball), hpre_b]
+        exact hconst R hR _
+      · -- Step 7: (iv), the lintegral: `ν⌞S = c D_#((Hⁿ⌞M)⌞D⁻¹S)` for `S = B̄_R(0)`, and
+        -- `g ∘ D = ‖θζ − θ(a)ζ(a)‖ₑ` by `a + lam D(x) = x`
+        rw [hH, Measure.restrict_smul, lintegral_smul_measure, hDemb.restrict_map,
+          hDemb.lintegral_map,
+          Measure.restrict_restrict (hDemb.measurable measurableSet_closedBall), hpre_cb,
+          inter_comm (closedBall a (lam * R)) M, smul_eq_mul]
+        simp only [hinv]
+        exact hconst R hR _
+    -- (ii) limits at `0⁺` transfer to a positive null sequence, with a finite factor
+    have hnull : ∀ (f h : ℝ → ℝ≥0∞) (C : ℝ≥0∞) (s : ℕ → ℝ), C ≠ ∞ → (∀ i, 0 < s i) → Tendsto s atTop (𝓝 0) → (limsup f (𝓝[>] 0) ≤ 1 → limsup (fun i => C * f (s i)) atTop ≤ C) ∧ (Tendsto h (𝓝[>] 0) (𝓝 0) → Tendsto (fun i => C * h (s i)) atTop (𝓝 0)) := by
+      intro f h C s hC hpos hs
+      have hs' : Tendsto s atTop (𝓝[>] 0) :=
+        tendsto_nhdsWithin_iff.2 ⟨hs, Eventually.of_forall hpos⟩
+      refine ⟨fun hf => ?_, fun hh => ?_⟩
+      · rw [ENNReal.limsup_const_mul_of_ne_top hC]
+        have hL : limsup (fun i => f (s i)) atTop ≤ 1 := by
+          refine le_of_forall_gt_imp_ge_of_dense fun c hc => ?_
+          have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), f r < c := eventually_lt_of_limsup_lt (hf.trans_lt hc)
+          exact limsup_le_of_le (h := (hs'.eventually hev).mono fun i hi => hi.le)
+        exact (mul_le_mul_right hL C).trans_eq (mul_one C)
+      · have hlim := ENNReal.Tendsto.const_mul (hh.comp hs') (Or.inr hC)
+        rwa [mul_zero] at hlim
+    -- (iii) eventual bounds on closed balls give a uniform bound on compact sets
+    have hcpt : ∀ (P : ℕ) (ν : ℕ → Measure (Euclid P)), (∀ i, ν i univ < ∞) → (∀ R : ℝ, 0 < R → ∃ B : ℝ≥0∞, B < ∞ ∧ ∀ᶠ i in atTop, ν i (closedBall 0 R) ≤ B) → ∀ K : Set (Euclid P), IsCompact K → ⨆ i, ν i K < ∞ := by
+      intro P ν hfin hball K hK
+      -- an enclosing ball `B̄_R(0)`, `R = max R₀ 1 > 0`
+      obtain ⟨R₀, hR₀⟩ := hK.isBounded.subset_closedBall 0
+      have hKR : K ⊆ closedBall 0 (max R₀ 1) :=
+        hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+      -- late indices: `νᵢ(B̄_R(0)) ≤ B` for `i ≥ N`
+      obtain ⟨B, hB, hev⟩ := hball (max R₀ 1) (lt_max_of_lt_right one_pos)
+      obtain ⟨N, hN⟩ := eventually_atTop.mp hev
+      -- early indices: the total masses `νⱼ(ℝᴾ)`, `j < N`, have finite sum
+      have hS : ∑ j ∈ Finset.range N, ν j univ < ∞ := ENNReal.sum_lt_top.mpr fun j _ => hfin j
+      refine lt_of_le_of_lt (iSup_le fun i => ?_) (max_lt hB hS)
+      rcases le_or_gt N i with hi | hi
+      · exact (measure_mono hKR).trans ((hN i hi).trans (le_max_left _ _))
+      · exact (measure_mono (subset_univ K)).trans
+          ((Finset.single_le_sum_of_canonicallyOrdered (f := fun j => ν j univ)
+            (Finset.mem_range.mpr hi)).trans (le_max_right _ _))
+    have hblow := Submission.cbr_ci_bl_blowUp_restrict_scaling
+    have hdens := Submission.cbr_ci_bl_density_bounds
+    intro P n μ M θ ζ a η₁ lams hMfin hM hθ hζ hμ hθpos hζle hζβ ha hη₁ hL hU hD hlampos hlam
+    -- Step 1: `νᵢ = λᵢ⁻ⁿ η_{a,λᵢ#}(Hⁿ⌞M)`, hence the scale identities at every `λᵢ`
+    have hid := fun i => hscale P n M θ ζ a (lams i) (hlampos i)
+      (hblow P n M θ a (lams i) hM hθ (hlampos i)).2.1
+    -- Step 2: `0 < ωₙ < ∞`, so `V(R) = ωₙRⁿ < ∞`
+    have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+    have hωtop : unitBallVolume n ≠ ∞ := by
+      rw [unitBallVolume]
+      exact measure_ball_lt_top.ne
+    have hVtop : ∀ R : ℝ, unitBallVolume n * ENNReal.ofReal (R ^ n) ≠ ∞ := fun R =>
+      ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+    -- Step 3: the density bounds hold below some `r₀ > 0`; `λᵢR → 0` with `λᵢR > 0`, so
+    -- eventually `λᵢR < r₀`
+    obtain ⟨r₀, hr₀, hr₀b⟩ :=
+      hdens P n μ M θ ζ a η₁ hM hθ hζ hμ hθpos hζle hζβ ha hη₁ hL hU hD
+    have hpos : ∀ R : ℝ, 0 < R → ∀ i, 0 < lams i * R := fun R hR i => mul_pos (hlampos i) hR
+    have hsR : ∀ R : ℝ, Tendsto (fun i => lams i * R) atTop (𝓝 0) := fun R => by
+      simpa using hlam.mul_const R
+    have hev : ∀ R : ℝ, ∀ᶠ i in atTop, lams i * R < r₀ := fun R =>
+      (tendsto_order.1 (hsR R)).2 r₀ hr₀
+    refine ⟨?_, ?_, ?_, ?_⟩
+    -- (a): `νᵢ(ℝᴾ) = λᵢ⁻ⁿ Hⁿ(M) < ∞`, and eventually `νᵢ(B̄_R(0)) ≤ V(R) · 2`, as
+    -- `Hⁿ(M ∩ B̄_{λᵢR}(a)) ≤ 2V(λᵢR)`
+    · refine hcpt P (fun i => μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+        (fun i => ?_) (fun R hR => ⟨unitBallVolume n * ENNReal.ofReal (R ^ n) * 2,
+          ENNReal.mul_lt_top (hVtop R).lt_top (by norm_num), ?_⟩)
+      · rw [(hid i).1]
+        exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hMfin
+      · filter_upwards [hev R] with i hi
+        rw [((hid i).2 R hR).1]
+        gcongr
+        exact ENNReal.div_le_of_le_mul (hr₀b _ (hpos R hR i) hi).2
+    -- (b): `νᵢ(B̄_R(0)) = V(R) h(λᵢR)` with `h(r) = Hⁿ(M ∩ B̄_r(a)) / V(r)`, and
+    -- `limsup_{r ↓ 0} h(r) ≤ 1` by (U)
+    · intro R hR
+      refine (limsup_congr (Eventually.of_forall fun i => ((hid i).2 R hR).1)).trans_le ?_
+      exact (hnull (fun r => μHE[n] (M ∩ closedBall a r) /
+        (unitBallVolume n * ENNReal.ofReal (r ^ n))) (fun _ => 0) _ (fun i => lams i * R)
+        (hVtop R) (hpos R hR) (hsR R)).1 hU
+    -- (c): for `λᵢR < r₀`, `ofReal(η₁/(4θ(a))) ≤ Hⁿ(M ∩ B_{λᵢR}(a)) / V(λᵢR)`; multiply by `V(R)`
+    · intro R hR
+      filter_upwards [hev R] with i hi
+      have hVlam : unitBallVolume n * ENNReal.ofReal ((lams i * R) ^ n) ≠ 0 :=
+        mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos (hpos R hR i) n)).ne'
+      have hHlam : μHE[n] (M ∩ ball a (lams i * R)) ≠ ∞ :=
+        ((measure_mono inter_subset_left).trans_lt hMfin).ne
+      calc ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (R ^ n))
+          = unitBallVolume n * ENNReal.ofReal (R ^ n) * ENNReal.ofReal (η₁ / (4 * θ a)) :=
+            mul_comm _ _
+        _ ≤ unitBallVolume n * ENNReal.ofReal (R ^ n) * (μHE[n] (M ∩ ball a (lams i * R)) /
+            (unitBallVolume n * ENNReal.ofReal ((lams i * R) ^ n))) := by
+            gcongr
+            exact (ENNReal.le_div_iff_mul_le (Or.inl hVlam) (Or.inr hHlam)).2
+              (hr₀b _ (hpos R hR i) hi).1
+        _ = (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+            (ball 0 R) := ((hid i).2 R hR).2.1.symm
+        _ ≤ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+            (closedBall 0 R) := measure_mono ball_subset_closedBall
+    -- (d): the deviation integral is `V(R) o(λᵢR) / V(λᵢR)`, and `o(r) / V(r) → 0` by (D)
+    · intro R hR
+      refine ((hnull (fun _ => 0) (fun r => (∫⁻ x in M ∩ closedBall a r,
+        ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) _
+        (fun i => lams i * R) (hVtop R) (hpos R hR) (hsR R)).2 hD).congr fun i => ?_
+      exact ((hid i).2 R hR).2.2.symm
+  intro hSL hRU hCT P d hSLIM Γ μ M θ ζ a η₁ lams hΓbd hΓisp hμfin hΓmass hM hMfin hθ hζ hμ
+    hθpos hζbd hζnorm hΓrep haM hη₁ hlow hup hdev hlam hlam0
+  have hθa : 0 < θ a := hθpos a haM
+  -- Step 1: the blow-ups `Γ'ᵢ`, dilations of `Γ` by `ηᵢ = dilation a λᵢ`
+  have hdc := fun i => Submission.cbr_ci_dilation_calculus P (d + 1) a (lams i) (hlam i)
+  have hdc' := fun i => Submission.cbr_ci_dilation_calculus P d a (lams i) (hlam i)
+  choose Γ' hΓ' using fun i => (hdc i).1 Γ
+  -- Step 2: `Γ'ᵢ` is a cycle with mass measure and admissible pair
+  -- `(λᵢ^{-n} ηᵢ#μ, ζ(a + λᵢ ·))`, and `Γ'ᵢ(ω) = ∫_{ηᵢ(M)} ⟨ω, θζ(a + λᵢ ·)⟩ dHⁿ`
+  have hsc := fun i => Submission.cbr_ci_bl_blowup_scale P d Γ (Γ' i) μ M θ ζ a (lams i) (hlam i)
+    hΓbd hμfin hΓmass hM hθ hζ hμ hθpos hΓrep ((hdc' i).2.1 Γ (Γ' i) (hΓ' i))
+    ((hdc i).2.2.2.1 Γ (Γ' i) μ ζ (hΓ' i)) ((hdc i).2.2.2.2.1 Γ (Γ' i) (hΓ' i))
+  -- Step 3: `νᵢ = Hⁿ⌞ηᵢ(M)` is bounded on compact sets uniformly in `i`; (T1) gives `φ`, `ν`
+  obtain ⟨hRa, -, -, -⟩ := hrb P (d + 1) μ M θ ζ a η₁ lams hMfin
+    hM hθ hζ hμ hθpos hζbd hζnorm haM hη₁ hlow hup hdev hlam hlam0
+  obtain ⟨φ, ν, hφ, -, hνK, hνint, hνlimsup, hνliminf⟩ := hCT.1 P univ
+    (fun i => μHE[d + 1].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+    isOpen_univ fun K hK _ => hRa K hK
+  -- Step 4: the rescaled bounds along the subsequence `λ ∘ φ`
+  obtain ⟨-, hRb, hRc, hRd⟩ := hrb P (d + 1) μ M θ ζ a η₁
+    (fun k => lams (φ k)) hMfin hM hθ hζ hμ hθpos hζbd hζnorm haM hη₁ hlow hup hdev
+    (fun k => hlam (φ k)) (hlam0.comp hφ.tendsto_atTop)
+  -- Step 5: the limit current `C(ω) = ∫ ⟨ω, θ(a)ζ(a)⟩ dν`
+  obtain ⟨C, hC⟩ := Submission.cmcs_restrict_current P (d + 1) univ (ENNReal.ofReal (θ a) • ν)
+    (fun _ => ζ a) univ (fun K hK _ => by
+      rw [Measure.smul_apply, smul_eq_mul]
+      exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hνK K hK (subset_univ K)))
+    aestronglyMeasurable_const (Eventually.of_forall fun _ => hζbd a)
+  have hCrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      C ω = ∫ y, θ a * ζ a ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂ν := by
+    intro ω
+    rw [hC ω, Measure.restrict_univ, integral_smul_measure, ENNReal.toReal_ofReal hθa.le,
+      smul_eq_mul, integral_const_mul]
+  have hCrep' : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      C ω = ∫ y, (θ a • ζ a) ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂ν := by
+    intro ω
+    simp only [hCrep ω, _root_.smul_apply, smul_eq_mul]
+  have hζ₀ : ∀ α : Covector (Euclid P) (d + 1),
+      |(θ a • ζ a) α| ≤ θ a * covectorEuclideanNorm α := by
+    intro α
+    rw [_root_.smul_apply, smul_eq_mul, abs_mul, abs_of_pos hθa]
+    exact mul_le_mul_of_nonneg_left (hζbd a α) hθa.le
+  -- Step 6: `Γ'_{φ(k)} ⇀ C` and `limsup_k μ'_{φ(k)}(K) ≤ θ(a)ν(K)`
+  have hmeas : ∀ c : ℝ, Measurable fun y : Euclid P => a + c • y :=
+    fun c => (measurable_id.const_smul c).const_add a
+  obtain ⟨hwk, hlimsupμ⟩ := Submission.cbr_ci_bl_constant_vector_limit P (d + 1)
+    (fun k => Γ' (φ k)) C
+    (fun k => μHE[d + 1].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) ν
+    (fun k => ENNReal.ofReal ((lams (φ k))⁻¹ ^ (d + 1)) • Measure.map (dilation a (lams (φ k))) μ)
+    (fun k y => θ (a + lams (φ k) • y) • ζ (a + lams (φ k) • y)) (θ a • ζ a) (θ a)
+    (fun k K hK => (le_iSup (fun i => (μHE[d + 1].restrict
+      (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) K) (φ k)).trans_lt (hRa K hK))
+    (fun K hK => hνK K hK (subset_univ K)) (fun f hf hfc => hνint f hf hfc (subset_univ _))
+    (fun K hK => hνlimsup K hK (subset_univ K))
+    (fun k => ((hθ.comp (hmeas (lams (φ k)))).stronglyMeasurable.smul
+      (hζ.comp_measurable (hmeas (lams (φ k))))).aestronglyMeasurable)
+    hθa.le hζ₀ hRd (fun k => (hsc (φ k)).2.2.2.2.2.2.2) hCrep' (fun k => (hsc (φ k)).2.2.2.1)
+  -- Step 7: `ν(B_R(0)) ≤ ωₙRⁿ` and `ν(B_r(0)) > 0`
+  have hνball : ∀ R : ℝ, 0 < R →
+      ν (ball 0 R) ≤ unitBallVolume (d + 1) * ENNReal.ofReal (R ^ (d + 1)) := by
+    intro R hR
+    calc ν (ball 0 R)
+        ≤ liminf (fun k => (μHE[d + 1].restrict
+            (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) (ball 0 R)) atTop :=
+          hνliminf _ isOpen_ball (subset_univ _)
+      _ ≤ liminf (fun k => (μHE[d + 1].restrict
+            (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) (closedBall 0 R)) atTop :=
+          liminf_le_liminf (Eventually.of_forall fun k => measure_mono ball_subset_closedBall)
+      _ ≤ limsup (fun k => (μHE[d + 1].restrict
+            (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) (closedBall 0 R)) atTop :=
+          liminf_le_limsup
+      _ ≤ unitBallVolume (d + 1) * ENNReal.ofReal (R ^ (d + 1)) := hRb R hR
+  have hνpos : ∀ r : ℝ, 0 < r → 0 < ν (ball 0 r) := by
+    intro r hr
+    have hr2 : 0 < r / 2 := half_pos hr
+    have hc : 0 < ENNReal.ofReal (η₁ / (4 * θ a)) *
+        (unitBallVolume (d + 1) * ENNReal.ofReal ((r / 2) ^ (d + 1))) :=
+      ENNReal.mul_pos (ENNReal.ofReal_pos.2 (div_pos hη₁ (mul_pos four_pos hθa))).ne'
+        (ENNReal.mul_pos (measure_ball_pos volume (0 : Euclid (d + 1)) one_pos).ne'
+          (ENNReal.ofReal_pos.2 (pow_pos hr2 _)).ne').ne'
+    calc 0 < ENNReal.ofReal (η₁ / (4 * θ a)) *
+          (unitBallVolume (d + 1) * ENNReal.ofReal ((r / 2) ^ (d + 1))) := hc
+      _ ≤ limsup (fun k => (μHE[d + 1].restrict
+            (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) (closedBall 0 (r / 2)))
+            atTop :=
+          le_limsup_of_frequently_le (hRc (r / 2) hr2).frequently
+      _ ≤ ν (closedBall 0 (r / 2)) := hνlimsup _ (isCompact_closedBall 0 (r / 2)) (subset_univ _)
+      _ ≤ ν (ball 0 r) := measure_mono (closedBall_subset_ball (half_lt_self hr))
+  -- Step 8: `∂C = 0`, as `∂Γ'_{φ(k)} = 0` and `∂Γ'_{φ(k)} ⇀ ∂C`
+  have hCbd : C.boundary = 0 := by
+    ext ω
+    have h : Tendsto (fun k => (Γ' (φ k)).boundary ω) atTop (𝓝 (C.boundary ω)) :=
+      hwk.boundary ω
+    have h0 : ∀ k, (Γ' (φ k)).boundary ω = 0 := fun k => by
+      rw [(hsc (φ k)).2.1, GeometricCurrentOn.zero_apply]
+    simp only [h0] at h
+    rw [GeometricCurrentOn.zero_apply]
+    exact tendsto_nhds_unique h tendsto_const_nhds
+  -- Step 9: `M_W(C) = θ(a)ν(W)` for open `W`
+  have hCmass : ∀ W : Set (Euclid P), IsOpen W → C.massOn W = ENNReal.ofReal (θ a) * ν W := by
+    obtain ⟨β, hβ1, hζβ⟩ := hζnorm a haM
+    exact Submission.cbr_ci_const_vector_massOn P (d + 1) ν (θ a • ζ a) (θ a) C
+      (fun K hK => hνK K hK (subset_univ K)) hζ₀
+      ⟨β, hβ1, by rw [_root_.smul_apply, hζβ, smul_eq_mul, mul_one]⟩ hCrep'
+  -- Step 10: `M_W(Γ'_{φ(k)}) + M_W(∂Γ'_{φ(k)}) ≤ μ'_{φ(k)}(closure W)` is bounded in `k` for
+  -- `W ⊂⊂ ℝᴾ`: each term is finite and the `limsup` is at most `θ(a)ν(closure W) < ∞`
+  have hzero : ∀ W : Set (Euclid P),
+      (0 : GeometricCurrentOn (univ : Set (Euclid P)) d).massOn W = 0 := by
+    intro W
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, -, rfl⟩
+    simp
+  have hsup : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ →
+      ⨆ i, ((Γ' (φ i)).massOn W + (Γ' (φ i)).boundary.massOn W) < ∞ := by
+    intro W hW hWc
+    have hls : limsup (fun k => (ENNReal.ofReal ((lams (φ k))⁻¹ ^ (d + 1)) •
+        Measure.map (dilation a (lams (φ k))) μ) (closure W)) atTop < ∞ :=
+      (hlimsupμ _ hWc.1).trans_lt
+        (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hνK _ hWc.1 (subset_univ _)))
+    obtain ⟨c, hc, hc'⟩ := exists_between hls
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (eventually_lt_of_limsup_lt hc)
+    have hfin : c + ∑ j ∈ Finset.range N, (ENNReal.ofReal ((lams (φ j))⁻¹ ^ (d + 1)) •
+        Measure.map (dilation a (lams (φ j))) μ) (closure W) < ∞ :=
+      ENNReal.add_lt_top.2 ⟨hc', ENNReal.sum_lt_top.2 fun j _ => (hsc (φ j)).2.2.1 _ hWc.1⟩
+    refine lt_of_le_of_lt (iSup_le fun i => ?_) hfin
+    show (Γ' (φ i)).massOn W + (Γ' (φ i)).boundary.massOn W ≤ _
+    rw [(hsc (φ i)).2.1, hzero, add_zero, (hsc (φ i)).2.2.2.1 W hW]
+    refine (measure_mono subset_closure).trans ?_
+    by_cases hi : N ≤ i
+    · exact (hN i hi).le.trans le_self_add
+    · exact (Finset.single_le_sum (f := fun j => (ENNReal.ofReal ((lams (φ j))⁻¹ ^ (d + 1)) •
+        Measure.map (dilation a (lams (φ j))) μ) (closure W)) (fun j _ => zero_le)
+        (Finset.mem_range.2 (not_le.1 hi))).trans le_add_self
+  -- Step 11: assemble; each `Γ'_{φ(k)}` has the integer slice property, so `C` has it by
+  -- `SLIM_{P,d}`
+  refine ⟨φ, ν, C, fun k => Γ' (φ k), fun k => ENNReal.ofReal ((lams (φ k))⁻¹ ^ (d + 1)) •
+      Measure.map (dilation a (lams (φ k))) μ, fun k y => ζ (a + lams (φ k) • y), hφ,
+    fun K hK => hνK K hK (subset_univ K), hνball, hνpos, hCrep, hCbd, hCmass,
+    hSLIM (fun k => Γ' (φ k)) C (fun k => Submission.cbr_ci_dilation_slice_property hSL hRU P d a
+      (lams (φ k)) Γ (Γ' (φ k)) μ ζ (hlam (φ k)) (hΓ' (φ k)) hΓbd
+      (fun K _ => (measure_mono (subset_univ K)).trans_lt hμfin) hζ.aestronglyMeasurable
+      (Eventually.of_forall fun x => hζbd x) (hsc 0).1 hΓisp) hsup hwk,
+    hwk, fun k => (hsc (φ k)).2.1, fun k => (hsc (φ k)).2.2.1, fun k => (hsc (φ k)).2.2.2.1,
+    fun k => (hsc (φ k)).2.2.2.2.1, fun k => Eventually.of_forall fun y => hζbd _,
+    fun k => (hsc (φ k)).2.2.2.2.2.1, hlimsupμ, fun k => (hsc (φ k)).2.2.2.2.2.2.1,
+    fun K hK => ?_, fun f hf hfc => hνint f hf hfc (subset_univ _)⟩
+  calc limsup (fun k => μHE[d + 1]
+        (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M ∩ K)) atTop
+      = limsup (fun k => (μHE[d + 1].restrict
+          (Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M)) K) atTop := by
+        congr 1
+        funext k
+        rw [Measure.restrict_apply hK.isClosed.measurableSet, inter_comm]
+    _ ≤ ν K := hνlimsup K hK (subset_univ K)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
