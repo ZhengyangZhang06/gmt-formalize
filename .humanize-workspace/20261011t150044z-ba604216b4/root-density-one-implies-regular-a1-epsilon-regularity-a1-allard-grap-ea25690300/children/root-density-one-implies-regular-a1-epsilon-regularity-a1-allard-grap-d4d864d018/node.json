@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1.conv_laplacian-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.weyl_lemma-a1",
+  "depth": 6,
+  "title": "Convolution with a smooth compactly supported kernel is smooth and its Laplacian is the convolution with the kernel's Laplacian",
+  "statement": "Let n ∈ ℕ, ℝⁿ = Euclid n with Lebesgue measure, e_i = EuclideanSpace.single i 1. For ψ : ℝⁿ → ℝ write Δψ(z) := Σ_{i<n} iteratedFDeriv ℝ 2 ψ z ![e_i, e_i]. Let f : ℝⁿ → ℝ be locally integrable, and let φ : ℝⁿ → ℝ be C^m for every m ∈ ℕ with compact support. Put F(x) := ∫ f(y)·φ(x − y) dy. Then:\n- F is C^m on ℝⁿ for every m ∈ ℕ;\n- for every x ∈ ℝⁿ, ΔF(x) = ∫ f(y)·Δφ(x − y) dy.",
+  "lean_statement": "∀ (n : ℕ) (f φ : Euclid n → ℝ), LocallyIntegrable f → (∀ m : ℕ, ContDiff ℝ m φ) → HasCompactSupport φ → (∀ m : ℕ, ContDiff ℝ m (fun x => ∫ y, f y * φ (x - y))) ∧ ∀ x : Euclid n, ∑ i : Fin n, iteratedFDeriv ℝ 2 (fun x => ∫ y, f y * φ (x - y)) x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = ∫ y, f y * ∑ i : Fin n, iteratedFDeriv ℝ 2 φ (x - y) ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)]",
+  "lean_name": "dorag_ha_weyl_conv_laplacian",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d4d864d018-a1"
+}
