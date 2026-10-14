@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "28d2bdb1fbf47c8329fc3b46cd515eb8aafb4baa1a7018bd1a167e27397425c5",
+  "git_delta": {
+    "base_commit": "9bf2c682b712ba62f0cab4f721d7b7bb2f3da4ec",
+    "candidate_commit": "4a73e5dd2f9d7e639cdf893147d4ca08d32c7b07",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_cvl_limsup_le_of_cthickening",
+    "diff_sha256": "72e014de5e9457e082ab01fea7f98f19b91f78a821bbd5e356f01eab110841eb",
+    "source_sha256": "0e919cb4b28826d33abab038999a6a47b30b70ecf3afcbfefebeb8037897dcfa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_cvl_limsup_le_of_cthickening",
+      "statement": "∀ (P : ℕ) (a : ℕ → ℝ≥0∞) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (c : ℝ≥0∞) (K : Set (Euclid P)), IsCompact K → c ≠ ∞ → (∀ K' : Set (Euclid P), IsCompact K' → ν K' < ∞) → (∀ K' : Set (Euclid P), IsCompact K' → limsup (fun k => νs k K') atTop ≤ ν K') → (∀ r : ℝ, 0 < r → ∃ v : ℕ → ℝ≥0∞, Tendsto v atTop (𝓝 0) ∧ ∀ k, a k ≤ c * νs k (cthickening r K) + v k) → limsup a atTop ≤ c * ν K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
