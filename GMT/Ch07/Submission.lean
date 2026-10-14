@@ -518,6 +518,144 @@ theorem Submission.dimred_mbl_dtfrsd_coordinate_plane_orientation_sign : (∀ (P
       · rw [ite_eq_left hte', Int.cast_one, one_mul, hxt, hte', he α]
       · rw [ite_eq_right hte', ite_eq_left hte, Int.cast_neg, Int.cast_one, neg_one_mul, h α]
 
+/-- **Simon Ch. 6, proof of 5.1, (27)–(28) (p. 167)**, on one open face of the unit lattice: let
+`Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` be an isometry, `Q₁ = (0, 1)ⁿ` and `F̆ = Φ_p(Q₁)`.  Then
+`τ(M, θ, ξ)⌞F̆`, pulled back to `Q₁`, is `u(y) ⟨ω(Φ_p(y)), e_{ι(0)} ∧ ⋯ ∧ e_{ι(n−1)}⟩ dy` for an
+integer-valued `u ∈ L¹(Q₁)` with `∫_{Q₁} |u| ≤ μ_V(F̆)`.  `F̆` is Borel and lies in the coordinate
+plane through `b`, so `coordinate_plane_orientation_sign` gives `ξ = σ e_{ι(0)} ∧ ⋯ ∧ e_{ι(n−1)}`
+`Hⁿ`-a.e. on `M ∩ F̆`, with `σ` integer-valued and `|σ| ≤ 1`.  Take `u = (1_M θ σ) ∘ Φ_p`: isometry
+invariance of `μHE` and `μHE = Lⁿ` on `ℝⁿ` give `Hⁿ⌞F̆ = Φ_p#(Lⁿ⌞Q₁)`, and `μ_V(F̆) < ∞` because
+`F̆` lies in the compact set `Φ_p([0, 1]ⁿ)`. -/
+theorem Submission.dimred_mbl_dtfrsd_face_density : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)))) → ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (p : (Fin n → Fin P) × (Fin P → ℤ)), StrictMono p.1 → Isometry (fun y : Euclid n => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) → ∃ u : Euclid n → ℝ, (∀ y, ∃ z : ℤ, u y = z) ∧ IntegrableOn u {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1} ∧ ENNReal.ofReal (∫ y in {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1}, |u y|) ≤ R.measure ((fun y : Euclid n => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) '' {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1}) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∫ x in R.carrier ∩ (fun y : Euclid n => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) '' {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1}, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] = ∫ y in {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1}, u y * (ω : DifferentialForm (Euclid P) n) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro hIMC hPO P n R p hι hiso
+  -- name the parametrization `Φ = Φ_p`, the open cube `Q₁` and the frame `Ep = E_p`
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : Euclid n → Euclid P, Φ = fun y : Euclid n =>
+      WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) :=
+    ⟨_, rfl⟩
+  obtain ⟨Q₁, hQ₁⟩ : ∃ Q₁ : Set (Euclid n), Q₁ = {y : Euclid n | ∀ i, 0 < y i ∧ y i < 1} :=
+    ⟨_, rfl⟩
+  obtain ⟨Ep, hEp⟩ : ∃ Ep : Fin n → Euclid P,
+      Ep = fun j => EuclideanSpace.single (p.1 j) (1 : ℝ) :=
+    ⟨_, rfl⟩
+  have hΦiso : Isometry Φ := by rw [hΦ]; exact hiso
+  suffices H : ∃ u : Euclid n → ℝ, (∀ y, ∃ z : ℤ, u y = z) ∧ IntegrableOn u Q₁ ∧
+      ENNReal.ofReal (∫ y in Q₁, |u y|) ≤ R.measure (Φ '' Q₁) ∧
+      ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+        ∫ x in R.carrier ∩ Φ '' Q₁,
+            (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] =
+          ∫ y in Q₁, u y * (ω : DifferentialForm (Euclid P) n) (Φ y) Ep by
+    subst hΦ hQ₁ hEp
+    exact H
+  -- `Q₁` is open, `Φ` is a measurable embedding (an isometry), so `F̆ = Φ(Q₁)` is Borel
+  have hQ₁meas : MeasurableSet Q₁ := by
+    have hopen : IsOpen Q₁ := by
+      have : Q₁ = ⋂ i, {y : Euclid n | 0 < y i ∧ y i < 1} := by
+        rw [hQ₁]; ext y; simp
+      rw [this]
+      refine isOpen_iInter_of_finite fun i => ?_
+      have hc : Continuous fun y : Euclid n => y i := by fun_prop
+      exact (isOpen_lt continuous_const hc).inter (isOpen_lt hc continuous_const)
+    exact hopen.measurableSet
+  have hΦme : MeasurableEmbedding Φ := hΦiso.isClosedEmbedding.measurableEmbedding
+  have hFmeas : MeasurableSet (Φ '' Q₁) := hΦme.measurableSet_image.2 hQ₁meas
+  have hMmeas : MeasurableSet R.carrier := R.measurableSet_carrier
+  -- `F̆` lies in the coordinate plane through `b`: `aᵢ = bᵢ` for `a ∈ F̆` and `i ∉ range ι`
+  have hplane : ∀ a ∈ Φ '' Q₁, ∀ i, (∀ j, p.1 j ≠ i) →
+      a i = (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) : Euclid P) i := by
+    rintro a ⟨y, -, rfl⟩ i hi
+    rw [hΦ]
+    simp [Ne.symm (hi _)]
+  -- `ξ = σ E_p`, `|σ| ≤ 1`, `Hⁿ`-a.e. on `M ∩ F̆`
+  obtain ⟨σ, hσmeas, hσle, hσae⟩ :=
+    Submission.dimred_mbl_dtfrsd_coordinate_plane_orientation_sign hIMC hPO P n univ R p.1
+      (WithLp.toLp 2 (fun i => (p.2 i : ℝ))) (Φ '' Q₁) isOpen_univ hι hFmeas hplane
+  rw [← hEp] at hσae
+  -- change of variables: `Hⁿ⌞F̆ = Φ#(Lⁿ⌞Q₁)`
+  have hrestr : μHE[n].restrict (Φ '' Q₁) =
+      Measure.map Φ ((volume : Measure (Euclid n)).restrict Q₁) := by
+    rw [← Measure.restrict_restrict_of_subset (image_subset_range Φ Q₁),
+      ← hΦiso.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume,
+      hΦme.restrict_map, hΦme.injective.preimage_image]
+  have hcov : ∀ f : Euclid P → ℝ, ∫ x in Φ '' Q₁, f x ∂μHE[n] = ∫ y in Q₁, f (Φ y) := by
+    intro f
+    rw [hrestr, hΦme.integral_map]
+  have hlcov : ∀ f : Euclid P → ℝ≥0∞, ∫⁻ x in Φ '' Q₁, f x ∂μHE[n] = ∫⁻ y in Q₁, f (Φ y) := by
+    intro f
+    rw [hrestr, hΦme.lintegral_map]
+  -- the density `g = 1_M θ σ` (so `u = g ∘ Φ`) and the weight `θ' = 1_M θ`
+  obtain ⟨g, hg⟩ : ∃ g : Euclid P → ℝ,
+      g = R.carrier.indicator (fun x => (R.mult x : ℝ) * (σ x : ℝ)) := ⟨_, rfl⟩
+  obtain ⟨θ', hθ'⟩ : ∃ θ' : Euclid P → ℝ≥0∞,
+      θ' = R.carrier.indicator (fun x => (R.mult x : ℝ≥0∞)) := ⟨_, rfl⟩
+  have hgM : ∀ x ∈ R.carrier, g x = (R.mult x : ℝ) * (σ x : ℝ) := fun x hx => by
+    rw [hg]; exact indicator_of_mem hx _
+  have hg0 : ∀ x ∉ R.carrier, g x = 0 := fun x hx => by
+    rw [hg]; exact indicator_of_notMem hx _
+  have hgmeas : Measurable g := by
+    rw [hg]
+    refine Measurable.indicator ?_ hMmeas
+    exact ((Measurable.of_discrete (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).mul
+      ((Measurable.of_discrete (f := fun k : ℤ => (k : ℝ))).comp hσmeas)
+  have hgint : ∀ x, ∃ z : ℤ, g x = z := by
+    intro x
+    by_cases hx : x ∈ R.carrier
+    · exact ⟨(R.mult x : ℤ) * σ x, by rw [hgM x hx]; push_cast; ring⟩
+    · exact ⟨0, by rw [hg0 x hx]; simp⟩
+  have hgle : ∀ x, ENNReal.ofReal |g x| ≤ θ' x := by
+    intro x
+    by_cases hx : x ∈ R.carrier
+    · rw [hgM x hx, hθ', indicator_of_mem hx, abs_mul, Nat.abs_cast]
+      have h1 : |(σ x : ℝ)| ≤ 1 := by exact_mod_cast hσle x
+      calc ENNReal.ofReal ((R.mult x : ℝ) * |(σ x : ℝ)|) ≤ ENNReal.ofReal (R.mult x : ℝ) :=
+            ENNReal.ofReal_le_ofReal (mul_le_of_le_one_right (Nat.cast_nonneg _) h1)
+        _ = (R.mult x : ℝ≥0∞) := ENNReal.ofReal_natCast _
+    · rw [hg0 x hx, hθ', indicator_of_notMem hx]; simp
+  -- `μ_V(F̆) = ∫_{F̆} 1_M θ dHⁿ = ∫_{Q₁} θ' ∘ Φ`
+  have hmass : R.measure (Φ '' Q₁) = ∫⁻ y in Q₁, θ' (Φ y) := by
+    rw [← hlcov θ', hθ', IMRep.measure, ← withDensity_indicator hMmeas,
+      withDensity_apply _ hFmeas]
+  -- `μ_V(F̆) ≤ μ_V(Φ([0, 1]ⁿ)) < ∞` by local integrability of `θ`
+  have hfin : R.measure (Φ '' Q₁) < ∞ := by
+    obtain ⟨C, hCc, hQC⟩ : ∃ C : Set (Euclid n), IsCompact C ∧ Q₁ ⊆ C := by
+      refine ⟨WithLp.toLp 2 '' (Set.univ.pi fun _ => Set.Icc (0 : ℝ) 1),
+        (isCompact_univ_pi fun _ => isCompact_Icc).image (PiLp.continuous_toLp 2 _), ?_⟩
+      intro y hy
+      rw [hQ₁] at hy
+      exact ⟨WithLp.ofLp y, fun i _ => ⟨(hy i).1.le, (hy i).2.le⟩, rfl⟩
+    have hKc : IsCompact (Φ '' C) := hCc.image hΦiso.continuous
+    have hKfin : R.measure (Φ '' C) ≠ ∞ := by
+      rw [IMRep.measure, withDensity_apply _ hKc.measurableSet,
+        Measure.restrict_restrict hKc.measurableSet, inter_comm]
+      exact R.locallyIntegrable_mult _ hKc (subset_univ _)
+    exact lt_of_le_of_lt (measure_mono (image_mono hQC)) hKfin.lt_top
+  -- integrability of `u = g ∘ Φ` on `Q₁` and `∫_{Q₁} |u| ≤ μ_V(F̆)`
+  have hlint : ∫⁻ y in Q₁, ENNReal.ofReal |g (Φ y)| ≤ R.measure (Φ '' Q₁) := by
+    rw [hmass]
+    exact lintegral_mono fun y => hgle (Φ y)
+  have huint : Integrable (fun y => g (Φ y)) ((volume : Measure (Euclid n)).restrict Q₁) := by
+    refine ⟨(hgmeas.comp hΦiso.continuous.measurable).aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    simp_rw [Real.enorm_eq_ofReal_abs]
+    exact lt_of_le_of_lt hlint hfin
+  refine ⟨fun y => g (Φ y), fun y => hgint (Φ y), huint, ?_, fun ω => ?_⟩
+  · exact (ofReal_integral_eq_lintegral_ofReal huint.abs
+      (Eventually.of_forall fun y => abs_nonneg _)).trans_le hlint
+  -- `∫_{M ∩ F̆} θ ⟨ω, ξ⟩ dHⁿ = ∫_{F̆} g ω(E_p) dHⁿ = ∫_{Q₁} u ω(Φ ·)(E_p)`
+  calc ∫ x in R.carrier ∩ Φ '' Q₁,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]
+      = ∫ x in R.carrier ∩ Φ '' Q₁, g x * (ω : DifferentialForm (Euclid P) n) x Ep ∂μHE[n] := by
+        refine integral_congr_ae ?_
+        filter_upwards [hσae, ae_restrict_mem (hMmeas.inter hFmeas)] with x hx hxm
+        rw [hx, hgM x hxm.1]
+        ring
+    _ = ∫ x in Φ '' Q₁, g x * (ω : DifferentialForm (Euclid P) n) x Ep ∂μHE[n] := by
+        refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hFmeas inter_subset_right
+          ?_).symm
+        intro x hx
+        rw [hg0 x (fun h => hx.2 ⟨h, hx.1⟩), zero_mul]
+    _ = ∫ y in Q₁, g (Φ y) * (ω : DifferentialForm (Euclid P) n) (Φ y) Ep :=
+        hcov (fun x => g x * (ω : DifferentialForm (Euclid P) n) x Ep)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
