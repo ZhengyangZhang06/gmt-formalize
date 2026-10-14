@@ -8914,25 +8914,6 @@ theorem Submission.dimred_cs_sos_product_decomposition : ∀ (P n : ℕ) (S : Ge
     show R₀.action (fun y => flat ((ω : DifferentialForm (Euclid P) n) (y + t))) =
       R₀.action (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y)))
     simp only [add_comm]
-/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
-determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors
-(alternating maps agreeing on distinct basis vectors are equal), so
-`Φ α = (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into the finite-dimensional
-space `ℝ^(Fin n → Fin P)`. -/
-theorem Submission.lcn_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
-  intro P n
-  -- the standard basis `e` of `ℝᴾ`
-  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  -- `Φ α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
-  let Φ : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
-    { toFun := fun α I => α fun i => e (I i)
-      map_add' := fun α β => rfl
-      map_smul' := fun c α => rfl }
-  -- `Φ α = Φ β` makes `α` and `β` agree on distinct basis vectors, hence everywhere
-  refine FiniteDimensional.of_injective Φ fun α β h => ?_
-  exact ContinuousAlternatingMap.toAlternatingMap_injective
-    (e.ext_alternating fun v _ => congr_fun h v)
-
 /-- **Simon 7.3.5** (chapter-07.txt lines 410–418: `∂S₀ = 0`, and `S₀` is a cone if `S` is; the
 book leaves the proof to the reader).  Let `S = [[L]] × S₀`, i.e. `S(ω) = ∫_L S₀(♭ω(t + ·)) dHᵈ(t)`
 with `♭α(v) = α(f₁, …, f_d, v₁, …, vₘ)` for an orthonormal frame `f` of `L`, `d = dim L`, where
