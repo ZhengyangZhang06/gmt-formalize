@@ -2313,6 +2313,47 @@ theorem Submission.cbr_ci_cp_finite_parallel_planes : ∀ (P n : ℕ) (ν : Meas
   rw [← ENNReal.toReal_sum fun i _ => hfin (e i), e.sum_comp (fun w : Z => a w)]
   exact (ENNReal.toReal_mono ENNReal.one_ne_top htsum).trans_eq ENNReal.toReal_one
 
+/-- **A cycle with constant unit `n`-vector, Euclidean growth and positive lower density is a
+finite sum of parallel `n`-planes** (`n = d + 1`; the constant-plane step of the closure theorem
+behind Simon 7.2.4, Ch. 6, 3.11).  The cycle condition `∫ ζ₀(dφ) dν = 0` makes `ν` invariant under
+translations along a subspace `V` such that `ζ₀(β) = ζ₀(β ∘ p_V)`; the growth bound forces
+`dim V ≤ n`, and the normalisation of `ζ₀` then gives `dim V = n` and `ζ₀(β) = β(v)` for an
+orthonormal basis `v` of `V`.  Haar uniqueness along `V` writes `ν = (Hⁿ⌞V) ⊗ σ`, the lower density
+bound makes `σ` purely atomic with atoms `≥ c`, and the growth bound together with `ν(B_r(0)) > 0`
+leaves finitely many planes `V + wᵢ`, `wᵢ ⊥ V`, with total weight `≤ 1`, one of them through `0`. -/
+theorem Submission.dmcbr_ci_constant_cycle_planes : ∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (c : ℝ), 0 < c → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ β : Covector (Euclid P) (d + 1), |ζ₀ β| ≤ covectorEuclideanNorm β) → (∃ β : Covector (Euclid P) (d + 1), covectorEuclideanNorm β ≤ 1 ∧ ζ₀ β = 1) → (∀ φ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (φ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume (d + 1) * ENNReal.ofReal (R ^ (d + 1))) → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0)) → ∃ (v : Fin (d + 1) → Euclid P) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), Orthonormal ℝ v ∧ (∀ β : Covector (Euclid P) (d + 1), ζ₀ β = β v) ∧ Injective w ∧ (∀ (i : Fin N) (j : Fin (d + 1)), inner ℝ (w i) (v j) = 0) ∧ (∀ i, c ≤ α i) ∧ ∑ i, α i ≤ 1 ∧ (∃ i, w i = 0) ∧ ν = ∑ i, ENNReal.ofReal (α i) • (μHE[(d + 1)]).restrict {y : Euclid P | y - w i ∈ Submodule.span ℝ (Set.range v)} := by
+  intro P d ν ζ₀ c hc hfin hnorm hone hcycle hgrowth hpos hdens
+  -- the cycle condition: `ν` is invariant under translations along `V`, and `ζ₀` only sees `V`
+  obtain ⟨V, hVder, hVann⟩ :=
+    Submission.cbr_ci_cp_wedge_annihilator_subspace P d ν ζ₀ hfin hcycle
+  have htrans : ∀ u ∈ V, ∀ A : Set (Euclid P), MeasurableSet A →
+      ν ((fun x => u + x) ⁻¹' A) = ν A := fun u hu =>
+    Submission.cbr_ci_cp_translation_invariant_of_fderiv P ν u hfin (hVder u hu)
+  have hproj : ∀ β : Covector (Euclid P) (d + 1),
+      ζ₀ β = ζ₀ (β.compContinuousLinearMap V.starProjection) :=
+    Submission.cbr_ci_cp_eval_comp_starProjection_eq P d ζ₀ V hVann
+  -- the growth bound gives `dim V ≤ n`; the normalisation of `ζ₀` gives `dim V = n`, `ζ₀ = β ↦ β(v)`
+  have hωtop : unitBallVolume (d + 1) ≠ ∞ := measure_ball_lt_top.ne
+  have hle : Module.finrank ℝ V ≤ d + 1 :=
+    Submission.cbr_ci_cp_finrank_le_of_growth P (d + 1) ν V (unitBallVolume (d + 1)) hωtop htrans
+      hgrowth (hpos 1 one_pos)
+  obtain ⟨hrank, v, hv, hspan, hζ⟩ :=
+    Submission.cbr_ci_cp_eval_eq_orthonormal_frame P d ζ₀ V hle hnorm hone hproj
+  -- `ν = (Hⁿ⌞V) ⊗ σ` with `σ` carried by countably many atoms `w ∈ V^⊥` of mass `≥ c`
+  obtain ⟨σ, hσV, hσfin, hνσ⟩ :=
+    Submission.cbr_ci_cp_invariant_measure_product P (d + 1) ν V hrank hfin htrans
+  obtain ⟨Z, -, hZ, hZc, hνZ⟩ :=
+    Submission.cbr_ci_cp_atomic_transversal P (d + 1) ν σ V c hc hrank hσV hσfin hνσ hdens
+  -- finitely many planes, of total weight `≤ 1`, one of them through `0`
+  obtain ⟨N, w, α, hinj, hw, hαc, hαsum, hw0, hνw⟩ :=
+    Submission.cbr_ci_cp_finite_parallel_planes P (d + 1) ν V Z (fun z => σ {z}) c hc hrank hZ hZc
+      hνZ hgrowth hpos
+  refine ⟨v, N, w, α, hv, hζ, hinj, fun i j => ?_, hαc, hαsum, hw0, ?_⟩
+  · have hvj : v j ∈ V := hspan ▸ Submodule.subset_span (mem_range_self j)
+    exact Submodule.inner_left_of_mem_orthogonal hvj (hw i)
+  · rw [hspan]
+    exact hνw
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
