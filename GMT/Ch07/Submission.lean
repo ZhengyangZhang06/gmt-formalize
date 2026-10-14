@@ -475,6 +475,33 @@ theorem Submission.cbr_smm_liminf_left_slope_le_deriv : ∀ (F : ℝ → ℝ) (t
     exact ENNReal.ofReal_mul (inv_nonneg.2 hh.le)
   exact hlim'.liminf_eq.le
 
+/-- **Left slice densities at a point of differentiability of the distribution function** (Simon
+Ch. 6, 4.9 and the remark after it; (10) in the proof of 5.1).  Let `μ` be a finite measure, `f`
+measurable and `F(s) = μ{f < s}` (read in `ℝ`).  If `F` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * μ{t - h < f < t} ≤ ofReal (F′(t))`.  For `h > 0`,
+`{t - h < f < t} ⊆ {f < t} \ {f < t - h}` and `{f < t - h} ⊆ {f < t}`, so, `μ` being finite,
+`μ{t - h < f < t} ≤ ofReal (F(t) - F(t - h))`; the liminf is monotone, and the left slopes of `F`
+are bounded by `F′(t)` (`Submission.cbr_smm_liminf_left_slope_le_deriv`). -/
+theorem Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) := by
+  intro α _ μ f t hμ hf hF
+  set F : ℝ → ℝ := fun s => (μ {x | f x < s}).toReal
+  -- `μ{f < s} = ofReal (F s)`, since `μ` is finite
+  have hA : ∀ s, μ {x | f x < s} = ENNReal.ofReal (F s) := fun s =>
+    (ENNReal.ofReal_toReal (measure_ne_top μ _)).symm
+  refine le_trans (liminf_le_liminf ?_) (Submission.cbr_smm_liminf_left_slope_le_deriv F t hF)
+  filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+  gcongr
+  -- `{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, and `{f < t - h} ⊆ {f < t}` as `h > 0`
+  have hsub : {x | f x < t - h} ⊆ {x | f x < t} := fun x (hx : f x < t - h) =>
+    show f x < t by linarith
+  calc μ {x | t - h < f x ∧ f x < t} ≤ μ ({x | f x < t} \ {x | f x < t - h}) :=
+        measure_mono fun x ⟨h₁, h₂⟩ => ⟨h₂, fun h₃ : f x < t - h => lt_asymm h₁ h₃⟩
+    _ = μ {x | f x < t} - μ {x | f x < t - h} :=
+        measure_sdiff hsub (measurableSet_lt hf measurable_const).nullMeasurableSet
+          (measure_ne_top μ _)
+    _ = ENNReal.ofReal (F t) - ENNReal.ofReal (F (t - h)) := by rw [hA, hA]
+    _ = ENNReal.ofReal (F t - F (t - h)) := (ENNReal.ofReal_sub _ ENNReal.toReal_nonneg).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
