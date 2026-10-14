@@ -60887,38 +60887,6 @@ theorem Submission.isoperimetric_theorem : IsoperimetricTheorem := by
           rw [hρk, hTt, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity)]
           push_cast
           ring_nf
-/-- **Simon Ch. 6, 6.3 (Boundary Rectifiability Theorem, p. 170).**  If `T ∈ 𝒟ₙ(U)` is integer
-multiplicity and `M_W(∂T) < ∞` for all `W ⊂⊂ U`, then `∂T` is integer multiplicity
-(`n = m + 1`).  Integer multiplicity is local, so fix `x₀ ∈ U`.  By slicing there are `r > 0` and an
-integer multiplicity `X ∈ 𝒟ₙ(ℝ^P)` with `M(X) + M(∂X) < ∞` that agrees with `T` on forms supported
-in `B_r(x₀)`.  Polyhedral approximation (deformation theorem) and compactness for cycles (8.2) make
-`∂X` integer multiplicity, hence also its restriction to `U`.  For `ω` supported in `B_r(x₀)`,
-`spt dω ⊆ spt ω`, so `∂T(ω) = T(dω) = X(dω) = ∂X(ω)`. -/
-theorem Submission.boundary_rectifiability : BoundaryRectifiability := by
-  intro P m U hU T hT hbd
-  -- Integer multiplicity is local: it suffices to match `∂T` near every `x₀ ∈ U`.
-  refine Submission.br_isIntegerMultiplicity_of_local P m U hU T.boundary fun x₀ hx₀ => ?_
-  -- Localization by slicing: `X = T` on forms supported in `B_r(x₀)`, `M(X) + M(∂X) < ∞`.
-  obtain ⟨r, hr, hrU, X, hXIM, hXmass, hXbd, hXT⟩ :=
-    Submission.br_local_finite_mass_extension Submission.slicing_theorem P m U hU T hT hbd x₀ hx₀
-  -- The finite mass case in `ℝ^P`: `∂X` is integer multiplicity.
-  have hXb : IsIntegerMultiplicity X.boundary :=
-    Submission.br_boundary_isIntegerMultiplicity_of_finite_mass Submission.deformation_theorem
-      Submission.integrality_of_weak_limits P m X hXIM hXmass hXbd
-  -- `∂T` agrees on `B_r(x₀)` with the integer multiplicity current `(∂X)|_U`.
-  refine ⟨ball x₀ r, isOpen_ball, mem_ball_self hr, hrU,
-    X.boundary.restrictDomain (subset_univ U),
-    Submission.br_restrictDomain_isIntegerMultiplicity P m univ U (subset_univ U) hU X.boundary hXb,
-    fun ω hω => ?_⟩
-  have hdω : tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) ⊆ ball x₀ r :=
-    (tsupport_exteriorDerivative_subset _).trans hω
-  calc T.boundary ω = T (exteriorDerivativeTestOn U m ω) := GeometricCurrentOn.boundary_apply T ω
-    _ = X (testFormOnInclusion (subset_univ U) (m + 1) (exteriorDerivativeTestOn U m ω)) :=
-        (hXT (exteriorDerivativeTestOn U m ω) hdω).symm
-    _ = X.boundary.restrictDomain (subset_univ U) ω := rfl
-
-theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
-
 theorem Submission.iwl_top_dim_integrality : ∀ (m : ℕ) (U : Set (Eucl (m + 1))), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → IsIntegerMultiplicity T := by
   intro m
   classical
@@ -62501,5 +62469,37 @@ theorem Submission.integrality_of_weak_limits : IntegralityOfWeakLimits := by
       exact hIM_of_eq_zero _ fun _ => rfl
     · simp only [GeometricCurrentOn.boundary_boundary, hmassOn_zero, add_zero]
       exact (iSup_mono fun j => (Yj j).boundary.massOn_mono (subset_univ W)).trans_lt hM
+
+/-- **Simon Ch. 6, 6.3 (Boundary Rectifiability Theorem, p. 170).**  If `T ∈ 𝒟ₙ(U)` is integer
+multiplicity and `M_W(∂T) < ∞` for all `W ⊂⊂ U`, then `∂T` is integer multiplicity
+(`n = m + 1`).  Integer multiplicity is local, so fix `x₀ ∈ U`.  By slicing there are `r > 0` and an
+integer multiplicity `X ∈ 𝒟ₙ(ℝ^P)` with `M(X) + M(∂X) < ∞` that agrees with `T` on forms supported
+in `B_r(x₀)`.  Polyhedral approximation (deformation theorem) and compactness for cycles (8.2) make
+`∂X` integer multiplicity, hence also its restriction to `U`.  For `ω` supported in `B_r(x₀)`,
+`spt dω ⊆ spt ω`, so `∂T(ω) = T(dω) = X(dω) = ∂X(ω)`. -/
+theorem Submission.boundary_rectifiability : BoundaryRectifiability := by
+  intro P m U hU T hT hbd
+  -- Integer multiplicity is local: it suffices to match `∂T` near every `x₀ ∈ U`.
+  refine Submission.br_isIntegerMultiplicity_of_local P m U hU T.boundary fun x₀ hx₀ => ?_
+  -- Localization by slicing: `X = T` on forms supported in `B_r(x₀)`, `M(X) + M(∂X) < ∞`.
+  obtain ⟨r, hr, hrU, X, hXIM, hXmass, hXbd, hXT⟩ :=
+    Submission.br_local_finite_mass_extension Submission.slicing_theorem P m U hU T hT hbd x₀ hx₀
+  -- The finite mass case in `ℝ^P`: `∂X` is integer multiplicity.
+  have hXb : IsIntegerMultiplicity X.boundary :=
+    Submission.br_boundary_isIntegerMultiplicity_of_finite_mass Submission.deformation_theorem
+      Submission.integrality_of_weak_limits P m X hXIM hXmass hXbd
+  -- `∂T` agrees on `B_r(x₀)` with the integer multiplicity current `(∂X)|_U`.
+  refine ⟨ball x₀ r, isOpen_ball, mem_ball_self hr, hrU,
+    X.boundary.restrictDomain (subset_univ U),
+    Submission.br_restrictDomain_isIntegerMultiplicity P m univ U (subset_univ U) hU X.boundary hXb,
+    fun ω hω => ?_⟩
+  have hdω : tsupport (exteriorDerivative (ω : DifferentialForm (Eucl P) m)) ⊆ ball x₀ r :=
+    (tsupport_exteriorDerivative_subset _).trans hω
+  calc T.boundary ω = T (exteriorDerivativeTestOn U m ω) := GeometricCurrentOn.boundary_apply T ω
+    _ = X (testFormOnInclusion (subset_univ U) (m + 1) (exteriorDerivativeTestOn U m ω)) :=
+        (hXT (exteriorDerivativeTestOn U m ω) hdω).symm
+    _ = X.boundary.restrictDomain (subset_univ U) ω := rfl
+
+theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
