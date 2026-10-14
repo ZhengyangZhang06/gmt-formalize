@@ -7714,6 +7714,63 @@ theorem Submission.dtc_imrep_of_null_off_compact : ∀ (P n : ℕ) (U V K : Set 
     ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[n]
   rw [hrestr]
 
+/-- **Push-forward of an integer multiplicity triple by a linear map** (Simon Ch. 6, 3.3–3.9,
+Lemma 3.9, for `f = L`).  Let `R = (M, θ, ξ)` be an `IMRep` in `ℝᴾ` of dimension `m ≥ 1` with
+`μ_R(ℝᴾ \ K) = 0` for a compact `K`.  Then `L_#τ(M, θ, ξ)` is represented by a triple carried by
+`L(K)`.  `T = τ(M, θ, ξ)` is a current (`dtc_imrep_current`) with
+`spt T = spt μ_R ⊆ K` (`dor_imrep_massOn_eq_measure_and_support`), a compact set.  The
+`C¹` push-forward along `L` (`dtc_bc_lc_pushforward`, with `DL(x) = L`) is integer multiplicity,
+has support in `L(spt T) ⊆ L(K)`, and evaluates `ω` to `∫_M θ ⟨ω(Lx) ∘ ΛᵐL, ξ⟩ dHᵐ = R(L^#ω)`.
+A representation `R₁` of it has `spt μ_{R₁} = spt L_#T ⊆ L(K)`, so `μ_{R₁}(ℝᴾ \ L(K)) = 0`, and
+`θ₁ ≥ 1` on `M₁` gives `Hᵐ(M₁ \ L(K)) = 0`.  Cutting `R₁` to the compact set `L(K)`
+(`dtc_imrep_of_null_off_compact`) keeps its action. -/
+theorem Submission.dimred_cs_sp_imrep_linear_pushforward : ∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P) (K : Set (Euclid P)), 0 < m → IsCompact K → R.measure Kᶜ = 0 → ∃ R' : IMRep (univ : Set (Euclid P)) m, R'.carrier ⊆ L '' K ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, R'.action (ω : DifferentialForm (Euclid P) m) = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m)) := by
+  intro P m R L K hm hK hRK
+  obtain ⟨m, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
+  -- Step 1: `T = τ(M, θ, ξ)` has `spt T = spt μ_R ⊆ K`, so `spt T` is compact
+  obtain ⟨T, hT⟩ := Submission.dtc_imrep_current P (m + 1) univ R
+  have hsptT : T.support = R.measure.support := by
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) univ T R isOpen_univ
+      hT).2, univ_inter]
+  have hTK : T.support ⊆ K := by
+    rw [hsptT]
+    exact Measure.support_subset_of_isClosed hK.isClosed (mem_ae_iff.mpr hRK)
+  have hTc : IsCompact T.support :=
+    hK.of_isClosed_subset (hsptT ▸ Measure.isClosed_support) hTK
+  -- Step 2: the `C¹` push-forward along `L` is integer multiplicity with support in `L(K)`
+  obtain ⟨push, hpush, -⟩ := Submission.dtc_bc_lc_pushforward P m univ L isOpen_univ
+    L.contDiff.contDiffOn
+  obtain ⟨hform, ⟨R₁, hR₁⟩, hspt, -, -⟩ := hpush T R hT hTc (subset_univ _)
+  have hLK : IsCompact (L '' K) := hK.image L.continuous
+  -- Step 3: `spt μ_{R₁} = spt L_#T ⊆ L(K)`, so `μ_{R₁}(ℝᴾ \ L(K)) = 0`
+  have hμ₁ : R₁.measure (L '' K)ᶜ = 0 := by
+    have hsupp₁ : R₁.measure.support ⊆ L '' K := by
+      rw [← univ_inter R₁.measure.support,
+        ← (Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) univ (push T) R₁
+          isOpen_univ hR₁).2]
+      exact hspt.trans (image_mono hTK)
+    exact measure_mono_null (compl_subset_compl.mpr hsupp₁) Measure.measure_compl_support
+  -- Step 4: `θ₁ ≥ 1` on `M₁`, hence `Hᵐ(M₁ \ L(K)) = 0`
+  have hnull : μHE[m + 1] (R₁.carrier \ L '' K) = 0 := by
+    have hmeas : MeasurableSet (L '' K)ᶜ := hLK.isClosed.measurableSet.compl
+    have h0 : ∫⁻ x in R₁.carrier ∩ (L '' K)ᶜ, (R₁.mult x : ℝ≥0∞) ∂μHE[m + 1] = 0 := by
+      rw [← hμ₁, IMRep.measure, withDensity_apply _ hmeas, Measure.restrict_restrict hmeas,
+        inter_comm]
+    refine nonpos_iff_eq_zero.mp ?_
+    calc μHE[m + 1] (R₁.carrier \ L '' K)
+        = ∫⁻ _ in R₁.carrier ∩ (L '' K)ᶜ, 1 ∂μHE[m + 1] := by rw [setLIntegral_one, sdiff_eq]
+      _ ≤ ∫⁻ x in R₁.carrier ∩ (L '' K)ᶜ, (R₁.mult x : ℝ≥0∞) ∂μHE[m + 1] :=
+        setLIntegral_mono
+          ((measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R₁.measurable_mult)
+          fun x hx => Nat.one_le_cast.mpr (R₁.mult_pos x hx.1)
+      _ = 0 := h0
+  -- Step 5: cut `R₁` to the compact set `L(K)`; the action is `R(L^#ω)` since `DL(x) = L`
+  obtain ⟨R', hR'K, hR'⟩ := Submission.dtc_imrep_of_null_off_compact P (m + 1) univ univ
+    (L '' K) R₁ hLK (subset_univ _) (subset_univ _) hnull
+  refine ⟨R', hR'K, fun ω => ?_⟩
+  rw [hR' ω, ← hR₁ ω, hform ω]
+  simp only [IMRep.action, affinePullbackForm, zero_add, ContinuousLinearMap.fderiv]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
