@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_chain-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Gram-determinant chain rule along an orthonormal frame of range Λ, and positivity for injective Λ",
+  "statement": "Let m, d, P ∈ ℕ, let Λ : ℝ^m → ℝ^d be a (continuous) linear map and let e_k := EuclideanSpace.single k 1 (k < m) be the standard basis of ℝ^m. (i) If Λ is injective, then det[⟨Λe_k, Λe_l⟩]_{k,l} > 0. (ii) For every linear Γ : ℝ^d → ℝ^P and every orthonormal family σ = (σ_0, …, σ_{m−1}) in ℝ^d whose span equals range Λ, det[⟨ΓΛe_k, ΓΛe_l⟩]_{k,l} = det[⟨Γσ_i, Γσ_j⟩]_{i,j} · det[⟨Λe_k, Λe_l⟩]_{k,l}.",
+  "lean_statement": "∀ (m d P : ℕ) (Λ : Euclid m →L[ℝ] Euclid d), (Injective Λ → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1)))) ∧ ∀ (Γ : Euclid d →L[ℝ] Euclid P) (σ : Fin m → Euclid d), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = LinearMap.range (Λ : Euclid m →ₗ[ℝ] Euclid d) → Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Γ (Λ (EuclideanSpace.single k 1))) (Γ (Λ (EuclideanSpace.single l 1)))) = Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (Γ (σ i)) (Γ (σ j))) * Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (Λ (EuclideanSpace.single k 1)) (Λ (EuclideanSpace.single l 1)))",
+  "lean_name": "codim1_lura_gram_det_comp_orthonormal",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-12e3a7fde6-a1"
+}
