@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem ae_tendsto_average |isUnifLocDoublingMeasureOfIsAddHaarMeasure|theorem tendsto_integral_of_dominated_convergence ",
+        "continuous_primitive",
+        "ae_eq_zero_of_.*interval|interval.*ae_eq_zero|ae_eq_zero_of_integral_I|forall_intervalIntegral|ae_eq_of_integral_I|integral_Ioc_eq_zero_iff|ae_eq_zero_of_forall_integral",
+        "idtp_cse_ah_cst_(plateau_weak_limit|ae_zero_of_rat_intervals)",
+        "python3 /tmp/cst-independent-audit-ous4m3xg/prepare.py",
+        "python3 /tmp/cst-independent-audit-ous4m3xg/run_lean.py Types.lean",
+        "python3 /tmp/cst-independent-audit-ous4m3xg/run_lean.py Checks.lean",
+        "python3 /tmp/cst-independent-audit-ous4m3xg/run_lean.py Assembly.lean",
+        "python3 /tmp/cst-independent-audit-ous4m3xg/run_lean.py RatIntervals.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-63b2fafad0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-63b2fafad0/decomposition-v1.json",
+        "/tmp/cst-independent-audit-ous4m3xg/prepare.py",
+        "/tmp/cst-independent-audit-ous4m3xg/run_lean.py",
+        "/tmp/cst-independent-audit-ous4m3xg/Types.lean",
+        "/tmp/cst-independent-audit-ous4m3xg/Checks.lean",
+        "/tmp/cst-independent-audit-ous4m3xg/Assembly.lean",
+        "/tmp/cst-independent-audit-ous4m3xg/RatIntervals.lean"
+      ],
+      "conclusion": "The pinned mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d and inspected source files match the compiler workspace; Submission.lean matches the snapshot. Required analytic APIs and the real-volume doubling instance are available. The targeted interval-uniqueness search found no matching shortcut. Neither proposed name is reserved elsewhere, and no identical frozen declaration was found for reuse. Independently compiled the standalone exact propositions, complete proofs, isolated second child, and parent assembly using only the two child hypotheses with Lean 4.35.0-rc3. All passed without warnings; both children and the parent use only propext, Classical.choice and Quot.sound. Scalar multiplication, Lebesgue measures, rational casts and filter instances have the intended meanings. The split appropriately separates two independent analytic obligations; its acyclic dependencies and assembly establish the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plateau_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including one sequence working for every integrable g and no ordering assumption on p,q. The proof supplies smoothness, closed support, the uniform bound, pointwise convergence, measurability and dominated convergence, including empty intervals and k=0. It is complete and non-circular. The bare identifier is unreserved, and the empty dependency list is correct."
+    },
+    {
+      "key": "ae_zero_of_rat_intervals",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition includes exactly the stated integrability and rational-endpoint hypotheses. The proof correctly handles empty intervals, zero extension, primitive continuity, rational density through both endpoints, null endpoint changes, Lebesgue differentiation and uniqueness along the nontrivial right-neighborhood filter. These steps prove the exact ambient-volume a.e. implication without either child or parent as a premise. The bare identifier is unreserved, and the empty dependency list is correct."
+    }
+  ],
+  "required_changes": []
+}
