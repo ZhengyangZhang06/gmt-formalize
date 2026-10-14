@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.chart_ball_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+  "depth": 6,
+  "title": "Approximate tangent plane of the chart image of a small ball at its centre (parent steps 2 and 4–9)",
+  "statement": "Let P, m ∈ ℕ, let V ⊆ ℝ^m be open, let ψ : ℝ^m → ℝ^P be of class C¹ on V (ContDiffOn ℝ 1 ψ V), and let v₀ ∈ V be a point at which Dψ(v₀) = fderiv ℝ ψ v₀ is injective. Then there is ρ > 0 such that the open ball B_ρ(v₀) is contained in V and the linear subspace T := range Dψ(v₀) of ℝ^P is the approximate tangent space of the set ψ(B_ρ(v₀)) at the point ψ(v₀) in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt m (ψ(B_ρ(v₀))) (ψ(v₀)) T): dim T = m, and ∫_{η_{ψ(v₀),r}(ψ(B_ρ(v₀)))} f dH^m → ∫_T f dH^m as r ↓ 0 for every continuous compactly supported f : ℝ^P → ℝ, where η_{x,r}(y) = r^{-1}(y − x) and H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → Injective (fderiv ℝ ψ v₀) → ∃ ρ : ℝ, 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ HasApproximateTangentSpaceAt m (ψ '' ball v₀ ρ) (ψ v₀) (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P))",
+  "lean_name": "codim1_ac_sat_chart_ball_approxTangent",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1.c1_local_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204-a1",
+      "result_commit": "12e74edc2f87670883f4d67e2d52fc0830d265e7",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7-a1",
+      "result_commit": "9ff76906722dcb8bcc007644718f45ab2b7ad407",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2f0652113f-a1"
+}
