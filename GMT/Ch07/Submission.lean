@@ -7445,6 +7445,24 @@ theorem Submission.dimred_cs_sos_lipschitz_approx_tangent : ∀ (P k : ℕ) (F :
   obtain ⟨l, hl⟩ := hcover u hFu hdiff hinj
   exact hu l hl
 
+/-- **Coarea formula for the projection onto a spine** (Federer 3.2.22 for `p = p_L` on `M`; the
+slicing step behind Simon Ch. 7, Lemma 3.5).  Let `M ⊆ ℝᴾ` be Borel,
+countably `n`-rectifiable and locally `Hⁿ`-finite, with an approximate tangent plane containing
+`L` at `Hⁿ`-a.e. point, `d = dim L < n` and `m = n − d`.  Then for `Hᵈ`-a.e. `t ∈ L` the slice
+`Mₜ = M ∩ p⁻¹(t)` is countably `m`-rectifiable with `Tan(Mₜ, x) = TₓM ∩ L⊥` for `Hᵐ`-a.e.
+`x ∈ Mₜ`, and `∫_M g dHⁿ = ∫_L ∫_{Mₜ} g dHᵐ dHᵈ(t)` for Borel `g ≥ 0`; the coarea factor is `1`
+because `p` restricted to `TₓM ⊇ L` is the orthogonal projection onto `L`.
+
+Up to an `Hⁿ`-null set, `M` is the disjoint union of Borel pieces `Fᵢ(Bᵢ) ⊆ M` with `Fᵢ`
+Lipschitz, bi-Lipschitz on `Bᵢ` and `DFᵢ` injective on `Bᵢ` (Simon Ch. 3, Lemma 1.2 and
+Remark 1.3).  The coarea formula for such a piece decomposition gives both conclusions. -/
+theorem Submission.dimred_cs_sos_spine_coarea : ∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), Module.finrank ℝ L < n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ L ≤ Q) → (∀ᵐ t ∂(μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))), CountablyRectifiable (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) ∧ ∀ᵐ x ∂(μHE[n - Module.finrank ℝ L].restrict (M ∩ {x | L.starProjection x = t})), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) x (Q ⊓ Lᗮ)) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L]) (μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))) ∧ ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set (Euclid P)), ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L] ∂μHE[Module.finrank ℝ L] := by
+  intro P n L M hdn hM hrect hloc htan
+  -- the disjoint bi-Lipschitz pieces of the Borel countably `n`-rectifiable set `M` feed the
+  -- coarea formula along the pieces
+  exact Submission.dimred_cs_sos_sc_coarea_of_pieces P n L M hdn hM
+    (Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect) hloc htan
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
