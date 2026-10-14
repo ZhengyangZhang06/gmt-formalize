@@ -451,6 +451,60 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, proof of Ch. 6, 5.1** (step 0 of the cube estimate: subtracting a constant multiple
+of `[[F]]` does not change the boundary inside the cube): if `g` is `C¹` with compact support in
+the open unit cube `Q₁ ⊆ ℝⁿ`, then `∫_{Q₁} div g = 0`.  Translation does not change `∫ g`, so
+differentiating `v ↦ ∫ g (x + v) dx` at `0` under the integral sign (dominated by `sup ‖Dg‖` on
+the `1`-thickening of `tsupport g`) gives `∫ Dg = 0`; the trace is a continuous linear functional,
+so `∫ div g = trace ∫ Dg = 0`; and `div g` vanishes off `tsupport g ⊆ Q₁`. -/
+theorem Submission.dimred_mbl_dt_cbm_integral_div_eq_zero : ∀ (m : ℕ) (g : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) = 0 := by
+  intro m g hg hgc hsub
+  -- `Dg` is continuous, compactly supported and bounded
+  have hDc : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  have hDs : HasCompactSupport (fderiv ℝ g) := hgc.fderiv ℝ
+  obtain ⟨C, hC⟩ := hDc.bounded_above_of_compact_support hDs
+  -- `∫ Dg = 0`: differentiate the constant map `v ↦ ∫ g (x + v) dx` at `v = 0`
+  have hD0 : ∫ x, fderiv ℝ g x = 0 := by
+    have hK : IsCompact (cthickening 1 (tsupport g)) := hgc.isCompact.cthickening
+    have h1 : HasFDerivAt (fun v : Euclid (m + 1) => ∫ x, g (x + v))
+        (∫ x, fderiv ℝ g (x + 0)) 0 := by
+      refine hasFDerivAt_integral_of_dominated_of_fderiv_le (F := fun v x => g (x + v))
+        (F' := fun v x => fderiv ℝ g (x + v))
+        (bound := (cthickening 1 (tsupport g)).indicator fun _ => C)
+        (ball_mem_nhds 0 one_pos) ?_ ?_ ?_ ?_ ?_ ?_
+      · exact Eventually.of_forall fun v =>
+          (hg.continuous.comp (continuous_add_const v)).aestronglyMeasurable
+      · simpa using hg.continuous.integrable_of_hasCompactSupport hgc
+      · exact (hDc.comp (continuous_add_const 0)).aestronglyMeasurable
+      · refine ae_of_all _ fun x v hv => ?_
+        by_cases hx : x + v ∈ tsupport g
+        · rw [indicator_of_mem (mem_cthickening_of_dist_le x (x + v) 1 _ hx ?_)]
+          · exact hC _
+          · rw [dist_eq_norm, sub_add_cancel_left, norm_neg]
+            exact (mem_ball_zero_iff.mp hv).le
+        · rw [fderiv_of_notMem_tsupport ℝ hx, norm_zero]
+          exact indicator_nonneg (fun _ _ => (norm_nonneg _).trans (hC 0)) x
+      · exact (integrableOn_const hK.measure_ne_top).integrable_indicator hK.measurableSet
+      · refine ae_of_all _ fun x v _ => ?_
+        have h := (hg.differentiable one_ne_zero (x + v)).hasFDerivAt.comp v
+          ((hasFDerivAt_id v).const_add x)
+        rwa [ContinuousLinearMap.comp_id] at h
+    have h2 : HasFDerivAt (fun v : Euclid (m + 1) => ∫ x, g (x + v))
+        (0 : Euclid (m + 1) →L[ℝ] Euclid (m + 1)) 0 := by
+      simp_rw [integral_add_right_eq_self]
+      exact hasFDerivAt_const _ _
+    simpa using h1.unique h2
+  -- the trace, as a continuous linear functional on `L(ℝⁿ, ℝⁿ)`
+  let T : (Euclid (m + 1) →L[ℝ] Euclid (m + 1)) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+    ((LinearMap.trace ℝ (Euclid (m + 1))).comp (ContinuousLinearMap.coeLM ℝ))
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+  · calc ∫ y, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) = ∫ y, T (fderiv ℝ g y) := rfl
+      _ = T (∫ y, fderiv ℝ g y) := T.integral_comp_comm (hDc.integrable_of_hasCompactSupport hDs)
+      _ = 0 := by rw [hD0, map_zero]
+  · intro y hy
+    rw [fderiv_of_notMem_tsupport ℝ fun h => hy (hsub h)]
+    simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
