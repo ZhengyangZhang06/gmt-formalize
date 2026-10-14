@@ -2401,6 +2401,104 @@ theorem Submission.idtp_ccd_scsp_du_bois_reymond : ∀ (a b : ℝ) (κ : ℝ →
   have hzero := Submission.idtp_ccd_scsp_dbr_fundamental_lemma a b (fun x => κ x - c)
     (hκ.sub continuousOn_const) horth
   exact ⟨c, fun x hx => sub_eq_zero.mp (hzero x hx)⟩
+/-- **The sector agrees with the plane near `r₀u`** (step 12 of the parent proof).  Choose
+`δ ≤ s` with `B_δ(r₀u) ⊆ N` and `|arctan(⟨y, e⟩ / ⟨y, u⟩)| < s` on `B_δ(r₀u)` (the angle is
+continuous at `r₀u` and vanishes there).  Points of `M` in `B_δ(r₀u)` lie in `M ∩ N`, the polar
+sector, hence in `span{u, e}`.  Conversely `y = x u + z e ∈ B_δ(r₀u)` has `x > r₀ − s > 0` and
+polar coordinates `t = ‖y‖ = x √(1 + (z / x)²) ∈ (r₀ − s, r₀ + s)`, `α = arctan(z / x) ∈ (−s, s)`
+with `t cos α = x`, `t sin α = z`, so `y` lies in the sector `M ∩ N`. -/
+theorem Submission.idtp_ccd_scsp_sector_plane : ∀ (P : ℕ) (M N : Set (Euclid P)) (u e : Euclid P) (r₀ s : ℝ), ‖u‖ = 1 → ‖e‖ = 1 → inner ℝ u e = 0 → 0 < s → s < r₀ → IsOpen N → r₀ • u ∈ N → M ∩ N = (fun q : ℝ × ℝ => q.1 • (Real.cos q.2 • u + Real.sin q.2 • e)) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) → ∃ δ : ℝ, 0 < δ ∧ M ∩ ball (r₀ • u) δ = (Submodule.span ℝ {u, e} : Set (Euclid P)) ∩ ball (r₀ • u) δ := by
+  intro P M N u e r₀ s hu he hue hs hsr hN hpN hMN
+  have hr₀ : 0 < r₀ := hs.trans hsr
+  -- inner products of the orthonormal pair `u, e`
+  have huu : inner ℝ u u = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hu, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have heu : inner ℝ e u = (0 : ℝ) := by rw [real_inner_comm, hue]
+  -- `⟨a u + b e, u⟩ = a` and `⟨a u + b e, e⟩ = b`
+  have hcu : ∀ a b : ℝ, inner ℝ (a • u + b • e) u = a := by
+    intro a b
+    rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, huu, heu]
+    ring
+  have hce : ∀ a b : ℝ, inner ℝ (a • u + b • e) e = b := by
+    intro a b
+    rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, hue, hee]
+    ring
+  have hnorm : ∀ a b : ℝ, ‖a • u + b • e‖ ^ 2 = a ^ 2 + b ^ 2 := by
+    intro a b
+    rw [← real_inner_self_eq_norm_sq, inner_add_right, real_inner_smul_right,
+      real_inner_smul_right, hcu, hce]
+    ring
+  -- the point `p = r₀ u`
+  have hpu : inner ℝ (r₀ • u) u = r₀ := by rw [real_inner_smul_left, huu, mul_one]
+  have hpe : inner ℝ (r₀ • u) e = (0 : ℝ) := by rw [real_inner_smul_left, hue, mul_zero]
+  have hpn : ‖r₀ • u‖ = r₀ := by rw [norm_smul, hu, mul_one, Real.norm_eq_abs, abs_of_pos hr₀]
+  -- the angle `f(y) = arctan(⟨y, e⟩ / ⟨y, u⟩)` is continuous at `p` with `f(p) = 0`
+  have hfc : ContinuousAt (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y u))
+      (r₀ • u) :=
+    Real.continuous_arctan.continuousAt.comp
+      ((continuous_id.inner continuous_const).continuousAt.div
+        (continuous_id.inner continuous_const).continuousAt (by simp [hpu, hr₀.ne']))
+  have hf0 : Real.arctan (inner ℝ (r₀ • u) e / inner ℝ (r₀ • u) u) = 0 := by
+    rw [hpe, zero_div, Real.arctan_zero]
+  have hIoo : Ioo (-s) s ∈ 𝓝 (Real.arctan (inner ℝ (r₀ • u) e / inner ℝ (r₀ • u) u)) := by
+    rw [hf0]
+    exact Ioo_mem_nhds (by linarith) hs
+  obtain ⟨δ₁, hδ₁, hball₁⟩ := Metric.mem_nhds_iff.1 (hfc.preimage_mem_nhds hIoo)
+  obtain ⟨δ₂, hδ₂, hball₂⟩ := Metric.isOpen_iff.1 hN _ hpN
+  refine ⟨min s (min δ₁ δ₂), lt_min hs (lt_min hδ₁ hδ₂), ?_⟩
+  have hδs : min s (min δ₁ δ₂) ≤ s := min_le_left _ _
+  have hδ₁' : min s (min δ₁ δ₂) ≤ δ₁ := (min_le_right _ _).trans (min_le_left _ _)
+  have hδ₂' : min s (min δ₁ δ₂) ≤ δ₂ := (min_le_right _ _).trans (min_le_right _ _)
+  ext y
+  constructor
+  · -- points of `M` near `p` lie in `M ∩ N`, hence are combinations of `u` and `e`
+    rintro ⟨hyM, hyB⟩
+    refine ⟨?_, hyB⟩
+    have hyMN : y ∈ M ∩ N := ⟨hyM, hball₂ (ball_subset_ball hδ₂' hyB)⟩
+    rw [hMN] at hyMN
+    obtain ⟨⟨t, α⟩, -, rfl⟩ := hyMN
+    rw [SetLike.mem_coe, Submodule.mem_span_pair]
+    exact ⟨t * Real.cos α, t * Real.sin α, by simp only [smul_add, smul_smul]⟩
+  · -- points `x u + z e` near `p` have polar coordinates in the sector
+    rintro ⟨hyQ, hyB⟩
+    refine ⟨?_, hyB⟩
+    rw [SetLike.mem_coe, Submodule.mem_span_pair] at hyQ
+    obtain ⟨x, z, rfl⟩ := hyQ
+    have hd : ‖x • u + z • e - r₀ • u‖ < min s (min δ₁ δ₂) := by
+      rw [← dist_eq_norm]
+      exact hyB
+    -- `|x - r₀| ≤ ‖y - p‖`, so `x > r₀ - s > 0`
+    have hx : 0 < x := by
+      have h1 := abs_real_inner_le_norm (x • u + z • e - r₀ • u) u
+      rw [inner_sub_left, hcu, hpu, hu, mul_one] at h1
+      have h2 := neg_abs_le (x - r₀)
+      linarith
+    -- the radius `t = ‖y‖ ∈ (r₀ - s, r₀ + s)`
+    have ht : ‖x • u + z • e‖ ∈ Ioo (r₀ - s) (r₀ + s) := by
+      have h1 := abs_norm_sub_norm_le (x • u + z • e) (r₀ • u)
+      rw [hpn] at h1
+      have h2 := abs_lt.1 (h1.trans_lt (hd.trans_le hδs))
+      exact ⟨by linarith [h2.1], by linarith [h2.2]⟩
+    -- the angle `α = arctan(z / x) ∈ (-s, s)`
+    have hα : Real.arctan (z / x) ∈ Ioo (-s) s := by
+      have h1 := hball₁ (ball_subset_ball hδ₁' hyB)
+      rw [mem_preimage, hcu, hce] at h1
+      exact h1
+    -- `t = x √(1 + (z / x)²)`, so `t cos α = x` and `t sin α = z`
+    have hS : 0 < √(1 + (z / x) ^ 2) := Real.sqrt_pos.2 (by positivity)
+    have htS : ‖x • u + z • e‖ = x * √(1 + (z / x) ^ 2) := by
+      refine (sq_eq_sq₀ (norm_nonneg _) (by positivity)).1 ?_
+      rw [hnorm, mul_pow, Real.sq_sqrt (by positivity)]
+      field_simp
+    have hmem : x • u + z • e ∈ M ∩ N := by
+      rw [hMN]
+      refine ⟨(‖x • u + z • e‖, Real.arctan (z / x)), ⟨ht, hα⟩, ?_⟩
+      simp only [smul_add, smul_smul]
+      rw [Real.cos_arctan, Real.sin_arctan, htS]
+      congr 2
+      · field_simp
+      · field_simp
+    exact hmem.1
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
