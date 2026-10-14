@@ -359,6 +359,173 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
+(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
+theorem Submission.cmb_abs_apply_le_of_massOn_le :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      |T ω| ≤ B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
+/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
+lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
+theorem Submission.cmb_exists_compactly_contained_exhaustion :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
+      (∀ i, CompactlyContainedOpen (W i) U) ∧
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
+  intro P U hU
+  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
+  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
+  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
+    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
+    exact hx
+  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
+    fun K hK hKU => ?_⟩
+  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
+    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
+        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
+      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
+        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
+        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
+    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
+      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
+      fun x hx => ?_⟩
+    by_contra hxU
+    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
+    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
+    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
+  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
+    rcases K.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, empty_subset _⟩
+    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
+    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
+    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
+    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
+      calc ‖x‖ ≤ R := hR x hx
+        _ < i₁ := hi₁
+        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
+    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
+      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
+            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
+        _ < infEDist x₀ Uᶜ := hi₂
+        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
+
+/-- Flat convergence implies weak convergence (Simon Ch. 6, proof of 7.2, the "if" part): for
+`ω ∈ 𝒟ⁿ(U)` take `W ⊂⊂ U` containing `spt ω ⊇ spt dω`; a decomposition `T_j − T = ∂R + S`
+with `M_W(S) + M_W(R) < δ` gives `|T_j(ω) − T(ω)| = |R(dω) + S(ω)| ≤ δ (sup |dω| + sup |ω|)`. -/
+theorem Submission.fiw_flat_to_weak :
+    ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n)
+      (Tj : ℕ → GeometricCurrentOn U n),
+      (∀ W, CompactlyContainedOpen W U → Tendsto (fun j => flatDistance W (Tj j) T) atTop (𝓝 0)) →
+      WeaklyConvergesOn Tj T := by
+  intro P n U hU T Tj hflat ω
+  -- The Euclidean coefficient norm of a test form is continuous with compact support, so bounded.
+  have hbdd : ∀ {k : ℕ} (η : TestFormOn U k), ∃ C : ℝ, 0 ≤ C ∧
+      ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) ≤ C := by
+    intro k η
+    have hη : Continuous (η : DifferentialForm (Eucl P) k) := η.property.1.1.continuous
+    have hηs : HasCompactSupport (η : DifferentialForm (Eucl P) k) := η.property.1.2
+    have hcont : Continuous fun x =>
+        covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) := by
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      exact Continuous.if_const _ (((continuous_eval_const _).comp hη).pow 2) continuous_const
+    have hsupp : HasCompactSupport fun x =>
+        covectorEuclideanNorm ((η : DifferentialForm (Eucl P) k) x) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) hηs
+        (covectorEuclideanNorm_zero P k)
+    obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hsupp
+    refine ⟨max C 0, le_max_right _ _, fun x => ?_⟩
+    have hx := hC x
+    rw [Real.norm_of_nonneg (covectorEuclideanNorm_nonneg _)] at hx
+    exact hx.trans (le_max_left _ _)
+  -- An open `W ⊂⊂ U` containing `spt ω`, hence also `spt dω`.
+  have hωs : HasCompactSupport (ω : DifferentialForm (Eucl P) n) := ω.property.1.2
+  have hωU : tsupport (ω : DifferentialForm (Eucl P) n) ⊆ U := ω.property.2
+  obtain ⟨Wseq, hWseq, hcover⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  obtain ⟨i, hi⟩ := hcover _ hωs.isCompact hωU
+  have hdi : tsupport ((exteriorDerivativeTestOn U n ω : TestFormOn U (n + 1)) :
+      DifferentialForm (Eucl P) (n + 1)) ⊆ Wseq i :=
+    (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Eucl P) n)).trans hi
+  obtain ⟨C₀, hC₀, hω⟩ := hbdd ω
+  obtain ⟨C₁, hC₁, hdω⟩ := hbdd (exteriorDerivativeTestOn U n ω)
+  have hC : 0 < C₀ + C₁ + 1 := by linarith
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hδ : 0 < ε / (C₀ + C₁ + 1) := div_pos hε hC
+  filter_upwards [(tendsto_order.1 (hflat (Wseq i) (hWseq i))).2 _ (ENNReal.ofReal_pos.2 hδ)]
+    with j hj
+  -- A decomposition `T_j − T = ∂R + S` with `M_W(S) + M_W(R) < δ`.
+  obtain ⟨R, hR⟩ := iInf_lt_iff.1 hj
+  obtain ⟨S, hS⟩ := iInf_lt_iff.1 hR
+  obtain ⟨⟨-, -, hdec⟩, hlt⟩ := iInf_lt_iff.1 hS
+  have hR₁ := Submission.cmb_abs_apply_le_of_massOn_le P (n + 1) U (Wseq i) R
+    (exteriorDerivativeTestOn U n ω) _ C₁ hδ.le (le_add_self.trans hlt.le) hdi hdω
+  have hS₁ := Submission.cmb_abs_apply_le_of_massOn_le P n U (Wseq i) S ω _ C₀ hδ.le
+    (le_self_add.trans hlt.le) hi hω
+  rw [Real.dist_eq, hdec ω, GeometricCurrentOn.boundary_apply]
+  calc |R (exteriorDerivativeTestOn U n ω) + S ω|
+      ≤ |R (exteriorDerivativeTestOn U n ω)| + |S ω| := abs_add_le _ _
+    _ ≤ ε / (C₀ + C₁ + 1) * C₁ + ε / (C₀ + C₁ + 1) * C₀ := add_le_add hR₁ hS₁
+    _ = ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) - ε / (C₀ + C₁ + 1) := by ring
+    _ < ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) := by linarith
+    _ = ε := div_mul_cancel₀ ε hC.ne'
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06

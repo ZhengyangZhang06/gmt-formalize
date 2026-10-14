@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_lincomb-a1",
+  "parent_id": "root.flat_iff_weak-a1",
+  "depth": 2,
+  "title": "Integer linear combinations of integer multiplicity currents (Simon 3.2(1))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T₁, T₂ ∈ D_n(U) integer multiplicity, a, b ∈ ℤ, and S ∈ D_n(U) with S(ω) = a·T₁(ω) + b·T₂(ω) for every ω ∈ D^n(U). Then S is integer multiplicity.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T₁ T₂ S : GeometricCurrentOn U n) (a b : ℤ), IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω, S ω = (a : ℝ) * T₁ ω + (b : ℝ) * T₂ ω) → IsIntegerMultiplicity S",
+  "lean_name": "fiw_im_lincomb",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1",
+    "root.flat_iff_weak-a1.im_mass_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.im_mass_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-lincomb-a1-a1"
+}
