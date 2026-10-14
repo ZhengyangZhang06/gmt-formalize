@@ -871,6 +871,159 @@ theorem Submission.idtp_cse_bml_plane_square_measure : ∀ (P : ℕ) (Q : Submod
       refine ⟨?_, h0, h1⟩
       have h2 := hn s
       nlinarith [sq_abs (s 0), sq_abs (s 1), abs_nonneg (s 0), abs_nonneg (s 1), norm_nonneg (ι s)]
+/-- **Portmanteau inequalities for vague convergence on an open set** (Evans–Gariepy §1.9).
+Simon does not state this separately: it is the converse of the "standard approximation
+argument" ending the proof of 7.2.4, and its compact-set half is the `ε`-neighbourhood argument
+giving (13) there (chapter-07.txt lines 264–288).  Let `U` be open and `νⱼ`, `μ` finite on compact
+subsets of `U`.  If `∫ f dνⱼ → ∫ f dμ` for every continuous `f` with compact support in `U`, then
+`limsup νⱼ(K) ≤ μ(K)` for compact `K ⊆ U` and `μ(G) ≤ liminf νⱼ(G)` for open `G ⊆ U`.  Urysohn
+cut-offs `1_K ≤ h ≤ 1_{thickening r K}` give `limsup νⱼ(K) ≤ μ(cthickening r K) → μ(K)` as
+`r ↓ 0`; cut-offs `1_C ≤ h` with `tsupport h ⊆ G` give `μ(C) ≤ liminf νⱼ(G)` for compact
+`C ⊆ G`, and `G` is exhausted by increasing compact sets. -/
+theorem Submission.cbr_vague_portmanteau : ∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => νs j K) atTop ≤ μ K) ∧ (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => νs j G) atTop) := by
+  intro P U νs μ hU hνs hμ hconv
+  -- Step 1: cut-off functions.  For compact `C` and `r > 0`, Urysohn's lemma gives a continuous
+  -- `h` with compact support, `0 ≤ h ≤ 1`, `h = 1` on `C` and `h = 0` off `thickening r C`;
+  -- hence `tsupport h ⊆ cthickening r C`
+  have hcut : ∀ (C : Set (Euclid P)) (r : ℝ), IsCompact C → 0 < r →
+      ∃ h : Euclid P → ℝ, Continuous h ∧ HasCompactSupport h ∧ (∀ x, 0 ≤ h x) ∧
+        (∀ x ∈ C, h x = 1) ∧ (∀ x, h x ≤ 1) ∧ (∀ x, x ∉ thickening r C → h x = 0) ∧
+        tsupport h ⊆ cthickening r C := by
+    intro C r hC hr
+    obtain ⟨h, h1, h0, hcs, h01⟩ := exists_continuous_one_zero_of_isCompact hC
+      isOpen_thickening.isClosed_compl
+      (disjoint_compl_right_iff_subset.mpr (self_subset_thickening hr C))
+    refine ⟨h, h.continuous, hcs, fun x => (h01 x).1, fun x hx => h1 hx, fun x => (h01 x).2,
+      fun x hx => h0 hx, (closure_mono fun x hx => ?_).trans
+        (closure_thickening_subset_cthickening r C)⟩
+    by_contra hxr
+    exact hx (h0 hxr)
+  -- Step 0: such an `h` is `ρ`-integrable whenever `ρ(tsupport h) < ∞`; then
+  -- `ρ(B) ≤ ofReal (∫ h dρ)` if `h = 1` on `B` (`Integrable.measure_le_integral`), and in any
+  -- case `ofReal (∫ h dρ) ≤ ρ(V)` if `h ≤ 1` and `h = 0` off `V` (`integral_le_measure`)
+  have hint : ∀ (ρ : Measure (Euclid P)) (h : Euclid P → ℝ), Continuous h → HasCompactSupport h →
+      ρ (tsupport h) < ∞ → Integrable h ρ := fun ρ h hc hcs hρ =>
+    (integrableOn_iff_integrable_of_support_subset (subset_tsupport h)).mp
+      (hc.continuousOn.integrableOn_of_subset_isCompact hcs (isClosed_tsupport h).measurableSet
+        subset_rfl hρ.ne)
+  -- Step 2: compact sets.  Choose `δ > 0` with `cthickening δ K ⊆ U`; for `0 < r ≤ δ`,
+  -- `limsup νⱼ(K) ≤ lim ofReal (∫ h dνⱼ) = ofReal (∫ h dμ) ≤ μ(cthickening r K)`, and
+  -- `μ(cthickening r K) → μ(K)` as `r → 0` because `μ(cthickening δ K) < ∞`
+  have hK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      limsup (fun j => νs j K) atTop ≤ μ K := by
+    intro K hKc hKU
+    obtain ⟨δ, hδ, hδU⟩ := hKc.exists_cthickening_subset_open hU hKU
+    have hr : ∀ r, 0 < r → r ≤ δ → limsup (fun j => νs j K) atTop ≤ μ (cthickening r K) := by
+      intro r hr hrδ
+      obtain ⟨h, hc, hcs, h0, h1, hle1, hout, hts⟩ := hcut K r hKc hr
+      have htsU : tsupport h ⊆ U := hts.trans ((cthickening_mono hrδ K).trans hδU)
+      calc limsup (fun j => νs j K) atTop
+          ≤ limsup (fun j => ENNReal.ofReal (∫ x, h x ∂(νs j))) atTop :=
+            limsup_le_limsup (Eventually.of_forall fun j =>
+              (hint (νs j) h hc hcs (hνs j _ hcs htsU)).measure_le_integral
+                (Eventually.of_forall h0) fun x hx => (h1 x hx).ge)
+        _ = ENNReal.ofReal (∫ x, h x ∂μ) :=
+            ((ENNReal.continuous_ofReal.tendsto _).comp (hconv h hc hcs htsU)).limsup_eq
+        _ ≤ μ (cthickening r K) := integral_le_measure (fun x _ => hle1 x)
+            fun x hx => (hout x fun hx' => hx (thickening_subset_cthickening r K hx')).le
+    have hlim := tendsto_measure_cthickening_of_isClosed
+      ⟨δ, hδ, (hμ _ hKc.cthickening hδU).ne⟩ hKc.isClosed
+    refine ge_of_tendsto (hlim.mono_left (nhdsWithin_le_nhds : 𝓝[>] (0 : ℝ) ≤ 𝓝 0)) ?_
+    filter_upwards [Ioc_mem_nhdsGT hδ] with r hr' using hr r hr'.1 hr'.2
+  -- Step 3: compact subsets `C` of open `G ⊆ U`.  With `h = 1` on `C` and `tsupport h ⊆ G`,
+  -- `μ(C) ≤ ofReal (∫ h dμ) = lim ofReal (∫ h dνⱼ) ≤ liminf νⱼ(G)`
+  have hCG : ∀ G : Set (Euclid P), IsOpen G → G ⊆ U → ∀ C : Set (Euclid P), IsCompact C →
+      C ⊆ G → μ C ≤ liminf (fun j => νs j G) atTop := by
+    intro G hG hGU C hCc hCG
+    obtain ⟨δ, hδ, hδG⟩ := hCc.exists_cthickening_subset_open hG hCG
+    obtain ⟨h, hc, hcs, h0, h1, hle1, -, hts⟩ := hcut C δ hCc hδ
+    have htsG : tsupport h ⊆ G := hts.trans hδG
+    calc μ C ≤ ENNReal.ofReal (∫ x, h x ∂μ) :=
+          (hint μ h hc hcs (hμ _ hcs (htsG.trans hGU))).measure_le_integral
+            (Eventually.of_forall h0) fun x hx => (h1 x hx).ge
+      _ = liminf (fun j => ENNReal.ofReal (∫ x, h x ∂(νs j))) atTop :=
+          (((ENNReal.continuous_ofReal.tendsto _).comp
+            (hconv h hc hcs (htsG.trans hGU))).liminf_eq).symm
+      _ ≤ liminf (fun j => νs j G) atTop :=
+          liminf_le_liminf (Eventually.of_forall fun j => integral_le_measure (fun x _ => hle1 x)
+            fun x hx => (image_eq_zero_of_notMem_tsupport fun hx' => hx (htsG hx')).le)
+  -- Step 4: open sets.  `G = ⋃ₙ Fₙ` with `Fₙ` closed and increasing, so `G` is exhausted by the
+  -- increasing compact sets `Fₙ ∩ closedBall 0 n ⊆ G`; continuity from below and Step 3
+  refine ⟨hK, fun G hG hGU => ?_⟩
+  obtain ⟨F, hFc, hFG, hFU, hFm⟩ := hG.exists_iUnion_isClosed
+  have hCm : Monotone fun n : ℕ => F n ∩ closedBall (0 : Euclid P) n := fun m n hmn =>
+    inter_subset_inter (hFm hmn) (closedBall_subset_closedBall (Nat.cast_le.mpr hmn))
+  calc μ G ≤ μ (⋃ n : ℕ, F n ∩ closedBall (0 : Euclid P) n) := measure_mono fun x hx => by
+        rw [← hFU] at hx
+        obtain ⟨m, hm⟩ := mem_iUnion.mp hx
+        obtain ⟨k, hk⟩ := exists_nat_ge ‖x‖
+        exact mem_iUnion.mpr ⟨max m k, hFm (le_max_left m k) hm,
+          mem_closedBall_zero_iff.mpr (hk.trans (Nat.cast_le.mpr (le_max_right m k)))⟩
+    _ = ⨆ n : ℕ, μ (F n ∩ closedBall (0 : Euclid P) n) := hCm.measure_iUnion
+    _ ≤ liminf (fun j => νs j G) atTop := iSup_le fun n =>
+        hCG G hG hGU _ ((isCompact_closedBall 0 n).inter_left (hFc n))
+          (inter_subset_left.trans (hFG n))
+/-- **Rescaled push-forward under a dilation** (Simon 7.3, the scaling `μ_{η_{a,λ#}T}` of blow-ups).
+For `λ > 0`, `η = η_{a,λ}` is the homeomorphism `y ↦ −λ⁻¹a + λ⁻¹y`.  Hence `ν = η_#(λ⁻²μ)` is
+finite on compact sets when `μ` is (preimages of compact sets are compact), `ν(S) = λ⁻²μ(η⁻¹S)`
+for measurable `S`, and `∫ g dν = λ⁻² ∫ g ∘ η dμ` for continuous `g` (change of variables). -/
+theorem Submission.idtp_cse_bml_rpm_dilation_map : ∀ (P : ℕ) (μ : Measure (Euclid P)) (a : Euclid P) (lam : ℝ), IsFiniteMeasureOnCompacts μ → 0 < lam → (∀ K : Set (Euclid P), IsCompact K → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) K < ∞) ∧ (∀ S : Set (Euclid P), MeasurableSet S → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S = ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S)) ∧ ∀ g : Euclid P → ℝ, Continuous g → ∫ x, g x ∂(Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ)) = lam⁻¹ ^ 2 * ∫ x, g (dilation a lam x) ∂μ := by
+  intro P μ a lam hμ hlam
+  -- Step 1: `η_{a,λ}` is the homeomorphism `y ↦ −λ⁻¹a + λ⁻¹y`, so it is measurable and
+  -- preimages of compact sets are compact
+  let e : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • a)))
+  have he : ⇑e = dilation a lam := by
+    funext y
+    simp [e, dilation, dilationCLM]
+  have hη : Measurable (dilation a lam) := he ▸ e.continuous.measurable
+  -- Step 2: `ν(S) = (λ⁻²μ)(η⁻¹S) = λ⁻²μ(η⁻¹S)` for measurable `S`
+  have hset : ∀ S : Set (Euclid P), MeasurableSet S →
+      Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S =
+        ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S) := fun S hS => by
+    rw [Measure.map_apply hη hS, Measure.smul_apply, smul_eq_mul]
+  refine ⟨fun K hK => ?_, hset, fun g hg => ?_⟩
+  · -- Step 3: a compact `K` is closed, hence measurable, and `μ(η⁻¹K) < ∞` as `η⁻¹K` is compact
+    have hK' : IsCompact (dilation a lam ⁻¹' K) := by
+      rw [← he]
+      exact e.isCompact_preimage.mpr hK
+    rw [hset K hK.isClosed.measurableSet]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hK'.measure_lt_top
+  · -- Step 4: change of variables, then `∫ f d(cμ) = c.toReal ∫ f dμ` with `c.toReal = λ⁻²`
+    rw [integral_map hη.aemeasurable hg.aestronglyMeasurable, integral_smul_measure,
+      ENNReal.toReal_ofReal (sq_nonneg _), smul_eq_mul]
+
+/-- **Portmanteau bounds for the rescaled measures `λⱼ⁻²(η_{a,λⱼ})_#μ`** (Simon 7.3, the blow-up
+measures `μ_{η_{a,λⱼ#}T}`; the compact-set half is (13) in the proof of 7.2.4).  Let `μ`, `ν` be
+finite on compact sets, `λⱼ > 0` and `ηⱼ = η_{a,λⱼ}`.  If `λⱼ⁻² ∫ g ∘ ηⱼ dμ → ∫ g dν` for every
+continuous `g` with compact support, then `limsup λⱼ⁻²μ(ηⱼ⁻¹K) ≤ ν(K)` for compact `K` and
+`ν(U) ≤ liminf λⱼ⁻²μ(ηⱼ⁻¹U)` for open `U`: the measures `νⱼ = ηⱼ#(λⱼ⁻²μ)` are finite on compact
+sets with `∫ g dνⱼ = λⱼ⁻² ∫ g ∘ ηⱼ dμ`, so vague portmanteau on `ℝᴾ` applies to `νⱼ → ν`, and
+`νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for the (Borel) sets `S = K, U`. -/
+theorem Submission.idtp_cse_bml_rescaled_portmanteau : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (a : Euclid P) (lams : ℕ → ℝ), IsFiniteMeasureOnCompacts μ → IsFiniteMeasureOnCompacts ν → (∀ j, 0 < lams j) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (∫ x, g x ∂ν))) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' K)) atTop ≤ ν K) ∧ ∀ U : Set (Euclid P), IsOpen U → ν U ≤ liminf (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' U)) atTop := by
+  intro P μ ν a lams hμ hν hlams hconv
+  -- Step 1: `νⱼ = ηⱼ#(λⱼ⁻²μ)` is finite on compact sets, `νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for measurable
+  -- `S` and `∫ g dνⱼ = λⱼ⁻² ∫ g ∘ ηⱼ dμ` for continuous `g`
+  have hmap := fun j => Submission.idtp_cse_bml_rpm_dilation_map P μ a (lams j) hμ (hlams j)
+  have hset : ∀ (j : ℕ) (S : Set (Euclid P)), MeasurableSet S →
+      Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) S =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' S) :=
+    fun j => (hmap j).2.1
+  -- Step 2: vague portmanteau on `U = ℝᴾ` for `νⱼ → ν`
+  obtain ⟨hK, hU⟩ := Submission.cbr_vague_portmanteau P univ
+    (fun j => Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ)) ν
+    isOpen_univ (fun j K hK _ => (hmap j).1 K hK) (fun K hK _ => hK.measure_lt_top)
+    fun g hg hgs _ => (hconv g hg hgs).congr fun j => ((hmap j).2.2 g hg).symm
+  -- Step 3: compact and open sets are measurable, so `νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for them
+  refine ⟨fun K hKc => ?_, fun U hUo => ?_⟩
+  · have hS : ∀ j, Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) K =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' K) := fun j =>
+      hset j K hKc.measurableSet
+    simpa only [hS] using hK K hKc (subset_univ K)
+  · have hS : ∀ j, Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) U =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' U) := fun j =>
+      hset j U hUo.measurableSet
+    simpa only [hS] using hU U hUo (subset_univ U)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
