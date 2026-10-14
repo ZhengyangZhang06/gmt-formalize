@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54f2a6288579c83b1e4c5f199cfea08a6171321dfca02454e113afc350e964a4",
+  "git_delta": {
+    "base_commit": "f23696824f215b8a69d11f9d99c24f647bf68072",
+    "candidate_commit": "6a10946c7f58e87790c45f4dc5e9ee2178f0b1a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_orientation_normal",
+    "diff_sha256": "f3dabd3b754df7c8591eafd3d77bda3aad0bd3e8e53a955dc49d504f0be658cc",
+    "source_sha256": "2f58b62d246ea9220a7bd81d6f07af0813ad25889c0481444b768d4023acdcb2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_orientation_normal",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), Module.finrank ℝ A₀ = m + 1 → (∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P))) → IsOrientation m M ξ → ∃ ν₀ : Euclid P → Euclid P, ContinuousOn ν₀ M ∧ ∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
