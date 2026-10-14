@@ -609,6 +609,39 @@ theorem Submission.dimred_mbl_dtsd_gr_exists_deriv_le_off_null : ∀ (F : ℝ �
   obtain ⟨r, ⟨hrI, hrc⟩, hrN⟩ := nonempty_of_measure_ne_zero hSN
   exact ⟨r, hrI, hrN, hrc⟩
 
+/-- **Choice of a good slicing radius** (Simon Ch. 6, proof of 5.1, (8)–(10)).  If `μ`, `μ'` are
+finite and `μ {f < ρ} ≤ B`, some `r ∈ (ρ/2, ρ)` has `liminf_{h → 0+} h⁻¹ μ {r - h < f < r} ≤
+(4/ρ) B` and `liminf_{h → 0+} h⁻¹ μ' {r - h < f < r} < ∞`.  The distribution functions
+`F(t) = μ {f < t}` and `G(t) = μ' {f < t}` are monotone, hence differentiable off a Lebesgue-null
+set (Lebesgue's theorem).  As `F(ρ) - F(ρ/2) ≤ F(ρ) ≤ B`, Markov's inequality gives `r ∈ (ρ/2, ρ)`
+off that set with `F′(r) ≤ (4/ρ) B`, and at `r` the two liminfs are at most `F′(r)` and
+`G′(r) < ∞`. -/
+theorem Submission.dimred_mbl_dtsd_good_radius : ∀ (P : ℕ) (μ μ' : Measure (Euclid P)) (f : Euclid P → ℝ) (ρ : ℝ) (B : ℝ≥0∞), IsFiniteMeasure μ → IsFiniteMeasure μ' → Measurable f → 0 < ρ → μ {x | f x < ρ} ≤ B → ∃ r ∈ Ioo (ρ / 2) ρ, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) ≤ ENNReal.ofReal (4 / ρ) * B ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) < ∞ := by
+  intro P μ μ' f ρ B hμ hμ' hf hρ hB
+  -- the distribution function `t ↦ ν {f < t}` of a finite measure `ν` is monotone
+  have hmono : ∀ (ν : Measure (Euclid P)) [IsFiniteMeasure ν],
+      Monotone fun s : ℝ => (ν {x | f x < s}).toReal := fun ν _ s s' hs =>
+    ENNReal.toReal_mono (measure_ne_top ν _) (measure_mono fun x (hx : f x < s) => hx.trans_le hs)
+  set F := fun s : ℝ => (μ {x | f x < s}).toReal
+  set G := fun s : ℝ => (μ' {x | f x < s}).toReal
+  -- `F` and `G` are differentiable off a Lebesgue-null set (Lebesgue's theorem)
+  have hN : volume ({t | ¬DifferentiableAt ℝ F t} ∪ {t | ¬DifferentiableAt ℝ G t}) = 0 :=
+    measure_union_null (ae_iff.1 (hmono μ).ae_differentiableAt)
+      (ae_iff.1 (hmono μ').ae_differentiableAt)
+  -- `F(ρ) - F(ρ/2) ≤ F(ρ) = μ {f < ρ} ≤ B`
+  have hFB : ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B :=
+    (ENNReal.ofReal_le_ofReal (sub_le_self _ ENNReal.toReal_nonneg)).trans
+      ((ENNReal.ofReal_toReal (measure_ne_top μ _)).le.trans hB)
+  -- Markov's inequality: some `r ∈ (ρ/2, ρ)` off the null set has `F′(r) ≤ (4/ρ) B`
+  obtain ⟨r, hr, hrN, hrB⟩ :=
+    Submission.dimred_mbl_dtsd_gr_exists_deriv_le_off_null F ρ B _ (hmono μ) hρ hFB hN
+  simp only [mem_union, mem_ofPred_eq, not_or, not_not] at hrN
+  -- at `r` the slice liminfs are at most `F′(r) ≤ (4/ρ) B` and `G′(r) < ∞`
+  exact ⟨r, hr,
+    (Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv _ μ f r hμ hf hrN.1).trans hrB,
+    (Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv _ μ' f r hμ' hf hrN.2).trans_lt
+      ENNReal.ofReal_lt_top⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
