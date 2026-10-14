@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6e381620e48c4de96a094fa5ce2201d23be56643866e01e9c935df982042db64",
+  "git_delta": {
+    "base_commit": "5df96fc0c3c09ad60752d6b73d7edbcf4efc34e9",
+    "candidate_commit": "cd257e50c3b6bd960c1fc9ffaa1229f99b09e569",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_series_limit",
+    "diff_sha256": "6adc39a92acf4564e6d22bbfa2e58ecb365da912da3bc283df841400d2dfc562",
+    "source_sha256": "b1301bf97e5fd59f166fdfa30e3f7015b3691d087b5bd282dc5334000b597605",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_series_limit",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)) (Xlim : GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → WeaklyConvergesOn X Xlim → (∀ r, IsIntegerMultiplicity (R r) ∧ IsIntegerMultiplicity (S r) ∧ (∀ ω : TestFormOn U (m + 1), X (r + 1) ω - X r ω = (R r).boundary ω + S r ω) ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → ∀ ℓ : ℕ, ∃ (R' : GeometricCurrentOn U (m + 2)) (S' : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ (∀ ω : TestFormOn U (m + 1), Xlim ω - X ℓ ω = R'.boundary ω + S' ω) ∧ R'.mass + S'.mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
