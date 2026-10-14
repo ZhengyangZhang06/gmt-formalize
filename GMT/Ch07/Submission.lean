@@ -3110,6 +3110,51 @@ theorem Submission.dtc_mass_eq_measure : ∀ (P n : ℕ) (U W : Set (Euclid P)) 
       _ ≤ T.massOn W := iSup_le fun m => hcompact _
           ((isCompact_closedBall 0 m).inter_left (hFc m)) (inter_subset_left.trans (hFW m))
 
+/-- **Simon Ch. 3, proof of Theorem 1.6 "⇒"** (a `C¹` embedded disk has its tangent plane as
+approximate tangent space): if `B = B̄(c, r) ⊆ U` with `U` open, `g` is `C¹` on `U`, injective on
+`B`, and `Dg(a)` is injective for `a ∈ B`, then at each `z ∈ B(c, r)` the set `S = g(B)` has
+approximate tangent space `Q = Dg(z)(ℝᵈ)` at `g(z)`.  First `dim Q = d`.  A compactness
+argument gives `m > 0` with `m|a − b| ≤ |g(a) − g(b)|` on `B`; at the interior point `z` this
+passes to `m|v| ≤ |Dg(z)v|`.  For `s > 0` the area formula for the rescaled map
+`b ↦ s⁻¹(g(z + s b) − g(z))` gives `∫_{η_{g(z),s}(S)} f dHᵈ = ∫_{B_s} J(z + s b) f(…) db`, with
+`B_s = {b | z + s b ∈ B}` and `J = √det(Dg* ∘ Dg)` continuous on `B`.  Dominated convergence
+(the lower bound confines the integrands to a fixed ball) sends this to
+`J(z) ∫ f(Dg(z)b) db`, which is `∫_Q f dHᵈ` by the linear area formula. -/
+theorem Submission.dtc_bc_lc_sl_c1_tangent : ∀ (P d : ℕ) (g : Euclid d → Euclid P) (U : Set (Euclid d)) (c : Euclid d) (r : ℝ), IsOpen U → closedBall c r ⊆ U → ContDiffOn ℝ 1 g U → InjOn g (closedBall c r) → (∀ z ∈ closedBall c r, Injective (fderiv ℝ g z)) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt d (g '' closedBall c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid d →ₗ[ℝ] Euclid P)) := by
+  intro P d g U c r hU hBU hg hinj hreg z hz
+  have hzB : z ∈ closedBall c r := ball_subset_closedBall hz
+  -- `g` is differentiable on the open set `U`, and `Dg` is continuous there
+  have hdiff : ∀ a ∈ U, DifferentiableAt ℝ g a := fun a ha =>
+    (hg.differentiableOn one_ne_zero a ha).differentiableAt (hU.mem_nhds ha)
+  have hDg : ContinuousOn (fderiv ℝ g) U := hg.continuousOn_fderiv_of_isOpen hU le_rfl
+  -- the lower Lipschitz bound `m|a − b| ≤ |g(a) − g(b)|` on the compact ball `B`
+  obtain ⟨m, hm, hmB⟩ := Submission.dtc_bc_lc_sl_c1t_lower_lipschitz P d g U (closedBall c r)
+    hU (isCompact_closedBall c r) hBU hg hinj hreg
+  have hmz : ∀ a ∈ closedBall c r, m * ‖a - z‖ ≤ ‖g a - g z‖ := fun a ha => hmB a ha z hzB
+  -- at the interior point `z` it passes to the derivative: `m|v| ≤ |Dg(z)v|`
+  have hmD : ∀ v : Euclid d, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖ :=
+    Submission.codim1_rdo_c1pt_fderiv_lower_bound P d g (ball c r) z m isOpen_ball hz
+      (hdiff z (hBU hzB)) fun a ha => hmz a (ball_subset_closedBall ha)
+  -- the Jacobian `J(a) = √det(Dg(a)* ∘ Dg(a))` is continuous on `B`
+  have hJ : ContinuousOn (fun a => Real.sqrt (((fderiv ℝ g a).adjoint ∘L fderiv ℝ g a).det))
+      (closedBall c r) :=
+    (Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))).comp_continuousOn
+      (hDg.mono hBU)
+  -- `dim Dg(z)(ℝᵈ) = d`, since `Dg(z)` is injective
+  refine ⟨by rw [LinearMap.finrank_range_of_inj (f := (fderiv ℝ g z : Euclid d →ₗ[ℝ] Euclid P))
+    (hreg z hzB), finrank_euclideanSpace_fin], fun f => ?_⟩
+  -- linear area formula: `∫_{Dg(z)(ℝᵈ)} f dHᵈ = J(z) ∫ f(Dg(z)b) db`
+  rw [Submission.codim1_rdo_c1pt_linear_range_integral P d (fderiv ℝ g z) f (hreg z hzB)]
+  -- for `s > 0` the area formula for the rescaled map turns `∫_{η_{g(z),s}(S)} f dHᵈ` into the
+  -- integral over `B_s`, whose limit as `s ↓ 0` is `J(z) ∫ f(Dg(z)b) db`
+  refine (Submission.dtc_bc_lc_sl_c1t_rescaled_tendsto P d g _ (closedBall c r) z m f
+    (isCompact_closedBall c r) (closedBall_mem_nhds_of_mem hz) (hg.continuousOn.mono hBU)
+    (hdiff z (hBU hzB)) hJ hm hmz hmD f.continuous f.hasCompactSupport).congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with s hs
+  exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P d g (closedBall c r) z s f
+    measurableSet_closedBall (fun a ha => hdiff a (hBU ha)) hinj hreg hs).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
