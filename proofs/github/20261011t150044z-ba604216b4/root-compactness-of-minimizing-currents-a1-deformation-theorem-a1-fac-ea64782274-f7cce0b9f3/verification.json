@@ -1,0 +1,15 @@
+{
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.tangent_le_plane-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/6815",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "cfd655d427eb5ab21ef7b0dc02f31fa9f345d2dd",
+  "integrated_commit": "",
+  "proof_base_commit": "3ee113211a633f2413583ab5a6f6076d20cb05a1",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "requires": []
+}
