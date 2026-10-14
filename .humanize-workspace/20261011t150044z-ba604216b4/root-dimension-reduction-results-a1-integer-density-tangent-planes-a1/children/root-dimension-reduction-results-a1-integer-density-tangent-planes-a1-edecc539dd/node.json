@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Two-dimensional minimizing cones have integer density at the vertex (classification of 2-dimensional minimizing cones proved)",
+  "statement": "For every P ∈ ℕ and every C ∈ 𝒟_2(ℝ^P): if C is minimizing in ℝ^P (IsMinimizingIn C univ), ∂C = 0 (BoundaryVanishes C) and C is a cone (IsConeCurrent C), then there is m ∈ ℕ with HasMassDensity C 0 m, i.e. Θ²(μ_C, 0) = m.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ m : ℕ, HasMassDensity C 0 m",
+  "lean_name": "idtp_two_dim_cone_integer_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd-a1"
+}

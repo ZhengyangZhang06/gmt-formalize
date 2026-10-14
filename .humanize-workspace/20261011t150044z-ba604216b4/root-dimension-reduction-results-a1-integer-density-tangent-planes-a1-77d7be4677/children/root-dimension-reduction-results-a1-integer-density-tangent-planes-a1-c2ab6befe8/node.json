@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.planar_orientation_sign-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Carrier in an n-plane: the orientation is ±τ₁∧⋯∧τₙ almost everywhere",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, and let R = (M, θ, ξ) be an integer multiplicity triple in U (R : IMRep U n with M = R.carrier, θ = R.mult, ξ = R.orient). Let τ = (τ_1, …, τ_n) be an orthonormal family in ℝ^P and Q := span{τ_1, …, τ_n}. If H^n(M ∖ Q) = 0 (H^n = μHE[n]), then for H^n-a.e. x ∈ M (that is, μHE[n].restrict M-a.e.) either ξ(x)(α) = α(τ_1, …, τ_n) for every n-covector α (α ∈ Covector (Euclid P) n), or ξ(x)(α) = −α(τ_1, …, τ_n) for every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → μHE[n] (R.carrier \\ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) = 0 → ∀ᵐ x ∂(μHE[n].restrict R.carrier), (∀ α : Covector (Euclid P) n, R.orient x α = α τ) ∨ (∀ α : Covector (Euclid P) n, R.orient x α = -α τ)",
+  "lean_name": "idtp_pc_orient_ae_eq_or_neg",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a-33314200d5-a1",
+      "result_commit": "038573e401c107149b7c1ae80dd1bc7621b035f5",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-2cfeb17896-a1",
+      "result_commit": "d5e029d5491f14cde86f926a115e1c61096d3512",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c2ab6befe8-a1"
+}

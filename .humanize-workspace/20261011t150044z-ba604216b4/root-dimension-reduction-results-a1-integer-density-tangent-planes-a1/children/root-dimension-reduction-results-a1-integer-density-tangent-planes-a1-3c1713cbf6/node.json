@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Weighted area formula on a countably n-rectifiable carrier for a C¹ map into ℝ^n (Simon Ch. 3, 2.4–2.5)",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every Borel set M ⊆ ℝ^P that is countably n-rectifiable (CountablyRectifiable n M) with H^n(M ∩ K) < ∞ for every compact K ⊆ ℝ^P (H^n := μHE[n]), every open Z ⊆ ℝ^P, every map F : ℝ^P → ℝ^n (= Euclid n) that is C¹ on Z (ContDiffOn ℝ 1 F Z) and every h : ℝ^P → [0, ∞] that is a.e. measurable for H^n⌞M: the fibre-sum function y ↦ Σ_{x ∈ M ∩ Z, F(x) = y} h(x) ∈ [0, ∞] (the tsum over the subtype M ∩ Z ∩ F^{−1}{y}) is a.e. measurable for Lebesgue measure L^n (volume) on ℝ^n, and ∫_{ℝ^n} Σ_{x ∈ M ∩ Z, F(x) = y} h(x) dL^n(y) = ∫_{M∩Z} J*(x)·h(x) dH^n(x), where J*(x) := (det(⟨DF(x)u_i, DF(x)u_j⟩)_{i,j})^{1/2}, DF(x) = fderiv ℝ F x and (u_i) is the standard orthonormal basis (stdOrthonormalBasis) of the approximate tangent plane T_x := approxTangentPlane n M x, indexed by Fin (dim T_x).",
+  "lean_statement": "∀ (P n : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → Euclid n) (h : Euclid P → ℝ≥0∞), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[n].restrict M) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * h x ∂μHE[n]",
+  "lean_name": "idtp_carrier_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3c1713cbf6-a1"
+}

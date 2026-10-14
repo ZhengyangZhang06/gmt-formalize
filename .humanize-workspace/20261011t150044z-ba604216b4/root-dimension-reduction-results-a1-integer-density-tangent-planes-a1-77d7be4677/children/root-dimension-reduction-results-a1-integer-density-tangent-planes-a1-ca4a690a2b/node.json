@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_measure_map-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Hausdorff measure on the span of an orthonormal n-frame is the push-forward of Lebesgue measure",
+  "statement": "Let P, n ∈ ℕ and let τ = (τ_1, …, τ_n) be an orthonormal family in ℝ^P (Euclid P). Put ι : ℝ^n → ℝ^P, ι(s) := Σ_i s_i τ_i (s_i the coordinates of s ∈ ℝ^n = Euclid n), and Q := span{τ_1, …, τ_n}. Then the n-dimensional Euclidean Hausdorff measure H^n = μHE[n] restricted to Q is the push-forward of Lebesgue measure L^n (volume on ℝ^n) under ι: H^n⌞Q = ι_#(L^n), i.e. μHE[n].restrict Q = Measure.map ι volume.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) = Measure.map (fun s : Euclid n => ∑ i, s i • τ i) volume",
+  "lean_name": "idtp_pc_plane_hausdorff_eq_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca4a690a2b-a1"
+}

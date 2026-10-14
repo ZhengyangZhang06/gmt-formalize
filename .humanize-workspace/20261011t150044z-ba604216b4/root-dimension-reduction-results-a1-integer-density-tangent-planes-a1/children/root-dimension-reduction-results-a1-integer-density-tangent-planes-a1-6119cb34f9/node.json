@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "The density of an integer multiplicity measure equals its multiplicity H^n-almost everywhere",
+  "statement": "For all P, n ∈ ℕ with n ≥ 1, every set U ⊆ ℝ^P and every integer multiplicity triple R = (M, θ, ξ) ∈ IMRep U n (carrier M, multiplicity θ : ℝ^P → ℕ, orientation ξ), if the measure μ_R := R.measure = θ·μHE[n]⌞M satisfies μ_R(K) < ∞ for every compact K ⊆ ℝ^P, then for μHE[n]-almost every x ∈ ℝ^P the ratio μ_R(B_ρ(x))/(ω_nρ^n) (open balls, ω_n = unitBallVolume n, computed in [0, ∞]) tends to 1_M(x)·θ(x) as ρ ↓ 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x))",
+  "lean_name": "idtp_imrep_measure_density_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6119cb34f9-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1.planar_piece_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1",
+  "depth": 5,
+  "title": "An ambient integer multiplicity cycle carried by a plane over a connected planar domain has constant multiplicity there",
+  "statement": "Let P, n ∈ ℕ with 1 ≤ n, let C ∈ 𝒟_n(ℝ^P) with ∂C = 0 (BoundaryVanishes C), and let R be an integer multiplicity representation of C in ℝ^P (R : IMRep ℝ^P n with R.Represents C), with mass measure μ := R.measure = (Hⁿ⌞R.carrier).withDensity(R.mult), Hⁿ = μHE[n]. Let V ⊆ ℝ^P be open and let Q ⊆ ℝ^P be a linear subspace with dim Q = n (Module.finrank ℝ Q = n) such that V ∩ Q is connected and spt C ∩ V ⊆ Q. Then there is c ∈ ℕ with μ(E) = c·Hⁿ(E ∩ Q) for every Borel set E ⊆ V.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (V : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)), 1 ≤ n → IsOpen V → BoundaryVanishes C → R.Represents C → Module.finrank ℝ Q = n → IsConnected (V ∩ (Q : Set (Euclid P))) → C.support ∩ V ⊆ (Q : Set (Euclid P)) → ∃ c : ℕ, ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ V → R.measure E = (c : ℝ≥0∞) * μHE[n] (E ∩ (Q : Set (Euclid P)))",
+  "lean_name": "idtp_tdc_puvd_planar_piece_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-235e335bf9-a1"
+}

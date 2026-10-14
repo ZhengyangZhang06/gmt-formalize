@@ -1,0 +1,198 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_constancy_reduction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3, 6 (transfer to the parameter domain), 7 and the first half of 8 of the parent-supplied proof, except for the distributional constancy theorem itself: "Let Ω := ι^{−1}(V) ⊆ ℝ^n (open; ι restricts to a homeomorphism of Ω onto V ∩ Q, so Ω is connected and nonempty) and h := g∘ι ∈ L¹_loc(Ω) … 0 = ∂S(φ) = (−1)^{i−1}∫_Ω h(s)∂_iψ(s) ds by (3) and (5)"; "(If a library form of this fact tests against C¹_c functions, note that (6) extends from ψ ∈ C^∞_c(Ω) to ψ ∈ C¹_c(Ω) …) Since h takes integer values and h = c on a set of positive measure (Ω is open and nonempty), c ∈ ℤ"; "since ι maps L^n-null subsets of Ω onto H^n-null subsets of V ∩ Q (by (3)), g = c H^n-a.e. on V ∩ Q". Conclusions (a)–(d) are exactly the hypotheses of SimonGMT Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero (supplied step 7), which the parent applies (that module lies outside the import closure of the frozen contract, so its application stays in the parent); (e) then returns the integer constant on V ∩ Q. Notation: H^n := μHE[n], L^n := volume on ℝ^n; e_j = EuclideanSpace.single j 1 = EuclideanSpace.basisFun (Fin n) ℝ j; |g| := ‖g‖ₑ.
+1. (Plane measure, supplied step 3.) By the sibling plane_measure_map (idtp_pc_plane_hausdorff_eq_map), H^n⌞Q = ι_#L^n. The map ι is an isometry (orthonormality: ‖ι(s)‖ = ‖s‖, ι linear), hence a closed embedding and therefore a measurable embedding (Isometry.isClosedEmbedding, IsClosedEmbedding.measurableEmbedding). Consequently, for every measurable A ⊆ ℝ^P:
+ (1a) H^n⌞(A ∩ Q) = (H^n⌞Q)⌞A = ι_#(L^n⌞ι^{−1}(A)) (Measure.restrict_restrict, MeasurableEmbedding.restrict_map);
+ (1b) ∫_{A∩Q} F dH^n = ∫_{ι^{−1}(A)} F(ι(s)) ds for every F : ℝ^P → ℝ (Bochner; MeasurableEmbedding.integral_map) and the same for lower integrals of F : ℝ^P → [0, ∞] (MeasurableEmbedding.lintegral_map);
+ (1c) a property holds for H^n⌞(A ∩ Q)-a.e. x iff it holds at ι(s) for L^n⌞ι^{−1}(A)-a.e. s (MeasurableEmbedding.ae_map_iff);
+ (1d) F is a.e.-strongly measurable for H^n⌞Q iff F∘ι is a.e.-strongly measurable for L^n (MeasurableEmbedding.aestronglyMeasurable_map_iff).
+2. ((a) Ω is open.) Ω = ι^{−1}(V) with ι continuous and V open.
+3. ((b) Ω is preconnected.) Let ι* : ℝ^P → ℝ^n, ι*(y) := (⟨τ_1, y⟩, …, ⟨τ_n, y⟩) (continuous). Every y ∈ Q has the form y = Σ_i c_iτ_i, and then ⟨τ_k, y⟩ = c_k, so y = ι(ι*(y)); also ι*(ι(s)) = s and ι(s) ∈ Q for all s. Hence ι*(V ∩ Q) = Ω: if y ∈ V ∩ Q then ι(ι*(y)) = y ∈ V, i.e. ι*(y) ∈ Ω; if s ∈ Ω then ι(s) ∈ V ∩ Q and ι*(ι(s)) = s. As V ∩ Q is connected and ι* is continuous, Ω = ι*(V ∩ Q) is connected (IsPreconnected.image), in particular preconnected and nonempty.
+4. ((c) local integrability.) By (i) and (1d), h = g∘ι is a.e.-strongly measurable for L^n. Let K' ⊆ Ω be compact. Then ι(K') is compact with ι(K') ⊆ V, measurable (closed), and ι^{−1}(ι(K')) = K' (ι is injective). By (1b) with A := ι(K') and (iii): ∫_{K'} |h| dL^n = ∫_{ι(K')∩Q} |g| dH^n < ∞. So h is integrable on every compact subset of the open set Ω, i.e. locally integrable on Ω (locallyIntegrableOn_iff, Ω being open, hence locally closed).
+5. (Smooth tests; supplied step 6, last equality.) Let ψ : ℝ^n → ℝ be C^∞ with compact support and tsupport ψ ⊆ Ω, and let j be an index. By the sibling plane_test_extension (idtp_pc_plane_test_extension) there is a C^∞ f : ℝ^P → ℝ with compact support, tsupport f ⊆ V and Df(ι(s))(τ_j) = Dψ(s)(e_j) for every s. By (1b) with A := V (open, hence measurable) and hypothesis (iv):
+ ∫_Ω h(s)·Dψ(s)(e_j) ds = ∫_Ω g(ι(s))·Df(ι(s))(τ_j) ds = ∫_{V∩Q} g(x)·Df(x)(τ_j) dH^n(x) = 0.
+6. ((d) C¹ tests; supplied step 7, parenthetical remark.) By the accepted sibling smooth_to_c1_tests (dgcr_smooth_tests_to_C1_tests), applied with D := Ω (open, step 2), G := h (locally integrable on Ω, step 4) and the identities of step 5, ∫_{ℝ^n} h(s)·Dφ(s)(e_i) ds = 0 for every C¹ function φ with compact support, tsupport φ ⊆ Ω and every i. [Reason, as in the supplied step 7: the mollifications φ_ε of φ are C^∞, have supports in a fixed compact subset of Ω for small ε, and ∂_iφ_ε → ∂_iφ uniformly, while h is integrable on that compact set; so ∫ h∂_iφ = lim ∫ h∂_iφ_ε = 0.]
+7. ((e) integrality and transfer back; supplied steps 7 and 8.) Let c₀ ∈ ℝ with h = c₀ L^n-a.e. on Ω. By (ii) and (1c) (with A := ℝ^P), h(s) ∈ ℤ for L^n-a.e. s ∈ ℝ^n. Ω is open and nonempty (step 3), so L^n(Ω) > 0 (IsOpen.measure_pos); hence some s ∈ Ω satisfies both h(s) = c₀ and h(s) = m for an integer m (Measure.exists_mem_of_measure_ne_zero_of_ae). Put c := m ∈ ℤ; then c₀ = c, and g(ι(s)) = h(s) = c for L^n-a.e. s ∈ Ω = ι^{−1}(V). By (1a) and (1c) with A := V, g(x) = c for H^n⌞(V ∩ Q)-a.e. x, i.e. for H^n-a.e. x ∈ V ∩ Q. ∎
+
+Formalization note (verified during the decomposition check; not part of the mathematical argument). The following single theorem proves exactly this frozen statement. It was compiled with `lake env lean` (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b36630) after `import GMT.Ch07.Submission` only, inside `namespace GMT.Ch07` with the contract opens. It uses exactly the declared dependencies Submission.idtp_pc_plane_hausdorff_eq_map, Submission.idtp_pc_plane_test_extension, Submission.dgcr_smooth_tests_to_C1_tests (by these Submission.* names) and no import or helper declaration. In a build where those dependencies were sorry stubs, `#print axioms` showed only propext, Classical.choice and Quot.sound besides the stubs; in a fully merged build containing the dependencies' accepted code it gives exactly propext, Classical.choice and Quot.sound. It follows the numbered steps above and may be used directly as the leaf candidate:
+```lean
+theorem Submission.idtp_pc_constancy_reduction : ∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), IsOpen V → Orthonormal ℝ τ → IsConnected (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) → (∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0) → IsOpen {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ IsPreconnected {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ LocallyIntegrableOn (fun s : Euclid n => g (∑ i, s i • τ i)) {s : Euclid n | ∑ i, s i • τ i ∈ V} volume ∧ (∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∀ i : Fin n, ∫ s, g (∑ k, s k • τ k) * fderiv ℝ φ s ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0) ∧ ∀ c₀ : ℝ, (∀ᵐ s ∂(volume.restrict {s : Euclid n | ∑ i, s i • τ i ∈ V}), g (∑ i, s i • τ i) = c₀) → ∃ c : ℤ, ∀ᵐ x ∂(μHE[n].restrict (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))), g x = c := by
+  intro P n V τ g hV hτ hconn hgm hgint hgloc hweak
+  -- the parametrization ι and its basic properties
+  let L : Euclid n →ₗ[ℝ] Euclid P :=
+    { toFun := fun s => ∑ i, s i • τ i
+      map_add' := fun s t => by simp [add_smul, Finset.sum_add_distrib]
+      map_smul' := fun c s => by simp [Finset.smul_sum, smul_smul] }
+  have hLapp : ∀ s, L s = ∑ i, s i • τ i := fun s => rfl
+  have hnorm : ∀ s, ‖L s‖ = ‖s‖ := by
+    intro s
+    have h1 : ‖L s‖ ^ 2 = ‖s‖ ^ 2 := by
+      rw [hLapp, ← real_inner_self_eq_norm_sq, hτ.inner_sum, EuclideanSpace.norm_eq,
+        Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+      simp [sq]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).mp h1
+  have hiso : Isometry L := AddMonoidHomClass.isometry_of_norm L hnorm
+  have hcont : Continuous L := hiso.continuous
+  have hemb : MeasurableEmbedding L := hiso.isClosedEmbedding.measurableEmbedding
+  have hinj : Injective L := hiso.injective
+  set Q : Set (Euclid P) := (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) with hQ
+  have hmap : (μHE[n] : Measure (Euclid P)).restrict Q = Measure.map L volume := Submission.idtp_pc_plane_hausdorff_eq_map P n τ hτ
+  -- transfer of restricted measures
+  have htr : ∀ A : Set (Euclid P), MeasurableSet A →
+      (μHE[n] : Measure (Euclid P)).restrict (A ∩ Q) = Measure.map L (volume.restrict (L ⁻¹' A)) := by
+    intro A hA
+    rw [← Measure.restrict_restrict hA, hmap, hemb.restrict_map]
+  set Ω : Set (Euclid n) := {s : Euclid n | ∑ i, s i • τ i ∈ V} with hΩ
+  have hΩL : Ω = L ⁻¹' V := rfl
+  have hΩo : IsOpen Ω := hV.preimage hcont
+  -- the left inverse ι*
+  let Ls : Euclid P → Euclid n := fun y => (WithLp.equiv 2 (Fin n → ℝ)).symm (fun k => inner ℝ (τ k) y)
+  have hLscont : Continuous Ls := by
+    refine (PiLp.continuous_toLp 2 _).comp ?_
+    exact continuous_pi fun k => continuous_const.inner continuous_id
+  have hLsL : ∀ s, Ls (L s) = s := by
+    intro s
+    ext k
+    simp [Ls, hLapp, hτ.inner_right_fintype]
+  have hrangeL : ∀ y ∈ Q, L (Ls y) = y := by
+    intro y hy
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hy
+    have : Ls (∑ i, c i • τ i) = (WithLp.equiv 2 (Fin n → ℝ)).symm c := by
+      ext k
+      simp [Ls, hτ.inner_right_fintype]
+    rw [this]
+    simp [hLapp]
+  have hLmemQ : ∀ s, L s ∈ Q := by
+    intro s
+    rw [hLapp]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  have himage : Ls '' (V ∩ Q) = Ω := by
+    ext s
+    constructor
+    · rintro ⟨y, ⟨hyV, hyQ⟩, rfl⟩
+      show L (Ls y) ∈ V
+      rw [hrangeL y hyQ]; exact hyV
+    · intro hs
+      exact ⟨L s, ⟨hs, hLmemQ s⟩, hLsL s⟩
+  have hΩc : IsPreconnected Ω := by
+    rw [← himage]
+    exact hconn.isPreconnected.image Ls hLscont.continuousOn
+  -- measurability and local integrability of h = g ∘ L
+  have hgm' : AEStronglyMeasurable (fun s => g (L s)) volume := by
+    have : AEStronglyMeasurable g (Measure.map L volume) := hmap ▸ hgm
+    exact (hemb.aestronglyMeasurable_map_iff).mp this
+  have hloc : LocallyIntegrableOn (fun s : Euclid n => g (∑ i, s i • τ i)) Ω volume := by
+    refine (locallyIntegrableOn_iff hΩo.isLocallyClosed).mpr fun k hkΩ hk => ?_
+    refine ⟨hgm'.restrict, ?_⟩
+    have hKc : IsCompact (L '' k) := hk.image hcont
+    have hKV : L '' k ⊆ V := by
+      rintro _ ⟨s, hs, rfl⟩; exact hkΩ hs
+    have hfin := hgloc (L '' k) hKc hKV
+    have h1 : ∫⁻ x in L '' k ∩ Q, ‖g x‖ₑ ∂μHE[n] = ∫⁻ s in k, ‖g (L s)‖ₑ := by
+      rw [htr _ hKc.isClosed.measurableSet, hemb.lintegral_map, hinj.preimage_image]
+    show ∫⁻ s in k, ‖g (L s)‖ₑ < ∞
+    rw [← h1]
+    exact lt_top_iff_ne_top.mpr hfin
+  -- smooth tests
+  have hsmooth : ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ Ω →
+      ∀ j : Fin n, ∫ v in Ω, g (∑ i, v i • τ i) * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+    intro a ha hac has j
+    obtain ⟨f, hf, hfc, hfV, hfa⟩ := Submission.idtp_pc_plane_test_extension P n V τ a hV hτ ha hac has
+    have h0 := hweak f hf hfc hfV j
+    have h2 : ∫ x in V ∩ Q, g x * fderiv ℝ f x (τ j) ∂μHE[n] =
+        ∫ s in Ω, g (L s) * fderiv ℝ f (L s) (τ j) := by
+      rw [htr V hV.measurableSet, hemb.integral_map]
+      rfl
+    rw [h2] at h0
+    rw [← h0]
+    refine setIntegral_congr_fun hΩo.measurableSet fun s _ => ?_
+    simp only [hLapp] at *
+    rw [(hfa s).2 j]
+  refine ⟨hΩo, hΩc, hloc, Submission.dgcr_smooth_tests_to_C1_tests n Ω _ hΩo hloc hsmooth, ?_⟩
+  -- back transfer
+  intro c₀ hc₀
+  have hne : Ω.Nonempty := by
+    rw [← himage]; exact hconn.nonempty.image Ls
+  have hint' : ∀ᵐ s ∂(volume : Measure (Euclid n)), ∃ m : ℤ, g (L s) = m := by
+    have : ∀ᵐ x ∂(Measure.map L (volume : Measure (Euclid n))), ∃ m : ℤ, g x = m := hmap ▸ hgint
+    exact (hemb.ae_map_iff).mp this
+  have hpos : (volume : Measure (Euclid n)) Ω ≠ 0 := (hΩo.measure_pos volume hne).ne'
+  obtain ⟨s, -, hs1, m, hm⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hpos
+    (hc₀.and (ae_restrict_of_ae hint'))
+  have hc : c₀ = m := hs1.symm.trans hm
+  refine ⟨m, ?_⟩
+  rw [show V ∩ Q = V ∩ Q from rfl, htr V hV.measurableSet, hemb.ae_map_iff]
+  filter_upwards [hc₀] with s hs
+  rw [← hc]; exact hs
+```
+
+## Key steps
+
+1. H^n⌞Q = ι_#L^n (sibling plane_measure_map) and ι is a measurable embedding: transfer of restricted measures, integrals, a.e. statements and a.e.-measurability between V ∩ Q and Ω.
+2. Ω = ι^{−1}(V) is open and Ω = ι*(V ∩ Q) is connected.
+3. h = g∘ι is locally integrable on Ω: ∫_{K'}|h| = ∫_{ι(K')∩Q}|g| dH^n < ∞.
+4. For ψ ∈ C^∞_c(Ω), extend to f (sibling plane_test_extension): ∫_Ω h ∂_jψ = ∫_{V∩Q} g D_{τ_j}f dH^n = 0; pass to C¹ tests (accepted dgcr_smooth_tests_to_C1_tests).
+5. If h = c₀ a.e. on Ω, then c₀ ∈ ℤ (h integer a.e., L^n(Ω) > 0) and g = c₀ H^n-a.e. on V ∩ Q.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (against manifest.json)`
+- `python3 scan of dag.json: accepted nodes (status, lean_name, lean_statement, candidate_commit) for dimred_*, imrep_*, atsm_*, dgcr_*, dgid_*, dgoj_*, rsdic_*, regcomp_*; duplicate lean_names; cross-branch reuse precedents (children whose parent field differs)`
+- `rg -n 'idtp_pc_' over dag.json, nodes/, the snapshot and all git refs (no match)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 01ae2c59, d15b5cf4, 038573e4, d5e029d5, c1d60848, dcc3f4b7, 8a6855aa; diff against the contract (added declarations, imports, removed lines)`
+- `grep -n theorem/def in .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean, Chapter03/Rectifiable.lean, Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean`
+- `rg -n 'Isometry.map_euclideanHausdorffMeasure|EuclideanSpace.euclideanHausdorffMeasure_eq_volume|exists_cthickening_subset_open|eq_of_le_of_finrank_eq|one_of_mem_closedBall' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `lake env lean /tmp/pc-decomp-k7q2/check/Probe2.lean and Names.lean (#check of the cited Mathlib/SimonGMT names after import GMT.Ch07.Submission; Chapter08 names unknown)`
+- `lake env lean /tmp/pc-decomp-k7q2/check/{Types,Parent,Children}.lean and /tmp/pc-decomp-k7q2/merged/Merged.lean (#print axioms)`
+- `sed -n 560,640p book/chapter-06.txt (Simon 2.34, Constancy Theorem and proof); sed -n 1830,1880p book/chapter-06.txt (deformation theorem (26)–(27))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/pc-decomp-k7q2/check/Types.lean`
+- `/tmp/pc-decomp-k7q2/check/Parent.lean`
+- `/tmp/pc-decomp-k7q2/check/Children.lean`
+- `/tmp/pc-decomp-k7q2/merged/Merged.lean`
+
+The pins match. The snapshot is project b4d606d (equal to workspace HEAD) with mathlib 25730c7c, and SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reused accepted declarations. dimred_im_mass_measure, imrep_carrier_sdiff_support_null, atsm_approxTangent_le_of_flat, dgcr_unitOrientation_eq_or_neg, dgcr_smooth_tests_to_C1_tests and dgcr_bwd_coordinate_covector are comparator-accepted and are reused at byte-identical types. Their candidates only add pairwise-disjoint declarations to the contract.
+
+Library support.
+- Mathlib supplies Isometry.map_euclideanHausdorffMeasure and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean:141,187).
+- Mathlib also supplies IsCompact.exists_cthickening_subset_open, Submodule.eq_of_le_of_finrank_eq, the ContDiffBump API and the MeasurableEmbedding transfer lemmas, all inside the frozen import closure.
+- SimonGMT supplies exteriorDerivative_apply (Chapter06/Forms.lean:119) and support_euclideanHausdorffMeasure_restrict_submodule (Chapter03).
+- SimonGMT's ae_eq_const_of_weak_coordinate_derivatives_zero (Chapter08/DistributionalConstancy.lean) is outside the frozen import closure. It is applied in this node's parent proof with an added import, following the accepted precedent 8a6855aa.
+
+Names. No idtp_pc_* name occurs anywhere.
+
+Lean. All 12 child types elaborate. The exact parent type follows from three child types plus the SimonGMT theorem. Each new child has a verified single-theorem proof from its declared dependencies. A fully merged build with the reused accepted code has no sorry, and all seven new declarations depend only on propext, Classical.choice and Quot.sound.

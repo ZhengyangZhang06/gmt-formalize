@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orthogonal_coordinates-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "Orthogonal isometric embeddings of complementary dimensions give orthogonal coordinates on ℝ^{n+k}",
+  "statement": "Let n, k ∈ ℕ and let ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝⁿ, w ∈ ℝ^k. Then (a) every x ∈ ℝ^{n+k} can be written as x = ιv + ι'w with v ∈ ℝⁿ and w ∈ ℝ^k, and (b) ‖ιv + ι'w‖² = ‖v‖² + ‖w‖² for all v ∈ ℝⁿ and w ∈ ℝ^k.",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (n + k), ∃ v : Euclid n, ∃ w : Euclid k, x = ι v + ι' w) ∧ ∀ (v : Euclid n) (w : Euclid k), ‖ι v + ι' w‖ ^ 2 = ‖v‖ ^ 2 + ‖w‖ ^ 2",
+  "lean_name": "dgcr_orthogonal_coordinates",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-a958fc631c-a1"
+}

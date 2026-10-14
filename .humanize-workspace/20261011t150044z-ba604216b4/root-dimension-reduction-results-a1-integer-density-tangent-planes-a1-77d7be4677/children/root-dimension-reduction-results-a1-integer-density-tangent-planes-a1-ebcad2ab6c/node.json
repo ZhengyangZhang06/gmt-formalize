@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.boundary_weak_derivative-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Vanishing boundary gives the ambient weak-derivative identity ∫_{V∩Q} g·D_{τ_j}f dHⁿ = 0",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, V ⊆ ℝ^P, S ∈ 𝒟_n(V) with ∂S = 0 in V (BoundaryVanishes S), τ = (τ_1, …, τ_n) an orthonormal family in ℝ^P, Q := span{τ_1, …, τ_n}, and g : ℝ^P → ℝ such that S(ω) = ∫_{V∩Q} g(x)·ω(x)(τ_1, …, τ_n) dH^n(x) for every ω ∈ 𝒟^n(V) (H^n = μHE[n]). Then for every C^∞ function f : ℝ^P → ℝ with compact support and tsupport f ⊆ V, and every index j, ∫_{V∩Q} g(x)·Df(x)(τ_j) dH^n(x) = 0, where Df(x)(v) = fderiv ℝ f x v.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V n) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), 1 ≤ n → Orthonormal ℝ τ → BoundaryVanishes S → (∀ ω : TestFormOn V n, S ω = ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) → ∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0",
+  "lean_name": "idtp_pc_boundary_weak_derivative",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.coordinate_covector-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5474b3f56d-a1",
+      "result_commit": "dcc3f4b7fc0f6beb359e7585fbca8b266cc0f38f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ebcad2ab6c-a1"
+}

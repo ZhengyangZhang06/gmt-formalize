@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "A 2-dimensional minimizing cone is an integer multiple of a plane near any point p ≠ 0 around which its density is constant on the support",
+  "statement": "For every P ∈ ℕ, every C ∈ 𝒟_2(ℝ^P) that is minimizing in ℝ^P (IsMinimizingIn C univ), has ∂C = 0 (BoundaryVanishes C) and is a cone (IsConeCurrent C), every p ∈ spt C with p ≠ 0, every k ∈ ℕ and every δ > 0 such that Θ²(μ_C, y) = k (HasMassDensity C y k) for every y ∈ spt C ∩ B_δ(p): there are δ' > 0 and a 2-dimensional linear subspace Q of ℝ^P with p ∈ Q, spt C ∩ B_{δ'}(p) = Q ∩ B_{δ'}(p), and M_W(C) = k·H²(W ∩ Q) for every open W ⊆ B_{δ'}(p), where H² = μHE[2].",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (p : Euclid P) (k : ℕ) (δ : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → p ∈ C.support → p ≠ 0 → 0 < δ → (∀ y ∈ C.support, y ∈ ball p δ → HasMassDensity C y k) → ∃ (δ' : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ' ∧ Module.finrank ℝ Q = 2 ∧ p ∈ Q ∧ C.support ∩ ball p δ' = (Q : Set (Euclid P)) ∩ ball p δ' ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball p δ' → C.massOn W = (k : ℝ≥0∞) * μHE[2] (W ∩ (Q : Set (Euclid P)))",
+  "lean_name": "idtp_cone_constant_density_planar",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.density_eq_multiplicity_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3597486845-a1"
+}

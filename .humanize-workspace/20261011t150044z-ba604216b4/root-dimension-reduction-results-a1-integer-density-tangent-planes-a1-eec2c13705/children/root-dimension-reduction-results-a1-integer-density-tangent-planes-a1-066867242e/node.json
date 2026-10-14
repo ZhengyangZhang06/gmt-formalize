@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1.measure_sum_planes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1",
+  "depth": 5,
+  "title": "The mass measure of a current carried by planes through 0 splits over the punctured planes",
+  "statement": "Let P, n, q ∈ ℕ with 1 ≤ n, let C ∈ 𝒟_n(ℝ^P), let R be an integer multiplicity representation of C in ℝ^P (R.Represents C) with mass measure μ := R.measure, and let P_1, …, P_q (Ps : Fin q → Submodule ℝ ℝ^P) be linear subspaces of ℝ^P with P_i ∩ P_j = {0} (Ps i ⊓ Ps j = ⊥) for i ≠ j, such that every x ∈ spt C with x ≠ 0 lies in some P_i. Then μ(A) = Σ_{i ∈ Fin q} μ(A ∩ (P_i ∖ {0})) for every Borel set A ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Ps : Fin q → Submodule ℝ (Euclid P)), 1 ≤ n → R.Represents C → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ i, R.measure (A ∩ ((Ps i : Set (Euclid P)) \\ {0}))",
+  "lean_name": "idtp_tdc_puvd_measure_eq_sum_planes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-066867242e-a1"
+}

@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_measure_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8 of the parent proof (consequences (a) and (b) of the area formula). Deviation (simplification): (i) is proved from the 1-Lipschitz projection Pr instead of the area formula, and (ii) by the Lipschitz bound, exactly as in the parent's 8(b); neither needs the nonlinear area formula.
+Notation used throughout: ℝ^m means Euclid m = EuclideanSpace ℝ (Fin m); Hⁿ := μHE[n] (on ℝⁿ it equals Lebesgue measure Lⁿ = volume, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n); ι : ℝⁿ → ℝ^{n+k} and ι' : ℝ^k → ℝ^{n+k} are linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w; ι* is the adjoint of ι; D := B_s(0) ⊆ ℝⁿ (open ball); Φ(v) := z + ιv + ι'u(v); Pr(x) := ι*(x − z); DΦ(v) := fderiv ℝ Φ v.
+Formalization note: unless this child is split further it is a machine leaf (one theorem appended to the frozen GMT/Ch07/Submission.lean, no new import or helper declaration); all lemmas cited are in the import closure of GMT.Ch07.Submission.
+1. Adjoint identities. Since ι is an isometry, ⟨ι*ιv, v'⟩ = ⟨ιv, ιv'⟩ = ⟨v, v'⟩ for all v' (ContinuousLinearMap.adjoint_inner_left, LinearIsometry.inner_map_map), so ι*ι = id; by orthogonality ⟨ι*ι'w, v'⟩ = ⟨ι'w, ιv'⟩ = 0 for all v', so ι*ι' = 0. Moreover ‖ι*‖ = ‖ι‖ ≤ 1 (ContinuousLinearMap.adjoint.norm_map and LinearIsometry.norm_toContinuousLinearMap_le), so ‖ι*y‖ ≤ ‖y‖. Consequently Pr(x) = ι*(x − z) is affine and 1-Lipschitz (LipschitzWith 1 Pr), and Pr(Φ(v)) = ι*ιv + ι*ι'u(v) = v for every v ∈ ℝⁿ.
+2. Two facts on Hausdorff measure. (a) Hⁿ on ℝⁿ is Lebesgue measure (EuclideanSpace.euclideanHausdorffMeasure_eq_volume n), as measures and hence also on non-measurable sets. (b) If f is L-Lipschitz on a set S (between Euclidean spaces) then Hⁿ(f(S)) ≤ Lⁿ·Hⁿ(S): this is Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (stated for μHE directly); equivalently LipschitzOnWith.hausdorffMeasure_image_le for μH[n] together with Measure.euclideanHausdorffMeasure_def (μHE[n] is a fixed positive multiple of μH[n] depending only on n).
+3. For every S ⊆ ℝⁿ: Lⁿ(S) = Hⁿ(S) = Hⁿ(Pr(Φ(S))) ≤ Hⁿ(Φ(S)), because S = Pr(Φ(S)) (Pr∘Φ = id) and Pr is 1-Lipschitz (step 2(b) with L = 1).
+4. Let A ⊆ D be Borel. u is continuous on D (C¹), so Φ is continuous on A and hence AE-measurable for Lⁿ⌞A (ContinuousOn.aemeasurable, A measurable); let ν := Φ_#(Lⁿ⌞A) (Measure.map). For Borel S ⊆ ℝ^{n+k}: ν(S) = (Lⁿ⌞A)(Φ⁻¹(S)) (Measure.map_apply_of_aemeasurable) = Lⁿ(Φ⁻¹(S) ∩ A) (Measure.restrict_apply', which only needs A measurable — Φ⁻¹(S) need not be measurable because u is arbitrary off D) ≤ Hⁿ(Φ(Φ⁻¹(S) ∩ A)) (step 3) = Hⁿ(S ∩ Φ(A)) = (Hⁿ⌞Φ(A))(S) (Measure.restrict_apply, which only needs S measurable). Hence ν ≤ Hⁿ⌞Φ(A) (Measure.le_iff).
+5. Part (i). For Borel g : ℝ^{n+k} → [0, ∞]: ∫⁻_A g(Φ(v)) dv = ∫⁻ g dν (lintegral_map', g measurable and Φ AE-measurable for Lⁿ⌞A) ≤ ∫⁻ g d(Hⁿ⌞Φ(A)) (monotonicity of the lower integral in the measure, lintegral_mono', using ν ≤ Hⁿ⌞Φ(A)) = ∫⁻_{Φ(A)} g dHⁿ.
+6. Part (ii). If t < 0 then B̄_t(0) = ∅ and Hⁿ(Φ(∅)) = 0 ≠ ∞. Let 0 ≤ t < s and K := B̄_t(0), a compact convex subset of D. Since Φ is C¹ on the open set D, v ↦ DΦ(v) is continuous on D (ContDiffOn.continuousOn_fderiv_of_isOpen), hence bounded on K by some Λ ≥ 0 (IsCompact.exists_bound_of_continuousOn; take the bound in ℝ≥0, e.g. Λ := C.toNNReal). Φ has derivative DΦ(v) at every v ∈ K ⊆ D (HasFDerivAt, hence HasFDerivWithinAt on K), so by the mean value inequality on the convex set K (Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le with f' := DΦ; this form needs no unique differentiability of K, which fails for t = 0), Φ is Λ-Lipschitz on K. By step 2, Hⁿ(Φ(K)) ≤ Λⁿ·Hⁿ(K) = Λⁿ·Lⁿ(K) < ∞ (compact sets have finite Lebesgue measure). ∎
+
+## Key steps
+
+1. Pr := ι*(· − z) is 1-Lipschitz with Pr∘Φ = id, so Lⁿ(S) = Hⁿ(Pr(Φ(S))) ≤ Hⁿ(Φ(S)) for all S ⊆ ℝⁿ.
+2. Hence Φ_#(Lⁿ⌞A) ≤ Hⁿ⌞Φ(A) for Borel A ⊆ D (only A and the test set S need be measurable), giving the lower-integral inequality.
+3. On B̄_t(0) (t < s) Φ is Lipschitz by the mean value inequality, so Hⁿ(Φ(B̄_t(0))) < ∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD vs manifest.json`
+- `rg -n 'integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|def areaJacobianAt' simongmt/Poincare/SimonGMT/Chapter02`
+- `rg -n 'def HasApproximateTangentSpaceAt|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule|HasApproximateTangentSpaceAt.unique|def blowUpMap' Chapter03/Rectifiable.lean`
+- `rg -n 'exteriorDerivative_apply|def affinePullbackForm|exteriorDerivative_affinePullbackForm|tsupport_exteriorDerivative_subset|GeometricCurrentOn.boundary|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|VanishesOn' Chapter06/{Forms,Currents,AffineCurrentPushforward,CurrentLocalEquality}.lean`
+- `rg -n 'ae_eq_const_of_weak_coordinate_derivatives_zero|WeakDerivativesZero|abbrev Euclidean' Chapter08/{DistributionalConstancy,Varifold}.lean (C¹ tests only; no smooth-test variant)`
+- `rg -n 'theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem dist_convolution_le|def apply (m : ι → E)|theorem ContDiffOn.differentiableOn|continuousOn_fderiv_of_isOpen' in pinned Mathlib`
+- `lake env lean /tmp/gcr3-work/Closure{,2,3}.lean: #exists tests (Lean environment lookup) of ~150 cited names against import GMT.Ch07.Submission`
+- `lake env lean /tmp/gcr3-work/{Orig,Plus}.lean: hash dump of all GMT.Ch07 constants without/with import Chapter02.WeightedArea + Chapter08.DistributionalConstancy (diff: identical)`
+- `python3 lean_contract.validate_lean_statement + gmt-compare.contract_scope; lake env lean /tmp/gcr3-work/Challenges.lean`
+- `lake env lean /tmp/gcr3-work/Assembly.lean; #print axioms GMT.Ch07.dgcr_assembly_check`
+- `python3 scan of dag.json and nodes/*/{decomposition-v*,parent-child-handoff}.json lean_names (dgcr_ collisions; accepted reusable declarations such as rsdic_unitOrientation_eq_or_eq_neg); git grep dgcr_ over all refs`
+- `read runtime flow: leaf_verification.check_source_delta / check_git_delta, parent_verification.check_parent_git_delta, runtime._machine_leaf, _solve_children node bound, _existing_lean_name_problem, _overlay_accepted_children, _publish_workspace_branch; swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json (max_nodes 1000, leaf_lean_agent_review false)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/Varifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/583ac9fefa804936b5c9a125fda7b1f6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json`
+- `/tmp/gcr3-work/Closure.lean`
+- `/tmp/gcr3-work/Closure2.lean`
+- `/tmp/gcr3-work/Closure3.lean`
+- `/tmp/gcr3-work/Orig.lean`
+- `/tmp/gcr3-work/Plus.lean`
+- `/tmp/gcr3-work/Challenges.lean`
+- `/tmp/gcr3-work/Assembly.lean`
+
+Snapshot = project b4d606d and mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and the simongmt package is at its pinned commit 2b36630.
+Reusable facts found:
+- Chapter02.integral_area_formula_of_injective_derivative: Bochner area formula for an injective map with injective derivative, any integrand. Used by the parent with areaJacobianAt_eq_sqrt_det_adjoint_comp.
+- Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero: distributional constancy, C¹ tests only, so the smooth-to-C¹ child is needed.
+- Chapter03 HasApproximateTangentSpaceAt with finrank_eq, support_/regular_euclideanHausdorffMeasure_restrict_submodule.
+- Chapter06 exteriorDerivative_apply (Mathlib extDeriv convention), affinePullbackForm with exteriorDerivative_affinePullbackForm, tsupport_exteriorDerivative_subset, boundary_apply, zeroRegion/support.
+- Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+- Mathlib: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.measure_compl_support, Convex.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le, convolution smoothness/derivative lemmas and dist_convolution_le, ContinuousAlternatingMap.apply / norm_image_sub_le, AlternatingMap.eq_smul_basis_det, Fin.sign_cycleRange.
+Outside the frozen import closure, hence used only in the parent: Chapter02.WeightedArea/Area and Chapter08.DistributionalConstancy. Adding these two imports keeps all 103 GMT.Ch07 declarations hash-identical. Mathlib BumpFunction.Normed/Convolution are also outside, so the mollifier child normalizes a ContDiffBump by hand.
+Workflow facts: childless nodes are machine leaves that may append only one theorem. This worker allows 1000 nodes and the DAG has 249. The accepted rsdic_unitOrientation_eq_or_eq_neg exists but is not reused, because a leaf would depend on it across branches.
+Lean checks:
+- All 9 child types pass validate_lean_statement and elaborate in the comparator contract scope.
+- The exact parent type follows from the 7 parent-level child types plus the two library modules, using only propext, Classical.choice and Quot.sound.
+- No name collisions.

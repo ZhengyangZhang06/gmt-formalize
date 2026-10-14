@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'euclideanHausdorffMeasure_zero_or_top|euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|measure_compl_support|isConnected_compl_singleton_of_one_lt_rank|ext_of_generateFrom_of_iUnion|closed_of_finiteDimensional' in the pinned snapshot's relevant Lean files",
+        "rg -n 'restrictDomain|testFormOnInclusion|exteriorDerivativeTestOn|def support|def zeroRegion|boundary_apply' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "Python checks of manifest pins, frozen-contract byte equality, handoff identity, DAG name collisions, identical reused types, comparator receipts, and dependency cycles including cited prerequisites",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/val/C1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/val/C2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/val/C3.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/val/C4.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/final/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/puvd-split/final/Statements.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Connected.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eec2c13705/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eec2c13705/decomposition-v1.json",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        "lakefile.toml",
+        "/tmp/puvd-split/val/C1.lean",
+        "/tmp/puvd-split/val/C2.lean",
+        "/tmp/puvd-split/val/C3.lean",
+        "/tmp/puvd-split/val/C4.lean",
+        "/tmp/puvd-split/final/Statements.lean",
+        "/tmp/puvd-split/final/Assembly.lean"
+      ],
+      "conclusion": "Pins and frozen definitions match. The snapshot supports the singleton-nullity, measure-uniqueness, support, and connectedness arguments. No proposed name is reserved and no proposed type duplicates an existing DAG declaration. The six reused accepted lemmas have identical frozen types and successful comparator records under the permitted axiom whitelist. The dependency closure, including proposed children and cited prerequisites, is acyclic. All four exact types elaborate independently. Independently rerun child validations and parent assembly succeeded with only propext, Classical.choice, and Quot.sound; validations using external prerequisites take their exact frozen types as hypotheses. Planar constancy and subspace-ball measure remain existing obligations. The four-way split is appropriate and establishes this selected parent, including q = 0. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "planar_piece_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all stated hypotheses; R.Represents C supplies integer multiplicity. Restriction preserves the cycle condition, the support and mass identities apply with their exact hypotheses, and the orthonormal frame permits the existing planar-constancy prerequisite. Compact finiteness justifies extension to Borel subsets. Taking natAbs gives the required natural coefficient. The proof is complete and non-circular."
+    },
+    {
+      "key": "plane_domain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complement of the finite union of other subspaces is open and has the required containment and disjointness. The two cases give either the whole plane or its punctured complement; rank two establishes connectedness and nonemptiness. The stated additional Mathlib import supplies the cited theorem, and the exact contract recompiles successfully."
+    },
+    {
+      "key": "density_of_ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the local ball-mass hypothesis. Positivity and finiteness of the normalization justify ENNReal cancellation, including n = 0. The interval (0,r) gives eventual constancy along the required right-neighborhood filter; together with nonnegativity this is precisely HasMassDensity."
+    },
+    {
+      "key": "measure_sum_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive dimension makes the singleton Hausdorff-null and therefore R.measure-null. The accepted support identity and the Lindelöf support theorem make the off-plane remainder null. Measurability and pairwise disjointness justify finite additivity, including q = 0 and infinite measure values. The proof establishes exactly the stated proposition without a cycle or dimension assumption on the planes."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_constancy_reduction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+  "depth": 4,
+  "title": "Reduction of constancy of a planar density to Euclidean distributional constancy",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P open, τ = (τ_1, …, τ_n) an orthonormal family in ℝ^P, Q := span{τ_1, …, τ_n} with V ∩ Q connected, ι : ℝ^n → ℝ^P, ι(s) := Σ_i s_i τ_i, Ω := {s ∈ ℝ^n : ι(s) ∈ V}, H^n = μHE[n] and L^n = Lebesgue measure (volume) on ℝ^n. Let g : ℝ^P → ℝ satisfy: (i) g is a.e.-strongly measurable for H^n⌞Q; (ii) g(x) ∈ ℤ for H^n⌞Q-a.e. x; (iii) ∫_{K∩Q} |g| dH^n < ∞ for every compact K ⊆ V (|g| = ‖g‖ₑ, lower integral); (iv) ∫_{V∩Q} g(x)·Df(x)(τ_j) dH^n(x) = 0 for every C^∞ f : ℝ^P → ℝ with compact support and tsupport f ⊆ V and every j. Put h := g∘ι. Then (a) Ω is open; (b) Ω is preconnected; (c) h is locally integrable on Ω with respect to L^n; (d) ∫_{ℝ^n} h(s)·Dφ(s)(e_i) ds = 0 for every C¹ function φ : ℝ^n → ℝ with compact support and tsupport φ ⊆ Ω and every i, where e_i = EuclideanSpace.basisFun (Fin n) ℝ i; (e) for every c₀ ∈ ℝ with h(s) = c₀ for L^n-a.e. s ∈ Ω there is c ∈ ℤ with g(x) = c for H^n-a.e. x ∈ V ∩ Q.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (τ : Fin n → Euclid P) (g : Euclid P → ℝ), IsOpen V → Orthonormal ℝ τ → IsConnected (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → AEStronglyMeasurable g (μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) → (∀ᵐ x ∂(μHE[n].restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))), ∃ m : ℤ, g x = m) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → ∫⁻ x in K ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ‖g x‖ₑ ∂μHE[n] ≠ ∞) → (∀ f : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ V → ∀ j : Fin n, ∫ x in V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x * fderiv ℝ f x (τ j) ∂μHE[n] = 0) → IsOpen {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ IsPreconnected {s : Euclid n | ∑ i, s i • τ i ∈ V} ∧ LocallyIntegrableOn (fun s : Euclid n => g (∑ i, s i • τ i)) {s : Euclid n | ∑ i, s i • τ i ∈ V} volume ∧ (∀ φ : Euclid n → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ {s : Euclid n | ∑ i, s i • τ i ∈ V} → ∀ i : Fin n, ∫ s, g (∑ k, s k • τ k) * fderiv ℝ φ s ((EuclideanSpace.basisFun (Fin n) ℝ) i) = 0) ∧ ∀ c₀ : ℝ, (∀ᵐ s ∂(volume.restrict {s : Euclid n | ∑ i, s i • τ i ∈ V}), g (∑ i, s i • τ i) = c₀) → ∃ c : ℤ, ∀ᵐ x ∂(μHE[n].restrict (V ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))), g x = c",
+  "lean_name": "idtp_pc_constancy_reduction",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_measure_map-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_test_extension-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_measure_map-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1.plane_test_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-d2f9caa6a3-a1",
+      "result_commit": "c1d608481329bbb6de1c0f4e4052367b8d92d742",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3e7df95514-a1"
+}
