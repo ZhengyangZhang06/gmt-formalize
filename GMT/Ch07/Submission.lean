@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Jacobian minors of a Lipschitz map**: for an `L`-Lipschitz `v : ℝᵐ → ℝᵖ`, rows
+`a : Fin r → Fin p` and columns `b : Fin r → Fin m`, the minor
+`M(u) = det ((Dv(u) e_{b t})_{a s})_{s,t}` is Borel measurable in `u` and `|M(u)| ≤ r! Lʳ`.
+`u ↦ Dv(u)` is measurable and `A ↦ det ((A e_{b t})_{a s})` is continuous; every entry is bounded
+by `‖Dv(u)‖ ≤ L`, and the Leibniz formula has `r!` terms of absolute value at most `Lʳ`. -/
+theorem Submission.cmcdt_lpi_pc_minor_measurable_bound : ∀ (m p r : ℕ) (L : NNReal) (v : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m), LipschitzWith L v → Measurable (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))) ∧ ∀ u, |Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))| ≤ (r.factorial : ℝ) * (L : ℝ) ^ r := by
+  intro m p r L v a b hv
+  constructor
+  · -- `u ↦ Dv(u)` is measurable and `A ↦ det ((A e_{b t})_{a s})` is continuous
+    have hcont : Continuous fun A : Euclid m →L[ℝ] Euclid p =>
+        Matrix.det (Matrix.of fun s t => A (EuclideanSpace.single (b t) 1) (a s)) := by
+      refine Continuous.matrix_det (continuous_matrix fun s t => ?_)
+      exact (continuous_apply (a s)).comp
+        ((PiLp.continuous_ofLp 2 _).comp (continuous_eval_const _))
+    exact hcont.measurable.comp (measurable_fderiv ℝ v)
+  · intro u
+    -- entry bound `|(Dv(u) e_{b t})_{a s}| ≤ ‖Dv(u)‖ ≤ L`
+    have hentry : ∀ s t, |fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)| ≤ (L : ℝ) := by
+      intro s t
+      calc |fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)|
+          = ‖fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖fderiv ℝ v u (EuclideanSpace.single (b t) 1)‖ := PiLp.norm_apply_le _ _
+        _ ≤ ‖fderiv ℝ v u‖ * ‖EuclideanSpace.single (b t) (1 : ℝ)‖ := (fderiv ℝ v u).le_opNorm _
+        _ = ‖fderiv ℝ v u‖ := by simp
+        _ ≤ L := norm_fderiv_le_of_lipschitz ℝ hv
+    -- Leibniz formula: `r!` terms, each of absolute value at most `Lʳ`
+    rw [Matrix.det_apply]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ σ : Equiv.Perm (Fin r), |Equiv.Perm.sign σ • ∏ i, Matrix.of
+            (fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)) (σ i) i|
+        ≤ ∑ _σ : Equiv.Perm (Fin r), (L : ℝ) ^ r := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          rw [Units.smul_def, zsmul_eq_mul, abs_mul, Finset.abs_prod]
+          have hsign : |((Equiv.Perm.sign σ : ℤ) : ℝ)| = 1 := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+          rw [hsign, one_mul]
+          calc ∏ i, |Matrix.of (fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))
+                (σ i) i|
+              ≤ ∏ _i : Fin r, (L : ℝ) :=
+                Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) fun i _ => hentry _ _
+            _ = (L : ℝ) ^ r := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+      _ = (r.factorial : ℝ) * (L : ℝ) ^ r := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

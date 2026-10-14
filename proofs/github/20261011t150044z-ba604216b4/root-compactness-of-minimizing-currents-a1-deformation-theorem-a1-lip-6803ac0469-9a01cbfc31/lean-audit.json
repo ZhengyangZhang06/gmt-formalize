@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0fae9733448813dcc628487954a2de4e841c0b22f6a7b7f6c871be8e155503cc",
+  "git_delta": {
+    "base_commit": "d3a60a716acfd3ec5c375ecc4be97044ca52423c",
+    "candidate_commit": "c175d12d0e59dfbada0d182554b10712768cd28a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pc_minor_measurable_bound",
+    "diff_sha256": "a416ba673379dd7f8bd4a120cc48fa88a2bb748eef155f0802cd44f37d26bf22",
+    "source_sha256": "4ce35e4eadcbbda7327b9418674dfe679f932a093f4474c7e4a450607bcb121b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pc_minor_measurable_bound",
+      "statement": "∀ (m p r : ℕ) (L : NNReal) (v : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m), LipschitzWith L v → Measurable (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))) ∧ ∀ u, |Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))| ≤ (r.factorial : ℝ) * (L : ℝ) ^ r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
