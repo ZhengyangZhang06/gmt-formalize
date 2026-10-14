@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c4fe9563e4ff4fe9e43610678df36df77c2733cffff1dd71e00d3197a0d072fb",
+  "git_delta": {
+    "base_commit": "77a286e0875ffaa6078d298783f94ffe41137784",
+    "candidate_commit": "641535db3c1ab9d16289a312541d445ab303c474",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_bh_blowUp_massOn_ball_bounded",
+    "diff_sha256": "d8ce4e4f481c187d10a626c6744889b50baf0c2856fee62203fd9512e1766eca",
+    "source_sha256": "d71c0dd72f359ecb859cd86d03c9ed99788ad7f5173c9253e3ccbebdde2ebf09",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_bh_blowUp_massOn_ball_bounded",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ : ℝ), IsOpen U → 0 < n → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T x (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
