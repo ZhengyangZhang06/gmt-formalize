@@ -451,6 +451,76 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.3, proof of (2), formula (10)**: `ω₁ = 2`, and for `‖v‖ = 1` the line
+`γ(t) = p + t v` is a measurable embedding with `H¹⌞γ(I) = γ_#(ℒ¹⌞I)` and `H¹(γ(I)) = ℒ¹(I)`
+for every `I ⊆ ℝ`.  `γ` is an isometry, `μHE[1] = volume` on `ℝ` and `μHE[1]` is preserved by
+isometries; the unit ball of `ℝ¹` is the image of `(-1, 1)` under `t ↦ 0 + t e₀`. -/
+theorem Submission.idtp_fons_odc_line_hausdorff : unitBallVolume 1 = 2 ∧ ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → MeasurableEmbedding (fun t : ℝ => p + t • v) ∧ ∀ I : Set ℝ, (μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => p + t • v) '' I) = Measure.map (fun t : ℝ => p + t • v) (volume.restrict I) ∧ (μHE[1] : Measure (Euclid P)) ((fun t : ℝ => p + t • v) '' I) = volume I := by
+  -- `H¹ = ℒ¹` on `ℝ`, since `finrank ℝ ℝ = 1`
+  have hR : (μHE[1] : Measure ℝ) = volume := by
+    simpa only [Module.finrank_self] using
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := ℝ)
+  -- `γ(t) = p + t v` is an isometry when `‖v‖ = 1`
+  have hiso : ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → Isometry (fun t : ℝ => p + t • v) :=
+    fun P p v hv => Isometry.of_dist_eq fun s t => by
+      show dist (p + s • v) (p + t • v) = dist s t
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hv, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+  refine ⟨?_, fun P p v hv => ?_⟩
+  · -- `ω₁ = 2`: the unit ball of `ℝ¹` is the image of `(-1, 1)` under `t ↦ 0 + t e₀`
+    set e : Euclid 1 := EuclideanSpace.single 0 1
+    have he : ‖e‖ = 1 := by simp [e]
+    have hball : ball (0 : Euclid 1) 1 = (fun t : ℝ => (0 : Euclid 1) + t • e) '' Ioo (-1) 1 := by
+      ext x
+      constructor
+      · intro hx
+        have hxe : x 0 • e = x := by
+          ext i
+          rw [Fin.fin_one_eq_zero i]
+          simp [e]
+        rw [mem_ball_zero_iff, ← hxe, norm_smul, he, mul_one, Real.norm_eq_abs] at hx
+        exact ⟨x 0, abs_lt.mp hx, (zero_add _).trans hxe⟩
+      · rintro ⟨t, ht, rfl⟩
+        rw [mem_ball_zero_iff]
+        show ‖(0 : Euclid 1) + t • e‖ < 1
+        rw [zero_add, norm_smul, he, mul_one, Real.norm_eq_abs]
+        exact abs_lt.mpr ht
+    rw [unitBallVolume, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume 1, hball,
+      (hiso 1 0 e he).euclideanHausdorffMeasure_image, hR, Real.volume_Ioo]
+    norm_num
+  · have hemb : MeasurableEmbedding (fun t : ℝ => p + t • v) :=
+      (hiso P p v hv).isClosedEmbedding.measurableEmbedding
+    refine ⟨hemb, fun I => ⟨?_, ?_⟩⟩
+    · -- `H¹⌞γ(I) = (H¹⌞range γ)⌞γ(I) = (γ_#ℒ¹)⌞γ(I) = γ_#(ℒ¹⌞γ⁻¹(γ(I))) = γ_#(ℒ¹⌞I)`
+      rw [← Measure.restrict_restrict_of_subset (image_subset_range _ I),
+        ← (hiso P p v hv).map_euclideanHausdorffMeasure, hR, hemb.restrict_map,
+        hemb.injective.preimage_image]
+    · rw [(hiso P p v hv).euclideanHausdorffMeasure_image, hR]
+
+/-- **Simon 7.3.3, proof of (2), step 4a**: for `‖u‖ = 1` and `f ≥ 0` continuous with compact
+support and `f(u) > 0`, `∫_{ℝu} f dH¹ > 0`.  By `idtp_fons_odc_line_hausdorff` (`p = 0`, `v = u`,
+`I = ℝ`), `H¹⌞ℝu = γ_#ℒ¹` for `γ(t) = t u`, so the integral is `∫_ℝ f(t u) dt`; `γ` is an
+isometry, so `t ↦ f(t u)` is continuous, nonnegative, compactly supported and positive at `1`. -/
+theorem Submission.idtp_fons_odc_ro_line_integral_pos : ∀ (P : ℕ) (u : Euclid P) (f : Euclid P → ℝ), ‖u‖ = 1 → Continuous f → HasCompactSupport f → (∀ y, 0 ≤ f y) → 0 < f u → 0 < ∫ y in (Submodule.span ℝ {u} : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P)) := by
+  intro P u f hu hf hfc hf0 hfu
+  obtain ⟨hemb, hline⟩ := Submission.idtp_fons_odc_line_hausdorff.2 P 0 u hu
+  -- `γ(t) = 0 + t u` is an isometry
+  have hiso : Isometry (fun t : ℝ => (0 : Euclid P) + t • u) :=
+    Isometry.of_dist_eq fun s t => by
+      show dist ((0 : Euclid P) + s • u) (0 + t • u) = dist s t
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hu, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+  -- the line `ℝu` is `γ(ℝ)`
+  have hspan : (Submodule.span ℝ {u} : Set (Euclid P)) =
+      (fun t : ℝ => (0 : Euclid P) + t • u) '' univ := by
+    ext y
+    simp only [SetLike.mem_coe, Submodule.mem_span_singleton, image_univ, mem_range, zero_add]
+  -- `∫_{ℝu} f dH¹ = ∫_ℝ f(γ t) dt`
+  rw [hspan, (hline univ).1, Measure.restrict_univ, hemb.integral_map]
+  exact (hf.comp hiso.continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
+    (hfc.comp_isClosedEmbedding hiso.isClosedEmbedding) (fun t => hf0 _) (x := 1)
+    (by simpa using hfu.ne')
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
