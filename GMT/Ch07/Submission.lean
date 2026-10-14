@@ -587,6 +587,114 @@ theorem Submission.lcn_mult_mul_orient_apply_integrableOn : ∀ (P n : ℕ) (U K
         exact (Real.norm_eq_abs _).symm.trans_le ((R.orient x).le_opNorm α)
     _ ≤ (R.mult x : ℝ) * (1 * ‖α‖) := by gcongr
     _ = ‖α‖ * R.mult x := by ring
+/-- **Simon 7.3.3, proof of (2), formula (10)**: `ω₁ = 2`, and for `‖v‖ = 1` the line
+`γ(t) = p + t v` is a measurable embedding with `H¹⌞γ(I) = γ_#(ℒ¹⌞I)` and `H¹(γ(I)) = ℒ¹(I)`
+for every `I ⊆ ℝ`.  `γ` is an isometry, `μHE[1] = volume` on `ℝ` and `μHE[1]` is preserved by
+isometries; the unit ball of `ℝ¹` is the image of `(-1, 1)` under `t ↦ 0 + t e₀`. -/
+theorem Submission.idtp_fons_odc_line_hausdorff : unitBallVolume 1 = 2 ∧ ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → MeasurableEmbedding (fun t : ℝ => p + t • v) ∧ ∀ I : Set ℝ, (μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => p + t • v) '' I) = Measure.map (fun t : ℝ => p + t • v) (volume.restrict I) ∧ (μHE[1] : Measure (Euclid P)) ((fun t : ℝ => p + t • v) '' I) = volume I := by
+  -- `H¹ = ℒ¹` on `ℝ`, since `finrank ℝ ℝ = 1`
+  have hR : (μHE[1] : Measure ℝ) = volume := by
+    simpa only [Module.finrank_self] using
+      InnerProductSpace.euclideanHausdorffMeasure_eq_volume (V := ℝ)
+  -- `γ(t) = p + t v` is an isometry when `‖v‖ = 1`
+  have hiso : ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → Isometry (fun t : ℝ => p + t • v) :=
+    fun P p v hv => Isometry.of_dist_eq fun s t => by
+      show dist (p + s • v) (p + t • v) = dist s t
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hv, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+  refine ⟨?_, fun P p v hv => ?_⟩
+  · -- `ω₁ = 2`: the unit ball of `ℝ¹` is the image of `(-1, 1)` under `t ↦ 0 + t e₀`
+    set e : Euclid 1 := EuclideanSpace.single 0 1
+    have he : ‖e‖ = 1 := by simp [e]
+    have hball : ball (0 : Euclid 1) 1 = (fun t : ℝ => (0 : Euclid 1) + t • e) '' Ioo (-1) 1 := by
+      ext x
+      constructor
+      · intro hx
+        have hxe : x 0 • e = x := by
+          ext i
+          rw [Fin.fin_one_eq_zero i]
+          simp [e]
+        rw [mem_ball_zero_iff, ← hxe, norm_smul, he, mul_one, Real.norm_eq_abs] at hx
+        exact ⟨x 0, abs_lt.mp hx, (zero_add _).trans hxe⟩
+      · rintro ⟨t, ht, rfl⟩
+        rw [mem_ball_zero_iff]
+        show ‖(0 : Euclid 1) + t • e‖ < 1
+        rw [zero_add, norm_smul, he, mul_one, Real.norm_eq_abs]
+        exact abs_lt.mpr ht
+    rw [unitBallVolume, ← EuclideanSpace.euclideanHausdorffMeasure_eq_volume 1, hball,
+      (hiso 1 0 e he).euclideanHausdorffMeasure_image, hR, Real.volume_Ioo]
+    norm_num
+  · have hemb : MeasurableEmbedding (fun t : ℝ => p + t • v) :=
+      (hiso P p v hv).isClosedEmbedding.measurableEmbedding
+    refine ⟨hemb, fun I => ⟨?_, ?_⟩⟩
+    · -- `H¹⌞γ(I) = (H¹⌞range γ)⌞γ(I) = (γ_#ℒ¹)⌞γ(I) = γ_#(ℒ¹⌞γ⁻¹(γ(I))) = γ_#(ℒ¹⌞I)`
+      rw [← Measure.restrict_restrict_of_subset (image_subset_range _ I),
+        ← (hiso P p v hv).map_euclideanHausdorffMeasure, hR, hemb.restrict_map,
+        hemb.injective.preimage_image]
+    · rw [(hiso P p v hv).euclideanHausdorffMeasure_image, hR]
+
+/-- **Simon 7.3.3, proof of (2), formula (10)**, along one ray: let `(M, θ, ξ)` be a
+`1`-dimensional integer multiplicity triple in `ℝᴾ`, `‖e‖ = 1`, `γ(t) = t e`, and `ξ = ±e`
+`H¹`-a.e. on `M ∩ γ(0, ∞)`.  With `β = ⟪e, ·⟫`, `g(t) = 1_M(t e) θ(t e) ⟨β, ξ(t e)⟩` is locally
+integrable, a.e. integer valued on `(0, ∞)` (as `⟨β, ±e⟩ = ±1`), and
+`∫_{M ∩ γ(0, ∞)} θ ⟨ω, ξ⟩ dH¹ = ∫₀^∞ g(t) ω(t e)(e) dt` for every test `1`-form `ω`: a.e. on
+`M ∩ γ(0, ∞)`, `⟨ω, ξ⟩ = ⟨β, ξ⟩ ω(e)`, and `γ` carries `ℒ¹⌞I` to `H¹⌞γ(I)`. -/
+theorem Submission.idtp_fons_odc_ra_single_ray : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (e : Euclid P), ‖e‖ = 1 → (∀ᵐ x ∂((μHE[1] : Measure (Euclid P)).restrict (R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0)), R.orient x = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ R.orient x = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)) → ∃ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) ∧ (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g t = k) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x) ∂μHE[1] = ∫ t in Ioi (0 : ℝ), g t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+  intro P R e he hξ
+  have hM := R.measurableSet_carrier
+  -- `γ(t) = t e` is a measurable embedding with `H¹⌞γ(I) = γ_#(ℒ¹⌞I)`
+  obtain ⟨hemb, hmap⟩ := Submission.idtp_fons_odc_line_hausdorff.2 P 0 e he
+  simp only [zero_add] at hemb hmap
+  replace hmap := fun I => (hmap I).1
+  -- the covector `β = ⟪e, ·⟫` has `β(e) = ‖e‖² = 1`
+  obtain ⟨β, hβ⟩ : ∃ β : Covector (Euclid P) 1, β (fun _ => e) = 1 :=
+    ⟨ContinuousAlternatingMap.ofSubsingleton ℝ (Euclid P) ℝ (0 : Fin 1) (innerSL ℝ e), by
+      rw [ContinuousAlternatingMap.ofSubsingleton_apply_apply, innerSL_apply_apply,
+        real_inner_self_eq_norm_sq, he, one_pow]⟩
+  -- for `ξ = ±e`: `⟨β, ξ⟩ = ±1` and `⟨α, ξ⟩ = ⟨β, ξ⟩ α(e)`
+  have hsign : ∀ ξ : MultiVector P 1,
+      (ξ = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨
+        ξ = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)) →
+      (ξ β = 1 ∨ ξ β = -1) ∧ ∀ α : Covector (Euclid P) 1, ξ α = ξ β * α (fun _ => e) := by
+    rintro ξ (rfl | rfl) <;> simp [hβ]
+  refine ⟨fun t => R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x β) (t • e), ?_, ?_,
+    fun ω => ?_⟩
+  · -- on a compact `k`, `g` is integrable since `θ ⟨β, ξ⟩` is `H¹`-integrable on `M ∩ γ(k)`
+    refine (locallyIntegrable_iff.2 fun k hk => ?_).locallyIntegrableOn _
+    have h1 : Integrable (R.carrier.indicator fun x => (R.mult x : ℝ) * R.orient x β)
+        ((μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => t • e) '' k)) := by
+      rw [integrable_indicator_iff hM, IntegrableOn, Measure.restrict_restrict hM]
+      exact Submission.lcn_mult_mul_orient_apply_integrableOn P 1 univ _ R
+        (hk.image (by fun_prop)) (subset_univ _) β
+    rw [hmap] at h1
+    exact hemb.integrable_map_iff.1 h1
+  · -- for a.e. `t > 0`, `g(t) = ±θ(t e)` if `t e ∈ M` (`ξ(t e) = ±e`) and `g(t) = 0` otherwise
+    rw [← Measure.restrict_restrict hM, ae_restrict_iff' hM, hmap, hemb.ae_map_iff] at hξ
+    filter_upwards [hξ] with t ht
+    by_cases hx : t • e ∈ R.carrier
+    · rw [indicator_of_mem hx]
+      rcases (hsign _ (ht hx)).1 with h1 | h1
+      · exact ⟨R.mult (t • e), by rw [h1, mul_one, Int.cast_natCast]⟩
+      · exact ⟨-(R.mult (t • e) : ℤ), by rw [h1, mul_neg_one, Int.cast_neg, Int.cast_natCast]⟩
+    · exact ⟨0, by rw [indicator_of_notMem hx, Int.cast_zero]⟩
+  · -- `θ ⟨ω, ξ⟩ = θ ⟨β, ξ⟩ ω(e)` a.e. on `M ∩ γ(0, ∞)`; extend by `0` off `M`, pull back by `γ`
+    calc ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x) ∂μHE[1]
+        = ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0, (R.mult x : ℝ) * R.orient x β *
+            (ω : DifferentialForm (Euclid P) 1) x (fun _ => e) ∂μHE[1] := by
+          refine integral_congr_ae ?_
+          filter_upwards [hξ] with x hx
+          rw [(hsign _ hx).2 ((ω : DifferentialForm (Euclid P) 1) x), mul_assoc]
+      _ = ∫ x in (fun t : ℝ => t • e) '' Ioi 0,
+            R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x β) x *
+              (ω : DifferentialForm (Euclid P) 1) x (fun _ => e) ∂μHE[1] := by
+          rw [inter_comm, ← setIntegral_indicator hM]
+          congr 1
+          funext x
+          exact Set.indicator_mul_left _ _ _
+      _ = ∫ t in Ioi (0 : ℝ), R.carrier.indicator (fun x => (R.mult x : ℝ) * R.orient x β) (t • e) *
+            (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+          rw [hmap, hemb.integral_map]
 
 /-- **Splitting the action along finitely many rays** (Simon Ch. 6, 3.1 (‡)).  Let
 `R = (M, θ, ξ)` be a `1`-dimensional integer multiplicity triple in `ℝᴾ` and `F` a finite set of
