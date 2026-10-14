@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.localization-a1.triple_inter_open-a1",
+  "parent_id": "root.boundary_rectifiability-a1.localization-a1",
+  "depth": 3,
+  "title": "Restricting a rectifiable triple to an open set",
+  "statement": "Let P, n ∈ ℕ, U, U′, V, M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λₙ(ℝ^P), and assume IsRectifiableTriple U n M θ ξ (the triple conditions of Simon Ch. 6, 3.1 relative to U, with Hⁿ = μHE[n] and orientation by weighted approximate tangent spaces of (M, θ)). Suppose V is open, M ∩ V ⊆ U′, and θ is Hⁿ-integrable on M ∩ V ∩ K for every compact K ⊆ U′. Then IsRectifiableTriple U′ n (M ∩ V) θ ξ: the restricted triple (M ∩ V, θ, ξ) satisfies all triple conditions relative to U′, including the orientation condition with respect to the weighted approximate tangent spaces of (M ∩ V, θ).",
+  "lean_statement": "∀ (P n : ℕ) (U U' V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → IsOpen V → M ∩ V ⊆ U' → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U' → IntegrableOn θ (M ∩ V ∩ K) (μHE[n] : Measure (Eucl P))) → IsRectifiableTriple U' n (M ∩ V) θ ξ",
+  "lean_name": "br_loc_triple_inter_open",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-tangent-locality-a1-a1",
+      "result_commit": "def607d836e2e6071aa1efb85ad37d0ca1d1ac19",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-localization-a1-triple-inter-open-a1-a1"
+}

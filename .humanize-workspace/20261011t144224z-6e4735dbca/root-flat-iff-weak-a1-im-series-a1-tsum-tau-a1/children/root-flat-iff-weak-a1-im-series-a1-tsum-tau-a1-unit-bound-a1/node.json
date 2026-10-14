@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1",
+  "depth": 4,
+  "title": "Operator-norm unit bound for ± simple n-vectors of orthonormal frames",
+  "statement": "Let P, n ∈ ℕ and let τ = (τ_1, …, τ_n) : Fin n → ℝ^P be an orthonormal family. Let w ∈ Λ_n(ℝ^P) (NVector (Eucl P) n, a continuous linear functional on n-covectors) satisfy w = simpleNVector τ or w = −simpleNVector τ. Then |w(α)| ≤ ‖α‖ for every n-covector α (Covector (Eucl P) n: a continuous alternating n-linear map ℝ^P → ℝ, with its operator norm ‖α‖).",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → ∀ α : Covector (Eucl P) n, |w α| ≤ ‖α‖",
+  "lean_name": "fiw_ims_tt_unit_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1-a1"
+}

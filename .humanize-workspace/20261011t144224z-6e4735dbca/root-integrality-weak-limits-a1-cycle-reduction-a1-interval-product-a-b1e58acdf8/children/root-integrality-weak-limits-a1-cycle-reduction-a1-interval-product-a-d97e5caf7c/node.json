@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.blowup_mass_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+  "depth": 5,
+  "title": "Uniform mass bound for blow-ups at a point with a weighted approximate tangent plane",
+  "statement": "Let P, m ∈ ℕ, Hᵐ := μHE[m], M ⊆ ℝ^P Hᵐ-null-measurable, θ : ℝ^P → ℝ with θ ≥ 0 on M and θ Hᵐ-integrable on M ∩ K for every compact K, x ∈ ℝ^P and T a linear subspace of ℝ^P with HasWeightedApproximateTangentSpaceAt m M θ x T (Simon Ch. 3, 1.7). Then for every R ∈ ℝ there is B ∈ ℝ such that for all sufficiently small r > 0 (eventually in 𝓝[>] 0), every C ∈ ℝ and every g : ℝ^P → ℝ with |g(w)| ≤ C for all w and g(w) = 0 whenever ‖w‖ > R satisfy |∫_{η_r(M)} g(w)·θ(x + r·w) dHᵐ(w)| ≤ C·B, where η_r := blowUpMap x r, η_r(z) = r⁻¹·(z − x).",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (T : Submodule ℝ (Eucl P)), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → (∀ z ∈ M, 0 ≤ θ z) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → HasWeightedApproximateTangentSpaceAt m M θ x T → ∀ R : ℝ, ∃ B : ℝ, ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ (C : ℝ) (g : Eucl P → ℝ), (∀ w, |g w| ≤ C) → (∀ w, R < ‖w‖ → g w = 0) → |∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, g w * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))| ≤ C * B",
+  "lean_name": "iwl_cr_ip_wt_blowup_mass_bound",
+  "depends_on": [
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1-a1",
+      "result_commit": "91a22d1bfc9063820dd1583526d3d097beffd0ec",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-d97e5caf7c-a1"
+}

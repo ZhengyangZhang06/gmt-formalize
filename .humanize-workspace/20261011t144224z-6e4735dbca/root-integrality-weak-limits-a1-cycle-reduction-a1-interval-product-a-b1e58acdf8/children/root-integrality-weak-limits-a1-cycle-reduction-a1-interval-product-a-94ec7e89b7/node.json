@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.slice_continuous-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+  "depth": 5,
+  "title": "Continuity in σ of the blown-up slice integrals",
+  "statement": "Let P, m ∈ ℕ, Hᵐ := μHE[m], M ⊆ ℝ^P any set, θ : ℝ^P → ℝ Hᵐ-integrable on M ∩ K for every compact K, x ∈ ℝ^P, f : ℝ^{P+1} → ℝ continuous with compact support, Φ(s, u) := (s, u_1, …, u_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))), and r > 0. Then the function σ ↦ ∫_{blowUpMap x r '' M} f(Φ(σ, w))·θ(x + r·w) dHᵐ(w) is continuous on ℝ.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P), (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → Continuous (fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P)))",
+  "lean_name": "iwl_cr_ip_wt_slice_continuous",
+  "depends_on": [
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1-a1",
+      "result_commit": "91a22d1bfc9063820dd1583526d3d097beffd0ec",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-94ec7e89b7-a1"
+}
