@@ -451,6 +451,315 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Directional derivatives of test forms are test forms: if `φ ∈ 𝒟^q(ℝᴾ)` and `v ∈ ℝᴾ`, then
+`z ↦ Dφ(z)[v]` is again `C^∞` (`Dφ` is `C^∞`, as `∞ + 1 ≤ ∞`) with compact support
+(`spt Dφ ⊆ spt φ`, and evaluation at `v` maps `0` to `0`). -/
+theorem Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply : ∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v) := by
+  rintro P q φ v ⟨hs, hc⟩
+  refine ⟨?_, ?_⟩
+  · -- `Dφ` is `C^∞`, hence so is its evaluation at the constant vector `v`
+    exact (hs.fderiv_right (by simp)).clm_apply contDiff_const
+  · -- `Dφ` has compact support, and `L ↦ L v` maps `0` to `0`
+    exact (hc.fderiv ℝ).comp_left (g := fun L : Euclid P →L[ℝ] Covector (Euclid P) q => L v) rfl
+/-- **Splitting the contracted exterior derivative** (Step 1 of the cube Stokes formula in the proof
+of Simon 7.3.5, where minimality passes from `[[L]] × S₀` to `S₀`).  Let `g = (g₀, …, g_j)` be
+vectors in `ℝᴾ` and let `flatD`, `flat`, `flatF a` contract covectors with `g`, resp. with `g`
+without `g_a`: `flatD α v = α(g, v)`, `flat α v = α(g, v)`, `flatF a α v = α(g ∘ a.succAbove, v)`.
+If the `n'`-form `ω` is differentiable at `x`, then
+`flatD(dω(x)) = Σₐ (−1)ᵃ D[flatF a ∘ ω](x)[g_a] + (−1)^{j+1} d[flat ∘ ω](x)`.
+Evaluate at a tuple `w` and put `V = (g, w)`.  As `dω(x)(V) = Σᵢ (−1)ⁱ (Dω(x)[Vᵢ])(V without Vᵢ)`,
+`D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`, both sides are
+alternating sums of values of `Dω(x)`.  Split the sum over `i < n' + 1` at `j + 1`: the index
+`a < j + 1` carries `g_a`, and omitting it leaves `(g ∘ a.succAbove, w)`; the index `j + 1 + l`
+carries `w_l`, and omitting it leaves `(g, w without w_l)`, with sign `(−1)^{j+1}(−1)ˡ`. -/
+theorem Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : DifferentialForm (Euclid P) n') (x : Euclid P), DifferentiableAt ℝ ω x → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → flatD (exteriorDerivative ω x) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) • fderiv ℝ (fun z => flatF a (ω z)) x (g a) + (-1 : ℝ) ^ (j + 1) • exteriorDerivative (fun z => flat (ω z)) x := by
+  intro P j m n' g h h₁ h₂ flatD flat flatF ω x hω hflatD hflat hflatF
+  -- Step 1: chain rule, `D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`
+  have hβ : ∀ a, fderiv ℝ (fun z => flatF a (ω z)) x = (flatF a).comp (fderiv ℝ ω x) := fun a =>
+    ((flatF a).hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  have hγ : fderiv ℝ (fun z => flat (ω z)) x = flat.comp (fderiv ℝ ω x) :=
+    (flat.hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  -- Step 5: value formulas for `Fin.append` and `Fin.succAbove`
+  have happL : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : (k : ℕ) < p), Fin.append u v k = u ⟨k, hk⟩ := fun u v k hk =>
+    Fin.append_left u v ⟨k, hk⟩
+  have happR : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : p ≤ (k : ℕ)), Fin.append u v k = v ⟨k - p, by have := k.isLt; omega⟩ := by
+    intro p q u v k hk
+    rw [← Fin.append_right u v ⟨k - p, by have := k.isLt; omega⟩]
+    congr 1
+    ext
+    simp only [Fin.val_natAdd]
+    omega
+  have hsA : ∀ {N : ℕ} (p : Fin (N + 1)) (i : Fin N),
+      ((p.succAbove i : Fin (N + 1)) : ℕ) = if (i : ℕ) < p then (i : ℕ) else i + 1 := by
+    intro N p i
+    rcases Nat.lt_or_ge (i : ℕ) p with hip | hip
+    · rw [Fin.succAbove_of_castSucc_lt _ _ (Fin.lt_def.2 hip), ite_eq_left hip]
+      rfl
+    · rw [Fin.succAbove_of_le_castSucc _ _ (Fin.le_def.2 hip), ite_eq_right (by omega)]
+      rfl
+  -- Steps 2–4: evaluate at `w`; both sides become alternating sums of values of `Dω(x)`
+  ext w
+  rw [hflatD]
+  simp only [exteriorDerivative, extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply,
+    ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.sum_apply,
+    ContinuousAlternatingMap.smul_apply, hβ, hγ, ContinuousLinearMap.comp_apply, hflatF, hflat]
+  -- Step 7: omitting the index of value `a` from `V = (g, w)` leaves `(g ∘ a.succAbove, w)`
+  have e2 : ∀ (a : Fin (j + 1)) (i : Fin (n' + 1)), (i : ℕ) = a →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) =
+        Fin.append (g ∘ a.succAbove) w ∘ Fin.cast h₂ := by
+    intro a i hi
+    funext l
+    have ha := a.isLt
+    have hs := hsA i l
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (l : ℕ) j with hlj | hlj
+    · have hk1 : (Fin.cast h₂ l : ℕ) < j := by simpa using hlj
+      have hk2 : (Fin.cast h₁ (i.succAbove l) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2, Function.comp_apply]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+    · have hla : ¬ (l : ℕ) < a := by omega
+      rw [ite_eq_right hla] at hs
+      have hk1 : j ≤ (Fin.cast h₂ l : ℕ) := by simpa using hlj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove l) : ℕ) := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+      omega
+  -- Step 8: omitting the index of value `j + 1 + l` from `V = (g, w)` leaves `(g, w without w_l)`
+  have e4 : ∀ (l : Fin (m + 1)) (i : Fin (n' + 1)), (i : ℕ) = j + 1 + l →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) = Fin.append g (l.removeNth w) ∘ Fin.cast h := by
+    intro l i hi
+    funext k
+    have hs := hsA i k
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (k : ℕ) (j + 1) with hkj | hkj
+    · rw [ite_eq_left (by omega)] at hs
+      have hk1 : (Fin.cast h k : ℕ) < j + 1 := by simpa using hkj
+      have hk2 : (Fin.cast h₁ (i.succAbove k) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+    · have hk1 : j + 1 ≤ (Fin.cast h k : ℕ) := by simpa using hkj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove k) : ℕ) := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+      split_ifs <;> omega
+  -- Step 6: reindex along `Fin.cast h₁` and split the sum at `j + 1`
+  rw [← Fin.sum_congr' _ h₁.symm, Fin.sum_univ_add (a := j + 1) (b := m + 1)]
+  congr 1
+  · refine Finset.sum_congr rfl fun a _ => ?_
+    have hi : (((Fin.castAdd (m + 1) a).cast h₁.symm : Fin (n' + 1)) : ℕ) = a := by simp
+    rw [e2 a _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_left, hi,
+      zsmul_eq_mul, smul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one]
+  · -- the sign `(−1)^{(j+1)+l} = (−1)^{j+1}(−1)^l`
+    rw [Finset.smul_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    have hi : (((Fin.natAdd (j + 1) l).cast h₁.symm : Fin (n' + 1)) : ℕ) = j + 1 + l := by simp
+    rw [e4 l _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_right, hi,
+      zsmul_eq_mul, smul_eq_mul]
+    push_cast
+    ring
+/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
+`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
+`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
+multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
+continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
+(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
+is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
+`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
+the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
+theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+  intro P
+  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
+  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
+    subst h
+    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
+    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
+      intro i j hc
+      have hv := congrArg Fin.val hc
+      have hi := i.isLt
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
+      omega
+    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
+    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
+        Fin.append g (Function.update v j x) =
+          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
+      intro _ v j x
+      funext z
+      induction z using Fin.addCases with
+      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
+      | right j' =>
+        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
+        congr 1
+        funext i
+        rw [Fin.append_right]
+    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
+    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
+      refine continuous_pi fun z => ?_
+      induction z using Fin.addCases with
+      | left i => simp only [Fin.append_left]; exact continuous_const
+      | right j => simp only [Fin.append_right]; exact continuous_apply j
+    -- `♭α (v) = α (g, v)` is a continuous alternating map
+    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
+      { toFun := fun v => α (Fin.append g v)
+        map_update_add' := fun v j x y => by
+          simp only [hupd _ v j, α.map_update_add]
+        map_update_smul' := fun v j c x => by
+          simp only [hupd _ v j, α.map_update_smul]
+        cont := α.cont.comp hcont
+        map_eq_zero_of_eq' := fun v i j hv hij =>
+          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
+            (by rw [Fin.append_right, Fin.append_right]; exact hv)
+            ((Fin.natAdd_injective m k).ne hij) }
+    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
+    -- `α ↦ ♭α` is linear
+    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
+      { toFun := φ
+        map_add' := fun α β => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.add_apply]
+        map_smul' := fun c α => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
+    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
+    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
+      intro α
+      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
+      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
+        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
+        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
+          rw [Fin.prod_univ_add]
+          simp only [Fin.append_left, Fin.append_right]
+          ring
+    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
+    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
+    rfl
+  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
+    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+      refine closure_minimal (fun y hy => ?_)
+        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
+      by_contra hy'
+      apply hy
+      show flat (ω (t + y)) = 0
+      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
+    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
+    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
+      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
+      rwa [Homeomorph.coe_addLeft] at hK'
+    refine ⟨⟨?_, ?_⟩, hsub⟩
+    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
+    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
+
+/-- **Boundary on translated forms.**  If `∂Y = X` in `ℝᴾ`, `γ` is a test `m`-form and
+`t ∈ ℝᴾ`, then `Y(d(γ(t + ·))) = X(γ(t + ·))`, both sides read by `currentEval`.  The translate
+`γₜ = γ(t + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b) with `Φ = id`), and
+translation commutes with `d`: `D(γ(t + ·))(y) = Dγ(t + y)` (`fderiv_comp_add_left`), so
+`dγₜ = (dγ)(t + ·)`.  Hence both arguments are test forms supported in `ℝᴾ`, `currentEval`
+evaluates the currents on them, and `Y(dγₜ) = ∂Y(γₜ) = X(γₜ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_translate_boundary_eval : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (γ : DifferentialForm (Euclid P) m) (t : Euclid P), Y.boundary = X → IsTestForm γ → currentEval Y (fun y => exteriorDerivative γ (t + y)) = currentEval X (fun y => γ (t + y)) := by
+  intro P m X Y γ t hYX hγ
+  subst hYX
+  -- the translate `γₜ = γ(t + ·)` is a test form (interior product (b) with `Φ = id`)
+  have hγt : IsTestForm (fun y => γ (t + y)) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 m m
+      (ContinuousLinearMap.id ℝ (Covector (Euclid P) m)) γ t hγ).1
+  -- translation commutes with `d`, since `D(γ(t + ·))(y) = Dγ(t + y)`
+  have hd : exteriorDerivative (fun y => γ (t + y)) = fun y => exteriorDerivative γ (t + y) := by
+    funext y
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y => γ (t + y)) y) =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ γ (t + y))
+    rw [fderiv_comp_add_left]
+  -- both forms are test forms supported in `ℝᴾ`, so `currentEval` evaluates on them
+  have hmem : IsTestForm (fun y => γ (t + y)) ∧ tsupport (fun y => γ (t + y)) ⊆ univ :=
+    ⟨hγt, subset_univ _⟩
+  have hdmem : IsTestForm (fun y => exteriorDerivative γ (t + y)) ∧
+      tsupport (fun y => exteriorDerivative γ (t + y)) ⊆ univ :=
+    ⟨hd ▸ exteriorDerivative_isTestForm hγt, subset_univ _⟩
+  -- unfold `currentEval`; `∂Y(γₜ) = Y(dγₜ)` and `dγₜ = (dγ)(t + ·)` as test forms
+  rw [currentEval, currentEval, dite_eq_left hdmem, dite_eq_left hmem,
+    GeometricCurrentOn.boundary_apply]
+  exact congrArg Y (Subtype.ext hd.symm)
+
+/-- **Slice identity for one translate.**  Write `β_a = ♭_{g ∘ a.succAbove} ω`, `γ = ♭_g ω` and
+`δ_a = D_{g_a} β_a`.  At every point `t + y` the contraction of `dω` with the frame splits as
+`♭_g dω = Σ_a (−1)^a δ_a + (−1)^{j+1} dγ` (`flat_extDeriv_split`).  Every translated form here
+is a test form (interior product (b), `isTestForm_fderiv_apply`, `exteriorDerivative_isTestForm`),
+so `Y` evaluates the splitting linearly, and the last term is
+`Y(dγ(t + ·)) = ∂Y(γ(t + ·)) = X(γ(t + ·))` (`translate_boundary_eval`). -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_identity : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (t : Euclid P), Y.boundary = X → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * currentEval Y (fun y => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)) + (-1 : ℝ) ^ (j + 1) * currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) := by
+  intro P j m n' g h h₁ h₂ X Y flatD flat flatF ω t hYX hD hflat hF
+  -- `currentEval` is the current itself on test forms (every support lies in `univ`)
+  have hev : ∀ (k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (φ : DifferentialForm (Euclid P) k) (hφ : IsTestForm φ ∧ tsupport φ ⊆ univ),
+      currentEval T φ = T ⟨φ, hφ⟩ := by
+    intro k T φ hφ
+    rw [currentEval, dite_eq_left hφ]
+  -- work with the underlying form `w` of `ω`
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n') := ω.property.1
+  generalize (ω : DifferentialForm (Euclid P) n') = w at hω ⊢
+  -- `β_a = flatF a ∘ w` and `γ = flat ∘ w` are test forms (interior product (b), translate by `0`)
+  have hβ : ∀ a : Fin (j + 1), IsTestForm (fun z => flatF a (w z)) := fun a => by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' (m + 1) (flatF a) w 0 hω).1
+  have hγ : IsTestForm (fun z => flat (w z)) := by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' m flat w 0 hω).1
+  -- the translates `♭_g dw (t + ·)`, `δ_a (t + ·)` and `dγ (t + ·)` are test forms
+  have hFt : IsTestForm (fun y => flatD (exteriorDerivative w (t + y))) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 (n' + 1) (m + 1) flatD _ t
+      (exteriorDerivative_isTestForm hω)).1
+  have hAt : ∀ a : Fin (j + 1),
+      IsTestForm (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) := fun a => by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t
+        (Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P (m + 1) _ (g a) (hβ a))).1
+  have hDt : IsTestForm (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) := by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t (exteriorDerivative_isTestForm hγ)).1
+  -- the pointwise splitting at `t + y`, read as an identity of test forms in `ℝᴾ`
+  have hsplit : (⟨fun y => flatD (exteriorDerivative w (t + y)), hFt, subset_univ _⟩ :
+        TestFormOn (univ : Set (Euclid P)) (m + 1)) =
+      ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) •
+        (⟨fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a), hAt a, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) +
+      (-1 : ℝ) ^ (j + 1) •
+        (⟨fun y => exteriorDerivative (fun z => flat (w z)) (t + y), hDt, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) := by
+    refine Subtype.ext (funext fun y => ?_)
+    simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
+      Pi.add_apply, Pi.smul_apply]
+    exact Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split P j m n' g h h₁ h₂ flatD flat flatF
+      w (t + y) ((hω.1.differentiable (by simp)).differentiableAt) hD hflat hF
+  -- the boundary term: `Y(dγ(t + ·)) = X(γ(t + ·))`
+  have hbd : currentEval Y (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) =
+      currentEval X (fun y => flat (w (t + y))) :=
+    Submission.dimred_cs_sos_mt_cs_translate_boundary_eval P m X Y _ t hYX hγ
+  have hA : ∀ a : Fin (j + 1),
+      currentEval Y (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) =
+        Y ⟨_, hAt a, subset_univ _⟩ := fun a => hev _ Y _ ⟨hAt a, subset_univ _⟩
+  -- linearity of `Y`
+  rw [← hbd, hev _ Y _ ⟨hFt, subset_univ _⟩, hev _ Y _ ⟨hDt, subset_univ _⟩, hsplit]
+  simp only [map_add, map_sum, map_smul, smul_eq_mul, hA]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

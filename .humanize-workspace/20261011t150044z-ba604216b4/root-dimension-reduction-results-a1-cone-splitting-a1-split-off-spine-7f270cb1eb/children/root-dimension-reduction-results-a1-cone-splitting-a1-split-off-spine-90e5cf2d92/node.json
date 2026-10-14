@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Stokes formula on a cube for current slices: the action of ∂([[Q_r]] × Y) is the face terms plus (−1)^k times that of [[Q_r]] × ∂Y",
+  "statement": "Let P, j, m, n' ∈ ℕ, k := j + 1, and let g = (g_0, …, g_j) (g : Fin (j + 1) → Euclid P) be orthonormal with span G; for a ∈ Fin (j + 1) let g^(a) := g ∘ a.succAbove (g with g_a removed) and G_a := span g^(a). Let h : n' = (j + 1) + m, h₁ : n' + 1 = (j + 1) + (m + 1) and h₂ : n' = j + (m + 1). Let Y ∈ 𝒟_{m+1}(ℝ^P) have an integer multiplicity representation R_Y, and let X ∈ 𝒟_m(ℝ^P) with ∂Y = X (Y.boundary = X). Let flatD : Λ^{n'+1} → Λ^{m+1}, flat : Λ^{n'} → Λ^m and flatF a : Λ^{n'} → Λ^{m+1} (a ∈ Fin (j + 1)) be continuous linear maps with flatD α v = α(Fin.append g v ∘ Fin.cast h₁), flat α v = α(Fin.append g v ∘ Fin.cast h) and flatF a α v = α(Fin.append g^(a) v ∘ Fin.cast h₂) (interior products with g, resp. g^(a)). Let ω be a test n'-form, dω its exterior derivative, r > 0, H^i := μHE[i], Q_r := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and Q'_a := {s ∈ G_a : |⟨g_{a.succAbove c}, s⟩| ≤ r for all c}. Writing Y(φ), X(φ) for currentEval of the form y ↦ φ(y), we have\n∫_{Q_r} Y(y ↦ flatD(dω(t + y))) dH^{j+1}(t) = Σ_{a ∈ Fin (j+1)} (−1)^a·[∫_{Q'_a} Y(y ↦ flatF a(ω(s + r·g_a + y))) dH^j(s) − ∫_{Q'_a} Y(y ↦ flatF a(ω(s − r·g_a + y))) dH^j(s)] + (−1)^{j+1}·∫_{Q_r} X(y ↦ flat(ω(t + y))) dH^{j+1}(t).",
+  "lean_statement": "∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (r : ℝ), Orthonormal ℝ g → RY.Represents Y → Y.boundary = X → 0 < r → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1] = (∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j])) + (-1 : ℝ) ^ (j + 1) * ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1]",
+  "lean_name": "dimred_cs_sos_mt_cube_stokes",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.translate_derivative-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.translate_derivative-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-37aaf335d9-a1",
+      "result_commit": "f899c748944f69ea21ca50d63f20848568c2a2d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-90e5cf2d92-a1"
+}
