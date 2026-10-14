@@ -4203,6 +4203,371 @@ theorem Submission.codim1_hcp_sc_cone_simons_defect : ∀ (P m : ℕ) (A₀ : Su
     (fun a c d => ((hCZ _ (hbT a) _ (hbT c)).2.2 _ (hbT d)).2)
     (by rw [hlast, map_smul, hΦW x hxW, hrad, smul_neg]) hg
 
+/-- **Integration by parts on a stationary hypersurface** (parent proof (4c)).  Let `M ⊆ A₀`
+(`dim A₀ = m + 1`, `0 ∉ M`) be stationary away from `0`, with smooth unit normal `ν ∈ A₀` and the
+Lipschitz approximation property (HL), and let `F` be `C²` near `M` with `F = f` on `M`.  For `φ`
+locally Lipschitz on `M` and vanishing on `M` off a compact subset of `M`, both integrands are
+`Hᵐ⌞M`-integrable and `∫_M Σⱼ δⱼφ δⱼf = −∫_M φ Σⱼ δⱼ(δⱼf)`, where `δⱼg(x) = D^M g(x)(Pₓeⱼ)`.
+
+By normal_complement `Pₓeⱼ = Πeⱼ − ⟨ν(x), eⱼ⟩ν(x)` on `M`, so (tangent_fderiv) `δⱼf` and
+`δⱼ(δⱼf)` are restrictions of `Gⱼ = DF(Πeⱼ − ⟨ν, eⱼ⟩ν)` and `DGⱼ(Πeⱼ − ⟨ν, eⱼ⟩ν)`.  With the (HL)
+approximants `χₖ → φ` and a cut-off `β` equal to `1` on the supports, `Xₖ = χₖβ Σⱼ Gⱼeⱼ` is an
+admissible field and `tr(Pₓ ∘ DXₖ(x)) = Σⱼ δⱼχₖ δⱼf + χₖ Σⱼ δⱼ(δⱼf)` on `M`, whose integral
+vanishes by stationarity.  Let `k → ∞`: Cauchy–Schwarz and Hölder turn the `L²` convergence
+`δχₖ → δφ` into `L¹` convergence of the first term, and dominated convergence handles the second. -/
+theorem Submission.codim1_hcp_sc_stationary_integration_by_parts : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → (0 : Euclid P) ∉ tsupport X → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ((∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0)) → ∀ (f F : Euclid P → ℝ) (O' : Set (Euclid P)), IsOpen O' → M ⊆ O' → ContDiffOn ℝ 2 F O' → (∀ y ∈ M, F y = f y) → ∀ φ : Euclid P → ℝ, LocallyLipschitzOn M φ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → φ x = 0) → Integrable (fun x => ∑ j : Fin P, fderivWithin ℝ φ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M) ∧ Integrable (fun x => φ x * ∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y ((Submodule.span ℝ (tangentSpace M y)).starProjection (EuclideanSpace.single j 1))) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M) ∧ ∫ x in M, (∑ j : Fin P, fderivWithin ℝ φ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ∂μHE[m] = -(∫ x in M, φ x * (∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y ((Submodule.span ℝ (tangentSpace M y)).starProjection (EuclideanSpace.single j 1))) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ∂μHE[m]) := by
+  intro P m A₀ M ν hdim hMA hM0 hMsub hMmeas hMfin hstat hνO hν HL f F O' hO' hMO' hF hFf φ hφ hφC
+  have hTan := Submission.codim1_hcp_sc_fderivWithin_tangent_eq
+  have hNC := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hdim hMA hMsub hν
+  obtain ⟨O, hO, hMO, hνs⟩ := hνO
+  obtain ⟨HL1, HL2⟩ := HL
+  obtain ⟨C, hC, hCM, hφ0⟩ := hφC
+  -- `Pr x = Pₓ`, the orthogonal projection onto `span TₓM`
+  obtain ⟨Pr, hPr⟩ : ∃ Pr : Euclid P → Euclid P →L[ℝ] Euclid P,
+      ∀ x, Pr x = (Submodule.span ℝ (tangentSpace M x)).starProjection := ⟨_, fun _ => rfl⟩
+  simp only [← hPr] at HL1 HL2 hstat ⊢
+  have hPr_mem : ∀ x v, Pr x v ∈ Submodule.span ℝ (tangentSpace M x) := fun x v => by
+    rw [hPr]; exact Submodule.starProjection_apply_mem _ v
+  -- step 1 (smooth extensions): by normal_complement `Pₓeⱼ = p j x` on `M`, where
+  -- `p j z = Πeⱼ − ⟨ν(z), eⱼ⟩ν(z)` is `C¹` on `U = (O ∩ O') \ {0} ⊇ M`; `Gⱼ(z) = DF(z)(p j z)` is
+  -- `C¹` on `U`, and `δⱼf = Gⱼ`, `δⱼ(δⱼf) = DGⱼ(pⱼ)` on `M` (tangent_fderiv)
+  set p : Fin P → Euclid P → Euclid P := fun j z =>
+    A₀.starProjection (EuclideanSpace.single j 1) - inner ℝ (ν z) (EuclideanSpace.single j 1) • ν z
+  have hPp : ∀ x ∈ M, ∀ j, Pr x (EuclideanSpace.single j 1) = p j x := fun x hx j => by
+    rw [hPr]; exact (hNC x hx).2 _
+  set U : Set (Euclid P) := (O ∩ O') \ {0}
+  have hUo : IsOpen U := (hO.inter hO').sdiff isClosed_singleton
+  have hMU : M ⊆ U := fun x hx =>
+    ⟨⟨hMO hx, hMO' hx⟩, fun h0 => hM0 (by rwa [mem_singleton_iff.1 h0] at hx)⟩
+  have hν1 : ContDiffOn ℝ 1 ν U :=
+    (hνs.of_le (by exact_mod_cast le_top)).mono fun x hx => hx.1.1
+  have hDF : ContDiffOn ℝ 1 (fderiv ℝ F) U :=
+    (hF.fderiv_of_isOpen hO' (by norm_num)).mono fun x hx => hx.1.2
+  have hp1 : ∀ j, ContDiffOn ℝ 1 (p j) U := fun j =>
+    contDiffOn_const.sub ((hν1.inner ℝ contDiffOn_const).smul hν1)
+  set G : Fin P → Euclid P → ℝ := fun j z => fderiv ℝ F z (p j z)
+  have hG1 : ∀ j, ContDiffOn ℝ 1 (G j) U := fun j => hDF.clm_apply (hp1 j)
+  have hGd : ∀ j, ∀ x ∈ U, HasFDerivAt (G j) (fderiv ℝ (G j) x) x := fun j x hx =>
+    (((hG1 j).differentiableOn one_ne_zero).differentiableAt (hUo.mem_nhds hx)).hasFDerivAt
+  have hdf : ∀ j, ∀ x ∈ M, fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)) = G j x := by
+    intro j x hx
+    have hFx : HasFDerivAt F (fderiv ℝ F x) x :=
+      ((hF.differentiableOn two_ne_zero).differentiableAt (hO'.mem_nhds (hMO' hx))).hasFDerivAt
+    rw [hTan P ℝ M f _ x (hFx.hasFDerivWithinAt.congr' (fun y hy => (hFf y hy).symm) hx) _
+      (hPr_mem x _), hPp x hx j]
+  have hddf : ∀ j, ∀ x ∈ M, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+      (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1)) =
+      fderiv ℝ (G j) x (p j x) := by
+    intro j x hx
+    rw [hTan P ℝ M _ _ x ((hGd j x (hMU hx)).hasFDerivWithinAt.congr' (fun y hy => hdf j y hy) hx)
+      _ (hPr_mem x _), hPp x hx j]
+  have hdf_cont : ∀ j, ContinuousOn
+      (fun x => fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) M := fun j =>
+    ((hG1 j).continuousOn.mono hMU).congr fun x hx => hdf j x hx
+  have hlap_cont : ContinuousOn (fun x => ∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+      (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1))) M :=
+    continuousOn_finsetSum _ fun j _ =>
+      ((((hG1 j).continuousOn_fderiv_of_isOpen hUo le_rfl).clm_apply
+        (hp1 j).continuousOn).mono hMU).congr fun x hx => hddf j x hx
+  -- step 2(b): if `g = 0` on `M \ K` (`K` closed), then `g` has tangential derivative `0` there
+  have hvanish : ∀ (g : Euclid P → ℝ) (K : Set (Euclid P)), IsClosed K →
+      (∀ y ∈ M, y ∉ K → g y = 0) → ∀ x ∈ M, x ∉ K →
+      ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderivWithin ℝ g M x v = 0 := by
+    intro g K hK hg x hx hxK v hv
+    have h0 : HasFDerivWithinAt g (0 : Euclid P →L[ℝ] ℝ) M x := by
+      refine (hasFDerivWithinAt_const (0 : ℝ) x M).congr_of_eventuallyEq ?_ (hg x hx hxK)
+      filter_upwards [inter_mem_nhdsWithin M (hK.isOpen_compl.mem_nhds hxK)] with y hy
+      exact hg y hy.1 hy.2
+    simpa using hTan P ℝ M g 0 x h0 v hv
+  have hvanish' : ∀ (g : Euclid P → ℝ) (K : Set (Euclid P)), IsClosed K →
+      (∀ y ∈ M, y ∉ K → g y = 0) → ∀ x ∈ M, x ∉ K → DifferentiableAt ℝ g x →
+      ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ g x v = 0 := by
+    intro g K hK hg x hx hxK hd v hv
+    rw [← hTan P ℝ M g _ x hd.hasFDerivAt.hasFDerivWithinAt v hv]
+    exact hvanish g K hK hg x hx hxK v hv
+  -- step 4: the (HL)(ii) approximants `χₖ` of `φ`, and the compact set `K = C ∪ C'' ⊆ M`
+  obtain ⟨C'', χ, hC'', hC''M, hχs, hχ0, hχu, hχL2⟩ := HL2 φ hφ ⟨C, hC, hCM, hφ0⟩
+  set K : Set (Euclid P) := C ∪ C''
+  have hK : IsCompact K := hC.union hC''
+  have hKM : K ⊆ M := union_subset hCM hC''M
+  have hμK : (μHE[m].restrict M) K ≠ ∞ := by
+    rw [Measure.restrict_apply hK.measurableSet, inter_comm]; exact hMfin K hK
+  have hφK : ∀ x ∈ M, x ∉ K → φ x = 0 := fun x hx hxK => hφ0 x hx fun h => hxK (Or.inl h)
+  have hχK : ∀ k, ∀ x ∈ M, x ∉ K → χ k x = 0 := fun k x hx hxK =>
+    hχ0 k x hx fun h => hxK (Or.inr h)
+  have hχ1 : ∀ k, ContDiff ℝ 1 (χ k) := fun k => (hχs k).1.of_le (by exact_mod_cast le_top)
+  have hχd : ∀ k x, HasFDerivAt (χ k) (fderiv ℝ (χ k) x) x := fun k x =>
+    ((hχ1 k).differentiable one_ne_zero x).hasFDerivAt
+  have hdφK : ∀ j, ∀ x ∈ M, x ∉ K → fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1)) = 0 :=
+    fun j x hx hxK => hvanish φ C hC.isClosed hφ0 x hx (fun h => hxK (Or.inl h)) _ (hPr_mem x _)
+  have hdχK : ∀ k j, ∀ x ∈ M, x ∉ K → fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) = 0 :=
+    fun k j x hx hxK => hvanish' (χ k) C'' hC''.isClosed (hχ0 k) x hx (fun h => hxK (Or.inr h))
+      (hχd k x).differentiableAt _ (hPr_mem x _)
+  have hdχ_cont : ∀ k j, ContinuousOn
+      (fun x => fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1))) M := fun k j =>
+    ((((hχ1 k).continuous_fderiv one_ne_zero).continuousOn.clm_apply (hp1 j).continuousOn).mono
+      hMU).congr fun x hx => by simp only [hPp x hx j]
+  -- step 3 (integrability): continuous on `M` and zero on `M \ K` implies integrable,
+  -- since `Hᵐ(M ∩ K) < ∞`
+  have hint : ∀ h : Euclid P → ℝ, ContinuousOn h M → (∀ x ∈ M, x ∉ K → h x = 0) →
+      Integrable h (μHE[m].restrict M) := by
+    intro h hc h0
+    obtain ⟨B, hB⟩ := hK.exists_bound_of_continuousOn (hc.mono hKM)
+    refine Integrable.mono' (g := K.indicator fun _ => B)
+      ((integrable_indicator_iff hK.measurableSet).2 (integrableOn_const hμK))
+      (hc.aestronglyMeasurable hMmeas) ?_
+    filter_upwards [ae_restrict_mem hMmeas] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK]; exact hB x hxK
+    · rw [indicator_of_notMem hxK, h0 x hx hxK, norm_zero]
+  have hIφB : Integrable (fun x => φ x * ∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+      (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1)))
+      (μHE[m].restrict M) :=
+    hint _ (hφ.continuousOn.mul hlap_cont) fun x hx hxK => by rw [hφK x hx hxK, zero_mul]
+  have hIA : ∀ k, Integrable (fun x => ∑ j : Fin P, fderiv ℝ (χ k) x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)))
+      (μHE[m].restrict M) := fun k =>
+    hint _ (continuousOn_finsetSum _ fun j _ => (hdχ_cont k j).mul (hdf_cont j))
+      fun x hx hxK => Finset.sum_eq_zero fun j _ => by rw [hdχK k j x hx hxK, zero_mul]
+  have hIB : ∀ k, Integrable (fun x => χ k x * ∑ j : Fin P, fderivWithin ℝ (fun y =>
+      fderivWithin ℝ f M y (Pr y (EuclideanSpace.single j 1))) M x
+      (Pr x (EuclideanSpace.single j 1))) (μHE[m].restrict M) := fun k =>
+    hint _ ((hχ1 k).continuous.continuousOn.mul hlap_cont) fun x hx hxK => by
+      rw [hχK k x hx hxK, zero_mul]
+  -- step 5 (cut-off): `K ⊆ W₁` with `closure W₁ ⊆ U` compact, and a smooth `β : ℝᴾ → [0, 1]`
+  -- with `support β = W₁` and `β = 1` exactly on `K`, so `Dβ = 0` on `K` (maxima of `β`)
+  obtain ⟨W₁, hW₁o, hKW₁, hW₁U, hW₁c⟩ :=
+    exists_open_between_and_isCompact_closure hK hUo (hKM.trans hMU)
+  obtain ⟨β, hβs, hβr, hβsupp, hβ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hW₁o hK.isClosed hKW₁
+  have hβ1' : ContDiff ℝ 1 β := hβs.of_le (by exact_mod_cast le_top)
+  have hβts : tsupport β = closure W₁ := by rw [tsupport, hβsupp]
+  have hβU : tsupport β ⊆ U := hβts ▸ hW₁U
+  have hβc : HasCompactSupport β := by rw [HasCompactSupport, hβts]; exact hW₁c
+  have hβK : ∀ x ∈ K, β x = 1 := fun x hx => (hβ1 x).1 hx
+  have hDβ : ∀ x ∈ K, fderiv ℝ β x = 0 := fun x hx =>
+    IsLocalMax.fderiv_eq_zero (Filter.Eventually.of_forall fun y => by
+      rw [hβK x hx]; exact (hβr (mem_range_self y)).2)
+  have hβd : ∀ x, HasFDerivAt β (fderiv ℝ β x) x := fun x =>
+    (hβ1'.differentiable one_ne_zero x).hasFDerivAt
+  -- `Xₖ = Σᵢ cₖᵢ eᵢ` with `cₖᵢ = 1_U χₖ β Gᵢ` is `C¹` with support in `tsupport β ⊆ U ∌ 0`
+  set c : ℕ → Fin P → Euclid P → ℝ := fun k i => U.indicator fun z => χ k z * β z * G i z
+    with hc_def
+  set X : ℕ → Euclid P → Euclid P := fun k z =>
+    ∑ i : Fin P, c k i z • EuclideanSpace.single i (1 : ℝ) with hX_def
+  have hc_eq : ∀ k i, ∀ x ∈ U, c k i =ᶠ[𝓝 x] fun z => χ k z * β z * G i z := fun k i x hx => by
+    filter_upwards [hUo.mem_nhds hx] with z hz
+    simp only [hc_def, indicator_of_mem hz]
+  have hc1 : ∀ k i, ContDiff ℝ 1 (c k i) := by
+    intro k i
+    refine contDiff_iff_contDiffAt.2 fun z => ?_
+    by_cases hz : z ∈ tsupport β
+    · exact ((((hχ1 k).contDiffAt.mul hβ1'.contDiffAt).mul
+        ((hG1 i).contDiffAt (hUo.mem_nhds (hβU hz)))).congr_of_eventuallyEq
+        (hc_eq k i z (hβU hz)))
+    · refine (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq ?_
+      filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hz] with w hw
+      simp only [Pi.zero_apply] at hw
+      simp [hc_def, hw]
+  have hX1 : ∀ k, ContDiff ℝ 1 (X k) := fun k =>
+    ContDiff.sum fun i _ => (hc1 k i).smul contDiff_const
+  have hXsupp : ∀ k, support (X k) ⊆ tsupport β := by
+    intro k z hz
+    by_contra hzβ
+    refine hz ?_
+    have hβz : β z = 0 := image_eq_zero_of_notMem_tsupport hzβ
+    classical
+    simp [hX_def, hc_def, indicator_apply, hβz]
+  have hXc : ∀ k, HasCompactSupport (X k) := fun k => hβc.mono' (hXsupp k)
+  have hX0 : ∀ k, (0 : Euclid P) ∉ tsupport (X k) := fun k h0 =>
+    (hβU (closure_minimal (hXsupp k) (isClosed_tsupport β) h0)).2 (mem_singleton _)
+  -- step 6: for `x ∈ M`, `tr(Pₓ ∘ DXₖ(x)) = tr(DXₖ(x) ∘ Pₓ) = Σⱼ D(cₖⱼ)(x)(Pₓeⱼ)
+  -- = Σⱼ δⱼχₖ δⱼf + χₖ Σⱼ δⱼ(δⱼf)` (product rule; `β = 1`, `Dβ = 0` on `K`, `χₖ = δχₖ = 0` off `K`)
+  have htr : ∀ k, ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Pr x).toLinearMap ∘ₗ
+      (fderiv ℝ (X k) x).toLinearMap) =
+      ∑ j : Fin P, fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) *
+        fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)) +
+      χ k x * ∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+        (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1)) := by
+    intro k x hx
+    have hXd : fderiv ℝ (X k) x = ∑ i : Fin P,
+        (fderiv ℝ (c k i) x).smulRight (EuclideanSpace.single i (1 : ℝ)) :=
+      (HasFDerivAt.fun_sum fun i _ =>
+        ((hc1 k i).differentiable one_ne_zero x).hasFDerivAt.smul_const _).fderiv
+    rw [LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ), Finset.mul_sum,
+      ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have h1 : inner ℝ ((EuclideanSpace.basisFun (Fin P) ℝ) j)
+        (((fderiv ℝ (X k) x).toLinearMap ∘ₗ (Pr x).toLinearMap)
+          ((EuclideanSpace.basisFun (Fin P) ℝ) j)) =
+        fderiv ℝ (c k j) x (Pr x (EuclideanSpace.single j 1)) := by
+      rw [EuclideanSpace.basisFun_apply, LinearMap.comp_apply, ContinuousLinearMap.coe_coe,
+        ContinuousLinearMap.coe_coe, hXd, EuclideanSpace.inner_single_left]
+      simp [Pi.single_apply]
+    have hprod : HasFDerivAt (fun z => χ k z * β z * G j z)
+        ((χ k x * β x) • fderiv ℝ (G j) x +
+          G j x • (χ k x • fderiv ℝ β x + β x • fderiv ℝ (χ k) x)) x :=
+      ((hχd k x).fun_mul (hβd x)).fun_mul (hGd j x (hMU hx))
+    rw [h1, (hc_eq k j x (hMU hx)).fderiv_eq, hprod.fderiv]
+    simp only [add_apply, smul_apply, smul_eq_mul]
+    rw [hdf j x hx, hddf j x hx, ← hPp x hx j]
+    by_cases hxK : x ∈ K
+    · rw [hβK x hxK, hDβ x hxK]
+      simp only [zero_apply]
+      ring
+    · rw [hχK k x hx hxK, hdχK k j x hx hxK]
+      ring
+  -- step 7 (stationarity): `∫_M (Σⱼ δⱼχₖ δⱼf + χₖ Σⱼ δⱼ(δⱼf)) = 0`
+  have hIk : ∀ k, ∫ x in M, (∑ j : Fin P, fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) *
+      fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)) +
+      χ k x * ∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+        (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1))) ∂μHE[m] = 0 :=
+    fun k => (setIntegral_congr_fun hMmeas fun x hx => (htr k x hx).symm).trans
+      (hstat (X k) (hX1 k) (hXc k) (hX0 k))
+  -- step 8 (limit): `Σⱼ δⱼχₖ δⱼf → Σⱼ δⱼφ δⱼf` in `L¹`, since on `M`
+  -- `|Σⱼ (δⱼχₖ − δⱼφ) δⱼf| ≤ (Σⱼ (δⱼχₖ − δⱼφ)²)^{1/2} · √B₂ · 1_K` (Cauchy–Schwarz in `j`; both
+  -- sides vanish off `K`), then Hölder and (HL)(ii)
+  have hCS : ∀ (a d : Fin P → ℝ) (B : ℝ), ∑ j, d j ^ 2 ≤ B →
+      |∑ j, a j * d j| ≤ Real.sqrt (∑ j, a j ^ 2) * Real.sqrt B := by
+    intro a d B hB
+    refine (Real.abs_le_sqrt (Finset.sum_mul_sq_le_sq_mul_sq _ _ _)).trans ?_
+    rw [← Real.sqrt_mul (Finset.sum_nonneg fun j _ => sq_nonneg _)]
+    exact Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_left hB (Finset.sum_nonneg fun j _ => sq_nonneg _))
+  have hsq : ∀ a : Fin P → ℝ,
+      ENNReal.ofReal (Real.sqrt (∑ j, a j ^ 2)) ^ (2 : ℝ) = ENNReal.ofReal (∑ j, a j ^ 2) :=
+    fun a => by
+      rw [ENNReal.ofReal_rpow_of_nonneg (Real.sqrt_nonneg _) zero_le_two, Real.rpow_two,
+        Real.sq_sqrt (Finset.sum_nonneg fun j _ => sq_nonneg _)]
+  obtain ⟨B₂, hB₂⟩ := hK.exists_bound_of_continuousOn
+    ((continuousOn_finsetSum Finset.univ fun j _ => (hdf_cont j).pow 2).mono hKM)
+  have hgm : AEMeasurable (K.indicator fun _ => ENNReal.ofReal (Real.sqrt B₂))
+      (μHE[m].restrict M) := aemeasurable_const.indicator hK.measurableSet
+  have hg2 : ∫⁻ x in M, (K.indicator (fun _ => ENNReal.ofReal (Real.sqrt B₂)) x) ^ (2 : ℝ)
+      ∂μHE[m] ≠ ∞ := by
+    have : (fun x => (K.indicator (fun _ => ENNReal.ofReal (Real.sqrt B₂)) x) ^ (2 : ℝ)) =
+        K.indicator fun _ => ENNReal.ofReal (Real.sqrt B₂) ^ (2 : ℝ) := by
+      funext x
+      by_cases hx : x ∈ K
+      · simp [hx]
+      · simp [hx, ENNReal.zero_rpow_of_pos two_pos]
+    rw [this, lintegral_indicator_const hK.measurableSet]
+    exact ENNReal.mul_ne_top (ENNReal.rpow_ne_top_of_nonneg zero_le_two ENNReal.ofReal_ne_top) hμK
+  have hAφm : AEStronglyMeasurable (fun x => ∑ j : Fin P, fderivWithin ℝ φ M x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)))
+      (μHE[m].restrict M) :=
+    Finset.aestronglyMeasurable_fun_sum _ fun j _ =>
+      (HL1 φ hφ j).mul ((hdf_cont j).aestronglyMeasurable hMmeas)
+  have hEst : ∀ k, ∫⁻ x in M, ‖(∑ j : Fin P, fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) *
+      fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) -
+      ∑ j : Fin P, fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1)) *
+      fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))‖ₑ ∂μHE[m] ≤
+      (∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) -
+        fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) ^ (1 / 2 : ℝ) *
+      (∫⁻ x in M, (K.indicator (fun _ => ENNReal.ofReal (Real.sqrt B₂)) x) ^ (2 : ℝ) ∂μHE[m]) ^
+        (1 / 2 : ℝ) := by
+    intro k
+    have hfm : AEMeasurable (fun x => ENNReal.ofReal (Real.sqrt (∑ j : Fin P,
+        (fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) -
+          fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1))) ^ 2))) (μHE[m].restrict M) :=
+      (Finset.aemeasurable_fun_sum _ fun j _ =>
+        ((((hdχ_cont k j).aestronglyMeasurable hMmeas).aemeasurable.sub
+          (HL1 φ hφ j).aemeasurable).pow_const 2)).sqrt.ennreal_ofReal
+    calc _ ≤ ∫⁻ x in M, ENNReal.ofReal (Real.sqrt (∑ j : Fin P,
+            (fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) -
+              fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1))) ^ 2)) *
+            K.indicator (fun _ => ENNReal.ofReal (Real.sqrt B₂)) x ∂μHE[m] := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem hMmeas] with x hx
+          rw [← Finset.sum_sub_distrib, Real.enorm_eq_ofReal_abs]
+          simp_rw [← sub_mul]
+          by_cases hxK : x ∈ K
+          · rw [indicator_of_mem hxK, ← ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+            exact ENNReal.ofReal_le_ofReal (hCS _ _ B₂ ((le_abs_self _).trans
+              ((Real.norm_eq_abs _).symm.le.trans (hB₂ x hxK))))
+          · rw [Finset.sum_eq_zero fun j _ => by
+              rw [hdχK k j x hx hxK, hdφK j x hx hxK, sub_zero, zero_mul], abs_zero,
+              ENNReal.ofReal_zero]
+            exact zero_le
+      _ ≤ _ := ENNReal.lintegral_mul_le_Lp_mul_Lq _ Real.HolderConjugate.two_two hfm hgm
+      _ = _ := by simp only [hsq]
+  have hL1 : Tendsto (fun k => ∫⁻ x in M, ‖(∑ j : Fin P, fderiv ℝ (χ k) x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) -
+      ∑ j : Fin P, fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1)) *
+      fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))‖ₑ ∂μHE[m]) atTop (𝓝 0) := by
+    have h0 : Tendsto (fun k => (∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) -
+          fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) ^ (1 / 2 : ℝ))
+        atTop (𝓝 0) := by
+      have := ((ENNReal.continuous_rpow_const (y := (1 / 2 : ℝ))).tendsto 0).comp hχL2
+      rwa [ENNReal.zero_rpow_of_pos (by norm_num)] at this
+    have h1 := ENNReal.Tendsto.mul_const h0
+      (Or.inr (ENNReal.rpow_ne_top_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) hg2))
+    rw [zero_mul] at h1
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h1 (fun k => zero_le) hEst
+  -- first conjunct: `Σⱼ δⱼφ δⱼf = Aₖ − (Aₖ − Σⱼ δⱼφ δⱼf)`, `Aₖ = Σⱼ δⱼχₖ δⱼf`, where the last
+  -- term has finite `L¹` norm for large `k`
+  have hIφA : Integrable (fun x => ∑ j : Fin P, fderivWithin ℝ φ M x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)))
+      (μHE[m].restrict M) := by
+    obtain ⟨k, hk⟩ := (hL1.eventually (gt_mem_nhds ENNReal.zero_lt_top)).exists
+    have hdiff : Integrable (fun x => (∑ j : Fin P, fderiv ℝ (χ k) x
+        (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) -
+        ∑ j : Fin P, fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1)) *
+        fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) (μHE[m].restrict M) :=
+      ⟨(hIA k).aestronglyMeasurable.sub hAφm, hasFiniteIntegral_iff_enorm.2 hk⟩
+    refine ((hIA k).sub hdiff).congr (Eventually.of_forall fun x => ?_)
+    simp only [Pi.sub_apply, sub_sub_cancel]
+  have hTA : Tendsto (fun k => ∫ x in M, (∑ j : Fin P, fderiv ℝ (χ k) x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)))
+      ∂μHE[m]) atTop (𝓝 (∫ x in M, (∑ j : Fin P, fderivWithin ℝ φ M x
+      (Pr x (EuclideanSpace.single j 1)) * fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1)))
+      ∂μHE[m])) :=
+    tendsto_integral_of_L1 _ hAφm (Eventually.of_forall hIA) hL1
+  -- `∫ χₖ Σⱼ δⱼ(δⱼf) → ∫ φ Σⱼ δⱼ(δⱼf)` by dominated convergence (`χₖ → φ` uniformly on `M`, and
+  -- everything vanishes off `K`)
+  obtain ⟨Φ, hΦ⟩ := hK.exists_bound_of_continuousOn (hφ.continuousOn.mono hKM)
+  obtain ⟨L, hL⟩ := hK.exists_bound_of_continuousOn (hlap_cont.mono hKM)
+  have hTB : Tendsto (fun k => ∫ x in M, χ k x * (∑ j : Fin P, fderivWithin ℝ (fun y =>
+      fderivWithin ℝ f M y (Pr y (EuclideanSpace.single j 1))) M x
+      (Pr x (EuclideanSpace.single j 1))) ∂μHE[m]) atTop (𝓝 (∫ x in M, φ x * (∑ j : Fin P,
+      fderivWithin ℝ (fun y => fderivWithin ℝ f M y (Pr y (EuclideanSpace.single j 1))) M x
+      (Pr x (EuclideanSpace.single j 1))) ∂μHE[m])) := by
+    refine tendsto_integral_filter_of_dominated_convergence (K.indicator fun _ => (Φ + 1) * L)
+      (Eventually.of_forall fun k => (hIB k).aestronglyMeasurable) ?_
+      ((integrable_indicator_iff hK.measurableSet).2 (integrableOn_const hμK)) ?_
+    · filter_upwards [Metric.tendstoUniformlyOn_iff.1 hχu 1 one_pos] with k hk
+      filter_upwards [ae_restrict_mem hMmeas] with x hx
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK, norm_mul]
+        have hΦx := hΦ x hxK
+        have hkx := hk x hx
+        rw [Real.dist_eq] at hkx
+        rw [Real.norm_eq_abs] at hΦx ⊢
+        have h1 : |χ k x| ≤ Φ + 1 := by
+          have := abs_sub_abs_le_abs_sub (χ k x) (φ x)
+          rw [abs_sub_comm] at this
+          linarith
+        exact mul_le_mul h1 (hL x hxK) (norm_nonneg _) (by linarith [abs_nonneg (φ x)])
+      · rw [indicator_of_notMem hxK, hχK k x hx hxK, zero_mul, norm_zero]
+    · filter_upwards [ae_restrict_mem hMmeas] with x hx
+      exact (hχu.tendsto_at hx).mul_const _
+  -- conclusion: `∫ Aₖ = −∫ χₖ Σⱼ δⱼ(δⱼf)` for every `k`; pass to the limit
+  have hEq : ∫ x in M, (∑ j : Fin P, fderivWithin ℝ φ M x (Pr x (EuclideanSpace.single j 1)) *
+      fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) ∂μHE[m] =
+      -(∫ x in M, φ x * (∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+        (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1))) ∂μHE[m]) := by
+    have h1 : ∀ k, ∫ x in M, (∑ j : Fin P, fderiv ℝ (χ k) x (Pr x (EuclideanSpace.single j 1)) *
+        fderivWithin ℝ f M x (Pr x (EuclideanSpace.single j 1))) ∂μHE[m] =
+        -(∫ x in M, χ k x * (∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ f M y
+          (Pr y (EuclideanSpace.single j 1))) M x (Pr x (EuclideanSpace.single j 1))) ∂μHE[m]) := by
+      intro k
+      have h := hIk k
+      rw [integral_add (hIA k) (hIB k)] at h
+      linarith
+    exact tendsto_nhds_unique hTA ((tendsto_congr h1).2 hTB.neg)
+  exact ⟨hIφA, hIφB, hEq⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
