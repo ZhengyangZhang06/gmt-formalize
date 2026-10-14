@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpo_tk_",
+        "abbrev Euclid|abbrev MultiVector|def boundaryMassOn|def CompactlyContained|cmcdt_lpo_tk_",
+        "def TestFormOnConverges|structure GeometricCurrentOn|tsupport_exteriorDerivative_subset|def boundary|theorem boundary_apply|def covectorEuclideanNorm|def massAdmissibleOn|def massOn|def mass |theorem massOn_mono|def VanishesOn|def zeroRegion|def support|theorem isOpen_zeroRegion",
+        "theorem norm_integral_le_of_norm_le_const|theorem norm_iteratedFDeriv_zero|theorem iteratedFDeriv_zero_apply|theorem tendstoUniformlyOn_iff|theorem le_opNorm|image_eq_one_of_notMem_mulTSupport|theorem basisFun_apply|theorem card_fun|theorem measureReal_def",
+        "card_fun",
+        "sed -n '1,145p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "sed -n '105,205p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '315,345p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '80,165p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "sed -n '22,45p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "rg -n '\\b(sorry|admit|axiom|unsafe)\\b' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean /tmp/tk-decomp-q8v3/FromPayload.lean",
+        "lake env lean /tmp/toolkit-independent-audit-d137gdze/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/BigOperators.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-90ae35200b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-90ae35200b/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/tk-decomp-q8v3/FromPayload.lean"
+      ],
+      "conclusion": "The four-conjunct split is appropriate. Independent string checks reconstructed the selected handoff's exact parent type from the child conclusions and antecedents; assembly is fun hVO hREP => ⟨h1 hVO hREP, h2, h3, h4 hVO⟩. All children have empty dependencies, standalone one-line propositions, and fresh bare names: no prefix matches occurred anywhere in the DAG containing 2130 lean_name fields or in the searched snapshot. No accepted declaration is reused. Project and Mathlib revisions match the manifest, and inspected compiler sources match the snapshot. Current evaluation, covector norms, real multiplication and ENNReal mass have the intended interpretations; no matrix-unit construction occurs. Each natural proof was independently reviewed against the definitions. The supplied Lean artifact has byte-identical child types and no child/parent circular references or placeholder tokens in its proof bodies. Independent compilation and transitive axiom reports could not be rerun because Lean/Lake is unavailable in this shell; the proposer's reported compilation is not treated as independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_support_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type preserve VO, REP and the exact MSB conclusion. Mass monotonicity supplies REP's local finiteness premise; its open-set identities establish finite total measure. VO makes every admissible evaluation on zeroRegion vanish, giving concentration on X.support. The pinned integral estimate requires neither integrability of the integrand nor c ≥ 0, so the final bound covers every real c. All steps are complete and non-circular."
+    },
+    {
+      "key": "bounded_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include exactly the linearity and uniform-bound hypotheses. The coefficient estimate follows from unit basis vectors, the alternating-map operator norm and N^k summands, including degenerate dimensions. The zero form gives C ≥ 0. Uniform convergence of zeroth derivatives on the common support, vanishing outside it and δ = ε/(C·A+1) prove the precise continuous' field. The admissible-form supremum then gives the stated mass bound. No VO, REP or sibling result is needed."
+    },
+    {
+      "key": "boundary_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on all dimensions and the boundary degree. Each relatively compact open zero region of X is also a zero region of its boundary, by boundary_apply and tsupport_exteriorDerivative_subset. Taking complements gives exactly the claimed inclusion. The proof is complete and independent of the parent and siblings."
+    },
+    {
+      "key": "locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type retain the exact VO antecedent, openness, support inclusion and equality hypothesis. Openness makes Wᶜ closed, so the difference form's topological support lies in Wᶜ and is disjoint from X.support. VO and linearity give the required equality. Every step is justified without circular reliance or additional obligations."
+    }
+  ],
+  "required_changes": []
+}

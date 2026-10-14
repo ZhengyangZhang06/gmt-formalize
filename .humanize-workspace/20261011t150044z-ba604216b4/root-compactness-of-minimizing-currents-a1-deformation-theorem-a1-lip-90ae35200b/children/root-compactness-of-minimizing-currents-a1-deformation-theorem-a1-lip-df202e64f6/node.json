@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1.mass_support_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1",
+  "depth": 6,
+  "title": "Mass–support bound |X(ψ)| ≤ c·M(X) for finite-mass currents (from VO and REP)",
+  "statement": "Assume (VO), the vanishing-off-support antecedent: for all P, n ∈ ℕ, U ⊆ ℝ^P, S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω disjoint from spt S, S(ω) = 0. Assume also (REP), the mass-representation antecedent. Let U be open and T ∈ 𝒟_n(U) with M_W(T) < ∞ for every open W ⊂⊂ U. Then there are a measure μ on ℝ^P and ξ : ℝ^P → MultiVector P n with: μ(Uᶜ) = 0; μ(K) < ∞ for compact K ⊆ U; M_W(T) = μ(W) for every open W; ξ μ-a.e. strongly measurable; |ξ(x)(α)| ≤ |α| for all x, α; T(ω) = ∫ ξ(x)(ω(x)) dμ for all ω ∈ 𝒟ⁿ(U); and, if also M_W(∂T) < ∞ for every open W ⊂⊂ U, μ(E) = 0 whenever Hⁿ(E) = 0. Both are the exact Lean antecedents of the frozen type; |α| := covectorEuclideanNorm α. Conclusion (MSB): let N, k ∈ ℕ, X ∈ 𝒟_k(ℝ^N) (GeometricCurrentOn univ k) with M(X) = X.mass < ∞, ψ ∈ 𝒟^k(ℝ^N) and c ∈ ℝ with |ψ(x)| ≤ c for every x ∈ spt X. Then |X(ψ)| ≤ c · M(X).toReal.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal",
+  "lean_name": "cmcdt_lpo_tk_mass_support_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-df202e64f6-a1"
+}
