@@ -754,6 +754,84 @@ theorem Submission.cbr_ci_pw_proj_smooth_cutoff : ∀ (P : ℕ) (K O : Set (Eucl
   · exact (hK.cthickening (r := δ)).of_isClosed_subset (isClosed_tsupport χ) hts
   · exact hrange (mem_range_self x)
 
+/-- **Cut-off extension of a pulled-back form** (the forms `χ · p^#ω`, `χ · p^#γ` of the projection
+argument).  Let `γ` be a smooth `l`-form on `ℝᵐ`, `p : ℝᴾ → ℝᵐ` continuous linear with
+`(p^#γ)(x) = γ(p x) ∘ p`, and `S, O ⊆ ℝᴾ` with `O` open and `K = S ∩ p⁻¹(spt γ)` compact, `K ⊆ O`.
+A smooth cut-off `χ` (`spt χ ⊆ O`, `0 ≤ χ ≤ 1`, `χ = 1` on an open `O' ⊇ K`) gives the test form
+`γ' = χ · p^#γ` on `ℝᴾ` with `spt γ' ⊆ O` and `|γ'| = χ |p^#γ| ≤ |p^#γ|`; on `S`, `γ' = p^#γ`, since
+`p^#γ` vanishes at points of `S` off `O'`.  At `x ∈ S ∩ O'`, `γ' = p^#γ` near `x`, so
+`dγ'(x) = d(p^#γ)(x) = p^#(dγ)(x)` by locality and naturality of `d`; at `x ∈ S \ O'`, `γ'` vanishes
+near `x` and `γ` near `p x`, so both sides are `0`. -/
+theorem Submission.cbr_ci_pw_proj_pullback_extension : ∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (S O : Set (Euclid P)) (γ : DifferentialForm (Euclid m) l), ContDiff ℝ (⊤ : ℕ∞) γ → IsOpen O → IsCompact (S ∩ pL ⁻¹' tsupport γ) → S ∩ pL ⁻¹' tsupport γ ⊆ O → ∃ γ' : TestFormOn (univ : Set (Euclid P)) l, tsupport (γ' : DifferentialForm (Euclid P) l) ⊆ O ∧ (∀ x, covectorEuclideanNorm ((γ' : DifferentialForm (Euclid P) l) x) ≤ covectorEuclideanNorm ((γ (pL x)).compContinuousLinearMap pL)) ∧ (∀ x ∈ S, (γ' : DifferentialForm (Euclid P) l) x = (γ (pL x)).compContinuousLinearMap pL) ∧ ∀ x ∈ S, exteriorDerivative (γ' : DifferentialForm (Euclid P) l) x = (exteriorDerivative γ (pL x)).compContinuousLinearMap pL := by
+  intro P m l pL S O γ hγ hO hK hKO
+  -- Step 1: a smooth cut-off `χ`, `spt χ ⊆ O`, `0 ≤ χ ≤ 1`, `χ = 1` on an open `O' ⊇ K`
+  obtain ⟨χ, O', hχ, hχc, hχO, hχ01, hO', hKO', hχ1⟩ :=
+    Submission.cbr_ci_pw_proj_smooth_cutoff P _ O hK hO hKO
+  -- Step 2: `β = p^#γ = Λ ∘ γ ∘ pL` is smooth, `Λ α = α ∘ pL` being continuous linear
+  set β : DifferentialForm (Euclid P) l := fun x => (γ (pL x)).compContinuousLinearMap pL
+    with hβdef
+  have hβ : ContDiff ℝ (⊤ : ℕ∞) β := by
+    have := (ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin l) (F := ℝ) pL).contDiff
+      (n := ((⊤ : ℕ∞) : WithTop ℕ∞)) |>.comp (hγ.comp pL.contDiff)
+    simpa [Function.comp_def] using this
+  -- Step 3: `β x = 0` whenever `pL x ∉ spt γ`
+  have hβ0 : ∀ x, pL x ∉ tsupport γ → β x = 0 := by
+    intro x hx
+    ext v
+    simp [hβdef, image_eq_zero_of_notMem_tsupport hx]
+  -- Step 4: `γ' = χ • β` is a test form on `ℝᴾ` with `spt γ' ⊆ spt χ ⊆ O`
+  set g : DifferentialForm (Euclid P) l := fun x => χ x • β x with hgdef
+  have hg : ContDiff ℝ (⊤ : ℕ∞) g := hχ.smul hβ
+  have hgc : HasCompactSupport g := hχc.smul_right
+  have hgs : tsupport g ⊆ tsupport χ := tsupport_smul_subset_left _ _
+  let γ' : TestFormOn (univ : Set (Euclid P)) l := ⟨g, ⟨⟨hg, hgc⟩, subset_univ _⟩⟩
+  -- Step 5: the coefficient norm is absolutely homogeneous, `|c • α| = |c| |α|`
+  have hscale : ∀ (c : ℝ) (α : Covector (Euclid P) l),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    have : (∑ I : Fin l → Fin P, if StrictMono I then
+          ((c • α) (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0) =
+        c ^ 2 * ∑ I : Fin l → Fin P, if StrictMono I then
+          (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0 := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs <;> simp [mul_pow]
+    rw [this, Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
+  refine ⟨γ', hgs.trans hχO, fun x => ?_, fun x hx => ?_, fun x hx => ?_⟩
+  -- Step 6 (b): `|χ x • β x| = χ x |β x| ≤ |β x|`
+  · change covectorEuclideanNorm (χ x • β x) ≤ covectorEuclideanNorm (β x)
+    rw [hscale, abs_of_nonneg (hχ01 x).1]
+    exact mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ01 x).2
+  -- Step 7 (c): `χ = 1` on `O'`, and `β x = 0` at `x ∈ S \ O'`, since `K ⊆ O'`
+  · change χ x • β x = β x
+    by_cases hxO' : x ∈ O'
+    · rw [hχ1 x hxO', one_smul]
+    · have : pL x ∉ tsupport γ := fun h => hxO' (hKO' ⟨hx, h⟩)
+      rw [hβ0 x this, smul_zero]
+  -- Step 8 (d) on `O'`: `g = β` near `x`, so `dg(x) = dβ(x) = p^#(dγ)(x)` by naturality of `d`
+  · change extDeriv g x = (extDeriv γ (pL x)).compContinuousLinearMap pL
+    by_cases hxO' : x ∈ O'
+    · have hev : g =ᶠ[𝓝 x] β := by
+        filter_upwards [hO'.mem_nhds hxO'] with y hy
+        simp [hgdef, hχ1 y hy]
+      rw [hev.extDeriv_eq]
+      have hpb := extDeriv_pullback (x := x) (ω := γ) (f := ⇑pL) (r := ((⊤ : ℕ∞) : WithTop ℕ∞))
+        ((hγ.differentiable (by simp)).differentiableAt) pL.contDiff.contDiffAt (by simp)
+      simpa [ContinuousLinearMap.fderiv] using hpb
+    -- Step 9 (d) off `O'`: `g` vanishes near `x` and `γ` near `pL x`, so both sides are `0`
+    · have hxK : pL x ∉ tsupport γ := fun h => hxO' (hKO' ⟨hx, h⟩)
+      have hopen : IsOpen ((tsupport γ)ᶜ) := (isClosed_tsupport γ).isOpen_compl
+      have hev : g =ᶠ[𝓝 x] 0 := by
+        filter_upwards [(hopen.preimage pL.continuous).mem_nhds hxK] with y hy
+        simp [hgdef, hβ0 y hy]
+      have hev' : γ =ᶠ[𝓝 (pL x)] 0 := by
+        filter_upwards [hopen.mem_nhds hxK] with y hy
+        exact image_eq_zero_of_notMem_tsupport hy
+      rw [hev.extDeriv_eq, hev'.extDeriv_eq]
+      ext v
+      simp [extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
