@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Uniform `L¹` approximate identity for a continuous compactly supported `h : ℝⁿ → ℝ`: for
+`ε > 0` there is `r > 0` with `∫⁻ ‖ρ ⋆ h - h‖ₑ ≤ ε` for every `ρ ≥ 0` with `∫ ρ = 1` and
+`spt ρ ⊆ B_r(0)`.  Take `tsupport h ⊆ B̄_R(0)`, `S = B̄_{R+1}(0)`, `η = ε / (Lⁿ(S) + 1)`, and by
+uniform continuity `r ≤ 1` with `|h(y) - h(x)| < η` for `|y - x| < r`.  On `S`,
+`dist_convolution_le` gives `|ρ ⋆ h - h| ≤ η`; off `S`, `h` and `ρ ⋆ h` vanish.  Integrating,
+`∫⁻ ‖ρ ⋆ h - h‖ₑ ≤ η Lⁿ(S) ≤ ε`. -/
+theorem Submission.cmcdt_cbm_sa_ml_compact_support_approx : ∀ (n : ℕ) (h : Euclid n → ℝ), Continuous h → HasCompactSupport h → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤ ENNReal.ofReal ε := by
+  intro n h hc hcs ε hε
+  -- `tsupport h ⊆ B̄_R(0)`; the error lives in the compact set `S = B̄_{R+1}(0)`
+  obtain ⟨R, hR⟩ := hcs.isCompact.isBounded.subset_closedBall (0 : Euclid n)
+  set S : Set (Euclid n) := closedBall (0 : Euclid n) (R + 1) with hS
+  have hSm : MeasurableSet S := measurableSet_closedBall
+  have hSfin : volume S ≠ ∞ := measure_closedBall_lt_top.ne
+  set V : ℝ := (volume S).toReal with hV
+  have hV0 : 0 ≤ V := ENNReal.toReal_nonneg
+  -- the pointwise tolerance `η = ε / (V + 1)`, and `r ≤ 1` from uniform continuity
+  set η : ℝ := ε / (V + 1) with hη
+  have hη0 : 0 < η := div_pos hε (by linarith)
+  obtain ⟨δ, hδ, hδh⟩ :=
+    Metric.uniformContinuous_iff.1 (hcs.uniformContinuous_of_continuous hc) η hη0
+  refine ⟨min δ 1, lt_min hδ one_pos, ?_⟩
+  intro ρ hρ0 hρ1 hρs
+  have hzero : ∀ y : Euclid n, R < ‖y‖ → h y = 0 := by
+    intro y hy
+    by_contra hne
+    have : y ∈ closedBall (0 : Euclid n) R := hR (subset_tsupport h hne)
+    rw [mem_closedBall_zero_iff] at this
+    linarith
+  -- pointwise bound by `η` on `S`, and `0` off `S`
+  have hpt : ∀ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤
+      S.indicator (fun _ => ENNReal.ofReal η) x := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx, ← ofReal_norm, ← dist_eq_norm]
+      refine ENNReal.ofReal_le_ofReal (dist_convolution_le hη0.le hρs hρ0 hρ1
+        hc.aestronglyMeasurable fun y hy => (hδh ?_).le)
+      exact lt_of_lt_of_le (mem_ball.1 hy) (min_le_left _ _)
+    · rw [indicator_of_notMem hx]
+      rw [hS, mem_closedBall_zero_iff, not_le] at hx
+      have hconv : convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0 := by
+        rw [convolution_def]
+        refine integral_eq_zero_of_ae (ae_of_all _ fun t => ?_)
+        by_cases ht : ρ t = 0
+        · simp [ht]
+        · have ht' : ‖t‖ < 1 :=
+            lt_of_lt_of_le (mem_ball_zero_iff.1 (hρs ht)) (min_le_right _ _)
+          have hxt : R < ‖x - t‖ := by
+            have := norm_sub_norm_le x t
+            linarith
+          simp [hzero _ hxt]
+      rw [hconv, hzero x (by linarith), sub_zero, enorm_zero]
+  calc ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ
+      ≤ ∫⁻ x, S.indicator (fun _ => ENNReal.ofReal η) x := lintegral_mono hpt
+    _ = ENNReal.ofReal η * volume S := lintegral_indicator_const hSm _
+    _ = ENNReal.ofReal (η * V) := by
+        rw [ENNReal.ofReal_mul hη0.le, hV, ENNReal.ofReal_toReal hSfin]
+    _ ≤ ENNReal.ofReal ε := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [hη, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
