@@ -1,0 +1,120 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.density_gap-a1.origin_regularity-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.density_gap-a1.origin_regularity-a1.cylinder_graph-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 6.1–6.4 of the parent's supplied proof, with σ := r/4. They convert the ball-graph conclusion of Allard's regularity theorem (Simon Ch. 5, 5.2) into the cylinder-graph form used to prove regularity (Simon 7.4.1). The argument is self-contained and uses no prerequisite theorem.
+
+Notation:
+- |·| is the Euclidean norm and ⟨·,·⟩ the inner product.
+- B_ρ(p) is the open ball, both in ℝ^n and in ℝ^{n+k}.
+- Φ(v) := z + ιv + ι'u(v).
+- Cyl := {z + ιv + ι'w : v ∈ ℝ^n, |v| < r/4, w ∈ ℝ^k, |w| < r/4} (the set {x | ∃ v ∈ ball 0 (r/4), ∃ w ∈ ball 0 (r/4), x = z + ι v + ι' w}).
+We must show S ∩ Cyl = Φ(B_{r/4}(0)).
+
+Proof.
+1. (Slope bound.) For every v ∈ B_r(0), |u(v)| ≤ |v|/4. Indeed:
+ - u is C¹ on the open set B_r(0), so it is differentiable at each point of B_r(0);
+ - B_r(0) is convex, ‖Du‖ ≤ 1/4 on it, and 0 ∈ B_r(0) because r > 0.
+ The mean value inequality therefore gives |u(v) − u(0)| ≤ (1/4)|v − 0|. Since u(0) = 0, |u(v)| ≤ |v|/4.
+2. (Norm of cylinder points.) For v ∈ ℝ^n and w ∈ ℝ^k, |ιv + ι'w| ≤ |ιv| + |ι'w| = |v| + |w|, since ι and ι' are linear isometries. Hence if |v| < r/4 and |w| < r/4, then |(z + ιv + ι'w) − z| < r/2 < r. So Cyl ⊆ B_r(z).
+3. (Uniqueness of cylinder coordinates.) If ιv + ι'w = ιv' + ι'w', then v = v' and w = w'.
+ - First, ι(v − v') = ιv − ιv' = ι'w' − ι'w = ι'(w' − w).
+ - So |ι(v − v')|² = ⟨ι(v − v'), ι(v − v')⟩ = ⟨ι(v − v'), ι'(w' − w)⟩ = 0, by the orthogonality hypothesis.
+ - Hence |v − v'| = |ι(v − v')| = 0, so v = v'.
+ - Then ιv + ι'w = ιv + ι'w' gives ι'w = ι'w'. Since ι' is an isometry it is injective, so w = w'.
+4. (S ∩ Cyl ⊆ Φ(B_{r/4}(0)).) Let x ∈ S ∩ Cyl, say x = z + ιv + ι'w with |v| < r/4 and |w| < r/4. By step 2, x ∈ B_r(z), so x ∈ S ∩ B_r(z) = Φ(B_r(0)) ∩ B_r(z). Hence x = Φ(v') = z + ιv' + ι'u(v') for some v' ∈ B_r(0). Cancelling z gives ιv' + ι'u(v') = ιv + ι'w. By step 3, v' = v and u(v) = w. Therefore x = Φ(v) with v ∈ B_{r/4}(0).
+5. (Φ(B_{r/4}(0)) ⊆ S ∩ Cyl.) Let v ∈ B_{r/4}(0). Then:
+ - v ∈ B_r(0), since r/4 < r;
+ - by step 1, |u(v)| ≤ |v|/4 < r/16 < r/4, so Φ(v) = z + ιv + ι'u(v) ∈ Cyl, taking w := u(v);
+ - by step 2, Φ(v) ∈ B_r(z).
+ So Φ(v) ∈ Φ(B_r(0)) ∩ B_r(z) = S ∩ B_r(z); in particular Φ(v) ∈ S. Thus Φ(v) ∈ S ∩ Cyl.
+Steps 4 and 5 give S ∩ Cyl = Φ(B_{r/4}(0)). ∎
+
+Formalization note. This exact statement was proved outright for this decomposition in the scratch file /tmp/orgsplit/ChildB.lean, theorem orgsplit_childB:
+- Build: lake env lean against the frozen GMT.Ch07.Submission (project b4d606d, Mathlib 25730c7c).
+- #print axioms: propext, Classical.choice, Quot.sound.
+Lemmas used, by step:
+- 1: (hC1.differentiableOn one_ne_zero v hv).differentiableAt (isOpen_ball.mem_nhds hv); (convex_ball 0 r).norm_image_sub_le_of_norm_fderiv_le with mem_ball_self.
+- 2: norm_add_le and LinearIsometry.norm_map.
+- 3: map_sub and sub_eq_sub_iff_add_eq_add, closed by `exact add_comm _ _`; a plain `rw [add_comm]` rewrites the dimension n + k instead. Then real_inner_self_eq_norm_sq, pow_eq_zero_iff, norm_eq_zero, sub_eq_zero, add_left_cancel and LinearIsometry.injective.
+- 4–5: Set.ext; mem_ball, dist_eq_norm, add_assoc, add_sub_cancel_left, mem_ball_zero_iff and ball_subset_ball; `simpa [add_assoc]` cancels z.
+
+## Key steps
+
+1. The mean value inequality on the convex ball B_r(0), with ‖Du‖ ≤ 1/4 and u(0) = 0, gives |u(v)| ≤ |v|/4 there.
+2. |ιv + ι'w| ≤ |v| + |w|, so the cylinder of radius r/4 about z lies in B_r(z).
+3. Orthogonality of ι and ι' makes cylinder coordinates unique: ιv + ι'w = ιv' + ι'w' implies v = v' and w = w'.
+4. (⊆) A point of S in the cylinder lies in S ∩ B_r(z) = Φ(B_r(0)) ∩ B_r(z), and uniqueness forces it to be Φ(v) with |v| < r/4.
+5. (⊇) For |v| < r/4, |u(v)| < r/4 puts Φ(v) in the cylinder ⊆ B_r(z), hence in Φ(B_r(0)) ∩ B_r(z) = S ∩ B_r(z).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 225,457p GMT/Ch07/Contract.lean (regularSet, approxTangentPlane, tangentialDivergence, IMRep.firstVariation, IsMinimizingIn, SameBoundary, BoundaryVanishes)`
+- `grep -n 'def GeometricCurrentOn.VanishesOn|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.support|def GeometricCurrentOn.massOn|abbrev CurrentOn' simongmt Chapter06/{CurrentLocalEquality,Mass,Currents}.lean`
+- `grep -n 'mem_support_iff_forall|protected theorem surjective|norm_image_sub_le_of_norm_fderiv_le|closure_thickening_subset_cthickening|IsCompact.cthickening|fderiv_of_notMem_tsupport|measure_ball_lt_top|compContinuousLinearMap_apply' over Mathlib MeasureTheory/Measure/Support.lean, Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean, Analysis/Calculus/MeanValue.lean, Topology/MetricSpace/Thickening.lean, Analysis/Calculus/FDeriv/Const.lean, MeasureTheory/Measure/Typeclasses/Finite.lean, Topology/Algebra/Module/Alternating/Basic.lean`
+- `python3 -I scans of dag.json: status, lean_name and lean_statement of this node, of its five resolved dependencies and of every ancestor dependency; every node whose lean_statement contains 'firstVariation X = 0' together with 'IsMinimizingIn', or the Allard ball-graph or cylinder-graph pattern`
+- `grep -c dimred_cdg_or_ dag.json (0); grep -rl dimred_cdg_or_ over nodes/, GMT/ and simongmt Poincare/ (no match); grep -rl --include='*.lean' dimred_cdg_or_ over the snapshot project and mathlib (exit 1, no match); grep over the 4366 workspaces/.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no match); git log --all --oneline -S dimred_cdg_or_ (empty)`
+- `sed -n over the runtime flow _recursive_lean/{runtime.py,inherited.py,speculation.py}: _existing_lean_name_problem, _inherited_prerequisites and cited_inherited, _overlay_accepted_children, _render_parent_supplied_natural, _reference_use_markdown, _reference_use_problem, draft_eligible`
+- `lake env lean /tmp/orgsplit/Assembly.lean, /tmp/orgsplit/ChildA.lean, /tmp/orgsplit/ChildB.lean and /tmp/orgsplit/Linked.lean with #print axioms (toolchain lean-4.35.0-rc3)`
+- `python3 -I simulation of cited_inherited on the rendered child proof files: flat_stationarity cites exactly the three resolved dependencies E, F and G of its proof; cylinder_graph cites none`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1/decomposition-v8.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c59c141430/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/speculation.py`
+- `/tmp/orgsplit/Assembly.lean`
+- `/tmp/orgsplit/ChildA.lean`
+- `/tmp/orgsplit/ChildB.lean`
+- `/tmp/orgsplit/Linked.lean`
+
+Pins and contract:
+- The manifest records project b4d606d and Mathlib 25730c7c. These equal the workspace HEAD and the package Mathlib; SimonGMT is at 2b36630.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+- SimonGMT defines the support of a current in U as U minus the union of the open, relatively compact sets W (closure W ⊆ U) on which it vanishes. This is the notion step 10 of flat_stationarity uses.
+
+Reuse:
+- No accepted declaration states either child.
+- A flat-stationarity lemma exists in the integer-density branch (status rlcr-lean, another parent). It has no support hypothesis and is proved from a different, still unaccepted root theorem. It is therefore neither the same type nor shareable.
+- The accepted identical-type twins of the parent's C¹-pushforward and first-variation prerequisites are not used. The children follow the supplied proof.
+
+Names:
+- dimred_cdg_or_minimizing_firstVariation_eq_zero and dimred_cdg_or_ball_graph_to_cylinder_graph are fresh.
+- The prefix dimred_cdg_or_ occurs nowhere in dag.json, the node files, the snapshot, SimonGMT, the workspace GMT sources, 4366 swarm-worktree Submission files or git history.
+
+Runtime:
+- A child reaches its parent's resolved dependencies only by citing their exact Lean names in its frozen proof file. That file embeds this ledger, and cited_inherited scans all of it.
+- flat_stationarity cites exactly the three dependencies its proof applies. cylinder_graph cites none, so it can be proved at once.
+- This ledger names no unaccepted dependency.
+
+Lean (lake env lean against the frozen GMT.Ch07.Submission):
+- Both child types elaborate.
+- Assembly.lean proves the parent's frozen type from the frozen types of its mass-support, Allard-graph and graph-regularity prerequisites plus the two child types.
+- ChildA.lean proves flat_stationarity from the frozen types of the mass-support, C¹-pushforward and first-variation prerequisites.
+- ChildB.lean proves cylinder_graph outright.
+- Linked.lean wires these to the real Submission names. Only the five prerequisite stubs use sorry.
+- #print axioms for the hypothesis-form theorems: propext, Classical.choice, Quot.sound.
