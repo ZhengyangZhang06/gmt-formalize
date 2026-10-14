@@ -6232,6 +6232,104 @@ theorem Submission.cmcdt_lpi_piece_representation : ((∀ (N N' k : ℕ) (A : Eu
     convert hsum using 1
     funext i
     exact (harea i).2 η
+/-- **Coordinate expansion of a `k`-covector** (the pointwise identity behind
+`H^#ω(u)(e) = Σ_I ω_I(H(u)) det D(H^I)(u)`): for `f ∈ Λᵏ(ℝ^{N'})` and `u ∈ (ℝ^{N'})ᵏ`,
+`k! f(u) = Σ_I f(e'_{I 0}, …, e'_{I (k-1)}) det (u_b (I c))_{c,b}`, the sum over all maps
+`I : Fin k → Fin N'`.  Expand each `u_b = Σ_i u_b(i) e'_i` and use multilinearity; for each
+permutation `σ` reindex `J = I ∘ σ` and use `f (v ∘ σ) = sign σ • f v`; average over the `k!`
+permutations and recognize the Leibniz formula for the determinant. -/
+theorem Submission.dor_lmb_fcd_jwc_covector_det_expansion : ∀ (N' k : ℕ) (f : Covector (Euclid N') k) (u : Fin k → Euclid N'), (k.factorial : ℝ) * f u = ∑ I : Fin k → Fin N', f (fun c => EuclideanSpace.single (I c) (1 : ℝ)) * Matrix.det (Matrix.of fun c b => u b (I c)) := by
+  intro N' k f u
+  set e : Fin N' → Euclid N' := fun i => EuclideanSpace.single i (1 : ℝ) with he
+  -- step 1: multilinear expansion in the standard basis
+  have h1 : f u = ∑ J : Fin k → Fin N', (∏ b, u b (J b)) * f (fun b => e (J b)) := by
+    have hu : u = fun b => ∑ i, u b i • e i := by
+      funext b
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin N') ℝ).sum_repr (u b)]
+      simp [he]
+    conv_lhs => rw [hu]
+    rw [show f (fun b => ∑ i, u b i • e i) = f.toMultilinearMap (fun b => ∑ i, u b i • e i) from rfl,
+      MultilinearMap.map_sum]
+    refine Finset.sum_congr rfl fun J _ => ?_
+    rw [MultilinearMap.map_smul_univ]
+    simp [smul_eq_mul]
+  -- step 2: reindex by a permutation `σ`, using alternation
+  have h2 : ∀ σ : Equiv.Perm (Fin k), f u = ∑ I : Fin k → Fin N',
+      ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) := by
+    intro σ
+    rw [h1]
+    rw [← Equiv.sum_comp ((σ.symm).arrowCongr (Equiv.refl (Fin N')))]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    have hperm : f (fun b => e (I (σ b))) = ((Equiv.Perm.sign σ : ℤ) : ℝ) * f (fun c => e (I c)) := by
+      have := f.toAlternatingMap.map_perm (fun c => e (I c)) σ
+      simp only [Function.comp_def] at this
+      rw [show f (fun b => e (I (σ b))) = f.toAlternatingMap (fun b => e (I (σ b))) from rfl, this,
+        Units.smul_def, zsmul_eq_mul]
+      rfl
+    simp only [Equiv.arrowCongr_apply, Equiv.refl_apply, Equiv.symm_symm, Function.comp_apply]
+    rw [hperm]
+    ring
+  -- step 3: average over `σ` and recognize the Leibniz formula
+  have h3 : (k.factorial : ℝ) * f u = ∑ σ : Equiv.Perm (Fin k), f u := by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  rw [h3]
+  calc ∑ σ : Equiv.Perm (Fin k), f u
+      = ∑ σ : Equiv.Perm (Fin k), ∑ I : Fin k → Fin N',
+          ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) :=
+        Finset.sum_congr rfl fun σ _ => h2 σ
+    _ = ∑ I : Fin k → Fin N', ∑ σ : Equiv.Perm (Fin k),
+          ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) :=
+        Finset.sum_comm
+    _ = _ := ?_
+  refine Finset.sum_congr rfl fun I _ => ?_
+  rw [Matrix.det_apply, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  rw [Units.smul_def, zsmul_eq_mul]
+  simp only [Matrix.of_apply, he]
+  ring
+/-- **Jacobian minors of a Lipschitz map**: for an `L`-Lipschitz `v : ℝᵐ → ℝᵖ`, rows
+`a : Fin r → Fin p` and columns `b : Fin r → Fin m`, the minor
+`M(u) = det ((Dv(u) e_{b t})_{a s})_{s,t}` is Borel measurable in `u` and `|M(u)| ≤ r! Lʳ`.
+`u ↦ Dv(u)` is measurable and `A ↦ det ((A e_{b t})_{a s})` is continuous; every entry is bounded
+by `‖Dv(u)‖ ≤ L`, and the Leibniz formula has `r!` terms of absolute value at most `Lʳ`. -/
+theorem Submission.cmcdt_lpi_pc_minor_measurable_bound : ∀ (m p r : ℕ) (L : NNReal) (v : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m), LipschitzWith L v → Measurable (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))) ∧ ∀ u, |Matrix.det (Matrix.of fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))| ≤ (r.factorial : ℝ) * (L : ℝ) ^ r := by
+  intro m p r L v a b hv
+  constructor
+  · -- `u ↦ Dv(u)` is measurable and `A ↦ det ((A e_{b t})_{a s})` is continuous
+    have hcont : Continuous fun A : Euclid m →L[ℝ] Euclid p =>
+        Matrix.det (Matrix.of fun s t => A (EuclideanSpace.single (b t) 1) (a s)) := by
+      refine Continuous.matrix_det (continuous_matrix fun s t => ?_)
+      exact (continuous_apply (a s)).comp
+        ((PiLp.continuous_ofLp 2 _).comp (continuous_eval_const _))
+    exact hcont.measurable.comp (measurable_fderiv ℝ v)
+  · intro u
+    -- entry bound `|(Dv(u) e_{b t})_{a s}| ≤ ‖Dv(u)‖ ≤ L`
+    have hentry : ∀ s t, |fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)| ≤ (L : ℝ) := by
+      intro s t
+      calc |fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)|
+          = ‖fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖fderiv ℝ v u (EuclideanSpace.single (b t) 1)‖ := PiLp.norm_apply_le _ _
+        _ ≤ ‖fderiv ℝ v u‖ * ‖EuclideanSpace.single (b t) (1 : ℝ)‖ := (fderiv ℝ v u).le_opNorm _
+        _ = ‖fderiv ℝ v u‖ := by simp
+        _ ≤ L := norm_fderiv_le_of_lipschitz ℝ hv
+    -- Leibniz formula: `r!` terms, each of absolute value at most `Lʳ`
+    rw [Matrix.det_apply]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ σ : Equiv.Perm (Fin r), |Equiv.Perm.sign σ • ∏ i, Matrix.of
+            (fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s)) (σ i) i|
+        ≤ ∑ _σ : Equiv.Perm (Fin r), (L : ℝ) ^ r := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          rw [Units.smul_def, zsmul_eq_mul, abs_mul, Finset.abs_prod]
+          have hsign : |((Equiv.Perm.sign σ : ℤ) : ℝ)| = 1 := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+          rw [hsign, one_mul]
+          calc ∏ i, |Matrix.of (fun s t => fderiv ℝ v u (EuclideanSpace.single (b t) 1) (a s))
+                (σ i) i|
+              ≤ ∏ _i : Fin r, (L : ℝ) :=
+                Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) fun i _ => hentry _ _
+            _ = (L : ℝ) ^ r := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+      _ = (r.factorial : ℝ) * (L : ℝ) ^ r := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
 /-- **Jacobian minors of Lipschitz maps are measurable and bounded** (the integrands in the weak
 continuity of Jacobian minors): if `g₀, …, g_{r-1}` are `L`-Lipschitz on `ℝᵏ` and
 `V₀, …, V_{r-1} ∈ ℝᵏ`, then `D(x) = det (Dg_c(x) V_b)_{c,b}` is measurable and
@@ -7111,6 +7209,153 @@ theorem Submission.cmcdt_lpi_minor_weak_continuity : ∀ (m p r : ℕ) (L : NNRe
     (fun s => (hproj (a s)).uniformContinuous.comp_tendstoUniformly hvv₀)
   rw [hcoord v₀ hv₀] at h
   exact h.congr fun j => hcoord (v j) (hv j)
+
+/-- **Weak continuity of `f(v_j) · M(v_j)` against `L¹` weights.**  Let `v_j → v₀` uniformly,
+all `L`-Lipschitz, `w ∈ L¹(ℝ^m)`, `f` continuous with compact support, and
+`M(v)(u) = det((Dv(u) e_{b t})_{a s})_{s,t}`.  Then `∫ w f(v_j) M(v_j) → ∫ w f(v₀) M(v₀)`.  Split
+`w f(v_j) M_j = w (f(v_j) - f(v₀)) M_j + c M_j` with `c = w f(v₀) ∈ L¹`.  Since `|M_j| ≤ K = r! Lʳ`
+and `f ∘ v_j → f ∘ v₀` uniformly, the first integral is eventually at most `η K ‖w‖₁` for any
+`η > 0`; the second converges by the weak continuity of Jacobian minors. -/
+theorem Submission.cmcdt_lpi_pc_scalar_weak_continuity : ∀ (m p r : ℕ) (L : NNReal) (v : ℕ → Euclid m → Euclid p) (v₀ : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m) (w : Euclid m → ℝ) (f : Euclid p → ℝ), (∀ j, LipschitzWith L (v j)) → LipschitzWith L v₀ → TendstoUniformly v v₀ atTop → Integrable w → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ u, w u * (f (v j u) * Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s)))) atTop (𝓝 (∫ u, w u * (f (v₀ u) * Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s))))) := by
+  intro m p r L v v₀ a b w f hv hv₀ hunif hw hf hfc
+  -- `f` is bounded by `C`, so the weight `c = w · f(v₀)` is integrable
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+  have hc : Integrable (fun u => w u * f (v₀ u)) :=
+    hw.mul_bdd (hf.comp hv₀.continuous).aestronglyMeasurable (Eventually.of_forall fun u => hC (v₀ u))
+  -- the minors are measurable and bounded by `r! Lʳ`, and their `c`-integrals converge
+  suffices key : ∀ (M : ℕ → Euclid m → ℝ) (M₀ : Euclid m → ℝ) (K : ℝ), (∀ j, Measurable (M j)) →
+      (∀ j u, |M j u| ≤ K) →
+      Tendsto (fun j => ∫ u, w u * f (v₀ u) * M j u) atTop (𝓝 (∫ u, w u * f (v₀ u) * M₀ u)) →
+      Tendsto (fun j => ∫ u, w u * (f (v j u) * M j u)) atTop (𝓝 (∫ u, w u * (f (v₀ u) * M₀ u))) from
+    key (fun j u => Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s)))
+      (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s)))
+      ((r.factorial : ℝ) * (L : ℝ) ^ r)
+      (fun j => (Submission.cmcdt_lpi_pc_minor_measurable_bound m p r L (v j) a b (hv j)).1)
+      (fun j => (Submission.cmcdt_lpi_pc_minor_measurable_bound m p r L (v j) a b (hv j)).2)
+      (Submission.cmcdt_lpi_minor_weak_continuity m p r L v v₀ a b (fun u => w u * f (v₀ u)) hv hv₀
+        hunif hc)
+  intro M M₀ K hM hMK hS
+  have hK : 0 ≤ K := (abs_nonneg _).trans (hMK 0 0)
+  have hfv : ∀ j, Continuous (fun u => f (v j u)) := fun j => hf.comp (hv j).continuous
+  have hfv₀ : Continuous (fun u => f (v₀ u)) := hf.comp hv₀.continuous
+  -- split `w f(v_j) M_j = w (f(v_j) - f(v₀)) M_j + c M_j`; both pieces are integrable
+  have hI₁ : ∀ j, Integrable (fun u => w u * ((f (v j u) - f (v₀ u)) * M j u)) := fun j =>
+    hw.mul_bdd (c := (C + C) * K) (((hfv j).sub hfv₀).measurable.mul (hM j)).aestronglyMeasurable
+      (Eventually.of_forall fun u => by
+        rw [norm_mul, Real.norm_eq_abs (M j u)]
+        exact mul_le_mul ((norm_sub_le _ _).trans (add_le_add (hC _) (hC _))) (hMK j u)
+          (abs_nonneg _) (by linarith))
+  have hI₂ : ∀ j, Integrable (fun u => w u * f (v₀ u) * M j u) := fun j =>
+    hc.mul_bdd (c := K) (hM j).aestronglyMeasurable
+      (Eventually.of_forall fun u => (Real.norm_eq_abs _).le.trans (hMK j u))
+  have hsplit : ∀ j, (∫ u, w u * (f (v j u) * M j u)) =
+      (∫ u, w u * ((f (v j u) - f (v₀ u)) * M j u)) + ∫ u, w u * f (v₀ u) * M j u := by
+    intro j
+    rw [← integral_add (hI₁ j) (hI₂ j)]
+    congr 1
+    funext u
+    ring
+  -- the first piece tends to `0`
+  have hT : Tendsto (fun j => ∫ u, w u * ((f (v j u) - f (v₀ u)) * M j u)) atTop (𝓝 0) := by
+    have hU := (hfc.uniformContinuous_of_continuous hf).comp_tendstoUniformly hunif
+    have hW : 0 ≤ ∫ u, ‖w u‖ := integral_nonneg fun u => norm_nonneg (w u)
+    have hD : 0 < K * (∫ u, ‖w u‖) + 1 := by nlinarith [mul_nonneg hK hW]
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨η, hη, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η * K * (∫ u, ‖w u‖) < ε := by
+      refine ⟨ε / (K * (∫ u, ‖w u‖) + 1), div_pos hε hD, ?_⟩
+      rw [mul_assoc, div_mul_eq_mul_div, div_lt_iff₀ hD]
+      nlinarith [mul_nonneg hK hW]
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 (Metric.tendstoUniformly_iff.1 hU η hη)
+    refine ⟨N, fun n hn => ?_⟩
+    have hpt : ∀ u, ‖w u * ((f (v n u) - f (v₀ u)) * M n u)‖ ≤ η * K * ‖w u‖ := by
+      intro u
+      have h₁ : ‖f (v n u) - f (v₀ u)‖ ≤ η := by
+        rw [← dist_eq_norm, dist_comm]
+        exact (hN n hn u).le
+      calc ‖w u * ((f (v n u) - f (v₀ u)) * M n u)‖
+          = ‖w u‖ * (‖f (v n u) - f (v₀ u)‖ * |M n u|) := by
+            rw [norm_mul, norm_mul, Real.norm_eq_abs (M n u)]
+        _ ≤ ‖w u‖ * (η * K) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul h₁ (hMK n u) (abs_nonneg _) hη.le) (norm_nonneg _)
+        _ = η * K * ‖w u‖ := mul_comm _ _
+    rw [dist_zero_right]
+    calc ‖∫ u, w u * ((f (v n u) - f (v₀ u)) * M n u)‖ ≤ ∫ u, η * K * ‖w u‖ :=
+          norm_integral_le_of_norm_le (hw.norm.const_mul _) (Eventually.of_forall hpt)
+      _ = η * K * (∫ u, ‖w u‖) := integral_const_mul _ _
+      _ < ε := hηε
+  -- the second piece converges to `∫ c M₀`; add the limits
+  have hlim := hT.add hS
+  rw [zero_add] at hlim
+  have e : (∫ u, w u * (f (v₀ u) * M₀ u)) = ∫ u, w u * f (v₀ u) * M₀ u := by
+    congr 1
+    funext u
+    ring
+  rw [e]
+  exact hlim.congr fun j => (hsplit j).symm
+
+/-- **Weak continuity of pull-backs under uniformly convergent Lipschitz maps** (step 6 (B4) of
+the proof that Lipschitz push-forwards of integer multiplicity currents are integer multiplicity;
+Simon Ch. 6, 2.29 and 3.6).  Let `Hⱼ, H₀ : ℝᵐ → ℝ^{N'}` be `L`-Lipschitz with `Hⱼ → H₀`
+uniformly, `w ∈ L¹(ℝᵐ)` and `ω` a continuous, compactly supported `m`-form on `ℝ^{N'}`.  Then
+`∫ w ω(Hⱼ)(DHⱼ e) → ∫ w ω(H₀)(DH₀ e)`.  For `I : Fin m → Fin N'` let
+`ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (m-1)})` and `M_I(H)(u) = det ((DH(u) e_t)_{I s})_{s,t}`.
+The coordinate expansion of `m`-covectors gives `w ω(H)(DH e) = (m!)⁻¹ Σ_I w ω_I(H) M_I(H)`
+pointwise.  Every summand is integrable (`M_I(H)` is measurable and bounded by `m! Lᵐ`, and `ω_I`
+is bounded), so the integral splits over `I`; each summand converges by the scalar weak continuity
+with the continuous, compactly supported coefficient `ω_I`. -/
+theorem Submission.cmcdt_lpi_pullback_weak_continuity : ∀ (m N' : ℕ) (L : NNReal) (H : ℕ → Euclid m → Euclid N') (H₀ : Euclid m → Euclid N') (w : Euclid m → ℝ) (ω : DifferentialForm (Euclid N') m), (∀ j, LipschitzWith L (H j)) → LipschitzWith L H₀ → TendstoUniformly H H₀ atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (H j u) (fun a => fderiv ℝ (H j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H₀ u) (fun a => fderiv ℝ H₀ u (EuclideanSpace.single a 1)))) := by
+  intro m N' L H H₀ w ω hH hH₀ hHH₀ hw hωc hωs
+  -- the coefficients `ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (m-1)})` are continuous with compact support
+  have hωIc : ∀ I : Fin m → Fin N',
+      Continuous fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ)) := fun I =>
+    hωc.eval_const _
+  have hωIs : ∀ I : Fin m → Fin N',
+      HasCompactSupport fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ)) := fun I =>
+    hωs.comp_left (g := fun α : Covector (Euclid N') m =>
+      α (fun c => EuclideanSpace.single (I c) (1 : ℝ))) (by simp)
+  -- step 1: `w ω(G)(DG e) = (m!)⁻¹ Σ_I w ω_I(G) M_I(G)` pointwise (coordinate expansion)
+  have hexp : ∀ (G : Euclid m → Euclid N') (u : Euclid m),
+      w u * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) =
+        (m.factorial : ℝ)⁻¹ * ∑ I : Fin m → Fin N',
+          w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+            Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+    intro G u
+    have hm : (m.factorial : ℝ) ≠ 0 := by exact_mod_cast m.factorial_ne_zero
+    rw [← Finset.mul_sum, ← Submission.dor_lmb_fcd_jwc_covector_det_expansion N' m (ω (G u))
+      (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)), mul_left_comm (w u),
+      inv_mul_cancel_left₀ hm]
+  -- step 2: the minors are measurable and bounded by `m! Lᵐ` and `ω_I` is bounded, so every
+  -- summand is integrable and the integral splits over `I`
+  have hint : ∀ G : Euclid m → Euclid N', LipschitzWith L G →
+      ∫ u, w u * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) =
+        (m.factorial : ℝ)⁻¹ * ∑ I : Fin m → Fin N', ∫ u,
+          w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+            Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+    intro G hG
+    have hI : ∀ I : Fin m → Fin N', Integrable fun u =>
+        w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+          Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+      intro I
+      obtain ⟨hmeas, hbd⟩ :=
+        Submission.cmcdt_lpi_pc_minor_measurable_bound m N' m L G I (fun t => t) hG
+      obtain ⟨C, hC⟩ := (hωIc I).bounded_above_of_compact_support (hωIs I)
+      refine hw.mul_bdd (c := C * ((m.factorial : ℝ) * (L : ℝ) ^ m))
+        (((hωIc I).comp hG.continuous).measurable.mul hmeas).aestronglyMeasurable
+        (Eventually.of_forall fun u => ?_)
+      rw [norm_mul]
+      exact mul_le_mul (hC _) ((Real.norm_eq_abs _).trans_le (hbd u)) (norm_nonneg _)
+        ((norm_nonneg _).trans (hC 0))
+    rw [← integral_finsetSum _ fun I _ => hI I, ← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall (hexp G))
+  -- step 3: each summand converges by the scalar weak continuity with coefficient `ω_I`
+  have hlim := (tendsto_finsetSum (Finset.univ : Finset (Fin m → Fin N')) fun I _ =>
+    Submission.cmcdt_lpi_pc_scalar_weak_continuity m N' m L H H₀ I (fun t => t) w
+      (fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ))) hH hH₀ hHH₀ hw (hωIc I)
+      (hωIs I)).const_mul ((m.factorial : ℝ)⁻¹)
+  rw [hint H₀ hH₀]
+  exact hlim.congr fun j => (hint (H j) (hH j)).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
