@@ -2780,6 +2780,97 @@ theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
+/-- **Admissible ambient extension of the normal variation `ζν`** (stability of the hypercone;
+`T_xM` as in Simon Ch. 2, §4).  Let `U, O ⊆ ℝᴾ` be open with `M ⊆ U ∩ O`, `ν` be `C^∞` on `O`
+with `|ν| = 1` on `M`, and `ζ` be `C^∞` with `ζ = 0` on `M` off a compact `C ⊆ M`.  Take a compact
+`L` with `C ⊆ int L ⊆ L ⊆ O ∩ U` and a `C^∞` cut-off `β` with support `int L` and `β = 1` on `C`.
+Then `Z = βζν` is `C^∞` (near points of `O` a product of smooth maps, elsewhere locally `0`),
+compactly supported in `U`, and `Z = ζν` on `M`.  Differentiating `Z ∘ γ = (ζ ∘ γ)(ν ∘ γ)` along a
+`C¹` curve `γ` in `M` through `x` gives `DZ(x)γ'(0) = (Dζ(x)γ'(0))ν(x) + ζ(x)Dν(x)γ'(0)`.  Off
+`tsupport Z`, `ζ = 0` on `M` near `x` (as `ν ≠ 0` on `M`), so `ζ ∘ γ = 0` near `0` and
+`Dζ(x)γ'(0) = 0`.  Both identities extend to `span T_xM` by linearity. -/
+theorem Submission.codim1_hcp_stab_variation_field : ∀ (P : ℕ) (U O M C : Set (Euclid P)) (ν : Euclid P → Euclid P) (ζ : Euclid P → ℝ), IsOpen U → IsOpen O → M ⊆ U → M ⊆ O → ContDiffOn ℝ (⊤ : ℕ∞) ν O → (∀ x ∈ M, ‖ν x‖ = 1) → ContDiff ℝ (⊤ : ℕ∞) ζ → IsCompact C → C ⊆ M → (∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z ∧ HasCompactSupport Z ∧ tsupport Z ⊆ U ∧ (∀ x ∈ M, Z x = ζ x • ν x) ∧ (∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ Z x τ = fderiv ℝ ζ x τ • ν x + ζ x • fderiv ℝ ν x τ) ∧ (∀ x ∈ M, x ∉ tsupport Z → ζ x = 0 ∧ ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ζ x τ = 0) := by
+  intro P U O M C ν ζ hU hO hMU hMO hν hν1 hζ hC hCM hζC
+  -- cut-off `β`: `C^∞`, `β = 1` on `C`, `tsupport β` compact inside `O ∩ U`
+  obtain ⟨L, hLc, hCL, hLOU⟩ := exists_compact_between hC (hO.inter hU)
+    fun x hx => ⟨hMO (hCM hx), hMU (hCM hx)⟩
+  obtain ⟨β, hβ, -, hβsupp, hβ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) isOpen_interior hC.isClosed hCL
+  have hβL : tsupport β ⊆ L := by
+    rw [tsupport, hβsupp]
+    exact closure_minimal interior_subset hLc.isClosed
+  have hβOU : tsupport β ⊆ O ∩ U := hβL.trans hLOU
+  have hβc : HasCompactSupport β := hLc.of_isClosed_subset (isClosed_tsupport β) hβL
+  have h1 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  have hζd : Differentiable ℝ ζ := hζ.differentiable h1
+  -- `Z = β ζ ν`
+  set Z : Euclid P → Euclid P := fun y => (β y * ζ y) • ν y with hZ
+  have hZcd : ContDiff ℝ (⊤ : ℕ∞) Z := by
+    refine contDiff_iff_contDiffAt.mpr fun y => ?_
+    by_cases hy : y ∈ O
+    · exact (hβ.contDiffAt.mul hζ.contDiffAt).smul (hν.contDiffAt (hO.mem_nhds hy))
+    · have hy' : y ∉ tsupport β := fun h => hy (hβOU h).1
+      have hev : Z =ᶠ[𝓝 y] fun _ => 0 := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.mp hy'] with z hz
+        simp [hZ, show β z = 0 from hz]
+      exact contDiffAt_const.congr_of_eventuallyEq hev
+  have hZM : ∀ x ∈ M, Z x = ζ x • ν x := by
+    intro x hx
+    by_cases hxC : x ∈ C
+    · simp [hZ, (hβ1 x).mp hxC]
+    · simp [hZ, hζC x hx hxC]
+  have hZd : Differentiable ℝ Z := hZcd.differentiable h1
+  refine ⟨Z, hZcd, hβc.mul_right.smul_right, ?_, hZM, ?_, ?_⟩
+  · exact (tsupport_smul_subset_left _ _).trans
+      (tsupport_mul_subset_left.trans (hβOU.trans inter_subset_right))
+  · intro x hx τ hτ
+    have hνd : HasFDerivAt ν (fderiv ℝ ν x) x :=
+      ((hν.contDiffAt (hO.mem_nhds (hMO hx))).differentiableAt h1).hasFDerivAt
+    induction hτ using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨γ, -, hγM, hγ0, hγ⟩ := hv
+      have hA : HasDerivAt (Z ∘ γ) (fderiv ℝ Z x v) 0 :=
+        (hZd x).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+      have hζγ : HasDerivAt (ζ ∘ γ) (fderiv ℝ ζ x v) 0 :=
+        (hζd x).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+      have hνγ : HasDerivAt (ν ∘ γ) (fderiv ℝ ν x v) 0 :=
+        hνd.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+      have hev : Z ∘ γ =ᶠ[𝓝 0] (ζ ∘ γ) • (ν ∘ γ) := by
+        filter_upwards [Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) one_pos] with s hs
+        exact hZM _ (hγM hs)
+      rw [(hA.congr_of_eventuallyEq hev.symm).unique (hζγ.smul hνγ), Function.comp_apply,
+        Function.comp_apply, hγ0, add_comm]
+    | zero => simp
+    | add a b _ _ ha hb =>
+      rw [map_add, map_add, map_add, ha, hb, add_smul, smul_add]
+      abel
+    | smul c a _ ha =>
+      rw [map_smul, map_smul, map_smul, ha, smul_add, smul_eq_mul, mul_smul, smul_comm (ζ x) c]
+  · intro x hx hxZ
+    have hZ0 : ∀ᶠ y in 𝓝 x, Z y = 0 := notMem_tsupport_iff_eventuallyEq.mp hxZ
+    have hζ0 : ∀ y ∈ M, Z y = 0 → ζ y = 0 := by
+      intro y hy hZy
+      rw [hZM y hy] at hZy
+      refine (smul_eq_zero.mp hZy).resolve_right fun h => ?_
+      have := hν1 y hy
+      rw [h, norm_zero] at this
+      exact zero_ne_one this
+    refine ⟨hζ0 x hx hZ0.self_of_nhds, fun τ hτ => ?_⟩
+    induction hτ using Submodule.span_induction with
+    | mem v hv =>
+      obtain ⟨γ, -, hγM, hγ0, hγ⟩ := hv
+      have hA : HasDerivAt (ζ ∘ γ) (fderiv ℝ ζ x v) 0 :=
+        (hζd x).hasFDerivAt.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+      have hev : ζ ∘ γ =ᶠ[𝓝 0] fun _ => (0 : ℝ) := by
+        have hγt : Tendsto γ (𝓝 0) (𝓝 x) := hγ0 ▸ hγ.continuousAt.tendsto
+        filter_upwards [hγt.eventually hZ0,
+          Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) one_pos] with s hs hs'
+        exact hζ0 _ (hγM hs') hs
+      exact (hA.congr_of_eventuallyEq hev.symm).unique (hasDerivAt_const 0 0)
+    | zero => simp
+    | add a b _ _ ha hb => rw [map_add, ha, hb, add_zero]
+    | smul c a _ ha => rw [map_smul, ha, smul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
