@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pull-back along the coordinate projection `ℝ^{P+1} → ℝᴾ` preserves the Euclidean coefficient
+norm of covectors** (Simon Ch. 6, 1.15; used for the cut-off pull-back in the proof of 7.4.3).
+If `(p y)ᵢ = y_{castSucc i}`, then `p e_{castSucc i} = eᵢ` and `p e_last = 0`.  Reindexing the
+coefficient sum of `p^*α` along the injective map `I ↦ castSucc ∘ I`, the coefficients off its
+range have an argument `p e_last = 0` and vanish, while `c_{castSucc ∘ I}(p^*α) = c_I(α)` on it
+(`castSucc ∘ I` is strictly increasing iff `I` is). -/
+theorem Submission.dor_lmb_fc_dtop_cp_proj_covector_norm : ∀ (P d : ℕ) (p : Euclid (P + 1) →L[ℝ] Euclid P), (∀ (y : Euclid (P + 1)) (i : Fin P), p y i = y (Fin.castSucc i)) → ∀ α : Covector (Euclid P) d, covectorEuclideanNorm (α.compContinuousLinearMap p) = covectorEuclideanNorm α := by
+  intro P d p hp α
+  classical
+  -- Step 1: `p e_{castSucc i} = e_i` and `p e_last = 0`
+  have hcs : ∀ i : Fin P, p (EuclideanSpace.basisFun (Fin (P + 1)) ℝ (Fin.castSucc i)) =
+      EuclideanSpace.basisFun (Fin P) ℝ i := by
+    intro i
+    ext j
+    rw [hp]
+    simp [Fin.castSucc_inj]
+  have hlast : p (EuclideanSpace.basisFun (Fin (P + 1)) ℝ (Fin.last P)) = 0 := by
+    ext j
+    rw [hp]
+    simp [(Fin.castSucc_lt_last j).ne]
+  -- Step 2: compare the coefficient sums under the square roots
+  unfold covectorEuclideanNorm
+  congr 1
+  symm
+  -- Step 3: reindex along the injective map `I ↦ castSucc ∘ I`
+  refine Fintype.sum_of_injective (fun I : Fin d → Fin P => Fin.castSucc ∘ I)
+    (fun I I' h => funext fun k => Fin.castSucc_injective P (congrFun h k)) _ _ ?_ ?_
+  -- Step 4: off the range some `J k` is `last`, so the coefficient has a zero argument
+  · intro J hJ
+    by_cases hJs : StrictMono J
+    · obtain ⟨k, hk⟩ : ∃ k, J k = Fin.last P := by
+        by_contra hne
+        exact hJ ⟨fun k => (J k).castPred fun h => hne ⟨k, h⟩,
+          funext fun k => Fin.castSucc_castPred _ _⟩
+      rw [ite_eq_left hJs, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+        α.map_coord_zero k (by simp only [Function.comp_apply, hk, hlast]), zero_pow two_ne_zero]
+    · rw [ite_eq_right hJs]
+  -- Step 5: on the range, `StrictMono (castSucc ∘ I) ↔ StrictMono I` and `p e_{castSucc I} = e_I`
+  · intro I
+    have hiff : StrictMono (Fin.castSucc ∘ I) ↔ StrictMono I :=
+      ⟨fun h _ _ hab => Fin.castSucc_lt_castSucc_iff.1 (h hab), Fin.strictMono_castSucc.comp⟩
+    by_cases hI : StrictMono I
+    · rw [ite_eq_left hI, ite_eq_left (hiff.2 hI),
+        ContinuousAlternatingMap.compContinuousLinearMap_apply]
+      congr 2
+      funext k
+      exact (hcs (I k)).symm
+    · rw [ite_eq_right hI, ite_eq_right (mt hiff.1 hI)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
