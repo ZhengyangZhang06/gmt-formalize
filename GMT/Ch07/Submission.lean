@@ -451,6 +451,44 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A `limsup` bound through closed thickenings of a compact set** (the second half of step 10
+of the blow-up limit in the integer-multiplicity criterion for cycles, there with `aₖ = μₖ(K)` and
+`c = θ(a)`).  Write `K_r = cthickening r K`.  For `r > 0`, `K_r` is compact, so
+`limsupₖ c νₖ(K_r) = c limsupₖ νₖ(K_r) ≤ c ν(K_r)` (`c ≠ ∞`); as `vₖ → 0`, the bound
+`aₖ ≤ c νₖ(K_r) + vₖ` gives `limsupₖ aₖ ≤ c ν(K_r)`.  `K` is closed and `ν(K_1) < ∞`, so
+`ν(K_r) → ν(K)` as `r ↓ 0`, and `limsupₖ aₖ ≤ c ν(K)`. -/
+theorem Submission.dmcbr_ci_bl_limsup_le_of_cthickening : ∀ (P : ℕ) (a : ℕ → ℝ≥0∞) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (c : ℝ≥0∞) (K : Set (Euclid P)), IsCompact K → c ≠ ∞ → (∀ K' : Set (Euclid P), IsCompact K' → ν K' < ∞) → (∀ K' : Set (Euclid P), IsCompact K' → limsup (fun k => νs k K') atTop ≤ ν K') → (∀ r : ℝ, 0 < r → ∃ v : ℕ → ℝ≥0∞, Tendsto v atTop (𝓝 0) ∧ ∀ k, a k ≤ c * νs k (cthickening r K) + v k) → limsup a atTop ≤ c * ν K := by
+  intro P a νs ν c K hK hc hνK hlim hbound
+  -- Steps 1–2: `limsupₖ aₖ ≤ c ν(K_r)` for every `r > 0`
+  have hr_le : ∀ r : ℝ, 0 < r → limsup a atTop ≤ c * ν (cthickening r K) := by
+    intro r hr
+    obtain ⟨v, hv, hav⟩ := hbound r hr
+    -- Step 1: `limsupₖ c νₖ(K_r) = c limsupₖ νₖ(K_r) ≤ c ν(K_r)`, `K_r` being compact
+    have hmain : limsup (fun k => c * νs k (cthickening r K)) atTop ≤
+        c * ν (cthickening r K) := by
+      rw [ENNReal.limsup_const_mul_of_ne_top hc]
+      gcongr
+      exact hlim _ hK.cthickening
+    -- Step 2: for `d > c ν(K_r)` pick `c ν(K_r) < b < d`; eventually `c νₖ(K_r) < b` and
+    -- `vₖ < d − b`, hence `aₖ ≤ b + (d − b) = d`
+    refine le_of_forall_gt_imp_ge_of_dense fun d hd => ?_
+    obtain ⟨b, hb, hbd⟩ := exists_between hd
+    have h₁ : ∀ᶠ k in atTop, c * νs k (cthickening r K) < b :=
+      eventually_lt_of_limsup_lt (hmain.trans_lt hb)
+    have h₂ : ∀ᶠ k in atTop, v k < d - b := (tendsto_order.1 hv).2 _ (tsub_pos_of_lt hbd)
+    refine limsup_le_of_le (h := ?_)
+    filter_upwards [h₁, h₂] with k hk₁ hk₂
+    calc a k ≤ c * νs k (cthickening r K) + v k := hav k
+      _ ≤ b + (d - b) := add_le_add hk₁.le hk₂.le
+      _ = d := add_tsub_cancel_of_le hbd.le
+  -- Step 3: `K` is closed and `ν(K_1) < ∞`, so `ν(K_r) → ν(K)` and `c ν(K_r) → c ν(K)` as `r ↓ 0`
+  have hfin : ∃ R > 0, ν (cthickening R K) ≠ ∞ := ⟨1, one_pos, (hνK _ hK.cthickening).ne⟩
+  have hνr : Tendsto (fun r => ν (cthickening r K)) (𝓝 0) (𝓝 (ν K)) :=
+    tendsto_measure_cthickening_of_isClosed hfin hK.isClosed
+  have htend : Tendsto (fun r => c * ν (cthickening r K)) (𝓝[>] 0) (𝓝 (c * ν K)) :=
+    (ENNReal.Tendsto.const_mul hνr (Or.inr hc)).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall hr_le)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
