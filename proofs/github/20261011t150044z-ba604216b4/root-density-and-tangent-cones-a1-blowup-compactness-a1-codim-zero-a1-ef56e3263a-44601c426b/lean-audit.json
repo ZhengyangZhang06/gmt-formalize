@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "374684657d019eb250c257c7c2a524be79c1a457aec2dded63522ad430682d7a",
+  "git_delta": {
+    "base_commit": "f1aec4e0cb4674cdd5f4b338cd049b5f1ce3a1c2",
+    "candidate_commit": "30726f91b76ba636865b48820716cba442720832",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_tc_weak_derivs",
+    "diff_sha256": "dc07ef98020a3d61d50fdc9a461b9ce6f5242937cfd0b3e46e04f1610ab4c756",
+    "source_sha256": "90530851671818984324568151218db11e9751e899d6dbbeb2db8dec7d7892a5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_tc_weak_derivs",
+      "statement": "∀ (m : ℕ) (V B : Set (Euclid (m + 1))) (X : GeometricCurrentOn V (m + 1)) (G : Euclid (m + 1) → ℝ), B ⊆ V → (∀ β : TestFormOn V m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ B → X.boundary β = 0) → (∀ ω : TestFormOn V (m + 1), X ω = ∫ y, G y * (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) → ∀ a : Euclid (m + 1) → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ B → ∀ j : Fin (m + 1), ∫ v in B, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
