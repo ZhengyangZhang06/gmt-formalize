@@ -4697,6 +4697,116 @@ theorem Submission.dor_lmb_fcd_cp_smooth_duality : ∀ (P : ℕ) (w : Euclid P �
     nlinarith
   linarith
 
+/-- **Face replacement** (Simon Ch. 6, proof of the Deformation Theorem 5.1, (26)–(37)): an
+integer multiplicity `Q ∈ 𝒟ₙ(ℝᴾ)`, `n = m + 1 < P`, vanishing off `L_n ∩ K` (`K` compact) with
+`M(∂Q) < ∞` is the lattice chain `Pc = Σ_{p ∈ s} β_p [[F_p]]` up to an integer multiplicity error
+`Q − Pc` with `M(Q − Pc) ≤ c M(∂Q)`, where `Σ_p |β_p| ≤ c M(Q)` and `c = max(c_cp, 2)`.
+The faces meeting `K` carry `Q` (`dor_lmb_fcd_fr_skeleton_cells`), so
+`Q = Σ_p u_p [[F_p°]]` with integer densities `u_p` and `Σ_p ∫|u_p| ≤ M(Q)` ((26)–(28), (33));
+testing `∂Q` near each face bounds the variation of `u_p` by `V_p`, `Σ_p V_p ≤ M(∂Q)` ((28)); the
+cube Poincaré inequality gives integer medians `β_p` with `∫|u_p − β_p| ≤ c_cp V_p` and
+`|β_p| ≤ 2∫|u_p|` ((31), (32), (35)).  Then `Q − Pc = Σ_p (u_p − β_p)[[F_p°]]` ((29)) has mass
+`≤ Σ_p ∫|u_p − β_p| ≤ c_cp M(∂Q)` ((34)), `Σ_p |β_p| ≤ 2 M(Q)` ((36)), `Pc` is integer
+multiplicity, and `Q − Pc` vanishes off `cthickening(√P, K) ⊇ F_p`. -/
+theorem Submission.dor_lmb_fcd_face_replacement : ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (K : Set (Euclid P)) (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity Q → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) ({x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∩ K) → Q ω = 0) → Q.boundary.mass ≠ ∞ → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (Q - Pc) ∧ (Q - Pc).mass ≤ ENNReal.ofReal c * Q.boundary.mass ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) ≤ ENNReal.ofReal c * Q.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (Real.sqrt P) K) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (Real.sqrt P) K) → (Q - Pc) ω = 0 := by
+  intro P m hmP
+  -- `c_cp`: the cube Poincaré constant with integer medians (Simon Ch. 2, 2.7; Ch. 6, (31), (35))
+  obtain ⟨ccp, hccp, hcp⟩ := Submission.dor_lmb_fcd_cube_poincare m
+  refine ⟨max ccp 2, le_max_of_le_right zero_le_two, ?_⟩
+  intro K Q hK hQ hQK hbd
+  -- the finitely many faces `F_p` (`p ∈ s`) meeting `K`; their open faces carry `L_n ∩ K` a.e.
+  obtain ⟨s, hs, hsK, hL, hcover⟩ := Submission.dor_lmb_fcd_fr_skeleton_cells P m K hmP hK
+  -- (26)–(28), (33): `Q = Σ_p u_p [[F_p°]]` with integer densities and `Σ ∫|u_p| ≤ M(Q)`
+  obtain ⟨u, huZ, huint, humass, hQu⟩ := Submission.dor_lmb_fcd_fr_face_representation P m s _ Q
+    hs (hL.inter hK.isClosed) hcover hQ hQK
+  -- (28): `∫ u_p div g ≤ V_p` for admissible `g`, with `Σ V_p ≤ M(∂Q)`
+  obtain ⟨V, -, hVsum, hVvar⟩ :=
+    Submission.dor_lmb_fcd_fr_boundary_variation P m s u Q hs hQu hbd
+  -- (31), (32), (35): integer medians `β_p` with `∫|u_p − β_p| ≤ c_cp V_p`, `|β_p| ≤ 2∫|u_p|`
+  have hβex : ∀ p, ∃ b : ℤ, p ∈ s →
+      (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y - b|) ≤ ccp * V p ∧
+        |(b : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| := by
+    intro p
+    by_cases hp : p ∈ s
+    · obtain ⟨b, hb⟩ := hcp (u p) (V p) (huZ p hp) (huint p hp) (hVvar p hp)
+      exact ⟨b, fun _ => hb⟩
+    · exact ⟨0, fun h => absurd h hp⟩
+  choose β hβ using hβex
+  -- constants are integrable on the unit cube `Q₁ = (0, 1)ⁿ`, of volume `1`
+  have hconst : ∀ p ∈ s, ∀ b : ℝ,
+      IntegrableOn (fun _ : Euclid (m + 1) => b) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    intro p hp b
+    have h1 := (Submission.dor_lmb_fcd_fr_face_geometry P m p (hs p hp)).1
+    exact integrableOn_const (by rw [h1]; exact ENNReal.one_ne_top)
+  -- the lattice chain `Pc = Σ_p β_p [[F_p]]`, and integrability of the face integrands
+  obtain ⟨hβint, ⟨Pc, hPc⟩, -⟩ := Submission.dor_lmb_fcd_fr_chain_current P m s
+    (fun p _ => (β p : ℝ)) hs fun p hp => hconst p hp _
+  obtain ⟨huωint, -, -⟩ := Submission.dor_lmb_fcd_fr_chain_current P m s u hs huint
+  -- the mass bound for currents with face densities `u_p − β_p`
+  obtain ⟨-, -, hDmass⟩ := Submission.dor_lmb_fcd_fr_chain_current P m s
+    (fun p y => u p y - β p) hs fun p hp => Integrable.sub (huint p hp) (hconst p hp _)
+  beta_reduce at hβint hPc hDmass
+  -- (29): `Q − Pc = Σ_p (u_p − β_p) [[F_p°]]`
+  have hQP : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (Q - Pc) ω =
+      ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        (u p y - β p) * (ω : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+          (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) := by
+    intro ω
+    show Q ω - Pc ω = _
+    rw [hQu ω, hPc ω, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [← integral_sub (huωint ω p hp) (hβint ω p hp)]
+    congr 1
+    funext y
+    ring
+  refine ⟨s, β, Pc, hs, ?_, ?_, ?_, ?_, hsK, ?_⟩
+  · -- the face formula of `Pc`: `∫_{F_p} f dHⁿ = ∫_{Q₁} f ∘ Φ_p`
+    intro ω
+    rw [hPc ω]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [(Submission.dor_lmb_fcd_fr_face_geometry P m p (hs p hp)).2.2.2.1]
+    exact integral_const_mul _ _
+  · -- `Pc` is integer multiplicity, hence so is `Q − Pc`
+    exact Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ Q Pc isOpen_univ hQ
+      (Submission.dor_lmb_fcd_fr_lattice_chain_im P m s β Pc hs hPc)
+  · -- (34): `M(Q − Pc) ≤ Σ_p ∫|u_p − β_p| ≤ c_cp Σ_p V_p ≤ c M(∂Q)`
+    calc (Q - Pc).mass
+        ≤ ENNReal.ofReal (∑ p ∈ s,
+            ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y - β p|) :=
+          hDmass (Q - Pc) hQP
+      _ ≤ ENNReal.ofReal (ccp * ∑ p ∈ s, V p) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [Finset.mul_sum]
+          exact Finset.sum_le_sum fun p hp => (hβ p hp).1
+      _ = ENNReal.ofReal ccp * ENNReal.ofReal (∑ p ∈ s, V p) := ENNReal.ofReal_mul hccp.le
+      _ ≤ ENNReal.ofReal (max ccp 2) * Q.boundary.mass :=
+          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_left _ _)) hVsum
+  · -- (36): `Σ_p |β_p| ≤ 2 Σ_p ∫|u_p| ≤ c M(Q)`
+    calc (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞))
+        = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) := by
+          rw [ENNReal.ofReal_sum_of_nonneg fun p _ => abs_nonneg _]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [← ENNReal.ofReal_natCast, Nat.cast_natAbs, Int.cast_abs]
+      _ ≤ ENNReal.ofReal (2 * ∑ p ∈ s,
+            ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y|) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [Finset.mul_sum]
+          exact Finset.sum_le_sum fun p hp => (hβ p hp).2
+      _ = ENNReal.ofReal 2 * ENNReal.ofReal (∑ p ∈ s,
+            ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y|) :=
+          ENNReal.ofReal_mul zero_le_two
+      _ ≤ ENNReal.ofReal (max ccp 2) * Q.mass :=
+          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_right _ _)) humass
+  · -- `Q − Pc` vanishes off `cthickening(√P, K)`, which contains every `F_p ⊇ Φ_p(Q₁)`
+    intro ω hω
+    rw [hQP ω]
+    refine Finset.sum_eq_zero fun p hp => setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+    have hmem := (Submission.dor_lmb_fcd_fr_face_geometry P m p (hs p hp)).2.2.2.2.1 y
+      fun i => ⟨(hy i).1.le, (hy i).2.le⟩
+    rw [image_eq_zero_of_notMem_tsupport (Set.disjoint_right.1 hω (hsK p hp hmem))]
+    simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
