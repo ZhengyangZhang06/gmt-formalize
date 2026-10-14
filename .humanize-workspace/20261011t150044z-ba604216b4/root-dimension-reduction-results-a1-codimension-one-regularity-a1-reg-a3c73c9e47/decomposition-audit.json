@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem extDeriv_apply|theorem extDeriv_pullback|theorem DifferentiableAt.continuousAlternatingMapCompContinuousLinearMap|continuousMultilinearMapOption_apply_eq_self|normDet_sq_eq_det_gram|euclideanHausdorffMeasure_eq_volume|contDiff_of_contDiffOn_union_of_isOpen|theorem ContDiffOn.fderiv_of_isOpen|theorem ContinuousOn.measurable_piecewise|theorem ContinuousOn.preimage_isClosed_of_isClosed",
+        "rg -n 'codim1_lur_cd_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "codim1_lur_cd_graph_chart_geometry",
+        "codim1_lur_cd_pullback_field_regularity",
+        "codim1_lur_cd_injective_area_formula_gram",
+        "codim1_lur_cd_pullback_field_trace",
+        "git -C .lake/packages/simongmt diff --exit-code HEAD -- Poincare/SimonGMT/Chapter02/WeightedArea.lean Poincare/SimonGMT/Chapter02/Area.lean Poincare/SimonGMT/Chapter06/Forms.lean Poincare/SimonGMT/Chapter06/Currents.lean",
+        "python3 /tmp/cdiv-independent-audit/run_lean.py /tmp/cdiv-independent-audit/Types.lean",
+        "python3 /tmp/cdiv-independent-audit/run_lean.py /tmp/cdiv-independent-audit/Proofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a3c73c9e47/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a3c73c9e47/decomposition-v1.json",
+        "/tmp/cdiv-split/Combined.lean",
+        "/tmp/cdiv-independent-audit/Types.lean",
+        "/tmp/cdiv-independent-audit/Proofs.lean"
+      ],
+      "conclusion": "Project, Mathlib and SimonGMT revisions match the snapshot pins; inspected Mathlib files match the snapshot byte-for-byte. The cited calculus, topology and area lemmas have the required hypotheses. No proposed name occurs in the snapshot's Chapter 7 source or the checked 982-node DAG; no identical frozen child type was found. All names are valid bare identifiers. All four exact one-line propositions elaborate independently under the contract imports, without child implementations. Additional checks confirm ordinary Matrix.of multiplication, the default volume measure, Set.indicator and the intended smoothness convention. Recompilation of the inspected supplied proof bodies against the frozen child types, followed by the exact handoff parent assembly, succeeds; every child and the selected parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: its four independent obligations establish this selected parent through localization, area transport, orientation and the trace identity. Empty sibling dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree on every hypothesis and all eight conclusions. Adjoint identities, differentiation of normality and the sum rule establish injectivity and the derivative formula. The compactness argument using π(K) is valid without assuming K ⊆ N or global continuity of G. Graph uniqueness and the measurable piecewise extension prove the remaining assertions. Radius positivity is derived wherever needed from the pointwise norm bound; empty-domain cases cause no gap."
+    },
+    {
+      "key": "field_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact openness, C², smoothness, compactness and indicator hypotheses are present in both statements. The explicit multilinear evaluation construction establishes C¹ coefficients. Vanishing outside the compact closed set C justifies gluing across the boundary and gives tsupport Φ ⊆ C ⊆ D. The supplied proof is complete and requires no sibling result."
+    },
+    {
+      "key": "gram_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type matches the prose, including arbitrary h and totalized Bochner integrals. The pinned area theorem requires precisely the stated measurability, differentiability and injectivity hypotheses, with no integrability assumption. Measure normalization and the nonnegative normDet–Gram identity yield the stated Matrix.of determinant. The proof is complete and non-circular."
+    },
+    {
+      "key": "field_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match exactly. Openness permits replacing Φ locally by Ψ before differentiating. Differentiability of the pullback and coefficients justifies the trace computation; extDeriv_apply supplies the correct signs and succAbove ordering. The stated C² hypothesis satisfies extDeriv_pullback, completing the identity without compact-support assumptions or reliance on another child."
+    }
+  ],
+  "required_changes": []
+}

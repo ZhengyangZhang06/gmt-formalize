@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.unit_orientation_isometry-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "A unit orientation in degree m+1 is the isometric push-forward of e_1∧…∧e_{m+1} (parent step 1)",
+  "statement": "Let P, m ∈ ℕ, let Q be a linear subspace of ℝ^P and let ξ ∈ Λ_{m+1}(ℝ^P) (MultiVector P (m+1), a continuous linear functional on (m+1)-covectors) with IsUnitOrientationOf ξ Q, i.e. there is an orthonormal family τ = (τ_0, …, τ_m) with span{τ_0, …, τ_m} = Q such that ξ(α) = α(τ) for every (m+1)-covector α, or ξ(α) = −α(τ) for every α. Then there is a linear isometry ι : ℝ^{m+1} → ℝ^P whose range (as a set) is Q and such that ξ(α) = α(ι e_0, …, ι e_m) for every (m+1)-covector α, where e_i = EuclideanSpace.single i 1 is the standard basis of ℝ^{m+1}.",
+  "lean_statement": "∀ (P m : ℕ) (ξ : MultiVector P (m + 1)) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid P, Set.range ι = (Q : Set (Euclid P)) ∧ ∀ α : Covector (Euclid P) (m + 1), ξ α = α (fun i => ι (EuclideanSpace.single i 1))",
+  "lean_name": "codim1_rdo_gc_unitOrientation_isometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-98cf693311-a1"
+}

@@ -1,0 +1,162 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.injective_unit_orientation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3 and 9 of the parent proof (frame τ of L = range F, α(b) = det(𝒜)·α(τ), det A = (det 𝒜)² > 0, J = |det 𝒜|, σ := det 𝒜/J ∈ {±1}), stated pointwise for an arbitrary injective F. Deviation (simplification): det 𝒜 ≠ 0 is obtained from det(F*∘F) ≠ 0 (F*∘F has trivial kernel) instead of the change-of-basis argument (τ.toBasis.isUnit_det 𝔟); both are valid, this one needs no auxiliary basis of L built from b.
+IsUnitOrientationOf ξ Q (frozen definition) means: ∃ τ : Fin n → ℝᴾ, Orthonormal ℝ τ ∧ span ℝ (range τ) = Q ∧ ((∀ α, ξ α = α τ) ∨ ∀ α, ξ α = −α τ).
+Notation: ℝᵐ means Euclid m = EuclideanSpace ℝ (Fin m); ⟨x, y⟩ is inner ℝ x y; e_j := EuclideanSpace.single j (1 : ℝ) is the j-th standard basis vector of ℝⁿ; an n-covector of ℝᴾ is an element of Covector (Euclid P) n = Euclid P [⋀^Fin n]→L[ℝ] ℝ (a continuous alternating n-linear map ℝᴾ × ⋯ × ℝᴾ → ℝ); MultiVector P n = Covector (Euclid P) n →L[ℝ] ℝ (continuous linear functionals on n-covectors); for a continuous linear map F, F* = F.adjoint and det of an endomorphism is ContinuousLinearMap.det (= LinearMap.det of the underlying linear map). Write bⱼ := F eⱼ, b := (b₁, …, bₙ).
+1. Frame. By the sibling `orthonormal_frame_range` (Submission.dgoj_exists_orthonormal_frame_range P n F hF) there is an orthonormal τ : Fin n → ℝᴾ with span(range τ) = range F. Each bⱼ = F eⱼ ∈ range F = span(range τ) (LinearMap.mem_range_self).
+2. Let 𝒜ᵢⱼ := ⟨τᵢ, bⱼ⟩ and d := det 𝒜. By the sibling `adjoint_det_frame_sq` (Submission.dgoj_det_adjoint_comp_eq_det_sq P n F τ hτ hb), det(F*∘F) = d².
+3. det(F*∘F) ≠ 0. Suppose det(F*∘F) = 0. Then the kernel of the linear endomorphism F*∘F of the finite-dimensional space ℝⁿ is nonzero (LinearMap.det_eq_zero_iff_ker_ne_bot; ContinuousLinearMap.det is the LinearMap.det of the underlying map). But the kernel is trivial (LinearMap.ker_eq_bot'): if F*(F x) = 0 then ⟨F x, F x⟩ = ⟨x, F*(F x)⟩ = ⟨x, 0⟩ = 0 (ContinuousLinearMap.adjoint_inner_right, inner_zero_right), so F x = 0 (inner_self_eq_zero) = F 0, and x = 0 by injectivity of F. Contradiction.
+4. Positivity, part (i). By steps 2–3, d ≠ 0 (otherwise det(F*∘F) = 0² = 0), hence det(F*∘F) = d² > 0. Moreover √(det(F*∘F)) = √(d²) = |d| (Real.sqrt_sq_eq_abs).
+5. Let ξ satisfy the hypothesis of (ii) and let α be any n-covector. By the sibling `covector_frame_det` (Submission.dgoj_covector_eq_det_mul_of_mem_span P n τ b hτ hb α), α(b) = d·α(τ). With the hypothesis and step 4: |d|·ξ(α) = √(det(F*∘F))·ξ(α) = α(b) = d·α(τ).
+6. Sign. If d > 0, then |d| = d and cancelling d ≠ 0 gives ξ(α) = α(τ) for every α (first disjunct). If d < 0, then |d| = −d, so −d·ξ(α) = d·α(τ), i.e. d·(ξ(α) + α(τ)) = 0, and d ≠ 0 gives ξ(α) = −α(τ) for every α (second disjunct).
+7. With τ orthonormal and span(range τ) = range F (step 1), step 6 is exactly IsUnitOrientationOf ξ (range F), part (ii). ∎
+Formalization note: unless split further this is a machine leaf: exactly one theorem `Submission.dgoj_unitOrientation_of_injective` appended to the frozen GMT/Ch07/Submission.lean inside `namespace GMT.Ch07` (before `main_theorem`), no new import, option or helper declaration. Every lemma cited is in the import closure of GMT.Ch07.Submission (pinned Mathlib 25730c7c). The following Lean proof was compiled by the parent decomposition session against that frozen import closure (lean 4.35.0-rc3; `#print axioms` = propext, Classical.choice, Quot.sound; no warnings) and passes the runtime leaf-delta check `check_source_delta`; it may be used verbatim:
+(It uses the three sibling theorems Submission.dgoj_exists_orthonormal_frame_range, Submission.dgoj_det_adjoint_comp_eq_det_sq and Submission.dgoj_covector_eq_det_mul_of_mem_span with exactly the frozen types of those siblings.)
+theorem Submission.dgoj_unitOrientation_of_injective : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F hF
+  obtain ⟨τ, hτo, hτs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n F hF
+  have hb : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ) := by
+    intro j
+    rw [hτs]
+    exact LinearMap.mem_range_self _ _
+  set d := (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det with hd_def
+  have hdet : (F.adjoint ∘L F).det = d ^ 2 :=
+    Submission.dgoj_det_adjoint_comp_eq_det_sq P n F τ hτo hb
+  have hne : (F.adjoint ∘L F).det ≠ 0 := by
+    intro h0
+    have hker := LinearMap.det_eq_zero_iff_ker_ne_bot.1 h0
+    apply hker
+    rw [LinearMap.ker_eq_bot']
+    intro x hx
+    have hx' : (F.adjoint ∘L F) x = 0 := hx
+    have hFx : F x = 0 := by
+      have h1 : inner ℝ (F x) (F x) = 0 := by
+        rw [← ContinuousLinearMap.adjoint_inner_right, ← ContinuousLinearMap.comp_apply, hx',
+          inner_zero_right]
+      exact inner_self_eq_zero.1 h1
+    exact hF (hFx.trans (map_zero F).symm)
+  have hd : d ≠ 0 := by
+    intro h
+    apply hne
+    rw [hdet, h]
+    ring
+  have hpos : 0 < (F.adjoint ∘L F).det := by
+    rw [hdet]
+    positivity
+  refine ⟨hpos, fun ξ hξ => ⟨τ, hτo, hτs, ?_⟩⟩
+  have hsqrt : Real.sqrt ((F.adjoint ∘L F).det) = |d| := by
+    rw [hdet, Real.sqrt_sq_eq_abs]
+  have key : ∀ α : Covector (Euclid P) n, |d| * ξ α = d * α τ := by
+    intro α
+    rw [← hsqrt, ← hξ α]
+    exact Submission.dgoj_covector_eq_det_mul_of_mem_span P n τ _ hτo hb α
+  rcases lt_or_gt_of_ne hd with hneg | hposd
+  · right
+    intro α
+    have h := key α
+    rw [abs_of_neg hneg] at h
+    have h' : d * (ξ α + α τ) = 0 := by linarith
+    rcases mul_eq_zero.1 h' with h0 | h0
+    · exact absurd h0 hd
+    · linarith
+  · left
+    intro α
+    have h := key α
+    rw [abs_of_pos hposd] at h
+    exact mul_left_cancel₀ hd h
+
+## Key steps
+
+1. Sibling orthonormal_frame_range: orthonormal τ with span(range τ) = range F, so every F eⱼ ∈ span(range τ).
+2. Sibling adjoint_det_frame_sq: det(F*∘F) = d² with d := det(⟨τᵢ, F eⱼ⟩).
+3. F*∘F has trivial kernel (⟨Fx, Fx⟩ = ⟨x, F*Fx⟩) so det(F*∘F) ≠ 0; hence d ≠ 0, det(F*∘F) = d² > 0 and √det = |d|.
+4. Sibling covector_frame_det: α(F e) = d·α(τ); with the hypothesis, |d|·ξ(α) = d·α(τ) for all α.
+5. d > 0 gives ξ = (α ↦ α(τ)), d < 0 gives ξ = (α ↦ −α(τ)); this is IsUnitOrientationOf ξ (range F).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `rg -n 'theorem AlternatingMap.eq_smul_basis_det' mathlib/Mathlib`
+- `rg -n 'theorem volumeForm_robust\b|theorem abs_volumeForm_apply_le' mathlib/Mathlib`
+- `rg -n 'theorem norm_image_sub_le' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `rg -n 'theorem le_opNorm|theorem opNorm_le_bound' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `rg -n 'finrank_range_of_inj' mathlib/Mathlib`
+- `rg -n 'theorem det_eq_zero_iff_ker_ne_bot' mathlib/Mathlib`
+- `rg -n 'theorem span_apply' mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean`
+- `rg -n 'theorem Orthonormal.inner_right_fintype' mathlib/Mathlib`
+- `rg -n 'theorem Orthonormal.comp_linearIsometry' mathlib/Mathlib`
+- `rg -n 'mem_span_range_iff_exists_fun' mathlib/Mathlib`
+- `rg -n 'theorem toMatrix_self|theorem toMatrix_apply' mathlib/Mathlib/LinearAlgebra/Matrix/Basis.lean`
+- `rg -n 'theorem det_toMatrix \(b' mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `rg -n 'theorem EuclideanSpace.inner_single_left' mathlib/Mathlib`
+- `rg -n 'theorem adjoint_inner_right' mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `rg -n 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen' mathlib/Mathlib`
+- `rg -n 'theorem ContinuousLinearMap.continuous_det' mathlib/Mathlib`
+- `rg -n 'def apply \(m : ι → E\)' mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `rg -n 'theorem posDef_gram_of_linearIndependent|theorem gram_eq_conjTranspose_mul' mathlib/Mathlib`
+- `rg -n 'continuous_of_finiteDimensional' mathlib/Mathlib`
+- `rg -n 'IsUnitOrientationOf|volumeForm|eq_smul_basis_det|ContinuousAlternatingMap.apply' project/GMT`
+- `rg -n 'adjoint ∘L|\.det\)|Real.sqrt' project/GMT --glob '*.lean'`
+- `rg -n 'mkContinuous|compContinuousLinearMap' project/GMT --glob '*.lean'`
+- `lean #check probes after import GMT.Ch07.Submission: Matrix.gram, Matrix.posDef_gram_of_linearIndependent, Matrix.PosDef.det_pos, MultilinearMap.continuous_of_finiteDimensional, AlternatingMap.toContinuousAlternatingMap, ContinuousAlternatingMap.apply, ContinuousAlternatingMap.norm_image_sub_le, LinearMap.isUnit_iff_isUnit_det, Orientation.volumeForm_robust`
+- `grep 'dgoj_' over dag.json, nodes/*/{decomposition-v*,parent-child-handoff}.json and git refs`
+- `lean Stmts/Assembly/Full2/Check/Challenge.lean and in-situ OrientationJacobianFull.lean with #print axioms; python leaf_verification.check_source_delta on each child`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Basis.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-regular-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7b72550114/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/graph_orientation_jacobian_decomposition/OrientationJacobianFull.lean`
+
+The snapshot is project b4d606d with mathlib 25730c7c.
+
+The project has no reusable frame, Gram or evaluation lemma for this node:
+- It contains only the Ch07 definitions of MultiVector and IsUnitOrientationOf.
+- The Ch02 Jacobian definitions (√det(L*∘L)) belong to another chapter's contract and are not imported.
+
+Pinned Mathlib inside the frozen import closure supplies:
+- linear algebra: AlternatingMap.eq_smul_basis_det, Module.Basis.span/span_apply, Module.Basis.det_apply/det_self, LinearMap.det_toMatrix, LinearMap.det_eq_zero_iff_ker_ne_bot, LinearMap.finrank_range_of_inj;
+- inner products and orientation: Orthonormal.inner_right_fintype/comp_linearIsometry, stdOrthonormalBasis, Orientation.volumeForm_robust and abs_volumeForm_apply_le, ContinuousLinearMap.adjoint_inner_left/right;
+- analysis: ContinuousAlternatingMap.le_opNorm and norm_image_sub_le, ContinuousLinearMap.continuous_det, ContDiffOn.continuousOn_fderiv_of_isOpen.
+
+Unknown after `import GMT.Ch07.Submission`, so outside the closure:
+- Matrix.gram and posDef_gram_of_linearIndependent (GramMatrix.lean);
+- Matrix.PosDef.det_pos;
+- MultilinearMap.continuous_of_finiteDimensional;
+- AlternatingMap.toContinuousAlternatingMap.
+The children therefore prove the Gram identity by hand, get positivity from the kernel of F*F, and build δ with the Hadamard bound.
+
+Checks:
+- All seven child types elaborate in the comparator contract scope.
+- Each child was proved as a single theorem that passes check_source_delta.
+- The frozen parent type assembles from the children in situ.
+- Axioms are only propext, Classical.choice and Quot.sound.
+- The prefix dgoj_ is unused, so there are no name collisions.

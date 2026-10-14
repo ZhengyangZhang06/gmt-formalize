@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "A set with vanishing tangential and nonpositive normal distributional derivative is a half-space (Simon 4.3 (8)–(9))",
+  "statement": "Let m ∈ ℕ, v ∈ ℝ^{m+1} with |v| = 1, and F₀ ⊆ ℝ^{m+1} Borel. Suppose ∫_{F₀} Dζ(z)(w) dL^{m+1}(z) = 0 for every C¹ compactly supported ζ : ℝ^{m+1} → ℝ and every w with ⟨w, v⟩ = 0, and ∫_{F₀} Dζ(z)(v) dL^{m+1}(z) ≤ 0 for every such ζ with ζ ≥ 0. Then L^{m+1}(F₀) = 0, or L^{m+1}(ℝ^{m+1} \\ F₀) = 0, or there is c ∈ ℝ with L^{m+1}(F₀ Δ {z : ⟨z, v⟩ > c}) = 0.",
+  "lean_statement": "∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → MeasurableSet F₀ → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in F₀, fderiv ℝ ζ z w = 0) → (∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F₀, fderiv ℝ ζ z v ≤ 0) → volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0",
+  "lean_name": "codim1_rdo_dg_halfspace_rigidity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a-a1"
+}

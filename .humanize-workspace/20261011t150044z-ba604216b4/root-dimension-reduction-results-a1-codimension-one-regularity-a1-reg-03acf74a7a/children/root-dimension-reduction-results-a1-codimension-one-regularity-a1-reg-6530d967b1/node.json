@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.nonneg_fundamental_lemma-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "depth": 6,
+  "title": "Sign version of the fundamental lemma: nonnegative pairing with all nonnegative C¹_c tests forces f ≥ 0 a.e.",
+  "statement": "Let n ∈ ℕ and f : ℝⁿ → ℝ be locally Lebesgue integrable. Suppose ∫ g(x) f(x) dLⁿ(x) ≥ 0 for every C¹ function g : ℝⁿ → ℝ with compact support and g ≥ 0 everywhere. Then f(x) ≥ 0 for Lⁿ-almost every x ∈ ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (f : EuclideanSpace ℝ (Fin n) → ℝ), LocallyIntegrable f volume → (∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * f x) → ∀ᵐ x ∂volume, 0 ≤ f x",
+  "lean_name": "codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1-a1"
+}

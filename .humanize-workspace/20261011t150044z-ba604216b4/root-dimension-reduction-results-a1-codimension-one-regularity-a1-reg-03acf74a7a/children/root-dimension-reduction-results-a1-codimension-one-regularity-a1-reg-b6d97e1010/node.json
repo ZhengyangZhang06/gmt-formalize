@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.tangential_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "depth": 6,
+  "title": "Vanishing distributional derivative in direction w gives a.e. invariance under translation by w",
+  "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set and w ∈ ℝⁿ. Suppose ∫_F Dζ(z)(w) dLⁿ(z) = 0 for every C¹ function ζ : ℝⁿ → ℝ with compact support. Then for Lⁿ-almost every z ∈ ℝⁿ: z + w ∈ F if and only if z ∈ F.",
+  "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, fderiv ℝ ζ z w = 0) → ∀ᵐ z ∂volume, (z + w ∈ F ↔ z ∈ F)",
+  "lean_name": "codim1_rdo_dg_hr_ae_translate_invariant",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010-a1"
+}

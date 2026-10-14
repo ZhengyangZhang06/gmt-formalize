@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.integral_div_zero-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+  "depth": 6,
+  "title": "The divergence of a C¹ compactly supported vector field on ℝ^P is integrable with integral 0 (parent step 6)",
+  "statement": "Let P ∈ ℕ and let φ : ℝ^P → ℝ^P (Euclid P) be C¹ (ContDiff ℝ 1) with compact support. Write div φ(z) := trace(Dφ(z)), the LinearMap.trace of fderiv ℝ φ z. Then div φ is Lebesgue integrable on ℝ^P and ∫_{ℝ^P} div φ dL^P = 0 (L^P = volume).",
+  "lean_statement": "∀ (P : ℕ) (φ : Euclid P → Euclid P), ContDiff ℝ 1 φ → HasCompactSupport φ → Integrable (fun z => LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P)) ∧ ∫ z, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = 0",
+  "lean_name": "codim1_rdo_dg_ce_integral_div_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b42f02f013-a1"
+}

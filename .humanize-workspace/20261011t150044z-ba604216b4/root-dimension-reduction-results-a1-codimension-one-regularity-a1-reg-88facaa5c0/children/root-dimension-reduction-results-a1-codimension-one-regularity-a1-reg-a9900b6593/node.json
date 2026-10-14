@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.mollifier_adjoint-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+  "depth": 6,
+  "title": "Symmetric mollification commutes with D and is self-adjoint: ∫ D(η*u)(s) = −∫ u div(η*s) (parent step 2, Fubini part; Simon Ch. 2, 2.5)",
+  "statement": "Let P ∈ N. Let η : R^P → R be C¹ with compact support and even (η(−z) = η(z) for all z). Let u : R^P → R and s : R^P → R^P be Lebesgue integrable. Write (η*u)(x) = ∫ η(t) u(x − t) dt and (η*s)(z) = ∫ η(t) s(z − t) dt, Mathlib's convolution with lsmul ℝ ℝ and volume. Then ∫ D(η*u)(x)(s(x)) dx = −∫ u(z) div(η*s)(z) dz, where div = trace of the derivative.",
+  "lean_statement": "∀ (P : ℕ) (η u : Euclid P → ℝ) (s : Euclid P → Euclid P), ContDiff ℝ 1 η → HasCompactSupport η → (∀ z, η (-z) = η z) → Integrable u → Integrable s → ∫ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x) = -∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ (convolution η s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z : Euclid P →ₗ[ℝ] Euclid P)",
+  "lean_name": "codim1_rdo_dg_sp_mollifier_adjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a9900b6593-a1"
+}

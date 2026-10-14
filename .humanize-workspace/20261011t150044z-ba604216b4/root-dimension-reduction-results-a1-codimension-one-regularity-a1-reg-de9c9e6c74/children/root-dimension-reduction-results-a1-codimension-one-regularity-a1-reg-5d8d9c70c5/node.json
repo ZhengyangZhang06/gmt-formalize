@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "depth": 4,
+  "title": "Near any point of N ∩ U, ∂[[E]] is a multiplicity-one oriented rectifiable current of finite mass (supplied steps 2–5)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U, N, E ⊆ ℝ^P, ξN : ℝ^P → Λ_{n+1}(ℝ^P), T ∈ 𝒟_n(U) and x ∈ N ∩ U. Assume U is open, InClassO n U N ξN, E is Borel with E ⊆ N ∩ U, IsBoundaryOfRegion T E ξN, and T is integer multiplicity. Then there are:\n- an open Z₀ with x ∈ Z₀ ⊆ U;\n- a Borel, countably n-rectifiable set M′ ⊆ Z₀ with H^n(M′) < ∞;\n- a map ξ′ : ℝ^P → Λ_n(ℝ^P) that is H^n⌞M′-a.e. strongly measurable and, H^n-a.e. on M′, a unit orientation of some subspace;\nsuch that T(ω) = ∫_{M′} ξ′(w)(ω(w)) dH^n(w) for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ Z₀.",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → x ∈ N ∩ U → ∃ (Z₀ M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), IsOpen Z₀ ∧ x ∈ Z₀ ∧ Z₀ ⊆ U ∧ MeasurableSet M' ∧ M' ⊆ Z₀ ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Z₀ → T ω = ∫ w in M', ξ' w ((ω : DifferentialForm (Euclid P) n) w) ∂μHE[n]",
+  "lean_name": "codim1_rdo_local_unit_representation",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-mass-up-4048586780-a1",
+      "result_commit": "fae4fd1e831d10c18bba18fe6f9e5711d59b1ac2",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-5d8d9c70c5-a1"
+}

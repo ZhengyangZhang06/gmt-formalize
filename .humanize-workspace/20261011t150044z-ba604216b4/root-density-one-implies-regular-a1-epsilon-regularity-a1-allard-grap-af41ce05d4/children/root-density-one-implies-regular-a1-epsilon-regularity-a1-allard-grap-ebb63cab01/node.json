@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.kernel-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Existence of a bounded Lipschitz probability kernel supported in the unit ball",
+  "statement": "For every n ∈ ℕ there are ρ : ℝⁿ → ℝ (ℝⁿ = Euclid n) and C ∈ ℝ such that ρ is continuous, ρ ≥ 0, ρ(z) = 0 whenever ‖z‖ ≥ 1, ∫ρ = 1, |ρ(z)| ≤ C for all z, and |ρ(z) − ρ(z')| ≤ C‖z − z'‖ for all z, z'.",
+  "lean_statement": "∀ (n : ℕ), ∃ (ρ : Euclid n → ℝ) (C : ℝ), Continuous ρ ∧ (∀ z, 0 ≤ ρ z) ∧ (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) ∧ ∫ z, ρ z = 1 ∧ (∀ z, |ρ z| ≤ C) ∧ ∀ z z', |ρ z - ρ z'| ≤ C * ‖z - z'‖",
+  "lean_name": "dorag_ha_rb_kernel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-ebb63cab01-a1"
+}

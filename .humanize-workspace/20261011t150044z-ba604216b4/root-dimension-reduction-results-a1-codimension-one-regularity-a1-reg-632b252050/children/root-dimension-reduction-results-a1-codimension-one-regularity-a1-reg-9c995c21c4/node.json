@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.perimeter_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Uniform perimeter bound for the blow-ups F_{y,r} (Simon 3.4.3 (6)–(7))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, D ⊆ E, F ⊆ E Borel, μ a measure on E, ν : E → E Borel with |ν(z)| = 1 for every z, and assume (GG) ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ : E → E with tsupport φ ⊆ D. Let y ∈ E, ρ₁ > 0 and C₁ ≥ 0 with B̄_{ρ₁}(y) ⊆ D and μ(B̄_ρ(y)) ≤ C₁ρ^m for all 0 < ρ < ρ₁. Then for all R > 0 and r > 0 with rR < ρ₁ and every C¹ compactly supported g : E → E with tsupport g ⊆ B_R(0) and |g(z)| ≤ 1 for all z, ∫_{F_{y,r}} div g dL^{m+1} ≤ C₁R^m, where F_{y,r} := {w : y + rw ∈ F}.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ R r : ℝ, 0 < R → 0 < r → r * R < ρ₁ → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C₁ * R ^ m",
+  "lean_name": "codim1_rdo_dg_bh_perimeter_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_gauss_green-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-9c995c21c4-a1"
+}

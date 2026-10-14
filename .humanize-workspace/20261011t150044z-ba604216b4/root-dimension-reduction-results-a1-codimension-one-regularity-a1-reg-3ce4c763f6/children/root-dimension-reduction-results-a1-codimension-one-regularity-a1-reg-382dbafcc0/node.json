@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.annular_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+  "depth": 6,
+  "title": "One-sided annular bound δ·μ(B̄_ρ) ≤ 3·L(F ∩ (B_{ρ+δ} ∖ B̄_ρ)) from Gauss–Green and the normal-average lower bound (parent steps 2–5)",
+  "statement": "Let P ∈ ℕ and D, F ⊆ ℝ^P (Euclid P) with F measurable. Let μ be a measure on ℝ^P, ν : ℝ^P → ℝ^P measurable with |ν(z)| ≤ 1 for all z, and y, v ∈ ℝ^P with |v| ≤ 1. Let ρ₂ ∈ ℝ with B̄_{ρ₂}(y) ⊆ D and μ(B̄_{ρ₂}(y)) < ∞. Assume two hypotheses. (GG): ∫_F div φ dL^P = −∫⟨φ, ν⟩ dμ for every C¹ map φ : ℝ^P → ℝ^P with compact support and tsupport φ ⊆ D, where div φ = trace Dφ and L^P = volume. (1′): ½ μ(B̄_r(y))_ℝ ≤ ∫_{B̄_r(y)} ⟨ν, v⟩ dμ for every r with 0 < r < ρ₂ (μ(·)_ℝ = ENNReal.toReal). Then for all ρ, δ > 0 with ρ + δ < ρ₂, δ·μ(B̄_ρ(y)) ≤ 3·L^P(F ∩ (B_{ρ+δ}(y) ∖ B̄_ρ(y))) in [0, ∞], i.e. ENNReal.ofReal δ * μ(B̄_ρ(y)) ≤ ENNReal.ofReal 3 * volume(F ∩ (B_{ρ+δ}(y) ∖ B̄_ρ(y))).",
+  "lean_statement": "∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₂ : ℝ), MeasurableSet F → closedBall y ρ₂ ⊆ D → μ (closedBall y ρ₂) ≠ ∞ → Measurable ν → (∀ z, ‖ν z‖ ≤ 1) → ‖v‖ ≤ 1 → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → (∀ r : ℝ, 0 < r → r < ρ₂ → (1 / 2 : ℝ) * (μ (closedBall y r)).toReal ≤ ∫ z in closedBall y r, inner ℝ (ν z) v ∂μ) → ∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₂ → ENNReal.ofReal δ * μ (closedBall y ρ) ≤ ENNReal.ofReal 3 * volume (F ∩ (ball y (ρ + δ) \\ closedBall y ρ))",
+  "lean_name": "codim1_rdo_dg_ce_annular_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.radial_cutoff-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.signed_layer_cake-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.radial_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1.signed_layer_cake-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-382dbafcc0-a1"
+}

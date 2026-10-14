@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.rescaled_gauss_green-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Rescaled Gauss–Green identity at centre y and scale r",
+  "statement": "Let m ∈ ℕ, D, F ⊆ ℝ^{m+1} with F Borel, μ a measure on ℝ^{m+1} and ν : ℝ^{m+1} → ℝ^{m+1} such that the Gauss–Green identity (GG) ∫_F div φ dL^{m+1} = −∫ ⟨φ, ν⟩ dμ holds for every C¹ compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ D (div φ = trace Dφ). Let y ∈ ℝ^{m+1}, r > 0 and g : ℝ^{m+1} → ℝ^{m+1} C¹ with compact support such that y + r w ∈ D for every w ∈ tsupport g. Then r^{-m} ∫ ⟨g(r^{-1}(z − y)), ν(z)⟩ dμ(z) = −∫_{F_{y,r}} div g dL^{m+1}, where F_{y,r} := {w : y + r w ∈ F}.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r : ℝ) (g : Euclid (m + 1) → Euclid (m + 1)), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → ContDiff ℝ 1 g → HasCompactSupport g → (∀ w ∈ tsupport g, y + r • w ∈ D) → (r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ = -∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1))",
+  "lean_name": "codim1_rdo_dg_tma_rescaled_gauss_green",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ea5f1f6b75-a1"
+}

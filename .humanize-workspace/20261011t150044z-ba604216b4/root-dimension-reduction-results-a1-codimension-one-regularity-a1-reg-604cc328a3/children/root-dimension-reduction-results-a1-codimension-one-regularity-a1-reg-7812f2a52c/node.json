@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.lipschitz_range_c1_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "Given scalar C¹ approximation, a Lipschitz image is covered by countably many C¹ images up to an H^n-null set (Simon Ch. 3, 1.2, display (1))",
+  "statement": "Let P, n ∈ ℕ. Assume (H): for every Lipschitz f : ℝ^n → ℝ (with a constant K ≥ 0) and every ε ∈ (0, ∞], there is a C¹ function g : ℝ^n → ℝ with L^n({x : f(x) ≠ g(x) or Df(x) ≠ Dg(x)}) < ε. Here L^n = volume and D is Mathlib's fderiv. (H) is the frozen statement of the sibling codim1_rdo_c1_approximation at dimension n (Simon Ch. 2, Theorem 1.5). Then for every Lipschitz map F : ℝ^n → ℝ^P there are C¹ maps G_i : ℝ^n → ℝ^P (i ∈ ℕ) with H^n(F(ℝ^n) ∖ ⋃_i G_i(ℝ^n)) = 0, where H^n = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ), (∀ (f : Euclid n → ℝ) (K : NNReal), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε) → ∀ (F : Euclid n → Euclid P) (K : NNReal), LipschitzWith K F → ∃ G : ℕ → Euclid n → Euclid P, (∀ i, ContDiff ℝ 1 (G i)) ∧ μHE[n] (range F \\ ⋃ i, range (G i)) = 0",
+  "lean_name": "codim1_rdo_c1cov_lipschitz_range_c1_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-7812f2a52c-a1"
+}

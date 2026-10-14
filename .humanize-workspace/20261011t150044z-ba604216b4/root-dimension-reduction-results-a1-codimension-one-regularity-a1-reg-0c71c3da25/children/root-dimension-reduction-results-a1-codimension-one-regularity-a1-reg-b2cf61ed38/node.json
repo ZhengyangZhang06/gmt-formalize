@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.gauss_green_complement-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "depth": 6,
+  "title": "Gauss-Green identity for the complement with reversed normal",
+  "statement": "Let P ∈ ℕ, D, F ⊆ ℝ^P with F Borel, μ a measure on ℝ^P and ν : ℝ^P → ℝ^P. Suppose ∫_F trace(Dφ) dL^P = −∫ ⟨φ, ν⟩ dμ for every C¹ map φ : ℝ^P → ℝ^P with compact support and tsupport φ ⊆ D. Then ∫_{ℝ^P ∖ F} trace(Dφ) dL^P = −∫ ⟨φ, −ν⟩ dμ for every such φ. Here L^P = volume, the integrals are Bochner integrals, and ⟨·,·⟩ = inner ℝ.",
+  "lean_statement": "∀ (P : ℕ) (D F : Set (Euclid P)) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P), MeasurableSet F → (∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ∀ φ : Euclid P → Euclid P, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in Fᶜ, LinearMap.trace ℝ (Euclid P) (fderiv ℝ φ z : Euclid P →ₗ[ℝ] Euclid P) = -∫ z, inner ℝ (φ z) (-ν z) ∂μ",
+  "lean_name": "codim1_rdo_dg_vdl_gauss_green_compl",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.divergence_integral_zero-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1.divergence_integral_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b2cf61ed38-a1"
+}

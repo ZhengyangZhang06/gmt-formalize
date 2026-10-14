@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.gauss_green_variation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Parent proof step 1, which is Simon's estimate |D(φ1_E)| ≤ φ|D1_E| + 1_E|Dφ| in the proof of Ch. 3, 4.3 (chapter-03.txt lines 689–712), written in the dual form the Sobolev step needs.
+
+Fix P, D, F, μ, ν satisfying the hypotheses. Fix ζ ≥ 0, C¹ and compactly supported with tsupport ζ ⊆ D, and g : R^P → R^P, C¹ and compactly supported with |g| ≤ 1. Write div X := trace(DX) and L := L^P = volume. All integrals are Bochner integrals. The hypotheses that D is open and that μ(Dᶜ) = 0 are not used. Measurability of ν only serves to make z ↦ ⟨φ(z), ν(z)⟩ Borel (step 6).
+
+1. Test field. Let φ(z) := ζ(z) g(z). φ is C¹ as a product of the C¹ maps ζ and g. φ vanishes wherever ζ does, so support φ ⊆ support ζ; hence φ has compact support and tsupport φ ⊆ tsupport ζ ⊆ D. By (GG), ∫_F div φ dL = −∫⟨φ, ν⟩ dμ.
+
+2. Product rule. By the Leibniz rule (Mathlib fderiv_fun_smul), Dφ(z) = ζ(z) Dg(z) + R_z, where R_z(v) := Dζ(z)(v) g(z), i.e. R_z is the linear map v ↦ a(v) w with a = Dζ(z) and w = g(z) (of rank at most one). The trace is linear, and the trace of v ↦ a(v) w is a(w) (LinearMap.trace_smulRight), so trace(R_z) = Dζ(z)(g(z)). Hence for every z: div φ(z) = ζ(z) div g(z) + Dζ(z)(g(z)).
+
+3. Integrability with respect to L. Dg and Dζ are continuous, since g and ζ are C¹. The trace is a continuous linear functional on the finite-dimensional space of linear maps of R^P, so z ↦ div g(z) is continuous. Hence the three functions z ↦ ζ(z) div g(z), z ↦ Dζ(z)(g(z)) and z ↦ |Dζ(z)| are continuous. All three vanish outside the compact set tsupport ζ, because ζ = 0 and Dζ = 0 off tsupport ζ. So they are L-integrable on R^P, and therefore on F.
+
+4. Rewriting the left side. Since F is measurable, ∫ 1_F(z) ζ(z) div g(z) dL = ∫_F ζ div g dL (integral_indicator). By steps 2 and 3 and linearity of the integral, ∫_F div φ dL = ∫_F ζ div g dL + ∫_F Dζ(g) dL. With step 1 this gives ∫ 1_F ζ div g dL = −∫⟨φ, ν⟩ dμ − ∫_F Dζ(g) dL.
+
+5. ζ is μ-integrable. K := tsupport ζ is compact and K ⊆ D, so μ(K) < ∞ by hypothesis. ζ is continuous, hence Borel measurable. It is bounded: it is continuous on the compact set K and vanishes outside K. A bounded Borel function is μ-integrable on the set K of finite μ-measure (Measure.integrableOn_of_bounded). Since ζ = 0 outside K, ζ is μ-integrable on R^P.
+
+6. Pointwise bounds. For every z, |⟨φ(z), ν(z)⟩| = ζ(z)|⟨g(z), ν(z)⟩| ≤ ζ(z)|g(z)||ν(z)| ≤ ζ(z), using ζ ≥ 0, Cauchy–Schwarz, |g| ≤ 1 and |ν| = 1. The function z ↦ ⟨φ(z), ν(z)⟩ is Borel, since φ is continuous and ν is Borel. Also |Dζ(z)(g(z))| ≤ |Dζ(z)||g(z)| ≤ |Dζ(z)| (operator norm, |g| ≤ 1).
+
+7. Conclusion. If |f| ≤ h pointwise with h integrable, then |∫ f| ≤ ∫ h (norm_integral_le_of_norm_le). Apply this with h = ζ for μ (step 5) and with h = |Dζ| on F for L (step 3), together with step 6 and the triangle inequality applied to step 4. This gives |∫ 1_F ζ div g dL| ≤ |∫⟨φ, ν⟩ dμ| + |∫_F Dζ(g) dL| ≤ ∫ ζ dμ + ∫_F |Dζ| dL. ∎
+
+## Key steps
+
+1. Apply (GG) to φ := ζg, which is C¹ with compact support inside tsupport ζ ⊆ D.
+2. Product rule: div(ζg) = ζ div g + Dζ(g), since the trace of v ↦ Dζ(v)g (rank at most one) is Dζ(g).
+3. ζ div g, Dζ(g) and |Dζ| are continuous with compact support, hence L-integrable on F; this gives ∫1_F ζ div g = −∫⟨ζg, ν⟩dμ − ∫_F Dζ(g).
+4. ζ is Borel and bounded and μ(tsupport ζ) < ∞, so ζ is μ-integrable; |⟨ζg, ν⟩| ≤ ζ and |Dζ(g)| ≤ |Dζ| give the bound.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,parent-supplied-plan.md}`
+- `cat local-references/123e8435b4a2469b/manifest.json; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show 5900180377298da556c85bb52c494b4e691baed4:GMT/Ch07/Submission.lean | sha256sum`
+- `rg -n '^theorem lintegral_pow_le_pow_lintegral_fderiv |irreducible_def lintegralPowLePowLIntegralFDerivConst' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `rg -n 'theorem ae_convolution_tendsto_right_of_locallyIntegrable|theorem normed_neg|theorem integral_normed|theorem nonneg_normed|theorem contDiff_normed|theorem hasCompactSupport_normed' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/{Convolution,Normed}.lean`
+- `rg -n 'hasFDerivAt_convolution_left|contDiff_convolution_left|HasCompactSupport.convolution|convolution_eq_swap|ConvolutionExistsAt.integrable_swap|trace_smulRight|theorem lintegral_liminf_le|theorem integral_integral_swap|theorem Measurable.inv|theorem integrable_indicator_iff' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -l 'SobolevInequality|BumpFunction.Convolution' local-references/123e8435b4a2469b/project/GMT/Ch07 (no match)`
+- `lake env lean /tmp/sp-split-v2/Avail2.lean (#check of 46 candidate declarations after import GMT.Ch07.Submission)`
+- `python3 -I scope.py: verifier gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem')`
+- `grep/sed /runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/{leaf_verification.py check_source_delta, parent_verification.py check_parent_git_delta, runtime.py _decompose/_machine_git_check/_existing_lean_name_problem, prompts.py DECOMPOSE/SPECULATIVE_PARENT_TASK/RLCR_LEAN_TASK, lean_contract.py}`
+- `python3 -I leafcheck.py and leafneg.py (runtime check_source_delta on each child inserted into the base Submission; negative control adding an import)`
+- `git log --all -S 'import Mathlib.Analysis' -- GMT/Ch07/Submission.lean; git show -s 8abce3204 bff81d31e 58a0bf378; lean-audit-v1.json review_method of dtc_mass_eq_measure and dtc_isIntegerMultiplicity_sub`
+- `python3 scans of dag.json (995 nodes) for codim1_rdo_dg_sp_* names and identical types; git log --all -S codim1_rdo_dg_sp_; grep -r codim1_rdo_dg_sp_ .lake/packages/simongmt`
+- `lake env lean -DautoImplicit=false /tmp/sp-split-v2/{Challenges,Full,FullNode,ChildrenOnly,ParentFull}.lean /tmp/sp-split-v2/final/{FinalChallenges,FinalNode}.lean`
+- `lake env lean /tmp/sp-split-v2/hashcheck/{Orig,SubX}.lean (hashes of every GMT.Ch07 constant with and without the two parent imports)`
+- `sed -n 686,714p book/chapter-03.txt; sed -n 540,600p book/chapter-02.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Arithmetic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-88facaa5c0/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-mass-eq-measure-a1/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-im-sub-a1/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-1e66f8f4bfb6/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/sp-split-v2/Avail2.lean`
+- `/tmp/sp-split-v2/ChildrenOnly.lean`
+- `/tmp/sp-split-v2/ParentFull.lean`
+- `/tmp/sp-split-v2/final/FinalChallenges.lean`
+- `/tmp/sp-split-v2/final/FinalNode.lean`
+- `/tmp/sp-split-v2/final/subproblems.json`
+- `/tmp/sp-split-v2/hashcheck/Orig.lean`
+- `/tmp/sp-split-v2/hashcheck/SubX.lean`
+
+Pins. The snapshot manifest pins project b4d606db and Mathlib 25730c7c, the same as the workspace. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean, and the Submission.lean at the children's proof base 590018037 are byte-identical (sha256 e4148e7f…). None of them imports SobolevInequality or BumpFunction.Convolution.
+
+Library reachability. The snapshot Mathlib contains lintegral_pow_le_pow_lintegral_fderiv (SobolevInequality.lean:371), lintegralPowLePowLIntegralFDerivConst (:358), ae_convolution_tendsto_right_of_locallyIntegrable (BumpFunction/Convolution.lean:103) and normed_neg/integral_normed/hasCompactSupport_normed (Normed.lean:49,68,79). All are absent from the GMT.Ch07.Submission import closure. In the closure: hasFDerivAt_convolution_left (ContDiff/Convolution.lean:91), contDiff_convolution_left (:427), HasCompactSupport.convolution (Convolution.lean:568), convolution_eq_swap (:693), trace_smulRight (Trace.lean:272), lintegral_liminf_le, integral_integral_swap, Measurable.inv and integrable_indicator_iff.
+
+Runtime rules. Leaves get only a single-theorem insertion (leaf_verification.check_source_delta); simulated, it rejects an added import. Non-leaves may add imports (parent_verification.check_parent_git_delta; accepted machine-nonleaf precedents bff81d31e and 77fcc7d4e). Depth-6 children are always leaves. Hence v1's import-dependent gns_real and bv_sobolev were unimplementable, and the new split keeps all five children import-free, with the Mathlib GNS and normed-bump calls in the parent's own proof.
+
+Lean checks. Adding the two parent imports leaves the type/value hashes of all 103 GMT.Ch07 constants unchanged. All five child types elaborate in the comparator scope. Complete proofs of the five children compile with only `import GMT.Ch07.Submission`, pass check_source_delta and the NodeSolution `exact Submission.X`, and use only propext/Classical.choice/Quot.sound. The parent's exact frozen type is proved from them, with the two imports, using the same axioms.
+
+Names and sources. The five names are fresh; no identical accepted type exists, so nothing is reused. The book citations checked are chapter-03.txt 689–712 (Sobolev step of 4.3) and chapter-02.txt 543–596 (Lemma 2.5, formula (4) at line 568).

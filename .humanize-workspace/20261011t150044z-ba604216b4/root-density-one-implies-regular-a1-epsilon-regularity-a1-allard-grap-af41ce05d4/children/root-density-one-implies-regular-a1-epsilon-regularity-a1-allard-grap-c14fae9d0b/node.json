@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.line_ftc-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "FTC for a Lipschitz function along a line, given a.e. differentiability on the segment",
+  "statement": "Let n ∈ ℕ, let u : ℝⁿ → ℝ (ℝⁿ = Euclid n) be L-Lipschitz for some L ≥ 0, let p, v ∈ ℝⁿ and a, b ∈ ℝ. Suppose that for Lebesgue-almost every τ ∈ ℝ with τ ∈ [min(a,b), max(a,b)], u is Fréchet differentiable at p + τv. Then u(p + bv) − u(p + av) = ∫_a^b Du(p + τv)v dτ (oriented interval integral), where Du = fderiv ℝ u.",
+  "lean_statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (p v : Euclid n) (a b : ℝ), LipschitzWith L u → (∀ᵐ τ : ℝ, τ ∈ Set.uIcc a b → DifferentiableAt ℝ u (p + τ • v)) → u (p + b • v) - u (p + a • v) = ∫ τ in a..b, fderiv ℝ u (p + τ • v) v",
+  "lean_name": "dorag_ha_rb_line_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c14fae9d0b-a1"
+}

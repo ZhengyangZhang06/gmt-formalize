@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.hyperplane_param-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Hausdorff measure on the hyperplane v^⊥ is Lebesgue measure through an isometric parametrization",
+  "statement": "Let m ∈ ℕ and v ∈ ℝ^{m+1} with v ≠ 0 (ℝ^k := EuclideanSpace ℝ (Fin k)), and P_v := (span{v})^⊥. There is a linear isometry ι : ℝ^m → ℝ^{m+1} with ⟨ι x, v⟩ = 0 for every x such that the restriction of H^m = μHE[m] to P_v equals the push-forward ι_# L^m of Lebesgue measure L^m on ℝ^m.",
+  "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1)), v ≠ 0 → ∃ ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1), (∀ x, inner ℝ (ι x) v = 0) ∧ (μHE[m] : Measure (Euclid (m + 1))).restrict ((Submodule.span ℝ {v})ᗮ : Set (Euclid (m + 1))) = Measure.map ι volume",
+  "lean_name": "codim1_rdo_dg_tma_hyperplane_param",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-7b610c9714-a1"
+}

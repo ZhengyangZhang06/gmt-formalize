@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.lipschitz_graph-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "A set satisfying the two-point cone condition lies in a closed Lipschitz graph over v^⊥ (Simon Ch. 3, 1.6 ⇐, graph step; McShane extension)",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, v ∈ E with |v| = 1, and S ⊆ E such that |⟨x′ − x, v⟩| ≤ ½|x′ − x| for all x, x′ ∈ S. Then there is a closed countably m-rectifiable set Γ ⊆ E with S ⊆ Γ.",
+  "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1)) (S : Set (Euclid (m + 1))), ‖v‖ = 1 → (∀ x ∈ S, ∀ x' ∈ S, |inner ℝ (x' - x) v| ≤ ‖x' - x‖ / 2) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ S ⊆ Γ",
+  "lean_name": "codim1_rdo_dg_rc_closed_graph_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3c55029282-a1"
+}

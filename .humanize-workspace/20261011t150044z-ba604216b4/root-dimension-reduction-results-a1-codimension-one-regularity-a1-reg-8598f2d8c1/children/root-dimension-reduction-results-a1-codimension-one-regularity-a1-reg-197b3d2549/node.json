@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.orthogonal_fubini-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Orthogonal coordinates (x, s) ↦ ι x + s v preserve Lebesgue measure",
+  "statement": "Let m ∈ ℕ, let ι : ℝ^m → ℝ^{m+1} be a linear isometry and v ∈ ℝ^{m+1} with |v| = 1 and ⟨ι x, v⟩ = 0 for all x. Then the map Θ : ℝ^m × ℝ → ℝ^{m+1}, Θ(x, s) := ι x + s v, is measure preserving from the product Lebesgue measure L^m ⊗ L^1 (the volume of ℝ^m × ℝ) to Lebesgue measure L^{m+1}.",
+  "lean_statement": "∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → MeasurePreserving (fun p : Euclid m × ℝ => ι p.1 + p.2 • v) volume volume",
+  "lean_name": "codim1_rdo_dg_tma_orthogonal_fubini",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-197b3d2549-a1"
+}

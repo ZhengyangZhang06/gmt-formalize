@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.sup_net-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 4 (Arzelà–Ascoli on the compact set K_s). It is proved here directly in its finite-net form, which is the total-boundedness half of Arzelà–Ascoli.
+
+1. Let C' := max(C, 0) + 1 > 0, so C ≤ C', and r := δ/(3C') > 0, so C'r = δ/3. By compactness (IsCompact.elim_nhds_subcover with the neighbourhoods ball(x, r)) there is a finite T ⊆ K with K ⊆ ⋃_{y∈T} ball(y, r).
+
+2. Define Φ : ℕ → (T → ℝ) by Φ(j)(y) := g_j(y), and give T → ℝ its sup metric. For y ∈ T ⊆ K, |g_j(y)| ≤ C ≤ C', so range Φ ⊆ closedBall(0, C') (dist_pi_le_iff). This ball is compact in the finite-dimensional space T → ℝ (isCompact_closedBall), so range Φ is totally bounded (IsCompact.totallyBounded, TotallyBounded.subset).
+
+3. By Metric.finite_approx_of_totallyBounded with radius δ/3, there is a finite t ⊆ range Φ with range Φ ⊆ ⋃_{q∈t} ball(q, δ/3). Each q ∈ t equals Φ(k_q) for k_q := Function.invFun Φ q (Function.invFun_eq, since q ∈ range Φ). Let S := {k_q : q ∈ t}, a finite set (Finset.image).
+
+4. Given j, choose q ∈ t with dist(Φ(j), q) < δ/3 and put k := k_q ∈ S. For y ∈ T: |g_j(y) − g_k(y)| ≤ dist(Φ(j), Φ(k)) = dist(Φ(j), q) < δ/3 (dist_le_pi_dist).
+
+5. Given x ∈ K, choose y ∈ T with ‖x − y‖ < r. Then
+|g_j(x) − g_k(x)| ≤ |g_j(x) − g_j(y)| + |g_j(y) − g_k(y)| + |g_k(y) − g_k(x)| ≤ C‖x − y‖ + δ/3 + C‖x − y‖ ≤ 2C'r + δ/3 = δ,
+using C‖x − y‖ ≤ C'‖x − y‖ ≤ C'r. ∎
+
+Alternatively one can use BoundedContinuousFunction.arzela_ascoli, which requires importing Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli. The argument above needs no extra import.
+
+Validation note (not part of the argument): a kernel-checked Lean proof of this exact frozen statement was compiled during decomposition review as Submission.dorag_ha_rb_sup_net in /tmp/rellich-validate/Full/Full.lean (axioms propext, Classical.choice, Quot.sound). That scratch file may not persist.
+
+## Key steps
+
+1. Cover K by finitely many r-balls centered in a finite T ⊆ K, with r = δ/(3C').
+2. The vectors (g_j(y))_{y∈T} lie in a compact ball of the finite product T → ℝ, so they have a finite δ/3-net of indices S.
+3. Three-term estimate: |g_j − g_k| ≤ C r + δ/3 + C r ≤ δ on K.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `grep -n 'absolutelyContinuousOnInterval\|integral_deriv_eq_sub' <snapshot>/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean <snapshot>/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `lake env lean /tmp/rellich-decomp/Names.lean (#check after import GMT.Ch07.Submission of LipschitzWith.ae_differentiableAt, measurableSet_of_differentiableAt, Measure.ae_ae_comm, Measure.addHaar_preimage_smul, Measure.integral_comp_smul_of_nonneg, Measure.setIntegral_comp_smul_of_pos, TotallyBounded.isCompact_of_isClosed, IsCompact.tendsto_subseq, Lp.instCompleteSpace, measurable_fderiv, norm_fderiv_le_of_lipschitz, integral_sub_left_eq_self, finite_approx_of_totallyBounded, MemLp.toLp, intervalIntegral.integral_congr_ae, LipschitzOnWith.absolutelyContinuousOnInterval, AbsolutelyContinuousOnInterval.integral_deriv_eq_sub, BoundedContinuousFunction.arzela_ascoli, L2.inner_def, ContDiffBump.integral_normed)`
+- `grep -n 'theorem arzela_ascoli' lake-packages-25730c7c/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean; grep -rn 'theorem integral_comp_smul_of_nonneg\|theorem MemLp.eLpNorm_eq_integral_rpow_norm\|theorem map_addHaar_smul\|theorem finite_approx_of_totallyBounded' (same Mathlib commit)`
+- `grep -rli -E 'rellich|kondrachov|arzela|mollif|absolutelyContinuousOnInterval' lake-packages-25730c7c/simongmt/Poincare <snapshot>/project/GMT`
+- `python3 -I scan of dag.json lean_name/theorems (323 names) and nodes/*/*.json (2900 files) for dorag_ha_rb_* and for accepted LipschitzWith/fderiv/MemLp/Finset-net statements`
+- `python3 -I scan of accepted candidate commits for extra imports in GMT/Ch07/Submission.lean`
+- `lake env lean /tmp/rellich-decomp/Children.lean (12 child statements + parent assembly), /tmp/rellich-decomp/Elab2.lean, /tmp/rellich-decomp/LineFTC.lean, /tmp/rellich-decomp/SegRay.lean, /tmp/rellich-validate/{A,B,C,D,E}/*.lean, /tmp/rellich-validate/Full/Full.lean (#print axioms of all 13 declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/ContinuousMap/Bounded/ArzelaAscoli.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af41ce05d4/parent-child-handoff.json`
+- `/tmp/rellich-decomp/Children.lean`
+- `/tmp/rellich-decomp/Elab2.lean`
+- `/tmp/rellich-decomp/LineFTC.lean`
+- `/tmp/rellich-decomp/SegRay.lean`
+- `/tmp/rellich-validate/AllStatements.lean`
+- `/tmp/rellich-validate/Full/Full.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. The children are declared as theorem Submission.X inside namespace GMT.Ch07 of Submission.lean, which is byte-identical to the contract.
+
+What the pinned code lacks:
+- No Rellich/Kondrachov theorem, no Lipschitz-on-lines FTC lemma and no finite-net Arzelà–Ascoli exist in the pinned project or SimonGMT. The SimonGMT matches are only a ContDiffBump mollifier for Ch08 distributional constancy (Chapter08/DistributionalConstancy.lean) and BV L¹ compactness notes (Chapter02/BV.lean); neither has the needed types.
+- No accepted DAG declaration has a reusable identical type, and the 12 dorag_ha_rb_* names are unreserved.
+
+Mathlib under import GMT.Ch07.Submission:
+- Available: Rademacher (LipschitzWith.ae_differentiableAt), measurableSet_of_differentiableAt, Measure.ae_ae_comm, Haar scaling (addHaar_preimage_smul, map_addHaar_smul, integral_comp_smul), Lp completeness, IsCompact.tendsto_subseq, TotallyBounded.isCompact_of_isClosed, finite_approx_of_totallyBounded.
+- Not imported: AbsolutelyContinuousOnInterval.integral_deriv_eq_sub and LipschitzOnWith.absolutelyContinuousOnInterval. They exist in the snapshot (AbsolutelyContinuousFun.lean:225, AbsolutelyContinuous.lean:309), so line_ftc adds import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun; an accepted child already added an import.
+- BoundedContinuousFunction.arzela_ascoli and L2.inner_def are not imported either and are not needed: the sup_net and l2_subseq proofs use only imported lemmas.
+
+Lean checks:
+- All 12 child types elaborate in comparator scope.
+- Each child was proved in Lean, and together with the exact frozen parent type they compile in /tmp/rellich-validate/Full/Full.lean with axioms [propext, Classical.choice, Quot.sound] only.

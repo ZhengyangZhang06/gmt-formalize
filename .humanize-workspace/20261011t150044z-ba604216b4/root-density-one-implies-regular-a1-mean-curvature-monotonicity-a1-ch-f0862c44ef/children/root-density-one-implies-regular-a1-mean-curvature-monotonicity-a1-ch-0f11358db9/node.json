@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+  "depth": 4,
+  "title": "Continuity of the inverse of a proper injective chart (Simon Ch. 2, (4.1)–(4.2))",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d, W ⊆ ℝ^P and ψ : ℝ^d → ℝ^P. Assume ψ is continuous on V and injective on V, ψ(V) ⊆ W, and V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W. Then for every v ∈ V and ε > 0 there is δ > 0 such that every v' ∈ V with |ψ(v') − ψ(v)| < δ satisfies |v' − v| < ε. Distances are Euclidean. No openness of V or W is assumed.",
+  "lean_statement": "∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε",
+  "lean_name": "dsmc_chart_inverse_continuity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9-a1"
+}

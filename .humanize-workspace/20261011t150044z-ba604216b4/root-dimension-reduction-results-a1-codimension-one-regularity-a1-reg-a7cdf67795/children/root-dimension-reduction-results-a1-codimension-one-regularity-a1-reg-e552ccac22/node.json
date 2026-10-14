@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1.translate_test-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1",
+  "depth": 6,
+  "title": "Perimeter bound controls translation differences of C¹ test functions",
+  "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ Borel, R, C ∈ ℝ and w ∈ ℝⁿ. Assume ∫_F div g dL ≤ C for every C¹ vector field g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ B_{R+|w|}(0) and |g(z)| ≤ 1 for all z, where div g(z) := trace Dg(z). Then for every C¹ function φ : ℝⁿ → ℝ with compact support, tsupport φ ⊆ B_R(0) and |φ| ≤ 1: ∫_F (φ(z) − φ(z + w)) dz ≤ |w|·C.",
+  "lean_statement": "∀ (n : ℕ) (F : Set (Euclid n)) (R C : ℝ) (w : Euclid n) (φ : Euclid n → ℝ), MeasurableSet F → (∀ g : Euclid n → Euclid n, ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid n) (R + ‖w‖) → (∀ z, ‖g z‖ ≤ 1) → ∫ z in F, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid n) ≤ C) → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid n) R → (∀ z, |φ z| ≤ 1) → ∫ z in F, (φ z - φ (z + w)) ≤ ‖w‖ * C",
+  "lean_name": "codim1_rdo_dg_bvc_translate_test_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e552ccac22-a1"
+}

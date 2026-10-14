@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.translation_l2-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "L² difference-quotient (translation) estimate for Lipschitz functions on balls",
+  "statement": "Let n ∈ ℕ, u : ℝⁿ → ℝ L-Lipschitz (ℝⁿ = Euclid n), w ∈ ℝⁿ and r, R ∈ ℝ with r + ‖w‖ ≤ R. Then ∫_{B_r} (u(x) − u(x − w))² dx ≤ ‖w‖² ∫_{B_R} ‖Du‖², where B_ρ := B̆_ρ(0) is the open ball (empty if ρ ≤ 0) and Du = fderiv ℝ u with operator norm.",
+  "lean_statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (L : NNReal) (w : Euclid n) (r R : ℝ), LipschitzWith L u → r + ‖w‖ ≤ R → ∫ x in ball (0 : Euclid n) r, (u x - u (x - w)) ^ 2 ≤ ‖w‖ ^ 2 * ∫ x in ball (0 : Euclid n) R, ‖fderiv ℝ u x‖ ^ 2",
+  "lean_name": "dorag_ha_rb_translation_l2",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.segment_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.segment_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-d3456fc4e9-a1"
+}

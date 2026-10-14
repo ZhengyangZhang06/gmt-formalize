@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_gauss_green-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Rescaled Gauss–Green identity for the blow-ups F_{y,r} (Simon 3.4.3 (8))",
+  "statement": "Let m ∈ ℕ and E := ℝ^{m+1} with Lebesgue measure L^{m+1} (= volume). Let D ⊆ E, let F ⊆ E be Borel, let μ be a measure on E and ν : E → E, and assume the Gauss–Green identity (GG) ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ : E → E with tsupport φ ⊆ D (div φ = trace Dφ). Let y ∈ E, r > 0 and R ∈ ℝ with B̄_{rR}(y) ⊆ D (closed ball). Then for every C¹ compactly supported g : E → E with tsupport g ⊆ B_R(0) (open ball), ∫_{F_{y,r}} div g dL^{m+1} = −(r^m)^{-1} ∫⟨g(r^{-1}(z − y)), ν(z)⟩ dμ(z), where F_{y,r} := {w : y + r w ∈ F}.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ",
+  "lean_name": "codim1_rdo_dg_bh_rescaled_gauss_green",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-2a232329dc-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.gram_area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1",
+  "depth": 6,
+  "title": "Injective-immersion area formula on a Borel subset of ℝ^m with Gram-determinant Jacobian",
+  "statement": "Let P, m ∈ ℕ, let G : ℝ^m → ℝ^P, and let F ⊆ ℝ^m be a Borel set. Assume G is differentiable at every v ∈ F with injective derivative DG(v), and G is injective on F. Let e_0, …, e_{m−1} be the standard basis of ℝ^m.\n\nThen for every function h : ℝ^P → ℝ:\n∫_{G(F)} h dH^m = ∫_F (det[⟨DG(v)e_i, DG(v)e_j⟩]_{i,j<m})^{1/2} · h(G(v)) dL^m(v).\n\nHere H^m = μHE[m] is the normalized m-dimensional Hausdorff measure on ℝ^P and L^m is Lebesgue measure on ℝ^m. Both sides are Bochner integrals; no integrability is assumed, and a non-integrable integral is 0.",
+  "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (F : Set (Euclid m)), MeasurableSet F → (∀ v ∈ F, DifferentiableAt ℝ G v) → (∀ v ∈ F, Function.Injective (fderiv ℝ G v)) → InjOn G F → ∀ h : Euclid P → ℝ, ∫ w in G '' F, h w ∂μHE[m] = ∫ v in F, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (EuclideanSpace.single i 1)) (fderiv ℝ G v (EuclideanSpace.single j 1)))) * h (G v)",
+  "lean_name": "codim1_lur_cd_injective_area_formula_gram",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689-a1"
+}

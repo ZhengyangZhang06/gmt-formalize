@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.bv_compactness-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "Compactness for sets of locally uniformly bounded perimeter (Simon Ch. 2, 2.6)",
+  "statement": "Let m ∈ ℕ and let F_k ⊆ ℝ^{m+1} (k ∈ ℕ) be Borel sets such that for every R > 0 there is C_R ∈ ℝ with ∫_{F_k} div g dL^{m+1} ≤ C_R for all sufficiently large k and every C¹ compactly supported g : ℝ^{m+1} → ℝ^{m+1} with tsupport g ⊆ B_R(0) and |g| ≤ 1. Then there are a strictly increasing ψ : ℕ → ℕ and a Borel set F₀ ⊆ ℝ^{m+1} with L^{m+1}((F_{ψ(j)} Δ F₀) ∩ B_R(0)) → 0 as j → ∞ for every R ∈ ℝ.",
+  "lean_statement": "∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → (∀ R : ℝ, 0 < R → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (ψ : ℕ → ℕ) (F₀ : Set (Euclid (m + 1))), StrictMono ψ ∧ MeasurableSet F₀ ∧ ∀ R : ℝ, Tendsto (fun j => volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0)",
+  "lean_name": "codim1_rdo_dg_bv_set_compactness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a7cdf67795-a1"
+}

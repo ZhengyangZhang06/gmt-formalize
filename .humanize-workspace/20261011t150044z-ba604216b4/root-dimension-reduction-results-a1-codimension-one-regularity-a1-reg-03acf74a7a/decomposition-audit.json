@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'ae_eq_of_integral_contDiff_smul_eq|ae_eq_zero_of_integral_contDiff_smul_eq_zero|ae_nonneg_of_forall_setIntegral_nonneg|ae_tendsto_measure_inter_div_of_measurableSet|addHaar_affineSubspace|intervalIntegral_integral_swap|exists_contMDiff_support_eq_eq_one_iff|support_fderiv_subset|exists_lt_isCompact_of_ne_top' mathlib/Mathlib",
+        "rg -n --glob '*.lean' '(theorem|lemma) .*([Hh]alf[Ss]pace|half_space|ae_translate|translate_invariant|ae_add_right_invariant|nonneg_of_integral_contDiff|integral_contDiff.*nonneg)' project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+        "sed -n '1,235p' mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "sed -n '1030,1130p' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "sed -n '728,787p' mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "codim1_rdo_dg_hr_translate_integral_eq",
+        "codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg",
+        "codim1_rdo_dg_hr_ae_translate_invariant",
+        "codim1_rdo_dg_hr_ae_translate_monotone",
+        "codim1_rdo_dg_hr_monotone_set_trichotomy",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/halfspace-independent-audit/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/halfspace-independent-audit/LibraryChecks.lean > /tmp/halfspace-independent-audit/LibraryChecks.log 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v2.json",
+        "/tmp/halfspace-independent-audit/TypesAndAssembly.lean",
+        "/tmp/halfspace-independent-audit/LibraryChecks.lean"
+      ],
+      "conclusion": "The handoff and contract digest match the selected theorem. Project b4d606db and Mathlib 25730c7c match the pinned revisions; the contract and eight checked Mathlib files match their workspace copies. The snapshot supplies the cited fundamental lemma, smooth cutoffs, oriented Fubini, density theorem, inner regularity and affine-subspace nullity. Targeted searches found no matching rigidity or nonnegative-test theorem. All five exact types independently elaborate without child declarations. A separate conditional Lean proof derives the exact selected parent from the tangential, normal and density contracts; its axioms are only propext, Classical.choice and Quot.sound. Library axiom checks and arbitrary-dimensional instance/cutoff checks pass. All names are bare identifiers and unreserved in the final 1095-node DAG scan; no accepted declaration is reused. Dependencies are acyclic and correctly directed. The five-way split is appropriate, and every supplied proof is complete enough for formalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translation_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type exactly matches the stated hypotheses and oriented identity. The proof establishes derivative support control, a common compact support for bounded translation parameters, product integrability, pointwise FTC and the required Fubini exchange. It covers negative and zero t without assuming finite measure of F, and has no circular dependency."
+    },
+    {
+      "key": "nonneg_fundamental_lemma",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the locally integrable sign criterion. Smooth cutoffs have a common compact integrable dominator and converge pointwise, including when K is empty. Passing to a measurable representative justifies inner regularity of the negative set; a positive-measure compact subset then gives the stated contradiction. No global integrability or unproved approximation claim is hidden."
+    },
+    {
+      "key": "tangential_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the fixed-direction almost-everywhere equivalence. Admissible translated tests, the declared translation-identity dependency at t = 1, translation invariance of volume and local integrability of both indicators justify the equality fundamental lemma. Indicator equality gives precisely the claimed membership equivalence, without extra orthogonality or normalization assumptions."
+    },
+    {
+      "key": "normal_monotonicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves the required order: every fixed nonnegative t has its own almost-everywhere implication. The translation identity gives the correct increasing-translation sign; compactly supported test products are integrable, and the declared nonnegativity lemma applies to the locally integrable indicator difference. Both dependencies are used correctly and non-circularly."
+    },
+    {
+      "key": "density_trichotomy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the geometric hypothesis and trichotomy. Comparing each pair of density points uses one fixed translation, so no simultaneous uncountable almost-everywhere assertion is needed. The density theorem, bounded supremum and null-hyperplane argument establish the global symmetric-difference conclusion. The proof derives v ≠ 0 before invoking hyperplane nullity, correctly covering v = 0 and n = 0 through the trivial alternatives."
+    }
+  ],
+  "required_changes": []
+}

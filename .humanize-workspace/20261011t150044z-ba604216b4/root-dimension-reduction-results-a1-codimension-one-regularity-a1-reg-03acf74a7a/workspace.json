@@ -1,0 +1,497 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.density_trichotomy-a1",
+      "key": "density_trichotomy",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)",
+              "rg -n \"theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg\" mathlib/Mathlib",
+              "sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|halfSpace)\" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+              "rg -n --glob '*.lean' \"theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)\" project mathlib/Mathlib (no match)",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)\" lake-packages-25730c7c/simongmt (no match)",
+              "rg -n \"theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset\" mathlib/Mathlib",
+              "python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)",
+              "cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}",
+              "sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log",
+              "sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))",
+              "lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)",
+              "lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)",
+              "lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt",
+              "/tmp/hr-split-v2/Types.lean",
+              "/tmp/hr-split-v2/Stub.lean",
+              "/tmp/hr-split-v2/StubAssembly.lean",
+              "/tmp/hr-split-v2/Parse.lean",
+              "/tmp/hr-split-v2/Avail.lean",
+              "/tmp/hr-split-v2/Avail2.lean",
+              "/tmp/hr-split-v2/Avail3.lean",
+              "/tmp/hr-split-v2/Inst.lean"
+            ],
+            "conclusion": "Pins and identity checks:\n- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.\n- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.\n\nLibrary results used by the children:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)\n- Measure.addHaar_affineSubspace (EqHaar.lean:199)\n- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)\n- intervalIntegral_integral_swap (Integral/Prod.lean:483)\n- support_fderiv_subset (FDeriv/Const.lean:379)\n- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)\n- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self\n\nWhat is missing:\n- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.\n- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).\n- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.\n\nLean checks:\n- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).\n- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.\n- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.\n\nNames and reuse:\n- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.\n- No accepted node has an identical frozen type, so nothing is reused.\n\nSource: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.density_trichotomy-a1",
+        "subproblem": {
+          "key": "density_trichotomy",
+          "title": "A set a.e. forward-invariant under the half-space of translations {⟨a,v⟩ ≥ 0} is null, co-null, or a half-space",
+          "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set and v ∈ ℝⁿ. Suppose that for every a ∈ ℝⁿ with ⟨a, v⟩ ≥ 0, for Lⁿ-almost every z ∈ ℝⁿ, z ∈ F implies z + a ∈ F. Then Lⁿ(F) = 0, or Lⁿ(ℝⁿ ∖ F) = 0, or there is c ∈ ℝ with Lⁿ(F Δ {z : ⟨z, v⟩ > c}) = 0.",
+          "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ a : EuclideanSpace ℝ (Fin n), 0 ≤ inner ℝ a v → ∀ᵐ z ∂volume, z ∈ F → z + a ∈ F) → volume F = 0 ∨ volume Fᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F {z | c < inner ℝ z v}) = 0",
+          "lean_name": "codim1_rdo_dg_hr_monotone_set_trichotomy",
+          "depends_on": [],
+          "natural_proof": "Source. These are steps 5 (density points) and 6 (conclusion) of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity`. They make rigorous Simon's “hence (9)” in Ch. 3, 4.3 (chapter-03.txt lines 664–690), with the parent's erratum: for the inward normal the limit set is {⟨z, v⟩ > c}, not {⟨z, v⟩ < c}. The hypothesis is exactly what the parent produces in its step 4; no unit-length assumption on v is needed.\n\nNotation.\n- E := ℝⁿ, L := Lⁿ; B̄_r(x) is the closed ball.\n- θ_r(x) := L(F ∩ B̄_r(x)) / L(B̄_r(x)) ∈ [0, ∞], with division in [0, ∞].\n- “r ↓ 0” is the filter 𝓝[>] 0 on ℝ, which is nontrivial.\n- A₁ := {x : θ_r(x) → 1 as r ↓ 0} and A₀ := {x : θ_r(x) → 0 as r ↓ 0}.\n\n1. Density points are ordered: if z₁ ∈ A₁ and z₀ ∈ A₀, then ⟨z₀, v⟩ < ⟨z₁, v⟩.\n   (a) Suppose instead ⟨z₀, v⟩ ≥ ⟨z₁, v⟩ and put a := z₀ − z₁. Then ⟨a, v⟩ ≥ 0, so by hypothesis N_a := {z : z ∈ F and z + a ∉ F} is L-null.\n   (b) For every r ∈ ℝ and z: ‖z − z₁‖ ≤ r ⟺ ‖(z + a) − z₀‖ ≤ r, since (z + a) − z₀ = z − z₁. Hence\n       B̄_r(z₁) = (· + a)⁻¹(B̄_r(z₀)) and {z : z + a ∈ F} ∩ B̄_r(z₁) = (· + a)⁻¹(F ∩ B̄_r(z₀)).\n       Lebesgue measure is translation invariant for arbitrary sets (Mathlib `measure_preimage_add_right`), so L(B̄_r(z₁)) = L(B̄_r(z₀)) and L({z : z + a ∈ F} ∩ B̄_r(z₁)) = L(F ∩ B̄_r(z₀)).\n   (c) F ∩ B̄_r(z₁) ⊆ ({z : z + a ∈ F} ∩ B̄_r(z₁)) ∪ N_a. By monotonicity and subadditivity,\n       L(F ∩ B̄_r(z₁)) ≤ L(F ∩ B̄_r(z₀)) + L(N_a) = L(F ∩ B̄_r(z₀)).\n   (d) Divide by the common denominator L(B̄_r(z₁)) = L(B̄_r(z₀)). Division in [0, ∞] is monotone in the numerator (Mathlib `ENNReal.div_le_div_right`), so θ_r(z₁) ≤ θ_r(z₀) for every r ∈ ℝ.\n   (e) Let r ↓ 0 and use the two limits (Mathlib `le_of_tendsto_of_tendsto'`). This yields 1 ≤ 0 in [0, ∞], a contradiction. So ⟨z₀, v⟩ < ⟨z₁, v⟩.\n\n2. Lebesgue density theorem.\n   - F is Borel and L is locally finite on ℝⁿ. By Mathlib `Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet`, θ_r(x) → 1_F(x) as r ↓ 0 for every x outside an L-null set N.\n   - If x ∈ F and x ∉ N, the limit is 1, so x ∈ A₁.\n   - If x ∉ F and x ∉ N, the limit is 0, so x ∈ A₀.\n   - Thus F ∖ A₁ ⊆ N and (ℝⁿ ∖ F) ∖ A₀ ⊆ N.\n\n3. Trivial cases.\n   - If A₁ = ∅, then F ⊆ N, so L(F) = 0 (first alternative).\n   - If A₀ = ∅, then ℝⁿ ∖ F ⊆ N, so L(ℝⁿ ∖ F) = 0 (second alternative).\n\n4. The threshold c. Assume A₁ ≠ ∅ and A₀ ≠ ∅, and fix z₁* ∈ A₁ and z₀* ∈ A₀.\n   - By step 1, ⟨z₀*, v⟩ < ⟨z₁*, v⟩; in particular v ≠ 0 (otherwise both sides are 0).\n   - The set S := {⟨z₀, v⟩ : z₀ ∈ A₀} ⊆ ℝ is nonempty and, by step 1, bounded above by ⟨z₁*, v⟩. So c := sup S is a real number.\n   - For every z₀ ∈ A₀, ⟨z₀, v⟩ ≤ c (Mathlib `le_csSup`).\n   - For every z₁ ∈ A₁, ⟨z₁, v⟩ is an upper bound of S by step 1, hence c ≤ ⟨z₁, v⟩ (Mathlib `csSup_le`).\n\n5. The symmetric difference. Let H := {z : c < ⟨z, v⟩} and P := {z : ⟨z, v⟩ = c}.\n   (a) F ∖ H ⊆ N ∪ P. Let z ∈ F with ⟨z, v⟩ ≤ c and z ∉ N. By step 2, z ∈ A₁, so c ≤ ⟨z, v⟩ by step 4. Hence ⟨z, v⟩ = c and z ∈ P.\n   (b) H ∖ F ⊆ N. Let z ∉ F with c < ⟨z, v⟩. If z ∉ N, then step 2 gives z ∈ A₀ and step 4 gives ⟨z, v⟩ ≤ c, a contradiction. Hence z ∈ N.\n   Therefore F Δ H = (F ∖ H) ∪ (H ∖ F) ⊆ N ∪ P.\n\n6. The hyperplane is null.\n   - Since v ≠ 0, P = p + ker⟨·, v⟩ with p := (c/‖v‖²) v (so ⟨p, v⟩ = c) is an affine subspace of ℝⁿ (Mathlib `AffineSubspace.mk' p (ker ⟨·, v⟩)`, membership by `AffineSubspace.mem_mk'`).\n   - P ≠ ℝⁿ, because p + v ∉ P: ⟨p + v, v⟩ = c + ‖v‖² ≠ c.\n   - A proper affine subspace of ℝⁿ is null for the add-Haar measure L (Mathlib `MeasureTheory.Measure.addHaar_affineSubspace`), so L(P) = 0.\n\n7. Conclusion. L(F Δ H) ≤ L(N) + L(P) = 0, which is the third alternative with this c. Together with step 3, one of the three alternatives always holds. ∎",
+          "proof_key_steps": [
+            "Ordering: if z₁ has F-density 1 and z₀ has F-density 0, then ⟨z₀,v⟩ < ⟨z₁,v⟩; otherwise translating by a = z₀ − z₁ gives θ_r(z₁) ≤ θ_r(z₀) for all r, hence 1 ≤ 0.",
+            "Lebesgue density theorem: F ∖ A₁ and Fᶜ ∖ A₀ lie in one null set N.",
+            "A₁ = ∅ ⇒ L(F) = 0; A₀ = ∅ ⇒ L(Fᶜ) = 0.",
+            "Otherwise c := sup{⟨z₀,v⟩ : z₀ ∈ A₀} is finite, ⟨z₀,v⟩ ≤ c ≤ ⟨z₁,v⟩ for z₀ ∈ A₀, z₁ ∈ A₁, and v ≠ 0.",
+            "F Δ {⟨z,v⟩ > c} ⊆ N ∪ {⟨z,v⟩ = c}, and that proper hyperplane is Lebesgue-null."
+          ]
+        },
+        "audit": {
+          "key": "density_trichotomy",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type exactly matches the geometric hypothesis and trichotomy. Comparing each pair of density points uses one fixed translation, so no simultaneous uncountable almost-everywhere assertion is needed. The density theorem, bounded supremum and null-hyperplane argument establish the global symmetric-difference conclusion. The proof derives v ≠ 0 before invoking hyperplane nullity, correctly covering v = 0 and n = 0 through the trivial alternatives."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.nonneg_fundamental_lemma-a1",
+      "key": "nonneg_fundamental_lemma",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)",
+              "rg -n \"theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg\" mathlib/Mathlib",
+              "sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|halfSpace)\" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+              "rg -n --glob '*.lean' \"theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)\" project mathlib/Mathlib (no match)",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)\" lake-packages-25730c7c/simongmt (no match)",
+              "rg -n \"theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset\" mathlib/Mathlib",
+              "python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)",
+              "cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}",
+              "sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log",
+              "sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))",
+              "lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)",
+              "lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)",
+              "lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt",
+              "/tmp/hr-split-v2/Types.lean",
+              "/tmp/hr-split-v2/Stub.lean",
+              "/tmp/hr-split-v2/StubAssembly.lean",
+              "/tmp/hr-split-v2/Parse.lean",
+              "/tmp/hr-split-v2/Avail.lean",
+              "/tmp/hr-split-v2/Avail2.lean",
+              "/tmp/hr-split-v2/Avail3.lean",
+              "/tmp/hr-split-v2/Inst.lean"
+            ],
+            "conclusion": "Pins and identity checks:\n- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.\n- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.\n\nLibrary results used by the children:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)\n- Measure.addHaar_affineSubspace (EqHaar.lean:199)\n- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)\n- intervalIntegral_integral_swap (Integral/Prod.lean:483)\n- support_fderiv_subset (FDeriv/Const.lean:379)\n- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)\n- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self\n\nWhat is missing:\n- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.\n- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).\n- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.\n\nLean checks:\n- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).\n- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.\n- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.\n\nNames and reuse:\n- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.\n- No accepted node has an identical frozen type, so nothing is reused.\n\nSource: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.nonneg_fundamental_lemma-a1",
+        "subproblem": {
+          "key": "nonneg_fundamental_lemma",
+          "title": "Sign version of the fundamental lemma: nonnegative pairing with all nonnegative C¹_c tests forces f ≥ 0 a.e.",
+          "statement": "Let n ∈ ℕ and f : ℝⁿ → ℝ be locally Lebesgue integrable. Suppose ∫ g(x) f(x) dLⁿ(x) ≥ 0 for every C¹ function g : ℝⁿ → ℝ with compact support and g ≥ 0 everywhere. Then f(x) ≥ 0 for Lⁿ-almost every x ∈ ℝⁿ.",
+          "lean_statement": "∀ (n : ℕ) (f : EuclideanSpace ℝ (Fin n) → ℝ), LocallyIntegrable f volume → (∀ g : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 g → HasCompactSupport g → (∀ x, 0 ≤ g x) → 0 ≤ ∫ x, g x * f x) → ∀ᵐ x ∂volume, 0 ≤ f x",
+          "lean_name": "codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg",
+          "depends_on": [],
+          "natural_proof": "Source. This is the analytic core of step 3 of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity` (“This forces f := u(· + tv) − u ≥ 0 a.e.”), stated for an arbitrary locally integrable f. The parent approximates 1_S, S = {f < 0} ∩ B_R(0), by mollified indicators η_{1/j} * 1_S. This proof makes the same three moves:\n- approximate an indicator by admissible nonnegative test functions bounded by 1 with uniformly compact supports;\n- pass to the limit by dominated convergence;\n- conclude from the sign of f on S.\nThe approximants are smooth Urysohn functions of compact sets K ⊆ S, followed by inner regularity. This is only a change of execution detail: the mollifier API (`ContDiffBump.normed`, `ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable`) is not in the import closure of `GMT.Ch07.Submission` (both are unknown constants there), whereas the smooth Urysohn lemma and inner regularity are. The scheme mirrors Mathlib's own proof of `ae_eq_zero_of_integral_contMDiff_smul_eq_zero` (Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean).\n\nNotation.\n- E := ℝⁿ, L := Lⁿ.\n- B_R := the open ball of radius R about 0.\n- For K ⊆ E and r > 0: K_r := {x : dist(x, K) < r} (open thickening, Mathlib `thickening r K`) and K^r := {x : dist(x, K) ≤ r} (closed thickening, `cthickening r K`).\n\n1. Integrals over compact sets are nonnegative: ∫_K f ≥ 0 for every compact K ⊆ E.\n   - Let K be compact. The closed thickening K^1 is closed and bounded, hence compact (Mathlib `IsCompact.cthickening`).\n   - Put u_j := 1/(j + 2) ∈ (0, 1) for j ∈ ℕ, so u_j → 0.\n   - For each j, K is closed, K_{u_j} is open (`isOpen_thickening`) and K ⊆ K_{u_j} (`self_subset_thickening`).\n   - By the smooth Urysohn lemma (Mathlib `exists_contMDiff_support_eq_eq_one_iff` for the model 𝓘(ℝ, E), converted with `contMDiff_iff_contDiff`), there is a C^∞ function g_j : E → ℝ with values in [0, 1], support g_j = K_{u_j}, and g_j = 1 on K.\n   - Then g_j is C¹ and g_j ≥ 0. Also tsupport g_j = closure(K_{u_j}) ⊆ K^{u_j} ⊆ K^1 (`closure_thickening_subset_cthickening`, monotonicity in the radius), so g_j has compact support.\n   - By hypothesis, ∫ g_j f ≥ 0 for every j.\n\n2. Pointwise convergence. Fix x.\n   - If x ∈ K, then g_j(x) = 1 = 1_K(x) for all j.\n   - If x ∉ K: since K is closed, K = closure K = ⋂_{ε>0} K_ε (Mathlib `closure_eq_iInter_thickening`), so there is ε > 0 with x ∉ K_ε (this also covers K = ∅, where every K_ε is empty). For every j with u_j < ε (all large j, as u_j → 0) we have K_{u_j} ⊆ K_ε, so x ∉ K_{u_j} = support g_j and g_j(x) = 0 = 1_K(x).\n   - Hence g_j(x) f(x) → 1_K(x) f(x) for every x.\n\n3. Dominated convergence.\n   - For all j and x, |g_j(x) f(x)| ≤ 1_{K^1}(x)·|f(x)|, since 0 ≤ g_j ≤ 1 and g_j = 0 off K^1.\n   - The bound is integrable because f is locally integrable and K^1 is compact (Mathlib `LocallyIntegrable.integrableOn_isCompact`).\n   - Each g_j f is a.e. strongly measurable (a continuous function times an a.e. strongly measurable one).\n   - By dominated convergence (Mathlib `tendsto_integral_of_dominated_convergence`), ∫ g_j f → ∫ 1_K f = ∫_K f (Mathlib `integral_indicator`; K is closed, hence measurable).\n   - Every ∫ g_j f ≥ 0, so ∫_K f ≥ 0.\n\n4. A Borel representative.\n   - f is locally integrable, hence a.e. strongly measurable. Let f̃ := `AEStronglyMeasurable.mk f`, a measurable function with f̃ = f L-a.e.\n   - f̃ is locally integrable (`LocallyIntegrable.congr`), and set integrals are unchanged: ∫_K f̃ = ∫_K f ≥ 0 for every compact K, by step 1.\n   - It suffices to prove f̃ ≥ 0 L-a.e.\n\n5. The negative set is null in each ball.\n   - Fix R ∈ ℕ and let S := {x : f̃(x) < 0} ∩ B_R. S is measurable and L(S) ≤ L(B_R) < ∞.\n   - Suppose L(S) > 0. Lebesgue measure is inner regular on sets of finite measure (Mathlib `MeasurableSet.exists_lt_isCompact_of_ne_top`, applied with r := 0 < L(S)), so there is a compact K ⊆ S with L(K) > 0.\n   - Let h := 1_K·(−f̃). Then h is integrable (f̃ is integrable on the compact K) and h ≥ 0 everywhere, since f̃ < 0 on K.\n   - The support of h is exactly K (−f̃ > 0 on K), which has positive measure. By Mathlib `integral_pos_iff_support_of_nonneg`, ∫ h > 0, i.e. ∫_K f̃ < 0.\n   - This contradicts step 4. Hence L(S) = 0.\n\n6. Conclusion. {f̃ < 0} = ⋃_{R∈ℕ} ({f̃ < 0} ∩ B_R) is a countable union of L-null sets, hence L-null (`measure_iUnion_null`). So f̃ ≥ 0 L-a.e., and since f = f̃ L-a.e., f ≥ 0 L-a.e. ∎",
+          "proof_key_steps": [
+            "For compact K, smooth Urysohn functions g_j (0 ≤ g_j ≤ 1, g_j = 1 on K, support g_j = the u_j-thickening of K, u_j ↓ 0) are admissible nonnegative C¹_c tests, so ∫ g_j f ≥ 0.",
+            "g_j → 1_K pointwise and |g_j f| ≤ |f|·1_{K^1}; dominated convergence gives ∫_K f ≥ 0 for every compact K.",
+            "Pass to a measurable representative f̃. If S = {f̃ < 0} ∩ B_R had positive measure, inner regularity would give a compact K ⊆ S with L(K) > 0 and ∫_K f̃ < 0, a contradiction.",
+            "The countable union over R ∈ ℕ gives f̃ ≥ 0 a.e., hence f ≥ 0 a.e."
+          ]
+        },
+        "audit": {
+          "key": "nonneg_fundamental_lemma",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type exactly expresses the locally integrable sign criterion. Smooth cutoffs have a common compact integrable dominator and converge pointwise, including when K is empty. Passing to a measurable representative justifies inner regularity of the negative set; a positive-measure compact subset then gives the stated contradiction. No global integrability or unproved approximation claim is hidden."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1",
+      "key": "translation_identity",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)",
+              "rg -n \"theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg\" mathlib/Mathlib",
+              "sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|halfSpace)\" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+              "rg -n --glob '*.lean' \"theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)\" project mathlib/Mathlib (no match)",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)\" lake-packages-25730c7c/simongmt (no match)",
+              "rg -n \"theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset\" mathlib/Mathlib",
+              "python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)",
+              "cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}",
+              "sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log",
+              "sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))",
+              "lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)",
+              "lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)",
+              "lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt",
+              "/tmp/hr-split-v2/Types.lean",
+              "/tmp/hr-split-v2/Stub.lean",
+              "/tmp/hr-split-v2/StubAssembly.lean",
+              "/tmp/hr-split-v2/Parse.lean",
+              "/tmp/hr-split-v2/Avail.lean",
+              "/tmp/hr-split-v2/Avail2.lean",
+              "/tmp/hr-split-v2/Avail3.lean",
+              "/tmp/hr-split-v2/Inst.lean"
+            ],
+            "conclusion": "Pins and identity checks:\n- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.\n- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.\n\nLibrary results used by the children:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)\n- Measure.addHaar_affineSubspace (EqHaar.lean:199)\n- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)\n- intervalIntegral_integral_swap (Integral/Prod.lean:483)\n- support_fderiv_subset (FDeriv/Const.lean:379)\n- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)\n- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self\n\nWhat is missing:\n- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.\n- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).\n- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.\n\nLean checks:\n- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).\n- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.\n- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.\n\nNames and reuse:\n- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.\n- No accepted node has an identical frozen type, so nothing is reused.\n\nSource: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1",
+        "subproblem": {
+          "key": "translation_identity",
+          "title": "Translation identity for set integrals of C¹_c functions (FTC + Fubini)",
+          "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set, ζ : ℝⁿ → ℝ a C¹ function with compact support, w ∈ ℝⁿ and t ∈ ℝ. Then ∫_F ζ(z − t w) dLⁿ(z) = ∫_F ζ(z) dLⁿ(z) − ∫_0^t ( ∫_F Dζ(z − s w)(w) dLⁿ(z) ) ds, where ∫_0^t is the oriented interval integral (∫_0^t = −∫_t^0 when t < 0).",
+          "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (ζ : EuclideanSpace ℝ (Fin n) → ℝ) (w : EuclideanSpace ℝ (Fin n)) (t : ℝ), MeasurableSet F → ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, ζ (z - t • w) = (∫ z in F, ζ z) - ∫ s in (0 : ℝ)..t, ∫ z in F, fderiv ℝ ζ (z - s • w) w",
+          "lean_name": "codim1_rdo_dg_hr_translate_integral_eq",
+          "depends_on": [],
+          "natural_proof": "Source. This is step 1 (translation identity) of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity`, which makes rigorous Simon Ch. 3, 4.3 (8)–(9) (chapter-03.txt lines 664–690; the printed text there only says “it follows that”, so the argument is the parent's step 1 with the details filled in). Here the identity is stated for arbitrary n, a Borel set F, a vector w and t ∈ ℝ.\n\nNotation.\n- E := ℝⁿ, L := Lⁿ (Lebesgue measure on E).\n- K := tsupport ζ, compact by hypothesis.\n- I := [min(0,t), max(0,t)] (Mathlib `Set.uIcc 0 t`) and J := (min(0,t), max(0,t)] (Mathlib `Set.uIoc 0 t`); J ⊆ I.\n- G(s, z) := Dζ(z − s w)(w) for (s, z) ∈ ℝ × E.\n- Interval integrals are oriented: ∫_0^t h = −∫_t^0 h when t < 0.\n\n1. Dζ is continuous, bounded, and vanishes off K.\n   - ζ is C¹, so z ↦ Dζ(z) is continuous (Mathlib `ContDiff.continuous_fderiv`, using 1 ≠ 0).\n   - If z ∉ K, then ζ vanishes on the open neighbourhood E ∖ K of z, so Dζ(z) = 0 (Mathlib `support_fderiv_subset`: support Dζ ⊆ tsupport ζ = K).\n   - A continuous function vanishing off a compact set is bounded; let M := sup_{y∈E} ‖Dζ(y)‖ < ∞.\n   - Consequently G is continuous on ℝ × E (composition of (s, z) ↦ z − s w, of Dζ, and of evaluation at w), |G(s, z)| ≤ M‖w‖ for all (s, z), and G(s, z) = 0 whenever z − s w ∉ K.\n\n2. A compact set carrying all supports.\n   - Let K' := {y + s w : y ∈ K, s ∈ I}. It is the image of the compact set K × I under the continuous map (y, s) ↦ y + s w, so K' is compact and L(K') < ∞.\n   - If s ∈ I and z ∉ K', then z − s w ∉ K (otherwise z = (z − s w) + s w ∈ K'), so G(s, z) = 0 and ζ(z − s w) = 0.\n\n3. Fundamental theorem of calculus at a fixed point.\n   - Fix z ∈ E and set φ(s) := ζ(z − s w) for s ∈ ℝ.\n   - The map s ↦ z − s w has derivative −w at every s. By the chain rule (Mathlib `HasFDerivAt.comp_hasDerivAt`), φ has derivative Dζ(z − s w)(−w) = −G(s, z) at every s.\n   - s ↦ −G(s, z) is continuous by step 1, hence interval integrable on every interval (Mathlib `Continuous.intervalIntegrable`).\n   - By the fundamental theorem of calculus for interval integrals (Mathlib `intervalIntegral.integral_eq_sub_of_hasDerivAt`, valid for both orientations):\n     ζ(z − t w) − ζ(z) = φ(t) − φ(0) = ∫_0^t (−G(s, z)) ds = −∫_0^t G(s, z) ds.\n\n4. Joint integrability.\n   - Let ν := (Lebesgue measure on ℝ restricted to J) ⊗ (L restricted to F). Both factors are s-finite.\n   - G is continuous, hence strongly measurable on ℝ × E.\n   - For ν-almost every (s, z) we have s ∈ J ⊆ I, hence |G(s, z)| ≤ M‖w‖·1_{K'}(z) by steps 1–2.\n   - The bound (s, z) ↦ M‖w‖·1_{K'}(z) is ν-integrable: it is a constant times the product of the constant 1 in s (integrable for the finite measure on J, of total mass |t|) and 1_{K'}(z) (integrable for L restricted to F, since L(F ∩ K') ≤ L(K') < ∞) (Mathlib `Integrable.mul_prod`); its integral is M‖w‖·|t|·L(F ∩ K') < ∞.\n   - By domination (Mathlib `Integrable.mono'`), G is ν-integrable.\n\n5. Splitting the left-hand side. The functions z ↦ ζ(z − t w) and z ↦ ζ(z) are continuous with compact supports (contained in K + t w and K), hence integrable on F (Mathlib `Continuous.integrable_of_hasCompactSupport`). Therefore\n   ∫_F (ζ(z − t w) − ζ(z)) dz = ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz.\n\n6. Integration over F and Fubini.\n   - Integrate the identity of step 3 over z ∈ F and use step 5 (the integral of −h is −∫h):\n     ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz = −∫_F ( ∫_0^t G(s, z) ds ) dz.\n   - By Fubini's theorem for an interval integral against a measure (Mathlib `MeasureTheory.intervalIntegral_integral_swap`, applied with μ := L restricted to F; its hypothesis is exactly the ν-integrability of step 4):\n     ∫_0^t ( ∫_F G(s, z) dz ) ds = ∫_F ( ∫_0^t G(s, z) ds ) dz.\n   - Hence ∫_F ζ(z − t w) dz − ∫_F ζ(z) dz = −∫_0^t ( ∫_F Dζ(z − s w)(w) dz ) ds.\n\n7. Conclusion. Adding ∫_F ζ(z) dz to both sides of the last display gives\n   ∫_F ζ(z − t w) dz = ∫_F ζ(z) dz − ∫_0^t ( ∫_F Dζ(z − s w)(w) dz ) ds. ∎",
+          "proof_key_steps": [
+            "Dζ is continuous and vanishes off the compact K = tsupport ζ, so G(s,z) := Dζ(z − s w)(w) is continuous, bounded by M‖w‖, and for s ∈ I = [min(0,t), max(0,t)] vanishes off the compact K' = K + I·w.",
+            "Pointwise FTC along s ↦ ζ(z − s w) (chain rule, derivative −G(s,z)): ζ(z − t w) − ζ(z) = −∫_0^t G(s,z) ds.",
+            "G is integrable for (Lebesgue|uIoc 0 t) ⊗ (L|F), dominated by M‖w‖·1_{K'}(z); ζ(· − t w) and ζ are integrable on F.",
+            "Integrate over F, swap the order with intervalIntegral_integral_swap, and rearrange."
+          ]
+        },
+        "audit": {
+          "key": "translation_identity",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone type exactly matches the stated hypotheses and oriented identity. The proof establishes derivative support control, a common compact support for bounded translation parameters, product integrability, pointwise FTC and the required Fubini exchange. It covers negative and zero t without assuming finite measure of F, and has no circular dependency."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.normal_monotonicity-a1",
+      "key": "normal_monotonicity",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)",
+              "rg -n \"theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg\" mathlib/Mathlib",
+              "sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|halfSpace)\" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+              "rg -n --glob '*.lean' \"theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)\" project mathlib/Mathlib (no match)",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)\" lake-packages-25730c7c/simongmt (no match)",
+              "rg -n \"theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset\" mathlib/Mathlib",
+              "python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)",
+              "cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}",
+              "sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log",
+              "sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))",
+              "lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)",
+              "lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)",
+              "lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt",
+              "/tmp/hr-split-v2/Types.lean",
+              "/tmp/hr-split-v2/Stub.lean",
+              "/tmp/hr-split-v2/StubAssembly.lean",
+              "/tmp/hr-split-v2/Parse.lean",
+              "/tmp/hr-split-v2/Avail.lean",
+              "/tmp/hr-split-v2/Avail2.lean",
+              "/tmp/hr-split-v2/Avail3.lean",
+              "/tmp/hr-split-v2/Inst.lean"
+            ],
+            "conclusion": "Pins and identity checks:\n- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.\n- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.\n\nLibrary results used by the children:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)\n- Measure.addHaar_affineSubspace (EqHaar.lean:199)\n- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)\n- intervalIntegral_integral_swap (Integral/Prod.lean:483)\n- support_fderiv_subset (FDeriv/Const.lean:379)\n- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)\n- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self\n\nWhat is missing:\n- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.\n- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).\n- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.\n\nLean checks:\n- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).\n- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.\n- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.\n\nNames and reuse:\n- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.\n- No accepted node has an identical frozen type, so nothing is reused.\n\nSource: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.normal_monotonicity-a1",
+        "subproblem": {
+          "key": "normal_monotonicity",
+          "title": "Nonpositive distributional derivative in direction v gives a.e. forward invariance along +v",
+          "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set and v ∈ ℝⁿ. Suppose ∫_F Dζ(z)(v) dLⁿ(z) ≤ 0 for every C¹ function ζ : ℝⁿ → ℝ with compact support and ζ ≥ 0 everywhere. Then for every t ≥ 0 and for Lⁿ-almost every z ∈ ℝⁿ: if z ∈ F then z + t v ∈ F.",
+          "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∫ z in F, fderiv ℝ ζ z v ≤ 0) → ∀ t : ℝ, 0 ≤ t → ∀ᵐ z ∂volume, z ∈ F → z + t • v ∈ F",
+          "lean_name": "codim1_rdo_dg_hr_ae_translate_monotone",
+          "depends_on": [
+            "translation_identity",
+            "nonneg_fundamental_lemma"
+          ],
+          "natural_proof": "Source. This is step 3 (normal monotonicity) of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity`. It makes rigorous Simon's “so that H is non-decreasing on ℝ” in Ch. 3, 4.3 (chapter-03.txt lines 664–690), with the parent's sign erratum for the inward normal (the limit set is {⟨z, v⟩ > c}, so mass moves forward along +v).\n\nNotation. E := ℝⁿ, L := Lⁿ, u := 1_F. Fix t ≥ 0 throughout steps 1–5.\n\n1. Admissible translates. Let ζ be C¹ with compact support and ζ ≥ 0. For s ∈ ℝ set ζ_s(y) := ζ(y − s v).\n   - ζ_s is C¹, nonnegative, and compactly supported (ζ composed with the homeomorphism y ↦ y − s v; Mathlib `HasCompactSupport.comp_homeomorph`).\n   - Dζ_s(z) = Dζ(z − s v) for every z (chain rule; Mathlib `fderiv_comp_sub`).\n   - By the hypothesis applied to ζ_s, for every s ∈ ℝ:\n     g(s) := ∫_F Dζ(z − s v)(v) dz = ∫_F Dζ_s(z)(v) dz ≤ 0.\n\n2. The translated integral increases.\n   - By the sibling lemma `translation_identity` (Lean: `Submission.codim1_rdo_dg_hr_translate_integral_eq`) with w := v and this t:\n     ∫_F ζ(z − t v) dz = ∫_F ζ(z) dz − ∫_0^t g(s) ds.\n   - Since 0 ≤ t and −g ≥ 0 everywhere, ∫_0^t (−g(s)) ds ≥ 0 (Mathlib `intervalIntegral.integral_nonneg_of_forall`, which needs no integrability hypothesis), i.e. ∫_0^t g(s) ds ≤ 0 (`intervalIntegral.integral_neg`).\n   - Hence ∫_F ζ(z − t v) dz ≥ ∫_F ζ(z) dz.\n\n3. Change of variables.\n   - ∫_F ζ(z − t v) dz = ∫ u(z) ζ(z − t v) dz = ∫ u(y + t v) ζ(y) dy, substituting z = y + t v; Lebesgue measure is translation invariant (Mathlib `integral_indicator`, `integral_add_right_eq_self`).\n   - Likewise ∫_F ζ = ∫ u ζ.\n   - Define f(y) := u(y + t v) − u(y). Then f is Borel and |f| ≤ 1, hence locally integrable; f depends on t but not on ζ.\n   - ζ·u(· + t v) and ζ·u are integrable, being bounded, measurable and compactly supported.\n   - So step 2 gives\n     ∫ ζ(y) f(y) dy = ∫ ζ(y) u(y + t v) dy − ∫ ζ(y) u(y) dy ≥ 0.\n\n4. Nonnegativity of f. Step 3 holds for every C¹ compactly supported ζ ≥ 0. By the sibling lemma `nonneg_fundamental_lemma` (Lean: `Submission.codim1_rdo_dg_hr_ae_nonneg_of_test_nonneg`) applied to f, f ≥ 0 L-a.e.\n\n5. Conclusion. If z ∈ F and z + t v ∉ F, then f(z) = 0 − 1 = −1 < 0. Hence, outside the L-null set {f < 0}, z ∈ F implies z + t v ∈ F. Since t ≥ 0 was arbitrary, the claim holds for every t ≥ 0. ∎",
+          "proof_key_steps": [
+            "Translates ζ(· − s v) are admissible nonnegative C¹_c tests, so g(s) := ∫_F Dζ(z − s v)(v) dz ≤ 0 for all s.",
+            "The translation identity with w = v and t ≥ 0 gives ∫_F ζ(z − t v) ≥ ∫_F ζ.",
+            "Substituting z = y + t v gives ∫ ζ·(1_F(· + t v) − 1_F) ≥ 0 for all C¹_c ζ ≥ 0.",
+            "The nonnegativity lemma gives 1_F(· + t v) ≥ 1_F a.e., i.e. z ∈ F ⇒ z + t v ∈ F for a.e. z."
+          ]
+        },
+        "audit": {
+          "key": "normal_monotonicity",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type preserves the required order: every fixed nonnegative t has its own almost-everywhere implication. The translation identity gives the correct increasing-translation sign; compactly supported test products are integrable, and the declared nonnegativity lemma applies to the locally integrable indicator difference. Both dependencies are used correctly and non-circularly."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1",
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.nonneg_fundamental_lemma-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.tangential_invariance-a1",
+      "key": "tangential_invariance",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+              "sha256sum of snapshot vs .lake/packages/mathlib for AEEqOfIntegralContDiff.lean, AEEqOfIntegral.lean, Besicovitch.lean, EqHaar.lean, PartitionOfUnity.lean, Integral/Prod.lean, FDeriv/Const.lean (all SAME)",
+              "rg -n \"theorem ae_eq_of_integral_contDiff_smul_eq|theorem ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem ae_nonneg_of_forall_setIntegral_nonneg|theorem ae_le_of_forall_setIntegral_le|theorem ae_nonneg_of_forall_setIntegral_nonneg_of|theorem ae_eq_zero_of_forall_setIntegral_isCompact|isCompact.*nonneg|theorem ae_nonneg_restrict_of_forall_setIntegral_nonneg\" mathlib/Mathlib",
+              "sed -n 60,215p mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean; sed -n 120,215p and 340,430p mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|halfSpace)\" project mathlib/Mathlib/Analysis mathlib/Mathlib/MeasureTheory",
+              "rg -n --glob '*.lean' \"theorem .*(ae_nonneg_of_integral|integral_contDiff.*nonneg|nonneg_of_integral_contDiff|ae_translate|translate_invariant|ae_add_right_invariant)\" project mathlib/Mathlib (no match)",
+              "rg -n --glob '*.lean' \"theorem .*(halfspace|half_space|translat|ae_nonneg|density_point|lebesgue_density|integral_contDiff)\" lake-packages-25730c7c/simongmt (no match)",
+              "rg -n \"theorem ae_tendsto_measure_inter_div_of_measurableSet|theorem addHaar_affineSubspace|intervalIntegral_integral_swap|theorem exists_contMDiff_support_eq_eq_one_iff|theorem support_fderiv_subset\" mathlib/Mathlib",
+              "python3 scans of dag.json: status counts (1010 nodes), lean_name hits for the five codim1_rdo_dg_hr_* names (none), identical frozen types (none), similar statements (fderiv+HasCompactSupport+∀ᵐ, symmDiff, 0 ≤ ∫+ContDiff); scan of 925 nodes/*/decomposition-v*.json and decomposition-review-retry.json for the names (only this node's never-activated decomposition-v1.json)",
+              "cat nodes/<this node>/{decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json,parent-child-handoff.json}",
+              "sed -n 1000,1100p, 1388,1640p, 1800,1990p, 2760,2900p, 6532,6590p runtime.py (_decompose, _solve_children node bound, _install_speculative_assumptions, _existing_lean_name_problem); grep 'Unknown identifier .Euclid' nodes/*/speculative-process-v*.log",
+              "sed -n 655,692p book/chapter-03.txt (Simon Ch. 3, 4.3 (7)-(9))",
+              "lake env lean -DautoImplicit=false /tmp/hr-split-v2/Types.lean (5 child types + parent frozen type proved from them; #print axioms)",
+              "lake env lean /tmp/hr-split-v2/Stub.lean and /tmp/hr-split-v2/StubAssembly.lean (replica of controller speculative stub; parent proved against stub axioms)",
+              "lake env lean /tmp/hr-split-v2/{Parse,Avail,Avail2,Avail3,Inst}.lean (rfl parse checks; availability of every cited lemma; ContDiffBump.normed and ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable unknown; instances for general n)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1/speculative-process-v1.log",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt",
+              "/tmp/hr-split-v2/Types.lean",
+              "/tmp/hr-split-v2/Stub.lean",
+              "/tmp/hr-split-v2/StubAssembly.lean",
+              "/tmp/hr-split-v2/Parse.lean",
+              "/tmp/hr-split-v2/Avail.lean",
+              "/tmp/hr-split-v2/Avail2.lean",
+              "/tmp/hr-split-v2/Avail3.lean",
+              "/tmp/hr-split-v2/Inst.lean"
+            ],
+            "conclusion": "Pins and identity checks:\n- Snapshot manifest: project b4d606db, Mathlib 25730c7c. Both match the workspace HEAD and .lake/packages/mathlib. SimonGMT is pinned at 2b366308.\n- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n- Every cited Mathlib file in the snapshot is byte-identical to the workspace package.\n\nLibrary results used by the children:\n- Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet (Besicovitch.lean:1089)\n- Measure.addHaar_affineSubspace (EqHaar.lean:199)\n- exists_contMDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:755)\n- intervalIntegral_integral_swap (Integral/Prod.lean:483)\n- support_fderiv_subset (FDeriv/Const.lean:379)\n- ae_eq_of_integral_contDiff_smul_eq (AEEqOfIntegralContDiff.lean:195)\n- MeasurableSet.exists_lt_isCompact_of_ne_top, integral_pos_iff_support_of_nonneg, measure_preimage_add_right, integral_add_right_eq_self\n\nWhat is missing:\n- There is no nonnegative-test version of the fundamental lemma. AEEqOfIntegral.lean:130 requires global integrability.\n- No translation identity, half-space rigidity or density-trichotomy lemma exists in Mathlib, the project or SimonGMT (rg found no match).\n- ContDiffBump.normed and the mollifier convergence lemma are not in the import closure of GMT.Ch07.Submission.\n\nLean checks:\n- All 5 child types elaborate after `import GMT.Ch07.Submission`, both in GMT.Ch07 scope and in the replicated speculative stub (root namespace Submission, regex-selected opens).\n- Children use EuclideanSpace ℝ (Fin n) because speculative logs show `Euclid` failing in the stub.\n- The parent's exact frozen type is proved from the children, with step 4 formalized. #print axioms gives propext, sorryAx, Classical.choice, Quot.sound; against stub axioms it gives only those three plus the three consumer-child axioms.\n\nNames and reuse:\n- The five codim1_rdo_dg_hr_* names occur in no DAG node (1010 nodes). The only file containing them is this node's never-activated decomposition-v1.json, which carries the identical audited split.\n- No accepted node has an identical frozen type, so nothing is reused.\n\nSource: the printed Simon Ch. 3, 4.3 (8)–(9) text is confirmed at chapter-03.txt lines 664–690."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.tangential_invariance-a1",
+        "subproblem": {
+          "key": "tangential_invariance",
+          "title": "Vanishing distributional derivative in direction w gives a.e. invariance under translation by w",
+          "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set and w ∈ ℝⁿ. Suppose ∫_F Dζ(z)(w) dLⁿ(z) = 0 for every C¹ function ζ : ℝⁿ → ℝ with compact support. Then for Lⁿ-almost every z ∈ ℝⁿ: z + w ∈ F if and only if z ∈ F.",
+          "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (w : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ ζ : EuclideanSpace ℝ (Fin n) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∫ z in F, fderiv ℝ ζ z w = 0) → ∀ᵐ z ∂volume, (z + w ∈ F ↔ z ∈ F)",
+          "lean_name": "codim1_rdo_dg_hr_ae_translate_invariant",
+          "depends_on": [
+            "translation_identity"
+          ],
+          "natural_proof": "Source. This is step 2 (tangential invariance) of the parent-supplied proof of `codim1_rdo_dg_halfspace_rigidity`, for a single vector w and t = 1; the parent applies this child to each w with ⟨w, v⟩ = 0. It makes rigorous Simon's “it follows that F = ℝⁿ × H” in Ch. 3, 4.3 (chapter-03.txt lines 664–690).\n\nNotation. E := ℝⁿ, L := Lⁿ, u := 1_F (the indicator of F), u_w := u(· + w), i.e. the indicator of the Borel set {y : y + w ∈ F}.\n\n1. Translated test functions are admissible. Let ζ be C¹ with compact support, let s ∈ ℝ, and set ζ_s(y) := ζ(y − s w).\n   - ζ_s is C¹, being ζ composed with a translation.\n   - ζ_s has compact support, being ζ composed with the homeomorphism y ↦ y − s w (Mathlib `HasCompactSupport.comp_homeomorph`).\n   - By the chain rule, Dζ_s(z) = Dζ(z − s w) for every z (Mathlib `fderiv_comp_sub`).\n\n2. The inner integrals vanish. Apply the hypothesis to ζ_s and use step 1: for every s ∈ ℝ,\n   ∫_F Dζ(z − s w)(w) dz = ∫_F Dζ_s(z)(w) dz = 0.\n\n3. Translation identity. Apply the sibling lemma `translation_identity` (Lean: `Submission.codim1_rdo_dg_hr_translate_integral_eq`) with this F, ζ, w and t = 1 (note 1·w = w), and use step 2:\n   ∫_F ζ(z − w) dz = ∫_F ζ(z) dz − ∫_0^1 ( ∫_F Dζ(z − s w)(w) dz ) ds = ∫_F ζ(z) dz − ∫_0^1 0 ds = ∫_F ζ(z) dz.\n\n4. Change of variables.\n   - ∫_F ζ(z − w) dz = ∫ u(z) ζ(z − w) dz (Mathlib `integral_indicator`; F is Borel).\n   - Lebesgue measure is invariant under the translation y ↦ y + w (Mathlib `integral_add_right_eq_self`). Substituting z = y + w gives ∫ u(z) ζ(z − w) dz = ∫ u(y + w) ζ((y + w) − w) dy = ∫ u_w(y) ζ(y) dy.\n   - Likewise ∫_F ζ = ∫ u ζ.\n   - Combined with step 3: for every C¹ compactly supported ζ,\n     ∫ ζ(y) u_w(y) dy = ∫ ζ(y) u(y) dy.\n\n5. Fundamental lemma.\n   - Every C^∞ function is C¹ (Mathlib `ContDiff.of_le`), so step 4 holds for every C^∞ compactly supported ζ; for real-valued functions ζ(y)·u(y) = ζ(y) • u(y).\n   - u = 1_F and u_w are indicators of Borel sets (F, and the preimage of F under the continuous map y ↦ y + w), bounded by 1, hence locally integrable.\n   - By the fundamental lemma of the calculus of variations (Mathlib `ae_eq_of_integral_contDiff_smul_eq`), u_w = u L-a.e.\n\n6. Conclusion. At every z where u_w(z) = u(z), i.e. 1_F(z + w) = 1_F(z), we have z + w ∈ F ⟺ z ∈ F, because an indicator equals 1 exactly on its set and 0 off it, and 0 ≠ 1. Hence z + w ∈ F ⟺ z ∈ F for L-a.e. z. ∎",
+          "proof_key_steps": [
+            "ζ(· − s w) is C¹ with compact support and derivative Dζ(· − s w), so ∫_F Dζ(z − s w)(w) dz = 0 for every s.",
+            "The translation identity with t = 1 gives ∫_F ζ(z − w) dz = ∫_F ζ(z) dz.",
+            "Substituting z = y + w gives ∫ ζ·1_F(· + w) = ∫ ζ·1_F for all C¹_c ζ, in particular all C_c^∞ ζ.",
+            "The fundamental lemma (ae_eq_of_integral_contDiff_smul_eq) gives 1_F(· + w) = 1_F a.e., i.e. z + w ∈ F ⟺ z ∈ F a.e."
+          ]
+        },
+        "audit": {
+          "key": "tangential_invariance",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The type matches the fixed-direction almost-everywhere equivalence. Admissible translated tests, the declared translation-identity dependency at t = 1, translation invariance of volume and local integrability of both indicators justify the equality fundamental lemma. Indicator equality gives precisely the claimed membership equivalence, without extra orthogonality or normalization assumptions."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.translation_identity-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition.json": "8dc4a14fd1f5e0dae76566c694c9f05e7f8552ba994e161c5054d20a82f276a7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/decomposition-audit.json": "0006cbfcd47c86572d7b9fa69bf886ce9b2f325fc7c6fbaf75af7900118f0193",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-child-handoff.json": "af4f5309334fed44f26ec36c409ba2084308c09a714d3e0601ff66deb00fea87",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-plan.md": "bd6ec36018d3f4c98bdd6a19ac7568eaf874a7f46a4b7ed50125d6d9bb4d0315",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-natural-proof.md": "a71c8ba5ca650b93d79d95caffec25ad3e81a82992cf480db4ded3e6144ca13c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/parent-supplied-natural-proof.json": "ecbe56d2a6ec16d6cef11ea24622d16a481c52c0655b435797d7040e9f5cb873",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa/node.json": "250a3e9243f9e0c818208730012b64a20e88180d4154e3c48d366654eb742fa2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-child-handoff.json": "6a5e89b7105f873d7076ff86b4e6404ea1b0c60c8e854fcf372b4319ff536b1e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-plan.md": "75b12db591842f89756dfac3fee0841b269fb2b6b5e07c4f81db6ad1f76913fe",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-natural-proof.md": "b57b8a5c4d21db8e656a047e698c465ef88149dfee6cef1539ac696731c83f26",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/parent-supplied-natural-proof.json": "f352b1aabf3c6b5ccf2da590c73940ebf651de6b08683275726ad997a7aa7e9b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6530d967b1/node.json": "7da528260a1b665616beb68a78e9028cd7d9842b3ca66a75bfcf986ef42df17e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-child-handoff.json": "1806f713f65fc0a1cc284eeb18a10fd7da677d4b0fd455db73194c3175760ecf",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-plan.md": "f6c1a4826ef8f9d4db07be766e18a1c316ac2618cd0c7cf20f50409fff24fa39",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-natural-proof.md": "fdb2cbd8cd5f2f097277dae1df5e3c1d50572f81c02f1523f55d39e2e7b31faa",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/parent-supplied-natural-proof.json": "ed43daa146aff62d5c3a7fa4f676e350e02096ab4f372d6730b8ac41f0c57aae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3f3d4e71cc/node.json": "ce14246dd78162fa813788ff079d06481550138641b8fd6d5b41a6afd36788cc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-child-handoff.json": "727c245fd24d6da88ddfa407a5b8dfee5c78c4414d2085135f165cf3bbc24802",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-plan.md": "3c5bdeda306f4159d88ec0a02aaccc493890b12408aee479496d7ed034c1a1fd",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-natural-proof.md": "1dcf5cb45156083b8002181745e5b13733d4d8a78efa7cf520f9325ec7d4e693",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/parent-supplied-natural-proof.json": "814a234c00c22bba36c2b855a116d89f4e6a524d3cbd182a444d0e467662569a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ff5b4af2a6/node.json": "198ce3a67e467dee19936d893f79af9b10c3508c5463006b828add506e2204b7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-child-handoff.json": "c1b10ad2c6833dc07a02f7d0c8f4bb34058902c7cd4e771053b2b6e7aea4f42f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-plan.md": "11fe9dd12129deadd11745ab0f7bd8a8131653dc2c03f780f8e40eb84f041380",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-natural-proof.md": "9a2877388dda2ec019fe0f99dcaa6ae6c1ff17406999e1b80969f8b147386252",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/parent-supplied-natural-proof.json": "862d81e1f5ee92371c65baf1244617d93763af5312f7d1d74ec67ab5d8c315f0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-03acf74a7a/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b6d97e1010/node.json": "c5ed2382c6b510d5f0a96cf2326c6e82639fd7c2b34f897a7f91aee029012ddd"
+  }
+}

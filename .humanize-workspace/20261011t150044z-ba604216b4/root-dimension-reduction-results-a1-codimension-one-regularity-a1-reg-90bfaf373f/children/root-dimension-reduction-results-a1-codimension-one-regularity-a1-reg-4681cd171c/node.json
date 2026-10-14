@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "A measure with flat tangent measures a.e. is carried by a countably m-rectifiable set (Simon Ch. 3, 1.6 ⇐)",
+  "statement": "Let m ≥ 1, let D ⊆ ℝ^{m+1} be open, μ a Borel measure on ℝ^{m+1} with μ(ℝ^{m+1} \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D, and ν : ℝ^{m+1} → ℝ^{m+1} Borel with |ν(y)| = 1 for every y. Assume that for μ-a.e. y and every continuous compactly supported f : ℝ^{m+1} → ℝ, r^{-m} ∫ f(r^{-1}(z − y)) dμ(z) → ∫_{(span{ν(y)})^⊥} f dH^m as r ↓ 0 (H^m = μHE[m]). Then there is a Borel countably m-rectifiable set R ⊆ ℝ^{m+1} with μ(ℝ^{m+1} \\ R) = 0.",
+  "lean_statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), 1 ≤ m → IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, ∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 (∫ z in ((Submodule.span ℝ {ν y})ᗮ : Set (Euclid (m + 1))), f z ∂μHE[m]))) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0",
+  "lean_name": "codim1_rdo_dg_rectifiable_of_flat_tangent",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4681cd171c-a1"
+}

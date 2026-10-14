@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.halving_reduction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Iterated halving on a countable ball cover gives a full-measure Borel countably m-rectifiable set (Simon Ch. 3, 1.6 ⇐, final iteration)",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, D ⊆ E open, and μ a Borel measure on E with μ(E \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D. Assume (★): for every open U ⊆ E whose closure Ū is compact and contained in D there is a closed countably m-rectifiable set Γ ⊆ E with μ(U \\ Γ) ≤ μ(U)/2. Then there is a Borel countably m-rectifiable set R ⊆ E with μ(E \\ R) = 0.",
+  "lean_statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))), IsOpen D → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → (∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \\ Γ) ≤ μ U / 2) → ∃ R : Set (Euclid (m + 1)), MeasurableSet R ∧ CountablyRectifiable m R ∧ μ Rᶜ = 0",
+  "lean_name": "codim1_rdo_dg_rc_of_halving",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-06fe9fc636-a1"
+}

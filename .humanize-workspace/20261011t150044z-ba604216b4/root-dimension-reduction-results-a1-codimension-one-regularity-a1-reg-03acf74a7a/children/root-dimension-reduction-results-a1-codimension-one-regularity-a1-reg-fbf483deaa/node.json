@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1.density_trichotomy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.halfspace_rigidity-a1",
+  "depth": 6,
+  "title": "A set a.e. forward-invariant under the half-space of translations {⟨a,v⟩ ≥ 0} is null, co-null, or a half-space",
+  "statement": "Let n ∈ ℕ, F ⊆ ℝⁿ a Borel set and v ∈ ℝⁿ. Suppose that for every a ∈ ℝⁿ with ⟨a, v⟩ ≥ 0, for Lⁿ-almost every z ∈ ℝⁿ, z ∈ F implies z + a ∈ F. Then Lⁿ(F) = 0, or Lⁿ(ℝⁿ ∖ F) = 0, or there is c ∈ ℝ with Lⁿ(F Δ {z : ⟨z, v⟩ > c}) = 0.",
+  "lean_statement": "∀ (n : ℕ) (F : Set (EuclideanSpace ℝ (Fin n))) (v : EuclideanSpace ℝ (Fin n)), MeasurableSet F → (∀ a : EuclideanSpace ℝ (Fin n), 0 ≤ inner ℝ a v → ∀ᵐ z ∂volume, z ∈ F → z + a ∈ F) → volume F = 0 ∨ volume Fᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F {z | c < inner ℝ z v}) = 0",
+  "lean_name": "codim1_rdo_dg_hr_monotone_set_trichotomy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fbf483deaa-a1"
+}

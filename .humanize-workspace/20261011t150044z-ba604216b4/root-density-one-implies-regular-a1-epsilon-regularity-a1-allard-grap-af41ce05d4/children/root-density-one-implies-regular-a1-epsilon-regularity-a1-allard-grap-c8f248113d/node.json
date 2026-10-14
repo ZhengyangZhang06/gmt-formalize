@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.mollify_l2-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1",
+  "depth": 6,
+  "title": "Interior L² mollification error bounded by ε²∫‖Du‖²",
+  "statement": "Let n ∈ ℕ, u : ℝⁿ → ℝ L-Lipschitz (ℝⁿ = Euclid n), and ρ : ℝⁿ → ℝ continuous with ρ ≥ 0, ρ(z) = 0 whenever ‖z‖ ≥ 1, and ∫ρ = 1. Let 0 < ε ≤ s and v(x) := ∫ u(x − εz)ρ(z) dz. Then ∫_{B̆_{1−s}(0)} (u(x) − v(x))² dx ≤ ε² ∫_{B̆_1(0)} ‖Du‖², where Du = fderiv ℝ u.",
+  "lean_statement": "∀ (n : ℕ) (u ρ : Euclid n → ℝ) (L : NNReal) (ε s : ℝ), LipschitzWith L u → Continuous ρ → (∀ z, 0 ≤ ρ z) → (∀ z : Euclid n, 1 ≤ ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → 0 < ε → ε ≤ s → ∫ x in ball (0 : Euclid n) (1 - s), (u x - ∫ z, u (x - ε • z) * ρ z) ^ 2 ≤ ε ^ 2 * ∫ x in ball (0 : Euclid n) 1, ‖fderiv ℝ u x‖ ^ 2",
+  "lean_name": "dorag_ha_rb_mollify_l2",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.translation_l2-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.rellich_ball-a1.translation_l2-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-c8f248113d-a1"
+}

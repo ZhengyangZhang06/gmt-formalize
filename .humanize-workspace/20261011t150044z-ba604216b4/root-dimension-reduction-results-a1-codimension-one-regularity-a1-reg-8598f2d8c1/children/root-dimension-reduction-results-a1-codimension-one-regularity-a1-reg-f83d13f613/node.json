@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.normal_halfspace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Normal derivative integrated over a half-space equals minus the boundary integral",
+  "statement": "Let m ∈ ℕ, let ι : ℝ^m → ℝ^{m+1} be a linear isometry and v ∈ ℝ^{m+1} with |v| = 1 and ⟨ι x, v⟩ = 0 for all x, and let h : ℝ^{m+1} → ℝ be C¹ with compact support. Then ∫_{⟨w,v⟩>0} Dh(w)(v) dL^{m+1}(w) = −∫_{ℝ^m} h(ι x) dL^m(x).",
+  "lean_statement": "∀ (m : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + 1)) (v : Euclid (m + 1)) (h : Euclid (m + 1) → ℝ), ‖v‖ = 1 → (∀ x, inner ℝ (ι x) v = 0) → ContDiff ℝ 1 h → HasCompactSupport h → ∫ w in {w : Euclid (m + 1) | 0 < inner ℝ w v}, fderiv ℝ h w v = -∫ x, h (ι x)",
+  "lean_name": "codim1_rdo_dg_tma_normal_halfspace",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.orthogonal_fubini-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.orthogonal_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-f83d13f613-a1"
+}
