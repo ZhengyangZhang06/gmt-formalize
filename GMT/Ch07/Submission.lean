@@ -537,6 +537,82 @@ theorem Submission.cmr_cc_det_covector_basis_kronecker : ∀ (P n : ℕ) (I J : 
     simp only [Matrix.of_apply]
     exact ite_eq_right fun hEq => hk₀ ⟨j, hEq.symm⟩
 
+/-- **Face covectors of a coordinate `(m+1)`-plane** (Simon Ch. 6, (1.1), (1.2), (1.15)): for
+strictly increasing `ι : Fin (m + 1) → Fin P` put `J_j = ι ∘ j.succAbove` (the `j`-th index
+dropped) and `ε_j = (-1)^j dx^{J_j}`, with `dx^{J_j}` from `Submission.cmr_cc_det_covector_exists`.
+The `J_j` are strictly increasing and pairwise distinct (for `j ≠ j'`, `ι j` is a value of `J_{j'}`
+but not of `J_j`), so by `Submission.cmr_cc_det_covector_basis_kronecker` the coefficient
+`α_c(e_I)` of `α_c = Σ_j c_j ε_j` is `(-1)^j c_j` if `I = J_j` and `0` for every other strictly
+increasing `I`.  This gives `α_c(e_{J_j}) = (-1)^j c_j` and `|α_c| = √(Σ_j c_j²)`. -/
+theorem Submission.cmcdtfrbv_face_covectors : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P), StrictMono ι → ∃ ε : Fin (m + 1) → Covector (Euclid P) m, (∀ c : Fin (m + 1) → ℝ, covectorEuclideanNorm (∑ j, c j • ε j) = Real.sqrt (∑ j, c j ^ 2)) ∧ ∀ (c : Fin (m + 1) → ℝ) (j : Fin (m + 1)), (∑ j', c j' • ε j') (fun k => EuclideanSpace.single (ι (j.succAbove k)) (1 : ℝ)) = (-1) ^ (j : ℕ) * c j := by
+  intro P m ι hι
+  -- Step 1: the face indices `J_j = ι ∘ j.succAbove` are strictly increasing
+  obtain ⟨J, hJ⟩ : ∃ J : Fin (m + 1) → Fin m → Fin P, ∀ j k, J j k = ι (j.succAbove k) :=
+    ⟨fun j k => ι (j.succAbove k), fun _ _ => rfl⟩
+  have hJmono : ∀ j, StrictMono (J j) := by
+    intro j a b hab
+    rw [hJ, hJ]
+    exact hι (Fin.strictMono_succAbove j hab)
+  -- Step 2: `j ↦ J_j` is injective: for `j ≠ j'`, `ι j` is a value of `J_{j'}` but not of `J_j`
+  have hJinj : Injective J := by
+    intro j j' h
+    by_contra hne
+    obtain ⟨z, hz⟩ := Fin.exists_succAbove_eq hne
+    have h1 : J j z = ι j := by rw [h, hJ, hz]
+    rw [hJ] at h1
+    exact Fin.succAbove_ne j z (hι.injective h1)
+  -- Step 3: `θ_j = dx^{J_j}` by `det_covector_exists`, and `ε_j = (-1)^j θ_j`
+  choose θ hθ using fun j => Submission.cmr_cc_det_covector_exists P m (J j)
+  obtain ⟨ε, hε⟩ : ∃ ε : Fin (m + 1) → Covector (Euclid P) m,
+      ∀ j, ε j = ((-1 : ℝ) ^ (j : ℕ)) • θ j :=
+    ⟨fun j => ((-1 : ℝ) ^ (j : ℕ)) • θ j, fun _ => rfl⟩
+  -- Steps 4–5: by `det_covector_kronecker`, on a strictly increasing `I`
+  -- `α_c(e_I) = Σ_{j'} [J_{j'} = I] (-1)^{j'} c_{j'}`
+  have hval : ∀ (c : Fin (m + 1) → ℝ) (I : Fin m → Fin P), StrictMono I →
+      (∑ j', c j' • ε j') (fun k => EuclideanSpace.basisFun (Fin P) ℝ (I k)) =
+        ∑ j', if J j' = I then (-1) ^ (j' : ℕ) * c j' else 0 := by
+    intro c I hI
+    rw [ContinuousAlternatingMap.sum_apply]
+    refine Finset.sum_congr rfl fun j' _ => ?_
+    rw [ContinuousAlternatingMap.smul_apply, hε, ContinuousAlternatingMap.smul_apply,
+      Submission.cmr_cc_det_covector_basis_kronecker P m (J j') I (θ j') (hJmono j') hI (hθ j')]
+    split_ifs
+    · rw [smul_eq_mul, smul_eq_mul, mul_one, mul_comm]
+    · rw [smul_zero, smul_zero]
+  -- Step 6: `α_c(e_{J_j}) = (-1)^j c_j`, since only `j' = j` has `J_{j'} = J_j`
+  have hface : ∀ (c : Fin (m + 1) → ℝ) (j : Fin (m + 1)),
+      (∑ j', c j' • ε j') (fun k => EuclideanSpace.basisFun (Fin P) ℝ (J j k)) =
+        (-1) ^ (j : ℕ) * c j := by
+    intro c j
+    rw [hval c (J j) (hJmono j), Finset.sum_eq_single j]
+    · exact ite_eq_left rfl
+    · intro j' _ hj'
+      exact ite_eq_right fun h => hj' (hJinj h)
+    · intro hj
+      exact absurd (Finset.mem_univ j) hj
+  refine ⟨ε, fun c => ?_, fun c j => ?_⟩
+  · -- Step 7: the squared coefficient of `α_c` on a strictly increasing `I` is `c_j²` if
+    -- `I = J_j` and `0` otherwise, so the squared coefficients sum to `Σ_j c_j²`
+    rw [covectorEuclideanNorm]
+    congr 1
+    symm
+    refine Fintype.sum_of_injective J hJinj _ _ (fun I hI => ?_) (fun j => ?_)
+    · split_ifs with hmono
+      · have h0 : (∑ j', if J j' = I then (-1 : ℝ) ^ (j' : ℕ) * c j' else 0) = 0 :=
+          Finset.sum_eq_zero fun j' _ => ite_eq_right fun h => hI ⟨j', h⟩
+        rw [hval c I hmono, h0]
+        ring
+      · rfl
+    · rw [ite_eq_left (hJmono j), hface c j]
+      rcases neg_one_pow_eq_or ℝ (j : ℕ) with h | h <;> rw [h] <;> ring
+  · -- Step 6 with `e_l = EuclideanSpace.single l 1`
+    have hv : (fun k => EuclideanSpace.single (ι (j.succAbove k)) (1 : ℝ)) =
+        fun k => EuclideanSpace.basisFun (Fin P) ℝ (J j k) := by
+      funext k
+      rw [EuclideanSpace.basisFun_apply, hJ]
+    rw [hv]
+    exact hface c j
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
