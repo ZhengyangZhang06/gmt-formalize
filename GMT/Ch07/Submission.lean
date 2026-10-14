@@ -620,6 +620,75 @@ theorem Submission.dimred_cs_sos_cfs_rh_radial_cartan : ∀ (P q : ℕ) (β : Di
   rw [hs, eq_sub_of_add_eq hC]
   module
 
+/-- **Radial homotopy formula** (Poincaré lemma for the radial contraction; Simon Ch. 6,
+2.25–2.26).  For a `C^∞` `(q + 1)`-form `β` on `ℝᴾ`, `Kβ(x) = ∫₀¹ tᵠ ι_x β(t x) dt` is `C^∞` and
+`d(Kβ)(x) + ∫₀¹ t^{q+1} ι_x (dβ)(t x) dt = β(x)`, where `ι_x α = α.curryLeft x`.  The integrand
+`h(t, x) = tᵠ ι_x β(t x)` is jointly `C^∞`, so `Kβ` is `C^∞` and `d(Kβ)(x) = ∫₀¹ d(h(t, ·))(x) dt`.
+By the radial Cartan identity, `d(h(t, ·))(x) = G(t) - F(t)` with `F(t) = t^{q+1} ι_x (dβ)(t x)`
+and `G(t) = (q + 1) tᵠ β(t x) + t^{q+1} Dβ(t x)[x]`, the derivative of `t ↦ t^{q+1} β(t x)`; the
+fundamental theorem of calculus gives `∫₀¹ G = β(x)`. -/
+theorem Submission.dimred_cs_sos_cfs_radial_homotopy : ∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x := by
+  intro P q β hβ
+  -- Step 1: the integrand `h(t, x) = tᵠ ι_x β(t x)` is jointly `C^∞`
+  have hh : ContDiff ℝ (⊤ : ℕ∞)
+      (fun p : ℝ × Euclid P => p.1 ^ q • (β (p.1 • p.2)).curryLeft p.2) :=
+    (contDiff_fst.pow q).smul
+      (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := q)).contDiff.comp (hβ.comp (contDiff_fst.smul contDiff_snd))).clm_apply
+        contDiff_snd)
+  -- Step 2: conclusion (1), by the parametric-integral lemma
+  refine ⟨(Submission.cmcdt_lpo_slice_param_integral P (Covector (Euclid P) q) _ hh).1,
+    fun x => ?_⟩
+  have hdiff : Differentiable ℝ β := hβ.differentiable (by simp)
+  have hDβ : Continuous (fderiv ℝ β) := hβ.continuous_fderiv (by simp)
+  have hsx : Continuous fun t : ℝ => t • x := continuous_id.smul continuous_const
+  -- Step 3: `d(Kβ)(x) = ∫₀¹ d(h(t, ·))(x) dt`
+  have hA : exteriorDerivative
+      (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x =
+      ∫ t in (0 : ℝ)..1, exteriorDerivative
+        (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x :=
+    Submission.dimred_cs_sos_cfs_rh_extDeriv_param_integral P q _ hh x
+  -- Step 4: the radial Cartan identity `d(h(t, ·))(x) = G(t) - F(t)`; `G` and `F` are continuous
+  let G : ℝ → Covector (Euclid P) (q + 1) := fun t =>
+    (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x
+  let F : ℝ → Covector (Euclid P) (q + 1) := fun t =>
+    t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x
+  have hB : ∀ t : ℝ, exteriorDerivative
+      (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x = G t - F t := fun t =>
+    eq_sub_of_add_eq (Submission.dimred_cs_sos_cfs_rh_radial_cartan P q β t x (hdiff _))
+  have hG : Continuous G :=
+    ((continuous_const.mul (continuous_pow q)).smul (hβ.continuous.comp hsx)).add
+      ((continuous_pow (q + 1)).smul ((hDβ.comp hsx).clm_apply continuous_const))
+  have hdβ : Continuous (exteriorDerivative β) :=
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ).continuous.comp hDβ
+  have hF : Continuous F :=
+    (continuous_pow (q + 1)).smul
+      (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := q + 1)).continuous.comp (hdβ.comp hsx)).clm_apply continuous_const)
+  -- `G(t)` is the derivative of `t ↦ t^{q+1} β(t x)`
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s ^ (q + 1) • β (s • x)) (G t) t := by
+    intro t
+    have h1 : HasDerivAt (fun s : ℝ => β (s • x)) (fderiv ℝ β (t • x) x) t := by
+      have h := (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t ((hasDerivAt_id' t).smul_const x)
+      rw [one_smul] at h
+      exact h
+    convert (hasDerivAt_pow (q + 1) t).fun_smul h1 using 1
+    simp only [G, Nat.add_sub_cancel]
+    push_cast
+    exact add_comm _ _
+  -- Step 5: integrate over `[0, 1]`
+  have hint : (∫ t in (0 : ℝ)..1, exteriorDerivative
+      (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x) =
+      (∫ t in (0 : ℝ)..1, G t) - ∫ t in (0 : ℝ)..1, F t := by
+    rw [intervalIntegral.integral_congr fun t _ => hB t]
+    exact intervalIntegral.integral_sub (hG.intervalIntegrable 0 1) (hF.intervalIntegrable 0 1)
+  have hftc : (∫ t in (0 : ℝ)..1, G t) = β x := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hG.intervalIntegrable 0 1)]
+    simp
+  rw [hA, hint, hftc]
+  exact sub_add_cancel _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
