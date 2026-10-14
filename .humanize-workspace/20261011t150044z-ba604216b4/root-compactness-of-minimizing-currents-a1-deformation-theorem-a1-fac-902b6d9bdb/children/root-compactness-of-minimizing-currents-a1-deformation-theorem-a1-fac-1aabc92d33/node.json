@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.support_faces-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1",
+  "depth": 5,
+  "title": "The support of a face current lies on the faces with nonzero density",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let s be a finite set of pairs p = (ι, b) with ι : Fin n → Fin P (arbitrary) and b : Fin P → ℤ, and let w_p : ℝⁿ → ℝ be integrable on Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 ∀ i} for every p ∈ s. Write Φ_p(y) := toLp(b) + Σ_j y_j e_{ι(j)} and E_p := (e_{ι(0)}, …, e_{ι(m)}) with e_l := EuclideanSpace.single l 1. Let D ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) satisfy D(ω) = Σ_{p∈s} ∫_{Q₁} w_p(y)·ω(Φ_p(y))(E_p) dy for every test n-form ω. Then every x ∈ spt D (D.support = univ ∖ zeroRegion D, Simon 6.2.11) equals Φ_p(y) for some p ∈ s with ∫_{Q₁} |w_p| ≠ 0 and some y ∈ [0,1]ⁿ (0 ≤ y_i ≤ 1 for all i).",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x",
+  "lean_name": "cmcdtfrfic_support_faces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-1aabc92d33-a1"
+}

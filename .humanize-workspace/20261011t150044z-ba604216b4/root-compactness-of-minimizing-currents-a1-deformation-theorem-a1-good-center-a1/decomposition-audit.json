@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'cmcdt_gc_|good.?cent|dual skeleton|vitali|bad set' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "exists_disjoint_subfamily_covering_enlargement|theorem prod_prod|volume_preserving_piEquivPiSubtypeProd|volume_measurePreserving_piCongrLeft|volume_preserving_symm_measurableEquiv_toLp|measure_preimage_equiv|theorem volume_pi_ball|theorem volume_pi_Ioo|theorem infDist_lt_iff|lemma dist_pi_lt_iff|theorem le_map_apply|countable_of_isOpen|theorem dist_eq|exists_subset_card_eq",
+        "rg -n -F 'cmcdt_gc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "git -C .lake/packages/mathlib status --porcelain --untracked-files=no",
+        "sed -n '1651,1725p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-center-independent-audit-20261013/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-center-independent-audit-20261013/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/good-center-independent-audit-20261013/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/good-center-independent-audit-20261013/Challenge.lean",
+        "/tmp/good-center-independent-audit-20261013/Full.lean",
+        "/tmp/good-center-independent-audit-20261013/Instances.lean"
+      ],
+      "conclusion": "The snapshot revisions match the manifest, and its Ch07 contract is byte-identical to the workspace Contract and Submission. Project searches found no reusable good-centre lemma. The pinned Mathlib supports the stated covering, arbitrary-set product-measure, coordinate-equivalence and distance arguments. Independent instance checks confirm Euclidean distance on Euclid P, the sup metric and product Lebesgue volume on Fin d → ℝ, and real-valued integer casts. All frozen types elaborate before any child implementation. The exact supplied child scripts, parent assembly and comparator-form exact-type checks compile; all four proved declarations use only propext, Classical.choice and Quot.sound. The final 1170-node DAG contains none of the proposed names. The split is appropriate: three independent, acyclic obligations establish precisely the selected cmcdt_good_center contract. The assembly chooses C before the measures and obtains one centre valid for both measures at every required radius."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tube_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean type agree, including unrestricted real r. The dimension hypothesis makes the skeleton nonempty; infDist_lt_iff supplies a nearby point and consequently r > 0. Selecting and injectively enumerating m+2 indices, choosing their integer shifts, and bounding the partial sum of squares proves the exact conclusion. The proof is complete and independent. The bare declaration name is unreserved."
+    },
+    {
+      "key": "bad_set_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for every d, finite measure and positive β. The proof correctly distinguishes sup-metric covering balls from the Euclidean periodic sets. Vitali covers centres with factor 3; the cube and radius bounds force equal integer shifts at any intersection, proving periodic-set disjointness. Countability, openness, finite nonzero mass cancellation and the zero-mass case are justified. The resulting 6^d/β bound implies 10^d/β, including d=0. No bad-set measurability assumption or circular dependency is needed. The bare name is unreserved."
+    },
+    {
+      "key": "cube_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree, including arbitrary nonmeasurable E_e and all natural dimensions. Measure-preserving coordinate equivalences and the arbitrary-set product formula justify the projection bound; the complementary cube has volume at most one. Noninjective maps contribute empty bad-centre sets, and finite subadditivity contradicts the strict volume hypothesis if no centre exists. Empty coordinate sets are covered by the same argument. The proof is complete, independent and directly usable in the parent assembly. The bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

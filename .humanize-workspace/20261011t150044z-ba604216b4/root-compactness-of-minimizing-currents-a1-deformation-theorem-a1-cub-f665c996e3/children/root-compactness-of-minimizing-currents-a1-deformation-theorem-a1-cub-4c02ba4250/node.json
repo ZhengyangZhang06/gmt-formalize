@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_l1-a1.l1_contraction-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_l1-a1",
+  "depth": 6,
+  "title": "L¹ contraction: ∫⁻‖k⋆g‖ₑ ≤ ∫⁻‖g‖ₑ for a nonnegative kernel with ∫k = 1",
+  "statement": "Let n ∈ ℕ and ℝⁿ = Euclid n with Lebesgue measure. Let k : ℝⁿ → ℝ satisfy k(z) ≥ 0 for all z and ∫ k = 1 (Bochner integral). Let g : ℝⁿ → ℝ be a.e.-strongly measurable. Write (k ⋆ g)(x) := ∫ k(t) g(x − t) dt (Mathlib's convolution with lsmul ℝ ℝ and volume). Then ∫⁻ ‖(k ⋆ g)(x)‖ₑ dx ≤ ∫⁻ ‖g(x)‖ₑ dx, an inequality between [0, ∞]-valued Lebesgue integrals of extended norms. This is Young's inequality for a probability kernel.",
+  "lean_statement": "∀ (n : ℕ) (k g : Euclid n → ℝ), (∀ z, 0 ≤ k z) → ∫ z, k z = 1 → AEStronglyMeasurable g volume → ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ ≤ ∫⁻ x, ‖g x‖ₑ",
+  "lean_name": "cmcdt_cbm_sa_ml_l1_contraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4c02ba4250-a1"
+}
