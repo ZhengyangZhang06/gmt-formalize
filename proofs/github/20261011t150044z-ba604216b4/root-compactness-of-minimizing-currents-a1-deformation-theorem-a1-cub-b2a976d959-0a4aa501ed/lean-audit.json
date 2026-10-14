@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3af5391b116c6888e97b7805db9bf52f12ddaab9c9cbb22177cb2033db8c06f1",
+  "git_delta": {
+    "base_commit": "97d94818fd9481b4433a554c747e8eb11d695f4e",
+    "candidate_commit": "4dea19b621036ce9564fd1029408a5675e0e204d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_sp_segment_bound",
+    "diff_sha256": "3bf1fe5760a5fbe6217b92f85895413fd995c480dd09e2bc5238afeaea2da40b",
+    "source_sha256": "7c5da0ebf7ee80c092ecea7f35a4c3cbf2f1c39c866b25794c7d9ca7ca36c631",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_sp_segment_bound",
+      "statement": "∀ (n : ℕ) (v : Euclid n → ℝ) (x y : Euclid n), ContDiff ℝ 1 v → |v x - v y| ≤ ‖x - y‖ * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v ((1 - t) • y + t • x)‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
