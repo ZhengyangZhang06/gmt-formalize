@@ -3530,6 +3530,89 @@ theorem Submission.cbr_ci_bl_density_bounds : ∀ (P n : ℕ) (μ : Measure (Euc
     (fun r => ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) (θ a) η₁
     (ENNReal.ofReal ((P : ℝ) ^ n)) (hθ a ha) hη₁ hK hmass hL hU hD
 
+/-- **Rescaled bounds for the blow-ups `νᵢ = Hⁿ⌞η_{a,λᵢ}(M)`** (steps 3 and 4 of the blow-up of a
+cycle with the integer slice property at a point `a` of `M`, with the density bounds used in its
+step 7; `V(r) = ωₙrⁿ`, `λᵢ > 0`, `λᵢ → 0`).  By `Submission.cbr_ci_bl_blowUp_restrict_scaling`,
+`νᵢ = λᵢ⁻ⁿ η_{a,λᵢ#}(Hⁿ⌞M)`, so `Submission.cbr_ci_bl_rb_scale_identities` gives
+`νᵢ(ℝᴾ) = λᵢ⁻ⁿ Hⁿ(M)`, `νᵢ(B̄_R(0)) = V(R) Hⁿ(M ∩ B̄_{λᵢR}(a)) / V(λᵢR)`, the same identity for
+open balls, and `∫_{B̄_R(0)} |τ(a + λᵢy) − τ(a)| dνᵢ(y) = V(R) o(λᵢR) / V(λᵢR)`, where `τ = θζ` and
+`o(r) = ∫_{M ∩ B̄_r(a)} |τ − τ(a)| dHⁿ`.  `Submission.cbr_ci_bl_density_bounds` gives `r₀ > 0` with
+`ofReal(η₁/(4θ(a))) V(r) ≤ Hⁿ(M ∩ B_r(a))` and `Hⁿ(M ∩ B̄_r(a)) ≤ 2V(r)` for `0 < r < r₀`, and
+`λᵢR < r₀` for all large `i`.  (a) Eventually `νᵢ(B̄_R(0)) ≤ 2V(R)`, and every `νᵢ` is finite, so
+`Submission.cbr_ci_bl_rb_compact_sup_bound` applies.  (b) and (d) follow from (U) and (D) along the
+null sequence `λᵢR` by `Submission.cbr_ci_bl_rb_null_seq_transfer`.  (c) For `λᵢR < r₀`,
+`ofReal(η₁/(4θ(a))) V(R) ≤ νᵢ(B_R(0)) ≤ νᵢ(B̄_R(0))`. -/
+theorem Submission.cbr_ci_bl_rescaled_bounds : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ) (lams : ℕ → ℝ), μHE[n] M < ∞ → MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → (∀ K : Set (Euclid P), IsCompact K → ⨆ i, (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) K < ∞) ∧ (∀ R : ℝ, 0 < R → limsup (fun i => (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) atTop ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (R ^ n)) ≤ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M)) (closedBall 0 R)) ∧ (∀ R : ℝ, 0 < R → Tendsto (fun i => ∫⁻ y in closedBall (0 : Euclid P) R, ‖θ (a + lams i • y) • ζ (a + lams i • y) - θ a • ζ a‖ₑ ∂(μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))) atTop (𝓝 0)) := by
+  have hscale := Submission.cbr_ci_bl_rb_scale_identities
+  have hnull := Submission.cbr_ci_bl_rb_null_seq_transfer
+  have hcpt := Submission.cbr_ci_bl_rb_compact_sup_bound
+  have hblow := Submission.cbr_ci_bl_blowUp_restrict_scaling
+  have hdens := Submission.cbr_ci_bl_density_bounds
+  intro P n μ M θ ζ a η₁ lams hMfin hM hθ hζ hμ hθpos hζle hζβ ha hη₁ hL hU hD hlampos hlam
+  -- Step 1: `νᵢ = λᵢ⁻ⁿ η_{a,λᵢ#}(Hⁿ⌞M)`, hence the scale identities at every `λᵢ`
+  have hid := fun i => hscale P n M θ ζ a (lams i) (hlampos i)
+    (hblow P n M θ a (lams i) hM hθ (hlampos i)).2.1
+  -- Step 2: `0 < ωₙ < ∞`, so `V(R) = ωₙRⁿ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := by
+    rw [unitBallVolume]
+    exact measure_ball_lt_top.ne
+  have hVtop : ∀ R : ℝ, unitBallVolume n * ENNReal.ofReal (R ^ n) ≠ ∞ := fun R =>
+    ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+  -- Step 3: the density bounds hold below some `r₀ > 0`; `λᵢR → 0` with `λᵢR > 0`, so
+  -- eventually `λᵢR < r₀`
+  obtain ⟨r₀, hr₀, hr₀b⟩ :=
+    hdens P n μ M θ ζ a η₁ hM hθ hζ hμ hθpos hζle hζβ ha hη₁ hL hU hD
+  have hpos : ∀ R : ℝ, 0 < R → ∀ i, 0 < lams i * R := fun R hR i => mul_pos (hlampos i) hR
+  have hsR : ∀ R : ℝ, Tendsto (fun i => lams i * R) atTop (𝓝 0) := fun R => by
+    simpa using hlam.mul_const R
+  have hev : ∀ R : ℝ, ∀ᶠ i in atTop, lams i * R < r₀ := fun R =>
+    (tendsto_order.1 (hsR R)).2 r₀ hr₀
+  refine ⟨?_, ?_, ?_, ?_⟩
+  -- (a): `νᵢ(ℝᴾ) = λᵢ⁻ⁿ Hⁿ(M) < ∞`, and eventually `νᵢ(B̄_R(0)) ≤ V(R) · 2`, as
+  -- `Hⁿ(M ∩ B̄_{λᵢR}(a)) ≤ 2V(λᵢR)`
+  · refine hcpt P (fun i => μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+      (fun i => ?_) (fun R hR => ⟨unitBallVolume n * ENNReal.ofReal (R ^ n) * 2,
+        ENNReal.mul_lt_top (hVtop R).lt_top (by norm_num), ?_⟩)
+    · rw [(hid i).1]
+      exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hMfin
+    · filter_upwards [hev R] with i hi
+      rw [((hid i).2 R hR).1]
+      gcongr
+      exact ENNReal.div_le_of_le_mul (hr₀b _ (hpos R hR i) hi).2
+  -- (b): `νᵢ(B̄_R(0)) = V(R) h(λᵢR)` with `h(r) = Hⁿ(M ∩ B̄_r(a)) / V(r)`, and
+  -- `limsup_{r ↓ 0} h(r) ≤ 1` by (U)
+  · intro R hR
+    refine (limsup_congr (Eventually.of_forall fun i => ((hid i).2 R hR).1)).trans_le ?_
+    exact (hnull (fun r => μHE[n] (M ∩ closedBall a r) /
+      (unitBallVolume n * ENNReal.ofReal (r ^ n))) (fun _ => 0) _ (fun i => lams i * R)
+      (hVtop R) (hpos R hR) (hsR R)).1 hU
+  -- (c): for `λᵢR < r₀`, `ofReal(η₁/(4θ(a))) ≤ Hⁿ(M ∩ B_{λᵢR}(a)) / V(λᵢR)`; multiply by `V(R)`
+  · intro R hR
+    filter_upwards [hev R] with i hi
+    have hVlam : unitBallVolume n * ENNReal.ofReal ((lams i * R) ^ n) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos (hpos R hR i) n)).ne'
+    have hHlam : μHE[n] (M ∩ ball a (lams i * R)) ≠ ∞ :=
+      ((measure_mono inter_subset_left).trans_lt hMfin).ne
+    calc ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (R ^ n))
+        = unitBallVolume n * ENNReal.ofReal (R ^ n) * ENNReal.ofReal (η₁ / (4 * θ a)) :=
+          mul_comm _ _
+      _ ≤ unitBallVolume n * ENNReal.ofReal (R ^ n) * (μHE[n] (M ∩ ball a (lams i * R)) /
+          (unitBallVolume n * ENNReal.ofReal ((lams i * R) ^ n))) := by
+          gcongr
+          exact (ENNReal.le_div_iff_mul_le (Or.inl hVlam) (Or.inr hHlam)).2
+            (hr₀b _ (hpos R hR i) hi).1
+      _ = (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+          (ball 0 R) := ((hid i).2 R hR).2.1.symm
+      _ ≤ (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a (lams i) '' M))
+          (closedBall 0 R) := measure_mono ball_subset_closedBall
+  -- (d): the deviation integral is `V(R) o(λᵢR) / V(λᵢR)`, and `o(r) / V(r) → 0` by (D)
+  · intro R hR
+    refine ((hnull (fun _ => 0) (fun r => (∫⁻ x in M ∩ closedBall a r,
+      ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) _
+      (fun i => lams i * R) (hVtop R) (hpos R hR) (hsR R)).2 hD).congr fun i => ?_
+    exact ((hid i).2 R hR).2.2.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
