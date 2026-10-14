@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dmcbr_cc_seg|cbr_cc_seg_|dmcbr_cc_segment_current' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image",
+        "MeasurableEmbedding.integral_map|setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|integral_Ioc_eq_integral_Ioo|setIntegral_eq_zero_of_forall_eq_zero|theorem restrict_map|lemma restrict_map",
+        "DifferentialForm|IsSmoothForm|exteriorDerivative|Covector",
+        "integral_eq_sub_of_hasDerivAt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/segment_audit_63_9yqdl/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/segment_audit_63_9yqdl/AcceptedChildren.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/segment_audit_63_9yqdl/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-437b2394ee/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-437b2394ee/decomposition-v1.json",
+        "/tmp/segment_audit_63_9yqdl/ChallengeTypes.lean",
+        "/tmp/segment_audit_63_9yqdl/AcceptedChildren.lean",
+        "/tmp/segment_audit_63_9yqdl/Assembly.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the snapshot; inspected definitions match the compiled package sources. The snapshot search found no proposed segment-current declarations. DAG inspection confirms each proposed bare name uniquely identifies an accepted declaration with a byte-identical frozen and declared type. All four recorded comparators passed, and candidate source hashes match their acceptance records. Independently, all challenge types elaborate without child implementations; the extracted accepted proofs and the assembly of the exact selected parent compile. Their axiom reports contain only propext, Classical.choice and Quot.sound. The split is appropriate: the measure and tangent lemmas feed segment_imrep, while zero_form_ftc supplies the boundary computation. These children and the three declared prerequisites establish both endpoint cases, finite mass using precisely MR, and the required support inclusion. Dependencies are acyclic, and the parent binding digest was reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "line_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the stated hypotheses and all three conclusions. The proof establishes the isometry, measurable embedding, normalized Hausdorff measure identity, and restricted push-forward identity. The inspected MeasurableEmbedding.integral_map genuinely permits arbitrary integrands, so no measurability or integrability hypothesis is missing. The proof is complete and independent; reuse preserves the accepted name and exact type."
+    },
+    {
+      "key": "open_segment_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the pinned tangent-space definition. Membership supplies 0 < s₀ < ℓ, so no separate positivity hypothesis on ℓ is needed. The proof establishes dimension one and explicitly constructs the preimage s₀ + rc for every relevant point of the line. The inspected integral lemma requires only null-measurability of the containing line, as supplied. Eventual equality proves the required limit without circular dependence."
+    },
+    {
+      "key": "zero_form_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes global smoothness, arbitrary a and v, and ℓ ≥ 0 exactly as stated. Continuous linear evaluation produces the smooth scalar function; the degree-zero exterior derivative formula, chain rule, continuity and interval integrability justify FTC. Removing the endpoint preserves the Lebesgue integral, including ℓ = 0. The supplied proof is complete and uses no undeclared theorem obligation."
+    },
+    {
+      "key": "segment_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly states the existence, carrier inclusion, finite measure and action formula. The proof supplies every frozen IMRep field: Borel carrier, Lipschitz rectifiability, positive measurable multiplicity, local integrability, measurable orientation and almost-everywhere tangent orientation. It then proves all three conclusions, including the action formula for arbitrary forms. Its only child dependencies are line_hausdorff and open_segment_tangent, correctly directed and acyclic; neither MR nor the parent conclusion is assumed."
+    }
+  ],
+  "required_changes": []
+}
