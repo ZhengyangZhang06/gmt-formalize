@@ -3474,6 +3474,86 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- **Localisation at a good radius** (Simon Ch. 6, proof of 7.2, chapter-06.txt lines 2090–2100:
+"by 4.5(1),(2) and an argument as in 6.7(2) of Ch. 2 … we can assume `spt Tⱼ ⊆ W̄`", with the slice
+estimates 4.9–4.11).  Take `W ⊆ B_r`, `V = B_{r+2}` and `Λ₀ ≥ M_V(Tⱼ) + M_V(∂Tⱼ)` for all `j`.
+The weights `μⱼ = θⱼHⁿ⌞Mⱼ` of representations of the `Tⱼ` satisfy `μⱼ(G) = M_G(Tⱼ)` for open `G`,
+so they are finite on balls and `μⱼ(B_{r+1}) ≤ Λ₀`.  Fatou applied to 4.10 gives a radius
+`t₀ ∈ (r, r + 1)` and a subsequence `φ` with `liminf_{h↓0} h⁻¹μ_{φ(j)}{t₀ − h < |x| < t₀} ≤ C`.
+Then `T'ⱼ = T_{φ(j)}⌞B_{t₀}` is integer multiplicity, agrees with `T_{φ(j)}` on forms supported in
+`W ⊆ B_{t₀}`, has support in `K = B̄_{r+1}` and mass `μ_{φ(j)}(B_{t₀}) ≤ Λ₀`, and by 4.11
+`M(∂T'ⱼ) ≤ 2M_V(∂T_{φ(j)}) + 2C ≤ 2Λ₀ + 2C`. -/
+theorem Submission.dtc_bc_lc_fd_localize : ∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (W : Set (Euclid P)), Bornology.IsBounded W → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ V : Set (Euclid P), IsOpen V → Bornology.IsBounded V → ⨆ j, ((Ts j).massOn V + (Ts j).boundary.massOn V) < ∞) → ∃ (K : Set (Euclid P)) (φ : ℕ → ℕ) (Λ : NNReal) (Ts' : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K ∧ StrictMono φ ∧ (∀ j, IsIntegerMultiplicity (Ts' j)) ∧ (∀ j, (Ts' j).support ⊆ K) ∧ (∀ j, (Ts' j).mass ≤ Λ ∧ (Ts' j).boundary.mass ≤ Λ) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → Ts' j ω = Ts (φ j) ω := by
+  intro P m Ts W hW hIM hbd
+  -- Step 1: `W ⊆ B_r`, `V = B_{r+2}` and `M_V(Tⱼ) + M_V(∂Tⱼ) ≤ Λ₀` for every `j`
+  obtain ⟨r, hWr⟩ := hW.subset_ball (0 : Euclid P)
+  have hsup : ∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → ∀ j,
+      (Ts j).massOn G + (Ts j).boundary.massOn G ≤
+        ⨆ i, ((Ts i).massOn G + (Ts i).boundary.massOn G) := fun G _ _ j =>
+    le_iSup (fun i => (Ts i).massOn G + (Ts i).boundary.massOn G) j
+  obtain ⟨Λ₀, hΛ₀⟩ : ∃ Λ₀ : NNReal, ∀ j, (Ts j).massOn (ball (0 : Euclid P) (r + 2)) +
+      (Ts j).boundary.massOn (ball (0 : Euclid P) (r + 2)) ≤ Λ₀ :=
+    ⟨_, fun j => (hsup _ isOpen_ball isBounded_ball j).trans
+      (ENNReal.coe_toNNReal (hbd _ isOpen_ball isBounded_ball).ne).ge⟩
+  -- Step 2: representations `Rⱼ` of the `Tⱼ`; their weights `μⱼ` satisfy `μⱼ(G) = M_G(Tⱼ)`
+  choose R hR using hIM
+  have hμ : ∀ j (G : Set (Euclid P)), IsOpen G → (R j).measure G = (Ts j).massOn G :=
+    fun j G hG => (Submission.dtc_mass_eq_measure P (m + 1) univ G (Ts j) (R j) isOpen_univ hG
+      (subset_univ G) (hR j)).symm
+  have hfin : ∀ (j : ℕ) (s : ℝ), (R j).measure (ball (0 : Euclid P) s) < ∞ := by
+    intro j s
+    rw [hμ j _ isOpen_ball]
+    exact (le_self_add.trans (hsup _ isOpen_ball isBounded_ball j)).trans_lt
+      (hbd _ isOpen_ball isBounded_ball)
+  have hball : ∀ j, (R j).measure (ball (0 : Euclid P) (r + 1)) ≤ Λ₀ := by
+    intro j
+    calc (R j).measure (ball (0 : Euclid P) (r + 1))
+        ≤ (R j).measure (ball (0 : Euclid P) (r + 2)) :=
+          measure_mono (ball_subset_ball (by linarith))
+      _ = (Ts j).massOn (ball (0 : Euclid P) (r + 2)) := hμ j _ isOpen_ball
+      _ ≤ Λ₀ := le_self_add.trans (hΛ₀ j)
+  -- Steps 3–4: a good radius `t₀ ∈ (r, r + 1)`, a subsequence `φ` and the slice bound `C`
+  obtain ⟨t₀, ht₀, φ, C, hφ, hC⟩ :=
+    Submission.dtc_bc_lc_fd_lz_good_radius P (fun j => (R j).measure) r Λ₀ hfin hball
+  -- Step 5: `T'ⱼ = T_{φ(j)}⌞B_{t₀}`, represented by `R'ⱼ = R_{φ(j)}⌞B_{t₀}`
+  choose T' R' hR' hcar hmult horient hmeas hagree hvan using fun j =>
+    Submission.dtc_bc_lc_fd_lz_truncate P (m + 1) univ (ball (0 : Euclid P) t₀) (Ts (φ j))
+      (R (φ j)) isOpen_univ measurableSet_ball (hR (φ j))
+  have hBK : ball (0 : Euclid P) t₀ ⊆ closedBall 0 (r + 1) :=
+    (ball_subset_ball ht₀.2.le).trans ball_subset_closedBall
+  have hΛ : (Λ₀ : ℝ≥0∞) ≤ 2 * Λ₀ + 2 * C :=
+    le_add_right (le_mul_of_one_le_left zero_le one_le_two)
+  refine ⟨closedBall 0 (r + 1), φ, 2 * Λ₀ + 2 * C, T', isCompact_closedBall _ _, hφ,
+    fun j => ⟨R' j, hR' j⟩, fun j => ?_, fun j => ⟨?_, ?_⟩, fun j ω hω => ?_⟩
+  · -- Step 7: `T'ⱼ` kills every form supported off `K = B̄_{r+1} ⊇ B_{t₀}`
+    exact (Submission.rsd_cmr_support_subset_of_vanish P (m + 1) univ _ (T' j) isOpen_univ
+      (isCompact_closedBall _ _) (subset_univ _) fun ω hω => hvan j ω (hω.mono_right hBK)).1
+  · -- Step 8: `M(T'ⱼ) = μ_{φ(j)}(B_{t₀}) ≤ μ_{φ(j)}(B_{r+1}) ≤ Λ₀`
+    calc (T' j).mass = (R' j).measure univ :=
+          Submission.dtc_mass_eq_measure P (m + 1) univ univ (T' j) (R' j) isOpen_univ isOpen_univ
+            subset_rfl (hR' j)
+      _ = (R (φ j)).measure (ball (0 : Euclid P) t₀) := by
+          rw [hmeas j, Measure.restrict_apply_univ]
+      _ ≤ (R (φ j)).measure (ball (0 : Euclid P) (r + 1)) :=
+          measure_mono (ball_subset_ball ht₀.2.le)
+      _ ≤ Λ₀ := hball (φ j)
+      _ ≤ ((2 * Λ₀ + 2 * C : NNReal) : ℝ≥0∞) := by push_cast; exact hΛ
+  · -- Step 9: 4.11 gives `M(∂T'ⱼ) ≤ 2M_V(∂T_{φ(j)}) + 2C ≤ 2Λ₀ + 2C`
+    calc (T' j).boundary.mass
+        ≤ 2 * (Ts (φ j)).boundary.massOn (ball (0 : Euclid P) (r + 2)) +
+            2 * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ *
+              (R (φ j)).measure {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0) :=
+          Submission.dtc_bc_lc_fd_lz_boundary_mass P m univ (ball (0 : Euclid P) (r + 2))
+            (Ts (φ j)) (T' j) (R (φ j)) (R' j) t₀ (closedBall_subset_ball (by linarith [ht₀.2]))
+            (hR (φ j)) (hR' j) (hcar j) (hmult j) (horient j)
+      _ ≤ 2 * Λ₀ + 2 * C := by
+          gcongr
+          · exact le_add_self.trans (hΛ₀ (φ j))
+          · exact hC j
+      _ = ((2 * Λ₀ + 2 * C : NNReal) : ℝ≥0∞) := by push_cast; rfl
+  · -- Step 6: forms supported in `W ⊆ B_r ⊆ B_{t₀}` see no difference
+    exact hagree j ω (hω.trans (hWr.trans (ball_subset_ball ht₀.1.le)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
