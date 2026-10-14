@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 2.5** (fact (F1) in the proof of Ch. 6, 7.2): `M_G(A − B) ≤ M_G(A) + M_G(B)`.
+`M_G(A − B)` is the supremum of `(A − B)(ω)` over the forms `ω ∈ 𝒟ⁿ(U)` admissible for `M_G`
+(`spt ω ⊆ G`, `|ω| ≤ 1`).  For such `ω` the form `−ω` is admissible as well, since it has the
+same support and pointwise coefficient norm.  As `(A − B)(ω) = A(ω) + B(−ω)` and `ofReal` is
+subadditive, `(A − B)(ω)` is bounded by `M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_tb_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: `M_G(A − B)` is a supremum, so fix an admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible (same support, same coefficient norm)
+  have hnω : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) + B(−ω)`
+  have hAB : (A - B) ω = A ω + B (-ω) := by
+    change A.toCurrent ω - B.toCurrent ω = A.toCurrent ω + B.toCurrent (-ω)
+    rw [map_neg B.toCurrent ω, sub_eq_add_neg]
+  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hAB]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
