@@ -1864,6 +1864,99 @@ theorem Submission.dorag_sn_open_superset_measure_lt : ∀ (N : ℕ) (μ : Measu
       _ ≤ ∑' i : T, δ i := ENNReal.tsum_le_tsum fun i => (hUδ i).le
       _ < ε := hδε
 
+/-- **Simon Ch. 3, Remark 1.8** (with Ch. 1, Theorem 3.3): for `C = τ(M, θ, ξ)` in `ℝᴾ`, at
+`Hⁿ`-a.e. `y`, an integer density `Θⁿ(μ_C, y) = k ≥ 1` forces `y ∈ M` and `θ(y) = k`.
+`M_W(C) = μ_C(W)` for open `W` (`Submission.rsd_massOn_eq_measure`), and `Θⁿ(μ_C, ·) = θ`
+`μ_C`-a.e. (`Submission.rsd_ae_hasMassDensity_mult`), hence `Hⁿ`-a.e. on `M`, where `θ ≥ 1`.  The
+set `A` of points `y ∉ M` of density `k ≥ 1` is `μ_C`-null, and `μ_C(B̄_s(x)) ≥ ωₙsⁿ/2` for small
+`s` at every `x ∈ A`.  So `Hⁿ(A) ≤ K μ_C(O)` for every open `O ⊇ A`
+(`Submission.dorag_sn_hausdorff_le_mul_of_lower_density`), where `μ_C(O)` can be made arbitrarily
+small (`Submission.dorag_sn_open_superset_measure_lt`); thus `Hⁿ(A) = 0`.  At the remaining points
+`y ∈ M` of density `k`, uniqueness of limits along `𝓝[>] 0` gives `θ(y) = k`. -/
+theorem Submission.idtp_cse_sp_density_mult_ae : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, 1 ≤ k → HasMassDensity C y k → y ∈ R.carrier ∧ R.mult y = k := by
+  intro P n C R hR
+  -- Step 1: `M_W(C) = μ_C(W)` for open `W`
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → C.massOn W = R.measure W := fun W hW =>
+    Submission.rsd_massOn_eq_measure P n univ C R isOpen_univ hR W hW (subset_univ W)
+  -- Step 2: `Θⁿ(μ_C, y) = θ(y)` for `Hⁿ`-a.e. `y ∈ M`, since `μ_C = θHⁿ⌞M` and `θ ≥ 1` on `M`
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hon : ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ R.carrier →
+      HasMassDensity C y (R.mult y) := by
+    have h := Submission.rsd_ae_hasMassDensity_mult P n univ C R isOpen_univ hR
+    rw [IMRep.measure, ae_withDensity_iff hθm, ae_restrict_iff' R.measurableSet_carrier] at h
+    filter_upwards [h] with y hy hyM
+    exact hy hyM (Nat.cast_ne_zero.2 (R.mult_pos y hyM).ne')
+  -- Step 3: `0 < ωₙ < ∞`, and `μ_C(B̄_1(x)) < ∞` (local integrability of `θ`)
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hloc : ∀ x : Euclid P, R.measure (closedBall x 1) ≠ ∞ := by
+    intro x
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall x 1) (subset_univ _)
+  -- Step 4: the off-carrier set `A` is `μ_C`-null, as `μ_C ≪ Hⁿ⌞M` and `A ∩ M = ∅`
+  set A : Set (Euclid P) := {y | y ∉ R.carrier ∧ ∃ k : ℕ, 1 ≤ k ∧ HasMassDensity C y k}
+  have hAμ : R.measure A = 0 := by
+    have hAM : A ∩ R.carrier = ∅ := eq_empty_of_forall_notMem fun y hy => hy.1.1 hy.2
+    have h0 : (μHE[n].restrict R.carrier) A = 0 := by
+      rw [Measure.restrict_apply' R.measurableSet_carrier, hAM, measure_empty]
+    exact withDensity_absolutelyContinuous (μHE[n].restrict R.carrier)
+      (fun x => (R.mult x : ℝ≥0∞)) h0
+  -- Step 5: `μ_C(B̄_s(x)) ≥ ωₙsⁿ/2` for small `s > 0`, at every `x ∈ A`
+  set c : ℝ := 1 / 2 * (unitBallVolume n).toReal with hc
+  have hcpos : 0 < c := mul_pos (by norm_num) (ENNReal.toReal_pos hω0 hωtop)
+  have hlow : ∀ x ∈ A, ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, 0 < t → t < t₀ →
+      ENNReal.ofReal (c * t ^ n) ≤ R.measure (closedBall x t) := by
+    rintro x ⟨-, k, hk, -, hkx⟩
+    have hk' : (1 : ℝ) ≤ k := by exact_mod_cast hk
+    have hlt : ENNReal.ofReal (1 / 2) < ENNReal.ofReal k :=
+      (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+    obtain ⟨t₀, ht₀, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 (hkx (Ioi_mem_nhds hlt))
+    refine ⟨t₀, ht₀, fun t ht htt₀ => ?_⟩
+    have hgt : ENNReal.ofReal (1 / 2) <
+        C.massOn (ball x t) / (unitBallVolume n * ENNReal.ofReal (t ^ n)) := hsub ⟨ht, htt₀⟩
+    have hd0 : unitBallVolume n * ENNReal.ofReal (t ^ n) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne'
+    have hdtop : unitBallVolume n * ENNReal.ofReal (t ^ n) ≠ ∞ :=
+      ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+    calc ENNReal.ofReal (c * t ^ n)
+        = ENNReal.ofReal (1 / 2) * (unitBallVolume n * ENNReal.ofReal (t ^ n)) := by
+          rw [ENNReal.ofReal_mul hcpos.le, hc, ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 1 / 2),
+            ENNReal.ofReal_toReal hωtop, mul_assoc]
+      _ ≤ C.massOn (ball x t) :=
+          (ENNReal.le_div_iff_mul_le (Or.inl hd0) (Or.inl hdtop)).1 hgt.le
+      _ = R.measure (ball x t) := hmass _ isOpen_ball
+      _ ≤ R.measure (closedBall x t) := measure_mono ball_subset_closedBall
+  -- Step 6: comparison theorem, `Hⁿ(A) ≤ K μ_C(O)` for every open `O ⊇ A`
+  obtain ⟨K, hKtop, hK⟩ := Submission.dorag_sn_hausdorff_le_mul_of_lower_density P n c hcpos
+  -- Step 7: open `O ⊇ A` with `μ_C(O) < ε` give `Hⁿ(A) ≤ K ε` for every `ε > 0`
+  have hε : ∀ ε : ℝ≥0∞, 0 < ε → μHE[n] A ≤ K * ε := by
+    intro ε hεpos
+    obtain ⟨O, hO, hAO, hOε⟩ := Submission.dorag_sn_open_superset_measure_lt P R.measure A hAμ
+      (fun x _ => ⟨1, one_pos,
+        ne_top_of_le_ne_top (hloc x) (measure_mono ball_subset_closedBall)⟩) ε hεpos
+    exact (hK R.measure A O hO hAO hlow).trans (mul_le_mul' le_rfl hOε.le)
+  -- Step 8: `Hⁿ(A) = 0`, letting `ε = 1/j → 0`
+  have hAnull : μHE[n] A = 0 := by
+    have hlim := ENNReal.Tendsto.const_mul (a := K) ENNReal.tendsto_inv_nat_nhds_zero
+      (Or.inr hKtop)
+    rw [mul_zero] at hlim
+    exact nonpos_iff_eq_zero.1 (ge_of_tendsto' hlim fun j =>
+      hε _ (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top j)))
+  have hoff : ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∉ A :=
+    measure_eq_zero_iff_ae_notMem.1 hAnull
+  -- Step 9: off `A`, density `k ≥ 1` forces `y ∈ M`; then limits along `𝓝[>] 0` are unique
+  filter_upwards [hon, hoff] with y hyon hyoff k hk hky
+  have hyM : y ∈ R.carrier := by
+    by_contra hyM
+    exact hyoff ⟨hyM, k, hk, hky⟩
+  refine ⟨hyM, ?_⟩
+  obtain ⟨-, hθlim⟩ := hyon hyM
+  obtain ⟨-, hklim⟩ := hky
+  have h := tendsto_nhds_unique hθlim hklim
+  rw [ENNReal.ofReal_natCast, ENNReal.ofReal_natCast] at h
+  exact_mod_cast h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
