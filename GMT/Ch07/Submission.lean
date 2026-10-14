@@ -453,6 +453,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Adjoint identities of the graph chart** (Simon 7.5.2 with Ch. 6, 2.35; step 1 of the
+chart perimeter estimate).  Let `ι : ℝ^{n+1} → ℝᴾ` be a linear isometry with adjoint `A = ι*`,
+and let `u` be differentiable on `D = B_{δ₁}(0)` with values in `(range ι)ᗮ`; put
+`G(y) = x + ιy + u(y)`.  Then `‖A‖ ≤ 1`, `Aι = id`, and for `v ∈ D`: `A(G(v) − x) = v`,
+`G(v) − x − ιA(G(v) − x) = u(v)` and `A ∘ DG(v) = id`.  Indeed `‖A‖ = ‖ι‖ ≤ 1`,
+`⟨Aιz, w⟩ = ⟨ιz, ιw⟩ = ⟨z, w⟩` and `⟨Au(v), w⟩ = ⟨u(v), ιw⟩ = 0`, so `Au ≡ 0` on `D`; since `D`
+is open, `DG(v) = ι + Du(v)` and `A ∘ Du(v) = D(A ∘ u)(v) = 0`. -/
+theorem Submission.codim1_lur_graph_chart_adjoint_identities : ∀ (P n : ℕ) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ : ℝ), DifferentiableOn ℝ u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap‖ ≤ 1 ∧ (∀ z : Euclid (n + 1), ContinuousLinearMap.adjoint ι.toContinuousLinearMap (ι z) = z) ∧ ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ContinuousLinearMap.adjoint ι.toContinuousLinearMap (x + ι v + u v - x) = v ∧ x + ι v + u v - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (x + ι v + u v - x)) = u v ∧ ∀ y : Euclid (n + 1), ContinuousLinearMap.adjoint ι.toContinuousLinearMap (fderiv ℝ (fun y => x + ι y + u y) v y) = y := by
+  intro P n x ι u δ₁ hu horth
+  set A := ContinuousLinearMap.adjoint ι.toContinuousLinearMap with hAdef
+  -- `‖A‖ = ‖ι‖ ≤ 1`
+  have hA : ‖A‖ ≤ 1 := by
+    rw [hAdef, LinearIsometryEquiv.norm_map]
+    exact ι.norm_toContinuousLinearMap_le
+  -- `Aι = id`: `⟨Aιz, w⟩ = ⟨ιz, ιw⟩ = ⟨z, w⟩`
+  have hAι : ∀ z, A (ι z) = z := by
+    intro z
+    apply ext_inner_right ℝ
+    intro w
+    rw [hAdef, ContinuousLinearMap.adjoint_inner_left]
+    exact ι.inner_map_map z w
+  -- `A u = 0` on `D`: `⟨Au(v), w⟩ = ⟨u(v), ιw⟩ = 0`
+  have hAu : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, A (u v) = 0 := by
+    intro v hv
+    apply ext_inner_right ℝ
+    intro w
+    rw [hAdef, ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+    exact horth v hv w
+  refine ⟨hA, hAι, fun v hv => ?_⟩
+  have hsub : x + ι v + u v - x = ι v + u v := by abel
+  have hπ : A (x + ι v + u v - x) = v := by
+    rw [hsub, map_add, hAι, hAu v hv, add_zero]
+  refine ⟨hπ, ?_, fun y => ?_⟩
+  · rw [hπ, hsub]; abel
+  · -- `DG(v) = ι + Du(v)`, and `A ∘ Du(v) = 0` since `A ∘ u ≡ 0` on the open ball `D`
+    have hvn : ball (0 : Euclid (n + 1)) δ₁ ∈ 𝓝 v := isOpen_ball.mem_nhds hv
+    have hud : DifferentiableAt ℝ u v := hu.differentiableAt hvn
+    have hG : fderiv ℝ (fun y => x + ι y + u y) v = ι.toContinuousLinearMap + fderiv ℝ u v :=
+      ((ι.toContinuousLinearMap.hasFDerivAt).const_add x).add hud.hasFDerivAt |>.fderiv
+    have hAdu : A ∘L fderiv ℝ u v = 0 := by
+      have h0 : (fun y => A (u y)) =ᶠ[𝓝 v] fun _ => (0 : Euclid (n + 1)) :=
+        Filter.eventually_of_mem hvn fun z hz => hAu z hz
+      exact (A.hasFDerivAt.comp v hud.hasFDerivAt).unique
+        ((hasFDerivAt_const (0 : Euclid (n + 1)) v).congr_of_eventuallyEq h0)
+    have hAdu' : A (fderiv ℝ u v y) = 0 := by
+      simpa using congrArg (fun L : Euclid (n + 1) →L[ℝ] Euclid (n + 1) => L y) hAdu
+    rw [hG]
+    show A (ι y + fderiv ℝ u v y) = y
+    rw [map_add, hAdu', add_zero]
+    exact hAι y
+
 /-- **Geometry of the graph chart** (Simon 7.5.2, used in 7.5.8).  Let `ι : ℝ^{n+1} → ℝᴾ` be a
 linear isometry with adjoint `A = ι*`, `D = B_{δ₁}(0)`, `u` be `C²` on `D` with values in
 `(range ι)ᗮ`, `|u| < δ₂/2` and `G(y) = x + ιy + u(y) ∈ N` on `D`, and let `u` be the only such graph
