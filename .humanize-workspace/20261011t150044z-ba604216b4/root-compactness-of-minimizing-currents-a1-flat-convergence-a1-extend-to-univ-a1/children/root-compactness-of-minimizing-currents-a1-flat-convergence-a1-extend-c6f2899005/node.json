@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.extend_to_univ-a1.cutoff_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.extend_to_univ-a1",
+  "depth": 4,
+  "title": "An extension to ℝ^P with support in a compact K ⊂ U has no more mass or boundary mass than its restriction to U",
+  "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be open and K ⊆ U compact. Let X ∈ 𝒟_{m+1}(U) (SimonGMT GeometricCurrentOn U (m + 1)) and Y ∈ 𝒟_{m+1}(ℝ^P) (GeometricCurrentOn univ (m + 1)) be currents such that (a) Y restricts to X, i.e. Y.restrictDomain (subset_univ U) = X: Y(ιη) = X(η) for every η ∈ 𝒟^{m+1}(U), where ι = testFormOnInclusion (subset_univ U) regards a test form in U (TestFormOn U (m + 1): a smooth form on ℝ^P with compact support contained in U) as a test form on ℝ^P without changing it; and (b) spt Y ⊆ K, where spt is the support of Simon 6.2.11 (GeometricCurrentOn.support). Then M(Y) ≤ M(X) and M(∂Y) ≤ M(∂X). Here ∂ is GeometricCurrentOn.boundary (∂Z(ω) = Z(dω)); M(Y) = Y.mass = Y.massOn ℝ^P and M(X) = X.mass = X.massOn U, where Z.massOn W is the supremum of ENNReal.ofReal(Z(ω)) over test forms ω in the domain of Z with tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ 1 for all x (Simon 6.2.4–6.2.5).",
+  "lean_statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsCompact K → K ⊆ U → Y.restrictDomain (subset_univ U) = X → Y.support ⊆ K → Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass",
+  "lean_name": "cmc_fc_eu_cutoff_mass_le",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-extend-c6f2899005-a1"
+}
