@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b2df168e341a4ddfe8b1ed96af14fe43e8b087f2ba2d39489e1ab092bc7b96de",
+  "git_delta": {
+    "base_commit": "e03dcd3c4bcd640b80588ba886c9d77776405fe8",
+    "candidate_commit": "ff973d79e9cf6b2a9d2ca01e23c63bccea44b6da",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cm_box_cancellation",
+    "diff_sha256": "c37dfb4d9233ca4a54b85591cf2282df6a6bbbd1d256183389f386d760266ff0",
+    "source_sha256": "aeea8fb8b5ea1ea7f86eb9153720a4327b81c94e5a412622ebab18c492fa3aa7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cm_box_cancellation",
+      "statement": "∀ (P m : ℕ) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (W₀ B : Set (Euclid P)) (a b e : ℝ≥0∞), R₀.Represents S₀ → R₀'.Represents S₀' → IsOpen W₀ → IsOpen B → Bornology.IsBounded B → (S₀' - S₀).support ⊆ W₀ → W₀ ⊆ B → b ≤ a → a ≠ ∞ → a * R₀.measure B ≤ (a - b) * R₀.measure B + b * R₀'.measure B + e → b * S₀.massOn W₀ ≤ b * S₀'.massOn W₀ + e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
