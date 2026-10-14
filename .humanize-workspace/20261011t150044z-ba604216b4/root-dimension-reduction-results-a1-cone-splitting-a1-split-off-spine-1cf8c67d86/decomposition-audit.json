@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|regular_euclideanHausdorffMeasure_restrict_submodule|support_euclideanHausdorffMeasure_restrict_submodule|def blowUpMap",
+        "ext_alternating|toAlternatingMap_injective",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image",
+        "class Regular|extends IsFiniteMeasureOnCompacts|theorem restrict_apply ",
+        "atsm_approxTangent_le_of_flat|lcn_covector_finiteDimensional|dimred_cs_sos_boundary_cone_transfer|idtp_fons_cs_sos_boundary_cone_transfer",
+        "git show 038573e401c107149b7c1ae80dd1bc7621b035f5:GMT/Ch07/Submission.lean",
+        "git show 127487dd6bed94a74811cb8523d5535db984c906:GMT/Ch07/Submission.lean",
+        "git show 4ca0b7ef99797aeed366f88205799f70e69ad25b:GMT/Ch07/Submission.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/bct-independent-audit-y94otenq/Types.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/bct-independent-audit-y94otenq/Assembled.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1cf8c67d86/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a-33314200d5/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31/accepted-candidate.json",
+        "/tmp/bct-independent-audit-y94otenq/Types.lean",
+        "/tmp/bct-independent-audit-y94otenq/Assembled.lean"
+      ],
+      "conclusion": "Independently confirmed project/mathlib pins and compatibility with the inspected snapshot sources. Neither reused declaration occurs in the snapshot project. Each has one accepted DAG owner; proposed types match its frozen handoff, comparator record and candidate declaration exactly. Acceptance identities, source hashes and retained artifact hashes match. Both dependency closures are empty, so the proposed edges are acyclic and correctly directed. Both names are bare identifiers with no conflicting active owner. Fresh Types.lean compilation confirms both propositions elaborate without either child implementation. Fresh Assembled.lean compilation combines the frozen base, both accepted child proofs and the corresponding parent proof body under the selected declaration name; exact-type examples pass. Both children and the selected parent depend only on propext, Classical.choice and Quot.sound. The existing root placeholder is absent from their axiom dependencies. The split is appropriate: tangent containment supplies step 1, and covector finite-dimensionality supplies continuity in steps 0 and 2; the remaining supplied argument establishes both selected implications."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangent_le_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the prose, including arbitrary, potentially nonmeasurable M and N. The proof correctly establishes positive plane integral, preservation of null sets under blow-up, vanishing using the stated flatness constants, and contradiction by uniqueness of the tangent limit. Restriction is evaluated on the measurable nonzero set of the bump, requiring no hidden measurability assumption. No parent conclusion is used. Instantiating N and T as Lᗮ gives precisely the selected proof's tangent-containment obligation. Exact accepted-type reuse is verified."
+    },
+    {
+      "key": "covector_findim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the stated continuous alternating-form space with its ordinary pointwise real module structure. Basis-tuple evaluation is linear and injective by alternating-map extensionality; its finite product codomain establishes finite-dimensionality for every P,n, including zero cases. The proof is complete and non-circular. It supplies continuity of both contraction and lifting in the selected proof. Exact accepted-type reuse is verified; no matrix-instance ambiguity occurs."
+    }
+  ],
+  "required_changes": []
+}
