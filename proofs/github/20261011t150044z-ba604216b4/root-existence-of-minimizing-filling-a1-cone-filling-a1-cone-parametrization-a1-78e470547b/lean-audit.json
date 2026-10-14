@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d851b39ebe79f63b082a073016f7ac4d20f4606764da99871b1a236839765de9",
+  "git_delta": {
+    "base_commit": "d88fa3679373c70df9456312cc28353f67adcbfb",
+    "candidate_commit": "cd1c0930cb6ee11dc8dfc227ed4002d3db519999",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "7ea3bdf88b78bd110f4a058d408c9163052694b739a72983ec49e153bf43c94b",
+    "source_sha256": "b7447bd1d586b56248f445bc2cc4a70191e3e391618ac6e6aab52076154e5d1a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cone_parametrization",
+      "statement": "∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2)) (F : ℕ → Euclid (n + 1) → Euclid P) (A : ℕ → Set (Euclid (n + 1))) (g : ℕ → Euclid (n + 1) → ℤ), IsCompact S.support → (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → (∀ j, ∀ u ∈ A j, DifferentiableAt ℝ (F j) u) → (∀ j, F j '' A j ⊆ S.support) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (S ω)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v)) → ∃ (G : ℕ → Euclid (n + 2) → Euclid P) (B : ℕ → Set (Euclid (n + 2))) (w : ℕ → Euclid (n + 2) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (G j)) ∧ (∀ j, MeasurableSet (B j)) ∧ (∀ j, Measurable (w j)) ∧ (∀ j, IntegrableOn (fun u => (w j u : ℝ)) (B j)) ∧ ∑' j, ∫⁻ u in B j, ‖(w j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 2) => inner ℝ (fderiv ℝ (G j) u (EuclideanSpace.single a 1)) (fderiv ℝ (G j) u (EuclideanSpace.single b 1))))) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), HasSum (fun j => ∫ u in B j, (w j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 2)) (G j u) (fun a => fderiv ℝ (G j) u (EuclideanSpace.single a 1))) (R ω)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

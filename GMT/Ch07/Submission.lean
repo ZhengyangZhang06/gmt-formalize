@@ -451,6 +451,549 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Fubini–Tonelli on the cylinder `Â = {z ∈ ℝ^{n+1} : z₀ ∈ (0, 1), tail z ∈ A}` for Borel
+`A ⊆ ℝⁿ`.  The map `e(u, t) = (t, u₁, …, uₙ)`, the composite of the swap `ℝⁿ × ℝ ≃ ℝ × ℝⁿ`,
+`id × ofLp`, the inverse of `piFinSuccAbove · 0` (i.e. `Fin.cons`) and `toLp`, is a
+measure-preserving measurable equivalence `ℝⁿ × ℝ ≃ᵐ ℝ^{n+1}` with `e⁻¹(Â) = A × (0, 1)`.  Hence
+`Â` is Borel, and change of variables along `e` followed by Tonelli (resp. Fubini) on the product
+set `A × (0, 1)` gives the iterated lower Lebesgue (resp. Bochner) integrals. -/
+theorem Submission.cmcdt_lpi_cyl_fubini : ∀ (n : ℕ) (A : Set (Euclid n)), MeasurableSet A → MeasurableSet {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} ∧ (∀ f : Euclid (n + 1) → ℝ≥0∞, Measurable f → ∫⁻ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))) ∧ ∀ f : Euclid (n + 1) → ℝ, IntegrableOn f {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫ u in A, ∫ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) := by
+  intro n A hA
+  set Ah := {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+    (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} with hAh_def
+  -- the measurable equivalence `e : ℝⁿ × ℝ ≃ᵐ ℝ^{n+1}`, `(u, t) ↦ (t, u)`
+  let e : (Euclid n × ℝ) ≃ᵐ Euclid (n + 1) :=
+    (MeasurableEquiv.prodComm.trans
+      ((MeasurableEquiv.prodCongr (MeasurableEquiv.refl ℝ)
+        (MeasurableEquiv.toLp 2 (Fin n → ℝ)).symm).trans
+        (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm)).trans
+      (MeasurableEquiv.toLp 2 (Fin (n + 1) → ℝ))
+  have he : ∀ p : Euclid n × ℝ, e p = WithLp.toLp 2 (Fin.cons p.2 (WithLp.ofLp p.1)) := by
+    rintro ⟨u, t⟩
+    simp [e, MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNthEquiv, Fin.insertNth_zero']
+    exact ⟨rfl, rfl⟩
+  -- each factor of `e` preserves Lebesgue measure
+  have hmp : MeasurePreserving e volume volume := by
+    have h1 : MeasurePreserving
+        (MeasurableEquiv.prodComm : (Euclid n × ℝ) ≃ᵐ (ℝ × Euclid n)) volume volume :=
+      Measure.measurePreserving_swap
+    have h2 : MeasurePreserving (MeasurableEquiv.prodCongr (MeasurableEquiv.refl ℝ)
+        (MeasurableEquiv.toLp 2 (Fin n → ℝ)).symm) volume volume :=
+      (MeasurePreserving.id volume).prod
+        (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin n))
+    have h3 : MeasurePreserving
+        (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm volume volume :=
+      (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm _
+    have h4 : MeasurePreserving (MeasurableEquiv.toLp 2 (Fin (n + 1) → ℝ)) volume volume := by
+      have := (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin (n + 1))).symm _
+      simpa using this
+    exact h4.comp (h3.comp (h2.comp h1))
+  -- `e⁻¹(Â) = A × (0, 1)`
+  have hpre : e ⁻¹' Ah = A ×ˢ Ioo (0 : ℝ) 1 := by
+    ext ⟨u, t⟩
+    simp [Ah, he, and_comm]
+  have hAhm : MeasurableSet Ah := by
+    have : Ah = e.symm ⁻¹' (A ×ˢ Ioo (0 : ℝ) 1) := by
+      rw [← hpre]; ext z; simp
+    rw [this]
+    exact e.symm.measurable (hA.prod measurableSet_Ioo)
+  refine ⟨hAhm, ?_, ?_⟩
+  · intro f hf
+    rw [← hmp.setLIntegral_comp_preimage_emb e.measurableEmbedding f Ah, hpre]
+    rw [Measure.volume_eq_prod, setLIntegral_prod]
+    · simp only [he]
+    · exact (hf.comp e.measurable).aemeasurable
+  · intro f hf
+    rw [← hmp.setIntegral_preimage_emb e.measurableEmbedding f Ah, hpre]
+    rw [Measure.volume_eq_prod, setIntegral_prod]
+    · simp only [he]
+    · rw [← Measure.volume_eq_prod, ← hpre]
+      exact (hmp.integrableOn_comp_preimage e.measurableEmbedding).2 hf
+/-- The radial retraction onto the closed ball `B̄ = {z : ‖z‖ ≤ ρ}` of `ℝᴾ`, `r(y) = y` for
+`‖y‖ ≤ ρ` and `r(y) = (ρ/‖y‖)•y` otherwise, maps `ℝᴾ` into `B̄`, fixes `B̄` and is 1-Lipschitz.
+It is the nearest-point projection onto `B̄`: `⟪x - r x, z - r x⟫ ≤ 0` for `z ∈ B̄`, since
+`x - r x` is a nonnegative multiple of `x` and `⟪x, z⟫ ≤ ρ‖x‖ = ⟪x, r x⟫`.  Adding these
+inequalities for `(x, z) = (x, r y)` and `(y, r x)` gives
+`‖r x - r y‖² ≤ ⟪x - y, r x - r y⟫ ≤ ‖x - y‖ ‖r x - r y‖`. -/
+theorem Submission.ecf_cp_ball_retraction : ∀ (P : ℕ) (ρ : ℝ), 0 < ρ → ∃ r : Euclid P → Euclid P, LipschitzWith 1 r ∧ (∀ y, ‖r y‖ ≤ ρ) ∧ ∀ y, ‖y‖ ≤ ρ → r y = y := by
+  intro P ρ hρ
+  -- `r y = y` on the ball `‖y‖ ≤ ρ` and `r y = (ρ / ‖y‖) • y` outside it
+  obtain ⟨r, hr_in, hr_out⟩ : ∃ r : Euclid P → Euclid P, (∀ y, ‖y‖ ≤ ρ → r y = y) ∧
+      ∀ y, ρ < ‖y‖ → r y = (ρ / ‖y‖) • y :=
+    ⟨fun y => if ‖y‖ ≤ ρ then y else (ρ / ‖y‖) • y, fun y hy => ite_eq_left hy,
+      fun y hy => ite_eq_right (not_le.mpr hy)⟩
+  -- `‖r y‖ ≤ ρ`: outside the ball, `‖r y‖ = (ρ / ‖y‖) * ‖y‖ = ρ`
+  have hr_le : ∀ y, ‖r y‖ ≤ ρ := by
+    intro y
+    rcases le_or_gt ‖y‖ ρ with hy | hy
+    · rw [hr_in y hy]
+      exact hy
+    · have hy0 : 0 < ‖y‖ := hρ.trans hy
+      rw [hr_out y hy, norm_smul_of_nonneg (div_nonneg hρ.le hy0.le), div_mul_cancel₀ _ hy0.ne']
+  -- variational inequality `⟪x - r x, z - r x⟫ ≤ 0` for `‖z‖ ≤ ρ`
+  have hvar : ∀ x z : Euclid P, ‖z‖ ≤ ρ → inner ℝ (x - r x) (z - r x) ≤ 0 := by
+    intro x z hz
+    rcases le_or_gt ‖x‖ ρ with hx | hx
+    · rw [hr_in x hx, sub_self, inner_zero_left]
+    · have hx0 : 0 < ‖x‖ := hρ.trans hx
+      have hc : 0 ≤ 1 - ρ / ‖x‖ := by
+        rw [sub_nonneg, div_le_one hx0]
+        exact hx.le
+      -- `x - r x = (1 - ρ / ‖x‖) • x` and `⟪x, z⟫ ≤ ρ ‖x‖ = ⟪x, r x⟫`
+      have hxz : inner ℝ x z ≤ ρ * ‖x‖ :=
+        calc inner ℝ x z ≤ ‖x‖ * ‖z‖ := real_inner_le_norm x z
+          _ ≤ ‖x‖ * ρ := by gcongr
+          _ = ρ * ‖x‖ := mul_comm _ _
+      have hxx : ρ / ‖x‖ * ‖x‖ ^ 2 = ρ * ‖x‖ := by
+        field_simp
+      rw [hr_out x hx, show x - (ρ / ‖x‖) • x = (1 - ρ / ‖x‖) • x by rw [sub_smul, one_smul],
+        real_inner_smul_left, inner_sub_right, real_inner_smul_right, real_inner_self_eq_norm_sq,
+        hxx]
+      exact mul_nonpos_of_nonneg_of_nonpos hc (by linarith)
+  refine ⟨r, LipschitzWith.mk_one fun x y => ?_, hr_le, hr_in⟩
+  rw [dist_eq_norm, dist_eq_norm]
+  -- adding the variational inequalities for `(x, r y)` and `(y, r x)`
+  have h1 := hvar x (r y) (hr_le y)
+  have h2 := hvar y (r x) (hr_le x)
+  have hkey : ‖r x - r y‖ ^ 2 ≤ inner ℝ (x - y) (r x - r y) := by
+    have e : inner ℝ (x - y) (r x - r y) = ‖r x - r y‖ ^ 2 - inner ℝ (x - r x) (r y - r x)
+        - inner ℝ (y - r y) (r x - r y) := by
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_comm]
+      ring
+    linarith
+  -- Cauchy–Schwarz, then cancel `‖r x - r y‖` (the case `r x = r y` is trivial)
+  have hcs : inner ℝ (x - y) (r x - r y) ≤ ‖x - y‖ * ‖r x - r y‖ := real_inner_le_norm _ _
+  nlinarith [norm_nonneg (r x - r y), norm_nonneg (x - y)]
+/-- **Gram determinant of a scaled cone frame** (the cone Jacobian behind Simon 6.2.30 and 6.3.10
+for `h(t, x) = t x`).  For `a ∈ ℝᴾ`, `w = (w₀, …, w_{k-1})` and every real `t`,
+`Γ(a, t w) = (tᵏ)² Γ(a, w)`, where `Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ`.  With `d = (1, t, …, t)` and
+`D = diag d`, `(a, t w)ₗ = dₗ (a, w)ₗ`, so bilinearity of the inner product gives
+`M(a, t w) = D M(a, w) D` for the Gram matrices, and `det D = ∏ₗ dₗ = tᵏ`. -/
+theorem Submission.ecf_cp_gc_det_smul : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (t : ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) = (t ^ k) ^ 2 * Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w t
+  -- Step 1: with `d = (1, t, …, t)`, `(a, t • w)_l = d_l • (a, w)_l` for every `l`
+  let d : Fin (k + 1) → ℝ := Fin.cons 1 fun _ => t
+  have hscale : ∀ l : Fin (k + 1), (Fin.cons a (t • w) : Fin (k + 1) → Euclid P) l =
+      d l • (Fin.cons a w : Fin (k + 1) → Euclid P) l := by
+    intro l
+    refine Fin.cases ?_ (fun i => ?_) l
+    · simp only [d, Fin.cons_zero, one_smul]
+    · simp only [d, Fin.cons_succ, Pi.smul_apply]
+  -- Step 2: `M(a, t • w) = D * M(a, w) * D` with `D = diagonal d`, by bilinearity
+  have hcong : (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) =
+      Matrix.diagonal d * (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) * Matrix.diagonal d := by
+    ext l m
+    simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.of_apply]
+    rw [hscale l, hscale m, real_inner_smul_left, real_inner_smul_right]
+    ring
+  -- Step 3: `det D = ∏ₗ dₗ = d₀ * ∏_{i < k} t = tᵏ`
+  have hD : (Matrix.diagonal d).det = t ^ k := by
+    rw [Matrix.det_diagonal, Fin.prod_univ_succ]
+    simp only [d, Fin.cons_zero, Fin.cons_succ, Finset.prod_const, Finset.card_fin, one_mul]
+  -- Step 4: `Γ(a, t • w) = tᵏ * Γ(a, w) * tᵏ = (tᵏ)² * Γ(a, w)`
+  rw [hcong, Matrix.det_mul, Matrix.det_mul, hD]
+  ring
+/-- Shear invariance of the Gram determinant: `Γ(a − Σₗ cₗwₗ, w) = Γ(a, w)`, where
+`Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ` and `(x, w) = (x, w₀, …, w_{k−1})`.  Let `E` be the matrix whose column
+`0` is `(1, −c₀, …, −c_{k−1})` and whose other columns are those of the identity.  Then
+`(a − Σₗ cₗwₗ, w)ⱼ = Σₗ Eₗⱼ (a, w)ₗ`, so by bilinearity `M(a − Σₗ cₗwₗ, w) = Eᵀ M(a, w) E`; `E` is
+lower triangular with unit diagonal, so `det E = 1`. -/
+theorem Submission.ecf_cp_gc_det_shear : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (c : Fin k → ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) i) ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j)) = Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w c
+  set v : Fin (k + 1) → Euclid P := Fin.cons a w
+  -- column `0` of `E` is `(1, -c₀, …, -c_{k-1})`, the other columns are those of the identity
+  set E : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ := Matrix.of fun l j =>
+    if j = 0 then (Fin.cons 1 (-c) : Fin (k + 1) → ℝ) l else if l = j then 1 else 0
+  -- `(a - ∑ c_l w_l, w)` is `v` recombined by the columns of `E`
+  have hcomb : ∀ j, (Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j =
+      ∑ l, E l j • v l := by
+    intro j
+    refine Fin.cases ?_ (fun i => ?_) j
+    · simp [E, v, Fin.sum_univ_succ, sub_eq_add_neg, neg_smul]
+    · simp [E, v, Fin.succ_ne_zero]
+  -- `E` is lower triangular with unit diagonal
+  have hdetE : E.det = 1 := by
+    rw [Matrix.det_of_isLowerTriangular E fun l j hlj => ?_]
+    · refine Finset.prod_eq_one fun i _ => ?_
+      by_cases hi : i = 0 <;> simp [E, hi]
+    · have hlj' : l < j := OrderDual.toDual_lt_toDual.mp hlj
+      have hj : j ≠ 0 := ((Fin.zero_le l).trans_lt hlj').ne'
+      simp [E, hj, hlj'.ne]
+  -- bilinearity: `M(a - ∑ c_l w_l, w) = Eᵀ M(a, w) E`
+  calc _ = (E.transpose * (Matrix.of fun i j : Fin (k + 1) => inner ℝ (v i) (v j)) * E).det := by
+        congr 1
+        ext i j
+        simp only [Matrix.of_apply, hcomb, sum_inner, inner_sum, real_inner_smul_left,
+          real_inner_smul_right, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun l _ => by ring
+    _ = _ := by rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetE, one_mul, mul_one]
+/-- If `b` is orthogonal to every `w j`, the Gram determinant of `(b, w 0, …, w (k - 1))` is
+`‖b‖²` times that of `w`.  Row 0 of the Gram matrix `M` is `(‖b‖², 0, …, 0)`, so the Laplace
+expansion along row 0 leaves only `‖b‖² · det (M.submatrix Fin.succ Fin.succ)`, and this minor
+is the Gram matrix of `w` (for `k = 0` it is the empty matrix, of determinant `1`). -/
+theorem Submission.ecf_cp_gc_det_orth : ∀ (P k : ℕ) (b : Euclid P) (w : Fin k → Euclid P), (∀ j : Fin k, inner ℝ b (w j) = 0) → Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons b w : Fin (k + 1) → Euclid P) i) ((Fin.cons b w : Fin (k + 1) → Euclid P) j)) = ‖b‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j)) := by
+  intro P k b w hbw
+  -- Laplace expansion along row 0, with the `j = 0` term split off
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  -- `M 0 0 = ‖b‖²` and `M 0 (j + 1) = ⟪b, w j⟫ = 0`, so only the `j = 0` term survives
+  simp only [Matrix.of_apply, Fin.cons_zero, Fin.cons_succ, hbw, mul_zero, zero_mul,
+    Finset.sum_const_zero, add_zero, Fin.val_zero, pow_zero, one_mul, Fin.succAbove_zero,
+    real_inner_self_eq_norm_sq]
+  -- the `j = 0` minor `M.submatrix Fin.succ Fin.succ` has entries `⟪w i, w j⟫` (`Fin.cons_succ`)
+  rfl
+/-- **Orthogonal residual against a finite family.**  For `a ∈ ℝᴾ` and any `w₀, …, w_{k-1} ∈ ℝᴾ`
+(not necessarily independent) there are `c₀, …, c_{k-1} ∈ ℝ` such that `a' = a - ∑ₗ cₗ wₗ` is
+orthogonal to every `w_j` and `‖a'‖ ≤ ‖a‖`.  Take `∑ₗ cₗ wₗ = π a` for the orthogonal projection
+`π` onto the (finite-dimensional, hence complete) span `W` of the `wₗ`: then `a - π a ⊥ W`, and
+Pythagoras for `a = (a - π a) + π a` gives `‖a - π a‖² ≤ ‖a‖²`. -/
+theorem Submission.ecf_cp_gc_orth_residual : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), ∃ c : Fin k → ℝ, (∀ j : Fin k, inner ℝ (a - ∑ l, c l • w l) (w j) = 0) ∧ ‖a - ∑ l, c l • w l‖ ≤ ‖a‖ := by
+  intro P k a w
+  -- `π a ∈ W = span (range w)` is a linear combination `∑ₗ cₗ wₗ`
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp
+    ((Submodule.span ℝ (range w)).starProjection_apply_mem a)
+  refine ⟨c, fun j => ?_, ?_⟩
+  · -- `a - π a ⊥ w_j`, since `w_j ∈ W`
+    rw [hc]
+    exact Submodule.starProjection_inner_eq_zero a (w j) (Submodule.subset_span (mem_range_self j))
+  · -- Pythagoras: `‖a‖² = ‖a - π a‖² + ‖π a‖²`
+    rw [hc]
+    have hp := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _
+      (Submodule.starProjection_inner_eq_zero a _
+        ((Submodule.span ℝ (range w)).starProjection_apply_mem a))
+    rw [sub_add_cancel] at hp
+    rw [mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _), hp]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
+
+/-- The cone Jacobian (Simon 6.2.30, 6.3.10 for `h(t, x) = t x`).  Write `Γ(v) = det[⟨vᵢ, vⱼ⟩]`
+for the Gram determinant of a family `v`, `J = √Γ`, and `(a, w) = Fin.cons a w`.
+(i) `Γ(a, t·w) = (tᵏ)²·Γ(a, w)`, so `J(a, t·w) = tᵏ·J(a, w)` for `t ≥ 0`.
+(ii) For the residual `a' = a - ∑ cₗ wₗ` of `a` orthogonal to every `wⱼ`, with `‖a'‖ ≤ ‖a‖`, shear
+invariance and the orthogonal block formula give `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, so
+`J(a, w) = ‖a'‖·J(w) ≤ ‖a‖·J(w)`.  No independence of `w` is needed. -/
+theorem Submission.ecf_cp_gram_cone : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), (∀ t : ℝ, 0 ≤ t → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j))) = t ^ k * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)))) ∧ Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))) ≤ ‖a‖ * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j))) := by
+  intro P k a w
+  refine ⟨fun t ht => ?_, ?_⟩
+  · -- (i): `√((tᵏ)²·Γ) = √((tᵏ)²)·√Γ = tᵏ·√Γ`, as `tᵏ ≥ 0`
+    have h := congrArg Real.sqrt (Submission.ecf_cp_gc_det_smul P k a w t)
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (pow_nonneg ht k)] at h
+    exact h
+  · -- (ii): `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, then `√(‖a'‖²·Γ(w)) = ‖a'‖·√Γ(w)`
+    obtain ⟨c, horth, hle⟩ := Submission.ecf_cp_gc_orth_residual P k a w
+    have h := congrArg Real.sqrt ((Submission.ecf_cp_gc_det_shear P k a w c).symm.trans
+      (Submission.ecf_cp_gc_det_orth P k _ w horth))
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
+    exact h.trans_le (mul_le_mul_of_nonneg_right hle (Real.sqrt_nonneg _))
+
+/-- The cone map over a Lipschitz `F : ℝᵏ → ℝᴾ` (Simon Ch. 6, 2.30 with `h(t, x) = t x`).  With
+the coordinates `s(z) = z₀`, `τ(z) = (z₁, …, z_k)`, the clamp `σ(t) = min (max t 0) 1` and the
+`1`-Lipschitz retraction `r` of `ℝᴾ` onto `B̄_ρ(0)` (`ecf_cp_ball_retraction`),
+`G(z) = σ(s z) • r(F(τ z))` is `(ρ + L)`-Lipschitz.  On the open set
+`s⁻¹(0, 1) ∩ τ⁻¹(F⁻¹(B_ρ(0)))`, a neighbourhood of `(t, u)` for `t ∈ (0, 1)`, `u ∈ A`, `G` agrees
+with `s • (F ∘ τ)`; so `G(t, u) = t F(u)`, and the product and chain rules give
+`DG(t, u) e₀ = F(u)` and `DG(t, u) e_{b+1} = t DF(u) e_b`. -/
+theorem Submission.ecf_cp_cone_map : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (ρ : ℝ), 0 < ρ → (∃ K : NNReal, LipschitzWith K F) → (∀ u ∈ A, DifferentiableAt ℝ F u) → (∀ u ∈ A, ‖F u‖ < ρ) → ∃ G : Euclid (k + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K G) ∧ ∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P) := by
+  rintro k P F A ρ hρ ⟨L, hL⟩ hdiff hlt
+  obtain ⟨r, hr, hr_le, hr_id⟩ := Submission.ecf_cp_ball_retraction P ρ hρ
+  -- the coordinates `s(z) = z₀` and `τ(z) = (z₁, …, z_k)`, both norm-nonincreasing
+  let s : Euclid (k + 1) →L[ℝ] ℝ := EuclideanSpace.proj 0
+  let τl : Euclid (k + 1) →ₗ[ℝ] Euclid k :=
+    { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+      map_add' := fun x y => by ext i; simp [Fin.tail]
+      map_smul' := fun c x => by ext i; simp [Fin.tail] }
+  let τ : Euclid (k + 1) →L[ℝ] Euclid k := LinearMap.toContinuousLinearMap τl
+  have hs : ∀ z, s z = WithLp.ofLp z 0 := fun z => rfl
+  have hτ : ∀ z, τ z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) := fun z => rfl
+  have hs_le : ∀ w, ‖s w‖ ≤ ‖w‖ := fun w => PiLp.norm_apply_le w 0
+  have hτ_le : ∀ w, ‖τ w‖ ≤ ‖w‖ := fun w => by
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ?_
+    rw [PiLp.norm_sq_eq_of_L2, PiLp.norm_sq_eq_of_L2, Fin.sum_univ_succ]
+    exact le_add_of_nonneg_left (sq_nonneg _)
+  -- the clamp `σ(t) = min (max t 0) 1`
+  let σ : ℝ → ℝ := fun x => min (max x 0) 1
+  have hσ : LipschitzWith 1 σ := (LipschitzWith.id.max_const 0).min_const 1
+  have hσ_le : ∀ x, ‖σ x‖ ≤ 1 := fun x => by
+    rw [Real.norm_of_nonneg (le_min (le_max_right x 0) zero_le_one)]
+    exact min_le_right _ _
+  have hσ_id : ∀ x, 0 ≤ x → x ≤ 1 → σ x = x := fun x h0 h1 => by
+    show min (max x 0) 1 = x
+    rw [max_eq_left h0, min_eq_left h1]
+  let G : Euclid (k + 1) → Euclid P := fun z => σ (s z) • r (F (τ z))
+  refine ⟨G, ⟨Real.toNNReal ρ + L, LipschitzWith.of_dist_le_mul fun z z' => ?_⟩, ?_⟩
+  · -- `G` is `(ρ + L)`-Lipschitz
+    rw [dist_eq_norm, dist_eq_norm, NNReal.coe_add, Real.coe_toNNReal _ hρ.le]
+    have hσd : ‖σ (s z) - σ (s z')‖ ≤ ‖z - z'‖ := by
+      have h := hσ.dist_le_mul (s z) (s z')
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul, ← map_sub] at h
+      exact h.trans (hs_le _)
+    have hrd : ‖r (F (τ z)) - r (F (τ z'))‖ ≤ L * ‖z - z'‖ := by
+      have h1 := hr.dist_le_mul (F (τ z)) (F (τ z'))
+      have h2 := hL.dist_le_mul (τ z) (τ z')
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul] at h1
+      rw [dist_eq_norm, dist_eq_norm, ← map_sub] at h2
+      exact h1.trans (h2.trans (mul_le_mul_of_nonneg_left (hτ_le _) L.coe_nonneg))
+    have hsplit : G z - G z' =
+        (σ (s z) - σ (s z')) • r (F (τ z)) + σ (s z') • (r (F (τ z)) - r (F (τ z'))) := by
+      simp only [G, sub_smul, smul_sub]
+      abel
+    calc ‖G z - G z'‖
+        ≤ ‖σ (s z) - σ (s z')‖ * ‖r (F (τ z))‖ + ‖σ (s z')‖ * ‖r (F (τ z)) - r (F (τ z'))‖ := by
+          rw [hsplit, ← norm_smul, ← norm_smul]
+          exact norm_add_le _ _
+      _ ≤ ‖z - z'‖ * ρ + 1 * (L * ‖z - z'‖) :=
+          add_le_add (mul_le_mul hσd (hr_le _) (norm_nonneg _) (norm_nonneg _))
+            (mul_le_mul (hσ_le _) hrd (norm_nonneg _) zero_le_one)
+      _ = (ρ + L) * ‖z - z'‖ := by ring
+  · intro u hu t ht
+    set z₀ : Euclid (k + 1) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))
+    have hsz : s z₀ = t := by simp [hs, z₀]
+    have hτz : τ z₀ = u := by simp [hτ, z₀]
+    refine ⟨?_, ?_⟩
+    · -- the value `G(t, u) = t F(u)`
+      show σ (s z₀) • r (F (τ z₀)) = t • F u
+      rw [hsz, hτz, hσ_id t ht.1.le ht.2.le, hr_id _ (hlt u hu).le]
+    · -- near `(t, u)`, `G = s • (F ∘ τ)`
+      have hN : IsOpen (s ⁻¹' Ioo 0 1 ∩ τ ⁻¹' (F ⁻¹' ball 0 ρ)) :=
+        (isOpen_Ioo.preimage s.continuous).inter
+          ((isOpen_ball.preimage hL.continuous).preimage τ.continuous)
+      have hz₀N : z₀ ∈ s ⁻¹' Ioo 0 1 ∩ τ ⁻¹' (F ⁻¹' ball 0 ρ) := by
+        refine ⟨?_, ?_⟩
+        · show s z₀ ∈ Ioo 0 1
+          rw [hsz]
+          exact ht
+        · show F (τ z₀) ∈ ball 0 ρ
+          rw [hτz, mem_ball_zero_iff]
+          exact hlt u hu
+      have hGH : G =ᶠ[𝓝 z₀] fun z => s z • F (τ z) := by
+        filter_upwards [hN.mem_nhds hz₀N] with z hz
+        have hz1 : s z ∈ Ioo 0 1 := hz.1
+        have hz2 : F (τ z) ∈ ball (0 : Euclid P) ρ := hz.2
+        show σ (s z) • r (F (τ z)) = s z • F (τ z)
+        rw [hσ_id _ hz1.1.le hz1.2.le, hr_id _ (mem_ball_zero_iff.1 hz2).le]
+      -- product and chain rules for `s • (F ∘ τ)` at `(t, u)`
+      have hFτ : HasFDerivAt (fun z => F (τ z)) ((fderiv ℝ F u).comp τ) z₀ := by
+        have h : HasFDerivAt F (fderiv ℝ F u) (τ z₀) := by
+          rw [hτz]
+          exact (hdiff u hu).hasFDerivAt
+        exact h.comp z₀ τ.hasFDerivAt
+      have hH : HasFDerivAt (fun z => s z • F (τ z))
+          (s z₀ • (fderiv ℝ F u).comp τ + s.smulRight (F (τ z₀))) z₀ :=
+        s.hasFDerivAt.smul hFτ
+      rw [hGH.fderiv_eq (𝕜 := ℝ), hH.fderiv]
+      funext a
+      refine Fin.cases ?_ (fun b => ?_) a
+      · have h1 : τ (EuclideanSpace.single 0 1) = 0 := by
+          ext i
+          simp [hτ, Fin.tail, Fin.succ_ne_zero]
+        have h2 : s (EuclideanSpace.single 0 1) = 1 := by simp [hs]
+        simp [hsz, hτz, h1, h2]
+      · have h1 : τ (EuclideanSpace.single b.succ 1) = EuclideanSpace.single b 1 := by
+          ext i
+          simp [hτ, Fin.tail, Pi.single_apply, Fin.succ_inj]
+        have h2 : s (EuclideanSpace.single b.succ 1) = 0 := by
+          simp [hs, (Fin.succ_ne_zero b).symm]
+        simp [hsz, h1, h2]
+
+/-- One piece of the cone parametrization (Simon Ch. 6, 2.30 and 3.10).  `z ↦ g(tail z)` is
+measurable, and Tonelli on the cylinder `Â = {z : z₀ ∈ (0, 1), tail z ∈ A}`
+(`cmcdt_lpi_cyl_fubini`) gives `∫_Â |g(tail z)| dz = ∫_A |g|`, so it is integrable on `Â`.  The
+integrand `g(tail z) ω(G z)(∂G z)` is measurable and bounded by `sup ‖ω‖ · K^{k+1} · |g(tail z)|`,
+so Fubini on `Â` applies.  At `z = (t, u)` it equals `g(u) t^k ω(t F(u))(F(u), ∂F(u))` by the
+hypotheses and multilinearity of `ω(t F(u))`, and `∫_{(0,1)} = ∫_0^1`. -/
+theorem Submission.ecf_cp_piece_integral : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P), MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → (∃ K : NNReal, LipschitzWith K G) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → Measurable (fun z : Euclid (k + 1) => g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) ∧ IntegrableOn (fun z : Euclid (k + 1) => (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A} ∧ ∀ ω : DifferentialForm (Euclid P) (k + 1), Continuous ω → HasCompactSupport ω → ∫ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1)) = ∫ u in A, (g u : ℝ) * ∫ t in (0 : ℝ)..1, t ^ k * ω (t • F u) (Fin.cons (F u) (fun b => fderiv ℝ F u (EuclideanSpace.single b 1))) := by
+  intro k P F A g G hA hg hgA hGL hGA
+  obtain ⟨-, hCl, hCb⟩ := Submission.cmcdt_lpi_cyl_fubini k A hA
+  set C := {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+    (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}
+  -- `τ z = tail z` is measurable, and `τ (t, u) = u`
+  have hτ : Measurable fun z : Euclid (k + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) := by
+    fun_prop
+  have hτι : ∀ (t : ℝ) (u : Euclid k), (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u) : Fin (k + 1) → ℝ)))) : Euclid k) = u := by
+    simp
+  -- (a)
+  have hgτ : Measurable fun z : Euclid (k + 1) => g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) :=
+    hg.comp hτ
+  have hgτR : Measurable fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) :=
+    measurable_from_top.comp hgτ
+  -- (b): `∫⁻_C ‖g(τ z)‖ₑ = ∫⁻_A ‖g‖ₑ · λ((0, 1)) = ∫⁻_A ‖g‖ₑ < ∞`
+  have hgτI : IntegrableOn (fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) C := by
+    refine ⟨hgτR.aestronglyMeasurable, ?_⟩
+    unfold HasFiniteIntegral
+    rw [hCl _ hgτR.enorm]
+    simp only [hτι, setLIntegral_const, Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]
+    exact hgA.2
+  refine ⟨hgτ, hgτI, ?_⟩
+  -- (c)
+  intro ω hωc hωs
+  obtain ⟨M, hM⟩ := hωs.exists_bound_of_continuous hωc
+  obtain ⟨K, hK⟩ := hGL
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hDG : ∀ (z : Euclid (k + 1)) (a : Fin (k + 1)),
+      ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖ ≤ K := by
+    intro z a
+    calc ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖
+        ≤ ‖fderiv ℝ G z‖ * ‖(EuclideanSpace.single a (1 : ℝ) : Euclid (k + 1))‖ :=
+          (fderiv ℝ G z).le_opNorm _
+      _ = ‖fderiv ℝ G z‖ := by simp
+      _ ≤ K := norm_fderiv_le_of_lipschitz ℝ hK
+  -- `z ↦ ω(G z)(∂G z)` is measurable: `(y, v) ↦ ω y v` is continuous and `fderiv` is Borel
+  have hωm : Measurable fun z => ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1)) := by
+    have h1 : Measurable fun z =>
+        (G z, fun a : Fin (k + 1) => fderiv ℝ G z (EuclideanSpace.single a 1)) :=
+      hK.continuous.measurable.prodMk <| measurable_pi_iff.mpr fun a =>
+        measurable_fderiv_apply_const ℝ G (EuclideanSpace.single a 1)
+    have h2 : Continuous fun p : Euclid P × (Fin (k + 1) → Euclid P) => ω p.1 p.2 :=
+      (hωc.comp continuous_fst).eval continuous_snd
+    exact h2.measurable.comp h1
+  -- `|g(τ z) ω(G z)(∂G z)| ≤ M K^{k+1} |g(τ z)|`, so the integrand is integrable on `C`
+  have hΦ : IntegrableOn (fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) *
+        ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1))) C := by
+    refine Integrable.mono' (hgτI.norm.mul_const (M * (K : ℝ) ^ (k + 1)))
+      (hgτR.mul hωm).aestronglyMeasurable (ae_of_all _ fun z => ?_)
+    rw [norm_mul]
+    gcongr
+    calc ‖ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1))‖
+        ≤ ‖ω (G z)‖ * ∏ a, ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖ := (ω (G z)).le_opNorm _
+      _ ≤ M * ∏ _a : Fin (k + 1), (K : ℝ) := by
+        gcongr with a
+        · exact hM _
+        · exact hDG z a
+      _ = M * (K : ℝ) ^ (k + 1) := by simp
+  -- Fubini on `C`, then compare the integrands for `u ∈ A` and `t ∈ (0, 1)`
+  rw [hCb _ hΦ]
+  refine setIntegral_congr_fun hA fun u hu => ?_
+  simp only
+  rw [intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo,
+    ← integral_const_mul]
+  refine setIntegral_congr_fun measurableSet_Ioo fun t ht => ?_
+  obtain ⟨h1, h2⟩ := hGA u hu t ht
+  rw [hτι, h1, h2]
+  congr 1
+  -- `(F u, t ∂F u) = (cₐ vₐ)ₐ` with `c = (1, t, …, t)`, so `ω(t F u)` scales by `∏ₐ cₐ = t^k`
+  have hc : (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) :
+      Fin (k + 1) → Euclid P) = fun a => (Fin.cons 1 fun _ => t : Fin (k + 1) → ℝ) a •
+        (Fin.cons (F u) (fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) :
+          Fin (k + 1) → Euclid P) a := by
+    funext a
+    refine Fin.cases ?_ (fun b => ?_) a <;> simp
+  rw [hc, ContinuousAlternatingMap.map_smul_univ]
+  simp [Fin.prod_univ_succ]
+/-- **One piece of the cone parametrization**: the mass estimate of Simon 6.2.27 for the cone
+homotopy `h(t, x) = t x` of 6.2.30.  Write `ι(t, u) = (t, u₁, …, u_k)`, `τ z = (z₁, …, z_k)`,
+`Â = {z : z₀ ∈ (0, 1), τ z ∈ A}`, `∂H(x) = (DH(x) e_a)_a` and
+`JH(x) = √det (⟨DH(x) e_a, DH(x) e_b⟩)_{ab}`.  If `‖F‖ ≤ ρ` on `A` and
+`∂G(ι(t, u)) = (F u, t ∂F(u))` for `u ∈ A`, `t ∈ (0, 1)`, then
+`∫⁻_Â |g(τ z)| JG(z) dz ≤ ρ ∫⁻_A |g(u)| JF(u) du`.  The integrand is Borel (`fderiv` is
+measurable and a Gram determinant is a polynomial in its entries), so Tonelli on the cylinder
+gives `∫⁻_A ∫⁻_{(0, 1)} |g(u)| JG(ι(t, u)) dt du`.  By the cone Jacobian,
+`JG(ι(t, u)) = tᵏ J(F u, ∂F(u)) ≤ tᵏ ‖F u‖ JF(u) ≤ ρ JF(u)`, and `(0, 1)` has measure `1`. -/
+theorem Submission.ecf_cp_piece_weight : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P) (ρ : ℝ), MeasurableSet A → Measurable g → (∀ u ∈ A, ‖F u‖ ≤ ρ) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → ∫⁻ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, ‖(g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1)) (fderiv ℝ G z (EuclideanSpace.single b 1))))) ≤ ENNReal.ofReal ρ * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ F u (EuclideanSpace.single a 1)) (fderiv ℝ F u (EuclideanSpace.single b 1))))) := by
+  intro k P F A g G ρ hA hg hF hDG
+  -- Step 1: the integrand `f(z) = |g(τ z)| · JG(z)` is measurable.  Each `z ↦ DG(z) e_a` is
+  -- measurable, and `det` is a signed sum of products of the entries `⟨DG(z) e_a, DG(z) e_b⟩`.
+  have hJG : Measurable fun z => ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of
+      fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+        (fderiv ℝ G z (EuclideanSpace.single b 1))))) := by
+    have hm : ∀ a b : Fin (k + 1), Measurable fun z => inner ℝ
+        (fderiv ℝ G z (EuclideanSpace.single a 1)) (fderiv ℝ G z (EuclideanSpace.single b 1)) :=
+      fun a b => continuous_inner.measurable.comp
+        ((measurable_fderiv_apply_const ℝ G (EuclideanSpace.single a 1)).prodMk
+          (measurable_fderiv_apply_const ℝ G (EuclideanSpace.single b 1)))
+    have hdet : Measurable fun z => Matrix.det (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+          (fderiv ℝ G z (EuclideanSpace.single b 1))) := by
+      simp only [Matrix.det_apply]
+      refine Finset.measurable_sum _ fun σ _ => ?_
+      refine Measurable.const_smul ?_ _
+      exact Finset.measurable_prod _ fun i _ => by simpa using hm (σ i) i
+    exact ENNReal.measurable_ofReal.comp (Real.continuous_sqrt.measurable.comp hdet)
+  have hτ : Measurable fun z : Euclid (k + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) :=
+    (WithLp.measurable_toLp 2 _).comp ((measurable_pi_iff.mpr fun i : Fin k =>
+      measurable_pi_apply (Fin.succ i)).comp (WithLp.measurable_ofLp 2 _))
+  have hfm : Measurable fun z : Euclid (k + 1) =>
+      ‖(g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt
+        (Matrix.det (Matrix.of fun a b : Fin (k + 1) =>
+          inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+            (fderiv ℝ G z (EuclideanSpace.single b 1))))) :=
+    ((Measurable.of_discrete (f := fun n : ℤ => (n : ℝ))).comp (hg.comp hτ)).enorm.mul hJG
+  -- Step 2: Tonelli on the cylinder; on the right, move the finite constant `ofReal ρ` inside
+  refine le_trans (le_of_eq ((Submission.cmcdt_lpi_cyl_fubini k A hA).2.1 _ hfm))
+    (le_trans ?_ (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).le)
+  -- Step 5: compare the inner integrals at each `u ∈ A`
+  refine setLIntegral_mono' hA fun u hu => ?_
+  have hρ : 0 ≤ ρ := (norm_nonneg _).trans (hF u hu)
+  obtain ⟨hGC1, hGC2⟩ :=
+    Submission.ecf_cp_gram_cone P k (F u) fun b => fderiv ℝ F u (EuclideanSpace.single b 1)
+  -- Step 4: integrate a pointwise bound over `(0, 1)`, which has measure `1`
+  refine le_trans (setLIntegral_mono' measurableSet_Ioo fun t ht => ?_) (le_of_eq (by
+    rw [setLIntegral_const, Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]))
+  -- Step 3: `τ(ι(t, u)) = u` and `DG(ι(t, u)) e_a = (F u, t ∂F(u))_a`
+  have hDa : ∀ a, fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))
+      (EuclideanSpace.single a 1) = (Fin.cons (F u) (t • fun b =>
+        fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P) a :=
+    congrFun (hDG u hu t ht)
+  simp only [Fin.tail_cons, WithLp.toLp_ofLp, hDa]
+  -- `JG(ι(t, u)) = tᵏ J(F u, ∂F(u)) ≤ tᵏ ‖F u‖ JF(u) ≤ ρ JF(u)`, as `0 ≤ tᵏ ≤ 1`, `‖F u‖ ≤ ρ`
+  rw [hGC1 t ht.1.le, mul_left_comm (ENNReal.ofReal ρ)]
+  refine mul_le_mul_right ?_ _
+  rw [← ENNReal.ofReal_mul hρ]
+  refine ENNReal.ofReal_le_ofReal ?_
+  calc t ^ k * _ ≤ t ^ k * (‖F u‖ * _) := mul_le_mul_of_nonneg_left hGC2 (pow_nonneg ht.1.le k)
+    _ ≤ t ^ k * (ρ * _) := mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_right (hF u hu) (Real.sqrt_nonneg _)) (pow_nonneg ht.1.le k)
+    _ ≤ ρ * _ := mul_le_of_le_one_left (mul_nonneg hρ (Real.sqrt_nonneg _))
+        (pow_le_one₀ ht.1.le ht.2.le)
+
+/-- **Cone over a parametrized cycle** (Simon 6.2.30 and 6.3.10 with `h(t, x) = tx`).  Let `spt S`
+be compact and `S(γ) = Σⱼ ∫_{Aⱼ} gⱼ γ(Fⱼ)(∂Fⱼ)`, with Lipschitz `Fⱼ` differentiable on the Borel
+sets `Aⱼ`, `Fⱼ(Aⱼ) ⊆ spt S`, integer weights `gⱼ` integrable on `Aⱼ` and `Σⱼ ∫_{Aⱼ} |gⱼ| JFⱼ < ∞`,
+and let `R(ω) = S(γ)` for a form `γ` equal to `∫₀¹ t^{n+1} ω(tx)(x, ·) dt` on `spt S`.  Take
+`ρ > 0` with `spt S ⊆ B_ρ(0)`.  On the cylinders `Bⱼ = (0, 1) × Aⱼ` the Lipschitz cone maps `Gⱼ`
+satisfy `Gⱼ(t, u) = t Fⱼ(u)` and `∂Gⱼ(t, u) = (Fⱼ(u), t ∂Fⱼ(u))`; with the weights
+`wⱼ(t, u) = gⱼ(u)` they parametrize `R`.  The cone Jacobian bound `JGⱼ ≤ ρ JFⱼ` on `Bⱼ` gives
+`Σⱼ ∫_{Bⱼ} |wⱼ| JGⱼ ≤ ρ Σⱼ ∫_{Aⱼ} |gⱼ| JFⱼ < ∞`, and Fubini on `Bⱼ` turns the `j`-th term of the
+series for `R(ω)` into the `j`-th term of the series for `S(γ)`. -/
+theorem Submission.ecf_cone_parametrization : ∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2)) (F : ℕ → Euclid (n + 1) → Euclid P) (A : ℕ → Set (Euclid (n + 1))) (g : ℕ → Euclid (n + 1) → ℤ), IsCompact S.support → (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → (∀ j, ∀ u ∈ A j, DifferentiableAt ℝ (F j) u) → (∀ j, F j '' A j ⊆ S.support) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (S ω)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v)) → ∃ (G : ℕ → Euclid (n + 2) → Euclid P) (B : ℕ → Set (Euclid (n + 2))) (w : ℕ → Euclid (n + 2) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (G j)) ∧ (∀ j, MeasurableSet (B j)) ∧ (∀ j, Measurable (w j)) ∧ (∀ j, IntegrableOn (fun u => (w j u : ℝ)) (B j)) ∧ ∑' j, ∫⁻ u in B j, ‖(w j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 2) => inner ℝ (fderiv ℝ (G j) u (EuclideanSpace.single a 1)) (fderiv ℝ (G j) u (EuclideanSpace.single b 1))))) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), HasSum (fun j => ∫ u in B j, (w j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 2)) (G j u) (fun a => fderiv ℝ (G j) u (EuclideanSpace.single a 1))) (R ω) := by
+  intro n P S R F A g hS hF hA hg hgi hdiff hFA hfin hSrep hRcone
+  -- `ρ > 0` with `spt S ⊆ B_ρ(0)`; since `Fⱼ(Aⱼ) ⊆ spt S`, `‖Fⱼ u‖ < ρ` on `Aⱼ`
+  obtain ⟨ρ, hρ, hSρ⟩ := hS.isBounded.subset_ball_lt 0 0
+  have hFρ : ∀ j, ∀ u ∈ A j, ‖F j u‖ < ρ := fun j u hu =>
+    mem_ball_zero_iff.1 (hSρ (hFA j (mem_image_of_mem (F j) hu)))
+  -- the Lipschitz cone maps: `Gⱼ(ι(t, u)) = t Fⱼ(u)` and `∂Gⱼ(ι(t, u)) = (Fⱼ u, t ∂Fⱼ(u))`
+  choose G hGlip hGcyl using fun j =>
+    Submission.ecf_cp_cone_map (n + 1) P (F j) (A j) ρ hρ (hF j) (hdiff j) (hFρ j)
+  -- one piece: `wⱼ = gⱼ ∘ τ` is measurable and integrable on `Bⱼ`, and Fubini on `Bⱼ`
+  have hpiece := fun j => Submission.ecf_cp_piece_integral (n + 1) P (F j) (A j) (g j) (G j)
+    (hA j) (hg j) (hgi j) (hGlip j) (hGcyl j)
+  refine ⟨G, fun j => {z : Euclid (n + 2) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (n + 1)) ∈ A j},
+    fun j z => g j (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))), hGlip,
+    fun j => (Submission.cmcdt_lpi_cyl_fubini (n + 1) (A j) (hA j)).1,
+    fun j => (hpiece j).1, fun j => (hpiece j).2.1, ?_, fun ω => ?_⟩
+  · -- total weight: `Σⱼ ∫⁻_{Bⱼ} |wⱼ| JGⱼ ≤ ρ Σⱼ ∫⁻_{Aⱼ} |gⱼ| JFⱼ < ∞`
+    refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.ofReal_ne_top (r := ρ)) hfin) ?_
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum fun j =>
+      Submission.ecf_cp_piece_weight (n + 1) P (F j) (A j) (g j) (G j) ρ (hA j) (hg j)
+        (fun u hu => (hFρ j u hu).le) fun u hu t ht => (hGcyl j u hu t ht).2
+  · -- representation: `R(ω) = S(γ)`, and the `j`-th terms agree by the cone formula for `γ`
+    obtain ⟨γ, hRγ, hγ⟩ := hRcone ω
+    rw [hRγ]
+    refine (hSrep γ).congr_fun fun j => ((hpiece j).2.2 (ω : DifferentialForm (Euclid P) (n + 2))
+      (ContDiff.continuous ω.property.1.1) ω.property.1.2).trans
+      (setIntegral_congr_fun (hA j) fun u hu => ?_)
+    exact congrArg ((g j u : ℝ) * ·) (hγ (F j u) (hFA j (mem_image_of_mem (F j) hu)) _).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

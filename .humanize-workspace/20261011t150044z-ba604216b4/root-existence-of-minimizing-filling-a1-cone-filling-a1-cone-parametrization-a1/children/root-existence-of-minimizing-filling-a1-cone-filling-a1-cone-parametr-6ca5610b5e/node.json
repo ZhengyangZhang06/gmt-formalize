@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.piece_weight-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1",
+  "depth": 4,
+  "title": "One piece of the cone parametrization: ∫⁻_{Cyl(A)} |g(τ)|·JG ≤ ρ ∫⁻_A |g|·JF",
+  "statement": "Let k, P ∈ ℕ, F : ℝ^k → ℝ^P, A ⊆ ℝ^k Borel, g : ℝ^k → ℤ measurable, G : ℝ^{k+1} → ℝ^P and ρ ∈ ℝ. Notation: ι(t, u) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)); τ(z) := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)); Cyl(A) := {z ∈ ℝ^{k+1} : (WithLp.ofLp z) 0 ∈ (0, 1), τ(z) ∈ A}; DH(z) := fderiv ℝ H z; e_a := EuclideanSpace.single a 1; ∂H(z) := (DH(z)e_a)_a; and JH(z) := √det[⟨DH(z)e_a, DH(z)e_b⟩]_{a,b} (Real.sqrt). Assume ‖F(u)‖ ≤ ρ for every u ∈ A, and ∂G(ι(t, u)) = Fin.cons (F(u)) (t·∂F(u)) for all u ∈ A and t ∈ (0, 1). Then ∫⁻_{Cyl(A)} ‖(g(τ z) : ℝ)‖ₑ·ofReal(JG(z)) dz ≤ ofReal(ρ)·∫⁻_A ‖(g(u) : ℝ)‖ₑ·ofReal(JF(u)) du. These are lower Lebesgue integrals in [0, ∞]; ‖·‖ₑ is the extended norm, i.e. the absolute value, and ofReal is ENNReal.ofReal.",
+  "lean_statement": "∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P) (ρ : ℝ), MeasurableSet A → Measurable g → (∀ u ∈ A, ‖F u‖ ≤ ρ) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → ∫⁻ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, ‖(g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1)) (fderiv ℝ G z (EuclideanSpace.single b 1))))) ≤ ENNReal.ofReal ρ * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ F u (EuclideanSpace.single a 1)) (fderiv ℝ F u (EuclideanSpace.single b 1)))))",
+  "lean_name": "ecf_cp_piece_weight",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+    "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90-a1",
+      "result_commit": "8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-6ca5610b5e-a1"
+}
