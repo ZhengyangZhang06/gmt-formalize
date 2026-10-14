@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "00e3ce05ca644fec682d9d64fd1a51139449710fbdc9e46de619b6dbd07f7f09",
+  "git_delta": {
+    "base_commit": "436ed8358d6d06c94e40b4523d2ab35d1990f0ec",
+    "candidate_commit": "ef60a96fb379ce9e3ea98a2ae446c6a8aa1c7a32",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_blowUp_restrict_scaling",
+    "diff_sha256": "33c0059e23116f263bbdcae53b5b2fd7a144c68128bbe4154e724ca3ce09335f",
+    "source_sha256": "a5af44fdb0cd9cad94a4972981cbdd5a7d7bdf6eee0b425b5d29785fc9eaa5a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_blowUp_restrict_scaling",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (a : Euclid P) (lam : ℝ), MeasurableSet M → Measurable θ → 0 < lam → MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) ∧ μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) = ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) (μHE[n].restrict M) ∧ ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) ((μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x))) = (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)).withDensity (fun y => ENNReal.ofReal (θ (a + lam • y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
