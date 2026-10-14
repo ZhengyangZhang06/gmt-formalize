@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1.mass_iunion-a1",
+  "parent_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+  "depth": 3,
+  "title": "Continuity of local mass along increasing unions of open sets",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, and let T ∈ D_k(U) = GeometricCurrentOn U k. Let O_0 ⊆ O_1 ⊆ O_2 ⊆ ⋯ be open subsets of ℝ^P. Then M_{⋃_i O_i}(T) = sup_i M_{O_i}(T) in [0, ∞].\nHere M_V(T) = T.massOn V is the supremum of ENNReal.ofReal(T(ω)) over the test forms ω ∈ D^k(U) with tsupport ω ⊆ V and |ω(x)| ≤ 1 for all x, where |·| = covectorEuclideanNorm.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U k) (O : ℕ → Set (Eucl P)), (∀ i, IsOpen (O i)) → Monotone O → T.massOn (⋃ i, O i) = ⨆ i, T.massOn (O i)",
+  "lean_name": "iwl_rl_massOn_iUnion_monotone",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-limit-a1-mass-iunion-a1-a1"
+}

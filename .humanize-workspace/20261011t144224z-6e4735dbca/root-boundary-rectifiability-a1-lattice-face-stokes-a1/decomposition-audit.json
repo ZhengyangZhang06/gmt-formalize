@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "LatticeFaceIndex|latticeFace|DifferentialForm|IsSmoothForm|exteriorDerivative",
+        "theorem Isometry.map_euclideanHausdorffMeasure|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero",
+        "IsClosedEmbedding.setIntegral_map|MeasurePreserving.setIntegral_preimage_emb",
+        "volume_preserving_toLp",
+        "volume_preserving_piFinSuccAbove",
+        "theorem integral_prod_symm",
+        "theorem extDeriv_apply|lemma extDeriv_apply",
+        "br_latticeFace_setIntegral_eq_cube|br_cube_integral_fderiv_eq_faces|br_cube_stokes_lattice",
+        "python3 /tmp/lfs_independent_audit_98b01644/run-check.py frozen",
+        "python3 /tmp/lfs_independent_audit_98b01644/run-check.py CombinedCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-face-stokes-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/lfs_independent_audit_98b01644/CombinedCheck.lean"
+      ],
+      "conclusion": "The split appropriately separates measure transport, scalar cube FTC, and exterior-derivative assembly. The pinned definitions and cited APIs support every proof step. All three exact one-line propositions independently elaborate in the replayed comparator scope before any proposed declaration exists. Replaying the supplied scratch proofs and exact parent assembly succeeds; all four declarations use only propext, Classical.choice, and Quot.sound. Inspected compiler-library sources match the snapshot. All names are bare identifiers, with no collision in the active DAG, project/package search, or 57 local branches. The only child dependency is cube_stokes on cube_ftc; it is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lattice_face_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary real ρ and arbitrary integrands. Coordinates establish the precise preimage and range inclusion; orthonormality gives the isometry. Closed-embedding change of variables applies without measurability or integrability hypotheses, and WithLp transport correctly distinguishes Euclidean from function-space parameters. Zero dimension and nonpositive ρ are covered. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "cube_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated C¹ cube identity with ρ ≥ 0. Coordinate insertion preserves product volume and identifies the box. Continuity supplies compact-set integrability for Fubini; the insertion curve has derivative Pi.single i 1, and FTC gives the stated endpoint difference. The proof covers n = 0 and ρ = 0 and has no undeclared or circular dependency."
+    },
+    {
+      "key": "cube_stokes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on smoothness, dimensions, casts, frames, signs, and translated lattice points. Fixed-frame evaluation and the affine chain rule justify the derivative expansion; compact-box integrability justifies finite summation and subtraction. Applying the declared cube_ftc dependency and identifying inserted endpoint coordinates proves the exact conclusion, including m = 0. Rewriting latticeFaceAction with lattice_face_param then proves precisely the selected parent contract."
+    }
+  ],
+  "required_changes": []
+}

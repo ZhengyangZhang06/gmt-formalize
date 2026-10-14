@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "structure IsRectifiableTriple|def IsIntegerMultiplicity|def IsRectifiableCurrent|def SlicingTheorem|def IsMassMeasure|def IsMeasureRepresentation|def IsRestriction|def IsSlice|def LipschitzPushforwardIntegerMultiplicity",
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt|def CountablyRectifiable|theorem CountablyRectifiable.mono",
+        "finiteMeasure_tendsto_subseq_of_compact_metrizable|simon_theorem_4_16_compact_metrizable",
+        "ae_tendsto_average_norm_sub|def vitaliFamily|tendsto_filterAt",
+        "simpleNVector|tsupport_affinePullbackForm_subset|affinePullbackForm_isTestForm|def affinePushforward|boundary_affinePushforward",
+        "euclideanHausdorffMeasure_homothety_image|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume",
+        "limsup_measure_closed_le_of_tendsto",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "exists_contDiff_zero_iff_one_iff_of_isClosed",
+        "ind_(mass_density_bound|ae_blowup_limit|rescaled_current|diagonal_weak_limit|plane_multiplicity_integer|const_multiple_integer|ae_integer_multiplicity)",
+        "lake env lean /tmp/ind-independent-audit/Types.lean",
+        "lake env lean /tmp/ind-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/ind-decomp-scratch/Assembly_checked.lean",
+        "/tmp/ind-independent-audit/kernel-evidence-files.json"
+      ],
+      "conclusion": "The split appropriately isolates seven genuine obligations for the selected iwl_integer_density contract. Independently checked the parent assembly and exact child/sibling type correspondence. The only internal dependency is plane_integer → const_integer; external dependencies do not lead back to the selected node. All seven names are bare identifiers, with no collisions in the 265-node DAG or matches in the searched libraries. All statements pass one-line contract validation, contain no implementation-dependent aliases, and match their prose. No matrix-unit construction occurs. Reused declarations have identical frozen types; their retained comparator records confirm kernel acceptance with only propext, Quot.sound and Classical.choice permitted. The local definitions support the measure, differentiation, scaling, support and localization arguments. The argument also matches displays (7)–(10) in [Simon, Chapter 6, pp. 178–179](https://web.stanford.edu/class/math285/ts-gmt.pdf). Fresh Lean execution was unavailable because lake is not installed; no new compilation success is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact quantifier order is proved: one subsequence works almost everywhere, with eventual bounds for each sufficiently small radius. Compact-ball measure extraction, diagonalization, density comparison and closed-set portmanteau supply the conclusion without assuming convergence of the original currents."
+    },
+    {
+      "key": "ae_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weighted measure has the required local finiteness and equivalent null sets. Differentiation and tangent-measure growth control the orientation error; the explicit change of variables proves the main-term limit. The full-measure set is independent of the subsequently chosen tangent plane and continuous compactly supported form."
+    },
+    {
+      "key": "rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proper affine pullback constructs the stated current and test forms, commutes with boundary, and gives the exact mass factor for arbitrary W. The image-triple argument verifies every rectifiability field and preserves integer multiplicity using r > 0."
+    },
+    {
+      "key": "diagonal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The dense-family selection enforces both strict increase and every mass bound. Passing the uniform evaluation bound through both limits supplies the needed continuity estimate for L, despite Z and L being arbitrary functions in the contract. The final approximation estimate proves convergence for every supported test form."
+    },
+    {
+      "key": "plane_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All additional hypotheses are explicitly stated and their Lean antecedents match the frozen sibling types. Slicing, Fatou extraction, restriction convergence and localization give the required mass and boundary bounds. Relative support closedness establishes properness of projection; the common cutoff proves projected convergence. TOP and const_integer then prove the exact conclusion without circularity."
+    },
+    {
+      "key": "const_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant argument reduces the orientation to a measurable sign almost everywhere. Smooth scalar tests and the fundamental lemma identify the coefficient. The proof handles c = 0 separately and uses openness and nonemptiness to obtain a point witnessing integer c in the remaining case."
+    },
+    {
+      "key": "ae_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Removing the null exceptional set preserves the current action and every rectifiable-triple field. Hausdorff-null preservation under blow-ups verifies tangent-space invariance explicitly, including the unchanged pointwise weight. The resulting carrier has natural-valued multiplicity everywhere, exactly as IsIntegerMultiplicity requires."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsMassMeasure|CompactlyContainedOpen|ind_md_|iwl_restriction_theory|rectifiability_density_comparison",
+        "limsup_measure_closed_le_of_tendsto|comap_apply|subtype_coe|limsup_eq_iInf_iSup_of_nat|eventually_lt_of_limsup_lt|PseudoMetrizableSpace|notation.*μHE",
+        "def massOn|def mass |massOn_mono|finiteMeasure_tendsto_subseq_of_compact_metrizable|dimensionalUpperDensity|def dimensionalDensityQuotient|realUnitBallVolume_eq",
+        "ind_md_|closedBall_weak_subseq|diagonal_weak_subseq|ae_closedBall_growth|mass_measure_balls",
+        "git show b9f9acdc41eaa29f36e54d7e570ae94d8ca8b4a6:GMT/Ch06/Submission.lean",
+        "git show c5336e1a14131119b486a9306a19dac19728d9fb:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ind-md-independent-audit/Statements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ind-md-independent-audit/ProofAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/HasOuterApproxClosed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-mass-density-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-density-comparison-a1/accepted-candidate.json",
+        "/tmp/ind-md-independent-audit/Statements.lean",
+        "/tmp/ind-md-independent-audit/ProofAudit.lean",
+        "/tmp/ind-md-independent-audit/iwl_restriction_theory_accepted.lean",
+        "/tmp/ind-md-independent-audit/rectifiability_density_comparison_accepted.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected mass-density theorem. Snapshot definitions and inspected library files match the compiler sources; SimonGMT files match its pinned revision. All four standalone, one-line propositions elaborate in the frozen comparator scope without child declarations. Their bare names are unreserved in the DAG, and the library name search returned no matches. The sole new dependency is diagonal_weak_subseq depending on ball_weak_subseq; accepted dependency closures do not reach the selected parent. Both reused declarations retain identical frozen types and definitions. Independent compilation checked each supplied argument and the exact parent assembly, using accepted contracts as hypotheses where needed. These checks and recompilation of both accepted declarations report only propext, Classical.choice and Quot.sound. The assembly preserves one subsequence and the required per-radius eventual quantifier."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_measure_balls",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary real radii. Mass monotonicity supplies local finiteness for the accepted restriction theorem; compact containment gives equality on every open ball, and monotone exhaustion proves the total-mass bound. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "ball_weak_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses provide uniformly bounded finite measures on the nonempty compact Borel subtype, including R = 0. The subtype instances, comap identity, compactness theorem and closed-set portmanteau application check correctly. Mapping the limit back proves precisely the stated finite-measure limsup bound."
+    },
+    {
+      "key": "diagonal_weak_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The only sibling reliance is correctly directed to ball_weak_subseq. The recursive index maps, strict increase of the diagonal, tail factorization and tail-supremum comparison are all justified. They establish the exact simultaneous bounds for every R and closed F without assuming the parent or this child."
+    },
+    {
+      "key": "ae_ball_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted comparison type permits t = infinity and arbitrary exceptional sets, so finite total mass excludes infinite density almost everywhere. The proof then supplies the small-radius interval, verifies the denominator is positive and finite, and converts the bound to the stated real constant. It covers n = 0 and proves the exact strict inequality."
+    }
+  ],
+  "required_changes": []
+}

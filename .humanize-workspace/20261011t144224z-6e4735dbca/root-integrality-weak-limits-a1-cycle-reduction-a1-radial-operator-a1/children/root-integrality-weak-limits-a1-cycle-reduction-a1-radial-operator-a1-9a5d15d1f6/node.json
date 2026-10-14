@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1.integrand_derivative-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+  "depth": 4,
+  "title": "Radial integrand: joint smoothness and first spatial derivative",
+  "statement": "Let P, k, a ∈ ℕ and let ω : ℝ^P → Λ_{k+1} be a C^∞ (k+1)-form. Then (1) the map F : ℝ × ℝ^P → Λ_k, F(t,x) := t^a • (ω(t•x)).curryLeft x, i.e. F(t,x)(v) = t^a ω(tx)(x, v), is C^∞. (2) For all t ∈ ℝ, x, w ∈ ℝ^P and v ∈ (ℝ^P)^k, the derivative of z ↦ t^a • (ω(t•z)).curryLeft z at x, applied to w and then v, equals t^a (t·(Dω(tx)[w])(x, v) + ω(tx)(w, v)), where (y, v) := Fin.cons y v.",
+  "lean_statement": "∀ (P k a : ℕ) (ω : DifferentialForm (Eucl P) (k + 1)), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun p : ℝ × Eucl P => p.1 ^ a • (ω (p.1 • p.2)).curryLeft p.2) ∧ ∀ (t : ℝ) (x w : Eucl P) (v : Fin k → Eucl P), fderiv ℝ (fun z : Eucl P => t ^ a • (ω (t • z)).curryLeft z) x w v = t ^ a * (t * fderiv ℝ ω (t • x) w (Fin.cons x v) + ω (t • x) (Fin.cons w v))",
+  "lean_name": "iwl_cr_ro_integrand_contDiff_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-operator-a1-9a5d15d1f6-a1"
+}
