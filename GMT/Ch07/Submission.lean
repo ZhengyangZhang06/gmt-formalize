@@ -7365,6 +7365,124 @@ theorem Submission.idtp_fons_cs_sos_spine_coarea : ∀ (P n : ℕ) (L : Submodul
     (fun G Y K hG hY hYl => Submission.idtp_fons_cs_sos_lipschitz_approx_tangent P _ G Y K
       (Nat.sub_pos_of_lt hdn) hG hY hYl)
     (Submission.dpf_itt_ae_of_ae_pieces P _)
+/-- **An integer multiplicity triple defines a current** (Simon 6.3.1 (‡)): for an `IMRep`
+`R = (M, θ, ξ)` in `U`, `ω ↦ ∫_M θ⟨ω, ξ⟩ dHⁿ` is a current `T ∈ 𝒟ₙ(U)`, so `T = τ(M, θ, ξ)`.
+
+Write `μ = Hⁿ⌞M`.  A unit orientation has `|ξ(x)(α)| = |α(τ₁, …, τₙ)| ≤ ‖α‖` (`τ` orthonormal),
+the integrand is a.e. strongly measurable, and `1_K θ` is `μ`-integrable for compact `K ⊆ U`.
+Hence for a test form `ω` the integrand is dominated by `sup|ω| · 1_{spt ω} θ`, so the functional
+is defined and linear.  If `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K`, then
+`|T(ωⱼ)| ≤ sup_K |ωⱼ| · ∫_K θ dμ → 0`. -/
+theorem Submission.dtc_imrep_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T := by
+  intro P n U R
+  set μ := μHE[n].restrict R.carrier with hμ
+  -- (1) a unit orientation has norm at most one
+  have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    intro α
+    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
+    have hατ : |α τ| ≤ ‖α‖ := by
+      have h := α.le_opNorm τ
+      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    rcases hξ with h | h
+    · rw [h]; exact hατ
+    · rw [h, abs_neg]; exact hατ
+  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
+    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
+  -- (2) measurability of the integrand
+  have hmeas : ∀ ω : DifferentialForm (Euclid P) n, Continuous ω →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (ω x)) μ := by
+    intro ω hω
+    have h2 : AEStronglyMeasurable (fun x => R.orient x (ω x)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
+        R.aestronglyMeasurable_orient hω.aestronglyMeasurable
+    exact hθmeas.mul h2
+  -- (3) `θ` is integrable over compact subsets of `U`
+  have hθK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      Integrable (K.indicator fun x => (R.mult x : ℝ)) μ := by
+    intro K hK hKU
+    rw [integrable_indicator_iff hK.isClosed.measurableSet]
+    refine ⟨hθmeas.restrict, ?_⟩
+    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂(μ.restrict K) < ∞
+    rw [hμ, Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm]
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
+  -- (4) integrability of the integrand for test forms
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x))
+        μ := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ω.property.1.1.continuous
+    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+    have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
+    refine Integrable.mono' ((hθK _ hK ω.property.2).const_mul C) (hmeas _ hωc) ?_
+    filter_upwards [hbound] with x hx
+    by_cases hxK : x ∈ tsupport (ω : DifferentialForm (Euclid P) n)
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x ((ω : DifferentialForm (Euclid P) n) x)|
+          ≤ (R.mult x : ℝ) * ‖(ω : DifferentialForm (Euclid P) n) x‖ := by
+            gcongr; exact hx _
+        _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x
+        _ = C * (R.mult x : ℝ) := mul_comm _ _
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp [h0, indicator_of_notMem hxK]
+  -- (5) the linear functional `ω ↦ ∫_M θ ⟨ω, ξ⟩ dHⁿ`
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => R.action (ω : DifferentialForm (Euclid P) n)
+      map_add' := by
+        intro ω η
+        simp only [IMRep.action, Submodule.coe_add, Pi.add_apply, map_add, mul_add]
+        exact integral_add (hint ω) (hint η)
+      map_smul' := by
+        intro c ω
+        simp only [IMRep.action, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
+          RingHom.id_apply]
+        rw [← integral_const_mul]
+        congr 1
+        funext x
+        ring }
+  refine ⟨⟨L, ?_⟩, fun ω => rfl⟩
+  -- (6) sequential continuity
+  intro ωs hconv
+  obtain ⟨K, hK, hKU, hsupp, -, hderiv⟩ := hconv
+  have h0 := hderiv 0
+  rw [Metric.tendstoUniformlyOn_iff] at h0
+  set CK := ∫ x, K.indicator (fun x => (R.mult x : ℝ)) x ∂μ with hCKdef
+  have hCK : 0 ≤ CK := integral_nonneg fun x => indicator_nonneg (fun _ _ => Nat.cast_nonneg _) x
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hε' : 0 < ε / (CK + 1) := div_pos hε (by linarith)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (h0 (ε / (CK + 1)) hε')
+  refine ⟨N, fun j hj => ?_⟩
+  have hptw : ∀ x ∈ K, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ < ε / (CK + 1) := by
+    intro x hx
+    have h := hN j hj x hx
+    rw [dist_comm, dist_eq_norm] at h
+    simpa [norm_iteratedFDeriv_zero] using h
+  rw [Real.dist_eq, sub_zero]
+  have hle : |L (ωs j)| ≤ ∫ x, (ε / (CK + 1)) * K.indicator (fun x => (R.mult x : ℝ)) x ∂μ := by
+    refine (Real.norm_eq_abs _).symm.le.trans (norm_integral_le_of_norm_le
+      ((hθK K hK hKU).const_mul _) ?_)
+    filter_upwards [hbound] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x ((ωs j : DifferentialForm (Euclid P) n) x)|
+          ≤ (R.mult x : ℝ) * ‖(ωs j : DifferentialForm (Euclid P) n) x‖ := by
+            gcongr; exact hx _
+        _ ≤ (R.mult x : ℝ) * (ε / (CK + 1)) := by gcongr; exact (hptw x hxK).le
+        _ = ε / (CK + 1) * (R.mult x : ℝ) := mul_comm _ _
+    · have h0 : (ωs j : DifferentialForm (Euclid P) n) x = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h))
+      simp [h0, indicator_of_notMem hxK]
+  rw [integral_const_mul, ← hCKdef] at hle
+  calc |L (ωs j)| ≤ ε / (CK + 1) * CK := hle
+    _ < ε := by
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+      nlinarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
