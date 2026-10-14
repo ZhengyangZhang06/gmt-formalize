@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "03cb3a5fbf2370ba6974982061fb1b4c3d1ec224f70c2e2c213ed86615cd8a88",
+  "git_delta": {
+    "base_commit": "14ce6229c89f78d964dfd3002c151d128cbd927f",
+    "candidate_commit": "904f56f12ac182e454b5aaa7ca74ff9c207bf503",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "eb721ea16d8a38a92af1d17f4c1b2ff4d42570b13b6626a2e687b45f5ed668e4",
+    "source_sha256": "0745187e70d4c9fcd3bdcb5a5497f9106447744e8a6c86164ea6cf9700922e31",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_sheet_first_variation",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → ball p ρ ⊆ U → 1 ≤ k → IsEmbeddedSubmanifold 1 n M → T.support ∩ ball p ρ = M ∩ ball p ρ → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → R.firstVariation X = (k : ℝ) * ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
