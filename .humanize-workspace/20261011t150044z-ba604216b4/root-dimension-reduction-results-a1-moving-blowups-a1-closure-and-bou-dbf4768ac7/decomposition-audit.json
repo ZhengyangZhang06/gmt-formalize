@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dmcbr_cc|dor_zdm|regcomp_cop_zdr|cbr_cc_zcs|zero_current_finite_sum' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|one_le_hausdorffMeasure_zero_of_nonempty|sum_measure_singleton|setIntegral_finset|integrableOn_singleton|integrableOn_finset_iUnion|theorem withDensity_apply |theorem restrict_restrict |mem_support_iff_forall|Infinite.exists_subset_card_eq|def constOfIsEmpty",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|def massAdmissibleOn|def massOn|def VanishesOn|def zeroRegion|def support|theorem isOpen_zeroRegion",
+        "git show 39634bad5eec4be8528431168a20eb2a5ff79a28:GMT/Ch07/Submission.lean",
+        "git show b79a8362eb8e1de4d573486b97c38079112a1023:GMT/Ch07/Submission.lean",
+        "git show 54eb07ba9e488285077a685bc48ab36e0348f2d2:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_zcs_independent_audit_20261014/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dmcbr_zcs_independent_audit_20261014/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-dbf4768ac7/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-dbf4768ac7/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-4b50b377f9/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-f8430bc5ec/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-fe595d3abe/accepted-candidate.json",
+        "/tmp/dmcbr_zcs_independent_audit_20261014/Types.lean",
+        "/tmp/dmcbr_zcs_independent_audit_20261014/Assembly.lean",
+        "/tmp/dmcbr_zcs_independent_audit_20261014/dor_zdm_imrep_zero_structure.lean",
+        "/tmp/dmcbr_zcs_independent_audit_20261014/regcomp_cop_zdr_unitOrientation_zero.lean",
+        "/tmp/dmcbr_zcs_independent_audit_20261014/cbr_cc_zcs_setIntegral_finset_hausdorff_zero.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match the pinned references; the inspected definitions and library side conditions support all three proofs. No proposed declaration names occur in the snapshot project. Each reused name uniquely identifies an accepted leaf with a byte-identical frozen type and passing comparator records. All names are bare identifiers, and the empty dependency lists are correct and acyclic. The one-line types independently elaborate without child implementations. Fresh recompilation of the accepted sources and the hypothesis-only parent assembly succeeded; their axiom lists contain only propext, Classical.choice and Quot.sound. The accepted-source sorry warnings concern only the frozen main_theorem. The split is appropriate: MR and VO place the carrier inside the compact support, child 1 makes it finite and supplies pointwise orientations, child 2 supplies signs, and child 3 evaluates the integral, yielding exactly dmcbr_cc_zero_current_finite_sum. The supplied parent digest was independently reproduced. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_zero_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U and openness only for the support equality. The proof establishes every conjunct: the null exceptional set is empty, zero-dimensional parametrizations have countable ranges, positive integer multiplicity and compact-set integrability imply finiteness and finite mass, singleton positivity upgrades the orientation condition everywhere, and the constant covector proves nonvanishing. The closed-ball argument proves the remaining support inclusion. All measure restrictions have the required measurability. No parent theorem or sibling is used."
+    },
+    {
+      "key": "unit_orientation_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Unfolding IsUnitOrientationOf supplies a single sign valid for every covector. Uniqueness of a function on Fin 0 identifies the orientation tuple with the specified empty tuple; choosing 1 or −1 proves both required conclusions. The proof is complete and independent."
+    },
+    {
+      "key": "finset_integral_h0",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly permits an arbitrary real-valued function. Singleton mass one makes its restriction almost everywhere constant and integrable; finite-union integrability supplies the precise hypothesis of setIntegral_finset. Every singleton's real measure is one, giving exactly the stated sum. No global measurability assumption or undeclared dependency is needed."
+    }
+  ],
+  "required_changes": []
+}
