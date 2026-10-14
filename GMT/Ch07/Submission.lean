@@ -882,5 +882,57 @@ theorem Submission.idtp_cse_ah_slice_ae_const : ∀ (a b c d : ℝ) (H : ℝ × 
   -- Step 7: the separating property of `F n` gives `w = 0` a.e. on `J`
   filter_upwards [hF_sep (fun α => H (t, α) - k) hw_int hw_zero] with α hα hαJ
   exact sub_eq_zero.mp (hα hαJ)
+/-- **Fibrewise a.e. constancy gives the product form** (steps 1 and 6 of the `α`-homogeneity
+step in the cone-sector endpoint density argument for Simon 7.3.3).  Let `c < d`, `I = (a, b)`,
+`J = (c, d)` and `H` integrable on `I × J`.  If for a.e. `t ∈ I` the slice `H(t, ·)` equals a
+constant `k_t` a.e. on `J`, then `H(t, α) = (d − c)⁻¹ ∫_J H(t, ·)` for a.e. `(t, α) ∈ I × J`.
+Lebesgue measure on `I × J` is `μ.prod ν` with `μ = vol|I`, `ν = vol|J`.  Take a strongly
+measurable `H̃ = H` a.e.; then `h̃(t) = (d − c)⁻¹ ∫_J H̃(t, ·)` is measurable and equals the slice
+average `h(t)` for a.e. `t`.  As `vol J = d − c`, `k_t = h(t)`.  So the measurable set
+`{H̃ = h̃ ∘ fst}` has a.e.-full sections and is conull, and `fst` carries `h̃ = h` back to the
+product. -/
+theorem Submission.idtp_cse_ah_ae_eq_slice_average : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = (d - c)⁻¹ * ∫ α in Ioo c d, H (p.1, α) := by
+  intro a b c d H hcd hH hk
+  -- step 1: `vol|(I × J) = (vol|I).prod (vol|J)`, so `H` is integrable for the product measure
+  have hprod : (volume : Measure (ℝ × ℝ)).restrict (Ioo a b ×ˢ Ioo c d) =
+      (volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)) := by
+    rw [Measure.volume_eq_prod, Measure.prod_restrict]
+  rw [IntegrableOn, hprod] at hH
+  refine (ae_restrict_iff' (measurableSet_Ioo.prod measurableSet_Ioo)).1 ?_
+  rw [hprod]
+  -- a strongly measurable representative `H̃ = H` a.e.
+  obtain ⟨H', hH'm, hHH'⟩ := hH.aestronglyMeasurable
+  -- step 2: `h̃(t) = (d - c)⁻¹ ∫_J H̃(t, ·)` is strongly measurable
+  have hh'm : StronglyMeasurable fun t => (d - c)⁻¹ * ∫ β in Ioo c d, H' (t, β) :=
+    hH'm.integral_prod_right'.const_mul _
+  -- step 3: `h̃ = h` for a.e. `t ∈ I`
+  have hhh' : ∀ᵐ t ∂volume.restrict (Ioo a b), (d - c)⁻¹ * ∫ β in Ioo c d, H' (t, β) =
+      (d - c)⁻¹ * ∫ β in Ioo c d, H (t, β) := by
+    filter_upwards [Measure.ae_ae_of_ae_prod hHH'] with t ht
+    rw [integral_congr_ae ht]
+  -- step 4: for a.e. `t ∈ I`, `H(t, ·)` is a.e. on `J` its constant `k_t`, which is the average
+  have hslice : ∀ᵐ t ∂volume.restrict (Ioo a b), ∀ᵐ α ∂volume.restrict (Ioo c d),
+      H (t, α) = (d - c)⁻¹ * ∫ β in Ioo c d, H (t, β) := by
+    filter_upwards [(ae_restrict_iff' measurableSet_Ioo).2 hk] with t ⟨k, hk⟩
+    rw [← ae_restrict_iff' measurableSet_Ioo] at hk
+    rw [integral_congr_ae hk, setIntegral_const, Real.volume_real_Ioo_of_le hcd.le, smul_eq_mul,
+      inv_mul_cancel_left₀ (sub_pos.2 hcd).ne']
+    exact hk
+  -- steps 5, 6: `{H̃ = h̃ ∘ fst}` is measurable with a.e.-full sections, hence conull
+  have hE : MeasurableSet {p : ℝ × ℝ | H' p = (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β)} :=
+    hH'm.measurableSet_eq_fun (hh'm.comp_measurable measurable_fst)
+  have h6 : ∀ᵐ p ∂(volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)),
+      H' p = (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β) := by
+    refine (Measure.ae_prod_iff_ae_ae hE).2 ?_
+    filter_upwards [Measure.ae_ae_of_ae_prod hHH', hslice, hhh'] with t h1 h2 h3
+    filter_upwards [h1, h2] with α h1 h2
+    exact h1.symm.trans (h2.trans h3.symm)
+  -- step 7: `h̃ ∘ fst = h ∘ fst` a.e., as `fst` is quasi-measure-preserving
+  have h7 : ∀ᵐ p ∂(volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d)),
+      (d - c)⁻¹ * ∫ β in Ioo c d, H' (p.1, β) = (d - c)⁻¹ * ∫ β in Ioo c d, H (p.1, β) :=
+    Measure.quasiMeasurePreserving_fst.ae hhh'
+  -- step 8: `H = H̃ = h̃ ∘ fst = h ∘ fst` a.e.
+  filter_upwards [hHH', h6, h7] with p h1 h2 h3
+  exact h1.trans (h2.trans h3)
 
 end GMT.Ch07
