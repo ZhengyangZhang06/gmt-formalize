@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fb3ee11ed0bc91e658996571d32df53e0cd18c9f1700637562de55409b90010c",
+  "git_delta": {
+    "base_commit": "89d3e8e0c6fdebbbf9719793c8266f9205b2b2eb",
+    "candidate_commit": "e93f3876611dee018b37cb462f41381e4ca251a1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "da7a2dc3f932fa607c902131ecceced31de17cecfd1843c152f415484b918d3d",
+    "source_sha256": "2577f8861a1e8af3faab46ca078ae6533330034b10a2abecc5b2920ee1dbc0a4",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_minimizing_piece_area_comparison",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (V M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 1 ≤ m → IsMinimizingIn C univ → BoundaryVanishes C → IsOpen V → M ⊆ V → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → (∀ W : Set (Euclid P), IsOpen W → W ⊆ V → μHE[m] (M ∩ W) ≠ ∞ → μHE[m] (M ∩ W) ≤ C.massOn W) → ∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ V → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

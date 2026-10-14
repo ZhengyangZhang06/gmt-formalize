@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1.embedded_rectifiable-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1",
+  "depth": 6,
+  "title": "An embedded C¹ m-submanifold of ℝ^P is Borel and countably m-rectifiable (Simon 3.1.2, \"if\" part)",
+  "statement": "Let P, m ∈ ℕ and let N ⊆ ℝ^P be an embedded m-dimensional C¹ submanifold in the sense of the contract (IsEmbeddedSubmanifold 1 m N): every y ∈ N has an open V ⊆ ℝ^m, an open W ⊆ ℝ^P with y ∈ W and a map ψ : ℝ^m → ℝ^P that is C¹ on V and injective on V, with ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ(z) injective for every z ∈ V. Then N is a Borel set (MeasurableSet N) and N is countably m-rectifiable (CountablyRectifiable m N, the SimonGMT form of Simon Ch. 3, 1.1).",
+  "lean_statement": "∀ (P m : ℕ) (N : Set (Euclid P)), IsEmbeddedSubmanifold 1 m N → MeasurableSet N ∧ CountablyRectifiable m N",
+  "lean_name": "codim1_ac_pp_embedded_measurable_rectifiable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2b6cecc022-a1"
+}

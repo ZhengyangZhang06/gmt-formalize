@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.monotonicity_mass_bound-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Uniform upper mass bound from monotonicity with bounded generalized mean curvature (Simon Ch. 4, 3.17)",
+  "statement": "Let U ⊆ ℝ^P be open and let R = (C, θ, ξ) be an integer multiplicity triple (IMRep) in U whose associated varifold v(C, θ) has locally bounded generalized mean curvature in U (IMRep.HasLocallyBoundedMeanCurvature: δV(X) = −∫ X·H dμ for X ∈ C¹_c(U; ℝ^P), with H essentially bounded on compact subsets of U). Then for every compact K ⊆ U there are C₀ ∈ ℝ and r₁ > 0 such that μ(B_r(x)) ≤ C₀ r^n for all x ∈ K and 0 < r < r₁, where μ = R.measure = θ H^n⌞C.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), IsOpen U → R.HasLocallyBoundedMeanCurvature → ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ x ∈ K, ∀ r : ℝ, 0 < r → r < r₁ → R.measure (ball x r) ≤ ENNReal.ofReal (C * r ^ n)",
+  "lean_name": "regcomp_monotonicity_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-monotonicity-mass-bound-a1-a1"
+}
