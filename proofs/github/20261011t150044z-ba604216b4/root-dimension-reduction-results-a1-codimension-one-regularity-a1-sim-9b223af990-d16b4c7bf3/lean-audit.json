@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3ee08b9cddc97297e30fc4f06fc3f43bd49e82c83bdb95833819299faa33013a",
+  "git_delta": {
+    "base_commit": "c2a31bf906015b5f9ad80d23450dab9e1021fd64",
+    "candidate_commit": "af5f1e31ee433fc228a4bc6e968f3c1911365433",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_jacobian_bound",
+    "diff_sha256": "7bbbaf5fbdf74edd4d4072faaa9156f0589f502ae3b875c301d915ce05a88df0",
+    "source_sha256": "b355e27b456f7d7327eece9bff0671c12b55be49ed02f999bd1f1f87b6e610af",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_jacobian_bound",
+      "statement": "∀ (P : ℕ) (Λ : ℝ), ∃ C : ℝ, ∀ (S : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), ‖L‖ ≤ Λ → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = 0 → ∀ t : ℝ, |t| ≤ 1 → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL)).det) ≤ 1 + t ^ 2 / 2 * ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) + C * |t| ^ 3",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
