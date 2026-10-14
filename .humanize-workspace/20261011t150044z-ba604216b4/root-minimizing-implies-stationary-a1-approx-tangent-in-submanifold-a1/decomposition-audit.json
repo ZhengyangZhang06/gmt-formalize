@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def HasApproximateTangentSpaceAt|def blowUpMap|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "exists_antilipschitzWith|euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image|bound_of_antilipschitz|integral_pos_iff_support_of_nonneg",
+        "ContDiffOn.differentiableOn|theorem restrict_apply |theorem restrict_apply\\(",
+        "class Regular|class IsFiniteMeasureOnCompacts|integrable_of_hasCompactSupport",
+        "atsm_chart_image_flat|atsm_approxTangent_le_of_flat",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-atsm-audit-tlmlktwl/chart_image_flat.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-atsm-audit-tlmlktwl/approx_tangent_le_flat.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-atsm-audit-tlmlktwl/ParentAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1/decomposition-v3.json",
+        "/tmp/independent-atsm-audit-tlmlktwl/chart_image_flat.lean",
+        "/tmp/independent-atsm-audit-tlmlktwl/approx_tangent_le_flat.lean",
+        "/tmp/independent-atsm-audit-tlmlktwl/ParentAssembly.lean"
+      ],
+      "conclusion": "Independently verified compatibility with project snapshot b4d606db, Mathlib 25730c7c and SimonGMT 2b366308. Both frozen one-line propositions elaborate before their declarations. The supplied proof appendices have exactly those types and compile separately against the inlined pinned header; both use only propext, Classical.choice and Quot.sound. The conditional assembly also compiles with only these axioms: the two children and the exact retained chart_tangentSpace_eq_range_fderiv sibling contract imply the selected approxTangent_le_submanifold_tangentSpace contract. This appropriately separates chart flatness from the measure-theoretic inclusion argument. Dependencies are correctly directed and acyclic. Both lean_name values are bare identifiers; scanning 451 DAG nodes and 881 decomposition/handoff artifacts found no reservation by another branch. Earlier proposals have identical frozen types. Name searches found no existing declarations in the snapshot project/GMT or SimonGMT source trees. Euclid carries the Euclidean norm, Q ≤ T is submodule inclusion, and no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_image_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and independent Lean proposition include all chart, properness, injectivity and base-point hypotheses. Properness and injectivity give the stated compact separation, forcing nearby image points to have nearby preimages. Derivative coercivity then absorbs the first-order remainder and produces the exact witness estimate. The proof covers d = 0 and an empty separation set, uses no parent or sibling conclusion, and supplies a complete formalization-ready argument. Its unchanged Lean appendix compiled with only standard axioms."
+    },
+    {
+      "key": "approx_tangent_le_flat",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the Lean proposition, including arbitrary M and N without measurability assumptions. The dimension hypothesis supplies support and compact integrability on Q. The separating bump has positive plane integral; similarity invariance preserves the exceptional null set, and flatness forces the small-scale integrals to vanish. Restriction is evaluated on the measurable set where the bump is nonzero, so no measurability assumption is missing. The constants and strict contradiction are valid, and uniqueness of the limit yields Q ≤ T. The complete proof is non-circular, and its unchanged Lean appendix compiled with only standard axioms."
+    }
+  ],
+  "required_changes": []
+}
