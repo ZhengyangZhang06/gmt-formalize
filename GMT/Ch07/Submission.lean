@@ -1898,6 +1898,68 @@ theorem Submission.dtc_bc_lc_sl_co_chart_bilipschitz : ∀ (P d : ℕ) (ψ : Euc
     linarith
   obtain ⟨m, hm, hm'⟩ := hlow
   exact ⟨m, C, hm, fun a ha b hb => ⟨hm' a ha b hb, hup a ha b hb⟩⟩
+/-- **Tangential gradient in a `C¹` chart** (Simon Ch. 2, 4.16 and Ch. 3, Definition 2.1, written
+in a chart `ψ`).  Let `ψ : ℝᵈ → ℝᴾ` and `F : ℝᵈ → ℝ` be `C¹`, and let `Dψ(y)` be injective for
+`y ∈ V`.  Put `B_y = Dψ(y)`, `S_y = B_y* B_y`, and let `∇F(y)` be the Riesz vector of `DF(y)`.
+Then `h(y) = B_y S_y⁻¹ ∇F(y)` lies in `B_y(ℝᵈ)` and satisfies `⟨h(y), B_y e⟩ = DF(y) e` for
+`y ∈ V` and `e ∈ ℝᵈ` (it is the gradient of `F ∘ ψ⁻¹` at `ψ(y)` along `ψ`), and `h` is continuous
+on `V`.
+
+Proof sketch:
+* For `y ∈ V`, `⟨S_y v, v⟩ = |B_y v|²`, so `S_y` is injective, hence bijective, hence a unit of
+  the ring of continuous linear endomorphisms of `ℝᵈ`.
+* `⟨h(y), B_y e⟩ = ⟨B_y* B_y S_y⁻¹ ∇F(y), e⟩ = ⟨∇F(y), e⟩ = DF(y) e`.
+* `y ↦ B_y`, `y ↦ S_y` and `y ↦ ∇F(y)` are continuous (`ψ`, `F` are `C¹`; the adjoint, composition
+  and the Riesz map are continuous), and `Ring.inverse` is continuous at the unit `S_{y₀}`,
+  `y₀ ∈ V`. -/
+theorem Submission.dtc_bc_lc_sl_co_chart_gradient : ∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (V : Set (Euclid d)), ContDiff ℝ 1 ψ → ContDiff ℝ 1 F → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ h : Euclid d → Euclid P, ContinuousOn h V ∧ ∀ y ∈ V, h y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (h y) (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+  intro P d ψ F V hψ hF hD
+  -- `B y = Dψ(y)`, `S y = B_y* B_y` and the Riesz vector `g y = ∇F(y)` of `DF(y)`
+  let B : Euclid d → (Euclid d →L[ℝ] Euclid P) := fun y => fderiv ℝ ψ y
+  let S : Euclid d → (Euclid d →L[ℝ] Euclid d) := fun y =>
+    (ContinuousLinearMap.adjoint (B y)).comp (B y)
+  let g : Euclid d → Euclid d := fun y =>
+    (InnerProductSpace.toDual ℝ (Euclid d)).symm (fderiv ℝ F y)
+  -- `S y` is a unit for `y ∈ V`: `⟨S_y v, v⟩ = |B_y v|²`, so `S y` is injective, hence bijective
+  have hunit : ∀ y ∈ V, IsUnit (S y) := by
+    intro y hy
+    have hinjS : Injective (S y) := by
+      refine (injective_iff_map_eq_zero (S y)).mpr fun v hv => ?_
+      have h1 : inner ℝ (B y v) (B y v) = 0 := by
+        rw [← ContinuousLinearMap.adjoint_inner_left]
+        change inner ℝ (S y v) v = 0
+        rw [hv, inner_zero_left]
+      exact (injective_iff_map_eq_zero (B y)).mp (hD y hy) v (inner_self_eq_zero.mp h1)
+    exact ContinuousLinearMap.isUnit_iff_bijective.mpr
+      ⟨hinjS, (LinearMap.injective_iff_surjective (f := (S y : Euclid d →ₗ[ℝ] Euclid d))).mp hinjS⟩
+  -- `h y = B_y S_y⁻¹ ∇F(y)` lies in the range of `B y`
+  refine ⟨fun y => B y (Ring.inverse (S y) (g y)), ?_, fun y hy =>
+    ⟨LinearMap.mem_range_self (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P) (Ring.inverse (S y) (g y)),
+      fun e => ?_⟩⟩
+  · -- continuity at `y₀ ∈ V`: `B`, `S` and `g` are continuous, and `Ring.inverse` is continuous
+    -- at the unit `S y₀`
+    intro y₀ hy₀
+    apply ContinuousAt.continuousWithinAt
+    have hBc : Continuous B := hψ.continuous_fderiv one_ne_zero
+    have hSc : Continuous S :=
+      ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid d) (F := Euclid P)).continuous.comp
+        hBc).clm_comp hBc
+    have hgc : Continuous g :=
+      (InnerProductSpace.toDual ℝ (Euclid d)).symm.continuous.comp
+        (hF.continuous_fderiv one_ne_zero)
+    have hinvc : ContinuousAt (fun y => Ring.inverse (S y)) y₀ := by
+      have h := NormedRing.inverse_continuousAt (hunit y₀ hy₀).unit
+      rw [IsUnit.unit_spec] at h
+      exact h.comp hSc.continuousAt
+    exact hBc.continuousAt.clm_apply (hinvc.clm_apply hgc.continuousAt)
+  · -- `⟨h y, B_y e⟩ = ⟨S_y S_y⁻¹ ∇F(y), e⟩ = ⟨∇F(y), e⟩ = DF(y) e`
+    show inner ℝ (B y (Ring.inverse (S y) (g y))) (B y e) = fderiv ℝ F y e
+    rw [← ContinuousLinearMap.adjoint_inner_left]
+    change inner ℝ (S y (Ring.inverse (S y) (g y))) e = fderiv ℝ F y e
+    have hSS : S y (Ring.inverse (S y) (g y)) = g y := by
+      rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel (S y) (hunit y hy), one_apply_eq_self]
+    rw [hSS]
+    exact InnerProductSpace.toDual_symm_apply
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
