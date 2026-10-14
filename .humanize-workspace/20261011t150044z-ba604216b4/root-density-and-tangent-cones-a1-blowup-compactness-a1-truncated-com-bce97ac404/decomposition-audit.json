@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbrr_|dtc_bc_tc_cl_|cbr_rectifiable_of_approx_tangent|doragm_approxTangent_lower_density|dor_ims_lusin_measurable_continuousOn|rsd_cmr_ir_blowUp_image_measure",
+        "euclideanHausdorffMeasure_zero|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety_image|hausdorffMeasure_zero_singleton|theorem LipschitzOnWith.extend_pi|theorem LipschitzOnWith.extend_real|regular_euclideanHausdorffMeasure_restrict_submodule|def starProjection",
+        "rg -n -A 17 'theorem countablyRectifiable_sUnion' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc_rect_split/lean/MergedWithParent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-bce97ac404/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-bce97ac404/decomposition-v1.json",
+        "/tmp/dtc_rect_split/lean/Assembly.lean",
+        "/tmp/dtc_rect_split/lean/MergedWithParent.lean"
+      ],
+      "conclusion": "The three-child split is appropriate and proves the selected contract: the zero-dimensional child handles n = 0; otherwise the other children produce rectifiable subsets with arbitrarily small measure loss, whose countable union leaves a null remainder. The snapshot project contains none of the reused declarations. Independently checked DAG records and comparator results establish accepted reuse at byte-identical frozen types, with unique bare names. Their 17-node dependency closure is acyclic and excludes the selected node and its ancestors; existing dependencies remain attached despite empty sibling dependency lists. All 17 proof blocks match their accepted candidates. The inspected library definitions confirm the intended Hausdorff normalization, operator-valued projections, and Lipschitz norm conversions. Fresh combined Lean compilation succeeded; the selected parent depends only on propext, Classical.choice and Quot.sound. Its proof does not depend on the unrelated frozen main_theorem sorry."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dim_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including the absence of measurability assumptions. Singleton measure and finite additivity force M to be finite; constant maps from nonempty Euclid 0 and countable unions establish rectifiability. The supplied proof is complete and non-circular. The bare name validly reuses the identical comparator-accepted declaration."
+    },
+    {
+      "key": "uniform_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly preserves all hypotheses and both bounds. Parts A–C justify scaling, lower density and vanishing cone density. The Borel representative, null-set removal and Lusin argument correctly use the measurability and finiteness hypotheses. Fatou establishes the required closed uniformity sets; continuity from below supplies E and δ. Negative a is handled correctly. The detailed proof is non-circular, and reuse preserves the accepted prerequisites."
+    },
+    {
+      "key": "uniform_to_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches the prose for arbitrary μ, all dimensions and real b. The finite projection net and closed-ball inclusion yield the contradiction a ≤ b·16ⁿ, including when b is nonpositive. Coordinatewise extension correctly accounts for the Euclidean norm conversion. The countable ball cover proves rectifiability without additional measurability or finiteness assumptions. The supplied proof is complete, non-circular and compatible with the accepted declaration."
+    }
+  ],
+  "required_changes": []
+}
