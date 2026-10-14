@@ -608,6 +608,30 @@ theorem Submission.cmcdt_lpo_pf_approx_data : ∀ (N N' : ℕ) (Λ : NNReal) (F 
       Submission.cmcdt_lpo_cutoff_pullback N N' k (Fs j) ω K (hFs j) hK
     exact ⟨ηs, fun j => ⟨W j, hW j⟩⟩
 
+/-- **Push-forward as a limit of smooth push-forwards** (Simon 6.2.28–2.29).  Suppose `lpush`
+has the approximation property (PA): `X(ηⱼ) → lpush(F, X)(ω)` whenever the `Fⱼ` are `C^∞` with
+`‖DFⱼ‖ ≤ Λ'` on `spt X`, `Fⱼ → F` uniformly on `spt X` and `ηⱼ = Fⱼ^#ω` on an open set
+containing `spt X`.  Then a single sequence of `C^∞`, `Λ`-Lipschitz `Fⱼ → F` (uniformly on `ℝᴺ`)
+serves every `ω ∈ 𝒟ᵏ(ℝ^{N'})`: take the approximants and cut-off pull-backs of
+`cmcdt_lpo_pf_approx_data` for `K = spt X` (so `‖DFⱼ‖ ≤ Λ` everywhere), drop the `dηⱼ` clause
+and apply (PA) with `Λ' = Λ`. -/
+theorem Submission.cmcdt_lpo_pf_smooth_approx : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ TendstoUniformly Fs F atTop ∧ ∀ ω : TestFormOn (univ : Set (Euclid N')) k, ∃ ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k, (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) ∧ Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω)) := by
+  intro lpush hPA N N' k Λ F X hF hX1 hX2 hX3
+  obtain ⟨Fs, hFs, hLip, hD, -, hU, hη⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  refine ⟨Fs, hFs, hLip, hU, fun ω => ?_⟩
+  obtain ⟨ηs, hηs⟩ := hη k ω
+  -- `ηⱼ = Fⱼ^#ω` on an open `W ⊇ spt X` (the `dηⱼ` clause is not needed)
+  have hη' : ∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+      (ηs j : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x) := fun j => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hηs j
+    exact ⟨W, hW, hKW, h1⟩
+  -- (PA) with `Λ' = Λ`, and uniform convergence on `ℝᴺ` restricted to `spt X`
+  exact ⟨ηs, hη', hPA N N' k Λ Λ F Fs X ω ηs hF hX1 hX2 hX3 hFs (fun j x _ => hD j x)
+    hU.tendstoUniformlyOn hη'⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
