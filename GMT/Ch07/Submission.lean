@@ -1402,6 +1402,40 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon Ch. 6, 3.2(3)** (locality of the weight): if `S = τ(R_S)` and `T = τ(R_T)` agree on
+every test form supported in the open set `O`, then `μ_{R_S}⌞O = μ_{R_T}⌞O`.  For open `G`,
+`dor_imrep_massOn_eq_measure_and_support` gives `μ_{R_S}(G ∩ O) = M_{G ∩ O}(S)` and likewise for
+`T`, while `M_{G ∩ O}(S) = M_{G ∩ O}(T)` because every admissible form is supported in `O`.  So
+the restricted weights agree on open sets, a π-system generating the Borel sets, and both are
+finite on the balls `B(0, j)` covering `ℝᴾ`. -/
+theorem Submission.dimred_cs_sp_measure_restrict_eq_of_agree : ∀ (P m : ℕ) (S T : GeometricCurrentOn (univ : Set (Euclid P)) m) (RS RT : IMRep (univ : Set (Euclid P)) m) (O : Set (Euclid P)), IsOpen O → RS.Represents S → RT.Represents T → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → S ω = T ω) → RS.measure.restrict O = RT.measure.restrict O := by
+  intro P m S T RS RT O hO hS hT hST
+  have hmS := (Submission.dor_imrep_massOn_eq_measure_and_support P m univ S RS isOpen_univ hS).1
+  have hmT := (Submission.dor_imrep_massOn_eq_measure_and_support P m univ T RT isOpen_univ hT).1
+  -- `M_G(S) = M_G(T)` for `G ⊆ O`: the admissible forms are the same, and `S`, `T` agree on them
+  have hmass : ∀ G : Set (Euclid P), G ⊆ O → S.massOn G = T.massOn G := by
+    intro G hG
+    unfold GeometricCurrentOn.massOn
+    rw [image_congr fun ω hω => by rw [hST ω (hω.1.trans hG)]]
+  -- the restricted weights agree on open sets
+  have hopen : ∀ G : Set (Euclid P), IsOpen G →
+      RS.measure.restrict O G = RT.measure.restrict O G := by
+    intro G hG
+    rw [Measure.restrict_apply hG.measurableSet, Measure.restrict_apply hG.measurableSet,
+      ← hmS _ (hG.inter hO), ← hmT _ (hG.inter hO), hmass _ inter_subset_right]
+  -- `μ_{R_S}⌞O (B(0, j)) ≤ μ_{R_S}(B̄(0, j)) = ∫_{M_S ∩ B̄(0, j)} θ_S dHᵐ < ∞`
+  have hball : ∀ j : ℕ, RS.measure.restrict O (ball (0 : Euclid P) j) ≠ ∞ := by
+    intro j
+    have hfin : RS.measure (closedBall (0 : Euclid P) j) < ∞ := by
+      rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+      exact (RS.locallyIntegrable_mult _ (isCompact_closedBall _ _) (subset_univ _)).lt_top
+    exact ((Measure.restrict_apply_le _ _).trans
+      (measure_mono ball_subset_closedBall)).trans_lt hfin |>.ne
+  exact Measure.ext_of_generateFrom_of_iUnion {s | IsOpen s} (fun j : ℕ => ball (0 : Euclid P) j)
+    BorelSpace.measurable_eq isPiSystem_isOpen (iUnion_ball_nat 0)
+    (fun j => (isOpen_ball : IsOpen (ball (0 : Euclid P) j))) hball hopen
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
