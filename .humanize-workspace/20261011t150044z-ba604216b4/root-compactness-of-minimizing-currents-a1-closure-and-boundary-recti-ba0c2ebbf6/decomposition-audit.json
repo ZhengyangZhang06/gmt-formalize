@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def detRowAlternating|theorem det_apply |theorem det_eq_zero_of_column_eq_zero",
+        "theorem cramer_apply|theorem cramer_one|def updateCol|theorem updateCol_apply",
+        "def mkContinuous|theorem mkContinuous_apply|def compLinearMap|theorem compLinearMap_apply",
+        "theorem orthonormal_iff_ite|theorem abs_real_inner_le_norm|theorem inner_self_eq_zero",
+        "^(theorem|lemma) one_apply|^instance.*: One",
+        "abbrev Covector",
+        "cbr_ci_pw_pu_inner_det_covector",
+        "cbr_ci_pw_pu_span_le_of_inner_det_eq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/plane-decomp-independent-audit-1nszruvq/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pu-decomp-claude/lean/ChkA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pu-decomp-claude/lean/ChkB.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pu-decomp-claude/lean/Combined.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/RowCol.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Diagonal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/plane-decomp-independent-audit-1nszruvq/Contracts.lean",
+        "/tmp/pu-decomp-claude/lean/ChkA.lean",
+        "/tmp/pu-decomp-claude/lean/ChkB.lean",
+        "/tmp/pu-decomp-claude/lean/Combined.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned project/mathlib revisions, agreement of the snapshot contract with the selected proof base and workspace Submission, and compatibility of the inspected mathlib sources. The cited determinant, continuity, orthonormality and Cramer lemmas have the required types. Neither proposed name is reserved in the 1523-node DAG or another recorded decomposition; neither exact child type duplicates a DAG declaration. Both contracts pass validate_lean_statement unchanged and elaborate independently as propositions. Both supplied scratch proofs and the exact parent proof compile using only propext, Classical.choice and Quot.sound. An independent hypothesis-only assembly also compiles: the covector child supplies determinant equalities, and two applications of the inclusion child yield the selected span equality. Matrix identity and updated-column calculations were separately checked in Lean. The split is appropriate, and the empty child dependency lists are correct and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "inner_det_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree for arbitrary P, n and w. The supplied proof constructs the real-linear row map, composes with the alternating determinant, establishes the factorial/product norm bound by Leibniz expansion and Cauchy–Schwarz, and applies mkContinuous without changing evaluations. This proves the exact existential, including n = 0, without circular reliance or missing hypotheses. The bare lean_name is fresh; no child dependency is needed."
+    },
+    {
+      "key": "span_le_of_det_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition match all quantifiers, both orthonormality hypotheses, the determinant hypothesis and the direction of inclusion. The residual is orthogonal to x; replacing one vector of y produces a zero-column determinant for x and an identity-column determinant equal to inner ℝ (y i) e for y. The assumed equality forces this value to vanish, hence e = 0 and y i belongs to span x. The n = 0 case is vacuous. Matrix.of and the explicitly typed identity have the intended matrix meaning. The proof is complete and independent of both the other child and the parent; the bare lean_name is fresh."
+    }
+  ],
+  "required_changes": []
+}

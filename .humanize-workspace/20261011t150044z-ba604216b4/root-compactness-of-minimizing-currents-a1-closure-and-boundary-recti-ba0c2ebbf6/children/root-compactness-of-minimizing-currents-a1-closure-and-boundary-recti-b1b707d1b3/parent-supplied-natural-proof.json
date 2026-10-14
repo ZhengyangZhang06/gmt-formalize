@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Submission.lean (identical)",
+        "rg -n '^theorem cramer_apply|^theorem cramer_one' mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean (lines 96, 120)",
+        "rg -n 'theorem det_eq_zero_of_column_eq_zero|^theorem det_apply ' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean (lines 365, 66); rg -n 'def detRowAlternating' same file (line 53)",
+        "rg -n '^def updateCol' mathlib/Mathlib/LinearAlgebra/Matrix/RowCol.lean (line 205)",
+        "rg -n 'def mkContinuous' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean (line 150: AlternatingMap.mkContinuous f C H)",
+        "rg -n 'def compLinearMap|theorem compLinearMap_apply' mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean (lines 506, 515)",
+        "rg -n 'theorem orthonormal_iff_ite' mathlib/Mathlib/Analysis/InnerProductSpace/ (Orthonormal.lean:82); rg -n 'theorem abs_real_inner_le_norm' (InnerProductSpace/Basic.lean:471)",
+        "rg -n 'theorem continuous_of_finiteDimensional' mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean mathlib/Mathlib/Analysis/Normed (no match; continuity is taken from mkContinuous instead)",
+        "grep -n Covector lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean (line 31: abbrev Covector E n := E [⋀^Fin n]→L[ℝ] ℝ)",
+        "python3 -I scan of dag.json lean_statement fields for existential Covector witnesses involving det and inner, and for det-covector lean_names (found cmr_cc_det_covector_exists [coordinate minors], covectorEuclideanNorm_gram_bounds, dgoj_covector_eq_det_mul_of_mem_span, codim1_lur_det_covector_clm; none matches det(⟨u_a, w_b⟩) for an arbitrary frame w)",
+        "git show fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e:GMT/Ch07/Submission.lean (layout of accepted Submission.cmr_cc_det_covector_exists: detRowAlternating.compLinearMap plus mkContinuous with a Leibniz bound, declared inside namespace GMT.Ch07)",
+        "rg -n -t lean 'cramer|updateCol|Orthonormal ℝ' and 'span_le_of|span_eq_of' over snapshot project/GMT (only the IsUnitOrientationOf definitions in Ch06/Ch07 Contract/Submission; no helper lemmas)",
+        "rg -l -t lean 'cbr_ci_pw_pu_' over snapshot project, workspace GMT/ and lake-packages-25730c7c/simongmt/Poincare (no match); python3 -I scan of the 1523 DAG lean_names (both proposed names fresh)",
+        "python3 -I validate_lean_statement from verifier/lean_contract.py on both child types (both pass unchanged)",
+        "lake env lean /tmp/pu-decomp-claude/lean/Elab.lean, ChkA.lean, ChkB.lean, Combined.lean (child types elaborate; both children proved; exact frozen parent type proved from the two child declarations; axioms propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/RowCol.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/tmp/pu-decomp-claude/lean/Elab.lean",
+        "/tmp/pu-decomp-claude/lean/ChkA.lean",
+        "/tmp/pu-decomp-claude/lean/ChkB.lean",
+        "/tmp/pu-decomp-claude/lean/Combined.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Submission.lean. The node's proof base adds no accepted lemmas, so only Mathlib and the frozen contract are available.\n\nThe snapshot project has no helper for Cramer, updateCol or span inclusion; its only Orthonormal occurrences are the IsUnitOrientationOf definitions. No accepted DAG declaration gives the inner-product determinant covector det(⟨u_a, w_b⟩) for an arbitrary frame w. The closest, cmr_cc_det_covector_exists, handles coordinate minors only. Child A is therefore a new obligation; its construction follows that accepted proof's detRowAlternating.compLinearMap plus mkContinuous pattern.\n\nAll Mathlib facts the child proofs cite exist in the snapshot: Matrix.cramer_apply, Matrix.cramer_one, Matrix.det_eq_zero_of_column_eq_zero, Matrix.det_apply, Matrix.updateCol, Matrix.detRowAlternating, AlternatingMap.compLinearMap, AlternatingMap.mkContinuous, orthonormal_iff_ite, abs_real_inner_le_norm. Covector E n is E [⋀^Fin n]→L[ℝ] ℝ (SimonGMT Chapter06/Forms.lean:31).\n\nBoth proposed names are fresh. Both child types elaborate and pass validate_lean_statement. Scratch Lean proofs of both children compile, and a combined file proves the exact frozen parent type from the two child declarations. All of these checks use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Notation: ⟨·,·⟩ is the Euclidean inner product on ℝ^P; it is real, hence symmetric. ‖·‖ is its norm and δ_{ab} the Kronecker delta. For u, w ∈ (ℝ^P)^n write G(u, w) := (⟨u_a, w_b⟩)_{a,b} = Matrix.of fun a b => ⟨u_a, w_b⟩, with row index a and column index b. Orthonormality of x and y means ⟨x_a, x_j⟩ = δ_{aj} and ⟨y_a, y_b⟩ = δ_{ab} for all indices (orthonormal_iff_ite). The hypothesis says det G(x, w) = det G(y, w) for every w.\n\n1. Reduction. By Submodule.span_le it suffices to show range y ⊆ span x, i.e. y_i ∈ span x for every index i. If n = 0 there is no index and the claim is immediate. Fix i.\n\n2. Orthogonal residual. Put c_j := ⟨x_j, y_i⟩ for each j and e := y_i − Σ_j c_j·x_j. Fix any index a. The inner product is linear in its second argument and x is orthonormal, so ⟨x_a, e⟩ = ⟨x_a, y_i⟩ − Σ_j c_j·⟨x_a, x_j⟩ = ⟨x_a, y_i⟩ − Σ_j c_j·δ_{aj}. Only the term j = a survives the sum, so this equals ⟨x_a, y_i⟩ − c_a. By symmetry of the real inner product c_a = ⟨x_a, y_i⟩, hence ⟨x_a, e⟩ = 0.\n\n3. Test frame. Let w := Function.update y i e, so that w_i = e and w_b = y_b for every b ≠ i.\n(a) The column of G(x, w) with index i is (⟨x_a, w_i⟩)_a = (⟨x_a, e⟩)_a, which is 0 by step 2. A square matrix with a zero column has determinant 0 (Matrix.det_eq_zero_of_column_eq_zero). Hence det G(x, w) = 0.\n(b) Let d := (⟨y_a, e⟩)_a ∈ ℝ^n.\n  - For b ≠ i: G(y, w)_{ab} = ⟨y_a, y_b⟩ = δ_{ab}, the (a, b) entry of the identity matrix 1.\n  - For b = i: G(y, w)_{ai} = ⟨y_a, e⟩ = d_a.\n  - By Matrix.updateCol_apply, (1.updateCol i d)_{ab} = d_a if b = i and 1_{ab} otherwise. Hence G(y, w) = (1 : Matrix (Fin n) (Fin n) ℝ).updateCol i d.\n  - By Cramer's rule, det(A.updateCol i d) = (cramer A d)_i (Matrix.cramer_apply), and cramer of the identity matrix is the identity map (Matrix.cramer_one).\n  - Therefore det G(y, w) = (cramer 1 d)_i = d_i = ⟨y_i, e⟩.\n  Equivalently: for every a ≠ i, subtracting d_a times column a from column i leaves the determinant unchanged. The result is the diagonal matrix with diagonal 1, …, d_i, …, 1, whose determinant is d_i.\n(c) The hypothesis for this w gives ⟨y_i, e⟩ = det G(y, w) = det G(x, w) = 0 by (a) and (b).\n\n4. The residual vanishes. Expand e = y_i − Σ_j c_j·x_j in the first slot: ⟨e, e⟩ = ⟨y_i, e⟩ − Σ_j c_j·⟨x_j, e⟩. By step 3(c) and step 2 this is 0 − Σ_j c_j·0 = 0. Since ⟨e, e⟩ = ‖e‖² = 0, we get e = 0 (inner_self_eq_zero), i.e. y_i = Σ_j c_j·x_j.\n\n5. Conclusion. Each x_j lies in span x (Submodule.subset_span). Hence so does c_j·x_j (Submodule.smul_mem), and so does the finite sum Σ_j c_j·x_j (Submodule.sum_mem). By step 4, y_i ∈ span x. Since i was arbitrary, range y ⊆ span x, and step 1 gives span y ⊆ span x. ∎",
+  "key_steps": [
+    "By Submodule.span_le it suffices to show y_i ∈ span x for each index i.",
+    "The residual e := y_i − Σ_j ⟨x_j, y_i⟩ x_j satisfies ⟨x_a, e⟩ = 0 for every a, by orthonormality of x.",
+    "Take w := Function.update y i e. G(x, w) has zero column i, so its determinant is 0. G(y, w) = (1 : Matrix).updateCol i (⟨y_a, e⟩)_a, so its determinant is ⟨y_i, e⟩ by cramer_apply and cramer_one.",
+    "The hypothesis gives ⟨y_i, e⟩ = 0. Then ⟨e, e⟩ = ⟨y_i, e⟩ − Σ_j ⟨x_j, y_i⟩⟨x_j, e⟩ = 0, so e = 0 and y_i = Σ_j ⟨x_j, y_i⟩ x_j ∈ span x."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
