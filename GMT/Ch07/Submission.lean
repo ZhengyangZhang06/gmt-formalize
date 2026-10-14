@@ -796,6 +796,86 @@ theorem Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges : ∀ (P Q d : �
         rw [← mul_div_assoc, div_lt_iff₀ (by linarith)]
         nlinarith
 
+/-- **Cut-off pull-back of test forms along the coordinate projection `ℝ^{P+1} → ℝᴾ`** (Simon
+Ch. 6, 2.23 for the projection `p`; used for the top-dimensional deformation step behind 7.4.3).
+Given a compact `K`, choose `K ⊆ V = B_r(0)` and a `C^∞` bump `ζ` with `0 ≤ ζ ≤ 1`, `ζ = 1` on
+`B̄_r(0)` and compact support, and put `E ω = ζ · p^#ω`, `(p^#ω)(y) = ω(py)(p·, …, p·)`.  Then `E`
+is linear, `E ω = p^#ω` on `V`, so `d(E ω) = p^#(dω)` on the open set `V` (locality of `d` and
+`d ∘ p^# = p^# ∘ d`); `spt E ω ⊆ spt p^#ω ⊆ p⁻¹(spt ω)`; `|E ω(y)| = ζ(y) |ω(py)| ≤ |ω(py)|`, as
+`p^*` preserves the Euclidean coefficient norm; and `ωⱼ → 0` implies `E ωⱼ → 0`. -/
+theorem Submission.dor_lmb_fc_dtop_cutoff_pullback : ∀ (P d : ℕ) (p : Euclid (P + 1) →L[ℝ] Euclid P), (∀ (y : Euclid (P + 1)) (i : Fin P), p y i = y (Fin.castSucc i)) → ∀ K : Set (Euclid (P + 1)), IsCompact K → ∃ (V : Set (Euclid (P + 1))) (E : TestFormOn (univ : Set (Euclid P)) d →ₗ[ℝ] TestFormOn (univ : Set (Euclid (P + 1))) d), IsOpen V ∧ K ⊆ V ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), y ∈ V → (E ω : DifferentialForm (Euclid (P + 1)) d) y = ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), y ∈ V → exteriorDerivative (E ω : DifferentialForm (Euclid (P + 1)) d) y = (exteriorDerivative (ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) d, tsupport (E ω : DifferentialForm (Euclid (P + 1)) d) ⊆ p ⁻¹' tsupport (ω : DifferentialForm (Euclid P) d)) ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), covectorEuclideanNorm ((E ω : DifferentialForm (Euclid (P + 1)) d) y) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) d) (p y))) ∧ ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d, TestFormOnConverges ωs 0 → TestFormOnConverges (fun j => E (ωs j)) 0 := by
+  intro P d p hp K hK
+  -- Step 1: `K ⊆ V = B_r(0)`, and a `C^∞` bump `ζ` with `ζ = 1` on `B̄_r(0)` and compact support
+  obtain ⟨r, hr, hKr⟩ := hK.isBounded.subset_ball_lt 0 (0 : Euclid (P + 1))
+  let ζ : ContDiffBump (0 : Euclid (P + 1)) := ⟨r, r + 1, hr, lt_add_one r⟩
+  have hζV : ∀ y ∈ ball (0 : Euclid (P + 1)) r, ζ y = 1 := fun y hy =>
+    ζ.one_of_mem_closedBall (ball_subset_closedBall hy)
+  -- Step 2: `p^#ω = Λ ∘ ω ∘ p` with `Λ α = α(p·, …, p·)`; `E ω = ζ • p^#ω` is a test form
+  let Λ : Covector (Euclid P) d →L[ℝ] Covector (Euclid (P + 1)) d :=
+    ContinuousAlternatingMap.compContinuousLinearMapCLM p
+  have hmem : ∀ ω : TestFormOn (univ : Set (Euclid P)) d,
+      (fun y => ζ y • ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ∈
+        TestFormOn (univ : Set (Euclid (P + 1))) d := by
+    intro ω
+    have hω : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) d) := ω.property.1.1
+    refine ⟨⟨?_, ?_⟩, subset_univ _⟩
+    · exact ζ.contDiff.smul (Λ.contDiff.comp (hω.comp p.contDiff))
+    · exact ζ.hasCompactSupport.smul_right
+  -- Step 3: `E` is linear, since `ω ↦ ω(py)(p·, …, p·)` is
+  let E : TestFormOn (univ : Set (Euclid P)) d →ₗ[ℝ] TestFormOn (univ : Set (Euclid (P + 1))) d :=
+    { toFun := fun ω => ⟨_, hmem ω⟩
+      map_add' := fun ω η => by
+        apply Subtype.ext
+        funext y
+        ext v
+        simp [mul_add]
+      map_smul' := fun c ω => by
+        apply Subtype.ext
+        funext y
+        ext v
+        simp [mul_left_comm] }
+  have hE : ∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)),
+      (E ω : DifferentialForm (Euclid (P + 1)) d) y =
+        ζ y • ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p :=
+    fun _ _ => rfl
+  refine ⟨ball 0 r, E, isOpen_ball, hKr, ?_, ?_, ?_, ?_, ?_⟩
+  -- Step 4: (i), `E ω = p^#ω` on `V`, where `ζ = 1`
+  · intro ω y hy
+    rw [hE, hζV y hy, one_smul]
+  -- Step 5: (ii), `E ω = p^#ω` near `y ∈ V` (`V` open), and `d(p^#ω) = p^#(dω)`
+  · intro ω y hy
+    have hω : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) d) := ω.property.1.1
+    have hloc : (E ω : DifferentialForm (Euclid (P + 1)) d) =ᶠ[𝓝 y]
+        affinePullbackForm p 0 (ω : DifferentialForm (Euclid P) d) := by
+      filter_upwards [isOpen_ball.mem_nhds hy] with z hz
+      rw [hE, hζV z hz, one_smul]
+      simp [affinePullbackForm]
+    calc exteriorDerivative (E ω : DifferentialForm (Euclid (P + 1)) d) y
+        = exteriorDerivative (affinePullbackForm p 0 (ω : DifferentialForm (Euclid P) d)) y :=
+          hloc.extDeriv_eq
+      _ = affinePullbackForm p 0 (exteriorDerivative (ω : DifferentialForm (Euclid P) d)) y :=
+          congrFun (exteriorDerivative_affinePullbackForm p 0 hω) y
+      _ = (exteriorDerivative (ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap
+            p := by
+          simp [affinePullbackForm]
+  -- Step 6: (iii), `spt (ζ • p^#ω) ⊆ spt p^#ω = spt (Λ ∘ (ω ∘ p)) ⊆ p⁻¹(spt ω)`
+  · intro ω
+    show tsupport (fun y => ζ y •
+      ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ⊆ _
+    exact (tsupport_smul_subset_right (fun y => ζ y)
+      (fun y => ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p)).trans
+      ((tsupport_comp_subset (g := Λ) (map_zero Λ) ((ω : DifferentialForm (Euclid P) d) ∘ p)).trans
+        (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) d) p.continuous))
+  -- Step 7: (iv), `|ζ(y) p^*(ω(py))| = |ζ(y)| |ω(py)| ≤ |ω(py)|`, as `0 ≤ ζ ≤ 1`
+  · intro ω y
+    rw [hE, (Submission.rsd_mw_tfa_norm_props (P + 1) d).2.1,
+      Submission.dor_lmb_fc_dtop_cp_proj_covector_norm P d p hp, abs_of_nonneg (ζ.nonneg' y)]
+    exact mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) ζ.le_one
+  -- Step 8: (v), sequential continuity of the cut-off pull-back
+  · intro ωs hωs
+    exact Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges P (P + 1) d p ζ ζ.contDiff
+      ζ.hasCompactSupport ωs (fun j => E (ωs j)) (fun j y => hE (ωs j) y) hωs
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
