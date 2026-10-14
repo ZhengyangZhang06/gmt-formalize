@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.orientation_sign-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1",
+  "depth": 4,
+  "title": "Two unit orientations of the same subspace agree up to sign",
+  "statement": "Let P, n ∈ ℕ, Q a subspace of ℝ^P, and ξ₁, ξ₂ ∈ Λₙ(ℝ^P) (the contract's MultiVector P n) both unit orientations of Q (IsUnitOrientationOf ξᵢ Q: there are an orthonormal family τ⁽ⁱ⁾ : Fin n → ℝ^P spanning Q and a sign with ξᵢ(α) = ±α(τ⁽ⁱ⁾) for all n-covectors α). Then ξ₂ = ξ₁ or ξ₂ = −ξ₁.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ξ₂ = ξ₁ ∨ ξ₂ = -ξ₁",
+  "lean_name": "dgcr_unitOrientation_eq_or_neg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-2cfeb17896-a1"
+}
