@@ -756,6 +756,259 @@ theorem Submission.idtp_cse_fc_jacobian_upper : ∀ (P : ℕ) (R : IMRep (univ :
     _ = 1 / ‖Q.starProjection x‖ := by field_simp
     _ ≤ 1 / (1 - 2 * s') := one_div_le_one_div_of_le h2s' hπ.le
 
+/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
+determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors, so
+`α ↦ (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into `ℝ^(Fin n → Fin P)`. -/
+theorem Submission.idtp_cse_fc_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `L α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
+  let L : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α I => α fun i => e (I i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `L α = L β` identifies `α` and `β` on distinct basis vectors, hence everywhere
+  refine FiniteDimensional.of_injective L fun α β h => ?_
+  exact ContinuousAlternatingMap.toAlternatingMap_injective
+    (e.ext_alternating fun v _ => congr_fun h v)
+
+/-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
+orthonormal) is nonzero.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
+alternatization of `w ↦ ∏ᵢ ⟨τᵢ, wᵢ⟩`, has `δ(τ) = 1` by orthonormality, so `|ξ(δ)| = 1`. -/
+theorem Submission.idtp_cse_fc_unit_orientation_ne_zero : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ξ ≠ 0 := by
+  rintro P n ξ Q ⟨τ, hτ, -, hξ⟩ h0
+  -- `δ(τ) = 1`: the term `σ = 1` is `∏ᵢ ‖τᵢ‖² = 1`, and for `σ ≠ 1` some factor
+  -- `⟨τᵢ, τ_{σ(i)}⟩` with `σ(i) ≠ i` vanishes
+  obtain ⟨δ, hδ⟩ : ∃ δ : Covector (Euclid P) n, δ τ = 1 := by
+    refine ⟨ContinuousMultilinearMap.alternatization
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+        fun i => innerSL ℝ (τ i)), ?_⟩
+    rw [ContinuousMultilinearMap.alternatization_apply_apply,
+      Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+    · rw [Equiv.Perm.sign_one, one_smul, Equiv.Perm.coe_one, Function.comp_id,
+        ContinuousMultilinearMap.compContinuousLinearMap_apply,
+        ContinuousMultilinearMap.mkPiAlgebra_apply]
+      refine Finset.prod_eq_one fun i _ => ?_
+      rw [innerSL_apply_apply, real_inner_self_eq_norm_sq, hτ.norm_eq_one, one_pow]
+    · intro σ _ hσ
+      obtain ⟨i, hi⟩ : ∃ i, σ i ≠ i := by
+        by_contra! h
+        exact hσ (Equiv.ext h)
+      rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+        ContinuousMultilinearMap.mkPiAlgebra_apply,
+        Finset.prod_eq_zero (Finset.mem_univ i) ?_, smul_zero]
+      rw [innerSL_apply_apply, Function.comp_apply]
+      exact hτ.inner_eq_zero hi.symm
+    · exact fun h => absurd (Finset.mem_univ _) h
+  -- `ξ = 0` would give `0 = |ξ(δ)| = |δ(τ)| = 1`
+  have h : ‖ξ δ‖ = ‖δ τ‖ := by
+    rcases hξ with h | h
+    · rw [h δ]
+    · rw [h δ, norm_neg]
+  rw [h0, hδ, zero_apply, norm_zero, norm_one] at h
+  exact zero_ne_one h
+
+/-- **Simon Ch. 6, 3.2(3)**, one covector at a time: if `C = τ(M, θ, ξ)` (in `ℝᴾ`) vanishes on the
+open set `W`, then `ξ(x)(α) = 0` for `μ_C`-a.e. `x ∈ W`.  Here `f = ξ(·)(α)` is a.e. bounded by
+`‖α‖` and `μ_C = θ Hⁿ⌞M` is finite on compact sets, so `f` is locally `μ_C`-integrable on `W`; for
+smooth `g` with compact support in `W`, `∫ g f dμ_C = τ(M, θ, ξ)(g α) = C(g α) = 0`, and the
+fundamental lemma of the calculus of variations gives `f = 0` a.e. on `W`. -/
+theorem Submission.idtp_cse_fc_orient_apply_ae_eq_zero : ∀ (P n : ℕ) (W : Set (Euclid P)) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → IsOpen W → C.VanishesOn W → ∀ α : Covector (Euclid P) n, ∀ᵐ x ∂R.measure, x ∈ W → R.orient x α = 0 := by
+  intro P n W C R hRC hW hC α
+  -- `μ_C = θHⁿ⌞M ≪ Hⁿ⌞M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- `|ξ(x)(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖` wherever `ξ(x)` is a unit orientation
+  have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x α‖ ≤ ‖α‖ := by
+    refine hac.ae_le ?_
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    have h1 : ‖R.orient x α‖ = ‖α τ‖ := by
+      rcases hξ with h | h
+      · rw [h α]
+      · rw [h α, norm_neg]
+    rw [h1]
+    calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := ContinuousAlternatingMap.le_opNorm α τ
+      _ = ‖α‖ := by rw [Finset.prod_eq_one fun i _ => hτ.norm_eq_one i, mul_one]
+  -- `f = ξ(·)(α)` is the continuous evaluation at `α` composed with `ξ`
+  have hmeas : AEStronglyMeasurable (fun x => R.orient x α) R.measure :=
+    ((ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+      R.aestronglyMeasurable_orient).mono_ac hac
+  -- `μ_C(K) = ∫_{M ∩ K} θ dHⁿ < ∞` for compact `K`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact (R.locallyIntegrable_mult K hK (subset_univ K)).lt_top
+  have hli : LocallyIntegrableOn (fun x => R.orient x α) W R.measure := by
+    refine (locallyIntegrableOn_iff hW.isLocallyClosed).2 fun K hKW hK => ?_
+    exact IntegrableOn.of_bound (hfin K hK) hmeas.restrict ‖α‖ (ae_restrict_of_ae hbound)
+  -- `∫ g f dμ_C = τ(M, θ, ξ)(g α) = C(g α) = 0`, as `g α` is a test form supported in `W`
+  refine hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hli fun g hg hgc hgW => ?_
+  let ω : TestFormOn (univ : Set (Euclid P)) n :=
+    ⟨fun y => g y • α, ⟨hg.smul contDiff_const, hgc.smul_right⟩, subset_univ _⟩
+  have h0 : C ω = 0 := hC ω ((tsupport_smul_subset_left _ _).trans hgW)
+  rw [hRC ω] at h0
+  have hθ : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+    funext x; simp
+  have hmθ : Measurable fun x => (R.mult x : NNReal) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+  rw [IMRep.measure, hθ, integral_withDensity_eq_integral_smul hmθ, ← h0, IMRep.action]
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [ω, NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul, map_smul]
+
+/-- **`μ_C`-a.e. point lies in `spt C`** (Simon 6.2.11 with 6.3.2(3), the half
+`spt μ_C ⊆ spt C` of `spt C = spt μ_C`).  Let `C = τ(M, θ, ξ)` in `ℝᴾ`.  If `C` vanishes on the
+open set `W`, then for a basis `α₁, …, α_N` of `Λⁿ(ℝᴾ)`, `μ_C`-a.e. `x ∈ W` has `ξ(x)(αₖ) = 0` for
+every `k` (`idtp_cse_fc_orient_apply_ae_eq_zero`), i.e. `ξ(x) = 0`, while `ξ ≠ 0` holds
+`μ_C`-a.e. (`idtp_cse_fc_unit_orientation_ne_zero`); so `μ_C(W) = 0`.  The zero region
+`(spt C)ᶜ` is a union of such `W`, hence (`ℝᴾ` being second countable) of countably many of them,
+and is `μ_C`-null. -/
+theorem Submission.idtp_cse_fc_ae_mem_support : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → ∀ᵐ x ∂R.measure, x ∈ C.support := by
+  intro P n C R hRC
+  -- (i) `μ_C(W) = 0` for every open `W` on which `C` vanishes
+  have hW : ∀ W : Set (Euclid P), IsOpen W → C.VanishesOn W → R.measure W = 0 := by
+    intro W hWo hCW
+    -- `μ_C ≪ Hⁿ⌞M`, and `Hⁿ⌞M`-a.e. `ξ(x)` is a unit orientation, hence nonzero
+    have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+    have hξ : ∀ᵐ x ∂R.measure, R.orient x ≠ 0 :=
+      hac.ae_le <| R.orients.mono fun x ⟨Q, _, hQ⟩ =>
+        Submission.idtp_cse_fc_unit_orientation_ne_zero P n _ Q hQ
+    -- a basis `α₁, …, α_N` of the finite-dimensional space `Λⁿ(ℝᴾ)`
+    have := Submission.idtp_cse_fc_covector_finiteDimensional P n
+    let α := Module.finBasis ℝ (Covector (Euclid P) n)
+    have hα : ∀ᵐ x ∂R.measure, ∀ k, x ∈ W → R.orient x (α k) = 0 :=
+      ae_all_iff.2 fun k =>
+        Submission.idtp_cse_fc_orient_apply_ae_eq_zero P n W C R hRC hWo hCW (α k)
+    -- such an `x ∈ W` has `ξ(x) = 0`, as `ξ(x)` vanishes on a basis
+    refine measure_eq_zero_iff_ae_notMem.2 ?_
+    filter_upwards [hξ, hα] with x hx0 hxα hxW
+    exact hx0 (ContinuousLinearMap.coe_injective (α.ext fun k => by simpa using hxα k hxW))
+  -- (ii) the zero region is the union of countably many such `W`
+  obtain ⟨T, hTc, hTS, hTU⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {W : Set (Euclid P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ univ ∧ C.VanishesOn W}
+    fun W hW => hW.1
+  have hZ : R.measure (⋃₀ {W : Set (Euclid P) | IsOpen W ∧ IsCompact (closure W) ∧
+      closure W ⊆ univ ∧ C.VanishesOn W}) = 0 := by
+    rw [← hTU, measure_sUnion_null_iff hTc]
+    exact fun W hWT => hW W (hTS hWT).1 (hTS hWT).2.2.2
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZ] with x hx
+  exact ⟨mem_univ x, hx⟩
+
+/-- **Fibre count for the cone-sector endpoint density** (Simon 7.3.3; the classification of
+`2`-dimensional minimizing cones used there, which the book cites to [Whi82]).  Let
+`N(p) = Σ_{x ∈ X(p)} θ(x)` be the multiplicity of the fibre `X(p) = M ∩ Z_s ∩ F̃⁻¹{p}` of
+`F̃(x) = (|x|, f(x))`, `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`, and `s₃ = min(s₂, δ/2, s/2)`, where `s₂` is
+the radius of the flux identity `H(p) = m p₁` (`idtp_cse_flux_density_eq`).  For a.e.
+`p ∈ (1 − s₃, 1 + s₃) × (−s₃, s₃)` the flux identity and, if `p₂ > 0`, the sector point
+`x_Q(p) ∈ M` of multiplicity `k` with `T_{x_Q(p)}M = Q` (`idtp_cse_sector_carrier_points`) give
+`m ≤ N(p)`, `k ≤ m` and, if `k < m`, `m + 1 ≤ N(p)` (`idtp_cse_fc_fibre_pointwise`).  A good point
+of the positive-measure half box gives `k ≤ m`.  If `k < m` and `0 < s' ≤ s₃`, then
+`ofReal((4m + 2)s'²) ≤ ∫_{Sq(s')} N` (`idtp_cse_fc_square_lintegral_lower`); the `N`-identity of
+`idtp_cse_fibre_area_identities` (with radial tangency, `idtp_cse_cone_stationary_radial`) for
+`b = 1_{Sq(s')}` turns this into `∫_{Z(s, s')} J dμ`, since `Z_s ∩ F̃⁻¹(Sq(s')) = Z(s, s')`, and
+`idtp_cse_fc_jacobian_upper` (with `μ`-a.e. `x ∈ spt C`, `idtp_cse_fc_ae_mem_support`, and the
+localization `Loc(s)` at `s'`) bounds that by `μ(Z(s, s'))/(1 − 2s')`. -/
+theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∀ (R : IMRep (univ : Set (Euclid P)) 2) (m : ℕ) (s : ℝ), R.Represents C → HasMassDensity C a m → 0 < s → s ≤ 1 / 4 → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → k ≤ m ∧ (k < m → ∃ s₃ : ℝ, 0 < s₃ ∧ ∀ s' : ℝ, 0 < s' → s' ≤ s₃ → ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s')) ≤ R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}) := by
+  intro P C Q a e δ k hmin hbd hcone hQ haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
+  -- Step 0: radial tangency, the fibre identities, the flux identity and the sector points
+  have hrad := (Submission.idtp_cse_cone_stationary_radial P 2 C R hmin hbd hcone hR).2
+  have hid := (Submission.idtp_cse_fibre_area_identities P R Q a e s hQ haQ heQ ha he hae hrad).2.2
+  obtain ⟨s₂, hs₂, hflux⟩ := Submission.idtp_cse_flux_density_eq P C Q a e δ k hmin hbd hcone hQ
+    haQ heQ ha he hae hδ hk haC hsect R m s hR ham hs hs4 hloc
+  have hsec := Submission.idtp_cse_sector_carrier_points P C Q a e δ k R hQ haQ heQ ha he hae hδ hk
+    hsect hR
+  -- the fibre multiplicity `N(p) = Σ_{x ∈ X(p)} θ(x)`
+  set N : ℝ × ℝ → ℝ≥0∞ := fun p => ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)
+  -- `s₃ = min(s₂, δ/2, s/2)`, so `s₃ ≤ 1/8`
+  set s₃ := min s₂ (min (δ / 2) (s / 2))
+  have hs₃0 : 0 < s₃ := lt_min hs₂ (lt_min (half_pos hδ) (half_pos hs))
+  have hs₃₂ : s₃ ≤ s₂ := min_le_left _ _
+  have hs₃δ : s₃ ≤ δ / 2 := (min_le_right _ _).trans (min_le_left _ _)
+  have hs₃s : s₃ ≤ s / 2 := (min_le_right _ _).trans (min_le_right _ _)
+  -- Step 2: a.e. on `Box(s₃)`, `m ≤ N(p)`, and for `p₂ > 0`, `k ≤ m` and `k < m → m + 1 ≤ N(p)`
+  have hgood : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ →
+      (m : ℝ≥0∞) ≤ N p ∧ (0 < p.2 → k ≤ m ∧ (k < m → (m : ℝ≥0∞) + 1 ≤ N p)) := by
+    filter_upwards [hflux, hsec] with p hpH hpsec hp
+    obtain ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩ := hp
+    obtain ⟨hmN, hcount⟩ := Submission.idtp_cse_fc_fibre_pointwise P R Q a e s m k p hQ haQ heQ ha
+      he hae hs hs4 (abs_lt.2 ⟨by linarith, by linarith⟩) (abs_lt.2 ⟨by linarith, by linarith⟩)
+      (hpH ⟨⟨by linarith, by linarith⟩, by linarith, by linarith⟩)
+    refine ⟨hmN, fun hp2 => ?_⟩
+    obtain ⟨hM, hθ, hT⟩ := hpsec (by linarith) hp2 (by linarith) (by linarith)
+    exact hcount hM hθ hT
+  -- Step 3: `k ≤ m`, read off at a good point of the half box `(1 - s₃, 1 + s₃) × (0, s₃)`
+  have hkm : k ≤ m := by
+    have hvol : volume (Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo 0 s₃ : Set (ℝ × ℝ)) ≠ 0 := by
+      rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
+      exact mul_ne_zero (ENNReal.ofReal_pos.2 (by linarith)).ne'
+        (ENNReal.ofReal_pos.2 (by linarith)).ne'
+    obtain ⟨p, ⟨⟨hp1l, hp1u⟩, hp2l, hp2u⟩, hp⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae hvol (ae_restrict_of_ae hgood)
+    exact ((hp ⟨⟨hp1l, hp1u⟩, by linarith, hp2u⟩).2 hp2l).1
+  refine ⟨hkm, fun hlt => ⟨s₃, hs₃0, fun s' hs' hs's₃ => ?_⟩⟩
+  -- Steps 5–7 for `0 < s' ≤ s₃`: the square `Sq(s') ⊆ Box(s₃)`
+  have hs's : s' ≤ s / 2 := hs's₃.trans hs₃s
+  have hSq : MeasurableSet (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' : Set (ℝ × ℝ)) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  have hSqbox : Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ⊆ Ioo (1 - s₃) (1 + s₃) ×ˢ Ioo (-s₃) s₃ :=
+    prod_mono (Ioo_subset_Ioo (by linarith) (by linarith)) (Ioo_subset_Ioo (by linarith) hs's₃)
+  -- Step 5: `ofReal((4m + 2)s'²) ≤ ∫⁻_{Sq(s')} N`
+  have hlow := Submission.idtp_cse_fc_square_lintegral_lower N m s' hs'
+    (hgood.mono fun p hp hpSq => (hp (hSqbox hpSq)).1)
+    (hgood.mono fun p hp hpSq hp2 => ((hp (hSqbox hpSq)).2 hp2).2 hlt)
+  -- Step 6: `∫⁻_{Sq(s')} N = ∫⁻ 1_{Sq(s')} N`, which the `N`-identity turns into an integral over `Z_s`
+  have hb : Measurable ((Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator (1 : ℝ × ℝ → ℝ≥0∞)) :=
+    measurable_one.indicator hSq
+  have hNSq : ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', N p =
+      ∫⁻ p, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 p * N p := by
+    rw [← lintegral_indicator hSq]
+    refine lintegral_congr fun p => ?_
+    by_cases hp : p ∈ Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s'
+    · rw [indicator_of_mem hp, indicator_of_mem hp, Pi.one_apply, one_mul]
+    · rw [indicator_of_notMem hp, indicator_of_notMem hp, zero_mul]
+  -- `Z_s` and `Z(s, s')` are Borel
+  have hZ : ∀ r : ℝ, MeasurableSet {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < r ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < r ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+    intro r
+    simp only [ofPred_and]
+    refine (measurableSet_lt measurable_const ?_).inter ((measurableSet_lt ?_ measurable_const).inter
+      ((measurableSet_lt ?_ measurable_const).inter (measurableSet_lt ?_ ?_))) <;> fun_prop
+  -- on `Z_s`, `F̃(x) ∈ Sq(s')` iff `x ∈ Z(s, s')`, so the integral over `Z_s` is one over `Z(s, s')`
+  have hmid : ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s').indicator 1 (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure ≤ ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure := by
+    rw [← lintegral_indicator (hZ s')]
+    refine (setLIntegral_congr_fun (hZ s) fun x hx => ?_).trans_le (setLIntegral_le_lintegral _ _)
+    obtain ⟨hxa, -, -, hxq⟩ := hx
+    have hiff : (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) ∈
+        Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ↔ x ∈ {x : Euclid P | 0 < inner ℝ x a ∧
+          |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧
+          ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+      simp only [mem_prod, mem_Ioo, mem_ofPred_eq, abs_lt]
+      constructor
+      · rintro ⟨⟨h1, h2⟩, h3, h4⟩
+        exact ⟨hxa, ⟨by linarith, by linarith⟩, ⟨h3, h4⟩, hxq⟩
+      · rintro ⟨-, ⟨h1, h2⟩, ⟨h3, h4⟩, -⟩
+        exact ⟨⟨by linarith, by linarith⟩, h3, h4⟩
+    by_cases hxZ : x ∈ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧
+        |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}
+    · rw [indicator_of_mem (hiff.2 hxZ), indicator_of_mem hxZ, Pi.one_apply, one_mul]
+    · rw [indicator_of_notMem (mt hiff.1 hxZ), indicator_of_notMem hxZ, zero_mul]
+  -- `J ≤ 1/(1 − 2s')` `μ`-a.e. on `Z(s, s')`: `μ`-a.e. point lies in `spt C`, where `Loc(s)` applies
+  have hjac := Submission.idtp_cse_fc_jacobian_upper P R Q a e C.support s s' hQ haQ heQ ha he hae
+    (Submission.idtp_cse_fc_ae_mem_support P 2 C R hR) hs' (by linarith)
+    fun x hx hxa hx1 hxf hxq => (hloc s' hs' (by linarith) x hx hxa hx1 hxf
+      (hxq.le.trans (by linarith [mul_nonneg hs.le (norm_nonneg x)]))).1
+  have hkey := hlow.trans (hNSq.trans_le ((hid _ hb).2.trans_le (hmid.trans hjac)))
+  -- Step 7: multiply by `ofReal(1 − 2s') > 0`
+  have h2s' : 0 < 1 - 2 * s' := by linarith
+  calc ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s'))
+      = ENNReal.ofReal ((4 * (m : ℝ) + 2) * s' ^ 2) * ENNReal.ofReal (1 - 2 * s') :=
+        ENNReal.ofReal_mul (by positivity)
+    _ ≤ ENNReal.ofReal (1 / (1 - 2 * s')) * R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} * ENNReal.ofReal (1 - 2 * s') := by
+        gcongr
+    _ = R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+        rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
+          ENNReal.ofReal_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
