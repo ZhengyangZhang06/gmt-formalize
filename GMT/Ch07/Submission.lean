@@ -1616,6 +1616,95 @@ theorem dor_lmb_fcd_cp_bv_poincare : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) 
       ofReal_integral_eq_lintegral_ofReal hF (ae_of_all _ fun p => abs_nonneg _)]
     exact hFatou
   exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hC0 hV)).1 hfin
+/-- Shrinking the unit cube `Q₁ = (0, 1)ᵐ⁺¹` to `Q_δ = (δ, 1 − δ)ᵐ⁺¹` while keeping half of the
+`L¹` norm of `f` (Simon Ch. 2, proof of Lemma 2.7).  The cubes `Q_{1/(j+4)}` are open and
+increase to `Q₁`, so continuity of the measure from above and of the integral along increasing
+unions give one `j` for both the layer bound and the integral bound. -/
+theorem dor_lmb_fcd_cp_shrinking : ∀ (m : ℕ) (f : Euclid (m + 1) → ℝ), IntegrableOn f {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 4 ∧ volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} ≤ 1 ∧ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \ {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}) ≤ 1 / 4 ∧ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |f y| := by
+  intro m f hf
+  -- Step 1: `Q_t` is open, `Q_t ⊆ Q₁` for `t ≥ 0`, and `volume Q₁ = 1`.
+  have hopen : ∀ t : ℝ, IsOpen {y : Euclid (m + 1) | ∀ i, t < y i ∧ y i < 1 - t} := by
+    intro t
+    simp only [Set.ofPred_forall, Set.ofPred_and]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hmeas : ∀ t : ℝ, MeasurableSet {y : Euclid (m + 1) | ∀ i, t < y i ∧ y i < 1 - t} :=
+    fun t => (hopen t).measurableSet
+  have hmeas₁ : MeasurableSet {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    simpa using hmeas 0
+  have hsub : ∀ t : ℝ, 0 ≤ t → {y : Euclid (m + 1) | ∀ i, t < y i ∧ y i < 1 - t} ⊆
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun t ht y hy i =>
+    ⟨ht.trans_lt (hy i).1, (hy i).2.trans_le (by linarith)⟩
+  have hvol₁ : volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+    have hpre : {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} =
+        WithLp.ofLp ⁻¹' (univ.pi fun _ : Fin (m + 1) => Ioo (0 : ℝ) 1) := by
+      ext y
+      simp [Set.mem_pi]
+    rw [hpre, (PiLp.volume_preserving_ofLp (Fin (m + 1))).measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+    simp
+  -- Step 2: `δ_j = 1/(j+4)` decreases to `0`, and the cubes `Q_{δ_j}` increase to `Q₁`.
+  obtain ⟨δ, hδdef⟩ : ∃ δ : ℕ → ℝ, δ = fun j : ℕ => 1 / ((j : ℝ) + 4) := ⟨_, rfl⟩
+  have hδpos : ∀ j, 0 < δ j := fun j => by rw [hδdef]; positivity
+  have hδle : ∀ j, δ j ≤ 1 / 4 := fun j => by
+    simp only [hδdef]
+    gcongr
+    linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
+  have hδanti : Antitone δ := fun j k hjk => by
+    simp only [hδdef]
+    gcongr
+  have hδlim : Tendsto δ atTop (𝓝 0) := by
+    rw [hδdef]
+    exact tendsto_const_nhds.div_atTop
+      (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
+  have hmono : Monotone fun j => {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j} :=
+    fun j k hjk y hy i =>
+      ⟨(hδanti hjk).trans_lt (hy i).1, (hy i).2.trans_le (by linarith [hδanti hjk])⟩
+  have hunion : ⋃ j, {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j} =
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    refine Subset.antisymm (iUnion_subset fun j => hsub _ (hδpos j).le) fun y hy => ?_
+    have hev : ∀ᶠ j in atTop, ∀ i, δ j < y i ∧ y i < 1 - δ j := by
+      rw [eventually_all]
+      intro i
+      filter_upwards [(tendsto_order.1 hδlim).2 _ (hy i).1,
+        (tendsto_order.1 hδlim).2 _ (sub_pos.2 (hy i).2)] with j hj₁ hj₂
+      exact ⟨hj₁, by linarith⟩
+    obtain ⟨j, hj⟩ := hev.exists
+    exact mem_iUnion.2 ⟨j, hj⟩
+  -- Step 3: continuity from above, `volume (Q₁ \ Q_{δ_j}) → 0`.
+  have hlayer : Tendsto (fun j => volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \
+      {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j})) atTop (𝓝 0) := by
+    have h := tendsto_measure_iInter_atTop (μ := volume)
+      (s := fun j => {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \
+        {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j})
+      (fun j => (hmeas₁.diff (hmeas _)).nullMeasurableSet)
+      (fun j k hjk => Set.sdiff_subset_sdiff_right (hmono hjk))
+      ⟨0, ((measure_mono Set.sdiff_subset).trans_lt (by rw [hvol₁]; exact ENNReal.one_lt_top)).ne⟩
+    rw [← Set.sdiff_iUnion, hunion, Set.sdiff_self, measure_empty] at h
+    exact h
+  have hev₁ : ∀ᶠ j in atTop, volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \
+      {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j}) < 1 / 4 :=
+    (tendsto_order.1 hlayer).2 _ (by norm_num)
+  -- Step 4: continuity of the integral, `∫_{Q_{δ_j}} |f| → ∫_{Q₁} |f|`.
+  have hint : Tendsto (fun j => ∫ y in {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j}, |f y|)
+      atTop (𝓝 (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y|)) := by
+    have h := tendsto_setIntegral_of_monotone (μ := volume) (f := fun y => |f y|)
+      (fun j => hmeas (δ j)) hmono (by rw [hunion]; exact hf.abs)
+    rw [hunion] at h
+    exact h
+  have hev₂ : ∀ᶠ j in atTop, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤
+      2 * ∫ y in {y : Euclid (m + 1) | ∀ i, δ j < y i ∧ y i < 1 - δ j}, |f y| := by
+    rcases (integral_nonneg fun y => abs_nonneg (f y) :
+        0 ≤ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y|).eq_or_lt with h₀ | hpos
+    · exact Eventually.of_forall fun j => by
+        rw [← h₀]
+        exact mul_nonneg zero_le_two (integral_nonneg fun y => abs_nonneg (f y))
+    · filter_upwards [(tendsto_order.1 hint).1 _ (half_lt_self hpos)] with j hj
+      linarith
+  -- Step 5: one `j` works for both bounds.
+  obtain ⟨j, hj₁, hj₂⟩ := (hev₁.and hev₂).exists
+  exact ⟨δ j, hδpos j, hδle j, (measure_mono (hsub _ (hδpos j).le)).trans hvol₁.le, hj₁.le, hj₂⟩
 
 end Submission
 
