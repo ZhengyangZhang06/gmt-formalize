@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5dd8a2aff72975d8ee31920546d5a78b0e8c9db6d928876f770185986e0d7a56",
+  "git_delta": {
+    "base_commit": "2e1d36178dbcf093dacd2b9329f3845d50b8a228",
+    "candidate_commit": "11755d39947098afa2b8d6708aee8877c940e265",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pfi_param_series_imrep",
+    "diff_sha256": "0b7d517a8580cb79824d7d047bcdba67968641b79ed336058bfc80c032b29a1f",
+    "source_sha256": "725b8915e412cae7b6074a0ff05805121c7d1a137f02277d669b75b69cc855a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pfi_param_series_imrep",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (H : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (w : ℕ → Euclid n → ℕ) (ζ : ℕ → Euclid n → MultiVector P n), IsOpen U → (∀ i, ∃ L : NNReal, LipschitzWith L (H i)) → (∀ i, MeasurableSet (B i)) → (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (H i) a) → (∀ i, H i '' B i ⊆ U) → (∀ i, Measurable (w i)) → (∀ i, AEStronglyMeasurable (ζ i) (volume.restrict (B i))) → (∀ i, ∀ᵐ a ∂(volume.restrict (B i)), ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, ζ i a α = s * α (fun j => fderiv ℝ (H i) a (EuclideanSpace.single j (1 : ℝ)))) → ∑' i, ∫⁻ a in B i, (w i a : ℝ≥0∞) * ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) ∂volume ≠ ∞ → ∃ R : IMRep U n, ∀ ω : TestFormOn U n, HasSum (fun i => ∫ a in B i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume) (R.action (ω : DifferentialForm (Euclid P) n))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
