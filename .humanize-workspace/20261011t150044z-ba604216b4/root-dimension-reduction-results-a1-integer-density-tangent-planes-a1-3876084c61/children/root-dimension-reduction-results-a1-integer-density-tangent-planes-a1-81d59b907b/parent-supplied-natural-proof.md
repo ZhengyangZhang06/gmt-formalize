@@ -1,0 +1,92 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_area-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 9 (area formula for the parametrization G(t, α) = tγ(α) with Jacobian J_G = t|γ′|; Simon Ch. 2 §3). Conventions: J := (r₀ − s, r₀ + s), I := (−s, s), R := J ×ˢ I ⊆ ℝ × ℝ with volume (the product Lebesgue measure); E₂ := Euclid 2 with coordinates w₀ := w 0, w₁ := w 1; γ′ := deriv γ. A Lean proof file may add the proof-only imports Poincare.SimonGMT.Chapter02.WeightedArea and Poincare.SimonGMT.Chapter02.AreaParametrization (pinned SimonGMT package).
+1. (Transport ℝ × ℝ ↔ Euclid 2.) Let Θ := (MeasurableEquiv.toLp 2 (Fin 2 → ℝ)).symm.trans MeasurableEquiv.finTwoArrow : E₂ ≃ᵐ ℝ × ℝ, so Θ(w) = (w₀, w₁). It is volume preserving: (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin 2)).trans (volume_preserving_finTwoArrow ℝ); and Θ.measurableEmbedding is a measurable embedding. Let R̃ := Θ⁻¹(R) = {w : w₀ ∈ J, w₁ ∈ I}, an open (hence measurable) set, and G̃ : E₂ → Euclid P, G̃(w) := w₀·γ(w₁). Then G̃ = G ∘ Θ with G(q) := q.1·γ(q.2), and since Θ is surjective, G̃(R̃) = G(Θ(Θ⁻¹ R)) = G(R) = S.
+2. (Differentiability.) For w ∈ R̃, w₁ lies in the open interval I, so γ is differentiable at w₁ with derivative γ′(w₁) (ContDiffOn on an open set); the coordinate maps are continuous linear. By the product rule G̃ is differentiable at w and DG̃(w)h = h₀·γ(w₁) + w₀·h₁·γ′(w₁).
+3. (Injective derivative.) Let w ∈ R̃ and suppose h₀·γ(w₁) + w₀h₁·γ′(w₁) = 0. Taking the inner product with γ(w₁) and using ⟨γ(w₁), γ(w₁)⟩ = 1 and ⟨γ(w₁), γ′(w₁)⟩ = 0 gives h₀ = 0; then w₀h₁·γ′(w₁) = 0 with w₀ > r₀ − s > 0 and γ′(w₁) ≠ 0 gives h₁ = 0. So DG̃(w) is injective.
+4. (Injectivity.) If w, w′ ∈ R̃ and w₀·γ(w₁) = w′₀·γ(w′₁), taking norms (‖γ‖ = 1 on I; w₀, w′₀ > 0) gives w₀ = w′₀; dividing gives γ(w₁) = γ(w′₁), and injectivity of γ on I gives w₁ = w′₁. Hence w = w′, i.e. G̃ is injective on R̃.
+5. (Area formula.) By SimonGMT Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative (Chapter02/WeightedArea.lean) with E := E₂, s := R̃ (measurable), f := G̃ (differentiable on R̃ with injective derivative, injective on R̃) and g := h: ∫_{G̃(R̃)} h dμHE[finrank ℝ E₂] = ∫_{R̃} areaJacobianAt G̃ w · h(G̃ w) dμHE[finrank ℝ E₂](w). On the source side μHE[finrank ℝ E₂] = volume (InnerProductSpace.euclideanHausdorffMeasure_eq_volume); on the target side finrank ℝ E₂ = 2 (finrank_euclideanSpace_fin), so the left side is ∫_S h dμHE[2].
+6. (Jacobian.) areaJacobianAt G̃ w = normDet(DG̃(w)) (areaJacobianAt_eq_normDet), and normDet(L)² = det(Gram(L b₀, L b₁)) for the standard orthonormal basis b := EuclideanSpace.basisFun (Fin 2) ℝ (LinearMap.normDet_sq_eq_det_gram), with normDet ≥ 0 (LinearMap.normDet_nonneg). (Equivalently use areaJacobianAt_eq_sqrt_det_gram after reindexing the basis by Fin (finrank ℝ E₂).) Here DG̃(w)b₀ = γ(w₁) and DG̃(w)b₁ = w₀γ′(w₁), so the Gram matrix has diagonal entries ⟨γ(w₁), γ(w₁)⟩ = 1 and w₀²‖γ′(w₁)‖², and off-diagonal entries w₀⟨γ(w₁), γ′(w₁)⟩ = 0; its determinant is w₀²‖γ′(w₁)‖². Hence areaJacobianAt G̃ w = w₀‖γ′(w₁)‖ for w ∈ R̃ (w₀ > 0).
+7. (Back to ℝ × ℝ.) By steps 5–6 and setIntegral_congr_fun on R̃, ∫_S h dμHE[2] = ∫_{R̃} Ψ(Θ w) dw with Ψ(q) := q.1‖γ′(q.2)‖·h(q.1·γ(q.2)). Since Θ is volume preserving with Θ⁻¹(R) = R̃, MeasurePreserving.setIntegral_preimage_emb (with Θ.measurableEmbedding) gives ∫_{R̃} Ψ(Θ w) dw = ∫_R Ψ(q) dq. This is the claimed identity; no integrability assumption is needed because every step is an equality of Bochner integrals. ∎
+
+## Key steps
+
+1. G̃(w) = w₀γ(w₁) on R̃ = Θ⁻¹(R) ⊆ Euclid 2 corresponds to G(t, α) = tγ(α) on R through the volume-preserving equivalence Θ : Euclid 2 ≃ᵐ ℝ × ℝ.
+2. DG̃(w) = (γ(w₁), w₀γ′(w₁)) is injective (γ ⊥ γ′, γ′ ≠ 0, w₀ > 0) and G̃ is injective on R̃ (norms, injectivity of γ).
+3. SimonGMT integral_area_formula_of_injective_derivative with μHE[2] = volume on Euclid 2 turns ∫_S h dH² into ∫_{R̃} areaJacobianAt G̃ · h∘G̃.
+4. The Gram determinant gives areaJacobianAt G̃ w = w₀‖γ′(w₁)‖; transport back to R ⊆ ℝ × ℝ with setIntegral_preimage_emb.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `grep -n 'IsEmbeddedSubmanifold\|def tangentSpace\|tangentSpace' GMT/Ch07/Contract.lean; sed -n 200,300p GMT/Ch07/Contract.lean`
+- `python3 -I scans of dag.json lean_statement for: arctan | deriv φ | Ioo with deriv and ∃ c | μHE[2] | areaJacobian | LinearMap.trace | starProjection | tangentSpace | cutoff (= 1 with IsCompact K and HasCompactSupport); lean_name lookups chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, dsmc_chart_tangentSpace_eq_range, dsmc_chart_range_subset_tangentSpace, fvmb_trace_starProjection_comp_eq_sum_inner, dgcr_bwd_normal_cutoff, dgce_left_inverse_tangentSpace_eq_range, doragm_sab_cutoff_profile`
+- `grep -c idtp_ccd_scsp dag.json; grep -rl idtp_ccd_scsp runs/.../nodes; grep -l idtp_ccd_scsp ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (all no match, also for each of the 10 proposed names)`
+- `grep -rn 'toOpenPartialHomeomorph|exists_contDiff_support_eq_eq_one_iff|exists_contDiff_tsupport_subset|IsCompact.exists_cthickening_subset_open|ContinuousLinearEquiv.isOpen|OpenPartialHomeomorph.hasFDerivAt_symm|restrOpen|symm_image_target_eq_source|volume_preserving_finTwoArrow|EuclideanSpace.volume_preserving_|euclideanHausdorffMeasure_eq_volume|LinearMap.finrank_range_of_inj|IsPreconnected.subset_of_closure_inter_subset|Filter.EventuallyEq.fderiv_eq|ContDiffOn.continuousOn_fderiv_of_isOpen|setIntegral_eq_integral_of_forall_compl_eq_zero|integral_hasDerivAt_right|contDiff_one_iff_deriv|hasDerivAt_arctan|contDiffAt_norm|LinearIndependent.pair_iff' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'theorem integral_area_formula_of_injective_derivative|def areaJacobianAt|areaJacobianAt_eq_normDet|areaJacobianAt_eq_sqrt_det_gram|normDet_sq_eq_det_gram|theorem ae_eq_const_of_weak_coordinate_derivatives_zero|def WeakDerivativesZero' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/{WeightedArea,Area,AreaParametrization,AreaCurve}.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `lake env lean /tmp/scsp_check/Probe.lean; Children.lean; Assembly.lean (#print axioms); Conservation.lean; Planarity.lean; Imports.lean; Names.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3876084c61/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3876084c61/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaParametrization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/tmp/scsp_check/Children.lean`
+- `/tmp/scsp_check/Assembly.lean`
+- `/tmp/scsp_check/Conservation.lean`
+- `/tmp/scsp_check/Planarity.lean`
+- `/tmp/scsp_check/Imports.lean`
+- `/tmp/scsp_check/Names.lean`
+
+Pins match. The snapshot project_commit b4d606d equals workspace HEAD, mathlib 25730c7c equals .lake/packages/mathlib HEAD, and SimonGMT is at the lakefile pin 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+The child proofs use three accepted DAG lemmas (status accepted): chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity and fvmb_trace_starProjection_comp_eq_sum_inner.
+
+No accepted DAG lemma states any child: no DAG statement mentions arctan, and there is no 1-D weak-derivative constancy lemma, cone area formula, or submanifold local-inverse lemma. The idtp_ccd_scsp_* names have no match in dag.json, in the run nodes, or in any worktree Submission.lean.
+
+Pinned Mathlib supplies the lemmas the proofs cite, including:
+- inverse function theorem: ContDiffAt.toOpenPartialHomeomorph; OpenPartialHomeomorph.restrOpen, contDiffAt_symm and hasFDerivAt_symm
+- cutoffs: ContinuousLinearEquiv.isOpen, exists_contDiff_support_eq_eq_one_iff (reachable from the frozen imports), IsCompact.exists_cthickening_subset_open
+- volume transport: EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp, volume_preserving_finTwoArrow, InnerProductSpace.euclideanHausdorffMeasure_eq_volume
+- integrals: integral_prod_mul, setIntegral_indicator, support_fderiv_subset
+- trigonometry: Real.cos_arctan, Real.sin_arctan
+
+These names do not exist and are not cited: HasFDerivAt.norm, EuclideanSpace.measurableEquiv, unprimed setIntegral_congr, and ContDiffBump.normed (unavailable without an extra import).
+
+SimonGMT supplies integral_area_formula_of_injective_derivative (WeightedArea.lean), areaJacobianAt_eq_normDet with LinearMap.normDet_sq_eq_det_gram (or areaJacobianAt_eq_sqrt_det_gram), and ae_eq_const_of_weak_coordinate_derivatives_zero. Using them requires proof-only imports, which load together with GMT.Ch07.Submission.
+
+Lean checks:
+- All 10 child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07.
+- The parent's exact frozen type is proved from the 10 Submission.* stubs, with axioms propext, Classical.choice and Quot.sound, plus sorryAx only from the stubs.
+- cone_conservation is proved from the test_field, cone_area and angle_curve stubs.
+- arc_planarity is proved from the angle_curve stub.
