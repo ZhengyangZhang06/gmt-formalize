@@ -3308,6 +3308,86 @@ theorem Submission.dtc_bc_lc_sl_c1_tangent : ∀ (P d : ℕ) (g : Euclid d → E
   exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P d g (closedBall c r) z s f
     measurableSet_closedBall (fun a ha => hdiff a (hBU ha)) hinj hreg hs).symm
 
+/-- **Gradient of `F` along a `C¹` parametrisation** (step 0(b) of the chart co-area formula).
+Let `ψ : ℝᴺ → ℝᴾ` and `F : ℝᴺ → ℝ` be `C¹`, with `Dψ(y)` injective on the open set `V`.  With
+`M(y) = Dψ(y)* Dψ(y)` and `∇F(y)` the Riesz representative of `DF(y)`, put
+`Ĝ(y) = Dψ(y) M(y)⁻¹ ∇F(y)` on `V` and `Ĝ = 0` off `V`.  On `V`, `M(y)` is injective
+(`⟪M(y)a, a⟫ = |Dψ(y)a|²`), hence invertible; inversion is continuous at invertible operators, so
+`Ĝ` is continuous on `V`, and Borel as a piecewise map over the open set `V`.  Then
+`⟪Ĝ(y), Dψ(y)e⟫ = ⟪M(y)M(y)⁻¹∇F(y), e⟫ = DF(y)e`; if `v = Dψ(y)u` also represents `DF(y)`, then
+`v - Ĝ(y)` lies in the range of `Dψ(y)` and is orthogonal to it, so `v = Ĝ(y)`; and `Ĝ(y) = 0`
+iff `DF(y) = 0`.  Nothing is claimed about `ψ(V)`: `Ĝ` is a field along the parameter `y`. -/
+theorem Submission.dtc_bc_lc_sl_cc_chart_gradient : ∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (V : Set (Euclid N)) (F : Euclid N → ℝ), IsOpen V → ContDiff ℝ 1 ψ → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ Gh : Euclid N → Euclid P, Measurable Gh ∧ ContinuousOn Gh V ∧ ∀ y ∈ V, Gh y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P) ∧ (∀ e, inner ℝ (Gh y) (fderiv ℝ ψ y e) = fderiv ℝ F y e) ∧ (∀ v ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ y e) = fderiv ℝ F y e) → v = Gh y) ∧ (Gh y = 0 ↔ fderiv ℝ F y = 0) := by
+  intro P N ψ V F hV hψ hinj hF
+  classical
+  -- `M(y) = Dψ(y)* ∘ Dψ(y)` and the gradient `∇F(y)`, the Riesz representative of `DF(y)`
+  obtain ⟨M, hM⟩ : ∃ M : Euclid N → (Euclid N →L[ℝ] Euclid N),
+      ∀ y, M y = (fderiv ℝ ψ y).adjoint ∘L fderiv ℝ ψ y := ⟨_, fun _ => rfl⟩
+  obtain ⟨g, hg⟩ : ∃ g : Euclid N → Euclid N,
+      ∀ y, g y = (InnerProductSpace.toDual ℝ (Euclid N)).symm (fderiv ℝ F y) := ⟨_, fun _ => rfl⟩
+  -- `y ↦ Dψ(y)`, `y ↦ M(y)` and `y ↦ ∇F(y)` are continuous
+  have hDψ : Continuous (fderiv ℝ ψ) := hψ.continuous_fderiv one_ne_zero
+  have hMc : Continuous M :=
+    ((ContinuousLinearMap.adjoint.continuous.comp hDψ).clm_comp hDψ).congr fun y => (hM y).symm
+  have hgc : Continuous g :=
+    ((InnerProductSpace.toDual ℝ (Euclid N)).symm.continuous.comp
+      (hF.continuous_fderiv one_ne_zero)).congr fun y => (hg y).symm
+  -- `⟪M(y)a, b⟫ = ⟪Dψ(y)a, Dψ(y)b⟫` and `⟪∇F(y), e⟫ = DF(y)e`
+  have hMinner : ∀ y a b, inner ℝ (M y a) b = inner ℝ (fderiv ℝ ψ y a) (fderiv ℝ ψ y b) :=
+    fun y a b => by
+      rw [hM, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
+  have hginner : ∀ y e, inner ℝ (g y) e = fderiv ℝ F y e := fun y e => by
+    rw [hg, InnerProductSpace.toDual_symm_apply]
+  -- on `V`, `M(y)` is injective (`⟪M(y)a, a⟫ = |Dψ(y)a|²`), hence invertible
+  have hMunit : ∀ y ∈ V, IsUnit (M y) := by
+    intro y hy
+    have hMinj : Injective (M y) := by
+      rw [injective_iff_map_eq_zero]
+      intro a ha
+      apply hinj y hy
+      rw [map_zero, ← inner_self_eq_zero (𝕜 := ℝ), ← hMinner, ha, inner_zero_left]
+    exact ContinuousLinearMap.isUnit_iff_bijective.2
+      ⟨hMinj, LinearMap.injective_iff_surjective (f := (M y : Euclid N →ₗ[ℝ] Euclid N)).1 hMinj⟩
+  -- `Ĝ₀(y) = Dψ(y) M(y)⁻¹ ∇F(y)`, with `Ring.inverse` continuous at the units `M(y)`, `y ∈ V`
+  obtain ⟨G₀, hG₀⟩ : ∃ G₀ : Euclid N → Euclid P,
+      ∀ y, G₀ y = fderiv ℝ ψ y (Ring.inverse (M y) (g y)) := ⟨_, fun _ => rfl⟩
+  have hG₀c : ContinuousOn G₀ V := by
+    intro y hy
+    have hinv : ContinuousAt (fun z => Ring.inverse (M z)) y := by
+      have h := NormedRing.inverse_continuousAt (hMunit y hy).unit
+      rw [IsUnit.unit_spec] at h
+      exact h.comp hMc.continuousAt
+    rw [funext hG₀]
+    exact (hDψ.continuousAt.clm_apply (hinv.clm_apply hgc.continuousAt)).continuousWithinAt
+  -- (b) on `V`: `⟪Ĝ₀(y), Dψ(y)e⟫ = ⟪M(y)M(y)⁻¹∇F(y), e⟫ = ⟪∇F(y), e⟫ = DF(y)e`
+  have hgrad : ∀ y ∈ V, ∀ e, inner ℝ (G₀ y) (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+    intro y hy e
+    rw [hG₀, ← hMinner, ← mul_apply_eq_comp, Ring.mul_inverse_cancel _ (hMunit y hy),
+      one_apply_eq_self, hginner]
+  -- `Ĝ = Ĝ₀` on `V` and `0` off `V`: Borel, since `V` is open and `Ĝ₀` is continuous on `V`
+  refine ⟨V.piecewise G₀ fun _ => 0, hG₀c.measurable_piecewise continuousOn_const hV.measurableSet,
+    hG₀c.congr fun y hy => piecewise_eq_of_mem _ _ _ hy, fun y hy => ?_⟩
+  rw [piecewise_eq_of_mem _ _ _ hy]
+  refine ⟨?_, hgrad y hy, ?_, ?_⟩
+  · -- (a) `Ĝ₀(y) = Dψ(y)(M(y)⁻¹∇F(y))`
+    rw [hG₀]
+    exact LinearMap.mem_range.2 ⟨_, rfl⟩
+  · -- (c) `v - Ĝ₀(y) = Dψ(y)(u - M(y)⁻¹∇F(y))` is orthogonal to the range of `Dψ(y)`
+    intro v hv hve
+    obtain ⟨u, rfl⟩ := LinearMap.mem_range.1 hv
+    rw [ContinuousLinearMap.coe_coe] at hve ⊢
+    have h0 : inner ℝ (fderiv ℝ ψ y u - G₀ y)
+        (fderiv ℝ ψ y (u - Ring.inverse (M y) (g y))) = 0 := by
+      rw [inner_sub_left, hve, hgrad y hy, sub_self]
+    rwa [map_sub, ← hG₀, inner_self_eq_zero, sub_eq_zero] at h0
+  · -- (d) by (b), and since `∇F(y) = 0` when `DF(y) = 0`
+    constructor
+    · intro h0
+      refine ContinuousLinearMap.ext fun e => ?_
+      rw [← hgrad y hy e, h0, inner_zero_left, zero_apply]
+    · intro h0
+      rw [hG₀, hg, h0, map_zero, map_zero, map_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
