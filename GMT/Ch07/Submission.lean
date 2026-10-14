@@ -24131,6 +24131,55 @@ theorem Submission.cbr_isIntegerMultiplicity_of_local : (∀ (P n : ℕ) (U : Se
     isOpen_ball hμKB hrestr hξmeas hRmeas (ae_of_all μ hξbound) hRbound fun E ω hE => by
       rw [hset E ω hE, Measure.restrict_zero, integral_zero_measure, add_zero]
   exact ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hB, hrestr.trans hRB, hae⟩
+
+/-- **Simon Ch. 6, 6.2–6.3** (boundary rectifiability from the closure theorem).  Assume (REP),
+(MR), (IMC), (SL), the deformation theorem (DT), (VO), and the closure theorem (CL) in degree `d`.
+If `R ∈ 𝒟_{d+1}(U)` is integer multiplicity and `M_W(∂R) < ∞` for open `W ⊂⊂ U`, then `∂R` is
+integer multiplicity.  This is a local property (`cbr_isIntegerMultiplicity_of_local` (1)), so fix
+`x₀ ∈ U`.  Slicing by `|· − x₀|` (`cbr_bim_slice_localization`) gives `r > 0` and `R' = R⌞B_r(x₀)`,
+represented by an `IMRep` carried by `B_r(x₀)`, with `M(R'), M(∂R') < ∞` and `∂R' = ∂R` on forms
+supported in `B_r(x₀)`.  Extending `R'` by zero (`dtc_extend_by_zero`) gives an integer
+multiplicity `Y ∈ 𝒟_{d+1}(ℝᴾ)` with `Y|_U = R'` and `spt Y ⊆ B̄_r(x₀)`, so `M(Y) ≤ M(R')` and
+`M(∂Y) ≤ M(∂R')` (`cbr_bim_extension_mass_bounds`).  By (DT) and (CL), `∂Y` is integer
+multiplicity (`cbr_bim_boundary_im_of_compact_support`), hence so is `(∂Y)|_{B_r(x₀)}`
+(`cbr_isIntegerMultiplicity_of_local` (2)), and `(∂Y)|_{B_r(x₀)} = (∂R)|_{B_r(x₀)}`. -/
+theorem Submission.cbr_boundary_isIntegerMultiplicity : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → ∀ (P : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary := by
+  intro hREP hMR hIMC hSL hDT hVO d hCL P U R hU hRim hbd
+  -- Step 11: by `cbr_isIntegerMultiplicity_of_local` (1), it suffices that `∂R` is integer
+  -- multiplicity on a ball around each point of `U`
+  refine (Submission.cbr_isIntegerMultiplicity_of_local hREP hMR hIMC P d U R.boundary hU).1 hbd
+    fun x₀ hx₀ => ?_
+  -- Steps 1–5: `R' = R⌞B_r(x₀)` has an `IMRep` carried by `B_r(x₀)`, `M(R'), M(∂R') < ∞`, and
+  -- `∂R' = ∂R` on forms supported in `B_r(x₀)`
+  obtain ⟨r, hr, hcbU, R', Rr, hRr, hcar, hR'm, hR'bm, hagree⟩ :=
+    Submission.cbr_bim_slice_localization hREP hIMC.2.1 hIMC.2.2.2 hSL P d U R x₀ hU hRim hbd hx₀
+  have hbU : ball x₀ r ⊆ U := ball_subset_closedBall.trans hcbU
+  -- Step 6: extend `R'` by zero to an integer multiplicity `Y ∈ 𝒟_{d+1}(ℝᴾ)` with
+  -- `spt Y ⊆ B̄_r(x₀)`; then `M(Y) ≤ M(R') < ∞` and `M(∂Y) ≤ M(∂R') < ∞`
+  obtain ⟨Y, hYR', hYspt, -, -, hYim⟩ :=
+    Submission.dtc_extend_by_zero P (d + 1) univ U (closedBall x₀ r) (subset_univ U) R' Rr
+      isOpen_univ hU (isCompact_closedBall x₀ r) hcbU hRr
+      (by rw [sdiff_eq_empty.mpr (hcar.trans ball_subset_closedBall), measure_empty])
+  obtain ⟨hYm, hYbm⟩ := Submission.cbr_bim_extension_mass_bounds hVO P d U (closedBall x₀ r) Y hU
+    (isCompact_closedBall x₀ r) hcbU hYspt
+  rw [hYR'] at hYm hYbm
+  -- Steps 7–9: the deformation theorem and the closure theorem in degree `d` show that `∂Y` is
+  -- integer multiplicity
+  have hYb : IsIntegerMultiplicity Y.boundary :=
+    Submission.cbr_bim_boundary_im_of_compact_support hDT d hCL P Y (closedBall x₀ r)
+      (isCompact_closedBall x₀ r) hYim hYspt (hYm.trans_lt hR'm) (hYbm.trans_lt hR'bm)
+  -- Step 10: `∂R = ∂R' = ∂Y` on `B_r(x₀)`, and `(∂Y)|_{B_r(x₀)}` is integer multiplicity by
+  -- `cbr_isIntegerMultiplicity_of_local` (2)
+  have hres : R.boundary.restrictDomain hbU = Y.boundary.restrictDomain (subset_univ _) := by
+    ext η
+    rw [GeometricCurrentOn.restrictDomain_apply, GeometricCurrentOn.restrictDomain_apply,
+      ← hagree (testFormOnInclusion hbU d η) η.property.2, ← hYR']
+    rfl
+  refine ⟨r, hr, hbU, ?_⟩
+  rw [hres]
+  exact (Submission.cbr_isIntegerMultiplicity_of_local hREP hMR hIMC P d univ Y.boundary
+    isOpen_univ).2 (ball x₀ r) (subset_univ _) isOpen_ball hYb
+
 /-- **Simon Ch. 6, remark before 4.10** (integrated lower left Dini derivative).  For monotone
 `F : ℝ → ℝ`, the lower integral over `(a, b)` of `D(t) = liminf_{h → 0+} (F(t) - F(t - h)) / h`
 is at most `F(b) - F(a)`.  `F` is differentiable a.e. (Lebesgue), and at a point of
