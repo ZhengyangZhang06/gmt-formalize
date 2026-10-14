@@ -2640,6 +2640,122 @@ theorem Submission.cmcs_wedge_norm_le : ∀ (P k : ℕ) (β : Euclid P →L[ℝ]
           ring
     exact (sq_le_sq₀ (covectorEuclideanNorm_nonneg ω) hrhs).mp hsq
 
+/-- **Cut-off estimate** (Simon 6.4.11: the identity `T(g dη) = ∂T(gη) − T(dg ∧ η)` and its two
+estimates).  Let `T = τ(M, θ, ξ) ∈ 𝒟_{m+1}(U)`, let `g ∈ C^∞` with `spt g ⊆ V`, `|g| ≤ a`,
+`‖Dg‖ ≤ c` and `Dg = 0` off `S`, and let `η ∈ 𝒟^m(U)` with `|η| ≤ 1`.  Then
+`|T(g dη)| ≤ a M_V(∂T) + c μ_T(S)`.  The identity follows from the Leibniz rule
+`d(gη) = g dη + dg ∧ η`.  For `a > 0` the forms `±a⁻¹gη` are admissible for `M_V(∂T)`, and
+`|dg ∧ η| ≤ ‖Dg‖ |η| ≤ c 1_S` gives `|T(dg ∧ η)| ≤ ∫ |dg ∧ η| dμ_T ≤ c μ_T(S)`. -/
+theorem Submission.dtc_bc_lc_fd_lz_cutoff_estimate : ∀ (P m : ℕ) (U V S : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (g : Euclid P → ℝ) (η : TestFormOn U m) (a c : ℝ), R.Represents T → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ V → (∀ x, |g x| ≤ a) → (∀ x, ‖fderiv ℝ g x‖ ≤ c) → (∀ x, fderiv ℝ g x ≠ 0 → x ∈ S) → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Euclid P) m) x) ≤ 1) → ENNReal.ofReal |R.action (fun x => g x • exteriorDerivative (η : DifferentialForm (Euclid P) m) x)| ≤ ENNReal.ofReal a * T.boundary.massOn V + ENNReal.ofReal c * R.measure S := by
+  intro P m U V S T R g η a c hRT hg hgV hga hgc hgS hη
+  -- `|sα| = |s| |α|` for the Euclidean coefficient norm
+  have hNsmul : ∀ (s : ℝ) (α : Covector (Euclid P) m),
+      covectorEuclideanNorm (s • α) = |s| * covectorEuclideanNorm α := by
+    intro s α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg s), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs <;> simp [mul_pow]
+  -- `gζ ∈ 𝒟ᵏ(U)` for every `ζ ∈ 𝒟ᵏ(U)`
+  have hgmem : ∀ {k : ℕ} (ζ : TestFormOn U k),
+      (fun x => g x • (ζ : DifferentialForm (Euclid P) k) x) ∈ TestFormOn U k := fun ζ =>
+    ⟨⟨hg.smul ζ.property.1.1, ζ.property.1.2.smul_left (f := g)⟩,
+      (tsupport_smul_subset_right g _).trans ζ.property.2⟩
+  -- `ω₁ = gη`, `ω₂ = g dη` and `E = d(gη) − g dη`
+  let ω₁ : TestFormOn U m := ⟨_, hgmem η⟩
+  let ω₂ : TestFormOn U (m + 1) := ⟨_, hgmem (exteriorDerivativeTestOn U m η)⟩
+  set E : TestFormOn U (m + 1) := exteriorDerivativeTestOn U m ω₁ - ω₂ with hEdef
+  -- identity 4.11: `T(g dη) = ∂T(gη) − T(E)`
+  have hsplit :
+      R.action (fun x => g x • exteriorDerivative (η : DifferentialForm (Euclid P) m) x) =
+        T.boundary ω₁ - T E := by
+    rw [hEdef, GeometricCurrentOn.boundary_apply, map_sub T.toCurrent, sub_sub_cancel]
+    exact (hRT ω₂).symm
+  -- boundary term: `|∂T(gη)| ≤ a M_V(∂T)`
+  have hbd : ENNReal.ofReal |T.boundary ω₁| ≤ ENNReal.ofReal a * T.boundary.massOn V := by
+    rcases ((abs_nonneg _).trans (hga 0)).eq_or_lt with ha | hapos
+    · -- `a = 0`: then `g = 0` and `gη = 0`
+      have hω₁ : ω₁ = 0 := by
+        apply Subtype.ext
+        funext x
+        change g x • (η : DifferentialForm (Euclid P) m) x = 0
+        rw [abs_nonpos_iff.mp ((hga x).trans ha.symm.le), zero_smul]
+      rw [hω₁, map_zero, abs_zero, ENNReal.ofReal_zero]
+      exact zero_le
+    · -- `a > 0`: `±a⁻¹gη` are admissible for `M_V(∂T)`
+      have hζ : a⁻¹ • ω₁ ∈ massAdmissibleOn U m V := by
+        refine ⟨?_, fun x => ?_⟩
+        · change tsupport (fun x => a⁻¹ • (g x • (η : DifferentialForm (Euclid P) m) x)) ⊆ V
+          exact (tsupport_smul_subset_right (fun _ => a⁻¹) _).trans
+            ((tsupport_smul_subset_left g _).trans hgV)
+        · change covectorEuclideanNorm (a⁻¹ • (g x • (η : DifferentialForm (Euclid P) m) x)) ≤ 1
+          rw [hNsmul, hNsmul, abs_inv, abs_of_pos hapos]
+          calc a⁻¹ * (|g x| * covectorEuclideanNorm ((η : DifferentialForm (Euclid P) m) x))
+              ≤ a⁻¹ * (a * 1) := mul_le_mul_of_nonneg_left
+                (mul_le_mul (hga x) (hη x) (covectorEuclideanNorm_nonneg _) hapos.le)
+                (inv_nonneg.mpr hapos.le)
+            _ = 1 := by rw [mul_one, inv_mul_cancel₀ hapos.ne']
+      have hζn : -(a⁻¹ • ω₁) ∈ massAdmissibleOn U m V := by
+        refine ⟨?_, fun x => ?_⟩
+        · change tsupport (-((a⁻¹ • ω₁ : TestFormOn U m) : DifferentialForm (Euclid P) m)) ⊆ V
+          rw [tsupport_neg]
+          exact hζ.1
+        · change covectorEuclideanNorm
+            (-((a⁻¹ • ω₁ : TestFormOn U m) : DifferentialForm (Euclid P) m) x) ≤ 1
+          rw [covectorEuclideanNorm_neg]
+          exact hζ.2 x
+      have hT1 : ENNReal.ofReal |T.boundary (a⁻¹ • ω₁)| ≤ T.boundary.massOn V := by
+        rcases abs_choice (T.boundary (a⁻¹ • ω₁)) with h | h <;> rw [h]
+        · exact T.boundary.le_massOn hζ
+        · have h' := T.boundary.le_massOn hζn
+          rwa [map_neg T.boundary.toCurrent] at h'
+      have hscale : T.boundary ω₁ = a * T.boundary (a⁻¹ • ω₁) := by
+        have h := map_smul T.boundary.toCurrent a (a⁻¹ • ω₁)
+        rwa [smul_inv_smul₀ hapos.ne', smul_eq_mul] at h
+      rw [hscale, abs_mul, abs_of_pos hapos, ENNReal.ofReal_mul hapos.le]
+      gcongr
+  -- Leibniz rule: `E(x) = dg(x) ∧ η(x)`
+  have hE : ∀ x, (E : DifferentialForm (Euclid P) (m + 1)) x =
+      ContinuousAlternatingMap.alternatizeUncurryFin
+        ((fderiv ℝ g x).smulRight ((η : DifferentialForm (Euclid P) m) x)) := by
+    intro x
+    change exteriorDerivative (fun y => g y • (η : DifferentialForm (Euclid P) m) y) x -
+      g x • exteriorDerivative (η : DifferentialForm (Euclid P) m) x = _
+    rw [Submission.cmcs_cd_extDeriv_smul_leibniz P m g η x (hg.differentiable (by simp) x)
+      (η.property.1.1.differentiable (by simp) x), add_sub_cancel_left]
+  -- wedge term: `|E(x)| ≤ ‖Dg(x)‖ |η(x)| ≤ c 1_S(x)`
+  have hEpt : ∀ x,
+      ENNReal.ofReal (covectorEuclideanNorm ((E : DifferentialForm (Euclid P) (m + 1)) x)) ≤
+        S.indicator (fun _ => ENNReal.ofReal c) x := by
+    intro x
+    have hw := Submission.cmcs_wedge_norm_le P m (fderiv ℝ g x)
+      ((η : DifferentialForm (Euclid P) m) x)
+    rw [← hE x] at hw
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx]
+      refine ENNReal.ofReal_le_ofReal (hw.trans ?_)
+      calc ‖fderiv ℝ g x‖ * covectorEuclideanNorm ((η : DifferentialForm (Euclid P) m) x)
+          ≤ c * 1 := mul_le_mul (hgc x) (hη x) (covectorEuclideanNorm_nonneg _)
+            ((norm_nonneg _).trans (hgc x))
+        _ = c := mul_one c
+    · have h0 : fderiv ℝ g x = 0 := by
+        by_contra h
+        exact hx (hgS x h)
+      rw [h0, norm_zero, zero_mul] at hw
+      rw [indicator_of_notMem hx, ENNReal.ofReal_eq_zero.mpr hw]
+  -- `|T(E)| ≤ ∫ |E| dμ_T ≤ c μ_T(S)`
+  have hTE : ENNReal.ofReal |T E| ≤ ENNReal.ofReal c * R.measure S :=
+    (Submission.dtc_bc_lc_fd_lz_action_bound P (m + 1) U T R E hRT).trans
+      ((lintegral_mono hEpt).trans (lintegral_indicator_const_le S _))
+  rw [hsplit]
+  calc ENNReal.ofReal |T.boundary ω₁ - T E|
+      ≤ ENNReal.ofReal (|T.boundary ω₁| + |T E|) := ENNReal.ofReal_le_ofReal (abs_sub _ _)
+    _ = ENNReal.ofReal |T.boundary ω₁| + ENNReal.ofReal |T E| :=
+        ENNReal.ofReal_add (abs_nonneg _) (abs_nonneg _)
+    _ ≤ ENNReal.ofReal a * T.boundary.massOn V + ENNReal.ofReal c * R.measure S :=
+        add_le_add hbd hTE
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
