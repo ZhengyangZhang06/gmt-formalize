@@ -62856,4 +62856,24 @@ theorem Submission.compactness_under_mass_bounds : CompactnessUnderMassBounds :=
   exact ⟨φ, T₀, hφ, hconv,
     Submission.cmb_tendsto_integral_of_weaklyConvergesOn P n U hU (fun q => T (φ q)) T₀ hTφ hconv⟩
 
+/-- **Simon Ch. 6, Theorem 3.11 (p. 149)**, proved as in Remark 8.3(2) (p. 176): Lemma 2.15
+gives a weakly convergent subsequence, 6.3 makes every `∂T_j` integer multiplicity, and 8.2
+shows that the weak limit is integer multiplicity. -/
+theorem Submission.federer_fleming_compactness : FedererFlemingCompactness := by
+  intro P m U hU T hT hB
+  -- 2.15, using `M_W(T_j) ≤ M_W(T_j) + M_W(∂T_j)`.
+  obtain ⟨φ, T₀, hφ, hconv, -⟩ := Submission.compactness_under_mass_bounds P (m + 1) U hU T
+    fun W hW => (hB W hW).trans_le' (iSup_mono fun j => le_self_add)
+  -- 6.3, using `M_W(∂T_j) ≤ M_W(T_j) + M_W(∂T_j)`: every `T_j` is an integral current.
+  have hI : ∀ j, IsIntegralCurrent (T j) := fun j =>
+    ⟨hT j, Submission.boundary_rectifiability P m U hU (T j) (hT j) fun W hW =>
+      (hB W hW).trans_le' (le_add_self.trans
+        (le_iSup (fun j => (T j).massOn W + (T j).boundary.massOn W) j))⟩
+  -- 8.2 for `T_{φ(j)}`, whose mass bounds are dominated by those of the whole sequence.
+  exact ⟨φ, T₀, hφ, Submission.integrality_of_weak_limits P m U hU (fun j => T (φ j)) T₀
+    (fun j => hI (φ j))
+    (fun W hW => (hB W hW).trans_le'
+      (iSup_comp_le (fun j => (T j).massOn W + (T j).boundary.massOn W) φ))
+    hconv, hconv⟩
+
 end GMT.Ch06
