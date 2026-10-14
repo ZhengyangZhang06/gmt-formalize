@@ -917,6 +917,68 @@ theorem Submission.cbr_ci_pw_proj_integral_estimate : ∀ (P m l : ℕ) (pL : Eu
         mul_le_mul_of_nonneg_right hle2 hCM
     _ = C * μK * M := by ring
 
+/-- **The pulled-back integral is a current** (projection step): for `ω ∈ 𝒟ˡ(U)` put
+`Y(ω) = ∫_F ⟨ω(pL x) ∘ pL, ξ(x)⟩ dμ(x)`.  By `integral_estimate` with `K = spt ω` every integrand
+is `μ⌞F`-integrable, so `Y` is linear; if `ωⱼ → 0` in `𝒟ˡ(U)` with all supports in a compact
+`K ⊆ U`, the same estimate gives `|Y(ωⱼ)| ≤ c · sup ‖ωⱼ‖ → 0`, so `Y ∈ 𝒟ₗ(U)` (Simon 6.2.1). -/
+theorem Submission.cbr_ci_pw_proj_integral_current : ∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l), MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid m), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → ∃ Y : GeometricCurrentOn U l, ∀ ω : TestFormOn U l, Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ := by
+  intro P m l pL U S F μ ξ hF hFS hcpt hμ hξm hξb hN3
+  -- every integrand is `μ⌞F`-integrable: `integral_estimate` with `K = spt ω`, `M = sup ‖ω‖`
+  have hint : ∀ ω : TestFormOn U l, Integrable (fun x => ξ x
+      (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL)) (μ.restrict F) := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid m) l) := ω.property.1.1.continuous
+    have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid m) l)) := ω.property.1.2
+    obtain ⟨c, -, hc⟩ := Submission.cbr_ci_pw_proj_integral_estimate P m l pL S F
+      (tsupport (ω : DifferentialForm (Euclid m) l)) μ ξ hF hFS (hcpt _ hK ω.property.2) hμ hξm
+      hξb hN3
+    obtain ⟨M, hM⟩ := hωc.bounded_above_of_compact_support ω.property.1.2
+    exact (hc _ M hωc (fun y hy => image_eq_zero_of_notMem_tsupport hy) hM).1
+  -- `Y` is linear: `ω ↦ ⟨ω(pL x) ∘ pL, ξ(x)⟩` is linear for each `x`
+  let T : CurrentOn U l :=
+    { toFun := fun ω => ∫ x in F, ξ x
+        (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ
+      map_add' := fun ω η => by
+        rw [← integral_add (hint ω) (hint η)]
+        congr 1
+        funext x
+        rw [← map_add]
+        congr 1
+      map_smul' := fun c ω => by
+        rw [RingHom.id_apply, smul_eq_mul, ← integral_const_mul]
+        congr 1
+        funext x
+        rw [← smul_eq_mul, ← map_smul]
+        congr 1 }
+  refine ⟨⟨T, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+  -- continuity: the supports lie in one compact `K ⊆ U` and `ωⱼ → 0` uniformly on `K`
+  obtain ⟨K, hK, hKU, hsupp, -, hconv⟩ := hωs
+  obtain ⟨c, hc0, hc⟩ := Submission.cbr_ci_pw_proj_integral_estimate P m l pL S F K μ ξ hF hFS
+    (hcpt K hK hKU) hμ hξm hξb hN3
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hδ : 0 < ε / (c + 1) := div_pos hε (by linarith)
+  obtain ⟨N, hN⟩ := (Metric.tendstoUniformlyOn_iff.1 (hconv 0) _ hδ).exists_forall_of_atTop
+  refine ⟨N, fun n hn => ?_⟩
+  -- `‖ωₙ(y)‖ ≤ ε / (c + 1)` everywhere: on `K` by uniform convergence, off `K` `ωₙ(y) = 0`
+  have hbd : ∀ y, ‖(ωs n : DifferentialForm (Euclid m) l) y‖ ≤ ε / (c + 1) := by
+    intro y
+    by_cases hy : y ∈ K
+    · have := hN n hn y hy
+      simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
+        norm_iteratedFDeriv_zero] at this
+      exact this.le
+    · rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hsupp n h)), norm_zero]
+      exact hδ.le
+  have hωc : Continuous (ωs n : DifferentialForm (Euclid m) l) := (ωs n).property.1.1.continuous
+  have := (hc _ _ hωc (fun y hy => image_eq_zero_of_notMem_tsupport (fun h => hy (hsupp n h)))
+    hbd).2
+  rw [Real.dist_eq, sub_zero]
+  calc |T (ωs n)| ≤ c * (ε / (c + 1)) := this
+    _ < ε := by
+      rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+      nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
