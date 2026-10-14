@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1.competitor-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1",
+  "depth": 6,
+  "title": "The chord competitor: outer rays, inner segments and a chord form an integer multiplicity current with controlled mass in B_2(0) (parent step 3 and step 8, mass of X)",
+  "statement": "Assume (PC), the exact frozen statement of the sibling theorem idtp_fons_odc_polygonal_current: for every P ∈ ℕ, finite type ι, p, v : ι → ℝ^P with |v_k| = 1, open sets I_k ⊆ ℝ and c_k ∈ ℤ such that H¹(γ_j(I_j) ∩ closure(γ_k(I_k))) = 0 for all j ≠ k, where γ_k(t) := p_k + t·v_k and H¹ := μHE[1], there are X ∈ 𝒟_1(ℝ^P) and an integer multiplicity triple R (IMRep univ 1) with R.Represents X, X(ω) = Σ_k c_k ∫_{I_k} ω(γ_k(t))(v_k) dt for every ω ∈ 𝒟¹(ℝ^P), and R.measure(A) = Σ_k |c_k|·ℒ¹(I_k ∩ γ_k⁻¹(A)) for every Borel A ⊆ ℝ^P. Then: for every P ∈ ℕ, every finite set F ⊆ ℝ^P of unit vectors, all mo, mi : ℝ^P → ℤ, b, u ∈ ℝ^P and ℓ ∈ ℝ with ℓ ≥ 0 and |u| = 1 such that the line s ↦ b + su meets every line through 0 in at most one parameter (for all e ∈ ℝ^P and s₁, s₂, t₁, t₂ ∈ ℝ, b + s₁u = t₁e and b + s₂u = t₂e imply s₁ = s₂), there is an integer multiplicity current X ∈ 𝒟_1(ℝ^P) (IsIntegerMultiplicity X) such that X(ω) = Σ_{e∈F} mo(e)·∫_{(1,∞)} ω(te)(e) dt + Σ_{e∈F} mi(e)·∫_{(0,1)} ω(te)(e) dt + ∫_{(0,ℓ)} ω(b + su)(u) ds for every ω ∈ 𝒟¹(ℝ^P), and M_{B_2(0)}(X) = X.massOn(B_2(0)) ≤ ofReal(Σ_{e∈F}|mo(e)| + Σ_{e∈F}|mi(e)| + ℓ).",
+  "lean_statement": "(∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, IsOpen (I k)) → (∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩ closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0) → ∃ (X : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1), R.Represents X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, (c k : ℝ) * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ k, ENNReal.ofReal |(c k : ℝ)| * volume (I k ∩ (fun t : ℝ => p k + t • v k) ⁻¹' A)) → ∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ (mo mi : Euclid P → ℤ) (b u : Euclid P) (ℓ : ℝ), 0 ≤ ℓ → ‖u‖ = 1 → (∀ (e : Euclid P) (s₁ s₂ t₁ t₂ : ℝ), b + s₁ • u = t₁ • e → b + s₂ • u = t₂ • e → s₁ = s₂) → ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1, IsIntegerMultiplicity X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ e ∈ F, (mo e : ℝ) * (∫ t in Ioi (1 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∑ e ∈ F, (mi e : ℝ) * (∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∫ s in Ioo (0 : ℝ) ℓ, (ω : DifferentialForm (Euclid P) 1) (b + s • u) (fun _ => u)) ∧ X.massOn (ball (0 : Euclid P) 2) ≤ ENNReal.ofReal (∑ e ∈ F, |(mo e : ℝ)| + ∑ e ∈ F, |(mi e : ℝ)| + ℓ)",
+  "lean_name": "idtp_fons_odc_antipodal_competitor",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-89a72ae371-a1"
+}
