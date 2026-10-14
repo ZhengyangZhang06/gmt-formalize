@@ -789,6 +789,107 @@ theorem Submission.idtp_fons_cc_psf_param_continuity : ∀ (P n : ℕ) (μ₀ : 
   -- Step 6: `λᵢ⁻ⁿ ∫ f ∘ η_{xᵢ,λᵢ} dμ₀ → λ⁻ⁿ ∫ f ∘ η_{x,λ} dμ₀`.
   exact (hinv.pow n).mul hdct
 
+/-- **Domain recovery under vague limits** (Simon 7.3.3, proof of 3.3(1), items (7) and (9),
+chapter-07.txt lines 445–467: a weak limit of `η_{xᵢ,λᵢ#}T` with `lim λᵢ = λ > 0` lives on
+`η_{x,λ}(U)`), for an arbitrary finite measure `μ₀`.  Write `μ₀^{x,λ} = λ⁻ⁿ η_{x,λ#}μ₀` and
+`G_{x,λ} = η_{x,λ}(B₂(0))`, and call `(x, λ)` admissible if `0 < λ ≤ 1` and `‖x‖ ≤ 1 − λ`.  If
+admissible `μ₀^{xᵢ,λᵢ}` converge vaguely to a Radon measure `ν` and no `G_{xᵢ,λᵢ}` contains the
+compact set `K`, then `ν = μ₀^{x,λ}` for an admissible `(x, λ)` with `K ⊄ G_{x,λ}`.  Since
+`K ⊆ B̄_R(0)`, `K ⊄ G_{xᵢ,λᵢ}` forces `λᵢ ≥ R⁻¹`, so a subsequence of the parameters converges in
+the compact set `B̄₁(0) × [R⁻¹, 1]`; continuity in the parameters and uniqueness of vague limits
+identify `ν`, and if `K ⊆ G_{x,λ}`, the margin `2 − max_K ‖x + λv‖ > 0` absorbs the parameter
+error, giving `K ⊆ G_{x_{ψ i},λ_{ψ i}}` for large `i`. -/
+theorem Submission.idtp_fons_cc_psf_vague_closed : ∀ (P n : ℕ) (μ₀ : Measure (Euclid P)), μ₀ univ ≠ ∞ → ∀ (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ν : Measure (Euclid P)) (K : Set (Euclid P)), (∀ i, 0 < lams i ∧ lams i ≤ 1 ∧ ‖xs i‖ ≤ 1 - lams i) → (∀ K' : Set (Euclid P), IsCompact K' → ν K' ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun i => ∫ x, f x ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ x, f x ∂ν))) → IsCompact K → (∀ i, ¬ K ⊆ dilation (xs i) (lams i) '' ball 0 2) → ∃ (x : Euclid P) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧ ν = (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∧ ¬ K ⊆ dilation x lam '' ball 0 2 := by
+  intro P n μ₀ hμ₀ xs lams ν K hadm hν hconv hK hnot
+  -- Step 1: `K` is bounded, so `K ⊆ closedBall 0 R` for some `R > 0`.
+  obtain ⟨R₀, hR₀⟩ := hK.isBounded.subset_closedBall 0
+  obtain ⟨R, hRpos, hKR⟩ : ∃ R : ℝ, 0 < R ∧ K ⊆ closedBall 0 R :=
+    ⟨max R₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _),
+      hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))⟩
+  -- Step 2: `λᵢ ≥ R⁻¹`; otherwise `λᵢ R ≤ 1` and domain_geometry (c) gives
+  -- `K ⊆ closedBall 0 R ⊆ G_{xᵢ,λᵢ}`.
+  have hlow : ∀ i, R⁻¹ ≤ lams i := by
+    intro i
+    obtain ⟨hl0, hl1, hx⟩ := hadm i
+    by_contra hlt
+    rw [not_le] at hlt
+    have hlR : lams i * R ≤ 1 :=
+      calc lams i * R ≤ R⁻¹ * R := mul_le_mul_of_nonneg_right hlt.le hRpos.le
+        _ = 1 := inv_mul_cancel₀ hRpos.ne'
+    exact hnot i (hKR.trans
+      (((Submission.idtp_fons_cc_psf_domain_geometry P (xs i) (lams i) hl0).2.2 hl1 hx).2 R hlR))
+  -- Step 3: the parameters lie in the compact set `closedBall 0 1 × [R⁻¹, 1]`; extract a
+  -- subsequence `(x_{ψ i}, λ_{ψ i}) → (x, λ)`.
+  have hmem : ∀ i, (xs i, lams i) ∈ closedBall (0 : Euclid P) 1 ×ˢ Icc R⁻¹ (1 : ℝ) := by
+    intro i
+    obtain ⟨hl0, hl1, hx⟩ := hadm i
+    refine ⟨?_, hlow i, hl1⟩
+    rw [mem_closedBall_zero_iff]
+    linarith
+  obtain ⟨⟨x, lam⟩, ⟨-, hlamR, hlam1⟩, ψ, hψ, hlim⟩ :=
+    ((isCompact_closedBall (0 : Euclid P) 1).prod isCompact_Icc).tendsto_subseq
+      (x := fun i => (xs i, lams i)) hmem
+  have hxlim : Tendsto (fun i => xs (ψ i)) atTop (𝓝 x) := hlim.fst_nhds
+  have hllim : Tendsto (fun i => lams (ψ i)) atTop (𝓝 lam) := hlim.snd_nhds
+  -- Step 4: `(x, λ)` is admissible.
+  have hlam0 : 0 < lam := lt_of_lt_of_le (inv_pos.2 hRpos) hlamR
+  have hxnorm : ‖x‖ ≤ 1 - lam :=
+    le_of_tendsto_of_tendsto' hxlim.norm (hllim.const_sub 1) fun i => (hadm (ψ i)).2.2
+  -- Step 5: param_continuity and uniqueness of limits give `∫ f dν = ∫ f dμ₀^{x,λ}`.
+  have hint : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+      ∫ v, f v ∂ν = ∫ v, f v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) :=
+    fun f hf hfc => tendsto_nhds_unique ((hconv f hf hfc).comp hψ.tendsto_atTop)
+      (Submission.idtp_fons_cc_psf_param_continuity P n μ₀ f (fun i => xs (ψ i))
+        (fun i => lams (ψ i)) x lam hμ₀ hf hfc (fun i => (hadm (ψ i)).1) hlam0 hxlim hllim)
+  -- Step 6: `μ₀^{x,λ}` is finite, so vague_unique gives `ν = μ₀^{x,λ}`.
+  have hcont : Continuous (dilation x lam) := by
+    unfold dilation
+    exact continuous_const.add (dilationCLM P lam).continuous
+  have hfin : ∀ K' : Set (Euclid P), IsCompact K' →
+      (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) K' ≠ ∞ := by
+    intro K' _
+    refine ne_top_of_le_ne_top ?_ (measure_mono (subset_univ K'))
+    rw [Measure.smul_apply, smul_eq_mul, Measure.map_apply hcont.measurable MeasurableSet.univ,
+      preimage_univ]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hμ₀
+  refine ⟨x, lam, ⟨hlam0, hlam1, hxnorm⟩,
+    Submission.idtp_fons_cc_psf_vague_unique P ν _ hν hfin hint, fun hsub => ?_⟩
+  -- Step 7: if `K ⊆ G_{x,λ}`, then `M = max_K ‖x + λ v‖ < 2`, and for `i` large the margin
+  -- `2 - M` absorbs the parameter error, so `K ⊆ G_{x_{ψ i},λ_{ψ i}}`, a contradiction.
+  have hKne : K.Nonempty := by
+    rw [nonempty_iff_ne_empty]
+    rintro rfl
+    exact hnot 0 (empty_subset _)
+  have hh : Continuous fun v : Euclid P => ‖x + lam • v‖ := by fun_prop
+  obtain ⟨v₀, hv₀, hmax⟩ := hK.exists_isMaxOn hKne hh.continuousOn
+  have hM : ‖x + lam • v₀‖ < 2 :=
+    ((Submission.idtp_fons_cc_psf_domain_geometry P x lam hlam0).1 v₀).1 (hsub hv₀)
+  have hγ : 0 < 2 - ‖x + lam • v₀‖ := sub_pos.2 hM
+  have hγR : 0 < (2 - ‖x + lam • v₀‖) / (2 * R) := div_pos hγ (mul_pos two_pos hRpos)
+  have ev1 : ∀ᶠ i in atTop, ‖xs (ψ i) - x‖ < (2 - ‖x + lam • v₀‖) / 2 :=
+    (Metric.tendsto_nhds.1 hxlim _ (half_pos hγ)).mono fun i hi => by rwa [dist_eq_norm] at hi
+  have ev2 : ∀ᶠ i in atTop, |lams (ψ i) - lam| < (2 - ‖x + lam • v₀‖) / (2 * R) :=
+    (Metric.tendsto_nhds.1 hllim _ hγR).mono fun i hi => by rwa [Real.dist_eq] at hi
+  obtain ⟨i, hi1, hi2⟩ := (ev1.and ev2).exists
+  refine hnot (ψ i) fun v hv => ((Submission.idtp_fons_cc_psf_domain_geometry P (xs (ψ i))
+    (lams (ψ i)) (hadm (ψ i)).1).1 v).2 ?_
+  have hvR : ‖v‖ ≤ R := mem_closedBall_zero_iff.1 (hKR hv)
+  have hvM : ‖x + lam • v‖ ≤ ‖x + lam • v₀‖ := isMaxOn_iff.1 hmax v hv
+  have h3 : |lams (ψ i) - lam| * ‖v‖ ≤ (2 - ‖x + lam • v₀‖) / 2 :=
+    calc |lams (ψ i) - lam| * ‖v‖ ≤ (2 - ‖x + lam • v₀‖) / (2 * R) * R :=
+          mul_le_mul hi2.le hvR (norm_nonneg v) hγR.le
+      _ = (2 - ‖x + lam • v₀‖) / 2 := by rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hRpos.ne']
+  have hsplit : xs (ψ i) + lams (ψ i) • v =
+      (x + lam • v) + (xs (ψ i) - x) + (lams (ψ i) - lam) • v := by
+    rw [sub_smul]
+    abel
+  calc ‖xs (ψ i) + lams (ψ i) • v‖
+      = ‖(x + lam • v) + (xs (ψ i) - x) + (lams (ψ i) - lam) • v‖ := by rw [hsplit]
+    _ ≤ ‖x + lam • v‖ + ‖xs (ψ i) - x‖ + ‖(lams (ψ i) - lam) • v‖ := norm_add₃_le
+    _ = ‖x + lam • v‖ + ‖xs (ψ i) - x‖ + |lams (ψ i) - lam| * ‖v‖ := by
+          rw [norm_smul, Real.norm_eq_abs]
+    _ < 2 := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
