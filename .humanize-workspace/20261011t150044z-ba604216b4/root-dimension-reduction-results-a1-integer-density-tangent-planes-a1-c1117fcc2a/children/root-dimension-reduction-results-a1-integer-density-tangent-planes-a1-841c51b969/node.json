@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.imrep_construction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "depth": 6,
+  "title": "The weighted open line pieces carry an integer multiplicity triple with explicit carrier, multiplicity and θ·ξ (parent steps 2–3)",
+  "statement": "Let P ∈ ℕ and ι a finite type. For each k ∈ ι let p_k, v_k ∈ ℝ^P with ‖v_k‖ = 1, I_k ⊆ ℝ open and c_k ∈ ℤ. Put γ_k(t) := p_k + t·v_k and S_k := γ_k(I_k), and assume H¹(S_j ∩ closure(S_k)) = 0 for all j ≠ k, where H¹ = μHE[1]. Then there is a 1-dimensional integer multiplicity triple R = (M, θ, ξ) in ℝ^P (IMRep univ 1) with:\n- carrier M = ⋃_{k : c_k ≠ 0} S_k;\n- multiplicity θ(x) = Σ_k 1_{S_k}(x)·|c_k| (natAbs) for every x;\n- θ(x)·ξ(x)(α) = Σ_k 1_{S_k}(x)·c_k·α(fun _ => v_k) for every x ∈ ℝ^P and every 1-covector α.",
+  "lean_statement": "∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, IsOpen (I k)) → (∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩ closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0) → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier = (⋃ k, ⋃ (_ : c k ≠ 0), (fun t : ℝ => p k + t • v k) '' I k) ∧ (∀ x, R.mult x = ∑ k, ((fun t : ℝ => p k + t • v k) '' I k).indicator (fun _ => (c k).natAbs) x) ∧ ∀ (x : Euclid P) (α : Covector (Euclid P) 1), (R.mult x : ℝ) * R.orient x α = ∑ k, ((fun t : ℝ => p k + t • v k) '' I k).indicator (fun _ => (c k : ℝ)) x * α (fun _ => v k)",
+  "lean_name": "idtp_fons_odc_pc_imrep",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.local_plane_tangent-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.piece_locally_line-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.local_plane_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.piece_locally_line-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-841c51b969-a1"
+}
