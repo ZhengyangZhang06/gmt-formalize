@@ -972,6 +972,155 @@ theorem Submission.dor_lmb_fcdr_grid_segment : ∀ (P : ℕ) (f : Euclid P → E
         Finset.sum_le_sum fun k hk => key k (Finset.mem_range.1 hk)
     _ = K * dist x y * (t N - t 0) := by rw [← Finset.mul_sum, Finset.sum_range_sub]
     _ = K * dist x y := by rw [ht0, htN]; ring
+/-- **Simon Ch. 6, Lemma 5.4** (retraction onto the `n`-skeleton, `n = m + 1 < P`; the printed
+construction, with the derivative bound proved directly).  Let `|aᵢ − 1/2| < 1/4`, `L*(a)` the set
+of points with at least `m + 2` coordinates in `aᵢ + ℤ`, `rⱼ(y) = max((yⱼ − aⱼ)/(1 − aⱼ),
+(aⱼ − yⱼ)/aⱼ)`, `κ` the `ℓ`-th largest entry (`ℓ = P − (m + 1)`),
+`Φ(y)ᵢ = aᵢ + (yᵢ − aᵢ)/max(rᵢ(y), κ(r(y)))` the closed form of the composed radial retractions of
+`[0, 1]ᴾ`, and `ψ(x) = ⌊x⌋ + Φ(x − ⌊x⌋)`.  Off `L*(a)`, `κ(r(x − ⌊x⌋)) > 0` (Claim C), so `ψ(x)`
+has `ℓ` integer coordinates and `|ψ(x) − x| ≤ √P`.  On a grid cube `z + [0, 1]ᴾ`,
+`ψ = z + Φ(· − z)` by periodicity, and Claims B and C bound its Lipschitz constant on
+`{dist(·, L*(a)) ≥ r/2}` by `4√P/κ ≤ 2c₁/r`, `c₁ = 4√P √(m + 2)`.  If `|x − y| < r`, the segment
+`[x, y]` stays in `{dist(·, L*(a)) ≥ r/2}` and cutting it at the grid gives `(2c₁/r)|x − y|`; if
+`|x − y| ≥ r`, then `|ψ(x) − ψ(y)| ≤ |x − y| + 2√P ≤ ((1/4 + 2√P)/r)|x − y|`.  So
+`c = 2c₁ + 2√P + 1/4` works. -/
+theorem Submission.dor_lmb_fcd_retraction : ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ ψ : Euclid P → Euclid P, (∀ x : Euclid P, 0 < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, ψ x i = z) ∧ dist (ψ x) x ≤ Real.sqrt P) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → ∀ x y : Euclid P, r ≤ infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → r ≤ infDist y {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → dist (ψ x) (ψ y) ≤ c / r * dist x y := by
+  intro P m hmP
+  -- Step 2: `κ`, the `ℓ`-th largest entry, `ℓ = P − (m + 1)`
+  obtain ⟨κ, hκ1, hκ2, hκ3⟩ := Submission.dor_lmb_fcdr_order_stat P m hmP
+  -- `c = 2c₁ + 2√P + 1/4 ≥ max(2c₁, 1/4 + 2√P)`, `c₁ = 4√P √(m + 2)`
+  refine ⟨8 * Real.sqrt P * Real.sqrt (m + 2) + 2 * Real.sqrt P + 1 / 4, by positivity,
+    fun a ha => ?_⟩
+  set L : Set (Euclid P) := {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+    ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  have hsP := Real.sqrt_nonneg (P : ℝ)
+  have hsm := Real.sqrt_nonneg ((m : ℝ) + 2)
+  -- Step 3: the closed-form cube map `Φ`
+  let Φ : Euclid P → Euclid P := fun y => WithLp.toLp 2 fun i => a i + (y i - a i) /
+    max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i))
+      (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))
+  have hΦ : ∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) /
+      max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i))
+        (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j))) := fun _ _ => rfl
+  -- integer points `z ∈ ℤᴾ` of `ℝᴾ`, and Step 5: `ψ(x) = ⌊x⌋ + Φ(x − ⌊x⌋)`
+  let zv : (Fin P → ℤ) → Euclid P := fun z => WithLp.toLp 2 fun i => (z i : ℝ)
+  let ψ : Euclid P → Euclid P := fun x => zv (fun j => ⌊x j⌋) + Φ (x - zv (fun j => ⌊x j⌋))
+  have hψ : ∀ x i, ψ x i = ⌊x i⌋ + Φ (x - zv (fun j => ⌊x j⌋)) i := fun _ _ => rfl
+  have hint : ∀ (z : Fin P → ℤ) (x : Euclid P) (i : Fin P), ∃ k : ℤ, x i - (x - zv z) i = k :=
+    fun z x i => ⟨z i, show x i - (x i - z i) = z i by ring⟩
+  -- Claim C: `dist(x, L*(a)) ≤ √(m + 2) κ(r(y))` if `x − y ∈ ℤᴾ`; so `κ(r(y)) > 0` off `L*(a)`
+  have hdual : ∀ x y : Euclid P, (∀ i, ∃ k : ℤ, x i - y i = k) →
+      infDist x L ≤ Real.sqrt (m + 2) *
+        κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) :=
+    Submission.dor_lmb_fcdr_dual_dist P m a ha κ hκ2
+  have hκpos : ∀ x y : Euclid P, (∀ i, ∃ k : ℤ, x i - y i = k) → 0 < infDist x L →
+      0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) := by
+    intro x y hxy hx
+    by_contra hneg
+    have h := mul_nonpos_of_nonneg_of_nonpos hsm (not_lt.1 hneg)
+    linarith [hdual x y hxy]
+  -- Step 5: on a grid cube `z + [0, 1]ᴾ`, `ψ = z + Φ(· − z)` (periodicity of `Φ`)
+  have hψcube : ∀ (z : Fin P → ℤ) (x : Euclid P), (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) →
+      ψ x = zv z + Φ (x - zv z) := by
+    intro z x hx
+    have hper := Submission.dor_lmb_fcdr_cube_periodic P m hmP a ha κ hκ1 Φ hΦ
+      (x - zv (fun j => ⌊x j⌋)) (x - zv z)
+      (fun j => show 0 ≤ x j - ⌊x j⌋ ∧ x j - ⌊x j⌋ ≤ 1 from
+        ⟨by linarith [Int.floor_le (x j)], by linarith [Int.lt_floor_add_one (x j)]⟩)
+      (fun j => show 0 ≤ x j - z j ∧ x j - z j ≤ 1 from
+        ⟨by linarith [(hx j).1], by linarith [(hx j).2]⟩)
+      (fun j => ⟨⌊x j⌋ - z j, show (x j - z j) - (x j - ⌊x j⌋) = ((⌊x j⌋ - z j : ℤ) : ℝ) by
+        push_cast; ring⟩)
+    ext i
+    show (⌊x i⌋ : ℝ) + Φ (x - zv (fun j => ⌊x j⌋)) i = z i + Φ (x - zv z) i
+    rw [hper i]
+    show (⌊x i⌋ : ℝ) + Φ (x - zv (fun j => ⌊x j⌋)) i
+      = z i + (Φ (x - zv (fun j => ⌊x j⌋)) i + ((x i - z i) - (x i - ⌊x i⌋)))
+    ring
+  -- Step 5: the first conclusion
+  have hfirst : ∀ x : Euclid P, 0 < infDist x L →
+      (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, ψ x i = z) ∧
+        dist (ψ x) x ≤ Real.sqrt P := by
+    intro x hx
+    obtain ⟨h01, s, hs, hs01⟩ := Submission.dor_lmb_fcdr_cube_skeleton P m a ha κ hκ1 Φ hΦ
+      (x - zv (fun j => ⌊x j⌋)) (hκpos x _ (hint _ x) hx)
+    refine ⟨⟨s, hs, fun i hi => ?_⟩, ?_⟩
+    · -- `Φ(x − ⌊x⌋)ᵢ ∈ {0, 1}` on `s`
+      rcases hs01 i hi with h | h
+      · exact ⟨⌊x i⌋, by rw [hψ, h, add_zero]⟩
+      · exact ⟨⌊x i⌋ + 1, by rw [hψ, h]; push_cast; ring⟩
+    · -- `|ψ(x)ᵢ − xᵢ| = |Φ(x − ⌊x⌋)ᵢ − (xᵢ − ⌊xᵢ⌋)| ≤ 1`
+      rw [EuclideanSpace.dist_eq]
+      apply Real.sqrt_le_sqrt
+      calc ∑ i, dist (ψ x i) (x i) ^ 2 ≤ ∑ _i : Fin P, (1 : ℝ) := by
+            refine Finset.sum_le_sum fun i _ => ?_
+            have h1 := h01 i
+            have h2 := Int.floor_le (x i)
+            have h3 := Int.lt_floor_add_one (x i)
+            have h5 : |ψ x i - x i| ≤ 1 := by
+              rw [hψ, abs_le]
+              constructor <;> linarith [h1.1, h1.2]
+            rw [Real.dist_eq]
+            calc |ψ x i - x i| ^ 2 ≤ 1 ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h5 2
+              _ = 1 := one_pow 2
+        _ = P := by
+            rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one]
+  -- Claims B and C on a grid cube: `|ψ(p) − ψ(q)| ≤ (4√P/κ) |p − q| ≤ (c/r) |p − q|` when
+  -- `dist(p, L*(a)) ≥ r/2`
+  have hcubeLip : ∀ r : ℝ, 0 < r → ∀ (z : Fin P → ℤ) (p q : Euclid P), r / 2 ≤ infDist p L →
+      (∀ i, (z i : ℝ) ≤ p i ∧ p i ≤ z i + 1) → (∀ i, (z i : ℝ) ≤ q i ∧ q i ≤ z i + 1) →
+      dist (ψ p) (ψ q) ≤
+        (8 * Real.sqrt P * Real.sqrt (m + 2) + 2 * Real.sqrt P + 1 / 4) / r * dist p q := by
+    intro r hr z p q hp hpz hqz
+    have hk := hκpos p (p - zv z) (hint z p) (by linarith)
+    have hd := hdual p (p - zv z) (hint z p)
+    have hB := Submission.dor_lmb_fcdr_cube_lipschitz P a ha κ hκ3 Φ hΦ (p - zv z) (q - zv z) hk
+    rw [dist_sub_right p q (zv z)] at hB
+    rw [hψcube z p hpz, hψcube z q hqz, dist_add_left]
+    refine hB.trans (mul_le_mul_of_nonneg_right ?_ dist_nonneg)
+    -- `4√P/κ ≤ 8√P√(m + 2)/r ≤ c/r`, as `r ≤ 2√(m + 2) κ`
+    have key : ∀ k : ℝ, 0 < k → r / 2 ≤ Real.sqrt (m + 2) * k →
+        4 * Real.sqrt P / k ≤
+          (8 * Real.sqrt P * Real.sqrt (m + 2) + 2 * Real.sqrt P + 1 / 4) / r := by
+      intro k hk hrk
+      rw [div_le_div_iff₀ hk hr]
+      nlinarith [mul_nonneg hsP (by linarith : (0 : ℝ) ≤ 2 * (Real.sqrt (m + 2) * k) - r),
+        mul_nonneg (by positivity : (0 : ℝ) ≤ 2 * Real.sqrt P + 1 / 4) hk.le]
+    exact key _ hk (hp.trans hd)
+  -- `[x, y] ⊆ ℝᴾ`: `|x − p| + |y − p| ≤ |x − y|` for `p ∈ [x, y]`
+  have hseg : ∀ x y p : Euclid P, p ∈ segment ℝ x y → dist x p + dist y p ≤ dist x y := by
+    intro x y p hp
+    rw [segment_eq_image'] at hp
+    obtain ⟨θ, ⟨hθ0, hθ1⟩, hθ⟩ := hp
+    have hθ' : x + θ • (y - x) = p := hθ
+    have e1 : x - p = (-θ) • (y - x) := by rw [← hθ', neg_smul]; abel
+    have e2 : y - p = (1 - θ) • (y - x) := by rw [← hθ', sub_smul, one_smul]; abel
+    rw [dist_eq_norm x p, dist_eq_norm y p, e1, e2, norm_smul, norm_smul, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_neg, abs_of_nonneg hθ0, abs_of_nonneg (sub_nonneg.2 hθ1),
+      dist_comm, dist_eq_norm]
+    linarith
+  refine ⟨ψ, hfirst, fun r hr hr4 x y hx hy => ?_⟩
+  have hc0 : 0 ≤ (8 * Real.sqrt P * Real.sqrt (m + 2) + 2 * Real.sqrt P + 1 / 4) / r := by
+    positivity
+  rcases lt_or_ge (dist x y) r with hxy | hxy
+  · -- Step 7(i): `|x − y| < r`, so `dist(·, L*(a)) ≥ r/2` on `[x, y]`; cut `[x, y]` at the grid
+    refine Submission.dor_lmb_fcdr_grid_segment P ψ {p | r / 2 ≤ infDist p L} _ hc0
+      (fun z p q hp _ hpz hqz => hcubeLip r hr z p q hp hpz hqz) x y fun p hp => ?_
+    show r / 2 ≤ infDist p L
+    have h1 : infDist x L ≤ infDist p L + dist x p := infDist_le_infDist_add_dist
+    have h2 : infDist y L ≤ infDist p L + dist y p := infDist_le_infDist_add_dist
+    linarith [hseg x y p hp]
+  · -- Step 7(ii): `|x − y| ≥ r`, so `|ψ(x) − ψ(y)| ≤ |x − y| + 2√P ≤ (c/r)|x − y|`
+    have h1 := (hfirst x (by linarith)).2
+    have h2 := (hfirst y (by linarith)).2
+    have h3 := dist_triangle4 (ψ x) x y (ψ y)
+    rw [dist_comm y (ψ y)] at h3
+    have hd : 0 ≤ dist x y := dist_nonneg
+    calc dist (ψ x) (ψ y) ≤ dist x y + 2 * Real.sqrt P := by linarith
+      _ ≤ (8 * Real.sqrt P * Real.sqrt (m + 2) + 2 * Real.sqrt P + 1 / 4) / r * dist x y := by
+        rw [div_mul_eq_mul_div, le_div_iff₀ hr]
+        nlinarith [mul_nonneg hsP (sub_nonneg.2 hxy),
+          mul_nonneg hd (by linarith : (0 : ℝ) ≤ 1 / 4 - r), mul_nonneg (mul_nonneg hsP hsm) hd]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
