@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1.dilation_im-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1",
+  "depth": 5,
+  "title": "A dilation of an integer multiplicity current is integer multiplicity",
+  "statement": "Let P, m ∈ ℕ, a ∈ ℝ^P, λ > 0 and η := dilation a λ. Let X, X' ∈ 𝒟_m(ℝ^P) with X'(ω) = λ^{−m}X(ω') for all ω, ω' ∈ 𝒟^m(ℝ^P) with ω'(y) = ω(η(y)) for every y. If X is integer multiplicity (X = τ(M, θ, ξ) for some IMRep (M, θ, ξ) in ℝ^P; contract IsIntegerMultiplicity), then X' is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → IsIntegerMultiplicity X → IsIntegerMultiplicity X'",
+  "lean_name": "cbr_cidc_dilation_isIntegerMultiplicity",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1.dilation_blowup-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_calculus-a1.dilation_blowup-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.rep_pushforward-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1-a1",
+      "result_commit": "cb3c7f3eda7f74be829e1ae3271494c85af94319",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-cd73dd1258-a1"
+}
