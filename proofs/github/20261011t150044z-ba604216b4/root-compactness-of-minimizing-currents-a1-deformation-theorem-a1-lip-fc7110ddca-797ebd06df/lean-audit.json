@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "152ed69c29b5e361e8459ff6d28586d773a2f9229dcf07c4abfc5301b57dd5ec",
+  "git_delta": {
+    "base_commit": "39e48febd7ffd09d71b1c56588ba57065ed4894b",
+    "candidate_commit": "fa599ddba49acd07bb1a0e19c6d5c01e7932c121",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_slice_end_form",
+    "diff_sha256": "c78ce9953d22288aca1bb8e9e08a5d1b9582c91e95e31d23cbacc7f802fe6c1b",
+    "source_sha256": "42c9ee5e63efa9e0b38879708ea22ed2dbe1aea1c7b3ef73773e519ff1ebdf5e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_slice_end_form",
+      "statement": "∀ (N k : ℕ) (s : ℝ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) k), ∃ ρ : TestFormOn (univ : Set (Euclid N)) k, ∀ (x : Euclid N) (v : Fin k → Euclid N), (ρ : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
