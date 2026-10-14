@@ -691,6 +691,35 @@ theorem Submission.dimred_mbl_dtsd_good_radius : ∀ (P : ℕ) (μ μ' : Measure
     (Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv _ μ f r hμ hf hrN.1).trans hrB,
     (Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv _ μ' f r hμ' hf hrN.2).trans_lt
       ENNReal.ofReal_lt_top⟩
+/-- **Lipschitz extension into `ℝᴾ`** (componentwise McShane): if `ψ : ℝᴾ → ℝᴾ` is `K`-Lipschitz
+on `S`, then some `φ : ℝᴾ → ℝᴾ` is `√P K`-Lipschitz on `ℝᴾ` and agrees with `ψ` on `S`.  Each
+coordinate `x ↦ ψ(x)ᵢ` is `K`-Lipschitz on `S` (`|vᵢ| ≤ |v|`), so has a `K`-Lipschitz extension
+`gᵢ` (`LipschitzOnWith.extend_real`); `φ = (gᵢ)ᵢ` then satisfies
+`|φ(x) − φ(y)|² = Σᵢ |gᵢ(x) − gᵢ(y)|² ≤ P K² |x − y|²`. -/
+theorem Submission.dimred_mbl_dtsd_lipschitz_extension : ∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S := by
+  intro P S ψ K hψ
+  -- (1) each coordinate `x ↦ ψ(x)ᵢ` is `K`-Lipschitz on `S`, since `|vᵢ| ≤ |v|`
+  have hcoord : ∀ i : Fin P, LipschitzOnWith K (fun x => ψ x i) S := fun i =>
+    LipschitzOnWith.of_dist_le_mul fun x hx y hy =>
+      (PiLp.dist_apply_le (ψ x) (ψ y) i).trans (hψ.dist_le_mul x hx y hy)
+  -- (2) McShane: `K`-Lipschitz `gᵢ : ℝᴾ → ℝ` with `gᵢ = ψ(·)ᵢ` on `S`
+  choose g hgL hgS using fun i => (hcoord i).extend_real
+  -- (3) `φ(x) = (gᵢ(x))ᵢ`
+  refine ⟨fun x => WithLp.toLp 2 fun i => g i x, LipschitzWith.of_dist_le_mul fun x y => ?_,
+    fun x hx => ?_⟩
+  · -- (4) `dist(φ x, φ y) = √(Σᵢ dist(gᵢ x, gᵢ y)²) ≤ √(P (K dist(x, y))²)`
+    rw [EuclideanSpace.dist_eq]
+    calc √(∑ i, dist (g i x) (g i y) ^ 2) ≤ √(∑ _i : Fin P, ((K : ℝ) * dist x y) ^ 2) := by
+          gcongr with i
+          exact (hgL i).dist_le_mul x y
+      _ = ↑(NNReal.sqrt P * K) * dist x y := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (by positivity)]
+          push_cast
+          ring
+  · -- (5) `φ = ψ` on `S`, coordinate by coordinate
+    ext i
+    exact (hgS i hx).symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
