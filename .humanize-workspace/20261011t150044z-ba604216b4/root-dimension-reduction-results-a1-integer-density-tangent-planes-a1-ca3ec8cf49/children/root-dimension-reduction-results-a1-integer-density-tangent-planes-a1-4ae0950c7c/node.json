@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.weak_limit_support_exclusion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "An open set that eventually lies in the domains and misses the supports of T_j misses the support of the weak limit",
+  "statement": "For all P, n ∈ ℕ, all sets U_j ⊆ ℝ^P = Euclid P (j ∈ ℕ), all currents T_j ∈ 𝒟_n(U_j), every S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and every open W ⊆ ℝ^P: if T_j ⇀ S (ConvergesWeakly: currentEval(T_j, ω) → S(ω) for every ω ∈ 𝒟^n(ℝ^P)) and, for all sufficiently large j, W ⊆ U_j and W ∩ spt T_j = ∅, then W ∩ spt S = ∅ (Disjoint W (spt S)), where spt is the support of Simon 6.2.11 (GeometricCurrentOn.support).",
+  "lean_statement": "∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ts : (j : ℕ) → GeometricCurrentOn (Us j) n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (W : Set (Euclid P)), ConvergesWeakly Ts S → IsOpen W → (∀ᶠ j in atTop, W ⊆ Us j ∧ Disjoint W (Ts j).support) → Disjoint W S.support",
+  "lean_name": "idtp_tpf_weak_limit_support_disjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4ae0950c7c-a1"
+}
