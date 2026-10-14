@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.smoothed_field-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+  "depth": 5,
+  "title": "Smoothing a unit field supported in Q_δ by a kernel of radius σ < δ gives an admissible C^∞ test field for Q₁",
+  "statement": "Let m ∈ ℕ, n := m + 1, ℝⁿ = Euclid n with Lebesgue measure, Q₁ := {y : 0 < y_i < 1 for all i} and Q_δ := {y : δ < y_i < 1 − δ for all i}. Let δ, σ ∈ ℝ with 0 < σ < δ. Let ρ : ℝⁿ → ℝ be C^∞ with ρ ≥ 0, ∫ρ = 1 and support ρ ⊆ B_σ(0) (open ball). Let s : ℝⁿ → ℝⁿ be a.e.-strongly measurable with |s(x)| ≤ 1 for all x and s(x) = 0 for all x ∉ Q_δ. Then G := ρ ⋆ s, G(y) = ∫ ρ(t) s(y − t) dt (Mathlib's convolution with lsmul ℝ ℝ and volume), is C^∞, has compact support, satisfies tsupport G ⊆ Q₁, and |G(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ (m : ℕ) (δ σ : ℝ) (ρ : Euclid (m + 1) → ℝ) (s : Euclid (m + 1) → Euclid (m + 1)), 0 < σ → σ < δ → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid (m + 1)) σ → AEStronglyMeasurable s volume → (∀ x, ‖s x‖ ≤ 1) → (∀ x, x ∉ {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} → s x = 0) → ContDiff ℝ (⊤ : ℕ∞) (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ HasCompactSupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ tsupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∧ ∀ y, ‖convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume y‖ ≤ 1",
+  "lean_name": "cmcdt_cbm_sa_smoothed_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-57a8a4ba62-a1"
+}
