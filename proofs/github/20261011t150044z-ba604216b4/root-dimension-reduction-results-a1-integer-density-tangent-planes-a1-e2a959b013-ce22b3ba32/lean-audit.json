@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d0259a42a2bc300dd1a2e628c0f7a9d45c6dc44bc012a04d5fadc6a73e15fa83",
+  "git_delta": {
+    "base_commit": "65b34345671d785dcde388a24c7d9299259e83d9",
+    "candidate_commit": "655cc09e4090ee7fa16d7992dc71cf4e7bc74739",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_ld_orthonormal_partner",
+    "diff_sha256": "f21489aa441e871c3a2e588a675e07f6c3a8f74f2dd1e0a490d8549bdea4878a",
+    "source_sha256": "4f5c43a04609d83f006663e03ba7381f01010b9f8aa5e2c723958229c62b0691",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_ld_orthonormal_partner",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (z : Euclid P), Module.finrank ℝ Q = 2 → z ∈ Q → ‖z‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ z e = 0 ∧ ∀ w ∈ Q, w = inner ℝ w z • z + inner ℝ w e • e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
