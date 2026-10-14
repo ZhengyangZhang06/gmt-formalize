@@ -3769,6 +3769,497 @@ theorem Submission.dorag_ha_interior_estimates : ∀ n : ℕ, 0 < n → ∃ CH :
   calc |h v - h 0 - fderiv ℝ h 0 v| ≤ 2 * n * (K₁ * ‖v‖) / (R / 4) * ‖v‖ / 2 := hT
     _ = 4 * n * K₁ * ‖v‖ ^ 2 / R := by field_simp
 
+/-- **Campanato and Morrey decay for harmonic maps** (Campanato's method, Giaquinta–Martinazzi,
+*Regularity Theory for Elliptic Systems*, 2012, Ch. 5, from the interior estimates of Simon
+Ch. 5, 3.2–3.4).  Let `h : ℝᵐ → ℝᵏ` be smooth and harmonic on `B_R(x₀)` with
+`|Dh|² = Σⱼ ‖Dh eⱼ‖²` integrable there.  For `0 < r ≤ R`,
+(i) `∫_{B_r(x₀)} |Dh − (Dh)_{x₀,r}|² ≤ C (r/R)^{m+2} ∫_{B_R(x₀)} |Dh − (Dh)_{x₀,R}|²` and
+(ii) `∫_{B_r(x₀)} |Dh|² ≤ C (r/R)ᵐ ∫_{B_R(x₀)} |Dh|²`, with `C = 16^{m+2} + 144ω2ᵐmkC_H²`.
+For `r > R/16` both follow from `B_r ⊆ B_R` and the minimality of the ball average.  For
+`r ≤ R/16` and any `Λ` above the right-hand integral, `Submission.dorag_ha_interior_estimates`
+for `v ↦ λ⁻¹(h − c)^κ(x + v)` on `B_{R/2}(0)`, `λ = √(Λ/(R/2)ᵐ)`, gives `|∂ⱼh^κ| ≤ C_Hλ`
+(`c = 0`) and, by three Taylor expansions at `x` and `x₀` (`c = (Dh)_{x₀,R}`),
+`|∂ⱼh^κ(x) − ∂ⱼh^κ(x₀)| ≤ 12C_Hλr/R` on `B_r(x₀)`. -/
+theorem Submission.codim1_hcp_sr_harmonic_decay : ∀ (m k : ℕ), 1 ≤ m → ∃ C : ℝ, 0 < C ∧ ∀ (x₀ : Euclid m) (R : ℝ) (h : Euclid m → Euclid k), 0 < R → (∀ n : ℕ, ContDiffOn ℝ n h (ball x₀ R)) → (∀ x ∈ ball x₀ R, ∑ i : Fin m, iteratedFDeriv ℝ 2 h x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun x => ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) → ∀ r : ℝ, 0 < r → r ≤ R → (∫ x in ball x₀ r, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ r, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ (m + 2) * ∫ x in ball x₀ R, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ R, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) ∧ ∫ x in ball x₀ r, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ m * ∫ x in ball x₀ R, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+  intro m k hm
+  obtain ⟨CH, hCH, hIE⟩ := Submission.dorag_ha_interior_estimates m (by omega)
+  -- `ω = Lᵐ(B₁(0))`, so `Lᵐ(B_ρ(y)) = ρᵐω`
+  obtain ⟨ω, hω_def⟩ : ∃ ω : ℝ, (volume (ball (0 : Euclid m) 1)).toReal = ω := ⟨_, rfl⟩
+  have hω : 0 < ω := hω_def ▸ ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne'
+    measure_ball_lt_top.ne
+  have hvol : ∀ (y : Euclid m) (ρ : ℝ), 0 < ρ → volume.real (ball y ρ) = ρ ^ m * ω := by
+    intro y ρ hρ
+    rw [measureReal_def, Measure.addHaar_ball_of_pos volume y hρ, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity), hω_def]
+  -- the constant `C = 16^{m+2} + C₀` with `C₀ = 144 ω 2ᵐ m k C_H²`
+  obtain ⟨C₀, hC₀_def⟩ : ∃ C₀ : ℝ, 144 * ω * 2 ^ m * ((m : ℝ) * k) * CH ^ 2 = C₀ := ⟨_, rfl⟩
+  have hC₀ : 0 ≤ C₀ := hC₀_def ▸ by positivity
+  have h16 : (0 : ℝ) < 16 ^ (m + 2) := by positivity
+  refine ⟨16 ^ (m + 2) + C₀, by linarith, ?_⟩
+  intro x₀ R h hR hh hΔ hint r hr hrR
+  -- `h` is `C¹` on the open ball `B = B_R(x₀)`
+  have hB : IsOpen (ball x₀ R) := isOpen_ball
+  have hh1 : ContDiffOn ℝ 1 h (ball x₀ R) := by exact_mod_cast hh 1
+  have hDcont : ContinuousOn (fderiv ℝ h) (ball x₀ R) :=
+    hh1.continuousOn_fderiv_of_isOpen hB le_rfl
+  have hDh : ∀ y ∈ ball x₀ R, HasFDerivAt h (fderiv ℝ h y) y := fun y hy =>
+    ((hh1.differentiableOn one_ne_zero).differentiableAt (hB.mem_nhds hy)).hasFDerivAt
+  -- `Σⱼ ‖(Dh − c) eⱼ‖² ≤ 2 Σⱼ ‖Dh eⱼ‖² + 2 Σⱼ ‖c eⱼ‖²` is integrable on `B` for every `c`
+  have hintc : ∀ c : Euclid m →L[ℝ] Euclid k, IntegrableOn (fun y => ∑ j : Fin m,
+      ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) := by
+    intro c
+    have hg : IntegrableOn (fun y => 2 * ∑ j : Fin m,
+        ‖fderiv ℝ h y (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 +
+        ∑ j : Fin m, 2 * ‖c (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) :=
+      (hint.const_mul 2).add (integrableOn_const measure_ball_lt_top.ne)
+    refine Integrable.mono' hg ?_ (ae_restrict_of_forall_mem measurableSet_ball fun y _ => ?_)
+    · exact ContinuousOn.aestronglyMeasurable (continuousOn_finsetSum _ fun j _ =>
+        ((hDcont.sub continuousOn_const).clm_apply continuousOn_const).norm.pow 2)
+        measurableSet_ball
+    · rw [Real.norm_of_nonneg (Finset.sum_nonneg fun _ _ => sq_nonneg _), Finset.mul_sum,
+        ← Finset.sum_add_distrib]
+      refine Finset.sum_le_sum fun j _ => ?_
+      have h1 := norm_sub_le (fderiv ℝ h y (EuclideanSpace.single j (1 : ℝ)))
+        (c (EuclideanSpace.single j (1 : ℝ)))
+      rw [sub_apply]
+      nlinarith [norm_nonneg (fderiv ℝ h y (EuclideanSpace.single j (1 : ℝ)) -
+        c (EuclideanSpace.single j (1 : ℝ))), norm_nonneg (fderiv ℝ h y
+        (EuclideanSpace.single j (1 : ℝ))), norm_nonneg (c (EuclideanSpace.single j (1 : ℝ))),
+        sq_nonneg (‖fderiv ℝ h y (EuclideanSpace.single j (1 : ℝ))‖ -
+        ‖c (EuclideanSpace.single j (1 : ℝ))‖)]
+  -- the ball average minimizes `A ↦ ∫_{B_ρ(x₀)} Σⱼ ‖(Dh − A) eⱼ‖²` (for `ρ < R`): the cross
+  -- terms `∫⟨(a − A) eⱼ, (Dh − a) eⱼ⟩` vanish since `∫_{B_ρ(x₀)} (Dh − a) = 0`
+  have hmin : ∀ ρ : ℝ, 0 < ρ → ρ < R → ∀ A : Euclid m →L[ℝ] Euclid k,
+      ∫ x in ball x₀ ρ, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ ρ, fderiv ℝ h z)
+        (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤
+      ∫ x in ball x₀ ρ, ∑ j : Fin m,
+        ‖(fderiv ℝ h x - A) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+    intro ρ hρ hρR A
+    have hcont : ContinuousOn (fderiv ℝ h) (closedBall x₀ ρ) :=
+      hDcont.mono (closedBall_subset_ball hρR)
+    have hDint : IntegrableOn (fderiv ℝ h) (ball x₀ ρ) :=
+      (hcont.integrableOn_compact (isCompact_closedBall _ _)).mono_set ball_subset_closedBall
+    have hzero : ∀ j : Fin m, ∫ x in ball x₀ ρ,
+        inner ℝ (((⨍ z in ball x₀ ρ, fderiv ℝ h z) - A) (EuclideanSpace.single j (1 : ℝ)))
+          ((fderiv ℝ h x - ⨍ z in ball x₀ ρ, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))) =
+        0 := by
+      intro j
+      have hi : Integrable (fun x => fderiv ℝ h x - ⨍ z in ball x₀ ρ, fderiv ℝ h z)
+          (volume.restrict (ball x₀ ρ)) := hDint.sub (integrableOn_const measure_ball_lt_top.ne)
+      have h1 := (innerSL ℝ (((⨍ z in ball x₀ ρ, fderiv ℝ h z) - A)
+        (EuclideanSpace.single j (1 : ℝ)))).integral_comp_comm
+        (hi.apply_continuousLinearMap (EuclideanSpace.single j (1 : ℝ)))
+      simp only [innerSL_apply_apply] at h1
+      rw [h1, ← ContinuousLinearMap.integral_apply hi,
+        setAverage_sub_setAverage measure_ball_lt_top.ne]
+      simp
+    obtain ⟨a, ha⟩ : ∃ a, ⨍ z in ball x₀ ρ, fderiv ℝ h z = a := ⟨_, rfl⟩
+    rw [ha] at hzero ⊢
+    have hexp : ∀ x, ∑ j : Fin m, ‖(fderiv ℝ h x - A) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 =
+        (∑ j : Fin m, ‖(fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 +
+        ∑ j : Fin m, 2 * inner ℝ ((a - A) (EuclideanSpace.single j (1 : ℝ)))
+          ((fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ)))) +
+        ∑ j : Fin m, ‖(a - A) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+      intro x
+      rw [← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      have : (fderiv ℝ h x - A) (EuclideanSpace.single j (1 : ℝ)) =
+          (fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ)) +
+          (a - A) (EuclideanSpace.single j (1 : ℝ)) := by
+        simp only [sub_apply]; abel
+      rw [this, norm_add_sq_real, real_inner_comm]
+    simp only [hexp]
+    have hI1 : Integrable (fun x => ∑ j : Fin m,
+        ‖(fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2)
+        (volume.restrict (ball x₀ ρ)) :=
+      ((continuousOn_finsetSum _ fun j _ =>
+        ((hcont.sub continuousOn_const).clm_apply continuousOn_const).norm.pow
+          2).integrableOn_compact (isCompact_closedBall _ _)).mono_set ball_subset_closedBall
+    have hI2 : ∀ j ∈ (Finset.univ : Finset (Fin m)), Integrable (fun x => 2 * inner ℝ
+        ((a - A) (EuclideanSpace.single j (1 : ℝ)))
+        ((fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ)))) (volume.restrict (ball x₀ ρ)) :=
+      fun j _ => ((continuousOn_const.mul (continuousOn_const.inner
+        ((hcont.sub continuousOn_const).clm_apply continuousOn_const))).integrableOn_compact
+        (isCompact_closedBall _ _)).mono_set ball_subset_closedBall
+    have hI12 : Integrable (fun x => ∑ j : Fin m,
+        ‖(fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 +
+        ∑ j : Fin m, 2 * inner ℝ ((a - A) (EuclideanSpace.single j (1 : ℝ)))
+          ((fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ)))) (volume.restrict (ball x₀ ρ)) :=
+      hI1.add (integrable_finsetSum _ hI2)
+    rw [integral_add hI12 (integrableOn_const measure_ball_lt_top.ne),
+      integral_add hI1 (integrable_finsetSum _ hI2), integral_finsetSum _ hI2, setIntegral_const]
+    simp only [integral_const_mul, hzero, mul_zero, Finset.sum_const_zero, add_zero, smul_eq_mul]
+    have : 0 ≤ volume.real (ball x₀ ρ) *
+        ∑ j : Fin m, ‖(a - A) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by positivity
+    linarith
+  -- `‖L‖² ≤ Σⱼ (L eⱼ)²` (Cauchy–Schwarz) and `‖(e_κ^*) ∘ T‖² ≤ Σⱼ ‖T eⱼ‖²`
+  have hopn : ∀ L : Euclid m →L[ℝ] ℝ,
+      ‖L‖ ^ 2 ≤ ∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2 := by
+    intro L
+    have hS : 0 ≤ ∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2 := by positivity
+    have hle : ‖L‖ ≤ Real.sqrt (∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2) := by
+      refine L.opNorm_le_bound (Real.sqrt_nonneg _) fun u => ?_
+      have hu : L u = ∑ j : Fin m, u j * L (EuclideanSpace.single j (1 : ℝ)) := by
+        conv_lhs => rw [← (EuclideanSpace.basisFun (Fin m) ℝ).sum_repr u]
+        simp [EuclideanSpace.basisFun_apply, map_sum, map_smul]
+      have hcs := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun j => u j)
+        (fun j => L (EuclideanSpace.single j (1 : ℝ)))
+      calc ‖L u‖
+          = Real.sqrt ((∑ j : Fin m, u j * L (EuclideanSpace.single j (1 : ℝ))) ^ 2) := by
+            rw [hu, Real.sqrt_sq_eq_abs, Real.norm_eq_abs]
+        _ ≤ Real.sqrt ((∑ j : Fin m, u j ^ 2) *
+            ∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2) := Real.sqrt_le_sqrt hcs
+        _ = Real.sqrt (∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2) * ‖u‖ := by
+            rw [Real.sqrt_mul (Finset.sum_nonneg fun _ _ => sq_nonneg _), mul_comm,
+              ← EuclideanSpace.real_norm_sq_eq, Real.sqrt_sq (norm_nonneg u)]
+    calc ‖L‖ ^ 2 ≤ Real.sqrt (∑ j : Fin m, L (EuclideanSpace.single j (1 : ℝ)) ^ 2) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) hle 2
+      _ = _ := Real.sq_sqrt hS
+  have hcomp : ∀ (T : Euclid m →L[ℝ] Euclid k) (κ : Fin k),
+      ‖(EuclideanSpace.proj κ).comp T‖ ^ 2 ≤
+        ∑ j : Fin m, ‖T (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+    intro T κ
+    refine (hopn _).trans (Finset.sum_le_sum fun j _ => ?_)
+    have h1 : ‖T (EuclideanSpace.single j (1 : ℝ)) κ‖ ≤ ‖T (EuclideanSpace.single j (1 : ℝ))‖ :=
+      PiLp.norm_apply_le _ κ
+    rw [Real.norm_eq_abs] at h1
+    calc ((EuclideanSpace.proj κ).comp T) (EuclideanSpace.single j (1 : ℝ)) ^ 2
+        = |T (EuclideanSpace.single j (1 : ℝ)) κ| ^ 2 := by rw [sq_abs]; rfl
+      _ ≤ ‖T (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h1 2
+  -- interior estimates for the normalized components (Simon Ch. 5, 3.2–3.4): if
+  -- `∫_B Σⱼ ‖(Dh − c) eⱼ‖² ≤ Λ`, `λ = √(Λ/(R/2)ᵐ)` and `x ∈ B_{R/2}(x₀)`, then
+  -- `|((Dh(x) − c) eⱼ)^κ| ≤ C_H λ` and `|h^κ(x + v) − h^κ(x) − (Dh(x) v)^κ| ≤ C_H λ ‖v‖²/(R/2)`
+  -- for `‖v‖ ≤ R/8`, by the accepted estimates for `v ↦ λ⁻¹ (h − c)^κ(x + v)` on `B_{R/2}(0)`
+  have core : ∀ (c : Euclid m →L[ℝ] Euclid k) (Λ : ℝ), 0 < Λ →
+      ∫ y in ball x₀ R, ∑ j : Fin m,
+        ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ Λ →
+      ∀ (κ : Fin k) (x : Euclid m), x ∈ ball x₀ (R / 2) →
+        (∀ j : Fin m, |(fderiv ℝ h x - c) (EuclideanSpace.single j (1 : ℝ)) κ| ≤
+          CH * Real.sqrt (Λ / (R / 2) ^ m)) ∧
+        ∀ v : Euclid m, ‖v‖ ≤ R / 8 → |h (x + v) κ - h x κ - fderiv ℝ h x v κ| ≤
+          CH * Real.sqrt (Λ / (R / 2) ^ m) * ‖v‖ ^ 2 / (R / 2) := by
+    intro c Λ hΛ hcΛ κ x hx
+    obtain ⟨lam, hlam_def⟩ : ∃ lam : ℝ, Real.sqrt (Λ / (R / 2) ^ m) = lam := ⟨_, rfl⟩
+    rw [hlam_def]
+    have hR2 : 0 < R / 2 := half_pos hR
+    have hlam : 0 < lam := hlam_def ▸ Real.sqrt_pos.2 (by positivity)
+    have hlam2 : lam ^ 2 = Λ / (R / 2) ^ m := hlam_def ▸ Real.sq_sqrt (by positivity)
+    -- `G = λ⁻¹ (h − c)^κ` is smooth and harmonic on `B`
+    obtain ⟨M, hM⟩ : ∃ M : Euclid k →L[ℝ] ℝ, lam⁻¹ • EuclideanSpace.proj κ = M := ⟨_, rfl⟩
+    have hMv : ∀ w : Euclid k, M w = lam⁻¹ * w κ := fun w => by rw [← hM]; rfl
+    obtain ⟨G, hG⟩ : ∃ G : Euclid m → ℝ, (fun y => M (h y - c y)) = G := ⟨_, rfl⟩
+    have hGs : ∀ n : ℕ, ContDiffOn ℝ n G (ball x₀ R) := fun n => by
+      rw [← hG]; exact M.contDiff.comp_contDiffOn ((hh n).sub c.contDiff.contDiffOn)
+    have hGd : ∀ y ∈ ball x₀ R, HasFDerivAt G (M.comp (fderiv ℝ h y - c)) y := fun y hy => by
+      rw [← hG]; exact M.hasFDerivAt.comp y ((hDh y hy).sub c.hasFDerivAt)
+    have hGΔ : ∀ y ∈ ball x₀ R, ∑ i : Fin m, iteratedFDeriv ℝ 2 G y
+        ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+      intro y hy
+      have h2 : ContDiffAt ℝ 2 h y := (hh 2).contDiffAt (hB.mem_nhds hy)
+      have h2c : ContDiffAt ℝ 2 (h - ⇑c) y := h2.sub c.contDiff.contDiffAt
+      have hc2 : iteratedFDeriv ℝ 2 c y = 0 := by
+        ext v
+        rw [iteratedFDeriv_two_apply]
+        have : fderiv ℝ (⇑c) = fun _ => c := funext fun _ => c.fderiv
+        simp [this]
+      have hG2 : iteratedFDeriv ℝ 2 G y =
+          M.compContinuousMultilinearMap (iteratedFDeriv ℝ 2 h y) := by
+        rw [← hG, show (fun y => M (h y - c y)) = M ∘ (h - ⇑c) from rfl,
+          M.iteratedFDeriv_comp_left h2c le_rfl,
+          iteratedFDeriv_sub_apply h2 c.contDiff.contDiffAt, hc2, sub_zero]
+      simp only [hG2, ContinuousLinearMap.compContinuousMultilinearMap_coe, Function.comp_apply]
+      rw [← map_sum, hΔ y hy, map_zero]
+    -- the translate `F = G(x + ·)` is smooth on `U = {w | x + w ∈ B} ⊇ B̄_{R/2}(0)`
+    have hxB : ∀ v ∈ closedBall (0 : Euclid m) (R / 2), x + v ∈ ball x₀ R := by
+      intro v hv
+      rw [mem_closedBall_zero_iff] at hv
+      rw [mem_ball] at hx ⊢
+      calc dist (x + v) x₀ ≤ dist (x + v) x + dist x x₀ := dist_triangle _ _ _
+        _ = ‖v‖ + dist x x₀ := by rw [dist_self_add_left]
+        _ < R := by linarith
+    have hU : IsOpen ((fun w => x + w) ⁻¹' ball x₀ R) :=
+      isOpen_ball.preimage (continuous_const.add continuous_id)
+    have hclU : closedBall (0 : Euclid m) (R / 2) ⊆ (fun w => x + w) ⁻¹' ball x₀ R :=
+      fun v hv => hxB v hv
+    have hFsU : ∀ n : ℕ, ContDiffOn ℝ n (fun w => G (x + w)) ((fun w => x + w) ⁻¹' ball x₀ R) :=
+      fun n => (hGs n).comp (contDiffOn_const.add contDiffOn_id) fun w hw => hw
+    have hFs : ∀ n : ℕ, ContDiffOn ℝ n (fun w => G (x + w)) (ball (0 : Euclid m) (R / 2)) :=
+      fun n => (hFsU n).mono (ball_subset_closedBall.trans hclU)
+    have hF1 : ∀ v ∈ closedBall (0 : Euclid m) (R / 2),
+        fderiv ℝ (fun w => G (x + w)) v = M.comp (fderiv ℝ h (x + v) - c) := fun v hv => by
+      rw [fderiv_comp_add_left, (hGd _ (hxB v hv)).fderiv]
+    have hFΔ : ∀ y ∈ ball (0 : Euclid m) (R / 2), ∑ i : Fin m,
+        iteratedFDeriv ℝ 2 (fun w => G (x + w)) y
+          ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0 := by
+      intro y hy
+      simp only [iteratedFDeriv_comp_add_left]
+      exact hGΔ _ (hxB y (ball_subset_closedBall hy))
+    have hFsU1 : ContDiffOn ℝ 1 (fun w => G (x + w)) ((fun w => x + w) ⁻¹' ball x₀ R) := by
+      exact_mod_cast hFsU 1
+    have hDFcont :
+        ContinuousOn (fderiv ℝ (fun w => G (x + w))) (closedBall (0 : Euclid m) (R / 2)) :=
+      (hFsU1.continuousOn_fderiv_of_isOpen hU le_rfl).mono hclU
+    have hDFint : IntegrableOn (fun v => ‖fderiv ℝ (fun w => G (x + w)) v‖ ^ 2)
+        (ball (0 : Euclid m) (R / 2)) :=
+      ((hDFcont.norm.pow 2).integrableOn_compact (isCompact_closedBall _ _)).mono_set
+        ball_subset_closedBall
+    have hF2int : IntegrableOn (fun v => G (x + v) ^ 2) (ball (0 : Euclid m) (R / 2)) :=
+      ((((hFsU 0).continuousOn.mono hclU).pow 2).integrableOn_compact
+        (isCompact_closedBall _ _)).mono_set ball_subset_closedBall
+    -- `‖DF(v)‖² ≤ λ⁻² Q(x + v)` with `Q = Σⱼ ‖(Dh − c) eⱼ‖²`, and `∫_{B_{R/2}(0)} Q(x + ·) ≤ Λ`
+    have hDFle : ∀ v ∈ closedBall (0 : Euclid m) (R / 2),
+        ‖fderiv ℝ (fun w => G (x + w)) v‖ ^ 2 ≤
+          (lam ^ 2)⁻¹ * ∑ j : Fin m,
+            ‖(fderiv ℝ h (x + v) - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+      intro v hv
+      rw [hF1 v hv, ← hM, ContinuousLinearMap.smul_comp, norm_smul, mul_pow, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hlam), inv_pow]
+      exact mul_le_mul_of_nonneg_left (hcomp _ κ) (by positivity)
+    have hQcont : ContinuousOn (fun v => ∑ j : Fin m,
+        ‖(fderiv ℝ h (x + v) - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2)
+        (closedBall (0 : Euclid m) (R / 2)) := by
+      have : ContinuousOn (fun v => fderiv ℝ h (x + v)) (closedBall (0 : Euclid m) (R / 2)) :=
+        hDcont.comp (continuousOn_const.add continuousOn_id) fun v hv => hxB v hv
+      exact continuousOn_finsetSum _ fun j _ =>
+        ((this.sub continuousOn_const).clm_apply continuousOn_const).norm.pow 2
+    have hQx : ∫ v in ball (0 : Euclid m) (R / 2), ∑ j : Fin m,
+        ‖(fderiv ℝ h (x + v) - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 =
+        ∫ y in ball x (R / 2), ∑ j : Fin m,
+          ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+      have hpre : (fun v => x + v) ⁻¹' ball x (R / 2) = ball (0 : Euclid m) (R / 2) := by
+        ext v
+        simp
+      rw [← hpre]
+      exact (measurePreserving_add_left volume x).setIntegral_preimage_emb
+        (measurableEmbedding_addLeft x) (fun y => ∑ j : Fin m,
+          ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x (R / 2))
+    have hQle : ∫ y in ball x (R / 2), ∑ j : Fin m,
+        ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ Λ := by
+      refine le_trans (setIntegral_mono_set (hintc c) ?_ ?_) hcΛ
+      · exact Eventually.of_forall fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+      · refine (ball_subset_ball' ?_).eventuallyLE
+        rw [mem_ball] at hx
+        linarith
+    have hDFbound : ∫ v in ball (0 : Euclid m) (R / 2), ‖fderiv ℝ (fun w => G (x + w)) v‖ ^ 2 ≤
+        (R / 2) ^ m := by
+      calc ∫ v in ball (0 : Euclid m) (R / 2), ‖fderiv ℝ (fun w => G (x + w)) v‖ ^ 2
+          ≤ ∫ v in ball (0 : Euclid m) (R / 2), (lam ^ 2)⁻¹ * ∑ j : Fin m,
+              ‖(fderiv ℝ h (x + v) - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+            setIntegral_mono_on hDFint
+              ((((hQcont.integrableOn_compact (isCompact_closedBall _ _)).mono_set
+                ball_subset_closedBall)).const_mul _) measurableSet_ball
+              fun v hv => hDFle v (ball_subset_closedBall hv)
+        _ = (lam ^ 2)⁻¹ * ∫ y in ball x (R / 2), ∑ j : Fin m,
+              ‖(fderiv ℝ h y - c) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+            rw [integral_const_mul, hQx]
+        _ ≤ (lam ^ 2)⁻¹ * Λ := mul_le_mul_of_nonneg_left hQle (by positivity)
+        _ = (R / 2) ^ m := by
+            rw [hlam2]
+            field_simp
+    obtain ⟨-, hb, hc⟩ := hIE (R / 2) (fun w => G (x + w)) hR2 hFs hFΔ hDFint hDFbound hF2int
+    have hDF0 : fderiv ℝ (fun w => G (x + w)) 0 = M.comp (fderiv ℝ h x - c) := by
+      rw [hF1 0 (mem_closedBall_self hR2.le), add_zero]
+    rw [hDF0] at hb hc
+    have hGv : ∀ w, G w = lam⁻¹ * (h w κ - c w κ) := fun w => by
+      rw [← hG]
+      simp only [hMv]
+      rfl
+    constructor
+    · intro j
+      have h1 := (M.comp (fderiv ℝ h x - c)).le_opNorm (EuclideanSpace.single j (1 : ℝ))
+      have hnorm : ‖EuclideanSpace.single j (1 : ℝ)‖ = 1 := by simp
+      rw [hnorm, mul_one, ContinuousLinearMap.comp_apply, hMv, Real.norm_eq_abs, abs_mul,
+        abs_of_pos (inv_pos.2 hlam)] at h1
+      have h2 := h1.trans hb
+      rw [inv_mul_le_iff₀ hlam] at h2
+      linarith
+    · intro v hv
+      have h1 := hc v (by linarith)
+      rw [hGv, hGv, add_zero, ContinuousLinearMap.comp_apply, hMv] at h1
+      have hkey : lam⁻¹ * (h (x + v) κ - c (x + v) κ) - lam⁻¹ * (h x κ - c x κ) -
+          lam⁻¹ * ((fderiv ℝ h x - c) v κ) =
+          lam⁻¹ * (h (x + v) κ - h x κ - fderiv ℝ h x v κ) := by
+        simp only [map_add, sub_apply, PiLp.add_apply, PiLp.sub_apply]
+        ring
+      rw [hkey, abs_mul, abs_of_pos (inv_pos.2 hlam), inv_mul_le_iff₀ hlam] at h1
+      calc |h (x + v) κ - h x κ - fderiv ℝ h x v κ| ≤ lam * (CH * ‖v‖ ^ 2 / (R / 2)) := h1
+        _ = CH * lam * ‖v‖ ^ 2 / (R / 2) := by ring
+  -- `a ≤ αΛ` for all `Λ > b` gives `a ≤ αb`
+  have squeeze : ∀ a b α : ℝ, 0 < α → (∀ Λ, b < Λ → a ≤ α * Λ) → a ≤ α * b := by
+    intro a b α hα H
+    refine le_of_forall_pos_le_add fun ε hε => ?_
+    calc a ≤ α * (b + ε / α) := H _ (by linarith [div_pos hε hα])
+      _ = α * b + ε := by field_simp
+  rcases le_or_gt r (R / 16) with hsmall | hlarge
+  · -- small radii `r ≤ R/16`
+    have hrR' : r < R := by linarith
+    have hsub2 : ∀ x ∈ ball x₀ r, x ∈ ball x₀ (R / 2) := fun x hx =>
+      ball_subset_ball (by linarith) hx
+    have hx₀ : x₀ ∈ ball x₀ (R / 2) := mem_ball_self (by linarith)
+    constructor
+    · -- Campanato decay: `Dh` is `6C_Hλr/(R/2)`-close to `Dh(x₀)` on `B_r(x₀)`
+      obtain ⟨a, ha⟩ : ∃ a, ⨍ z in ball x₀ R, fderiv ℝ h z = a := ⟨_, rfl⟩
+      rw [ha]
+      have hP : 0 ≤ ∫ x in ball x₀ R, ∑ j : Fin m,
+          ‖(fderiv ℝ h x - a) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+        setIntegral_nonneg measurableSet_ball fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+      refine squeeze _ _ _ (by positivity) fun Λ hΛ => ?_
+      have hΛ0 : 0 < Λ := hP.trans_lt hΛ
+      have hc := core a Λ hΛ0 hΛ.le
+      obtain ⟨lam, hlam_def⟩ : ∃ lam : ℝ, Real.sqrt (Λ / (R / 2) ^ m) = lam := ⟨_, rfl⟩
+      simp only [hlam_def] at hc
+      have hlam2 : lam ^ 2 = Λ / (R / 2) ^ m := hlam_def ▸ Real.sq_sqrt (by positivity)
+      have hlam : 0 ≤ lam := hlam_def ▸ Real.sqrt_nonneg _
+      have hK : 0 ≤ CH * lam / (R / 2) := by positivity
+      -- three Taylor expansions (centres `x`, `x₀`) give the Lipschitz bound
+      have hpt : ∀ x ∈ ball x₀ r, ∀ j : Fin m, ∀ κ : Fin k,
+          |(fderiv ℝ h x - fderiv ℝ h x₀) (EuclideanSpace.single j (1 : ℝ)) κ| ≤
+            6 * (CH * lam / (R / 2)) * r := by
+        intro x hx j κ
+        obtain ⟨K, hK_def⟩ : ∃ K : ℝ, CH * lam / (R / 2) = K := ⟨_, rfl⟩
+        have hK : 0 ≤ K := hK_def ▸ hK
+        rw [hK_def]
+        have hTay : ∀ y ∈ ball x₀ (R / 2), ∀ v : Euclid m, ‖v‖ ≤ R / 8 →
+            |h (y + v) κ - h y κ - fderiv ℝ h y v κ| ≤ K * ‖v‖ ^ 2 := fun y hy v hv => by
+          rw [← hK_def, div_mul_eq_mul_div]
+          exact (hc κ y hy).2 v hv
+        have hxr : ‖x - x₀‖ < r := by rwa [mem_ball, dist_eq_norm] at hx
+        have hn1 : ‖r • EuclideanSpace.single j (1 : ℝ)‖ = r := by
+          rw [norm_smul, Real.norm_of_nonneg hr.le]
+          simp
+        have hn2 : ‖x - x₀ + r • EuclideanSpace.single j (1 : ℝ)‖ ≤ 2 * r :=
+          (norm_add_le _ _).trans (by rw [hn1]; linarith)
+        have hT1 := hTay x (hsub2 x hx) (r • EuclideanSpace.single j (1 : ℝ))
+          (by rw [hn1]; linarith)
+        have hT2 := hTay x₀ hx₀ (x - x₀ + r • EuclideanSpace.single j (1 : ℝ)) (by linarith)
+        have hT3 := hTay x₀ hx₀ (x - x₀) (by linarith)
+        rw [show x₀ + (x - x₀ + r • EuclideanSpace.single j (1 : ℝ)) =
+          x + r • EuclideanSpace.single j (1 : ℝ) by abel, map_add, map_smul, PiLp.add_apply,
+          PiLp.smul_apply, smul_eq_mul] at hT2
+        rw [show x₀ + (x - x₀) = x by abel] at hT3
+        rw [hn1, map_smul, PiLp.smul_apply, smul_eq_mul] at hT1
+        have hb2 : K * ‖x - x₀ + r • EuclideanSpace.single j (1 : ℝ)‖ ^ 2 ≤ K * (2 * r) ^ 2 :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hn2 2) hK
+        have hb3 : K * ‖x - x₀‖ ^ 2 ≤ K * r ^ 2 :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hxr.le 2) hK
+        rw [sub_apply, PiLp.sub_apply]
+        have hmul : |r * (fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ)) κ -
+            fderiv ℝ h x₀ (EuclideanSpace.single j (1 : ℝ)) κ)| ≤ r * (6 * K * r) := by
+          rw [abs_le] at hT1 hT2 hT3 ⊢
+          constructor <;> linarith [hT1.1, hT1.2, hT2.1, hT2.2, hT3.1, hT3.2]
+        rw [abs_mul, abs_of_pos hr] at hmul
+        exact le_of_mul_le_mul_left hmul hr
+      have hsum : ∀ x ∈ ball x₀ r, ∑ j : Fin m,
+          ‖(fderiv ℝ h x - fderiv ℝ h x₀) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤
+            m * k * (6 * (CH * lam / (R / 2)) * r) ^ 2 := by
+        intro x hx
+        calc ∑ j : Fin m, ‖(fderiv ℝ h x - fderiv ℝ h x₀) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2
+            = ∑ j : Fin m, ∑ κ : Fin k,
+                ((fderiv ℝ h x - fderiv ℝ h x₀) (EuclideanSpace.single j (1 : ℝ)) κ) ^ 2 := by
+              simp only [EuclideanSpace.real_norm_sq_eq]
+          _ ≤ ∑ j : Fin m, ∑ κ : Fin k, (6 * (CH * lam / (R / 2)) * r) ^ 2 :=
+              Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun κ _ =>
+                sq_le_sq' (abs_le.1 (hpt x hx j κ)).1 (abs_le.1 (hpt x hx j κ)).2
+          _ = m * k * (6 * (CH * lam / (R / 2)) * r) ^ 2 := by simp; ring
+      calc ∫ x in ball x₀ r, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ r, fderiv ℝ h z)
+            (EuclideanSpace.single j (1 : ℝ))‖ ^ 2
+          ≤ ∫ x in ball x₀ r, ∑ j : Fin m,
+              ‖(fderiv ℝ h x - fderiv ℝ h x₀) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+            hmin r hr hrR' _
+        _ ≤ ∫ x in ball x₀ r, ((m : ℝ) * k * (6 * (CH * lam / (R / 2)) * r) ^ 2) :=
+            integral_mono_of_nonneg
+              (Eventually.of_forall fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
+              (integrableOn_const measure_ball_lt_top.ne)
+              (ae_restrict_of_forall_mem measurableSet_ball hsum)
+        _ = r ^ m * ω * ((m : ℝ) * k * (6 * (CH * lam / (R / 2)) * r) ^ 2) := by
+            rw [setIntegral_const, hvol x₀ r hr, smul_eq_mul]
+        _ = C₀ * (r / R) ^ (m + 2) * Λ := by
+            rw [← hC₀_def]
+            have hsq : (6 * (CH * lam / (R / 2)) * r) ^ 2 =
+                144 * CH ^ 2 * lam ^ 2 * r ^ 2 / R ^ 2 := by
+              field_simp
+              ring
+            rw [hsq, hlam2, div_pow, div_pow]
+            field_simp
+            ring
+        _ ≤ (16 ^ (m + 2) + C₀) * (r / R) ^ (m + 2) * Λ := by
+            gcongr
+            linarith
+    · -- Morrey decay: `|Dh|² ≤ m k C_H² λ²` on `B_r(x₀)`
+      have hP : 0 ≤ ∫ x in ball x₀ R, ∑ j : Fin m,
+          ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+        setIntegral_nonneg measurableSet_ball fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+      refine squeeze _ _ _ (by positivity) fun Λ hΛ => ?_
+      have hΛ0 : 0 < Λ := hP.trans_lt hΛ
+      have hc := core 0 Λ hΛ0 (by simpa only [sub_zero] using hΛ.le)
+      obtain ⟨lam, hlam_def⟩ : ∃ lam : ℝ, Real.sqrt (Λ / (R / 2) ^ m) = lam := ⟨_, rfl⟩
+      simp only [hlam_def, sub_zero] at hc
+      have hlam2 : lam ^ 2 = Λ / (R / 2) ^ m := hlam_def ▸ Real.sq_sqrt (by positivity)
+      have hsum : ∀ x ∈ ball x₀ r, ∑ j : Fin m,
+          ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ m * k * (CH * lam) ^ 2 := by
+        intro x hx
+        calc ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2
+            = ∑ j : Fin m, ∑ κ : Fin k,
+                (fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ)) κ) ^ 2 := by
+              simp only [EuclideanSpace.real_norm_sq_eq]
+          _ ≤ ∑ j : Fin m, ∑ κ : Fin k, (CH * lam) ^ 2 :=
+              Finset.sum_le_sum fun j _ => Finset.sum_le_sum fun κ _ =>
+                sq_le_sq' (abs_le.1 ((hc κ x (hsub2 x hx)).1 j)).1
+                  (abs_le.1 ((hc κ x (hsub2 x hx)).1 j)).2
+          _ = m * k * (CH * lam) ^ 2 := by simp; ring
+      calc ∫ x in ball x₀ r, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2
+          ≤ ∫ x in ball x₀ r, ((m : ℝ) * k * (CH * lam) ^ 2) :=
+            integral_mono_of_nonneg
+              (Eventually.of_forall fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
+              (integrableOn_const measure_ball_lt_top.ne)
+              (ae_restrict_of_forall_mem measurableSet_ball hsum)
+        _ = r ^ m * ω * ((m : ℝ) * k * (CH * lam) ^ 2) := by
+            rw [setIntegral_const, hvol x₀ r hr, smul_eq_mul]
+        _ = (ω * 2 ^ m * ((m : ℝ) * k) * CH ^ 2) * (r / R) ^ m * Λ := by
+            rw [mul_pow, hlam2, div_pow, div_pow]
+            field_simp
+        _ ≤ (16 ^ (m + 2) + C₀) * (r / R) ^ m * Λ := by
+            gcongr
+            rw [← hC₀_def]
+            have : 0 ≤ ω * 2 ^ m * ((m : ℝ) * k) * CH ^ 2 := by positivity
+            linarith
+  · -- large radii `R/16 < r ≤ R`: compare with `B_R(x₀)` directly
+    have h16r : 1 ≤ 16 * (r / R) := by
+      rw [mul_div_assoc', le_div_iff₀ hR]
+      linarith
+    have hpow : ∀ p : ℕ, 1 ≤ (16 : ℝ) ^ p * (r / R) ^ p := fun p => by
+      rw [← mul_pow]
+      exact one_le_pow₀ h16r
+    constructor
+    · have hP : 0 ≤ ∫ x in ball x₀ R, ∑ j : Fin m,
+          ‖(fderiv ℝ h x - ⨍ z in ball x₀ R, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+        setIntegral_nonneg measurableSet_ball fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+      have hΦ : ∫ x in ball x₀ r, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ r, fderiv ℝ h z)
+          (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤
+          ∫ x in ball x₀ R, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ R, fderiv ℝ h z)
+            (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 := by
+        rcases eq_or_lt_of_le hrR with rfl | hlt
+        · exact le_rfl
+        · exact (hmin r hr hlt _).trans (setIntegral_mono_set (hintc _)
+            (Eventually.of_forall fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
+            (ball_subset_ball hrR).eventuallyLE)
+      calc _ ≤ _ := hΦ
+        _ ≤ 16 ^ (m + 2) * (r / R) ^ (m + 2) * _ := le_mul_of_one_le_left hP (hpow _)
+        _ ≤ (16 ^ (m + 2) + C₀) * (r / R) ^ (m + 2) * _ := by gcongr; linarith
+    · have hP : 0 ≤ ∫ x in ball x₀ R, ∑ j : Fin m,
+          ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+        setIntegral_nonneg measurableSet_ball fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _
+      calc _ ≤ ∫ x in ball x₀ R, ∑ j : Fin m,
+            ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 :=
+            setIntegral_mono_set hint
+              (Eventually.of_forall fun _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
+              (ball_subset_ball hrR).eventuallyLE
+        _ ≤ 16 ^ m * (r / R) ^ m * _ := le_mul_of_one_le_left hP (hpow _)
+        _ ≤ (16 ^ (m + 2) + C₀) * (r / R) ^ m * _ := by
+            gcongr
+            have : (16 : ℝ) ^ m ≤ 16 ^ (m + 2) := pow_le_pow_right₀ (by norm_num) (by omega)
+            linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
