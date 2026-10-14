@@ -451,6 +451,29 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Isometric images: Borel, `Hᵏ`-measure and change of variables** (for the lattice faces
+`F̆_p = Φ_p(Q₁)` in the deformation theorem, Simon Ch. 6 §5).  If `Φ : ℝᵏ → ℝᴾ` is an isometry and
+`A ⊆ ℝᵏ` is Borel, then `Φ(A)` is Borel, `Hᵏ(Φ(A)) = Lᵏ(A)`, and
+`∫_{Φ(A)} h dHᵏ = ∫_A h(Φ(y)) dy` for every `h : ℝᴾ → ℝ` (Bochner integrals: no integrability of
+`h` is needed).  `Φ` is a closed, hence measurable, embedding; `Hᵏ` is isometry invariant and equals
+`Lᵏ` on `ℝᵏ`; and `Φ_#Hᵏ = Hᵏ⌞range Φ` restricts to `Hᵏ⌞Φ(A) = Φ_#(Lᵏ⌞A)`. -/
+theorem Submission.dimred_mbl_dtfrpi_isometry_image_integral : ∀ (P k : ℕ) (Φ : Euclid k → Euclid P) (A : Set (Euclid k)), Isometry Φ → MeasurableSet A → MeasurableSet (Φ '' A) ∧ μHE[k] (Φ '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in Φ '' A, h x ∂μHE[k] = ∫ y in A, h (Φ y) := by
+  intro P k Φ A hΦ hA
+  -- step 1: `ℝᵏ` is complete, so `Φ` is a closed, hence measurable, embedding and `Φ(A)` is Borel
+  have hemb : MeasurableEmbedding Φ := hΦ.isClosedEmbedding.measurableEmbedding
+  have hΦA : MeasurableSet (Φ '' A) := hemb.measurableSet_image.mpr hA
+  -- step 4: `Hᵏ⌞Φ(A) = (Φ_#Hᵏ)⌞Φ(A) = Φ_#(Hᵏ⌞Φ⁻¹(Φ(A))) = Φ_#(Lᵏ⌞A)`, as `Φ_#Hᵏ = Hᵏ⌞range Φ`
+  have hpush : μHE[k].restrict (Φ '' A) = (volume.restrict A).map Φ := by
+    have h := hemb.restrict_map μHE[k] (Φ '' A)
+    rwa [hΦ.map_euclideanHausdorffMeasure, Measure.restrict_restrict hΦA,
+      Set.inter_eq_left.mpr (Set.image_subset_range Φ A), Set.preimage_image_eq A hemb.injective,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume k] at h
+  refine ⟨hΦA, ?_, fun h => ?_⟩
+  -- steps 2-3: `Hᵏ(Φ(A)) = Hᵏ(A) = Lᵏ(A)`, by isometry invariance and `Hᵏ = Lᵏ` on `ℝᵏ`
+  · rw [hΦ.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume k]
+  -- step 5: change of variables along the measurable embedding `Φ`, valid for every `h`
+  · rw [hpush, hemb.integral_map]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
