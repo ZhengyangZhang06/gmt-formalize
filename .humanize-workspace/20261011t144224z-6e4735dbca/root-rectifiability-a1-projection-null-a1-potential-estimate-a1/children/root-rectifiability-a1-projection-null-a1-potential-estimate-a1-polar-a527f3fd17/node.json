@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.polar_integral-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Polar coordinates for integrable functions on ℝ^{m+1} (formula (P) of Step 1)",
+  "statement": "Let m ∈ ℕ and n := m + 1. Let S := {θ ∈ ℝⁿ : |θ| = 1} be the unit sphere of ℝⁿ = Eucl n, and let σ := (Lⁿ).toSphere be the measure on S induced by Lebesgue measure Lⁿ = volume (Mathlib's Measure.toSphere; σ(A) = n·Lⁿ({rθ : 0 < r < 1, θ ∈ A}) for measurable A ⊆ S, by Measure.toSphere_apply'). Then for every Lebesgue-integrable g : ℝⁿ → ℝ, ∫_{ℝⁿ} g(x) dx = ∫_S (∫_{(0,∞)} r^m·g(rθ) dr) dσ(θ).",
+  "lean_statement": "∀ (m : ℕ) (g : Eucl (m + 1) → ℝ), Integrable g → ∫ x, g x = ∫ θ : sphere (0 : Eucl (m + 1)) 1, (∫ r in Ioi (0 : ℝ), r ^ m * g (r • (θ : Eucl (m + 1)))) ∂(volume : Measure (Eucl (m + 1))).toSphere",
+  "lean_name": "rpn_pe_integral_eq_polar",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-polar-a527f3fd17-a1"
+}

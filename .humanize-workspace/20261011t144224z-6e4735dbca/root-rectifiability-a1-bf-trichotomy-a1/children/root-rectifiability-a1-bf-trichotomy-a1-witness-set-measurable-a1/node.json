@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.bf_trichotomy-a1.witness_set_measurable-a1",
+  "parent_id": "root.rectifiability-a1.bf_trichotomy-a1",
+  "depth": 3,
+  "title": "The parameter set of fibre witnesses (alternative T3) is Borel",
+  "statement": "Let N, m ∈ ℕ, k := m + 1, let E ⊆ ℝ^N (= Eucl N) be σ-compact and δ ∈ ℝ. For v = (v₁, …, v_k) ∈ (ℝ^N)^k let L_v(x) := (⟨v₁,x⟩, …, ⟨v_k,x⟩) ∈ ℝᵏ (= Eucl k). Then the set W := {(a, v) ∈ ℝ^N × (ℝ^N)^k : there is x ∈ E with x ≠ a, |x − a| < δ and L_v x = L_v a} is measurable (Borel) in ℝ^N × (ℝ^N)^k.",
+  "lean_statement": "∀ (N m : ℕ) (E : Set (Eucl N)) (δ : ℝ), IsSigmaCompact E → MeasurableSet {p : Eucl N × (Fin (m + 1) → Eucl N) | ∃ x ∈ E, x ≠ p.1 ∧ dist x p.1 < δ ∧ (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) x) : Eucl (m + 1)) = (WithLp.toLp 2 (fun i : Fin (m + 1) => inner ℝ (p.2 i) p.1) : Eucl (m + 1))}",
+  "lean_name": "rectifiability_bf_witness_set_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-bf-trichotomy-a1-witness-set-measurable-a1-a1"
+}
