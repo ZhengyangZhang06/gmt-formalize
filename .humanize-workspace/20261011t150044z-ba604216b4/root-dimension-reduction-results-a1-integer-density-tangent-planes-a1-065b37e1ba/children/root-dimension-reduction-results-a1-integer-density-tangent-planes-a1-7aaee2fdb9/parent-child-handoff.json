@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical)",
+        "python3 -I read of nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-child-handoff.json and parent-supplied-plan.md",
+        "grep -n 'theorem weighted_area_formula_lipschitz_fiberSum|theorem aemeasurable_weightedAreaFiberSum_lipschitz|theorem weighted_area_formula_lipschitz_injOn|def weightedAreaFiberSum|def areaJacobianAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' -r .lake/packages/simongmt/Poincare/SimonGMT",
+        "grep -n 'theorem|lemma|def ' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (normDet_comp, normDet_sq_eq_det_gram, normDet_eq_abs_det, normDet_nonneg)",
+        "grep -rn euclideanHausdorffMeasure_eq_volume mathlib/Mathlib; grep tprod_image (to_additive tsum_image) in mathlib/Mathlib/Topology/Algebra/InfiniteSum/Basic.lean; grep exists_measurable_superset_of_null mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "python3 -I scans of dag.json: nodes whose lean_statement has fibre tsums, stdOrthonormalBasis or LinearMap.det; carrier_area_formula-a1 and rectifiable_area_formula-a1 subtrees; git show c2cf4bd9 (accepted dpf_raf_piece_area_formula_gram proof)",
+        "grep -c idtp_caf_paf dag.json DAG.md dag.mmd issue-workers.json; grep -rl nodes/; git grep idtp_caf_paf over all ref tips; grep in simongmt and GMT sources (all no match)",
+        "lake env lean /tmp/paf_split_dec/Stmts.lean (child stubs plus assembly of the frozen parent type), Proofs.lean (full child proofs), Full.lean (end-to-end), Challenge_*.lean (exact comparator form), Bare_*/Lip_*/Noninj_c2.lean (minimal imports per child)",
+        "python3 -I /tmp/paf_split_scripts/validate.py (verifier/lean_contract.py validate_lean_statement) and gen_challenge.py (verifier/gmt-compare.py child_modules, contract mode)",
+        "independent reviewer subagent: /tmp/paf_split_review/indep/Implication.lean (children as axioms; #print axioms), Min_*.lean, Challenge_*.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/paf_split_dec/Stmts.lean",
+        "/tmp/paf_split_dec/Proofs.lean",
+        "/tmp/paf_split_dec/Full.lean",
+        "/tmp/paf_split_review/subproblems.json",
+        "/tmp/paf_split_review/indep/Implication.lean"
+      ],
+      "conclusion": "The pins match: snapshot project b4d606d is the workspace HEAD, mathlib is 25730c7c, and Contract.lean is identical to the snapshot copy.\n\nLibrary support.\n- SimonGMT provides (A1) aemeasurable_weightedAreaFiberSum_lipschitz and weighted_area_formula_lipschitz_fiberSum (Chapter02/AreaNoninjective.lean), (A2) weighted_area_formula_lipschitz_injOn with an arbitrary weight (Chapter02/AreaLipschitz.lean), areaJacobianAt_eq_normDet, and (L1) euclideanHausdorffMeasure_image_le_of_lipschitzOn, which is already in the contract import closure.\n- Mathlib provides LinearMap.normDet_comp, normDet_sq_eq_det_gram, normDet_eq_abs_det, EuclideanSpace and InnerProductSpace euclideanHausdorffMeasure_eq_volume, tsum_image and exists_measurable_superset_of_null.\n\nStatement scope. normDet, areaJacobianAt and weightedAreaFiberSum are not in the contract scope, so the child statements use |LinearMap.det|, Gram determinants and subtype tsums.\n\nNo reuse. The accepted dpf_raf_piece_area_formula_gram (commit c2cf4bd) is the closest analogue and served as a proof template, but no existing DAG declaration has a matching type, so fresh idtp_caf_paf_* names are used; none of them occurs anywhere.\n\nLean checks.\n- All three child types elaborate in the exact comparator form.\n- The frozen parent type follows from them; with the children as axioms, the only other axioms are propext, Classical.choice and Quot.sound.\n- Each child has a complete proof with only the standard axioms. Extra imports: none for child 1, Chapter02.AreaNoninjective for child 2, Chapter02.AreaLipschitz for child 3."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1.fiber_side-a1",
+  "subproblem": {
+    "key": "fiber_side",
+    "title": "Fibre side: the Euclidean weighted area formula for Φ transported through the injective parametrization g (parent steps 3–4)",
+    "statement": "Let P, n ∈ ℕ; g : ℝ^n → ℝ^P continuous; A ⊆ ℝ^n Borel with g injective on A; F : ℝ^P → ℝ^n; Φ : ℝ^n → ℝ^n Lipschitz with F(g(a)) = Φ(a) for every a ∈ A; and h : ℝ^P → [0, ∞] Borel measurable. Then the fibre-sum function y ↦ Σ_{x ∈ g(A), F(x) = y} h(x) (the tsum over the subtype g(A) ∩ F^{−1}{y}) is a.e. measurable for Lebesgue measure L^n (volume) on ℝ^n, and ∫_{ℝ^n} Σ_{x ∈ g(A), F(x) = y} h(x) dL^n(y) = ∫_A |det DΦ(a)| · h(g(a)) dL^n(a), where DΦ(a) = fderiv ℝ Φ a regarded as a linear endomorphism of ℝ^n and the factor |det DΦ(a)| enters through ENNReal.ofReal.",
+    "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (F : Euclid P → Euclid n) (Φ : Euclid n → Euclid n) (LΦ : NNReal) (h : Euclid P → ℝ≥0∞), Continuous g → MeasurableSet A → InjOn g A → LipschitzWith LΦ Φ → (∀ a ∈ A, F (g a) = Φ a) → Measurable h → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ a in A, ENNReal.ofReal |LinearMap.det (fderiv ℝ Φ a : Euclid n →ₗ[ℝ] Euclid n)| * h (g a) ∂volume",
+    "lean_name": "idtp_caf_paf_fiber_side",
+    "depends_on": [],
+    "natural_proof": "Source: steps 3 and 4 of the parent proof (the carrier fibre over y is the g-image of the parameter fibre of Φ = G∘g over y, and the Euclidean weighted area formula, Simon Ch. 2 §3 (3.4)–(3.5) as formalized in SimonGMT, applies to the Lipschitz map Φ : ℝ^n → ℝ^n with the Borel weight h∘g). Here Φ is any Lipschitz map with F∘g = Φ on A; the parent applies this with Φ := G∘g. Notation: λ := volume on ℝ^n. SimonGMT definitions (import Poincare.SimonGMT.Chapter02.AreaNoninjective): areaFiber A Φ y := {a // a ∈ A ∧ Φ a = y}; weightedAreaFiberSum A Φ w y := Σ_{a : areaFiber A Φ y} w(a) (tsum); areaJacobianAt Φ a = normDet(DΦ(a)) (areaJacobianAt_eq_normDet). Library fact (A1): for a Lipschitz map Φ between finite-dimensional real inner product spaces E → E', a Borel set A ⊆ E and a Borel w : E → [0, ∞], the function weightedAreaFiberSum A Φ w is μHE[finrank ℝ E]-a.e. measurable (aemeasurable_weightedAreaFiberSum_lipschitz) and ∫ weightedAreaFiberSum A Φ w y dμHE[finrank ℝ E](y) = ∫_A ofReal(areaJacobianAt Φ a) · w(a) dλ(a) (weighted_area_formula_lipschitz_fiberSum). Library fact (E): μHE[finrank ℝ E] = volume on E = ℝ^n (InnerProductSpace.euclideanHausdorffMeasure_eq_volume). Library fact (D): for an endomorphism f of a finite-dimensional real inner product space, normDet(f) = |det f| (LinearMap.normDet_eq_abs_det).\n1. (Fibres as images.) Fix y ∈ ℝ^n. Then g(A) ∩ F^{−1}{y} = g(A ∩ Φ^{−1}{y}). Indeed, if x = g(a) with a ∈ A and F(x) = y, then Φ(a) = F(g(a)) = y, so a ∈ A ∩ Φ^{−1}{y}; conversely, if a ∈ A and Φ(a) = y, then g(a) ∈ g(A) and F(g(a)) = Φ(a) = y.\n2. (Reindexing the fibre sum.) g is injective on A ∩ Φ^{−1}{y} ⊆ A (InjOn.mono). By tsum_image (Σ_{x ∈ g(s)} k(x) = Σ_{a ∈ s} k(g(a)) for g injective on s), applied with s := A ∩ Φ^{−1}{y} and k := h, and step 1: Σ_{x ∈ g(A) ∩ F^{−1}{y}} h(x) = Σ_{a ∈ A ∩ Φ^{−1}{y}} h(g(a)). The index subtype A ∩ Φ^{−1}{y} is definitionally {a // a ∈ A ∧ Φ a = y} = areaFiber A Φ y, so the right side is weightedAreaFiberSum A Φ (h∘g) y (rfl). As y was arbitrary, the fibre-sum function y ↦ Σ_{x ∈ g(A) ∩ F^{−1}{y}} h(x) equals weightedAreaFiberSum A Φ (h∘g) (funext).\n3. (Hypotheses of (A1).) Φ is Lipschitz, A is Borel, and w := h∘g is Borel measurable because h is Borel measurable and g is continuous, hence measurable (Measurable.comp, Continuous.measurable).\n4. (Apply (A1) with E = E' = ℝ^n.) weightedAreaFiberSum A Φ (h∘g) is μHE[finrank ℝ ℝ^n]-a.e. measurable and its integral against μHE[finrank ℝ ℝ^n] equals ∫_A ofReal(areaJacobianAt Φ a) · h(g(a)) dλ(a). By (E) the measure μHE[finrank ℝ ℝ^n] is λ, so by step 2 the fibre-sum function is λ-a.e. measurable (the first assertion) and ∫ Σ_{x ∈ g(A) ∩ F^{−1}{y}} h(x) dλ(y) = ∫_A ofReal(areaJacobianAt Φ a) · h(g(a)) dλ(a).\n5. (Jacobian as an absolute determinant.) For every a ∈ ℝ^n, areaJacobianAt Φ a = normDet(DΦ(a)) = |det DΦ(a)| by areaJacobianAt_eq_normDet and (D) applied to the endomorphism DΦ(a) of ℝ^n (this holds whether or not Φ is differentiable at a). Rewriting the integrand pointwise (lintegral_congr) turns the right side of step 4 into ∫_A ofReal(|det DΦ(a)|) · h(g(a)) dλ(a), which is the second assertion. ∎",
+    "proof_key_steps": [
+      "For each y, g(A) ∩ F^{−1}{y} = g(A ∩ Φ^{−1}{y}) because F∘g = Φ on A.",
+      "tsum_image (g injective on A ∩ Φ^{−1}{y}) identifies the carrier fibre sum with weightedAreaFiberSum A Φ (h∘g) y.",
+      "h∘g is Borel; the SimonGMT Lipschitz weighted area formula (A1) for Φ gives a.e. measurability and ∫ fibre sum dμHE[finrank] = ∫_A ofReal(areaJacobianAt Φ)·h∘g dλ.",
+      "μHE[finrank ℝ ℝ^n] = volume and areaJacobianAt Φ a = normDet(DΦ(a)) = |det DΦ(a)| give both assertions."
+    ]
+  },
+  "audit": {
+    "key": "fiber_side",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact subtype fibres correspond through g using injectivity and F∘g = Φ on A. Continuity of g makes h∘g measurable, satisfying the verified noninjective area formula. Converting target Hausdorff measure to volume and normDet to the absolute determinant gives precisely both stated conclusions. No differentiability or measurability hypothesis is silently added, and the proof is complete and non-circular."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7aaee2fdb9/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7aaee2fdb9/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7aaee2fdb9/parent-supplied-natural-proof.json"
+}
