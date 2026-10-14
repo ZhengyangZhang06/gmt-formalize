@@ -8,6 +8,7 @@ import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -6650,6 +6651,110 @@ theorem Submission.dtc_bc_lc_sl_chart_pieces : ∀ (P n : ℕ) (M : Set (Euclid 
           · simp only [Nat.unpair_pair]
       · exact Or.inl (Or.inr (mem_iUnion.2 ⟨k, ⟨hxM, hk⟩, hxY⟩))
     · exact Or.inl (Or.inl ⟨hxM, hxS⟩)
+/-- **Weak convergence of the smoothed gradients** (Simon Ch. 6, proof of Lemma 4.5(2), (1) on
+p. 156, with `∇^M h` replaced by the approximate tangential gradient `H`).  Let `M ⊆ ℝᴾ` be Borel
+with `H^{n+1}(M ∩ C) < ∞` for compact `C`, `h` `K`-Lipschitz and `H` Borel with `|H| ≤ K` such
+that, for `H^{n+1}`-a.e. `x ∈ M`, `TₓM` exists, `H(x) ∈ TₓM`, and for every `ε > 0` the set
+`{y ∈ M : ε|y − x| < |h(y) − h(x) − ⟨H(x), y − x⟩|}` has `H^{n+1}`-density `0` at `x`.  Let
+`(ψⱼ, Vⱼ, Yⱼ, Fⱼ)` be `C¹` chart pieces of `M` adapted to `h`: the sets `Aⱼ = ψⱼ(Yⱼ)` are
+disjoint and cover `M` up to an `H^{n+1}`-null set.  If `hₖ` is `C¹` with `‖Dhₖ‖ ≤ K`, `hₖ → h`
+uniformly, and `w` is `H^{n+1}`-integrable on `M` and a.e. tangent, then
+`∫_M Dhₖ(w) dH^{n+1} → ∫_M ⟨H, w⟩ dH^{n+1}`.
+
+Proof sketch:
+* Each `Aⱼ` is Borel (Lusin–Souslin), `Aⱼ ⊆ M`, and `M = ⋃ⱼ Aⱼ` up to an `H^{n+1}`-null set.
+* For `x = ψⱼ(y) ∈ Aⱼ`, `TₓM = range Dψⱼ(y)` (uniqueness of approximate tangent planes), so
+  `w(x) ∈ range Dψⱼ(y)` for a.e. `x ∈ Aⱼ`; `dtc_bc_lc_sl_ll_piece_gradient` gives
+  `⟨H(x), Dψⱼ(y)e⟩ = DFⱼ(y)e`.
+* `dtc_bc_lc_sl_ll_piece_weak_limit` then gives `∫_{Aⱼ} Dhₖ(w) → ∫_{Aⱼ} ⟨H, w⟩` for every `j`.
+* `|Dhₖ(w)|, |⟨H, w⟩| ≤ K|w|`, so both integrands are integrable on `M` and
+  `∫_M f = Σⱼ ∫_{Aⱼ} f` (`integral_iUnion`).  Since `|∫_{Aⱼ} Dhₖ(w)| ≤ K ∫_{Aⱼ} |w|` and
+  `Σⱼ ∫_{Aⱼ} |w| ≤ ∫_M |w| < ∞`, Tannery's theorem exchanges `lim_k` and `Σⱼ`. -/
+theorem Submission.dtc_bc_lc_sl_ll_weak_limit : ∀ (P n : ℕ) (M : Set (Euclid P)) (h : Euclid P → ℝ) (K : NNReal) (H : Euclid P → Euclid P) (ψ : ℕ → Euclid (n + 1) → Euclid P) (V Y : ℕ → Set (Euclid (n + 1))) (F : ℕ → Euclid (n + 1) → ℝ) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → Euclid P), MeasurableSet M → (∀ C : Set (Euclid P), IsCompact C → μHE[n + 1] (M ∩ C) ≠ ∞) → LipschitzWith K h → Measurable H → (∀ x, ‖H x‖ ≤ K) → (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ H x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ (H x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) → (∀ j, IsOpen (V j) ∧ ContDiff ℝ 1 (ψ j) ∧ InjOn (ψ j) (V j) ∧ (∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) ∧ ContDiff ℝ 1 (F j) ∧ MeasurableSet (Y j) ∧ IsCompact (closure (Y j)) ∧ closure (Y j) ⊆ V j ∧ ψ j '' Y j ⊆ M ∧ (∀ y ∈ Y j, h (ψ j y) = F j y) ∧ ∀ y ∈ Y j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → μHE[n + 1] (M \ ⋃ j, ψ j '' Y j) = 0 → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ K) → TendstoUniformly hs h atTop → IntegrableOn w M μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict M), w x ∈ approxTangentPlane (n + 1) M x) → Tendsto (fun k => ∫ x in M, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in M, inner ℝ (H x) (w x) ∂μHE[n + 1])) := by
+  intro P n M h K H ψ V Y F hs w hM hloc hh hHm hHK hHgrad hpc hdisj hnull hs_C1 hs_deriv hunif
+    hw hwtan
+  -- Step 1: the pieces `Aⱼ = ψⱼ(Yⱼ)` are Borel subsets of `M`
+  have hAmeas : ∀ j, MeasurableSet (ψ j '' Y j) := by
+    intro j
+    obtain ⟨-, hψ, hinj, -, -, hY, -, hYV, -⟩ := hpc j
+    exact hY.image_of_continuousOn_injOn hψ.continuous.continuousOn
+      (hinj.mono (subset_closure.trans hYV))
+  have hAM : ∀ j, ψ j '' Y j ⊆ M := fun j => (hpc j).2.2.2.2.2.2.2.2.1
+  -- Step 2: `TₓM = range Dψⱼ(y)` at `x = ψⱼ(y)`, so `w` is tangent in chart form
+  have hwchart : ∀ j, ∀ᵐ x ∂(μHE[n + 1].restrict (ψ j '' Y j)), ∀ y ∈ Y j, ψ j y = x →
+      w x ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P) := by
+    intro j
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset (hAM j) hwtan] with x hx y hy hyx
+    have htan := (hpc j).2.2.2.2.2.2.2.2.2.2 y hy
+    rw [hyx] at htan
+    have hex : ∃ Q, HasApproximateTangentSpaceAt (n + 1) M x Q := ⟨_, htan⟩
+    have hQ : approxTangentPlane (n + 1) M x =
+        LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P) := by
+      unfold approxTangentPlane
+      rw [dite_eq_left hex]
+      exact hex.choose_spec.unique htan
+    rw [← hQ]
+    exact hx
+  -- Step 3: `⟨H(x), Dψⱼ(y)e⟩ = DFⱼ(y)e` a.e. on `Aⱼ` (`dtc_bc_lc_sl_ll_piece_gradient`)
+  have hgrad : ∀ j, ∀ᵐ x ∂(μHE[n + 1].restrict (ψ j '' Y j)), ∀ y ∈ Y j, ψ j y = x →
+      ∀ e : Euclid (n + 1), inner ℝ (H x) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e := by
+    intro j
+    obtain ⟨hV, hψ, hinj, hDinj, hF, hY, hYc, hYV, hYM, hhF, htan⟩ := hpc j
+    filter_upwards [Submission.dtc_bc_lc_sl_ll_piece_gradient P n M (ψ j) (V j) (Y j) (F j) h H
+      hM hloc hV hψ hinj hDinj hF hY hYc hYV hYM hhF htan hHgrad] with x hx y hy hyx e
+    exact (hx y hy hyx).2 e
+  -- Step 4: `∫_{Aⱼ} Dhₖ(w) → ∫_{Aⱼ} ⟨H, w⟩` for every `j` (`dtc_bc_lc_sl_ll_piece_weak_limit`)
+  have hconv : ∀ j, Tendsto (fun k => ∫ x in ψ j '' Y j, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1])
+      atTop (𝓝 (∫ x in ψ j '' Y j, inner ℝ (H x) (w x) ∂μHE[n + 1])) := by
+    intro j
+    obtain ⟨hV, hψ, hinj, hDinj, hF, hY, hYc, hYV, hYM, hhF, -⟩ := hpc j
+    exact Submission.dtc_bc_lc_sl_ll_piece_weak_limit P n (ψ j) (V j) (Y j) (F j) h K H hs w hV
+      hψ hinj hDinj hF hY hYc hYV hh hhF hs_C1 hs_deriv hunif (hgrad j) (hw.mono_set hYM)
+      (hwchart j)
+  -- Step 5: both integrands are measurable and bounded by `K|w|`, hence integrable on `M`
+  have hwn : IntegrableOn (fun x => ‖w x‖) M μHE[n + 1] := hw.norm
+  have hwm : AEStronglyMeasurable w (μHE[n + 1].restrict M) := hw.aestronglyMeasurable
+  have hfk_meas : ∀ k, AEStronglyMeasurable (fun x => fderiv ℝ (hs k) x (w x))
+      (μHE[n + 1].restrict M) := fun k =>
+    (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable
+      (((hs_C1 k).continuous_fderiv one_ne_zero).aestronglyMeasurable.prodMk hwm)
+  have hpt : ∀ k x, ‖fderiv ℝ (hs k) x (w x)‖ ≤ (K : ℝ) * ‖w x‖ := by
+    intro k x
+    calc ‖fderiv ℝ (hs k) x (w x)‖ ≤ ‖fderiv ℝ (hs k) x‖ * ‖w x‖ :=
+          (fderiv ℝ (hs k) x).le_opNorm _
+      _ ≤ K * ‖w x‖ := by gcongr; exact hs_deriv k x
+  have hfk_int : ∀ k, IntegrableOn (fun x => fderiv ℝ (hs k) x (w x)) M μHE[n + 1] := fun k =>
+    Integrable.mono' (hwn.const_mul K) (hfk_meas k) (Eventually.of_forall (hpt k))
+  have hf_int : IntegrableOn (fun x => inner ℝ (H x) (w x)) M μHE[n + 1] := by
+    refine Integrable.mono' (hwn.const_mul K) ?_ (Eventually.of_forall fun x => ?_)
+    · exact continuous_inner.comp_aestronglyMeasurable (hHm.aestronglyMeasurable.prodMk hwm)
+    · calc ‖inner ℝ (H x) (w x)‖ ≤ ‖H x‖ * ‖w x‖ := norm_inner_le_norm _ _
+        _ ≤ K * ‖w x‖ := by gcongr; exact hHK x
+  -- Step 6: `∫_M f = Σⱼ ∫_{Aⱼ} f` for `f` integrable on `M`
+  have hMU : M =ᵐ[μHE[n + 1]] ⋃ j, ψ j '' Y j := by
+    refine ae_eq_set.2 ⟨hnull, ?_⟩
+    rw [Set.sdiff_eq_empty.2 (iUnion_subset hAM)]
+    exact measure_empty
+  have hdecomp : ∀ f : Euclid P → ℝ, IntegrableOn f M μHE[n + 1] →
+      ∫ x in M, f x ∂μHE[n + 1] = ∑' j, ∫ x in ψ j '' Y j, f x ∂μHE[n + 1] := by
+    intro f hf
+    rw [setIntegral_congr_set hMU,
+      integral_iUnion hAmeas hdisj (hf.mono_set (iUnion_subset hAM))]
+  have hlhs : (fun k => ∫ x in M, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) =
+      fun k => ∑' j, ∫ x in ψ j '' Y j, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1] :=
+    funext fun k => hdecomp _ (hfk_int k)
+  rw [hlhs, hdecomp _ hf_int]
+  -- Step 7: Tannery's theorem with the summable bound `K ∫_{Aⱼ} |w|`
+  have hsum : Summable fun j => (K : ℝ) * ∫ x in ψ j '' Y j, ‖w x‖ ∂μHE[n + 1] :=
+    (hasSum_integral_iUnion hAmeas hdisj (hwn.mono_set (iUnion_subset hAM))).summable.mul_left _
+  refine tendsto_tsum_of_dominated_convergence hsum hconv (Eventually.of_forall fun k j => ?_)
+  calc ‖∫ x in ψ j '' Y j, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]‖
+      ≤ ∫ x in ψ j '' Y j, ‖fderiv ℝ (hs k) x (w x)‖ ∂μHE[n + 1] :=
+        norm_integral_le_integral_norm _
+    _ ≤ ∫ x in ψ j '' Y j, (K : ℝ) * ‖w x‖ ∂μHE[n + 1] :=
+        integral_mono_of_nonneg (Eventually.of_forall fun x => norm_nonneg _)
+          ((hwn.mono_set (hAM j)).const_mul _) (Eventually.of_forall fun x => hpt k x)
+    _ = (K : ℝ) * ∫ x in ψ j '' Y j, ‖w x‖ ∂μHE[n + 1] := integral_const_mul _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
