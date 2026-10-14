@@ -451,6 +451,368 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 4.4** (graph chart): near `y ∈ M`, an embedded `C¹` submanifold `M ⊆ ℝᴾ` of
+dimension `m` is the graph `F(a) = y + ιa + ι'u(a)` of a `C¹` map `u` with `u(0) = 0` and small
+slope over its tangent plane `T = range ι` (`ι'` onto `Tᗮ`): `M` meets the cylinder
+`Z = {y + ιa + ι'b : ‖a‖ < s, ‖b‖ < t}` exactly in `F(B_s(0))`, `F` is an injective immersion,
+proper into `Z`, and `T_{F(a)}M = range DF(a)`.  Take isometries onto `T = range Dψ(v₀)` and `Tᗮ`
+for a chart `ψ` with `ψ(v₀) = y`, invert `φ = ι*(ψ − y)` near `v₀` by the inverse function theorem
+(inverse `χ`) and put `u = ι'*(ψ ∘ χ − y)`; properness of `ψ` shows that `M` near `y` is the image
+under `ψ` of the domain of the local inverse. -/
+theorem Submission.codim1_hcp_sr_graph_chart : ∀ (P m : ℕ) (M : Set (Euclid P)) (y : Euclid P), 1 ≤ m → IsEmbeddedSubmanifold 1 m M → y ∈ M → ∃ (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid (P - m) →ₗᵢ[ℝ] Euclid P), (∀ a b, inner ℝ (ι a) (ι' b) = 0) ∧ (∀ z : Euclid P, ∃ a b, z = ι a + ι' b) ∧ ∀ ε δ : ℝ, 0 < ε → 0 < δ → ∃ (s t : ℝ) (u : Euclid m → Euclid (P - m)), 0 < s ∧ 0 < t ∧ s + t ≤ δ ∧ ContDiffOn ℝ 1 u (ball 0 s) ∧ u 0 = 0 ∧ (∀ a ∈ ball (0 : Euclid m) s, ‖fderiv ℝ u a‖ ≤ ε ∧ ‖u a‖ < t) ∧ IsOpen {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} ∧ M ∩ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} = (fun a => y + ι a + ι' (u a)) '' ball 0 s ∧ InjOn (fun a => y + ι a + ι' (u a)) (ball 0 s) ∧ (∀ a ∈ ball (0 : Euclid m) s, Injective (fderiv ℝ (fun a => y + ι a + ι' (u a)) a) ∧ tangentSpace M (y + ι a + ι' (u a)) = Set.range (fderiv ℝ (fun a => y + ι a + ι' (u a)) a)) ∧ ∀ K ⊆ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b}, IsCompact K → IsCompact (ball (0 : Euclid m) s ∩ (fun a => y + ι a + ι' (u a)) ⁻¹' K) := by
+  intro P m M y _ hM hy
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hDψ⟩ := hM y hy
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by simpa using hψ
+  have hψat : ∀ v ∈ V, ContDiffAt ℝ 1 ψ v := fun v hv => hψ1.contDiffAt (hV.mem_nhds hv)
+  have hψd : ∀ v ∈ V, HasFDerivAt ψ (fderiv ℝ ψ v) v := fun v hv =>
+    ((hψat v hv).differentiableAt one_ne_zero).hasFDerivAt
+  obtain ⟨v₀, hv₀V, hψv₀⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hyW, hy⟩
+  -- the tangent plane `T = range Dψ(v₀)` and its orthogonal complement
+  set D := fderiv ℝ ψ v₀
+  set T : Submodule ℝ (Euclid P) := LinearMap.range (D : Euclid m →ₗ[ℝ] Euclid P) with hT
+  have hTrank : Module.finrank ℝ T = m := by
+    rw [hT, LinearMap.finrank_range_of_inj (f := (D : Euclid m →ₗ[ℝ] Euclid P)) (hDψ v₀ hv₀V)]
+    simp
+  have hTorank : Module.finrank ℝ Tᗮ = P - m := by
+    have := T.finrank_add_finrank_orthogonal
+    rw [hTrank, finrank_euclideanSpace_fin] at this
+    omega
+  let e : T ≃ₗᵢ[ℝ] Euclid m := ((stdOrthonormalBasis ℝ T).reindex (finCongr hTrank)).repr
+  let e' : Tᗮ ≃ₗᵢ[ℝ] Euclid (P - m) :=
+    ((stdOrthonormalBasis ℝ Tᗮ).reindex (finCongr hTorank)).repr
+  let ι : Euclid m →ₗᵢ[ℝ] Euclid P := T.subtypeₗᵢ.comp e.symm.toLinearIsometry
+  let ι' : Euclid (P - m) →ₗᵢ[ℝ] Euclid P := Tᗮ.subtypeₗᵢ.comp e'.symm.toLinearIsometry
+  have hιT : ∀ a, ι a ∈ T := fun a => (e.symm a).2
+  have hι'T : ∀ b, ι' b ∈ Tᗮ := fun b => (e'.symm b).2
+  have horth : ∀ a b, inner ℝ (ι a) (ι' b) = 0 := fun a b =>
+    Submodule.inner_right_of_mem_orthogonal (hιT a) (hι'T b)
+  have hspan : ∀ z : Euclid P, ∃ a b, z = ι a + ι' b := by
+    intro z
+    obtain ⟨w, hw, w', hw', rfl⟩ := T.exists_add_mem_mem_orthogonal z
+    refine ⟨e ⟨w, hw⟩, e' ⟨w', hw'⟩, ?_⟩
+    simp [ι, ι']
+  have hDι : ∀ w, ∃ a, D w = ι a := fun w =>
+    ⟨e ⟨D w, LinearMap.mem_range_self _ w⟩, by simp [ι]⟩
+  -- the projections `π = ι*`, `π' = ι'*`
+  set π : Euclid P →L[ℝ] Euclid m := ContinuousLinearMap.adjoint ι.toContinuousLinearMap with hπ
+  set π' : Euclid P →L[ℝ] Euclid (P - m) :=
+    ContinuousLinearMap.adjoint ι'.toContinuousLinearMap with hπ'
+  have hπι : ∀ a, π (ι a) = a := fun a => ext_inner_right ℝ fun a' => by
+    rw [hπ, ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      ι.inner_map_map]
+  have hπι' : ∀ b, π (ι' b) = 0 := fun b => ext_inner_right ℝ fun a' => by
+    rw [hπ, ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      inner_zero_left, real_inner_comm, horth]
+  have hπ'ι : ∀ a, π' (ι a) = 0 := fun a => ext_inner_right ℝ fun b' => by
+    rw [hπ', ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      inner_zero_left, horth]
+  have hπ'ι' : ∀ b, π' (ι' b) = b := fun b => ext_inner_right ℝ fun b' => by
+    rw [hπ', ContinuousLinearMap.adjoint_inner_left, LinearIsometry.coe_toContinuousLinearMap,
+      ι'.inner_map_map]
+  have hdec : ∀ z, z = ι (π z) + ι' (π' z) := by
+    intro z
+    obtain ⟨a, b, rfl⟩ := hspan z
+    simp [hπι, hπι', hπ'ι, hπ'ι']
+  -- `φ(v) = π(ψ(v) − y)` has the invertible derivative `π ∘ Dψ(v₀)` at `v₀`
+  set φ : Euclid m → Euclid m := fun v => π (ψ v - y)
+  have hφat : ContDiffAt ℝ 1 φ v₀ :=
+    π.contDiff.contDiffAt.comp v₀ ((hψat v₀ hv₀V).sub contDiffAt_const)
+  have hφinj : Injective (π ∘L D) := by
+    intro w w' h
+    obtain ⟨a, ha⟩ := hDι w
+    obtain ⟨a', ha'⟩ := hDι w'
+    have h' : a = a' := by simpa [ha, ha', hπι] using h
+    exact hDψ v₀ hv₀V (by rw [ha, ha', h'])
+  let L : Euclid m ≃L[ℝ] Euclid m :=
+    (LinearEquiv.ofInjectiveEndo (π ∘L D : Euclid m →ₗ[ℝ] Euclid m) hφinj).toContinuousLinearEquiv
+  have hL : (L : Euclid m →L[ℝ] Euclid m) = π ∘L D := by
+    ext1 w; rfl
+  have hφd : HasFDerivAt φ (L : Euclid m →L[ℝ] Euclid m) v₀ := by
+    rw [hL]
+    exact π.hasFDerivAt.comp v₀ ((hψd v₀ hv₀V).sub_const y)
+  have hn : (1 : WithTop ℕ∞) ≠ 0 := one_ne_zero
+  have hφs : HasStrictFDerivAt φ (L : Euclid m →L[ℝ] Euclid m) v₀ :=
+    hφat.hasStrictFDerivAt' hφd hn
+  set PH := hφs.toOpenPartialHomeomorph φ
+  have hv₀src : v₀ ∈ PH.source := hφs.mem_toOpenPartialHomeomorph_source
+  have hφv₀ : φ v₀ = 0 := by simp [φ, hψv₀]
+  have h0tgt : (0 : Euclid m) ∈ PH.target := by
+    rw [← hφv₀]; exact hφs.image_mem_toOpenPartialHomeomorph_target
+  set χ : Euclid m → Euclid m := ⇑PH.symm
+  have hχ0 : χ 0 = v₀ := by
+    rw [← hφv₀]; exact PH.left_inv hv₀src
+  have hχat : ContDiffAt ℝ 1 χ 0 := by
+    refine PH.contDiffAt_symm h0tgt (f₀' := L) ?_ ?_
+    · rw [show PH.symm 0 = v₀ from hχ0]; exact hφd
+    · rw [show PH.symm 0 = v₀ from hχ0]; exact hφat
+  -- the graph function `u(a) = π'(ψ(χ(a)) − y)`
+  set u : Euclid m → Euclid (P - m) := fun a => π' (ψ (χ a) - y)
+  have hFψ : ∀ a ∈ PH.target, y + ι a + ι' (u a) = ψ (χ a) := by
+    intro a ha
+    have h1 : π (ψ (χ a) - y) = a := PH.right_inv ha
+    have h2 : ψ (χ a) - y = ι a + ι' (u a) := by
+      conv_lhs => rw [hdec (ψ (χ a) - y)]
+      rw [h1]
+    rw [add_assoc, ← h2]
+    abel
+  -- every point of `M` near `y` is `ψ(v)` with `v` in the source of the local inverse
+  have hψcont : ContinuousOn ψ V := hψ1.continuousOn
+  obtain ⟨r, hr, hrW⟩ : ∃ r, 0 < r ∧ closedBall y r ⊆ W :=
+    Metric.nhds_basis_closedBall.mem_iff.1 (hW.mem_nhds hyW)
+  have hCc : IsCompact ((V ∩ ψ ⁻¹' closedBall y r) \ PH.source) :=
+    (hprop _ hrW (isCompact_closedBall y r)).diff PH.open_source
+  have hyC : y ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall y r) \ PH.source) := by
+    rintro ⟨v, ⟨⟨hvV, -⟩, hvs⟩, hψv⟩
+    exact hvs (hinj hvV hv₀V (hψv.trans hψv₀.symm) ▸ hv₀src)
+  obtain ⟨r₁, hr₁, hr₁C⟩ :
+      ∃ r₁ > 0, ball y r₁ ⊆ (ψ '' ((V ∩ ψ ⁻¹' closedBall y r) \ PH.source))ᶜ :=
+    Metric.isOpen_iff.1 ((hCc.image_of_continuousOn
+      (hψcont.mono fun v hv => hv.1.1)).isClosed.isOpen_compl) y hyC
+  set r₀ := min r r₁
+  have hr₀ : 0 < r₀ := lt_min hr hr₁
+  have hr₀W : ball y r₀ ⊆ W :=
+    (ball_subset_ball (min_le_left _ _)).trans (ball_subset_closedBall.trans hrW)
+  have hloc : ∀ z ∈ M, z ∈ ball y r₀ → ∃ v ∈ PH.source, ψ v = z := by
+    intro z hzM hz
+    have hzW : z ∈ closedBall y r :=
+      ball_subset_closedBall (ball_subset_ball (min_le_left _ _) hz)
+    obtain ⟨v, hvV, rfl⟩ : z ∈ ψ '' V := by rw [himg]; exact ⟨hrW hzW, hzM⟩
+    refine ⟨v, ?_, rfl⟩
+    by_contra hvs
+    exact hr₁C (ball_subset_ball (min_le_right _ _) hz) ⟨v, ⟨⟨hvV, hzW⟩, hvs⟩, rfl⟩
+  -- `u` is `C¹` near `0`, `u(0) = 0` and `Du(0) = 0`
+  have hev1 : ∀ᶠ a in 𝓝 (0 : Euclid m), a ∈ PH.target := PH.open_target.mem_nhds h0tgt
+  have hev2 : ∀ᶠ a in 𝓝 (0 : Euclid m), χ a ∈ V :=
+    hχat.continuousAt.preimage_mem_nhds (by rw [hχ0]; exact hV.mem_nhds hv₀V)
+  have hev3 : ∀ᶠ a in 𝓝 (0 : Euclid m), ContDiffAt ℝ 1 χ a := hχat.eventually (by simp)
+  have hev4 : ∀ᶠ a in 𝓝 (0 : Euclid m), ContDiffAt ℝ 1 u a := by
+    filter_upwards [hev2, hev3] with a ha2 ha3
+    exact π'.contDiff.contDiffAt.comp a (((hψat _ ha2).comp a ha3).sub contDiffAt_const)
+  have hu0 : u 0 = 0 := by simp [u, hχ0, hψv₀]
+  have hu0at : ContDiffAt ℝ 1 u 0 := hev4.self_of_nhds
+  have hDu0 : fderiv ℝ u 0 = 0 := by
+    have h1 : HasFDerivAt (ψ ∘ χ) (D ∘L fderiv ℝ χ 0) 0 := by
+      have hψ' : HasFDerivAt ψ D (χ 0) := by rw [hχ0]; exact hψd v₀ hv₀V
+      exact hψ'.comp 0 (hχat.differentiableAt one_ne_zero).hasFDerivAt
+    have h2 : HasFDerivAt u (π' ∘L (D ∘L fderiv ℝ χ 0)) 0 :=
+      π'.hasFDerivAt.comp 0 (h1.sub_const y)
+    rw [h2.fderiv]
+    ext1 w
+    obtain ⟨a, ha⟩ := hDι (fderiv ℝ χ 0 w)
+    simp [ha, hπ'ι]
+  have hDucont : ContinuousAt (fderiv ℝ u) 0 :=
+    (hu0at.fderiv_right (m := 0) (by norm_num)).continuousAt
+  refine ⟨ι, ι', horth, hspan, fun ε δ hε hδ => ?_⟩
+  -- choice of `t` and `s`
+  set t := min δ r₀ / 2 with htdef
+  have ht0 : 0 < t := by positivity
+  have hev5 : ∀ᶠ a in 𝓝 (0 : Euclid m), ‖fderiv ℝ u a‖ < ε :=
+    hDucont.norm.eventually_lt continuousAt_const (by rw [hDu0, norm_zero]; exact hε)
+  have hev6 : ∀ᶠ a in 𝓝 (0 : Euclid m), ‖u a‖ < t :=
+    hu0at.continuousAt.norm.eventually_lt continuousAt_const (by rw [hu0, norm_zero]; exact ht0)
+  obtain ⟨s₁, hs₁, hs₁ball⟩ :=
+    Metric.eventually_nhds_iff_ball.1 (hev1.and (hev2.and (hev4.and (hev5.and hev6))))
+  set s := min s₁ t
+  have hs : 0 < s := lt_min hs₁ ht0
+  have hst : s ≤ t := min_le_right _ _
+  have htt : t + t = min δ r₀ := by rw [htdef]; ring
+  have hsδ : s + t ≤ δ := by linarith [min_le_left δ r₀]
+  have hsr₀ : s + t ≤ r₀ := by linarith [min_le_right δ r₀]
+  have hgood : ∀ a ∈ ball (0 : Euclid m) s, a ∈ PH.target ∧ χ a ∈ V ∧ ContDiffAt ℝ 1 u a ∧
+      ‖fderiv ℝ u a‖ < ε ∧ ‖u a‖ < t :=
+    fun a ha => hs₁ball a (ball_subset_ball (min_le_left _ _) ha)
+  -- the graph map `F(a) = y + ιa + ι'u(a)`
+  have hπF : ∀ a, π (y + ι a + ι' (u a) - y) = a := by
+    intro a
+    have : y + ι a + ι' (u a) - y = ι a + ι' (u a) := by abel
+    rw [this, map_add, hπι, hπι', add_zero]
+  have hFψ' : ∀ a ∈ ball (0 : Euclid m) s, y + ι a + ι' (u a) = ψ (χ a) :=
+    fun a ha => hFψ a (hgood a ha).1
+  have hFM : ∀ a ∈ ball (0 : Euclid m) s, y + ι a + ι' (u a) ∈ M := by
+    intro a ha
+    have : ψ (χ a) ∈ ψ '' V := ⟨χ a, (hgood a ha).2.1, rfl⟩
+    rw [himg] at this
+    rw [hFψ' a ha]
+    exact this.2
+  have hZball : ∀ a ∈ ball (0 : Euclid m) s, ∀ b ∈ ball (0 : Euclid (P - m)) t,
+      y + ι a + ι' b ∈ ball y r₀ := by
+    intro a ha b hb
+    rw [mem_ball, dist_eq_norm]
+    have : y + ι a + ι' b - y = ι a + ι' b := by abel
+    rw [this]
+    calc ‖ι a + ι' b‖ ≤ ‖ι a‖ + ‖ι' b‖ := norm_add_le _ _
+      _ = ‖a‖ + ‖b‖ := by rw [ι.norm_map, ι'.norm_map]
+      _ < s + t := add_lt_add (mem_ball_zero_iff.1 ha) (mem_ball_zero_iff.1 hb)
+      _ ≤ r₀ := hsr₀
+  have hZ : ∀ z : Euclid P, (∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t,
+      z = y + ι a + ι' b) ↔ (π (z - y) ∈ ball (0 : Euclid m) s ∧
+        π' (z - y) ∈ ball (0 : Euclid (P - m)) t) := by
+    intro z
+    constructor
+    · rintro ⟨a, ha, b, hb, rfl⟩
+      have : y + ι a + ι' b - y = ι a + ι' b := by abel
+      rw [this, map_add, map_add, hπι, hπι', hπ'ι, hπ'ι', add_zero, zero_add]
+      exact ⟨ha, hb⟩
+    · rintro ⟨ha, hb⟩
+      refine ⟨_, ha, _, hb, ?_⟩
+      rw [add_assoc, ← hdec]
+      abel
+  have hZopen : IsOpen {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+      ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} := by
+    have : {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+        ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} =
+        (fun z => π (z - y)) ⁻¹' ball 0 s ∩ (fun z => π' (z - y)) ⁻¹' ball 0 t := by
+      ext z; exact hZ z
+    rw [this]
+    exact (isOpen_ball.preimage (π.continuous.comp (continuous_id.sub continuous_const))).inter
+      (isOpen_ball.preimage (π'.continuous.comp (continuous_id.sub continuous_const)))
+  have hMZ : M ∩ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+      ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} =
+      (fun a => y + ι a + ι' (u a)) '' ball 0 s := by
+    ext z
+    constructor
+    · rintro ⟨hzM, a, ha, b, hb, rfl⟩
+      obtain ⟨v, hvs, hψv⟩ := hloc _ hzM (hZball a ha b hb)
+      refine ⟨a, ha, ?_⟩
+      have hφv : φ v = a := by
+        show π (ψ v - y) = a
+        rw [hψv]
+        have : y + ι a + ι' b - y = ι a + ι' b := by abel
+        rw [this, map_add, hπι, hπι', add_zero]
+      have hχφ : χ (φ v) = v := PH.left_inv hvs
+      calc y + ι a + ι' (u a) = ψ (χ a) := hFψ' a ha
+        _ = ψ (χ (φ v)) := by rw [hφv]
+        _ = ψ v := by rw [hχφ]
+        _ = y + ι a + ι' b := hψv
+    · rintro ⟨a, ha, rfl⟩
+      exact ⟨hFM a ha, a, ha, u a, mem_ball_zero_iff.2 (hgood a ha).2.2.2.2, rfl⟩
+  have hinjF : InjOn (fun a => y + ι a + ι' (u a)) (ball 0 s) := by
+    intro a _ a' _ h
+    have h' : y + ι a + ι' (u a) = y + ι a' + ι' (u a') := h
+    calc a = π (y + ι a + ι' (u a) - y) := (hπF a).symm
+      _ = π (y + ι a' + ι' (u a') - y) := by rw [h']
+      _ = a' := hπF a'
+  have hFd : ∀ a ∈ ball (0 : Euclid m) s, HasFDerivAt (fun a => y + ι a + ι' (u a))
+      (ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ u a) a := by
+    intro a ha
+    have hu : HasFDerivAt u (fderiv ℝ u a) a :=
+      ((hgood a ha).2.2.1.differentiableAt one_ne_zero).hasFDerivAt
+    exact (ι.toContinuousLinearMap.hasFDerivAt.const_add y).add
+      (ι'.toContinuousLinearMap.hasFDerivAt.comp a hu)
+  have huC : ContDiffOn ℝ 1 u (ball 0 s) := fun a ha => (hgood a ha).2.2.1.contDiffWithinAt
+  have hFC : ContDiffOn ℝ 1 (fun a => y + ι a + ι' (u a)) (ball (0 : Euclid m) s) :=
+    (contDiffOn_const.add ι.contDiff.contDiffOn).add (ι'.contDiff.comp_contDiffOn huC)
+  refine ⟨s, t, u, hs, ht0, hsδ, huC, hu0,
+    fun a ha => ⟨(hgood a ha).2.2.2.1.le, (hgood a ha).2.2.2.2⟩, hZopen, hMZ, hinjF,
+    fun a ha => ⟨?_, ?_⟩, ?_⟩
+  · -- `DF(a)` is injective: `π ∘ DF(a) = id`
+    rw [(hFd a ha).fderiv]
+    intro w w' h
+    have := congrArg π h
+    simpa [hπι, hπι'] using this
+  · -- tangent spaces
+    rw [(hFd a ha).fderiv]
+    ext v
+    constructor
+    · intro hv
+      simp only [tangentSpace, mem_ofPred_eq] at hv
+      obtain ⟨γ, -, hγM, hγ0, hγv⟩ := hv
+      have hFZ : γ 0 ∈ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+          ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} :=
+        ⟨a, ha, u a, mem_ball_zero_iff.2 (hgood a ha).2.2.2.2, hγ0⟩
+      have hev : ∀ᶠ τ in 𝓝 (0 : ℝ), γ τ ∈ M ∩ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+          ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} := by
+        filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1),
+          hγv.continuousAt.preimage_mem_nhds (hZopen.mem_nhds hFZ)] with τ hτ hτZ
+        exact ⟨hγM hτ, hτZ⟩
+      have hγF : γ =ᶠ[𝓝 0] (fun a => y + ι a + ι' (u a)) ∘ (fun τ => π (γ τ - y)) := by
+        filter_upwards [hev] with τ hτ
+        rw [hMZ] at hτ
+        obtain ⟨a', -, h'⟩ := hτ
+        have h'' : y + ι a' + ι' (u a') = γ τ := h'
+        show γ τ = y + ι (π (γ τ - y)) + ι' (u (π (γ τ - y)))
+        rw [← h'', hπF]
+      have hα : HasDerivAt (fun τ => π (γ τ - y)) (π v) 0 :=
+        π.hasFDerivAt.comp_hasDerivAt 0 (hγv.sub_const y)
+      have hcomp := (hFd a ha).comp_hasDerivAt_of_eq 0 hα (by rw [hγ0, hπF])
+      exact ⟨π v, (hγv.unique (hcomp.congr_of_eventuallyEq hγF)).symm⟩
+    · rintro ⟨w, rfl⟩
+      simp only [tangentSpace, mem_ofPred_eq]
+      have has : ‖a‖ < s := mem_ball_zero_iff.1 ha
+      set c := (s - ‖a‖) / (‖w‖ + 1) with hcdef
+      have hc : 0 < c := div_pos (by linarith) (by positivity)
+      have hcw : c * (‖w‖ + 1) = s - ‖a‖ := by rw [hcdef]; field_simp
+      have hβball : ∀ τ : ℝ, a + (c * Real.sin (τ / c)) • w ∈ ball (0 : Euclid m) s := by
+        intro τ
+        rw [mem_ball_zero_iff]
+        have h1 : |c * Real.sin (τ / c)| ≤ c := by
+          rw [abs_mul, abs_of_pos hc]
+          exact mul_le_of_le_one_right hc.le (Real.abs_sin_le_one _)
+        calc ‖a + (c * Real.sin (τ / c)) • w‖ ≤ ‖a‖ + ‖(c * Real.sin (τ / c)) • w‖ :=
+              norm_add_le _ _
+          _ = ‖a‖ + |c * Real.sin (τ / c)| * ‖w‖ := by rw [norm_smul, Real.norm_eq_abs]
+          _ ≤ ‖a‖ + c * ‖w‖ := by gcongr
+          _ < ‖a‖ + c * (‖w‖ + 1) := by nlinarith
+          _ = s := by rw [hcw]; ring
+      have hβd : HasDerivAt (fun τ : ℝ => a + (c * Real.sin (τ / c)) • w) w 0 := by
+        have h1 : HasDerivAt (fun τ : ℝ => c * Real.sin (τ / c)) 1 0 := by
+          have h2 : HasDerivAt (fun τ : ℝ => τ / c) (1 / c) 0 :=
+            (hasDerivAt_id (0 : ℝ)).div_const c
+          have h3 := ((Real.hasDerivAt_sin ((0 : ℝ) / c)).comp 0 h2).const_mul c
+          have h4 : c * (Real.cos (0 / c) * (1 / c)) = 1 := by
+            rw [zero_div, Real.cos_zero, one_mul, mul_one_div_cancel hc.ne']
+          rw [h4] at h3
+          exact h3
+        have := (h1.smul_const w).const_add a
+        simpa using this
+      refine ⟨(fun a => y + ι a + ι' (u a)) ∘ (fun τ : ℝ => a + (c * Real.sin (τ / c)) • w),
+        ?_, ?_, ?_, ?_⟩
+      · exact (hFC.comp_contDiff (contDiff_const.add ((contDiff_const.mul
+          (Real.contDiff_sin.comp (contDiff_id.div_const c))).smul contDiff_const))
+          hβball).contDiffOn
+      · intro τ _
+        exact hFM _ (hβball τ)
+      · simp
+      · exact (hFd a ha).comp_hasDerivAt_of_eq 0 hβd (by simp)
+  · -- properness
+    intro K hKZ hK
+    have hKW : K ⊆ W := fun z hz => by
+      obtain ⟨a, ha, b, hb, rfl⟩ := hKZ hz
+      exact hr₀W (hZball a ha b hb)
+    have hMK : M ∩ K = ψ '' (V ∩ ψ ⁻¹' K) := by
+      ext z
+      constructor
+      · rintro ⟨hzM, hzK⟩
+        obtain ⟨v, hv, rfl⟩ : z ∈ ψ '' V := by rw [himg]; exact ⟨hKW hzK, hzM⟩
+        exact ⟨v, ⟨hv, hzK⟩, rfl⟩
+      · rintro ⟨v, ⟨hv, hvK⟩, rfl⟩
+        have : ψ v ∈ ψ '' V := ⟨v, hv, rfl⟩
+        rw [himg] at this
+        exact ⟨this.2, hvK⟩
+    have hMKc : IsCompact (M ∩ K) := by
+      rw [hMK]
+      exact (hprop K hKW hK).image_of_continuousOn (hψcont.mono inter_subset_left)
+    have hpre : ball (0 : Euclid m) s ∩ (fun a => y + ι a + ι' (u a)) ⁻¹' K =
+        (fun z => π (z - y)) '' (M ∩ K) := by
+      ext a
+      constructor
+      · rintro ⟨ha, haK⟩
+        exact ⟨_, ⟨hFM a ha, haK⟩, hπF a⟩
+      · rintro ⟨z, ⟨hzM, hzK⟩, rfl⟩
+        have hz : z ∈ M ∩ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s,
+            ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} := ⟨hzM, hKZ hzK⟩
+        rw [hMZ] at hz
+        obtain ⟨a, ha, rfl⟩ := hz
+        refine ⟨?_, ?_⟩
+        · show π (y + ι a + ι' (u a) - y) ∈ ball 0 s
+          rw [hπF]
+          exact ha
+        · show y + ι (π (y + ι a + ι' (u a) - y)) + ι' (u (π (y + ι a + ι' (u a) - y))) ∈ K
+          rw [hπF]
+          exact hzK
+    rw [hpre]
+    exact hMKc.image (π.continuous.comp (continuous_id.sub continuous_const))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
