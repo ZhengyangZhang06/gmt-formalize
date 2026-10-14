@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "92e4a97c183594051538be4b66fdb19897072de11afd012d1b5cdf1838ec3a3e",
+  "git_delta": {
+    "base_commit": "bb5bd698c506f5922a6c68eae34e6c22d7015965",
+    "candidate_commit": "13ae859c9d3b77f26a64a39b50f1e7d28508cf40",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_tangent_normal_complement",
+    "diff_sha256": "3fc84a40d95c54de936b3707ad893f33f2ae091f880eb182a074d96772bdaa80",
+    "source_sha256": "9c7ab5d878330cdb1412ed97b53a80e6fe09812f30cfa43d5981c10a800fbd31",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_tangent_normal_complement",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, tangentSpace M x = {v : Euclid P | v ∈ A₀ ∧ inner ℝ (ν x) v = 0} ∧ ∀ w : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection w = A₀.starProjection w - inner ℝ (ν x) w • ν x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
