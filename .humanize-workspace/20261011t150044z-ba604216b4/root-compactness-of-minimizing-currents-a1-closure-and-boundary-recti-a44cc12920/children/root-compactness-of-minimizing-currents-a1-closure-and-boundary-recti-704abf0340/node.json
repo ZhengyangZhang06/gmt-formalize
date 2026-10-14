@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1.subspace_frame-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1",
+  "depth": 6,
+  "title": "An n-dimensional subspace of ℝ^P is the span of an orthonormal n-frame",
+  "statement": "Let P, n ∈ ℕ and let V ⊆ ℝ^P (Euclid P) be a linear subspace with dim V = n. Then there is an orthonormal family v = (v_0, …, v_{n−1}) in ℝ^P, indexed by Fin n, with span{v_0, …, v_{n−1}} = V.",
+  "lean_statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → ∃ v : Fin n → Euclid P, Orthonormal ℝ v ∧ Submodule.span ℝ (Set.range v) = V",
+  "lean_name": "cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-704abf0340-a1"
+}

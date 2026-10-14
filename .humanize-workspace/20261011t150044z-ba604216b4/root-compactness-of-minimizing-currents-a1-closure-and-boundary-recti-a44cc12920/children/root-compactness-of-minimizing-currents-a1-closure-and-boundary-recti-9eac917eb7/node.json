@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1.frame_flip-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1",
+  "depth": 6,
+  "title": "Negating the first vector of an orthonormal frame keeps it orthonormal with the same span and negates every covector value",
+  "statement": "Let P, d ∈ ℕ and let v = (v_0, …, v_d) be an orthonormal family in ℝ^P (Euclid P), indexed by Fin (d + 1). Then there is an orthonormal family w = (w_0, …, w_d) in ℝ^P with span{w_0, …, w_d} = span{v_0, …, v_d} and β(w_0, …, w_d) = −β(v_0, …, v_d) for every (d+1)-covector β on ℝ^P (Covector (Euclid P) (d + 1)).",
+  "lean_statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∃ w : Fin (d + 1) → Euclid P, Orthonormal ℝ w ∧ Submodule.span ℝ (Set.range w) = Submodule.span ℝ (Set.range v) ∧ ∀ β : Covector (Euclid P) (d + 1), β w = -β v",
+  "lean_name": "cbr_ci_cp_exists_orthonormal_frame_eval_neg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9eac917eb7-a1"
+}

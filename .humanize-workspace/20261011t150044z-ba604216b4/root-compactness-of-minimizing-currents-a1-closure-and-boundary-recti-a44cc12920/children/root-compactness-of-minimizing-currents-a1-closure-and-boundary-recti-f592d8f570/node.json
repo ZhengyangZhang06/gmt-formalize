@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1.rank_deficient_vanish-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1",
+  "depth": 6,
+  "title": "An n-covector pulled back by the orthogonal projection onto a subspace of dimension < n vanishes",
+  "statement": "Let P, n ∈ ℕ and let V ⊆ ℝ^P (Euclid P) be a linear subspace with dim V < n and orthogonal projection p_V = V.starProjection. Then for every n-covector β on ℝ^P (Covector (Euclid P) n) the pulled-back covector β∘p_V := β.compContinuousLinearMap V.starProjection, (β∘p_V)(u) = β(p_V u_0, …, p_V u_{n−1}), is the zero covector.",
+  "lean_statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V < n → ∀ β : Covector (Euclid P) n, β.compContinuousLinearMap V.starProjection = 0",
+  "lean_name": "cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f592d8f570-a1"
+}
