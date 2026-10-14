@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.local_plane_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "depth": 6,
+  "title": "A set agreeing near x with the affine plane x + Q has Q as approximate tangent space at x (parent step 3e)",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be measurable, x ∈ ℝ^P, Q ⊆ ℝ^P a linear subspace with finrank Q = n, and r > 0. Suppose M ∩ B_r(x) = {y : y − x ∈ Q} ∩ B_r(x), where B_r(x) is the open ball. Then HasApproximateTangentSpaceAt n M x Q holds (Simon Ch. 3, Def. 1.4): finrank Q = n and, for every f ∈ C_c(ℝ^P), ∫_{η_{x,ρ}(M)} f dHⁿ → ∫_Q f dHⁿ as ρ ↓ 0. Here η_{x,ρ}(y) = ρ⁻¹(y − x) is blowUpMap x ρ and Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r : ℝ), MeasurableSet M → Module.finrank ℝ Q = n → 0 < r → M ∩ ball x r = {y | y - x ∈ Q} ∩ ball x r → HasApproximateTangentSpaceAt n M x Q",
+  "lean_name": "idtp_fons_odc_pc_local_plane_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1038b48524-a1"
+}
