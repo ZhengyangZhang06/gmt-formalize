@@ -1,0 +1,93 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}",
+        "python3 scan of dag.json: lean_statement and status for dimred_im_mass_measure, idtp_tdc_subspace_ball_measure, idtp_tdc_no_infinite_planar_pieces, rsd_massOn_eq_measure, codim1_subspace_ball_euclideanHausdorff, cone_current_imrep_measure_smul_image, and every child of two_dim_cone_density-a1",
+        "python3 regex scan of dag.json lean_statements for 'IsFiniteMeasureOnCompacts|\\.measure \\(ball|\\.measure K|OuterRegular|IsLocallyFiniteMeasure|\\(μ ν : Measure|Measure \\(Euclid P\\)\\)|R\\.measure .* < ∞|R\\.measure .* ≠ ∞'",
+        "python3 print of exact statements: rsd_imrep_compact_measure_ne_top, cmc_ml_measure_eq_of_eq_on_open_subsets, lcmp_measure_le_add_of_open_nhds, cmr_null_of_compact_null, dorag_lip_vitali_two_measure_bound, cbr_imRep_measure_basic, rsd_mw_wlm_exists_open_measure_between",
+        "grep -c / grep -rl / grep -rn 'idtp_tdc_nipp_local_comparison|idtp_tdc_nipp_disjoint_packing|idtp_tdc_nipp|nipp_' over dag.json, nodes/ and GMT/",
+        "cat nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd/decomposition-scope-v1.json; python3 summary of decomposition-v1.json (parent split rationale, cross-branch black boxes)",
+        "git show 01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a:GMT/Ch07/Submission.lean | grep -n '^theorem' (accepted dimred_im_mass_measure candidate)",
+        "grep -n 'unitBallVolume|def HasMassDensity' GMT/Ch07/Submission.lean",
+        "grep -rn 'μHE\\[' mathlib/Mathlib",
+        "rg -n 'theorem _root_.Set.exists_isOpen_lt_of_lt|of_pseudoMetrizableSpace_of_isFiniteMeasure' Mathlib/MeasureTheory/Measure/Regular.lean",
+        "rg -n 'theorem isOpen_iUnion_countable' Mathlib/Topology/Bases.lean; rg -n 'theorem Countable.exists_eq_range' Mathlib/Data/Set/Countable.lean",
+        "rg -n 'disjoint_disjointed|iUnion_disjointed|disjointed_subset' Mathlib/Order/Disjointed.lean; rg -n 'MeasurableSet.disjointed' Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "rg -n 'theorem measure_iUnion' Mathlib/MeasureTheory/Measure/NullMeasurable.lean; rg -n 'tsum_const_eq_top_of_ne_zero|protected theorem tsum_le_tsum' Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "rg -n 'isCompact_closedBall' Mathlib/Topology/MetricSpace/ProperSpace.lean; rg -n 'theorem withDensity_apply' Mathlib/MeasureTheory/Measure/WithDensity.lean; rg -n 'theorem restrict_restrict' Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n 'theorem Submodule.closed_of_finiteDimensional' Mathlib/Topology/Algebra/Module/FiniteDimension.lean; rg -n 'theorem measure_ball_pos' Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "rg -n 'le_of_forall_lt|le_of_forall_gt|forall_gt' Mathlib/Order/Basic.lean",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; lake-manifest.json revs vs manifest.json",
+        "lake env lean /tmp/nipp-decomp/Probe0.lean; lake env lean /tmp/nipp-decomp/Stmts.lean; lake env lean /tmp/nipp-decomp/Validate.lean (#print axioms nipp_check_disjoint_packing, nipp_check_local_comparison, nipp_assembly_check)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-edecc539dd/decomposition-scope-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/tmp/nipp-decomp/Probe0.lean",
+        "/tmp/nipp-decomp/Stmts.lean",
+        "/tmp/nipp-decomp/Validate.lean",
+        "/tmp/nipp-decomp/draft.json",
+        "/tmp/nipp-review/Elab.lean",
+        "/tmp/nipp-review/Assembly.lean",
+        "/tmp/nipp-review/Children.lean",
+        "/tmp/nipp-review/NameFree.lean",
+        "/tmp/nipp-review/Probe.lean"
+      ],
+      "conclusion": "Pins and contract:\n- The pins match manifest.json: project HEAD b4d606db, mathlib 25730c7c, SimonGMT 2b366308.\n- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n- The frozen selected type elaborates. unitBallVolume n is volume (ball (0 : Euclid n) 1) (Submission.lean:143). μHE[d] is Mathlib's euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:72).\n\nMathlib facts used by the children, all present in the snapshot:\n- Set.exists_isOpen_lt_of_lt (Regular.lean:359) and the WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure instance (Regular.lean:1072).\n- TopologicalSpace.isOpen_iUnion_countable (Bases.lean:932) and Set.Countable.exists_eq_range (Countable.lean:149).\n- disjoint_disjointed, disjointed_subset and iUnion_disjointed (Disjointed.lean:206, 316, 320), and MeasurableSet.disjointed (Constructions.lean:113).\n- measure_iUnion (NullMeasurable.lean:241), ENNReal.tsum_le_tsum and ENNReal.tsum_const_eq_top_of_ne_zero (InfiniteSum/ENNReal.lean:116, 167).\n- isCompact_closedBall, the exported ProperSpace field (ProperSpace.lean:39/41), and le_of_forall_gt, generated by to_dual from le_of_forall_lt (Order/Basic.lean:351).\n\nFacts used only by the parent's glue: withDensity_apply, Measure.restrict_restrict, Submodule.closed_of_finiteDimensional (FiniteDimension.lean:531) and measure_ball_pos (OpenPos.lean:212).\n\nReuse:\n- dimred_im_mass_measure is accepted with the exact frozen type the parent proof cites. idtp_tdc_subspace_ball_measure is the parent's existing sibling prerequisite (status decomposing).\n- No DAG declaration has either child's type. cmc_ml_measure_eq_of_eq_on_open_subsets (accepted) is an equality version, and lcmp_measure_le_add_of_open_nhds (accepted) covers compact sets only. rsd_imrep_compact_measure_ne_top (accepted) covers only step 1's finiteness.\n- The new names idtp_tdc_nipp_local_comparison and idtp_tdc_nipp_disjoint_packing have no match in dag.json, nodes/ or GMT/.\n\nLean checks:\n- Both child lean_statements elaborate after import GMT.Ch07.Submission.\n- Validate.lean proves both children at their exact types and derives the exact selected type from the two children plus the byte-identical frozen types of dimred_im_mass_measure and idtp_tdc_subspace_ball_measure. Every #print axioms reports [propext, Classical.choice, Quot.sound].\n- The independent reviewer reproduced all of this in /tmp/nipp-review and approved."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1.local_comparison-a1",
+  "subproblem": {
+    "key": "local_comparison",
+    "title": "Comparison of two measures on open subsets of small balls extends to a Borel set",
+    "statement": "Let P ∈ ℕ, let μ and ν be Borel measures on ℝ^P (Measure (Euclid P)), and let D ⊆ ℝ^P be a Borel set. Assume μ(K) ≠ ∞ for every compact K ⊆ ℝ^P, and that every w ∈ D has some ε > 0 such that ν(W) ≤ μ(W) for every open set W ⊆ B_ε(w). Then ν(D) ≤ μ(D).",
+    "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (D : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → MeasurableSet D → (∀ w ∈ D, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → ν W ≤ μ W) → ν D ≤ μ D",
+    "lean_name": "idtp_tdc_nipp_local_comparison",
+    "depends_on": [],
+    "natural_proof": "Source: steps 2 and 3 of the parent proof of idtp_tdc_no_infinite_planar_pieces (outer regularity on a small ball, then a countable disjointified cover of the disc), stated for an arbitrary measure ν in place of H²⌞Q_i and an arbitrary Borel set D in place of the disc D_i.\n1. (Balls have finite μ-measure.) Let w ∈ ℝ^P and ε ∈ ℝ. The open ball B_ε(w) is contained in the closed ball closedBall(w, ε), which is compact because ℝ^P is a proper metric space (isCompact_closedBall). By the hypothesis on compact sets and monotonicity, μ(B_ε(w)) ≤ μ(closedBall(w, ε)) < ∞.\n2. (Local inequality on Borel sets.) Fix w ∈ ℝ^P and ε ∈ ℝ such that ν(W) ≤ μ(W) for every open W ⊆ B := B_ε(w). Claim: ν(E) ≤ μ(E) for every Borel set E ⊆ B. Proof: the restriction μ⌞B (Measure.restrict μ B) has total mass (μ⌞B)(ℝ^P) = μ(B) < ∞ by step 1, so it is a finite Borel measure on the metric space ℝ^P; hence it is weakly regular (MeasureTheory.Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure), in particular outer regular. Since [0, ∞] is linearly ordered, to prove ν(E) ≤ μ(E) it suffices to prove ν(E) < t for every t ∈ [0, ∞] with μ(E) < t (le_of_forall_gt). Fix such a t. Because E is Borel and E ⊆ B, (μ⌞B)(E) = μ(E ∩ B) = μ(E) < t. By outer regularity of μ⌞B (Set.exists_isOpen_lt_of_lt) there is an open set O ⊇ E with (μ⌞B)(O) < t; as O is open, hence Borel, (μ⌞B)(O) = μ(O ∩ B). The set O ∩ B is open (an intersection of two open sets), O ∩ B ⊆ B, and E ⊆ O ∩ B because E ⊆ O and E ⊆ B. By monotonicity of ν and the hypothesis applied to W := O ∩ B: ν(E) ≤ ν(O ∩ B) ≤ μ(O ∩ B) < t. This proves the claim.\n3. (Empty case.) If D = ∅, then ν(D) = 0 ≤ μ(D) and we are done. Assume from now on that D ≠ ∅.\n4. (Countable subcover.) For each w ∈ D choose ε_w > 0 as in the hypothesis, so ν(W) ≤ μ(W) for every open W ⊆ B_{ε_w}(w). Each ball B_{ε_w}(w) (w ∈ D) is open and contains its centre w (as ε_w > 0), so D ⊆ ⋃_{w∈D} B_{ε_w}(w). Since ℝ^P is second countable, TopologicalSpace.isOpen_iUnion_countable, applied to the family of open balls indexed by the points of D, gives a countable set T of points of D with ⋃_{w∈T} B_{ε_w}(w) = ⋃_{w∈D} B_{ε_w}(w). T is nonempty: a point x ∈ D lies in B_{ε_x}(x) ⊆ ⋃_{w∈D} B_{ε_w}(w) = ⋃_{w∈T} B_{ε_w}(w). Hence T is the range of a sequence (w_l)_{l∈ℕ} of points of D, repetitions allowed (Set.Countable.exists_eq_range). Put B_l := B_{ε_{w_l}}(w_l) for l ∈ ℕ. Then D ⊆ ⋃_{w∈T} B_{ε_w}(w) = ⋃_{l∈ℕ} B_l.\n5. (Disjointification.) For l ∈ ℕ let E_l := D ∩ (B_l ∖ ⋃_{l'<l} B_{l'}), i.e. E_l = D ∩ disjointed B l in Mathlib. Each E_l is Borel (D is Borel and every B_{l'} is open; MeasurableSet.disjointed), E_l ⊆ B_l (disjointed_subset), the sets E_l are pairwise disjoint (disjoint_disjointed), and ⋃_{l∈ℕ} E_l = D ∩ ⋃_{l∈ℕ} B_l = D (iUnion_disjointed together with D ⊆ ⋃_l B_l from step 4).\n6. (Summation.) Fix l ∈ ℕ. Since w_l ∈ D, ν(W) ≤ μ(W) for every open W ⊆ B_l, and E_l is a Borel subset of B_l, so step 2 (with w := w_l and ε := ε_{w_l}) gives ν(E_l) ≤ μ(E_l). By countable additivity of ν and of μ on the pairwise disjoint Borel sets E_l (measure_iUnion) and termwise comparison of series in [0, ∞] (ENNReal.tsum_le_tsum): ν(D) = ν(⋃_l E_l) = Σ_l ν(E_l) ≤ Σ_l μ(E_l) = μ(⋃_l E_l) = μ(D). ∎",
+    "proof_key_steps": [
+      "Every open ball has finite μ-measure, because closed balls of ℝ^P are compact.",
+      "On a ball B on whose open subsets ν ≤ μ, outer regularity of the finite measure μ⌞B gives ν(E) ≤ μ(E) for every Borel E ⊆ B.",
+      "D = ∅ is trivial; otherwise Lindelöf (isOpen_iUnion_countable) gives a sequence of the balls B_{ε_w}(w), w ∈ D, covering D.",
+      "Disjointify the cover inside D into Borel pieces E_l ⊆ B_l with ⋃ E_l = D.",
+      "Summing ν(E_l) ≤ μ(E_l) by countable additivity gives ν(D) ≤ μ(D)."
+    ]
+  },
+  "audit": {
+    "key": "local_comparison",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line Lean proposition exactly matches the prose and includes every hypothesis. Compact finiteness makes each restricted ball measure finite, so outer regularity supplies the claimed Borel comparison without requiring ν to be finite. Positive radii give a cover; the empty case, nonempty countable enumeration, measurable disjointification and countable additivity are all justified. The supplied proof independently formalizes without additional mathematical obligations or circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a7a97cacf/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a7a97cacf/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a7a97cacf/parent-supplied-natural-proof.json"
+}
