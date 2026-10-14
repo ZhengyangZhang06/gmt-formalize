@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1.measure_locality-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1",
+  "depth": 6,
+  "title": "Weight measures of two represented currents agree on an open set where the currents agree (supplied step 5)",
+  "statement": "Let P, m ∈ ℕ, let S, T ∈ 𝒟_m(ℝ^P) be currents represented by integer multiplicity triples RS and RT in ℝ^P (RS.Represents S, RT.Represents T), and let O ⊆ ℝ^P be open. Suppose S(ω) = T(ω) for every test form ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ O. Then the weight measures agree on O: RS.measure⌞O = RT.measure⌞O (Measure.restrict).",
+  "lean_statement": "∀ (P m : ℕ) (S T : GeometricCurrentOn (univ : Set (Euclid P)) m) (RS RT : IMRep (univ : Set (Euclid P)) m) (O : Set (Euclid P)), IsOpen O → RS.Represents S → RT.Represents T → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → S ω = T ω) → RS.measure.restrict O = RT.measure.restrict O",
+  "lean_name": "idtp_fons_cs_sp_measure_restrict_eq_of_agree",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4b34300832-a1"
+}
