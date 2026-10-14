@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Integrals over a frame box in frame coordinates",
+  "statement": "Let P, k ∈ ℕ, let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family with span G, r ∈ ℝ, H^k := μHE[k], and let f : ℝ^P → ℝ be any function. Put Q := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and I := {u ∈ ℝ^k (u : Fin k → ℝ) : |u_i| ≤ r for all i}, with Lebesgue measure volume on Fin k → ℝ. Then ∫_Q f dH^k = ∫_I f(Σ_i u_i·g_i) du.",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (f : Euclid P → ℝ), Orthonormal ℝ g → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, f t ∂μHE[k] = ∫ u in {u : Fin k → ℝ | ∀ i, |u i| ≤ r}, f (∑ i, u i • g i)",
+  "lean_name": "dimred_cs_sos_mt_cs_frame_box_integral",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_compact-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_compact-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-0daec41530-a1"
+}
