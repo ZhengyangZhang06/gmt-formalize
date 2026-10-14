@@ -1564,6 +1564,28 @@ theorem Submission.dor_lmb_fc_dtop_ip_image_imrep : ∀ (P Q d : ℕ) (L : Eucli
       hme.restrict_map, hme.lintegral_map]
     simp only [hAL]
 
+/-- **Simon Ch. 6, 2.23 and 3.3–3.9 for a linear isometric embedding `L : ℝᴾ → ℝ^Q`**: if `T`
+is an integer multiplicity current in `ℝᴾ`, then so is `L_#T` in `ℝ^Q`, and `M(L_#T) = M(T)`.
+If `R = (M, θ, ξ)` represents `T`, the image triple `R'` of `dor_lmb_fc_dtop_ip_image_imrep`
+represents `L_#T` and has `μ_{R'}(B) = μ_R(L⁻¹(B))` for Borel `B`.  Applying Simon 6.3.2(3),
+`M_W(X) = μ(W)` for open `W` (`dor_imrep_massOn_eq_measure_and_support`), on both sides gives
+`M(L_#T) = μ_{R'}(ℝ^Q) = μ_R(L⁻¹(ℝ^Q)) = μ_R(ℝᴾ) = M(T)`. -/
+theorem Submission.dor_lmb_fc_dtop_isometric_pushforward_im : ∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d), Isometry L → IsIntegerMultiplicity T → IsIntegerMultiplicity (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T).mass = T.mass := by
+  intro P Q d L hL T hLi hT
+  obtain ⟨R, hR⟩ := hT
+  obtain ⟨R', hR', hμ⟩ := Submission.dor_lmb_fc_dtop_ip_image_imrep P Q d L hL T R hLi hR
+  refine ⟨⟨R', hR'⟩, ?_⟩
+  -- `M(X) = M_U(X)` with `U = univ` open on both sides, so (C1) applies with `W = univ`
+  calc (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T).mass
+      = R'.measure univ :=
+        (Submission.dor_imrep_massOn_eq_measure_and_support Q d univ _ R' isOpen_univ hR').1
+          univ isOpen_univ
+    _ = R.measure (L ⁻¹' univ) := hμ univ MeasurableSet.univ
+    _ = T.mass := by
+        rw [preimage_univ]
+        exact ((Submission.dor_imrep_massOn_eq_measure_and_support P d univ T R isOpen_univ
+          hR).1 univ isOpen_univ).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
