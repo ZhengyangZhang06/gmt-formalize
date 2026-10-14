@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "cmcdt_im_series|dimred_mbl_dt_lpip|dimred_cs_sos_cfs",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem measurable_fderiv|isOpen_setOfPred_linearIndependent",
+        "git show 9b823b56965f653716675d2e458c314229939386:GMT/Ch07/Submission.lean",
+        "git show 918eb38eb0f008565b3ac7b39050fcbdb28ab475:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/psim-independent-audit/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/psim-independent-audit/MergedNoSorry.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-10d8744eb4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-53b6b2be95/accepted-candidate.json",
+        "/tmp/psim-decomp/lean/Assembly.lean",
+        "/tmp/psim-independent-audit/ChallengeTypes.lean",
+        "/tmp/psim-independent-audit/MergedNoSorry.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest. The frozen project contains neither reused declaration; the pinned definitions and derivative/partition APIs support the supplied proofs. Both names uniquely identify comparator-accepted nodes with byte-identical frozen types and matching candidate-source hashes. The augmented dependency graph is acyclic. Both challenge types elaborate without child declarations or proof stubs. Independent compilation of the assembly and the combined source, with the root placeholder removed, succeeds; both children and the exact selected parent use only propext, Classical.choice and Quot.sound. The split appropriately supplies the two missing reuse declarations: their conclusions, the three existing dependencies, the c-based mass estimate and HasSum uniqueness prove the selected contract. No matrix-unit construction occurs. Mathematical provenance agrees with [Simon, Chapter 6, §§3.9 and 3.13](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose, including its explicitly identified frozen antecedents. The bare name is a valid exact-type accepted reuse. Independently checked steps establish convergence, current continuity, mass and support bounds. Positive integer multiplicities and finite total weight give finite carrier measure and finite overlap almost everywhere. Tangent locality, measurable orientation signs and dominated summation then produce the stated IMRep, correctly handling cancellation. This proves every conclusion without circular reliance or deferred proof construction."
+    },
+    {
+      "key": "lipschitz_piece_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all prose hypotheses and conclusions; its bare name is a valid exact-type accepted reuse. The proof establishes integrability and Borel regularity, correctly uses k+1 > 0 to infer differentiability from injective fderiv, and handles the discarded and empty regular sets. The verified partition theorem and accepted BIC provide integer-multiplicity pieces with summable masses. IMSc and countable integral additivity give the required current and evaluation formula. All cited dependencies are available and acyclic. IMSc is an explicit antecedent, so depends_on=[] is correct; the parent supplies it from im_series."
+    }
+  ],
+  "required_changes": []
+}
