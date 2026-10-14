@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22c3294bbca1b5fc6784f385e7f9bd75ea9af7490b2b4e413ff41a2a5a17d43f",
+  "git_delta": {
+    "base_commit": "14a45bc45fc0eb106506a0256fe86d6c9695435a",
+    "candidate_commit": "f08238a6c6672cc69aeb9d6d0f1bb6ed16d15163",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_piece_weak_limit",
+    "diff_sha256": "58b1fcd2d1b2628efa14f05c1089c30723fd9c6eeb521ba3a0e64325feb46912",
+    "source_sha256": "326d98dcf70a55a81bead5890af643b63102668f7342734588ec9562793f219d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_piece_weak_limit",
+      "statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (h : Euclid P → ℝ) (K : NNReal) (G : Euclid P → Euclid P) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → LipschitzWith K h → (∀ y ∈ Y, h (ψ y) = F y) → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ K) → TendstoUniformly hs h atTop → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → ∀ e : Euclid (n + 1), inner ℝ (G x) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → IntegrableOn w (ψ '' Y) μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → w x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → Tendsto (fun k => ∫ x in ψ '' Y, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in ψ '' Y, inner ℝ (G x) (w x) ∂μHE[n + 1]))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
