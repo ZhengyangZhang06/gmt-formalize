@@ -451,6 +451,225 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for `Hⁿ` under the dilation `T(x) = cx`, `c > 0`**: formula (1.1) for the
+scaling of the mass measure of a cone (proof of Simon 7.4.5, chapter-07.txt lines 697–699, "by
+virtue of the fact that `C` is a cone").  For every `M ⊆ ℝᴾ`: (i) `T_#(Hⁿ⌞T⁻¹(M)) = c⁻ⁿ Hⁿ⌞M`;
+(ii) `∫⁻_{T⁻¹(M)} g(cz) dHⁿ(z) = c⁻ⁿ ∫⁻_M g dHⁿ` for every `g : ℝᴾ → [0, ∞]`; (iii) the same for
+the Bochner integral of every `g : ℝᴾ → ℝ`.  `T` is a homeomorphism, hence a measurable embedding,
+and `T⁻¹(B) = c⁻¹B` with `Hⁿ(c⁻¹B) = c⁻ⁿ Hⁿ(B)` gives `T_#Hⁿ = c⁻ⁿ Hⁿ`; restriction and integrals
+commute with the push-forward along `T`. -/
+theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n] := by
+  intro P n c hc M
+  -- Step 1: `T(x) = cx` is a homeomorphism, hence a measurable embedding.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- Step 2: `T_#Hⁿ = c⁻ⁿ Hⁿ`, since `Hⁿ(T⁻¹(B)) = Hⁿ(c⁻¹B) = ‖c⁻¹‖ⁿ Hⁿ(B)` for Borel `B`.
+  have hmap : Measure.map (fun x : Euclid P => c • x) (μHE[n] : Measure (Euclid P)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • (μHE[n] : Measure (Euclid P)) := by
+    ext B hB
+    rw [Measure.map_apply hT.measurable hB, Set.preimage_smul₀ hc.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hc.ne'), Measure.smul_apply,
+      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hc]
+  -- Step 3, (i): `T_#(Hⁿ⌞T⁻¹(M)) = (T_#Hⁿ)⌞M = c⁻ⁿ Hⁿ⌞M`.
+  have h1 : Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M := by
+    rw [← hT.restrict_map, hmap, Measure.restrict_smul]
+  refine ⟨h1, fun g => ?_, fun g => ?_⟩
+  -- Step 4, (ii): `∫⁻ g ∘ T dν = ∫⁻ g d(T_#ν)` for `ν = Hⁿ⌞T⁻¹(M)`, then (i).
+  · have h := hT.lintegral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Step 5, (iii): the same for Bochner integrals, with `(ofReal c⁻ⁿ).toReal = c⁻ⁿ`.
+  · have h := hT.integral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
+    exact h.symm
+
+/-- **`n`-homogeneity of `f Hⁿ` for a dilation-invariant density `f`** (Simon Lemma 7.3.5,
+chapter-07.txt lines 407–420, whose proof is "left to the reader": part (ii) of the invariance of
+the mass measure `μ = Θ Hⁿ` of `S` when its density `Θ` is invariant under `w ↦ λw`, with an
+arbitrary `f : ℝᴾ → [0, ∞]` in place of `ofReal ∘ Θ`).  If `λ > 0` and `f(λx) = f(x)` for all `x`,
+then `(f Hⁿ)(λA) = λⁿ (f Hⁿ)(A)` for every Borel `A ⊆ ℝᴾ`.  `δ(x) = λx` is a homeomorphism, so
+`λA = δ(A)` is Borel and `δ⁻¹(λA) = A`; the change of variables (ii) of
+`Submission.euclid_hausdorff_dilation_change_of_variables` with `g = f` and `f ∘ δ = f` gives
+`(f Hⁿ)(A) = λ⁻ⁿ (f Hⁿ)(λA)`, and `λⁿ λ⁻ⁿ = 1`. -/
+theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A := by
+  intro P n f lam hlam hf A hA
+  -- Step 1: `δ(x) = λx` is a homeomorphism, hence a measurable embedding: `D = δ(A)` is Borel and
+  -- `δ⁻¹(D) = A` by injectivity.
+  have hδ : MeasurableEmbedding (fun x : Euclid P => lam • x) :=
+    (Homeomorph.smulOfNeZero lam hlam.ne').measurableEmbedding
+  have hD : MeasurableSet ((fun x : Euclid P => lam • x) '' A) := hδ.measurableSet_image.2 hA
+  have hpre : (fun x : Euclid P => lam • x) ⁻¹' ((fun x : Euclid P => lam • x) '' A) = A :=
+    Set.preimage_image_eq A hδ.injective
+  -- Steps 2–3: change of variables (ii) with `c = λ`, `M = D`, `g = f`; with `δ⁻¹(D) = A` and
+  -- `f(λz) = f(z)` it reads `∫⁻_A f dHⁿ = λ⁻ⁿ ∫⁻_D f dHⁿ`.
+  have h := (Submission.euclid_hausdorff_dilation_change_of_variables P n lam hlam
+    ((fun x : Euclid P => lam • x) '' A)).2.1 f
+  rw [hpre] at h
+  simp only [hf] at h
+  -- Steps 4–5: `ν(A) = λ⁻ⁿ ν(D)` by `withDensity_apply` (`A`, `D` Borel), and
+  -- `ofReal(λⁿ) ofReal(λ⁻ⁿ) = ofReal((λλ⁻¹)ⁿ) = 1`.
+  rw [withDensity_apply _ hD, withDensity_apply _ hA, h, ← mul_assoc,
+    ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
+    ENNReal.ofReal_one, one_mul]
+
+/-- **The domains `G = η_{x,λ}(B₂(0))` of the rescaled currents** (Simon 7.3.3, proof of 3.3(1),
+item (9), chapter-07.txt lines 445–467: the limits of `η_{xᵢ,λᵢ#}T` with `λᵢ → λ > 0` live on
+`η_{x,λ}(U)`).  For `λ > 0`: (a) `v ∈ G` iff `‖x + λv‖ < 2`; (b) `G` is open; (c) if `λ ≤ 1` and
+`‖x‖ ≤ 1 − λ`, then `B₂(0) ⊆ G`, and `closedBall 0 R ⊆ G` whenever `λR ≤ 1`.
+`η_{x,λ}(u) = λ⁻¹(u − x)` has inverse `v ↦ x + λv`, which gives (a); (b) follows from (a) by
+`isOpen_lt`; (c) follows from (a) and `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ ≤ 1 − λ + λ‖v‖`. -/
+theorem Submission.idtp_fons_cc_psf_domain_geometry : ∀ (P : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2) ∧ IsOpen (dilation x lam '' ball 0 2) ∧ (lam ≤ 1 → ‖x‖ ≤ 1 - lam → ball 0 2 ⊆ dilation x lam '' ball 0 2 ∧ ∀ R : ℝ, lam * R ≤ 1 → closedBall 0 R ⊆ dilation x lam '' ball 0 2) := by
+  intro P x lam hlam
+  -- Step 1: `η(u) = −λ⁻¹x + λ⁻¹u = λ⁻¹(u − x)`.
+  have hη : ∀ u : Euclid P, dilation x lam u = lam⁻¹ • (u - x) := by
+    intro u
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [neg_add_eq_sub, smul_sub]
+  -- Steps 2–3, (a): `v = η(u)` iff `u = x + λv`, so `v ∈ η(B₂(0))` iff `‖x + λv‖ < 2`.
+  have ha : ∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2 := by
+    intro v
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      rw [hη, smul_smul, mul_inv_cancel₀ hlam.ne', one_smul, add_sub_cancel]
+      exact mem_ball_zero_iff.1 hu
+    · intro hv
+      refine ⟨x + lam • v, mem_ball_zero_iff.2 hv, ?_⟩
+      rw [hη, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+  refine ⟨ha, ?_, fun hlam1 hx => ⟨fun v hv => ?_, fun R hR v hv => ?_⟩⟩
+  -- Step 4, (b): `G = {v | ‖x + λv‖ < 2}` is a strict sublevel set of a continuous function.
+  · have hc : Continuous fun v : Euclid P => ‖x + lam • v‖ := by fun_prop
+    rw [show dilation x lam '' ball 0 2 = {v | ‖x + lam • v‖ < 2} from Set.ext ha]
+    exact isOpen_lt hc continuous_const
+  -- Step 5, (c): `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ < (1 − λ) + 2λ ≤ 2` for `‖v‖ < 2`.
+  · have hv' : lam * ‖v‖ < lam * 2 := mul_lt_mul_of_pos_left (mem_ball_zero_iff.1 hv) hlam
+    rw [ha]
+    calc ‖x + lam • v‖ ≤ ‖x‖ + ‖lam • v‖ := norm_add_le _ _
+      _ = ‖x‖ + lam * ‖v‖ := by rw [norm_smul_of_nonneg hlam.le]
+      _ < 2 := by linarith
+  -- Step 6, (c): `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ ≤ (1 − λ) + λR ≤ 2 − λ < 2` for `‖v‖ ≤ R`, `λR ≤ 1`.
+  · have hv' : lam * ‖v‖ ≤ lam * R :=
+      mul_le_mul_of_nonneg_left (mem_closedBall_zero_iff.1 hv) hlam.le
+    rw [ha]
+    calc ‖x + lam • v‖ ≤ ‖x‖ + ‖lam • v‖ := norm_add_le _ _
+      _ = ‖x‖ + lam * ‖v‖ := by rw [norm_smul_of_nonneg hlam.le]
+      _ < 2 := by linarith
+
+/-- **Transferred lower mass bound for the rescaled measures** (positive-scale family of the cone
+class in the proof of Simon 7.3.3(1), chapter-07.txt lines 420–476: the "rescaling and translation"
+reducing (2) to (4), and the family (10)–(11)).  Let `μ₀ = r⁻ⁿ η_{z,r#}(μ⌞B_{2r}(z))` and
+`μ₀^{x,λ} = λ⁻ⁿ η_{x,λ#}μ₀`.  If `e^{−Λ₀σ} ωₙ σⁿ ≤ μ(B_σ(p))` for every `p ∈ spt μ` and
+`0 < σ < ρ'` with `B̄_{ρ'}(p) ⊆ B̄_{2r}(z)`, then `e^{−rΛ₀ρ} ωₙ ρⁿ ≤ μ₀^{x,λ}(B_ρ(y))` whenever
+`0 < λ ≤ 1`, `ρ > 0`, `B̄_ρ(y) ⊆ η_{x,λ}(B₂(0))` and `y ∈ spt μ₀^{x,λ}`.  With `s = rλ` and
+`p = z + r(x + λy)`: `η_{a,t}⁻¹(B_σ(w)) = B_{tσ}(a + tw)` gives
+`μ₀^{x,λ}(B_σ(y)) = λ⁻ⁿ r⁻ⁿ μ(B_{sσ}(p) ∩ B_{2r}(z))`; the membership test of
+`Submission.idtp_fons_cc_psf_domain_geometry` gives `B̄_{sρ}(p) ⊆ B_{2r}(z)`, so the intersection
+drops for `σ ≤ ρ` and `p ∈ spt μ`; compactness gives a margin `δ > 0` with
+`B̄_{sρ+δ}(p) ⊆ B_{2r}(z)`; finally the bound at `p` with `σ = sρ` is rescaled by `λ⁻ⁿ r⁻ⁿ`, and
+`e^{−rΛ₀ρ} ≤ e^{−Λ₀sρ}` as `Λ₀ ≥ 0`, `λ ≤ 1`. -/
+theorem Submission.idtp_fons_cc_psf_lower_bound : ∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → ∀ Λ₀ : ℝ, 0 ≤ Λ₀ → (∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ closedBall z (2 * r) → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ₀ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ μ (ball p σ)) → ∀ (x y : Euclid P) (lam ρ : ℝ), 0 < lam → lam ≤ 1 → 0 < ρ → closedBall y ρ ⊆ dilation x lam '' ball 0 2 → (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ρ) := by
+  intro P n μ μ₀ z r hr hμ₀ Λ₀ hΛ₀ hμ x y lam ρ hlam hlam1 hρ hsub hspt
+  have hs : 0 < r * lam := mul_pos hr hlam
+  -- Step 1: `η_{a,t}(v) = t⁻¹(v − a)` is continuous, hence measurable, and
+  -- `η_{a,t}⁻¹(B_σ(w)) = B_{tσ}(a + tw)` for `t > 0`.
+  have hmeas : ∀ (a : Euclid P) (t : ℝ), Measurable (dilation a t) := fun a t =>
+    (continuous_const.add (dilationCLM P t).continuous).measurable
+  have hpre : ∀ (a w : Euclid P) (t σ : ℝ), 0 < t →
+      dilation a t ⁻¹' ball w σ = ball (a + t • w) (t * σ) := by
+    intro a w t σ ht
+    ext v
+    have hv : dilation a t v - w = t⁻¹ • (v - (a + t • w)) := by
+      simp only [dilation, dilationCLM, FunLike.coe_smul, ContinuousLinearMap.coe_id',
+        Pi.smul_apply, id_eq]
+      rw [smul_sub t⁻¹ v (a + t • w), smul_add, smul_smul, inv_mul_cancel₀ ht.ne', one_smul]
+      abel
+    simp only [mem_preimage, mem_ball, dist_eq_norm]
+    rw [hv, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht.le), inv_mul_lt_iff₀ ht]
+  -- Step 2: the ball formula `μ₀^{x,λ}(B_σ(y)) = λ⁻ⁿ r⁻ⁿ μ(B_{rλσ}(p) ∩ B_{2r}(z))`.
+  obtain ⟨p, hp⟩ : ∃ p : Euclid P, p = z + r • (x + lam • y) := ⟨_, rfl⟩
+  have hball : ∀ σ : ℝ, (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y σ) =
+      ENNReal.ofReal (lam⁻¹ ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) *
+        μ (ball p (r * (lam * σ)) ∩ ball z (2 * r))) := by
+    intro σ
+    rw [Measure.smul_apply, smul_eq_mul, Measure.map_apply (hmeas x lam) measurableSet_ball,
+      hpre x y lam σ hlam, hμ₀, Measure.smul_apply, smul_eq_mul,
+      Measure.map_apply (hmeas z r) measurableSet_ball, hpre z (x + lam • y) r (lam * σ) hr, ← hp,
+      Measure.restrict_apply measurableSet_ball]
+  -- Step 3: `B̄_{rλρ}(p) ⊆ B_{2r}(z)`: for `q` in the closed ball, `u = y + (rλ)⁻¹(q − p)` lies in
+  -- `B̄_ρ(y) ⊆ η_{x,λ}(B₂(0))`, so `‖x + λu‖ < 2` (domain_geometry (a)), and `x + λu = r⁻¹(q − z)`.
+  have hDG := Submission.idtp_fons_cc_psf_domain_geometry P x lam hlam
+  have hcont : closedBall p (r * (lam * ρ)) ⊆ ball z (2 * r) := by
+    intro q hq
+    rw [mem_closedBall, dist_eq_norm] at hq
+    have hu : y + (r * lam)⁻¹ • (q - p) ∈ closedBall y ρ := by
+      rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg (inv_nonneg.2 hs.le), inv_mul_le_iff₀ hs]
+      linarith
+    have h2 := (hDG.1 _).1 (hsub hu)
+    have hxu : x + lam • (y + (r * lam)⁻¹ • (q - p)) = r⁻¹ • (q - z) := by
+      rw [hp]
+      match_scalars <;> field_simp <;> ring
+    rw [hxu, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le), inv_mul_lt_iff₀ hr] at h2
+    rw [mem_ball, dist_eq_norm]
+    linarith
+  -- Step 4: for `σ ≤ ρ` the intersection with `B_{2r}(z)` drops.
+  have hball' : ∀ σ : ℝ, σ ≤ ρ →
+      (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y σ) =
+        ENNReal.ofReal (lam⁻¹ ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) * μ (ball p (r * (lam * σ)))) := by
+    intro σ hσ
+    have hle : r * (lam * σ) ≤ r * (lam * ρ) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hσ hlam.le) hr.le
+    rw [hball σ, inter_eq_left.2
+      (ball_subset_closedBall.trans ((closedBall_subset_closedBall hle).trans hcont))]
+  -- Step 5: `p ∈ spt μ`: with `σ = min(ρ, ε/(rλ))`, `μ₀^{x,λ}(B_σ(y)) ≠ 0` forces
+  -- `μ(B_{rλσ}(p)) ≠ 0`, and `B_{rλσ}(p) ⊆ B_ε(p)`.
+  have hp_spt : ∀ ε : ℝ, 0 < ε → μ (ball p ε) ≠ 0 := by
+    intro ε hε h0
+    obtain ⟨σ, hσdef⟩ : ∃ σ : ℝ, σ = min ρ (ε / (r * lam)) := ⟨_, rfl⟩
+    have hσ : 0 < σ := hσdef ▸ lt_min hρ (div_pos hε hs)
+    have hσε : r * (lam * σ) ≤ ε := by
+      have h := hσdef ▸ min_le_right ρ (ε / (r * lam))
+      rw [le_div_iff₀ hs] at h
+      linarith
+    apply hspt σ hσ
+    rw [hball' σ (hσdef ▸ min_le_left _ _), measure_mono_null (ball_subset_ball hσε) h0, mul_zero,
+      mul_zero]
+  -- Step 6: a margin `δ > 0` with `B̄_{rλρ+δ}(p) ⊆ B_{2r}(z)` (compactness of `B̄_{rλρ}(p)`).
+  obtain ⟨δ, hδ, hδsub⟩ := (isCompact_closedBall p (r * (lam * ρ))).exists_cthickening_subset_open
+    isOpen_ball hcont
+  rw [cthickening_closedBall hδ.le (mul_pos hr (mul_pos hlam hρ)).le] at hδsub
+  -- Step 7: the hypothesis on `μ` at `p` with `σ = rλρ < ρ' = rλρ + δ`.
+  have h7 := hμ p hp_spt (r * (lam * ρ)) (δ + r * (lam * ρ))
+    (hδsub.trans ball_subset_closedBall) (by positivity) (by linarith)
+  -- Step 8: `λ⁻ⁿ r⁻ⁿ (rλρ)ⁿ = ρⁿ`.
+  have hkey : ENNReal.ofReal (lam⁻¹ ^ n) * ENNReal.ofReal (r⁻¹ ^ n) *
+      ENNReal.ofReal ((r * (lam * ρ)) ^ n) = ENNReal.ofReal (ρ ^ n) := by
+    have hc : lam⁻¹ * r⁻¹ * (r * (lam * ρ)) = ρ := by
+      field_simp
+    rw [← ENNReal.ofReal_mul (pow_nonneg (inv_nonneg.2 hlam.le) n),
+      ← ENNReal.ofReal_mul (mul_nonneg (pow_nonneg (inv_nonneg.2 hlam.le) n)
+        (pow_nonneg (inv_nonneg.2 hr.le) n)), ← mul_pow, ← mul_pow, hc]
+  -- Step 9: `e^{−rΛ₀ρ} ≤ e^{−Λ₀rλρ}`, since `Λ₀rρ(1 − λ) ≥ 0`.
+  have hexp : ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) ≤
+      ENNReal.ofReal (Real.exp (-(Λ₀ * (r * (lam * ρ))))) := by
+    apply ENNReal.ofReal_le_ofReal
+    rw [Real.exp_le_exp]
+    have h := mul_nonneg (mul_nonneg (mul_nonneg hΛ₀ hr.le) hρ.le) (sub_nonneg.2 hlam1)
+    linarith
+  rw [hball' ρ le_rfl]
+  calc ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n))
+      ≤ ENNReal.ofReal (Real.exp (-(Λ₀ * (r * (lam * ρ))))) *
+          (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) := by gcongr
+    _ = ENNReal.ofReal (lam⁻¹ ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) *
+          (ENNReal.ofReal (Real.exp (-(Λ₀ * (r * (lam * ρ))))) *
+            (unitBallVolume n * ENNReal.ofReal ((r * (lam * ρ)) ^ n)))) := by
+        rw [← hkey]
+        ring
+    _ ≤ ENNReal.ofReal (lam⁻¹ ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) * μ (ball p (r * (lam * ρ)))) := by
+        gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
