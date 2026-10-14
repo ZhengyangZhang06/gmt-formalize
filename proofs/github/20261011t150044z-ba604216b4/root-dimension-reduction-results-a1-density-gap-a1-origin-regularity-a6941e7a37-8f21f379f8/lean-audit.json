@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e6806e3291bc8cbddb3d210e2948f02403cff93d04f6f9b0e03074fc8cb56913",
+  "git_delta": {
+    "base_commit": "debad2d1f6eef57ee04878884d8a4636f3916c4f",
+    "candidate_commit": "4da145b33b3f6003d1b1c21857cc871c51a9d466",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cdg_or_minimizing_firstVariation_eq_zero",
+    "diff_sha256": "fceabcb89eb10a0181a2753eae93ba86107c5ebee162babd6787b77a3873289b",
+    "source_sha256": "d31fb1d65cc22b116526aff0a56e97a6c86b42914d50a43c72eb6f8e5d7f7573",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cdg_or_minimizing_firstVariation_eq_zero",
+      "statement": "∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (R : IMRep (univ : Set (Euclid P)) j), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → C.support.Nonempty → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
