@@ -451,6 +451,52 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Geometry of the cube `Q_r = {t ∈ G : |⟨gᵢ, t⟩| ≤ r ∀ i}` and of `Q_r + K`** (Simon, Ch. 7,
+3.5, the splitting lemma, whose proof is left to the reader).  Let `g` be orthonormal with span
+`G`, `q = p_{G^⊥}` and `K ⊆ G^⊥` compact.  Every `t ∈ G` is `t = Σᵢ ⟨gᵢ, t⟩ gᵢ`, so
+`‖t‖ ≤ Σᵢ |⟨gᵢ, t⟩| ≤ k r` on `Q_r`; `Q_r` is closed (`G` is finite-dimensional), hence compact,
+and `Q_r + K` is compact as the image of `Q_r × K` under addition.  For `x = t + y` with `t ∈ Q_r`,
+`y ∈ K`: `⟨gᵢ, y⟩ = 0` gives `⟨gᵢ, x⟩ = ⟨gᵢ, t⟩`, and `q(t) = 0` (`t ∈ G ⊆ G^⊥⊥`), `q(y) = y`
+give `q(x) = y ∈ K`. -/
+theorem Submission.dimred_cs_sos_mt_cc_cube_sum_geometry : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (K : Set (Euclid P)), Orthonormal ℝ g → IsCompact K → K ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → IsCompact {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ∧ IsCompact (Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K) ∧ Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K := by
+  intro P k g r K hg hK hKG
+  -- Step 1: every `t ∈ G` expands as `t = Σᵢ ⟨gᵢ, t⟩ gᵢ`, by orthonormality
+  have hexp : ∀ t ∈ Submodule.span ℝ (Set.range g), ∑ i, inner ℝ (g i) t • g i = t := by
+    intro t ht
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp ht
+    simp only [hg.inner_right_fintype]
+  -- Step 2: `Q_r` is closed, as `G` is a finite-dimensional subspace
+  have hQc : IsClosed {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    rw [ofPred_and, ofPred_forall]
+    exact (Submodule.span ℝ (Set.range g)).closed_of_finiteDimensional.inter
+      (isClosed_iInter fun i => isClosed_le (continuous_const.inner continuous_id).abs
+        continuous_const)
+  -- Step 3: `Q_r` is bounded, `‖t‖ ≤ Σᵢ |⟨gᵢ, t⟩| ≤ k r`
+  have hQb : Bornology.IsBounded
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    refine (isBounded_closedBall (x := (0 : Euclid P)) (r := k * r)).subset fun t ht => ?_
+    rw [mem_closedBall_zero_iff, ← hexp t ht.1]
+    calc ‖∑ i, inner ℝ (g i) t • g i‖ ≤ ∑ i, ‖inner ℝ (g i) t • g i‖ := norm_sum_le _ _
+      _ = ∑ i, |inner ℝ (g i) t| := by simp [norm_smul, hg.1]
+      _ ≤ ∑ _i : Fin k, r := Finset.sum_le_sum fun i _ => ht.2 i
+      _ = k * r := by simp
+  -- Step 4: `Q_r` is compact, and so is `Q_r + K`, the image of `Q_r × K` under addition
+  have hQK := isCompact_of_isClosed_isBounded hQc hQb
+  refine ⟨hQK, by simpa only [← image2_add] using hQK.add hK, ?_⟩
+  -- Step 5: for `x = t + y`, `⟨gᵢ, x⟩ = ⟨gᵢ, t⟩` and `q(x) = q(t) + q(y) = 0 + y`
+  rintro x ⟨t, ht, y, hy, rfl⟩
+  have hyG : y ∈ (Submodule.span ℝ (Set.range g))ᗮ := hKG hy
+  refine ⟨fun i => ?_, ?_⟩
+  · have h0 : inner ℝ (g i) y = 0 :=
+      Submodule.inner_right_of_mem_orthogonal (Submodule.subset_span (mem_range_self i)) hyG
+    simpa only [inner_add_right, h0, add_zero] using ht.2 i
+  · have htq : (Submodule.span ℝ (Set.range g))ᗮ.starProjection t = 0 :=
+      (Submodule.starProjection_apply_eq_zero_iff _).mpr
+        (Submodule.le_orthogonal_orthogonal _ ht.1)
+    have hyq : (Submodule.span ℝ (Set.range g))ᗮ.starProjection y = y :=
+      Submodule.starProjection_eq_self_iff.mpr hyG
+    simpa only [mem_preimage, map_add, htq, hyq, zero_add] using hy
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
