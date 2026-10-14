@@ -1,0 +1,27 @@
+# Parent-supplied child implementation contract
+
+This scaffold was created deterministically by the controller. DAG child
+`root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1` must not run plan generation or natural-language proof generation.
+Use the independently reviewed proof at `.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-supplied-natural-proof.md` directly.
+
+## Frozen theorem
+
+- Parent node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1`
+- Child key: `image_representation`
+- Declaration: `Submission.dpf_imrep_bilipschitz_image_rep`
+- Exact Lean type: `∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, R'.action (ω : DifferentialForm (Euclid P) n) = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]`
+
+## Sibling prerequisites
+
+- `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1`
+- `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1`
+- `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1`
+- `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1`
+
+## Implementation steps
+
+1. Read the complete parent-supplied natural-language proof.
+2. Formalize exactly the frozen theorem without weakening or replacing it.
+3. Use only the listed accepted sibling prerequisites and ordinary frozen proof-base helpers.
+4. Run the configured author-side child comparator and return a committed candidate. The outer
+   controller, not this nested implementation loop, owns the independent reviewer comparator.

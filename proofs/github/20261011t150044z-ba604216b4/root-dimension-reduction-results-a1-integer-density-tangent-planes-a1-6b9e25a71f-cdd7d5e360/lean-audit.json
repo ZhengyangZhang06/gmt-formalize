@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a0cefacb619ab628b792d5c1a58c720c9e940be4dce99211969d41c5e190196d",
+  "git_delta": {
+    "base_commit": "f0eda3888c45d0048ddb38d4571a04d60cce8a84",
+    "candidate_commit": "1f7ef1baa25925cb574768e734c83d8c0f90f71b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_mlb_univ_monotonicity_density",
+    "diff_sha256": "e3a293a40668598a4c6f655e3b41b7f34faf0250aa2038275ac590353a16f372",
+    "source_sha256": "e7f0a8dfe4438648a11d8fd99a6093dce2bea9e209df28b1e7a27dffe9f1ec4a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_mlb_univ_monotonicity_density",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → (∀ y : Euclid P, MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * C.massOn (ball y ρ)) (Ioi 0)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ) ∧ ∀ y ∈ C.support, ∀ θ : ℝ, HasMassDensity C y θ → 1 ≤ θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
