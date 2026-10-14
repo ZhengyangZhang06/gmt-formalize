@@ -19728,6 +19728,54 @@ theorem Submission.dimred_cs_sos_minimality_transfer : ∀ (P n : ℕ) (S : Geom
     rw [hrr]
   linarith
 
+/-- **Simon 7.3.5** (chapter-07.txt lines 410–418, proof "left to the reader"): a minimizing
+cone `S = τ(M, θ, ξ)` in `ℝᴾ` with `∂S = 0` that is invariant under the translations `τ_v`,
+`v ∈ L`, where `d = dim L < n` and `L ⊆ TₓM` for `μ`-a.e. `x`, splits off its spine:
+`S = [[L]] × S₀` for an integer multiplicity `S₀ ∈ 𝒟_{n−d}(ℝᴾ)` that is minimizing in `L⊥`, has
+`∂S₀ = 0`, is a cone, has `spt S₀ ⊆ L⊥`, `μ₀(ℝᴾ ∖ L⊥) = 0` and `μ(A) = ∫_L μ₀(A − t) dHᵈ(t)`.
+If `d = 0`, then `L = {0}`, `L⊥ = ℝᴾ` and `H⁰⌞{0}` is the unit point mass at `0`, so `S₀ = S`,
+`R₀ = R` work.  If `d ≥ 1`, fix an orthonormal basis `f₁, …, f_d` of `L`.  Slicing by the
+projection onto `L` and the translation invariance give `S₀ = τ(R₀)` with the support, null-set
+and measure statements and `S(ω) = ∫_L S₀(♭ω(t + ·)) dHᵈ(t)`, `♭α(v) = α(f₁, …, f_d, v)`
+(`dimred_cs_sos_product_decomposition`).  Testing this identity with the forms
+`ϕ(px) dt¹ ∧ ⋯ ∧ dtᵈ ∧ q^#β` passes `∂S = 0` and the cone property to `S₀`
+(`dimred_cs_sos_boundary_cone_transfer`), and the competitors
+`S + [[Q_R]] × X₀ − (−1)^{d−1}[[∂Q_R]] × (0 ⨯ X₀)` show that `S₀` is minimizing in `L⊥`
+(`dimred_cs_sos_minimality_transfer`). -/
+theorem Submission.dimred_cs_split_off_spine : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), Module.finrank ℝ L < n → n ≤ P → IsMinimizingIn S univ → BoundaryVanishes S → IsConeCurrent S → (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) → R.Represents S → (∀ᵐ x ∂R.measure, ∀ v ∈ L, (approxTangentPlane n R.carrier x).starProjection v = v) → ∃ (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), R₀.Represents S₀ ∧ IsMinimizingIn S₀ (Lᗮ : Set (Euclid P)) ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L] := by
+  intro P n S R L hd _hnP hmin hbd hcone htrans hR htan
+  rcases Nat.eq_zero_or_pos (Module.finrank ℝ L) with hd0 | hdpos
+  · -- `d = 0`: `L = {0}`, so `L⊥ = ℝᴾ` and `n − d = n`; take `S₀ = S` and `R₀ = R`.
+    obtain rfl : L = ⊥ := Submodule.finrank_eq_zero.mp hd0
+    rw [hd0, Nat.sub_zero, Submodule.bot_orthogonal_eq_top, Submodule.top_coe,
+      Submodule.bot_coe]
+    refine ⟨S, R, hR, hmin, hbd, hcone, subset_univ _, by rw [compl_univ, measure_empty],
+      fun A _ => ?_⟩
+    -- `∫_{{0}} μ(A − t) dH⁰(t) = μ(A) H⁰({0}) = μ(A)`: `H⁰ = μH[0]` is the counting measure.
+    rw [lintegral_singleton, Measure.euclideanHausdorffMeasure_zero,
+      Measure.hausdorffMeasure_zero_singleton, mul_one]
+    simp only [zero_add, preimage_id']
+  · -- `d ≥ 1`: an orthonormal basis `f₁, …, f_d` of `L`.
+    obtain ⟨f, hf, hfL⟩ : ∃ f : Fin (Module.finrank ℝ L) → Euclid P,
+        Orthonormal ℝ f ∧ ∀ i, f i ∈ L :=
+      ⟨L.subtypeₗᵢ ∘ stdOrthonormalBasis ℝ L,
+        (stdOrthonormalBasis ℝ L).orthonormal.comp_linearIsometry L.subtypeₗᵢ,
+        fun i => (stdOrthonormalBasis ℝ L i).2⟩
+    -- `S = [[L]] × S₀`: `S₀ = τ(R₀)`, `spt S₀ ⊆ L⊥`, `μ₀(ℝᴾ ∖ L⊥) = 0`, `μ = Hᵈ⌞L ⊗ μ₀` and
+    -- `S(ω) = ∫_L S₀(♭ω(t + ·)) dHᵈ(t)`.
+    obtain ⟨S₀, R₀, hR₀, hspt, hnull, hmeas, hprod⟩ :=
+      Submission.dimred_cs_sos_product_decomposition P n S R L f hd hdpos hf hfL htrans hR htan
+    -- `∂S = 0` and the cone property pass to `S₀`.
+    obtain ⟨hbd₀, hcone₀⟩ :=
+      Submission.dimred_cs_sos_boundary_cone_transfer P n S L f S₀ R₀ hd hdpos hf hfL hR₀ hnull
+        hprod
+    have hbdS₀ : BoundaryVanishes S₀ := hbd₀ hbd
+    -- Minimality passes to `S₀`: otherwise large-cube product competitors would beat `S`.
+    have hmin₀ : IsMinimizingIn S₀ (Lᗮ : Set (Euclid P)) :=
+      Submission.dimred_cs_sos_minimality_transfer P n S R L f S₀ R₀ hd hdpos hf hfL hmin hR hR₀
+        hbdS₀ hnull hmeas hprod
+    exact ⟨S₀, R₀, hR₀, hmin₀, hbdS₀, hcone₀ hcone, hspt, hnull, hmeas⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
