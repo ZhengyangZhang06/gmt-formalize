@@ -928,6 +928,31 @@ theorem Submission.idtp_convergesWeakly_massOn_le : ∀ (P n : ℕ) (Us : ℕ �
     dite_eq_left h
   rw [heval]
   exact ((Ts j).le_massOn (W := W) (omega := ⟨_, h⟩) hω).trans hB
+/-- **The dilation `η_{x,λ}` maps `B_ρ(x)` onto `B_{ρ/λ}(0)`** (Simon 7.3, `η_{x,λ}(y) = λ⁻¹(y − x)`,
+`λ > 0`).  Since `‖η(y)‖ = λ⁻¹‖y − x‖`, `η⁻¹(B_{ρ/λ}(0)) = B_ρ(x)`; and since `η(x + λz) = z`,
+`η(B_ρ(x)) = B_{ρ/λ}(0)`.  No sign condition on `ρ` is needed (both sides are empty if `ρ ≤ 0`). -/
+theorem Submission.dtc_bc_cz_blowUp_eval_dilation_ball : ∀ (P : ℕ) (x : Euclid P) (ρ lam : ℝ), 0 < lam → dilation x lam ⁻¹' ball 0 (ρ / lam) = ball x ρ ∧ dilation x lam '' ball x ρ = ball 0 (ρ / lam) := by
+  intro P x ρ lam hlam
+  -- Step 1: `η(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x)`.
+  have h1 : ∀ y, dilation x lam y = lam⁻¹ • (y - x) := by
+    intro y
+    simp [dilation, dilationCLM, sub_eq_neg_add]
+  -- Step 2: `η(y) ∈ B_{ρ/λ}(0) ↔ λ⁻¹‖y − x‖ < ρ/λ ↔ ‖y − x‖ < ρ ↔ y ∈ B_ρ(x)`.
+  have hpre : dilation x lam ⁻¹' ball 0 (ρ / lam) = ball x ρ := by
+    ext y
+    rw [mem_preimage, mem_ball, mem_ball, dist_zero_right, h1, norm_smul, dist_eq_norm,
+      Real.norm_eq_abs, abs_inv, abs_of_pos hlam, lt_div_iff₀ hlam, inv_mul_eq_div,
+      div_mul_cancel₀ _ hlam.ne']
+  refine ⟨hpre, Subset.antisymm ?_ ?_⟩
+  · -- Step 3: `η(B_ρ(x)) ⊆ B_{ρ/λ}(0)` by the preimage identity.
+    rw [image_subset_iff, hpre]
+  · -- Step 4: `z = η(x + λz)` and `x + λz ∈ η⁻¹(B_{ρ/λ}(0)) = B_ρ(x)`.
+    intro z hz
+    have hz' : dilation x lam (x + lam • z) = z := by
+      rw [h1, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+    refine ⟨x + lam • z, ?_, hz'⟩
+    rw [← hpre, mem_preimage, hz']
+    exact hz
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
