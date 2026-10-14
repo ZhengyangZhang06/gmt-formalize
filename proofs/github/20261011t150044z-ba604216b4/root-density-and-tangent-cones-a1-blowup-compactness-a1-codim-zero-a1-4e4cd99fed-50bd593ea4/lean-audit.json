@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f4e5801ef3e1e9e08b4d5a5453b78184638e5404f29de7681901effb71fab452",
+  "git_delta": {
+    "base_commit": "a7dd1b7b2c5be71d9096cb43008edcc995e533e0",
+    "candidate_commit": "867fc3f583abb0c229cadff2a1c7f628526a443e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_top_density_det_covector",
+    "diff_sha256": "6f8dd8d677a56190f1c62210253b53afa28148b74dc05ff8da9b88cf04b449a9",
+    "source_sha256": "dbc04c99ad28a41e24f31ce51bc2e2e2257273bc67d49994922ca0e6c937d953",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_top_density_det_covector",
+      "statement": "∀ n : ℕ, ∃ ε : Covector (Euclid n) n, ε ⇑(EuclideanSpace.basisFun (Fin n) ℝ) = 1 ∧ (∀ (α : Covector (Euclid n) n) (v : Fin n → Euclid n), α v = ε v * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) ∧ ∀ τ : Fin n → Euclid n, Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = ⊤ → ε τ = 1 ∨ ε τ = -1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
