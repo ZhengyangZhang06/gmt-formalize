@@ -710,6 +710,61 @@ theorem Submission.idtp_cse_bml_tendsto_nhdsGT_of_subseq : ∀ (f : ℝ → ℝ�
   -- `ms j = φ j + N` gives `ns (ms j) = λ_{φ(j)}`
   exact ⟨fun j => φ j + N, hφ⟩
 
+/-- **Tilt-excess decay at a point with a multiplicity-`m` tangent plane** (the tilt-excess step
+for the 2-dimensional minimizing cones `S₀` of (15) in the proof of Simon 7.3.3(1),
+chapter-07.txt lines 499–507).  Let `R` represent `C ∈ 𝒟₂(ℝᴾ)`, `μ = R.measure`, `d = ⟨β, ξ⟩`
+with `|d| ≤ 1` `μ`-a.e. and `β(a, e) = 1`, and let every sequence `λⱼ ↓ 0` have a subsequence
+`tⱼ` with `η_{a,tⱼ#}C ⇀ C' = c ∫_Q ⟨·, a ∧ e⟩ dH²`, `|c| = m`, and `μ_{η_{a,tⱼ#}C} → m H²⌞Q`.
+Testing with `ω_ϑ = ϑβ` (`ϑ = 1` on `B₃(0)`), `η_{a,tⱼ#}C(ω_ϑ) = tⱼ⁻² ∫ (ϑ ∘ η_{a,tⱼ}) d dμ`
+tends to `c ∫_Q ϑ dH²`, while `tⱼ⁻² ∫ ϑ ∘ η_{a,tⱼ} dμ → m ∫_Q ϑ dH²`; the difference bounds
+`tⱼ⁻² ∫_{B_{3tⱼ}(a)} (1 - |d|) dμ`, so the latter tends to `0`, and hence so does
+`s⁻² ∫_{B_{3s}(a)} (1 - |d|) dμ` as `s ↓ 0`, by the subsequence criterion. -/
+theorem Submission.idtp_cse_bml_tilt_excess_decay : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (m : ℕ) (β : Covector (Euclid P) 2), R.Represents C → β ![a, e] = 1 → (∀ᵐ x ∂R.measure, |R.orient x β| ≤ 1) → (∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧ c.natAbs = m ∧ ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → Tendsto (fun s' : ℝ => (∫⁻ x in ball a (3 * s'), ENNReal.ofReal (1 - |R.orient x β|) ∂R.measure) / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 0) := by
+  intro P C R Q a e m β hRC hβ hd1 hBP
+  -- Step 0: `μ` is finite on compacts and `d = ⟨β, ξ⟩` is a.e. strongly measurable
+  obtain ⟨-, -, -, -, hloc, horient, -⟩ := Submission.cbr_imRep_measure_basic P 2 univ R
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → R.measure K < ∞ :=
+    fun K hK => hloc K hK (subset_univ K)
+  have hdm : AEStronglyMeasurable (fun x => R.orient x β) R.measure :=
+    (ContinuousLinearMap.apply ℝ ℝ β).continuous.comp_aestronglyMeasurable horient
+  -- Step 3: the cutoff `ϑ` (`= 1` on `B₃(0)`) and the test form `ω_ϑ = ϑβ`
+  obtain ⟨ϑ, ω, hϑc, hϑcs, hϑ01, hϑ1, hω⟩ :=
+    Submission.idtp_cse_bml_td_cutoff_test_form P 2 3 β (by norm_num)
+  -- Step 1: by the subsequence criterion it suffices to treat sequences `λⱼ → 0⁺`
+  refine Submission.idtp_cse_bml_tendsto_nhdsGT_of_subseq _ 0 fun lams hlams hlim => ?_
+  -- Step 2: the subsequence `tⱼ = λ_{φ(j)}`, the limit `C'` and the multiplicity `c` of (BP)
+  obtain ⟨φ, C', c, hφ, hc, hconv, hC', hmass⟩ := hBP lams hlams hlim
+  refine ⟨φ, hφ, ?_⟩
+  -- Step 4: `C'(ω_ϑ) = c ∫_Q ϑ dH²`, since `ω_ϑ(x)(a, e) = ϑ(x) β(a, e) = ϑ(x)`
+  have hC'ω : C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), ϑ x ∂μHE[2] := by
+    rw [hC' ω]
+    congr 1
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [hω x, ContinuousAlternatingMap.smul_apply, hβ, smul_eq_mul, mul_one]
+  -- Steps 4–5: `tⱼ⁻² ∫ ϑ(η_{a,tⱼ}(y)) ⟨β, ξ(y)⟩ dμ = η_{a,tⱼ#}C(ω_ϑ) → c ∫_Q ϑ dH²`
+  have hV : Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 *
+      ∫ y, ϑ (dilation a (lams (φ j)) y) * R.orient y β ∂R.measure) atTop
+      (𝓝 ((c : ℝ) * ∫ x in (Q : Set (Euclid P)), ϑ x ∂μHE[2])) := by
+    have h := hconv ω
+    rw [hC'ω] at h
+    exact h.congr fun j => Submission.idtp_cse_bml_td_blowUp_smul_form_eval P 2 C R a
+      (lams (φ j)) (hlams (φ j)) ϑ β ω hRC hω
+  -- Step 7: `tⱼ⁻² ∫ ϑ ∘ η_{a,tⱼ} dμ → m ∫_Q ϑ dH²` by (BP) and `m = |c|`, so the bound
+  -- `tⱼ⁻² ∫ ϑ ∘ η_{a,tⱼ} dμ - |η_{a,tⱼ#}C(ω_ϑ)|` tends to `m ∫_Q ϑ - |c ∫_Q ϑ| = 0`
+  have hD : Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, ϑ (dilation a (lams (φ j)) x) ∂R.measure -
+      |(lams (φ j))⁻¹ ^ 2 * ∫ x, ϑ (dilation a (lams (φ j)) x) * R.orient x β ∂R.measure|)
+      atTop (𝓝 0) := by
+    have hI : 0 ≤ ∫ x in (Q : Set (Euclid P)), ϑ x ∂μHE[2] := integral_nonneg fun x => (hϑ01 x).1
+    have hm : (m : ℝ) = |(c : ℝ)| := by rw [← hc, Nat.cast_natAbs, Int.cast_abs]
+    have h := (hmass ϑ hϑc hϑcs).sub hV.abs
+    rwa [abs_mul, abs_of_nonneg hI, hm, sub_self] at h
+  -- Steps 8–9: `0 ≤ X(tⱼ)/tⱼ² ≤ ofReal(tⱼ⁻² ∫ ϑ ∘ η_{a,tⱼ} dμ - |η_{a,tⱼ#}C(ω_ϑ)|) → 0`
+  have hD' := ENNReal.tendsto_ofReal hD
+  rw [ENNReal.ofReal_zero] at hD'
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hD' (fun _ => zero_le)
+    fun j => Submission.idtp_cse_bml_td_excess_bound P R.measure (fun x => R.orient x β) ϑ a
+      (lams (φ j)) (hlams (φ j)) hfin hdm hd1 hϑc hϑcs (fun x => (hϑ01 x).1) hϑ1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
