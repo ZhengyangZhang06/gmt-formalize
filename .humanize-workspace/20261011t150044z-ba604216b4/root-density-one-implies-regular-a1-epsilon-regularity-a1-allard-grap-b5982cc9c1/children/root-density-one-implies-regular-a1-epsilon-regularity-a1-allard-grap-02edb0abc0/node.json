@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1.hs_operator_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_height-a1",
+  "depth": 5,
+  "title": "Operator norm bounded by the Hilbert–Schmidt norm",
+  "statement": "For every P ∈ ℕ, every (continuous) linear map A : ℝ^P → ℝ^P (Lean: A : Euclid P →L[ℝ] Euclid P; every linear map on ℝ^P is continuous) and every v ∈ ℝ^P: |Av|² ≤ (Σ_{i=1}^{P} |A e_i|²)·|v|², where e_i = EuclideanSpace.single i 1 is the standard basis; equivalently the operator norm is bounded by the Hilbert–Schmidt norm, ‖A‖ ≤ |A| := (Σ_i |A e_i|²)^{1/2}.",
+  "lean_statement": "∀ (P : ℕ) (A : Euclid P →L[ℝ] Euclid P) (v : Euclid P), ‖A v‖ ^ 2 ≤ (∑ i : Fin P, ‖A (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) * ‖v‖ ^ 2",
+  "lean_name": "dorag_th_norm_apply_sq_le_hs",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-02edb0abc0-a1"
+}
