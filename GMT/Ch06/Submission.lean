@@ -42863,6 +42863,31 @@ theorem Submission.deformation_theorem : DeformationTheorem := by
         ring
     exact hSim hS''im
 
+/-- **Simon Ch. 6, 6.2 (Weak Polyhedral Approximation Theorem, p. 169).**  The printed second
+paragraph (slicing 4.5 by an exhaustion function) gives integer multiplicity truncations
+`X_k = T ⌞ {φ > λ_k}`, extended to `ℝ^{m+1+ℓ}`, with `M(X_k) + M(∂X_k) < ∞` and `X_k(ω) = T(ω)`
+for large `k`; the printed first paragraph (deformation theorem 5.3 at scales `ρ_k ↓ 0`) gives
+lattice chains `Pc_k` with `Pc_k(ω) - X_k(ω) → 0`.  Then `P_k := Pc_k` restricted to `U`
+converges weakly to `T` in `U`. -/
+theorem Submission.polyhedral_approximation : PolyhedralApproximation := by
+  intro m ℓ hℓ U hU T hT hmass
+  -- Truncations `X_k ∈ 𝒟_{m+1}(ℝ^{m+1+ℓ})` of `T`, via the slicing theorem.
+  obtain ⟨X, hXim, hXmass, hXT⟩ := Submission.polyhedral_approx_truncation_seq
+    Submission.slicing_theorem (m + 1 + ℓ) m U hU T hT hmass
+  -- Lattice chains `Pc_k` at scales `ρ_k ↓ 0`, via the deformation theorem.
+  obtain ⟨ρ, β, Pc, hρ, hρa, hρ0, hPc, hconv⟩ := Submission.polyhedral_approx_finite_mass_seq
+    Submission.deformation_theorem m ℓ hℓ X hXim hXmass
+  -- Restricting the domain to `U` does not change the underlying test forms.
+  refine ⟨ρ, β, fun k => (Pc k).restrictDomain (subset_univ U), hρ, hρa, hρ0,
+    fun k ω => hPc k (testFormOnInclusion (subset_univ U) (m + 1) ω), fun ω => ?_⟩
+  -- `P_k(ω) = (Pc_k(ω) - X_k(ω)) + T(ω)` for large `k`, and `Pc_k(ω) - X_k(ω) → 0`.
+  have h := (hconv (testFormOnInclusion (subset_univ U) (m + 1) ω)).add_const (T ω)
+  rw [zero_add] at h
+  refine h.congr' ?_
+  filter_upwards [hXT ω] with k hk
+  rw [hk, sub_add_cancel]
+  rfl
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
