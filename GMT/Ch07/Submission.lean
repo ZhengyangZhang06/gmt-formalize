@@ -1175,6 +1175,33 @@ theorem Submission.dor_lmb_pc_unitOrientation_comp : ∀ (P n : ℕ) (ξ : Multi
     · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
     · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
 
+/-- **A map fixing `N` to first order fixes the orientation of a triple carried by `N`** (steps
+3–4 of the projected comparison; Simon Ch. 3, §1 and Ch. 2, §4).  Let `R = (M, θ, ξ)` satisfy
+`Hⁿ(M \ N) = 0` for an embedded `C¹` submanifold `N`, and let `f(x) = x` and `Df(x)v = v` for
+`x ∈ N ∩ O` and `v ∈ TₓN`.  For `Hⁿ`-a.e. `x ∈ M`, `x ∈ N` and `ξ(x)` orients an approximate
+tangent plane `Q` of `M` at `x` (`R.orients`), and `Q ⊆ TₓN`
+(`approxTangent_le_submanifold_tangentSpace`).  If also `x ∈ O`, then `f(x) = x` and `Df(x)`
+fixes `Q`, so `ξ(x)(α ∘ Df(x)) = ξ(x)(α)` (`dor_lmb_pc_unitOrientation_comp`, part (b)). -/
+theorem Submission.dor_lmb_pc_imrep_orient_fixed_by_retraction : ∀ (P n d : ℕ) (U N O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 d N → MeasurableSet O → μHE[n] (R.carrier \ N) = 0 → (∀ x ∈ N ∩ O, f x = x) → (∀ x ∈ N ∩ O, ∀ v ∈ tangentSpace N x, fderiv ℝ f x v = v) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α := by
+  intro P n d U N O R f hN hO hnull hfix hDfix
+  -- `Hⁿ⌞M`-a.e. point lies in `N`: `Hⁿ⌞M(ℝᴾ \ N) = Hⁿ(M \ N) = 0`
+  have hMN : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ N := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null ?_ hnull
+    exact fun x hx => ⟨hx.2, hx.1⟩
+  -- with `R.orients`, pass from `Hⁿ⌞M` to `Hⁿ⌞(M ∩ O)`
+  have hMO : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), x ∈ N ∧ ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q :=
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left (hMN.and R.orients)
+  filter_upwards [hMO, ae_restrict_mem (R.measurableSet_carrier.inter hO)]
+    with x ⟨hxN, Q, hQ, hξ⟩ hx
+  have hxNO : x ∈ N ∩ O := ⟨hxN, hx.2⟩
+  -- the approximate tangent plane `Q` lies in `TₓN`, on which `Df(x)` is the identity
+  have hQN := Submission.approxTangent_le_submanifold_tangentSpace P n d N R.carrier x Q hN hxN
+    hnull hQ
+  exact ⟨hfix x hxNO, (Submission.dor_lmb_pc_unitOrientation_comp P n (R.orient x) Q
+    (fderiv ℝ f x) hξ).2 fun v hv => hDfix x hxNO v (hQN hv)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
