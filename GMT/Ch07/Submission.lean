@@ -1088,6 +1088,22 @@ theorem Submission.codim1_hcp_fcp_locally_planar_is_plane : ∀ (P m : ℕ) (A�
     uniq w hwM Hy H₀ (U Hy) (U H₀) (hUopen Hy) (hUopen H₀) hwUy hwU₀ (hUeq Hy) (hUeq H₀)
   exact ⟨hHy₀ ▸ (hOyM.subset ⟨hyOy, hy⟩).2, hM0 y hy⟩
 
+/-- **Flat cones are planes** (Simon, Appendix B, proof of Theorem B.2: from `|A| ≡ 0` to a
+hyperplane).  Let `dim A₀ = m + 1`, `m ≥ 2`, and let `M ⊆ A₀` be a nonempty embedded `C¹`
+`m`-dimensional cone with `0 ∉ M` and `M̄ ⊆ M ∪ {0}`, whose unit normal `ν ∈ A₀` has zero
+tangential derivative.  Then `M = H₀ \ {0}` for an `m`-dimensional subspace `H₀`.  Near each
+`x ∈ M`, the chain rule and the mean value theorem in a chart make `ν` and then `z ↦ ν(x) · z`
+constant, the cone rays force that constant to be `0`, and the inverse function theorem makes the
+chart image open in `A₀ ∩ ν(x)^⊥`; so `M` agrees near `x` with an `m`-plane of `A₀`.  Such a set
+is one punctured `m`-plane: `H \ {0}` is connected for `dim H ≥ 2`, `M̄ ⊆ M ∪ {0}` makes the part
+of `M` modelled on `H` closed in `H \ {0}`, and two `m`-planes of `A₀` meet away from `0`. -/
+theorem Submission.codim1_hcp_flat_cone_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M ν hm hA₀ hne hMA₀ h0 hM hcl hcone hνd hν hDν
+  -- Steps 1, 3, 4: near each `x ∈ M`, `M` coincides with an `m`-plane `H ≤ A₀`
+  have hloc := Submission.codim1_hcp_fcp_local_plane P m A₀ M ν hA₀ hMA₀ hM hcone hνd hν hDν
+  -- Steps 2, 5–8: these local planes globalize to one punctured `m`-plane `H₀ \ {0}`
+  exact Submission.codim1_hcp_fcp_locally_planar_is_plane P m A₀ M hm hA₀ hne h0 hcl hloc
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
