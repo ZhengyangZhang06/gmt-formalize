@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1",
+  "depth": 4,
+  "title": "Cone Jacobian: Gram-determinant scaling J(a, tw) = t^k J(a, w) and the bound J(a, w) ≤ ‖a‖ J(w)",
+  "statement": "Let P, k ∈ ℕ, a ∈ ℝ^P (Euclid P) and w = (w_0, …, w_{k−1}) with every w_i ∈ ℝ^P. For a finite family v = (v_0, …, v_m) of vectors of ℝ^P let Γ(v) := det[⟨v_i, v_j⟩]_{i,j}, i.e. Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) (Γ of the empty family is 1), and let J(v) := √Γ(v), with Real.sqrt, which is 0 on negative numbers. Write (a, w) := Fin.cons a w = (a, w_0, …, w_{k−1}) (a family indexed by Fin (k+1)) and, for t ∈ ℝ, t·w := (t w_0, …, t w_{k−1}). Then: (i) J(a, t·w) = t^k·J(a, w) for every t ≥ 0; (ii) J(a, w) ≤ ‖a‖·J(w).",
+  "lean_statement": "∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), (∀ t : ℝ, 0 ≤ t → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j))) = t ^ k * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)))) ∧ Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))) ≤ ‖a‖ * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j)))",
+  "lean_name": "ecf_cp_gram_cone",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9-a1"
+}

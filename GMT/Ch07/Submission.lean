@@ -509,6 +509,62 @@ theorem Submission.cmcdt_lpi_cyl_fubini : ∀ (n : ℕ) (A : Set (Euclid n)), Me
     · simp only [he]
     · rw [← Measure.volume_eq_prod, ← hpre]
       exact (hmp.integrableOn_comp_preimage e.measurableEmbedding).2 hf
+/-- The radial retraction onto the closed ball `B̄ = {z : ‖z‖ ≤ ρ}` of `ℝᴾ`, `r(y) = y` for
+`‖y‖ ≤ ρ` and `r(y) = (ρ/‖y‖)•y` otherwise, maps `ℝᴾ` into `B̄`, fixes `B̄` and is 1-Lipschitz.
+It is the nearest-point projection onto `B̄`: `⟪x - r x, z - r x⟫ ≤ 0` for `z ∈ B̄`, since
+`x - r x` is a nonnegative multiple of `x` and `⟪x, z⟫ ≤ ρ‖x‖ = ⟪x, r x⟫`.  Adding these
+inequalities for `(x, z) = (x, r y)` and `(y, r x)` gives
+`‖r x - r y‖² ≤ ⟪x - y, r x - r y⟫ ≤ ‖x - y‖ ‖r x - r y‖`. -/
+theorem Submission.ecf_cp_ball_retraction : ∀ (P : ℕ) (ρ : ℝ), 0 < ρ → ∃ r : Euclid P → Euclid P, LipschitzWith 1 r ∧ (∀ y, ‖r y‖ ≤ ρ) ∧ ∀ y, ‖y‖ ≤ ρ → r y = y := by
+  intro P ρ hρ
+  -- `r y = y` on the ball `‖y‖ ≤ ρ` and `r y = (ρ / ‖y‖) • y` outside it
+  obtain ⟨r, hr_in, hr_out⟩ : ∃ r : Euclid P → Euclid P, (∀ y, ‖y‖ ≤ ρ → r y = y) ∧
+      ∀ y, ρ < ‖y‖ → r y = (ρ / ‖y‖) • y :=
+    ⟨fun y => if ‖y‖ ≤ ρ then y else (ρ / ‖y‖) • y, fun y hy => ite_eq_left hy,
+      fun y hy => ite_eq_right (not_le.mpr hy)⟩
+  -- `‖r y‖ ≤ ρ`: outside the ball, `‖r y‖ = (ρ / ‖y‖) * ‖y‖ = ρ`
+  have hr_le : ∀ y, ‖r y‖ ≤ ρ := by
+    intro y
+    rcases le_or_gt ‖y‖ ρ with hy | hy
+    · rw [hr_in y hy]
+      exact hy
+    · have hy0 : 0 < ‖y‖ := hρ.trans hy
+      rw [hr_out y hy, norm_smul_of_nonneg (div_nonneg hρ.le hy0.le), div_mul_cancel₀ _ hy0.ne']
+  -- variational inequality `⟪x - r x, z - r x⟫ ≤ 0` for `‖z‖ ≤ ρ`
+  have hvar : ∀ x z : Euclid P, ‖z‖ ≤ ρ → inner ℝ (x - r x) (z - r x) ≤ 0 := by
+    intro x z hz
+    rcases le_or_gt ‖x‖ ρ with hx | hx
+    · rw [hr_in x hx, sub_self, inner_zero_left]
+    · have hx0 : 0 < ‖x‖ := hρ.trans hx
+      have hc : 0 ≤ 1 - ρ / ‖x‖ := by
+        rw [sub_nonneg, div_le_one hx0]
+        exact hx.le
+      -- `x - r x = (1 - ρ / ‖x‖) • x` and `⟪x, z⟫ ≤ ρ ‖x‖ = ⟪x, r x⟫`
+      have hxz : inner ℝ x z ≤ ρ * ‖x‖ :=
+        calc inner ℝ x z ≤ ‖x‖ * ‖z‖ := real_inner_le_norm x z
+          _ ≤ ‖x‖ * ρ := by gcongr
+          _ = ρ * ‖x‖ := mul_comm _ _
+      have hxx : ρ / ‖x‖ * ‖x‖ ^ 2 = ρ * ‖x‖ := by
+        field_simp
+      rw [hr_out x hx, show x - (ρ / ‖x‖) • x = (1 - ρ / ‖x‖) • x by rw [sub_smul, one_smul],
+        real_inner_smul_left, inner_sub_right, real_inner_smul_right, real_inner_self_eq_norm_sq,
+        hxx]
+      exact mul_nonpos_of_nonneg_of_nonpos hc (by linarith)
+  refine ⟨r, LipschitzWith.mk_one fun x y => ?_, hr_le, hr_in⟩
+  rw [dist_eq_norm, dist_eq_norm]
+  -- adding the variational inequalities for `(x, r y)` and `(y, r x)`
+  have h1 := hvar x (r y) (hr_le y)
+  have h2 := hvar y (r x) (hr_le x)
+  have hkey : ‖r x - r y‖ ^ 2 ≤ inner ℝ (x - y) (r x - r y) := by
+    have e : inner ℝ (x - y) (r x - r y) = ‖r x - r y‖ ^ 2 - inner ℝ (x - r x) (r y - r x)
+        - inner ℝ (y - r y) (r x - r y) := by
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_comm]
+      ring
+    linarith
+  -- Cauchy–Schwarz, then cancel `‖r x - r y‖` (the case `r x = r y` is trivial)
+  have hcs : inner ℝ (x - y) (r x - r y) ≤ ‖x - y‖ * ‖r x - r y‖ := real_inner_le_norm _ _
+  nlinarith [norm_nonneg (r x - r y), norm_nonneg (x - y)]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
