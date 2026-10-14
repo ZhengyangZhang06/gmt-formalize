@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e6e88635902740b73cda3c747e383f8d63f3957a851a678407acc5753bb280cb",
+  "git_delta": {
+    "base_commit": "6c544db52af05d3fd9c90cc9fb2554e8664359ec",
+    "candidate_commit": "8f93dc59dd63b3d831366d89c6c6a74b5144cb0f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ro_ray_isolation",
+    "diff_sha256": "57c3b5356c08dc660f8b0bb627e7753a7ab913a37cd1ff0301a928c5aa3fe834",
+    "source_sha256": "1e3a03fef7b52b4a1b31a9d82326210c2e6458fcdab49ae2b2fc1dc4c43e6039",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ro_ray_isolation",
+      "statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (e : Euclid P) (t₀ : ℝ), (∀ e' ∈ F, ‖e'‖ = 1) → ‖e‖ = 1 → 0 < t₀ → ∃ δ : ℝ, 0 < δ ∧ ball (t₀ • e) δ ∩ (⋃ e' ∈ F, (fun t : ℝ => t • e') '' Ioi 0) ⊆ (fun t : ℝ => t • e) '' Ioi 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
