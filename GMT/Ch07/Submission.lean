@@ -451,6 +451,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lebesgue points of `τ` for `Hⁿ⌞M`, normalised by `ωₙrⁿ`** (steps 5–6 of the `good_points`
+proof; Simon Ch. 1, 3.11(3), 3.12 and 3.17, in the strong form `⨍ |τ − τ(a)| → 0`).  If `M` is
+Borel with `Hⁿ(M) < ∞` and `τ ∈ L¹(Hⁿ⌞M)`, then for `Hⁿ⌞M`-a.e. `a` with
+`limsup_{r↓0} Hⁿ(M ∩ B̄_r(a))/(ωₙrⁿ) < ∞`, `(ωₙrⁿ)⁻¹ ∫_{M ∩ B̄_r(a)} |τ − τ(a)| dHⁿ → 0` as
+`r ↓ 0`.  Closed balls form a (Besicovitch) Vitali family for `Hⁿ⌞M`, so the error divided by
+`Hⁿ(M ∩ B̄_r(a))` tends to `0`; the bounded density quotient converts this into the
+normalisation `ωₙrⁿ`. -/
+theorem Submission.dmcbr_ci_gp_lebesgue_error_tendsto : ∀ (P n : ℕ) (M : Set (Euclid P)) (τ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → StronglyMeasurable τ → ∫⁻ x in M, ‖τ x‖ₑ ∂μHE[n] < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ∞ → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n M τ _hM hMfin hτ hfin
+  -- `Hⁿ⌞M` is finite and `τ` is `Hⁿ⌞M`-integrable
+  have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict M) :=
+    isFiniteMeasure_restrict.2 hMfin.ne
+  -- Besicovitch differentiation: `⨍_E |τ − τ(a)| → 0` along the Vitali family of closed balls
+  have hL := (Besicovitch.vitaliFamily
+      ((μHE[n] : Measure (Euclid P)).restrict M)).ae_tendsto_lintegral_enorm_sub_div
+    (E := MultiVector P n) (f := τ) (Integrable.locallyIntegrable ⟨hτ.aestronglyMeasurable, hfin⟩)
+  filter_upwards [hL] with a ha hlim
+  have hball :=
+    ha.comp (Besicovitch.tendsto_filterAt ((μHE[n] : Measure (Euclid P)).restrict M) a)
+  -- rewrite the Besicovitch quotient in terms of `M ∩ closedBall a r`
+  have hq : Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) /
+      μHE[n] (M ∩ closedBall a r)) (𝓝[>] 0) (𝓝 0) := by
+    refine hball.congr fun r => ?_
+    simp only [Function.comp_apply]
+    rw [Measure.restrict_restrict measurableSet_closedBall,
+      Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  -- the density quotient is eventually bounded by a finite constant `C`
+  obtain ⟨C, hC1, hC2⟩ := exists_between hlim
+  have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n)) < C :=
+    eventually_lt_of_limsup_lt hC1
+  -- `I/(ωₙrⁿ) = (I/Hⁿ(M ∩ B̄_r(a))) · (Hⁿ(M ∩ B̄_r(a))/(ωₙrⁿ)) ≤ C · I/Hⁿ(M ∩ B̄_r(a))`
+  have hupper : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      (∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) /
+          (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤
+        C * ((∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) /
+          μHE[n] (M ∩ closedBall a r)) := by
+    filter_upwards [hev] with r hr
+    set I := ∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]
+    set m := μHE[n] (M ∩ closedBall a r)
+    set w := unitBallVolume n * ENNReal.ofReal (r ^ n)
+    by_cases hm0 : m = 0
+    · -- a null ball carries no error
+      have hI : I = 0 := setLIntegral_measure_zero _ _ hm0
+      simp [hI]
+    · have hmtop : m ≠ ∞ := (lt_of_le_of_lt (measure_mono inter_subset_left) hMfin).ne
+      have hIw : I / w = I / m * (m / w) := by
+        rw [div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv, mul_assoc, ← mul_assoc m⁻¹,
+          ENNReal.inv_mul_cancel hm0 hmtop, one_mul]
+      rw [hIw, mul_comm C]
+      gcongr
+  have hCq : Tendsto (fun r : ℝ => C * ((∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) /
+      μHE[n] (M ∩ closedBall a r))) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul hq (Or.inr hC2.ne)
+  -- squeeze `0 ≤ I/(ωₙrⁿ) ≤ C · I/Hⁿ(M ∩ B̄_r(a)) → 0`
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hCq
+    (Eventually.of_forall fun _ => zero_le) hupper
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
