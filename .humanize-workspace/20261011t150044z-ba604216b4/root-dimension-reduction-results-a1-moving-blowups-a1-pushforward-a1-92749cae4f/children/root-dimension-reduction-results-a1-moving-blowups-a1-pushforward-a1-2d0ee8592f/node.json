@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1.action_tendsto-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.extension-a1",
+  "depth": 5,
+  "title": "The integer-multiplicity action is continuous under uniform convergence on a compact set that carries the carrier",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P. Let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n), and let K ⊆ U be compact with Hⁿ(M ∖ K) = 0, where Hⁿ = μHE[n]. Let h_j (j ∈ ℕ) and h be continuous maps ℝ^P → Λⁿ(ℝ^P) (n-covectors) with h_j → h uniformly on K. Then R.action(h_j) → R.action(h) as j → ∞, where R.action(g) = ∫_M θ(x)·ξ(x)(g(x)) dHⁿ(x).",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (hs : ℕ → Euclid P → Covector (Euclid P) n) (h : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → (∀ j, Continuous (hs j)) → Continuous h → TendstoUniformlyOn hs h atTop K → Tendsto (fun j => R.action (hs j)) atTop (𝓝 (R.action h))",
+  "lean_name": "dimred_mbl_pf_ext_action_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-2d0ee8592f-a1"
+}
