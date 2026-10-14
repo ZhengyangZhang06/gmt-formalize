@@ -856,6 +856,97 @@ theorem Submission.dimred_mbl_dtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin
   · exact Or.inr fun α => by rw [hσ α, hc α]
   · exact Or.inr fun α => by rw [hσ α, hc α]
   · exact Or.inl fun α => by rw [hσ α, hc α, neg_neg]
+/-- Deformation theorem, face replacement: divergence form of `dγ` on a coordinate face.  For
+`Φ(y) = b + ∑ⱼ yⱼ e_{ι j}` and `G(y)ᵢ = (−1)ⁱ γ(Φ y)(e_{ι ∘ succAbove i})` (`γ(Φ y)` on the
+frame `E = (e_{ι 0}, …, e_{ι m})` with its `i`-th vector removed), `G` is smooth,
+`‖G(y)‖ ≤ |γ(Φ y)|` and `dγ(Φ y)(E) = div G(y) = trace DG(y)`. -/
+theorem Submission.dimred_mbl_dtfr_face_divergence : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m) (G : Euclid (m + 1) → Euclid (m + 1)), StrictMono ι → ContDiff ℝ (⊤ : ℕ∞) γ → (∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), G y i = (-1 : ℝ) ^ (i : ℕ) * γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun l => EuclideanSpace.single (ι (Fin.succAbove i l)) (1 : ℝ))) → ContDiff ℝ (⊤ : ℕ∞) G ∧ (∀ y : Euclid (m + 1), ‖G y‖ ≤ covectorEuclideanNorm (γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) := by
+  intro P m ι b γ G hι hγ hG
+  classical
+  -- `Φ y = c + L y` parametrizes the face; `L y = ∑ j, y j • e_{ι j}`
+  let L : Euclid (m + 1) →L[ℝ] Euclid P :=
+    ∑ j, (EuclideanSpace.proj j : Euclid (m + 1) →L[ℝ] ℝ).smulRight
+      (EuclideanSpace.single (ι j) (1 : ℝ))
+  let Φ : Euclid (m + 1) → Euclid P := fun y =>
+    WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)
+  have hL : ∀ y, L y = ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ) := by
+    intro y
+    simp [L]
+  have hΦL : Φ = fun y => WithLp.toLp 2 (fun k => (b k : ℝ)) + L y := by
+    funext y
+    simp only [Φ, hL]
+  have hΦd : ∀ y, HasFDerivAt Φ L y := by
+    intro y
+    rw [hΦL]
+    exact L.hasFDerivAt.const_add _
+  have hΦs : ContDiff ℝ (⊤ : ℕ∞) Φ := by
+    rw [hΦL]
+    exact contDiff_const.add L.contDiff
+  -- `ev i α = α (w i)`, `w i` the frame with its `i`-th vector removed
+  let w : Fin (m + 1) → Fin m → Euclid P := fun i l =>
+    EuclideanSpace.single (ι (Fin.succAbove i l)) (1 : ℝ)
+  let ev : Fin (m + 1) → Covector (Euclid P) m →L[ℝ] ℝ := fun i =>
+    ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (w i)
+  have hGi : ∀ y i, G y i = (-1 : ℝ) ^ (i : ℕ) * ev i (γ (Φ y)) := fun y i => hG y i
+  have hGc : ∀ i, (fun y => G y i) = fun y => (-1 : ℝ) ^ (i : ℕ) * ev i (γ (Φ y)) := by
+    intro i
+    funext y
+    exact hGi y i
+  have hγd : Differentiable ℝ γ := hγ.differentiable (by simp)
+  have hGs : ContDiff ℝ (⊤ : ℕ∞) G := by
+    rw [contDiff_euclidean]
+    intro i
+    rw [hGc i]
+    exact contDiff_const.mul ((ev i).contDiff.comp (hγ.comp hΦs))
+  refine ⟨hGs, ?_, ?_⟩
+  · -- `‖G y‖² = ∑ i, γ(Φ y)(w i)²` is a sub-sum of `|γ(Φ y)|²`
+    intro y
+    show ‖G y‖ ≤ covectorEuclideanNorm (γ (Φ y))
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    apply Real.sqrt_le_sqrt
+    let g : (Fin m → Fin P) → ℝ := fun I => if StrictMono I then
+      (γ (Φ y) (fun l => EuclideanSpace.basisFun (Fin P) ℝ (I l))) ^ 2 else 0
+    have hinj : Function.Injective fun i : Fin (m + 1) => ι ∘ Fin.succAbove i :=
+      hι.injective.comp_left.comp Fin.succAbove_left_injective
+    have hterm : ∀ i, ‖G y i‖ ^ 2 = g (ι ∘ Fin.succAbove i) := by
+      intro i
+      have hmono : StrictMono (ι ∘ Fin.succAbove i) := hι.comp (Fin.strictMono_succAbove i)
+      simp only [g, hmono, ↓reduceIte, Real.norm_eq_abs, sq_abs, hGi, mul_pow]
+      rcases neg_one_pow_eq_or ℝ (i : ℕ) with h | h <;> simp [h, ev, w]
+    calc ∑ i, ‖G y i‖ ^ 2 = ∑ i, g (ι ∘ Fin.succAbove i) := Finset.sum_congr rfl fun i _ => hterm i
+      _ = ∑ I ∈ Finset.univ.image fun i : Fin (m + 1) => ι ∘ Fin.succAbove i, g I :=
+        (Finset.sum_image hinj.injOn).symm
+      _ ≤ ∑ I, g I :=
+        Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun I _ _ => by
+          simp only [g]
+          split_ifs <;> positivity
+  · -- both sides are `∑ i, (-1)^i Dγ(Φ y)(e_{ι i})(w i)`
+    intro y
+    show exteriorDerivative γ (Φ y) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) =
+      LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)
+    have hcoord : ∀ i (v : Euclid (m + 1)),
+        fderiv ℝ G y v i = (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ γ (Φ y) (L v)) (w i) := by
+      intro i v
+      have h1 : HasFDerivAt (fun y => G y i)
+          ((EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).comp (fderiv ℝ G y)) y :=
+        (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).hasFDerivAt.comp y
+          ((hGs.differentiable (by simp)) y).hasFDerivAt
+      have h2 : HasFDerivAt (fun y => G y i)
+          ((-1 : ℝ) ^ (i : ℕ) • (ev i).comp ((fderiv ℝ γ (Φ y)).comp L)) y := by
+        rw [hGc i]
+        exact ((ev i).hasFDerivAt.comp y ((hγd (Φ y)).hasFDerivAt.comp y (hΦd y))).const_mul _
+      have h3 := congrArg (fun f : Euclid (m + 1) →L[ℝ] ℝ => f v) (h1.unique h2)
+      simpa [ev] using h3
+    have hfd : ∀ (i : Fin (m + 1)) (x : Euclid P),
+        fderiv ℝ (fun x => γ x (Fin.removeNth i fun j => EuclideanSpace.single (ι j) (1 : ℝ))) x =
+          (ev i).comp (fderiv ℝ γ x) := fun i x =>
+      ((ev i).hasFDerivAt.comp x (hγd x).hasFDerivAt).fderiv
+    rw [exteriorDerivative_apply (hγd _),
+      LinearMap.trace_eq_matrix_trace ℝ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ).toBasis,
+      Matrix.trace]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hfd]
+    simp [Matrix.diag, LinearMap.toMatrix_apply, hcoord, hL, ev, w, zsmul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
