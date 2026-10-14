@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Testing `∂C = 0` against `df` along rays** (Simon Ch. 6, (6.2.3) `∂T(φ) = T(dφ)`, applied to
+the `0`-form of `f`).  Let `C ∈ 𝒟₁(ℝᴾ)` with `∂C = 0` be given by densities `G e` along the rays
+`t ↦ te`, `e ∈ F`: `C(ω) = Σ_{e∈F} ∫_{(0,∞)} G e t · ω(te)[e] dt`.  For `f ∈ C^∞_c(ℝᴾ)` the
+`0`-form `f̂(x) = f(x)` is a test form with `df̂(x)[v] = Df(x)v`, so
+`0 = ∂C(f̂) = C(df̂) = Σ_{e∈F} ∫_{(0,∞)} G e t · Df(te)e dt`, and by the chain rule
+`Df(te)e = (d/dt) f(te)`. -/
+theorem Submission.idtp_fons_odc_rc_boundary_ray_test : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ (F : Finset (Euclid P)) (G : Euclid P → ℝ → ℝ), (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * deriv (fun s : ℝ => f (s • e)) t = 0 := by
+  intro P C hC F G hrep f hf hfc
+  -- Step 1: the test `0`-form `f̂(x) = constOfIsEmpty (f x)`.
+  have hfhat : (fun x => ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (f x)) ∈
+      TestFormOn (univ : Set (Euclid P)) 0 :=
+    ⟨⟨(ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)).contDiff.comp hf,
+      hfc.comp_left (map_zero (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)))⟩,
+      subset_univ _⟩
+  -- Step 2: `df̂(x)[v] = Df(x)v`.
+  have hd : ∀ x v : Euclid P, ((exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩ :
+      TestFormOn (univ : Set (Euclid P)) 1) : DifferentialForm (Euclid P) 1) x (fun _ => v) =
+      fderiv ℝ f x v := by
+    intro x v
+    change extDeriv (fun x => ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (f x)) x
+      (fun _ => v) = _
+    rw [extDeriv_constOfIsEmpty, ContinuousAlternatingMap.ofSubsingleton_apply_apply]
+  -- Step 3: `0 = ∂C(f̂) = C(df̂)`.
+  have h0 : C (exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩) = 0 := by
+    rw [← GeometricCurrentOn.boundary_apply, hC, GeometricCurrentOn.zero_apply]
+  -- Step 4: the chain rule `deriv (s ↦ f(se)) t = Df(te)e`.
+  have hderiv : ∀ (e : Euclid P) (t : ℝ), deriv (fun s : ℝ => f (s • e)) t = fderiv ℝ f (t • e) e := by
+    intro e t
+    have hs : HasDerivAt (fun s : ℝ => s • e) e t := by
+      simpa using (hasDerivAt_id t).smul_const e
+    exact ((hf.differentiable (by simp) (t • e)).hasFDerivAt.comp_hasDerivAt t hs).deriv
+  -- Step 5: substitute both into the ray representation of `C(df̂)`.
+  have h1 := hrep (exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩)
+  simp only [hd] at h1
+  simp only [hderiv]
+  exact h1.symm.trans h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
