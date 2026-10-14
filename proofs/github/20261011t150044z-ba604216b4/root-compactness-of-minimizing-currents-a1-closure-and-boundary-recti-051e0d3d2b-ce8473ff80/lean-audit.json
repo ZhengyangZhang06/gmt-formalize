@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa29df62deaacd6cc647898587ea6ae28372ab7625b34f6881e7b1ef20365984",
+  "git_delta": {
+    "base_commit": "5f4d98ca0b7e9d7728a77ed0132df8f902b91d49",
+    "candidate_commit": "70782671f29949f7a434dae52ffb67ed0d4d1ac1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_rb_null_seq_transfer",
+    "diff_sha256": "6c2171c0be819df41ad8ec5934daaed4092c0073783c0900d9e603e987225f74",
+    "source_sha256": "05e95035f7277a6cce793e0c54a2f7f00bb43e04887e35d277fbadd7deeaf7e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_rb_null_seq_transfer",
+      "statement": "∀ (f h : ℝ → ℝ≥0∞) (C : ℝ≥0∞) (s : ℕ → ℝ), C ≠ ∞ → (∀ i, 0 < s i) → Tendsto s atTop (𝓝 0) → (limsup f (𝓝[>] 0) ≤ 1 → limsup (fun i => C * f (s i)) atTop ≤ C) ∧ (Tendsto h (𝓝[>] 0) (𝓝 0) → Tendsto (fun i => C * h (s i)) atTop (𝓝 0))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
