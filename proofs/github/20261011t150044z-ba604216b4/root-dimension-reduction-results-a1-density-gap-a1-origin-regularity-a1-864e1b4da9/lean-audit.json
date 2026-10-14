@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e8f4bc87a1125d667623f72b5a0233ab921ed817957d200ef4d4727e826b1ecb",
+  "git_delta": {
+    "base_commit": "e9cbee111219260ec6057650ebd4f9b86e751db5",
+    "candidate_commit": "4dd1cb0004912a351a0543b6b856b2bcf2bf743c",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "423e869ddc2166d11d1c9c548cd56cc3922893e909d085b860277749c3fd9483",
+    "source_sha256": "b4159cbcc5ee6e21c10d3352821bf1f9bb93c43692c2984ccc6c2840cce7274c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cdg_minimizing_origin_regular",
+      "statement": "∀ (P j : ℕ), 1 ≤ j → j ≤ P → ∃ δ : ℝ, 0 < δ ∧ ∀ C : GeometricCurrentOn (univ : Set (Euclid P)) j, IsMinimizingIn C univ → BoundaryVanishes C → (0 : Euclid P) ∈ C.support → (∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 → C.massOn (ball 0 ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume j * ENNReal.ofReal (ρ ^ j)) → (0 : Euclid P) ∈ regularSet C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
