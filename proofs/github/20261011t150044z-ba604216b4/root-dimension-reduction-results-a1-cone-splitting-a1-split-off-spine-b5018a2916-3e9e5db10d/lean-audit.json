@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "967cf0dac25e950a73269a3c6a74396b16f45033b7341e685874e4c46077a0a3",
+  "git_delta": {
+    "base_commit": "f75b54651fc5113520e2d7004fd30776782ac2d5",
+    "candidate_commit": "0292ee8383001f085b58a9ce272664fb7745c561",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8137ca34049f55e8fd652a915b05c01e339d1284abd9994b1fe312a43565baf7",
+    "source_sha256": "8782f34f24bb9985478c88b6bbed2db19d793b60f1121103844cdd6f89bb1cc2",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cube_cycle",
+      "statement": "∀ (P k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (r : ℝ), 0 < k → 0 < m → Orthonormal ℝ g → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → Y.boundary = X → IsCompact Y.support → Y.support ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → 0 < r → ∃ Z E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ IsCompact Z.support ∧ Z.support ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' Y.support ∧ E'.mass ≤ ENNReal.ofReal (2 * (k : ℝ) * (2 * r) ^ (k - 1)) * Y.mass ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[k]) + E' ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
