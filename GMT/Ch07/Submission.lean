@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Localized radial homotopy formula with a compactly supported primitive** (the cone
+construction behind Simon 6.2.25–2.32).  Write `K₀β(x) = ∫₀¹ t^q ι_x β(tx) dt` and
+`K₁α(x) = ∫₀¹ t^(q+1) ι_x α(tx) dt`, and assume the homotopy formula (H): `K₀β` is `C^∞` and
+`d(K₀β) + K₁(dβ) = β` for every `C^∞` `(q+1)`-form `β`.  For a test form `γ`, (H) gives
+`K₁(dγ) = γ − d(K₀γ)`.  Let `ζ` be a bump equal to `1` near every point of `B(0, |ρ| + 1)`.  Then
+`ψ = ζ K₀γ` is a test form, and `ψ = K₀γ` near each `x` with `‖x‖ < ρ`, so
+`dψ(x) = d(K₀γ)(x)` there. -/
+theorem Submission.dimred_cs_sos_cfs_cc_cutoff_homotopy : ∀ (P q : ℕ) (ρ : ℝ), (∀ β : DifferentialForm (Euclid P) (q + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x) → ∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), ∃ ψ : TestFormOn (univ : Set (Euclid P)) q, ∀ x : Euclid P, ‖x‖ < ρ → (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) (t • x)).curryLeft x) = (γ : DifferentialForm (Euclid P) (q + 1)) x - exteriorDerivative (ψ : DifferentialForm (Euclid P) q) x := by
+  intro P q ρ hH γ
+  -- Step 1: the homotopy formula (H) for the smooth form `γ`
+  obtain ⟨hKγ, hγ⟩ := hH (γ : DifferentialForm (Euclid P) (q + 1)) γ.property.1.1
+  -- Step 2: a bump `ζ` equal to `1` near every point of `B(0, |ρ| + 1)`
+  let ζ : ContDiffBump (0 : Euclid P) := ⟨|ρ| + 1, |ρ| + 2, by positivity, by linarith⟩
+  -- Step 3: the test form `ψ = ζ K₀γ`
+  refine ⟨⟨fun y => ζ y • ∫ t in (0 : ℝ)..1,
+      t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y,
+    ⟨ζ.contDiff.smul hKγ, ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩, fun x hx => ?_⟩
+  -- Step 4: `ψ = K₀γ` near `x`, so `dψ(x) = d(K₀γ)(x)`
+  have hxζ : x ∈ ball (0 : Euclid P) ζ.rIn := by
+    rw [mem_ball_zero_iff]
+    exact hx.trans_le ((le_abs_self ρ).trans (le_add_of_nonneg_right zero_le_one))
+  have hloc : (fun y => ζ y • ∫ t in (0 : ℝ)..1,
+      t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y) =ᶠ[𝓝 x]
+      fun y => ∫ t in (0 : ℝ)..1,
+        t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y := by
+    filter_upwards [ζ.eventuallyEq_one_of_mem_ball hxζ] with y hy
+    rw [hy, Pi.one_apply, one_smul]
+  -- Step 5: `K₁(dγ)(x) = γ(x) - d(K₀γ)(x) = γ(x) - dψ(x)`
+  exact (eq_sub_of_add_eq' (hγ x)).trans
+    (congrArg (fun v => (γ : DifferentialForm (Euclid P) (q + 1)) x - v) hloc.extDeriv_eq.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
