@@ -9652,6 +9652,120 @@ theorem Submission.dor_lmb_slicing_lipschitz : (∀ (P n : ℕ) (U : Set (Euclid
     rw [image_eq_zero_of_notMem_tsupport fun hxω => disjoint_left.1 hω hxω (hcarrier t hx),
       map_zero, mul_zero]
 
+/-- **Cut-off at a good level** (Simon 7.2.4, displays (3)–(7) and (10), chapter-07.txt lines
+187–246, with the Lipschitz slicing function `f = |· − y|` of Simon Ch. 6, 4.5): let
+`T − T' = ∂R + S` in `U` with `T, T', S, R` integer multiplicity, and `B̄_{ρ'}(y) ⊆ U`.  Then for
+some `t ∈ (ρ, ρ')` there are an integer multiplicity cycle `X` (constructed as `∂(R⌞B_t(y))`)
+vanishing on forms supported off `B̄_t(y)`, and a triple `RY` representing `Y = T' + X`, with
+`μ_{RY}(B̄_t(y)) ≤ M_{B_{ρ'}(y)}(T) + M_{B_{ρ'}(y)}(S) + (2/(ρ' − ρ)) M_{B_{ρ'}(y)}(R)`.
+
+Slice `R` by `|· − y|` and choose `t` so that the slice `P_t` is good, `μ_{T'}(∂B_t(y)) = 0` and
+`M_{B_{ρ'}(y)}(P_t) ≤ 2 M_{B_{ρ'}(y)}(R)/(ρ' − ρ)`; put `X := (∂R)⌞B_t(y) + P_t`.  On `B_t(y)`,
+`Y = T' + ∂R = T − S`; on `∂B_t(y)`, `μ_{RY} ≤ μ_{T'} + μ_{(∂R)⌞B_t(y)} + μ_{P_t}` and only the
+last term charges the sphere. -/
+theorem Submission.dor_lmb_good_level_cut : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T T' S : GeometricCurrentOn U n) (R : GeometricCurrentOn U (n + 1)) (y : Euclid P) (ρ ρ' : ℝ), IsOpen U → 0 < n → IsIntegerMultiplicity T → IsIntegerMultiplicity T' → IsIntegerMultiplicity S → IsIntegerMultiplicity R → (∀ ω : TestFormOn U n, T ω - T' ω = R.boundary ω + S ω) → 0 < ρ → ρ < ρ' → closedBall y ρ' ⊆ U → ∃ (t : ℝ) (X Y : GeometricCurrentOn U n) (RY : IMRep U n), ρ < t ∧ t < ρ' ∧ IsIntegerMultiplicity X ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ (∀ ω : TestFormOn U n, Y ω = T' ω + X ω) ∧ RY.Represents Y ∧ RY.measure (closedBall y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') + ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := by
+  intro hC1 P n U T T' S R y ρ ρ' hU _hn hTim hT'im hSim hRim hrel _hρ hρρ' hball
+  -- Step 1(a): representations of `T`, `T'`, `S` and `R`
+  obtain ⟨RT, hRT⟩ := hTim
+  obtain ⟨RT', hRT'⟩ := hT'im
+  obtain ⟨RS, hRS⟩ := hSim
+  obtain ⟨RR, hRR⟩ := hRim
+  -- Step 1(b): a representation of `T − T'`, then one of `∂R = (T − T') − S`
+  have hsub : ∀ ω : TestFormOn U n, (T - T') ω = T ω - T' ω := fun ω => rfl
+  obtain ⟨RD, hRD, -⟩ := Submission.dor_lmb_int_combination_imrep P n U T T' (T - T') RT RT'
+    1 (-1) hU hRT hRT' fun ω => by
+      rw [hsub ω]
+      push_cast
+      ring
+  obtain ⟨RB, hRB, -⟩ := Submission.dor_lmb_int_combination_imrep P n U (T - T') S R.boundary
+    RD RS 1 (-1) hU hRD hRS fun ω => by
+      rw [hsub ω]
+      push_cast
+      linarith [hrel ω]
+  -- Step 2: slice `R` by the 1-Lipschitz function `|· − y|`; `{|· − y| < t} = B_t(y)`
+  obtain ⟨Ps, hPmass, hPae⟩ := Submission.dor_lmb_slicing_lipschitz hC1 P n U R RR RB
+    (fun x => dist x y) 1 hU hRR hRB (LipschitzWith.dist_left y)
+  -- Step 3: `μ_{T'}(B̄_{ρ'}(y)) < ∞`, as `B̄_{ρ'}(y)` is a compact subset of `U`
+  have hT'fin : RT'.measure (closedBall y ρ') ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact RT'.locallyIntegrable_mult _ (isCompact_closedBall y ρ') hball
+  -- Step 4: a level `t ∈ (ρ, ρ')` where the slice is good, `μ_{T'}(∂B_t(y)) = 0`, and
+  -- `M_{B_{ρ'}(y)}(P_t) ≤ (2/(ρ' − ρ)) M_{B_{ρ'}(y)}(R)`
+  have hPint : ∫⁻ s, (Ps s).massOn (ball y ρ') ≤ R.massOn (ball y ρ') := by
+    simpa only [ENNReal.coe_one, one_mul] using (hPmass _ isOpen_ball).2
+  obtain ⟨t, hρt, htρ', ⟨⟨RP, hRP⟩, -, hPt⟩, hsph, hPtmass⟩ :=
+    Submission.dor_lmb_glc_good_radius P RT'.measure y ρ ρ' (fun s => (Ps s).massOn (ball y ρ'))
+      (R.massOn (ball y ρ')) _ hρρ' hT'fin (hPmass _ isOpen_ball).1 hPint hPae
+  -- Step 5: `D = (∂R)⌞B_t(y)`, represented by `RBt = (M_B ∩ B_t(y), θ_B, ξ_B)`
+  obtain ⟨D, RBt, hRBt, hcar, hmult, hor, hmeas⟩ :=
+    Submission.dor_lmb_imrep_restrict_current P n U (ball y t) RB hU measurableSet_ball
+  have hD : ∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t,
+      (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+    intro ω
+    rw [hRBt ω, IMRep.action, hcar, hmult, hor]
+  -- Step 6: the cut cycle `X = D + P_t`
+  obtain ⟨X, hXDP, hXbd, hXoff, hXin⟩ :=
+    Submission.dor_lmb_glc_cut_cycle P n U R RR RB D (Ps t) y t hRR hD hPt
+  -- Step 6(c): `X` is integer multiplicity, with `μ_{RX} ≤ μ_{RB}⌞B_t(y) + μ_{RP}`
+  obtain ⟨RX, hRX, hRXle⟩ := Submission.dor_lmb_int_combination_imrep P n U D (Ps t) X RBt RP
+    1 1 hU hRBt hRP fun ω => by
+      rw [hXDP ω]
+      push_cast
+      ring
+  -- Step 7: `Y = T' + X`, with `μ_{RY} ≤ μ_{T'} + μ_{RX}`
+  let Y : GeometricCurrentOn U n :=
+    { toCurrent := T'.toCurrent + X.toCurrent
+      continuous' := fun ωs h => by
+        simpa using (T'.continuous' ωs h).add (X.continuous' ωs h) }
+  have hY : ∀ ω : TestFormOn U n, Y ω = T' ω + X ω := fun ω => rfl
+  obtain ⟨RY, hRY, hRYle⟩ := Submission.dor_lmb_int_combination_imrep P n U T' X Y RT' RX
+    1 1 hU hRT' hRX fun ω => by
+      rw [hY ω]
+      push_cast
+      ring
+  -- Step 8: on `B_t(y)`, `Y = T' + ∂R = T − S`, so `μ_{RY}(B_t(y)) = M_{B_t(y)}(Y)` is at most
+  -- `M_{B_{ρ'}(y)}(T) + M_{B_{ρ'}(y)}(S)`
+  have hYin : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t →
+      Y ω = T ω - S ω := by
+    intro ω hω
+    rw [hY ω, hXin ω hω]
+    linarith [hrel ω]
+  have hBt : RY.measure (ball y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') := by
+    rw [← (hC1 P n U Y RY hU hRY).1 _ isOpen_ball]
+    calc Y.massOn (ball y t) ≤ T.massOn (ball y t) + S.massOn (ball y t) :=
+          Submission.dor_lmb_glc_massOn_sub_le P n U (ball y t) T S Y hYin
+      _ ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') :=
+          add_le_add (T.massOn_mono (ball_subset_ball htρ'.le))
+            (S.massOn_mono (ball_subset_ball htρ'.le))
+  -- Step 9: on `∂B_t(y)`, only `μ_{RP}` can charge the sphere, and
+  -- `μ_{RP}(∂B_t(y)) ≤ μ_{RP}(B_{ρ'}(y)) = M_{B_{ρ'}(y)}(P_t)`
+  have hSt : RY.measure (sphere y t) ≤
+      ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := by
+    have hY3 : RY.measure (sphere y t) ≤
+        RT'.measure (sphere y t) + (RBt.measure (sphere y t) + RP.measure (sphere y t)) := by
+      have h1 := Measure.le_iff'.1 hRYle (sphere y t)
+      have h2 := Measure.le_iff'.1 hRXle (sphere y t)
+      simp only [Int.natAbs_one, Nat.cast_one, one_smul, Measure.coe_add, Pi.add_apply] at h1 h2
+      exact h1.trans (add_le_add le_rfl h2)
+    have hRBt0 : RBt.measure (sphere y t) = 0 := by
+      rw [hmeas, Measure.restrict_apply isClosed_sphere.measurableSet,
+        sphere_disjoint_ball.inter_eq, measure_empty]
+    calc RY.measure (sphere y t)
+        ≤ RT'.measure (sphere y t) + (RBt.measure (sphere y t) + RP.measure (sphere y t)) := hY3
+      _ = RP.measure (sphere y t) := by rw [hsph, hRBt0, zero_add, zero_add]
+      _ ≤ RP.measure (ball y ρ') :=
+          measure_mono (sphere_subset_closedBall.trans (closedBall_subset_ball htρ'))
+      _ = (Ps t).massOn (ball y ρ') := ((hC1 P n U (Ps t) RP hU hRP).1 _ isOpen_ball).symm
+      _ ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := hPtmass
+  -- Step 10: `B̄_t(y) = B_t(y) ∪ ∂B_t(y)`
+  refine ⟨t, X, Y, RY, hρt, htρ', ⟨RX, hRX⟩, hXbd, hXoff, hY, hRY, ?_⟩
+  calc RY.measure (closedBall y t) = RY.measure (ball y t ∪ sphere y t) := by
+        rw [ball_union_sphere]
+    _ ≤ RY.measure (ball y t) + RY.measure (sphere y t) := measure_union_le _ _
+    _ ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') +
+          ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := add_le_add hBt hSt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
