@@ -882,6 +882,61 @@ theorem Submission.dimred_cs_sos_cfs_cp_piece_bounds : ∀ (P n : ℕ) (ρ : ℝ
   have hz0 : Measurable (fun z : Euclid (n + 1) => WithLp.ofLp z 0) := by
     fun_prop
   -- `tail (t, u) = u`
+/-- **Lipschitz pull-back of a test form against an integrable weight** (supplied step 3 of the
+cylinder construction, third item).  `ω` is smooth with compact support, so `‖ω(y)‖ ≤ M` for all
+`y`; an `L`-Lipschitz `H` has `‖DH(z)‖ ≤ L` at every `z` (`fderiv` is `0` where `H` is not
+differentiable), so `|ω(H z)(DH(z)e₁, …, DH(z)eₙ)| ≤ ‖ω(H z)‖ ∏ₐ ‖DH(z)eₐ‖ ≤ M Lⁿ`.  The integrand
+is Borel: `z ↦ DH(z)eₐ` is measurable and `(x, w) ↦ ω(H x)(w)` is continuous.  An integrable
+function times a bounded a.e. strongly measurable function is integrable. -/
+theorem Submission.cmcdt_lpi_cyl_pullback_integrable : ∀ (Q n : ℕ) (L : NNReal) (H : Euclid n → Euclid Q) (S : Set (Euclid n)) (g : Euclid n → ℝ) (ω : TestFormOn (univ : Set (Euclid Q)) n), LipschitzWith L H → IntegrableOn g S → IntegrableOn (fun z => g z * (ω : DifferentialForm (Euclid Q) n) (H z) (fun a => fderiv ℝ H z (EuclideanSpace.single a 1))) S := by
+  intro Q n L H S g ω hH hg
+  -- `ω` is continuous with compact support, hence bounded: `‖ω(y)‖ ≤ M`
+  have hωc : Continuous (ω : DifferentialForm (Euclid Q) n) := ω.2.1.1.continuous
+  obtain ⟨M, hM⟩ := hωc.bounded_above_of_compact_support ω.2.1.2
+  -- the integrand is Borel: `z ↦ (DH(z)eₐ)ₐ` is measurable and `(x, w) ↦ ω(H x)(w)` continuous
+  have hmeas : Measurable fun z => (ω : DifferentialForm (Euclid Q) n) (H z)
+      (fun a => fderiv ℝ H z (EuclideanSpace.single a 1)) := by
+    have hv : Measurable fun z => fun a : Fin n => fderiv ℝ H z (EuclideanSpace.single a 1) :=
+      measurable_pi_iff.mpr fun a => measurable_fderiv_apply_const ℝ H _
+    have hc : Continuous fun p : Euclid n × (Fin n → Euclid Q) =>
+        (ω : DifferentialForm (Euclid Q) n) (H p.1) p.2 :=
+      (hωc.comp (hH.continuous.comp continuous_fst)).eval continuous_snd
+    exact hc.measurable.comp (measurable_id.prodMk hv)
+  -- `|ω(H z)(DH(z)e)| ≤ ‖ω(H z)‖ ∏ₐ ‖DH(z)eₐ‖ ≤ M Lⁿ`, since `‖DH(z)eₐ‖ ≤ ‖DH(z)‖ ≤ L`
+  have hbd : ∀ z, ‖(ω : DifferentialForm (Euclid Q) n) (H z)
+      (fun a => fderiv ℝ H z (EuclideanSpace.single a 1))‖ ≤ M * (L : ℝ) ^ n := by
+    intro z
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM (H z))
+    have hcomp : ∀ a : Fin n, ‖fderiv ℝ H z (EuclideanSpace.single a 1)‖ ≤ L := fun a =>
+      calc ‖fderiv ℝ H z (EuclideanSpace.single a 1)‖
+          ≤ ‖fderiv ℝ H z‖ * ‖(EuclideanSpace.single a (1 : ℝ))‖ :=
+            ContinuousLinearMap.le_opNorm _ _
+        _ = ‖fderiv ℝ H z‖ := by simp
+        _ ≤ L := norm_fderiv_le_of_lipschitz ℝ hH
+    calc _ ≤ ‖(ω : DifferentialForm (Euclid Q) n) (H z)‖ *
+            ∏ a, ‖fderiv ℝ H z (EuclideanSpace.single a 1)‖ :=
+          ContinuousAlternatingMap.le_opNorm _ _
+      _ ≤ M * ∏ _a : Fin n, (L : ℝ) := by
+          gcongr with a
+          · exact hM _
+          · exact hcomp a
+      _ = M * (L : ℝ) ^ n := by simp
+  exact hg.mul_bdd hmeas.aestronglyMeasurable (Eventually.of_forall hbd)
+
+/-- **Cone piece change of variables** (Simon Ch. 6, 2.27 and 2.30, for one piece).  Let
+`B = {z ∈ ℝ^{n+1} : z₀ ∈ (0, 1), tail z ∈ A}`, and suppose that on `B` the map `H` is the cone
+map `H(z) = z₀ G(tail z)` with `DH(z)ê = (G(tail z), z₀ DG(tail z)e)`, and that on `G(A)` the
+form `η` is the radial homotopy `η(v) = ∫₀¹ tⁿ ι_v ω(tv) dt`.  The weight `w ∘ tail` is
+integrable on `B` by Tonelli on the cylinder (`|(0, 1)| = 1`), so the integrand on `B` is
+integrable (Lipschitz pull-back) and Fubini reduces the identity to a fixed `u ∈ A`.  There
+multilinearity gives `ω(tv)(v, t x) = tⁿ ω(tv)(v, x)` for `v = G(u)`, `x = DG(u)e`, and
+evaluation at `x` commutes with the covector-valued interval integral defining `η(v)`. -/
+theorem Submission.dimred_cs_sos_cfs_cp_piece_action : ∀ (P n : ℕ) (L : NNReal) (G : Euclid n → Euclid P) (H : Euclid (n + 1) → Euclid P) (A : Set (Euclid n)) (w : Euclid n → ℤ) (ω : TestFormOn (univ : Set (Euclid P)) (n + 1)) (η : DifferentialForm (Euclid P) n), LipschitzWith L H → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) → (∀ u ∈ A, η (G u) = ∫ t in (0 : ℝ)..1, t ^ n • ((ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)).curryLeft (G u)) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (H z) (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) := by
+  intro P n L G H A w ω η hHL hA hw hwi hHB hη
+  obtain ⟨-, hlin, hfub⟩ := Submission.cmcdt_lpi_cyl_fubini n A hA
+  have htail : Measurable (fun z : Euclid (n + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n)) := by
+    fun_prop
   have hιtail : ∀ (t : ℝ) (u : Euclid n),
       (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
         (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)))) : Euclid n) = u := by
@@ -892,6 +947,18 @@ theorem Submission.dimred_cs_sos_cfs_cp_piece_bounds : ∀ (P n : ℕ) (ρ : ℝ
     refine ⟨(hwR.comp htail).aestronglyMeasurable, ?_⟩
     rw [HasFiniteIntegral, hlin (fun z => ‖(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ)
       (hwR.comp htail).enorm]
+  have hι0 : ∀ (t : ℝ) (u : Euclid n),
+      WithLp.ofLp (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)) 0 = t := by
+    intro t u; simp
+  have hwR : Measurable (fun u => (w u : ℝ)) := (measurable_of_countable _).comp hw
+  -- `w ∘ tail` is integrable on `B`: Tonelli on the cylinder and `|(0, 1)| = 1`
+  have hint : IntegrableOn
+      (fun z : Euclid (n + 1) => (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ))
+      {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+        (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} := by
+    refine ⟨(hwR.comp htail).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral,
+      hlin (fun z => ‖(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ) (hwR.comp htail).enorm]
     simp only [hιtail]
     simp only [lintegral_const, Measure.restrict_apply MeasurableSet.univ, univ_inter,
       Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]
@@ -953,6 +1020,59 @@ theorem Submission.dimred_cs_sos_cfs_cp_piece_bounds : ∀ (P n : ℕ) (ρ : ℝ
       _ = ENNReal.ofReal ρ * ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u) := by
           rw [lintegral_const_mul]
           fun_prop
+  -- so the integrand on `B` is integrable (Lipschitz pull-back), and Fubini applies
+  have hF := Submission.cmcdt_lpi_cyl_pullback_integrable P (n + 1) L H _ _ ω hHL hint
+  rw [hfub _ hF]
+  refine setIntegral_congr_fun hA fun u hu => ?_
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) (n + 1)) := ω.2.1.1.continuous
+  -- `α(v, s x) = sⁿ α(v, x)` for an `(n + 1)`-covector `α`
+  have hsc : ∀ (α : Covector (Euclid P) (n + 1)) (v : Euclid P) (x : Fin n → Euclid P) (s : ℝ),
+      α (Fin.cons v (fun a => s • x a)) = s ^ n * α (Fin.cons v x) := by
+    intro α v x s
+    have h1 : α (Fin.cons v (fun a => s • x a)) = (α.curryLeft v) (fun a => s • x a) := rfl
+    have h2 : α (Fin.cons v x) = (α.curryLeft v) x := rfl
+    rw [h1, h2, ContinuousAlternatingMap.map_smul_univ (α.curryLeft v) (fun _ => s)]
+    simp
+  -- the inner integrand at `z = (t, u)`, `t ∈ (0, 1)`
+  have hinner : ∀ t ∈ Ioo (0 : ℝ) 1,
+      (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+          (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1))))) : ℝ) *
+        (ω : DifferentialForm (Euclid P) (n + 1)) (H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))))
+          (fun b => fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))
+            (EuclideanSpace.single b 1)) =
+      (w u : ℝ) * (t ^ n * (ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)
+        (Fin.cons (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)))) := by
+    intro t ht
+    have hz : WithLp.ofLp (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)) 0 ∈
+        Ioo (0 : ℝ) 1 := by rw [hι0]; exact ht
+    have hzA : (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)))) : Euclid n) ∈ A := by
+      rw [hιtail]; exact hu
+    obtain ⟨h1, h2⟩ := hHB _ hz hzA
+    rw [h1, h2]
+    simp only [hιtail, Fin.cons_zero]
+    rw [hsc]
+  rw [setIntegral_congr_fun measurableSet_Ioo hinner, integral_const_mul]
+  congr 1
+  -- evaluation at `DG(u)e` commutes with the covector-valued integral defining `η(G u)`
+  rw [hη u hu]
+  have hcont : Continuous (fun t : ℝ =>
+      t ^ n • ((ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)).curryLeft (G u)) := by
+    have : Continuous (fun t : ℝ => (ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)) :=
+      hωc.comp (continuous_id.smul continuous_const)
+    exact (continuous_pow n).smul
+      ((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := n)).continuous.comp this |>.clm_apply continuous_const)
+  have hcomm := ContinuousLinearMap.intervalIntegral_comp_comm
+    (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+      (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)))
+    (hcont.intervalIntegrable (μ := volume) 0 1)
+  rw [← ContinuousAlternatingMap.apply_apply, ← hcomm,
+    intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo]
+  refine setIntegral_congr_fun measurableSet_Ioo fun t _ => ?_
+  simp only [ContinuousAlternatingMap.apply_apply, ContinuousAlternatingMap.smul_apply,
+    smul_eq_mul]
+  rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
