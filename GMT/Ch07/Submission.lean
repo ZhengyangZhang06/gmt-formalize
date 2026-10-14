@@ -516,6 +516,58 @@ theorem Submission.dimred_mbl_dtfrbv_face_neighbourhoods : ∀ (P k : ℕ), (∀
     have h₂ := hkey q p hq hp hqp t' ht' t (fun i => ⟨(ht i).1.le, (ht i).2.le⟩) x hxt'
     have h₃ := dist_triangle (Φ p t) x (Φ q t')
     linarith [dist_comm (Φ p t) x, dist_comm (Φ q t') (Φ p t)]
+/-- Local mass is superadditive over a finite pairwise disjoint family (Simon 6.2.5; the summation
+over faces in the proof of 6.5.1): `∑_{i ∈ s} M_{N_i}(S) ≤ M_W(S)` for `W = ⋃_{i ∈ s} N_i`.
+Forms `ω_i` admissible for the pairwise disjoint `N_i` have at most one nonzero value at each
+point, so `∑_{i ∈ s} ω_i` is admissible for `W`, and `S(∑ ω_i) = ∑ S(ω_i)`.  Choosing `ω_i` with
+`S(ω_i) ≥ 0` and `M_{N_i}(S) ≤ S(ω_i) + ε / #s`, and letting `ε → 0`, gives the inequality. -/
+theorem Submission.dimred_mbl_dtfrbv_massOn_disjoint_sum_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i) := by
+  classical
+  intro P n U S ι s N hN
+  -- gluing: forms admissible for the pairwise disjoint `N i` sum to a form admissible for `W`
+  have hglue : ∀ ω : ι → TestFormOn U n, (∀ i ∈ s, ω i ∈ massAdmissibleOn U n (N i)) →
+      (∑ i ∈ s, ω i) ∈ massAdmissibleOn U n (⋃ i ∈ s, N i) := by
+    intro ω hω
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_sum, Finset.sum_fn]
+      have hsupp : support (fun x => ∑ i ∈ s, (ω i : DifferentialForm (Euclid P) n) x) ⊆
+          ⋃ i ∈ s, tsupport (ω i : DifferentialForm (Euclid P) n) :=
+        (Finset.support_sum s fun i => (ω i : DifferentialForm (Euclid P) n)).trans
+          (iUnion₂_mono fun i _ => subset_tsupport _)
+      exact (closure_minimal hsupp (isClosed_biUnion_finset fun i _ => isClosed_tsupport _)).trans
+        (iUnion₂_mono fun i hi => (hω i hi).1)
+    · rw [Submodule.coe_sum, Finset.sum_apply]
+      by_cases hx : ∃ i ∈ s, x ∈ tsupport (ω i : DifferentialForm (Euclid P) n)
+      · -- `x` lies in at most one `N i`, so at most one summand is nonzero at `x`
+        obtain ⟨i, hi, hxi⟩ := hx
+        rw [Finset.sum_eq_single i (fun j hj hji => image_eq_zero_of_notMem_tsupport fun hxj =>
+          Set.disjoint_left.1 (hN hj hi hji) ((hω j hj).1 hxj) ((hω i hi).1 hxi))
+          (fun h => absurd hi h)]
+        exact (hω i hi).2 x
+      · rw [Finset.sum_eq_zero fun i hi =>
+          image_eq_zero_of_notMem_tsupport fun hxi => hx ⟨i, hi, hxi⟩, covectorEuclideanNorm_zero]
+        exact zero_le_one
+  refine ENNReal.le_of_forall_pos_le_add fun ε hε hW => ?_
+  have hδ : (ε : ℝ≥0∞) / s.card ≠ 0 :=
+    ENNReal.div_ne_zero.2 ⟨ENNReal.coe_ne_zero.2 hε.ne', ENNReal.natCast_ne_top _⟩
+  -- near-optimal forms: `S(ω_i) ≥ 0` and `M_{N_i}(S) ≤ S(ω_i) + ε / #s`
+  have happrox : ∀ i ∈ s, ∃ ω ∈ massAdmissibleOn U n (N i), 0 ≤ S ω ∧
+      S.massOn (N i) ≤ ENNReal.ofReal (S ω) + (ε : ℝ≥0∞) / s.card := by
+    intro i hi
+    by_cases h0 : S.massOn (N i) = 0
+    · exact ⟨0, ⟨by simp, fun x => by simp⟩, by simp, by simp [h0]⟩
+    have hfin : S.massOn (N i) ≠ ∞ :=
+      ((S.massOn_mono (Finset.subset_set_biUnion_of_mem (f := N) hi)).trans_lt hW).ne
+    obtain ⟨_, ⟨ω, hω, rfl⟩, hlt⟩ := lt_sSup_iff.1 (ENNReal.sub_lt_self hfin h0 hδ)
+    exact ⟨ω, hω, (ENNReal.ofReal_pos.1 (zero_le.trans_lt hlt)).le,
+      tsub_le_iff_right.1 hlt.le⟩
+  choose! ω hω hpos happ using happrox
+  calc ∑ i ∈ s, S.massOn (N i)
+      ≤ ∑ i ∈ s, (ENNReal.ofReal (S (ω i)) + (ε : ℝ≥0∞) / s.card) := Finset.sum_le_sum happ
+    _ = ENNReal.ofReal (S (∑ i ∈ s, ω i)) + s.card * ((ε : ℝ≥0∞) / s.card) := by
+      rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, map_sum,
+        ENNReal.ofReal_sum_of_nonneg hpos]
+    _ ≤ S.massOn (⋃ i ∈ s, N i) + ε := add_le_add (S.le_massOn (hglue ω hω)) ENNReal.mul_div_le
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
