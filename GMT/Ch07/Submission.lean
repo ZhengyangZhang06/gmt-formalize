@@ -587,6 +587,46 @@ theorem Submission.lcn_mult_mul_orient_apply_integrableOn : ∀ (P n : ℕ) (U K
         exact (Real.norm_eq_abs _).symm.trans_le ((R.orient x).le_opNorm α)
     _ ≤ (R.mult x : ℝ) * (1 * ‖α‖) := by gcongr
     _ = ‖α‖ * R.mult x := by ring
+/-- **Isolation of a ray** (steps 2–3 of the proof of `idtp_fons_odc_ray_orientation`): for a
+finite set `F` of unit vectors, a unit vector `e` and `t₀ > 0`, some ball about `t₀e` meets the
+open rays `{te' : t > 0}`, `e' ∈ F`, only inside `{te : t > 0}`.  The closed rays
+`{se' : s ≥ 0}`, `e' ∈ F ∖ {e}`, are closed (`s ↦ se'` is an isometry of `ℝ`) and miss `t₀e`
+(comparing norms in `t₀e = se'` gives `s = t₀`, hence `e' = e`); take a ball about `t₀e` avoiding
+their finite union. -/
+theorem Submission.idtp_fons_odc_ro_ray_isolation : ∀ (P : ℕ) (F : Finset (Euclid P)) (e : Euclid P) (t₀ : ℝ), (∀ e' ∈ F, ‖e'‖ = 1) → ‖e‖ = 1 → 0 < t₀ → ∃ δ : ℝ, 0 < δ ∧ ball (t₀ • e) δ ∩ (⋃ e' ∈ F, (fun t : ℝ => t • e') '' Ioi 0) ⊆ (fun t : ℝ => t • e) '' Ioi 0 := by
+  classical
+  intro P F e t₀ hF he ht₀
+  -- `K`: the closed rays `{s • e' : s ≥ 0}` of the directions `e' ∈ F` other than `e`
+  have hK : IsClosed (⋃ e' ∈ F.erase e, (fun t : ℝ => t • e') '' Ici 0) := by
+    refine isClosed_biUnion_finset fun e' he' => ?_
+    -- `s ↦ s • e'` is an isometry of `ℝ` (as `‖e'‖ = 1`), hence a closed embedding
+    have hiso : Isometry fun t : ℝ => t • e' := Isometry.of_dist_eq fun s s' => by
+      rw [dist_eq_norm, ← sub_smul, norm_smul, hF e' (Finset.mem_of_mem_erase he'), mul_one,
+        Real.dist_eq, Real.norm_eq_abs]
+    exact hiso.isClosedEmbedding.isClosedMap _ isClosed_Ici
+  -- `t₀ • e ∉ K`: comparing norms in `s • e' = t₀ • e` gives `s = t₀`, hence `e' = e`
+  have hx : t₀ • e ∉ ⋃ e' ∈ F.erase e, (fun t : ℝ => t • e') '' Ici 0 := by
+    simp only [mem_iUnion, mem_image, mem_Ici, not_exists, not_and]
+    intro e' he' s hs hse
+    have hs' : s = t₀ := by
+      have h := congrArg norm hse
+      rwa [norm_smul, norm_smul, hF e' (Finset.mem_of_mem_erase he'), he, mul_one, mul_one,
+        Real.norm_of_nonneg hs, Real.norm_of_nonneg ht₀.le] at h
+    rw [hs'] at hse
+    exact (Finset.mem_erase.mp he').1 (smul_right_injective _ ht₀.ne' hse)
+  -- a ball about `t₀ • e` inside the open complement of `K`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hK.isOpen_compl _ hx
+  refine ⟨δ, hδ, ?_⟩
+  rintro y ⟨hyB, hyU⟩
+  simp only [mem_iUnion, mem_image, mem_Ioi] at hyU
+  obtain ⟨e'', he'', t, ht, rfl⟩ := hyU
+  by_cases h : e'' = e
+  · subst h
+    exact ⟨t, ht, rfl⟩
+  · exfalso
+    refine hball hyB ?_
+    simp only [mem_iUnion, mem_image, mem_Ici]
+    exact ⟨e'', Finset.mem_erase.mpr ⟨h, he''⟩, t, ht.le, rfl⟩
 /-- **Simon 7.3.3, proof of (2), formula (10)**: `ω₁ = 2`, and for `‖v‖ = 1` the line
 `γ(t) = p + t v` is a measurable embedding with `H¹⌞γ(I) = γ_#(ℒ¹⌞I)` and `H¹(γ(I)) = ℒ¹(I)`
 for every `I ⊆ ℝ`.  `γ` is an isometry, `μHE[1] = volume` on `ℝ` and `μHE[1]` is preserved by
@@ -750,6 +790,199 @@ theorem Submission.idtp_fons_odc_ra_action_split : ∀ (P : ℕ) (R : IMRep (uni
     · rw [Set.sdiff_eq_empty.2 (iUnion₂_subset fun e _ => inter_subset_left), measure_empty]
   /- Step 6: `R.action ω = ∫_M f = ∫_{⋃ M ∩ ray(e)} f = Σ_e ∫_{M ∩ ray(e)} f`. -/
   rw [IMRep.action, setIntegral_congr_set hae, hsplit]
+/-- **Simon 7.3.3, proof of (2), step 4a**: for `‖u‖ = 1` and `f ≥ 0` continuous with compact
+support and `f(u) > 0`, `∫_{ℝu} f dH¹ > 0`.  By `idtp_fons_odc_line_hausdorff` (`p = 0`, `v = u`,
+`I = ℝ`), `H¹⌞ℝu = γ_#ℒ¹` for `γ(t) = t u`, so the integral is `∫_ℝ f(t u) dt`; `γ` is an
+isometry, so `t ↦ f(t u)` is continuous, nonnegative, compactly supported and positive at `1`. -/
+theorem Submission.idtp_fons_odc_ro_line_integral_pos : ∀ (P : ℕ) (u : Euclid P) (f : Euclid P → ℝ), ‖u‖ = 1 → Continuous f → HasCompactSupport f → (∀ y, 0 ≤ f y) → 0 < f u → 0 < ∫ y in (Submodule.span ℝ {u} : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P)) := by
+  intro P u f hu hf hfc hf0 hfu
+  obtain ⟨hemb, hline⟩ := Submission.idtp_fons_odc_line_hausdorff.2 P 0 u hu
+  -- `γ(t) = 0 + t u` is an isometry
+  have hiso : Isometry (fun t : ℝ => (0 : Euclid P) + t • u) :=
+    Isometry.of_dist_eq fun s t => by
+      show dist ((0 : Euclid P) + s • u) (0 + t • u) = dist s t
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hu, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+  -- the line `ℝu` is `γ(ℝ)`
+  have hspan : (Submodule.span ℝ {u} : Set (Euclid P)) =
+      (fun t : ℝ => (0 : Euclid P) + t • u) '' univ := by
+    ext y
+    simp only [SetLike.mem_coe, Submodule.mem_span_singleton, image_univ, mem_range, zero_add]
+  -- `∫_{ℝu} f dH¹ = ∫_ℝ f(γ t) dt`
+  rw [hspan, (hline univ).1, Measure.restrict_univ, hemb.integral_map]
+  exact (hf.comp hiso.continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
+    (hfc.comp_isClosedEmbedding hiso.isClosedEmbedding) (fun t => hf0 _) (x := 1)
+    (by simpa using hfu.ne')
+
+/-- **Simon Ch. 3, Definition 1.4** (step 4 of `idtp_fons_odc_ray_orientation`): if near `x` the
+set `M` lies on the line `x + ℝv` up to an `H¹`-null set `N`, every `1`-dimensional approximate
+tangent space `Q` of `M` at `x` is `ℝv`.  As `finrank Q = 1 = finrank ℝv` it suffices to exclude a
+unit vector `u ∈ Q \ ℝv`, for which `Q = ℝu`.  With `d = dist(u, ℝv) > 0` and the bump
+`f = max(0, d/2 - |· - u|) ∈ C_c`, `line_integral_pos` gives `∫_Q f dH¹ > 0`.  But for
+`0 < ρ < δ/(1 + d)` every `y ∈ η_{x,ρ}(M)` with `f(y) ≠ 0` has `x + ρy ∈ B_δ(x)` off the line,
+so `y` lies in the `H¹`-null set `η_{x,ρ}(N)` (`η_{x,ρ}` is Lipschitz) and
+`∫_{η_{x,ρ}(M)} f dH¹ = 0`; uniqueness of limits as `ρ ↓ 0` then forces `∫_Q f dH¹ = 0`. -/
+theorem Submission.idtp_fons_odc_ro_tangent_line : ∀ (P : ℕ) (M N : Set (Euclid P)) (x v : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), v ≠ 0 → 0 < δ → (μHE[1] : Measure (Euclid P)) N = 0 → M ∩ ball x δ ⊆ range (fun s : ℝ => x + s • v) ∪ N → HasApproximateTangentSpaceAt 1 M x Q → Q = Submodule.span ℝ {v} := by
+  intro P M N x v δ Q hv hδ hN hloc hQ
+  -- `η_{x,ρ}(S) = {y | x + ρ y ∈ S}` for `ρ ≠ 0`
+  have himage : ∀ (S : Set (Euclid P)) {ρ : ℝ}, ρ ≠ 0 →
+      Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' S = (fun y => x + ρ • y) ⁻¹' S := by
+    intro S ρ hρ
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ] using hz
+    · intro hy
+      exact ⟨_, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ]⟩
+  -- `η_{x,ρ}` is `|ρ⁻¹|`-Lipschitz, so `η_{x,ρ}(N)` is `H¹`-null
+  have hnull : ∀ ρ : ℝ,
+      (μHE[1] : Measure (Euclid P)) (Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' N) = 0 := by
+    intro ρ
+    have hlip : LipschitzWith ‖ρ⁻¹‖₊ (Poincare.SimonGMT.Chapter03.blowUpMap x ρ) :=
+      LipschitzWith.of_dist_le_mul fun a b => by
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dist_smul₀, dist_sub_right,
+          coe_nnnorm, le_refl]
+    refine nonpos_iff_eq_zero.1 ?_
+    calc _ ≤ (‖ρ⁻¹‖₊ : ℝ≥0∞) ^ 1 * μHE[1] N :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn 1
+            hlip.lipschitzOnWith
+      _ = 0 := by rw [hN, mul_zero]
+  -- `x + ρ y` lies on the line `x + ℝv` iff `y ∈ ℝv` (`ρ ≠ 0`)
+  have hline : ∀ (y : Euclid P) {ρ : ℝ}, ρ ≠ 0 →
+      (x + ρ • y ∈ range (fun s : ℝ => x + s • v) ↔ y ∈ Submodule.span ℝ {v}) := by
+    intro y ρ hρ
+    simp only [mem_range, add_right_inj, Submodule.mem_span_singleton]
+    constructor
+    · rintro ⟨s, hs⟩
+      exact ⟨ρ⁻¹ * s, by rw [mul_smul, hs, smul_smul, inv_mul_cancel₀ hρ, one_smul]⟩
+    · rintro ⟨a, rfl⟩
+      exact ⟨ρ * a, mul_smul _ _ _⟩
+  -- `finrank Q = 1 = finrank ℝv`, so it suffices to show `Q ≤ ℝv`
+  refine Submodule.eq_of_le_of_finrank_eq ?_ (by rw [hQ.1, finrank_span_singleton hv])
+  by_contra hQL
+  -- a unit vector `u ∈ Q \ ℝv`; then `Q = ℝu`
+  obtain ⟨u, huQ, huL, hu⟩ : ∃ u ∈ Q, u ∉ Submodule.span ℝ {v} ∧ ‖u‖ = 1 := by
+    obtain ⟨w, hwQ, hwL⟩ := IsConcreteLE.not_le_iff_exists.1 hQL
+    have hw : ‖w‖ ≠ 0 := norm_ne_zero_iff.2 fun h => hwL (h ▸ Submodule.zero_mem _)
+    refine ⟨‖w‖⁻¹ • w, Q.smul_mem _ hwQ, fun h => hwL ?_, ?_⟩
+    · simpa [smul_smul, mul_inv_cancel₀ hw] using (Submodule.span ℝ {v}).smul_mem ‖w‖ h
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hw]
+  have hspan : Submodule.span ℝ {u} = Q :=
+    Submodule.eq_of_le_of_finrank_eq ((Submodule.span_singleton_le_iff_mem _ _).2 huQ)
+      (by rw [hQ.1, finrank_span_singleton (by rintro rfl; simp at hu)])
+  -- `d = dist(u, ℝv) > 0` and the bump `f = max(0, d/2 - |· - u|)`
+  obtain ⟨d, hdu, hd⟩ : ∃ d, d = infDist u (Submodule.span ℝ {v} : Set (Euclid P)) ∧ 0 < d :=
+    ⟨_, rfl, ((Submodule.closed_of_finiteDimensional _).notMem_iff_infDist_pos
+      ⟨0, Submodule.zero_mem _⟩).1 huL⟩
+  obtain ⟨f, hf⟩ : ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ,
+      ∀ y, f y = max 0 (d / 2 - ‖y - u‖) :=
+    ⟨⟨⟨fun y => max 0 (d / 2 - ‖y - u‖), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall u (d / 2)) fun y hy => max_eq_left (by
+        rw [mem_closedBall, dist_eq_norm, not_le] at hy; linarith)⟩, fun y => rfl⟩
+  -- by `line_integral_pos`, the limit `∫_Q f dH¹ = ∫_{ℝu} f dH¹` is positive
+  have hpos : 0 < ∫ y in (Q : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P)) := by
+    rw [← hspan]
+    refine Submission.idtp_fons_odc_ro_line_integral_pos P u f hu (map_continuous f)
+      f.hasCompactSupport (fun y => by rw [hf]; exact le_max_left _ _) ?_
+    rw [hf, sub_self, norm_zero, sub_zero]
+    exact lt_max_of_lt_right (half_pos hd)
+  -- for `0 < ρ < δ / (1 + d)`, `f = 0` on `η_{x,ρ}(M)` off the null set `η_{x,ρ}(N)`
+  have hzero : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' M,
+      f y ∂(μHE[1] : Measure (Euclid P)) = 0 := by
+    have h1d : (0 : ℝ) < 1 + d := by linarith
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ h1d)] with ρ ⟨hρ0, hρ⟩
+    rw [lt_div_iff₀ h1d] at hρ
+    refine setIntegral_eq_zero_of_ae_eq_zero (ae_iff.2 (measure_mono_null (fun y hy => ?_)
+      (hnull ρ)))
+    simp only [mem_ofPred_eq, not_imp] at hy
+    rw [himage _ hρ0.ne'] at hy ⊢
+    obtain ⟨hyM, hfy⟩ := hy
+    have hyu : ‖y - u‖ < d / 2 := by
+      by_contra h
+      exact hfy (by rw [hf]; exact max_eq_left (by linarith [not_lt.1 h]))
+    have hball : x + ρ • y ∈ ball x δ := by
+      have hy1 : ‖y‖ < 1 + d := by linarith [norm_sub_norm_le y u]
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hρ0.le]
+      exact (mul_lt_mul_of_pos_left hy1 hρ0).trans hρ
+    rcases hloc (show x + ρ • y ∈ M ∩ ball x δ from ⟨hyM, hball⟩) with hyl | hyN
+    · exfalso
+      have h := infDist_le_dist_of_mem (x := u) (SetLike.mem_coe.2 ((hline y hρ0.ne').1 hyl))
+      rw [← hdu, dist_comm, dist_eq_norm] at h
+      linarith
+    · exact hyN
+  -- uniqueness of the limit as `ρ ↓ 0` contradicts `∫_Q f dH¹ > 0`
+  exact hpos.ne' (tendsto_nhds_unique (hQ.2 f)
+    (tendsto_const_nhds.congr' (hzero.mono fun ρ h => h.symm)))
+/-- A unit orientation of the line `ℝe`, `‖e‖ = 1`, is `±e`, i.e. `ξ = ±(α ↦ α(e))` (Simon 6.1.1,
+6.2.2 with `n = 1`).  An orthonormal `τ : Fin 1 → ℝᴾ` spanning `ℝe` has `τ₀ = c e` with
+`|c| = ‖τ₀‖ = 1`, and `α(τ) = c α(e)` by multilinearity, so `⟨α, ξ⟩ = ±α(τ) = ±α(e)`. -/
+theorem Submission.idtp_fons_odc_ro_line_orientation : ∀ (P : ℕ) (e : Euclid P) (ξ : MultiVector P 1), ‖e‖ = 1 → IsUnitOrientationOf ξ (Submodule.span ℝ {e}) → ξ = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ ξ = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) := by
+  intro P e ξ he ⟨τ, hτ, hspan, hξ⟩
+  -- `τ 0 ∈ span (range τ) = ℝe`, so `τ 0 = c • e`
+  obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp
+    (hspan ▸ Submodule.subset_span (Set.mem_range_self 0) : τ 0 ∈ Submodule.span ℝ {e})
+  -- `1 = ‖τ 0‖ = |c| ‖e‖ = |c|`, so `c = ±1`
+  have hc1 : |c| = 1 := by
+    have h := hτ.1 0
+    rwa [← hc, norm_smul, he, mul_one, Real.norm_eq_abs] at h
+  -- `Fin 1 = {0}`, so `α τ = α (fun _ => c • e) = c * α (fun _ => e)`
+  have hev : ∀ α : Covector (Euclid P) 1, α τ = c * α (fun _ => e) := by
+    intro α
+    have hτc : τ = fun _ => c • e := funext fun i => by rw [Subsingleton.elim i 0, hc]
+    rw [hτc, α.map_smul_univ (fun _ => c) (fun _ => e)]
+    simp
+  rcases (abs_eq zero_le_one).mp hc1 with rfl | rfl <;> rcases hξ with hξ | hξ
+  · exact Or.inl (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, one_mul, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inr (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, one_mul, neg_apply, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inr (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, neg_one_mul, neg_apply, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inl (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, neg_one_mul, neg_neg, ContinuousAlternatingMap.apply_apply])
+
+/-- **Orientation along the rays of a `1`-dimensional carrier** (for Simon 7.3.3, proof of (2),
+(10): `1`-dimensional minimizing cones are `m[[ℓ]]`; Ch. 3, 1.4 and Ch. 6, 3.1).  Let
+`R = (M, θ, ξ)` be a `1`-dimensional integer multiplicity triple in `ℝᴾ` and `F` a finite set of
+unit vectors with `H¹(M \ ⋃_{e ∈ F} ray(e)) = 0`, `ray(e) = {t e : t > 0}`.  Then for each
+`e ∈ F`, `ξ(x) = ±e` for `H¹`-a.e. `x ∈ M ∩ ray(e)`: near `x = t₀ e` the other rays stay away,
+so `M` lies on the line `x + ℝe` up to an `H¹`-null set, the approximate tangent line `TₓM` is
+`ℝe`, and the unit orientations of `ℝe` are `±e`. -/
+theorem Submission.idtp_fons_odc_ray_orientation : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∀ e ∈ F, ∀ᵐ x ∂((μHE[1] : Measure (Euclid P)).restrict (R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0)), R.orient x = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ R.orient x = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) := by
+  intro P R F hF hnull e he
+  have he1 : ‖e‖ = 1 := hF e he
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    simp at he1
+  -- Step 1: `ray(e)` is the image of `(0, ∞)` under the measurable embedding `t ↦ 0 + t e`
+  -- (line_param), so `M ∩ ray(e)` is measurable.
+  have hray : MeasurableSet ((fun t : ℝ => t • e) '' Ioi 0) := by
+    have h := (Submission.idtp_fons_odc_line_hausdorff.2 P 0 e he1).1.measurableSet_image.2
+      (measurableSet_Ioi (a := (0 : ℝ)))
+    simpa only [zero_add] using h
+  -- Step 6: `R.orients` holds a.e. on `M`, hence a.e. on `M ∩ ray(e)`, and a.e. point of
+  -- `M ∩ ray(e)` is `t₀ e` with `t₀ > 0`.
+  filter_upwards [ae_restrict_mem (R.measurableSet_carrier.inter hray),
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients] with x hx hxQ
+  obtain ⟨-, t₀, ht₀ : 0 < t₀, hxe⟩ := hx
+  simp only at hxe
+  subst hxe
+  obtain ⟨Q, hQ, hQo⟩ := hxQ
+  -- Step 2: near `t₀ e`, every point on a ray of `F` lies on `ray(e)` (ray_isolation).
+  obtain ⟨δ, hδ, hball⟩ := Submission.idtp_fons_odc_ro_ray_isolation P F e t₀ hF he1 ht₀
+  -- Step 3: `M ∩ B_δ(t₀ e) ⊆ (t₀ e + ℝe) ∪ N` with `N = M \ ⋃_{e' ∈ F} ray(e')`.
+  have hloc : R.carrier ∩ ball (t₀ • e) δ ⊆ range (fun s : ℝ => t₀ • e + s • e) ∪
+      (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) := by
+    rintro y ⟨hyM, hyB⟩
+    by_cases hy : y ∈ ⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0
+    · obtain ⟨t, -, rfl⟩ := hball ⟨hyB, hy⟩
+      exact Or.inl ⟨t - t₀, by simp only [← add_smul, add_sub_cancel]⟩
+    · exact Or.inr ⟨hyM, hy⟩
+  -- Step 4: the approximate tangent line of `M` at `t₀ e` is `ℝe` (tangent_line).
+  obtain rfl := Submission.idtp_fons_odc_ro_tangent_line P R.carrier _ (t₀ • e) e δ Q he0 hδ
+    hnull hloc hQ
+  -- Step 5: the unit orientations of `ℝe` are `±e` (line_orientation).
+  exact Submission.idtp_fons_odc_ro_line_orientation P e (R.orient (t₀ • e)) he1 hQo
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
