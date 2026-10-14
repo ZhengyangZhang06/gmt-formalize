@@ -2315,6 +2315,36 @@ theorem Submission.codim1_hcp_submanifold_area_formula : ∀ (P m : ℕ) (M E : 
   rw [← hunion, image_iUnion, measure_iUnion hΦdisj hΦEs, lintegral_iUnion hEs hdisj]
   exact tsum_congr hpiece
 
+/-- **Simon Ch. 2, §5 (5.1–5.4)**: a deformation-minimal `C¹` submanifold is stationary.  Let
+`M ⊆ U` be an embedded `C¹` `m`-submanifold with `Hᵐ(M ∩ K) < ∞` for compact `K ⊆ U`, whose area
+does not decrease under the deformations `x ↦ x + tZ(x)`, `Z` smooth with compact support in `U`.
+Then `∫_M div_M X dHᵐ = 0` for every `C¹` field `X` with compact support in `U`.  By smooth
+approximation of `X` it suffices to take `X = Z` smooth.  `E = M ∩ spt Z` is Borel with
+`Hᵐ(E) < ∞`, and for small `|t|` the map `Φₜ = id + tZ` is `C¹`, injective and has injective
+differential.  So the area formula turns `Hᵐ(E) ≤ Hᵐ(Φₜ(E))` into `Hᵐ(E) ≤ ∫_E Jₜ dHᵐ`, and the
+first-order expansion of the Jacobian `Jₜ` at `t = 0` gives `∫_M div_M Z dHᵐ = 0`. -/
+theorem Submission.codim1_hcp_deformation_minimal_stationary : ∀ (P m : ℕ) (U M : Set (Euclid P)), IsOpen U → M ⊆ U → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ U → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0 := by
+  intro P m U M hU _ hM hfin hdef
+  -- it suffices to prove `∫_M div_M Z dHᵐ = 0` for smooth `Z` with compact support in `U`
+  refine Submission.codim1_hcp_fv_smooth_to_C1_stationary P m U M hU hM hfin
+    fun Z hZ hZc hZU => ?_
+  have hZ1 : ContDiff ℝ 1 Z := hZ.of_le (by exact_mod_cast le_top)
+  -- `E = M ∩ spt Z` is Borel (`M` is) and `Hᵐ(E) < ∞` (`spt Z` is a compact subset of `U`)
+  have hE : MeasurableSet (M ∩ tsupport Z) :=
+    (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1.inter
+      (isClosed_tsupport Z).measurableSet
+  refine Submission.codim1_hcp_fv_jacobian_minimal_stationary P m M Z hM hZ1 hZc
+    (hfin _ hZc.isCompact hZU) ?_
+  -- for `|t| < min(t₀, c)`, `Φₜ = id + tZ` is `C¹`, injective and has injective differential, so
+  -- the area formula rewrites `Hᵐ(Φₜ(E))` as `∫_E Jₜ dHᵐ`
+  obtain ⟨t₀, ht₀, hmin⟩ := hdef Z hZ hZc hZU
+  obtain ⟨c, hc, hinj⟩ := Submission.codim1_hcp_fv_perturbation_injective P Z hZ1 hZc
+  refine ⟨min t₀ c, lt_min ht₀ hc, fun t ht => ?_⟩
+  obtain ⟨hΦ, hDΦ⟩ := hinj t (ht.trans_le (min_le_right t₀ c))
+  exact (hmin t (ht.trans_le (min_le_left t₀ c))).trans_eq
+    (Submission.codim1_hcp_submanifold_area_formula P m M (M ∩ tsupport Z) (fun x => x + t • Z x)
+      hM hE inter_subset_left (contDiff_id.add (hZ1.const_smul t)) hΦ.injOn fun x _ => hDΦ x)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
