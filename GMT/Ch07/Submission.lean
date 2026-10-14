@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of 5.1, step 4** (with `n = m + 1`): a point `x ∈ ℝᴾ` of the lattice
+`(m + 1)`-skeleton `L_{m+1}` (at least `P − (m + 1)` integer coordinates) that is not in the
+`m`-skeleton `L_m` (fewer than `P − m` integer coordinates) lies on an open unit lattice
+`(m + 1)`-face.  The set `J` of integer coordinates of `x` has `P = m + 1 + |J|`, so its
+complement is the range of a strictly increasing `ι : Fin (m + 1) → Fin P`.  With `b = ⌊x⌋`
+and `y_j = fract(x_{ι(j)})`, which lies in `(0, 1)` as `x_{ι(j)} ∉ ℤ`, coordinatewise
+`b + Σⱼ yⱼ e_{ι(j)} = x`: `⌊xᵢ⌋ = xᵢ` for `i ∈ J`, `⌊xᵢ⌋ + fract(xᵢ) = xᵢ` for `i = ι(j₀)`. -/
+theorem Submission.dimred_mbl_dtfrsd_skeleton_point_on_open_face : ∀ (P m : ℕ) (x : Euclid P), (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → (¬ ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → ∃ (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (y : Euclid (m + 1)), StrictMono p.1 ∧ (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) = x := by
+  classical
+  rintro P m x ⟨s, hsP, hs⟩ hnot
+  -- Step 1: the set `J` of integer coordinates of `x`
+  obtain ⟨J, hJ⟩ : ∃ J : Finset (Fin P), ∀ i, i ∈ J ↔ ∃ z : ℤ, x i = z :=
+    ⟨Finset.univ.filter fun i => ∃ z : ℤ, x i = z, fun i => by simp⟩
+  -- Steps 2–4: `s ⊆ J` gives `P ≤ m + 1 + |J|`, and `J` itself is not admissible in (ii), so
+  -- `m + |J| < P`; hence `|Jᶜ| = P − |J| = m + 1`
+  have hcard : Jᶜ.card = m + 1 := by
+    have h1 : s.card ≤ J.card := Finset.card_le_card fun i hi => (hJ i).2 (hs i hi)
+    have h2 : ¬ P ≤ m + J.card := fun h => hnot ⟨J, h, fun i hi => (hJ i).1 hi⟩
+    rw [Finset.card_compl, Fintype.card_fin]
+    omega
+  -- Step 5: the increasing enumeration `ι` of `Jᶜ`
+  obtain ⟨ι, hιmono, hιJ, hιrange⟩ : ∃ ι : Fin (m + 1) → Fin P,
+      StrictMono ι ∧ (∀ j, ι j ∉ J) ∧ ∀ i, i ∉ J → ∃ j, ι j = i := by
+    refine ⟨Jᶜ.orderEmbOfFin hcard, (Jᶜ.orderEmbOfFin hcard).strictMono,
+      fun j => Finset.mem_compl.1 (Jᶜ.orderEmbOfFin_mem hcard j), fun i hi => ?_⟩
+    have hrange : i ∈ Set.range (Jᶜ.orderEmbOfFin hcard) := by
+      rw [Finset.range_orderEmbOfFin]
+      exact Finset.mem_compl.2 hi
+    exact hrange
+  -- Steps 6–7: `p = (ι, ⌊x⌋)` and `y_j = fract(x_{ι(j)}) ∈ (0, 1)`, since `x_{ι(j)} ∉ ℤ`
+  refine ⟨(ι, fun i => ⌊x i⌋), WithLp.toLp 2 fun j => Int.fract (x (ι j)), hιmono,
+    fun j => ⟨?_, ?_⟩, ?_⟩
+  · rw [PiLp.toLp_apply]
+    exact Int.fract_pos.2 fun h => hιJ j ((hJ (ι j)).2 ⟨_, h⟩)
+  · rw [PiLp.toLp_apply]
+    exact Int.fract_lt_one _
+  -- Step 8: the `i`-th coordinate is `⌊xᵢ⌋ + Σⱼ [i = ι(j)] fract(x_{ι(j)}) = xᵢ`
+  refine PiLp.ext fun i => ?_
+  simp only [PiLp.add_apply, WithLp.ofLp_sum, Finset.sum_apply, PiLp.smul_apply,
+    PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+  by_cases hi : i ∈ J
+  · -- (a) `i ∈ J`: no `ι(j)` equals `i`, and `⌊xᵢ⌋ = xᵢ` as `xᵢ ∈ ℤ`
+    obtain ⟨z, hz⟩ := (hJ i).1 hi
+    rw [Finset.sum_eq_zero, add_zero, hz, Int.floor_intCast]
+    exact fun j _ => ite_eq_right fun h : i = ι j => hιJ j (h ▸ hi)
+  · -- (b) `i = ι(j₀)`: only the `j₀` summand survives, and `⌊xᵢ⌋ + fract(xᵢ) = xᵢ`
+    obtain ⟨j₀, rfl⟩ := hιrange i hi
+    rw [Finset.sum_eq_single j₀, ite_eq_left rfl, Int.floor_add_fract]
+    · exact fun j _ hj => ite_eq_right fun h => hj (hιmono.injective h.symm)
+    · exact fun h => absurd (Finset.mem_univ j₀) h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
