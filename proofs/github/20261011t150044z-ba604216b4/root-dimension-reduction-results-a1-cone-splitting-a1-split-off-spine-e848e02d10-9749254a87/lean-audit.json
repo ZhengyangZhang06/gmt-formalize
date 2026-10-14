@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52ba9df7fc9de52ce77c51d7ba98b809b8a24f0df31d26bcae41d6f703d09bd1",
+  "git_delta": {
+    "base_commit": "9d8924e1da0975c7b0644d85573ce4473da64f6d",
+    "candidate_commit": "04c1e6491c0e5ff3cf3f0668a788a1f4848d17fd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_rh_extDeriv_param_integral",
+    "diff_sha256": "b5a4346b8ec305aa54ad80601ac35f1fd5610753abb65b999eb3aec9d042add1",
+    "source_sha256": "c95774920c1b6e9da3d2e54e8fb1b1875302b56a43bca963ff83d76c1d166980",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_rh_extDeriv_param_integral",
+      "statement": "∀ (N k : ℕ) (h : ℝ × Euclid N → Covector (Euclid N) k), ContDiff ℝ (⊤ : ℕ∞) h → ∀ x : Euclid N, exteriorDerivative (fun y : Euclid N => ∫ t in (0 : ℝ)..1, h (t, y)) x = ∫ t in (0 : ℝ)..1, exteriorDerivative (fun y : Euclid N => h (t, y)) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
