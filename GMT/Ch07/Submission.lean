@@ -9166,6 +9166,66 @@ theorem Submission.dimred_minimizing_monotonicity : ∀ (P n d : ℕ) (U N : Set
     (fun x hx => (hsupp x (hspt hx).1).1 hx)
     (Submission.dimred_mono_ae_ball_density_ge_one P n U R hU) hΘ hΘusc
 
+/-- **Monotonicity, upper semicontinuous density and `Θ ≥ 1` for minimizing cycles in `ℝᴾ`**
+(Simon 7.3.1(1) with `U = N = ℝᴾ`, through 7.1.2 and Ch. 4, 3.3–3.13 with `H = 0`).  Take
+`C = τ(M, θ, ξ)` and `μ = θHⁿ⌞M`.  The identity chart makes `ℝᴾ` an embedded `C²` submanifold, so
+by 7.1.2 `v(M, θ)` is stationary in `ℝᴾ`; every vector is tangent to `ℝᴾ` (`γ(t) = x + tX(x)`),
+so `δV(X) = 0` for all `X ∈ C¹_c`.  Then 3.17 with `H = 0`, `κ = 0` and `M_W(C) = μ(W)` give the
+monotonicity of `ρ⁻ⁿM_{B_ρ(y)}(C)`; `μ(B̄₁(y)) < ∞`, so monotone limits give an upper
+semicontinuous density `Θ` on `ℝᴾ`; `Θ ≥ 1` `μ`-a.e. and upper semicontinuity give `Θ ≥ 1` on
+`spt C`. -/
+theorem Submission.idtp_cse_mlb_univ_monotonicity_density : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → (∀ y : Euclid P, MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * C.massOn (ball y ρ)) (Ioi 0)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y : Euclid P, HasMassDensity C y (Θ y)) ∧ UpperSemicontinuous Θ) ∧ ∀ y ∈ C.support, ∀ θ : ℝ, HasMassDensity C y θ → 1 ≤ θ := by
+  intro P n C hmin hbd
+  -- `C = τ(M, θ, ξ)`, and `ℝᴾ` is an embedded `C²` submanifold (identity chart)
+  obtain ⟨R, hR⟩ := hmin.1
+  have hN : IsEmbeddedSubmanifold 2 P (univ : Set (Euclid P)) := fun z _ =>
+    ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ z, contDiff_id.contDiffOn, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun w _ => by
+        rw [fderiv_id, ContinuousLinearMap.coe_id']
+        exact injective_id⟩
+  -- 7.1.2: `v(M, θ)` is stationary in `ℝᴾ`, and every `X ∈ C¹_c` is tangent to `ℝᴾ`
+  have hstat : R.IsStationaryAlong univ :=
+    Submission.stationaryAlong_of_minimizing_in_submanifold P n P univ univ C R isOpen_univ hN
+      (by simp) (by rwa [inter_self]) hbd hR (by simp)
+  have hfv : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+      R.firstVariation X = 0 := fun X hX hXc =>
+    hstat X hX hXc (subset_univ _) fun x _ => ⟨fun t => x + t • X x,
+      (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn, mapsTo_univ _ _,
+      by simp, by simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X x)).const_add x⟩
+  -- `M_W(C) = μ(W)` for open `W`; `x ∈ spt C` iff `μ(B_ε(x)) > 0` for all `ε > 0`
+  obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P n univ C R isOpen_univ hR
+  have hp := Submission.dsmc_approxTangentPlane_starProjection_aemeasurable P n univ R isOpen_univ
+  -- (ii) 3.17 with `H = 0` and `κ = 0` on `B̄_ρ(y)`
+  have hmono : ∀ y : Euclid P, MonotoneOn (fun ρ : ℝ =>
+      ENNReal.ofReal (1 / ρ ^ n) * C.massOn (ball y ρ)) (Ioi 0) := by
+    intro y σ hσ ρ _ hσρ
+    have h := Submission.dsmc_exp_ball_mass_monotone P n univ R 0 0 y ρ (subset_univ _) hp
+      aestronglyMeasurable_zero (fun _ => by simp) (fun X hX hXc _ => by
+        rw [hfv X hX hXc]
+        simp) σ ρ hσ hσρ le_rfl
+    simp only [zero_mul, Real.exp_zero] at h
+    dsimp only
+    rw [hmass _ isOpen_ball (subset_univ _), hmass _ isOpen_ball (subset_univ _)]
+    exact h
+  -- (iii) `M_{B₁(y)}(C) ≤ μ(B̄₁(y)) = ∫_{M ∩ B̄₁(y)} θ dHⁿ < ∞`; monotone limits give `Θ`
+  have hfin : ∀ y ∈ (univ : Set (Euclid P)), ∃ r : ℝ, 0 < r ∧ C.massOn (ball y r) ≠ ∞ := by
+    intro y _
+    refine ⟨1, one_pos, ?_⟩
+    rw [hmass _ isOpen_ball (subset_univ _)]
+    refine ne_top_of_le_ne_top ?_ (measure_mono ball_subset_closedBall)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall y 1) (subset_univ _)
+  obtain ⟨Θ, hΘ, hΘusc⟩ := Submission.dimred_mono_density_usc_of_monotone P n univ C isOpen_univ
+    hfin fun K _ _ => ⟨0, le_rfl, fun y r _ => by
+      simp only [zero_mul, Real.exp_zero]
+      exact (hmono y).mono Ioo_subset_Ioi_self⟩
+  -- (iv) `Θ ≥ 1` `μ`-a.e. and `Θ` is upper semicontinuous, so `Θ ≥ 1` on `spt C`
+  refine ⟨hmono, ⟨Θ, fun y => hΘ y (mem_univ y), upperSemicontinuousOn_univ_iff.1 hΘusc⟩, ?_⟩
+  exact Submission.dimred_mono_support_density_ge_one_of_usc P n univ C R.measure Θ isOpen_univ
+    hmass (fun x hx => (hsupp x (mem_univ x)).1 hx)
+    (Submission.dimred_mono_ae_ball_density_ge_one P n univ R isOpen_univ) hΘ hΘusc
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
