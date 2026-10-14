@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "627c61e20820e0801ef2dfedfa270d78424fa4777483ad4879077a9add7b1c4a",
+  "git_delta": {
+    "base_commit": "d3567414f752306b0acde03a7cbee02d471e77e9",
+    "candidate_commit": "e7fd2aeecf45ac1f24279d9fa20d0b43c1f94cf6",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "490e720e8366ad660cf0515f960da069b8bcece7dc30f378204565a5d2d7b63a",
+    "source_sha256": "3e3bdb9b647175a24debf29df4087d296db895af55a7a5c08fb5f1405cf0b0d5",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_rectifiable_c1_cover",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)), CountablyRectifiable m M → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ M ⊆ N₀ ∪ ⋃ l, N l",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
