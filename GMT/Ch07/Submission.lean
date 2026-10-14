@@ -3273,6 +3273,56 @@ theorem Submission.dtc_bc_lc_pfi_refined_bilipschitz_pieces : ∀ (P n : ℕ) (M
     · simp only [Nat.unpair_pair]
       exact hk
     · simp only [Nat.unpair_pair]
+/-- **Simon Ch. 6, (3.4)–(3.5)** (orientation along a bi-Lipschitz piece): let `R = (M, θ, ξ)` be
+an integer multiplicity triple in the open set `U`, `G : ℝⁿ → ℝᴾ` `L`-Lipschitz, `A ⊆ ℝⁿ` Borel
+and `κ > 0` with `κ|a − a'| ≤ |G a − G a'|` on `A`, `G` differentiable with injective derivative
+at every point of `A`, and `G(A) ⊆ M`.  Then for a.e. `a ∈ A` there is `σ = ±1` with
+`J_G(a) ⟨β, ξ(G a)⟩ = σ β(DG(a)e₁, …, DG(a)eₙ)` for every `n`-covector `β`, where
+`J_G(a) = (det[DG(a)eₖ · DG(a)eₗ])^{1/2}`.
+`M` is locally `Hⁿ`-finite in `U` since `θ ≥ 1` is locally integrable, so `M` has approximate
+tangent space `range DG(a)` at `G a` for a.e. `a ∈ A`; the `Hⁿ`-a.e. orientation condition of `R`
+pulls back along `G` to a.e. `a ∈ A`; uniqueness of approximate tangent spaces identifies the
+oriented plane with `range DG(a)`, which `J_G(a)⁻¹ DG(a)_# e` orients, so
+`ξ(G a) = ±J_G(a)⁻¹ DG(a)_# e`. -/
+theorem Submission.dtc_bc_lc_pfi_piece_orientation_sign : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (κ : ℝ), IsOpen U → LipschitzWith L G → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ R.carrier → ∀ᵐ a ∂(volume.restrict A), ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ∀ β : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ G a (EuclideanSpace.single k 1)) (fderiv ℝ G a (EuclideanSpace.single l 1)))) * R.orient (G a) β = σ * β (fun k => fderiv ℝ G a (EuclideanSpace.single k 1)) := by
+  intro P n U R G A L κ hU hG hA hκ hbi hdiff hGA
+  -- Step 1: `Hⁿ(M ∩ C) ≤ ∫_{M ∩ C} θ dHⁿ < ∞` for compact `C ⊆ U`, as `θ ≥ 1` on `M`
+  have hfin : ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (R.carrier ∩ C) ≠ ∞ := by
+    intro C hC hCU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult C hC hCU) ?_
+    calc μHE[n] (R.carrier ∩ C) = ∫⁻ _ in R.carrier ∩ C, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono' (R.measurableSet_carrier.inter hC.isClosed.measurableSet)
+          fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  -- Step 2: `M` has approximate tangent space `range DG(a)` at `G a` for a.e. `a ∈ A`
+  have htan := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U R.carrier G A L κ hU
+    R.measurableSet_carrier R.carrier_subset hfin hG hA hκ hbi hdiff hGA
+  -- Step 3: `G` is injective on `A`, so the `Hⁿ`-a.e. orientation condition of `R`, which holds
+  -- `Hⁿ`-a.e. on `G(A) ⊆ M`, pulls back along `G` to a.e. `a ∈ A`
+  have hinj : InjOn G A := by
+    intro a ha a' ha' hGa
+    have h := hbi a ha a' ha'
+    rw [hGa, sub_self, norm_zero] at h
+    have h' : ‖a - a'‖ ≤ 0 := le_of_mul_le_mul_left (by simpa using h) hκ
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  obtain ⟨-, -, hpull, -⟩ :=
+    (Submission.dtc_bc_lc_pfi_area_change_of_variables P n).2 G A hA hdiff hinj
+  have horient := hpull _ (ae_restrict_of_ae_restrict_of_subset hGA R.orients)
+  obtain ⟨hsign, -, hunit, -⟩ := Submission.dtc_bc_lc_pfi_unitOrientation_algebra P n
+  filter_upwards [htan, horient, ae_restrict_mem hA] with a hta hor ha
+  -- Step 4: by uniqueness of approximate tangent spaces, `ξ(G a)` orients `range DG(a)`
+  obtain ⟨Q, hQ, hξ⟩ := hor
+  rw [hQ.unique hta] at hξ
+  -- Step 5: `J_G(a) > 0` and `ζ := J_G(a)⁻¹ DG(a)_# e` also orients `range DG(a)`, so
+  -- `ξ(G a) = ±ζ`, whence `J_G(a) ξ(G a)(β) = ±β(DG(a)e)`
+  obtain ⟨hJ, hζ⟩ := hunit (fderiv ℝ G a) (hdiff a ha).2
+  rcases hsign _ _ _ hζ hξ with h | h
+  · refine ⟨1, Or.inl rfl, fun β => ?_⟩
+    rw [h, smul_apply, ContinuousAlternatingMap.apply_apply, smul_eq_mul,
+      mul_inv_cancel_left₀ hJ.ne', one_mul]
+  · refine ⟨-1, Or.inr rfl, fun β => ?_⟩
+    rw [h, neg_apply, smul_apply, ContinuousAlternatingMap.apply_apply, smul_eq_mul, mul_neg,
+      mul_inv_cancel_left₀ hJ.ne', neg_one_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
