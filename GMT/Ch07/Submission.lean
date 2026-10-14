@@ -451,6 +451,136 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Coordinate covectors** (Simon Ch. 6, §1, 1.1, 1.2 and 1.5).  For `J : Fin k → Fin P`,
+`dx^J = dx^{J(0)} ∧ ⋯ ∧ dx^{J(k−1)}` is the alternatization of the continuous multilinear map
+`v ↦ ∏ᵣ (v_r)_{J(r)}`, so `dx^J(v) = Σ_σ sign σ ∏ᵣ (v_{σ(r)})_{J(r)}`.  At `e_I` the `σ`-term is
+`[I ∘ σ = J]`; for strictly increasing `I, J`, `I ∘ σ = J` makes `σ` strictly increasing, hence
+`σ = id` and `I = J`, so `dx^J(e_I) = [I = J]`.  For an injective family of strictly increasing
+`J_l`, `(Σ_l c_l dx^{J_l})(e_I)` is `c_l` if `I = J_l` and `0` if `I ∉ range J`; summing the
+squares over strictly increasing `I` gives `covectorEuclideanNorm (Σ_l c_l dx^{J_l}) = √(Σ_l c_l²)`.
+-/
+theorem Submission.dor_lmb_fcd_fr_coordinate_covectors : ∀ (P k : ℕ), ∃ dx : (Fin k → Fin P) → Covector (Euclid P) k, (∀ I J : Fin k → Fin P, StrictMono I → StrictMono J → dx J (fun r => EuclideanSpace.single (I r) (1 : ℝ)) = if I = J then 1 else 0) ∧ ∀ (N : ℕ) (J : Fin N → Fin k → Fin P) (c : Fin N → ℝ), Function.Injective J → (∀ l, StrictMono (J l)) → covectorEuclideanNorm (∑ l, c l • dx (J l)) = Real.sqrt (∑ l, c l ^ 2) := by
+  intro P k
+  classical
+  -- Step 1: `dx^J` is the alternatization of `v ↦ ∏ᵣ (v_r)_{J(r)}`
+  let dx : (Fin k → Fin P) → Covector (Euclid P) k := fun J =>
+    ContinuousMultilinearMap.alternatization
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin k) ℝ).compContinuousLinearMap
+        (fun r => EuclideanSpace.proj (J r)))
+  have hdx : ∀ (J : Fin k → Fin P) (v : Fin k → Euclid P),
+      dx J v = ∑ σ : Equiv.Perm (Fin k), Equiv.Perm.sign σ • ∏ r, (v (σ r)) (J r) := by
+    intro J v
+    simp only [dx, ContinuousMultilinearMap.alternatization_apply_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      ContinuousMultilinearMap.mkPiAlgebra_apply, Function.comp_apply]
+    rfl
+  -- Step 2: if `I ∘ σ = J` with `I, J` strictly increasing, then `σ = id` and `I = J`
+  have hperm : ∀ (I J : Fin k → Fin P), StrictMono I → StrictMono J →
+      ∀ σ : Equiv.Perm (Fin k), (∀ r, I (σ r) = J r) → σ = 1 ∧ I = J := by
+    intro I J hI hJ σ hσ
+    have hσmono : StrictMono σ := by
+      intro a b hab
+      have : I (σ a) < I (σ b) := by rw [hσ a, hσ b]; exact hJ hab
+      exact hI.lt_iff_lt.mp this
+    have hrange : Set.range σ = Set.range (id : Fin k → Fin k) := by
+      rw [Set.range_id]; exact σ.surjective.range_eq
+    have hid : (σ : Fin k → Fin k) = id :=
+      (StrictMono.range_inj_of_wellFoundedLT hσmono strictMono_id).mp hrange
+    have hσ1 : σ = 1 := by
+      ext r; simp [congrFun hid r]
+    refine ⟨hσ1, ?_⟩
+    funext r
+    have := hσ r
+    rw [hσ1] at this
+    simpa using this
+  -- duality `dx^J(e_I) = [I = J]` for strictly increasing `I, J`
+  have hdual : ∀ I J : Fin k → Fin P, StrictMono I → StrictMono J →
+      dx J (fun r => EuclideanSpace.single (I r) (1 : ℝ)) = if I = J then 1 else 0 := by
+    intro I J hI hJ
+    rw [hdx]
+    have hterm : ∀ σ : Equiv.Perm (Fin k),
+        ∏ r, (EuclideanSpace.single (I (σ r)) (1 : ℝ)) (J r) =
+          if (∀ r, I (σ r) = J r) then 1 else 0 := by
+      intro σ
+      split_ifs with h
+      · refine Finset.prod_eq_one fun r _ => ?_
+        rw [h r]; simp
+      · push Not at h
+        obtain ⟨r, hr⟩ := h
+        refine Finset.prod_eq_zero (Finset.mem_univ r) ?_
+        simp [Ne.symm hr]
+    simp_rw [hterm]
+    split_ifs with hIJ
+    · subst hIJ
+      rw [Finset.sum_eq_single (1 : Equiv.Perm (Fin k))]
+      · simp
+      · intro σ _ hσ
+        rw [ite_eq_right]
+        · simp
+        · intro h
+          exact hσ (hperm I I hI hI σ h).1
+      · simp
+    · refine Finset.sum_eq_zero fun σ _ => ?_
+      rw [ite_eq_right]
+      · simp
+      · intro h
+        exact hIJ (hperm I J hI hJ σ h).2
+  refine ⟨dx, hdual, ?_⟩
+  intro N J c hJinj hJmono
+  -- Step 3: values of `Σ_l c_l dx^{J_l}` on the coordinate frames `e_I`
+  have hval : ∀ I : Fin k → Fin P, StrictMono I →
+      (∑ l, c l • dx (J l)) (fun r => EuclideanSpace.basisFun (Fin P) ℝ (I r)) =
+        ∑ l, if I = J l then c l else 0 := by
+    intro I hI
+    simp only [EuclideanSpace.basisFun_apply]
+    rw [ContinuousAlternatingMap.sum_apply]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [ContinuousAlternatingMap.smul_apply, hdual I (J l) hI (hJmono l)]
+    split_ifs <;> simp
+  -- by injectivity of `J`, at most one `l` has `J_l = I`
+  have hsq : ∀ I : Fin k → Fin P,
+      (∑ l, if I = J l then c l else 0) ^ 2 = ∑ l, if I = J l then c l ^ 2 else 0 := by
+    intro I
+    by_cases hex : ∃ l, I = J l
+    · obtain ⟨l₀, hl₀⟩ := hex
+      have h1 : (∑ l, if I = J l then c l else 0) = c l₀ := by
+        rw [Finset.sum_eq_single l₀]
+        · simp [hl₀]
+        · intro l _ hl
+          rw [ite_eq_right]
+          intro h
+          exact hl (hJinj (h.symm.trans hl₀))
+        · simp
+      have h2 : (∑ l, if I = J l then c l ^ 2 else 0) = c l₀ ^ 2 := by
+        rw [Finset.sum_eq_single l₀]
+        · simp [hl₀]
+        · intro l _ hl
+          rw [ite_eq_right]
+          intro h
+          exact hl (hJinj (h.symm.trans hl₀))
+        · simp
+      rw [h1, h2]
+    · push Not at hex
+      simp [hex]
+  -- Step 4: sum the squares over strictly increasing `I` and exchange the finite sums
+  unfold covectorEuclideanNorm
+  congr 1
+  calc (∑ I : Fin k → Fin P, if StrictMono I then
+          ((∑ l, c l • dx (J l)) (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+      = ∑ I : Fin k → Fin P, ∑ l, (if I = J l then c l ^ 2 else 0) := by
+        refine Finset.sum_congr rfl fun I _ => ?_
+        split_ifs with hI
+        · rw [hval I hI, hsq I]
+        · symm
+          refine Finset.sum_eq_zero fun l _ => ?_
+          rw [ite_eq_right]
+          rintro rfl
+          exact hI (hJmono l)
+    _ = ∑ l, ∑ I : Fin k → Fin P, (if I = J l then c l ^ 2 else 0) := Finset.sum_comm
+    _ = ∑ l, c l ^ 2 := by
+        refine Finset.sum_congr rfl fun l _ => ?_
+        simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
