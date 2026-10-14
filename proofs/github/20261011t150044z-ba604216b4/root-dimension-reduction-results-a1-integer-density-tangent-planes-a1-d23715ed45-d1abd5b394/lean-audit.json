@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9df060b102c914bd21249abfb3b1d50192fab9d6b4253c1f3335195d51f225c6",
+  "git_delta": {
+    "base_commit": "f7d98547831ab8880caf199f560d9d2dc7da2ede",
+    "candidate_commit": "bf306eb7aa2d72dca5169908b0a0248a64915a97",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_wedge_covector",
+    "diff_sha256": "3f73802a6a576ac9f1095bfcb30452e8b0316d06dffd2ecaadd187a49ddbe57c",
+    "source_sha256": "e359a3b20c6e31a5425fa4e605305d019b4c825faa47ac9af81864c2f6df9a94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_wedge_covector",
+      "statement": "∀ (P : ℕ) (a e : Euclid P), ∃ β : Covector (Euclid P) 2, ∀ v : Fin 2 → Euclid P, β v = inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
