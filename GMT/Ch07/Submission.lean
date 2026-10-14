@@ -451,6 +451,58 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Trace estimate on cubes, the limit `k → ∞`** (for the appeal to Simon Ch. 2, 2.8–2.9 in
+(32) of the proof of Ch. 6, 5.1): an affine bound `|∫_S v_k h| ≤ A + B ∫_S |v_k|` (`B ≥ 0`) passes
+to an `L¹(S)` limit `w` of the `v_k`, for a multiplier `h` with `|h| ≤ M` on the measurable set
+`S`.  With `ε_k = ∫_S |v_k - w| → 0` one has `|∫_S w h - ∫_S v_k h| ≤ M ε_k` and
+`∫_S |v_k| ≤ ∫_S |w| + ε_k`, so `|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k` for every `k`. -/
+theorem Submission.dimred_mbl_dt_cbm_bvt_l1_limit : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (S : Set α) (v : ℕ → α → ℝ) (w h : α → ℝ) (A B M : ℝ), MeasurableSet S → 0 ≤ B → (∀ k, IntegrableOn (v k) S μ) → IntegrableOn w S μ → AEStronglyMeasurable h (μ.restrict S) → (∀ x ∈ S, |h x| ≤ M) → Tendsto (fun k => ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 0) → (∀ k, |∫ x in S, v k x * h x ∂μ| ≤ A + B * ∫ x in S, |v k x| ∂μ) → |∫ x in S, w x * h x ∂μ| ≤ A + B * ∫ x in S, |w x| ∂μ := by
+  intro α _ μ S v w h A B M hS hB hv hw hh hM hlim hbound
+  -- 1. `|h| ≤ M` a.e. on `S`, so `w h` and every `v_k h` are integrable on `S`
+  have hae : ∀ᵐ x ∂(μ.restrict S), ‖h x‖ ≤ M := by
+    filter_upwards [ae_restrict_mem hS] with x hx
+    simpa [Real.norm_eq_abs] using hM x hx
+  have hwh : Integrable (fun x => w x * h x) (μ.restrict S) := Integrable.mul_bdd hw hh hae
+  have hvh : ∀ k, Integrable (fun x => v k x * h x) (μ.restrict S) :=
+    fun k => Integrable.mul_bdd (hv k) hh hae
+  -- 2–4. for every `k`, `|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k` with `ε_k = ∫_S |v_k - w|`
+  have key : ∀ k, |∫ x in S, w x * h x ∂μ| ≤
+      A + B * ∫ x in S, |w x| ∂μ + (B + M) * ∫ x in S, |v k x - w x| ∂μ := by
+    intro k
+    have hdiff : Integrable (fun x => |v k x - w x|) (μ.restrict S) := ((hv k).sub hw).abs
+    -- 2. `|∫_S w h - ∫_S v_k h| ≤ ∫_S |v_k - w| |h| ≤ M ε_k`
+    have h1 : |∫ x in S, w x * h x ∂μ - ∫ x in S, v k x * h x ∂μ| ≤
+        M * ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_sub hwh (hvh k), ← integral_const_mul]
+      refine abs_integral_le_integral_abs.trans (integral_mono_ae (hwh.sub (hvh k)).abs
+        (hdiff.const_mul M) ?_)
+      filter_upwards [ae_restrict_mem hS] with x hx
+      calc |w x * h x - v k x * h x| = |v k x - w x| * |h x| := by
+            rw [← sub_mul, abs_mul, abs_sub_comm]
+        _ ≤ |v k x - w x| * M := mul_le_mul_of_nonneg_left (hM x hx) (abs_nonneg _)
+        _ = M * |v k x - w x| := mul_comm _ _
+    -- 3. `∫_S |v_k| ≤ ∫_S |w| + ε_k`, from `|v_k| ≤ |w| + |v_k - w|`
+    have h2 : ∫ x in S, |v k x| ∂μ ≤ ∫ x in S, |w x| ∂μ + ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_add hw.abs hdiff]
+      refine integral_mono (hv k).abs (hw.abs.add hdiff) fun x => ?_
+      have := abs_add_le (w x) (v k x - w x)
+      rwa [add_sub_cancel] at this
+    -- 4. `|∫_S w h| ≤ |∫_S v_k h| + M ε_k ≤ A + B (∫_S |w| + ε_k) + M ε_k`, as `B ≥ 0`
+    calc |∫ x in S, w x * h x ∂μ|
+        ≤ |∫ x in S, v k x * h x ∂μ| + |∫ x in S, w x * h x ∂μ - ∫ x in S, v k x * h x ∂μ| := by
+          linarith [abs_sub_abs_le_abs_sub (∫ x in S, w x * h x ∂μ) (∫ x in S, v k x * h x ∂μ)]
+      _ ≤ (A + B * ∫ x in S, |v k x| ∂μ) + M * ∫ x in S, |v k x - w x| ∂μ :=
+          add_le_add (hbound k) h1
+      _ ≤ (A + B * (∫ x in S, |w x| ∂μ + ∫ x in S, |v k x - w x| ∂μ)) +
+            M * ∫ x in S, |v k x - w x| ∂μ := by gcongr
+      _ = A + B * ∫ x in S, |w x| ∂μ + (B + M) * ∫ x in S, |v k x - w x| ∂μ := by ring
+  -- 5. let `k → ∞`: `ε_k → 0`
+  have hlim' : Tendsto (fun k => A + B * ∫ x in S, |w x| ∂μ +
+      (B + M) * ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 (A + B * ∫ x in S, |w x| ∂μ + (B + M) * 0)) :=
+    tendsto_const_nhds.add (hlim.const_mul _)
+  have := ge_of_tendsto' hlim' key
+  rwa [mul_zero, add_zero] at this
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
