@@ -3250,6 +3250,74 @@ theorem Submission.cbr_ci_bl_db_withDensity_le : ∀ (P n : ℕ) (μ : Measure (
         -- Step 4: enlarge `M ∩ B` to `M ∩ B'` in the `g`-integral
         gcongr c * μHE[n] (M ∩ B) + K * ?_
         exact lintegral_mono_set (inter_subset_inter_right M hBB')
+/-- **Eventual density bounds from a ball-mass inequality** (steps 3 and 4 of the proof of
+`Submission.cbr_ci_bl_density_bounds`).  Write `V(r) = ωₙ rⁿ`, which is nonzero for `r > 0` and
+always finite.  As `r ↓ 0`, eventually `ofReal (η₁ / 2) < m / V` (by the liminf bound),
+`K (o / V) < ofReal (η₁ / 4)` (since `K (o / V) → K · 0 = 0`) and `H / V < 2` (by the limsup
+bound); choose `r₀` so that all three hold on `(0, r₀)`.  Clearing denominators gives
+`ofReal (η₁ / 2) V ≤ m(r)`, `K o(r) ≤ ofReal (η₁ / 4) V` and `H(r) ≤ 2 V`.  Splitting
+`η₁ / 2 = η₁ / 4 + η₁ / 4`, using `m(r) ≤ ofReal θ₀ h(r) + K o(r)` and cancelling the finite
+quarter gives `ofReal (η₁ / 4) V ≤ ofReal θ₀ h(r)`; dividing by `ofReal θ₀ ∈ (0, ∞)` gives
+`ofReal (η₁ / (4 θ₀)) V ≤ h(r)`. -/
+theorem Submission.cbr_ci_bl_db_eventual_bounds : ∀ (n : ℕ) (m h H o : ℝ → ℝ≥0∞) (θ₀ η₁ : ℝ) (K : ℝ≥0∞), 0 < θ₀ → 0 < η₁ → K ≠ ∞ → (∀ r : ℝ, 0 < r → m r ≤ ENNReal.ofReal θ₀ * h r + K * o r) → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => m r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => H r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => o r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ₀)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ h r ∧ H r ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n)) := by
+  intro n m h H o θ₀ η₁ K hθ₀ hη₁ hK hB hL hU hD
+  -- Step 1: `V(r) = ωₙ rⁿ` is nonzero for `r > 0` and always finite
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hV0 : ∀ r : ℝ, 0 < r → unitBallVolume n * ENNReal.ofReal (r ^ n) ≠ 0 := fun r hr =>
+    mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne'
+  have hVt : ∀ r : ℝ, unitBallVolume n * ENNReal.ofReal (r ^ n) ≠ ∞ := fun r =>
+    ENNReal.mul_ne_top hωt ENNReal.ofReal_ne_top
+  -- Step 2: (a) `ofReal (η₁ / 2) < m / V` eventually, by the liminf bound
+  have ha : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (η₁ / 2) < m r / (unitBallVolume n * ENNReal.ofReal (r ^ n)) :=
+    eventually_lt_of_lt_liminf
+      (((ENNReal.ofReal_lt_ofReal_iff hη₁).2 (half_lt_self hη₁)).trans_le hL)
+  -- Step 3: (b) `K (o / V) < ofReal (η₁ / 4)` eventually, since `K (o / V) → K · 0 = 0`
+  have hb : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      K * (o r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) < ENNReal.ofReal (η₁ / 4) := by
+    have hK0 := ENNReal.Tendsto.const_mul hD (Or.inr hK)
+    rw [mul_zero] at hK0
+    exact (tendsto_order.1 hK0).2 _ (ENNReal.ofReal_pos.2 (by positivity))
+  -- Step 4: (c) `H / V < 2` eventually, by the limsup bound
+  have hc : ∀ᶠ r in 𝓝[>] (0 : ℝ), H r / (unitBallVolume n * ENNReal.ofReal (r ^ n)) < 2 :=
+    eventually_lt_of_limsup_lt (hU.trans_lt ENNReal.one_lt_two)
+  -- Step 5: all three hold on some interval `(0, r₀)`
+  obtain ⟨r₀, hr₀, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 (ha.and (hb.and hc))
+  refine ⟨r₀, hr₀, fun r hr hrr₀ => ?_⟩
+  obtain ⟨ha', hb', hc'⟩ := hsub ⟨hr, hrr₀⟩
+  set V := unitBallVolume n * ENNReal.ofReal (r ^ n) with hV
+  -- Step 6: clearing denominators; this already gives `H(r) ≤ 2 V`
+  have hmV : ENNReal.ofReal (η₁ / 2) * V ≤ m r :=
+    ((ENNReal.lt_div_iff_mul_lt (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 ha').le
+  have hoV : K * o r ≤ ENNReal.ofReal (η₁ / 4) * V := by
+    rw [← mul_div_assoc] at hb'
+    exact ((ENNReal.div_lt_iff (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 hb').le
+  refine ⟨?_, ((ENNReal.div_lt_iff (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 hc').le⟩
+  -- Step 7: split `ofReal (η₁ / 2) V` into two quarters
+  have hq4 : 0 ≤ η₁ / 4 := by positivity
+  have hsplit : ENNReal.ofReal (η₁ / 2) * V =
+      ENNReal.ofReal (η₁ / 4) * V + ENNReal.ofReal (η₁ / 4) * V := by
+    rw [show η₁ / 2 = η₁ / 4 + η₁ / 4 by ring, ENNReal.ofReal_add hq4 hq4, add_mul]
+  -- Step 8: cancel the finite quarter `ofReal (η₁ / 4) V`
+  have hq : ENNReal.ofReal (η₁ / 4) * V ≤ ENNReal.ofReal θ₀ * h r := by
+    have hfin : ENNReal.ofReal (η₁ / 4) * V ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hVt r)
+    refine (ENNReal.add_le_add_iff_right hfin).1 ?_
+    calc ENNReal.ofReal (η₁ / 4) * V + ENNReal.ofReal (η₁ / 4) * V
+        = ENNReal.ofReal (η₁ / 2) * V := hsplit.symm
+      _ ≤ m r := hmV
+      _ ≤ ENNReal.ofReal θ₀ * h r + K * o r := hB r hr
+      _ ≤ ENNReal.ofReal θ₀ * h r + ENNReal.ofReal (η₁ / 4) * V := by gcongr
+  -- Step 9: divide by `ofReal θ₀ ∈ (0, ∞)`
+  have hθ0 : ENNReal.ofReal θ₀ ≠ 0 := (ENNReal.ofReal_pos.2 hθ₀).ne'
+  have heq : ENNReal.ofReal (η₁ / (4 * θ₀)) = (ENNReal.ofReal θ₀)⁻¹ * ENNReal.ofReal (η₁ / 4) := by
+    rw [← ENNReal.ofReal_inv_of_pos hθ₀, ← ENNReal.ofReal_mul (inv_nonneg.2 hθ₀.le)]
+    congr 1
+    field_simp
+  calc ENNReal.ofReal (η₁ / (4 * θ₀)) * V
+      = (ENNReal.ofReal θ₀)⁻¹ * (ENNReal.ofReal (η₁ / 4) * V) := by rw [heq, mul_assoc]
+    _ ≤ (ENNReal.ofReal θ₀)⁻¹ * (ENNReal.ofReal θ₀ * h r) := by gcongr
+    _ = h r := ENNReal.inv_mul_cancel_left hθ0 ENNReal.ofReal_ne_top
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
