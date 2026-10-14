@@ -451,6 +451,120 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **One partial derivative integrated over the open unit cube** (Fubini and the one-variable
+fundamental theorem of calculus).  For `G ∈ C¹(ℝ^{k+1})` and a coordinate `i`, the partial
+derivative `DG(·)eᵢ` is integrable on `Q^{k+1} = (0, 1)^{k+1}` and
+`∫_{Q^{k+1}} DG(y)eᵢ dy = ∫_{Q^k} G(y', yᵢ = 1) dy' − ∫_{Q^k} G(y', yᵢ = 0) dy'`. -/
+theorem Submission.dimred_mbl_dtfrcb_cube_partial_ftc : ∀ (k : ℕ) (i : Fin (k + 1)) (G : Euclid (k + 1) → ℝ), ContDiff ℝ 1 G → IntegrableOn (fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1} ∧ ∫ y in {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1}, fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = (∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (1 : ℝ) (WithLp.ofLp y)))) - ∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (0 : ℝ) (WithLp.ofLp y))) := by
+  intro k i G hG
+  have hGd : Differentiable ℝ G := hG.differentiable one_ne_zero
+  have hg : Continuous fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) :=
+    (hG.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  -- The open cube `Q^d` lies in the compact image of the closed box `[0, 1]^d` under `toLp`.
+  have hcpt : ∀ d : ℕ,
+      IsCompact (WithLp.toLp 2 '' Set.pi univ fun _ : Fin d => Icc (0 : ℝ) 1 : Set (Euclid d)) :=
+    fun d => (isCompact_univ_pi fun _ => isCompact_Icc).image (PiLp.continuous_toLp 2 _)
+  have hsub : ∀ d : ℕ, {y : Euclid d | ∀ j, 0 < y j ∧ y j < 1} ⊆
+      WithLp.toLp 2 '' Set.pi univ fun _ : Fin d => Icc (0 : ℝ) 1 :=
+    fun d y hy => ⟨WithLp.ofLp y, fun j _ => ⟨(hy j).1.le, (hy j).2.le⟩, rfl⟩
+  refine ⟨(hg.continuousOn.integrableOn_compact (hcpt (k + 1))).mono_set (hsub (k + 1)), ?_⟩
+  -- Transport the cube integrals to the open boxes of `Fin d → ℝ`.
+  have htrans : ∀ (d : ℕ) (f : Euclid d → ℝ),
+      ∫ y in {y : Euclid d | ∀ j, 0 < y j ∧ y j < 1}, f y =
+        ∫ x in Set.pi univ fun _ : Fin d => Ioo (0 : ℝ) 1, f (WithLp.toLp 2 x) := by
+    intro d f
+    have hpre : WithLp.toLp 2 ⁻¹' {y : Euclid d | ∀ j, 0 < y j ∧ y j < 1} =
+        Set.pi univ fun _ : Fin d => Ioo (0 : ℝ) 1 := by
+      ext x
+      simp
+    rw [← hpre, (PiLp.volume_preserving_toLp (Fin d)).setIntegral_preimage_emb
+      (MeasurableEquiv.toLp 2 (Fin d → ℝ)).measurableEmbedding f]
+  rw [htrans, htrans, htrans]
+  dsimp only
+  -- Split off the `i`-th coordinate: `(t, z) ↦ insertNth i t z` is measure preserving.
+  have hmp : MeasurePreserving (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (k + 1) => ℝ) i).symm
+      (volume.prod volume) volume :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (k + 1) => ℝ) i).symm _
+  have hpre : (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (k + 1) => ℝ) i).symm ⁻¹'
+      (Set.pi univ fun _ : Fin (k + 1) => Ioo (0 : ℝ) 1) =
+        Ioo (0 : ℝ) 1 ×ˢ Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1 := by
+    ext ⟨t, z⟩
+    simp only [Set.mem_preimage, MeasurableEquiv.piFinSuccAbove_symm_apply,
+      Fin.insertNthEquiv_apply, Set.mem_univ_pi, Set.mem_prod]
+    rw [Fin.forall_iff_succAbove i]
+    simp only [Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove]
+  -- The integrand in the coordinates `(t, z)` is continuous, hence integrable on the box.
+  have hFc : Continuous fun p : ℝ × (Fin k → ℝ) =>
+      fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i p.1 p.2)) (EuclideanSpace.single i (1 : ℝ)) :=
+    hg.comp ((PiLp.continuous_toLp 2 _).comp
+      (Continuous.finInsertNth (A := fun _ => ℝ) i continuous_fst continuous_snd))
+  have hFint : Integrable (fun p : ℝ × (Fin k → ℝ) =>
+      fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i p.1 p.2)) (EuclideanSpace.single i (1 : ℝ)))
+      ((volume.restrict (Ioo (0 : ℝ) 1)).prod
+        (volume.restrict (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1))) := by
+    rw [Measure.prod_restrict]
+    exact (hFc.continuousOn.integrableOn_compact
+      (isCompact_Icc.prod (isCompact_univ_pi fun _ => isCompact_Icc))).mono_set
+      (Set.prod_mono Ioo_subset_Icc_self (Set.pi_mono fun _ _ => Ioo_subset_Icc_self))
+  -- Along each line `t ↦ insertNth i t z` (direction `eᵢ`), the fundamental theorem of calculus.
+  have hline : ∀ (z : Fin k → ℝ) (t : ℝ), WithLp.toLp 2 (Fin.insertNth i t z) =
+      WithLp.toLp 2 (Fin.insertNth i 0 z) + t • EuclideanSpace.single i (1 : ℝ) := by
+    intro z t
+    ext j
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨l, rfl⟩
+    · simp
+    · simp [Fin.succAbove_ne]
+  have hftc : ∀ z : Fin k → ℝ,
+      ∫ t in Ioo (0 : ℝ) 1,
+          fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ)) =
+        G (WithLp.toLp 2 (Fin.insertNth i 1 z)) - G (WithLp.toLp 2 (Fin.insertNth i 0 z)) := by
+    intro z
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun s => G (WithLp.toLp 2 (Fin.insertNth i s z)))
+        (fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ))) t := by
+      intro t
+      have hcurve : HasDerivAt
+          (fun s : ℝ => WithLp.toLp 2 (Fin.insertNth i 0 z) + s • EuclideanSpace.single i (1 : ℝ))
+          (EuclideanSpace.single i (1 : ℝ)) t := by
+        simpa only [one_smul] using
+          ((hasDerivAt_id' t).smul_const (EuclideanSpace.single i (1 : ℝ))).const_add
+            (WithLp.toLp 2 (Fin.insertNth i 0 z))
+      have h := (hGd (WithLp.toLp 2 (Fin.insertNth i 0 z) +
+        t • EuclideanSpace.single i (1 : ℝ))).hasFDerivAt.comp_hasDerivAt t hcurve
+      simpa only [Function.comp_def, ← hline] using h
+    have hcont : Continuous fun t : ℝ =>
+        fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ)) :=
+      hg.comp ((PiLp.continuous_toLp 2 _).comp
+        (Continuous.finInsertNth (A := fun _ => ℝ) i continuous_id continuous_const))
+    rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le zero_le_one]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hcont.intervalIntegrable 0 1)
+  have hface : ∀ c : ℝ, IntegrableOn (fun z : Fin k → ℝ => G (WithLp.toLp 2 (Fin.insertNth i c z)))
+      (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+    intro c
+    have hc : Continuous fun z : Fin k → ℝ => G (WithLp.toLp 2 (Fin.insertNth i c z)) :=
+      hG.continuous.comp ((PiLp.continuous_toLp 2 _).comp
+        (Continuous.finInsertNth (A := fun _ => ℝ) i continuous_const continuous_id))
+    exact (hc.continuousOn.integrableOn_compact (isCompact_univ_pi fun _ => isCompact_Icc)).mono_set
+      (Set.pi_mono fun _ _ => Ioo_subset_Icc_self)
+  calc ∫ x in Set.pi univ (fun _ : Fin (k + 1) => Ioo (0 : ℝ) 1),
+        fderiv ℝ G (WithLp.toLp 2 x) (EuclideanSpace.single i (1 : ℝ))
+      = ∫ p in Ioo (0 : ℝ) 1 ×ˢ Set.pi univ (fun _ : Fin k => Ioo (0 : ℝ) 1),
+          fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i p.1 p.2)) (EuclideanSpace.single i (1 : ℝ))
+          ∂(volume.prod volume) := by
+        have h := hmp.setIntegral_preimage_emb (MeasurableEquiv.measurableEmbedding _)
+          (fun x => fderiv ℝ G (WithLp.toLp 2 x) (EuclideanSpace.single i (1 : ℝ)))
+          (Set.pi univ fun _ : Fin (k + 1) => Ioo (0 : ℝ) 1)
+        rw [hpre] at h
+        exact h.symm
+    _ = ∫ z in Set.pi univ (fun _ : Fin k => Ioo (0 : ℝ) 1), ∫ t in Ioo (0 : ℝ) 1,
+          fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ)) := by
+        rw [← Measure.prod_restrict]
+        exact integral_prod_symm _ hFint
+    _ = ∫ z in Set.pi univ (fun _ : Fin k => Ioo (0 : ℝ) 1),
+          (G (WithLp.toLp 2 (Fin.insertNth i 1 z)) - G (WithLp.toLp 2 (Fin.insertNth i 0 z))) :=
+        integral_congr_ae (Eventually.of_forall hftc)
+    _ = _ := integral_sub (hface 1) (hface 0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
