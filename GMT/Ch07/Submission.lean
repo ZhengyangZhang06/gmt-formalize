@@ -1109,6 +1109,510 @@ theorem Submission.dgcr_graph_orientation_jacobian : ∀ (n k : ℕ) (ι : Eucli
     simp only [hPrΦ]
     rw [smul_apply, hev, smul_eq_mul, ← mul_assoc,
       mul_inv_cancel₀ (hpos v hv).ne', one_mul]
+/-- **Uniform local mass bound for blow-ups with converging centres** (Simon 7.5.3 and 7.5.5,
+chapter-07.txt lines 790–901).  If `xᵢ → x`, `λᵢ → 0` (`λᵢ > 0`) and `M_{B_ρ(y)}(T) ≤ Cρⁿ` for
+`y ∈ B_{r₀}(x)`, `0 < ρ < r₀`, then for each `R > 0` and all large `i`,
+`η_{xᵢ,λᵢ#}T(ω) ≤ max(C, 0)Rⁿ` for every `ω ∈ 𝒟ⁿ(ℝᴾ)` with `spt ω ⊆ B_R(0)` and `|ω| ≤ 1`.  If
+`spt ω ⊄ η_{xᵢ,λᵢ}(U)` the value is `0`; otherwise `η_{xᵢ,λᵢ#}T(ω) = λᵢ⁻ⁿ T(ω')` with
+`ω' = ω ∘ η_{xᵢ,λᵢ}` admissible for `M_{B_{λᵢR}(xᵢ)}(T) ≤ C(λᵢR)ⁿ`. -/
+theorem Submission.codim1_zsl_gbl_blowUp_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) y) ≤ 1) → currentEval (blowUp T (xs i) (lams i) (hlams i).ne') (ω : DifferentialForm (Euclid P) n) ≤ c := by
+  intro P n U T x xs lams hlams hxs hlam hmass R hR
+  obtain ⟨C, r₀, hr₀, hmass⟩ := hmass
+  refine ⟨max C 0 * R ^ n, ?_⟩
+  -- Step 1: for all large `i`, `xᵢ ∈ B_{r₀}(x)` and `λᵢR < r₀`.
+  have hlamR : Tendsto (fun i => lams i * R) atTop (𝓝 0) := by
+    simpa using hlam.mul_const R
+  filter_upwards [hxs.eventually (ball_mem_nhds x hr₀), hlamR.eventually (gt_mem_nhds hr₀)]
+    with i hxi hlRi
+  intro ω hωsupp hωnorm
+  have hρ : 0 < lams i * R := mul_pos (hlams i) hR
+  unfold currentEval
+  split_ifs with h
+  · -- Step 2: `spt ω ⊆ η(U)`, so `η_{xᵢ,λᵢ#}T(ω) = λᵢ⁻ⁿ T(ω')` with `ω' = ω ∘ η ∈ 𝒟ⁿ(U)`.
+    obtain ⟨ω', hω'⟩ := (Submission.dtc_blowUp_testForm_corr P n U (xs i) (lams i) (hlams i)).1
+      ⟨(ω : DifferentialForm (Euclid P) n), h⟩
+    rw [(Submission.dtc_blowUp_testForm_corr P n U (xs i) (lams i) (hlams i)).2.2 T
+      ⟨(ω : DifferentialForm (Euclid P) n), h⟩ ω' hω']
+    -- Step 3: `ω'` is admissible for `M_{B_{λᵢR}(xᵢ)}(T)`: `η(z) = λᵢ⁻¹(z − xᵢ)` lies in
+    -- `B_R(0)` iff `z ∈ B_{λᵢR}(xᵢ)`, and `|ω'(z)| = |ω(η(z))| ≤ 1`.
+    have hdil : ∀ z, dilation (xs i) (lams i) z = (lams i)⁻¹ • (z - xs i) := by
+      intro z
+      simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+      abel
+    have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ ball (xs i) (lams i * R) := by
+      rw [show (ω' : DifferentialForm (Euclid P) n) =
+          (ω : DifferentialForm (Euclid P) n) ∘ dilation (xs i) (lams i) from funext hω']
+      have hcont : Continuous (dilation (xs i) (lams i)) :=
+        continuous_const.add (dilationCLM P (lams i)).continuous
+      refine (tsupport_comp_subset_preimage _ hcont).trans fun z hz => ?_
+      have hz' := mem_ball_zero_iff.mp (hωsupp hz)
+      rw [hdil, norm_smul, norm_inv, Real.norm_of_nonneg (hlams i).le,
+        inv_mul_lt_iff₀ (hlams i)] at hz'
+      rwa [mem_ball, dist_eq_norm]
+    have hadm : ω' ∈ massAdmissibleOn U n (ball (xs i) (lams i * R)) := by
+      refine ⟨hsupp, fun z => ?_⟩
+      rw [hω' z]
+      exact hωnorm _
+    -- Step 4: `T(ω') ≤ M_{B_{λᵢR}(xᵢ)}(T) ≤ C(λᵢR)ⁿ`, hence `T(ω') ≤ max(C, 0)(λᵢR)ⁿ`.
+    have hT : T ω' ≤ max C 0 * (lams i * R) ^ n := by
+      rcases ENNReal.ofReal_le_ofReal_iff'.mp
+          ((T.le_massOn hadm).trans (hmass (xs i) hxi (lams i * R) hρ hlRi)) with hT | hT
+      · exact hT.trans (mul_le_mul_of_nonneg_right (le_max_left C 0) (pow_nonneg hρ.le n))
+      · exact hT.trans (mul_nonneg (le_max_right C 0) (pow_nonneg hρ.le n))
+    -- Step 5: `λᵢ⁻ⁿ max(C, 0)(λᵢR)ⁿ = max(C, 0)Rⁿ`.
+    calc (lams i)⁻¹ ^ n * T ω' ≤ (lams i)⁻¹ ^ n * (max C 0 * (lams i * R) ^ n) :=
+          mul_le_mul_of_nonneg_left hT (pow_nonneg (inv_nonneg.mpr (hlams i).le) n)
+      _ = max C 0 * R ^ n := by
+          rw [mul_pow, mul_left_comm, ← mul_assoc ((lams i)⁻¹ ^ n), ← mul_pow,
+            inv_mul_cancel₀ (hlams i).ne', one_pow, one_mul]
+  · -- `spt ω ⊄ η(U)`: the value is `0 ≤ max(C, 0)Rⁿ`.
+    exact mul_nonneg (le_max_right C 0) (pow_nonneg hR.le n)
+/-- **Flattening of rescaled `C¹` graphs** (Simon 7.5.5: the rescaled sheets of `N` flatten to the
+tangent plane).  Let `u` be `C¹` on `B_δ ⊆ ℝᵐ` with `Du(0) = 0`, `sᵢ → 0`, `λᵢ ↓ 0`, and let the
+offsets `tᵢ` be such that `gᵢ(w) = λᵢ⁻¹ (u(sᵢ + λᵢ w) − tᵢ)` satisfies `|gᵢ(w)| ≤ C₀` at some
+`|w| ≤ C₀`.  Since `Du` is continuous with `Du(0) = 0`, `u` is `η`-Lipschitz with `‖Du‖ < η` on a
+small ball (mean value inequality), and `Dgᵢ(w) = Du(sᵢ + λᵢ w)` by the chain rule.  Hence
+`|gᵢ(0)| ≤ 2 C₀` eventually; a subsequence `gᵢ(0) → b` (compactness), and on `B_R` the rescalings
+converge to the constant `b` in `C¹`. -/
+theorem Submission.codim1_zsl_gbl_rescaled_graph_flattening : ∀ (m k : ℕ) (u : Euclid m → Euclid k) (δ C₀ : ℝ) (s : ℕ → Euclid m) (t : ℕ → Euclid k) (lams : ℕ → ℝ), 0 < δ → ContDiffOn ℝ 1 u (ball 0 δ) → fderiv ℝ u 0 = 0 → (∀ i, 0 < lams i) → Tendsto s atTop (𝓝 0) → Tendsto lams atTop (𝓝 0) → (∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i) → ∃ (σ : ℕ → ℕ) (b : Euclid k), StrictMono σ ∧ (∀ R : ℝ, 0 < R → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, DifferentiableAt ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w) ∧ ∀ R ε : ℝ, 0 < R → 0 < ε → ∀ᶠ i in atTop, ∀ w ∈ ball (0 : Euclid m) R, ‖(lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i)) - b‖ < ε ∧ ‖fderiv ℝ (fun w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i))) w‖ < ε := by
+  intro m k u δ C₀ s t lams hδ hu hDu0 hlams hs hlam hoff
+  -- `u` is differentiable on the open ball `B_δ` and `Du` is continuous there
+  have hdiff : ∀ v ∈ ball (0 : Euclid m) δ, DifferentiableAt ℝ u v := fun v hv =>
+    (hu.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hv)
+  have hcont : ContinuousOn (fderiv ℝ u) (ball (0 : Euclid m) δ) :=
+    hu.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  -- for every `η > 0`: `‖Du‖ < η` and `u` is `η`-Lipschitz on some `B_ρ ⊆ B_δ`
+  have hsmall : ∀ η : ℝ, 0 < η → ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ δ ∧
+      (∀ v ∈ ball (0 : Euclid m) ρ, ‖fderiv ℝ u v‖ < η) ∧
+      ∀ v ∈ ball (0 : Euclid m) ρ, ∀ v' ∈ ball (0 : Euclid m) ρ, ‖u v' - u v‖ ≤ η * ‖v' - v‖ := by
+    intro η hη
+    obtain ⟨ρ₀, hρ₀, hρ₀D⟩ := Metric.continuousOn_iff.1 hcont 0 (mem_ball_self hδ) η hη
+    have hD : ∀ v ∈ ball (0 : Euclid m) (min ρ₀ δ), ‖fderiv ℝ u v‖ < η := by
+      intro v hv
+      have h := hρ₀D v (ball_subset_ball (min_le_right _ _) hv)
+        (mem_ball.1 (ball_subset_ball (min_le_left _ _) hv))
+      rwa [hDu0, dist_zero_right] at h
+    refine ⟨min ρ₀ δ, lt_min hρ₀ hδ, min_le_right _ _, hD, fun v hv v' hv' => ?_⟩
+    exact Convex.norm_image_sub_le_of_norm_fderiv_le
+      (fun x hx => hdiff x (ball_subset_ball (min_le_right _ _) hx))
+      (fun x hx => (hD x hx).le) (convex_ball _ _) hv hv'
+  -- chain rule: `Dgᵢ(w) = Du(sᵢ + λᵢ w)` whenever `sᵢ + λᵢ w ∈ B_δ`
+  have hchain : ∀ (i : ℕ) (w : Euclid m), s i + lams i • w ∈ ball (0 : Euclid m) δ →
+      HasFDerivAt (fun w => (lams i)⁻¹ • (u (s i + lams i • w) - t i))
+        (fderiv ℝ u (s i + lams i • w)) w := by
+    intro i w hw
+    have h1 : HasFDerivAt (fun w : Euclid m => s i + lams i • w)
+        (lams i • ContinuousLinearMap.id ℝ (Euclid m)) w :=
+      ((hasFDerivAt_id w).const_smul (lams i)).const_add (s i)
+    have h2 := (((hdiff _ hw).hasFDerivAt.comp w h1).sub_const (t i)).const_smul (lams i)⁻¹
+    refine h2.congr_fderiv ?_
+    ext1 v
+    simp [smul_smul, inv_mul_cancel₀ (hlams i).ne']
+  -- `|sᵢ + λᵢ w| ≤ |sᵢ| + λᵢ R` for `|w| ≤ R`, and `|sᵢ| + λᵢ c → 0`
+  have hball : ∀ (i : ℕ) (R r : ℝ) (w : Euclid m), ‖w‖ ≤ R → ‖s i‖ + lams i * R < r →
+      s i + lams i • w ∈ ball (0 : Euclid m) r := by
+    intro i R r w hw hr
+    rw [mem_ball_zero_iff]
+    have hmul : lams i * ‖w‖ ≤ lams i * R := mul_le_mul_of_nonneg_left hw (hlams i).le
+    calc ‖s i + lams i • w‖ ≤ ‖s i‖ + ‖lams i • w‖ := norm_add_le _ _
+      _ = ‖s i‖ + lams i * ‖w‖ := by rw [norm_smul, Real.norm_of_nonneg (hlams i).le]
+      _ < r := by linarith
+  have htend : ∀ c : ℝ, Tendsto (fun i => ‖s i‖ + lams i * c) atTop (𝓝 0) := by
+    intro c
+    simpa using hs.norm.add (hlam.mul_const c)
+  -- `C₀ ≥ 0`, witnessed by some offset point
+  have hC₀ : 0 ≤ C₀ := by
+    obtain ⟨i, w, hw, -, -⟩ := hoff.exists
+    exact (norm_nonneg w).trans hw
+  -- `|gᵢ(0)| ≤ 2 C₀` for all `i ≥ i₂`
+  obtain ⟨ρ₁, hρ₁, -, -, hlip₁⟩ := hsmall 1 one_pos
+  obtain ⟨i₂, hi₂⟩ := eventually_atTop.1 (hoff.and ((htend C₀).eventually_lt_const hρ₁))
+  have hbound : ∀ j, (lams (i₂ + j))⁻¹ • (u (s (i₂ + j)) - t (i₂ + j)) ∈
+      closedBall (0 : Euclid k) (2 * C₀) := by
+    intro j
+    obtain ⟨⟨w, hw, -, hut⟩, hlt⟩ := hi₂ (i₂ + j) (Nat.le_add_right _ _)
+    have hl0 := hlams (i₂ + j)
+    have hs0 : s (i₂ + j) ∈ ball (0 : Euclid m) ρ₁ := by
+      simpa using hball (i₂ + j) C₀ ρ₁ 0 (by simpa using hC₀) hlt
+    have hsw := hball (i₂ + j) C₀ ρ₁ w hw hlt
+    have h1 := hlip₁ _ hsw _ hs0
+    have hmul : lams (i₂ + j) * ‖w‖ ≤ lams (i₂ + j) * C₀ := mul_le_mul_of_nonneg_left hw hl0.le
+    rw [mem_closedBall_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hl0.le,
+      inv_mul_le_iff₀ hl0]
+    calc ‖u (s (i₂ + j)) - t (i₂ + j)‖
+        ≤ ‖u (s (i₂ + j)) - u (s (i₂ + j) + lams (i₂ + j) • w)‖ +
+          ‖u (s (i₂ + j) + lams (i₂ + j) • w) - t (i₂ + j)‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+      _ ≤ 1 * ‖s (i₂ + j) - (s (i₂ + j) + lams (i₂ + j) • w)‖ + C₀ * lams (i₂ + j) :=
+          add_le_add h1 hut
+      _ = lams (i₂ + j) * ‖w‖ + C₀ * lams (i₂ + j) := by
+          rw [one_mul, sub_add_cancel_left, norm_neg, norm_smul, Real.norm_of_nonneg hl0.le]
+      _ ≤ lams (i₂ + j) * (2 * C₀) := by linarith
+  -- a subsequence along which `gᵢ(0) → b`
+  obtain ⟨b, -, φ, hφ, hφb⟩ := (isCompact_closedBall (0 : Euclid k) (2 * C₀)).tendsto_subseq hbound
+  obtain ⟨σ, hσ, hg0⟩ : ∃ σ : ℕ → ℕ, StrictMono σ ∧
+      Tendsto (fun j => (lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j))) atTop (𝓝 b) :=
+    ⟨fun j => i₂ + φ j, fun a a' h => Nat.add_lt_add_left (hφ h) i₂, hφb⟩
+  refine ⟨σ, b, hσ, ?_, ?_⟩
+  · -- (H1): differentiability on `B_R`
+    intro R hR
+    filter_upwards [((htend R).comp hσ.tendsto_atTop).eventually_lt_const hδ] with j hj w hw
+    exact (hchain (σ j) w (hball (σ j) R δ w (mem_ball_zero_iff.1 hw).le hj)).differentiableAt
+  · -- (H2): `C¹`-closeness to the constant `b` on `B_R`
+    intro R ε hR hε
+    have hηpos : 0 < min ε (ε / (2 * R)) := lt_min hε (by positivity)
+    have hηR : min ε (ε / (2 * R)) * R ≤ ε / 2 := by
+      calc min ε (ε / (2 * R)) * R ≤ ε / (2 * R) * R :=
+            mul_le_mul_of_nonneg_right (min_le_right _ _) hR.le
+        _ = ε / 2 := by field_simp
+    obtain ⟨ρ, hρ, hρδ, hD, hlip⟩ := hsmall _ hηpos
+    filter_upwards [((htend R).comp hσ.tendsto_atTop).eventually_lt_const hρ,
+      hg0.eventually (ball_mem_nhds b (half_pos hε))] with j hj hgj w hw
+    have hl0 := hlams (σ j)
+    have hwR : ‖w‖ < R := mem_ball_zero_iff.1 hw
+    have hsw : s (σ j) + lams (σ j) • w ∈ ball (0 : Euclid m) ρ := hball (σ j) R ρ w hwR.le hj
+    have hs0 : s (σ j) ∈ ball (0 : Euclid m) ρ := by
+      simpa using hball (σ j) R ρ 0 (by simpa using hR.le) hj
+    have hfd := (hchain (σ j) w (ball_subset_ball hρδ hsw)).fderiv
+    refine ⟨?_, ?_⟩
+    · have hl := hlip _ hs0 _ hsw
+      have hηw : min ε (ε / (2 * R)) * ‖w‖ ≤ ε / 2 :=
+        (mul_le_mul_of_nonneg_left hwR.le hηpos.le).trans hηR
+      calc ‖(lams (σ j))⁻¹ • (u (s (σ j) + lams (σ j) • w) - t (σ j)) - b‖
+          ≤ ‖(lams (σ j))⁻¹ • (u (s (σ j) + lams (σ j) • w) - t (σ j)) -
+              (lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j))‖ +
+            ‖(lams (σ j))⁻¹ • (u (s (σ j)) - t (σ j)) - b‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
+        _ < ε / 2 + ε / 2 := by
+            refine add_lt_add_of_le_of_lt ?_ (mem_ball_iff_norm.1 hgj)
+            rw [← smul_sub, sub_sub_sub_cancel_right, norm_smul, norm_inv,
+              Real.norm_of_nonneg hl0.le, inv_mul_le_iff₀ hl0]
+            calc ‖u (s (σ j) + lams (σ j) • w) - u (s (σ j))‖
+                ≤ min ε (ε / (2 * R)) * ‖s (σ j) + lams (σ j) • w - s (σ j)‖ := hl
+              _ = lams (σ j) * (min ε (ε / (2 * R)) * ‖w‖) := by
+                  rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hl0.le]; ring
+              _ ≤ lams (σ j) * (ε / 2) := mul_le_mul_of_nonneg_left hηw hl0.le
+        _ = ε := add_halves ε
+    · rw [hfd]
+      exact (hD _ hsw).trans_le (min_le_left _ _)
+/-- **Chart coordinates of the blow-up centres and bounded offsets of nearby carrier points**
+(Simon 7.5.5, steps 1 and 3 of the graph blow-up limit, chapter-07.txt lines 790–901).  Let
+`ι : ℝᵐ → ℝᴾ`, `ι' : ℝᵏ → ℝᴾ` be linear isometries with orthogonal ranges spanning `ℝᴾ`, and let
+`N` be the graph `{x + ιv + ι'u(v) : |v| < δ₁}` of `u` inside the chart
+`{x + ιv + ι'w : |v| < δ₁, |w| < δ₂}`.  If `xᵢ → x`, `λᵢ ↓ 0` and each `xᵢ` is within `C₀λᵢ` of
+some `pᵢ ∈ N`, then `xᵢ = x + ιsᵢ + ι'tᵢ` with `sᵢ, tᵢ → 0`, and for all large `i` the offset
+`w = λᵢ⁻¹(v − sᵢ)` of `pᵢ = x + ιv + ι'u(v)` satisfies `|w| ≤ C₀`, `sᵢ + λᵢw ∈ B_{δ₁}(0)` and
+`|u(sᵢ + λᵢw) − tᵢ| ≤ C₀λᵢ`.  The key estimate is Pythagoras: `|ιa + ι'b|² = |a|² + |b|²`. -/
+theorem Submission.codim1_zsl_gbl_centre_chart_offsets : ∀ (m k P : ℕ) (N : Set (Euclid P)) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (u : Euclid m → Euclid k) (δ₁ δ₂ C₀ : ℝ), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∀ i, 0 < lams i) → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid P, ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid m) δ₁ → ∃ (s : ℕ → Euclid m) (t : ℕ → Euclid k), (∀ i, xs i = x + ι (s i) + ι' (t i)) ∧ Tendsto s atTop (𝓝 0) ∧ Tendsto t atTop (𝓝 0) ∧ ∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ₁ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i := by
+  intro m k P N x xs lams ι ι' u δ₁ δ₂ C₀ hxs hlams hlpos hnear horth hspan hδ₁ hδ₂ hchart
+  -- Step 1 (Pythagoras): `|ιa + ι'b|² = |a|² + |b|²`, hence `|a|, |b| ≤ |ιa + ι'b|`.
+  have hpyth : ∀ (a : Euclid m) (b : Euclid k), ‖a‖ ≤ ‖ι a + ι' b‖ ∧ ‖b‖ ≤ ‖ι a + ι' b‖ := by
+    intro a b
+    have hsq : ‖ι a + ι' b‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
+      rw [norm_add_sq_real, horth, LinearIsometry.norm_map, LinearIsometry.norm_map]
+      ring
+    constructor
+    · rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _), hsq]
+      exact le_add_of_nonneg_right (sq_nonneg _)
+    · rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _), hsq]
+      exact le_add_of_nonneg_left (sq_nonneg _)
+  -- Step 2 (coordinates of the centres): `xᵢ − x = ιsᵢ + ι'tᵢ` and `|sᵢ|, |tᵢ| ≤ |xᵢ − x| → 0`.
+  choose s t hst using fun i => hspan (xs i - x)
+  have hcentre : ∀ i, xs i = x + ι (s i) + ι' (t i) := by
+    intro i
+    rw [add_assoc, ← hst i, add_sub_cancel]
+  have hxs0 : Tendsto (fun i => ‖xs i - x‖) atTop (𝓝 0) :=
+    tendsto_iff_norm_sub_tendsto_zero.1 hxs
+  have hst_le : ∀ i, ‖s i‖ ≤ ‖xs i - x‖ ∧ ‖t i‖ ≤ ‖xs i - x‖ := by
+    intro i
+    rw [hst i]
+    exact hpyth (s i) (t i)
+  have hs : Tendsto s atTop (𝓝 0) := squeeze_zero_norm (fun i => (hst_le i).1) hxs0
+  have ht : Tendsto t atTop (𝓝 0) := squeeze_zero_norm (fun i => (hst_le i).2) hxs0
+  -- Step 3 (nearby carrier points converge to `x`): `|pᵢ − x| ≤ |C₀|λᵢ + |xᵢ − x| → 0`.
+  choose p hpN hpd using hnear
+  have hbound : ∀ i, ‖p i - x‖ ≤ |C₀| * lams i + ‖xs i - x‖ := by
+    intro i
+    calc ‖p i - x‖ = ‖(p i - xs i) + (xs i - x)‖ := by rw [sub_add_sub_cancel]
+      _ ≤ ‖p i - xs i‖ + ‖xs i - x‖ := norm_add_le _ _
+      _ ≤ |C₀| * lams i + ‖xs i - x‖ := by
+        gcongr
+        rw [← dist_eq_norm]
+        exact (hpd i).trans (mul_le_mul_of_nonneg_right (le_abs_self C₀) (hlpos i).le)
+  have hlim : Tendsto (fun i => |C₀| * lams i + ‖xs i - x‖) atTop (𝓝 0) := by
+    have h := (hlams.const_mul |C₀|).add hxs0
+    rwa [mul_zero, add_zero] at h
+  have hp : Tendsto (fun i => ‖p i - x‖) atTop (𝓝 0) :=
+    squeeze_zero (fun i => norm_nonneg _) hbound hlim
+  have hev : ∀ᶠ i in atTop, ‖p i - x‖ < min δ₁ δ₂ := (tendsto_order.1 hp).2 _ (lt_min hδ₁ hδ₂)
+  refine ⟨s, t, hcentre, hs, ht, ?_⟩
+  filter_upwards [hev] with i hi
+  -- Step 4 (`pᵢ` lies on the graph): `pᵢ − x = ιa + ι'b` with `|a| < δ₁`, `|b| < δ₂`, so the
+  -- chart identity gives `pᵢ = x + ιv + ι'u(v)` with `|v| < δ₁`.
+  obtain ⟨a, b, hab⟩ := hspan (p i - x)
+  have hpab : ‖ι a + ι' b‖ = ‖p i - x‖ := by rw [hab]
+  have hmem : p i ∈ N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂,
+      y = x + ι v + ι' w} := by
+    refine ⟨hpN i, a, ?_, b, ?_, ?_⟩
+    · rw [mem_ball_zero_iff]
+      exact ((hpyth a b).1.trans_eq hpab).trans_lt (hi.trans_le (min_le_left _ _))
+    · rw [mem_ball_zero_iff]
+      exact ((hpyth a b).2.trans_eq hpab).trans_lt (hi.trans_le (min_le_right _ _))
+    · rw [add_assoc, ← hab, add_sub_cancel]
+  rw [hchart] at hmem
+  obtain ⟨v, hv, hpv⟩ := hmem
+  have hpv' : x + ι v + ι' (u v) = p i := hpv
+  -- Step 5 (the offset `w = λᵢ⁻¹(v − sᵢ)`): `pᵢ − xᵢ = ι(v − sᵢ) + ι'(u(v) − tᵢ)`, so by Step 1
+  -- `|v − sᵢ|, |u(v) − tᵢ| ≤ |pᵢ − xᵢ| ≤ C₀λᵢ`.
+  have hdiff : p i - xs i = ι (v - s i) + ι' (u v - t i) := by
+    rw [← hpv', hcentre i, map_sub, map_sub]
+    abel
+  have hd : ‖ι (v - s i) + ι' (u v - t i)‖ ≤ C₀ * lams i := by
+    rw [← hdiff, ← dist_eq_norm]
+    exact hpd i
+  have hl := hlpos i
+  have hsv : s i + lams i • ((lams i)⁻¹ • (v - s i)) = v := by
+    rw [smul_smul, mul_inv_cancel₀ hl.ne', one_smul, add_sub_cancel]
+  refine ⟨(lams i)⁻¹ • (v - s i), ?_, ?_, ?_⟩
+  · rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hl, inv_mul_le_iff₀ hl, mul_comm]
+    exact (hpyth (v - s i) (u v - t i)).1.trans hd
+  · rw [hsv]
+    exact hv
+  · rw [hsv]
+    exact (hpyth (v - s i) (u v - t i)).2.trans hd
+/-- Graph representation of a blow-up of `T = ∂[[E]]` (used in the proof of Simon 7.5.5,
+pp. 199–200).  Let `Γ(v) = x + ιv + ι'u(v)` be a `C¹` graph chart of `N` over `B_{δ₁}`
+(`ι, ι'` orthogonal isometries spanning `ℝ^{n+1+k}`) whose Jacobian orients `ξN`, let
+`y = x + ιs + ι't`, `G(w) = ιw + ι'(λ⁻¹(u(s + λw) − t))` and
+`F' = {w : s + λw ∈ B_{δ₁}, Γ(s + λw) ∈ E}`.  If `η_{y,λ#}T = ∂[[η_{y,λ}(E)]]` and the area
+formula for `C¹` graphs holds, then `F'` is measurable and
+`η_{y,λ#}T(ω) = ∫_{F' ∩ B_R} dω(G(w))(DG(w)e₀, …, DG(w)eₙ) dw` for `ω ∈ 𝒟ⁿ(ℝ^{n+1+k})` with
+`spt ω ⊆ B_R`, whenever `|s| + λR < δ₁`, `|t| + λR < δ₂` and `B_{λR}(y) ⊆ U`.  Here
+`y + λG(w) = Γ(s + λw)` and `DG(w) = DΓ(s + λw)`; Pythagoras and the chart identity give
+`η_{y,λ}(E) ∩ B_R ⊆ G(F' ∩ B_R) ⊆ η_{y,λ}(E)`, and `dω = 0` off `B_R`. -/
+theorem Submission.codim1_zsl_gbl_blowUp_graph_representation : ∀ (n k : ℕ) (U N E : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (T : GeometricCurrentOn U n) (x y : Euclid (n + 1 + k)) (lam : ℝ) (hlam : 0 < lam) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ : ℝ) (s : Euclid (n + 1)) (t : Euclid k), MeasurableSet E → E ⊆ N → IsBoundaryOfRegion (blowUp T y lam hlam.ne') (dilation y lam '' E) (fun z => ξN (y + lam • z)) → (∀ (g : Euclid (n + 1) → Euclid k) (D A : Set (Euclid (n + 1))) (f : Euclid (n + 1 + k) → ℝ), IsOpen D → ContDiffOn ℝ 1 g D → MeasurableSet A → A ⊆ D → ∫ z in (fun w => ι w + ι' (g w)) '' A, f z ∂μHE[n + 1] = ∫ w in A, Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det) * f (ι w + ι' (g w))) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ z : Euclid (n + 1 + k), ∃ v w, z = ι v + ι' w) → ContDiffOn ℝ 1 u (ball 0 δ₁) → N ∩ {z | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, z = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α) → y = x + ι s + ι' t → MeasurableSet {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧ x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} ∧ ∀ R : ℝ, ‖s‖ + lam * R < δ₁ → ‖t‖ + lam * R < δ₂ → ball y (lam * R) ⊆ U → ∀ ω : TestFormOn (univ : Set (Euclid (n + 1 + k))) n, tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ ball 0 R → currentEval (blowUp T y lam hlam.ne') (ω : DifferentialForm (Euclid (n + 1 + k)) n) = ∫ w in {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧ x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} ∩ ball 0 R, exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) (ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) (fun j => fderiv ℝ (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) w (EuclideanSpace.single j (1 : ℝ))) := by
+  intro n k U N E ξN T x y lam hlam ι ι' u δ₁ δ₂ s t hE hEN hbd harea horth hspan hu hchart
+    hjac hy
+  have hlam0 : lam ≠ 0 := hlam.ne'
+  -- Step 1: measurability of F'
+  have hΓcont : ContinuousOn (fun v => x + ι v + ι' (u v)) (ball (0 : Euclid (n + 1)) δ₁) := by
+    have hcu : ContinuousOn u (ball (0 : Euclid (n + 1)) δ₁) := hu.continuousOn
+    exact (continuousOn_const.add ι.continuous.continuousOn).add
+      (ι'.continuous.comp_continuousOn hcu)
+  have hA₀ : MeasurableSet {v : Euclid (n + 1) | v ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι v + ι' (u v) ∈ E} := by
+    classical
+    have hpw : Measurable ((ball (0 : Euclid (n + 1)) δ₁).piecewise
+        (fun v => x + ι v + ι' (u v)) (fun _ => (0 : Euclid (n + 1 + k)))) :=
+      hΓcont.measurable_piecewise continuousOn_const measurableSet_ball
+    have heq : {v : Euclid (n + 1) | v ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+        x + ι v + ι' (u v) ∈ E} = ball (0 : Euclid (n + 1)) δ₁ ∩
+          (ball (0 : Euclid (n + 1)) δ₁).piecewise (fun v => x + ι v + ι' (u v))
+            (fun _ => (0 : Euclid (n + 1 + k))) ⁻¹' E := by
+      ext v
+      simp only [Set.mem_ofPred_eq, mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hv, hvE⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv]⟩
+      · rintro ⟨hv, hvE⟩
+        exact ⟨hv, by rwa [Set.piecewise_eq_of_mem _ _ _ hv] at hvE⟩
+    rw [heq]
+    exact measurableSet_ball.inter (hpw hE)
+  have haff : Continuous (fun w : Euclid (n + 1) => s + lam • w) :=
+    continuous_const.add (continuous_id.const_smul lam)
+  have hF : MeasurableSet {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E} :=
+    haff.measurable hA₀
+  refine ⟨hF, ?_⟩
+  intro R hR1 hR2 hRU ω hω
+  set F' := {w : Euclid (n + 1) | s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s + lam • w) + ι' (u (s + lam • w)) ∈ E}
+  -- Step 2: the dilation
+  have hdil : ∀ z : Euclid (n + 1 + k), dilation y lam (y + lam • z) = z := by
+    intro z
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+      smul_add, smul_smul, inv_mul_cancel₀ hlam0, one_smul]
+    abel
+  have hdil' : ∀ e : Euclid (n + 1 + k), y + lam • dilation y lam e = e := by
+    intro e
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply,
+      smul_add, smul_neg, smul_smul, mul_inv_cancel₀ hlam0, one_smul]
+    abel
+  have hηE : dilation y lam '' E = (fun z => y + lam • z) ⁻¹' E := by
+    ext z
+    constructor
+    · rintro ⟨e, he, rfl⟩
+      simpa [hdil' e] using he
+    · intro hz
+      exact ⟨y + lam • z, hz, hdil z⟩
+  have hηEmeas : MeasurableSet (dilation y lam '' E) := by
+    rw [hηE]
+    exact (continuous_const.add (continuous_id.const_smul lam)).measurable hE
+  have hballU : ball (0 : Euclid (n + 1 + k)) R ⊆ dilation y lam '' U := by
+    intro z hz
+    refine ⟨y + lam • z, hRU ?_, hdil z⟩
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_ball, dist_zero_right] at hz
+    exact mul_lt_mul_of_pos_left hz hlam
+  -- Step 3: evaluation of the blow-up
+  have hωtest : IsTestForm (ω : DifferentialForm (Euclid (n + 1 + k)) n) := ω.2.1
+  have hcur : currentEval (blowUp T y lam hlam.ne') (ω : DifferentialForm (Euclid (n + 1 + k)) n) =
+      ∫ z in dilation y lam '' E, ξN (y + lam • z)
+        (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z) ∂μHE[n + 1] := by
+    have h : IsTestForm (ω : DifferentialForm (Euclid (n + 1 + k)) n) ∧
+        tsupport (ω : DifferentialForm (Euclid (n + 1 + k)) n) ⊆ dilation y lam '' U :=
+      ⟨hωtest, hω.trans hballU⟩
+    unfold currentEval
+    rw [dite_eq_left h]
+    exact hbd ⟨ω, h⟩
+  -- Step 4: Pythagoras and (4.1)
+  have hpyth : ∀ (a : Euclid (n + 1)) (b : Euclid k),
+      ‖a‖ ≤ ‖ι a + ι' b‖ ∧ ‖b‖ ≤ ‖ι a + ι' b‖ := by
+    intro a b
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real (horth a b)
+    rw [ι.norm_map, ι'.norm_map] at h
+    have h0 := norm_nonneg (ι a + ι' b)
+    have ha := norm_nonneg a
+    have hb := norm_nonneg b
+    constructor <;> nlinarith
+  have h41 : ∀ w : Euclid (n + 1),
+      y + lam • (ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) =
+        x + ι (s + lam • w) + ι' (u (s + lam • w)) := by
+    intro w
+    rw [hy]
+    simp only [map_add, map_sub, map_smul, smul_add, smul_sub, smul_smul, mul_inv_cancel₀ hlam0,
+      one_smul]
+    abel
+  -- Step 5: Y ⊆ η(E)
+  set G : Euclid (n + 1) → Euclid (n + 1 + k) :=
+    fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))
+  have hYsub : G '' (F' ∩ ball 0 R) ⊆ dilation y lam '' E := by
+    rintro _ ⟨w, ⟨hwF, _⟩, rfl⟩
+    rw [hηE, mem_preimage]
+    simp only [G]
+    rw [h41 w]
+    exact hwF.2
+  -- Step 6: f vanishes on η(E) \ Y
+  have hvan : ∀ z ∈ dilation y lam '' E \ G '' (F' ∩ ball 0 R),
+      ξN (y + lam • z)
+        (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z) = 0 := by
+    rintro z ⟨hzE, hzY⟩
+    by_cases hzR : z ∈ ball (0 : Euclid (n + 1 + k)) R
+    · exfalso
+      apply hzY
+      rw [hηE, mem_preimage] at hzE
+      obtain ⟨a, b, hzab⟩ := hspan z
+      have hzn : ‖z‖ < R := by simpa [mem_ball, dist_zero_right] using hzR
+      obtain ⟨ha, hb⟩ := hpyth a b
+      rw [← hzab] at ha hb
+      have he : y + lam • z = x + ι (s + lam • a) + ι' (t + lam • b) := by
+        rw [hy, hzab]
+        simp only [map_add, map_smul, smul_add]
+        abel
+      have hsa : s + lam • a ∈ ball (0 : Euclid (n + 1)) δ₁ := by
+        rw [mem_ball, dist_zero_right]
+        calc ‖s + lam • a‖ ≤ ‖s‖ + ‖lam • a‖ := norm_add_le _ _
+          _ = ‖s‖ + lam * ‖a‖ := by rw [norm_smul, Real.norm_of_nonneg hlam.le]
+          _ < ‖s‖ + lam * R := by
+            have := mul_lt_mul_of_pos_left (ha.trans_lt hzn) hlam
+            linarith
+          _ < δ₁ := hR1
+      have htb : t + lam • b ∈ ball (0 : Euclid k) δ₂ := by
+        rw [mem_ball, dist_zero_right]
+        calc ‖t + lam • b‖ ≤ ‖t‖ + ‖lam • b‖ := norm_add_le _ _
+          _ = ‖t‖ + lam * ‖b‖ := by rw [norm_smul, Real.norm_of_nonneg hlam.le]
+          _ < ‖t‖ + lam * R := by
+            have := mul_lt_mul_of_pos_left (hb.trans_lt hzn) hlam
+            linarith
+          _ < δ₂ := hR2
+      have hmem : y + lam • z ∈ N ∩ {z | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁,
+          ∃ w ∈ ball (0 : Euclid k) δ₂, z = x + ι v + ι' w} :=
+        ⟨hEN hzE, s + lam • a, hsa, t + lam • b, htb, he⟩
+      rw [hchart] at hmem
+      obtain ⟨v, hv, hve⟩ := hmem
+      have hsw : s + lam • (lam⁻¹ • (v - s)) = v := by
+        rw [smul_smul, mul_inv_cancel₀ hlam0, one_smul]
+        abel
+      simp only at hve
+      have hGw : G (lam⁻¹ • (v - s)) = z := by
+        apply smul_right_injective _ hlam0
+        apply add_left_cancel (a := y)
+        show y + lam • (ι (lam⁻¹ • (v - s)) + ι' (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t))) =
+          y + lam • z
+        rw [h41 (lam⁻¹ • (v - s)), hsw]
+        exact hve
+      refine ⟨lam⁻¹ • (v - s), ⟨⟨?_, ?_⟩, ?_⟩, hGw⟩
+      · rw [hsw]; exact hv
+      · rw [hsw, hve]; exact hzE
+      · -- |w| ≤ |G w| = |z| < R
+        have := (hpyth (lam⁻¹ • (v - s)) (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t))).1
+        rw [mem_ball, dist_zero_right]
+        have hGw' : ι (lam⁻¹ • (v - s)) + ι' (lam⁻¹ • (u (s + lam • (lam⁻¹ • (v - s))) - t)) = z :=
+          hGw
+        rw [hGw'] at this
+        exact this.trans_lt hzn
+    · have hzt : z ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n)) :=
+        fun h => hzR (hω (tsupport_exteriorDerivative_subset _ h))
+      rw [image_eq_zero_of_notMem_tsupport hzt, map_zero]
+  -- Step 7: restriction of the integral
+  have hrestr := setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (μ := μHE[n + 1])
+    (f := fun z => ξN (y + lam • z)
+      (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z)) hηEmeas hYsub hvan
+  -- Step 8: area formula
+  set D : Set (Euclid (n + 1)) := (fun w => s + lam • w) ⁻¹' ball (0 : Euclid (n + 1)) δ₁
+  have hDopen : IsOpen D := isOpen_ball.preimage haff
+  have hgC1 : ContDiffOn ℝ 1 (fun w => lam⁻¹ • (u (s + lam • w) - t)) D := by
+    have haffC : ContDiff ℝ 1 (fun w : Euclid (n + 1) => s + lam • w) :=
+      contDiff_const.add (contDiff_id.const_smul lam)
+    have h1 : ContDiffOn ℝ 1 (fun w => u (s + lam • w)) D :=
+      hu.comp haffC.contDiffOn (fun w hw => hw)
+    exact (h1.sub contDiffOn_const).const_smul lam⁻¹
+  have hAmeas : MeasurableSet (F' ∩ ball (0 : Euclid (n + 1)) R) := hF.inter measurableSet_ball
+  have hAD : F' ∩ ball (0 : Euclid (n + 1)) R ⊆ D := fun w hw => hw.1.1
+  have harea' := harea (fun w => lam⁻¹ • (u (s + lam • w) - t)) D (F' ∩ ball 0 R)
+    (fun z => ξN (y + lam • z) (exteriorDerivative (ω : DifferentialForm (Euclid (n + 1 + k)) n) z))
+    hDopen hgC1 hAmeas hAD
+  -- Step 9: the derivative of G
+  have hDG : ∀ w ∈ D, fderiv ℝ (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t))) w =
+      fderiv ℝ (fun v => x + ι v + ι' (u v)) (s + lam • w) := by
+    intro w hw
+    have hv : s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ := hw
+    have hud : DifferentiableAt ℝ u (s + lam • w) :=
+      (hu.differentiableOn one_ne_zero _ hv).differentiableAt (isOpen_ball.mem_nhds hv)
+    set L := fderiv ℝ u (s + lam • w)
+    have hLd : HasFDerivAt u L (s + lam • w) := hud.hasFDerivAt
+    have haffd : HasFDerivAt (fun w : Euclid (n + 1) => s + lam • w)
+        (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1))) w :=
+      (((ContinuousLinearMap.id ℝ (Euclid (n + 1))).hasFDerivAt (x := w)).const_smul
+        lam).const_add s
+    have hcomp : HasFDerivAt (fun w => u (s + lam • w))
+        (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1)))) w :=
+      hLd.comp w haffd
+    have hg : HasFDerivAt (fun w => lam⁻¹ • (u (s + lam • w) - t))
+        (lam⁻¹ • (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1))))) w :=
+      (hcomp.sub_const t).const_smul lam⁻¹
+    have hLeq : lam⁻¹ • (L.comp (lam • ContinuousLinearMap.id ℝ (Euclid (n + 1)))) = L := by
+      ext1 e
+      simp only [smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.id_apply, map_smul, smul_smul, inv_mul_cancel₀ hlam0, one_smul]
+    rw [hLeq] at hg
+    have hG : HasFDerivAt (fun w => ι w + ι' (lam⁻¹ • (u (s + lam • w) - t)))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp L) w :=
+      (ι.toContinuousLinearMap.hasFDerivAt).add (ι'.toContinuousLinearMap.hasFDerivAt.comp w hg)
+    have hΓd : HasFDerivAt (fun v => x + ι v + ι' (u v))
+        (ι.toContinuousLinearMap + ι'.toContinuousLinearMap.comp L) (s + lam • w) :=
+      ((ι.toContinuousLinearMap.hasFDerivAt (x := s + lam • w)).const_add x).add
+        (ι'.toContinuousLinearMap.hasFDerivAt.comp (s + lam • w) hLd)
+    rw [hG.fderiv, hΓd.fderiv]
+  -- Steps 10-11: pointwise identity and conclusion
+  rw [hcur, hrestr]
+  simp only [G]
+  rw [harea']
+  refine setIntegral_congr_fun hAmeas ?_
+  intro w hw
+  have hwD : w ∈ D := hAD hw
+  have hv : s + lam • w ∈ ball (0 : Euclid (n + 1)) δ₁ := hwD
+  simp only
+  rw [hDG w hwD, h41 w]
+  exact (hjac (s + lam • w) hv _).symm
 /-- Steps 1–2 of the local comparison for a graph (Simon 7.5, codimension one regularity): for
 linear isometries `ι : ℝᵐ → ℝ^{m+k}`, `ι' : ℝᵏ → ℝ^{m+k}` with `⟨ιv, ι'w⟩ = 0` and `g`
 differentiable at `w₀`, the graph map `G(w) = ιw + ι'g(w)` has `DG(w₀) = ι + ι' ∘ Dg(w₀)`, and
@@ -4431,5 +4935,67 @@ theorem Submission.codim1_zsl_flat_graph_limit : ∀ (n k : ℕ) (Us : ℕ → S
       linarith
     rw [image_eq_zero_of_notMem_tsupport hnot]
     rfl
+
+/-- **Blow-ups of `∂[[E]]` along a `C¹` graph flatten to `∂[[F]]` in a plane** (Simon 7.5.3 and
+7.5.5, chapter-07.txt lines 790–901).  Near `x` the carrier `N` is the graph
+`Γ(v) = x + ιv + ι'u(v)` of a `C¹` map `u` with `Du(0) = 0`, oriented by `ξN`.  If `T = ∂[[E]]`
+has local mass bounds, `xᵢ → x` lie within `C₀λᵢ` of `N`, `λᵢ → 0` and `η_{xᵢ,λᵢ#}T ⇀ S`, then
+`S = ∂[[F]]` with the constant orientation `ξN(x)`, for a measurable `F` in a plane
+`{ιw + ι'b}`.  In chart coordinates `xᵢ = x + ιsᵢ + ι'tᵢ` the blow-ups live on the rescaled graphs
+of `gᵢ(w) = λᵢ⁻¹(u(sᵢ + λᵢw) − tᵢ)`, which flatten in `C¹` to the constant `b` along a
+subsequence; the flat limit lemma then identifies `S`. -/
+theorem Submission.codim1_zsl_graph_blowup_limit : ∀ (n k : ℕ) (U N E : Set (Euclid (n + 1 + k))) (ξN : Euclid (n + 1 + k) → MultiVector (n + 1 + k) (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid (n + 1 + k)) (xs : ℕ → Euclid (n + 1 + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + 1 + k))) n) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid (n + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + 1 + k)) (u : Euclid (n + 1) → Euclid k) (δ₁ δ₂ C₀ : ℝ), IsOpen U → MeasurableSet E → E ⊆ N → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid (n + 1 + k), ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → ContDiffOn ℝ 1 u (ball 0 δ₁) → u 0 = 0 → fderiv ℝ u 0 = 0 → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, u v ∈ ball (0 : Euclid k) δ₂) → N ∩ {y | ∃ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid (n + 1)) δ₁ → (∀ α : Covector (Euclid (n + 1 + k)) (n + 1), ξN x α = α (fun j => ι (EuclideanSpace.single j (1 : ℝ)))) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ α : Covector (Euclid (n + 1 + k)) (n + 1), α (fun j => fderiv ℝ (fun v => x + ι v + ι' (u v)) v (EuclideanSpace.single j (1 : ℝ))) = Real.sqrt (((fderiv ℝ (fun v => x + ι v + ι' (u v)) v).adjoint ∘L fderiv ℝ (fun v => x + ι v + ι' (u v)) v).det) * ξN (x + ι v + ι' (u v)) α) → ∃ (b : Euclid k) (F : Set (Euclid (n + 1 + k))), MeasurableSet F ∧ F ⊆ {y | ∃ w, y = ι w + ι' b} ∧ IsBoundaryOfRegion S F (fun _ => ξN x) := by
+  intro n k U N E ξN T x xs lams hlams S ι ι' u δ₁ δ₂ C₀ hU hE hEN hT hxU hxs hlams0 hmass hconv
+    hnear horth hspan hδ₁ hδ₂ hu _hu0 hDu0 _huδ₂ hchart hξx hξ
+  -- Steps 1 and 3 (centre_offsets): `xᵢ = x + ι sᵢ + ι' tᵢ` with `sᵢ, tᵢ → 0`, and the points of
+  -- `N` within `C₀λᵢ` of `xᵢ` give bounded offsets on the graph of `u`.
+  obtain ⟨s, t, hst, hs, ht, hoff⟩ := Submission.codim1_zsl_gbl_centre_chart_offsets (n + 1) k
+    (n + 1 + k) N x xs lams ι ι' u δ₁ δ₂ C₀ hxs hlams0 hlams hnear horth hspan hδ₁ hδ₂ hchart
+  -- Steps 2, 4 and 5 (graph_flattening): along a subsequence `σ` the rescaled graph maps
+  -- `gᵢ(w) = λᵢ⁻¹(u(sᵢ + λᵢw) − tᵢ)` converge in `C¹` on every ball to a constant `b`.
+  obtain ⟨σ, b, hσ, hdiff, hflat⟩ := Submission.codim1_zsl_gbl_rescaled_graph_flattening (n + 1) k
+    u δ₁ C₀ s t lams hδ₁ hu hDu0 hlams hs hlams0 hoff
+  have hσt : Tendsto σ atTop atTop := hσ.tendsto_atTop
+  -- Step 8 (graph_representation, fed by blowup_region and graph_area): at every scale `λᵢ` the
+  -- parameter set `F'ᵢ` is measurable, and the blow-up is represented on the rescaled graph over
+  -- every ball `B_R` satisfying the scale conditions.
+  have hrep := fun i => Submission.codim1_zsl_gbl_blowUp_graph_representation n k U N E ξN T x
+    (xs i) (lams i) (hlams i) ι ι' u δ₁ δ₂ (s i) (t i) hE hEN
+    (Submission.codim1_zsl_blowUp_isBoundaryOfRegion (n + 1 + k) n U E ξN T (xs i) (lams i)
+      (hlams i) hT)
+    (fun g D A f hD hg hA hAD =>
+      Submission.codim1_zsl_graph_area_formula (n + 1) k ι ι' g D A f horth hD hg hA hAD)
+    horth hspan hu hchart hξ (hst i)
+  -- Step 6: for every `R` the scale conditions hold for all large `i`, because `sᵢ, tᵢ, λᵢ → 0`,
+  -- `xᵢ → x` and `ball(x, r) ⊆ U`.
+  obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
+  have hscale : ∀ R : ℝ, ∀ᶠ i in atTop, ‖s i‖ + lams i * R < δ₁ ∧ ‖t i‖ + lams i * R < δ₂ ∧
+      ball (xs i) (lams i * R) ⊆ U := by
+    intro R
+    have h₁ : Tendsto (fun i => ‖s i‖ + lams i * R) atTop (𝓝 0) := by
+      simpa using (tendsto_norm_zero.comp hs).add (hlams0.mul_const R)
+    have h₂ : Tendsto (fun i => ‖t i‖ + lams i * R) atTop (𝓝 0) := by
+      simpa using (tendsto_norm_zero.comp ht).add (hlams0.mul_const R)
+    have h₃ : Tendsto (fun i => lams i * R + dist (xs i) x) atTop (𝓝 0) := by
+      simpa using (hlams0.mul_const R).add (tendsto_iff_dist_tendsto_zero.1 hxs)
+    filter_upwards [h₁.eventually_lt_const hδ₁, h₂.eventually_lt_const hδ₂,
+      h₃.eventually_lt_const hr] with i hi₁ hi₂ hi₃
+    exact ⟨hi₁, hi₂, (ball_subset_ball' hi₃.le).trans hrU⟩
+  -- Step 9 (flat_limit) along `σ`: weak convergence passes to the subsequence; (H1)–(H2) are the
+  -- `C¹` flattening, (H3) the graph representation and (H4) the mass bound of step 7.
+  obtain ⟨F, hFmeas, hFplane, hFS⟩ := Submission.codim1_zsl_flat_graph_limit n k
+    (fun i => dilation (xs (σ i)) (lams (σ i)) '' U)
+    (fun i => blowUp T (xs (σ i)) (lams (σ i)) (hlams (σ i)).ne') S ι ι' (ξN x) b
+    (fun i w => (lams (σ i))⁻¹ • (u (s (σ i) + lams (σ i) • w) - t (σ i)))
+    (fun i => {w : Euclid (n + 1) | s (σ i) + lams (σ i) • w ∈ ball (0 : Euclid (n + 1)) δ₁ ∧
+      x + ι (s (σ i) + lams (σ i) • w) + ι' (u (s (σ i) + lams (σ i) • w)) ∈ E})
+    horth hspan hξx (fun ω => (hconv ω).comp hσt) (fun i => (hrep (σ i)).1) hdiff hflat
+    (fun R _ => (hσt.eventually (hscale R)).mono fun i hi ω hω =>
+      (hrep (σ i)).2 R hi.1 hi.2.1 hi.2.2 ω hω)
+    (fun R hR => by
+      obtain ⟨c, hc⟩ := Submission.codim1_zsl_gbl_blowUp_mass_bound (n + 1 + k) n U T x xs lams
+        hlams hxs hlams0 hmass R hR
+      exact ⟨c, hσt.eventually hc⟩)
+  exact ⟨b, F, hFmeas, hFplane, hFS⟩
 
 end GMT.Ch07
