@@ -581,6 +581,68 @@ theorem Submission.dor_lmb_fcdr_dual_dist : ∀ (P m : ℕ) (a : Euclid P), (∀
       ≤ Real.sqrt (((m : ℝ) + 2) * (κ u) ^ 2) := Real.sqrt_le_sqrt hsum
     _ = Real.sqrt ((m : ℝ) + 2) * κ u := by
       rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hκ_nonneg]
+/-- **Simon Ch. 6, Lemma 5.4** (step 4(i) of the closed-form retraction): with
+`r_j(y) = max((y_j − a_j)/(1 − a_j), (a_j − y_j)/a_j)` and `κ(r(y)) > 0`, the point
+`Φ(y)_i = a_i + (y_i − a_i)/max(r_i(y), κ(r(y)))` lies in the cube `[0, 1]ᴾ`, and `Φ(y)_i ∈ {0, 1}`
+on an index set `s` with `P ≤ m + 1 + |s|`.  As `1/4 < a_i < 3/4`, `μ_i = max(r_i(y), κ(r(y)))` is
+positive and dominates `(y_i − a_i)/(1 − a_i)` and `(a_i − y_i)/a_i`, so
+`−a_i ≤ (y_i − a_i)/μ_i ≤ 1 − a_i`.  On the indices with `κ(r(y)) ≤ r_i(y)` given by the hypothesis
+on `κ`, `μ_i = r_i(y)` and the quotient is exactly `1 − a_i` (`y_i ≥ a_i`) or `−a_i` (`y_i < a_i`). -/
+theorem Submission.dor_lmb_fcdr_cube_skeleton : ∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y : Euclid P, 0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) → (∀ i, 0 ≤ Φ y i ∧ Φ y i ≤ 1) ∧ ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, Φ y i = 0 ∨ Φ y i = 1 := by
+  intro P m a ha κ hκ Φ hΦ y hy
+  -- `|a_i − 1/2| < 1/4` gives `0 < a_i < 1`
+  have ha' : ∀ i, 0 < a i ∧ a i < 1 := fun i => by
+    obtain ⟨h1, h2⟩ := abs_lt.mp (ha i)
+    constructor <;> linarith
+  -- if `μ > 0` dominates `(z − b)/(1 − b)` and `(b − z)/b`, then `0 ≤ b + (z − b)/μ ≤ 1`
+  have bounds : ∀ b z μ : ℝ, 0 < b → b < 1 → 0 < μ → (z - b) / (1 - b) ≤ μ → (b - z) / b ≤ μ →
+      0 ≤ b + (z - b) / μ ∧ b + (z - b) / μ ≤ 1 := by
+    intro b z μ hb0 hb1 hμ h1 h2
+    rw [div_le_iff₀ (by linarith)] at h1
+    rw [div_le_iff₀ hb0] at h2
+    constructor
+    · have : -b ≤ (z - b) / μ := by
+        rw [le_div_iff₀ hμ]
+        linarith
+      linarith
+    · have : (z - b) / μ ≤ 1 - b := by
+        rw [div_le_iff₀ hμ]
+        linarith
+      linarith
+  -- if moreover `0 < k ≤ r = max((z − b)/(1 − b), (b − z)/b)`, then `max(r, k) = r` and the
+  -- coordinate is `b + (1 − b) = 1` (`z ≥ b`) or `b − b = 0` (`z < b`)
+  have skel : ∀ b z k : ℝ, 0 < b → b < 1 → 0 < k → k ≤ max ((z - b) / (1 - b)) ((b - z) / b) →
+      b + (z - b) / max (max ((z - b) / (1 - b)) ((b - z) / b)) k = 0 ∨
+        b + (z - b) / max (max ((z - b) / (1 - b)) ((b - z) / b)) k = 1 := by
+    intro b z k hb0 hb1 hk hkr
+    have h1b : 0 < 1 - b := by linarith
+    rw [max_eq_left hkr]
+    rcases le_or_gt b z with h | h
+    · right
+      have e1 : (b - z) / b ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) hb0.le
+      have e2 : 0 ≤ (z - b) / (1 - b) := div_nonneg (by linarith) h1b.le
+      rw [max_eq_left (e1.trans e2)] at hkr ⊢
+      have hzb : z - b ≠ 0 := by
+        intro h0
+        rw [h0, zero_div] at hkr
+        linarith
+      rw [div_div_cancel₀ hzb]
+      ring
+    · left
+      have e1 : (z - b) / (1 - b) ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) h1b.le
+      have e2 : 0 ≤ (b - z) / b := div_nonneg (by linarith) hb0.le
+      rw [max_eq_right (e1.trans e2), ← neg_sub b z, neg_div, div_div_cancel₀ (sub_pos.mpr h).ne']
+      ring
+  -- `μ_i = max(r_i(y), κ(r(y))) ≥ κ(r(y)) > 0` dominates both quotients in `r_i(y)`
+  refine ⟨fun i => ?_, ?_⟩
+  · rw [hΦ y i]
+    exact bounds (a i) (y i) _ (ha' i).1 (ha' i).2 (hy.trans_le (le_max_right _ _))
+      ((le_max_left _ _).trans (le_max_left _ _)) ((le_max_right _ _).trans (le_max_left _ _))
+  · -- the indices with `κ(r(y)) ≤ r_i(y)` land on a face: `Φ(y)_i ∈ {0, 1}`
+    obtain ⟨s, hs, hsκ⟩ := hκ fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)
+    refine ⟨s, hs, fun i hi => ?_⟩
+    rw [hΦ y i]
+    exact skel (a i) (y i) _ (ha' i).1 (ha' i).2 hy (hsκ i hi)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
