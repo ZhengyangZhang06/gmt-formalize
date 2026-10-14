@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pull-back field** (the integrand `⟨ω(f(x)), df_x# T⃗⟩` of Simon Ch. 6, 2.24(2)–(3), and the
+estimate behind 2.29): if `f` is `C¹` on the open set `O ⊇ G`, `G` is open, `‖Df‖ ≤ Λ` on `G`, and
+the continuous form `ω` has `‖ω‖ ≤ W`, then `φ = 1_G · ω(f) ∘ Df` is a.e. strongly measurable for
+every measure and `‖φ‖ ≤ W Λⁿ`.  `Df` and `ω ∘ f` are continuous on `O` and `L ↦ (α ↦ α ∘ L)` is
+continuous, so `ω(f) ∘ Df` is continuous on the open set `G`; on `G`, `‖α ∘ L‖ ≤ ‖α‖ ‖L‖ⁿ`, and
+`φ = 0` off `G`. -/
+theorem Submission.dor_lmb_pc_cm_pullback_field_bounded : ∀ (P n : ℕ) (G O : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : DifferentialForm (Euclid P) n) (Λ W : ℝ), IsOpen G → IsOpen O → G ⊆ O → ContDiffOn ℝ 1 f O → Continuous ω → 0 ≤ Λ → (∀ x ∈ G, ‖fderiv ℝ f x‖ ≤ Λ) → (∀ z, ‖ω z‖ ≤ W) → (∀ μ : Measure (Euclid P), AEStronglyMeasurable (G.indicator fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) μ) ∧ ∀ x, ‖G.indicator (fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) x‖ ≤ W * Λ ^ n := by
+  intro P n G O f ω Λ W hG hO hGO hf hω hΛ hDf hW
+  -- Steps 1–3: `Df` and `ω ∘ f` are continuous on `O`, hence so is `ω(f) ∘ Df`
+  have hcont : ContinuousOn
+      (fun y => (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)) G := by
+    have h1 : ContinuousOn (fun y => fderiv ℝ f y) O := hf.continuousOn_fderiv_of_isOpen hO le_rfl
+    have h2 : ContinuousOn (fun y => ω (f y)) O := hω.comp_continuousOn hf.continuousOn
+    have h3 : ContinuousOn (fun y => ContinuousAlternatingMap.compContinuousLinearMapCLM
+        (fderiv ℝ f y) (ω (f y))) O :=
+      (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp_continuousOn h1).clm_apply h2
+    exact h3.mono hGO
+  -- Step 5: `W ≥ 0`
+  have hW0 : 0 ≤ W := (norm_nonneg _).trans (hW 0)
+  refine ⟨fun μ => ?_, fun x => ?_⟩
+  -- Step 4: continuity on the open (Borel) set `G` gives measurability of `1_G · ω(f) ∘ Df`
+  · rw [aestronglyMeasurable_indicator_iff hG.measurableSet]
+    exact hcont.aestronglyMeasurable hG.measurableSet
+  -- Steps 6–7: `‖α ∘ L‖ ≤ ‖α‖ ‖L‖ⁿ` on `G`; the field vanishes off `G`
+  · by_cases hx : x ∈ G
+    · rw [Set.indicator_of_mem hx]
+      calc ‖(ω (f x)).compContinuousLinearMap (fderiv ℝ f x)‖
+          ≤ ‖ω (f x)‖ * ‖fderiv ℝ f x‖ ^ Fintype.card (Fin n) :=
+            ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _
+        _ = ‖ω (f x)‖ * ‖fderiv ℝ f x‖ ^ n := by rw [Fintype.card_fin]
+        _ ≤ W * Λ ^ n := mul_le_mul (hW _) (pow_le_pow_left₀ (norm_nonneg _) (hDf x hx) n)
+            (pow_nonneg (norm_nonneg _) _) hW0
+    · rw [Set.indicator_of_notMem hx, norm_zero]
+      exact mul_nonneg hW0 (pow_nonneg hΛ n)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
