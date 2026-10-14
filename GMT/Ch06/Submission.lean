@@ -58327,4 +58327,113 @@ theorem Submission.iwl_integer_density : ∀ (P m : ℕ), m + 2 ≤ P → Slicin
       ring
     exact hnat (-k) (by push_cast; linarith)
 
+/-- **Simon Ch. 6, Theorem 8.2 (pp. 176–179)**, by induction on `n = m + 1` (all `U` at once).
+In degree `n` the boundary-limit hypothesis (BLI) — weak limits in `ℝ^P` of integer multiplicity
+boundaries `∂Y_j` with `sup_j M(∂Y_j) < ∞` are integer multiplicity — is the case `n − 1 = 0`
+(`iwl_zero_dim_integrality`) for `n = 1` and the inductive hypothesis (with `∂∂ = 0`) for
+`n ≥ 2`.  Given BLI:
+* `P < n`: every `n`-covector on `ℝ^P` vanishes, so `T = 0 = τ(∅, 1, 0)`;
+* `P = n`: Remark 3.12 (`iwl_top_dim_integrality`);
+* `P ≥ n + 1`: localize to compactly supported currents in `ℝ^P` (Remark 8.3(1),
+  `iwl_localization`) and reduce to cycles by cones (`iwl_cycle_reduction`).  For cycles,
+  `Θ*ⁿ(μ_T, ·) > 0` `μ_T`-a.e. (printed (1)–(6), `iwl_positive_density`), so `T` is rectifiable
+  by 8.1, and its multiplicity is integer valued (printed (7)–(10), `iwl_integer_density`). -/
+theorem Submission.integrality_of_weak_limits : IntegralityOfWeakLimits := by
+  -- A current killing every test form is `τ(∅, 1, 0)`.
+  have hIM_of_eq_zero : ∀ {P k : ℕ} {U : Set (Eucl P)} (X : GeometricCurrentOn U k),
+      (∀ ω, X ω = 0) → IsIntegerMultiplicity X := by
+    intro P k U X hX
+    refine ⟨∅, fun _ => 1, fun _ => 0,
+      { subset := empty_subset U
+        nullMeasurableSet := nullMeasurableSet_empty
+        countablyRectifiable :=
+          Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+        pos := fun x hx => absurd hx (notMem_empty x)
+        integrableOn := fun K _ _ => by simp
+        aestronglyMeasurable := aestronglyMeasurable_const
+        orients := by simp }, fun x hx => absurd hx (notMem_empty x), fun ω => ?_⟩
+    simp [tauAction, hX ω]
+  -- The zero current has zero mass.
+  have hmassOn_zero : ∀ {P k : ℕ} {U : Set (Eucl P)} (W : Set (Eucl P)),
+      (0 : GeometricCurrentOn U k).massOn W = 0 := by
+    intro P k U W
+    refine le_antisymm (sSup_le ?_) bot_le
+    rintro r ⟨ω, -, rfl⟩
+    simp
+  intro P
+  -- Degree `m + 1`, assuming (BLI) in that degree.
+  have step : ∀ m : ℕ,
+      (∀ (Yj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1))
+        (Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)),
+        (∀ j, IsIntegerMultiplicity (Yj j).boundary) → (⨆ j, (Yj j).boundary.mass) < ∞ →
+        WeaklyConvergesOn (fun j => (Yj j).boundary) Y.boundary →
+        IsIntegerMultiplicity Y.boundary) →
+      ∀ (U : Set (Eucl P)), IsOpen U →
+        ∀ (Tj : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)),
+          (∀ j, IsIntegralCurrent (Tj j)) →
+          (∀ W, CompactlyContainedOpen W U →
+            (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) →
+          WeaklyConvergesOn Tj T → IsIntegerMultiplicity T := by
+    intro m hBLI U hU Tj T hTj hmass hconv
+    rcases lt_trichotomy P (m + 1) with hP | rfl | hP
+    · -- Step 1, `P < m + 1`: any `m + 1` vectors in `ℝ^P` are linearly dependent, so every
+      -- `(m + 1)`-covector and every test form vanishes, and `T = 0`.
+      have hcov : ∀ c : Covector (Eucl P) (m + 1), c = 0 := by
+        intro c
+        ext v
+        refine c.toAlternatingMap.map_linearDependent v fun hv => ?_
+        have h := hv.fintype_card_le_finrank
+        rw [Fintype.card_fin, finrank_euclideanSpace_fin] at h
+        omega
+      refine hIM_of_eq_zero T fun ω => ?_
+      rw [show ω = 0 from Subtype.ext (funext fun x => hcov _)]
+      exact T.toCurrent.map_zero
+    · -- Step 2, `P = m + 1`: Remark 3.12.
+      exact Submission.iwl_top_dim_integrality m U hU Tj T (fun j => (hTj j).1) hmass hconv
+    · -- Steps 4–11, `P ≥ m + 2`.
+      have hP2 : m + 2 ≤ P := by omega
+      refine Submission.iwl_localization P m Submission.slicing_theorem ?_ U hU Tj T hTj hmass
+        hconv
+      refine Submission.iwl_cycle_reduction P m
+        Submission.lipschitz_pushforward_integer_multiplicity hBLI ?_
+      intro K _ Tj T hIM hbd _ hM hconv
+      -- `∂T = 0`, and `M_W(T) ≤ liminf_j M_W(T_j) ≤ sup_j M(T_j) < ∞`.
+      have hTbd : T.boundary = 0 := by
+        ext ω
+        refine tendsto_nhds_unique (hconv.boundary ω) ?_
+        simp [hbd]
+      have hTmass : ∀ W, CompactlyContainedOpen W univ →
+          T.massOn W + T.boundary.massOn W < ∞ := by
+        intro W _
+        rw [hTbd, hmassOn_zero, add_zero]
+        calc T.massOn W ≤ liminf (fun j => (Tj j).massOn W) atTop := hconv.massOn_le_liminf W
+          _ ≤ ⨆ j, (Tj j).massOn W := le_trans liminf_le_limsup limsup_le_iSup
+          _ ≤ ⨆ j, (Tj j).mass := iSup_mono fun j => (Tj j).massOn_mono (subset_univ W)
+          _ < ∞ := hM
+      -- Step 10: 8.1 applies.
+      have hrect : IsRectifiableCurrent T :=
+        Submission.rectifiability_theorem P m univ isOpen_univ T hTmass
+          (Submission.iwl_positive_density P m hP2 Submission.slicing_theorem
+            Submission.isoperimetric_theorem
+            Submission.lipschitz_pushforward_integer_multiplicity hBLI Tj T hIM hbd hM hconv)
+      exact Submission.iwl_integer_density P m hP2 Submission.slicing_theorem
+        Submission.lipschitz_pushforward_integer_multiplicity Tj T hIM hbd hM hconv hrect
+  -- Step 3: induction on `m`.
+  intro m
+  induction m with
+  | zero =>
+    refine step 0 fun Yj Y hIM hM hconv => ?_
+    exact Submission.iwl_zero_dim_integrality P univ isOpen_univ (fun j => (Yj j).boundary)
+      Y.boundary hIM
+      (fun W _ => (iSup_mono fun j => (Yj j).boundary.massOn_mono (subset_univ W)).trans_lt hM)
+      hconv
+  | succ m ih =>
+    refine step (m + 1) fun Yj Y hIM hM hconv => ?_
+    refine ih univ isOpen_univ (fun j => (Yj j).boundary) Y.boundary
+      (fun j => ⟨hIM j, ?_⟩) (fun W _ => ?_) hconv
+    · rw [GeometricCurrentOn.boundary_boundary]
+      exact hIM_of_eq_zero _ fun _ => rfl
+    · simp only [GeometricCurrentOn.boundary_boundary, hmassOn_zero, add_zero]
+      exact (iSup_mono fun j => (Yj j).boundary.massOn_mono (subset_univ W)).trans_lt hM
+
 end GMT.Ch06
