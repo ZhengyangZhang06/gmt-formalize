@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.orient_approx_tangent_plane-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+  "depth": 3,
+  "title": "The orientation of an integer multiplicity triple orients the chosen approximate tangent plane a.e.",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n). Then for H^n-almost every x ∈ M (with respect to μHE[n] restricted to M), ξ(x) is a unit orientation of approxTangentPlane n M x. That is, there are orthonormal τ_1, …, τ_n spanning approxTangentPlane n M x such that either ξ(x)(α) = α(τ_1, …, τ_n) for all n-covectors α, or ξ(x)(α) = −α(τ_1, …, τ_n) for all n-covectors α.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), IsUnitOrientationOf (R.orient x) (approxTangentPlane n R.carrier x)",
+  "lean_name": "fvmb_imrep_ae_unitOrientation_approxTangentPlane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-o-90c59096a1-a1"
+}

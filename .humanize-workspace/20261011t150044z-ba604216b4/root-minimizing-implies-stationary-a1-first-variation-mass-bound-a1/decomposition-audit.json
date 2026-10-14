@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "def IsUnitOrientationOf|structure IMRep|def IMRep.measure|def approxTangentPlane|def tangentialDivergence|def IMRep.firstVariation|fvmb_",
+        "det_eq_prod_eigenvalues|apply_eigenvectorBasis|trace_eq_sum_inner|trace_eq_sum_eigenvalues|isSymmetric_adjoint_comp_self|trace_smulRight|eq_starProjection_of_mem_of_inner_eq_zero|abs_exp_sub_one_sub_id_le|add_one_le_exp|sqrt_le_sqrt",
+        "fvmb_gram_det_le_exp_sum_norm_sq_sub|fvmb_orthonormal_gram_sqrt_det_le_first_order|fvmb_trace_starProjection_comp_eq_sum_inner|fvmb_imrep_ae_unitOrientation_approxTangentPlane",
+        "python3 /tmp/fvmb-independent-audit-1cw5eycz/run_lean.py /tmp/fvmb-independent-audit-1cw5eycz/StandaloneTypes.lean",
+        "python3 /tmp/fvmb-independent-audit-1cw5eycz/run_lean.py /tmp/fvmb2/E/SolutionCheck.lean",
+        "python3 /tmp/fvmb-independent-audit-1cw5eycz/run_lean.py /tmp/fvmb-independent-audit-1cw5eycz/CB.lean",
+        "python3 /tmp/fvmb-independent-audit-1cw5eycz/run_lean.py /tmp/fvmb-independent-audit-1cw5eycz/TM.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Spectrum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1/decomposition-v2.json",
+        "/tmp/fvmb-independent-audit-1cw5eycz/StandaloneTypes.lean",
+        "/tmp/fvmb-independent-audit-1cw5eycz/CB.lean",
+        "/tmp/fvmb-independent-audit-1cw5eycz/TM.lean",
+        "/tmp/fvmb2/E/SolutionCheck.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and byte-identical relevant sources. The cited spectral, projection, trace, exponential and tangent-uniqueness facts support the supplied proofs. No proposed name occurs in the 457-node DAG or another branch's searched decomposition/handoff; all names are bare identifiers. All four one-line propositions elaborate using frozen definitions without child implementations. Independent checks confirm ordinary Matrix.of multiplication, operator norms and the inferred orthogonal-projection instance. The split is appropriate and acyclic: gram_jacobian_first_order depends only on gram_det_exp_bound; the other children are independent. Together with the two already accepted siblings, they supply the pointwise estimate, divergence identity and orientation needed for the selected parent's support, integration and mass-supremum argument. Fresh Lean replay closes every exact child type and the exact selected parent type. Child proofs use only propext, Classical.choice and Quot.sound. The parent replay additionally uses only CB and TM; their frozen types match the accepted declarations, whose axiom checks independently show only those same standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gram_det_exp_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match for arbitrary P, n and vectors. Realizing the Gram matrix as V*V establishes the determinant, trace and nonnegative eigenvalues; multiplying the exponential inequalities proves the claim, including n = 0. The proof is complete and non-circular."
+    },
+    {
+      "key": "gram_jacobian_first_order",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type expresses the stated uniform estimate with all hypotheses. The supplied positive constants, column expansion, bound on |σ| and two error estimates are valid for either sign of t and for n = 0. Its sole dependency is correctly declared; no additional smoothness or invertibility is assumed."
+    },
+    {
+      "key": "trace_projection_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orthonormality and the span equality give the projection formula. The rank-one decomposition and trace_smulRight then prove precisely the stated trace identity. Finite-dimensional Euclidean space supplies the projection instance without a missing hypothesis, and the identity matches tangentialDivergence definitionally."
+    },
+    {
+      "key": "orient_approx_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The restricted-measure quantifier and orientation predicate exactly match the prose. R.orients supplies a tangent-plane witness almost everywhere; the defining choice and tangent-plane uniqueness identify it with approxTangentPlane. Transporting the orientation proves the conclusion without circular reliance."
+    }
+  ],
+  "required_changes": []
+}
