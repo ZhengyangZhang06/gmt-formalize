@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1.carried_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1",
+  "depth": 6,
+  "title": "Concentration of the mass measure transfers across a difference supported in a closed set",
+  "statement": "Let P, j ∈ ℕ, let S₁, S₂ ∈ 𝒟_j(ℝ^P) (GeometricCurrentOn univ j) be represented by integer multiplicity triples R₁ = (M₁, θ₁, ξ₁), R₂ = (M₂, θ₂, ξ₂) in ℝ^P (IMRep univ j with R₁.Represents S₁ and R₂.Represents S₂), and let F ⊆ ℝ^P be closed. Write μ_i := R_i.measure = θ_i·H^j⌞M_i (H^j = μHE[j]). Assume μ₂(ℝ^P ∖ F) = 0 and spt(S₁ − S₂) ⊆ F, where S₁ − S₂ is the contract difference ((S₁ − S₂)(ω) = S₁(ω) − S₂(ω)) and spt is the SimonGMT support (ℝ^P minus the union of the open sets with compact closure on which the current vanishes). Then μ₁(ℝ^P ∖ F) = 0.",
+  "lean_statement": "∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (F : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsClosed F → R₂.measure Fᶜ = 0 → (S₁ - S₂).support ⊆ F → R₁.measure Fᶜ = 0",
+  "lean_name": "dimred_cs_sos_mt_cm_carried_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-70e266ff27-a1"
+}

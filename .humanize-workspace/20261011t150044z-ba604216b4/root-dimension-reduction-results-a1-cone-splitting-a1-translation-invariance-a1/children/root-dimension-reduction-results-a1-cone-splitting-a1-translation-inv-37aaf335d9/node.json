@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1.translate_derivative-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "depth": 4,
+  "title": "Differentiation under the integral sign along the translations y ↦ sv + y",
+  "statement": "Let P, n ∈ ℕ, R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) (M = R.carrier, θ = R.mult, ξ = R.orient), ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n), v ∈ ℝ^P and t ∈ ℝ. For s ∈ ℝ put G(s) := R.action(y ↦ ω(s·v + y)) = ∫_M θ(y)·ξ(y)(ω(sv + y)) dHⁿ(y). Then G has derivative R.action(y ↦ Dω(t·v + y)[v]) at t (HasDerivAt), where Dω(z)[u] = fderiv ℝ ω z u.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (v : Euclid P) (t : ℝ), HasDerivAt (fun s : ℝ => R.action (fun y => (ω : DifferentialForm (Euclid P) n) (s • v + y))) (R.action (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v)) t",
+  "lean_name": "dimred_cs_ti_translate_action_hasDerivAt",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-inv-37aaf335d9-a1"
+}

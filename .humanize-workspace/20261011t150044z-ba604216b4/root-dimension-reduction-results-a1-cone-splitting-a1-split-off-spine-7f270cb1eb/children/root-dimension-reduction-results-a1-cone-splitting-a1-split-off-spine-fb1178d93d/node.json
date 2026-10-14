@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Interior product with a frame is a continuous linear map of covectors, and continuous linear images of translated test forms are test forms",
+  "statement": "Let P ∈ ℕ and write Λ^j := Covector (Euclid P) j (continuous alternating j-linear forms on ℝ^P, with the operator norm).\n(a) For all k, m, n' ∈ ℕ, every family g = (g_1, …, g_k) of vectors of ℝ^P (g : Fin k → Euclid P) and every equation h : n' = k + m, there is a continuous linear map ♭ : Λ^{n'} → Λ^m such that (♭α)(v) = α(Fin.append g v ∘ Fin.cast h) = α(g_1, …, g_k, v_1, …, v_m) for every α ∈ Λ^{n'} and every v = (v_1, …, v_m) ∈ (ℝ^P)^m.\n(b) For all a, b ∈ ℕ, every continuous linear map Φ : Λ^a → Λ^b, every test a-form ω on ℝ^P (IsTestForm ω: C^∞ with compact support) and every t ∈ ℝ^P, the b-form y ↦ Φ(ω(t + y)) is a test form, and tsupport(y ↦ Φ(ω(t + y))) ⊆ {y : t + y ∈ tsupport ω}.",
+  "lean_statement": "∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω",
+  "lean_name": "dimred_cs_sos_mt_interior_product",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fb1178d93d-a1"
+}

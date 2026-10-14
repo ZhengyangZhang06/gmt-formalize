@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_cs_sos_mt_cm_(carried_transfer|comparison_box|split_mass|box_masses|box_cancellation)|dimred_mbl_lc_rc_cycle_competitor",
+        "setIntegral_sdiff|theorem measure_sdiff |withDensity_absolutelyContinuous|theorem withDensity_apply |le_of_add_le_add_left",
+        "starProjection_add_starProjection_orthogonal|inner_starProjection_left_eq_right|starProjection_eq_self_iff|starProjection_apply_mem",
+        "GeometricCurrentOn.(VanishesOn|zeroRegion|support|isOpen_zeroRegion)|namespace GeometricCurrentOn",
+        "git show 35e359955ef6bac37033306b3f33a12c284b7174:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cm-independent-audit/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cm-independent-audit/Recheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cm-independent-audit/CycleCandidate.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8a972d0014/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8a972d0014/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-4725781174/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+        "/tmp/cm-independent-audit/IndependentTypes.lean",
+        "/tmp/cm-independent-audit/Recheck.lean",
+        "/tmp/cm-independent-audit/CycleCandidate.lean"
+      ],
+      "conclusion": "Project, mathlib and compiler inputs match the pins. All six one-line propositions elaborate independently; their names are bare identifiers. The five new names are absent from the pinned Submission and DAG. The reused cycle theorem has an identical frozen type and matching accepted-source hash; independently recompiling its complete candidate yields only propext, Classical.choice and Quot.sound. All supplied child proofs and the exact selected-parent assembly compile against exact prerequisite stubs, with admissions confined to those stubs. Cited inherited dependencies are available and their closures are acyclic, with no reliance on this parent. The six-way split is appropriate and establishes the selected competitor-mass inequality. No matrix-instance issue occurs. [Simon, Chapter 7, Lemma 3.5](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=113) confirms that the source leaves the broader lemma’s proof to the reader."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "carried_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Closedness supplies null neighborhoods; the support criterion and zero-region intersection transfer support containment. Absolute continuity and the carrier-null theorem then establish the exact measure conclusion. The proof is complete and non-circular."
+    },
+    {
+      "key": "comparison_box",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The coordinate estimate establishes boundedness, properness gives compact closure, and projection self-adjointness proves slab inclusion. The argument also covers zero-dimensional frames and arbitrary radii allowed by the type. Its proof uses only standard axioms."
+    },
+    {
+      "key": "cycle_competitor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the comparator-accepted declaration. The proof verifies integer multiplicity, boundary equality, support containment and compactness before applying minimality. Its specialization supplies precisely the selected parent’s competitor inequality; the independent axiom check passes."
+    },
+    {
+      "key": "split_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include every representation, concentration and action hypothesis. A continuous interior product exists; integrability justifies both integral identities. The currentEval difference identity and two mass inequalities establish the conclusion for arbitrary W without circular reliance."
+    },
+    {
+      "key": "box_masses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact conditional statement needs no additional dimension relation. Openness, measurability and concentration justify all three product-box applications. Frame volumes and finite-measure subtraction give precisely the stated masses, including the truncated shell factor."
+    },
+    {
+      "key": "box_cancellation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Local integrability on compact closure proves the cancelled quantity finite. Measure comparison, distributivity and b ≤ a yield the additive inequality; ENNReal cancellation is valid even when e is infinite. No additional finiteness assumption is hidden."
+    }
+  ],
+  "required_changes": []
+}
