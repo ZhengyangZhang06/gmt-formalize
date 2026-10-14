@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c22e3c413f5ca4dabc2576ce971d53690dd16bd9742a3cd612252446ba684c63",
+  "git_delta": {
+    "base_commit": "07583810c0571bfba72d6345d8b84f0bc240fab9",
+    "candidate_commit": "d6f3255bfc55adee5a2e1bdffb268f996ceb692c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrbv_massOn_disjoint_sum_le",
+    "diff_sha256": "4914b1ef3af503c7883df4292c69f8697d6ff208e70093b045945d39b58237e8",
+    "source_sha256": "aaac905d5828186f668c77c600d65261dcde296414a005614a91bb27df8b6c7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrbv_massOn_disjoint_sum_le",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
