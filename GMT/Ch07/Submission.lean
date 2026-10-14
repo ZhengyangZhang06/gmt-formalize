@@ -6938,218 +6938,6 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
-/-- **Face replacement** (Simon Ch. 6, proof of 5.1, displays (26)–(37); the BV facts on the
-faces come from `cmcdt_cube_bv_median`).  Let `Q₀` be integer multiplicity, `n = m + 1`,
-`spt Q₀ ⊆ K ∩ Lₙ`, `M(Q₀) ≤ Λ` and `M(∂Q₀) < ∞`.  Over the open unit `n`-faces `F̆`,
-`Q₀ = Σ_F ũ_F [[F̆]]` with integer densities `ũ_F`, `Σ_F ∫|ũ_F| ≤ M(Q₀)`
-(`cmcdtfr_skeleton_decomposition`); testing `∂Q₀` near `F̆` bounds the variation of `ũ_F` by
-`V_F` with `Σ_F V_F ≤ M(∂Q₀)` (`cmcdtfr_boundary_variation`).  Integer medians `β_F` of the
-`ũ_F` (`cmcdt_cube_bv_median`, constant `c_B`) give `Pc = Σ_F β_F [[F]]`, which lies in the
-finite family of integer chains on faces meeting `K` with `Σ|β_F| ≤ 2Λ`
-(`cmcdtfr_finite_family`).  Then `M(Q₀ − Pc)`, `M(∂(Q₀ − Pc)) ≤ c_B M(∂Q₀)`
-(`cmcdtfr_face_integral_current`), so `M(∂Pc) ≤ (1 + c_B) M(∂Q₀)` as
-`∂Pc = ∂Q₀ − ∂(Q₀ − Pc)`; `Pc` and `∂Pc` are integer multiplicity, `M(Pc) = Σ|β_F| ≤ 2M(Q₀)`,
-and `Pc = 0` or `M(Pc) ≥ 1` (`cmcdtfr_polyhedral_im`, `cmcdtfr_chain_boundary`).  A face
-carrying `Pc` meets `spt Q₀`, a face carrying `Q₀ − Pc` meets `spt ∂Q₀` (there `V_F ≠ 0`), and a
-face has diameter `≤ √P` (`cmcdtfr_face_geometry`).  Take `c = max(2, 1 + c_B)`. -/
-theorem Submission.cmcdt_face_replacement : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (K : Set (Euclid P)) (Λ : NNReal), IsCompact K → ∃ 𝒬₀ : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬₀.Finite ∧ ∀ Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Q₀ → Q₀.support ⊆ K → Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} → Q₀.mass ≤ Λ → Q₀.boundary.mass < ∞ → ∃ Pc ∈ 𝒬₀, IsIntegerMultiplicity Pc ∧ IsIntegerMultiplicity Pc.boundary ∧ (Pc = 0 ∨ 1 ≤ Pc.mass) ∧ Pc.mass ≤ c * Q₀.mass ∧ Pc.boundary.mass ≤ c * Q₀.boundary.mass ∧ (Q₀ - Pc).mass ≤ c * Q₀.boundary.mass ∧ Pc.support ⊆ cthickening (Real.sqrt P) Q₀.support ∧ (Q₀ - Pc).support ∪ Pc.boundary.support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
-  intro hVO hMR hIMC P m
-  -- support and mass calculus for currents in `ℝᴾ`: `spt(A − B) ⊆ spt A ∪ spt B`,
-  -- `spt ∂A ⊆ spt A` and `M(A − B) ≤ M(A) + M(B)`
-  have hspt_sub : ∀ (k : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid P)) k),
-      (A - B).support ⊆ A.support ∪ B.support := by
-    intro k A B x hx
-    simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_union, mem_univ, true_and] at hx ⊢
-    by_contra h
-    rw [not_or, not_not, not_not] at h
-    apply hx
-    obtain ⟨hA, hB⟩ := h
-    simp only [GeometricCurrentOn.zeroRegion, mem_sUnion, mem_ofPred_eq] at hA hB ⊢
-    obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁v⟩, hxW₁⟩ := hA
-    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ := hB
-    refine ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o,
-      hW₁c.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
-      fun ω hω => ?_⟩, hxW₁, hxW₂⟩
-    show A ω - B ω = 0
-    rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
-  have hspt_bd : ∀ (k : ℕ) (A : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)),
-      A.boundary.support ⊆ A.support := by
-    intro k A x hx
-    simp only [GeometricCurrentOn.support, Set.mem_sdiff] at hx ⊢
-    refine ⟨hx.1, fun hxA => hx.2 ?_⟩
-    simp only [GeometricCurrentOn.zeroRegion, mem_sUnion, mem_ofPred_eq] at hxA ⊢
-    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := hxA
-    refine ⟨W, ⟨hWo, hWc, hWU, fun γ hγ => ?_⟩, hxW⟩
-    exact hWv (exteriorDerivativeTestOn univ k γ)
-      ((tsupport_exteriorDerivative_subset _).trans hγ)
-  have hmass_sub : ∀ (k : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid P)) k),
-      (A - B).mass ≤ A.mass + B.mass := by
-    intro k A B
-    refine sSup_le ?_
-    rintro r ⟨ω, hω, rfl⟩
-    have hnω : -ω ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
-      refine ⟨subset_univ _, fun x => ?_⟩
-      have h := hω.2 x
-      rwa [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
-    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by
-          congr 1
-          show A ω - B ω = A ω + B (-ω)
-          rw [show B (-ω) = -B ω from map_neg B.toCurrent ω, sub_eq_add_neg]
-      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
-      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
-  -- `c_B` from the cube BV median lemma and `c := max(2, 1 + c_B)`
-  obtain ⟨cB, hcB, hmedian⟩ := Submission.cmcdt_cube_bv_median m
-  refine ⟨Real.toNNReal (max 2 (1 + cB)),
-    Real.one_le_toNNReal.2 (le_max_of_le_left one_le_two), fun K Λ hK => ?_⟩
-  -- `𝒬₀`: the integer chains `Σ β_F [[F]]` on faces meeting `K` with `Σ|β_F| ≤ 2Λ`
-  refine ⟨_, Submission.cmcdtfr_finite_family P (m + 1) K (2 * (Λ : ℝ)) hK, ?_⟩
-  intro Q₀ hQ₀ hQ₀K hQ₀L hQ₀Λ hQ₀b
-  -- `Q₀ = Σ_F ũ_F [[F̆]]` over the open faces `F̆` meeting `spt Q₀`
-  obtain ⟨s, u, hs, huZ, huI, hSu, huspt, hQ₀rep⟩ :=
-    Submission.cmcdtfr_skeleton_decomposition hVO hMR hIMC P m K Q₀ hK hQ₀ hQ₀K hQ₀L
-  -- the variations `V_F` of the `ũ_F`, with `Σ_F V_F ≤ M(∂Q₀)`
-  obtain ⟨V, hV0, hSV, hVbd, hVspt⟩ :=
-    Submission.cmcdtfr_boundary_variation hVO P m s u Q₀ hs huI hQ₀rep hQ₀b
-  -- integer medians `β_F` (`β_F := 0` off `s`)
-  have hmed : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), ∃ b : ℤ, p ∈ s →
-      (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y - b| ≤ cB * V p) ∧
-      |(b : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| ∧
-      ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) →
-        |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
-          (u p y - b) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ cB * V p := by
-    intro p
-    by_cases hp : p ∈ s
-    · obtain ⟨b, hb⟩ := hmedian (u p) (V p) (huZ p hp) (huI p hp) (hVbd p hp)
-      exact ⟨b, fun _ => hb⟩
-    · exact ⟨0, fun h => absurd h hp⟩
-  choose β hβ using hmed
-  -- the face currents with densities `β_F` (this is `Pc`), `ũ_F` and `ũ_F − β_F`
-  have hcube : volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1 :=
-    (Submission.cmcdtfr_face_geometry P (m + 1)).1
-  have hβI : ∀ p ∈ s, IntegrableOn (fun _ : Euclid (m + 1) => (β p : ℝ))
-      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun p _ =>
-    integrableOn_const (by rw [hcube]; exact ENNReal.one_ne_top)
-  obtain ⟨hβω, ⟨Pc, hPc⟩, hPcD⟩ :=
-    Submission.cmcdtfr_face_integral_current P m s (fun p _ => (β p : ℝ)) hs hβI
-  obtain ⟨huω, -, -⟩ := Submission.cmcdtfr_face_integral_current P m s u hs huI
-  obtain ⟨-, -, hdD⟩ := Submission.cmcdtfr_face_integral_current P m s
-    (fun p y => u p y - (β p : ℝ)) hs fun p hp => (huI p hp).sub (hβI p hp)
-  -- `Pc = Σ_F β_F [[F]]`
-  have hPcrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω =
-      ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
-        (ω : DifferentialForm (Euclid P) (m + 1))
-          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
-          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
-    intro ω
-    rw [hPc ω]
-    exact Finset.sum_congr rfl fun p _ => integral_const_mul _ _
-  -- `Q₀ − Pc = Σ_F (ũ_F − β_F) [[F̆]]`
-  have hdrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (Q₀ - Pc) ω =
-      ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
-        (u p y - (β p : ℝ)) * (ω : DifferentialForm (Euclid P) (m + 1))
-          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
-          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
-    intro ω
-    show Q₀ ω - Pc ω = _
-    rw [hQ₀rep ω, hPc ω, ← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun p hp => ?_
-    rw [← integral_sub (huω ω p hp) (hβω ω p hp)]
-    congr 1
-    ext y
-    ring
-  -- integrality of `Pc` and `∂Pc`, `M(Pc) = Σ|β_F|`, and `Pc = 0` or `M(Pc) ≥ 1`
-  obtain ⟨hPcIM, hPcmass, hPc01⟩ :=
-    Submission.cmcdtfr_polyhedral_im hMR P (m + 1) s β Pc hs hPcrep
-  obtain ⟨s', β', hs', hPcbrep⟩ := Submission.cmcdtfr_chain_boundary P m s β Pc hs hPcrep
-  obtain ⟨hPcbIM, -, -⟩ :=
-    Submission.cmcdtfr_polyhedral_im hMR P m s' β' Pc.boundary hs' hPcbrep
-  -- mass and support bounds for `Pc` and `Q₀ − Pc` from their face densities
-  obtain ⟨-, -, hPcspt⟩ := hPcD Pc hPc
-  obtain ⟨hdmass, hdbmass, hdspt⟩ := hdD (Q₀ - Pc) hdrep
-  have hdb : (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, cB * V p) :=
-    hdbmass (fun p => cB * V p) fun p hp G hG hG1 => (hβ p hp).2.2 G hG hG1
-  -- `Σ|β_F| ≤ 2 Σ_F ∫|ũ_F| ≤ 2Λ`, `Σ_F ∫|ũ_F − β_F| ≤ c_B Σ_F V_F`
-  have hβsum : ∑ p ∈ s, |(β p : ℝ)| ≤
-      2 * ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| := by
-    rw [Finset.mul_sum]
-    exact Finset.sum_le_sum fun p hp => (hβ p hp).2.1
-  have hSuΛ : ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| ≤
-      (Λ : ℝ) := by
-    have h := hSu.trans hQ₀Λ
-    rw [← ENNReal.ofReal_coe_nnreal] at h
-    exact (ENNReal.ofReal_le_ofReal_iff Λ.coe_nonneg).1 h
-  have hdsum : ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
-      |u p y - (β p : ℝ)| ≤ cB * ∑ p ∈ s, V p := by
-    rw [Finset.mul_sum]
-    exact Finset.sum_le_sum fun p hp => (hβ p hp).1
-  have hdb' : (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal cB * Q₀.boundary.mass := by
-    calc (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, cB * V p) := hdb
-      _ = ENNReal.ofReal cB * ENNReal.ofReal (∑ p ∈ s, V p) := by
-          rw [← Finset.mul_sum, ENNReal.ofReal_mul hcB.le]
-      _ ≤ ENNReal.ofReal cB * Q₀.boundary.mass := mul_le_mul' le_rfl hSV
-  -- `∂Pc = ∂Q₀ − ∂(Q₀ − Pc)`
-  have hPcb_eq : Pc.boundary = Q₀.boundary - (Q₀ - Pc).boundary := by
-    ext γ
-    show Pc (exteriorDerivativeTestOn univ m γ) = Q₀ (exteriorDerivativeTestOn univ m γ) -
-      (Q₀ (exteriorDerivativeTestOn univ m γ) - Pc (exteriorDerivativeTestOn univ m γ))
-    ring
-  -- supports: a face carrying `Pc` meets `spt Q₀`, a face carrying `Q₀ − Pc` meets `spt ∂Q₀`
-  -- (there `V_F ≠ 0`), and a face has diameter `≤ √P`
-  have hdiam := fun p (hp : p ∈ s) =>
-    ((Submission.cmcdtfr_face_geometry P (m + 1)).2 p p (hs p hp) (hs p hp)).2.1
-  have hPcsupp : Pc.support ⊆ cthickening (Real.sqrt P) Q₀.support := by
-    intro x hx
-    obtain ⟨p, hp, -, y, hy, rfl⟩ := hPcspt x hx
-    obtain ⟨y', hy', hy'Q⟩ := huspt p hp
-    exact mem_cthickening_of_dist_le _ _ _ _ hy'Q (hdiam p hp y y' hy hy')
-  have hdsupp : (Q₀ - Pc).support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
-    intro x hx
-    obtain ⟨p, hp, hne, y, hy, rfl⟩ := hdspt x hx
-    have hVp : V p ≠ 0 := by
-      intro h0
-      apply hne
-      have h1 := (hβ p hp).1
-      rw [h0, mul_zero] at h1
-      exact le_antisymm h1 (integral_nonneg fun y => abs_nonneg _)
-    obtain ⟨y', hy', hy'Q⟩ := hVspt p hp hVp
-    exact mem_cthickening_of_dist_le _ _ _ _ hy'Q (hdiam p hp y y' hy hy')
-  have hPcbsupp : Pc.boundary.support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
-    intro x hx
-    rw [hPcb_eq] at hx
-    rcases hspt_sub m _ _ hx with h | h
-    · exact self_subset_cthickening _ h
-    · exact hdsupp (hspt_bd m _ h)
-  refine ⟨Pc, ?_, hPcIM, hPcbIM, hPc01, ?_, ?_, ?_, hPcsupp, union_subset hdsupp hPcbsupp⟩
-  · -- `Pc ∈ 𝒬₀`
-    rw [Set.mem_ofPred_eq]
-    refine ⟨s, β, hs, fun p hp => ?_, by linarith, hPcrep⟩
-    obtain ⟨y, hy, hyQ⟩ := huspt p hp
-    exact ⟨y, hy, hQ₀K hyQ⟩
-  · -- `M(Pc) = Σ|β_F| ≤ 2M(Q₀)`
-    show Pc.mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.mass
-    calc Pc.mass = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) := hPcmass
-      _ ≤ ENNReal.ofReal (2 * _) := ENNReal.ofReal_le_ofReal hβsum
-      _ = ENNReal.ofReal 2 * ENNReal.ofReal _ := ENNReal.ofReal_mul zero_le_two
-      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.mass :=
-          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_left _ _)) hSu
-  · -- `M(∂Pc) ≤ M(∂Q₀) + M(∂(Q₀ − Pc)) ≤ (1 + c_B)M(∂Q₀)`
-    show Pc.boundary.mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass
-    calc Pc.boundary.mass ≤ Q₀.boundary.mass + (Q₀ - Pc).boundary.mass := by
-          rw [hPcb_eq]
-          exact hmass_sub m _ _
-      _ ≤ Q₀.boundary.mass + ENNReal.ofReal cB * Q₀.boundary.mass := add_le_add le_rfl hdb'
-      _ = ENNReal.ofReal (1 + cB) * Q₀.boundary.mass := by
-          rw [ENNReal.ofReal_add zero_le_one hcB.le, ENNReal.ofReal_one, add_mul, one_mul]
-      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass :=
-          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_right _ _)) le_rfl
-  · -- `M(Q₀ − Pc) ≤ Σ_F ∫|ũ_F − β_F| ≤ c_B M(∂Q₀)`
-    show (Q₀ - Pc).mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass
-    calc (Q₀ - Pc).mass ≤ ENNReal.ofReal _ := hdmass
-      _ ≤ ENNReal.ofReal (cB * ∑ p ∈ s, V p) := ENNReal.ofReal_le_ofReal hdsum
-      _ = ENNReal.ofReal cB * ENNReal.ofReal (∑ p ∈ s, V p) := ENNReal.ofReal_mul hcB.le
-      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass :=
-          mul_le_mul' (ENNReal.ofReal_le_ofReal (by linarith [le_max_right 2 (1 + cB)])) hSV
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -7636,5 +7424,217 @@ theorem Submission.cmcdt_cube_bv_median : ∀ m : ℕ, ∃ c : ℝ, 0 < c ∧ �
     _ ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * (2 ^ (m + 2) * Real.sqrt (m + 1) * V) := by
         gcongr
     _ ≤ _ := by nlinarith
+
+/-- **Face replacement** (Simon Ch. 6, proof of 5.1, displays (26)–(37); the BV facts on the
+faces come from `cmcdt_cube_bv_median`).  Let `Q₀` be integer multiplicity, `n = m + 1`,
+`spt Q₀ ⊆ K ∩ Lₙ`, `M(Q₀) ≤ Λ` and `M(∂Q₀) < ∞`.  Over the open unit `n`-faces `F̆`,
+`Q₀ = Σ_F ũ_F [[F̆]]` with integer densities `ũ_F`, `Σ_F ∫|ũ_F| ≤ M(Q₀)`
+(`cmcdtfr_skeleton_decomposition`); testing `∂Q₀` near `F̆` bounds the variation of `ũ_F` by
+`V_F` with `Σ_F V_F ≤ M(∂Q₀)` (`cmcdtfr_boundary_variation`).  Integer medians `β_F` of the
+`ũ_F` (`cmcdt_cube_bv_median`, constant `c_B`) give `Pc = Σ_F β_F [[F]]`, which lies in the
+finite family of integer chains on faces meeting `K` with `Σ|β_F| ≤ 2Λ`
+(`cmcdtfr_finite_family`).  Then `M(Q₀ − Pc)`, `M(∂(Q₀ − Pc)) ≤ c_B M(∂Q₀)`
+(`cmcdtfr_face_integral_current`), so `M(∂Pc) ≤ (1 + c_B) M(∂Q₀)` as
+`∂Pc = ∂Q₀ − ∂(Q₀ − Pc)`; `Pc` and `∂Pc` are integer multiplicity, `M(Pc) = Σ|β_F| ≤ 2M(Q₀)`,
+and `Pc = 0` or `M(Pc) ≥ 1` (`cmcdtfr_polyhedral_im`, `cmcdtfr_chain_boundary`).  A face
+carrying `Pc` meets `spt Q₀`, a face carrying `Q₀ − Pc` meets `spt ∂Q₀` (there `V_F ≠ 0`), and a
+face has diameter `≤ √P` (`cmcdtfr_face_geometry`).  Take `c = max(2, 1 + c_B)`. -/
+theorem Submission.cmcdt_face_replacement : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (K : Set (Euclid P)) (Λ : NNReal), IsCompact K → ∃ 𝒬₀ : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬₀.Finite ∧ ∀ Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Q₀ → Q₀.support ⊆ K → Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} → Q₀.mass ≤ Λ → Q₀.boundary.mass < ∞ → ∃ Pc ∈ 𝒬₀, IsIntegerMultiplicity Pc ∧ IsIntegerMultiplicity Pc.boundary ∧ (Pc = 0 ∨ 1 ≤ Pc.mass) ∧ Pc.mass ≤ c * Q₀.mass ∧ Pc.boundary.mass ≤ c * Q₀.boundary.mass ∧ (Q₀ - Pc).mass ≤ c * Q₀.boundary.mass ∧ Pc.support ⊆ cthickening (Real.sqrt P) Q₀.support ∧ (Q₀ - Pc).support ∪ Pc.boundary.support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
+  intro hVO hMR hIMC P m
+  -- support and mass calculus for currents in `ℝᴾ`: `spt(A − B) ⊆ spt A ∪ spt B`,
+  -- `spt ∂A ⊆ spt A` and `M(A − B) ≤ M(A) + M(B)`
+  have hspt_sub : ∀ (k : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid P)) k),
+      (A - B).support ⊆ A.support ∪ B.support := by
+    intro k A B x hx
+    simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_union, mem_univ, true_and] at hx ⊢
+    by_contra h
+    rw [not_or, not_not, not_not] at h
+    apply hx
+    obtain ⟨hA, hB⟩ := h
+    simp only [GeometricCurrentOn.zeroRegion, mem_sUnion, mem_ofPred_eq] at hA hB ⊢
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁v⟩, hxW₁⟩ := hA
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ := hB
+    refine ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o,
+      hW₁c.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩, hxW₁, hxW₂⟩
+    show A ω - B ω = 0
+    rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
+  have hspt_bd : ∀ (k : ℕ) (A : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)),
+      A.boundary.support ⊆ A.support := by
+    intro k A x hx
+    simp only [GeometricCurrentOn.support, Set.mem_sdiff] at hx ⊢
+    refine ⟨hx.1, fun hxA => hx.2 ?_⟩
+    simp only [GeometricCurrentOn.zeroRegion, mem_sUnion, mem_ofPred_eq] at hxA ⊢
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := hxA
+    refine ⟨W, ⟨hWo, hWc, hWU, fun γ hγ => ?_⟩, hxW⟩
+    exact hWv (exteriorDerivativeTestOn univ k γ)
+      ((tsupport_exteriorDerivative_subset _).trans hγ)
+  have hmass_sub : ∀ (k : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid P)) k),
+      (A - B).mass ≤ A.mass + B.mass := by
+    intro k A B
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    have hnω : -ω ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      have h := hω.2 x
+      rwa [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by
+          congr 1
+          show A ω - B ω = A ω + B (-ω)
+          rw [show B (-ω) = -B ω from map_neg B.toCurrent ω, sub_eq_add_neg]
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
+  -- `c_B` from the cube BV median lemma and `c := max(2, 1 + c_B)`
+  obtain ⟨cB, hcB, hmedian⟩ := Submission.cmcdt_cube_bv_median m
+  refine ⟨Real.toNNReal (max 2 (1 + cB)),
+    Real.one_le_toNNReal.2 (le_max_of_le_left one_le_two), fun K Λ hK => ?_⟩
+  -- `𝒬₀`: the integer chains `Σ β_F [[F]]` on faces meeting `K` with `Σ|β_F| ≤ 2Λ`
+  refine ⟨_, Submission.cmcdtfr_finite_family P (m + 1) K (2 * (Λ : ℝ)) hK, ?_⟩
+  intro Q₀ hQ₀ hQ₀K hQ₀L hQ₀Λ hQ₀b
+  -- `Q₀ = Σ_F ũ_F [[F̆]]` over the open faces `F̆` meeting `spt Q₀`
+  obtain ⟨s, u, hs, huZ, huI, hSu, huspt, hQ₀rep⟩ :=
+    Submission.cmcdtfr_skeleton_decomposition hVO hMR hIMC P m K Q₀ hK hQ₀ hQ₀K hQ₀L
+  -- the variations `V_F` of the `ũ_F`, with `Σ_F V_F ≤ M(∂Q₀)`
+  obtain ⟨V, hV0, hSV, hVbd, hVspt⟩ :=
+    Submission.cmcdtfr_boundary_variation hVO P m s u Q₀ hs huI hQ₀rep hQ₀b
+  -- integer medians `β_F` (`β_F := 0` off `s`)
+  have hmed : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), ∃ b : ℤ, p ∈ s →
+      (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y - b| ≤ cB * V p) ∧
+      |(b : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| ∧
+      ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) →
+        |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+          (u p y - b) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ cB * V p := by
+    intro p
+    by_cases hp : p ∈ s
+    · obtain ⟨b, hb⟩ := hmedian (u p) (V p) (huZ p hp) (huI p hp) (hVbd p hp)
+      exact ⟨b, fun _ => hb⟩
+    · exact ⟨0, fun h => absurd h hp⟩
+  choose β hβ using hmed
+  -- the face currents with densities `β_F` (this is `Pc`), `ũ_F` and `ũ_F − β_F`
+  have hcube : volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1 :=
+    (Submission.cmcdtfr_face_geometry P (m + 1)).1
+  have hβI : ∀ p ∈ s, IntegrableOn (fun _ : Euclid (m + 1) => (β p : ℝ))
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun p _ =>
+    integrableOn_const (by rw [hcube]; exact ENNReal.one_ne_top)
+  obtain ⟨hβω, ⟨Pc, hPc⟩, hPcD⟩ :=
+    Submission.cmcdtfr_face_integral_current P m s (fun p _ => (β p : ℝ)) hs hβI
+  obtain ⟨huω, -, -⟩ := Submission.cmcdtfr_face_integral_current P m s u hs huI
+  obtain ⟨-, -, hdD⟩ := Submission.cmcdtfr_face_integral_current P m s
+    (fun p y => u p y - (β p : ℝ)) hs fun p hp => (huI p hp).sub (hβI p hp)
+  -- `Pc = Σ_F β_F [[F]]`
+  have hPcrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω =
+      ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        (ω : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+    intro ω
+    rw [hPc ω]
+    exact Finset.sum_congr rfl fun p _ => integral_const_mul _ _
+  -- `Q₀ − Pc = Σ_F (ũ_F − β_F) [[F̆]]`
+  have hdrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (Q₀ - Pc) ω =
+      ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        (u p y - (β p : ℝ)) * (ω : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+    intro ω
+    show Q₀ ω - Pc ω = _
+    rw [hQ₀rep ω, hPc ω, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [← integral_sub (huω ω p hp) (hβω ω p hp)]
+    congr 1
+    ext y
+    ring
+  -- integrality of `Pc` and `∂Pc`, `M(Pc) = Σ|β_F|`, and `Pc = 0` or `M(Pc) ≥ 1`
+  obtain ⟨hPcIM, hPcmass, hPc01⟩ :=
+    Submission.cmcdtfr_polyhedral_im hMR P (m + 1) s β Pc hs hPcrep
+  obtain ⟨s', β', hs', hPcbrep⟩ := Submission.cmcdtfr_chain_boundary P m s β Pc hs hPcrep
+  obtain ⟨hPcbIM, -, -⟩ :=
+    Submission.cmcdtfr_polyhedral_im hMR P m s' β' Pc.boundary hs' hPcbrep
+  -- mass and support bounds for `Pc` and `Q₀ − Pc` from their face densities
+  obtain ⟨-, -, hPcspt⟩ := hPcD Pc hPc
+  obtain ⟨hdmass, hdbmass, hdspt⟩ := hdD (Q₀ - Pc) hdrep
+  have hdb : (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, cB * V p) :=
+    hdbmass (fun p => cB * V p) fun p hp G hG hG1 => (hβ p hp).2.2 G hG hG1
+  -- `Σ|β_F| ≤ 2 Σ_F ∫|ũ_F| ≤ 2Λ`, `Σ_F ∫|ũ_F − β_F| ≤ c_B Σ_F V_F`
+  have hβsum : ∑ p ∈ s, |(β p : ℝ)| ≤
+      2 * ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum fun p hp => (hβ p hp).2.1
+  have hSuΛ : ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y| ≤
+      (Λ : ℝ) := by
+    have h := hSu.trans hQ₀Λ
+    rw [← ENNReal.ofReal_coe_nnreal] at h
+    exact (ENNReal.ofReal_le_ofReal_iff Λ.coe_nonneg).1 h
+  have hdsum : ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+      |u p y - (β p : ℝ)| ≤ cB * ∑ p ∈ s, V p := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum fun p hp => (hβ p hp).1
+  have hdb' : (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal cB * Q₀.boundary.mass := by
+    calc (Q₀ - Pc).boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, cB * V p) := hdb
+      _ = ENNReal.ofReal cB * ENNReal.ofReal (∑ p ∈ s, V p) := by
+          rw [← Finset.mul_sum, ENNReal.ofReal_mul hcB.le]
+      _ ≤ ENNReal.ofReal cB * Q₀.boundary.mass := mul_le_mul' le_rfl hSV
+  -- `∂Pc = ∂Q₀ − ∂(Q₀ − Pc)`
+  have hPcb_eq : Pc.boundary = Q₀.boundary - (Q₀ - Pc).boundary := by
+    ext γ
+    show Pc (exteriorDerivativeTestOn univ m γ) = Q₀ (exteriorDerivativeTestOn univ m γ) -
+      (Q₀ (exteriorDerivativeTestOn univ m γ) - Pc (exteriorDerivativeTestOn univ m γ))
+    ring
+  -- supports: a face carrying `Pc` meets `spt Q₀`, a face carrying `Q₀ − Pc` meets `spt ∂Q₀`
+  -- (there `V_F ≠ 0`), and a face has diameter `≤ √P`
+  have hdiam := fun p (hp : p ∈ s) =>
+    ((Submission.cmcdtfr_face_geometry P (m + 1)).2 p p (hs p hp) (hs p hp)).2.1
+  have hPcsupp : Pc.support ⊆ cthickening (Real.sqrt P) Q₀.support := by
+    intro x hx
+    obtain ⟨p, hp, -, y, hy, rfl⟩ := hPcspt x hx
+    obtain ⟨y', hy', hy'Q⟩ := huspt p hp
+    exact mem_cthickening_of_dist_le _ _ _ _ hy'Q (hdiam p hp y y' hy hy')
+  have hdsupp : (Q₀ - Pc).support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
+    intro x hx
+    obtain ⟨p, hp, hne, y, hy, rfl⟩ := hdspt x hx
+    have hVp : V p ≠ 0 := by
+      intro h0
+      apply hne
+      have h1 := (hβ p hp).1
+      rw [h0, mul_zero] at h1
+      exact le_antisymm h1 (integral_nonneg fun y => abs_nonneg _)
+    obtain ⟨y', hy', hy'Q⟩ := hVspt p hp hVp
+    exact mem_cthickening_of_dist_le _ _ _ _ hy'Q (hdiam p hp y y' hy hy')
+  have hPcbsupp : Pc.boundary.support ⊆ cthickening (Real.sqrt P) Q₀.boundary.support := by
+    intro x hx
+    rw [hPcb_eq] at hx
+    rcases hspt_sub m _ _ hx with h | h
+    · exact self_subset_cthickening _ h
+    · exact hdsupp (hspt_bd m _ h)
+  refine ⟨Pc, ?_, hPcIM, hPcbIM, hPc01, ?_, ?_, ?_, hPcsupp, union_subset hdsupp hPcbsupp⟩
+  · -- `Pc ∈ 𝒬₀`
+    rw [Set.mem_ofPred_eq]
+    refine ⟨s, β, hs, fun p hp => ?_, by linarith, hPcrep⟩
+    obtain ⟨y, hy, hyQ⟩ := huspt p hp
+    exact ⟨y, hy, hQ₀K hyQ⟩
+  · -- `M(Pc) = Σ|β_F| ≤ 2M(Q₀)`
+    show Pc.mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.mass
+    calc Pc.mass = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) := hPcmass
+      _ ≤ ENNReal.ofReal (2 * _) := ENNReal.ofReal_le_ofReal hβsum
+      _ = ENNReal.ofReal 2 * ENNReal.ofReal _ := ENNReal.ofReal_mul zero_le_two
+      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.mass :=
+          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_left _ _)) hSu
+  · -- `M(∂Pc) ≤ M(∂Q₀) + M(∂(Q₀ − Pc)) ≤ (1 + c_B)M(∂Q₀)`
+    show Pc.boundary.mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass
+    calc Pc.boundary.mass ≤ Q₀.boundary.mass + (Q₀ - Pc).boundary.mass := by
+          rw [hPcb_eq]
+          exact hmass_sub m _ _
+      _ ≤ Q₀.boundary.mass + ENNReal.ofReal cB * Q₀.boundary.mass := add_le_add le_rfl hdb'
+      _ = ENNReal.ofReal (1 + cB) * Q₀.boundary.mass := by
+          rw [ENNReal.ofReal_add zero_le_one hcB.le, ENNReal.ofReal_one, add_mul, one_mul]
+      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass :=
+          mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_right _ _)) le_rfl
+  · -- `M(Q₀ − Pc) ≤ Σ_F ∫|ũ_F − β_F| ≤ c_B M(∂Q₀)`
+    show (Q₀ - Pc).mass ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass
+    calc (Q₀ - Pc).mass ≤ ENNReal.ofReal _ := hdmass
+      _ ≤ ENNReal.ofReal (cB * ∑ p ∈ s, V p) := ENNReal.ofReal_le_ofReal hdsum
+      _ = ENNReal.ofReal cB * ENNReal.ofReal (∑ p ∈ s, V p) := ENNReal.ofReal_mul hcB.le
+      _ ≤ ENNReal.ofReal (max 2 (1 + cB)) * Q₀.boundary.mass :=
+          mul_le_mul' (ENNReal.ofReal_le_ofReal (by linarith [le_max_right 2 (1 + cB)])) hSV
 
 end GMT.Ch07
