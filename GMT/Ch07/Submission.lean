@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Dilation pull-back of a test form** (Simon 6.2.23 for `f = δ_λ`, `δ_λ(x) = λx`, `λ ≠ 0`):
+`δ_λ^#ω = affinePullbackForm (λ·id) 0 ω` is again a test form on `ℝᴾ`, and
+`(δ_λ^#ω)(x) = λᵏ ω(λx)` as `k`-covectors.  `x ↦ λx` is a homeomorphism, hence proper, so the
+pull-back preserves compactly supported smooth forms; multilinearity of the covector `ω(λx)`
+pulls `λ` out of each of its `k` slots. -/
+theorem Submission.cmcdt_dil_pullback_testForm : ∀ (P k : ℕ) (lam : ℝ), lam ≠ 0 → ∀ ω : TestFormOn (univ : Set (Euclid P)) k, ∃ η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) ∧ ∀ x : Euclid P, (η : DifferentialForm (Euclid P) k) x = lam ^ k • (ω : DifferentialForm (Euclid P) k) (lam • x) := by
+  intro P k lam hlam ω
+  -- Step 1: `x ↦ 0 + (λ·id)x = λx` is a homeomorphism, hence a proper map.
+  have hproper : IsProperMap
+      (fun x : Euclid P => (0 : Euclid P) + (lam • ContinuousLinearMap.id ℝ (Euclid P)) x) := by
+    convert (Homeomorph.smulOfNeZero (α := Euclid P) lam hlam).isProperMap using 1
+    funext x
+    simp
+  -- Step 2: the pull-back along the proper map is a test form, trivially supported in `univ`.
+  refine ⟨⟨affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0
+      (ω : DifferentialForm (Euclid P) k),
+    affinePullbackForm_isTestForm _ _ hproper ω.property.1, subset_univ _⟩, rfl, fun x => ?_⟩
+  -- Steps 3–4: `η(x)(v) = ω(λx)(λv₁, …, λvₖ) = (∏ᵢ λ) ω(λx)(v) = λᵏ ω(λx)(v)` for every `v`.
+  have hx : (0 : Euclid P) + (lam • ContinuousLinearMap.id ℝ (Euclid P)) x = lam • x := by
+    simp
+  ext v
+  have hv : (lam • ContinuousLinearMap.id ℝ (Euclid P)) ∘ v = fun i => lam • v i := by
+    funext i
+    simp
+  simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply, hx, hv,
+    ContinuousAlternatingMap.map_smul_univ, Fin.prod_const, ContinuousAlternatingMap.smul_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
