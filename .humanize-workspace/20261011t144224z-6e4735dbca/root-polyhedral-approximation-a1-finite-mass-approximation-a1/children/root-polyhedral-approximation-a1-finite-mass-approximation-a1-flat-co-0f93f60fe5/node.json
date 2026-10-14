@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1.flat_convergence-a1",
+  "parent_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1",
+  "depth": 3,
+  "title": "Flat decompositions with vanishing masses give pointwise convergence of the differences",
+  "statement": "Let P, n ∈ ℕ and let U ⊆ ℝ^P be an arbitrary set. For k ∈ ℕ let X_k, Pc_k, S_k ∈ D_n(U) (GeometricCurrentOn U n) and R_k ∈ D_{n+1}(U) (GeometricCurrentOn U (n+1)). Assume X_k(ω) − Pc_k(ω) = ∂R_k(ω) + S_k(ω) for every k ∈ ℕ and every ω ∈ Dⁿ(U). Assume also M(R_k) → 0 and M(S_k) → 0 in [0, ∞] as k → ∞, where M(·) = mass = M_U(·). Then Pc_k(ω) − X_k(ω) → 0 as k → ∞ for every ω ∈ Dⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (X Pc S : ℕ → GeometricCurrentOn U n) (R : ℕ → GeometricCurrentOn U (n + 1)), (∀ (k : ℕ) (ω : TestFormOn U n), X k ω - Pc k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → ∀ ω : TestFormOn U n, Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0)",
+  "lean_name": "polyhedral_approx_flat_seq_tendsto",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+    "root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.mass_estimate-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1-a1",
+      "result_commit": "d771ac3ae563701d45563ad2e197624b3f42977f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-finite-mass-approximation-a1-flat-co-0f93f60fe5-a1"
+}

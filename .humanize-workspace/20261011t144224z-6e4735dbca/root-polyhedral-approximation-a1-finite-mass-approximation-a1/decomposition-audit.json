@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def DeformationTheorem|^def IsLatticeChain|^abbrev LatticeFaceIndex",
+        "br_la_abs_apply_le_mul_mass|polyhedral_approx_testForm_covectorNorm_bounded|polyhedral_approx_scale_seq|polyhedral_approx_flat_seq_tendsto",
+        "def covectorEuclideanNorm|covectorEuclideanNorm_zero|covectorEuclideanNorm_neg|def massAdmissibleOn|def massOn|def mass |le_massOn",
+        "def exteriorDerivativeTestOn|boundary_apply|abbrev TestFormOn|structure GeometricCurrentOn|def IsTestForm",
+        "theorem tendsto_toReal |protected theorem Tendsto.const_mul|theorem tendsto_ofReal ",
+        "bounded_above_of_compact_support|squeeze_zero_norm",
+        "theorem mono.|instance instContinuousEvalConst|theorem tendsto_one_div_add_atTop_nhds_zero_nat|theorem antitone_nat_of_succ_le",
+        "git show d771ac3ae563701d45563ad2e197624b3f42977f -- GMT/Ch06/Submission.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fms_independent_audit_n2_qyw1p/Contracts.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fms_independent_audit_n2_qyw1p/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-finite-mass-approximation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-finite-mass-approximation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-boundary-rectifiability-a1-lattice-approximation-a1-mass-estimate-a1/isolated-comparator-result.json",
+        "/tmp/fms_independent_audit_n2_qyw1p/Contracts.lean",
+        "/tmp/fms_independent_audit_n2_qyw1p/Proofs.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected finite-mass sequence theorem. The pinned definitions support all four contracts; none of the proposed names occurs in the snapshot project. DAG and decomposition scans confirm that the three fresh names are unreserved, while br_la_abs_apply_le_mul_mass is comparator-accepted at d771ac3 with an identical frozen type. All names are bare identifiers. The other branch's test-form lemma is now accepted, but retaining the proposed fresh name is valid. Dependencies are acyclic and correctly directed. All four child types independently elaborate as propositions without child implementations or the ancestor's placeholder theorem. Complete proof checks, including the exact frozen parent assembly, succeed with only propext, Classical.choice and Quot.sound. The assembly uses the uniform deformation constant, finite-mass identity, adapted scales, integer coefficient choices and vanishing error masses to establish every selected parent conjunct. The relevant coercions and instances agree with the prose; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including C > 0, the global coefficient bound and finite mass. Homogeneity makes C⁻¹η admissible; finite mass permits conversion to toReal; applying the bound to ω and −ω proves the absolute-value estimate. The proof is complete and non-circular. Reuse has an identical comparator-accepted frozen type."
+    },
+    {
+      "key": "testform_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly covers arbitrary U and all degrees. Continuous covector evaluations give continuity of the coefficient norm; its zero value preserves compact support. Compact-support boundedness and C = C₀ + 1 supply the positive bound. No openness hypothesis or additional lemma is missing."
+    },
+    {
+      "key": "scale_sequence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the arbitrary-real-sequence statement. Using 1 + |a_k| handles negative terms. The recursive minimum proves positivity, antitonicity, the reciprocal upper bound and convergence; the final inequalities prove the required product bound. No circular dependency or deferred construction remains."
+    },
+    {
+      "key": "flat_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on degrees, domain, decomposition and ENNReal limits. Exterior differentiation preserves TestFormOn for arbitrary U. Convergence to zero gives eventual finiteness and convergence of toReal masses. The two declared siblings yield the eventual evaluation bound, and norm squeezing proves the exact signed difference limit. The proof needs no additional hypotheses or parent theorem."
+    }
+  ],
+  "required_changes": []
+}
