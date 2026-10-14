@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d746b457b4e0c96562eb2f5d82781b43bf1a3b0fa79629eaf77862fbff5641b6",
+  "git_delta": {
+    "base_commit": "9a01e0d8f36f724278e4a8e0b487521ac9577d16",
+    "candidate_commit": "e20ff0600f8043e64efda60d1239da63f5b38d76",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_etp_rescaled_limit_mem",
+    "diff_sha256": "5caac712427a8787da74d8580cbdd220f0e463b26f2ec6363865baf3045a6d52",
+    "source_sha256": "7e3a3807cbdd8ae34bf8765857c455a5370d4c0a8be52d3e1510b9f85af6c17b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_etp_rescaled_limit_mem",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Set (Euclid P)) (a w : Euclid P) (m : ℝ) (lams : ℕ → ℝ) (ws : ℕ → Euclid P), IsClosed S → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ j, 0 < lams j) → Tendsto ws atTop (𝓝 w) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (m * ∫ x in S, g x ∂μHE[2]))) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, unitBallVolume 2 * ENNReal.ofReal ((lams j * r) ^ 2) ≤ μ (ball (a + lams j • ws j) (lams j * r))) → w ∈ S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
