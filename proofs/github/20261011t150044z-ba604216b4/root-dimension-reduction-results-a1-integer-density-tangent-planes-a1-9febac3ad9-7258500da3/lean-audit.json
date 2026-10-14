@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea2bf51c980216660c467b9159c66fc4d06bda6a2ad5cf87fdefe187b54f0c55",
+  "git_delta": {
+    "base_commit": "2bb1a7b475145c09b5ebb08ac4abb6a895195883",
+    "candidate_commit": "b255afb667e8aadab28af1052a5174a97b4f1529",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_scsp_tf_rotation_trace",
+    "diff_sha256": "daa07a5a4b80567b5b922743ce0ad90d6981ffc5eb99b2a33dc298af93f9ae1b",
+    "source_sha256": "386e795b4df4612291e75ef4dcc9daee7f8202087deaddd30d9718f2a956bc7e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_scsp_tf_rotation_trace",
+      "statement": "∀ (P : ℕ) (u e v w : Euclid P) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (t : ℝ), Orthonormal ℝ ![v, w] → Submodule.span ℝ (Set.range ![v, w]) = Q → DifferentiableAt ℝ g (t • v) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) (t • v)).toLinearMap) = fderiv ℝ g (t • v) w * (t * (inner ℝ v u * inner ℝ w e - inner ℝ v e * inner ℝ w u))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
