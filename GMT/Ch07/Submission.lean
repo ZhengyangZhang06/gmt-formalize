@@ -550,6 +550,26 @@ theorem Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq : ∀ (P n : ℕ) (x y :
   rw [SetLike.mem_coe, hyi]
   exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 
+/-- **A unit orientation determines its plane.**  Orthonormal frames `v`, `v'` in `ℝᴾ` with
+`β(v) = β(v')` for every `n`-covector `β` span the same subspace.  Evaluating the hypothesis on
+the determinant covector `β_w(u) = det (⟨u a, w b⟩)_{a,b}` gives
+`det (⟨v a, w b⟩) = det (⟨v' a, w b⟩)` for every frame `w`, so `span v' ⊆ span v`; the
+hypothesis is symmetric in `v`, `v'`, so also `span v ⊆ span v'`. -/
+theorem Submission.cbr_ci_pw_span_eq_of_covector_eval_eq : ∀ (P n : ℕ) (v v' : Fin n → Euclid P), Orthonormal ℝ v → Orthonormal ℝ v' → (∀ β : Covector (Euclid P) n, β v = β v') → Submodule.span ℝ (Set.range v) = Submodule.span ℝ (Set.range v') := by
+  intro P n v v' hv hv' hβ
+  -- step 1: on the determinant covector `β_w` of each frame `w`, the hypothesis reads
+  -- `det (⟨v a, w b⟩) = det (⟨v' a, w b⟩)`
+  have hdet : ∀ w : Fin n → Euclid P, Matrix.det (Matrix.of fun a b => inner ℝ (v a) (w b)) =
+      Matrix.det (Matrix.of fun a b => inner ℝ (v' a) (w b)) := fun w => by
+    obtain ⟨β, hβw⟩ := Submission.cbr_ci_pw_pu_inner_det_covector P n w
+    rw [← hβw v, ← hβw v']
+    exact hβ β
+  -- step 2: `span v ⊆ span v'` from the hypothesis read backwards, `span v' ⊆ span v` from it
+  -- read forwards
+  exact le_antisymm
+    (Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq P n v' v hv' hv fun w => (hdet w).symm)
+    (Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq P n v v' hv hv' hdet)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
