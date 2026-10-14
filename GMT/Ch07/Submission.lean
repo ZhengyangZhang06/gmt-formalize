@@ -601,6 +601,69 @@ theorem Submission.idtp_fons_cc_psf_total_mass : ∀ (P n : ℕ) (μ μ₀ : Mea
         smul_eq_mul]
     rw [hmem]
     exact ⟨mul_ne_zero (hc lam hlam) h0, ENNReal.mul_ne_top ENNReal.ofReal_ne_top htop⟩
+/-- **Support relation for the rescaled measure `μ₀`** (proof of Simon 7.3.3, 3.3(1),
+chapter-07.txt lines 445–467, the blow-ups `η_{x,λ#}T` with `x = 0`, `λ = 1` relative to the ball
+`B_{2r}(z)`).  If `r > 0` and `μ₀ = r⁻ⁿ η_#(μ⌞B_{2r}(z))` with `η = η_{z,r}`, then for every
+`w ∈ B₂(0)`: every ball about `w` has positive `μ₀`-measure iff every ball about `z + rw` has
+positive `μ`-measure (`w ∈ spt μ₀` iff `z + rw ∈ spt μ`).  `η⁻¹(B_σ(w)) = B_{rσ}(z + rw)`, so
+`μ₀(B_σ(w)) = r⁻ⁿ μ(B_{rσ}(z + rw) ∩ B_{2r}(z))`, and the intersection drops for `σ ≤ 2 − ‖w‖`;
+the radii `min(2 − ‖w‖, ε/r)` resp. `min(ε, 2 − ‖w‖)` transfer nonvanishing in both directions
+by monotonicity. -/
+theorem Submission.idtp_fons_cc_psf_support : ∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → ∀ w ∈ ball (0 : Euclid P) 2, (∀ ε : ℝ, 0 < ε → μ₀ (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (z + r • w) ε) ≠ 0 := by
+  intro P n μ μ₀ z r hr hμ₀ w hw
+  -- Step 1: `η = dilation z r`, `η(v) = −r⁻¹z + r⁻¹v`, is continuous, hence Borel measurable.
+  have hη : Measurable (dilation z r) :=
+    (continuous_const.add (dilationCLM P r).continuous).measurable
+  -- Step 2: `η⁻¹(B_σ(w)) = B_{rσ}(z + rw)`, since `η(v) − w = r⁻¹(v − (z + rw))` and `r > 0`.
+  have hpre : ∀ σ : ℝ, dilation z r ⁻¹' ball w σ = ball (z + r • w) (r * σ) := by
+    intro σ
+    ext v
+    have hv : dilation z r v - w = r⁻¹ • (v - (z + r • w)) := by
+      simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+      rw [smul_sub, smul_add, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+      abel
+    rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, dist_eq_norm, hv, norm_smul,
+      Real.norm_eq_abs, abs_inv, abs_of_pos hr, inv_mul_lt_iff₀ hr]
+  -- Step 3: `μ₀(B_σ(w)) = c · μ(B_{rσ}(z + rw) ∩ B_{2r}(z))` with `c = ofReal(r⁻ⁿ)`.
+  have hball : ∀ σ : ℝ, μ₀ (ball w σ) =
+      ENNReal.ofReal (r⁻¹ ^ n) * μ (ball (z + r • w) (r * σ) ∩ ball z (2 * r)) := by
+    intro σ
+    rw [hμ₀, Measure.smul_apply, Measure.map_apply hη measurableSet_ball, hpre,
+      Measure.restrict_apply measurableSet_ball, smul_eq_mul]
+  -- Step 4: for `σ ≤ 2 − ‖w‖`, `B_{rσ}(z + rw) ⊆ B_{2r}(z)` (as `rσ + r‖w‖ ≤ 2r`), so the
+  -- intersection drops.
+  have hw2 : ‖w‖ < 2 := mem_ball_zero_iff.1 hw
+  have hdrop : ∀ σ : ℝ, σ ≤ 2 - ‖w‖ →
+      μ₀ (ball w σ) = ENNReal.ofReal (r⁻¹ ^ n) * μ (ball (z + r • w) (r * σ)) := by
+    intro σ hσ
+    have hsub : ball (z + r • w) (r * σ) ⊆ ball z (2 * r) := by
+      apply ball_subset_ball'
+      rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+      nlinarith
+    rw [hball, inter_eq_left.2 hsub]
+  -- Step 5: `c = ofReal(r⁻ⁿ) ≠ 0`.
+  have hc : ENNReal.ofReal (r⁻¹ ^ n) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+    exact pow_pos (inv_pos.2 hr) n
+  constructor
+  -- Step 6 (⇒): with `σ = min(2 − ‖w‖, ε/r)`, `c · μ(B_{rσ}(z + rw)) = μ₀(B_σ(w)) ≠ 0`, and
+  -- `B_{rσ}(z + rw) ⊆ B_ε(z + rw)` since `rσ ≤ ε`.
+  · intro h ε hε hzero
+    have hσ : 0 < min (2 - ‖w‖) (ε / r) := lt_min (by linarith) (div_pos hε hr)
+    have h1 := h _ hσ
+    rw [hdrop _ (min_le_left _ _)] at h1
+    refine right_ne_zero_of_mul h1 (measure_mono_null (ball_subset_ball ?_) hzero)
+    calc r * min (2 - ‖w‖) (ε / r) ≤ r * (ε / r) :=
+          mul_le_mul_of_nonneg_left (min_le_right _ _) hr.le
+      _ = ε := mul_div_cancel₀ ε hr.ne'
+  -- Step 7 (⇐): with `σ = min(ε, 2 − ‖w‖)`, `μ₀(B_σ(w)) = c · μ(B_{rσ}(z + rw)) ≠ 0` (both
+  -- factors are nonzero), and `B_σ(w) ⊆ B_ε(w)`.
+  · intro h ε hε hzero
+    have hσ : 0 < min ε (2 - ‖w‖) := lt_min hε (by linarith)
+    have h1 : μ₀ (ball w (min ε (2 - ‖w‖))) ≠ 0 := by
+      rw [hdrop _ (min_le_right _ _)]
+      exact mul_ne_zero hc (h _ (mul_pos hr hσ))
+    exact h1 (measure_mono_null (ball_subset_ball (min_le_left _ _)) hzero)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
