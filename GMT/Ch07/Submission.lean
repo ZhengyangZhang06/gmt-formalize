@@ -4530,6 +4530,57 @@ theorem Submission.codim1_zsl_fl_isometry_image_setIntegral : ∀ (m P : ℕ) (�
       preimage_image_eq A hemb.injective]
   rw [hres, hemb.integral_map]
 
+/-- **Zero-scale limits of blow-ups of `∂[[E]]` with moving centres** (Simon 7.5.3–7.5.5,
+chapter-07.txt lines 790–901, as used for 7.5.8).  Let `N ∈ 𝒪` in `U` be oriented by `ξ_N`,
+`T = ∂[[E]]` with `E ⊆ N ∩ U`, `M_{B_ρ(y)}(T) ≤ Cρⁿ` near `x ∈ U`, `xᵢ → x`, `λᵢ → 0⁺` and
+`η_{xᵢ,λᵢ#}T ⇀ S` with `spt S ≠ ∅`.  Then `S = ∂[[F]]` for a Borel set `F` in an affine
+`(n+1)`-plane `A = Q − a` of class `𝒪` of `ℝᴾ`, oriented by the constant `ξ_A = ξ_N(x)`.
+`spt S ≠ ∅` gives `x ∈ N` and `dist(xᵢ, N) = O(λᵢ)`; a chart of `N` at `x` forces
+`P = n + 1 + k`; in the oriented graph chart `v ↦ x + ιv + ι'u(v)` of `N` over `T_xN = range ι`
+the blow-ups converge to `∂[[F]]` with `F ⊆ {ιw + ι'b}`; and `ξ_N(x) = ιe₀ ∧ ⋯ ∧ ιeₙ` orients
+`Q := range ι`, so `a := −ι'b`. -/
+theorem Submission.codim1_zero_scale_limit_offset_plane : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → S.support.Nonempty → ∃ (Q : Submodule ℝ (Euclid P)) (a : Euclid P) (F : Set (Euclid P)) (ξA : MultiVector P (n + 1)), Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξA) ∧ MeasurableSet F ∧ F ⊆ {y | y + a ∈ Q} ∧ IsBoundaryOfRegion S F (fun _ => ξA) := by
+  intro P n U N E ξN T x xs lams hlams S _hn hU hO hE hEU hT hx hxs hlams0 hmass hconv hS
+  obtain ⟨hNsub, hNor, hNcl, -⟩ := hO
+  have hEN : E ⊆ N := fun y hy => (hEU hy).1
+  -- `dist(xᵢ, N) = O(λᵢ)` and `x ∈ N`, since `spt S ≠ ∅`
+  obtain ⟨hxN, C₀, -, hp⟩ := Submission.codim1_zsl_blowUp_centres_near P n U N E ξN T x xs lams
+    hlams S hNcl hEN hT hx hxs hlams0 hconv hS
+  -- a chart of `N` at `x` has an injective derivative `ℝ^{n+1} → ℝᴾ`, so `P = n + 1 + k`
+  obtain ⟨k, rfl⟩ : ∃ k, P = n + 1 + k := by
+    obtain ⟨V, W, ψ, -, -, hxW, -, -, hψV, -, hinj⟩ := hNsub x hxN
+    obtain ⟨z, hz, -⟩ : x ∈ ψ '' V := by
+      rw [hψV]
+      exact ⟨hxW, hxN⟩
+    have h := LinearMap.finrank_le_finrank_of_injective
+      (f := (fderiv ℝ ψ z : Euclid (n + 1) →ₗ[ℝ] Euclid P)) (hinj z hz)
+    rw [finrank_euclideanSpace_fin, finrank_euclideanSpace_fin] at h
+    exact ⟨P - (n + 1), by omega⟩
+  -- the oriented graph chart of `N` at `x` over `T_xN = range ι`
+  obtain ⟨ι, ι', u, δ₁, δ₂, horth, hspan, hδ₁, hδ₂, hu, hu0, hdu0, hub, hchart, hξx, hξ⟩ :=
+    Submission.codim1_zsl_oriented_graph_chart n k N ξN x hNsub hNor hxN
+  -- the blow-ups converge to `∂[[F]]`, `F` in the plane `{ιw + ι'b}`
+  obtain ⟨b, F, hF, hFsub, hSF⟩ := Submission.codim1_zsl_graph_blowup_limit n k U N E ξN T x xs
+    lams hlams S ι ι' u δ₁ δ₂ C₀ hU hE hEN hT hx hxs hlams0 hmass hconv hp horth hspan hδ₁ hδ₂ hu
+    hu0 hdu0 hub hchart hξx hξ
+  -- `ξ_N(x) = ιe₀ ∧ ⋯ ∧ ιeₙ` is a unit orientation of `Q := range ι`
+  have hQ : IsUnitOrientationOf (ξN x) (LinearMap.range ι.toLinearMap) := by
+    refine ⟨fun j => ι (EuclideanSpace.single j (1 : ℝ)),
+      EuclideanSpace.orthonormal_single.comp_linearIsometry ι, ?_, Or.inl hξx⟩
+    have he : (fun j => ι (EuclideanSpace.single j (1 : ℝ))) =
+        ι.toLinearMap ∘ (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis := by
+      funext j
+      simp
+    rw [he, range_comp, ← Submodule.map_span, Module.Basis.span_eq, ← LinearMap.range_eq_map]
+  -- the offset plane `A = Q − a`, `a := −ι'b`, is in class `𝒪` of `ℝᴾ`, and `F ⊆ A`
+  obtain ⟨hrank, hclass⟩ :=
+    Submission.codim1_zsl_offset_plane_inClassO (n + 1 + k) n _ (ξN x) (-ι' b) hQ
+  refine ⟨LinearMap.range ι.toLinearMap, -ι' b, F, ξN x, hrank, hclass, hF, fun y hy => ?_, hSF⟩
+  obtain ⟨w, rfl⟩ := hFsub hy
+  show ι w + ι' b + -ι' b ∈ LinearMap.range ι.toLinearMap
+  rw [add_neg_cancel_right]
+  exact LinearMap.mem_range_self _ w
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
