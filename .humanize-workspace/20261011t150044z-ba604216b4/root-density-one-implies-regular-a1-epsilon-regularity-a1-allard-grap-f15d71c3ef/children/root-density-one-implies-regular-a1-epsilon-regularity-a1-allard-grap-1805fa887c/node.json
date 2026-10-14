@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.mean_value_gradient_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "depth": 6,
+  "title": "Operator-norm L² bound for a covector field whose components satisfy the ball mean value identity",
+  "statement": "Let n ∈ ℕ, y ∈ ℝⁿ (ℝⁿ = Euclid n), ρ > 0, and let g : ℝⁿ → (ℝⁿ →L[ℝ] ℝ) be continuous on closedBall(y, ρ). Here ‖·‖ is the operator norm and V := (volume (ball y ρ)).toReal. Suppose that for every e ∈ ℝⁿ the component z ↦ g(z)e satisfies the ball mean value identity ∫_{B̆_ρ(y)} g(z)e dz = V·g(y)e. Then ‖g(y)‖²·V ≤ ∫_{B̆_ρ(y)} ‖g(z)‖² dz.",
+  "lean_statement": "∀ (n : ℕ) (g : Euclid n → (Euclid n →L[ℝ] ℝ)) (y : Euclid n) (ρ : ℝ), 0 < ρ → ContinuousOn g (closedBall y ρ) → (∀ e : Euclid n, ∫ z in ball y ρ, g z e = (volume (ball y ρ)).toReal * g y e) → ‖g y‖ ^ 2 * (volume (ball y ρ)).toReal ≤ ∫ z in ball y ρ, ‖g z‖ ^ 2",
+  "lean_name": "dorag_ha_ie_opNorm_sq_mul_volume_le_of_mean_value",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.mean_value_sq_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.mean_value_sq_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-1805fa887c-a1"
+}
