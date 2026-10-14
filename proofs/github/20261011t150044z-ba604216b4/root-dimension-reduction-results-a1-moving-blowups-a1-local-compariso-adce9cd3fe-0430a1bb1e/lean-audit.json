@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97f53551c11af3e2e3c0a83119a0536e7aab11145fb28b86caba0b998d4e8cb5",
+  "git_delta": {
+    "base_commit": "e3ccc8889c5640803db769398983110653e2efb5",
+    "candidate_commit": "d23c35d1f9b59fafec780b74129f1f69c52135ea",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_ic_cycle",
+    "diff_sha256": "8b3383d15c6e9e43288ff04cac6c08c117339fa9528e15e0bbc8c8f615bf6d6f",
+    "source_sha256": "0b80767efc4dae573bcf3fc0276a6f02d6b6c3d6a8b4a5b2f7e1cc48efc042da",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_cycle",
+      "statement": "∀ (P m : ℕ) (F : Set (Euclid P)) (C S Ŷ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact F → IsIntegerMultiplicity C → IsIntegerMultiplicity S → S.boundary = C.boundary → (S - C).support ⊆ F → IsIntegerMultiplicity Ŷ → Ŷ.boundary = 0 → Ŷ.support ⊆ F → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = 0 ∧ IsCompact Y.support ∧ Y.support ⊆ F ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Y ω = (S - C) ω + Ŷ ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
