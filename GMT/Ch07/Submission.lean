@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The closed frame box is compact** (cube Stokes step in the proof of Simon 7.3.5, which the
+book leaves to the reader).  Let `g = (g₁, …, g_k)` be orthonormal in `ℝᴾ` and `r ∈ ℝ`.  The map
+`ι(u) = Σ uᵢgᵢ` is continuous, takes values in `span{gᵢ}` and satisfies `⟨gᵢ, ι(u)⟩ = uᵢ`.  Every
+`t ∈ span{gᵢ}` is some `ι(c)`, so the box `{t ∈ span{gᵢ} : |⟨gᵢ, t⟩| ≤ r for all i}` is the image
+`ι([-r, r]ᵏ)` of a compact cube, hence compact. -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_compact : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ), Orthonormal ℝ g → IsCompact {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+  intro P k g r hg
+  -- Step 1: `ι(u) = Σ uᵢgᵢ` lies in `span g`; its coordinates `⟨gᵢ, ι(u)⟩ = uᵢ` come from
+  -- `Orthonormal.inner_right_fintype` below
+  have hmem : ∀ u : Fin k → ℝ, ∑ i, u i • g i ∈ Submodule.span ℝ (Set.range g) := fun u =>
+    Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  -- Step 2: the box is the image of the cube `Π [-r, r]` under `ι`
+  have hbox : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+      (fun u : Fin k → ℝ => ∑ i, u i • g i) '' Set.pi univ fun _ => Icc (-r) r := by
+    ext t
+    constructor
+    · rintro ⟨ht, hr⟩
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 ht
+      refine ⟨c, fun i _ => ?_, rfl⟩
+      have hi := hr i
+      rw [hg.inner_right_fintype c i] at hi
+      exact abs_le.1 hi
+    · rintro ⟨u, hu, rfl⟩
+      refine ⟨hmem u, fun i => ?_⟩
+      rw [hg.inner_right_fintype u i]
+      exact abs_le.2 (hu i (mem_univ i))
+  -- Step 3: `ι` is continuous and the cube is compact, so its image is compact
+  rw [hbox]
+  exact (isCompact_univ_pi fun _ => isCompact_Icc).image
+    (continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
