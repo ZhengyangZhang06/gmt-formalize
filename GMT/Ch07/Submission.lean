@@ -922,6 +922,44 @@ theorem Submission.dmcbr_ci_iso_volume_le_smul_hausdorff : ∀ (d : ℕ), (volum
         gcongr
         simpa only [Measure.smul_apply, smul_eq_mul] using Measure.le_iff'.1 hν s
 
+/-- **`Hⁿ = μHE[n]` is dominated by Simon's normalisation `ωₙ (diam/2)ⁿ`** (Simon, Ch. 1, 2.1–2.2,
+p. 9, and the completion of the proof of 2.9, pp. 12–13): `μHE[n] ≤ (ωₙ/2ⁿ) • μH[n]` on every
+`ℝᴾ`.  By definition `μHE[n] = c • μH[n]` on every space, with `c = addHaarScalarFactor volume μH[n]`
+computed on `ℝⁿ`, where `μHE[n] = volume`; so `volume = c • μH[n]` on `ℝⁿ`.  The unit cube `K` of
+`ℝⁿ` has volume `1`, so `c · μH[n](K) = 1` and `0 < μH[n](K) < ∞`.  Evaluating
+`volume ≤ (ωₙ/2ⁿ) • μH[n]` on `ℝⁿ` (isodiametric inequality and covering) at `K` gives
+`c · μH[n](K) ≤ (ωₙ/2ⁿ) · μH[n](K)`, hence `c ≤ ωₙ/2ⁿ`, and then
+`μHE[n](s) = c · μH[n](s) ≤ (ωₙ/2ⁿ) · μH[n](s)` for every `s ⊆ ℝᴾ`. -/
+theorem Submission.dmcbr_ci_euclideanHausdorff_le_isodiametric : ∀ (P n : ℕ), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P)) := by
+  intro P n
+  -- `μHE[n] = c • μH[n]` on every space, `c` being the Haar factor of `volume` to `μH[n]` on `ℝⁿ`
+  obtain ⟨c, hc⟩ : ∃ c : NNReal,
+      Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin n))) μH[(n : ℝ)] = c :=
+    ⟨_, rfl⟩
+  -- on `ℝⁿ`, `volume = μHE[n] = c • μH[n]`
+  have hvol : (volume : Measure (Euclid n)) = c • (μH[(n : ℝ)] : Measure (Euclid n)) := by
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.euclideanHausdorffMeasure_def,
+      hc]
+  -- the unit cube `K` of `ℝⁿ` has volume `1`, so `c · μH[n](K) = 1` and `0 < μH[n](K) < ∞`
+  obtain ⟨K, hK1⟩ : ∃ K : Set (Euclid n), volume K = 1 :=
+    ⟨_, (stdOrthonormalBasis ℝ (Euclid n)).volume_parallelepiped⟩
+  have hK : (c : ℝ≥0∞) * μH[(n : ℝ)] K = 1 := by
+    rw [← Measure.coe_nnreal_smul_apply, ← hvol, hK1]
+  have hK0 : μH[(n : ℝ)] K ≠ 0 := right_ne_zero_of_mul_eq_one hK
+  have hKtop : μH[(n : ℝ)] K ≠ ∞ :=
+    (ENNReal.lt_top_of_mul_ne_top_right (by rw [hK]; exact ENNReal.one_ne_top)
+      (left_ne_zero_of_mul_eq_one hK)).ne
+  -- `volume ≤ (ωₙ/2ⁿ) • μH[n]` on `ℝⁿ` (completion of the proof of 2.9) at `K` gives `c ≤ ωₙ/2ⁿ`
+  have hcle : (c : ℝ≥0∞) ≤ unitBallVolume n / 2 ^ n := by
+    have h := Measure.le_iff'.1 (Submission.dmcbr_ci_iso_volume_le_smul_hausdorff n) K
+    rw [hvol, Measure.coe_nnreal_smul_apply, Measure.smul_apply, smul_eq_mul] at h
+    exact (ENNReal.mul_le_mul_iff_left hK0 hKtop).1 h
+  -- on `ℝᴾ`: `μHE[n](s) = c · μH[n](s) ≤ (ωₙ/2ⁿ) · μH[n](s)`
+  refine Measure.le_iff'.2 fun s => ?_
+  rw [Measure.euclideanHausdorffMeasure_def, hc, Measure.coe_nnreal_smul_apply,
+    Measure.smul_apply, smul_eq_mul]
+  exact mul_le_mul_of_nonneg_right hcle zero_le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
