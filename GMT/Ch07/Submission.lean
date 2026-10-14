@@ -3024,6 +3024,61 @@ theorem Submission.dtc_bc_lc_sl_ll_immersion_antilipschitz : ∀ (P N : ℕ) (ψ
   rw [mem_sphere_zero_iff_norm, he₀0, norm_zero] at he₀
   exact zero_ne_one he₀
 
+/-- **Interior product with a unit simple `(n+1)`-vector** (Simon Ch. 6, proof of 4.5(2): "since
+`ξ(x)` orients `TₓM`, `⟨ξ, dh ∧ ω⟩ = ⟨ξ ⌞ ∇^M h, ω⟩`", stated pointwise).  For `ξ ∈ Λ_{n+1}(ℝᴾ)`
+and an `n`-covector `α`, write `β ∧ α = alternatizeUncurryFin (β.smulRight α)`,
+`eᵢ = EuclideanSpace.single i 1`, `eᵢ♭ = ⟨eᵢ, ·⟩` and `v = Σᵢ ξ(eᵢ♭ ∧ α) eᵢ`.  Then (1)
+`ξ(β ∧ α) = β(v)` for every `β`, and (2) `v ∈ Q` whenever `ξ` is a unit orientation of `Q`.
+For (1), `β = Σᵢ β(eᵢ) eᵢ♭` (expand `y` in the orthonormal basis `eᵢ`) and `β ↦ ξ(β ∧ α)` is
+linear.  For (2), let `ξ = ±τ₀ ∧ ⋯ ∧ τₙ` with `span τ = Q` and `c ∈ Qᗮ`: by (1),
+`⟨c, v⟩ = ξ(c♭ ∧ α) = ±Σⱼ (-1)ʲ ⟨c, τⱼ⟩ α(τ without τⱼ) = 0`, so `v ∈ Qᗮᗮ = Q`. -/
+theorem Submission.dtc_bc_lc_sl_ll_orient_interior : ∀ (P n : ℕ) (ξ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ξ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ξ Q → (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P)) ∈ Q := by
+  intro P n ξ α
+  -- `eᵢ = EuclideanSpace.single i 1` is the standard orthonormal basis `b` of `ℝᴾ`
+  let b : OrthonormalBasis (Fin P) ℝ (Euclid P) := EuclideanSpace.basisFun (Fin P) ℝ
+  have hb : ∀ i, b i = (EuclideanSpace.single i (1 : ℝ) : Euclid P) := fun i =>
+    EuclideanSpace.basisFun_apply (Fin P) ℝ i
+  -- step 2: `β ∧ α = Σᵢ β(eᵢ) (eᵢ♭ ∧ α)` before alternation, since `β(y) = Σᵢ β(eᵢ) ⟨eᵢ, y⟩`
+  have hsplit : ∀ β : Euclid P →L[ℝ] ℝ, β.smulRight α =
+      ∑ i : Fin P, β (EuclideanSpace.single i (1 : ℝ) : Euclid P) •
+        (innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α := by
+    intro β
+    ext y : 1
+    have hy : β y = ∑ i : Fin P, β (EuclideanSpace.single i (1 : ℝ) : Euclid P) *
+        inner ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P) y := by
+      conv_lhs => rw [← b.sum_repr' y]
+      simp only [map_sum, map_smul, smul_eq_mul, hb, mul_comm]
+    rw [ContinuousLinearMap.smulRight_apply, hy, Finset.sum_smul, sum_apply]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [smul_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, smul_smul]
+  -- steps 1 and 3: `β ↦ ξ(β ∧ α)` is linear, so `ξ(β ∧ α) = Σᵢ β(eᵢ) ξ(eᵢ♭ ∧ α) = β(v)`
+  have h1 : ∀ β : Euclid P →L[ℝ] ℝ, ξ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P)) := by
+    intro β
+    rw [hsplit β, ← ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply, map_sum, map_sum,
+      map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, map_smul, map_smul, ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply,
+      smul_eq_mul, smul_eq_mul, mul_comm]
+  refine ⟨h1, fun Q hQ => ?_⟩
+  -- step 4: `ξ = ±τ₀ ∧ ⋯ ∧ τₙ` with `span τ = Q`
+  obtain ⟨τ, -, hτQ, hξ⟩ := hQ
+  -- step 5: `v ∈ Qᗮᗮ = Q` (`Q` is finite-dimensional)
+  rw [← Q.orthogonal_orthogonal, Submodule.mem_orthogonal]
+  intro c hc
+  -- `⟨c, v⟩ = ξ(c♭ ∧ α) = ±(c♭ ∧ α)(τ)`, and every term of `(c♭ ∧ α)(τ)` has a factor `⟨c, τⱼ⟩ = 0`
+  have hτ : ∀ j, inner ℝ c (τ j) = 0 := fun j =>
+    Submodule.inner_left_of_mem_orthogonal
+      (hτQ ▸ Submodule.subset_span (Set.mem_range_self j)) hc
+  have hzero : ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ c).smulRight α) τ = 0 := by
+    rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [ContinuousLinearMap.smulRight_apply, innerSL_apply_apply, hτ j, zero_smul,
+      ContinuousAlternatingMap.coe_zero, Pi.zero_apply, smul_zero]
+  rw [← innerSL_apply_apply ℝ, ← h1 (innerSL ℝ c)]
+  rcases hξ with hξ | hξ
+  · rw [hξ, hzero]
+  · rw [hξ, hzero, neg_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
