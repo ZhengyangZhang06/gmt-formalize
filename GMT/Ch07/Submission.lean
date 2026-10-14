@@ -1817,6 +1817,78 @@ theorem Submission.codim1_hcp_un_smooth_glue : ∀ (P : ℕ) (F : Type) [NormedA
     have h := hG ⟨x, hMO hx⟩
     rw [ite_eq_left hx] at h
     exact (hνG ⟨x, hMO hx⟩).trans h
+/-- **Fundamental lemma of the calculus of variations on `M`** (step (7c) of the zero mean
+curvature argument for `codim1_hcp_minimal_unit_normal`, with `div_M ν` replaced by `h`).  Let
+`U` be open, `M ⊆ U` measurable, `h` continuous on `M`, `μ(M ∩ K) < ∞` for compact `K ⊆ U` and
+`μ(M ∩ B_s(x)) > 0` for `x ∈ M`, `s > 0`.  If `∫_M φ h dμ = 0` for every `C^∞` function `φ` with
+compact support and `tsupport φ ⊆ U`, then `h = 0` on `M`.  Otherwise, replacing `h` by `-h`,
+`c < h < 3c` on `M ∩ B_δ(x₀)`, `c = h(x₀) / 2 > 0`.  A bump `φ ∈ [0, 1]` equal to `1` on
+`B_{r/4}(x₀)` with `tsupport φ = K := closedBall(x₀, r/2) ⊆ U` (`r ≤ δ`) satisfies
+`0 ≤ φ h ≤ 3c·1_K` on `M`, so `φ h` is integrable and `∫_M φ h dμ ≥ c μ(M ∩ B_{r/4}(x₀)) > 0`. -/
+theorem Submission.codim1_hcp_un_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Euclid P)) (U M : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → M ⊆ U → MeasurableSet M → ContinuousOn h M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ (M ∩ K) ≠ ∞) → (∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μ (M ∩ ball x s)) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in M, φ x * h x ∂μ = 0) → ∀ x ∈ M, h x = 0 := by
+  intro P μ U M h hU hMU hM hh hfin hpos hint x₀ hx₀
+  by_contra hne
+  -- step 1: replacing `h` by `-h` if necessary, `0 < h x₀`; put `c = h x₀ / 2`
+  wlog hx₀pos : 0 < h x₀ generalizing h
+  · refine this (-h) hh.neg (fun φ hφ hφc hφU => ?_) (by simpa using hne) ?_
+    · simp only [Pi.neg_apply, mul_neg, integral_neg, hint φ hφ hφc hφU, neg_zero]
+    · simpa using lt_of_le_of_ne (not_lt.1 hx₀pos) hne
+  set c := h x₀ / 2 with hc_def
+  have hc : 0 < c := half_pos hx₀pos
+  -- step 2: `c < h < 3c` on `M ∩ B_δ(x₀)`, and `B_r(x₀) ⊆ U` for some `r ∈ (0, δ]`
+  obtain ⟨δ, hδ, hδh⟩ := Metric.continuousWithinAt_iff.1 (hh x₀ hx₀) c hc
+  have hbound : ∀ x ∈ M, dist x x₀ < δ → c < h x ∧ h x < 3 * c := by
+    intro x hx hxδ
+    have hx' := hδh hx hxδ
+    rw [Real.dist_eq, abs_lt] at hx'
+    constructor <;> linarith
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x₀ (hMU hx₀)
+  obtain ⟨r, hr, hrδ, hrU⟩ : ∃ r, 0 < r ∧ r ≤ δ ∧ ball x₀ r ⊆ U :=
+    ⟨min δ ε, lt_min hδ hε, min_le_left _ _, (ball_subset_ball (min_le_right _ _)).trans hεU⟩
+  -- step 3: the bump `φ` (radii `r/4 < r/2`) is admissible, so `∫_M φ h dμ = 0`
+  let φ : ContDiffBump x₀ := ⟨r / 4, r / 2, by positivity, by linarith⟩
+  have hKU : closedBall x₀ (r / 2) ⊆ U := (closedBall_subset_ball (by linarith)).trans hrU
+  have hzero := hint φ φ.contDiff φ.hasCompactSupport (φ.tsupport_eq.trans_subset hKU)
+  -- step 4: `μ(M ∩ K) < ∞` and `0 ≤ φ h ≤ 3c·1_K` on `M`, so `φ h` is integrable on `M`
+  have hKfin : μ (M ∩ closedBall x₀ (r / 2)) ≠ ∞ := hfin _ (isCompact_closedBall x₀ _) hKU
+  have hKh : ∀ x ∈ M, x ∈ closedBall x₀ (r / 2) → 0 < h x ∧ h x < 3 * c := by
+    intro x hx hxK
+    have hx' := hbound x hx (lt_of_le_of_lt hxK (by linarith))
+    exact ⟨hc.trans hx'.1, hx'.2⟩
+  have hφK : ∀ x, x ∉ closedBall x₀ (r / 2) → φ x = 0 := fun x hxK =>
+    φ.zero_of_le_dist (not_le.1 hxK).le
+  have hnn : ∀ x ∈ M, 0 ≤ φ x * h x := by
+    intro x hx
+    by_cases hxK : x ∈ closedBall x₀ (r / 2)
+    · exact mul_nonneg φ.nonneg (hKh x hx hxK).1.le
+    · rw [hφK x hxK, zero_mul]
+  have hdom : Integrable ((closedBall x₀ (r / 2)).indicator fun _ => 3 * c) (μ.restrict M) := by
+    refine (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const ?_)
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact hKfin
+  have hInt : IntegrableOn (fun x => φ x * h x) M μ := by
+    refine hdom.mono' ((φ.continuous.continuousOn.mul hh).aestronglyMeasurable hM)
+      (ae_restrict_of_forall_mem hM fun x hx => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hnn x hx)]
+    by_cases hxK : x ∈ closedBall x₀ (r / 2)
+    · rw [indicator_of_mem hxK]
+      exact (mul_le_of_le_one_left (hKh x hx hxK).1.le φ.le_one).trans (hKh x hx hxK).2.le
+    · rw [indicator_of_notMem hxK, hφK x hxK, zero_mul]
+  -- step 5: `∫_M φ h ≥ ∫_{M ∩ B_{r/4}} φ h ≥ c μ(M ∩ B_{r/4}) > 0`, contradicting step 3
+  have hBfin : μ (M ∩ ball x₀ (r / 4)) ≠ ∞ := ne_top_of_le_ne_top hKfin
+    (measure_mono (inter_subset_inter_right _
+      (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith)))))
+  have h₁ : ∫ x in M ∩ ball x₀ (r / 4), φ x * h x ∂μ ≤ ∫ x in M, φ x * h x ∂μ :=
+    setIntegral_mono_set hInt (ae_restrict_of_forall_mem hM hnn)
+      (Eventually.of_forall fun x hx => hx.1)
+  have h₂ : c * μ.real (M ∩ ball x₀ (r / 4)) ≤ ∫ x in M ∩ ball x₀ (r / 4), φ x * h x ∂μ := by
+    refine setIntegral_ge_of_const_le_real (hM.inter measurableSet_ball) hBfin (fun x hx => ?_)
+      (hInt.mono_set inter_subset_left)
+    rw [φ.one_of_mem_closedBall (ball_subset_closedBall hx.2), one_mul]
+    exact (hbound x hx.1 ((mem_ball.1 hx.2).trans (by linarith))).1.le
+  have h₃ : 0 < μ.real (M ∩ ball x₀ (r / 4)) :=
+    ENNReal.toReal_pos (hpos x₀ hx₀ _ (by positivity)).ne' hBfin
+  linarith [mul_pos hc h₃]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
