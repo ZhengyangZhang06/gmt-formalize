@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ae74e600bb67d551f491cff35c3ed6d7b9f89f4cd26e6f833fefa46301409a7",
+  "git_delta": {
+    "base_commit": "f7d98547831ab8880caf199f560d9d2dc7da2ede",
+    "candidate_commit": "5a51c06f2d1e6773a66a7d9293fe0b11526da7f9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_tilt_pointwise_bound",
+    "diff_sha256": "5821b777fc41b84a6c87c4dfd0854287a73a3843c45ffa5be7956cb5686184fa",
+    "source_sha256": "1eea7038744e25bc2c1456667ade9e0b39c01c628fd82d829b6a99e65d43c06c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_tilt_pointwise_bound",
+      "statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (β : Covector (Euclid P) 2), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ v : Fin 2 → Euclid P, β v = inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)) → (∀ᵐ x ∂R.measure, (approxTangentPlane 2 R.carrier x).starProjection x = x) → (∀ x : Euclid P, 0 < inner ℝ x a → ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2 ≤ 1) ∧ ∀ᵐ x ∂R.measure, |R.orient x β| ≤ 1 ∧ (0 < inner ℝ x a → 1 - 2 * (1 - |R.orient x β|) ≤ ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
