@@ -3525,6 +3525,115 @@ estimate `|A^#β|_E ≤ ‖A‖ᵏ |β|_E` for a linear map `A : ℝᴺ → ℝ�
 theorem Submission.dimred_mbl_dt_lp_covector_bounds : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β := by
   exact ⟨Submission.dimred_mbl_dt_lp_cb_pullback_le, Submission.dimred_mbl_dt_lp_cb_curryLeft_le⟩
 
+/-- **Simon 6.3.2(2)** with `T₁ = [[(0,1)]]`: the product `C = [[(0,1)]] × X` of 6.2.17, written
+as `C(ω) = ∫₀¹ X(ηₜ) dt` with `ηₜ(x)(v) = ω(ι(t, x))(e₀, Jv)`, `ι(t, x) = (t, x)`,
+`e₀ = (1, 0, …, 0)` and `Jv = ι(0, v)`, is integer multiplicity whenever `X ∈ 𝒟_{k+1}(ℝᴺ)` is
+integer multiplicity with `M(X) < ∞`.  If `X = τ(M, θ, ξ)`, then
+`C = τ((0,1) × M, θ ∘ tail, e₀ ∧ ξ)`.  By 6.3.2(3), `∫_M θ dHᵏ⁺¹ = M(X) < ∞`; the cylinder
+triple is an integer multiplicity representation, and `H^{k+2}⌞((0,1) × M) = ι_#(L¹⌞(0,1) ⊗
+Hᵏ⁺¹⌞M)` together with Fubini identifies its action with `∫₀¹ X(ηₜ) dt`.  The integrand is
+bounded by `θ ∘ tail · sup |ω|` on `spt ω`, since `|ξ'(y)(α)| ≤ |α|` for a.e. `y`. -/
+theorem Submission.dimred_mbl_dt_lp_im_cylinder : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)) (C : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1 + 1)), IsIntegerMultiplicity X → IsCompact X.support → X.mass < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1 + 1), ∃ η : ℝ → TestFormOn (univ : Set (Euclid N)) (k + 1), (∀ (t : ℝ) (x : Euclid N) (v : Fin (k + 1) → Euclid N), (η t : DifferentialForm (Euclid N) (k + 1)) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ C ω = ∫ t in (0 : ℝ)..1, X (η t)) → IsIntegerMultiplicity C := by
+  intro _hVO hMR hIMC N k X C hX _hXspt hXmass hC
+  obtain ⟨R, hR⟩ := hX
+  -- Step 1: `∫_M θ dHᵏ⁺¹ = R.measure(ℝᴺ) = M(X) < ∞` by (MR), so `Hᵏ⁺¹(M) < ∞` (`θ ≥ 1` on `M`)
+  have hθ : ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k + 1] ≠ ∞ := by
+    have h := hMR N (k + 1) univ X R isOpen_univ hR univ isOpen_univ
+    rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ] at h
+    rw [← h]
+    exact hXmass.ne
+  have hM : μHE[k + 1] R.carrier ≠ ∞ := by
+    refine ne_top_of_le_ne_top hθ ?_
+    calc μHE[k + 1] R.carrier = ∫⁻ _ in R.carrier, (1 : ℝ≥0∞) ∂μHE[k + 1] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k + 1] :=
+          setLIntegral_mono' R.measurableSet_carrier fun x hx =>
+            Nat.one_le_cast.mpr (R.mult_pos x hx)
+  have : IsFiniteMeasure (μHE[k + 1].restrict R.carrier) := isFiniteMeasure_restrict.2 hM
+  -- Step 2: the cylinder triple `R' = ((0,1) × M, θ ∘ tail, e₀ ∧ ξ)`, and
+  -- `H^{k+2}⌞R'.carrier = ι_#(L¹⌞(0,1) ⊗ Hᵏ⁺¹⌞M)`
+  obtain ⟨R', hcarrier, hmult, horient⟩ :=
+    Submission.dimred_mbl_dt_lp_imc_cylinder_imrep N (k + 1) R hθ
+  have hmeas := Submission.dimred_mbl_dt_lp_imc_cylinder_measure N (k + 1) R.carrier
+    R.measurableSet_carrier R.rectifiable hM
+  rw [← hcarrier] at hmeas
+  have hι : Measurable fun p : ℝ × Euclid N =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1)) := by
+    fun_prop
+  refine ⟨R', fun ω => ?_⟩
+  obtain ⟨η, hη, hCω⟩ := hC ω
+  have hωc : Continuous (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) :=
+    ContDiff.continuous ω.property.1.1
+  have hωK : IsCompact (tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1))) :=
+    ω.property.1.2
+  -- Step 3: `|ω(y)| ≤ c` for every `y`
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, ∀ y,
+      ‖covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) y)‖ ≤ c := by
+    have hnorm : Continuous fun α : Covector (Euclid (N + 1)) (k + 1 + 1) =>
+        covectorEuclideanNorm α := by
+      unfold covectorEuclideanNorm
+      refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+      by_cases hI : StrictMono I
+      · simp only [hI, ↓reduceIte]
+        exact (continuous_eval_const _).pow 2
+      · simp only [hI, ↓reduceIte]
+        exact continuous_const
+    have hcs : HasCompactSupport fun y =>
+        covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) y) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) hωK
+        (covectorEuclideanNorm_zero _ _)
+    exact Continuous.bounded_above_of_compact_support (hnorm.comp hωc) hcs
+  -- Step 4: the integrand `θ'·ξ'(ω)` of `R'.action ω` is integrable: by (IMC)(d) it is bounded by
+  -- `θ'·c` on the compact set `spt ω`, where `θ'` is integrable, and it vanishes off `spt ω`
+  have hfm : AEStronglyMeasurable (fun y => (R'.mult y : ℝ) *
+      R'.orient y ((ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) y))
+      (μHE[k + 1 + 1].restrict R'.carrier) :=
+    ((measurable_from_nat (f := fun m : ℕ => (m : ℝ))).comp
+      R'.measurable_mult).aestronglyMeasurable.mul
+      (Continuous.comp_aestronglyMeasurable₂ (g := fun (L : MultiVector (N + 1) (k + 1 + 1))
+          (α : Covector (Euclid (N + 1)) (k + 1 + 1)) => L α)
+        (continuous_fst.clm_apply continuous_snd) R'.aestronglyMeasurable_orient
+        hωc.aestronglyMeasurable)
+  have hfi : Integrable (fun y => (R'.mult y : ℝ) *
+      R'.orient y ((ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) y))
+      (μHE[k + 1 + 1].restrict R'.carrier) := by
+    refine Integrable.mono'
+      (g := (tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1))).indicator
+        fun y => (R'.mult y : ℝ) * c) ?_ hfm ?_
+    · rw [integrable_indicator_iff hωK.measurableSet, IntegrableOn,
+        Measure.restrict_restrict hωK.measurableSet, inter_comm]
+      refine Integrable.mul_const ?_ c
+      simpa using integrable_toReal_of_lintegral_ne_top
+        ((measurable_from_nat (f := fun m : ℕ => (m : ℝ≥0∞))).comp
+          R'.measurable_mult).aemeasurable
+        (R'.locallyIntegrable_mult _ hωK (subset_univ _))
+    · filter_upwards [hIMC.2.2.2 (N + 1) (k + 1 + 1) univ R'] with y hy
+      by_cases hyK : y ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1))
+      · rw [indicator_of_mem hyK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+        exact mul_le_mul_of_nonneg_left ((hy _).trans ((Real.le_norm_self _).trans (hc y)))
+          (Nat.cast_nonneg _)
+      · simp [indicator_of_notMem hyK, image_eq_zero_of_notMem_tsupport hyK]
+  rw [← hmeas] at hfm hfi
+  -- Step 5: `C(ω) = ∫₀¹ X(ηₜ) dt = ∫₀¹ ∫_M θ(x) ξ(x)(ηₜ(x)) dHᵏ⁺¹ dt`, where
+  -- `ξ(x)(ηₜ(x)) = ξ'(ι(t, x))(ω(ι(t, x)))` for a.e. `x ∈ M`; Fubini and Step 2 give `R'.action ω`
+  calc C ω = ∫ t in (0 : ℝ)..1, X (η t) := hCω
+    _ = ∫ t in Ioo (0 : ℝ) 1, X (η t) := by
+      rw [intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo]
+    _ = ∫ t in Ioo (0 : ℝ) 1, ∫ x in R.carrier,
+          (R'.mult (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) : ℝ) *
+            R'.orient (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))
+              ((ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1))
+                (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))) ∂μHE[k + 1] := by
+      refine integral_congr_ae ?_
+      filter_upwards with t
+      rw [hR (η t), IMRep.action]
+      refine integral_congr_ae ?_
+      filter_upwards [horient] with x hx
+      rw [hmult, hx t _ _ (hη t x)]
+    _ = R'.action ω := by
+      rw [IMRep.action, ← hmeas, integral_map hι.aemeasurable hfm]
+      exact (integral_prod _ ((integrable_map_measure hfm hι.aemeasurable).1 hfi)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
