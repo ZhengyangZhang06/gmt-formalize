@@ -1,0 +1,124 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmr_|massRepresentation' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "def covectorEuclideanNorm|def massAdmissibleOn|def massOn|le_massOn|def Covector|abbrev Covector|def IsTestForm|def exteriorDerivative|exteriorDerivative_apply|boundary_apply",
+        "haveLebesgueDecomposition_of_sigmaFinite|instance.*[Ss]igmaFinite|rnDeriv_lt_top|singularPart_eq_zero_of_ac",
+        "curryLeft|norm_curryLeft",
+        "git -C ../../lake-packages-25730c7c/simongmt rev-parse HEAD",
+        "git -C ../../lake-packages-25730c7c/mathlib rev-parse HEAD",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmr-independent-audit/TypesAndAssembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmr-independent-audit/Constructions.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmr-independent-audit/Availability.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "../../lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean",
+        "../../book/chapter-06.txt",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/accepted-candidate.json",
+        "../../cluster-state/verification/results/hoa43/20261012T034335Z-ch07-root.minimizing_implies_stationary-a1.covector_gram_bounds-a1-wekynz07/comparator-config.json",
+        "../../cluster-state/verification/results/hoa17/20261012T183252Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approx-qc78d0nt/comparator-config.json",
+        "../../cluster-state/verification/results/hoa18/20261013T001051Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1-r4352in9/comparator-config.json",
+        "/tmp/cmr-independent-audit/TypesAndAssembly.lean",
+        "/tmp/cmr-independent-audit/Constructions.lean",
+        "/tmp/cmr-independent-audit/Availability.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace contract and Submission byte-for-byte; package revisions match the manifest and pinned SimonGMT revision. No cmr_ declaration was found in the snapshot project or DAG. All twelve frozen propositions independently elaborate without declaring any child theorem. The conditional assembly from representation_core and null_sets proves the exact selected parent type and uses only propext, Classical.choice and Quot.sound. Separate successful Lean checks verify coordinate projection, trace as the sum of diagonal derivatives, smoothness order, and Euclidean Borel/volume instances. The replacement Riesz and localization APIs are available; the cited Simon vector-Riesz, Sobolev and normalized-bump declarations are unavailable under the frozen import. The three reused declarations have identical accepted frozen types and successful comparator evidence restricted to the permitted axioms. Their dependency closures are accepted and do not reach the selected parent. The proposed graph is acyclic, correctly directed, and every child contributes to this parent. All names are bare identifiers and all statements are standalone one-line propositions. The split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Multilinear expansion, Cauchy–Binet and Cauchy–Schwarz establish the bound; the determinant covector establishes the norming assertion. The proof covers degree zero and excess degree without downstream reliance."
+    },
+    {
+      "key": "mollify_unit_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The support margin and normalized nonnegative kernel preserve support and the coefficient unit bound. Uniform continuity and the continuous coefficient map give the stated uniform approximation."
+    },
+    {
+      "key": "testform_l1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Compact exhaustion, continuous L¹ approximation, radial retraction, smoothing and cutoff produce the required form. The explicit error estimates establish the strict lintegral bound and use concentration on V correctly."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary U and W. Both signed rescalings are admissible; finite mass permits conversion to toReal. Rescaling by r + ε and taking the limit correctly handles r = 0."
+    },
+    {
+      "key": "covector_euclidean_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient map has the required norm identity and is injective by the declared Gram-bound dependency. An orthonormal basis of its range supplies the equivalence; finite-dimensionality supplies continuity. No coordinate-spanning theorem is assumed circularly."
+    },
+    {
+      "key": "coordinate_covectors",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction and continuity estimate establish existence. Kronecker evaluations and the preceding norm equivalence establish spanning and the annihilator conclusion, including degenerate degrees. The Matrix.of constructions match the intended determinants."
+    },
+    {
+      "key": "testform_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Zero extension is continuous because its support remains compactly inside U. Fixed-support approximations and finite mass on unions give convergent, choice-independent evaluations. The proof then establishes linearity, agreement with T, and exactly the required local bound."
+    },
+    {
+      "key": "vector_riesz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Clamping proves additivity of the scalar variation functional. Scalar Riesz representation and sigma-finite Lebesgue decomposition then provide measurable coordinate densities integrable on compacts. Finite coordinate summation proves the stated vector representation without assuming a vector-Riesz theorem."
+    },
+    {
+      "key": "representation_core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Polar normalization and pushforward establish support, compact finiteness, measurability, the pointwise bound and representation. The inverse equivalence bounds β in operator norm, allowing L¹ approximation. Relatively compact open exhaustion establishes mass equality for every open W. Together with null_sets this yields the exact parent."
+    },
+    {
+      "key": "top_dim_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The directional estimate follows from the divergence hypothesis, FTC and integrable Fubini bounds. Ball averaging and shrinking smooth cutoffs give the compact-null integral estimate; taking the cutoff limit before r → 0 proves the exact conclusion. This weaker signed conclusion suffices for the caller's localization argument."
+    },
+    {
+      "key": "divergence_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiating the contracted covector gives the asserted trace term with the correct exterior-derivative signs. The remaining db term has compact support and bounds independent of g. The supplied K therefore bounds both forms and establishes every stated conclusion."
+    },
+    {
+      "key": "null_sets",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The localized divergence bounds satisfy top_dim_null's hypotheses. Varying the smooth weight and applying the verified local distribution lemma gives coordinatewise vanishing on C; spanning and mass equality force μ(C) = 0. Finite compact restrictions and a measurable Hausdorff-null hull extend this to arbitrary E. Degree zero is handled separately; no parent conclusion is assumed."
+    }
+  ],
+  "required_changes": []
+}
