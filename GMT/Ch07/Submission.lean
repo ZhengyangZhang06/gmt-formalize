@@ -2118,6 +2118,325 @@ theorem Submission.idtp_fons_cr_nonflat_usc : ∀ (P n : ℕ) (β : ℝ) (S Dset
   rcases (hw (φ i)).2 with h | h
   · exact h.2 hi
   · exact h (hDs _ (hw (φ i)).1)
+/-- **Simon 7.3.3(2), proof** (chapter-07.txt lines 485–583, with Remark 3.4 and Appendix A.4),
+for an abstract class `𝓜` of measures with open domains `D μ ⊇ B₂(0)`.  Fix `β > 0`, let
+`φ_μ = dens μ • e₁` (`e₁ ∈ ℝ¹`), `F = {φ_μ : μ ∈ 𝓜}` and `sing φ_μ = N(spt μ, D μ)`, the points of
+`spt μ ∩ D μ` that are not `β`-flat together with `ℝᴾ ∖ D μ` (well defined, as `μ ↦ φ_μ` is
+injective on `𝓜`).  The hypotheses of `abstract_dimension_reduction` hold: (H0), (H1) and A.2 by
+the density representation and the normalization `∫ f φ_μ dμH[n] = (c ∫ f dμ) • e₁`, A.1 and
+A.3(2) by rescaling (the domain of a rescaling is the rescaled domain), closedness by
+`idtp_fons_cr_nonflat_closed`, A.3(1) since a plane density is homogeneous (so `D μ = ℝᴾ`) and
+`spt μ` lies in the plane, and A.3(3) since weak convergence of the `φ`'s is vague convergence of
+the measures, so that `idtp_fons_cr_support_limit` and `idtp_fons_cr_nonflat_usc` apply.  An
+extremal `ψ = φ_ν` with `d = n − 1` would have `spt ν` in an `n`-plane and `D ν = ℝᴾ`, so
+`sing ψ = ∅ ≠ L`; hence `d ≤ n − 2`, `Z = N(spt μ, D μ) ∩ B₁(0)` is `μH[n−2+α]`-null for `α > 0`
+(empty if `n = 1`), and the points of `spt μ ∩ B₁(0)` off `Z` are `β`-flat. -/
+theorem Submission.idtp_fons_flat_class_reduction : ∀ (P n : ℕ) (Λ : ℝ) (𝓜 : Set (Measure (Euclid P))) (D : Measure (Euclid P) → Set (Euclid P)) (dens : Measure (Euclid P) → Euclid P → ℝ), 1 ≤ n → (∀ (μ : Measure (Euclid P)) (x : Euclid P), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → (∀ μ ∈ 𝓜, ∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ μ ∈ 𝓜, μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (dens μ x))) → (∀ μ ∈ 𝓜, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam) ∈ 𝓜 ∧ D (ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam)) = dilation y lam '' D μ) → (∀ μ ∈ 𝓜, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ν : Measure (Euclid P)), StrictMono sub ∧ ν ∈ 𝓜 ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid P, dens ν (t • w) = dens ν w) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • μ.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ μ ∈ 𝓜, IsOpen (D μ) ∧ ball (0 : Euclid P) 2 ⊆ D μ) → (∀ μ ∈ 𝓜, ∀ μs : ℕ → Measure (Euclid P), (∀ j, μs j ∈ 𝓜) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))) → ∀ K : Set (Euclid P), IsCompact K → K ⊆ D μ → ∀ᶠ j in atTop, K ⊆ D (μs j)) → (∀ μ ∈ 𝓜, ∀ (y : Euclid P) (ρ : ℝ), 0 < ρ → closedBall y ρ ⊆ D μ → (∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ μ (ball y ρ)) → (∀ ν ∈ 𝓜, ∀ L : Submodule ℝ (Euclid P), Module.finrank ℝ L + 1 = n → (∀ y ∈ L, ∀ t : ℝ, 0 < t → ∀ w : Euclid P, dens ν (y + t • w) = dens ν w) → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → ν (ball w ε) ≠ 0) → w ∈ Q) → (∀ ν ∈ 𝓜, (∀ t : ℝ, 0 < t → ∀ w : Euclid P, dens ν (t • w) = dens ν w) → D ν = univ) → ∀ μ ∈ 𝓜, ∀ β : ℝ, 0 < β → ∃ Z : Set (Euclid P), (n = 1 → Z = ∅) ∧ (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] Z = 0) ∧ ∀ w ∈ ball (0 : Euclid P) 1, (∀ ε : ℝ, 0 < ε → μ (ball w ε) ≠ 0) → w ∉ Z → ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ D μ ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0) → y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s := by
+  intro P n Λ 𝓜 D dens hn hdens hfin hrep hdil hblow hD hexh hlow hM8 hM9 μ₀ hμ₀ β hβ
+  -- the density functions `φ_ν = dens ν • e₁` with values in `Euclid 1`
+  obtain ⟨e₁, he₁, hproj⟩ : ∃ e₁ : Euclid 1, e₁ ≠ 0 ∧
+      ∀ r : ℝ, EuclideanSpace.proj (0 : Fin 1) (r • e₁) = r :=
+    ⟨EuclideanSpace.single 0 1, by simp, fun r => by simp⟩
+  obtain ⟨φ, hφ⟩ : ∃ φ : Measure (Euclid P) → Euclid P → Euclid 1,
+      ∀ ν x, φ ν x = dens ν x • e₁ := ⟨fun ν x => dens ν x • e₁, fun _ _ => rfl⟩
+  -- the support `spt ν` and the non-flat set `N(S, D)`
+  obtain ⟨spt, hspt⟩ : ∃ spt : Measure (Euclid P) → Set (Euclid P),
+      ∀ ν w, w ∈ spt ν ↔ ∀ ε : ℝ, 0 < ε → ν (ball w ε) ≠ 0 :=
+    ⟨fun ν => {w | ∀ ε : ℝ, 0 < ε → ν (ball w ε) ≠ 0}, fun _ _ => Iff.rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : Set (Euclid P) → Set (Euclid P) → Set (Euclid P), ∀ S Dset, N S Dset =
+      ((S ∩ Dset) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P),
+        Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧
+          ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ :=
+    ⟨fun S Dset => ((S ∩ Dset) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧
+      ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧
+        ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ,
+      fun _ _ => rfl⟩
+  obtain ⟨sing, hsing_def⟩ : ∃ sing : (Euclid P → Euclid 1) → Set (Euclid P),
+      ∀ g w, w ∈ sing g ↔ ∃ ν ∈ 𝓜, φ ν = g ∧ w ∈ N (spt ν) (D ν) :=
+    ⟨fun g => {w | ∃ ν ∈ 𝓜, φ ν = g ∧ w ∈ N (spt ν) (D ν)}, fun _ _ => Iff.rfl⟩
+  -- step 1: `dens ν` is Borel and nonnegative
+  have hdm : ∀ ν : Measure (Euclid P), Measurable (dens ν) := fun ν => by
+    rw [show dens ν = _ from funext (hdens ν)]
+    exact Submission.idtp_fons_cr_density_measurable P n ν
+  have hd0 : ∀ ν x, 0 ≤ dens ν x := fun ν x => by
+    rw [hdens]
+    exact ENNReal.toReal_nonneg
+  -- step 2: normalization
+  obtain ⟨c, hc, hnorm⟩ := Submission.idtp_fons_cr_density_normalization P n
+  have hloc : ∀ ν ∈ 𝓜, LocallyIntegrable (φ ν) μH[(n : ℝ)] := fun ν hν => by
+    rw [show φ ν = fun x => dens ν x • e₁ from funext (hφ ν)]
+    exact (hnorm 1 ν (dens ν) e₁ (hdm ν) (hd0 ν) (hfin ν hν) (hrep ν hν)).1
+  have hint : ∀ ν ∈ 𝓜, ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+      ∫ x, f x • φ ν x ∂μH[(n : ℝ)] = (c * ∫ x, f x ∂ν) • e₁ := fun ν hν f hf hfc => by
+    simp only [hφ]
+    exact (hnorm 1 ν (dens ν) e₁ (hdm ν) (hd0 ν) (hfin ν hν) (hrep ν hν)).2 f hf hfc
+  -- step 3: rescaling
+  have hdens_resc : ∀ (ν : Measure (Euclid P)) (y : Euclid P) (t : ℝ), 0 < t → ∀ w,
+      dens (ENNReal.ofReal (t⁻¹ ^ n) • ν.map (dilation y t)) w = dens ν (y + t • w) := by
+    intro ν y t ht w
+    rw [hdens, hdens, (Submission.idtp_fons_cr_density_rescale P n ν y t ht).1 w]
+  have hspt_resc : ∀ (ν : Measure (Euclid P)) (y : Euclid P) (t : ℝ), 0 < t →
+      spt (ENNReal.ofReal (t⁻¹ ^ n) • ν.map (dilation y t)) = (fun x => y + t • x) ⁻¹' spt ν := by
+    intro ν y t ht
+    ext w
+    rw [mem_preimage, hspt, hspt]
+    exact (Submission.idtp_fons_cr_density_rescale P n ν y t ht).2 w
+  -- step 4: injectivity of `ν ↦ φ_ν` on `𝓜`, so `sing φ_ν = N(spt ν, D ν)`
+  have hinj : ∀ ν₁ ∈ 𝓜, ∀ ν₂ ∈ 𝓜, φ ν₁ = φ ν₂ → ν₁ = ν₂ := by
+    intro ν₁ hν₁ ν₂ hν₂ h
+    have hd : dens ν₁ = dens ν₂ := funext fun x => by
+      have h' := congrFun h x
+      rw [hφ, hφ] at h'
+      exact smul_left_injective ℝ he₁ h'
+    rw [hrep ν₁ hν₁, hrep ν₂ hν₂, hd]
+  have hsing : ∀ ν ∈ 𝓜, sing (φ ν) = N (spt ν) (D ν) := by
+    intro ν hν
+    ext w
+    rw [hsing_def]
+    constructor
+    · rintro ⟨ν', hν', heq, hw⟩
+      rwa [hinj ν' hν' ν hν heq] at hw
+    · intro hw
+      exact ⟨ν, hν, rfl, hw⟩
+  -- `spt ν` is closed
+  have hspt_closed : ∀ ν : Measure (Euclid P), IsClosed (spt ν) := by
+    intro ν
+    rw [← isOpen_compl_iff, Metric.isOpen_iff]
+    intro w hw
+    rw [mem_compl_iff, hspt] at hw
+    obtain ⟨ε, hε, h0⟩ : ∃ ε : ℝ, 0 < ε ∧ ν (ball w ε) = 0 := by
+      by_contra h
+      exact hw fun ε hε h0 => h ⟨ε, hε, h0⟩
+    refine ⟨ε / 2, half_pos hε, fun w' hw' hw'S => ?_⟩
+    rw [hspt] at hw'S
+    refine hw'S (ε / 2) (half_pos hε) (measure_mono_null (ball_subset_ball' ?_) h0)
+    rw [mem_ball] at hw'
+    linarith
+  -- step 5: (H0) and (H1)
+  have hH0 : ∀ φ₁ ∈ φ '' 𝓜, ∀ φ₂ ∈ φ '' 𝓜, (∀ᵐ x ∂μH[(n : ℝ)], φ₁ x = φ₂ x) → φ₁ = φ₂ := by
+    rintro _ ⟨ν₁, hν₁, rfl⟩ _ ⟨ν₂, hν₂, rfl⟩ hae
+    have hae' : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
+        ENNReal.ofReal (dens ν₁ x) = ENNReal.ofReal (dens ν₂ x) := by
+      rw [Measure.euclideanHausdorffMeasure_def]
+      refine Measure.ae_smul_measure ?_ _
+      filter_upwards [hae] with x hx
+      rw [hφ, hφ] at hx
+      rw [smul_left_injective ℝ he₁ hx]
+    have h12 : ν₁ = ν₂ :=
+      (hrep ν₁ hν₁).trans ((withDensity_congr_ae hae').trans (hrep ν₂ hν₂).symm)
+    rw [h12]
+  have hH1 : ∀ φ₁ ∈ φ '' 𝓜, LocallyIntegrable φ₁ μH[(n : ℝ)] := by
+    rintro _ ⟨ν, hν, rfl⟩
+    exact hloc ν hν
+  -- step 6: (A.1)
+  have hA1 : ∀ φ₁ ∈ φ '' 𝓜, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      (fun x => φ₁ (y + lam • x)) ∈ φ '' 𝓜 := by
+    rintro _ ⟨ν, hν, rfl⟩ y lam hlam hlam1 hy
+    refine ⟨_, (hdil ν hν y lam hlam hlam1 hy).1, funext fun x => ?_⟩
+    rw [hφ, hφ, hdens_resc ν y lam hlam x]
+  -- step 7: (A.2)
+  have hA2 : ∀ φ₁ ∈ φ '' 𝓜, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) →
+      StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid 1),
+        StrictMono sub ∧ ψ ∈ φ '' 𝓜 ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+          Tendsto (fun k => ∫ x, f x • φ₁ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop
+            (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x := by
+    rintro _ ⟨ν, hν, rfl⟩ y hy lams hpos hanti hlim
+    obtain ⟨sub, ν', hsub, hν', hhom, hconv⟩ := hblow ν hν y hy lams hpos hanti hlim
+    refine ⟨sub, φ ν', hsub, ⟨ν', hν', rfl⟩, fun f hf hfc => ?_, fun lam hlam x => ?_⟩
+    · -- eventually `λ_{sub k} < 1` and `|y| ≤ 1 - λ_{sub k}`, so the rescalings lie in `𝓜`
+      have hev : ∀ᶠ k in atTop, lams (sub k) < 1 ∧ ‖y‖ ≤ 1 - lams (sub k) := by
+        have h1 : Tendsto (fun k => lams (sub k)) atTop (𝓝 0) := hlim.comp hsub.tendsto_atTop
+        have hm : (0 : ℝ) < min 1 (1 - ‖y‖) := lt_min one_pos (sub_pos.2 hy)
+        filter_upwards [h1.eventually (gt_mem_nhds hm)] with k hk
+        exact ⟨hk.trans_le (min_le_left _ _), by linarith [min_le_right 1 (1 - ‖y‖)]⟩
+      rw [hint ν' hν' f hf hfc]
+      refine Tendsto.congr' ?_ (((hconv f hf hfc).const_mul c).smul_const e₁)
+      filter_upwards [hev] with k hk
+      have hmem := (hdil ν hν y (lams (sub k)) (hpos _) hk.1 hk.2).1
+      rw [← hint _ hmem f hf hfc]
+      refine integral_congr_ae (ae_of_all _ fun x => ?_)
+      simp only [hφ, hdens_resc ν y _ (hpos (sub k)) x]
+    · rw [hφ, hφ, hhom lam hlam x]
+  -- step 9: closedness (A.3)
+  have hclosed : ∀ φ₁ ∈ φ '' 𝓜, IsClosed (sing φ₁) := by
+    rintro _ ⟨ν, hν, rfl⟩
+    rw [hsing ν hν, hN]
+    exact Submission.idtp_fons_cr_nonflat_closed P n β (spt ν) (D ν) hβ (hspt_closed ν) (hD ν hν).1
+  -- step 10: (A.3(1)) planes have no non-flat points
+  have hplane : ∀ φ₁ ∈ φ '' 𝓜, ∀ (L : Submodule ℝ (Euclid P)) (c' : Euclid 1),
+      Module.finrank ℝ L = n → φ₁ = Set.indicator (L : Set (Euclid P)) (fun _ => c') →
+        sing φ₁ = ∅ := by
+    rintro _ ⟨ν, hν, rfl⟩ L c' hL hind
+    have hoff : ∀ x, x ∉ L → dens ν x = 0 := by
+      intro x hx
+      have h := congrFun hind x
+      rw [Set.indicator_of_notMem (show x ∉ (L : Set (Euclid P)) from hx), hφ] at h
+      exact (smul_eq_zero.1 h).resolve_right he₁
+    have hhom : ∀ t : ℝ, 0 < t → ∀ w, dens ν (t • w) = dens ν w := by
+      intro t ht w
+      by_cases hw : w ∈ L
+      · have h1 := congrFun hind (t • w)
+        have h2 := congrFun hind w
+        rw [Set.indicator_of_mem (show t • w ∈ (L : Set (Euclid P)) from L.smul_mem t hw),
+          hφ] at h1
+        rw [Set.indicator_of_mem (show w ∈ (L : Set (Euclid P)) from hw), hφ] at h2
+        exact smul_left_injective ℝ he₁ (h1.trans h2.symm)
+      · have htw : t • w ∉ L := fun h => hw (by
+          have h' := L.smul_mem t⁻¹ h
+          rwa [smul_smul, inv_mul_cancel₀ ht.ne', one_smul] at h')
+        rw [hoff _ htw, hoff _ hw]
+    have hDuniv := hM9 ν hν hhom
+    -- `spt ν ⊆ L`
+    have hsptL : ∀ w ∈ spt ν, w ∈ L := by
+      intro w hw
+      by_contra hwL
+      obtain ⟨ε, hε, hεL⟩ :=
+        Metric.isOpen_iff.1 L.closed_of_finiteDimensional.isOpen_compl w hwL
+      refine (hspt ν w).1 hw ε hε ?_
+      rw [hrep ν hν, withDensity_apply _ measurableSet_ball]
+      calc ∫⁻ x in ball w ε, ENNReal.ofReal (dens ν x) ∂(μHE[n] : Measure (Euclid P))
+          = ∫⁻ x in ball w ε, 0 ∂(μHE[n] : Measure (Euclid P)) :=
+            setLIntegral_congr_fun measurableSet_ball fun x hx => by
+              rw [hoff x (hεL hx), ENNReal.ofReal_zero]
+        _ = 0 := lintegral_zero
+    rw [hsing ν hν, hN, hDuniv]
+    refine eq_empty_of_forall_notMem fun w hw => ?_
+    rcases hw with ⟨⟨hwS, -⟩, hwR⟩ | hwD
+    · exact hwR ⟨1, one_pos, subset_univ _, L, hL, 0, by linarith, fun y hy _ => by
+        rw [Submodule.starProjection_eq_self_iff.2 (L.sub_mem (hsptL y hy) (hsptL w hwS)),
+          sub_self, norm_zero]⟩
+    · exact hwD (mem_univ w)
+  -- step 11: (A.3(2)) dilation equivariance
+  have hA32 : ∀ φ₁ ∈ φ '' 𝓜, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      sing (fun x => φ₁ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ₁ := by
+    rintro _ ⟨ν, hν, rfl⟩ y lam hlam hlam1 hy
+    obtain ⟨hmem, hDres⟩ := hdil ν hν y lam hlam hlam1 hy
+    have hfun : (fun x => φ ν (y + lam • x)) =
+        φ (ENNReal.ofReal (lam⁻¹ ^ n) • ν.map (dilation y lam)) := by
+      funext x
+      rw [hφ, hφ, hdens_resc ν y lam hlam x]
+    have hinv1 : ∀ z, y + lam • dilation y lam z = z := fun z => by
+      change y + lam • (-(lam⁻¹ • y) + lam⁻¹ • z) = z
+      rw [smul_add, smul_neg, smul_inv_smul₀ hlam.ne', smul_inv_smul₀ hlam.ne']
+      abel
+    have hinv2 : ∀ w, dilation y lam (y + lam • w) = w := fun w => by
+      change -(lam⁻¹ • y) + lam⁻¹ • (y + lam • w) = w
+      rw [smul_add, inv_smul_smul₀ hlam.ne']
+      abel
+    have hD' : D (ENNReal.ofReal (lam⁻¹ ^ n) • ν.map (dilation y lam)) =
+        (fun x => y + lam • x) ⁻¹' D ν := by
+      rw [hDres]
+      ext w
+      constructor
+      · rintro ⟨z, hz, rfl⟩
+        rw [mem_preimage, hinv1]
+        exact hz
+      · intro hw
+        exact ⟨_, hw, hinv2 w⟩
+    rw [hfun, hsing _ hmem, hsing ν hν, hspt_resc ν y lam hlam, hD', hN, hN]
+    exact Submission.idtp_fons_cr_nonflat_affine_preimage P n β (spt ν) (D ν) y lam hlam
+  -- step 12: (A.3(3)) upper semicontinuity of the non-flat sets
+  have hA33 : ∀ φ₁ ∈ φ '' 𝓜, ∀ φs : ℕ → Euclid P → Euclid 1, (∀ k, φs k ∈ φ '' 𝓜) →
+      (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+        Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop
+          (𝓝 (∫ x, f x • φ₁ x ∂μH[(n : ℝ)]))) →
+      ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀,
+        ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ₁, dist x z < ε} := by
+    rintro _ ⟨ν, hν, rfl⟩ φs hφs hconv ε hε
+    have hφs' : ∀ k, ∃ ν' ∈ 𝓜, φ ν' = φs k := hφs
+    choose νs hνs hνφ using hφs'
+    -- weak convergence of the `φ`'s is vague convergence of the measures
+    have hvague : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+        Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν)) := by
+      intro f hf hfc
+      have h := hconv f hf hfc
+      simp only [← hνφ, hint _ (hνs _) f hf hfc, hint ν hν f hf hfc] at h
+      have h1 := ((EuclideanSpace.proj (0 : Fin 1)).continuous.tendsto _).comp h
+      simp only [Function.comp_def, hproj] at h1
+      have h2 := h1.const_mul c⁻¹
+      simpa only [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul] using h2
+    -- support semicontinuity (step 8)
+    have hsupp : ∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub →
+        (∀ k, z k ∈ spt (νs (sub k))) → Tendsto z atTop (𝓝 x) → x ∈ D ν → x ∈ spt ν := by
+      intro sub z x hsub hz hzx hxD
+      rw [hspt]
+      refine Submission.idtp_fons_cr_support_limit P n Λ ν (fun k => νs (sub k)) (D ν)
+        (fun k => D (νs (sub k))) z x (fun k K hK => hfin _ (hνs _) K hK) (hD ν hν).1
+        (fun K hK hKD => hsub.tendsto_atTop.eventually (hexh ν hν νs hνs hvague K hK hKD))
+        (fun k z ρ hρ hzρ hzspt => hlow _ (hνs _) z ρ hρ hzρ hzspt)
+        (fun f hf hfc => (hvague f hf hfc).comp hsub.tendsto_atTop)
+        (fun k => (hspt _ _).1 (hz k)) hzx hxD
+    have hcl : closedBall (0 : Euclid P) 1 ⊆ D ν :=
+      (closedBall_subset_ball (by norm_num : (1 : ℝ) < 2)).trans (hD ν hν).2
+    have hbk : ∀ k, ball (0 : Euclid P) 1 ⊆ D (νs k) := fun k =>
+      (ball_subset_ball (by norm_num : (1 : ℝ) ≤ 2)).trans (hD _ (hνs k)).2
+    obtain ⟨k₀, hk₀⟩ := Submission.idtp_fons_cr_nonflat_usc P n β (spt ν) (D ν)
+      (fun k => spt (νs k)) (fun k => D (νs k)) hβ hcl hbk (hexh ν hν νs hνs hvague) hsupp ε hε
+    refine ⟨k₀, fun k hk x hx => ?_⟩
+    rw [← hνφ k, hsing _ (hνs k), hN] at hx
+    obtain ⟨z, hz, hxz⟩ := hk₀ k hk hx
+    exact ⟨z, by rw [hsing ν hν, hN]; exact hz, hxz⟩
+  -- step 13: Appendix A.4
+  have key := Submission.abstract_dimension_reduction P n 1 (φ '' 𝓜) sing hH0 hH1 hA1 hA2 hclosed
+    hplane hA32 hA33
+  -- steps 14–15: exclusion of `d = n − 1` and conclusion
+  have hsing₀ := hsing μ₀ hμ₀
+  have hZ : N (spt μ₀) (D μ₀) ∩ ball (0 : Euclid P) 1 = ∅ ∨ (2 ≤ n ∧ ∀ α : ℝ, 0 < α →
+      μH[(n : ℝ) - 2 + α] (N (spt μ₀) (D μ₀) ∩ ball (0 : Euclid P) 1) = 0) := by
+    rcases key with hI | ⟨d, hd, hdim, ⟨_, ⟨ν, hν, rfl⟩, L, hL, hsingψ, hinv⟩, -⟩
+    · left
+      have h := hI (φ μ₀) ⟨μ₀, hμ₀, rfl⟩
+      rw [hsing₀, inter_comm] at h
+      exact h
+    · right
+      have hd2 : d + 2 ≤ n := by
+        by_contra hcon
+        have hdn : Module.finrank ℝ L + 1 = n := by omega
+        have hinv' : ∀ y ∈ L, ∀ t : ℝ, 0 < t → ∀ w : Euclid P, dens ν (y + t • w) = dens ν w := by
+          intro y hy t ht w
+          have h := hinv y hy t ht w
+          rw [hφ, hφ] at h
+          exact smul_left_injective ℝ he₁ h
+        obtain ⟨Q, hQ, hsptQ⟩ := hM8 ν hν L hdn hinv'
+        have hhom : ∀ t : ℝ, 0 < t → ∀ w : Euclid P, dens ν (t • w) = dens ν w := by
+          intro t ht w
+          have h := hinv' 0 L.zero_mem t ht w
+          rwa [zero_add] at h
+        have hDuniv := hM9 ν hν hhom
+        have hempty : N (spt ν) (D ν) = ∅ := by
+          rw [hN, hDuniv]
+          refine eq_empty_of_forall_notMem fun w hw => ?_
+          rcases hw with ⟨⟨hwS, -⟩, hwR⟩ | hwD
+          · exact hwR ⟨1, one_pos, subset_univ _, Q, hQ, 0, by linarith, fun y hy _ => by
+              rw [Submodule.starProjection_eq_self_iff.2 (Q.sub_mem (hsptQ y ((hspt ν y).1 hy))
+                (hsptQ w ((hspt ν w).1 hwS))), sub_self, norm_zero]⟩
+          · exact hwD (mem_univ w)
+        have h0 : (0 : Euclid P) ∈ sing (φ ν) := by
+          rw [hsingψ]
+          exact L.zero_mem
+        rw [hsing ν hν, hempty] at h0
+        exact h0
+      refine ⟨by omega, fun α hα => ?_⟩
+      have hd2' : (d : ℝ) + 2 ≤ n := by exact_mod_cast hd2
+      have h := hdim (φ μ₀) ⟨μ₀, hμ₀, rfl⟩ ((n : ℝ) - 2 - d + α) (by linarith)
+      rw [hsing₀, show (d : ℝ) + ((n : ℝ) - 2 - d + α) = (n : ℝ) - 2 + α by ring] at h
+      exact h
+  refine ⟨N (spt μ₀) (D μ₀) ∩ ball (0 : Euclid P) 1, fun h1 => ?_, fun α hα => ?_,
+    fun w hw hwspt hwZ => ?_⟩
+  · rcases hZ with h | ⟨h2, -⟩
+    · exact h
+    · omega
+  · rcases hZ with h | ⟨-, h⟩
+    · rw [h]
+      exact measure_empty
+    · exact h α hα
+  · have hwD : w ∈ D μ₀ := (hD μ₀ hμ₀).2 (ball_subset_ball (by norm_num) hw)
+    by_contra hcon
+    refine hwZ ⟨?_, hw⟩
+    rw [hN]
+    refine Or.inl ⟨⟨(hspt μ₀ w).2 hwspt, hwD⟩, ?_⟩
+    rintro ⟨ρ, hρ, hρD, Q, hQ, s, hs, hflat⟩
+    exact hcon ⟨ρ, hρ, hρD, Q, hQ, s, hs, fun y hy hyb => hflat y ((hspt μ₀ y).2 hy) hyb⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
