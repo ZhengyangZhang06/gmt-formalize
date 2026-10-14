@@ -515,6 +515,48 @@ theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid
     ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
     ENNReal.ofReal_one, one_mul]
 
+/-- **The domains `G = η_{x,λ}(B₂(0))` of the rescaled currents** (Simon 7.3.3, proof of 3.3(1),
+item (9), chapter-07.txt lines 445–467: the limits of `η_{xᵢ,λᵢ#}T` with `λᵢ → λ > 0` live on
+`η_{x,λ}(U)`).  For `λ > 0`: (a) `v ∈ G` iff `‖x + λv‖ < 2`; (b) `G` is open; (c) if `λ ≤ 1` and
+`‖x‖ ≤ 1 − λ`, then `B₂(0) ⊆ G`, and `closedBall 0 R ⊆ G` whenever `λR ≤ 1`.
+`η_{x,λ}(u) = λ⁻¹(u − x)` has inverse `v ↦ x + λv`, which gives (a); (b) follows from (a) by
+`isOpen_lt`; (c) follows from (a) and `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ ≤ 1 − λ + λ‖v‖`. -/
+theorem Submission.idtp_fons_cc_psf_domain_geometry : ∀ (P : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2) ∧ IsOpen (dilation x lam '' ball 0 2) ∧ (lam ≤ 1 → ‖x‖ ≤ 1 - lam → ball 0 2 ⊆ dilation x lam '' ball 0 2 ∧ ∀ R : ℝ, lam * R ≤ 1 → closedBall 0 R ⊆ dilation x lam '' ball 0 2) := by
+  intro P x lam hlam
+  -- Step 1: `η(u) = −λ⁻¹x + λ⁻¹u = λ⁻¹(u − x)`.
+  have hη : ∀ u : Euclid P, dilation x lam u = lam⁻¹ • (u - x) := by
+    intro u
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [neg_add_eq_sub, smul_sub]
+  -- Steps 2–3, (a): `v = η(u)` iff `u = x + λv`, so `v ∈ η(B₂(0))` iff `‖x + λv‖ < 2`.
+  have ha : ∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2 := by
+    intro v
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      rw [hη, smul_smul, mul_inv_cancel₀ hlam.ne', one_smul, add_sub_cancel]
+      exact mem_ball_zero_iff.1 hu
+    · intro hv
+      refine ⟨x + lam • v, mem_ball_zero_iff.2 hv, ?_⟩
+      rw [hη, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+  refine ⟨ha, ?_, fun hlam1 hx => ⟨fun v hv => ?_, fun R hR v hv => ?_⟩⟩
+  -- Step 4, (b): `G = {v | ‖x + λv‖ < 2}` is a strict sublevel set of a continuous function.
+  · have hc : Continuous fun v : Euclid P => ‖x + lam • v‖ := by fun_prop
+    rw [show dilation x lam '' ball 0 2 = {v | ‖x + lam • v‖ < 2} from Set.ext ha]
+    exact isOpen_lt hc continuous_const
+  -- Step 5, (c): `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ < (1 − λ) + 2λ ≤ 2` for `‖v‖ < 2`.
+  · have hv' : lam * ‖v‖ < lam * 2 := mul_lt_mul_of_pos_left (mem_ball_zero_iff.1 hv) hlam
+    rw [ha]
+    calc ‖x + lam • v‖ ≤ ‖x‖ + ‖lam • v‖ := norm_add_le _ _
+      _ = ‖x‖ + lam * ‖v‖ := by rw [norm_smul_of_nonneg hlam.le]
+      _ < 2 := by linarith
+  -- Step 6, (c): `‖x + λv‖ ≤ ‖x‖ + λ‖v‖ ≤ (1 − λ) + λR ≤ 2 − λ < 2` for `‖v‖ ≤ R`, `λR ≤ 1`.
+  · have hv' : lam * ‖v‖ ≤ lam * R :=
+      mul_le_mul_of_nonneg_left (mem_closedBall_zero_iff.1 hv) hlam.le
+    rw [ha]
+    calc ‖x + lam • v‖ ≤ ‖x‖ + ‖lam • v‖ := norm_add_le _ _
+      _ = ‖x‖ + lam * ‖v‖ := by rw [norm_smul_of_nonneg hlam.le]
+      _ < 2 := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
