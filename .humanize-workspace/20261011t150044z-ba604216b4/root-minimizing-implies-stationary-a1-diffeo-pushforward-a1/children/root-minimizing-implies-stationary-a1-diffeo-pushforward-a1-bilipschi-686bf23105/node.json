@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_diffeo-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "A compactly supported C¹ diffeomorphism of ℝ^P is bi-Lipschitz and preserves every set containing its support",
+  "statement": "Let P ∈ ℕ, E := ℝ^P, U, K ⊆ E with K compact and K ⊆ U, and let φ : E → E be a C¹ bijection such that Dφ(x) is injective for every x ∈ E and φ(x) = x for every x ∉ K. Then there is Λ ≥ 0 such that φ is Λ-Lipschitz, φ is Λ-antilipschitz (|x − y| ≤ Λ|φ(x) − φ(y)| for all x, y), and φ^{-1}(U) = U.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ Λ : NNReal, LipschitzWith Λ φ ∧ AntilipschitzWith Λ φ ∧ φ ⁻¹' U = U",
+  "lean_name": "dpf_c1_compact_perturbation_bilipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-686bf23105-a1"
+}

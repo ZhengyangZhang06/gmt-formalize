@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.covector_frame_det-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "An n-covector on vectors spanned by an orthonormal n-frame is det(⟨τᵢ, bⱼ⟩) times its value on the frame",
+  "statement": "Let P, n ∈ ℕ, let τ = (τ₁, …, τₙ) (indexed by Fin n) be an orthonormal family in ℝᴾ = Euclid P and let b = (b₁, …, bₙ) be a family in ℝᴾ with bⱼ ∈ span{τ₁, …, τₙ} for every j. Then for every n-covector α of ℝᴾ (α ∈ Covector (Euclid P) n, a continuous alternating n-linear form), α(b₁, …, bₙ) = det(𝒜)·α(τ₁, …, τₙ), where 𝒜 is the n×n real matrix 𝒜ᵢⱼ := ⟨τᵢ, bⱼ⟩ (Matrix.of fun i j => inner ℝ (τ i) (b j)).",
+  "lean_statement": "∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ",
+  "lean_name": "dgoj_covector_eq_det_mul_of_mem_span",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c-a1"
+}

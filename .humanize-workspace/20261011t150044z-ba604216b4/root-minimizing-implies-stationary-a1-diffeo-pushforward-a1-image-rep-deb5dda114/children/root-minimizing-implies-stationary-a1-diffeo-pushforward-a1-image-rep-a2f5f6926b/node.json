@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1.image_measure_comparison-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1",
+  "depth": 5,
+  "title": "Pushforward of H^n restricted to a Lipschitz image under a measurable left inverse is at most Λ^n·(H^n⌞S)",
+  "statement": "Let P, n ∈ ℕ and E := ℝ^P (Euclid P) with its Borel σ-algebra. Let H^n := μHE[n], the normalized n-dimensional Hausdorff measure on E. Let Λ ≥ 0, let φ : E → E be Λ-Lipschitz, and let ψ : E → E be Borel measurable with ψ(φ(x)) = x for every x ∈ E. Then for every set S ⊆ E, not assumed measurable, the image under ψ of H^n⌞φ(S) is at most Λ^n times H^n⌞S: ψ_#(H^n⌞φ(S)) ≤ Λ^n·(H^n⌞S) as measures on E. Equivalently, H^n(ψ^{-1}(A) ∩ φ(S)) ≤ Λ^n·H^n(A ∩ S) for every Borel set A ⊆ E.",
+  "lean_statement": "∀ (P n : ℕ) (φ ψ : Euclid P → Euclid P) (Λ : NNReal) (S : Set (Euclid P)), LipschitzWith Λ φ → Measurable ψ → LeftInverse ψ φ → (μHE[n].restrict (φ '' S)).map ψ ≤ ((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict S",
+  "lean_name": "dpfir_ii_map_restrict_image_le_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-a2f5f6926b-a1"
+}
