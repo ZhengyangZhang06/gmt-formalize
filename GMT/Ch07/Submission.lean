@@ -3189,11 +3189,6 @@ theorem Submission.dimred_mbl_pfi_gram_jacobian_algebra : ∀ (P n : ℕ) (A : E
     · exact ⟨1, Or.inl rfl, fun α => by rw [h, hev α]; ring⟩
     · exact ⟨-1, Or.inr rfl, fun α => by rw [h, hev α, neg_apply]; ring⟩
 
-/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
-theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
-
-end GMT.Ch07
-
 /-- A summable series of integer-weighted Lipschitz parametrizations `Hᵢ : Bᵢ → U` with
 orientations `ζᵢ = ±DHᵢ#e` is summed by one integer multiplicity triple `R` in `U`:
 `Σᵢ ∫_{Bᵢ} wᵢ ⟨ω ∘ Hᵢ, ζᵢ⟩ = R(ω)` for every `ω ∈ 𝒟ⁿ(U)`.  `DHᵢ` is injective on
@@ -3342,3 +3337,8 @@ theorem Submission.dimred_mbl_pfi_param_series_imrep : ∀ (P n : ℕ) (U : Set 
     (e.hasSum_iff
       (f := fun p : ℕ × ℕ => (Rp p.1 p.2).action (ω : DifferentialForm (Euclid P) n))).mp (hR' ω)
   exact hprod.prod_fiberwise hfib
+
+/-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
+theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
+
+end GMT.Ch07
