@@ -3308,6 +3308,122 @@ theorem Submission.dtc_bc_lc_sl_c1_tangent : ∀ (P d : ℕ) (g : Euclid d → E
   exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P d g (closedBall c r) z s f
     measurableSet_closedBall (fun a ha => hdiff a (hBU ha)) hinj hreg hs).symm
 
+/-- **Simon Ch. 2, Theorem 6.4** (`C¹` Sard type), its critical part, with Eilenberg's inequality
+(Simon Ch. 2, 1.9) in place of the co-area formula: if Eilenberg's inequality holds on `ℝⁿ⁺¹`
+with constant `C`, `F` is `C¹` and `DF = 0` on `Z`, then `Hⁿ(Z ∩ F⁻¹{t}) = 0` for a.e. `t`.
+It suffices to treat `Z ⊆ B̄(0, R)`.  For `ε > 0`, uniform continuity of `DF` on `B̄(0, R + 1)`
+gives `δ`; the disjointed balls `D m ⊆ B(x m, r)`, `2r = min δ 1`, around a dense sequence are
+Borel, pairwise disjoint and cover `ℝⁿ⁺¹`.  If `p ∈ Z ∩ D m`, then `‖DF‖ = ‖DF − DF(p)‖ < ε`
+on the convex ball `B(x m, r)`, so `F` is `ε`-Lipschitz on `Z ∩ D m` (mean value inequality).
+The sum `Φ_ε` of the Eilenberg majorants dominates `Hⁿ(Z ∩ F⁻¹{t})` and
+`∫ Φ_ε ≤ C ε Hⁿ⁺¹(B̄(0, R))`, so `inf_k Φ_{1/(k+1)}` is a Borel majorant with zero integral. -/
+theorem Submission.dtc_bc_lc_sl_cc_critical_null : ∀ (n : ℕ) (C : NNReal), (∀ (A : Set (Euclid (n + 1))) (f : Euclid (n + 1) → ℝ) (L : NNReal), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μHE[n] (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * μHE[n + 1] A) → ∀ (F : Euclid (n + 1) → ℝ) (Z : Set (Euclid (n + 1))), ContDiff ℝ 1 F → (∀ y ∈ Z, fderiv ℝ F y = 0) → ∀ᵐ t, μHE[n] (Z ∩ F ⁻¹' {t}) = 0 := by
+  intro n C hEil F Z hF hZ
+  -- Step 1: it suffices to treat the bounded pieces `Z ∩ B̄(0, R)`
+  suffices key : ∀ R : ℝ, ∀ᵐ t, μHE[n] ((Z ∩ closedBall 0 R) ∩ F ⁻¹' {t}) = 0 by
+    filter_upwards [ae_all_iff.2 fun m : ℕ => key m] with t ht
+    refine measure_mono_null (fun x hx => ?_) (measure_iUnion_null ht)
+    obtain ⟨m, hm⟩ := exists_nat_ge ‖x‖
+    exact mem_iUnion.2 ⟨m, ⟨hx.1, mem_closedBall_zero_iff.2 hm⟩, hx.2⟩
+  intro R
+  -- Step 2: `DF` is uniformly continuous on `K₁ = B̄(0, R + 1)`
+  have hdiff : Differentiable ℝ F := hF.differentiable one_ne_zero
+  have hDF : UniformContinuousOn (fderiv ℝ F) (closedBall 0 (R + 1)) :=
+    (isCompact_closedBall _ _).uniformContinuousOn_of_continuous
+      (hF.continuous_fderiv one_ne_zero).continuousOn
+  -- `μHE[n + 1]` is Lebesgue measure on `ℝⁿ⁺¹`, so `μHE[n + 1] (B̄(0, R)) < ∞`
+  have hK : μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R) ≠ ∞ := by
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact measure_closedBall_lt_top.ne
+  -- Steps 3-5: for every `ε > 0` a Borel majorant `Φ` with `∫ Φ ≤ C ε μHE[n + 1] (B̄(0, R))`
+  have main : ∀ ε : NNReal, 0 < ε → ∃ Φ : ℝ → ℝ≥0∞, Measurable Φ ∧
+      (∀ t, μHE[n] ((Z ∩ closedBall 0 R) ∩ F ⁻¹' {t}) ≤ Φ t) ∧
+      ∫⁻ t, Φ t ≤ (C : ℝ≥0∞) * ε * μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R) := by
+    intro ε hε
+    obtain ⟨δ, hδ, hδε⟩ := Metric.uniformContinuousOn_iff.1 hDF ε (NNReal.coe_pos.2 hε)
+    -- the disjointed balls `D m ⊆ B(x m, r)`, `2 r = min δ 1`, partition `ℝⁿ⁺¹`
+    obtain ⟨r, hr0, hr⟩ : ∃ r : ℝ, 0 < r ∧ 2 * r = min δ 1 :=
+      ⟨min δ 1 / 2, by positivity, by ring⟩
+    set x := TopologicalSpace.denseSeq (Euclid (n + 1))
+    set D := disjointed fun m => ball (x m) r
+    have hDcov : ∀ y, ∃ m, y ∈ D m := by
+      intro y
+      obtain ⟨m, hm⟩ := Metric.denseRange_iff.1 (TopologicalSpace.denseRange_denseSeq _) y r hr0
+      have hy : y ∈ ⋃ m, D m := by
+        rw [iUnion_disjointed]
+        exact mem_iUnion.2 ⟨m, mem_ball.2 hm⟩
+      exact mem_iUnion.1 hy
+    -- `F` is `ε`-Lipschitz on each piece `Z ∩ B̄(0, R) ∩ D m`: if `p` lies in it, then
+    -- `|w - p| < min δ 1` on `B(x m, r)`, so `‖DF(w)‖ = ‖DF(w) - DF(p)‖ < ε` there
+    have hlip : ∀ m, LipschitzOnWith ε F ((Z ∩ closedBall 0 R) ∩ D m) := by
+      intro m
+      rcases ((Z ∩ closedBall 0 R) ∩ D m).eq_empty_or_nonempty with he | ⟨p, ⟨hpZ, hpR⟩, hpD⟩
+      · rw [he]
+        exact lipschitzOnWith_empty _ _
+      refine (Convex.lipschitzOnWith_of_nnnorm_fderiv_le (fun w _ => hdiff w) (fun w hw => ?_)
+        (convex_ball (x m) r)).mono (inter_subset_right.trans (disjointed_subset _ m))
+      have hpB : p ∈ ball (x m) r := disjointed_subset _ m hpD
+      have hwp : dist w p < min δ 1 := by
+        rw [mem_ball] at hw hpB
+        linarith [dist_triangle_right w p (x m)]
+      have hpR' : ‖p‖ ≤ R := mem_closedBall_zero_iff.1 hpR
+      have hwK : w ∈ closedBall (0 : Euclid (n + 1)) (R + 1) := by
+        rw [mem_closedBall_zero_iff]
+        have h1 : ‖w‖ ≤ ‖p‖ + ‖w - p‖ := norm_le_norm_add_norm_sub' w p
+        rw [← dist_eq_norm] at h1
+        linarith [min_le_right δ 1]
+      have hpK : p ∈ closedBall (0 : Euclid (n + 1)) (R + 1) :=
+        mem_closedBall_zero_iff.2 (by linarith)
+      have h := hδε w hwK p hpK (hwp.trans_le (min_le_left δ 1))
+      rw [hZ p hpZ, dist_zero_right] at h
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact h.le
+    -- Eilenberg's inequality on each piece
+    choose φ hφm hφle hφint using fun m => hEil _ F ε (hlip m)
+    refine ⟨fun t => ∑' m, φ m t, Measurable.tsum hφm, fun t => ?_, ?_⟩
+    · -- countable subadditivity: the pieces cover `Z ∩ B̄(0, R)`
+      calc μHE[n] ((Z ∩ closedBall 0 R) ∩ F ⁻¹' {t})
+          ≤ μHE[n] (⋃ m, ((Z ∩ closedBall 0 R) ∩ D m) ∩ F ⁻¹' {t}) := by
+            refine measure_mono fun y hy => ?_
+            obtain ⟨m, hm⟩ := hDcov y
+            exact mem_iUnion.2 ⟨m, ⟨hy.1, hm⟩, hy.2⟩
+        _ ≤ ∑' m, μHE[n] (((Z ∩ closedBall 0 R) ∩ D m) ∩ F ⁻¹' {t}) := measure_iUnion_le _
+        _ ≤ ∑' m, φ m t := ENNReal.tsum_le_tsum fun m => hφle m t
+    · -- integrate term by term; the pieces lie in the disjoint Borel sets `B̄(0, R) ∩ D m`
+      rw [lintegral_tsum fun m => (hφm m).aemeasurable]
+      calc ∑' m, ∫⁻ t, φ m t
+          ≤ ∑' m, (C : ℝ≥0∞) * ε * μHE[n + 1] ((Z ∩ closedBall 0 R) ∩ D m) :=
+            ENNReal.tsum_le_tsum hφint
+        _ = (C : ℝ≥0∞) * ε * ∑' m, μHE[n + 1] ((Z ∩ closedBall 0 R) ∩ D m) :=
+            ENNReal.tsum_mul_left
+        _ ≤ (C : ℝ≥0∞) * ε * μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R) := by
+            gcongr
+            calc ∑' m, μHE[n + 1] ((Z ∩ closedBall 0 R) ∩ D m)
+                ≤ ∑' m, μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R ∩ D m) :=
+                  ENNReal.tsum_le_tsum fun m =>
+                    measure_mono (inter_subset_inter_left _ inter_subset_right)
+              _ ≤ μHE[n + 1] (⋃ m, closedBall (0 : Euclid (n + 1)) R ∩ D m) :=
+                  tsum_meas_le_meas_iUnion_of_disjoint _
+                    (fun m => measurableSet_closedBall.inter
+                      (MeasurableSet.disjointed (fun i => measurableSet_ball) m))
+                    (fun i j hij => (disjoint_disjointed _ hij).mono inter_subset_right
+                      inter_subset_right)
+              _ ≤ μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R) :=
+                  measure_mono (iUnion_subset fun m => inter_subset_left)
+  -- Step 6: the infimum `Ψ` of the majorants for `ε = (k + 1)⁻¹` has zero integral
+  choose Φ hΦm hΦle hΦint using fun k : ℕ => main ((k + 1 : ℕ) : NNReal)⁻¹ (by positivity)
+  have hlim : Tendsto (fun k : ℕ => (C : ℝ≥0∞) * ((((k + 1 : ℕ) : NNReal)⁻¹ : NNReal) : ℝ≥0∞) *
+      μHE[n + 1] (closedBall (0 : Euclid (n + 1)) R)) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.mul_const (ENNReal.Tendsto.const_mul (a := (C : ℝ≥0∞))
+      (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1))
+      (Or.inr ENNReal.coe_ne_top)) (Or.inr hK)
+    simpa [ENNReal.coe_inv, Function.comp_def] using h
+  have hΨ : ∫⁻ t, ⨅ k, Φ k t = 0 :=
+    le_antisymm (ge_of_tendsto' hlim fun k =>
+      (lintegral_mono fun t => iInf_le _ k).trans (hΦint k)) zero_le
+  filter_upwards [(lintegral_eq_zero_iff (Measurable.iInf hΦm)).1 hΨ] with t ht
+  exact le_antisymm ((le_iInf fun k => hΦle k t).trans_eq ht) zero_le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
