@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "851a7c270b07884e7575aafb140db8a247168e3369a250660ad6d779b53c4e36",
+  "git_delta": {
+    "base_commit": "b6f311aef250ca8a03ae59775fde0e851f77a78a",
+    "candidate_commit": "b5a9c72826900c50560bf85961a2df3b26015b2b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pfi_gram_jacobian_algebra",
+    "diff_sha256": "4c760af30353345afcf065ebd6b056c20da2eaacf8c6da498582be389ea8b5b8",
+    "source_sha256": "a9cb5d6927f2ab879b8e31df29348ca305c034566d84c965a8e7d7e3842a9177",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pfi_gram_jacobian_algebra",
+      "statement": "∀ (P n : ℕ) (A : Euclid n →L[ℝ] Euclid P), (∀ L : Euclid P →L[ℝ] Euclid P, Real.sqrt (((L ∘L A).adjoint ∘L (L ∘L A)).det) ≤ ‖L‖ ^ n * Real.sqrt ((A.adjoint ∘L A).det)) ∧ (∀ α : Covector (Euclid P) n, |α (fun j => A (EuclideanSpace.single j (1 : ℝ)))| ≤ Real.sqrt ((A.adjoint ∘L A).det) * ‖α‖) ∧ (Injective A → ∀ ξ : MultiVector P n, IsUnitOrientationOf ξ (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P)) → ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, Real.sqrt ((A.adjoint ∘L A).det) * ξ α = s * α (fun j => A (EuclideanSpace.single j (1 : ℝ))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
