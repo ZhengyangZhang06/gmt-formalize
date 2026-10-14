@@ -858,6 +858,55 @@ theorem Submission.dimred_tr_ibl_countable_tests : ∀ (P n : ℕ), ∃ ωs : �
   rw [abs_le] at hlim hseq
   constructor <;> linarith [hlim.1, hlim.2, hseq.1, hseq.2, h₂.1, h₂.2]
 
+/-- **Diagonal limit**: if `A_{k,i} ⇀ Z_k` as `i → ∞` for every `k`, `Z_k ⇀ C` in `ℝᴾ`, and on
+each ball `B = B_{R+1}(0)` the domains eventually contain `B` with `M_B(A_{k,i}) ≤ Γ(R)`
+(`k ≥ k₀(R)`, `i` large) and `M_B(C) ≤ Γ(R)`, then some diagonal `A_{k,φ(k)}` converges weakly
+to `C`.  With the countable test family `ωs` of `dimred_tr_ibl_countable_tests`, for each `k` the
+finitely many conditions `|A_{k,i}(ωs m) − Z_k(ωs m)| < 1/(k+1)` (`m ≤ k`) and the domain and
+mass bounds for the `R ≤ k` with `k₀(R) ≤ k` hold for all large `i`;
+`Filter.extraction_forall_of_eventually` gives a strictly increasing `φ` meeting them at
+`i = φ(k)`, and `dimred_tr_ibl_countable_tests` applies to `A_{k,φ(k)}` and `C`. -/
+theorem Submission.dimred_tr_ibl_diagonal_limit : ∀ (P n : ℕ) (Vs : ℕ → ℕ → Set (Euclid P)) (As : (k i : ℕ) → GeometricCurrentOn (Vs k i) n) (Ws : ℕ → Set (Euclid P)) (Zs : (k : ℕ) → GeometricCurrentOn (Ws k) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n), Tendsto (fun i => currentEval (As k i) (ω : DifferentialForm (Euclid P) n)) atTop (𝓝 (currentEval (Zs k) (ω : DifferentialForm (Euclid P) n)))) → ConvergesWeakly Zs C → (∀ R : ℕ, ∃ (k₀ : ℕ) (Γ : ℝ≥0∞), Γ ≠ ∞ ∧ C.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ ∧ ∀ k, k₀ ≤ k → ∀ᶠ i in atTop, ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k i ∧ (As k i).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ConvergesWeakly (fun k => As k (φ k)) C := by
+  intro P n Vs As Ws Zs C hAZ hZC hM
+  -- step 1: the countable test family `ωs`
+  obtain ⟨ωs, hωs⟩ := Submission.dimred_tr_ibl_countable_tests P n
+  -- step 2: `k₀(R)` and `Γ(R)` for every `R`
+  choose k₀ Γ hΓ hCΓ hAΓ using hM
+  -- steps 3 and 4: for each `k`, the finitely many conditions `Q(k, i)` hold for all large `i`
+  have hQ : ∀ k : ℕ, ∀ᶠ i in atTop,
+      (∀ m ∈ Iic k, |currentEval (As k i) (ωs m : DifferentialForm (Euclid P) n) -
+          currentEval (Zs k) (ωs m : DifferentialForm (Euclid P) n)| < 1 / ((k : ℝ) + 1)) ∧
+      ∀ R ∈ Iic k, k₀ R ≤ k → ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k i ∧
+          (As k i).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ R := by
+    intro k
+    refine Filter.Eventually.and ?_ ?_
+    · -- (a): `A_{k,i}(ωs m) → Z_k(ωs m)` as `i → ∞`, and `1 / (k + 1) > 0`
+      refine (Filter.eventually_all_finite (Set.finite_Iic k)).2 fun m _ => ?_
+      filter_upwards [Metric.tendsto_nhds.1 (hAZ k (ωs m)) (1 / ((k : ℝ) + 1))
+        Nat.one_div_pos_of_nat] with i hi
+      rwa [Real.dist_eq] at hi
+    · -- (b): from step 2 if `k₀(R) ≤ k`, vacuous otherwise
+      refine (Filter.eventually_all_finite (Set.finite_Iic k)).2 fun R _ => ?_
+      by_cases hk : k₀ R ≤ k
+      · exact (hAΓ R k hk).mono fun i hi _ => hi
+      · exact Filter.Eventually.of_forall fun i h => absurd h hk
+  -- step 5: the diagonal `φ`, with `Q(k, φ(k))` for every `k`
+  obtain ⟨φ, hφ, hφQ⟩ := Filter.extraction_forall_of_eventually hQ
+  -- step 8: `dimred_tr_ibl_countable_tests` for `A_{k,φ(k)}` and `C`
+  refine ⟨φ, hφ, hωs (fun k => Vs k (φ k)) (fun k => As k (φ k)) C (fun R => ?_) fun m => ?_⟩
+  · -- step 6: the mass hypothesis, from clause (b) for `k ≥ max (k₀ R) R`
+    exact ⟨max (k₀ R) R, Γ R, hΓ R, hCΓ R, fun k hk =>
+      (hφQ k).2 R (Set.mem_Iic.2 (le_of_max_le_right hk)) (le_of_max_le_left hk)⟩
+  · -- step 7: clause (a) for `k ≥ m` squeezes `A_{k,φ(k)}(ωs m) − Z_k(ωs m)` to `0`, and
+    -- `Z_k(ωs m) → C(ωs m)`
+    have hdiff : Tendsto (fun k => currentEval (As k (φ k)) (ωs m : DifferentialForm (Euclid P) n) -
+        currentEval (Zs k) (ωs m : DifferentialForm (Euclid P) n)) atTop (𝓝 0) := by
+      refine squeeze_zero_norm' ?_ tendsto_one_div_add_atTop_nhds_zero_nat
+      filter_upwards [Filter.eventually_ge_atTop m] with k hk
+      rw [Real.norm_eq_abs]
+      exact ((hφQ k).1 m (Set.mem_Iic.2 hk)).le
+    simpa only [sub_add_cancel, zero_add] using hdiff.add (hZC (ωs m))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
