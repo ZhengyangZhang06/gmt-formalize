@@ -1318,6 +1318,48 @@ theorem Submission.cbrr_lipschitz_cover_of_cone_condition : ∀ (P n : ℕ) (T :
   refine ⟨F, ⟨_, hF⟩, fun x hx => ⟨L x, ?_⟩⟩
   rw [← hFg (mem_image_of_mem L hx), hgL x hx]
 
+/-- Rectifiability from uniform density bounds (Simon Ch. 3, proof of Theorem 1.6, steps
+(6)–(10) and the final cover).  Take a `1/16`-net `T₁, …, T_N` of `n`-planes and a dense sequence
+`(u_q)` in `ℝᴾ`, and cut `E` into the countably many pieces
+`D_{j,q} = {x ∈ E : ‖p_{Q(x)} − p_{T_j}‖ < 1/16} ∩ B_{δ/4}(u_q)`.  Two points of `D_{j,q}` are
+closer than `δ/2`, so the cone claim gives `|y − x| ≤ 4 |p_{T_j}(y − x)|` on `D_{j,q}`, and
+`D_{j,q}` lies in a single Lipschitz image `F_{j,q}(ℝⁿ)`.  The pieces cover `E`, so `E` lies in a
+countable union of Lipschitz images of `ℝⁿ`.  (Simon covers a compact `E` by finitely many balls
+`B_{δ/4}(x₀)`; centres from a dense sequence make compactness unnecessary.) -/
+theorem Submission.cbrr_rectifiable_of_uniform_density : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → 0 < δ → (∀ x ∈ E, Module.finrank ℝ (Q x) = n) → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → CountablyRectifiable n E := by
+  intro P n μ E Q a b δ ha hab hδ hQ hlow hup
+  -- Step 1: a `1/16`-net `T₁, …, T_N` of `n`-planes
+  obtain ⟨N, T, hT, hnet⟩ := Submission.cbrr_projection_net P n (1 / 16) (by norm_num)
+  -- Step 2: a dense sequence `(u_q)` of centres
+  obtain ⟨u, hu⟩ := TopologicalSpace.exists_dense_seq (Euclid P)
+  -- Step 3: the pieces `D_{j,q}`
+  let D : Fin N × ℕ → Set (Euclid P) := fun p =>
+    {x | x ∈ E ∧ ‖(Q x).starProjection - (T p.1).starProjection‖ < 1 / 16} ∩ ball (u p.2) (δ / 4)
+  -- Step 4: the cone condition on each piece, whose points are less than `δ / 2` apart
+  have hcone : ∀ p, ∀ x ∈ D p, ∀ y ∈ D p, ‖y - x‖ ≤ 4 * ‖(T p.1).starProjection (y - x)‖ := by
+    rintro ⟨j, q⟩ x ⟨⟨hxE, hxj⟩, hxq⟩ y ⟨⟨hyE, -⟩, hyq⟩
+    refine Submission.cbrr_cone_claim P n μ E Q (T j) a b δ ha hab hlow hup x hxE y hyE hxj ?_
+    rw [mem_ball] at hxq hyq
+    calc ‖y - x‖ = dist y x := (dist_eq_norm y x).symm
+      _ ≤ dist y (u q) + dist x (u q) := dist_triangle_right y x (u q)
+      _ < δ / 4 + δ / 4 := add_lt_add hyq hxq
+      _ = δ / 2 := by ring
+  -- Step 5: each piece lies in one Lipschitz image `F_{j,q}(ℝⁿ)`
+  choose F hF hDF using fun p : Fin N × ℕ =>
+    Submission.cbrr_lipschitz_cover_of_cone_condition P n (T p.1) (D p) 4 (hT p.1) (hcone p)
+  -- Step 6: the pieces cover `E`
+  have hcover : E ⊆ ⋃₀ range fun p => range (F p) := by
+    intro x hx
+    obtain ⟨j, hj⟩ := hnet (Q x) (hQ x hx)
+    obtain ⟨q, hq⟩ := hu.exists_dist_lt x (by positivity : (0 : ℝ) < δ / 4)
+    exact mem_sUnion.2 ⟨range (F (j, q)), mem_range_self _, hDF (j, q) ⟨⟨hx, hj⟩, mem_ball.2 hq⟩⟩
+  -- Step 7: the countably many Lipschitz images are countably `n`-rectifiable, hence so is `E`
+  refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion
+    (countable_range fun p => range (F p)) ?_).mono hcover
+  rintro _ ⟨p, rfl⟩
+  obtain ⟨K, hK⟩ := hF p
+  exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
