@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff5587fb60432d1e9e8fe9001fa522670ade9f706035309c05661cabd312447b",
+  "git_delta": {
+    "base_commit": "fdd81536c881caab953eca70c92c8088864e12b3",
+    "candidate_commit": "d6f6a92db89b192c68e7b80ea31d251cb157a5c1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_fp_offset_plane_ball_measure",
+    "diff_sha256": "bcf1bd1bd8cbccebcc6805431030a5948b35eaafd34576accf210435158297a6",
+    "source_sha256": "51521ac7ce9d0fe3904f1e645da4f3c0478ebcb3f76c71eb8097f54ff5421593",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_fp_offset_plane_ball_measure",
+      "statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)) (w : Euclid P) (R : ℝ), Module.finrank ℝ V = n → w ∈ Vᗮ → ‖w‖ < R → μHE[n] ({y : Euclid P | y - w ∈ V} ∩ ball 0 R) = unitBallVolume n * ENNReal.ofReal (Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
