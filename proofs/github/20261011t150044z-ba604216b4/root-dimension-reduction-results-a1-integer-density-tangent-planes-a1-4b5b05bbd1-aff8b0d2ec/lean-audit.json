@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1314206abad3d818bc6cb28b6f580d3b4b309973f18871a266a6eca1a051285",
+  "git_delta": {
+    "base_commit": "67d2682549eabcb1d55dfd5e49fa671b16ad52c4",
+    "candidate_commit": "f3d7ce47a48e927a798ecaf3f2f84eb71c2baabd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_normalize_dist_le",
+    "diff_sha256": "130f78605c4df5f36a7cf00b3d82a7df0dc596a092474ffcebd50f3223731464",
+    "source_sha256": "03e3cfc85070d0fe60f5b099738deaf505db28d6fabec886124c892bb2bb0087",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_normalize_dist_le",
+      "statement": "∀ (P : ℕ) (y w : Euclid P), y ≠ 0 → ‖w‖ = 1 → ‖‖y‖⁻¹ • y - w‖ ≤ 2 * ‖y - w‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
