@@ -669,6 +669,139 @@ theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid
       exact mul_pos hlam hr
   exact (hT.2 f).comp hlim
 
+/-- **Integer multiplicity is preserved by the dilation push-forward** `δ_{λ#}`, `δ_λ(x) = λx`,
+`λ > 0` (step 7 of the proof of `cmcdt_dilation_pushforward`; compare Simon 6.3.3).  If
+`Y(ω) = X(δ_λ^#ω)` and `X = τ(M, θ, ξ)`, then `Y = τ(λM, θ(·/λ), ξ(·/λ))`, with
+`λM = δ_{λ⁻¹}⁻¹(M)`.  The change of variables `(δ_λ)_#(Hᵏ⌞M) = λ⁻ᵏ Hᵏ⌞λM` transfers local
+integrability, measurability and orientation (`T_{λx}(λM) = TₓM`), and `δ_λ^#ω(x) = λᵏω(λx)`
+gives `Y(ω) = λᵏλ⁻ᵏ ∫_{λM} θ(·/λ) ⟨ω, ξ(·/λ)⟩ dHᵏ`.  This holds in every degree `k`. -/
+theorem Submission.cmcdt_dil_isIntegerMultiplicity : ∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y := by
+  intro P k lam hlam X Y hXY ⟨R, hR⟩
+  have hlam0 : lam ≠ 0 := hlam.ne'
+  -- `δ_λ` is a homeomorphism, hence a measurable embedding, and `δ_λ⁻¹(δ_{λ⁻¹}⁻¹(S)) = S`
+  have hT : MeasurableEmbedding (fun x : Euclid P => lam • x) :=
+    (Homeomorph.smulOfNeZero lam hlam0).measurableEmbedding
+  have hpre : ∀ S : Set (Euclid P),
+      (fun x : Euclid P => lam • x) ⁻¹' ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' S) = S := by
+    intro S
+    ext x
+    simp only [mem_preimage, inv_smul_smul₀ hlam0]
+  have hc0 : ENNReal.ofReal (lam⁻¹ ^ k) ≠ 0 :=
+    (ENNReal.ofReal_pos.2 (pow_pos (inv_pos.2 hlam) k)).ne'
+  -- change of variables on `M' = δ_{λ⁻¹}⁻¹(M)`: `(δ_λ)_#(Hᵏ⌞M) = λ⁻ᵏ Hᵏ⌞M'` and
+  -- `∫_M g(λz) dHᵏ(z) = λ⁻ᵏ ∫_{M'} g dHᵏ`
+  obtain ⟨hcv1, -, hcv3⟩ := Submission.euclid_hausdorff_dilation_change_of_variables P k lam hlam
+    ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier)
+  rw [hpre] at hcv1 hcv3
+  -- rectifiability: `M' ⊆ δ_{λ⁻¹}⁻¹(M₀) ∪ ⋃ⱼ range (λFⱼ)`, with `Hᵏ(δ_{λ⁻¹}⁻¹(M₀)) = λᵏHᵏ(M₀) = 0`
+  have hrect : CountablyRectifiable k ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier) := by
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
+    refine ⟨(fun y : Euclid P => lam⁻¹ • y) ⁻¹' M₀, ?_, fun j z => lam • F j z, fun j => ?_,
+      fun y hy => ?_⟩
+    · rw [preimage_smul₀ (inv_ne_zero hlam0),
+        Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero (inv_ne_zero hlam0)), hM₀,
+        smul_zero]
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖lam‖₊ * K, (lipschitzWith_smul lam).comp hK⟩
+    · have hy' : lam⁻¹ • y ∈ R.carrier := hy
+      rcases hcover hy' with h0 | h1
+      · exact Or.inl h0
+      · obtain ⟨j, z, hz⟩ := mem_iUnion.1 h1
+        exact Or.inr (mem_iUnion.2 ⟨j, z, by simp only [hz, smul_inv_smul₀ hlam0]⟩)
+  -- local integrability: `∫⁻_{M ∩ δ_λ⁻¹(K)} θ dHᵏ = λ⁻ᵏ ∫⁻_{M' ∩ K} θ(·/λ) dHᵏ`
+  have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+      ∫⁻ x in (fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier ∩ K,
+        (R.mult (lam⁻¹ • x) : ℝ≥0∞) ∂μHE[k] ≠ ∞ := by
+    intro K hK _ htop
+    have hKc : IsCompact ((fun x : Euclid P => lam • x) ⁻¹' K) :=
+      (Homeomorph.smulOfNeZero lam hlam0).isCompact_preimage.2 hK
+    have h := (Submission.euclid_hausdorff_dilation_change_of_variables P k lam hlam
+      ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier ∩ K)).2.1
+      (fun y => (R.mult (lam⁻¹ • y) : ℝ≥0∞))
+    rw [preimage_inter, hpre] at h
+    simp only [inv_smul_smul₀ hlam0] at h
+    rw [htop, ENNReal.mul_top hc0] at h
+    exact R.locallyIntegrable_mult _ hKc (subset_univ _) h
+  -- measurability: `ξ(·/λ) ∘ δ_λ = ξ`, and `Hᵏ⌞M' ≪ λ⁻ᵏ Hᵏ⌞M' = (δ_λ)_#(Hᵏ⌞M)`
+  have hmeas : AEStronglyMeasurable (fun y : Euclid P => R.orient (lam⁻¹ • y))
+      (μHE[k].restrict ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier)) := by
+    have h : AEStronglyMeasurable (fun y : Euclid P => R.orient (lam⁻¹ • y))
+        (Measure.map (fun x : Euclid P => lam • x) (μHE[k].restrict R.carrier)) := by
+      rw [hT.aestronglyMeasurable_map_iff]
+      have he : ((fun y : Euclid P => R.orient (lam⁻¹ • y)) ∘ fun x : Euclid P => lam • x) =
+          R.orient := by
+        funext x
+        simp only [Function.comp_apply, inv_smul_smul₀ hlam0]
+      rw [he]
+      exact R.aestronglyMeasurable_orient
+    rw [hcv1] at h
+    exact h.mono_ac (Measure.absolutelyContinuous_smul hc0)
+  -- orientation: `T_{λx}M' = TₓM` (dilation invariance, `dilation 0 λ⁻¹ = δ_λ`) and
+  -- `ξ(λx/λ) = ξ(x)`, transferred from `Hᵏ⌞M`-a.e. `x` to `Hᵏ⌞M'`-a.e. `y = λx`
+  have hdil : dilation (0 : Euclid P) lam⁻¹ = fun y => lam • y := by
+    funext y
+    simp [dilation, dilationCLM]
+  have himg : (fun y : Euclid P => lam • y) '' R.carrier =
+      (fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      simpa only [mem_preimage, inv_smul_smul₀ hlam0] using hx
+    · intro hy
+      exact ⟨lam⁻¹ • y, hy, smul_inv_smul₀ hlam0 y⟩
+  have hor : ∀ᵐ y ∂(μHE[k].restrict ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier)),
+      ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt k ((fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier) y Q ∧
+          IsUnitOrientationOf (R.orient (lam⁻¹ • y)) Q := by
+    refine (Measure.ae_ennreal_smul_measure_iff hc0).1 ?_
+    rw [← hcv1, hT.ae_map_iff]
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, hQ, hξ⟩ := hx
+    refine ⟨Q, ?_, ?_⟩
+    · have h := Submission.dtc_approxTangent_dilation P k R.carrier 0 x lam⁻¹ Q
+        (inv_pos.2 hlam) hQ
+      rwa [hdil, himg] at h
+    · rwa [inv_smul_smul₀ hlam0]
+  refine ⟨{ carrier := (fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier
+            mult := fun y => R.mult (lam⁻¹ • y)
+            orient := fun y => R.orient (lam⁻¹ • y)
+            measurableSet_carrier :=
+              (continuous_const_smul lam⁻¹).measurable R.measurableSet_carrier
+            carrier_subset := subset_univ _
+            rectifiable := hrect
+            measurable_mult := R.measurable_mult.comp (continuous_const_smul lam⁻¹).measurable
+            mult_pos := fun y hy => R.mult_pos _ hy
+            locallyIntegrable_mult := hint
+            aestronglyMeasurable_orient := hmeas
+            orients := hor }, fun ω => ?_⟩
+  -- representation: `Y(ω) = X(η)` with `η(x) = λᵏω(λx)` (pullback test form), then change of
+  -- variables with `g(y) = θ(y/λ) ⟨ω(y), ξ(y/λ)⟩`
+  obtain ⟨η, hη, hηx⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+  rw [hXY ω η hη, hR η]
+  show ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((η : DifferentialForm (Euclid P) k) x)
+      ∂μHE[k] = ∫ y in (fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier,
+        (R.mult (lam⁻¹ • y) : ℝ) * R.orient (lam⁻¹ • y) ((ω : DifferentialForm (Euclid P) k) y)
+          ∂μHE[k]
+  have h3 := hcv3 fun y => (R.mult (lam⁻¹ • y) : ℝ) *
+    R.orient (lam⁻¹ • y) ((ω : DifferentialForm (Euclid P) k) y)
+  simp only [inv_smul_smul₀ hlam0] at h3
+  calc ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((η : DifferentialForm (Euclid P) k) x)
+        ∂μHE[k]
+      = ∫ x in R.carrier, lam ^ k * ((R.mult x : ℝ) *
+          R.orient x ((ω : DifferentialForm (Euclid P) k) (lam • x))) ∂μHE[k] := by
+        refine integral_congr_ae (ae_of_all _ fun x => ?_)
+        simp only [hηx x, map_smul, smul_eq_mul]
+        ring
+    _ = lam ^ k * ∫ x in R.carrier, (R.mult x : ℝ) *
+          R.orient x ((ω : DifferentialForm (Euclid P) k) (lam • x)) ∂μHE[k] :=
+        integral_const_mul _ _
+    _ = lam ^ k * (lam⁻¹ ^ k * ∫ y in (fun y : Euclid P => lam⁻¹ • y) ⁻¹' R.carrier,
+          (R.mult (lam⁻¹ • y) : ℝ) *
+            R.orient (lam⁻¹ • y) ((ω : DifferentialForm (Euclid P) k) y) ∂μHE[k]) := by
+        rw [h3]
+    _ = _ := by
+        rw [← mul_assoc, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
