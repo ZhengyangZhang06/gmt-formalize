@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "009f76d0cfd1e9ee60006dfd2acb210ebeb130592a77bd7402e438bcab14f5cd",
+  "git_delta": {
+    "base_commit": "b6bbaca8b55b7bee809925953d0b594840c4c05c",
+    "candidate_commit": "c45a6249683e8aeb5d1e6a091e54bcedf25f7d38",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "27bb60f77110deec06c4c771351bf19b6432a87812351ae338e4888685eb078f",
+    "source_sha256": "f57831ee32ed4eb322c58cede2f1e046d1c9a05ff4c0793f4d342ccd41a4685f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_piece_image_approxTangent_ae",
+      "statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → ∀ᵐ a ∂(volume.restrict A), HasApproximateTangentSpaceAt n (g '' A) (g a) (LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
