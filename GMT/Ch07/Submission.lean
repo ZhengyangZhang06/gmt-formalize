@@ -451,6 +451,19 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The open unit cube `Q₁ = {y : 0 < yᵢ < 1 ∀ i}` of `ℝ^{m+1}` has Lebesgue measure `1`.  The
+coordinate map `ofLp : ℝ^{m+1} → (Fin (m + 1) → ℝ)` is measure preserving and `Q₁` is the
+preimage of the measurable box `∏ᵢ (0, 1)`, whose volume is `∏ᵢ (1 − 0) = 1`. -/
+theorem Submission.cmcdt_cbm_bvp_unit_cube_volume : ∀ m : ℕ, volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+  intro m
+  have hset : {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} =
+      WithLp.ofLp ⁻¹' Set.pi Set.univ (fun _ : Fin (m + 1) => Set.Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Set.mem_pi]
+  rw [hset, (PiLp.volume_preserving_ofLp (Fin (m + 1))).measure_preimage
+    (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
