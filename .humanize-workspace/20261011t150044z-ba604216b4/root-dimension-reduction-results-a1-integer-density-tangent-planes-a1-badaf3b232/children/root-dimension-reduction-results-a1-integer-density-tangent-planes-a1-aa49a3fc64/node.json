@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.planes_eq_or_inf_bot-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1",
+  "depth": 5,
+  "title": "Two seeded 2-planes of a closed locally planar set are equal or meet only at 0",
+  "statement": "Let P ∈ ℕ and let S ⊆ ℝ^P be a closed set such that every p ∈ S with p ≠ 0 has δ > 0 and a 2-dimensional linear subspace Q of ℝ^P with S ∩ B_δ(p) = Q ∩ B_δ(p). Let Q₁, Q₂ be 2-dimensional linear subspaces of ℝ^P, let p₁ ∈ Q₁ and p₂ ∈ Q₂ with |p₁| = |p₂| = 1, and let δ₁, δ₂ > 0 with S ∩ B_δ₁(p₁) = Q₁ ∩ B_δ₁(p₁) and S ∩ B_δ₂(p₂) = Q₂ ∩ B_δ₂(p₂). Then Q₁ = Q₂ or Q₁ ∩ Q₂ = {0} (Q₁ ⊓ Q₂ = ⊥).",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (p₁ p₂ : Euclid P) (δ₁ δ₂ : ℝ), IsClosed S → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → Module.finrank ℝ Q₁ = 2 → Module.finrank ℝ Q₂ = 2 → p₁ ∈ Q₁ → ‖p₁‖ = 1 → 0 < δ₁ → S ∩ ball p₁ δ₁ = (Q₁ : Set (Euclid P)) ∩ ball p₁ δ₁ → p₂ ∈ Q₂ → ‖p₂‖ = 1 → 0 < δ₂ → S ∩ ball p₂ δ₂ = (Q₂ : Set (Euclid P)) ∩ ball p₂ δ₂ → Q₁ = Q₂ ∨ Q₁ ⊓ Q₂ = ⊥",
+  "lean_name": "idtp_tdc_csfp_planes_eq_or_inf_bot",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.subspace_eq_of_inter_ball-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.great_circle_local_plane-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.subspace_eq_of_inter_ball-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1.great_circle_local_plane-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-aa49a3fc64-a1"
+}

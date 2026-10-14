@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Uniqueness of planes in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in finitely many
+2-planes `Pᵢ` with `Pᵢ ∩ Pⱼ = {0}`): linear subspaces `Q₁, Q₂` of `ℝᴾ` that agree on a ball
+`B_t(x)`, `t > 0`, about a point `x ∈ Q₁` are equal.  First, `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`
+gives `x ∈ Q₂`.  For `v ∈ Q₁` and `s = t / (2(|v| + 1)) > 0` we have `|s v| < t`, so `x + s v`
+lies in `Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`; hence `s v ∈ Q₂` and `v ∈ Q₂`.  Exchanging `Q₁` and `Q₂`,
+antisymmetry gives `Q₁ = Q₂`. -/
+theorem Submission.idtp_tdc_csfp_subspace_eq_of_inter_ball : ∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂ := by
+  intro P Q₁ Q₂ x t hx ht h
+  -- Step 1: `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, so `x ∈ Q₂`
+  have hx₂ : x ∈ Q₂ := by
+    have hx' : x ∈ (Q₁ : Set (Euclid P)) ∩ ball x t := ⟨hx, mem_ball_self ht⟩
+    rw [h] at hx'
+    exact hx'.1
+  -- Step 2: if `x ∈ A`, `x ∈ B` and `A ∩ B_t(x) = B ∩ B_t(x)`, then `A ≤ B`
+  have key : ∀ A B : Submodule ℝ (Euclid P), x ∈ A → x ∈ B →
+      (A : Set (Euclid P)) ∩ ball x t = (B : Set (Euclid P)) ∩ ball x t → A ≤ B := by
+    intro A B hxA hxB hAB v hv
+    -- `s := t / (2(|v| + 1)) > 0` has `s |v| ≤ s (|v| + 1) = t / 2 < t`
+    obtain ⟨s, hs, hsv⟩ : ∃ s : ℝ, 0 < s ∧ s * ‖v‖ < t := by
+      refine ⟨t / (2 * (‖v‖ + 1)), by positivity, ?_⟩
+      calc t / (2 * (‖v‖ + 1)) * ‖v‖ ≤ t / (2 * (‖v‖ + 1)) * (‖v‖ + 1) := by gcongr; linarith
+        _ = t / 2 := by field_simp
+        _ < t := half_lt_self ht
+    -- `y := x + s v ∈ A ∩ B_t(x) = B ∩ B_t(x)`, so `s v = y − x ∈ B` and `v = s⁻¹ (s v) ∈ B`
+    have hy : x + s • v ∈ (A : Set (Euclid P)) ∩ ball x t := ⟨A.add_mem hxA (A.smul_mem s hv), by
+      rwa [mem_ball, dist_self_add_left, norm_smul_of_nonneg hs.le]⟩
+    rw [hAB] at hy
+    exact (B.smul_mem_iff hs.ne').1 ((B.add_mem_iff_right hxB).1 hy.1)
+  -- Step 3: `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`
+  exact le_antisymm (key Q₁ Q₂ hx hx₂ h) (key Q₂ Q₁ hx₂ hx h.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
