@@ -3682,6 +3682,171 @@ theorem Submission.dor_lmb_fcd_fr_face_representation : ∀ (P m : ℕ) (s : Fin
       _ = ∑ p ∈ s, ∫ x in Mp p, g x ∂μHE[m + 1] := integral_biUnion_finset s hMpm hMpdisj hgint
       _ = _ := Finset.sum_congr rfl hpiece
 
+/-- **Divergence-form test forms near a face** (Simon Ch. 6, (28), by the arguments of 2.34–2.35).
+For the face `Φ_p(y) = z + Σⱼ yⱼ e_{ι(j)}` and `g : ℝⁿ → ℝⁿ` smooth with compact support and
+`|g| ≤ 1`, put `ω = χ Σ_l (-1)^l (g_l ∘ π) dx^{J_l}` with `J_l = ι ∘ succAbove l`, the face
+coordinates `π(x)_k = x_{ι(k)} - z_{ι(k)}` and the normal cut-off `χ = η(|x - Φ_p(π x)|²)`, `η = 1`
+on `[0, δ²/2]` and `η = 0` on `[δ², ∞)`.  The `dx^{J_l}` are orthonormal, so `|ω| = χ |g ∘ π| ≤ 1`;
+`spt ω` lies in `{|x - Φ_p(π x)| ≤ δ} ∩ π⁻¹(spt g)`; and near the face
+`ω(x)(e_{J_i}) = (-1)^i gᵢ(π x)`, so the alternating-sum formula for `d` gives
+`dω(Φ_p y)(e_p) = Σᵢ ∂ᵢgᵢ(y) = trace Dg(y)`. -/
+theorem Submission.dor_lmb_fcd_fr_divergence_form : ∀ (P m : ℕ) (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) (g : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), StrictMono p.2 → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → 0 < δ → ∃ ω : TestFormOn (univ : Set (Euclid P)) m, (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ (∀ x ∈ tsupport (ω : DifferentialForm (Euclid P) m), ∃ y ∈ tsupport g, dist x (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) ≤ δ) ∧ ∀ y : Euclid (m + 1), exteriorDerivative (ω : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+  intro P m p g δ hι hg hgc hg1 hδ
+  -- 1. coordinate covectors `dx^J`
+  obtain ⟨dx, hdx, hdxn⟩ := Submission.dor_lmb_fcd_fr_coordinate_covectors P m
+  -- 2. the frames `J l = ι ∘ succAbove l`: strictly increasing and pairwise distinct
+  let J : Fin (m + 1) → Fin m → Fin P := fun l r => p.2 (l.succAbove r)
+  have hJ : ∀ l, StrictMono (J l) := fun l => hι.comp (Fin.strictMono_succAbove l)
+  have hJinj : Injective J := by
+    intro l l' h
+    apply Fin.succAbove_left_injective
+    funext r
+    exact hι.injective (congrFun h r)
+  -- the face map `Φ` and the face coordinates `π x = πL x - πL z`, with `π ∘ Φ = id`
+  let z : Euclid P := WithLp.toLp 2 (fun i => (p.1 i : ℝ))
+  let Φ : Euclid (m + 1) → Euclid P := fun y =>
+    z + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)
+  let πL : Euclid P →L[ℝ] Euclid (m + 1) :=
+    (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.pi fun k => EuclideanSpace.proj (p.2 k))
+  have hπL : ∀ x k, πL x k = x (p.2 k) := fun x k => rfl
+  have hπLe : ∀ j, πL (EuclideanSpace.single (p.2 j) (1 : ℝ)) = EuclideanSpace.single j 1 := by
+    intro j
+    ext k
+    simp [hπL, PiLp.single_apply, hι.injective.eq_iff]
+  let π : Euclid P → Euclid (m + 1) := fun x => πL x - πL z
+  have hπΦ : ∀ y, π (Φ y) = y := by
+    intro y
+    simp only [π, Φ, map_add, add_sub_cancel_left, map_sum, map_smul, hπLe]
+    ext k
+    simp [Pi.single_apply]
+  -- the squared normal distance `ν x = |x - Φ(π x)|²` and the cut-off `χ = η ∘ ν`
+  let ν : Euclid P → ℝ := fun x => ‖x - Φ (π x)‖ ^ 2
+  let χ : Euclid P → ℝ := fun x => Real.smoothTransition (2 - 2 * ν x / δ ^ 2)
+  -- 3. the form `ω = Σ_l (-1)^l χ (g_l ∘ π) dx^{J l}`
+  let c : Fin (m + 1) → Euclid P → ℝ := fun l x => (-1) ^ (l : ℕ) * χ x * g (π x) l
+  let ω : DifferentialForm (Euclid P) m := fun x => ∑ l, c l x • dx (J l)
+  have hcoord : ∀ j : Fin (m + 1), ContDiff ℝ (⊤ : ℕ∞) fun y : Euclid (m + 1) => y j :=
+    fun j => (EuclideanSpace.proj j : Euclid (m + 1) →L[ℝ] ℝ).contDiff
+  have hπ : ContDiff ℝ (⊤ : ℕ∞) π := πL.contDiff.sub contDiff_const
+  have hΦ : ContDiff ℝ (⊤ : ℕ∞) Φ :=
+    contDiff_const.add (ContDiff.sum fun j _ => (hcoord j).smul contDiff_const)
+  have hν : ContDiff ℝ (⊤ : ℕ∞) ν := (contDiff_norm_sq ℝ).comp (contDiff_id.sub (hΦ.comp hπ))
+  have hχ : ContDiff ℝ (⊤ : ℕ∞) χ :=
+    Real.smoothTransition.contDiff.comp (contDiff_const.sub ((contDiff_const.mul hν).div_const _))
+  have hgπ : ∀ l, ContDiff ℝ (⊤ : ℕ∞) fun x => g (π x) l := fun l =>
+    (hcoord l).comp (hg.comp hπ)
+  have hω : ContDiff ℝ (⊤ : ℕ∞) ω :=
+    ContDiff.sum fun l _ => ((contDiff_const.mul hχ).mul (hgπ l)).smul contDiff_const
+  -- `χ = 0` where `ν ≥ δ²` and `χ = 1` where `2ν ≤ δ²`
+  have hχ0 : ∀ x, δ ^ 2 ≤ ν x → χ x = 0 := by
+    intro x hx
+    apply Real.smoothTransition.zero_of_nonpos
+    have : 2 ≤ 2 * ν x / δ ^ 2 := by
+      rw [le_div_iff₀ (by positivity)]
+      linarith
+    linarith
+  have hχ1 : ∀ x, 2 * ν x ≤ δ ^ 2 → χ x = 1 := by
+    intro x hx
+    apply Real.smoothTransition.one_of_one_le
+    have : 2 * ν x / δ ^ 2 ≤ 1 := by
+      rw [div_le_one₀ (by positivity)]
+      exact hx
+    linarith
+  -- `spt ω ⊆ Z = {ν ≤ δ²} ∩ π⁻¹(spt g)`, and `|x - Φ(π x)| ≤ δ` on `Z`
+  have hω0 : ∀ x, (χ x = 0 ∨ g (π x) = 0) → ω x = 0 := by
+    intro x hx
+    refine Finset.sum_eq_zero fun l _ => ?_
+    rcases hx with h | h <;> simp [c, h]
+  have hsuppZ : tsupport ω ⊆ {x | ν x ≤ δ ^ 2} ∩ π ⁻¹' tsupport g := by
+    refine closure_minimal (fun x hx => ⟨?_, ?_⟩)
+      ((isClosed_le hν.continuous continuous_const).inter
+        ((isClosed_tsupport g).preimage hπ.continuous))
+    · by_contra h
+      exact hx (hω0 x (Or.inl (hχ0 x (le_of_not_ge h))))
+    · by_contra h
+      exact hx (hω0 x (Or.inr (image_eq_zero_of_notMem_tsupport h)))
+  have hZδ : ∀ x, ν x ≤ δ ^ 2 → dist x (Φ (π x)) ≤ δ := fun x hx => by
+    rw [dist_eq_norm]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) hδ.le two_ne_zero).mp hx
+  -- compact support: `Z ⊆ cthickening δ (Φ(spt g))`
+  have hcpt : HasCompactSupport ω :=
+    ((hgc.isCompact.image hΦ.continuous).cthickening (r := δ)).of_isClosed_subset
+      (isClosed_tsupport ω) (hsuppZ.trans fun x hx =>
+        Metric.mem_cthickening_of_dist_le x (Φ (π x)) δ _ (mem_image_of_mem Φ hx.2)
+          (hZδ x hx.1))
+  refine ⟨⟨ω, ⟨hω, hcpt⟩, subset_univ _⟩, fun x => ?_, fun x hx => ?_, fun y => ?_⟩
+  · -- 4. (i) `|ω(x)| = χ(x) |g(π x)| ≤ 1`
+    show covectorEuclideanNorm (∑ l, c l x • dx (J l)) ≤ 1
+    rw [hdxn (m + 1) J (fun l => c l x) hJinj hJ]
+    refine (Real.sqrt_le_sqrt ?_).trans_eq Real.sqrt_one
+    calc ∑ l, c l x ^ 2 = χ x ^ 2 * ‖g (π x)‖ ^ 2 := by
+          rw [EuclideanSpace.real_norm_sq_eq, Finset.mul_sum]
+          refine Finset.sum_congr rfl fun l _ => ?_
+          simp only [c]
+          rw [mul_pow, mul_pow, ← pow_mul, mul_comm (l : ℕ) 2, pow_mul, neg_one_sq, one_pow,
+            one_mul]
+      _ ≤ 1 * 1 := mul_le_mul (pow_le_one₀ (Real.smoothTransition.nonneg _)
+          (Real.smoothTransition.le_one _)) (pow_le_one₀ (norm_nonneg _) (hg1 _)) (sq_nonneg _)
+          zero_le_one
+      _ = 1 := one_mul 1
+  · -- 5. (ii) `x` is within `δ` of `Φ(π x)`, `π x ∈ spt g`
+    obtain ⟨hxν, hxg⟩ := hsuppZ hx
+    exact ⟨π x, hxg, hZδ x hxν⟩
+  · -- 6. (iii) near `Φ y`, `χ = 1`, so `ω` agrees with `ω₀ = Σ_l (-1)^l (g_l ∘ π) dx^{J l}`
+    let ω₀ : DifferentialForm (Euclid P) m := fun x =>
+      ∑ l : Fin (m + 1), ((-1) ^ (l : ℕ) * g (π x) l) • dx (J l)
+    have hω₀ : ContDiff ℝ (⊤ : ℕ∞) ω₀ :=
+      ContDiff.sum fun l _ => (contDiff_const.mul (hgπ l)).smul contDiff_const
+    have hνΦ : 2 * ν (Φ y) < δ ^ 2 := by
+      simp only [ν, hπΦ, sub_self, norm_zero]
+      simpa using pow_pos hδ 2
+    have hloc : ω =ᶠ[𝓝 (Φ y)] ω₀ := by
+      filter_upwards [(isOpen_lt (continuous_const.mul hν.continuous) continuous_const).mem_nhds
+        hνΦ] with x hx
+      simp only [ω, ω₀, c, hχ1 x (le_of_lt hx), mul_one]
+    have hd : exteriorDerivative ω (Φ y) = exteriorDerivative ω₀ (Φ y) := hloc.extDeriv_eq
+    -- `ω₀(x)(e_{J i}) = (-1)^i g_i(π x)`
+    have hω₀e : ∀ i : Fin (m + 1),
+        (fun x => ω₀ x (i.removeNth fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) =
+          fun x => (-1) ^ (i : ℕ) * g (π x) i := by
+      intro i
+      funext x
+      show (∑ l : Fin (m + 1), ((-1) ^ (l : ℕ) * g (π x) l) • dx (J l))
+          (fun r => EuclideanSpace.single (J i r) (1 : ℝ)) = _
+      rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single i]
+      · rw [ContinuousAlternatingMap.smul_apply, hdx _ _ (hJ i) (hJ i), ite_eq_left rfl,
+          smul_eq_mul, mul_one]
+      · intro l _ hl
+        rw [ContinuousAlternatingMap.smul_apply, hdx _ _ (hJ i) (hJ l),
+          ite_eq_right fun h => hl (hJinj h).symm, smul_zero]
+      · exact fun h => absurd (Finset.mem_univ i) h
+    -- `D[(-1)^i g_i ∘ π](Φ y)(e_{ι i}) = (-1)^i (Dg(y) ê_i)_i`
+    have hderiv : ∀ i : Fin (m + 1),
+        fderiv ℝ (fun x => (-1) ^ (i : ℕ) * g (π x) i) (Φ y)
+          (EuclideanSpace.single (p.2 i) (1 : ℝ)) =
+          (-1) ^ (i : ℕ) * fderiv ℝ g y (EuclideanSpace.single i (1 : ℝ)) i := by
+      intro i
+      have hπd : HasFDerivAt π πL (Φ y) := πL.hasFDerivAt.sub_const (πL z)
+      have hgd : HasFDerivAt g (fderiv ℝ g y) (π (Φ y)) := by
+        rw [hπΦ]
+        exact (hg.differentiable (by simp) y).hasFDerivAt
+      have h2 : fderiv ℝ (fun x => (-1) ^ (i : ℕ) * g (π x) i) (Φ y) =
+          ((-1 : ℝ) ^ (i : ℕ)) • ((EuclideanSpace.proj i).comp ((fderiv ℝ g y).comp πL)) :=
+        (((EuclideanSpace.proj i).hasFDerivAt.comp (Φ y) (hgd.comp (Φ y) hπd)).const_mul
+          ((-1 : ℝ) ^ (i : ℕ))).fderiv
+      rw [h2, smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.comp_apply, hπLe, smul_eq_mul]
+      rfl
+    show exteriorDerivative ω (Φ y) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) = _
+    rw [hd, exteriorDerivative_apply (hω₀.differentiable (by simp)).differentiableAt,
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hω₀e i, hderiv i, EuclideanSpace.basisFun_apply, EuclideanSpace.inner_single_left,
+      map_one, one_mul, ContinuousLinearMap.coe_coe, zsmul_eq_mul]
+    push_cast
+    rw [← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
