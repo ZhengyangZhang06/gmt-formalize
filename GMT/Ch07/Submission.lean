@@ -1899,6 +1899,7 @@ theorem Submission.idtp_ccd_scsp_ca_prod_area_formula : ∀ (P : ℕ) (G : ℝ �
   -- (4) pull the integral back from `e⁻¹(R)` to `R`
   simp_rw [hpt]
   exact hmp.setIntegral_preimage_emb hemb Ψ R
+
 /-- **Smooth cutoff near a compact set** (step 3 of the parent proof).  Take `δ > 0` with
 `cthickening δ K ⊆ N`.  The smooth Urysohn lemma for the closed set `cthickening (δ / 4) K`
 inside the open set `thickening (δ / 2) K` gives a `C¹` function `ζ` with
@@ -2135,6 +2136,80 @@ theorem Submission.idtp_ccd_scsp_test_field : ∀ (P : ℕ) (u e : Euclid P) (r�
     show A * (c⁻¹ * b) - B * (c⁻¹ * a) = c⁻¹ * (A ^ 2 + B ^ 2) by rw [← hkey]; ring,
     show (t * A) ^ 2 + (t * B) ^ 2 = t ^ 2 * (A ^ 2 + B ^ 2) by ring]
   field_simp
+
+/-- **Stationarity of a cone over a unit curve gives a weak conservation law** (the
+separation-of-variables step in the planarity of a stationary, radially invariant `C¹` sheet, used
+for the 2-dimensional tangent cones in the proof of Simon 7.3.3).  Let
+`S = {tγ(α) : t ∈ (r₀ − s, r₀ + s), α ∈ (−s, s)}`, where the unit `C¹` curve `γ` has angle `α`
+in the `(u, e)`-plane, and `T(tγ(α)) = span{γ(α), γ′(α)}`.  If `∫_S tr(P_T ∘ DX) dH² = 0` for
+every admissible `X`, then `∫ φ′κ = 0` for `κ = (⟨γ,u⟩² + ⟨γ,e⟩²)/‖γ′‖`: test with the field of
+`idtp_ccd_scsp_test_field` built from a radial bump `λ`, pull back to the parameter rectangle by
+the area formula `idtp_ccd_scsp_cone_area`, and separate variables,
+`0 = (∫ tλ(t) dt) · ∫ φ′κ` with `∫ tλ(t) dt > 0`. -/
+theorem Submission.idtp_ccd_scsp_cone_conservation : ∀ (P : ℕ) (u e : Euclid P) (r₀ s : ℝ) (N : Set (Euclid P)) (γ : ℝ → Euclid P) (T : Euclid P → Submodule ℝ (Euclid P)), ‖u‖ = 1 → ‖e‖ = 1 → inner ℝ u e = 0 → 0 < s → s < r₀ → IsOpen N → (∀ x ∈ N, 0 < inner ℝ x u) → ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → (∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, t • γ α ∈ N ∧ T (t • γ α) = Submodule.span ℝ {γ α, deriv γ α}) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ N → ∫ x in (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s), LinearMap.trace ℝ (Euclid P) ((T x).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[2] = 0) → ∀ φ : ℝ → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ioo (-s) s → ∫ α, deriv φ α * ((inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖) = 0 := by
+  intro P u e r₀ s N γ T hu he hue hs hsr hN hNu hγ hγα hcone hstat φ hφ hφc hφs
+  -- radial weight `λ`: a bump at `r₀` with radii `s / 4 < s / 2`, supported in `(r₀ - s, r₀ + s)`
+  let b : ContDiffBump r₀ := ⟨s / 4, s / 2, by positivity, by linarith⟩
+  have hb_supp : tsupport b ⊆ Ioo (r₀ - s) (r₀ + s) := by
+    rw [b.tsupport_eq, Real.closedBall_eq_Icc]
+    exact Icc_subset_Ioo (by change r₀ - s < r₀ - s / 2; linarith)
+      (by change r₀ + s / 2 < r₀ + s; linarith)
+  -- test field `X` with `tr (P_T ∘ DX)(tγ(α)) = λ(t) φ′(α) (⟨γ,u⟩² + ⟨γ,e⟩²) / ‖γ′(α)‖²`
+  obtain ⟨X, hX1, hXc, hXN, hXtr⟩ := Submission.idtp_ccd_scsp_test_field P u e r₀ s N γ T b φ
+    hu he hue hs hsr hN hNu hγ hγα hcone b.contDiff b.hasCompactSupport hb_supp hφ hφc hφs
+  -- `⟨γ, γ′⟩ = 0`, `γ′ ≠ 0`; `γ` is injective on `(-s, s)` since the angle of `γ(α)` is `α`
+  have hcurve := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγ hγα
+  have hinj : InjOn γ (Ioo (-s) s) := fun a ha a' ha' haa' => by
+    rw [← (hγα a ha).2.2, ← (hγα a' ha').2.2, haa']
+  -- the area formula of `idtp_ccd_scsp_cone_area` (declared after `main_theorem`, hence proved
+  -- here from its two parts): `G(t, α) = tγ(α)` is injective on `R` with injective derivative,
+  -- `∂₁G = γ(α)` and `∂₂G = tγ′(α)`
+  have hR : MeasurableSet (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  obtain ⟨hGinj, hreg⟩ := Submission.idtp_ccd_scsp_ca_cone_map_regular P r₀ s γ hs hsr hγ hinj
+    fun α hα => ⟨(hγα α hα).1, (hcurve α hα).1, (hcurve α hα).2.2⟩
+  -- stationarity, pulled back to the parameter rectangle by the area formula
+  have h0 := hstat X hX1 hXc hXN
+  rw [Submission.idtp_ccd_scsp_ca_prod_area_formula P (fun q : ℝ × ℝ => q.1 • γ q.2) _
+    (fun x => LinearMap.trace ℝ (Euclid P)
+      ((T x).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap)) hR
+    (fun z hz => (hreg z hz).1) (fun z hz => (hreg z hz).2.1) hGinj] at h0
+  -- separation of variables (the Jacobian is `t‖γ′(α)‖`): `0 = (∫ tλ(t) dt) · ∫_{(-s, s)} φ′κ`
+  rw [setIntegral_congr_fun hR
+    (g := fun q : ℝ × ℝ => (q.1 * b q.1) *
+      (deriv φ q.2 * ((inner ℝ (γ q.2) u ^ 2 + inner ℝ (γ q.2) e ^ 2) / ‖deriv γ q.2‖))) ?_,
+    Measure.volume_eq_prod, setIntegral_prod_mul (fun t => t * b t)
+      (fun α => deriv φ α * ((inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖))] at h0
+  swap
+  · rintro ⟨t, α⟩ ⟨ht, hα⟩
+    obtain ⟨-, -, h10, h01⟩ := hreg (t, α) ⟨ht, hα⟩
+    have ht0 : 0 < t := by linarith [ht.1]
+    have hne : ‖deriv γ α‖ ≠ 0 := norm_ne_zero_iff.mpr (hcurve α hα).2.2
+    have hJ : (1 : ℝ) ^ 2 * (t * ‖deriv γ α‖) ^ 2 - (t * 0) ^ 2 = (t * ‖deriv γ α‖) ^ 2 := by
+      ring
+    simp only at h10 h01 ⊢
+    rw [h10, h01, (hγα α hα).1, norm_smul, Real.norm_eq_abs, abs_of_pos ht0,
+      real_inner_smul_right, (hcurve α hα).1, hJ, Real.sqrt_sq (mul_nonneg ht0.le (norm_nonneg _)),
+      hXtr t ht α hα]
+    field_simp
+  -- the radial factor is positive: `tλ(t) ≥ 0` on `(r₀ - s, r₀ + s)`, `> 0` on `(r₀ ± s / 2)`
+  have hpos : 0 < ∫ t in Ioo (r₀ - s) (r₀ + s), t * b t := by
+    have hint : Integrable fun t : ℝ => t * b t :=
+      (continuous_id.mul b.continuous).integrable_of_hasCompactSupport
+        (b.hasCompactSupport.mul_left (f := fun t : ℝ => t))
+    rw [setIntegral_pos_iff_support_of_nonneg_ae
+      (ae_restrict_of_forall_mem measurableSet_Ioo fun t ht =>
+        mul_nonneg (by linarith [ht.1] : (0 : ℝ) ≤ t) b.nonneg) hint.integrableOn]
+    calc (0 : ℝ≥0∞) < volume (Ioo (r₀ - s / 2) (r₀ + s / 2)) := by
+          rw [Real.volume_Ioo]; exact ENNReal.ofReal_pos.mpr (by linarith)
+      _ ≤ volume (support (fun t => t * b t) ∩ Ioo (r₀ - s) (r₀ + s)) := by
+          refine measure_mono fun t ht => ⟨?_, by constructor <;> linarith [ht.1, ht.2]⟩
+          have hbt : 0 < b t := b.pos_of_mem_ball (by rw [Real.ball_eq_Ioo]; exact ht)
+          exact (mul_pos (by linarith [ht.1]) hbt).ne'
+  -- `φ′κ` vanishes off `tsupport φ ⊆ (-s, s)`
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo (-s) s) fun α hα => by
+    rw [deriv_of_notMem_tsupport fun h => hα (hφs h), zero_mul]]
+  exact (mul_eq_zero.mp h0).resolve_left hpos.ne'
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
