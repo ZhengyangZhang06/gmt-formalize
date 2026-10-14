@@ -722,6 +722,87 @@ theorem Submission.idtp_cse_ah_ae_scaling_of_weak_scaling : ∀ (a b r : ℝ) (h
         rw [integral_sub (hI _ hhr) ((hI _ hJ).const_mul r), integral_const_mul]
     _ = 0 := by
         rw [hcv, hid, ← mul_assoc, pow_two, ← mul_assoc, inv_mul_cancel₀ hr.ne', one_mul, sub_self]
+/-- **A.e. degree-one homogeneity forces linearity near `1`** (step 8 of the rigidity lemma
+`idtp_cse_alpha_invariant_homogeneous`, towards Simon 7.3.3).  Let `0 < s ≤ 1` and let `h` be
+a.e.-strongly measurable on `I = (1 - s, 1 + s)`.  If for every `r` with `|r - 1| < s/4`,
+`h (r u) = r h u` for a.e. `u ∈ (1 - s/2, 1 + s/2)`, then `h v = c v` for a.e.
+`v ∈ (1 - s/8, 1 + s/8)`.  Pass to a measurable `h'` with `h = h'` a.e. on `I` (`u ↦ r u` maps
+`(1 - s/2, 1 + s/2)` into `I` and pulls null sets back to null sets) and put `g v = h' v / v`, so
+`g (r u) = g u` for a.e. `u`.  Tonelli swaps the quantifiers, giving `u₀ ∈ (1 - s/16, 1 + s/16)`
+with `g (r u₀) = g u₀` for a.e. `r ∈ (1 - s/4, 1 + s/4)`; rescaling by `u₀` gives `g = c := g u₀`
+a.e. on `(1 - s/8, 1 + s/8)`. -/
+theorem Submission.idtp_cse_ah_ae_linear_of_ae_scaling : ∀ (s : ℝ) (h : ℝ → ℝ), 0 < s → s ≤ 1 → AEStronglyMeasurable h (volume.restrict (Ioo (1 - s) (1 + s))) → (∀ r : ℝ, |r - 1| < s / 4 → ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u) → ∃ c : ℝ, ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → h v = c * v := by
+  intro s h hs hs1 hmeas hscal
+  -- a measurable `h'` with `h = h'` a.e. on `I = (1 - s, 1 + s)`
+  obtain ⟨h', hh', hhh'⟩ := hmeas
+  have hI : ∀ᵐ v, v ∈ Ioo (1 - s) (1 + s) → h v = h' v :=
+    (ae_restrict_iff' measurableSet_Ioo).1 hhh'
+  -- for `r ∈ R = (1 - s/4, 1 + s/4)`: `h' (r u) = r h' u` for a.e. `u ∈ I₁ = (1 - s/2, 1 + s/2)`
+  have hscal' : ∀ r ∈ Ioo (1 - s / 4) (1 + s / 4),
+      ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h' (r * u) = r * h' u := by
+    intro r hr
+    have hr0 : 0 < r := by linarith [hr.1]
+    -- `u ↦ r u` maps `I₁` into `I`, and the preimage of the null set `{h ≠ h'} ∩ I` is null
+    have h1 : ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = h' (r * u) := by
+      rw [ae_iff]
+      refine measure_mono_null (fun u hu => ?_)
+        ((Real.volume_preimage_mul_left hr0.ne' _).trans (by rw [ae_iff.1 hI, mul_zero]))
+      simp only [mem_ofPred_eq, not_imp, mem_preimage, mem_Ioo] at hu ⊢
+      obtain ⟨⟨hu1, hu2⟩, hu3⟩ := hu
+      have hu0 : 0 < u := by linarith
+      refine ⟨⟨?_, ?_⟩, hu3⟩
+      · nlinarith [mul_pos (sub_pos.2 hr.1) (sub_pos.2 hu1),
+          mul_pos (by linarith : (0 : ℝ) < 1 - s / 4) (sub_pos.2 hu1),
+          mul_pos (by linarith : (0 : ℝ) < 1 - s / 2) (sub_pos.2 hr.1), mul_pos hs hs]
+      · nlinarith [mul_pos (sub_pos.2 hr.2) (sub_pos.2 hu2), mul_pos hr0 (sub_pos.2 hu2),
+          mul_pos hu0 (sub_pos.2 hr.2), mul_nonneg hs.le (sub_nonneg.2 hs1)]
+    have hr' : |r - 1| < s / 4 := abs_sub_lt_iff.2 ⟨by linarith [hr.2], by linarith [hr.1]⟩
+    filter_upwards [hscal r hr', h1, hI] with u hu1 hu2 hu3 hu
+    rw [← hu2 hu, hu1 hu, hu3 ⟨by linarith [hu.1], by linarith [hu.2]⟩]
+  -- the quotient `g v = h' v / v` satisfies `g (r u) = g u` for a.e. `u ∈ I₁`, for each `r ∈ R`
+  obtain ⟨g, hg, hgdef⟩ : ∃ g : ℝ → ℝ, Measurable g ∧ ∀ v, g v = h' v / v :=
+    ⟨fun v => h' v / v, hh'.measurable.div measurable_id, fun v => rfl⟩
+  have hginv : ∀ r ∈ Ioo (1 - s / 4) (1 + s / 4),
+      ∀ᵐ u ∂(volume.restrict (Ioo (1 - s / 2) (1 + s / 2))), g (r * u) = g u := by
+    intro r hr
+    rw [ae_restrict_iff' measurableSet_Ioo]
+    filter_upwards [hscal' r hr] with u hu1 hu
+    rw [hgdef, hgdef, hu1 hu, mul_div_mul_left _ _ (by linarith [hr.1] : r ≠ 0)]
+  -- Tonelli: for a.e. `u ∈ I₁`, `g (r u) = g u` for a.e. `r ∈ R`
+  have hE : MeasurableSet {p : ℝ × ℝ | g (p.2 * p.1) = g p.1} :=
+    measurableSet_eq_fun (hg.comp (measurable_snd.mul measurable_fst)) (hg.comp measurable_fst)
+  have hswap : ∀ᵐ u ∂(volume.restrict (Ioo (1 - s / 2) (1 + s / 2))),
+      ∀ᵐ r ∂(volume.restrict (Ioo (1 - s / 4) (1 + s / 4))), g (r * u) = g u :=
+    (Measure.ae_ae_comm (p := fun u r => g (r * u) = g u) hE).2
+      (ae_restrict_of_forall_mem measurableSet_Ioo hginv)
+  -- choose such a `u₀ ∈ I₃ = (1 - s/16, 1 + s/16)`; put `c = g u₀`
+  have hI₃ : volume.restrict (Ioo (1 - s / 2) (1 + s / 2)) (Ioo (1 - s / 16) (1 + s / 16)) ≠ 0 := by
+    rw [Measure.restrict_apply measurableSet_Ioo,
+      inter_eq_left.2 (Ioo_subset_Ioo (by linarith) (by linarith)), Real.volume_Ioo]
+    exact (ENNReal.ofReal_pos.2 (by linarith)).ne'
+  obtain ⟨u₀, hu₀, hu₀ae⟩ := Measure.exists_mem_of_measure_ne_zero_of_ae hI₃ (ae_restrict_of_ae hswap)
+  have hu₀0 : 0 < u₀ := by linarith [hu₀.1]
+  have hA : ∀ᵐ r, r ∈ Ioo (1 - s / 4) (1 + s / 4) → g (r * u₀) = g u₀ :=
+    (ae_restrict_iff' measurableSet_Ioo).1 hu₀ae
+  -- rescaling `v ↦ v / u₀`: `g v = c` for a.e. `v ∈ I₂ = (1 - s/8, 1 + s/8)`
+  have hgc : ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → g v = g u₀ := by
+    rw [ae_iff]
+    refine measure_mono_null (fun v hv => ?_)
+      ((Real.volume_preimage_mul_left (inv_ne_zero hu₀0.ne') _).trans (by rw [ae_iff.1 hA, mul_zero]))
+    simp only [mem_ofPred_eq, not_imp, mem_preimage, mem_Ioo] at hv ⊢
+    obtain ⟨⟨hv1, hv2⟩, hv3⟩ := hv
+    have hvu : u₀⁻¹ * v * u₀ = v := by field_simp
+    refine ⟨⟨?_, ?_⟩, by rwa [hvu]⟩
+    · rw [← div_eq_inv_mul, lt_div_iff₀ hu₀0]
+      nlinarith [hu₀.2, mul_pos (by linarith : (0 : ℝ) < 1 - s / 4) (sub_pos.2 hu₀.2), mul_pos hs hs]
+    · rw [← div_eq_inv_mul, div_lt_iff₀ hu₀0]
+      nlinarith [hu₀.1, mul_pos (by linarith : (0 : ℝ) < 1 + s / 4) (sub_pos.2 hu₀.1),
+        mul_nonneg hs.le (sub_nonneg.2 hs1)]
+  -- conclusion: `h v = h' v = v g v = c v` for a.e. `v ∈ I₂`
+  refine ⟨g u₀, ?_⟩
+  filter_upwards [hI, hgc] with v hv1 hv2 hv
+  have hv0 : v ≠ 0 := by linarith [hv.1]
+  rw [hv1 ⟨by linarith [hv.1], by linarith [hv.2]⟩, ← hv2 hv, hgdef, div_mul_cancel₀ _ hv0]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
