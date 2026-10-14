@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.positive_density-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Positive upper density of the mass of a weak limit of integral cycles (printed (1)–(6))",
+  "statement": "Assume m + 2 ≤ P, SlicingTheorem, IsoperimetricTheorem, LipschitzPushforwardIntegerMultiplicity and (BLI) for degree m+1 currents in ℝ^P (if every ∂Y_j is integer multiplicity, sup_j M(∂Y_j) < ∞ and ∂Y_j ⇀ ∂Y, then ∂Y is integer multiplicity). Let T_j, T ∈ D_{m+1}(ℝ^P) with T_j integer multiplicity, ∂T_j = 0, sup_j M(T_j) < ∞ and T_j ⇀ T. Then there is a measure μ with IsMassMeasure T μ such that the upper density Θ*^{m+1}(μ,x) = limsup_{ρ↓0} μ(B̄_ρ(x))/(ω_{m+1}ρ^{m+1}) is positive for μ-a.e. x.",
+  "lean_statement": "∀ (P m : ℕ), m + 2 ≤ P → SlicingTheorem → IsoperimetricTheorem → LipschitzPushforwardIntegerMultiplicity → (∀ (Yj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Yj j).boundary) → (⨆ j, (Yj j).boundary.mass) < ∞ → WeaklyConvergesOn (fun j => (Yj j).boundary) Y.boundary → IsIntegerMultiplicity Y.boundary) → ∀ (Tj : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ j, (Tj j).boundary = 0) → (⨆ j, (Tj j).mass) < ∞ → WeaklyConvergesOn Tj T → ∃ μ : Measure (Eucl P), IsMassMeasure T μ ∧ ∀ᵐ x ∂μ, 0 < dimensionalUpperDensity μ.toOuterMeasure ((m + 1 : ℕ) : ℝ) univ x",
+  "lean_name": "iwl_positive_density",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.restriction_theory-a1",
+    "root.integrality_weak_limits-a1.restriction_limit-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-positive-density-a1-a1"
+}

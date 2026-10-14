@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.riesz_l1_dual-a1",
+  "parent_id": "root.constancy-a1",
+  "depth": 2,
+  "title": "Riesz representation (L¹(μ))* = L^∞(μ) for a finite measure",
+  "statement": "Let μ be a finite measure on a measurable space α, F : (α → ℝ) → ℝ and C ∈ ℝ such that F(f + g) = F(f) + F(g), F(c f) = c F(f) and |F(f)| ≤ C ∫|f| dμ for all μ-integrable f, g and all c ∈ ℝ. Then there is a measurable θ : α → ℝ, bounded on all of α, with F(f) = ∫ f θ dμ for every μ-integrable f.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∃ θ : α → ℝ, Measurable θ ∧ (∃ M : ℝ, ∀ x, |θ x| ≤ M) ∧ ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ",
+  "lean_name": "constancy_riesz_l1_dual_bounded_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-riesz-l1-dual-a1-a1"
+}

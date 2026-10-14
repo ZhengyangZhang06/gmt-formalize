@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_slices-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "depth": 5,
+  "title": "Horizontal slices x ↦ ψ(cons(s,x))∘ι of a test form and of its e₀-derivative are test forms (supplied step 2)",
+  "statement": "Let m, q ∈ ℕ and ψ ∈ D^q(ℝ^{m+1}) = TestFormOn univ q. Then there are families Ψ, Ψ′ : ℝ → D^q(ℝ^m) such that for all s ∈ ℝ, x ∈ ℝ^m and v : Fin q → ℝ^m: Ψ(s)(x)(v) = ψ(cons(s,x))(fun i => ι(v i)) and Ψ′(s)(x)(v) = (fderiv ℝ ψ (cons(s,x)) e₀)(fun i => ι(v i)), where cons(s,x) := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)), ι(w) := cons(0, w) and e₀ := EuclideanSpace.single 0 1.",
+  "lean_statement": "∀ (m q : ℕ) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) q), ∃ Ψ Ψ' : ℝ → TestFormOn (univ : Set (Eucl m)) q, (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ s : DifferentialForm (Eucl m) q) x v = (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) ∧ ∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v = fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (EuclideanSpace.single 0 1) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))",
+  "lean_name": "dph_iprod_horizontal_slices",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1-a1",
+      "result_commit": "fd5f1e29719e3bfa62df774678e3c6879599f8f9",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-b3ea5a5a02-a1"
+}

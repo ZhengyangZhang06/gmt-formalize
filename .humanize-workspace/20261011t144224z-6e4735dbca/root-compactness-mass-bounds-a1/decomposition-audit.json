@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -A 14 '^def CompactnessUnderMassBounds|^def IsMeasureRepresentation|^def CompactlyContainedOpen' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n -i 'compactness|subseq|separab|mollif|continuous.*representation|representation.*continuous' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/",
+        "exists_contDiff_support_eq_eq_one_iff|exists_contDiff_dist_le",
+        "exists_open_between_and_isCompact_closure|theorem IsCompact.tendsto_subseq",
+        "IsSeparable.exists_countable_dense_subset|exists_countable_dense_subset",
+        "lake env lean Scratch/InstanceAudit.lean",
+        "lake env lean -o .lake/build/lib/lean/Scratch/Weak.olean Scratch/Weak.lean",
+        "lake env lean -o .lake/build/lib/lean/Scratch/Repr.olean Scratch/Repr.lean",
+        "lake env lean -o .lake/build/lib/lean/Scratch/ContForms.olean Scratch/ContForms.lean",
+        "lake env lean Scratch/Assemble.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cmb_independent_audit_qkbpq5q8/Scratch/Assemble.lean",
+        "/tmp/cmb_independent_audit_qkbpq5q8/Scratch/InstanceAudit.lean",
+        "/tmp/cmb_independent_audit_qkbpq5q8/proof-build-results.json",
+        "/tmp/cmb_independent_audit_qkbpq5q8/challenge-build-results.json"
+      ],
+      "conclusion": "The split is appropriate for the selected contract Submission.compactness_under_mass_bounds : CompactnessUnderMassBounds. Checked project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d and SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197; frozen Contract and scratch Submission are byte-identical. The SimonGMT search found no reusable compactness, subsequence, separability, mollification or continuous-representation-extension theorem. All eight frozen strings passed validation and independently regenerated comparator challenges elaborated without child implementations. Fresh recompilation checked all supplied proof sources, exact Submission names and parent assembly; all eight children and the parent assembly depend only on propext, Classical.choice and Quot.sound. The dependency graph is acyclic and sufficient. All names are bare identifiers, with no current DAG or other-branch proposal collision. Relevant completeness, Borel, countability and scalar-action instances were independently checked. The cutoff theorem's parameter is ℕ∞, so its ⊤ denotes smoothness. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches both stated properties. Extended distance handles an empty complement; closed containment proves compactness and inclusion in U, and the positive compact minimum gives cofinality. The consumers require no nesting property."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match, including arbitrary U and W. C is nonnegative by evaluation at zero. The two admissible rescalings, the justified ofReal comparison using B ≥ 0, and the limit c ↓ C prove the exact bound."
+    },
+    {
+      "key": "covector_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scalar action and finite sum have the intended covector types. The determinant calculation, sorting and permutation-sign cancellation, and basis extensionality establish the expansion without another child. The argument covers n = 0 and n > P."
+    },
+    {
+      "key": "testform_separable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the countability, support and approximation claims. The finite coefficient-function space supplies second countability; choosing preimages of a countable dense subset gives supported test forms. The coefficient estimate and vanishing outside closure W establish the global error bound."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly the stated assumptions. Smooth approximation into the complete covector space, followed by a compactly supported cutoff, preserves support inside V. The norm comparison proves the requested coefficient-norm estimate; openness of U is unnecessary."
+    },
+    {
+      "key": "weak_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared dependencies suffice. Countable-product compactness yields one strictly increasing subsequence; density and mass control give convergence on every test form. Linearity and the common-support, zeroth-derivative estimate establish precisely the sequential continuity required by GeometricCurrentOn."
+    },
+    {
+      "key": "repr_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree; compact support follows from tsupport ω ⊆ W and compact closure W. Cutoff tests give integrable coefficients for arbitrary supplied representations. Expansion and bounded multiplication establish integrability and a fixed error constant G; approximation and mass_bound then yield BC. No extra measure or vector-field hypotheses are assumed."
+    },
+    {
+      "key": "continuous_form_conv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lower semicontinuity supplies the same finite mass bound for S₀. The declared approximation and representation-bound children justify integral splitting and the uniform remainder estimates, proving convergence for every representation. Together with weak_subseq and the subsequence supremum inequality, this establishes exactly the selected parent."
+    }
+  ],
+  "required_changes": []
+}

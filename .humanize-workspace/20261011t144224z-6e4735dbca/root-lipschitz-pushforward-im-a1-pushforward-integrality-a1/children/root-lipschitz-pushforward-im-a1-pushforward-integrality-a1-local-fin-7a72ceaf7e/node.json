@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.local_finite_weight-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Local finiteness of the pushed-forward weight θ‖L_#ξ‖ over preimages of compacts (parent Step 4(b))",
+  "statement": "Assume (RSN) [the frozen statement of the uncle lemma lpf_rectifiable_support_null]: for all P, n, U ⊆ ℝ^P, T ∈ D_n(U) and (M, θ, ξ) with IsRectifiableTriple U n M θ ξ and T(ω) = tauAction n M θ ξ ω for all ω ∈ Dⁿ(U), Hⁿ(M ∖ spt T) = 0. Let P, Q, n ∈ ℕ, U ⊆ ℝ^P open, V ⊆ ℝ^Q any set, T ∈ D_n(U), (M, θ, ξ) with IsRectifiableTriple U n M θ ξ and T(ω) = tauAction n M θ ξ ω for all ω ∈ Dⁿ(U). Let f : ℝ^P → ℝ^Q be locally Lipschitz on U with f⁻¹(K) ∩ spt T compact for every compact K ⊆ V, and let L : ℝ^P → L(ℝ^P, ℝ^Q) satisfy the derivative clause: for Hⁿ⌞M-a.e. x, every T_x with HasWeightedApproximateTangentSpaceAt n M θ x T_x and every v ∈ T_x, t ↦ f(x + tv) has derivative L(x)v at 0. Then for every compact K ⊆ V, ∫⁻_{M ∩ f⁻¹(K)} ofReal(θ(x))·‖L(x)_#ξ(x)‖ₑ dHⁿ(x) < ∞.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \\ T.support) = 0) → ∀ (P Q n : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n) (f : Eucl P → Eucl Q) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsOpen U → IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → LocallyLipschitzOn U f → (∀ K, IsCompact K → K ⊆ V → IsCompact (f ⁻¹' K ∩ T.support)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => f (x + t • v)) (L x v) 0) → ∀ K : Set (Eucl Q), IsCompact K → K ⊆ V → ∫⁻ x in M ∩ f ⁻¹' K, ENNReal.ofReal (θ x) * ‖nVectorPushforward n (L x) (ξ x)‖ₑ ∂(μHE[n] : Measure (Eucl P)) < ∞",
+  "lean_name": "lpf_pi_local_finite_weight",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.jacobian_local_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.jacobian_local_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-local-fin-7a72ceaf7e-a1"
+}

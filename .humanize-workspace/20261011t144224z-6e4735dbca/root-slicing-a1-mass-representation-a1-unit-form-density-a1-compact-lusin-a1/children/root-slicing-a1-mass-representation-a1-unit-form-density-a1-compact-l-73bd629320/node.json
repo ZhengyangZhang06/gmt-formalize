@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1.inner_compact-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1",
+  "depth": 5,
+  "title": "Compact inner approximation of W ∩ E inside an open W ⊆ U for a measure finite on compact subsets of U",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P, and μ a measure on the Borel sets of ℝ^P with μ(K) < ∞ for every compact K ⊆ U. Let E ⊆ ℝ^P be Borel, W ⊆ U open and c ∈ [0, ∞] with c < μ(W ∩ E). Then there is a compact set K ⊆ W ∩ E with c < μ(K).",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)) (μ : Measure (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) → ∀ E : Set (Eucl P), MeasurableSet E → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → ∀ c : ℝ≥0∞, c < μ (W ∩ E) → ∃ K : Set (Eucl P), IsCompact K ∧ K ⊆ W ∩ E ∧ c < μ K",
+  "lean_name": "smr_ufd_cl_inner_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-l-73bd629320-a1"
+}

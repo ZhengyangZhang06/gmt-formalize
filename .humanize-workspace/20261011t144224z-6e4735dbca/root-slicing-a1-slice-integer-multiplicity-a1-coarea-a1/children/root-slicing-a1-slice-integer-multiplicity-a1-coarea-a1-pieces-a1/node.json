@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.pieces-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "Disjoint Borel C¹ pieces of M on which f is C¹ in a chart and G is its chart gradient (parent Steps 1–4)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ L-Lipschitz, and G : ℝ^P → ℝ^P with the tangential-gradient property: for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x, G(x) ∈ Q and s ↦ f(x + su) has derivative ⟨G(x), u⟩ at 0 for every u ∈ Q. Then there are Φ_i : ℝⁿ → ℝ^P, Ω_i ⊆ ℝⁿ, h_i : ℝⁿ → ℝ and W_i ⊆ ℝ^P (i ∈ ℕ) such that: Ω_i is open; Φ_i is C¹, Lipschitz on Ω_i and c_i-antilipschitz on Ω_i for some c_i > 0; h_i is C¹; W_i is Borel with W_i ⊆ M and W_i ⊆ Φ_i(Ω_i); the W_i are pairwise disjoint; Hⁿ(M ∖ ⋃_i W_i) = 0; and for all i and all w ∈ Ω_i with Φ_i(w) ∈ W_i: f(Φ_i(w)) = h_i(w), G(Φ_i(w)) ∈ range DΦ_i(w), and ⟨G(Φ_i(w)), DΦ_i(w)u⟩ = Dh_i(w)u for every u ∈ ℝⁿ (Hⁿ := μHE[n]).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∃ (Φ : ℕ → Eucl (m + 1) → Eucl P) (Ω : ℕ → Set (Eucl (m + 1))) (h : ℕ → Eucl (m + 1) → ℝ) (W : ℕ → Set (Eucl P)), (∀ i, IsOpen (Ω i)) ∧ (∀ i, ContDiff ℝ 1 (Φ i)) ∧ (∀ i, ∃ K : ℝ≥0, LipschitzOnWith K (Φ i) (Ω i)) ∧ (∀ i, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω i, ∀ w' ∈ Ω i, c * ‖w - w'‖ ≤ ‖Φ i w - Φ i w'‖) ∧ (∀ i, ContDiff ℝ 1 (h i)) ∧ (∀ i, MeasurableSet (W i)) ∧ (∀ i, W i ⊆ M) ∧ (∀ i, W i ⊆ Φ i '' Ω i) ∧ Pairwise (Function.onFun Disjoint W) ∧ (μHE[m + 1] : Measure (Eucl P)) (M \\ ⋃ i, W i) = 0 ∧ ∀ i, ∀ w ∈ Ω i, Φ i w ∈ W i → f (Φ i w) = h i w ∧ G (Φ i w) ∈ LinearMap.range (fderiv ℝ (Φ i) w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ i w)) (fderiv ℝ (Φ i) w u) = fderiv ℝ (h i) w u",
+  "lean_name": "slicing_im_coarea_pieces",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.c1_approx-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_cover-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_tangent-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.line_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.c1_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.line_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-pieces-a1-a1"
+}

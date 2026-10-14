@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1`
+- Child DAG node: `root.slicing-a1.mass_representation-a1.unit_form_density-a1.compact_lusin-a1.inner_compact-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P) with its Euclidean metric and Borel σ-algebra; μ is a measure on this σ-algebra and all measure values lie in [0, ∞]. For S ⊆ ℝ^P and δ > 0, thickening(δ, S) = {x : ∃ y ∈ S, dist(x, y) < δ}, an open set. Source: Simon, Introduction to GMT, Ch. 6, 2.7–2.9 (pp. 136–137). This argument is steps 2–4 of the supplied proof of the parent theorem smr_ufd_compact_lusin_set (step U3 of smr_exists_unit_form_gt), extracted with the details filled in. Step 1 of the parent proof (finiteness of c) is not needed here.
+
+1. (Compact exhaustion of W.) For j ∈ ℕ put F_j := ℝ^P ∖ thickening(1/(j+1), ℝ^P ∖ W) and K_j := closedBall(0, j) ∩ F_j = closedBall(0, j) ∖ thickening(1/(j+1), ℝ^P ∖ W).
+ (a) K_j is compact. F_j is closed (the complement of an open set), so K_j is a closed subset of closedBall(0, j). That ball is compact because ℝ^P is a proper metric space.
+ (b) K_j ⊆ W. If x ∉ W, then x ∈ ℝ^P ∖ W ⊆ thickening(1/(j+1), ℝ^P ∖ W) (take y := x), so x ∉ F_j ⊇ K_j.
+ (c) K_i ⊆ K_j for i ≤ j. First, closedBall(0, i) ⊆ closedBall(0, j). Second, 1/(j+1) ≤ 1/(i+1), so thickening(1/(j+1), ℝ^P ∖ W) ⊆ thickening(1/(i+1), ℝ^P ∖ W), hence F_i ⊆ F_j.
+ (d) ⋃_j K_j = W. "⊆" is (b). Conversely, let x ∈ W. As W is open, there is r > 0 with ball(x, r) ⊆ W. Choose j ∈ ℕ with j ≥ ‖x‖ and 1/(j+1) ≤ r. If y ∉ W, then y ∉ ball(x, r), so dist(x, y) ≥ r ≥ 1/(j+1). Hence x ∉ thickening(1/(j+1), ℝ^P ∖ W), i.e. x ∈ F_j. Also ‖x‖ ≤ j, i.e. x ∈ closedBall(0, j). So x ∈ K_j.
+ (e) μ(K_j) < ∞ for every j: K_j is compact by (a) and K_j ⊆ W ⊆ U by (b), so the hypothesis applies.
+ (Variant: any increasing sequence of closed sets F_j ⊆ W with ⋃_j F_j = W may replace the F_j above, for example the sequence given by Mathlib's IsOpen.exists_iUnion_isClosed. Then K_j := F_j ∩ closedBall(0, j) satisfies (a)–(e) by the same arguments. In (d), pick i with x ∈ F_i, take j ≥ max(i, ‖x‖), and use F_i ⊆ F_j.)
+2. (Continuity from below.) The sets E ∩ K_j (j ∈ ℕ) are Borel, since E is Borel and K_j is closed. They increase with j by 1(c), and ⋃_j (E ∩ K_j) = E ∩ ⋃_j K_j = E ∩ W = W ∩ E by 1(d). By continuity of measures along increasing sequences, μ(E ∩ K_j) → μ(W ∩ E) as j → ∞. Since c < μ(W ∩ E), the open neighbourhood (c, ∞] of the limit contains μ(E ∩ K_j) for all large j. Fix one such j, so that c < μ(E ∩ K_j), and put E′ := E ∩ K_j.
+3. (A Borel piece of finite measure.) E′ is Borel and E′ ⊆ E ∩ W by 1(b). Also μ(E′) ≤ μ(K_j) < ∞ by monotonicity and 1(e).
+4. (Inner regularity by compact sets.) Every measure on ℝ^P is inner regular by compact sets on Borel sets of finite measure: if S ⊆ ℝ^P is Borel with μ(S) < ∞ and r < μ(S), then some compact K ⊆ S has r < μ(K).
+ Justification: ν(B) := μ(B ∩ S) defines a finite Borel measure on the complete separable metric space ℝ^P. Finite Borel measures on such spaces are inner regular by compact sets on all Borel sets (Ulam's theorem). On ℝ^P this also follows directly: approximate from inside by closed sets, which works for finite Borel measures on metric spaces, then intersect with large closed balls, using that ν is finite. Hence ν(S) = sup{ν(K) : K ⊆ S compact}. Since ν(S) = μ(S) > r, some compact K ⊆ S has r < ν(K) = μ(K ∩ S) = μ(K).
+ In Mathlib this is the instance instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace (Mathlib/MeasureTheory/Measure/RegularityCompacts.lean) together with MeasurableSet.exists_lt_isCompact_of_ne_top (Mathlib/MeasureTheory/Measure/Regular.lean).
+ Apply this with S := E′ and r := c, which steps 2 and 3 allow. This gives a compact K ⊆ E′ with c < μ(K).
+5. (Conclusion.) K is compact, K ⊆ E′ ⊆ E ∩ W = W ∩ E by step 3, and c < μ(K). ∎
+
+Formalization note (not part of the argument): GMT.Ch06.Submission does not import the step-4 instance for an arbitrary μ. There are two options, both checked to compile with the frozen submission:
+- add `import Mathlib.MeasureTheory.Measure.RegularityCompacts` and use MeasurableSet.exists_lt_isCompact_of_ne_top directly;
+- with the base imports only, apply MeasurableSet.exists_lt_isCompact_of_ne_top to the finite measure μ.restrict E′ (using `Fact (μ E′ < ∞)` and Measure.restrict_apply_self), then transfer back with Measure.restrict_eq_self.
+Useful names: IsOpen.exists_iUnion_isClosed, isCompact_closedBall, IsCompact.inter_left, tendsto_measure_iUnion_atTop, tendsto_order, Filter.Eventually.exists. A scratch proof along steps 1–5, using the IsOpen.exists_iUnion_isClosed variant of step 1, compiles with axioms [propext, Classical.choice, Quot.sound].
+
+## Key steps
+
+1. Compact exhaustion of W: K_j := closedBall(0, j) ∖ thickening(1/(j+1), ℝ^P ∖ W). These are compact, increasing, contained in W, with ⋃_j K_j = W, and μ(K_j) < ∞ because K_j ⊆ W ⊆ U.
+2. Continuity from below: μ(E ∩ K_j) → μ(W ∩ E) > c, so some j has c < μ(E′) for the Borel set E′ := E ∩ K_j.
+3. Finiteness: μ(E′) ≤ μ(K_j) < ∞, and E′ ⊆ W ∩ E.
+4. Inner regularity by compact sets on finite-measure Borel sets of the Polish space ℝ^P (InnerRegularCompactLTTop; MeasurableSet.exists_lt_isCompact_of_ne_top) gives a compact K ⊆ E′ with c < μ(K).
+5. Hence K is compact, K ⊆ W ∩ E and c < μ(K).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum workspace GMT/Ch06/Submission.lean vs snapshot project/GMT/Ch06/Contract.lean (both ea3ee0dd…: frozen submission identical to contract)`
+- `python3 over dag.json: children of root.slicing-a1.mass_representation-a1.unit_form_density-a1 (5 siblings smr_ufd_*, depth 4); regex (?i)lusin|InnerRegular|exists_lt_isCompact|inner approx over lean_statement/statement/title`
+- `grep -c / grep -rl 'smr_ufd_cl_inner_compact' and 'smr_ufd_cl_vector_lusin' in dag.json, nodes/, lake-packages-25730c7c/simongmt/Poincare, mathlib snapshot (0 matches); dag.json lean_name duplicates check (none)`
+- `grep -n 'theorem|lemma' simongmt Poincare/SimonGMT/Chapter01/Lusin.lean (exists_isClosed_continuousOn_of_measurable: real-valued f, closed-regularity hypothesis hreg, MeasurableSet A, nu A ≠ ∞, ε ≠ 0)`
+- `grep instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace (RegularityCompacts.lean:186), MeasurableSet.exists_isCompact_isClosed_sdiff_lt (Regular.lean:859), exists_lt_isCompact_of_ne_top (Regular.lean)`
+- `grep IsOpen.exists_iUnion_isClosed (Topology/MetricSpace/HausdorffDistance.lean:207), tendsto_measure_iUnion_atTop (MeasureTheory/Measure/Continuity.lean:198), continuous_toLp (Analysis/Normed/Lp/PiLp.lean:546), exists_pos_mul_lt (ENNReal)`
+- `grep -rln Lusin mathlib snapshot --include=*.lean (only Function/Jacobian, Constructions/Polish/Basic, MetricSpace/Polish: no Lusin continuity theorem)`
+- `git show d24e9e7b (lpf_lli_inner_compact_approx) and b7b6c027 (lpf_c1r_lusin_closed): accepted children declare `theorem Submission.X` inside namespace GMT.Ch06 in GMT/Ch06/Submission.lean`
+- `sed verifier/gmt-compare.py (child_modules, contract_scope, candidate_inputs: Submission.lean not byte-frozen, new .lean files allowed under GMT/Ch06/) and verifier/lean_contract.py validate_lean_statement`
+- `lean -o: compile frozen Submission (base) and Submission + RegularityCompacts + SimonGMT Lusin imports (extended) into /tmp/cl-decomp-2L5BXI/build{,2}`
+- `lean checks/Avail.lean (base: InnerRegularCompactLTTop μ for arbitrary μ NOT synthesized; finite-measure Regular/InnerRegular synthesized)`
+- `lean checks/gen/NodeChallenge_{00,01,02}.lean (generated by gmt-compare.py child_modules in Contract scope; all elaborate)`
+- `lean checks/Assembly.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `lean checks/ChildA.lean, checks/ChildB.lean (extended env; #print axioms standard); lean checks/BaseFallback.lean (restrict fallback compiles; SimonGMT Lusin unknown under base import)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-mass-representation-a1-unit-form-density-a1-compact-lusin-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_00_smr_ufd_cl_inner_compact.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_01_smr_ufd_cl_vector_lusin.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/gen/NodeChallenge_02_smr_ufd_compact_lusin_set.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/Assembly.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/ChildA.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/ChildB.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/BaseFallback.lean`
+- `/tmp/cl-decomp-2L5BXI/checks/Avail.lean`
+
+Snapshot (project d8d46c95, Mathlib 25730c7c): the frozen Contract is byte-identical to the frozen Submission.
+
+Mathlib has no Lusin continuity theorem. SimonGMT's Lusin (Chapter01/Lusin.lean, exists_isClosed_continuousOn_of_measurable) is real-valued only and takes a closed-regularity hypothesis, hence the coordinatewise argument.
+
+Availability under the base import GMT.Ch06.Submission:
+- InnerRegularCompactLTTop for an arbitrary measure on Eucl P is not available. It comes from Mathlib.MeasureTheory.Measure.RegularityCompacts (instInnerRegularCompactLTTopOfIsCompletelyPseudoMetrizableSpace).
+- Finite-measure Regular/InnerRegular instances are available, so μ.restrict gives a base-import fallback for inner regularity.
+- SimonGMT Lusin needs import Poincare.SimonGMT.Chapter01.Lusin.
+- Adding both imports to Submission compiles, and the comparator allows it.
+
+No existing declaration or DAG node has either child type, and the proposed names occur nowhere. Related accepted nodes (lpf_lli_inner_compact_approx, lpf_c1r_lusin_closed, lpf_wtc_lusin_compact_pieces) have different types, so they cannot be reused.
+
+Lean checks:
+- Both child types and the parent type elaborate in the comparator child scope.
+- The parent's exact frozen type is kernel-checked from the two child types, with axioms [propext, Classical.choice, Quot.sound].
+- Each child has a sorry-free scratch proof with standard axioms.

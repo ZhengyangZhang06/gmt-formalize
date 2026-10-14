@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.product_boundary-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "depth": 5,
+  "title": "Boundary formulas for every Z with ProdChar(X, Z), and finite boundary mass of [[0,1]]×X for normal X (supplied steps 9–10)",
+  "statement": "(II) For all m, every X ∈ D_0(ℝ^m) with M(X) < ∞, every Z ∈ D_{0+1}(ℝ^{m+1}) with ProdChar(X, Z), every ψ ∈ D^0(ℝ^{m+1}) and all ψ₀, ψ₁ ∈ D^0(ℝ^m) with ψ_i(x)(v) = ψ(cons(i,x))(fun l => ι(v l)) for all x, v (i = 0, 1): ∂Z(ψ) = X(ψ₁) − X(ψ₀). (III) For all m, j, every X ∈ D_{j+1}(ℝ^m) with M(X) < ∞, every Z ∈ D_{j+1+1}(ℝ^{m+1}) with ProdChar(X, Z), every ψ ∈ D^{j+1}(ℝ^{m+1}), all ψ₀, ψ₁ ∈ D^{j+1}(ℝ^m) with ψ_i(x)(v) = ψ(cons(i,x))(fun l => ι(v l)) for all x, v (i = 0, 1), and every φ : ℝ → D^j(ℝ^m) with φ(s)(x)(v) = ψ(cons(s,x))(Fin.cons e₀ (fun l => ι(v l))) for s ∈ [0,1] and all x, v: ∂Z(ψ) = X(ψ₁) − X(ψ₀) − ∫_0^1 ∂X(φ(s)) ds. (N) For all m, k, every X ∈ D_k(ℝ^m) with M(X) < ∞ and every Z ∈ D_{k+1}(ℝ^{m+1}) with ProdChar(X, Z): if M(∂Y) < ∞ for every j ∈ ℕ and Y ∈ D_{j+1}(ℝ^m) with k = j + 1 and HEq Y X, then M(∂Z) < ∞. ProdChar(X, Z) is as in conjunct (a) of product_exists; D^q = TestFormOn univ q, D_q = GeometricCurrentOn univ q, M = mass, ∂ = boundary, cons, ι, e₀ as above.",
+  "lean_statement": "(∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) 0) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (0 + 1)), X.mass < ∞ → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (0 + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) 0), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin 0 → Eucl m), (φ s : DifferentialForm (Eucl m) 0) x v = (η : DifferentialForm (Eucl (m + 1)) (0 + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) 0) (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) 0), (∀ (x : Eucl m) (v : Fin 0 → Eucl m), (ψ₀ : DifferentialForm (Eucl m) 0) x v = (ψ : DifferentialForm (Eucl (m + 1)) 0) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → (∀ (x : Eucl m) (v : Fin 0 → Eucl m), (ψ₁ : DifferentialForm (Eucl m) 0) x v = (ψ : DifferentialForm (Eucl (m + 1)) 0) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z.boundary ψ = X ψ₁ - X ψ₀) ∧ (∀ (m j : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (j + 1 + 1)), X.mass < ∞ → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) ((j + 1) + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) (j + 1)), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m), (φ s : DifferentialForm (Eucl m) (j + 1)) x v = (η : DifferentialForm (Eucl (m + 1)) ((j + 1) + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ∀ (ψ : TestFormOn (univ : Set (Eucl (m + 1))) (j + 1)) (ψ₀ ψ₁ : TestFormOn (univ : Set (Eucl m)) (j + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) j), (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m), (ψ₀ : DifferentialForm (Eucl m) (j + 1)) x v = (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → (∀ (x : Eucl m) (v : Fin (j + 1) → Eucl m), (ψ₁ : DifferentialForm (Eucl m) (j + 1)) x v = (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 1 (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin j → Eucl m), (φ s : DifferentialForm (Eucl m) j) x v = (ψ : DifferentialForm (Eucl (m + 1)) (j + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z.boundary ψ = X ψ₁ - X ψ₀ - ∫ s in (0 : ℝ)..1, X.boundary (φ s)) ∧ (∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1)), X.mass < ∞ → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → ((∀ (j : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl m)) (j + 1)), k = j + 1 → HEq Y X → Y.boundary.mass < ∞) → Z.boundary.mass < ∞))",
+  "lean_name": "dph_iprod_boundary",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_slices-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_ext_deriv-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1-a1",
+      "result_commit": "143edefdefb78884021e674a1258fa4be2c3d315",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_slices-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_ext_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-ea428ac2b9-a1"
+}

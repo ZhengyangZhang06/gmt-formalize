@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1",
+  "parent_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "depth": 3,
+  "title": "Zero k-density off a carrier at all scales Rr (Upper Density Theorem, Simon Ch. 1, 3.6)",
+  "statement": "Let P, k ∈ ℕ, Hᵏ := μHE[k] on ℝ^P = Eucl P, U ⊆ ℝ^P open, S ⊆ ℝ^P Hᵏ-null-measurable, and g : ℝ^P → [0, ∞] (not necessarily measurable) with ∫⁻_{S∩K} g dHᵏ < ∞ for every compact K ⊆ U. Then for Hᵏ-almost every x with x ∈ U and x ∉ S, and for every R > 0, r^{−k}·∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0 as r ↓ 0 (r^{−k} is written ENNReal.ofReal((r^k)⁻¹), B̄_ρ(x) = closedBall x ρ).",
+  "lean_statement": "∀ (P k : ℕ) (U S : Set (Eucl P)) (g : Eucl P → ℝ≥0∞), IsOpen U → NullMeasurableSet S (μHE[k] : Measure (Eucl P)) → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∫⁻ y in S ∩ K, g y ∂(μHE[k] : Measure (Eucl P)) < ∞) → ∀ᵐ x ∂(μHE[k] : Measure (Eucl P)), x ∈ U → x ∉ S → ∀ R : ℝ, 0 < R → Tendsto (fun r : ℝ => ENNReal.ofReal ((r ^ k)⁻¹) * ∫⁻ y in S ∩ closedBall x (R * r), g y ∂(μHE[k] : Measure (Eucl P))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "iwl_imc_density_zero_off_set",
+  "depends_on": [
+    "root.rectifiability-a1.density_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.density_comparison-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-density-comparison-a1-a1",
+      "result_commit": "c5336e1a14131119b486a9306a19dac19728d9fb",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-density-zero-off-set-a1-a1"
+}

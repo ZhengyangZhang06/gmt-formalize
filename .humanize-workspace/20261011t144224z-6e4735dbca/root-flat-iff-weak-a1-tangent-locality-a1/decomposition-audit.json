@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt|^import|^open",
+        "euclideanHausdorffMeasure_smul₀|Isometry.euclideanHausdorffMeasure_image|measurePreserving_euclideanHausdorffMeasure",
+        "theorem ae_tendsto_measure_inter_div\\b|theorem tendsto_filterAt|protected def vitaliFamily|ae_tendsto_lintegral_enorm_sub_div",
+        "theorem withDensity_absolutelyContinuous|theorem withDensity_apply₀|theorem setLIntegral_withDensity_eq_lintegral_mul₀|theorem lintegral_withDensity_eq_lintegral_mul₀",
+        "lt_div_iff_mul_lt",
+        "fiw_tl_(blowup_setIntegral|growth_bound|transfer|ae_l1_density)",
+        "#print axioms ScopedReview.assembly",
+        "#check ENNReal.div_lt_iff",
+        "#check ENNReal.lt_div_iff_mul_lt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-v3.json",
+        "/tmp/fiw_tl_independent_a3_44peouon/Audit/Assembly.lean",
+        "/tmp/fiw_tl_independent_a3_44peouon/Audit/LibraryChecks.lean"
+      ],
+      "conclusion": "Independently checked the pinned project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The definitions and cited analytic tools support the supplied arguments. All four child types and the frozen parent type elaborate in fresh comparator challenge files without child implementations. The exact parent follows from the transfer and density contracts in ScopedReview.assembly, whose axioms are only propext, Classical.choice and Quot.sound. Required Euclidean and finite-measure typeclass instances also synthesize. All names are bare identifiers; searches of the DAG, other decomposition proposals and project Lean files found no foreign reservations. The four-way split is appropriate: change of variables supports growth and transfer, growth supports transfer, and density is independent. Dependencies are acyclic, and the resulting full-measure set is independent of Q."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary S and g. The homeomorphism, arbitrary-set scaling and restricted push-forward identity justify change of variables without integrability assumptions. Division by r^n is valid because r > 0. The proof is complete and independent."
+    },
+    {
+      "key": "growth_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include precisely the required hypotheses. The explicit cutoff, local integrability and nonnegativity justify the integral comparison; tangent convergence supplies a finite bound, and conversion to the lintegral is valid. No assumption x ∈ M is needed. Only the declared change-of-variables dependency is used."
+    },
+    {
+      "key": "pointwise_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree. Local integrability justifies the indicator representation and integral subtraction. Applying relative L¹-closeness and the growth bound at s = Rr makes the error vanish; the scalar identity gives the required limit. The argument permits arbitrary signs of c and θ₂ and uses only its declared dependencies."
+    },
+    {
+      "key": "ae_l1_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract matches the prose with all hypotheses present. Compact localization yields finite measures, positivity transfers null sets in the correct direction, and g is integrable. Besicovitch density and differentiation apply with the required instances. The indicator decomposition and final arithmetic prove the exact estimate, including zero-denominator cases. The proof is complete, independent and non-circular."
+    }
+  ],
+  "required_changes": []
+}

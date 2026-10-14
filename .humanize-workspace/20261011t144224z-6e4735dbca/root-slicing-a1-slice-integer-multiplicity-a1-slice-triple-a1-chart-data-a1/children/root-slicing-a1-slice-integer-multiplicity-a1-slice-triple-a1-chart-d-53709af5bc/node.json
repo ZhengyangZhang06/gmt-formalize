@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1.lipschitz_on_c1_pieces-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.chart_data-a1",
+  "depth": 5,
+  "title": "C¹ Lusin pieces of a real function that is Lipschitz on an open set (Simon Ch. 2, Theorem 1.5, localized)",
+  "statement": "Let n ∈ ℕ (ℝⁿ = EuclideanSpace ℝ (Fin n), Lⁿ = volume), let Ω ⊆ ℝⁿ be open, and let u : ℝⁿ → ℝ be K-Lipschitz on Ω for some K ≥ 0. Then there are C¹ functions h_k : ℝⁿ → ℝ and sets A_k ⊆ Ω (k ∈ ℕ) such that, for every k and every w ∈ A_k, u(w) = h_k(w) and u is Fréchet differentiable at w with derivative Dh_k(w) = fderiv ℝ h_k w; and Lⁿ(Ω ∖ ⋃_k A_k) = 0.",
+  "lean_statement": "∀ (n : ℕ) (Ω : Set (Eucl n)) (u : Eucl n → ℝ) (K : ℝ≥0), IsOpen Ω → LipschitzOnWith K u Ω → ∃ (h : ℕ → Eucl n → ℝ) (A : ℕ → Set (Eucl n)), (∀ k, ContDiff ℝ 1 (h k)) ∧ (∀ k, A k ⊆ Ω) ∧ (∀ k, ∀ w ∈ A k, u w = h k w ∧ HasFDerivAt u (fderiv ℝ (h k) w) w) ∧ (volume : Measure (Eucl n)) (Ω \\ ⋃ k, A k) = 0",
+  "lean_name": "slicing_im_st_cd_c1_pieces_of_lipschitzOn",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-b45cce92e1-a1",
+      "result_commit": "f7a35d70d995337ed144dac4f6ad64b3dd527871",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-chart-d-53709af5bc-a1"
+}

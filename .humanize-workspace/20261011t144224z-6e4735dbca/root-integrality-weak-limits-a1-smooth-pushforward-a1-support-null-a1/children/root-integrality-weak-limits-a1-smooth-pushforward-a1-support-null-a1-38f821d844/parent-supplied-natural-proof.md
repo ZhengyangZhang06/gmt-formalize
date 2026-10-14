@@ -1,0 +1,183 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.local_null-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 3–7 of the parent proof, for one fixed open set W. The pieces come from siblings:
+- the pointwise algebra of step 1 is the sibling signed_simple_bound (iwl_sp_sn_signed_simpleNVector_bound_ne_zero);
+- the finite basis of step 2 is the sibling covector_basis (iwl_sp_sn_covector_separating_family);
+- the analytic core of steps 4 and 6 is the sibling weighted_fundamental_lemma (iwl_sp_sn_weighted_fundamental_lemma).
+
+Conventions.
+- μ := μHE[n] = Hⁿ on ℝ^P = Eucl P, and ν := μ⌞M = μ.restrict M.
+- Fields of IsRectifiableTriple U n M θ ξ used below:
+  - nullMeasurableSet: M is μ-null-measurable;
+  - pos: θ(x) > 0 for x ∈ M;
+  - integrableOn: θ is μ-integrable on M ∩ K for every compact K ⊆ U;
+  - aestronglyMeasurable: ξ is ν-a.e. strongly measurable;
+  - orients: for ν-a.e. x there is an orthonormal τ : Fin n → ℝ^P with ξ(x) = simpleNVector τ or ξ(x) = −simpleNVector τ. Its tangent-space clause is not used.
+- Dⁿ(U) = TestFormOn U n consists of the maps ω : ℝ^P → Covector (Eucl P) n that are C^∞ (IsSmoothForm ω, i.e. ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω), have compact support, and satisfy tsupport ω ⊆ U.
+- tauAction n M θ ξ ω = ∫_M θ(x)·ξ(x)(ω(x)) dμ(x).
+
+1. (Good points.) By orients, for ν-a.e. x there is an orthonormal τ with ξ(x) = simpleNVector τ or ξ(x) = −simpleNVector τ. For each such x, apply the sibling signed_simple_bound to τ and w := ξ(x): |ξ(x)(b)| ≤ ‖b‖ for every n-covector b, and ξ(x) ≠ 0. Hence for ν-a.e. x, both (∀ b, |ξ(x)(b)| ≤ ‖b‖) and ξ(x) ≠ 0 hold.
+
+2. (θ is integrable on M ∩ W, and W ⊆ U.) K := closure W is compact and K ⊆ U, so θ is μ-integrable on M ∩ K (integrableOn). Since W ⊆ closure W, M ∩ W ⊆ M ∩ K, so θ is μ-integrable on M ∩ W (IntegrableOn.mono_set). Also W ⊆ closure W ⊆ U.
+
+3. (Coefficients.) Fix α ∈ Covector (Eucl P) n and put g_α(x) := ξ(x)(α).
+   - Evaluation at α, w ↦ w(α), is a continuous linear map NVector (Eucl P) n → ℝ (ContinuousLinearMap.apply ℝ ℝ α). Composing it with ξ (aestronglyMeasurable) shows that g_α is ν-a.e. strongly measurable.
+   - By step 1, |g_α(x)| ≤ ‖α‖ for ν-a.e. x.
+
+4. (Testing T.) Let φ : ℝ^P → ℝ be C^∞ with compact support and tsupport φ ⊆ W. Define ω(x) := φ(x)·α.
+   - ω is C^∞, as a smooth scalar function times a constant covector (ContDiff.smul with contDiff_const).
+   - ω has compact support (HasCompactSupport.smul_right).
+   - tsupport ω ⊆ tsupport φ ⊆ W ⊆ U (tsupport_smul_subset_left and step 2).
+   So ω ∈ Dⁿ(U) with tsupport ω ⊆ W, and T(ω) = 0 because T vanishes on W. By linearity of ξ(x), ξ(x)(φ(x)·α) = φ(x)·g_α(x). The representation hypothesis then gives
+   0 = T(ω) = ∫_M θ(x)·ξ(x)(φ(x)·α) dμ(x) = ∫_M θ(x)·(φ(x)·g_α(x)) dμ(x).
+
+5. (Each coefficient vanishes a.e. on W.) Apply the sibling weighted_fundamental_lemma with the measure μ, the sets M and W, the weight θ, g := g_α and C := ‖α‖. Its hypotheses hold:
+   - W is open;
+   - M is μ-null-measurable (nullMeasurableSet);
+   - θ > 0 on M (pos);
+   - θ is μ-integrable on M ∩ W (step 2);
+   - g_α is ν-a.e. strongly measurable and |g_α| ≤ ‖α‖ ν-a.e. (step 3);
+   - the test integrals vanish (step 4).
+   Hence for ν-a.e. x, x ∈ W ⇒ ξ(x)(α) = 0.
+
+6. (A finite separating family.) By the sibling covector_basis there are N ∈ ℕ and covectors b_1, …, b_N such that every n-vector vanishing on all b_i is zero. Apply step 5 to α = b_i for each of the finitely many i and intersect the full-measure sets (ae_all_iff). Then for ν-a.e. x, for every i, x ∈ W ⇒ ξ(x)(b_i) = 0.
+
+7. (ν(W) = 0.) Take x in the intersection of the full-measure sets of steps 1 and 6, and suppose x ∈ W. Then ξ(x)(b_i) = 0 for every i, so ξ(x) = 0 by the separating property of step 6. This contradicts ξ(x) ≠ 0 from step 1. Hence ν-a.e. x satisfies x ∉ W, i.e. ν({x : x ∈ W}) = ν(W) = 0 (ae_iff).
+
+8. (Conclusion.) W is open, hence measurable, so ν(W) = μ(W ∩ M) (Measure.restrict_apply). Therefore Hⁿ(M ∩ W) = μ(W ∩ M) = 0. ∎
+
+Formalization aid (not part of the mathematical argument). The following Lean proof of exactly this frozen statement compiled with Lean v4.35.0-rc3, Mathlib 25730c7c, frozen project d8d46c9 and the shared pinned packages. It was placed inside `namespace Submission`, immediately before `theorem main_theorem`, in a scratch copy of GMT/Ch06/Submission.lean (after the sibling declarations iwl_sp_sn_covector_separating_family, iwl_sp_sn_signed_simpleNVector_bound_ne_zero and iwl_sp_sn_weighted_fundamental_lemma, whose names it uses). `#print axioms` gives [propext, Classical.choice, Quot.sound]. The comparator's generated NodeSolution module (`exact Submission.iwl_sp_sn_local_null`) typechecks.
+
+```lean
+theorem iwl_sp_sn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
+  intro P n U W T M θ ξ h hrep hWo hWc hWU hvan
+  have hWU' : W ⊆ U := subset_closure.trans hWU
+  have hθ : IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) :=
+    (h.integrableOn (closure W) hWc hWU).mono_set (Set.inter_subset_inter_right M subset_closure)
+  have hgood : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M),
+      (∀ b : Covector (Eucl P) n, |ξ x b| ≤ ‖b‖) ∧ ξ x ≠ 0 := by
+    filter_upwards [h.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    exact iwl_sp_sn_signed_simpleNVector_bound_ne_zero P n τ (ξ x) hτ hξ
+  have key : ∀ α : Covector (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
+    intro α
+    refine iwl_sp_sn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
+      (fun x => ξ x α) ‖α‖ hWo h.nullMeasurableSet h.pos hθ ?_ ?_ ?_
+    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable
+        h.aestronglyMeasurable
+    · filter_upwards [hgood] with x hx
+      exact hx.1 α
+    · intro φ hφ hφc hφW
+      let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
+      have hωs : IsSmoothForm ω := hφ.smul contDiff_const
+      have hωc : HasCompactSupport ω := hφc.smul_right
+      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left φ (fun _ => α)).trans hφW
+      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU'⟩
+      have h0 : T ωU = 0 := hvan ωU hωW
+      rw [hrep ωU] at h0
+      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
+  obtain ⟨N, b, hb⟩ := iwl_sp_sn_covector_separating_family P n
+  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
+    ae_all_iff.mpr (fun i => key (b i))
+  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
+    filter_upwards [hall, hgood] with x hx hg hxW
+    exact hg.2 (hb (ξ x) (fun i => hx i hxW))
+  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
+    rw [ae_iff] at hnotW
+    simpa using hnotW
+  rw [Measure.restrict_apply hWo.measurableSet, Set.inter_comm] at hres
+  exact hres
+```
+
+## Key steps
+
+1. Hⁿ⌞M-a.e. x is good: by orients and signed_simple_bound, |ξ(x)(b)| ≤ ‖b‖ for every covector b, and ξ(x) ≠ 0.
+2. θ is Hⁿ-integrable on M ∩ W ⊆ M ∩ closure W, because closure W is a compact subset of U.
+3. For each covector α, testing T with φ·α (φ ∈ C_c^∞, tsupport φ ⊆ W) gives ∫_M θ·(φ·ξ(α)) dHⁿ = T(φα) = 0.
+4. weighted_fundamental_lemma (g = ξ(·)(α), C = ‖α‖) gives ξ(x)(α) = 0 for Hⁿ⌞M-a.e. x ∈ W.
+5. covector_basis plus finitely many a.e. sets give ξ = 0 a.e. on W. This contradicts ξ ≠ 0, so (Hⁿ⌞M)(W) = Hⁿ(M ∩ W) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean (identical); cmp GMT/Ch06/Submission.lean local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean (identical); rg -n 'Submission\.' project/GMT/Ch06/Submission.lean (no match)`
+- `rg -n 'structure IsRectifiableTriple|def tauAction|orients :|integrableOn :|aestronglyMeasurable :|pos :|nullMeasurableSet :|subset :' project/GMT/Ch06/Contract.lean`
+- `rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib`
+- `rg -n 'theorem isOpen_sUnion_countable' mathlib/Mathlib/Topology/Bases.lean`
+- `rg -n 'theorem Module.Basis.ext_multilinear' mathlib/Mathlib; rg -n '^theorem of_injective' mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean; rg -n 'def finBasis' mathlib/Mathlib; grep -n 'theorem ext \|^namespace' mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `rg -n 'theorem orthonormal_iff_ite' mathlib/Mathlib; rg -n 'theorem innerSL_apply_apply' mathlib/Mathlib; rg -n '^theorem le_opNorm ' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean; rg -n 'theorem det_one' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `rg -n 'theorem Integrable.mul_bdd |theorem measure_biUnion_null_iff|theorem ae_restrict_mem₀|theorem ae_restrict_of_ae_restrict_of_subset|theorem restrict_restrict |theorem IntegrableOn.locallyIntegrableOn|theorem tsupport_smul_subset_left|theorem HasCompactSupport.smul_right' mathlib/Mathlib`
+- `rg -n 'scoped\[MeasureTheory\] notation "μHE\["' mathlib/Mathlib`
+- `rg -n 'instance.*FiniteDimensional.*ContinuousAlternatingMap|instance.*Module.Finite.*ContinuousAlternatingMap' mathlib/Mathlib (no match)`
+- `rg -n 'iwl_sp_sn|lpf_rsn' project/ (no match); grep -rl 'iwl_sp_sn' runs/20261011T144224Z-6e4735dbca (no match); python3 -I scan of dag.json lean_name/lean_statement duplicates`
+- `grep -n 'simpleNVector|wedgeCovectors|VanishesOn|zeroRegion|def support|IsTestForm|IsSmoothForm|TestFormOn' simongmt/Poincare/SimonGMT/Chapter06/{Forms,FormsDuality,Currents,CurrentLocalEquality}.lean`
+- `python3 -I read of nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/decomposition-v1.json (accepted identical-type precedent)`
+- `verifier gmt-compare.py contract_scope + child_modules (contract mode) and lean_contract.validate_lean_statement -> /tmp/iwl-sp-sn-decomp/work2/gen/NodeChallenge_*.lean, NodeSolution_*.lean`
+- `pinned lean 4.35.0-rc3 (LEAN_PATH = workspace .lake/build/lib/lean + lake-packages-25730c7c/*/.lake/build/lib/lean) on NodeChallenge_*.lean; scratch Submission.lean -o build/GMT/Ch06/Submission.olean; NodeSolution_*.lean; Axioms.lean (#print axioms); Sufficiency.lean; InstCheck2.lean (#synth Norm (Covector (Eucl 3) 2); IsSmoothForm ω ↔ ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := Iff.rfl)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Dimension/Free.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Basis/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/iwl-sp-sn-decomp/work2/Submission.lean`
+- `/tmp/iwl-sp-sn-decomp/work2/gen/Sufficiency.lean`
+- `/tmp/iwl-sp-sn-decomp/work2/gen/Axioms.lean`
+- `/tmp/iwl-sp-sn-decomp/work/gen/InstCheck2.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract. Its byte-identical Submission has no Submission.* declarations, so all five iwl_sp_sn_* names are free; rg found no match in the snapshot, the run directory or dag.json.
+
+Every cited Mathlib lemma exists at the pin with the stated hypotheses:
+- IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero (AEEqOfIntegralContDiff.lean:205) accepts an arbitrary measure, uses ContDiff ℝ ∞ and needs only LocallyIntegrableOn;
+- TopologicalSpace.isOpen_sUnion_countable (Bases.lean:948), Module.Basis.ext_multilinear (Multilinear/Basis.lean:30), FiniteDimensional.of_injective (FiniteDimensional/Defs.lean:84), Module.finBasis and Module.Basis.ext (Basis/Defs.lean:315);
+- orthonormal_iff_ite, innerSL_apply_apply, ContinuousAlternatingMap.le_opNorm and Matrix.det_one;
+- Integrable.mul_bdd, measure_biUnion_null_iff, ae_restrict_mem₀, ae_restrict_of_ae_restrict_of_subset, Measure.restrict_restrict, IntegrableOn.locallyIntegrableOn, tsupport_smul_subset_left and HasCompactSupport.smul_right.
+
+There is no FiniteDimensional/Module.Finite instance for ContinuousAlternatingMap (no match), so covector_basis proves finite-dimensionality by an injective coordinate map.
+
+The pinned SimonGMT package supplies:
+- simpleNVector_apply (by rfl) and wedgeCovectors_apply_det, which together yield the evaluation bound and nonvanishing of ±simpleNVector τ;
+- VanishesOn, zeroRegion and support = U \ zeroRegion, matching support_cover.
+
+The accepted identical-type node lpf_rectifiable_support_null was split the same way, with all children accepted.
+
+Scratch Lean runs, with the workspace unmodified:
+- all five child types elaborate in the comparator scope;
+- the Lean aids compile and every NodeSolution typechecks;
+- the parent type follows from the child propositions alone;
+- only propext, Classical.choice and Quot.sound are used.

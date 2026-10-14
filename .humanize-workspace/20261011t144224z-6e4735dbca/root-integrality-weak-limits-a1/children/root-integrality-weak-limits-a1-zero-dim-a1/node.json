@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.zero_dim-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Integrality of weak limits of 0-dimensional integer multiplicity currents",
+  "statement": "Let U ⊆ ℝ^P be open and X_j, X ∈ D_0(U) with every X_j integer multiplicity, sup_j M_W(X_j) < ∞ for every open W ⊂⊂ U, and X_j ⇀ X. Then X is integer multiplicity.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0), (∀ j, IsIntegerMultiplicity (Xj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, (Xj j).massOn W) < ∞) → WeaklyConvergesOn Xj X → IsIntegerMultiplicity X",
+  "lean_name": "iwl_zero_dim_integrality",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.patching-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.patching-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-zero-dim-a1-a1"
+}

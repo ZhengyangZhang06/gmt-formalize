@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.current_criterion-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1",
+  "depth": 5,
+  "title": "A linear functional on test forms bounded by B·sup|ω| is a current of mass at most B (supplied fact (F5/F6))",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P (ℝ^P = Eucl P) be any set, D^n(U) := TestFormOn U n and |γ| := covectorEuclideanNorm γ. Let T₀ : D^n(U) → ℝ be a function and B ∈ ℝ such that T₀(ω + η) = T₀(ω) + T₀(η) and T₀(c·ω) = c·T₀(ω) for all ω, η ∈ D^n(U) and c ∈ ℝ, and |T₀(ω)| ≤ B·C for every ω ∈ D^n(U) and every C ∈ ℝ with |ω(y)| ≤ C for all y ∈ ℝ^P. Then there is S ∈ GeometricCurrentOn U n with S(ω) = T₀(ω) for every ω ∈ D^n(U) and S.mass ≤ ENNReal.ofReal B.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T₀ : TestFormOn U n → ℝ) (B : ℝ), (∀ ω η : TestFormOn U n, T₀ (ω + η) = T₀ ω + T₀ η) → (∀ (c : ℝ) (ω : TestFormOn U n), T₀ (c • ω) = c * T₀ ω) → (∀ (ω : TestFormOn U n) (C : ℝ), (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) y) ≤ C) → |T₀ ω| ≤ B * C) → ∃ S : GeometricCurrentOn U n, (∀ ω, S ω = T₀ ω) ∧ S.mass ≤ ENNReal.ofReal B",
+  "lean_name": "dph_lpf_current_of_bounded_functional",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1.series_current-a1.continuity_criterion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.series_current-a1.continuity_criterion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-series-current-a1-continuity-criterion-a1-a1",
+      "result_commit": "5c2485018f3340792575eada5d595fc0c38682d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-4a6665d902-a1"
+}

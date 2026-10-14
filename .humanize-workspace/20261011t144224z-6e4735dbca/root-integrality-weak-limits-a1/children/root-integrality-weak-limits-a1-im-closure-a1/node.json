@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.im_closure-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Closure properties of integer multiplicity currents (Simon 3.2)",
+  "statement": "Let U ⊆ ℝ^P be open and k ∈ ℕ. (a) Every integer multiplicity X ∈ D_k(U) has M_W(X) < ∞ for all W ⊂⊂ U. (b) Every restriction of an integer multiplicity X ∈ D_k(U) to a set A is integer multiplicity. (c) If X, Y ∈ D_k(U) are integer multiplicity, a, b ∈ ℤ and Z(ω) = aX(ω) + bY(ω) for all test forms ω, then Z is integer multiplicity.",
+  "lean_statement": "(∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, IsIntegerMultiplicity X → ∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X : GeometricCurrentOn U k) (A : Set (Eucl P)) (S : GeometricCurrentOn U k), IsIntegerMultiplicity X → IsRestriction X A S → IsIntegerMultiplicity S) ∧ (∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (X Y Z : GeometricCurrentOn U k) (a b : ℤ), IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω : TestFormOn U k, Z ω = (a : ℝ) * X ω + (b : ℝ) * Y ω) → IsIntegerMultiplicity Z)",
+  "lean_name": "iwl_im_closure",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.integrality_weak_limits-a1.restriction_theory-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-im-closure-a1-a1"
+}

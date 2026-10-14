@@ -1,0 +1,110 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1`
+- Child DAG node: `root.slicing-a1.slice_mass_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions (as in the parent proof). D^k(U) is the space of test k-forms on U (smooth, compact support, tsupport ⊆ U; `TestFormOn U k`), D_k(U) the currents (`GeometricCurrentOn U k`: linear, and X(ω_j) → 0 whenever ω_j → 0 in D^k(U), i.e. all tsupports lie in one compact K ⊆ U and every iterated derivative of ω_j tends to 0 uniformly on K). I(k,P) is the set of strictly increasing β : {1,…,k} → {1,…,P}; e_β := (e_{β_1},…,e_{β_k}); dx^β is the coordinate k-covector, dx^β(e_γ) = δ_{βγ} for β, γ ∈ I(k,P). Fact A: every k-covector α equals Σ_β α(e_β) dx^β, and |α|² = Σ_β α(e_β)², where |α| := covectorEuclideanNorm α. A k-vector is a continuous linear functional w on k-covectors (`NVector`); put w^β := w(dx^β), so w(α) = Σ_β α(e_β) w^β and |w(α)| ≤ |α|·|w| with |w| := (Σ_β (w^β)²)^{1/2} (Cauchy–Schwarz). For a form ω, ‖ω‖ := sup_x |ω(x)|. M_W(X) = X.massOn W is the supremum of X(ω) over ω ∈ D^k(U) with tsupport ω ⊆ W and |ω(x)| ≤ 1 for all x. ρ_ε is a standard mollifier (smooth, ≥ 0, supported in the closed ε-ball, ∫ρ_ε = 1); for a continuous compactly supported form φ, ρ_ε*φ (componentwise convolution) is smooth, supported in the closed ε-neighbourhood of tsupport φ, satisfies |ρ_ε*φ(x)| ≤ ‖φ‖ (|·| is a norm, hence convex) and ρ_ε*φ → φ uniformly as ε ↓ 0. All measures are Borel measures on ℝ^P = Eucl P.
+
+Source: Simon Ch. 6, 4.9–4.11 (pp. 157–158), including the closing sentence “To handle general Lipschitz f we simply use f^{(σ)} in place of f … then let σ ↓ 0”, i.e. the parent proof's Steps 3–4, with the parent's errata: (i) the right side of 4.10 is M_W(T⌞{a<f<b}) (printed M(T⌞{a<f<b})); (ii) ess sup_W|Df| is used as “any L_W ≥ |Df| a.e. on W”; (iii) in 4.11 “the first part of 4.11” reads “the first part of 4.9”; (iv) the argument is written for the slice ⟨T,f,t₋⟩ of 4.6. The parent's preliminaries R1–R3 are replaced by the siblings `slicing_mass_representation` and `slicing_representation_unique`, and the argument is run for an arbitrary family S with IsSlice T f t (S t). Products in [0,∞] use 0·∞ = 0.
+
+Setting. P, m, U open; T ∈ D_{m+1}(U) with M_W(T) < ∞ and M_W(∂T) < ∞ for every open W with compact closure ⊆ U; f : ℝ^P → ℝ with |f(x) − f(y)| ≤ L|x−y| for x, y ∈ U; S : ℝ → D_m(U) with IsSlice T f t (S t) for every t; W ⊆ U open; L_W ≥ 0 with ‖Df(x)‖ ≤ L_W for Lebesgue-a.e. x ∈ W (Df(x) = fderiv ℝ f x); a < b; R ∈ D_{m+1}(U) with IsRestriction T A_ab R, A_ab := {x | x ∈ U ∧ a < f x ∧ f x < b}.
+
+1. (Normalized representation of T.) Apply `slicing_mass_representation` to X := T (degree m+1). It gives μ_T, T⃗ with: IsMeasureRepresentation T μ_T T⃗; μ_T(K) < ∞ for every compact K ⊆ U; |T⃗(x)(α)| ≤ |α| for all x and all (m+1)-covectors α; and, for every Borel A and every Y ∈ D_{m+1}(U) with Y(η) = ∫_A T⃗(η) dμ_T for all η, M_{W′}(Y) = μ_T(W′ ∩ A) for every open W′ ⊆ U. In particular, for every η ∈ D^{m+1}(U),
+ (**) |T(η)| = |∫ T⃗(x)(η(x)) dμ_T| ≤ ∫ |η(x)| dμ_T(x).
+
+2. (Identification of R, R2.) IsRestriction T A_ab R gives that A_ab is measurable and a pair (μ_R, v_R) with IsMeasureRepresentation T μ_R v_R and R(η) = ∫_{A_ab} v_R(η) dμ_R for all η. Both pairs represent T, so ∫ v_R(η) dμ_R = T(η) = ∫ T⃗(η) dμ_T for every η ∈ D^{m+1}(U); `slicing_representation_unique` (degree m+1, open set ℝ^P) gives ∫_{A_ab} v_R(η) dμ_R = ∫_{A_ab} T⃗(η) dμ_T, i.e. R(η) = ∫_{A_ab} T⃗(η) dμ_T for all η. By step 1 (with A := A_ab, Y := R, W′ := W), M_W(R) = μ_T(W ∩ A_ab) =: Q ∈ [0,∞].
+
+3. (Auxiliary facts.)
+ (i) (McShane, `LipschitzOnWith.extend_real`.) There is f̃ : ℝ^P → ℝ, L-Lipschitz on ℝ^P, with f̃ = f on U. For σ > 0 let f_σ := ρ_σ * f̃; f_σ is smooth on ℝ^P and |f_σ − f̃| ≤ Lσ everywhere.
+ (ii) (Rademacher, `LipschitzOnWith.ae_differentiableWithinAt_of_mem` for the open set U.) f is differentiable at a.e. point of U, and since f̃ = f near every point of U, Df̃ = Df there. With the hypothesis: for a.e. z ∈ W, f̃ is differentiable at z and ‖Df̃(z)‖ ≤ L_W.
+ (iii) (Gradient bound.) Let K ⊆ W be compact and δ₀ > 0 with the closed 2δ₀-neighbourhood K_{2δ₀} of K contained in W. For 0 < σ < δ₀, x ∈ K and a unit vector e: (f_σ(x+se) − f_σ(x))/s = ∫ ρ_σ(y)(f̃(x+se−y) − f̃(x−y))/s dy; the integrand is bounded by Lρ_σ(y) and, for 0 < |s| < δ₀, x − y ∈ K_{2δ₀} ⊆ W for |y| ≤ σ, so by (ii) (the exceptional set is Lebesgue-null and Lebesgue measure is translation invariant) it converges to ρ_σ(y)Df̃(x−y)e for a.e. y as s → 0. By dominated convergence Df_σ(x)e = ∫ ρ_σ(y)Df̃(x−y)e dy, hence |Df_σ(x)e| ≤ L_W. So ‖Df_σ(x)‖ ≤ L_W for x ∈ K.
+ (iv) (R5.) For a 1-covector α and an m-covector γ, |α∧γ| ≤ |α||γ|: if α ≠ 0 choose an orthonormal basis ε₁,…,ε_P with α = |α|ε₁*; the Euclidean coefficient norm is the norm of the inner product induced on covectors, so it may be computed in this basis; writing γ = Σ_β c_β ε^β, α∧γ = |α|Σ_{β ∌ 1} c_β ε^1∧ε^β with pairwise distinct multi-indices, so |α∧γ|² = |α|²Σ_{β∌1}c_β² ≤ |α|²|γ|². For smooth g, |dg(x)| = ‖Dg(x)‖.
+ (v) (Cut-offs.) For h > 0 and ε > 0 there is a smooth nonincreasing χ = χ_{h,ε} : ℝ → [0,1] with χ = 1 on (−∞, t−h], χ = 0 on [t,∞) and |χ′| ≤ (1+ε)/h (mollify, with radius < κ, the piecewise linear function equal to 1 on (−∞, t−h+κ], to 0 on [t−κ,∞) and linear in between, κ > 0 small); then χ′ = 0 outside (t−h, t).
+
+4. (Pointwise bound 4.9, for every t ∈ ℝ.) Fix t. IsSlice T f t (S t) gives currents A, B, a representation (μ, v) of T and a representation (μ′, v′) of ∂T such that A(η) = ∫_{A_t} v(η) dμ, B(ω) = ∫_{A_t} v′(ω) dμ′ and (S t)(ω) = A(dω) − B(ω), where A_t := {x ∈ U : f(x) < t}. Fix ω admissible for M_W(S t): ω ∈ D^m(U), K := tsupport ω ⊆ W, |ω(x)| ≤ 1. If K = ∅ then (S t)(ω) = 0; otherwise choose δ₀ as in 3(iii). Fix h > 0, ε > 0, χ := χ_{h,ε} and 0 < σ < δ₀.
+ (4a) (4.11.) χ∘f_σ is smooth, so χ(f_σ)ω ∈ D^m(U) with tsupport ⊆ K, and d(χ(f_σ)ω) = χ′(f_σ)df_σ∧ω + χ(f_σ)dω with both terms in D^{m+1}(U), tsupport ⊆ K. Hence ∂T(χ(f_σ)ω) − T(χ(f_σ)dω) = T(χ′(f_σ)df_σ∧ω).
+ (4b) By the representations from IsSlice, ∂T(χ(f_σ)ω) = ∫ χ(f_σ)v′(ω) dμ′ and T(χ(f_σ)dω) = ∫ χ(f_σ)v(dω) dμ.
+ (4c) By (**), (iv) and (iii): |T(χ′(f_σ)df_σ∧ω)| ≤ ∫ |χ′(f_σ)||df_σ||ω| dμ_T ≤ ((1+ε)/h)·L_W·μ_T(K ∩ {t−h < f_σ < t}) ≤ ((1+ε)/h)·L_W·μ_T(K ∩ {x ∈ U : t−h−Lσ < f(x) < t+Lσ}), because χ′(f_σ(x)) ≠ 0 only if t−h < f_σ(x) < t, and |f_σ − f| ≤ Lσ on K ⊆ U.
+ (4d) Let σ ↓ 0. f_σ → f̃ uniformly on ℝ^P, so χ(f_σ) → χ(f̃) uniformly; the integrands v′(ω), v(dω) are integrable and vanish off K; by dominated convergence the two integrals in (4b) converge to ∫ χ(f̃)v′(ω) dμ′ and ∫ χ(f̃)v(dω) dμ (χ∘f̃ is continuous on ℝ^P, and f̃ = f on K ⊆ U). As σ ↓ 0 the sets K ∩ {x ∈ U : t−h−Lσ < f(x) < t+Lσ} decrease, their intersection is contained in K ∩ {x ∈ U : t−h ≤ f(x) ≤ t} (with equality if L > 0), and μ_T(K) < ∞; hence lim_{σ↓0} μ_T(K ∩ {t−h−Lσ < f < t+Lσ}) ≤ μ_T(K ∩ {t−h ≤ f ≤ t}). Hence
+ |∫ χ(f̃)v′(ω) dμ′ − ∫ χ(f̃)v(dω) dμ| ≤ ((1+ε)/h)·L_W·μ_T(K ∩ {x ∈ U : t−h ≤ f(x) ≤ t}).
+ (4e) Let h ↓ 0 (with χ = χ_{h,ε}). For x ∈ U, χ_{h,ε}(f̃(x)) = χ_{h,ε}(f(x)) → 1_{A_t}(x) (it equals 1 once h < t − f(x) if f(x) < t, and 0 if f(x) ≥ t); the integrands vanish off K ⊆ U; by dominated convergence the left side tends to |B(ω) − A(dω)| = |(S t)(ω)|. Therefore |(S t)(ω)| ≤ liminf_{h↓0} ((1+ε)/h)·L_W·μ_T(K ∩ {t−h ≤ f ≤ t}). If L_W = 0 every term is 0 (μ_T(K) < ∞), so (S t)(ω) = 0. If L_W > 0, since K ⊆ W this is ≤ (1+ε)·L_W·Λ(t), where
+ Λ(t) := liminf_{h↓0} h⁻¹·μ_T(W ∩ {x ∈ U : t−h ≤ f(x) ≤ t}) ∈ [0,∞].
+ (4f) Letting ε ↓ 0 and taking the supremum over admissible ω (M_W(S t) is the supremum of ofReal((S t)(ω)) ≤ |(S t)(ω)|):
+ (4.9) M_W(S t) ≤ L_W·Λ(t) for every t ∈ ℝ; in particular M_W(S t) = 0 for every t if L_W = 0.
+
+5. (Measurable majorant and 4.10.)
+ Case L_W = 0: g :≡ 0 is measurable; M_W(S t) = 0 = g(t) by (4.9); ∫⁻_{(a,b)} g = 0 ≤ L_W·M_W(R).
+ Case L_W > 0 and Q = ∞: g :≡ ∞ is measurable, M_W(S t) ≤ g(t), and ∫⁻_{(a,b)} g ≤ ∞ = L_W·Q = L_W·M_W(R).
+ Case L_W > 0 and Q < ∞: let G(s) := μ_T(W ∩ {x ∈ U : a < f(x) ≤ s}) for s ∈ ℝ. G is nondecreasing, G = 0 on (−∞, a], G(s) ≤ Q < ∞ for s < b, and G is right-continuous on (−∞, b) (continuity from above for the decreasing sets W ∩ {a < f ≤ s′}, s′ ↓ s, of finite measure). For t ∈ (a,b) and k > 0 let Δ_t(k) := (G(t) − G(t−k))/k and D(t) := liminf_{k↓0} Δ_t(k) ∈ [0,∞]. Define g(t) := L_W·D(t) for t ∈ (a,b) and g(t) := 0 otherwise.
+ (5a) Λ(t) ≤ D(t) for t ∈ (a,b): for h > 0 with h + h² < t − a and k := h + h², {t−h ≤ f ≤ t} ⊆ {t−k < f ≤ t}, so h⁻¹μ_T(W ∩ {t−h ≤ f ≤ t}) ≤ h⁻¹(G(t) − G(t−k)) = (1+h)Δ_t(k). Choose k_j ↓ 0 with Δ_t(k_j) → D(t) and h_j > 0 with h_j + h_j² = k_j; then h_j ↓ 0 and Λ(t) ≤ liminf_j h_j⁻¹μ_T(W ∩ {t−h_j ≤ f ≤ t}) ≤ lim_j (1+h_j)Δ_t(k_j) = D(t).
+ (5b) g is Borel: for t ∈ (a,b), k ↦ G(t−k) is left-continuous on (0,∞) (right-continuity of G at t − k < b, and G = 0 on (−∞,a] with G(s) → 0 as s ↓ a), so Δ_t is left-continuous and its infimum over (0,1/j) equals its infimum over ℚ ∩ (0,1/j). Thus D(t) = sup_j inf_{q∈ℚ∩(0,1/j)} Δ_t(q), and each t ↦ Δ_t(q) is Borel on (a,b) (G is monotone on (−∞, b), hence Borel). Hence D, and g, are Borel measurable.
+ (5c) For t ∈ (a,b): M_W(S t) ≤ L_W·Λ(t) ≤ L_W·D(t) = g(t), by (4.9) and (5a).
+ (5d) Let a < a′ < b′ < b and G̃(s) := G(min(max(s,a′),b′)), a real-valued monotone function on ℝ. By Lebesgue's theorem (`Monotone.ae_differentiableAt`), G̃ is differentiable at a.e. s; at such s ∈ (a′,b′), G̃ = G near s, so Δ_s(k) → deriv G̃(s) and D(s) = deriv G̃(s). By `MonotoneOn.intervalIntegrable_deriv` and `MonotoneOn.intervalIntegral_deriv_mem_uIcc`, deriv G̃ ≥ 0 is integrable on [a′,b′] with ∫_{a′}^{b′} deriv G̃ ≤ G̃(b′) − G̃(a′) ≤ Q. Hence ∫⁻_{(a′,b′)} D ≤ Q, and by monotone convergence (a′ ↓ a, b′ ↑ b) ∫⁻_{(a,b)} D ≤ Q. Therefore ∫⁻_{(a,b)} g = L_W·∫⁻_{(a,b)} D ≤ L_W·Q = L_W·M_W(R).
+
+6. (Conclusion.) In every case g : ℝ → [0,∞] is measurable, M_W(S t) ≤ g(t) for all t ∈ (a,b), and ∫⁻_{t∈(a,b)} g(t) ≤ L_W·M_W(R). (This is 4.10 in its upper-integral form with M_W(T⌞{a<f<b}) on the right.) ∎
+
+## Key steps
+
+1. slicing_mass_representation gives a normalized representation (μ_T, T⃗) of T: |T(η)| ≤ ∫|η| dμ_T, μ_T finite on compacts of U, restriction masses M_W′(T⌞A) = μ_T(W′∩A).
+2. slicing_representation_unique identifies the given restriction R with T⌞{a<f<b} computed in (μ_T, T⃗), so M_W(R) = μ_T(W ∩ {a<f<b}) = Q.
+3. McShane extension, mollification f_σ = ρ_σ * f̃ and Rademacher give |Df_σ| ≤ L_W near tsupport ω ⊆ W.
+4. 4.11 with cut-offs χ_h: ∂T(χ(f_σ)ω) − T(χ(f_σ)dω) = T(χ′(f_σ)df_σ∧ω), bounded by ((1+ε)/h) L_W μ_T(K ∩ {t−h−Lσ < f < t+Lσ}); restriction terms evaluated in the IsSlice representations.
+5. σ ↓ 0, then h ↓ 0 (dominated convergence), then ε ↓ 0 and sup over ω: M_W(S t) ≤ L_W · liminf_h h⁻¹ μ_T(W ∩ {t−h ≤ f ≤ t}) for every t (4.9).
+6. Cases L_W = 0 (g ≡ 0) and Q = ∞ (g ≡ ∞); otherwise g = L_W · lower left Dini derivative of G(s) = μ_T(W ∩ {a<f≤s}): Borel via rational infima, dominates the mass, and ∫g ≤ L_W Q by Lebesgue's theorem for monotone functions (4.10).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp workspaces/gmt-ch06/GMT/Ch06/Contract.lean against GMT/Ch06/Submission.lean and against snapshot project/GMT/Ch06/Contract.lean (all identical)`
+- `read project/GMT/Ch06/Contract.lean: IsMeasureRepresentation, IsRestriction, IsSlice, IsIntegerMultiplicity, IsRectifiableTriple, CompactlyContainedOpen, SlicingTheorem`
+- `read simongmt Chapter06/{Currents,Mass,FormsDuality,CurrentLocalEquality,Forms,Representation}.lean: GeometricCurrentOn, TestFormOnConverges, GeometricCurrentOn.boundary, tsupport_exteriorDerivative_subset, massOn, massAdmissibleOn, covectorEuclideanNorm, zeroRegion, support, NVector`
+- `grep -rn 'theorem simon_theorem_4_14' simongmt/Poincare/SimonGMT/Chapter01 (RadonPolarRepresentation.lean; IsLocallyBoundedCcFunctional in VectorFunctionalEnvelope.lean; IsRadonOuterMeasure in RadonOuterMeasure.lean)`
+- `grep -rln 'coarea|co-area' simongmt/Poincare/SimonGMT (only linear co-area: Chapter02/CoareaLinear.lean, CoareaProjection.lean; no co-area formula for rectifiable sets)`
+- `grep -n '^def |^theorem ' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt)`
+- `grep -rn 'Monotone.ae_differentiableAt|MonotoneOn.intervalIntegral_deriv_mem_uIcc|MonotoneOn.intervalIntegrable_deriv' mathlib/Mathlib`
+- `grep -rn 'LipschitzOnWith.extend_real|LipschitzOnWith.ae_differentiableWithinAt_of_mem|theorem measurable_deriv|theorem ext_of_generate_finite' mathlib/Mathlib`
+- `grep -rln 'Lusin' mathlib/Mathlib/MeasureTheory (only Lusin–Souslin; Lusin's continuity theorem is cited from Simon Ch. 1, 1.17)`
+- `python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (child scope: namespace GMT.Ch06 + opens)`
+- `lake build GMT.Ch06.Submission (scratch /tmp/slicing_split_check_r1, frozen d8d46c9, pinned shared packages)`
+- `lake env lean Scratch/Stmts.lean and Scratch/FinalChallenge.lean (6 child statements as _root_ comparator targets in the contract scope; 0 errors)`
+- `lake env lean Scratch/Assembly.lean (SlicingTheorem from slicing_exists, slicing_support_subset, slicing_mass_bound, slicing_integer_multiplicity_ae; #print axioms)`
+- `lake env lean Scratch/Glue.lean (slicing_exists from slicing_mass_representation; slicing_support_subset from slicing_representation_unique; restriction-mass identification from both; #print axioms)`
+- `python3 listing of dag.json lean_name values (20 nodes) and grep of the run's nodes/ for the six proposed names (no matches)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonOuterMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/CoareaLinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1/parent-child-handoff.json`
+- `/tmp/slicing_split_check_r1/Scratch/Stmts.lean`
+- `/tmp/slicing_split_check_r1/Scratch/FinalChallenge.lean`
+- `/tmp/slicing_split_check_r1/Scratch/Assembly.lean`
+- `/tmp/slicing_split_check_r1/Scratch/Glue.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract; Submission is byte-identical, so child statements may use only contract, SimonGMT and Mathlib names. SimonGMT provides currents with sequential continuity, boundary, massOn (Euclidean coefficient norm), support/zeroRegion and the vector Riesz theorem `simon_theorem_4_14` on any locally compact Hausdorff space (Radon outer measure, unit field a.e.). It has only linear co-area and no co-area for rectifiable sets, and Mathlib has neither (nor Lusin's continuity theorem), so these are cited from Simon Ch. 3 §2 and Ch. 1, 1.17. Mathlib provides McShane (`LipschitzOnWith.extend_real`), Rademacher (`LipschitzOnWith.ae_differentiableWithinAt_of_mem`), Lebesgue's theorem for monotone functions (`Monotone.ae_differentiableAt`, `MonotoneOn.intervalIntegral_deriv_mem_uIcc`) and π-system uniqueness of finite measures (`ext_of_generate_finite`). In a scratch build of the frozen project, all six child statements elaborate in the comparator's child scope. `SlicingTheorem` follows from the four property children by `choose` plus assembly. `slicing_exists` follows from `slicing_mass_representation`, `slicing_support_subset` from `slicing_representation_unique`, and the restriction-mass identification used by `slicing_mass_bound` from both. All of these are kernel-checked with axioms [propext, Classical.choice, Quot.sound]. The DAG (20 nodes) reserves none of the six proposed names; the concurrently added polyhedral children have different names and types. These checks do not certify the analytic proofs.

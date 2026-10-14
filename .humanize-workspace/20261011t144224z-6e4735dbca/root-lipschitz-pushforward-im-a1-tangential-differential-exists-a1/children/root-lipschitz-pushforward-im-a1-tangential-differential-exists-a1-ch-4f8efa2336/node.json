@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.chart_directional_deriv-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "depth": 3,
+  "title": "Directional derivative of a Lipschitz map along a chart (fact (DD))",
+  "statement": "Let ρ > 0, let f : ℝ^P → ℝ^Q be K-Lipschitz on the open ball B_ρ(Φ(w)) (K ≥ 0), let Φ : ℝⁿ → ℝ^P have Fréchet derivative A at w, and let f∘Φ have Fréchet derivative B at w. Then for every s ∈ ℝⁿ the map t ↦ f(Φ(w) + t·As) is differentiable at t = 0 with derivative Bs, and |Bs| ≤ K|As|.",
+  "lean_statement": "∀ (P Q n : ℕ) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (w : Eucl n) (A : Eucl n →L[ℝ] Eucl P) (B : Eucl n →L[ℝ] Eucl Q) (K : ℝ≥0) (ρ : ℝ), 0 < ρ → LipschitzOnWith K f (ball (Φ w) ρ) → HasFDerivAt Φ A w → HasFDerivAt (f ∘ Φ) B w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => f (Φ w + t • A s)) (B s) 0 ∧ ‖B s‖ ≤ (K : ℝ) * ‖A s‖",
+  "lean_name": "lpf_tde_chart_directional_deriv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-ch-4f8efa2336-a1"
+}

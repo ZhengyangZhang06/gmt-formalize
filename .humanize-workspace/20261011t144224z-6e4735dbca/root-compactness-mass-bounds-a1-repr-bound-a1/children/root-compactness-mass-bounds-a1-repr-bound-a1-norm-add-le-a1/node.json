@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1.norm_add_le-a1",
+  "parent_id": "root.compactness_mass_bounds-a1.repr_bound-a1",
+  "depth": 3,
+  "title": "Triangle inequality for the Euclidean coefficient norm of covectors",
+  "statement": "For all P, n ∈ ℕ and all α, γ ∈ Covector (Eucl P) n: |α + γ| ≤ |α| + |γ|. Here |·| = covectorEuclideanNorm, i.e. |α| = √(Σ_{I : Fin n → Fin P} [I strictly increasing]·α(b_{I(0)}, …, b_{I(n−1)})²) with b_i = EuclideanSpace.basisFun (Fin P) ℝ i.",
+  "lean_statement": "∀ (P n : ℕ) (α γ : Covector (Eucl P) n), covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ",
+  "lean_name": "cmb_rb_covectorEuclideanNorm_add_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-repr-bound-a1-norm-add-le-a1-a1"
+}
