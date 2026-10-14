@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmr_vr|dominating_measure|density_representation' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "theorem finsetSum_apply|theorem add_apply|class IsFiniteMeasureOnCompacts|lt_top_of_isCompact|def AbsolutelyContinuous|absolutelyContinuous_of_le",
+        "measurable_rnDeriv|haveLebesgueDecomposition_add|singularPart_eq_zero_of_ac|lintegral_rnDeriv_lt_top_of_measure_ne_top|rnDeriv_lt_top|haveLebesgueDecomposition_of_sigmaFinite",
+        "integral_withDensity_eq_integral_toReal_smul|integrable_toReal_of_lintegral_ne_top|theorem Integrable.bdd_mul|integrable_of_forall_notMem_eq_zero|of_isFiniteMeasureOnCompacts|sigmaCompactSpace_of_locallyCompact_secondCountable|class Regular|theorem integral_rieszMeasure|regular_rieszMeasure|def rieszMeasure|bounded_above_of_compact_support|theorem Measurable.ennreal_toReal|theorem integral_sub |theorem sum_lt_top",
+        "cmr_vr_cd_dominating_measure|cmr_vr_cd_density_representation",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cd-split-1669/Stmts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cd-split-1669/Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-1669aaf2f9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-1669aaf2f9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/cd-split-1669/Stmts.lean",
+        "/tmp/cd-split-1669/Final.lean"
+      ],
+      "conclusion": "The split appropriately isolates two independent obligations from the selected common-density proof. The pinned project search found no matching reusable declaration. The manifest records project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the inspected working-library files match the snapshot. Module.lean:91,160 confirms measure addition and finite-sum evaluation for arbitrary sets. Lebesgue.lean:100,115,252,364,384,952 supports every density step with the stated hypotheses. The compactness, integrability, and RMK APIs support the remaining steps. Both names are bare identifiers, absent from the 821-node DAG and other node reservations. Both frozen statements pass the comparator syntax validator, match their supplied Lean declarations exactly, and contain no implementation-dependent references. Their empty dependency lists are appropriate and acyclic. Independent source review confirms that RMK, these children, and integral subtraction establish the exact selected parent. Compiler reruns stalled on filesystem reads and were interrupted; fresh elaboration and axiom-print results were not independently obtained. Acceptance rests on the independent mathematical and source-level audit, not on an asserted successful rerun."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dominating_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary topology and sigma-algebra without compatibility. The supplied proof constructs the finite sum in Measure X, proves compact finiteness, and derives both absolute-continuity conclusions from vanishing nonnegative summands. Evaluation identities hold even for nonmeasurable sets, so no hypothesis is missing. The empty-family case is covered. This is a complete, independent obligation with no circular reliance; its bare declaration name is unreserved."
+    },
+    {
+      "key": "density_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition includes all prose hypotheses and conclusions. Each supplied step is justified: sigma-compactness yields sigma-finiteness; absolute continuity removes the singular part; the measurable, almost-everywhere finite RN derivative gives a measurable real density integrable on every compact set. Boundedness and compact support establish integrability of f*g, and the withDensity identity gives the required integral equality. Multiplication and scalar multiplication are correctly interpreted over real values. The retained Hausdorff hypothesis is harmless. No sibling or parent theorem is assumed, and the bare name is unreserved. Applied to both RMK measures, this child supplies precisely the integrability and identities needed for the selected parent's subtraction argument."
+    }
+  ],
+  "required_changes": []
+}
