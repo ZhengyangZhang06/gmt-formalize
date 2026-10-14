@@ -4465,6 +4465,289 @@ theorem Submission.dimred_tr_mcr_homogeneous_infinite_mass : ∀ (P n : ℕ) (μ
   exact Submission.idtp_fons_cc_psf_nonhomogeneous P n μ (fun x => ENNReal.ofReal (g x)) hn h0
     htop (fun t ht w => congrArg ENNReal.ofReal (hhom t ht w)) hμ
 
+/-- **Class reduction for the density threshold** (Simon 7.3.3, proof of 3.3(1),
+chapter-07.txt lines 472–494, with Remark 3.4, lines 380–398).  `𝓜` is a class of measures
+`μ = Θ_μ Hⁿ` (`Θ_μ = dens μ`, the upper density), finite on compact sets, closed under the
+rescalings `μ^{y,λ} = λ⁻ⁿ η_{y,λ#}μ` (Simon's (10)), with `n`-homogeneous vague blow-up limits,
+satisfying the monotonicity bound, and containing no infinite flat measure of density `≥ c`.
+Simon's data (13), (14) become `F = {Θ_μ e₁ : μ ∈ 𝓜}` and `sing φ = closure {c ≤ ⟨φ, e₁⟩}`; the
+closure makes `sing φ` closed and, by the threshold limit (Simon's (12)), adds no points inside
+`B₂(0)`.  The normalized pairings `∫ f Θ_μ e₁ dμH[n] = c₀ (∫ f dμ) e₁` turn the weak convergence
+of A.2 and A.3(3) into vague convergence of the measures; A.3(1) follows from (6) and
+`dimred_tr_mcr_homogeneous_infinite_mass`, and A.3(3) from the threshold limit and
+`dimred_tr_mcr_eventually_near`.  The alternatives of A.4 then pass to the superlevel sets
+`{c ≤ Θ_μ}`; an extremal `ν` has `Θ_ν` constant on `L`, so `{c ≤ Θ_ν} = L`, and, being nonzero and
+`n`-homogeneous, has infinite mass. -/
+theorem Submission.dimred_tr_measure_class_reduction : (∀ (P n Q : ℕ) (F : Set (Euclid P → Euclid Q)) (sing : (Euclid P → Euclid Q) → Set (Euclid P)), (∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ) → (∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)]) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → (fun x => φ (y + lam • x)) ∈ F) → (∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid Q), StrictMono sub ∧ ψ ∈ F ∧ (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧ ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x) → (∀ φ ∈ F, IsClosed (sing φ)) → (∀ φ ∈ F, ∀ (L : Submodule ℝ (Euclid P)) (c : Euclid Q), Module.finrank ℝ L = n → φ = Set.indicator (L : Set (Euclid P)) (fun _ => c) → sing φ = ∅) → (∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ) → (∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid Q, (∀ k, φs k ∈ F) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε}) → (∀ φ ∈ F, ball (0 : Euclid P) 1 ∩ sing φ = ∅) ∨ ∃ d : ℕ, d + 1 ≤ n ∧ (∀ φ ∈ F, ∀ α : ℝ, 0 < α → μH[(d : ℝ) + α] (sing φ ∩ ball (0 : Euclid P) 1) = 0) ∧ (∃ ψ ∈ F, ∃ L : Submodule ℝ (Euclid P), Module.finrank ℝ L = d ∧ sing ψ = (L : Set (Euclid P)) ∧ ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, ψ (y + lam • x) = ψ x) ∧ (d = 0 → ∀ φ ∈ F, ∀ σ : ℝ, σ < 1 → (sing φ ∩ ball (0 : Euclid P) σ).Finite)) → ∀ (P n : ℕ) (c Λ : ℝ) (𝓜 : Set (Measure (Euclid P))) (dens : Measure (Euclid P) → Euclid P → ℝ), 1 ≤ n → 0 < c → (∀ (μ : Measure (Euclid P)) (x : Euclid P), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → (∀ μ ∈ 𝓜, ∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ μ ∈ 𝓜, μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (dens μ x))) → (∀ μ ∈ 𝓜, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam) ∈ 𝓜) → (∀ μ ∈ 𝓜, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ν : Measure (Euclid P)), StrictMono sub ∧ ν ∈ 𝓜 ∧ (∀ lam : ℝ, 0 < lam → ∀ s : Set (Euclid P), MeasurableSet s → ν ((fun x => lam • x) '' s) = ENNReal.ofReal (lam ^ n) * ν s) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • μ.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ μ ∈ 𝓜, ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) → (∀ μ ∈ 𝓜, μ univ = ∞ → ∀ (Q : Submodule ℝ (Euclid P)) (c' : ℝ), Module.finrank ℝ Q = n → c ≤ c' → (∀ x, dens μ x = Set.indicator (Q : Set (Euclid P)) (fun _ => c') x) → False) → (∀ μ ∈ 𝓜, {x | x ∈ ball (0 : Euclid P) 1 ∧ c ≤ dens μ x} = ∅) ∨ ∃ d : ℕ, d + 1 ≤ n ∧ (∀ μ ∈ 𝓜, ∀ α : ℝ, 0 < α → μH[(d : ℝ) + α] {x | x ∈ ball (0 : Euclid P) 1 ∧ c ≤ dens μ x} = 0) ∧ (d = 0 → ∀ μ ∈ 𝓜, ∀ σ : ℝ, σ < 1 → {x | x ∈ ball (0 : Euclid P) σ ∧ c ≤ dens μ x}.Finite) ∧ ∃ ν ∈ 𝓜, ν univ = ∞ ∧ ∃ L : Submodule ℝ (Euclid P), Module.finrank ℝ L = d ∧ {x | c ≤ dens ν x} = (L : Set (Euclid P)) ∧ ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, dens ν (y + lam • x) = dens ν x := by
+  intro hADR P n c Λ 𝓜 dens hn hc hdens hfin hrep hres hblow hmono hflat
+  -- `e = e₁ ∈ ℝ¹`, `φ_μ = dens μ • e`, `F = {φ_μ : μ ∈ 𝓜}`, `sing φ = closure {c ≤ ⟨φ, e⟩}`
+  obtain ⟨e, he0⟩ : ∃ e : Euclid 1, e 0 = 1 := ⟨EuclideanSpace.single 0 1, by simp⟩
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : Measure (Euclid P) → Euclid P → Euclid 1,
+      ∀ μ, Φ μ = fun x => dens μ x • e := ⟨_, fun _ => rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : Set (Euclid P → Euclid 1), F = Φ '' 𝓜 := ⟨_, rfl⟩
+  obtain ⟨sing, hsing⟩ : ∃ sing : (Euclid P → Euclid 1) → Set (Euclid P),
+      ∀ ψ, sing ψ = closure {x | c ≤ ψ x 0} := ⟨_, fun _ => rfl⟩
+  have hΦ0 : ∀ μ x, Φ μ x 0 = dens μ x := fun μ x => by
+    rw [hΦ, PiLp.smul_apply, he0, smul_eq_mul, mul_one]
+  have hΦF : ∀ μ ∈ 𝓜, Φ μ ∈ F := fun μ hμ => by
+    rw [hF]
+    exact mem_image_of_mem Φ hμ
+  have hsingΦ : ∀ μ, sing (Φ μ) = closure {x | c ≤ dens μ x} := fun μ => by
+    rw [hsing]
+    simp only [hΦ0]
+  -- Step 1: `dens μ` is Borel and nonnegative
+  have hmeas : ∀ μ, Measurable (dens μ) := fun μ => by
+    rw [show dens μ = _ from funext (hdens μ)]
+    exact Submission.idtp_fons_cr_density_measurable P n μ
+  have hnn : ∀ μ x, 0 ≤ dens μ x := fun μ x => by
+    rw [hdens]
+    exact ENNReal.toReal_nonneg
+  -- Step 2: `dens μ^{y,λ} = dens μ (y + λ ·)`
+  have hdres : ∀ (μ : Measure (Euclid P)) (y : Euclid P) (lam : ℝ), 0 < lam → ∀ x,
+      dens (ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam)) x = dens μ (y + lam • x) := by
+    intro μ y lam hlam x
+    rw [hdens, hdens, (Submission.idtp_fons_cr_density_rescale P n μ y lam hlam).1 x]
+  -- Step 4: normalized pairings `∫ f φ_μ dμH[n] = (c₀ ∫ f dμ) e`, and local integrability
+  obtain ⟨c₀, hc₀, hnorm⟩ := Submission.idtp_fons_cr_density_normalization P n
+  have hint : ∀ μ ∈ 𝓜, ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+      ∫ x, f x • Φ μ x ∂μH[(n : ℝ)] = (c₀ * ∫ x, f x ∂μ) • e := by
+    intro μ hμ f hf hfc
+    rw [hΦ]
+    exact (hnorm 1 μ (dens μ) e (hmeas μ) (hnn μ) (hfin μ hμ) (hrep μ hμ)).2 f hf hfc
+  -- Step 6: upper semicontinuity on `B₂(0)`, by the threshold limit along a constant sequence
+  have husc : ∀ μ ∈ 𝓜, ∀ x : Euclid P, ‖x‖ < 2 → x ∈ closure {z | c ≤ dens μ z} →
+      c ≤ dens μ x := by
+    intro μ hμ x hx hcl
+    obtain ⟨xs, hxs, hlim⟩ := mem_closure_iff_seq_limit.1 hcl
+    rw [hdens]
+    exact Submission.dimred_tr_mcr_threshold_limit P n Λ c μ (fun _ => μ) xs x (hfin μ hμ)
+      (fun _ => hfin μ hμ) (hmono μ hμ) (fun _ => hmono μ hμ) (fun _ _ _ => tendsto_const_nhds)
+      hlim hx fun j => by
+        have h : c ≤ dens μ (xs j) := hxs j
+        rw [hdens] at h
+        exact h
+  -- Step 7: the hypotheses of (ADR) for `(P, n, 1, F, sing)`
+  -- (H0)
+  have hH0 : ∀ φ ∈ F, ∀ ψ ∈ F, (∀ᵐ x ∂μH[(n : ℝ)], φ x = ψ x) → φ = ψ := by
+    intro φ hφ ψ hψ hae
+    rw [hF] at hφ hψ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    obtain ⟨ν, hν, rfl⟩ := hψ
+    have hae' : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
+        ENNReal.ofReal (dens μ x) = ENNReal.ofReal (dens ν x) := by
+      rw [Measure.euclideanHausdorffMeasure_def]
+      refine Measure.ae_smul_measure (hae.mono fun x hx => ?_) _
+      rw [← hΦ0 μ x, ← hΦ0 ν x, hx]
+    have hμν : μ = ν := by
+      rw [hrep μ hμ, hrep ν hν]
+      exact withDensity_congr_ae hae'
+    rw [hμν]
+  -- (Loc)
+  have hLoc : ∀ φ ∈ F, LocallyIntegrable φ μH[(n : ℝ)] := by
+    intro φ hφ
+    rw [hF] at hφ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    rw [hΦ]
+    exact (hnorm 1 μ (dens μ) e (hmeas μ) (hnn μ) (hfin μ hμ) (hrep μ hμ)).1
+  -- (A.1)
+  have hA1 : ∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      (fun x => φ (y + lam • x)) ∈ F := by
+    intro φ hφ y lam hlam hlam1 hy
+    rw [hF] at hφ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    convert hΦF _ (hres μ hμ y lam hlam hlam1 hy) using 1
+    funext x
+    simp only [hΦ]
+    rw [hdres μ y lam hlam x]
+  -- (A.2)
+  have hA2 : ∀ φ ∈ F, ∀ y : Euclid P, ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ k, 0 < lams k) →
+      StrictAnti lams → Tendsto lams atTop (𝓝 0) →
+      ∃ (sub : ℕ → ℕ) (ψ : Euclid P → Euclid 1), StrictMono sub ∧ ψ ∈ F ∧
+        (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+          Tendsto (fun k => ∫ x, f x • φ (y + lams (sub k) • x) ∂μH[(n : ℝ)]) atTop
+            (𝓝 (∫ x, f x • ψ x ∂μH[(n : ℝ)]))) ∧
+        ∀ lam : ℝ, 0 < lam → ∀ x, ψ (lam • x) = ψ x := by
+    intro φ hφ y hy lams hpos hanti hlim
+    rw [hF] at hφ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    obtain ⟨sub, ν, hsub, hν, hhom, hconv⟩ := hblow μ hμ y hy lams hpos hanti hlim
+    refine ⟨sub, Φ ν, hsub, hΦF ν hν, fun f hf hfc => ?_, fun lam hlam x => ?_⟩
+    · -- for large `k`, `λ_{sub k} < 1 − |y|`, so `μ^{y,λ_{sub k}} ∈ 𝓜` and step 4 applies
+      have hev : ∀ᶠ k in atTop, lams (sub k) < 1 - ‖y‖ :=
+        (hlim.comp hsub.tendsto_atTop).eventually (gt_mem_nhds (sub_pos.2 hy))
+      have heq : ∀ᶠ k in atTop, (c₀ * ∫ x, f x ∂(ENNReal.ofReal ((lams (sub k))⁻¹ ^ n) •
+          μ.map (dilation y (lams (sub k))))) • e =
+            ∫ x, f x • Φ μ (y + lams (sub k) • x) ∂μH[(n : ℝ)] := by
+        filter_upwards [hev] with k hk
+        have hk0 := hpos (sub k)
+        have hmem := hres μ hμ y (lams (sub k)) hk0 (by linarith [norm_nonneg y]) (by linarith)
+        rw [← hint _ hmem f hf hfc]
+        refine integral_congr_ae (ae_of_all _ fun x => ?_)
+        simp only [hΦ]
+        rw [hdres μ y _ hk0 x]
+      rw [hint ν hν f hf hfc]
+      exact ((tendsto_const_nhds.mul (hconv f hf hfc)).smul_const e).congr' heq
+    · -- step 3: a homogeneous `ν` has dilation-invariant density
+      rw [hΦ]
+      show dens ν (lam • x) • e = dens ν x • e
+      rw [hdens, hdens, Submission.idtp_fons_cc_tm_density_homogeneous P n ν hhom lam hlam x]
+  -- (A.3): closedness
+  have hclosed : ∀ φ ∈ F, IsClosed (sing φ) := fun φ _ => by
+    rw [hsing]
+    exact isClosed_closure
+  -- (A.3)(1): a flat `φ_μ = 1_L c''` has empty singular set
+  have hplane : ∀ φ ∈ F, ∀ (L : Submodule ℝ (Euclid P)) (c'' : Euclid 1),
+      Module.finrank ℝ L = n → φ = Set.indicator (L : Set (Euclid P)) (fun _ => c'') →
+        sing φ = ∅ := by
+    intro φ hφ L c'' hL hφL
+    rw [hF] at hφ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    have hind : ∀ x, dens μ x = Set.indicator (L : Set (Euclid P)) (fun _ => c'' 0) x := by
+      intro x
+      rw [← hΦ0 μ x, hφL]
+      by_cases hx : x ∈ (L : Set (Euclid P))
+      · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx]
+      · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx, PiLp.zero_apply]
+    rw [hsingΦ]
+    by_cases hcc : c ≤ c'' 0
+    · -- `c'' 0 ≥ c`: `μ` would be an infinite flat measure, excluded by (6)
+      exfalso
+      have hinv : ∀ t : ℝ, 0 < t → ∀ x, dens μ (t • x) = dens μ x := by
+        intro t ht x
+        rw [hind, hind]
+        by_cases hx : x ∈ (L : Set (Euclid P))
+        · rw [Set.indicator_of_mem (L.smul_mem t hx), Set.indicator_of_mem hx]
+        · have htx : t • x ∉ (L : Set (Euclid P)) := fun h => hx ((L.smul_mem_iff ht.ne').1 h)
+          rw [Set.indicator_of_notMem htx, Set.indicator_of_notMem hx]
+      have h0 : 0 < dens μ 0 := by
+        rw [hind, Set.indicator_of_mem (L.zero_mem : (0 : Euclid P) ∈ (L : Set (Euclid P)))]
+        exact lt_of_lt_of_le hc hcc
+      have hinf : μ univ = ∞ := Submission.dimred_tr_mcr_homogeneous_infinite_mass P n μ (dens μ) 0
+        hn (hdens μ) (hrep μ hμ) hinv h0
+      exact hflat μ hμ hinf L (c'' 0) hL hcc hind
+    · -- `c'' 0 < c`: the superlevel set `{c ≤ dens μ}` is empty
+      have hE : {x | c ≤ dens μ x} = (∅ : Set (Euclid P)) := by
+        refine eq_empty_of_forall_notMem fun x hx => ?_
+        change c ≤ dens μ x at hx
+        rw [hind] at hx
+        by_cases hxL : x ∈ (L : Set (Euclid P))
+        · rw [Set.indicator_of_mem hxL] at hx
+          exact hcc hx
+        · rw [Set.indicator_of_notMem hxL] at hx
+          exact absurd hx (not_le.2 hc)
+      rw [hE, closure_empty]
+  -- (A.3)(2): `w ↦ y + λw` is a homeomorphism
+  have hA32 : ∀ φ ∈ F, ∀ (y : Euclid P) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam →
+      sing (fun x => φ (y + lam • x)) = (fun x => y + lam • x) ⁻¹' sing φ := by
+    intro φ _ y lam hlam _ _
+    rw [hsing, hsing]
+    exact (((Homeomorph.smulOfNeZero lam hlam.ne').trans (Homeomorph.addLeft y)).preimage_closure
+      {x | c ≤ φ x 0}).symm
+  -- (A.3)(3): limits of singular points of `φ_{μ_k}` are singular points of `φ_μ`
+  have hA33 : ∀ φ ∈ F, ∀ φs : ℕ → Euclid P → Euclid 1, (∀ k, φs k ∈ F) →
+      (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+        Tendsto (fun k => ∫ x, f x • φs k x ∂μH[(n : ℝ)]) atTop
+          (𝓝 (∫ x, f x • φ x ∂μH[(n : ℝ)]))) →
+      ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀,
+        ball (0 : Euclid P) 1 ∩ sing (φs k) ⊆ {x | ∃ z ∈ sing φ, dist x z < ε} := by
+    intro φ hφ φs hφs hconv
+    rw [hF] at hφ
+    obtain ⟨μ, hμ, rfl⟩ := hφ
+    simp only [hF, mem_image] at hφs
+    choose μs hμs hμsφ using hφs
+    obtain rfl : φs = fun k => Φ (μs k) := funext fun k => (hμsφ k).symm
+    -- step 4: weak convergence of the `φ_{μ_k}` is vague convergence of the `μ_k`
+    have hvague : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f →
+        Tendsto (fun k => ∫ x, f x ∂(μs k)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+      intro f hf hfc
+      have h := hconv f hf hfc
+      simp only [hint _ (hμs _) f hf hfc, hint μ hμ f hf hfc] at h
+      have h0 := ((PiLp.continuous_apply 2 (fun _ : Fin 1 => ℝ) 0).tendsto _).comp h
+      simp only [Function.comp_def, PiLp.smul_apply, he0, smul_eq_mul, mul_one] at h0
+      have h2 := h0.const_mul c₀⁻¹
+      simp only [← mul_assoc, inv_mul_cancel₀ hc₀.ne', one_mul] at h2
+      exact h2
+    refine Submission.dimred_tr_mcr_eventually_near P (sing (Φ μ)) (fun k => sing (Φ (μs k)))
+      ?_
+    intro sub z x hsub hz hzx
+    -- each `z k` lies in `B₁(0) ∩ closure {c ≤ dens μ_{sub k}}`, so `c ≤ dens μ_{sub k} (z k)`
+    have hzk : ∀ k, c ≤ dens (μs (sub k)) (z k) := by
+      intro k
+      obtain ⟨hzb, hzs⟩ := hz k
+      change z k ∈ sing (Φ (μs (sub k))) at hzs
+      rw [hsingΦ] at hzs
+      refine husc _ (hμs _) (z k) ?_ hzs
+      have := mem_ball_zero_iff.1 hzb
+      linarith
+    have hx1 : ‖x‖ ≤ 1 := by
+      have : x ∈ closedBall (0 : Euclid P) 1 := isClosed_closedBall.mem_of_tendsto hzx
+        (Eventually.of_forall fun k => ball_subset_closedBall (hz k).1)
+      exact mem_closedBall_zero_iff.1 this
+    -- the threshold limit along the subsequence gives `c ≤ dens μ x`
+    have hcx : c ≤ dens μ x := by
+      rw [hdens]
+      exact Submission.dimred_tr_mcr_threshold_limit P n Λ c μ (fun k => μs (sub k)) z x
+        (hfin μ hμ) (fun k => hfin _ (hμs (sub k))) (hmono μ hμ) (fun k => hmono _ (hμs (sub k)))
+        (fun f hf hfc => (hvague f hf hfc).comp hsub.tendsto_atTop) hzx (by linarith)
+        fun k => by
+          have h := hzk k
+          rw [hdens] at h
+          exact h
+    rw [hsingΦ]
+    exact subset_closure hcx
+  -- Step 8: apply (ADR)
+  have hsub : ∀ μ ∈ 𝓜, ∀ σ : ℝ,
+      {x | x ∈ ball (0 : Euclid P) σ ∧ c ≤ dens μ x} ⊆ sing (Φ μ) ∩ ball (0 : Euclid P) σ := by
+    intro μ _ σ x hx
+    rw [hsingΦ]
+    exact ⟨subset_closure hx.2, hx.1⟩
+  rcases hADR P n 1 F sing hH0 hLoc hA1 hA2 hclosed hplane hA32 hA33 with
+    hI | ⟨d, hd, hnull, ⟨ψ, hψ, L, hL, hsingψ, hinvψ⟩, hfin0⟩
+  · -- (I)
+    refine Or.inl fun μ hμ => subset_eq_empty (hsub μ hμ 1) ?_
+    rw [inter_comm]
+    exact hI _ (hΦF μ hμ)
+  · -- (II)
+    rw [hF] at hψ
+    obtain ⟨ν, hν, rfl⟩ := hψ
+    have hinvν : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ x, dens ν (y + lam • x) = dens ν x := by
+      intro y hy lam hlam x
+      rw [← hΦ0 ν, ← hΦ0 ν, hinvψ y hy lam hlam x]
+    -- `dens ν` is constant on `L`
+    have hconst : ∀ y ∈ L, dens ν y = dens ν 0 := by
+      intro y hy
+      have h := hinvν y hy 1 one_pos 0
+      rwa [smul_zero, add_zero] at h
+    -- `E = {c ≤ dens ν}` has closure `L`, hence is a nonempty subset of `L`, hence equals `L`
+    have hclE : closure {x | c ≤ dens ν x} = (L : Set (Euclid P)) := by
+      rw [← hsingΦ, hsingψ]
+    have hEL : {x | c ≤ dens ν x} ⊆ (L : Set (Euclid P)) := hclE ▸ subset_closure
+    obtain ⟨x₀, hx₀⟩ : ({x | c ≤ dens ν x} : Set (Euclid P)).Nonempty := by
+      rw [nonempty_iff_ne_empty]
+      intro hne
+      rw [hne, closure_empty] at hclE
+      have h0 : (0 : Euclid P) ∈ (L : Set (Euclid P)) := L.zero_mem
+      rw [← hclE] at h0
+      exact h0
+    have hc0 : c ≤ dens ν 0 := by
+      rw [← hconst x₀ (hEL hx₀)]
+      exact hx₀
+    have hE : {x | c ≤ dens ν x} = (L : Set (Euclid P)) := by
+      refine Subset.antisymm hEL fun y hy => ?_
+      show c ≤ dens ν y
+      rw [hconst y hy]
+      exact hc0
+    -- `ν` is nonzero and `n`-homogeneous, so `ν(ℝᴾ) = ∞`
+    have hνinf : ν univ = ∞ := by
+      refine Submission.dimred_tr_mcr_homogeneous_infinite_mass P n ν (dens ν) 0 hn (hdens ν)
+        (hrep ν hν) (fun t ht x => ?_) (lt_of_lt_of_le hc hc0)
+      have h := hinvν 0 L.zero_mem t ht x
+      rwa [zero_add] at h
+    refine Or.inr ⟨d, hd, fun μ hμ α hα => ?_, fun hd0 μ hμ σ hσ => ?_, ν, hν, hνinf, L, hL, hE,
+      hinvν⟩
+    · exact measure_mono_null (hsub μ hμ 1) (hnull _ (hΦF μ hμ) α hα)
+    · exact (hfin0 hd0 _ (hΦF μ hμ) σ hσ).subset (hsub μ hμ σ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
