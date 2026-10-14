@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1.det_shear-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1",
+  "depth": 5,
+  "title": "Gram determinant shear invariance: Γ(a − Σ c_l w_l, w) = Γ(a, w)",
+  "statement": "Let P, k ∈ ℕ, a ∈ ℝ^P (Euclid P), w = (w_0, …, w_{k−1}) with every w_i ∈ ℝ^P, and let c = (c_0, …, c_{k−1}) ∈ ℝ^k be arbitrary. For a finite family v of vectors of ℝ^P let Γ(v) := det[⟨v_i, v_j⟩]_{i,j}, i.e. Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)). Write (x, w) := Fin.cons x w = (x, w_0, …, w_{k−1}) (a family indexed by Fin (k+1)). Then Γ(a − Σ_{l<k} c_l w_l, w) = Γ(a, w).",
+  "lean_statement": "∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (c : Fin k → ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) i) ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j)) = Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))",
+  "lean_name": "ecf_cp_gc_det_shear",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-b0a6837404-a1"
+}
