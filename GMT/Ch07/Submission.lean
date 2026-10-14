@@ -5195,6 +5195,100 @@ theorem Submission.cmcdt_lpi_pc_piece_orientation : ∀ (P n : ℕ) (L : NNReal)
     · rw [hηH u hu]
       exact (hi u hu).1
 
+/-- **The Lipschitz image of an integer-weighted bi-Lipschitz piece** (Simon Ch. 6, 3.5–3.9).
+Let `H : ℝⁿ → ℝᴾ` be `L`-Lipschitz, let `B ⊆ ℝⁿ` be Borel with `κ |a − a'| ≤ |H a − H a'|` on `B`
+(`κ > 0`), `H` differentiable with injective `DH` at every point of `B`, and let `g : ℝⁿ → ℤ` be
+measurable, integrable and nonzero on `B`.
+Assume (L3) `|α(τ)| ≤ |α|` for orthonormal `τ`, and (IMC)(b): the restriction of an `IMRep` to
+a Borel set represents a current.  Then `H_♯(g [[B]])` is an integer multiplicity current `Φ`
+with `M(Φ) ≤ Lⁿ ∫_B |g|` and `Φ(ω) = ∫_B g ω(H)(DH e₀, …, DH eₙ₋₁)`.
+
+Proof sketch:
+* `H` is injective on `B`, so `N = H(B)` is Borel; `m = g ∘ H⁻¹` is an integer density with
+  `∫_N |m| dHⁿ ≤ Lⁿ ∫_B |g|`, and `η` orients `N` `Hⁿ`-a.e. with `J η(H) = DH e₀ ∧ ⋯ ∧ DH eₙ₋₁`
+  on `B`, `J` the Gram Jacobian.
+* `(N, m, η)` is an `IMRep` acting by `ω ↦ ∫_N m ⟨ω, η⟩ dHⁿ` (`N ⊆ range H` is rectifiable), and
+  (IMC)(b) with `E = ℝᴾ` makes it represent a current `Φ`.
+* The Gram area formula gives `Φ(ω) = ∫_B J g ⟨ω(H), η(H)⟩ = ∫_B g ω(H)(DH e)`.
+* For admissible `ω`, (L3) and the unit orientation give `|⟨ω, η⟩| ≤ 1` on `N`, so
+  `M(Φ) ≤ ∫_N |m| dHⁿ ≤ Lⁿ ∫_B |g|`. -/
+theorem Submission.cmcdt_lpi_pc_piece_current : (∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → ∀ (P n : ℕ) (L : NNReal) (κ : ℝ) (H : Euclid n → Euclid P) (B : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet B → 0 < κ → (∀ a ∈ B, ∀ a' ∈ B, κ * ‖a - a'‖ ≤ ‖H a - H a'‖) → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → IntegrableOn (fun u => (g u : ℝ)) B → (∀ u ∈ B, g u ≠ 0) → ∃ Φ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity Φ ∧ Φ.mass ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, Φ ω = ∫ u in B, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+  intro hL3 hIMC P n L κ H B g hH hB hκ hbilip hdiff hg hgint hg0
+  -- Step 1: `H` is injective on `B`, so `N = H(B)` is Borel
+  have hinj : InjOn H B := by
+    intro a ha a' ha' haa'
+    have h := hbilip a ha a' ha'
+    rw [haa', sub_self, norm_zero] at h
+    have h0 : ‖a - a'‖ ≤ 0 := by
+      by_contra hpos
+      exact absurd h (not_le.mpr (mul_pos hκ (not_le.mp hpos)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  have hNmeas : MeasurableSet (H '' B) :=
+    (Submission.cmcdt_lpi_pc_measurable_inverse P n H B hH.continuous.continuousOn hB hinj).1
+  -- Step 2: the integer density `m = g ∘ H⁻¹` and the orientation `η` of `N`
+  obtain ⟨m, hm, hmint, hmH, hNfin, hmle⟩ :=
+    Submission.cmcdt_lpi_pc_piece_multiplicity P n L H B g hH hB hinj hdiff hg hgint hg0
+  obtain ⟨η, hη, hηH, hηae⟩ :=
+    Submission.cmcdt_lpi_pc_piece_orientation P n L κ H B hH hB hκ hbilip hdiff
+  have hmfin : ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] ≠ ∞ :=
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)
+      (ne_of_lt hgint.hasFiniteIntegral)) hmle
+  -- Step 3: the `IMRep` `(N, m, η)` in `ℝᴾ`
+  obtain ⟨R, hR⟩ := Submission.cmcdt_ims_imrep_of_int_density P n univ (H '' B) η m isOpen_univ
+    hNmeas (subset_univ _)
+    ((Poincare.SimonGMT.Chapter03.countablyRectifiable_range hH).mono (image_subset_range H B))
+    (fun K _ _ => ne_top_of_le_ne_top hNfin (measure_mono inter_subset_left)) hη hm hmint
+    (fun K _ _ => ne_top_of_le_ne_top hmfin (lintegral_mono_set inter_subset_left)) hηae
+  -- Step 4: (IMC)(b) with `E = ℝᴾ` gives the current `Φ`, acting by `∫_N m ⟨ω, η⟩ dHⁿ`
+  obtain ⟨Φ, R', hR', hcar, hmult, horient⟩ :=
+    hIMC P n univ R univ isOpen_univ MeasurableSet.univ
+  have hΦ : ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+      Φ ω = ∫ y in H '' B, m y * η y ((ω : DifferentialForm (Euclid P) n) y) ∂μHE[n] := by
+    intro ω
+    rw [hR' ω, ← hR (ω : DifferentialForm (Euclid P) n)]
+    simp only [IMRep.action]
+    rw [hcar, inter_univ, hmult, horient]
+  -- Step 5: the formula, from the Gram area formula and `J η(H) = DH e₀ ∧ ⋯ ∧ DH eₙ₋₁` on `B`
+  have hformula : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, Φ ω = ∫ u in B,
+      (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+    intro ω
+    rw [hΦ ω, Submission.codim1_lur_cd_injective_area_formula_gram P n H B hB
+      (fun v hv => (hdiff v hv).1) (fun v hv => (hdiff v hv).2) hinj]
+    refine setIntegral_congr_fun hB fun u hu => ?_
+    have hJ := (hηH u hu).2 ((ω : DifferentialForm (Euclid P) n) (H u))
+    rw [hmH u hu, ← hJ]
+    ring
+  refine ⟨Φ, ⟨R', hR'⟩, ?_, hformula⟩
+  -- Step 6: the mass bound, from `|⟨ω, η⟩| ≤ 1` on `N` for admissible `ω`
+  rw [GeometricCurrentOn.mass, GeometricCurrentOn.massOn]
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  have hle : ∀ y ∈ H '' B,
+      ‖m y * η y ((ω : DifferentialForm (Euclid P) n) y)‖ₑ ≤ ‖m y‖ₑ := by
+    rintro _ ⟨u, hu, rfl⟩
+    obtain ⟨τ, hτ, -, hητ⟩ := (hηH u hu).1
+    have h1 : |η (H u) ((ω : DifferentialForm (Euclid P) n) (H u))| ≤ 1 := by
+      refine le_trans ?_ ((hL3 P n _ τ hτ).trans (hω.2 (H u)))
+      rcases hητ with h | h <;> simp [h]
+    rw [enorm_mul]
+    calc ‖m (H u)‖ₑ * ‖η (H u) ((ω : DifferentialForm (Euclid P) n) (H u))‖ₑ
+        ≤ ‖m (H u)‖ₑ * 1 := by
+          gcongr
+          rw [Real.enorm_eq_ofReal_abs]
+          exact ENNReal.ofReal_le_one.mpr h1
+      _ = ‖m (H u)‖ₑ := mul_one _
+  calc ENNReal.ofReal (Φ ω)
+      ≤ ‖Φ ω‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ = ‖∫ y in H '' B, m y * η y ((ω : DifferentialForm (Euclid P) n) y) ∂μHE[n]‖ₑ := by
+        rw [hΦ ω]
+    _ ≤ ∫⁻ y in H '' B, ‖m y * η y ((ω : DifferentialForm (Euclid P) n) y)‖ₑ ∂μHE[n] :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] := setLIntegral_mono' hNmeas hle
+    _ ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ := hmle
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
