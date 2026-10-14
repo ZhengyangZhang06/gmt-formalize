@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8a0a8b53a351e2d5d329e1bcd620d2f46ad2e3a264b363505b151c79839c6b06",
+  "git_delta": {
+    "base_commit": "391e7763fdad91c99819995f0d9f639f1360e5cf",
+    "candidate_commit": "bbd0cdeeba21a078ed0172b4be518ef55f43e257",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a988826a95fa780a7abb15a70447e6d885dd30a54b48ab267a49d8ae20fbf67c",
+    "source_sha256": "051d3327935649cda02c9f202edc842b3a19a25be00cc0deb6d404fde835f575",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_minimizing_of_minimizing_in_subspace",
+      "statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsMinimizingIn T (V : Set (Euclid P)) → T.support ⊆ (V : Set (Euclid P)) → IsMinimizingIn T univ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

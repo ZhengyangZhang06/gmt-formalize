@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/6984 | this PR | root.dimension_reduction_results-a1.im_mass_measure-a1, root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1, root.density_and_tangent_cones-a1.im_sub-a1, root.density_and_tangent_cones-a1.vanish_off_support-a1, root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1, root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1, root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_tangent_le_flat-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1.projection_invariance-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1.measure_locality-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.subspace_projection-a1.projected_mass-a1 |
