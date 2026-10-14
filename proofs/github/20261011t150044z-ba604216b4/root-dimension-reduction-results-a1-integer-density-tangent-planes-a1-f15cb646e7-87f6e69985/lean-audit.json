@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "69e5cbccede2015d1222134b658c4975becc85294fdeeea15a38d43d15ddc88e",
+  "git_delta": {
+    "base_commit": "445d12da0d3b1f802f36a1e4e37926f822a8883c",
+    "candidate_commit": "1bf77a25d2fdb2ba271d0aab2e925b1d123950b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ray_current_rep",
+    "diff_sha256": "5e286f610e11f6975299a6187c569ca2c3ed7c7a7fe48a8c7b51589745931a4d",
+    "source_sha256": "33f598632fd1824b3dc6c17827c5c8b8861ff0fc979387fb8f0df45b27ad5b84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ray_current_rep",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.Represents C ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ e ∈ F, ENNReal.ofReal |(m e : ℝ)| * volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
