@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbrz_|dmcbrz_|closure_degree_zero' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton|theorem setIntegral_finset|theorem lintegral_finset|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem integrableOn_singleton|integrableOn_finite_biUnion",
+        "HasApproximateTangentSpaceAt|blowUpMap|countablyRectifiable_of_measure_zero",
+        "theorem extraction_of_frequently_atTop |theorem IsCompact.tendsto_subseq|theorem Finite.exists_infinite_fiber|theorem Nat.frequently_atTop_iff_infinite|theorem liminf_le_limsup|theorem limsup_le_iSup|exists_nat_gt|isCompact_univ_pi",
+        "def apply|apply.*→L|apply_apply",
+        "python3 -I /tmp/closure_zero_independent_audit_dposzv1t/verify_records.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5c0a00bf7/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5c0a00bf7/decomposition-v1.json",
+        "/tmp/closure_zero_independent_audit_dposzv1t/verify_records.py",
+        "/tmp/closure_zero_independent_audit_dposzv1t/evidence.json"
+      ],
+      "conclusion": "Verified compatibility with project b4d606db, Mathlib 25730c7c and SimonGMT 2b366308. The snapshot search found no cbrz_, dmcbrz_ or closure_degree_zero declarations. All five proposed names are bare identifiers, each has exactly one accepted DAG owner, and each proposed type is byte-identical to its frozen accepted type and committed declaration. Independently verified candidate source hashes, passing comparator/kernel results, and the permitted-axiom whitelist {propext, Quot.sound, Classical.choice}; evidence.json records the exact artifacts. Every type passes standalone-expression validation and contains no implementation-dependent alias or placeholder. The evaluation functional is genuinely a continuous linear map, and the scalar operations have the intended real/ENNReal types; no Matrix/IsUnit construction occurs. The dependency graph is acyclic. The supplied assembly establishes the selected degree-zero closure contract using these children and the handoff-authorized foundations locality theorem, so the split is appropriate. A fresh compiler replay was stopped under memory pressure; compilation evidence comes from the verified immutable comparator results."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "count_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line type agree, including arbitrary nonmeasurable functions. Unit singleton mass establishes singleton integrability, finite-union integrability, and both finite-sum formulas. No global sigma-finiteness or unstated measurability is needed. The proof is complete and independent; type-identical accepted reuse at fc243d0a is verified."
+    },
+    {
+      "key": "point_sum_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the type. Nonzero integer weights and the total-weight bound give finitely many counts and weight vectors. A common subsequence then converges in the finite compact product, and continuity plus uniqueness identifies every prescribed limit. Empty products cover zero counts without assuming K nonempty. This is a complete, non-circular analytic obligation; accepted reuse at 8dd8dd9f is type-identical."
+    },
+    {
+      "key": "finite_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches the pinned tangent-space definition. Positive separation from the other finitely many points and a support radius make the blow-up integral eventually equal to f(0); count_integral identifies the integral over the zero subspace, whose dimension is zero. The proof also covers ambient dimension zero. Its sole dependency is correctly directed; accepted reuse at c4815756 is type-identical."
+    },
+    {
+      "key": "imrep_point_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes all required hypotheses. Local integrability and positive multiplicity force finiteness inside closure B. Positive singleton mass upgrades the orientation property from almost everywhere to every carrier point. Localization, finite-set integration and enumeration prove the action formula, nonzero weights and measure bound. Neither openness of U nor measurability of B is needed. Only count_integral is used; accepted reuse at d199e840 is type-identical."
+    },
+    {
+      "key": "point_sum_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact statement for arbitrary V and points outside V. It groups repeated locations, removes cancellations and outside-domain terms, then verifies every IMRep field: measurable carrier and fields, rectifiability, positive multiplicity, local integrability and unit tangent orientation. The two declared dependencies supply precisely the finite integrals and tangent assertion. The resulting action equals S without circularity; accepted reuse at 6a4e557e is type-identical."
+    }
+  ],
+  "required_changes": []
+}
