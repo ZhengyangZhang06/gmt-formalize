@@ -451,6 +451,89 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Limit functional along uniformly convergent test forms** (test-form extension, steps 4–5).
+Let `|α| = ‖c α‖` for a continuous linear equivalence `c`, and let `|T ω| ≤ r m(W)` whenever
+`W ⊂⊂ U` is open, `spt ω ⊆ W` and `|ω(x)| ≤ r` for all `x`.  Then there is `Φ` with
+`T(ωₖ) → Φ(G)` whenever `spt ωₖ ⊆ W` for one open `W ⊂⊂ U` and all `k`, and
+`|ωₖ(x) − G(x)| ≤ εₖ` for all `k`, `x`, with `εₖ → 0`.
+
+For two such data `(W, ωₖ, εₖ)`, `(W', ω'ₗ, ε'ₗ)` of the same `G`, `ωₖ − ω'ₗ` is a test form with
+`spt ⊆ W ∪ W' ⊂⊂ U` and `|ωₖ − ω'ₗ| ≤ εₖ + ε'ₗ`, so `|T(ωₖ) − T(ω'ₗ)| ≤ (εₖ + ε'ₗ) m(W ∪ W')`.
+With equal data, `(T(ωₖ))` is Cauchy, hence convergent.  `Φ(G)` is the limit along chosen data
+(`0` if there are none), and the estimate with `l = k` shows that every approximating sequence
+of `G` tends to `Φ(G)`. -/
+theorem Submission.cmr_tfe_exists_limit_functional : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : Set (Euclid P) → ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → (∀ (W : Set (Euclid P)) (ω : TestFormOn U n) (r : ℝ), IsOpen W → CompactlyContained W U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * m W) → ∃ Φ : (Euclid P → Covector (Euclid P) n) → ℝ, ∀ (G : Euclid P → Covector (Euclid P) n) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ), IsOpen W → CompactlyContained W U → (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) → (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) → Tendsto εs atTop (𝓝 0) → Tendsto (fun k => T (ωs k)) atTop (𝓝 (Φ G)) := by
+  intro P n d c U T m hc hm
+  classical
+  -- (1) `|α − β| ≤ |α| + |β|`, since `|·| = ‖c ·‖` with `c` linear
+  have htri : ∀ α β : Covector (Euclid P) n,
+      covectorEuclideanNorm (α - β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β := by
+    intro α β
+    rw [hc, hc, hc, map_sub]
+    exact norm_sub_le _ _
+  -- (2)–(3) the key estimate for two approximating data of the same `G`
+  have hkey : ∀ (G : Euclid P → Covector (Euclid P) n) (W W' : Set (Euclid P))
+      (ωs ωs' : ℕ → TestFormOn U n) (εs εs' : ℕ → ℝ), IsOpen W → CompactlyContained W U →
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) →
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) →
+      IsOpen W' → CompactlyContained W' U →
+      (∀ k, tsupport (ωs' k : DifferentialForm (Euclid P) n) ⊆ W') →
+      (∀ k x, covectorEuclideanNorm ((ωs' k : DifferentialForm (Euclid P) n) x - G x) ≤ εs' k) →
+      ∀ k l, |T (ωs k) - T (ωs' l)| ≤ (εs k + εs' l) * m (W ∪ W') := by
+    intro G W W' ωs ωs' εs εs' hW hWU hωW hωG hW' hW'U hω'W hω'G k l
+    -- `W ∪ W'` is open and `W ∪ W' ⊂⊂ U`
+    have hWW'U : CompactlyContained (W ∪ W') U := by
+      rw [CompactlyContained, closure_union]
+      exact ⟨hWU.1.union hW'U.1, union_subset hWU.2 hW'U.2⟩
+    -- the bound for `δ = ωs k − ωs' l`, and `T δ = T (ωs k) − T (ωs' l)` by linearity
+    have h := hm (W ∪ W') (ωs k - ωs' l) (εs k + εs' l) (hW.union hW') hWW'U ?_ ?_
+    · rwa [map_sub T.toCurrent] at h
+    · rw [Submodule.coe_sub]
+      exact (tsupport_sub _ _).trans (union_subset_union (hωW k) (hω'W l))
+    · intro x
+      rw [Submodule.coe_sub, Pi.sub_apply,
+        ← sub_sub_sub_cancel_right ((ωs k : DifferentialForm (Euclid P) n) x) _ (G x)]
+      exact (htri _ _).trans (add_le_add (hωG k x) (hω'G l x))
+  -- (4) along approximating data, `(T (ωs k))` is Cauchy, hence convergent
+  have hconv : ∀ (G : Euclid P → Covector (Euclid P) n) (W : Set (Euclid P))
+      (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ), IsOpen W → CompactlyContained W U →
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) →
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) →
+      Tendsto εs atTop (𝓝 0) → ∃ L, Tendsto (fun k => T (ωs k)) atTop (𝓝 L) := by
+    intro G W ωs εs hW hWU hωW hωG hε
+    refine cauchySeq_tendsto_of_complete (cauchySeq_iff_tendsto_dist_atTop_0.mpr ?_)
+    have h0 := ((hε.comp tendsto_fst).add (hε.comp tendsto_snd)).mul_const (m (W ∪ W))
+    rw [add_zero, zero_mul, prod_atTop_atTop_eq] at h0
+    refine squeeze_zero (fun _ => dist_nonneg) (fun p => ?_) h0
+    rw [Real.dist_eq]
+    exact hkey G W W ωs ωs εs εs hW hWU hωW hωG hW hWU hωW hωG p.1 p.2
+  -- (5) `Φ G` is the limit along chosen approximating data of `G` (`0` if there are none)
+  refine ⟨fun G => if h : ∃ (L : ℝ) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n)
+      (εs : ℕ → ℝ), IsOpen W ∧ CompactlyContained W U ∧
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) ∧
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) ∧
+      Tendsto εs atTop (𝓝 0) ∧ Tendsto (fun k => T (ωs k)) atTop (𝓝 L) then h.choose else 0, ?_⟩
+  -- (6) every approximating sequence of `G` tends to `Φ G`
+  intro G W ωs εs hW hWU hωW hωG hε
+  obtain ⟨L, hL⟩ := hconv G W ωs εs hW hWU hωW hωG hε
+  have h : ∃ (L : ℝ) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ),
+      IsOpen W ∧ CompactlyContained W U ∧
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) ∧
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) ∧
+      Tendsto εs atTop (𝓝 0) ∧ Tendsto (fun k => T (ωs k)) atTop (𝓝 L) :=
+    ⟨L, W, ωs, εs, hW, hWU, hωW, hωG, hε, hL⟩
+  dsimp only
+  rw [dite_eq_left h]
+  obtain ⟨W', ωs', εs', hW', hW'U, hω'W, hω'G, hε', hL'⟩ := h.choose_spec
+  have h0 := (hε.add hε').mul_const (m (W ∪ W'))
+  rw [add_zero, zero_mul] at h0
+  have hdiff : Tendsto (fun k => T (ωs k) - T (ωs' k)) atTop (𝓝 0) :=
+    squeeze_zero_norm (fun k => (Real.norm_eq_abs _).trans_le
+      (hkey G W W' ωs ωs' εs εs' hW hWU hωW hωG hW' hW'U hω'W hω'G k k)) h0
+  have hlim := hL'.add hdiff
+  rw [add_zero] at hlim
+  exact hlim.congr fun k => add_sub_cancel _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
