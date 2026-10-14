@@ -1054,6 +1054,118 @@ theorem Submission.cmcdt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid
     Submission.cmcdt_lpo_tk_bounded_current, Submission.cmcdt_lpo_tk_boundary_support_subset,
     Submission.cmcdt_lpo_tk_locality hVO⟩
 
+/-- **Evaluation bound for the cylinder on a pulled-back test form** (parent proof step 7).  By (9),
+`cyl(X)(β) = X(θ)` with `θ(x)(v) = ∫₀¹ β(ι(t, x))(e₀, Jv) dt`, so by the mass-support bound it is
+enough that `|θ(x)| ≤ bᵏ·a·c` on `spt X`.  For fixed `x` the integrand is the continuous
+`f(t) = (β(ι(t, x)) ⌟ e₀) ∘ J`, and `|f(t)| ≤ bᵏ·a·|γ| ≤ bᵏ·a·c` for `t ∈ [0, 1]` by
+`cmcdt_lpoh_phi_bound`; the Minkowski bound for coefficient norms gives `|θ(x)| ≤ bᵏ·a·c`. -/
+theorem Submission.cmcdt_lpoh_cyl_eval_bound : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (cyl : ∀ (N k : ℕ), GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)), (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ cyl N k X ω = X η) → ∀ (N N' k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (β : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (a b c : ℝ), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → 0 ≤ b → (∀ x ∈ X.support, ∀ t ∈ Icc (0 : ℝ) 1, ∃ (γ : Covector (Euclid N') (k + 1)) (D : Euclid (N + 1) →L[ℝ] Euclid N'), (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = γ.compContinuousLinearMap D ∧ covectorEuclideanNorm γ ≤ c ∧ ‖D (EuclideanSpace.single 0 1)‖ ≤ a ∧ ∀ v : Euclid N, ‖D (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ b * ‖v‖) → |cyl N k X β| ≤ b ^ k * a * c * X.mass.toReal := by
+  intro hVO hREP hL1 hL2 cyl h9 N N' k X β a b c hXc hXm hXb hb hβ
+  -- Mass-support bound: `|X(ψ)| ≤ c'·M(X)` when `|ψ(x)| ≤ c'` on `spt X`.  By (REP) on `univ`,
+  -- `X(ψ) = ∫ ξ(x)(ψ(x)) dμ` with `μ(univ) = M(X)`, and the zero region of `X` is `μ`-null by (VO).
+  have hMSB : ∀ (ψ : TestFormOn (univ : Set (Euclid N)) k) (c' : ℝ),
+      (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c') →
+        |X ψ| ≤ c' * X.mass.toReal := by
+    intro ψ c' hψ
+    obtain ⟨μ, ξ, -, -, hμW, -, hξ, hXμ, -⟩ := hREP N k univ X isOpen_univ
+      fun W _ _ => (X.massOn_mono (subset_univ W)).trans_lt hXm
+    have hμ : μ univ = X.mass := (hμW univ isOpen_univ).symm
+    have : IsFiniteMeasure μ := ⟨by rw [hμ]; exact hXm⟩
+    have hZ : μ X.zeroRegion = 0 := by
+      rw [← hμW _ X.isOpen_zeroRegion]
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, hω, rfl⟩
+      simp only [hVO N k univ X ω (disjoint_sdiff_right.mono_left hω.1), ENNReal.ofReal_zero,
+        le_refl]
+    have hae : ∀ᵐ x ∂μ, ‖ξ x ((ψ : DifferentialForm (Euclid N) k) x)‖ ≤ c' := by
+      filter_upwards [measure_eq_zero_iff_ae_notMem.1 hZ] with x hx
+      rw [Real.norm_eq_abs]
+      exact (hξ x _).trans (hψ x ⟨mem_univ x, hx⟩)
+    rw [hXμ ψ, ← hμ, ← Real.norm_eq_abs, ← measureReal_def]
+    exact norm_integral_le_of_norm_le_const hae
+  -- Minkowski bound for the coefficient norm: if `α(v) = ∫₀¹ f(t)(v) dt` with `f` continuous and
+  -- `|f(t)| ≤ C` on `[0, 1]`, Cauchy–Schwarz gives `|α|² = ∫₀¹ ⟨α, f(t)⟩ dt ≤ |α|·C`, so `|α| ≤ C`.
+  have hMink : ∀ (α : Covector (Euclid N) k) (f : ℝ → Covector (Euclid N) k) (C : ℝ),
+      Continuous f → (∀ v : Fin k → Euclid N, α v = ∫ t in (0 : ℝ)..1, f t v) →
+        (∀ t ∈ Icc (0 : ℝ) 1, covectorEuclideanNorm (f t) ≤ C) → covectorEuclideanNorm α ≤ C := by
+    intro α f C hf hα hfC
+    let s : Finset (Fin k → Fin N) := Finset.univ.filter fun I => StrictMono I
+    let e : (Fin k → Fin N) → Fin k → Euclid N := fun I i => EuclideanSpace.basisFun (Fin N) ℝ (I i)
+    have hnorm : ∀ γ : Covector (Euclid N) k,
+        covectorEuclideanNorm γ = Real.sqrt (∑ I ∈ s, γ (e I) ^ 2) := by
+      intro γ
+      rw [covectorEuclideanNorm, Finset.sum_filter]
+    have hcont : ∀ v : Fin k → Euclid N, Continuous fun t => f t v :=
+      fun v => (continuous_eval_const v).comp hf
+    have hC : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hfC 0 ⟨le_rfl, zero_le_one⟩)
+    have hcont' : ∀ I, Continuous fun t => α (e I) * f t (e I) :=
+      fun I => continuous_const.mul (hcont (e I))
+    have hsq : covectorEuclideanNorm α ^ 2 = ∫ t in (0 : ℝ)..1, ∑ I ∈ s, α (e I) * f t (e I) := by
+      rw [intervalIntegral.integral_finsetSum fun I _ => (hcont' I).intervalIntegrable 0 1, hnorm,
+        Real.sq_sqrt (Finset.sum_nonneg fun I _ => sq_nonneg _)]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      rw [intervalIntegral.integral_const_mul, ← hα, sq]
+    have hle : covectorEuclideanNorm α ^ 2 ≤ covectorEuclideanNorm α * C := by
+      rw [hsq]
+      calc ∫ t in (0 : ℝ)..1, ∑ I ∈ s, α (e I) * f t (e I)
+          ≤ ∫ t in (0 : ℝ)..1, covectorEuclideanNorm α * C := by
+            refine intervalIntegral.integral_mono_on zero_le_one
+              ((continuous_finsetSum _ fun I _ => hcont' I).intervalIntegrable 0 1)
+              intervalIntegrable_const fun t ht => ?_
+            calc ∑ I ∈ s, α (e I) * f t (e I)
+                ≤ Real.sqrt (∑ I ∈ s, α (e I) ^ 2) * Real.sqrt (∑ I ∈ s, f t (e I) ^ 2) :=
+                  Real.sum_mul_le_sqrt_mul_sqrt s _ _
+              _ = covectorEuclideanNorm α * covectorEuclideanNorm (f t) := by rw [hnorm, hnorm]
+              _ ≤ covectorEuclideanNorm α * C :=
+                  mul_le_mul_of_nonneg_left (hfC t ht) (covectorEuclideanNorm_nonneg _)
+        _ = covectorEuclideanNorm α * C := by simp
+    rcases (covectorEuclideanNorm_nonneg α).eq_or_lt with h0 | hpos
+    · rw [← h0]
+      exact hC
+    · exact le_of_mul_le_mul_left (by rwa [sq] at hle) hpos
+  -- Step 1: the slice `θ` with `cyl(X)(β) = X(θ)`; step 2: reduce to `|θ(x)| ≤ bᵏ·a·c` on `spt X`
+  obtain ⟨θ, hθ, hcyl⟩ := h9 N k X hXc hXm hXb β
+  rw [hcyl]
+  refine hMSB θ (b ^ k * a * c) fun x hx => ?_
+  -- Step 3: the continuous integrand `f(t) = (β(ι(t, x)) ⌟ e₀) ∘ J`
+  let Jl : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
+    { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+      map_add' := by
+        intro v w
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i <;> simp
+      map_smul' := by
+        intro r v
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i <;> simp }
+  let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap Jl
+  let f : ℝ → Covector (Euclid N) k := fun t =>
+    (((β : DifferentialForm (Euclid (N + 1)) (k + 1))
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))).curryLeft
+        (EuclideanSpace.single 0 1)).compContinuousLinearMap J
+  have hf : Continuous f := by
+    have hι : Continuous fun t : ℝ =>
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) := by
+      fun_prop
+    exact (ContinuousAlternatingMap.compContinuousLinearMapCLM J).continuous.comp
+      ((ContinuousLinearMap.apply ℝ _ (EuclideanSpace.single 0 1 : Euclid (N + 1))).continuous.comp
+        ((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid (N + 1)) (F := ℝ)
+          (n := k)).continuous.comp (β.property.1.1.continuous.comp hι)))
+  have hfv : ∀ (t : ℝ) (v : Fin k → Euclid N), f t v =
+      (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))
+        (Fin.cons (EuclideanSpace.single 0 1)
+          (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) :=
+    fun _ _ => rfl
+  -- Steps 4–5: `|f(t)| ≤ bᵏ·a·c` on `[0, 1]` by `cmcdt_lpoh_phi_bound`, then the Minkowski bound
+  refine hMink ((θ : DifferentialForm (Euclid N) k) x) f (b ^ k * a * c) hf
+    (fun v => by rw [hθ x v]; simp only [hfv]) fun t ht => ?_
+  obtain ⟨γ, D, hβeq, hγ, hDe, hDJ⟩ := hβ x hx t ht
+  have ha : 0 ≤ a := (norm_nonneg _).trans hDe
+  calc covectorEuclideanNorm (f t) ≤ b ^ k * a * covectorEuclideanNorm γ :=
+        Submission.cmcdt_lpoh_phi_bound hL1 hL2 N N' k γ D (f t) a b hb hDe hDJ
+          fun v => by rw [hfv, hβeq]
+    _ ≤ b ^ k * a * c := mul_le_mul_of_nonneg_left hγ (mul_nonneg (pow_nonneg hb k) ha)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
