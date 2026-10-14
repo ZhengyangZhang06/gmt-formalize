@@ -480,6 +480,99 @@ theorem Submission.cbrcs_ce_smooth_cutoff : ∀ (P : ℕ) (U K : Set (Euclid P))
   · -- Step 6: `ζ = 1` on `N = V₁ ⊆ closure V₁`
     intro x hx
     exact (hζone x).1 (subset_closure hx)
+/-- **Leibniz estimate for `f • g`** (used in the closure step of Simon 7.2.4 to show that
+multiplication by a smooth cutoff `ζ` is continuous on test forms).  For `C^∞` maps
+`f : ℝᴾ → ℝ` and `g : ℝᴾ → Λᵏ`, `‖Dⁿ(f • g)(x)‖ ≤ ∑ᵢ C(n, i) ‖Dⁱf(x)‖ ‖Dⁿ⁻ⁱg(x)‖`.  This is
+Mathlib's `norm_iteratedFDeriv_smul_le`, whose file is outside the frozen imports, so it is
+proved by the same induction: for a continuous bilinear `B` with `‖B u v‖ ≤ c ‖u‖ ‖v‖`,
+`‖Dⁿ B(a, b)(x)‖ ≤ c ∑ᵢ C(n, i) ‖Dⁱa(x)‖ ‖Dⁿ⁻ⁱb(x)‖` for all target spaces, by induction on `n`:
+`D B(a, b) = B.precompR (a, Db) + B.precompL (Da, b)`, both bilinear maps are again bounded by
+`c`, and Pascal's rule combines the two bounds.  Then take `B = lsmul` and `c = 1`. -/
+theorem Submission.cbrcs_ce_leibniz_smul_bound : ∀ (P k n : ℕ) (f : Euclid P → ℝ) (g : DifferentialForm (Euclid P) k) (x : Euclid P), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ‖iteratedFDeriv ℝ n (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (n - i) g x‖ := by
+  intro P k n f g x hf hg
+  -- Step 1: the bilinear estimate `(A_n)`, by induction on `n` over all target spaces
+  have aux : ∀ (n : ℕ) (E F G : Type) [NormedAddCommGroup E] [NormedSpace ℝ E]
+      [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
+      (B : E →L[ℝ] F →L[ℝ] G) (c : ℝ) (a : Euclid P → E) (b : Euclid P → F), 0 ≤ c →
+      (∀ u v, ‖B u v‖ ≤ c * ‖u‖ * ‖v‖) → ContDiff ℝ (⊤ : ℕ∞) a → ContDiff ℝ (⊤ : ℕ∞) b →
+      ‖iteratedFDeriv ℝ n (fun y => B (a y) (b y)) x‖ ≤
+        c * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i a x‖ *
+          ‖iteratedFDeriv ℝ (n - i) b x‖ := by
+    intro n
+    induction n with
+    | zero =>
+      -- Step 2: for `n = 0` this is the hypothesis on `B` at `(a x, b x)`
+      intro E F G _ _ _ _ _ _ B c a b _ hB _ _
+      simp only [norm_iteratedFDeriv_zero, zero_add, Finset.range_one, Finset.sum_singleton,
+        Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_zero, ← mul_assoc]
+      exact hB _ _
+    | succ n IH =>
+      intro E F G _ _ _ _ _ _ B c a b hc hB ha hb
+      -- Step 3: `a`, `b` are differentiable and `Da`, `Db` are smooth
+      obtain ⟨ha₁, hDa⟩ := contDiff_infty_iff_fderiv.1 ha
+      obtain ⟨hb₁, hDb⟩ := contDiff_infty_iff_fderiv.1 hb
+      -- Step 4: `B₁ = B.precompR` and `B₂ = B.precompL` are bounded with the same constant `c`
+      have hB₁ : ∀ (u : E) (L : Euclid P →L[ℝ] F),
+          ‖B.precompR (Euclid P) u L‖ ≤ c * ‖u‖ * ‖L‖ := by
+        intro u L
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun v => ?_
+        rw [ContinuousLinearMap.precompR_apply, ContinuousLinearMap.compL_apply,
+          ContinuousLinearMap.comp_apply]
+        calc ‖B u (L v)‖ ≤ c * ‖u‖ * ‖L v‖ := hB _ _
+          _ ≤ c * ‖u‖ * (‖L‖ * ‖v‖) := by gcongr; exact L.le_opNorm v
+          _ = c * ‖u‖ * ‖L‖ * ‖v‖ := by ring
+      have hB₂ : ∀ (L : Euclid P →L[ℝ] E) (w : F),
+          ‖B.precompL (Euclid P) L w‖ ≤ c * ‖L‖ * ‖w‖ := by
+        intro L w
+        refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun v => ?_
+        rw [ContinuousLinearMap.precompL_apply]
+        calc ‖B (L v) w‖ ≤ c * ‖L v‖ * ‖w‖ := hB _ _
+          _ ≤ c * (‖L‖ * ‖v‖) * ‖w‖ := by gcongr; exact L.le_opNorm v
+          _ = c * ‖L‖ * ‖w‖ * ‖v‖ := by ring
+      -- Step 5: the product rule `Dh = B₁ (a, Db) + B₂ (Da, b)`
+      have hD : fderiv ℝ (fun y => B (a y) (b y)) = fun y =>
+          B.precompR (Euclid P) (a y) (fderiv ℝ b y) +
+            B.precompL (Euclid P) (fderiv ℝ a y) (b y) := by
+        funext y
+        exact B.fderiv_of_bilinear (ha₁ y) (hb₁ y)
+      -- Step 6: both terms are smooth, so `Dⁿ` of the sum is the sum of the `Dⁿ`
+      have hA₁ : ContDiff ℝ (⊤ : ℕ∞) (fun y => B.precompR (Euclid P) (a y) (fderiv ℝ b y)) :=
+        (B.precompR (Euclid P)).isBoundedBilinearMap.contDiff.comp₂ ha hDb
+      have hA₂ : ContDiff ℝ (⊤ : ℕ∞) (fun y => B.precompL (Euclid P) (fderiv ℝ a y) (b y)) :=
+        (B.precompL (Euclid P)).isBoundedBilinearMap.contDiff.comp₂ hDa hb
+      -- Step 7: the first term, by `(A_n)` for `B₁`
+      have I₁ : ‖iteratedFDeriv ℝ n (fun y => B.precompR (Euclid P) (a y) (fderiv ℝ b y)) x‖ ≤
+          c * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i a x‖ *
+            ‖iteratedFDeriv ℝ (n + 1 - i) b x‖ := by
+        refine (IH E (Euclid P →L[ℝ] F) (Euclid P →L[ℝ] G) (B.precompR (Euclid P)) c a
+          (fderiv ℝ b) hc hB₁ ha hDb).trans (le_of_eq ?_)
+        congr 1
+        refine Finset.sum_congr rfl fun i hi => ?_
+        rw [Nat.succ_sub (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)), norm_iteratedFDeriv_fderiv]
+      -- Step 8: the second term, by `(A_n)` for `B₂`
+      have I₂ : ‖iteratedFDeriv ℝ n (fun y => B.precompL (Euclid P) (fderiv ℝ a y) (b y)) x‖ ≤
+          c * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ (i + 1) a x‖ *
+            ‖iteratedFDeriv ℝ (n - i) b x‖ := by
+        refine (IH (Euclid P →L[ℝ] E) F (Euclid P →L[ℝ] G) (B.precompL (Euclid P)) c
+          (fderiv ℝ a) b hc hB₂ hDa hb).trans (le_of_eq ?_)
+        congr 1
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [norm_iteratedFDeriv_fderiv]
+      -- Step 9: combine with Pascal's rule
+      rw [← norm_iteratedFDeriv_fderiv, hD,
+        fun_iteratedFDeriv_add_apply (contDiff_infty.1 hA₁ n).contDiffAt
+          (contDiff_infty.1 hA₂ n).contDiffAt]
+      refine (norm_add_le _ _).trans ((add_le_add I₁ I₂).trans (le_of_eq ?_))
+      simp_rw [← mul_add, mul_assoc]
+      congr 1
+      exact (Finset.sum_choose_succ_mul
+        (fun i j => ‖iteratedFDeriv ℝ i a x‖ * ‖iteratedFDeriv ℝ j b x‖) n).symm
+  -- Step 10: specialize to `B = lsmul`, `c = 1`
+  have h := aux n ℝ (Covector (Euclid P) k) (Covector (Euclid P) k)
+    (ContinuousLinearMap.lsmul ℝ ℝ) 1 f g zero_le_one
+    (fun t v => by
+      rw [ContinuousLinearMap.lsmul_apply, norm_smul, one_mul]) hf hg
+  simpa only [ContinuousLinearMap.lsmul_apply, one_mul] using h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
