@@ -1092,5 +1092,74 @@ theorem Submission.idtp_cse_ah_ae_eq_slice_average : ∀ (a b c d : ℝ) (H : �
   -- step 8: `H = H̃ = h̃ ∘ fst = h ∘ fst` a.e.
   filter_upwards [hHH', h6, h7] with p h1 h2 h3
   exact h1.trans (h2.trans h3)
+/-- **`α`-invariance and degree-one homogeneity of the edge density** (steps 8 and 9(b) of the
+cone-sector endpoint density argument for Simon 7.3.3).  Let `0 < s ≤ 1`, `I = (1 - s, 1 + s)`,
+`J = (-s, s)` and let `H` be integrable on `I × J`.  If `∫ ψ′(α) l(t) H(t, α) = 0` for all `C¹`
+tests `ψ`, `l` supported in `J`, `I` (`α`-invariance), and the weak scaling identity
+`∫ l(t/r) ψ(α) H = r² ∫ l(t) ψ(α) H` holds for `C¹` tests `l` supported in
+`I₁ = (1 - s/2, 1 + s/2)`, `ψ` supported in `J` and `|r - 1| < s/4`, then `H(t, α) = c t` for
+a.e. `(t, α) ∈ (1 - s/8, 1 + s/8) × J`.  By `α`-invariance the slices `H(t, ·)` are a.e.
+constant, so `H(t, α) = h(t)` a.e. on `I × J`, `h` the slice average (integrable on `I` by
+Fubini).  Testing the scaling identity against a normalized bump `ψ₀` in `J` reduces it to
+`∫ l(t/r) h(t) dt = r² ∫ l h`, as `u ↦ r u` maps `I₁` into `I`; hence `h(r u) = r h(u)` for a.e.
+`u ∈ I₁`, so `h(v) = c v` for a.e. `v ∈ (1 - s/8, 1 + s/8)`, and `H(t, α) = h(t) = c t`. -/
+theorem Submission.idtp_cse_alpha_invariant_homogeneous : ∀ (s : ℝ) (H : ℝ × ℝ → ℝ), 0 < s → s ≤ 1 → IntegrableOn H (Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p) → ∃ c : ℝ, ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → H p = c * p.1 := by
+  intro s H hs hs1 hH hα hβ
+  have hJ : -s < s := by linarith
+  -- steps 1–6: the slices are a.e. constant, so `H(t, α) = h(t)` for a.e. `(t, α) ∈ I × J`,
+  -- with `h` the slice average
+  set h : ℝ → ℝ := fun t => (s - -s)⁻¹ * ∫ α in Ioo (-s) s, H (t, α)
+  have hHh : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s → H p = h p.1 :=
+    Submission.idtp_cse_ah_ae_eq_slice_average (1 - s) (1 + s) (-s) s H hJ hH
+      (Submission.idtp_cse_ah_slice_ae_const (1 - s) (1 + s) (-s) s H hJ hH hα)
+  -- `h` is integrable on `I` (Fubini)
+  have hH' : Integrable H
+      ((volume.restrict (Ioo (1 - s) (1 + s))).prod (volume.restrict (Ioo (-s) s))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  have hhI : IntegrableOn h (Ioo (1 - s) (1 + s)) := hH'.integral_prod_left.const_mul _
+  -- for `|r - 1| < s/4`, `u ↦ r u` maps `I₁ = (1 - s/2, 1 + s/2)` into `I`
+  have hmaps : ∀ r : ℝ, |r - 1| < s / 4 →
+      Ioo (r * (1 - s / 2)) (r * (1 + s / 2)) ⊆ Ioo (1 - s) (1 + s) := by
+    intro r hr t ht
+    obtain ⟨hr1, hr2⟩ := abs_sub_lt_iff.1 hr
+    constructor
+    · nlinarith [ht.1, mul_pos (by linarith : (0 : ℝ) < r - 1 + s / 4)
+        (by linarith : (0 : ℝ) < 1 - s / 2), mul_pos hs hs]
+    · nlinarith [ht.2, mul_pos (by linarith : (0 : ℝ) < 1 + s / 4 - r)
+        (by linarith : (0 : ℝ) < 1 + s / 2), mul_nonneg hs.le (sub_nonneg.2 hs1)]
+  -- a normalized bump `ψ₀` in `J`
+  obtain ⟨ψ₀, hψ₀C, hψ₀S, hψ₀1⟩ := Submission.idtp_cse_ah_normalized_bump (-s) s hJ
+  have hψ₀0 : ∀ α, α ∉ Ioo (-s) s → ψ₀ α = 0 := fun α hα =>
+    image_eq_zero_of_notMem_tsupport fun h' => hα (hψ₀S h')
+  -- step 7: `h(r u) = r h(u)` for a.e. `u ∈ I₁`, for each `r` with `|r - 1| < s/4`
+  have hscal : ∀ r : ℝ, |r - 1| < s / 4 →
+      ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u := by
+    intro r hr
+    have hr0 : 0 < r := by linarith [(abs_sub_lt_iff.1 hr).2]
+    refine Submission.idtp_cse_ah_ae_scaling_of_weak_scaling (1 - s / 2) (1 + s / 2) r h hr0
+      (hhI.mono_set (Ioo_subset_Ioo (by linarith) (by linarith))) (hhI.mono_set (hmaps r hr))
+      fun l hl hlS => ?_
+    have hl0 : ∀ t, t ∉ Ioo (1 - s / 2) (1 + s / 2) → l t = 0 := fun t ht =>
+      image_eq_zero_of_notMem_tsupport fun h' => ht (hlS h')
+    -- `l(t/r) ≠ 0` forces `t ∈ r I₁ ⊆ I`
+    have hdiv : ∀ t, t / r ∈ Ioo (1 - s / 2) (1 + s / 2) → t ∈ Ioo (1 - s) (1 + s) := fun t ht =>
+      hmaps r hr ⟨(lt_div_iff₀' hr0).1 ht.1, (div_lt_iff₀' hr0).1 ht.2⟩
+    -- both sides of the scaling identity reduce to one-variable integrals against `h`
+    have h1 := Submission.idtp_cse_ah_product_integral_reduce (1 - s) (1 + s) (-s) s H h
+      (fun t => l (t / r)) ψ₀ hHh (fun t ht => hl0 (t / r) fun hu => ht (hdiv t hu)) hψ₀0 hψ₀1
+    have h2 := Submission.idtp_cse_ah_product_integral_reduce (1 - s) (1 + s) (-s) s H h l ψ₀ hHh
+      (fun t ht => hl0 t fun hu => ht (Ioo_subset_Ioo (by linarith) (by linarith) hu)) hψ₀0 hψ₀1
+    rw [← h1, ← h2]
+    exact hβ l ψ₀ r hl hψ₀C hlS hψ₀S hr
+  -- step 8: `h(v) = c v` for a.e. `v ∈ I₂ = (1 - s/8, 1 + s/8)`
+  obtain ⟨c, hc⟩ :=
+    Submission.idtp_cse_ah_ae_linear_of_ae_scaling s h hs hs1 hhI.aestronglyMeasurable hscal
+  refine ⟨c, ?_⟩
+  -- step 9: pull back along `fst` and combine with `H(t, α) = h(t)`
+  have hc' : ∀ᵐ p : ℝ × ℝ, p.1 ∈ Ioo (1 - s / 8) (1 + s / 8) → h p.1 = c * p.1 :=
+    (Measure.quasiMeasurePreserving_fst (μ := volume) (ν := volume)).ae hc
+  filter_upwards [hHh, hc'] with p h1 h2 hp
+  rw [h1 ⟨Ioo_subset_Ioo (by linarith) (by linarith) hp.1, hp.2⟩, h2 hp.1]
 
 end GMT.Ch07
