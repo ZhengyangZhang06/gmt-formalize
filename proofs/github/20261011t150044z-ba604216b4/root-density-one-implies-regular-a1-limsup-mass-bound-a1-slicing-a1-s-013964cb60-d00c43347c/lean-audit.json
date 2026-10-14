@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64a07cfb3ddf15612b488d04547b9dc4a65f428ab906fb017512304c7a0acf1e",
+  "git_delta": {
+    "base_commit": "d46f625a82881337f2c2d2d0eb8b1a9d2efff51e",
+    "candidate_commit": "d5dde9a9607413ea783a61a85d7e8b4c6840ec2a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_si_ae_forall_compact",
+    "diff_sha256": "d7977a6b5404d9545106b4b8d60d12b73ebb78d9ce2417bd36d2e0715a697d4b",
+    "source_sha256": "4951229cce744de10c5dd9cf2da44040dc9561d1c6bbbd010576fbc25d250ffa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_si_ae_forall_compact",
+      "statement": "∀ (P : ℕ) (U : Set (Euclid P)) (F : ℝ → Set (Euclid P) → ℝ≥0∞), IsOpen U → (∀ t, Monotone (F t)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᵐ t, F t K ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → F t K ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
