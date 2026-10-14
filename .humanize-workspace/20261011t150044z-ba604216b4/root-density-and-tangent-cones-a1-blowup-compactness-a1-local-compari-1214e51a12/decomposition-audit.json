@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'IsUnitOrientationOf|IMRep|coarea|slice' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "theorem alternatizeUncurryFin_apply|eq_smul_basis_det|theorem det_to_matrix_orthonormalBasis_real|theorem finrank_add_inf_finrank_orthogonal|theorem exists_measurable_superset_of_null|theorem integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem integral_toReal|theorem ae_lt_top|theorem lintegral_eq_zero_iff|lemma norm_alternatizeUncurryFin_le|theorem le_opNorm",
+        "rg -n 'coarea|co-area|Coarea' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT --glob '*.lean'",
+        "rg -l --glob 'decomposition-v*.json' '\"lean_name\": \"dtc_bc_lc_sl_sf_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git diff --stat b4d606db1da5da8fa2c0292ad4924d97de8b3c4b 2af75d6921b01a9c889a45103692ca0af95ea394 -- GMT/Ch07/Contract.lean lake-manifest.json lean-toolchain lakefile.toml",
+        "sed -n '1148,1328p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit-f5v6l_eo/Unit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit-f5v6l_eo/Rest.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit-f5v6l_eo/Accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit-f5v6l_eo/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit-f5v6l_eo/Challenges.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1214e51a12/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1214e51a12/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/slice-family-independent-audit-f5v6l_eo/Unit.lean",
+        "/tmp/slice-family-independent-audit-f5v6l_eo/Rest.lean",
+        "/tmp/slice-family-independent-audit-f5v6l_eo/Accepted.lean",
+        "/tmp/slice-family-independent-audit-f5v6l_eo/Assembly.lean",
+        "/tmp/slice-family-independent-audit-f5v6l_eo/Challenges.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected slice-family theorem. All six frozen types pass validation and elaborate in regenerated comparator scope without child implementations. All names are bare identifiers; the five new names have no competing reservation. The sole child dependency, imrep_of_subset → im_calculus, and the inherited prerequisite graph are acyclic. Independently recompiled proofs establish the five new contracts, with imrep_of_subset conditional only on its declared dependency. The accepted im_calculus declaration has the identical frozen type and compatible compiler context. Its proof and the exact parent assembly also recompile, using only propext, Classical.choice and Quot.sound. The assembly derives the selected frozen parent from precisely the proposed children and permitted coarea/Leibniz prerequisites. Inline wedge normalization, operator norms, restricted measures and real-volume defaults match the prose; no matrix-unit construction occurs. The snapshot contains coarea contract Props in both Ch02 and Ch03, but neither supplies a proved imported slicing theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Orthonormal evaluation proves the operator-norm bound; the orthogonal decomposition, uniform determinant sign and explicit wedge expansion prove the interior-product orientation, including n = 0. No circular reliance occurs."
+    },
+    {
+      "key": "cutoff_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis appears in the type. The proof works directly with the restricted measure, handles interior, exterior and endpoint cases, and obtains the exact density limit by eventual defect-set inclusion and squeezing. No measurability assumption on M is silently required."
+    },
+    {
+      "key": "coarea_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conditional coarea contract matches the prose. Borel null envelopes handle arbitrary predicates, singleton-nullness proves level-set vanishing, and countable compact-ball exhaustion establishes simultaneous local finiteness. Each step uses the stated measurability hypotheses correctly."
+    },
+    {
+      "key": "coarea_signed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weighted absolute-integrability assumption is exact. Positive and negative parts establish slice integrability, measurable Bochner integrals and the signed identity without subtracting infinities. Exceptional nonintegrable slices are correctly accommodated."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse: commit 2af75d6921b01a9c889a45103692ca0af95ea394 supplies the identical frozen type. The referenced proof was inspected and recompiled with only standard axioms. Its locality component supplies the declared downstream dependency without circularity."
+    },
+    {
+      "key": "imrep_of_subset",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every IMRep hypothesis. Positive integer multiplicity gives local Hausdorff finiteness; declared tangent locality transfers orientations to A. The proof then checks every structure field and preserves the exact carrier, multiplicity and orientation."
+    }
+  ],
+  "required_changes": []
+}
