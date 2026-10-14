@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Support lemma (Simon 6.2.11): a current vanishes on test forms supported away from its support",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω disjoint from spt S, where spt S = U ∖ Z_S and Z_S is the union of all open W with closure W compact, closure W ⊆ U and S(η) = 0 for every η ∈ 𝒟ⁿ(U) with tsupport η ⊆ W (GeometricCurrentOn.support). Then S(ω) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0",
+  "lean_name": "dtc_vanish_off_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1"
+}
