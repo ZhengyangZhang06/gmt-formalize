@@ -2588,6 +2588,105 @@ theorem Submission.dimred_tr_bc_zero_limit_minimizing : (∀ (n k ℓ : ℕ), �
   rw [hSC]
   exact ⟨hCmin, hCbd⟩
 
+/-- **The anchor and the infinite-mass members of the blow-up class** (proof of Simon 7.3.3(1),
+chapter-07.txt lines 443–465: `T` itself belongs to the class `𝒯` of weak limits of rescalings
+`η_{xᵢ,λᵢ#}T`, and the members with `λᵢ → 0` minimize in all of `ℝ^{n+ℓ}`, (8) there).  Let
+`μ_T` be the weight of `T`, `W = B_{2r}(z)` and `μ_{a,t} = t⁻ⁿ η_{a,t#}(μ_T⌞W)`; `𝓜` consists of
+the `μ_{a,t}` with `0 < t ≤ r`, `|a − z| ≤ r − t`, and of the weights `μ_S` of the weak limits `S`
+of `η_{cᵢ,tᵢ#}T` with `|cᵢ − z| < r − tᵢ`, `tᵢ → 0` and `cᵢ` convergent.  (i) The anchor `μ_{z,r}`
+has `μ_{z,r}(B_ρ(w)) = r⁻ⁿ M_{B_{rρ}(z + rw)}(T)` for `0 < ρ < 1 − |w|`, so its density at
+`w ∈ B₁(0)` is that of `T` at `z + rw`.  (ii) `μ_{a,t}(ℝ^{n+k}) = t⁻ⁿ μ_T(W) < ∞`, so a member of
+infinite mass is some `μ_S`; then `S` is minimizing in `ℝ^{n+k}` with `∂S = 0`
+(`dimred_tr_bc_zero_limit_minimizing`), and by the monotonicity formula `S` has a density at every
+point, which is the `limsup` density of `μ_S` since `M_{B_ρ(y)}(S) = μ_S(B_ρ(y))`. -/
+theorem Submission.dimred_tr_bc_class_anchor_infinite : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (z : Euclid (n + k)) (r : ℝ) (RT : IMRep U n) (𝓜 : Set (Measure (Euclid (n + k)))), 0 < r → closedBall z (2 * r) ⊆ U → RT.Represents T → (∀ μ : Measure (Euclid (n + k)), μ ∈ 𝓜 ↔ (∃ (a : Euclid (n + k)) (t : ℝ), 0 < t ∧ t ≤ r ∧ dist a z ≤ r - t ∧ μ = ENNReal.ofReal (t⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation a t)) ∨ ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RS : IMRep (univ : Set (Euclid (n + k))) n) (cs : ℕ → Euclid (n + k)) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (b : Euclid (n + k)), (∀ i, dist (cs i) z < r - ts i) ∧ Tendsto ts atTop (𝓝 0) ∧ Tendsto cs atTop (𝓝 b) ∧ ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S ∧ RS.Represents S ∧ μ = RS.measure) → ∀ dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ, (∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → (∃ μ₀ ∈ 𝓜, ∀ w ∈ ball (0 : Euclid (n + k)) 1, ∀ θ : ℝ, HasMassDensity T (z + r • w) θ → dens μ₀ w = θ) ∧ ∀ ν ∈ 𝓜, ν univ = ∞ → ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), (∀ i, xs i ∈ ball z r) ∧ Tendsto lams atTop (𝓝 0) ∧ ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S ∧ IsMinimizingIn S univ ∧ BoundaryVanishes S ∧ ∀ y, HasMassDensity S y (dens ν y) := by
+  intro hIM hMON hMB n k ℓ hℓk U N T hn hU hN hNcl hTmin hTspt hTbd z r RT 𝓜 hr hzU hRT hM dens
+    hdens
+  obtain ⟨hAC1, hAC2, hAC3, -, -, -, -, -, -⟩ := Submission.idtp_fons_cc_ambient_calculus
+  -- Step 0: if the density ratio of `μ` at `x` tends to `θ ≥ 0` as `ρ ↓ 0`, its `limsup` is `θ`
+  have hdens_eq : ∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)) (θ : ℝ), 0 ≤ θ →
+      Tendsto (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+        (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → dens μ x = θ := by
+    intro μ x θ hθ hlim
+    rw [hdens, hlim.limsup_eq, ENNReal.toReal_ofReal hθ]
+  -- Step 1: `μ_T(W) ≤ μ_T(B̄_{2r}(z)) < ∞`, as the multiplicity is locally `Hⁿ`-integrable and
+  -- `B̄_{2r}(z) ⊆ U`; so every positive-scale member has finite total mass `t⁻ⁿ μ_T(W)`
+  have hWfin : RT.measure (ball z (2 * r)) ≠ ∞ := by
+    have hK := RT.locallyIntegrable_mult (closedBall z (2 * r)) (isCompact_closedBall z (2 * r))
+      hzU
+    have hKeq : RT.measure (closedBall z (2 * r)) =
+        ∫⁻ x in RT.carrier ∩ closedBall z (2 * r), (RT.mult x : ℝ≥0∞) ∂μHE[n] := by
+      rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+        Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    rw [← hKeq] at hK
+    exact ne_top_of_le_ne_top hK (measure_mono ball_subset_closedBall)
+  have hPSfin : ∀ (a : Euclid (n + k)) (t : ℝ), 0 < t →
+      (ENNReal.ofReal (t⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation a t)) univ
+        ≠ ∞ := by
+    intro a t ht
+    rw [hAC2 (n + k) n _ a t univ ht MeasurableSet.univ, preimage_univ,
+      Measure.restrict_apply_univ]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hWfin
+  refine ⟨⟨ENNReal.ofReal (r⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation z r),
+    (hM _).2 (Or.inl ⟨z, r, hr, le_rfl, by simp, rfl⟩), ?_⟩, ?_⟩
+  · -- Step 2: the anchor `μ₀ = μ_{z,r}` (`(a, t) = (z, r)`, admissible as `|z − z| = 0 = r − r`);
+    -- by Step 0 it suffices that its density ratio at `w` tends to `θ`
+    rintro w hw θ ⟨hθ, hθlim⟩
+    have hw1 : ‖w‖ < 1 := mem_ball_zero_iff.1 hw
+    apply hdens_eq _ w θ hθ
+    -- `ρ ↦ rρ` maps `𝓝[>] 0` to itself, so `M_{B_{rρ}(z+rw)}(T)/(ωₙ(rρ)ⁿ) → θ`
+    have hscale : Tendsto (fun ρ : ℝ => r * ρ) (𝓝[>] 0) (𝓝[>] 0) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+        (((continuous_const_mul r).tendsto' 0 0 (mul_zero r)).mono_left nhdsWithin_le_nhds)
+        (eventually_nhdsWithin_of_forall fun ρ hρ => mul_pos hr hρ)
+    refine (hθlim.comp hscale).congr' ?_
+    -- for `0 < ρ < 1 − |w|`: `B_{rρ}(z + rw) ⊆ W ⊆ U` and
+    -- `μ₀(B_ρ(w)) = r⁻ⁿ μ_T(B_{rρ}(z + rw)) = r⁻ⁿ M_{B_{rρ}(z+rw)}(T)`
+    filter_upwards [Ioo_mem_nhdsGT (sub_pos.2 hw1)] with ρ hρ
+    have hball : ball (z + r • w) (r * ρ) ⊆ ball z (2 * r) := by
+      refine ball_subset_ball' ?_
+      rw [dist_self_add_left, norm_smul, Real.norm_of_nonneg hr.le]
+      nlinarith [hρ.2]
+    have hmass : T.massOn (ball (z + r • w) (r * ρ)) = RT.measure (ball (z + r • w) (r * ρ)) :=
+      (hIM (n + k) n U T RT hU hRT).1 _ isOpen_ball
+        (hball.trans (ball_subset_closedBall.trans hzU))
+    -- and `(rρ)ⁿ = rⁿρⁿ`, `r⁻ⁿ = (rⁿ)⁻¹` with `0 < rⁿ < ∞`
+    have hc0 : ENNReal.ofReal (r ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne'
+    have hcancel : ∀ m : ℝ≥0∞, ENNReal.ofReal (r ^ n) * ((ENNReal.ofReal (r ^ n))⁻¹ * m) = m :=
+      fun m => by rw [← mul_assoc, ENNReal.mul_inv_cancel hc0 ENNReal.ofReal_ne_top, one_mul]
+    rw [Function.comp_apply, hAC2 (n + k) n _ z r _ hr measurableSet_ball,
+      hAC3 (n + k) z w r ρ hr, Measure.restrict_apply measurableSet_ball, inter_eq_left.2 hball,
+      ← hmass, mul_pow, ENNReal.ofReal_mul (pow_nonneg hr.le n), inv_pow,
+      ENNReal.ofReal_inv_of_pos (pow_pos hr n),
+      ← ENNReal.mul_div_mul_left (_ * T.massOn _) _ hc0 ENNReal.ofReal_ne_top, hcancel,
+      mul_left_comm (unitBallVolume n)]
+  · -- Step 3: a member `ν` of infinite total mass
+    intro ν hν hνinf
+    rcases (hM ν).1 hν with ⟨a, t, ht, -, -, rfl⟩ |
+        ⟨S, RS, cs, ts, hts, b, hcs, hts0, hcsb, hconv, hRS, rfl⟩
+    · -- by Step 1, `ν` is not a positive-scale member
+      exact absurd hνinf (hPSfin a t ht)
+    -- (a) the centres `cᵢ` lie in `B_r(z)`, as `|cᵢ − z| < r − tᵢ < r`
+    have hcsr : ∀ i, dist (cs i) z < r := fun i => (hcs i).trans_le (sub_le_self r (hts i).le)
+    -- (b) `|b − z| ≤ r`, so `b ∈ U` and `S` is minimizing in `ℝ^{n+k}` with `∂S = 0`
+    have hbU : b ∈ U := by
+      have hbz : dist b z ≤ r :=
+        le_of_tendsto' (hcsb.dist tendsto_const_nhds) fun i => (hcsr i).le
+      exact hzU (mem_closedBall.2 (by linarith))
+    obtain ⟨hSmin, hSbd⟩ := Submission.dimred_tr_bc_zero_limit_minimizing hMB n k ℓ hℓk U N T hn hU
+      hN hNcl hTmin hTspt hTbd b cs ts hts S hbU hcsb hts0 hconv
+    -- (c) monotonicity in `U = N = ℝ^{n+k}` gives densities `Θ(y)` of `S` at every `y`
+    obtain ⟨-, -, ⟨Θ, hΘ, -⟩, -⟩ := hMON (n + k) n (n + k) univ univ S hn (Nat.le_add_right n k)
+      le_rfl isOpen_univ (hAC1 (n + k)) (by simp) (by rwa [inter_self])
+      (by rw [inter_self]; exact subset_univ _) hSbd
+    refine ⟨S, cs, ts, hts, fun i => mem_ball.2 (hcsr i), hts0, hconv, hSmin, hSbd, fun y => ?_⟩
+    -- (d) `M_{B_ρ(y)}(S) = μ_S(B_ρ(y))`, so `dens μ_S y = Θ(y)`
+    obtain ⟨hΘ0, hΘlim⟩ := hΘ y (mem_univ y)
+    have hmassS := (hIM (n + k) n univ S RS isOpen_univ hRS).1
+    rw [hdens_eq RS.measure y (Θ y) hΘ0
+      (hΘlim.congr fun ρ => by rw [hmassS _ isOpen_ball (subset_univ _)])]
+    exact hΘ y (mem_univ y)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
