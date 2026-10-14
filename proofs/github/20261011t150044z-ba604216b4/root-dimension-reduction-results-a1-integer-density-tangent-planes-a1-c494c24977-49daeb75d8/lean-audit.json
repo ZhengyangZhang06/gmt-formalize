@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "35e25974e65e6b96b9d0e04dd32467ce76fd4e5589d36621bee9c9b097642146",
+  "git_delta": {
+    "base_commit": "7506ff494a330c369d3a890e2b8ac9aba31466fe",
+    "candidate_commit": "1d1e48bcdd9664c11d290c845a1b5a3dded7146c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ra_single_ray",
+    "diff_sha256": "e6f41c5984c079b4cc27f5f5b9e4adbfd5c82cda6803309596557b836854c181",
+    "source_sha256": "8133c3123488b1ee1efd98cf2ceebae3d3f8d08ce53d5ed1328977d50f44c546",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ra_single_ray",
+      "statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (e : Euclid P), ‖e‖ = 1 → (∀ᵐ x ∂((μHE[1] : Measure (Euclid P)).restrict (R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0)), R.orient x = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ R.orient x = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)) → ∃ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) ∧ (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g t = k) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x) ∂μHE[1] = ∫ t in Ioi (0 : ℝ), g t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
