@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_hasCompactSupport_lintegral_sub_le|exists_hasCompactSupport_integral_sub_le",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "exists_open_between_and_isCompact_closure",
+        "theorem MeasurableSet.exists_isCompact_sdiff_lt|of_sigmaCompactSpace_of_isLocallyFiniteMeasure",
+        "abbrev Covector|abbrev DifferentialForm|def IsTestForm",
+        "def covectorEuclideanNorm",
+        "rsd_mw_tfa_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-mw-tfa-audit-20261012/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rsd-mw-tfa-audit-20261012/DirectProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/rsd-mw-tfa-split/Full.lean",
+        "/tmp/rsd-mw-tfa-audit-20261012/FrozenTypes.lean",
+        "/tmp/rsd-mw-tfa-audit-20261012/DirectProofs.lean"
+      ],
+      "conclusion": "The split appropriately separates five genuine analytic obligations for the selected parent. Dependencies are acyclic and correctly directed. The pinned contract, manifest, and relevant Mathlib sources match the build sources. All five exact one-line propositions elaborate independently of child implementations. Independently replaying the supplied proofs with explicit frozen types also compiles the exact selected parent; every resulting theorem uses only propext, Classical.choice, and Quot.sound. CompleteSpace, BorelSpace, measure regularity, and the smoothness-order interpretation were checked. The two additional imports identified in the proposal are compatible with the comparator policy. All lean_names are bare identifiers, and the final 278-node DAG scan found no reservations for them. No child relies on itself, the selected parent, or an ancestor theorem. The cutoff assembly proves the required support, unit bound, and strict integral error bound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match all four conclusions. The coefficient-vector construction agrees with the actual norm definition. Linearity gives triangle inequality and homogeneity; the operator-norm estimate gives a nonnegative domination constant and then Lipschitz continuity. The proof covers all P and n without additional hypotheses or circular reliance."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every measure, openness, and positivity hypothesis is present. Compact inner approximation and the pinned smooth Urysohn theorem supply the claimed support and range, with χ = 1 exactly on K. The null complement hypothesis gives the strict exceptional-measure bound. The typed smoothness order is C∞, and the supplied proof is complete."
+    },
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit radial map has a denominator at least one, so continuity and the unit bound follow correctly. The two cases N(a) ≤ 1 and N(a) > 1 establish the factor-two estimate using only norm_props and existing elementary norm facts. The contract matches the prose and has no circular dependency."
+    },
+    {
+      "key": "continuous_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pinned L¹-density theorem applies under the stated hypotheses. Retraction preserves continuity and compact support because ρ(0) = 0. The a.e. estimate integrates correctly using finite constant multiplication, and the chosen tolerance yields strict error below δ, including C = 0. Only the declared siblings are used."
+    },
+    {
+      "key": "smooth_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support and continuity give uniform continuity, and the smoothing theorem applies to the complete covector codomain. The explicit rescaling gives both N(h) ≤ 1 and N(h − g) ≤ 2Cδ/(2C + 1) ≤ δ. Smoothness matches the exact Lean type; no compact-support conclusion for h or additional hypothesis is assumed."
+    }
+  ],
+  "required_changes": []
+}

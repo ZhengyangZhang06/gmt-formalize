@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.pullback_continuity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1",
+  "depth": 5,
+  "title": "Weak continuity of pull-backs of continuous forms by uniformly convergent, uniformly Lipschitz maps (supplied step 6, B4)",
+  "statement": "Let m, N' ∈ ℕ, L ≥ 0, and let H_j, H₀ : ℝ^m → ℝ^{N'} (j ∈ ℕ) be L-Lipschitz maps with H_j → H₀ uniformly on ℝ^m. Let w ∈ L¹(ℝ^m) (Lebesgue) and let ω : ℝ^{N'} → Λ^m(ℝ^{N'}) be a continuous m-form with compact support (DifferentialForm (Euclid N') m). Write DH(u) := fderiv ℝ H u and e_a for the standard basis of ℝ^m. Then ∫ w(u)·ω(H_j(u))(DH_j(u)e_0, …, DH_j(u)e_{m−1}) du → ∫ w(u)·ω(H₀(u))(DH₀(u)e_0, …, DH₀(u)e_{m−1}) du as j → ∞.",
+  "lean_statement": "∀ (m N' : ℕ) (L : NNReal) (H : ℕ → Euclid m → Euclid N') (H₀ : Euclid m → Euclid N') (w : Euclid m → ℝ) (ω : DifferentialForm (Euclid N') m), (∀ j, LipschitzWith L (H j)) → LipschitzWith L H₀ → TendstoUniformly H H₀ atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (H j u) (fun a => fderiv ℝ (H j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H₀ u) (fun a => fderiv ℝ H₀ u (EuclideanSpace.single a 1))))",
+  "lean_name": "cmcdt_lpi_pullback_weak_continuity",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.minor_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.minor_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-d2560752b4-a1"
+}

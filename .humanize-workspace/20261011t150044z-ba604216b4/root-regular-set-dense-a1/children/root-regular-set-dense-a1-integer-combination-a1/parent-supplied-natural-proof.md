@@ -1,0 +1,130 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1`
+- Child DAG node: `root.regular_set_dense-a1.integer_combination-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, Remark 3.2(1) (chapter-06.txt lines 755–756), printed without proof. The argument uses the locality of approximate tangent planes (Ch. 3, Remarks 1.5(2)–(3) and 1.8(1), chapter-03.txt lines 86–143 and 298–315) and the density theorem for Radon measures (Ch. 1, Theorem 3.16 with Remark 3.11(3), chapter-01.txt lines 905–925).
+
+Set-up and notation:
+- Let R_i = (M_i, θ_i, ξ_i) represent T_i (i = 1, 2). Replace ξ₁, ξ₂ by Borel functions agreeing with them H^n-a.e. on M₁, M₂; this affects neither the integral formulas nor the a.e. statements.
+- Write ⟨α, v⟩ := v(α). Say v orients the n-plane Q if ⟨α, v⟩ = ±α(τ₁, …, τ_n) for all α, for some orthonormal basis τ of Q (IsUnitOrientationOf).
+- A := M₁ ∪ M₂ is Borel and A ⊆ U. For compact K ⊆ U, H^n(A ∩ K) ≤ ∫_{M₁∩K} θ₁ dH^n + ∫_{M₂∩K} θ₂ dH^n < ∞ (θ_i ≥ 1 on M_i).
+
+1. Upper bound from a tangent plane (Remark 1.5(3)). Let D ⊆ A be Borel, x ∈ U, and suppose HasApproximateTangentSpaceAt n D x Q. Then H^n(D ∩ B̄_ρ(x)) = O(ρ^n) as ρ ↓ 0.
+Proof: take f ∈ C_c(ℝ^P; [0, 1]) with f = 1 on B̄_1(0). By translation invariance and scaling of H^n, H^n(η_{x,ρ}(Z)) = ρ^{−n}H^n(Z). So ρ^{−n}H^n(D ∩ B̄_ρ(x)) = H^n(η_{x,ρ}(D) ∩ B̄_1(0)) ≤ ∫_{η_{x,ρ}(D)} f dH^n → ∫_Q f dH^n < ∞. For small ρ these quantities are finite, since B̄_{2ρ}(x) is a compact subset of U.
+
+2. Locality lemma. Let B ⊆ C ⊆ A be Borel. Then for H^n-a.e. x ∈ B and every n-plane Q: HasApproximateTangentSpaceAt n B x Q holds iff HasApproximateTangentSpaceAt n C x Q holds.
+Proof:
+- Let K_j ⊆ U be compact with U = ⋃_j int K_j, and let λ_j := H^n⌞(A ∩ K_j), a finite Borel measure.
+- By the density theorem (Ch. 1, 3.16; Mathlib Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet), for λ_j-a.e. x ∈ B we have λ_j(B ∩ B̄_ρ(x))/λ_j(B̄_ρ(x)) → 1 as ρ ↓ 0 (in particular λ_j(B̄_ρ(x)) > 0).
+- Discard the union over j of the exceptional sets, an H^n-null subset of B. Fix x ∈ B and j with x ∈ int K_j at which the convergence holds, and put a(ρ) := H^n(A ∩ B̄_ρ(x)), which equals λ_j(B̄_ρ(x)) for small ρ.
+- Then H^n((A ∖ B) ∩ B̄_ρ(x)) = o(a(ρ)), so a(ρ) ≤ 2H^n(B ∩ B̄_ρ(x)) ≤ 2H^n(C ∩ B̄_ρ(x)) for small ρ.
+- If B or C has an approximate tangent plane at x, step 1 gives H^n(B ∩ B̄_ρ(x)) = O(ρ^n) or H^n(C ∩ B̄_ρ(x)) = O(ρ^n). In either case a(ρ) = O(ρ^n), and H^n((C ∖ B) ∩ B̄_ρ(x)) ≤ H^n((A ∖ B) ∩ B̄_ρ(x)) = o(ρ^n).
+- For f ∈ C_c(ℝ^P) with spt f ⊆ B̄_R(0): |∫_{η_{x,ρ}(C)} f dH^n − ∫_{η_{x,ρ}(B)} f dH^n| ≤ sup|f|·ρ^{−n}H^n((C ∖ B) ∩ B̄_{Rρ}(x)) → 0.
+Hence the two limits in Definition 1.4 coincide whenever one of them exists.
+
+3. Agreement on the overlap.
+- By the axioms of R₁ and R₂, for H^n-a.e. x ∈ M_i the plane T_xM_i exists and ξ_i(x) orients it.
+- Apply step 2 with B := M₁ ∩ M₂ and C := M₁, resp. C := M₂. For H^n-a.e. x ∈ M₁ ∩ M₂ this gives T_xM₁ = T_x(M₁ ∩ M₂) = T_xM₂ =: Q_x.
+- Two orthonormal bases τ, τ' of Q_x satisfy τ'_i = Σ_k O_{ik}τ_k with O orthogonal, so α(τ') = det(O)α(τ) with det O = ±1. Hence ξ₂(x) = s(x)ξ₁(x) with s(x) ∈ {1, −1}.
+- Define the Borel function σ := 1 where Σ_I ⟨e^I, ξ₁⟩⟨e^I, ξ₂⟩ ≥ 0, and σ := −1 otherwise (sum over strictly increasing I; e^I are the coordinate covectors).
+- When ξ₁(x) orients a plane, Σ_I ⟨e^I, ξ₁(x)⟩² = 1 by Cauchy–Binet: ⟨e^I, ±τ₁∧⋯∧τ_n⟩ = ±det(A_I) and Σ_I det(A_I)² = det(⟨τ_i, τ_j⟩) = 1. Therefore σ = s H^n-a.e. on M₁ ∩ M₂.
+
+4. Construction.
+- Define the Borel integer-valued function c := p₁θ₁1_{M₁} + p₂θ₂(σ1_{M₁∩M₂} + 1_{M₂∖M₁}).
+- Define the Borel n-vector field ζ := ξ₁ on M₁ and ζ := ξ₂ on M₂ ∖ M₁.
+- By step 3, for H^n-a.e. x ∈ A and every α: p₁θ₁(x)1_{M₁}(x)⟨α, ξ₁(x)⟩ + p₂θ₂(x)1_{M₂}(x)⟨α, ξ₂(x)⟩ = c(x)⟨α, ζ(x)⟩.
+- Let M' := {x ∈ A : c(x) ≠ 0}, θ' := |c| on M' and θ' := 0 off M', and ξ' := sign(c)ζ.
+
+5. R' := (M', θ', ξ') is an IMRep in U.
+- M' is Borel and M' ⊆ A ⊆ U.
+- M' is countably n-rectifiable, because M₁ ∪ M₂ is a union of countably n-rectifiable sets and subsets inherit the property.
+- θ' is Borel and ℕ-valued, and θ' ≥ 1 on M'.
+- For compact K ⊆ U, ∫_{M'∩K} θ' dH^n ≤ |p₁|∫_{M₁∩K} θ₁ dH^n + |p₂|∫_{M₂∩K} θ₂ dH^n < ∞.
+- ξ' is Borel.
+- Orientation on M' ∩ M₁: for H^n-a.e. such x, T_xM₁ =: Q exists and ξ₁(x) orients it. Step 2 with B := M' ∩ M₁ ⊆ C := M₁ gives T_x(M' ∩ M₁) = Q. Step 2 with B := M' ∩ M₁ ⊆ C := M' then gives T_xM' = Q, and ξ'(x) = ±ξ₁(x) orients Q.
+- Orientation on M' ∩ (M₂ ∖ M₁): likewise, for H^n-a.e. such x, T_xM' = T_xM₂ and ξ'(x) = ±ξ₂(x) orients it.
+Hence for H^n-a.e. x ∈ M' there is an n-plane Q with HasApproximateTangentSpaceAt n M' x Q and ξ'(x) orienting Q.
+
+6. Representation. Let ω ∈ 𝒟^n(U). All integrands below are bounded H^n-a.e. by (|p₁|θ₁1_{M₁} + |p₂|θ₂1_{M₂})·‖ω‖·1_{spt ω}, which is integrable (|⟨α, v⟩| ≤ ‖α‖ for v orienting a plane). By step 4,
+S(ω) = p₁∫_{M₁} θ₁⟨ω, ξ₁⟩ dH^n + p₂∫_{M₂} θ₂⟨ω, ξ₂⟩ dH^n = ∫_A c⟨ω, ζ⟩ dH^n = ∫_{M'} θ'⟨ω, ξ'⟩ dH^n,
+because c = 0 on A ∖ M' and c⟨ω, ζ⟩ = |c|⟨ω, sign(c)ζ⟩. So R' represents S, and S is integer multiplicity.
+Edge cases: for n = 0 the same argument applies with Q = {0} and orientations ±(evaluation at the empty tuple). If n > P, then H^n = 0 on ℝ^P and S = 0.
+
+## Key steps
+
+1. A tangent plane gives H^n(D ∩ B̄_ρ(x)) = O(ρ^n).
+2. Density theorem: nested Borel sets B ⊆ C ⊆ M₁ ∪ M₂ have the same approximate tangent planes at H^n-a.e. point of B.
+3. On M₁ ∩ M₂ the orientations agree up to a Borel sign σ ∈ {±1}.
+4. The carrier {c ≠ 0}, multiplicity |c| and orientation sign(c)ζ form an IMRep representing p₁T₁ + p₂T₂.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'IMRep|IsIntegerMultiplicity|regularSet|HasMassDensity' local-references/123e8435b4a2469b/project -t lean -c`
+- `rg -n 'IMRep|IsIntegerMultiplicity|^def |^theorem |^structure ' local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `grep -n '^def \|^theorem \|^structure ' simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Representation}.lean simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n '^theorem [a-zA-Z_.]*(density|Density|ball|Ball)' simongmt/Poincare/SimonGMT/Chapter01 Chapter03 Chapter04`
+- `grep -n 'ae_tendsto_rnDeriv\|ae_tendsto_measure_inter_div\|ae_tendsto_average' -r local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/`
+- `grep -n 'μHE\[' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rl 'rsd_' runs/20261011T150044Z-ba604216b4; grep -rn 'rsd_massOn_eq_measure|...|rsd_constant_multiplicity_reduction' GMT .humanize`
+- `lake env lean /tmp/rsd-a1-check/Test/Children.lean (five child types in the comparator's replayed Contract scope)`
+- `lake env lean /tmp/rsd-a1-check/Test/Assembly.lean (RegularSetDense from children 1,2,3,5 + DensityAndTangentCones + DensityOneImpliesRegular; #print axioms)`
+- `lake env lean /tmp/rsd-a1-check/Test/Axioms.lean; lake env lean /tmp/rsd-a1-review/Child5Literal.lean; lake env lean /tmp/rsd-a1-review/CompetitorSupport.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/rsd-a1-check/Test/Children.lean`
+- `/tmp/rsd-a1-check/Test/Assembly.lean`
+- `/tmp/rsd-a1-check/Test/Axioms.lean`
+- `/tmp/rsd-a1-review/Child5Literal.lean`
+- `/tmp/rsd-a1-review/CompetitorSupport.lean`
+
+The snapshot's Ch07 contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.
+
+No match for the structural facts the parent proof cites:
+- GMT/Ch06/Contract.lean has its own unproved integer-multiplicity notions; they have different types and live in a separate module that Ch07 does not import.
+- The simongmt Chapter06 files provide massOn, support/zeroRegion and restrictDomain, but no mass = weight, density = multiplicity, spt T = spt mu_T, or integer-combination lemma for IMRep.
+- Representation.lean leaves the mass-representation bridge pending.
+
+Reusable tools, each checked to depend only on propext, Classical.choice and Quot.sound:
+- Chapter06: GeometricCurrentOn.le_massOn, massOn_mono, support_subset_domain.
+- Chapter03: HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono, countablyRectifiable_iUnion.
+- Chapter01: ae_dimensionalUpperDensity_eq_zero_outside (Simon 1.3.6, stated for simonHausdorffMeasureReal).
+- Mathlib: Besicovitch.ae_tendsto_rnDeriv and ae_tendsto_measure_inter_div_of_measurableSet.
+- Mathlib muHE scaling and isometry lemmas (euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image); these two were located by grep but their axioms were not printed.
+
+The five child types elaborate in the comparator's replayed scope. The conditional assembly of RegularSetDense from children 1, 2, 3 and 5 plus DensityAndTangentCones and DensityOneImpliesRegular depends only on propext, Classical.choice and Quot.sound. No rsd_ name occurs in the run directory or workspace, so the proposed names do not collide.
