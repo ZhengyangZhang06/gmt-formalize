@@ -1420,6 +1420,41 @@ theorem Submission.dor_lmb_fc_dtop_ip_isometry_change_of_variables : ∀ (P Q d 
   · rw [← hmap A, hfe.integral_map]
   · rw [← hmap A, hfe.lintegral_map]
 
+/-- Approximate tangent spaces are transported by a linear isometric embedding `L : ℝᴾ → ℝ^Q`
+(Simon Ch. 3, 1.4; cf. `T_y(f(M))` in Ch. 6, 3.7): if `S = TₓM` then `L(S) = T_{Lx}(L(M))`.  The
+injective `L` restricts to `S ≃ L(S)`, so `dim L(S) = d`.  By linearity
+`η_{Lx,r}(L(M)) = L(η_{x,r}(M))` for every `r`; for `f ∈ C_c(ℝ^Q)`, `f ∘ L ∈ C_c(ℝᴾ)` as `L` is a
+closed embedding, and the Jacobian-one change of variables `∫_{L(A)} f dHᵈ = ∫_A f ∘ L dHᵈ`
+(`dor_lmb_fc_dtop_ip_isometry_change_of_variables`) turns the blow-up integrals and the limit
+`∫_{L(S)} f dHᵈ` into those of `f ∘ L`. -/
+theorem Submission.dor_lmb_fc_dtop_ip_approxTangent_isometry : ∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (M : Set (Euclid P)) (x : Euclid P) (S : Submodule ℝ (Euclid P)), Isometry L → HasApproximateTangentSpaceAt d M x S → HasApproximateTangentSpaceAt d (L '' M) (L x) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S) := by
+  intro P Q d L M x S hL hS
+  -- `∫_{L(A)} h dHᵈ = ∫_A h ∘ L dHᵈ` for every `A ⊆ ℝᴾ`
+  obtain ⟨-, -, hint, -⟩ :=
+    Submission.dor_lmb_fc_dtop_ip_isometry_change_of_variables P Q d L hL
+  -- `dim L(S) = dim S = d`, as the injective `L` restricts to `S ≃ L(S)`
+  refine ⟨(Submodule.equivMapOfInjective (L : Euclid P →ₗ[ℝ] Euclid Q) hL.injective
+    S).finrank_eq.symm.trans hS.1, fun f => ?_⟩
+  -- `g = f ∘ L ∈ C_c(ℝᴾ)`, as `L` is a closed embedding
+  let g : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+    ⟨⟨f ∘ L, (map_continuous f).comp L.continuous⟩,
+      f.hasCompactSupport.comp_isClosedEmbedding hL.isClosedEmbedding⟩
+  -- `∫_{L(S)} f dHᵈ = ∫_S g dHᵈ`
+  have hlim : ∫ y in (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S : Set (Euclid Q)),
+      f y ∂μHE[d] = ∫ y in (S : Set (Euclid P)), g y ∂μHE[d] := by
+    rw [Submodule.map_coe, ContinuousLinearMap.coe_coe, hint]
+    rfl
+  rw [hlim]
+  refine (hS.2 g).congr fun r => ?_
+  -- `η_{Lx,r}(L(M)) = L(η_{x,r}(M))`, so `∫_{η_{Lx,r}(L(M))} f dHᵈ = ∫_{η_{x,r}(M)} g dHᵈ`
+  have hblow : Poincare.SimonGMT.Chapter03.blowUpMap (L x) r '' (L '' M) =
+      L '' (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M) := by
+    rw [image_image, image_image]
+    refine image_congr fun w _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, map_smul, map_sub]
+  rw [hblow, hint]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
