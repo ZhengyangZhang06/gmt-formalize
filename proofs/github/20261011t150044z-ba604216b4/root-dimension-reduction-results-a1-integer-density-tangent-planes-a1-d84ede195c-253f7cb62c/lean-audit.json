@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "685bcea44b4afc6f6b1927e1a4721c20d38ef7b3db8d0bfc9c5a2400c6fed57b",
+  "git_delta": {
+    "base_commit": "d839e9421ab4f9169accc291e8b661516d47f4e1",
+    "candidate_commit": "54b9c09dda4df46f1e63d1fa487c2c40ec49266d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_td_blowUp_smul_form_eval",
+    "diff_sha256": "1246d7e8beace16ffdf4bcfe68365f29045da2d48cd5d2a496716e4bcae67de1",
+    "source_sha256": "cf1fdfc598ac5c5a281dc640957de35bb30baaba46ca2c06d1ae3025d1504d2a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_td_blowUp_smul_form_eval",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (a : Euclid P) (t : ℝ) (ht : 0 < t) (g : Euclid P → ℝ) (β : Covector (Euclid P) n) (ω : TestFormOn (univ : Set (Euclid P)) n), R.Represents C → (∀ x, (ω : DifferentialForm (Euclid P) n) x = g x • β) → currentEval (blowUp C a t ht.ne') (ω : DifferentialForm (Euclid P) n) = t⁻¹ ^ n * ∫ y, g (dilation a t y) * R.orient y β ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
