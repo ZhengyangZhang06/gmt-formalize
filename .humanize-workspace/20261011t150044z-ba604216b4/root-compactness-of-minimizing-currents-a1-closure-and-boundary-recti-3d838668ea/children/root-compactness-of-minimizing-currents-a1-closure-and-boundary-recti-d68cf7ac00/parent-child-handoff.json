@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "python3 -I scan of dag.json: selected node record (depth 4, depends_on cone-a1 and covering-a1); frozen lean_statement of siblings cone-a1 (cbrld_cycle_eval_le_radius_mul_mass) and covering-a1 (cbrld_vitali_setIntegral_le); statements containing '(S - T).support ⊆', 'support ∪', '.mass ≤ S.mass +', 'massOn W ≤ S.massOn W + T.massOn W', '(S - T).mass', '|T ω| ≤', '.mass.toReal' (found cmr_abs_apply_le_massOn, cmc_ml_massOn_eq_of_disjoint_sub_support, cmc_massOn_le_of_le_near_support, cmc_fc_sc_abs_le_mul_mass; none states spt(S − T) ⊆ spt S ∪ spt T or M_W(S − T) ≤ M_W(S) + M_W(T))",
+        "grep -rn 'massOn_add|massOn_sub|mass_sub|mass_add_le|support_sub|support_add|sub_apply|zeroRegion_inter|VanishesOn.sub' over lake-packages-25730c7c/simongmt/Poincare/SimonGMT and workspaces/gmt-ch07/GMT; rg -nE 'massOn_sub|mass_sub|support_sub|sub_support|zeroRegion_inter' project/GMT in the snapshot (no current-difference lemma); grep 'instance' in SimonGMT Chapter06 and GMT/Ch07/Submission.lean (only Zero and the contract's Sub instance on GeometricCurrentOn)",
+        "sed of SimonGMT Chapter06 Mass.lean (covectorEuclideanNorm_neg, massAdmissibleOn, GeometricCurrentOn.massOn, mass, le_massOn), Currents.lean (GeometricCurrentOn, TestFormOn, exteriorDerivativeTestOn, boundary, boundary_apply, GeometricCurrentOn.ext), CurrentLocalEquality.lean (VanishesOn, zeroRegion, support), Forms.lean (Covector, DifferentialForm, IsSmoothForm, IsTestForm)",
+        "grep/rg in snapshot mathlib/Mathlib for: norm_setIntegral_le_of_norm_le_const_ae, setIntegral_eq_zero_of_forall_eq_zero, setIntegral_eq_integral_of_forall_compl_eq_zero, ContinuousLinearMap.aestronglyMeasurable_comp₂, isBoundedBilinearMap_apply, closedBall_sdiff_ball (closedBall_diff_ball is a deprecated alias), ae_eq_set, setIntegral_congr_set, measure_congr, ofReal_add_le, ofReal_lt_ofReal_iff, ofReal_le_iff_le_toReal, toReal_mono, toReal_ofReal, toReal_add, toReal_pos, mul_lt_top, add_lt_top, image_eq_one_of_notMem_mulTSupport, closure_ball_subset_closedBall, isCompact_closedBall, IsCompact.of_isClosed_subset, measure_mono_null, measure_iUnion_null, le_of_forall_pos_lt_add",
+        "sed -n 6530,6640p and 4390,4440p of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_dependency_problem, _existing_lean_name_problem, accepted-theorem reuse rule)",
+        "lake env lean /tmp/cbrld-ns-decomp-q7m2/Types.lean, Meas.lean, Children.lean (#print axioms NsCheck.c1 … NsCheck.c5) and Assembly.lean (#print axioms NsCheck.assembly)",
+        "python3 -I /tmp/cbrld-ns-decomp-q7m2/scripts/check.py (verifier/lean_contract.py validate_lean_statement, lean_name collision scan of dag.json, verbatim containment in the Lean check files); python3 -I /tmp/cbrld-ns-decomp-q7m2/scripts/gen_challenges.py (verifier/gmt-compare.py child_modules, contract mode) followed by lake env lean on the five generated Challenge_*.lean files"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Gauge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d838668ea/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/tmp/cbrld-ns-decomp-q7m2/Types.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/Meas.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/Children.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/Assembly.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/children.json",
+        "/tmp/cbrld-ns-decomp-q7m2/scripts/check.py",
+        "/tmp/cbrld-ns-decomp-q7m2/scripts/gen_challenges.py",
+        "/tmp/cbrld-ns-decomp-q7m2/challenges/Challenge_support_sub.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/challenges/Challenge_mass_sub.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/challenges/Challenge_ball_mass.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/challenges/Challenge_ball_support.lean",
+        "/tmp/cbrld-ns-decomp-q7m2/challenges/Challenge_comparison.lean"
+      ],
+      "conclusion": "No reusable lemma on the support or mass of a difference of currents exists in the snapshot's project/GMT, in SimonGMT Chapter06 or among DAG nodes. SimonGMT gives only the definitions plus le_massOn, massOn_mono, boundary_apply and GeometricCurrentOn.ext. The contract adds only the Sub instance. The closest accepted node, cmr_abs_apply_le_massOn, is not needed because `comparison` uses only the one-sided le_massOn. Every generic Mathlib tool cited in the child proofs was found in the pinned snapshot. closedBall_diff_ball and Set.diff_eq_empty are deprecated in favour of closedBall_sdiff_ball and sdiff_eq_empty. Measurability of y ↦ ξ y (ω y) needs explicit type arguments for ContinuousLinearMap.aestronglyMeasurable_comp₂; isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂ also works. The five child types elaborate in the frozen scope and inside the comparator's NodeChallenge wrapper, pass validate_lean_statement and collide with no DAG lean_name. All five children were proved in Lean. The verbatim frozen parent type was derived from ball_mass, ball_support, comparison and the frozen cone and covering types. All proofs use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.support_sub-a1",
+  "subproblem": {
+    "key": "support_sub",
+    "title": "Support of a difference of currents",
+    "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P and all currents S, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), the difference current S − T of the frozen contract (Sub instance, (S − T)(ω) = S(ω) − T(ω)) satisfies spt(S − T) ⊆ spt S ∪ spt T. Here spt R = U ∖ Z(R) (GeometricCurrentOn.support). The zero region Z(R) is the union of all open sets W with closure(W) compact and closure(W) ⊆ U such that R(ω) = 0 for every test form ω ∈ 𝒟^n(U) with tsupport ω ⊆ W.",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), (S - T).support ⊆ S.support ∪ T.support",
+    "lean_name": "cbrld_ns_support_sub_subset",
+    "depends_on": [],
+    "natural_proof": "Source: fact 1(d) of the parent proof (spt(S − A) ⊆ spt S ∪ spt A), written for an arbitrary domain U.\n\nNotation: R ∈ 𝒟_n(U) vanishes on W (GeometricCurrentOn.VanishesOn) if R(ω) = 0 for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W. The zero region Z(R) (GeometricCurrentOn.zeroRegion) is the union of all W such that W is open, closure W is compact, closure W ⊆ U and R vanishes on W. Then spt R = U ∖ Z(R).\n\n1. For every ω ∈ 𝒟^n(U), (S − T)(ω) = S(ω) − T(ω). The Sub instance of the frozen contract sets the underlying linear functional of S − T to S.toCurrent − T.toCurrent, and (f − g)(ω) = f(ω) − g(ω) for linear maps (LinearMap.sub_apply; this holds by rfl).\n2. Let y ∈ spt(S − T). Then y ∈ U and y ∉ Z(S − T). Suppose, for a contradiction, that y ∉ spt S and y ∉ spt T.\n3. Since y ∈ U and y ∉ spt S = U ∖ Z(S), we have y ∈ Z(S). So there is an open W₁ with y ∈ W₁, closure W₁ compact, closure W₁ ⊆ U, and S vanishing on W₁. Likewise y ∈ Z(T) gives an open W₂ ∋ y with closure W₂ compact, closure W₂ ⊆ U, and T vanishing on W₂.\n4. Put W := W₁ ∩ W₂. It is open as an intersection of two open sets, and it contains y. Since W ⊆ W₁, closure W ⊆ closure W₁ (closure_mono), hence closure W ⊆ U. Also closure W is compact, being a closed subset of the compact set closure W₁ (IsCompact.of_isClosed_subset with isClosed_closure).\n5. S − T vanishes on W. If ω ∈ 𝒟^n(U) and tsupport ω ⊆ W, then tsupport ω ⊆ W₁ and tsupport ω ⊆ W₂. Hence S(ω) = 0 and T(ω) = 0, and by step 1, (S − T)(ω) = 0 − 0 = 0.\n6. By steps 4–5, W belongs to the family whose union is Z(S − T), so y ∈ W ⊆ Z(S − T). This contradicts step 2. Hence y ∈ spt S ∪ spt T, which proves spt(S − T) ⊆ spt S ∪ spt T. ∎",
+    "proof_key_steps": [
+      "Unfold spt R = U ∖ Z(R) and (S − T)(ω) = S(ω) − T(ω).",
+      "A point y ∈ U outside spt S ∪ spt T lies in zero-region sets W₁ (for S) and W₂ (for T).",
+      "W₁ ∩ W₂ is open, contains y, has compact closure contained in U, and S − T vanishes on it.",
+      "Hence y ∈ Z(S − T), contradicting y ∈ spt(S − T)."
+    ]
+  },
+  "audit": {
+    "key": "support_sub",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and type agree for arbitrary U. The proof correctly uses membership in U to obtain both zero-region witnesses, then verifies openness, compact closure, domain containment and vanishing on their intersection. It requires neither openness of U nor circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d68cf7ac00/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d68cf7ac00/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d68cf7ac00/parent-supplied-natural-proof.json"
+}
