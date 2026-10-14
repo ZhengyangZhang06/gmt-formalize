@@ -451,6 +451,93 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 2.7** (proof, the final limit `σ ↓ 0`): on the cube
+`Q_δ = {z : δ < zᵢ < 1 - δ}` (`0 ≤ δ`) the double-integral oscillation
+`∫_{Q_δ} ∫_{Q_δ} |u(x) - u(y)| dy dx` passes to `L¹(Q_δ)` limits of continuous functions: if `u` is
+integrable on the unit cube, every `v_k` has oscillation `≤ K` and `∫_{Q_δ} |v_k - u| → 0`, then
+`u` has oscillation `≤ K`.  Integrating
+`|u(x) - u(y)| ≤ |v_k(x) - v_k(y)| + |u(x) - v_k(x)| + |v_k(y) - u(y)|` over `Q_δ × Q_δ` gives
+`D(u) ≤ K + 2 |Q_δ| ∫_{Q_δ} |v_k - u|` (Fubini for `v_k`, continuous on the bounded `Q_δ`). -/
+theorem Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_l1_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (v : ℕ → Euclid (m + 1) → ℝ) (δ K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → 0 ≤ δ → (∀ k, Continuous (v k)) → (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - v k y| ≤ K) → Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K := by
+  intro m u v δ K hu hδ hv hK hlim
+  set S : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- 1. `S ⊆ Q₁`, since `0 ≤ δ`
+  have hSQ : S ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- 2. `Q₁ ⊆ B̄(0, √(m + 1))`, so `S` has finite volume
+  have hSB : S ⊆ closedBall (0 : Euclid (m + 1)) √(m + 1 : ℕ) := by
+    intro z hz
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, ‖z.ofLp i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := Finset.sum_le_sum fun i _ => by
+          have h0 := (hSQ hz i).1
+          have h1 := (hSQ hz i).2
+          rw [Real.norm_eq_abs, sq_abs]
+          nlinarith
+      _ = (m + 1 : ℕ) := by simp
+  have hS_fin : volume S < ∞ := (measure_mono hSB).trans_lt measure_closedBall_lt_top
+  have : IsFiniteMeasure (volume.restrict S) := isFiniteMeasure_restrict.mpr hS_fin.ne
+  -- 3. `u, v k ∈ L¹(S)`
+  have huS : Integrable u (volume.restrict S) := hu.mono_set hSQ
+  have hvS : ∀ k, Integrable (v k) (volume.restrict S) := fun k =>
+    ((hv k).continuousOn.integrableOn_compact (isCompact_closedBall _ _)).mono_set hSB
+  -- 4. Fubini: `d_k x = ∫_S |v k x - v k y| dy` is integrable on `S`
+  have hd : ∀ k, Integrable (fun x => ∫ y in S, |v k x - v k y|) (volume.restrict S) := fun k =>
+    (((hvS k).comp_fst (volume.restrict S)).sub
+      ((hvS k).comp_snd (volume.restrict S))).abs.integral_prod_left
+  -- 5–6. the inner integral
+  have hinner : ∀ k x, ∫ y in S, |u x - u y| ≤ (∫ y in S, |v k x - v k y|) +
+      (volume.restrict S).real univ * |u x - v k x| + ∫ y in S, |v k y - u y| := by
+    intro k x
+    have h1 : Integrable (fun y => |v k x - v k y|) (volume.restrict S) :=
+      ((integrable_const (v k x)).sub (hvS k)).abs
+    have h2 : Integrable (fun _ : Euclid (m + 1) => |u x - v k x|) (volume.restrict S) :=
+      integrable_const _
+    have h3 : Integrable (fun y => |v k y - u y|) (volume.restrict S) := ((hvS k).sub huS).abs
+    have h12 : Integrable (fun y => |v k x - v k y| + |u x - v k x|) (volume.restrict S) :=
+      h1.add h2
+    calc ∫ y in S, |u x - u y|
+        ≤ ∫ y in S, (|v k x - v k y| + |u x - v k x| + |v k y - u y|) := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _)
+            (h12.add h3) (Eventually.of_forall fun y => ?_)
+          calc |u x - u y| = |(v k x - v k y) + (u x - v k x) + (v k y - u y)| := by
+                congr 1; ring
+            _ ≤ _ := abs_add_three _ _ _
+      _ = _ := by
+          rw [integral_add h12 h3, integral_add h1 h2, integral_const, smul_eq_mul]
+  -- 7. the outer integral: `D(u) ≤ K + 2 a ε_k`
+  have hbound : ∀ k, ∫ x in S, ∫ y in S, |u x - u y| ≤
+      K + (volume.restrict S).real univ * (∫ x in S, |v k x - u x|) +
+        (volume.restrict S).real univ * ∫ x in S, |v k x - u x| := by
+    intro k
+    have h2 : Integrable (fun x => (volume.restrict S).real univ * |u x - v k x|)
+        (volume.restrict S) := ((huS.sub (hvS k)).abs).const_mul _
+    have h3 : Integrable (fun _ : Euclid (m + 1) => ∫ y in S, |v k y - u y|) (volume.restrict S) :=
+      integrable_const _
+    have h12 : Integrable (fun x => (∫ y in S, |v k x - v k y|) +
+        (volume.restrict S).real univ * |u x - v k x|) (volume.restrict S) := (hd k).add h2
+    have hsymm : ∫ x in S, |u x - v k x| = ∫ x in S, |v k x - u x| := by
+      simp_rw [abs_sub_comm (u _)]
+    calc ∫ x in S, ∫ y in S, |u x - u y|
+        ≤ ∫ x in S, ((∫ y in S, |v k x - v k y|) + (volume.restrict S).real univ * |u x - v k x| +
+            ∫ y in S, |v k y - u y|) :=
+          integral_mono_of_nonneg
+            (Eventually.of_forall fun x => integral_nonneg fun y => abs_nonneg _)
+            (h12.add h3) (Eventually.of_forall fun x => hinner k x)
+      _ = (∫ x in S, ∫ y in S, |v k x - v k y|) +
+            (volume.restrict S).real univ * (∫ x in S, |u x - v k x|) +
+            (volume.restrict S).real univ * ∫ y in S, |v k y - u y| := by
+          rw [integral_add h12 h3, integral_add (hd k) h2, integral_const_mul,
+            integral_const, smul_eq_mul]
+      _ ≤ _ := by
+          rw [hsymm]
+          linarith [hK k]
+  -- 8. let `k → ∞`
+  have hlim' := (tendsto_const_nhds (x := K)).add (hlim.const_mul ((volume.restrict S).real univ))
+    |>.add (hlim.const_mul ((volume.restrict S).real univ))
+  rw [mul_zero, add_zero, add_zero] at hlim'
+  exact ge_of_tendsto' hlim' hbound
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
