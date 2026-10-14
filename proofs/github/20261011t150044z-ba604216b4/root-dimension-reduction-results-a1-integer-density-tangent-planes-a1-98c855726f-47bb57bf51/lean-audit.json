@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5a76d9972f59533ffc72d44e911ab16d0c6a06525e86c03d172d67d1d1687bed",
+  "git_delta": {
+    "base_commit": "70acbd7ee1e324a85daa0c40388364b86a004f36",
+    "candidate_commit": "400844f75998f016ef0da1e99b4d6b7e869be9e6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_psf_vague_unique",
+    "diff_sha256": "155927c4f57c4c16dd3351f8f329567762cc47daf228c780ec9dae348ad75eb3",
+    "source_sha256": "c1d455c6962e24b377047d041055583c05cd10baf9315b467ceeccb8bf57eddb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_psf_vague_unique",
+      "statement": "∀ (P : ℕ) (ν₁ ν₂ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν₁ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → ν₂ K ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x ∂ν₁ = ∫ x, f x ∂ν₂) → ν₁ = ν₂",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
