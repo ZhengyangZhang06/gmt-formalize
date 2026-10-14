@@ -494,6 +494,108 @@ theorem Submission.dimred_cs_sos_cfs_cc_imrep_vanish_bound : ∀ (P n : ℕ) (U 
     filter_upwards [hξ] with x hx
     rw [norm_mul, Real.norm_eq_abs, Nat.abs_cast]
     exact mul_le_mul_of_nonneg_left ((hx _).trans (hb x)) (Nat.cast_nonneg _)
+/-- **The cut-off radial operator `ω ↦ ζ·Kω`** (for the cone `0 ⨯ T = h#([[(0, 1)]] × T)`,
+`h(t, x) = tx`, Simon 6.2.30).  For a `(q+2)`-form `β` put `(Kβ)(x) = ∫₀¹ t^{q+1} ι_x β(tx) dt`,
+`ι_x α = α.curryLeft x`, and assume that `Kβ` is `C^∞` whenever `β` is.  Let `ζ` be the bump
+function with `ζ = 1` on `B̄_ρ(0)`, `ζ = 0` off `B_{ρ+1}(0)` and `0 ≤ ζ ≤ 1`.  The integrands are
+continuous, so `K` is linear on test forms and `Φ ω = ζ·Kω` is a linear map
+`𝒟^{q+2}(ℝᴾ) → 𝒟^{q+1}(ℝᴾ)` with `Φ ω = Kω` on `B_ρ(0)`.  Since `‖ι_x α‖ ≤ ‖α‖ ‖x‖`,
+`‖ω‖ ≤ b` gives `‖Kω(x)‖ ≤ b ‖x‖`, hence `‖(Φ ω)(x)‖ ≤ (ρ + 1) b`. -/
+theorem Submission.dimred_cs_sos_cfs_cc_cutoff_cone_operator : ∀ (P q : ℕ) (ρ : ℝ), 0 < ρ → (∀ β : DifferentialForm (Euclid P) (q + 1 + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x)) → ∃ Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (x : Euclid P), ‖x‖ < ρ → (Φ ω : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (b : ℝ), (∀ y, ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) y‖ ≤ b) → ∀ x, ‖(Φ ω : DifferentialForm (Euclid P) (q + 1)) x‖ ≤ (ρ + 1) * b := by
+  intro P q ρ hρ hK
+  -- Step 1: the cutoff `ζ`, with `ζ = 1` on `closedBall 0 ρ` and `ζ = 0` off `ball 0 (ρ + 1)`
+  let ζ : ContDiffBump (0 : Euclid P) := ⟨ρ, ρ + 1, hρ, by linarith⟩
+  let K : DifferentialForm (Euclid P) (q + 1 + 1) → DifferentialForm (Euclid P) (q + 1) :=
+    fun β x => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x
+  -- Step 2: for continuous `β` the integrands are continuous, hence interval integrable
+  have hint : ∀ β : DifferentialForm (Euclid P) (q + 1 + 1), Continuous β → ∀ x : Euclid P,
+      IntervalIntegrable (fun t : ℝ => t ^ (q + 1) • (β (t • x)).curryLeft x) volume 0 1 := by
+    intro β hβ x
+    refine Continuous.intervalIntegrable ?_ 0 1
+    have hc : Continuous fun t : ℝ => (β (t • x)).curryLeft :=
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ)).continuous.comp
+        (hβ.comp (continuous_id.smul continuous_const))
+    exact (continuous_pow (q + 1)).smul (hc.clm_apply continuous_const)
+  have hsm : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) (q + 1 + 1)) := fun ω => ω.2.1.1
+  -- Step 3: `K` is additive and homogeneous on test forms
+  have hKadd : ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      K ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) + ω') = K ω + K ω' := by
+    intro ω ω'
+    funext x
+    simp only [K, Pi.add_apply, ContinuousAlternatingMap.curryLeft_add, add_apply, smul_add]
+    exact intervalIntegral.integral_add (hint _ (hsm ω).continuous x) (hint _ (hsm ω').continuous x)
+  have hKsmul : ∀ (c : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)),
+      K (c • (ω : DifferentialForm (Euclid P) (q + 1 + 1))) = c • K ω := by
+    intro c ω
+    funext x
+    simp only [K, Pi.smul_apply, ContinuousAlternatingMap.curryLeft_smul, smul_apply]
+    rw [← intervalIntegral.integral_smul]
+    congr 1
+    funext t
+    rw [smul_comm]
+  -- Step 4: `ζ • Kω` is a test form, `Kω` being smooth by the hypothesis on `K`
+  have hη : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      (fun x => ζ x • K ω x) ∈ TestFormOn (univ : Set (Euclid P)) (q + 1) := by
+    intro ω
+    refine ⟨⟨?_, ?_⟩, subset_univ _⟩
+    · exact (ζ.contDiff (n := ⊤)).smul (hK _ (hsm ω))
+    · exact ζ.hasCompactSupport.smul_right
+  -- Step 5: `Φ ω := ζ • Kω` is linear in `ω`
+  let Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ]
+      TestFormOn (univ : Set (Euclid P)) (q + 1) :=
+    { toFun := fun ω => ⟨fun x => ζ x • K ω x, hη ω⟩
+      map_add' := by
+        intro ω ω'
+        apply Subtype.ext
+        funext x
+        show ζ x • K ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) + ω') x =
+          ζ x • K ω x + ζ x • K ω' x
+        rw [hKadd, Pi.add_apply, smul_add]
+      map_smul' := by
+        intro c ω
+        apply Subtype.ext
+        funext x
+        show ζ x • K (c • (ω : DifferentialForm (Euclid P) (q + 1 + 1))) x = c • (ζ x • K ω x)
+        rw [hKsmul, Pi.smul_apply, smul_comm] }
+  refine ⟨Φ, ?_, ?_⟩
+  · -- Step 6: `ζ x = 1` for `‖x‖ < ρ`, so `(Φ ω)(x) = Kω(x)`
+    intro ω x hx
+    show ζ x • K ω x = _
+    rw [ζ.one_of_mem_closedBall (mem_closedBall_zero_iff.2 hx.le), one_smul]
+  · -- Step 7: `‖(Φ ω)(x)‖ ≤ (ρ + 1) b`
+    intro ω b hb x
+    have hb0 : 0 ≤ b := (norm_nonneg _).trans (hb 0)
+    show ‖ζ x • K ω x‖ ≤ (ρ + 1) * b
+    rcases lt_or_ge ‖x‖ (ρ + 1) with hx | hx
+    · -- `‖t ^ (q + 1) • ι_x ω(t x)‖ ≤ ‖ω(t x)‖ ‖x‖ ≤ b ‖x‖` on `(0, 1]`, so `‖Kω(x)‖ ≤ b ‖x‖`
+      have hKx : ‖K ω x‖ ≤ b * ‖x‖ := by
+        have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+          (C := b * ‖x‖)
+          (f := fun t => t ^ (q + 1) •
+            ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x)
+          (by
+            intro t ht
+            rw [uIoc_of_le zero_le_one] at ht
+            rw [norm_smul, norm_pow, Real.norm_eq_abs, abs_of_pos ht.1]
+            calc t ^ (q + 1) * ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x‖
+                ≤ 1 * (b * ‖x‖) := by
+                  refine mul_le_mul (pow_le_one₀ ht.1.le ht.2) ?_ (norm_nonneg _) zero_le_one
+                  calc ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x‖
+                      ≤ ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft‖ *
+                          ‖x‖ := ContinuousLinearMap.le_opNorm _ _
+                    _ = ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)‖ * ‖x‖ := by
+                        rw [ContinuousAlternatingMap.norm_curryLeft]
+                    _ ≤ b * ‖x‖ := mul_le_mul_of_nonneg_right (hb _) (norm_nonneg _)
+              _ = b * ‖x‖ := one_mul _)
+        simpa using h
+      -- `0 ≤ ζ ≤ 1` and `‖x‖ < ρ + 1`
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ζ.nonneg]
+      calc ζ x * ‖K ω x‖ ≤ 1 * (b * ‖x‖) := mul_le_mul ζ.le_one hKx (norm_nonneg _) zero_le_one
+        _ ≤ (ρ + 1) * b := by nlinarith [norm_nonneg x]
+    · -- `ζ x = 0` for `‖x‖ ≥ ρ + 1`
+      rw [ζ.zero_of_le_dist (by rw [dist_zero_right]; exact hx), zero_smul, norm_zero]
+      exact mul_nonneg (by linarith) hb0
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
