@@ -573,6 +573,7 @@ theorem Submission.isoperimetric_mass_lt_top :
       rw [hχout]
       exact hxK.le
     rw [indicator_of_notMem hxK, hχ0]
+    simp
 /-- **Test forms have bounded Euclidean coefficient norm** (the finiteness of `sup_x |ω(x)|` behind
 "Evidently (1), (2) give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).
 `x ↦ |ω(x)|` is continuous, since `α ↦ |α|` is the square root of a finite sum of squares of
