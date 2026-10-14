@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.piece_orientation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1",
+  "depth": 6,
+  "title": "Orientation of an oriented rectifiable set along a bi-Lipschitz piece (supplied step 4)",
+  "statement": "Assume, as a hypothesis, (IMC a), the first conjunct of the frozen type of Submission.cmc_imRep_locality_restrict_sub (exact Lean text, as antecedent): for all P, n, every open U ⊆ ℝ^P and all Borel M₁ ⊆ M₂ ⊆ U with μHE[n](M₂ ∩ K) < ∞ for every compact K ⊆ U, for μHE[n]⌞M₁-a.e. x and every linear subspace Q, HasApproximateTangentSpaceAt n M₁ x Q ⟺ HasApproximateTangentSpaceAt n M₂ x Q. Let N, n ∈ ℕ, Hⁿ := μHE[n] on ℝ^N and λ := volume on ℝⁿ. Let M ⊆ ℝ^N be Borel with Hⁿ(M ∩ K) < ∞ for every compact K, and let ξ : ℝ^N → Λ_n(ℝ^N) (MultiVector N n) be AE strongly measurable for Hⁿ⌞M, such that for Hⁿ⌞M-a.e. x there is a linear subspace Q with HasApproximateTangentSpaceAt n M x Q and IsUnitOrientationOf (ξ(x)) Q. Let L ∈ ℝ≥0, G : ℝⁿ → ℝ^N L-Lipschitz, A ⊆ ℝⁿ Borel and m > 0 with m|a − a'| ≤ |G(a) − G(a')| for a, a' ∈ A. Assume G is differentiable at every a ∈ A with injective derivative DG(a) := fderiv ℝ G a, and G(A) ⊆ M. Then u ↦ ξ(G(u)) is AE strongly measurable for λ⌞A, and for λ⌞A-a.e. u, ξ(G(u)) is a unit orientation (IsUnitOrientationOf) of span{DG(u)e_0, …, DG(u)e_{n−1}}, where e_a := EuclideanSpace.single a 1.",
+  "lean_statement": "(∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (N n : ℕ) (M : Set (Euclid N)) (ξ : Euclid N → MultiVector N n) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), MeasurableSet M → (∀ K : Set (Euclid N), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → AEStronglyMeasurable ξ (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid N), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ξ x) Q) → LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ M → AEStronglyMeasurable (fun u => ξ (G u)) (volume.restrict A) ∧ ∀ᵐ u ∂(volume.restrict A), IsUnitOrientationOf (ξ (G u)) (Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))))",
+  "lean_name": "cmcdt_lpi_pr_piece_orientation_ae",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1",
+      "result_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-5d9982b5d0-a1"
+}

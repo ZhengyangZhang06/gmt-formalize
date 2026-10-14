@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.coeff_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1",
+  "depth": 5,
+  "title": "Coefficient bounds for the Euclidean covector norm (Simon 6.1.15)",
+  "statement": "Let P, k ∈ ℕ and let α be a k-covector on ℝ^P (α ∈ Covector (Euclid P) k, a continuous alternating k-linear form). Write e_l := EuclideanSpace.single l 1 (l ∈ Fin P) for the standard basis of ℝ^P, e_J := (e_{J(0)}, …, e_{J(k−1)}) for J : Fin k → Fin P, and |α| := covectorEuclideanNorm α = (Σ_{J : Fin k → Fin P strictly increasing} α(e_J)²)^{1/2}. Then: (i) |α(e_I)| ≤ |α| for every strictly increasing I : Fin k → Fin P; (ii) for every strictly increasing ι : Fin (k+1) → Fin P, Σ_{i ∈ Fin (k+1)} α(e_{ι(i.succAbove 0)}, …, e_{ι(i.succAbove (k−1))})² ≤ |α|², where i.succAbove : Fin k → Fin (k+1) is the increasing enumeration of Fin (k+1) ∖ {i}.",
+  "lean_statement": "∀ (P k : ℕ) (α : Covector (Euclid P) k), (∀ I : Fin k → Fin P, StrictMono I → |α (fun j => EuclideanSpace.single (I j) (1 : ℝ))| ≤ covectorEuclideanNorm α) ∧ ∀ ι : Fin (k + 1) → Fin P, StrictMono ι → ∑ i : Fin (k + 1), (α (fun j => EuclideanSpace.single (ι (i.succAbove j)) (1 : ℝ))) ^ 2 ≤ covectorEuclideanNorm α ^ 2",
+  "lean_name": "cmcdtfrfic_coeff_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-426e8f0761-a1"
+}
