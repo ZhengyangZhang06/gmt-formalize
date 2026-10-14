@@ -1531,6 +1531,91 @@ theorem dor_lmb_fcd_cp_mollified_variation : ∀ (m : ℕ) (u : Euclid (m + 1) �
   simp_rw [indicator_mul_left] at hneg
   rw [hadj]
   exact hneg
+/-- BV Poincaré inequality on the cube `Q_δ = (δ, 1 − δ)^{m+1}` in double-integral form (cf. the
+proof of Simon Ch. 2, Lemma 2.7): if `∫_{Q₁} u div g ≤ V` for all smooth `g` with compact support
+in `Q₁ = (0, 1)^{m+1}` and `|g| ≤ 1`, then `∫_{Q_δ} ∫_{Q_δ} |u(x) − u(y)| ≤ (m + 1)(1 − 2δ)|Q_δ| V`.
+The mollifications `v_k = η_k ∗ 1_{Q₁}u` satisfy this bound by the smooth inequality, and
+`v_k → u` a.e. on `Q_δ`, so Fatou's lemma on `Q_δ × Q_δ` passes it to `u`. -/
+theorem dor_lmb_fcd_cp_bv_poincare : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ) (η : ℕ → Euclid (m + 1) → ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → δ < 1 / 2 → (∀ k, ContDiff ℝ (⊤ : ℕ∞) (η k)) → (∀ k, HasCompactSupport (η k)) → (∀ k z, 0 ≤ η k z) → (∀ k z, η k (-z) = η k z) → (∀ k, ∫ z, η k z = 1) → (∀ k, support (η k) ⊆ ball (0 : Euclid (m + 1)) δ) → (∀ᵐ x ∂volume, Tendsto (fun k => (convolution (η k) (Set.indicator {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} u) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x) atTop (𝓝 ((Set.indicator {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} u) x))) → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |u x - u y| ≤ ((m : ℝ) + 1) * (1 - 2 * δ) * (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * V := by
+  intro m u V δ η hu hH hδ hδ2 hη hηc hη0 hηe hη1 hηs hlim
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1}
+  set Q : Set (Euclid (m + 1)) := {y | ∀ i, δ < y i ∧ y i < 1 - δ}
+  set C : ℝ := ((m : ℝ) + 1) * (1 - 2 * δ) * (volume Q).toReal
+  set v : ℕ → Euclid (m + 1) → ℝ := fun k =>
+    convolution (η k) (Q₁.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  -- Step 1: each `v k` is smooth with `∫_Q ‖D v_k‖ ≤ V` (sibling `mollified_variation`).
+  have hmv : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (v k) ∧ ∫ x in Q, ‖fderiv ℝ (v k) x‖ ≤ V := fun k =>
+    Submission.dor_lmb_fcd_cp_mollified_variation m u V δ (η k) hu hH hδ (hη k) (hηc k)
+      (hη0 k) (hηe k) (hη1 k) (hηs k)
+  have hV : 0 ≤ V := (integral_nonneg fun x => norm_nonneg _).trans (hmv 0).2
+  have hC0 : 0 ≤ C := by
+    have : 0 ≤ 1 - 2 * δ := by linarith
+    positivity
+  -- Step 2: the smooth Poincaré inequality for `v k` (sibling `smooth_poincare`).
+  have hD : ∀ k, ∫ x in Q, ∫ y in Q, |v k x - v k y| ≤ C * V := fun k =>
+    (Submission.dor_lmb_fcd_cp_smooth_poincare m (v k) δ
+      ((hmv k).1.of_le (by exact_mod_cast le_top)) hδ.le hδ2).trans
+      (mul_le_mul_of_nonneg_left (hmv k).2 hC0)
+  -- `Q` is a measurable subset of `Q₁` contained in a compact ball.
+  have hQQ₁ : Q ⊆ Q₁ := fun y hy i => ⟨hδ.trans (hy i).1, (hy i).2.trans (by linarith)⟩
+  have hQm : MeasurableSet Q := by
+    have hc : ∀ i : Fin (m + 1), Measurable fun y : Euclid (m + 1) => y i := fun i => by fun_prop
+    have hQi : Q = ⋂ i, ({y : Euclid (m + 1) | δ < y i} ∩ {y | y i < 1 - δ}) := by
+      ext y
+      rw [mem_iInter]
+      exact Iff.rfl
+    rw [hQi]
+    exact MeasurableSet.iInter fun i =>
+      (measurableSet_lt measurable_const (hc i)).inter (measurableSet_lt (hc i) measurable_const)
+  have hQK : Q ⊆ closedBall (0 : Euclid (m + 1)) (Real.sqrt (m + 1)) := by
+    intro y hy
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := Finset.sum_le_sum fun i _ => by
+          have h1 := (hy i).1
+          have h2 := (hy i).2
+          rw [Real.norm_eq_abs, sq_abs]
+          nlinarith
+      _ = m + 1 := by simp
+  have hK : IsCompact (closedBall (0 : Euclid (m + 1)) (Real.sqrt (m + 1))) :=
+    isCompact_closedBall _ _
+  have : IsFiniteMeasure (volume.restrict Q) :=
+    isFiniteMeasure_restrict.2 ((measure_mono hQK).trans_lt hK.measure_lt_top).ne
+  set μ : Measure (Euclid (m + 1)) := volume.restrict Q
+  -- Integrability on `Q × Q`.
+  have huQ : Integrable u μ := hu.mono_set hQQ₁
+  have hF : Integrable (fun p : Euclid (m + 1) × Euclid (m + 1) => |u p.1 - u p.2|) (μ.prod μ) :=
+    ((huQ.comp_fst μ).sub (huQ.comp_snd μ)).abs
+  have hFk : ∀ k, Integrable (fun p : Euclid (m + 1) × Euclid (m + 1) => |v k p.1 - v k p.2|)
+      (μ.prod μ) := fun k => by
+    have hvk : Integrable (v k) μ :=
+      (((hmv k).1.continuous.continuousOn).integrableOn_compact hK).mono_set hQK
+    exact ((hvk.comp_fst μ).sub (hvk.comp_snd μ)).abs
+  -- Step 3: `v k → u` a.e. on `Q`, hence `|v k x - v k y| → |u x - u y|` a.e. on `Q × Q`.
+  have hlimQ : ∀ᵐ x ∂μ, Tendsto (fun k => v k x) atTop (𝓝 (u x)) := by
+    filter_upwards [ae_restrict_of_ae hlim, ae_restrict_mem hQm] with x hx hxQ
+    rwa [indicator_of_mem (hQQ₁ hxQ)] at hx
+  have hlimP : ∀ᵐ p ∂(μ.prod μ), Tendsto (fun k => ENNReal.ofReal |v k p.1 - v k p.2|) atTop
+      (𝓝 (ENNReal.ofReal |u p.1 - u p.2|)) := by
+    filter_upwards [Measure.quasiMeasurePreserving_fst.ae hlimQ,
+      Measure.quasiMeasurePreserving_snd.ae hlimQ] with p h1 h2
+    exact ENNReal.tendsto_ofReal (h1.sub h2).abs
+  -- Steps 4–5: Fatou's lemma on `Q × Q` and Fubini.
+  have hFatou : ∫⁻ p, ENNReal.ofReal |u p.1 - u p.2| ∂(μ.prod μ) ≤ ENNReal.ofReal (C * V) :=
+    calc ∫⁻ p, ENNReal.ofReal |u p.1 - u p.2| ∂(μ.prod μ)
+        = ∫⁻ p, liminf (fun k => ENNReal.ofReal |v k p.1 - v k p.2|) atTop ∂(μ.prod μ) :=
+          lintegral_congr_ae (hlimP.mono fun p hp => hp.liminf_eq.symm)
+      _ ≤ liminf (fun k => ∫⁻ p, ENNReal.ofReal |v k p.1 - v k p.2| ∂(μ.prod μ)) atTop :=
+          lintegral_liminf_le' fun k => (hFk k).aemeasurable.ennreal_ofReal
+      _ ≤ ENNReal.ofReal (C * V) := liminf_le_of_frequently_le' (Frequently.of_forall fun k => by
+          rw [← ofReal_integral_eq_lintegral_ofReal (hFk k) (ae_of_all _ fun p => abs_nonneg _),
+            integral_prod _ (hFk k)]
+          exact ENNReal.ofReal_le_ofReal (hD k))
+  have hfin : ENNReal.ofReal (∫ x in Q, ∫ y in Q, |u x - u y|) ≤ ENNReal.ofReal (C * V) := by
+    rw [← integral_prod (fun p : Euclid (m + 1) × Euclid (m + 1) => |u p.1 - u p.2|) hF,
+      ofReal_integral_eq_lintegral_ofReal hF (ae_of_all _ fun p => abs_nonneg _)]
+    exact hFatou
+  exact (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hC0 hV)).1 hfin
 
 end Submission
 
