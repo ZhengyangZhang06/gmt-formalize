@@ -4554,6 +4554,816 @@ theorem Submission.codim1_hcp_sr_campanato_lemmas : (∀ (A a b : ℝ), 0 ≤ A 
               C₁ * Real.sqrt K * d ^ α) := add_le_add e1 (add_le_add e2 e3)
         _ ≤ ((C₁ + L) * 2 ^ α + C₁ + 1) * Real.sqrt K * d ^ α := by linarith [hKd]
 
+/-- **Campanato's `C^{1,α}` estimate for `Δw = div F`** (the Schauder theory invoked in Simon's
+proof of Ch. 5, 7.1; Giaquinta–Martinazzi 2012, §§5.1–5.4).  Harmonic replacement in `B_ρ(x)` and
+harmonic decay give the comparison inequalities for `Φ(x,r) = ∫_{B_r(x)} |Dw - (Dw)_{x,r}|²` and
+`Ψ(x,r) = ∫_{B_r(x)} |Dw|²` (Hilbert–Schmidt norms); a Caccioppoli estimate with the test map `η²w`
+bounds `Ψ(x, R/8)`; the iteration lemma gives `Ψ ≲ r^{m-α}`, then `Φ ≲ r^{m+α}`, so `Dw` is
+`α/2`-Hölder and bounded on `B_{3R/8}(x₀)`; a second Campanato pass gives `Φ ≲ r^{m+2α}`, and
+Campanato's criterion yields the `α`-Hölder bound on `B_{R/4}(x₀)`.  As elaborated, (H_F) reads
+`∫|F - c|² ≤ ε₁ ∫_{B_ρ(x)} (|Dw - (Dw)_{x,ρ}|² + Kρ^{2α} ∫_{B_ρ(x)} (|Dw|² + Kρ^{m+2α}))` (the
+set-integral notation absorbs the trailing sums); for `ρ ≤ R/8` this still gives the comparison
+inequality, with a constant depending on `K` and `R`. -/
+theorem Submission.codim1_hcp_sr_c1alpha_estimate : ∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → α < 1 → ∃ ε₁ : ℝ, 0 < ε₁ ∧ ∀ K R : ℝ, 0 ≤ K → 0 < R → ∃ C : ℝ, 0 ≤ C ∧ ∀ (x₀ : Euclid m) (w : Euclid m → Euclid k) (F : Euclid m → (Euclid m →L[ℝ] Euclid k)), ContDiffOn ℝ 1 w (ball x₀ R) → ContinuousOn F (ball x₀ R) → (∀ x ∈ ball x₀ R, ‖w x‖ ≤ K) → (∀ x ∈ ball x₀ R, ‖F x‖ ≤ ε₁ * ‖fderiv ℝ w x‖ + K) → (∀ (x : Euclid m) (ρ : ℝ), 0 < ρ → closedBall x ρ ⊆ ball x₀ R → ∃ c : Euclid m →L[ℝ] Euclid k, ∫ z in ball x ρ, ‖F z - c‖ ^ 2 ≤ ε₁ * ∫ z in ball x ρ, ‖fderiv ℝ w z - ⨍ z' in ball x ρ, fderiv ℝ w z'‖ ^ 2 + K * ρ ^ (2 * α) * ∫ z in ball x ρ, ‖fderiv ℝ w z‖ ^ 2 + K * ρ ^ ((m : ℝ) + 2 * α)) → (∀ ζ : Euclid m → Euclid k, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x₀ R → ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (fderiv ℝ w x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ))) = ∫ x in ball x₀ R, ∑ j : Fin m, inner ℝ (F x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ)))) → (∀ x ∈ ball x₀ (R / 4), ‖fderiv ℝ w x‖ ≤ C) ∧ ∀ x ∈ ball x₀ (R / 4), ∀ y ∈ ball x₀ (R / 4), ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C * ‖x - y‖ ^ α := by
+  -- elementary real inequalities, proved first while the local context is empty
+  obtain ⟨sq_le_two, le_one_add, cacc_pt, sum_cacc, hF_alg, comb1, comb2, sup_alg, sup_end, ring_id2,
+      hrad, heps, hF2alg, cacc_fin, combC, hDFpt, hfin⟩ :
+      (∀ a b c : ℝ, 0 ≤ a → a ≤ b + c → a ^ 2 ≤ 2 * b ^ 2 + 2 * c ^ 2) ∧
+      (∀ a b : ℝ, a ^ 2 ≤ b → a ≤ 1 + b) ∧
+      -- the pointwise Caccioppoli inequality for one direction `eⱼ`
+      (∀ e t G K p q s nf na : ℝ, 0 ≤ e → |t| ≤ G → p ≤ nf * na → |q| ≤ nf * K →
+        |s| ≤ na * K → e * e * p + (e * t + e * t) * q - (e * e * na ^ 2 + (e * t + e * t) * s)
+          + e * e * na ^ 2 ≤ e * e * (5 * nf ^ 2 + na ^ 2 / 8) + 17 * G ^ 2 * K ^ 2) ∧
+      -- summing the pointwise Caccioppoli inequality over `j`
+      (∀ (n : ℕ) (E c HA HF : ℝ) (P Q fa a : Fin n → ℝ), HA = ∑ j, a j →
+        HF = ∑ j, fa j → (∀ j, P j - Q j + E * a j ≤ E * (5 * fa j + a j / 8) + c) →
+        (∑ j, P j) - (∑ j, Q j) + E * HA ≤ E * (5 * HF + HA / 8) + n * c) ∧
+      -- the bound coming from the hypothesis on `F`, in terms of `Φ` and `Ψ`
+      (∀ ε Φ' Ψ' V V₁ P P₁ K Q c' K' : ℝ, K' = V₁ * K * c' + V₁ ^ 2 * K ^ 2 * P₁ →
+        0 ≤ ε → ε ≤ 1 → 0 ≤ Φ' → 0 ≤ Ψ' → 0 ≤ V → V ≤ V₁ → 0 ≤ P → P ≤ P₁ → 0 ≤ K → 0 ≤ Q →
+        0 ≤ c' → ε * (c' * Φ' + K * P * (c' * Ψ' + K * Q * V) * V) ≤
+          ε * c' * Φ' + K' * (P * Ψ' + Q)) ∧
+      -- the final algebra of the comparison inequalities (C1') and (C2')
+      (∀ A Cd' m' cN' q q' ε Φr Φρ D K X : ℝ, A = (4 * Cd' + 2) * m' * (cN' + 1) →
+        q' = q → 0 ≤ Cd' → 1 ≤ m' → 0 ≤ cN' → 0 ≤ q → 0 ≤ ε → 0 ≤ Φρ → 0 ≤ K → 0 ≤ X →
+        Φr ≤ 4 * Cd' * q * Φρ + (4 * Cd' + 2) * D → D ≤ m' * (ε * cN' * Φρ + K * X) →
+        Φr ≤ A * (q' + ε) * Φρ + A * K * X) ∧
+      (∀ A Cd' m' cN' q q' ε Ψr Ψρ D K w₁ w₂ w₂' : ℝ, A = (4 * Cd' + 2) * m' * (cN' + 1) →
+        q' = q → w₂' = w₂ → 0 ≤ Cd' → 1 ≤ m' → 0 ≤ cN' → 0 ≤ q → 0 ≤ Ψρ → 0 ≤ w₁ * w₂ →
+        Ψr ≤ 4 * Cd' * q * Ψρ + (4 * Cd' + 2) * D →
+        D ≤ m' * (2 * ε ^ 2 * cN') * Ψρ + m' * (2 * K ^ 2) * (w₁ * w₂) →
+        Ψr ≤ A * (q' + 2 * ε ^ 2) * Ψρ + 2 * A * K ^ 2 * w₁ * w₂') ∧
+      (∀ a b c H c' d : ℝ, 0 ≤ a → a - b ≤ c → c ≤ H → b ^ 2 ≤ c' * d →
+        a ^ 2 - 2 * H ^ 2 ≤ 2 * c' * d) ∧
+      (∀ X H c' I Ψ' C' P V Vr C₆' : ℝ, 0 < V → Vr = V →
+        C₆' = 2 * H ^ 2 + 2 * c' * C' * P / V → (X - 2 * H ^ 2) * Vr ≤ I → I = 2 * c' * Ψ' →
+        Ψ' ≤ C' * P → 0 ≤ c' → X ≤ C₆') ∧
+      (∀ c A T B t b C' : ℝ, 0 ≤ t → 0 < T → C' = c * (A / T ^ b + B) →
+        c * ((t / T) ^ b * A + B * t ^ b) = C' * t ^ b) ∧
+      -- the radii used below
+      (∀ R R₁ : ℝ, 0 < R → R₁ = R / 8 → R / 8 < R / 4 ∧ R / 4 < R / 2 ∧ R₁ ≤ R / 2 ∧
+        R / 2 + R₁ < R ∧ R / 4 + R₁ < R ∧ 3 * R / 8 ≤ R / 2 ∧ R / 16 ≤ R₁ ∧ R / 16 ≤ R₁ / 2 ∧
+        R / 4 ≤ R / 2 ∧ R / 4 ≤ 3 * R / 8 ∧ R₁ + R / 4 ≤ 3 * R / 8 ∧ R / 16 + 3 * R / 8 ≤ R / 2 ∧
+        R₁ + R / 2 < R ∧ 2 * R₁ + R / 2 < R) ∧
+      (∀ ε ea mm cn : ℝ, 0 < ε → ε ≤ 1 → ε ≤ ea / 2 → 0 ≤ mm → 0 ≤ cn →
+        ε * (40 * mm * (cn + 1)) ≤ 1 → 2 * ε ^ 2 ≤ ea ∧ 10 * mm * cn * ε ^ 2 ≤ 1 / 4) ∧
+      (∀ a b c e K' : ℝ, 0 ≤ a → a ≤ e * b + K' → b ^ 2 ≤ c →
+        a ^ 2 ≤ 2 * e ^ 2 * c + 2 * K' ^ 2) ∧
+      (∀ e Y X Sl Sr m' c' ε K' M c₁ : ℝ, 0 ≤ e → e ≤ 1 → 0 ≤ Y → 0 ≤ m' →
+        Sr - Sl + e * e * Y ≤ e * e * (5 * X + Y / 8) + m' * (17 * M ^ 2 * K' ^ 2) →
+        X ≤ m' * (2 * ε ^ 2 * (c' * Y) + 2 * K' ^ 2) → 10 * m' * c' * ε ^ 2 ≤ 1 / 4 →
+        c₁ = 10 * m' * K' ^ 2 + 17 * m' * M ^ 2 * K' ^ 2 →
+        e * e * Y ≤ 2 * (Sl - Sr) + 2 * c₁) ∧
+      (∀ Φr I1 T1 Dr Cd' q T2 Φρ D : ℝ, Φr ≤ I1 → I1 ≤ 2 * T1 + 2 * Dr →
+        T1 ≤ Cd' * q * T2 → T2 ≤ 2 * Φρ + 2 * D → Dr ≤ D → 0 ≤ Cd' → 0 ≤ q → q ≤ 1 → 0 ≤ D →
+        Φr ≤ 4 * Cd' * q * Φρ + (4 * Cd' + 2) * D) ∧
+      (∀ a b c c' d e mm : ℝ, 0 ≤ mm → a ≤ mm * b → b ≤ c * (c' * d) + e →
+        a ≤ mm * (c * c') * d + mm * e) ∧
+      (∀ R R₁ t α' : ℝ, 0 < R → 0 ≤ α' → R₁ = R / 8 → R₁ / 2 < t →
+        1 ≤ (16 / R) ^ α' * t ^ α') := by
+    refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b c ha h
+      linarith only [pow_le_pow_left₀ ha h 2, sq_nonneg (b - c)]
+    · intro a b h
+      linarith only [h, sq_nonneg (a - 1 / 2)]
+    · intro e t G K p q s nf na he ht hp hq hsK
+      have i2 : t * q ≤ G * (nf * K) := (le_abs_self _).trans ((abs_mul t q).trans_le
+        (mul_le_mul ht hq (abs_nonneg _) ((abs_nonneg _).trans ht)))
+      have i3 : -t * s ≤ G * (na * K) := (le_abs_self _).trans ((abs_mul (-t) s).trans_le
+        (mul_le_mul ((abs_neg t).trans_le ht) hsK (abs_nonneg _) ((abs_nonneg _).trans ht)))
+      have he2 : 0 ≤ 2 * e := mul_nonneg zero_le_two he
+      linarith only [mul_le_mul_of_nonneg_left hp (mul_self_nonneg e),
+        mul_le_mul_of_nonneg_left i2 he2, mul_le_mul_of_nonneg_left i3 he2,
+        mul_le_mul_of_nonneg_left (two_mul_le_add_sq (2 * nf) (na / 4)) (mul_self_nonneg e),
+        two_mul_le_add_sq (e * nf) (G * K), two_mul_le_add_sq (e * na / 4) (4 * G * K)]
+    · intro n E c HA HF P Q fa a hA hF h
+      have h1 := Finset.sum_le_sum fun j (_ : j ∈ Finset.univ) => h j
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_add_distrib,
+        ← Finset.mul_sum, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.sum_div,
+        Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, ← hA, ← hF] at h1
+      exact h1
+    · intro ε Φ' Ψ' V V₁ P P₁ K Q c' K' hK' hε0 hε1 hΦ' hΨ' hV0 hV hP0 hP hK hQ hc'
+      subst hK'
+      have hV₁ : 0 ≤ V₁ := hV0.trans hV
+      have hX0 : 0 ≤ K * P * (c' * Ψ' + K * Q * V) * V :=
+        mul_nonneg (mul_nonneg (mul_nonneg hK hP0) (add_nonneg (mul_nonneg hc' hΨ')
+          (mul_nonneg (mul_nonneg hK hQ) hV0))) hV0
+      have s3 : V * (K * P * (c' * Ψ')) ≤ V₁ * (K * P * (c' * Ψ')) :=
+        mul_le_mul_of_nonneg_right hV (mul_nonneg (mul_nonneg hK hP0) (mul_nonneg hc' hΨ'))
+      have s4 : V * V * P * (K * K * Q) ≤ V₁ * V₁ * P₁ * (K * K * Q) :=
+        mul_le_mul_of_nonneg_right (mul_le_mul (mul_le_mul hV hV hV0 hV₁) hP hP0 (mul_nonneg hV₁ hV₁))
+          (mul_nonneg (mul_nonneg hK hK) hQ)
+      linarith only [mul_le_of_le_one_left hX0 hε1, s3, s4,
+        mul_nonneg (mul_nonneg (mul_nonneg hV₁ hK) hc') hQ,
+        mul_nonneg (mul_nonneg (mul_nonneg (sq_nonneg V₁) (sq_nonneg K)) (hP0.trans hP))
+          (mul_nonneg hP0 hΨ')]
+    · intro A Cd' m' cN' q q' ε Φr Φρ D K X hA hq' hCd' hm' hcN' hq hε hΦ hK hX h1 h2
+      subst hA hq'
+      have hc : 0 ≤ 4 * Cd' + 2 := by linarith only [hCd']
+      have f1 := mul_le_mul_of_nonneg_left (one_le_mul_of_one_le_of_one_le hm'
+        (by linarith only [hcN'] : (1 : ℝ) ≤ cN' + 1)) hc
+      linarith only [h1, mul_le_mul_of_nonneg_left h2 hc,
+        mul_nonneg (by linarith only [f1] : 0 ≤ (4 * Cd' + 2) * m' * (cN' + 1) - 4 * Cd')
+          (mul_nonneg hq hΦ),
+        mul_nonneg (mul_nonneg hc (zero_le_one.trans hm')) (mul_nonneg hε hΦ),
+        mul_nonneg (mul_nonneg (mul_nonneg hc (zero_le_one.trans hm')) hcN') (mul_nonneg hK hX)]
+    · intro A Cd' m' cN' q q' ε Ψr Ψρ D K w₁ w₂ w₂' hA hq' hw hCd' hm' hcN' hq hΨ hW h1 h2
+      subst hA hq' hw
+      have hc : 0 ≤ 4 * Cd' + 2 := by linarith only [hCd']
+      have f1 := mul_le_mul_of_nonneg_left (one_le_mul_of_one_le_of_one_le hm'
+        (by linarith only [hcN'] : (1 : ℝ) ≤ cN' + 1)) hc
+      linarith only [h1, mul_le_mul_of_nonneg_left h2 hc,
+        mul_nonneg (by linarith only [f1] : 0 ≤ (4 * Cd' + 2) * m' * (cN' + 1) - 4 * Cd')
+          (mul_nonneg hq hΨ),
+        mul_nonneg (mul_nonneg hc (zero_le_one.trans hm')) (mul_nonneg (sq_nonneg ε) hΨ),
+        mul_nonneg (mul_nonneg (mul_nonneg hc (zero_le_one.trans hm')) hcN')
+          (mul_nonneg (sq_nonneg K) hW)]
+    · intro a b c H c' d ha h1 h2 h3
+      have h4 : a ≤ H + b := by linarith only [h1, h2]
+      linarith only [pow_le_pow_left₀ ha h4 2, sq_nonneg (H - b), h3]
+    · intro X H c' I Ψ' C' P V Vr C₆' hV hVr hC h1 hI h2 hc
+      rw [hVr, hI] at h1
+      rw [hC]
+      have h3 : X - 2 * H ^ 2 ≤ 2 * c' * C' * P / V := by
+        rw [le_div_iff₀ hV]
+        linarith only [h1, mul_le_mul_of_nonneg_left h2 (mul_nonneg zero_le_two hc)]
+      linarith only [h3]
+    · intro c A T B t b C' ht hT hC'
+      rw [hC', Real.div_rpow ht hT.le]; ring
+    · intro R R₁ hR hR₁
+      subst hR₁
+      exact ⟨by linarith only [hR], by linarith only [hR], by linarith only [hR], by linarith only [hR],
+        by linarith only [hR], by linarith only [hR], by linarith only [hR], by linarith only [hR],
+        by linarith only [hR], by linarith only [hR], by linarith only [hR], by linarith only [hR],
+        by linarith only [hR], by linarith only [hR]⟩
+    · intro ε ea mm cn h0 h1 ha hm hc h
+      have hsq : ε ^ 2 ≤ ε := (sq ε).trans_le (mul_le_of_le_one_right h0.le h1)
+      have h2 := mul_le_mul_of_nonneg_left hsq (mul_nonneg hm hc)
+      exact ⟨by linarith only [hsq, ha], by linarith only [h2, h, mul_nonneg hm h0.le]⟩
+    · intro a b c e K' ha h hb
+      linarith only [pow_le_pow_left₀ ha h 2, sq_nonneg (e * b - K'),
+        mul_le_mul_of_nonneg_left hb (sq_nonneg e)]
+    · intro e Y X Sl Sr m' c' ε K' M c₁ he0 he1 hY hm hsum hX hε hc₁
+      have hE0 : 0 ≤ e * e := mul_nonneg he0 he0
+      linarith only [hsum, mul_le_mul_of_nonneg_left hX hE0,
+        mul_le_mul_of_nonneg_left hε (mul_nonneg hE0 hY),
+        mul_le_of_le_one_left (mul_nonneg hm (sq_nonneg K')) ((mul_le_of_le_one_left he0 he1).trans he1),
+        mul_nonneg hE0 hY, hc₁]
+    · intro Φr I1 T1 Dr Cd' q T2 Φρ D h1 h2 h3 h4 h5 hC hq0 hq1 hD
+      linarith only [h1, h2, h3, h5, mul_le_mul_of_nonneg_left h4 (mul_nonneg hC hq0),
+        mul_le_mul_of_nonneg_left hq1 (mul_nonneg hC hD)]
+    · intro a b c c' d e mm hm h1 h2
+      linarith only [h1, mul_le_mul_of_nonneg_left h2 hm]
+    · intro R R₁ t α' hR hα' hR₁ ht
+      subst hR₁
+      rw [← Real.mul_rpow (div_nonneg (by norm_num) hR.le) (by linarith only [ht, hR])]
+      refine Real.one_le_rpow ?_ hα'
+      rw [div_mul_eq_mul_div, le_div_iff₀ hR]
+      linarith only [ht]
+  intro m k α hm hα0 hα1
+  obtain ⟨⟨hcampI, hcampII⟩, Cd, hCd, hdec⟩ := And.intro Submission.codim1_hcp_sr_campanato_lemmas
+    (Submission.codim1_hcp_sr_harmonic_decay m k hm)
+  have hrepl := Submission.codim1_hcp_sr_harmonic_replacement m k hm
+  have hmR : (1 : ℝ) ≤ m := Nat.one_le_cast.mpr hm
+  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  have hsingle : ∀ j : Fin m, ‖EuclideanSpace.single j (1 : ℝ)‖ = 1 := fun j => by
+    rw [PiLp.norm_single, norm_one]
+  -- the squared Hilbert–Schmidt norm `|A|² = Σⱼ |A eⱼ|²`, and `ω = |B₁(0)|`
+  obtain ⟨hs, ω, hs_def, hω_def⟩ : ∃ (hs : (Euclid m →L[ℝ] Euclid k) → ℝ) (ω : ℝ),
+      (∀ A, hs A = ∑ j : Fin m, ‖A (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) ∧
+      ω = (volume (ball (0 : Euclid m) 1)).toReal := ⟨_, _, fun _ => rfl, rfl⟩
+  have hs_nonneg : ∀ A, 0 ≤ hs A := fun A =>
+    (Finset.sum_nonneg fun j _ => sq_nonneg _).trans_eq (hs_def A).symm
+  have hs_cont : Continuous hs :=
+    (continuous_finsetSum _ fun j _ => (continuous_id.clm_apply continuous_const).norm.pow 2).congr
+      fun A => (hs_def A).symm
+  have hs_le : ∀ A, hs A ≤ m * ‖A‖ ^ 2 := fun A =>
+    (hs_def A).trans_le ((Finset.sum_le_card_nsmul _ _ _ fun j _ => pow_le_pow_left₀ (norm_nonneg _)
+      ((A.le_opNorm _).trans_eq ((congrArg (‖A‖ * ·) (hsingle j)).trans (mul_one _))) 2).trans_eq
+      ((congrArg (· • ‖A‖ ^ 2) (Finset.card_fin m)).trans (nsmul_eq_mul _ _)))
+  have hs_add : ∀ A B, hs (A + B) ≤ 2 * hs A + 2 * hs B := by
+    intro A B
+    rw [hs_def, hs_def, hs_def, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    exact Finset.sum_le_sum fun j _ => sq_le_two _ _ _ (norm_nonneg _)
+      (by rw [add_apply]; exact norm_add_le _ _)
+  have hs_neg : ∀ A, hs (-A) = hs A := fun A => by
+    simp only [hs_def, neg_apply, norm_neg]
+  have hs_sub : ∀ A B, hs (A - B) ≤ 2 * hs A + 2 * hs B := fun A B =>
+    ((congrArg hs (sub_eq_add_neg A B)).trans_le (hs_add A (-B))).trans_eq (by rw [hs_neg])
+  have hs_tri1 : ∀ A B c, hs (A - c) ≤ 2 * hs (B - c) + 2 * hs (A - B) := fun A B c =>
+    (congrArg hs (sub_add_sub_cancel' B c A)).symm.trans_le (hs_add _ _)
+  have hs_tri2 : ∀ A B c, hs (B - c) ≤ 2 * hs (A - c) + 2 * hs (A - B) := fun A B c =>
+    (congrArg hs (sub_sub_sub_cancel_left c B A)).symm.trans_le (hs_sub _ _)
+  have hs_tri3 : ∀ A B, hs A ≤ 2 * hs B + 2 * hs (A - B) := fun A B =>
+    (congrArg hs (add_sub_cancel B A)).symm.trans_le (hs_add _ _)
+  have hs_tri4 : ∀ A B, hs B ≤ 2 * hs A + 2 * hs (A - B) := fun A B =>
+    (congrArg hs (sub_sub_cancel A B)).symm.trans_le (hs_sub _ _)
+  have hcN : ∃ cN : ℝ, 0 ≤ cN ∧ ∀ A : Euclid m →L[ℝ] Euclid k, ‖A‖ ^ 2 ≤ cN * hs A := by
+    obtain ⟨v, hv⟩ : ∃ v : Module.Basis (Fin m) ℝ (Euclid m),
+        ∀ i, v i = EuclideanSpace.single i (1 : ℝ) :=
+      ⟨(EuclideanSpace.basisFun (Fin m) ℝ).toBasis, fun i => by
+        rw [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply]⟩
+    refine ⟨(Fintype.card (Fin m) • ‖(v.equivFunL : Euclid m →L[ℝ] (Fin m → ℝ))‖) ^ 2,
+      sq_nonneg _, fun A => ?_⟩
+    have h1 : ∀ i, ‖A (v i)‖ ≤ Real.sqrt (hs A) := fun i => by
+      apply Real.le_sqrt_of_sq_le
+      rw [hs_def, hv]
+      exact Finset.single_le_sum (f := fun j => ‖A (EuclideanSpace.single j (1 : ℝ))‖ ^ 2)
+        (fun j _ => sq_nonneg _) (Finset.mem_univ i)
+    exact (pow_le_pow_left₀ (norm_nonneg _) (v.opNorm_le (Real.sqrt_nonneg _) h1) 2).trans_eq
+      ((mul_pow _ _ 2).trans (congrArg _ (Real.sq_sqrt (hs_nonneg A))))
+  -- `|B_r(x)| = ω rᵐ`
+  have hω_pos : 0 < ω := by
+    rw [hω_def]
+    exact ENNReal.toReal_pos (measure_ball_pos volume _ one_pos).ne' measure_ball_lt_top.ne
+  have hvol : ∀ (x : Euclid m) (r : ℝ), 0 < r → volume.real (ball x r) = ω * r ^ m := by
+    intro x r hr
+    rw [measureReal_def, Measure.addHaar_ball_of_pos volume x hr, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_nonneg hr.le m), hω_def, mul_comm]
+  have hcst : ∀ (x : Euclid m) (r C : ℝ), IntegrableOn (fun _ => C) (ball x r) := fun x r C =>
+    integrableOn_const measure_ball_lt_top.ne enorm_ne_top
+  -- integrability of continuous functions on closed balls
+  have hcint : ∀ (x : Euclid m) (r : ℝ) (g : Euclid m → ℝ), ContinuousOn g (closedBall x r) →
+      IntegrableOn g (ball x r) := fun x r g hg =>
+    (hg.integrableOn_compact (isCompact_closedBall x r)).mono_set ball_subset_closedBall
+  -- `∫_B f ≤ a ∫_B u + b |B|` from a pointwise bound `0 ≤ f ≤ a u + b`
+  have hmonolin : ∀ (x : Euclid m) (r : ℝ) (f u : Euclid m → ℝ) (a b : ℝ), 0 < r →
+      (∀ z, 0 ≤ f z) → IntegrableOn u (ball x r) → (∀ z ∈ ball x r, f z ≤ a * u z + b) →
+      ∫ z in ball x r, f z ≤ a * (∫ z in ball x r, u z) + b * (ω * r ^ m) := by
+    intro x r f u a b hr hf hu h
+    have hab : IntegrableOn (fun z => a * u z + b) (ball x r) := (hu.const_mul a).add (hcst x r b)
+    calc ∫ z in ball x r, f z ≤ ∫ z in ball x r, (a * u z + b) :=
+          integral_mono_of_nonneg (ae_of_all _ hf) hab
+            ((ae_restrict_iff' measurableSet_ball).mpr (ae_of_all _ h))
+      _ = a * (∫ z in ball x r, u z) + b * (ω * r ^ m) := by
+          rw [integral_add (hu.const_mul a) (hcst x r b), integral_const_mul, setIntegral_const,
+            smul_eq_mul, hvol x r hr, mul_comm (ω * r ^ m)]
+  have hmono0 : ∀ (x : Euclid m) (r : ℝ) (f u : Euclid m → ℝ) (a : ℝ),
+      (∀ z, 0 ≤ f z) → IntegrableOn u (ball x r) → (∀ z ∈ ball x r, f z ≤ a * u z) →
+      ∫ z in ball x r, f z ≤ a * ∫ z in ball x r, u z := fun x r f u a hf hu h =>
+    (integral_mono_of_nonneg (ae_of_all _ hf) (hu.const_mul a)
+      ((ae_restrict_iff' measurableSet_ball).mpr (ae_of_all _ h))).trans_eq (integral_const_mul _ _)
+  have hcbd : ∀ (x : Euclid m) (r : ℝ) (f : Euclid m → ℝ) (b : ℝ), 0 < r → (∀ z, 0 ≤ f z) →
+      (∀ z ∈ ball x r, f z ≤ b) → ∫ z in ball x r, f z ≤ b * (ω * r ^ m) := fun x r f b hr hf h =>
+    (hmonolin x r f (fun _ => 0) 0 b hr hf (hcst x r 0)
+      (fun z hz => (h z hz).trans_eq ((zero_add b).symm.trans (congrArg (· + b) (zero_mul 0).symm)))).trans_eq
+      ((congrArg (· + b * (ω * r ^ m)) (zero_mul _)).trans (zero_add _))
+  -- integrated triangle inequality
+  have htri : ∀ (x : Euclid m) (r : ℝ) (u v d : Euclid m → ℝ), IntegrableOn v (ball x r) →
+      IntegrableOn d (ball x r) → (∀ z, 0 ≤ u z) → (∀ z ∈ ball x r, u z ≤ 2 * v z + 2 * d z) →
+      ∫ z in ball x r, u z ≤ 2 * (∫ z in ball x r, v z) + 2 * ∫ z in ball x r, d z := by
+    intro x r u v d hv hd hu h
+    have hvd : IntegrableOn (fun z => 2 * v z + 2 * d z) (ball x r) :=
+      (hv.const_mul 2).add (hd.const_mul 2)
+    calc ∫ z in ball x r, u z ≤ ∫ z in ball x r, (2 * v z + 2 * d z) :=
+          integral_mono_of_nonneg (ae_of_all _ hu) hvd
+            ((ae_restrict_iff' measurableSet_ball).mpr (ae_of_all _ h))
+      _ = 2 * (∫ z in ball x r, v z) + 2 * ∫ z in ball x r, d z := by
+          rw [integral_add (hv.const_mul 2) (hd.const_mul 2), integral_const_mul, integral_const_mul]
+  -- the ball mean minimizes `c ↦ ∫_{B_r(x)} |f - c|²`
+  have hMP : ∀ (x : Euclid m) (r : ℝ) (f : Euclid m → (Euclid m →L[ℝ] Euclid k))
+      (c : Euclid m →L[ℝ] Euclid k), IntegrableOn f (ball x r) →
+      IntegrableOn (fun z => hs (f z)) (ball x r) →
+      ∫ z in ball x r, hs (f z - ⨍ z' in ball x r, f z') ≤ ∫ z in ball x r, hs (f z - c) := by
+    intro x r f c hf hf2
+    generalize ha : ⨍ z' in ball x r, f z' = a
+    obtain ⟨Λ, hΛ⟩ : ∃ Λ : (Euclid m →L[ℝ] Euclid k) →L[ℝ] ℝ, ∀ A, Λ A = ∑ j : Fin m,
+        inner ℝ ((a - c) (EuclideanSpace.single j (1 : ℝ))) (A (EuclideanSpace.single j (1 : ℝ))) :=
+      ⟨∑ j : Fin m, (innerSL ℝ ((a - c) (EuclideanSpace.single j (1 : ℝ)))).comp
+        (ContinuousLinearMap.apply ℝ (Euclid k) (EuclideanSpace.single j (1 : ℝ))), fun A => by
+        rw [sum_apply]; rfl⟩
+    have hfa : IntegrableOn (fun z => f z - a) (ball x r) :=
+      hf.sub (integrableOn_const measure_ball_lt_top.ne enorm_ne_top)
+    have hint : IntegrableOn (fun z => hs (f z - a)) (ball x r) :=
+      Integrable.mono' ((hf2.const_mul 2).add (hcst x r (2 * hs (-a))))
+        (hs_cont.comp_aestronglyMeasurable hfa.aestronglyMeasurable)
+        (ae_of_all _ fun z => (Real.norm_of_nonneg (hs_nonneg _)).trans_le
+          ((congrArg hs (sub_eq_add_neg (f z) a)).trans_le (hs_add _ _)))
+    have hΛint : IntegrableOn (fun z => Λ (f z - a)) (ball x r) := Λ.integrable_comp hfa
+    have hΛ0 : ∫ z in ball x r, Λ (f z - a) = 0 :=
+      (Λ.integral_comp_comm hfa).trans ((congrArg Λ
+        ((congrArg (fun t => ∫ z in ball x r, (f z - t)) ha).symm.trans
+          (setAverage_sub_setAverage measure_ball_lt_top.ne f))).trans Λ.map_zero)
+    have hpt : ∀ z, hs (f z - c) = hs (f z - a) + 2 * Λ (f z - a) + hs (a - c) := by
+      intro z
+      rw [← sub_add_sub_cancel (f z) a c, hs_def, hs_def, hs_def, hΛ, Finset.mul_sum,
+        ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun j _ => by rw [add_apply, norm_add_sq_real, real_inner_comm]
+    have hsum : IntegrableOn (fun z => hs (f z - a) + 2 * Λ (f z - a)) (ball x r) :=
+      hint.add (hΛint.const_mul 2)
+    have h0 : 0 ≤ 2 * (∫ z in ball x r, Λ (f z - a)) + volume.real (ball x r) • hs (a - c) :=
+      (smul_nonneg measureReal_nonneg (hs_nonneg _)).trans_eq ((zero_add _).symm.trans
+        (congrArg (· + volume.real (ball x r) • hs (a - c)) ((mul_zero 2).symm.trans
+          (congrArg (2 * ·) hΛ0.symm))))
+    exact (le_add_of_nonneg_right h0).trans_eq ((add_assoc _ _ _).symm.trans
+      ((integral_congr_ae (ae_of_all _ hpt)).trans ((integral_add hsum (hcst x r _)).trans
+        (congrArg₂ (· + ·) ((integral_add hint (hΛint.const_mul 2)).trans
+          (congrArg ((∫ z in ball x r, hs (f z - a)) + ·) (integral_const_mul 2 _)))
+          (setIntegral_const _)))).symm)
+  -- the constants of the iteration lemmas
+  obtain ⟨cN, ⟨hcN0, hN1⟩, A₁, hA₁⟩ : ∃ cN : ℝ, (0 ≤ cN ∧ ∀ A : Euclid m →L[ℝ] Euclid k,
+      ‖A‖ ^ 2 ≤ cN * hs A) ∧ ∃ A₁ : ℝ, A₁ = (4 * Cd + 2) * m * (cN + 1) :=
+    hcN.imp fun cN h => ⟨h, _, rfl⟩
+  have hcN1 : 0 < cN + 1 := lt_add_of_le_of_pos hcN0 one_pos
+  have hA₁0 : 0 ≤ A₁ := (mul_nonneg (mul_nonneg (add_nonneg (mul_nonneg zero_le_four hCd.le)
+    zero_le_two) hm0) hcN1.le).trans_eq hA₁.symm
+  obtain ⟨⟨εa, ca, hεa, hca, hIa⟩, ⟨εb, cb, hεb, hcb, hIb⟩, ⟨εc, cc, hεc, hcc, hIc⟩,
+      ⟨C₀', hC₀', hII'⟩, C₀'', hC₀'', hII''⟩ :=
+    And.intro (hcampI A₁ m (m - α) hA₁0 (sub_pos.mpr (hα1.trans_le hmR)) (sub_lt_self _ hα0))
+    (And.intro (hcampI A₁ (m + 2) (m + α) hA₁0 (add_pos_of_nonneg_of_pos hm0 hα0)
+      (add_lt_add_of_le_of_lt le_rfl (hα1.trans one_lt_two)))
+    (And.intro (hcampI A₁ (m + 2) (m + 2 * α) hA₁0
+      (add_pos_of_nonneg_of_pos hm0 (mul_pos two_pos hα0))
+      (add_lt_add_of_le_of_lt le_rfl (mul_lt_of_lt_one_right two_pos hα1)))
+    (And.intro (hcampII m k (α / 2) hm (half_pos hα0) ((half_le_self hα0.le).trans hα1.le))
+      (hcampII m k α hm hα0 hα1.le))))
+  obtain ⟨ε₁, hε₁⟩ : ∃ ε₁ : ℝ,
+      ε₁ = min (min 1 (εa / 2)) (min (min εb εc) (1 / (40 * m * (cN + 1)))) := ⟨_, rfl⟩
+  have hden : 0 < 40 * (m : ℝ) * (cN + 1) :=
+    mul_pos (mul_pos Nat.ofNat_pos (zero_lt_one.trans_le hmR)) hcN1
+  have hε₁0 : 0 < ε₁ := (lt_min (lt_min one_pos (half_pos hεa))
+    (lt_min (lt_min hεb hεc) (one_div_pos.mpr hden))).trans_eq hε₁.symm
+  have hε₁1 : ε₁ ≤ 1 := hε₁.trans_le ((min_le_left _ _).trans (min_le_left _ _))
+  have hε₁a : ε₁ ≤ εa / 2 := hε₁.trans_le ((min_le_left _ _).trans (min_le_right _ _))
+  have hε₁b : ε₁ ≤ εb :=
+    hε₁.trans_le ((min_le_right _ _).trans ((min_le_left _ _).trans (min_le_left _ _)))
+  have hε₁c : ε₁ ≤ εc :=
+    hε₁.trans_le ((min_le_right _ _).trans ((min_le_left _ _).trans (min_le_right _ _)))
+  have hε₁m : ε₁ * (40 * m * (cN + 1)) ≤ 1 := (le_div_iff₀ hden).mp
+    (hε₁.trans_le ((min_le_right _ _).trans (min_le_right _ _)))
+  obtain ⟨hε₁a', hε₁cacc⟩ := heps ε₁ εa m cN hε₁0 hε₁1 hε₁a hm0 hcN0 hε₁m
+  refine ⟨ε₁, hε₁0, fun K R hK hR => ?_⟩
+  -- the cutoff profile `η₀ ∈ C_c^∞(B_{R/4}(0))`, `η₀ = 1` on `B_{R/8}(0)`, `|Dη₀| ≤ M₀`
+  obtain ⟨η₀, hη₀in, hη₀out, M₀, hM₀⟩ : ∃ η₀ : ContDiffBump (0 : Euclid m),
+      η₀.rIn = R / 8 ∧ η₀.rOut = R / 4 ∧ ∃ M₀ : ℝ, ∀ y, ‖fderiv ℝ η₀ y‖ ≤ M₀ := by
+    refine ⟨⟨R / 8, R / 4, div_pos hR Nat.ofNat_pos, (hrad R (R / 8) hR rfl).1⟩, rfl, rfl, ?_⟩
+    exact ((ContDiffBump.contDiff _ (n := 1)).continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+      ((ContDiffBump.hasCompactSupport _).fderiv ℝ)
+  have hM₀0 : 0 ≤ M₀ := (norm_nonneg _).trans (hM₀ 0)
+  obtain ⟨R₁, K₁, c₁, Ccacc, B₃, C₃, B₅, C₅, H, C₆, B₈, C₈, hR₁, hK₁, hc₁, hCcacc, hB₃, hC₃,
+      hB₅, hC₅, hH, hC₆, hB₈, hC₈⟩ : ∃ R₁ K₁ c₁ Ccacc B₃ C₃ B₅ C₅ H C₆ B₈ C₈ : ℝ, R₁ = R / 8 ∧
+      K₁ = ω * R₁ ^ m * K * cN + (ω * R₁ ^ m) ^ 2 * K ^ 2 * R₁ ^ (2 * α) ∧
+      c₁ = 10 * m * K ^ 2 + 17 * m * M₀ ^ 2 * K ^ 2 ∧ Ccacc = 2 * c₁ * (ω * (R / 2) ^ m) ∧
+      B₃ = 2 * A₁ * K ^ 2 * ω * R₁ ^ α ∧ C₃ = ca * (Ccacc / R₁ ^ ((m : ℝ) - α) + B₃) ∧
+      B₅ = A₁ * K₁ * (C₃ + R₁ ^ α) ∧
+      C₅ = cb * (C₃ * R₁ ^ ((m : ℝ) - α) / R₁ ^ ((m : ℝ) + α) + B₅) ∧
+      H = C₀' * Real.sqrt (cN * C₅) * (R / 16) ^ (α / 2) ∧
+      C₆ = 2 * H ^ 2 + 2 * cN * C₃ * (R / 16) ^ ((m : ℝ) - α) / (ω * (R / 16) ^ m) ∧
+      B₈ = A₁ * K₁ * (m * C₆ * ω + 1) ∧
+      C₈ = cc * (m * C₆ * ω * R₁ ^ m / R₁ ^ ((m : ℝ) + 2 * α) + B₈) :=
+    ⟨_, _, _, _, _, _, _, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+  have hR₁0 : 0 < R₁ := (div_pos hR Nat.ofNat_pos).trans_eq hR₁.symm
+  have hR4 : 0 < R / 4 := div_pos hR four_pos
+  have hR16 : 0 < R / 16 := div_pos hR Nat.ofNat_pos
+  have hωR : 0 ≤ ω * R₁ ^ m := mul_nonneg hω_pos.le (pow_nonneg hR₁0.le m)
+  have hK₁0 : 0 ≤ K₁ := (add_nonneg (mul_nonneg (mul_nonneg hωR hK) hcN0)
+    (mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)) (Real.rpow_nonneg hR₁0.le _))).trans_eq hK₁.symm
+  have hc₁0 : 0 ≤ c₁ := (add_nonneg (mul_nonneg (mul_nonneg (Nat.ofNat_nonneg _) hm0) (sq_nonneg K))
+    (mul_nonneg (mul_nonneg (mul_nonneg (Nat.ofNat_nonneg _) hm0) (sq_nonneg M₀)) (sq_nonneg K))).trans_eq
+    hc₁.symm
+  have hCcacc0 : 0 ≤ Ccacc := (mul_nonneg (mul_nonneg zero_le_two hc₁0)
+    (mul_nonneg hω_pos.le (pow_nonneg (half_pos hR).le m))).trans_eq hCcacc.symm
+  have h2AKω : 0 ≤ 2 * A₁ * K ^ 2 * ω :=
+    mul_nonneg (mul_nonneg (mul_nonneg zero_le_two hA₁0) (sq_nonneg _)) hω_pos.le
+  have hB₃0 : 0 ≤ B₃ := (mul_nonneg h2AKω (Real.rpow_nonneg hR₁0.le _)).trans_eq hB₃.symm
+  have hC₃0 : 0 ≤ C₃ := (mul_nonneg hca.le
+    (add_nonneg (div_nonneg hCcacc0 (Real.rpow_nonneg hR₁0.le _)) hB₃0)).trans_eq hC₃.symm
+  have hAK : 0 ≤ A₁ * K₁ := mul_nonneg hA₁0 hK₁0
+  have hB₅0 : 0 ≤ B₅ := (mul_nonneg hAK (add_nonneg hC₃0 (Real.rpow_nonneg hR₁0.le _))).trans_eq hB₅.symm
+  have hC₅0 : 0 ≤ C₅ := (mul_nonneg hcb.le (add_nonneg (div_nonneg (mul_nonneg hC₃0
+    (Real.rpow_nonneg hR₁0.le _)) (Real.rpow_nonneg hR₁0.le _)) hB₅0)).trans_eq hC₅.symm
+  have hC₆0 : 0 ≤ C₆ := (add_nonneg (mul_nonneg zero_le_two (sq_nonneg H)) (div_nonneg
+    (mul_nonneg (mul_nonneg (mul_nonneg zero_le_two hcN0) hC₃0) (Real.rpow_nonneg hR16.le _))
+    (mul_nonneg hω_pos.le (pow_nonneg hR16.le m)))).trans_eq hC₆.symm
+  have hB₈0 : 0 ≤ B₈ := (mul_nonneg hAK
+    (add_nonneg (mul_nonneg (mul_nonneg hm0 hC₆0) hω_pos.le) zero_le_one)).trans_eq hB₈.symm
+  have hC₈0 : 0 ≤ C₈ := (mul_nonneg hcc.le (add_nonneg (div_nonneg (mul_nonneg (mul_nonneg
+    (mul_nonneg hm0 hC₆0) hω_pos.le) (pow_nonneg hR₁0.le m)) (Real.rpow_nonneg hR₁0.le _)) hB₈0)).trans_eq hC₈.symm
+  -- the radii used below
+  obtain ⟨-, hn1, hn2, hn3, hn4, hn5, hn6, hn7, hn8, hn9, hn10, hn11, hn12, hn13⟩ :=
+    hrad R R₁ hR hR₁
+  -- the error terms of the three iterations
+  have hB3ρ : ∀ ρ, 0 < ρ → ρ ≤ R₁ →
+      2 * A₁ * K ^ 2 * ω * ρ ^ (m : ℝ) ≤ B₃ * ρ ^ ((m : ℝ) - α) := by
+    intro ρ hρ hρR
+    exact (congrArg (2 * A₁ * K ^ 2 * ω * ·) ((congrArg (ρ ^ ·) (add_sub_cancel α (m : ℝ))).symm.trans
+      (Real.rpow_add hρ _ _))).trans_le ((mul_assoc _ _ _).symm.trans_le
+      ((mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow hρ.le hρR hα0.le)
+        h2AKω) (Real.rpow_nonneg hρ.le _)).trans_eq (congrArg (· * ρ ^ ((m : ℝ) - α)) hB₃.symm)))
+  have hB5ρ : ∀ ρ, 0 < ρ → ρ ≤ R₁ → ∀ Ψρ, Ψρ ≤ C₃ * ρ ^ ((m : ℝ) - α) →
+      A₁ * K₁ * (ρ ^ (2 * α) * Ψρ + ρ ^ ((m : ℝ) + 2 * α)) ≤ B₅ * ρ ^ ((m : ℝ) + α) := by
+    intro ρ hρ hρR Ψρ hΨρ
+    have h1 := mul_le_mul_of_nonneg_left hΨρ (Real.rpow_nonneg hρ.le (2 * α))
+    rw [mul_left_comm, ← Real.rpow_add hρ,
+      show 2 * α + ((m : ℝ) - α) = (m : ℝ) + α by ring] at h1
+    have h2 := mul_le_mul_of_nonneg_right (Real.rpow_le_rpow hρ.le hρR hα0.le)
+      (Real.rpow_nonneg hρ.le ((m : ℝ) + α))
+    rw [← Real.rpow_add hρ, show α + ((m : ℝ) + α) = (m : ℝ) + 2 * α by ring] at h2
+    rw [hB₅, mul_assoc (A₁ * K₁)]
+    exact mul_le_mul_of_nonneg_left ((add_le_add h1 h2).trans_eq (add_mul _ _ _).symm) hAK
+  have hB8ρ : ∀ ρ, 0 < ρ → ∀ Ψρ, Ψρ ≤ m * C₆ * ω * ρ ^ m →
+      A₁ * K₁ * (ρ ^ (2 * α) * Ψρ + ρ ^ ((m : ℝ) + 2 * α)) ≤ B₈ * ρ ^ ((m : ℝ) + 2 * α) := by
+    intro ρ hρ Ψρ hΨρ
+    have h1 := mul_le_mul_of_nonneg_left hΨρ (Real.rpow_nonneg hρ.le (2 * α))
+    rw [mul_left_comm, ← Real.rpow_natCast, ← Real.rpow_add hρ, add_comm (2 * α)] at h1
+    rw [hB₈, mul_assoc (A₁ * K₁)]
+    exact mul_le_mul_of_nonneg_left ((add_le_add_left h1 _).trans_eq (add_one_mul _ _).symm) hAK
+  refine ⟨max (Real.sqrt C₆) (max (C₀'' * Real.sqrt (cN * C₈)) (2 * Real.sqrt C₆ * (16 / R) ^ α)),
+    le_max_of_le_left (Real.sqrt_nonneg _), fun x₀ w F hw hF hwK hFK hHF hweak => ?_⟩
+  have hDw : ContinuousOn (fderiv ℝ w) (ball x₀ R) :=
+    hw.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  obtain ⟨Ψ, Φ, hΨ, hΦ⟩ : ∃ Ψ Φ : Euclid m → ℝ → ℝ,
+      (∀ x r, Ψ x r = ∫ z in ball x r, hs (fderiv ℝ w z)) ∧
+      ∀ x r, Φ x r = ∫ z in ball x r, hs (fderiv ℝ w z - ⨍ z' in ball x r, fderiv ℝ w z') :=
+    ⟨_, _, fun _ _ => rfl, fun _ _ => rfl⟩
+  -- integrability on balls `B_r(x)` with `B̄_r(x) ⊆ B_R(x₀)`
+  have hgood : ∀ (x : Euclid m) (r : ℝ), closedBall x r ⊆ ball x₀ R →
+      IntegrableOn (fderiv ℝ w) (ball x r) ∧
+      (∀ c, IntegrableOn (fun z => hs (fderiv ℝ w z - c)) (ball x r)) ∧
+      IntegrableOn (fun z => hs (fderiv ℝ w z)) (ball x r) := fun x r hxr =>
+    ⟨((hDw.mono hxr).integrableOn_compact (isCompact_closedBall x r)).mono_set
+        ball_subset_closedBall,
+      fun c => hcint x r _ (hs_cont.comp_continuousOn ((hDw.mono hxr).sub continuousOn_const)),
+      hcint x r _ (hs_cont.comp_continuousOn (hDw.mono hxr))⟩
+  have hΨ0 : ∀ x r, 0 ≤ Ψ x r := fun x r =>
+    (integral_nonneg fun z => hs_nonneg _).trans_eq (hΨ x r).symm
+  have hΦ0 : ∀ x r, 0 ≤ Φ x r := fun x r =>
+    (integral_nonneg fun z => hs_nonneg _).trans_eq (hΦ x r).symm
+  have hΦΨ : ∀ x r, closedBall x r ⊆ ball x₀ R → Φ x r ≤ Ψ x r := fun x r hxr =>
+    (hΦ x r).trans_le ((hMP x r _ 0 (hgood x r hxr).1 (hgood x r hxr).2.2).trans_eq
+      ((setIntegral_congr_fun measurableSet_ball fun z _ => congrArg hs (sub_zero _)).trans
+        (hΨ x r).symm))
+  have hΨmono : ∀ x r ρ, r ≤ ρ → closedBall x ρ ⊆ ball x₀ R → Ψ x r ≤ Ψ x ρ :=
+    fun x r ρ hrρ hxρ => (hΨ x r).trans_le ((setIntegral_mono_set (hgood x ρ hxρ).2.2
+      (ae_of_all _ fun z => hs_nonneg _) (ball_subset_ball hrρ).eventuallyLE).trans_eq
+        (hΨ x ρ).symm)
+  have hΦmono : ∀ x r ρ, r ≤ ρ → closedBall x ρ ⊆ ball x₀ R → Φ x r ≤ Φ x ρ := by
+    intro x r ρ hrρ hxρ
+    have hxr := (hgood x r ((closedBall_subset_closedBall hrρ).trans hxρ))
+    exact (hΦ x r).trans_le ((hMP x r _ _ hxr.1 hxr.2.2).trans ((setIntegral_mono_set
+      ((hgood x ρ hxρ).2.1 _) (ae_of_all _ fun z => hs_nonneg _)
+      (ball_subset_ball hrρ).eventuallyLE).trans_eq (hΦ x ρ).symm))
+  have hΦop : ∀ x r, closedBall x r ⊆ ball x₀ R →
+      ∫ z in ball x r, ‖fderiv ℝ w z - ⨍ z' in ball x r, fderiv ℝ w z'‖ ^ 2 ≤ cN * Φ x r :=
+    fun x r hxr => (hmono0 x r _ _ cN (fun z => sq_nonneg _) ((hgood x r hxr).2.1 _)
+      (fun z _ => hN1 _)).trans_eq (congrArg (cN * ·) (hΦ x r).symm)
+  -- `|F|² ≤ 2ε₁² c_N |Dw|² + 2K²`
+  have hF2 : ∀ z ∈ ball x₀ R, ‖F z‖ ^ 2 ≤ 2 * ε₁ ^ 2 * (cN * hs (fderiv ℝ w z)) + 2 * K ^ 2 :=
+    fun z hz => hF2alg _ _ _ _ _ (norm_nonneg _) (hFK z hz) (hN1 _)
+  -- the weak equation localizes to balls `B_ρ(x) ⊆ B_R(x₀)`
+  have hloc : ∀ (x : Euclid m) (ρ : ℝ) (A : Euclid m → (Euclid m →L[ℝ] Euclid k))
+      (ζ : Euclid m → Euclid k), ball x ρ ⊆ ball x₀ R → (∀ z, z ∉ ball x ρ → fderiv ℝ ζ z = 0) →
+      ∫ z in ball x₀ R, ∑ j : Fin m, inner ℝ (A z (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ z (EuclideanSpace.single j (1 : ℝ))) =
+        ∫ z in ball x ρ, ∑ j : Fin m, inner ℝ (A z (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ z (EuclideanSpace.single j (1 : ℝ))) := fun x ρ A ζ hbx hzero =>
+    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_ball hbx (fun z hz => by
+      rw [hzero z hz.2]
+      simp only [zero_apply, inner_zero_right, Finset.sum_const_zero])
+  have hweakloc : ∀ (x : Euclid m) (ρ : ℝ), ball x ρ ⊆ ball x₀ R → ∀ ζ : Euclid m → Euclid k,
+      ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball x ρ →
+      ∫ z in ball x ρ, ∑ j : Fin m, inner ℝ (fderiv ℝ w z (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ z (EuclideanSpace.single j (1 : ℝ))) =
+        ∫ z in ball x ρ, ∑ j : Fin m, inner ℝ (F z (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ z (EuclideanSpace.single j (1 : ℝ))) := by
+    intro x ρ hbx ζ hζ hζc hζs
+    have hzero : ∀ z, z ∉ ball x ρ → fderiv ℝ ζ z = 0 := fun z hz => by
+      by_contra hne
+      exact hz (hζs (support_fderiv_subset ℝ hne))
+    exact (hloc x ρ _ ζ hbx hzero).symm.trans ((hweak ζ hζ hζc (hζs.trans hbx)).trans
+      (hloc x ρ _ ζ hbx hzero))
+  -- continuity of `y ↦ Σⱼ ⟨A y eⱼ, B y eⱼ⟩`
+  have hcpair : ∀ (S : Set (Euclid m)) (A B : Euclid m → (Euclid m →L[ℝ] Euclid k)),
+      ContinuousOn A S → ContinuousOn B S → ContinuousOn (fun y => ∑ j : Fin m,
+        inner ℝ (A y (EuclideanSpace.single j (1 : ℝ))) (B y (EuclideanSpace.single j (1 : ℝ)))) S :=
+    fun S A B hA hB => continuousOn_finsetSum _ fun j _ =>
+      (hA.clm_apply continuousOn_const).inner (hB.clm_apply continuousOn_const)
+  -- the balls used in the iterations
+  have hsubR : ∀ x ∈ ball x₀ (R / 2), ∀ ρ, ρ ≤ R₁ → closedBall x ρ ⊆ ball x₀ R :=
+    fun x hx ρ hρ => closedBall_subset_ball' ((add_lt_add_of_le_of_lt hρ hx).trans hn12)
+  have hsub2 : ∀ x ∈ ball x₀ (R / 2), ∀ ρ, ρ ≤ R₁ → closedBall x (2 * ρ) ⊆ ball x₀ R :=
+    fun x hx ρ hρ => closedBall_subset_ball' ((add_lt_add_of_le_of_lt
+      (mul_le_mul_of_nonneg_left hρ zero_le_two) hx).trans hn13)
+  -- Caccioppoli: `Ψ(x, R/8) ≤ C_cacc` for `x ∈ B_{R/2}(x₀)`
+  have hcacc : ∀ x ∈ ball x₀ (R / 2), Ψ x R₁ ≤ Ccacc := by
+    intro x hx
+    have hcl2 : closedBall x (R / 2) ⊆ ball x₀ R := closedBall_subset_ball'
+      ((add_lt_add_of_le_of_lt le_rfl (mem_ball.mp hx)).trans_eq (add_halves R))
+    have hb2 : ball x (R / 2) ⊆ ball x₀ R := ball_subset_closedBall.trans hcl2
+    have hcl4 : closedBall x (R / 4) ⊆ ball x (R / 2) := closedBall_subset_ball hn1
+    -- the cutoff `η(y) = η₀(y - x)`: `η = 1` on `B_{R/8}(x)`, `η = 0` off `B_{R/4}(x)`
+    have hη_cd : ContDiff ℝ 1 (fun y => η₀ (y - x)) :=
+      (η₀.contDiff (n := 1)).comp (contDiff_id.sub contDiff_const)
+    have hη1 : ∀ y ∈ ball x R₁, η₀ (y - x) = 1 := fun y hy =>
+      η₀.one_of_mem_closedBall (mem_closedBall.mpr ((dist_zero_right (y - x)).trans_le
+        ((dist_eq_norm y x).symm.trans_le ((mem_ball.mp hy).le.trans_eq (hR₁.trans hη₀in.symm)))))
+    have hη0 : ∀ y, y ∉ ball x (R / 4) → η₀ (y - x) = 0 := fun y hy =>
+      η₀.zero_of_le_dist (hη₀out.trans_le ((not_lt.mp hy).trans_eq
+        ((dist_eq_norm y x).trans (dist_zero_right (y - x)).symm)))
+    have hηd : ∀ y, HasFDerivAt (fun y => η₀ (y - x)) (fderiv ℝ η₀ (y - x)) y := fun y =>
+      (hasFDerivAt_comp_sub x).mpr ((η₀.contDiff (n := 1)).differentiable one_ne_zero _).hasFDerivAt
+    -- the test map `ζ = η² w`
+    obtain ⟨ζ, hζ_def⟩ : ∃ ζ : Euclid m → Euclid k,
+        ζ = ((fun y => η₀ (y - x)) * fun y => η₀ (y - x)) • w := ⟨_, rfl⟩
+    have hζ0 : ∀ y, y ∉ ball x (R / 4) → ζ y = 0 := fun y hy => by
+      rw [hζ_def]
+      show (η₀ (y - x) * η₀ (y - x)) • w y = 0
+      rw [hη0 y hy, mul_zero, zero_smul]
+    have hζ_cd : ContDiff ℝ 1 ζ := by
+      rw [contDiff_iff_contDiffAt]
+      intro y
+      by_cases hy : y ∈ ball x₀ R
+      · rw [hζ_def]
+        exact (hη_cd.contDiffAt.mul hη_cd.contDiffAt).smul
+          (hw.contDiffAt (isOpen_ball.mem_nhds hy))
+      · have hy' : y ∉ closedBall x (R / 4) := fun h => hy (hb2 (hcl4 h))
+        have : ζ =ᶠ[𝓝 y] fun _ => 0 := by
+          filter_upwards [isClosed_closedBall.isOpen_compl.mem_nhds hy'] with z hz
+          exact hζ0 z (fun h => hz (ball_subset_closedBall h))
+        exact contDiffAt_const.congr_of_eventuallyEq this
+    have hζ_supp : support ζ ⊆ closedBall x (R / 4) := fun y hy => by
+      by_contra h
+      exact hy (hζ0 y (fun h' => h (ball_subset_closedBall h')))
+    have hζ_cs : HasCompactSupport ζ :=
+      HasCompactSupport.intro (isCompact_closedBall x (R / 4))
+        (fun y hy => hζ0 y (fun h => hy (ball_subset_closedBall h)))
+    have hζD : ∀ y ∈ ball x₀ R, ∀ v, fderiv ℝ ζ y v =
+        (η₀ (y - x) * η₀ (y - x)) • fderiv ℝ w y v +
+          (η₀ (y - x) * fderiv ℝ η₀ (y - x) v + η₀ (y - x) * fderiv ℝ η₀ (y - x) v) • w y := by
+      intro y hy v
+      have hwd : HasFDerivAt w (fderiv ℝ w y) y :=
+        ((hw.differentiableOn one_ne_zero) y hy |>.differentiableAt
+          (isOpen_ball.mem_nhds hy)).hasFDerivAt
+      exact (congrArg (fun g => fderiv ℝ g y v) hζ_def).trans
+        (congrArg (· v) (((hηd y).mul (hηd y)).smul hwd).fderiv)
+    -- the weak equation tested with `ζ` on `B_{R/2}(x)`
+    have hW := hweakloc x (R / 2) hb2 ζ hζ_cd hζ_cs
+      ((closure_minimal hζ_supp isClosed_closedBall).trans hcl4)
+    have hζc : Continuous (fderiv ℝ ζ) := hζ_cd.continuous_fderiv one_ne_zero
+    have hDwc : ContinuousOn (fderiv ℝ w) (closedBall x (R / 2)) := hDw.mono hcl2
+    have hLint := hcint x (R / 2) _ (hcpair _ _ _ hDwc hζc.continuousOn)
+    have hRint := hcint x (R / 2) _ (hcpair _ _ _ (hF.mono hcl2) hζc.continuousOn)
+    -- the pointwise inequality `η²|Dw|² ≤ 2(Σ⟨Dw eⱼ, Dζ eⱼ⟩ - Σ⟨F eⱼ, Dζ eⱼ⟩) + 2c₁`
+    have hpt : ∀ y ∈ ball x (R / 2), η₀ (y - x) * η₀ (y - x) * hs (fderiv ℝ w y) ≤ 2 *
+        ((∑ j : Fin m, inner ℝ (fderiv ℝ w y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ)))) -
+        ∑ j : Fin m, inner ℝ (F y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ)))) + 2 * c₁ := by
+      intro y hy
+      have hyR : y ∈ ball x₀ R := hb2 hy
+      have he0 : 0 ≤ η₀ (y - x) := η₀.nonneg
+      have he1 : η₀ (y - x) ≤ 1 := η₀.le_one
+      have hsum := sum_cacc m (η₀ (y - x) * η₀ (y - x)) (17 * M₀ ^ 2 * K ^ 2) _ _
+        (fun j => inner ℝ (F y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ))))
+        (fun j => inner ℝ (fderiv ℝ w y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ))))
+        (fun j => ‖F y (EuclideanSpace.single j (1 : ℝ))‖ ^ 2)
+        (fun j => ‖fderiv ℝ w y (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (hs_def _) (hs_def _)
+        fun j => by
+          rw [hζD y hyR, inner_add_right, inner_add_right, real_inner_smul_right,
+            real_inner_smul_right, real_inner_smul_right, real_inner_smul_right,
+            real_inner_self_eq_norm_sq]
+          exact cacc_pt _ _ M₀ K _ _ _ _ _ he0
+            ((Real.norm_eq_abs _).symm.trans_le ((ContinuousLinearMap.le_opNorm _ _).trans
+              ((mul_le_of_le_one_right (norm_nonneg _) (hsingle j).le).trans (hM₀ _))))
+            (real_inner_le_norm _ _)
+            ((abs_real_inner_le_norm _ _).trans
+              (mul_le_mul_of_nonneg_left (hwK y hyR) (norm_nonneg _)))
+            ((abs_real_inner_le_norm _ _).trans
+              (mul_le_mul_of_nonneg_left (hwK y hyR) (norm_nonneg _)))
+      exact cacc_fin _ _ _ _ _ _ _ _ _ _ _ he0 he1 (hs_nonneg _) hm0 hsum
+        ((hs_le (F y)).trans (mul_le_mul_of_nonneg_left (hF2 y hyR) hm0)) hε₁cacc hc₁
+    -- integrate and absorb
+    have hLR : IntegrableOn (fun y =>
+        (∑ j : Fin m, inner ℝ (fderiv ℝ w y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ)))) -
+        ∑ j : Fin m, inner ℝ (F y (EuclideanSpace.single j (1 : ℝ)))
+          (fderiv ℝ ζ y (EuclideanSpace.single j (1 : ℝ)))) (ball x (R / 2)) :=
+      hLint.sub hRint
+    have hQ := hmonolin x (R / 2) _ _ 2 (2 * c₁) (half_pos hR)
+      (fun y => mul_nonneg (mul_self_nonneg (η₀ (y - x))) (hs_nonneg (fderiv ℝ w y))) hLR hpt
+    have hQint := hcint x (R / 2) (fun y => η₀ (y - x) * η₀ (y - x) * hs (fderiv ℝ w y))
+      ((hη_cd.continuous.continuousOn.mul hη_cd.continuous.continuousOn).mul
+        (hs_cont.comp_continuousOn hDwc))
+    exact (hΨ x R₁).trans_le (((setIntegral_congr_fun measurableSet_ball fun z hz => by
+        rw [hη1 z hz, one_mul, one_mul]).trans_le (setIntegral_mono_set hQint
+          (ae_of_all _ fun z => mul_nonneg (mul_self_nonneg _) (hs_nonneg _))
+          (ball_subset_ball hn2).eventuallyLE)).trans
+        (hQ.trans_eq ((congrArg (fun t => 2 * t + 2 * c₁ * (ω * (R / 2) ^ m))
+          ((integral_sub hLint hRint).trans (sub_eq_zero.mpr hW))).trans
+          ((congrArg (· + 2 * c₁ * (ω * (R / 2) ^ m)) (mul_zero 2)).trans
+            ((zero_add _).trans hCcacc.symm)))))
+  -- comparison with the harmonic replacement (Campanato's inequalities (C1'), (C2'))
+  have hcomp : ∀ (x : Euclid m) (ρ : ℝ), 0 < ρ → ρ ≤ R₁ → closedBall x (2 * ρ) ⊆ ball x₀ R →
+      ∀ r, 0 < r → r ≤ ρ →
+      Φ x r ≤ A₁ * ((r / ρ) ^ ((m : ℝ) + 2) + ε₁) * Φ x ρ
+          + A₁ * K₁ * (ρ ^ (2 * α) * Ψ x ρ + ρ ^ ((m : ℝ) + 2 * α)) ∧
+      Ψ x r ≤ A₁ * ((r / ρ) ^ (m : ℝ) + 2 * ε₁ ^ 2) * Ψ x ρ
+          + 2 * A₁ * K ^ 2 * ω * ρ ^ (m : ℝ) := by
+    intro x ρ hρ hρR₁ hxρ r hr hrρ
+    have hball2 : ball x (2 * ρ) ⊆ ball x₀ R := ball_subset_closedBall.trans hxρ
+    have hcl : closedBall x ρ ⊆ ball x₀ R :=
+      (closedBall_subset_closedBall (le_mul_of_one_le_left hρ.le one_le_two)).trans hxρ
+    have hbx : ball x ρ ⊆ ball x₀ R := ball_subset_closedBall.trans hcl
+    have hsubr : ball x r ⊆ ball x ρ := ball_subset_ball hrρ
+    -- the harmonic replacement `h` of `w` in `B_ρ(x)`
+    obtain ⟨h, hsm, hharm, hDint, hDle⟩ := hrepl x ρ (2 * ρ) w F hρ (lt_two_mul_self hρ)
+      (hw.mono hball2) (hF.mono hball2) (hweakloc x ρ hbx)
+    have hDint' : IntegrableOn (fun z => hs (fderiv ℝ w z - fderiv ℝ h z)) (ball x ρ) :=
+      hDint.congr_fun (fun z _ => (hs_def _).symm) measurableSet_ball
+    have hDle' : ∀ c, ∫ z in ball x ρ, hs (fderiv ℝ w z - fderiv ℝ h z) ≤
+        ∫ z in ball x ρ, hs (F z - c) := fun c =>
+      ((setIntegral_congr_fun measurableSet_ball fun z _ => hs_def _).trans_le (hDle c)).trans_eq
+        (setIntegral_congr_fun measurableSet_ball fun z _ => (hs_def _).symm)
+    obtain ⟨D, hD⟩ : ∃ D, D = ∫ z in ball x ρ, hs (fderiv ℝ w z - fderiv ℝ h z) := ⟨_, rfl⟩
+    have hD0 : 0 ≤ D := (integral_nonneg fun z => hs_nonneg _).trans_eq hD.symm
+    have hDr : ∫ z in ball x r, hs (fderiv ℝ w z - fderiv ℝ h z) ≤ D :=
+      (setIntegral_mono_set hDint' (ae_of_all _ fun z => hs_nonneg _) hsubr.eventuallyLE).trans_eq
+        hD.symm
+    -- integrability in `B_ρ(x)`
+    have hwg := hgood x ρ hcl
+    have hDhm : AEStronglyMeasurable (fderiv ℝ h) (volume.restrict (ball x ρ)) :=
+      ((hsm 1).continuousOn_fderiv_of_isOpen isOpen_ball Nat.cast_one.ge).aestronglyMeasurable
+        measurableSet_ball
+    have hhint2c : ∀ c, IntegrableOn (fun z => hs (fderiv ℝ h z - c)) (ball x ρ) := fun c =>
+      Integrable.mono' (((hwg.2.1 c).const_mul 2).add (hDint'.const_mul 2))
+        (hs_cont.comp_aestronglyMeasurable (hDhm.sub aestronglyMeasurable_const))
+        (ae_of_all _ fun z => (Real.norm_of_nonneg (hs_nonneg _)).trans_le (hs_tri2 _ _ _))
+    have hhint2 : IntegrableOn (fun z => hs (fderiv ℝ h z)) (ball x ρ) :=
+      (hhint2c 0).congr_fun (fun z _ => congrArg hs (sub_zero _)) measurableSet_ball
+    have hhint : IntegrableOn (fderiv ℝ h) (ball x ρ) :=
+      Integrable.mono' ((hcst x ρ 1).add (hhint2.const_mul cN)) hDhm
+        (ae_of_all _ fun z => le_one_add _ _ (hN1 _))
+    -- harmonic decay
+    obtain ⟨hdec1, hdec2⟩ := hdec x ρ h hρ hsm hharm
+      (hhint2.congr_fun (fun z _ => hs_def _) measurableSet_ball) r hr hrρ
+    have hdec1' : ∫ z in ball x r, hs (fderiv ℝ h z - ⨍ z' in ball x r, fderiv ℝ h z') ≤
+        Cd * (r / ρ) ^ (m + 2) *
+          ∫ z in ball x ρ, hs (fderiv ℝ h z - ⨍ z' in ball x ρ, fderiv ℝ h z') :=
+      ((setIntegral_congr_fun measurableSet_ball fun z _ => hs_def _).trans_le hdec1).trans_eq
+        (congrArg (Cd * (r / ρ) ^ (m + 2) * ·)
+          (setIntegral_congr_fun measurableSet_ball fun z _ => (hs_def _).symm))
+    have hdec2' : ∫ z in ball x r, hs (fderiv ℝ h z) ≤
+        Cd * (r / ρ) ^ m * ∫ z in ball x ρ, hs (fderiv ℝ h z) :=
+      ((setIntegral_congr_fun measurableSet_ball fun z _ => hs_def _).trans_le hdec2).trans_eq
+        (congrArg (Cd * (r / ρ) ^ m * ·)
+          (setIntegral_congr_fun measurableSet_ball fun z _ => (hs_def _).symm))
+    have hq0 : 0 ≤ r / ρ := div_nonneg hr.le hρ.le
+    have hq1 : r / ρ ≤ 1 := (div_le_one hρ).mpr hrρ
+    -- (C1): `Φ(r) ≤ 4C_d (r/ρ)^{m+2} Φ(ρ) + (4C_d + 2) D`
+    have hC1 : Φ x r ≤ 4 * Cd * (r / ρ) ^ (m + 2) * Φ x ρ + (4 * Cd + 2) * D := by
+      have c1 := (hΦ x r).trans_le (hMP x r (fderiv ℝ w) (⨍ z' in ball x r, fderiv ℝ h z')
+        (hwg.1.mono_set hsubr) (hwg.2.2.mono_set hsubr))
+      have c2 := htri x r (fun z => hs (fderiv ℝ w z - ⨍ z' in ball x r, fderiv ℝ h z')) _ _
+        ((hhint2c (⨍ z' in ball x r, fderiv ℝ h z')).mono_set hsubr) (hDint'.mono_set hsubr)
+        (fun z => hs_nonneg _) (fun z _ => hs_tri1 _ _ _)
+      have c5 := ((hMP x ρ _ (⨍ z' in ball x ρ, fderiv ℝ w z') hhint hhint2).trans
+        (htri x ρ (fun z => hs (fderiv ℝ h z - ⨍ z' in ball x ρ, fderiv ℝ w z')) _ _
+          (hwg.2.1 _) hDint' (fun z => hs_nonneg _) (fun z _ => hs_tri2 _ _ _))).trans_eq
+        (congrArg₂ (fun a b => 2 * a + 2 * b) (hΦ x ρ).symm hD.symm)
+      exact combC _ _ _ _ Cd _ _ _ D c1 c2 hdec1' c5 hDr hCd.le (pow_nonneg hq0 _)
+        (pow_le_one₀ hq0 hq1) hD0
+    -- (C2): `Ψ(r) ≤ 4C_d (r/ρ)^m Ψ(ρ) + (4C_d + 2) D`
+    have hC2 : Ψ x r ≤ 4 * Cd * (r / ρ) ^ m * Ψ x ρ + (4 * Cd + 2) * D := by
+      have d1 := (hΨ x r).trans_le (htri x r (fun z => hs (fderiv ℝ w z)) _ _
+        (hhint2.mono_set hsubr) (hDint'.mono_set hsubr) (fun z => hs_nonneg _)
+        (fun z _ => hs_tri3 _ _))
+      have d2 := (htri x ρ (fun z => hs (fderiv ℝ h z)) _ _ hwg.2.2 hDint' (fun z => hs_nonneg _)
+        (fun z _ => hs_tri4 _ _)).trans_eq
+        (congrArg₂ (fun a b => 2 * a + 2 * b) (hΨ x ρ).symm hD.symm)
+      exact combC _ _ _ _ Cd _ _ _ D le_rfl d1 hdec2' d2 hDr hCd.le (pow_nonneg hq0 _)
+        (pow_le_one₀ hq0 hq1) hD0
+    -- `D ≤ ∫ |F - c|²_HS` for the constant `c` of (H_F)
+    have hρm : ω * ρ ^ m ≤ ω * R₁ ^ m :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hρ.le hρR₁ m) hω_pos.le
+    have hKP : 0 ≤ K * ρ ^ (2 * α) := mul_nonneg hK (Real.rpow_nonneg hρ.le _)
+    have hKQ : 0 ≤ K * ρ ^ ((m : ℝ) + 2 * α) := mul_nonneg hK (Real.rpow_nonneg hρ.le _)
+    obtain ⟨c, hc⟩ := hHF x ρ hρ hcl
+    have hI2 : ∫ z in ball x ρ, (‖fderiv ℝ w z‖ ^ 2 + K * ρ ^ ((m : ℝ) + 2 * α)) ≤
+        cN * Ψ x ρ + K * ρ ^ ((m : ℝ) + 2 * α) * (ω * ρ ^ m) :=
+      (hmonolin x ρ _ _ cN _ hρ (fun z => add_nonneg (sq_nonneg _) hKQ) hwg.2.2
+        (fun z _ => add_le_add_left (hN1 _) _)).trans_eq
+        (congrArg (cN * · + K * ρ ^ ((m : ℝ) + 2 * α) * (ω * ρ ^ m)) (hΨ x ρ).symm)
+    have hI1 : ∫ z in ball x ρ, (‖fderiv ℝ w z - ⨍ z' in ball x ρ, fderiv ℝ w z'‖ ^ 2 +
+        K * ρ ^ (2 * α) * ∫ z in ball x ρ, (‖fderiv ℝ w z‖ ^ 2 + K * ρ ^ ((m : ℝ) + 2 * α))) ≤
+        cN * Φ x ρ + K * ρ ^ (2 * α) * (cN * Ψ x ρ + K * ρ ^ ((m : ℝ) + 2 * α) * (ω * ρ ^ m)) *
+          (ω * ρ ^ m) :=
+      (hmonolin x ρ _ _ cN _ hρ
+        (fun z => add_nonneg (sq_nonneg _) (mul_nonneg hKP
+          (integral_nonneg fun z => add_nonneg (sq_nonneg _) hKQ)))
+        (hwg.2.1 _) (fun z _ => add_le_add (hN1 _) (mul_le_mul_of_nonneg_left hI2 hKP))).trans_eq
+        (congrArg (cN * · + K * ρ ^ (2 * α) * (cN * Ψ x ρ + K * ρ ^ ((m : ℝ) + 2 * α) *
+          (ω * ρ ^ m)) * (ω * ρ ^ m)) (hΦ x ρ).symm)
+    have hDc : D ≤ m * (ε₁ * cN * Φ x ρ + K₁ * (ρ ^ (2 * α) * Ψ x ρ + ρ ^ ((m : ℝ) + 2 * α))) :=
+      (hD.trans_le ((hDle' c).trans (hmono0 x ρ _ _ m (fun z => hs_nonneg _)
+        (hcint x ρ (fun z => ‖F z - c‖ ^ 2) (((hF.mono hcl).sub continuousOn_const).norm.pow 2))
+        (fun z _ => hs_le _)))).trans (mul_le_mul_of_nonneg_left (hc.trans
+          ((mul_le_mul_of_nonneg_left hI1 hε₁0.le).trans (hF_alg ε₁ _ _ _ _ _ _ K _ cN K₁ hK₁
+            hε₁0.le hε₁1 (hΦ0 x ρ) (hΨ0 x ρ) (mul_nonneg hω_pos.le (pow_nonneg hρ.le m)) hρm
+            (Real.rpow_nonneg hρ.le _) (Real.rpow_le_rpow hρ.le hρR₁ (mul_nonneg zero_le_two hα0.le))
+            hK (Real.rpow_nonneg hρ.le _) hcN0))) hm0)
+    have hDF : D ≤ m * (2 * ε₁ ^ 2 * cN) * Ψ x ρ + m * (2 * K ^ 2) * (ω * ρ ^ m) :=
+      (hD.trans_le ((hDle' 0).trans (hmonolin x ρ _ _ (m * (2 * ε₁ ^ 2 * cN)) (m * (2 * K ^ 2)) hρ
+        (fun z => hs_nonneg _) hwg.2.2 (fun z hz => (congrArg hs (sub_zero _)).trans_le
+          (hDFpt _ _ _ _ _ _ _ hm0 (hs_le _) (hF2 z (hbx hz))))))).trans_eq
+        (congrArg (m * (2 * ε₁ ^ 2 * cN) * · + m * (2 * K ^ 2) * (ω * ρ ^ m)) (hΨ x ρ).symm)
+    -- conclusion
+    exact ⟨comb1 A₁ Cd m cN _ _ ε₁ _ _ D K₁ _ hA₁ ((congrArg ((r / ρ) ^ ·)
+        ((Nat.cast_add m 2).trans (congrArg ((m : ℝ) + ·) (Nat.cast_ofNat : ((2 : ℕ) : ℝ) = 2))).symm).trans
+          (Real.rpow_natCast _ _)) hCd.le hmR hcN0 (pow_nonneg hq0 _) hε₁0.le
+        (hΦ0 x ρ) hK₁0 (add_nonneg (mul_nonneg (Real.rpow_nonneg hρ.le _) (hΨ0 x ρ))
+          (Real.rpow_nonneg hρ.le _)) hC1 hDc,
+      comb2 A₁ Cd m cN _ _ ε₁ _ _ D K _ _ _ hA₁ (Real.rpow_natCast _ _) (Real.rpow_natCast _ _)
+        hCd.le hmR hcN0 (pow_nonneg hq0 _) (hΨ0 x ρ)
+        (mul_nonneg hω_pos.le (pow_nonneg hρ.le m)) hC2 hDF⟩
+  -- Step 3 (Morrey decay): `Ψ(x, r) ≤ C₃ r^{m-α}` on `B_{R/2}(x₀)`, `r ≤ R₁`
+  have hstep3 : ∀ x ∈ ball x₀ (R / 2), ∀ r, 0 < r → r ≤ R₁ → Ψ x r ≤ C₃ * r ^ ((m : ℝ) - α) :=
+    fun x hx r hr hrR₁ => (hIa (Ψ x) R₁ (2 * ε₁ ^ 2) B₃ (mul_nonneg zero_le_two (sq_nonneg _))
+      hε₁a' hB₃0 (fun s _ _ => hΨ0 x s) (fun s ρ _ hsρ hρR => hΨmono x s ρ hsρ (hsubR x hx ρ hρR))
+      (fun s ρ hs hsρ hρR => (hcomp x ρ (hs.trans_le hsρ) hρR (hsub2 x hx ρ hρR) s hs hsρ).2.trans
+        (add_le_add_right (hB3ρ ρ (hs.trans_le hsρ) hρR) _))
+      r R₁ hr hrR₁ le_rfl).trans ((mul_le_mul_of_nonneg_left (add_le_add_left
+        (mul_le_mul_of_nonneg_left (hcacc x hx) (Real.rpow_nonneg (div_nonneg hr.le hR₁0.le) _))
+        _) hca.le).trans_eq (ring_id2 _ _ _ _ _ _ _ hr.le hR₁0 hC₃))
+  -- Step 4 (first Campanato pass): `Φ(x, r) ≤ C₅ r^{m+α}` on `B_{R/2}(x₀)`, `r ≤ R₁`
+  have hstep4 : ∀ x ∈ ball x₀ (R / 2), ∀ r, 0 < r → r ≤ R₁ → Φ x r ≤ C₅ * r ^ ((m : ℝ) + α) :=
+    fun x hx r hr hrR₁ => (hIb (Φ x) R₁ ε₁ B₅ hε₁0.le hε₁b hB₅0 (fun s _ _ => hΦ0 x s)
+      (fun s ρ _ hsρ hρR => hΦmono x s ρ hsρ (hsubR x hx ρ hρR))
+      (fun s ρ hs hsρ hρR => (hcomp x ρ (hs.trans_le hsρ) hρR (hsub2 x hx ρ hρR) s hs hsρ).1.trans
+        (add_le_add_right (hB5ρ ρ (hs.trans_le hsρ) hρR _ (hstep3 x hx ρ (hs.trans_le hsρ) hρR)) _))
+      r R₁ hr hrR₁ le_rfl).trans ((mul_le_mul_of_nonneg_left (add_le_add_left
+        (mul_le_mul_of_nonneg_left ((hΦΨ x R₁ (hsubR x hx R₁ le_rfl)).trans
+          (hstep3 x hx R₁ hR₁0 le_rfl)) (Real.rpow_nonneg (div_nonneg hr.le hR₁0.le) _))
+        _) hcb.le).trans_eq (ring_id2 _ _ _ _ _ _ _ hr.le hR₁0 hC₅))
+  -- Step 5: `Dw` is `α/2`-Hölder on `B_{R/2}(x₀)` at scale `R₁/2`, and bounded on `B_{3R/8}(x₀)`
+  have hhol1 : ∀ x ∈ ball x₀ (R / 2), ∀ y ∈ ball x₀ (R / 2), ‖x - y‖ ≤ R₁ / 2 →
+      ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C₀' * Real.sqrt (cN * C₅) * ‖x - y‖ ^ (α / 2) :=
+    hII' (fderiv ℝ w) x₀ (R / 2) R₁ (cN * C₅) (half_pos hR) hR₁0 (mul_nonneg hcN0 hC₅0)
+      (hDw.mono (closedBall_subset_ball hn3))
+      (fun x hx ρ hρ hρR => (hΦop x ρ (hsubR x hx ρ hρR)).trans
+        ((mul_le_mul_of_nonneg_left (hstep4 x hx ρ hρ hρR) hcN0).trans_eq
+          (by rw [mul_div_cancel₀ α two_ne_zero, mul_assoc])))
+  have hsup : ∀ x ∈ ball x₀ (3 * R / 8), ‖fderiv ℝ w x‖ ^ 2 ≤ C₆ := by
+    intro x hx
+    have hx2 : x ∈ ball x₀ (R / 2) := ball_subset_ball hn5 hx
+    have hxB : ball x (R / 16) ⊆ ball x₀ (R / 2) :=
+      ball_subset_ball' ((add_le_add_right (le_of_lt hx) _).trans hn11)
+    have hpt : ∀ z ∈ ball x (R / 16),
+        ‖fderiv ℝ w x‖ ^ 2 - 2 * H ^ 2 ≤ 2 * cN * hs (fderiv ℝ w z) := fun z hz =>
+      have hxz : ‖x - z‖ < R / 16 := (dist_eq_norm x z).symm.trans_lt ((dist_comm x z).trans_lt hz)
+      sup_alg _ _ _ _ _ _ (norm_nonneg _) (norm_sub_norm_le _ _)
+        ((hhol1 x hx2 z (hxB hz) (hxz.le.trans hn7)).trans
+          ((mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (norm_nonneg _) hxz.le (half_pos hα0).le)
+            (mul_nonneg hC₀'.le (Real.sqrt_nonneg _))).trans_eq hH.symm)) (hN1 _)
+    exact sup_end _ H cN _ (Ψ x (R / 16)) C₃ _ _ _ C₆ (mul_pos hω_pos (pow_pos hR16 m))
+      (hvol x (R / 16) hR16) hC₆
+      (setIntegral_ge_of_const_le_real measurableSet_ball measure_ball_lt_top.ne hpt
+        ((hgood x (R / 16) (hsubR x hx2 (R / 16) hn6)).2.2.const_mul
+          (2 * cN)))
+      ((integral_const_mul _ _).trans (congrArg (2 * cN * ·) (hΨ x (R / 16)).symm))
+      (hstep3 x hx2 (R / 16) hR16 hn6) hcN0
+  -- Step 6 (second Campanato pass): `Φ(x, r) ≤ C₈ r^{m+2α}` on `B_{R/4}(x₀)`, `r ≤ R₁`
+  have hstep6 : ∀ x ∈ ball x₀ (R / 4), ∀ r, 0 < r → r ≤ R₁ →
+      Φ x r ≤ C₈ * r ^ ((m : ℝ) + 2 * α) := by
+    intro x hx r hr hrR₁
+    have hx2 : x ∈ ball x₀ (R / 2) := ball_subset_ball hn8 hx
+    have hΨb : ∀ ρ, 0 < ρ → ρ ≤ R₁ → Ψ x ρ ≤ m * C₆ * ω * ρ ^ m := fun ρ hρ hρR =>
+      (hΨ x ρ).trans_le ((hcbd x ρ _ (m * C₆) hρ (fun z => hs_nonneg _) (fun z hz =>
+        (hs_le _).trans (mul_le_mul_of_nonneg_left (hsup z (ball_subset_ball'
+          ((add_le_add hρR (le_of_lt hx)).trans hn10) hz)) hm0))).trans_eq
+        (mul_assoc _ _ _).symm)
+    exact (hIc (Φ x) R₁ ε₁ B₈ hε₁0.le hε₁c hB₈0 (fun s _ _ => hΦ0 x s)
+      (fun s ρ _ hsρ hρR => hΦmono x s ρ hsρ (hsubR x hx2 ρ hρR))
+      (fun s ρ hs hsρ hρR => (hcomp x ρ (hs.trans_le hsρ) hρR (hsub2 x hx2 ρ hρR) s hs hsρ).1.trans
+        (add_le_add_right (hB8ρ ρ (hs.trans_le hsρ) _ (hΨb ρ (hs.trans_le hsρ) hρR)) _))
+      r R₁ hr hrR₁ le_rfl).trans ((mul_le_mul_of_nonneg_left (add_le_add_left
+        (mul_le_mul_of_nonneg_left ((hΦΨ x R₁ (hsubR x hx2 R₁ le_rfl)).trans (hΨb R₁ hR₁0 le_rfl))
+          (Real.rpow_nonneg (div_nonneg hr.le hR₁0.le) _)) _) hcc.le).trans_eq
+        (ring_id2 _ _ _ _ _ _ _ hr.le hR₁0 hC₈))
+  -- Step 7: `Dw` is `α`-Hölder on `B_{R/4}(x₀)` at scale `R₁/2`
+  have hR42 : ball x₀ (R / 4) ⊆ ball x₀ (R / 2) := ball_subset_ball hn8
+  have hhol2 : ∀ x ∈ ball x₀ (R / 4), ∀ y ∈ ball x₀ (R / 4), ‖x - y‖ ≤ R₁ / 2 →
+      ‖fderiv ℝ w x - fderiv ℝ w y‖ ≤ C₀'' * Real.sqrt (cN * C₈) * ‖x - y‖ ^ α :=
+    hII'' (fderiv ℝ w) x₀ (R / 4) R₁ (cN * C₈) hR4 hR₁0 (mul_nonneg hcN0 hC₈0)
+      (hDw.mono (closedBall_subset_ball hn4))
+      (fun x hx ρ hρ hρR => (hΦop x ρ (hsubR x (hR42 hx) ρ hρR)).trans
+        ((mul_le_mul_of_nonneg_left (hstep6 x hx ρ hρ hρR) hcN0).trans_eq (mul_assoc _ _ _).symm))
+  -- conclusion
+  have hbd : ∀ x ∈ ball x₀ (R / 4), ‖fderiv ℝ w x‖ ≤ Real.sqrt C₆ := fun x hx =>
+    (Real.sqrt_sq (norm_nonneg _)).symm.trans_le
+      (Real.sqrt_le_sqrt (hsup x (ball_subset_ball hn9 hx)))
+  refine ⟨fun x hx => (hbd x hx).trans (le_max_left _ _), fun x hx y hy => ?_⟩
+  by_cases hxy : ‖x - y‖ ≤ R₁ / 2
+  · exact (hhol2 x hx y hy hxy).trans (mul_le_mul_of_nonneg_right
+      ((le_max_left _ _).trans (le_max_right _ _)) (Real.rpow_nonneg (norm_nonneg _) _))
+  · have h3 := hfin R R₁ ‖x - y‖ α hR hα0.le hR₁ (not_le.mp hxy)
+    exact (norm_sub_le _ _).trans ((add_le_add (hbd x hx) (hbd y hy)).trans
+      ((((two_mul (Real.sqrt C₆)).symm.trans_le (le_mul_of_one_le_right
+        (mul_nonneg zero_le_two (Real.sqrt_nonneg _)) h3)).trans_eq (mul_assoc _ _ _).symm).trans
+        (mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (le_max_right _ _))
+          (Real.rpow_nonneg (norm_nonneg _) _))))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
