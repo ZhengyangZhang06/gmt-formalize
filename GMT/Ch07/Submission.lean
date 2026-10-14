@@ -2571,6 +2571,41 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Total mass `0` or `∞` under Euclidean lower density bounds** (proof of Simon 7.3.3, density
+bounds for the members of `𝒯`, chapter-07.txt lines 420–470): let `n ≥ 1` and let `μ` be a
+measure on `ℝᴾ` with `μ(B_ρ(w)) ≥ ωₙρⁿ` for every `ρ > 0` at each `w ∈ spt μ`, i.e. at each `w`
+with `μ(B_ε(w)) ≠ 0` for all `ε > 0`.  Then `μ(ℝᴾ) = 0` or `μ(ℝᴾ) = ∞`.  If `spt μ` has a point
+`w`, then `ωₙρⁿ ≤ μ(B_ρ(w)) ≤ μ(ℝᴾ)` for all `ρ > 0`, and `ωₙρⁿ → ∞` as `ωₙ > 0` and `n ≥ 1`.
+Otherwise every point has a `μ`-null ball around it, and countably many of these balls cover
+`ℝᴾ` (Lindelöf), so `μ(ℝᴾ) = 0`. -/
+theorem Submission.idtp_fons_cc_mb_mass_dichotomy : ∀ (P n : ℕ) (μ : Measure (Euclid P)), 1 ≤ n → (∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball w ε) ≠ 0) → ∀ ρ : ℝ, 0 < ρ → unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ μ (ball w ρ)) → μ univ = 0 ∨ μ univ = ∞ := by
+  intro P n μ hn hH
+  by_cases hw : ∃ w : Euclid P, ∀ ε : ℝ, 0 < ε → μ (ball w ε) ≠ 0
+  · -- Case 1: `w ∈ spt μ`, so `ωₙρⁿ ≤ μ(B_ρ(w)) ≤ μ(ℝᴾ)` for every `ρ > 0`
+    obtain ⟨w, hw⟩ := hw
+    right
+    have hev : ∀ᶠ ρ in atTop, unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ μ univ :=
+      (eventually_gt_atTop 0).mono fun ρ hρ =>
+        (hH w hw ρ hρ).trans (measure_mono (subset_univ _))
+    -- `ωₙ = |B_1(0)| > 0` (Haar measure of an open ball) and `ρⁿ → ∞`, so `ωₙρⁿ → ωₙ · ∞ = ∞`
+    have hω : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+    have hlim :
+        Tendsto (fun ρ : ℝ => unitBallVolume n * ENNReal.ofReal (ρ ^ n)) atTop (𝓝 ∞) := by
+      have h := ENNReal.Tendsto.const_mul (a := unitBallVolume n)
+        (ENNReal.tendsto_ofReal_atTop.comp (tendsto_pow_atTop (Nat.one_le_iff_ne_zero.mp hn)))
+        (Or.inl ENNReal.top_ne_zero)
+      rw [ENNReal.mul_top hω] at h
+      exact h
+    exact top_le_iff.1 (le_of_tendsto hlim hev)
+  · -- Case 2: `spt μ = ∅`, so every point has a `μ`-null ball around it, and `μ(ℝᴾ) = 0` as
+    -- `ℝᴾ` is second countable
+    left
+    refine measure_null_of_locally_null univ fun x _ => ?_
+    obtain ⟨ε, hε, hμ⟩ : ∃ ε : ℝ, 0 < ε ∧ μ (ball x ε) = 0 := by
+      by_contra! h
+      exact hw ⟨x, h⟩
+    exact ⟨ball x ε, by rw [nhdsWithin_univ]; exact ball_mem_nhds x hε, hμ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
