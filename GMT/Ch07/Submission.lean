@@ -505,6 +505,63 @@ theorem Submission.idtp_fons_odc_fr_cone_disjoint : ∀ (P : ℕ) (σ σ' : Eucl
     nlinarith [sq_nonneg (t - s), mul_pos ht hs]
   nlinarith [norm_nonneg (t • σ - s • σ')]
 
+/-- A thin cone around a direction carrying density has mass at least `1/2` (Simon 7.3.3; the
+finite-rays step for `1`-dimensional minimizing cones).  Let `μ(λW) = λ μ(W)` for `λ > 0` and open
+`W`, `μ(B_1(0)) < ∞`, `|σ| = 1`, `0 < ρ < 1` and `ρ ≤ μ(B_ρ(σ))`.  The cone
+`K = ⋃_{t>0} B(tσ, tρ)` is open and invariant under positive dilations, so
+`μ(K ∩ B_r(0)) = r a` with `a = μ(K ∩ B_1(0)) ≤ μ(B_1(0)) < ∞`.  As `B_ρ(σ) ⊆ K ∩ B_{1+ρ}(0)` misses
+`B_{1-ρ}(0)`, `ρ + (1 - ρ) a ≤ μ(B_ρ(σ)) + μ(K ∩ B_{1-ρ}(0)) ≤ μ(K ∩ B_{1+ρ}(0)) = (1 + ρ) a`, whence
+`ρ ≤ 2ρa` and `1 ≤ 2a`. -/
+theorem Submission.idtp_fons_odc_fr_cone_mass : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ σ : Euclid P, ‖σ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → ρ < 1 → ENNReal.ofReal ρ ≤ μ (ball σ ρ) → 1 ≤ 2 * μ ((⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) ∩ ball 0 1) := by
+  intro P μ hscale hfin σ hσ ρ hρ0 hρ1 hdens
+  set K : Set (Euclid P) := ⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)
+  -- `K` is an open cone: `|cx - (ct)σ| = c|x - tσ| < (ct)ρ`
+  have hK : IsOpen K := isOpen_iUnion fun t => isOpen_iUnion fun _ => isOpen_ball
+  have hcone : ∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K := by
+    intro c hc x hx
+    obtain ⟨t, ht, hx⟩ := mem_iUnion₂.1 hx
+    refine mem_iUnion₂.2 ⟨c * t, mul_pos hc ht, ?_⟩
+    rw [mem_ball, mul_smul, dist_smul₀, Real.norm_of_nonneg hc.le, mul_assoc]
+    exact mul_lt_mul_of_pos_left hx hc
+  -- `μ(K ∩ B_r(0)) = r μ(K ∩ B_1(0))` for `r > 0`
+  have hscaleK : ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1) :=
+    Submission.idtp_fons_odc_fr_cone_scaling P μ hscale K hK hcone
+  -- `B_ρ(σ)` (the ball at `t = 1`) and `K ∩ B_{1-ρ}(0)` are disjoint subsets of `K ∩ B_{1+ρ}(0)`
+  have hsub : ball σ ρ ∪ (K ∩ ball 0 (1 - ρ)) ⊆ K ∩ ball 0 (1 + ρ) := by
+    refine union_subset (fun x hx => ⟨mem_iUnion₂.2 ⟨1, one_pos, by simpa using hx⟩, ?_⟩)
+      (inter_subset_inter_right _ (ball_subset_ball (by linarith)))
+    rw [mem_ball, dist_eq_norm] at hx
+    rw [mem_ball_zero_iff]
+    calc ‖x‖ = ‖(x - σ) + σ‖ := by rw [sub_add_cancel]
+      _ ≤ ‖x - σ‖ + ‖σ‖ := norm_add_le _ _
+      _ < 1 + ρ := by rw [hσ]; linarith
+  have hdisj : Disjoint (ball σ ρ) (K ∩ ball 0 (1 - ρ)) := by
+    refine disjoint_left.2 fun x hx hx' => ?_
+    rw [mem_ball, dist_eq_norm] at hx
+    have h1 := mem_ball_zero_iff.1 hx'.2
+    have h2 : ‖σ‖ ≤ ‖x - σ‖ + ‖x‖ := by
+      rw [norm_sub_rev]
+      calc ‖σ‖ = ‖(σ - x) + x‖ := by rw [sub_add_cancel]
+        _ ≤ ‖σ - x‖ + ‖x‖ := norm_add_le _ _
+    rw [hσ] at h2
+    linarith
+  -- `ρ + (1 - ρ) a ≤ μ(B_ρ(σ)) + μ(K ∩ B_{1-ρ}(0)) ≤ μ(K ∩ B_{1+ρ}(0)) = (1 + ρ) a`
+  have key := measure_mono (μ := μ) hsub
+  rw [measure_union hdisj (hK.inter isOpen_ball).measurableSet, hscaleK (1 - ρ) (by linarith),
+    hscaleK (1 + ρ) (by linarith)] at key
+  have key' := (add_le_add hdens le_rfl).trans key
+  -- everything is finite, as `a ≤ μ(B_1(0)) < ∞`: pass to real numbers
+  have ha : μ (K ∩ ball 0 1) ≠ ∞ := ne_top_of_le_ne_top hfin (measure_mono inter_subset_right)
+  rw [← ENNReal.ofReal_toReal ha] at key' ⊢
+  set a := (μ (K ∩ ball 0 1)).toReal
+  have ha0 : 0 ≤ a := ENNReal.toReal_nonneg
+  rw [← ENNReal.ofReal_mul (by linarith), ← ENNReal.ofReal_mul (by linarith),
+    ← ENNReal.ofReal_add hρ0.le (by nlinarith), ENNReal.ofReal_le_ofReal_iff (by positivity)]
+    at key'
+  -- `ρ ≤ 2ρa` and `ρ > 0` give `1 ≤ 2a`
+  rw [← ENNReal.ofReal_ofNat 2, ← ENNReal.ofReal_mul (by norm_num), ← ENNReal.ofReal_one]
+  exact ENNReal.ofReal_le_ofReal (by nlinarith)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
