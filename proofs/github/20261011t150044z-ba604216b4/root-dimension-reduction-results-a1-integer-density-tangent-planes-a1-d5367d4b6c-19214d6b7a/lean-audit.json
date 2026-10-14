@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "41e92a48697f7b179bd3584f3ba4cbadf859549af679685a80130685ba8fc51e",
+  "git_delta": {
+    "base_commit": "7f14b658bf42d50b5682298b782e7846a73bdd00",
+    "candidate_commit": "49353a3a2e76ba4ac783ecad4f74219c8657d05e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "97dcacea3a001b51cf09057377180ecfd51777fcbf2793fed7cb4e3a6e022339",
+    "source_sha256": "d4d9f224640b3449fcbcc390e958d83e9e5ac478037c3588dae2fff98ddc4c14",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_no_infinite_planar_pieces",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (ρ R : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → (∀ i, ‖z i‖ ≤ R) → (∀ i j, i ≠ j → Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ)) → (∀ i, ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → False",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
