@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.isometry_image_integral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 5,
+  "title": "Isometric images: Borel, Hᵏ-measure and change of variables",
+  "statement": "Let P, k ∈ ℕ, let Φ : ℝ^k → ℝ^P be an isometry for the Euclidean metrics and let A ⊆ ℝ^k be Borel. Then Φ(A) is Borel, Hᵏ(Φ(A)) = Lᵏ(A), and ∫_{Φ(A)} h dHᵏ = ∫_A h(Φ(y)) dy for every function h : ℝ^P → ℝ. Here Hᵏ = μHE[k] is the normalized Hausdorff measure, Lᵏ = volume is Lebesgue measure on ℝ^k = Euclid k, and the integrals are Bochner integrals (both 0 when not integrable).",
+  "lean_statement": "∀ (P k : ℕ) (Φ : Euclid k → Euclid P) (A : Set (Euclid k)), Isometry Φ → MeasurableSet A → MeasurableSet (Φ '' A) ∧ μHE[k] (Φ '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in Φ '' A, h x ∂μHE[k] = ∫ y in A, h (Φ y)",
+  "lean_name": "cmcdtfrpi_isometry_image_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-d446b77974-a1"
+}
