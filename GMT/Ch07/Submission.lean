@@ -451,6 +451,187 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Rescaled points with a uniform lower mass bound lie in the limit set** (the common core of
+steps 2(d) and 3 of the edge tangent-plane argument in the cone-sector endpoint density proof for
+Simon 7.3.3).  Let `μ` be finite on compact subsets of `ℝᴾ`, `S ⊆ ℝᴾ` closed, `λⱼ > 0` and
+`wⱼ → w`.  Suppose `λⱼ⁻² ∫ g ∘ η_{a,λⱼ} dμ → m ∫_S g dH²` for every continuous compactly
+supported `g`, and for each `r > 0` eventually `ω₂ (λⱼ r)² ≤ μ(B_{λⱼ r}(a + λⱼ wⱼ))`.  Then
+`w ∈ S`.  Otherwise some `B_ρ(w)` misses `S`; with `r = ρ/4`, the bump
+`g = min(1, max(0, 2 - |z - w|/(2r)))` vanishes on `S`, so the rescaled integrals tend to `0`.
+But once `|wⱼ - w| < r`, `η_{a,λⱼ}` maps `B_{λⱼ r}(a + λⱼ wⱼ)` into `B̄_{2r}(w)`, where `g = 1`,
+so `λⱼ⁻² ∫ g ∘ η_{a,λⱼ} dμ ≥ λⱼ⁻² μ(B_{λⱼ r}(a + λⱼ wⱼ)) ≥ ω₂ r² > 0` eventually. -/
+theorem Submission.idtp_cse_etp_rescaled_limit_mem : ∀ (P : ℕ) (μ : Measure (Euclid P)) (S : Set (Euclid P)) (a w : Euclid P) (m : ℝ) (lams : ℕ → ℝ) (ws : ℕ → Euclid P), IsClosed S → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ j, 0 < lams j) → Tendsto ws atTop (𝓝 w) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (m * ∫ x in S, g x ∂μHE[2]))) → (∀ r : ℝ, 0 < r → ∀ᶠ j in atTop, unitBallVolume 2 * ENNReal.ofReal ((lams j * r) ^ 2) ≤ μ (ball (a + lams j • ws j) (lams j * r))) → w ∈ S := by
+  intro P μ S a w m lams ws hS hμ hlam hws hV hL
+  by_contra hw
+  -- step 2: a ball `B_ρ(w)` misses `S`; `r = ρ / 4`
+  obtain ⟨ρ, hρ, hρS⟩ := Metric.isOpen_iff.1 hS.isOpen_compl w hw
+  obtain ⟨r, hr_def⟩ : ∃ r : ℝ, r = ρ / 4 := ⟨_, rfl⟩
+  have hr : 0 < r := by rw [hr_def]; positivity
+  -- the bump `g`: `g = 1` on `closedBall w (2r)`, `g = 0` off `ball w ρ`, `g ≥ 0`
+  obtain ⟨g, hg_def⟩ : ∃ g : Euclid P → ℝ, g = fun z => min 1 (max 0 (2 - dist z w / (2 * r))) :=
+    ⟨_, rfl⟩
+  have hg_cont : Continuous g := by rw [hg_def]; fun_prop
+  have hg_nonneg : ∀ z, 0 ≤ g z := fun z => by
+    rw [hg_def]
+    exact le_min zero_le_one (le_max_left _ _)
+  have hg_one : ∀ z, dist z w ≤ 2 * r → g z = 1 := by
+    intro z hz
+    have h : 1 ≤ 2 - dist z w / (2 * r) := by
+      have : dist z w / (2 * r) ≤ 1 := (div_le_one₀ (by positivity)).2 hz
+      linarith
+    rw [hg_def]
+    exact min_eq_left (h.trans (le_max_right _ _))
+  have hg_zero : ∀ z, ρ ≤ dist z w → g z = 0 := by
+    intro z hz
+    have h : 2 - dist z w / (2 * r) ≤ 0 := by
+      have : 2 ≤ dist z w / (2 * r) := by
+        rw [le_div_iff₀ (by positivity)]
+        linarith
+      linarith
+    rw [hg_def]
+    simp only [max_eq_left h, min_eq_right zero_le_one]
+  have hg_supp : HasCompactSupport g :=
+    HasCompactSupport.intro (isCompact_closedBall w ρ) fun z hz =>
+      hg_zero z (not_le.1 (by simpa only [Metric.mem_closedBall] using hz)).le
+  -- `g = 0` on `S`, so `∫_S g dH² = 0` and the rescaled integrals tend to `0`
+  have hgS : ∫ x in S, g x ∂μHE[2] = 0 :=
+    setIntegral_eq_zero_of_forall_eq_zero fun x hx =>
+      hg_zero x (not_lt.1 fun h => hρS (Metric.mem_ball.2 h) hx)
+  have hlim := hV g hg_cont hg_supp
+  rw [hgS, mul_zero] at hlim
+  -- step 1: `κ = ω₂ ∈ (0, ∞)`
+  have hκ : 0 < (unitBallVolume 2).toReal := by
+    have h0 : (0 : ℝ≥0∞) < volume (ball (0 : Euclid 2) 1) := measure_ball_pos _ _ one_pos
+    have h1 : volume (ball (0 : Euclid 2) 1) < ∞ := measure_ball_lt_top
+    exact ENNReal.toReal_pos h0.ne' h1.ne
+  -- `ηⱼ = dilation a λⱼ` scales distances by `λⱼ⁻¹`
+  have hdil : ∀ l : ℝ, 0 < l → ∀ x v : Euclid P,
+      dist (dilation a l x) v = l⁻¹ * dist x (a + l • v) := by
+    intro l hl x v
+    have h : dilation a l x - v = l⁻¹ • (x - (a + l • v)) := by
+      simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+      rw [smul_sub, smul_add, smul_smul, inv_mul_cancel₀ hl.ne', one_smul]
+      abel
+    rw [dist_eq_norm, h, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hl.le), ← dist_eq_norm]
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => lt_top_iff_ne_top.2 (hμ K hK)⟩
+  -- steps 3–4: `κ r² ≤ λⱼ⁻² ∫ g ∘ ηⱼ dμ` for all large `j`
+  have hlow : ∀ᶠ j in atTop,
+      (unitBallVolume 2).toReal * r ^ 2 ≤ (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ := by
+    filter_upwards [hL r hr, Metric.tendsto_nhds.1 hws r hr] with j hj hwj
+    have hl := hlam j
+    have hBfin : μ (ball (a + lams j • ws j) (lams j * r)) ≠ ∞ := measure_ball_lt_top.ne
+    -- `1_{Bⱼ} ≤ g ∘ ηⱼ` for `Bⱼ = B_{λⱼ r}(a + λⱼ wⱼ)`, as `ηⱼ(Bⱼ) ⊆ closedBall w (2r)`
+    have hle : (ball (a + lams j • ws j) (lams j * r)).indicator (1 : Euclid P → ℝ) ≤
+        fun x => g (dilation a (lams j) x) := by
+      refine fun x => ?_
+      by_cases hx : x ∈ ball (a + lams j • ws j) (lams j * r)
+      · rw [Set.indicator_of_mem hx, Pi.one_apply]
+        refine (hg_one _ ?_).ge
+        have h1 : dist (dilation a (lams j) x) (ws j) < r := by
+          rw [hdil _ hl, inv_mul_lt_iff₀ hl]
+          exact Metric.mem_ball.1 hx
+        linarith [dist_triangle (dilation a (lams j) x) (ws j) w]
+      · rw [Set.indicator_of_notMem hx]
+        exact hg_nonneg _
+    -- step 3: both sides are `μ`-integrable (`μ` is finite on compact sets)
+    have hcomp : HasCompactSupport fun x => g (dilation a (lams j) x) :=
+      HasCompactSupport.intro (isCompact_closedBall (a + lams j • w) (lams j * ρ)) fun x hx => by
+        refine hg_zero _ ?_
+        rw [hdil _ hl, le_inv_mul_iff₀ hl]
+        exact (not_le.1 (by simpa only [Metric.mem_closedBall] using hx)).le
+    have hηc : Continuous (dilation a (lams j)) :=
+      continuous_const.add (dilationCLM P (lams j)).continuous
+    have hint_g : Integrable (fun x => g (dilation a (lams j) x)) μ :=
+      (hg_cont.comp hηc).integrable_of_hasCompactSupport hcomp
+    have hint_B : Integrable
+        ((ball (a + lams j • ws j) (lams j * r)).indicator (1 : Euclid P → ℝ)) μ :=
+      (integrableOn_const (C := (1 : ℝ)) hBfin).integrable_indicator measurableSet_ball
+    -- `κ (λⱼ r)² ≤ μ(Bⱼ) ≤ ∫ g ∘ ηⱼ dμ`
+    have h1 := integral_mono hint_B hint_g hle
+    rw [integral_indicator_one measurableSet_ball, measureReal_def] at h1
+    have h2 := ENNReal.toReal_mono hBfin hj
+    rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (sq_nonneg _)] at h2
+    have hinv : (lams j)⁻¹ ^ 2 * lams j ^ 2 = 1 := by
+      rw [← mul_pow, inv_mul_cancel₀ hl.ne', one_pow]
+    calc (unitBallVolume 2).toReal * r ^ 2
+        = (lams j)⁻¹ ^ 2 * ((unitBallVolume 2).toReal * (lams j * r) ^ 2) := by
+          linear_combination (-((unitBallVolume 2).toReal * r ^ 2)) * hinv
+      _ ≤ (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ := by
+          gcongr
+          exact h2.trans h1
+  -- step 5: `0 < κ r² ≤ lim λⱼ⁻² ∫ g ∘ ηⱼ dμ = 0`, a contradiction
+  have h := ge_of_tendsto hlim hlow
+  have hpos : 0 < (unitBallVolume 2).toReal * r ^ 2 := mul_pos hκ (pow_pos hr 2)
+  linarith
+
+/-- **Simon 7.3.3, proof (the cusp at an edge point `a`)**: let `μ` be locally finite, `a ∈ Q`,
+`π` the orthogonal projection onto `Q` and `q = id − π`.  If (i) `μ(B_ρ(y)) ≥ ω₂ρ²` for `y ∈ Z`,
+`ρ > 0`, and (ii) along a subsequence of every `λⱼ ↓ 0`, `λⱼ⁻²∫ g ∘ η_{a,λⱼ} dμ → m∫_Q g dH²`,
+then `|q(x)| ≤ ε|x − a|` for `x ∈ Z` near `a`.  Otherwise there are `xⱼ ∈ Z` with
+`sⱼ = |xⱼ − a| → 0` and `|q(xⱼ)| > εsⱼ`; a limit `w` of the unit directions `sⱼ⁻¹(xⱼ − a)` lies in
+`Q` by `idtp_cse_etp_rescaled_limit_mem` (the balls `B_{sⱼr}(xⱼ)` have mass `≥ ω₂(sⱼr)²`), yet
+`|q(w)| ≥ ε`. -/
+theorem Submission.idtp_cse_etp_cusp : ∀ (P : ℕ) (μ : Measure (Euclid P)) (Z : Set (Euclid P)) (Q : Submodule ℝ (Euclid P)) (a : Euclid P) (m : ℝ), a ∈ Q → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ y ∈ Z, ∀ ρ : ℝ, 0 < ρ → unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ μ (ball y ρ)) → (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂μ) atTop (𝓝 (m * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ ∀ x ∈ Z, dist x a < s → ‖x - Q.starProjection x‖ ≤ ε * dist x a := by
+  intro P μ Z Q a m haQ hfin hlow hblow ε hε
+  -- `q(x − a) = q(x)` because `πa = a`
+  have hπa : Q.starProjection a = a := Submodule.starProjection_eq_self_iff.2 haQ
+  -- if no `s` works, pick `xⱼ ∈ Z` with `|xⱼ − a| < 1/(j+1)` and `|q(xⱼ)| > ε|xⱼ − a|`
+  by_contra hcon
+  have hbad : ∀ j : ℕ, ∃ x ∈ Z, dist x a < 1 / ((j : ℝ) + 1) ∧
+      ε * dist x a < ‖x - Q.starProjection x‖ := by
+    intro j
+    by_contra h
+    exact hcon ⟨1 / ((j : ℝ) + 1), by positivity, fun x hx hxa =>
+      not_lt.1 fun hlt => h ⟨x, hx, hxa, hlt⟩⟩
+  choose xs hxZ hxa hxq using hbad
+  -- `sⱼ := |xⱼ − a| > 0` (else `xⱼ = a` and `q(xⱼ) = 0`), and `sⱼ → 0`
+  have hpos : ∀ j, 0 < dist (xs j) a := by
+    intro j
+    refine dist_pos.2 fun h => ?_
+    have := hxq j
+    rw [h, hπa, sub_self, norm_zero, dist_self, mul_zero] at this
+    exact lt_irrefl _ this
+  have hlim : Tendsto (fun j => dist (xs j) a) atTop (𝓝 0) :=
+    squeeze_zero (fun _ => dist_nonneg) (fun j => (hxa j).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+  -- the blow-up subsequence `φ` for `λⱼ := sⱼ`
+  obtain ⟨φ, -, hV⟩ := hblow (fun j => dist (xs j) a) hpos hlim
+  -- the unit directions `wⱼ := sⱼ⁻¹(xⱼ − a)` along `φ` have a subsequence `ψ` with `wψⱼ → w`
+  have hsph : ∀ j, (dist (xs (φ j)) a)⁻¹ • (xs (φ j) - a) ∈ sphere (0 : Euclid P) 1 := by
+    intro j
+    rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, Real.norm_eq_abs,
+      abs_of_pos (hpos _), ← dist_eq_norm]
+    exact inv_mul_cancel₀ (hpos _).ne'
+  obtain ⟨w, -, ψ, hψ, hw⟩ := (isCompact_sphere (0 : Euclid P) 1).tendsto_subseq hsph
+  -- `a + sⱼwⱼ = xⱼ ∈ Z`, so (i) bounds the mass of every ball `B_{sⱼr}(a + sⱼwⱼ)`
+  have hcenter : ∀ j, a + dist (xs (φ (ψ j))) a •
+      ((dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a)) = xs (φ (ψ j)) := by
+    intro j
+    rw [smul_smul, mul_inv_cancel₀ (hpos _).ne', one_smul, add_sub_cancel]
+  -- hence `w ∈ Q` (`Q` is closed, and (ii) along `φ` persists along `φ ∘ ψ`)
+  have hwQ : w ∈ (Q : Set (Euclid P)) :=
+    Submission.idtp_cse_etp_rescaled_limit_mem P μ Q a w m (fun j => dist (xs (φ (ψ j))) a)
+      (fun j => (dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a))
+      (Submodule.closed_of_finiteDimensional Q) hfin (fun _ => hpos _) hw
+      (fun g hg hgc => (hV g hg hgc).comp hψ.tendsto_atTop)
+      (fun r hr => Eventually.of_forall fun j => by
+        rw [hcenter j]
+        exact hlow _ (hxZ _) _ (mul_pos (hpos _) hr))
+  -- but `|q(wⱼ)| = sⱼ⁻¹|q(xⱼ)| > ε` for every `j`, so `0 = |q(w)| ≥ ε`
+  have hq : ∀ j, ε < ‖(dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a) -
+      Q.starProjection ((dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a))‖ := by
+    intro j
+    rw [map_smul, map_sub, hπa, ← smul_sub, sub_sub_sub_cancel_right, norm_smul, norm_inv,
+      Real.norm_eq_abs, abs_of_pos (hpos _), lt_inv_mul_iff₀ (hpos _), mul_comm]
+    exact hxq _
+  have hqlim : Tendsto (fun j => ‖(dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a) -
+      Q.starProjection ((dist (xs (φ (ψ j))) a)⁻¹ • (xs (φ (ψ j)) - a))‖) atTop
+      (𝓝 ‖w - Q.starProjection w‖) :=
+    ((continuous_id.sub Q.starProjection.continuous).norm.tendsto w).comp hw
+  have hge := ge_of_tendsto' hqlim fun j => (hq j).le
+  rw [Submodule.starProjection_eq_self_iff.2 hwQ, sub_self, norm_zero] at hge
+  exact absurd hε (not_lt.2 hge)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
