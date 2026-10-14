@@ -479,6 +479,137 @@ theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Eucli
   funext x
   rw [ho, NNReal.smul_def, smul_eq_mul]
   norm_cast
+/-- **Mass localization for a current vanishing away from a compact set** (Simon 7.2.4, proof,
+step 4(a)).  Let `C ⊆ V` with `C` compact and `V` open, and let `X ∈ 𝒟ₖ(U)` kill every
+`ω ∈ 𝒟ᵏ(U)` with `spt ω ∩ C = ∅`.  Then `M_G(X) ≤ M_V(X)` for every `G`.  Choose a smooth
+`χ : ℝᴾ → [0, 1]` with `χ = 1` on an open `N ⊇ C` and `spt χ ⊆ V`.  For `ω` admissible
+for `M_G`, `(1 − χ)ω` vanishes on `N`, so `X(ω) = X(χω)`, and `χω` is admissible for `M_V`
+because `|χω| = χ|ω| ≤ 1`. -/
+theorem Submission.lcmp_massOn_le_of_vanish_off_compact : ∀ (P k : ℕ) (U V C : Set (Euclid P)) (X : GeometricCurrentOn U k), IsCompact C → IsOpen V → C ⊆ V → (∀ ω : TestFormOn U k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) C → X ω = 0) → ∀ G : Set (Euclid P), X.massOn G ≤ X.massOn V := by
+  intro P k U V C X hC hV hCV hvan G
+  -- Step 4: `|cα| = |c| |α|` for the Euclidean coefficient norm
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) k),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    have hsum : (∑ I : Fin k → Fin P, if StrictMono I then
+        ((c • α) (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0) =
+        c ^ 2 * ∑ I : Fin k → Fin P, if StrictMono I then
+          (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0 := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+        ring
+      · simp
+    rw [hsum, Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq_eq_abs]
+  -- Step 1: if `C = ∅` then `X = 0`, so `M_G(X) = 0`
+  rcases C.eq_empty_or_nonempty with rfl | hCne
+  · refine sSup_le ?_
+    rintro r ⟨ω, -, rfl⟩
+    show ENNReal.ofReal (X ω) ≤ X.massOn V
+    rw [hvan ω (disjoint_empty _), ENNReal.ofReal_zero]
+    exact zero_le
+  -- Step 2: `C ⊆ V' = {dist(·, C) < δ/2}` with `closure V' ⊆ {dist(·, C) ≤ δ/2} ⊆ V`
+  obtain ⟨δ, hδ, hδV⟩ := hC.exists_cthickening_subset_open hV hCV
+  have hV'o : IsOpen (thickening (δ / 2) C) := isOpen_thickening
+  -- Step 3: `χ = τ(2g/a)`, where `{g ≠ 0} = V'`, `a = min_C g > 0`, `τ` the smooth transition
+  obtain ⟨g, hgsupp, hgsmooth, hgrange⟩ := hV'o.exists_contDiff_support_eq (n := (⊤ : ℕ∞))
+  have hgnn : ∀ x, 0 ≤ g x := fun x => (hgrange ⟨x, rfl⟩).1
+  have hgpos : ∀ x ∈ C, 0 < g x := by
+    intro x hx
+    have hxs : x ∈ support g := by
+      rw [hgsupp]
+      exact self_subset_thickening (half_pos hδ) C hx
+    exact lt_of_le_of_ne (hgnn x) (Ne.symm hxs)
+  obtain ⟨x₀, hx₀C, hx₀min⟩ := hC.exists_isMinOn hCne hgsmooth.continuous.continuousOn
+  set a := g x₀
+  have ha : 0 < a := hgpos x₀ hx₀C
+  set χ : Euclid P → ℝ := fun x => Real.smoothTransition (2 * g x / a)
+  have hχsmooth : ContDiff ℝ (⊤ : ℕ∞) χ :=
+    Real.smoothTransition.contDiff.comp ((contDiff_const.mul hgsmooth).div_const a)
+  -- `χ = 1` on the open set `N = {g > a/2} ⊇ C`
+  set N : Set (Euclid P) := {x | a / 2 < g x}
+  have hNo : IsOpen N := isOpen_lt continuous_const hgsmooth.continuous
+  have hCN : C ⊆ N := fun x hx => by
+    have h1 : a ≤ g x := hx₀min hx
+    show a / 2 < g x
+    linarith
+  have hχN : ∀ x ∈ N, χ x = 1 := fun x hx => by
+    apply Real.smoothTransition.one_of_one_le
+    have hx' : a / 2 < g x := hx
+    rw [le_div_iff₀ ha]
+    linarith
+  -- `χ = 0` where `g = 0`, so `spt χ ⊆ closure V' ⊆ {dist(·, C) ≤ δ/2} ⊆ V`
+  have hχsupp : support χ ⊆ thickening (δ / 2) C := by
+    intro x hx
+    by_contra h
+    rw [← hgsupp, mem_support, not_not] at h
+    apply hx
+    show Real.smoothTransition (2 * g x / a) = 0
+    rw [h, mul_zero, zero_div]
+    exact Real.smoothTransition.zero_of_nonpos le_rfl
+  have hclχ : tsupport χ ⊆ cthickening (δ / 2) C :=
+    (closure_mono hχsupp).trans (closure_thickening_subset_cthickening _ _)
+  have htχ : tsupport χ ⊆ V :=
+    hclχ.trans ((cthickening_mono (half_le_self hδ.le) C).trans hδV)
+  -- Step 5: for `ω` admissible for `M_G`, `ω₁ = χω ∈ 𝒟ᵏ(U)`
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (X ω) ≤ X.massOn V
+  have hωt : IsTestForm (ω : DifferentialForm (Euclid P) k) := ω.property.1
+  obtain ⟨ω₁f, hω₁f⟩ : ∃ g : DifferentialForm (Euclid P) k,
+      g = fun x => χ x • (ω : DifferentialForm (Euclid P) k) x := ⟨_, rfl⟩
+  have hω₁smooth : IsSmoothForm ω₁f := by
+    rw [hω₁f]
+    exact hχsmooth.smul hωt.1
+  have hω₁supp : tsupport ω₁f ⊆ tsupport (ω : DifferentialForm (Euclid P) k) := by
+    rw [hω₁f]
+    exact tsupport_smul_subset_right _ _
+  have hω₁suppχ : tsupport ω₁f ⊆ tsupport χ := by
+    rw [hω₁f]
+    exact tsupport_smul_subset_left _ _
+  have hω₁cpt : HasCompactSupport ω₁f :=
+    IsCompact.of_isClosed_subset hωt.2 (isClosed_tsupport _) hω₁supp
+  let ω₁ : TestFormOn U k := ⟨ω₁f, ⟨hω₁smooth, hω₁cpt⟩, hω₁supp.trans ω.property.2⟩
+  -- Step 6: `ω₂ = ω − ω₁` vanishes on `N ⊇ C`, so `spt ω₂ ∩ C = ∅` and `X(ω₂) = 0`
+  have hω₂van : X (ω - ω₁) = 0 := by
+    apply hvan
+    rw [Set.disjoint_left]
+    intro x hx hxC
+    have hzero : ∀ y ∈ N, ((ω - ω₁ : TestFormOn U k) : DifferentialForm (Euclid P) k) y = 0 := by
+      intro y hy
+      have hco : ((ω - ω₁ : TestFormOn U k) : DifferentialForm (Euclid P) k) y =
+          (ω : DifferentialForm (Euclid P) k) y - ω₁f y := rfl
+      rw [hco, hω₁f]
+      beta_reduce
+      rw [hχN y hy, one_smul, sub_self]
+    have hxN : x ∈ N := hCN hxC
+    have hnot : x ∉ tsupport ((ω - ω₁ : TestFormOn U k) : DifferentialForm (Euclid P) k) := by
+      rw [notMem_tsupport_iff_eventuallyEq]
+      filter_upwards [hNo.mem_nhds hxN] with y hy
+      exact hzero y hy
+    exact hnot hx
+  have hsplit : X ω = X ω₁ := by
+    have : X (ω - ω₁) = X ω - X ω₁ := map_sub X.toCurrent ω ω₁
+    linarith
+  -- Step 5 (cont.): `spt ω₁ ⊆ spt χ ⊆ V` and `|ω₁(x)| = χ(x) |ω(x)| ≤ 1`
+  have hadm : ω₁ ∈ massAdmissibleOn U k V := by
+    refine ⟨hω₁suppχ.trans htχ, fun x => ?_⟩
+    have hco : (ω₁ : DifferentialForm (Euclid P) k) x =
+        χ x • (ω : DifferentialForm (Euclid P) k) x := by
+      show ω₁f x = _
+      rw [hω₁f]
+    rw [hco, hsmul]
+    have h0 : 0 ≤ χ x := Real.smoothTransition.nonneg _
+    have h1 : χ x ≤ 1 := Real.smoothTransition.le_one _
+    rw [abs_of_nonneg h0]
+    have h2 := covectorEuclideanNorm_nonneg ((ω : DifferentialForm (Euclid P) k) x)
+    have h3 := hω.2 x
+    nlinarith
+  -- Step 7: `ofReal X(ω) = ofReal X(ω₁) ≤ M_V(X)`; take the supremum over `ω`
+  rw [hsplit]
+  exact X.le_massOn hadm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
