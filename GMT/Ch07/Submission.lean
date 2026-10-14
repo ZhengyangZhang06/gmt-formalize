@@ -643,6 +643,17 @@ theorem Submission.dtc_imrep_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (R :
     _ < ε := by
       rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
       nlinarith
+/-- **The integer multiplicity current `c[[ℝⁿ]]`** (Simon 6.2.2, 6.2.34, 6.3.1 (‡)): for `c ∈ ℤ`
+there is an integer multiplicity `C ∈ 𝒟ₙ(ℝⁿ)` with `C(ω) = c ∫ ⟨ω(y), e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ(y)`, where
+`e` is the standard basis of `ℝⁿ`.
+
+Take the triple `R` of `c[[ℝⁿ]]` (`R(ω) = c ∫ ω(y)(e) dLⁿ(y)`) and the current `C = τ(R)` it
+defines.  Then `R` represents `C`, so `C` is integer multiplicity and `C(ω) = R(ω)`. -/
+theorem Submission.dtc_bc_cz_unit_current : ∀ (n : ℕ) (c : ℤ), 0 < n → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity C ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, C ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n c hn
+  obtain ⟨R, hR⟩ := Submission.dtc_bc_cz_unit_current_imrep n c hn
+  obtain ⟨C, hC⟩ := Submission.dtc_imrep_current n n univ R
+  exact ⟨C, ⟨R, hC⟩, fun ω => (hC ω).trans (hR ω)⟩
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
