@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "417f01076744393d73d0a3654735cb7bb2cb2b34c1a3dc3be0a607f90bc798ed",
+  "git_delta": {
+    "base_commit": "fa423443bea727ed79446c0b263513132eb93495",
+    "candidate_commit": "69e32bce842834229d1c9d145592348463175a7d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_det_laplace_first_column",
+    "diff_sha256": "ca59597ab42132b62dd9a27523c02f35e58dd3815c7312af4a0ab4b30f9004d4",
+    "source_sha256": "959953b861ddbb3f134d767d878e5baf37fba4cf08f9503dfe51f47af8f66b36",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_det_laplace_first_column",
+      "statement": "∀ (n : ℕ) (p : Euclid (n + 1)) (j : Fin (n + 1)), Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) : Fin (n + 1) → Euclid (n + 1)) c r) = (-1 : ℝ) ^ (j : ℕ) * p j",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
