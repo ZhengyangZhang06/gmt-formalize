@@ -9892,6 +9892,106 @@ theorem Submission.dimred_mbl_current_foundations : (∀ (P n : ℕ) (U : Set (E
   exact ⟨μ, ξ, hμU, hμK, hμW, hξ, hξα, hTξ, fun hbd =>
     Submission.dimred_mbl_fnd_null_of_representation P n U T μ ξ hU hbd hμU hμK hμW hξ hξα hTξ⟩
 
+/-- **Push-forward of integer multiplicity currents by a `C¹` map** (Simon Ch. 6, 2.23–2.24 and
+3.3–3.9).  Let `f` be `C¹` on the open set `O` with `‖Df‖ ≤ L` there, and call `Y ∈ 𝒟ₙ(ℝᴾ)`
+(`n = m + 1`) admissible if it is integer multiplicity and `spt Y` is a compact subset of `O`.  For
+admissible `Y = τ(M, θ, ξ)` let `push Y(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ`, a current
+supported in `f(spt Y)`; otherwise `push Y = Y`.  This integral is the limit of `Y(ωⱼ)` for one
+sequence of test forms `ωⱼ` chosen before the representation, so the formula holds for every
+representation of `Y` and is additive in `Y`.  Integrality, `M(push Y) ≤ Lⁿ M(Y)`, `∂ push Y = 0`
+if `∂Y = 0`, and `push Y = Y` if `f` fixes `spt Y` follow from the formula.  For admissible `Y₁`,
+`Y₂`, `Y₁ - Y₂` is admissible since `spt(Y₁ - Y₂) ⊆ spt Y₁ ∪ spt Y₂`. -/
+theorem Submission.dimred_mbl_pushforward : ∀ (P m : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (L : ℝ), IsOpen O → ContDiffOn ℝ 1 f O → (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push Y ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (push Y) ∧ (push Y).support ⊆ f '' Y.support ∧ (push Y).mass ≤ ENNReal.ofReal (L ^ (m + 1)) * Y.mass ∧ (Y.boundary = 0 → (push Y).boundary = 0) ∧ ((∀ y ∈ Y.support, f y = y) → push Y = Y)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y₁ → IsIntegerMultiplicity Y₂ → IsCompact Y₁.support → Y₁.support ⊆ O → IsCompact Y₂.support → Y₂.support ⊆ O → push (Y₁ - Y₂) = push Y₁ - push Y₂ := by
+  intro P m O f L hO hf hL
+  classical
+  -- Step 1 (carrier_facts): `Hⁿ(M \ spt Y) = 0`, `spt Y` closed, `spt(Y₁ - Y₂) ⊆ spt Y₁ ∪ spt Y₂`
+  have hcar := Submission.dimred_mbl_pf_imrep_carrier_mass_support P (m + 1)
+  -- Step 3 (pf_current): for admissible `Y` and a representation `R` of `Y`, the push-forward
+  -- formula defines a current supported in `f(spt Y)`
+  have hex : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      IsIntegerMultiplicity Y ∧ IsCompact Y.support ∧ Y.support ⊆ O →
+        ∃ (Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+          (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y ∧
+          (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Z ω = ∫ x in R.carrier,
+            (R.mult x : ℝ) * R.orient x
+              (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap
+                (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ Z.support ⊆ f '' Y.support := by
+    rintro Y ⟨⟨R, hR⟩, hK, hKO⟩
+    obtain ⟨Z, hZ, -, hZs⟩ := Submission.dimred_mbl_pf_pushforward_current_exists P (m + 1) univ
+      Y.support O R f isOpen_univ hK (subset_univ _) (hcar.1 Y R hR).1 hO hKO hf (subset_univ _)
+    exact ⟨Z, R, hR, hZ, hZs⟩
+  -- `push Y` is that current if `Y` is admissible, and `Y` otherwise
+  obtain ⟨push, hpush⟩ : ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) →
+      GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ Y
+        (h : IsIntegerMultiplicity Y ∧ IsCompact Y.support ∧ Y.support ⊆ O),
+          push Y = Classical.choose (hex Y h) :=
+    ⟨fun Y => if h : IsIntegerMultiplicity Y ∧ IsCompact Y.support ∧ Y.support ⊆ O then
+      Classical.choose (hex Y h) else Y, fun Y h => dite_eq_left h⟩
+  have hspec : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      IsIntegerMultiplicity Y → IsCompact Y.support → Y.support ⊆ O →
+        ∃ R₀ : IMRep (univ : Set (Euclid P)) (m + 1), R₀.Represents Y ∧
+          (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push Y ω = ∫ x in R₀.carrier,
+            (R₀.mult x : ℝ) * R₀.orient x
+              (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap
+                (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ (push Y).support ⊆ f '' Y.support := by
+    intro Y hY hK hKO
+    rw [hpush Y ⟨hY, hK, hKO⟩]
+    exact Classical.choose_spec (hex Y ⟨hY, hK, hKO⟩)
+  -- Step 2 (extension): the formula holds for every representation `R` of `Y`, both integrals
+  -- being limits of `Y(ωⱼ)` for one sequence of test forms `ωⱼ`
+  have hformula : ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y → IsCompact Y.support →
+        Y.support ⊆ O → ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push Y ω =
+          ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x
+            (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap
+              (fderiv ℝ f x)) ∂μHE[m + 1] := by
+    intro Y R hR hK hKO ω
+    obtain ⟨R₀, hR₀, hZ, -⟩ := hspec Y ⟨R, hR⟩ hK hKO
+    obtain ⟨ωs, hωs⟩ := Submission.dimred_mbl_pf_pullback_integral_extension P (m + 1) O
+      Y.support f ω hO hf hK hKO
+    rw [hZ ω]
+    exact tendsto_nhds_unique (hωs Y R₀ hR₀ subset_rfl) (hωs Y R hR subset_rfl)
+  refine ⟨push, fun Y R hR hK hKO => ?_, fun Y₁ Y₂ hY₁ hY₂ hK₁ hKO₁ hK₂ hKO₂ => ?_⟩
+  · -- (A) for an admissible `Y = τ(M, θ, ξ)`
+    obtain ⟨-, -, -, hsupp⟩ := hspec Y ⟨R, hR⟩ hK hKO
+    have hF := hformula Y R hR hK hKO
+    have hnull : μHE[m + 1] (R.carrier \ Y.support) = 0 := (hcar.1 Y R hR).1
+    refine ⟨hF, ?_, hsupp, ?_, fun hbd => ?_, fun hfix => ?_⟩
+    · -- (ii) integrality (pf_integer), with (TL) from im_calculus (a)
+      refine Submission.dimred_mbl_pf_pushforward_isIntegerMultiplicity
+        (fun P' n' U' A B hU' hA hB hAB hBU hfin => ?_) P (m + 1) univ Y.support O R f (push Y)
+        isOpen_univ (Nat.succ_pos m) hK (subset_univ _) hnull hO hKO hf (subset_univ _) hF
+      filter_upwards [Submission.cmc_imRep_locality_restrict_sub.1 P' n' U' A B hU' hA hB hAB hBU
+        hfin] with x hx Q
+      exact (hx Q).symm
+    · -- (iv) mass (mass_bound)
+      exact Submission.dimred_mbl_pf_pushforward_mass_le P (m + 1) O f L Y (push Y) R hL hR hK hKO
+        hF
+    · -- (v) boundary (pf_boundary)
+      exact Submission.dimred_mbl_pf_pushforward_boundaryVanishes P (m + 1) univ Y.support O R f Y
+        (push Y) isOpen_univ hK (subset_univ _) hnull hO hKO hf hR hbd hF
+    · -- (vi) identity
+      exact Submission.dimred_mbl_pf_pushforward_eq_self_of_fix P (m + 1) O f Y (push Y) R hO hf hR
+        hKO hfix hF
+  · -- (B) `Y₁ - Y₂` is admissible (im_calculus (c), carrier_facts (2)), and the extension along
+    -- `spt Y₁ ∪ spt Y₂` makes the formula additive
+    obtain ⟨R₁, hR₁⟩ := hY₁
+    obtain ⟨R₂, hR₂⟩ := hY₂
+    obtain ⟨R, hR⟩ := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ Y₁ Y₂
+      isOpen_univ ⟨R₁, hR₁⟩ ⟨R₂, hR₂⟩
+    have hsub : (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support := (hcar.2 Y₁ Y₂).2
+    have hK : IsCompact (Y₁ - Y₂).support :=
+      (hK₁.union hK₂).of_isClosed_subset (hcar.2 (Y₁ - Y₂) Y₂).1 hsub
+    have hKO : (Y₁ - Y₂).support ⊆ O := hsub.trans (union_subset hKO₁ hKO₂)
+    ext ω
+    obtain ⟨ωs, hωs⟩ := Submission.dimred_mbl_pf_pullback_integral_extension P (m + 1) O
+      (Y₁.support ∪ Y₂.support) f ω hO hf (hK₁.union hK₂) (union_subset hKO₁ hKO₂)
+    show push (Y₁ - Y₂) ω = push Y₁ ω - push Y₂ ω
+    rw [hformula (Y₁ - Y₂) R hR hK hKO ω, hformula Y₁ R₁ hR₁ hK₁ hKO₁ ω,
+      hformula Y₂ R₂ hR₂ hK₂ hKO₂ ω]
+    exact tendsto_nhds_unique (hωs (Y₁ - Y₂) R hR hsub)
+      ((hωs Y₁ R₁ hR₁ subset_union_left).sub (hωs Y₂ R₂ hR₂ subset_union_right))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
