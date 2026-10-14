@@ -727,6 +727,33 @@ theorem Submission.cbr_ci_pw_orthonormal_covector_bounds : ∀ (P n : ℕ) (v : 
   exact ⟨fun β => Submission.regcomp_covector_eval_orthonormal_le P n β v hv,
     fun l γ => (Submission.cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq P n v pL hv hpL l γ).le⟩
 
+/-- **Smooth cutoff around a compact set** (the cutoff (N4) of White's projection argument): for
+`K` compact and `O` open in `ℝᴾ` with `K ⊆ O` there are `χ ∈ C^∞_c(ℝᴾ)` with `tsupport χ ⊆ O`
+and `0 ≤ χ ≤ 1`, and an open `O' ⊇ K` with `χ = 1` on `O'`.  Choose `δ > 0` with
+`cthickening δ K ⊆ O`; the smooth Urysohn lemma gives `χ` with `support χ = thickening δ K` and
+`χ = 1` exactly on `cthickening (δ/2) K`.  Then `tsupport χ ⊆ cthickening δ K ⊆ O`, a compact
+set, and `O' = thickening (δ/2) K`. -/
+theorem Submission.cbr_ci_pw_proj_smooth_cutoff : ∀ (P : ℕ) (K O : Set (Euclid P)), IsCompact K → IsOpen O → K ⊆ O → ∃ (χ : Euclid P → ℝ) (O' : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ O ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ IsOpen O' ∧ K ⊆ O' ∧ ∀ x ∈ O', χ x = 1 := by
+  intro P K O hK hO hKO
+  -- Step 1: `cthickening δ K ⊆ O` for some `δ > 0`; put `r = δ/2`
+  obtain ⟨δ, hδ, hδO⟩ := hK.exists_cthickening_subset_open hO hKO
+  have hr : 0 < δ / 2 := half_pos hδ
+  -- Steps 2-3: smooth Urysohn for the closed `cthickening r K` inside the open `thickening δ K`
+  obtain ⟨χ, hχ, hrange, hsupp, hone⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) (isOpen_thickening (δ := δ) (E := K))
+      (isClosed_cthickening (δ := δ / 2) (E := K))
+      (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  -- Step 4: `tsupport χ = closure (thickening δ K) ⊆ cthickening δ K`
+  have hts : tsupport χ ⊆ cthickening δ K := by
+    rw [tsupport, hsupp]
+    exact closure_thickening_subset_cthickening δ K
+  -- Steps 5-7: compact support inside the compact `cthickening δ K`, the bounds `0 ≤ χ ≤ 1`, and
+  -- `χ = 1` on `O' = thickening r K ⊆ cthickening r K`
+  refine ⟨χ, thickening (δ / 2) K, hχ, ?_, hts.trans hδO, fun x => ?_, isOpen_thickening,
+    self_subset_thickening hr K, fun x hx => (hone x).1 (thickening_subset_cthickening _ _ hx)⟩
+  · exact (hK.cthickening (r := δ)).of_isClosed_subset (isClosed_tsupport χ) hts
+  · exact hrange (mem_range_self x)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
