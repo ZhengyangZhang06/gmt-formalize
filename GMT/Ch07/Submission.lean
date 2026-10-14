@@ -492,6 +492,38 @@ theorem Submission.idtp_cse_fa_pj_polar_fderiv_apply : ∀ (P : ℕ) (a e x : Eu
   · field_simp
   · field_simp
     ring
+/-- Gram determinant of two vectors over a `2`-plane: if `dim T = 2`, `uᵢ` is the orthonormal
+basis `stdOrthonormalBasis ℝ T` and `p, q ∈ ℝᴾ`, then
+`det(⟨p, uᵢ⟩⟨p, uⱼ⟩ + ⟨q, uᵢ⟩⟨q, uⱼ⟩) = |p_T p|² |p_T q|² − ⟨p_T p, p_T q⟩²`.  Lagrange's
+identity on `Fin 2` gives `(Σ ⟨p, uᵢ⟩²)(Σ ⟨q, uᵢ⟩²) − (Σ ⟨p, uᵢ⟩⟨q, uᵢ⟩)²`; as
+`⟨v, uᵢ⟩ = ⟨p_T v, uᵢ⟩`, Parseval in `T` evaluates the three sums. -/
+theorem Submission.idtp_cse_fa_pj_gram_det_two_plane : ∀ (P : ℕ) (T : Submodule ℝ (Euclid P)) (p q : Euclid P), Module.finrank ℝ T = 2 → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => inner ℝ p (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ p (stdOrthonormalBasis ℝ T j : Euclid P) + inner ℝ q (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ q (stdOrthonormalBasis ℝ T j : Euclid P)) = ‖T.starProjection p‖ ^ 2 * ‖T.starProjection q‖ ^ 2 - inner ℝ (T.starProjection p) (T.starProjection q) ^ 2 := by
+  intro P T p q hT
+  set b := stdOrthonormalBasis ℝ T
+  -- Lagrange's identity on `Fin n` with `n = 2` (the index type `Fin (dim T)` is not rewritten)
+  have hlag : ∀ n : ℕ, n = 2 → ∀ f g : Fin n → ℝ,
+      Matrix.det (Matrix.of fun i j : Fin n => f i * f j + g i * g j) =
+        (∑ i, f i ^ 2) * (∑ i, g i ^ 2) - (∑ i, f i * g i) ^ 2 := by
+    rintro n rfl f g
+    rw [Matrix.det_fin_two]
+    simp only [Matrix.of_apply, Fin.sum_univ_two]
+    ring
+  -- reduction to `T`: `⟨v, uᵢ⟩ = ⟨P_T v, uᵢ⟩_T`
+  have hred : ∀ (v : Euclid P) (i : Fin (Module.finrank ℝ T)),
+      inner ℝ v (b i : Euclid P) = inner ℝ (T.orthogonalProjectionOnto v) (b i) := fun v i =>
+    (T.inner_orthogonalProjectionOnto_eq_of_mem_right (b i) v).symm
+  rw [hlag _ hT (fun i => inner ℝ p (b i : Euclid P)) (fun i => inner ℝ q (b i : Euclid P))]
+  simp only [hred]
+  -- Parseval in `T`
+  have hpq : ∑ i, inner ℝ (T.orthogonalProjectionOnto p) (b i) *
+      inner ℝ (T.orthogonalProjectionOnto q) (b i) =
+      inner ℝ (T.orthogonalProjectionOnto p) (T.orthogonalProjectionOnto q) := by
+    rw [← b.sum_inner_mul_inner]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [real_inner_comm (b i) (T.orthogonalProjectionOnto q)]
+  rw [b.sum_sq_inner_left, b.sum_sq_inner_left, hpq, Submodule.coe_inner, ← Submodule.norm_coe,
+    ← Submodule.norm_coe, Submodule.coe_orthogonalProjectionOnto_apply,
+    Submodule.coe_orthogonalProjectionOnto_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
