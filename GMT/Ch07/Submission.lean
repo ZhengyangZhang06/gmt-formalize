@@ -731,6 +731,22 @@ theorem Submission.cbr_ci_cp_prod_of_rectangles : ∀ (P n : ℕ) (ν σ : Measu
         exact htA ((hsec y hy).1 ▸ hyA)
     rw [setLIntegral_congr_fun hV key, lintegral_indicator_const hA, Measure.restrict_apply hA]
 
+/-- A measure `ν` on `ℝᴾ`, finite on compact sets and invariant under the translations by an
+`n`-dimensional linear subspace `V`, is the image of `(Hⁿ⌞V) ⊗ σ` under `(t, y) ↦ t + y` for a
+measure `σ` carried by `V^⊥` and finite on compact sets (used for the product structure of
+translation invariant measures in the integer multiplicity part of Simon 7.2.4, Remark
+7.2.5(1)).  With `p = V.starProjection` and `q = Vᗮ.starProjection`, uniqueness of Haar measure
+on `V` gives such a `σ` with `ν(p⁻¹(A) ∩ q⁻¹(B)) = σ(B)·Hⁿ(A ∩ V)` for Borel `A`, `B`; the image
+of `(Hⁿ⌞V) ⊗ σ` under addition has the same values on these rectangles, which form a generating
+π-system covered by countably many rectangles of finite measure, so it equals `ν`. -/
+theorem Submission.cbr_ci_cp_invariant_measure_product : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → ∃ σ : Measure (Euclid P), σ (Vᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) ∧ ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+  intro P n ν V hn hcpt hinv
+  -- the transverse measure `σ` on `V^⊥` and the rectangle formula (Haar uniqueness on `V`)
+  obtain ⟨σ, hσV, hσcpt, hrect⟩ :=
+    Submission.cbr_ci_cp_prod_rectangle_formula P n ν V hn hcpt hinv
+  -- `ν` agrees with the image of `(Hⁿ⌞V) ⊗ σ` on rectangles, hence on all Borel sets
+  exact ⟨σ, hσV, hσcpt, Submission.cbr_ci_cp_prod_of_rectangles P n ν σ V hn hσV hσcpt hrect⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
