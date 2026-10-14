@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "codim1_rdo_dg_ce_|integral_lineDeriv_mul_eq|trace_smulRight|trace_eq_sum_inner|norm_fderiv_le_of_lipschitz|integral_integral_swap|theorem addHaar_ball",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/cutoff-independent-audit-97qeum_6/TypesOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/cutoff-independent-audit-97qeum_6/FromPayload.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3ce4c763f6/decomposition-v1.json",
+        "/tmp/cutoff-independent-audit-97qeum_6/TypesOnly.lean",
+        "/tmp/cutoff-independent-audit-97qeum_6/FromPayload.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the snapshot pins; the frozen contract matches the workspace header. The inspected library supplies the required derivative, trace, Fubini, integration-by-parts, and ball-scaling lemmas. All five names are bare identifiers, with no reservations among 975 DAG nodes and no matches in the searched snapshot project or SimonGMT sources. No accepted declaration is reused. Every frozen proposition elaborates before any child implementation. Independently extracted appendices and the parent assembly compile under the frozen imports; all six declarations use only propext, Classical.choice, and Quot.sound. Euclidean norms, inner products, trace, and volume have the intended instances; no inline matrix constructions occur. The five-leaf split is appropriate and acyclic. Applying annular_bound to F and its complement, then taking δ = ρ, proves the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line type. Matching endpoint derivatives establish the profile's C¹ regularity; the Lipschitz bound, Fermat argument, and compact superlevel maximum prove all remaining properties, including boundary points and P = 0. The proof is complete and independent."
+    },
+    {
+      "key": "signed_layer_cake",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including allowing nonmeasurable B. The inclusions B ⊆ {ζ ≥ t} ⊆ S justify finite-measure monotonicity. Restriction to S makes the bounded signed integrand integrable on a finite product, so Fubini and c ≥ 0 yield the exact conclusion without assuming global σ-finiteness."
+    },
+    {
+      "key": "integral_div_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The coordinate trace formula gives a finite sum of continuous, compactly supported derivatives, establishing integrability. Fubini and the fundamental theorem of calculus give zero for each summand; the supplied integration-by-parts alternative is also valid. The P = 0 case and absence of child dependencies are handled."
+    },
+    {
+      "key": "normal_average_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Convergence of the inner products supplies a positive radius, capped by ρ₀. Bounded measurability and finite ball mass justify commuting integration with the inner product. The zero-mass case and positive finite-mass rescaling are treated correctly, proving the exact quantitative bound without circularity."
+    },
+    {
+      "key": "annular_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, and the proof uses exactly the declared radial_cutoff and signed_layer_cake dependencies. The admissible field ζv has divergence Dζ(v); Gauss–Green and the two integral bounds yield the constant 3. Established finiteness justifies conversion to ENNReal. No positivity assumption on ρ₂ is missing, since qualifying radius pairs already imply it."
+    }
+  ],
+  "required_changes": []
+}
