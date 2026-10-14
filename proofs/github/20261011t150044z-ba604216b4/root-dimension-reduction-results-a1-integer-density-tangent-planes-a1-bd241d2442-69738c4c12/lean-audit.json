@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d85c77543f5b9f6e146f2a8cab4b07ad04e157a87b2236966c736af0b6c84b30",
+  "git_delta": {
+    "base_commit": "d184cae41b48bcec75e9601a4306b7143bcb43d3",
+    "candidate_commit": "ac29e59a7fa14f53fe70e19203294d3378a6a127",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_fr_cone_disjoint",
+    "diff_sha256": "ab82ce24328c8b38e47c34325a776b8c3a34e822975b98473fdac324348f9d89",
+    "source_sha256": "eb5996b6f65d274ebca488c6445aa27397e2fc5a1d4798b79ff3e20a39499850",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_fr_cone_disjoint",
+      "statement": "∀ (P : ℕ) (σ σ' : Euclid P) (ρ : ℝ), ‖σ‖ = 1 → ‖σ'‖ = 1 → 0 < ρ → ρ ≤ 1 → 2 * ρ ≤ ‖σ - σ'‖ → Disjoint (⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) (⋃ (s : ℝ) (_ : 0 < s), ball (s • σ') (s * ρ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
