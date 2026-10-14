@@ -610,6 +610,77 @@ theorem Submission.cbr_ci_dr_dn_norm_le_mul_covectorEuclideanNorm : ∀ (P n : �
   calc ‖α‖ ≤ K * ‖L α‖ := h1
     _ ≤ K * covectorEuclideanNorm α := by gcongr
 
+/-- **The norm on `n`-vectors dual to the Euclidean coefficient norm** (step 1 of the density
+representation of a cycle).  Let `|α|` be the Euclidean coefficient norm on `Λⁿ(ℝᴾ)`,
+`B = {β : |β| ≤ 1}` and `N ζ = sup ζ(B)`.  `Λⁿ(ℝᴾ)` is finite-dimensional, hence proper, and `B`
+is closed (`|·|` is continuous) and bounded (`‖β‖ ≤ K |β| ≤ K`), hence compact; so the supremum
+is attained, and `0 ∈ B` gives `N ζ ≥ 0`.  If `|α| = 0` then `‖α‖ ≤ K |α| = 0`; otherwise
+`±|α|⁻¹ α ∈ B` gives `|ζ α| ≤ N ζ |α|`.  Finally, if `ζ β = N ζ` with `β ∈ B`, then
+`N ζ ≤ ζ' β + ‖ζ - ζ'‖ ‖β‖ ≤ N ζ' + K ‖ζ - ζ'‖`, so `N` is `K`-Lipschitz, hence continuous. -/
+theorem Submission.cbr_ci_dr_multivector_dual_norm : ∀ (P n : ℕ), ∃ N : MultiVector P n → ℝ, Continuous N ∧ (∀ ζ : MultiVector P n, 0 ≤ N ζ) ∧ (∀ (ζ : MultiVector P n) (α : Covector (Euclid P) n), |ζ α| ≤ N ζ * covectorEuclideanNorm α) ∧ (∀ ζ : MultiVector P n, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ β = N ζ) := by
+  intro P n
+  -- Steps 3–4: `Λⁿ(ℝᴾ)` is finite-dimensional (hence proper), `|·|` is continuous and
+  -- absolutely homogeneous, and `‖α‖ ≤ K |α|`
+  have := Submission.dor_ims_lusin_covector_finiteDimensional P n
+  obtain ⟨-, hsmul, -, hcont⟩ := Submission.rsd_mw_tfa_norm_props P n
+  obtain ⟨K, hK, hnorm⟩ := Submission.cbr_ci_dr_dn_norm_le_mul_covectorEuclideanNorm P n
+  -- Step 5: the unit ball `B` of `|·|` contains `0`, lies in `closedBall 0 K` and is compact
+  let B := {β : Covector (Euclid P) n | covectorEuclideanNorm β ≤ 1}
+  have h0B : (0 : Covector (Euclid P) n) ∈ B := by
+    show covectorEuclideanNorm (0 : Covector (Euclid P) n) ≤ 1
+    rw [covectorEuclideanNorm_zero]
+    exact zero_le_one
+  have hBK : ∀ β ∈ B, ‖β‖ ≤ K := fun β hβ =>
+    (hnorm β).trans (mul_le_of_le_one_right hK.le hβ)
+  have hBc : IsCompact B :=
+    Metric.isCompact_of_isClosed_isBounded (isClosed_le hcont continuous_const)
+      ((Metric.isBounded_closedBall (x := (0 : Covector (Euclid P) n)) (r := K)).subset
+        fun β hβ => mem_closedBall_zero_iff.mpr (hBK β hβ))
+  -- Step 6: `N ζ = sup ζ(B)` is attained on `B` and bounds `ζ` on `B`
+  have hmem : ∀ ζ : MultiVector P n, ∃ β ∈ B, ζ β = sSup (ζ '' B) := fun ζ =>
+    (hBc.image ζ.continuous).sSup_mem ⟨ζ 0, 0, h0B, rfl⟩
+  have hle : ∀ ζ : MultiVector P n, ∀ β ∈ B, ζ β ≤ sSup (ζ '' B) := fun ζ β hβ =>
+    le_csSup (hBc.image ζ.continuous).bddAbove ⟨β, hβ, rfl⟩
+  refine ⟨fun ζ => sSup (ζ '' B), ?_, fun ζ => ?_, fun ζ α => ?_, hmem⟩
+  · -- Step 9: `N ζ ≤ N ζ' + K ‖ζ - ζ'‖`, so `N` is `K`-Lipschitz
+    refine (LipschitzWith.of_le_add_mul' (f := fun ζ : MultiVector P n => sSup (ζ '' B)) K
+      fun ζ ζ' => ?_).continuous
+    obtain ⟨β, hβ, hζβ⟩ := hmem ζ
+    have h1 : ζ β - ζ' β ≤ ‖ζ - ζ'‖ * K := by
+      have h := (ζ - ζ').le_opNorm β
+      rw [sub_apply, Real.norm_eq_abs] at h
+      exact (le_abs_self _).trans
+        (h.trans (mul_le_mul_of_nonneg_left (hBK β hβ) (norm_nonneg _)))
+    have h2 := hle ζ' β hβ
+    rw [dist_eq_norm ζ ζ']
+    show sSup (ζ '' B) ≤ sSup (ζ' '' B) + K * ‖ζ - ζ'‖
+    linarith
+  · -- Step 7: `0 ∈ B` and `ζ 0 = 0`
+    exact (map_zero ζ).symm.le.trans (hle ζ 0 h0B)
+  · -- Step 8: if `|α| = 0` then `α = 0`; otherwise rescale `α` into `B`
+    show |ζ α| ≤ sSup (ζ '' B) * covectorEuclideanNorm α
+    rcases (covectorEuclideanNorm_nonneg α).eq_or_lt with h | h
+    · have hα : ‖α‖ ≤ 0 := by
+        have h' := hnorm α
+        rwa [← h, mul_zero] at h'
+      rw [norm_le_zero_iff.mp hα, map_zero, abs_zero, covectorEuclideanNorm_zero, mul_zero]
+    · have hβ : (covectorEuclideanNorm α)⁻¹ • α ∈ B := by
+        show covectorEuclideanNorm ((covectorEuclideanNorm α)⁻¹ • α) ≤ 1
+        rw [hsmul, abs_inv, abs_of_pos h, inv_mul_cancel₀ h.ne']
+      have hβ' : -((covectorEuclideanNorm α)⁻¹ • α) ∈ B := by
+        show covectorEuclideanNorm (-((covectorEuclideanNorm α)⁻¹ • α)) ≤ 1
+        rw [covectorEuclideanNorm_neg]
+        exact hβ
+      have h1 := hle ζ _ hβ
+      have h2 := hle ζ _ hβ'
+      rw [map_neg] at h2
+      calc |ζ α| = covectorEuclideanNorm α * |ζ ((covectorEuclideanNorm α)⁻¹ • α)| := by
+            rw [map_smul, smul_eq_mul, abs_mul, abs_inv, abs_of_pos h,
+              mul_inv_cancel_left₀ h.ne']
+        _ ≤ covectorEuclideanNorm α * sSup (ζ '' B) :=
+            mul_le_mul_of_nonneg_left (abs_le.mpr ⟨by linarith, h1⟩) h.le
+        _ = sSup (ζ '' B) * covectorEuclideanNorm α := mul_comm _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
