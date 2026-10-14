@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f221d3f254a2c3858d3887d0113fc064fa51d229622fa0adcf2cb20fb011bb05",
+  "git_delta": {
+    "base_commit": "dc06b5deecedb1cf0617dde41dae5673c7bac498",
+    "candidate_commit": "91623849c3074e4843515901ce90e47d765b9781",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_cross_product",
+    "diff_sha256": "97baa79872e4fb9dda118f7cf25c12e7354ad60a9b3f1ede99d13729efe68c1c",
+    "source_sha256": "0b913e7cf212ab0add11198a79477721544fe49dc630c7e978ee2a45ec33bd3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_cross_product",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ A₀ = m + 1 → ∃ N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P, (∀ w : Fin m → Euclid P, N w ∈ A₀) ∧ (∀ (w : Fin m → Euclid P) (j : Fin m), inner ℝ (N w) (w j) = 0) ∧ (∀ w : Fin m → Euclid P, Orthonormal ℝ w → (∀ j, w j ∈ A₀) → ‖N w‖ = 1) ∧ ∀ w : Fin m → Euclid P, LinearIndependent ℝ w → (∀ j, w j ∈ A₀) → N w ≠ 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
