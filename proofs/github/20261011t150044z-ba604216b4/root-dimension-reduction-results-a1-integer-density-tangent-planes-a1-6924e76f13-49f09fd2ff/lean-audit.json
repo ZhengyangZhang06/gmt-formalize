@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8a1c5c2ec2d08c46b244ef72a323bae8991d6b576e1d7289278d5145f112a4c",
+  "git_delta": {
+    "base_commit": "e3d6df2a53306c229d9129a85d07aaca94698e49",
+    "candidate_commit": "f7b8ec045646f39979eebdd843988cf7e5db82c0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_accumulating_discs",
+    "diff_sha256": "faaf8dd28d39681b38ed6fc493069a68cde83f28914e6139e1f9cf0776e2725e",
+    "source_sha256": "30fba543a32abc66d109326adfdc918fe0890dd598cb08cc539b1faa0a3a465c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_accumulating_discs",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (k : ℕ → ℕ) (b : Euclid P) (ρ : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → Tendsto z atTop (𝓝 b) → (∀ i, ∀ x ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q i : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → (¬ ∃ (ε : ℝ) (m : ℕ), 0 < ε ∧ ∀ y ∈ C.support, y ∈ ball b ε → HasMassDensity C y m) → False",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
