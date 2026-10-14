@@ -698,6 +698,31 @@ theorem Submission.cmcdtfrcb_face_regroup : ∀ (P m : ℕ) (s : Finset ((Fin (m
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [Finset.sum_mul]
 
+/-- **Boundary of a lattice chain** (Simon Ch. 6, 5.1, step 8 of the deformation theorem: the
+boundary of an integer lattice chain is an integer lattice chain).  Index an oriented lattice
+`(m+1)`-cube by `p = (ι, b)`, `Φ_p y = b + Σⱼ yⱼ e_{ι j}`, and let `T = Σ_{p ∈ s} β_p [[p]]`.  For a
+test `m`-form `γ`, `∂T(γ) = T(dγ) = Σ_p β_p ∫_{(0,1)^{m+1}} dγ(Φ_p y)(e_ι) dy`; cubical Stokes
+turns each integral into the signed face sum
+`Σᵢ (-1)ⁱ ([[ι ∘ succAbove i, b + 𝟙_{ι i}]](γ) - [[ι ∘ succAbove i, b]](γ))`, and regrouping
+these faces gives integers `β'_q` on strictly increasing indices `q ∈ s'`, chosen independently
+of `γ`. -/
+theorem Submission.cmcdtfr_chain_boundary : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s', StrictMono p.1) ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) m, T.boundary γ = ∑ p ∈ s', (β' p : ℝ) * ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro P m s β T hs hT
+  -- one regrouping `(s', β')` of the signed faces serves every face functional `I`
+  obtain ⟨s', β', hs', hI⟩ := Submission.cmcdtfrcb_face_regroup P m s β hs
+  refine ⟨s', β', hs', fun γ => ?_⟩
+  -- test forms are smooth, in particular `C¹`
+  have hγ : ContDiff ℝ 1 (γ : DifferentialForm (Euclid P) m) := γ.property.1.1.of_le (by simp)
+  -- `∂T(γ) = T(dγ)`; expand `T`, and the right side as the regrouped face sum of `I q = [[q]](γ)`
+  rw [GeometricCurrentOn.boundary_apply, hT, ← hI fun q =>
+    ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m)
+      (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ))
+      (fun j => EuclideanSpace.single (q.1 j) (1 : ℝ))]
+  -- cube by cube, `[[p]](dγ)` is the signed sum of the faces of `p` (cubical Stokes)
+  refine Finset.sum_congr rfl fun p _ => ?_
+  congr 1
+  exact Submission.cmcdtfrcb_cube_stokes P m p.1 p.2 γ hγ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
