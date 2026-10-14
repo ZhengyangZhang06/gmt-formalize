@@ -451,6 +451,57 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Blow-ups at a point off the support vanish** (Simon 6.2.11; class `𝒯` in the proof of 7.3.3).
+Assume (BC)(ii): `η_{x,λ#}T(ω) = T(η_{x,λ}^# ω)`.  If `p ∈ U \ spt T`, then `p` lies in an open
+`W` with `closure W ⊆ U` on which `T` vanishes; for `B_ε(p) ⊆ W`, `T` vanishes on `B_ε(p)`, so
+`M_{B_ε(p)}(T) = 0`.  If `λⱼ → 0` and `spt ω ⊆ B_R(0)`, then `spt η_{p,λⱼ}^# ω ⊆ B_{λⱼR}(p)`,
+which lies in `B_ε(p)` once `λⱼR < ε`; so `η_{p,λⱼ#}T(ω) = 0` for large `j`, and
+`η_{p,λⱼ#}T ⇀ 0`. -/
+theorem Submission.dimred_tr_bc_vanishing_blowup : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (p : Euclid P), p ∈ U → p ∉ T.support → ∃ ε : ℝ, 0 < ε ∧ ball p ε ⊆ U ∧ T.VanishesOn (ball p ε) ∧ T.massOn (ball p ε) = 0 ∧ ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun j => blowUp T p (lams j) (hlams j).ne') (0 : GeometricCurrentOn (univ : Set (Euclid P)) n) := by
+  intro hBC P n U T p hpU hpT
+  -- Step 1: `spt T = U \ zeroRegion T`, so `p` lies in an open `W` with `closure W ⊆ U` and
+  -- `T.VanishesOn W`; choose `B_ε(p) ⊆ W`
+  obtain ⟨W, ⟨hWo, -, hWU, hWv⟩, hpW⟩ : p ∈ T.zeroRegion := by
+    by_contra h
+    exact hpT ⟨hpU, h⟩
+  obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.1 hWo p hpW
+  -- Step 2: `T` vanishes on `B_ε(p) ⊆ W`
+  have hvan : T.VanishesOn (ball p ε) := fun ω hω => hWv ω (hω.trans hεW)
+  refine ⟨ε, hε, hεW.trans (subset_closure.trans hWU), hvan, ?_, ?_⟩
+  · -- Step 3: every admissible form gives `ofReal 0 = 0`, so `M_{B_ε(p)}(T) = 0`
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, hω, rfl⟩
+    exact ((congrArg ENNReal.ofReal (hvan ω hω.1)).trans ENNReal.ofReal_zero).le
+  · -- Step 4: `spt ω ⊆ B_R(0)` as `spt ω` is compact, and `λⱼR < ε` for large `j`
+    intro lams hlams hlim ω
+    obtain ⟨R, hR⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    have hev : ∀ᶠ j in atTop, lams j * R < ε := by
+      have h := hlim.mul_const R
+      rw [zero_mul] at h
+      exact h.eventually_lt_const hε
+    -- Step 8: it suffices that `η_{p,λⱼ#}T(ω) = 0 = 0(ω)` for all large `j`
+    rw [GeometricCurrentOn.zero_apply]
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hev] with j hj
+    -- Step 5: by (BC)(ii), `η_{p,λⱼ#}T(ω) = T(η_{p,λⱼ}^# ω)`
+    rw [(hBC P n U T p (lams j) (hlams j)).2.1]
+    -- Step 6: `spt η_{p,λⱼ}^# ω ⊆ η_{p,λⱼ}⁻¹(B_R(0)) = B_{λⱼR}(p) ⊆ B_ε(p)`, as
+    -- `‖η_{p,λⱼ}(v)‖ = λⱼ⁻¹‖v − p‖`
+    have hsupp : tsupport (affinePullbackForm (dilationCLM P (lams j)) (-((lams j)⁻¹ • p))
+        (ω : DifferentialForm (Euclid P) n)) ⊆ ball p ε := by
+      intro v hv
+      have hv' : -((lams j)⁻¹ • p) + (lams j)⁻¹ • v ∈ ball (0 : Euclid P) R :=
+        hR (tsupport_affinePullbackForm_subset _ _ _ hv)
+      rw [mem_ball_zero_iff, ← smul_neg, ← smul_add, neg_add_eq_sub, norm_smul, norm_inv,
+        Real.norm_of_nonneg (hlams j).le, inv_mul_lt_iff₀ (hlams j)] at hv'
+      rw [mem_ball, dist_eq_norm]
+      exact hv'.trans hj
+    -- Step 7: `currentEval T` of the pulled-back form is `0` in both cases of its definition
+    rw [currentEval]
+    split_ifs with h
+    · exact (hvan ⟨_, h⟩ hsupp).symm
+    · rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
