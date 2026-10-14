@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1.chord-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1",
+  "depth": 6,
+  "title": "The chord between two distinct, non-antipodal unit vectors stays in the closed unit ball and meets every line through 0 at most once (parent steps 1–2)",
+  "statement": "Let P ∈ ℕ and let a, b ∈ ℝ^P (Euclid P) with |a| = |b| = 1, a ≠ b and b ≠ −a. Then there are ℓ ∈ ℝ and u ∈ ℝ^P such that ℓ > 0, |a − b| = ℓ, |u| = 1, b + ℓu = a, |b + su| ≤ 1 for every s ∈ [0, ℓ], and, for every e ∈ ℝ^P and s₁, s₂, t₁, t₂ ∈ ℝ, b + s₁u = t₁e and b + s₂u = t₂e imply s₁ = s₂ (the line s ↦ b + su meets each line ℝe through 0 in at most one parameter).",
+  "lean_statement": "∀ (P : ℕ) (a b : Euclid P), ‖a‖ = 1 → ‖b‖ = 1 → a ≠ b → b ≠ -a → ∃ (ℓ : ℝ) (u : Euclid P), 0 < ℓ ∧ ‖a - b‖ = ℓ ∧ ‖u‖ = 1 ∧ b + ℓ • u = a ∧ (∀ s ∈ Icc (0 : ℝ) ℓ, ‖b + s • u‖ ≤ 1) ∧ ∀ (e : Euclid P) (s₁ s₂ t₁ t₂ : ℝ), b + s₁ • u = t₁ • e → b + s₂ • u = t₂ • e → s₁ = s₂",
+  "lean_name": "idtp_fons_odc_antipodal_chord",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bc9dda22f4-a1"
+}
