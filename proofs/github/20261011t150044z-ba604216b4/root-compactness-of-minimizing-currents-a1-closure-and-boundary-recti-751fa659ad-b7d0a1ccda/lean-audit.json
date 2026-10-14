@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "67279afd95c8863212f168f37148b6318996b5288e322b496aabe72dd1d4d208",
+  "git_delta": {
+    "base_commit": "2ef2eae44c124a7842c4176a5c94ab3f1c203f04",
+    "candidate_commit": "9f8186474a23fbbfe5e8d6291672257aba9917d7",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "186b6629a8713a7034e88631e1f7909cfe4eb566ad36da84ab999c2dd91b0b7e",
+    "source_sha256": "390410554e044a2c941d9651bb6798c763034006198f8723a5b91a2cf12da383",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_atomic_transversal",
+      "statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (c : ℝ), 0 < c → Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → ∃ Z : Set (Euclid P), Z.Countable ∧ Z ⊆ (Vᗮ : Set (Euclid P)) ∧ (∀ w ∈ Z, ENNReal.ofReal c ≤ σ {w}) ∧ ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V})",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
