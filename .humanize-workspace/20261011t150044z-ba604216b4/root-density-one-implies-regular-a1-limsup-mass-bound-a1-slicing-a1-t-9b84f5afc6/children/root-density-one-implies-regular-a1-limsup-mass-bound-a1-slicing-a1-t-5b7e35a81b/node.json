@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.covector_findim-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+  "depth": 5,
+  "title": "The space of n-covectors on ℝ^P is finite-dimensional",
+  "statement": "For all P, n ∈ ℕ, the real vector space Covector (Euclid P) n = Λⁿ(ℝ^P) of continuous alternating n-linear forms on ℝ^P = EuclideanSpace ℝ (Fin P), with pointwise addition and scalar multiplication, is finite-dimensional over ℝ.",
+  "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+  "lean_name": "dor_lmbs_tfa_covector_finiteDimensional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-5b7e35a81b-a1"
+}
