@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3034a56f59e43972d807aecca698a3acfab735c7182c7cace3663784c27e37b4",
+  "git_delta": {
+    "base_commit": "916f4ffbde6e7b1cf866ae86b3480a66b2bf199a",
+    "candidate_commit": "aa4391c1ad83d4e5d2292dfe5eb0ed6552f6773f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_density_normalization",
+    "diff_sha256": "2032cad27463d81d50402a248976889e82979c272163131b9c193a89ad925377",
+    "source_sha256": "3174eb23efb2560fc7cf3b06d7775d8af7a01f442283110b60cdaa647d248532",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_density_normalization",
+      "statement": "∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (Q : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (e : Euclid Q), Measurable g → (∀ x, 0 ≤ g x) → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → LocallyIntegrable (fun x => g x • e) μH[(n : ℝ)] ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x • (g x • e) ∂μH[(n : ℝ)] = (c * ∫ x, f x ∂μ) • e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
