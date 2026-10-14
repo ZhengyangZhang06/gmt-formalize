@@ -582,6 +582,113 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
     constructor <;> linarith
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+/-- **Leibniz bound for `f • g`** (used for the cut-off pull-backs `ζ • L^#ω` in the
+flat-convergence step behind Simon 7.4.3).  For `C^∞` maps `f : ℝ^Q → ℝ` and `g : ℝ^Q → F`,
+`‖Dᵏ(f • g)(x)‖ ≤ ∑_{i ≤ k} C(k, i) ‖Dⁱf(x)‖ ‖D^{k-i}g(x)‖`.  This is Mathlib's
+`norm_iteratedFDeriv_smul_le`, whose module `Mathlib.Analysis.Calculus.ContDiff.Bounds` is not
+imported here, so its argument is reproduced: for a continuous bilinear `B` (all spaces in
+`Type`), `‖Dⁿ(B(u, v))(z)‖ ≤ ‖B‖ ∑_{i ≤ n} C(n, i) ‖Dⁱu(z)‖ ‖D^{n-i}v(z)‖` by induction on `n`,
+using `D(B(u, v)) = B.precompR(u, Dv) + B.precompL(Du, v)`, `‖B.precompR‖, ‖B.precompL‖ ≤ ‖B‖`
+and Pascal's rule; then take `B = lsmul`, with `‖lsmul‖ ≤ 1`. -/
+theorem Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound : ∀ (Q : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid Q → ℝ) (g : Euclid Q → F), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (k : ℕ) (x : Euclid Q), ‖iteratedFDeriv ℝ k (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (k - i) g x‖ := by
+  intro Q F _ _ f g hf hg k x
+  -- Steps 1–6: the bound for a continuous bilinear `B`, by induction on the order `n`,
+  -- simultaneously for all real normed spaces `E₁, F₁, G₁` in `Type`
+  have key : ∀ (n : ℕ) (E₁ F₁ G₁ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
+      [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [NormedAddCommGroup G₁] [NormedSpace ℝ G₁]
+      (B : E₁ →L[ℝ] F₁ →L[ℝ] G₁) (u : Euclid Q → E₁) (v : Euclid Q → F₁),
+      ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) u → ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) v →
+      ∀ z : Euclid Q, ‖iteratedFDeriv ℝ n (fun y => B (u y) (v y)) z‖ ≤
+        ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+          ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+    intro n
+    induction n with
+    | zero =>
+      -- Step 2: `‖B (u z) (v z)‖ ≤ ‖B‖ ‖u z‖ ‖v z‖`
+      intro E₁ F₁ G₁ _ _ _ _ _ _ B u v _ _ z
+      simp only [norm_iteratedFDeriv_zero, zero_add, Finset.range_one, Finset.sum_singleton,
+        Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_zero, ← mul_assoc]
+      exact B.le_opNorm₂ (u z) (v z)
+    | succ n IH =>
+      intro E₁ F₁ G₁ _ _ _ _ _ _ B u v hu hv z
+      -- Step 3: `u, v, Du, Dv` are `Cⁿ`
+      have In : ((n : ℕ) : WithTop ℕ∞) + 1 ≤ ((n + 1 : ℕ) : WithTop ℕ∞) := by
+        simp only [Nat.cast_succ, le_refl]
+      have hu' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) u := hu.of_le (Nat.cast_le.2 (Nat.le_succ n))
+      have hv' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) v := hv.of_le (Nat.cast_le.2 (Nat.le_succ n))
+      have hDu : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) (fderiv ℝ u) := hu.fderiv_right In
+      have hDv : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) (fderiv ℝ v) := hv.fderiv_right In
+      -- the operator norms of `B.precompR`, `B.precompL` need these instances in scope
+      let _ : NormedAddCommGroup ((Euclid Q →L[ℝ] F₁) →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedSpace ℝ ((Euclid Q →L[ℝ] F₁) →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedAddCommGroup (F₁ →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedSpace ℝ (F₁ →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      -- Step 5, first term: the claim for `(B.precompR, u, Dv)`
+      have I1 : ‖iteratedFDeriv ℝ n (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) z‖ ≤
+          ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+            ‖iteratedFDeriv ℝ (n + 1 - i) v z‖ := by
+        calc ‖iteratedFDeriv ℝ n (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) z‖
+            ≤ ‖B.precompR (Euclid Q)‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ (n - i) (fderiv ℝ v) z‖ :=
+              IH E₁ (Euclid Q →L[ℝ] F₁) (Euclid Q →L[ℝ] G₁) (B.precompR (Euclid Q)) u
+                (fderiv ℝ v) hu' hDv z
+          _ ≤ ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ (n - i) (fderiv ℝ v) z‖ := by
+              gcongr
+              exact B.norm_precompR_le (Euclid Q)
+          _ = ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+                ‖iteratedFDeriv ℝ (n + 1 - i) v z‖ := by
+              congr 1
+              refine Finset.sum_congr rfl fun i hi => ?_
+              rw [norm_iteratedFDeriv_fderiv,
+                Nat.succ_sub (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi))]
+      -- Step 5, second term: the claim for `(B.precompL, Du, v)`
+      have I2 : ‖iteratedFDeriv ℝ n (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) z‖ ≤
+          ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ (i + 1) u z‖ *
+            ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+        calc ‖iteratedFDeriv ℝ n (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) z‖
+            ≤ ‖B.precompL (Euclid Q)‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i (fderiv ℝ u) z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ :=
+              IH (Euclid Q →L[ℝ] E₁) F₁ (Euclid Q →L[ℝ] G₁) (B.precompL (Euclid Q)) (fderiv ℝ u)
+                v hDu hv' z
+          _ ≤ ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i (fderiv ℝ u) z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+              gcongr
+              exact B.norm_precompL_le (Euclid Q)
+          _ = ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ (i + 1) u z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+              congr 1
+              refine Finset.sum_congr rfl fun i _ => ?_
+              rw [norm_iteratedFDeriv_fderiv]
+      -- Step 3: `D(B(u, v)) = B.precompR(u, Dv) + B.precompL(Du, v)`
+      have J : fderiv ℝ (fun y => B (u y) (v y)) = fun y =>
+          B.precompR (Euclid Q) (u y) (fderiv ℝ v y) + B.precompL (Euclid Q) (fderiv ℝ u y) (v y) := by
+        funext y
+        exact B.fderiv_of_bilinear (hu.differentiable (by positivity) y)
+          (hv.differentiable (by positivity) y)
+      -- Step 4: split the top derivative and use the triangle inequality
+      have A : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞)
+          (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) :=
+        (B.precompR (Euclid Q)).isBoundedBilinearMap.contDiff.comp₂ hu' hDv
+      have A' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞)
+          (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) :=
+        (B.precompL (Euclid Q)).isBoundedBilinearMap.contDiff.comp₂ hDu hv'
+      rw [← norm_iteratedFDeriv_fderiv, J, fun_iteratedFDeriv_add_apply A.contDiffAt A'.contDiffAt]
+      refine (norm_add_le _ _).trans ((add_le_add I1 I2).trans (le_of_eq ?_))
+      -- Step 6: Pascal's rule
+      simp_rw [← mul_add, mul_assoc]
+      congr 1
+      exact (Finset.sum_choose_succ_mul
+        (fun i j => ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ j v z‖) n).symm
+  -- Step 7: specialize to `B = lsmul`, with `‖lsmul‖ ≤ 1`
+  have h := key k ℝ F F (ContinuousLinearMap.lsmul ℝ ℝ) f g (contDiff_infty.1 hf k)
+    (contDiff_infty.1 hg k) x
+  have hB : ‖(ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] F →L[ℝ] F)‖ ≤ 1 :=
+    ContinuousLinearMap.opNorm_lsmul_le
+  have hsum : 0 ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ *
+      ‖iteratedFDeriv ℝ (k - i) g x‖ := by positivity
+  simp only [ContinuousLinearMap.lsmul_apply] at h
+  exact h.trans (mul_le_of_le_one_left hsum hB)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
