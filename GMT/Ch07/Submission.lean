@@ -3752,6 +3752,20 @@ theorem Submission.cmcdt_im_series : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : 
   rw [hWR]
   exact hR' ω
 
+/-- **Covector norm bounds: pull-back, interior product, orthonormal evaluation** (Simon Ch. 6, §1;
+the pointwise estimates behind the homotopy and Lipschitz push-forward mass bounds 6.2.27, 6.2.29
+used in the deformation theorem 6.5.1).  With `|α|` the Euclidean coefficient norm
+`covectorEuclideanNorm α` (Simon 6.1.5):
+(L1) `|A^#β| ≤ ‖A‖ᵏ |β|` for a linear map `A : ℝᴺ → ℝᴺ'` and the pull-back
+`A^#β(w₁, …, w_k) = β(Aw₁, …, Aw_k)` (`cmcdt_lp_covector_pullback_norm_le`);
+(L2) `|ι_v β| ≤ ‖v‖ |β|` for the interior product `ι_v β(w₁, …, w_k) = β(v, w₁, …, w_k)`
+(`cmcdt_lp_covector_curryLeft_norm_le`);
+(L3) `|α(τ₁, …, τ_k)| ≤ |α|` for an orthonormal family `τ` in `ℝᴺ`
+(`regcomp_covector_eval_orthonormal_le`). -/
+theorem Submission.cmcdt_lp_covector_norm_bounds : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α :=
+  ⟨Submission.cmcdt_lp_covector_pullback_norm_le, Submission.cmcdt_lp_covector_curryLeft_norm_le,
+    Submission.regcomp_covector_eval_orthonormal_le⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
