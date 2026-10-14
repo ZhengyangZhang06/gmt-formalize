@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dimred_tr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "rg -n 'hausdorffMeasure_image_le|hausdorffMeasure_le_liminf_tsum' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "sed -n '90,245p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "sed -n '50,115p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "python3 /tmp/threshold-independent-audit/run_checks.py Types Assembly Tangent",
+        "python3 /tmp/threshold-independent-audit/run_checks.py Reuse_abstract_dimension_reduction Reuse_blowup_density Reuse_cone_of_constant_density",
+        "python3 /tmp/threshold-independent-audit/run_checks.py Reuse_stationarity Reuse_cone_measure_homogeneous Reuse_blowup_imrep"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v7.json",
+        "/tmp/threshold-independent-audit/Types.lean",
+        "/tmp/threshold-independent-audit/Assembly.lean",
+        "/tmp/threshold-independent-audit/Tangent.lean",
+        "/tmp/threshold-independent-audit/run_checks.py"
+      ],
+      "conclusion": "The pinned revisions and contract match the workspace. The snapshot contains the required Hausdorff covering/image bounds and nonzero normalization factor; no dimred_tr_ declaration was found. All twelve types independently elaborate as propositions without child implementations. All names are bare identifiers; six are unreserved and six reuse accepted declarations at identical frozen types. The complete proposed prerequisite closure is acyclic. All six reused candidates recompile, and their target declarations depend only on propext, Classical.choice and Quot.sound. The exact conditional parent and tangent assemblies compile without sorryAx or undeclared dependencies. No matrix-unit construction occurs. The split is appropriate: its analytic and abstract obligations jointly establish precisely the selected threshold-reduction contract, including both exceptional-dimension conclusions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "abstract_dimension_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse. H0 justifies weak-limit uniqueness; tangent persistence and increasing invariance establish the dimension bound, extremal subspace and finiteness conclusion. Independently cross-checked against [Simon, Appendix A.4–A.5](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=132)."
+    },
+    {
+      "key": "stationarity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include the necessary representation and carrier-null hypotheses. Tangential deformations give admissible competitors; first variation with both signs forces stationarity. The n = 0 case is handled."
+    },
+    {
+      "key": "blowup_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type reuse. Positive scales and x ∈ U justify localized scaling. Vague convergence at continuity radii, followed by continuity from below, gives every required ball mass and the density at zero."
+    },
+    {
+      "key": "cone_of_constant_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type reuse. Equality in stationary monotonicity forces radial tangency almost everywhere. Cartan’s formula and BoundaryVanishes then prove the precise currentEval cone identity; the ofReal convention handles arbitrary real θ."
+    },
+    {
+      "key": "cone_measure_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type reuse. The rescaled triple satisfies the IMRep conditions and represents the same cone. Weight uniqueness and Hausdorff scaling yield the claimed identity for every positive scale and Borel set."
+    },
+    {
+      "key": "tangent_measure_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "MON and MB exactly match the registered prerequisite types. Constant-centre compactness and density existence, followed by the four declared siblings, establish every conclusion. The exact conditional Lean assembly also passes."
+    },
+    {
+      "key": "imrep_density_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Vitali comparison and localization prove vanishing density off the carrier. Approximate-tangent tests establish unit carrier density, and integer multiplicity level sets give the stated almost-everywhere limit. Arbitrary V, open W and n = 0 are covered."
+    },
+    {
+      "key": "blowup_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type reuse. The inverse similarity transports carrier, multiplicity and orientation. Hausdorff change of variables proves both representation and the measure formula, without an unlisted openness assumption on U."
+    },
+    {
+      "key": "blowup_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Equivalent test-form guards justify both branches of currentEval. The admissible-form bijection proves mass scaling for arbitrary W, and contravariant pullback composition proves the exact iterated identity."
+    },
+    {
+      "key": "iterated_blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied countable-test construction, domain exhaustion, inherited mass bounds and increasing diagonal prove convergence on every test form. The sole sibling dependency, blowup_calculus, is correctly directed."
+    },
+    {
+      "key": "measure_class_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ADR premise is used explicitly. Normalized pairings, finite compact mass and the proved semicontinuity lemma verify all ADR hypotheses. The extremal threshold set is exactly L, and its measure has infinite mass."
+    },
+    {
+      "key": "blowup_class",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit positive-scale and zero-scale constructions establish all seven properties. Tangent closure uses the declared diagonal lemma; infinite mass forces an admissible zero-scale limit. All four leading premises match their supplied contracts exactly."
+    }
+  ],
+  "required_changes": []
+}
