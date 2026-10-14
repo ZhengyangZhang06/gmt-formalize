@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1.flat_point_persists-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1",
+  "depth": 6,
+  "title": "Persistence of β-flat points under support and domain convergence (Simon's claim in 7.3.3; supplied proof, steps 5–8)",
+  "statement": "Let P, n ∈ ℕ, β > 0, S, D ⊆ ℝ^P and S_k, D_k ⊆ ℝ^P (k ∈ ℕ). B_r(x) denotes the open ball. For a linear subspace Q, p_Q = Q.starProjection is the orthogonal projection onto Q.\nAssume:\n- (E): every compact K ⊆ D satisfies K ⊆ D_k for all sufficiently large k;\n- (H): whenever sub : ℕ → ℕ is strictly increasing, z_k ∈ S_{sub(k)} for all k, z_k → x and x ∈ D, then x ∈ S.\nLet w ∈ ℝ^P be β-flat for (S, D): there are ρ > 0 with B_ρ(w) ⊆ D, a linear subspace Q ⊆ ℝ^P with dim Q = n, and s < βρ such that |(y − w) − p_Q(y − w)| ≤ s for every y ∈ S ∩ B_ρ(w). Let σ : ℕ → ℕ be strictly increasing and v : ℕ → ℝ^P with v_i → w.\nThen for all sufficiently large i, v_i is β-flat for (S_{σ(i)}, D_{σ(i)}): there are ρ_i > 0 with B_{ρ_i}(v_i) ⊆ D_{σ(i)}, a linear subspace Q_i ⊆ ℝ^P with dim Q_i = n, and s_i < βρ_i such that |(y − v_i) − p_{Q_i}(y − v_i)| ≤ s_i for every y ∈ S_{σ(i)} ∩ B_{ρ_i}(v_i).",
+  "lean_statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ w : Euclid P, (∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∃ ρ : ℝ, 0 < ρ ∧ ball (v i) ρ ⊆ Ds (σ i) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ s",
+  "lean_name": "idtp_fons_cr_nusc_flat_point_persists",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1.flat_eventually-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1.flat_eventually-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a01a40515-a1"
+}
