@@ -1109,6 +1109,21 @@ annihilates every test form supported in `B_R(0)` (`dtc_blowUp_algebra`,
 `dtc_vanish_off_support`). -/
 theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) := by
   intro P m U T x hU hxU hxb lams hlams hlim
+/-- **Rescaled retractions** (Simon 7.2.4 and Remark 7.2.5(2), rescaled for the blow-ups of
+7.3.1).  Let `π` be a `C¹` retraction of `B_δ(x)` onto `N` (`π(B_δ(x)) ⊆ N`, `π = id` on
+`N ∩ B_δ(x)`) whose Lipschitz constant on `B_s(x)` is at most `1 + η` for small `s`.  Then
+`πⱼ(z) = η_{x,λⱼ}(π(x + λⱼz)) = λⱼ⁻¹(π(x + λⱼz) − x)` is, for all large `j`, a `C¹` map of
+`B_G(0)` into `η_{x,λⱼ}(U ∩ N)` which is the identity on `η_{x,λⱼ}(U ∩ N) ∩ B_G(0)` and satisfies
+`|πⱼ(z)| ≤ 2|z|`; and for every `η > 0`, eventually `πⱼ` is `(1 + η)`-Lipschitz on `B_G(0)`.
+Once `λⱼG` is below a radius `s₁` on which `π` is `2`-Lipschitz and below half the radius of a
+ball `B_{r₀}(x) ⊆ U`, `x + λⱼz ∈ B_{s₁}(x)` and `|π(x + λⱼz) − x| ≤ 2λⱼ|z| < r₀` (`π(x) = x`). -/
+theorem Submission.dtc_bc_bh_rescaled_retraction : ∀ (P : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (π : Euclid P → Euclid P), IsOpen U → x ∈ U → x ∈ N → 0 < δ → ContDiffOn ℝ 1 π (ball x δ) → MapsTo π (ball x δ) N → (∀ y ∈ N ∩ ball x δ, π y = y) → (∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖) → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖ := by
+  intro P U N x δ π hU hxU hxN hδ hC hmaps hid hlip lams hlams hlim G hG
+  -- a ball `B_{r₀}(x) ⊆ U`
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU x hxU
+  -- `π` is `2`-Lipschitz on `B_{s₁}(x)`
+  obtain ⟨s₁, hs₁, hs₁δ, hlip1⟩ := hlip 1 one_pos
+  have hπx : π x = x := hid x ⟨hxN, mem_ball_self hδ⟩
   -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
   have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
     intro lam y
@@ -1177,6 +1192,93 @@ theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (
       calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hzR.le hlam.le
         _ < r := hj
     exact hy.2 (hrU hyball).2
+  -- `x + λ • z ∈ B_t(x)` when `z ∈ B_G(0)` and `λ G ≤ t`
+  have hmem : ∀ (lam t : ℝ) (z : Euclid P), 0 < lam → lam * G ≤ t → z ∈ ball (0 : Euclid P) G →
+      x + lam • z ∈ ball x t := by
+    intro lam t z hlam hlt hz
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_ball, dist_zero_right] at hz
+    calc lam * ‖z‖ < lam * G := mul_lt_mul_of_pos_left hz hlam
+      _ ≤ t := hlt
+  -- `λⱼ G < t` for all large `j`
+  have hsmall : ∀ t : ℝ, 0 < t → ∀ᶠ j in atTop, lams j * G < t := by
+    intro t ht
+    have h0 : Tendsto (fun j => lams j * G) atTop (𝓝 0) := by
+      simpa using hlim.mul_const G
+    exact (tendsto_order.1 h0).2 t ht
+  refine ⟨fun j z => dilation x (lams j) (π (x + lams j • z)), ?_, ?_⟩
+  · filter_upwards [hsmall (min s₁ (r₀ / 2)) (lt_min hs₁ (half_pos hr₀))] with j hj
+    have hlam := hlams j
+    have hj₁ : lams j * G ≤ s₁ := hj.le.trans (min_le_left _ _)
+    have hj₂ : lams j * G ≤ r₀ / 2 := hj.le.trans (min_le_right _ _)
+    have hjδ : lams j * G ≤ δ := hj₁.trans hs₁δ
+    -- the affine map `z ↦ x + λⱼ z` maps `B_G(0)` into `B_δ(x)`
+    have hmapsδ : MapsTo (fun z : Euclid P => x + lams j • z) (ball 0 G) (ball x δ) :=
+      fun z hz => hmem (lams j) δ z hlam hjδ hz
+    -- `π(x + λⱼ z) ∈ U ∩ N` and `|π(x + λⱼ z) - x| ≤ 2 λⱼ |z|`
+    have hkey : ∀ z ∈ ball (0 : Euclid P) G, π (x + lams j • z) ∈ U ∩ N ∧
+        ‖π (x + lams j • z) - x‖ ≤ 2 * (lams j * ‖z‖) := by
+      intro z hz
+      have hy : x + lams j • z ∈ ball x s₁ := hmem (lams j) s₁ z hlam hj₁ hz
+      have hbd : ‖π (x + lams j • z) - x‖ ≤ 2 * (lams j * ‖z‖) := by
+        have := hlip1 _ hy x (mem_ball_self hs₁)
+        rw [hπx] at this
+        calc ‖π (x + lams j • z) - x‖ ≤ (1 + 1) * ‖x + lams j • z - x‖ := this
+          _ = 2 * (lams j * ‖z‖) := by
+            rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]; norm_num
+      refine ⟨⟨hr₀U ?_, hmaps (hmapsδ hz)⟩, hbd⟩
+      rw [mem_ball, dist_eq_norm]
+      rw [mem_ball, dist_zero_right] at hz
+      calc ‖π (x + lams j • z) - x‖ ≤ 2 * (lams j * ‖z‖) := hbd
+        _ < 2 * (lams j * G) := by
+          have := mul_lt_mul_of_pos_left hz hlam
+          linarith
+        _ ≤ r₀ := by linarith
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · -- `C¹` on `B_G(0)`
+      have hdilC : ContDiff ℝ 1 (dilation x (lams j)) := by
+        unfold dilation
+        exact contDiff_const.add (dilationCLM P (lams j)).contDiff
+      have haff : ContDiff ℝ 1 (fun z : Euclid P => x + lams j • z) :=
+        contDiff_const.add (contDiff_id.const_smul (lams j))
+      exact hdilC.comp_contDiffOn (hC.comp haff.contDiffOn hmapsδ)
+    · -- maps `B_G(0)` into `η_j(U ∩ N)`
+      intro z hz
+      exact ⟨π (x + lams j • z), (hkey z hz).1, rfl⟩
+    · -- identity on `η_j(U ∩ N) ∩ B_G(0)`
+      rintro z ⟨⟨y', hy', rfl⟩, hz⟩
+      have hinv : x + lams j • dilation x (lams j) y' = y' := by
+        rw [hdil, smul_smul, mul_inv_cancel₀ hlam.ne', one_smul, add_sub_cancel]
+      show dilation x (lams j) (π (x + lams j • dilation x (lams j) y')) = dilation x (lams j) y'
+      rw [hinv, hid y' ⟨hy'.2, ?_⟩]
+      rw [← hinv]
+      exact hmapsδ hz
+    · -- `|π_j(z)| ≤ 2|z|`
+      intro z hz
+      show ‖dilation x (lams j) (π (x + lams j • z))‖ ≤ 2 * ‖z‖
+      rw [hdil, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hlam.le)]
+      calc (lams j)⁻¹ * ‖π (x + lams j • z) - x‖ ≤ (lams j)⁻¹ * (2 * (lams j * ‖z‖)) :=
+            mul_le_mul_of_nonneg_left (hkey z hz).2 (inv_nonneg.2 hlam.le)
+        _ = 2 * ‖z‖ := by field_simp
+  · intro η hη
+    obtain ⟨s, hs, hsδ, hlipη⟩ := hlip η hη
+    filter_upwards [hsmall s hs] with j hj y hy z hz
+    have hlam := hlams j
+    have hy' := hmem (lams j) s y hlam hj.le hy
+    have hz' := hmem (lams j) s z hlam hj.le hz
+    show ‖dilation x (lams j) (π (x + lams j • y)) - dilation x (lams j) (π (x + lams j • z))‖ ≤
+      (1 + η) * ‖y - z‖
+    rw [hdil, hdil, ← smul_sub, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hlam.le)]
+    have h1 := hlipη _ hy' _ hz'
+    have h2 : ‖x + lams j • y - (x + lams j • z)‖ = lams j * ‖y - z‖ := by
+      rw [add_sub_add_left_eq_sub, ← smul_sub, norm_smul, Real.norm_of_nonneg hlam.le]
+    have h3 : π (x + lams j • y) - x - (π (x + lams j • z) - x) =
+        π (x + lams j • y) - π (x + lams j • z) := by abel
+    rw [h3]
+    calc (lams j)⁻¹ * ‖π (x + lams j • y) - π (x + lams j • z)‖
+        ≤ (lams j)⁻¹ * ((1 + η) * (lams j * ‖y - z‖)) := by
+          rw [← h2]; exact mul_le_mul_of_nonneg_left h1 (inv_nonneg.2 hlam.le)
+      _ = (1 + η) * ‖y - z‖ := by field_simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
