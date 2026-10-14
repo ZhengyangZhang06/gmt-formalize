@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.local_inverse-a1.chart_image_open-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.local_inverse-a1",
+  "depth": 6,
+  "title": "Images of open subsets under a proper injective chart are relatively open",
+  "statement": "Let P, d ∈ ℕ, M, W ⊆ ℝ^P, V, V₁ ⊆ ℝ^d and ψ : ℝ^d → ℝ^P. Assume W is open, ψ is continuous on V and injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, V₁ is open and V₁ ⊆ V. Then there is an open set N₀ ⊆ ℝ^P with M ∩ N₀ = ψ(V₁).",
+  "lean_statement": "∀ (P d : ℕ) (M W : Set (Euclid P)) (V V₁ : Set (Euclid d)) (ψ : Euclid d → Euclid P), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₁ → V₁ ⊆ V → ∃ N₀ : Set (Euclid P), IsOpen N₀ ∧ M ∩ N₀ = ψ '' V₁",
+  "lean_name": "idtp_ccd_scsp_li_chart_image_open",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9-a1",
+      "result_commit": "5e4b215846243d699169f3e42b95b8e007ea2d70",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d3639ee607-a1"
+}
