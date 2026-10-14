@@ -899,6 +899,138 @@ theorem Submission.codim1_hcp_lsa_c1_graph_chart : ∀ (P m : ℕ) (M : Set (Euc
       hsurj.range_comp]
   exact ⟨pr, G, r, W, Real.toNNReal Cb, hrpos, hWo, hpW, hpr, hG0, hGc.mono hbO, hGL, hMW, hleft,
     hderiv, htan⟩
+/-- Hausdorff measure and lower integrals over Lipschitz images (Simon Ch. 2, Theorem 1.8(i)):
+if `G : ℝᵐ → ℝᴾ` is `Λ`-Lipschitz on `D`, then `Hᵐ(G(N)) ≤ Λᵐ Lᵐ(N)` for every `N ⊆ D`, measurable
+or not, and for Borel `D` and Borel `H ≥ 0`, `∫_{G(D)} H dHᵐ ≤ Λᵐ ∫_D H ∘ G dLᵐ`.  The first
+bound is the `μH[m]` estimate for Lipschitz images scaled by the common normalizing constant of
+`μHE[m]`, with `μHE[m] = Lᵐ` on `ℝᵐ`.  Applied to `N = G⁻¹(s) ∩ D` it gives
+`Hᵐ⌞G(D) ≤ Λᵐ G₊(Lᵐ⌞D)` on Borel sets `s`; integrating `H` against this measure inequality and
+changing variables gives the second bound.  Injectivity of `G` is not needed. -/
+theorem Submission.codim1_hcp_lsa_lipschitz_image_lintegral_le : ∀ (m P : ℕ) (G : Euclid m → Euclid P) (D : Set (Euclid m)) (Λ : NNReal), LipschitzOnWith Λ G D → (∀ N ⊆ D, μHE[m] (G '' N) ≤ (Λ : ℝ≥0∞) ^ m * volume N) ∧ (MeasurableSet D → ∀ H : Euclid P → ℝ≥0∞, Measurable H → ∫⁻ x in G '' D, H x ∂μHE[m] ≤ (Λ : ℝ≥0∞) ^ m * ∫⁻ a in D, H (G a)) := by
+  intro m P G D Λ hG
+  -- part (a): `μH[m](G(N)) ≤ Λᵐ μH[m](N)`, scaled by the normalizing constant of `μHE[m]`
+  have hset : ∀ N ⊆ D, μHE[m] (G '' N) ≤ (Λ : ℝ≥0∞) ^ m * volume N := by
+    intro N hN
+    have h := (hG.mono hN).hausdorffMeasure_image_le (d := (m : ℝ)) (Nat.cast_nonneg m)
+    rw [ENNReal.rpow_natCast] at h
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume m,
+      Measure.euclideanHausdorffMeasure_def, Measure.euclideanHausdorffMeasure_def]
+    simp only [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+    calc _ ≤ _ := mul_le_mul_right h _
+      _ = _ := by ring
+  refine ⟨hset, fun hD H hH => ?_⟩
+  -- part (b): the measure inequality `Hᵐ⌞G(D) ≤ Λᵐ G₊(Lᵐ⌞D)`, from (a) with `N = G⁻¹(s) ∩ D`
+  have hGae : AEMeasurable G (volume.restrict D) := hG.continuousOn.aemeasurable hD
+  have hle : μHE[m].restrict (G '' D) ≤ ((Λ : ℝ≥0∞) ^ m) • (volume.restrict D).map G := by
+    refine Measure.le_iff.2 fun s hs => ?_
+    rw [Measure.restrict_apply hs, Measure.smul_apply, Measure.map_apply_of_aemeasurable hGae hs,
+      Measure.restrict_apply' hD, smul_eq_mul]
+    calc μHE[m] (s ∩ G '' D) ≤ μHE[m] (G '' (G ⁻¹' s ∩ D)) := by
+          refine measure_mono ?_
+          rintro _ ⟨hy, a, ha, rfl⟩
+          exact ⟨a, ⟨hy, ha⟩, rfl⟩
+      _ ≤ (Λ : ℝ≥0∞) ^ m * volume (G ⁻¹' s ∩ D) := hset _ inter_subset_right
+  -- integrate `H` against the measure inequality and change variables along `G`
+  calc ∫⁻ x in G '' D, H x ∂μHE[m] ≤ ∫⁻ x, H x ∂(((Λ : ℝ≥0∞) ^ m) • (volume.restrict D).map G) :=
+        lintegral_mono' hle le_rfl
+    _ = (Λ : ℝ≥0∞) ^ m * ∫⁻ a in D, H (G a) := by
+        rw [lintegral_smul_measure, lintegral_map' hH.aemeasurable hGae, smul_eq_mul]
+
+/-- **Rademacher's theorem on a `C¹` submanifold** (Simon Ch. 2, 1.4 and §4).  If `M ⊆ ℝᴾ` is an
+embedded `C¹` `m`-dimensional submanifold and `ζ` is locally Lipschitz on `M`, then `ζ` is
+differentiable within `M` at `Hᵐ`-a.e. point of `M`.  Near `p ∈ M`, a graph chart `G` over
+`B_r(0) ⊆ ℝᵐ` with `pr(G(a) − p) = a` is shrunk to `B_{r₁}(0)` so that `ζ ∘ G` is Lipschitz there
+and every `x ∈ M ∩ O` is `G(pr(x − p))`, for an open `O ∋ p`.  By Rademacher `ζ ∘ G` is
+differentiable off an `Lᵐ`-null set `N`, and `G(N)` is `Hᵐ`-null because `G` is Lipschitz; off
+`G(N)`, `ζ` agrees on `M ∩ O` with the differentiable function `(ζ ∘ G)(pr(· − p))`.  Countably
+many such `O` cover `M`. -/
+theorem Submission.codim1_hcp_lsa_rademacher_on_submanifold : ∀ (P m : ℕ) (M : Set (Euclid P)) (ζ : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M ζ → ∀ᵐ x ∂(μHE[m].restrict M), DifferentiableWithinAt ℝ ζ M x := by
+  intro P m M ζ hM hζ
+  -- step 1: `M` is Borel
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  -- step 2: near each `p ∈ M`, `ζ` is differentiable within `M` off an `Hᵐ`-null set
+  have hloc : ∀ p ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ p ∈ O ∧ ∃ E : Set (Euclid P),
+      μHE[m] E = 0 ∧ ∀ x ∈ M ∩ O, x ∉ E → DifferentiableWithinAt ℝ ζ M x := by
+    intro p hp
+    -- (a) a graph chart `G` of `M ∩ W` over `B_r(0)`, inverted by `z ↦ pr(z − p)`
+    obtain ⟨pr, G, r, W, Λ, hr, hWo, hpW, -, hG0, hGc, hGL, hMW, hleft, -, -⟩ :=
+      Submission.codim1_hcp_lsa_c1_graph_chart P m M p hM hp
+    -- (b) `ζ` is `K`-Lipschitz on `t ⊇ M ∩ U`, with `U ∋ p` open
+    obtain ⟨K, t, ht, hKt⟩ := hζ hp
+    obtain ⟨U, hUo, hpU, hUt⟩ : ∃ U : Set (Euclid P), IsOpen U ∧ p ∈ U ∧ M ∩ U ⊆ t := by
+      obtain ⟨U, hUo, hpU, hUt⟩ := mem_nhdsWithin.1 ht
+      exact ⟨U, hUo, hpU, fun x hx => hUt ⟨hx.2, hx.1⟩⟩
+    -- (c) shrink the chart so that `G(B_{r₁}(0)) ⊆ U`; `O = W ∩ {pr(z − p) ∈ B_{r₁}(0)}`
+    obtain ⟨r₁, hr₁, hr₁r, hGU⟩ : ∃ r₁ : ℝ, 0 < r₁ ∧ r₁ ≤ r ∧ G '' ball 0 r₁ ⊆ U := by
+      have hGcont : ContinuousAt G 0 :=
+        hGc.continuousOn.continuousAt (isOpen_ball.mem_nhds (mem_ball_self hr))
+      have hpre : G ⁻¹' U ∈ 𝓝 (0 : Euclid m) :=
+        hGcont.preimage_mem_nhds (hUo.mem_nhds (by rw [hG0]; exact hpU))
+      obtain ⟨ε, hε, hεU⟩ := Metric.mem_nhds_iff.1 hpre
+      refine ⟨min ε r, lt_min hε hr, min_le_right _ _, ?_⟩
+      rintro _ ⟨a, ha, rfl⟩
+      exact hεU (ball_subset_ball (min_le_left _ _) ha)
+    have hball : ball (0 : Euclid m) r₁ ⊆ ball 0 r := ball_subset_ball hr₁r
+    let O : Set (Euclid P) := W ∩ (fun z => pr (z - p)) ⁻¹' ball 0 r₁
+    have hOo : IsOpen O := hWo.inter (isOpen_ball.preimage (by fun_prop))
+    have hpO : p ∈ O := ⟨hpW, by simp [hr₁]⟩
+    -- (d) every `x ∈ M ∩ O` is `G(a)` with `a = pr(x − p) ∈ B_{r₁}(0)`
+    have hMO : ∀ x ∈ M ∩ O, pr (x - p) ∈ ball (0 : Euclid m) r₁ ∧ G (pr (x - p)) = x := by
+      intro x hx
+      have hxW : x ∈ M ∩ W := ⟨hx.1, hx.2.1⟩
+      rw [hMW] at hxW
+      obtain ⟨a, ha, rfl⟩ := hxW
+      have h2 : pr (G a - p) ∈ ball (0 : Euclid m) r₁ := hx.2.2
+      rw [hleft a ha] at h2 ⊢
+      exact ⟨h2, rfl⟩
+    -- (e) `ζ ∘ G` is `KΛ`-Lipschitz on `B_{r₁}(0)`
+    have hGM : ∀ a ∈ ball (0 : Euclid m) r, G a ∈ M := fun a ha =>
+      ((hMW.symm ▸ mem_image_of_mem G ha : G a ∈ M ∩ W)).1
+    have hgL : LipschitzOnWith (K * Λ) (ζ ∘ G) (ball 0 r₁) :=
+      hKt.comp (hGL.mono hball) fun a ha => hUt ⟨hGM a (hball ha), hGU (mem_image_of_mem G ha)⟩
+    -- (f) Rademacher: `ζ ∘ G` is differentiable off the `Lᵐ`-null set `N`
+    let N : Set (Euclid m) := {a | a ∈ ball (0 : Euclid m) r₁ ∧ ¬ DifferentiableAt ℝ (ζ ∘ G) a}
+    have hN : volume N = 0 := by
+      have hrad := hgL.ae_differentiableWithinAt_of_mem (μ := volume)
+      rw [ae_iff] at hrad
+      refine measure_mono_null (fun a ha => ?_) hrad
+      simp only [mem_ofPred_eq, not_imp]
+      exact ⟨ha.1, fun hd => ha.2 (hd.differentiableAt (isOpen_ball.mem_nhds ha.1))⟩
+    refine ⟨O, hOo, hpO, G '' N, ?_, ?_⟩
+    · -- (g) `Hᵐ(G(N)) ≤ Λᵐ Lᵐ(N) = 0`
+      have h := (Submission.codim1_hcp_lsa_lipschitz_image_lintegral_le m P G (ball 0 r₁) Λ
+        (hGL.mono hball)).1 N (fun a ha => ha.1)
+      rw [hN, mul_zero] at h
+      exact le_antisymm h zero_le
+    · -- (h) off `G(N)`, `ζ` agrees on `M ∩ O` with `(ζ ∘ G)(pr(· − p))`, differentiable at `x`
+      intro x hx hxE
+      obtain ⟨ha, hGa⟩ := hMO x hx
+      have hdiffa : DifferentiableAt ℝ (ζ ∘ G) (pr (x - p)) := by
+        by_contra hnd
+        exact hxE ⟨pr (x - p), ⟨ha, hnd⟩, hGa⟩
+      have hpr' : DifferentiableAt ℝ (fun z : Euclid P => pr (z - p)) x := by fun_prop
+      have hf : DifferentiableAt ℝ ((ζ ∘ G) ∘ fun z : Euclid P => pr (z - p)) x :=
+        hdiffa.comp x hpr'
+      refine hf.differentiableWithinAt.congr_of_eventuallyEq ?_ ?_
+      · filter_upwards [inter_mem_nhdsWithin M (hOo.mem_nhds hx.2)] with y hy
+        simp only [Function.comp_apply, (hMO y ⟨hy.1, hy.2⟩).2]
+      · simp only [Function.comp_apply, hGa]
+  -- step 3: countably many of the neighbourhoods `O p` cover `M` (second countability)
+  choose! O hOo hpO E hE hdiff using hloc
+  obtain ⟨T, hTM, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable M O hOo
+  have hnull : μHE[m] (⋃ p ∈ T, E p) = 0 :=
+    (measure_biUnion_null_iff hTc).2 fun p hp => hE p (hTM hp)
+  -- step 4: every point of `M` where `ζ` is not differentiable within `M` lies in `⋃_{p ∈ T} E p`
+  rw [ae_restrict_iff' hMmeas, ae_iff]
+  refine measure_mono_null (fun x hx => ?_) hnull
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxM, hxnd⟩ := hx
+  have hxU : x ∈ ⋃ p ∈ M, O p := mem_iUnion₂.2 ⟨x, hxM, hpO x hxM⟩
+  rw [← hTU] at hxU
+  obtain ⟨p, hpT, hxO⟩ := mem_iUnion₂.1 hxU
+  refine mem_iUnion₂.2 ⟨p, hpT, ?_⟩
+  by_contra hxE
+  exact hxnd (hdiff p (hTM hpT) x ⟨hxM, hxO⟩ hxE)
 
 /-- The tangent projection `x ↦ P_x` of an embedded `C¹` submanifold `M ⊆ ℝᴾ`, `P_x` the
 orthogonal projection onto `span T_xM`, is continuous on `M`.  Near `x₀ ∈ M` take a `C¹` graph
