@@ -451,6 +451,52 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Iterated blow-ups at a point of the open unit ball are again admissible blow-up limits**
+(the class-membership step of Simon 7.3.3, proof of (1): `η_{y,s#}η_{x,λ#}T = η_{x+λy,λs#}T`).
+Assume (IBL): if `η_{xᵢ,λᵢ#}T ⇀ S` with `xᵢ → x ∈ U`, `λᵢ ↓ 0` and `M_{B_ρ(x′)}(T) ≤ Γρⁿ` near `x`,
+and `η_{y,sₖ#}S ⇀ C` with `sₖ ↓ 0`, then `η_{x_{φ(k)}+λ_{φ(k)}y, λ_{φ(k)}sₖ#}T ⇀ C` along some
+`φ`.  If `η_{cᵢ,tᵢ#}T ⇀ S` with `dist(cᵢ, z) < r − tᵢ`, `tᵢ ↓ 0`, `cᵢ → b ∈ U`, and `‖y‖ < 1`,
+`sₖ ↓ 0`, `η_{y,sₖ#}S ⇀ C`, then `C` is the weak limit of blow-ups `η_{c′ₖ,t′ₖ#}T` with
+`dist(c′ₖ, z) < r − t′ₖ`, `t′ₖ ↓ 0`, `c′ₖ → b`: with `sₖ < 1 − ‖y‖` for `k ≥ k₀` and
+`i(k) = φ(k + k₀)`, take `c′ₖ = c_{i(k)} + t_{i(k)}y` and `t′ₖ = t_{i(k)}s_{k+k₀}`; then
+`dist(c′ₖ, z) < t_{i(k)}‖y‖ + r − t_{i(k)} = r − t_{i(k)}(1 − ‖y‖) < r − t′ₖ`. -/
+theorem Submission.dimred_tr_bc_ct_zero_scale_iterate : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (y : Euclid P) (ss : ℕ → ℝ) (hss : ∀ k, 0 < ss k) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → Tendsto ss atTop (𝓝 0) → (∃ δ Γ : ℝ, 0 < δ ∧ ∀ x' ∈ ball x δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → ConvergesWeakly (fun k => blowUp S y (ss k) (hss k).ne') C → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ConvergesWeakly (fun k => blowUp T (xs (φ k) + lams (φ k) • y) (lams (φ k) * ss k) (mul_pos (hlams (φ k)) (hss k)).ne') C) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (z : Euclid P) (r : ℝ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (cs : ℕ → Euclid P) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (b y : Euclid P) (ss : ℕ → ℝ) (hss : ∀ k, 0 < ss k) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → b ∈ U → (∀ i, dist (cs i) z < r - ts i) → Tendsto ts atTop (𝓝 0) → Tendsto cs atTop (𝓝 b) → ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S → (∃ δ Γ : ℝ, 0 < δ ∧ ∀ x' ∈ ball b δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) → ‖y‖ < 1 → Tendsto ss atTop (𝓝 0) → ConvergesWeakly (fun k => blowUp S y (ss k) (hss k).ne') C → ∃ (cs' : ℕ → Euclid P) (ts' : ℕ → ℝ) (hts' : ∀ i, 0 < ts' i), (∀ i, dist (cs' i) z < r - ts' i) ∧ Tendsto ts' atTop (𝓝 0) ∧ Tendsto cs' atTop (𝓝 b) ∧ ConvergesWeakly (fun i => blowUp T (cs' i) (ts' i) (hts' i).ne') C := by
+  intro hIBL P n U T z r S cs ts hts b y ss hss C hU hb hdist hts0 hcs hTS hmass hy hss0 hSC
+  -- Step 1: (IBL) at `x := b` gives `φ` with `η_{c_{φ(k)}+t_{φ(k)}y, t_{φ(k)}sₖ#}T ⇀ C`
+  obtain ⟨φ, hφ, hconv⟩ :=
+    hIBL P n U T b cs ts hts S y ss hss C hU hb hcs hts0 hss0 hmass hTS hSC
+  -- Step 2: `sₖ < 1 − ‖y‖` for all `k ≥ k₀`, as `sₖ → 0 < 1 − ‖y‖`
+  obtain ⟨k₀, hk₀⟩ := eventually_atTop.mp (hss0.eventually (gt_mem_nhds (sub_pos.mpr hy)))
+  -- Step 5: `k ↦ k + k₀` and `i(k) = φ(k + k₀)` tend to `∞`
+  have hshift : Tendsto (fun k => k + k₀) atTop atTop := tendsto_add_atTop_nat k₀
+  have hidx : Tendsto (fun k => φ (k + k₀)) atTop atTop := hφ.tendsto_atTop.comp hshift
+  -- Step 3: `c′ₖ = c_{i(k)} + t_{i(k)}y` and `t′ₖ = t_{i(k)}s_{k+k₀} > 0`
+  refine ⟨fun k => cs (φ (k + k₀)) + ts (φ (k + k₀)) • y, fun k => ts (φ (k + k₀)) * ss (k + k₀),
+    fun k => mul_pos (hts (φ (k + k₀))) (hss (k + k₀)), fun k => ?_, ?_, ?_, ?_⟩
+  · -- Step 4: with `t = t_{i(k)}`, `dist(c′ₖ, z) ≤ t‖y‖ + dist(c_{i(k)}, z) < r − t(1 − ‖y‖)`,
+    -- and `t′ₖ = t s_{k+k₀} < t(1 − ‖y‖)` as `k + k₀ ≥ k₀`
+    show dist (cs (φ (k + k₀)) + ts (φ (k + k₀)) • y) z < r - ts (φ (k + k₀)) * ss (k + k₀)
+    have ht := hts (φ (k + k₀))
+    have h1 := dist_triangle (cs (φ (k + k₀)) + ts (φ (k + k₀)) • y) (cs (φ (k + k₀))) z
+    have h2 : dist (cs (φ (k + k₀)) + ts (φ (k + k₀)) • y) (cs (φ (k + k₀))) =
+        ts (φ (k + k₀)) * ‖y‖ := by
+      rw [dist_self_add_left, norm_smul, Real.norm_of_nonneg ht.le]
+    have h3 : ts (φ (k + k₀)) * ss (k + k₀) < ts (φ (k + k₀)) * (1 - ‖y‖) :=
+      mul_lt_mul_of_pos_left (hk₀ (k + k₀) (Nat.le_add_left k₀ k)) ht
+    linarith [hdist (φ (k + k₀))]
+  · -- Step 5: `t′ₖ → 0 · 0 = 0`
+    have h := (hts0.comp hidx).mul (hss0.comp hshift)
+    rw [mul_zero] at h
+    exact h
+  · -- Step 5: `c′ₖ → b + 0 • y = b`
+    have h := (hcs.comp hidx).add ((hts0.comp hidx).smul_const y)
+    rw [zero_smul, add_zero] at h
+    exact h
+  · -- Step 6: the tail along `k ↦ k + k₀` of the weakly convergent sequence of step 1 has the
+    -- same limit; its terms are `η_{c′ₖ,t′ₖ#}T` (the nonvanishing proofs are irrelevant)
+    intro ω
+    exact (hconv ω).comp hshift
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
