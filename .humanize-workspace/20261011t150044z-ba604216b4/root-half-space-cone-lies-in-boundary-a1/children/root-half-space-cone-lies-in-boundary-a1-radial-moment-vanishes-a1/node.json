@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.radial_moment_vanishes-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "Stationarity plus radial tangency make the weighted first moments vanish (Simon 7.4.5, lines 708–719)",
+  "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n), μ = θH^n⌞M (R.measure), and p_x the orthogonal projection onto approxTangentPlane n M x. Assume (i) R.firstVariation X = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support, and (ii) p_x(x) = x for μ-a.e. x. Then for every e ∈ ℝ^P and ρ ∈ ℝ, ∫ max(ρ² − |x|², 0)·⟨e, x⟩ dμ(x) = 0.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x) → ∀ (e : Euclid P) (ρ : ℝ), ∫ x, max (ρ ^ 2 - ‖x‖ ^ 2) 0 * inner ℝ e x ∂R.measure = 0",
+  "lean_name": "stationary_radial_imrep_weighted_moment_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-radial-moment-vanishes-a1-a1"
+}
