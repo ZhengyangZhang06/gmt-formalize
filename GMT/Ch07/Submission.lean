@@ -9,6 +9,7 @@ import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
 import Poincare.SimonGMT.Chapter01.DensityComparison
+import Poincare.SimonGMT.Chapter08.DistributionalConstancy
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -2292,5 +2293,42 @@ theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Eucli
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan ψ hψK),
     ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
   exact htest ψ hψ hψc (hψK.trans hKD) i
+
+/-- **Constancy theorem in top dimension** (Simon Ch. 6, Theorem 2.34, for `n`-currents in
+`ℝⁿ`; Lemma B of the codimension-zero blow-up step).  Let `X ∈ 𝒟ₙ(V)`, `n = m + 1`, be integer
+multiplicity and `B ⊆ V` open and connected with `∂X = 0` in `B`.  Then `X = c[[B]]` in `B` for
+some `c ∈ ℤ`: `X(ω) = c ∫ ω(e₁, …, eₙ) dLⁿ` whenever `spt ω ⊆ B`.  `X(ω) = ∫ g ω(e) dLⁿ` for an
+integer-valued `L¹_loc` density `g`; `∂X = 0` in `B` kills the weak derivatives of `g` against
+`C_c^∞(B)` tests, hence (by mollification) against `C_c¹(B)` tests, and distributional constancy
+gives `g = c₀` a.e. on `B`.  `B` has positive measure unless empty, so `c₀ ∈ ℤ`. -/
+theorem Submission.dtc_bc_cz_top_constancy : ∀ (m : ℕ) (V B : Set (Euclid (m + 1))) (X : GeometricCurrentOn V (m + 1)), IsOpen V → IsIntegerMultiplicity X → IsOpen B → IsPreconnected B → B ⊆ V → (∀ β : TestFormOn V m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ B → X.boundary β = 0) → ∃ c : ℤ, ∀ ω : TestFormOn V (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ B → X ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ) := by
+  intro m V B X hV hIM hB hBc hBV hbd
+  -- step 1: the integer density `g` of `X`, `X(ω) = ∫ g ω(e) dLⁿ`
+  obtain ⟨g, hgloc, hrep⟩ := Submission.dtc_bc_cz_top_density (m + 1) V X m.succ_pos hV hIM
+  -- steps 2–5: `∂X = 0` in `B` gives `∫_B g ∂ⱼa = 0` for every `a ∈ C_c^∞(B)`
+  have hweak := Submission.dtc_bc_cz_tc_weak_derivs m V B X (fun y => (g y : ℝ)) hBV hbd hrep
+  -- step 6: `C¹` tests by mollification; distributional constancy gives `g = c₀` a.e. on `B`
+  have hgB : LocallyIntegrableOn (fun y => (g y : ℝ)) B volume := hgloc.mono_set hBV
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, ∀ᵐ y ∂(volume.restrict B), (g y : ℝ) = c₀ :=
+    Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero hgB hB hBc
+      (Submission.dgcr_smooth_tests_to_C1_tests (m + 1) B _ hB hgB hweak)
+  -- step 7: the constant is an integer, `g(y₀)` for some `y₀ ∈ B` (any `c` if `B = ∅`)
+  obtain ⟨c, hc⟩ : ∃ c : ℤ, ∀ᵐ y ∂(volume.restrict B), (g y : ℝ) = c := by
+    rcases B.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, by simp⟩
+    obtain ⟨y₀, -, hy₀⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae (hB.measure_pos volume hne).ne' hc₀
+    refine ⟨g y₀, ?_⟩
+    filter_upwards [hc₀] with y hy
+    rw [hy, hy₀]
+  -- step 8: `X(ω) = ∫ g ω(e) = c ∫ ω(e)`, as `ω = 0` off `B`
+  refine ⟨c, fun ω hω => ?_⟩
+  rw [hrep ω, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [(ae_restrict_iff' hB.measurableSet).mp hc] with y hy
+  by_cases hyB : y ∈ B
+  · rw [hy hyB]
+  · rw [image_eq_zero_of_notMem_tsupport fun h => hyB (hω h)]
+    simp
 
 end GMT.Ch07
