@@ -2926,6 +2926,104 @@ theorem Submission.dtc_bc_lc_sl_ll_approx_grad_unique : ∀ (P N : ℕ) (A : Set
   -- Step 8: limits along `𝓝[>] 0` are unique, so `∫_Q φ dHᴺ = 0`, a contradiction
   exact hpos.ne' (tendsto_nhds_unique (hT.2 φ) hint0)
 
+/-- **Injective `C¹` immersions are anti-Lipschitz on compact sets** (supplied proof of the
+Lipschitz Leibniz rule, step 4(b), "Bi-Lipschitz chart", lower bound).  Let `ψ : ℝᴺ → ℝᴾ` be `C¹`
+and `C` compact, with `ψ` injective on `C` and `Dψ(y)` injective for every `y ∈ C`.  Then
+`c ‖a − b‖ ≤ ‖ψ(a) − ψ(b)‖` on `C` for some `c > 0`.
+
+Proof sketch (by contradiction):
+* Otherwise there are `a_k, b_k ∈ C` with `‖ψ(a_k) − ψ(b_k)‖ < ‖a_k − b_k‖/(k + 1)`, so
+  `a_k ≠ b_k`; put `e_k = (a_k − b_k)/‖a_k − b_k‖`.
+* `C × C × S^{N−1}` is compact, so along a subsequence `a_k → a₀`, `b_k → b₀`, `e_k → e₀`, where
+  `‖e₀‖ = 1`.
+* `C` is bounded, so `ψ(a_k) − ψ(b_k) → 0` and `ψ(a₀) = ψ(b₀)`; injectivity on `C` gives
+  `a₀ = b₀`.
+* `ψ` is strictly differentiable at `a₀`, so along the subsequence
+  `‖Dψ(a₀) e_k‖ ≤ 1/(k + 1) + o(1) → 0`.  Hence `Dψ(a₀) e₀ = 0` with `e₀ ≠ 0`, contradicting
+  injectivity of `Dψ(a₀)`. -/
+theorem Submission.dtc_bc_lc_sl_ll_immersion_antilipschitz : ∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (C : Set (Euclid N)), ContDiff ℝ 1 ψ → IsCompact C → InjOn ψ C → (∀ y ∈ C, Injective (fderiv ℝ ψ y)) → ∃ c : ℝ, 0 < c ∧ ∀ a ∈ C, ∀ b ∈ C, c * ‖a - b‖ ≤ ‖ψ a - ψ b‖ := by
+  intro P N ψ C hψ hC hinj hD
+  -- step 1: otherwise `a k, b k ∈ C` with `‖ψ (a k) - ψ (b k)‖ < (k + 1)⁻¹ ‖a k - b k‖`
+  by_contra hcon
+  push Not at hcon
+  choose a ha b hb hab using fun k : ℕ => hcon ((k : ℝ) + 1)⁻¹ (by positivity)
+  have hne : ∀ k, a k - b k ≠ 0 := fun k h0 => by
+    have h := hab k
+    rw [h0, norm_zero, mul_zero] at h
+    exact absurd h (not_lt.2 (norm_nonneg _))
+  -- the unit secants `e k = (a k - b k) / ‖a k - b k‖`
+  set e : ℕ → Euclid N := fun k => ‖a k - b k‖⁻¹ • (a k - b k) with he_def
+  have he : ∀ k, e k ∈ sphere (0 : Euclid N) 1 := fun k => by
+    rw [mem_sphere_zero_iff_norm, he_def, norm_smul, norm_inv, norm_norm,
+      inv_mul_cancel₀ (norm_ne_zero_iff.2 (hne k))]
+  -- step 2: a subsequence along which `a → a₀`, `b → b₀`, `e → e₀` (`C × C × S` is compact)
+  obtain ⟨⟨a₀, b₀, e₀⟩, ⟨ha₀, hb₀, he₀⟩, φ, hφ, hlim⟩ :=
+    (hC.prod (hC.prod (isCompact_sphere (0 : Euclid N) 1))).tendsto_subseq
+      (x := fun k => (a k, b k, e k)) fun k => ⟨ha k, hb k, he k⟩
+  have hla : Tendsto (fun k => a (φ k)) atTop (𝓝 a₀) := (continuous_fst.tendsto _).comp hlim
+  have hlb : Tendsto (fun k => b (φ k)) atTop (𝓝 b₀) :=
+    ((continuous_fst.comp continuous_snd).tendsto _).comp hlim
+  have hle : Tendsto (fun k => e (φ k)) atTop (𝓝 e₀) :=
+    ((continuous_snd.comp continuous_snd).tendsto _).comp hlim
+  have hφ0 : Tendsto (fun k => ((φ k : ℝ) + 1)⁻¹) atTop (𝓝 0) := by
+    have h := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).comp hφ.tendsto_atTop
+    simp only [Function.comp_def, one_div] at h
+    exact h
+  -- step 3: `‖ψ (a k) - ψ (b k)‖ < (k + 1)⁻¹ diam C → 0`, so `ψ a₀ = ψ b₀` and `a₀ = b₀`
+  obtain ⟨D, hDC⟩ := Metric.isBounded_iff.1 hC.isBounded
+  have hψab : ψ a₀ = ψ b₀ := by
+    have h1 : Tendsto (fun k => ψ (a (φ k)) - ψ (b (φ k))) atTop (𝓝 (ψ a₀ - ψ b₀)) :=
+      ((hψ.continuous.tendsto _).comp hla).sub ((hψ.continuous.tendsto _).comp hlb)
+    have h2 : Tendsto (fun k => ψ (a (φ k)) - ψ (b (φ k))) atTop (𝓝 0) := by
+      refine squeeze_zero_norm (fun k => ?_) (by simpa using hφ0.mul_const D)
+      calc ‖ψ (a (φ k)) - ψ (b (φ k))‖ ≤ ((φ k : ℝ) + 1)⁻¹ * ‖a (φ k) - b (φ k)‖ :=
+            (hab (φ k)).le
+        _ ≤ ((φ k : ℝ) + 1)⁻¹ * D := by
+          gcongr
+          exact (dist_eq_norm _ _).symm.trans_le (hDC (ha (φ k)) (hb (φ k)))
+    exact sub_eq_zero.1 (tendsto_nhds_unique h1 h2)
+  have hab₀ : a₀ = b₀ := hinj ha₀ hb₀ hψab
+  rw [← hab₀] at hlb
+  -- step 4: `ψ` is strictly differentiable at `a₀` with derivative `L = Dψ(a₀)`, so the
+  -- remainder `ψ (a k) - ψ (b k) - L (a k - b k)` is `o(‖a k - b k‖)`
+  set L := fderiv ℝ ψ a₀
+  have ho : Tendsto (fun k => ‖ψ (a (φ k)) - ψ (b (φ k)) - L (a (φ k) - b (φ k))‖ /
+      ‖a (φ k) - b (φ k)‖) atTop (𝓝 0) :=
+    ((hψ.contDiffAt.hasStrictFDerivAt one_ne_zero).isLittleO.comp_tendsto
+      (hla.prodMk_nhds hlb)).norm_norm.tendsto_div_nhds_zero
+  -- step 5: `‖L (e k)‖ ≤ (k + 1)⁻¹ + o(1)`, so `L (e k) → 0`
+  have h4 : Tendsto (fun k => L (e (φ k))) atTop (𝓝 0) := by
+    have hbound : Tendsto (fun k => ((φ k : ℝ) + 1)⁻¹ +
+        ‖ψ (a (φ k)) - ψ (b (φ k)) - L (a (φ k) - b (φ k))‖ / ‖a (φ k) - b (φ k)‖) atTop
+        (𝓝 0) := by
+      simpa using hφ0.add ho
+    refine squeeze_zero_norm (fun k => ?_) hbound
+    have hn : 0 < ‖a (φ k) - b (φ k)‖ := norm_pos_iff.2 (hne (φ k))
+    have h1 : ‖ψ (a (φ k)) - ψ (b (φ k))‖ / ‖a (φ k) - b (φ k)‖ ≤ ((φ k : ℝ) + 1)⁻¹ := by
+      rw [div_le_iff₀ hn]
+      exact (hab (φ k)).le
+    calc ‖L (e (φ k))‖ = ‖L (a (φ k) - b (φ k))‖ / ‖a (φ k) - b (φ k)‖ := by
+          simp only [he_def, map_smul, norm_smul, norm_inv, norm_norm]
+          rw [inv_mul_eq_div]
+      _ ≤ (‖ψ (a (φ k)) - ψ (b (φ k))‖ +
+            ‖ψ (a (φ k)) - ψ (b (φ k)) - L (a (φ k) - b (φ k))‖) / ‖a (φ k) - b (φ k)‖ := by
+          gcongr
+          calc ‖L (a (φ k) - b (φ k))‖
+              = ‖(ψ (a (φ k)) - ψ (b (φ k))) -
+                  (ψ (a (φ k)) - ψ (b (φ k)) - L (a (φ k) - b (φ k)))‖ := by
+                rw [sub_sub_cancel]
+            _ ≤ _ := norm_sub_le _ _
+      _ = ‖ψ (a (φ k)) - ψ (b (φ k))‖ / ‖a (φ k) - b (φ k)‖ +
+            ‖ψ (a (φ k)) - ψ (b (φ k)) - L (a (φ k) - b (φ k))‖ / ‖a (φ k) - b (φ k)‖ :=
+          add_div _ _ _
+      _ ≤ _ := add_le_add h1 le_rfl
+  -- step 6: so `L e₀ = 0` with `‖e₀‖ = 1`, contradicting injectivity of `L`
+  have h5 : Tendsto (fun k => L (e (φ k))) atTop (𝓝 (L e₀)) := (L.continuous.tendsto _).comp hle
+  have hLe : L e₀ = 0 := tendsto_nhds_unique h5 h4
+  have he₀0 : e₀ = 0 := hD a₀ ha₀ (hLe.trans (map_zero L).symm)
+  rw [mem_sphere_zero_iff_norm, he₀0, norm_zero] at he₀
+  exact zero_ne_one he₀
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
