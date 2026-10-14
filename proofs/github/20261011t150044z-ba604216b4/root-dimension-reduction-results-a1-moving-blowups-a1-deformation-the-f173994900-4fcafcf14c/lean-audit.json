@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4a76d82ce6d1533d97512249792c45be530322f8564a1a5b3ab9059df3d74df",
+  "git_delta": {
+    "base_commit": "6d6df89797ee511a8b440a89f12be2f852c2d070",
+    "candidate_commit": "86615d426cae5482761b175e2f2eb8198d1911bc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_cylinder_rectifiable",
+    "diff_sha256": "5c155dd9b75eee9c9ef34d726cfc63c00ff50f5012d6a251f9082e728a12ba49",
+    "source_sha256": "a63e1ad73a7069a29ce6e82b834aa0341957e576aefb6595396c3c2adce1e693",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_cylinder_rectifiable",
+      "statement": "∀ (N n : ℕ) (I : Set ℝ) (M : Set (Euclid N)), CountablyRectifiable n M → CountablyRectifiable (n + 1) ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (I ×ˢ M))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
