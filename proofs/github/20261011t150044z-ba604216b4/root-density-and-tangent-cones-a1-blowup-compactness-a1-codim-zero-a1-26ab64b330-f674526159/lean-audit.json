@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e3d971b8d195b6dbd5e05d8c90781a486d9e4a5578c1f329d4fa071c1803ec07",
+  "git_delta": {
+    "base_commit": "2fff56fd360d21f5cd04ef912de09ba39dfe0df2",
+    "candidate_commit": "e1322eb8626c4bcf0658518ac2186344f7afd25e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "293707c233fc88db69d31d511c6e5133fd59de9c15978533ce3f338dfc2d9ce2",
+    "source_sha256": "035ca32aab22d2ce78d27411998ac10fae959a37477e33f3b6e2eff8d9cd055f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_isMinimizingIn",
+      "statement": "∀ (n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid n)) n) (A : Set (Euclid n)), 0 < n → IsIntegerMultiplicity C → IsMinimizingIn C A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
