@@ -2908,6 +2908,64 @@ theorem Submission.cmcdt_ims_imrep_of_int_density : ∀ (P n : ℕ) (U N : Set (
     _ = ∫ x in N, N'.indicator (fun x => (mult x : ℝ) * orient x (ω x)) x ∂μHE[n] :=
         (setIntegral_indicator hN'meas).symm
     _ = ∫ x in N, m x * η x (ω x) ∂μHE[n] := setIntegral_congr_fun hN hpt
+/-- **`C¹` cut-off with a global Lipschitz bound** (step 1(b) of the integer multiplicity
+push-forward).  If `f` is `C¹` on an open `O ⊇ K`, `K` compact, then `φ = id + χ (f − id)` is `C¹`
+on `ℝᴾ`, globally Lipschitz, and agrees with `f` to first order on `K`; here `χ ∈ [0, 1]` is a
+smooth cut-off with `χ = 1` exactly on `cthickening δ K` and `support χ = thickening (2δ) K`, where
+`cthickening (3δ) K ⊆ O`.  `Dφ` is continuous and equals `id` off the compact set `spt χ`, so it
+is bounded, and the mean value inequality makes `φ` Lipschitz. -/
+theorem Submission.dtc_bc_lc_pfi_c1_cutoff_lipschitz : ∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (Λ : NNReal), ContDiff ℝ 1 φ ∧ LipschitzWith Λ φ ∧ ∀ x ∈ K, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x := by
+  intro P O K f hO hK hKO hf
+  -- Step 1: a margin `cthickening (3δ) K ⊆ O`
+  obtain ⟨ε, hε, hεO⟩ := hK.exists_cthickening_subset_open hO hKO
+  obtain ⟨δ, hδ, hδε⟩ : ∃ δ : ℝ, 0 < δ ∧ 3 * δ = ε := ⟨ε / 3, by positivity, by ring⟩
+  -- Step 2: the cut-off `χ`, equal to `1` exactly on `cthickening δ K`, with
+  -- `support χ = thickening (2δ) K`
+  obtain ⟨χ, hχ, -, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+    (isOpen_thickening (δ := 2 * δ) (E := K)) (isClosed_cthickening (δ := δ) (E := K))
+    (cthickening_subset_thickening' (by positivity) (by linarith) K)
+  have hχ' : ContDiff ℝ 1 χ := hχ
+  have htsupp : tsupport χ ⊆ cthickening (2 * δ) K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening _ _
+  have htO : tsupport χ ⊆ O := htsupp.trans ((cthickening_mono (by linarith) K).trans hεO)
+  have htcpt : IsCompact (tsupport χ) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport χ) htsupp
+  have hχK : ∀ x ∈ K, ∀ᶠ y in 𝓝 x, χ y = 1 := fun x hx =>
+    Filter.mem_of_superset (isOpen_thickening.mem_nhds (self_subset_thickening hδ K hx))
+      fun y hy => (hχ1 y).1 (thickening_subset_cthickening δ K hy)
+  -- Step 3: `φ = id + χ (f − id)`; it is the identity near every point off `spt χ`
+  set φ : Euclid P → Euclid P := fun x => x + χ x • (f x - x) with hφdef
+  have hφid : ∀ x, x ∉ tsupport χ → φ =ᶠ[𝓝 x] id := by
+    intro x hx
+    filter_upwards [notMem_tsupport_iff_eventuallyEq.mp hx] with y hy
+    have hy' : χ y = 0 := hy
+    simp [hφdef, hy']
+  -- Step 4: `φ` is `C¹`
+  have hφ : ContDiff ℝ 1 φ := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hx : x ∈ O
+    · exact contDiffAt_id.add
+        (hχ'.contDiffAt.smul ((hf.contDiffAt (hO.mem_nhds hx)).sub contDiffAt_id))
+    · exact contDiffAt_id.congr_of_eventuallyEq (hφid x fun h => hx (htO h))
+  -- Step 6: `‖Dφ‖ ≤ max 1 C`, so `φ` is Lipschitz
+  obtain ⟨C, hC⟩ :=
+    htcpt.exists_bound_of_continuousOn (hφ.continuous_fderiv one_ne_zero).continuousOn
+  refine ⟨φ, (max 1 C).toNNReal, hφ, ?_, ?_⟩
+  · refine lipschitzWith_of_nnnorm_fderiv_le (hφ.differentiable one_ne_zero) fun x => ?_
+    rw [← NNReal.coe_le_coe, coe_nnnorm,
+      Real.coe_toNNReal _ (zero_le_one.trans (le_max_left _ _))]
+    by_cases hx : x ∈ tsupport χ
+    · exact (hC x hx).trans (le_max_right _ _)
+    · rw [(hφid x hx).fderiv_eq, fderiv_id]
+      exact ContinuousLinearMap.norm_id_le.trans (le_max_left _ _)
+  -- Step 5: `φ = f` near each point of `K`
+  · intro x hx
+    have heq : φ =ᶠ[𝓝 x] f := by
+      filter_upwards [hχK x hx] with y hy
+      simp [hφdef, hy]
+    exact ⟨heq.eq_of_nhds, heq.fderiv_eq⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
