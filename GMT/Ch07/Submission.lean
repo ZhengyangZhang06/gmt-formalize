@@ -1282,6 +1282,38 @@ theorem Submission.cmcdt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid
     Submission.cmcdt_lpo_tk_bounded_current, Submission.cmcdt_lpo_tk_boundary_support_subset,
     Submission.cmcdt_lpo_tk_locality hVO⟩
 
+/-- **The cylinder `[[0, 1]] × X`** (Simon 6.2.17–2.21): conjuncts (7)–(9) of the operator
+package.  With `ι(t, x) = (t, x)`, `J v = ι(0, v)` and `e₀` the first unit vector,
+`cyl X (ω) = X(S ω)` for the slice `S ω (x)(v) = ∫₀¹ ω(ι(t, x))(e₀, J v) dt`.  The covector maps
+`γ ↦ γ(e₀, J ·)` and `γ ↦ γ(J ·)` do not increase the Euclidean norm, so `S` is linear,
+support-controlled and bounded in the sup of the covector norm; the bounded-current constructor
+gives `cyl X` with `M(cyl X) ≤ M(X)`, additive in `X`.  Its support lies in the compact set
+`ι([0, 1] × spt X)`, and the homotopy identities
+`S(dω) = ω(ι(1, ·))(J ·) − ω(ι(0, ·))(J ·) − d(S ω)` (Simon 6.2.21) make `M(∂ cyl X)` finite. -/
+theorem Submission.cmcdt_lpo_cylinder : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ∃ (cyl : ∀ (N k : ℕ), GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)), (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact (cyl N k X).support ∧ (cyl N k X).mass < ∞ ∧ (cyl N k X).boundary.mass < ∞ ∧ (cyl N k X).support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) ∧ (∀ (N k : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → cyl N k (X - Y) = cyl N k X - cyl N k Y) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ cyl N k X ω = X η := by
+  intro hVO hREP hLB
+  obtain ⟨hL1, hL2, -⟩ := hLB
+  -- slices (a)–(e) of test forms, and the bounds (MSB), (BC) of the current toolkit
+  obtain ⟨hSA, hSB, hSC, hSD, hSE⟩ := Submission.cmcdt_lpo_slice_forms
+  obtain ⟨hMSB, hBC, -, -⟩ := Submission.cmcdt_lpo_current_toolkit hVO hREP
+  -- step 1: `γ ↦ γ(e₀, J ·)` and `γ ↦ γ(J ·)` do not increase the covector norm
+  obtain ⟨hR1, hR2⟩ := Submission.cmcdt_lpo_cyl_restriction_bounds hL1 hL2
+  -- step 2: the linear slice operators `S N k : 𝒟^{k+1}(ℝ^{N+1}) → 𝒟^k(ℝ^N)`
+  choose S hSf hSs hSb using Submission.cmcdt_lpo_cyl_slice_operator hSA hSE hR1
+  -- step 3: `cyl X (ω) = X(S ω)` with `M(cyl X) ≤ M(X)`, additive on finite-mass currents
+  choose cyl hcyl hsub using fun N k : ℕ =>
+    Submission.cmcdt_lpo_cyl_current hMSB hBC N k (S N k) (hSb N k)
+  refine ⟨cyl, fun N k X hXc hXm hXb => ?_,
+    fun N k X Y _ hXm _ _ hYm _ => hsub N k X Y hXm hYm,
+    fun N k X _ hXm _ ω => ⟨S N k ω, hSf N k ω, (hcyl N k X hXm).1 ω⟩⟩
+  -- conjunct (7): compact support in `ι([0, 1] × spt X)`, finite mass and boundary mass
+  obtain ⟨happ, hmass⟩ := hcyl N k X hXm
+  obtain ⟨hcpt, hspt⟩ :=
+    Submission.cmcdt_lpo_cyl_support hVO N k X (cyl N k X) (S N k) hXc (hSs N k) happ
+  exact ⟨hcpt, hmass.trans_lt hXm,
+    Submission.cmcdt_lpo_cyl_boundary_mass hMSB hSB hSC hSD hR2 N k X (cyl N k X)
+      (fun m => S N m) hXm hXb (fun m => hSf N m) (fun m => hSb N m) happ, hspt⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
