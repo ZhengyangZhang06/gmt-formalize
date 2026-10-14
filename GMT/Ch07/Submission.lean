@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.5.1** (proof, (31): the integer median `β`): if `μ` is a probability measure and `u`
+is `μ`-a.e. measurable and integer-valued, then some `β ∈ ℤ` has `μ{u ≥ β} ≥ 1/2` and
+`μ{u ≤ β} ≥ 1/2`.  Take the least integer `β` with `F(β) ≥ 1/2`, `F(t) = μ{u ≤ t}`; it exists
+because `F(n) → 1` and `F(-n) → 0` (continuity of `μ` from below and above).  Then
+`F(β - 1) < 1/2`, and `{u ≥ β} = {u ≤ β - 1}ᶜ` since `u` is integer-valued. -/
+theorem Submission.dimred_mbl_dt_cbm_im_integer_median_exists : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)} := by
+  intro X _ μ u _ hu hint
+  -- each `{u ≤ t}` is null-measurable
+  have hnm : ∀ t : ℝ, NullMeasurableSet {x | u x ≤ t} μ := fun t =>
+    hu.nullMeasurableSet_preimage measurableSet_Iic
+  -- `F(t) = μ.real {u ≤ t}` is nondecreasing
+  have hmono : ∀ s t : ℝ, s ≤ t → μ.real {x | u x ≤ s} ≤ μ.real {x | u x ≤ t} := fun s t hst =>
+    measureReal_mono fun x hx => le_trans (show u x ≤ s from hx) hst
+  -- upper tail: `F(n) → 1`, so `F(n₁) > 1/2` for some `n₁ : ℕ`
+  obtain ⟨n₁, hn₁⟩ : ∃ n₁ : ℕ, 1 / 2 < μ.real {x | u x ≤ (n₁ : ℝ)} := by
+    have hA : Monotone fun n : ℕ => {x | u x ≤ (n : ℝ)} := fun a b hab x hx =>
+      le_trans (show u x ≤ (a : ℝ) from hx) (Nat.cast_le.mpr hab)
+    have hU : (⋃ n : ℕ, {x | u x ≤ (n : ℝ)}) = univ :=
+      eq_univ_of_forall fun x => mem_iUnion.mpr (exists_nat_ge (u x))
+    have h1 := tendsto_measure_iUnion_atTop (μ := μ) hA
+    rw [hU, measure_univ] at h1
+    have h2 : Tendsto (fun n : ℕ => μ.real {x | u x ≤ (n : ℝ)}) atTop (𝓝 1) := by
+      simpa [Function.comp_def, Measure.real] using (ENNReal.tendsto_toReal ENNReal.one_ne_top).comp h1
+    exact (h2.eventually (lt_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1))).exists
+  -- lower tail: `F(-n) → 0`, so `F(-n₀) < 1/2` for some `n₀ : ℕ`
+  obtain ⟨n₀, hn₀⟩ : ∃ n₀ : ℕ, μ.real {x | u x ≤ -(n₀ : ℝ)} < 1 / 2 := by
+    have hB : Antitone fun n : ℕ => {x | u x ≤ -(n : ℝ)} := fun a b hab x hx =>
+      le_trans (show u x ≤ -(b : ℝ) from hx) (neg_le_neg (Nat.cast_le.mpr hab))
+    have hI : (⋂ n : ℕ, {x | u x ≤ -(n : ℝ)}) = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => ?_
+      obtain ⟨n, hn⟩ := exists_nat_gt (-u x)
+      have : u x ≤ -(n : ℝ) := mem_iInter.mp hx n
+      linarith
+    have h1 := tendsto_measure_iInter_atTop (μ := μ) (fun n : ℕ => hnm (-(n : ℝ))) hB
+      ⟨0, measure_ne_top μ _⟩
+    rw [hI, measure_empty] at h1
+    have h2 : Tendsto (fun n : ℕ => μ.real {x | u x ≤ -(n : ℝ)}) atTop (𝓝 0) := by
+      simpa [Function.comp_def, Measure.real] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h1
+    exact (h2.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).exists
+  -- `β` is the least integer with `F(β) ≥ 1/2`; the set is nonempty and bounded below by `-n₀`
+  obtain ⟨β, hβ, hmin⟩ := Int.exists_least_of_bdd
+    (P := fun z : ℤ => 1 / 2 ≤ μ.real {x | u x ≤ (z : ℝ)})
+    ⟨-(n₀ : ℤ), fun z hz => by
+      by_contra hlt
+      have hz' : (z : ℝ) ≤ -(n₀ : ℝ) := by exact_mod_cast (not_le.mp hlt).le
+      linarith [hmono _ _ hz']⟩
+    ⟨n₁, by simpa using hn₁.le⟩
+  refine ⟨β, ?_, hβ⟩
+  -- minimality: `F(β - 1) < 1/2`
+  have hβ1 : μ.real {x | u x ≤ ((β - 1 : ℤ) : ℝ)} < 1 / 2 :=
+    lt_of_not_ge fun h => by linarith [hmin (β - 1) h]
+  -- `u` is integer-valued, so `{β ≤ u} = {u ≤ β - 1}ᶜ`
+  have hset : {x | (β : ℝ) ≤ u x} = {x | u x ≤ ((β - 1 : ℤ) : ℝ)}ᶜ := by
+    ext x
+    obtain ⟨z, hz⟩ := hint x
+    simp only [mem_ofPred_eq, mem_compl_iff, hz, Int.cast_le, not_le]
+    omega
+  rw [hset, probReal_compl_eq_one_sub₀ (hnm _)]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
