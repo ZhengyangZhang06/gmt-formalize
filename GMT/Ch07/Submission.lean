@@ -1300,6 +1300,39 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- **Tangent spaces of a submanifold lying in a linear subspace** (Simon Ch. 2, §4; step 1 of
+the unit normal of a minimal hypercone plane): if `A₀ ⊆ ℝᴾ` is a linear subspace and `M ⊆ A₀` is
+an embedded `C¹` `m`-dimensional submanifold, then every `T_xM`, `x ∈ M`, is an `m`-dimensional
+linear subspace of `A₀`.  For a chart `ψ` with `ψ(v) = x`, `T_xM = Dψ(v)(ℝᵐ)`
+(`Submission.chart_tangentSpace_eq_range_fderiv`), of dimension `m` as `Dψ(v)` is injective.  A
+vector `γ'(0) ∈ T_xM` is the limit of the difference quotients `s⁻¹(γ(s) − γ(0)) ∈ A₀`,
+`0 < |s| < 1`, so it lies in the closed subspace `A₀`. -/
+theorem Submission.codim1_hcp_un_tangent_subspace : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → M ⊆ (A₀ : Set (Euclid P)) → ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ Q = m ∧ Q ≤ A₀ := by
+  intro P m A₀ M hM hMA x hx
+  -- Step 1: a chart `(V, W, ψ)` at `x`, and `v ∈ V` with `ψ(v) = x`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hD⟩ := hM x hx
+  obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := himg ▸ ⟨hxW, hx⟩
+  -- Step 2: `T_{ψ(v)}M = Dψ(v)(ℝᵐ)`, the underlying set of `Q = range Dψ(v)`
+  have hT : tangentSpace M (ψ v) = Set.range (fderiv ℝ ψ v) :=
+    Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ hinj himg
+      hprop hD hv
+  have hQ : (LinearMap.range (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P) : Set (Euclid P)) =
+      tangentSpace M (ψ v) := by
+    rw [hT, LinearMap.coe_range, ContinuousLinearMap.coe_coe]
+  refine ⟨_, hQ, ?_, fun w hw => ?_⟩
+  · -- Step 3: `Dψ(v)` is injective, so `dim Q = dim ℝᵐ = m`
+    rw [LinearMap.finrank_range_of_inj (hD v hv), finrank_euclideanSpace_fin]
+  · -- Step 4: `w = γ'(0)` for a `C¹` curve `γ` in `M` with `γ(0) = ψ(v)`
+    obtain ⟨γ, -, hγM, hγ0, hγw⟩ : w ∈ tangentSpace M (ψ v) := hQ ▸ hw
+    -- the difference quotients `s⁻¹(γ(s) − γ(0))`, `0 < |s| < 1`, lie in `A₀` as `M ⊆ A₀`
+    have hev : ∀ᶠ s in 𝓝[≠] (0 : ℝ), s⁻¹ • (γ (0 + s) - γ 0) ∈ A₀ := by
+      filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (neg_lt_zero.2 one_pos) one_pos)]
+        with s hs
+      refine A₀.smul_mem _ (A₀.sub_mem (hMA (hγM ?_)) (hMA (hγ0 ▸ hx)))
+      rwa [zero_add]
+    -- they tend to `w = γ'(0)`, and `A₀` is closed (finite-dimensional), so `w ∈ A₀`
+    exact A₀.closed_of_finiteDimensional.mem_of_tendsto hγw.tendsto_slope_zero hev
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
