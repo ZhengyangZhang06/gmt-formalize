@@ -645,6 +645,36 @@ theorem Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals : ∀ (c d : ℝ) (w
   have hwbx : wb x = 0 :=
     tendsto_nhds_unique hlim (tendsto_const_nhds.congr' (hzero.mono fun ρ hρ => hρ.symm))
   rwa [hwb, indicator_of_mem hxJ] at hwbx
+/-- **Reduction of a product-tested integral to one variable** (step 7 of the `α`-homogeneity
+rigidity at the edge of a planar sector of a 2-dimensional minimizing cone, Simon 7.3.3).  If
+`H(p) = h(p.1)` for a.e. `p ∈ O = (a, b) × (c, d)`, `f = 0` off `(a, b)`, `ψ₀ = 0` off `(c, d)`
+and `∫ ψ₀ = 1`, then `∫ f(p.1) ψ₀(p.2) H(p) dp = ∫ f h`.  The integrand vanishes off `O` and
+equals `(f h)(p.1) ψ₀(p.2)` a.e. on `O`; `setIntegral_prod_mul` (no integrability needed) factors
+the box integral as `(∫_{(a,b)} f h) (∫_{(c,d)} ψ₀)`, and both factors are whole-line integrals. -/
+theorem Submission.idtp_cse_ah_product_integral_reduce : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (h f ψ₀ : ℝ → ℝ), (∀ᵐ p : ℝ × ℝ, p ∈ Ioo a b ×ˢ Ioo c d → H p = h p.1) → (∀ t, t ∉ Ioo a b → f t = 0) → (∀ α, α ∉ Ioo c d → ψ₀ α = 0) → ∫ α, ψ₀ α = 1 → ∫ p : ℝ × ℝ, f p.1 * ψ₀ p.2 * H p = ∫ t, f t * h t := by
+  intro a b c d H h f ψ₀ hH hf hψ hψ1
+  -- step 1: the integrand vanishes off the box `O = (a, b) × (c, d)`
+  have hvan : ∀ p : ℝ × ℝ, p ∉ Ioo a b ×ˢ Ioo c d → f p.1 * ψ₀ p.2 * H p = 0 := by
+    intro p hp
+    rcases not_and_or.mp hp with hp1 | hp2
+    · rw [hf _ hp1, zero_mul, zero_mul]
+    · rw [hψ _ hp2, mul_zero, zero_mul]
+  -- step 2: on `O`, `H p = h p.1` almost everywhere
+  have hO : ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * ψ₀ p.2 * H p =
+      ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * h p.1 * ψ₀ p.2 := by
+    refine setIntegral_congr_ae (measurableSet_Ioo.prod measurableSet_Ioo) ?_
+    filter_upwards [hH] with p hp hpO
+    rw [hp hpO, mul_right_comm]
+  -- step 3: `volume = volume.prod volume` on `ℝ × ℝ`, and the box integral factors
+  have hprod : ∫ p in Ioo a b ×ˢ Ioo c d, f p.1 * h p.1 * ψ₀ p.2 =
+      (∫ t in Ioo a b, f t * h t) * ∫ α in Ioo c d, ψ₀ α := by
+    rw [Measure.volume_eq_prod]
+    exact setIntegral_prod_mul (fun t => f t * h t) ψ₀ (Ioo a b) (Ioo c d)
+  -- step 4: both factors are whole-line integrals, and `∫ ψ₀ = 1`
+  have hfh : ∀ t, t ∉ Ioo a b → f t * h t = 0 := fun t ht => by rw [hf t ht, zero_mul]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hvan, hO, hprod,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hψ, hψ1, mul_one,
+    setIntegral_eq_integral_of_forall_compl_eq_zero hfh]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
