@@ -3193,3 +3193,152 @@ theorem Submission.dimred_mbl_pfi_gram_jacobian_algebra : ∀ (P n : ℕ) (A : E
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
 end GMT.Ch07
+
+/-- A summable series of integer-weighted Lipschitz parametrizations `Hᵢ : Bᵢ → U` with
+orientations `ζᵢ = ±DHᵢ#e` is summed by one integer multiplicity triple `R` in `U`:
+`Σᵢ ∫_{Bᵢ} wᵢ ⟨ω ∘ Hᵢ, ζᵢ⟩ = R(ω)` for every `ω ∈ 𝒟ⁿ(U)`.  `DHᵢ` is injective on
+`Bᵢ⁺ = {a ∈ Bᵢ : Jᵢ(a) > 0, wᵢ(a) ≥ 1}`; cut `Bᵢ⁺` into bi-Lipschitz pieces `C_{il}`, make each
+piece a triple `R_{il}` by the area formula and sum the `R_{il}`, whose total mass is at most
+`Σᵢ ∫_{Bᵢ} wᵢJᵢ < ∞`.  The integrands are dominated by `wᵢJᵢ‖ω‖_∞` and vanish a.e. off `Bᵢ⁺`,
+so summing over the pieces of each `Bᵢ⁺` gives the series. -/
+theorem Submission.dimred_mbl_pfi_param_series_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (H : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (w : ℕ → Euclid n → ℕ) (ζ : ℕ → Euclid n → MultiVector P n), IsOpen U → (∀ i, ∃ L : NNReal, LipschitzWith L (H i)) → (∀ i, MeasurableSet (B i)) → (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (H i) a) → (∀ i, H i '' B i ⊆ U) → (∀ i, Measurable (w i)) → (∀ i, AEStronglyMeasurable (ζ i) (volume.restrict (B i))) → (∀ i, ∀ᵐ a ∂(volume.restrict (B i)), ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, ζ i a α = s * α (fun j => fderiv ℝ (H i) a (EuclideanSpace.single j (1 : ℝ)))) → ∑' i, ∫⁻ a in B i, (w i a : ℝ≥0∞) * ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) ∂volume ≠ ∞ → ∃ R : IMRep U n, ∀ ω : TestFormOn U n, HasSum (fun i => ∫ a in B i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume) (R.action (ω : DifferentialForm (Euclid P) n)) := by
+  intro P n U H B w ζ hU hHL hBm hHd hHU hwm hζm hsign hsum
+  classical
+  choose LH hLH using hHL
+  have hcJ : Continuous (fun A : Euclid n →L[ℝ] Euclid P => Real.sqrt ((A.adjoint ∘L A).det)) := by
+    refine Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp ?_)
+    exact isBoundedBilinearMap_comp.continuous.comp
+      ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid n) (F := Euclid P)).continuous.prodMk
+        continuous_id)
+  have hJmeas : ∀ i, Measurable (fun a =>
+      Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) :=
+    fun i => hcJ.measurable.comp (measurable_fderiv ℝ (H i))
+  set Bp : ℕ → Set (Euclid n) := fun i => B i ∩
+    {a | 0 < Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)} ∩
+    {a | 1 ≤ w i a}
+  have hBpm : ∀ i, MeasurableSet (Bp i) := fun i =>
+    ((hBm i).inter (measurableSet_lt measurable_const (hJmeas i))).inter
+      (measurableSet_le measurable_const (hwm i))
+  have hBpB : ∀ i, Bp i ⊆ B i := fun i => inter_subset_left.trans inter_subset_left
+  have hinjBp : ∀ i, ∀ a ∈ Bp i, DifferentiableAt ℝ (H i) a ∧ Injective (fderiv ℝ (H i) a) := by
+    intro i a ha
+    refine ⟨hHd i a (hBpB i ha), ?_⟩
+    have hpos : 0 < ((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det :=
+      Real.sqrt_pos.mp ha.1.2
+    set A := fderiv ℝ (H i) a
+    have hT : IsUnit ((A.adjoint ∘L A : Euclid n →L[ℝ] Euclid n) : Euclid n →ₗ[ℝ] Euclid n) :=
+      (LinearMap.isUnit_iff_isUnit_det _).2 (isUnit_iff_ne_zero.2 hpos.ne')
+    intro x y hxy
+    have h2 : (A.adjoint ∘L A) x = (A.adjoint ∘L A) y := by
+      simp only [ContinuousLinearMap.comp_apply, hxy]
+    exact (Module.End.isUnit_iff _).1 hT |>.1 h2
+  have hpart := fun i => Submission.dimred_mbl_pfi_bilipschitz_partition P n (H i) (Bp i) (hBpm i)
+    (hinjBp i)
+  choose C mC hCm hCdisj hCunion hmC hClow using hpart
+  have hCsub : ∀ i l, C i l ⊆ Bp i := fun i l => (hCunion i) ▸ subset_iUnion (C i) l
+  have hJfin : ∀ i, ∫⁻ a in B i, (w i a : ℝ≥0∞) *
+      ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det))
+        ∂volume ≠ ∞ := fun i => ENNReal.ne_top_of_tsum_ne_top hsum i
+  have hpiece : ∀ i l, ∃ R : IMRep U n, R.measure U = ∫⁻ a in C i l, (w i a : ℝ≥0∞) *
+      ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det))
+        ∂volume ∧ ∀ ω : DifferentialForm (Euclid P) n,
+          R.action ω = ∫ a in C i l, (w i a : ℝ) * ζ i a (ω (H i a)) ∂volume := by
+    intro i l
+    have hsub : C i l ⊆ B i := (hCsub i l).trans (hBpB i)
+    exact Submission.dimred_mbl_pfi_bilipschitz_piece_imrep P n U (H i) (C i l) (LH i) (mC i l)
+      (w i) (ζ i) hU (hLH i) (hCm i l) (hmC i l) (hClow i l) (fun a ha => hinjBp i a (hCsub i l ha))
+      ((Set.image_mono hsub).trans (hHU i)) (hwm i) (fun a ha => (hCsub i l ha).2)
+      ((hζm i).mono_measure (Measure.restrict_mono hsub le_rfl))
+      (ae_restrict_of_ae_restrict_of_subset hsub (hsign i))
+      (ne_top_of_le_ne_top (hJfin i) (lintegral_mono_set hsub))
+  choose Rp hRpmeas hRpact using hpiece
+  let e : ℕ ≃ ℕ × ℕ := Nat.pairEquiv.symm
+  have hmass : ∑' k, (Rp (e k).1 (e k).2).measure U ≠ ∞ := by
+    rw [e.tsum_eq (fun p => (Rp p.1 p.2).measure U), ENNReal.tsum_prod']
+    simp_rw [hRpmeas]
+    refine ne_top_of_le_ne_top hsum (ENNReal.tsum_le_tsum fun i => ?_)
+    rw [← lintegral_iUnion (hCm i) (hCdisj i), hCunion i]
+    exact lintegral_mono_set (hBpB i)
+  obtain ⟨R', hR'⟩ := Submission.cmcdt_ims_imrep_tsum P n U (fun k => Rp (e k).1 (e k).2) hU hmass
+  refine ⟨R', fun ω => ?_⟩
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous ω.property.1.1
+  obtain ⟨Bω, hBω⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+  have hint : ∀ i, IntegrableOn
+      (fun a => (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a))) (B i) volume := by
+    intro i
+    have hζ' := hζm i
+    have hsm : StronglyMeasurable
+        (fun a => (w i a : ℝ) * (hζ'.mk _ a) ((ω : DifferentialForm (Euclid P) n) (H i a))) := by
+      have hc : Continuous (fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2) :=
+        isBoundedBilinearMap_apply.continuous
+      exact (measurable_from_nat.comp (hwm i)).stronglyMeasurable.mul
+        (hc.comp_stronglyMeasurable (hζ'.stronglyMeasurable_mk.prodMk
+          (hωc.comp (hLH i).continuous).stronglyMeasurable))
+    have hae : (fun a => (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)))
+        =ᵐ[volume.restrict (B i)]
+        (fun a => (w i a : ℝ) * (hζ'.mk _ a) ((ω : DifferentialForm (Euclid P) n) (H i a))) := by
+      filter_upwards [hζ'.ae_eq_mk] with a ha
+      simp only [ha]
+    have hdom : IntegrableOn (fun a => Bω * ((w i a : ℝ) *
+        Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det))) (B i) volume := by
+      refine Integrable.const_mul ?_ _
+      refine ⟨((measurable_from_nat.comp (hwm i)).mul (hJmeas i)).aestronglyMeasurable, ?_⟩
+      rw [HasFiniteIntegral]
+      have : ∀ a, ‖(w i a : ℝ) *
+          Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)‖ₑ =
+          (w i a : ℝ≥0∞) *
+            ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) := by
+        intro a
+        rw [← ofReal_norm, Real.norm_eq_abs, abs_of_nonneg (by positivity),
+          ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
+      simp_rw [this]
+      exact (hJfin i).lt_top
+    refine hdom.mono' (hsm.aestronglyMeasurable.congr hae.symm) ?_
+    filter_upwards [hsign i] with a ⟨s, hs, hsα⟩
+    rw [hsα, norm_mul, norm_mul, Real.norm_natCast]
+    have hb := (Submission.dimred_mbl_pfi_gram_jacobian_algebra P n (fderiv ℝ (H i) a)).2.1
+      ((ω : DifferentialForm (Euclid P) n) (H i a))
+    have hs1 : ‖s‖ = 1 := by rcases hs with h | h <;> simp [h]
+    rw [hs1, one_mul, Real.norm_eq_abs]
+    calc (w i a : ℝ) * |((ω : DifferentialForm (Euclid P) n) (H i a))
+          (fun j => fderiv ℝ (H i) a (EuclideanSpace.single j (1 : ℝ)))|
+        ≤ (w i a : ℝ) * (Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det) * Bω) := by
+          gcongr
+          exact hb.trans (mul_le_mul_of_nonneg_left (hBω _) (Real.sqrt_nonneg _))
+      _ = Bω * ((w i a : ℝ) *
+          Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det)) := by ring
+  have hvanish : ∀ i,
+      ∫ a in B i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume =
+        ∫ a in Bp i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume := by
+    intro i
+    refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero (hBm i).nullMeasurableSet (hBpB i) ?_
+    filter_upwards [(ae_restrict_iff' (hBm i)).1 (hsign i)] with a ha hdiff
+    obtain ⟨s, hs, hsα⟩ := ha hdiff.1
+    have hnot : ¬ (0 < Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det) ∧
+        1 ≤ w i a) := fun h => hdiff.2 ⟨⟨hdiff.1, h.1⟩, h.2⟩
+    by_cases hw : 1 ≤ w i a
+    · have hJ0 : Real.sqrt (((fderiv ℝ (H i) a).adjoint ∘L fderiv ℝ (H i) a).det) = 0 :=
+        le_antisymm (not_lt.1 fun h => hnot ⟨h, hw⟩) (Real.sqrt_nonneg _)
+      have hb := (Submission.dimred_mbl_pfi_gram_jacobian_algebra P n (fderiv ℝ (H i) a)).2.1
+        ((ω : DifferentialForm (Euclid P) n) (H i a))
+      rw [hJ0, zero_mul] at hb
+      have h0 : ((ω : DifferentialForm (Euclid P) n) (H i a))
+          (fun j => fderiv ℝ (H i) a (EuclideanSpace.single j (1 : ℝ))) = 0 :=
+        abs_nonpos_iff.mp hb
+      rw [hsα, h0, mul_zero, mul_zero]
+    · have hw0 : w i a = 0 := by omega
+      simp [hw0]
+  have hfib : ∀ i, HasSum (fun l => (Rp i l).action (ω : DifferentialForm (Euclid P) n))
+      (∫ a in B i, (w i a : ℝ) * ζ i a ((ω : DifferentialForm (Euclid P) n) (H i a)) ∂volume) := by
+    intro i
+    simp_rw [hRpact]
+    have h1 := hasSum_integral_iUnion (hCm i) (hCdisj i)
+      ((hint i).mono_set (by rw [hCunion i]; exact hBpB i))
+    rw [hCunion i] at h1
+    rw [hvanish i]
+    exact h1
+  have hprod : HasSum (fun p : ℕ × ℕ => (Rp p.1 p.2).action (ω : DifferentialForm (Euclid P) n))
+      (R'.action (ω : DifferentialForm (Euclid P) n)) :=
+    (e.hasSum_iff
+      (f := fun p : ℕ × ℕ => (Rp p.1 p.2).action (ω : DifferentialForm (Euclid P) n))).mp (hR' ω)
+  exact hprod.prod_fiberwise hfib
