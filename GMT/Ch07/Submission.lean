@@ -1218,6 +1218,136 @@ theorem Submission.dimred_tr_blowup_calculus : ∀ (P n : ℕ) (U : Set (Euclid 
       Submission.dimred_tr_bc_currentEval_blowUp P n U T (x + lam • y) (lam * mu)
         (mul_pos hlam hmu) ω]
 
+/-- **Iterated zero-scale blow-up limits are zero-scale blow-up limits** (closure of the class `𝒯`
+of limits `lim η_{xᵢ,λᵢ#}T`, `λᵢ → 0`, under `η_{y,s#}` followed by weak limits, in the proof of
+Simon 7.3.3, chapter-07.txt lines 450–472, (10); Appendix A.1).  `B_{δ'}(x) ⊆ U`.  By
+`Submission.dimred_tr_blowup_calculus` (i) and `η_{a,t}⁻¹(B_ρ(p)) = B_{tρ}(a + tp)`, once
+`dist(a + tp, x) + tρ < min(δ, δ')` the blow-up `η_{a,t#}T` has `B_ρ(p)` in its domain and
+`M_{B_ρ(p)}(η_{a,t#}T) = t⁻ⁿ M_{B_{tρ}(a+tp)}(T) ≤ Γρⁿ`; this holds eventually along `aᵢ → x`,
+`tᵢ → 0`, so `Submission.idtp_convergesWeakly_massOn_le` gives `M_{B_ρ(p)}(S) ≤ Γρⁿ` and then
+`M_{B_ρ(0)}(C) ≤ Γρⁿ`.  By (ii) and (iii), `currentEval (η_{xᵢ+λᵢy,λᵢsₖ#}T) ω =
+currentEval (η_{xᵢ,λᵢ#}T) (η_{y,sₖ}^#ω) → currentEval S (η_{y,sₖ}^#ω) =
+currentEval (η_{y,sₖ#}S) ω` as `i → ∞` (if `η_{y,sₖ}^#ω` is not a test form all terms are `0`),
+and `Submission.dimred_tr_ibl_diagonal_limit` selects the diagonal `φ`. -/
+theorem Submission.dimred_tr_iterated_blowup_limit : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (y : Euclid P) (ss : ℕ → ℝ) (hss : ∀ k, 0 < ss k) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → Tendsto ss atTop (𝓝 0) → (∃ δ Γ : ℝ, 0 < δ ∧ ∀ x' ∈ ball x δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → ConvergesWeakly (fun k => blowUp S y (ss k) (hss k).ne') C → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ConvergesWeakly (fun k => blowUp T (xs (φ k) + lams (φ k) • y) (lams (φ k) * ss k) (mul_pos (hlams (φ k)) (hss k)).ne') C := by
+  intro P n U T x xs lams hlams S y ss hss C hU hx hxs hlams0 _ hmass hb hc
+  obtain ⟨δ, Γ, hδ, hT⟩ := hmass
+  obtain ⟨δ', hδ', hδ'U⟩ := Metric.isOpen_iff.1 hU x hx
+  -- `η_{a,t}⁻¹(B_ρ(p)) = B_{tρ}(a + tp)`
+  have hpre : ∀ (a p : Euclid P) (t ρ : ℝ), 0 < t →
+      dilation a t ⁻¹' ball p ρ = ball (a + t • p) (t * ρ) := by
+    intro a p t ρ ht
+    ext z
+    rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, dist_eq_norm]
+    have hz : dilation a t z - p = t⁻¹ • (z - (a + t • p)) := by
+      show -(t⁻¹ • a) + t⁻¹ • z - p = _
+      rw [smul_sub, smul_add, smul_smul, inv_mul_cancel₀ ht.ne', one_smul]
+      abel
+    rw [hz, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos ht, inv_mul_lt_iff₀ ht]
+  -- `t⁻ⁿ Γ (tρ)ⁿ = Γ ρⁿ`
+  have hscale : ∀ t ρ : ℝ, 0 < t → ENNReal.ofReal (t⁻¹ ^ n) * ENNReal.ofReal (Γ * (t * ρ) ^ n) =
+      ENNReal.ofReal (Γ * ρ ^ n) := by
+    intro t ρ ht
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    congr 1
+    rw [mul_pow, inv_pow]
+    field_simp
+  -- local domain and mass bound for a blow-up of `T` with centre near `x` and small scale
+  have hloc : ∀ (a p : Euclid P) (t ρ : ℝ) (ht : 0 < t), 0 < ρ →
+      dist (a + t • p) x + t * ρ < min δ δ' →
+      ball p ρ ⊆ dilation a t '' U ∧
+        (blowUp T a t ht.ne').massOn (ball p ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n) := by
+    intro a p t ρ ht hρ hlt
+    have htρ : 0 < t * ρ := mul_pos ht hρ
+    have hd : 0 ≤ dist (a + t • p) x := dist_nonneg
+    have hlt1 : dist (a + t • p) x + t * ρ < δ := hlt.trans_le (min_le_left _ _)
+    have hlt2 : dist (a + t • p) x + t * ρ < δ' := hlt.trans_le (min_le_right _ _)
+    have hsurj : ∀ z, dilation a t (a + t • z) = z := by
+      intro z
+      simp [dilation, dilationCLM, smul_add, smul_smul, ht.ne']
+    refine ⟨fun z hz => ⟨a + t • z, ?_, hsurj z⟩, ?_⟩
+    · apply hδ'U
+      apply ball_subset_ball' (by linarith : t * ρ + dist (a + t • p) x ≤ δ')
+      rw [← hpre a p t ρ ht, mem_preimage, hsurj z]
+      exact hz
+    · rw [(Submission.dimred_tr_blowup_calculus P n U T a t ht).1, hpre a p t ρ ht]
+      calc ENNReal.ofReal (t⁻¹ ^ n) * T.massOn (ball (a + t • p) (t * ρ))
+          ≤ ENNReal.ofReal (t⁻¹ ^ n) * ENNReal.ofReal (Γ * (t * ρ) ^ n) := by
+            gcongr
+            exact hT _ (mem_ball.2 (by linarith)) _ htρ (by linarith)
+        _ = ENNReal.ofReal (Γ * ρ ^ n) := hscale t ρ ht
+  -- these conditions hold eventually along centres `aᵢ → x` and scales `tᵢ → 0`
+  have hev : ∀ (a : ℕ → Euclid P) (t : ℕ → ℝ), Tendsto a atTop (𝓝 x) →
+      Tendsto t atTop (𝓝 0) → ∀ (p : Euclid P) (ρ : ℝ),
+        ∀ᶠ i in atTop, dist (a i + t i • p) x + t i * ρ < min δ δ' := by
+    intro a t ha ht p ρ
+    have h1 : Tendsto (fun i => a i + t i • p) atTop (𝓝 x) := by
+      simpa using ha.add (ht.smul_const p)
+    have h2 : Tendsto (fun i => dist (a i + t i • p) x + t i * ρ) atTop (𝓝 0) := by
+      simpa using (tendsto_iff_dist_tendsto_zero.1 h1).add (ht.mul_const ρ)
+    exact h2.eventually (eventually_lt_nhds (lt_min hδ hδ'))
+  -- mass bounds for `S`
+  have hS : ∀ (p : Euclid P) (ρ : ℝ), 0 < ρ → S.massOn (ball p ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n) := by
+    intro p ρ hρ
+    refine Submission.idtp_convergesWeakly_massOn_le P n _ _ _ S (ball p ρ) _ hb ?_
+    filter_upwards [hev xs lams hxs hlams0 p ρ] with i hi
+    exact hloc (xs i) p (lams i) ρ (hlams i) hρ hi
+  -- mass bounds for `C`
+  have hC : ∀ ρ : ℝ, 0 < ρ → C.massOn (ball 0 ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n) := by
+    intro ρ hρ
+    refine Submission.idtp_convergesWeakly_massOn_le P n _ _ _ C (ball 0 ρ) _ hc
+      (Eventually.of_forall fun k => ⟨fun z _ => ⟨y + ss k • z, mem_univ _, ?_⟩, ?_⟩)
+    · simp [dilation, dilationCLM, smul_add, smul_smul, (hss k).ne']
+    · rw [(Submission.dimred_tr_blowup_calculus P n univ S y (ss k) (hss k)).1,
+        hpre y 0 (ss k) ρ (hss k), smul_zero, add_zero]
+      calc ENNReal.ofReal ((ss k)⁻¹ ^ n) * S.massOn (ball y (ss k * ρ))
+          ≤ ENNReal.ofReal ((ss k)⁻¹ ^ n) * ENNReal.ofReal (Γ * (ss k * ρ) ^ n) := by
+            gcongr
+            exact hS y _ (mul_pos (hss k) hρ)
+        _ = ENNReal.ofReal (Γ * ρ ^ n) := hscale (ss k) ρ (hss k)
+  -- inner convergence for fixed `k`
+  have hinner : ∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n),
+      Tendsto (fun i => currentEval (blowUp T (xs i + lams i • y) (lams i * ss k)
+        (mul_pos (hlams i) (hss k)).ne') (ω : DifferentialForm (Euclid P) n)) atTop
+        (𝓝 (currentEval (blowUp S y (ss k) (hss k).ne') (ω : DifferentialForm (Euclid P) n))) := by
+    intro k ω
+    set ν := affinePullbackForm (dilationCLM P (ss k)) (-((ss k)⁻¹ • y))
+      (ω : DifferentialForm (Euclid P) n) with hν_def
+    have h1 : ∀ i, currentEval (blowUp T (xs i + lams i • y) (lams i * ss k)
+        (mul_pos (hlams i) (hss k)).ne') (ω : DifferentialForm (Euclid P) n) =
+        currentEval (blowUp T (xs i) (lams i) (hlams i).ne') ν := fun i => by
+      rw [← (Submission.dimred_tr_blowup_calculus P n U T (xs i) (lams i) (hlams i)).2.2 y (ss k)
+          (hss k),
+        (Submission.dimred_tr_blowup_calculus P n _ (blowUp T (xs i) (lams i) (hlams i).ne') y
+          (ss k) (hss k)).2.1]
+    have h2 : currentEval (blowUp S y (ss k) (hss k).ne') (ω : DifferentialForm (Euclid P) n) =
+        currentEval S ν :=
+      (Submission.dimred_tr_blowup_calculus P n univ S y (ss k) (hss k)).2.1 _
+    simp only [h1, h2]
+    by_cases hν : IsTestForm ν ∧ tsupport ν ⊆ (univ : Set (Euclid P))
+    · have h3 : currentEval S ν = S ⟨ν, hν⟩ := dite_eq_left hν
+      rw [h3]
+      exact hb ⟨ν, hν⟩
+    · have h3 : ∀ {V : Set (Euclid P)} (A : GeometricCurrentOn V n), currentEval A ν = 0 := by
+        intro V A
+        exact dite_eq_right fun h => hν ⟨h.1, subset_univ _⟩
+      simp only [h3]
+      exact tendsto_const_nhds
+  -- diagonal selection
+  refine Submission.dimred_tr_ibl_diagonal_limit P n
+    (fun k i => dilation (xs i + lams i • y) (lams i * ss k) '' U)
+    (fun k i => blowUp T (xs i + lams i • y) (lams i * ss k) (mul_pos (hlams i) (hss k)).ne')
+    (fun k => dilation y (ss k) '' univ) (fun k => blowUp S y (ss k) (hss k).ne') C hinner hc ?_
+  intro R
+  refine ⟨0, ENNReal.ofReal (Γ * ((R : ℝ) + 1) ^ n), ENNReal.ofReal_ne_top,
+    hC _ (by positivity), fun k _ => ?_⟩
+  have ha : Tendsto (fun i => xs i + lams i • y) atTop (𝓝 x) := by
+    simpa using hxs.add (hlams0.smul_const y)
+  have ht : Tendsto (fun i => lams i * ss k) atTop (𝓝 0) := by
+    simpa using hlams0.mul_const (ss k)
+  filter_upwards [hev _ _ ha ht 0 ((R : ℝ) + 1)] with i hi
+  exact hloc _ 0 _ _ (mul_pos (hlams i) (hss k)) (by positivity) hi
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
