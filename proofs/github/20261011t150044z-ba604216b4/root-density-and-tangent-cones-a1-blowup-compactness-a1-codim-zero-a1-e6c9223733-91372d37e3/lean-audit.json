@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4a0b4730dc672a022e1f8a098565a44adf9a0df49e7ee29c7dcb25a1d38c1810",
+  "git_delta": {
+    "base_commit": "14be780f06052ae59e89f3e9d8cf4c303e10d3d6",
+    "candidate_commit": "f7172d76a03e6137e1b5cb7e6a1c0b7a260aa593",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "246b5649da09096382aa8e201ff72597b0c90186954e2e2649719e9522a518bd",
+    "source_sha256": "17b0c3be3fdb996ae3a495e47fb135c131de3ec3ff8e67cd1db6ec70d5500d78",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_top_density",
+      "statement": "∀ (n : ℕ) (V : Set (Euclid n)) (X : GeometricCurrentOn V n), 0 < n → IsOpen V → IsIntegerMultiplicity X → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : TestFormOn V n, X ω = ∫ y, (g y : ℝ) * (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
