@@ -2322,6 +2322,81 @@ theorem Submission.idtp_ccd_sfv_approxTangentPlane_eq_span_ae : ∀ (P n : ℕ) 
   exact Submodule.eq_of_le_of_finrank_eq (hQT.trans hTspan)
     (by rw [hQ.1, (Submission.idtp_ccd_sfv_span_tangentSpace_finrank P n N (ψ v) hN hxN).2])
 
+/-- **First variation of a constant-density sheet** (Simon Ch. 4, 2.2–2.3, for the varifold
+`v(M, θ)`; step 6(b) and the first equality of step 9 of the parent proof).  Let `T = τ(S, θ, ξ)`
+in the open set `U`, `B = B_ρ(p) ⊆ U`, `k ≥ 1`, `M` an embedded `C¹` `n`-submanifold with
+`spt T ∩ B = M ∩ B`, and `Θⁿ(μ_T, y) = k` at every `y ∈ spt T ∩ B`.  Then every `C¹` field `X`
+with compact support in `B` has `δV(X) = k ∫_{M ∩ B} tr(p_{TₓM} ∘ DX(x)) dHⁿ(x)`.
+* `(S ∩ B) ∖ M` is `Hⁿ`-null.  Its points lie off `spt T`, hence in the open zero region of `T`.
+  A ball `B_r(x)` there misses `spt T`, so `idtp_ccd_sfv_mult_ae_eq_density` with density `0`
+  gives `θ = 0` a.e. on `S ∩ B_r(x)`; as `θ ≥ 1` on `S`, `Hⁿ(S ∩ B_r(x)) = 0`.
+* `(M ∩ B) ∖ S = (spt T ∩ B) ∖ S` is `Hⁿ`-null (`idtp_ccd_sfv_support_sdiff_carrier_null`).
+* `θ = k` (`idtp_ccd_sfv_mult_ae_eq_density`) and `TₓS = span TₓM`
+  (`idtp_ccd_sfv_approxTangentPlane_eq_span_ae`) hold `Hⁿ`-a.e. on `S ∩ B`.
+* `DX = 0` off `spt X ⊆ B`, so `δV(X) = ∫_{S ∩ B} θ div_S X dHⁿ = k ∫_{S ∩ B} tr(p_{TₓM} DX) dHⁿ`,
+  and `S ∩ B = M ∩ B` up to an `Hⁿ`-null set. -/
+theorem Submission.idtp_ccd_sheet_first_variation : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ) (k : ℕ), IsOpen U → R.Represents T → ball p ρ ⊆ U → 1 ≤ k → IsEmbeddedSubmanifold 1 n M → T.support ∩ ball p ρ = M ∩ ball p ρ → (∀ y ∈ T.support, y ∈ ball p ρ → HasMassDensity T y k) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → R.firstVariation X = (k : ℝ) * ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[n] := by
+  intro P n U T R M p ρ k hU hRT hBU hk hM hsupp hdens X _ _ hXB
+  have hS : MeasurableSet R.carrier := R.measurableSet_carrier
+  -- Step 2: `(S ∩ B) \ M` is `Hⁿ`-null.  Its points lie off `spt T`, so in the open zero region
+  -- of `T`.  A ball `B_r(x)` there misses `spt T`, so `idtp_ccd_sfv_mult_ae_eq_density` applies
+  -- vacuously with `k = 0`: `θ = 0` a.e. on `S ∩ B_r(x)`, and `θ ≥ 1` on `S` makes this null.
+  have hSM : μHE[n] ((R.carrier ∩ ball p ρ) \ M) = 0 := by
+    refine measure_null_of_locally_null _ fun x hx => ?_
+    have hxz : x ∈ T.zeroRegion := by
+      by_contra hxz
+      have hxT : x ∈ T.support ∩ ball p ρ :=
+        ⟨mem_sdiff_of_mem (R.carrier_subset hx.1.1) hxz, hx.1.2⟩
+      rw [hsupp] at hxT
+      exact hx.2 hxT.1
+    obtain ⟨r, hr, hrz⟩ := Metric.isOpen_iff.1 T.isOpen_zeroRegion x hxz
+    have h0 := (Submission.idtp_ccd_sfv_mult_ae_eq_density P n U T R x r 0 hU hRT
+      fun y hy hyr => absurd (hrz hyr) hy.2).2
+    have hfalse : ∀ᵐ y ∂(μHE[n].restrict (R.carrier ∩ ball x r)), False := by
+      filter_upwards [h0, ae_restrict_mem (hS.inter isOpen_ball.measurableSet)] with y hy hyS
+      exact (R.mult_pos y hyS.1).ne' hy
+    have hnull : μHE[n] (R.carrier ∩ ball x r) = 0 :=
+      Measure.restrict_eq_zero.1 (ae_eq_bot.1 (eventually_false_iff_eq_bot.1 hfalse))
+    refine ⟨((R.carrier ∩ ball p ρ) \ M) ∩ ball x r,
+      inter_mem_nhdsWithin _ (isOpen_ball.mem_nhds (mem_ball_self hr)),
+      measure_mono_null (fun y hy => ?_) hnull⟩
+    exact ⟨hy.1.1.1, hy.2⟩
+  -- Step 4: `(M ∩ B) \ S` is `Hⁿ`-null, as `spt T ∩ B = M ∩ B`; so `S ∩ B = M ∩ B` a.e.
+  have hMS : μHE[n] ((M ∩ ball p ρ) \ R.carrier) = 0 := by
+    rw [← hsupp]
+    exact Submission.idtp_ccd_sfv_support_sdiff_carrier_null P n U T R p ρ k hU hRT hBU hk hdens
+  have hSMae : R.carrier ∩ ball p ρ =ᵐ[μHE[n]] M ∩ ball p ρ := by
+    refine ae_eq_set.2 ⟨measure_mono_null (fun y hy => ?_) hSM,
+      measure_mono_null (fun y hy => ?_) hMS⟩
+    · exact ⟨hy.1, fun hyM => hy.2 ⟨hyM, hy.1.2⟩⟩
+    · exact ⟨hy.1, fun hyS => hy.2 ⟨hyS, hy.1.2⟩⟩
+  -- Steps 3 and 5: `θ = k` and `TₓS = span TₓM` for `Hⁿ`-a.e. `x ∈ S ∩ B`.
+  have hθ := (Submission.idtp_ccd_sfv_mult_ae_eq_density P n U T R p ρ k hU hRT hdens).2
+  have hT := Submission.idtp_ccd_sfv_approxTangentPlane_eq_span_ae P n U R M (ball p ρ) hM
+    isOpen_ball hSM
+  -- Step 6: the integrand vanishes off `tsupport X ⊆ B`.
+  have hS0 : ∀ x ∈ R.carrier \ (R.carrier ∩ ball p ρ),
+      (R.mult x : ℝ) * tangentialDivergence n R.carrier X x = 0 := by
+    intro x hx
+    have hxX : x ∉ tsupport X := fun h => hx.2 ⟨hx.1, hXB h⟩
+    simp [tangentialDivergence, fderiv_of_notMem_tsupport ℝ hxX]
+  -- Step 7: evaluation.
+  calc R.firstVariation X
+      = ∫ x in R.carrier ∩ ball p ρ, (R.mult x : ℝ) * tangentialDivergence n R.carrier X x
+          ∂μHE[n] :=
+        setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hS inter_subset_left hS0
+    _ = ∫ x in R.carrier ∩ ball p ρ, (k : ℝ) * LinearMap.trace ℝ (Euclid P)
+          ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+            (fderiv ℝ X x).toLinearMap) ∂μHE[n] := by
+        refine integral_congr_ae ?_
+        filter_upwards [hT, hθ] with x hxT hxθ
+        simp only [tangentialDivergence, hxT, hxθ]
+    _ = (k : ℝ) * ∫ x in R.carrier ∩ ball p ρ, LinearMap.trace ℝ (Euclid P)
+          ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+            (fderiv ℝ X x).toLinearMap) ∂μHE[n] :=
+        integral_const_mul _ _
+    _ = _ := by rw [setIntegral_congr_set hSMae]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
