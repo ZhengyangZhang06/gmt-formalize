@@ -4671,6 +4671,265 @@ theorem Submission.cmr_vr_coordinate_assembly : ∀ (X : Type) [TopologicalSpace
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [inner_smul_right, EuclideanSpace.inner_single_right, hgc, conj_trivial, one_mul, mul_comm]
 
+/-- Jordan decomposition of a locally bounded `Λ : C_c(X, ℝ) → ℝ`.  For `f : C_c(X, ℝ≥0)` put
+`V f := sup {Λ h : |h| ≤ f}` (bounded above by rescaling the local bound on `tsupport f`).  `V` is
+additive (clamp `h₁ := (h ⊓ f) ⊔ (-f)`) and `ℝ≥0`-homogeneous, so `V̂ := toRealPositiveLinear V`
+is positive; `V̂ + Λ` is positive since `-k` is admissible for `k ≥ 0`, and `Λ = (V̂ + Λ) - V̂`. -/
+theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f := by
+  intro X _ Λ hΛ
+  -- scaled bound: `tsupport f ⊆ K`, `|f| ≤ s` give `|Λ f| ≤ s * M_K` (`s = 0`, else rescale)
+  have hscale : ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ (f : CompactlySupportedContinuousMap X ℝ)
+      (s : ℝ), tsupport f ⊆ K → 0 ≤ s → (∀ x, |f x| ≤ s) → |Λ f| ≤ s * M := by
+    intro K hK
+    obtain ⟨M, hM⟩ := hΛ K hK
+    refine ⟨M, fun f s hfK hs hfs => ?_⟩
+    rcases hs.eq_or_lt with rfl | hspos
+    · have hf0 : f = 0 := by
+        ext x
+        simpa using hfs x
+      simp [hf0]
+    · have hsub : tsupport (s⁻¹ • f) ⊆ K :=
+        (tsupport_smul_subset_right (fun _ : X => s⁻¹) f).trans hfK
+      have hbd : ∀ x, |(s⁻¹ • f) x| ≤ 1 := by
+        intro x
+        rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
+          abs_of_pos (inv_pos.mpr hspos)]
+        calc s⁻¹ * |f x| ≤ s⁻¹ * s := mul_le_mul_of_nonneg_left (hfs x) (inv_pos.mpr hspos).le
+          _ = 1 := inv_mul_cancel₀ hspos.ne'
+      have h1 := hM _ hsub hbd
+      rw [map_smul, smul_eq_mul, abs_mul, abs_of_pos (inv_pos.mpr hspos)] at h1
+      have := (inv_mul_le_iff₀ hspos).mp h1
+      linarith
+  -- `A f = {h : |h| ≤ f}` contains `0`, and `Λ '' A f` is bounded above: members of `A f` have
+  -- `tsupport h ⊆ tsupport f` and `|h| ≤ max C 0` with `C` a bound for `f`
+  let A : CompactlySupportedContinuousMap X NNReal → Set (CompactlySupportedContinuousMap X ℝ) :=
+    fun f => {h | ∀ x, |h x| ≤ (f x : ℝ)}
+  have hA0 : ∀ f, (0 : CompactlySupportedContinuousMap X ℝ) ∈ A f := by
+    intro f x
+    simp
+  have hbdd : ∀ f, BddAbove (Λ '' A f) := by
+    intro f
+    obtain ⟨M, hM⟩ := hscale (tsupport f) f.hasCompactSupport.isCompact
+    obtain ⟨C, hC⟩ := f.toReal.continuous.bounded_above_of_compact_support
+      f.toReal.hasCompactSupport
+    refine ⟨max C 0 * M, ?_⟩
+    rintro _ ⟨h, hh, rfl⟩
+    have hsupp : tsupport h ⊆ tsupport f := by
+      apply closure_mono
+      intro x hx hfx
+      apply hx
+      have := hh x
+      rw [hfx] at this
+      simpa using this
+    have hbd : ∀ x, |h x| ≤ max C 0 := by
+      intro x
+      refine (hh x).trans ((le_abs_self _).trans ?_)
+      have h' : ‖f.toReal x‖ ≤ C := hC x
+      rw [CompactlySupportedContinuousMap.toReal_apply, Real.norm_eq_abs] at h'
+      exact h'.trans (le_max_left _ _)
+    exact (le_abs_self _).trans (hM h _ hsupp (le_max_right _ _) hbd)
+  -- the variation `V f = sup (Λ '' A f) ≥ Λ 0 = 0`
+  let V : CompactlySupportedContinuousMap X NNReal → ℝ := fun f => sSup (Λ '' A f)
+  have hle : ∀ f, ∀ h ∈ A f, Λ h ≤ V f := fun f h hh => le_csSup (hbdd f) ⟨h, hh, rfl⟩
+  have hVle : ∀ f (c : ℝ), (∀ h ∈ A f, Λ h ≤ c) → V f ≤ c := by
+    intro f c hc
+    exact csSup_le ⟨0, 0, hA0 f, map_zero Λ⟩ (by rintro _ ⟨h, hh, rfl⟩; exact hc h hh)
+  have hV0 : ∀ f, 0 ≤ V f := fun f => by simpa using hle f 0 (hA0 f)
+  -- additivity: `≤` by the clamp `h₁ = (h ⊓ f) ⊔ (-f)`, `h - h₁ ∈ A g`; `≥` by `h₁ + h₂ ∈ A (f + g)`
+  have hadd : ∀ f g, V (f + g) = V f + V g := by
+    intro f g
+    apply le_antisymm
+    · apply hVle
+      intro h hh
+      let h₁ : CompactlySupportedContinuousMap X ℝ := (h ⊓ f.toReal) ⊔ (-f.toReal)
+      have hpt : ∀ x, |h₁ x| ≤ (f x : ℝ) ∧ |(h - h₁) x| ≤ (g x : ℝ) := by
+        intro x
+        have hx := hh x
+        have hf0 : (0 : ℝ) ≤ f x := (f x).2
+        have hg0 : (0 : ℝ) ≤ g x := (g x).2
+        simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add] at hx
+        simp only [h₁, CompactlySupportedContinuousMap.sub_apply,
+          CompactlySupportedContinuousMap.sup_apply, CompactlySupportedContinuousMap.inf_apply,
+          CompactlySupportedContinuousMap.neg_apply, CompactlySupportedContinuousMap.toReal_apply]
+        rw [abs_le] at hx ⊢
+        rw [abs_le]
+        rcases le_total (h x) (f x) with h1 | h1
+        · rw [min_eq_left h1]
+          rcases le_total (h x) (-(f x : ℝ)) with h2 | h2
+          · rw [max_eq_right h2]
+            constructor <;> constructor <;> linarith
+          · rw [max_eq_left h2]
+            constructor <;> constructor <;> linarith
+        · rw [min_eq_right h1, max_eq_left (by linarith)]
+          constructor <;> constructor <;> linarith
+      have h1mem : h₁ ∈ A f := fun x => (hpt x).1
+      have h2mem : h - h₁ ∈ A g := fun x => (hpt x).2
+      have e : Λ h = Λ h₁ + Λ (h - h₁) := by rw [map_sub]; ring
+      rw [e]
+      exact add_le_add (hle f h₁ h1mem) (hle g _ h2mem)
+    · have key : V f ≤ V (f + g) - V g := by
+        apply hVle
+        intro h₁ hh₁
+        have : V g ≤ V (f + g) - Λ h₁ := by
+          apply hVle
+          intro h₂ hh₂
+          have hmem : h₁ + h₂ ∈ A (f + g) := by
+            intro x
+            simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add]
+            exact (abs_add_le _ _).trans (add_le_add (hh₁ x) (hh₂ x))
+          have := hle _ _ hmem
+          rw [map_add] at this
+          linarith
+        linarith
+      linarith
+  -- homogeneity: `A 0 = {0}`; for `c > 0`, `h ↦ c⁻¹ • h` maps `A (c • f)` into `A f`
+  have hzero : V 0 = 0 := by
+    apply le_antisymm _ (hV0 0)
+    apply hVle
+    intro h hh
+    have : h = 0 := by
+      ext x
+      simpa using hh x
+    simp [this]
+  have hsmul_le : ∀ (c : NNReal) f, V (c • f) ≤ c * V f := by
+    intro c f
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp [hzero]
+    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
+    apply hVle
+    intro h hh
+    have hmem : (c : ℝ)⁻¹ • h ∈ A f := by
+      intro x
+      have := hh x
+      simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, NNReal.coe_mul] at this
+      rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
+        abs_of_pos (inv_pos.mpr hcpos)]
+      rw [inv_mul_le_iff₀ hcpos]
+      exact this
+    have := hle f _ hmem
+    rw [map_smul, smul_eq_mul] at this
+    exact (inv_mul_le_iff₀ hcpos).mp this
+  have hsmul : ∀ (c : NNReal) f, V (c • f) = c * V f := by
+    intro c f
+    rcases eq_or_ne c 0 with rfl | hc
+    · simp [hzero]
+    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
+    apply le_antisymm (hsmul_le c f)
+    have h := hsmul_le c⁻¹ (c • f)
+    rw [inv_smul_smul₀ hc, NNReal.coe_inv] at h
+    exact (le_inv_mul_iff₀ hcpos).mp h
+  -- `V` is `ℝ≥0`-linear; `V̂ := toRealPositiveLinear V` is a positive functional on `C_c(X, ℝ)`
+  let W : CompactlySupportedContinuousMap X NNReal →ₗ[NNReal] NNReal :=
+    { toFun := fun f => ⟨V f, hV0 f⟩
+      map_add' := fun f g => NNReal.eq (hadd f g)
+      map_smul' := fun c f => NNReal.eq (hsmul c f) }
+  let Vh := CompactlySupportedContinuousMap.toRealPositiveLinear W
+  -- `V̂ + Λ` is positive: for `k ≥ 0`, `V̂ k = V k⁺` and `-k ∈ A k⁺`, so `-Λ k ≤ V̂ k`
+  have hdom : ∀ k : CompactlySupportedContinuousMap X ℝ, 0 ≤ k → 0 ≤ Vh k + Λ k := by
+    intro k hk
+    have hkeq : k.nnrealPart.toReal = k := by
+      ext x
+      rw [CompactlySupportedContinuousMap.toReal_apply,
+        CompactlySupportedContinuousMap.nnrealPart_apply]
+      exact Real.coe_toNNReal _ (hk x)
+    have hVk : Vh k = V k.nnrealPart := by
+      have := CompactlySupportedContinuousMap.eq_toRealPositiveLinear_toReal W k.nnrealPart
+      rw [hkeq] at this
+      exact this
+    have hmem : -k ∈ A k.nnrealPart := by
+      intro x
+      rw [CompactlySupportedContinuousMap.neg_apply, abs_neg,
+        CompactlySupportedContinuousMap.nnrealPart_apply, Real.coe_toNNReal _ (hk x)]
+      exact (abs_of_nonneg (hk x)).le
+    have := hle _ _ hmem
+    rw [map_neg] at this
+    rw [hVk]
+    linarith
+  refine ⟨PositiveLinearMap.mk₀ (Vh.toLinearMap + Λ) hdom, Vh, fun f => ?_⟩
+  show Λ f = (Vh f + Λ f) - Vh f
+  ring
+/-- **Radon–Nikodym density on `C_c`.**  If `μ₀`, `ξ` are finite on compact subsets of a locally
+compact second countable space and `ξ ≪ μ₀`, then `ξ` has a measurable density `g`, `μ₀`-integrable
+on compact sets, with `f·g` `μ₀`-integrable and `∫ f dξ = ∫ f g dμ₀` for every `f ∈ C_c(X, ℝ)`.
+`X` is σ-compact, so `μ₀`, `ξ` are σ-finite and `ξ = μ₀.withDensity δ` for `δ = ξ.rnDeriv μ₀`
+(the singular part vanishes since `ξ ≪ μ₀`), with `δ < ∞` `μ₀`-a.e.  Take `g = δ.toReal`: on a
+compact `K`, `∫⁻_K δ dμ₀ < ∞` because `ξ(K) < ∞`.  A bounded `f` with compact support times `g` is
+integrable on `tsupport f` and vanishes outside it.  The `T2Space` hypothesis is not used. -/
+theorem Submission.cmr_vr_cd_density_representation : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ₀ ξ : Measure X), IsFiniteMeasureOnCompacts μ₀ → IsFiniteMeasureOnCompacts ξ → ξ ≪ μ₀ → ∃ g : X → ℝ, Measurable g ∧ (∀ K : Set X, IsCompact K → IntegrableOn g K μ₀) ∧ ∀ f : CompactlySupportedContinuousMap X ℝ, Integrable (fun x => f x * g x) μ₀ ∧ ∫ x, f x ∂ξ = ∫ x, f x * g x ∂μ₀ := by
+  intro X _ _ _ _ _ _ μ₀ ξ hμ₀ hξ hac
+  -- `X` is σ-compact, so both measures are σ-finite and `(ξ, μ₀)` has a Lebesgue decomposition
+  have : SigmaCompactSpace X := sigmaCompactSpace_of_locallyCompact_secondCountable
+  have : SigmaFinite μ₀ := SigmaFinite.of_isFiniteMeasureOnCompacts μ₀
+  have : SigmaFinite ξ := SigmaFinite.of_isFiniteMeasureOnCompacts ξ
+  -- `ξ = μ₀.withDensity δ` with `δ = dξ/dμ₀` measurable and `μ₀`-a.e. finite
+  set δ : X → ℝ≥0∞ := ξ.rnDeriv μ₀
+  have hδm : Measurable δ := Measure.measurable_rnDeriv ξ μ₀
+  have hξδ : ξ = μ₀.withDensity δ := by
+    have h := Measure.haveLebesgueDecomposition_add ξ μ₀
+    rwa [Measure.singularPart_eq_zero_of_ac hac, zero_add] at h
+  have hδlt : ∀ᵐ x ∂μ₀, δ x < ∞ := Measure.rnDeriv_lt_top ξ μ₀
+  -- `g = δ.toReal` is integrable on compact sets: `∫⁻_K δ dμ₀ < ∞` since `ξ(K) < ∞`
+  have hgK : ∀ K : Set X, IsCompact K → IntegrableOn (fun x => (δ x).toReal) K μ₀ := by
+    intro K hK
+    have hlin : ∫⁻ x in K, δ x ∂μ₀ < ∞ :=
+      Measure.lintegral_rnDeriv_lt_top_of_measure_ne_top μ₀ hK.measure_lt_top.ne
+    exact integrable_toReal_of_lintegral_ne_top hδm.aemeasurable hlin.ne
+  refine ⟨fun x => (δ x).toReal, hδm.ennreal_toReal, hgK, fun f => ⟨?_, ?_⟩⟩
+  -- `f` is bounded, so `f·g` is integrable on `tsupport f`, and it vanishes outside
+  · obtain ⟨C, hC⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
+    have hon : IntegrableOn (fun x => f x * (δ x).toReal) (tsupport f) μ₀ :=
+      Integrable.bdd_mul (c := C) (hgK _ f.hasCompactSupport.isCompact)
+        (map_continuous f).measurable.aestronglyMeasurable (Eventually.of_forall hC)
+    refine hon.integrable_of_forall_notMem_eq_zero fun x hx => ?_
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  -- `∫ f dξ = ∫ δ.toReal • f dμ₀`
+  · rw [hξδ, integral_withDensity_eq_integral_toReal_smul hδm hδlt]
+    congr 1
+    funext x
+    exact (smul_eq_mul _ _).trans (mul_comm _ _)
+
+/-- Common dominating measure and densities for finitely many pairs of positive functionals
+(Riesz–Markov–Kakutani; Rudin, *Real and Complex Analysis*, Thm 2.14 and 6.10).  Let `X` be
+locally compact, Hausdorff and second countable with its Borel σ-algebra, and let `Λ₁ᵢ, Λ₂ᵢ`
+(`i ∈ Fin m`) be positive linear functionals on `C_c(X, ℝ)`.  Then there are a measure `μ₀`,
+finite on compact sets, and measurable `ρᵢ`, `μ₀`-integrable on compact sets, with
+`Λ₁ᵢ f - Λ₂ᵢ f = ∫ f ρᵢ dμ₀` for all `f ∈ C_c(X, ℝ)`.
+
+Proof sketch:
+* `bᵢ := rieszMeasure Λ₁ᵢ` and `aᵢ := rieszMeasure Λ₂ᵢ` are regular, hence finite on compact
+  sets, and `∫ f dbᵢ = Λ₁ᵢ f`, `∫ f daᵢ = Λ₂ᵢ f`.
+* `cmr_vr_cd_dominating_measure` gives a compact-finite `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`.
+* `cmr_vr_cd_density_representation` gives locally integrable densities `gaᵢ`, `gbᵢ` with
+  `∫ f daᵢ = ∫ f gaᵢ dμ₀`, `∫ f dbᵢ = ∫ f gbᵢ dμ₀`, both integrands integrable.
+* With `ρᵢ := gbᵢ - gaᵢ`, linearity of the integral gives the representation. -/
+theorem Submission.cmr_vr_common_density : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (Λ₁ Λ₂ : Fin m → (CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ)), ∃ (μ₀ : Measure X) (ρ : Fin m → X → ℝ), IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, Measurable (ρ i)) ∧ (∀ i, ∀ K : Set X, IsCompact K → IntegrableOn (ρ i) K μ₀) ∧ ∀ (i : Fin m) (f : CompactlySupportedContinuousMap X ℝ), Λ₁ i f - Λ₂ i f = ∫ x, f x * ρ i x ∂μ₀ := by
+  intro X _ _ _ _ _ _ m Λ₁ Λ₂
+  -- Step 1 (RMK): the Riesz measures are regular, hence finite on compact sets
+  have ha : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₂ i)) :=
+    fun _ => inferInstance
+  have hb : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₁ i)) :=
+    fun _ => inferInstance
+  -- Step 2: a common compact-finite measure `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`
+  obtain ⟨μ₀, hμ₀, hac_a, hac_b⟩ := Submission.cmr_vr_cd_dominating_measure X m
+    (fun i => RealRMK.rieszMeasure (Λ₂ i)) (fun i => RealRMK.rieszMeasure (Λ₁ i)) ha hb
+  -- Step 3: locally integrable densities `gaᵢ`, `gbᵢ` of `aᵢ`, `bᵢ` with respect to `μ₀`
+  choose ga hga_meas hga_int hga_rep using fun i =>
+    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₂ i)) hμ₀ (ha i)
+      (hac_a i)
+  choose gb hgb_meas hgb_int hgb_rep using fun i =>
+    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₁ i)) hμ₀ (hb i)
+      (hac_b i)
+  -- Step 4: `ρᵢ := gbᵢ - gaᵢ` and linearity of the integral
+  refine ⟨μ₀, fun i => gb i - ga i, hμ₀, fun i => (hgb_meas i).sub (hga_meas i),
+    fun i K hK => (hgb_int i K hK).sub (hga_int i K hK), fun i f => ?_⟩
+  obtain ⟨hgb_f, hgb_eq⟩ := hgb_rep i f
+  obtain ⟨hga_f, hga_eq⟩ := hga_rep i f
+  calc Λ₁ i f - Λ₂ i f
+      = ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₁ i)) - ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₂ i)) := by
+        rw [RealRMK.integral_rieszMeasure, RealRMK.integral_rieszMeasure]
+    _ = ∫ x, f x * gb i x ∂μ₀ - ∫ x, f x * ga i x ∂μ₀ := by rw [hgb_eq, hga_eq]
+    _ = ∫ x, (f x * gb i x - f x * ga i x) ∂μ₀ := (integral_sub hgb_f hga_f).symm
+    _ = ∫ x, f x * (gb i - ga i) x ∂μ₀ := by simp only [Pi.sub_apply, mul_sub]
 /-- **Riesz representation of locally bounded functionals on `C_c(X, ℝ^d)`** (Simon Ch. 1, 4.14,
 in the form used for currents in Ch. 6, 2.7).  If `X` is locally compact Hausdorff and second
 countable and `L : C_c(X, ℝ^d) → ℝ` is linear with `|L g| ≤ M_K` whenever `spt g ⊆ K` and
@@ -16932,265 +17191,6 @@ theorem Submission.dimred_mbl_fnd_testForm_extension_functional : ∀ (P n : ℕ
     show |Φ (ext g)| ≤ (T.massOn W).toReal
     simpa only [one_mul] using hΦbd W (ext g) 1 hW ⟨hWc, hWU⟩ (hcont g) (hcpt g)
       ((hspt g).trans ((image_mono hgK).trans hKW)) hg1'
-/-- Jordan decomposition of a locally bounded `Λ : C_c(X, ℝ) → ℝ`.  For `f : C_c(X, ℝ≥0)` put
-`V f := sup {Λ h : |h| ≤ f}` (bounded above by rescaling the local bound on `tsupport f`).  `V` is
-additive (clamp `h₁ := (h ⊓ f) ⊔ (-f)`) and `ℝ≥0`-homogeneous, so `V̂ := toRealPositiveLinear V`
-is positive; `V̂ + Λ` is positive since `-k` is admissible for `k ≥ 0`, and `Λ = (V̂ + Λ) - V̂`. -/
-theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f := by
-  intro X _ Λ hΛ
-  -- scaled bound: `tsupport f ⊆ K`, `|f| ≤ s` give `|Λ f| ≤ s * M_K` (`s = 0`, else rescale)
-  have hscale : ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ (f : CompactlySupportedContinuousMap X ℝ)
-      (s : ℝ), tsupport f ⊆ K → 0 ≤ s → (∀ x, |f x| ≤ s) → |Λ f| ≤ s * M := by
-    intro K hK
-    obtain ⟨M, hM⟩ := hΛ K hK
-    refine ⟨M, fun f s hfK hs hfs => ?_⟩
-    rcases hs.eq_or_lt with rfl | hspos
-    · have hf0 : f = 0 := by
-        ext x
-        simpa using hfs x
-      simp [hf0]
-    · have hsub : tsupport (s⁻¹ • f) ⊆ K :=
-        (tsupport_smul_subset_right (fun _ : X => s⁻¹) f).trans hfK
-      have hbd : ∀ x, |(s⁻¹ • f) x| ≤ 1 := by
-        intro x
-        rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
-          abs_of_pos (inv_pos.mpr hspos)]
-        calc s⁻¹ * |f x| ≤ s⁻¹ * s := mul_le_mul_of_nonneg_left (hfs x) (inv_pos.mpr hspos).le
-          _ = 1 := inv_mul_cancel₀ hspos.ne'
-      have h1 := hM _ hsub hbd
-      rw [map_smul, smul_eq_mul, abs_mul, abs_of_pos (inv_pos.mpr hspos)] at h1
-      have := (inv_mul_le_iff₀ hspos).mp h1
-      linarith
-  -- `A f = {h : |h| ≤ f}` contains `0`, and `Λ '' A f` is bounded above: members of `A f` have
-  -- `tsupport h ⊆ tsupport f` and `|h| ≤ max C 0` with `C` a bound for `f`
-  let A : CompactlySupportedContinuousMap X NNReal → Set (CompactlySupportedContinuousMap X ℝ) :=
-    fun f => {h | ∀ x, |h x| ≤ (f x : ℝ)}
-  have hA0 : ∀ f, (0 : CompactlySupportedContinuousMap X ℝ) ∈ A f := by
-    intro f x
-    simp
-  have hbdd : ∀ f, BddAbove (Λ '' A f) := by
-    intro f
-    obtain ⟨M, hM⟩ := hscale (tsupport f) f.hasCompactSupport.isCompact
-    obtain ⟨C, hC⟩ := f.toReal.continuous.bounded_above_of_compact_support
-      f.toReal.hasCompactSupport
-    refine ⟨max C 0 * M, ?_⟩
-    rintro _ ⟨h, hh, rfl⟩
-    have hsupp : tsupport h ⊆ tsupport f := by
-      apply closure_mono
-      intro x hx hfx
-      apply hx
-      have := hh x
-      rw [hfx] at this
-      simpa using this
-    have hbd : ∀ x, |h x| ≤ max C 0 := by
-      intro x
-      refine (hh x).trans ((le_abs_self _).trans ?_)
-      have h' : ‖f.toReal x‖ ≤ C := hC x
-      rw [CompactlySupportedContinuousMap.toReal_apply, Real.norm_eq_abs] at h'
-      exact h'.trans (le_max_left _ _)
-    exact (le_abs_self _).trans (hM h _ hsupp (le_max_right _ _) hbd)
-  -- the variation `V f = sup (Λ '' A f) ≥ Λ 0 = 0`
-  let V : CompactlySupportedContinuousMap X NNReal → ℝ := fun f => sSup (Λ '' A f)
-  have hle : ∀ f, ∀ h ∈ A f, Λ h ≤ V f := fun f h hh => le_csSup (hbdd f) ⟨h, hh, rfl⟩
-  have hVle : ∀ f (c : ℝ), (∀ h ∈ A f, Λ h ≤ c) → V f ≤ c := by
-    intro f c hc
-    exact csSup_le ⟨0, 0, hA0 f, map_zero Λ⟩ (by rintro _ ⟨h, hh, rfl⟩; exact hc h hh)
-  have hV0 : ∀ f, 0 ≤ V f := fun f => by simpa using hle f 0 (hA0 f)
-  -- additivity: `≤` by the clamp `h₁ = (h ⊓ f) ⊔ (-f)`, `h - h₁ ∈ A g`; `≥` by `h₁ + h₂ ∈ A (f + g)`
-  have hadd : ∀ f g, V (f + g) = V f + V g := by
-    intro f g
-    apply le_antisymm
-    · apply hVle
-      intro h hh
-      let h₁ : CompactlySupportedContinuousMap X ℝ := (h ⊓ f.toReal) ⊔ (-f.toReal)
-      have hpt : ∀ x, |h₁ x| ≤ (f x : ℝ) ∧ |(h - h₁) x| ≤ (g x : ℝ) := by
-        intro x
-        have hx := hh x
-        have hf0 : (0 : ℝ) ≤ f x := (f x).2
-        have hg0 : (0 : ℝ) ≤ g x := (g x).2
-        simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add] at hx
-        simp only [h₁, CompactlySupportedContinuousMap.sub_apply,
-          CompactlySupportedContinuousMap.sup_apply, CompactlySupportedContinuousMap.inf_apply,
-          CompactlySupportedContinuousMap.neg_apply, CompactlySupportedContinuousMap.toReal_apply]
-        rw [abs_le] at hx ⊢
-        rw [abs_le]
-        rcases le_total (h x) (f x) with h1 | h1
-        · rw [min_eq_left h1]
-          rcases le_total (h x) (-(f x : ℝ)) with h2 | h2
-          · rw [max_eq_right h2]
-            constructor <;> constructor <;> linarith
-          · rw [max_eq_left h2]
-            constructor <;> constructor <;> linarith
-        · rw [min_eq_right h1, max_eq_left (by linarith)]
-          constructor <;> constructor <;> linarith
-      have h1mem : h₁ ∈ A f := fun x => (hpt x).1
-      have h2mem : h - h₁ ∈ A g := fun x => (hpt x).2
-      have e : Λ h = Λ h₁ + Λ (h - h₁) := by rw [map_sub]; ring
-      rw [e]
-      exact add_le_add (hle f h₁ h1mem) (hle g _ h2mem)
-    · have key : V f ≤ V (f + g) - V g := by
-        apply hVle
-        intro h₁ hh₁
-        have : V g ≤ V (f + g) - Λ h₁ := by
-          apply hVle
-          intro h₂ hh₂
-          have hmem : h₁ + h₂ ∈ A (f + g) := by
-            intro x
-            simp only [CompactlySupportedContinuousMap.add_apply, NNReal.coe_add]
-            exact (abs_add_le _ _).trans (add_le_add (hh₁ x) (hh₂ x))
-          have := hle _ _ hmem
-          rw [map_add] at this
-          linarith
-        linarith
-      linarith
-  -- homogeneity: `A 0 = {0}`; for `c > 0`, `h ↦ c⁻¹ • h` maps `A (c • f)` into `A f`
-  have hzero : V 0 = 0 := by
-    apply le_antisymm _ (hV0 0)
-    apply hVle
-    intro h hh
-    have : h = 0 := by
-      ext x
-      simpa using hh x
-    simp [this]
-  have hsmul_le : ∀ (c : NNReal) f, V (c • f) ≤ c * V f := by
-    intro c f
-    rcases eq_or_ne c 0 with rfl | hc
-    · simp [hzero]
-    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
-    apply hVle
-    intro h hh
-    have hmem : (c : ℝ)⁻¹ • h ∈ A f := by
-      intro x
-      have := hh x
-      simp only [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, NNReal.coe_mul] at this
-      rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
-        abs_of_pos (inv_pos.mpr hcpos)]
-      rw [inv_mul_le_iff₀ hcpos]
-      exact this
-    have := hle f _ hmem
-    rw [map_smul, smul_eq_mul] at this
-    exact (inv_mul_le_iff₀ hcpos).mp this
-  have hsmul : ∀ (c : NNReal) f, V (c • f) = c * V f := by
-    intro c f
-    rcases eq_or_ne c 0 with rfl | hc
-    · simp [hzero]
-    have hcpos : (0 : ℝ) < c := NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr hc)
-    apply le_antisymm (hsmul_le c f)
-    have h := hsmul_le c⁻¹ (c • f)
-    rw [inv_smul_smul₀ hc, NNReal.coe_inv] at h
-    exact (le_inv_mul_iff₀ hcpos).mp h
-  -- `V` is `ℝ≥0`-linear; `V̂ := toRealPositiveLinear V` is a positive functional on `C_c(X, ℝ)`
-  let W : CompactlySupportedContinuousMap X NNReal →ₗ[NNReal] NNReal :=
-    { toFun := fun f => ⟨V f, hV0 f⟩
-      map_add' := fun f g => NNReal.eq (hadd f g)
-      map_smul' := fun c f => NNReal.eq (hsmul c f) }
-  let Vh := CompactlySupportedContinuousMap.toRealPositiveLinear W
-  -- `V̂ + Λ` is positive: for `k ≥ 0`, `V̂ k = V k⁺` and `-k ∈ A k⁺`, so `-Λ k ≤ V̂ k`
-  have hdom : ∀ k : CompactlySupportedContinuousMap X ℝ, 0 ≤ k → 0 ≤ Vh k + Λ k := by
-    intro k hk
-    have hkeq : k.nnrealPart.toReal = k := by
-      ext x
-      rw [CompactlySupportedContinuousMap.toReal_apply,
-        CompactlySupportedContinuousMap.nnrealPart_apply]
-      exact Real.coe_toNNReal _ (hk x)
-    have hVk : Vh k = V k.nnrealPart := by
-      have := CompactlySupportedContinuousMap.eq_toRealPositiveLinear_toReal W k.nnrealPart
-      rw [hkeq] at this
-      exact this
-    have hmem : -k ∈ A k.nnrealPart := by
-      intro x
-      rw [CompactlySupportedContinuousMap.neg_apply, abs_neg,
-        CompactlySupportedContinuousMap.nnrealPart_apply, Real.coe_toNNReal _ (hk x)]
-      exact (abs_of_nonneg (hk x)).le
-    have := hle _ _ hmem
-    rw [map_neg] at this
-    rw [hVk]
-    linarith
-  refine ⟨PositiveLinearMap.mk₀ (Vh.toLinearMap + Λ) hdom, Vh, fun f => ?_⟩
-  show Λ f = (Vh f + Λ f) - Vh f
-  ring
-/-- **Radon–Nikodym density on `C_c`.**  If `μ₀`, `ξ` are finite on compact subsets of a locally
-compact second countable space and `ξ ≪ μ₀`, then `ξ` has a measurable density `g`, `μ₀`-integrable
-on compact sets, with `f·g` `μ₀`-integrable and `∫ f dξ = ∫ f g dμ₀` for every `f ∈ C_c(X, ℝ)`.
-`X` is σ-compact, so `μ₀`, `ξ` are σ-finite and `ξ = μ₀.withDensity δ` for `δ = ξ.rnDeriv μ₀`
-(the singular part vanishes since `ξ ≪ μ₀`), with `δ < ∞` `μ₀`-a.e.  Take `g = δ.toReal`: on a
-compact `K`, `∫⁻_K δ dμ₀ < ∞` because `ξ(K) < ∞`.  A bounded `f` with compact support times `g` is
-integrable on `tsupport f` and vanishes outside it.  The `T2Space` hypothesis is not used. -/
-theorem Submission.cmr_vr_cd_density_representation : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ₀ ξ : Measure X), IsFiniteMeasureOnCompacts μ₀ → IsFiniteMeasureOnCompacts ξ → ξ ≪ μ₀ → ∃ g : X → ℝ, Measurable g ∧ (∀ K : Set X, IsCompact K → IntegrableOn g K μ₀) ∧ ∀ f : CompactlySupportedContinuousMap X ℝ, Integrable (fun x => f x * g x) μ₀ ∧ ∫ x, f x ∂ξ = ∫ x, f x * g x ∂μ₀ := by
-  intro X _ _ _ _ _ _ μ₀ ξ hμ₀ hξ hac
-  -- `X` is σ-compact, so both measures are σ-finite and `(ξ, μ₀)` has a Lebesgue decomposition
-  have : SigmaCompactSpace X := sigmaCompactSpace_of_locallyCompact_secondCountable
-  have : SigmaFinite μ₀ := SigmaFinite.of_isFiniteMeasureOnCompacts μ₀
-  have : SigmaFinite ξ := SigmaFinite.of_isFiniteMeasureOnCompacts ξ
-  -- `ξ = μ₀.withDensity δ` with `δ = dξ/dμ₀` measurable and `μ₀`-a.e. finite
-  set δ : X → ℝ≥0∞ := ξ.rnDeriv μ₀
-  have hδm : Measurable δ := Measure.measurable_rnDeriv ξ μ₀
-  have hξδ : ξ = μ₀.withDensity δ := by
-    have h := Measure.haveLebesgueDecomposition_add ξ μ₀
-    rwa [Measure.singularPart_eq_zero_of_ac hac, zero_add] at h
-  have hδlt : ∀ᵐ x ∂μ₀, δ x < ∞ := Measure.rnDeriv_lt_top ξ μ₀
-  -- `g = δ.toReal` is integrable on compact sets: `∫⁻_K δ dμ₀ < ∞` since `ξ(K) < ∞`
-  have hgK : ∀ K : Set X, IsCompact K → IntegrableOn (fun x => (δ x).toReal) K μ₀ := by
-    intro K hK
-    have hlin : ∫⁻ x in K, δ x ∂μ₀ < ∞ :=
-      Measure.lintegral_rnDeriv_lt_top_of_measure_ne_top μ₀ hK.measure_lt_top.ne
-    exact integrable_toReal_of_lintegral_ne_top hδm.aemeasurable hlin.ne
-  refine ⟨fun x => (δ x).toReal, hδm.ennreal_toReal, hgK, fun f => ⟨?_, ?_⟩⟩
-  -- `f` is bounded, so `f·g` is integrable on `tsupport f`, and it vanishes outside
-  · obtain ⟨C, hC⟩ := (map_continuous f).bounded_above_of_compact_support f.hasCompactSupport
-    have hon : IntegrableOn (fun x => f x * (δ x).toReal) (tsupport f) μ₀ :=
-      Integrable.bdd_mul (c := C) (hgK _ f.hasCompactSupport.isCompact)
-        (map_continuous f).measurable.aestronglyMeasurable (Eventually.of_forall hC)
-    refine hon.integrable_of_forall_notMem_eq_zero fun x hx => ?_
-    simp [image_eq_zero_of_notMem_tsupport hx]
-  -- `∫ f dξ = ∫ δ.toReal • f dμ₀`
-  · rw [hξδ, integral_withDensity_eq_integral_toReal_smul hδm hδlt]
-    congr 1
-    funext x
-    exact (smul_eq_mul _ _).trans (mul_comm _ _)
-
-/-- Common dominating measure and densities for finitely many pairs of positive functionals
-(Riesz–Markov–Kakutani; Rudin, *Real and Complex Analysis*, Thm 2.14 and 6.10).  Let `X` be
-locally compact, Hausdorff and second countable with its Borel σ-algebra, and let `Λ₁ᵢ, Λ₂ᵢ`
-(`i ∈ Fin m`) be positive linear functionals on `C_c(X, ℝ)`.  Then there are a measure `μ₀`,
-finite on compact sets, and measurable `ρᵢ`, `μ₀`-integrable on compact sets, with
-`Λ₁ᵢ f - Λ₂ᵢ f = ∫ f ρᵢ dμ₀` for all `f ∈ C_c(X, ℝ)`.
-
-Proof sketch:
-* `bᵢ := rieszMeasure Λ₁ᵢ` and `aᵢ := rieszMeasure Λ₂ᵢ` are regular, hence finite on compact
-  sets, and `∫ f dbᵢ = Λ₁ᵢ f`, `∫ f daᵢ = Λ₂ᵢ f`.
-* `cmr_vr_cd_dominating_measure` gives a compact-finite `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`.
-* `cmr_vr_cd_density_representation` gives locally integrable densities `gaᵢ`, `gbᵢ` with
-  `∫ f daᵢ = ∫ f gaᵢ dμ₀`, `∫ f dbᵢ = ∫ f gbᵢ dμ₀`, both integrands integrable.
-* With `ρᵢ := gbᵢ - gaᵢ`, linearity of the integral gives the representation. -/
-theorem Submission.cmr_vr_common_density : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (m : ℕ) (Λ₁ Λ₂ : Fin m → (CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ)), ∃ (μ₀ : Measure X) (ρ : Fin m → X → ℝ), IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, Measurable (ρ i)) ∧ (∀ i, ∀ K : Set X, IsCompact K → IntegrableOn (ρ i) K μ₀) ∧ ∀ (i : Fin m) (f : CompactlySupportedContinuousMap X ℝ), Λ₁ i f - Λ₂ i f = ∫ x, f x * ρ i x ∂μ₀ := by
-  intro X _ _ _ _ _ _ m Λ₁ Λ₂
-  -- Step 1 (RMK): the Riesz measures are regular, hence finite on compact sets
-  have ha : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₂ i)) :=
-    fun _ => inferInstance
-  have hb : ∀ i, IsFiniteMeasureOnCompacts (RealRMK.rieszMeasure (Λ₁ i)) :=
-    fun _ => inferInstance
-  -- Step 2: a common compact-finite measure `μ₀` with `aᵢ ≪ μ₀` and `bᵢ ≪ μ₀`
-  obtain ⟨μ₀, hμ₀, hac_a, hac_b⟩ := Submission.cmr_vr_cd_dominating_measure X m
-    (fun i => RealRMK.rieszMeasure (Λ₂ i)) (fun i => RealRMK.rieszMeasure (Λ₁ i)) ha hb
-  -- Step 3: locally integrable densities `gaᵢ`, `gbᵢ` of `aᵢ`, `bᵢ` with respect to `μ₀`
-  choose ga hga_meas hga_int hga_rep using fun i =>
-    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₂ i)) hμ₀ (ha i)
-      (hac_a i)
-  choose gb hgb_meas hgb_int hgb_rep using fun i =>
-    Submission.cmr_vr_cd_density_representation X μ₀ (RealRMK.rieszMeasure (Λ₁ i)) hμ₀ (hb i)
-      (hac_b i)
-  -- Step 4: `ρᵢ := gbᵢ - gaᵢ` and linearity of the integral
-  refine ⟨μ₀, fun i => gb i - ga i, hμ₀, fun i => (hgb_meas i).sub (hga_meas i),
-    fun i K hK => (hgb_int i K hK).sub (hga_int i K hK), fun i f => ?_⟩
-  obtain ⟨hgb_f, hgb_eq⟩ := hgb_rep i f
-  obtain ⟨hga_f, hga_eq⟩ := hga_rep i f
-  calc Λ₁ i f - Λ₂ i f
-      = ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₁ i)) - ∫ x, f x ∂(RealRMK.rieszMeasure (Λ₂ i)) := by
-        rw [RealRMK.integral_rieszMeasure, RealRMK.integral_rieszMeasure]
-    _ = ∫ x, f x * gb i x ∂μ₀ - ∫ x, f x * ga i x ∂μ₀ := by rw [hgb_eq, hga_eq]
-    _ = ∫ x, (f x * gb i x - f x * ga i x) ∂μ₀ := (integral_sub hgb_f hga_f).symm
-    _ = ∫ x, f x * (gb i - ga i) x ∂μ₀ := by simp only [Pi.sub_apply, mul_sub]
 /-- **Representation of a current of locally finite mass by its mass measure** (Simon Ch. 6,
 2.7–2.8, without the absolute-continuity clause; `|·|` is `covectorEuclideanNorm`).  `|α| = ‖A α‖`
 for the coefficient map `A` (`dor_ims_sua_coeff_norm_rep`), and `|α| = 0` forces every `α(e_j)` to
