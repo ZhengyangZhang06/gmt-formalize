@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2425971b64a27175bef398cc0d89c5ecf77a659fb95adc3fa1c70ffb78510163",
+  "git_delta": {
+    "base_commit": "989c7ecdd02e10aa7d2b0b901e8a2b53e4bf6961",
+    "candidate_commit": "b68328e5a955e0bf052ec4c5aaa79b4c11027da2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_cci_borel_current_im",
+    "diff_sha256": "447992f796796cb5ed413b1b19494baa564b546baa07ae36df2ebd479f638b13",
+    "source_sha256": "4cf35a17fd44b2c51409a2786d195fa278a4332ac6ef9de124592bbc70c89818",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cci_borel_current_im",
+      "statement": "∀ (n : ℕ) (G : Set (Euclid n)), MeasurableSet G → ∃ A : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity A ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, A ω = ∫ x in G, (ω : DifferentialForm (Euclid n) n) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
