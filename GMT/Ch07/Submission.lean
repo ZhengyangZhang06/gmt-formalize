@@ -454,4 +454,71 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- Smoothing a field `s` with `|s| ≤ 1` and `s = 0` off `Q_δ` by a nonnegative unit-mass `C^∞`
+kernel `ρ` supported in `B_σ(0)`, `σ < δ`, gives a `C^∞` field `ρ ⋆ s` with `|ρ ⋆ s| ≤ 1` whose
+topological support is compact and lies in `Q₁` (the mollification step of Simon Ch. 2, 2.5 and
+2.7, as used in the proof of the deformation theorem, Ch. 6, 5.1).  The support of `ρ ⋆ s` lies
+in the closed box `{δ − σ ≤ y_i ≤ 1 − δ + σ}`, which is compact and contained in `Q₁`. -/
+theorem cmcdt_cbm_sa_smoothed_field : ∀ (m : ℕ) (δ σ : ℝ) (ρ : Euclid (m + 1) → ℝ) (s : Euclid (m + 1) → Euclid (m + 1)), 0 < σ → σ < δ → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid (m + 1)) σ → AEStronglyMeasurable s volume → (∀ x, ‖s x‖ ≤ 1) → (∀ x, x ∉ {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} → s x = 0) → ContDiff ℝ (⊤ : ℕ∞) (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ HasCompactSupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ tsupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∧ ∀ y, ‖convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume y‖ ≤ 1 := by
+  intro m δ σ ρ s hσ hσδ hρ hρ0 hρ1 hρs hs hs1 hs0
+  -- Step 1: `ρ` vanishes off `closedBall 0 σ`, so it has compact support and is integrable.
+  have hρc : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) σ) fun x hx => ?_
+    by_contra h
+    exact hx (ball_subset_closedBall (hρs h))
+  have hρi : Integrable ρ := hρ.continuous.integrable_of_hasCompactSupport hρc
+  -- Step 2: `s` is measurable and bounded by `1`, hence integrable on compact sets.
+  have hsl : LocallyIntegrable s volume := by
+    rw [locallyIntegrable_iff]
+    exact fun K hK => Measure.integrableOn_of_bounded hK.measure_lt_top.ne hs
+      (Eventually.of_forall hs1)
+  -- Step 3: `ρ` is `C^∞` with compact support and `s` is locally integrable, so `ρ ⋆ s` is `C^∞`.
+  have hG : ContDiff ℝ (⊤ : ℕ∞) (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hρc.contDiff_convolution_left _ hρ hsl
+  -- Step 4: `‖ρ t • s (y − t)‖ ≤ ρ t` and `∫ ρ = 1`.
+  have hbd : ∀ y, ‖convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume y‖ ≤ 1 := by
+    intro y
+    rw [convolution_def]
+    refine (norm_integral_le_of_norm_le hρi (Eventually.of_forall fun t => ?_)).trans hρ1.le
+    rw [ContinuousLinearMap.lsmul_apply, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hρ0 t)]
+    exact mul_le_of_le_one_right (hρ0 t) (hs1 _)
+  -- Step 5: `support (ρ ⋆ s) ⊆ support s + support ρ ⊆ Q_δ + B_σ(0)` lies in the box `P`,
+  -- since `|t_i| ≤ |t| < σ`.
+  set P : Set (Euclid (m + 1)) := {y | ∀ i, δ - σ ≤ y i ∧ y i ≤ 1 - δ + σ}
+  have hsupp : support (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ P := by
+    intro y hy
+    obtain ⟨a, ha, t, ht, rfl⟩ :=
+      support_convolution_subset_swap (ContinuousLinearMap.lsmul ℝ ℝ) hy
+    have ha' : ∀ i, δ < a i ∧ a i < 1 - δ := by
+      by_contra h
+      exact ha (hs0 a h)
+    have ht' : ‖t‖ < σ := mem_ball_zero_iff.mp (hρs ht)
+    intro i
+    have hti : |t i| < σ := lt_of_le_of_lt (PiLp.norm_apply_le t i) ht'
+    obtain ⟨h1, h2⟩ := abs_lt.mp hti
+    obtain ⟨h3, h4⟩ := ha' i
+    simp only [PiLp.add_apply]
+    constructor <;> linarith
+  -- Step 6: `P` is compact (the preimage of a product of intervals under `PiLp.homeomorph`)
+  -- and lies in `Q₁` because `0 < δ − σ` and `1 − δ + σ < 1`.
+  have hPc : IsCompact P := by
+    have h := (PiLp.homeomorph 2 (fun _ : Fin (m + 1) => ℝ)).isCompact_preimage.mpr
+      (isCompact_univ_pi fun _ : Fin (m + 1) => isCompact_Icc (a := δ - σ) (b := 1 - δ + σ))
+    convert h using 1
+    ext y
+    simp only [mem_preimage, mem_univ_pi, mem_Icc]
+    rfl
+  have hPQ : P ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    intro y hy i
+    obtain ⟨h1, h2⟩ := hy i
+    constructor <;> linarith
+  -- Step 7: `tsupport (ρ ⋆ s)` is a closed subset of the compact set `P ⊆ Q₁`.
+  have hts : tsupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ P :=
+    closure_minimal hsupp hPc.isClosed
+  exact ⟨hG, hPc.of_isClosed_subset (isClosed_tsupport _) hts, hts.trans hPQ, hbd⟩
+
+end Submission
+
 end GMT.Ch07
