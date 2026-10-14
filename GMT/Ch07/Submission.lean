@@ -1109,21 +1109,6 @@ annihilates every test form supported in `B_R(0)` (`dtc_blowUp_algebra`,
 `dtc_vanish_off_support`). -/
 theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) := by
   intro P m U T x hU hxU hxb lams hlams hlim
-/-- **Rescaled retractions** (Simon 7.2.4 and Remark 7.2.5(2), rescaled for the blow-ups of
-7.3.1).  Let `π` be a `C¹` retraction of `B_δ(x)` onto `N` (`π(B_δ(x)) ⊆ N`, `π = id` on
-`N ∩ B_δ(x)`) whose Lipschitz constant on `B_s(x)` is at most `1 + η` for small `s`.  Then
-`πⱼ(z) = η_{x,λⱼ}(π(x + λⱼz)) = λⱼ⁻¹(π(x + λⱼz) − x)` is, for all large `j`, a `C¹` map of
-`B_G(0)` into `η_{x,λⱼ}(U ∩ N)` which is the identity on `η_{x,λⱼ}(U ∩ N) ∩ B_G(0)` and satisfies
-`|πⱼ(z)| ≤ 2|z|`; and for every `η > 0`, eventually `πⱼ` is `(1 + η)`-Lipschitz on `B_G(0)`.
-Once `λⱼG` is below a radius `s₁` on which `π` is `2`-Lipschitz and below half the radius of a
-ball `B_{r₀}(x) ⊆ U`, `x + λⱼz ∈ B_{s₁}(x)` and `|π(x + λⱼz) − x| ≤ 2λⱼ|z| < r₀` (`π(x) = x`). -/
-theorem Submission.dtc_bc_bh_rescaled_retraction : ∀ (P : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (π : Euclid P → Euclid P), IsOpen U → x ∈ U → x ∈ N → 0 < δ → ContDiffOn ℝ 1 π (ball x δ) → MapsTo π (ball x δ) N → (∀ y ∈ N ∩ ball x δ, π y = y) → (∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖) → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖ := by
-  intro P U N x δ π hU hxU hxN hδ hC hmaps hid hlip lams hlams hlim G hG
-  -- a ball `B_{r₀}(x) ⊆ U`
-  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU x hxU
-  -- `π` is `2`-Lipschitz on `B_{s₁}(x)`
-  obtain ⟨s₁, hs₁, hs₁δ, hlip1⟩ := hlip 1 one_pos
-  have hπx : π x = x := hid x ⟨hxN, mem_ball_self hδ⟩
   -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
   have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
     intro lam y
@@ -1192,6 +1177,27 @@ theorem Submission.dtc_bc_bh_rescaled_retraction : ∀ (P : ℕ) (U N : Set (Euc
       calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hzR.le hlam.le
         _ < r := hj
     exact hy.2 (hrU hyball).2
+/-- **Rescaled retractions** (Simon 7.2.4 and Remark 7.2.5(2), rescaled for the blow-ups of
+7.3.1).  Let `π` be a `C¹` retraction of `B_δ(x)` onto `N` (`π(B_δ(x)) ⊆ N`, `π = id` on
+`N ∩ B_δ(x)`) whose Lipschitz constant on `B_s(x)` is at most `1 + η` for small `s`.  Then
+`πⱼ(z) = η_{x,λⱼ}(π(x + λⱼz)) = λⱼ⁻¹(π(x + λⱼz) − x)` is, for all large `j`, a `C¹` map of
+`B_G(0)` into `η_{x,λⱼ}(U ∩ N)` which is the identity on `η_{x,λⱼ}(U ∩ N) ∩ B_G(0)` and satisfies
+`|πⱼ(z)| ≤ 2|z|`; and for every `η > 0`, eventually `πⱼ` is `(1 + η)`-Lipschitz on `B_G(0)`.
+Once `λⱼG` is below a radius `s₁` on which `π` is `2`-Lipschitz and below half the radius of a
+ball `B_{r₀}(x) ⊆ U`, `x + λⱼz ∈ B_{s₁}(x)` and `|π(x + λⱼz) − x| ≤ 2λⱼ|z| < r₀` (`π(x) = x`). -/
+theorem Submission.dtc_bc_bh_rescaled_retraction : ∀ (P : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (π : Euclid P → Euclid P), IsOpen U → x ∈ U → x ∈ N → 0 < δ → ContDiffOn ℝ 1 π (ball x δ) → MapsTo π (ball x δ) N → (∀ y ∈ N ∩ ball x δ, π y = y) → (∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖) → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid P → Euclid P, (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖ := by
+  intro P U N x δ π hU hxU hxN hδ hC hmaps hid hlip lams hlams hlim G hG
+  -- a ball `B_{r₀}(x) ⊆ U`
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU x hxU
+  -- `π` is `2`-Lipschitz on `B_{s₁}(x)`
+  obtain ⟨s₁, hs₁, hs₁δ, hlip1⟩ := hlip 1 one_pos
+  have hπx : π x = x := hid x ⟨hxN, mem_ball_self hδ⟩
+  -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
+  have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
+    intro lam y
+    simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.coe_id', id_eq, smul_sub]
+    abel
   -- `x + λ • z ∈ B_t(x)` when `z ∈ B_G(0)` and `λ G ≤ t`
   have hmem : ∀ (lam t : ℝ) (z : Euclid P), 0 < lam → lam * G ≤ t → z ∈ ball (0 : Euclid P) G →
       x + lam • z ∈ ball x t := by
