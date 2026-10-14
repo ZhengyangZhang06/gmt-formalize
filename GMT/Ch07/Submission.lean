@@ -2754,6 +2754,88 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Extension by zero to `ℝᴾ`** (Simon Ch. 6, proof of Theorem 7.2, which applies the
+Deformation Theorem 5.3 in `ℝ^{n+ℓ}` to a current in `U` vanishing off a compact subset of `U`).
+Let `A = τ(M, θ, ξ)` in the open `U` vanish off the compact `K ⊆ U`.  Every form admissible for
+`M_{U∖K}(A)` is supported off `K`, so `μ_A(U ∖ K) = M_{U∖K}(A) = 0` (Ch. 6, 3.2(3)); as `θ ≥ 1`
+on `M ⊆ U`, `Hᵈ(M ∖ K) = 0`.  The triple `(M ∩ K, θ, ξ)` is an `IMRep` in `U`, hence in `ℝᴾ`
+(`∫_{M ∩ K} θ dHᵈ < ∞`, `K` being a compact subset of `U`).  Its current `Y ∈ 𝒟_d(ℝᴾ)` restricts
+to `A` on `U` (`M ∩ K = M` `Hᵈ`-a.e.), vanishes off `K`, and has
+`M(Y) = θHᵈ(M ∩ K) ≤ θHᵈ(M) = M(A)`. -/
+theorem Submission.dor_lmb_fc_tb_extend_univ : ∀ (P d : ℕ) (U K : Set (Euclid P)) (A : GeometricCurrentOn U d), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity A → (∀ ω : TestFormOn U d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → A ω = 0) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) d, IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = A ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → Y ω = 0) ∧ Y.mass ≤ A.mass := by
+  intro P d U K A hU hK hKU hA hvan
+  obtain ⟨R, hR⟩ := hA
+  have hmassA := (Submission.dor_imrep_massOn_eq_measure_and_support P d U A R hU hR).1
+  -- `M_{U∖K}(A) = 0`: every admissible form is supported off `K`
+  have hzero : A.massOn (U \ K) = 0 := by
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (A ω) ≤ 0
+    rw [hvan ω (Set.disjoint_left.2 fun x hx hxK => (hω.1 hx).2 hxK), ENNReal.ofReal_zero]
+  -- `Hᵈ(M ∖ K) = 0`: `θ Hᵈ⌞M` vanishes on `U ∖ K`, and `θ ≥ 1` on `M ⊆ U`
+  have hnull : μHE[d] (R.carrier \ K) = 0 := by
+    have h0 : R.measure (U \ K) = 0 := (hmassA (U \ K) (hU.sdiff hK.isClosed)).symm.trans hzero
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+    rw [IMRep.measure, withDensity_apply_eq_zero hθ,
+      Measure.restrict_apply' R.measurableSet_carrier] at h0
+    have hsub : R.carrier \ K ⊆ {x | (R.mult x : ℝ≥0∞) ≠ 0} ∩ (U \ K) ∩ R.carrier := by
+      intro x hx
+      refine ⟨⟨?_, R.carrier_subset hx.1, hx.2⟩, hx.1⟩
+      show (R.mult x : ℝ≥0∞) ≠ 0
+      exact_mod_cast (R.mult_pos x hx.1).ne'
+    exact measure_mono_null hsub h0
+  -- `(M ∩ K, θ, ξ)` is an `IMRep` in `U` (integer multiplicity calculus (b) with `E = K`) ...
+  have hIMC := Submission.cmc_imRep_locality_restrict_sub.2.1
+  obtain ⟨-, R₁, -, hcar₁, hmult₁, horient₁⟩ := hIMC P d U R K hU hK.isClosed.measurableSet
+  -- ... and also in `ℝᴾ`, as `∫_{M ∩ K} θ dHᵈ < ∞`
+  obtain ⟨Rh, hcarh, hmulth, horienth⟩ : ∃ Rh : IMRep (univ : Set (Euclid P)) d,
+      Rh.carrier = R.carrier ∩ K ∧ Rh.mult = R.mult ∧ Rh.orient = R.orient := by
+    have hsub : R₁.carrier ⊆ R₁.carrier ∩ K := fun x hx => ⟨hx, (hcar₁.subset hx).2⟩
+    refine ⟨{ carrier := R₁.carrier
+              mult := R₁.mult
+              orient := R₁.orient
+              measurableSet_carrier := R₁.measurableSet_carrier
+              carrier_subset := subset_univ _
+              rectifiable := R₁.rectifiable
+              measurable_mult := R₁.measurable_mult
+              mult_pos := R₁.mult_pos
+              locallyIntegrable_mult := fun K' _ _ =>
+                ne_top_of_le_ne_top (R₁.locallyIntegrable_mult K hK hKU)
+                  (lintegral_mono_set (inter_subset_left.trans hsub))
+              aestronglyMeasurable_orient := R₁.aestronglyMeasurable_orient
+              orients := R₁.orients }, hcar₁, hmult₁, horient₁⟩
+  -- its current `Y ∈ 𝒟_d(ℝᴾ)` (integer multiplicity calculus (b) in `ℝᴾ` with `E = ℝᴾ`)
+  obtain ⟨Y, R₂, hR₂, hcar₂, hmult₂, horient₂⟩ :=
+    hIMC P d univ Rh univ isOpen_univ MeasurableSet.univ
+  rw [hcarh, inter_univ] at hcar₂
+  rw [hmulth] at hmult₂
+  rw [horienth] at horient₂
+  have hact : ∀ ω : DifferentialForm (Euclid P) d, R₂.action ω =
+      ∫ x in R.carrier ∩ K, (R.mult x : ℝ) * R.orient x (ω x) ∂μHE[d] := by
+    intro ω
+    rw [IMRep.action, hcar₂, hmult₂, horient₂]
+  refine ⟨Y, ⟨R₂, hR₂⟩, ?_, ?_, ?_⟩
+  · -- `Y⌞U = A`, as `M ∩ K = M` up to the `Hᵈ`-null set `M ∖ K`
+    have hae : (R.carrier ∩ K : Set (Euclid P)) =ᵐ[μHE[d]] R.carrier :=
+      ae_eq_set.2 ⟨by rw [Set.sdiff_eq_empty.2 inter_subset_left, measure_empty],
+        by rwa [Set.sdiff_self_inter]⟩
+    ext ω
+    rw [GeometricCurrentOn.restrictDomain_apply, hR₂, hact, hR ω, IMRep.action]
+    exact setIntegral_congr_set hae
+  · -- `Y` vanishes off `K ⊇ M ∩ K`
+    intro ω hω
+    rw [hR₂, hact]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport (Set.disjoint_right.1 hω hx.2), map_zero, mul_zero]
+  · -- `M(Y) = θHᵈ(M ∩ K) ≤ θHᵈ(M) = M(A)`
+    show Y.massOn univ ≤ A.massOn U
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P d univ Y R₂ isOpen_univ hR₂).1 univ
+        isOpen_univ, hmassA U hU, IMRep.measure, IMRep.measure,
+      withDensity_apply _ MeasurableSet.univ, withDensity_apply _ hU.measurableSet,
+      Measure.restrict_univ, Measure.restrict_restrict hU.measurableSet,
+      inter_eq_self_of_subset_right R.carrier_subset, hcar₂, hmult₂]
+    exact lintegral_mono_set inter_subset_left
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
