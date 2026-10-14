@@ -9152,6 +9152,132 @@ theorem Submission.codim1_rdo_c1a_whitney_extension : ∀ (n : ℕ) (A : Set (Eu
   · by_cases hx : x ∈ A
     · exact hgcont x hx
     · exact (hgc x hx).continuousAt_fderiv one_ne_zero
+/-- **Test form of the chart perimeter estimate** (Simon 7.5; the forms of Simon Ch. 6, 2.35
+transported to the graph chart `G(v) = x + ιv + u(v)`).  With `π(w) = ι*(w − x)`,
+`p^⊥(w) = w − x − ιπ(w)` and the cut-off `ζ = χ(|p^⊥|²)`, `χ` smooth, `χ = 1` on
+`[0, (δ₂/2)²]`, `χ = 0` on `[(3δ₂/4)², ∞)`, the form `ω(w) = Λ(ζ(w)φ(π(w)))`,
+`Λ(p)(a) = det[p, ι*a₀, …, ι*aₙ₋₁]`, is supported in `{π ∈ spt φ, |p^⊥| ≤ 3δ₂/4} ⊆ Z` and has
+coefficient norm `≤ (n+1)! √(Pⁿ)`.  On `B_{δ₁}(0)`, `π ∘ G = id`, `p^⊥ ∘ G = u` (so `ζ ∘ G = 1`)
+and `ι* ∘ DG = id`, so the `j`-th coefficient of the pull-back is
+`(−1)ʲ det[φ(v), e_{j.succAbove 0}, …, e_{j.succAbove (n−1)}] = (−1)ʲ (−1)ʲ φⱼ(v) = φⱼ(v)`. -/
+theorem Submission.codim1_lur_chart_test_form_exists : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ) (φ : Euclid (n + 1) → Euclid (n + 1)), 0 < δ₂ → closedBall x (δ₁ + δ₂) ⊆ U → DifferentiableOn ℝ u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ‖u v‖ < δ₂ / 2) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 δ₁ → (∀ y, ‖φ y‖ ≤ 1) → ∃ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ closedBall x (δ₁ + δ₂) ∧ (∀ w, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) w) ≤ ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n)) ∧ φ = (ball (0 : Euclid (n + 1)) δ₁).indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * (ω : DifferentialForm (Euclid P) n) (x + ι v + u v) (fun k => fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) := by
+  intro P n U x ι u δ₁ δ₂ φ hδ₂ hball hu horth hsmall hφ hφc hφD hφ1
+  -- `‖ι*‖ ≤ 1`; on `B_{δ₁}(0)`: `π(G(v)) = v`, `p^⊥(G(v)) = u(v)`, `ι*(DG(v)y) = y`
+  obtain ⟨hA, -, hG⟩ := Submission.codim1_lur_graph_chart_adjoint_identities P n x ι u δ₁ hu horth
+  set A := ContinuousLinearMap.adjoint ι.toContinuousLinearMap
+  -- `Λ(p)(a) = det[p, Aa₀, …, Aaₙ₋₁]`, continuous linear in `p`
+  obtain ⟨Λ, hΛ⟩ := Submission.codim1_lur_det_covector_clm P n A
+  -- the chart projections `π(w) = ι*(w − x)` and `p^⊥(w) = w − x − ιπ(w)`
+  set π : Euclid P → Euclid (n + 1) := fun w => A (w - x) with hπdef
+  set q : Euclid P → Euclid P := fun w => w - x - ι (A (w - x)) with hqdef
+  have hπc : ContDiff ℝ (⊤ : ℕ∞) π := A.contDiff.comp (contDiff_id.sub contDiff_const)
+  have hqc : ContDiff ℝ (⊤ : ℕ∞) q :=
+    (contDiff_id.sub contDiff_const).sub (ι.toContinuousLinearMap.contDiff.comp hπc)
+  have hdecomp : ∀ w, ‖w - x‖ ≤ ‖π w‖ + ‖q w‖ := by
+    intro w
+    have : w - x = ι (π w) + q w := by simp only [hπdef, hqdef]; abel
+    rw [this]
+    exact (norm_add_le _ _).trans (by rw [ι.norm_map])
+  -- the cut-off `ζ(w) = χ(|p^⊥(w)|²)`, `χ = 1` on `[0, (δ₂/2)²]`, `χ = 0` on `[(3δ₂/4)², ∞)`
+  set a : ℝ := (δ₂ / 2) ^ 2 with ha
+  set b : ℝ := (3 * δ₂ / 4) ^ 2 with hb
+  have hab : 0 < b - a := by rw [ha, hb]; nlinarith
+  set ζ : Euclid P → ℝ := fun w => Real.smoothTransition ((b - ‖q w‖ ^ 2) / (b - a))
+  have hζc : ContDiff ℝ (⊤ : ℕ∞) ζ :=
+    Real.smoothTransition.contDiff.comp
+      ((contDiff_const.sub ((contDiff_norm_sq ℝ).comp hqc)).div_const _)
+  have hζ0 : ∀ w, 0 ≤ ζ w := fun w => Real.smoothTransition.nonneg _
+  have hζ1 : ∀ w, ζ w ≤ 1 := fun w => Real.smoothTransition.le_one _
+  have hζsupp : ∀ w, ζ w ≠ 0 → ‖q w‖ < 3 * δ₂ / 4 := by
+    intro w hw
+    by_contra hcon
+    push Not at hcon
+    apply hw
+    apply Real.smoothTransition.zero_of_nonpos
+    apply div_nonpos_of_nonpos_of_nonneg _ hab.le
+    have : (3 * δ₂ / 4) ^ 2 ≤ ‖q w‖ ^ 2 := pow_le_pow_left₀ (by positivity) hcon 2
+    rw [hb]; linarith
+  -- the test form `ω(w) = Λ(ζ(w) φ(π(w))) = ζ(w) det[φ(π(w)), ι*·, …, ι*·]`
+  set ω₀ : DifferentialForm (Euclid P) n := fun w => Λ (ζ w • φ (π w)) with hω₀def
+  have hω₀c : ContDiff ℝ (⊤ : ℕ∞) ω₀ := Λ.contDiff.comp (hζc.smul (hφ.comp hπc))
+  -- `spt ω ⊆ S = {π ∈ spt φ, |p^⊥| ≤ 3δ₂/4}`, a compact subset of `Z ⊆ B̄_{δ₁+δ₂}(x) ⊆ U`
+  set S : Set (Euclid P) := {w | π w ∈ tsupport φ ∧ ‖q w‖ ≤ 3 * δ₂ / 4}
+  have hSclosed : IsClosed S :=
+    ((isClosed_tsupport φ).preimage hπc.continuous).inter
+      (isClosed_le (continuous_norm.comp hqc.continuous) continuous_const)
+  have hsuppS : support ω₀ ⊆ S := by
+    intro w hw
+    have hne : ζ w • φ (π w) ≠ 0 := by
+      intro h0; apply hw; simp only [hω₀def, h0, map_zero]
+    refine ⟨subset_tsupport _ (right_ne_zero_of_smul hne), (hζsupp w (left_ne_zero_of_smul hne)).le⟩
+  have htsS : tsupport ω₀ ⊆ S := closure_minimal hsuppS hSclosed
+  obtain ⟨R, hR⟩ := hφc.isBounded.subset_closedBall 0
+  have hSball : S ⊆ closedBall x (R + 3 * δ₂ / 4) := by
+    intro w hw
+    rw [mem_closedBall, dist_eq_norm]
+    have h1 : ‖π w‖ ≤ R := by simpa using hR hw.1
+    linarith [hdecomp w, hw.2]
+  have hcpt : HasCompactSupport ω₀ :=
+    (isCompact_closedBall x _).of_isClosed_subset (isClosed_tsupport _) (htsS.trans hSball)
+  have hSZ : S ⊆
+      {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧
+        ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} := by
+    intro w hw
+    refine ⟨?_, ?_⟩
+    · have h1 := hφD hw.1
+      rw [mem_ball_zero_iff] at h1
+      exact h1
+    · have := hw.2; show ‖q w‖ < δ₂; linarith
+  have hZB : {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧
+      ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ⊆
+      closedBall x (δ₁ + δ₂) := by
+    intro w hw
+    rw [mem_closedBall, dist_eq_norm]
+    have h1 : ‖π w‖ < δ₁ := hw.1
+    have h2 : ‖q w‖ < δ₂ := hw.2
+    linarith [hdecomp w]
+  let ω : TestFormOn U n := ⟨ω₀, ⟨⟨hω₀c, hcpt⟩, (htsS.trans hSZ).trans (hZB.trans hball)⟩⟩
+  refine ⟨ω, htsS.trans hSZ, (htsS.trans hSZ).trans hZB, ?_, ?_⟩
+  · -- coefficient bound: `ω(w) = Λ(p)` with `|p| = ζ(w) |φ(π(w))| ≤ 1`
+    intro w
+    apply Submission.codim1_lur_det_covector_norm_le P n A (ζ w • φ (π w)) _ hA _ (hΛ _)
+    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (hζ0 w)]
+    calc ζ w * ‖φ (π w)‖ ≤ 1 * 1 := mul_le_mul (hζ1 w) (hφ1 _) (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  · -- the pulled-back field is `φ`: both sides vanish off `B_{δ₁}(0)`
+    funext v
+    by_cases hv : v ∈ ball (0 : Euclid (n + 1)) δ₁
+    · rw [Set.indicator_of_mem hv]
+      obtain ⟨hπv, hqv, hdv⟩ := hG v hv
+      have hζv : ζ (x + ι v + u v) = 1 := by
+        apply Real.smoothTransition.one_of_one_le
+        rw [le_div_iff₀ hab, one_mul]
+        have hq' : q (x + ι v + u v) = u v := hqv
+        rw [hq']
+        have h0 := hsmall v hv
+        have : ‖u v‖ ^ 2 < (δ₂ / 2) ^ 2 := pow_lt_pow_left₀ h0 (norm_nonneg _) two_ne_zero
+        rw [ha]; linarith
+      -- `ω(G(v))(DG(v)e_{j.succAbove ·}) = det[φ(v), e_{j.succAbove ·}] = (−1)ʲ φⱼ(v)`
+      have hterm : ∀ j : Fin (n + 1),
+          (ω : DifferentialForm (Euclid P) n) (x + ι v + u v) (fun k =>
+            fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1)) =
+          (-1 : ℝ) ^ (j : ℕ) * φ v j := by
+        intro j
+        show Λ (ζ (x + ι v + u v) • φ (π (x + ι v + u v))) _ = _
+        have hπ' : π (x + ι v + u v) = v := hπv
+        rw [hζv, one_smul, hπ', hΛ]
+        simp only [hdv]
+        exact Submission.codim1_lur_det_laplace_first_column n (φ v) j
+      simp only [hterm]
+      have hsq : ∀ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * ((-1 : ℝ) ^ (j : ℕ) * φ v j) = φ v j := by
+        intro j
+        rw [← mul_assoc, ← pow_add, ← two_mul, pow_mul, neg_one_sq, one_pow, one_mul]
+      simp only [hsq]
+      ext i
+      simp [Pi.single_apply]
+    · rw [Set.indicator_of_notMem hv]
+      exact image_eq_zero_of_notMem_tsupport fun h => hv (hφD h)
+
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
