@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.local_inverse-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1",
+  "depth": 5,
+  "title": "Local inversion of a transversal C¹ map restricted to an embedded C¹ surface",
+  "statement": "For every P ∈ ℕ, every embedded C¹ 2-dimensional submanifold M ⊆ ℝ^P (IsEmbeddedSubmanifold 1 2 M), every p ∈ M, every open U ⊆ ℝ^P with p ∈ U and every map F : ℝ^P → ℝ² (Euclid 2) that is C¹ on U and whose derivative DF(p) is injective on Q := span(tangentSpace M p) (v ∈ Q and DF(p)v = 0 imply v = 0): there exist an open O ⊆ ℝ² with F(p) ∈ O, an open N ⊆ ℝ^P with p ∈ N ⊆ U, and G : ℝ² → ℝ^P that is C¹ on O, such that G(O) = M ∩ N, F(G(w)) = w for every w ∈ O, and tangentSpace M (G(w)) = range DG(w) for every w ∈ O.",
+  "lean_statement": "∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (U : Set (Euclid P)) (F : Euclid P → Euclid 2), IsEmbeddedSubmanifold 1 2 M → p ∈ M → IsOpen U → p ∈ U → ContDiffOn ℝ 1 F U → (∀ v ∈ Submodule.span ℝ (tangentSpace M p), fderiv ℝ F p v = 0 → v = 0) → ∃ (O : Set (Euclid 2)) (N : Set (Euclid P)) (G : Euclid 2 → Euclid P), IsOpen O ∧ IsOpen N ∧ F p ∈ O ∧ p ∈ N ∧ N ⊆ U ∧ ContDiffOn ℝ 1 G O ∧ G '' O = M ∩ N ∧ (∀ w ∈ O, F (G w) = w) ∧ ∀ w ∈ O, tangentSpace M (G w) = Set.range (fderiv ℝ G w)",
+  "lean_name": "idtp_ccd_scsp_local_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-90cc8d121d-a1"
+}

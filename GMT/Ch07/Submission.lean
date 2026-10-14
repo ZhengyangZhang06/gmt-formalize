@@ -451,6 +451,138 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §4 (tangent plane of a locally conical surface).**  Let `M ⊆ ℝᴾ` be an
+embedded `C¹` surface, `p ∈ M`, and let `M ∩ B_ρ(p)` be closed under positive dilations `x ↦ tx`
+that stay in `B_ρ(p)`.  Then `span T_pM` is `2`-dimensional and contains `p`.  For a chart
+`ψ : V → W` with `ψ(v₀) = p`, `span T_pM = Dψ(v₀)(ℝ²)`: `⊇` by the curves `t ↦ ψ(v₀ + ctw)`;
+`⊆` since, for a left inverse `π` of `Dψ(v₀)`, `π ∘ ψ` has a local inverse `g` near `v₀`
+(inverse function theorem), and properness of `ψ` gives `γ = ψ ∘ g ∘ π ∘ γ` near `0` for every
+`C¹` curve `γ` in `M` through `p`.  The radial curve `t ↦ (1 + ε₀t)p` lies in `M` and has
+velocity `ε₀p` at `0`. -/
+theorem Submission.idtp_ccd_scsp_tangent_plane_mem : ∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → p ∈ M → 0 < ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → Module.finrank ℝ (Submodule.span ℝ (tangentSpace M p)) = 2 ∧ p ∈ Submodule.span ℝ (tangentSpace M p) := by
+  intro P M p ρ hM hp hρ hrad
+  -- Step 1: a chart `ψ : V → W` of `M` at `p`, and `v₀ ∈ V` with `ψ(v₀) = p`
+  obtain ⟨V, W, ψ, hV, hW, hpW, hψ, hinj, himg, hprop, hD⟩ := hM p hp
+  obtain ⟨v₀, hv₀V, hv₀⟩ : p ∈ ψ '' V := by rw [himg]; exact ⟨hpW, hp⟩
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  set L := fderiv ℝ ψ v₀
+  have hψv₀ : HasStrictFDerivAt ψ L v₀ :=
+    (hψ1.contDiffAt (hV.mem_nhds hv₀V)).hasStrictFDerivAt one_ne_zero
+  -- Step 2: `span T_pM = Dψ(v₀)(ℝ²)`
+  have hspan : Submodule.span ℝ (tangentSpace M p) =
+      LinearMap.range (L : Euclid 2 →ₗ[ℝ] Euclid P) := by
+    apply le_antisymm
+    · -- `T_pM ⊆ Dψ(v₀)(ℝ²)`: let `γ` be a `C¹` curve in `M` with `γ(0) = p`, `γ'(0) = v`
+      rw [Submodule.span_le]
+      rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+      -- a continuous left inverse `π` of the injective `L`
+      obtain ⟨π₀, hπ₀⟩ := (L : Euclid 2 →ₗ[ℝ] Euclid P).exists_leftInverse_of_injective
+        (LinearMap.ker_eq_bot.mpr (hD v₀ hv₀V))
+      set π : Euclid P →L[ℝ] Euclid 2 := LinearMap.toContinuousLinearMap π₀
+      have hπL : π.comp L = ContinuousLinearMap.id ℝ (Euclid 2) := by
+        refine ContinuousLinearMap.ext fun w => ?_
+        simpa [π] using LinearMap.congr_fun hπ₀ w
+      -- `π ∘ ψ` has derivative `id` at `v₀`, so it has a local inverse `g` near `v₀`
+      have hf : HasStrictFDerivAt (fun x => π (ψ x))
+          ((ContinuousLinearEquiv.refl ℝ (Euclid 2) : Euclid 2 →L[ℝ] Euclid 2)) v₀ := by
+        rw [ContinuousLinearEquiv.coe_refl, ← hπL]
+        exact π.hasStrictFDerivAt.comp v₀ hψv₀
+      obtain ⟨g, hleft, hgd⟩ : ∃ g : Euclid 2 → Euclid 2, (∀ᶠ x in 𝓝 v₀, g (π (ψ x)) = x) ∧
+          HasFDerivAt g (ContinuousLinearMap.id ℝ (Euclid 2)) (π (ψ v₀)) :=
+        ⟨_, hf.eventually_left_inverse, by simpa using hf.to_localInverse.hasFDerivAt⟩
+      have hg0 : g (π (ψ v₀)) = v₀ := hleft.self_of_nhds
+      obtain ⟨U₀, hU₀, hU₀o, hv₀U₀⟩ := _root_.eventually_nhds_iff.mp hleft
+      -- properness: for `B̄_δ(p) ⊆ W`, `C = (V ∩ ψ⁻¹(B̄_δ(p))) \ U₀` is compact, so `ψ(C)` is
+      -- closed, and `p ∉ ψ(C)` as `ψ` is injective on `V`
+      obtain ⟨δ, hδ, hδW⟩ := nhds_basis_closedBall.mem_iff.mp (hW.mem_nhds hpW)
+      set C := (V ∩ ψ ⁻¹' closedBall p δ) \ U₀
+      have hCc : IsCompact C := (hprop _ hδW (isCompact_closedBall p δ)).diff hU₀o
+      have hCcl : IsClosed (ψ '' C) :=
+        (hCc.image_of_continuousOn (hψ1.continuousOn.mono fun x hx => hx.1.1)).isClosed
+      have hpC : p ∉ ψ '' C := by
+        rintro ⟨x, ⟨⟨hxV, -⟩, hxU⟩, hx⟩
+        exact hxU (by rw [hinj hxV hv₀V (hx.trans hv₀.symm)]; exact hv₀U₀)
+      -- near `t = 0`, `γ(t) = ψ(x)` with `x ∈ U₀`, so `γ = ψ ∘ g ∘ π ∘ γ`
+      have hev : γ =ᶠ[𝓝 0] fun t => ψ (g (π (γ t))) := by
+        have h1 : ∀ᶠ t in 𝓝 (0:ℝ), γ t ∈ (ψ '' C)ᶜ ∩ ball p δ := by
+          have h := hγv.continuousAt.tendsto
+          rw [hγ0] at h
+          exact h (inter_mem (hCcl.isOpen_compl.mem_nhds hpC) (ball_mem_nhds p hδ))
+        filter_upwards [h1, Ioo_mem_nhds (show (-1:ℝ) < 0 by norm_num)
+          (show (0:ℝ) < 1 by norm_num)] with t ht ht'
+        obtain ⟨x, hxV, hxt⟩ : γ t ∈ ψ '' V := by
+          rw [himg]; exact ⟨hδW (ball_subset_closedBall ht.2), hγM ht'⟩
+        have hxU : x ∈ U₀ := by
+          by_contra hxU
+          exact ht.1 ⟨x, ⟨⟨hxV, by rw [mem_preimage, hxt]; exact ball_subset_closedBall ht.2⟩,
+            hxU⟩, hxt⟩
+        rw [← hxt, hU₀ x hxU]
+      -- chain rule: `v = γ'(0) = L(π v)`
+      have h1 : HasDerivAt (fun t => π (γ t)) (π v) 0 := π.hasFDerivAt.comp_hasDerivAt 0 hγv
+      have h2 : HasDerivAt (fun t => g (π (γ t))) (π v) 0 :=
+        hgd.comp_hasDerivAt_of_eq 0 h1 (by show π (ψ v₀) = π (γ 0); rw [hγ0, hv₀])
+      have h3 : HasDerivAt (fun t => ψ (g (π (γ t)))) (L (π v)) 0 :=
+        hψv₀.hasFDerivAt.comp_hasDerivAt_of_eq 0 h2
+          (by show v₀ = g (π (γ 0)); rw [hγ0, ← hv₀, hg0])
+      exact ⟨π v, (hγv.unique (h3.congr_of_eventuallyEq hev)).symm⟩
+    · -- `Dψ(v₀)(ℝ²) ⊆ span T_pM`: `t ↦ ψ(v₀ + ctw)` (with `B_{r₀}(v₀) ⊆ V`) has velocity `cLw`
+      rintro _ ⟨w, rfl⟩
+      obtain ⟨r₀, hr₀, hball⟩ := Metric.isOpen_iff.mp hV v₀ hv₀V
+      set c : ℝ := r₀ / (‖w‖ + 1) with hc
+      have hc0 : 0 < c := div_pos hr₀ (by positivity)
+      have hmaps : ∀ t ∈ Ioo (-1:ℝ) 1, v₀ + (c * t) • w ∈ V := by
+        intro t ht
+        apply hball
+        rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_mul,
+          abs_of_pos hc0]
+        have ht1 : |t| < 1 := abs_lt.mpr ⟨ht.1, ht.2⟩
+        calc c * |t| * ‖w‖ ≤ c * 1 * ‖w‖ := by gcongr
+          _ < r₀ := by
+            rw [mul_one, hc, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+            nlinarith [norm_nonneg w]
+      have hmem : c • L w ∈ tangentSpace M p := by
+        refine ⟨fun t => ψ (v₀ + (c * t) • w), ?_, ?_, ?_, ?_⟩
+        · exact hψ1.comp (by fun_prop : ContDiff ℝ 1 (fun t : ℝ => v₀ + (c * t) • w)).contDiffOn
+            hmaps
+        · intro t ht
+          exact (himg ▸ mem_image_of_mem ψ (hmaps t ht) : ψ _ ∈ W ∩ M).2
+        · simp [hv₀]
+        · have hβ : HasDerivAt (fun t : ℝ => v₀ + (c * t) • w) (c • w) 0 := by
+            simpa using (((hasDerivAt_id (0:ℝ)).const_mul c).smul_const w).const_add v₀
+          have h := hψv₀.hasFDerivAt.comp_hasDerivAt_of_eq 0 hβ (by simp)
+          rw [map_smul] at h
+          exact h
+      have := Submodule.smul_mem _ c⁻¹ (Submodule.subset_span hmem)
+      rwa [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] at this
+  refine ⟨?_, ?_⟩
+  · -- Step 3: `dim span T_pM = dim Dψ(v₀)(ℝ²) = 2`, as `Dψ(v₀)` is injective
+    rw [hspan, LinearMap.finrank_range_of_inj (f := (L : Euclid 2 →ₗ[ℝ] Euclid P)) (hD v₀ hv₀V),
+      finrank_euclideanSpace_fin]
+  · -- Step 4: the radial curve `t ↦ (1 + ε₀t)p`, `ε₀ = min(1/2, ρ/(|p| + 1))`, stays in
+    -- `M ∩ B_ρ(p)` by radial invariance at `x = p`, so `ε₀p ∈ T_pM` and `p ∈ span T_pM`
+    set ε₀ : ℝ := min (1/2) (ρ / (‖p‖ + 1))
+    have hε₀0 : 0 < ε₀ := lt_min (by norm_num) (div_pos hρ (by positivity))
+    have hmem : ε₀ • p ∈ tangentSpace M p := by
+      refine ⟨fun t => (1 + ε₀ * t) • p, ?_, ?_, ?_, ?_⟩
+      · exact (by fun_prop : ContDiff ℝ 1 (fun t : ℝ => (1 + ε₀ * t) • p)).contDiffOn
+      · intro t ht
+        have ht1 : |t| < 1 := abs_lt.mpr ⟨ht.1, ht.2⟩
+        have hpos : 0 < 1 + ε₀ * t := by
+          have : -ε₀ < ε₀ * t := by nlinarith [ht.1]
+          linarith [min_le_left (1/2 : ℝ) (ρ / (‖p‖ + 1))]
+        refine hrad p ⟨hp, mem_ball_self hρ⟩ _ hpos ?_
+        rw [mem_ball, dist_eq_norm, add_smul, one_smul, add_sub_cancel_left, norm_smul,
+          Real.norm_eq_abs, abs_mul, abs_of_pos hε₀0]
+        calc ε₀ * |t| * ‖p‖ ≤ ε₀ * 1 * ‖p‖ := by gcongr
+          _ ≤ ρ / (‖p‖ + 1) * ‖p‖ := by rw [mul_one]; gcongr; exact min_le_right _ _
+          _ < ρ := by
+            rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+            nlinarith [norm_nonneg p]
+      · simp
+      · simpa using ((hasDerivAt_id (0:ℝ)).const_mul ε₀ |>.const_add 1).smul_const p
+    have := Submodule.smul_mem _ ε₀⁻¹ (Submodule.subset_span hmem)
+    rwa [smul_smul, inv_mul_cancel₀ hε₀0.ne', one_smul] at this
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

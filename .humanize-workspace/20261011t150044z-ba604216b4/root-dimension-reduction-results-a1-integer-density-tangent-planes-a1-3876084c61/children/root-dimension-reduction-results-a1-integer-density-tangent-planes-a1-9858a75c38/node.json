@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1",
+  "depth": 5,
+  "title": "du Bois-Reymond lemma on an open interval",
+  "statement": "For all reals a, b and every κ : ℝ → ℝ that is continuous on (a, b) such that ∫_ℝ φ′(x)κ(x) dx = 0 for every C¹ function φ : ℝ → ℝ with compact support and tsupport φ ⊆ (a, b): there is c ∈ ℝ with κ(x) = c for every x ∈ (a, b).",
+  "lean_statement": "∀ (a b : ℝ) (κ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → (∀ φ : ℝ → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b → ∫ x, deriv φ x * κ x = 0) → ∃ c : ℝ, ∀ x ∈ Ioo a b, κ x = c",
+  "lean_name": "idtp_ccd_scsp_du_bois_reymond",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9858a75c38-a1"
+}

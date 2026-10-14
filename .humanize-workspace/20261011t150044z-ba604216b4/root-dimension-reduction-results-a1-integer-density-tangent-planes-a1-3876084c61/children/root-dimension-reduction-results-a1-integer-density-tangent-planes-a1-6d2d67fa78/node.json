@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.angle_curve-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1",
+  "depth": 5,
+  "title": "Derivative identities for a unit curve parametrized by its angle",
+  "statement": "For every P ∈ ℕ, all vectors u, e ∈ ℝ^P, every real s and every γ : ℝ → ℝ^P that is C¹ on (−s, s) and satisfies ‖γ(α)‖ = 1, ⟨γ(α), u⟩ > 0 and arctan(⟨γ(α), e⟩/⟨γ(α), u⟩) = α for every α ∈ (−s, s): for every α ∈ (−s, s), with γ′(α) := deriv γ α, ⟨γ(α), γ′(α)⟩ = 0, ⟨γ(α),u⟩⟨γ′(α),e⟩ − ⟨γ(α),e⟩⟨γ′(α),u⟩ = ⟨γ(α),u⟩² + ⟨γ(α),e⟩², and γ′(α) ≠ 0.",
+  "lean_statement": "∀ (P : ℕ) (u e : Euclid P) (s : ℝ) (γ : ℝ → Euclid P), ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → ∀ α ∈ Ioo (-s) s, inner ℝ (γ α) (deriv γ α) = 0 ∧ inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 ∧ deriv γ α ≠ 0",
+  "lean_name": "idtp_ccd_scsp_angle_curve",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-6d2d67fa78-a1"
+}
