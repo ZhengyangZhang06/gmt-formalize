@@ -615,6 +615,44 @@ theorem Submission.cbr_ci_pw_noi_smooth_cutoff_seq : ∀ (n : ℕ) (V : Set (Euc
     by_contra hne
     exact hy ((htsupp j).trans (hrV j) (subset_tsupport _ (Ne.symm hne)))
 
+/-- Finite Borel measures on `ℝⁿ` are determined on an open set `U` by their integrals of smooth
+functions with compact support in `U`: if `∫ b dμ = ∫ b dν` for every `C^∞` function `b` with
+compact support and `spt b ⊆ U`, then `μ⌞U = ν⌞U`.  For open `O`, smooth cutoffs `bⱼ → 𝟙_{O ∩ U}`
+with `0 ≤ bⱼ ≤ 1` and dominated convergence give `μ(O ∩ U) = ν(O ∩ U)`; the open sets form a
+π-system generating the Borel σ-algebra. -/
+theorem Submission.cbr_ci_pw_noi_restrict_eq_of_smooth_test : ∀ (n : ℕ) (U : Set (Euclid n)) (μ ν : Measure (Euclid n)), IsOpen U → IsFiniteMeasure μ → IsFiniteMeasure ν → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y, b y ∂μ = ∫ y, b y ∂ν) → μ.restrict U = ν.restrict U := by
+  intro n U μ ν hU hμ hν htest
+  -- Step 1: `μ` and `ν` agree on `O ∩ U` for every open `O`, by testing with smooth cutoffs
+  -- `bⱼ → 𝟙_{O ∩ U}` and dominated convergence (bound `1`, integrable as the measures are finite).
+  have hopen : ∀ O : Set (Euclid n), IsOpen O → μ (O ∩ U) = ν (O ∩ U) := by
+    intro O hO
+    obtain ⟨b, hbs, hbc, hbt, hb01, hblim⟩ :=
+      Submission.cbr_ci_pw_noi_smooth_cutoff_seq n (O ∩ U) (hO.inter hU)
+    have hlim : ∀ ρ : Measure (Euclid n), IsFiniteMeasure ρ →
+        Tendsto (fun j => ∫ y, b j y ∂ρ) atTop (𝓝 (ρ.real (O ∩ U))) := by
+      intro ρ hρ
+      rw [← integral_indicator_one (hO.inter hU).measurableSet]
+      refine tendsto_integral_of_dominated_convergence (fun _ => (1 : ℝ))
+        (fun j => (hbs j).continuous.aestronglyMeasurable) (integrable_const 1)
+        (fun j => Eventually.of_forall fun y => ?_) (Eventually.of_forall hblim)
+      rw [Real.norm_eq_abs, abs_le]
+      constructor <;> linarith [(hb01 j y).1, (hb01 j y).2]
+    have heq : ∀ j, ∫ y, b j y ∂μ = ∫ y, b j y ∂ν := fun j =>
+      htest (b j) (hbs j) (hbc j) ((hbt j).trans inter_subset_right)
+    have h₁ := hlim μ hμ
+    have h₂ := hlim ν hν
+    simp_rw [heq] at h₁
+    exact (ENNReal.toReal_eq_toReal_iff' (measure_ne_top _ _) (measure_ne_top _ _)).mp
+      (tendsto_nhds_unique h₁ h₂)
+  -- Step 2: `μ⌞U` and `ν⌞U` agree on the π-system of open sets, which generates the Borel
+  -- σ-algebra, and on `univ`; finite measures agreeing there are equal.
+  refine ext_of_generate_finite {s | IsOpen s} BorelSpace.measurable_eq isPiSystem_isOpen ?_ ?_
+  · intro s (hs : IsOpen s)
+    rw [Measure.restrict_apply hs.measurableSet, Measure.restrict_apply hs.measurableSet]
+    exact hopen s hs
+  · rw [Measure.restrict_apply_univ, Measure.restrict_apply_univ]
+    simpa using hopen univ isOpen_univ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
