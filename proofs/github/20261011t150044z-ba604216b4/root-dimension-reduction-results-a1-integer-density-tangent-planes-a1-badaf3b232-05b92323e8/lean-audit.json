@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2d67928df5a6f4604415d434c3ade0844970d2d36217221a1ad2c2cee8f12665",
+  "git_delta": {
+    "base_commit": "607cc6935dcf38b2bb126aab1fadd5d6734454dc",
+    "candidate_commit": "1041e795f4bc3b354b8b9b03cf2e94a8b4541aac",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c480cd6cfcb8d2a04bc27b7adb5f0802d3ce85830bf93cd13d3eee476f665176",
+    "source_sha256": "46258e1154af948ed51895bc0cc1d8848b3a09ece0052ec14ee045ff5908150c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_cone_set_finite_planes",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)), IsClosed S → (∀ x ∈ S, ∀ s : ℝ, 0 < s → s • x ∈ S) → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → ∃ (q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)), (∀ i, Module.finrank ℝ (Ps i) = 2) ∧ (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) ∧ ∀ x ∈ S, x ≠ 0 → ∃ i, x ∈ Ps i",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
