@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.line_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "depth": 6,
+  "title": "Weighted integrals of 1-forms along unit-speed lines define a 1-current (parent step 1)",
+  "statement": "Let P ∈ ℕ and ι a finite type. For each k ∈ ι let p_k, v_k ∈ ℝ^P with ‖v_k‖ = 1, let I_k ⊆ ℝ be an arbitrary set, and let c_k ∈ ℝ. Then there is a current X ∈ 𝒟_1(ℝ^P), that is, a GeometricCurrentOn univ 1: a linear functional on test 1-forms that is sequentially continuous at 0 for TestFormOnConverges. It satisfies X(ω) = Σ_k c_k·∫_{I_k} ω(p_k + t·v_k)(v_k) dt for every ω ∈ 𝒟¹(ℝ^P). Here ω(y)(v) means ω(y)(fun _ => v), and ∫_{I_k} is the Bochner integral for Lebesgue measure restricted to I_k.",
+  "lean_statement": "∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℝ), (∀ k, ‖v k‖ = 1) → ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1, ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, c k * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)",
+  "lean_name": "idtp_fons_odc_pc_line_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cde7f29442-a1"
+}
