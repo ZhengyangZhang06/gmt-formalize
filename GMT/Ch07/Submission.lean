@@ -1556,6 +1556,62 @@ theorem Submission.lcmp_massOn_le_add_of_eval_eq : ∀ (P k : ℕ) (U G : Set (E
     _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal |Y ω| := ENNReal.ofReal_add_le
     _ ≤ X.massOn G + Y.massOn G := add_le_add hXle habs
 
+/-- **Mixed-domain triangle inequality for local mass** (Simon 6.2.5).  Let `U ⊆ V₁`, `U ⊆ V₂`
+and let `ιᵢ : 𝒟ⁿ(U) → 𝒟ⁿ(Vᵢ)` be the inclusions.  If `Z(ω) = X(ι₁ω) + c Y(ι₂ω)` for every
+`ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ G`, then `M_G(Z) ≤ M_G(X) + |c| M_G(Y)`.  The inclusions keep the
+underlying form, so for `ω` admissible for `M_G(Z)` the forms `ι₁ω`, `ι₂ω` and `−ι₂ω` are
+admissible for `M_G(X)` and `M_G(Y)`; hence `|Y(ι₂ω)| ≤ M_G(Y)` and
+`Z(ω) ≤ X(ι₁ω) + |c| |Y(ι₂ω)| ≤ M_G(X) + |c| M_G(Y)`.  Taking the supremum over admissible `ω`
+gives the claim. -/
+theorem Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl : ∀ (P n : ℕ) (U V₁ V₂ G : Set (Euclid P)) (h₁ : U ⊆ V₁) (h₂ : U ⊆ V₂) (Z : GeometricCurrentOn U n) (X : GeometricCurrentOn V₁ n) (Y : GeometricCurrentOn V₂ n) (c : ℝ), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X (testFormOnInclusion h₁ n ω) + c * Y (testFormOnInclusion h₂ n ω)) → Z.massOn G ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G := by
+  intro P n U V₁ V₂ G h₁ h₂ Z X Y c hZ
+  -- Step 1: `M_G(Z)` is a supremum, so bound each admissible value `ofReal (Z ω)`
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: the inclusions keep the underlying form, so `ι₁ω` and `ι₂ω` are admissible
+  have hω₁ : testFormOnInclusion h₁ n ω ∈ massAdmissibleOn V₁ n G := ⟨hω.1, hω.2⟩
+  have hω₂ : testFormOnInclusion h₂ n ω ∈ massAdmissibleOn V₂ n G := ⟨hω.1, hω.2⟩
+  -- Step 3: `−ι₂ω` is admissible (same support, same Euclidean coefficient norm)
+  have hneg : -testFormOnInclusion h₂ n ω ∈ massAdmissibleOn V₂ n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · have hco : ((-testFormOnInclusion h₂ n ω : TestFormOn V₂ n) :
+          DifferentialForm (Euclid P) n) = -(ω : DifferentialForm (Euclid P) n) := rfl
+      rw [hco, tsupport_neg]
+      exact hω.1
+    · have hco : ((-testFormOnInclusion h₂ n ω : TestFormOn V₂ n) :
+          DifferentialForm (Euclid P) n) x = -((ω : DifferentialForm (Euclid P) n) x) := rfl
+      rw [hco, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 4: `ofReal X(ι₁ω) ≤ M_G(X)` and, as `Y(−ι₂ω) = −Y(ι₂ω)`, `ofReal |Y(ι₂ω)| ≤ M_G(Y)`
+  have hXle : ENNReal.ofReal (X (testFormOnInclusion h₁ n ω)) ≤ X.massOn G := X.le_massOn hω₁
+  have hYle : ENNReal.ofReal (Y (testFormOnInclusion h₂ n ω)) ≤ Y.massOn G := Y.le_massOn hω₂
+  have hYle' : ENNReal.ofReal (Y (-testFormOnInclusion h₂ n ω)) ≤ Y.massOn G :=
+    Y.le_massOn hneg
+  have hYneg : Y (-testFormOnInclusion h₂ n ω) = -Y (testFormOnInclusion h₂ n ω) :=
+    map_neg Y.toCurrent _
+  rw [hYneg] at hYle'
+  have habs : ENNReal.ofReal |Y (testFormOnInclusion h₂ n ω)| ≤ Y.massOn G := by
+    rcases abs_cases (Y (testFormOnInclusion h₂ n ω)) with ⟨h, _⟩ | ⟨h, _⟩
+    · rw [h]; exact hYle
+    · rw [h]; exact hYle'
+  -- Step 5: `c Y(ι₂ω) ≤ |c| |Y(ι₂ω)|`; `ofReal` is monotone, subadditive and multiplicative
+  have hcy : c * Y (testFormOnInclusion h₂ n ω) ≤ |c| * |Y (testFormOnInclusion h₂ n ω)| :=
+    calc c * Y (testFormOnInclusion h₂ n ω) ≤ |c * Y (testFormOnInclusion h₂ n ω)| := le_abs_self _
+      _ = |c| * |Y (testFormOnInclusion h₂ n ω)| := abs_mul _ _
+  -- Step 6: the hypothesis applies as `spt ω ⊆ G`; conclude by monotonicity in `[0, ∞]`
+  show ENNReal.ofReal (Z ω) ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G
+  calc ENNReal.ofReal (Z ω)
+      = ENNReal.ofReal (X (testFormOnInclusion h₁ n ω) + c * Y (testFormOnInclusion h₂ n ω)) := by
+        rw [hZ ω hω.1]
+    _ ≤ ENNReal.ofReal (X (testFormOnInclusion h₁ n ω) + |c| * |Y (testFormOnInclusion h₂ n ω)|) :=
+        ENNReal.ofReal_le_ofReal (by linarith)
+    _ ≤ ENNReal.ofReal (X (testFormOnInclusion h₁ n ω)) +
+          ENNReal.ofReal (|c| * |Y (testFormOnInclusion h₂ n ω)|) := ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal (X (testFormOnInclusion h₁ n ω)) +
+          ENNReal.ofReal |c| * ENNReal.ofReal |Y (testFormOnInclusion h₂ n ω)| := by
+        rw [ENNReal.ofReal_mul (abs_nonneg c)]
+    _ ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
