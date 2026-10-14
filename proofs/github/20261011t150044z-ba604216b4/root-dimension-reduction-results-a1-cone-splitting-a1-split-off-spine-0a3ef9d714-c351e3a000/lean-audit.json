@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3646a008fb0949e8d4025132637e78d678dad857e7db00f7027ee5d2e59e1d70",
+  "git_delta": {
+    "base_commit": "a5edabe5b37f99f09971df3efee7a1cc009039b6",
+    "candidate_commit": "fca45779ebdd0cf84eadb7a69e4cf95e0814fff3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cc_cycle_of_boundary_eq",
+    "diff_sha256": "20afd513e303abec2eb992066ea7133c28099ae8094192d4093cefb7b9b1119d",
+    "source_sha256": "f02ab6494086763cd6066db01a7d60970bc5b565d82edd1ec4650658df8f3ae3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cc_cycle_of_boundary_eq",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (B : GeometricCurrentOn U (n + 1 + 1)) (T₁ T₂ : GeometricCurrentOn U (n + 1)) (p : ℕ), IsOpen U → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω : TestFormOn U (n + 1), B.boundary ω = T₂ ω + (-1 : ℝ) ^ p * T₁ ω) → ∃ Z E' : GeometricCurrentOn U (n + 1), IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ Z.support ⊆ B.support ∧ E'.mass ≤ T₂.mass ∧ ∀ ω : TestFormOn U (n + 1), Z ω = T₁ ω + E' ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
