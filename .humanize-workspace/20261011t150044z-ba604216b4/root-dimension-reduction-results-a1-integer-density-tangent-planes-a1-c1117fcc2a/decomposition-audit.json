@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'idtp_fons_odc_pc_|idtp_fons_odc_polygonal_current' project/GMT",
+        "rg -n 'HasApproximateTangentSpaceAt|blowUpMap' mathlib/Mathlib",
+        "rg -n 'theorem Integrable.restrict|lemma Integrable.restrict|restrict_le_self|restrict_restrict_of_subset' mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -l --glob 'decomposition-*.json' 'idtp_fons_odc_pc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/polygonal-independent-audit-u52jrd2w/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/polygonal-independent-audit-u52jrd2w/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pc_split/AllClean.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c1117fcc2a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c1117fcc2a/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/tmp/polygonal-independent-audit-u52jrd2w/Contracts.lean",
+        "/tmp/polygonal-independent-audit-u52jrd2w/Assembly.lean",
+        "/tmp/pc_split/AllClean.lean"
+      ],
+      "conclusion": "Snapshot-relative searches used the supplied snapshot root; listed relative file paths are workspace-relative. Project and Mathlib revisions match the manifest, the contract matches Submission.lean byte-for-byte, and inspected dependency sources match their pins. The snapshot supplies the required integration and isometry lemmas; HasApproximateTangentSpaceAt and blowUpMap have no Mathlib matches and are defined in pinned SimonGMT. All five exact one-line propositions elaborate independently, without their implementations. All names are bare identifiers and unreserved; no accepted declaration is being reused. Dependencies are correctly directed and acyclic, with line_param correctly inherited by the two proofs citing it. The split is appropriate: its conclusions imply this exact selected parent, verified by an independent Lean assembly using only child-contract hypotheses. Recompilation of the supplied supporting proofs succeeds; parent and child axiom checks contain only propext, Classical.choice and Quot.sound. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "line_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including real coefficients and arbitrary parameter sets. Closed isometric embeddings give compactly supported integrands. Integrability survives arbitrary restriction; the common compact support and zeroth-derivative convergence justify dominated convergence. Linearity and finite summation establish the exact current contract without circular reliance."
+    },
+    {
+      "key": "local_plane_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The proof chooses a strictly positive support radius, verifies the blow-up image/preimage identity for positive scales, and proves equality of measurable indicators on the test function's support. Eventual integral equality establishes precisely the pinned tangent-space predicate, including its dimension condition."
+    },
+    {
+      "key": "piece_locally_line",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every hypothesis used. Finiteness provides a common neighborhood excluding other pieces; openness supplies the parameter interval. The unit-speed identity converts spatial distance into parameter distance, proving both inclusions. No measurability or additional assumptions on other pieces are needed."
+    },
+    {
+      "key": "imrep_construction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit construction proves every IMRep field and all three stated identities. It handles zero multiplicity, measurable orientation, rectifiability, and local integrability. Outside the null closure-overlap union, the two declared geometric dependencies establish the tangent line and the signed orthonormal vector establishes orientation. The inherited line_param dependency is valid and non-circular."
+    },
+    {
+      "key": "imrep_formulas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies to any R satisfying the three explicit identities, so no construction dependency is missing. It establishes integrability before interchanging sums and integrals, handles zero coefficients separately, and uses measurable-embedding transport and withDensity to derive exactly both formulas, including the ENNReal coefficient conversion."
+    }
+  ],
+  "required_changes": []
+}
