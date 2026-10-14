@@ -7096,6 +7096,29 @@ theorem Submission.dor_lmbsf_slice_imreps : ∀ (P n : ℕ) (U : Set (Euclid P))
             ring
           · rw [indicator_of_notMem hxS, indicator_of_notMem hxS, mul_zero]
 
+/-- **Simon Ch. 6, 4.4–4.5(2) for an integer multiplicity `T = τ(M, θ, ξ)` and a Lipschitz `f`**
+(for a.e. `t`, `R_t = (M ∩ {g ≠ 0} ∩ f⁻¹(t), θ, ξ⌞ν)` with `ν = g/|g|`).
+`dor_lmbsf_tangential_gradient` gives the tangential gradient `g` of `f` along `M`: `|g| ≤ L`,
+`g ∈ TₓM`, the co-area formula, rectifiable slices with tangent planes `TₓM ∩ g(x)^⊥`, and the
+weak limit of the gradients of `C¹` approximations of `γ_{a,b} ∘ f`.  `dor_lmbsf_slice_imreps`
+builds the slices, with (1)–(3) and `∫_a^b τ(R_s)(ω) ds = ∫_{M ∩ {a < f < b}} θ ξ(g♭ ∧ ω) dH^{n+1}`
+(co-area, Simon 4.2).  `dor_lmbsf_lipschitz_cutoff_leibniz` is the Leibniz rule
+`∂T(γω) = T(dγ ∧ ω) + T(γ dω)` for the Lipschitz cut-off `γ = γ_{a,b} ∘ f`, with
+`T(dγ ∧ ω) = −(b − a)⁻¹ ∫_{M ∩ {a < f < b}} θ ξ(g♭ ∧ ω) dH^{n+1}`; solving it for this middle term
+gives (4). -/
+theorem Submission.dor_lmbs_imrep_slice_family : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Rs : ℝ → IMRep U n, (∀ t, (Rs t).carrier ⊆ f ⁻¹' {t}) ∧ (∀ W : Set (Euclid P), MeasurableSet W → AEMeasurable (fun t => (Rs t).measure W) ∧ ∫⁻ t, (Rs t).measure W ≤ (L : ℝ≥0∞) * RT.measure W) ∧ (∀ ω : TestFormOn U n, Integrable (fun s => (Rs s).action (ω : DifferentialForm (Euclid P) n))) ∧ ∀ (ω : TestFormOn U n) (a b : ℝ), a < b → ∫ s in a..b, (Rs s).action (ω : DifferentialForm (Euclid P) n) = (b - a) * ((∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) := by
+  intro hTL P n U T RT RB f L hU hRT hRB hf
+  -- the tangential gradient `g` of `f` along `M`
+  obtain ⟨g, hgm, hgL, hgtan, hcoarea, hrect, hslice, hweak⟩ :=
+    Submission.dor_lmbsf_tangential_gradient hTL P n U RT f L hU hf
+  -- the slices `R_t`, conclusions (1)–(3), and `∫_a^b τ(R_s)(ω) ds` as a middle term
+  obtain ⟨Rs, hcarrier, hmass, hint, hmiddle⟩ :=
+    Submission.dor_lmbsf_slice_imreps P n U RT f L g hU hf hgm hgL hgtan hcoarea hrect hslice
+  refine ⟨Rs, hcarrier, hmass, hint, fun ω a b hab => ?_⟩
+  -- (4): the Leibniz identity `A = B - (b - a)⁻¹ * S` solved for `S = (b - a) * (B - A)`
+  rw [hmiddle ω a b hab, Submission.dor_lmbsf_lipschitz_cutoff_leibniz P n U T RT RB f L g hU hRT
+    hRB hf hgm hgL hweak ω a b hab, sub_sub_cancel, mul_inv_cancel_left₀ (sub_pos.mpr hab).ne']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
