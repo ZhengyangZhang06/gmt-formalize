@@ -2083,6 +2083,73 @@ theorem Submission.dimred_cs_sos_mt_slice_integrable : ∀ (P k j n' : ℕ) (g :
   rintro t ⟨htE, htEK⟩
   exact hK0 t (hEG htE) fun htK => htEK ⟨htE, htK⟩
 
+/-- **Stokes formula on a cube for current slices.**  Let `g = (g₀, …, g_j)` be orthonormal,
+`Q_r = {t ∈ span g : |⟨gᵢ, t⟩| ≤ r}`, `Q'ₐ` the corresponding box of the frame `g ∘ a.succAbove`
+(`g` without `gₐ`), and `∂Y = X`.  Then `∫_{Q_r} Y(♭(dω)(t + ·))` is the sum of the face terms
+`(−1)ᵃ (∫_{Q'ₐ} Y(♭ₐω(s + r gₐ + ·)) − ∫_{Q'ₐ} Y(♭ₐω(s − r gₐ + ·)))` and of
+`(−1)^{j+1} ∫_{Q_r} X(♭ω(t + ·))`.  For each `t` the slice identity writes `Y(♭(dω)(t + ·))` as
+`Σₐ (−1)ᵃ Y(D(♭ₐω)(t + ·)[gₐ]) + (−1)^{j+1} X(♭ω(t + ·))`.  All slices are continuous, hence
+integrable on the compact box `Q_r`; the `X`-slice is the `Y`-slice of the test form `d(♭ω)`, as
+`∂Y = X`.  Split the integral and apply the fundamental theorem of calculus in the direction `gₐ`
+to `t ↦ Y(♭ₐω(t + ·))`, whose derivative along `gₐ` is the slice `Y(D(♭ₐω)(t + ·)[gₐ])`. -/
+theorem Submission.dimred_cs_sos_mt_cube_stokes : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (r : ℝ), Orthonormal ℝ g → RY.Represents Y → Y.boundary = X → 0 < r → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1] = (∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j])) + (-1 : ℝ) ^ (j + 1) * ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1] := by
+  intro P j m n' g h h₁ h₂ X Y RY flatD flat flatF ω r hg hRY hYX hr hflatD hflat hflatF
+  set Q : Set (Euclid P) := {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}
+  -- `Q_r` is compact, hence a bounded Borel subset of `span g`
+  have hQc : IsCompact Q := Submission.dimred_cs_sos_mt_cs_frame_box_compact P (j + 1) g r hg
+  have hQm : MeasurableSet Q := hQc.measurableSet
+  -- slices `t ↦ Y(Φ(φ(t + ·)))` by translated test forms are continuous and integrable on `Q_r`
+  have hsl : ∀ (q : ℕ) (Φ : Covector (Euclid P) q →L[ℝ] Covector (Euclid P) (m + 1))
+      (φ : TestFormOn (univ : Set (Euclid P)) q),
+      Continuous (fun t => currentEval Y (fun y =>
+        Φ ((φ : DifferentialForm (Euclid P) q) (t + y)))) ∧
+        IntegrableOn (fun t => currentEval Y (fun y =>
+          Φ ((φ : DifferentialForm (Euclid P) q) (t + y)))) Q μHE[j + 1] := by
+    intro q Φ φ
+    have hs := Submission.dimred_cs_sos_mt_slice_integrable P (j + 1) (m + 1) q g Y RY Φ φ hg hRY
+    exact ⟨hs.1, hs.2.1 Q hQm (fun t ht => ht.1) hQc.isBounded⟩
+  -- the contracted forms `♭ₐω = flatF a ∘ ω` and `♭ω = flat ∘ ω` are test forms
+  have hβ : ∀ a, IsTestForm (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) := fun a =>
+    ⟨(flatF a).contDiff.comp ω.property.1.1, ω.property.1.2.comp_left (map_zero (flatF a))⟩
+  have hγ : IsTestForm (fun z => flat ((ω : DifferentialForm (Euclid P) n') z)) :=
+    ⟨flat.contDiff.comp ω.property.1.1, ω.property.1.2.comp_left (map_zero flat)⟩
+  -- the slices `Aₐ(t) = Y(D(♭ₐω)(t + ·)[gₐ])` of the test forms `D(♭ₐω)(·)[gₐ]`
+  have hA : ∀ a : Fin (j + 1),
+      Continuous (fun t => currentEval Y (fun y =>
+        fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a))) ∧
+        IntegrableOn (fun t => currentEval Y (fun y =>
+          fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)))
+          Q μHE[j + 1] := fun a =>
+    hsl (m + 1) (ContinuousLinearMap.id ℝ _)
+      ⟨fun z => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) z (g a),
+        Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P (m + 1) _ (g a) (hβ a),
+        subset_univ _⟩
+  -- `t ↦ X(♭ω(t + ·))` is the slice `t ↦ Y(d(♭ω)(t + ·))` (`∂Y = X`), so it is integrable on `Q_r`
+  have hX : IntegrableOn
+      (fun t => currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))))
+      Q μHE[j + 1] :=
+    (hsl (m + 1) (ContinuousLinearMap.id ℝ _)
+      ⟨exteriorDerivative (fun z => flat ((ω : DifferentialForm (Euclid P) n') z)),
+        exteriorDerivative_isTestForm hγ, subset_univ _⟩).2.congr_fun
+      (fun t _ => Submission.dimred_cs_sos_mt_cs_translate_boundary_eval P m X Y _ t hYX hγ) hQm
+  -- integrate the slice identity over `Q_r` and split the integral
+  rw [setIntegral_congr_fun hQm fun t _ =>
+      Submission.dimred_cs_sos_mt_cs_slice_identity P j m n' g h h₁ h₂ X Y flatD flat flatF ω t
+        hYX hflatD hflat hflatF,
+    integral_add
+      (integrable_finsetSum Finset.univ fun a _ => (hA a).2.const_mul ((-1 : ℝ) ^ (a : ℕ)))
+      (hX.const_mul ((-1 : ℝ) ^ (j + 1))),
+    integral_finsetSum Finset.univ fun a _ => (hA a).2.const_mul ((-1 : ℝ) ^ (a : ℕ)),
+    integral_const_mul]
+  congr 1
+  refine Finset.sum_congr rfl fun a _ => ?_
+  -- the fundamental theorem of calculus in the direction `gₐ` for `bₐ(t) = Y(♭ₐω(t + ·))`
+  rw [integral_const_mul,
+    Submission.dimred_cs_sos_mt_cs_frame_box_ftc P j g a r _
+      (fun t => currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (t + y))))
+      hg hr (hA a).1 (hsl n' (flatF a) ω).1 fun s τ =>
+        Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt P (m + 1) n' Y RY (flatF a) ω s (g a) τ hRY]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
