@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "A unit covector attaining 1 on an orthonormal frame: |β_τ|_E = 1 and β_τ(τ) = 1",
+  "statement": "Let P, n ∈ ℕ and let τ = (τ_0, …, τ_{n−1}) be an orthonormal family in ℝ^P. Then there is an n-covector β on ℝ^P with |β|_E = covectorEuclideanNorm β = 1 and β(τ_0, …, τ_{n−1}) = 1.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P), Orthonormal ℝ τ → ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β = 1 ∧ β τ = 1",
+  "lean_name": "regcomp_exists_covector_eval_orthonormal_eq_one",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-e3a7dbabf1-a1"
+}

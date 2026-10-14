@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_scaling-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "Support of a restricted and nonzero-scaled current",
+  "statement": "Let P, n ∈ ℕ and V ⊆ U ⊆ ℝ^P with V open. Let T ∈ 𝒟_n(U), T₀ ∈ 𝒟_n(V) and c ∈ ℝ ∖ {0} with T(ι ω) = c·T₀(ω) for every ω ∈ 𝒟^n(V), where ι = testFormOnInclusion (same underlying form). Then spt T₀ = spt T ∩ V. Here, for a current S in a domain D, spt S = D ∖ Z(S) (Simon 6.2.11 as in GeometricCurrentOn.support), where the zero region Z(S) is the union of all open sets W with closure(W) compact, closure(W) ⊆ D and S(ω) = 0 for every ω ∈ 𝒟^n(D) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℝ), IsOpen V → c ≠ 0 → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = c * T₀ ω) → T₀.support = T.support ∩ V",
+  "lean_name": "rsd_cmr_support_eq_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-scaling-a1-a1"
+}

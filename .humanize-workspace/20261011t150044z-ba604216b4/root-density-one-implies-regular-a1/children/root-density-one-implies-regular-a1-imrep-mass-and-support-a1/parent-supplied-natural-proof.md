@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.imrep_mass_and_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, Remark 3.2(3) (chapter-06.txt lines 763–765: M_W(T) = ∫_{M∩W} θ dHⁿ for open W) and Ch. 6, 2.11–2.12 (chapter-06.txt lines 295–307: spt T = spt μ_T). The book states both without proof; a complete proof follows. Notation: M = R.carrier, θ = R.mult, ξ = R.orient, μ_R = R.measure = θHⁿ⌞M. For an n-covector α, |α| = (Σ_I α(e_I)²)^{1/2} is the Euclidean coefficient norm (covectorEuclideanNorm; I runs over strictly increasing multi-indices, e_I = (e_{i_1}, …, e_{i_n})), and dx^I denotes the coordinate covector with dx^I(e_J) = δ_{IJ}. ⟨α, ξ(x)⟩ means ξ(x)(α).
+1. Pointwise algebra. Let x ∈ M be a point where R.orients holds: there are an orthonormal family τ₁, …, τₙ and s ∈ {1, −1} with ⟨α, ξ(x)⟩ = s·α(τ₁, …, τₙ) for every α. Expanding τ_j = Σ_i τ_j^i e_i, multilinearity and alternation give α(τ₁, …, τₙ) = Σ_I α(e_I)·det(τ^I), where det(τ^I) is the n×n minor of the matrix (τ_j^i) on the rows I; by the Cauchy–Binet formula Σ_I det(τ^I)² = det(τᵀτ) = 1. By Cauchy–Schwarz, |⟨α, ξ(x)⟩| ≤ |α| for every α. The covector ξ^♭(x) := Σ_I ⟨dx^I, ξ(x)⟩ dx^I has coefficients s·det(τ^I), hence |ξ^♭(x)| = 1 and ⟨ξ^♭(x), ξ(x)⟩ = Σ_I det(τ^I)² = 1. (For n = 0 the only I is empty: |α| = |α()|, ξ(x) = ±evaluation, ξ^♭(x) = ±1.) Since R.orients holds Hⁿ-a.e. on M and μ_R ≪ Hⁿ⌞M, these facts hold μ_R-a.e. The field x ↦ ξ^♭(x) is μ_R-a.e. strongly measurable, being a continuous linear function of the a.e. strongly measurable ξ (R.aestronglyMeasurable_orient).
+2. Integral formula. For ω ∈ 𝒟ⁿ(U) the function x ↦ θ(x)⟨ω(x), ξ(x)⟩ is Hⁿ⌞M-integrable: it is a.e. strongly measurable, vanishes off the compact set spt ω ⊆ U, is bounded by θ·sup|ω| a.e. (step 1), and ∫_{M∩spt ω} θ dHⁿ < ∞ (R.locallyIntegrable_mult). Hence T(ω) = R.action(ω) = ∫ ⟨ω, ξ⟩ dμ_R (integral with respect to the density θ).
+3. Upper bound. Let W be open and ω admissible for M_W(T) (ω ∈ 𝒟ⁿ(U), spt ω ⊆ W, |ω(x)| ≤ 1 for all x). By step 1, ⟨ω(x), ξ(x)⟩ ≤ |ω(x)| ≤ 1 for μ_R-a.e. x, and ω = 0 off W, so T(ω) ≤ μ_R(W) by step 2. Taking the supremum, M_W(T) ≤ μ_R(W).
+4. Lower bound. Let W be open and t a real number with t < μ_R(W); we construct an admissible ω with T(ω) > t, which proves M_W(T) ≥ μ_R(W) (also when μ_R(W) = ∞). Put G := W ∩ U (open). Since M ⊆ U, μ_R(G) = μ_R(W). μ_R is a Borel measure, finite on compact subsets of U; restricted to the open σ-compact set G it is a Radon measure (Simon Ch. 1, 1.15), hence inner regular by compact sets and outer regular on sets of finite measure. Fix η > 0 and a compact K ⊆ G with μ_R(K) > t + 4η. (a) Lusin (Simon Ch. 1, 1.17): there is a compact K' ⊆ K with μ_R(K ∖ K') < η such that ξ^♭ restricted to K' is continuous, and |ξ^♭| = 1, ⟨ξ^♭, ξ⟩ = 1 μ_R-a.e. on K'. (b) There is an open V with K' ⊆ V, V̄ compact, V̄ ⊆ G, and μ_R(V ∖ K') < η. (c) Extend the coefficients of ξ^♭ on K' continuously to ℝ^P (Tietze), compose with the radial retraction of Λⁿ(ℝ^P) onto its closed unit ball for |·|, and multiply by a continuous χ with 0 ≤ χ ≤ 1, χ = 1 on K', spt χ ⊆ V. The resulting continuous g has compact support in V, |g| ≤ 1 everywhere and g = ξ^♭ on K'. (d) Let g_ε := φ_ε ∗ g (coefficientwise convolution with a standard mollifier). For 0 < ε < dist(spt g, ℝ^P ∖ V), g_ε is C^∞ with compact support in V ⊆ W ∩ U, |g_ε(x)| ≤ ∫ φ_ε(x − y)|g(y)| dy ≤ 1 by convexity of the norm, and g_ε → g uniformly as ε → 0; so g_ε is admissible for M_W(T). (e) By steps 2 and 1, T(g_ε) = ∫⟨g_ε, ξ⟩ dμ_R ≥ ∫_{K'}⟨g, ξ⟩ dμ_R − ∫_{V∖K'}|⟨g, ξ⟩| dμ_R − sup|g_ε − g|·μ_R(V̄) ≥ μ_R(K') − η − sup|g_ε − g|·μ_R(V̄) ≥ μ_R(K) − 2η − sup|g_ε − g|·μ_R(V̄) > t + 2η − sup|g_ε − g|·μ_R(V̄). As μ_R(V̄) < ∞, T(g_ε) > t for small ε. Together with step 3 this proves (i): M_W(T) = μ_R(W).
+5. Support. By definition (SimonGMT GeometricCurrentOn.support; Simon 2.11) spt T = U ∖ Z, where Z is the union of all open W with W̄ compact, W̄ ⊆ U and T(ω) = 0 for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ W. Recall x ∈ spt μ_R iff μ_R(B) > 0 for every neighbourhood B of x. (a) If x ∈ U ∩ spt μ_R and x ∈ Z, choose W in the union with x ∈ W; every admissible form for M_W(T) has T(ω) = 0, so M_W(T) = 0, hence μ_R(W) = 0 by (i), contradicting x ∈ spt μ_R. So U ∩ spt μ_R ⊆ spt T. (b) spt T ⊆ U by definition. If x ∈ U ∖ spt μ_R, choose r > 0 with μ_R(B_r(x)) = 0 and B̄_r(x) ⊆ U (U open). For ω ∈ 𝒟ⁿ(U) with spt ω ⊆ B_r(x), T(ω) = ∫⟨ω, ξ⟩ dμ_R = 0 by step 2; so B_r(x) is one of the sets forming Z, x ∈ Z and x ∉ spt T. Hence spt T = U ∩ spt μ_R, which is (ii).
+
+## Key steps
+
+1. For a unit simple n-vector ξ, |⟨α, ξ⟩| ≤ |α| (Cauchy–Binet), with equality for the dual covector ξ^♭.
+2. T(ω) = ∫⟨ω, ξ⟩ dμ_R, so admissible forms give T(ω) ≤ μ_R(W).
+3. Lusin, Tietze extension, retraction and mollification of ξ^♭ give admissible forms with T(ω) arbitrarily close to μ_R(W).
+4. The mass formula identifies the zero region of T with the complement of spt μ_R in U.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -c sorry local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n -i 'allard|constancy theorem|slice|flat metric|nearest.point|nearestPoint|tubular' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean -l`
+- `rg -n 'massOn.*=.*measure|massOn_eq|mass_eq_' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean`
+- `rg -n 'measure_compl_support|mem_support_iff' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure|class|abbrev) ' simongmt Chapter04/{Basic,Density,MeanCurvature,FirstVariation}.lean Chapter05/Basic.lean Chapter06/{Mass,Currents,CurrentLocalEquality,AffineCurrentPushforward}.lean`
+- `rg -n -i 'pushforward|slice|slicing|constancy' simongmt Chapter06/*.lean`
+- `rg -l 'dor_imrep|dor_zero_dim|dor_stationary|dor_minimizing' simongmt GMT dag.json (name-collision check: no match)`
+- `lake env lean /tmp/ch07-dor-decomp/Check.lean (contract text + five child types)`
+- `lean -o /tmp/ch07-dor-decomp/build/DorContract.olean (byte copy of Contract.lean); lean /tmp/ch07-dor-decomp/Final.lean (#check of the exact frozen strings)`
+- `lean /tmp/ch07-dor-decomp/Assembly2.lean (#print axioms dor_assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/ch07-dor-decomp/Check.lean`
+- `/tmp/ch07-dor-decomp/Final.lean`
+- `/tmp/ch07-dor-decomp/Assembly2.lean`
+- `/tmp/ch07-dor-decomp/spec/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and its only sorry is the final main_theorem.
+
+Reusable facts found:
+- Mathlib Measure.measure_compl_support and mem_support_iff_forall (Support.lean). Used for the support identity and for showing that μ_R is carried by spt T.
+- Mathlib hausdorffMeasure_zero_singleton and euclideanHausdorffMeasure_zero. H⁰ is the counting measure, which the n = 0 child uses.
+- SimonGMT Chapter04/MeanCurvature.lean HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn: closed-ball monotonicity of e^{Λρ}ρ^{−n}μ(B̄_ρ) for the library RectifiableVarifold, usable for mean_curvature_monotonicity once IMRep is bridged.
+
+Not available, so cited from Simon as in the parent proof:
+- Allard regularity: Chapter05/Basic.lean states that Lipschitz approximation, excess decay and Allard are not formalized.
+- The current Constancy Theorem 6.2.34: the Chapter08 Constancy* files concern the stationary-varifold constancy theorem.
+- Slicing of integer multiplicity currents and flat convergence (6.4.5, 6.7.2): no matches.
+- C¹ or Lipschitz push-forward of currents: only GeometricCurrentOn.affinePushforward for proper affine maps.
+- The mass formula M_W(T) = μ_T(W) for the contract's Euclidean coefficient norm: Chapter06/Representation.lean only has the assumed field MassRepresentation.mass_characterization, for the comass Current API.
+
+Lean checks:
+- All five child types elaborate with the frozen definitions.
+- The conditional assembly of DensityOneImpliesRegular from three of them plus MinimizingImpliesStationary depends only on propext, Classical.choice, Quot.sound and the stub sorryAx.
+- The DAG reserves only the root's ten children, and the five dor_-prefixed names have no matches.

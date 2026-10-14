@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "An integer multiplicity triple defines a current",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, and let R = (M, θ, ξ) be an IMRep in U. Then there is T ∈ 𝒟_n(U) (GeometricCurrentOn U n: an ℝ-linear functional on 𝒟^n(U) that is sequentially continuous for TestFormOnConverges) represented by R, i.e. T(ω) = R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟^n(U), where ξ(x)(α) = ⟨α, ξ(x)⟩ and Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T",
+  "lean_name": "rsd_cmr_imrep_represents_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-current-a1-a1"
+}

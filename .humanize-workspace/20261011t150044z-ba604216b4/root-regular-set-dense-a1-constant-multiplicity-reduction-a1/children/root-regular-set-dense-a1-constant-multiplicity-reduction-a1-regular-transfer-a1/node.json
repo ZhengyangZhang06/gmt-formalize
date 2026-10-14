@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.regular_transfer-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "Regular points survive restriction and nonzero integer scaling",
+  "statement": "Let P, n ∈ ℕ and V ⊆ U ⊆ ℝ^P. Let T ∈ 𝒟_n(U), T₀ ∈ 𝒟_n(V) and c ∈ ℤ ∖ {0} with T(ι ω) = c·T₀(ω) for every ω ∈ 𝒟^n(V) (ι = testFormOnInclusion). If y ∈ spt T and y ∈ reg T₀, then y ∈ reg T. Here reg is the contract's regularSet (Simon 7.4.1): y ∈ reg S, for S in a domain D, iff y ∈ spt S and there are ρ > 0 with B_ρ(y) ⊆ D, m ∈ ℤ ∖ {0}, an embedded C¹ n-dimensional submanifold M' ∋ y with an orientation ξ' (IsOrientation) and Hⁿ(M' ∩ K) < ∞ for every compact K ⊆ B_ρ(y), such that S(ω) = m∫_{M'} ξ'(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟^n(D) with tsupport ω ⊆ B_ρ(y).",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℤ) (y : Euclid P), c ≠ 0 → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (c : ℝ) * T₀ ω) → y ∈ T.support → y ∈ regularSet T₀ → y ∈ regularSet T",
+  "lean_name": "rsd_cmr_regularSet_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-regular-transfer-a1-a1"
+}

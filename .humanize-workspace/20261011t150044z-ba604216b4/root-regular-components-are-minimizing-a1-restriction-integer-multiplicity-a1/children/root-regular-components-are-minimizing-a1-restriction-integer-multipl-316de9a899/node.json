@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.sub_imrep-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Restricting an integer multiplicity triple to a Borel sub-carrier with smaller positive multiplicity",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P, and let R = (C, θ, ξ) be an integer multiplicity triple in U (IMRep U n). Let C' ⊆ C be Borel, and let θ' : ℝ^P → ℕ be measurable with 0 < θ'(x) ≤ θ(x) for every x ∈ C'. Assume that, for Hⁿ-a.e. x ∈ C', every approximate tangent space of C at x is an approximate tangent space of C' at x: for all Q, HasApproximateTangentSpaceAt n C x Q → HasApproximateTangentSpaceAt n C' x Q. Then there is an integer multiplicity triple R' in U with carrier C', multiplicity θ' and orientation ξ.",
+  "lean_statement": "∀ (P n : ℕ) (U C' : Set (Euclid P)) (R : IMRep U n) (θ' : Euclid P → ℕ), MeasurableSet C' → C' ⊆ R.carrier → Measurable θ' → (∀ x ∈ C', 0 < θ' x) → (∀ x ∈ C', θ' x ≤ R.mult x) → (∀ᵐ x ∂(μHE[n].restrict C'), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R.carrier x Q → HasApproximateTangentSpaceAt n C' x Q) → ∃ R' : IMRep U n, R'.carrier = C' ∧ R'.mult = θ' ∧ R'.orient = R.orient",
+  "lean_name": "regcomp_rim_sub_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multipl-316de9a899-a1"
+}
