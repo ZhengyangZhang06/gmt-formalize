@@ -56691,4 +56691,133 @@ theorem Submission.dtc_bc_lc_fd_boundary_im : ∀ (P m : ℕ) (R : GeometricCurr
     exact Submission.dtc_bc_lc_fd_bim_nested_im (m + 1) U X R.boundary R.boundary.mass
       (by omega) hU hUmono hX (fun j => (hXb j).trans_lt hRb) hsum hRb hpart
 
+/-- **Simon Ch. 6, proof of 7.2 (summing the flat decomposition)**.  Let `n = m + 1 < P`, `L` be
+compact, and `X_r, Z_r, Y ∈ 𝒟ₙ(ℝᴾ)`, `R_r ∈ 𝒟ₙ₊₁(ℝᴾ)`, `S_r ∈ 𝒟ₙ(ℝᴾ)` with `Y`, `Z_r`, `R_r` integer
+multiplicity, `M(X_r) ≤ Λ`, `spt R_r ⊆ L`, `X_{r+1} − X_r − S_r = ∂R_r`, `M(R_r) + M(S_r) ≤ 2^{−r}`,
+and `Z_r(ω) = X_r(ω) → Y(ω)` whenever `spt ω ⊆ V`.  Then for every `q` there are integer
+multiplicity `R'`, `S'` with `Y − Z_q − S' = ∂R'` and `M_V(R') + M_V(S') ≤ 2·2^{−q}`.
+* The series `R^{(q)} = Σᵢ R_{q+i}` and `S^{(q)} = Σᵢ S_{q+i}` converge in mass; `R^{(q)}` is
+  integer multiplicity, `spt R^{(q)} ⊆ L`, and `M(R^{(q)}) + M(S^{(q)}) ≤ Σᵢ 2^{−(q+i)} = 2·2^{−q}`.
+* Telescoping: `X_{q+N}(ω) → X_q(ω) + ∂R^{(q)}(ω) + S^{(q)}(ω)` for every `ω`.
+* Testing with `±ω`, `M(∂R^{(q)}) ≤ 2Λ + M(S^{(q)}) < ∞`; `spt R^{(q)}` is compact, so boundary
+  rectifiability makes `∂R^{(q)}` integer multiplicity.
+* For `spt ω ⊆ V`, `Y(ω) = Z_q(ω) + ∂R^{(q)}(ω) + S^{(q)}(ω)`.  So `R' = R^{(q)}` and
+  `S' = Y − Z_q − ∂R^{(q)}` work: `S'` is integer multiplicity, and `S' = S^{(q)}` on `V` gives
+  `M_V(S') ≤ M(S^{(q)})`. -/
+theorem Submission.dtc_bc_lc_fd_series_limit : ∀ (P m : ℕ) (X Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (V L : Set (Euclid P)) (Λ : NNReal), m + 1 < P → IsCompact L → IsIntegerMultiplicity Y → (∀ r, IsIntegerMultiplicity (Z r)) → (∀ r, (X r).mass ≤ Λ) → (∀ r, IsIntegerMultiplicity (R r) ∧ (R r).support ⊆ L ∧ X (r + 1) - X r - S r = (R r).boundary ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ V → (∀ r, Z r ω = X r ω) ∧ Tendsto (fun r => X r ω) atTop (𝓝 (Y ω))) → ∀ q : ℕ, ∃ (R' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ Y - Z q - S' = R'.boundary ∧ R'.massOn V + S'.massOn V ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ q := by
+  intro P m X Z Y R S V L Λ hP hL hY hZ hXΛ hRS hV q
+  -- Step 1: `M(R_r), M(S_r) ≤ 2^{−r}`, and `Σᵢ 2^{−(q+i)} = 2·2^{−q} < ∞`
+  have hgeom : ∑' i, (2⁻¹ : ℝ≥0∞) ^ (q + i) = 2 * (2⁻¹ : ℝ≥0∞) ^ q := by
+    simp_rw [pow_add]
+    rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, inv_inv, mul_comm]
+  have hfin : 2 * (2⁻¹ : ℝ≥0∞) ^ q < ∞ :=
+    ENNReal.mul_lt_top ENNReal.ofNat_lt_top (ENNReal.pow_lt_top (ENNReal.inv_lt_top.2 two_pos))
+  have hRsum : ∑' i, (R (q + i)).mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ q :=
+    (ENNReal.tsum_le_tsum fun i => le_self_add.trans (hRS (q + i)).2.2.2).trans hgeom.le
+  have hSsum : ∑' i, (S (q + i)).mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ q :=
+    (ENNReal.tsum_le_tsum fun i => le_add_self.trans (hRS (q + i)).2.2.2).trans hgeom.le
+  -- Step 2: the mass-convergent series `R^{(q)} = Σᵢ R_{q+i}` and `S^{(q)} = Σᵢ S_{q+i}`
+  obtain ⟨RQ, hRQ, hRQm, hRQs, hRQim⟩ :=
+    Submission.dtc_bc_lc_fd_series P (m + 1) (fun i => R (q + i)) (hRsum.trans_lt hfin)
+  obtain ⟨SQ, hSQ, hSQm, -, -⟩ :=
+    Submission.dtc_bc_lc_fd_series P m (fun i => S (q + i)) (hSsum.trans_lt hfin)
+  have hRQim' : IsIntegerMultiplicity RQ := hRQim fun i => (hRS (q + i)).1
+  have hRQL : RQ.support ⊆ L :=
+    hRQs.trans (closure_minimal (iUnion_subset fun i => (hRS (q + i)).2.1) hL.isClosed)
+  -- Step 3: telescoping, `X_{q+N}(ω) → X_q(ω) + ∂R^{(q)}(ω) + S^{(q)}(ω)` for every `ω`
+  have htel : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (N : ℕ),
+      X (q + N) ω = X q ω + ∑ i ∈ Finset.range N, (R (q + i)).boundary ω +
+        ∑ i ∈ Finset.range N, S (q + i) ω := by
+    intro ω N
+    induction N with
+    | zero => simp
+    | succ N ih =>
+      have h : X (q + N + 1) ω - X (q + N) ω - S (q + N) ω = (R (q + N)).boundary ω :=
+        congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω)
+          (hRS (q + N)).2.2.1
+      rw [Finset.sum_range_succ, Finset.sum_range_succ]
+      show X (q + N + 1) ω = _
+      linarith
+  have hlim : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Tendsto (fun N => X (q + N) ω) atTop (𝓝 (X q ω + RQ.boundary ω + SQ ω)) := by
+    intro ω
+    have h1 : Tendsto (fun N => ∑ i ∈ Finset.range N, (R (q + i)).boundary ω) atTop
+        (𝓝 (RQ.boundary ω)) :=
+      (hRQ (exteriorDerivativeTestOn univ (m + 1) ω)).tendsto_sum_nat
+    have h2 : Tendsto (fun N => ∑ i ∈ Finset.range N, S (q + i) ω) atTop (𝓝 (SQ ω)) :=
+      (hSQ ω).tendsto_sum_nat
+    exact ((tendsto_const_nhds (x := X q ω)).add h1 |>.add h2).congr fun N => (htel ω N).symm
+  -- Step 4: `M(∂R^{(q)}) ≤ 2Λ + M(S^{(q)}) < ∞`, testing the limit in Step 3 with `±ω`
+  have hneg : ∀ ω ∈ massAdmissibleOn univ (m + 1) (univ : Set (Euclid P)),
+      -ω ∈ massAdmissibleOn univ (m + 1) (univ : Set (Euclid P)) := by
+    intro ω hω
+    refine ⟨subset_univ _, fun x => ?_⟩
+    have hx : ((-ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) :
+        DifferentialForm (Euclid P) (m + 1)) x = -((ω : DifferentialForm (Euclid P) (m + 1)) x) :=
+      rfl
+    rw [hx, covectorEuclideanNorm_neg]
+    exact hω.2 x
+  have hle : ∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (c : ℝ≥0∞)
+      (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), c ≠ ∞ → T.mass ≤ c →
+      ω ∈ massAdmissibleOn univ (m + 1) univ → T ω ≤ c.toReal := fun T c ω hc hT hω =>
+    (ENNReal.ofReal_le_iff_le_toReal hc).1 ((T.le_massOn hω).trans hT)
+  have hSQfin : SQ.mass ≠ ∞ := (hSQm.trans_lt (hSsum.trans_lt hfin)).ne
+  have hbd : RQ.boundary.mass ≤ ENNReal.ofReal (2 * Λ + SQ.mass.toReal) := by
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (RQ.boundary ω) ≤ _
+    apply ENNReal.ofReal_le_ofReal
+    have h0 : X q ω + RQ.boundary ω + SQ ω ≤ Λ :=
+      le_of_tendsto (hlim ω) (Eventually.of_forall fun N => by
+        simpa using hle (X (q + N)) Λ ω ENNReal.coe_ne_top (hXΛ _) hω)
+    have h1 : -X q ω ≤ Λ := by
+      have h := hle (X q) Λ (-ω) ENNReal.coe_ne_top (hXΛ q) (hneg ω hω)
+      rw [(X q).toCurrent.map_neg ω] at h
+      simpa using h
+    have h2 : -SQ ω ≤ SQ.mass.toReal := by
+      have h := hle SQ SQ.mass (-ω) hSQfin le_rfl (hneg ω hω)
+      rwa [SQ.toCurrent.map_neg ω] at h
+    linarith
+  -- Step 5: `spt R^{(q)}` is closed in the compact `L`, so boundary rectifiability applies
+  have hRQcpt : IsCompact RQ.support :=
+    hL.of_isClosed_subset (isClosed_univ.sdiff RQ.isOpen_zeroRegion) hRQL
+  have hbdim : IsIntegerMultiplicity RQ.boundary :=
+    Submission.dtc_bc_lc_fd_boundary_im P m RQ hP hRQim' hRQcpt
+      (hRQm.trans_lt (hRsum.trans_lt hfin)) (hbd.trans_lt ENNReal.ofReal_lt_top)
+  -- Step 6: for `spt ω ⊆ V`, `Y(ω) = Z_q(ω) + ∂R^{(q)}(ω) + S^{(q)}(ω)`
+  have hid : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ V →
+      Y ω = Z q ω + RQ.boundary ω + SQ ω := by
+    intro ω hω
+    obtain ⟨hZX, hXY⟩ := hV ω hω
+    have hshift : Tendsto (fun N => X (q + N) ω) atTop (𝓝 (Y ω)) :=
+      ((tendsto_add_atTop_iff_nat q).2 hXY).congr fun N =>
+        congrArg (fun r => X r ω) (Nat.add_comm N q)
+    rw [hZX q]
+    exact tendsto_nhds_unique hshift (hlim ω)
+  -- Step 7: `R' = R^{(q)}` and `S' = Y − Z_q − ∂R^{(q)}`, integer multiplicity as a difference
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1
+  refine ⟨RQ, Y - Z q - RQ.boundary, hRQim',
+    hsub P (m + 1) univ _ _ isOpen_univ (hsub P (m + 1) univ _ _ isOpen_univ hY (hZ q)) hbdim,
+    ?_, ?_⟩
+  · ext ω
+    show Y ω - Z q ω - (Y ω - Z q ω - RQ.boundary ω) = RQ.boundary ω
+    ring
+  -- Step 8: `M_V(R') ≤ M(R^{(q)})`, and `M_V(S') ≤ M(S^{(q)})` since `S' = S^{(q)}` on `V`
+  · have hS' : (Y - Z q - RQ.boundary).massOn V ≤ SQ.mass := by
+      apply sSup_le
+      rintro _ ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (Y ω - Z q ω - RQ.boundary ω) ≤ SQ.mass
+      have heq : Y ω - Z q ω - RQ.boundary ω = SQ ω := by
+        rw [hid ω hω.1]
+        ring
+      rw [heq]
+      exact SQ.le_massOn ⟨subset_univ _, hω.2⟩
+    calc RQ.massOn V + (Y - Z q - RQ.boundary).massOn V ≤ RQ.mass + SQ.mass :=
+          add_le_add (RQ.massOn_mono (subset_univ V)) hS'
+      _ ≤ ∑' i, (R (q + i)).mass + ∑' i, (S (q + i)).mass := add_le_add hRQm hSQm
+      _ = ∑' i, ((R (q + i)).mass + (S (q + i)).mass) := ENNReal.tsum_add.symm
+      _ ≤ ∑' i, (2⁻¹ : ℝ≥0∞) ^ (q + i) := ENNReal.tsum_le_tsum fun i => (hRS (q + i)).2.2.2
+      _ = 2 * (2⁻¹ : ℝ≥0∞) ^ q := hgeom
+
 end GMT.Ch07
