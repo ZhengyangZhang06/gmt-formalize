@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.secant_range-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+  "depth": 4,
+  "title": "Rescaled-secant limits lie in the range of the secant-approximating map",
+  "statement": "Let P, d ∈ ℕ, N ⊆ ℝ^P and x, w ∈ ℝ^P, and let A : ℝ^d → ℝ^P be a continuous linear map. Assume two things.\n(Secant estimate) For every ε > 0 there is δ > 0 such that every y ∈ N with |y − x| < δ admits a ∈ ℝ^d with |y − x − Aa| ≤ ε|y − x|.\n(Blow-up points) For every s > 0 there is λ₀ > 0 such that every λ ∈ (0, λ₀) admits y ∈ N with |λ⁻¹(y − x) − w| < s.\nThen w ∈ A(ℝ^d), i.e. w ∈ Set.range A.",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (x w : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y x < δ → ∃ a : Euclid d, ‖y - x - A a‖ ≤ ε * ‖y - x‖) → (∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ N, ‖lam⁻¹ • (y - x) - w‖ < s) → w ∈ Set.range A",
+  "lean_name": "dsmc_att_mem_range_of_secant_blowUp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-31e68cd105-a1"
+}
