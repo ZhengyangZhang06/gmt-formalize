@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bae9e64b3d7bf6b0615720bf0d004eb59d7538fe0c33d5a1ce7e21c2f2fdb9f8",
+  "git_delta": {
+    "base_commit": "b71d7c2ef3591626443480193d5a8556b846e9ed",
+    "candidate_commit": "0ebe6a00ac8ffa32a5b8c7a07d7ba064f7bc26b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "0f6dfeb9688ff2d4a026baac053a63ba2b80f91b8992b5dd93006e9436c98240",
+    "source_sha256": "01013021bcefb149d5eb49562e5f78180b5f687606280e91e240de9aa6921a46",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_local_unit_representation",
+      "statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → x ∈ N ∩ U → ∃ (Z₀ M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), IsOpen Z₀ ∧ x ∈ Z₀ ∧ Z₀ ⊆ U ∧ MeasurableSet M' ∧ M' ⊆ Z₀ ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Z₀ → T ω = ∫ w in M', ξ' w ((ω : DifferentialForm (Euclid P) n) w) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
