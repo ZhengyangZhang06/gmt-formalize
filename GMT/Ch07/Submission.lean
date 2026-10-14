@@ -3043,6 +3043,145 @@ theorem Submission.dimred_mbl_dt_lp_imc_cylinder_rectifiable : ∀ (N n : ℕ) (
   · obtain ⟨j, u, rfl⟩ := mem_iUnion.mp hx
     exact Or.inr (mem_iUnion.mpr ⟨j, _, hFh j t u⟩)
 
+/-- The cylinder over an integer multiplicity representation: for `R = (M, θ, ξ)` in `ℝᴺ` with
+`∫_M θ dHⁿ < ∞`, `Ψ(t, x) = (t, x)`, `J v = (0, v)` and `e₀ = (1, 0)`, the triple
+`(Ψ((0, 1) × M), θ ∘ tail, ξ(tail ·)(α ↦ α(e₀, J ·)))` is an integer multiplicity
+representation in `ℝ^{N+1}` (the current `[[0, 1]] × τ(M, θ, ξ)`).  `θ ≥ 1` on `M` gives
+`Hⁿ(M) < ∞`; `ξ` is replaced by a strongly measurable version; `Hⁿ⌞M`-a.e. properties of `x` hold
+at `H^{n+1}`-a.e. point `Ψ(t, x)` of the cylinder by the product-null lemma; local integrability
+follows from the product formula and the orientation condition from the approximate tangent
+planes `span(e₀, J(TₓM))` of the cylinder. -/
+theorem Submission.dimred_mbl_dt_lp_imc_cylinder_imrep : ∀ (N n : ℕ) (R : IMRep (univ : Set (Euclid N)) n), ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ → ∃ R' : IMRep (univ : Set (Euclid (N + 1))) (n + 1), R'.carrier = (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier) ∧ (∀ (t : ℝ) (x : Euclid N), R'.mult (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = R.mult x) ∧ ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ (t : ℝ) (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → R'.orient (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) α = R.orient x β := by
+  have hPN := @Submission.dimred_mbl_dt_lp_imc_product_null
+  have hCM := @Submission.dimred_mbl_dt_lp_imc_cylinder_measure
+  have hCT := @Submission.dimred_mbl_dt_lp_imc_cylinder_tangent
+  have hOR := @Submission.dimred_mbl_dt_lp_imc_orientation
+  have hRC := @Submission.dimred_mbl_dt_lp_imc_cylinder_rectifiable
+  intro N n R hint
+  -- Step 1: `Hⁿ(M) ≤ ∫_M θ dHⁿ < ∞`, since `θ ≥ 1` on `M`
+  have hMmeas := R.measurableSet_carrier
+  have hMfin : μHE[n] R.carrier ≠ ∞ := by
+    refine ne_top_of_le_ne_top hint ?_
+    rw [← setLIntegral_one]
+    exact setLIntegral_mono ((measurable_from_nat (f := (Nat.cast : ℕ → ℝ≥0∞))).comp
+      R.measurable_mult) fun x hx => Nat.one_le_cast.mpr (R.mult_pos x hx)
+  -- `Ψ(t, x) = (t, x)` is a continuous injection, hence a measurable embedding
+  set Ψ : ℝ × Euclid N → Euclid (N + 1) :=
+    fun p => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))
+  have hΨc : Continuous Ψ := by
+    refine (PiLp.continuous_toLp 2 (fun _ : Fin (N + 1) => ℝ)).comp (continuous_pi fun i => ?_)
+    induction i using Fin.cases with
+    | zero => simpa using continuous_fst
+    | succ j =>
+      simp only [Fin.cons_succ]
+      exact (PiLp.continuous_apply 2 (fun _ : Fin N => ℝ) j).comp continuous_snd
+  have hΨi : Injective Ψ := by
+    rintro ⟨t, x⟩ ⟨t', x'⟩ h
+    have h' : (Fin.cons t (WithLp.ofLp x) : Fin (N + 1) → ℝ) = Fin.cons t' (WithLp.ofLp x') :=
+      congrArg WithLp.ofLp h
+    obtain ⟨rfl, h2⟩ := Fin.cons_injective2 h'
+    have hx : x = x' := by simpa using congrArg (WithLp.toLp 2) h2
+    rw [hx]
+  have hΨemb : MeasurableEmbedding Ψ := hΨc.measurableEmbedding hΨi
+  have hCmeas : MeasurableSet (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier)) :=
+    hΨemb.measurableSet_image.mpr (measurableSet_Ioo.prod hMmeas)
+  -- the projection `tail(y) = (y₁, …, y_N)`, a left inverse of `Ψ(t, ·)`
+  obtain ⟨tl, htlc, htl⟩ : ∃ tl : Euclid (N + 1) → Euclid N, Continuous tl ∧
+      ∀ (t : ℝ) (x : Euclid N), tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = x :=
+    ⟨fun y => WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)),
+      (PiLp.continuous_toLp 2 (fun _ : Fin N => ℝ)).comp
+        (continuous_pi fun j => PiLp.continuous_apply 2 (fun _ : Fin (N + 1) => ℝ) j.succ),
+      fun t x => by simp⟩
+  have htlΨ : ∀ p : ℝ × Euclid N, tl (Ψ p) = p.2 := fun p => htl p.1 p.2
+  -- Step 2: a strongly measurable version `ξ'` of `ξ`
+  obtain ⟨ξ', hξ'sm, hξ'eq⟩ : ∃ ξ' : Euclid N → MultiVector N n, StronglyMeasurable ξ' ∧
+      R.orient =ᵐ[μHE[n].restrict R.carrier] ξ' :=
+    ⟨_, R.aestronglyMeasurable_orient.stronglyMeasurable_mk,
+      R.aestronglyMeasurable_orient.ae_eq_mk⟩
+  -- Step 3: `L₁ α = (α.curryLeft e₀) ∘ J`, continuous linear in `α`
+  let Jl : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+      map_add' := fun v w => by
+        ext i
+        induction i using Fin.cases <;> simp
+      map_smul' := fun c v => by
+        ext i
+        induction i using Fin.cases <;> simp }
+  let L₁ : Covector (Euclid (N + 1)) (n + 1) →L[ℝ] Covector (Euclid N) n :=
+    (ContinuousAlternatingMap.compContinuousLinearMapCLM Jl).comp
+      ((ContinuousLinearMap.apply ℝ (Covector (Euclid (N + 1)) n)
+        (EuclideanSpace.single 0 1)).comp
+          ContinuousAlternatingMap.curryLeftLI.toContinuousLinearMap)
+  have hK : ∀ (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n),
+      (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1)
+        (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → L₁ α = β := by
+    intro α β h
+    ext v
+    rw [h v]
+    rfl
+  -- Step 4: an `Hⁿ⌞M`-a.e. property of `x` holds `H^{n+1}⌞M̃`-a.e. at `y = Ψ(t, x)`
+  have hT : ∀ P : Euclid N → Prop, (∀ᵐ x ∂(μHE[n].restrict R.carrier), P x) →
+      ∀ᵐ y ∂(μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier))),
+        ∀ (t : ℝ) (x : Euclid N), y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) → P x := by
+    intro P hP
+    rw [ae_restrict_iff' hMmeas] at hP
+    have hnull := hPN N n _ (ae_iff.mp hP)
+    filter_upwards [ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.mp hnull),
+      ae_restrict_mem hCmeas] with y hy hyC t x hyx
+    obtain ⟨⟨t', x'⟩, ⟨-, hx'⟩, hy'⟩ := hyC
+    have hxx : x' = x := congrArg Prod.snd (@hΨi (t', x') (t, x) (hy'.trans hyx))
+    rw [hxx] at hx'
+    by_contra hPx
+    exact hy ⟨(t, x), ⟨mem_univ _, fun h => hPx (h hx')⟩, hyx.symm⟩
+  -- Step 5: the fields of `R'`
+  have hint' : ∫⁻ y in Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier), (R.mult (tl y) : ℝ≥0∞) ∂μHE[n + 1] =
+      ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+    have : IsFiniteMeasure (μHE[n].restrict R.carrier) := isFiniteMeasure_restrict.mpr hMfin
+    have hm : Measurable fun y => (R.mult (tl y) : ℝ≥0∞) :=
+      (measurable_from_nat (f := (Nat.cast : ℕ → ℝ≥0∞))).comp
+        (R.measurable_mult.comp htlc.measurable)
+    have hCM' : Measure.map Ψ (((volume : Measure ℝ).restrict (Ioo 0 1)).prod
+        (μHE[n].restrict R.carrier)) = μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier)) :=
+      hCM N n R.carrier hMmeas R.rectifiable hMfin
+    rw [← hCM', lintegral_map hm hΨc.measurable,
+      lintegral_prod (fun p => (R.mult (tl (Ψ p)) : ℝ≥0∞)) (hm.comp hΨc.measurable).aemeasurable]
+    simp only [htlΨ, lintegral_const, Measure.restrict_apply_univ, Real.volume_Ioo, sub_zero,
+      ENNReal.ofReal_one, mul_one]
+  have hfin' :
+      ∫⁻ y in Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier), (R.mult (tl y) : ℝ≥0∞) ∂μHE[n + 1] ≠ ∞ := by
+    rw [hint']
+    exact hint
+  have hmult_pos : ∀ y ∈ Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier), 0 < R.mult (tl y) := by
+    rintro y ⟨⟨t, x⟩, ⟨-, hx⟩, rfl⟩
+    rw [htlΨ]
+    exact R.mult_pos x hx
+  have hcont : Continuous fun φ : MultiVector N n => φ.comp L₁ :=
+    continuous_id.clm_comp continuous_const
+  have hsm : AEStronglyMeasurable (fun y => (ξ' (tl y)).comp L₁)
+      (μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier))) :=
+    (hcont.comp_stronglyMeasurable (hξ'sm.comp_measurable htlc.measurable)).aestronglyMeasurable
+  have horients : ∀ᵐ y ∂(μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier))),
+      ∃ Q : Submodule ℝ (Euclid (N + 1)),
+        HasApproximateTangentSpaceAt (n + 1) (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier)) y Q ∧
+          IsUnitOrientationOf ((ξ' (tl y)).comp L₁) Q := by
+    filter_upwards [hT _ R.orients, hT (fun x => R.orient x = ξ' x) hξ'eq,
+      hCT N n R.carrier hMmeas R.rectifiable hMfin, ae_restrict_mem hCmeas] with y h1 h2 h3 hy
+    obtain ⟨⟨t, x⟩, -, rfl⟩ := hy
+    obtain ⟨Q, hQt, hQo⟩ := h1 t x rfl
+    refine ⟨_, h3 t x rfl Q hQt, hOR N n (R.orient x) ((ξ' (tl (Ψ (t, x)))).comp L₁) Q hQo
+      fun α β hαβ => ?_⟩
+    show ξ' (tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))) (L₁ α) = R.orient x β
+    rw [htl, ← h2 t x rfl, hK α β hαβ]
+  -- Step 6: `R' = (M̃, θ ∘ tail, ξ'(tail ·) ∘ L₁)`
+  refine ⟨⟨Ψ '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier), fun y => R.mult (tl y),
+    fun y => (ξ' (tl y)).comp L₁, hCmeas, subset_univ _, hRC N n _ _ R.rectifiable,
+    R.measurable_mult.comp htlc.measurable, hmult_pos,
+    fun K _ _ => ne_top_of_le_ne_top hfin' (lintegral_mono_set inter_subset_left), hsm,
+    horients⟩, rfl, fun t x => congrArg R.mult (htl t x), ?_⟩
+  filter_upwards [hξ'eq] with x hx t α β hαβ
+  show ξ' (tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))) (L₁ α) = R.orient x β
+  rw [htl, ← hx, hK α β hαβ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
