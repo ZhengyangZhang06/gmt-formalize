@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.8, 6.2.11** (general fact (G2) in the proof of 7.5.2(‡)): positive density forces
+membership in the support.  If `y ∈ U \ spt T`, then `y` lies in an open `W` on which `T`
+vanishes.  For `B_ρ(y) ⊆ W` every form admissible for `M_{B_ρ(y)}(T)` is supported in `W`, so
+`M_{B_ρ(y)}(T) = 0`.  The density ratio is therefore eventually `0` as `ρ ↓ 0`, and uniqueness of
+limits in `[0, ∞]` gives `θ = 0`. -/
+theorem Submission.codim1_rdo_density_pos_mem_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (θ : ℝ), y ∈ U → 0 < θ → HasMassDensity T y θ → y ∈ T.support := by
+  intro P n U T y θ hyU hθ hT
+  refine ⟨hyU, fun hyZ => ?_⟩
+  -- `y ∈ Z(T)`: an open `W ∋ y` on which `T` vanishes, and a ball `B_r(y) ⊆ W`
+  obtain ⟨W, ⟨hWo, -, -, hTW⟩, hyW⟩ := Set.mem_sUnion.mp hyZ
+  obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.mp hWo y hyW
+  -- `M_{B_ρ(y)}(T) = 0` for `0 < ρ < r`, so the density ratio is eventually `0`
+  have hzero : (fun ρ : ℝ => T.massOn (ball y ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+      =ᶠ[𝓝[>] 0] fun _ => 0 := by
+    filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+    have hM : T.massOn (ball y ρ) = 0 := by
+      refine le_antisymm (sSup_le ?_) bot_le
+      rintro _ ⟨ω, hω, rfl⟩
+      exact (ENNReal.ofReal_eq_zero.mpr
+        (hTW ω (hω.1.trans ((ball_subset_ball hρ.2.le).trans hrW))).le).le
+    rw [hM, ENNReal.zero_div]
+  -- uniqueness of limits: `ofReal θ = 0`, i.e. `θ ≤ 0`
+  have hθ0 : ENNReal.ofReal θ = 0 := tendsto_nhds_unique (hT.2.congr' hzero) tendsto_const_nhds
+  exact absurd (ENNReal.ofReal_eq_zero.mp hθ0) (not_le.mpr hθ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
