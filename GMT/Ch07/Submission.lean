@@ -451,6 +451,131 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Image measure comparison** (image representation of the diffeomorphism push-forward, used
+for Simon 7.1.2).  If `φ` is `Λ`-Lipschitz and `ψ` is a measurable left inverse of `φ`, then
+`ψ_#(Hⁿ⌞φ(S)) ≤ Λⁿ Hⁿ⌞S` for every set `S`, not assumed measurable.  For Borel `A`,
+`ψ⁻¹(A) ∩ φ(S) = φ(A ∩ S)`, and `Hⁿ(φ(A ∩ S)) ≤ Λⁿ Hⁿ(A ∩ S)` (Simon Ch. 2, 1.8(i)). -/
+theorem Submission.dpfir_ii_map_restrict_image_le_smul : ∀ (P n : ℕ) (φ ψ : Euclid P → Euclid P) (Λ : NNReal) (S : Set (Euclid P)), LipschitzWith Λ φ → Measurable ψ → LeftInverse ψ φ → (μHE[n].restrict (φ '' S)).map ψ ≤ ((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict S := by
+  intro P n φ ψ Λ S hφ hψ hψφ
+  refine Measure.le_iff.2 fun A hA => ?_
+  -- `ψ⁻¹(A) ∩ φ(S) = φ(A ∩ S)`, as `ψ ∘ φ = id`
+  have hset : ψ ⁻¹' A ∩ φ '' S = φ '' (A ∩ S) := by
+    ext y
+    constructor
+    · rintro ⟨hy, x, hx, rfl⟩
+      exact ⟨x, ⟨by rwa [mem_preimage, hψφ x] at hy, hx⟩, rfl⟩
+    · rintro ⟨x, ⟨hxA, hxS⟩, rfl⟩
+      exact ⟨by rwa [mem_preimage, hψφ x], x, hxS, rfl⟩
+  -- both sides are values of `μHE[n]`; no measurability of `S` or `φ '' S` is needed
+  rw [Measure.map_apply hψ hA, Measure.restrict_apply (hψ hA), hset, Measure.smul_apply,
+    Measure.restrict_apply hA, smul_eq_mul]
+  exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+    hφ.lipschitzOnWith
+/-- Lipschitz images of countably `n`-rectifiable sets are countably `n`-rectifiable (used in
+Simon Ch. 6, 3.6–3.7; Ch. 3, Definition 1.1).  If `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)` with `Hⁿ(M₀) = 0` and each
+`Fⱼ` Lipschitz, then `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ (φ ∘ Fⱼ)(ℝⁿ)`, where `Hⁿ(φ(M₀)) ≤ Λⁿ Hⁿ(M₀) = 0`
+(Simon Ch. 2, Theorem 1.8(i)) and `φ ∘ Fⱼ` is `Λ Kⱼ`-Lipschitz. -/
+theorem Submission.dpfir_ii_countablyRectifiable_image_of_lipschitz : ∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith Λ φ → CountablyRectifiable n M → CountablyRectifiable n (φ '' M) := by
+  intro P n M φ Λ hφ hM
+  -- `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝⁿ)` with `Hⁿ(M₀) = 0` and each `Fⱼ` Lipschitz
+  obtain ⟨M₀, hM₀, F, hF, hMsub⟩ := hM
+  refine ⟨φ '' M₀, ?_, fun j => φ ∘ F j, fun j => ?_, ?_⟩
+  · -- `Hⁿ(φ(M₀)) ≤ Λⁿ Hⁿ(M₀) = 0`
+    have h := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hφ.lipschitzOnWith (s := M₀))
+    rw [hM₀, mul_zero] at h
+    exact nonpos_iff_eq_zero.1 h
+  · -- `φ ∘ Fⱼ` is `Λ Kⱼ`-Lipschitz
+    obtain ⟨K, hK⟩ := hF j
+    exact ⟨Λ * K, hφ.comp hK⟩
+  · -- `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ (φ ∘ Fⱼ)(ℝⁿ)`
+    rintro _ ⟨x, hx, rfl⟩
+    rcases hMsub hx with hx₀ | hxF
+    · exact Or.inl (mem_image_of_mem φ hx₀)
+    · obtain ⟨j, v, rfl⟩ := mem_iUnion.1 hxF
+      exact Or.inr (mem_iUnion.2 ⟨j, v, rfl⟩)
+
+/-- **Bi-Lipschitz image of an integer multiplicity triple** (image representation of the
+diffeomorphism push-forward, used for Simon 7.1.2; cf. Simon 6.3.6–3.9 for injective `f`).  Let
+`R = (M, θ, ξ)` be a triple in `U` and `φ : ℝᴾ → ℝᴾ` a bijection that is `Λ`-Lipschitz and
+`Λ`-antilipschitz with `φ⁻¹(U) = U`.  If `η` is `Hⁿ⌞M`-a.e. strongly measurable and, for
+`Hⁿ`-a.e. `x ∈ M`, `η(x)` orients the approximate tangent space of `φ(M)` at `φ(x)`, then
+`(φ(M), θ ∘ φ⁻¹, η ∘ φ⁻¹)` is a triple in `U`.  The inverse `ψ = φ⁻¹` is `Λ`-Lipschitz, and
+`ψ_#(Hⁿ⌞φ(S)) ≤ Λⁿ Hⁿ⌞S` makes `ψ` quasi-measure-preserving from `Hⁿ⌞φ(M)` to `Hⁿ⌞M` and gives
+`∫_{φ(M) ∩ K} θ ∘ ψ dHⁿ ≤ Λⁿ ∫_{M ∩ φ⁻¹(K)} θ dHⁿ`. -/
+theorem Submission.dpfir_bilipschitz_image_imrep_exists : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal) (η : Euclid P → MultiVector P n), Bijective φ → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable η (μHE[n].restrict R.carrier) → (∀ᵐ x ∂(μHE[n].restrict R.carrier), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (φ '' R.carrier) (φ x) Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R' : IMRep U n, R'.carrier = φ '' R.carrier ∧ ∀ x, R'.mult (φ x) = R.mult x ∧ R'.orient (φ x) = η x := by
+  intro P n U R φ Λ η hφ hφL hφA hU hη hηQ
+  -- the two-sided inverse `ψ` of `φ` is `Λ`-Lipschitz, hence continuous and measurable
+  obtain ⟨ψ, hleft, hright⟩ : ∃ ψ : Euclid P → Euclid P, LeftInverse ψ φ ∧ RightInverse ψ φ :=
+    ⟨invFun φ, leftInverse_invFun hφ.1, rightInverse_invFun hφ.2⟩
+  have hψc : Continuous ψ := (hφA.to_rightInverse hright).continuous
+  have hψm : Measurable ψ := hψc.measurable
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  -- `ψ_#(Hⁿ⌞φ(M)) ≤ Λⁿ Hⁿ⌞M`: `ψ` is quasi-measure-preserving from `Hⁿ⌞φ(M)` to `Hⁿ⌞M`
+  have hqmp : Measure.QuasiMeasurePreserving ψ (μHE[n].restrict (φ '' R.carrier))
+      (μHE[n].restrict R.carrier) :=
+    ⟨hψm, Measure.absolutelyContinuous_of_le_smul
+      (Submission.dpfir_ii_map_restrict_image_le_smul P n φ ψ Λ R.carrier hφL hψm hleft)⟩
+  -- (a) `φ(M) = ψ⁻¹(M)` is Borel
+  have hmeas : MeasurableSet (φ '' R.carrier) := by
+    rw [image_eq_preimage_of_inverse hleft hright]
+    exact hψm R.measurableSet_carrier
+  -- (b) `φ(M) ⊆ φ(U) = U`, as `U = φ⁻¹(U)`
+  have hsub : φ '' R.carrier ⊆ U := image_subset_iff.2 (R.carrier_subset.trans hU.symm.subset)
+  -- (e) `θ(ψ(φ(x))) = θ(x) > 0` on `M`
+  have hpos : ∀ y ∈ φ '' R.carrier, 0 < R.mult (ψ y) := by
+    rintro _ ⟨x, hx, rfl⟩
+    rw [hleft x]
+    exact R.mult_pos x hx
+  -- (f) `∫_{φ(M) ∩ K} θ ∘ ψ dHⁿ ≤ Λⁿ ∫_{M ∩ φ⁻¹(K)} θ dHⁿ < ∞`, with `φ⁻¹(K) = ψ(K) ⊆ U` compact
+  have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∫⁻ y in φ '' R.carrier ∩ K, (R.mult (ψ y) : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    intro K hK hKU
+    have hK' : IsCompact (φ ⁻¹' K) := by
+      rw [← image_eq_preimage_of_inverse (f := ψ) (g := φ) hright hleft]
+      exact hK.image hψc
+    have hK'U : φ ⁻¹' K ⊆ U := (preimage_mono hKU).trans hU.subset
+    have hle : ∫⁻ y in φ '' (R.carrier ∩ φ ⁻¹' K), (R.mult (ψ y) : ℝ≥0∞) ∂μHE[n] ≤
+        (Λ : ℝ≥0∞) ^ n * ∫⁻ x in R.carrier ∩ φ ⁻¹' K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+      calc ∫⁻ y in φ '' (R.carrier ∩ φ ⁻¹' K), (R.mult (ψ y) : ℝ≥0∞) ∂μHE[n]
+          = ∫⁻ x, (R.mult x : ℝ≥0∞) ∂((μHE[n].restrict (φ '' (R.carrier ∩ φ ⁻¹' K))).map ψ) :=
+            (lintegral_map hθm hψm).symm
+        _ ≤ ∫⁻ x, (R.mult x : ℝ≥0∞)
+              ∂(((Λ : ℝ≥0∞) ^ n) • μHE[n].restrict (R.carrier ∩ φ ⁻¹' K)) :=
+            lintegral_mono' (Submission.dpfir_ii_map_restrict_image_le_smul P n φ ψ Λ _ hφL hψm
+              hleft) le_rfl
+        _ = (Λ : ℝ≥0∞) ^ n * ∫⁻ x in R.carrier ∩ φ ⁻¹' K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+            rw [lintegral_smul_measure, smul_eq_mul]
+    rw [← image_inter_preimage]
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top)
+      (R.locallyIntegrable_mult _ hK' hK'U)) hle
+  -- (h) the orientation hypothesis at `ψ(y)`, with `φ(ψ(y)) = y`
+  have horients : ∀ᵐ y ∂(μHE[n].restrict (φ '' R.carrier)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (φ '' R.carrier) y Q ∧ IsUnitOrientationOf (η (ψ y)) Q := by
+    filter_upwards [hqmp.ae hηQ] with y hy
+    obtain ⟨Q, hQ, hηy⟩ := hy
+    rw [hright y] at hQ
+    exact ⟨Q, hQ, hηy⟩
+  refine ⟨{ carrier := φ '' R.carrier
+            mult := fun y => R.mult (ψ y)
+            orient := fun y => η (ψ y)
+            measurableSet_carrier := hmeas
+            carrier_subset := hsub
+            -- (c) Lipschitz images of countably `n`-rectifiable sets are rectifiable
+            rectifiable :=
+              Submission.dpfir_ii_countablyRectifiable_image_of_lipschitz P n R.carrier φ Λ hφL
+                R.rectifiable
+            -- (d) `θ ∘ ψ` is measurable
+            measurable_mult := R.measurable_mult.comp hψm
+            mult_pos := hpos
+            locallyIntegrable_mult := hint
+            -- (g) a.e. strong measurability transfers along `ψ`
+            aestronglyMeasurable_orient := hη.comp_quasiMeasurePreserving hqmp
+            orients := horients }, rfl, fun x => ⟨?_, ?_⟩⟩
+  · exact congrArg R.mult (hleft x)
+  · exact congrArg η (hleft x)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
