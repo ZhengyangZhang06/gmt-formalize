@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5f8c852c36c6abf0170725a24cf2df96283131ff948fba41e4b7c6a79be05755",
+  "git_delta": {
+    "base_commit": "106d2b9a0a2f925994bd836bf4b13db813fdb171",
+    "candidate_commit": "141aac643fe29c1cd47670f4656cde7c47fb772a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_lsa_fderivWithin_eq_on_tangent_span",
+    "diff_sha256": "4e83f431751eb080135337179dd3ef557493f0539b36c5f80e71b10fd1e111a2",
+    "source_sha256": "b9f63946c5a3ca6e3669b03227c1f8789811d7e54307ef48d02fa9a1012b6253",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_lsa_fderivWithin_eq_on_tangent_span",
+      "statement": "∀ (P : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (f' : Euclid P →L[ℝ] ℝ) (x v : Euclid P), HasFDerivWithinAt f f' M x → v ∈ Submodule.span ℝ (tangentSpace M x) → fderivWithin ℝ f M x v = f' v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
