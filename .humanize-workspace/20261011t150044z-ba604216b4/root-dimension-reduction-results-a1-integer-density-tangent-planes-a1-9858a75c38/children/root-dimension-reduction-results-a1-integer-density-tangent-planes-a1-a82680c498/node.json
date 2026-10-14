@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_fundamental_lemma-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1",
+  "depth": 6,
+  "title": "Fundamental lemma of the calculus of variations on an open interval (continuous version)",
+  "statement": "Let a, b be reals and g : ℝ → ℝ continuous on (a, b). Suppose ∫_ℝ χ(x)·g(x) dx = 0 for every C^∞ function χ : ℝ → ℝ with compact support and tsupport χ ⊆ (a, b). Then g(x) = 0 for every x ∈ (a, b).",
+  "lean_statement": "∀ (a b : ℝ) (g : ℝ → ℝ), ContinuousOn g (Ioo a b) → (∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → ∫ x, χ x * g x = 0) → ∀ x ∈ Ioo a b, g x = 0",
+  "lean_name": "idtp_ccd_scsp_dbr_fundamental_lemma",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a82680c498-a1"
+}

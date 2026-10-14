@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_normalized_bump-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1",
+  "depth": 6,
+  "title": "Normalized smooth bump in an open interval",
+  "statement": "For all reals a < b there is a C^∞ function η : ℝ → ℝ with compact support, tsupport η ⊆ (a, b), and ∫_ℝ η(x) dx = 1.",
+  "lean_statement": "∀ (a b : ℝ), a < b → ∃ η : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ Ioo a b ∧ ∫ x, η x = 1",
+  "lean_name": "idtp_ccd_scsp_dbr_normalized_bump",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8fe818cc90-a1"
+}

@@ -2210,6 +2210,197 @@ theorem Submission.idtp_ccd_scsp_cone_conservation : ∀ (P : ℕ) (u e : Euclid
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo (-s) s) fun α hα => by
     rw [deriv_of_notMem_tsupport fun h => hα (hφs h), zero_mul]]
   exact (mul_eq_zero.mp h0).resolve_left hpos.ne'
+/-- **Integrability of `χ κ`.**  If `κ` is continuous on `(a, b)` and `χ` is continuous with
+compact support `tsupport χ ⊆ (a, b)`, then `x ↦ χ x * κ x` is integrable on `ℝ`: it is
+continuous on the compact set `K = tsupport χ`, hence integrable on `K`, and it vanishes
+off `K`. -/
+theorem Submission.idtp_ccd_scsp_dbr_integrable : ∀ (a b : ℝ) (κ χ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → Continuous χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → Integrable (fun x => χ x * κ x) := by
+  intro a b κ χ hκ hχ hχc hsupp
+  -- `χ κ` is continuous on the compact set `K = tsupport χ ⊆ (a, b)`, so integrable on `K`
+  have hK : IntegrableOn (fun x => χ x * κ x) (tsupport χ) :=
+    (hχ.continuousOn.mul (hκ.mono hsupp)).integrableOn_compact hχc.isCompact
+  -- off `K` we have `χ x = 0`, so `χ x * κ x = 0`
+  exact hK.integrable_of_forall_notMem_eq_zero fun x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, zero_mul]
+/-- **Normalized smooth bump in an open interval.**  For `a < b` there is a `C^∞` function
+`η : ℝ → ℝ` with compact support, `tsupport η ⊆ (a, b)` and `∫ η = 1`: normalize the
+`ContDiffBump` `β` centred at `m = (a + b)/2` with radii `(b - a)/8 < ρ = (b - a)/4`, whose
+closed support `[m - ρ, m + ρ]` lies in `(a, b)` and whose integral is positive. -/
+theorem Submission.idtp_ccd_scsp_dbr_normalized_bump : ∀ (a b : ℝ), a < b → ∃ η : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) η ∧ HasCompactSupport η ∧ tsupport η ⊆ Ioo a b ∧ ∫ x, η x = 1 := by
+  intro a b hab
+  -- `β`: the bump centred at `m = (a + b)/2`, equal to `1` on radius `(b - a)/8` and
+  -- supported in radius `ρ = (b - a)/4`
+  let β : ContDiffBump ((a + b) / 2) := ⟨(b - a) / 8, (b - a) / 4, by linarith, by linarith⟩
+  -- `tsupport β = [m - ρ, m + ρ] ⊆ (a, b)`
+  have hsupp : tsupport β ⊆ Ioo a b := by
+    rw [β.tsupport_eq]
+    intro x hx
+    rw [mem_closedBall, Real.dist_eq, abs_le] at hx
+    change -((b - a) / 4) ≤ x - (a + b) / 2 ∧ x - (a + b) / 2 ≤ (b - a) / 4 at hx
+    constructor <;> linarith [hx.1, hx.2]
+  -- `∫ β > 0`: `β ≥ 0` is integrable and its support `ball(m, ρ)` has measure `2ρ > 0`
+  have hpos : 0 < ∫ x, β x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => β.nonneg)
+      (β.continuous.integrable_of_hasCompactSupport β.hasCompactSupport), β.support_eq,
+      Real.volume_ball, ENNReal.ofReal_pos]
+    change 0 < 2 * ((b - a) / 4)
+    linarith
+  -- `η = (∫ β)⁻¹ • β`
+  refine ⟨fun x => (∫ x, β x)⁻¹ * β x, contDiff_const.mul β.contDiff, β.hasCompactSupport.mul_left,
+    tsupport_mul_subset_right.trans hsupp, ?_⟩
+  rw [integral_const_mul, inv_mul_cancel₀ hpos.ne']
+/-- **Compactly supported `C¹` antiderivative** (du Bois-Reymond, step 4).  For `K = tsupport g`
+nonempty, pick `a < a' < inf K` and `sup K < b' < b`, so `g = 0` outside `(a', b')`.  By the
+fundamental theorem of calculus `Φ(x) = ∫_{a'}^{x} g` is `C¹` with `Φ' = g`.  It vanishes for
+`x < a'` (`g = 0` on `(x, a']`) and for `x > b'` (`Φ(x) = ∫ g = 0`), so
+`tsupport Φ ⊆ [a', b'] ⊆ (a, b)`.  If `K = ∅`, then `g = 0` and `Φ = 0` works. -/
+theorem Submission.idtp_ccd_scsp_dbr_antiderivative : ∀ (a b : ℝ) (g : ℝ → ℝ), Continuous g → HasCompactSupport g → tsupport g ⊆ Ioo a b → ∫ x, g x = 0 → ∃ Φ : ℝ → ℝ, ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ Ioo a b ∧ deriv Φ = g := by
+  intro a b g hg hgc hsub hint
+  rcases (tsupport g).eq_empty_or_nonempty with hK | hK
+  · -- `tsupport g = ∅`: `g = 0`, and `Φ = 0` works
+    have hg0 : g = 0 := funext fun x => image_eq_zero_of_notMem_tsupport (by simp [hK])
+    refine ⟨0, contDiff_const, HasCompactSupport.zero, by simp, ?_⟩
+    rw [hg0]
+    exact deriv_const' 0
+  -- `a < a' < inf K ≤ sup K < b' < b` for the compact set `K = tsupport g`
+  have ha := (hsub (hgc.isCompact.sInf_mem hK)).1
+  have hb := (hsub (hgc.isCompact.sSup_mem hK)).2
+  set a' := (a + sInf (tsupport g)) / 2 with ha'
+  set b' := (sSup (tsupport g) + b) / 2 with hb'
+  -- `g = 0` outside `(a', b')`
+  have hzero : ∀ y, y ∉ Ioo a' b' → g y = 0 := by
+    intro y hy
+    refine image_eq_zero_of_notMem_tsupport fun hyK => hy ⟨?_, ?_⟩
+    · have := csInf_le hgc.isCompact.bddBelow hyK
+      linarith
+    · have := le_csSup hgc.isCompact.bddAbove hyK
+      linarith
+  -- `Φ(x) = ∫_{a'}^{x} g` vanishes outside `[a', b']`
+  have hΦ : ∀ x, x ∉ Icc a' b' → (∫ y in a'..x, g y) = 0 := by
+    intro x hx
+    rcases lt_or_ge x a' with hxa | hxa
+    · -- `x < a'`: `g = 0` on `Ι a' x = (x, a']`
+      refine intervalIntegral.integral_zero_ae (Eventually.of_forall fun y hy => hzero y ?_)
+      rw [uIoc_of_ge hxa.le] at hy
+      exact fun h => (not_lt.2 hy.2) h.1
+    · -- `x > b'`: `support g ⊆ (a', x]`, so `Φ(x) = ∫ g = 0`
+      have hxb : b' < x := lt_of_not_ge fun h => hx ⟨hxa, h⟩
+      rw [intervalIntegral.integral_eq_integral_of_support_subset, hint]
+      intro y hy
+      have hy' : y ∈ Ioo a' b' := support_subset_iff'.2 hzero hy
+      exact ⟨hy'.1, hy'.2.le.trans hxb.le⟩
+  -- fundamental theorem of calculus: `Φ' = g`
+  have hderiv : deriv (fun x => ∫ y in a'..x, g y) = g :=
+    funext fun x => Continuous.deriv_integral g hg a' x
+  refine ⟨fun x => ∫ y in a'..x, g y, ?_, HasCompactSupport.intro isCompact_Icc hΦ,
+    (closure_minimal (support_subset_iff'.2 hΦ) isClosed_Icc).trans
+      (Icc_subset_Ioo (by linarith) (by linarith)), hderiv⟩
+  rw [contDiff_one_iff_deriv, hderiv]
+  exact ⟨fun x => (hg.integral_hasStrictDerivAt a' x).hasDerivAt.differentiableAt, hg⟩
+
+/-- Fundamental lemma of the calculus of variations on `(a, b)` (continuous version): if `g` is
+continuous on `(a, b)` and `∫ χ g = 0` for every smooth compactly supported `χ` with
+`tsupport χ ⊆ (a, b)`, then `g = 0` on `(a, b)`.  If some such `h` had `h(x₀) > 0`, continuity
+would give `r > 0` with `[x₀ - r, x₀ + r] ⊆ (a, b)` and `h > h(x₀) / 2` there; the bump `χ` at `x₀`
+with radii `r / 2 < r` makes `χ h ≥ 0` integrable (`idtp_ccd_scsp_dbr_integrable`) and positive
+on `(x₀ - r / 2, x₀ + r / 2)`, so `∫ χ h > 0`.  Applying this to `g` and `-g` gives `g(x₀) = 0`. -/
+theorem Submission.idtp_ccd_scsp_dbr_fundamental_lemma : ∀ (a b : ℝ) (g : ℝ → ℝ), ContinuousOn g (Ioo a b) → (∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b → ∫ x, χ x * g x = 0) → ∀ x ∈ Ioo a b, g x = 0 := by
+  intro a b g hg hint x₀ hx₀
+  -- Claim: no `h` satisfying the hypotheses is positive at `x₀`.
+  have claim : ∀ h : ℝ → ℝ, ContinuousOn h (Ioo a b) →
+      (∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ → tsupport χ ⊆ Ioo a b →
+        ∫ x, χ x * h x = 0) → ¬ 0 < h x₀ := by
+    intro h hh hhint hpos
+    -- `closedBall x₀ (ρ / 2) ⊆ (a, b)`, and `h > h x₀ / 2` there
+    have hev : ∀ᶠ y in 𝓝 x₀, y ∈ Ioo a b ∧ h x₀ / 2 < h y :=
+      (isOpen_Ioo.eventually_mem hx₀).and ((hh.continuousAt (isOpen_Ioo.mem_nhds hx₀)).eventually
+        (lt_mem_nhds (half_lt_self hpos)))
+    obtain ⟨ρ, hρ, hball⟩ := Metric.eventually_nhds_iff_ball.1 hev
+    have hr : 0 < ρ / 2 := half_pos hρ
+    have hclosed : ∀ y ∈ closedBall x₀ (ρ / 2), y ∈ Ioo a b ∧ h x₀ / 2 < h y := fun y hy =>
+      hball y (closedBall_subset_ball (half_lt_self hρ) hy)
+    -- the bump `χ` at `x₀` with radii `ρ / 4 < ρ / 2`
+    let χ : ContDiffBump x₀ := ⟨ρ / 2 / 2, ρ / 2, half_pos hr, half_lt_self hr⟩
+    have hχ : tsupport χ ⊆ Ioo a b := by
+      rw [χ.tsupport_eq]
+      exact fun y hy => (hclosed y hy).1
+    have hnonneg : 0 ≤ fun y => χ y * h y := fun y => by
+      by_cases hy : y ∈ closedBall x₀ (ρ / 2)
+      · exact mul_nonneg χ.nonneg ((half_pos hpos).le.trans (hclosed y hy).2.le)
+      · exact (mul_eq_zero_of_left (χ.zero_of_le_dist (not_le.1 (mt mem_closedBall.2 hy)).le)
+          (h y)).ge
+    have hint' : Integrable fun y => χ y * h y :=
+      Submission.idtp_ccd_scsp_dbr_integrable a b h χ hh χ.continuous χ.hasCompactSupport hχ
+    have hsupp : ball x₀ (ρ / 2 / 2) ⊆ support fun y => χ y * h y := by
+      intro y hy
+      rw [mem_support, χ.one_of_mem_closedBall (ball_subset_closedBall hy), one_mul]
+      exact ((half_pos hpos).trans (hclosed y (closedBall_subset_closedBall (half_lt_self hr).le
+        (ball_subset_closedBall hy))).2).ne'
+    have hpos' : 0 < ∫ y, χ y * h y := by
+      rw [integral_pos_iff_support_of_nonneg hnonneg hint']
+      refine lt_of_lt_of_le ?_ (measure_mono hsupp)
+      rw [Real.volume_ball, ENNReal.ofReal_pos]
+      positivity
+    exact hpos'.ne' (hhint χ χ.contDiff χ.hasCompactSupport hχ)
+  have hneg : ¬ 0 < -g x₀ := claim (fun y => -g y) hg.neg fun χ hχ hχc hχs => by
+    simp only [mul_neg, integral_neg, hint χ hχ hχc hχs, neg_zero]
+  linarith [not_lt.1 (claim g hg hint), not_lt.1 hneg]
+
+/-- **du Bois-Reymond lemma** on an open interval (step 10 of the parent proof; Encyclopedia of
+Mathematics, "Du Bois-Reymond lemma").  Fix a normalized bump `η` in `(a, b)` (sibling
+`dbr_normalized_bump`) and put `c := ∫ η κ`.  For a test function `χ` with `I := ∫ χ`, the
+zero-mean function `χ − I η` has a compactly supported `C¹` antiderivative `Φ` in `(a, b)`
+(sibling `dbr_antiderivative`).  Testing the hypothesis with `Φ` gives
+`0 = ∫ (χ − I η) κ = ∫ χ κ − I c = ∫ χ (κ − c)` (integrability from sibling `dbr_integrable`),
+so `κ − c` vanishes on `(a, b)` by the sibling `dbr_fundamental_lemma`. -/
+theorem Submission.idtp_ccd_scsp_du_bois_reymond : ∀ (a b : ℝ) (κ : ℝ → ℝ), ContinuousOn κ (Ioo a b) → (∀ φ : ℝ → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ioo a b → ∫ x, deriv φ x * κ x = 0) → ∃ c : ℝ, ∀ x ∈ Ioo a b, κ x = c := by
+  intro a b κ hκ hφ
+  -- if `b ≤ a` the interval `(a, b)` is empty
+  rcases le_or_gt b a with hba | hab
+  · exact ⟨0, fun x hx => absurd ((hx.1.trans hx.2).trans_le hba) (lt_irrefl a)⟩
+  -- a normalized bump `η` in `(a, b)` and the constant `c = ∫ η κ`
+  obtain ⟨η, hη, hηc, hηs, hη1⟩ := Submission.idtp_ccd_scsp_dbr_normalized_bump a b hab
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, ∫ x, η x * κ x = c := ⟨_, rfl⟩
+  have hηi : Integrable η := hη.continuous.integrable_of_hasCompactSupport hηc
+  have hηκ : Integrable (fun x => η x * κ x) :=
+    Submission.idtp_ccd_scsp_dbr_integrable a b κ η hκ hη.continuous hηc hηs
+  -- `κ − c` is orthogonal to every test function in `(a, b)`
+  have horth : ∀ χ : ℝ → ℝ, ContDiff ℝ (⊤ : ℕ∞) χ → HasCompactSupport χ →
+      tsupport χ ⊆ Ioo a b → ∫ x, χ x * (κ x - c) = 0 := by
+    intro χ hχ hχc hχs
+    obtain ⟨I, hI⟩ : ∃ I : ℝ, ∫ x, χ x = I := ⟨_, rfl⟩
+    have hχi : Integrable χ := hχ.continuous.integrable_of_hasCompactSupport hχc
+    have hχκ : Integrable (fun x => χ x * κ x) :=
+      Submission.idtp_ccd_scsp_dbr_integrable a b κ χ hκ hχ.continuous hχc hχs
+    -- `χ − I η` is continuous, compactly supported in `(a, b)` and has zero mean
+    have h0c : Continuous (fun x => χ x - I * η x) :=
+      hχ.continuous.sub (continuous_const.mul hη.continuous)
+    have h0cpt : HasCompactSupport (fun x => χ x - I * η x) :=
+      hχc.sub (hηc.mul_left (f := fun _ => I))
+    have h0s : tsupport (fun x => χ x - I * η x) ⊆ Ioo a b :=
+      (tsupport_sub χ (fun x => I * η x)).trans
+        (union_subset hχs (tsupport_mul_subset_right.trans hηs))
+    have h0int : ∫ x, (χ x - I * η x) = 0 := by
+      rw [integral_sub hχi (hηi.const_mul I), integral_const_mul, hη1, mul_one, hI, sub_self]
+    -- its antiderivative `Φ` is an admissible test function
+    obtain ⟨Φ, hΦ, hΦc, hΦs, hΦd⟩ :=
+      Submission.idtp_ccd_scsp_dbr_antiderivative a b _ h0c h0cpt h0s h0int
+    have h0 : ∫ x, (χ x - I * η x) * κ x = 0 := by
+      have h := hφ Φ hΦ hΦc hΦs
+      rw [hΦd] at h
+      exact h
+    -- `∫ (χ − I η) κ = ∫ χ κ − I c = ∫ χ (κ − c)`
+    have h1 : ∫ x, (χ x - I * η x) * κ x = (∫ x, χ x * κ x) - I * c := by
+      simp_rw [sub_mul, mul_assoc]
+      rw [integral_sub hχκ (hηκ.const_mul I), integral_const_mul I (fun x => η x * κ x), hc]
+    have h2 : ∫ x, χ x * (κ x - c) = (∫ x, χ x * κ x) - I * c := by
+      simp_rw [mul_sub]
+      rw [integral_sub hχκ (hχi.mul_const c), integral_mul_const c χ, hI]
+    rw [h2, ← h1, h0]
+  -- the fundamental lemma gives `κ = c` on `(a, b)`
+  have hzero := Submission.idtp_ccd_scsp_dbr_fundamental_lemma a b (fun x => κ x - c)
+    (hκ.sub continuousOn_const) horth
+  exact ⟨c, fun x hx => sub_eq_zero.mp (hzero x hx)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

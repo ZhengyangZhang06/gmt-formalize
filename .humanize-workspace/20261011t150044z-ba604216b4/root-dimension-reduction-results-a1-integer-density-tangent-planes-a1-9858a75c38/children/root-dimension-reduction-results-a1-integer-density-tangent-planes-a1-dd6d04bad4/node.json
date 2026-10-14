@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1.dbr_antiderivative-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.du_bois_reymond-a1",
+  "depth": 6,
+  "title": "Compactly supported C¹ antiderivative of a zero-mean continuous function",
+  "statement": "Let a, b be reals and g : ℝ → ℝ continuous with compact support, tsupport g ⊆ (a, b) and ∫_ℝ g(x) dx = 0. Then there is Φ : ℝ → ℝ of class C¹ with compact support, tsupport Φ ⊆ (a, b), and deriv Φ = g (equality of functions).",
+  "lean_statement": "∀ (a b : ℝ) (g : ℝ → ℝ), Continuous g → HasCompactSupport g → tsupport g ⊆ Ioo a b → ∫ x, g x = 0 → ∃ Φ : ℝ → ℝ, ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ Ioo a b ∧ deriv Φ = g",
+  "lean_name": "idtp_ccd_scsp_dbr_antiderivative",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-dd6d04bad4-a1"
+}
