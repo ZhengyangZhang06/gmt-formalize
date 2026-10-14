@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eaaac3dfd37d0b0e6d249abdbfcf5a1d19d381bcd3ebd6df7c1bbc7cb585389a",
+  "git_delta": {
+    "base_commit": "bdf34f91edfa2642928ed59a139dd914ab9326d5",
+    "candidate_commit": "005dcb9f72a4a06158e9d0edef3cce568eeb7198",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_du_bois_reymond",
+    "diff_sha256": "eab2f99b6f8aac631790e217fbc57431523719265214396d9833a731f7a858c7",
+    "source_sha256": "e2cd8c2270fe3230bfeddb25290198a490f135e84ed52ae29c820672aa21c2de",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_du_bois_reymond",
+      "statement": "∀ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) → (∀ φ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g t * deriv φ t = 0) → ∃ c : ℝ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g t = c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
