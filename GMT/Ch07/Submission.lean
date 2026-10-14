@@ -556,5 +556,53 @@ theorem Submission.idtp_cse_ah_antiderivative_test : ∀ (c d : ℝ) (g : ℝ �
     rw [intervalIntegral.integral_of_le (hp.1.trans_le (hpq.trans hx.le)).le,
       setIntegral_eq_integral_of_forall_compl_eq_zero, hg0]
     exact fun α hα => hgpq α fun h => hα ⟨hp.1.trans_le h.1, h.2.trans hx.le⟩
+/-- **Product-tested vanishing forces a.e. vanishing of slice integrals** (step 2 of the
+`α`-homogeneity step in the cone-sector endpoint density argument for Simon 7.3.3).  Let
+`I = (a, b)`, `J = (c, d)`, `H` integrable on `I × J` and `g` continuous with `tsupport g ⊆ J`.
+If `∫ g(α) l(t) H(t, α) = 0` for every `C¹` function `l` with `tsupport l ⊆ I`, then
+`Φ(t) = ∫_J g(α) H(t, α) dα` vanishes for a.e. `t ∈ I`.  As `g` is bounded, `g(α) H(t, α)` is
+integrable for `vol|I ⊗ vol|J = vol|(I × J)` and `Φ` is integrable on `I` (Fubini).  The test
+integrand vanishes off `I × J`, so Fubini turns the hypothesis into `∫ l Φ = 0` for every smooth
+`l` with compact support in `I`, and the fundamental lemma on the open set `I` applies. -/
+theorem Submission.idtp_cse_ah_slice_integral_ae_zero : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ) (g : ℝ → ℝ), IntegrableOn H (Ioo a b ×ˢ Ioo c d) → Continuous g → tsupport g ⊆ Ioo c d → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, g p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∫ α in Ioo c d, g α * H (t, α) = 0 := by
+  intro a b c d H g hH hg hgs htest
+  -- step 1: `H` is integrable for `μ.prod ν`, `μ = vol|I`, `ν = vol|J`
+  have hH' : Integrable H ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  -- step 2: `g` is bounded, so `K(t, α) = g α * H (t, α)` is integrable for `μ.prod ν`
+  have hgc : HasCompactSupport g :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) (hgs.trans Ioo_subset_Icc_self)
+  obtain ⟨M, hM⟩ := hgc.exists_bound_of_continuous hg
+  have hK : Integrable (fun p : ℝ × ℝ => g p.2 * H p)
+      ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) :=
+    hH'.bdd_mul (hg.comp continuous_snd).aestronglyMeasurable (Eventually.of_forall fun p => hM p.2)
+  -- step 3: `Φ(t) = ∫_J g α H(t, α) dα` is integrable on `I` (Fubini)
+  have hΦ : IntegrableOn (fun t => ∫ α in Ioo c d, g α * H (t, α)) (Ioo a b) := hK.integral_prod_left
+  -- step 5: the fundamental lemma on the open interval `I`
+  refine isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero hΦ.locallyIntegrableOn
+    fun l hl hlc hls => ?_
+  -- step 4: `∫ l Φ = ∫_{I × J} g(p.2) l(p.1) H(p) = ∫_{ℝ²} g(p.2) l(p.1) H(p) = 0`
+  obtain ⟨L, hL⟩ := hlc.exists_bound_of_continuous hl.continuous
+  have hl0 : ∀ t ∉ Ioo a b, l t = 0 := fun t ht => image_eq_zero_of_notMem_tsupport fun h => ht (hls h)
+  have hg0 : ∀ α ∉ Ioo c d, g α = 0 := fun α hα => image_eq_zero_of_notMem_tsupport fun h => hα (hgs h)
+  have hlK : Integrable (fun p : ℝ × ℝ => g p.2 * l p.1 * H p)
+      ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) :=
+    (hK.bdd_mul (f := fun p => l p.1) (hl.continuous.comp continuous_fst).aestronglyMeasurable
+      (Eventually.of_forall fun p => hL p.1)).congr (Eventually.of_forall fun p => by ring)
+  rw [← htest l (hl.of_le (by exact_mod_cast le_top)) hls,
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo a b) fun t ht => by
+      rw [hl0 t ht, zero_smul],
+    ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioo a b ×ˢ Ioo c d) fun p hp => by
+      rcases not_and_or.mp hp with hp | hp
+      · rw [hl0 _ hp, mul_zero, zero_mul]
+      · rw [hg0 _ hp, zero_mul, zero_mul],
+    Measure.volume_eq_prod, ← Measure.prod_restrict, integral_prod _ hlK]
+  refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  simp only [smul_eq_mul]
+  rw [← integral_const_mul]
+  refine integral_congr_ae (Eventually.of_forall fun α => ?_)
+  simp only
+  ring
 
 end GMT.Ch07
