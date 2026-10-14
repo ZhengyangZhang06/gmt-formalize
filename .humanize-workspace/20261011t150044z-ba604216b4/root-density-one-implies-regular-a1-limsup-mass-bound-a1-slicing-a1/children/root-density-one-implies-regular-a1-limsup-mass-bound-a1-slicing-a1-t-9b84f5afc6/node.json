@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1",
+  "depth": 4,
+  "title": "A countable family of test forms that is C¹-sequentially dense in 𝒟ⁿ(U) with common compact supports",
+  "statement": "Let P, n ∈ ℕ and let U ⊆ ℝ^P be open. Then there is a countable set D ⊆ 𝒟ⁿ(U) (TestFormOn U n: C^∞ compactly supported n-forms on ℝ^P whose topological support lies in U) with the following property. For every ω ∈ 𝒟ⁿ(U) there are a compact set K ⊆ U with tsupport ω ⊆ K and a sequence (ω_k)_{k∈ℕ} in D such that tsupport ω_k ⊆ K for every k, ω_k → ω uniformly on ℝ^P, and dω_k → dω uniformly on ℝ^P. Here d = exteriorDerivative, and uniform convergence of covector-valued maps is with respect to the operator norm of covectors (the norm of Covector (Euclid P) k).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)), IsOpen U → ∃ D : Set (TestFormOn U n), D.Countable ∧ ∀ ω : TestFormOn U n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), IsCompact K ∧ K ⊆ U ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop ∧ TendstoUniformly (fun k x => exteriorDerivative (ωs k : DifferentialForm (Euclid P) n) x) (exteriorDerivative (ω : DifferentialForm (Euclid P) n)) atTop",
+  "lean_name": "dor_lmbs_testForm_countable_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-9b84f5afc6-a1"
+}
