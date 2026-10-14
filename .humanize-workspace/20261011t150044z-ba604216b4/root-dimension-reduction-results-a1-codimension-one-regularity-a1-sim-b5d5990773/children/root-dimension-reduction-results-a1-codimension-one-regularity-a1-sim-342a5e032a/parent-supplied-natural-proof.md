@@ -1,0 +1,91 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Step 3 of the supplied proof of the parent (first six items: the unit normal ν obtained from the orientation ξ and a volume form Ω of A₀ — "the orientation induced from C" of Simon Appendix B — ν continuous, ν C^∞) and the last part of its step 2 (H_M ≡ 0 from stationarity), with Simon Ch. 2, 4.23–4.29 (B and H = trace B; for a hypersurface of A₀ with unit normal ν, H = −(div_M ν)ν). Sibling lemmas: smooth_charts (Submission.codim1_hcp_smooth_charts), chart_tangent_space, density_one (Submission.dimred_rpd_submanifold_density_one), locally_closed.
+
+1. (Tangent spaces.) For x ∈ M, T_x := tangentSpace M x is an m-dimensional linear subspace (chart_tangent_space) and T_x ⊆ A₀: if v = γ'(0) for a C¹ curve γ with values in M ⊆ A₀, then v = lim_{s→0}(γ(s) − γ(0))/s lies in the closed subspace A₀. Hence N_x := A₀ ∩ T_x^⊥ is a line and A₀ = T_x ⊕ N_x orthogonally. P_x is the orthogonal projection onto T_x = span T_x.
+
+2. (Volume form of A₀.) Fix an orthonormal basis a_0, …, a_m of A₀ and let Ω(v_0, …, v_m) := det(a_i·v_j)_{i,j=0..m}, an alternating (m+1)-linear form on ℝ^P. Ω(v_0, …, v_m) = 0 if the v_j are linearly dependent or if some v_j is orthogonal to A₀; Ω(w_0, …, w_m) = ±1 for every orthonormal basis (w_j) of A₀ (the matrix (a_i·w_j) is orthogonal); Ω ≠ 0 on every basis of A₀. For v ∈ ℝ^P let ι_vΩ be the m-covector (w_1, …, w_m) ↦ Ω(w_1, …, w_m, v), an element of Covector (Euclid P) m; v ↦ ι_vΩ is linear.
+
+3. (The unit normal on M.) Let x ∈ M. By IsOrientation, ξ(x) is a unit orientation of T_x: there are an orthonormal basis τ_1, …, τ_m of T_x and ε_x ∈ {1, −1} with ξ(x)(β) = ε_x·β(τ_1, …, τ_m) for every m-covector β. Put ℓ_x(v) := ξ(x)(ι_vΩ) = ε_x·Ω(τ_1, …, τ_m, v), a linear functional of v ∈ ℝ^P.
+ - ℓ_x(v) = 0 if v ∈ T_x or v ⊥ A₀ (step 2).
+ - If n ∈ N_x is a unit vector, (τ_1, …, τ_m, n) is an orthonormal basis of A₀, so ℓ_x(n) = ±1.
+ Define ν₀(x) := Σ_{i=0}^m ℓ_x(a_i)a_i ∈ A₀. Then ν₀(x)·v = ℓ_x(v) for all v ∈ ℝ^P (for v ∈ A₀ expand v = Σ_i(a_i·v)a_i; for v ⊥ A₀ both sides vanish). Hence ν₀(x) ⊥ T_x, so ν₀(x) ∈ N_x and ν₀(x) = λn with λ = ν₀(x)·n = ℓ_x(n) = ±1; thus |ν₀(x)| = 1. Since ν₀(x) = Σ_i ξ(x)(ι_{a_i}Ω)a_i and ξ is continuous on M, ν₀ is continuous on M.
+
+4. (C^∞ graph charts.) Let y ∈ M. By smooth_charts there is a C^∞ chart (V, W, ψ) of M at y. Fix a linear isometry ι_y : ℝ^m → ℝ^P onto T_y and put π_y := ι_y*. As in Simon 4.4, the inverse function theorem (C^∞ version) applied to π_y∘(ψ − y) at ψ^{-1}(y), whose derivative π_y∘Dψ(ψ^{-1}(y)) is invertible (chart_tangent_space: range Dψ = T_y), gives an open ball D_y ⊆ ℝ^m centred at 0, an open set W_y ∋ y and a C^∞ map G_y : D_y → ℝ^P with M ∩ W_y = G_y(D_y) and π_y(G_y(a) − y) = a for a ∈ D_y; DG_y(a) is injective with range T_{G_y(a)} (chart_tangent_space and the chain rule; G_y = ψ∘(π_y∘(ψ − y))^{-1}). [W_y exists because ψ is a homeomorphism of V onto W ∩ M: continuous, injective and proper.]
+
+5. (ν₀ is smooth along M.) With G_y and D_y as in step 4 and ∂_jG_y(a) := DG_y(a)e_j (a basis of T_{G_y(a)}), put n(a) := Σ_{i=0}^m Ω(∂_1G_y(a), …, ∂_mG_y(a), a_i)a_i ∈ A₀, a C^∞ function of a ∈ D_y. As in step 3, n(a)·v = Ω(∂_1G_y(a), …, ∂_mG_y(a), v) for all v, so n(a) ⊥ T_{G_y(a)} and n(a) ∈ N_{G_y(a)}; and n(a) ≠ 0, because the ∂_jG_y(a) together with a unit vector of N_{G_y(a)} form a basis of A₀, on which Ω ≠ 0. Hence ν₀(G_y(a)) = s(a)·n(a)/|n(a)| with s(a) ∈ {±1}; s(a) = ν₀(G_y(a))·n(a)/|n(a)| is continuous on the connected ball D_y, hence constant. So ν₀∘G_y is C^∞ on D_y.
+
+6. (C^∞ extension to an open set.) For y ∈ M put O_y := {z ∈ W_y : π_y(z − y) ∈ D_y}, an open set containing y, and ν_y(z) := ν₀(G_y(π_y(z − y))) for z ∈ O_y. ν_y is C^∞ on O_y (an affine map into D_y followed by the C^∞ map ν₀∘G_y), and for z ∈ M ∩ O_y we have z ∈ M ∩ W_y = G_y(D_y), z = G_y(a) with a = π_y(z − y), so ν_y(z) = ν₀(z).
+ O := ⋃_{y∈M} O_y is open and contains M. As an open subset of ℝ^P it is a σ-compact smooth manifold, so there is a smooth partition of unity (λ_i)_{i∈I} on O subordinate to the open cover {O_y} (Mathlib SmoothPartitionOfUnity.exists_isSubordinate): λ_i ∈ C^∞(O; [0, 1]), tsupport λ_i ⊆ O_{y(i)} (closure in O), the family is locally finite, and Σ_iλ_i = 1 on O. Define ν(z) := Σ_iλ_i(z)ν_{y(i)}(z) for z ∈ O, each term being C^∞ on O (it equals λ_iν_{y(i)} on O_{y(i)} and vanishes near every point of O ∖ tsupport λ_i), the sum being locally finite; and ν(z) := 0 for z ∉ O. Then ν is C^∞ on O, and for x ∈ M, ν(x) = Σ_iλ_i(x)ν₀(x) = ν₀(x). So, by step 3, ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for v ∈ T_x, for every x ∈ M.
+
+7. (Zero mean curvature.) For x ∈ M put div_M ν(x) := trace(P_x∘Dν(x)) = Σ_iτ_i·Dν(x)τ_i (orthonormal basis τ of T_x; trace formula: extend τ to an orthonormal basis of ℝ^P).
+ (7a) div_M ν is continuous on M: Dν is continuous on O ⊇ M, and x ↦ P_x is continuous on M, because on M ∩ W_y, P_x = DG_y(a)(DG_y(a)*DG_y(a))^{-1}DG_y(a)* with a = π_y(x − y).
+ (7b) Let φ : ℝ^P → ℝ be C^∞ with compact support and tsupport φ ⊆ O ∩ U. Then X := φν (taken as 0 off O) is C^∞ with compact support and tsupport X ⊆ U: it vanishes on the open complement of the compact set tsupport φ ⊆ O. For x ∈ M, DX(x)w = (Dφ(x)w)ν(x) + φ(x)Dν(x)w, so div_M X(x) = Σ_i(Dφ(x)τ_i)(τ_i·ν(x)) + φ(x)div_M ν(x) = φ(x)div_M ν(x). By stationarity, ∫_M φ·div_M ν dH^m = 0. (The integrand is Borel on M — M is Borel by locally_closed — bounded, and vanishes off M ∩ tsupport φ, which has finite measure.)
+ (7c) Suppose div_M ν(x₀) ≠ 0 for some x₀ ∈ M, and let σ ∈ {±1} be its sign. By (7a) there are c, s > 0 with closedBall(x₀, 2s) ⊆ O ∩ U and σ·div_M ν ≥ c on M ∩ B_{2s}(x₀). Take φ ∈ C^∞_c(B_{2s}(x₀); [0, 1]) with φ = 1 on B_s(x₀). Then σφ·div_M ν ≥ 0 on M and ≥ c on M ∩ B_s(x₀), so σ∫_M φ·div_M ν dH^m ≥ c·H^m(M ∩ B_s(x₀)) > 0: by density_one, H^m(M ∩ B_{s'}(x₀))/(ω_m s'^m) → 1 as s' ↓ 0, so H^m(M ∩ B_{s'}(x₀)) > 0 for some s' ≤ s. This contradicts (7b). Hence trace(P_x∘Dν(x)) = 0 for every x ∈ M.
+ Together with step 6 this proves the statement (with this ν and O). ∎
+
+## Key steps
+
+1. T_xM ⊆ A₀ is m-dimensional, so N_x = A₀ ∩ T_x^⊥ is a line.
+2. ν₀(x) := A₀-representative of v ↦ ξ(x)(ι_vΩ), Ω a volume form of A₀: a continuous unit normal of M in A₀.
+3. In C^∞ graph charts (smooth_charts) ν₀ = ±n/|n|, n built from Ω and ∂_jG, so ν₀ is C^∞ along M.
+4. Extend ν₀ constantly along the normal directions of each chart cylinder and glue with a smooth partition of unity on O = ⋃O_y.
+5. Stationarity tested with X = φν gives ∫_M φ div_M ν = 0; continuity and positivity of H^m on balls (density_one) give div_M ν ≡ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, MultiVector, tangentialDivergence, unitBallVolume)`
+- `python3 scans of dag.json: selected node, parent simons_regular_cone and its decomposition-v1.json; nodes whose types mention IsEmbeddedSubmanifold or tangentSpace with statuses and candidate commits; keyword scan Allard|Schauder|second fundamental|Simons|stability|first variation|area formula`
+- `grep -n 'theorem|def' simongmt/Poincare/SimonGMT/AppendixB/{SimonsInequalities,ConeDefect,LagrangeIdentity}.lean and Chapter02/{SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldCalculus,AreaFormula,Area}.lean`
+- `grep -rn 'measurable_fderiv|LipschitzWith.ae_differentiableAt|ae_differentiableWithinAt_of_mem|hausdorffMeasure_image_le|image_of_continuousOn_injOn|hasDerivAt_integral_of_dominated_loc_of_deriv_le|exists_isSubordinate|contDiffOn_infty|HasFDerivWithinAt.unique_on|normDet' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `runtime.py of flow gmt-claude-252c8df06c56: _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint; store.py ensure`
+- `git for-each-ref (1709 distinct objects) | xargs git grep -l codim1_hcp -- 'GMT/*.lean' (no match); grep -c codim1_hcp dag.json (0); grep -rn codim1_hcp simongmt (no match)`
+- `lean -DautoImplicit=false /tmp/hcp-split/check/{Types,TypesAll,Assembly,Inst}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `book: chapter-B.txt 1-282; chapter-02.txt 854-1410; chapter-05.txt 1280-1397; chapter-03.txt 290-330; grep 'B.2 Theorem|B.8 Lemma|B.11 Lemma|Proof of B.2' sources/chapter-07-source.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/LagrangeIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/hcp-split/check/TypesAll.lean`
+- `/tmp/hcp-split/check/Assembly.lean`
+- `/tmp/hcp-split/check/Inst.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib (simongmt 2b366308). The snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+Library. SimonGMT supplies injective_area_formula_of_injective_derivative (Chapter02/AreaFormula.lean:145), the Appendix B algebra simonsDefect_eq_sum_skew (LagrangeIdentity.lean:122), four_mul_radialSkewSum_le, radial_derivative_of_codazzi, cone_simonsDefect_lower_bound (ConeDefect.lean:136–228) and exists_final_exponent (witness 1/10). It has no submanifold curvature calculus, Simons identity or Allard theorem; these remain book citations inside unit_normal, stability, simons_cone and smooth_regularity. The snapshot Mathlib has measurable_fderiv (FDeriv/Measurable.lean:378), LipschitzWith.ae_differentiableAt and LipschitzOnWith.ae_differentiableWithinAt_of_mem (Calculus/Rademacher.lean), LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733), MeasurableSet.image_of_continuousOn_injOn, hasDerivAt_integral_of_dominated_loc_of_deriv_le, SmoothPartitionOfUnity.exists_isSubordinate, contDiffOn_infty and HasFDerivWithinAt.unique_on. LinearMap.normDet exists (InnerProductSpace/NormDet.lean) but is outside Submission's import closure, so Jacobians are stated as √det(L*∘L).
+DAG. chart_tangentSpace_eq_range_fderiv, dimred_rpd_submanifold_density_one and dimred_rpd_embedded_locally_closed are accepted with candidate commits (d626082a69a0, e8842d90b78f, 6da66b1edf6f) and are reused with byte-identical types; the runtime reuses accepted nodes by identical name and type and leaves their handoffs untouched. The Allard nodes dor_allard_bounded_curvature_graph and codim1_ldr_allard_bounded_curvature_graph are unaccepted and cannot be reused. The stationarity integrand has the same form as idtp_ccd_sheet_first_variation. The 9 new codim1_hcp_ names are free in dag.json, GMT/, SimonGMT and all ref trees.
+Lean. All 12 child types elaborate after import GMT.Ch07.Submission in the contract namespace and opens (TypesAll.lean, exit 0). The selected frozen type is kernel-checked from the child types as axioms (Assembly.lean, exit 0; axioms: propext, Classical.choice, Quot.sound and six children). Inline instances verified by rfl (Inst.lean): the inner product on span(tangentSpace M x) is Submodule.innerProductSpace and starProjection = subtypeL ∘ orthogonalProjection; ContDiff ℝ (⊤ : ℕ∞) elaborates to ↑⊤ (C^∞, not analytic).
