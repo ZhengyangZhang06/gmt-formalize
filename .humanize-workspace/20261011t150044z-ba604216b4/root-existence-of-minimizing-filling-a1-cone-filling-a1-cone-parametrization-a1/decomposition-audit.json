@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "measurable_fderiv|norm_fderiv_le_of_lipschitz",
+        "volume_preserving_piFinSuccAbove|volume_preserving_symm_measurableEquiv_toLp",
+        "starProjection|sub_starProjection_mem_orthogonal|mem_span_range_iff_exists_fun",
+        "theorem sqrt_mul|theorem sqrt_sq |lemma sqrt_mul",
+        "exists_bound_of_continuous|instContinuousEval|map_smul_univ|le_opNorm",
+        "integral_Ioc_eq_integral_Ioo|integral_of_le|setLIntegral_mono|lintegral_const_mul",
+        "closedBall.*LipschitzWith 1|LipschitzWith 1.*closedBall|radialRetraction|retractionBall|ball_retraction",
+        "git show 8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-param-independent-audit/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametrization-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametrization-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90/parent-child-handoff.json",
+        "/tmp/cone-param-independent-audit/Audit.lean"
+      ],
+      "conclusion": "The split appropriately isolates the selected cone-parametrization proof's metric, algebraic, calculus and integration obligations. Dependencies are acyclic and correctly directed. The snapshot records project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the workspace contract is byte-identical and its Mathlib revision matches. Relevant derivative, measure-preservation, projection, square-root and integration APIs support the supplied arguments. The radial-retraction search returned no matches. All six frozen types independently elaborate without implemented children. A conditional assembly of the exact selected parent, the actual accepted Fubini proof, and coordinate, scalar-action, derivative and measurability checks compiled successfully. The assembly and reused checkpoint have only propext, Classical.choice and Quot.sound as axioms. All names are bare identifiers; the five new names are unreserved, and the sole reused name has the identical accepted frozen type. Matrix.of, Euclidean inner products and pointwise scalar actions have the intended meanings; no problematic matrix IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cylinder_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including dimension zero and the distinct measurability/integrability hypotheses. The proof constructs the volume-preserving measurable equivalence, identifies the restricted product set, transfers integrability, and applies Tonelli/Fubini correctly. The accepted checkpoint has the identical frozen type; its actual proof replayed without sorryAx. Reuse is non-circular."
+    },
+    {
+      "key": "ball_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact existential contract matches the prose. The explicit radial map fixes the closed ball and satisfies the norm bound. Positivity justifies division outside the ball. The variational inequalities and Cauchy–Schwarz prove nonexpansiveness, with the zero-distance case handled separately. The proof is complete and independent."
+    },
+    {
+      "key": "gram_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match their prose, with t ≥ 0 correctly required for scaling. The diagonal determinant calculation is valid. Orthogonal projection and the explicit unipotent matrix prove the determinant factorization without assuming independence of w, including k = 0. The square-root steps require only the stated nonnegative first factors. No circularity or missing hypothesis remains."
+    },
+    {
+      "key": "cone_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match, and A need not be measurable. The retraction and clamp give a globally Lipschitz map. The strict radius bound supplies the open neighbourhood where it equals the unmodified cone map; differentiability at u then justifies the chain/product rules and the exact basis-tuple identity. The sole declared dependency, ball_retraction, is sufficient."
+    },
+    {
+      "key": "piece_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three conclusions and all hypotheses match exactly. The proof establishes measurability and integrability of the pulled-back weight, then bounds the form integrand using compact support and the global Lipschitz derivative bound. Fubini, multilinearity and endpoint removal give the stated interval-integral identity. No unassumed regularity of F is used, and cylinder_fubini is the correct dependency."
+    },
+    {
+      "key": "piece_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract correctly requires neither Lipschitzness of G nor global positivity of ρ. Measurability of fderiv supplies the Tonelli integrand. The derivative tuple and gram_cone yield the pointwise estimate; integrating over the unit interval and extracting the finite ENNReal constant proves the exact bound. Nonnegativity of ρ follows at points of A, while the empty-set case is harmless. Both dependencies are correctly directed."
+    }
+  ],
+  "required_changes": []
+}

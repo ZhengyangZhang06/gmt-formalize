@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.cone_map-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1",
+  "depth": 4,
+  "title": "A Lipschitz cone map z ↦ s(z)·F(τ(z)) with the prescribed value and derivative on the cylinder (0,1) × A",
+  "statement": "Let k, P ∈ ℕ, let F : ℝ^k → ℝ^P (Euclid k → Euclid P) be Lipschitz, let A ⊆ ℝ^k be any set and let ρ > 0. Assume that F is differentiable at every u ∈ A and that ‖F(u)‖ < ρ for every u ∈ A. Write ι(t, u) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) ∈ ℝ^{k+1} for t ∈ ℝ and u ∈ ℝ^k. For H : ℝ^d → ℝ^P write DH(z) := fderiv ℝ H z, e_a := EuclideanSpace.single a 1 and ∂H(z) := (DH(z)e_a)_{a<d}. Then there is a Lipschitz map G : ℝ^{k+1} → ℝ^P such that, for every u ∈ A and every t ∈ (0, 1): G(ι(t, u)) = t·F(u), and ∂G(ι(t, u)) = Fin.cons (F(u)) (t·∂F(u)). That is, DG(ι(t, u))e_0 = F(u) and DG(ι(t, u))e_{b+1} = t·DF(u)e_b for every b < k.",
+  "lean_statement": "∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (ρ : ℝ), 0 < ρ → (∃ K : NNReal, LipschitzWith K F) → (∀ u ∈ A, DifferentiableAt ℝ F u) → (∀ u ∈ A, ‖F u‖ < ρ) → ∃ G : Euclid (k + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K G) ∧ ∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)",
+  "lean_name": "ecf_cp_cone_map",
+  "depends_on": [
+    "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.ball_retraction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.ball_retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-00051af5f4-a1"
+}
