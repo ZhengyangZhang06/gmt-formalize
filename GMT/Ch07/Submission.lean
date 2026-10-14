@@ -2178,6 +2178,193 @@ theorem Submission.dor_lmb_fcd_sd_series_limit : (∀ (P m : ℕ) (U : Set (Eucl
     rw [← (hS₁sum ω).tsum_eq]
     simp [hz]
 
+/-- **Deformation of the shells onto the skeleton: assembly** (Simon Ch. 6, 5.1, displays (11)–(18)
+and the end of the proof of the deformation theorem).  With `Vⱼ = φⱼ#Wⱼ`, `Hⱼ = h#(id, φⱼ)Wⱼ`,
+`Yⱼ = φⱼ#Dⱼ`, `E′ⱼ = h#(id, φⱼ)Dⱼ`, `L_N = φ_N#Z_N` and `K_N = h#(id, φ_N)Z_N`, the telescoping
+identities and `Σ_{j≤N} Wⱼ = T − A_N` give `Σ_{j≤N} Vⱼ − T + A_N − ∂Σ_{j≤N} Hⱼ = Σ_{j≤N} E′ⱼ − K_N`
+and `∂Σ_{j≤N} Vⱼ = Σ_{j≤N} Yⱼ − L_N`.  As `Λⱼ ≤ c₄2ʲ` and `|φⱼ − id| = |ψ − id| ≤ √P` on `Eⱼ`,
+the mass bounds `M(φ#X) ≤ Λᵏ M(X)`, `M(h#X) ≤ √P (2Λ)ᵏ M(X)` and the dyadic decay of `M(Wⱼ)`,
+`M(Dⱼ)`, `M(Zⱼ)` give `Σ M(Vⱼ), Σ M(Hⱼ) ≤ c M(T)`, `Σ M(Yⱼ), Σ M(E′ⱼ) ≤ c M(∂T)` and
+`M(L_N), M(K_N) → 0`; `Vⱼ` lives on `ψ(Eⱼ) ⊆ F₁` and `Hⱼ`, `E′ⱼ` on the segments from `x` to
+`ψ(x)`, inside `F₂`.  The series limit then yields `Q`, `R₁`, `S₁`. -/
+theorem Submission.dor_lmb_fcd_sd_core : (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ) (push : ∀ k : ℕ, (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k) (homot : ∀ k : ℕ, (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), (∀ (k : ℕ) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → push k (fun x => x) X = X) → (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → Y ω = 0) → push k F (X - Y) = push k F X - push k F Y ∧ homot k F G (X - Y) = homot k F G X - homot k F G Y) → (∀ (k : ℕ) (Λ : NNReal) (F G F' G' : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith Λ F' → LipschitzWith Λ G' → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → EqOn F F' E → EqOn G G' E → push k F X = push k F' X ∧ homot k F G X = homot k F' G' X) → (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → IsIntegerMultiplicity (push k F X) ∧ IsIntegerMultiplicity (homot k F G X) ∧ (push k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F '' E) → push k F X ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) ({y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)}) → homot k F G X ω = 0) ∧ ∀ δ : ℝ, (∀ x ∈ E, dist (F x) (G x) ≤ δ) → (homot k F G X).mass ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass) → (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity X.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) (E) → X ω = 0) → (push (k + 1) F X).boundary = push k F X.boundary ∧ push (k + 1) G X - push (k + 1) F X - homot k F G X.boundary = (homot (k + 1) F G X).boundary) → ∀ (c c₄ C : ℝ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ψ : Euclid P → Euclid P) (E : ℕ → Set (Euclid P)) (φ : ℕ → Euclid P → Euclid P) (Λ : ℕ → NNReal) (W A : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m) (F₁ F₂ : Set (Euclid P)), 0 ≤ c₄ → 0 ≤ C → c₄ ^ (m + 1) * (1 + 2 * C) ≤ c → Real.sqrt P * (2 * c₄) ^ (m + 1) * (1 + 2 * C) ≤ c → c₄ ^ m * (1 + 2 * C) ≤ c → Real.sqrt P * (2 * c₄) ^ m * (1 + 2 * C) ≤ c → T.mass ≠ ∞ → T.boundary.mass ≠ ∞ → (∀ j, IsCompact (E j)) → (∀ j, E j ⊆ E (j + 1)) → (∀ j, LipschitzWith (Λ j) (φ j)) → (∀ j, 1 ≤ Λ j) → (∀ j, Λ j ≤ Λ (j + 1)) → (∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j) → (∀ j, EqOn (φ j) ψ (E j)) → (∀ j, ∀ x ∈ E j, dist (ψ x) x ≤ Real.sqrt P) → (∀ j, ψ '' E j ⊆ F₁) → (∀ j, ∀ x ∈ E j, ∀ t ∈ Icc (0 : ℝ) 1, x + t • (ψ x - x) ∈ F₂) → (∀ j, IsIntegerMultiplicity (W j)) → (∀ j, IsIntegerMultiplicity (D j)) → (∀ j, IsIntegerMultiplicity (Z j)) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (E j) → W j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → D j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → Z j ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), W j ω = T ω - A N ω) → (W 0).mass ≤ T.mass → (∀ j, (W (j + 1)).mass ≤ ENNReal.ofReal (C * (1 / 2) ^ ((j + 2) * (m + 2))) * T.mass) → (D 0).mass ≤ T.boundary.mass → (∀ j, (D (j + 1)).mass ≤ ENNReal.ofReal (C * (1 / 2) ^ ((j + 2) * (m + 2))) * T.boundary.mass) → (∀ j, (Z j).mass ≤ ENNReal.ofReal (4 * C * (1 / 2) ^ ((j + 2) * (m + 1))) * T.mass) → Tendsto (fun N => (A N).mass) atTop (𝓝 0) → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R₁ ∧ IsIntegerMultiplicity S₁ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Q ω = R₁.boundary ω + S₁ ω) ∧ Q.mass ≤ ENNReal.ofReal c * T.mass ∧ Q.boundary.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ R₁.mass ≤ ENNReal.ofReal c * T.mass ∧ S₁.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₁) → Q ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (F₂) → R₁ ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₂) → S₁ ω = 0 := by
+  intro hIMS P m push homot hPF1 hPF2 hPF3 hPF4 hPF5 c c₄ C T ψ E φ Λ W A D Z F₁ F₂ hc₄ hC hcV hcH
+    hcY hcE hT hbT hEc hEsub hφL hΛ1 hΛmono hΛc hφψ hψdist hψF₁ hψF₂ hWim hDim hZim hWv hDv hZv
+    hbW0 hbW hWsum hW0 hW hD0 hD hZ hA
+  -- Step 1: `id` is `Λⱼ`-Lipschitz, as `1 ≤ Λⱼ`
+  have hid : ∀ j, LipschitzWith (Λ j) (fun x : Euclid P => x) :=
+    fun j => LipschitzWith.id.weaken (hΛ1 j)
+  -- Step 2: `φ_{j+1} = ψ = φⱼ` on `Eⱼ ⊆ E_{j+1}`
+  have hφstep : ∀ j, EqOn (φ (j + 1)) (φ j) (E j) :=
+    fun j x hx => (hφψ (j + 1) (hEsub j hx)).trans (hφψ j hx).symm
+  -- Step 3: the telescoping identities (S1), (S2)
+  obtain ⟨hS1, hS2⟩ := Submission.dor_lmb_fcd_sd_telescoping P m push homot hPF1 hPF2 hPF3 hPF5
+    E φ Λ W D Z hEc hEsub hφL hΛ1 hΛmono hφstep hWim hDim hZim hWv hDv hZv hbW0 hbW
+  -- (h1): add `Σ_{j≤N} Wⱼ = T − A_N` to (S1)
+  have h1 : ∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      ∑ j ∈ Finset.range (N + 1), push (m + 1) (φ j) (W j) ω - T ω + A N ω -
+          ∑ j ∈ Finset.range (N + 1), (homot (m + 1) (fun x => x) (φ j) (W j)).boundary ω =
+        ∑ j ∈ Finset.range (N + 1), homot m (fun x => x) (φ j) (D j) ω -
+          homot m (fun x => x) (φ N) (Z N) ω := fun N ω => by
+    have hS := hS1 N ω
+    have hT' := hWsum N ω
+    linarith
+  -- Step 4: PF(4) for `push_k(φⱼ, ·)` and `homot_k(id, φⱼ, ·)` on `Wⱼ`, `Dⱼ`, `Zⱼ`
+  have hpW := fun j : ℕ => hPF4 (m + 1) (Λ j) (φ j) (φ j) (E j) (W j) (hφL j) (hφL j) (hEc j)
+    (hWim j) (hWv j)
+  have hhW := fun j : ℕ => hPF4 (m + 1) (Λ j) (fun x => x) (φ j) (E j) (W j) (hid j) (hφL j)
+    (hEc j) (hWim j) (hWv j)
+  have hpD := fun j : ℕ => hPF4 m (Λ j) (φ j) (φ j) (E j) (D j) (hφL j) (hφL j) (hEc j)
+    (hDim j) (hDv j)
+  have hhD := fun j : ℕ => hPF4 m (Λ j) (fun x => x) (φ j) (E j) (D j) (hid j) (hφL j) (hEc j)
+    (hDim j) (hDv j)
+  have hpZ := fun j : ℕ => hPF4 m (Λ j) (φ j) (φ j) (E j) (Z j) (hφL j) (hφL j) (hEc j)
+    (hZim j) (hZv j)
+  have hhZ := fun j : ℕ => hPF4 m (Λ j) (fun x => x) (φ j) (E j) (Z j) (hid j) (hφL j) (hEc j)
+    (hZim j) (hZv j)
+  -- `|x − φⱼ(x)| = |ψ(x) − x| ≤ √P` on `Eⱼ`
+  have hδ : ∀ j, ∀ x ∈ E j, dist x (φ j x) ≤ Real.sqrt P := fun j x hx => by
+    rw [hφψ j hx, dist_comm]
+    exact hψdist j x hx
+  -- Step 5(a), (b): `Λᵏ M(X) ≤ c₄ᵏ y (1/2)ᵉ M₀` from `Λ ≤ c₄2ʲ`, `M(X) ≤ y (1/2)ᵇ M₀`, `jk + e ≤ b`
+  have key : ∀ (a κ y r : ℝ) (L : ℝ≥0∞) (j k b e : ℕ) (M M₀ : ℝ≥0∞),
+      0 ≤ a → 0 ≤ κ → 0 ≤ y → L ≤ ENNReal.ofReal (κ * 2 ^ j) → j * k + e ≤ b →
+      a * κ ^ k * y * (1 / 2) ^ e ≤ r → M ≤ ENNReal.ofReal (y * (1 / 2) ^ b) * M₀ →
+      ENNReal.ofReal a * L ^ k * M ≤ ENNReal.ofReal r * M₀ := by
+    intro a κ y r L j k b e M M₀ ha hκ hy hL hb hr hM
+    have hκ2 : 0 ≤ κ * 2 ^ j := by positivity
+    have hak : 0 ≤ a * (κ * 2 ^ j) ^ k := by positivity
+    have hreal : a * (κ * 2 ^ j) ^ k * (y * (1 / 2) ^ b) ≤ r := by
+      obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le hb
+      have h2 : (2 : ℝ) ^ (j * k) * (1 / 2) ^ (j * k) = 1 := by rw [← mul_pow]; norm_num
+      calc a * (κ * 2 ^ j) ^ k * (y * (1 / 2) ^ (j * k + e + l))
+          = a * κ ^ k * y * (1 / 2) ^ e * ((2 : ℝ) ^ (j * k) * (1 / 2) ^ (j * k)) *
+              (1 / 2) ^ l := by
+            rw [mul_pow, ← pow_mul, pow_add, pow_add]; ring
+        _ ≤ a * κ ^ k * y * (1 / 2) ^ e := by
+            rw [h2, mul_one]
+            exact mul_le_of_le_one_right (by positivity) (pow_le_one₀ (by norm_num) (by norm_num))
+        _ ≤ r := hr
+    calc ENNReal.ofReal a * L ^ k * M
+        ≤ ENNReal.ofReal a * ENNReal.ofReal (κ * 2 ^ j) ^ k *
+            (ENNReal.ofReal (y * (1 / 2) ^ b) * M₀) := by gcongr
+      _ = ENNReal.ofReal (a * (κ * 2 ^ j) ^ k * (y * (1 / 2) ^ b)) * M₀ := by
+          rw [← ENNReal.ofReal_pow hκ2, ← ENNReal.ofReal_mul ha, ← mul_assoc,
+            ← ENNReal.ofReal_mul hak]
+      _ ≤ ENNReal.ofReal r * M₀ := by gcongr
+  have keyP : ∀ (κ y r : ℝ) (L : ℝ≥0∞) (j k b e : ℕ) (M M₀ : ℝ≥0∞),
+      0 ≤ κ → 0 ≤ y → L ≤ ENNReal.ofReal (κ * 2 ^ j) → j * k + e ≤ b →
+      κ ^ k * y * (1 / 2) ^ e ≤ r → M ≤ ENNReal.ofReal (y * (1 / 2) ^ b) * M₀ →
+      L ^ k * M ≤ ENNReal.ofReal r * M₀ := by
+    intro κ y r L j k b e M M₀ hκ hy hL hb hr hM
+    have h := key 1 κ y r L j k b e M M₀ zero_le_one hκ hy hL hb (by rw [one_mul]; exact hr) hM
+    rwa [ENNReal.ofReal_one, one_mul] at h
+  -- Step 5(c): `Σⱼ aⱼ ≤ (A₀ + 2B) M₀` if `a₀ ≤ A₀ M₀` and `a_{j+1} ≤ B (1/2)ʲ M₀`
+  have hgeom : ∀ b : ℝ, 0 ≤ b →
+      ∑' j : ℕ, ENNReal.ofReal (b * (1 / 2) ^ j) = ENNReal.ofReal (2 * b) := by
+    intro b hb
+    rw [← ENNReal.ofReal_tsum_of_nonneg (fun j => mul_nonneg hb (pow_nonneg (by norm_num) j))
+      (summable_geometric_two.mul_left b), tsum_mul_left, tsum_geometric_two, mul_comm]
+  have hsum : ∀ (f : ℕ → ℝ≥0∞) (M₀ : ℝ≥0∞) (a₀ b r : ℝ), 0 ≤ a₀ → 0 ≤ b → a₀ + 2 * b ≤ r →
+      f 0 ≤ ENNReal.ofReal a₀ * M₀ → (∀ j, f (j + 1) ≤ ENNReal.ofReal (b * (1 / 2) ^ j) * M₀) →
+      ∑' j, f j ≤ ENNReal.ofReal r * M₀ := by
+    intro f M₀ a₀ b r ha₀ hb hr h0 hs
+    have h2b : 0 ≤ 2 * b := by positivity
+    calc ∑' j, f j = f 0 + ∑' j, f (j + 1) := tsum_eq_zero_add' ENNReal.summable
+      _ ≤ ENNReal.ofReal a₀ * M₀ + ∑' j, ENNReal.ofReal (b * (1 / 2) ^ j) * M₀ :=
+          add_le_add h0 (ENNReal.tsum_le_tsum hs)
+      _ = ENNReal.ofReal (a₀ + 2 * b) * M₀ := by
+          rw [ENNReal.tsum_mul_right, hgeom b hb, ENNReal.ofReal_add ha₀ h2b, add_mul]
+      _ ≤ ENNReal.ofReal r * M₀ := by gcongr
+  -- `g_N ≤ K (1/2)ᴺ M(T)` and `M(T) < ∞` give `g_N → 0`
+  have htend : ∀ (g : ℕ → ℝ≥0∞) (K : ℝ),
+      (∀ N, g N ≤ ENNReal.ofReal (K * (1 / 2) ^ N) * T.mass) → Tendsto g atTop (𝓝 0) := by
+    intro g K hg
+    have h1 : Tendsto (fun N : ℕ => K * (1 / 2 : ℝ) ^ N) atTop (𝓝 0) := by
+      simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2)
+        (by norm_num)).const_mul K
+    have h2 := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hT)
+    rw [ENNReal.ofReal_zero, zero_mul] at h2
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h2 (fun N => zero_le) hg
+  -- `Λⱼ ≤ c₄2ʲ` and `2Λⱼ ≤ (2c₄)2ʲ` in `[0, ∞]`
+  have hΛe : ∀ j, (Λ j : ℝ≥0∞) ≤ ENNReal.ofReal (c₄ * 2 ^ j) := fun j =>
+    ENNReal.ofReal_coe_nnreal.symm.le.trans (ENNReal.ofReal_le_ofReal (hΛc j))
+  have hΛe2 : ∀ j, 2 * (Λ j : ℝ≥0∞) ≤ ENNReal.ofReal (2 * c₄ * 2 ^ j) := fun j => by
+    rw [mul_assoc, ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ENNReal.ofReal_ofNat]
+    gcongr
+    exact hΛe j
+  have hsP : 0 ≤ Real.sqrt P := Real.sqrt_nonneg _
+  have h2c₄ : 0 ≤ 2 * c₄ := by positivity
+  -- Step 6: the masses of `Vⱼ`, `Hⱼ`, `Yⱼ`, `E′ⱼ`, `L_N`, `K_N`
+  have hV0 : (push (m + 1) (φ 0) (W 0)).mass ≤ ENNReal.ofReal (c₄ ^ (m + 1)) * T.mass :=
+    (hpW 0).2.2.1.trans (keyP c₄ 1 _ _ 0 (m + 1) 0 0 _ _ hc₄ zero_le_one (hΛe 0) (by simp)
+      (by simp) (by simpa using hW0))
+  have hV : ∀ j, (push (m + 1) (φ (j + 1)) (W (j + 1))).mass ≤
+      ENNReal.ofReal (c₄ ^ (m + 1) * C * (1 / 2) ^ j) * T.mass := fun j =>
+    (hpW (j + 1)).2.2.1.trans (keyP c₄ C _ _ (j + 1) (m + 1) ((j + 2) * (m + 2)) j _ _ hc₄ hC
+      (hΛe (j + 1)) (by nlinarith) le_rfl (hW j))
+  have hH0 : (homot (m + 1) (fun x => x) (φ 0) (W 0)).mass ≤
+      ENNReal.ofReal (Real.sqrt P * (2 * c₄) ^ (m + 1)) * T.mass :=
+    ((hhW 0).2.2.2.2.2 (Real.sqrt P) (hδ 0)).trans (key (Real.sqrt P) (2 * c₄) 1 _ _ 0 (m + 1) 0 0
+      _ _ hsP h2c₄ zero_le_one (hΛe2 0) (by simp) (by simp) (by simpa using hW0))
+  have hH : ∀ j, (homot (m + 1) (fun x => x) (φ (j + 1)) (W (j + 1))).mass ≤
+      ENNReal.ofReal (Real.sqrt P * (2 * c₄) ^ (m + 1) * C * (1 / 2) ^ j) * T.mass := fun j =>
+    ((hhW (j + 1)).2.2.2.2.2 (Real.sqrt P) (hδ (j + 1))).trans (key (Real.sqrt P) (2 * c₄) C _ _
+      (j + 1) (m + 1) ((j + 2) * (m + 2)) j _ _ hsP h2c₄ hC (hΛe2 (j + 1)) (by nlinarith) le_rfl
+      (hW j))
+  have hY0 : (push m (φ 0) (D 0)).mass ≤ ENNReal.ofReal (c₄ ^ m) * T.boundary.mass :=
+    (hpD 0).2.2.1.trans (keyP c₄ 1 _ _ 0 m 0 0 _ _ hc₄ zero_le_one (hΛe 0) (by simp) (by simp)
+      (by simpa using hD0))
+  have hY : ∀ j, (push m (φ (j + 1)) (D (j + 1))).mass ≤
+      ENNReal.ofReal (c₄ ^ m * C * (1 / 2) ^ j) * T.boundary.mass := fun j =>
+    (hpD (j + 1)).2.2.1.trans (keyP c₄ C _ _ (j + 1) m ((j + 2) * (m + 2)) j _ _ hc₄ hC
+      (hΛe (j + 1)) (by nlinarith) le_rfl (hD j))
+  have hE0 : (homot m (fun x => x) (φ 0) (D 0)).mass ≤
+      ENNReal.ofReal (Real.sqrt P * (2 * c₄) ^ m) * T.boundary.mass :=
+    ((hhD 0).2.2.2.2.2 (Real.sqrt P) (hδ 0)).trans (key (Real.sqrt P) (2 * c₄) 1 _ _ 0 m 0 0 _ _
+      hsP h2c₄ zero_le_one (hΛe2 0) (by simp) (by simp) (by simpa using hD0))
+  have hE : ∀ j, (homot m (fun x => x) (φ (j + 1)) (D (j + 1))).mass ≤
+      ENNReal.ofReal (Real.sqrt P * (2 * c₄) ^ m * C * (1 / 2) ^ j) * T.boundary.mass := fun j =>
+    ((hhD (j + 1)).2.2.2.2.2 (Real.sqrt P) (hδ (j + 1))).trans (key (Real.sqrt P) (2 * c₄) C _ _
+      (j + 1) m ((j + 2) * (m + 2)) j _ _ hsP h2c₄ hC (hΛe2 (j + 1)) (by nlinarith) le_rfl (hD j))
+  have hL : ∀ N, (push m (φ N) (Z N)).mass ≤
+      ENNReal.ofReal (c₄ ^ m * (4 * C) * (1 / 2) ^ N) * T.mass := fun N =>
+    (hpZ N).2.2.1.trans (keyP c₄ (4 * C) _ _ N m ((N + 2) * (m + 1)) N _ _ hc₄ (by positivity)
+      (hΛe N) (by nlinarith) le_rfl (hZ N))
+  have hK : ∀ N, (homot m (fun x => x) (φ N) (Z N)).mass ≤
+      ENNReal.ofReal (Real.sqrt P * (2 * c₄) ^ m * (4 * C) * (1 / 2) ^ N) * T.mass := fun N =>
+    ((hhZ N).2.2.2.2.2 (Real.sqrt P) (hδ N)).trans (key (Real.sqrt P) (2 * c₄) (4 * C) _ _ N m
+      ((N + 2) * (m + 1)) N _ _ hsP h2c₄ (by positivity) (hΛe2 N) (by nlinarith) le_rfl (hZ N))
+  -- the four mass sums, with `c₄^{m+1}(1 + 2C) ≤ c` etc.
+  have hVsum : ∑' j, (push (m + 1) (φ j) (W j)).mass ≤ ENNReal.ofReal c * T.mass :=
+    hsum (fun j => (push (m + 1) (φ j) (W j)).mass) T.mass _ _ c (by positivity) (by positivity)
+      (by linarith) hV0 hV
+  have hHsum : ∑' j, (homot (m + 1) (fun x => x) (φ j) (W j)).mass ≤ ENNReal.ofReal c * T.mass :=
+    hsum (fun j => (homot (m + 1) (fun x => x) (φ j) (W j)).mass) T.mass _ _ c (by positivity)
+      (by positivity) (by linarith) hH0 hH
+  have hYsum : ∑' j, (push m (φ j) (D j)).mass ≤ ENNReal.ofReal c * T.boundary.mass :=
+    hsum (fun j => (push m (φ j) (D j)).mass) T.boundary.mass _ _ c (by positivity)
+      (by positivity) (by linarith) hY0 hY
+  have hEsum : ∑' j, (homot m (fun x => x) (φ j) (D j)).mass ≤
+      ENNReal.ofReal c * T.boundary.mass :=
+    hsum (fun j => (homot m (fun x => x) (φ j) (D j)).mass) T.boundary.mass _ _ c (by positivity)
+      (by positivity) (by linarith) hE0 hE
+  -- Step 7: `Vⱼ` vanishes off `φⱼ(Eⱼ) = ψ(Eⱼ) ⊆ F₁`; `Hⱼ`, `E′ⱼ` vanish off the segments `⊆ F₂`
+  have hseg :
+      ∀ j, {y : Euclid P | ∃ x ∈ E j, ∃ t ∈ Icc (0 : ℝ) 1, y = x + t • (φ j x - x)} ⊆ F₂ := by
+    rintro j y ⟨x, hx, t, ht, rfl⟩
+    rw [hφψ j hx]
+    exact hψF₂ j x hx t ht
+  -- Step 8: the series limit
+  exact Submission.dor_lmb_fcd_sd_series_limit hIMS P m c T (fun j => push (m + 1) (φ j) (W j))
+    (fun j => homot m (fun x => x) (φ j) (D j)) A (fun N => homot m (fun x => x) (φ N) (Z N))
+    (fun j => homot (m + 1) (fun x => x) (φ j) (W j)) (fun j => push m (φ j) (D j))
+    (fun N => push m (φ N) (Z N)) F₁ F₂ hT hbT (fun j => (hpW j).1) (fun j => (hhW j).2.1)
+    (fun j => (hhD j).2.1) h1 hS2 hA (htend _ _ hK) (htend _ _ hL) hVsum hHsum hEsum hYsum
+    (fun j ω hω => (hpW j).2.2.2.1 ω (hω.mono_right ((hφψ j).image_eq.trans_subset (hψF₁ j))))
+    (fun j ω hω => (hhW j).2.2.2.2.1 ω (hω.mono_right (hseg j)))
+    (fun j ω hω => (hhD j).2.2.2.2.1 ω (hω.mono_right (hseg j)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
