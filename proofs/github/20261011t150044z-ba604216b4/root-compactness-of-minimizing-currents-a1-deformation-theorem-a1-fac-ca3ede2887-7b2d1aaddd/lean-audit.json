@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1e503cc07c81fd7acf45731c61f8ea85fd956ef23635f730d440e1490e8967e2",
+  "git_delta": {
+    "base_commit": "a78b7599356165e38c64fe141a0166fb12b85d9b",
+    "candidate_commit": "64a422c6b2216b7de3797da4432c3bb00be9e188",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrcb_pullback_divergence",
+    "diff_sha256": "fc0d7e9b8b59c9a6f131c0cf22f88e3cc866960c3784b6ad32c26ceb7f298d69",
+    "source_sha256": "c1af29df1f1bf464bd4267d70d6e3cc79ea4b921325c76b7dc24c64c5c9dbf39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrcb_pullback_divergence",
+      "statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (a : Euclid P) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → (∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), fderiv ℝ (fun z : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) y (EuclideanSpace.single i (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Along the affine coordinate cube `Φ y = a + Σⱼ yⱼ e_{ι j}`, the exterior derivative of a `C¹`
+`m`-form `γ` on `E = (e_{ι j})ⱼ` is the divergence `Σᵢ ∂ᵢFᵢ` of the coefficient fields
+`Fᵢ(y) = (-1)ⁱ γ(Φ y)(E ∘ succAbove i)`, and each `Fᵢ` is `C¹`.  `Φ = a + L` with `L` continuous
+linear and `L eᵢ = e_{ι i}`; expand `dγ(Φ y)(E)` by `exteriorDerivative_apply`
+(`removeNth i E = E ∘ succAbove i`) and apply the chain rule to `Fᵢ`. -/
+theorem Submission.cmcdtfrcb_pullback_divergence : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (a : Euclid P) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → (∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), fderiv ℝ (fun z : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) y (EuclideanSpace.single i (1 : ℝ)) := by
+  intro P m ι a γ hγ
+  -- `Φ y = a + L y` with `L v = Σⱼ vⱼ e_{ι j}` continuous linear, and `L eᵢ = e_{ι i}`
+  let L : Euclid (m + 1) →L[ℝ] Euclid P :=
+    ∑ j, (EuclideanSpace.proj j).smulRight (EuclideanSpace.single (ι j) (1 : ℝ))
+  have hL : ∀ v : Euclid (m + 1),
+      a + L v = a + ∑ j, v j • EuclideanSpace.single (ι j) (1 : ℝ) := by
+    intro v
+    simp [L]
+  have hΦ : ∀ y : Euclid (m + 1), HasFDerivAt
+      (fun z : Euclid (m + 1) => a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) L y := by
+    intro y
+    simpa only [hL] using (L.hasFDerivAt (x := y)).const_add a
+  have hΦc : ContDiff ℝ 1
+      fun z : Euclid (m + 1) => a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ) := by
+    simpa only [hL] using (contDiff_const (c := a)).add L.contDiff
+  have hLe : ∀ i : Fin (m + 1),
+      L (EuclideanSpace.single i (1 : ℝ)) = EuclideanSpace.single (ι i) (1 : ℝ) := by
+    intro i
+    simp [L]
+  refine ⟨fun i => ?_, fun y => ?_⟩
+  · -- `Fᵢ = (-1)ⁱ · ev_{E ∘ succAbove i} ∘ γ ∘ Φ`, evaluation being continuous linear
+    exact contDiff_const.mul ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+      fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)).contDiff.comp
+        (hγ.comp hΦc))
+  · -- `dγ(Φ y)(E) = Σᵢ (-1)ⁱ D[γ(·)(removeNth i E)](Φ y)(e_{ι i})`; match the terms with the
+    -- chain rule `DFᵢ(y) eᵢ = (-1)ⁱ D[γ(·)(E ∘ succAbove i)](Φ y)(L eᵢ)`
+    rw [exteriorDerivative_apply ((hγ.differentiable one_ne_zero) _)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    set x := a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)
+    set u : Fin m → Euclid P := fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)
+    have hg : HasFDerivAt (fun x' => γ x' u) (fderiv ℝ (fun x' => γ x' u) x) x :=
+      (((hγ.differentiable one_ne_zero) x).continuousAlternatingMap_apply_const u).hasFDerivAt
+    have hF : HasFDerivAt
+        (fun z : Euclid (m + 1) =>
+          (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) u)
+        ((-1 : ℝ) ^ (i : ℕ) • (fderiv ℝ (fun x' => γ x' u) x).comp L) y :=
+      (hg.comp y (hΦ y)).const_mul _
+    -- `removeNth i E = E ∘ succAbove i = u` and `E i = e_{ι i}`
+    show (-1 : ℤ) ^ (i : ℕ) •
+      fderiv ℝ (fun x' => γ x' u) x (EuclideanSpace.single (ι i) (1 : ℝ)) = _
+    rw [hF.fderiv]
+    simp [hLe]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
