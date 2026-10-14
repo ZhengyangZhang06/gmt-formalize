@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7bef803e84148dc9e8235a43fd88ef8c1591320c4e0f393c1c2ba964d63890c5",
+  "git_delta": {
+    "base_commit": "8a726a7d7f2ad88e8940893d494453bafeca523c",
+    "candidate_commit": "67f443f85082c8a5cd253bac734badca8d9b40c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_imp_degree_zero",
+    "diff_sha256": "d5e7eccab4d0cffe3edbdfc7162e6dbb1fec497001fcedd95b7d400f633295f4",
+    "source_sha256": "7a488c141e410c33f5c172709a34eb4869970ea06728002d102e8462cd9e4d54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_imp_degree_zero",
+      "statement": "∀ (N N' : ℕ) (R : IMRep (univ : Set (Euclid N)) 0), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) 0, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) 0, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') 0) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[0].restrict R.carrier), F x = F' x) → Y F = Y F'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
