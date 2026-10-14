@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7d574b3d79693c246284cb07a8ad34fb738554d70d94b8fe3ee2357318fc856d",
+  "git_delta": {
+    "base_commit": "91a7c1653ae045aa9813ad72f23a0e63a0cadea5",
+    "candidate_commit": "1a0619bb060928d57b235c239872ad0caa24dca4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lp_pullback_basis_sq_sum_le",
+    "diff_sha256": "d9d97ab7cbf2133a27a2ad6d67098df53630f063a0da4440100ea1d0679c1e56",
+    "source_sha256": "d70ccc81670e64164ada561b77c52b3f9932d0661ef9a15328af7b68de796a74",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lp_pullback_basis_sq_sum_le",
+      "statement": "∀ (N N' m : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : Covector (Euclid N') m), ∑ j : Fin m → Fin N, ((γ.compContinuousLinearMap A) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (j i))) ^ 2 ≤ (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N', (γ (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
