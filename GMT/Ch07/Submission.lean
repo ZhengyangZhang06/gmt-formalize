@@ -479,6 +479,22 @@ theorem Submission.cmc_fcl_imrep_integral_data : ∀ (P n : ℕ) (U : Set (Eucli
     rw [hcoe, integral_withDensity_eq_integral_smul hf]
     simp only [NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul]
 
+/-- **Borel restriction of an integer multiplicity representation** (fact (R6) in the
+localization step of the proof of Simon Ch. 6, 7.2, where `T⌞{f < t} = τ(M ∩ {f < t}, θ, ξ)` as
+in Ch. 6, 4.5).  If `R = (M, θ, ξ)`, `R' = (M ∩ E, θ, ξ)` with `E` Borel, and `R'` represents
+`A`, then `μ_{R'} = μ_R⌞E` and `A(ω) = ∫_E ⟨ω, ξ⟩ dμ_R`.  Restriction to the measurable set `E`
+commutes with `withDensity`, and `(Hⁿ⌞M)⌞E = Hⁿ⌞(M ∩ E)`; the action formula is
+`A(ω) = ∫ ⟨ω, ξ⟩ dμ_{R'}` (`cmc_fcl_imrep_integral_data`) rewritten with `μ_{R'} = μ_R⌞E`. -/
+theorem Submission.cmc_fcl_imrep_restrict_formula : ∀ (P n : ℕ) (U : Set (Euclid P)) (R R' : IMRep U n) (A : GeometricCurrentOn U n) (E : Set (Euclid P)), MeasurableSet E → R'.Represents A → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : TestFormOn U n, A ω = ∫ x in E, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure := by
+  intro P n U R R' A E hE hA hc hm ho
+  -- Steps 1–2: `μ_{R'} = (Hⁿ⌞(M ∩ E)).withDensity θ = ((Hⁿ⌞M).withDensity θ)⌞E = μ_R⌞E`
+  have hmeas : R'.measure = R.measure.restrict E := by
+    rw [IMRep.measure, IMRep.measure, restrict_withDensity hE, Measure.restrict_restrict hE,
+      hc, hm, inter_comm]
+  refine ⟨hmeas, fun ω => ?_⟩
+  -- Step 3: `A(ω) = ∫ ⟨ω, ξ'⟩ dμ_{R'}` (part (d) of `imrep_data`), then `μ_{R'} = μ_R⌞E`, `ξ' = ξ`
+  rw [(Submission.cmc_fcl_imrep_integral_data P n U A R' hA).2.2.2 ω, hmeas, ho]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
