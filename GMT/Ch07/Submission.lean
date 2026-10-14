@@ -1173,6 +1173,135 @@ theorem dimred_mbl_dtsr_segment_lipschitz : ∀ (P : ℕ) (f : Euclid P → Eucl
   have hg1 : g 1 = y := by simp [g]
   rwa [hg1, mul_one] at h1
 
+/-- **Retraction onto the `n`-skeleton away from the dual skeleton** (Lemma D; Simon Ch. 6,
+Lemma 5.4, chapter-06.txt lines 1493–1645, with `n = m + 1`).  Let
+`L*(a) = {w : w_i − a_i ∈ ℤ for at least m + 2 indices i}` and `d = dist(·, L*(a))`.  Take
+`ψ = Ψ_P` (`dimred_mbl_dtsr_face_retraction_family`) and `c₀` from
+`dimred_mbl_dtsr_face_count_induction`.  If `x` lies in a closed unit cube `z + [0, 1]ᴾ`
+(the face `F(z, univ)`) and `d(x) > 0`, then `dimred_mbl_dtsr_dual_dist_count` gives the
+counting condition with `ρ = d(x)/√(m + 2)`, and the face induction with `j = P` puts `ψ(x)` in the
+same cube (so `|ψ(x) − x| ≤ √P`) and in the `n`-skeleton, and gives
+`|ψ(y) − ψ(x)| ≤ (√(m + 2) c₀/d(x))|y − x|` for `y` in that cube near `x`.  The finitely many
+cubes through `x` cover a neighbourhood of `x` (`dimred_mbl_dtsr_cube_cover`).  Let
+`0 < r ≤ 1/4` and `d(x), d(y) ≥ r`.  If `|x − y| < r/2`, then `d > r/2` on `[x, y]` (`d` is
+`1`-Lipschitz), and `dimred_mbl_dtsr_segment_lipschitz` gives the constant `2√(m + 2) c₀/r`.
+Otherwise `|ψ(x) − ψ(y)| ≤ 2√P + |x − y| ≤ (4√P + 1)|x − y|/r`.  So
+`c = 2√(m + 2) c₀ + 4√P + 1` works. -/
+theorem dimred_mbl_dt_skeleton_retraction : ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 < c ∧ ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ ψ : Euclid P → Euclid P, (∀ x : Euclid P, 0 < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, ψ x i = z) ∧ dist (ψ x) x ≤ Real.sqrt P) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → ∀ x y : Euclid P, r ≤ infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → r ≤ infDist y {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} → dist (ψ x) (ψ y) ≤ c / r * dist x y := by
+  intro P m hPm
+  -- Step 0: `c₀` from the face induction and `c = 2√(m + 2) c₀ + 4√P + 1`
+  obtain ⟨c₀, hc₀, hind⟩ := Submission.dimred_mbl_dtsr_face_count_induction P m
+  have hsq : (0 : ℝ) < Real.sqrt (m + 2) := Real.sqrt_pos.mpr (by positivity)
+  refine ⟨2 * Real.sqrt (m + 2) * c₀ + 4 * Real.sqrt P + 1, by positivity, ?_⟩
+  intro a ha
+  -- Step 1: `ψ = Ψ_P` for the composite of the face retractions; the face induction at `j = P`
+  obtain ⟨Ψ, hΨ0, hΨrec⟩ := Submission.dimred_mbl_dtsr_face_retraction_family P m a ha
+  have key := hind a ha Ψ hΨ0 hΨrec P (by omega) le_rfl
+  set L : Set (Euclid P) := {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+    ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} with hL
+  -- Step 2: the closed unit cube `z + [0, 1]ᴾ` is the face `F(z, univ)`, of diameter `√P`
+  have hcard : (Finset.univ : Finset (Fin P)).card = P := by simp
+  have hface : ∀ (z : Fin P → ℤ) (u : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      ∀ i, (i ∈ (Finset.univ : Finset (Fin P)) → (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) ∧
+        (i ∉ (Finset.univ : Finset (Fin P)) → u i = z i) :=
+    fun z u hu i => ⟨fun _ => hu i, fun h => absurd (Finset.mem_univ i) h⟩
+  have hdiam : ∀ (z : Fin P → ℤ) (u v : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      (∀ i, (z i : ℝ) ≤ v i ∧ v i ≤ z i + 1) → dist u v ≤ Real.sqrt P := by
+    intro z u v hu hv
+    rw [EuclideanSpace.dist_eq]
+    apply Real.sqrt_le_sqrt
+    calc ∑ i, dist (u i) (v i) ^ 2 ≤ ∑ _i : Fin P, (1 : ℝ) := by
+          apply Finset.sum_le_sum
+          intro i _
+          have h1 : dist (u i) (v i) ≤ 1 := by
+            rw [Real.dist_eq, abs_le]
+            constructor <;> linarith [(hu i).1, (hu i).2, (hv i).1, (hv i).2]
+          have h0 : 0 ≤ dist (u i) (v i) := dist_nonneg
+          nlinarith
+      _ = P := by simp
+  -- Step 3: on a cube through `u` with `d(u) > 0`, the face induction with
+  -- `ρ = d(u)/√(m + 2)`; the counting condition is `dimred_mbl_dtsr_dual_dist_count`
+  have hcube : ∀ (z : Fin P → ℤ) (u : Euclid P), (∀ i, (z i : ℝ) ≤ u i ∧ u i ≤ z i + 1) →
+      0 < infDist u L →
+      (∀ i, (i ∈ (Finset.univ : Finset (Fin P)) → (z i : ℝ) ≤ Ψ P u i ∧ Ψ P u i ≤ z i + 1) ∧
+        (i ∉ (Finset.univ : Finset (Fin P)) → Ψ P u i = z i)) ∧
+      (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ k : ℤ, Ψ P u i = k) ∧
+      ∀ᶠ y in 𝓝[{w : Euclid P | ∀ i, (i ∈ (Finset.univ : Finset (Fin P)) →
+          (z i : ℝ) ≤ w i ∧ w i ≤ z i + 1) ∧ (i ∉ (Finset.univ : Finset (Fin P)) → w i = z i)}] u,
+        dist (Ψ P y) (Ψ P u) ≤ c₀ / (infDist u L / Real.sqrt (m + 2)) * dist y u :=
+    fun z u hu hd => key z Finset.univ hcard u (hface z u hu) _ (div_pos hd hsq)
+      (Submission.dimred_mbl_dtsr_dual_dist_count P m a u z)
+  -- Step 4, part (i): the cube `⌊x⌋ + [0, 1]ᴾ` contains both `x` and `ψ(x)`
+  have hfloor : ∀ u : Euclid P, ∀ i, ((⌊u i⌋ : ℤ) : ℝ) ≤ u i ∧ u i ≤ (⌊u i⌋ : ℤ) + 1 :=
+    fun u i => ⟨Int.floor_le _, (Int.lt_floor_add_one _).le⟩
+  have hpartI : ∀ x : Euclid P, 0 < infDist x L →
+      (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, Ψ P x i = z) ∧
+        dist (Ψ P x) x ≤ Real.sqrt P := by
+    intro x hx
+    obtain ⟨hmem, hint, -⟩ := hcube (fun i => ⌊x i⌋) x (hfloor x) hx
+    exact ⟨hint, hdiam _ (Ψ P x) x (fun i => (hmem i).1 (Finset.mem_univ i)) (hfloor x)⟩
+  -- Step 5: `|ψ(y) − ψ(w)| ≤ (√(m + 2) c₀/d(w))|y − w|` for `y` near `w`, from the finitely
+  -- many cubes through `w` (`dimred_mbl_dtsr_cube_cover`)
+  have hlocal : ∀ w : Euclid P, 0 < infDist w L → ∀ᶠ y in 𝓝 w,
+      dist (Ψ P y) (Ψ P w) ≤ c₀ / (infDist w L / Real.sqrt (m + 2)) * dist y w := by
+    intro w hw
+    obtain ⟨Z, hZ, hcov⟩ := Submission.dimred_mbl_dtsr_cube_cover P w
+    have hall : ∀ z ∈ Z, ∀ᶠ y : Euclid P in 𝓝 w, (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) →
+        dist (Ψ P y) (Ψ P w) ≤ c₀ / (infDist w L / Real.sqrt (m + 2)) * dist y w := by
+      intro z hz
+      have h3 := (hcube z w (hZ z hz) hw).2.2
+      rw [eventually_nhdsWithin_iff] at h3
+      filter_upwards [h3] with y hy hyz
+      exact hy (hface z y hyz)
+    rw [← Finset.eventually_all] at hall
+    filter_upwards [hall, hcov] with y hy hyz
+    obtain ⟨z, hz, hyz⟩ := hyz
+    exact hy z hz hyz
+  refine ⟨Ψ P, hpartI, ?_⟩
+  -- Step 6, part (ii)
+  intro r hr hr4 x y hx hy
+  have hc₀' : 0 ≤ 2 * Real.sqrt (m + 2) * c₀ := by positivity
+  have hsP : 0 ≤ Real.sqrt P := Real.sqrt_nonneg _
+  by_cases hxy : dist x y < r / 2
+  · -- Step 6a: `|x − y| < r/2`, so `d > r/2` on `[x, y]`; the segment argument with
+    -- `K = 2√(m + 2) c₀/r`
+    have hK : 0 ≤ 2 * Real.sqrt (m + 2) * c₀ / r := by positivity
+    have hseg := dimred_mbl_dtsr_segment_lipschitz P (Ψ P) x y
+      (2 * Real.sqrt (m + 2) * c₀ / r) hK ?_
+    · rw [dist_comm (Ψ P x), dist_comm x]
+      calc dist (Ψ P y) (Ψ P x) ≤ 2 * Real.sqrt (m + 2) * c₀ / r * dist y x := hseg
+        _ ≤ (2 * Real.sqrt (m + 2) * c₀ + 4 * Real.sqrt P + 1) / r * dist y x := by
+          apply mul_le_mul_of_nonneg_right _ dist_nonneg
+          apply div_le_div_of_nonneg_right _ hr.le
+          linarith
+    · intro t ht
+      have hdist : dist (x + t • (y - x)) x ≤ dist x y := by
+        rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1,
+          ← dist_eq_norm, dist_comm y x]
+        exact mul_le_of_le_one_left dist_nonneg ht.2
+      -- `d` is `1`-Lipschitz
+      have hdw : r / 2 < infDist (x + t • (y - x)) L := by
+        have h1 := infDist_le_infDist_add_dist (x := x) (y := x + t • (y - x)) (s := L)
+        rw [dist_comm] at h1
+        linarith
+      have hwpos : 0 < infDist (x + t • (y - x)) L := by linarith
+      filter_upwards [hlocal _ hwpos] with w hw
+      refine hw.trans (mul_le_mul_of_nonneg_right ?_ dist_nonneg)
+      rw [div_div_eq_mul_div, div_le_div_iff₀ hwpos hr]
+      have hc0 : 0 ≤ c₀ * Real.sqrt (m + 2) := by positivity
+      nlinarith
+  · -- Step 6b: `|x − y| ≥ r/2`, so `|ψ(x) − ψ(y)| ≤ 2√P + |x − y| ≤ (4√P + 1)|x − y|/r`
+    have hxy : r / 2 ≤ dist x y := not_lt.mp hxy
+    have h1 := (hpartI x (by linarith)).2
+    have h2 := (hpartI y (by linarith)).2
+    have hD : 0 ≤ dist x y := dist_nonneg
+    calc dist (Ψ P x) (Ψ P y) ≤ dist (Ψ P x) x + dist x y + dist y (Ψ P y) :=
+          dist_triangle4 _ _ _ _
+      _ ≤ 2 * Real.sqrt P + dist x y := by rw [dist_comm y]; linarith
+      _ ≤ (2 * Real.sqrt (m + 2) * c₀ + 4 * Real.sqrt P + 1) / r * dist x y := by
+        rw [div_mul_eq_mul_div, le_div_iff₀ hr]
+        nlinarith
+
 end Submission
 
 end GMT.Ch07
