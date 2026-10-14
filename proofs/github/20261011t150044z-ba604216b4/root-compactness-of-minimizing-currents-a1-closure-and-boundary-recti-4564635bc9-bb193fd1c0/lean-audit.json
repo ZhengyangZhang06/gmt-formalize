@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4cd917d08f625885ec6af76aee917253fe7e45caf053c29cdbfad1e6013d8a75",
+  "git_delta": {
+    "base_commit": "41af6fbfe0b28051ed8c1ba02add6a320a8de1ef",
+    "candidate_commit": "097cf4562d908931b3213498b532231ed50bdae3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_db_withDensity_le",
+    "diff_sha256": "33d78db0fc026a2b13db63d77057a5412b78cd37f3fecc7cde75260f1637a604",
+    "source_sha256": "9baf2fa467d2ed3fb229064b70f2d2311180c204e30799cf9ae9a65e06e5187d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_db_withDensity_le",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M B B' : Set (Euclid P)) (θ : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞) (c K : ℝ≥0∞), MeasurableSet M → MeasurableSet B → B ⊆ B' → K ≠ ∞ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, ENNReal.ofReal (θ x) ≤ c + K * g x) → μ B ≤ c * μHE[n] (M ∩ B) + K * ∫⁻ x in M ∩ B', g x ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
