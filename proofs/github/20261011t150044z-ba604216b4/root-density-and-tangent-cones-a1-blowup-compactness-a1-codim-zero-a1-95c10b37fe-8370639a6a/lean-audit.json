@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fa4656c11d5831f4914064f032189ddca9d4ea4d1d5a58bec4d4a6782406efd",
+  "git_delta": {
+    "base_commit": "6461b3fd7774a30a0704f569d5dfa9f451b412a8",
+    "candidate_commit": "a5221e20d5f0bbbca1f0143f5d26620caab740b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_blowUp_eval_dilation_ball",
+    "diff_sha256": "10d5bd15cbdf113e7d0723b46405a6f2e368f64f46b6f7027342957d3a3f61d4",
+    "source_sha256": "e92d9aad9a8f48228761744e239dae694f8375c8a533d526ac32b1d524d8fc4e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_blowUp_eval_dilation_ball",
+      "statement": "∀ (P : ℕ) (x : Euclid P) (ρ lam : ℝ), 0 < lam → dilation x lam ⁻¹' ball 0 (ρ / lam) = ball x ρ ∧ dilation x lam '' ball x ρ = ball 0 (ρ / lam)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
