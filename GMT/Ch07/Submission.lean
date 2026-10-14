@@ -451,6 +451,434 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Ch. 1, proof of 2.10, final step** (p. 12): a centrally symmetric set `K ⊆ ℝᵈ`
+(`x ∈ K → −x ∈ K`; no measurability or boundedness assumed) has `Lᵈ(K) ≤ ω_d (½ diam K)ᵈ`.
+If `diam K = ∞` then `d ≥ 1` (`ℝ⁰` is a point) and the right-hand side is `∞`.  Otherwise
+`2‖x‖ = |x − (−x)| ≤ diam K` for `x ∈ K`, so `K` lies in the closed ball of radius `½ diam K`
+about `0`, whose measure is `(½ diam K)ᵈ ω_d` by the scaling of the Haar measure `Lᵈ`. -/
+theorem Submission.cbr_ci_iso_volume_le_of_neg_mem : ∀ (d : ℕ) (K : Set (Euclid d)), (∀ x ∈ K, -x ∈ K) → volume K ≤ unitBallVolume d * (ediam K / 2) ^ d := by
+  intro d K hK
+  by_cases htop : ediam K = ∞
+  · -- `diam K = ∞` forces `d ≥ 1` (`ℝ⁰` is a point), and then the right-hand side is `∞`
+    rcases Nat.eq_zero_or_pos d with rfl | hd
+    · exact absurd (ediam_subsingleton Set.subsingleton_of_subsingleton) (htop ▸ ENNReal.top_ne_zero)
+    · have hω : unitBallVolume d ≠ 0 := (measure_ball_pos volume (0 : Euclid d) one_pos).ne'
+      rw [htop, ENNReal.top_div_of_ne_top ENNReal.ofNat_ne_top, ENNReal.top_pow hd.ne',
+        ENNReal.mul_top hω]
+      exact le_top
+  · -- central symmetry: `2‖x‖ = dist(x, -x) ≤ diam K`, so `K ⊆ B̄(0, diam K / 2)`
+    have hr : 0 ≤ diam K / 2 := div_nonneg diam_nonneg zero_le_two
+    have hsub : K ⊆ closedBall (0 : Euclid d) (diam K / 2) := by
+      intro x hx
+      have h := dist_le_diam_of_mem' htop hx (hK x hx)
+      rw [dist_eq_norm, sub_neg_eq_add, ← two_smul ℝ x, norm_smul, Real.norm_two] at h
+      rw [mem_closedBall_zero_iff]
+      linarith
+    -- `Lᵈ(B̄(0, r)) = rᵈ ω_d` (`finrank ℝ ℝᵈ = d`) and `ofReal (diam K / 2) = ediam K / 2`
+    have hball : volume (closedBall (0 : Euclid d) (diam K / 2)) =
+        ENNReal.ofReal ((diam K / 2) ^ d) * unitBallVolume d := by
+      rw [Measure.addHaar_closedBall volume _ hr, finrank_euclideanSpace_fin]
+      rfl
+    have hrad : ENNReal.ofReal ((diam K / 2) ^ d) = (ediam K / 2) ^ d := by
+      rw [ENNReal.ofReal_pow hr, ENNReal.ofReal_div_of_pos two_pos, ENNReal.ofReal_ofNat, diam,
+        ENNReal.ofReal_toReal htop]
+    calc volume K ≤ volume (closedBall (0 : Euclid d) (diam K / 2)) := measure_mono hsub
+      _ = unitBallVolume d * (ediam K / 2) ^ d := by rw [hball, hrad, mul_comm]
+/-- Reflection symmetries of the coordinate Steiner symmetrization (Simon, Ch. 1, proof of 2.10).
+Write `y[i↦t]` for `y` with `i`-th coordinate replaced by `t`, `R_i(y) = y[i↦-y_i]`,
+`A^j_y = {t : y[j↦t] ∈ A}` and `S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ L¹(A^j_y)/2}`.  Then (a) `S_j(A)`
+is invariant under `R_j`, and (b) if `i ≠ j` and `A` is invariant under `R_i`, so is `S_j(A)`.
+For (a), `R_j(y)[j↦t] = y[j↦t]`; for (b), `R_i(y)[j↦t] = R_i(y[j↦t])` and `R_i` is an involution,
+so the `j`-slices of `y` and of its reflection agree, while `|(R_i y)_j| = |y_j|`. -/
+theorem Submission.cbr_ci_iso_steiner_reflection : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), (∀ x ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}, WithLp.toLp 2 (Function.update x.ofLp j (-x j)) ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}) ∧ ∀ i : Fin d, i ≠ j → (∀ x ∈ A, WithLp.toLp 2 (Function.update x.ofLp i (-x i)) ∈ A) → ∀ x ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2}, WithLp.toLp 2 (Function.update x.ofLp i (-x i)) ∈ {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} := by
+  intro d j A
+  refine ⟨fun x hx => ?_, fun i hij hA x hx => ?_⟩
+  · -- (a) `R_j(x)[j↦t] = x[j↦t]`, so the `j`-slice is unchanged, and `|(R_j x)_j| = |x_j|`
+    simpa using hx
+  · -- (b) `R_i` is an involution and commutes with `y ↦ y[j↦t]`, so the `j`-slices of `x` and
+    -- `R_i(x)` agree; moreover `(R_i x)_j = x_j` since `i ≠ j`
+    have hR : ∀ z : Euclid d, WithLp.toLp 2 (update (WithLp.toLp 2 (update z.ofLp i (-z i))).ofLp i
+        (-(WithLp.toLp 2 (update z.ofLp i (-z i))) i)) = z := by
+      intro z
+      ext k
+      by_cases hk : k = i
+      · subst hk
+        simp
+      · simp [hk]
+    have hcomm : ∀ t : ℝ, WithLp.toLp 2 (update (update x.ofLp i (-x i)) j t) =
+        WithLp.toLp 2 (update (WithLp.toLp 2 (update x.ofLp j t)).ofLp i
+          (-(WithLp.toLp 2 (update x.ofLp j t)) i)) := by
+      intro t
+      simp only [update_of_ne hij]
+      rw [update_comm hij]
+    have hslice : {t : ℝ | WithLp.toLp 2 (update (WithLp.toLp 2 (update x.ofLp i (-x i))).ofLp j t) ∈ A} =
+        {t : ℝ | WithLp.toLp 2 (update x.ofLp j t) ∈ A} := by
+      ext t
+      simp only [Set.mem_ofPred_eq]
+      rw [hcomm t]
+      constructor
+      · intro h
+        have h' := hA _ h
+        rwa [hR] at h'
+      · exact hA _
+    have hxj : (WithLp.toLp 2 (update x.ofLp i (-x i))) j = x j := by
+      simp [hij.symm]
+    show _ ∧ _
+    rw [hslice, hxj]
+    exact hx
+/-- **Steiner symmetrization does not increase the diameter** (Simon 2.10, proof of the
+isodiametric inequality).  For compact `A ⊆ ℝᵈ` and `j < d`, write `y[j↦t]` for `y` with its `j`-th
+coordinate replaced by `t`, `A^j_y = {t : y[j↦t] ∈ A}`, `λ(y) = L¹(A^j_y)` and
+`S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ λ(y)/2}`; then `ediam S_j(A) ≤ ediam A`.  Each slice `A^j_y` is
+compact, so it contains `a_y = inf A^j_y` and `b_y = sup A^j_y`, and `λ(y) ≤ b_y - a_y`.  For
+`x, y ∈ S_j(A)`, `|x_j - y_j| ≤ (λ(x) + λ(y))/2 ≤ max(b_y - a_x, b_x - a_y)`, and replacing the
+`j`-th coordinates of `x, y` by the matching endpoints gives two points of `A` at distance at least
+`|x - y|`. -/
+theorem Submission.cbr_ci_iso_steiner_ediam_le : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ediam {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} ≤ ediam A := by
+  intro d j A hA
+  -- (1) every slice `A^j_y` is compact: closed, and contained in the compact image of `A`
+  -- under the `j`-th coordinate
+  have hslice : ∀ y : Euclid d,
+      IsCompact {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} := by
+    intro y
+    have hf : Continuous fun t : ℝ => WithLp.toLp 2 (Function.update y.ofLp j t) :=
+      (PiLp.continuous_toLp 2 _).comp (continuous_const.update j continuous_id)
+    refine (hA.image (PiLp.continuous_apply 2 _ j)).of_isClosed_subset
+      (hA.isClosed.preimage hf) fun t ht => ⟨_, ht, by simp⟩
+  -- (2) a nonempty compact `P ⊆ ℝ` contains `inf P` and `sup P`, and `L¹(P) ≤ sup P - inf P`
+  have hlen : ∀ P : Set ℝ, IsCompact P → P.Nonempty →
+      sInf P ∈ P ∧ sSup P ∈ P ∧ (volume P).toReal ≤ sSup P - sInf P := by
+    intro P hP hne
+    refine ⟨hP.sInf_mem hne, hP.sSup_mem hne, ?_⟩
+    refine ENNReal.toReal_le_of_le_ofReal
+      (sub_nonneg.mpr (csInf_le_csSup hne hP.bddBelow hP.bddAbove)) ?_
+    calc volume P ≤ volume (Icc (sInf P) (sSup P)) :=
+          measure_mono fun t ht => ⟨csInf_le hP.bddBelow ht, le_csSup hP.bddAbove ht⟩
+      _ = ENNReal.ofReal (sSup P - sInf P) := Real.volume_Icc
+  -- (3) two-point estimate: replacing the `j`-th coordinates by `a, b` with
+  -- `|x_j - y_j| ≤ |a - b|` does not decrease the distance
+  have hpt : ∀ (x y : Euclid d) (a b : ℝ), WithLp.toLp 2 (Function.update x.ofLp j a) ∈ A →
+      WithLp.toLp 2 (Function.update y.ofLp j b) ∈ A → |x j - y j| ≤ |a - b| →
+      edist x y ≤ ediam A := by
+    intro x y a b ha hb hab
+    refine le_trans ?_ (edist_le_ediam_of_mem ha hb)
+    rw [edist_dist, edist_dist]
+    refine ENNReal.ofReal_le_ofReal ?_
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt (Finset.sum_le_sum fun i _ => ?_)
+    by_cases hi : i = j
+    · subst hi
+      simp only [Function.update_self, Real.dist_eq]
+      exact pow_le_pow_left₀ (abs_nonneg _) hab 2
+    · simp only [Function.update_of_ne hi, le_refl]
+  -- (4) for `x, y ∈ S_j(A)`, `|x_j - y_j| ≤ (λ(x) + λ(y))/2` is realised by a pair of points of `A`
+  refine ediam_le ?_
+  rintro x ⟨hxne, hxj⟩ y ⟨hyne, hyj⟩
+  obtain ⟨hax, hbx, hlx⟩ := hlen _ (hslice x) hxne
+  obtain ⟨hay, hby, hly⟩ := hlen _ (hslice y) hyne
+  have hx := abs_le.mp hxj
+  have hy := abs_le.mp hyj
+  rcases le_total
+      (sSup {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A} -
+        sInf {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A})
+      (sSup {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} -
+        sInf {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A}) with h | h
+  · refine hpt x y _ _ hax hby ?_
+    rw [abs_sub_comm _ (sSup _)]
+    exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans (le_abs_self _)
+  · refine hpt x y _ _ hbx hay ?_
+    exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans (le_abs_self _)
+/-- **Simon, Ch. 1, Note after the proof of 2.10** (p. 12): for compact `A ⊆ ℝᵈ` and a coordinate
+`j`, the length `y ↦ L¹{t : y[j ↦ t] ∈ A}` of the slice of `A` along the `j`-th coordinate line
+through `y` is upper semicontinuous.  Every slice lies in `[-R, R]` (`A ⊆ B_R(0)`), so has finite
+length.  Given `L¹(A^j_x) < r`, outer regularity gives an open `U ⊇ A^j_x` with `L¹(U) < r`; the
+compact set `C = A ∖ {z : z_j ∈ U}` has closed image under `π z = z[j ↦ 0]`, `π x ∉ π(C)`, and for
+`y` in the neighbourhood `π⁻¹(π(C)ᶜ)` of `x` the slice `A^j_y` lies in `U`, so `L¹(A^j_y) < r`. -/
+theorem Submission.cbr_ci_iso_slice_length_usc : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) := by
+  intro d j A hA
+  -- every slice lies in `[-R, R]`, so it has finite length
+  obtain ⟨R, hR⟩ := hA.isBounded.subset_closedBall (0 : Euclid d)
+  have hfin : ∀ y : Euclid d,
+      volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} ≠ ∞ := by
+    intro y
+    refine ne_top_of_le_ne_top (measure_Icc_lt_top (a := -R) (b := R)).ne (measure_mono ?_)
+    intro t ht
+    have h1 := PiLp.norm_apply_le (WithLp.toLp 2 (Function.update y.ofLp j t) : Euclid d) j
+    rw [WithLp.ofLp_toLp, Function.update_self, Real.norm_eq_abs] at h1
+    exact abs_le.mp (h1.trans (mem_closedBall_zero_iff.mp (hR ht)))
+  refine upperSemicontinuous_iff.mpr fun x => upperSemicontinuousAt_iff.mpr fun r hr => ?_
+  -- outer regularity: an open `U` around the slice through `x` with `L¹(U) < r`
+  obtain ⟨U, hxU, hUo, hUr⟩ := Set.exists_isOpen_lt_of_lt
+    {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp j t) ∈ A} (ENNReal.ofReal r)
+    ((ENNReal.lt_ofReal_iff_toReal_lt (hfin x)).mpr hr)
+  -- the projection `z ↦ z[j ↦ 0]` and the compact part of `A` off `{z : z_j ∈ U}`
+  let proj : Euclid d → Euclid d := fun z => WithLp.toLp 2 (Function.update z.ofLp j 0)
+  have hproj : Continuous proj :=
+    (PiLp.continuous_toLp 2 _).comp
+      ((continuous_update j).comp ((PiLp.continuous_ofLp 2 _).prodMk continuous_const))
+  have hC : IsCompact (A \ {z : Euclid d | z.ofLp j ∈ U}) :=
+    hA.diff (hUo.preimage (PiLp.continuous_apply 2 _ j))
+  -- `π x ∉ π(C)`: a point of `C` over `π x` would put its `j`-th coordinate in the slice at `x`
+  have hx : proj x ∉ proj '' (A \ {z : Euclid d | z.ofLp j ∈ U}) := by
+    rintro ⟨z, ⟨hzA, hzU⟩, hzx⟩
+    have h : Function.update z.ofLp j 0 = Function.update x.ofLp j 0 := by
+      simpa only [proj, WithLp.ofLp_toLp] using congrArg WithLp.ofLp hzx
+    have hz : WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j)) = z := by
+      calc WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j))
+          = WithLp.toLp 2 (Function.update (Function.update x.ofLp j 0) j (z.ofLp j)) := by
+            rw [Function.update_idem]
+        _ = z := by rw [← h, Function.update_idem, Function.update_eq_self, WithLp.toLp_ofLp]
+    exact hzU (hxU (show WithLp.toLp 2 (Function.update x.ofLp j (z.ofLp j)) ∈ A by
+      rw [hz]; exact hzA))
+  -- on the neighbourhood `π⁻¹(π(C)ᶜ)` of `x` every slice lies in `U`
+  filter_upwards [((hC.image hproj).isClosed.isOpen_compl.preimage hproj).mem_nhds hx] with y hy
+  have hy' : proj y ∉ proj '' (A \ {z : Euclid d | z.ofLp j ∈ U}) := hy
+  have hyU : {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} ⊆ U := by
+    intro t ht
+    by_contra htU
+    refine hy' ⟨WithLp.toLp 2 (Function.update y.ofLp j t), ⟨ht, ?_⟩, ?_⟩
+    · show (WithLp.toLp 2 (Function.update y.ofLp j t)).ofLp j ∉ U
+      rwa [WithLp.ofLp_toLp, Function.update_self]
+    · simp only [proj, Function.update_idem]
+  exact ENNReal.toReal_lt_of_lt_ofReal ((measure_mono hyU).trans_lt hUr)
+/-- **Steiner symmetrization of a compact set is compact** (Simon Ch. 1, the Note after the proof
+of 2.10: `S_j(A)` is compact because the slice length is upper semicontinuous).  Let `A ⊆ ℝ^d` be
+compact, `A^j_y = {t : y[j ↦ t] ∈ A}` and `λ(y) = L¹(A^j_y)`.  If `λ` is upper semicontinuous,
+then `S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ λ(y)/2}` is compact: `{y : A^j_y ≠ ∅} = π⁻¹(π(A))` for
+`π z = z[j ↦ 0]`, `{y : |y_j| ≤ λ(y)/2}` is a superlevel set of the upper semicontinuous
+`λ − 2|y_j|`, and `S_j(A) ⊆ closedBall(0, 3R)` whenever `A ⊆ closedBall(0, R)`. -/
+theorem Submission.cbr_ci_iso_steiner_isCompact : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → UpperSemicontinuous (fun y : Euclid d => (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal) → IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} := by
+  intro d j A hA hlen
+  -- Step 1: `π z = z[j ↦ 0]` is continuous, and `π z = π y` forces `y[j ↦ z_j] = z`
+  let π : Euclid d → Euclid d := fun z => WithLp.toLp 2 (Function.update z.ofLp j 0)
+  have hπ : Continuous π :=
+    (PiLp.continuous_toLp 2 _).comp ((PiLp.continuous_ofLp 2 _).update j continuous_const)
+  have hπ_eq : ∀ y z : Euclid d, π z = π y →
+      WithLp.toLp 2 (Function.update y.ofLp j (z j)) = z := by
+    intro y z h
+    ext i
+    by_cases hi : i = j
+    · subst hi
+      simp
+    · have := congrArg (fun w : Euclid d => w i) h
+      simp only [π, Function.update_of_ne hi] at this ⊢
+      exact this.symm
+  -- Step 2: `{y : A^j_y ≠ ∅} = π⁻¹(π(A))` is closed, `π(A)` being compact
+  have hN : IsClosed
+      {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty} := by
+    convert (hA.image hπ).isClosed.preimage hπ using 1
+    ext y
+    constructor
+    · rintro ⟨t, ht⟩
+      exact ⟨_, ht, by simp [π]⟩
+    · rintro ⟨z, hz, h⟩
+      exact ⟨z j, by rw [mem_ofPred_eq, hπ_eq y z h]; exact hz⟩
+  -- Step 3: `{y : 0 ≤ λ(y) − 2|y_j|}` is closed, `λ − 2|y_j|` being upper semicontinuous
+  have hM : IsClosed {y : Euclid d | 0 ≤
+      (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal + -(2 * |y j|)} :=
+    (hlen.add ((PiLp.continuous_apply 2 _ j).abs.const_mul 2).neg.upperSemicontinuous)
+      |>.isClosed_preimage 0
+  -- Step 4: `S_j(A)` is the intersection of these two closed sets
+  have hS : IsClosed {y : Euclid d |
+      {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧
+        |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} := by
+    convert hN.inter hM using 1
+    ext y
+    simp only [mem_ofPred_eq, mem_inter_iff]
+    exact and_congr Iff.rfl ⟨fun h => by linarith, fun h => by linarith⟩
+  -- Step 5: `S_j(A) ⊆ closedBall(0, 3R)` when `A ⊆ closedBall(0, R)`
+  obtain ⟨R, hR⟩ := hA.isBounded.subset_closedBall 0
+  refine Metric.isCompact_of_isClosed_isBounded hS
+    ((isBounded_closedBall (x := (0 : Euclid d)) (r := 3 * R)).subset ?_)
+  rintro y ⟨⟨t, ht⟩, hy⟩
+  rw [mem_closedBall_zero_iff]
+  -- every `s ∈ A^j_y` has `|s| ≤ ‖y[j ↦ s]‖ ≤ R`
+  have hnorm : ∀ s : ℝ, WithLp.toLp 2 (Function.update y.ofLp j s) ∈ A → |s| ≤ R := by
+    intro s hs
+    have h1 := PiLp.norm_apply_le (WithLp.toLp 2 (Function.update y.ofLp j s)) j
+    have h2 := mem_closedBall_zero_iff.1 (hR hs)
+    simp only [Function.update_self, Real.norm_eq_abs] at h1
+    linarith
+  -- hence `A^j_y ⊆ [−R, R]` and `λ(y) ≤ 2R`
+  have hR0 : 0 ≤ R := (abs_nonneg t).trans (hnorm t ht)
+  have hvol : (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal ≤ 2 * R := by
+    refine ENNReal.toReal_le_of_le_ofReal (by linarith) ?_
+    calc volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}
+        ≤ volume (Icc (-R) R) := measure_mono fun s hs => abs_le.1 (hnorm s hs)
+      _ = ENNReal.ofReal (2 * R) := by rw [Real.volume_Icc]; ring_nf
+  -- `y − y[j ↦ t] = (y_j − t) e_j`
+  have hdiff : ‖y - WithLp.toLp 2 (Function.update y.ofLp j t)‖ = |y j - t| := by
+    have : y - WithLp.toLp 2 (Function.update y.ofLp j t) = EuclideanSpace.single j (y j - t) := by
+      ext i
+      by_cases hi : i = j
+      · subst hi
+        simp
+      · simp [hi]
+    rw [this, PiLp.norm_single, Real.norm_eq_abs]
+  have hz : ‖WithLp.toLp 2 (Function.update y.ofLp j t)‖ ≤ R := mem_closedBall_zero_iff.1 (hR ht)
+  -- Step 6: `‖y‖ ≤ ‖y[j ↦ t]‖ + |y_j − t| ≤ R + |y_j| + |t| ≤ 3R`, using `|y_j| ≤ λ(y)/2 ≤ R`
+  calc ‖y‖ = ‖WithLp.toLp 2 (Function.update y.ofLp j t) +
+        (y - WithLp.toLp 2 (Function.update y.ofLp j t))‖ := by rw [add_sub_cancel]
+    _ ≤ ‖WithLp.toLp 2 (Function.update y.ofLp j t)‖ +
+        ‖y - WithLp.toLp 2 (Function.update y.ofLp j t)‖ := norm_add_le _ _
+    _ ≤ R + (|y j| + |t|) := by
+        rw [hdiff]
+        gcongr
+        exact abs_sub _ _
+    _ ≤ 3 * R := by linarith [hnorm t ht]
+/-- **Cavalieri's principle along a coordinate direction** (Simon Ch. 1, proof of 2.10: Steiner
+symmetrization keeps Lebesgue measure "by Fubini").  If measurable `S, A ⊆ ℝᵈ` have line slices
+`{t : y[j↦t] ∈ S}`, `{t : y[j↦t] ∈ A}` of equal `L¹`-measure through every `y`, then
+`Lᵈ(S) = Lᵈ(A)`.  With `d = n + 1`, `φ(t, z) = Fin.insertNth j t z` is measure preserving from
+`L¹ ⊗ Lⁿ` to `Lᵈ`; its fibre over `z` is the slice through `φ(0, z)`, and Tonelli
+(`Measure.prod_apply_symm`) integrates the equal slice measures over `z`. -/
+theorem Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (S A : Set (Euclid d)), MeasurableSet S → MeasurableSet A → (∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ S} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}) → volume S = volume A := by
+  intro d j S A hS hA hslice
+  cases d with
+  | zero => exact Fin.elim0 j
+  | succ n =>
+    -- `φ(t, z) = Fin.insertNth j t z`, measure preserving from `L¹ ⊗ Lⁿ` to `Lᵈ`
+    let e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) j
+    let φ : ℝ × (Fin n → ℝ) → Euclid (n + 1) := fun p => WithLp.toLp 2 (e.symm p)
+    have hφ : MeasurePreserving φ volume volume :=
+      (PiLp.volume_preserving_toLp (Fin (n + 1))).comp
+        (MeasurePreserving.symm e (volume_preserving_piFinSuccAbove _ j))
+    -- the fibre of `φ` over `z` is the coordinate slice through `φ(0, z)`
+    have hfibre (B : Set (Euclid (n + 1))) (z : Fin n → ℝ) :
+        (fun t => φ (t, z)) ⁻¹' B =
+          {t : ℝ | WithLp.toLp 2 (Function.update (φ (0, z)).ofLp j t) ∈ B} := by
+      ext t
+      change WithLp.toLp 2 (j.insertNth t z) ∈ B ↔
+        WithLp.toLp 2 (Function.update (j.insertNth 0 z) j t) ∈ B
+      rw [Fin.update_insertNth]
+    -- Tonelli: `Lᵈ(B) = (L¹ ⊗ Lⁿ)(φ⁻¹ B) = ∫⁻ z, L¹(fibre of φ⁻¹ B over z)`
+    have hvol (B : Set (Euclid (n + 1))) (hB : MeasurableSet B) :
+        volume B = ∫⁻ z : Fin n → ℝ, volume ((fun t => φ (t, z)) ⁻¹' B) :=
+      (hφ.measure_preimage hB.nullMeasurableSet).symm.trans
+        (Measure.prod_apply_symm (hB.preimage hφ.measurable))
+    rw [hvol S hS, hvol A hA]
+    refine lintegral_congr fun z => ?_
+    rw [hfibre S z, hfibre A z]
+    exact hslice (φ (0, z))
+/-- Steiner symmetrization in direction `j` keeps the length of every line slice: for compact
+`A ⊆ ℝᵈ` and `y ∈ ℝᵈ`, `L¹{t | y[j↦t] ∈ S_j(A)} = L¹(B)` with `B = {t | y[j↦t] ∈ A}`.  Each
+point `y[j↦t]` of the line has `j`-th coordinate `t` and slice `B`, so the left set is
+`{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = L¹(B)`.  It is empty if `B = ∅` and `[-ℓ/2, ℓ/2]` otherwise, of
+length `ℓ`, which is finite because `B` lies in the compact projection `π_j(A)`. -/
+theorem Submission.cbr_ci_iso_svol_steiner_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ {x : Euclid d | {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}.Nonempty ∧ |x j| ≤ (volume {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}).toReal / 2}} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} := by
+  intro d j A hA y
+  -- `B = A^j_y = {s | y[j↦s] ∈ A}`
+  obtain ⟨B, hB⟩ : ∃ B : Set ℝ, {s : ℝ | WithLp.toLp 2 (update y.ofLp j s) ∈ A} = B :=
+    ⟨_, rfl⟩
+  -- steps 1–2: `(y[j↦t])_j = t` and `(y[j↦t])[j↦s] = y[j↦s]` (`WithLp.ofLp_toLp` is `rfl`), so
+  -- `A^j_{y[j↦t]} = B` and the left set is `{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = (L¹ B).toReal`
+  simp only [mem_ofPred_eq, update_idem, update_self, hB]
+  -- step 3: `B ⊆ π_j(A)`, which is compact, so `L¹(B) < ∞`
+  have hBfin : volume B ≠ ∞ := by
+    have hπ : IsCompact ((fun x : Euclid d => x j) '' A) := hA.image (PiLp.continuous_apply 2 _ j)
+    refine (measure_lt_top_of_subset ?_ hπ.measure_lt_top.ne).ne
+    rintro s hs
+    rw [← hB] at hs
+    exact ⟨_, hs, update_self j s y.ofLp⟩
+  rcases B.eq_empty_or_nonempty with rfl | hBne
+  -- step 4: if `B = ∅`, the left set is empty
+  · simp only [Set.not_nonempty_empty, false_and, ofPred_false]
+  -- step 5: otherwise it is `[-ℓ/2, ℓ/2]`, of measure `ofReal ℓ = L¹(B)`
+  · have hIcc : {t : ℝ | B.Nonempty ∧ |t| ≤ (volume B).toReal / 2} =
+        Icc (-((volume B).toReal / 2)) ((volume B).toReal / 2) := by
+      ext t
+      rw [mem_ofPred_eq, mem_Icc, ← abs_le, and_iff_right hBne]
+    rw [hIcc, Real.volume_Icc, sub_neg_eq_add, add_halves, ENNReal.ofReal_toReal hBfin]
+/-- **Symmetric replacement** (Simon, Ch. 1, proof of 2.10): applying the coordinate Steiner
+symmetrizations `S_i(B) = {y : B^i_y ≠ ∅, |y_i| ≤ L¹(B^i_y)/2}`, `B^i_y = {t : y[i↦t] ∈ B}`, for
+`i = 1, …, d` to a compact `A ⊆ ℝᵈ` gives a compact `K` with `Lᵈ(K) = Lᵈ(A)`, `ediam K ≤ ediam A`
+and `-K = K`.  Each `S_i` keeps compactness, Lebesgue measure (equal slice lengths and Cavalieri)
+and the diameter bound, makes the set invariant under `R_i(y) = y[i↦-y_i]` and keeps the earlier
+`R_k`-invariances; flipping the coordinates of `x ∈ K` one at a time then gives `-x ∈ K`. -/
+theorem Submission.dmcbr_ci_iso_exists_symmetric_replacement : ∀ (d : ℕ) (A : Set (Euclid d)), IsCompact A → ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧ ediam K ≤ ediam A ∧ ∀ x ∈ K, -x ∈ K := by
+  intro d A hA
+  -- Step 0: for compact `B`, `S_i(B)` is compact (the slice length is upper semicontinuous) and
+  -- `Lᵈ(S_i(B)) = Lᵈ(B)` (equal slice lengths and Cavalieri's principle)
+  have hstep : ∀ (i : Fin d) (B : Set (Euclid d)), IsCompact B →
+      IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}.Nonempty ∧
+        |y i| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}).toReal / 2} ∧
+      volume {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}.Nonempty ∧
+        |y i| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}).toReal / 2} =
+        volume B := by
+    intro i B hB
+    have hS := Submission.cbr_ci_iso_steiner_isCompact d i B hB
+      (Submission.cbr_ci_iso_slice_length_usc d i B hB)
+    exact ⟨hS, Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq d i _ B hS.measurableSet
+      hB.measurableSet (Submission.cbr_ci_iso_svol_steiner_slice_volume_eq d i B hB)⟩
+  -- Steps 1–3: for every finite set `F` of coordinates there is a compact `K_F` with
+  -- `Lᵈ(K_F) = Lᵈ(A)`, `ediam K_F ≤ ediam A` and `R_k(K_F) ⊆ K_F` for `k ∈ F`
+  have hclaim : ∀ F : Finset (Fin d), ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧
+      ediam K ≤ ediam A ∧
+      ∀ k ∈ F, ∀ x ∈ K, WithLp.toLp 2 (Function.update x.ofLp k (-x k)) ∈ K := by
+    intro F
+    induction F using Finset.induction_on with
+    | empty => exact ⟨A, hA, rfl, le_rfl, by simp⟩
+    | insert i F hi ih =>
+      -- `K_{insert i F} = S_i(K_F)`
+      obtain ⟨K, hK, hvol, hdiam, hsym⟩ := ih
+      obtain ⟨hSc, hSv⟩ := hstep i K hK
+      refine ⟨_, hSc, hSv.trans hvol, (Submission.cbr_ci_iso_steiner_ediam_le d i K hK).trans hdiam,
+        fun k hk x hx => ?_⟩
+      rcases Finset.mem_insert.mp hk with rfl | hk
+      · exact (Submission.cbr_ci_iso_steiner_reflection d k K).1 x hx
+      · exact (Submission.cbr_ci_iso_steiner_reflection d i K).2 k (fun h => hi (h ▸ hk))
+          (hsym k hk) x hx
+  -- Step 4: `K = K_univ` is invariant under every `R_i`
+  obtain ⟨K, hK, hvol, hdiam, hsym⟩ := hclaim Finset.univ
+  refine ⟨K, hK, hvol, hdiam, fun x hx => ?_⟩
+  -- Step 5: `x^G ∈ K` for every `G`, where `x^G` negates the coordinates in `G`, since
+  -- `x^{insert i G} = R_i(x^G)` for `i ∉ G`; and `x^univ = -x`
+  have hflip : ∀ G : Finset (Fin d),
+      (WithLp.toLp 2 (fun k => if k ∈ G then -x k else x k) : Euclid d) ∈ K := by
+    intro G
+    induction G using Finset.induction_on with
+    | empty => simpa using hx
+    | insert i G hi ih =>
+      convert hsym i (Finset.mem_univ i) _ ih using 1
+      ext k
+      by_cases hk : k = i
+      · subst hk
+        simp [hi]
+      · simp [hk]
+  convert hflip Finset.univ using 1
+  ext k
+  simp
+
+/-- **Simon, Ch. 1, Theorem 2.10** (isodiametric inequality, pp. 11–12): every `A ⊆ ℝᵈ` (no
+measurability or boundedness assumed) has `Lᵈ(A) ≤ ω_d (½ diam A)ᵈ`.  If `diam A = ∞` then
+`d ≥ 1` (`ℝ⁰` is a point) and the right-hand side is `ω_d · ∞ = ∞`, as `ω_d > 0`.  Otherwise, as in
+Simon's reduction to compact sets, the closure `Ā` is compact with `diam Ā = diam A` and
+`Lᵈ(A) ≤ Lᵈ(Ā)`; Steiner symmetrization gives a centrally symmetric compact `K` with
+`Lᵈ(K) = Lᵈ(Ā)` and `diam K ≤ diam Ā`, and the bound for `K` is monotone in the diameter. -/
+theorem Submission.dmcbr_ci_iso_volume_le_ediam_pow : ∀ (d : ℕ) (A : Set (Euclid d)), volume A ≤ unitBallVolume d * (ediam A / 2) ^ d := by
+  intro d A
+  by_cases hA : ediam A = ∞
+  · -- unbounded `A`: then `d ≥ 1` (`ℝ⁰` is a point), and the right-hand side is `ω_d · ∞ = ∞`
+    have hd : d ≠ 0 := by
+      rintro rfl
+      exact ENNReal.zero_ne_top ((ediam_subsingleton Set.subsingleton_of_subsingleton).symm.trans hA)
+    have hω : unitBallVolume d ≠ 0 := (measure_ball_pos volume (0 : Euclid d) one_pos).ne'
+    have h2 : ediam A / 2 = ∞ := by
+      rw [hA]
+      exact ENNReal.top_div_of_ne_top ENNReal.ofNat_ne_top
+    rw [h2, ENNReal.top_pow hd, ENNReal.mul_top hω]
+    exact le_top
+  · -- bounded `A`: pass to the compact closure `Ā` (same diameter, at least the same measure),
+    -- then to a centrally symmetric compact replacement of `Ā`
+    have hc : IsCompact (closure A) := (isBounded_iff_ediam_ne_top.2 hA).isCompact_closure
+    obtain ⟨K, -, hKA, hKd, hKs⟩ :=
+      Submission.dmcbr_ci_iso_exists_symmetric_replacement d (closure A) hc
+    rw [ediam_closure] at hKd
+    calc volume A ≤ volume (closure A) := measure_mono subset_closure
+      _ = volume K := hKA.symm
+      _ ≤ unitBallVolume d * (ediam K / 2) ^ d := Submission.cbr_ci_iso_volume_le_of_neg_mem d K hKs
+      _ ≤ unitBallVolume d * (ediam A / 2) ^ d := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
