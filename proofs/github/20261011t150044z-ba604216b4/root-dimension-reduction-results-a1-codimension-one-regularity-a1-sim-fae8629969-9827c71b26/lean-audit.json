@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25774b9733dff1af59834ed5c1871d84207875bf30a44e4cb97ba06ee619376b",
+  "git_delta": {
+    "base_commit": "c23e070e77b5be815baa97566c18c83e566fd5a7",
+    "candidate_commit": "54a0243a1fb72d22bcb3433d0f82ea8ccda793ff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_lsa_rademacher_on_submanifold",
+    "diff_sha256": "59551163020d9450f7a7e292aa19b0e7ecdd7e2196e43f42fd4b3212d96946d9",
+    "source_sha256": "86c1e451d64ccea32884f99b8b4dc6ab9d5ca78aa35b8e7cde117f7ebd7d13c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_lsa_rademacher_on_submanifold",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (ζ : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M ζ → ∀ᵐ x ∂(μHE[m].restrict M), DifferentiableWithinAt ℝ ζ M x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
