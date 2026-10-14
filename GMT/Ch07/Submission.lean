@@ -1423,6 +1423,53 @@ theorem Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset : ∀ (P n :
   rw [hY] at hx
   by_contra hxF
   exact hsupp hxF hx.2
+/-- **A compactly carried integer multiplicity cycle annihilates exact forms** (the cut-off step of
+Simon Ch. 6, 2.23–2.24).  Let `X = τ(M, θ, ξ) ∈ 𝒟_{k+1}(ℝᴾ)` with `∂X = 0`, and let `K` be compact
+with `μ_R(ℝᴾ ∖ K) = 0`, `μ_R = θ H^{k+1}⌞M`.  Then `∫_M θ ⟨dη, ξ⟩ dH^{k+1} = 0` for every smooth
+`k`-form `η` (no support condition).  As `θ ≥ 1` on `M`, `H^{k+1}(M ∖ K) = 0`.  A bump function
+`ζ ≡ 1` on a ball `B ⊇ K` makes `ψ = ζη` a test form with `dψ = dη` on `B`, so the integral equals
+`X(dψ) = ∂X(ψ) = 0`. -/
+theorem Submission.dimred_cs_sp_cp_action_extDeriv_eq_zero : ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (R : IMRep (univ : Set (Euclid P)) (k + 1)) (K : Set (Euclid P)) (η : DifferentialForm (Euclid P) k), R.Represents X → IsCompact K → R.measure Kᶜ = 0 → X.boundary = 0 → IsSmoothForm η → R.action (exteriorDerivative η) = 0 := by
+  intro P k X R K η hR hK hμK hX hη
+  -- Step 1: `θ ≥ 1` on `M`, so `H^{k+1}(M ∖ K) ≤ μ_R(ℝᴾ ∖ K) = 0`
+  have hKc : MeasurableSet Kᶜ := hK.isClosed.measurableSet.compl
+  have hnull : μHE[k + 1] (Kᶜ ∩ R.carrier) = 0 := by
+    refine le_antisymm ?_ zero_le
+    calc μHE[k + 1] (Kᶜ ∩ R.carrier) = ∫⁻ _ in Kᶜ ∩ R.carrier, 1 ∂μHE[k + 1] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in Kᶜ ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k + 1] :=
+          setLIntegral_mono' (hKc.inter R.measurableSet_carrier) fun x hx => by
+            exact_mod_cast R.mult_pos x hx.2
+      _ = R.measure Kᶜ := by
+          rw [IMRep.measure, withDensity_apply _ hKc, Measure.restrict_restrict hKc]
+      _ = 0 := hμK
+  have hae : ∀ᵐ x ∂(μHE[k + 1].restrict R.carrier), x ∈ K := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    exact hnull
+  -- Step 2: a bump function `ζ ≡ 1` on a ball `B ⊇ K` makes `ψ = ζη` a test form
+  obtain ⟨r, hr⟩ := hK.isBounded.subset_ball (0 : Euclid P)
+  let ζ : ContDiffBump (0 : Euclid P) :=
+    ⟨max r 1, max r 1 + 1, zero_lt_one.trans_le (le_max_right r 1), lt_add_one _⟩
+  have hKζ : K ⊆ ball (0 : Euclid P) ζ.rIn := hr.trans (ball_subset_ball (le_max_left r 1))
+  let ψ : DifferentialForm (Euclid P) k := fun x => ζ x • η x
+  have hψ : IsTestForm ψ := ⟨ζ.contDiff.smul hη, ζ.hasCompactSupport.smul_right⟩
+  let ψt : TestFormOn (univ : Set (Euclid P)) k := ⟨ψ, hψ, subset_univ _⟩
+  -- Step 3: `ψ = η` near each point of `B`, so `dψ = dη` on `B`
+  have hloc : ∀ x ∈ ball (0 : Euclid P) ζ.rIn, exteriorDerivative ψ x = exteriorDerivative η x := by
+    intro x hx
+    refine Filter.EventuallyEq.extDeriv_eq ?_
+    filter_upwards [ζ.eventuallyEq_one_of_mem_ball hx] with y hy
+    simp only [ψ, hy, Pi.one_apply, one_smul]
+  -- Step 4: the two integrals agree, as `H^{k+1}⌞M`-a.e. point lies in `K`
+  have h4 : R.action (exteriorDerivative η) = R.action (exteriorDerivative ψ) := by
+    simp only [IMRep.action]
+    refine integral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [hloc x (hKζ hx)]
+  -- Step 5: `R.action (dψ) = X(dψ) = ∂X(ψ) = 0`
+  have h5 : R.action (exteriorDerivative ψ) = X (exteriorDerivativeTestOn univ k ψt) :=
+    (hR (exteriorDerivativeTestOn univ k ψt)).symm
+  rw [h4, h5, ← GeometricCurrentOn.boundary_apply, hX, GeometricCurrentOn.zero_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
