@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eaffe33e4e4c878ec76104715aaa34a399b90c6b22c1664895a0e73fc77cf274",
+  "git_delta": {
+    "base_commit": "c1b41159097c2eb9f17ed5fcc355599ee541d6fe",
+    "candidate_commit": "bcfcb1c363db241e2a4c11530b846c75d9335757",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_cone_annuli_measure",
+    "diff_sha256": "9afbe0e937825e3ad35f0136d2ab481bf28db0bf16a957e9bb3b6f48d7920302",
+    "source_sha256": "2b8eb328225addf360d16b31af005bd76bc25af209eeff0dda75a9f749606a37",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_cone_annuli_measure",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)), (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ c : ℝ, 0 < c → μHE[m] (M ∩ sphere (0 : Euclid P) c) = 0) ∧ (∀ α : ℝ, -(m : ℝ) < α → ∫⁻ x in M ∩ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ α) ∂μHE[m] ≠ ∞) ∧ (∀ β : ℝ, β < -(m : ℝ) → ∫⁻ x in M \\ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ β) ∂μHE[m] ≠ ∞)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
