@@ -1805,6 +1805,46 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
       exact hατ
     · rw [h α, abs_neg]
       exact hατ
+
+/-- **Restriction `T⌞E` of an integer multiplicity current to a Borel set** (Simon Ch. 6, 2.9 and
+3.2(3); used with `E` a ball in the localization step of the proof of 7.2).  For `T = τ(M, θ, ξ)`
+in the open `U` and Borel `E`, part (b) of `cmc_imRep_locality_restrict_sub` gives
+`T' = τ(M ∩ E, θ, ξ)`, whose weight is `θHⁿ⌞(M ∩ E) = (θHⁿ⌞M)⌞E` (`restrict_withDensity`,
+`Measure.restrict_restrict`).  With `F_ω = θ⟨ω, ξ⟩`, `T'(ω) = ∫_{M∩E} F_ω` and `T(ω) = ∫_M F_ω`:
+if `spt ω ⊆ E`, `F_ω` vanishes on `M \ E`, so `T'(ω) = T(ω)`; if `spt ω` misses `E`, `F_ω`
+vanishes on `M ∩ E`, so `T'(ω) = 0`. -/
+theorem Submission.dtc_bc_lc_fd_lz_truncate : ∀ (P n : ℕ) (U E : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → MeasurableSet E → R.Represents T → ∃ (T' : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents T' ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R'.measure = R.measure.restrict E ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → T' ω = T ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → T' ω = 0 := by
+  intro P n U E T R hU hE hT
+  -- Step 1: `R' = (M ∩ E, θ, ξ)` and its current `T' = τ(M ∩ E, θ, ξ)`
+  obtain ⟨T', R', hT', hcar, hmult, horient⟩ :=
+    Submission.cmc_imRep_locality_restrict_sub.2.1 P n U R E hU hE
+  -- Step 2: `T'(ω) = ∫_{M ∩ E} θ⟨ω, ξ⟩ dHⁿ`
+  have hT'ω : ∀ ω : TestFormOn U n, T' ω = ∫ x in R.carrier ∩ E,
+      (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+    intro ω
+    rw [hT' ω, IMRep.action, hcar, hmult, horient]
+  -- `θ⟨ω, ξ⟩` vanishes where `ω` does
+  have hzero : ∀ (ω : TestFormOn U n) (x : Euclid P),
+      x ∉ tsupport (ω : DifferentialForm (Euclid P) n) →
+        (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x) = 0 := by
+    intro ω x hx
+    rw [image_eq_zero_of_notMem_tsupport hx, map_zero, mul_zero]
+  refine ⟨T', R', hT', hcar, hmult, horient, ?_, ?_, ?_⟩
+  · -- Step 3: the weight `θHⁿ⌞(M ∩ E) = (θHⁿ⌞M)⌞E`
+    rw [IMRep.measure, IMRep.measure, restrict_withDensity hE, Measure.restrict_restrict hE, hcar,
+      hmult, inter_comm]
+  · -- Step 4: if `spt ω ⊆ E`, the integrand vanishes on `M \ E`
+    intro ω hω
+    rw [hT'ω ω, hT ω, IMRep.action]
+    refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+      inter_subset_left fun x hx => hzero ω x fun hxω => ?_).symm
+    exact hx.2 ⟨hx.1, hω hxω⟩
+  · -- Step 5: if `spt ω` misses `E`, the integrand vanishes on `M ∩ E`
+    intro ω hω
+    rw [hT'ω ω]
+    exact setIntegral_eq_zero_of_forall_eq_zero fun x hx =>
+      hzero ω x fun hxω => hω.notMem_of_mem_left hxω hx.2
+
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
