@@ -555,6 +555,22 @@ theorem Submission.cmc_fcl_massOn_le_measure_inter : ∀ (P d : ℕ) (U : Set (E
     _ = μ.restrict E (tsupport (ω : DifferentialForm (Euclid P) d)) := lintegral_indicator_one hS
     _ = μ (tsupport (ω : DifferentialForm (Euclid P) d) ∩ E) := Measure.restrict_apply hS
     _ ≤ μ (E ∩ V) := measure_mono fun x hx => ⟨hx.2, hω.1 hx.1⟩
+/-- **Subadditivity of local mass** (Simon 6.2.5).  If `X(ω) = Y(ω) + Z(ω)` for every
+`ω ∈ 𝒟ᵈ(U)`, then `M_V(X) ≤ M_V(Y) + M_V(Z)` in `[0, ∞]`.  The admissible forms for `M_V`
+(`spt ω ⊆ V`, `|ω| ≤ 1`) depend only on `U`, `d` and `V`; for each of them
+`ofReal (X ω) ≤ ofReal (Y ω) + ofReal (Z ω) ≤ M_V(Y) + M_V(Z)`.  Taking the supremum over
+admissible `ω` gives the claim. -/
+theorem Submission.cmc_fcl_massOn_le_add : ∀ (P d : ℕ) (U : Set (Euclid P)) (X Y Z : GeometricCurrentOn U d) (V : Set (Euclid P)), (∀ ω : TestFormOn U d, X ω = Y ω + Z ω) → X.massOn V ≤ Y.massOn V + Z.massOn V := by
+  intro P d U X Y Z V h
+  -- Step 4: `M_V(X)` is a supremum, so bound each admissible value `ofReal (X ω)`
+  refine sSup_le ?_
+  -- Step 1: fix `ω` admissible for `M_V`; the same `ω` is admissible for `Y` and `Z`
+  rintro r ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (X ω) ≤ Y.massOn V + Z.massOn V
+  -- Steps 2–3: `ofReal` is subadditive, and admissible values are bounded by local mass
+  calc ENNReal.ofReal (X ω) = ENNReal.ofReal (Y ω + Z ω) := by rw [h ω]
+    _ ≤ ENNReal.ofReal (Y ω) + ENNReal.ofReal (Z ω) := ENNReal.ofReal_add_le
+    _ ≤ Y.massOn V + Z.massOn V := add_le_add (Y.le_massOn hω) (Z.le_massOn hω)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
