@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74418abc0b889e2c5e4c0d4160d2e9448c14e3d315a8bf0883fb6bda49a80009",
+  "git_delta": {
+    "base_commit": "d184cae41b48bcec75e9601a4306b7143bcb43d3",
+    "candidate_commit": "5162c8d9c6f9bf5ea8dad02b7966f3d503762aa9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_fr_origin_null",
+    "diff_sha256": "86657a5d96478a2ac6fe951838e33c10dd6107be4f99ee3e03d7ca1ec5bf0f3e",
+    "source_sha256": "c0818c95e0660f0da33ede64ec75e7cc18a218382c8a4d472a0ef3375657ef2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_fr_origin_null",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → μ {0} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

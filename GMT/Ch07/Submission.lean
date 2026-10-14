@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A measure on `ℝᴾ` that is `1`-homogeneous on open sets (`μ(λW) = λ μ(W)`, `λ > 0`) and finite
+on `B₁(0)` has no atom at the origin.  For `r > 0`, `r • B₁(0) = B_r(0)` (`smul_ball`), so
+`μ{0} ≤ μ(B_r(0)) = r μ(B₁(0))`; the right side tends to `0` as `r ↓ 0` because `μ(B₁(0)) < ∞`. -/
+theorem Submission.idtp_fons_odc_fr_origin_null : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → μ {0} = 0 := by
+  intro P μ hscale hfin
+  have h : Tendsto (fun r : ℝ => ENNReal.ofReal r * μ (ball (0 : Euclid P) 1)) (𝓝[>] 0)
+      (𝓝 0) := by
+    have h0 : Tendsto (fun r : ℝ => ENNReal.ofReal r) (𝓝[>] 0) (𝓝 0) := by
+      simpa using (ENNReal.tendsto_ofReal (tendsto_id (x := 𝓝 (0 : ℝ)))).mono_left
+        nhdsWithin_le_nhds
+    simpa using ENNReal.Tendsto.mul_const h0 (Or.inr hfin)
+  refine le_zero_iff.1 (ge_of_tendsto h ?_)
+  filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+  calc μ {0} ≤ μ (ball (0 : Euclid P) r) :=
+        measure_mono (singleton_subset_iff.2 (mem_ball_self hr))
+    _ = ENNReal.ofReal r * μ (ball (0 : Euclid P) 1) := by
+      rw [← hscale r hr _ isOpen_ball, image_smul, smul_ball hr.ne', smul_zero,
+        Real.norm_of_nonneg hr.le, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
