@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Smooth cutoff function** (the cutoff `ζ` with `X(ζ ·)` extending a current from `U` to
+`ℝᴾ`).  If `U ⊆ ℝᴾ` is open and `K ⊆ U` is compact, there is a `C^∞` function `ζ` with
+`0 ≤ ζ ≤ 1`, compact support `spt ζ ⊆ U`, and `ζ = 1` on an open set `N ⊇ K`.  Choose open sets
+`V₁ ⊇ K` and `V₂ ⊇ closure V₁` with compact closures in `U`; the smooth Urysohn lemma gives `ζ`
+with values in `[0, 1]`, `support ζ = V₂` and `ζ = 1` exactly on `closure V₁`.  Then
+`spt ζ = closure V₂` and `N = V₁` work. -/
+theorem Submission.cbrcs_ce_smooth_cutoff : ∀ (P : ℕ) (U K : Set (Euclid P)), IsOpen U → IsCompact K → K ⊆ U → ∃ (ζ : Euclid P → ℝ) (N : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ U ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ IsOpen N ∧ K ⊆ N ∧ ∀ x ∈ N, ζ x = 1 := by
+  intro P U K hU hK hKU
+  -- Step 1: an open `V₁ ⊇ K` with compact closure inside `U`
+  obtain ⟨V₁, hV₁open, hKV₁, hV₁U, hV₁compact⟩ :=
+    exists_open_between_and_isCompact_closure hK hU hKU
+  -- Step 2: an open `V₂ ⊇ closure V₁` with compact closure inside `U`
+  obtain ⟨V₂, hV₂open, hV₁V₂, hV₂U, hV₂compact⟩ :=
+    exists_open_between_and_isCompact_closure hV₁compact hU hV₁U
+  -- Step 3: the smooth Urysohn function for `closure V₁ ⊆ V₂`
+  obtain ⟨ζ, hζsmooth, hζrange, hζsupport, hζone⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) hV₂open isClosed_closure hV₁V₂
+  -- Step 4: `spt ζ = closure V₂`, compact and contained in `U`
+  have htsupport : tsupport ζ = closure V₂ := by
+    rw [tsupport, hζsupport]
+  refine ⟨ζ, V₁, hζsmooth, ?_, htsupport ▸ hV₂U, ?_, hV₁open, hKV₁, ?_⟩
+  · rw [HasCompactSupport, htsupport]
+    exact hV₂compact
+  · -- Step 5: `ζ` takes values in `[0, 1]`
+    intro x
+    exact hζrange (mem_range_self x)
+  · -- Step 6: `ζ = 1` on `N = V₁ ⊆ closure V₁`
+    intro x hx
+    exact (hζone x).1 (subset_closure hx)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
