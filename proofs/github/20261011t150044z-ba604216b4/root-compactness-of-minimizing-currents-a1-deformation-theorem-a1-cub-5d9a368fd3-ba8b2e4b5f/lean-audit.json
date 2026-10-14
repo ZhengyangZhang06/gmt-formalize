@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1709a22aeb3a3950f816dcae23004453763a175b28565962a742a53a614611f6",
+  "git_delta": {
+    "base_commit": "e07c5ac128e2db28a903b2d5e8249785b5b45e18",
+    "candidate_commit": "0ba388c3a6150e84ab6f3de1632b4e228686c055",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_bvp_unit_cube_volume",
+    "diff_sha256": "8c5ad3e75baa53456d53cdc05f00a02fe043d645704671f8650a49521139ab92",
+    "source_sha256": "95ae9030e081b4c8f4959aaab105685390dd77bf1ad4627e05cb74143c07c92b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_bvp_unit_cube_volume",
+      "statement": "∀ m : ℕ, volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
