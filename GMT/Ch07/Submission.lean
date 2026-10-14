@@ -2914,4 +2914,24 @@ theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Eu
       with x hx
     rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
 
+/-- **A nonzero integer multiplicity cycle carried by an `n`-plane is supported on the whole
+plane** (Simon 7.3.2 Remarks (1), via the Constancy Theorem, Ch. 6, 2.34; steps 9–10 of the
+flat-point tangent plane step in the proof of 7.3.3(2)).  Let `τ` be orthonormal,
+`Q = span{τ₁, …, τₙ}`, `n ≥ 1`, and let `C ∈ 𝒟ₙ(ℝᴾ)` be integer multiplicity with `∂C = 0`,
+`spt C ⊆ Q` and `M_W(C) ≠ 0` for some open `W`.  Then `spt C = Q`.  `ℝᴾ ∩ Q = Q` is convex and
+contains `0`, hence connected, so constancy gives `c ∈ ℤ` with `M_W(C) = |c| Hⁿ(W ∩ Q)` for
+every open `W`; such a mass formula, nonzero somewhere, forces `spt C = Q`. -/
+theorem Submission.idtp_tpf_planar_support_eq : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P), 1 ≤ n → Orthonormal ℝ τ → IsIntegerMultiplicity C → BoundaryVanishes C → C.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → (∃ W : Set (Euclid P), IsOpen W ∧ C.massOn W ≠ 0) → C.support = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+  intro P n C τ hn hτ hIM hbd hspt hW
+  -- step 1: `ℝᴾ ∩ Q = Q` is convex and nonempty (`0 ∈ Q`), hence connected
+  have hconn : IsConnected (univ ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P))) := by
+    rw [univ_inter]
+    exact (Submodule.span ℝ (Set.range τ)).convex.isConnected ⟨0, Submodule.zero_mem _⟩
+  -- step 2: constancy in `V = ℝᴾ`, `M_W(C) = |c| Hⁿ(W ∩ Q)` for every open `W`
+  obtain ⟨c, -, hmass⟩ :=
+    Submission.idtp_planar_cycle_eq_const_mul P n univ C τ hn isOpen_univ hτ hIM hbd hspt hconn
+  -- steps 3–6: a mass formula `|c| Hⁿ⌞Q` that is nonzero somewhere forces `spt C = Q`
+  exact Submission.idtp_tpf_pse_support_of_mass_formula P n C τ c hτ hspt
+    (fun W hW => hmass W hW (subset_univ W)) hW
+
 end GMT.Ch07
