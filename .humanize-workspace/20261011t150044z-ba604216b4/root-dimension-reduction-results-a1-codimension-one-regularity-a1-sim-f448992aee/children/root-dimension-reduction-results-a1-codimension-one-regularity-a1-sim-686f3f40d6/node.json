@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.piece_pushforward-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1",
+  "depth": 5,
+  "title": "The push-forward of an oriented multiplicity-one C¹ piece by a bi-Lipschitz C¹ bijection with injective derivative is an integer multiplicity current of mass at most the area of the image (Simon 6.2.24(3), 6.3.9 for C¹ pieces)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1; N ⊆ ℝ^P an embedded m-dimensional C¹ submanifold with orientation ξ : ℝ^P → Λ_m(ℝ^P) (IsOrientation m N ξ: ξ is continuous on N and ξ(x) is a unit orientation of T_xN for x ∈ N); W ⊆ ℝ^P open with H^m(N ∩ W) < ∞; Φ : ℝ^P → ℝ^P a C¹ bijection with DΦ(x) injective for every x, Λ-Lipschitz and Λ-antilipschitz for some Λ ≥ 0. Then there is an integer multiplicity current D ∈ 𝒟_m(ℝ^P) such that for every ω ∈ 𝒟^m(ℝ^P) the function x ↦ ⟨ω(Φ(x))∘DΦ(x), ξ(x)⟩ = ξ(x)(ω(Φ(x)).compContinuousLinearMap(DΦ(x))) is H^m-integrable on N ∩ W and D(ω) = ∫_{N∩W} ξ(x)(ω(Φ(x))∘DΦ(x)) dH^m(x), and M_{W′}(D) ≤ H^m(Φ(N ∩ W) ∩ W′) for every W′ ⊆ ℝ^P (M_{W′} = massOn, H^m = μHE[m]).",
+  "lean_statement": "∀ (P m : ℕ) (N W : Set (Euclid P)) (ξ : Euclid P → MultiVector P m) (Φ : Euclid P → Euclid P) (Λ : NNReal), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOrientation m N ξ → IsOpen W → μHE[m] (N ∩ W) ≠ ∞ → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → LipschitzWith Λ Φ → AntilipschitzWith Λ Φ → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun x => ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x))) (μHE[m].restrict (N ∩ W)) ∧ D ω = ∫ x in N ∩ W, ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (Φ '' (N ∩ W) ∩ W')",
+  "lean_name": "codim1_ac_oriented_piece_pushforward",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.image_submanifold-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.image_submanifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_approx_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-f9454fcfd5-a1",
+      "result_commit": "863f6d9cf6039f8d589e99100765452f47833535",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd-a1",
+      "result_commit": "3de784c0d8f0b1958b4654727bdadb33fc1c77ea",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-686f3f40d6-a1"
+}
