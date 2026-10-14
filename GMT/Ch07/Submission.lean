@@ -664,6 +664,71 @@ theorem Submission.cmcdt_lpi_cyl_slice_covector_bound : (∀ (N N' k : ℕ) (A :
   rw [← hβv]
   exact (hv β).trans (mul_le_mul_of_nonneg_left hβ hc)
 
+/-- **Simon Ch. 6, 2.18–2.20 and 2.27**, one product piece of the cylinder `[[(0, 1)]] × G_#τ(A, w)`:
+with `Ĝ(z) = (z₀, G(tail z))`, `Â = (0, 1) × A` and `ŵ(z) = w(tail z)`, if `c ≥ 0` bounds the action
+of `DG(u)` on `n`-covectors at every `u ∈ A`, then `∫_Â ŵ ⟨ω ∘ Ĝ, DĜ ê⟩ ≤ ∫_A |w| c` for every form
+`ω` with `|ω| ≤ 1`.  At `z = (t, u) ∈ Â` the frame `DĜ(z) ê` is `(e₀, (0, DG(u) e))`, so the slice
+covector bound gives `|ŵ ⟨ω ∘ Ĝ, DĜ ê⟩| ≤ |w(u)| c(u)`; Tonelli on `(0, 1) × A` and
+`λ¹((0, 1)) = 1` evaluate the integral of this majorant (as in `M([[(0, 1)]] × T) = M(T)`). -/
+theorem Submission.cmcdt_lpi_cyl_piece_mass : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (c : Euclid n → ℝ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), MeasurableSet A → Measurable w → Measurable c → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ u ∈ A, 0 ≤ c u ∧ ∀ α : Covector (Euclid N) n, |α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))| ≤ c u * covectorEuclideanNorm α) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → ∀ ω : DifferentialForm (Euclid (N + 1)) (n + 1), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ENNReal.ofReal (∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))) ≤ ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+  intro hL1 hL2 N n G A w c Gh Ah wh hA hw hc hGd hcb hGh hAh hwh ω hω
+  -- `Â` is Borel with Tonelli on `(0, 1) × A`, and `DĜ(t, u) ê = (e₀, (0, DG(u) e))`
+  obtain ⟨hAhm, hTon, -⟩ := Submission.cmcdt_lpi_cyl_fubini n A hA
+  obtain ⟨-, -, hder⟩ := Submission.cmcdt_lpi_cyl_suspension_map N n G Gh hGh
+  have htail : Continuous fun z : Euclid (n + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) := by
+    fun_prop
+  -- the measurable majorant `g(z) = |w(tail z)| c(tail z)`
+  set g : Euclid (n + 1) → ℝ≥0∞ := fun z =>
+    ENNReal.ofReal (|((w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℤ) : ℝ)| *
+      c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) with hg_def
+  have hg : Measurable g := by
+    have h1 : Measurable fun z : Euclid (n + 1) =>
+        ((w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℤ) : ℝ) :=
+      (measurable_from_top (f := fun k : ℤ => (k : ℝ))).comp (hw.comp htail.measurable)
+    exact ENNReal.measurable_ofReal.comp
+      ((continuous_abs.measurable.comp h1).mul (hc.comp htail.measurable))
+  -- on `Â`, the slice covector bound and `|ω| ≤ 1` bound the integrand by `g`
+  have hpt : ∀ z ∈ Ah,
+      ‖(wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ ≤ g z := by
+    intro z hz
+    rw [hAh] at hz
+    obtain ⟨-, hu⟩ := hz
+    set u : Euclid n := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) with hu_def
+    set t : ℝ := WithLp.ofLp z 0 with ht_def
+    have hz' : z = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) := by
+      simp [hu_def, ht_def]
+    have hb := Submission.cmcdt_lpi_cyl_slice_covector_bound hL1 hL2 N n (ω (Gh z))
+      (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) (c u) (hcb u hu).1 (hcb u hu).2
+    have hD : (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1)) =
+        Fin.cons (EuclideanSpace.single 0 1) (fun b => WithLp.toLp 2 (Fin.cons 0
+          (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))) := by
+      rw [hz']
+      exact hder t u (hGd u hu)
+    rw [Real.enorm_eq_ofReal_abs, hg_def]
+    apply ENNReal.ofReal_le_ofReal
+    rw [hwh, abs_mul, hD]
+    calc |((w u : ℤ) : ℝ)| * |ω (Gh z) (Fin.cons (EuclideanSpace.single 0 1) (fun b =>
+          WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))))|
+        ≤ |((w u : ℤ) : ℝ)| * (c u * covectorEuclideanNorm (ω (Gh z))) :=
+          mul_le_mul_of_nonneg_left hb (abs_nonneg _)
+      _ ≤ |((w u : ℤ) : ℝ)| * (c u * 1) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (hω _) (hcb u hu).1)
+            (abs_nonneg _)
+      _ = _ := by ring
+  -- `ofReal ∫_Â F ≤ ∫⁻_Â ‖F‖ₑ ≤ ∫⁻_Â g = ∫⁻_A ∫⁻_(0,1) |w| c = ∫⁻_A |w| c`
+  calc ENNReal.ofReal (∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1)))
+      ≤ ‖∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ :=
+        Real.ofReal_le_enorm _
+    _ ≤ ∫⁻ z in Ah, ‖(wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ z in Ah, g z := setLIntegral_mono' (hAh ▸ hAhm) hpt
+    _ = ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1, g (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) := by
+        rw [hAh]; exact hTon g hg
+    _ = ∫⁻ u in A, ENNReal.ofReal (|((w u : ℤ) : ℝ)| * c u) := by
+        congr 1; funext u
+        simp [hg_def, Real.volume_Ioo]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
