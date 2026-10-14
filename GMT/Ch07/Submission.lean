@@ -1596,6 +1596,82 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Push-forward of `τ(M, θ, ξ)` by a `C¹` map** (Simon 6.2.23–6.2.24(2)).  If `Hⁿ⌞M` is
+carried by the compact `K ⊆ U`, `f` is `C¹` on an open `O ⊇ K` and `f(K) ⊆ U`, then
+`Q(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ(x)` defines `Q ∈ 𝒟ₙ(U)` with `spt Q` a compact
+subset of `f(K)`.  The bound `|Q(ω)| ≤ A sup |ω|` makes the linear functional `Q` a current.
+If `spt ω` misses `f(K)`, then `ω(f(x)) = 0` for `x ∈ K`, which is `Hⁿ`-almost all of `M`, so
+`Q(ω) = 0`. -/
+theorem Submission.dimred_mbl_pf_pushforward_current_exists : ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → ∃ Q : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) ∧ IsCompact Q.support ∧ Q.support ⊆ f '' K := by
+  intro P n U K O R f hU hK hKU hMK hO hKO hf hfK
+  -- Step 1: `I(ω) = θ ⟨ω(f) ∘ Df, ξ⟩` is integrable and `|∫_M I(ω)| ≤ A B` if `‖ω‖ ≤ B`
+  obtain ⟨A, -, hA⟩ := Submission.dimred_mbl_pfc_pullback_integrand_bound P n U K O R f hK hKU
+    hMK hO hKO hf
+  let I : DifferentialForm (Euclid P) n → Euclid P → ℝ := fun ω x =>
+    (R.mult x : ℝ) * R.orient x ((ω (f x)).compContinuousLinearMap (fderiv ℝ f x))
+  -- a test form is continuous with compact support, hence bounded
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (I (ω : DifferentialForm (Euclid P) n)) (μHE[n].restrict R.carrier) := by
+    intro ω
+    obtain ⟨B, hB⟩ := ω.2.1.1.continuous.bounded_above_of_compact_support ω.2.1.2
+    exact (hA _ B ω.2.1.1.continuous hB).1
+  -- Step 2: `I` is linear in `ω`, since `α ↦ α ∘ Df(x)` and `ξ(x)` are linear
+  have hadd : ∀ (ω η : TestFormOn U n) (x : Euclid P),
+      I ((ω + η : TestFormOn U n) : DifferentialForm (Euclid P) n) x =
+        I (ω : DifferentialForm (Euclid P) n) x + I (η : DifferentialForm (Euclid P) n) x := by
+    intro ω η x
+    have h : ∀ α β : Covector (Euclid P) n, (α + β).compContinuousLinearMap (fderiv ℝ f x) =
+        α.compContinuousLinearMap (fderiv ℝ f x) + β.compContinuousLinearMap (fderiv ℝ f x) := by
+      intro α β
+      ext v
+      simp
+    simp only [I, Submodule.coe_add, Pi.add_apply, h, map_add, mul_add]
+  have hsmul : ∀ (c : ℝ) (ω : TestFormOn U n) (x : Euclid P),
+      I ((c • ω : TestFormOn U n) : DifferentialForm (Euclid P) n) x =
+        c * I (ω : DifferentialForm (Euclid P) n) x := by
+    intro c ω x
+    have h : ∀ α : Covector (Euclid P) n, (c • α).compContinuousLinearMap (fderiv ℝ f x) =
+        c • α.compContinuousLinearMap (fderiv ℝ f x) := by
+      intro α
+      ext v
+      simp
+    simp only [I, Submodule.coe_smul, Pi.smul_apply, h, map_smul, smul_eq_mul]
+    ring
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x in R.carrier, I (ω : DifferentialForm (Euclid P) n) x ∂μHE[n]
+      map_add' := fun ω η => by
+        simp only [hadd]
+        exact integral_add (hint ω) (hint η)
+      map_smul' := fun c ω => by
+        simp only [hsmul, RingHom.id_apply, smul_eq_mul]
+        exact integral_const_mul c _ }
+  -- Step 3: with `c = A` on every compact set, `L` is a current `Q`
+  obtain ⟨Q, hQ⟩ := Submission.cmcs_rc_order_zero_current P n U L fun _ _ _ =>
+    ⟨A, fun ω B _ hB => (hA _ B ω.2.1.1.continuous hB).2⟩
+  -- Step 4: `Hⁿ`-a.e. point of `M` lies in `K`
+  have hMKae : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+    rw [ae_restrict_iff' R.measurableSet_carrier, ae_iff]
+    exact measure_mono_null (fun x hx => not_imp.mp hx) hMK
+  -- Step 5: `Q(ω) = 0` if `spt ω ∩ f(K) = ∅`, as then `ω(f(x)) = 0` for `x ∈ K`
+  have hvan : ∀ ω : TestFormOn U n,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f '' K) → Q ω = 0 := by
+    intro ω hω
+    rw [hQ]
+    show ∫ x in R.carrier, I (ω : DifferentialForm (Euclid P) n) x ∂μHE[n] = 0
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [hMKae] with x hx
+    have h0 : (ω : DifferentialForm (Euclid P) n) (f x) = 0 :=
+      image_eq_zero_of_notMem_tsupport fun h => hω.notMem_of_mem_left h (mem_image_of_mem f hx)
+    have h : ((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x) =
+        0 := by
+      ext v
+      simp [h0]
+    simp only [I, h, map_zero, mul_zero, Pi.zero_apply]
+  -- Step 6: `f(K)` is a compact subset of `U`, so `spt Q` is a compact subset of `f(K)`
+  obtain ⟨hsub, hcpt⟩ := Submission.rsd_cmr_support_subset_of_vanish P n U (f '' K) Q hU
+    (hK.image_of_continuousOn (hf.continuousOn.mono hKO)) hfK hvan
+  exact ⟨Q, hQ, hcpt, hsub⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
