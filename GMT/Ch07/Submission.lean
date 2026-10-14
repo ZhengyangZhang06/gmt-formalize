@@ -1120,6 +1120,51 @@ theorem Submission.dimred_tr_ida_density_on_carrier : ∀ (P n : ℕ) (V W : Set
     rw [← mul_div_assoc, ← ENNReal.add_div]
     exact ENNReal.div_le_div_right (hup ρ) _
 
+/-- **Density of `μ_R` localized to an open set** (Simon Ch. 3, Remark 1.5(3), Remark 1.8 and
+Theorem 1.9, with Ch. 1, Theorem 3.6 and Remark 3.7(2)).  Let `R = (M, θ, ξ)` be an integer
+multiplicity triple and `W` open with `μ_R(K ∩ W) < ∞` for compact `K`.  Then for `Hⁿ`-a.e. `x`,
+`μ_R(B_ρ(x) ∩ W) / (ωₙρⁿ) → 1_{M ∩ W}(x) θ(x)` as `ρ ↓ 0`.  At `Hⁿ`-a.e. `x ∈ M ∩ W` this is
+`Submission.dimred_tr_ida_density_on_carrier`.  Since `μ_R = θHⁿ⌞M` lives on `M`,
+`μ_R(B_ρ(x) ∩ W) = (μ_R⌞W)((M ∩ W) ∩ B_ρ(x))`; the upper density theorem
+`Submission.idtp_dema_upper_density_zero` for `μ_R⌞W` (finite on compact sets) and the Borel set
+`M ∩ W` makes this `o(ρⁿ)` at `Hⁿ`-a.e. `x ∉ M ∩ W`. -/
+theorem Submission.dimred_tr_imrep_density_ae : ∀ (P n : ℕ) (V W : Set (Euclid P)) (R : IMRep V n), IsOpen W → (∀ K : Set (Euclid P), IsCompact K → R.measure (K ∩ W) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), Tendsto (fun ρ : ℝ => R.measure (ball x ρ ∩ W) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator (R.carrier ∩ W) (fun y => (R.mult y : ℝ≥0∞)) x)) := by
+  intro P n V W R hW hfin
+  have hWm : MeasurableSet W := hW.measurableSet
+  have hMW : MeasurableSet (R.carrier ∩ W) := R.measurableSet_carrier.inter hWm
+  -- Step 1: `μ := μ_R⌞W` is finite on compact sets
+  have hfin' : ∀ K : Set (Euclid P), IsCompact K → R.measure.restrict W K ≠ ∞ := by
+    intro K hK
+    rw [Measure.restrict_apply' hWm]
+    exact hfin K hK
+  -- Step 2 (off the carrier): upper density theorem for `μ` and the Borel set `M ∩ W`
+  have hoff := Submission.idtp_dema_upper_density_zero P n (R.measure.restrict W)
+    (R.carrier ∩ W) hMW hfin'
+  -- Steps 3–4 (on the carrier): density `θ(x)` at `Hⁿ`-a.e. `x ∈ M ∩ W`
+  have hon := Submission.dimred_tr_ida_density_on_carrier P n V W R hW hfin
+  -- Step 5: outside both exceptional sets, distinguish `x ∈ M ∩ W` and `x ∉ M ∩ W`
+  filter_upwards [hoff, hon] with x hxoff hxon
+  by_cases hx : x ∈ R.carrier ∩ W
+  · rw [Set.indicator_of_mem hx]
+    exact hxon hx
+  · rw [Set.indicator_of_notMem hx]
+    -- `μ_R(B_ρ(x) ∩ W) = μ((M ∩ W) ∩ B_ρ(x))`: both are `∫_{B_ρ(x) ∩ W ∩ M} θ dHⁿ`
+    have heq : ∀ ρ : ℝ, R.measure (ball x ρ ∩ W) =
+        R.measure.restrict W ((R.carrier ∩ W) ∩ ball x ρ) := by
+      intro ρ
+      rw [Measure.restrict_apply' hWm]
+      simp only [IMRep.measure]
+      rw [withDensity_apply _ (measurableSet_ball.inter hWm),
+        withDensity_apply _ ((hMW.inter measurableSet_ball).inter hWm),
+        Measure.restrict_restrict (measurableSet_ball.inter hWm),
+        Measure.restrict_restrict ((hMW.inter measurableSet_ball).inter hWm)]
+      congr 2
+      ext y
+      simp only [mem_inter_iff]
+      tauto
+    simp_rw [heq]
+    exact hxoff hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
