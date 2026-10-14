@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "474e3ebf121f1fc6bf6936d7925698500f0971fe1a331427766e6eb2ce4c3e6f",
+  "git_delta": {
+    "base_commit": "d287da9a50ec36ac62c86362e93f335ddfea1639",
+    "candidate_commit": "92ce2b72cd88a5f52888873ce7d68525b203a256",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_cone_stationary_radial",
+    "diff_sha256": "43fc82f58c76824875188f27776bf4a3339120baf7d925b6e0e2d925ab908845",
+    "source_sha256": "72b7183dc422724a334570b188bb344a32e1fcd8d34844182945d2df5443cd41",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_cone_stationary_radial",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → R.Represents C → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) ∧ ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
