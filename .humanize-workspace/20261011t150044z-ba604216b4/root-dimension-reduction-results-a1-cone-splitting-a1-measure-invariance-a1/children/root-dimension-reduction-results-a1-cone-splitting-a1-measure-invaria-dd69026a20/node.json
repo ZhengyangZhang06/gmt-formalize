@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.translate_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "depth": 4,
+  "title": "Translation invariance of f·Hⁿ for a translation-invariant density f",
+  "statement": "Let P, n ∈ ℕ, H^n = μHE[n] on ℝ^P, f : ℝ^P → [0, ∞] an arbitrary function (no measurability assumed), and y ∈ ℝ^P with f(y + x) = f(x) for every x ∈ ℝ^P. Let ν := H^n.withDensity f, so ν(B) = ∫⁻_B f dH^n for Borel B. Then ν((x ↦ y + x)⁻¹(A)) = ν(A) for every Borel A ⊆ ℝ^P; that is, ν(A − y) = ν(A).",
+  "lean_statement": "∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (y : Euclid P), (∀ x : Euclid P, f (y + x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => y + x) ⁻¹' A) = (μHE[n] : Measure (Euclid P)).withDensity f A",
+  "lean_name": "dimred_cs_mi_withDensity_translate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-dd69026a20-a1"
+}

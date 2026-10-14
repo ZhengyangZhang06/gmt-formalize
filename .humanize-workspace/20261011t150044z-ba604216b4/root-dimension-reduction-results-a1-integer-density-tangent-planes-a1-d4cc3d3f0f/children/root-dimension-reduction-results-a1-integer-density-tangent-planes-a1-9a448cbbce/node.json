@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.total_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Finite positive total mass of the seed μ₀ and of every member μ₀^{x,λ}, and concentration of μ₀ on B_2(0) (parent steps 0(a)–(c), 3)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, z ∈ ℝ^P and r > 0 with μ(B_{2r}(z)) ≠ 0 and μ(B_{2r}(z)) ≠ ∞, and let μ₀ := ofReal(r⁻¹^n)•(μ⌞B_{2r}(z)).map(dilation z r). Then μ₀(ℝ^P) ≠ 0, μ₀(ℝ^P) ≠ ∞ and μ₀(B_2(0)ᶜ) = 0; and for every x ∈ ℝ^P and λ > 0 the measure μ₀^{x,λ} := ofReal(λ⁻¹^n)•μ₀.map(dilation x λ) satisfies μ₀^{x,λ}(ℝ^P) ≠ 0 and μ₀^{x,λ}(ℝ^P) ≠ ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ (ball z (2 * r)) ≠ 0 → μ (ball z (2 * r)) ≠ ∞ → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → μ₀ univ ≠ 0 ∧ μ₀ univ ≠ ∞ ∧ μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 ∧ ∀ (x : Euclid P) (lam : ℝ), 0 < lam → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ 0 ∧ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ ∞",
+  "lean_name": "idtp_fons_cc_psf_total_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9a448cbbce-a1"
+}

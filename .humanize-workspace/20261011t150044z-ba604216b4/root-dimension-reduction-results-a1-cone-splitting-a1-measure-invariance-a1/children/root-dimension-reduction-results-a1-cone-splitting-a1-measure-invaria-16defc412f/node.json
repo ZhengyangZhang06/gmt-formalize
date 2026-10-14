@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.density_eq_mult-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "depth": 4,
+  "title": "The density equals the multiplicity Hⁿ-a.e. on the carrier",
+  "statement": "Let P, n ∈ ℕ, S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), and let R = (M, θ, ξ) be an integer multiplicity representation of S in ℝ^P (R : IMRep univ n with R.Represents S; M = R.carrier, θ = R.mult). Let Θ : ℝ^P → ℝ satisfy HasMassDensity S x Θ(x) for every x ∈ ℝ^P. Then Θ(x) = θ(x) (θ(x) ∈ ℕ cast to ℝ) for H^n⌞M-a.e. x, i.e. for almost every x with respect to μHE[n] restricted to R.carrier.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Θ : Euclid P → ℝ), R.Represents S → (∀ x : Euclid P, HasMassDensity S x (Θ x)) → ∀ᵐ x ∂((μHE[n] : Measure (Euclid P)).restrict R.carrier), Θ x = (R.mult x : ℝ)",
+  "lean_name": "dimred_cs_mi_density_eq_mult_ae",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.density_unique-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.density_unique-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-a1",
+      "result_commit": "71a35e92ff3a966996363e5040ecd37921ba6cb9",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-16defc412f-a1"
+}

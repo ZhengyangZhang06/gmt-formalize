@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD",
+        "grep -rn --include=*.lean -F in local-references/123e8435b4a2469b/mathlib/Mathlib for: ext_of_integral_eq_on_compactlySupported, Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts, cthickening_closedBall, IsCompact.exists_cthickening_subset_open, pow_left_inj₀, tendsto_integral_of_dominated_convergence, integral_smul_measure, integral_map, smul_unitBall, IsCompact.tendsto_subseq, tendsto_ofReal_atTop",
+        "python3 scan of dag.json: cone_class subtree (lean_name, status, depends_on); accepted nodes whose lean_statement contains 'HasCompactSupport', 'map (dilation', 'withDensity' or 'dilation … ball'; equal-integral ⇒ measure-equality patterns; lean_name lookup of the ten proposed names",
+        "python3 extraction of this node's parent-child-handoff.json and parent-supplied-natural-proof.json, of the dilate_homogeneity handoff (nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6) and of cone_class decomposition-v1.json (nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9)",
+        "git show fc55b7480dccf7e48261ad5b085ddd0c0cc9f1d6 -- GMT/Ch07/Submission.lean; git ls-tree -r --name-only d1625d7690ef2c4584f95774d9d18e9abd590050",
+        "grep -n in /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py for _overlay_accepted_children, _existing_lean_name_problem, _dependency_problem, _topological, _install_parent_supplied_child_handoff",
+        "sed -n 440,540p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt (Simon 7.3.3, proof of 3.3(1), items (6)–(11))",
+        "lake env lean /tmp/psf_dec_9q4/{Assembly,DG,TM,INJ,VU,PC,NH,LB,VC,Full}.lean with #print axioms",
+        "python3 replay of Runtime._dependency_problem, Runtime._topological and the lean_name collision rule on /tmp/psf_dec_9q4/gen/subproblems.json against dag.json; recomputation of the decomposition_scope digest"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d4cc3d3f0f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d4cc3d3f0f/parent-supplied-natural-proof.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/psf_dec_9q4/Assembly.lean",
+        "/tmp/psf_dec_9q4/Full.lean"
+      ],
+      "conclusion": "Pins match: manifest project b4d606db1 = workspace HEAD, Mathlib 25730c7c = .lake/packages/mathlib HEAD; the snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and this node's proof base d1625d76 contains only the bare contract. Reuse: the only accepted declaration matching an obligation is Submission.dimred_cs_mi_withDensity_dilate (node dilate_homogeneity-a1, accepted, candidate fc55b748, which contains its dependency euclid_hausdorff_dilation_change_of_variables); its type is copied byte for byte. No accepted or library declaration states the other nine obligations: dag.json has no vague-uniqueness, parameter-continuity, rescaling-injectivity or transferred-lower-bound lemma, and none of the nine fresh idtp_fons_cc_psf_* names occurs in it. ambient_calculus is unaccepted and owned by another parent, so it cannot be shared; its facts are proved inline. Snapshot Mathlib provides everything the child proofs cite: Measure.ext_of_integral_eq_on_compactlySupported (RieszMarkovKakutani/Real.lean:412), Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Measure/Regular.lean:1183), isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts (Typeclasses/Finite.lean:401), cthickening_closedBall (Normed/Module/Ball/Pointwise.lean:318, no nontriviality assumption), IsCompact.exists_cthickening_subset_open (MetricSpace/Thickening.lean:426), pow_left_inj₀ (GroupWithZero/Basic.lean:690), tendsto_integral_of_dominated_convergence (Integral/DominatedConvergence.lean:57), integral_smul_measure and integral_map (Bochner/Basic.lean:1052, 1081), smul_unitBall (Pointwise.lean:85), IsCompact.tendsto_subseq (Topology/Sequences.lean:298), ENNReal.tendsto_ofReal_atTop (ENNReal/Lemmas.lean:160). Lean: all ten child types elaborate; the parent's frozen type compiles from them; all nine new children were proved in scratch files, and the combined proof uses only the standard axioms plus the reused accepted lemma."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.nonhomogeneous-a1",
+  "subproblem": {
+    "key": "nonhomogeneous",
+    "title": "A measure of finite positive total mass is not of the form Hⁿ.withDensity f with f(t·w) = f(w) for all t > 0, when n ≥ 1 (parent step 6)",
+    "statement": "Let P, n ∈ ℕ with n ≥ 1, ν a measure on ℝ^P with ν(ℝ^P) ≠ 0 and ν(ℝ^P) ≠ ∞, and f : ℝ^P → [0, ∞] an arbitrary function (no measurability assumed) with f(t·w) = f(w) for every t > 0 and w ∈ ℝ^P. Then ν ≠ μHE[n].withDensity f.",
+    "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ≥0∞), 1 ≤ n → ν univ ≠ 0 → ν univ ≠ ∞ → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → ν ≠ (μHE[n] : Measure (Euclid P)).withDensity f",
+    "lean_name": "idtp_fons_cc_psf_nonhomogeneous",
+    "depends_on": [
+      "withdensity_dilate"
+    ],
+    "natural_proof": "Source: parent step 6 (non-homogeneity), stated for an arbitrary measure ν of finite positive total mass. In the parent, ν := μ₀^{x,λ}, whose total mass lies in (0, ∞) by the sibling total_mass; this gives clause (6). Sibling used: withdensity_dilate (WD), the accepted Submission.dimred_cs_mi_withDensity_dilate.\nNotation: ρ := μHE[n].withDensity f.\n1. Suppose, for contradiction, that ν = ρ. Then ρ(ℝ^P) ≠ 0 and ρ(ℝ^P) ≠ ∞.\n2. (Scaling of balls.) Let t > 0. The hypothesis gives f(t•w) = f(w) for every w, and B_1(0) is Borel, so WD (with λ := t and A := B_1(0)) gives ρ((w ↦ t•w) '' B_1(0)) = ofReal(t^n)·ρ(B_1(0)). The image (w ↦ t•w) '' B_1(0) = t•B_1(0) equals B_{‖t‖}(0) = B_t(0) (Set.image_smul, smul_unitBall, ‖t‖ = t). Hence ρ(B_t(0)) = ofReal(t^n)·ρ(B_1(0)) for every t > 0.\n3. (Case ρ(B_1(0)) = 0.) Then ρ(B_t(0)) = 0 for every t > 0 by step 2. Every v ∈ ℝ^P lies in B_{m+1}(0) for a natural number m > ‖v‖ (Archimedean property), so ℝ^P = ⋃_{m ∈ ℕ} B_{m+1}(0), and by countable subadditivity (measure_iUnion_null) ρ(ℝ^P) = 0, contradicting step 1.\n4. (Case ρ(B_1(0)) ≠ 0.) For t ≥ 1 we have t^n ≥ t^1 = t (n ≥ 1; pow_le_pow_right₀), so by monotonicity of ofReal and of ρ and by step 2: ofReal(t)·ρ(B_1(0)) ≤ ofReal(t^n)·ρ(B_1(0)) = ρ(B_t(0)) ≤ ρ(ℝ^P). Moreover ofReal(t) → ∞ as t → ∞ (ENNReal.tendsto_ofReal_atTop), so ofReal(t)·ρ(B_1(0)) → ∞·ρ(B_1(0)) (ENNReal.Tendsto.mul_const, applicable because the limit ∞ is ≠ 0), and ∞·ρ(B_1(0)) = ∞ because ρ(B_1(0)) ≠ 0 (ENNReal.top_mul). Since these values are ≤ ρ(ℝ^P) for all t ≥ 1, the limit satisfies ∞ ≤ ρ(ℝ^P) (le_of_tendsto), i.e. ρ(ℝ^P) = ∞, contradicting step 1.\n5. Both cases are impossible, so ν ≠ ρ = μHE[n].withDensity f. ∎",
+    "proof_key_steps": [
+      "withdensity_dilate with A = B_1(0) and t•B_1(0) = B_t(0) gives ρ(B_t(0)) = ofReal(t^n)·ρ(B_1(0)) for ρ = Hⁿ.withDensity f.",
+      "If ρ(B_1(0)) = 0, all balls about 0 are null and ρ(ℝ^P) = 0.",
+      "If ρ(B_1(0)) ≠ 0, ρ(ℝ^P) ≥ ofReal(t)·ρ(B_1(0)) → ∞ (n ≥ 1), so ρ(ℝ^P) = ∞.",
+      "Either way ρ(ℝ^P) ∈ {0, ∞}, whereas ν(ℝ^P) ∈ (0, ∞); so ν ≠ ρ."
+    ]
+  },
+  "audit": {
+    "key": "nonhomogeneous",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The declared scaling dependency gives the ball formula for every positive radius. The zero case uses a countable ball cover; the nonzero case uses n ≥ 1 and valid ENNReal limit multiplication to force infinite total mass. Both contradict the stated mass hypotheses."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c/parent-supplied-natural-proof.json"
+}

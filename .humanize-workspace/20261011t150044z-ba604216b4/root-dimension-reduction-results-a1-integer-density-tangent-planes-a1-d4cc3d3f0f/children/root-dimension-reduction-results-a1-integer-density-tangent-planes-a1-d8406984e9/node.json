@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.injective-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Injectivity of (x, λ) ↦ ofReal(λ⁻¹^n)•μ₀.map(dilation x λ) for a finite nonzero μ₀ concentrated on B_2(0): total mass recovers λ, barycenter recovers x (parent step 2)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, and let μ₀ be a measure on ℝ^P with μ₀(ℝ^P) ≠ 0, μ₀(ℝ^P) ≠ ∞ and μ₀(B_2(0)ᶜ) = 0. If x, x' ∈ ℝ^P, λ, λ' > 0 and ofReal(λ⁻¹^n)•μ₀.map(dilation x λ) = ofReal(λ'⁻¹^n)•μ₀.map(dilation x' λ'), then x = x' and λ = λ'.",
+  "lean_statement": "∀ (P n : ℕ) (μ₀ : Measure (Euclid P)), 1 ≤ n → μ₀ univ ≠ 0 → μ₀ univ ≠ ∞ → μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 → ∀ (x x' : Euclid P) (lam lam' : ℝ), 0 < lam → 0 < lam' → ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam) = ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam') → x = x' ∧ lam = lam'",
+  "lean_name": "idtp_fons_cc_psf_injective",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d8406984e9-a1"
+}

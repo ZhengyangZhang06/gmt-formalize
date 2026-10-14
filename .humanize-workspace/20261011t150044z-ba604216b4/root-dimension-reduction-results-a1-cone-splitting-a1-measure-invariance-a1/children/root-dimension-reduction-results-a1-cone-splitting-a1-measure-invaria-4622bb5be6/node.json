@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1",
+  "depth": 4,
+  "title": "n-homogeneity of f·Hⁿ for a dilation-invariant density f",
+  "statement": "Let P, n ∈ ℕ, H^n = μHE[n] on ℝ^P, f : ℝ^P → [0, ∞] an arbitrary function (no measurability assumed), and λ > 0 with f(λx) = f(x) for every x ∈ ℝ^P. Let ν := H^n.withDensity f. Then for every Borel A ⊆ ℝ^P, ν(λA) = λ^n·ν(A), where λA = (x ↦ λx)(A) is the image of A; in [0, ∞] this reads ν(λA) = ofReal(λ^n)·ν(A).",
+  "lean_statement": "∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A",
+  "lean_name": "dimred_cs_mi_withDensity_dilate",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-862a12a643-a1",
+      "result_commit": "22204a6d923d28f1c362798e3e4f529019c709a5",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6-a1"
+}

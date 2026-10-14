@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.vague_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Domain recovery under vague limits: a vague limit of admissible members μ₀^{x_i,λ_i} (μ₀ finite) whose domains all fail to contain a compact K is an admissible member whose domain also fails to contain K (parent step 5c)",
+  "statement": "Let P, n ∈ ℕ and μ₀ a measure on ℝ^P with μ₀(ℝ^P) ≠ ∞. For x ∈ ℝ^P and λ > 0 write μ₀^{x,λ} := ofReal(λ⁻¹^n)•μ₀.map(dilation x λ) and G_{x,λ} := dilation x λ '' B_2(0); call (x, λ) admissible if 0 < λ ≤ 1 and ‖x‖ ≤ 1 − λ. Let (x_i, λ_i) (i ∈ ℕ) be admissible, let ν be a measure on ℝ^P with ν(K') ≠ ∞ for every compact K', such that ∫ f dμ₀^{x_i,λ_i} → ∫ f dν for every continuous compactly supported f : ℝ^P → ℝ, and let K ⊆ ℝ^P be compact with K ⊄ G_{x_i,λ_i} for every i. Then there is an admissible (x, λ) with ν = μ₀^{x,λ} and K ⊄ G_{x,λ}.",
+  "lean_statement": "∀ (P n : ℕ) (μ₀ : Measure (Euclid P)), μ₀ univ ≠ ∞ → ∀ (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ν : Measure (Euclid P)) (K : Set (Euclid P)), (∀ i, 0 < lams i ∧ lams i ≤ 1 ∧ ‖xs i‖ ≤ 1 - lams i) → (∀ K' : Set (Euclid P), IsCompact K' → ν K' ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun i => ∫ x, f x ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ x, f x ∂ν))) → IsCompact K → (∀ i, ¬ K ⊆ dilation (xs i) (lams i) '' ball 0 2) → ∃ (x : Euclid P) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧ ν = (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∧ ¬ K ⊆ dilation x lam '' ball 0 2",
+  "lean_name": "idtp_fons_cc_psf_vague_closed",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.domain_geometry-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.vague_unique-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.param_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.domain_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.vague_unique-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.param_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a623922796-a1"
+}
