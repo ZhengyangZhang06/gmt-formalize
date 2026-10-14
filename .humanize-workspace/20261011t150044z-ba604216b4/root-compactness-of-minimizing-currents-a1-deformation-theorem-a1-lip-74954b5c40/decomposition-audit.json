@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpo|homotopy|cylinder",
+        "compContinuousLinearMapCLM|def curryLeftLI|theorem curryLeft_apply_apply",
+        "theorem HasFDerivAt.smul |def toContinuousLinearMap|theorem comp_cons|theorem Continuous.finCons|theorem pow_le_pow_left₀",
+        "boundaryMassOn",
+        "cited_inherited",
+        "cmcdt_lpo_she_affine_homotopy",
+        "cmcdt_lpo_she_slice_bound",
+        "cmcdt_lpo_she_cylinder_homotopy",
+        "git -C .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib rev-parse HEAD",
+        "/tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lake env /tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lean /tmp/she-independent-audit-8465scpp/Types.lean",
+        "/tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lake env /tmp/lean-tc-local/lean-4.35.0-rc3-linux/bin/lean /tmp/she-independent-audit-8465scpp/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-74954b5c40/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-74954b5c40/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/swarm_broker.py",
+        "/tmp/she-independent-audit-8465scpp/Types.lean",
+        "/tmp/she-independent-audit-8465scpp/Audit.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical workspace contract, and relevant APIs. No cmcdt_lpo declarations were found in the searched snapshot. All three frozen propositions elaborate before any child declaration; their names are bare identifiers and have no reservations in other DAG branches or decomposition plans. The runtime correctly inherits the slice prerequisite for slice_bound and cylinder_formula, with no dependency cycle. Independently checked the supplied proofs step by step and compiled their prototype bodies with the frozen slice contract as an explicit hypothesis. The exact selected parent follows from the children and frozen cutoff/toolkit contracts, including empty support, degree zero and truncated subtraction. Both Lean checks succeeded; axiom reports contain only propext, Classical.choice and Quot.sound. This verifies the required implications without treating pending prerequisites as proved. The split is appropriate, and the inline constructions have the intended Euclidean and continuous-linear-map types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "affine_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the hypotheses and three conclusions. The supplied construction proves smoothness and computes the full derivative using continuous linear coordinate maps and the chain/product rules. Evaluations at e₀ and Jv give the required formulas, including N = 0. The proof is complete and non-circular."
+    },
+    {
+      "key": "slice_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and proposition agree on every hypothesis. The proof constructs a continuous covector-valued integrand, verifies its integral representation, and applies L1/L2 with justified nonnegative factors. Pointwise existential witnesses need no continuity. The inherited slice theorem's exact Minkowski conjunct yields the stated coefficient-norm bound. No hidden assumption or circular reliance remains."
+    },
+    {
+      "key": "cylinder_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The LOC antecedent and both degree cases match the prose exactly. Slice existence supplies the required test forms; the homotopy identities establish their equality with the appropriate differences on W. LOC, current linearity and boundary_apply then give both conclusions. The inherited slice dependency is acyclic, and no additional compactness or mass hypothesis is needed."
+    }
+  ],
+  "required_changes": []
+}
