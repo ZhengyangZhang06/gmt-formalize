@@ -497,6 +497,30 @@ theorem Submission.idtp_fons_odc_line_hausdorff : unitBallVolume 1 = 2 ∧ ∀ (
         hemb.injective.preimage_image]
     · rw [(hiso P p v hv).euclideanHausdorffMeasure_image, hR]
 
+/-- **Simon 7.3.3, proof of (2), step 4a**: for `‖u‖ = 1` and `f ≥ 0` continuous with compact
+support and `f(u) > 0`, `∫_{ℝu} f dH¹ > 0`.  By `idtp_fons_odc_line_hausdorff` (`p = 0`, `v = u`,
+`I = ℝ`), `H¹⌞ℝu = γ_#ℒ¹` for `γ(t) = t u`, so the integral is `∫_ℝ f(t u) dt`; `γ` is an
+isometry, so `t ↦ f(t u)` is continuous, nonnegative, compactly supported and positive at `1`. -/
+theorem Submission.idtp_fons_odc_ro_line_integral_pos : ∀ (P : ℕ) (u : Euclid P) (f : Euclid P → ℝ), ‖u‖ = 1 → Continuous f → HasCompactSupport f → (∀ y, 0 ≤ f y) → 0 < f u → 0 < ∫ y in (Submodule.span ℝ {u} : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P)) := by
+  intro P u f hu hf hfc hf0 hfu
+  obtain ⟨hemb, hline⟩ := Submission.idtp_fons_odc_line_hausdorff.2 P 0 u hu
+  -- `γ(t) = 0 + t u` is an isometry
+  have hiso : Isometry (fun t : ℝ => (0 : Euclid P) + t • u) :=
+    Isometry.of_dist_eq fun s t => by
+      show dist ((0 : Euclid P) + s • u) (0 + t • u) = dist s t
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hu, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+  -- the line `ℝu` is `γ(ℝ)`
+  have hspan : (Submodule.span ℝ {u} : Set (Euclid P)) =
+      (fun t : ℝ => (0 : Euclid P) + t • u) '' univ := by
+    ext y
+    simp only [SetLike.mem_coe, Submodule.mem_span_singleton, image_univ, mem_range, zero_add]
+  -- `∫_{ℝu} f dH¹ = ∫_ℝ f(γ t) dt`
+  rw [hspan, (hline univ).1, Measure.restrict_univ, hemb.integral_map]
+  exact (hf.comp hiso.continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
+    (hfc.comp_isClosedEmbedding hiso.isClosedEmbedding) (fun t => hf0 _) (x := 1)
+    (by simpa using hfu.ne')
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
