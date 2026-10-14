@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Integrals over a finite set against `H⁰ = μHE[0]` are finite sums (for Simon 6.8.2, `n = 0`):
+`μHE[0] = μH[0]` is the counting measure, `μH[0]{x} = 1`, so `∫_F f dH⁰ = Σ_{x ∈ F} f(x)` (each
+`f` is integrable on the finite union `F` of singletons) and `∫⁻_F g dH⁰ = Σ_{x ∈ F} g(x)`. -/
+theorem Submission.cbrz_finset_integral_hausdorff_zero : ∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞), (∫ x in (F : Set (Euclid P)), f x ∂μHE[0]) = ∑ x ∈ F, f x ∧ (∫⁻ x in (F : Set (Euclid P)), g x ∂μHE[0]) = ∑ x ∈ F, g x := by
+  intro P F f g
+  rw [Measure.euclideanHausdorffMeasure_zero]
+  constructor
+  · -- `f` is integrable on each singleton `{x}`, `μH[0]{x} = 1`, hence on the finite union `F`
+    have hint : IntegrableOn f (F : Set (Euclid P)) μH[0] := by
+      rw [← Set.biUnion_of_singleton (F : Set (Euclid P)),
+        integrableOn_finite_biUnion F.finite_toSet]
+      intro x _
+      exact integrableOn_singleton (by simp) (by simp [Measure.hausdorffMeasure_zero_singleton])
+    rw [setIntegral_finset F hint]
+    simp [measureReal_def, Measure.hausdorffMeasure_zero_singleton]
+  · rw [lintegral_finset]
+    simp [Measure.hausdorffMeasure_zero_singleton]
+
+/-- A finite set `F ⊆ ℝᴾ` has approximate tangent space `⊥ = {0}` in dimension `0` at each point
+`y ∈ F` (Simon Ch. 3, 1.4 with `n = 0`): if `f ∈ C_c(ℝᴾ)` vanishes off the ball of radius `R₀` and
+`δ > 0` separates `y` from `F \ {y}`, then for `0 < ρ < δ / R₀` the finite blow-up `η_{y,ρ}(F)`
+meets `{f ≠ 0}` at most in `η_{y,ρ}(y) = 0`, so `∫_{η_{y,ρ}(F)} f dH⁰ = f(0) = ∫_⊥ f dH⁰`. -/
+theorem Submission.dmcbrz_approxTangent_finite_zero : ∀ (P : ℕ) (F : Set (Euclid P)) (y : Euclid P), F.Finite → y ∈ F → HasApproximateTangentSpaceAt 0 F y ⊥ := by
+  intro P F y hF hy
+  have hCI := Submission.cbrz_finset_integral_hausdorff_zero P
+  refine ⟨finrank_bot ℝ (Euclid P), fun f => ?_⟩
+  -- `∫_⊥ f dH⁰ = f(0)`, the carrier of `⊥` being the finite set `{0}`
+  have hlim : ∫ z in ((⊥ : Submodule ℝ (Euclid P)) : Set (Euclid P)), f z ∂μHE[0] = f 0 := by
+    have h := (hCI {0} f fun _ => 0).1
+    rw [Finset.coe_singleton, Finset.sum_singleton] at h
+    rw [Submodule.bot_coe, h]
+  rw [hlim]
+  -- `f` vanishes outside the open ball of radius `R₀ > 0`
+  obtain ⟨R₀, hR₀, hfz⟩ : ∃ R₀ > 0, ∀ z : Euclid P, R₀ ≤ ‖z‖ → f z = 0 := by
+    obtain ⟨R, hR⟩ := f.hasCompactSupport.isBounded.subset_closedBall 0
+    refine ⟨max R 0 + 1, by positivity, fun z hz => image_eq_zero_of_notMem_tsupport fun hzs => ?_⟩
+    have h := hR hzs
+    rw [mem_closedBall, dist_zero_right] at h
+    linarith [le_max_left R 0]
+  -- `δ > 0` separates `y` from the finite, hence closed, set `F \ {y}`
+  obtain ⟨δ, hδ, hsep⟩ : ∃ δ > 0, ∀ z ∈ F, z ≠ y → δ ≤ ‖z - y‖ := by
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hF.sdiff.isClosed.isOpen_compl y
+      (fun h => h.2 rfl : y ∉ F \ {y})
+    refine ⟨δ, hδ, fun z hz hzy => not_lt.1 fun h => hball ?_ ⟨hz, hzy⟩⟩
+    rwa [mem_ball, dist_eq_norm]
+  -- for `0 < ρ < δ / R₀`, every point `η_{y,ρ}(z) ≠ 0` of the blow-up has norm `≥ ρ⁻¹δ > R₀`
+  apply tendsto_nhds_of_eventually_eq
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR₀)] with ρ hρ
+  have hfin : (Poincare.SimonGMT.Chapter03.blowUpMap y ρ '' F).Finite := hF.image _
+  rw [← hfin.coe_toFinset, (hCI hfin.toFinset f fun _ => 0).1, Finset.sum_eq_single 0]
+  · intro w hw hw0
+    obtain ⟨z, hz, rfl⟩ := hfin.mem_toFinset.1 hw
+    have hzy : z ≠ y := by
+      rintro rfl
+      exact hw0 (by simp [Poincare.SimonGMT.Chapter03.blowUpMap])
+    apply hfz
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv, Real.norm_of_nonneg hρ.1.le,
+      inv_mul_eq_div, le_div_iff₀ hρ.1, mul_comm R₀ ρ]
+    exact ((lt_div_iff₀ hR₀).1 hρ.2).le.trans (hsep z hz hzy)
+  · intro h0
+    exact absurd (hfin.mem_toFinset.2 ⟨y, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap]⟩) h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
