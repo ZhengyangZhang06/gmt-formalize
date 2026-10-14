@@ -3426,6 +3426,616 @@ theorem Submission.codim1_hcp_sc_weingarten_codazzi : ∀ (P m : ℕ) (A₀ : Su
     rw [hDC a ha]
     exact sub_eq_zero.mp (by simpa using e2.symm)
 
+/-- **Simon, Appendix B, B.8 (Simons' identity) for a minimal hypersurface of `A₀`**: for every
+`x ∈ M`, `Δ_M |A|²(x) = 2 |∇A|²(x) − 2 (|A|²(x))²`, where `δⱼ g = D^M g (P eⱼ)`,
+`Δ_M = Σⱼ δⱼ δⱼ`, `|A|² = Σᵢ |Dν(P eᵢ)|²` and `∇A` is the tangential derivative of
+`C = Dν ∘ P`.
+
+The proof is the frame-free form of B.4–B.9 (the elementary derivation of [Giu84, Ch. 10] that
+Simon cites before B.4).  On the open `O ⊇ M` put `Q(z) w = Π w − ⟨ν(z), w⟩ ν(z)` (`Π` the
+projection onto `A₀`), `C(z) = Dν(z) ∘ Q(z)` and `δ_b f(z) = Df(z) (Q(z) b)`.  By
+`codim1_hcp_sc_tangent_normal_complement`, `Q(y) = P_y` on `M`, and by
+`codim1_hcp_sc_fderivWithin_tangent_eq`, `fderivWithin` along `T_y M` is the derivative of any
+ambient smooth extension; so every quantity of the statement is an ambient one.  Then:
+* `δ`-derivatives only see values on `M`;
+* `δ_a δ_b f − δ_b δ_a f = ⟨ν, a⟩ Df(C b) − ⟨ν, b⟩ Df(C a)` on `M`, by the symmetry of `D²f` and
+  of the Weingarten map (B.4, `codim1_hcp_sc_weingarten_codazzi`).  For `f = ν` this is Codazzi
+  (B.5); applied to `f = C` it replaces the Gauss and Ricci identities (B.6–B.7);
+* contracting Codazzi and using `H = tr C = 0` on `M`: `Σⱼ δⱼ C eⱼ = −|A|² ν` on `M`;
+* B.8–B.9: the product rule, the splitting `Σⱼ |δⱼ C|² = |∇A|² + 2 Σⱼ |C² eⱼ|²` and
+  `Σᵢ ⟨C eᵢ, Σⱼ δⱼ δⱼ C eᵢ⟩ = −|A|⁴ − 2 Σⱼ |C² eⱼ|²` give `Δ_M |A|² = 2 |∇A|² − 2 |A|⁴`. -/
+theorem Submission.codim1_hcp_sc_simons_identity : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0) → ∀ x ∈ M, (∑ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ (fun z => ∑ i : Fin P, ‖fderiv ℝ ν z ((Submodule.span ℝ (tangentSpace M z)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) M y ((Submodule.span ℝ (tangentSpace M y)).starProjection (EuclideanSpace.single j 1))) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) = 2 * (∑ i : Fin P, ∑ j : Fin P, ∑ k : Fin P, (inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single k 1)) ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))) ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) - 2 * (∑ i : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) ^ 2 := by
+  intro P m A₀ M ν hdim hMA hM hO hν htr x hx
+  refine Exists.elim hO fun O hO' => ?_
+  have hOo : IsOpen O := hO'.1
+  have hMO : M ⊆ O := hO'.2.1
+  have hνO : ContDiffOn ℝ (⊤ : ℕ∞) ν O := hO'.2.2
+  have hxO : x ∈ O := hMO hx
+  have NC' := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hdim hMA (hM 1) hν
+  have WC' := Submission.codim1_hcp_sc_weingarten_codazzi P m A₀ M ν hdim hMA hM
+    ⟨O, hOo, hMO, hνO⟩ hν
+  /- The standard basis `eⱼ` of `ℝᴾ`: Parseval's identity and its consequences. -/
+  refine Exists.elim (⟨_, rfl⟩ : ∃ e : Fin P → Euclid P, e = fun i => EuclideanSpace.single i 1)
+    fun e he => ?_
+  have hpar : ∀ u v : Euclid P, ∑ i, inner ℝ u (e i) * inner ℝ v (e i) = inner ℝ u v := by
+    intro u v
+    have h := (EuclideanSpace.basisFun (Fin P) ℝ).sum_inner_mul_inner u v
+    simp only [EuclideanSpace.basisFun_apply] at h
+    rw [← h, he]
+    exact Finset.sum_congr rfl fun j _ => by rw [real_inner_comm v]
+  have hexp : ∀ u : Euclid P, ∑ i, inner ℝ u (e i) • e i = u := by
+    intro u
+    have h := (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr' u
+    simp only [EuclideanSpace.basisFun_apply] at h
+    conv_rhs => rw [← h]
+    rw [he]
+    exact Finset.sum_congr rfl fun j _ => by rw [real_inner_comm]
+  have hsq : ∀ u : Euclid P, ∑ i, inner ℝ u (e i) ^ 2 = ‖u‖ ^ 2 := by
+    intro u
+    rw [← real_inner_self_eq_norm_sq, ← hpar]
+    exact Finset.sum_congr rfl fun j _ => sq _
+  have hinclm : ∀ (W : Euclid P →L[ℝ] Euclid P) (n v : Euclid P),
+      ∑ i, inner ℝ n (e i) * inner ℝ (W (e i)) v = inner ℝ (W n) v := by
+    intro W n v
+    conv_rhs => rw [← hexp n]
+    rw [map_sum, sum_inner]
+    exact Finset.sum_congr rfl fun i _ => by rw [map_smul, real_inner_smul_left]
+  have hsmclm : ∀ (T : Euclid P →L[ℝ] Euclid P) (u : Euclid P),
+      ∑ i, inner ℝ u (e i) • T (e i) = T u := by
+    intro T u
+    conv_rhs => rw [← hexp u]
+    rw [map_sum]
+    exact Finset.sum_congr rfl fun i _ => (map_smul T _ _).symm
+  /- Step B (linear algebra): `Σⱼ |L_j|²` splits into the tangential block and twice
+  `Σⱼ |S² eⱼ|²`, given the normal parts of `L_j` in both slots. -/
+  have hstepB : ∀ (n : Euclid P) (S R : Euclid P →L[ℝ] Euclid P)
+      (L : Fin P → Euclid P →L[ℝ] Euclid P), ‖n‖ = 1 → R n = 0 →
+      (∀ w, inner ℝ n (R w) = 0) → (∀ w, inner ℝ n (S w) = 0) →
+      (∀ u v, inner ℝ (R u) v = inner ℝ u (R v)) → (∀ w, S (R w) = S w) →
+      (∀ u v, inner ℝ (S u) v = inner ℝ u (S v)) →
+      (∀ j b, L j b - L j (R b) = -(inner ℝ n b • S (S (e j)))) →
+      (∀ j b, L j b - R (L j b) = -(inner ℝ (S (e j)) (S b) • n)) →
+      ∑ j, ∑ i, ‖L j (e i)‖ ^ 2 =
+        ∑ j, ∑ i, ∑ k, inner ℝ (L j (R (e i))) (R (e k)) ^ 2 + 2 * ∑ j, ‖S (S (e j))‖ ^ 2 := by
+    intro n S R L hn hRn hnR hnS hRsymm hSR hSsymm hLin' hLout'
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hnn : inner ℝ n n = 1 := by rw [real_inner_self_eq_norm_sq, hn]; norm_num
+    have hnw : inner ℝ n (S (S (e j))) = 0 := hnS _
+    -- `L_j eᵢ = R L_j R eᵢ − ⟨n, eᵢ⟩ S² eⱼ − ⟨S² eⱼ, eᵢ⟩ n`
+    have hdec : ∀ i, L j (e i) = R (L j (R (e i))) - inner ℝ n (e i) • S (S (e j)) -
+        inner ℝ (S (S (e j))) (e i) • n := by
+      intro i
+      have h1 := hLin' j (e i)
+      have h2 := hLout' j (R (e i))
+      rw [hSR, ← hSsymm (S (e j)) (e i)] at h2
+      calc L j (e i) = (L j (e i) - L j (R (e i))) + (L j (R (e i)) - R (L j (R (e i)))) +
+            R (L j (R (e i))) := by abel
+        _ = R (L j (R (e i))) - inner ℝ n (e i) • S (S (e j)) -
+            inner ℝ (S (S (e j))) (e i) • n := by rw [h1, h2]; abel
+    have hnorm : ∀ i, ‖L j (e i)‖ ^ 2 = ‖R (L j (R (e i)))‖ ^ 2 -
+        2 * (inner ℝ n (e i) * inner ℝ (R (L j (R (e i)))) (S (S (e j)))) +
+        inner ℝ n (e i) ^ 2 * ‖S (S (e j))‖ ^ 2 + inner ℝ (S (S (e j))) (e i) ^ 2 := by
+      intro i
+      have hnY : inner ℝ n (R (L j (R (e i)))) = 0 := hnR _
+      have hYn : inner ℝ (R (L j (R (e i)))) n = 0 := by rw [real_inner_comm]; exact hnY
+      have hwn : inner ℝ (S (S (e j))) n = 0 := by rw [real_inner_comm]; exact hnw
+      rw [hdec i]
+      simp only [← real_inner_self_eq_norm_sq, inner_sub_left, inner_sub_right,
+        real_inner_smul_left, real_inner_smul_right, hYn, hnY, hwn, hnw, hnn,
+        real_inner_comm (R (L j (R (e i)))) (S (S (e j)))]
+      ring
+    simp_rw [hnorm]
+    rw [Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.mul_sum,
+      ← Finset.sum_mul]
+    have hA : ∑ i, ‖R (L j (R (e i)))‖ ^ 2 =
+        ∑ i, ∑ k, inner ℝ (L j (R (e i))) (R (e k)) ^ 2 := by
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← hsq]
+      exact Finset.sum_congr rfl fun k _ => by rw [hRsymm]
+    have hB : ∑ i, inner ℝ n (e i) * inner ℝ (R (L j (R (e i)))) (S (S (e j))) = 0 := by
+      have := hinclm (R.comp ((L j).comp R)) n (S (S (e j)))
+      simp only [ContinuousLinearMap.comp_apply, hRn, map_zero, inner_zero_left] at this
+      exact this
+    have hC1 : ∑ i, inner ℝ n (e i) ^ 2 = 1 := by
+      rw [hsq, hn]; norm_num
+    rw [hA, hB, hC1, hsq]
+    ring
+  /- Step C (algebra): `Σᵢ ⟨S eᵢ, Λ eᵢ⟩ = −|S|⁴ − 2 Σᵢ |S² eᵢ|²` for `Λ` of the form below. -/
+  have hstepCalg : ∀ (n : Euclid P) (S : Euclid P →L[ℝ] Euclid P), S n = 0 →
+      (∀ w, inner ℝ n (S w) = 0) → (∀ u v, inner ℝ (S u) v = inner ℝ u (S v)) →
+      ∀ (Λ : Euclid P → Euclid P) (κ : Euclid P → ℝ) (V : Euclid P),
+      (∀ b, Λ b = κ b • n - (∑ i, ‖S (e i)‖ ^ 2) • S b - (2 : ℝ) • S (S (S b)) -
+        inner ℝ n b • V) →
+      ∑ i, inner ℝ (S (e i)) (Λ (e i)) =
+        -(∑ i, ‖S (e i)‖ ^ 2) ^ 2 - 2 * ∑ i, ‖S (S (e i))‖ ^ 2 := by
+    intro n S hSn hnS hSsymm Λ κ V hΛ
+    have h1 : ∀ i, inner ℝ (S (e i)) n = 0 := fun i => by rw [real_inner_comm]; exact hnS _
+    have h2 : ∀ i, inner ℝ (S (e i)) (S (S (S (e i)))) = ‖S (S (e i))‖ ^ 2 := fun i => by
+      rw [← hSsymm, real_inner_self_eq_norm_sq]
+    have h3 : ∑ i, inner ℝ n (e i) * inner ℝ (S (e i)) V = 0 := by
+      rw [hinclm, hSn, inner_zero_left]
+    simp_rw [hΛ, inner_sub_right, real_inner_smul_right, h1, h2, real_inner_self_eq_norm_sq]
+    simp only [mul_zero, zero_sub, Finset.sum_sub_distrib, Finset.sum_neg_distrib]
+    rw [h3, ← Finset.mul_sum, ← Finset.mul_sum]
+    ring
+  /- The ambient projection field `Q(z) w = Π w − ⟨ν(z), w⟩ ν(z)`. -/
+  refine Exists.elim (⟨_, rfl⟩ : ∃ Q : Euclid P → Euclid P →L[ℝ] Euclid P,
+      Q = fun z => A₀.starProjection - (innerSL ℝ (ν z)).smulRight (ν z)) fun Q hQdef => ?_
+  have hQ : ∀ z w, Q z w = A₀.starProjection w - inner ℝ (ν z) w • ν z := fun z w => by
+    rw [hQdef]; simp
+  have hQsymm : ∀ z u v, inner ℝ (Q z u) v = inner ℝ u (Q z v) := by
+    intro z u v
+    rw [hQ, hQ, inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right,
+      Submodule.inner_starProjection_left_eq_right, real_inner_comm (ν z) u]
+    ring
+  -- where `ν ∈ A₀` is a unit vector, `Q` is the orthogonal projection onto `A₀ ∩ ν^⊥`
+  have hQfacts : ∀ y, ν y ∈ A₀ → ‖ν y‖ = 1 →
+      (∀ w, inner ℝ (ν y) (Q y w) = 0) ∧ (∀ w, Q y w ∈ A₀) ∧ Q y (ν y) = 0 ∧
+        (∀ v ∈ A₀, inner ℝ (ν y) v = 0 → Q y v = v) ∧ (∀ w, Q y (Q y w) = Q y w) := by
+    intro y hA h1
+    have hPν : A₀.starProjection (ν y) = ν y := (Submodule.starProjection_eq_self_iff).2 hA
+    have hνν : inner ℝ (ν y) (ν y) = 1 := by rw [real_inner_self_eq_norm_sq, h1]; norm_num
+    have h1' : ∀ w, inner ℝ (ν y) (Q y w) = 0 := by
+      intro w
+      rw [hQ, inner_sub_right, real_inner_smul_right, hνν,
+        ← Submodule.inner_starProjection_left_eq_right, hPν]
+      ring
+    have h2 : ∀ w, Q y w ∈ A₀ := fun w => by
+      rw [hQ]; exact A₀.sub_mem (A₀.starProjection_apply_mem w) (A₀.smul_mem _ hA)
+    have h4 : ∀ v ∈ A₀, inner ℝ (ν y) v = 0 → Q y v = v := by
+      intro v hv hνv
+      rw [hQ, hνv, zero_smul, sub_zero]
+      exact (Submodule.starProjection_eq_self_iff).2 hv
+    refine ⟨h1', h2, ?_, h4, fun w => h4 _ (h2 w) (h1' w)⟩
+    rw [hQ, hPν, hνν, one_smul, sub_self]
+  /- Smoothness on `O`. -/
+  have hdiff : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : Euclid P → F},
+      ContDiffOn ℝ (⊤ : ℕ∞) f O → ∀ {y : Euclid P}, y ∈ O → DifferentiableAt ℝ f y := by
+    intro F _ _ f hf y hy
+    exact (hf.contDiffAt (hOo.mem_nhds hy)).differentiableAt (by simp)
+  have hcdf : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : Euclid P → F},
+      ContDiffOn ℝ (⊤ : ℕ∞) f O → ContDiffOn ℝ (⊤ : ℕ∞) (fderiv ℝ f) O := by
+    intro F _ _ f hf
+    exact hf.fderiv_of_isOpen hOo (by simp)
+  have hQb : ∀ b, ContDiffOn ℝ (⊤ : ℕ∞) (fun z => Q z b) O := by
+    intro b
+    have h : (fun z => Q z b) = fun z => A₀.starProjection b - inner ℝ (ν z) b • ν z :=
+      funext fun z => hQ z b
+    rw [h]
+    exact contDiffOn_const.sub ((hνO.inner ℝ contDiffOn_const).smul hνO)
+  have hQs : ContDiffOn ℝ (⊤ : ℕ∞) Q O := by
+    rw [hQdef]
+    exact contDiffOn_const.sub (((innerSL ℝ).contDiff.comp_contDiffOn hνO).smulRight hνO)
+  /- Derivative formulas. -/
+  have hfis : ∀ {W : Euclid P → Euclid P} {y : Euclid P}, DifferentiableAt ℝ ν y →
+      DifferentiableAt ℝ W y → ∀ c u : Euclid P,
+      fderiv ℝ (fun z => inner ℝ (ν z) c • W z) y u =
+        inner ℝ (fderiv ℝ ν y u) c • W y + inner ℝ (ν y) c • fderiv ℝ W y u := by
+    intro W y hνy hW c u
+    rw [fderiv_fun_smul (hνy.inner ℝ (differentiableAt_const c)) hW, add_apply, smul_apply,
+      ContinuousLinearMap.smulRight_apply, fderiv_inner_apply ℝ hνy (differentiableAt_const c),
+      fderiv_const_apply, zero_apply, inner_zero_right, zero_add, add_comm]
+  have hfQ : ∀ {y : Euclid P}, DifferentiableAt ℝ ν y → ∀ b u : Euclid P,
+      fderiv ℝ (fun z => Q z b) y u =
+        -(inner ℝ (fderiv ℝ ν y u) b • ν y + inner ℝ (ν y) b • fderiv ℝ ν y u) := by
+    intro y hd b u
+    have h : (fun z => Q z b) = fun z => A₀.starProjection b - inner ℝ (ν z) b • ν z :=
+      funext fun z => hQ z b
+    rw [h, fderiv_const_sub, neg_apply, hfis hd hd]
+  have hfac : ∀ {L : Euclid P → Euclid P →L[ℝ] Euclid P} {y : Euclid P},
+      DifferentiableAt ℝ L y → ∀ b u : Euclid P,
+      fderiv ℝ (fun z => L z b) y u = fderiv ℝ L y u b := by
+    intro L y hL b u
+    rw [fderiv_clm_apply hL (differentiableAt_const b)]
+    simp
+  have hfic : ∀ {G : Euclid P → Euclid P} {y : Euclid P}, DifferentiableAt ℝ G y →
+      ∀ d u : Euclid P,
+      fderiv ℝ (fun z => inner ℝ (G z) d) y u = inner ℝ (fderiv ℝ G y u) d := by
+    intro G y hG d u
+    rw [fderiv_inner_apply ℝ hG (differentiableAt_const d)]
+    simp
+  have hfns : ∀ {G : Euclid P → Euclid P} {y : Euclid P}, DifferentiableAt ℝ G y →
+      ∀ u : Euclid P, fderiv ℝ (fun z => ‖G z‖ ^ 2) y u = 2 * inner ℝ (G y) (fderiv ℝ G y u) := by
+    intro G y hG u
+    rw [hG.hasFDerivAt.norm_sq.fderiv]
+    simp
+  -- derivative of `z ↦ Df(z) (Q(z) c)`
+  have hftan : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : Euclid P → F},
+      ContDiffOn ℝ (⊤ : ℕ∞) f O → ∀ {y : Euclid P}, y ∈ O → ∀ c u : Euclid P,
+      fderiv ℝ (fun z => fderiv ℝ f z (Q z c)) y u =
+        fderiv ℝ (fderiv ℝ f) y u (Q y c) -
+          (inner ℝ (fderiv ℝ ν y u) c • fderiv ℝ f y (ν y) +
+            inner ℝ (ν y) c • fderiv ℝ f y (fderiv ℝ ν y u)) := by
+    intro F _ _ f hf y hy c u
+    have hfd : DifferentiableAt ℝ (fderiv ℝ f) y := hdiff (hcdf hf) hy
+    have hQd : DifferentiableAt ℝ (fun z => Q z c) y := hdiff (hQb c) hy
+    rw [fderiv_clm_apply hfd hQd]
+    simp only [add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
+      hfQ (hdiff hνO hy), map_neg, map_add, map_smul]
+    abel
+  -- commutation formula `δ_a δ_b f − δ_b δ_a f = ⟨ν, a⟩ Df(C b) − ⟨ν, b⟩ Df(C a)` where the
+  -- Weingarten map `Dν ∘ Q` is self-adjoint (B.4)
+  have hcomm : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : Euclid P → F},
+      ContDiffOn ℝ (⊤ : ℕ∞) f O → ∀ {y : Euclid P}, y ∈ O →
+      (∀ a b, inner ℝ (fderiv ℝ ν y (Q y a)) b = inner ℝ (fderiv ℝ ν y (Q y b)) a) →
+      ∀ a b : Euclid P,
+      fderiv ℝ (fun z => fderiv ℝ f z (Q z b)) y (Q y a) -
+          fderiv ℝ (fun z => fderiv ℝ f z (Q z a)) y (Q y b) =
+        inner ℝ (ν y) a • fderiv ℝ f y (fderiv ℝ ν y (Q y b)) -
+          inner ℝ (ν y) b • fderiv ℝ f y (fderiv ℝ ν y (Q y a)) := by
+    intro F _ _ f hf y hy hS a b
+    have hsymm : IsSymmSndFDerivAt ℝ f y := (hf.contDiffAt (hOo.mem_nhds hy)).isSymmSndFDerivAt
+      (by simp [minSmoothness_of_isRCLikeNormedField])
+    rw [hftan hf hy, hftan hf hy, hsymm (Q y a) (Q y b), hS a b]
+    module
+  /- On `M`, `Q` is the projection onto `span T_y M`, and tangential derivatives only see
+  values on `M`. -/
+  have hPQ : ∀ y ∈ M, (Submodule.span ℝ (tangentSpace M y)).starProjection = Q y :=
+    fun y hy => ContinuousLinearMap.ext fun w => by rw [hQ]; exact (NC' y hy).2 w
+  have hQT : ∀ y ∈ M, ∀ w, Q y w ∈ tangentSpace M y := fun y hy w => by
+    rw [(NC' y hy).1]
+    exact ⟨(hQfacts y (hν y hy).1 (hν y hy).2.1).2.1 w,
+      (hQfacts y (hν y hy).1 (hν y hy).2.1).1 w⟩
+  have hQspan : ∀ y ∈ M, ∀ w, Q y w ∈ Submodule.span ℝ (tangentSpace M y) := fun y hy w =>
+    Submodule.subset_span (hQT y hy w)
+  have hloc : ∀ (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (φ : Euclid P → F),
+      (∀ z ∈ M, φ z = 0) → ∀ y ∈ M, DifferentiableAt ℝ φ y → ∀ w, fderiv ℝ φ y (Q y w) = 0 := by
+    intro F _ _ φ hφ y hy hd w
+    have h0 : HasFDerivWithinAt φ (0 : Euclid P →L[ℝ] F) M y :=
+      (hasFDerivWithinAt_const (0 : F) y M).congr (fun z hz => hφ z hz) (hφ y hy)
+    have h1 := Submission.codim1_hcp_sc_fderivWithin_tangent_eq P F M φ 0 y h0 (Q y w)
+      (hQspan y hy w)
+    have h2 := Submission.codim1_hcp_sc_fderivWithin_tangent_eq P F M φ (fderiv ℝ φ y) y
+      hd.hasFDerivAt.hasFDerivWithinAt (Q y w) (hQspan y hy w)
+    rw [h1] at h2
+    simpa using h2.symm
+  have heqOn : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] {φ ψ : Euclid P → F},
+      (∀ z ∈ M, φ z = ψ z) → ∀ {y : Euclid P}, y ∈ M → DifferentiableAt ℝ φ y →
+      DifferentiableAt ℝ ψ y → ∀ w, fderiv ℝ φ y (Q y w) = fderiv ℝ ψ y (Q y w) := by
+    intro F _ _ φ ψ h y hy hφ hψ w
+    have h0 := hloc F (fun z => φ z - ψ z) (fun z hz => sub_eq_zero.2 (h z hz)) y hy
+      (hφ.sub hψ) w
+    rw [fderiv_fun_sub hφ hψ, sub_apply, sub_eq_zero] at h0
+    exact h0
+  /- The Weingarten map `Dν ∘ Q` maps into `T_y M` and is self-adjoint (B.4). -/
+  have hW : ∀ y ∈ M, ∀ a,
+      fderiv ℝ ν y (Q y a) ∈ A₀ ∧ inner ℝ (ν y) (fderiv ℝ ν y (Q y a)) = 0 :=
+    fun y hy a => by
+      have h := (WC' y hy (Q y a) (hQT y hy a) (Q y a) (hQT y hy a)).1
+      rw [(NC' y hy).1] at h
+      exact h
+  have hS : ∀ y ∈ M, ∀ a b,
+      inner ℝ (fderiv ℝ ν y (Q y a)) b = inner ℝ (fderiv ℝ ν y (Q y b)) a := by
+    intro y hy a b
+    have hq4 := (hQfacts y (hν y hy).1 (hν y hy).2.1).2.2.2.1
+    have hfix : ∀ c u,
+        inner ℝ (fderiv ℝ ν y (Q y c)) u = inner ℝ (fderiv ℝ ν y (Q y c)) (Q y u) :=
+      fun c u => by rw [← hQsymm, hq4 _ (hW y hy c).1 (hW y hy c).2]
+    rw [hfix a b, hfix b a]
+    exact (WC' y hy (Q y a) (hQT y hy a) (Q y b) (hQT y hy b)).2.1
+  /- The Weingarten field `C = Dν ∘ Q`. -/
+  refine Exists.elim (⟨_, rfl⟩ : ∃ C : Euclid P → Euclid P →L[ℝ] Euclid P,
+      C = fun z => (fderiv ℝ ν z).comp (Q z)) fun C hCdef => ?_
+  have hC : ∀ z b, C z b = fderiv ℝ ν z (Q z b) := fun z b => by rw [hCdef]; rfl
+  have hCs : ContDiffOn ℝ (⊤ : ℕ∞) C O := by
+    rw [hCdef]
+    exact (hcdf hνO).clm_comp hQs
+  -- minimality: `H = Σⱼ ⟨C eⱼ, eⱼ⟩ = tr(P ∘ Dν) = 0` on `M`
+  have hH : ∀ y ∈ M, ∑ j, inner ℝ (C y (e j)) (e j) = 0 := by
+    intro y hy
+    have h := htr y hy
+    rw [LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)] at h
+    rw [← h, he]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [EuclideanSpace.basisFun_apply, LinearMap.coe_comp, Function.comp_apply,
+      ContinuousLinearMap.coe_coe, hPQ y hy]
+    rw [hC, real_inner_comm]
+  -- pointwise facts on `M`: `C(y)` maps into `T_y M`, kills `(T_y M)^⊥`, is self-adjoint
+  have hpt : ∀ y ∈ M, (∀ b, Q y (C y b) = C y b) ∧ (∀ b, C y (Q y b) = C y b) ∧
+      C y (ν y) = 0 ∧ (∀ b, inner ℝ (ν y) (C y b) = 0) ∧
+      (∀ b, fderiv ℝ ν y (C y b) = C y (C y b)) ∧
+      (∀ u v, inner ℝ (C y u) v = inner ℝ u (C y v)) := by
+    intro y hy
+    have hq3 := (hQfacts y (hν y hy).1 (hν y hy).2.1).2.2.1
+    have hq4 := (hQfacts y (hν y hy).1 (hν y hy).2.1).2.2.2.1
+    have hq5 := (hQfacts y (hν y hy).1 (hν y hy).2.1).2.2.2.2
+    have p1 : ∀ b, Q y (C y b) = C y b := fun b => by
+      rw [hC]; exact hq4 _ (hW y hy b).1 (hW y hy b).2
+    refine ⟨p1, fun b => by rw [hC, hC, hq5], by rw [hC, hq3, map_zero],
+      fun b => by rw [hC]; exact (hW y hy b).2, fun b => by rw [hC y (C y b), p1],
+      fun u v => by rw [hC, hC, hS y hy, real_inner_comm]⟩
+  /- Codazzi (B.5): `DC(y)(Q a) b − DC(y)(Q b) a = ⟨ν, a⟩ Dν(Dν(Q b)) − ⟨ν, b⟩ Dν(Dν(Q a))`. -/
+  have hcod : ∀ y ∈ M, ∀ a b, fderiv ℝ C y (Q y a) b - fderiv ℝ C y (Q y b) a =
+      inner ℝ (ν y) a • fderiv ℝ ν y (fderiv ℝ ν y (Q y b)) -
+        inner ℝ (ν y) b • fderiv ℝ ν y (fderiv ℝ ν y (Q y a)) := by
+    intro y hy a b
+    have hCd : DifferentiableAt ℝ C y := hdiff hCs (hMO hy)
+    rw [← hfac hCd, ← hfac hCd]
+    simp only [hC]
+    exact hcomm hνO (hMO hy) (hS y hy) a b
+  /- Contracted Codazzi with `H = 0`: on `M`, `Σⱼ DC(y)(Q eⱼ) eⱼ = −|A|²(y) ν(y)`. -/
+  have hZ : ∀ y ∈ M, ∑ j, fderiv ℝ C y (Q y (e j)) (e j) = -(∑ i, ‖C y (e i)‖ ^ 2) • ν y := by
+    intro y hy
+    have hCd : DifferentiableAt ℝ C y := hdiff hCs (hMO hy)
+    have p4 := (hpt y hy).2.2.2.1
+    have p5 := (hpt y hy).2.2.2.2.1
+    have p6 := (hpt y hy).2.2.2.2.2
+    have hdi : ∀ c c', DifferentiableAt ℝ (fun z => inner ℝ (C z c) c') y := fun c c' =>
+      (hCd.clm_apply (differentiableAt_const c)).inner ℝ (differentiableAt_const c')
+    have hfi : ∀ c c' u,
+        fderiv ℝ (fun z => inner ℝ (C z c) c') y u = inner ℝ (fderiv ℝ C y u c) c' :=
+      fun c c' u => by rw [hfic (hCd.clm_apply (differentiableAt_const c)), hfac hCd]
+    -- swap the two slots: `C` is self-adjoint on `M`
+    have hswap : ∀ j d, inner ℝ (fderiv ℝ C y (Q y (e j)) (e j)) d =
+        inner ℝ (fderiv ℝ C y (Q y (e j)) d) (e j) := by
+      intro j d
+      rw [← hfi, ← hfi]
+      refine heqOn (fun z hz => ?_) hy (hdi _ _) (hdi _ _) (e j)
+      rw [(hpt z hz).2.2.2.2.2, real_inner_comm]
+    -- `H` vanishes on `M`, hence so do its tangential derivatives
+    have hHd : ∀ d, ∑ j, inner ℝ (fderiv ℝ C y (Q y d) (e j)) (e j) = 0 := by
+      intro d
+      have h0 := hloc ℝ (fun z => ∑ j, inner ℝ (C z (e j)) (e j)) hH y hy
+        (DifferentiableAt.fun_sum fun j _ => hdi _ _) d
+      rw [fderiv_fun_sum fun j _ => hdi _ _, sum_apply] at h0
+      simpa only [hfi] using h0
+    refine ext_inner_right ℝ fun d => ?_
+    rw [sum_inner, real_inner_smul_left]
+    simp_rw [hswap]
+    have hcod' : ∀ j, fderiv ℝ C y (Q y (e j)) d = fderiv ℝ C y (Q y d) (e j) +
+        (inner ℝ (ν y) (e j) • fderiv ℝ ν y (fderiv ℝ ν y (Q y d)) -
+          inner ℝ (ν y) d • fderiv ℝ ν y (fderiv ℝ ν y (Q y (e j)))) := fun j => by
+      rw [← hcod y hy (e j) d]
+      abel
+    simp_rw [hcod', inner_add_left, inner_sub_left, real_inner_smul_left]
+    rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, hHd d]
+    have hNN : ∀ c, fderiv ℝ ν y (fderiv ℝ ν y (Q y c)) = C y (C y c) := fun c => by
+      rw [← hC, p5]
+    simp_rw [hNN]
+    have h2 : ∑ j, inner ℝ (ν y) (e j) * inner ℝ (C y (C y d)) (e j) = 0 := by rw [hpar, p4]
+    have h3 : ∑ j, inner ℝ (ν y) d * inner ℝ (C y (C y (e j))) (e j) =
+        inner ℝ (ν y) d * ∑ i, ‖C y (e i)‖ ^ 2 := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [p6, real_inner_self_eq_norm_sq]
+    rw [h2, h3]
+    ring
+  /- From here on we work at the point `x`. -/
+  have hCdx : DifferentiableAt ℝ C x := hdiff hCs hxO
+  have hνdx : DifferentiableAt ℝ ν x := hdiff hνO hxO
+  have hDs : ∀ c, ContDiffOn ℝ (⊤ : ℕ∞) (fun z => fderiv ℝ C z (Q z c)) O := fun c =>
+    (hcdf hCs).clm_apply (hQb c)
+  have hDd : ∀ c, DifferentiableAt ℝ (fun z => fderiv ℝ C z (Q z c)) x := fun c =>
+    hdiff (hDs c) hxO
+  have hgs : ContDiffOn ℝ (⊤ : ℕ∞) (fun z => ∑ i, ‖C z (e i)‖ ^ 2) O :=
+    ContDiffOn.sum fun i _ => (hCs.clm_apply contDiffOn_const).norm_sq ℝ
+  have p1 := (hpt x hx).1
+  have p2 := (hpt x hx).2.1
+  have p3 := (hpt x hx).2.2.1
+  have p4 := (hpt x hx).2.2.2.1
+  have p5 := (hpt x hx).2.2.2.2.1
+  have p6 := (hpt x hx).2.2.2.2.2
+  have hq1 := (hQfacts x (hν x hx).1 (hν x hx).2.1).1
+  have hq3 := (hQfacts x (hν x hx).1 (hν x hx).2.1).2.2.1
+  -- `L = DC(x)(Q a)` satisfies `L b − L (Q b) = −⟨ν, b⟩ C² a`
+  have hLin : ∀ a b, fderiv ℝ C x (Q x a) b - fderiv ℝ C x (Q x a) (Q x b) =
+      -(inner ℝ (ν x) b • C x (C x a)) := by
+    intro a b
+    have hQd : DifferentiableAt ℝ (fun z => Q z b) x := hdiff (hQb b) hxO
+    have hd1 : DifferentiableAt ℝ (fun z => C z b) x :=
+      hCdx.clm_apply (differentiableAt_const b)
+    have hd2 : DifferentiableAt ℝ (fun z => C z (Q z b)) x := hCdx.clm_apply hQd
+    -- `C(z) b − C(z) (Q(z) b)` vanishes on `M`
+    have h0 := hloc (Euclid P) (fun z => C z b - C z (Q z b))
+      (fun z hz => by rw [(hpt z hz).2.1 b, sub_self]) x hx (hd1.sub hd2) a
+    simp only [fderiv_fun_sub hd1 hd2, sub_apply, hfac hCdx, fderiv_clm_apply hCdx hQd,
+      add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
+      hfQ hνdx, ← hC x a, map_neg, map_add, map_smul, p3, smul_zero, zero_add] at h0
+    rw [sub_eq_zero] at h0
+    rw [h0]
+    abel
+  -- `L = DC(x)(Q a)` satisfies `L b − Q (L b) = −⟨C a, C b⟩ ν`
+  have hLout : ∀ a b, fderiv ℝ C x (Q x a) b - Q x (fderiv ℝ C x (Q x a) b) =
+      -(inner ℝ (C x a) (C x b) • ν x) := by
+    intro a b
+    have hQd : DifferentiableAt ℝ Q x := hdiff hQs hxO
+    have hd1 : DifferentiableAt ℝ (fun z => C z b) x :=
+      hCdx.clm_apply (differentiableAt_const b)
+    have hd2 : DifferentiableAt ℝ (fun z => Q z (C z b)) x := hQd.clm_apply hd1
+    -- `C(z) b − Q(z) (C(z) b)` vanishes on `M`
+    have h0 := hloc (Euclid P) (fun z => C z b - Q z (C z b))
+      (fun z hz => by rw [(hpt z hz).1 b, sub_self]) x hx (hd1.sub hd2) a
+    simp only [fderiv_fun_sub hd1 hd2, sub_apply, hfac hCdx, fderiv_clm_apply hQd hd1,
+      add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply, ← hfac hQd,
+      hfQ hνdx, ← hC x a, p4, zero_smul, add_zero] at h0
+    rw [sub_eq_zero] at h0
+    exact sub_eq_iff_eq_add'.2 h0
+  /- Step A (product rule): `Σⱼ δⱼ δⱼ |C|² = Σⱼ Σᵢ 2 (⟨C eᵢ, δⱼ δⱼ C eᵢ⟩ + |δⱼ C eᵢ|²)`. -/
+  have hstepA : ∑ j, fderiv ℝ (fun y => fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) y
+        (Q y (e j))) x (Q x (e j)) =
+      ∑ j, ∑ i, 2 * (inner ℝ (C x (e i))
+        (fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) (e i)) +
+        ‖fderiv ℝ C x (Q x (e j)) (e i)‖ ^ 2) := by
+    have hCd : ∀ y ∈ O, DifferentiableAt ℝ C y := fun y hy => hdiff hCs hy
+    have hCb : ∀ (b : Euclid P), ∀ y ∈ O, DifferentiableAt ℝ (fun z => C z b) y :=
+      fun b y hy => (hCd y hy).clm_apply (differentiableAt_const b)
+    refine Finset.sum_congr rfl fun j _ => ?_
+    -- the first tangential derivative of `|C|²` near `x`
+    have h1 : (fun y => fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) y (Q y (e j))) =ᶠ[𝓝 x]
+        fun y => ∑ i, 2 * inner ℝ (C y (e i)) (fderiv ℝ C y (Q y (e j)) (e i)) := by
+      filter_upwards [hOo.mem_nhds hxO] with y hy
+      rw [fderiv_fun_sum fun i _ => ((hCb (e i) y hy).norm_sq ℝ), sum_apply]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hfns (hCb (e i) y hy), hfac (hCd y hy)]
+    rw [h1.fderiv_eq]
+    have hd2 : ∀ i, DifferentiableAt ℝ (fun y => fderiv ℝ C y (Q y (e j)) (e i)) x :=
+      fun i => (hDd (e j)).clm_apply (differentiableAt_const _)
+    rw [fderiv_fun_sum fun i _ => ((hCb (e i) x hxO).inner ℝ (hd2 i)).const_mul 2, sum_apply]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [fderiv_const_mul ((hCb (e i) x hxO).inner ℝ (hd2 i)), smul_apply,
+      fderiv_inner_apply ℝ (hCb (e i) x hxO) (hd2 i), hfac (hDd (e j)), hfac (hCd x hxO),
+      real_inner_self_eq_norm_sq, smul_eq_mul]
+  /- Step C (calculus): `Σⱼ δⱼ δⱼ C(x) b = κ(b) ν − |A|² C b − 2 C³ b − ⟨ν, b⟩ V`, by Codazzi
+  on `M`, the commutation formula for `C` (in place of B.6–B.7) and
+  `Σⱼ δⱼ C eⱼ = −|A|² ν`. -/
+  have hstepC : ∃ (κ : Euclid P → ℝ) (V : Euclid P), ∀ b,
+      ∑ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) b =
+        κ b • ν x - (∑ i, ‖C x (e i)‖ ^ 2) • C x b - (2 : ℝ) • C x (C x (C x b)) -
+          inner ℝ (ν x) b • V := by
+    have hWs : ∀ c, ContDiffOn ℝ (⊤ : ℕ∞)
+        (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z c))) O := fun c =>
+      (hcdf hνO).clm_apply ((hcdf hνO).clm_apply (hQb c))
+    have hWd : ∀ c, DifferentiableAt ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z c))) x :=
+      fun c => hdiff (hWs c) hxO
+    have hDdb : ∀ c c', DifferentiableAt ℝ (fun z => fderiv ℝ C z (Q z c) c') x := fun c c' =>
+      (hDd c).clm_apply (differentiableAt_const c')
+    have hWdi : ∀ c c', DifferentiableAt ℝ
+        (fun z => inner ℝ (ν z) c • fderiv ℝ ν z (fderiv ℝ ν z (Q z c'))) x := fun c c' =>
+      (hνdx.inner ℝ (differentiableAt_const c)).smul (hWd c')
+    refine ⟨fun b => -fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) x (Q x b),
+      ∑ j, (fderiv ℝ C x (fderiv ℝ ν x (Q x (e j))) (e j) +
+        fderiv ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z (e j)))) x (Q x (e j))),
+      fun b => ?_⟩
+    -- per-`j` expansion: Codazzi on `M`, then the commutation formula for `C`
+    have hj : ∀ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) b =
+        fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x b) (e j) +
+          inner ℝ (ν x) (e j) • fderiv ℝ C x (fderiv ℝ ν x (Q x b)) (e j) -
+          inner ℝ (ν x) b • fderiv ℝ C x (fderiv ℝ ν x (Q x (e j))) (e j) +
+          ((inner ℝ (fderiv ℝ ν x (Q x (e j))) (e j) • fderiv ℝ ν x (fderiv ℝ ν x (Q x b)) +
+              inner ℝ (ν x) (e j) • fderiv ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z b))) x
+                (Q x (e j))) -
+            (inner ℝ (fderiv ℝ ν x (Q x (e j))) b • fderiv ℝ ν x (fderiv ℝ ν x (Q x (e j))) +
+              inner ℝ (ν x) b • fderiv ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z (e j)))) x
+                (Q x (e j)))) := by
+      intro j
+      have heq := heqOn
+        (φ := fun z => fderiv ℝ C z (Q z (e j)) b)
+        (ψ := fun z => fderiv ℝ C z (Q z b) (e j) +
+          (inner ℝ (ν z) (e j) • fderiv ℝ ν z (fderiv ℝ ν z (Q z b)) -
+            inner ℝ (ν z) b • fderiv ℝ ν z (fderiv ℝ ν z (Q z (e j)))))
+        (fun z hz => by
+          rw [← hcod z hz (e j) b]
+          abel)
+        hx (hDdb (e j) b) ((hDdb b (e j)).fun_add ((hWdi (e j) b).fun_sub (hWdi b (e j)))) (e j)
+      have hcm := congrArg (fun T => T (e j)) (hcomm hCs hxO (hS x hx) (e j) b)
+      simp only [sub_apply, smul_apply] at hcm
+      rw [sub_eq_iff_eq_add'] at hcm
+      rw [← hfac (hDd (e j)) b (Q x (e j)), heq]
+      simp only [fderiv_fun_add (hDdb b (e j)) ((hWdi (e j) b).fun_sub (hWdi b (e j))),
+        add_apply, fderiv_fun_sub (hWdi (e j) b) (hWdi b (e j)), sub_apply, hfac (hDd b),
+        hfis hνdx (hWd b), hfis hνdx (hWd (e j)), hcm]
+      abel
+    simp_rw [hj]
+    simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
+    -- (i) the contracted term, by `Σⱼ DC(Q eⱼ) eⱼ = −|A|² ν` on `M`
+    have hZd : DifferentiableAt ℝ (fun z => ∑ j, fderiv ℝ C z (Q z (e j)) (e j)) x :=
+      DifferentiableAt.fun_sum fun j _ => hDdb (e j) (e j)
+    have hgd : DifferentiableAt ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) x := hdiff hgs hxO
+    have hS1 : ∑ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x b) (e j) =
+        -(fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) x (Q x b) • ν x) -
+          (∑ i, ‖C x (e i)‖ ^ 2) • C x b := by
+      have h1 : ∑ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x b) (e j) =
+          fderiv ℝ (fun z => ∑ j, fderiv ℝ C z (Q z (e j)) (e j)) x (Q x b) := by
+        rw [fderiv_fun_sum fun j _ => hDdb (e j) (e j), sum_apply]
+        exact Finset.sum_congr rfl fun j _ => (hfac (hDd (e j)) _ _).symm
+      simp only [h1, heqOn (ψ := fun z => -((∑ i, ‖C z (e i)‖ ^ 2) • ν z))
+        (fun z hz => by rw [hZ z hz, neg_smul]) hx hZd (hgd.fun_smul hνdx).fun_neg b,
+        fderiv_fun_neg, neg_apply, fderiv_fun_smul hgd hνdx, add_apply, smul_apply,
+        ContinuousLinearMap.smulRight_apply, ← hC x b]
+      module
+    -- (ii) `Σⱼ ⟨ν, eⱼ⟩ DC(C b) eⱼ = DC(C b) ν = −C³ b`
+    have hS2 : ∑ j, inner ℝ (ν x) (e j) • fderiv ℝ C x (fderiv ℝ ν x (Q x b)) (e j) =
+        -C x (C x (C x b)) := by
+      rw [hsmclm, ← hC x b]
+      have h := hLin (C x b) (ν x)
+      simp only [p1, hq3, map_zero, sub_zero, real_inner_self_eq_norm_sq, (hν x hx).2.1, one_pow,
+        one_smul] at h
+      exact h
+    -- (iii) the mean curvature term vanishes
+    have hS4 : ∑ j, inner ℝ (fderiv ℝ ν x (Q x (e j))) (e j) •
+        fderiv ℝ ν x (fderiv ℝ ν x (Q x b)) = 0 := by
+      have h := hH x hx
+      simp only [hC] at h
+      rw [← Finset.sum_smul, h, zero_smul]
+    -- (iv) `Σⱼ ⟨ν, eⱼ⟩ DW(Q eⱼ) = DW(Q ν) = 0`
+    have hS5 : ∑ j, inner ℝ (ν x) (e j) •
+        fderiv ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z b))) x (Q x (e j)) = 0 := by
+      have := hsmclm
+        ((fderiv ℝ (fun z => fderiv ℝ ν z (fderiv ℝ ν z (Q z b))) x).comp (Q x)) (ν x)
+      simp only [ContinuousLinearMap.comp_apply, hq3, map_zero] at this
+      exact this
+    -- (v) `Σⱼ ⟨C eⱼ, b⟩ C² eⱼ = C³ b`
+    have hS6 : ∑ j, inner ℝ (fderiv ℝ ν x (Q x (e j))) b •
+        fderiv ℝ ν x (fderiv ℝ ν x (Q x (e j))) = C x (C x (C x b)) := by
+      have := hsmclm ((C x).comp (C x)) (C x b)
+      simp only [ContinuousLinearMap.comp_apply] at this
+      rw [← this]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [← hC x (e j), p5, p6, real_inner_comm]
+    simp only [hS1, hS2, hS4, hS5, hS6, ← Finset.smul_sum]
+    module
+  /- Simons' identity in ambient form (B.8 with `H = 0`). -/
+  have hcore : ∑ j, fderiv ℝ (fun y => fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) y (Q y (e j))) x
+        (Q x (e j)) =
+      2 * ∑ i, ∑ j, ∑ k, inner ℝ (fderiv ℝ C x (Q x (e k)) (Q x (e i))) (Q x (e j)) ^ 2 -
+        2 * (∑ i, ‖C x (e i)‖ ^ 2) ^ 2 := by
+    rw [hstepA]
+    simp only [mul_add, Finset.sum_add_distrib, ← Finset.mul_sum]
+    obtain ⟨κ, V, hΛ⟩ := hstepC
+    have hCalg := hstepCalg (ν x) (C x) p3 p4 p6
+      (fun b => ∑ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) b) κ V hΛ
+    have hBalg := hstepB (ν x) (C x) (Q x) (fun j => fderiv ℝ C x (Q x (e j))) (hν x hx).2.1
+      hq3 hq1 p4 (hQsymm x) p2 p6 (fun j b => hLin (e j) b) (fun j b => hLout (e j) b)
+    have hA' : ∑ j, ∑ i, inner ℝ (C x (e i))
+          (fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) (e i)) =
+        ∑ i, inner ℝ (C x (e i))
+          (∑ j, fderiv ℝ (fun z => fderiv ℝ C z (Q z (e j))) x (Q x (e j)) (e i)) := by
+      rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun i _ => (inner_sum _ _ _).symm
+    have hN : ∑ i, ∑ j, ∑ k, inner ℝ (fderiv ℝ C x (Q x (e k)) (Q x (e i))) (Q x (e j)) ^ 2 =
+        ∑ j, ∑ i, ∑ k, inner ℝ (fderiv ℝ C x (Q x (e j)) (Q x (e i))) (Q x (e k)) ^ 2 := by
+      calc ∑ i, ∑ j, ∑ k, inner ℝ (fderiv ℝ C x (Q x (e k)) (Q x (e i))) (Q x (e j)) ^ 2 =
+            ∑ i, ∑ k, ∑ j, inner ℝ (fderiv ℝ C x (Q x (e k)) (Q x (e i))) (Q x (e j)) ^ 2 :=
+          Finset.sum_congr rfl fun i _ => Finset.sum_comm
+        _ = _ := Finset.sum_comm
+    rw [hA', hCalg, hBalg, hN]
+    ring
+  /- Identify the frozen (within-`M`) quantities with the ambient ones. -/
+  have hg : ∀ z ∈ M, (∑ i, ‖fderiv ℝ ν z
+      ((Submodule.span ℝ (tangentSpace M z)).starProjection (e i))‖ ^ 2) =
+      ∑ i, ‖C z (e i)‖ ^ 2 := fun z hz => by
+    simp only [hPQ z hz, hC]
+  have hinner : ∀ (j : Fin P), ∀ y ∈ M,
+      fderivWithin ℝ (fun z => ∑ i, ‖fderiv ℝ ν z
+        ((Submodule.span ℝ (tangentSpace M z)).starProjection (e i))‖ ^ 2) M
+        y ((Submodule.span ℝ (tangentSpace M y)).starProjection (e j)) =
+      fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) y (Q y (e j)) := by
+    intro j y hy
+    rw [hPQ y hy]
+    exact Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ y
+      ((hdiff hgs (hMO hy)).hasFDerivAt.hasFDerivWithinAt.congr hg (hg y hy)) _
+      (hQspan y hy (e j))
+  have hLHS : ∀ j : Fin P, fderivWithin ℝ (fun y => fderivWithin ℝ (fun z => ∑ i,
+        ‖fderiv ℝ ν z ((Submodule.span ℝ (tangentSpace M z)).starProjection (e i))‖ ^ 2) M y
+        ((Submodule.span ℝ (tangentSpace M y)).starProjection (e j))) M x (Q x (e j)) =
+      fderiv ℝ (fun y => fderiv ℝ (fun z => ∑ i, ‖C z (e i)‖ ^ 2) y (Q y (e j))) x
+        (Q x (e j)) := fun j =>
+    Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x
+      ((hdiff ((hcdf hgs).clm_apply (hQb (e j))) hxO).hasFDerivAt.hasFDerivWithinAt.congr
+        (hinner j) (hinner j x hx)) _ (hQspan x hx (e j))
+  have hRHS : ∀ k : Fin P, fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp
+      (Submodule.span ℝ (tangentSpace M y)).starProjection) M x (Q x (e k)) =
+      fderiv ℝ C x (Q x (e k)) := fun k =>
+    Submission.codim1_hcp_sc_fderivWithin_tangent_eq P (Euclid P →L[ℝ] Euclid P) M _ _ x
+      (hCdx.hasFDerivAt.hasFDerivWithinAt.congr (fun y hy => by rw [hPQ y hy, hCdef])
+        (by rw [hPQ x hx, hCdef])) _ (hQspan x hx (e k))
+  have he1 : ∀ i, (EuclideanSpace.single i 1 : Euclid P) = e i := fun i => by rw [he]
+  simp only [he1, hPQ x hx]
+  simp only [hLHS, hRHS, ← hC]
+  exact hcore
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
