@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e76824a0f32594f4f3a6add3dfcee3b1df367a6a002fac390aab7567c15b648",
+  "git_delta": {
+    "base_commit": "1128aec86cad1893ce5a9fb88b818b86998aaf23",
+    "candidate_commit": "578fe124deed55982aa9ad722c3f31df8a0cce54",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_cp_piece_action",
+    "diff_sha256": "27bc25c0e2b867753e8f931e0a40cd2dd407a891205f1d254a3bb5709f9972e5",
+    "source_sha256": "42b795a3e87fe4ed37b2fed657cb044aa4b53d91af6153dde6dcef38f731fed6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_cp_piece_action",
+      "statement": "∀ (P n : ℕ) (L : NNReal) (G : Euclid n → Euclid P) (H : Euclid (n + 1) → Euclid P) (A : Set (Euclid n)) (w : Euclid n → ℤ) (ω : TestFormOn (univ : Set (Euclid P)) (n + 1)) (η : DifferentialForm (Euclid P) n), LipschitzWith L H → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) → (∀ u ∈ A, η (G u) = ∫ t in (0 : ℝ)..1, t ^ n • ((ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)).curryLeft (G u)) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (H z) (fun b => fderiv ℝ H z (EuclideanSpace.single b 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
