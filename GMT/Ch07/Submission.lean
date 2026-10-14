@@ -1203,6 +1203,32 @@ theorem Submission.dimred_cs_sos_mt_frame_measure : ∀ (P k : ℕ) (g : Fin k �
   -- (i): the affine plane measure at `a = 0`, where `0 + ι(u) = ι(u)` and `y − 0 = y`
   simpa using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
 
+/-- **Bounded subsets of the span of an orthonormal frame have finite `Hᵏ`-measure** (Simon
+Ch. 1, 2.9, `Hᵏ = Lᵏ` on `ℝᵏ`; integrability over `G` in the splitting lemma, Ch. 7, 3.5).
+Let `G = span g`.  A bounded `E ⊆ G` lies in some `closedBall 0 ρ`; put `r = max ρ 0 + 1 > 0`.
+For `t ∈ E`, Cauchy–Schwarz and `‖gᵢ‖ = 1` give `|⟨gᵢ, t⟩| ≤ ‖t‖ ≤ ρ ≤ r`, so `E` lies in the
+closed coordinate box of `G` of half-width `r`.  By `Submission.dimred_cs_sos_mt_frame_measure`
+(ii) that box has `Hᵏ`-measure `(2r)ᵏ < ∞`, and monotonicity finishes. -/
+theorem Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top : ∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ E : Set (Euclid P), E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → μHE[k] E ≠ ∞ := by
+  intro P k g hg E hEG hE
+  -- Step 1: `E ⊆ closedBall 0 ρ`; put `r = max ρ 0 + 1`, so that `0 < r` and `ρ ≤ r`
+  obtain ⟨ρ, hρ⟩ := hE.subset_closedBall 0
+  set r : ℝ := max ρ 0 + 1
+  have hr : 0 < r := by linarith [le_max_right ρ 0]
+  have hρr : ρ ≤ r := by linarith [le_max_left ρ 0]
+  -- Step 2: `E` lies in the closed box of half-width `r`, by Cauchy–Schwarz and `‖gᵢ‖ = 1`
+  have hbox : E ⊆ {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    intro t ht
+    refine ⟨hEG ht, fun i => ?_⟩
+    calc |inner ℝ (g i) t| ≤ ‖g i‖ * ‖t‖ := abs_real_inner_le_norm _ _
+      _ = ‖t‖ := by rw [hg.1 i, one_mul]
+      _ ≤ ρ := mem_closedBall_zero_iff.mp (hρ ht)
+      _ ≤ r := hρr
+  -- Step 3: the box has `Hᵏ`-measure `(2r)ᵏ < ∞` by frame_measure (ii); monotonicity finishes
+  refine ne_top_of_le_ne_top ?_ (measure_mono hbox)
+  rw [((Submission.dimred_cs_sos_mt_frame_measure P k g hg).2 r hr).1]
+  exact ENNReal.ofReal_ne_top
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
