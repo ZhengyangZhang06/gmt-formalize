@@ -1832,6 +1832,31 @@ theorem Submission.cmcs_smp_pairing_integrable : ∀ (P n : ℕ) (U : Set (Eucli
   change Integrable (fun x => ξ x (w x)) μ
   have hwc : Continuous w := hws.continuous
   -- `x ↦ |w(x)|` is continuous with compact support, hence bounded by some `M`
+  have hnc : Continuous fun x => covectorEuclideanNorm (w x) := by
+    unfold covectorEuclideanNorm
+    refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ _).continuous.comp hwc).pow 2
+    · exact continuous_const
+  have hcs : HasCompactSupport fun x => covectorEuclideanNorm (w x) := by
+    refine HasCompactSupport.intro hwcs fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport hx, covectorEuclideanNorm_zero]
+  obtain ⟨M, hM⟩ := hnc.bounded_above_of_compact_support hcs
+  -- `(Λ, α) ↦ Λ α` is continuous, so the pairing is a.e. strongly measurable
+  have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    isBoundedBilinearMap_apply.continuous
+  have hmeas : AEStronglyMeasurable (fun x => ξ x (w x)) μ :=
+    hev.comp_aestronglyMeasurable₂ hξm hwc.aestronglyMeasurable
+  -- domination by `M` times the indicator of `spt w`, integrable as `μ(spt w) < ∞`
+  refine Integrable.mono' ((integrable_indicator_iff (isClosed_tsupport w).measurableSet).2
+    (integrableOn_const (hμ _ hwcs hwU).ne)) hmeas ?_
+  filter_upwards [hξ] with x hx
+  rw [Real.norm_eq_abs]
+  by_cases hxK : x ∈ tsupport w
+  · rw [indicator_of_mem hxK]
+    exact (hx (w x)).trans ((Real.le_norm_self _).trans (hM x))
+  · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK]
+    simp
 /-- An open `U ⊆ ℝᴾ` is exhausted by the compact sets `Kᵢ = B̄(0, i) \ thickening((i + 1)⁻¹, Uᶜ)`
 (the exhaustion in the proof of Simon 1.4.16): `Kᵢ ⊆ U`, since a point of `Uᶜ` lies in every
 positive thickening of `Uᶜ`; a compact `C ⊆ U` has a margin `δ > 0` with `thickening δ C ⊆ U` and
@@ -2285,25 +2310,14 @@ theorem Submission.cbr_rlim_coeffNorm_bound : ∀ (P k : ℕ) (U : Set (Euclid P
     split_ifs
     · exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ _).continuous.comp hwc).pow 2
     · exact continuous_const
+  -- and vanishes off `spt w`, so it has compact support
   have hcs : HasCompactSupport fun x => covectorEuclideanNorm (w x) := by
     refine HasCompactSupport.intro hwcs fun x hx => ?_
     rw [image_eq_zero_of_notMem_tsupport hx, covectorEuclideanNorm_zero]
+  -- hence it is bounded by some `M`, and by `max M 0`
   obtain ⟨M, hM⟩ := hnc.bounded_above_of_compact_support hcs
-  -- `(Λ, α) ↦ Λ α` is continuous, so the pairing is a.e. strongly measurable
-  have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
-    isBoundedBilinearMap_apply.continuous
-  have hmeas : AEStronglyMeasurable (fun x => ξ x (w x)) μ :=
-    hev.comp_aestronglyMeasurable₂ hξm hwc.aestronglyMeasurable
-  -- domination by `M` times the indicator of `spt w`, integrable as `μ(spt w) < ∞`
-  refine Integrable.mono' ((integrable_indicator_iff (isClosed_tsupport w).measurableSet).2
-    (integrableOn_const (hμ _ hwcs hwU).ne)) hmeas ?_
-  filter_upwards [hξ] with x hx
-  rw [Real.norm_eq_abs]
-  by_cases hxK : x ∈ tsupport w
-  · rw [indicator_of_mem hxK]
-    exact (hx (w x)).trans ((Real.le_norm_self _).trans (hM x))
-  · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK]
-    simp
+  exact ⟨max M 0, le_max_right _ _,
+    fun x => ((Real.le_norm_self _).trans (hM x)).trans (le_max_left _ _)⟩
 /-- **Dominated convergence for level cut-offs** (step 5 of the slice mass bound in the proof of
 Simon 7.2.4, cut-offs `g_h` of the level set `{f < t}`).  If `F` is `μ`-integrable, `f` is
 measurable and, for `0 < h < 1`, `g_h` is a.e. strongly measurable with `|g_h| ≤ C`, `g_h = 1` on
@@ -3322,14 +3336,6 @@ theorem Submission.cmcs_slice_mass_pointwise : ∀ (P k : ℕ) (U : Set (Euclid 
   exact (Submission.cmcs_cutoff_defect_bound P k U T μ μ' ξ ξ' (g h) η hξ hT hbT hgs).trans
     (Submission.cmcs_smp_strip_lintegral_le P k μ (g h) (η : DifferentialForm (Euclid P) k) W
       {x | t - h < f x ∧ f x < t} _ hgd hgS hηW hη1)
-  -- and vanishes off `spt w`, so it has compact support
-  have hcs : HasCompactSupport fun x => covectorEuclideanNorm (w x) := by
-    refine HasCompactSupport.intro hwcs fun x hx => ?_
-    rw [image_eq_zero_of_notMem_tsupport hx, covectorEuclideanNorm_zero]
-  -- hence it is bounded by some `M`, and by `max M 0`
-  obtain ⟨M, hM⟩ := hnc.bounded_above_of_compact_support hcs
-  exact ⟨max M 0, le_max_right _ _,
-    fun x => ((Real.le_norm_self _).trans (hM x)).trans (le_max_left _ _)⟩
 /-- **Smooth one-sided cut-off of a test form** (the `C^∞` version of the Lipschitz cut-off
 `γ_ε ∘ f` in the proof of Simon 6.4.5(2)): for continuous `f`, `t` and `ε > 0` there is `χ` with
 `0 ≤ χ ≤ 1`, `χ = 1` on `{f ≤ t - ε}` and `χ = 0` on `{f ≥ t}` such that `χ ω` is again a test
@@ -3593,6 +3599,30 @@ nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)`
 (`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
 `(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
 theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  set G := hF.stieltjesFunction
+  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
+  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
+  have hGb : leftLim G b ≤ F b := by
+    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
+    exact hF.rightLim_le hy
+  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
+      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
+        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
+        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
+        filter_upwards [hF.ae_hasDerivAt] with t ht
+        rw [ht.deriv]
+        exact ENNReal.ofReal_toReal_le
+    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
+    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
+    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
+    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
+/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
+nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
+`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
+(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
+`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
 theorem Submission.cbr_smm_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
   intro F a b hF
   set G := hF.stieltjesFunction
