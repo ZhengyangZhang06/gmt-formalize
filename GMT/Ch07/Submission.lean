@@ -1187,6 +1187,151 @@ theorem Submission.dimred_mbl_dtsd_good_radius : ∀ (P : ℕ) (μ μ' : Measure
     (Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv _ μ' f r hμ' hf hrN.2).trans_lt
       ENNReal.ofReal_lt_top⟩
 
+/-- **Dyadic shell decomposition** (Simon Ch. 6, proof of the deformation theorem 5.1,
+displays (8)–(10), chapter-06.txt lines 1725–1740).  Let `T ∈ 𝒟ₙ(ℝᴾ)`, `n = m + 1`, be integer
+multiplicity with `spt T` compact and `M(T), M(∂T) < ∞`, and let `d` be `1`-Lipschitz with
+`M_{d<r}(T) ≤ C r^{m+2} M(T)` and `M_{d<r}(∂T) ≤ C r^{m+2} M(∂T)` for `0 < r ≤ 1/4`.  Represent
+`T`, `∂T` by finite measures `μ_T`, `μ_∂`, slice by `d` (`A_t = T⌞{d < t}`, `B_t = (∂T)⌞{d < t}`,
+`∂A_t = B_t` off `{d = t}`), choose good radii `rⱼ ∈ ((1/2)^{j+3}, (1/2)^{j+2})` and put
+`W₀ = T − A_{r₀}`, `W_{j+1} = A_{rⱼ} − A_{r_{j+1}}`, `D₀ = ∂T − B_{r₀}`,
+`D_{j+1} = B_{rⱼ} − B_{r_{j+1}}`, `Zⱼ = ∂A_{rⱼ} − B_{rⱼ}`.  Then `Wⱼ`, `Dⱼ` are `T`, `∂T` restricted
+to the half-open shells `{d ≥ r₀}`, `{r_{j+1} ≤ d < rⱼ}`, so `Σⱼ Wⱼ = T`, each `Wⱼ` is integer
+multiplicity and the density bounds give the mass estimates; `∂W₀ = D₀ − Z₀` and
+`∂W_{j+1} = D_{j+1} − (Z_{j+1} − Zⱼ)` hold pointwise, and slicing `∂T` once more bounds
+`M(∂B_{rⱼ})`. -/
+theorem Submission.dimred_mbl_dtsd_shell_decomposition : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (d : Euclid P → ℝ) (C : NNReal), IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞ → T.boundary.mass < ∞ → LipschitzWith 1 d → (∀ r : ℝ, 0 < r → r ≤ 1 / 4 → T.massOn {x | d x < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * T.mass ∧ T.boundary.massOn {x | d x < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * T.boundary.mass) → ∃ (r : ℕ → ℝ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ j, (1 / 2 : ℝ) ^ (j + 3) < r j ∧ r j < (1 / 2 : ℝ) ^ (j + 2)) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), HasSum (fun j => W j ω) (T ω)) ∧ (W 0).boundary = D 0 - Z 0 ∧ (∀ j, (W (j + 1)).boundary = D (j + 1) - (Z (j + 1) - Z j)) ∧ (∀ j, IsIntegerMultiplicity (W j)) ∧ (∀ j, IsCompact (W j).support ∧ (W j).mass < ∞ ∧ (W j).boundary.mass < ∞) ∧ (∀ j, IsCompact (D j).support ∧ (D j).mass < ∞ ∧ boundaryMassOn (D j) univ < ∞) ∧ (∀ j, IsCompact (Z j).support ∧ (Z j).mass < ∞ ∧ boundaryMassOn (Z j) univ < ∞) ∧ (∀ j, (W j).support ⊆ T.support ∩ {x | r j ≤ d x}) ∧ (∀ j, (D j).support ⊆ T.boundary.support ∩ {x | r j ≤ d x}) ∧ (∀ j, (Z j).support ⊆ T.support ∩ {x | d x = r j}) ∧ (W 0).mass ≤ T.mass ∧ (∀ j, (W (j + 1)).mass ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * T.mass) ∧ (D 0).mass ≤ T.boundary.mass ∧ (∀ j, (D (j + 1)).mass ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * T.boundary.mass) ∧ (∀ j, (Z j).mass ≤ 4 * C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 1))) * T.mass) := by
+  intro hVO hMR hREP hIMC hSL P m T d C hIM hTc hTm hbm hd hdens
+  have hdc : Continuous d := hd.continuous
+  have hdm : Measurable d := hdc.measurable
+  -- Step 1: the finite mass measure `μ_T` of `T`, null off `spt T`; `T⌞E` is IM for Borel `E`
+  obtain ⟨μ, ξ, hμf, hξm, hξb, hTrep, hTμ, hTnull, hIMsub⟩ :=
+    Submission.dimred_mbl_dtsd_sh_im_mass_measure hVO hMR hIMC P (m + 1) T hIM hTm
+  -- Step 2: a finite measure `μ_∂` representing `∂T`, null off `spt ∂T`
+  obtain ⟨μ', ξ', hμ'f, hξ'm, hξ'b, hbrep, hbμ, hbnull⟩ :=
+    Submission.dimred_mbl_dtsd_sh_finite_mass_measure hVO hREP P m T.boundary hbm
+  -- Step 4: slice by `d`: `A_t = T⌞{d < t}`, `B_t = (∂T)⌞{d < t}`, `∂A_t = B_t` off `{d = t}`
+  obtain ⟨A, B, hA, hB, hAB, hZ, -⟩ := hSL P m univ T μ μ' ξ ξ' d 1 isOpen_univ
+    (fun K _ _ => measure_lt_top μ K) (fun K _ _ => measure_lt_top μ' K) hξm hξ'm hξb hξ'b
+    hTrep hbrep hd
+  -- Step 5: good radii `rⱼ ∈ ((1/2)^{j+3}, (1/2)^{j+2})`; `μ_T`, `μ_∂` inherit the density bounds
+  obtain ⟨r, hr, hra, hrμ, hrt, hrt', hlim, hlim'⟩ :=
+    Submission.dimred_mbl_dtsd_sh_dyadic_good_radii Submission.dimred_mbl_dtsd_good_radius P m μ
+      μ' d C T.mass T.boundary.mass hμf hμ'f hdm hTm.ne hbm.ne fun s hs hs' => by
+        have hopen : IsOpen {x | d x < s} := isOpen_lt hdc continuous_const
+        rw [← hTμ _ hopen, ← hbμ _ hopen]
+        exact hdens s hs hs'
+  -- Step 6: the shells `Wⱼ`, `Dⱼ` and the slice errors `Zⱼ`
+  obtain ⟨W, hW0, hWs⟩ : ∃ W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      W 0 = T - A (r 0) ∧ ∀ j, W (j + 1) = A (r j) - A (r (j + 1)) :=
+    ⟨fun j => Nat.casesOn j (T - A (r 0)) fun i => A (r i) - A (r (i + 1)), rfl, fun _ => rfl⟩
+  obtain ⟨D, hD0, hDs⟩ : ∃ D : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m,
+      D 0 = T.boundary - B (r 0) ∧ ∀ j, D (j + 1) = B (r j) - B (r (j + 1)) :=
+    ⟨fun j => Nat.casesOn j (T.boundary - B (r 0)) fun i => B (r i) - B (r (i + 1)), rfl,
+      fun _ => rfl⟩
+  obtain ⟨Z, hZd⟩ : ∃ Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m,
+      ∀ j, Z j = (A (r j)).boundary - B (r j) := ⟨_, fun _ => rfl⟩
+  -- `(X − Y)(ω) = X(ω) − Y(ω)`
+  have hsub : ∀ (k : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (ω : TestFormOn (univ : Set (Euclid P)) k), (X - Y) ω = X ω - Y ω := fun _ _ _ _ => rfl
+  -- Steps 7, 10, 11, 13: shell integrals, the series `Σⱼ Wⱼ = T`, supports and shell masses
+  obtain ⟨hW0i, hWsi, hsum, hWspt, hAspt, hW0M, hWsM⟩ :=
+    Submission.dimred_mbl_dtsd_sh_shell_series Submission.dimred_mbl_dtsd_support_calculus
+      Submission.cmc_fcl_massOn_le_measure_inter P (m + 1) T (fun j => A (r j)) W μ ξ d r hμf
+      hξm hξb hTnull hdc hra hrt hTrep (fun j => hA (r j)) (fun ω => by rw [hW0]; rfl)
+      (fun j ω => by rw [hWs]; rfl)
+  obtain ⟨-, -, -, hDspt, hBspt, hD0M, hDsM⟩ :=
+    Submission.dimred_mbl_dtsd_sh_shell_series Submission.dimred_mbl_dtsd_support_calculus
+      Submission.cmc_fcl_massOn_le_measure_inter P m T.boundary (fun j => B (r j)) D μ' ξ' d r
+      hμ'f hξ'm hξ'b hbnull hdc hra hrt' hbrep (fun j => hB (r j)) (fun ω => by rw [hD0]; rfl)
+      (fun j ω => by rw [hDs]; rfl)
+  obtain ⟨hS1, hS2, hS3, -, hS5⟩ := Submission.dimred_mbl_dtsd_support_calculus P m
+  have hS2' := (Submission.dimred_mbl_dtsd_support_calculus P (m + 1)).2.1
+  -- Step 8: `Wⱼ = T⌞Eⱼ` for the Borel shells `Eⱼ`, so `Wⱼ` is integer multiplicity
+  have hE0 : MeasurableSet {x | r 0 ≤ d x} := measurableSet_le measurable_const hdm
+  have hEs : ∀ j, MeasurableSet {x | r (j + 1) ≤ d x ∧ d x < r j} := fun j =>
+    (measurableSet_le measurable_const hdm).inter (measurableSet_lt hdm measurable_const)
+  have hWIM : ∀ j, IsIntegerMultiplicity (W j) := by
+    intro j
+    cases j with
+    | zero => exact hIMsub _ _ hE0 hW0i
+    | succ j => exact hIMsub _ _ (hEs j) (hWsi j)
+  -- Step 9: the boundary relations, pointwise
+  have hW0b : (W 0).boundary = D 0 - Z 0 := by
+    rw [hW0, hD0, hZd]
+    ext η
+    simp only [hsub, GeometricCurrentOn.boundary_apply]
+    ring
+  have hWsb : ∀ j, (W (j + 1)).boundary = D (j + 1) - (Z (j + 1) - Z j) := by
+    intro j
+    rw [hWs, hDs, hZd, hZd]
+    ext η
+    simp only [hsub, GeometricCurrentOn.boundary_apply]
+    ring
+  -- Step 10c: `spt Zⱼ ⊆ spt T ∩ {d = rⱼ}`
+  have hZspt : ∀ j, (Z j).support ⊆ T.support ∩ {x | d x = r j} := by
+    intro j
+    rw [hZd]
+    refine subset_inter ((hS3 _ _).trans (union_subset ((hS5 _).trans (hAspt j))
+      ((hBspt j).trans (hS5 T)))) (hS1 _ _ (isClosed_eq hdc continuous_const) fun η hη => ?_)
+    rw [hsub, hAB (r j) η hη, sub_self]
+  -- Step 11: masses; `M(Zⱼ)` by the slicing estimate at the good radius `rⱼ`
+  have hZM : ∀ j, (Z j).mass ≤
+      4 * C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 1))) * T.mass := by
+    intro j
+    have h := hZ univ (r j) isOpen_univ
+    simp only [univ_inter, ENNReal.coe_one, one_mul] at h
+    rw [hZd]
+    exact h.trans (hlim j)
+  have hDf : ∀ j, (D j).mass < ∞ := by
+    intro j
+    cases j with
+    | zero => exact hD0M.trans_lt (measure_lt_top μ' univ)
+    | succ j => exact (hDsM j).trans_lt (measure_lt_top μ' _)
+  have hZf : ∀ j, (Z j).mass < ∞ := fun j => (hZM j).trans_lt
+    (ENNReal.mul_lt_top (ENNReal.mul_lt_top (ENNReal.mul_lt_top ENNReal.ofNat_lt_top
+      ENNReal.coe_lt_top) ENNReal.ofReal_lt_top) hTm)
+  -- Step 12: boundary masses; slicing `∂T` a second time gives `M(∂B_{rⱼ}) < ∞`
+  obtain ⟨hBsub, hBbd⟩ := Submission.dimred_mbl_dtsd_sh_boundaryMassOn_calculus P m univ univ
+  have hBf : ∀ j, boundaryMassOn (B (r j)) univ < ∞ := by
+    intro j
+    have h := Submission.dimred_mbl_dtsd_sh_slice_boundaryMassOn_le hSL P m univ T μ' ξ' d 1
+      (r j) (B (r j)) univ isOpen_univ isOpen_univ (fun K _ _ => measure_lt_top μ' K) hξ'm hξ'b
+      hbrep hd (hB (r j))
+    simp only [univ_inter, ENNReal.coe_one, one_mul] at h
+    exact h.trans_lt (hlim' j)
+  refine ⟨r, W, D, Z, hr, hsum, hW0b, hWsb, hWIM, fun j => ?_, fun j => ?_, fun j => ?_, hWspt,
+    hDspt, hZspt, hW0M.trans (hTμ univ isOpen_univ).ge, fun j => (hWsM j).trans (hrμ j).1,
+    hD0M.trans (hbμ univ isOpen_univ).ge, fun j => (hDsM j).trans (hrμ j).2, hZM⟩
+  · -- `Wⱼ`: compact support, finite mass and finite boundary mass (Step 12a)
+    refine ⟨hTc.of_isClosed_subset (hS2' _) ((hWspt j).trans inter_subset_left), ?_, ?_⟩
+    · cases j with
+      | zero => exact hW0M.trans_lt (measure_lt_top μ univ)
+      | succ j => exact (hWsM j).trans_lt (measure_lt_top μ _)
+    · cases j with
+      | zero =>
+        rw [hW0b]
+        exact (Submission.cmc_fc_cs_massOn_sub_le P m univ univ _ _).trans_lt
+          (ENNReal.add_lt_top.2 ⟨hDf 0, hZf 0⟩)
+      | succ j =>
+        rw [hWsb j]
+        exact (Submission.cmc_fc_cs_massOn_sub_le P m univ univ _ _).trans_lt
+          (ENNReal.add_lt_top.2 ⟨hDf (j + 1), (Submission.cmc_fc_cs_massOn_sub_le P m univ univ
+            _ _).trans_lt (ENNReal.add_lt_top.2 ⟨hZf (j + 1), hZf j⟩)⟩)
+  · -- `Dⱼ`: `spt Dⱼ ⊆ spt ∂T ⊆ spt T`; `∂D₀ = ∂∂T − ∂B_{r₀}`, `∂D_{j+1} = ∂B_{rⱼ} − ∂B_{r_{j+1}}`
+    refine ⟨hTc.of_isClosed_subset (hS2 _) ((hDspt j).trans (inter_subset_left.trans (hS5 T))),
+      hDf j, ?_⟩
+    cases j with
+    | zero =>
+      rw [hD0]
+      exact (hBsub _ _).trans_lt (by rw [hBbd, zero_add]; exact hBf 0)
+    | succ j =>
+      rw [hDs]
+      exact (hBsub _ _).trans_lt (ENNReal.add_lt_top.2 ⟨hBf j, hBf (j + 1)⟩)
+  · -- `Zⱼ`: `∂Zⱼ = ∂∂A_{rⱼ} − ∂B_{rⱼ}`
+    refine ⟨hTc.of_isClosed_subset (hS2 _) ((hZspt j).trans inter_subset_left), hZf j, ?_⟩
+    rw [hZd]
+    exact (hBsub _ _).trans_lt (by rw [hBbd, zero_add]; exact hBf j)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
