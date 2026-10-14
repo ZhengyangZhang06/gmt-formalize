@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea00f8d020c4df67f61fc9ac7e0cee625d18fcb108e1e92ad10cf2e1b6aeb58d",
+  "git_delta": {
+    "base_commit": "d3331ed5eb1168cf3ab9bbba932415e3c1f34562",
+    "candidate_commit": "50b2b10bd5203f126ebdb18b1cada5e8324787ed",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cc_support_smul_boundary",
+    "diff_sha256": "c17dfea79a80df0e90a9eb2205cdf80cf110f91f93ca86e32fa9313ac47ca963",
+    "source_sha256": "9cf24875e307c03f875c5f63b18570f191630977050ca10a2a69e047d97e06a3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cc_support_smul_boundary",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n) (c : ℝ), (∀ ω : TestFormOn U n, S ω = c * T.boundary ω) → S.support ⊆ T.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
