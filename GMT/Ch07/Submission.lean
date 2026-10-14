@@ -714,6 +714,122 @@ theorem Submission.dor_lmb_fcd_gc_cube_selection : ∀ (P d : ℕ) (E : (Fin d �
       _ < ENNReal.ofReal ((1 / 2) ^ P) := hsum
       _ = volume Q := hQ.symm
   exact lt_irrefl _ this
+/-- **Simon, Ch. 6, proof of 5.1** (choice of the centre `a`, (5)–(7)).  Put `d = m + 2`,
+`K = #(Fin d → Fin P)`, `β = 2K·10ᵈ·2ᴾ + 1` and `C = Kβ`.  For each `e : Fin d → Fin P` let
+`E_e` be the union of the bad sets of centres of the image measures of `μ` and `μ'` under
+`x ↦ (x_{e(k)})_k`.  Each bad set has volume `≤ 10ᵈ/β`, so `Σ_e |E_e| < (1/2)ᴾ` and the cube
+selection gives `a` with `(a_{e(k)})_k ∉ E_e` for every injective `e`.  The `r`-tube about
+`L*(a)` lies in the union over injective `e` of the preimages of the periodic
+`r`-neighbourhoods of `(a_{e(k)})_k`, each of `ν`-measure `≤ β rᵈ ν(ℝᴾ)` for `ν = μ, μ'`; hence
+`ν(tube) ≤ Kβ rᵈ ν(ℝᴾ)`. -/
+theorem Submission.dor_lmb_fcd_good_center : ∀ (P m : ℕ), m + 1 < P → ∃ C : NNReal, ∀ μ μ' : Measure (Euclid P), IsFiniteMeasure μ → IsFiniteMeasure μ' → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ r : ℝ, 0 < r → r ≤ 1 / 4 → μ {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ univ ∧ μ' {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * μ' univ := by
+  have c1 := Submission.dor_lmb_fcd_gc_tube_cover
+  have c2 := Submission.dor_lmb_fcd_gc_bad_set_volume
+  have c3 := Submission.dor_lmb_fcd_gc_cube_selection
+  classical
+  intro P m hPm
+  -- Step 4: the constants `β` and `C = Kβ`, depending only on `P` and `m`
+  set K : ℕ := Fintype.card (Fin (m + 2) → Fin P) with hK
+  set β : ℝ := 2 * K * 10 ^ (m + 2) * 2 ^ P + 1 with hβ
+  have hβpos : 0 < β := by positivity
+  refine ⟨Real.toNNReal (K * β), ?_⟩
+  intro μ μ' hμ hμ'
+  -- the coordinate projections `x ↦ (x_{e(k)})_k`
+  let prj : (Fin (m + 2) → Fin P) → Euclid P → (Fin (m + 2) → ℝ) := fun e x k => x (e k)
+  have hprj : ∀ e, Measurable (prj e) := fun e =>
+    (continuous_pi fun k => PiLp.continuous_apply 2 (fun _ : Fin P => ℝ) (e k)).measurable
+  -- the bad sets of centres of the projected measures (steps 2–3)
+  let Bad : Measure (Fin (m + 2) → ℝ) → Set (Fin (m + 2) → ℝ) := fun ρ =>
+    {g | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧
+      ENNReal.ofReal (β * r ^ (m + 2)) * ρ univ <
+        ρ {y | ∃ z : Fin (m + 2) → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2}}
+  let E : (Fin (m + 2) → Fin P) → Set (Fin (m + 2) → ℝ) := fun e =>
+    Bad (μ.map (prj e)) ∪ Bad (μ'.map (prj e))
+  have hE : ∀ e, volume (E e) ≤ 2 * ENNReal.ofReal (10 ^ (m + 2) / β) := by
+    intro e
+    calc volume (E e) ≤ volume (Bad (μ.map (prj e))) + volume (Bad (μ'.map (prj e))) :=
+          measure_union_le _ _
+      _ ≤ ENNReal.ofReal (10 ^ (m + 2) / β) + ENNReal.ofReal (10 ^ (m + 2) / β) :=
+          add_le_add (c2 (m + 2) _ inferInstance β hβpos) (c2 (m + 2) _ inferInstance β hβpos)
+      _ = 2 * ENNReal.ofReal (10 ^ (m + 2) / β) := (two_mul _).symm
+  -- the exceptional sets do not exhaust the cube
+  have hsum : ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) := by
+    calc ∑ e, volume (E e) ≤ ∑ _e : Fin (m + 2) → Fin P, 2 * ENNReal.ofReal (10 ^ (m + 2) / β) :=
+          Finset.sum_le_sum fun e _ => hE e
+      _ = ENNReal.ofReal (2 * K * 10 ^ (m + 2) / β) := by
+          rw [Finset.sum_const, Finset.card_univ, ← hK, nsmul_eq_mul,
+            show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_natCast,
+            ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+      _ < ENNReal.ofReal ((1 / 2) ^ P) := by
+          rw [ENNReal.ofReal_lt_ofReal_iff (by positivity), div_lt_iff₀ hβpos, hβ]
+          have h2 : ((1 : ℝ) / 2) ^ P * 2 ^ P = 1 := by
+            rw [← mul_pow]; norm_num
+          have h3 : (0 : ℝ) < (1 / 2) ^ P := by positivity
+          have h4 : ((1 : ℝ) / 2) ^ P * (2 * K * 10 ^ (m + 2) * 2 ^ P + 1) =
+              2 * K * 10 ^ (m + 2) * ((1 / 2) ^ P * 2 ^ P) + (1 / 2) ^ P := by ring
+          rw [h4, h2]
+          linarith
+  -- choice of a good centre `a` for both measures
+  obtain ⟨a, ha, hgood⟩ := c3 P (m + 2) E hsum
+  refine ⟨a, ha, ?_⟩
+  intro r hr0 hr1
+  -- Step 5: the estimate for any finite `ν` for which `a` is good
+  have key : ∀ ν : Measure (Euclid P), IsFiniteMeasure ν →
+      (∀ e : Fin (m + 2) → Fin P, Function.Injective e → prj e a ∉ Bad (ν.map (prj e))) →
+      ν {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤
+        (Real.toNNReal (K * β) : ℝ≥0∞) * ENNReal.ofReal (r ^ (m + 2)) * ν univ := by
+    intro ν hν hνgood
+    let O : (Fin (m + 2) → Fin P) → Set (Fin (m + 2) → ℝ) := fun e =>
+      {y | ∃ z : Fin (m + 2) → ℤ, ∑ k, (y k - prj e a k - z k) ^ 2 < r ^ 2}
+    let T : (Fin (m + 2) → Fin P) → Set (Euclid P) := fun e =>
+      {x | Function.Injective e ∧ prj e x ∈ O e}
+    -- step 1: the `r`-tube about `L*(a)` lies in the periodic coordinate cylinders
+    have hcover : {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ⊆ ⋃ e, T e := by
+      intro x hx
+      obtain ⟨e, he, z, hz⟩ := c1 P m hPm a x r hx
+      exact mem_iUnion.2 ⟨e, he, z, hz⟩
+    -- each cylinder family has `ν`-measure `≤ β rᵈ ν(ℝᴾ)`, since `a` is good
+    have hT : ∀ e, ν (T e) ≤ ENNReal.ofReal (β * r ^ (m + 2)) * ν univ := by
+      intro e
+      by_cases he : Function.Injective e
+      · have hsub : T e ⊆ prj e ⁻¹' O e := fun x hx => hx.2
+        have hcube : ∀ k, |prj e a k - 1 / 2| < 1 / 4 := fun k => ha (e k)
+        have hnot := hνgood e he
+        have hle : (ν.map (prj e)) (O e) ≤
+            ENNReal.ofReal (β * r ^ (m + 2)) * (ν.map (prj e)) univ := by
+          by_contra hlt
+          exact hnot ⟨hcube, r, hr0, hr1, not_le.1 hlt⟩
+        calc ν (T e) ≤ ν (prj e ⁻¹' O e) := measure_mono hsub
+          _ ≤ (ν.map (prj e)) (O e) := Measure.le_map_apply (hprj e).aemeasurable _
+          _ ≤ ENNReal.ofReal (β * r ^ (m + 2)) * (ν.map (prj e)) univ := hle
+          _ = ENNReal.ofReal (β * r ^ (m + 2)) * ν univ := by
+              rw [Measure.map_apply (hprj e) MeasurableSet.univ, preimage_univ]
+      · have : T e = ∅ := by
+          ext x
+          simp only [mem_empty_iff_false, iff_false]
+          exact fun hx => he hx.1
+        rw [this, measure_empty]
+        exact bot_le
+    -- subadditivity over the `K` maps `e`
+    calc ν {x | infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+          ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r} ≤ ν (⋃ e, T e) := measure_mono hcover
+      _ ≤ ∑ e, ν (T e) := measure_iUnion_fintype_le ν T
+      _ ≤ ∑ _e : Fin (m + 2) → Fin P, ENNReal.ofReal (β * r ^ (m + 2)) * ν univ :=
+          Finset.sum_le_sum fun e _ => hT e
+      _ = (Real.toNNReal (K * β) : ℝ≥0∞) * ENNReal.ofReal (r ^ (m + 2)) * ν univ := by
+          rw [Finset.sum_const, Finset.card_univ, ← hK, nsmul_eq_mul, ← mul_assoc]
+          congr 1
+          rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (by positivity),
+            show ((Real.toNNReal (K * β) : ℝ≥0∞)) = ENNReal.ofReal (K * β) from rfl,
+            ← ENNReal.ofReal_mul (by positivity)]
+          congr 1
+          ring
+  exact ⟨key μ hμ fun e he h => hgood e he (Or.inl h),
+    key μ' hμ' fun e he h => hgood e he (Or.inr h)⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
