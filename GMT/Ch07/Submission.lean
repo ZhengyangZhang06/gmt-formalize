@@ -451,6 +451,17 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lusin–Souslin**: if `H : ℝⁿ → ℝᴾ` is continuous and injective on a Borel set `B`, then
+`H(B)` is Borel and `H` has a Borel left inverse on `B`.  The restriction `B.domRestrict H` is a
+measurable embedding (`ℝⁿ` is Polish), so its inverse on `H(B)`, extended by `0`, is Borel. -/
+theorem Submission.cmcdt_lpi_pc_measurable_inverse : ∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), ContinuousOn H B → MeasurableSet B → InjOn H B → MeasurableSet (H '' B) ∧ ∃ h : Euclid P → Euclid n, Measurable h ∧ ∀ u ∈ B, h (H u) = u := by
+  intro P n H B hH hB hinj
+  refine ⟨hB.image_of_continuousOn_injOn hH hinj, ?_⟩
+  -- `h` inverts `B.domRestrict H` on its range and is `0` off it
+  obtain ⟨h, hh, hcomp⟩ := (hH.measurableEmbedding hB hinj).exists_measurable_extend
+    measurable_subtype_coe fun _ => ⟨0⟩
+  exact ⟨h, hh, fun u hu => congrFun hcomp ⟨u, hu⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
