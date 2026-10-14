@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "53eb0bbbfce5be0114e412767f28c44180a0cc1b2ee761b68d158dc618e60509",
+  "git_delta": {
+    "base_commit": "2dd45611ba0bc57249d642aa53f368164e1df591",
+    "candidate_commit": "35e359955ef6bac37033306b3f33a12c284b7174",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_rc_cycle_competitor",
+    "diff_sha256": "a868bb6502e95b111146f5ce84008521c201422fc70d29949a454e89909d507f",
+    "source_sha256": "88dde1e912fe0bed43d06928399f69bb64d407b728784c115beba96978ef53ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_rc_cycle_competitor",
+      "statement": "∀ (P m : ℕ) (U A W : Set (Euclid P)) (T Z₁ : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn T A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact X.support → X.support ⊆ A ∩ W → (∀ ω : TestFormOn U (m + 1), Z₁ ω = T ω + X (testFormOnInclusion (subset_univ U) (m + 1) ω)) → T.massOn W ≤ Z₁.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
