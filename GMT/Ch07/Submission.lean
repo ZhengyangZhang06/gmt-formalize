@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Good slicing parameters** (the (MM) part of step 7 of the slice-limit argument): given the
+measurable majorant property (MM) of slice-mass liminfs, if `supᵢ μᵢ(B_k(0)) < ∞` for every `k`
+and `Zᵢ(t, k) ≤ L · liminf_{h↓0} h⁻¹ μᵢ(B_k(0) ∩ {t − h < f < t})`, then for a.e. `t ∈ ℝ`,
+`liminfᵢ Zᵢ(t, k) < ∞` for every `k`.  (MM) on `B_k(0)` and `(−m, m)` gives a measurable
+`g ≥ liminfᵢ Zᵢ(·, k)` a.e. on `(−m, m)` with `∫_{(−m,m)} g ≤ L · supᵢ μᵢ(B_k(0)) < ∞`, so
+`g < ∞` a.e. there; intersect over the countably many `k, m` and take `m > |t|`. -/
+theorem Submission.dmcbr_sl_ae_liminf_slice_mass_finite : (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (Z : ℕ → ℝ → ℕ → ℝ≥0∞), Continuous f → (∀ k : ℕ, ⨆ i, μs i (ball (0 : Euclid P) k) < ∞) → (∀ (i : ℕ) (t : ℝ) (k : ℕ), Z i t k ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs i (ball (0 : Euclid P) k ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ k : ℕ, liminf (fun i => Z i t k) atTop < ∞ := by
+  intro hMM P μs f L Z hf hbd hZ
+  -- (MM) on `G = B_k(0)`, `(a, b) = (-m, m)`: a majorant with finite integral
+  have hkm : ∀ k m : ℕ, ∀ᵐ t ∂(volume : Measure ℝ),
+      t ∈ Ioo (-(m : ℝ)) m → liminf (fun i => Z i t k) atTop < ∞ := by
+    intro k m
+    have hG : ∀ j, μs j (ball (0 : Euclid P) k ∩ {x | -(m : ℝ) < f x ∧ f x < m}) ≤
+        ⨆ i, μs i (ball (0 : Euclid P) k) := fun j =>
+      (measure_mono inter_subset_left).trans (le_iSup (fun i => μs i (ball (0 : Euclid P) k)) j)
+    obtain ⟨g, hg, hae, hint⟩ := hMM P μs f (ball (0 : Euclid P) k) (-(m : ℝ)) m L
+      (fun j t => Z j t k) hf (fun j => (hG j).trans_lt (hbd k)) (fun j t _ => hZ j t k)
+    have hfin : ∫⁻ t in Ioo (-(m : ℝ)) m, g t ≠ ∞ :=
+      ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top
+        ((liminf_le_of_frequently_le' (Frequently.of_forall hG)).trans_lt (hbd k)).ne) hint
+    -- a measurable function with finite integral is finite a.e.
+    have hlt := (ae_restrict_iff' measurableSet_Ioo).mp (ae_lt_top hg hfin)
+    filter_upwards [hae, hlt] with t h1 h2 ht
+    exact (h1 ht).trans_lt (h2 ht)
+  -- countably many `k, m`
+  have hall : ∀ᵐ t ∂(volume : Measure ℝ), ∀ k m : ℕ,
+      t ∈ Ioo (-(m : ℝ)) m → liminf (fun i => Z i t k) atTop < ∞ :=
+    ae_all_iff.mpr fun k => ae_all_iff.mpr (hkm k)
+  filter_upwards [hall] with t ht k
+  obtain ⟨m, hm⟩ := exists_nat_gt |t|
+  exact ht k m ⟨by linarith [neg_abs_le t], by linarith [le_abs_self t]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
