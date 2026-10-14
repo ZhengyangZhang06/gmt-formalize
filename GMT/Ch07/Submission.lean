@@ -3398,6 +3398,54 @@ theorem Submission.cbr_ci_bl_cvl_limsup_le_of_cthickening : ∀ (P : ℕ) (a : �
       nhdsWithin_le_nhds
   exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall hr)
 
+/-- **Blow-up limit with a constant orienting vector** (the weak convergence `Γ_k ⇀ C` of the
+blow-ups and the upper bound for their mass measures, in the proof that cycles with the integer
+slice property are integer multiplicity; `|·|` is `covectorEuclideanNorm`).  Let
+`X_k(ω) = ∫ ⟨ω, τ_k⟩ dν_k` and `C(ω) = ∫ ⟨ω, ζ₀⟩ dν`, where `∫ f dν_k → ∫ f dν` for continuous
+compactly supported `f`, `limsup_k ν_k(K) ≤ ν(K)` for compact `K`, `|⟨α, ζ₀⟩| ≤ s |α|`, and
+`∫_{B̄_R(0)} ‖τ_k − ζ₀‖ dν_k → 0` for every `R > 0`.  Let `μ_k` be the mass measure of `X_k`.  Then
+`X_k ⇀ C` by `Submission.cbr_ci_bl_cvl_pairing_tendsto` with `w = ω`.  Fix a compact `K` and
+`r > 0`, and choose `R > 0` with `cthickening r K ⊆ B̄_R(0)`.  The open set
+`G = thickening r K` satisfies `K ⊆ G ⊆ cthickening r K`.  Apply
+`Submission.cbr_ci_bl_cvl_massOn_le` with `B = Pⁿ` (`Submission.cbr_ci_bl_covector_opNorm_le`):
+`μ_k(K) ≤ M_G(X_k) ≤ s ν_k(cthickening r K) + Pⁿ ∫_{B̄_R(0)} ‖τ_k − ζ₀‖ dν_k`.  The last term tends
+to `0`, so `Submission.cbr_ci_bl_cvl_limsup_le_of_cthickening` gives `limsup_k μ_k(K) ≤ s ν(K)`. -/
+theorem Submission.cbr_ci_bl_constant_vector_limit : ∀ (P n : ℕ) (Xs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (s : ℝ), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun k => νs k K) atTop ≤ ν K) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → 0 ≤ s → (∀ α : Covector (Euclid P) n, |ζ₀ α| ≤ s * covectorEuclideanNorm α) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n), Xs k ω = ∫ x, τs k x ((ω : DifferentialForm (Euclid P) n) x) ∂(νs k)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, C ω = ∫ x, ζ₀ ((ω : DifferentialForm (Euclid P) n) x) ∂ν) → (∀ (k : ℕ) (W : Set (Euclid P)), IsOpen W → (Xs k).massOn W = μs k W) → WeaklyConvergesOn Xs C ∧ ∀ K : Set (Euclid P), IsCompact K → limsup (fun k => μs k K) atTop ≤ ENNReal.ofReal s * ν K := by
+  intro P n Xs C νs ν μs τs ζ₀ s hνsK hνK hconv hlimsup hτ hs hζ₀ hδ hX hC hmass
+  refine ⟨fun ω => ?_, fun K hK => ?_⟩
+  · -- weak convergence: `ω` is continuous with compact support, so
+    -- `X_k(ω) = ∫ ⟨ω, τ_k⟩ dν_k → ∫ ⟨ω, ζ₀⟩ dν = C(ω)`
+    have hω : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+        tsupport (ω : DifferentialForm (Euclid P) n) ⊆ univ := ω.property
+    rw [hC ω]
+    exact (Submission.cbr_ci_bl_cvl_pairing_tendsto P n νs ν τs ζ₀
+      (ω : DifferentialForm (Euclid P) n) hνsK hconv hτ hδ hω.1.1.continuous hω.1.2).congr
+      fun k => (hX k ω).symm
+  · -- mass bound: for `r > 0` compare `μ_k(K)` with `ν_k(cthickening r K)` up to an error `v_k → 0`
+    refine Submission.cbr_ci_bl_cvl_limsup_le_of_cthickening P (fun k => μs k K) νs ν
+      (ENNReal.ofReal s) K hK ENNReal.ofReal_ne_top hνK hlimsup fun r hr => ?_
+    -- `cthickening r K` is compact, hence contained in some `B̄_R(0)` with `R > 0`
+    obtain ⟨R, hR, hKR⟩ := (hK.cthickening (r := r)).isBounded.subset_closedBall_lt 0 (0 : Euclid P)
+    -- `v_k = Pⁿ ∫_{B̄_R(0)} ‖τ_k − ζ₀‖ dν_k → 0`
+    have hv := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal ((P : ℝ) ^ n)) (hδ R hR)
+      (Or.inr ENNReal.ofReal_ne_top)
+    rw [mul_zero] at hv
+    refine ⟨_, hv, fun k => ?_⟩
+    -- `M_G(X_k) ≤ s ν_k(G) + v_k` for the open `G = thickening r K ⊆ cthickening r K ⊆ B̄_R(0)`,
+    -- using `‖α‖ ≤ Pⁿ |α|`
+    have hM := Submission.cbr_ci_bl_cvl_massOn_le P n (Xs k) (νs k) (τs k) ζ₀ s ((P : ℝ) ^ n) R
+      (thickening r K) (hνsK k) (hτ k) hs hζ₀ (by positivity)
+      (Submission.cbr_ci_bl_covector_opNorm_le P n) (hX k) isOpen_thickening
+      ((thickening_subset_cthickening r K).trans hKR)
+    rw [hmass k _ isOpen_thickening] at hM
+    -- `μ_k(K) ≤ μ_k(G) = M_G(X_k)` and `ν_k(G) ≤ ν_k(cthickening r K)`
+    calc μs k K ≤ μs k (thickening r K) := measure_mono (self_subset_thickening hr K)
+      _ ≤ _ := hM
+      _ ≤ ENNReal.ofReal s * νs k (cthickening r K) + ENNReal.ofReal ((P : ℝ) ^ n) *
+          ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k) := by
+        gcongr
+        exact thickening_subset_cthickening r K
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
