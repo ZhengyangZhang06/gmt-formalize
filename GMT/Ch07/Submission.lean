@@ -451,6 +451,220 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Leibniz bound for `f • g`** (used for the cut-off pull-backs `ζ • L^#ω` in the
+flat-convergence step behind Simon 7.4.3).  For `C^∞` maps `f : ℝ^Q → ℝ` and `g : ℝ^Q → F`,
+`‖Dᵏ(f • g)(x)‖ ≤ ∑_{i ≤ k} C(k, i) ‖Dⁱf(x)‖ ‖D^{k-i}g(x)‖`.  This is Mathlib's
+`norm_iteratedFDeriv_smul_le`, whose module `Mathlib.Analysis.Calculus.ContDiff.Bounds` is not
+imported here, so its argument is reproduced: for a continuous bilinear `B` (all spaces in
+`Type`), `‖Dⁿ(B(u, v))(z)‖ ≤ ‖B‖ ∑_{i ≤ n} C(n, i) ‖Dⁱu(z)‖ ‖D^{n-i}v(z)‖` by induction on `n`,
+using `D(B(u, v)) = B.precompR(u, Dv) + B.precompL(Du, v)`, `‖B.precompR‖, ‖B.precompL‖ ≤ ‖B‖`
+and Pascal's rule; then take `B = lsmul`, with `‖lsmul‖ ≤ 1`. -/
+theorem Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound : ∀ (Q : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid Q → ℝ) (g : Euclid Q → F), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (k : ℕ) (x : Euclid Q), ‖iteratedFDeriv ℝ k (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (k - i) g x‖ := by
+  intro Q F _ _ f g hf hg k x
+  -- Steps 1–6: the bound for a continuous bilinear `B`, by induction on the order `n`,
+  -- simultaneously for all real normed spaces `E₁, F₁, G₁` in `Type`
+  have key : ∀ (n : ℕ) (E₁ F₁ G₁ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
+      [NormedAddCommGroup F₁] [NormedSpace ℝ F₁] [NormedAddCommGroup G₁] [NormedSpace ℝ G₁]
+      (B : E₁ →L[ℝ] F₁ →L[ℝ] G₁) (u : Euclid Q → E₁) (v : Euclid Q → F₁),
+      ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) u → ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) v →
+      ∀ z : Euclid Q, ‖iteratedFDeriv ℝ n (fun y => B (u y) (v y)) z‖ ≤
+        ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+          ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+    intro n
+    induction n with
+    | zero =>
+      -- Step 2: `‖B (u z) (v z)‖ ≤ ‖B‖ ‖u z‖ ‖v z‖`
+      intro E₁ F₁ G₁ _ _ _ _ _ _ B u v _ _ z
+      simp only [norm_iteratedFDeriv_zero, zero_add, Finset.range_one, Finset.sum_singleton,
+        Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_zero, ← mul_assoc]
+      exact B.le_opNorm₂ (u z) (v z)
+    | succ n IH =>
+      intro E₁ F₁ G₁ _ _ _ _ _ _ B u v hu hv z
+      -- Step 3: `u, v, Du, Dv` are `Cⁿ`
+      have In : ((n : ℕ) : WithTop ℕ∞) + 1 ≤ ((n + 1 : ℕ) : WithTop ℕ∞) := by
+        simp only [Nat.cast_succ, le_refl]
+      have hu' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) u := hu.of_le (Nat.cast_le.2 (Nat.le_succ n))
+      have hv' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) v := hv.of_le (Nat.cast_le.2 (Nat.le_succ n))
+      have hDu : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) (fderiv ℝ u) := hu.fderiv_right In
+      have hDv : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞) (fderiv ℝ v) := hv.fderiv_right In
+      -- the operator norms of `B.precompR`, `B.precompL` need these instances in scope
+      let _ : NormedAddCommGroup ((Euclid Q →L[ℝ] F₁) →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedSpace ℝ ((Euclid Q →L[ℝ] F₁) →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedAddCommGroup (F₁ →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      let _ : NormedSpace ℝ (F₁ →L[ℝ] Euclid Q →L[ℝ] G₁) := inferInstance
+      -- Step 5, first term: the claim for `(B.precompR, u, Dv)`
+      have I1 : ‖iteratedFDeriv ℝ n (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) z‖ ≤
+          ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+            ‖iteratedFDeriv ℝ (n + 1 - i) v z‖ := by
+        calc ‖iteratedFDeriv ℝ n (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) z‖
+            ≤ ‖B.precompR (Euclid Q)‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ (n - i) (fderiv ℝ v) z‖ :=
+              IH E₁ (Euclid Q →L[ℝ] F₁) (Euclid Q →L[ℝ] G₁) (B.precompR (Euclid Q)) u
+                (fderiv ℝ v) hu' hDv z
+          _ ≤ ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ (n - i) (fderiv ℝ v) z‖ := by
+              gcongr
+              exact B.norm_precompR_le (Euclid Q)
+          _ = ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i u z‖ *
+                ‖iteratedFDeriv ℝ (n + 1 - i) v z‖ := by
+              congr 1
+              refine Finset.sum_congr rfl fun i hi => ?_
+              rw [norm_iteratedFDeriv_fderiv,
+                Nat.succ_sub (Nat.lt_succ_iff.1 (Finset.mem_range.1 hi))]
+      -- Step 5, second term: the claim for `(B.precompL, Du, v)`
+      have I2 : ‖iteratedFDeriv ℝ n (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) z‖ ≤
+          ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ (i + 1) u z‖ *
+            ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+        calc ‖iteratedFDeriv ℝ n (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) z‖
+            ≤ ‖B.precompL (Euclid Q)‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i (fderiv ℝ u) z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ :=
+              IH (Euclid Q →L[ℝ] E₁) F₁ (Euclid Q →L[ℝ] G₁) (B.precompL (Euclid Q)) (fderiv ℝ u)
+                v hDu hv' z
+          _ ≤ ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ i (fderiv ℝ u) z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+              gcongr
+              exact B.norm_precompL_le (Euclid Q)
+          _ = ‖B‖ * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
+                ‖iteratedFDeriv ℝ (i + 1) u z‖ * ‖iteratedFDeriv ℝ (n - i) v z‖ := by
+              congr 1
+              refine Finset.sum_congr rfl fun i _ => ?_
+              rw [norm_iteratedFDeriv_fderiv]
+      -- Step 3: `D(B(u, v)) = B.precompR(u, Dv) + B.precompL(Du, v)`
+      have J : fderiv ℝ (fun y => B (u y) (v y)) = fun y =>
+          B.precompR (Euclid Q) (u y) (fderiv ℝ v y) + B.precompL (Euclid Q) (fderiv ℝ u y) (v y) := by
+        funext y
+        exact B.fderiv_of_bilinear (hu.differentiable (by positivity) y)
+          (hv.differentiable (by positivity) y)
+      -- Step 4: split the top derivative and use the triangle inequality
+      have A : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞)
+          (fun y => B.precompR (Euclid Q) (u y) (fderiv ℝ v y)) :=
+        (B.precompR (Euclid Q)).isBoundedBilinearMap.contDiff.comp₂ hu' hDv
+      have A' : ContDiff ℝ ((n : ℕ) : WithTop ℕ∞)
+          (fun y => B.precompL (Euclid Q) (fderiv ℝ u y) (v y)) :=
+        (B.precompL (Euclid Q)).isBoundedBilinearMap.contDiff.comp₂ hDu hv'
+      rw [← norm_iteratedFDeriv_fderiv, J, fun_iteratedFDeriv_add_apply A.contDiffAt A'.contDiffAt]
+      refine (norm_add_le _ _).trans ((add_le_add I1 I2).trans (le_of_eq ?_))
+      -- Step 6: Pascal's rule
+      simp_rw [← mul_add, mul_assoc]
+      congr 1
+      exact (Finset.sum_choose_succ_mul
+        (fun i j => ‖iteratedFDeriv ℝ i u z‖ * ‖iteratedFDeriv ℝ j v z‖) n).symm
+  -- Step 7: specialize to `B = lsmul`, with `‖lsmul‖ ≤ 1`
+  have h := key k ℝ F F (ContinuousLinearMap.lsmul ℝ ℝ) f g (contDiff_infty.1 hf k)
+    (contDiff_infty.1 hg k) x
+  have hB : ‖(ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] F →L[ℝ] F)‖ ≤ 1 :=
+    ContinuousLinearMap.opNorm_lsmul_le
+  have hsum : 0 ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ *
+      ‖iteratedFDeriv ℝ (k - i) g x‖ := by positivity
+  simp only [ContinuousLinearMap.lsmul_apply] at h
+  exact h.trans (mul_le_of_le_one_left hsum hB)
+
+/-- **Cut-off pull-backs of a null sequence of test forms tend to `0`** (Simon Ch. 6: the
+topology of `𝒟ⁿ(U)` in §1, before 1.15, and the cut-off pull-back `ω ↦ ζ f^#ω` of 2.23, here for
+linear `f`).  Let `L : ℝ^Q → ℝᴾ` be linear and `ζ` smooth with compact support.  If `ωⱼ → 0` in
+`𝒟ᵈ(ℝᴾ)` and `ηⱼ = ζ · L^#ωⱼ`, then `ηⱼ → 0` in `𝒟ᵈ(ℝ^Q)`.  Every `ηⱼ` is supported in the
+compact `spt ζ`.  Each `D^l ωⱼ → 0` uniformly on all of `ℝᴾ`, since it vanishes off the common
+compact set.  The chain rule gives `‖D^l(L^#ωⱼ)(y)‖ ≤ ‖L‖ᵈ ‖L‖ˡ ‖D^l ωⱼ(Ly)‖`, and the
+derivatives of `ζ` are bounded.  The Leibniz bound then gives `supᵧ ‖D^k ηⱼ(y)‖ → 0`. -/
+theorem Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges : ∀ (P Q d : ℕ) (L : Euclid Q →L[ℝ] Euclid P) (ζ : Euclid Q → ℝ), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → ∀ (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d) (ηs : ℕ → TestFormOn (univ : Set (Euclid Q)) d), (∀ (j : ℕ) (y : Euclid Q), (ηs j : DifferentialForm (Euclid Q) d) y = ζ y • ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L) → TestFormOnConverges ωs 0 → TestFormOnConverges ηs 0 := by
+  intro P Q d L ζ hζ hζc ωs ηs hη hω
+  -- Step 1: a compact `C ⊇ tsupport ωⱼ` on which every `D^l ωⱼ → 0` uniformly
+  obtain ⟨C, -, -, hωC, -, hωD⟩ := hω
+  have hωs : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (ωs j : DifferentialForm (Euclid P) d) := fun j =>
+    (ωs j).property.1.1
+  -- Step 2: `D^l ωⱼ → 0` uniformly on all of `ℝᴾ`, since it vanishes off `C`
+  have hdecay : ∀ (l : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ j in atTop, ∀ x : Euclid P,
+      ‖iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d) x‖ < ε := by
+    intro l ε hε
+    filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hωD l) ε hε] with j hj x
+    by_cases hx : x ∈ C
+    · have hjx := hj x hx
+      simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left] at hjx
+      exact hjx
+    · have hx' : x ∉ tsupport (iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d)) :=
+        fun h => hx (hωC j (tsupport_iteratedFDeriv_subset l h))
+      rw [image_eq_zero_of_notMem_tsupport hx', norm_zero]
+      exact hε
+  -- Step 3: `ηⱼ = ζ • gⱼ` with `gⱼ = Λ ∘ ωⱼ ∘ L` smooth, where `Λ α = α ∘ (L × ⋯ × L)`
+  let Λ : Covector (Euclid P) d →L[ℝ] Covector (Euclid Q) d :=
+    ContinuousAlternatingMap.compContinuousLinearMapCLM L
+  let g : ℕ → Euclid Q → Covector (Euclid Q) d := fun j y =>
+    ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L
+  have hgΛ : ∀ j, g j = Λ ∘ ((ωs j : DifferentialForm (Euclid P) d) ∘ L) := fun j => rfl
+  have hηg : ∀ j, (ηs j : DifferentialForm (Euclid Q) d) = fun y => ζ y • g j y := fun j =>
+    funext (hη j)
+  have hgs : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (g j) := fun j => by
+    rw [hgΛ j]
+    exact Λ.contDiff.comp ((hωs j).comp L.contDiff)
+  -- Step 4: `‖D^l gⱼ(y)‖ ≤ ‖L‖ᵈ ‖L‖ˡ ‖D^l ωⱼ(Ly)‖`, as `D^l gⱼ(y) = Λ ∘ D^l ωⱼ(Ly) ∘ (L, …, L)`
+  have hΛ : ∀ (l : ℕ) (A : ContinuousMultilinearMap ℝ (fun _ : Fin l => Euclid Q)
+      (Covector (Euclid P) d)), ‖Λ.compContinuousMultilinearMap A‖ ≤ ‖L‖ ^ d * ‖A‖ := by
+    intro l A
+    refine ContinuousMultilinearMap.opNorm_le_bound (by positivity) fun m => ?_
+    calc ‖Λ.compContinuousMultilinearMap A m‖ = ‖(A m).compContinuousLinearMap L‖ := rfl
+      _ ≤ ‖A m‖ * ‖L‖ ^ Fintype.card (Fin d) := (A m).norm_compContinuousLinearMap_le L
+      _ ≤ ‖A‖ * (∏ i, ‖m i‖) * ‖L‖ ^ d := by
+          rw [Fintype.card_fin]
+          gcongr
+          exact A.le_opNorm m
+      _ = ‖L‖ ^ d * ‖A‖ * ∏ i, ‖m i‖ := by ring
+  have hgD : ∀ (l j : ℕ) (y : Euclid Q), ‖iteratedFDeriv ℝ l (g j) y‖ ≤
+      ‖L‖ ^ d * (‖iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d) (L y)‖ * ‖L‖ ^ l) := by
+    intro l j y
+    rw [hgΛ j, Λ.iteratedFDeriv_comp_left (i := l) ((hωs j).comp L.contDiff).contDiffAt (by simp),
+      L.iteratedFDeriv_comp_right (i := l) (hωs j) y (by simp)]
+    refine (hΛ l _).trans ?_
+    gcongr
+    refine (ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans_eq ?_
+    simp
+  -- Step 5: every `D^i ζ` is bounded
+  have hZ : ∀ i : ℕ, ∃ Z : ℝ, ∀ y, ‖iteratedFDeriv ℝ i ζ y‖ ≤ Z := fun i =>
+    (hζ.continuous_iteratedFDeriv (m := i) (by simp)).bounded_above_of_compact_support
+      (hζc.iteratedFDeriv i)
+  choose Z hZ using hZ
+  -- Steps 6 and 8: all supports lie in the compact set `tsupport ζ`
+  refine ⟨tsupport ζ, hζc.isCompact, subset_univ _, fun j => ?_, ?_, fun k => ?_⟩
+  · rw [hηg j]
+    exact tsupport_smul_subset_left _ _
+  · simp
+  -- Step 7: eventually `‖D^k ηⱼ(y)‖ ≤ S δ < ε` for all `y`, with `δ = ε / (S + 1)`
+  refine Metric.tendstoUniformlyOn_iff.mpr fun ε hε => ?_
+  obtain ⟨S, hS⟩ : ∃ S : ℝ, S = ∑ i ∈ Finset.range (k + 1),
+      (k.choose i : ℝ) * |Z i| * (‖L‖ ^ d * ‖L‖ ^ (k - i)) := ⟨_, rfl⟩
+  have hS0 : 0 ≤ S := by
+    rw [hS]
+    exact Finset.sum_nonneg fun i _ => by positivity
+  have hδ : 0 < ε / (S + 1) := div_pos hε (by linarith)
+  have hev : ∀ᶠ j in atTop, ∀ i ∈ Finset.range (k + 1), ∀ x : Euclid P,
+      ‖iteratedFDeriv ℝ (k - i) (ωs j : DifferentialForm (Euclid P) d) x‖ < ε / (S + 1) :=
+    (Filter.eventually_all_finset _).2 fun i _ => hdecay (k - i) _ hδ
+  filter_upwards [hev] with j hj y _
+  simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left]
+  rw [hηg j]
+  calc ‖iteratedFDeriv ℝ k (fun y => ζ y • g j y) y‖
+      ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i ζ y‖ *
+          ‖iteratedFDeriv ℝ (k - i) (g j) y‖ :=
+        Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound Q (Covector (Euclid Q) d) ζ (g j) hζ
+          (hgs j) k y
+    _ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * |Z i| *
+          (‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1))) := by
+        refine Finset.sum_le_sum fun i hi => ?_
+        have h1 : ‖iteratedFDeriv ℝ i ζ y‖ ≤ |Z i| := (hZ i y).trans (le_abs_self _)
+        have h2 : ‖iteratedFDeriv ℝ (k - i) (g j) y‖ ≤
+            ‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1)) := by
+          refine (hgD (k - i) j y).trans ?_
+          have h3 := (hj i hi (L y)).le
+          calc ‖L‖ ^ d * (‖iteratedFDeriv ℝ (k - i) (ωs j : DifferentialForm (Euclid P) d) (L y)‖ *
+                ‖L‖ ^ (k - i)) ≤ ‖L‖ ^ d * (ε / (S + 1) * ‖L‖ ^ (k - i)) := by gcongr
+            _ = ‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1)) := by ring
+        gcongr
+    _ = S * (ε / (S + 1)) := by
+        rw [hS, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun i _ => by ring
+    _ < ε := by
+        rw [← mul_div_assoc, div_lt_iff₀ (by linarith)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
