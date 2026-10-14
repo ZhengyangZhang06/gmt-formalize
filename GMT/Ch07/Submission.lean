@@ -1804,8 +1804,8 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
-/-- **Gradient bound at a density point** (Simon Ch. 3, Remark 1.8; the first step of the
-co-area argument).  Let `f : ℝᴾ → ℝ` be `L`-Lipschitz, `F = f ∘ ψ` on `Y ⊆ ℝᵈ`, and let `y ∈ Y`
+/-- **Gradient bound at a density point** (a step of the co-area formula, Simon Ch. 3, §2).
+Let `f : ℝᴾ → ℝ` be `L`-Lipschitz, `F = f ∘ ψ` on `Y ⊆ ℝᵈ`, and let `y ∈ Y`
 be a Lebesgue density point of `Y` at which `ψ` and `F` are differentiable.  Then
 `|DF(y) e| ≤ L |Dψ(y) e|` for every `e ∈ ℝᵈ`.
 
