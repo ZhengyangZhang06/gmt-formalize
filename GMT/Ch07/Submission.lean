@@ -1095,6 +1095,31 @@ theorem Submission.idtp_dema_density_on_carrier : ∀ (P n : ℕ) (U : Set (Eucl
     rw [← mul_div_assoc, ← ENNReal.add_div]
     exact ENNReal.div_le_div_right (hup ρ) _
 
+/-- **Simon Ch. 3, Remarks 1.8(1),(2) and Theorem 1.9** (with Ch. 1, 3.6 and Remark 3.7(2)): the
+density of `μ_R = θ Hⁿ⌞M` is `1_M θ` `Hⁿ`-a.e.  If `μ_R(K) < ∞` for every compact `K`, then
+`μ_R(B_ρ(x)) / (ωₙρⁿ) → 1_M(x) θ(x)` as `ρ ↓ 0` for `Hⁿ`-a.e. `x`.  At `Hⁿ`-a.e. `x ∈ M` this is
+`idtp_dema_density_on_carrier`.  Since `μ_R(ℝᴾ \ M) = 0`, `μ_R(B_ρ(x)) = μ_R(M ∩ B_ρ(x))`, so at
+`Hⁿ`-a.e. `x ∉ M` the upper density theorem `idtp_dema_upper_density_zero` (with `μ = μ_R` and
+`A = M`) gives the limit `0`. -/
+theorem Submission.idtp_imrep_measure_density_ae : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x)) := by
+  intro P n U R _hn hfin
+  -- `μ_R` is carried by `M`
+  have hnull : R.measure R.carrierᶜ = 0 := by
+    rw [IMRep.measure, withDensity_apply _ R.measurableSet_carrier.compl,
+      Measure.restrict_restrict R.measurableSet_carrier.compl, compl_inter_self,
+      Measure.restrict_empty, lintegral_zero_measure]
+  filter_upwards [Submission.idtp_dema_upper_density_zero P n R.measure R.carrier
+      R.measurableSet_carrier hfin, Submission.idtp_dema_density_on_carrier P n U R hfin]
+    with x hoff hon
+  by_cases hx : x ∈ R.carrier
+  · -- on `M` the density is `θ(x)`
+    rw [indicator_of_mem hx]
+    exact hon hx
+  · -- off `M` the density is that of `μ_R⌞M`, namely `0`
+    rw [indicator_of_notMem hx]
+    refine (hoff hx).congr fun ρ => ?_
+    rw [inter_comm, measure_inter_conull hnull]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
