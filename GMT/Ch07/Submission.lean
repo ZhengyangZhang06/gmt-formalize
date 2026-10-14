@@ -496,6 +496,165 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
   exact ge_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
+/-- **Shell decomposition** (Simon Ch. 6, proof of the Deformation Theorem 5.1, (8) and
+(17)–(19)).  Let `X(ω) = ∫ ⟨ω, ξ⟩ dμ` with `μ` finite and carried by `spt X`, `|ξ| ≤ 1` `μ`-a.e.,
+let `Aⱼ = X⌞{d < rⱼ}` for a continuous `d` and a strictly decreasing `r` with `μ{d < rⱼ} → 0`, and
+let `Y₀ = X − A₀`, `Yⱼ₊₁ = Aⱼ − Aⱼ₊₁`.  Then `Yⱼ` is `X` restricted to the shell
+`{rⱼ ≤ d < rⱼ₋₁}` (`r₋₁ = ∞`), `Σⱼ Yⱼ(ω) = X(ω)`, `spt Yⱼ ⊆ spt X ∩ {rⱼ ≤ d}`, `spt Aⱼ ⊆ spt X`,
+`M(Y₀) ≤ μ(ℝᴾ)` and `M(Yⱼ₊₁) ≤ μ{d < rⱼ}`; the support calculus and the mass bound
+`M_V(X) ≤ μ(E ∩ V)` for currents represented by `μ⌞E` are hypotheses.  The shells are disjoint,
+so `Σⱼ μ(shellⱼ) ≤ μ(ℝᴾ) < ∞`, and by 6.2.5 `|Yⱼ(ω)| ≤ sup|ω| · μ(shellⱼ)`; the partial sums are
+`X(ω) − A_N(ω)` with `|A_N(ω)| ≤ sup|ω| · μ{d < r_N} → 0`. -/
+theorem Submission.cmcsd_sh_shell_series : (∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support)) → (∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V)) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (A Y : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k) (d : Euclid P → ℝ) (r : ℕ → ℝ), IsFiniteMeasure μ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) k, |ξ x α| ≤ covectorEuclideanNorm α) → μ X.supportᶜ = 0 → Continuous d → StrictAnti r → Tendsto (fun j => μ {x | d x < r j}) atTop (𝓝 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) k), A j ω = ∫ x in {x | d x < r j}, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y 0 ω = X ω - A 0 ω) → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) k), Y (j + 1) ω = A j ω - A (j + 1) ω) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y 0 ω = ∫ x in {x | r 0 ≤ d x}, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) ∧ (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) k), Y (j + 1) ω = ∫ x in {x | r (j + 1) ≤ d x ∧ d x < r j}, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, HasSum (fun j => Y j ω) (X ω)) ∧ (∀ j, (Y j).support ⊆ X.support ∩ {x | r j ≤ d x}) ∧ (∀ j, (A j).support ⊆ X.support) ∧ (Y 0).mass ≤ μ univ ∧ (∀ j, (Y (j + 1)).mass ≤ μ {x | d x < r j}) := by
+  intro hS hML P k X A Y μ ξ d r hμ hξm hξb hnull hd hr htend hX hA hY0 hYs
+  have hdm : Measurable d := hd.measurable
+  -- the integrand `x ↦ ξ x (ω x)` is bounded, a.e. strongly measurable and integrable
+  have hcont : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      Continuous (ω : DifferentialForm (Euclid P) k) := fun ω => ω.property.1.1.continuous
+  have hnormcont : Continuous (fun α : Covector (Euclid P) k => covectorEuclideanNorm α) := by
+    unfold covectorEuclideanNorm
+    exact Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ =>
+      continuous_if_const _ (fun _ => (continuous_eval_const _).pow 2) fun _ => continuous_const)
+  have hbound : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, ∃ c : ℝ,
+      ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ c := by
+    intro ω
+    obtain ⟨c, hc⟩ := (hnormcont.comp (hcont ω)).bounded_above_of_compact_support
+      (ω.property.1.2.comp_left (covectorEuclideanNorm_zero P k))
+    exact ⟨c, fun x => (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hc x)⟩
+  have hfm : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      AEStronglyMeasurable (fun x => ξ x ((ω : DifferentialForm (Euclid P) k) x)) μ := fun ω =>
+    Continuous.comp_aestronglyMeasurable₂
+      (g := fun (L : MultiVector P k) (α : Covector (Euclid P) k) => L α)
+      isBoundedBilinearMap_apply.continuous hξm (hcont ω).aestronglyMeasurable
+  have hfi : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) k) x)) μ := fun ω => by
+    obtain ⟨c, hc⟩ := hbound ω
+    exact Integrable.of_bound (hfm ω) c
+      (hξb.mono fun x hx => by rw [Real.norm_eq_abs]; exact (hx _).trans (hc x))
+  -- the shell integrals
+  have hlt : ∀ j, MeasurableSet {x | d x < r j} := fun j => measurableSet_lt hdm measurable_const
+  have hge : ∀ j, MeasurableSet {x | r j ≤ d x} := fun j => measurableSet_le measurable_const hdm
+  have hY0' : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      Y 0 ω = ∫ x in {x | r 0 ≤ d x}, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ := by
+    intro ω
+    rw [hY0, hX, hA, ← integral_add_compl (hlt 0) (hfi ω)]
+    have h : {x | d x < r 0}ᶜ = {x | r 0 ≤ d x} := by ext x; simp
+    rw [h]; ring
+  have hYs' : ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) k),
+      Y (j + 1) ω = ∫ x in {x | r (j + 1) ≤ d x ∧ d x < r j},
+        ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ := by
+    intro j ω
+    have hsub : {x | d x < r (j + 1)} ⊆ {x | d x < r j} :=
+      fun x hx => lt_trans hx (hr (Nat.lt_succ_self j))
+    have hset : {x | d x < r j} \ {x | d x < r (j + 1)} = {x | r (j + 1) ≤ d x ∧ d x < r j} :=
+      Set.ext fun _ => ⟨fun h => ⟨not_lt.1 h.2, h.1⟩, fun h => ⟨h.2, not_lt.2 h.1⟩⟩
+    rw [hYs, hA, hA, ← setIntegral_sdiff (hlt (j + 1)) (hfi ω).integrableOn hsub, hset]
+  -- the shells as one family
+  obtain ⟨E, hE0, hEs⟩ : ∃ E : ℕ → Set (Euclid P), E 0 = {x | r 0 ≤ d x} ∧
+      ∀ i, E (i + 1) = {x | r (i + 1) ≤ d x ∧ d x < r i} :=
+    ⟨fun j => match j with
+      | 0 => {x | r 0 ≤ d x}
+      | i + 1 => {x | r (i + 1) ≤ d x ∧ d x < r i}, rfl, fun _ => rfl⟩
+  have hEm : ∀ j, MeasurableSet (E j) := by
+    intro j
+    cases j with
+    | zero => rw [hE0]; exact hge 0
+    | succ i => rw [hEs]; exact (hge (i + 1)).inter (hlt i)
+  have hEge : ∀ j, E j ⊆ {x | r j ≤ d x} := by
+    intro j
+    cases j with
+    | zero => rw [hE0]
+    | succ i => rw [hEs]; exact fun x hx => hx.1
+  have hElt : ∀ i j, i < j → E j ⊆ {x | d x < r i} := by
+    intro i j hij
+    cases j with
+    | zero => omega
+    | succ j =>
+      rw [hEs]
+      exact fun x hx => lt_of_lt_of_le hx.2 (hr.antitone (by omega))
+  have hdisj : Pairwise (Disjoint on E) := by
+    intro i j hij
+    rcases Nat.lt_or_gt_of_ne hij with h | h
+    · exact Set.disjoint_left.2 fun x hxi hxj =>
+        absurd (show r i ≤ d x from hEge i hxi) (not_le.2 (hElt i j h hxj))
+    · exact Set.disjoint_left.2 fun x hxi hxj =>
+        absurd (show r j ≤ d x from hEge j hxj) (not_le.2 (hElt j i h hxi))
+  have hYE : ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) k),
+      Y j ω = ∫ x in E j, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ := by
+    intro j ω
+    cases j with
+    | zero => rw [hE0]; exact hY0' ω
+    | succ i => rw [hEs]; exact hYs' i ω
+  -- masses of the shells and of the `Aⱼ`
+  have hmassY : ∀ j, (Y j).massOn univ ≤ μ (E j) := fun j =>
+    (hML P k univ (Y j) μ ξ (E j) univ hξb (hYE j)).trans (measure_mono inter_subset_left)
+  have hmassA : ∀ j, (A j).massOn univ ≤ μ {x | d x < r j} := fun j =>
+    (hML P k univ (A j) μ ξ _ univ hξb (hA j)).trans (measure_mono inter_subset_left)
+  -- evaluation bound by mass (Simon 6.2.5)
+  have hEB : ∀ (Z : GeometricCurrentOn (univ : Set (Euclid P)) k) (S : Set (Euclid P))
+      (ω : TestFormOn (univ : Set (Euclid P)) k) (c : ℝ),
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ c) →
+      Z.massOn univ ≤ μ S → |Z ω| ≤ c * (μ S).toReal := by
+    intro Z S ω c hc hZ
+    have hne : Z.massOn univ ≠ ∞ := (hZ.trans_lt (measure_lt_top μ S)).ne
+    have h0c : 0 ≤ c := (covectorEuclideanNorm_nonneg _).trans (hc 0)
+    calc |Z ω| ≤ c * (Z.massOn univ).toReal :=
+          Submission.cmr_abs_apply_le_massOn P k univ univ Z ω c hne (subset_univ _) hc
+      _ ≤ c * (μ S).toReal :=
+          mul_le_mul_of_nonneg_left (ENNReal.toReal_mono (measure_ne_top μ S) hZ) h0c
+  -- the partial sums telescope to `X(ω) − A_N(ω)`, and `A_N(ω) → 0`
+  have hpart : ∀ (ω : TestFormOn (univ : Set (Euclid P)) k) (N : ℕ),
+      ∑ j ∈ Finset.range (N + 1), Y j ω = X ω - A N ω := by
+    intro ω N
+    induction N with
+    | zero => simp [hY0]
+    | succ N ih => rw [Finset.sum_range_succ, ih, hYs]; ring
+  have hsum : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, HasSum (fun j => Y j ω) (X ω) := by
+    intro ω
+    obtain ⟨c, hc⟩ := hbound ω
+    have hsumE : ∑' j, μ (E j) ≠ ∞ := by
+      rw [← measure_iUnion hdisj hEm]; exact measure_ne_top μ _
+    have hsummable : Summable (fun j => Y j ω) := by
+      refine Summable.of_norm_bounded ((ENNReal.summable_toReal hsumE).mul_left c) (fun j => ?_)
+      rw [Real.norm_eq_abs]; exact hEB (Y j) (E j) ω c hc (hmassY j)
+    rw [hsummable.hasSum_iff_tendsto_nat, ← tendsto_add_atTop_iff_nat 1]
+    simp only [hpart]
+    have hbd : ∀ n, ‖A n ω‖ ≤ c * (μ {x | d x < r n}).toReal := fun n => by
+      rw [Real.norm_eq_abs]; exact hEB (A n) _ ω c hc (hmassA n)
+    have hto : Tendsto (fun n => c * (μ {x | d x < r n}).toReal) atTop (𝓝 0) := by
+      have h := ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp htend).const_mul c
+      simpa using h
+    simpa using tendsto_const_nhds.sub (squeeze_zero_norm hbd hto)
+  -- supports: `μ` is carried by `spt X`
+  have hae : ∀ᵐ x ∂μ, x ∈ X.support := by
+    have h := measure_eq_zero_iff_ae_notMem.1 hnull
+    exact h.mono fun x hx => by simpa using hx
+  have hvanish : ∀ (S F : Set (Euclid P)) (ω : TestFormOn (univ : Set (Euclid P)) k),
+      MeasurableSet S → S ⊆ F →
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (X.support ∩ F) →
+      ∫ x in S, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ = 0 := by
+    intro S F ω hSm hSF hdisj
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [ae_restrict_mem hSm, ae_restrict_of_ae hae] with x hxS hxX
+    have hx : x ∉ tsupport (ω : DifferentialForm (Euclid P) k) :=
+      fun h => Set.disjoint_left.1 hdisj h ⟨hxX, hSF hxS⟩
+    simp [image_eq_zero_of_notMem_tsupport hx]
+  have hsptY : ∀ j, (Y j).support ⊆ X.support ∩ {x | r j ≤ d x} := by
+    intro j
+    refine (hS P k).1 _ _ (((hS P k).2.1 X).inter (isClosed_le continuous_const hd))
+      (fun ω hω => ?_)
+    rw [hYE j]
+    exact hvanish (E j) _ ω (hEm j) (hEge j) hω
+  have hsptA : ∀ j, (A j).support ⊆ X.support := by
+    intro j
+    refine (hS P k).1 _ _ ((hS P k).2.1 X) (fun ω hω => ?_)
+    rw [hA j]
+    exact hvanish _ univ ω (hlt j) (subset_univ _) (by rwa [inter_univ])
+  refine ⟨hY0', hYs', hsum, hsptY, hsptA, (hmassY 0).trans (measure_mono (subset_univ _)),
+    fun j => (hmassY (j + 1)).trans (measure_mono ?_)⟩
+  rw [hEs]
+  exact fun x hx => hx.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
