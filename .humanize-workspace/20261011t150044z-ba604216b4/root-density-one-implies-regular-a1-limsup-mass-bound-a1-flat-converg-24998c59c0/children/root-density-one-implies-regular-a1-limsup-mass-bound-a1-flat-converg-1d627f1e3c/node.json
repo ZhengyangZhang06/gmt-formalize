@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.integer_median-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Integer median of an integer-valued function on the unit cube (Simon 6.5.1 (31), (35); parent steps 1–2)",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} ⊆ Euclid (m + 1) and Lⁿ := volume. Let u : ℝⁿ → ℝ take an integer value at every point (u(y) ∈ ℤ for all y) and be integrable on Q₁. Then there is β ∈ ℤ such that Lⁿ(Q₁ ∩ {y : β ≤ u(y)}) ≥ 1/2 and Lⁿ(Q₁ ∩ {y : u(y) ≤ β}) ≥ 1/2 (measures in [0, ∞]) and |β| ≤ 2∫_{Q₁}|u|.",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, 1 / 2 ≤ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∩ {y | (β : ℝ) ≤ u y}) ∧ 1 / 2 ≤ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∩ {y | u y ≤ (β : ℝ)}) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y|",
+  "lean_name": "dor_lmb_fcd_cp_integer_median",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-1d627f1e3c-a1"
+}
