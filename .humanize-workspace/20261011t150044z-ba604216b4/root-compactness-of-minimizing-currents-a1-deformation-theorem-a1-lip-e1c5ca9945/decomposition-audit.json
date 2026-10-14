@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "covectorEuclideanNorm|compContinuousLinearMap|curryLeft|basisFun",
+        "covectorEuclideanNorm|abbrev Covector",
+        "real_norm_sq_eq|inner_single_left|basisFun_apply",
+        "toDual_symm_apply|def toDual",
+        "opNorm_comp_le|sum_mul_le_sqrt_mul_sqrt|def consEquiv|theorem comp_cons|compContinuousLinearMap_apply|def vecCons",
+        "dorag_ha_lsc_grad_norm_sq",
+        "cmcdt_lp_pullback_basis_sq_sum_le",
+        "git show f2fb0a2b140ff1416c89e7eb125bac070f45f8fc:GMT/Ch07/Submission.lean",
+        "git show 16144a475b272196ba8b2bd15f104028282dbcfc:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pullback-decomposition-audit-foav7o30/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pullback-decomposition-audit-foav7o30/AssemblyAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-e1c5ca9945/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-e1c5ca9945/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6113d5ce09/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/accepted-candidate.json",
+        "/tmp/pullback-decomposition-audit-foav7o30/Contracts.lean",
+        "/tmp/pullback-decomposition-audit-foav7o30/AssemblyAudit.lean"
+      ],
+      "conclusion": "Verified project revision b4d606db and Mathlib revision 25730c7c; relevant compiler sources match the snapshot. The frozen project files contain no matches for the searched covector helper terms; imported SimonGMT defines precisely the stated covectors and coefficient norm. Pinned Mathlib supports Riesz, basis coordinates, continuous currying/evaluation, reindexing and operator-norm composition; OrthonormalBasis.norm_dual also directly supplies Parseval. Both child types independently elaborate as Prop before implementation. Accepted reuse has a byte-identical frozen type and matching comparator receipt; the new name has no DAG owner. Dependencies are acyclic. Independently compiled the inspected, sorry-free child proofs and exact parent assembly; all four relevant declarations depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "grad_norm_sq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition match both conjuncts, with all hypotheses explicit. The bare name validly reuses comparator-accepted candidate f2fb0a2b140ff1416c89e7eb125bac070f45f8fc with identical frozen type. Riesz isometry gives the representative and norm equality; real inner-product symmetry identifies its coordinates; the coordinate norm formula proves (i). Cauchy–Schwarz applied to a and −a proves both inequalities required for (ii). This includes n=0, uses no circular assumption, and supplies hs_sum's Parseval input."
+    },
+    {
+      "key": "hs_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and standalone one-line proposition exactly match the prose, including all index maps and the operator norm of A. Its sole child dependency, grad_norm_sq, is correctly directed. The proof establishes Parseval, the squared composition bound, and first-slot reindexing; handles the unique empty tuple; applies induction generalized over all lower-degree covectors; constructs μ_j as continuous linear evaluation composed with curryLeft; and sums inequalities with nonnegative factors. No parent theorem or normalization identity is assumed. The split appropriately isolates this induction: the existing accepted sq_sum dependency, positive factorial cancellation and comparison of nonnegative squares establish the exact selected parent, including zero degrees and dimensions."
+    }
+  ],
+  "required_changes": []
+}
