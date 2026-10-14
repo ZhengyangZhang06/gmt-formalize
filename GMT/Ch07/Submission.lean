@@ -34781,6 +34781,53 @@ theorem Submission.cbr_lower_density_of_slice_property : (∀ (P n : ℕ) (U : S
   · intro x hx δ hδ
     exact hfill C μ ξ hCb hμK hξ hξb hC hISP x (not_le.1 hx) δ hδ
 
+/-- Cycles of finite mass with the integer slice property are integer multiplicity (B. White's
+tangent-plane argument, used in place of Simon's rectifiability theorem 6.8.1 for the closure
+theorem behind 7.2.4).  Since `∂Γ = 0`, the mass representation `(μ, ξ)` of `Γ` is absolutely
+continuous with respect to `Hⁿ`, and the slice property bounds its lower density below
+(`cbr_lower_density_of_slice_property`); hence `μ = θ Hⁿ⌞M` and `Γ = ∫_M θ ⟨·, ζ⟩ dHⁿ` with
+`|ζ| = 1` on `M`.  At `Hⁿ`-a.e. `a ∈ M` (upper density at most `1`, Lebesgue point of `θζ`) the
+blow-ups of `Γ` converge to `θ(a)` times an oriented `n`-plane; this plane is the approximate
+tangent plane of `M` at `a`, `ζ(a)` orients it and `θ(a)` is an integer.  Since `M` is then
+countably `n`-rectifiable, `(M, θ, ζ)` is an integer multiplicity representation of `Γ`. -/
+theorem Submission.cbr_cycle_isIntegerMultiplicity : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (Λ : NNReal), 0 < ρ → IsCompact K → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → T.support ⊆ K → T.mass ≤ Λ → T.boundary.mass < ∞ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → ∀ (P : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Γ.boundary = 0 → Γ.mass < ∞ → IsCompact Γ.support → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (Γ).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → IsIntegerMultiplicity Γ := by
+  intro hREP hMR hIMC hSL hDT hVO d hCL P Γ hΓb hΓm _hΓs hISP
+  -- The mass representation `(μ, ξ)` of `Γ`: `μ` is finite and, as `∂Γ = 0`, `μ ≪ Hⁿ`.
+  obtain ⟨μ, ξ, -, hμK, hμW, hξ, hξb, hΓξ, hμac⟩ := hREP P (d + 1) univ Γ isOpen_univ
+    fun W _ _ => (Γ.massOn_mono (subset_univ W)).trans_lt hΓm
+  have hμ : μ univ < ∞ := by
+    rw [← hμW univ isOpen_univ]
+    exact hΓm
+  have hμac' : ∀ E : Set (Euclid P), μHE[d + 1] E = 0 → μ E = 0 := by
+    refine hμac fun W _ _ => ?_
+    change Γ.boundary.massOn W < ∞
+    rw [hΓb]
+    refine (sSup_le ?_).trans_lt ENNReal.zero_lt_top
+    rintro r ⟨ω, -, rfl⟩
+    simp
+  -- The lower density of `μ` is at least `η₀` almost everywhere.
+  obtain ⟨η₀, hη₀, hLD⟩ :=
+    Submission.cbr_lower_density_of_slice_property hREP hMR hSL hDT hVO P d
+  have hdens := hLD Γ μ ξ hΓb (fun K hK => hμK K hK (subset_univ K)) hμW hξ
+    (ae_of_all _ fun x => hξb x) hΓξ hISP
+  -- `μ = θ Hⁿ⌞M` and `Γ = ∫_M θ ⟨·, ζ⟩ dHⁿ`.
+  obtain ⟨M, θ, ζ, hM, hMfin, hθ, hζ, hμM, hθpos, hζb, hζM, hΓM, hMdens⟩ :=
+    Submission.cbr_ci_density_representation P (d + 1) Γ μ ξ η₀ hη₀ hμ hμW hξ hξb hΓξ hμac'
+      hdens
+  have hθint : ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[d + 1] < ∞ := by
+    have h := hμ
+    rwa [hμM, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ] at h
+  -- At `Hⁿ`-a.e. `a ∈ M`, `M` has an approximate tangent plane oriented by `ζ(a)` and `θ(a)` is
+  -- an integer; this makes `(M, θ, ζ)` an integer multiplicity representation of `Γ`.
+  refine Submission.cbr_ci_isIntegerMultiplicity_of_ae_tangent
+    Submission.cbr_rectifiable_of_approx_tangent P (d + 1) Γ M θ ζ hM hMfin hθ hζ hθpos hθint hΓM ?_
+  filter_upwards [Submission.cbr_ci_ae_good_points P (d + 1) M θ ζ hM hMfin hθ hζ hθpos hθint hζb,
+    ae_restrict_mem hM] with a ha haM
+  exact Submission.cbr_ci_pointwise_tangent_integer hREP hMR hSL
+    Submission.cbr_setIntegral_eq_of_integral_eq Submission.cbr_measure_convergence_tools P d
+    (Submission.cbr_slice_property_of_weak_limit hREP hMR hIMC hSL d hCL P) ⟨η₀, hη₀, hLD⟩ Γ μ M θ ζ
+    a η₀ hΓb hISP hμ hμW hM hMfin hθ hζ hμM hθpos hζb hζM hΓM haM hη₀ (hMdens a haM) ha.1 ha.2
+
 namespace Submission
 
 /-- Smoothing a field `s` with `|s| ≤ 1` and `s = 0` off `Q_δ` by a nonnegative unit-mass `C^∞`
