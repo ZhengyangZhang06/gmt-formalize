@@ -727,6 +727,47 @@ theorem Submission.cbr_ci_pw_orthonormal_covector_bounds : ∀ (P n : ℕ) (v : 
   exact ⟨fun β => Submission.regcomp_covector_eval_orthonormal_le P n β v hv,
     fun l γ => (Submission.cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq P n v pL hv hpL l γ).le⟩
 
+/-- **Mass bound for a projected current** (Simon (6.2.5); the mass estimate in White's projection
+argument): let `U ⊆ ℝᵐ` be open, `pL : ℝᴾ → ℝᵐ` linear with `|γ ∘ pL|_E ≤ |γ|_E` for every
+`l`-covector `γ` on `ℝᵐ`, `|⟨β, ξ(x)⟩| ≤ |β|_E` for `μ`-a.e. `x`, and
+`Y(ω) = ∫_F ⟨ω(pL x) ∘ pL, ξ(x)⟩ dμ(x)` for `ω ∈ 𝒟ˡ(U)`.  Then `M_U(Y) ≤ μ(F ∩ pL⁻¹(U))`.  For an
+admissible `ω` the integrand has absolute value `≤ |ω(pL x)|_E ≤ 1`, and it vanishes when
+`pL x ∉ U ⊇ spt ω`; so `Y(ω) ≤ ‖∫_F ·‖ₑ ≤ ∫⁻_F ‖·‖ₑ ≤ ∫⁻_F 1_{pL⁻¹(U)} = μ(F ∩ pL⁻¹(U))`.  The
+estimate runs in `ℝ≥0∞`, so it needs neither integrability nor measurability of `F`. -/
+theorem Submission.cbr_ci_pw_proj_mass_le : ∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l) (Y : GeometricCurrentOn U l), IsOpen U → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → (∀ ω : TestFormOn U l, Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ) → Y.massOn U ≤ μ (F ∩ pL ⁻¹' U) := by
+  intro P m l pL U F μ ξ Y hU hξb hN3 hY
+  -- `pL⁻¹(U)` is open, hence measurable
+  have hUm : MeasurableSet (pL ⁻¹' U) := (hU.preimage pL.continuous).measurableSet
+  -- Step 1: it suffices to bound `ofReal (Y ω)` for each admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, ⟨-, hω1⟩, rfl⟩
+  show ENNReal.ofReal (Y ω) ≤ _
+  rw [hY ω]
+  -- Step 2: `‖Φ_ω‖ₑ ≤ 1_{pL⁻¹(U)}` a.e. on `F`; off `pL⁻¹(U)`, `ω (pL x) = 0` as `tsupport ω ⊆ U`
+  have hpt : ∀ᵐ x ∂(μ.restrict F), ‖ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL)‖ₑ ≤ (pL ⁻¹' U).indicator 1 x := by
+    filter_upwards [ae_restrict_of_ae hξb] with x hx
+    by_cases hxU : pL x ∈ U
+    · rw [indicator_of_mem (show x ∈ pL ⁻¹' U from hxU), Pi.one_apply, Real.enorm_eq_ofReal_abs,
+        ← ENNReal.ofReal_one]
+      exact ENNReal.ofReal_le_ofReal ((hx _).trans ((hN3 _).trans (hω1 _)))
+    · have h0 : (ω : DifferentialForm (Euclid m) l) (pL x) = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hxU (ω.property.2 h))
+      have hβ0 : ((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL = 0 := by
+        ext v
+        simp [h0]
+      rw [hβ0, map_zero, enorm_zero]
+      exact zero_le
+  -- Step 3: `ofReal (Y ω) ≤ ‖∫_F Φ_ω‖ₑ ≤ ∫⁻_F ‖Φ_ω‖ₑ ≤ ∫⁻_F 1_{pL⁻¹(U)} = μ(F ∩ pL⁻¹(U))`
+  calc ENNReal.ofReal (∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ)
+      ≤ ‖∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in F, ‖ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL)‖ₑ ∂μ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in F, (pL ⁻¹' U).indicator 1 x ∂μ := lintegral_mono_ae hpt
+    _ = μ (F ∩ pL ⁻¹' U) := by
+        rw [lintegral_indicator_one hUm, Measure.restrict_apply hUm, inter_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
