@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5325c56267ea02f39d3f8645374026f2681f03632cb27a2023ad44eecac8686a",
+  "git_delta": {
+    "base_commit": "5daf2ebdf680824317a4812214386abf0d765525",
+    "candidate_commit": "c87bd1c4fbe9ef1f858636aa9f40f575fe1c771a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_rs_cutoff_defect",
+    "diff_sha256": "34e058f2c9809eb27917b6bedf1ce09578c224ac5d2232e280f087f2396a8a22",
+    "source_sha256": "e4aa3fda899278ebf5448412fa56780e7e84a9af100e548317ea3b57eed05b26",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_rs_cutoff_defect",
+      "statement": "∀ (P m : ℕ) (U V : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (g : Euclid P → ℝ) (β : TestFormOn (univ : Set (Euclid P)) m), Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → S.boundary ω = 0) → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ U → tsupport g ⊆ V → ENNReal.ofReal |∫ x in Rp.carrier, g x * ((Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x)) ∂μHE[m + 1]| ≤ ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x)) ∂Rp.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
