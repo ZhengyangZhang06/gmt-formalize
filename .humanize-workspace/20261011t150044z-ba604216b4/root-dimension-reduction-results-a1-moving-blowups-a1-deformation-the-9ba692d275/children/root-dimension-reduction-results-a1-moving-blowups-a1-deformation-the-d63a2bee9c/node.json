@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.mass_disjoint_sum-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 6,
+  "title": "Superadditivity of local mass over a finite pairwise disjoint family (step 9)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ Euclid P be any set, and let S be an n-current in U (GeometricCurrentOn U n). Let ι be a type, s a finite subset of ι, and N : ι → Set (Euclid P) with N_i ∩ N_j = ∅ for all distinct i, j ∈ s. Then Σ_{i∈s} M_{N_i}(S) ≤ M_{⋃_{i∈s} N_i}(S) in [0, ∞]. Here M_W(S) = S.massOn W is the supremum of ofReal(S ω) over the test n-forms ω in U (TestFormOn U n) with tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ 1 for all x (Simon 6.2.5).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i)",
+  "lean_name": "dimred_mbl_dtfrbv_massOn_disjoint_sum_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d63a2bee9c-a1"
+}
