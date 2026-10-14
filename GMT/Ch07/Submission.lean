@@ -451,6 +451,125 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The covector `w₁♭ ∧ ⋯ ∧ wₙ♭`** (Simon Ch. 6, 1.1 with 1.4): for every `w : Fin n → ℝᴾ`
+some `n`-covector `β` on `ℝᴾ` has `β(u₁, …, uₙ) = det (⟨u_a, w_b⟩)_{a,b}`.  With the row map
+`p_w x = (⟨x, w_b⟩)_b`, linear since `⟨·, ·⟩` is linear in its first argument, `β⁰ = det ∘ p_w`
+is alternating, and the Leibniz formula with Cauchy–Schwarz gives
+`|β⁰(u)| ≤ n! ∏_b ‖w_b‖ ∏_a ‖u_a‖`, so `β⁰` is continuous. -/
+theorem Submission.cbr_ci_pw_pu_inner_det_covector : ∀ (P n : ℕ) (w : Fin n → Euclid P), ∃ β : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)) := by
+  intro P n w
+  -- Step 1: the row map `p_w x = (⟨x, w_b⟩)_b` is linear
+  let p : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+    { toFun := fun x b => inner ℝ x (w b)
+      map_add' := fun x y => by
+        funext b
+        simp [inner_add_left]
+      map_smul' := fun c x => by
+        funext b
+        simp [real_inner_smul_left] }
+  -- Step 2: `β⁰ = det ∘ p_w` is alternating, and `β⁰(u) = det (⟨u_a, w_b⟩)_{a,b}`
+  let β₀ : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap p
+  have hβ₀ : ∀ u : Fin n → Euclid P,
+      β₀ u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)) := fun u => rfl
+  -- Step 3: the Leibniz formula, `|sign σ| = 1`, Cauchy–Schwarz, reindexing along `σ` and
+  -- `n!` permutations give `|β⁰(u)| ≤ (n! ∏_b ‖w_b‖) ∏_a ‖u_a‖`
+  have hbound : ∀ u : Fin n → Euclid P,
+      ‖β₀ u‖ ≤ ((n.factorial : ℝ) * ∏ b, ‖w b‖) * ∏ a, ‖u a‖ := by
+    intro u
+    rw [hβ₀, Real.norm_eq_abs, Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n),
+            Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i|
+        ≤ ∑ σ : Equiv.Perm (Fin n),
+            |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), (∏ a, ‖u a‖) * ∏ b, ‖w b‖ := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hσ : |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i| =
+              ∏ i, |inner ℝ (u (σ i)) (w i)| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+              simp [h, Finset.abs_prod]
+          calc |Equiv.Perm.sign σ • ∏ i, Matrix.of (fun a b => inner ℝ (u a) (w b)) (σ i) i|
+              = ∏ i, |inner ℝ (u (σ i)) (w i)| := hσ
+            _ ≤ ∏ i, ‖u (σ i)‖ * ‖w i‖ := by
+                gcongr with i
+                exact abs_real_inner_le_norm (u (σ i)) (w i)
+            _ = (∏ i, ‖u (σ i)‖) * ∏ i, ‖w i‖ := Finset.prod_mul_distrib
+            _ = (∏ a, ‖u a‖) * ∏ b, ‖w b‖ := by
+                rw [Equiv.prod_comp σ fun a => ‖u a‖]
+      _ = ((n.factorial : ℝ) * ∏ b, ‖w b‖) * ∏ a, ‖u a‖ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+          ring
+  -- Step 4: `β = β⁰.mkContinuous (n! ∏_b ‖w_b‖)` is an `n`-covector with the values of `β⁰`
+  exact ⟨β₀.mkContinuous _ hbound, hβ₀⟩
+/-- Orthonormal frames `x`, `y` in `ℝᴾ` with `det(⟨x a, w b⟩) = det(⟨y a, w b⟩)` for every frame
+`w` satisfy `span y ⊆ span x`.  For each `i` the residual `e = y i - ∑ j, ⟨x j, y i⟩ • x j` is
+orthogonal to every `x a`.  Test the hypothesis on `w = update y i e`: `(⟨x a, w b⟩)` has zero
+column `i`, while `(⟨y a, w b⟩)` is the identity with column `i` replaced by `(⟨y a, e⟩)ₐ`, of
+determinant `⟨y i, e⟩` by Cramer's rule.  Hence `⟨y i, e⟩ = 0`, so `⟨e, e⟩ = 0`, `e = 0` and
+`y i ∈ span x`. -/
+theorem Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq : ∀ (P n : ℕ) (x y : Fin n → Euclid P), Orthonormal ℝ x → Orthonormal ℝ y → (∀ w : Fin n → Euclid P, Matrix.det (Matrix.of fun a b => inner ℝ (x a) (w b)) = Matrix.det (Matrix.of fun a b => inner ℝ (y a) (w b))) → Submodule.span ℝ (Set.range y) ≤ Submodule.span ℝ (Set.range x) := by
+  intro P n x y hx hy hdet
+  -- step 1: it suffices to show `y i ∈ span x` for every index `i`
+  rw [Submodule.span_le]
+  rintro _ ⟨i, rfl⟩
+  -- step 2: the residual `e = y i - ∑ j, ⟨x j, y i⟩ • x j` is orthogonal to every `x a`
+  obtain ⟨e, he⟩ : ∃ e : Euclid P, e = y i - ∑ j, inner ℝ (x j) (y i) • x j := ⟨_, rfl⟩
+  have hxe : ∀ a, inner ℝ (x a) e = 0 := fun a => by
+    rw [he, inner_sub_right, hx.inner_right_fintype, sub_self]
+  -- step 3: test the hypothesis on the frame `w = update y i e`
+  -- (a) column `i` of `(⟨x a, w b⟩)` vanishes, so its determinant is `0`
+  have hxdet : Matrix.det (Matrix.of fun a b => inner ℝ (x a) (update y i e b)) = 0 :=
+    Matrix.det_eq_zero_of_column_eq_zero i fun a => by
+      rw [Matrix.of_apply, update_self, hxe a]
+  -- (b) `(⟨y a, w b⟩)` is the identity matrix with column `i` replaced by `(⟨y a, e⟩)ₐ`,
+  -- so by Cramer's rule its determinant is `⟨y i, e⟩`
+  have hydet : Matrix.det (Matrix.of fun a b => inner ℝ (y a) (update y i e b)) =
+      inner ℝ (y i) e := by
+    have hG : (Matrix.of fun a b => inner ℝ (y a) (update y i e b)) =
+        (1 : Matrix (Fin n) (Fin n) ℝ).updateCol i fun a => inner ℝ (y a) e := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.updateCol_apply]
+      by_cases hb : b = i
+      · rw [hb, update_self, ite_eq_left rfl]
+      · rw [update_of_ne hb, ite_eq_right hb, Matrix.one_apply, orthonormal_iff_ite.mp hy]
+    rw [hG, ← Matrix.cramer_apply, Matrix.cramer_one, Module.End.one_apply]
+  -- (c) the hypothesis gives `⟨y i, e⟩ = 0`
+  have hye : inner ℝ (y i) e = 0 := by
+    rw [← hydet, ← hdet, hxdet]
+  -- step 4: `⟨e, e⟩ = ⟨y i, e⟩ - ∑ j, ⟨x j, y i⟩ ⟨x j, e⟩ = 0`, so `e = 0`
+  have hee : inner ℝ e e = 0 := by
+    calc inner ℝ e e = inner ℝ (y i - ∑ j, inner ℝ (x j) (y i) • x j) e := by rw [← he]
+      _ = 0 := by
+        rw [inner_sub_left, sum_inner, hye]
+        simp only [real_inner_smul_left, hxe, mul_zero, Finset.sum_const_zero, sub_zero]
+  have hyi : y i = ∑ j, inner ℝ (x j) (y i) • x j := by
+    rw [← sub_eq_zero, ← he]
+    exact inner_self_eq_zero.mp hee
+  -- step 5: `y i` is a linear combination of the `x j`, hence lies in `span x`
+  rw [SetLike.mem_coe, hyi]
+  exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+
+/-- **A unit orientation determines its plane.**  Orthonormal frames `v`, `v'` in `ℝᴾ` with
+`β(v) = β(v')` for every `n`-covector `β` span the same subspace.  Evaluating the hypothesis on
+the determinant covector `β_w(u) = det (⟨u a, w b⟩)_{a,b}` gives
+`det (⟨v a, w b⟩) = det (⟨v' a, w b⟩)` for every frame `w`, so `span v' ⊆ span v`; the
+hypothesis is symmetric in `v`, `v'`, so also `span v ⊆ span v'`. -/
+theorem Submission.cbr_ci_pw_span_eq_of_covector_eval_eq : ∀ (P n : ℕ) (v v' : Fin n → Euclid P), Orthonormal ℝ v → Orthonormal ℝ v' → (∀ β : Covector (Euclid P) n, β v = β v') → Submodule.span ℝ (Set.range v) = Submodule.span ℝ (Set.range v') := by
+  intro P n v v' hv hv' hβ
+  -- step 1: on the determinant covector `β_w` of each frame `w`, the hypothesis reads
+  -- `det (⟨v a, w b⟩) = det (⟨v' a, w b⟩)`
+  have hdet : ∀ w : Fin n → Euclid P, Matrix.det (Matrix.of fun a b => inner ℝ (v a) (w b)) =
+      Matrix.det (Matrix.of fun a b => inner ℝ (v' a) (w b)) := fun w => by
+    obtain ⟨β, hβw⟩ := Submission.cbr_ci_pw_pu_inner_det_covector P n w
+    rw [← hβw v, ← hβw v']
+    exact hβ β
+  -- step 2: `span v ⊆ span v'` from the hypothesis read backwards, `span v' ⊆ span v` from it
+  -- read forwards
+  exact le_antisymm
+    (Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq P n v' v hv' hv fun w => (hdet w).symm)
+    (Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq P n v v' hv hv' hdet)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
