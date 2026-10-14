@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.radon_convergence_criterion-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Convergence of integrals from limsup on compact sets and liminf on open sets",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P any set, and μ, μ_j (j ∈ ℕ) Borel measures on ℝ^P such that (a) μ(K) < ∞ for every compact K ⊆ U; (b) limsup_j μ_j(K) ≤ μ(K) for every compact K ⊆ U; (c) μ(G) ≤ liminf_j μ_j(G) for every open G ⊆ U (lim sup and lim inf in [0, ∞]). Then ∫ f dμ_j → ∫ f dμ (Bochner integrals) for every continuous f : ℝ^P → ℝ with compact support and tsupport f ⊆ U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+  "lean_name": "cmc_tendsto_integral_of_limsup_liminf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-radon-convergence-criterion-a1-a1"
+}

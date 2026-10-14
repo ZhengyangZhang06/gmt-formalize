@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.ae_excess-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "Localized Besicovitch density: Hⁿ((B ∖ A) ∩ B̄_ρ(x)) is eventually ≤ ε·Hⁿ(B ∩ B̄_ρ(x)) for Hⁿ⌞A-a.e. x",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let A ⊆ B ⊆ U be Borel sets with μ(B ∩ K) < ∞ for every compact K ⊆ U, where μ := μHE[n]. Then for μ⌞A-almost every x the following holds for every ε ∈ (0, ∞] (an extended nonnegative real): eventually as ρ → 0 in the filter 𝓝[>]0 (i.e. for all 0 < ρ < ρ_ε, for some ρ_ε > 0), μ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε · μ(B ∩ B̄_ρ(x)), products taken in [0, ∞] with 0·∞ = 0. The exceptional μ⌞A-null set does not depend on ε.",
+  "lean_statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)",
+  "lean_name": "rsdic_tl_ae_excess_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-ae77d43f74-a1"
+}
