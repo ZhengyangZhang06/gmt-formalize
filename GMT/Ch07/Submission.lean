@@ -451,6 +451,87 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Support of a face current** (Simon Ch. 6, proof of Theorem 5.1, the face currents of (27)).
+Let `D ∈ 𝒟_{m+1}(ℝᴾ)` act by `D(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p y)(E_p) dy`, where `Q₁` is the
+open unit cube, each `w_p` is integrable on `Q₁`, `Φ_p(y) = b_p + Σ_j y_j e_{ι_p(j)}` and
+`E_p = (e_{ι_p(j)})_j`.  Then every `x ∈ spt D` is `Φ_p(y)` for some `p ∈ s` with
+`∫_{Q₁} |w_p| ≠ 0` and some `y` in the closed unit cube.  Otherwise `x` lies outside the compact
+union `Z` of the closed faces `Φ_p([0,1]^{m+1})` with `∫_{Q₁} |w_p| ≠ 0`, so some ball `B` about
+`x` misses `Z`.  Each face integral of a test form supported in `B` vanishes: either `w_p = 0`
+a.e. on `Q₁`, or the form vanishes on `Φ_p(Q₁) ⊆ Z`.  So `D` vanishes on `B`, and `x` lies in the
+zero region of `D`, contradicting `x ∈ spt D`. -/
+theorem Submission.dimred_mbl_dtfric_support_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x := by
+  intro P m s w D hint hD x hx
+  -- Step 1: otherwise `x` misses every closed face `Φ_p(Cⁿ)` with `∫_{Q₁} |w_p| ≠ 0`
+  by_contra hcon
+  push Not at hcon
+  set Q : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}
+  set C : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 ≤ y i ∧ y i ≤ 1}
+  set Φ : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → Euclid P :=
+    fun p y => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+    with hΦ
+  set s' := s.filter (fun p => (∫ y in Q, |w p y|) ≠ 0) with hs'
+  set Z : Set (Euclid P) := ⋃ p ∈ s', Φ p '' C with hZ
+  -- Step 2: `Z` is compact, so some ball about `x` misses it
+  have hCcomp : IsCompact C := by
+    have hpi : IsCompact (Set.pi univ (fun _ : Fin (m + 1) => Icc (0 : ℝ) 1)) :=
+      isCompact_univ_pi (fun _ => isCompact_Icc)
+    have himg := hpi.image (PiLp.continuous_toLp 2 (fun _ : Fin (m + 1) => ℝ))
+    convert himg using 1
+    ext y
+    constructor
+    · intro hy
+      refine ⟨WithLp.ofLp y, ?_, by simp⟩
+      intro i _
+      exact ⟨(hy i).1, (hy i).2⟩
+    · rintro ⟨z, hz, rfl⟩ i
+      exact ⟨(hz i (mem_univ i)).1, (hz i (mem_univ i)).2⟩
+  have hΦcont : ∀ p, Continuous (Φ p) := by
+    intro p
+    exact continuous_const.add
+      (continuous_finsetSum _ fun j _ => (PiLp.continuous_apply 2 _ j).smul continuous_const)
+  have hZcomp : IsCompact Z := s'.isCompact_biUnion (fun p _ => hCcomp.image (hΦcont p))
+  have hxZ : x ∉ Z := by
+    intro hxZ
+    simp only [hZ, mem_iUnion, mem_image] at hxZ
+    obtain ⟨p, hp, y, hy, hyx⟩ := hxZ
+    rw [hs', Finset.mem_filter] at hp
+    exact hcon p hp.1 hp.2 y hy hyx
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hZcomp.isClosed.isOpen_compl x hxZ
+  -- Step 3: `D` vanishes on `ball x r`, face by face
+  have hvan : D.VanishesOn (ball x r) := by
+    intro ω hω
+    rw [hD ω]
+    apply Finset.sum_eq_zero
+    intro p hp
+    by_cases hp0 : (∫ y in Q, |w p y|) = 0
+    · -- (a) `w_p = 0` a.e. on `Q₁`
+      have habs : (fun y => |w p y|) =ᵐ[volume.restrict Q] 0 :=
+        (integral_eq_zero_iff_of_nonneg (fun y => abs_nonneg (w p y)) (hint p hp).abs).mp hp0
+      apply integral_eq_zero_of_ae
+      filter_upwards [habs] with y hy
+      have : w p y = 0 := abs_eq_zero.mp hy
+      simp [this]
+    · -- (b) `ω` vanishes on `Φ_p(Q₁) ⊆ Z`
+      apply setIntegral_eq_zero_of_forall_eq_zero
+      intro y hy
+      have hyC : y ∈ C := fun i => ⟨(hy i).1.le, (hy i).2.le⟩
+      have hps' : p ∈ s' := by rw [hs', Finset.mem_filter]; exact ⟨hp, hp0⟩
+      have hmemZ : Φ p y ∈ Z := mem_biUnion hps' (mem_image_of_mem _ hyC)
+      have hnot : Φ p y ∉ tsupport (ω : DifferentialForm (Euclid P) (m + 1)) := by
+        intro hin
+        exact hball (hω hin) hmemZ
+      have h0 := image_eq_zero_of_notMem_tsupport hnot
+      simp only [hΦ] at h0
+      simp [h0]
+  -- Step 4: `ball x r` is open with compact closure, so `x` lies in the zero region of `D`
+  have hxzero : x ∈ D.zeroRegion := by
+    refine mem_sUnion.mpr ⟨ball x r, ⟨isOpen_ball, ?_, subset_univ _, hvan⟩, mem_ball_self hr⟩
+    exact (isCompact_closedBall x r).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  -- Step 5: this contradicts `x ∈ spt D`
+  exact hx.2 hxzero
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
