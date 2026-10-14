@@ -1,0 +1,68 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_scaling-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent step 2 ("Open cones scale").
+1. Fix r > 0 and put W := K ∩ B_1(0). W is open as the intersection of the open set K with the open ball B_1(0). The homogeneity hypothesis with λ = r gives μ(rW) = r·μ(W), where rW = {rx : x ∈ W}. So it suffices to prove rW = K ∩ B_r(0).
+2. (K ∩ B_r(0) ⊆ rW.) Let y ∈ K ∩ B_r(0) and put x := r⁻¹y. Since r⁻¹ > 0 and y ∈ K, the cone property gives x ∈ K. Also |x| = r⁻¹|y| < r⁻¹·r = 1, so x ∈ B_1(0). Hence x ∈ W, and y = r·(r⁻¹y) = rx ∈ rW.
+3. (rW ⊆ K ∩ B_r(0).) Let y = rx with x ∈ W. Since r > 0 and x ∈ K, the cone property gives y ∈ K. Also |y| = r|x| < r·1 = r, because |x| < 1 and r > 0, so y ∈ B_r(0).
+4. By steps 2 and 3, K ∩ B_r(0) = rW. By step 1, μ(K ∩ B_r(0)) = μ(rW) = r·μ(W) = r·μ(K ∩ B_1(0)). ∎
+
+## Key steps
+
+1. W := K ∩ B_1(0) is open, so homogeneity with λ = r gives μ(rW) = r·μ(W).
+2. If y ∈ K ∩ B_r(0), then r⁻¹y ∈ K ∩ B_1(0) by the cone property, so y ∈ rW.
+3. If x ∈ K ∩ B_1(0), then rx ∈ K and |rx| < r, so rW ⊆ K ∩ B_r(0).
+4. Hence K ∩ B_r(0) = rW and μ(K ∩ B_r(0)) = r·μ(K ∩ B_1(0)).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git show bdf34f91edfa2642928ed59a139dd914ab9326d5:GMT/Ch07/Submission.lean | cmp - GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n "theorem measure_null_of_locally_null|theorem smul_ball |theorem image_smul |theorem eventually_all_finset|theorem measure_biUnion_finset |theorem Infinite.exists_subset_card_eq|theorem exists_nat_gt|theorem norm_sub_sq_real|theorem Ioo_mem_nhdsGT |theorem mem_ball_zero_iff|theorem dist_smul₀|lemma dist_smul₀|lemma smul_ball |lemma Ioo_mem_nhdsGT " <snapshot>/mathlib/Mathlib`
+- `rg -n "(theorem|lemma) (Ioo_mem_nhdsGT|image_smul|mem_ball_zero_iff|measure_union_null|measure_mono_null|ENNReal.tendsto_ofReal|tendsto_ofReal)\b" <snapshot>/mathlib/Mathlib; rg -n "Ioo_mem_nhdsGT|theorem mem_ball_zero_iff|lemma mem_ball_zero_iff" <snapshot>/mathlib/Mathlib`
+- `rg -n -i "homogeneous|finite.?rays|cone_inter_ball|\bray\b" <snapshot>/project/GMT; rg -n -il "IsCone|cone" <snapshot>/project/GMT`
+- `python3 -I /tmp/fr_split_check/scan.py dag.json (selected node record: depth 5, status decomposing, children []; lean_name and node-id collisions for idtp_fons_odc_fr_{cone_scaling,cone_disjoint,cone_mass,card_le,origin_null}; nodes whose lean_statement contains the homogeneity hypothesis)`
+- `git log --all --oneline -S idtp_fons_odc_fr_ (no match)`
+- `git show 75f499358:GMT/Ch07/Submission.lean | sed -n 860,1073p (speculative draft Submission.odc_finiterays_* helpers of the identical theorem)`
+- `grep -n _machine_leaf|leaf_lean_agent_review|max_depth|max_nodes in /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py, prompts.py, config.github-theorems.example.yaml; grep -n helper|set_option|declaration leaf_verification.py; grep -n 'def check_parent_git_delta' -A 60 parent_verification.py`
+- `grep -n "1-dimensional minimizing cone|union of rays|rays" book/chapter-07.txt; sed -n 555,580p book/chapter-07.txt`
+- `lake env lean /tmp/fr_split_check/Types.lean; lake env lean /tmp/fr_split_check/Assembly.lean (with #print axioms for all six declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/MulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-supplied-plan.md`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/parent_verification.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/prompts.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/config.github-theorems.example.yaml`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/fr_split_check/Types.lean`
+- `/tmp/fr_split_check/Assembly.lean`
+- `/tmp/fr_split_check/scan.py`
+
+Version pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c. At the node's proof base bdf34f91, Submission.lean is byte-identical to Contract.lean, so children elaborate in namespace GMT.Ch07 with the contract's opens. The snapshot Mathlib supplies every library fact used: measure_null_of_locally_null (MeasureTheory/OuterMeasure/Basic.lean:150), measure_mono_null (:54), measure_union_null (:128), smul_ball (Analysis/Normed/Module/Ball/Pointwise.lean:79), Set image_smul (Algebra/Group/Pointwise/Set/Scalar.lean:155), eventually_all_finset (Order/Filter/Finite.lean:258), measure_biUnion_finset (MeasureTheory/Measure/Basic.lean:150), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862), ENNReal.exists_nat_gt (Basic/ENNReal/Basic.lean:622), norm_sub_sq_real (Analysis/InnerProductSpace/Basic.lean:437), dist_smul₀ (Analysis/Normed/MulAction.lean:153), ENNReal.tendsto_ofReal (Topology/Instances/ENNReal/Lemmas.lean:72), and Ioo_mem_nhdsGT (used at MeasureTheory/Integral/DominatedConvergence.lean:527). No project or library declaration states any of the five child statements: the project/GMT search for homogeneous-measure and cone lemmas found nothing relevant. dag.json has no node with these names or ids, and the only node with the homogeneity hypothesis is the selected one. git log --all -S idtp_fons_odc_fr_ found nothing. The speculative draft 75f499358 proves the identical theorem using the same five-lemma structure (as Submission.odc_finiterays_* helpers, which were never reserved as nodes). runtime.py:3966 and leaf_verification.py:98-108, with leaf_lean_agent_review false, make a childless node a single-theorem leaf with no helpers or set_option, and depth 5 < max_depth 6 permits this split. Lean: all five child types elaborate. Each child is proved as one theorem referencing only its listed siblings, and the frozen parent type follows from card_le and origin_null, with only the axioms propext, Classical.choice and Quot.sound. The book (chapter-07.txt:563-566) only says the 1-dimensional cone form m[[ℓ]] is 'easy to check'.

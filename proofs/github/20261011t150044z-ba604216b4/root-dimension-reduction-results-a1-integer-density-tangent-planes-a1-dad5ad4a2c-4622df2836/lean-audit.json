@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "383f1a87fb7f0117c9c8954953dad435c27294f5b90692717bb2af2e83b4a4de",
+  "git_delta": {
+    "base_commit": "d184cae41b48bcec75e9601a4306b7143bcb43d3",
+    "candidate_commit": "f32e673ebb4e927fed3557cddacb17e5989d3089",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_fr_cone_scaling",
+    "diff_sha256": "ad5fd685a4d047f77a6c175a7edbbb2ca5d82a47c0958719d5cd7ef68d5ca79e",
+    "source_sha256": "8798d045aa0a70c38eae20bd4a0f03f7b532a4dc413c0cf9f2c002adb663d6c0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_fr_cone_scaling",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → ∀ K : Set (Euclid P), IsOpen K → (∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K) → ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
