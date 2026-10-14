@@ -762,6 +762,25 @@ theorem Submission.cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt : ∀ (P 
   have hcard := hli'.fintype_card_le_finrank
   rw [Fintype.card_fin] at hcard
   omega
+/-- **An orthonormal frame spanning a subspace** (Simon 6.1.1; the frame `τ` of
+`IsUnitOrientationOf`): an `n`-dimensional subspace `V` of `ℝᴾ` is `span{v₀, …, vₙ₋₁}` for an
+orthonormal `v : Fin n → ℝᴾ`.  Reindex the orthonormal basis `stdOrthonormalBasis ℝ V` along
+`finrank ℝ V = n` to `b : Fin n → V` and put `vᵢ = ↑bᵢ`; the inclusion `V → ℝᴾ` is a linear
+isometry, so `v` is orthonormal, and `span (range v)` is the image of `span (range b) = ⊤` under
+the inclusion, i.e. `V`. -/
+theorem Submission.cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq : ∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → ∃ v : Fin n → Euclid P, Orthonormal ℝ v ∧ Submodule.span ℝ (Set.range v) = V := by
+  intro P n V hV
+  -- Step 1: an orthonormal basis `b` of `V` indexed by `Fin n`
+  let b : OrthonormalBasis (Fin n) ℝ V := (stdOrthonormalBasis ℝ V).reindex (finCongr hV)
+  refine ⟨fun i => (b i : Euclid P), ?_, ?_⟩
+  · -- Step 2: `vᵢ = ↑bᵢ` is orthonormal, the inclusion `V.subtypeₗᵢ` being a linear isometry
+    exact b.orthonormal.comp_linearIsometry V.subtypeₗᵢ
+  · -- Step 3: `span (range v) = map V.subtype (span (range b)) = map V.subtype ⊤ = V`
+    have hrange : Set.range (fun i => (b i : Euclid P)) = (V.subtype) '' Set.range b := by
+      rw [← Set.range_comp]; rfl
+    have hb : Submodule.span ℝ (Set.range b) = ⊤ := by
+      simpa [OrthonormalBasis.coe_toBasis] using b.toBasis.span_eq
+    rw [hrange, Submodule.span_image, hb, Submodule.map_top, Submodule.range_subtype]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
