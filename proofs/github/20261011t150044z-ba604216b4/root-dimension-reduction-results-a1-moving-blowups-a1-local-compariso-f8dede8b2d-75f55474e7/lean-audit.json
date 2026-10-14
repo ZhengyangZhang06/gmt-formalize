@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11f570358245d923a9324822dbda1e249a61003684066503298ff3a767f702e7",
+  "git_delta": {
+    "base_commit": "fd94676cb07c3b00ae313f5c10f5e534d9f8d0a3",
+    "candidate_commit": "a7642e04b8e4553ec662f9c14e8877c2288d4cad",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_sd_level_decomposition",
+    "diff_sha256": "4e2a34794c9d94c87526ae1fc272ad65fba222e59d282ed513c50eb58efbd3db",
+    "source_sha256": "003c752bac10e5c67358cd4cd0320ed56706908585be0087f99b0b8875b833a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_sd_level_decomposition",
+      "statement": "∀ (P m : ℕ) (R A : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (B S' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : IMRep (univ : Set (Euclid P)) (m + 2)) (β : IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ) (t : ℝ) (W₀ : Set (Euclid P)) (c : ℝ≥0∞), ρ.Represents R → IsIntegerMultiplicity S' → Continuous f → IsOpen W₀ → IsCompact {x | f x ≤ t} → {x | f x ≤ t} ⊆ W₀ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), A ω = ∫ x in {x | f x < t}, ρ.orient x ((ω : DifferentialForm (Euclid P) (m + 2)) x) ∂ρ.measure) → (∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), B η = ∫ x in {x | f x < t}, β.orient x ((η : DifferentialForm (Euclid P) (m + 1)) x) ∂β.measure) → (∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (η : DifferentialForm (Euclid P) (m + 1))) {x | f x = t} → A.boundary η = B η) → (A.boundary - B).massOn W₀ ≤ c → c ≠ ∞ → (∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity T → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → T.boundary.massOn W < ∞) → IsIntegerMultiplicity T.boundary) → ∃ Y Sr : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = 0 ∧ Y.support ⊆ {x | f x ≤ t} ∧ Sr.mass ≤ S'.massOn W₀ + c ∧ (∀ Q : IMRep (univ : Set (Euclid P)) (m + 1), Q.Represents Y → Q.measure {x | f x = t} ≤ c) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ {x | f x < t} → Y ω = R.boundary ω ∧ Sr ω = S' ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

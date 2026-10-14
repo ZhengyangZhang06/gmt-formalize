@@ -1,0 +1,124 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 0 and 3.2 of the parent node's supplied proof of the mass formula M_W(T) = R.measure W (there ν = μ⌞O). Notation (shared with the parent proof): ℝ^P = Euclid P = EuclideanSpace ℝ (Fin P) with standard orthonormal basis e_i = EuclideanSpace.basisFun (Fin P) ℝ i; Λ^n = Covector (Euclid P) n, the continuous alternating n-linear forms on ℝ^P; for a family b : Fin P → ℝ^P and j : Fin n → Fin P write b∘j := (b_{j(0)}, …, b_{j(n−1)}); |α|_E := covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin P} [I strictly increasing] α(e∘I)²) (SimonGMT Chapter06/Mass.lean). Uses the sibling lemma regcomp_covector_eval_orthonormal_le (|α(τ)| ≤ |α|_E for orthonormal τ). ‖·‖ denotes the operator norm of Λ^n (its Mathlib norm); IsTestForm h means ContDiff ℝ ∞ h ∧ HasCompactSupport h. Implementation note: the C_c-density and bump-convolution lemmas cited below need Mathlib.MeasureTheory.Function.ContinuousMapDense and Mathlib.Analysis.Calculus.BumpFunction.Convolution (and Mathlib.Geometry.Manifold.SmoothApprox for the optional remark), which are not in the import closure of GMT.Ch07.Submission; import them in the implementation's helper module.
+
+0. (The coefficient norm.) Let N := Fin n → Fin P and define Φ : Λ^n → EuclideanSpace ℝ N by Φ(α)_j := α(e∘j) if j is strictly increasing and 0 otherwise. Φ is linear, and each coordinate is a continuous linear functional (|α(e∘j)| ≤ ‖α‖·Π_k ‖e_{j(k)}‖ = ‖α‖), so Φ is a continuous linear map; by EuclideanSpace.norm_eq, |α|_E = ‖Φ(α)‖. Consequently:
+ (a) |·|_E is a continuous seminorm: |α + β|_E ≤ |α|_E + |β|_E, |cα|_E = |c|·|α|_E, |α − β|_E = |β − α|_E.
+ (b) |α|_E ≤ c₁‖α‖ with c₁ := 1 + ‖Φ‖ ≥ 1.
+ (c) ‖α‖ ≤ c₂|α|_E with c₂ := P^n: for v = (v_0, …, v_{n−1}) expand v_k = Σ_i (v_k)_i e_i; multilinearity gives α(v) = Σ_{j ∈ N} (Π_k (v_k)_{j(k)})·α(e∘j) (ContinuousMultilinearMap.map_sum); if j is injective, (e_{j(0)}, …, e_{j(n−1)}) is orthonormal and |α(e∘j)| ≤ |α|_E by regcomp_covector_eval_orthonormal_le; if j is not injective, α(e∘j) = 0 (alternating). As |(v_k)_i| ≤ ‖v_k‖, |α(v)| ≤ P^n·|α|_E·Π_k ‖v_k‖, so ‖α‖ ≤ P^n|α|_E (ContinuousMultilinearMap.opNorm_le_bound).
+ (d) (Radial retraction.) For v ∈ Λ^n put π(v) := (max 1 |v|_E)⁻¹ • v. Then π is continuous, π(0) = 0, |π(v)|_E ≤ 1, π(v) = v if |v|_E ≤ 1, and |π(v) − b|_E ≤ |v − b|_E whenever |b|_E ≤ 1. For the last claim assume s := |v|_E > 1 and put x := Φ(v), y := Φ(b) in the inner product space EuclideanSpace ℝ N, so ‖x‖ = s, ‖y‖ ≤ 1 and Φ(π(v)) = x/s. Then ‖x − y‖² − ‖x/s − y‖² = s² − 1 − 2(1 − 1/s)⟨x, y⟩ ≥ s² − 1 − 2(1 − 1/s)s = (s − 1)² ≥ 0, using ⟨x, y⟩ ≤ ‖x‖‖y‖ ≤ s and 1 − 1/s > 0.
+
+1. (Integrability and continuous approximation.) Put V := (ν ℝ^P).toReal (ν is finite). By 0(c), ‖g(x)‖ ≤ c₂ for all x; with g ν-a.e. strongly measurable and ν finite, g is ν-integrable (Integrable.of_bound / integrable_of_bounded). ν is a finite Borel measure on the σ-compact metric space ℝ^P, hence regular (instance Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure). By Integrable.exists_hasCompactSupport_lintegral_sub_le (Mathlib.MeasureTheory.Function.ContinuousMapDense) there is a continuous, compactly supported g₀ : ℝ^P → Λ^n with ∫⁻ ‖g(x) − g₀(x)‖ₑ dν ≤ ofReal(ε/(4c₁)). By 0(b), ofReal|g₀(x) − g(x)|_E ≤ c₁‖g(x) − g₀(x)‖ₑ, so ∫⁻ ofReal|g₀ − g|_E dν ≤ ofReal(ε/4).
+
+2. (Cutoff.) By exists_compact_between choose a compact L with K ⊆ interior L and L ⊆ O. By Urysohn's lemma (exists_continuous_one_zero_of_isCompact for K and the closed set (interior L)ᶜ) there is a continuous χ : ℝ^P → [0, 1] with χ = 1 on K and χ = 0 off interior L; hence tsupport χ ⊆ L. Put g₁ := χ • g₀: continuous with tsupport g₁ ⊆ L. Since g = 0 off K and χ = 1 on K, g = χ • g, so g₁ − g = χ • (g₀ − g) and |g₁(x) − g(x)|_E = χ(x)|g₀(x) − g(x)|_E ≤ |g₀(x) − g(x)|_E (0(a)). Therefore ∫⁻ ofReal|g₁ − g|_E dν ≤ ofReal(ε/4).
+
+3. (Retraction.) Put g₂ := π ∘ g₁. It is continuous, vanishes wherever g₁ does (π(0) = 0), so tsupport g₂ ⊆ L, and |g₂(x)|_E ≤ 1. By 0(d) with b := g(x) (|g(x)|_E ≤ 1), |g₂(x) − g(x)|_E ≤ |g₁(x) − g(x)|_E, so ∫⁻ ofReal|g₂ − g|_E dν ≤ ofReal(ε/4).
+
+4. (Mollification.) g₂ is continuous with compact support, hence uniformly continuous (HasCompactSupport.uniformContinuous_of_continuous). Let κ := ε/(4c₁(1 + V)) > 0. Choose r₀ > 0 with cthickening r₀ L ⊆ O (IsCompact.exists_cthickening_subset_open) and r₁ > 0 with ‖g₂(x) − g₂(y)‖ ≤ κ whenever dist(x, y) < r₁. Let φ : ContDiffBump (0 : ℝ^P) have φ.rOut < min r₀ r₁, let φ_n := φ.normed volume (smooth, ≥ 0, ∫ φ_n = 1, support φ_n = ball(0, φ.rOut)) and h := φ_n ⋆[lsmul ℝ ℝ, volume] g₂, i.e. h(z) = ∫ φ_n(t)·g₂(z − t) dt.
+ (a) h is C^∞ (HasCompactSupport.contDiff_convolution_left with ℕ∞-order ⊤; g₂ is locally integrable) and has compact support (HasCompactSupport.convolution), so IsTestForm h.
+ (b) support h ⊆ support φ_n + support g₂ ⊆ ball(0, φ.rOut) + L ⊆ cthickening r₀ L (support_convolution_subset); cthickening r₀ L is closed, so tsupport h ⊆ cthickening r₀ L ⊆ O.
+ (c) |h(z)|_E ≤ 1: Φ(h(z)) = ∫ φ_n(t)·Φ(g₂(z − t)) dt (ContinuousLinearMap.integral_comp_comm; the integrand is continuous with compact support), so |h(z)|_E = ‖Φ(h(z))‖ ≤ ∫ φ_n(t)·‖Φ(g₂(z − t))‖ dt ≤ ∫ φ_n = 1 (norm_integral_le_integral_norm, φ_n ≥ 0, |g₂|_E ≤ 1).
+ (d) For every z, g₂ varies by at most κ on ball(z, φ.rOut) (φ.rOut < r₁), so ‖h(z) − g₂(z)‖ ≤ κ (ContDiffBump.dist_normed_convolution_le) and |h(z) − g₂(z)|_E ≤ c₁κ by 0(b).
+
+5. (Estimate.) Pointwise |h − g|_E ≤ |h − g₂|_E + |g₂ − g|_E (0(a)), hence ∫⁻ ofReal|h − g|_E dν ≤ ofReal(c₁κ)·ν(ℝ^P) + ofReal(ε/4) = ofReal(c₁κV) + ofReal(ε/4) ≤ ofReal(ε/4) + ofReal(ε/4) = ofReal(ε/2) < ofReal(ε), since c₁κV = εV/(4(1 + V)) ≤ ε/4 (lintegral_add_left / lintegral_mono, lintegral_const).
+
+6. (Conclusion.) h satisfies IsTestForm h (4(a)), tsupport h ⊆ O (4(b)), |h(z)|_E ≤ 1 for all z (4(c)) and ∫⁻ ofReal(|h − g|_E) dν < ofReal(ε) (5). ∎
+
+Remark (equivalent implementation of step 4, optional): instead of convolving, apply Continuous.exists_contDiff_approx (Mathlib.Geometry.Manifold.SmoothApprox) to (1 − δ)·g₂ with a constant error δ/c₁ (δ ∈ (0, 1) small): it yields a C^∞ h with ‖h − (1 − δ)g₂‖ < δ/c₁ everywhere and support h ⊆ support g₂ ⊆ L, so tsupport h ⊆ L ⊆ O, h has compact support, |h|_E ≤ (1 − δ) + δ = 1 and |h − g₂|_E ≤ 2δ; choosing δ ≤ ε/(8(1 + V)) gives the same estimate in step 5.
+
+## Key steps
+
+1. |α|_E = ‖Φ(α)‖ for a continuous linear coefficient map Φ into a Euclidean space; |·|_E is a continuous seminorm, comparable with the operator norm (using |α(e∘j)| ≤ |α|_E for injective j), and the radial retraction onto its unit ball is nonexpansive towards the ball.
+2. g is ν-integrable; ν is regular; C_c-density gives continuous compactly supported g₀ close to g in L¹(ν).
+3. Cutoff χ with χ = 1 on K, tsupport χ ⊆ L ⊂ O, then radial retraction, keeps the L¹ error.
+4. Mollification gives a C^∞ form h with tsupport h ⊆ O, |h|_E ≤ 1 (convexity) and uniformly close to g₂.
+5. Sum of the errors is < ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scan of dag.json (132 nodes) for lean_name collisions with the eight proposed regcomp_ names (none) and for related nodes (dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure, covectorEuclideanNorm_gram_bounds: all still decomposing, with different types)`
+- `git worktree list; grep -nE '^(theorem|lemma|def) ' .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no regcomp_ declarations)`
+- `grep -n 'covectorEuclideanNorm|massAdmissibleOn|GeometricCurrentOn.massOn|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `grep -n 'wedgeCovectors|wedgeCovectors_apply_det|euclideanCovectorCoordinate' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `grep -n 'IsTestForm|testFormOnSubmodule|TestFormOn|GeometricCurrentOn' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean`
+- `grep -rn 'exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right|sum_inner_mul_inner' Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `grep -rn 'Integrable.exists_hasCompactSupport_lintegral_sub_le|MemLp.exists_hasCompactSupport_eLpNorm_sub_le|MemLp.exist_eLpNorm_sub_le' Mathlib`
+- `grep -rn 'dist_normed_convolution_le|contDiff_convolution_left|support_convolution_subset|convolution_def|Continuous.exists_contDiff_approx|UniformContinuous.exists_contDiff_dist_le' Mathlib`
+- `grep -n 'Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure' Mathlib/MeasureTheory/Measure/Regular.lean`
+- `grep -rn 'map_eq_zero_of_not_injective|theorem map_perm|theorem Module.Basis.ext_multilinear|theorem det_permutation|def sort|monotone_sort' Mathlib`
+- `grep -rn 'IsSeparable.exists_countable_dense_subset|IsSeparable.mono|exists_compact_between|IsOpen.exists_iUnion_isClosed|exists_cthickening_subset_open|exists_continuous_one_zero_of_isCompact|uniformContinuous_of_continuous' Mathlib`
+- `grep -rn 'enorm_integral_le_lintegral_enorm|theorem withDensity_apply|lintegral_withDensity_eq_lintegral_mul₀' Mathlib/MeasureTheory`
+- `lake env lean /tmp/imrep-mass-split/Inst.lean and Inst2.lean (#synth FiniteDimensional ℝ (Covector (Euclid P) n): fails; SeparableSpace: fails; CompleteSpace: found; ν.Regular for finite ν: found; signatures of the cited lemmas)`
+- `lake env lean /tmp/imrep-mass-split/CheckFinal2.lean (eight frozen child types + le_antisymm parent assembly; #print axioms)`
+- `lake env lean /tmp/imrep-mass-split/Check2.lean, Check3.lean, Check4.lean (unit_orientation_pairing from stubs; full proof of mass_le_measure; skeleton of measure_le_mass)`
+- `python3 -I /tmp/imrep-mass-split/scripts/numcheck2.py (numeric check of the three covector facts for (P,n) in {(4,2),(5,3),(3,3),(4,1),(3,0),(2,3)})`
+- `sed -n 755,770p book/chapter-06.txt (Remark 3.2(3))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Permutation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/imrep-mass-split/CheckFinal2.lean`
+- `/tmp/imrep-mass-split/Check2.lean`
+- `/tmp/imrep-mass-split/Check3.lean`
+- `/tmp/imrep-mass-split/Check4.lean`
+- `/tmp/imrep-mass-split/Inst.lean`
+- `/tmp/imrep-mass-split/Inst2.lean`
+- `/tmp/imrep-mass-split/scripts/numcheck2.py`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean. None of the eight proposed regcomp_ names occurs in dag.json or in any speculative Submission. No comparator-accepted declaration with an identical type exists to reuse: the related nodes dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure and covectorEuclideanNorm_gram_bounds are all still decomposing and have different types.
+
+SimonGMT Chapter06 provides covectorEuclideanNorm (with _zero, _neg, _nonneg), massAdmissibleOn, GeometricCurrentOn.massOn and le_massOn (Mass.lean), and wedgeCovectors with wedgeCovectors_apply_det (FormsDuality.lean). FormsDuality is not in the import closure of GMT.Ch07.Submission; the covector_norming child carries an import note.
+
+Mathlib supplies: orthonormal-basis extension and Parseval (PiL2); C_c-density in L¹ for regular measures (ContinuousMapDense, not imported by the contract); regularity of finite Borel measures on Euclid P (Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, which resolves); bump-function convolution (contDiff_convolution_left, dist_normed_convolution_le, support_convolution_subset); Continuous.exists_contDiff_approx; alternating-map lemmas (map_perm, map_eq_zero_of_not_injective, Basis.ext_multilinear/ext_alternating); Tuple.sort; Matrix.det_permutation; separability and exhaustion lemmas; and enorm_integral_le_lintegral_enorm, withDensity_apply, lintegral_withDensity_eq_lintegral_mul₀.
+
+Mathlib has no FiniteDimensional or SeparableSpace instance for Covector (Euclid P) n (#synth fails), so near_maximizer proves finite-dimensionality locally; CompleteSpace and NormedSpace are found.
+
+Verification:
+- All eight frozen child types elaborate after import GMT.Ch07.Submission in the contract's namespace and opens.
+- The le_antisymm assembly of regcomp_imrep_mass_formula compiles, using only propext, Classical.choice and Quot.sound, plus sorryAx from the child stubs.
+- unit_orientation_pairing was proved from stubs of its two dependencies, and mass_le_measure was proved completely from unit_orientation_pairing.
+- A skeleton of measure_le_mass applying near_maximizer and smooth_form_approx typechecks.
+- A pure-Python check confirmed covector_sq_sum, covector_eval_le and covector_norming numerically, including n = 0, n = P and n > P.
+- An independent reviewer subagent re-ran these checks and accepted the split.
