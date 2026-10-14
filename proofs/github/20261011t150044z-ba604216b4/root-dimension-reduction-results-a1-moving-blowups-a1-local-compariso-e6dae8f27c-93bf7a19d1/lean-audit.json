@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "30128fcb72a1f4b804f430cd0b293a115a3f29ef4915fbcb0045bcef01825d02",
+  "git_delta": {
+    "base_commit": "1f0d4072f828d0e7df64a2dca1c5c0b1ceeb914a",
+    "candidate_commit": "707672504bd9b2570b8e314c93ddfe14d7184c86",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_ic_rb_massOn_le_add_incl",
+    "diff_sha256": "0b4ad9ba7425a1000b21c6cb7eb0c07b7bfe62430bbbd0d6a48662373df3b28a",
+    "source_sha256": "8fdc3485743ea55469f3f5932504f4d383cc6c03cdeca215bb1531c1ce1c3bd1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl",
+      "statement": "∀ (P n : ℕ) (U V₁ V₂ G : Set (Euclid P)) (h₁ : U ⊆ V₁) (h₂ : U ⊆ V₂) (Z : GeometricCurrentOn U n) (X : GeometricCurrentOn V₁ n) (Y : GeometricCurrentOn V₂ n) (c : ℝ), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → Z ω = X (testFormOnInclusion h₁ n ω) + c * Y (testFormOnInclusion h₂ n ω)) → Z.massOn G ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
