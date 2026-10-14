@@ -480,6 +480,30 @@ theorem Submission.dmcbr_sl_sb_ennreal_liminf_add_le : ∀ (ι : Type) (F : Filt
   refine ENNReal.biSup_add_biSup_le' ⟨univ, univ_mem⟩ ⟨univ, univ_mem⟩ fun s hs t ht => ?_
   exact le_iSup₂_of_le (s ∩ t) (inter_mem hs ht) <|
     le_iInf₂ fun i hi => add_le_add (iInf₂_le i hi.1) (iInf₂_le i hi.2)
+/-- **Boundary mass of a slice of a represented boundary** (Simon Ch. 6, (4.6)–(4.10)).  Assume
+the slicing bounds (SL) for represented currents.  If `∂T` is represented by `(μ, ξ)` with
+`|ξ(x)(α)| ≤ |α|` `μ`-a.e., `f` is `L`-Lipschitz and `B(η) = ∫_{f<t} ξ(η) dμ`, then
+`M_W(∂B) ≤ L · liminf_{h ↓ 0} h⁻¹ μ(W ∩ {t − h < f < t})` for open `W`.  For `m = 0` the left side
+is `0`.  Otherwise apply (SL) to `∂T`, whose boundary `∂∂T = 0` is represented by the zero measure
+and the zero field: its slices satisfy `A_t = B` and `B'_t = 0`, so `∂A_t − B'_t = ∂B`. -/
+theorem Submission.dmcbr_sl_sb_boundaryMassOn_slice_le : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P m) (f : Euclid P → ℝ) (L : NNReal) (t : ℝ) (B : GeometricCurrentOn U m) (W : Set (Euclid P)), IsOpen U → IsOpen W → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ η : TestFormOn U m, T.boundary η = ∫ x, ξ x ((η : DifferentialForm (Euclid P) m) x) ∂μ) → LipschitzWith L f → (∀ η : TestFormOn U m, B η = ∫ x in {x | f x < t}, ξ x ((η : DifferentialForm (Euclid P) m) x) ∂μ) → boundaryMassOn B W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0) := by
+  intro SL P m U T μ ξ f L t B W hU hW hμ hξ hξb hT hf hB
+  cases m with
+  | zero => exact zero_le
+  | succ m =>
+    -- (SL) for `∂T`, represented by `(μ, ξ)`; `∂∂T = 0` is represented by the zero measure
+    obtain ⟨A, B', hA, hB', -, hmass, -⟩ := SL P m U T.boundary μ 0 ξ 0 f L hU hμ
+      (fun K _ _ => by simp) hξ (aestronglyMeasurable_zero_measure _) hξb (by simp) hT
+      (fun η => by simp) hf
+    -- `A_t = B` and `B'_t = 0`, hence `∂A_t − B'_t = ∂B`
+    have hAt : A t = B := GeometricCurrentOn.ext fun ω => (hA t ω).trans (hB ω).symm
+    have hslice : (A t).boundary - B' t = B.boundary := by
+      ext ζ
+      change (A t).boundary ζ - B' t ζ = B.boundary ζ
+      rw [hB' t ζ, Measure.restrict_zero, integral_zero_measure, sub_zero, hAt]
+    have h := hmass W t hW
+    rw [hslice] at h
+    exact h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
