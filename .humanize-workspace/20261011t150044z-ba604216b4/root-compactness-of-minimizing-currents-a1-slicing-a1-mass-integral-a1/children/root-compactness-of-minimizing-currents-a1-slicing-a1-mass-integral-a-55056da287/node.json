@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.left_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+  "depth": 4,
+  "title": "Integrated lower left density of a measure on ℝ (abstract Simon 4.10)",
+  "statement": "Let ν be a measure on ℝ (Borel σ-algebra) and a, b ∈ ℝ. For t ∈ ℝ let g(t) := liminf_{h→0+} ofReal(h⁻¹)·ν((t − h, t)) ∈ [0, ∞], the liminf along the filter 𝓝[>] 0. Then the lower Lebesgue integral over (a, b) with respect to Lebesgue measure satisfies ∫⁻_{(a,b)} g(t) dt ≤ ν((a, b)), where ofReal : ℝ → [0, ∞] is ENNReal.ofReal. No finiteness of ν and no measurability of g is assumed.",
+  "lean_statement": "∀ (ν : Measure ℝ) (a b : ℝ), ∫⁻ t in Ioo a b, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) ≤ ν (Ioo a b)",
+  "lean_name": "cmcs_smi_lintegral_left_density_le",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.left_dini-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.left_dini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-55056da287-a1"
+}
