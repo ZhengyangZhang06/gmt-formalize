@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.excess_density-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "A growth bound for A plus relative smallness of B ∖ A gives zero n-density of B ∖ A (ENNReal asymptotics)",
+  "statement": "Let P, n ∈ ℕ, let A, B ⊆ ℝ^P be arbitrary sets, x ∈ ℝ^P, and r₀, C, r₁ ∈ ℝ with r₀ > 0, r₁ > 0 and μ(B ∩ B̄_{r₀}(x)) < ∞, where μ := μHE[n]. Assume (Growth) μ(A ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(C·ρⁿ) for all 0 < ρ < r₁, and (Relative excess) for every ε ∈ (0, ∞], eventually as ρ → 0 in 𝓝[>]0, μ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε·μ(B ∩ B̄_ρ(x)). Then μ((B ∖ A) ∩ B̄_ρ(x)) / ENNReal.ofReal(ρ)ⁿ → 0 in [0, ∞] as ρ → 0 in 𝓝[>]0.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "rsdic_tl_excess_density_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-943634d71b-a1"
+}

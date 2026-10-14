@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.parametrized_is_im-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1",
+  "depth": 3,
+  "title": "Simon 6.3.5–3.9: a current with an integral Lipschitz parametrization of finite total weight is integer multiplicity",
+  "statement": "Let k, P ∈ ℕ and T ∈ 𝒟_{k+1}(ℝ^P) (GeometricCurrentOn univ (k + 1) on ℝ^P = Euclid P). For j ∈ ℕ let F_j : ℝ^{k+1} → ℝ^P be Lipschitz, A_j ⊆ ℝ^{k+1} Borel and g_j : ℝ^{k+1} → ℤ measurable with (g_j : ℝ) Lebesgue integrable on A_j. With DF(u) := fderiv ℝ F u, e_a := EuclideanSpace.single a 1, ∂F(u) := (DF(u)e_a)_{a ≤ k} and JF(u) := (det[⟨DF(u)e_a, DF(u)e_b⟩]_{a,b})^{1/2}, assume Σ_j ∫⁻_{A_j} |g_j(u)|·JF_j(u) du < ∞ and, for every test (k+1)-form ω, HasSum (j ↦ ∫_{A_j} g_j(u)·ω(F_j u)(∂F_j(u)) du) (T(ω)). Then T is integer multiplicity (IsIntegerMultiplicity T).",
+  "lean_statement": "∀ (k P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (F : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (g : ℕ → Euclid (k + 1) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T",
+  "lean_name": "ecf_isIntegerMultiplicity_of_parametrization",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.piece_current-a1",
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1-a1",
+      "result_commit": "9b823b56965f653716675d2e458c314229939386",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.piece_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-53b6b2be95-a1",
+      "result_commit": "918eb38eb0f008565b3ac7b39050fcbdb28ab475",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1",
+      "result_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-parametrized-is-im-a1-a1"
+}

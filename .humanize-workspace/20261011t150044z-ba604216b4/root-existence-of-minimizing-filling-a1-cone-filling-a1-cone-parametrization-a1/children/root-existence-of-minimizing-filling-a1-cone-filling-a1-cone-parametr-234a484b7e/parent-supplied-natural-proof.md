@@ -1,0 +1,98 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1`
+- Child DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.ball_retraction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 2 of the selected node's supplied proof (F1 of the cone-filling proof). There the radial retraction r_ρ onto B̄ := closedBall(0, ρ) is the nearest-point projection onto a closed convex set, and the variational-inequality argument below is the one given there, with every case written out.
+
+Proof. Fix P and ρ > 0, and write B̄ := {z ∈ ℝ^P : ‖z‖ ≤ ρ}.
+1. (Definition.) For y ∈ ℝ^P put r(y) := y if ‖y‖ ≤ ρ and r(y) := (ρ/‖y‖)·y if ‖y‖ > ρ. Property (3) holds by definition.
+2. (Property (2).) If ‖y‖ ≤ ρ, then ‖r(y)‖ = ‖y‖ ≤ ρ. If ‖y‖ > ρ, then ‖y‖ > 0 and ρ/‖y‖ > 0, so ‖r(y)‖ = (ρ/‖y‖)·‖y‖ = ρ. In particular r(y) ∈ B̄ for every y.
+3. (Variational inequality.) Claim: for every x ∈ ℝ^P and every z ∈ B̄, with p := r(x), ⟨x − p, z − p⟩ ≤ 0.
+ - Case ‖x‖ ≤ ρ: p = x, so x − p = 0 and the inner product is 0.
+ - Case ‖x‖ > ρ: put c := 1 − ρ/‖x‖ > 0. Then p = (ρ/‖x‖)·x and x − p = c·x.
+   Moreover ⟨x, p⟩ = (ρ/‖x‖)·‖x‖² = ρ‖x‖.
+   By Cauchy–Schwarz (real_inner_le_norm) and ‖z‖ ≤ ρ, ⟨x, z⟩ ≤ ‖x‖‖z‖ ≤ ρ‖x‖.
+   Hence ⟨x − p, z − p⟩ = c·(⟨x, z⟩ − ⟨x, p⟩) ≤ c·(ρ‖x‖ − ρ‖x‖) = 0.
+4. (1-Lipschitz.) Let x, y ∈ ℝ^P, p := r(x) and q := r(y). By step 2, p, q ∈ B̄.
+   Step 3 for x and z := q gives ⟨x − p, q − p⟩ ≤ 0. Step 3 for y and z := p gives ⟨y − q, p − q⟩ ≤ 0.
+   Add the two inequalities and use (x − p) − (y − q) = (x − y) − (p − q):
+   0 ≥ ⟨x − p, q − p⟩ − ⟨y − q, q − p⟩ = ⟨(x − y) − (p − q), q − p⟩ = ‖p − q‖² − ⟨x − y, p − q⟩.
+   Hence ‖p − q‖² ≤ ⟨x − y, p − q⟩ ≤ ‖x − y‖·‖p − q‖ by Cauchy–Schwarz.
+   If p = q, then ‖p − q‖ = 0 ≤ ‖x − y‖. Otherwise divide by ‖p − q‖ > 0 to get ‖p − q‖ ≤ ‖x − y‖.
+   Thus dist(r(x), r(y)) ≤ 1·dist(x, y) for all x, y, i.e. r is 1-Lipschitz (LipschitzWith.of_dist_le_mul with constant 1).
+Steps 1–4 give r with (1), (2) and (3). ∎
+
+## Key steps
+
+1. Define r(y) = y on the closed ball and r(y) = (ρ/‖y‖)·y outside it; then ‖r(y)‖ ≤ ρ and r fixes the ball.
+2. Variational inequality ⟨x − r(x), z − r(x)⟩ ≤ 0 for every z in the ball: x − r(x) is a nonnegative multiple of x, and ⟨x, z⟩ ≤ ρ‖x‖ = ⟨x, r(x)⟩.
+3. Adding the inequalities for (x, z = r(y)) and (y, z = r(x)) gives ‖r(x) − r(y)‖² ≤ ⟨x − y, r(x) − r(y)⟩ ≤ ‖x − y‖‖r(x) − r(y)‖, so r is 1-Lipschitz.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'theorem measurable_fderiv |theorem norm_fderiv_le_of_lipschitz|theorem bounded_above_of_compact_support|theorem map_smul_univ|theorem volume_preserving_piFinSuccAbove|theorem EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp|theorem integral_Ioc_eq_integral_Ioo|theorem integral_of_le' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `rg -n 'closedBall.*LipschitzWith 1|LipschitzWith 1.*closedBall|radialRetraction|retractionBall|ball_retraction|lipschitzWith_one_norm_smul' mathlib/Mathlib (no match); rg -n LipschitzWith mathlib/Mathlib/Analysis/InnerProductSpace`
+- `rg -n 'ContinuousEval' mathlib/Mathlib/Analysis/Normed/Module/Multilinear mathlib/Mathlib/Analysis/Normed/Module/Alternating mathlib/Mathlib/Topology/Algebra/Module/Alternating mathlib/Mathlib/Topology/Algebra/Module/Multilinear`
+- `python3 -I over dag.json: lean_name/lean_statement search for cyl|fubini, Matrix.det with inner ℝ (Gram lemmas), LipschitzWith 1, Fin.cons with Matrix.det; status and candidate of cmcdt_lpi_cyl_fubini; uniqueness grep of ecf_cp_ball_retraction, ecf_cp_gram_cone, ecf_cp_cone_map, ecf_cp_piece_integral, ecf_cp_piece_weight in dag.json, nodes/, GMT, simongmt`
+- `git show 8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f:GMT/Ch07/Submission.lean | grep -n 'theorem Submission.cmcdt_lpi_cyl_fubini|sorry'`
+- `lake env lean /tmp/cone-param-split/Final.lean (six child types generated from this JSON plus the parent assembly and #print axioms); lake env lean /tmp/cone-param-split/{Meaning,Names,Spot}.lean`
+- `sed -n 520,555p and 850,870p book/chapter-06.txt`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametrization-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cone-param-split/Final.lean`
+- `/tmp/cone-param-split/Split1.lean`
+- `/tmp/cone-param-split/Meaning.lean`
+- `/tmp/cone-param-split/Names.lean`
+- `/tmp/cone-param-split/Spot.lean`
+
+Snapshot and contract:
+- The snapshot (project b4d606d, Mathlib 25730c7c) Ch07 Contract.lean is byte-identical (sha256 e4148e7f…) to the workspace Contract.lean and Submission.lean.
+
+Mathlib facts the child proofs cite:
+- All are present in the pinned Mathlib: measurable_fderiv, measurable_fderiv_apply_const, norm_fderiv_le_of_lipschitz, HasFDerivAt.smul, Filter.EventuallyEq.fderiv_eq, ContinuousAlternatingMap.map_smul_univ, ContinuousAlternatingMap.le_opNorm, ContinuousAlternatingMap.instContinuousEval, HasCompactSupport.exists_bound_of_continuous, Integrable.mono', setIntegral_congr_fun, intervalIntegral.integral_of_le, integral_Ioc_eq_integral_Ioo, setLIntegral_mono', lintegral_const_mul', Real.volume_Ioo, ENNReal.ofReal_mul, Submodule.starProjection, Submodule.sub_starProjection_mem_orthogonal, Submodule.mem_span_range_iff_exists_fun, Matrix.det_succ_row_zero, Matrix.det_mul, Matrix.det_of_isLowerTriangular, Real.sqrt_mul, Real.sqrt_sq, LipschitzWith.of_dist_le_mul and LipschitzWith.comp/max_const/min_const.
+- Measurable.inner is not available; the proofs use continuous_inner instead.
+- measurable_pi_lambda is deprecated; the proofs use measurable_pi_iff.
+
+What is new and what is reused:
+- No radial-retraction lemma exists in Mathlib or the DAG; the only LipschitzWith 1 projections are onto subspaces. This justifies ball_retraction.
+- No DAG node states the cone Gram bound J(a, w) ≤ ‖a‖J(w) or the scaling J(a, tw) = t^k J(a, w). This justifies gram_cone.
+- cmcdt_lpi_cyl_fubini is accepted at an identical type. Candidate 8597f3f0 declares it, and that commit's only sorry is main_theorem. It is reused.
+- The five new ecf_cp_ names are unused everywhere.
+
+Lean checks:
+- All six child types elaborate.
+- The exact parent type is proved from them with 0 errors.
+- The axioms are standard, plus sorryAx from the stubs only.
+- The meaning checks and spot checks pass.
