@@ -1092,6 +1092,92 @@ theorem Submission.dpf_smooth_approx_compact_perturbation : ∀ (P : ℕ) (U K :
       atTop (𝓝 (ContinuousLinearMap.id ℝ (Euclid P)))).add h
     rw [hDg x, add_sub_cancel] at h2
     exact h2.congr fun k => ((hderiv k x).fderiv).symm
+/-- **Simon Ch. 2, (4.18)–(4.20)** (tangential divergence in an orthonormal frame): if `τ₁, …, τₙ`
+is an orthonormal basis of `Q`, then `trace(p_Q ∘ B) = Σₐ τₐ · Bτₐ`.  The orthogonality
+characterization of the projection gives `p_Q z = Σₐ (τₐ · z) τₐ`, so `p_Q ∘ B` is the sum of the
+rank-one maps `z ↦ (τₐ · Bz) τₐ`, and the trace of `z ↦ ℓ(z) v` is `ℓ(v)`. -/
+theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
+  intro P n Q τ B hτ hQ
+  -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
+  have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
+    intro z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [← hQ]
+      exact Submodule.sum_mem _ fun a _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
+    · intro q hq
+      rw [← hQ] at hq
+      induction hq using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨b, rfl⟩ := hx
+        rw [inner_sub_left, hτ.inner_left_fintype, real_inner_comm]
+        simp
+      | zero => simp
+      | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
+      | smul c x _ hx => rw [inner_smul_right, hx, mul_zero]
+  -- `p_Q ∘ B = Σₐ (z ↦ ⟪τₐ, Bz⟫ τₐ)`
+  have hdecomp : Q.starProjection.toLinearMap ∘ₗ B.toLinearMap =
+      ∑ a, ((innerₛₗ ℝ (τ a)) ∘ₗ B.toLinearMap).smulRight (τ a) := by
+    ext z
+    simp [hproj]
+  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
+  rw [hdecomp, map_sum]
+  simp
+/-- An embedded `Cʳ` submanifold `M ⊆ ℝᴾ` (Simon Ch. 2, §4, (4.1)) is Borel, and it meets every
+small closed ball about one of its points in a compact set.  For a chart `(V, W, ψ)` and a compact
+`K ⊆ W`, `M ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact because `ψ` is proper and continuous on `V`.  With `O`
+the union of the chart domains `W`, `M = O ∩ closure M`: a point `p ∈ O ∩ closure M` lies in the
+closure of the compact, hence closed, set `M ∩ closedBall p ε`.  So `M` is Borel. -/
+theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → MeasurableSet M ∧ ∀ y ∈ M, ∃ ε : ℝ, 0 < ε ∧ IsCompact (M ∩ closedBall y ε) := by
+  intro P r d M hM
+  -- step 1: for a chart `(V, W, ψ)` at `y` and compact `K ⊆ W`, `M ∩ K = ψ(V ∩ ψ⁻¹(K))` is compact
+  have key : ∀ y ∈ M, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧
+      ∀ K ⊆ W, IsCompact K → IsCompact (M ∩ K) := by
+    intro y hy
+    obtain ⟨V, W, ψ, -, hW, hyW, hψ, -, himg, hprop, -⟩ := hM y hy
+    refine ⟨W, hW, hyW, fun K hKW hK => ?_⟩
+    have hEq : M ∩ K = ψ '' (V ∩ ψ ⁻¹' K) := by
+      ext x
+      constructor
+      · rintro ⟨hxM, hxK⟩
+        have hx : x ∈ ψ '' V := by rw [himg]; exact ⟨hKW hxK, hxM⟩
+        obtain ⟨v, hv, rfl⟩ := hx
+        exact ⟨v, ⟨hv, hxK⟩, rfl⟩
+      · rintro ⟨v, ⟨hv, hvK⟩, rfl⟩
+        have hv' : ψ v ∈ W ∩ M := by rw [← himg]; exact ⟨v, hv, rfl⟩
+        exact ⟨hv'.2, hvK⟩
+    rw [hEq]
+    exact (hprop K hKW hK).image_of_continuousOn (hψ.continuousOn.mono inter_subset_left)
+  refine ⟨?_, ?_⟩
+  · -- steps 3-5: `O = ⋃_{y ∈ M} W_y` is open and `M = O ∩ closure M`, so `M` is Borel
+    choose! Wf hWo hyW hcpt using key
+    have hO : IsOpen (⋃ y ∈ M, Wf y) := isOpen_biUnion fun y hy => hWo y hy
+    have hMeq : M = (⋃ y ∈ M, Wf y) ∩ closure M := by
+      apply Subset.antisymm
+      · intro x hx
+        exact ⟨mem_biUnion hx (hyW x hx), subset_closure hx⟩
+      · -- `p ∈ O ∩ closure M` lies in the closure of the compact set `M ∩ closedBall p (r'/2)`
+        rintro p ⟨hpO, hpcl⟩
+        obtain ⟨y, hy, hpW⟩ := mem_iUnion₂.1 hpO
+        obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 (hWo y hy) p hpW
+        have hcb : closedBall p (r' / 2) ⊆ Wf y :=
+          (closedBall_subset_ball (by linarith)).trans hball
+        have hC := hcpt y hy (closedBall p (r' / 2)) hcb (isCompact_closedBall p (r' / 2))
+        have h1 : p ∈ ball p (r' / 2) ∩ closure M := ⟨mem_ball_self (by linarith), hpcl⟩
+        have h2 := isOpen_ball.inter_closure h1
+        have hsub : ball p (r' / 2) ∩ M ⊆ M ∩ closedBall p (r' / 2) :=
+          fun x hx => ⟨hx.2, ball_subset_closedBall hx.1⟩
+        have h3 : p ∈ closure (M ∩ closedBall p (r' / 2)) := closure_mono hsub h2
+        rw [hC.isClosed.closure_eq] at h3
+        exact h3.1
+    rw [hMeq]
+    exact hO.measurableSet.inter isClosed_closure.measurableSet
+  · -- step 2: a closed ball about `y` inside the chart domain `W` meets `M` in a compact set
+    intro y hy
+    obtain ⟨W, hW, hyW, hcpt⟩ := key y hy
+    obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 hW y hyW
+    exact ⟨r' / 2, by linarith,
+      hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 /-- **Tangent projections of an embedded `C¹` submanifold** (Simon Ch. 2, §4, (4.1)–(4.3)).  Let
 `M ⊆ ℝᴾ` be an embedded `C¹` `m`-dimensional submanifold, `S_x = span T_xM` and `P_x` the
 orthogonal projection onto `S_x`.  Then (a) `dim S_x = m` on `M`, (b) `x ↦ P_x` is continuous on
@@ -1254,6 +1340,7 @@ theorem Submission.codim1_hcp_fv_trace_comp_abs_le : ∀ (P : ℕ) (K : Submodul
         rw [hon.1 a, one_mul]
         exact (L.le_opNorm _).trans (by rw [hon.1 a, mul_one])
     _ = (Module.finrank ℝ K : ℝ) * ‖L‖ := by simp
+
 /-- **Simon Ch. 2, §5** (the expansion `J_t = 1 + t div_M X + O(t²)` behind the first variation
 formula 5.3, for the linear map `I + tB` on an `n`-plane): given `P`, `n`, `A ≥ 0` and `ε > 0`
 there is `δ > 0` such that for `|t| < δ`, every subspace `K ⊆ ℝᴾ` with `dim K = n` and every `B`
@@ -1358,6 +1445,136 @@ theorem Submission.codim1_hcp_fv_perturbation_injective : ∀ (P : ℕ) (Z : Euc
       have hpos : 0 < ‖v - w‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
       nlinarith
     exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+/-- Simon Ch. 2, §5 (first variation, 5.1–5.3), in one-sided form: if `M` is an embedded `C¹`
+`m`-submanifold, `Z` is `C¹` with compact support, `E = M ∩ spt Z` has `Hᵐ(E) < ∞`, and
+`Hᵐ(E) ≤ ∫_E J_t dHᵐ` for `|t| < t₀`, where `J_t` is the Jacobian of `Φ_t = id + tZ` along
+`span T_xM`, then `∫_M div_M Z dHᵐ = 0`.  Instead of differentiating under the integral sign:
+`J_t ≤ 1 + t div_M Z + ε|t|` uniformly on `E` for small `|t|`, so monotonicity of the lower
+integral gives `0 ≤ t ∫_E div_M Z + ε|t| Hᵐ(E)`; `t = ±T/2` and `ε → 0` give
+`∫_E div_M Z = 0`, and `div_M Z = 0` off `spt Z`. -/
+theorem Submission.codim1_hcp_fv_jacobian_minimal_stationary : ∀ (P m : ℕ) (M : Set (Euclid P)) (Z : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 m M → ContDiff ℝ 1 Z → HasCompactSupport Z → μHE[m] (M ∩ tsupport Z) ≠ ∞ → (∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ ∫⁻ x in M ∩ tsupport Z, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ (fun y => y + t • Z y) x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]) → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ Z x).toLinearMap) ∂μHE[m] = 0 := by
+  intro P m M Z hM hZ hZc hfin ⟨t₀, ht₀, hmin⟩
+  set τ : Euclid P → ℝ := fun x => LinearMap.trace ℝ (Euclid P)
+    ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+      (fderiv ℝ Z x).toLinearMap) with hτ_def
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  have hEmeas : MeasurableSet (M ∩ tsupport Z) := hMmeas.inter (isClosed_tsupport Z).measurableSet
+  obtain ⟨hfr, -, hdivc⟩ := Submission.codim1_hcp_fv_tangent_projection_continuousOn P m M hM
+  have hdiff : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  obtain ⟨Λ₀, hΛ₀⟩ := (hZ.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv (𝕜 := ℝ))
+  set Λ := max Λ₀ 0 with hΛ_def
+  have hΛ : ∀ x, ‖fderiv ℝ Z x‖ ≤ Λ := fun x => (hΛ₀ x).trans (le_max_left _ _)
+  have hΛ0 : 0 ≤ Λ := le_max_right _ _
+  -- |div_M Z| ≤ mΛ on M
+  have hτb : ∀ x ∈ M, |τ x| ≤ m * Λ := by
+    intro x hx
+    have h := Submission.codim1_hcp_fv_trace_comp_abs_le P (Submodule.span ℝ (tangentSpace M x))
+      (fderiv ℝ Z x)
+    rw [hfr x hx] at h
+    exact h.trans (mul_le_mul_of_nonneg_left (hΛ x) (Nat.cast_nonneg m))
+  -- measurability and integrability of div_M Z on E = M ∩ tsupport Z
+  have hτmeas : AEStronglyMeasurable τ (μHE[m].restrict M) :=
+    (hdivc Z hZ).aestronglyMeasurable hMmeas
+  have hτmeasE : AEStronglyMeasurable τ (μHE[m].restrict (M ∩ tsupport Z)) :=
+    hτmeas.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+  have hτint : IntegrableOn τ (M ∩ tsupport Z) μHE[m] :=
+    IntegrableOn.of_bound hfin.lt_top hτmeasE (m * Λ)
+      (ae_restrict_of_forall_mem hEmeas fun x hx => by
+        rw [Real.norm_eq_abs]; exact hτb x hx.1)
+  -- derivative of the deformation Φ_t = id + tZ
+  have hfd : ∀ (t : ℝ) (x : Euclid P), fderiv ℝ (fun y => y + t • Z y) x =
+      ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x := fun t x =>
+    ((hasFDerivAt_id x).add ((hdiff x).hasFDerivAt.const_smul t)).fderiv
+  set a := (μHE[m] (M ∩ tsupport Z)).toReal with ha_def
+  have ha0 : 0 ≤ a := ENNReal.toReal_nonneg
+  set I := ∫ x in M ∩ tsupport Z, τ x ∂μHE[m] with hI_def
+  -- one-sided first-order inequality: 0 ≤ t I + ε |t| a for small |t|
+  have key : ∀ ε : ℝ, 0 < ε → ∃ T : ℝ, 0 < T ∧ ∀ t : ℝ, |t| < T → 0 ≤ t * I + ε * |t| * a := by
+    intro ε hε
+    obtain ⟨δ, hδ, hJ⟩ := Submission.codim1_hcp_fv_subspace_jacobian_first_order P m Λ ε hΛ0 hε
+    refine ⟨min t₀ (min δ (1 / (m * Λ + 1))), lt_min ht₀ (lt_min hδ (by positivity)),
+      fun t ht => ?_⟩
+    have ht₀' : |t| < t₀ := lt_of_lt_of_le ht (min_le_left _ _)
+    have htδ : |t| < δ := lt_of_lt_of_le ht ((min_le_right _ _).trans (min_le_left _ _))
+    have htc : |t| < 1 / (m * Λ + 1) :=
+      lt_of_lt_of_le ht ((min_le_right _ _).trans (min_le_right _ _))
+    have htmΛ : |t| * (m * Λ) ≤ 1 := by
+      have hpos : 0 < (m : ℝ) * Λ + 1 := by positivity
+      rw [lt_div_iff₀ hpos] at htc
+      nlinarith [abs_nonneg t, mul_nonneg (Nat.cast_nonneg m : (0:ℝ) ≤ m) hΛ0]
+    have hnn : ∀ x ∈ M ∩ tsupport Z, 0 ≤ 1 + t * τ x + ε * |t| := by
+      intro x hx
+      have h1 : |t * τ x| ≤ 1 := by
+        rw [abs_mul]
+        exact (mul_le_mul_of_nonneg_left (hτb x hx.1) (abs_nonneg t)).trans htmΛ
+      have h2 : -1 ≤ t * τ x := (abs_le.mp h1).1
+      nlinarith [abs_nonneg t]
+    have hpt : ∀ x ∈ M ∩ tsupport Z,
+        ENNReal.ofReal (Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp
+          (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+            ((fderiv ℝ (fun y => y + t • Z y) x).comp
+              (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ≤
+          ENNReal.ofReal (1 + t * τ x + ε * |t|) := by
+      intro x hx
+      apply ENNReal.ofReal_le_ofReal
+      rw [hfd t x]
+      exact hJ t htδ _ _ (hfr x hx.1) (hΛ x)
+    have hc : IntegrableOn (fun _ : Euclid P => (1 : ℝ)) (M ∩ tsupport Z) μHE[m] :=
+      integrableOn_const hfin
+    have hc' : IntegrableOn (fun _ : Euclid P => ε * |t|) (M ∩ tsupport Z) μHE[m] :=
+      integrableOn_const hfin
+    have hint : IntegrableOn (fun x => 1 + t * τ x + ε * |t|) (M ∩ tsupport Z) μHE[m] :=
+      (hc.add (hτint.const_mul t)).add hc'
+    have h2 := (hmin t ht₀').trans (setLIntegral_mono' hEmeas hpt)
+    rw [← ofReal_integral_eq_lintegral_ofReal hint (ae_restrict_of_forall_mem hEmeas hnn)] at h2
+    have hcalc : ∫ x in M ∩ tsupport Z, (1 + t * τ x + ε * |t|) ∂μHE[m] =
+        a + t * I + ε * |t| * a := by
+      have e1 : ∫ x in M ∩ tsupport Z, (1 + t * τ x + ε * |t|) ∂μHE[m] =
+          ∫ x in M ∩ tsupport Z, (1 + t * τ x) ∂μHE[m] +
+            ∫ x in M ∩ tsupport Z, ε * |t| ∂μHE[m] :=
+        integral_add (hc.add (hτint.const_mul t)) hc'
+      have e2 : ∫ x in M ∩ tsupport Z, (1 + t * τ x) ∂μHE[m] =
+          ∫ x in M ∩ tsupport Z, (1 : ℝ) ∂μHE[m] + ∫ x in M ∩ tsupport Z, t * τ x ∂μHE[m] :=
+        integral_add hc (hτint.const_mul t)
+      rw [e1, e2, integral_const_mul, setIntegral_const, setIntegral_const]
+      simp only [smul_eq_mul, Measure.real, ha_def, hI_def]
+      ring
+    rw [hcalc] at h2
+    have hrhs : 0 ≤ a + t * I + ε * |t| * a := by
+      rw [← hcalc]
+      exact setIntegral_nonneg hEmeas hnn
+    rw [← ENNReal.ofReal_toReal hfin, ENNReal.ofReal_le_ofReal_iff hrhs] at h2
+    linarith
+  -- Fermat: |I| ≤ ε a for every ε > 0, hence I = 0
+  have hI0 : I = 0 := by
+    have hbound : ∀ ε : ℝ, 0 < ε → |I| ≤ ε * a := by
+      intro ε hε
+      obtain ⟨T, hT, hTI⟩ := key ε hε
+      have hpos := hTI (T / 2) (by rw [abs_of_pos (by positivity)]; linarith)
+      have hneg := hTI (-(T / 2)) (by rw [abs_neg, abs_of_pos (by positivity)]; linarith)
+      rw [abs_of_pos (by positivity : (0:ℝ) < T / 2)] at hpos
+      rw [abs_neg, abs_of_pos (by positivity : (0:ℝ) < T / 2)] at hneg
+      have h1 : -(ε * a) ≤ I := by nlinarith
+      have h2 : I ≤ ε * a := by nlinarith
+      exact abs_le.mpr ⟨h1, h2⟩
+    by_contra hne
+    have hIpos : 0 < |I| := abs_pos.mpr hne
+    have := hbound (|I| / (2 * (a + 1))) (by positivity)
+    have hlt : |I| / (2 * (a + 1)) * a < |I| := by
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith
+    linarith
+  -- div_M Z vanishes on M \ tsupport Z, so ∫_M = ∫_{M ∩ tsupport Z}
+  have hzero : ∀ x ∈ M \ (M ∩ tsupport Z), τ x = 0 := by
+    intro x hx
+    have hxs : x ∉ tsupport Z := fun h => hx.2 ⟨hx.1, h⟩
+    have hD : fderiv ℝ Z x = 0 := by
+      by_contra hne
+      exact hxs (support_fderiv_subset ℝ hne)
+    simp only [hτ_def, hD, ContinuousLinearMap.toLinearMap_zero, LinearMap.comp_zero, map_zero]
+  rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas inter_subset_left hzero]
+  exact hI0
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
