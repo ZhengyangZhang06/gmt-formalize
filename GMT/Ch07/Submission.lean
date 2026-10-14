@@ -2446,6 +2446,277 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+/-- **Simon Ch. 6, 3.6–3.9 and 2.29 for `n = 0`**: the Lipschitz push-forward of a finite-mass
+`0`-dimensional integer multiplicity current.  `H⁰ = μHE[0]` is counting measure, so
+`H⁰(M) ≤ μ_R(ℝᴺ) < ∞` makes the carrier `M` finite and `H⁰⌞M`-a.e. statements hold on all of `M`;
+there each `ξ(x)` is `ε(x) ev` with `ε(x) = ±1`.  `Y(F)(ω) = ∑_{x ∈ M} θ(x) ε(x) ω(F(x))(∅)` is a
+current, `R.action(F_j^# ω)` is the same finite sum with `F_j` in place of `F` (so it converges to
+`Y(F)(ω)`), and `Y(F)` depends only on `F` on `M`.  Regrouping by the fibres of `F`,
+`Y(F) = τ(M', |c|, sign(c) ev)` with `c(y) = ∑_{F(x) = y} θ(x) ε(x)` and `M' = {c ≠ 0}` finite
+(a finite set has approximate tangent space `{0}` at each of its points). -/
+theorem Submission.dor_lmb_fcd_imp_degree_zero : ∀ (N N' : ℕ) (R : IMRep (univ : Set (Euclid N)) 0), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) 0, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) 0, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') 0) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[0].restrict R.carrier), F x = F' x) → Y F = Y F' := by
+  intro N N' R hR
+  classical
+  -- `μHE[0]` is the counting measure
+  have hsing : ∀ {P : ℕ} (x : Euclid P), (μHE[0] : Measure (Euclid P)) {x} = 1 := by
+    intro P x
+    rw [Measure.euclideanHausdorffMeasure_zero]
+    exact Measure.hausdorffMeasure_zero_singleton x
+  -- the carrier is finite, since `H⁰(M) ≤ R.measure univ < ∞`
+  have hfin : R.carrier.Finite := by
+    by_contra hinf
+    have hle : (μHE[0] : Measure (Euclid N)) R.carrier ≤ R.measure univ := by
+      rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+        ← setLIntegral_one]
+      exact setLIntegral_mono' R.measurableSet_carrier fun x hx => by
+        exact_mod_cast R.mult_pos x hx
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt (ne_top_of_le_ne_top hR hle)
+    obtain ⟨t, hts, rfl⟩ := Set.Infinite.exists_subset_card_eq hinf n
+    have : ((t.card : ℕ) : ℝ≥0∞) ≤ (μHE[0] : Measure (Euclid N)) R.carrier := by
+      calc ((t.card : ℕ) : ℝ≥0∞) = ∑ x ∈ t, (μHE[0] : Measure (Euclid N)) {x} := by
+            simp
+        _ = (μHE[0] : Measure (Euclid N)) t := sum_measure_singleton
+        _ ≤ _ := measure_mono hts
+    exact absurd hn (not_lt.mpr this)
+  set S := hfin.toFinset
+  have hS : (S : Set (Euclid N)) = R.carrier := hfin.coe_toFinset
+  -- `H⁰⌞M`-a.e. statements hold at every point of `M`
+  have hpt : ∀ {p : Euclid N → Prop},
+      (∀ᵐ x ∂((μHE[0] : Measure (Euclid N)).restrict R.carrier), p x) → ∀ x ∈ R.carrier, p x := by
+    intro p hp x hx
+    by_contra hpx
+    have h0 := ae_iff.mp hp
+    have hsub : ({x} : Set (Euclid N)) ⊆ {y | ¬ p y} ∩ R.carrier := by
+      rintro y rfl
+      exact ⟨hpx, hx⟩
+    have h1 : (μHE[0] : Measure (Euclid N)) {x} ≤
+        ((μHE[0] : Measure (Euclid N)).restrict R.carrier) {y | ¬ p y} :=
+      (measure_mono hsub).trans (Measure.le_restrict_apply _ _)
+    rw [hsing, h0] at h1
+    exact absurd h1 (by norm_num)
+  -- the unit `0`-covector and the empty tuple; a `0`-covector is `α(∅)` times the unit
+  let K₁ : ∀ {P : ℕ}, Covector (Euclid P) 0 := fun {P} =>
+    ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (1 : ℝ)
+  let v₀ : ∀ {P : ℕ}, Fin 0 → Euclid P := fun {P} => fun i => i.elim0
+  have hcov : ∀ {P : ℕ} (α : Covector (Euclid P) 0), α = α v₀ • K₁ := by
+    intro P α
+    ext v
+    simp [K₁, Subsingleton.elim v v₀]
+  have horient : ∀ x (α : Covector (Euclid N) 0), R.orient x α = α v₀ * R.orient x K₁ := by
+    intro x α
+    conv_lhs => rw [hcov α]
+    rw [map_smul, smul_eq_mul]
+  -- signs: on `M`, `ξ(x) = ε(x) · ev` with `ε(x) = ±1`
+  have hsign : ∀ x ∈ R.carrier, R.orient x K₁ = 1 ∨ R.orient x K₁ = -1 := by
+    intro x hx
+    obtain ⟨Q, -, τ, -, -, hτ⟩ := hpt R.orients x hx
+    rcases hτ with hτ | hτ
+    · left; rw [hτ]; simp [K₁]
+    · right; rw [hτ]; simp [K₁]
+  let σ : Euclid N → ℤ := fun x => if R.orient x K₁ = 1 then 1 else -1
+  have hσ : ∀ x ∈ R.carrier, R.orient x K₁ = (σ x : ℝ) := by
+    intro x hx
+    rcases hsign x hx with h | h
+    · simp [σ, h]
+    · simp [σ, h]
+  let wZ : Euclid N → ℤ := fun x => (R.mult x : ℤ) * σ x
+  -- `R.action β = ∑_{x ∈ M} θ(x) ε(x) β(x)(∅)`
+  have haction : ∀ β : DifferentialForm (Euclid N) 0,
+      R.action β = ∑ x ∈ S, (wZ x : ℝ) * β x v₀ := by
+    intro β
+    have hint : IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x (β x)) (S : Set (Euclid N))
+        (μHE[0] : Measure (Euclid N)) := by
+      rw [← (S : Set (Euclid N)).biUnion_of_singleton, integrableOn_finite_biUnion S.finite_toSet]
+      intro x _
+      exact integrableOn_singleton (hx := by rw [hsing]; exact ENNReal.one_lt_top)
+    rw [IMRep.action, ← hS, setIntegral_finset S hint]
+    refine Finset.sum_congr rfl fun x hx => ?_
+    have hxM : x ∈ R.carrier := hS ▸ hx
+    rw [measureReal_def, hsing, ENNReal.toReal_one, one_smul, horient, hσ x hxM]
+    simp only [wZ]
+    push_cast
+    ring
+  -- the currents `Y(F)(ω) = ∑_{x ∈ M} θ(x) ε(x) ω(F(x))(∅)`
+  let L : (Euclid N → Euclid N') → CurrentOn (univ : Set (Euclid N')) 0 := fun F =>
+    { toFun := fun ω => ∑ x ∈ S, (wZ x : ℝ) * (ω : DifferentialForm (Euclid N') 0) (F x) v₀
+      map_add' := fun ω η => by
+        simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add,
+          Finset.sum_add_distrib]
+      map_smul' := fun c ω => by
+        simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun x _ => by ring }
+  have hL : ∀ F ω, L F ω = ∑ x ∈ S, (wZ x : ℝ) * (ω : DifferentialForm (Euclid N') 0) (F x) v₀ :=
+    fun F ω => rfl
+  have hcont : ∀ F (ωs : ℕ → TestFormOn (univ : Set (Euclid N')) 0), TestFormOnConverges ωs 0 →
+      Tendsto (fun j => L F (ωs j)) atTop (𝓝 0) := by
+    intro F ωs hωs
+    obtain ⟨K, -, -, hsupp, -, hconv⟩ := hωs
+    have hpt0 : ∀ y,
+        Tendsto (fun j => (ωs j : DifferentialForm (Euclid N') 0) y v₀) atTop (𝓝 0) := by
+      intro y
+      by_cases hy : y ∈ K
+      · have hΦ : Continuous (fun g : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => Euclid N')
+            (Covector (Euclid N') 0) => g v₀ v₀) :=
+          (continuous_eval_const v₀).comp (continuous_eval_const v₀)
+        have h0 := (hΦ.tendsto _).comp ((hconv 0).tendsto_at hy)
+        simpa [Function.comp_def, iteratedFDeriv_zero_apply] using h0
+      · have hz : ∀ j, (ωs j : DifferentialForm (Euclid N') 0) y = 0 := fun j =>
+          image_eq_zero_of_notMem_tsupport fun h => hy (hsupp j h)
+        simp [hz]
+    have := tendsto_finsetSum S fun x _ => (hpt0 (F x)).const_mul (wZ x : ℝ)
+    simpa [hL] using this
+  let Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) 0 := fun F =>
+    ⟨L F, hcont F⟩
+  have hY : ∀ F ω, Y F ω = ∑ x ∈ S, (wZ x : ℝ) * (ω : DifferentialForm (Euclid N') 0) (F x) v₀ :=
+    fun F ω => rfl
+  refine ⟨Y, fun F Λ hF => ⟨?_, ?_⟩, ?_⟩
+  · -- integrality: regroup the finite sum by the fibres of `F`
+    let c : Euclid N' → ℤ := fun y => ∑ x ∈ S.filter (fun x => F x = y), wZ x
+    have hc_supp : ∀ y, c y ≠ 0 → y ∈ S.image F := by
+      intro y hy
+      by_contra hy'
+      apply hy
+      refine Finset.sum_eq_zero fun x hx => ?_
+      rw [Finset.mem_filter] at hx
+      exact absurd (Finset.mem_image.mpr ⟨x, hx.1, hx.2⟩) hy'
+    let T' : Finset (Euclid N') := (S.image F).filter (fun y => c y ≠ 0)
+    have hT' : ∀ y, y ∈ T' ↔ c y ≠ 0 := by
+      intro y
+      simp only [T', Finset.mem_filter]
+      exact ⟨fun h => h.2, fun h => ⟨hc_supp y h, h⟩⟩
+    have hT'meas : MeasurableSet (T' : Set (Euclid N')) := T'.finite_toSet.measurableSet
+    let ev : MultiVector N' 0 := ContinuousAlternatingMap.apply ℝ (Euclid N') ℝ v₀
+    let orient' : Euclid N' → MultiVector N' 0 := fun y => if c y < 0 then -ev else ev
+    refine ⟨{ carrier := T'
+              mult := fun y => (c y).natAbs
+              orient := orient'
+              measurableSet_carrier := hT'meas
+              carrier_subset := subset_univ _
+              rectifiable := ?_
+              measurable_mult := ?_
+              mult_pos := ?_
+              locallyIntegrable_mult := ?_
+              aestronglyMeasurable_orient := ?_
+              orients := ?_ }, ?_⟩
+    · -- a finite set is countably `0`-rectifiable
+      obtain ⟨g, hg⟩ := Set.countable_iff_exists_subset_range.mp T'.countable_toSet
+      refine ⟨∅, measure_empty, fun j _ => g j, fun j => ⟨0, LipschitzWith.const _⟩, ?_⟩
+      intro y hy
+      obtain ⟨j, rfl⟩ := hg hy
+      exact Or.inr (Set.mem_iUnion.mpr ⟨j, 0, rfl⟩)
+    · -- measurability of the multiplicity
+      refine measurable_to_countable' fun k => ?_
+      by_cases hk : k = 0
+      · have : (fun y => (c y).natAbs) ⁻¹' {k} = (T' : Set (Euclid N'))ᶜ := by
+          ext y
+          simp [hk, hT']
+        rw [this]
+        exact hT'meas.compl
+      · refine (T'.finite_toSet.subset fun y hy => ?_).measurableSet
+        have hy' : (c y).natAbs = k := hy
+        rw [Finset.mem_coe, hT']
+        intro h0
+        rw [h0] at hy'
+        exact hk hy'.symm
+    · intro y hy
+      exact Int.natAbs_pos.mpr ((hT' y).mp hy)
+    · intro K _ _
+      refine ne_top_of_le_ne_top ?_ (lintegral_mono_set Set.inter_subset_left)
+      rw [lintegral_finset]
+      exact ENNReal.sum_ne_top.mpr fun y _ => by simp
+    · refine (StronglyMeasurable.ite ?_ stronglyMeasurable_const
+        stronglyMeasurable_const).aestronglyMeasurable
+      exact (T'.finite_toSet.subset fun y hy => (hT' y).mpr (ne_of_lt hy)).measurableSet
+    · refine ae_restrict_of_forall_mem hT'meas fun y hy => ⟨⊥, ⟨by simp, fun f => ?_⟩, ?_⟩
+      · -- the approximate tangent space of a finite set is `{0}`
+        obtain ⟨ρ, hρ⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall (0 : Euclid N')
+        have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r ∧ ∀ z ∈ T', z ≠ y → ρ < r⁻¹ * ‖z - y‖ := by
+          refine eventually_mem_nhdsWithin.and ((Filter.eventually_all_finset T').2 fun z _ => ?_)
+          by_cases hzy : z = y
+          · exact Eventually.of_forall fun _ h => absurd hzy h
+          · have hd : 0 < ‖z - y‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hzy)
+            exact ((tendsto_inv_nhdsGT_zero.atTop_mul_const hd).eventually_gt_atTop ρ).mono
+              fun r hr _ => hr
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [hev] with r hr
+        obtain ⟨hr0, hfar⟩ := hr
+        symm
+        rw [Submodule.bot_coe]
+        refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+          (T'.finite_toSet.image _).measurableSet ?_ ?_
+        · rintro _ rfl
+          exact ⟨y, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap]⟩
+        · rintro _ ⟨⟨z, hz, rfl⟩, hz0⟩
+          apply image_eq_zero_of_notMem_tsupport
+          intro hmem
+          have hzy : z ≠ y := by
+            rintro rfl
+            exact hz0 (by simp [Poincare.SimonGMT.Chapter03.blowUpMap])
+          have h1 := hρ hmem
+          have h2 := hfar z hz hzy
+          rw [mem_closedBall_zero_iff, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv,
+            Real.norm_of_nonneg hr0.le] at h1
+          linarith
+      · -- `±ev` orients `⊥`
+        refine ⟨v₀, ⟨fun i => i.elim0, by intro i; exact i.elim0⟩, by simp, ?_⟩
+        by_cases hneg : c y < 0
+        · right; intro α; simp [orient', hneg, ev]
+        · left; intro α; simp [orient', hneg, ev]
+    · -- `R'` represents `Y(F)`
+      intro ω
+      have hint : IntegrableOn
+          (fun y => ((c y).natAbs : ℝ) * orient' y ((ω : DifferentialForm (Euclid N') 0) y))
+          (T' : Set (Euclid N')) (μHE[0] : Measure (Euclid N')) := by
+        rw [← (T' : Set (Euclid N')).biUnion_of_singleton,
+          integrableOn_finite_biUnion T'.finite_toSet]
+        intro y _
+        exact integrableOn_singleton (hx := by rw [hsing]; exact ENNReal.one_lt_top)
+      show ∑ x ∈ S, (wZ x : ℝ) * (ω : DifferentialForm (Euclid N') 0) (F x) v₀ =
+        ∫ y in (T' : Set (Euclid N')),
+          ((c y).natAbs : ℝ) * orient' y ((ω : DifferentialForm (Euclid N') 0) y)
+            ∂(μHE[0] : Measure (Euclid N'))
+      rw [setIntegral_finset T' hint]
+      have hterm : ∀ y ∈ T', (μHE[0] : Measure (Euclid N')).real {y} •
+          (((c y).natAbs : ℝ) * orient' y ((ω : DifferentialForm (Euclid N') 0) y)) =
+          (c y : ℝ) * (ω : DifferentialForm (Euclid N') 0) y v₀ := by
+        intro y _
+        rw [measureReal_def, hsing, ENNReal.toReal_one, one_smul, Nat.cast_natAbs, Int.cast_abs]
+        by_cases hneg : c y < 0
+        · have habs : |(c y : ℝ)| = -(c y : ℝ) := abs_of_neg (by exact_mod_cast hneg)
+          simp only [orient', ite_eq_left hneg, ev, habs, neg_apply,
+            ContinuousAlternatingMap.apply_apply]
+          ring
+        · have habs : |(c y : ℝ)| = (c y : ℝ) := abs_of_nonneg (by exact_mod_cast not_lt.mp hneg)
+          simp only [orient', ite_eq_right hneg, ev, habs, ContinuousAlternatingMap.apply_apply]
+      rw [Finset.sum_congr rfl hterm]
+      show _ = ∑ y ∈ (S.image F).filter (fun y => c y ≠ 0),
+        (c y : ℝ) * (ω : DifferentialForm (Euclid N') 0) y v₀
+      rw [Finset.sum_filter_of_ne]
+      · simp only [c, Int.cast_sum, Finset.sum_mul]
+        rw [← Finset.sum_fiberwise_of_maps_to (g := F) (t := S.image F)
+          fun x hx => Finset.mem_image_of_mem F hx]
+        refine Finset.sum_congr rfl fun y _ => Finset.sum_congr rfl fun x hx => ?_
+        rw [(Finset.mem_filter.mp hx).2]
+      · intro y _ h h0
+        apply h
+        rw [h0, Int.cast_zero, zero_mul]
+  · -- `R.action(F_j^# ω) → Y(F)(ω)`
+    intro Fs _ _ hFs ω
+    simp only [haction, hY]
+    refine tendsto_finsetSum S fun x _ => Tendsto.const_mul _ ?_
+    have hω : Continuous (ω : DifferentialForm (Euclid N') 0) := ContDiff.continuous ω.property.1.1
+    have h1 := (((continuous_eval_const v₀).comp hω).tendsto (F x)).comp (hFs.tendsto_at x)
+    refine h1.congr fun j => ?_
+    simp only [Function.comp_apply, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    exact congrArg _ (Subsingleton.elim _ _)
+  · -- locality
+    intro F F' Λ _ _ hFF'
+    have hEq : ∀ x ∈ R.carrier, F x = F' x := hpt hFF'
+    ext ω
+    simp only [hY]
+    refine Finset.sum_congr rfl fun x hx => ?_
+    rw [hEq x (hS ▸ hx)]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
