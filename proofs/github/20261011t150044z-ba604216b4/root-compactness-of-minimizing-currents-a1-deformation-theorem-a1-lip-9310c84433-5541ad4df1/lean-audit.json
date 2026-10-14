@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7b0b9f7c5484ea58aaabd8cdae32eb5f5aa9ae1f99168bf667f8d79ab9bd6a7",
+  "git_delta": {
+    "base_commit": "7b48745bf40cf3cfdba34935053ab6dff5429d1c",
+    "candidate_commit": "445fb9017470896594b24d5d23bf892b8796493b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_slice_param_integral",
+    "diff_sha256": "bb6afe684173204478b8be7d309f769fe7bc37025e6fd0326cedd667907f7a8c",
+    "source_sha256": "bdd603610d0396556fe628bb1962257032a829dc31a1727441ff929df0c9085e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_slice_param_integral",
+      "statement": "∀ (N : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (h : ℝ × Euclid N → V), ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) ∧ ∀ x : Euclid N, HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x')) (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
