@@ -1978,6 +1978,79 @@ theorem Submission.dor_lmb_pc_unitOrientation_comp : ∀ (P n : ℕ) (ξ : Multi
     · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
     · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
 
+/-- **Competitor mass bound** (Simon 7.2.4 (8)–(9), for the competitor `S = Z + f_#X`).  Let
+`Y = τ(RY) = τ(RZ) + τ(RX)`, `f ∈ C¹(O)` with `‖Df‖ ≤ Λ` on `G ⊂⊂ U`, `f = id` and
+`ξ_Z(α ∘ Df) = ξ_Z(α)` a.e. on `M_Z ∩ G`, and `M_X ⊆ G` a.e.  For an admissible `ω`
+(`spt ω ⊆ G`, `|ω|_E ≤ 1`), `φ := 1_G · ω(f) ∘ Df` is bounded, measurable and vanishes off the
+compact `Ḡ ⊆ U`; it represents both parts of `S(ω)`, so the vector density identity
+`1_{M_Y} θ_Y ξ_Y = 1_{M_Z} θ_Z ξ_Z + 1_{M_X} θ_X ξ_X` gives `S(ω) = ∫_{M_Y} θ_Y ξ_Y(φ) dHⁿ`.
+As `|ξ_Y(α ∘ Df)| ≤ |α|_E ‖Df‖ⁿ ≤ Λⁿ` on `G`, `S(ω) ≤ Λⁿ μ_{RY}(G)`; take the supremum over `ω`. -/
+theorem Submission.dor_lmb_pc_competitor_massOn_le : ∀ (P n : ℕ) (U G O : Set (Euclid P)) (RZ RX RY : IMRep U n) (Y S : GeometricCurrentOn U n) (f : Euclid P → Euclid P) (Λ : ℝ), IsOpen U → IsOpen G → CompactlyContained G U → IsOpen O → G ⊆ O → ContDiffOn ℝ 1 f O → 0 ≤ Λ → (∀ x ∈ G, ‖fderiv ℝ f x‖ ≤ Λ) → RY.Represents Y → (∀ ω : TestFormOn U n, Y ω = RZ.action (ω : DifferentialForm (Euclid P) n) + RX.action (ω : DifferentialForm (Euclid P) n)) → (∀ᵐ x ∂(μHE[n].restrict (RZ.carrier ∩ G)), f x = x ∧ ∀ α : Covector (Euclid P) n, RZ.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = RZ.orient x α) → μHE[n] (RX.carrier \ G) = 0 → (∀ ω : TestFormOn U n, S ω = RZ.action (ω : DifferentialForm (Euclid P) n) + ∫ x in RX.carrier, (RX.mult x : ℝ) * RX.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → S.massOn G ≤ ENNReal.ofReal (Λ ^ n) * RY.measure G := by
+  intro P n U G O RZ RX RY Y S f Λ hU hG hGU hO hGO hf hΛ hDf hY hYZX hZfix hXG hS
+  obtain ⟨hKc, hKU⟩ := hGU
+  -- Step 1: the vector densities satisfy `ν_Y = ν_Z + ν_X` `Hⁿ`-a.e.
+  have hvd := Submission.dor_lmb_pc_cm_vector_density_add P n U RZ RX RY Y hU hY hYZX
+  -- `M_G(S)` is the supremum of `S(ω)` over the admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, ⟨hωG, hω1⟩, rfl⟩
+  show ENNReal.ofReal (S ω) ≤ ENNReal.ofReal (Λ ^ n) * RY.measure G
+  -- `ω` is continuous and bounded by `W`
+  obtain ⟨⟨hsmooth, hcpt⟩, -⟩ := ω.2
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous hsmooth
+  obtain ⟨W, hW⟩ := hωc.bounded_above_of_compact_support hcpt
+  -- Step 2: `φ = 1_G · ω(f) ∘ Df` is measurable, bounded by `W Λⁿ` and vanishes off `Ḡ`
+  set φ : Euclid P → Covector (Euclid P) n := G.indicator fun y =>
+    ((ω : DifferentialForm (Euclid P) n) (f y)).compContinuousLinearMap (fderiv ℝ f y) with hφ
+  obtain ⟨hφm, hφB⟩ := Submission.dor_lmb_pc_cm_pullback_field_bounded P n G O f
+    (ω : DifferentialForm (Euclid P) n) Λ W hG hO hGO hf hωc hΛ hDf hW
+  have hφ0 : ∀ x, x ∉ closure G → φ x = 0 := fun x hx =>
+    Set.indicator_of_notMem (fun h => hx (subset_closure h)) _
+  -- Step 4: `τ(RZ)(ω) = ∫_{M_Z} θ_Z ξ_Z(φ) dHⁿ`, as `f` fixes `M_Z ∩ G` and `ω = φ = 0` off `G`
+  have hZ : RZ.action (ω : DifferentialForm (Euclid P) n) =
+      ∫ x in RZ.carrier, (RZ.mult x : ℝ) * RZ.orient x (φ x) ∂μHE[n] := by
+    refine setIntegral_congr_ae RZ.measurableSet_carrier ?_
+    filter_upwards [(ae_restrict_iff' (RZ.measurableSet_carrier.inter hG.measurableSet)).1 hZfix]
+      with x hx hxZ
+    by_cases hxG : x ∈ G
+    · obtain ⟨hfx, hor⟩ := hx ⟨hxZ, hxG⟩
+      rw [hφ, Set.indicator_of_mem hxG, hfx, hor]
+    · rw [hφ, Set.indicator_of_notMem hxG,
+        image_eq_zero_of_notMem_tsupport fun h => hxG (hωG h)]
+  -- Step 5: the `X` part equals `∫_{M_X} θ_X ξ_X(φ) dHⁿ`, as `M_X ⊆ G` a.e.
+  have hX : ∫ x in RX.carrier, (RX.mult x : ℝ) * RX.orient x
+        (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x))
+        ∂μHE[n] =
+      ∫ x in RX.carrier, (RX.mult x : ℝ) * RX.orient x (φ x) ∂μHE[n] := by
+    refine setIntegral_congr_ae RX.measurableSet_carrier ?_
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hXG] with x hx hxX
+    have hxG : x ∈ G := by_contra fun h => hx ⟨hxX, h⟩
+    rw [hφ, Set.indicator_of_mem hxG]
+  -- Steps 3 and 6: `S(ω) = ∫_{M_Y} θ_Y ξ_Y(φ) dHⁿ`, integrating `ν_Y = ν_Z + ν_X` against `φ`
+  have hSY : S ω = ∫ x in RY.carrier, (RY.mult x : ℝ) * RY.orient x (φ x) ∂μHE[n] := by
+    rw [hS ω, hZ, hX]
+    exact (Submission.dor_lmb_pc_cm_pairing_add_of_bounded P n U (closure G) RZ RX RY φ
+      (W * Λ ^ n) hKc hKU (hφm μHE[n]) hφ0 hφB hvd).symm
+  -- Step 7: `|ξ_Y(φ)| ≤ |ω(f)|_E ‖Df‖ⁿ ≤ Λⁿ` on `G` and `ξ_Y(φ) = 0` off `G`, `Hⁿ⌞M_Y`-a.e.
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict RY.carrier),
+      |RY.orient x (φ x)| ≤ G.indicator (fun _ => Λ ^ n) x := by
+    filter_upwards [RY.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    by_cases hxG : x ∈ G
+    · rw [hφ, Set.indicator_of_mem hxG, Set.indicator_of_mem hxG]
+      calc |RY.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap
+            (fderiv ℝ f x))|
+          ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) (f x)) *
+              ‖fderiv ℝ f x‖ ^ n :=
+            (Submission.dor_lmb_pc_unitOrientation_comp P n (RY.orient x) Q (fderiv ℝ f x) hQ).1 _
+        _ ≤ 1 * Λ ^ n := mul_le_mul (hω1 (f x)) (pow_le_pow_left₀ (norm_nonneg _) (hDf x hxG) n)
+            (pow_nonneg (norm_nonneg _) n) zero_le_one
+        _ = Λ ^ n := one_mul _
+    · rw [hφ, Set.indicator_of_notMem hxG, Set.indicator_of_notMem hxG, map_zero, abs_zero]
+  -- Step 8: `ofReal(S(ω)) ≤ ofReal(Λⁿ) μ_{RY}(G)`
+  rw [hSY]
+  exact Submission.dor_lmb_pc_cm_ofReal_integral_le_measure P n U G RY
+    (fun x => RY.orient x (φ x)) (Λ ^ n) hG.measurableSet hbound
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
