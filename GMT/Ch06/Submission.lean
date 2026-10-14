@@ -67212,4 +67212,44 @@ theorem Submission.fiw_total_boundedness : DeformationTheorem → ∀ (P m : ℕ
       _ = ρ * (2 * C * B) := by ring
       _ < ε := hρε
 
+/-- **Simon Ch. 6, Theorem 7.2 (pp. 170–172).**  For integer multiplicity `T, T_j ∈ 𝒟ₙ(U)` with
+`sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all `W ⊂⊂ U`, `T_j ⇀ T` iff `d_W(T_j, T) → 0` for every
+`W ⊂⊂ U`.  The "if" part is `fiw_flat_to_weak`.  For "only if", fix `W ⊂⊂ U`; by the subsequence
+principle it suffices that every subsequence `T_{ns j}` has a further subsequence with
+`d_W(·, T) → 0`.  Localization (printed (4)) gives integral currents `T'_j ⇀ T'` with supports in
+a fixed compact `K ⊆ U` and bounded `M(T'_j) + M(∂T'_j)`, such that every decomposition
+`T'_j − T' = ∂R + S` bounds `d_W(T_{ns(ψ j)}, T)` by `M_W(S) + M_W(R)`.  Total boundedness
+((1)–(3), from the Deformation Theorem) and the series of 3.13 ((5) and `R^(ℓ)`, `S^(ℓ)`) give such
+decompositions with `M(R) + M(S) ≤ 2 · 2^{-ℓ}` along a subsequence `φ`. -/
+theorem Submission.flat_convergence_iff_weak_convergence : FlatConvergenceIffWeakConvergence := by
+  intro P m U hU T Tj hT hTj hbound
+  refine ⟨fun hweak W hW => ?_, Submission.fiw_flat_to_weak P (m + 1) U hU T Tj⟩
+  refine tendsto_of_subseq_tendsto fun ns hns => ?_
+  -- (4): localize the subsequence `T_{ns j}`, which keeps the mass bounds and `⇀ T`.
+  obtain ⟨ψ, K, B, T', T'j, -, hK, hKU, hB, hT'j, hT'jb, hT'js, hT'jm, hT'w, hd⟩ :=
+    Submission.fiw_localization Submission.slicing_theorem Submission.boundary_rectifiability
+      P m U hU T (fun j => Tj (ns j)) hT (fun j => hTj (ns j))
+      (fun V hV => (iSup_comp_le (fun j => (Tj j).massOn V + (Tj j).boundary.massOn V) ns).trans_lt
+        (hbound V hV))
+      (fun ω => (hweak ω).comp hns) W hW
+  -- (1)–(3), (5) and 3.13: `T'_{φ ℓ} − T' = ∂R + S` with `M(R) + M(S) ≤ 2 · 2^{-ℓ}`.
+  obtain ⟨φ, -, hφ⟩ := Submission.fiw_flat_cauchy_limit P (m + 1) U hU T'j T'
+    (Submission.fiw_total_boundedness Submission.deformation_theorem P m U hU K hK hKU B hB T'j
+      hT'j hT'jb hT'js hT'jm) hT'w
+  refine ⟨fun ℓ => ψ (φ ℓ), ?_⟩
+  have hWU : W ⊆ U := subset_closure.trans hW.2.2
+  -- `d_W(T_{ns(ψ(φ ℓ))}, T) ≤ M_W(S) + M_W(R) ≤ M(R) + M(S) ≤ 2 · 2^{-ℓ} → 0`.
+  have hle : ∀ ℓ, flatDistance W (Tj (ns (ψ (φ ℓ)))) T ≤ 2 * 2⁻¹ ^ ℓ := fun ℓ => by
+    obtain ⟨R, S, hR, hS, hRS, hRSm⟩ := hφ ℓ
+    calc flatDistance W (Tj (ns (ψ (φ ℓ)))) T ≤ S.massOn W + R.massOn W := hd (φ ℓ) R S hR hS hRS
+      _ ≤ S.mass + R.mass := add_le_add (S.massOn_mono hWU) (R.massOn_mono hWU)
+      _ = R.mass + S.mass := add_comm _ _
+      _ ≤ 2 * 2⁻¹ ^ ℓ := hRSm
+  have hlim : Tendsto (fun ℓ : ℕ => (2 : ℝ≥0∞) * 2⁻¹ ^ ℓ) atTop (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul (a := 2)
+      (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one ENNReal.one_half_lt_one)
+      (Or.inr ENNReal.ofNat_ne_top)
+    rwa [mul_zero] at h
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le) hle
+
 end GMT.Ch06
