@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d1739c31309a110f8c3d51eac2f1cda6d4d5c393537daa955942dc15bc847dc1",
+  "git_delta": {
+    "base_commit": "0a9fa1451b259298e3c5732d851fe8cc79018927",
+    "candidate_commit": "14bac472758561f7beb3c031141c9e1a83ce6170",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfr_skeleton_null",
+    "diff_sha256": "75a5b663e96efa6b50ed846f1a9a6b78fea284b20dc55c960f8c9375ce4c87e9",
+    "source_sha256": "01fcff79ed20d2351cb51e483c1a0b7f2d45e2f6625dbdc372db079867870b67",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfr_skeleton_null",
+      "statement": "∀ (P m : ℕ), μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
