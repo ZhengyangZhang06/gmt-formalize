@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eff7319a5fb44025c458373c2c41cbe3934aa0202d8b8ae736034e6505d409da",
+  "git_delta": {
+    "base_commit": "5e9c30ce2f1317b30ee7eb78371184374e342411",
+    "candidate_commit": "954ccd87f51e5f74dd5c70108ceef7f9ba073869",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsdtd_mass_controls_eval",
+    "diff_sha256": "29dabdb0ceb7793859800118095b89b1e96e5c9d2765d1ebdfa71eec4e078270",
+    "source_sha256": "56b7d618d9bfb36d374aa6bcb103fc62f13b8f8b733d1a0dd67ba2bd409284fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsdtd_mass_controls_eval",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), (Tendsto (fun j => (X j).mass) atTop (𝓝 0) → ∀ ω : TestFormOn U n, Tendsto (fun j => X j ω) atTop (𝓝 0)) ∧ (∑' j, (X j).mass < ∞ → (∀ ω : TestFormOn U n, Summable (fun j => X j ω)) ∧ ∀ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun j => X j ω) (Y ω)) → Y.mass ≤ ∑' j, (X j).mass)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
