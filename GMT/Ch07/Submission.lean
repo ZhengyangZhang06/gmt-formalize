@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `C¹` cutoff near a compact set: if `K ⊆ O ⊆ ℝᴾ`, `K` compact, `O` open and `f` is `C¹` on `O`,
+then `g = χ • f` is `C¹` on `ℝᴾ` and globally Lipschitz, and `g = f`, `Dg = Df` on `K`.  Here `χ` is
+a smooth Urysohn function, `χ = 1` on `cthickening (δ/3) K` and `support χ = thickening (2δ/3) K`
+for `cthickening δ K ⊆ O`, so `g = f` near `K` and `g = 0` off the compact `tsupport χ ⊆ O`;
+`Dg` is continuous with compact support, hence bounded, and the mean value inequality applies. -/
+theorem Submission.dimred_mbl_pfi_c1_lipschitz_cutoff : ∀ (P : ℕ) (K O : Set (Euclid P)) (f : Euclid P → Euclid P), IsCompact K → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (g : Euclid P → Euclid P) (L : NNReal), ContDiff ℝ 1 g ∧ LipschitzWith L g ∧ ∀ x ∈ K, g x = f x ∧ fderiv ℝ g x = fderiv ℝ f x := by
+  intro P K O f hK hO hKO hf
+  classical
+  -- Step 1: room around `K` and a smooth Urysohn function `χ` with `tsupport χ ⊆ O` compact
+  obtain ⟨δ, hδ, hδO⟩ := hK.exists_cthickening_subset_open hO hKO
+  have hts : cthickening (δ / 3) K ⊆ thickening (2 * δ / 3) K :=
+    cthickening_subset_thickening' (by positivity) (by linarith) K
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞))
+    isOpen_thickening isClosed_cthickening hts
+  have hcl : tsupport χ ⊆ cthickening (2 * δ / 3) K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening _ _
+  have hclO : tsupport χ ⊆ O := hcl.trans ((cthickening_mono (by linarith) K).trans hδO)
+  have hχc : HasCompactSupport χ :=
+    (hK.cthickening (r := 2 * δ / 3)).of_isClosed_subset (isClosed_tsupport _) hcl
+  -- Step 2: `g = χ • f` is `C¹` at points of `O` (product rule) and off `O` (`g = 0` nearby)
+  set g : Euclid P → Euclid P := fun x => χ x • f x with hgdef
+  have hgC1 : ContDiff ℝ 1 g := by
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hx : x ∈ O
+    · exact (hχ.contDiffAt.of_le (by exact_mod_cast le_top)).smul (hf.contDiffAt (hO.mem_nhds hx))
+    · have hnx : (tsupport χ)ᶜ ∈ 𝓝 x :=
+        (isClosed_tsupport χ).isOpen_compl.mem_nhds (fun h => hx (hclO h))
+      apply (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq
+      filter_upwards [hnx] with y hy
+      simp [hgdef, image_eq_zero_of_notMem_tsupport hy]
+  -- Step 3: `g = f` on the open set `thickening (δ/3) K ⊇ K`, where `χ = 1`
+  have hgK : ∀ x ∈ K, g =ᶠ[𝓝 x] f := by
+    intro x hx
+    have hmem : thickening (δ / 3) K ∈ 𝓝 x :=
+      isOpen_thickening.mem_nhds (self_subset_thickening (by positivity) K hx)
+    filter_upwards [hmem] with y hy
+    have h1 : χ y = 1 := (hχ1 y).1 (thickening_subset_cthickening _ _ hy)
+    simp [hgdef, h1]
+  -- Step 4: `Dg` is continuous with compact support, hence bounded; mean value inequality
+  have hgc : HasCompactSupport g := hχc.smul_right
+  obtain ⟨C, hC⟩ := hgc.fderiv (𝕜 := ℝ) |>.exists_bound_of_continuous
+    (hgC1.continuous_fderiv one_ne_zero)
+  refine ⟨g, (max C 0).toNNReal, hgC1, ?_, fun x hx =>
+    ⟨(hgK x hx).eq_of_nhds, (hgK x hx).fderiv_eq⟩⟩
+  refine lipschitzWith_of_nnnorm_fderiv_le (hgC1.differentiable one_ne_zero) (fun x => ?_)
+  rw [← NNReal.coe_le_coe, coe_nnnorm, Real.coe_toNNReal _ (le_max_right _ _)]
+  exact (hC x).trans (le_max_left _ _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
