@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "74f50fb62e695973c76047720423e00b221e5e79635280740d52f4c2abeb2a7c",
+  "git_delta": {
+    "base_commit": "f30d953638cebc0dff209cea1dfe28f143d5b1d6",
+    "candidate_commit": "b8183e2002b709c1acd651b4534e76793d030d3c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fd_fs_pushforward_signed_transfer",
+    "diff_sha256": "925a3fe5040c7defd453202201cade8c29b04370b7c8c48a46a81257fe5d5621",
+    "source_sha256": "71c412db481c5ddebc92baf7aff156415fa36c2e9b1895b3a46cacfb09306214",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fd_fs_pushforward_signed_transfer",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (φ : X → ℝ × ℝ) (g : X → ℝ) (H : ℝ × ℝ → ℝ≥0∞), ν univ ≠ ∞ → Measurable φ → AEStronglyMeasurable g ν → (∀ᵐ x ∂ν, 0 ≤ g x ∧ g x ≤ 1) → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x, b (φ x) * ENNReal.ofReal (g x) ∂ν) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x, b (φ x) * g x ∂ν) ∧ ∀ S : Set (ℝ × ℝ), MeasurableSet S → ∫⁻ p in S, H p = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

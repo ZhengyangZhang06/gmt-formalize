@@ -451,6 +451,97 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Transfer of a push-forward density identity.**  Let `ν` be a finite measure on `X`,
+`φ : X → ℝ²` measurable, `g` `ν`-a.e. strongly measurable with `0 ≤ g ≤ 1` `ν`-a.e., and
+`H : ℝ² → [0, ∞]` a.e.-measurable with `∫ b H dp = ∫ (b ∘ φ) g dν` for every Borel `b ≥ 0`.  Then
+`H < ∞` a.e., `H` is integrable, `∫ b H dp = ∫ (b ∘ φ) g dν` for every bounded Borel
+`b : ℝ² → ℝ`, and `∫_S H dp = ∫_{φ⁻¹(S)} g dν` for every Borel `S`.  Taking `b ≡ 1` gives
+`∫ H dp ≤ ν(X) < ∞`; for a Borel `0 ≤ β ≤ M` both sides are integrable and their lower integrals
+agree (`b = ofReal ∘ β`); a bounded `b` is `max(b, 0) − max(−b, 0)`; and `b = 1_S` gives the set
+identity. -/
+theorem Submission.idtp_cse_fd_fs_pushforward_signed_transfer : ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (φ : X → ℝ × ℝ) (g : X → ℝ) (H : ℝ × ℝ → ℝ≥0∞), ν univ ≠ ∞ → Measurable φ → AEStronglyMeasurable g ν → (∀ᵐ x ∂ν, 0 ≤ g x ∧ g x ≤ 1) → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x, b (φ x) * ENNReal.ofReal (g x) ∂ν) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x, b (φ x) * g x ∂ν) ∧ ∀ S : Set (ℝ × ℝ), MeasurableSet S → ∫⁻ p in S, H p = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν := by
+  intro X _ ν φ g H hν hφ hg hg01 hH htr
+  have : IsFiniteMeasure ν := ⟨lt_top_iff_ne_top.mpr hν⟩
+  -- the identity with `b ≡ 1`, and `∫ ofReal g dν ≤ ν(X) < ∞` since `g ≤ 1` a.e.
+  have hfin : ∫⁻ p : ℝ × ℝ, H p ≠ ∞ := by
+    have h1 := htr (fun _ => 1) measurable_const
+    simp only [one_mul] at h1
+    rw [h1]
+    refine ne_top_of_le_ne_top hν ?_
+    calc ∫⁻ x, ENNReal.ofReal (g x) ∂ν ≤ ∫⁻ _, 1 ∂ν :=
+          lintegral_mono_ae (hg01.mono fun x hx => ENNReal.ofReal_le_one.mpr hx.2)
+      _ = ν univ := lintegral_one
+  -- (i) and (ii)
+  have hi : ∀ᵐ p : ℝ × ℝ, H p ≠ ∞ := (ae_lt_top' hH hfin).mono fun p hp => hp.ne
+  have hii : Integrable (fun p : ℝ × ℝ => (H p).toReal) :=
+    integrable_toReal_of_lintegral_ne_top hH hfin
+  -- the signed identity for a Borel `β` with `0 ≤ β ≤ M`, via lower integrals
+  have hpos : ∀ β : ℝ × ℝ → ℝ, Measurable β → ∀ M : ℝ, (∀ p, 0 ≤ β p ∧ β p ≤ M) →
+      Integrable (fun p => β p * (H p).toReal) ∧ Integrable (fun x => β (φ x) * g x) ν ∧
+      ∫ p : ℝ × ℝ, β p * (H p).toReal = ∫ x, β (φ x) * g x ∂ν := by
+    intro β hβ M hβM
+    have hint1 : Integrable (fun p => β p * (H p).toReal) :=
+      hii.bdd_mul hβ.aestronglyMeasurable (Eventually.of_forall fun p => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hβM p).1]
+        exact (hβM p).2)
+    have hint2 : Integrable (fun x => β (φ x) * g x) ν := by
+      refine Integrable.of_bound ((hβ.comp hφ).aestronglyMeasurable.mul hg) M ?_
+      filter_upwards [hg01] with x hx
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hβM (φ x)).1 hx.1)]
+      calc β (φ x) * g x ≤ M * 1 :=
+            mul_le_mul (hβM (φ x)).2 hx.2 hx.1 ((hβM (φ x)).1.trans (hβM (φ x)).2)
+        _ = M := mul_one M
+    refine ⟨hint1, hint2, ?_⟩
+    rw [integral_eq_lintegral_of_nonneg_ae
+        (Eventually.of_forall fun p => mul_nonneg (hβM p).1 ENNReal.toReal_nonneg)
+        hint1.aestronglyMeasurable,
+      integral_eq_lintegral_of_nonneg_ae (hg01.mono fun x hx => mul_nonneg (hβM (φ x)).1 hx.1)
+        hint2.aestronglyMeasurable]
+    congr 1
+    calc ∫⁻ p, ENNReal.ofReal (β p * (H p).toReal)
+        = ∫⁻ p, ENNReal.ofReal (β p) * H p := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hi] with p hp
+          rw [ENNReal.ofReal_mul (hβM p).1, ENNReal.ofReal_toReal hp]
+      _ = ∫⁻ x, ENNReal.ofReal (β (φ x)) * ENNReal.ofReal (g x) ∂ν :=
+          htr (fun p => ENNReal.ofReal (β p)) (ENNReal.measurable_ofReal.comp hβ)
+      _ = ∫⁻ x, ENNReal.ofReal (β (φ x) * g x) ∂ν := by
+          refine lintegral_congr fun x => ?_
+          rw [ENNReal.ofReal_mul (hβM (φ x)).1]
+  refine ⟨hi, hii, ?_, ?_⟩
+  · -- (iii): split `b = max b 0 - max (-b) 0`
+    rintro b hb ⟨M, hM⟩
+    have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+    obtain ⟨i1, i2, e1⟩ := hpos (fun p => max (b p) 0) (hb.max measurable_const) M
+      fun p => ⟨le_max_right _ _, max_le ((le_abs_self _).trans (hM p)) hM0⟩
+    obtain ⟨i3, i4, e2⟩ := hpos (fun p => max (-b p) 0) (hb.neg.max measurable_const) M
+      fun p => ⟨le_max_right _ _, max_le ((neg_le_abs _).trans (hM p)) hM0⟩
+    calc ∫ p, b p * (H p).toReal
+        = ∫ p, (max (b p) 0 * (H p).toReal - max (-b p) 0 * (H p).toReal) := by
+          refine integral_congr_ae (Eventually.of_forall fun p => ?_)
+          dsimp only
+          rw [← sub_mul, max_zero_sub_eq_self]
+      _ = (∫ p, max (b p) 0 * (H p).toReal) - ∫ p, max (-b p) 0 * (H p).toReal :=
+          integral_sub i1 i3
+      _ = (∫ x, max (b (φ x)) 0 * g x ∂ν) - ∫ x, max (-b (φ x)) 0 * g x ∂ν := by rw [e1, e2]
+      _ = ∫ x, (max (b (φ x)) 0 * g x - max (-b (φ x)) 0 * g x) ∂ν := (integral_sub i2 i4).symm
+      _ = ∫ x, b (φ x) * g x ∂ν := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          dsimp only
+          rw [← sub_mul, max_zero_sub_eq_self]
+  · -- (iv): the identity with `b = 1_S`
+    intro S hS
+    have key := htr (S.indicator 1) (measurable_one.indicator hS)
+    calc ∫⁻ p in S, H p = ∫⁻ p, S.indicator H p := (lintegral_indicator hS H).symm
+      _ = ∫⁻ p, S.indicator 1 p * H p := by
+          refine lintegral_congr fun p => ?_
+          by_cases hp : p ∈ S <;> simp [hp]
+      _ = ∫⁻ x, S.indicator 1 (φ x) * ENNReal.ofReal (g x) ∂ν := key
+      _ = ∫⁻ x, (φ ⁻¹' S).indicator (fun x => ENNReal.ofReal (g x)) x ∂ν := by
+          refine lintegral_congr fun x => ?_
+          by_cases hx : φ x ∈ S <;> simp [hx]
+      _ = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν := lintegral_indicator (hφ hS) _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
