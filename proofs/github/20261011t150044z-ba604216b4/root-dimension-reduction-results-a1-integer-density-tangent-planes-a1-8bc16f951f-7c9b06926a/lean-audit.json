@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "762a0593bef5eadc169a97fa3d2e856daba8b929ac5c9851b9b4f89d01a58306",
+  "git_delta": {
+    "base_commit": "ba3a54aa6ed288e90471169f2d0fe560048b67fd",
+    "candidate_commit": "84bdfd92bb29331fc2f38cf90d006aa0a2bc1c0c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_cst_ae_zero_of_rat_intervals",
+    "diff_sha256": "ba0bf10f4f878ee78296c0f263a89021bb8303915f594f40ba0839bdfafc9ae1",
+    "source_sha256": "562c78b128c543ca90d6eabf6dfc0ab13cc4c78f85efde72cd3131d3875d1f87",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals",
+      "statement": "∀ (c d : ℝ) (w : ℝ → ℝ), IntegrableOn w (Ioo c d) → (∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → ∫ α in Ioo (p : ℝ) (q : ℝ), w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

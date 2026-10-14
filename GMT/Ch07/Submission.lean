@@ -451,6 +451,83 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Vanishing integrals over rational subintervals force a.e. vanishing: if `w` is integrable on
+`(c, d)` and `∫_{(p, q)} w = 0` for all rationals `c < p < q < d`, then `w = 0` a.e. on `(c, d)`.
+Extend `w` by zero to `w̄ = 𝟙_{(c, d)} w`.  The primitive `W x = ∫_c^x w̄` is continuous and
+constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`; so the averages of `w̄`
+over `[x - ρ, x + ρ] ⊆ [c, d]` vanish, and Lebesgue differentiation gives `w x = w̄ x = 0` for
+a.e. `x ∈ (c, d)`. -/
+theorem Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals : ∀ (c d : ℝ) (w : ℝ → ℝ), IntegrableOn w (Ioo c d) → (∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → ∫ α in Ioo (p : ℝ) (q : ℝ), w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d w hw hrat
+  -- Step 0: if `d ≤ c` the interval is empty and the claim is vacuous.
+  rcases le_or_gt d c with hdc | hcd
+  · exact Eventually.of_forall fun α hα => absurd (hα.1.trans hα.2) (not_lt.mpr hdc)
+  -- Step 1: the extension `w̄ = 𝟙_{(c, d)} w` by zero is integrable on `ℝ`.
+  set wb : ℝ → ℝ := (Ioo c d).indicator w with hwb
+  have hwbi : Integrable wb := hw.integrable_indicator measurableSet_Ioo
+  have hwb_rat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d →
+      ∫ α in Ioo (p : ℝ) (q : ℝ), wb α = 0 := by
+    intro p q hcp hpq hqd
+    rw [← hrat p q hcp hpq hqd]
+    exact setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (show α ∈ Ioo c d from ⟨hcp.trans hα.1, hα.2.trans hqd⟩) w
+  -- Step 2: the primitive `W x = ∫_c^x w̄` is continuous and `W q = W p` for rationals.
+  set W : ℝ → ℝ := fun x => ∫ t in c..x, wb t with hW
+  have hWc : Continuous W :=
+    intervalIntegral.continuous_primitive (fun _ _ => hwbi.intervalIntegrable) c
+  have hWsub : ∀ a b : ℝ, W b - W a = ∫ t in a..b, wb t := fun a b =>
+    intervalIntegral.integral_interval_sub_left hwbi.intervalIntegrable hwbi.intervalIntegrable
+  have hWrat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → W q = W p := by
+    intro p q hcp hpq hqd
+    have h := hWsub p q
+    rw [intervalIntegral.integral_of_le hpq.le, integral_Ioc_eq_integral_Ioo,
+      hwb_rat p q hcp hpq hqd] at h
+    linarith
+  -- Step 3: `W` is constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`.
+  obtain ⟨q₀, hcq₀, hq₀d⟩ := exists_rat_btwn hcd
+  have hWS : ∀ r : ℚ, c < (r : ℝ) → (r : ℝ) < d → W r = W q₀ := by
+    intro r hcr hrd
+    rcases lt_trichotomy (r : ℝ) (q₀ : ℝ) with h | h | h
+    · exact (hWrat r q₀ hcr h hq₀d).symm
+    · rw [h]
+    · exact hWrat q₀ r hcq₀ h hrd
+  have hSsub : Ioo c d ∩ range ((↑) : ℚ → ℝ) ⊆ Icc c d := fun x hx =>
+    Ioo_subset_Icc_self hx.1
+  have hclos : Icc c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) := by
+    have h : Ioo c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) :=
+      Rat.denseRange_cast.open_subset_closure_inter isOpen_Ioo
+    rw [← closure_Ioo hcd.ne]
+    exact closure_minimal h isClosed_closure
+  have hEq : EqOn W (fun _ => W q₀) (Icc c d) := by
+    refine EqOn.of_subset_closure ?_ hWc.continuousOn continuousOn_const hSsub hclos
+    rintro x ⟨hxJ, r, rfl⟩
+    exact hWS r hxJ.1 hxJ.2
+  have hWq₀ : W q₀ = 0 := by
+    have h := hEq (left_mem_Icc.mpr hcd.le)
+    simp only [hW, intervalIntegral.integral_same] at h
+    exact h.symm
+  have hW0 : ∀ x ∈ Icc c d, W x = 0 := fun x hx => (hEq hx).trans hWq₀
+  -- Step 4: Lebesgue differentiation for `w̄` along closed balls centred at `x`.
+  filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average volume hwbi.locallyIntegrable 1]
+    with x hx hxJ
+  have hlim : Tendsto (fun ρ => ⨍ y in closedBall x ρ, wb y) (𝓝[>] 0) (𝓝 (wb x)) := by
+    refine hx (fun _ => x) id tendsto_id ?_
+    filter_upwards [self_mem_nhdsWithin] with ρ hρ
+    exact mem_closedBall_self (by rw [one_mul]; exact le_of_lt hρ)
+  -- Step 5: the averages vanish for `0 < ρ < min (x - c) (d - x)`.
+  have hm : 0 < min (x - c) (d - x) := lt_min (sub_pos.mpr hxJ.1) (sub_pos.mpr hxJ.2)
+  have hzero : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ⨍ y in closedBall x ρ, wb y = 0 := by
+    filter_upwards [Ioo_mem_nhdsGT hm] with ρ hρ
+    have h1 : c ≤ x - ρ := by linarith [min_le_left (x - c) (d - x), hρ.2]
+    have h2 : x + ρ ≤ d := by linarith [min_le_right (x - c) (d - x), hρ.2]
+    have hle : x - ρ ≤ x + ρ := by linarith [hρ.1]
+    rw [setAverage_eq, Real.closedBall_eq_Icc, integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le hle, ← hWsub, hW0 _ ⟨by linarith, h2⟩,
+      hW0 _ ⟨h1, by linarith⟩, sub_zero, smul_zero]
+  have hwbx : wb x = 0 :=
+    tendsto_nhds_unique hlim (tendsto_const_nhds.congr' (hzero.mono fun ρ hρ => hρ.symm))
+  rwa [hwb, indicator_of_mem hxJ] at hwbx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
