@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c); read GMT/Ch07/Contract.lean, GMT/Ch07/README.md and this node's parent-child-handoff.json (proof identical to the selected one)",
+        "python3 -I scans of dag.json (1538 nodes): lean_name / lean_statement matching IsIntegerMultiplicity, bilipschitz, area, Real.sqrt (Matrix.det, normDet, approxTangent, imrep, int_density, pieces; status and candidate_commit of dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, ptd_piece_image_approxTangent_ae, ptd_piece_image_measurable_ae_pullback, codim1_lura_gram_area_formula, codim1_lurpt_piece_area_jacobian, codim1_zsl_ga_linear_area, cmcdt_ims_imrep_of_int_density, dpfir_integral_eq_of_area_lintegral, dpf_unitOrientation_map_gramNormalized, dgoj_covector_eq_det_mul_of_mem_span, rsd_isIntegerMultiplicity_int_combination, regcomp_ims_imrep_of_signed_pieces, dpf_raf_piece_area_formula_gram; sibling nodes dimred_mbl_pf_* and dor_lmb_pc_* (decomposing, no decomposition files)",
+        "read nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-v1.json (the parent's 12-child split) and the parent-child-handoff.json / parent-supplied-natural-proof.md of the four reused nodes",
+        "git show <candidate_commit>:GMT/Ch07/Submission.lean | grep 'theorem Submission.<name>' for a2ba78f, a216804, d5ba41d, c48b246 (types identical); git show b18a413 (accepted dpf_imrep_bilipschitz_image_rep: continuous_compContinuousLinearMapCLM, clm_apply measurability pattern); git log --all --oneline -S'<each new name>' (no match)",
+        "grep -n in /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean: max_depth, _existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children, leaf_verification.check_source_delta",
+        "rg in .lake/packages/simongmt/Poincare/SimonGMT: weighted_area_formula_lipschitz_injOn, areaJacobianAt, area_image_criticalSet_eq_zero, linear_area_formula (Chapter02, not imported by GMT.Ch07.Submission), CountablyRectifiable.mono, countablyRectifiable_range, countablyRectifiable_iUnion, HasApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean), Covector, TestFormOn, covectorEuclideanNorm (Chapter06)",
+        "grep in Mathlib at the pin: normDet (NormDet.lean, not imported), euclideanHausdorffMeasure_image_eq_normDet_mul_volume, hausdorffMeasure_image_le, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, MeasurableSet.image_of_continuousOn_injOn, LinearMap.exists_antilipschitzWith, continuous_clm_apply, Measurable.find, integral_tsum, integral_iUnion, lintegral_iUnion, Measurable.nnreal_tsum, ContinuousAlternatingMap.apply, exists_contDiff_support_eq_eq_one_iff, singularValues (no opNorm bound), Hadamard (none)",
+        "lake env lean /tmp/pfint_decomp/check/{Check1..Check6,Types,Assembly}.lean (imports, instances, lemma names, child types, assembly with #print axioms)",
+        "python3 -I /tmp/pfint_decomp/scripts/{scope.py,validate.py}: contract_scope replay and lean_contract.validate_lean_statement on all 12 strings"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-182d7d15d7/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-74efcb8c6f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/leaf_verification.py",
+        "/tmp/pfint_decomp/check/Types.lean",
+        "/tmp/pfint_decomp/check/Assembly.lean"
+      ],
+      "conclusion": "The pinned project has no push-forward of integer multiplicity currents by C¹ maps. It has four comparator-accepted declarations that are exactly steps 2, 3+(TL), the area formula and step 11 of the supplied proof: dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, codim1_lura_gram_area_formula and cmcdt_ims_imrep_of_int_density. They are reused with byte-identical types. LinearMap.normDet and the SimonGMT Chapter02 area files are not in the import closure of GMT.Ch07.Submission, so the new statements use the Gram-determinant Jacobian, as the accepted area formula does. The eight new statements have globally unique names, elaborate in the comparator scope and pass validate_lean_statement. A sorry-free Lean assembly derives the exact frozen parent type from the 12 child types using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: step 10 of the parent proof (\"k agrees Hⁿ-a.e. with a Borel ℤ-valued function k̃\"), in the form needed by the sibling imrep_of_density (measurable and integer valued at every point).\n1. Notation. S(y) := Σ'_j |f_j(y)| ∈ [0, ∞] (ℝ≥0∞-valued tsum of the measurable functions y ↦ ((f_j y).natAbs : ℝ≥0∞)); S is measurable (Measurable.ennreal_tsum, or its current name Measurable.tsum). For y and j put p_j(y) := (max(f_j(y), 0) : ℝ≥0) and q_j(y) := (max(−f_j(y), 0) : ℝ≥0) (Real.toNNReal of ±f_j(y)); both are measurable, take values in ℕ ⊆ ℝ≥0, and p_j(y) − q_j(y) = f_j(y), p_j(y) + q_j(y) = |f_j(y)|.\n2. Definition. m(y) := (Σ'_j p_j(y) : ℝ≥0) − (Σ'_j q_j(y) : ℝ≥0), the tsums taken in ℝ≥0 (equal to 0 when the family is not summable) and cast to ℝ. m is measurable (Measurable.nnreal_tsum — a deprecated alias that still works; Measurable.tsum is the current name — for each tsum, then coercion and subtraction).\n3. Integrality. Let (a_j) be a family in ℝ≥0 with every a_j a natural number. If (a_j) is summable, a_j → 0 along the cofinite filter (Summable.tendsto_cofinite_zero), so the set F := {j : a_j ≥ 1} is finite and a_j = 0 for j ∉ F (a natural number < 1 is 0); hence Σ' a_j = Σ_{j∈F} a_j (tsum_eq_sum) is a natural number. If (a_j) is not summable, Σ' a_j = 0 (tsum_eq_zero_of_not_summable). Applied to (p_j(y)) and (q_j(y)), m(y) is a difference of two natural numbers, an integer.\n4. Pointwise bound. If S(y) = ∞ there is nothing to prove. If S(y) < ∞, then Σ'_j (p_j(y) + q_j(y) : ℝ≥0∞) = S(y) < ∞, so both families (p_j(y)) and (q_j(y)) are summable in ℝ≥0 (ENNReal.tsum_coe_ne_top_iff_summable and comparison) and |m(y)| ≤ Σ'_j p_j(y) + Σ'_j q_j(y) = S(y).\n5. Almost everywhere. ∫⁻ S dHⁿ = Σ_j ∫⁻ |f_j| dHⁿ < ∞ (lintegral_tsum; each term is measurable), so S(y) < ∞ for Hⁿ-a.e. y (ae_lt_top). For such y, Σ_j |f_j(y)| < ∞, so the real family (f_j(y)) is summable (absolutely summable real families are summable), (p_j(y)) and (q_j(y)) are summable (step 4), and Σ'_j f_j(y) = Σ'_j p_j(y) − Σ'_j q_j(y) = m(y) (Summable.tsum_sub for summable families, and NNReal.coe_tsum).\n6. Steps 2–5 give m. ∎",
+  "key_steps": [
+    "S := Σ_j|f_j| is measurable with ∫⁻S = Σ_j∫⁻|f_j| < ∞, so S < ∞ a.e.",
+    "m := Σ_j f_j⁺ − Σ_j f_j⁻ with ℝ≥0-valued tsums is measurable (Measurable.nnreal_tsum).",
+    "A summable family of natural numbers has finite support, so each tsum is a natural number (or 0 if not summable): m is integer valued everywhere.",
+    "|m| ≤ S pointwise, and m = Σ_j f_j wherever S < ∞, i.e. a.e."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
