@@ -1021,6 +1021,71 @@ theorem Submission.cmcdt_lpo_she_cylinder_homotopy : (∀ (N k : ℕ) (X : Geome
     -- step 8: linearity of `X`
     rw [hX]
     exact (X.toCurrent.map_sub η₁ η₀).symm
+/-- The cut-off pull-back of Simon 6.2.23: for a `C^∞` map `F : ℝᴺ → ℝ^{N'}`, `ω ∈ 𝒟ᵏ(ℝ^{N'})` and
+a compact `K ⊆ ℝᴺ`, some `η = ζ F^#ω ∈ 𝒟ᵏ(ℝᴺ)` agrees with `F^#ω` on an open `W ⊇ K`, and
+`dη = F^#(dω)` on `W` (as used in 6.2.24(1)).  Here `ζ` is a smooth bump equal to `1` on a ball
+`W ⊇ K`.  `F^#ω` is smooth: as a multilinear map, `F^#ω(x) = ω(F x) ∘ (DF(x), …, DF(x))` depends
+smoothly on `x`, and `γ ↦ (γ(e_{I 1}, …, e_{I k}))_I` is linear and injective into a
+finite-dimensional space, so it has a continuous linear left inverse.  On `W`, `η = F^#ω` near
+each point, so `dη = d(F^#ω) = F^#(dω)` (`extDeriv_pullback`). -/
+theorem Submission.cmcdt_lpo_cutoff_pullback : ∀ (N N' k : ℕ) (F : Euclid N → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k) (K : Set (Euclid N)), ContDiff ℝ (⊤ : ℕ∞) F → IsCompact K → ∃ (η : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W ∧ K ⊆ W ∧ (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)) ∧ ∀ x ∈ W, exteriorDerivative (η : DifferentialForm (Euclid N) k) x = (exteriorDerivative (ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x) := by
+  intro N N' k F ω K hF hK
+  set ω₀ : DifferentialForm (Euclid N') k := (ω : DifferentialForm (Euclid N') k)
+  have hω : ContDiff ℝ (⊤ : ℕ∞) ω₀ := ω.2.1.1
+  have hDF : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ F) := hF.fderiv_right le_rfl
+  -- the pull-back `P = F^#ω` is smooth
+  set P : DifferentialForm (Euclid N) k :=
+    fun x => (ω₀ (F x)).compContinuousLinearMap (fderiv ℝ F x)
+  have hP : ContDiff ℝ (⊤ : ℕ∞) P := by
+    let ι : Covector (Euclid N) k →L[ℝ] ContinuousMultilinearMap ℝ (fun _ : Fin k => Euclid N) ℝ :=
+      ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ
+    have h1 : ContDiff ℝ (⊤ : ℕ∞) fun x => ι (P x) := by
+      have h := ((ContinuousMultilinearMap.compContinuousLinearMapContinuousMultilinear ℝ
+        (fun _ : Fin k => Euclid N) (fun _ : Fin k => Euclid N') ℝ).contDiff.comp
+          (contDiff_pi.2 fun _ => hDF)).clm_apply
+        ((ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ).contDiff.comp (hω.comp hF))
+      convert h using 1
+      funext x
+      ext v
+      simp [ι, P, Function.comp_def]
+    -- the values on basis tuples determine a covector
+    let e := EuclideanSpace.basisFun (Fin N) ℝ
+    let ev' : ContinuousMultilinearMap ℝ (fun _ : Fin k => Euclid N) ℝ →L[ℝ]
+        ((Fin k → Fin N) → ℝ) :=
+      ContinuousLinearMap.pi fun I =>
+        ContinuousMultilinearMap.apply ℝ (fun _ : Fin k => Euclid N) ℝ fun i => e (I i)
+    let ev : Covector (Euclid N) k →ₗ[ℝ] ((Fin k → Fin N) → ℝ) := (ev'.comp ι).toLinearMap
+    have hev : LinearMap.ker ev = ⊥ := by
+      rw [LinearMap.ker_eq_bot']
+      intro γ hγ
+      have h' : γ.toAlternatingMap = (0 : Covector (Euclid N) k).toAlternatingMap := by
+        refine e.toBasis.ext_alternating fun I _ => ?_
+        have := congrFun hγ I
+        simpa [ev, ev', ι, e] using this
+      exact ContinuousAlternatingMap.toAlternatingMap_injective h'
+    obtain ⟨ℓ, hℓ⟩ := ev.exists_leftInverse_of_injective hev
+    have hPℓ : P = fun x => LinearMap.toContinuousLinearMap ℓ (ev' (ι (P x))) := by
+      funext x
+      exact (LinearMap.congr_fun hℓ (P x)).symm
+    rw [hPℓ]
+    exact (LinearMap.toContinuousLinearMap ℓ).contDiff.comp (ev'.contDiff.comp h1)
+  -- a smooth bump `b`, equal to `1` on a ball `W ⊇ K`
+  obtain ⟨R, hR, hKR⟩ := hK.isBounded.subset_ball_lt 0 (0 : Euclid N)
+  let b : ContDiffBump (0 : Euclid N) := ⟨R, R + 1, hR, by linarith⟩
+  have hb1 : ∀ x ∈ ball (0 : Euclid N) R, b x = 1 := fun x hx =>
+    b.one_of_mem_closedBall (ball_subset_closedBall hx)
+  have hη : (fun x => b x • P x) ∈ TestFormOn (univ : Set (Euclid N)) k :=
+    ⟨⟨b.contDiff.smul hP, b.hasCompactSupport.smul_right⟩, subset_univ _⟩
+  refine ⟨⟨fun x => b x • P x, hη⟩, ball 0 R, isOpen_ball, hKR, fun x hx => ?_, fun x hx => ?_⟩
+  · show b x • P x = P x
+    rw [hb1 x hx, one_smul]
+  · have heq : (fun x => b x • P x) =ᶠ[𝓝 x] P := by
+      filter_upwards [isOpen_ball.mem_nhds hx] with y hy
+      rw [hb1 y hy, one_smul]
+    show extDeriv (fun x => b x • P x) x = _
+    rw [heq.extDeriv_eq]
+    exact extDeriv_pullback ((hω.differentiable (by simp)).differentiableAt) hF.contDiffAt
+      (by simp)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
