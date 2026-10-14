@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); git status/log of the workspace (branch problems/ch07 at b4d606d, clean)",
+        "python3 -I over dag.json: the selected node (depth 5, decomposing, depends on radial_homotopy-a1); its siblings radial_homotopy (decomposing, then speculative-lean), compact_im_param, cone_param and param_series_im; dependency classes (1286 sibling, 896 non-sibling, every non-sibling target accepted)",
+        "python3 -I over the 2202 accepted lean_statements for: TestFormOnConverges | Disjoint (tsupport | .support ⊆ | IMRep with |T ω| ≤ | R.measure univ | IsUnitOrientationOf | curryLeft | ContDiffBump",
+        "git show 493589396f:GMT/Ch07/Submission.lean, 02c6122c94:GMT/Ch07/Submission.lean and 8d68dfd93a:GMT/Ch07/Submission.lean (accepted proofs of cmcs_rc_order_zero_current, rsd_cmr_support_subset_of_vanish and dpf_pfc_testFormOnConverges_zero_uniform; none adds an import)",
+        "grep -n in the Mathlib snapshot: Analysis/Normed/Module/Alternating/Curry.lean (curryLeft_add, curryLeft_smul, curryLeft_zero, norm_curryLeft, curryLeftLI); Analysis/Calculus/BumpFunction/Basic.lean (one_of_mem_closedBall, zero_of_le_dist, eventuallyEq_one_of_mem_ball, hasCompactSupport, contDiff); Analysis/Calculus/DifferentialForm/Basic.lean (Filter.EventuallyEq.extDeriv_eq)",
+        "sed simongmt Chapter06/{Currents,Forms,Mass,CurrentLocalEquality}.lean for TestFormOnConverges, GeometricCurrentOn.continuous', exteriorDerivativeTestOn, boundary_apply, GeometricCurrentOn.ext, zeroRegion, support, IsSmoothForm",
+        "python3 -I, loading verifier/gmt-compare.py via importlib: contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem) gives the 7 replayed scope commands",
+        "lake env lean /tmp/cc-decomp/{Smoke,Debug1,Assembly,Assembly2,ChildA,ChildB,ChildC}.lean and /tmp/cc-decomp/final/{Final,Final2}.lean, with #print axioms",
+        "python3 -I scan of nodes/*/{decomposition-v*,decomposition-scope-v*,parent-child-handoff}.json (5951 files) and dag.json for dimred_cs_sos_cfs_cc_ (no match)",
+        "sed -n 420,560p book/chapter-06.txt (Simon 6.2.25–2.32: homotopy formula, affine homotopy, the cone 0 ⨯ T, ∂(0 ⨯ T) = T − 0 ⨯ ∂T)",
+        "Independent reviewer agent: re-ran Final.lean and Final2.lean, the comparator-scope challenge files and validate_lean_statement (/tmp/cc-review); verdict ACCEPT on both rounds"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-77a7f533dd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-77a7f533dd/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-7244aadae8/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cc-decomp/final/Final2.lean",
+        "/tmp/cc-decomp/final/Final.lean",
+        "/tmp/cc-decomp/Assembly2.lean",
+        "/tmp/cc-decomp/ChildA.lean",
+        "/tmp/cc-decomp/ChildB.lean",
+        "/tmp/cc-decomp/ChildC.lean"
+      ],
+      "conclusion": "Pins. The manifest records project b4d606db and Mathlib 25730c7c. The workspace is at b4d606d and its working tree is clean.\n\nLibrary gaps. Neither Mathlib nor SimonGMT has the cone current, a C⁰ bound for IMRep-represented currents, or a cut-off radial operator, so three new lemmas are needed. The pinned Mathlib supplies every API they use:\n- curryLeft_add, curryLeft_smul, norm_curryLeft, curryLeftLI;\n- ContDiffBump.{one_of_mem_closedBall, zero_of_le_dist, eventuallyEq_one_of_mem_ball, hasCompactSupport, contDiff};\n- Filter.EventuallyEq.extDeriv_eq;\n- intervalIntegral.norm_integral_le_of_norm_le_const, norm_integral_le_of_norm_le;\n- integrable_toReal_of_lintegral_ne_top, integral_toReal.\n\nReuse. Two accepted DAG declarations are reused with byte-identical frozen types: cmcs_rc_order_zero_current (commit 4935893) and rsd_cmr_support_subset_of_vanish (commit 02c6122). Neither commit adds an import. Considered but not used:\n- dpf_pfc_testFormOnConverges_zero_uniform (used in an earlier compiled variant);\n- dtc_bc_lc_fd_lz_action_bound (it bounds with covectorEuclideanNorm, not the operator norm);\n- unit_orientation_norm_le_one and regcomp_rim_action_integrable (not needed for the direct proof).\n\nUncle dependency. radial_homotopy is not accepted, and every non-sibling dependency in dag.json points to an accepted node. So the children take radial_homotopy's conclusions as hypotheses, and the selected node discharges them.\n\nLean checks. Final2.lean replays the comparator scope from gmt-compare.py and proves all five children; each depends only on propext, Classical.choice and Quot.sound. It also proves the frozen parent type from the children plus a stub for the uncle; the only extra axiom, sorryAx, comes from that stub.\n\nNames. The three new names occur nowhere in dag.json or in the 5951 decomposition, scope and handoff files.\n\nSource. Simon Ch. 6, 2.25–2.32 (chapter-06.txt lines 441–551) is the source of the cone 0 ⨯ T and of ∂(0 ⨯ T) = T − 0 ⨯ ∂T."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1",
+  "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1.imrep_vanish_bound-a1",
+  "subproblem": {
+    "key": "imrep_vanish_bound",
+    "title": "Vanishing on the carrier and the C⁰ bound |X(γ)| ≤ μ_R(ℝ^P)·sup‖γ‖ for a current represented by an integer multiplicity triple",
+    "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, X ∈ 𝒟_n(U) (GeometricCurrentOn U n), and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) representing X (R.Represents X). That is, X(γ) = ∫_M θ(x)·ξ(x)(γ(x)) dHⁿ(x) for every γ ∈ 𝒟ⁿ(U), where Hⁿ = μHE[n].\nThen:\n(a) if γ ∈ 𝒟ⁿ(U) and γ(x) = 0 for every x ∈ M = R.carrier, then X(γ) = 0;\n(b) if μ_R(ℝ^P) := R.measure univ = ∫_M θ dHⁿ is finite, then |X(γ)| ≤ μ_R(ℝ^P)·b for every γ ∈ 𝒟ⁿ(U) and b ∈ ℝ with ‖γ(x)‖ ≤ b for all x ∈ ℝ^P. Here ‖·‖ is the operator norm on Covector (Euclid P) n, and μ_R(ℝ^P) is read as the real number (R.measure univ).toReal.",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (R : IMRep U n), R.Represents X → (∀ γ : TestFormOn U n, (∀ x ∈ R.carrier, (γ : DifferentialForm (Euclid P) n) x = 0) → X γ = 0) ∧ (R.measure univ ≠ ∞ → ∀ (γ : TestFormOn U n) (b : ℝ), (∀ x, ‖(γ : DifferentialForm (Euclid P) n) x‖ ≤ b) → |X γ| ≤ (R.measure univ).toReal * b)",
+    "lean_name": "dimred_cs_sos_cfs_cc_imrep_vanish_bound",
+    "depends_on": [],
+    "natural_proof": "Source: step 0 of the selected parent proof ((0a) vanishing and (0b) C⁰ bound), stated for an arbitrary domain U and degree n, and with the vanishing hypothesis required only on the carrier M. The selected node applies it with U = ℝ^P, n = q + 1, and M ⊆ spt X.\n\nNotation. M := R.carrier, θ := R.mult : ℝ^P → ℕ (measurable), ξ := R.orient, Hⁿ := μHE[n], and μ := Hⁿ⌞M = μHE[n].restrict M. By R.Represents X and the definition of IMRep.action, for every γ ∈ 𝒟ⁿ(U):\n (∗) X(γ) = ∫_M (θ(x) : ℝ)·ξ(x)(γ(x)) dHⁿ(x).\n\n1. Part (a). Let γ ∈ 𝒟ⁿ(U) with γ(x) = 0 for every x ∈ M. For x ∈ M, ξ(x) is a continuous linear functional on n-covectors, so ξ(x)(γ(x)) = ξ(x)(0) = 0 (map_zero). The integrand of (∗) is therefore θ(x)·0 = 0 at every point of M. A set integral whose integrand vanishes at every point of the set is 0 (setIntegral_eq_zero_of_forall_eq_zero), so X(γ) = 0.\n\n2. Part (b): orientation bound. By the field R.orients, for μ-a.e. x there is a subspace Q with IsUnitOrientationOf (ξ(x)) Q. That is, there is an orthonormal family τ = (τ_1, …, τ_n) in ℝ^P with ξ(x)(α) = α(τ) for all α, or with ξ(x)(α) = −α(τ) for all α. For such x and every n-covector α,\n |ξ(x)(α)| = |α(τ)| ≤ ‖α‖·∏_i ‖τ_i‖ = ‖α‖,\nby ContinuousAlternatingMap.le_opNorm and ‖τ_i‖ = 1 (orthonormality). For n = 0 the product is empty and equals 1. Hence, for μ-a.e. x, |ξ(x)(α)| ≤ ‖α‖ for every α.\n\n3. Mass identity. R.measure = (Hⁿ⌞M).withDensity θ, so R.measure univ = ∫⁻_M θ dHⁿ (withDensity_apply with the measurable set univ, then Measure.restrict_univ).\n\n4. Integrability of θ. Assume R.measure univ ≠ ∞. The function x ↦ (θ(x) : ℝ≥0∞) is measurable: θ is measurable, and every function on ℕ is measurable (measurable_from_nat). By step 3 its μ-lintegral is R.measure univ < ∞. Hence x ↦ (θ(x) : ℝ≥0∞).toReal = (θ(x) : ℝ) is μ-integrable (integrable_toReal_of_lintegral_ne_top). Since every θ(x) < ∞, integral_toReal gives\n ∫ (θ(x) : ℝ) dμ = (∫⁻ θ dμ).toReal = (R.measure univ).toReal.\n\n5. Estimate. Let γ ∈ 𝒟ⁿ(U) and b ∈ ℝ with ‖γ(x)‖ ≤ b for all x. By step 2 and θ(x) ≥ 0, for μ-a.e. x:\n |θ(x)·ξ(x)(γ(x))| = θ(x)·|ξ(x)(γ(x))| ≤ θ(x)·‖γ(x)‖ ≤ θ(x)·b.\nThe function x ↦ θ(x)·b is μ-integrable (step 4, times the constant b). Applying norm_integral_le_of_norm_le to (∗):\n |X(γ)| ≤ ∫ θ(x)·b dμ = (∫ θ dμ)·b = (R.measure univ).toReal·b,\nby integral_mul_const and step 4. ∎\n\n(A Lean proof following exactly these steps compiled during decomposition against the frozen contract. It depends only on propext, Classical.choice and Quot.sound.)",
+    "proof_key_steps": [
+      "X(γ) = ∫_M θ·ξ(γ) dHⁿ (R.Represents); if γ vanishes on M the integrand vanishes on M, so X(γ) = 0.",
+      "R.orients: for Hⁿ-a.e. x ∈ M, ξ(x)(α) = ±α(τ) with τ orthonormal, hence |ξ(x)(α)| ≤ ‖α‖ (le_opNorm).",
+      "R.measure univ = ∫⁻_M θ dHⁿ < ∞, so θ is Hⁿ⌞M-integrable with ∫θ = (R.measure univ).toReal (integrable_toReal_of_lintegral_ne_top, integral_toReal).",
+      "norm_integral_le_of_norm_le with dominating function θ·b gives |X(γ)| ≤ (R.measure univ).toReal·b."
+    ]
+  },
+  "audit": {
+    "key": "imrep_vanish_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and exact type agree. Carrierwise vanishing proves part (a) without finite mass. For part (b), the almost-everywhere unit-orientation estimate, measurable multiplicity and finite density integral give precisely the stated operator-norm bound, including n = 0. No additional positivity assumption on b is needed. The proof is complete and independent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-29431f4c74/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-29431f4c74/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-29431f4c74/parent-supplied-natural-proof.json"
+}

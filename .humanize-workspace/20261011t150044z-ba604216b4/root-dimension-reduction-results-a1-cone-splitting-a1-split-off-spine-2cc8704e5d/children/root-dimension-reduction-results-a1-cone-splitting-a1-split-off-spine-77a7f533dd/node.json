@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "depth": 5,
+  "title": "The cone current 0 ⨯ X: boundary X, compact support in the cone over spt X, and action ω ↦ X(Kω)",
+  "statement": "Let P, q ∈ ℕ and X ∈ 𝒟_{q+1}(ℝ^P) (GeometricCurrentOn univ (q+1)) with ∂X = 0 (X.boundary = 0) and spt X compact. Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ (q+1)) representing X, with M ⊆ spt X and μ_R(ℝ^P) = ∫_M θ dH^{q+1} < ∞ (R.measure univ ≠ ∞).\nThen there is Y ∈ 𝒟_{q+2}(ℝ^P) (GeometricCurrentOn univ (q+1+1)) such that:\n- ∂Y = X;\n- spt Y is compact and spt Y ⊆ C₀ := {s x : s ∈ [0,1], x ∈ spt X};\n- for every ω ∈ 𝒟^{q+2}(ℝ^P) there is η ∈ 𝒟^{q+1}(ℝ^P) with η(x) = ∫_0^1 t^{q+1}·ι_x(ω(t x)) dt for every x ∈ spt X and Y(ω) = X(η) (ι_xα = α.curryLeft x).\nY is the cone 0 ⨯ X of Simon Ch. 6, 2.26 (steps 0 and 3–6 of the parent proof).",
+  "lean_statement": "∀ (P q : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1)) (R : IMRep (univ : Set (Euclid P)) (q + 1)), R.Represents X → R.carrier ⊆ X.support → R.measure univ ≠ ∞ → X.boundary = 0 → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1 + 1), Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ x ∈ X.support, (η : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ Y ω = X η",
+  "lean_name": "dimred_cs_sos_cfs_cone_current",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.radial_homotopy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.radial_homotopy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-77a7f533dd-a1"
+}
