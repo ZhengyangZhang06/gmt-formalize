@@ -555,6 +555,26 @@ theorem Submission.ecf_cp_gc_orth_residual : ∀ (P k : ℕ) (a : Euclid P) (w :
     rw [mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _), hp]
     exact le_add_of_nonneg_right (mul_self_nonneg _)
 
+/-- The cone Jacobian (Simon 6.2.30, 6.3.10 for `h(t, x) = t x`).  Write `Γ(v) = det[⟨vᵢ, vⱼ⟩]`
+for the Gram determinant of a family `v`, `J = √Γ`, and `(a, w) = Fin.cons a w`.
+(i) `Γ(a, t·w) = (tᵏ)²·Γ(a, w)`, so `J(a, t·w) = tᵏ·J(a, w)` for `t ≥ 0`.
+(ii) For the residual `a' = a - ∑ cₗ wₗ` of `a` orthogonal to every `wⱼ`, with `‖a'‖ ≤ ‖a‖`, shear
+invariance and the orthogonal block formula give `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, so
+`J(a, w) = ‖a'‖·J(w) ≤ ‖a‖·J(w)`.  No independence of `w` is needed. -/
+theorem Submission.ecf_cp_gram_cone : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), (∀ t : ℝ, 0 ≤ t → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j))) = t ^ k * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)))) ∧ Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))) ≤ ‖a‖ * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j))) := by
+  intro P k a w
+  refine ⟨fun t ht => ?_, ?_⟩
+  · -- (i): `√((tᵏ)²·Γ) = √((tᵏ)²)·√Γ = tᵏ·√Γ`, as `tᵏ ≥ 0`
+    have h := congrArg Real.sqrt (Submission.ecf_cp_gc_det_smul P k a w t)
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (pow_nonneg ht k)] at h
+    exact h
+  · -- (ii): `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, then `√(‖a'‖²·Γ(w)) = ‖a'‖·√Γ(w)`
+    obtain ⟨c, horth, hle⟩ := Submission.ecf_cp_gc_orth_residual P k a w
+    have h := congrArg Real.sqrt ((Submission.ecf_cp_gc_det_shear P k a w c).symm.trans
+      (Submission.ecf_cp_gc_det_orth P k _ w horth))
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
+    exact h.trans_le (mul_le_mul_of_nonneg_right hle (Real.sqrt_nonneg _))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
