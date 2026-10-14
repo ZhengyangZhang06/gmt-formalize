@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8f2c21a799d60394e8bb6598aef47709ea6f45613dbc8c112bf9c38e8e77b752",
+  "git_delta": {
+    "base_commit": "9438ea7b92d4428b7ece7e90ae6ae97bfc4b94ef",
+    "candidate_commit": "3a6e615fcc74a863cc92f8ac71411de292836e25",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sr_harmonic_decay",
+    "diff_sha256": "73f0a8d5a590ba1b1a674d82b908f91571fcdfc68386624d435e89f9be481bdf",
+    "source_sha256": "af57e323fc02a3791f79deda93e347202c58bfb00205fb44dac28dba3cd0df80",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sr_harmonic_decay",
+      "statement": "∀ (m k : ℕ), 1 ≤ m → ∃ C : ℝ, 0 < C ∧ ∀ (x₀ : Euclid m) (R : ℝ) (h : Euclid m → Euclid k), 0 < R → (∀ n : ℕ, ContDiffOn ℝ n h (ball x₀ R)) → (∀ x ∈ ball x₀ R, ∑ i : Fin m, iteratedFDeriv ℝ 2 h x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun x => ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) → ∀ r : ℝ, 0 < r → r ≤ R → (∫ x in ball x₀ r, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ r, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ (m + 2) * ∫ x in ball x₀ R, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ R, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) ∧ ∫ x in ball x₀ r, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ m * ∫ x in ball x₀ R, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
