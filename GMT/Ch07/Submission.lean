@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, proof of Ch. 6, 5.1, (31)** (integer median): an integer-valued `μ`-a.e.-measurable
+`u` on a probability space has an integer `β` with `μ{u ≥ β} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2`.
+`F(t) = μ{u ≤ t}` is nondecreasing, tends to `1` along `ℕ` (continuity from below) and to `0`
+along `−ℕ` (continuity from above, the sets `{u ≤ t}` being `μ`-null-measurable), so
+`{z ∈ ℤ : F(z) ≥ 1/2}` has a least element `β`; then `F(β − 1) < 1/2`, and as `u` is
+integer-valued, `{u ≥ β} = {u ≤ β − 1}ᶜ` has measure `1 − F(β − 1) > 1/2`. -/
+theorem Submission.cmcdt_cbm_im_integer_median_exists : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)} := by
+  intro X _ μ u _ hu hint
+  -- the sublevel sets `{u ≤ t}` are null-measurable, and `F(t) = μ{u ≤ t}` is nondecreasing
+  have hnm : ∀ t : ℝ, NullMeasurableSet {x | u x ≤ t} μ := fun t =>
+    hu.nullMeasurableSet_preimage measurableSet_Iic
+  have hmono : ∀ s t : ℝ, s ≤ t → μ.real {x | u x ≤ s} ≤ μ.real {x | u x ≤ t} :=
+    fun s t hst => measureReal_mono fun x (hx : u x ≤ s) => hx.trans hst
+  -- upper tail: `F(n) → 1` (continuity from below)
+  obtain ⟨n₁, hn₁⟩ : ∃ n : ℕ, 1 / 2 < μ.real {x | u x ≤ (n : ℝ)} := by
+    have hm : Monotone fun n : ℕ => {x | u x ≤ (n : ℝ)} :=
+      fun m n hmn x (hx : u x ≤ m) => hx.trans (Nat.cast_le.mpr hmn)
+    have hU : (⋃ n : ℕ, {x | u x ≤ (n : ℝ)}) = univ :=
+      eq_univ_of_forall fun x => mem_iUnion.mpr (exists_nat_ge (u x))
+    have h := tendsto_measure_iUnion_atTop (μ := μ) hm
+    rw [hU, measure_univ] at h
+    have h' := (ENNReal.tendsto_toReal ENNReal.one_ne_top).comp h
+    rw [ENNReal.toReal_one] at h'
+    exact (h'.eventually (lt_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1))).exists
+  -- lower tail: `F(-n) → 0` (continuity from above)
+  obtain ⟨n₀, hn₀⟩ : ∃ n : ℕ, μ.real {x | u x ≤ -(n : ℝ)} < 1 / 2 := by
+    have hm : Antitone fun n : ℕ => {x | u x ≤ -(n : ℝ)} :=
+      fun m n hmn x (hx : u x ≤ -(n : ℝ)) => hx.trans (neg_le_neg (Nat.cast_le.mpr hmn))
+    have hI : (⋂ n : ℕ, {x | u x ≤ -(n : ℝ)}) = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => ?_
+      obtain ⟨n, hn⟩ := exists_nat_gt (-u x)
+      have hxn : u x ≤ -(n : ℝ) := mem_iInter.mp hx n
+      linarith
+    have h := tendsto_measure_iInter_atTop (μ := μ) (fun n => hnm _) hm ⟨0, measure_ne_top _ _⟩
+    rw [hI, measure_empty] at h
+    have h' := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h
+    rw [ENNReal.toReal_zero] at h'
+    exact (h'.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).exists
+  -- `β`: the least integer `z` with `F(z) ≥ 1/2`
+  obtain ⟨β, hβ, hβmin⟩ := Int.exists_least_of_bdd
+    (P := fun z : ℤ => 1 / 2 ≤ μ.real {x | u x ≤ (z : ℝ)})
+    ⟨-(n₀ : ℤ), fun z hz => by
+      by_contra hlt
+      have hz' : (z : ℝ) ≤ -(n₀ : ℝ) := by exact_mod_cast (not_le.mp hlt).le
+      linarith [hmono _ _ hz']⟩
+    ⟨n₁, by exact_mod_cast hn₁.le⟩
+  refine ⟨β, ?_, hβ⟩
+  -- `F(β - 1) < 1/2` by minimality
+  have hβ1 : μ.real {x | u x ≤ ((β - 1 : ℤ) : ℝ)} < 1 / 2 := by
+    by_contra h
+    have := hβmin (β - 1) (not_lt.mp h)
+    omega
+  -- `u` is integer-valued, so `{β ≤ u} = {u ≤ β - 1}ᶜ`
+  have hset : {x | (β : ℝ) ≤ u x} = {x | u x ≤ ((β - 1 : ℤ) : ℝ)}ᶜ := by
+    ext x
+    obtain ⟨z, hz⟩ := hint x
+    rw [mem_compl_iff, mem_ofPred, mem_ofPred, hz, Int.cast_le, Int.cast_le]
+    omega
+  rw [hset, probReal_compl_eq_one_sub₀ (hnm _)]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
