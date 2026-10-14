@@ -622,6 +622,54 @@ theorem Submission.idtp_cse_rc_angle_fderiv : ∀ (P : ℕ) (Q : Submodule ℝ (
   obtain ⟨hf, hDf⟩ := Submission.idtp_cse_rc_af_polar_angle_fderiv P a e x hx.ne'
   exact ⟨hf, fun v => by rw [hDf v, hnorm x]⟩
 
+/-- **Support estimate for the angular test function** (steps 3–4 of the test-function
+construction in the rotation argument for cone sectors, Simon 7.3).  Write `π = Q.starProjection`,
+`α = ⟨y, a⟩ > 0` and `β = ⟨y, e⟩`, and assume `|π y|² = α² + β²`.  If `0 < s ≤ 1/4`,
+`||y| − 1| < s`, `|arctan (β / α)| < s` and `|y − π y| < s |y|`, then `α > 1/2` and `|y| < 5/4`.
+* `s ≤ 1/4 < π/4 = arctan 1` and `arctan` is increasing and odd, so `−1 < β / α < 1`; as `α > 0`,
+  this is `−α < β < α`, hence `β² < α²`.
+* `3/4 < |y| < 5/4`, and Pythagoras `|y|² = |π y|² + |y − π y|²` with `|y − π y|² < s² |y|²`,
+  `s² ≤ 1/16` gives `|π y|² > (15/16) |y|² > 135/256`.
+* So `2 α² > α² + β² = |π y|² > 135/256`, i.e. `α² > 135/512 > (1/2)²`, and `α > 1/2`. -/
+theorem Submission.idtp_cse_rc_tf_support_bound : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e y : Euclid P) (s : ℝ), 0 < s → s ≤ 1 / 4 → ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 → 0 < inner ℝ y a → |‖y‖ - 1| < s → |Real.arctan (inner ℝ y e / inner ℝ y a)| < s → ‖y - Q.starProjection y‖ < s * ‖y‖ → 1 / 2 < inner ℝ y a ∧ ‖y‖ < 5 / 4 := by
+  intro P Q a e y s hs hs4 hproj ha hy harc hq
+  -- Step 1: `s ≤ 1/4 < π/4` (as `π ≥ 2`), and `−s < arctan (β / α) < s`
+  have hpi : s < Real.pi / 4 := by linarith [Real.two_le_pi]
+  obtain ⟨harc₁, harc₂⟩ := abs_lt.1 harc
+  -- Step 2: `−1 < β / α < 1`, since `arctan` is monotone with `arctan (±1) = ±π/4`
+  have ht₁ : inner ℝ y e / inner ℝ y a < 1 := by
+    by_contra h
+    have h' := Real.arctan_strictMono.monotone (not_lt.1 h)
+    rw [Real.arctan_one] at h'
+    linarith
+  have ht₂ : -1 < inner ℝ y e / inner ℝ y a := by
+    by_contra h
+    have h' := Real.arctan_strictMono.monotone (not_lt.1 h)
+    rw [Real.arctan_neg, Real.arctan_one] at h'
+    linarith
+  -- Step 3: multiplying by `α > 0` gives `−α < β < α`, hence `β² < α²`
+  rw [div_lt_one ha] at ht₁
+  rw [lt_div_iff₀ ha] at ht₂
+  have hβα : inner ℝ y e ^ 2 < inner ℝ y a ^ 2 := by nlinarith
+  -- Step 4: Pythagoras `|y|² = |π y|² + |y − π y|²`, as `π_{Qᗮ} y = y − π y`
+  have hpyth : ‖y‖ ^ 2 = ‖Q.starProjection y‖ ^ 2 + ‖y - Q.starProjection y‖ ^ 2 := by
+    rw [← Submodule.starProjection_orthogonal_val]
+    exact Q.norm_sq_eq_add_norm_sq_starProjection y
+  -- Step 5: `3/4 < |y| < 5/4`, so `|y|² > 9/16`
+  obtain ⟨hy₁, hy₂⟩ := abs_lt.1 hy
+  have hy34 : 3 / 4 < ‖y‖ := by linarith
+  have hysq : 9 / 16 < ‖y‖ ^ 2 := by nlinarith
+  -- Step 6: `|y − π y|² < s² |y|²` and `s² ≤ 1/16`, so `|π y|² > (15/16) |y|² > 135/256`
+  have hq2 : ‖y - Q.starProjection y‖ ^ 2 < (s * ‖y‖) ^ 2 :=
+    pow_lt_pow_left₀ hq (norm_nonneg _) two_ne_zero
+  have hs2 : s ^ 2 ≤ 1 / 16 := by nlinarith
+  have hπ : 135 / 256 < ‖Q.starProjection y‖ ^ 2 := by
+    nlinarith [mul_le_mul_of_nonneg_right hs2 (sq_nonneg ‖y‖)]
+  -- Step 7: `2 α² > α² + β² = |π y|² > 135/256`, so `α² > (1/2)²` and `α > 1/2`
+  refine ⟨?_, by linarith⟩
+  have hα2 : (1 / 2 : ℝ) ^ 2 < inner ℝ y a ^ 2 := by nlinarith
+  exact (pow_lt_pow_iff_left₀ (by norm_num) ha.le two_ne_zero).1 hα2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
