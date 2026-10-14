@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "poincar[eé] inequality|poincare_inequality|poincareInequality|dimred_mbl_dt_cbm_sp_",
+        "map_addHaar_smul|lintegral_mul_left_eq_self|lintegral_lintegral_swap|Measurable.lintegral_prod_right.|integral_eq_lintegral_of_nonneg_ae|integral_eq_sub_of_hasDerivAt |PiLp.volume_preserving_ofLp|volume_pi_Ioo|theorem EuclideanSpace.norm_eq|theorem setLIntegral_mono.|Bornology.IsBounded.measure_lt_top",
+        "[x.get('id') for x in values if x.get('lean_name')==c['lean_name']]",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent_smooth_poincare_9426_dqnf6aqm/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9426bce89d/parent-child-handoff.json",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/ProofsAndAssembly.lean",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/ProofsAndAssembly.log",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/Challenge_segment_bound.lean",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/Challenge_convex_slice_bound.lean",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/Challenge_convex_poincare.lean",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/Challenge_cube_geometry.lean",
+        "/tmp/independent_smooth_poincare_9426_dqnf6aqm/Challenge_parent.lean"
+      ],
+      "conclusion": "Verified the frozen handoff and matching project/mathlib revisions. The search found Ch02 BV and Ch04 varifold specifications, but no directly reusable proved smooth double-integral inequality; the mathlib inequality-name search had no match. Inspected the pinned calculus, Haar scaling, Tonelli, Bochner conversion, Euclidean norm and volume APIs. Independently compiled the unmodified four supplied proof appendices and supplied parent assembly; all use only propext, Classical.choice and Quot.sound. All five frozen types separately elaborate in generated comparator challenge files without the proposed implementations. Both statement validators accept them unchanged. All four proposed names are bare identifiers and unreserved in the 2092-node DAG. The split appropriately separates calculus, slicing, integral assembly and geometry; dependencies are acyclic, and the supplied composition proves exactly the selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all stated hypotheses and the interval-integral conclusion. The proof establishes continuous differentiability along the correctly oriented segment, applies FTC, and bounds the derivative using the operator norm with justified integral monotonicity. It is complete for every n, including zero, and uses no child or parent theorem."
+    },
+    {
+      "key": "convex_slice_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the measurable ENNReal-valued slice bound. The indicator extension, positive dilation change of variables, translation invariance, Tonelli swap and convex-image containment justify both parameter cases. Extended-real multiplication handles zero and infinite values without unstated finiteness assumptions. The proof is complete and independent of other children."
+    },
+    {
+      "key": "convex_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes convexity, measurability, nonnegative diameter bound and global C¹ regularity exactly as stated. Boundedness gives compact closure and finite gradient lower integral; measurable Tonelli rearrangements and finite-upper-bound toReal monotonicity justify the Bochner conclusion. Its only sibling dependencies are exactly segment_bound and convex_slice_bound. Specialization with cube_geometry proves the selected parent's exact constant."
+    },
+    {
+      "key": "cube_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly records the four stated geometric conclusions under δ ≥ 0. Coordinate inequalities prove convexity and measurability; the Euclidean L² norm gives the diameter estimate. Volume preservation of WithLp.ofLp and the product-box formula give volume ≤ 1 without assuming a sup-norm isometry. The proof also handles n = 0 and empty cubes and has no dependencies."
+    }
+  ],
+  "required_changes": []
+}

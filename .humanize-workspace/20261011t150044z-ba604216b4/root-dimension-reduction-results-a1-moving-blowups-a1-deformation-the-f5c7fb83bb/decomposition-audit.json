@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dimred_mbl_dt_cbm_bvp|cmcdtfrfg_cube_volume|BVPoincare",
+        "lemma Integrable.comp_fst|lemma Integrable.comp_snd|theorem Integrable.integral_prod_left|theorem setIntegral_prod",
+        "lemma integral_mono_of_nonneg|lemma abs_integral_le_integral_abs",
+        "volume_preserving_ofLp",
+        "theorem volume_pi_Ioo",
+        "theorem restrict_apply_univ",
+        "theorem prod_restrict",
+        "tendsto_setIntegral_of_monotone",
+        "theorem iUnion_prod_of_monotone",
+        "ContinuousOn.integrableOn_compact",
+        "git show a104b3873f3c979b07a45e8d97d3d4d1d84c106a:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bvp-independent-audit-solitgtp/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f5c7fb83bb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f5c7fb83bb/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f53301754d/accepted-candidate.json",
+        "/tmp/bvp-independent-audit-solitgtp/VerifiedAssembly.lean",
+        "/tmp/bvp-independent-audit-solitgtp/Challenge_cube_volume.lean",
+        "/tmp/bvp-independent-audit-solitgtp/Challenge_osc_l1_limit.lean",
+        "/tmp/bvp-independent-audit-solitgtp/Challenge_osc_exhaustion.lean",
+        "/tmp/bvp-independent-audit-solitgtp/Challenge_mean_dev.lean"
+      ],
+      "conclusion": "The pinned revisions and contract context match. Searches found no proposed child declarations in the snapshot; Ch02.BVPoincare is an unproved specification. The cited measure-theoretic lemmas have the required hypotheses. All four frozen types independently elaborate in regenerated comparator challenges, without child implementations. All four supplied Lean proofs and an assembly of the exact selected parent from the two exact sibling hypotheses independently compile using only propext, Classical.choice and Quot.sound. The split is appropriate: every child contributes to the selected parent, and the sole internal dependency is osc_exhaustion on cube_volume. The three new bare names are unreserved. Reused cmcdtfrfg_cube_volume is comparator-accepted with an identical frozen type and proof."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including dimension zero. The measure-preserving coordinate preimage and open-box product formula prove the result completely. Accepted-declaration reuse satisfies type identity, compatibility and axiom checks."
+    },
+    {
+      "key": "osc_l1_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The compact-ball argument establishes finite measure and integrability without relying on cube_volume. Fubini and two justified integrations give D(u) ≤ K + 2aε_k; convergence yields the conclusion. The proof covers every δ ≥ 0, including empty cubes, and is complete and non-circular."
+    },
+    {
+      "key": "osc_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Measurability, monotonicity and finite-coordinate exhaustion are established explicitly. cube_volume supplies finite measure; product integrability, increasing-set convergence and Fubini then prove the bound. Its only child dependency is correctly directed toward cube_volume."
+    },
+    {
+      "key": "mean_dev",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition correctly permits arbitrary S: restrict_apply_univ requires no measurability assumption on S. Unit mass justifies the constant-integral identity, product integrability justifies Fubini, and the absolute-integral inequality followed by integration proves the conclusion completely without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof (face notation, Hⁿ(F̆) = 1, diam F ≤ √P, and Lemma 2.1), written for faces of an arbitrary common dimension k, as the parent proof notes that Lemma 2.1 holds for j-faces of any common dimension.
+
+Notation. e_i := EuclideanSpace.single i (1 : ℝ) ∈ Euclid P. For p = (ι, b): Φ_p(y) := WithLp.toLp 2 (fun i => (b i : ℝ)) + Σ_j y_j • e_{ι(j)}. Q₁^k := {y : ∀ i, 0 < y_i < 1}, C^k := {y : ∀ i, 0 ≤ y_i ≤ 1}. For v ∈ Euclid P, ‖v‖² = Σ_i v_i² (EuclideanSpace.norm_eq, EuclideanSpace.dist_eq), so |v_i| ≤ ‖v‖ for every coordinate i.
+
+1. Volume. WithLp.ofLp : Euclid k → (Fin k → ℝ) is measure preserving (PiLp.volume_preserving_ofLp), and Q₁^k is the preimage under ofLp of the box Set.pi univ (fun _ => Ioo 0 1). Hence vol(Q₁^k) = Π_{i : Fin k} ENNReal.ofReal(1 − 0) = 1 (Real.volume_pi_Ioo). For k = 0 the empty product is 1.
+2. Coordinates. EuclideanSpace.single (ι j) 1 has i-th coordinate 1 if i = ι(j) and 0 otherwise, so Φ_p(y)_i = b_i + Σ_j [ι(j) = i] y_j. Since ι is injective (strictly increasing), Φ_p(y)_{ι(j)} = b_{ι(j)} + y_j and Φ_p(y)_i = b_i for i ∉ range ι.
+3. (a) Isometry. By step 2, Φ_p(y) − Φ_p(y') has coordinate y_j − y'_j at ι(j) and 0 at every i ∉ range ι, and each i is hit by at most one j. So ‖Φ_p y − Φ_p y'‖² = Σ_j (y_j − y'_j)² = ‖y − y'‖², i.e. dist(Φ_p y, Φ_p y') = dist(y, y').
+4. (b) Diameter. For y, y' ∈ C^k, |y_j − y'_j| ≤ 1 for all j, so dist(y, y')² ≤ k. Since ι : Fin k → Fin P is injective, k ≤ P. By (a), dist(Φ_p y, Φ_p y') = dist(y, y') ≤ √k ≤ √P.
+5. (c) Set-up. Let p = (ι, b) ≠ q = (ι', b') with ι, ι' strictly increasing, y ∈ Q₁^k, y' ∈ C^k, x := Φ_p(y), z := Φ_q(y'). Then dist(x, z) ≥ |x_i − z_i| for every i.
+6. Case A: some j has z_{ι(j)} ∉ (b_{ι(j)}, b_{ι(j)} + 1). Since x_{ι(j)} = b_{ι(j)} + y_j with 0 < y_j < 1, every real number outside that open interval has distance ≥ min(y_j, 1 − y_j) from x_{ι(j)}. Hence dist(x, z) ≥ |x_{ι(j)} − z_{ι(j)}| ≥ min(y_j, 1 − y_j): the second alternative holds.
+7. Case B: b_{ι(j)} < z_{ι(j)} < b_{ι(j)} + 1 for every j; in particular no z_{ι(j)} is an integer.
+ (i) range ι ⊆ range ι': if ι(j) ∉ range ι', step 2 for q gives z_{ι(j)} = b'_{ι(j)} ∈ ℤ, which is impossible. Both ranges have k elements, so they are equal, and two strictly increasing maps Fin k → Fin P with the same range coincide (each sends j to the (j+1)-st smallest element of the common range; formally by induction on j). So ι = ι'.
+ (ii) b and b' agree on range ι: for each j, z_{ι(j)} = b'_{ι(j)} + y'_j with y'_j ∈ [0, 1] and z_{ι(j)} ∉ ℤ, so b'_{ι(j)} = ⌊z_{ι(j)}⌋; likewise b_{ι(j)} = ⌊z_{ι(j)}⌋ because b_{ι(j)} < z_{ι(j)} < b_{ι(j)} + 1.
+ (iii) Since p ≠ q and ι = ι', b ≠ b'; by (ii) there is i ∉ range ι with b_i ≠ b'_i. By step 2, x_i = b_i and z_i = b'_i are distinct integers, so dist(x, z) ≥ |b_i − b'_i| ≥ 1: the first alternative holds.
+8. Cases A and B are exhaustive, which proves (c). For k = 0 there is no j, Case B applies with ι = ι' the empty map, and it gives dist(x, z) ≥ 1. ∎
+
+## Key steps
+
+1. vol(Q₁^k) = 1: Q₁^k is the ofLp-preimage of the box Π(0,1) and ofLp is measure preserving (Real.volume_pi_Ioo).
+2. Coordinates: Φ_p(y)_{ι(j)} = b_{ι(j)} + y_j and Φ_p(y)_i = b_i off range ι; hence Φ_p is an isometry and the closed face has diameter ≤ √k ≤ √P.
+3. Separation, case A: if a coordinate z_{ι(j)} of the other point leaves (b_{ι(j)}, b_{ι(j)} + 1), the distance is ≥ min(y_j, 1 − y_j).
+4. Case B: otherwise range ι ⊆ range ι', so ι = ι' and b, b' agree on range ι (floors); p ≠ q then gives distinct integers b_i ≠ b'_i off range ι and distance ≥ 1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n 'dimred_mbl_dtfr|dtfr_' SNAPSHOT/project GMT lake-packages-25730c7c/simongmt -g '*.lean' (no match); python3 -I scan of RUN/dag.json lean_name fields (1611 nodes): the only 'dtfr' names are the twin's nine cmcdtfr_* (decomposing, not accepted); no duplicate lean_names`
+- `python3 -I scan of the 1023 accepted RUN/dag.json nodes for reusable identical types (IsUnitOrientationOf, approxTangent, support/mass of differences, insertNth/succAbove/removeNth): related lemmas such as cbrld_ns_support_sub_subset, cbrld_ns_massOn_sub_le, dgcr_unitOrientation_eq_or_neg, atsm_approxTangent_le_of_flat and dimred_mbl_fnd_coordinate_divergence_form have different types; none reused`
+- `python3/cat of the twin node root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1: decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json (identical frozen type, accepted 9-child split), and its children's decomposition files (face_geometry 4-child split proved in scratch; skeleton_null atomic with an in-closure route; plane_orientation 2-child split proved in scratch)`
+- `sed/grep of SimonGMT Chapter06 Currents.lean (GeometricCurrentOn, ext, Zero, boundary, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset), Mass.lean (covectorEuclideanNorm, massAdmissibleOn, massOn, mass, massOn_mono, le_massOn), CurrentLocalEquality.lean (VanishesOn, zeroRegion, support), Forms.lean (Covector, DifferentialForm, IsSmoothForm = ContDiff ℝ ∞, exteriorDerivative_apply) and Chapter03 Rectifiable.lean (CountablyRectifiable, countablyRectifiable_range/_iUnion/_of_measure_zero/mono, blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule, support_/regular_euclideanHausdorffMeasure_restrict_submodule)`
+- `rg -n -l on SNAPSHOT/mathlib/Mathlib for Isometry.euclideanHausdorffMeasure_image and euclideanHausdorffMeasure_zero_or_top (Geometry/Euclidean/Volume/Measure.lean), volume_preserving_piFinSuccAbove (MeasureTheory/Constructions/Pi.lean), exists_contDiff_support_eq_eq_one_iff (Geometry/Manifold/PartitionOfUnity.lean), intervalIntegral.integral_eq_sub_of_hasDerivAt (MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean), integral_divergence_of_hasFDerivAt_off_countable' (MeasureTheory/Integral/DivergenceTheorem.lean, not imported) and hausdorffMeasure_of_dimH_lt (Topology/MetricSpace/HausdorffDimension.lean, not imported)`
+- `lake env lean /tmp/dmfr/lean/Closure.lean, Closure2.lean, Closure3.lean, Closure4.lean: #check of every Mathlib/SimonGMT name cited in the child proofs under import GMT.Ch07.Submission (all resolve; integral_divergence_of_hasFDerivAt_off_countable', hausdorffMeasure_of_dimH_lt, dimH_univ_eq_finrank, LipschitzWith.dimH_image_le, exists_smooth_tsupport_subset, Integrable.bdd_mul' and AlternatingMap.toContinuousAlternatingMap are unknown and are not cited)`
+- `lake env lean /tmp/dmfr/lean/Types.lean (11 child types + CB + selected type, comparator challenge form, only sorry warnings); InstCheck.lean (clean); Assembly.lean (#print axioms DMFRAsm.check: propext, Classical.choice, Quot.sound); E2E.lean (comparator-style target compiles from Submission stand-ins); FD.lean (face_divergence and current_calculus proved, standard axioms)`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose, _existing_lean_name_problem, _solve_children, _accepted_checkpoint) and decomposition_scope.py; verifier/gmt-compare.py (child_modules, contract_scope, CHILD_TARGET)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bca4c27bf8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-14c5ade45a/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-1dd1ac6935/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/tmp/dmfr/lean/Types.lean`
+- `/tmp/dmfr/lean/InstCheck.lean`
+- `/tmp/dmfr/lean/Assembly.lean`
+- `/tmp/dmfr/lean/E2E.lean`
+- `/tmp/dmfr/lean/FD.lean`
+- `/tmp/dmfr/lean/Closure.lean`
+- `/tmp/dmfr/lean/Closure2.lean`
+- `/tmp/dmfr/lean/Closure3.lean`
+- `/tmp/dmfr/lean/Closure4.lean`
+
+Pins match: project b4d606db, Mathlib 25730c7c and SimonGMT 2b36630. Submission.lean is byte-identical to the frozen contract.
+Neither the snapshot project nor Mathlib contains lattice-face currents, cubical Stokes, polyhedral chains or a deformation theorem, so these obligations are new. The twin node cmcdt_face_replacement has the identical frozen type and an audited 9-child split, but its cmcdtfr_* declarations are reserved by an active branch and not accepted. Accepted DAG lemmas with related content have different types. So all eleven children get fresh dimred_mbl_dtfr_* names, which collide with nothing in the DAG, the snapshot, Mathlib or SimonGMT.
+Every cited Mathlib or SimonGMT name resolves under the frozen imports. Two lemmas cited by the twin's proofs do not resolve there: integral_divergence_of_hasFDerivAt_off_countable' (DivergenceTheorem.lean) and hausdorffMeasure_of_dimH_lt (HausdorffDimension.lean). They are not cited here; the chain_boundary and skeleton_null proofs use in-closure replacements.
+The 11 child types elaborate in the comparator's scope. A Lean assembly proves the exact selected type from CB's frozen type and the 11 child types, using only propext, Classical.choice and Quot.sound. The new children face_divergence and current_calculus were proved in full in scratch.

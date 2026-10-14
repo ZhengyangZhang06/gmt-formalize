@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.telescoping_real-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1",
+  "depth": 5,
+  "title": "A telescoping real series whose remainders tend to zero has sum zero",
+  "statement": "Let a, k : ℕ → ℝ and s ∈ ℝ. Suppose that the real series Σ_j a_j has sum s (HasSum a s, i.e. unconditional summation in ℝ), that a_0 = −k_0 and a_{j+1} = k_j − k_{j+1} for every j ∈ ℕ, and that k_j → 0 as j → ∞. Then s = 0.",
+  "lean_statement": "∀ (a k : ℕ → ℝ) (s : ℝ), HasSum a s → a 0 = -k 0 → (∀ j, a (j + 1) = k j - k (j + 1)) → Tendsto k atTop (𝓝 0) → s = 0",
+  "lean_name": "cmcsdtd_hasSum_telescoping_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-eefa0a396e-a1"
+}
