@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f866b36692a41b88a665b22a6cd141e6a1aae05837968a1c6a286768ac29a6e5",
+  "git_delta": {
+    "base_commit": "1496adcf93fa3bd4ef6254fdf39e32901bf36c12",
+    "candidate_commit": "5b997f8f15d4f49c3b04f77403d8e84a04b7b628",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sp_cp_action_extDeriv_eq_zero",
+    "diff_sha256": "97c6e3abad1cc68b187e0c8ecab5c1735753fa27b0b5fdb62da42ab6ed390eae",
+    "source_sha256": "d0387a4263022217ba92d903e7848bf15d53bee166a8c5af0a6f666c65eacc00",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_cp_action_extDeriv_eq_zero",
+      "statement": "∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (R : IMRep (univ : Set (Euclid P)) (k + 1)) (K : Set (Euclid P)) (η : DifferentialForm (Euclid P) k), R.Represents X → IsCompact K → R.measure Kᶜ = 0 → X.boundary = 0 → IsSmoothForm η → R.action (exteriorDerivative η) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
