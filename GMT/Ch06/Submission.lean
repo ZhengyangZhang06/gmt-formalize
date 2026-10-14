@@ -359,6 +359,521 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): an integer
+multiplicity `Y = τ(M, θ, ξ) ∈ 𝒟₀(U)` is a locally finite integer combination of point masses,
+`Y(ω) = ∑_{x ∈ N} c(x) ω(x)` with `c(x) ≠ 0` on `N = M`.  `H⁰` is counting measure, so `H⁰`-null
+sets are empty and sets of finite `H⁰` measure are finite.  As `θ ≥ 1` on `M` and `θ` is locally
+`H⁰`-integrable, `M ∩ K` is finite for compact `K ⊆ U`; the orientation condition holds at every
+point of `M`, where `ξ(x) = ±[[x]]`, so `c(x) = θ(x) ξ(x)(1) = ±θ(x)` is a nonzero integer, and the
+integral over `M` reduces to the finite sum over `M ∩ spt ω`. -/
+theorem Submission.br_zd_im_dirac_repr :
+    ∀ (P : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U 0), IsIntegerMultiplicity Y → ∃ (N : Set (Eucl P)) (c : Eucl P → ℤ), N ⊆ U ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) ∧ (∀ x ∈ N, c x ≠ 0) ∧ ∀ ω : TestFormOn U 0, Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  classical
+  rintro P U Y ⟨M, θ, ξ, hT, hθ, hY⟩
+  set μ : Measure (Eucl P) := (μHE[0] : Measure (Eucl P)) with hμ
+  -- `H⁰ = μH[0]` gives every point mass `1`.
+  have hpt : ∀ x : Eucl P, μ {x} = 1 := fun x => by
+    rw [hμ, Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  -- `H⁰`-null sets are empty.
+  have hnull : ∀ E : Set (Eucl P), μ E = 0 → E = ∅ := by
+    intro E hE
+    refine eq_empty_of_forall_notMem fun x hx => ?_
+    have h1 := measure_mono (μ := μ) (singleton_subset_iff.2 hx)
+    rw [hpt, hE] at h1
+    exact absurd h1 (by simp)
+  -- `H⁰` of a finset is its cardinality.
+  have hcard : ∀ F : Finset (Eucl P), μ (F : Set (Eucl P)) = F.card := by
+    intro F
+    rw [← sum_measure_singleton]
+    simp [hpt]
+  -- Sets of finite `H⁰` measure are finite.
+  have hfin : ∀ E : Set (Eucl P), μ E < ∞ → E.Finite := by
+    intro E hE
+    by_contra hinf
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt hE.ne
+    obtain ⟨F, hFE, hFcard⟩ := Set.Infinite.exists_subset_card_eq hinf n
+    have h1 := measure_mono (μ := μ) hFE
+    rw [hcard, hFcard] at h1
+    exact absurd (h1.trans_lt hn) (lt_irrefl _)
+  -- Integrals over finsets are finite sums.
+  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ), IntegrableOn g (F : Set (Eucl P)) μ := by
+    intro F g
+    rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
+      integrableOn_finset_iUnion]
+    exact fun x _ => integrableOn_singleton (hx := by rw [hpt]; exact ENNReal.one_lt_top)
+  have hsum : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
+      ∫ x in (F : Set (Eucl P)), g x ∂μ = ∑ x ∈ F, g x := by
+    intro F g
+    rw [setIntegral_finset F (hint F g)]
+    simp only [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
+  -- `θ ≥ 1` on `M`.
+  have hθ1 : ∀ x ∈ M, (1 : ℝ) ≤ θ x := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hθ x hx
+    have hpos := hT.pos x hx
+    rw [hk] at hpos ⊢
+    exact_mod_cast Nat.one_le_iff_ne_zero.2 (by rintro rfl; simp at hpos)
+  -- Local finiteness: `H⁰(M ∩ K) ≤ ∫_{M ∩ K} θ dH⁰ < ∞`.
+  have hlocfin : ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (M ∩ K).Finite := by
+    intro K hK hKU
+    apply hfin
+    have hMK : NullMeasurableSet (M ∩ K) μ :=
+      hT.nullMeasurableSet.inter hK.isClosed.measurableSet.nullMeasurableSet
+    have h1 : IntegrableOn (fun _ => (1 : ℝ)) (M ∩ K) μ := by
+      refine (hT.integrableOn K hK hKU).mono' aestronglyMeasurable_const ?_
+      filter_upwards [ae_restrict_mem₀ hMK] with x hx
+      simpa using hθ1 x hx.1
+    rcases (integrableOn_const_iff (by simp)).1 h1 with h | h
+    · simp at h
+    · exact h
+  -- Orientation at every point of `M`: its failure set is `H⁰`-null in `M`, hence empty.
+  set ε : NVector (Eucl P) 0 := simpleNVector (![] : Fin 0 → Eucl P) with hε
+  have horient : ∀ x ∈ M, ξ x = ε ∨ ξ x = -ε := by
+    have h := hT.orients
+    rw [Filter.Eventually, mem_ae_iff] at h
+    have h2 := Measure.le_restrict_apply (μ := μ) (s := M) _ |>.trans_eq h
+    rw [nonpos_iff_eq_zero] at h2
+    have h3 := hnull _ h2
+    intro x hx
+    have hx' : x ∉ {x | ∃ τ : Fin 0 → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt 0 M θ x (Submodule.span ℝ (range τ)) ∧
+        (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ)}ᶜ := by
+      intro hmem
+      have : x ∈ ({x | ∃ τ : Fin 0 → Eucl P, Orthonormal ℝ τ ∧
+        HasWeightedApproximateTangentSpaceAt 0 M θ x (Submodule.span ℝ (range τ)) ∧
+        (ξ x = simpleNVector τ ∨ ξ x = -simpleNVector τ)}ᶜ ∩ M) := ⟨hmem, hx⟩
+      rw [h3] at this
+      exact this
+    rw [Set.notMem_compl_iff] at hx'
+    obtain ⟨τ, -, -, hτ⟩ := hx'
+    rwa [Subsingleton.elim τ ![]] at hτ
+  -- The unit `0`-covector `1`: every `0`-covector is `α = α(![]) • 1`.
+  set one0 : Covector (Eucl P) 0 :=
+    ContinuousAlternatingMap.constOfIsEmpty ℝ (Eucl P) (Fin 0) 1 with hone0
+  have hdecomp : ∀ (α : Covector (Eucl P) 0), α = α ![] • one0 := by
+    intro α
+    ext v
+    rw [Subsingleton.elim v ![]]
+    simp [one0]
+  have hpair : ∀ (w : NVector (Eucl P) 0) (α : Covector (Eucl P) 0), w α = α ![] * w one0 := by
+    intro w α
+    conv_lhs => rw [hdecomp α]
+    rw [map_smul, smul_eq_mul]
+  -- The coefficients `c(x) = ⌊θ(x) ξ(x)(1)⌋`, equal to `±θ(x) ∈ ℤ ∖ {0}` on `M`.
+  let c : Eucl P → ℤ := fun x => ⌊θ x * ξ x one0⌋
+  have hcM : ∀ x ∈ M, (c x : ℝ) = θ x * ξ x one0 ∧ c x ≠ 0 := by
+    intro x hx
+    obtain ⟨k, hk⟩ := hθ x hx
+    have hk1 : (1 : ℝ) ≤ k := hk ▸ hθ1 x hx
+    have hk1' : (1 : ℤ) ≤ k := by exact_mod_cast hk1
+    have hεone : ε one0 = 1 := by simp [ε, one0]
+    rcases horient x hx with h | h
+    · have he : θ x * ξ x one0 = ((k : ℤ) : ℝ) := by rw [h, hεone, hk]; simp
+      refine ⟨by simp only [c, he, Int.floor_intCast], ?_⟩
+      simp only [c, he, Int.floor_intCast]
+      omega
+    · have he : θ x * ξ x one0 = (Int.cast (-(k : ℤ)) : ℝ) := by
+        rw [h, neg_apply, hεone, hk]; simp
+      refine ⟨by simp only [c, he, Int.floor_intCast], ?_⟩
+      simp only [c, he, Int.floor_intCast]
+      omega
+  refine ⟨M, c, hT.subset, hlocfin, fun x hx => (hcM x hx).2, ?_⟩
+  -- The integral over `M` is the finite sum over `S = M ∩ spt ω`.
+  intro ω
+  set f : DifferentialForm (Eucl P) 0 := (ω : DifferentialForm (Eucl P) 0) with hf
+  have hKc : IsCompact (tsupport f) := ω.property.1.2
+  have hKU : tsupport f ⊆ U := ω.property.2
+  have hSfin : (M ∩ tsupport f).Finite := hlocfin _ hKc hKU
+  set S : Finset (Eucl P) := hSfin.toFinset with hS
+  have hSM : (S : Set (Eucl P)) = M ∩ tsupport f := hSfin.coe_toFinset
+  have hzero : ∀ x, x ∉ tsupport f → f x = 0 := fun x hx => image_eq_zero_of_notMem_tsupport hx
+  rw [hY ω, tauAction]
+  rw [setIntegral_eq_of_subset_of_ae_sdiff_eq_zero (s := (S : Set (Eucl P))) hT.nullMeasurableSet
+    (by rw [hSM]; exact inter_subset_left) (Eventually.of_forall fun x hx => ?_)]
+  · rw [hsum, finsum_mem_eq_sum_of_subset _ (t := S) ?_ (by rw [hSM]; exact inter_subset_left)]
+    · refine Finset.sum_congr rfl fun x hx => ?_
+      have hxM : x ∈ M := by
+        have : x ∈ (S : Set (Eucl P)) := hx
+        rw [hSM] at this
+        exact this.1
+      rw [hpair, (hcM x hxM).1]
+      ring
+    · rintro x ⟨hxM, hx0⟩
+      rw [hSM]
+      refine ⟨hxM, subset_tsupport _ ?_⟩
+      intro hfx
+      apply hx0
+      simp [hfx]
+  · have hx' : x ∉ tsupport f := fun h => hx.2 (by rw [hSM]; exact ⟨hx.1, h⟩)
+    have h0 : (ω : DifferentialForm (Eucl P) 0) x = 0 := hzero x hx'
+    simp [h0]
+
+/-- The mass lower bound for a locally finite Dirac sum (the `0`-dimensional step in the proof of
+Simon Ch. 6, 6.3): if `Y(ω) = ∑ᶠ_{x ∈ N} c(x) ω(x)` with `N ∩ K` finite for compact `K ⊆ U`, then
+`∑_{x ∈ S} |c(x)| ≤ M_W(Y)` for every finite `S ⊆ N ∩ W`, `W ⊆ U` open.  Test with
+`ω = ∑_{x ∈ S} sign(c(x)) φₓ`, where the bumps `φₓ` (`φₓ(x) = 1`) have pairwise disjoint
+supports `B(x, δ) ⊆ W` meeting `N` only in `x`: then `|ω| ≤ 1` and `Y(ω) = ∑_{x ∈ S} |c(x)|`. -/
+theorem Submission.br_zd_dirac_massOn_ge :
+    ∀ (P : ℕ) (U W N : Set (Eucl P)) (Y : GeometricCurrentOn U 0) (c : Eucl P → ℤ), IsOpen W →
+      W ⊆ U → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) →
+      (∀ ω : TestFormOn U 0,
+        Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) →
+      ∀ S : Finset (Eucl P), (↑S : Set (Eucl P)) ⊆ N ∩ W →
+        ENNReal.ofReal (∑ x ∈ S, |(c x : ℝ)|) ≤ Y.massOn W := by
+  classical
+  intro P U W N Y c hW hWU hN hY S hS
+  -- A common radius `δ > 0`: for `x ∈ S`, `B̄(x, 2δ) ⊆ W` and `N ∩ B̄(x, 2δ) = {x}`.
+  have hloc : ∀ x ∈ S, ∀ᶠ δ in 𝓝[>] (0 : ℝ),
+      closedBall x (2 * δ) ⊆ W ∧ ∀ y ∈ N, dist y x ≤ 2 * δ → y = x := by
+    intro x hx
+    obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.mp hW x (hS hx).2
+    have hfin : (N ∩ closedBall x (r / 2)).Finite :=
+      hN _ (isCompact_closedBall x (r / 2))
+        (((closedBall_subset_ball (half_lt_self hr)).trans hrW).trans hWU)
+    obtain ⟨ε, hε, hεF⟩ := Metric.isOpen_iff.mp
+      (hfin.subset (sdiff_subset (t := {x}))).isClosed.isOpen_compl x (by simp)
+    filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < min (r / 4) (ε / 4) by positivity)]
+      with δ ⟨hδ0, hδ⟩
+    have h1 : δ < r / 4 := hδ.trans_le (min_le_left _ _)
+    have h2 : δ < ε / 4 := hδ.trans_le (min_le_right _ _)
+    refine ⟨(closedBall_subset_ball (by linarith)).trans hrW, fun y hyN hyx => ?_⟩
+    by_contra hne
+    exact hεF (mem_ball.2 (by linarith)) ⟨⟨hyN, mem_closedBall.2 (by linarith)⟩, hne⟩
+  obtain ⟨δ, hδS, hδ : 0 < δ⟩ :=
+    (((Filter.eventually_all_finset S).2 hloc).and self_mem_nhdsWithin).exists
+  -- Bumps `φ x` with `φ x = 1` on `B̄(x, δ/2)`, support `B(x, δ)`, and signs `s x` of `c x`.
+  let φ : (x : Eucl P) → ContDiffBump x := fun x => ⟨δ / 2, δ, half_pos hδ, half_lt_self hδ⟩
+  let s : Eucl P → ℝ := fun x => if 0 ≤ (c x : ℝ) then 1 else -1
+  have hφ0 : ∀ x y, δ ≤ dist y x → φ x y = 0 := fun x y h => (φ x).zero_of_le_dist h
+  have hφ1 : ∀ x, φ x x = 1 := fun x =>
+    (φ x).one_of_mem_closedBall (mem_closedBall_self (half_pos hδ).le)
+  -- The balls `B(x, δ)`, `x ∈ S`, are pairwise disjoint.
+  have hsep : ∀ x ∈ S, ∀ x' ∈ S, x' ≠ x → ∀ y, dist y x < δ → δ ≤ dist y x' := by
+    intro x hx x' hx' hne y hy
+    by_contra h
+    refine hne ((hδS x hx).2 x' (hS hx').1 ?_)
+    have := dist_triangle x' y x
+    rw [dist_comm x' y] at this
+    linarith
+  let h : Eucl P → ℝ := fun y => ∑ x ∈ S, s x * φ x y
+  have hh0 : ∀ y, h y ≠ 0 → ∃ x ∈ S, dist y x < δ := by
+    intro y hy
+    by_contra hcon
+    exact hy (Finset.sum_eq_zero fun x hx => by
+      rw [hφ0 x y (not_lt.1 fun h' => hcon ⟨x, hx, h'⟩), mul_zero])
+  have hhS : ∀ x ∈ S, h x = s x := by
+    intro x hx
+    rw [show h x = ∑ x' ∈ S, s x' * φ x' x from rfl,
+      Finset.sum_eq_single_of_mem x hx fun x' hx' hne =>
+        by rw [hφ0 x' x (hsep x hx x' hx' hne x (by simpa using hδ)), mul_zero],
+      hφ1, mul_one]
+  have hh1 : ∀ y, |h y| ≤ 1 := by
+    intro y
+    by_cases hy : h y = 0
+    · simp [hy]
+    obtain ⟨x, hx, hyx⟩ := hh0 y hy
+    rw [show h y = ∑ x' ∈ S, s x' * φ x' y from rfl,
+      Finset.sum_eq_single_of_mem x hx fun x' hx' hne =>
+        by rw [hφ0 x' y (hsep x hx x' hx' hne y hyx), mul_zero], abs_mul]
+    have hs : |s x| = 1 := by simp only [s]; split_ifs <;> simp
+    rw [hs, one_mul, abs_of_nonneg (φ x).nonneg]
+    exact (φ x).le_one
+  -- The test form `ω = h • 𝟙`, where `𝟙` is the `0`-covector with value `1`.
+  let e : Covector (Eucl P) 0 :=
+    ContinuousAlternatingMap.constOfIsEmpty ℝ (Eucl P) (Fin 0) (1 : ℝ)
+  let f : DifferentialForm (Eucl P) 0 := fun y => h y • e
+  have hfe : ∀ y, f y ![] = h y := fun y => by simp [f, e]
+  set B : Set (Eucl P) := ⋃ x ∈ S, closedBall x δ
+  have hB : IsCompact B := S.isCompact_biUnion fun x _ => isCompact_closedBall x δ
+  have hBW : B ⊆ W := iUnion₂_subset fun x hx =>
+    (closedBall_subset_closedBall (by linarith)).trans (hδS x hx).1
+  have hfB : ∀ y, y ∉ B → f y = 0 := by
+    intro y hy
+    by_contra hne
+    obtain ⟨x, hx, hyx⟩ := hh0 y fun h0 => hne (by simp [f, h0])
+    exact hy (mem_iUnion₂.2 ⟨x, hx, mem_closedBall.2 hyx.le⟩)
+  have hfsupp : tsupport f ⊆ B :=
+    closure_minimal (fun y hy => by_contra fun hyB => hy (hfB y hyB)) hB.isClosed
+  have hfsmooth : IsSmoothForm f :=
+    (ContDiff.sum fun x _ => contDiff_const.mul (φ x).contDiff).smul contDiff_const
+  have hfcpt : HasCompactSupport f := HasCompactSupport.intro hB hfB
+  let ω : TestFormOn U 0 := ⟨f, show IsTestForm f ∧ tsupport f ⊆ U from
+    ⟨⟨hfsmooth, hfcpt⟩, hfsupp.trans (hBW.trans hWU)⟩⟩
+  have hadm : ω ∈ massAdmissibleOn U 0 W := by
+    refine show tsupport f ⊆ W ∧ ∀ y, covectorEuclideanNorm (f y) ≤ 1 from
+      ⟨hfsupp.trans hBW, fun y => ?_⟩
+    -- For a `0`-covector `α`, the coefficient norm is `|α(![])|`.
+    rw [covectorEuclideanNorm, Fintype.sum_unique, ite_eq_left (Subsingleton.strictMono _),
+      show (fun i => EuclideanSpace.basisFun (Fin P) ℝ ((default : Fin 0 → Fin P) i)) = ![] from
+        Subsingleton.elim _ _, hfe, Real.sqrt_sq_eq_abs]
+    exact hh1 y
+  -- Only the points of `S` contribute to `Y(ω) = ∑ᶠ_{y ∈ N} c(y) h(y)`, and `h = s` on `S`.
+  have hval : Y ω = ∑ x ∈ S, |(c x : ℝ)| := by
+    rw [hY]
+    change ∑ᶠ y ∈ N, (c y : ℝ) * f y ![] = _
+    simp_rw [hfe]
+    rw [finsum_mem_eq_sum_of_inter_support_eq (fun y => (c y : ℝ) * h y) (t := S) ?_]
+    · refine Finset.sum_congr rfl fun x hx => ?_
+      rw [hhS x hx]
+      simp only [s]
+      split_ifs with h0
+      · rw [mul_one, abs_of_nonneg h0]
+      · rw [mul_neg_one, abs_of_neg (not_le.1 h0)]
+    · ext y
+      simp only [mem_inter_iff, Function.mem_support, Finset.mem_coe]
+      constructor
+      · rintro ⟨hyN, hy⟩
+        refine ⟨?_, hy⟩
+        obtain ⟨x, hx, hyx⟩ := hh0 y (right_ne_zero_of_mul hy)
+        rw [(hδS x hx).2 y hyN (by linarith)]
+        exact hx
+      · rintro ⟨hyS, hy⟩
+        exact ⟨(hS hyS).1, hy⟩
+  calc ENNReal.ofReal (∑ x ∈ S, |(c x : ℝ)|) = ENNReal.ofReal (Y ω) := by rw [hval]
+    _ ≤ Y.massOn W := Y.le_massOn hadm
+
+/-- Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): a finite
+integer combination of point masses `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`, `D ⊆ U`, is the integer
+multiplicity current `τ(M, θ, ξ)` with `M = {x ∈ D : a(x) ≠ 0}`, `θ = |a|` and `ξ = ±1` the sign
+of `a`.  `Y` is continuous since convergence of test forms gives pointwise convergence.  `M` is
+finite, so it is `H⁰`-measurable and countably `0`-rectifiable and `H⁰`-integrals over it are
+finite sums; at `x ∈ M`, for small `r` the blow-up `η_{x,r}(M)` meets the support of a given
+`f ∈ C_c` only in `0`, so the weighted tangent space is `{0}`, spanned by the empty frame. -/
+theorem Submission.br_zd_finite_dirac_im :
+    ∀ (P : ℕ) (U : Set (Eucl P)) (D : Finset (Eucl P)) (a : Eucl P → ℤ),
+      (↑D : Set (Eucl P)) ⊆ U → ∃ Y : GeometricCurrentOn U 0, IsIntegerMultiplicity Y ∧
+        ∀ ω : TestFormOn U 0,
+          Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  open Poincare.SimonGMT.Chapter03 (blowUpMap) in
+  classical
+  intro P U D a hDU
+  -- `H⁰{x} = 1`, so `H⁰`-integrals over finite sets are finite sums.
+  have hpt : ∀ x : Eucl P, (μHE[0] : Measure (Eucl P)) {x} = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hint : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
+      IntegrableOn g (F : Set (Eucl P)) (μHE[0] : Measure (Eucl P)) := by
+    intro F g
+    rw [← biUnion_of_singleton (F : Set (Eucl P)), Finset.set_biUnion_coe,
+      integrableOn_finset_iUnion]
+    exact fun x _ => integrableOn_singleton (hx := by rw [hpt]; exact ENNReal.one_lt_top)
+  have hsum : ∀ (F : Finset (Eucl P)) (g : Eucl P → ℝ),
+      ∫ x in (F : Set (Eucl P)), g x ∂(μHE[0] : Measure (Eucl P)) = ∑ x ∈ F, g x := by
+    intro F g
+    rw [setIntegral_finset F (hint F g)]
+    simp only [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
+  -- The current `Y(ω) = ∑_{x ∈ D} a(x) ω(x)`: if `ω_j → 0`, then `ω_j(x) → 0` for every `x`
+  -- (uniformly on the common compact support `K`, and `ω_j(x) = 0` off `K`).
+  let L : TestFormOn U 0 →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]
+      map_add' := fun ω η => by simp [Finset.sum_add_distrib, mul_add]
+      map_smul' := fun t ω => by simp [Finset.mul_sum, mul_left_comm] }
+  have hcont : ∀ ωs : ℕ → TestFormOn U 0, TestFormOnConverges ωs 0 →
+      Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    rintro ωs ⟨K, -, -, hsupp, -, hconv⟩
+    have hx : ∀ x, Tendsto (fun j => (ωs j : DifferentialForm (Eucl P) 0) x ![]) atTop (𝓝 0) := by
+      intro x
+      by_cases hxK : x ∈ K
+      · have hev : Continuous fun T : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => Eucl P)
+            (Covector (Eucl P) 0) => T ![] ![] := by fun_prop
+        simpa [Function.comp_def] using (hev.tendsto _).comp ((hconv 0).tendsto_at hxK)
+      · have h0 : ∀ j, (ωs j : DifferentialForm (Eucl P) 0) x = 0 := fun j =>
+          image_eq_zero_of_notMem_tsupport fun h => hxK (hsupp j h)
+        simp [h0]
+    simpa [L] using tendsto_finsetSum D fun x _ => (hx x).const_mul (a x : ℝ)
+  obtain ⟨Y, hY⟩ : ∃ Y : GeometricCurrentOn U 0, ∀ ω : TestFormOn U 0,
+      Y ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] :=
+    ⟨⟨L, hcont⟩, fun ω => rfl⟩
+  refine ⟨Y, ?_, hY⟩
+  -- The triple: `M = {a ≠ 0}`, `θ = |a|`, `ξ = -ε` on `N = {a < 0}` and `ξ = ε` elsewhere, where
+  -- `⟨α, ε⟩ = α(![])`; then `θ(x) ⟨α, ξ(x)⟩ = a(x) α(![])` on `M`.
+  set M : Finset (Eucl P) := D.filter (fun x => a x ≠ 0) with hM
+  set N : Finset (Eucl P) := D.filter (fun x => a x < 0) with hN
+  let ε : NVector (Eucl P) 0 := simpleNVector ![]
+  let θ : Eucl P → ℝ := fun x => |(a x : ℝ)|
+  let ξ : Eucl P → NVector (Eucl P) 0 := fun x => if x ∈ N then -ε else ε
+  have hMmeas : MeasurableSet (M : Set (Eucl P)) := M.finite_toSet.measurableSet
+  have hterm : ∀ x ∈ M, ∀ α : Covector (Eucl P) 0, θ x * ξ x α = (a x : ℝ) * α ![] := by
+    intro x hx α
+    have hxD : x ∈ D := (Finset.mem_filter.1 hx).1
+    by_cases hneg : a x < 0
+    · have hxN : x ∈ N := Finset.mem_filter.2 ⟨hxD, hneg⟩
+      have ha : (a x : ℝ) < 0 := by exact_mod_cast hneg
+      simp only [θ, ξ, ε, hxN, ↓reduceIte, neg_apply, simpleNVector_apply,
+        abs_of_neg ha]
+      ring
+    · have hxN : x ∉ N := fun h => hneg (Finset.mem_filter.1 h).2
+      have ha : (0 : ℝ) ≤ a x := by exact_mod_cast not_lt.1 hneg
+      simp only [θ, ξ, ε, hxN, ↓reduceIte, simpleNVector_apply, abs_of_nonneg ha]
+  refine ⟨M, θ, ξ,
+    { subset := fun x hx => hDU (Finset.mem_filter.1 hx).1
+      nullMeasurableSet := hMmeas.nullMeasurableSet
+      countablyRectifiable := ?_
+      pos := fun x hx => abs_pos.2 (Int.cast_ne_zero.2 (Finset.mem_filter.1 hx).2)
+      integrableOn := fun K _ _ => (hint M θ).mono_set inter_subset_left
+      aestronglyMeasurable := ?_
+      orients := ?_ }, fun x _ => ⟨(a x).natAbs, by simp [θ, Nat.cast_natAbs, Int.cast_abs]⟩, ?_⟩
+  · -- `M` is countable, hence covered by the ranges of countably many constant maps.
+    obtain ⟨g, hg⟩ := countable_iff_exists_subset_range.1 M.finite_toSet.countable
+    refine ⟨∅, measure_empty, fun j _ => g j, fun j => ⟨0, LipschitzWith.const _⟩, fun y hy => ?_⟩
+    obtain ⟨j, rfl⟩ := hg hy
+    exact Or.inr (mem_iUnion.2 ⟨j, 0, rfl⟩)
+  · -- `ξ` is constant off and on the finite set `N`.
+    exact (StronglyMeasurable.ite N.finite_toSet.measurableSet stronglyMeasurable_const
+      stronglyMeasurable_const).aestronglyMeasurable
+  · -- Every `x ∈ M` is oriented by the empty frame, spanning the weighted tangent space `{0}`.
+    refine ae_restrict_of_forall_mem hMmeas fun x hx =>
+      ⟨![], ⟨fun i => i.elim0, fun i => i.elim0⟩, ?_, ?_⟩
+    · rw [range_eq_empty, Submodule.span_empty]
+      refine ⟨finrank_bot ℝ (Eucl P), fun f => ?_⟩
+      have hbot : ∫ y in ((⊥ : Submodule ℝ (Eucl P)) : Set (Eucl P)), f y
+          ∂(μHE[0] : Measure (Eucl P)) = f 0 := by
+        simp
+      rw [hbot]
+      -- `f = 0` off `B_R(0)`, and the points of `M \ {x}` have distance `≥ d` from `x`; so for
+      -- `0 < r < d / R` only `y = x` contributes to `∑_{y ∈ M} f(η_{x,r}(y)) θ(y)`.
+      obtain ⟨R, hR, hfR⟩ := f.hasCompactSupport.exists_pos_le_norm
+      obtain ⟨d, hd, hdM⟩ := Metric.isOpen_iff.mp
+        (M.erase x).finite_toSet.isClosed.isOpen_compl x (by simp)
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT (div_pos hd hR)] with r ⟨hr0, hrd⟩
+      have hinj : Function.Injective (blowUpMap x r) := fun y z h => by
+        simpa [blowUpMap, hr0.ne'] using h
+      have hback : ∀ y, x + r • blowUpMap x r y = y := fun y => by
+        simp [blowUpMap, smul_smul, hr0.ne']
+      rw [← Finset.coe_image, hsum, Finset.sum_image fun y _ z _ h => hinj h]
+      simp only [hback]
+      rw [Finset.sum_eq_single x (fun y hy hyx => ?_) (fun h => absurd hx h)]
+      · simp [blowUpMap, mul_comm]
+      · have hyd : d ≤ ‖y - x‖ := by
+          rw [← dist_eq_norm]
+          by_contra h
+          exact hdM (mem_ball.2 (not_le.1 h)) (Finset.mem_erase.2 ⟨hyx, hy⟩)
+        rw [lt_div_iff₀ hR] at hrd
+        rw [hfR, zero_mul]
+        rw [blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr0, le_inv_mul_iff₀ hr0]
+        linarith
+    · by_cases hxN : x ∈ N
+      · exact Or.inr (by simp [ξ, ε, hxN])
+      · exact Or.inl (by simp [ξ, ε, hxN])
+  · -- `τ(M, θ, ξ)(ω) = ∑_{x ∈ M} a(x) ω(x) = ∑_{x ∈ D} a(x) ω(x)`, as `a = 0` on `D \ M`.
+    intro ω
+    rw [hY, tauAction, hsum, Finset.sum_congr rfl fun x hx => hterm x hx _, hM,
+      Finset.sum_filter_of_ne]
+    intro x _ hne ha
+    exact hne (by simp [ha])
+
+/-- The case `n = 0` of Simon Ch. 6, 8.2 (p. 176, "trivial in case `n = 0`"), on a set `W` with
+`closure W` compact (used for 6.3): let `X_j ⇀ X` and, on test forms supported in `W`, let
+`X_j(ω) = ∑ᶠ_{x ∈ N_j} c_j(x) ω(x)` with integers `c_j ≠ 0` on `N_j`, `N_j ∩ W` finite and
+`∑_{x ∈ N_j ∩ W} |c_j(x)| ≤ Λ`.  Then on such forms `X(ω) = ∑_{x ∈ D} a(x) ω(x)` for a finite
+`D ⊆ W` and integers `a`.  Each `N_j ∩ W` has at most `Q = ⌊Λ⌋₊` points, with `|c_j| ≤ ⌊Λ⌋`;
+padding with `0`-weighted copies of `0` gives configurations of length `Q` in a compact set, a
+subsequence converges, limit points outside `W` contribute `0` and equal ones are grouped. -/
+theorem Submission.br_zd_dirac_local_limit : ∀ (P : ℕ) (U W : Set (Eucl P)) (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0) (N : ℕ → Set (Eucl P)) (c : ℕ → Eucl P → ℤ) (Λ : ℝ), IsCompact (closure W) → WeaklyConvergesOn Xj X → (∀ j, ∀ x ∈ N j, c j x ≠ 0) → (∀ j, (N j ∩ W).Finite) → (∀ j (S : Finset (Eucl P)), (↑S : Set (Eucl P)) ⊆ N j ∩ W → ∑ x ∈ S, |(c j x : ℝ)| ≤ Λ) → (∀ j (ω : TestFormOn U 0), tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → Xj j ω = ∑ᶠ x ∈ N j, (c j x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) → ∃ (D : Finset (Eucl P)) (a : Eucl P → ℤ), (↑D : Set (Eucl P)) ⊆ W ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W → X ω = ∑ x ∈ D, (a x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+  intro P U W Xj X N c Λ hW hconv hc hfin hbound hrepr
+  classical
+  -- `ω°(x) = ω(x)(![])` is continuous and vanishes off `tsupport ω`.
+  have hcont : ∀ ω : TestFormOn U 0,
+      Continuous fun x => (ω : DifferentialForm (Eucl P) 0) x ![] := fun ω =>
+    ω.property.1.1.continuous.eval_const _
+  have hvan : ∀ (ω : TestFormOn U 0) (x : Eucl P),
+      x ∉ tsupport (ω : DifferentialForm (Eucl P) 0) →
+        (ω : DifferentialForm (Eucl P) 0) x ![] = 0 := fun ω x hx => by
+    rw [image_eq_zero_of_notMem_tsupport hx, ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+  -- Step 1: on forms supported in `W`, `X_j(ω) = ∑_{x ∈ A_j} c_j(x) ω°(x)`, `A_j = N_j ∩ W`.
+  let A : ℕ → Finset (Eucl P) := fun j => (hfin j).toFinset
+  have hA : ∀ j x, x ∈ A j ↔ x ∈ N j ∧ x ∈ W := fun j x => by simp [A]
+  have hXj : ∀ j (ω : TestFormOn U 0), tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W →
+      Xj j ω = ∑ x ∈ A j, (c j x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![] := by
+    intro j ω hω
+    rw [hrepr j ω hω]
+    refine finsum_mem_eq_sum_of_subset _ ?_ fun x hx => ((hA j x).1 hx).1
+    rintro x ⟨hxN, hx0⟩
+    refine (hA j x).2 ⟨hxN, by_contra fun hxW => hx0 ?_⟩
+    simp [hvan ω x fun h => hxW (hω h)]
+  -- Step 2: `#A_j ≤ Q = ⌊Λ⌋₊` (as `|c_j| ≥ 1` on `N_j`) and `|c_j| ≤ m = ⌊Λ⌋` on `A_j`.
+  have hΛ : 0 ≤ Λ := by simpa using hbound 0 ∅ (by simp)
+  obtain ⟨Q, hcard⟩ : ∃ Q : ℕ, ∀ j, (A j).card ≤ Q := by
+    refine ⟨⌊Λ⌋₊, fun j => Nat.le_floor ?_⟩
+    calc ((A j).card : ℝ) = ∑ x ∈ A j, (1 : ℝ) := by simp
+      _ ≤ ∑ x ∈ A j, |(c j x : ℝ)| := Finset.sum_le_sum fun x hx => by
+          exact_mod_cast Int.one_le_abs (hc j x ((hA j x).1 hx).1)
+      _ ≤ Λ := hbound j (A j) fun x hx => (hA j x).1 hx
+  obtain ⟨m, hm, hcoef⟩ : ∃ m : ℤ, 0 ≤ m ∧ ∀ j, ∀ x ∈ A j, |c j x| ≤ m := by
+    refine ⟨⌊Λ⌋, Int.floor_nonneg.2 hΛ, fun j x hx => Int.le_floor.2 ?_⟩
+    simpa using hbound j {x} (by simpa using (hA j x).1 hx)
+  -- Step 3: pad each configuration to length `Q` by points `0` with coefficient `0`.
+  have pad : ∀ (n : ℕ) (B : Finset (Eucl P)), B.card ≤ n → ∀ d : Eucl P → ℤ,
+      ∃ (p : Fin n → Eucl P) (b : Fin n → ℤ), (∀ ℓ, p ℓ ∈ B ∨ p ℓ = 0) ∧
+        (∀ ℓ, b ℓ = 0 ∨ ∃ x ∈ B, b ℓ = d x) ∧
+        ∀ g : Eucl P → ℝ, ∑ x ∈ B, (d x : ℝ) * g x = ∑ ℓ, (b ℓ : ℝ) * g (p ℓ) := by
+    intro n
+    induction n with
+    | zero =>
+      intro B hB d
+      obtain rfl : B = ∅ := Finset.card_eq_zero.1 (Nat.le_zero.1 hB)
+      exact ⟨Fin.elim0, Fin.elim0, fun ℓ => ℓ.elim0, fun ℓ => ℓ.elim0, fun g => by simp⟩
+    | succ n ih =>
+      intro B hB d
+      rcases B.eq_empty_or_nonempty with rfl | ⟨x, hx⟩
+      · exact ⟨fun _ => 0, fun _ => 0, fun _ => Or.inr rfl, fun _ => Or.inl rfl, fun g => by simp⟩
+      obtain ⟨p, b, hp, hb, hpb⟩ :=
+        ih (B.erase x) (by rw [Finset.card_erase_of_mem hx]; omega) d
+      refine ⟨Fin.cons x p, Fin.cons (d x) b, fun ℓ => ?_, fun ℓ => ?_, fun g => ?_⟩
+      · refine Fin.cases (by simp [hx]) (fun i => ?_) ℓ
+        simpa using (hp i).imp_left Finset.mem_of_mem_erase
+      · refine Fin.cases (Or.inr ⟨x, hx, by simp⟩) (fun i => ?_) ℓ
+        simpa using (hb i).imp_right fun ⟨z, hz, h⟩ => ⟨z, Finset.mem_of_mem_erase hz, h⟩
+      · rw [← Finset.add_sum_erase B _ hx, hpb g, Fin.sum_univ_succ]
+        simp
+  choose p b hp hb hpb using fun j => pad Q (A j) (hcard j) (c j)
+  -- Step 4: `(p_j, b_j) ∈ (closure W ∪ {0})^Q × [-m, m]^Q`, which is compact; extract a
+  -- subsequence `ψ` with `(p_{ψ i}, b_{ψ i}) → (y, β)`.
+  have hK : IsCompact ((Set.univ.pi fun _ : Fin Q => closure W ∪ {0}) ×ˢ
+      (Set.univ.pi fun _ : Fin Q => Set.Icc (-m) m)) :=
+    (isCompact_univ_pi fun _ => hW.union isCompact_singleton).prod
+      (isCompact_univ_pi fun _ => (Set.finite_Icc _ _).isCompact)
+  have hmem : ∀ j, (p j, b j) ∈ (Set.univ.pi fun _ : Fin Q => closure W ∪ {0}) ×ˢ
+      (Set.univ.pi fun _ : Fin Q => Set.Icc (-m) m) := by
+    refine fun j => ⟨fun ℓ _ => ?_, fun ℓ _ => ?_⟩
+    · exact (hp j ℓ).imp (fun h => subset_closure ((hA j _).1 h).2) id
+    · show b j ℓ ∈ Set.Icc (-m) m
+      rcases hb j ℓ with h | ⟨x, hx, h⟩
+      · rw [h]
+        exact ⟨neg_nonpos.2 hm, hm⟩
+      · rw [h]
+        exact abs_le.1 (hcoef j x hx)
+  obtain ⟨⟨y, β⟩, -, ψ, hψ, hlim⟩ := hK.tendsto_subseq hmem
+  -- Step 5: `X(ω) = ∑_ℓ β_ℓ ω°(y_ℓ)` by continuity of `(p, b) ↦ ∑_ℓ b_ℓ ω°(p_ℓ)`.
+  have hX : ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Eucl P) 0) ⊆ W →
+      X ω = ∑ ℓ, (β ℓ : ℝ) * (ω : DifferentialForm (Eucl P) 0) (y ℓ) ![] := by
+    intro ω hω
+    have hΦ : Continuous fun q : (Fin Q → Eucl P) × (Fin Q → ℤ) =>
+        ∑ ℓ, (q.2 ℓ : ℝ) * (ω : DifferentialForm (Eucl P) 0) (q.1 ℓ) ![] :=
+      continuous_finsetSum _ fun ℓ _ =>
+        ((continuous_of_discreteTopology (f := fun z : ℤ => (z : ℝ))).comp
+          ((continuous_apply ℓ).comp continuous_snd)).mul
+          ((hcont ω).comp ((continuous_apply ℓ).comp continuous_fst))
+    refine tendsto_nhds_unique ((hconv ω).comp hψ.tendsto_atTop) ?_
+    refine ((hΦ.tendsto (y, β)).comp hlim).congr fun i => ?_
+    simp only [Function.comp_apply]
+    rw [hXj (ψ i) ω hω, hpb (ψ i)]
+  -- Steps 6–7: limit points outside `W` contribute `0`; group the others by position.
+  let s : Finset (Fin Q) := Finset.univ.filter fun ℓ => y ℓ ∈ W
+  refine ⟨s.image y, fun z => ∑ ℓ ∈ s.filter fun ℓ => y ℓ = z, β ℓ, ?_, fun ω hω => ?_⟩
+  · intro z hz
+    rw [Finset.coe_image] at hz
+    obtain ⟨ℓ, hℓ, rfl⟩ := hz
+    simpa [s] using hℓ
+  · rw [hX ω hω, ← Finset.sum_subset (Finset.subset_univ s) fun ℓ _ hℓ => ?_,
+      ← Finset.sum_fiberwise_of_maps_to fun ℓ hℓ => Finset.mem_image_of_mem y hℓ]
+    · refine Finset.sum_congr rfl fun z _ => ?_
+      push_cast
+      rw [Finset.sum_mul]
+      exact Finset.sum_congr rfl fun ℓ hℓ => by rw [(Finset.mem_filter.1 hℓ).2]
+    · have hyW : y ℓ ∉ W := by simpa [s] using hℓ
+      rw [hvan ω (y ℓ) fun h => hyW (hω h), mul_zero]
+
 /-- **Integrability of the integrands of `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  For a
 rectifiable triple `(M, θ, ξ)` in `U`: (a) `x ↦ θ(x) ⟨b, ξ(x)⟩` is `Hᵏ`-integrable on `M ∩ K` for
 every compact `K ⊆ U` and `k`-covector `b`; (b) `x ↦ θ(x) ⟨ω(x), ξ(x)⟩` is `Hᵏ`-integrable on `M`
@@ -1100,6 +1615,43 @@ theorem Submission.br_isIntegerMultiplicity_of_local :
   rw [hXY _ (hfU i) ω hω, hrep i ω]
   exact Submission.ltg_tau_congr_on_open P k (M i) M₀ (θ i) θ₀ (ξ i) ξ₀ (Vx (f i))
     (hVo _ (hfU i)) (hagree i).1 (hagree i).2 ω hω
+
+/-- The case `n = 0` of Simon Ch. 6, 3.11 and 8.2 (p. 176, "trivial in case `n = 0`"), used for
+6.3: a weak limit `X` of integer multiplicity `X_j ∈ 𝒟₀(U)` with `sup_j M_W(X_j) < ∞` for every
+`W ⊂⊂ U` is integer multiplicity.  Each `X_j` is a locally finite integer Dirac sum
+`∑ᶠ_{x ∈ N_j} c_j(x) ω(x)`.  Near `x₀ ∈ U` take `W = B_{ε/2}(x₀) ⊂⊂ U`; testing with signed bumps,
+`∑_{x ∈ S} |c_j(x)| ≤ Λ = sup_j M_W(X_j)` for finite `S ⊆ N_j ∩ W`, so on forms supported in `W` the
+limit `X` is a finite integer Dirac sum, which is an integer multiplicity current.  These local
+representations patch together. -/
+theorem Submission.br_zero_dim_weak_limit_isIntegerMultiplicity : ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U 0) (X : GeometricCurrentOn U 0), (∀ j, IsIntegerMultiplicity (Xj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, (Xj j).massOn W) < ∞) → WeaklyConvergesOn Xj X → IsIntegerMultiplicity X := by
+  intro P U hU Xj X hXj hmass hconv
+  -- Each `X_j` is a locally finite integer Dirac sum `∑ᶠ_{x ∈ N_j} c_j(x) ω(x)`.
+  choose N c hNU hNfin hc hrepr using fun j => Submission.br_zd_im_dirac_repr P U (Xj j) (hXj j)
+  refine Submission.br_isIntegerMultiplicity_of_local P 0 U hU X fun x₀ hx₀ => ?_
+  -- `W = B_{ε/2}(x₀)` with `B_ε(x₀) ⊆ U`, so `closure W = B̄_{ε/2}(x₀)` is compact and lies in `U`.
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x₀ hx₀
+  set W : Set (Eucl P) := ball x₀ (ε / 2)
+  have hclW : closure W = closedBall x₀ (ε / 2) := closure_ball x₀ (half_pos hε).ne'
+  have hWK : IsCompact (closure W) := by
+    rw [hclW]
+    exact isCompact_closedBall x₀ (ε / 2)
+  have hclWU : closure W ⊆ U := by
+    rw [hclW]
+    exact (closedBall_subset_ball (half_lt_self hε)).trans hεU
+  have hWU : W ⊆ U := subset_closure.trans hclWU
+  -- `Λ = sup_j M_W(X_j) < ∞` bounds the weights `∑_{x ∈ S} |c_j(x)|` of the `X_j` in `W`.
+  have hΛ : (⨆ j, (Xj j).massOn W) < ∞ := hmass W ⟨isOpen_ball, hWK, hclWU⟩
+  obtain ⟨D, a, hDW, hXD⟩ := Submission.br_zd_dirac_local_limit P U W Xj X N c
+    (⨆ j, (Xj j).massOn W).toReal hWK hconv hc
+    (fun j => (hNfin j _ hWK hclWU).subset (inter_subset_inter_right _ subset_closure))
+    (fun j S hS => (ENNReal.ofReal_le_iff_le_toReal hΛ.ne).1
+      ((Submission.br_zd_dirac_massOn_ge P U W (N j) (Xj j) (c j) isOpen_ball hWU (hNfin j)
+        (hrepr j) S hS).trans (le_iSup (fun j => (Xj j).massOn W) j)))
+    (fun j ω _ => hrepr j ω)
+  -- On forms supported in `W`, `X` is a finite integer Dirac sum, i.e. integer multiplicity.
+  obtain ⟨Y, hY, hYD⟩ := Submission.br_zd_finite_dirac_im P U D a (hDW.trans hWU)
+  exact ⟨W, isOpen_ball, mem_ball_self (half_pos hε), hWU, Y, hY,
+    fun ω hω => (hXD ω hω).trans (hYD ω).symm⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
