@@ -574,6 +574,25 @@ theorem Submission.cmcdtfrbvbsf_closed_faces_isCompact : ∀ (P m : ℕ) (s : Fi
   convert s.isCompact_biUnion hΦ using 1
   ext x
   simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_image, exists_prop, hC_def]
+/-- **Deformation theorem, face replacement** (Simon 6.5).  Let `Q₀` be the `(m+1)`-current
+`Q₀(ω) = Σ_{p ∈ s} ∫_{(0,1)^{m+1}} u_p(y) ω(Φ_p y)(e_{ι_p(0)}, …, e_{ι_p(m)}) dy` with
+`Φ_p(y) = b_p + Σⱼ yⱼ e_{ι_p(j)}`, and let `Z` be the union of the closed faces `Φ_q([0,1]^{m+1})`,
+`q ∈ s`.  If `spt γ ∩ Z = ∅` then `∂Q₀(γ) = Q₀(dγ) = 0` (Simon (6.2.3)): `spt dγ ⊆ spt γ`, so
+`dγ` vanishes at every `Φ_p(y)`, `y ∈ (0,1)^{m+1}`, and every integrand is zero. -/
+theorem Submission.cmcdtfrbvbsf_boundary_vanish_off_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ γ : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (γ : DifferentialForm (Euclid P) m)) {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x} → Q₀.boundary γ = 0 := by
+  intro P m s u Q₀ hQ₀ γ hdisj
+  -- `∂Q₀(γ) = Q₀(dγ)`, expanded with the representation of `Q₀`
+  rw [GeometricCurrentOn.boundary_apply, hQ₀]
+  -- each integrand vanishes on `(0,1)^{m+1}`: `Φ_p(y)` lies on the closed faces, which miss
+  -- `spt dγ ⊆ spt γ`
+  refine Finset.sum_eq_zero fun p hp => setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+  have hx : WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+      ∉ tsupport (exteriorDerivativeTestOn univ m γ : DifferentialForm (Euclid P) (m + 1)) :=
+    fun hx => Set.disjoint_left.mp hdisj
+      (tsupport_exteriorDerivative_subset (γ : DifferentialForm (Euclid P) m) hx)
+      ⟨p, hp, y, fun i => ⟨(hy i).1.le, (hy i).2.le⟩, rfl⟩
+  rw [image_eq_zero_of_notMem_tsupport hx, ContinuousAlternatingMap.coe_zero, Pi.zero_apply,
+    mul_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
