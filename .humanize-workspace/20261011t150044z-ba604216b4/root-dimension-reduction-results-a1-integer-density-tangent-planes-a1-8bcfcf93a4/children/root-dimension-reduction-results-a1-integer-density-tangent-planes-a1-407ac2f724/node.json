@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1.mass_dichotomy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1",
+  "depth": 6,
+  "title": "Total mass is 0 or ∞ for a measure on ℝ^P with Euclidean lower density bounds at its support points",
+  "statement": "Let P, n ∈ ℕ with 1 ≤ n. Let μ be a measure on (the Borel σ-algebra of) ℝ^P = Euclid P, and let ω_n := unitBallVolume n, the Lebesgue measure of the open unit ball of ℝ^n. Assume: every w ∈ ℝ^P with μ(B_ε(w)) ≠ 0 for all ε > 0 satisfies ω_n·ofReal(ρ^n) ≤ μ(B_ρ(w)) for every ρ > 0. Here B denotes the open ball and ofReal = ENNReal.ofReal. Then μ(ℝ^P) = 0 or μ(ℝ^P) = ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)), 1 ≤ n → (∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball w ε) ≠ 0) → ∀ ρ : ℝ, 0 < ρ → unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ μ (ball w ρ)) → μ univ = 0 ∨ μ univ = ∞",
+  "lean_name": "idtp_fons_cc_mb_mass_dichotomy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-407ac2f724-a1"
+}

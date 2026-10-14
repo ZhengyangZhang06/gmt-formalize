@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1.monotone_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1",
+  "depth": 6,
+  "title": "Lower mass bound from a monotone weighted ratio whose limit density is at least 1",
+  "statement": "Let n ∈ ℕ, Λ, ρ, σ, θ ∈ ℝ and m : ℝ → [0, ∞]. Let ω_n := unitBallVolume n, the Lebesgue measure of the open unit ball of ℝ^n (Euclid n). Let ofReal = ENNReal.ofReal : ℝ → [0, ∞] and τ^n be the natural power.\n\nAssume:\n- 1 ≤ θ and 0 < σ < ρ;\n- the function τ ↦ ofReal(e^{Λτ}/τ^n)·m(τ) is nondecreasing on (0, ρ);\n- m(τ)/(ω_n·ofReal(τ^n)) → ofReal θ in [0, ∞] as τ → 0⁺ (along 𝓝[>]0).\n\nThen ofReal(e^{−(Λσ)})·(ω_n·ofReal(σ^n)) ≤ m(σ).",
+  "lean_statement": "∀ (n : ℕ) (Λ ρ σ θ : ℝ) (m : ℝ → ℝ≥0∞), 1 ≤ θ → 0 < σ → σ < ρ → MonotoneOn (fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ) / τ ^ n) * m τ) (Ioo 0 ρ) → Tendsto (fun τ : ℝ => m τ / (unitBallVolume n * ENNReal.ofReal (τ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ m σ",
+  "lean_name": "idtp_fons_cc_mb_monotone_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-11d84149c6-a1"
+}
