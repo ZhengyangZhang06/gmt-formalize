@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4524d624e690d28d93dbe9bac664c841d924e3f42df8db3553422760769640bc",
+  "git_delta": {
+    "base_commit": "b2899b96afdb75d7052f19d95c85161738326503",
+    "candidate_commit": "97a9471cce969e634a7974b94ddca8a1997d464f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4be92323e2600d00837cb369f0de4692ceb9cfa991c7eb7f6479b78f4baeac66",
+    "source_sha256": "687b2b83d85b678d67b0398c83afc6a34c88e2496892715f48b47684bb5b4866",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_sa_mollify_l1",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ), Integrable f → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ ≤ ENNReal.ofReal ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
