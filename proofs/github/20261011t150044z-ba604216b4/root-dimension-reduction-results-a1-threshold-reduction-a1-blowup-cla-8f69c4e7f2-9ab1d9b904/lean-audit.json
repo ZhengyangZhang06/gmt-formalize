@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "99149be1e9ed8a2d1115b6b29ff8bba1cd340edab90331da35ced47c44606fe0",
+  "git_delta": {
+    "base_commit": "878b592fb50bb6de50e8d1c412af79ca56e064bc",
+    "candidate_commit": "344bc4e76b19c8eea2ac29b158cf8cc901be7625",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_bc_zero_limit_rescale",
+    "diff_sha256": "af75d4cfbe8ab72fa401421e2ce41594df019255feb21464ff5f75960945f3c2",
+    "source_sha256": "de01d2f1cfb0aa0bb05facafb01be8f1360162162afeea27076ebb2a05b7e912",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_bc_zero_limit_rescale",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (cs : ℕ → Euclid P) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S → ∃ S' : GeometricCurrentOn (univ : Set (Euclid P)) n, ConvergesWeakly (fun i => blowUp T (cs i + ts i • y) (ts i * lam) (mul_pos (hts i) hlam).ne') S' ∧ ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents S → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents S' ∧ R'.measure = ENNReal.ofReal (lam⁻¹ ^ n) • R.measure.map (dilation y lam)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
