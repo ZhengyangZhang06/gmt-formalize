@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "depth": 3,
+  "title": "Simon 6.2.6(a)–(b) for the Euclidean coefficient norm: a unit simple n-vector has dual norm 1, attained by one fixed linear map J",
+  "statement": "Let P, n ∈ ℕ. Let F = Covector (Euclid P) n be the space of n-covectors on ℝ^P (continuous alternating n-linear maps (ℝ^P)^n → ℝ), let n-vectors be the continuous linear functionals ξ : F → ℝ (MultiVector P n, with ⟨α, ξ⟩ = ξ(α)), and let |α| = covectorEuclideanNorm α = (Σ_I α(e_{I(1)}, …, e_{I(n)})²)^{1/2}, summed over strictly increasing I : {1,…,n} → {1,…,P}. Then there is one continuous linear map J : MultiVector P n → F such that for every n-vector ξ and every subspace Q with IsUnitOrientationOf ξ Q (that is, ξ(α) = ±α(τ₁,…,τ_n) for all α, for an orthonormal family τ spanning Q): (i) |ξ(α)| ≤ |α| for every α ∈ F; (ii) |J(ξ)| = 1; (iii) ξ(J(ξ)) = 1.",
+  "lean_statement": "∀ (P n : ℕ), ∃ J : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (J ξ) = 1 ∧ ξ (J ξ) = 1",
+  "lean_name": "rsd_mw_unit_orientation_dual",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-unit-orientation-dual-a1-a1"
+}
