@@ -1,0 +1,22 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/7038",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "08f3ad1893308186ccfa37de49ad473be078ecf6",
+  "integrated_commit": "",
+  "proof_base_commit": "bdf34f91edfa2642928ed59a139dd914ab9326d5",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+    "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+    "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.component_integrable-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1.action_split-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1.single_ray-a1"
+  ]
+}
