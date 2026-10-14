@@ -1404,6 +1404,55 @@ theorem Submission.dimred_mbl_dtfr_face_integral_current : ∀ (P m : ℕ) (s : 
       _ ≤ B p := hB p hp G hGsmooth hG1
   -- Step 4: (III)(c), by `dimred_mbl_dtfric_support_faces`
   · exact Submission.dimred_mbl_dtfric_support_faces P m s w D hint hD
+/-- `spt(A − B) ⊆ spt A ∪ spt B`, `M_W(A − B) ≤ M_W(A) + M_W(B)`, `spt ∂A ⊆ spt A` and
+`∂(A − B) = ∂A − ∂B`.  A point of `U` in zero-region sets `W₁` of `A` and `W₂` of `B` lies in
+`W₁ ∩ W₂`, an open set with compact closure in `U` on which `A − B` vanishes.  For a `W`-admissible
+`ω`, `−ω` is `W`-admissible and `(A − B)(ω) = A(ω) + B(−ω)`.  A zero-region set of `A` is one of
+`∂A`, since `tsupport dγ ⊆ tsupport γ`.  Finally `∂(A − B)(γ) = A(dγ) − B(dγ) = (∂A − ∂B)(γ)`. -/
+theorem Submission.dimred_mbl_dtfr_current_calculus : (∀ (P n : ℕ) (U W : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).support ⊆ A.support ∪ B.support ∧ (A - B).massOn W ≤ A.massOn W + B.massOn W) ∧ ∀ (P m : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U (m + 1)), A.boundary.support ⊆ A.support ∧ (A - B).boundary = A.boundary - B.boundary := by
+  refine ⟨fun P n U W A B => ⟨?_, ?_⟩, fun P m U A B => ⟨?_, ?_⟩⟩
+  · -- `spt(A − B) ⊆ spt A ∪ spt B`
+    rintro y ⟨hyU, hyZ⟩
+    by_contra hAB
+    have hA : y ∈ A.zeroRegion := not_not.mp fun h => hAB (Or.inl ⟨hyU, h⟩)
+    have hB : y ∈ B.zeroRegion := not_not.mp fun h => hAB (Or.inr ⟨hyU, h⟩)
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, hW₁U, hW₁v⟩, hyW₁⟩ := mem_sUnion.mp hA
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hyW₂⟩ := mem_sUnion.mp hB
+    -- `W₁ ∩ W₂` belongs to the family whose union is the zero region of `A − B`
+    have hcl : closure (W₁ ∩ W₂) ⊆ closure W₁ := closure_mono inter_subset_left
+    refine hyZ (mem_sUnion.mpr ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o,
+      hW₁c.of_isClosed_subset isClosed_closure hcl, hcl.trans hW₁U, fun ω hω => ?_⟩, hyW₁, hyW₂⟩)
+    change A ω - B ω = 0
+    rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
+  · -- `M_W(A − B) ≤ M_W(A) + M_W(B)`
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    -- `−ω` is `W`-admissible
+    have hneg : -ω ∈ massAdmissibleOn U n W := by
+      refine ⟨?_, fun x => ?_⟩
+      · show tsupport (-(ω : DifferentialForm (Euclid P) n)) ⊆ W
+        rw [tsupport_neg]
+        exact hω.1
+      · show covectorEuclideanNorm (-(ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [covectorEuclideanNorm_neg]
+        exact hω.2 x
+    -- `(A − B)(ω) = A(ω) + B(−ω)`
+    have heq : (A - B) ω = A ω + B (-ω) := by
+      rw [show B (-ω) = -B ω from map_neg B.toCurrent ω]
+      exact sub_eq_add_neg (A ω) (B ω)
+    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [heq]
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.massOn W + B.massOn W := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+  · -- `spt ∂A ⊆ spt A`: a zero-region set of `A` is one of `∂A`
+    rintro y ⟨hyU, hyZ⟩
+    refine ⟨hyU, fun hA => hyZ ?_⟩
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, hW₁U, hW₁v⟩, hyW₁⟩ := mem_sUnion.mp hA
+    refine mem_sUnion.mpr ⟨W₁, ⟨hW₁o, hW₁c, hW₁U, fun γ hγ => ?_⟩, hyW₁⟩
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hW₁v _ ((tsupport_exteriorDerivative_subset (γ : DifferentialForm (Euclid P) m)).trans hγ)
+  · -- `∂(A − B)(γ) = (A − B)(dγ) = A(dγ) − B(dγ) = (∂A − ∂B)(γ)`
+    ext γ
+    rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
