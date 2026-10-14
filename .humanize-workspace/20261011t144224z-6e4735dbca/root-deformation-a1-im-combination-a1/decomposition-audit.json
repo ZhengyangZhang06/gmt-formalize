@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsIntegerMultiplicity|IsRectifiableTriple|tauAction|GeometricCurrentOn|import|namespace",
+        "deformation_imcomb|fiw_ims_combine|iwl_weighted_tangent_locality|iwl_imc_normalized_lebesgue_points",
+        "def HasWeightedApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|def blowUpMap|theorem unique",
+        "withDensity_apply|toMeasurable_ae_eq|ae_restrict_mem₀|restrict_restrict₀|ae_restrict_iUnion_iff|integral_const_mul|lintegral_indicator₀|aestronglyMeasurable_iUnion_iff",
+        "ae_tendsto_lintegral_enorm_sub_div|tendsto_filterAt|hasSum_integral_of_summable_integral_norm|det_to_matrix_orthonormalBasis_real|eq_smul_basis_det",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imcomb-independent-audit-aa0bbutl/Integrated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1/decomposition-v1.json",
+        "/tmp/imcomb-independent-audit-aa0bbutl/reuse-audit.json",
+        "/tmp/imcomb-independent-audit-aa0bbutl/Integrated.lean",
+        "/tmp/imcomb-independent-audit-aa0bbutl/Integrated.log",
+        "/tmp/imcomb-independent-audit-aa0bbutl/challenge-results.json"
+      ],
+      "conclusion": "The split is appropriate for the selected deformation_im_combination contract: three analytic lemmas discharge the tangent-comparison hypothesis of the reused integer-series theorem, whose two-term specialization proves the parent. Independently confirmed nine identical-type reuses against their original comparator challenges, candidate payloads, successful kernel results and standard-axiom policies. The three new names are unreserved; the project/SimonGMT name search returned no matches. Dependencies, including reused implementation descendants, are acyclic and do not return to the selected parent. All twelve child types match their prose, are standalone one-line propositions, and use bare identifiers. All thirteen regenerated comparator challenges elaborate. The three supplied new proofs and parent assembly compile with only standard axioms and the intended reused-declaration stubs. Pinned revisions and relevant snapshot/source compatibility were confirmed. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes arbitrary A and infinite thresholds exactly as stated. Localization, the covering argument, the convergent-tail estimate and threshold limits prove the sharp inequality without assuming measurability of A. Identical accepted reuse verified."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Null-measurability justifies the indicator identities; local integrability justifies subtracting the small-scale integrals. Correct blow-up scaling and equality of the weights at x give the exact equivalence for every Q."
+    },
+    {
+      "key": "zero_density_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No measurability hypothesis on g is missing: withDensity_apply applies on measurable sets for arbitrary g. The measurable hull, countable compact localization and Upper Density Theorem establish the stated limit with the correct normalization."
+    },
+    {
+      "key": "lebesgue_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite restricted measures permit Besicovitch differentiation. The declared density_comparison dependency supplies finite upper density outside an H-null set; the zero-ball-mass case and radius rescaling complete the exact normalized-limit conclusion."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The families become orthonormal bases of their common span. Their change-of-basis determinant is ±1, and evaluation on arbitrary covectors proves the asserted NVector equality, including degree zero."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both orientation clauses transfer to the overlap measure. Positivity of θ₂ supplies the nonzero hypothesis for weighted-tangent uniqueness; frame_sign then gives the required orientation alternatives."
+    },
+    {
+      "key": "overlap_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localized measurability permits termwise nonnegative integration and proves compact-set integrability of Θ. Every active integer coefficient contributes at least one, so finiteness of Θ almost everywhere forces finite overlap."
+    },
+    {
+      "key": "tsum_tau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support and the orthonormal-frame operator-norm estimate give summable integrals of norms. Measurability and domination justify termwise integration, and the indicator calculation identifies precisely the stated HasSum terms and limit."
+    },
+    {
+      "key": "im_combine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the reference orientation and finite integer-valued signed multiplicity, handles cancellation, and verifies every triple condition and the HasSum identity. Tangent comparison remains an explicit hypothesis; neither the selected parent nor an unconditional combination theorem is assumed."
+    },
+    {
+      "key": "subset_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Applying zero_density_off_set to M∖E with density ‖θ‖ gives the needed estimate almost everywhere on E. Rescaling and the indicator-difference identity meet every tangent_locality hypothesis, without positivity or local finiteness of H restricted to M."
+    },
+    {
+      "key": "weight_change",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized Lebesgue points for both weights control their difference after scaling by θ′(x)/θ(x). Positivity legitimizes division; homogeneity and tangent_locality prove the exact implication even when θ′ is signed or vanishes."
+    },
+    {
+      "key": "tangent_overlap",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurability of the truncated overlaps, proves their local finiteness using the positive lower bound, and shows they exhaust the overlap. The subset–weight-change–subset chain has the correct directions, and countable almost-everywhere gluing proves the full conclusion."
+    }
+  ],
+  "required_changes": []
+}
