@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'deformation theorem|federer|polyhedral|cubical|skeleton|lipschitz.*push' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n -i 'federer.?fleming|deformation theorem|flat norm|polyhedral chain|cmcdt_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n 'cmcdt_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'area_image_criticalSet_eq_zero|injective_area_formula_lipschitzOn|weighted_area_formula_lipschitzOn_fiberSum|exteriorDerivativeOn_pullbackFormWithin|boundary_affinePushforward|massOn_le_liminf' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02 .lake/packages/simongmt/Poincare/SimonGMT/Chapter06 -g '*.lean'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-independent-audit/InstanceChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-independent-audit/ReferenceAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt2/lean/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json",
+        "/tmp/cmcdt-independent-audit/Types.lean",
+        "/tmp/cmcdt-independent-audit/InstanceChecks.lean",
+        "/tmp/cmcdt-independent-audit/ReferenceAxioms.lean",
+        "/tmp/cmcdt2/lean/Assembly.lean"
+      ],
+      "conclusion": "The eight-child split is appropriate for the selected cmc_deformation_theorem. The snapshot contract matches the workspace; pinned Mathlib and SimonGMT revisions were verified. Chapter 6 contains an unfinished deformation specification, not a reusable proof; the Mathlib search found no deformation theorem or polyhedral-chain implementation. All eight unchanged one-line propositions independently elaborate without child implementations. The smoothness notation, trace coercion, subtraction, ENNReal products and empty closed thickenings have the intended meanings; no matrix-unit construction occurs. All names are bare and unreserved in the inspected DAG. Dependency edges are acyclic, including the existing prerequisite branches, and the explicit antecedents match their frozen types verbatim. The supplied assembly was independently inspected and recompiled: assuming the stated children and prerequisites, it proves exactly the selected frozen parent type. The assembly and checked library lemmas use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "skeleton_retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated coordinate conditions and uniform constant. The facewise radial construction, periodic-plane distance estimate, codimension induction and segment argument prove both conclusions, with the corrected 1/4 margin and no circular reliance."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies to the two arbitrary finite measures quantified in the type. Disjoint periodic cylinders justify the covering estimate; Fubini yields one centre good for both measures at every required radius. Zero measures and the zero-dimensional complementary fibre are handled."
+    },
+    {
+      "key": "cube_bv_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and all three conclusions match. Testing with zero establishes V ≥ 0; mollification, Poincaré, the integer median and the trace estimate prove the claimed bounds. The final test field need not have compact support because its derivative is bounded on the closed cube."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Proper affine push-forward supplies all six properties for every degree, including zero. The inverse, exact mass scaling, support equality and transformed IMRep are justified directly. The unconstrained definition at λ = 0 is legitimate."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Absolute mass summability defines a continuous current with the stated evaluation, mass and support properties. The finite-measure carrier union, tangent locality, orientation signs and integrable integer multiplicity construct its IMRep directly, without invoking a closure theorem or the parent."
+    },
+    {
+      "key": "lipschitz_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The operator contract matches the prose, including locality, normality hypotheses and the separate degree-zero identity. Mollification and cut-off homotopies establish the calculus; parametrization, the area formula, weak continuity of minors and the declared im_series dependency establish integrality. The proof supplies constructions and arguments rather than a future proof-search plan."
+    },
+    {
+      "key": "skeleton_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies suffice. Good slicing radii make the shell and slice currents normal; locality cancels successive slice terms. Summable mass estimates and im_series yield the identity and integrality, while weak boundary convergence gives the boundary mass and support bounds. Constants are uniform in T, and n ≥ P and zero-current cases are covered."
+    },
+    {
+      "key": "face_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The disjoint face neighbourhoods bound the sum of variations without an undeclared boundary-measure representation. The median estimates give the required mass bounds and a finite coefficient family fixed before Q₀. Explicit face representations and cubical Stokes establish integrality, including vertex boundaries; the mass dichotomy and both support conditions follow."
+    }
+  ],
+  "required_changes": []
+}
