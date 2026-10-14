@@ -1,0 +1,27 @@
+{
+  "node_id": "root.flat_iff_weak-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/338",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "7c119a556b4c6c3ef8bae377dcae1dbfe3ffade7",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.deformation-a1",
+    "root.slicing-a1",
+    "root.boundary_rectifiability-a1",
+    "root.flat_iff_weak-a1.flat_to_weak-a1",
+    "root.flat_iff_weak-a1.tangent_locality-a1",
+    "root.flat_iff_weak-a1.im_mass_formula-a1",
+    "root.flat_iff_weak-a1.im_series-a1",
+    "root.flat_iff_weak-a1.im_lincomb-a1",
+    "root.flat_iff_weak-a1.localization-a1",
+    "root.flat_iff_weak-a1.total_boundedness-a1",
+    "root.flat_iff_weak-a1.flat_cauchy_limit-a1"
+  ]
+}
