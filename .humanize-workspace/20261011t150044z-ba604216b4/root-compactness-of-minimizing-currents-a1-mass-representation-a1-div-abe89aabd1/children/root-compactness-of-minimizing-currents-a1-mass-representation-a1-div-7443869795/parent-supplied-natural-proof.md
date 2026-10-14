@@ -1,0 +1,149 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.jacobi_trace-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, fact (F3) (Jacobi), with every step written out. Step 5 corrects one phrase of the parent (see there).
+
+Notation.
+- ℝⁿ := Euclid n = EuclideanSpace ℝ (Fin n). e'_j := EuclideanSpace.single j 1 (j ∈ Fin n) is the standard basis. e := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis is the same basis as a Module.Basis, so e j = e'_j and e.repr x k = x k.
+- For v : Fin n → ℝⁿ, D(v) := det(Matrix.of fun k j => v j k). This is the determinant of the n×n matrix whose j-th column is v j.
+- For i ∈ Fin n and v : Fin n → ℝⁿ, v⁽ⁱ⁾ := Function.update v i (A(v i)), i.e. v with its i-th entry replaced by A(v i).
+- Φ(v) := Σ_{i ∈ Fin n} D(v⁽ⁱ⁾). We must show Φ(u) = tr(A)·D(u), where tr(A) = LinearMap.trace ℝ ℝⁿ A.
+
+1. (D is the determinant of the standard basis.) For v : Fin n → ℝⁿ the matrix of the family v in the basis e is e.toMatrix v k j = e.repr(v j) k = v j k (Basis.toMatrix_apply). By Basis.det_apply, e.det v = det(e.toMatrix v) = D(v). So D = e.det is an alternating n-linear form on ℝⁿ, and D(e') = e.det e = 1 (Basis.det_self).
+
+2. (Φ is n-linear.) Fix i. For j ∈ Fin n put f_{i,j} := A if j = i, and f_{i,j} := id otherwise. Then v⁽ⁱ⁾ = (j ↦ f_{i,j}(v j)). So v ↦ D(v⁽ⁱ⁾) is the multilinear map e.det with the linear map f_{i,j} applied in slot j (MultilinearMap.compLinearMap), and it is n-linear. A finite sum of n-linear maps is n-linear, so Φ is n-linear.
+
+3. (Φ is alternating.) Let v : Fin n → ℝⁿ and j ≠ l with v j = v l. We show Φ(v) = 0.
+ (a) Let i ∉ {j, l}. Then v⁽ⁱ⁾ agrees with v at positions j and l, so it has the equal entries v j = v l at two distinct positions. Since D is alternating, D(v⁽ⁱ⁾) = 0.
+ (b) Let σ := Equiv.swap j l. Then v⁽ˡ⁾ = v⁽ʲ⁾ ∘ σ. We check each position.
+  - Position j: (v⁽ʲ⁾ ∘ σ)(j) = v⁽ʲ⁾(l) = v l, because l ≠ j. Also v⁽ˡ⁾(j) = v j, because j ≠ l. These agree since v j = v l.
+  - Position l: (v⁽ʲ⁾ ∘ σ)(l) = v⁽ʲ⁾(j) = A(v j) = A(v l) = v⁽ˡ⁾(l).
+  - Any other position k: both sides equal v k.
+ (c) D is alternating, so D(v⁽ʲ⁾ ∘ σ) = −D(v⁽ʲ⁾) (AlternatingMap.map_swap). Hence D(v⁽ʲ⁾) + D(v⁽ˡ⁾) = 0.
+ Split the sum Φ(v) into the terms i = j, the term i = l, and the rest (Finset.sum_eq_add_of_mem). By (a)–(c), Φ(v) = 0. Together with step 2, Φ is an alternating n-linear form on ℝⁿ.
+
+4. (Reduction to the basis.) Every alternating n-linear form on ℝⁿ is a multiple of the basis determinant: Φ = Φ(e)·e.det (AlternatingMap.eq_smul_basis_det). Evaluate at u and use step 1: Φ(u) = Φ(e)·D(u).
+
+5. (Value at the basis.) Fix i and let c := A(e'_i). Then c = Σ_k c_k e'_k with c_k = e.repr c k (Basis.sum_repr). D is linear in slot i (AlternatingMap.map_update_sum, AlternatingMap.map_update_smul), so
+ D(e'⁽ⁱ⁾) = D(Function.update e' i c) = Σ_k c_k·D(Function.update e' i e'_k).
+ - For k ≠ i, the tuple Function.update e' i e'_k has the entry e'_k at the two distinct positions i and k, so its D-value is 0.
+ - For k = i, the tuple is e' itself, and D(e') = 1.
+ Hence D(e'⁽ⁱ⁾) = c_i = (A e'_i)_i, and Φ(e) = Σ_i (A e'_i)_i.
+ Correction to the parent's wording: this is also the expansion along row i. Row i of the matrix of Function.update e' i c is (0, …, 0, c_i, 0, …, 0), and deleting row i and column i leaves the identity matrix of size n − 1. The parent's phrase "the other rows are rows of the identity" is not literally true, since those rows carry c_k in column i. The value c_i is unaffected.
+
+6. (Trace.) The matrix B := LinearMap.toMatrix e e A has entries B_{k,i} = e.repr(A(e i)) k = (A e'_i)_k (LinearMap.toMatrix_apply). So Σ_i (A e'_i)_i = Σ_i B_{i,i} = Matrix.trace B = LinearMap.trace ℝ ℝⁿ A, by LinearMap.trace_eq_matrix_trace with the basis e.
+
+7. (Conclusion.) By steps 4–6, Σ_i D(Function.update u i (A(u i))) = Φ(u) = Φ(e)·D(u) = tr(A)·D(u). Written out, this is Σ_i det(Matrix.of fun k j => Function.update u i (A(u i)) j k) = LinearMap.trace ℝ (Euclid n) A · det(Matrix.of fun k j => u j k). The case n = 0 is covered: both sides are 0, since the sum is empty and the trace on the zero space is 0.
+
+Lean note. Steps 1–7 compile in about 75 lines with only the frozen imports:
+- Let e := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis. Step 1 is `rw [e.det_apply]; congr 1`.
+- Step 2: Φm := ∑ i, (e.det.toMultilinearMap).compLinearMap (f i), with f i j := if j = i then A else LinearMap.id. Its value is computed with the root lemma sum_apply (MultilinearMap.sum_apply is a deprecated alias) and MultilinearMap.compLinearMap_apply.
+- Step 3 builds the AlternatingMap { Φm with map_eq_zero_of_eq' := … }. It uses Finset.sum_eq_add_of_mem, e.det.map_eq_zero_of_eq, Function.update_of_ne, Equiv.swap_apply_of_ne_of_ne and e.det.map_swap.
+- Step 4 is AlternatingMap.eq_smul_basis_det e Φ, evaluated at u.
+- Step 5 uses `conv_lhs => rw [← e.sum_repr (A (e i))]`, AlternatingMap.map_update_sum, Finset.sum_eq_single i, AlternatingMap.map_update_smul, Function.update_eq_self, e.det_self and e.det.map_eq_zero_of_eq.
+- Step 6 is LinearMap.trace_eq_matrix_trace ℝ e with Matrix.trace, Matrix.diag_apply and LinearMap.toMatrix_apply.
+A shorter computation, also complete and also compiled, may be used instead. Let M := Matrix.of fun k j => u j k and B := LinearMap.toMatrix e e A.
+ (i) A(u i) k = (B·M)_{k,i}, by LinearMap.toMatrix_mulVec_repr e e A (u i) and e.repr x = x.
+ (ii) Hence the i-th summand is det(M.updateCol i (column i of B·M)).
+ (iii) By Cramer's rule this equals (adjugate M ·(B·M))_{i,i} (Matrix.cramer_apply, Matrix.cramer_eq_adjugate_mulVec).
+ (iv) Σ_i (adjugate M·(B·M))_{i,i} = trace((B·M)·adjugate M) (Matrix.trace_mul_comm) = trace(B·(det M • 1)) (Matrix.mul_assoc, Matrix.mul_adjugate) = det M·trace B (Matrix.trace_smul), and trace B = tr(A).
+
+## Key steps
+
+1. D(v) := det(Matrix.of fun k j => v j k) equals e.det v for the standard basis e of ℝⁿ (Basis.det_apply, Basis.toMatrix_apply).
+2. Φ(v) := Σ_i D(Function.update v i (A(v i))) is n-linear: each summand is e.det with A in slot i and id in the other slots (compLinearMap).
+3. Φ is alternating. If v j = v l with j ≠ l, the terms i ∉ {j, l} vanish, and the terms i = j and i = l differ by the swap (j l), so they cancel (map_swap).
+4. Φ = Φ(e)·e.det (AlternatingMap.eq_smul_basis_det), so Φ(u) = Φ(e)·D(u).
+5. By linearity in slot i, D(Function.update e i (A e_i)) = (A e_i)_i, so Φ(e) = Σ_i (A e_i)_i = tr(A) (LinearMap.toMatrix_apply, LinearMap.trace_eq_matrix_trace).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical); git rev-parse HEAD in lake-packages-25730c7c/simongmt (2b3663083f3f) and .lake/packages/mathlib (25730c7c759d)`
+- `cmp -s of 16 cited Mathlib files between local-references/123e8435b4a2469b/mathlib and lake-packages-25730c7c/mathlib (all identical)`
+- `grep -n 'def Covector|abbrev Covector|def DifferentialForm|abbrev DifferentialForm|def IsTestForm|def covectorEuclideanNorm|def exteriorDerivative|theorem exteriorDerivative_apply' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `grep -rn 'Leibniz|extDeriv_smul|smul_extDeriv|curryLeft' simongmt/Poincare/SimonGMT; grep '^theorem|^def' Chapter06/WedgeForms.lean (no Leibniz rule for b•ω; curryLeft unused)`
+- `grep -n '^theorem|^lemma|^def' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/*.lean (extDeriv = alternatizeUncurryFin ∘ fderiv; extDeriv_apply/add/smul; no product rule)`
+- `grep -rn 'def curryLeft|norm_curryLeft|curryLeft_apply_apply' and 'insertNth' in Mathlib/LinearAlgebra/Alternating and Mathlib/Analysis/Normed/Module/Alternating; sed Analysis/Normed/Module/Alternating/Uncurry/Fin.lean (map_insertNth, alternatizeUncurryFin_apply, norm_alternatizeUncurryFin_le)`
+- `grep -rn trace Mathlib/LinearAlgebra/Matrix/Determinant/*.lean Mathlib/LinearAlgebra/Matrix/Charpoly/*.lean (only derivative_det_one_add_X_smul, det_one_add_smul); grep det_updateCol_*, AlternatingMap.eq_smul_basis_det, LinearMap.trace_eq_matrix_trace, cramer_apply, cramer_eq_adjugate_mulVec, mul_adjugate, trace_mul_comm, toMatrix_mulVec_repr, Basis.det_apply, AlternatingMap.map_swap`
+- `grep -n continuousAlternatingMap_apply_const Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean; grep 'def apply' Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `grep Continuous.bounded_above_of_compact_support, fderiv_of_notMem_tsupport, HasCompactSupport.fderiv, HasCompactSupport.mono', HasCompactSupport.smul_right, tsupport_smul_subset_left in Mathlib`
+- `python3 -I scan of dag.json: lean_statements mentioning covectorEuclideanNorm with an operator norm, exteriorDerivative/extDeriv/alternatizeUncurryFin/curryLeft, or LinearMap.trace with det; lean_name lookup for cmr_df_* (none) and rsd_mw_tfa_norm_props (accepted, candidate f492ba4a)`
+- `git show 9dcae6bdd56d (accepted dgcr_bwd_extDeriv_smul_const Lean proof); git show f492ba4a003c:GMT/Ch07/Submission.lean (accepted rsd_mw_tfa_norm_props Lean proof)`
+- `find workspaces -maxdepth 6 -name Submission.lean -path '*Ch07*' (689 files) | xargs grep -l cmr_df_ (no match)`
+- `grep -n 'def _existing_lean_name_problem|def _accepted_checkpoint' _recursive_lean/runtime.py; contract_scope and child_modules in verifier/gmt-compare.py; validate_lean_statement from _recursive_lean/lean_contract.py on all four statements (pass)`
+- `lake env lean /tmp/cmr-div-split/Stmts.lean Assembly.lean Children.lean JacobiAlt.lean Full.lean gen/Final.lean gen2/Final2.lean; reviewer: lake env lean /tmp/cmr-div-review/FinalCopy.lean Mine.lean JacobiAdj.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-abe89aabd1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/WedgeForms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/ToLin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/cmr-div-split/Stmts.lean`
+- `/tmp/cmr-div-split/Assembly.lean`
+- `/tmp/cmr-div-split/Children.lean`
+- `/tmp/cmr-div-split/JacobiAlt.lean`
+- `/tmp/cmr-div-split/Full.lean`
+- `/tmp/cmr-div-split/gen/Final.lean`
+- `/tmp/cmr-div-split/gen2/Final2.lean`
+- `/tmp/cmr-div-split/gen/decomposition_draft.json`
+
+Pinned sources. The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. SimonGMT is pinned at 2b366308. All 16 cited Mathlib files are byte-identical between the snapshot and the build tree.
+
+Available and used. Mathlib provides:
+- extDeriv = alternatizeUncurryFin ∘ fderiv, with extDeriv_apply (wrapped by SimonGMT exteriorDerivative_apply);
+- ContinuousAlternatingMap.map_insertNth and Fin.insertNth_removeNth, which together are the parent's (F2);
+- ContinuousAlternatingMap.curryLeft with norm_curryLeft;
+- fderiv_continuousAlternatingMap_apply_const_apply;
+- AlternatingMap.eq_smul_basis_det, LinearMap.trace_eq_matrix_trace and the cramer/adjugate lemmas;
+- support and bound lemmas: fderiv_of_notMem_tsupport, HasCompactSupport.mono', Continuous.bounded_above_of_compact_support.
+
+Not available (no match), so these became children:
+- Jacobi's column-replacement identity Σ_i det(update) = tr·det. Mathlib has only derivative_det_one_add_X_smul, for polynomial matrices.
+- Any Leibniz or contraction formula for extDeriv(b•θ.curryLeft∘G). SimonGMT has no Leibniz rule and does not use curryLeft.
+
+DAG.
+- The accepted theorem rsd_mw_tfa_norm_props (candidate f492ba4a) supplies (F1). It is reused with its byte-identical type.
+- The accepted dgcr_bwd_extDeriv_smul_const is the constant-covector analogue of the contraction child. It served as a model but is not needed.
+- No cmr_df_* name occurs in dag.json or in any of the 689 Ch07 Submission.lean worktrees.
+
+Lean checks, after import GMT.Ch07.Submission in the comparator scope:
+- The four child types elaborate and pass validate_lean_statement.
+- The verbatim parent type is proved from the four children.
+- Complete proofs of the three new children compile.
+- The whole chain is sorry-free, and #print axioms gives only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced these checks and accepted.

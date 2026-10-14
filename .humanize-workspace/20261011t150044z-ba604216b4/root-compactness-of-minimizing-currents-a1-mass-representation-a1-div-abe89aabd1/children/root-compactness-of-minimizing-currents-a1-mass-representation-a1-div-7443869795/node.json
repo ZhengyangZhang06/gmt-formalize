@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1.jacobi_trace-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.divergence_form-a1",
+  "depth": 4,
+  "title": "Jacobi's trace identity: Σ_i det(u with column i replaced by A u_i) = tr(A)·det(u) (parent fact F3)",
+  "statement": "Let n ∈ ℕ, let A : ℝⁿ → ℝⁿ be ℝ-linear (ℝⁿ = Euclid n = EuclideanSpace ℝ (Fin n)), and let u : Fin n → ℝⁿ. For v : Fin n → ℝⁿ write D(v) := det(Matrix.of fun k j => v j k), the determinant of the n×n matrix whose j-th column is v j. Then Σ_{i ∈ Fin n} D(Function.update u i (A(u i))) = tr(A)·D(u), where tr(A) = LinearMap.trace ℝ ℝⁿ A.",
+  "lean_statement": "∀ (n : ℕ) (A : Euclid n →ₗ[ℝ] Euclid n) (u : Fin n → Euclid n), ∑ i : Fin n, Matrix.det (Matrix.of fun k j => Function.update u i (A (u i)) j k) = LinearMap.trace ℝ (Euclid n) A * Matrix.det (Matrix.of fun k j => u j k)",
+  "lean_name": "cmr_df_det_update_sum_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-7443869795-a1"
+}

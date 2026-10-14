@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.div_mass_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "depth": 4,
+  "title": "Mass bound for the representation integral against dη − ζ (parent step 4)",
+  "statement": "Let P, m ∈ ℕ, U, W ⊆ ℝ^P with W ⊆ U, and T ∈ 𝒟_{m+1}(U) (GeometricCurrentOn U (m+1)) with M_W(T) := T.massOn W ≠ ∞ and M_W(∂T) := T.boundary.massOn W ≠ ∞. Let μ be a measure on ℝ^P and ξ : ℝ^P → Λ_{m+1} (MultiVector P (m+1)) with T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{m+1}(U). Assume the evaluation bound (EB): for every k ∈ ℕ, S ∈ 𝒟_k(U), ω ∈ 𝒟^k(U) and r ∈ ℝ with S.massOn W ≠ ∞, tsupport ω ⊆ W and covectorEuclideanNorm(ω(x)) ≤ r for all x, one has |S(ω)| ≤ r·(S.massOn W).toReal. Let θ be an (m+1)-covector, b, D : ℝ^P → ℝ with tsupport b ⊆ W, K ∈ ℝ, and let η, ζ be test forms (IsTestForm: smooth with compact support) of degrees m and m+1 with tsupport η ⊆ tsupport b, tsupport ζ ⊆ tsupport b, covectorEuclideanNorm(η(x)) ≤ K and covectorEuclideanNorm(ζ(x)) ≤ K for all x, and exteriorDerivative η x = (b(x)·D(x))•θ + ζ(x) for all x. Then |∫ b(x)·ξ(x)(θ)·D(x) d(μ.restrict W)(x)| ≤ K·((T.boundary.massOn W).toReal + (T.massOn W).toReal).",
+  "lean_statement": "∀ (P m : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (m + 1)) (θ : Covector (Euclid P) (m + 1)) (b D : Euclid P → ℝ) (η : DifferentialForm (Euclid P) m) (ζ : DifferentialForm (Euclid P) (m + 1)) (K : ℝ), W ⊆ U → T.massOn W ≠ ∞ → T.boundary.massOn W ≠ ∞ → (∀ ω : TestFormOn U (m + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μ) → (∀ (k : ℕ) (S : GeometricCurrentOn U k) (ω : TestFormOn U k) (r : ℝ), S.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) k) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ r) → |S ω| ≤ r * (S.massOn W).toReal) → tsupport b ⊆ W → IsTestForm η → IsTestForm ζ → tsupport η ⊆ tsupport b → tsupport ζ ⊆ tsupport b → (∀ x, covectorEuclideanNorm (η x) ≤ K) → (∀ x, covectorEuclideanNorm (ζ x) ≤ K) → (∀ x, exteriorDerivative η x = (b x * D x) • θ + ζ x) → |∫ x, b x * ξ x θ * D x ∂(μ.restrict W)| ≤ K * ((T.boundary.massOn W).toReal + (T.massOn W).toReal)",
+  "lean_name": "cmr_abs_integral_div_le_mass",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-nul-d2701ca50d-a1"
+}
