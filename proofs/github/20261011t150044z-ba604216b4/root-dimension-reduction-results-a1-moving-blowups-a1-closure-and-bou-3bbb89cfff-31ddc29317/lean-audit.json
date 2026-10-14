@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "715fd1062530dd87d16f4f8b630a5976480ca6fd50db3cefd83bb20239097224",
+  "git_delta": {
+    "base_commit": "4a6f1776eda5c305464e88fcc5e91f421ea9f548",
+    "candidate_commit": "6f17e241f5e114237a14062d2b4caa6697ae348e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_gp_upper_density_le_one",
+    "diff_sha256": "c2661fa0f80d889a318d5a41d84adfa20ab837247aa13297cbd8fc0c7cd6c0b4",
+    "source_sha256": "dc605ec7f9628ec5bd0fa38dd5ab2ad6f8d7eac87def9a90a571db1e4702878c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_gp_upper_density_le_one",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P)) → MeasurableSet M → μHE[n] M < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
