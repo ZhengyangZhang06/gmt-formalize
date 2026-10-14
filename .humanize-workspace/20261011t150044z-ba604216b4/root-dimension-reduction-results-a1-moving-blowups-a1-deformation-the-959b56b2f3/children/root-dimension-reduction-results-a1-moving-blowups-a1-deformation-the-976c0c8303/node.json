@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_imrep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "The cylinder IMRep ((0,1) × M, θ∘tail, e₀ ∧ ξ) (parent step 6)",
+  "statement": "Let N, n ∈ ℕ and R = (M, θ, ξ) an integer multiplicity representation in ℝ^N of degree n (IMRep univ n) with ∫_M θ dHⁿ < ∞ (Hᵈ := μHE[d]). Put Ψ(t, x) := (t, x_1, …, x_N) ∈ ℝ^{N+1} (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), e₀ := EuclideanSpace.single 0 1 and Jv := Ψ(0, v). Then there is an IMRep R' in ℝ^{N+1} of degree n+1 with carrier Ψ((0, 1) × M), multiplicity R'.mult(Ψ(t, x)) = θ(x) for all t, x, and such that for Hⁿ-a.e. x ∈ M, for all t ∈ ℝ, every (n+1)-covector α on ℝ^{N+1} and every n-covector β on ℝ^N with β(v_1, …, v_n) = α(e₀, Jv_1, …, Jv_n) for all v: R'.orient(Ψ(t, x))(α) = ξ(x)(β).",
+  "lean_statement": "∀ (N n : ℕ) (R : IMRep (univ : Set (Euclid N)) n), ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ → ∃ R' : IMRep (univ : Set (Euclid (N + 1))) (n + 1), R'.carrier = (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier) ∧ (∀ (t : ℝ) (x : Euclid N), R'.mult (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = R.mult x) ∧ ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ (t : ℝ) (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → R'.orient (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) α = R.orient x β",
+  "lean_name": "dimred_mbl_dt_lp_imc_cylinder_imrep",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_measure-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_tangent-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.orientation-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_rectifiable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_rectifiable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-976c0c8303-a1"
+}
