@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ce17ec8e946cf2a818ed4ce27e0a10893b2888013d0d9b4284f4f57aa0a85105",
+  "git_delta": {
+    "base_commit": "a05c33f74f9555111a7566abe3e3307f2bb4eb70",
+    "candidate_commit": "733f09002beff9c679dd81b7bf0d271178eef8f7",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "44e07e148167abcc923bde49efedcc05b2eb3e290135b4ab2a4849c7932d87c8",
+    "source_sha256": "a94eae00d27726e86ea0938b1b569f2f856d58d0f4cc2f057d199bf9b867abb6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_alpha_invariant_homogeneous",
+      "statement": "∀ (s : ℝ) (H : ℝ × ℝ → ℝ), 0 < s → s ≤ 1 → IntegrableOn H (Ioo (1 - s) (1 + s) ×ˢ Ioo (-s) s) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p) → ∃ c : ℝ, ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → H p = c * p.1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
