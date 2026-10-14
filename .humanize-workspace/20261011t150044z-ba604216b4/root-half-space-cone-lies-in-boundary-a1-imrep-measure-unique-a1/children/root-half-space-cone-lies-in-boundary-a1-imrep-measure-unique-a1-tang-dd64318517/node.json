@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.tangent_null_invariance-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes are unchanged by H^n-null modifications of the set",
+  "statement": "Let P, n ∈ ℕ and A, B ⊆ ℝ^P with H^n(A ∖ B) = 0 and H^n(B ∖ A) = 0, where H^n = μHE[n]. Then for every x ∈ ℝ^P and every linear subspace Q ⊆ ℝ^P: Q is an approximate tangent space of A at x in the sense of Simon Ch. 3, 1.4 (SimonGMT HasApproximateTangentSpaceAt n A x Q: finrank Q = n and ∫_{η_{x,r}(A)} f dH^n → ∫_Q f dH^n as r ↓ 0 for every f ∈ C_c(ℝ^P), with η_{x,r}(y) = r^{-1}(y − x)) if and only if Q is an approximate tangent space of B at x.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (A \\ B) = 0 → μHE[n] (B \\ A) = 0 → (HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q)",
+  "lean_name": "hasApproximateTangentSpaceAt_iff_of_null_sdiff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-tang-dd64318517-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+  "depth": 3,
+  "title": "Two representations of one current have a.e. equal vector densities 1_M θ ξ",
+  "statement": "Let U ⊆ ℝ^P be open, n ∈ ℕ, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and let R_1 = (M_1, θ_1, ξ_1) and R_2 = (M_2, θ_2, ξ_2) be integer multiplicity triples in U (IMRep U n) that both represent T (R_1.Represents T and R_2.Represents T). Then for H^n⌞(M_1 ∪ M_2)-almost every x ∈ ℝ^P (H^n = μHE[n]) the n-vectors 1_{M_1}(x)θ_1(x)ξ_1(x) and 1_{M_2}(x)θ_2(x)ξ_2(x) in MultiVector P n are equal.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R₁ R₂ : IMRep U n), IsOpen U → R₁.Represents T → R₂.Represents T → ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∪ R₂.carrier)), R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x = R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+  "lean_name": "imrep_weighted_orient_indicator_ae_eq",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c-a1"
+}
