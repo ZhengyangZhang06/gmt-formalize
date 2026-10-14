@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1.translate_imrep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1",
+  "depth": 6,
+  "title": "Translates of integer multiplicity currents in ℝ^P: τ_vA is integer multiplicity, with translated action and translated measure",
+  "statement": "Let P, n ∈ ℕ, let A ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) have an integer multiplicity representation R_A = (M, θ, ξ) (IMRep univ n with R_A.Represents A), and let v ∈ ℝ^P. Then there are A^v ∈ 𝒟_n(ℝ^P) and an integer multiplicity representation R^v (IMRep univ n) with R^v.Represents A^v such that (a) currentEval A^v φ = currentEval A (y ↦ φ(y + v)) for every n-form φ : ℝ^P → Λ^n(ℝ^P), whether or not φ is a test form, and (b) R^v.measure(C) = R_A.measure((y ↦ y + v)⁻¹(C)) for every Borel set C ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (A : GeometricCurrentOn (univ : Set (Euclid P)) n) (RA : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), RA.Represents A → ∃ (Av : GeometricCurrentOn (univ : Set (Euclid P)) n) (Rv : IMRep (univ : Set (Euclid P)) n), Rv.Represents Av ∧ (∀ φ : DifferentialForm (Euclid P) n, currentEval Av φ = currentEval A (fun y => φ (y + v))) ∧ ∀ C : Set (Euclid P), MeasurableSet C → Rv.measure C = RA.measure ((fun y => y + v) ⁻¹' C)",
+  "lean_name": "dimred_cs_sos_mt_fc_translate_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-406450a7ed-a1"
+}
