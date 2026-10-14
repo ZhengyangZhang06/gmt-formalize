@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.planar_globalize-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1",
+  "depth": 6,
+  "title": "A punctured set that is locally an m-plane of the (m+1)-space A₀ is a punctured m-plane (parent steps 2, 5–8)",
+  "statement": "Globalization. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P; M ⊆ ℝ^P. Hypotheses: m ≥ 2; dim A₀ = m + 1; M ≠ ∅; 0 ∉ M; closure(M) ⊆ M ∪ {0}; and for every x ∈ M there are a linear subspace H ⊆ A₀ with dim H = m and an open set O ⊆ ℝ^P with x ∈ O and O ∩ M = O ∩ H. Conclusion: there is a linear subspace H₀ ⊆ ℝ^P with dim H₀ = m (Module.finrank ℝ H₀ = m) and M = H₀ ∖ {0}.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \\ {0}",
+  "lean_name": "codim1_hcp_fcp_locally_planar_is_plane",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.punctured_connected-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.punctured_connected-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-407063d934-a1"
+}

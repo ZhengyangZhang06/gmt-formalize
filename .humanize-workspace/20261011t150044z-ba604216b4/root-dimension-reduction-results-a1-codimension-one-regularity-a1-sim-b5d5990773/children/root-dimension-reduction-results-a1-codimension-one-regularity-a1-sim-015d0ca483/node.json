@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "depth": 5,
+  "title": "Area formula on an embedded C¹ submanifold for a C¹ map that is injective with injective derivative (Simon Ch. 2, 4.11–4.13, as used in 5.1–5.2)",
+  "statement": "Area formula on an embedded C¹ submanifold. Data: P, m ∈ ℕ; M ⊆ ℝ^P; a Borel set E ⊆ ℝ^P; a map Φ : ℝ^P → ℝ^P. Hypotheses: M is an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M); E is Borel (MeasurableSet E) and E ⊆ M; Φ is C¹ on ℝ^P; Φ is injective on E; the derivative DΦ(x) = fderiv ℝ Φ x is injective for every x ∈ E. Notation: for x ∈ ℝ^P let T_x := span(tangentSpace M x) (a linear subspace, with the inner product of ℝ^P) and ι_x : T_x → ℝ^P the inclusion; J^MΦ(x) := √det((DΦ(x)∘ι_x)*(DΦ(x)∘ι_x)), where * is the adjoint for the inner products of T_x and ℝ^P and det is the determinant of the endomorphism (DΦ(x)∘ι_x)*(DΦ(x)∘ι_x) of T_x. Conclusion: H^m(Φ(E)) = ∫_E J^MΦ dH^m as an equality in [0, ∞], where H^m = μHE[m] and the integrand is read through ENNReal.ofReal (a lower Lebesgue integral ∫⁻ over E).",
+  "lean_statement": "∀ (P m : ℕ) (M E : Set (Euclid P)) (Φ : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 m M → MeasurableSet E → E ⊆ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) = ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]",
+  "lean_name": "codim1_hcp_submanifold_area_formula",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-015d0ca483-a1"
+}

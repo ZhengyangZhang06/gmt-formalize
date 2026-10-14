@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.cross_product-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "Generalized cross product of an (m+1)-dimensional subspace A₀ (the volume form of A₀, parent step 2)",
+  "statement": "Cross product in A₀. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P with dim A₀ = m + 1. Conclusion: there is a continuous alternating m-linear map N : (ℝ^P)^m → ℝ^P (an element of Euclid P [⋀^Fin m]→L[ℝ] Euclid P) such that for every w = (w_1, …, w_m) ∈ (ℝ^P)^m: (i) N(w) ∈ A₀; (ii) N(w)·w_j = 0 for every j; (iii) if (w_j) is orthonormal and every w_j ∈ A₀, then |N(w)| = 1; (iv) if (w_j) is linearly independent and every w_j ∈ A₀, then N(w) ≠ 0.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ A₀ = m + 1 → ∃ N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P, (∀ w : Fin m → Euclid P, N w ∈ A₀) ∧ (∀ (w : Fin m → Euclid P) (j : Fin m), inner ℝ (N w) (w j) = 0) ∧ (∀ w : Fin m → Euclid P, Orthonormal ℝ w → (∀ j, w j ∈ A₀) → ‖N w‖ = 1) ∧ ∀ w : Fin m → Euclid P, LinearIndependent ℝ w → (∀ j, w j ∈ A₀) → N w ≠ 0",
+  "lean_name": "codim1_hcp_un_cross_product",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7e83e9b791-a1"
+}

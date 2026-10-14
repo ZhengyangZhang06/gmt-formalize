@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.normal_complement-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "Tangent spaces of a hypersurface of A₀: T_xM = A₀ ∩ ν(x)^⊥ and P_x = Π_{A₀} − ν(x)⊗ν(x)",
+  "statement": "Let P, m ∈ ℕ, A₀ ⊆ ℝ^P a linear subspace with dim A₀ = m + 1, M ⊆ A₀ an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M), and ν : ℝ^P → ℝ^P with ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for all v ∈ tangentSpace M x, for every x ∈ M. Then for every x ∈ M: tangentSpace M x = {v ∈ A₀ : ν(x)·v = 0}, and for every w ∈ ℝ^P, (span tangentSpace M x).starProjection w = A₀.starProjection w − (ν(x)·w)ν(x).",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, tangentSpace M x = {v : Euclid P | v ∈ A₀ ∧ inner ℝ (ν x) v = 0} ∧ ∀ w : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection w = A₀.starProjection w - inner ℝ (ν x) w • ν x",
+  "lean_name": "codim1_hcp_sc_tangent_normal_complement",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-298c0f923f-a1"
+}
