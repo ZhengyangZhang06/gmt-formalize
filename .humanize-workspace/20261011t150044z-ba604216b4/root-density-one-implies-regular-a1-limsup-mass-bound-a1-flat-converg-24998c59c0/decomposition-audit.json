@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "BVPoincare|\\bmedian\\b|Poincaré inequality for BV",
+        "ae_convolution_tendsto_right_of_locallyIntegrable|normed_neg|contDiff_normed|hasCompactSupport_normed|integral_normed|support_normed_eq",
+        "measurePreserving_arrowProdEquivProdArrow|volume_preserving_piFinSuccAbove|measurePreserving_pi|volume_preserving_ofLp|volume_preserving_toLp",
+        "theorem exists_contDiff_support_eq_eq_one_iff|exists_isCompact_sdiff_lt|tendsto_measure_iInter_atTop|tendsto_setIntegral_of_monotone|lintegral_liminf_le\\x27",
+        "git show b04a0309aad1bc70ed6b149c974bbddf4620a560 -- GMT/Ch07/Submission.lean",
+        "git show ae0277d4bed94a51b60fb4c7470fe259ed625e37 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cube-poincare-independent-audit-pozi1i01/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cube-poincare-independent-audit-pozi1i01/ReusedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-24998c59c0/parent-child-handoff.json",
+        "/tmp/cube-poincare-independent-audit-pozi1i01/results.json",
+        "/tmp/cube-poincare-independent-audit-pozi1i01/Assembly.lean",
+        "/tmp/cube-poincare-independent-audit-pozi1i01/ReusedProofs.log"
+      ],
+      "conclusion": "Verified the pinned revisions, handoff and requested contract digest. The searched project supplies a sorry-frozen BV Poincare specification, not a reusable proof; the pinned Mathlib supplies the required measure-preserving maps, cutoffs, convolution and convergence results. All twelve child types and the parent type independently elaborate in comparator scope. All names are bare identifiers: ten are fresh, and both reused declarations are accepted with byte-identical frozen types. Their recompiled proofs use only propext, Classical.choice and Quot.sound. The supplied mixed-point, slice, gradient and telescoping proof blocks also pass. No problematic matrix-unit construction occurs. Dependencies are correctly directed and acyclic. The split is appropriate: every child contributes to the selected theorem. Replaying the supplied parent assembly with four exact child contracts as explicit hypotheses proves the frozen parent with c = 10(m + 1), using only standard axioms and no placeholders. All 17 independent Lean checks passed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integer_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all stated hypotheses. Measurable representatives justify the level-set measures; continuity of measure gives a least integer crossing 1/2. Integrality supplies the opposite half-measure set, and the three sign cases prove the required bound on beta without circular reliance."
+    },
+    {
+      "key": "median_deviation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles zero measure explicitly and establishes product integrability before using Fubini. The mean estimate and the two median inequalities give exactly the stated factor 1 + theta⁻¹. No additional theta ≤ 1 hypothesis is needed."
+    },
+    {
+      "key": "mixed_point_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate-swap involution preserves the restricted product measure, yielding precisely one cube-volume factor. The argument covers arbitrary delta, including empty cubes. The supplied complete Lean proof independently compiled with only permitted axioms."
+    },
+    {
+      "key": "slice_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The empty-cube case correctly handles delta ≥ 1/2. Otherwise the measure-preserving slice swap and Fubini give the factor 1 − 2 delta. The exact supplied Lean proof independently compiled with only permitted axioms."
+    },
+    {
+      "key": "coordinate_step",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "FTC applies to the affine coordinate segment with the stated derivative. Compact-closure bounds justify all integrations. Applying exactly the two declared Fubini identities produces the stated side-length and volume factors; no additional obligation or circular step is hidden."
+    },
+    {
+      "key": "smooth_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate path telescopes correctly. Finite-sum integration, coordinate_step and the unit coordinate-vector norm yield exactly the factor m + 1 and the operator-norm integral. The supplied telescoping proof also independently compiled."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse of accepted declaration b04a0309aad1bc70ed6b149c974bbddf4620a560. Finite Borel measures on Euclidean space have the required regularity; the compact core and smooth Urysohn construction establish every conclusion. Recompilation confirmed only permitted axioms."
+    },
+    {
+      "key": "smooth_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The gradient represents fderiv with the correct Euclidean and operator norms, independently checked in Lean. The explicit regularized, cutoff test field is admissible, and its quantified error tends to zero. The proof establishes the exact conclusion using only smooth_cutoff."
+    },
+    {
+      "key": "mollifier_adjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid exact-type reuse of accepted declaration ae0277d4bed94a51b60fb4c7470fe259ed625e37. Oddness of the kernel derivative, the rank-one trace identity and integrable product domination justify Fubini and the negative sign. Recompilation confirmed only permitted axioms."
+    },
+    {
+      "key": "mollified_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The indicator extension is integrable and convolution is globally smooth. The support argument correctly allows tsupport eta to reach the closed delta-ball. Nonnegativity and normalization preserve the unit bound; the adjoint identity and testing H with the negative convolved field provide exactly the required dual bound."
+    },
+    {
+      "key": "bv_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies give uniform smooth double-integral bounds. Almost-everywhere convergence passes to the finite product measure, and Fatou applies with all integrability and finite-value conversions justified. The parent explicitly supplies normalized bumps satisfying the convergence hypothesis."
+    },
+    {
+      "key": "shrinking",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The increasing cubes exhaust the unit cube. Continuity of measure and the integral supplies both thresholds simultaneously, with the zero-integral case treated explicitly. This implements the shrinking step in [Simon, Chapter 2, Lemma 2.7](https://math.stanford.edu/~lms/ntu-gmt-text.pdf). The prose and frozen type agree."
+    }
+  ],
+  "required_changes": []
+}

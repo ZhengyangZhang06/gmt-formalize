@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.mixed_point_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Fubini identity for mixed points on the cube Q_δ (the Fubini step of parent step 3)",
+  "statement": "Let m ∈ ℕ, δ ∈ ℝ, k ∈ Fin (m + 1), Q_δ := {y ∈ Euclid (m + 1) : δ < y_i < 1 − δ for all i}, and let h : Euclid (m + 1) → ℝ be integrable on Q_δ. For x, y let a_k(x, y) be the point whose j-th coordinate is y_j for j < k and x_j for j ≥ k. Then ∫_{Q_δ} ∫_{Q_δ} h(a_k(x, y)) dy dx = volume(Q_δ)·∫_{Q_δ} h.",
+  "lean_statement": "∀ (m : ℕ) (δ : ℝ) (k : Fin (m + 1)) (h : Euclid (m + 1) → ℝ), IntegrableOn h {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h (WithLp.toLp 2 (fun j => if j < k then y j else x j)) = (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h x",
+  "lean_name": "dor_lmb_fcd_cp_mixed_point_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-318862211a-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1.shrinking-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.cube_poincare-a1",
+  "depth": 6,
+  "title": "Shrinking the unit cube to Q_δ while keeping half of an L¹ norm (parent step 4)",
+  "statement": "Let m ∈ ℕ, Q₁ := {y ∈ Euclid (m + 1) : 0 < y_i < 1 for all i}, Q_δ := {y : δ < y_i < 1 − δ for all i}, and let f be integrable on Q₁. Then there is δ with 0 < δ ≤ 1/4, volume(Q_δ) ≤ 1, volume(Q₁ ∖ Q_δ) ≤ 1/4 and ∫_{Q₁}|f| ≤ 2∫_{Q_δ}|f|.",
+  "lean_statement": "∀ (m : ℕ) (f : Euclid (m + 1) → ℝ), IntegrableOn f {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 4 ∧ volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} ≤ 1 ∧ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \\ {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}) ≤ 1 / 4 ∧ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |f y|",
+  "lean_name": "dor_lmb_fcd_cp_shrinking",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-539621c9cb-a1"
+}

@@ -454,4 +454,110 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- Integer median of an integer-valued function on the open unit cube `Q₁ ⊆ ℝ^{m+1}` (Simon
+Ch. 6, 5.1, (31) and (35)): some `β ∈ ℤ` has `Lⁿ(Q₁ ∩ {β ≤ u}) ≥ 1/2`, `Lⁿ(Q₁ ∩ {u ≤ β}) ≥ 1/2`
+and `|β| ≤ 2 ∫_{Q₁} |u|`.  `β` is the least integer with `Lⁿ(Q₁ ∩ {u ≤ β}) ≥ 1/2`; integrality
+makes `{β ≤ u}` the complement of `{u ≤ β - 1}`, and Chebyshev's inequality for `|u|` gives both
+the existence of `β` and the bound. -/
+theorem dor_lmb_fcd_cp_integer_median : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, 1 / 2 ≤ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∩ {y | (β : ℝ) ≤ u y}) ∧ 1 / 2 ≤ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∩ {y | u y ≤ (β : ℝ)}) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| := by
+  intro m u hZ hu
+  set Q : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1} with hQ
+  -- Step 0: `Q₁` is the preimage of the box `(0, 1)ⁿ` under the measure-preserving coordinate map,
+  -- so it is measurable with `Lⁿ(Q₁) = 1`.
+  have hbox : MeasurableSet (univ.pi fun _ : Fin (m + 1) => Ioo (0 : ℝ) 1) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Ioo
+  have hQeq : Q = WithLp.ofLp ⁻¹' (univ.pi fun _ : Fin (m + 1) => Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Q, Set.mem_pi]
+  have hQm : MeasurableSet Q := by
+    rw [hQeq]
+    exact (PiLp.volume_preserving_ofLp (Fin (m + 1))).measurable hbox
+  have hQ1 : volume Q = 1 := by
+    rw [hQeq, (PiLp.volume_preserving_ofLp (Fin (m + 1))).measure_preimage hbox.nullMeasurableSet,
+      Real.volume_pi_Ioo]
+    simp
+  -- Work with the probability measure `μ = Lⁿ⌞Q₁`; `Lⁿ(Q₁ ∩ s) = μ(s)` for every set `s`.
+  set μ : Measure (Euclid (m + 1)) := volume.restrict Q with hμQ
+  have hμ : ∀ s, volume (Q ∩ s) = μ s := fun s => by
+    rw [hμQ, Measure.restrict_apply' hQm, inter_comm]
+  have hμuniv : μ univ = 1 := by rw [← hμ, inter_univ, hQ1]
+  have : IsFiniteMeasure μ := ⟨by rw [hμuniv]; exact ENNReal.one_lt_top⟩
+  simp only [hμ]
+  set I := ∫ y, |u y| ∂μ with hI
+  have hI0 : 0 ≤ I := integral_nonneg fun y => abs_nonneg _
+  -- Chebyshev: `ε μ({ε ≤ |u|}) ≤ ∫ |u| dμ`; no measurability of `u` is needed.
+  have hmarkov : ∀ ε : ℝ, ε * μ.real {y | ε ≤ |u y|} ≤ I := fun ε =>
+    mul_meas_ge_le_integral_of_nonneg (Eventually.of_forall fun y => abs_nonneg _)
+      (Integrable.abs (μ := μ) hu) ε
+  have hhalf : ((1 : ℝ≥0∞) / 2).toReal = 1 / 2 := by norm_num
+  -- Tails: for `N > 2 ∫ |u|`, `μ({N ≤ |u|}) < 1/2`.
+  obtain ⟨N, hN⟩ := exists_nat_gt (2 * I)
+  have hNpos : (0 : ℝ) < N := lt_of_le_of_lt (by linarith) hN
+  have htail : μ {y | (N : ℝ) ≤ |u y|} < 1 / 2 := by
+    have h1 := hmarkov N
+    have h2 : μ.real {y | (N : ℝ) ≤ |u y|} < 1 / 2 := not_le.1 fun h => by nlinarith
+    rw [← hhalf, measureReal_def] at h2
+    exact (ENNReal.toReal_lt_toReal (measure_ne_top μ _) (by norm_num)).1 h2
+  -- `μ(A) + μ(B) ≥ 1` and `μ(B) < 1/2` force `μ(A) ≥ 1/2`.
+  have hcompl : ∀ a b : ℝ≥0∞, 1 ≤ a + b → b < 1 / 2 → 1 / 2 ≤ a := by
+    intro a b hab hb
+    refine not_lt.1 fun h => ?_
+    have h' := ENNReal.add_lt_add h hb
+    rw [ENNReal.add_halves] at h'
+    exact absurd hab (not_le.2 h')
+  -- Steps 1–2: the least integer `β` with `μ({u ≤ β}) ≥ 1/2` (Simon (31)).  It exists since
+  -- `μ({u ≤ N}) ≥ 1/2` while `μ({u ≤ z}) < 1/2` for `z < -N`.
+  have hS : ∃ z : ℤ, 1 / 2 ≤ μ {y | u y ≤ z} := by
+    refine ⟨N, hcompl _ (μ {y | u y ≤ ((N : ℤ) : ℝ)}ᶜ) (hμuniv ▸ measure_univ_le_add_compl _)
+      (lt_of_le_of_lt (measure_mono fun y hy => ?_) htail)⟩
+    simp only [mem_compl_iff, mem_ofPred_eq, not_le, Int.cast_natCast] at hy ⊢
+    exact hy.le.trans (le_abs_self _)
+  have hSb : ∃ b : ℤ, ∀ z : ℤ, 1 / 2 ≤ μ {y | u y ≤ z} → b ≤ z := by
+    refine ⟨-N, fun z hz => not_lt.1 fun hlt => ?_⟩
+    have hz' : (z : ℝ) ≤ -(N : ℝ) := by exact_mod_cast hlt.le
+    refine absurd hz (not_le.2 (lt_of_le_of_lt (measure_mono fun y hy => ?_) htail))
+    simp only [mem_ofPred_eq] at hy ⊢
+    linarith [neg_abs_le (u y)]
+  obtain ⟨β, hβ, hβmin⟩ := Int.exists_least_of_bdd hSb hS
+  have hβ1 : μ {y | u y ≤ ((β - 1 : ℤ) : ℝ)} < 1 / 2 :=
+    not_le.1 fun h => by have := hβmin (β - 1) h; omega
+  -- Step 3: by integrality `{β ≤ u}ᶜ = {u ≤ β - 1}`, so `μ({β ≤ u}) ≥ 1 - μ({u ≤ β - 1}) ≥ 1/2`.
+  have hup : 1 / 2 ≤ μ {y | (β : ℝ) ≤ u y} := by
+    refine hcompl _ _ ?_ hβ1
+    calc (1 : ℝ≥0∞) = μ univ := hμuniv.symm
+      _ ≤ μ {y | (β : ℝ) ≤ u y} + μ {y | (β : ℝ) ≤ u y}ᶜ := measure_univ_le_add_compl _
+      _ ≤ μ {y | (β : ℝ) ≤ u y} + μ {y | u y ≤ ((β - 1 : ℤ) : ℝ)} := by
+        gcongr
+        intro y hy
+        simp only [mem_compl_iff, mem_ofPred_eq, not_le] at hy ⊢
+        obtain ⟨k, hk⟩ := hZ y
+        rw [hk] at hy ⊢
+        have hk' : k < β := by exact_mod_cast hy
+        have hk'' : k ≤ β - 1 := by omega
+        exact_mod_cast hk''
+  refine ⟨β, hup, hβ, ?_⟩
+  -- Step 4 (Simon (35)): `{|β| ≤ |u|}` contains `{β ≤ u}` (`β ≥ 0`) or `{u ≤ β}` (`β ≤ 0`), so it
+  -- has measure `≥ 1/2`, and Chebyshev gives `|β| / 2 ≤ ∫ |u|`.
+  have hbig : 1 / 2 ≤ μ {y | |(β : ℝ)| ≤ |u y|} := by
+    rcases le_total 0 β with h0 | h0
+    · refine hup.trans (measure_mono fun y hy => ?_)
+      simp only [mem_ofPred_eq] at hy ⊢
+      have h0' : (0 : ℝ) ≤ β := by exact_mod_cast h0
+      rw [abs_of_nonneg h0']
+      exact hy.trans (le_abs_self _)
+    · refine hβ.trans (measure_mono fun y hy => ?_)
+      simp only [mem_ofPred_eq] at hy ⊢
+      have h0' : (β : ℝ) ≤ 0 := by exact_mod_cast h0
+      rw [abs_of_nonpos h0']
+      exact (neg_le_neg hy).trans (neg_le_abs _)
+  have hbig' : 1 / 2 ≤ μ.real {y | |(β : ℝ)| ≤ |u y|} := by
+    have h := ENNReal.toReal_mono (measure_ne_top μ _) hbig
+    rwa [hhalf, ← measureReal_def] at h
+  have h4 := hmarkov |(β : ℝ)|
+  nlinarith [abs_nonneg (β : ℝ)]
+
+end Submission
+
 end GMT.Ch07
