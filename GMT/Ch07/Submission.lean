@@ -680,6 +680,515 @@ theorem Submission.cbr_ci_pw_mollified_tendstoUniformlyOn : ∀ (n : ℕ) (R s c
   · filter_upwards [hΛ] with k hk x _ x' _
     exact (hLip (ball 0 (2 * R)) (u k) (hu k) x x').trans
       (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hk hL) dist_nonneg)
+/-- **Translation bound for smooth tests** (steps 1(b)–(d) of the BV estimate): let `u` be
+integrable on `B = B_ρ(0) ⊆ ℝⁿ` with `|∫_B u(y) Df(y)(z) dy| ≤ V ‖z‖ K` for every smooth compactly
+supported `f` with `tsupport f ⊆ B` and `|f| ≤ K`.  If `g` is smooth with compact support,
+`tsupport g ⊆ B_{ρ−‖v‖}(0)` and `|g| ≤ M`, then `|∫_B u(y) (g(y + v) − g(y)) dy| ≤ V ‖v‖ M`.  By
+the fundamental theorem of calculus along `τ ↦ y + τv` and Fubini on `(0, 1] × B` (dominated by
+`K_D ‖v‖ |u|`, where `‖Dg‖ ≤ K_D`), the left side is `∫₀¹ ∫_B u(y) Dg(y + τv)(v) dy dτ`; for
+`τ ∈ (0, 1]` the inner integral is bounded by the hypothesis applied to the translate `g(· + τv)`,
+whose support stays in `B`. -/
+theorem Submission.cbr_ci_pw_bv_translate_test : ∀ (n : ℕ) (ρ V M : ℝ) (u g : Euclid n → ℝ) (v : Euclid n), IntegrableOn u (ball 0 ρ) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (K : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 ρ → (∀ y, |f y| ≤ K) → |∫ y in ball 0 ρ, u y * fderiv ℝ f y z| ≤ V * ‖z‖ * K) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (ρ - ‖v‖) → (∀ y, |g y| ≤ M) → |∫ y in ball 0 ρ, u y * (g (y + v) - g y)| ≤ V * ‖v‖ * M := by
+  intro n ρ V M u g v hu hvar hg hgc hgs hgb
+  -- Step 1: `Dg` is continuous with compact support, hence bounded by some `K_D`
+  have hgd : Differentiable ℝ g := hg.differentiable (by simp)
+  have hDc : Continuous (fderiv ℝ g) := hg.continuous_fderiv (by simp)
+  have hDcs : HasCompactSupport (fderiv ℝ g) := hgc.fderiv ℝ
+  obtain ⟨KD, hKD⟩ := hDc.bounded_above_of_compact_support hDcs
+  -- Step 2: FTC along the segment `τ ↦ y + τv`
+  have hFTC : ∀ y, g (y + v) - g y = ∫ τ in (0:ℝ)..1, fderiv ℝ g (y + τ • v) v := by
+    intro y
+    have hderiv : ∀ τ ∈ uIcc (0:ℝ) 1,
+        HasDerivAt (fun τ : ℝ => g (y + τ • v)) (fderiv ℝ g (y + τ • v) v) τ := by
+      intro τ _
+      have h1 : HasDerivAt (fun τ : ℝ => y + τ • v) v τ := by
+        simpa using ((hasDerivAt_id τ).smul_const v).const_add y
+      exact (hgd (y + τ • v)).hasFDerivAt.comp_hasDerivAt τ h1
+    have hint : IntervalIntegrable (fun τ : ℝ => fderiv ℝ g (y + τ • v) v) volume 0 1 := by
+      apply Continuous.intervalIntegrable
+      exact (hDc.comp (continuous_const.add (continuous_id.smul continuous_const))).clm_apply
+        continuous_const
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+    simp
+  -- Step 3: `Φ(τ, y) = u(y) Dg(y + τv)(v)` is integrable on `(0, 1] × B`, dominated by
+  -- `K_D ‖v‖ |u(y)|`
+  have : IsFiniteMeasure (volume.restrict (Set.uIoc (0:ℝ) 1)) :=
+    isFiniteMeasure_restrict.2 (by simp)
+  have hInt : Integrable (uncurry fun (τ : ℝ) (y : Euclid n) => u y * fderiv ℝ g (y + τ • v) v)
+      ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod (volume.restrict (ball (0 : Euclid n) ρ))) := by
+    have hdom : Integrable (fun p : ℝ × Euclid n => (KD * ‖v‖) * ‖u p.2‖)
+        ((volume.restrict (Set.uIoc (0:ℝ) 1)).prod (volume.restrict (ball (0 : Euclid n) ρ))) :=
+      (hu.norm.const_mul (KD * ‖v‖)).comp_snd _
+    refine hdom.mono' ?_ (Eventually.of_forall fun p => ?_)
+    · exact (hu.aestronglyMeasurable.comp_snd).mul
+        ((hDc.comp (continuous_snd.add (continuous_fst.smul continuous_const))).clm_apply
+          continuous_const).aestronglyMeasurable
+    · simp only [uncurry, norm_mul]
+      have h1 : ‖fderiv ℝ g (p.2 + p.1 • v) v‖ ≤ KD * ‖v‖ :=
+        ((fderiv ℝ g (p.2 + p.1 • v)).le_opNorm v).trans
+          (mul_le_mul_of_nonneg_right (hKD _) (norm_nonneg v))
+      calc ‖u p.2‖ * ‖fderiv ℝ g (p.2 + p.1 • v) v‖ ≤ ‖u p.2‖ * (KD * ‖v‖) :=
+            mul_le_mul_of_nonneg_left h1 (norm_nonneg _)
+        _ = KD * ‖v‖ * ‖u p.2‖ := by ring
+  -- Step 4: Fubini, `∫_B u (g(· + v) − g) = ∫₀¹ X(τ) dτ` with `X(τ) = ∫_B u(y) Dg(y + τv)(v) dy`
+  have hLHS : ∫ y in ball (0 : Euclid n) ρ, u y * (g (y + v) - g y)
+      = ∫ τ in (0:ℝ)..1, ∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v := by
+    simp_rw [hFTC, ← intervalIntegral.integral_const_mul]
+    exact (intervalIntegral_integral_swap hInt).symm
+  -- Step 5: `|X(τ)| ≤ V ‖v‖ M` for `τ ∈ (0, 1]`, by the hypothesis for `f_τ = g(· + τv)`
+  have hX : ∀ τ ∈ Set.uIoc (0:ℝ) 1,
+      ‖∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v‖ ≤ V * ‖v‖ * M := by
+    intro τ hτ
+    rw [uIoc_of_le zero_le_one] at hτ
+    set f : Euclid n → ℝ := fun y => g (y + τ • v) with hf
+    have hfs : ContDiff ℝ (⊤ : ℕ∞) f := hg.comp (contDiff_id.add contDiff_const)
+    have hfc : HasCompactSupport f := hgc.comp_homeomorph (Homeomorph.addRight (τ • v))
+    have hft : tsupport f ⊆ ball 0 ρ := by
+      intro y hy
+      have : f = g ∘ (Homeomorph.addRight (τ • v)) := rfl
+      rw [this, tsupport_comp_eq_preimage] at hy
+      have hy' := mem_ball_zero_iff.1 (hgs hy)
+      simp only [Homeomorph.coe_addRight] at hy'
+      rw [mem_ball_zero_iff]
+      have h1 : ‖y‖ ≤ ‖y + τ • v‖ + ‖τ • v‖ := by
+        calc ‖y‖ = ‖(y + τ • v) - τ • v‖ := by simp
+          _ ≤ ‖y + τ • v‖ + ‖τ • v‖ := norm_sub_le _ _
+      have h2 : ‖τ • v‖ ≤ ‖v‖ := by
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos hτ.1]
+        exact mul_le_of_le_one_left (norm_nonneg _) hτ.2
+      linarith
+    have hfb : ∀ y, |f y| ≤ M := fun y => hgb _
+    have := hvar f v M hfs hfc hft hfb
+    rw [Real.norm_eq_abs]
+    simpa [hf, fderiv_comp_add_right] using this
+  -- Step 6: integrate the bound of step 5 over `(0, 1]`
+  rw [hLHS, ← Real.norm_eq_abs]
+  calc ‖∫ τ in (0:ℝ)..1, ∫ y in ball (0 : Euclid n) ρ, u y * fderiv ℝ g (y + τ • v) v‖
+      ≤ V * ‖v‖ * M * |1 - 0| := intervalIntegral.norm_integral_le_of_norm_le_const hX
+    _ = V * ‖v‖ * M := by simp
+/-- **Pairing identity** (steps 1(a) and 1(c) of the BV estimate): let `S ⊆ ℝⁿ` be measurable,
+`u` integrable on `S`, `φ` continuous with compact support and `∫ φ = 1`, and `g` continuous with
+compact support and `g = 0` off `S`.  Then, with `w(x) = ∫_S u(y) φ(x − y) dy`,
+`∫ (u − w) g = ∫ φ(z) ∫_S u(y) (g(y) − g(y + z)) dy dz`.  With `ū = 1_S u`, two applications of
+Fubini (dominated by multiples of `|g(x)| |ū(y)|` and `|φ(z)| |ū(y)|`), translation invariance and
+`∫ φ = 1` reduce both sides to `∫ ū g − ∫ ū(y) ∫ φ(z) g(z + y) dz dy`. -/
+theorem Submission.cbr_ci_pw_bv_pairing_identity : ∀ (n : ℕ) (S : Set (Euclid n)) (φ u g : Euclid n → ℝ), MeasurableSet S → Continuous φ → HasCompactSupport φ → ∫ y, φ y = 1 → IntegrableOn u S → Continuous g → HasCompactSupport g → (∀ x, x ∉ S → g x = 0) → ∫ x, (u x - ∫ y in S, u y * φ (x - y)) * g x = ∫ z, φ z * ∫ y in S, u y * (g y - g (y + z)) := by
+  intro n S φ u g hS hφ hφc hφ1 hu hg hgc hgS
+  -- Step 1: `ū = 1_S u` is integrable; `φ` and `g` are integrable and bounded
+  set ub : Euclid n → ℝ := S.indicator u with hub
+  have hubi : Integrable ub := (integrable_indicator_iff hS).2 hu
+  obtain ⟨Kφ, hKφ⟩ := hφ.bounded_above_of_compact_support hφc
+  obtain ⟨Kg, hKg⟩ := hg.bounded_above_of_compact_support hgc
+  have hφi : Integrable φ := hφ.integrable_of_hasCompactSupport hφc
+  have hgi : Integrable g := hg.integrable_of_hasCompactSupport hgc
+  -- Step 2: integrals over `S` become integrals of `ū`, and `(u − w) g = ū g − w g`
+  have hw : ∀ x, ∫ y in S, u y * φ (x - y) = ∫ y, ub y * φ (x - y) := by
+    intro x
+    rw [← integral_indicator hS]
+    congr 1; funext y
+    simp only [hub, Set.indicator]; split_ifs <;> simp
+  have hI : ∀ z, ∫ y in S, u y * (g y - g (y + z)) = ∫ y, ub y * (g y - g (y + z)) := by
+    intro z
+    rw [← integral_indicator hS]
+    congr 1; funext y
+    simp only [hub, Set.indicator]; split_ifs <;> simp
+  have hL : ∀ x, (u x - ∫ y in S, u y * φ (x - y)) * g x
+      = ub x * g x - (∫ y, ub y * φ (x - y)) * g x := by
+    intro x
+    rw [hw x, sub_mul]
+    congr 1
+    by_cases hx : x ∈ S
+    · simp [hub, Set.indicator_of_mem hx]
+    · simp [hgS x hx]
+  simp_rw [hL, hI]
+  have hubg : Integrable (fun x => ub x * g x) :=
+    hubi.mul_bdd hg.aestronglyMeasurable (Eventually.of_forall hKg)
+  -- Step 3: first Fubini, for `F(x, y) = ū(y) φ(x − y) g(x)`
+  have hFi : Integrable (uncurry fun x y => ub y * φ (x - y) * g x) (volume.prod volume) := by
+    have hdom : Integrable (fun p : Euclid n × Euclid n => Kφ * (‖g p.1‖ * ‖ub p.2‖))
+        (volume.prod volume) := (hgi.norm.mul_prod hubi.norm).const_mul Kφ
+    refine hdom.mono' ?_ (Eventually.of_forall fun p => ?_)
+    · exact ((hubi.aestronglyMeasurable.comp_snd).mul
+        ((hφ.comp (continuous_fst.sub continuous_snd)).aestronglyMeasurable)).mul
+        ((hg.comp continuous_fst).aestronglyMeasurable)
+    · simp only [uncurry, norm_mul]
+      have h1 := hKφ (p.1 - p.2)
+      have h2 := norm_nonneg (ub p.2)
+      have h3 := norm_nonneg (g p.1)
+      calc ‖ub p.2‖ * ‖φ (p.1 - p.2)‖ * ‖g p.1‖ = ‖φ (p.1 - p.2)‖ * (‖g p.1‖ * ‖ub p.2‖) := by ring
+        _ ≤ Kφ * (‖g p.1‖ * ‖ub p.2‖) := mul_le_mul_of_nonneg_right h1 (mul_nonneg h3 h2)
+  -- translation invariance of Lebesgue measure: `∫ φ(x − y) g(x) dx = ∫ φ(z) g(z + y) dz`
+  have htr : ∀ y, ∫ x, φ (x - y) * g x = ∫ z, φ z * g (z + y) := fun y => by
+    simpa [sub_add_cancel] using integral_sub_right_eq_self
+      (μ := (volume : Measure (Euclid n))) (fun z => φ z * g (z + y)) y
+  have hwg : ∀ x, (∫ y, ub y * φ (x - y)) * g x = ∫ y, ub y * φ (x - y) * g x := fun x =>
+    (integral_mul_const _ _).symm
+  have hwgi : Integrable (fun x => (∫ y, ub y * φ (x - y)) * g x) := by
+    simp_rw [hwg]; exact hFi.integral_prod_left
+  have key1 : ∫ x, (∫ y, ub y * φ (x - y)) * g x = ∫ y, ub y * ∫ z, φ z * g (z + y) := by
+    simp_rw [hwg]
+    rw [integral_integral_swap hFi]
+    congr 1; funext y
+    simp_rw [mul_assoc]
+    rw [integral_const_mul, htr]
+  have hconv : Integrable (fun y => ub y * ∫ z, φ z * g (z + y)) := by
+    refine (hFi.integral_prod_right).congr (Eventually.of_forall fun y => ?_)
+    simp only [uncurry]
+    simp_rw [mul_assoc]
+    rw [integral_const_mul, htr]
+  -- Step 4: `∫ φ(z) (g(y) − g(y + z)) dz = g(y) − ∫ φ(z) g(z + y) dz`, by `∫ φ = 1`
+  have hinner : ∀ y, ∫ z, φ z * (g y - g (y + z)) = g y - ∫ z, φ z * g (z + y) := by
+    intro y
+    have hc : Integrable (fun z => φ z * g y) := hφi.mul_const _
+    have hs : Integrable (fun z => φ z * g (z + y)) :=
+      hφi.mul_bdd (hg.comp (continuous_id.add continuous_const)).aestronglyMeasurable
+        (Eventually.of_forall fun z => hKg _)
+    simp_rw [mul_sub]
+    rw [integral_sub hc (by simpa [add_comm] using hs), integral_mul_const, hφ1, one_mul]
+    simp_rw [add_comm y]
+  -- Step 5: second Fubini, for `H(z, y) = φ(z) ū(y) (g(y) − g(y + z))`
+  have hHi : Integrable (uncurry fun z y => φ z * (ub y * (g y - g (y + z))))
+      (volume.prod volume) := by
+    have hdom : Integrable (fun p : Euclid n × Euclid n => (2 * Kg) * (‖φ p.1‖ * ‖ub p.2‖))
+        (volume.prod volume) := (hφi.norm.mul_prod hubi.norm).const_mul (2 * Kg)
+    refine hdom.mono' ?_ (Eventually.of_forall fun p => ?_)
+    · exact (hφ.comp continuous_fst).aestronglyMeasurable.mul
+        ((hubi.aestronglyMeasurable.comp_snd).mul
+          ((hg.comp continuous_snd).sub
+            (hg.comp (continuous_snd.add continuous_fst))).aestronglyMeasurable)
+    · simp only [uncurry, norm_mul]
+      have h1 : ‖g p.2 - g (p.2 + p.1)‖ ≤ 2 * Kg := by
+        calc ‖g p.2 - g (p.2 + p.1)‖ ≤ ‖g p.2‖ + ‖g (p.2 + p.1)‖ := norm_sub_le _ _
+          _ ≤ Kg + Kg := add_le_add (hKg _) (hKg _)
+          _ = 2 * Kg := by ring
+      have h2 := norm_nonneg (ub p.2)
+      have h3 := norm_nonneg (φ p.1)
+      calc ‖φ p.1‖ * (‖ub p.2‖ * ‖g p.2 - g (p.2 + p.1)‖)
+          = ‖g p.2 - g (p.2 + p.1)‖ * (‖φ p.1‖ * ‖ub p.2‖) := by ring
+        _ ≤ (2 * Kg) * (‖φ p.1‖ * ‖ub p.2‖) := mul_le_mul_of_nonneg_right h1 (mul_nonneg h3 h2)
+  have key2 : ∫ z, φ z * ∫ y, ub y * (g y - g (y + z))
+      = ∫ y, ub y * (g y - ∫ z, φ z * g (z + y)) := by
+    simp_rw [← integral_const_mul]
+    rw [integral_integral_swap hHi]
+    congr 1; funext y
+    have : ∀ z, φ z * (ub y * (g y - g (y + z))) = ub y * (φ z * (g y - g (y + z))) :=
+      fun z => by ring
+    simp_rw [this]
+    rw [integral_const_mul, hinner y]
+  -- Step 6: both sides equal `∫ ū g − ∫ ū(y) ∫ φ(z) g(z + y) dz dy`
+  rw [integral_sub hubg hwgi, key1, key2]
+  simp_rw [mul_sub]
+  rw [integral_sub hubg hconv]
+
+/-- **Pairing of `u − u ∗ φ` with a test function, for `u` of bounded variation** (Claim A of the
+`BV` mollifier estimate; mollification of `BV` functions as in Simon, Ch. 2, §2).  Let `φ ≥ 0` be
+smooth with `tsupport φ ⊆ B_s(0)` and `∫ φ = 1`, let `u` be integrable on `B_{2R}(0)` with
+`|∫_{B_{2R}(0)} u(y) Df(y)(z) dy| ≤ V‖z‖M` for all smooth `f` with compact support in `B_{2R}(0)`
+and `|f| ≤ M`, and let `2s < R`.  If `g` is smooth with compact support in `B_{R+s}(0)` and
+`|g| ≤ 1`, then `|∫ (u − w) g| ≤ sV`, where `w(x) = ∫_{B_{2R}(0)} u(y) φ(x − y) dy`.  By Fubini,
+`∫ (u − w) g = ∫ φ(z) I(z) dz` with `I(z) = ∫_{B_{2R}(0)} u(y) (g(y) − g(y + z)) dy`; if
+`φ(z) ≠ 0` then `‖z‖ < s < R − s`, so `g` and its translate by `z` are supported in `B_{2R}(0)` and
+the translation estimate gives `|I(z)| ≤ V‖z‖ ≤ sV`; integrate against `φ`. -/
+theorem Submission.cbr_ci_pw_bv_smooth_test_bound : ∀ (n : ℕ) (R s V : ℝ) (φ u g : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + s) → (∀ x, |g x| ≤ 1) → |∫ x, (u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) * g x| ≤ s * V := by
+  intro n R s V φ u g _hR hs h2s hV hφ hφ0 hφs hφ1 hu hvar hg hgc hgs hgb
+  -- `φ` has compact support, and `g` vanishes off `B_{2R}(0)` since `R + s ≤ 2R`
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  have hgS : ∀ x, x ∉ ball (0 : Euclid n) (2 * R) → g x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun hx' => hx (ball_subset_ball (by linarith) (hgs hx'))
+  -- Fubini: `∫ (u - w) g = ∫ φ(z) ∫_{B_{2R}(0)} u(y) (g(y) - g(y + z)) dy dz`
+  rw [Submission.cbr_ci_pw_bv_pairing_identity n (ball 0 (2 * R)) φ u g measurableSet_ball
+    hφ.continuous hφc hφ1 hu hg.continuous hgc hgS]
+  -- `|φ(z) I(z)| ≤ φ(z) sV`: trivial if `φ(z) = 0`, else `‖z‖ < s` and translate by `z`
+  have hbound : ∀ z, ‖φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))‖ ≤
+      φ z * (s * V) := by
+    intro z
+    by_cases hz : φ z = 0
+    · simp [hz]
+    have hzs : ‖z‖ < s := mem_ball_zero_iff.1 (hφs (subset_tsupport φ hz))
+    have hT := Submission.cbr_ci_pw_bv_translate_test n (2 * R) V 1 u g z hu hvar hg hgc
+      (hgs.trans (ball_subset_ball (by linarith))) hgb
+    have hneg : ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z)) =
+        -∫ y in ball (0 : Euclid n) (2 * R), u y * (g (y + z) - g y) := by
+      rw [← integral_neg]; congr 1; funext y; ring
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hφ0 z), hneg, abs_neg]
+    refine mul_le_mul_of_nonneg_left (hT.trans ?_) (hφ0 z)
+    linarith [mul_le_mul_of_nonneg_left hzs.le hV]
+  -- integrate against `φ`, using `∫ φ = 1`
+  have hφi : Integrable φ := hφ.continuous.integrable_of_hasCompactSupport hφc
+  calc |∫ z, φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))|
+      = ‖∫ z, φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))‖ :=
+        (Real.norm_eq_abs _).symm
+    _ ≤ ∫ z, φ z * (s * V) :=
+        norm_integral_le_of_norm_le (hφi.mul_const _) (Eventually.of_forall hbound)
+    _ = s * V := by rw [integral_mul_const, hφ1, one_mul]
+/-- **Smooth a.e. approximation of a bounded function supported in a ball** (mollification; cf.
+Evans, *PDE*, App. C, Thm. 7).  If `g₀ : ℝⁿ → ℝ` is measurable, `|g₀| ≤ 1` and `g₀ = 0` off
+`B_R(0)`, let `ρ = b / ∫ b` for the `ContDiffBump` `b` with radii `1/4, 1/2`,
+`ψ_ε(x) = ε⁻ⁿ ρ(ε⁻¹ x)` and `θ_j = δ / (j + 2)`.  Then `G_j = g₀ ⋆ ψ_{θ_j}` is `C^∞`, vanishes
+off `B̄_{R + θ_j/2}(0) ⊆ B_{R+δ}(0)`, satisfies `|G_j| ≤ ∫ ψ_{θ_j} = 1`, and `G_j(x) → g₀(x)` at
+every Lebesgue point `x` of `g₀` (approximate identity with `|ψ_{θ_j}| ≤ C / Lⁿ(B_{θ_j}(x))`),
+hence for `Lⁿ`-a.e. `x`. -/
+theorem Submission.cbr_ci_pw_bv_smooth_ae_approx : ∀ (n : ℕ) (R δ : ℝ) (g₀ : Euclid n → ℝ), 0 < δ → Measurable g₀ → (∀ x, |g₀ x| ≤ 1) → (∀ x, R ≤ ‖x‖ → g₀ x = 0) → ∃ G : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (G j)) ∧ (∀ j, HasCompactSupport (G j)) ∧ (∀ j, tsupport (G j) ⊆ ball 0 (R + δ)) ∧ (∀ j x, |G j x| ≤ 1) ∧ ∀ᵐ x ∂(volume : Measure (Euclid n)), Tendsto (fun j => G j x) atTop (𝓝 (g₀ x)) := by
+  intro n R δ g₀ hδ hg₀m hg₀b hg₀z
+  -- Step 0: g₀ is integrable
+  have hg₀out : ∀ x, x ∉ ball (0 : Euclid n) R → g₀ x = 0 := fun x hx =>
+    hg₀z x (by simpa [mem_ball_zero_iff] using hx)
+  have hg₀i : Integrable g₀ := by
+    have hon : IntegrableOn g₀ (ball (0 : Euclid n) R) :=
+      Measure.integrableOn_of_bounded (M := 1) measure_ball_lt_top.ne hg₀m.aestronglyMeasurable
+        (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hg₀b x)
+    exact (integrableOn_iff_integrable_of_support_subset
+      (fun x hx => by by_contra h; exact hx (hg₀out x h))).1 hon
+  -- Step 1: a normalized bump
+  let b : ContDiffBump (0 : Euclid n) := ⟨1 / 4, 1 / 2, by norm_num, by norm_num⟩
+  have hbi : Integrable (b : Euclid n → ℝ) := b.continuous.integrable_of_hasCompactSupport b.hasCompactSupport
+  set I : ℝ := ∫ x, b x with hIdef
+  have hI : 0 < I := by
+    rw [hIdef, integral_pos_iff_support_of_nonneg (fun x => b.nonneg) hbi, b.support_eq]
+    exact measure_ball_pos _ _ (by norm_num)
+  set ρ : Euclid n → ℝ := fun x => b x / I with hρdef
+  have hρc : ContDiff ℝ (⊤ : ℕ∞) ρ := b.contDiff.div_const I
+  have hρ0 : ∀ x, 0 ≤ ρ x := fun x => div_nonneg b.nonneg hI.le
+  have hρb : ∀ x, ρ x ≤ 1 / I := fun x => div_le_div_of_nonneg_right b.le_one hI.le
+  have hρz : ∀ x, (1 / 2 : ℝ) ≤ ‖x‖ → ρ x = 0 := by
+    intro x hx
+    have : x ∉ support (b : Euclid n → ℝ) := by
+      rw [b.support_eq, mem_ball_zero_iff]; exact not_lt.2 hx
+    simp [hρdef, notMem_support.1 this]
+  have hρ1 : ∫ x, ρ x = 1 := by
+    simp only [hρdef]; rw [integral_div, ← hIdef, div_self hI.ne']
+  -- Step 2: rescaled mollifiers
+  set ψ : ℝ → Euclid n → ℝ := fun ε x => (ε ^ n)⁻¹ * ρ (ε⁻¹ • x) with hψdef
+  have hψc : ∀ ε, ContDiff ℝ (⊤ : ℕ∞) (ψ ε) := fun ε =>
+    contDiff_const.mul (hρc.comp (contDiff_const_smul ε⁻¹))
+  have hψ0 : ∀ ε, 0 < ε → ∀ x, 0 ≤ ψ ε x := fun ε hε x =>
+    mul_nonneg (inv_nonneg.2 (pow_nonneg hε.le n)) (hρ0 _)
+  have hψz : ∀ ε, 0 < ε → ∀ x, ε / 2 ≤ ‖x‖ → ψ ε x = 0 := by
+    intro ε hε x hx
+    have : (1 / 2 : ℝ) ≤ ‖ε⁻¹ • x‖ := by
+      rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hε]
+      rw [le_inv_mul_iff₀ hε]; linarith
+    simp [hψdef, hρz _ this]
+  have hψb : ∀ ε, 0 < ε → ∀ x, |ψ ε x| ≤ (1 / I) / ε ^ n := by
+    intro ε hε x
+    rw [abs_of_nonneg (hψ0 ε hε x), hψdef]
+    simp only
+    rw [div_eq_inv_mul]
+    exact mul_le_mul_of_nonneg_left (hρb _) (inv_nonneg.2 (pow_nonneg hε.le n))
+  have hψ1 : ∀ ε, 0 < ε → ∫ x, ψ ε x = 1 := by
+    intro ε hε
+    simp only [hψdef]
+    rw [integral_const_mul, Measure.integral_comp_inv_smul_of_nonneg _ _ hε.le,
+      finrank_euclideanSpace_fin, hρ1, smul_eq_mul, mul_one, inv_mul_cancel₀ (pow_ne_zero n hε.ne')]
+  have hψcs : ∀ ε, 0 < ε → HasCompactSupport (ψ ε) := by
+    intro ε hε
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) ε) fun x hx => ?_
+    rw [mem_closedBall_zero_iff, not_le] at hx
+    exact hψz ε hε x (by linarith)
+  -- Step 3: the sequence
+  set θ : ℕ → ℝ := fun j => δ / ((j : ℝ) + 2) with hθdef
+  have hθpos : ∀ j, 0 < θ j := fun j => div_pos hδ (by positivity)
+  have hθlt : ∀ j, θ j < δ := fun j => by
+    rw [hθdef]; simp only
+    rw [div_lt_iff₀ (by positivity)]; nlinarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
+  have hG : ∀ j x, convolution g₀ (ψ (θ j)) (ContinuousLinearMap.lsmul ℝ ℝ) volume x
+      = ∫ y, g₀ y * ψ (θ j) (x - y) := by
+    intro j x
+    rw [convolution_def]
+    simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  have hvan : ∀ j x, R + θ j / 2 ≤ ‖x‖ →
+      convolution g₀ (ψ (θ j)) (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0 := by
+    intro j x hx
+    rw [hG]
+    have : (fun y => g₀ y * ψ (θ j) (x - y)) = fun _ => 0 := by
+      funext y
+      by_cases hy : R ≤ ‖y‖
+      · rw [hg₀z y hy, zero_mul]
+      · push Not at hy
+        have h1 : θ j / 2 ≤ ‖x - y‖ := by
+          have := norm_sub_norm_le x y
+          linarith
+        rw [hψz (θ j) (hθpos j) _ h1, mul_zero]
+    rw [this, integral_zero]
+  have hsupp : ∀ j, support (convolution g₀ (ψ (θ j)) (ContinuousLinearMap.lsmul ℝ ℝ) volume)
+      ⊆ closedBall 0 (R + θ j / 2) := by
+    intro j x hx
+    rw [mem_closedBall_zero_iff]
+    by_contra h
+    exact hx (hvan j x (not_le.1 h).le)
+  refine ⟨fun j => convolution g₀ (ψ (θ j)) (ContinuousLinearMap.lsmul ℝ ℝ) volume, ?_, ?_, ?_, ?_, ?_⟩
+  · intro j
+    exact (hψcs (θ j) (hθpos j)).contDiff_convolution_right (ContinuousLinearMap.lsmul ℝ ℝ)
+      hg₀i.locallyIntegrable (hψc (θ j))
+  · intro j
+    exact HasCompactSupport.of_support_subset_isCompact (isCompact_closedBall _ _) (hsupp j)
+  · intro j
+    refine (closure_minimal (hsupp j) isClosed_closedBall).trans (closedBall_subset_ball ?_)
+    linarith [hθlt j, hθpos j]
+  · intro j x
+    simp only
+    rw [hG]
+    have hψi : Integrable (ψ (θ j)) :=
+      (hψc (θ j)).continuous.integrable_of_hasCompactSupport (hψcs (θ j) (hθpos j))
+    calc |∫ y, g₀ y * ψ (θ j) (x - y)| ≤ ∫ y, |g₀ y * ψ (θ j) (x - y)| := abs_integral_le_integral_abs
+      _ ≤ ∫ y, ψ (θ j) (x - y) := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _)
+            (hψi.comp_sub_left x) (Eventually.of_forall fun y => ?_)
+          show |g₀ y * ψ (θ j) (x - y)| ≤ ψ (θ j) (x - y)
+          rw [abs_mul, abs_of_nonneg (hψ0 _ (hθpos j) _)]
+          exact mul_le_of_le_one_left (hψ0 _ (hθpos j) _) (hg₀b y)
+      _ = 1 := by rw [integral_sub_left_eq_self, hψ1 _ (hθpos j)]
+  · have hleb := IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub
+      (μ := (volume : Measure (Euclid n))) hg₀i.locallyIntegrable 1
+    filter_upwards [hleb] with x hx
+    have hθ0 : Tendsto θ atTop (𝓝 0) := by
+      have : Tendsto (fun j : ℕ => ((j : ℝ) + 2)) atTop atTop :=
+        tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+      simpa [hθdef] using this.const_div_atTop δ
+    have hθ : Tendsto θ atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hθ0
+        (Eventually.of_forall fun j => hθpos j)
+    have havg := hx (fun _ => x) θ hθ
+      (Eventually.of_forall fun j => mem_closedBall_self (by simpa using (hθpos j).le))
+    have hB1 : 0 < (volume : Measure (Euclid n)).real (closedBall 0 1) := by
+      rw [measureReal_def]
+      exact ENNReal.toReal_pos (measure_closedBall_pos _ _ one_pos).ne' measure_closedBall_lt_top.ne
+    have key := tendsto_integral_smul_of_tendsto_average_norm_sub
+      (μ := (volume : Measure (Euclid n))) (f := g₀) (c := g₀ x)
+      (a := fun j => closedBall x (θ j)) (g := fun j y => ψ (θ j) (x - y))
+      ((1 / I) * (volume : Measure (Euclid n)).real (closedBall 0 1)) havg
+      (Eventually.of_forall fun j => hg₀i.integrableOn)
+      (by
+        refine tendsto_const_nhds.congr' (Eventually.of_forall fun j => ?_)
+        simp only
+        rw [integral_sub_left_eq_self, hψ1 _ (hθpos j)])
+      (Eventually.of_forall fun j y hy => by
+        rw [mem_closedBall, dist_comm, dist_eq_norm]
+        by_contra h
+        exact hy (hψz _ (hθpos j) _ (by linarith [hθpos j])))
+      (Eventually.of_forall fun j y => by
+        rw [Measure.addHaar_real_closedBall' _ _ (hθpos j).le, finrank_euclideanSpace_fin]
+        have hpow : 0 < θ j ^ n := pow_pos (hθpos j) n
+        calc |ψ (θ j) (x - y)| ≤ (1 / I) / θ j ^ n := hψb _ (hθpos j) _
+          _ = (1 / I) * (volume : Measure (Euclid n)).real (closedBall 0 1) /
+              (θ j ^ n * (volume : Measure (Euclid n)).real (closedBall 0 1)) := by
+            field_simp)
+    refine key.congr' (Eventually.of_forall fun j => ?_)
+    simp only
+    rw [hG]
+    congr 1; funext y
+    rw [smul_eq_mul, mul_comm]
+
+/-- **The `L¹` norm on a ball by duality with smooth test functions** (steps 2 and 4 of the BV
+estimate `∫_{B_R} |u − u ∗ φ_s| ≤ s V` in the cycle part of the proof of Simon 7.2.4): if `h` is
+integrable on `B_{R+δ}(0)`, `δ > 0`, and `∫ h g ≤ C` for every smooth `g` with compact support in
+`B_{R+δ}(0)` and `|g| ≤ 1`, then `∫_{B_R(0)} |h| ≤ C`.  With a Borel representative `h̃` of `h`
+on `B_{R+δ}(0)` and `g₀ = 1_{B_R(0)} sgn h̃`, the admissible smooth tests `G_j → g₀` a.e. of
+`smooth_ae_approx` give `∫ h G_j ≤ C`, and dominated convergence (dominant `|h|`) gives
+`∫ h G_j → ∫_{B_{R+δ}(0)} h g₀ = ∫_{B_R(0)} |h|`. -/
+theorem Submission.cbr_ci_pw_bv_l1_duality : ∀ (n : ℕ) (R δ C : ℝ) (h : Euclid n → ℝ), 0 < δ → IntegrableOn h (ball 0 (R + δ)) → (∀ g : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + δ) → (∀ x, |g x| ≤ 1) → ∫ x, h x * g x ≤ C) → ∫ x in ball 0 R, |h x| ≤ C := by
+  intro n R δ C h hδ hh htest
+  set B : Set (Euclid n) := ball 0 (R + δ) with hB
+  -- Step 1: a Borel representative `h̃ = hm` of `h` on `B`
+  set hm : Euclid n → ℝ := hh.aestronglyMeasurable.mk h with hhm
+  have hhm_meas : Measurable hm := hh.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hae : h =ᵐ[volume.restrict B] hm := hh.aestronglyMeasurable.ae_eq_mk
+  -- Step 2: the sign function `g₀ = 1_{B_R(0)} sgn h̃`: Borel, `|g₀| ≤ 1`, `g₀ = 0` off `B_R(0)`
+  set g₀ : Euclid n → ℝ :=
+    (ball (0 : Euclid n) R).indicator (fun x => if 0 ≤ hm x then 1 else -1) with hg₀
+  have hg₀m : Measurable g₀ :=
+    (Measurable.ite (measurableSet_le measurable_const hhm_meas) measurable_const
+      measurable_const).indicator measurableSet_ball
+  have hg₀b : ∀ x, |g₀ x| ≤ 1 := by
+    intro x
+    simp only [hg₀, Set.indicator]
+    split_ifs <;> norm_num
+  have hg₀z : ∀ x, R ≤ ‖x‖ → g₀ x = 0 := by
+    intro x hx
+    simp only [hg₀]
+    exact Set.indicator_of_notMem (by simpa [mem_ball_zero_iff] using hx) _
+  -- Step 3: smooth admissible tests `G_j → g₀` a.e.
+  obtain ⟨G, hGs, hGc, hGt, hGb, hGl⟩ :=
+    Submission.cbr_ci_pw_bv_smooth_ae_approx n R δ g₀ hδ hg₀m hg₀b hg₀z
+  -- Step 4: `∫_B h G_j = ∫ h G_j ≤ C`, as `G_j` vanishes off `B`
+  have hle : ∀ j, ∫ x in B, h x * G j x ≤ C := by
+    intro j
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => by
+      rw [image_eq_zero_of_notMem_tsupport (fun hx' => hx (hGt j hx')), mul_zero])]
+    exact htest (G j) (hGs j) (hGc j) (hGt j) (hGb j)
+  -- Step 5: dominated convergence on `B`, with dominant `|h|`
+  have hlim : Tendsto (fun j => ∫ x in B, h x * G j x) atTop (𝓝 (∫ x in B, h x * g₀ x)) := by
+    refine tendsto_integral_of_dominated_convergence (fun x => ‖h x‖) (fun j => ?_) hh.norm
+      (fun j => ?_) ?_
+    · exact hh.aestronglyMeasurable.mul (hGs j).continuous.aestronglyMeasurable
+    · refine Eventually.of_forall fun x => ?_
+      rw [norm_mul]
+      exact mul_le_of_le_one_right (norm_nonneg _) (by rw [Real.norm_eq_abs]; exact hGb j x)
+    · exact (ae_restrict_of_ae hGl).mono fun x hx => tendsto_const_nhds.mul hx
+  -- Step 6: `h g₀ = 1_{B_R(0)} |h|` a.e. on `B`, so `∫_B h g₀ = ∫_{B_R(0)} |h|`
+  have heq : ∫ x in B, h x * g₀ x = ∫ x in ball 0 R, |h x| := by
+    have hfg : (fun x => h x * g₀ x) =ᵐ[volume.restrict B]
+        (ball (0 : Euclid n) R).indicator (fun x => |h x|) := by
+      filter_upwards [hae] with x hx
+      simp only [hg₀, Set.indicator]
+      split_ifs with hxR hpos
+      · rw [hx, mul_one, abs_of_nonneg hpos]
+      · rw [hx, mul_neg_one, abs_of_neg (not_le.1 hpos)]
+      · rw [mul_zero]
+    rw [integral_congr_ae hfg, setIntegral_indicator measurableSet_ball,
+      Set.inter_eq_right.2 (ball_subset_ball (by linarith : R ≤ R + δ))]
+  -- Step 7: a limit of numbers `≤ C` is `≤ C`
+  rw [← heq]
+  exact le_of_tendsto' hlim hle
+/-- **Continuity of the mollification** (the "`w` is continuous" step of the BV estimate): if `u`
+is integrable on `S ⊆ ℝⁿ` and `φ` is continuous with compact support, then
+`x ↦ ∫_S u(y) φ(x - y) dy` is continuous.  `φ` is bounded, `|φ| ≤ K`, so for every `x` the
+integrand is dominated by the `x`-independent integrable function `|u| K`, and it is continuous in
+`x` for every `y`; conclude by `continuous_of_dominated`. -/
+theorem Submission.cbr_ci_pw_bv_mollify_continuous : ∀ (n : ℕ) (S : Set (Euclid n)) (φ u : Euclid n → ℝ), IntegrableOn u S → Continuous φ → HasCompactSupport φ → Continuous (fun x => ∫ y in S, u y * φ (x - y)) := by
+  intro n S φ u hu hφ hφc
+  -- `|φ| ≤ K`: `φ` is continuous with compact support
+  obtain ⟨K, hK⟩ := hφ.bounded_above_of_compact_support hφc
+  -- dominated continuity of parametric integrals, with the dominant `|u| K` integrable on `S`
+  refine continuous_of_dominated (bound := fun y => ‖u y‖ * K) (fun x => ?_) (fun x => ?_)
+    (hu.norm.mul_const K) (Eventually.of_forall fun y => ?_)
+  · -- measurability in `y`: `u` is a.e.-strongly measurable on `S`, `y ↦ φ (x - y)` is continuous
+    exact hu.aestronglyMeasurable.mul
+      (hφ.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+  · -- domination: `|u y φ (x - y)| ≤ |u y| K`
+    exact Eventually.of_forall fun y => by
+      rw [norm_mul]; exact mul_le_mul_of_nonneg_left (hK _) (norm_nonneg _)
+  · -- continuity in `x` for each fixed `y`
+    exact continuous_const.mul (hφ.comp (continuous_id.sub continuous_const))
+
+/-- **BV estimate for mollification** (for the integer multiplicity of limits in Simon 7.2.4,
+Remark 7.2.5(1); the boundary mass `M_{B_{2R}}(∂Y)` is replaced by a variation bound `V`): if `u`
+is integrable on `B_{2R}(0)` and `|∫_{B_{2R}(0)} u(y) Df(y)(z) dy| ≤ V‖z‖M` for every smooth `f`
+supported in `B_{2R}(0)` with `|f| ≤ M`, then `∫_{B_R(0)} |u − w| ≤ sV` for
+`w(x) = ∫_{B_{2R}(0)} u(y)φ(x − y) dy`, where `φ ≥ 0` is smooth, `tsupport φ ⊆ B_s(0)`,
+`∫φ = 1` and `2s < R`.  The mollification `w` is continuous (`cbr_ci_pw_bv_mollify_continuous`),
+so `u − w` is integrable on `B_{R+s}(0)`; its pairings with smooth `g`, `|g| ≤ 1`,
+`tsupport g ⊆ B_{R+s}(0)` are at most `sV` (`cbr_ci_pw_bv_smooth_test_bound`); `L¹` duality
+(`cbr_ci_pw_bv_l1_duality` with `δ = s`) concludes. -/
+theorem Submission.cbr_ci_pw_bv_mollifier_estimate : ∀ (n : ℕ) (R s V : ℝ) (φ u : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ∫ x in ball 0 R, |u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)| ≤ s * V := by
+  intro n R s V φ u hR hs hsR hV hφ hφ0 hφs hφ1 hu hvar
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall 0 s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  have hw : Continuous fun x => ∫ y in ball 0 (2 * R), u y * φ (x - y) :=
+    Submission.cbr_ci_pw_bv_mollify_continuous n (ball 0 (2 * R)) φ u hu hφ.continuous hφc
+  have hh : IntegrableOn (fun x => u x - ∫ y in ball 0 (2 * R), u y * φ (x - y))
+      (ball 0 (R + s)) :=
+    (hu.mono_set (ball_subset_ball (by linarith))).fun_sub
+      ((hw.continuousOn.integrableOn_compact (isCompact_closedBall 0 (R + s))).mono_set
+        ball_subset_closedBall)
+  exact Submission.cbr_ci_pw_bv_l1_duality n R s (s * V)
+    (fun x => u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) hs hh
+    fun g hg hgc hgs hg1 => (le_abs_self _).trans
+      (Submission.cbr_ci_pw_bv_smooth_test_bound n R s V φ u g hR hs hsR hV hφ hφ0 hφs hφ1 hu
+        hvar hg hgc hgs hg1)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

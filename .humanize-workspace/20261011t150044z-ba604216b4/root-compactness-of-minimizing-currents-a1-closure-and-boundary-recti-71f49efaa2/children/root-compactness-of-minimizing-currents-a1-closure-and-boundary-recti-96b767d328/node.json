@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.mollify_continuous-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "Mollification of an integrable function by a continuous compactly supported kernel is continuous",
+  "statement": "Let n ∈ ℕ, let S ⊆ ℝⁿ be any set (ℝⁿ = Euclid n with Lebesgue measure), let u : ℝⁿ → ℝ be integrable on S (with respect to Lebesgue measure restricted to S), and let φ : ℝⁿ → ℝ be continuous with compact support. Then the function x ↦ ∫_S u(y)φ(x − y) dy is continuous on ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (S : Set (Euclid n)) (φ u : Euclid n → ℝ), IntegrableOn u S → Continuous φ → HasCompactSupport φ → Continuous (fun x => ∫ y in S, u y * φ (x - y))",
+  "lean_name": "cbr_ci_pw_bv_mollify_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-96b767d328-a1"
+}

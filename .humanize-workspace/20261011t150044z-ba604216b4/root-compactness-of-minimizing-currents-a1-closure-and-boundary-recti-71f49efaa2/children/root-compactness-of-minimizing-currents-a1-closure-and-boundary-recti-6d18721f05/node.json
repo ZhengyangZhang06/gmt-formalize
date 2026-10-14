@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.translate_test-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "Translation bound for smooth tests from the variation hypothesis (FTC along segments and Fubini)",
+  "statement": "Let n ∈ ℕ, ρ, V, M ∈ ℝ, u, g : ℝⁿ → ℝ and v ∈ ℝⁿ, where ℝⁿ = Euclid n carries Lebesgue measure. Assume u is integrable on the open ball B_ρ(0), and |∫_{B_ρ(0)} u(y)·Df(y)(z) dy| ≤ V‖z‖K for every smooth (C^∞) compactly supported f : ℝⁿ → ℝ with tsupport f ⊆ B_ρ(0), every z ∈ ℝⁿ and every K ∈ ℝ with |f(y)| ≤ K for all y. Let g : ℝⁿ → ℝ be smooth with compact support, tsupport g ⊆ B_{ρ−‖v‖}(0) and |g(y)| ≤ M for all y. Then |∫_{B_ρ(0)} u(y)(g(y + v) − g(y)) dy| ≤ V‖v‖M.",
+  "lean_statement": "∀ (n : ℕ) (ρ V M : ℝ) (u g : Euclid n → ℝ) (v : Euclid n), IntegrableOn u (ball 0 ρ) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (K : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 ρ → (∀ y, |f y| ≤ K) → |∫ y in ball 0 ρ, u y * fderiv ℝ f y z| ≤ V * ‖z‖ * K) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (ρ - ‖v‖) → (∀ y, |g y| ≤ M) → |∫ y in ball 0 ρ, u y * (g (y + v) - g y)| ≤ V * ‖v‖ * M",
+  "lean_name": "cbr_ci_pw_bv_translate_test",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6d18721f05-a1"
+}
