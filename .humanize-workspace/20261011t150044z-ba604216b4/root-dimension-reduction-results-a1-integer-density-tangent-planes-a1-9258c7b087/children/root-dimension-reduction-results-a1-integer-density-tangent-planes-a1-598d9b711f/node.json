@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.nearby_center_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+  "depth": 5,
+  "title": "Monotonicity transfers a bound on the monotone quantity at one centre to small balls about nearby centres (Simon 7.3.3(1), display (2))",
+  "statement": "For all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), points y, y' ∈ ℝ^P and reals Λ, r, τ, θ₁, θ₂, assume Λ ≥ 0, 0 < τ < r, |y' − y| < τ, θ₁·(r/(r − τ))^n ≤ θ₂, the function ρ ↦ ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(y')}(T) is monotone on (0, r), and ofReal(e^{Λr}/r^n)·M_{B_r(y)}(T) ≤ ω_n·ofReal(θ₁). Then M_{B_ρ(y')}(T) ≤ ofReal(θ₂)·ω_n·ofReal(ρ^n) for every ρ with 0 < ρ < r − τ. Here M_W(T) = T.massOn W ∈ [0, ∞], ω_n = unitBallVolume n, ofReal = ENNReal.ofReal, products are in [0, ∞], and B_ρ(y) is the open ball.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y y' : Euclid P) (Λ r τ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < τ → τ < r → dist y' y < τ → θ₁ * (r / (r - τ)) ^ n ≤ θ₂ → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ)) (Ioo 0 r) → ENNReal.ofReal (Real.exp (Λ * r) / r ^ n) * T.massOn (ball y r) ≤ unitBallVolume n * ENNReal.ofReal θ₁ → ∀ ρ : ℝ, 0 < ρ → ρ < r - τ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "idod_nearby_center_ball_mass_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-598d9b711f-a1"
+}

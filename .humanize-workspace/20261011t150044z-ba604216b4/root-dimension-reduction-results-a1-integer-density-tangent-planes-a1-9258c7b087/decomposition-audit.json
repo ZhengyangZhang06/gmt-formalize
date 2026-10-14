@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def unitBallVolume|def HasMassDensity",
+        "measure_ball_pos|measure_ball_lt_top",
+        "protected theorem Tendsto.mul\\b|protected theorem Tendsto.mul_const|theorem tendsto_ofReal\\b",
+        "protected theorem mul_inv\\b|protected theorem mul_inv_cancel|theorem ofReal_div_of_pos",
+        "theorem ofReal_lt_ofReal_iff\\b|theorem ofReal_mul\\b|mul_lt_mul_iff_right",
+        "theorem GeometricCurrentOn.massOn_mono",
+        "ball_subset_ball\\x27|closedBall_subset_closedBall\\x27",
+        "idod_monotone_quantity_eventually_lt",
+        "idod_nearby_center_ball_mass_bound",
+        "idod_local_uniform_ball_mass_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/udb_independent_audit_up2fqofw/Full.lean",
+        "#print axioms Submission.idod_monotone_quantity_eventually_lt",
+        "#print axioms Submission.idod_nearby_center_ball_mass_bound",
+        "#print axioms Submission.idod_local_uniform_ball_mass_bound",
+        "#print axioms Submission.idod_uniform_ball_mass_bound"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9258c7b087/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-9258c7b087/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/udb_independent_audit_up2fqofw/Statements.lean",
+        "/tmp/udb_independent_audit_up2fqofw/Statements.log",
+        "/tmp/udb_independent_audit_up2fqofw/Full.lean",
+        "/tmp/udb_independent_audit_up2fqofw/Assembly.lean",
+        "/tmp/udb_independent_audit_up2fqofw/ParentOnly.lean"
+      ],
+      "conclusion": "Independently verified the handoff against the selected DAG contract. Project and Mathlib revisions match the manifest; the inspected library files match the installed sources. Contract.lean:143–149 supplies exactly the stated volume and density definitions. The cited ENNReal lemmas support all cancellation, strict-comparison and product-limit steps; massOn_mono requires only set inclusion. All frozen propositions elaborate before any child implementation. Explicit elaboration confirms ENNReal semiring multiplication, real natural powers and the Euclidean L2 metric; the zero-dimensional volume instances also synthesize. No matrix construction occurs. Proof headers regenerated verbatim from the proposal and handoff compile, with only propext, Classical.choice and Quot.sound. Separate assumption checks confirm C3 depends only on C1/C2 and the exact selected parent follows from C3 alone. The DAG scan at 2026-10-13T12:59:36Z contained 1260 nodes and no child-name reservations or identical child types; declaration searches found no conflicts. All three lean_name values are bare identifiers intended for Submission.X. No previously accepted declaration is reused. The split appropriately separates the limit argument, transfer inequality and local parameter choices, leaving compactness to the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "eventual_threshold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes all hypotheses. Each proof step is justified: unitBallVolume is positive and finite even for n = 0; positive radii justify the normalization identity; the stated conditions exclude both problematic ENNReal product-limit cases; and the strict limiting inequality yields the required eventual threshold. Arbitrary real Λ is valid because only continuity is used. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "nearby_center_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every prose hypothesis and conclusion. Setting s = r − τ places both compared radii inside the monotonicity interval. Ball inclusion, mass monotonicity and Λ ≥ 0 justify the comparison. The rescaling factor q is nonnegative, so the ofReal multiplication identity requires no sign assumption on θ₁ or θ₂. Positive denominators justify the normalization identity, and exp(Λρ) ≥ 1 completes the mass bound. No finiteness assumption on the mass or circular dependency is hidden."
+    },
+    {
+      "key": "local_uniform_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose. The proof obtains r using C1 and the nontrivial right-neighborhood filter, obtains τ by continuity with nonzero denominator, and chooses δ = min(τ, r − τ) > 0. The closed-ball inclusion supplies precisely the monotonicity hypothesis needed by C2, and all remaining C2 hypotheses are explicitly established. Its only dependencies are C1 and C2, correctly directed and acyclic. Applying this child pointwise and taking a finite subcover proves the exact selected parent, including the empty-K case. No further proof planning is needed."
+    }
+  ],
+  "required_changes": []
+}

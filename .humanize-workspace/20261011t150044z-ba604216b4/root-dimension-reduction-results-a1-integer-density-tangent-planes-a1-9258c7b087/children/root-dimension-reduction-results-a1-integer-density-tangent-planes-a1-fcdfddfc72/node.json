@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.eventual_threshold-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+  "depth": 5,
+  "title": "A density below θ₁ puts the monotone quantity below ω_n θ₁ at small radii (Simon 7.3.3(1), display (2), via Ch. 4 §4.7)",
+  "statement": "For all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), y ∈ ℝ^P and reals Λ, θ, θ₁: if HasMassDensity T y θ and θ < θ₁, then eventually as ρ ↓ 0 (along the filter 𝓝[>] 0 on ℝ), ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(y)}(T) < ω_n·ofReal(θ₁). Here M_W(T) = T.massOn W ∈ [0, ∞], ω_n = unitBallVolume n, ofReal = ENNReal.ofReal, products are in [0, ∞], and B_ρ(y) is the open ball.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P) (Λ θ θ₁ : ℝ), HasMassDensity T y θ → θ < θ₁ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ) < unitBallVolume n * ENNReal.ofReal θ₁",
+  "lean_name": "idod_monotone_quantity_eventually_lt",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fcdfddfc72-a1"
+}
