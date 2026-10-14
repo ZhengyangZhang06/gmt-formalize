@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5275d8711f53d586b8115a431e47e40c4629b2740dc95aac9fc840f795b13a36",
+  "git_delta": {
+    "base_commit": "7e6043a47b6329e1d373db6beddab3b90e360246",
+    "candidate_commit": "43abfe5c54d0d2040f1153aca449418df0ad2819",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "be62b9798edb28a0c839db904467e2d521ecbe6a6986a8e517225355cb11d2f9",
+    "source_sha256": "4b9e3bd60a9d75b9a24e364da2f86f6e58df19387fcd8e17ce3216028b492d1d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_cauchy_subseq",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X j ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X (θ (r + 1)) ω - X (θ r) ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
