@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d0c7208b7eb8cae61b3c78a007e368bc92b8666bb7f6b15343cc211704bd57b",
+  "git_delta": {
+    "base_commit": "a8037a96885f134a6bf46c694dadae829a36772d",
+    "candidate_commit": "d1d51e47a2990f83db82db9943da4cf7d0999c70",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pf_ext_testForm_uniform_approx",
+    "diff_sha256": "2222935fb3897cb6ab11327e9d4a2793734e6056f5b5716e72829b7f372c79f4",
+    "source_sha256": "c63078a10fdb05730c821e8a187f3ac87b0259b8f136dbad265727bcf50bec3f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_ext_testForm_uniform_approx",
+      "statement": "∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
