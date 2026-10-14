@@ -1,0 +1,82 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.estimate-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof A3 (smooth homotopy formula and its mass estimate) and A4(E), with the interpolating map H(y) = F(tail y) + y_0(G − F)(tail y), cut off by the sibling cut-off lemma. Notation. ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), Jv := ι(0, v), e₀ := EuclideanSpace.single 0 1, tail y := WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)); |α| := covectorEuclideanNorm α; F^#ω as in the statement; d = exteriorDerivative. Siblings used: Submission.cmcdt_lpo_cutoff_pullback (CP), Submission.cmcdt_lpo_slice_forms ((a) slice forms, (b) affine slices, (c), (d) homotopy identities, (e) Minkowski bound), and Submission.cmcdt_lpo_current_toolkit applied to (VO), (REP) ((MSB), (SB), (LOC)). (L1), (L2) are the first two conjuncts of (LB). For a (m+1)-covector γ on ℝ^{N+1} write Φ(γ) := (γ.curryLeft e₀).compContinuousLinearMap J, so Φ(γ)(v) = γ(Fin.cons e₀ (J ∘ v)); Φ is continuous linear.
+1. Empty support. If spt X = ∅ then X = 0 by (VO) (every tsupport is disjoint from ∅). Then X(η_G) − X(η_F) = 0, M(X) = 0 (the zero current has mass sSup{ofReal 0} = 0) and boundaryMassOn X univ = 0 (for k ≥ 1, ∂0 = 0), so both sides are 0. Assume from now on spt X ≠ ∅; evaluating the hypotheses at a point of spt X gives Λ ≥ 0 and δ ≥ 0, and a, b ≥ 0 since norms are nonnegative.
+2. Interpolation. H(y) := F(tail y) + (y 0)·(G(tail y) − F(tail y)) is C^∞ (tail and y ↦ y 0 are continuous linear). For all t, x: H(ι(t, x)) = F(x) + t(G(x) − F(x)); in particular H ∘ ι(1, ·) = G and H ∘ ι(0, ·) = F on all of ℝ^N. By the chain rule, at y = ι(t, x): DH(y)e₀ = G(x) − F(x) and DH(y)∘J = DF(x) + t(DG(x) − DF(x)) =: A_t(x). For x ∈ spt X and t ∈ [0, 1]: ‖A_t(x)‖ ≤ (1 − t)‖DF(x)‖ + t‖DG(x)‖ ≤ Λ and ‖G(x) − F(x)‖ ≤ δ.
+3. Cut-off pull-back. K' := {ι(t, x) : t ∈ [0, 1], x ∈ spt X} is compact (continuous image of [0, 1] × spt X; spt X is compact). CP applied to H, ω, K' gives β ∈ 𝒟^k(ℝ^{N+1}) and an open W' ⊇ K' with β = H^#ω and dβ = (dω ∘ H)·DH, i.e. dβ(y) = (dω(H y)).compContinuousLinearMap (DH(y)), for y ∈ W'.
+4. End slices. By slice (b) with s = 1 and s = 0 there are ρ₁, ρ₀ ∈ 𝒟^k(ℝ^N) with ρ_s(x)(v) = β(ι(s, x))(J ∘ v). V := {x : ι(0, x) ∈ W' ∧ ι(1, x) ∈ W'} is open and contains spt X. For x ∈ V: ρ₁(x) = (H^#ω)(ι(1, x)).compContinuousLinearMap J = (ω(H(ι(1, x)))).compContinuousLinearMap (DH(ι(1, x)) ∘ J) = (ω(G x)).compContinuousLinearMap (DG(x)) = G^#ω(x), because H ∘ ι(1, ·) = G and D(H ∘ ι(1, ·))(x) = DH(ι(1, x)) ∘ J; likewise ρ₀ = F^#ω on V. With the open sets W_F, W_G ⊇ spt X on which η_F = F^#ω and η_G = G^#ω, ρ₁ = η_G on V ∩ W_G and ρ₀ = η_F on V ∩ W_F; by (LOC), X(ρ₁) = X(η_G) and X(ρ₀) = X(η_F).
+5. Homotopy identity. Let η ∈ 𝒟^k(ℝ^N) be given by slice (a) for the test form dβ (exteriorDerivativeTestOn univ k β): η(x)(v) = ∫_0^1 dβ(ι(t, x))(Fin.cons e₀ (J ∘ v)) dt. Case k = 0: by slice (d), η(x)(v) = β(ι(1, x))(J ∘ v) − β(ι(0, x))(J ∘ v) = (ρ₁ − ρ₀)(x)(v) for all x, v, so η = ρ₁ − ρ₀ (test forms with equal values are equal: Subtype.ext, funext, ContinuousAlternatingMap.ext) and X(η_G) − X(η_F) = X(ρ₁) − X(ρ₀) = X(η). Case k = k' + 1: let θ ∈ 𝒟^{k'}(ℝ^N) be given by slice (a) for β (θ(x)(u) = ∫_0^1 β(ι(t, x))(Fin.cons e₀ (J ∘ u)) dt). By slice (c) applied to β and θ, η(x)(v) = ρ₁(x)(v) − ρ₀(x)(v) − dθ(x)(v) for all x, v, so η = ρ₁ − ρ₀ − dθ and, since X(dθ) = ∂X(θ), X(η_G) − X(η_F) = X(η) + ∂X(θ).
+6. Bound for η on spt X. Fix x ∈ spt X and put p_t := H(ι(t, x)). Let f(t) := Φ(dβ(ι(t, x))); f is continuous and η(x)(v) = ∫_0^1 f(t)(v) dt. For t ∈ [0, 1], ι(t, x) ∈ K' ⊆ W', so dβ(ι(t, x)) = (dω(p_t)).compContinuousLinearMap (DH(ι(t, x))) and, for every v, f(t)(v) = dω(p_t)(Fin.cons (DH e₀) (DH ∘ J ∘ v)) = dω(p_t)(Fin.cons (G x − F x) (A_t(x) ∘ v)); i.e. f(t) = ((dω(p_t)).curryLeft (G x − F x)).compContinuousLinearMap (A_t(x)). By (L1) and (L2): |f(t)| ≤ ‖A_t(x)‖^k·‖G x − F x‖·|dω(p_t)| ≤ Λ^k·δ·b. By slice (e), |η(x)| ≤ Λ^k·δ·b. By (MSB), |X(η)| ≤ Λ^k·δ·b·M(X).toReal.
+7. Bound for θ on spt ∂X (case k = k' + 1). By (SB), spt ∂X ⊆ spt X. For x ∈ spt X and t ∈ [0, 1], β(ι(t, x)) = (ω(p_t)).compContinuousLinearMap (DH(ι(t, x))), so the integrand g(t) := Φ(β(ι(t, x))) of θ(x) equals ((ω(p_t)).curryLeft (G x − F x)).compContinuousLinearMap (A_t(x)) and |g(t)| ≤ Λ^{k'}·δ·a by (L1), (L2); by slice (e), |θ(x)| ≤ Λ^{k−1}·δ·a. ∂X has finite mass M(∂X) = boundaryMassOn X univ < ∞, so by (MSB) applied to ∂X: |∂X(θ)| ≤ Λ^{k−1}·δ·a·(boundaryMassOn X univ).toReal.
+8. Conclusion. k = 0: |X(η_G) − X(η_F)| = |X(η)| ≤ δ·Λ^0·M(X).toReal·b = δ·(Λ^k·M(X).toReal·b + Λ^{k−1}·(boundaryMassOn X univ).toReal·a), because boundaryMassOn X univ = 0 in degree 0. k ≥ 1: |X(η_G) − X(η_F)| ≤ |X(η)| + |∂X(θ)| ≤ δ·(Λ^k·M(X).toReal·b + Λ^{k−1}·(boundaryMassOn X univ).toReal·a). □
+
+## Key steps
+
+1. Trivial if spt X = ∅ (X = 0); otherwise Λ, δ ≥ 0.
+2. H(y) := F(tail y) + y_0(G − F)(tail y) is C^∞ with H∘ι(1,·) = G, H∘ι(0,·) = F, DH e₀ = G − F and DH∘J = (1−t)DF + tDG on ι([0,1] × spt X).
+3. Cut off H^#ω near K' = ι([0,1] × spt X) (CP); its end slices ρ₁, ρ₀ agree with G^#ω, F^#ω near spt X, so X(ρ₁) = X(η_G), X(ρ₀) = X(η_F) (LOC).
+4. Slice homotopy identity: S_{dβ} = ρ₁ − ρ₀ − dS_β (k ≥ 1) or ρ₁ − ρ₀ (k = 0), hence X(η_G) − X(η_F) = X(S_{dβ}) + ∂X(S_β).
+5. Pointwise bounds on spt X via (L1), (L2) and the Minkowski bound: |S_{dβ}| ≤ Λ^kδb, |S_β| ≤ Λ^{k−1}δa; conclude with (MSB) for X and ∂X (spt ∂X ⊆ spt X).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical)`
+- `git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, as recorded in manifest.json)`
+- `rg -n cmcdt_lpo local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'IsLipschitzPushforward|LipschitzPushforwardIntegerMultiplicity' local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `rg -n 'theorem extDeriv_pullback|theorem extDeriv_apply' mathlib/Mathlib (Analysis/Calculus/DifferentialForm/Basic.lean:198, :259)`
+- `rg -n 'theorem exists_contDiff_tsupport_subset|theorem IsOpen.exists_contDiff_support_eq|theorem HasCompactSupport.contDiff_convolution_left|theorem hasFDerivAt_integral_of_dominated_of_fderiv_le|theorem norm_integral_le_of_norm_le_const|theorem norm_fderiv_le_of_lipschitz|def curryLeftLI|theorem curryLeft_apply_apply|theorem integral_eq_sub_of_hasDerivAt|theorem integral_pos_iff_support_of_nonneg|def smoothTransition' mathlib/Mathlib -g '*.lean'`
+- `rg -n compContinuousLinearMap mathlib/Mathlib/Analysis/Calculus/ContDiff mathlib/Mathlib/Analysis/Normed/Module/Alternating mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean -g '*.lean'`
+- `sed -n 200,260p mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean (interval version hasFDerivAt_integral_of_dominated_of_fderiv_le'')`
+- `sed -n 1,140p mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms,AffineCurrentPushforward}.lean`
+- `lake env lean /tmp/ops-decomp-k7q2/Avail.lean, Avail2.lean, Avail3.lean, Avail4.lean (#check availability of every cited lemma in the frozen import closure of GMT.Ch07.Submission)`
+- `lake env lean /tmp/ops-decomp-k7q2/Children.lean (all eight child types elaborate; sorry-free assembly Submission.lpo_assembly_check of the exact selected frozen type; #print axioms)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name fields and of the selected node's depth and dependencies`
+- `grep of /runtime/flows/*/_recursive_lean/inherited.py and runtime.py _overlay_accepted_children (ancestor dependency names cited in a child proof become inherited prerequisites)`
+- `sed -n 350,530p book/chapter-06.txt (Simon 6.2.17-2.29: product with [[0,1]], push-forward 2.23-2.24, homotopy formula 2.25-2.27, Lemmas 2.28-2.29)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3968ae1944/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/ops-decomp-k7q2/Children.lean`
+- `/tmp/ops-decomp-k7q2/Avail.lean`
+- `/tmp/ops-decomp-k7q2/Avail2.lean`
+- `/tmp/ops-decomp-k7q2/Avail3.lean`
+- `/tmp/ops-decomp-k7q2/Avail4.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace Submission.lean. Its only Lipschitz push-forward material is the unsolved Ch06 specification (IsLipschitzPushforward, LipschitzPushforwardIntegerMultiplicity; main_theorem := by sorry). That specification is written over another Euclidean type and cannot be imported into Ch07, so no proof can be reused. Every Mathlib tool the child proofs cite is in the frozen import closure: extDeriv_apply, extDeriv_pullback, Filter.EventuallyEq.extDeriv_eq, curryLeftLI, curryLeft_apply_apply, exists_contDiff_tsupport_subset, IsOpen.exists_contDiff_support_eq, Real.smoothTransition, ContDiffBump with hasContDiffBump_of_innerProductSpace, HasCompactSupport.contDiff_convolution_left, hasFDerivAt_integral_of_dominated_of_fderiv_le'', intervalIntegral.integral_eq_sub_of_hasDerivAt, norm_integral_le_of_norm_le_const (Bochner and interval), norm_fderiv_le_of_lipschitz, integral_pos_iff_support_of_nonneg and LinearMap.exists_leftInverse_of_injective. ContDiffBump.normed, ContDiffBump.dist_normed_convolution_le, intervalIntegral.hasFDerivAt_integral_of_dominated_of_fderiv_le, contDiff_parametric_integral_of_contDiff and exists_smooth_zero_one_of_isClosed are not in the closure, and the child proofs do not use them. SimonGMT Chapter 6 provides GeometricCurrentOn, TestFormOn, TestFormOnConverges, massOn and mass, support via zeroRegion, boundary and boundary_boundary, tsupport_exteriorDerivative_subset, exteriorDerivative_apply and affinePullbackForm_isTestForm. No DAG node or snapshot declaration uses the prefix cmcdt_lpo_. All eight child types elaborate after import GMT.Ch07.Submission. The assembly of the exact selected frozen type from the pushforward, cylinder and homotopy child types and the covector-bounds type compiles without sorry, with axioms propext, Classical.choice and Quot.sound. Simon 6.2.25-2.29 in book/chapter-06.txt matches the decomposition: the homotopy formula, the mass estimate 2.27, the smooth estimate in the proof of 2.28, and the mollifier limit of 2.29.

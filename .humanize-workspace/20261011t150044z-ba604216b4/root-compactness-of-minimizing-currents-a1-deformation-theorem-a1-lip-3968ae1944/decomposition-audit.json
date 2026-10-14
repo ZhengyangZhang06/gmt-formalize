@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpo_",
+        "IsLipschitzPushforward|LipschitzPushforwardIntegerMultiplicity|covectorEuclideanNorm|boundaryMassOn",
+        "theorem extDeriv_apply|theorem extDeriv_pullback|theorem norm_integral_le_of_norm_le_const|theorem hasFDerivAt_integral_of_dominated_of_fderiv_le|theorem IsOpen.exists_contDiff_support_eq|theorem HasCompactSupport.contDiff_convolution_left|curryLeftLI|curryLeft_apply_apply",
+        "rg -n 'cmcdt_lpo_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/operators-independent-audit-_ujb3hkb/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/operators-independent-audit-_ujb3hkb/LibraryChecks.lean",
+        "sed -n '350,530p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3968ae1944/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3968ae1944/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/operators-independent-audit-_ujb3hkb/ContractsAndAssembly.lean",
+        "/tmp/operators-independent-audit-_ujb3hkb/LibraryChecks.lean"
+      ],
+      "conclusion": "The pinned revisions and workspace contract agree. No cmcdt_lpo_ declaration matches in the snapshot or DAG; all eight names are bare, distinct and unreserved. Dependencies exactly match child-proof citations and are acyclic. Every child type independently elaborates without child implementations. A fresh, sorry-free conditional assembly proves the exact frozen parent type using pushforward, cylinder, homotopy and the identical inherited covector-bounds contract. Thus the split supplies precisely conjuncts (1)–(12) of the selected node. The assembly and queried library theorems use only propext, Classical.choice and Quot.sound. Supplementary probes found no automatic finite-dimensional covector instance and used an incorrectly unqualified Haar-class name; these are routine implementation matters, not defects in the submitted contracts or mathematical arguments. Inline Euclidean coordinates and contraction have the intended meanings; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five clauses match the one-line proposition. Compact domination justifies differentiation under the integral; support projection gives compact support. The coordinate calculation proves the correct boundary sign, including degree zero, and the coefficient map proves the integral norm bound. No circular reliance occurs."
+    },
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and both local identities match exactly. The proof constructs a compactly supported smooth cutoff, establishes smoothness of the pullback, and applies locality of differentiation and extDeriv_pullback. The empty compact set is handled; properness of F is unnecessary."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized bump convolution supplies smooth approximants with exactly the stated Lipschitz constant and error rate. Positivity, integrability, and the zero-dimensional case are justified. The proof establishes the quantified statement without another construction or search obligation."
+    },
+    {
+      "key": "toolkit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "VO and REP are copied exactly. The representation measure is finite and concentrated on the current support, proving MSB even for negative constants. The coefficient bound proves the required sequential continuity for BC; SB and LOC follow from support definitions and exterior-derivative support containment."
+    },
+    {
+      "key": "estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger support-local derivative estimate is valid and matches the prose and type. Cutoff pullbacks and the slice identity give the evaluation formula; MSB and the covector bounds give both terms. Empty support, signs, degree zero and truncated subtraction are handled using only declared prerequisites."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The comparison estimate makes the defining evaluations Cauchy; locality proves linearity and BC produces a current. Comparison with arbitrary smooth approximants proves the exact PA interface. PA then establishes all six parent conjuncts, with normality of differences and boundaries explicitly justified."
+    },
+    {
+      "key": "cylinder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contract reproduces conjuncts (7)–(9). The uniquely determined slice operator is linear and bounded, so BC constructs the cylinder. Support projection proves compactness, and the slice boundary identities give finite boundary mass in every degree. The infinite-mass default is outside the required hypotheses."
+    },
+    {
+      "key": "homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PA, (7) and (9) suffice for arbitrary operator families, so no dependency on their implementations is missing. The smooth interpolants have uniformly bounded derivatives on the required supports and converge there to H. Passing the slice identities and evaluation bounds through PA proves exactly (10)–(12), including empty support and negative displacement bounds."
+    }
+  ],
+  "required_changes": []
+}

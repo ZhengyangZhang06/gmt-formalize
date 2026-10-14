@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.mollify-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1",
+  "depth": 5,
+  "title": "Mollification of Lipschitz maps: C^∞ Λ-Lipschitz approximants within Λ/(j + 1)",
+  "statement": "For all N, N' ∈ ℕ, Λ ∈ ℝ≥0 and every Λ-Lipschitz map F : ℝ^N → ℝ^{N'} there are maps F_j : ℝ^N → ℝ^{N'} (j ∈ ℕ), each C^∞ (ContDiff ℝ (⊤ : ℕ∞)) and Λ-Lipschitz, with |F_j(x) − F(x)| ≤ Λ/(j + 1) for all j ∈ ℕ and x ∈ ℝ^N.",
+  "lean_statement": "∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1)",
+  "lean_name": "cmcdt_lpo_mollify_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-26edcacc53-a1"
+}

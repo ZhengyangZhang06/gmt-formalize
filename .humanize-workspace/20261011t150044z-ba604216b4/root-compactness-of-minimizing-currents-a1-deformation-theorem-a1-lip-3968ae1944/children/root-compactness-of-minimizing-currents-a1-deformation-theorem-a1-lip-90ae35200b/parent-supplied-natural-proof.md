@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof A0 (representation of finite-mass currents via (REP) and (VO)), 0(b) (bounded linear functionals are currents with mass ≤ C) and 0(c) (S2), (S3). Conventions: |α| := covectorEuclideanNorm α. M_W(T) = T.massOn W = sSup {ofReal(T ω) : ω ∈ 𝒟^k, tsupport ω ⊆ W, |ω(x)| ≤ 1 ∀x} and M(T) = T.mass = M_univ(T). spt T = univ ∖ zeroRegion T, where zeroRegion T is the union of the open sets W with compact closure (⊆ univ) on which T vanishes (T(ω) = 0 whenever tsupport ω ⊆ W); zeroRegion T is open.
+1. (SB). Let X ∈ 𝒟_{k+1}(ℝ^N) and x ∉ spt X. Then x ∈ zeroRegion X: there is an open W ∋ x with compact closure on which X vanishes. For ω ∈ 𝒟^k with tsupport ω ⊆ W we have ∂X(ω) = X(dω) (GeometricCurrentOn.boundary_apply) and tsupport dω ⊆ tsupport ω ⊆ W (tsupport_exteriorDerivative_subset), so ∂X(ω) = 0. Thus ∂X vanishes on W, W is one of the sets in the union defining zeroRegion ∂X, and x ∉ spt ∂X.
+2. (LOC). ψ := η − η' vanishes on the open set W, so support ψ ⊆ Wᶜ, which is closed; hence tsupport ψ ⊆ Wᶜ, which is disjoint from spt X ⊆ W. By (VO) (P := N, n := k, U := univ), X(ψ) = 0, i.e. X(η) = X(η') by linearity of X.
+3. (MSB), representation. Let X with M(X) < ∞. For every W, M_W(X) ≤ M(X) < ∞ (massOn_mono, W ⊆ univ); in particular the hypothesis of (REP) holds for U := univ (open). (REP) gives μ, ξ with: M_W(X) = μ(W) for every open W; ξ μ-a.e. strongly measurable; |ξ(x)(α)| ≤ |α| for all x, α; X(ω) = ∫ ξ(x)(ω(x)) dμ for every ω ∈ 𝒟^k.
+4. (MSB), total mass. μ(univ) = M_univ(X) = M(X) < ∞ (univ is open), so μ is a finite measure and μ(univ).toReal = M(X).toReal.
+5. (MSB), concentration. Z := (spt X)ᶜ = zeroRegion X is open, so μ(Z) = M_Z(X). Every ω admissible for M_Z(X) has tsupport ω ⊆ Z, i.e. disjoint from spt X, so X(ω) = 0 by (VO); hence each element of the defining set is ofReal 0 = 0 and M_Z(X) = 0. So μ(Z) = 0 and μ-a.e. x lies in spt X.
+6. (MSB), estimate. For μ-a.e. x (namely x ∈ spt X): |ξ(x)(ψ(x))| ≤ |ψ(x)| ≤ c. By norm_integral_le_of_norm_le_const (finite measure, a.e. bound c; no sign condition on c is needed): |X(ψ)| = |∫ ξ(x)(ψ(x)) dμ| ≤ c·μ.real(univ) = c·M(X).toReal.
+7. (BC), coefficient bound. Let A := sqrt(N^k). For a k-covector α, each coefficient satisfies |α(e_{I 1}, …, e_{I k})| ≤ ‖α‖·∏_i ‖e_{I i}‖ = ‖α‖ (operator-norm bound for continuous multilinear maps), and there are at most N^k index tuples, so |α| ≤ A·‖α‖.
+8. (BC), sign of C. Applying the hypothesis to ω = 0 and c = 1 gives 0 ≤ C.
+9. (BC), continuity. Let (ω_j) satisfy TestFormOnConverges ω_j 0: there is a compact K ⊆ univ containing every tsupport ω_j such that, in particular, iteratedFDeriv ℝ 0 ω_j → 0 uniformly on K. Since ‖iteratedFDeriv ℝ 0 ω_j x‖ = ‖ω_j(x)‖ (norm_iteratedFDeriv_zero), for every ε > 0 there is j₀ with ‖ω_j(x)‖ ≤ ε for all j ≥ j₀ and x ∈ K; for x ∉ K, ω_j(x) = 0. So for j ≥ j₀, |ω_j(x)| ≤ A·ε for every x and |T₀(ω_j)| ≤ C·A·ε. Hence T₀(ω_j) → 0, so T := ⟨T₀, this continuity⟩ is a GeometricCurrentOn univ k with T(ω) = T₀(ω) for every ω.
+10. (BC), mass. For every ω admissible for M_univ (|ω(x)| ≤ 1 for all x): T(ω) ≤ |T₀(ω)| ≤ C·1, so ofReal(T ω) ≤ ofReal C. Taking the supremum, M(T) ≤ ofReal C. □
+
+## Key steps
+
+1. (SB): a zero region of X is a zero region of ∂X because tsupport dω ⊆ tsupport ω.
+2. (LOC): tsupport(η − η') ⊆ Wᶜ is disjoint from spt X, so (VO) gives X(η − η') = 0.
+3. (MSB): (REP) with U = univ gives μ, ξ; μ(univ) = M(X), μ((spt X)ᶜ) = M_{(spt X)ᶜ}(X) = 0 by (VO); |∫ ξ(ψ) dμ| ≤ c·μ(univ).
+4. (BC): |α| ≤ sqrt(N^k)‖α‖, so test-form convergence to 0 forces T₀(ω_j) → 0; admissible forms give M(T) ≤ ofReal C.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical)`
+- `git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, as recorded in manifest.json)`
+- `rg -n cmcdt_lpo local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n 'IsLipschitzPushforward|LipschitzPushforwardIntegerMultiplicity' local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `rg -n 'theorem extDeriv_pullback|theorem extDeriv_apply' mathlib/Mathlib (Analysis/Calculus/DifferentialForm/Basic.lean:198, :259)`
+- `rg -n 'theorem exists_contDiff_tsupport_subset|theorem IsOpen.exists_contDiff_support_eq|theorem HasCompactSupport.contDiff_convolution_left|theorem hasFDerivAt_integral_of_dominated_of_fderiv_le|theorem norm_integral_le_of_norm_le_const|theorem norm_fderiv_le_of_lipschitz|def curryLeftLI|theorem curryLeft_apply_apply|theorem integral_eq_sub_of_hasDerivAt|theorem integral_pos_iff_support_of_nonneg|def smoothTransition' mathlib/Mathlib -g '*.lean'`
+- `rg -n compContinuousLinearMap mathlib/Mathlib/Analysis/Calculus/ContDiff mathlib/Mathlib/Analysis/Normed/Module/Alternating mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean -g '*.lean'`
+- `sed -n 200,260p mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean (interval version hasFDerivAt_integral_of_dominated_of_fderiv_le'')`
+- `sed -n 1,140p mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms,AffineCurrentPushforward}.lean`
+- `lake env lean /tmp/ops-decomp-k7q2/Avail.lean, Avail2.lean, Avail3.lean, Avail4.lean (#check availability of every cited lemma in the frozen import closure of GMT.Ch07.Submission)`
+- `lake env lean /tmp/ops-decomp-k7q2/Children.lean (all eight child types elaborate; sorry-free assembly Submission.lpo_assembly_check of the exact selected frozen type; #print axioms)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name fields and of the selected node's depth and dependencies`
+- `grep of /runtime/flows/*/_recursive_lean/inherited.py and runtime.py _overlay_accepted_children (ancestor dependency names cited in a child proof become inherited prerequisites)`
+- `sed -n 350,530p book/chapter-06.txt (Simon 6.2.17-2.29: product with [[0,1]], push-forward 2.23-2.24, homotopy formula 2.25-2.27, Lemmas 2.28-2.29)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3968ae1944/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/ops-decomp-k7q2/Children.lean`
+- `/tmp/ops-decomp-k7q2/Avail.lean`
+- `/tmp/ops-decomp-k7q2/Avail2.lean`
+- `/tmp/ops-decomp-k7q2/Avail3.lean`
+- `/tmp/ops-decomp-k7q2/Avail4.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace Submission.lean. Its only Lipschitz push-forward material is the unsolved Ch06 specification (IsLipschitzPushforward, LipschitzPushforwardIntegerMultiplicity; main_theorem := by sorry). That specification is written over another Euclidean type and cannot be imported into Ch07, so no proof can be reused. Every Mathlib tool the child proofs cite is in the frozen import closure: extDeriv_apply, extDeriv_pullback, Filter.EventuallyEq.extDeriv_eq, curryLeftLI, curryLeft_apply_apply, exists_contDiff_tsupport_subset, IsOpen.exists_contDiff_support_eq, Real.smoothTransition, ContDiffBump with hasContDiffBump_of_innerProductSpace, HasCompactSupport.contDiff_convolution_left, hasFDerivAt_integral_of_dominated_of_fderiv_le'', intervalIntegral.integral_eq_sub_of_hasDerivAt, norm_integral_le_of_norm_le_const (Bochner and interval), norm_fderiv_le_of_lipschitz, integral_pos_iff_support_of_nonneg and LinearMap.exists_leftInverse_of_injective. ContDiffBump.normed, ContDiffBump.dist_normed_convolution_le, intervalIntegral.hasFDerivAt_integral_of_dominated_of_fderiv_le, contDiff_parametric_integral_of_contDiff and exists_smooth_zero_one_of_isClosed are not in the closure, and the child proofs do not use them. SimonGMT Chapter 6 provides GeometricCurrentOn, TestFormOn, TestFormOnConverges, massOn and mass, support via zeroRegion, boundary and boundary_boundary, tsupport_exteriorDerivative_subset, exteriorDerivative_apply and affinePullbackForm_isTestForm. No DAG node or snapshot declaration uses the prefix cmcdt_lpo_. All eight child types elaborate after import GMT.Ch07.Submission. The assembly of the exact selected frozen type from the pushforward, cylinder and homotopy child types and the covector-bounds type compiles without sorry, with axioms propext, Classical.choice and Quot.sound. Simon 6.2.25-2.29 in book/chapter-06.txt matches the decomposition: the homotopy formula, the mass estimate 2.27, the smooth estimate in the proof of 2.28, and the mollifier limit of 2.29.
