@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3a071771db6fc89d36c48cefcfe0a6ff33cb40a98fdd27ffb35bd03b69af1ea7",
+  "git_delta": {
+    "base_commit": "202924b327145699259ceb5b88ead58be65d953b",
+    "candidate_commit": "980a574371567eb8b83729046aa68b9ac194b9ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pf_pushforward_mass_le",
+    "diff_sha256": "44b1ce17a77e3c96589af1e7d080a102d4e0c295cfac3d5718d818f45fa8ad39",
+    "source_sha256": "91474ad2c237686fdcc4d409ae661a099aeb718fb74de3b886b41f7bf0ce0335",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pf_pushforward_mass_le",
+      "statement": "∀ (P n : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (L : ℝ) (Y Z : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → Z.mass ≤ ENNReal.ofReal (L ^ n) * Y.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
