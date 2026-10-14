@@ -621,6 +621,99 @@ theorem Submission.dor_lmb_fcd_gc_bad_set_volume : ∀ (d : ℕ) (ρ : Measure (
         apply ENNReal.ofReal_le_ofReal
         gcongr
         norm_num
+/-- **Simon, Ch. 6, proof of 5.1** ((5) and the choice of `a`, cube version).  If sets
+`E_e ⊆ ℝ^d`, one for each map `e : Fin d → Fin P`, have total Lebesgue outer measure
+`< (1/2)^P`, then some `a` in the open cube `(1/4, 3/4)^P` has `(a_{e(k)})_k ∉ E_e` for every
+injective `e`.  By Fubini over the coordinates in `range e` and the rest, the centres in the cube
+whose `e`-projection lies in `E_e` have volume `≤ L^d(E_e)`; the cube has volume `(1/2)^P`, so the
+union bound leaves a good centre. -/
+theorem Submission.dor_lmb_fcd_gc_cube_selection : ∀ (P d : ℕ) (E : (Fin d → Fin P) → Set (Fin d → ℝ)), ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ e : Fin d → Fin P, Function.Injective e → (fun k => a (e k)) ∉ E e := by
+  classical
+  intro P d E hsum
+  -- Step 2 (Fubini): for injective `e`, the points of the cube whose `e`-projection lies in `F`
+  -- have volume at most `volume F`
+  have fubini : ∀ e : Fin d → Fin P, Function.Injective e → ∀ F : Set (Fin d → ℝ),
+      volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ≤
+        volume F := by
+    intro e he F
+    let p : Fin P → Prop := fun i => i ∈ range e
+    let Φ := MeasurableEquiv.piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    have hΦ : MeasurePreserving Φ := by
+      convert volume_preserving_piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    let σ : Fin d ≃ {i // p i} := Equiv.ofInjective e he
+    let ψ := (MeasurableEquiv.piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm
+    have hψ : MeasurePreserving ψ :=
+      (volume_measurePreserving_piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm _
+    have hψapp : ∀ u k, ψ u k = u (σ k) := by
+      intro u k
+      simp [ψ, MeasurableEquiv.piCongrLeft, Equiv.piCongrLeft_symm_apply]
+    let G : Set ({i // p i} → ℝ) := ψ ⁻¹' F
+    let H : Set ({i // ¬ p i} → ℝ) := Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)
+    have hsub : {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ⊆
+        Φ ⁻¹' (G ×ˢ H) := by
+      rintro x ⟨hx1, hx2⟩
+      refine ⟨?_, fun i _ => hx1 i⟩
+      show ψ (fun i => x i) ∈ F
+      have : ψ (fun i : {i // p i} => x i) = fun k => x (e k) := by
+        funext k; rw [hψapp]; rfl
+      rw [this]; exact hx2
+    have hG : volume G = volume F := hψ.measure_preimage_equiv F
+    have hH : volume H ≤ 1 := by
+      rw [Real.volume_pi_Ioo]
+      refine Finset.prod_le_one fun i _ => ?_
+      rw [ENNReal.ofReal_le_one]; norm_num
+    calc volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F}
+        ≤ volume (Φ ⁻¹' (G ×ˢ H)) := measure_mono hsub
+      _ = volume (G ×ˢ H) := hΦ.measure_preimage_equiv _
+      _ = volume G * volume H := by
+          rw [Measure.volume_eq_prod]; exact Measure.prod_prod G H
+      _ ≤ volume G * 1 := by gcongr
+      _ = volume F := by rw [mul_one, hG]
+  have hI : ∀ t : ℝ, |t - 1 / 2| < 1 / 4 ↔ t ∈ Ioo (1 / 4 : ℝ) (3 / 4) := by
+    intro t
+    rw [abs_sub_lt_iff, mem_Ioo]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  -- Step 1: the open cube `Q` in `Euclid P` has volume `(1/2)^P`
+  let Q : Set (Euclid P) := {a | ∀ i, a i ∈ Ioo (1 / 4 : ℝ) (3 / 4)}
+  have hofLp : MeasurePreserving (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm :=
+    EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin P)
+  have hQ : volume Q = ENNReal.ofReal ((1 / 2) ^ P) := by
+    have : Q = (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+        (Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)) := by
+      ext a; simp [Q, Set.mem_pi]
+    rw [this, hofLp.measure_preimage_equiv, Real.volume_pi_Ioo, Finset.prod_const,
+      Finset.card_univ, Fintype.card_fin, ← ENNReal.ofReal_pow (by norm_num)]
+    norm_num
+  -- Step 3: the sets of centres with a bad projection
+  let A : (Fin d → Fin P) → Set (Euclid P) := fun e =>
+    {a | Function.Injective e ∧ a ∈ Q ∧ (fun k => a (e k)) ∈ E e}
+  have hA : ∀ e, volume (A e) ≤ volume (E e) := by
+    intro e
+    by_cases he : Function.Injective e
+    · have hsub : A e ⊆ (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+          {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ E e} := by
+        rintro a ⟨-, haQ, haE⟩
+        exact ⟨haQ, haE⟩
+      calc volume (A e) ≤ _ := measure_mono hsub
+        _ = _ := hofLp.measure_preimage_equiv _
+        _ ≤ volume (E e) := fubini e he (E e)
+    · have : A e = ∅ := by
+        ext a; simp only [mem_empty_iff_false, iff_false]; exact fun h => he h.1
+      rw [this, measure_empty]; exact bot_le
+  -- Steps 4–5: union bound and choice of `a`
+  by_contra hcon
+  push Not at hcon
+  have hcov : Q ⊆ ⋃ e, A e := by
+    intro a haQ
+    obtain ⟨e, he, haE⟩ := hcon a fun i => (hI _).2 (haQ i)
+    exact mem_iUnion.2 ⟨e, he, haQ, haE⟩
+  have : volume Q < volume Q :=
+    calc volume Q ≤ volume (⋃ e, A e) := measure_mono hcov
+      _ ≤ ∑ e, volume (A e) := measure_iUnion_fintype_le _ _
+      _ ≤ ∑ e, volume (E e) := Finset.sum_le_sum fun e _ => hA e
+      _ < ENNReal.ofReal ((1 / 2) ^ P) := hsum
+      _ = volume Q := hQ.symm
+  exact lt_irrefl _ this
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
