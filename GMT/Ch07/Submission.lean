@@ -2545,28 +2545,6 @@ theorem Submission.rsdic_exists_imrep_int_combination : ∀ (P n : ℕ) (U : Set
       Nat.one_le_cast.mpr (R.mult_pos x hx.1)
   have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞ := by
     intro K hK hKU
-    intro K hK hKU
-    refine ne_top_of_le_ne_top (b := ∫⁻ x in K, ((p₁.natAbs : ℝ≥0∞) *
-        R₁.carrier.indicator (fun y => (R₁.mult y : ℝ≥0∞)) x + (p₂.natAbs : ℝ≥0∞) *
-        R₂.carrier.indicator (fun y => (R₂.mult y : ℝ≥0∞)) x) ∂μHE[n]) ?_
-      ((lintegral_mono hbound).trans (lintegral_mono_set inter_subset_right))
-    rw [lintegral_add_left ((hθ₁e.indicator hM₁).const_mul _),
-      lintegral_const_mul _ (hθ₁e.indicator hM₁), lintegral_const_mul _ (hθ₂e.indicator hM₂),
-      lintegral_indicator hM₁, lintegral_indicator hM₂, Measure.restrict_restrict hM₁,
-      Measure.restrict_restrict hM₂]
-    exact ENNReal.add_ne_top.mpr
-      ⟨ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (R₁.locallyIntegrable_mult K hK hKU),
-        ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (R₂.locallyIntegrable_mult K hK hKU)⟩
-  -- Step 6 (f): `Hⁿ(M' ∩ K) ≤ Hⁿ(M₁ ∩ K) + Hⁿ(M₂ ∩ K) < ∞`, as `θᵢ ≥ 1` on `Mᵢ`
-  have hfinR : ∀ (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U →
-      μHE[n] (R.carrier ∩ K) ≠ ∞ := by
-    intro R K hK hKU
-    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
-    rw [← setLIntegral_one]
-    exact setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) fun x hx =>
-      Nat.one_le_cast.mpr (R.mult_pos x hx.1)
-  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞ := by
-    intro K hK hKU
     refine ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨hfinR R₁ K hK hKU, hfinR R₂ K hK hKU⟩)
       ((measure_mono ?_).trans (measure_union_le _ _))
     rintro x ⟨hx, hxK⟩
@@ -2828,62 +2806,6 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
-/-- **Integer multiplicity calculus** (Simon Ch. 3, Remark 1.5(2) and the proof of 1.6 "⇒";
-Ch. 6, Remarks 2.6, 2.9 and 3.2(1)).
-(a) Locality: for Borel `M ⊆ M' ⊆ U`, `M'` locally `Hⁿ`-finite in the open `U`, `TₓM = TₓM'` for
-`Hⁿ`-a.e. `x ∈ M` (tangent locality with the two sides exchanged).
-(b) Restriction: for an `IMRep` `R = (M, θ, ξ)` in the open `U` and Borel `E`, `(M ∩ E, θ, ξ)` is
-an `IMRep`: `M` is locally `Hⁿ`-finite in `U` (`θ ≥ 1` on `M`), so (a) for `M ∩ E ⊆ M` transfers
-`TₓM` to `Tₓ(M ∩ E)` a.e. on `M ∩ E`; it defines a current `τ(M ∩ E, θ, ξ)`.
-(c) Differences: `A − B = 1 · A + (−1) · B` is an integer combination.
-(d) Orientation bound: `Hⁿ`-a.e. on `M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so
-`|⟨α, ξ(x)⟩| = |α(τ)| ≤ |α|`. -/
-theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) := by
-  -- (a) tangent locality for `M ⊆ M'`, with the two sides of `↔` exchanged
-  have ha : ∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M →
-      MeasurableSet M' → M ⊆ M' → M' ⊆ U →
-      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) →
-      ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
-    intro P n U M M' hU hM hM' hMM' hM'U hfin
-    filter_upwards [Submission.rsdic_ae_tangent_iff_of_subset P n U M M' hU hM hM' hMM' hM'U
-      hfin] with x hx Q
-    exact (hx Q).symm
-  refine ⟨ha, ?_, ?_, ?_⟩
-  · -- (b) the restriction `(M ∩ E, θ, ξ)` of `R = (M, θ, ξ)`
-    intro P n U R E hU hE
-    have hME : MeasurableSet (R.carrier ∩ E) := R.measurableSet_carrier.inter hE
-    -- `TₓM = Tₓ(M ∩ E)` a.e. on `M ∩ E`, `M` being locally `Hⁿ`-finite in `U`
-    have htan : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ E)), ∀ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n R.carrier x Q →
-          HasApproximateTangentSpaceAt n (R.carrier ∩ E) x Q := by
-      filter_upwards [ha P n U (R.carrier ∩ E) R.carrier hU hME R.measurableSet_carrier
-        inter_subset_left R.carrier_subset fun K hK hKU =>
-          (Submission.rsd_imrep_compact_measure_ne_top P n U R K hK hKU).1] with x hx Q
-      exact (hx Q).2
-    obtain ⟨R', hcar, hmult, horient⟩ := Submission.regcomp_rim_sub_imrep P n U (R.carrier ∩ E) R
-      R.mult hME inter_subset_left R.measurable_mult (fun x hx => R.mult_pos x hx.1)
-      (fun x _ => le_rfl) htan
-    -- the current `τ(M ∩ E, θ, ξ)`
-    obtain ⟨A, hA⟩ := Submission.dtc_imrep_current P n U R'
-    exact ⟨A, R', hA, hcar, hmult, horient⟩
-  · -- (c) `A − B = 1 · A + (−1) · B`
-    intro P n U A B hU hA hB
-    refine Submission.rsd_isIntegerMultiplicity_int_combination P n U A B (A - B) 1 (-1) hU hA hB
-      fun ω => ?_
-    show A ω - B ω = _
-    push_cast
-    ring
-  · -- (d) `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, a.e. on `M`
-    intro P n U R
-    filter_upwards [R.orients] with x hx α
-    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-    have hατ := Submission.regcomp_covector_eval_orthonormal_le P n α τ hτ
-    rcases hξ with h | h
-    · rw [h α]
-      exact hατ
-    · rw [h α, abs_neg]
-      exact hατ
 /-- **Lipschitz extension into `ℝᴾ` with a `√P` loss** (Simon Ch. 2, 1.2, applied to each
 coordinate; used for the deformation theorem, Ch. 6, 5.1).  Each coordinate `x ↦ ψ(x)ᵢ` is
 `K`-Lipschitz on `S` since `|vᵢ| ≤ |v|`; McShane's extension gives `K`-Lipschitz `gᵢ : ℝᴾ → ℝ`
