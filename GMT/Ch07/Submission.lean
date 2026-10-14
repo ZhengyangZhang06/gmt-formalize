@@ -2734,6 +2734,126 @@ theorem Submission.dimred_rpd_submanifold_density_one : ∀ (P n : ℕ) (M : Set
     filter_upwards [hbounds ε hε0 hε1] with s hs
     exact lt_of_le_of_lt hs.2 hεb
 
+/-- **The unit normal of a cone is homogeneous of degree `0`** (Simon, Appendix B, proof of
+Lemma B.11, (1)–(2)).  Let `M ⊆ A₀` be an embedded `C¹` `m`-submanifold with `tM ⊆ M` for
+`t > 0`, and `ν` a `C^∞` unit normal to `M` in `A₀`.  By
+`Submission.codim1_hcp_sc_tangent_normal_complement`, `T_yM = {v ∈ A₀ : ν(y) · v = 0}` is a
+linear subspace.  The curve `s ↦ eˢx` gives `x ∈ T_xM`, and scaling curves gives
+`tT_xM ⊆ T_{tx}M`, hence `T_{tx}M = T_xM`.  So `ν(tx)` is a unit vector in
+`A₀ ∩ (T_xM)^⊥ = ℝν(x)`, i.e. `ν(tx) = ±ν(x)`; `t ↦ ν(x) · ν(tx)` is continuous on `(0, ∞)`
+and equals `1` at `t = 1`, so the intermediate value theorem gives `ν(tx) = ν(x)`.
+Differentiating `ν(tγ(s)) = ν(γ(s))` at `s = 0` along curves `γ` in `M` gives
+`tDν(tx)v = Dν(x)v`, and differentiating the constant map `t ↦ ν(tx)` at `t = 1` gives
+`Dν(x)x = 0`. -/
+theorem Submission.codim1_hcp_sc_cone_normal_homogeneous : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, x ∈ tangentSpace M x ∧ fderiv ℝ ν x x = 0 ∧ ∀ t : ℝ, 0 < t → tangentSpace M (t • x) = tangentSpace M x ∧ ν (t • x) = ν x ∧ ∀ v ∈ tangentSpace M x, t • fderiv ℝ ν (t • x) v = fderiv ℝ ν x v := by
+  intro P m A₀ M ν hdim hMA hM hcone hO hν x hx
+  obtain ⟨O, hOo, hMO, hνO⟩ := hO
+  -- Step 0: `ν` is differentiable at every point of `M ⊆ O`, and `T_yM = {v ∈ A₀ : ν(y) · v = 0}`
+  have hνd : ∀ y ∈ M, HasFDerivAt ν (fderiv ℝ ν y) y := fun y hy =>
+    ((hνO.contDiffAt (hOo.mem_nhds (hMO hy))).differentiableAt (by simp)).hasFDerivAt
+  have hT : ∀ y ∈ M, tangentSpace M y = {v : Euclid P | v ∈ A₀ ∧ inner ℝ (ν y) v = 0} :=
+    fun y hy =>
+      (Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hdim hMA hM hν y hy).1
+  -- in particular each `T_yM`, `y ∈ M`, is closed under scalar multiplication
+  have hTsmul : ∀ y ∈ M, ∀ (c : ℝ) (v : Euclid P), v ∈ tangentSpace M y →
+      c • v ∈ tangentSpace M y := by
+    intro y hy c v hv
+    rw [hT y hy] at hv ⊢
+    exact ⟨A₀.smul_mem c hv.1, by rw [real_inner_smul_right, hv.2, mul_zero]⟩
+  -- Step 1: `x ∈ T_xM`, via the curve `s ↦ eˢx` in `M`
+  have hxT : x ∈ tangentSpace M x := by
+    refine ⟨fun s => Real.exp s • x, (Real.contDiff_exp.smul contDiff_const).contDiffOn,
+      fun s _ => hcone _ (Real.exp_pos s) x hx, by simp, ?_⟩
+    simpa using (Real.hasDerivAt_exp 0).smul_const x
+  -- Step 2: `t • T_yM ⊆ T_{ty}M` for `t > 0`: scale the curves
+  have hscale : ∀ t : ℝ, 0 < t → ∀ y v : Euclid P, v ∈ tangentSpace M y →
+      t • v ∈ tangentSpace M (t • y) := by
+    rintro t ht y v ⟨γ, hγ, hγM, hγ0, hγv⟩
+    exact ⟨fun s => t • γ s, hγ.const_smul t, fun s hs => hcone t ht _ (hγM hs),
+      by simp [hγ0], hγv.const_smul t⟩
+  -- Step 3: `T_{ty}M = T_yM` for `y ∈ M` and `t > 0`
+  have hTeq : ∀ y ∈ M, ∀ t : ℝ, 0 < t → tangentSpace M (t • y) = tangentSpace M y := by
+    intro y hy t ht
+    ext w
+    constructor
+    · intro hw
+      have h1 := hscale t⁻¹ (inv_pos.2 ht) (t • y) w hw
+      rw [inv_smul_smul₀ ht.ne'] at h1
+      have h2 := hTsmul y hy t _ h1
+      rwa [smul_inv_smul₀ ht.ne'] at h2
+    · intro hw
+      have h1 := hscale t ht y _ (hTsmul y hy t⁻¹ w hw)
+      rwa [smul_inv_smul₀ ht.ne'] at h1
+  -- Step 4: `ν(ty) = λν(y)` with `λ = ν(y) · ν(ty) ∈ {1, −1}`
+  have hpm : ∀ y ∈ M, ∀ t : ℝ, 0 < t →
+      ν (t • y) = inner ℝ (ν y) (ν (t • y)) • ν y ∧
+        (inner ℝ (ν y) (ν (t • y)) = 1 ∨ inner ℝ (ν y) (ν (t • y)) = -1) := by
+    intro y hy t ht
+    obtain ⟨hνyA, hνy1, -⟩ := hν y hy
+    obtain ⟨hνtA, hνt1, hνtT⟩ := hν (t • y) (hcone t ht y hy)
+    set lam : ℝ := inner ℝ (ν y) (ν (t • y)) with hlam
+    have hyy : inner ℝ (ν y) (ν y) = (1 : ℝ) := by
+      rw [real_inner_self_eq_norm_sq, hνy1, one_pow]
+    -- `h = ν(ty) − λν(y) ∈ A₀` is orthogonal to `ν(y)`, so `h ∈ T_yM = T_{ty}M`
+    have hhT : ν (t • y) - lam • ν y ∈ tangentSpace M y := by
+      rw [hT y hy]
+      refine ⟨A₀.sub_mem hνtA (A₀.smul_mem lam hνyA), ?_⟩
+      rw [inner_sub_right, real_inner_smul_right, hyy, mul_one, ← hlam, sub_self]
+    have e1 : inner ℝ (ν (t • y)) (ν (t • y) - lam • ν y) = (0 : ℝ) :=
+      hνtT _ (by rw [hTeq y hy t ht]; exact hhT)
+    have e2 : inner ℝ (ν y) (ν (t • y) - lam • ν y) = (0 : ℝ) := by
+      rw [hT y hy] at hhT
+      exact hhT.2
+    -- `|h|² = ν(ty) · h − λ ν(y) · h = 0`
+    have hh0 : ν (t • y) - lam • ν y = 0 := by
+      apply (inner_self_eq_zero (𝕜 := ℝ)).1
+      rw [inner_sub_left, real_inner_smul_left, e1, e2, mul_zero, sub_zero]
+    have hνt : ν (t • y) = lam • ν y := sub_eq_zero.1 hh0
+    refine ⟨hνt, (abs_eq zero_le_one).1 ?_⟩
+    -- `1 = |ν(ty)| = |λ| |ν(y)| = |λ|`
+    have := congrArg norm hνt
+    rw [norm_smul, hνt1, hνy1, mul_one, Real.norm_eq_abs] at this
+    exact this.symm
+  -- Step 5: `ν(ty) = ν(y)` for `y ∈ M` and `t > 0`: `g(s) = ν(y) · ν(sy)` is continuous on
+  -- `(0, ∞)` with values in `{1, −1}` and `g(1) = 1`, so `g(t) = −1` contradicts the IVT
+  have hhom : ∀ y ∈ M, ∀ t : ℝ, 0 < t → ν (t • y) = ν y := by
+    intro y hy t ht
+    have hg : ContinuousOn (fun s : ℝ => inner ℝ (ν y) (ν (s • y))) (Ioi 0) :=
+      continuousOn_const.inner (hνO.continuousOn.comp
+        (continuous_id.smul continuous_const).continuousOn fun s hs => hMO (hcone s hs y hy))
+    obtain ⟨hνt, h1 | h1⟩ := hpm y hy t ht
+    · rw [hνt, h1, one_smul]
+    · exfalso
+      have hg1 : inner ℝ (ν y) (ν ((1 : ℝ) • y)) = (1 : ℝ) := by
+        rw [one_smul, real_inner_self_eq_norm_sq, (hν y hy).2.1, one_pow]
+      obtain ⟨s, hs, hs0⟩ := isPreconnected_Ioi.intermediate_value (show t ∈ Ioi (0 : ℝ) from ht)
+        (Set.mem_Ioi.2 one_pos) hg
+        (show (0 : ℝ) ∈ Icc (inner ℝ (ν y) (ν (t • y))) (inner ℝ (ν y) (ν ((1 : ℝ) • y))) by
+          rw [h1, hg1]
+          constructor <;> norm_num)
+      have hs0' : inner ℝ (ν y) (ν (s • y)) = (0 : ℝ) := hs0
+      rcases (hpm y hy s hs).2 with h2 | h2 <;> linarith
+  refine ⟨hxT, ?_, fun t ht => ⟨hTeq x hx t ht, hhom x hx t ht, ?_⟩⟩
+  · -- Step 7: `Dν(x)x = 0`: `t ↦ ν(tx)` is constant near `t = 1`, with derivative `Dν(x)x` there
+    have h1 : HasDerivAt (fun t : ℝ => ν (t • x)) (fderiv ℝ ν x x) 1 := by
+      have hl : HasDerivAt (fun t : ℝ => t • x) x 1 := by
+        simpa using (hasDerivAt_id (1 : ℝ)).smul_const x
+      exact (hνd x hx).comp_hasDerivAt_of_eq 1 hl (one_smul ℝ x).symm
+    have h2 : HasDerivAt (fun t : ℝ => ν (t • x)) 0 1 := by
+      refine (hasDerivAt_const (1 : ℝ) (ν x)).congr_of_eventuallyEq ?_
+      filter_upwards [Ioi_mem_nhds one_pos] with t ht using hhom x hx t ht
+    exact h1.unique h2
+  · -- Step 6: `tDν(tx)v = Dν(x)v`: differentiate `ν(tγ(s)) = ν(γ(s))` at `s = 0`
+    rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+    have h1 : HasDerivAt (fun s => ν (t • γ s)) (fderiv ℝ ν (t • x) (t • v)) 0 :=
+      (hνd (t • x) (hcone t ht x hx)).comp_hasDerivAt_of_eq 0 (hγv.const_smul t) (by simp [hγ0])
+    have h2 : HasDerivAt (fun s => ν (t • γ s)) (fderiv ℝ ν x v) 0 := by
+      refine ((hνd x hx).comp_hasDerivAt_of_eq 0 hγv hγ0.symm).congr_of_eventuallyEq ?_
+      filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1)]
+        with s hs using hhom (γ s) (hγM hs) t ht
+    rw [← map_smul]
+    exact h1.unique h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
