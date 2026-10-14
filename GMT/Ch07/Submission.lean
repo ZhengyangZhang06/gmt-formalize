@@ -451,6 +451,104 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The affine homotopy `h(t, x) = f(x) + t (g(x) − f(x))` from `f` to `g` (Simon 6.2.26, p. 140)
+for smooth `f, g : ℝᴺ → ℝᴺ'`, with `(t, x) ∈ ℝ^{N+1}` written `ι(t, x)`, and the derivative facts
+used for 2.27: `h` is `C^∞`, `dh_{ι(t,x)} e₀ = g(x) − f(x)`,
+`dh_{ι(t,x)} ι(0, v) = df_x v + t (dg_x v − df_x v)` and
+`‖dh_{ι(t,x)}‖ ≤ |g(x) − f(x)| + ‖df_x‖ + |t| (‖dg_x‖ + ‖df_x‖)`.  With `tl y = (y₁, …, y_N)` and
+`hd y = y₀`, both continuous linear with `‖tl w‖, |hd w| ≤ ‖w‖`, `h = f ∘ tl + hd • (g ∘ tl − f ∘ tl)`
+and the chain and product rules give
+`dh_y w = df_{tl y} (tl w) + hd y (dg_{tl y} (tl w) − df_{tl y} (tl w)) + hd w (g(tl y) − f(tl y))`. -/
+theorem Submission.cmcdt_lpoh_interp_calculus : ∀ (N N' : ℕ) (f g : Euclid N → Euclid N'), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∃ h : Euclid (N + 1) → Euclid N', ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ (t : ℝ) (x : Euclid N), h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = f x + t • (g x - f x)) ∧ (∀ (t : ℝ) (x : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) = g x - f x) ∧ (∀ (t : ℝ) (x v : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ f x v + t • (fderiv ℝ g x v - fderiv ℝ f x v)) ∧ ∀ (t : ℝ) (x : Euclid N), ‖fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ ‖g x - f x‖ + ‖fderiv ℝ f x‖ + |t| * (‖fderiv ℝ g x‖ + ‖fderiv ℝ f x‖) := by
+  intro N N' f g hf hg
+  -- the coordinate maps `tl y = (y₁, …, y_N)` and `hd y = y₀`
+  let tlL : Euclid (N + 1) →ₗ[ℝ] Euclid N :=
+    { toFun := fun y => WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))
+      map_add' := by intro y z; rfl
+      map_smul' := by intro r y; rfl }
+  let tl : Euclid (N + 1) →L[ℝ] Euclid N := LinearMap.toContinuousLinearMap tlL
+  let hd : Euclid (N + 1) →L[ℝ] ℝ := EuclideanSpace.proj (0 : Fin (N + 1))
+  have htl : ∀ y, tl y = WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)) := fun y => rfl
+  have hhd : ∀ y : Euclid (N + 1), hd y = WithLp.ofLp y 0 := fun y => rfl
+  have htlι : ∀ (t : ℝ) (x : Euclid N), tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = x := by
+    intro t x; rw [htl]; simp
+  have hhdι : ∀ (t : ℝ) (x : Euclid N), hd (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = t := by
+    intro t x; rw [hhd]; simp
+  have hfd : Differentiable ℝ f := hf.differentiable (by simp)
+  have hgd : Differentiable ℝ g := hg.differentiable (by simp)
+  set h : Euclid (N + 1) → Euclid N' := fun y => f (tl y) + hd y • (g (tl y) - f (tl y)) with hh
+  -- `dh_y = df_{tl y} ∘ tl + hd y • (dg_{tl y} ∘ tl − df_{tl y} ∘ tl) + hd ⊗ (g(tl y) − f(tl y))`
+  have hderiv : ∀ y, HasFDerivAt h ((fderiv ℝ f (tl y)).comp tl +
+      (hd y • ((fderiv ℝ g (tl y)).comp tl - (fderiv ℝ f (tl y)).comp tl) +
+        hd.smulRight (g (tl y) - f (tl y)))) y := by
+    intro y
+    have h1 : HasFDerivAt (fun y => f (tl y)) ((fderiv ℝ f (tl y)).comp tl) y :=
+      (hfd (tl y)).hasFDerivAt.comp y tl.hasFDerivAt
+    have h2 : HasFDerivAt (fun y => g (tl y)) ((fderiv ℝ g (tl y)).comp tl) y :=
+      (hgd (tl y)).hasFDerivAt.comp y tl.hasFDerivAt
+    exact h1.add (hd.hasFDerivAt.smul (h2.sub h1))
+  have hfd' : ∀ y, fderiv ℝ h y = (fderiv ℝ f (tl y)).comp tl +
+      (hd y • ((fderiv ℝ g (tl y)).comp tl - (fderiv ℝ f (tl y)).comp tl) +
+        hd.smulRight (g (tl y) - f (tl y))) := fun y => (hderiv y).fderiv
+  have htle : tl (EuclideanSpace.single 0 1) = 0 := by
+    rw [htl]; ext i; simp [Fin.tail]
+  have hhde : hd (EuclideanSpace.single 0 1 : Euclid (N + 1)) = 1 := by
+    rw [hhd]; simp
+  have htlJ : ∀ v : Euclid N, tl (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = v := fun v => htlι 0 v
+  have hhdJ : ∀ v : Euclid N, hd (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = 0 := fun v => hhdι 0 v
+  -- `‖tl w‖ ≤ ‖w‖` and `|hd w| ≤ ‖w‖`
+  have htln : ∀ w : Euclid (N + 1), ‖tl w‖ ≤ ‖w‖ := by
+    intro w
+    rw [htl, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
+    apply Real.sqrt_le_sqrt
+    rw [Fin.sum_univ_succ]
+    simp only [Fin.tail]
+    have : 0 ≤ ‖WithLp.ofLp w 0‖ ^ 2 := by positivity
+    linarith
+  have hhdn : ∀ w : Euclid (N + 1), |hd w| ≤ ‖w‖ := by
+    intro w
+    rw [hhd, ← Real.norm_eq_abs]
+    exact PiLp.norm_apply_le w 0
+  refine ⟨h, (hf.comp tl.contDiff).add (hd.contDiff.smul ((hg.comp tl.contDiff).sub (hf.comp tl.contDiff))),
+    ?_, ?_, ?_, ?_⟩
+  · intro t x
+    simp only [hh, htlι, hhdι]
+  · intro t x
+    rw [hfd']
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htle, hhde, map_zero, sub_self, smul_zero, zero_add, one_smul,
+      htlι]
+  · intro t x v
+    rw [hfd']
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htlJ, hhdJ, zero_smul, add_zero, htlι, hhdι]
+  · intro t x
+    rw [hfd']
+    apply ContinuousLinearMap.opNorm_le_bound _ (by positivity)
+    intro w
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htlι, hhdι]
+    have e1 : ‖fderiv ℝ f x (tl w)‖ ≤ ‖fderiv ℝ f x‖ * ‖w‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact htln w)
+    have e2 : ‖fderiv ℝ g x (tl w)‖ ≤ ‖fderiv ℝ g x‖ * ‖w‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact htln w)
+    have e3 : ‖hd w • (g x - f x)‖ ≤ ‖g x - f x‖ * ‖w‖ := by
+      rw [norm_smul, Real.norm_eq_abs, mul_comm]
+      gcongr
+      exact hhdn w
+    calc ‖fderiv ℝ f x (tl w) + (t • (fderiv ℝ g x (tl w) - fderiv ℝ f x (tl w)) + hd w • (g x - f x))‖
+        ≤ ‖fderiv ℝ f x (tl w)‖ + (‖t • (fderiv ℝ g x (tl w) - fderiv ℝ f x (tl w))‖ + ‖hd w • (g x - f x)‖) :=
+          (norm_add_le _ _).trans (by gcongr; exact norm_add_le _ _)
+      _ ≤ ‖fderiv ℝ f x‖ * ‖w‖ + (|t| * (‖fderiv ℝ g x‖ * ‖w‖ + ‖fderiv ℝ f x‖ * ‖w‖) + ‖g x - f x‖ * ‖w‖) := by
+          gcongr
+          rw [norm_smul, Real.norm_eq_abs]
+          gcongr
+          exact (norm_sub_le _ _).trans (add_le_add e2 e1)
+      _ = (‖g x - f x‖ + ‖fderiv ℝ f x‖ + |t| * (‖fderiv ℝ g x‖ + ‖fderiv ℝ f x‖)) * ‖w‖ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
