@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform bound on compact sets** (step 4(a) of the blow-up mass bounds): if every `νᵢ` is
+finite and, for each `R > 0`, the masses `νᵢ(B̄_R(0))` are eventually bounded by some `B < ∞`,
+then `supᵢ νᵢ(K) < ∞` for every compact `K`.  Enclose `K` in `B̄_R(0)`, `R = max R₀ 1`; the
+indices `i ≥ N` are bounded by `B`, the finitely many `i < N` by `∑_{j<N} νⱼ(ℝᴾ) < ∞`. -/
+theorem Submission.cbr_ci_bl_rb_compact_sup_bound : ∀ (P : ℕ) (ν : ℕ → Measure (Euclid P)), (∀ i, ν i univ < ∞) → (∀ R : ℝ, 0 < R → ∃ B : ℝ≥0∞, B < ∞ ∧ ∀ᶠ i in atTop, ν i (closedBall 0 R) ≤ B) → ∀ K : Set (Euclid P), IsCompact K → ⨆ i, ν i K < ∞ := by
+  intro P ν hfin hball K hK
+  -- an enclosing ball `B̄_R(0)`, `R = max R₀ 1 > 0`
+  obtain ⟨R₀, hR₀⟩ := hK.isBounded.subset_closedBall 0
+  have hKR : K ⊆ closedBall 0 (max R₀ 1) :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  -- late indices: `νᵢ(B̄_R(0)) ≤ B` for `i ≥ N`
+  obtain ⟨B, hB, hev⟩ := hball (max R₀ 1) (lt_max_of_lt_right one_pos)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp hev
+  -- early indices: the total masses `νⱼ(ℝᴾ)`, `j < N`, have finite sum
+  have hS : ∑ j ∈ Finset.range N, ν j univ < ∞ := ENNReal.sum_lt_top.mpr fun j _ => hfin j
+  refine lt_of_le_of_lt (iSup_le fun i => ?_) (max_lt hB hS)
+  rcases le_or_gt N i with hi | hi
+  · exact (measure_mono hKR).trans ((hN i hi).trans (le_max_left _ _))
+  · exact (measure_mono (subset_univ K)).trans
+      ((Finset.single_le_sum_of_canonicallyOrdered (f := fun j => ν j univ)
+        (Finset.mem_range.mpr hi)).trans (le_max_right _ _))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
