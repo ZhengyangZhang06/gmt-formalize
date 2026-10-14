@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "47c0691143a680e5a1e7280c2825ce7f74587259b3dddb9db7bcf8e6d3ce2883",
+  "git_delta": {
+    "base_commit": "26a02a4f4916b739a2f21552dcf66f886323f813",
+    "candidate_commit": "e2cb40c87a110fcd17462b132469e16a9be8c514",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_graph_contDiffOn",
+    "diff_sha256": "33fa569260a54f9fdb4eac2c2780454d43d88f0c1d8cb109b53c1ba79c989afd",
+    "source_sha256": "04b29ab0419c553b774a012dddafd93318eb311b2bf0a185eec54944cc2f74be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_graph_contDiffOn",
+      "statement": "∀ (P d r : ℕ) (M W₀ : Set (Euclid P)) (D : Set (Euclid d)) (G : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), 1 ≤ r → IsEmbeddedSubmanifold r d M → IsOpen D → IsOpen W₀ → ContDiffOn ℝ 1 G D → InjOn G D → G '' D = W₀ ∩ M → (∀ K ⊆ W₀, IsCompact K → IsCompact (D ∩ G ⁻¹' K)) → (∀ a ∈ D, Injective (fderiv ℝ G a)) → (∀ a ∈ D, π (G a - c) = a) → ContDiffOn ℝ r G D",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
