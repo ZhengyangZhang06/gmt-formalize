@@ -837,6 +837,141 @@ theorem Submission.dor_lmb_fcdr_cube_lipschitz : ∀ (P : ℕ) (a : Euclid P), (
           Real.sqrt_mul (Nat.cast_nonneg _),
           Real.sqrt_sq (div_nonneg (by positivity) hk.le)]
         ring
+/-- **Lipschitz on every closed unit grid cube implies Lipschitz along segments** (Simon Ch. 6,
+5.4, closed-form retraction, step 7(i)).  If `|f x − f y| ≤ K |x − y|` whenever `x, y ∈ S` lie in
+a common closed cube `z + [0, 1]ᴾ` (`z ∈ ℤᴾ`), then `|f x − f y| ≤ K |x − y|` whenever
+`[x, y] ⊆ S`.  With `γ(t) = x + t (y − x)`, the parameters `t ∈ [0, 1]` at which a non-constant
+coordinate `γᵢ(t)` is an integer, together with `0` and `1`, are finitely many,
+`0 = t₀ < ⋯ < t_N = 1`.  Between consecutive breakpoints no coordinate crosses an integer, so
+`γ(t_k)` and `γ(t_{k+1})` lie in the cube `⌊γ(s)⌋ + [0, 1]ᴾ`, `s = (t_k + t_{k+1})/2`; the cube
+estimates `K (t_{k+1} − t_k) |x − y|` telescope along the triangle inequality to `K |x − y|`. -/
+theorem Submission.dor_lmb_fcdr_grid_segment : ∀ (P : ℕ) (f : Euclid P → Euclid P) (S : Set (Euclid P)) (K : ℝ), 0 ≤ K → (∀ (z : Fin P → ℤ) (x y : Euclid P), x ∈ S → y ∈ S → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) → dist (f x) (f y) ≤ K * dist x y) → ∀ x y : Euclid P, segment ℝ x y ⊆ S → dist (f x) (f y) ≤ K * dist x y := by
+  intro P f S K hK hcube x y hseg
+  -- Step 1: `γ t = x + t (y − x)`, `t ∈ [0, 1]`, parametrises `[x, y] ⊆ S`, and
+  -- `|γ a − γ b| = |a − b| |x − y|`
+  let γ : ℝ → Euclid P := fun t => x + t • (y - x)
+  have hγi : ∀ t i, γ t i = x i + t * (y i - x i) := fun t i => by simp [γ]
+  have hγS : ∀ t, 0 ≤ t → t ≤ 1 → γ t ∈ S := fun t h0 h1 =>
+    hseg (by rw [segment_eq_image']; exact ⟨t, ⟨h0, h1⟩, rfl⟩)
+  have hγdist : ∀ a b, dist (γ a) (γ b) = |a - b| * dist x y := by
+    intro a b
+    have h : γ a - γ b = (a - b) • (y - x) := by
+      simp only [γ]; rw [add_sub_add_left_eq_sub, sub_smul]
+    rw [dist_eq_norm (γ a) (γ b), h, norm_smul, Real.norm_eq_abs, ← dist_eq_norm y x,
+      dist_comm y x]
+  have hγ0 : γ 0 = x := by simp [γ]
+  have hγ1 : γ 1 = y := by simp [γ]
+  -- Step 2: the breakpoints `T ⊆ [0, 1]`: `0`, `1` and every `t` with `γᵢ(t) = m ∈ ℤ`,
+  -- `xᵢ ≠ yᵢ`, i.e. `t = (m − xᵢ)/(yᵢ − xᵢ)` with `m ∈ [⌊min(xᵢ, yᵢ)⌋, ⌈max(xᵢ, yᵢ)⌉]` (for
+  -- `xᵢ = yᵢ` this quotient is `0 ∈ T`) ...
+  let B : Finset ℝ := Finset.univ.biUnion fun i : Fin P =>
+    (Finset.Icc ⌊min (x i) (y i)⌋ ⌈max (x i) (y i)⌉).image fun m : ℤ =>
+      ((m : ℝ) - x i) / (y i - x i)
+  let T : Finset ℝ := (insert 0 (insert 1 B)).filter fun t => 0 ≤ t ∧ t ≤ 1
+  have hmemT : ∀ u, u ∈ T ↔ (u = 0 ∨ u = 1 ∨ u ∈ B) ∧ 0 ≤ u ∧ u ≤ 1 := fun u =>
+    Finset.mem_filter.trans <|
+      and_congr_left' (Finset.mem_insert.trans (or_congr_right Finset.mem_insert))
+  have hmemB : ∀ (i : Fin P) (m : ℤ), min (x i) (y i) < m → (m : ℝ) < max (x i) (y i) →
+      ((m : ℝ) - x i) / (y i - x i) ∈ B := fun i m h1 h2 =>
+    Finset.mem_biUnion.2 ⟨i, Finset.mem_univ i, Finset.mem_image.2 ⟨m,
+      Finset.mem_Icc.2 ⟨Int.floor_le_iff.2 (by linarith), Int.le_ceil_iff.2 (by linarith)⟩, rfl⟩⟩
+  have hT : ∀ u ∈ T, 0 ≤ u ∧ u ≤ 1 := fun u hu => ((hmemT u).1 hu).2
+  have h0T : (0 : ℝ) ∈ T := (hmemT 0).2 ⟨Or.inl rfl, le_rfl, zero_le_one⟩
+  have h1T : (1 : ℝ) ∈ T := (hmemT 1).2 ⟨Or.inr (Or.inl rfl), zero_le_one, le_rfl⟩
+  -- ... listed increasingly as `0 = t 0 < t 1 < ⋯ < t N = 1`, `N = card T − 1`
+  have hcard : 2 ≤ T.card := by
+    have h := Finset.card_le_card (show ({0, 1} : Finset ℝ) ⊆ T by
+      intro u hu
+      rcases Finset.mem_insert.1 hu with rfl | hu
+      · exact h0T
+      · rw [Finset.mem_singleton.1 hu]; exact h1T)
+    rwa [Finset.card_pair zero_ne_one] at h
+  let e := T.orderEmbOfFin rfl
+  let t : ℕ → ℝ := fun k => if h : k < T.card then e ⟨k, h⟩ else 1
+  let N := T.card - 1
+  have h0 : 0 < T.card := lt_of_lt_of_le two_pos hcard
+  have hNlt : N < T.card := Nat.sub_lt h0 one_pos
+  have ht0 : t 0 = 0 := by
+    have : t 0 = e ⟨0, h0⟩ := dite_eq_left h0
+    rw [this, Finset.orderEmbOfFin_zero rfl h0]
+    exact le_antisymm (Finset.min'_le T 0 h0T) (Finset.le_min' T _ 0 fun u hu => (hT u hu).1)
+  have htN : t N = 1 := by
+    have : t N = e ⟨T.card - 1, hNlt⟩ := dite_eq_left hNlt
+    rw [this, Finset.orderEmbOfFin_last rfl h0]
+    exact le_antisymm (Finset.max'_le T _ 1 fun u hu => (hT u hu).2) (Finset.le_max' T 1 h1T)
+  -- `t k < t (k + 1)` are consecutive breakpoints
+  have hstep : ∀ k < N, t k ∈ T ∧ t (k + 1) ∈ T ∧ t k < t (k + 1) ∧
+      ∀ u ∈ T, ¬(t k < u ∧ u < t (k + 1)) := by
+    intro k hk
+    have hk1 : k < T.card := hk.trans hNlt
+    have hk2 : k + 1 < T.card := Nat.add_lt_of_lt_sub hk
+    have htk : t k = e ⟨k, hk1⟩ := dite_eq_left hk1
+    have htk' : t (k + 1) = e ⟨k + 1, hk2⟩ := dite_eq_left hk2
+    rw [htk, htk']
+    refine ⟨T.orderEmbOfFin_mem rfl _, T.orderEmbOfFin_mem rfl _,
+      e.strictMono (Fin.mk_lt_mk.2 k.lt_succ_self), ?_⟩
+    rintro u hu ⟨h1, h2⟩
+    have hu' : u ∈ Set.range e := by rw [Finset.range_orderEmbOfFin]; exact hu
+    obtain ⟨j, rfl⟩ := hu'
+    have h1' : k < j.val := Fin.lt_def.1 (e.lt_iff_lt.1 h1)
+    have h2' : j.val < k + 1 := Fin.lt_def.1 (e.lt_iff_lt.1 h2)
+    exact absurd h1' (not_lt.2 (Nat.lt_add_one_iff.1 h2'))
+  -- Step 3: if no breakpoint lies strictly between `a < b`, no coordinate of `γ` passes strictly
+  -- across an integer `m` on `[a, b]`: otherwise `(m − xᵢ)/(yᵢ − xᵢ)` would be such a breakpoint
+  have hcross : ∀ a b, 0 ≤ a → b ≤ 1 → a < b → (∀ u ∈ T, ¬(a < u ∧ u < b)) →
+      ∀ (i : Fin P) (m : ℤ), ¬(γ a i < m ∧ (m : ℝ) < γ b i) ∧ ¬(γ b i < m ∧ (m : ℝ) < γ a i) := by
+    intro a b ha hb hab hgap i m
+    have hbreak : a < ((m : ℝ) - x i) / (y i - x i) → ((m : ℝ) - x i) / (y i - x i) < b →
+        min (x i) (y i) < m → (m : ℝ) < max (x i) (y i) → False := fun h1 h2 h3 h4 =>
+      hgap _ ((hmemT _).2 ⟨Or.inr (Or.inr (hmemB i m h3 h4)), by linarith, by linarith⟩) ⟨h1, h2⟩
+    simp only [hγi]
+    constructor
+    · rintro ⟨h1, h2⟩
+      have hd : 0 < y i - x i := not_le.1 fun hd =>
+        by linarith [mul_le_mul_of_nonpos_right hab.le hd]
+      exact hbreak ((lt_div_iff₀ hd).2 (by linarith)) ((div_lt_iff₀ hd).2 (by linarith))
+        (by linarith [min_le_left (x i) (y i), mul_nonneg ha hd.le])
+        (by linarith [le_max_right (x i) (y i), mul_le_of_le_one_left hd.le hb])
+    · rintro ⟨h1, h2⟩
+      have hd : y i - x i < 0 := not_le.1 fun hd =>
+        by linarith [mul_le_mul_of_nonneg_right hab.le hd]
+      exact hbreak ((lt_div_iff_of_neg hd).2 (by linarith)) ((div_lt_iff_of_neg hd).2 (by linarith))
+        (by linarith [min_le_right (x i) (y i), mul_nonneg (sub_nonneg.2 hb) (neg_nonneg.2 hd.le)])
+        (by linarith [le_max_left (x i) (y i), mul_nonneg ha (neg_nonneg.2 hd.le)])
+  -- Steps 3–4: each piece `γ(t k), γ(t (k + 1))` lies in the closed cube `z + [0, 1]ᴾ`,
+  -- `z = ⌊γ(midpoint)⌋`, so the cube estimate bounds it by `K (t (k + 1) − t k) |x − y|`
+  have key : ∀ k < N,
+      dist (f (γ (t k))) (f (γ (t (k + 1)))) ≤ K * dist x y * (t (k + 1) - t k) := by
+    intro k hk
+    obtain ⟨haT, hbT, hab, hgap⟩ := hstep k hk
+    set a := t k
+    set b := t (k + 1)
+    obtain ⟨ha0, ha1⟩ := hT a haT
+    obtain ⟨hb0, hb1⟩ := hT b hbT
+    let z : Fin P → ℤ := fun i => ⌊γ ((a + b) / 2) i⌋
+    have hz : ∀ i, ((z i : ℝ) ≤ γ a i ∧ γ a i ≤ z i + 1) ∧
+        ((z i : ℝ) ≤ γ b i ∧ γ b i ≤ z i + 1) := by
+      intro i
+      have hmid : γ ((a + b) / 2) i = (γ a i + γ b i) / 2 := by rw [hγi, hγi, hγi]; ring
+      have hz1 : (z i : ℝ) ≤ (γ a i + γ b i) / 2 := hmid ▸ Int.floor_le _
+      have hz2 : (γ a i + γ b i) / 2 < z i + 1 := hmid ▸ Int.lt_floor_add_one _
+      obtain ⟨hc1, hc2⟩ := hcross a b ha0 hb1 hab hgap i (z i)
+      obtain ⟨hd1, hd2⟩ := hcross a b ha0 hb1 hab hgap i (z i + 1)
+      rw [Int.cast_add, Int.cast_one] at hd1 hd2
+      exact ⟨⟨not_lt.1 fun h => hc1 ⟨h, by linarith⟩, not_lt.1 fun h => hd2 ⟨by linarith, h⟩⟩,
+        not_lt.1 fun h => hc2 ⟨h, by linarith⟩, not_lt.1 fun h => hd1 ⟨by linarith, h⟩⟩
+    calc dist (f (γ a)) (f (γ b)) ≤ K * dist (γ a) (γ b) :=
+          hcube z (γ a) (γ b) (hγS a ha0 ha1) (hγS b hb0 hb1) (fun i => (hz i).1) fun i => (hz i).2
+      _ = K * dist x y * (b - a) := by
+          rw [hγdist, abs_sub_comm, abs_of_pos (sub_pos.2 hab)]; ring
+  -- Step 5: triangle inequality along `γ(t 0), …, γ(t N)`, then telescoping
+  calc dist (f x) (f y) = dist (f (γ (t 0))) (f (γ (t N))) := by rw [ht0, htN, hγ0, hγ1]
+    _ ≤ ∑ k ∈ Finset.range N, dist (f (γ (t k))) (f (γ (t (k + 1)))) :=
+        dist_le_range_sum_dist (fun k => f (γ (t k))) N
+    _ ≤ ∑ k ∈ Finset.range N, K * dist x y * (t (k + 1) - t k) :=
+        Finset.sum_le_sum fun k hk => key k (Finset.mem_range.1 hk)
+    _ = K * dist x y * (t N - t 0) := by rw [← Finset.mul_sum, Finset.sum_range_sub]
+    _ = K * dist x y := by rw [ht0, htN]; ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
