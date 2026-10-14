@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f2e8225d2a5a9029d3828f2899b36b72dd23881ae0c67b23ead548c4d0406180",
+  "git_delta": {
+    "base_commit": "b8fb703a17cfd9f351149e96eeeced6ce6a748e5",
+    "candidate_commit": "ed778d442d1b72dff54c498f15fa5d5bac2d6f0f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_cyl_pullback_integrable",
+    "diff_sha256": "a5015e2621c9487ae360facf31ce61272d70e16236dfdf4686fccdb85a9aad79",
+    "source_sha256": "8fc556578f02558f65066fa0d5c6f7fd409faf6fc8551227c1ddc4e392b3c1c5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_cyl_pullback_integrable",
+      "statement": "∀ (Q n : ℕ) (L : NNReal) (H : Euclid n → Euclid Q) (S : Set (Euclid n)) (g : Euclid n → ℝ) (ω : TestFormOn (univ : Set (Euclid Q)) n), LipschitzWith L H → IntegrableOn g S → IntegrableOn (fun z => g z * (ω : DifferentialForm (Euclid Q) n) (H z) (fun a => fderiv ℝ H z (EuclideanSpace.single a 1))) S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
