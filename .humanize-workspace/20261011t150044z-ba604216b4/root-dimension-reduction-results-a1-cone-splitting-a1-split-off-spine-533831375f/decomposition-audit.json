@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dimred_cs_sos|idtp_fons_cs_sos|dpf_itt_approxTangentPlane_eq|dgoj_covector_eq_det_mul_of_mem_span|unit_orientations_common_unit_covector|lcn_covector_finiteDimensional|dpf_pfc_imrep_pairing_integrable_abs_le' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "HasApproximateTangentSpaceAt.unique",
+        "eq_smul_basis_det|ext_alternating|toAlternatingMap_injective|le_opNorm|of_injective|norm_integral_le_of_norm_le|integrable_indicator_iff|comp_aestronglyMeasurable₂|withDensity_eq_iff_of_sigmaFinite",
+        "git show 34325ececca5ed226212e37aa67e711a3a090e9d:GMT/Ch07/Submission.lean",
+        "git show 73310ec921452a01670f397b34d1cf3cd7135598:GMT/Ch07/Submission.lean",
+        "git show deb99356ba22fa0a7c3b91feabd427b84a2fb40d:GMT/Ch07/Submission.lean",
+        "git show 127487dd6bed94a74811cb8523d5535db984c906:GMT/Ch07/Submission.lean",
+        "git show 5c8c6597411e77948b224fda014774beaa21ebaf:GMT/Ch07/Submission.lean",
+        "git show 4f6806e0881ee4f37f895e42d42962fa3e681f5c:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pd-independent-audit-_7wdqwle/Parent.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Matrix/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-533831375f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-533831375f/decomposition-v1.json",
+        "/tmp/pd-independent-audit-_7wdqwle/Parent.lean"
+      ],
+      "conclusion": "Accept the split. Project and dependency pins match, and the snapshot contract is byte-identical to the workspace contract. The searched snapshot project contains none of the proposed reused names. Each name instead has exactly one comparator-accepted DAG owner, with a byte-identical frozen and candidate declaration type. All names are bare identifiers. The 32-node prerequisite closure is acyclic and does not reach the selected parent. Independently compiled the five actual accepted proofs, including pairing_bound's accepted orientation-bound dependency: exit 0; every child uses only propext, Classical.choice and Quot.sound. All five propositions elaborate before their implementations are introduced. Matrix.of and the pinned matrix definitions confirm ordinary matrix semantics. The parent proof matches the accepted twin after exactly the three stated substitutions and proves the selected frozen type using these children and only the four inherited contracts as explicit assumptions. Its axiom report contains exactly those assumptions and the standard axioms, with no sorryAx. The inherited spine_coarea obligation remains unresolved; this audit does not certify it."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chosen_tangent_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match. The supplied witness selects the positive branch of approxTangentPlane; choose_spec and the pinned uniqueness theorem identify the selected plane with Q without additional hypotheses. This supplies the parent's tangent-plane identification. Accepted identical-type reuse is valid."
+    },
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs a basis of the frame's span, restricts the covector, applies the basis-determinant identity, and identifies coordinates through orthonormality. It proves the exact formula, including n = 0. Matrix.of correctly constructs the matrix. The parent uses this obligation in its orientation decomposition."
+    },
+    {
+      "key": "common_unit_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both orientation hypotheses are used correctly. The determinant covector is alternating and continuous; orthonormal change of frame gives determinant of absolute value one. This proves both required evaluations, including degree zero, without relying on the parent or another proposed child. Its specialization supplies the parent's nonzero evaluation."
+    },
+    {
+      "key": "covector_findim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The linear evaluation map into the finite space of basis-indexed tuples is injective by alternating-map extensionality. FiniteDimensional.of_injective proves the exact statement for all P and n. The parent uses it for measurable comparison sets and continuity of the contraction map."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match. The proof explicitly establishes the orientation bound, strong measurability, integrability of the compactly supported dominating function, and the precise integral estimate. No global finite-measure assumption is needed. Its existing orientation-bound dependency is accepted and acyclic; step 0 also supplies that argument independently. The parent uses integrability for signed coarea."
+    }
+  ],
+  "required_changes": []
+}
