@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1.three_term_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1",
+  "depth": 6,
+  "title": "Localised three-term estimate for the rescaled area integrals",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P continuous, L : ℝ^n → ℝ^P continuous linear, B ⊆ ℝ^n Borel, J : ℝ^n → ℝ Borel with 0 ≤ J ≤ K, m > 0, b ∈ ℝ^n, f : ℝ^P → ℝ continuous, and R, M, r ∈ ℝ. Assume (labels (i) and (iii) as in the parent) (i) m|a − b| ≤ |F(a) − F(b)| for all a ∈ B; (iii) m|c| ≤ |Lc| for all c ∈ ℝ^n; f(w) = 0 whenever |w| ≥ R; |f(w)| ≤ M for all w; and r > 0. Write Φ_r(c) := r^{-1}(F(b + rc) − F(b)) and D := B̄_{R/m}(0). Then |∫_{ℝ^n} 1_B(b + rc)·J(b + rc)·f(Φ_r(c)) dλ(c) − J(b)·∫_{ℝ^n} f(Lc) dλ(c)| ≤ KM·∫_D 1_{ℝ^n∖B}(b + rc) dλ(c) + M·∫_D |J(b + rc) − J(b)| dλ(c) + J(b)·∫_D |f(Φ_r(c)) − f(Lc)| dλ(c). Here λ is Lebesgue measure on ℝ^n and all integrals are Bochner integrals.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (K m : ℝ) (b : Euclid n) (f : Euclid P → ℝ) (R M r : ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a ∧ J a ≤ K) → 0 < m → (∀ a ∈ B, m * ‖a - b‖ ≤ ‖F a - F b‖) → (∀ c, m * ‖c‖ ≤ ‖L c‖) → Continuous f → (∀ w, R ≤ ‖w‖ → f w = 0) → (∀ w, ‖f w‖ ≤ M) → 0 < r → ‖(∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume) - J b * (∫ c, f (L c) ∂volume)‖ ≤ K * M * (∫ c in closedBall (0 : Euclid n) (R / m), Bᶜ.indicator (fun _ => (1 : ℝ)) (b + r • c) ∂volume) + M * (∫ c in closedBall (0 : Euclid n) (R / m), ‖J (b + r • c) - J b‖ ∂volume) + J b * (∫ c in closedBall (0 : Euclid n) (R / m), ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume)",
+  "lean_name": "pit_ril_three_term_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-bdb1848a47-a1"
+}

@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n 'HasApproximateTangentSpaceAt|blowUpMap|areaJacobianAt|normDet' project --glob '*.lean'",
+        "rg -n 'pit_' project --glob '*.lean' (no match)",
+        "rg -n 'theorem integral_comp_smul \\(|theorem setAverage_eq \\(|theorem addHaar_real_closedBall. |theorem addHaar_ball_of_pos|theorem addHaar_closedBall. |theorem integral_withDensity_eq_integral_smul |theorem ae_tendsto_measure_inter_div \\(|theorem ae_tendsto_average_norm_sub|theorem integral_smul_nnreal_measure|theorem image_preimage_eq_inter_range|uniformContinuous_of_continuous|theorem measure_sdiff|integral_add_left_eq_self' mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|norm_fderiv_le_of_lipschitz|finrank_range_of_inj|tendsto_slope_zero_right|euclideanHausdorffMeasure_eq_volume' mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'theorem weighted_area_formula_lipschitz_injOn|theorem measurable_areaJacobianAt|theorem areaJacobianAt_eq_normDet|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT",
+        "grep -n 'def HasApproximateTangentSpaceAt|def blowUpMap' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "python3 -I dag.json scans: lean_statements containing blowUpMap/withDensity; sibling statements under piece_tangent_density-a1; depth-1 depends_on; 'pit_' prefix and the six proposed names over all eight chapter DAGs (2,620 nodes) and stored node JSON proposals (no match)",
+        "git grep -l -E 'pit_(setIntegral_blowUpMap_image|blowUp_image_setIntegral_eq_rescaled|fderiv_lower_bound_of_density|integral_closedBall_rescale_tendsto|rescaled_integral_tendsto|setIntegral_range_linear)|Submission\\.pit_' <2,909 refs> -- 'GMT/*.lean' (no match; control query setIntegral_blowUpMap_image_eq_inv_pow_mul matched 14 refs)",
+        "git show 713eebc5c1a6b6da58d0d5ede7e1174c7c83e7cc:GMT/Ch07/Submission.lean (accepted setIntegral_blowUpMap_image_eq_inv_pow_mul proof)",
+        "gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem'); lean_contract.validate_lean_statement on the six child types and the parent type",
+        "lake env lean /tmp/pit-decomp-k7/Scope.lean (LinearMap.normDet, areaJacobianAt unknown after import GMT.Ch07.Submission)",
+        "lake env lean /tmp/pit-decomp-k7/Types.lean (six child types + parent type in the exact challenge scope)",
+        "lake env lean /tmp/pit-decomp-k7/Assembly.lean (#print axioms pit_assembly_conditional)",
+        "lake env lean /tmp/pit-decomp-k7/C12.lean, C4.lean, C6.lean, agent3/C3.lean, agent5/C5.lean (#print axioms of each child)",
+        "lake env lean /tmp/pit-decomp-k7/EndToEnd.lean (#print axioms Submission.ptd_piece_image_approxTangent_ae)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/pit-decomp-k7/Scope.lean",
+        "/tmp/pit-decomp-k7/Types.lean",
+        "/tmp/pit-decomp-k7/Assembly.lean",
+        "/tmp/pit-decomp-k7/C12.lean",
+        "/tmp/pit-decomp-k7/C4.lean",
+        "/tmp/pit-decomp-k7/C6.lean",
+        "/tmp/pit-decomp-k7/agent3/C3.lean",
+        "/tmp/pit-decomp-k7/agent5/C5.lean",
+        "/tmp/pit-decomp-k7/EndToEnd.lean"
+      ],
+      "conclusion": "The snapshot has no proof of the selected statement or of any proposed child. The project supplies only the frozen contract, the definitions HasApproximateTangentSpaceAt and blowUpMap (via SimonGMT Chapter03) and Euclid.\n\nEvery lemma cited in the child proofs exists in the pinned Mathlib 25730c7c with compatible hypotheses:\n- Measure.integral_comp_smul (valid for every f) and integral_add_left_eq_self;\n- setAverage_eq, Measure.addHaar_real_closedBall', addHaar_ball_of_pos and addHaar_closedBall;\n- integral_withDensity_eq_integral_smul, integral_map, integral_smul_measure and integral_smul_nnreal_measure;\n- Measure.euclideanHausdorffMeasure_smul₀, image_preimage_eq_inter_range and measure_sdiff;\n- HasCompactSupport.uniformContinuous_of_continuous and HasLineDerivAt.tendsto_slope_zero_right;\n- for the parent assembly: Besicovitch.ae_tendsto_measure_inter_div, IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub, LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume, norm_fderiv_le_of_lipschitz, LinearMap.finrank_range_of_inj and EuclideanSpace.euclideanHausdorffMeasure_eq_volume.\nSimonGMT 2b36630 supplies weighted_area_formula_lipschitz_injOn, measurable_areaJacobianAt, areaJacobianAt_eq_normDet and euclideanHausdorffMeasure_image_le_of_lipschitzOn. Only the parent assembly uses them, after adding imports.\n\nLinearMap.normDet and areaJacobianAt are unknown after import GMT.Ch07.Submission, so every child type keeps the Jacobian abstract.\n\nThe only DAG overlap is that blowup_scaling's type equals the accepted setIntegral_blowUpMap_image_eq_inv_pow_mul (proof at 713eebc5). That declaration sits under a depth-1 branch that depends on this node's ancestor, so this split uses a fresh name. No proposed name collides anywhere.\n\nLean checks: all six types and the parent type elaborate in the comparator's replayed scope. The conditional assembly and all six child proofs use only propext, Classical.choice and Quot.sound, and the end-to-end file proves Submission.ptd_piece_image_approxTangent_ae with those axioms."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_area_formula-a1",
+  "subproblem": {
+    "key": "rescaled_area_formula",
+    "title": "Rescaled area formula for blow-ups of a Lipschitz image",
+    "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P continuous, B ⊆ ℝ^n Borel, and J : ℝ^n → ℝ Borel with J ≥ 0. Write H^n = μHE[n] and λ for Lebesgue measure on ℝ^n. Assume the weighted area formula ∫⁻_{F(B)} g dH^n = ∫⁻_B ofReal(J(x))·g(F(x)) dλ(x) holds for every g : ℝ^P → [0,∞]. Let b ∈ ℝ^n, r > 0 and f : ℝ^P → ℝ continuous. Then ∫_{η_{F(b),r}(F(B))} f dH^n = ∫_{ℝ^n} 1_B(b + rc)·J(b + rc)·f(r^{-1}(F(b + rc) − F(b))) dλ(c), where η_{F(b),r} = blowUpMap (F b) r and 1_B·J = B.indicator J.",
+    "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (J : Euclid n → ℝ) (b : Euclid n) (r : ℝ) (f : Euclid P → ℝ), Continuous F → MeasurableSet B → Measurable J → (∀ a, 0 ≤ J a) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume) → 0 < r → Continuous f → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap (F b) r '' (F '' B), f z ∂μHE[n] = ∫ c, B.indicator J (b + r • c) * f (r⁻¹ • (F (b + r • c) - F b)) ∂volume",
+    "lean_name": "pit_blowUp_image_setIntegral_eq_rescaled",
+    "depends_on": [
+      "blowup_scaling"
+    ],
+    "natural_proof": "Source: step 4 of the parent proof (rescaled area formula), with the Jacobian kept abstract. In the parent, J = areaJacobianAt F and the area hypothesis is SimonGMT weighted_area_formula_lipschitz_injOn (step 0(f)).\nNotation:\n- A := F(B), y := F(b), η := η_{y,r}, so η(z) = r^{-1}(z − y);\n- λ := volume on ℝ^n and H^n := μHE[n] on ℝ^P;\n- ν := the measure λ⌞B with density x ↦ ofReal(J(x)) = ((J x).toNNReal : [0,∞]);\n- G(a) := 1_B(a)·J(a)·f(r^{-1}(F(a) − y)) for a ∈ ℝ^n.\n1. Scaling. Apply the sibling pit_setIntegral_blowUpMap_image with M := A and x := y: ∫_{η(A)} f dH^n = r^{-n} ∫_A f(η(z)) dH^n(z).\n2. The area hypothesis as a measure identity: H^n⌞A = F_#ν. F is continuous, hence Borel. Let T ⊆ ℝ^P be Borel and apply the hypothesis to g := 1_T.\n- Left side: ∫⁻_A 1_T dH^n = (H^n⌞A)(T) (lintegral_indicator_one).\n- Right side: ofReal(J(x))·1_T(F(x)) = 1_{F^{-1}(T)}(x)·ofReal(J(x)) for every x. So the right side is ∫⁻_{F^{-1}(T)} ofReal(J) d(λ⌞B) (lintegral_indicator; F^{-1}(T) is Borel). This equals ν(F^{-1}(T)) (withDensity_apply), which equals (F_#ν)(T) (Measure.map_apply).\n- Measures agreeing on all Borel sets are equal (Measure.ext).\n3. Transfer of the Bochner integral. The function h := f∘η is continuous (η is affine), hence strongly measurable.\n- By step 2 and integral_map (F is measurable), ∫_A h dH^n = ∫ h d(F_#ν) = ∫ h(F(x)) dν(x).\n- By integral_withDensity_eq_integral_smul with the Borel density x ↦ (J x).toNNReal, this is ∫_B (J x).toNNReal · h(F(x)) dλ(x) = ∫_B J(x)·h(F(x)) dλ(x), since ((J x).toNNReal : ℝ) = J(x) when J ≥ 0.\n- As B is Borel, integral_indicator gives ∫_B J(x)·h(F(x)) dλ(x) = ∫_{ℝ^n} 1_B(x)·J(x)·h(F(x)) dλ(x) = ∫ G dλ. Here h(F(x)) = f(r^{-1}(F(x) − y)) by the definition of blowUpMap.\n- These identities hold for arbitrary integrands, so no integrability is needed.\n4. Substitution a = b + rc. λ is an additive Haar measure on ℝ^n and finrank ℝ ℝ^n = n (finrank_euclideanSpace_fin).\n- Measure.integral_comp_smul applied to x ↦ G(b + x) gives ∫ G(b + rc) dλ(c) = |(r^n)^{-1}| ∫ G(b + x) dλ(x).\n- Translation invariance (integral_add_left_eq_self) gives ∫ G(b + x) dλ(x) = ∫ G dλ. Both identities hold for every function.\n- Since r > 0, ∫ G(b + rc) dλ(c) = r^{-n} ∫ G dλ.\n5. Combining steps 1, 3 and 4: ∫_{η(A)} f dH^n = r^{-n} ∫_A f∘η dH^n = r^{-n} ∫ G dλ = ∫ G(b + rc) dλ(c).\nFinally G(b + rc) = 1_B(b + rc)·J(b + rc)·f(r^{-1}(F(b + rc) − F(b))) = B.indicator J (b + r • c) · f (r⁻¹ • (F (b + r • c) − F b)), the stated integrand.\nRemark: compared with step 4 of the parent proof, the measure identity of step 2 makes the integrability estimates of 4(i) and 4(iii) unnecessary. In particular no co-Lipschitz or finiteness hypothesis is used.",
+    "proof_key_steps": [
+      "Scaling sibling: ∫_{η(F(B))} f dH^n = r^{-n} ∫_{F(B)} f∘η dH^n.",
+      "The area hypothesis with indicator weights gives H^n⌞F(B) = F_#((λ⌞B) with density ofReal∘J).",
+      "integral_map, integral_withDensity_eq_integral_smul and integral_indicator give ∫_{F(B)} f∘η dH^n = ∫ 1_B·J·(f∘η∘F) dλ.",
+      "Substituting a = b + rc via integral_comp_smul and translation invariance produces r^n, which cancels r^{-n}."
+    ]
+  },
+  "audit": {
+    "key": "rescaled_area_formula",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "All hypotheses appear in both contracts. Indicator weights establish the claimed pushforward measure identity. Continuity supplies the measurability needed for integral_map; the measurable finite nonnegative density permits the unconditional withDensity integral identity. Translation and positive dilation give exactly the stated rescaling. Only blowup_scaling is used as a child dependency."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.blowup_scaling-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-96e209f8f6/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-96e209f8f6/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-96e209f8f6/parent-supplied-natural-proof.json"
+}
