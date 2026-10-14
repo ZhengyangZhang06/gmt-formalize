@@ -451,6 +451,239 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Upper density theorem** (Simon Ch. 1, 3.6 with Remark 3.7(2), via 3.3 with the crude
+covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `μ` is finite on compact subsets of
+`ℝᴾ` and `A ⊆ ℝᴾ` is Borel, then for `Hⁿ`-a.e. `x ∉ A`, `μ(A ∩ B_ρ(x)) / (ωₙ ρⁿ) → 0` as `ρ ↓ 0`.
+Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give `t · μH[n](E) ≤ 6ⁿ μ(G)`
+whenever each `x ∈ E` has arbitrarily small `ρ` with `t ρⁿ ≤ μ(G ∩ B̄_ρ(x))`.  For Borel `S` with
+`μ(S) < ∞`, taking `G = S \ F` for a closed `F ⊆ S` with `μ(S \ F)` small (weak regularity of
+`μ⌞S`) makes every threshold set `{x ∉ S : μ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}`
+`μH[n]`-null, hence `Hⁿ`-null.  The general case applies this to `S = A ∩ B_j(0)`, which agrees
+with `A` near `x` once `j > |x| + 1`. -/
+theorem Submission.idtp_dema_upper_density_zero : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)), MeasurableSet A → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ A → Tendsto (fun ρ : ℝ => μ (A ∩ ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n μ A hA hfin
+  -- Step 1, Vitali selection (Simon 1.3.4).
+  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
+      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
+      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
+        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
+        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
+    intro E p δ hE
+    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
+      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
+      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
+      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
+      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
+    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
+    · apply hdisj.countable_of_nonempty_interior
+      intro a ha
+      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
+      rw [isOpen_ball.interior_eq]
+      exact mem_ball_self (huT ha).2.1
+    · intro x hx
+      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
+      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
+      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
+      rw [mem_closedBall]
+      have h1 : dist w x ≤ ρ := hw1
+      have h2 : dist w b.1 ≤ b.2 := hw2
+      have hle' : ρ ≤ 2 * b.2 := hle
+      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
+        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
+        _ ≤ 3 * b.2 := by linarith
+  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
+  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
+      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
+        t * ENNReal.ofReal ρ ^ n ≤ μ (G ∩ closedBall x ρ)) →
+      t * μH[(n : ℝ)] E ≤ 6 ^ n * μ G := by
+    intro t E G ht0 httop hG hE
+    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
+        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
+          t * ENNReal.ofReal a.2 ^ n ≤ μ (G ∩ closedBall a.1 a.2)) ∧
+        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
+        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
+      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μ (G ∩ closedBall c ρ))
+        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
+    choose u hucount hu hdisj hcover using hfam
+    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
+    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μ G := by
+      intro j
+      rw [← ENNReal.tsum_mul_left]
+      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
+          ≤ ∑' a : u j, μ (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
+            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
+        _ = μ (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
+            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
+              fun a _ => hG.inter measurableSet_closedBall).symm
+        _ ≤ μ G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
+    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
+        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
+      intro j a
+      apply ediam_le_of_forall_dist_le
+      intro y hy z hz
+      rw [mem_closedBall] at hy hz
+      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
+            dist_triangle_right _ _ _
+        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
+    have hterm : ∀ j, t * ∑' a : u j,
+        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
+          6 ^ n * μ G := by
+      intro j
+      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
+          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
+            gcongr with a
+            rw [ENNReal.rpow_natCast]
+            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
+                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
+              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
+                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
+                norm_num
+        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
+            rw [ENNReal.tsum_mul_left]; ring
+        _ ≤ 6 ^ n * μ G := by gcongr; exact hsum j
+    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
+      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
+      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
+      (by
+        rw [← ENNReal.ofReal_zero]
+        apply ENNReal.tendsto_ofReal
+        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+        simpa using this.const_mul 6)
+      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
+      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
+        have := (hu j a a.2).2.2.1
+        linarith)))
+      (Eventually.of_forall fun j x hx => by
+        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
+        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
+    have hbound : ∀ j, ∑' a : u j,
+        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
+          6 ^ n * μ G / t := by
+      intro j
+      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
+      exact hterm j
+    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μ G / t :=
+      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
+    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μ G / t) := by gcongr
+      _ = 6 ^ n * μ G := ENNReal.mul_div_cancel ht0 httop
+  -- Step 3, the finite case (Simon 1.3.6).
+  have finite_case : ∀ S : Set (Euclid P), MeasurableSet S → μ S ≠ ∞ →
+      ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S →
+        Tendsto (fun ρ : ℝ => μ (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
+    intro S hS hSfin
+    have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
+        μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+          t < μ (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
+      intro t ht0 httop
+      set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+        t < μ (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
+      have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
+        intro ε hε
+        have : IsFiniteMeasure (μ.restrict S) :=
+          ⟨by rw [Measure.restrict_apply_univ]; exact hSfin.lt_top⟩
+        have : (μ.restrict S).WeaklyRegular :=
+          Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
+        have hpos : t * ε / 6 ^ n ≠ 0 := by
+          apply ENNReal.div_ne_zero.2
+          exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
+        obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
+          (μ := μ.restrict S)
+          (by rw [Measure.restrict_apply hS, inter_self]; exact hSfin) hpos
+        have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
+        have hμG : μ (S \ F) < t * ε / 6 ^ n := by
+          rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
+        have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
+            t * ENNReal.ofReal ρ ^ n ≤ μ ((S \ F) ∩ closedBall x ρ) := by
+          intro x hx δ hδ
+          obtain ⟨hxS, hfreq⟩ := hx
+          have hxF : x ∉ F := fun h => hxS (hFS h)
+          obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
+          have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
+            Ioo_mem_nhdsGT (by positivity)
+          obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
+          refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
+          have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
+            pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
+          have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
+          have h1 : t * ENNReal.ofReal ρ ^ n < μ (S ∩ closedBall x ρ) :=
+            (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
+          have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
+            ext y
+            constructor
+            · rintro ⟨hyS, hyB⟩
+              refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
+              rw [mem_ball]
+              have := mem_closedBall.1 hyB
+              have := hρ.2
+              have := min_le_right δ (r₁ / 2)
+              linarith
+            · rintro ⟨⟨hyS, _⟩, hyB⟩
+              exact ⟨hyS, hyB⟩
+          rw [← h2]
+          exact h1.le
+        have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
+        have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
+        have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
+        have hlt : t * μH[(n : ℝ)] N < t * ε := by
+          calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μ (S \ F) := hcomp
+            _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
+            _ = t * ε := ENNReal.mul_div_cancel h6 h6'
+        exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
+      have hH : μH[(n : ℝ)] N = 0 := by
+        by_contra h
+        exact lt_irrefl _ (key _ h)
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+    rw [ae_iff]
+    apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
+      ((k : ℝ≥0∞) + 1)⁻¹ < μ (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
+    · intro x hx
+      simp only [mem_ofPred_eq, Classical.not_imp] at hx
+      obtain ⟨hxS, hnt⟩ := hx
+      rw [ENNReal.tendsto_nhds_zero] at hnt
+      push Not at hnt
+      obtain ⟨ε, hε, hfreq⟩ := hnt
+      obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
+      refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
+      calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
+        _ < ε := hk
+        _ < _ := hρ
+    · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
+  -- Step 4, localization (Simon 1.3.7(2)).
+  have hloc : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ j : ℕ, x ∉ A ∩ ball 0 j →
+      Tendsto (fun ρ : ℝ => μ ((A ∩ ball 0 j) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
+        (𝓝[>] 0) (𝓝 0) :=
+    ae_all_iff.2 fun j => finite_case _ (hA.inter measurableSet_ball)
+      (ne_top_of_le_ne_top (hfin _ (isCompact_closedBall 0 j))
+        (measure_mono (inter_subset_right.trans ball_subset_closedBall)))
+  -- Step 0/5, normalization and open balls.
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos _ _ one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  filter_upwards [hloc] with x hx hxA
+  obtain ⟨j, hj⟩ := exists_nat_gt (‖x‖ + 1)
+  have hcl := hx j (fun h => hxA h.1)
+  have hlim : Tendsto (fun ρ : ℝ => (unitBallVolume n)⁻¹ *
+      (μ ((A ∩ ball 0 j) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul hcl (Or.inr (ENNReal.inv_ne_top.2 hω0))
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => zero_le) ?_
+  have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 1 := Ioo_mem_nhdsGT one_pos
+  filter_upwards [hev] with ρ hρ
+  have hsub : A ∩ ball x ρ ⊆ (A ∩ ball 0 j) ∩ closedBall x ρ := by
+    rintro y ⟨hyA, hyB⟩
+    refine ⟨⟨hyA, ?_⟩, ball_subset_closedBall hyB⟩
+    rw [mem_ball, dist_zero_right]
+    have h1 : dist y x < ρ := hyB
+    have h2 : ‖y‖ ≤ ‖x‖ + dist y x := by
+      have := norm_le_norm_add_norm_sub' y x
+      rw [dist_eq_norm]; linarith [norm_sub_rev y x]
+    linarith [hρ.2]
+  have hle : μ (A ∩ ball x ρ) ≤ μ ((A ∩ ball 0 j) ∩ closedBall x ρ) := measure_mono hsub
+  calc μ (A ∩ ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))
+      = (unitBallVolume n)⁻¹ * (μ (A ∩ ball x ρ) / ENNReal.ofReal ρ ^ n) := by
+        rw [ENNReal.ofReal_pow hρ.1.le, ENNReal.div_eq_inv_mul, ENNReal.div_eq_inv_mul,
+          ENNReal.mul_inv (Or.inl hω0) (Or.inl hωtop), mul_assoc]
+    _ ≤ (unitBallVolume n)⁻¹ * (μ ((A ∩ ball 0 j) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) := by
+        gcongr
 /-- An approximate tangent plane forces unit `Hⁿ`-density on closed balls (Simon Ch. 3,
 Remark 1.5(3), with Definition 1.4).  If `Hⁿ(M ∩ B̄_s(x)) < ∞` and `Q` is an approximate tangent
 space of `M` at `x`, then `Hⁿ(M ∩ B̄_ρ(x)) / (ωₙρⁿ) → 1` as `ρ ↓ 0`.  Since
@@ -2381,6 +2614,165 @@ theorem Submission.idtp_cse_sp_sector_rel_open : ∀ (P : ℕ) (Q : Submodule �
   calc y = inner ℝ y a • a + inner ℝ y e • e := hexp y hy
     _ = (t' * Real.cos φ') • a + (t' * Real.sin φ') • e := by rw [hpy.1, hpy.2]
     _ = t' • (Real.cos φ' • a + Real.sin φ' • e) := by rw [smul_add, smul_smul, smul_smul]
+
+/-- **Simon Ch. 3, Remarks 1.8(1)–(2) and Theorem 1.9** (with the upper density theorem, Ch. 1,
+3.6–3.7(2)): if `R = (M, θ, ξ)` has weight `μ_R = θ Hⁿ⌞M` finite on compact sets, then for
+`Hⁿ`-a.e. `x ∈ M`, `μ_R(B_ρ(x)) / (ωₙρⁿ) → θ(x)` as `ρ ↓ 0`.  As `θ ≥ 1` on `M`,
+`ν := Hⁿ⌞M ≤ μ_R`, so `ν(B_ρ(x)) / (ωₙρⁿ) → 1` at approximate tangent points.  With `k = θ(x)` and
+`A_k = M ∩ θ⁻¹(ℕ ∖ {k})`, `μ_R(A_k ∩ B_ρ(x)) = o(ρⁿ)` for `Hⁿ`-a.e. `x ∉ A_k`, and
+`kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`, `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)` squeeze the ratio to `k`. -/
+theorem Submission.idtp_dema_density_on_carrier : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier → Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞)) := by
+  intro P n U R hfin
+  set M := R.carrier with hM
+  have hMm : MeasurableSet M := R.measurableSet_carrier
+  set ν : Measure (Euclid P) := (μHE[n] : Measure (Euclid P)).restrict M with hν
+  -- `μ_R(S) = ∫_{S ∩ M} θ dHⁿ` for Borel `S`
+  have hmeas : ∀ S : Set (Euclid P), MeasurableSet S →
+      R.measure S = ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+    intro S hS
+    simp only [IMRep.measure]
+    rw [withDensity_apply _ hS, Measure.restrict_restrict hS]
+  -- Step 1: `ν ≤ μ_R` on Borel sets, as `θ ≥ 1` on `M`
+  have hνle : ∀ S : Set (Euclid P), MeasurableSet S → ν S ≤ R.measure S := by
+    intro S hS
+    rw [hmeas S hS, hν, Measure.restrict_apply hS]
+    calc μHE[n] (S ∩ M) = ∫⁻ _y in S ∩ M, (1 : ℝ≥0∞) ∂μHE[n] := by simp
+      _ ≤ ∫⁻ y in S ∩ M, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+        apply setLIntegral_mono' (hS.inter hMm)
+        intro y hy
+        have h := R.mult_pos y hy.2
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr h.ne'
+  -- Step 2: the Borel sets `A_k = M ∩ θ⁻¹(ℕ ∖ {k})`
+  set A : ℕ → Set (Euclid P) := fun k => M ∩ R.mult ⁻¹' ({k}ᶜ) with hA
+  have hAm : ∀ k, MeasurableSet (A k) := fun k =>
+    hMm.inter (R.measurable_mult (measurableSet_singleton k).compl)
+  -- Step 3: `Hⁿ`-a.e., `μ_R(A_k ∩ B_ρ(x)) / (ωₙρⁿ) → 0` for every `k` with `x ∉ A_k`
+  have hUD : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, x ∉ A k →
+      Tendsto (fun ρ : ℝ => R.measure (A k ∩ ball x ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0) :=
+    ae_all_iff.2 fun k => Submission.idtp_dema_upper_density_zero P n R.measure (A k) (hAm k) hfin
+  -- Step 4: `Hⁿ`-a.e. on `M` there is an approximate tangent space (field `orients`)
+  have htan : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M →
+      ∃ Q, HasApproximateTangentSpaceAt n M x Q := by
+    have h := R.orients
+    rw [ae_restrict_iff' hMm] at h
+    filter_upwards [h] with x hx hxM
+    obtain ⟨Q, hQ, -⟩ := hx hxM
+    exact ⟨Q, hQ⟩
+  filter_upwards [hUD, htan] with x hxUD hxtan hxM
+  obtain ⟨Q, hQ⟩ := hxtan hxM
+  set k : ℕ := R.mult x with hk
+  have hxA : x ∉ A k := fun h => h.2 (by simp [hk])
+  have he := hxUD k hxA
+  -- `ν(B_ρ(x)) / (ωₙρⁿ) → 1`, using `Hⁿ(M ∩ B̄_1(x)) ≤ μ_R(B̄_1(x)) < ∞`
+  have hfinball : μHE[n] (M ∩ closedBall x 1) ≠ ∞ := by
+    have h1 := hνle (closedBall x 1) measurableSet_closedBall
+    have h2 := hfin (closedBall x 1) (isCompact_closedBall x 1)
+    rw [hν, Measure.restrict_apply measurableSet_closedBall] at h1
+    rw [inter_comm]
+    exact ne_top_of_le_ne_top h2 h1
+  have hTD := Submission.rsd_tendsto_closedBall_density_of_approxTangent P n M x Q 1 one_pos
+    hfinball hQ
+  have hTD' : Tendsto (fun ρ : ℝ => ν (closedBall x ρ) /
+      (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 1) := by
+    refine hTD.congr fun ρ => ?_
+    rw [hν, Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  have hb := Submission.rsd_tendsto_ball_density_of_closedBall P n ν x 1 hTD'
+  -- Step 5: `μ_R(B) = k Hⁿ(B ∩ M ∩ θ⁻¹(k)) + μ_R(A_k ∩ B)`, whence the bounds (U) and (L)
+  set T : Set (Euclid P) := R.mult ⁻¹' {k} with hT
+  have hTm : MeasurableSet T := R.measurable_mult (measurableSet_singleton k)
+  have hsplit : ∀ ρ : ℝ, R.measure (ball x ρ) =
+      (k : ℝ≥0∞) * μHE[n] ((ball x ρ ∩ M) ∩ T) + R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hmeas _ measurableSet_ball, hmeas _ ((hAm k).inter measurableSet_ball),
+      ← lintegral_inter_add_sdiff (B := T) _ _ hTm]
+    congr 1
+    · rw [setLIntegral_congr_fun ((measurableSet_ball.inter hMm).inter hTm)
+        (g := fun _ => (k : ℝ≥0∞)) (fun y hy => by
+          have : R.mult y = k := hy.2
+          simp [this])]
+      simp
+    · have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
+        ext y
+        simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
+          mem_singleton_iff]
+        tauto
+      rw [hset]
+  have hνsplit : ∀ ρ : ℝ, ν (ball x ρ) =
+      μHE[n] ((ball x ρ ∩ M) ∩ T) + ν (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hν, Measure.restrict_apply measurableSet_ball,
+      Measure.restrict_apply ((hAm k).inter measurableSet_ball),
+      ← measure_inter_add_sdiff (ball x ρ ∩ M) hTm]
+    have hset : (ball x ρ ∩ M) \ T = (A k ∩ ball x ρ) ∩ M := by
+      ext y
+      simp only [hA, hT, mem_inter_iff, Set.mem_sdiff, mem_preimage, mem_compl_iff,
+        mem_singleton_iff]
+      tauto
+    rw [hset]
+  -- (U) `μ_R(B) ≤ kν(B) + μ_R(A_k ∩ B)`
+  have hup : ∀ ρ : ℝ, R.measure (ball x ρ) ≤
+      (k : ℝ≥0∞) * ν (ball x ρ) + R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hsplit ρ]
+    have h1 : μHE[n] ((ball x ρ ∩ M) ∩ T) ≤ ν (ball x ρ) := by
+      rw [hν, Measure.restrict_apply measurableSet_ball]
+      exact measure_mono inter_subset_left
+    exact add_le_add (mul_le_mul_right h1 _) le_rfl
+  -- (L) `kν(B) ≤ μ_R(B) + kμ_R(A_k ∩ B)`
+  have hlow : ∀ ρ : ℝ, (k : ℝ≥0∞) * ν (ball x ρ) ≤
+      R.measure (ball x ρ) + (k : ℝ≥0∞) * R.measure (A k ∩ ball x ρ) := by
+    intro ρ
+    rw [hνsplit ρ, mul_add, hsplit ρ, add_assoc]
+    have h2 := hνle (A k ∩ ball x ρ) ((hAm k).inter measurableSet_ball)
+    exact add_le_add le_rfl ((mul_le_mul_right h2 _).trans le_add_self)
+  -- Step 6: divide by `ωₙρⁿ`; both bounds tend to `k`, as `k < ∞`
+  set c : ℝ → ℝ≥0∞ := fun ρ => unitBallVolume n * ENNReal.ofReal (ρ ^ n) with hc
+  have hk_top : (k : ℝ≥0∞) ≠ ∞ := ENNReal.natCast_ne_top k
+  have hupper : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) +
+      R.measure (A k ∩ ball x ρ) / c ρ) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
+    have := (ENNReal.Tendsto.const_mul hb (Or.inr hk_top)).add he
+    simpa using this
+  have hlower : Tendsto (fun ρ => (k : ℝ≥0∞) * (ν (ball x ρ) / c ρ) -
+      (k : ℝ≥0∞) * (R.measure (A k ∩ ball x ρ) / c ρ)) (𝓝[>] 0) (𝓝 (k : ℝ≥0∞)) := by
+    have h1 := ENNReal.Tendsto.const_mul hb (Or.inr hk_top)
+    have h2 := ENNReal.Tendsto.const_mul he (Or.inr hk_top)
+    have := ENNReal.Tendsto.sub h1 h2 (Or.inl (by simp))
+    simpa using this
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlower hupper (fun ρ => ?_) (fun ρ => ?_)
+  · -- the lower bound, from (L)
+    simp only
+    rw [tsub_le_iff_right, ← mul_div_assoc, ← mul_div_assoc, ← ENNReal.add_div]
+    exact ENNReal.div_le_div_right (hlow ρ) _
+  · -- the upper bound, from (U)
+    simp only
+    rw [← mul_div_assoc, ← ENNReal.add_div]
+    exact ENNReal.div_le_div_right (hup ρ) _
+
+/-- **Simon Ch. 3, Remarks 1.8(1),(2) and Theorem 1.9** (with Ch. 1, 3.6 and Remark 3.7(2)): the
+density of `μ_R = θ Hⁿ⌞M` is `1_M θ` `Hⁿ`-a.e.  If `μ_R(K) < ∞` for every compact `K`, then
+`μ_R(B_ρ(x)) / (ωₙρⁿ) → 1_M(x) θ(x)` as `ρ ↓ 0` for `Hⁿ`-a.e. `x`.  At `Hⁿ`-a.e. `x ∈ M` this is
+`idtp_dema_density_on_carrier`.  Since `μ_R(ℝᴾ \ M) = 0`, `μ_R(B_ρ(x)) = μ_R(M ∩ B_ρ(x))`, so at
+`Hⁿ`-a.e. `x ∉ M` the upper density theorem `idtp_dema_upper_density_zero` (with `μ = μ_R` and
+`A = M`) gives the limit `0`. -/
+theorem Submission.idtp_imrep_measure_density_ae : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x)) := by
+  intro P n U R _hn hfin
+  -- `μ_R` is carried by `M`
+  have hnull : R.measure R.carrierᶜ = 0 := by
+    rw [IMRep.measure, withDensity_apply _ R.measurableSet_carrier.compl,
+      Measure.restrict_restrict R.measurableSet_carrier.compl, compl_inter_self,
+      Measure.restrict_empty, lintegral_zero_measure]
+  filter_upwards [Submission.idtp_dema_upper_density_zero P n R.measure R.carrier
+      R.measurableSet_carrier hfin, Submission.idtp_dema_density_on_carrier P n U R hfin]
+    with x hoff hon
+  by_cases hx : x ∈ R.carrier
+  · -- on `M` the density is `θ(x)`
+    rw [indicator_of_mem hx]
+    exact hon hx
+  · -- off `M` the density is that of `μ_R⌞M`, namely `0`
+    rw [indicator_of_notMem hx]
+    refine (hoff hx).congr fun ρ => ?_
+    rw [inter_comm, measure_inter_conull hnull]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
