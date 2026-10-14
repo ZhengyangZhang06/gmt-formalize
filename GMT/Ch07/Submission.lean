@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Convolving with a probability density `k ≥ 0`, `∫ k = 1`, does not increase the `L¹` norm:
+`∫⁻ ‖k ⋆ g‖ₑ ≤ ∫⁻ ‖g‖ₑ` (Young's inequality `‖k ⋆ g‖₁ ≤ ‖k‖₁ ‖g‖₁`).  As `∫ k = 1 ≠ 0`, `k` is
+integrable and `∫⁻ ‖k‖ₑ = ofReal (∫ k) = 1`.  Pointwise `‖(k ⋆ g)(x)‖ₑ ≤ ∫⁻ ‖k t‖ₑ ‖g (x - t)‖ₑ dt`;
+Tonelli and translation invariance of Lebesgue measure turn the right side, integrated in `x`,
+into `(∫⁻ ‖k‖ₑ) (∫⁻ ‖g‖ₑ)`. -/
+theorem Submission.cmcdt_cbm_sa_ml_l1_contraction : ∀ (n : ℕ) (k g : Euclid n → ℝ), (∀ z, 0 ≤ k z) → ∫ z, k z = 1 → AEStronglyMeasurable g volume → ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ ≤ ∫⁻ x, ‖g x‖ₑ := by
+  intro n k g hk0 hk1 hg
+  -- `k` is integrable because `∫ k = 1 ≠ 0`, and it has unit mass `∫⁻ ‖k‖ₑ = 1`.
+  have hk_int : Integrable k := integrable_of_integral_eq_one hk1
+  have hk_mass : ∫⁻ t, ‖k t‖ₑ = 1 := by
+    rw [lintegral_enorm_of_nonneg hk0,
+      ← ofReal_integral_eq_lintegral_ofReal hk_int (ae_of_all _ hk0), hk1, ENNReal.ofReal_one]
+  -- The convolution integrand is jointly a.e.-measurable, as Tonelli requires.
+  have hmeas : AEMeasurable (uncurry fun (x t : Euclid n) => ‖k t‖ₑ * ‖g (x - t)‖ₑ)
+      (volume.prod volume) := by
+    refine (hk_int.aestronglyMeasurable.convolution_integrand
+      (ContinuousLinearMap.lsmul ℝ ℝ) hg).enorm.congr (ae_of_all _ fun p => ?_)
+    simp [uncurry]
+  calc ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ
+      ≤ ∫⁻ x, ∫⁻ t, ‖k t‖ₑ * ‖g (x - t)‖ₑ := by
+        refine lintegral_mono fun x => ?_
+        rw [convolution_def]
+        refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+        refine lintegral_congr fun t => ?_
+        simp
+    _ = ∫⁻ t, ∫⁻ x, ‖k t‖ₑ * ‖g (x - t)‖ₑ := lintegral_lintegral_swap hmeas
+    _ = ∫⁻ t, ‖k t‖ₑ * ∫⁻ x, ‖g x‖ₑ := by
+        refine lintegral_congr fun t => ?_
+        rw [lintegral_const_mul' _ _ enorm_ne_top,
+          lintegral_sub_right_eq_self (fun x => ‖g x‖ₑ) t]
+    _ = (∫⁻ t, ‖k t‖ₑ) * ∫⁻ x, ‖g x‖ₑ := lintegral_mul_const'' _ hk_int.aestronglyMeasurable.enorm
+    _ = ∫⁻ x, ‖g x‖ₑ := by rw [hk_mass, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
