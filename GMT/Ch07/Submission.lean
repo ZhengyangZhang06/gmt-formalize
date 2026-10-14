@@ -3033,6 +3033,71 @@ theorem Submission.dor_lmb_fc_tb_extend_univ_boundary : ∀ (P m : ℕ) (U K : S
     Submission.dor_lmb_fc_tb_eq_of_vanish_off P m U K Y.boundary Z hU hK hKU hbYK hZK hbYZ
   -- Step 7: hence `∂Y` is integer multiplicity and `M(∂Y) = M(Z) ≤ M(∂A)`
   exact ⟨Y, hYim, hYZ ▸ hZim, hYA, hYK, hYmass, hYZ ▸ hZmass⟩
+/-- **Simon 6.7.2** (proof, "only finitely many currents `P` as in (2)"): for `ρ > 0`, compact `K`
+and `B ∈ ℕ` there are only finitely many currents `Σ_{p ∈ s} b(p) [[F_p]]` with grid cells
+`F_p ⊆ K` of side `ρ` and `|b(p)| ≤ B`.  The corner `ρz` of a cell `F_p ⊆ K` gives
+`ρ|zᵢ| ≤ ‖ρz‖ ≤ D` (`‖y‖ ≤ D` on `K`), so `p` lies in a finite index set `C`; each such current
+is `Φ e = Σ_{q ∈ C} e(q) [[F_q]]` for one of the finitely many `e ∈ [-B, B]^C` (`e = b` on `s`,
+`0` off `s`), and a current is determined by its values. -/
+theorem Submission.dor_lmb_fc_tb_cell_chains_finite : ∀ (P m : ℕ) (U K : Set (Euclid P)) (ρ : ℝ) (B : ℕ), 0 < ρ → IsCompact K → {X : GeometricCurrentOn U (m + 1) | ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (b : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ), (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ K) ∧ (∀ p ∈ s, (b p).natAbs ≤ B) ∧ ∀ ω : TestFormOn U (m + 1), X ω = ∑ p ∈ s, (b p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]}.Finite := by
+  intro P m U K ρ B hρ hK
+  classical
+  -- `‖y‖ ≤ D` on `K`, and `D / ρ ≤ N`
+  obtain ⟨D, hD⟩ := hK.isBounded.exists_norm_le
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, D / ρ ≤ N := ⟨⌈D / ρ⌉₊, Nat.le_ceil _⟩
+  -- the finite set of index pairs `(z, ι)` with `|zᵢ| ≤ N`
+  let C : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P)) :=
+    Fintype.piFinset (fun _ : Fin P => Finset.Icc (-(N : ℤ)) N) ×ˢ Finset.univ
+  -- a cell `F_p ⊆ K` contains its corner `ρz`, hence `ρ|zᵢ| ≤ D`
+  have hC : ∀ p : (Fin P → ℤ) × (Fin (m + 1) → Fin P),
+      {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧
+        (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ K → p ∈ C := by
+    intro p hp
+    have hy : (WithLp.toLp 2 (fun i => ρ * (p.1 i : ℝ)) : Euclid P) ∈ K := by
+      refine hp fun i => ⟨fun _ => ⟨le_rfl, ?_⟩, fun _ => rfl⟩
+      exact mul_le_mul_of_nonneg_left (by linarith) hρ.le
+    refine Finset.mem_product.2 ⟨Fintype.mem_piFinset.2 fun i => Finset.mem_Icc.2 ?_,
+      Finset.mem_univ _⟩
+    have h1 := (PiLp.norm_apply_le (WithLp.toLp 2 (fun i => ρ * (p.1 i : ℝ)) : Euclid P) i).trans
+      (hD _ hy)
+    simp only [Real.norm_eq_abs, abs_mul, abs_of_pos hρ] at h1
+    have h2 : |(p.1 i : ℝ)| ≤ N := ((le_div_iff₀' hρ).2 h1).trans hN
+    exact abs_le.1 (by exact_mod_cast h2)
+  -- abstract the cells `F_p` and the cell integrals `I_p`
+  have key : ∀ (F : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Set (Euclid P))
+      (I : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → TestFormOn U (m + 1) → ℝ),
+      (∀ p, F p ⊆ K → p ∈ C) →
+      {X : GeometricCurrentOn U (m + 1) | ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P)))
+        (b : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ), (∀ p ∈ s, F p ⊆ K) ∧
+        (∀ p ∈ s, (b p).natAbs ≤ B) ∧
+        ∀ ω : TestFormOn U (m + 1), X ω = ∑ p ∈ s, (b p : ℝ) * I p ω}.Finite := by
+    intro F I hFC
+    -- `Φ e = Σ_{q ∈ C} e(q) I_q`, for the finitely many `e ∈ [-B, B]^C`
+    let Φ : (C → ℤ) → TestFormOn U (m + 1) → ℝ := fun e ω => ∑ q : C, (e q : ℝ) * I q ω
+    have hE : (Set.univ.pi fun _ : C => Set.Icc (-(B : ℤ)) B).Finite :=
+      Set.Finite.pi fun _ => Set.finite_Icc _ _
+    refine Set.Finite.of_finite_image (f := fun X : GeometricCurrentOn U (m + 1) => fun ω => X ω)
+      ((hE.image Φ).subset ?_) fun X _ Y _ hXY => GeometricCurrentOn.ext fun ω => congrFun hXY ω
+    rintro _ ⟨X, ⟨s, b, hsK, hsb, hX⟩, rfl⟩
+    have hsC : s ⊆ C := fun p hp => hFC p (hsK p hp)
+    -- `e = b` on `s` and `e = 0` off `s`
+    refine ⟨fun q => if (q : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) ∈ s then b q else 0,
+      Set.mem_univ_pi.2 fun q => ?_, funext fun ω => ?_⟩
+    · show (if (q : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) ∈ s then b q else 0) ∈
+        Set.Icc (-(B : ℤ)) B
+      split_ifs with hq
+      · have h : |b q| ≤ (B : ℤ) := by
+          rw [Int.abs_eq_natAbs]
+          exact_mod_cast hsb _ hq
+        exact Set.mem_Icc.2 (abs_le.1 h)
+      · exact Set.mem_Icc.2 ⟨by omega, by omega⟩
+    · calc _ = ∑ q ∈ C, ((if q ∈ s then b q else 0 : ℤ) : ℝ) * I q ω :=
+            Finset.sum_coe_sort C fun q => ((if q ∈ s then b q else 0 : ℤ) : ℝ) * I q ω
+        _ = ∑ p ∈ s, ((if p ∈ s then b p else 0 : ℤ) : ℝ) * I p ω :=
+            (Finset.sum_subset hsC fun q _ hq => by simp [hq]).symm
+        _ = ∑ p ∈ s, (b p : ℝ) * I p ω := Finset.sum_congr rfl fun p hp => by simp [hp]
+        _ = X ω := (hX ω).symm
+  exact key _ _ hC
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
