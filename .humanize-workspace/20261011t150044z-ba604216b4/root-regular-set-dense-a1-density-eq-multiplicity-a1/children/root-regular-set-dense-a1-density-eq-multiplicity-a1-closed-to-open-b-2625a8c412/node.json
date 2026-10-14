@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1",
+  "parent_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+  "depth": 3,
+  "title": "Closed-ball density limits give the same open-ball density limit",
+  "statement": "Let P, n ∈ ℕ, let ν be any Borel measure on ℝ^P, x ∈ ℝ^P and θ ∈ [0, ∞]. Write ω_n = unitBallVolume n (the Lebesgue measure of the unit ball of ℝ^n) and, for ρ > 0, c(ρ) = ω_n·ρ^n ∈ [0, ∞], with ρ^n entered via ENNReal.ofReal. If ν(B̄_ρ(x))/c(ρ) → θ in [0, ∞] as ρ ↓ 0, then ν(B_ρ(x))/c(ρ) → θ as ρ ↓ 0. Here B̄_ρ(x) and B_ρ(x) are the closed and open balls, and quotients are taken in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ)",
+  "lean_name": "rsd_tendsto_ball_density_of_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412-a1"
+}
