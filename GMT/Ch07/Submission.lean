@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Translates along `G` of an action carried by `Gᗮ` vanish outside a compact set: if
+`μ_R(ℝᴾ \ Gᗮ) = 0` and `η` has compact support, then `τ(M, θ, ξ)(η(t + ·)) = 0` for every
+`t ∈ G \ K`, `K = p(spt η)` with `p` the orthogonal projection onto `G`.  As `θ ≥ 1` on `M`,
+`Hʲ`-a.e. `y ∈ M` lies in `Gᗮ`, and there `η(t + y) ≠ 0` would give `t = p(t + y) ∈ K`. -/
+theorem Submission.dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated : ∀ (P j : ℕ) (G : Submodule ℝ (Euclid P)) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), HasCompactSupport η → R.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → ∃ K : Set (Euclid P), IsCompact K ∧ ∀ t ∈ G, t ∉ K → R.action (fun y => η (t + y)) = 0 := by
+  intro P j G R η hη hG
+  -- Step 1: `K = p(spt η)` is compact, `p` the orthogonal projection onto `G`
+  refine ⟨G.starProjection '' tsupport η, hη.isCompact.image G.starProjection.continuous, ?_⟩
+  intro t ht htK
+  -- Step 2: `Hʲ⌞M`-a.e. point lies in `Gᗮ`, since `θ ≠ 0` on `M`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  have hae : ∀ᵐ y ∂(μHE[j].restrict R.carrier), y ∈ (Gᗮ : Set (Euclid P)) := by
+    have h1 : ∀ᵐ y ∂R.measure, y ∈ (Gᗮ : Set (Euclid P)) := mem_ae_iff.2 hG
+    filter_upwards [(ae_withDensity_iff hθ).1 h1, ae_restrict_mem R.measurableSet_carrier]
+      with y hy hyM
+    exact hy (by exact_mod_cast (R.mult_pos y hyM).ne')
+  -- Step 3: the integrand vanishes at every `y ∈ Gᗮ`
+  refine integral_eq_zero_of_ae ?_
+  filter_upwards [hae] with y hy
+  have hty : t + y ∉ tsupport η := fun h => htK ⟨t + y, h, by
+    rw [map_add, Submodule.starProjection_eq_self_iff.2 ht,
+      G.starProjection_apply_eq_zero_iff.2 hy, add_zero]⟩
+  simp only [Pi.zero_apply, image_eq_zero_of_notMem_tsupport hty, map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
