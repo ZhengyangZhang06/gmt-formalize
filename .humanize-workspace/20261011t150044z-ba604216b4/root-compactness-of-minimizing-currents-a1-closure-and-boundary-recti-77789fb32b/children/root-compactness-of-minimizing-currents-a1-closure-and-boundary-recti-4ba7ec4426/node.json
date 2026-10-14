@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1.ball_cover-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+  "depth": 5,
+  "title": "Besicovitch–Vitali cover of E by disjoint admissible closed balls inside an open set",
+  "statement": "Let P ∈ ℕ and let μ be a measure on the Borel σ-algebra of ℝ^P with μ(K) < ∞ for every compact K ⊆ ℝ^P. Let Q(x, ρ) be an arbitrary predicate on pairs (x, ρ) ∈ ℝ^P × ℝ. Let W ⊆ ℝ^P be open and let E ⊆ W be an arbitrary set, not necessarily measurable. Assume that for every x ∈ E and every δ > 0 there is ρ with 0 < ρ < δ and Q(x, ρ). Then there are a countable set t ⊆ E and a function r : ℝ^P → ℝ such that:\n(a) for every x ∈ t, r(x) > 0, the closed ball B̄_{r(x)}(x) is contained in W, and Q(x, r(x)) holds;\n(b) the closed balls B̄_{r(x)}(x), x ∈ t, are pairwise disjoint, i.e. B̄_{r(x)}(x) ∩ B̄_{r(y)}(y) = ∅ for distinct x, y ∈ t;\n(c) μ(E ∖ ⋃_{x∈t} B̄_{r(x)}(x)) = 0, where μ is the outer measure.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → ℝ → Prop) (E W : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → IsOpen W → E ⊆ W → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ Q x ρ) → ∃ (t : Set (Euclid P)) (r : Euclid P → ℝ), t.Countable ∧ t ⊆ E ∧ (∀ x ∈ t, 0 < r x ∧ closedBall x (r x) ⊆ W ∧ Q x (r x)) ∧ t.PairwiseDisjoint (fun x => closedBall x (r x)) ∧ μ (E \\ ⋃ x ∈ t, closedBall x (r x)) = 0",
+  "lean_name": "cbrldvc_exists_disjoint_closedBall_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-4ba7ec4426-a1"
+}
