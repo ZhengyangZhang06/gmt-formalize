@@ -6459,6 +6459,78 @@ theorem Submission.minimizing_implies_stationary : MinimizingImpliesStationary :
   exact ⟨hstat, Submission.meanCurvature_bounded_of_stationaryAlong (n + k) n (n + ℓ) U N R hU hN
     hNcl hnull hstat⟩
 
+/-- **Simon Ch. 3, proof of Theorem 1.6 "⇒"**, along a Lipschitz map `F : ℝᵏ → ℝᴾ`: if `Y` is
+Borel with `Hᵏ(Y ∩ C) < ∞` for compact `C`, then for a.e. `u` with `F(u) ∈ Y`, `F`
+differentiable at `u` and `DF(u)` injective, `Y` has approximate tangent space `DF(u)(ℝᵏ)` at
+`F(u)`.  The Borel set `G` of such `u` is covered by countably many Borel pieces on which `F` is
+`r(Aᵢ)`-close to some `Aᵢ = DF(yᵢ)`, where `2r(A)|w| ≤ |Aw|` for injective `A`.  Hence
+`r(Aᵢ)|a − a'| ≤ |F(a) − F(a')|` on each piece, and the bi-Lipschitz piece lemma applies. -/
+theorem Submission.idtp_fons_cs_sos_lipschitz_approx_tangent : ∀ (P k : ℕ) (F : Euclid k → Euclid P) (Y : Set (Euclid P)) (K : NNReal), 0 < k → LipschitzWith K F → MeasurableSet Y → (∀ C : Set (Euclid P), IsCompact C → μHE[k] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure (Euclid k)), F u ∈ Y → DifferentiableAt ℝ F u → Function.Injective (fderiv ℝ F u) → HasApproximateTangentSpaceAt k Y (F u) (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P)) := by
+  intro P k F Y K _hk hF hY hfin
+  classical
+  -- Step 1: the regular set `G = {u : DF(u) exists and is injective, F(u) ∈ Y}` is Borel
+  set G : Set (Euclid k) :=
+    ({u | DifferentiableAt ℝ F u} ∩ {u | Injective (fderiv ℝ F u)}) ∩ F ⁻¹' Y
+  have hGm : MeasurableSet G :=
+    ((measurableSet_of_differentiableAt ℝ F).inter
+      (measurable_fderiv ℝ F ContinuousLinearMap.isOpen_injective.measurableSet)).inter
+      (hF.continuous.measurable hY)
+  -- Step 2: an injective `A` satisfies `c_A‖w‖ ≤ ‖Aw‖` with `c_A > 0`; tolerance `r(A) = c_A/2`
+  have hlb : ∀ A : Euclid k →L[ℝ] Euclid P, Injective A →
+      ∃ c : NNReal, 0 < c ∧ ∀ w, (c : ℝ) * ‖w‖ ≤ ‖A w‖ := by
+    intro A hA
+    obtain ⟨K', hK'pos, hK'⟩ :=
+      (LinearMap.injective_iff_antilipschitz (A : Euclid k →ₗ[ℝ] Euclid P)).1 hA
+    refine ⟨K'⁻¹, inv_pos.2 hK'pos, fun w => ?_⟩
+    have hw := ZeroHomClass.bound_of_antilipschitz (A : Euclid k →ₗ[ℝ] Euclid P) hK' w
+    have hK'r : (0 : ℝ) < K' := hK'pos
+    rw [NNReal.coe_inv, inv_mul_le_iff₀ hK'r]
+    simpa using hw
+  choose! c hcpos hc using hlb
+  let r : (Euclid k →L[ℝ] Euclid P) → NNReal := fun A => if Injective A then c A / 2 else 1
+  have hr0 : ∀ A, r A ≠ 0 := by
+    intro A
+    simp only [r]
+    split_ifs with h
+    · exact (div_pos (hcpos A h) two_pos).ne'
+    · exact one_ne_zero
+  -- Step 3: countably many Borel pieces `G ∩ t n` on which `F` is `r(A n)`-close to `A n`
+  obtain ⟨t, A, -, htm, hcov, happ, hAder⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt F G (fderiv ℝ F)
+      (fun u hu => hu.1.1.hasFDerivAt.hasFDerivWithinAt) r hr0
+  -- Steps 4–5: on a nonempty piece, `A n = DF(y)` is injective, so `F` is bi-Lipschitz there
+  -- and the bi-Lipschitz piece lemma gives the tangent planes
+  have hpiece : ∀ n, ∀ᵐ u ∂(volume : Measure (Euclid k)), u ∈ G ∩ t n →
+      HasApproximateTangentSpaceAt k Y (F u)
+        (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P)) := by
+    intro n
+    rcases (G ∩ t n).eq_empty_or_nonempty with hB | hB
+    · exact Eventually.of_forall fun u hu => by simp [hB] at hu
+    obtain ⟨y, hyG, hAy⟩ := hAder (hB.mono inter_subset_left) n
+    have hinj : Injective (A n) := hAy ▸ hyG.1.2
+    have hrA : r (A n) = c (A n) / 2 := ite_eq_left hinj
+    have hm : (0 : ℝ) < r (A n) := NNReal.coe_pos.2 (pos_iff_ne_zero.2 (hr0 _))
+    have hbi : ∀ a ∈ G ∩ t n, ∀ a' ∈ G ∩ t n, (r (A n) : ℝ) * ‖a - a'‖ ≤ ‖F a - F a'‖ := by
+      intro a ha a' ha'
+      have h1 := happ n a ha a' ha'
+      have h2 := hc (A n) hinj (a - a')
+      have h3 : ‖A n (a - a')‖ ≤ ‖F a - F a'‖ + ‖F a - F a' - A n (a - a')‖ := by
+        calc ‖A n (a - a')‖ = ‖(F a - F a') - (F a - F a' - A n (a - a'))‖ := by
+              congr 1; abel
+          _ ≤ ‖F a - F a'‖ + ‖F a - F a' - A n (a - a')‖ := norm_sub_le _ _
+      rw [hrA] at h1 ⊢
+      push_cast at h1 ⊢
+      linarith
+    exact (ae_restrict_iff' (hGm.inter (htm n))).1
+      (Submission.dpf_approxTangent_ae_bilipschitz_piece P k univ Y F (G ∩ t n) K (r (A n))
+        isOpen_univ hY (subset_univ _) (fun C hC _ => hfin C hC) hF (hGm.inter (htm n)) hm hbi
+        (fun a ha => ⟨ha.1.1.1, ha.1.1.2⟩) (by rintro _ ⟨a, ha, rfl⟩; exact ha.1.2))
+  -- Step 6: a.e. `u` lies in no exceptional set; a regular `u ∈ F⁻¹(Y)` lies in some piece
+  filter_upwards [ae_all_iff.2 hpiece] with u hu hFu hdiff hinj
+  have huG : u ∈ G := ⟨⟨hdiff, hinj⟩, hFu⟩
+  obtain ⟨n, hn⟩ := mem_iUnion.1 (hcov huG)
+  exact hu n ⟨huG, hn⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
