@@ -1099,69 +1099,6 @@ theorem Submission.ptd_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P
   have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
       Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
     ext y
-/-- **The cylinder over one piece.**  Let `G : ℝⁿ → ℝᴺ` be Lipschitz, `A ⊆ ℝⁿ` Borel, `G`
-injective on `A` and differentiable at every point of `A`, and `Hⁿ(G(A)) < ∞`.  Then
-`Ψ(t, x) = (t, x)` carries `(L¹⌞(0, 1)) × (Hⁿ⌞G(A))` to `Hⁿ⁺¹⌞Ψ((0, 1) × G(A))`.  By
-`Measure.prod_eq` it suffices that `Hⁿ⁺¹(Ψ(s × G(B))) = |s| Hⁿ(G(B))` for Borel `s ⊆ (0, 1)` and
-`B ⊆ A`.  Where `DG` is injective, Mathlib's partition lemma cuts `B` into Borel pieces on which `G`
-is `(1 + 2δ)`-bi-Lipschitz relative to a linear `S` with `|S h| = |DG(y) h|`; the Lipschitz image
-bound compares `Hⁿ(G(P))` and `Hⁿ⁺¹(Ψ(s × G(P)))` with `Lⁿ(S(P))` and `|s| Lⁿ(S(P))`, and `δ → 0`.
-Where `DG` is not injective, `G(B)` and the cylinder over it are null (Sard: on each piece `G` is
-`(L + 1)`-Lipschitz relative to a linear `D` with `det D = ε`). -/
-theorem Submission.dimred_mbl_dt_lp_imc_piece_measure : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal), LipschitzWith L G → MeasurableSet A → InjOn G A → (∀ a ∈ A, DifferentiableAt ℝ G a) → μHE[n] (G '' A) ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict (G '' A))) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ (G '' A))) := by
-  intro N n G A L hG hA hinj hdiff hfin
-  -- Step 0.  `Φ_d(t, u) = (t, u₁, …, u_d)` is a continuous bijection `ℝ × ℝᵈ → ℝᵈ⁺¹` with
-  -- `|Φ_d(t, u) − Φ_d(t', u')|² = (t − t')² + |u − u'|²`
-  obtain ⟨Φ, hΦ⟩ : ∃ Φ : (d : ℕ) → ℝ × Euclid d → Euclid (d + 1),
-      ∀ d p, Φ d p = WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :=
-    ⟨fun d p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)), fun _ _ => rfl⟩
-  have hΦfun : ∀ d, (fun p : ℝ × Euclid d =>
-      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (d + 1))) = Φ d :=
-    fun d => funext fun p => (hΦ d p).symm
-  rw [hΦfun N]
-  have hΦc : ∀ d, Continuous (Φ d) := fun d => by
-    rw [← hΦfun d]
-    fun_prop
-  have hΦi : ∀ d, Injective (Φ d) := by
-    rintro d ⟨t, u⟩ ⟨t', u'⟩ h
-    rw [hΦ, hΦ] at h
-    obtain ⟨h1, h2⟩ := Fin.cons_injective2 (WithLp.toLp_injective 2 h)
-    exact Prod.ext h1 (WithLp.ofLp_injective 2 h2)
-  have hΦs : ∀ d, Surjective (Φ d) := fun d z =>
-    ⟨(WithLp.ofLp z 0, WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))), by simp [hΦ, Fin.cons_self_tail]⟩
-  have hΦe : ∀ d, MeasurableEmbedding (Φ d) := fun d => (hΦc d).measurableEmbedding (hΦi d)
-  have hΦsub : ∀ (d : ℕ) (t t' : ℝ) (u u' : Euclid d),
-      Φ d (t, u) - Φ d (t', u') = Φ d (t - t', u - u') := by
-    intro d t t' u u'
-    simp only [hΦ]
-    ext i
-    refine Fin.cases ?_ (fun j => ?_) i <;> simp
-  have hΦinner : ∀ (d : ℕ) (s s' : ℝ) (v v' : Euclid d),
-      inner ℝ (Φ d (s, v)) (Φ d (s', v')) = s * s' + inner ℝ v v' := by
-    intro d s s' v v'
-    simp [hΦ, PiLp.inner_apply, Fin.sum_univ_succ, mul_comm]
-  have hΦnorm : ∀ (d : ℕ) (t : ℝ) (u : Euclid d), ‖Φ d (t, u)‖ ^ 2 = t ^ 2 + ‖u‖ ^ 2 := by
-    intro d t u
-    rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, hΦinner, sq]
-  -- a `K`-Lipschitz comparison `y ↔ x` (`K ≥ 1`) extends to the cylinders `Φ(t, y) ↔ Φ(t, x)`
-  have hcyl : ∀ (d₁ d₂ : ℕ) (K t t' : ℝ) (x x' : Euclid d₁) (y y' : Euclid d₂), 1 ≤ K →
-      ‖y - y'‖ ≤ K * ‖x - x'‖ → ‖Φ d₂ (t, y) - Φ d₂ (t', y')‖ ≤ K * ‖Φ d₁ (t, x) - Φ d₁ (t', x')‖ := by
-    intro d₁ d₂ K t t' x x' y y' hK hyx
-    rw [hΦsub, hΦsub]
-    have hK0 : 0 ≤ K := zero_le_one.trans hK
-    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 ?_
-    rw [mul_pow, hΦnorm, hΦnorm]
-    have h1 : ‖y - y'‖ ^ 2 ≤ K ^ 2 * ‖x - x'‖ ^ 2 := by
-      rw [← mul_pow]
-      exact pow_le_pow_left₀ (norm_nonneg _) hyx 2
-    have h2 : (t - t') ^ 2 ≤ K ^ 2 * (t - t') ^ 2 :=
-      le_mul_of_one_le_left (sq_nonneg _) (one_le_pow₀ hK)
-    linarith
-  have himgprod : ∀ (d d' : ℕ) (f : Euclid d → Euclid d') (s : Set ℝ) (P : Set (Euclid d)),
-      (fun p : ℝ × Euclid d => Φ d' (p.1, f p.2)) '' (s ×ˢ P) = Φ d' '' (s ×ˢ (f '' P)) := by
-    intro d d' f s P
-    ext z
-    simp only [mem_image, mem_prod, Prod.exists]
     constructor
     · rintro ⟨⟨z, hz, rfl⟩, hy⟩
       refine ⟨z, ⟨hz, ?_⟩, rfl⟩
@@ -3072,63 +3009,6 @@ theorem Submission.dimred_mbl_dt_lp_imc_cylinder_tangent : ∀ (N n : ℕ) (M : 
   obtain ⟨-, -, -, hrange, -⟩ := (Submission.dimred_mbl_dt_lp_imc_suspension N n (F i) (G i)
     (hGcons i)).2.2 t u (hdiff i u hu).1
   rwa [hGcons, hrange, ← hQeq] at hT
-/-- Orientation of a cylinder: let `e₀` be the first basis vector of `ℝᴺ⁺¹` and `J v = (0, v)`
-for `v ∈ ℝᴺ`.  If `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` orients `Q ⊆ ℝᴺ` and the `(n+1)`-vector `ξ'` pairs with each
-`α` as `ξ` pairs with `α(e₀, J ·)`, then `ξ' = ±e₀ ∧ Jτ₁ ∧ ⋯ ∧ Jτₙ` orients `ℝe₀ ⊕ J(Q)`
-(Simon 6.1.1, 6.1.7).  The frame `(e₀, Jτ₁, …, Jτₙ)` is orthonormal because `J` is a linear
-isometry onto `e₀^⊥`. -/
-theorem Submission.dimred_mbl_dt_lp_imc_orientation : ∀ (N n : ℕ) (ξ : MultiVector N n) (ξ' : MultiVector (N + 1) (n + 1)) (Q : Submodule ℝ (Euclid N)), IsUnitOrientationOf ξ Q → (∀ (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ξ' α = ξ β) → IsUnitOrientationOf ξ' (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N))))) := by
-  intro N n ξ ξ' Q hξ hrel
-  obtain ⟨τ, hτon, hτspan, hτsign⟩ := hξ
-  set e₀ : Euclid (N + 1) := EuclideanSpace.single 0 1 with he₀
-  -- Step 1: `J` is linear and isometric, `J(ℝᴺ) ⊥ e₀` and `‖e₀‖ = 1`
-  let J : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
-    { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
-      map_add' := fun v w => by
-        ext i
-        refine Fin.cases ?_ (fun j => ?_) i <;> simp
-      map_smul' := fun c v => by
-        ext i
-        refine Fin.cases ?_ (fun j => ?_) i <;> simp }
-  have hJ : (fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) =
-      ⇑J := rfl
-  have hJJ : ∀ v w, inner ℝ (J v) (J w) = inner ℝ v w := by
-    intro v w
-    simp [J, PiLp.inner_apply, Fin.sum_univ_succ]
-  have he₀J : ∀ v, inner ℝ e₀ (J v) = 0 := by
-    intro v
-    simp [he₀, J, EuclideanSpace.inner_single_left]
-  have he₀e₀ : inner ℝ e₀ e₀ = (1 : ℝ) := by
-    simp [he₀]
-  -- Step 2: the frame `τ' = (e₀, Jτ₁, …, Jτₙ)` is orthonormal
-  set τ' : Fin (n + 1) → Euclid (N + 1) := Fin.cons e₀ (fun i => J (τ i)) with hτ'
-  have hτ'on : Orthonormal ℝ τ' := by
-    rw [orthonormal_iff_ite] at hτon ⊢
-    intro i j
-    refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
-    · rw [hτ', Fin.cons_zero, ite_eq_left rfl]
-      exact he₀e₀
-    · simp [hτ', he₀J, (Fin.succ_ne_zero j).symm]
-    · simp [hτ', real_inner_comm, he₀J, Fin.succ_ne_zero i]
-    · simp [hτ', hJJ, hτon]
-  -- Step 3: `span τ' = ℝe₀ ⊔ J(span τ) = ℝe₀ ⊔ J(Q)`
-  have hspan : Submodule.span ℝ (range τ') =
-      Submodule.span ℝ (insert e₀ (J '' (Q : Set (Euclid N)))) := by
-    rw [hτ', Fin.range_cons, Submodule.span_insert, Submodule.span_insert, range_comp',
-      ← Submodule.map_span, hτspan, ← Submodule.map_span, Submodule.span_eq]
-  -- Step 4: `ξ' α = ξ β` for `β = α(e₀, J ·)`, and `β(τ) = α(τ')`
-  let Jc : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap J
-  have hval : ∀ α : Covector (Euclid (N + 1)) (n + 1),
-      ξ' α = ξ ((α.curryLeft e₀).compContinuousLinearMap Jc) :=
-    fun α => hrel α _ fun v => rfl
-  have hβτ : ∀ α : Covector (Euclid (N + 1)) (n + 1),
-      (α.curryLeft e₀).compContinuousLinearMap Jc τ = α τ' := fun α => rfl
-  rw [hJ]
-  refine ⟨τ', hτ'on, hspan, ?_⟩
-  rcases hτsign with h | h
-  · exact Or.inl fun α => by rw [hval, h, hβτ]
-  · exact Or.inr fun α => by rw [hval, h, hβτ]
-
 /-- **Cylinders over rectifiable sets** (the carrier `(0, 1) × M` of `[[(0, 1)]] × T`, Simon
 Ch. 6, 2.17–2.21, with an arbitrary `I ⊆ ℝ` in place of `(0, 1)`): if `M ⊆ ℝᴺ` is countably
 `n`-rectifiable, then `Ψ(I × M) ⊆ ℝ^{N+1}`, `Ψ(t, x) = (t, x₁, …, x_N)`, is countably
