@@ -1535,6 +1535,37 @@ theorem Submission.imrep_weighted_orient_indicator_ae_eq : ∀ (P n : ℕ) (U : 
       hscal R₂ h₂ subset_union_right α, sub_self]
     rfl
 
+/-- Vector density of a sum (step 1 of the competitor mass bound in the proof of Simon Ch. 7,
+2.4 (8)–(9)).  Let `U` be open, `R = (M, θ, ξ)` represent `T`, and `T = τ(M₁, θ₁, ξ₁) +
+τ(M₂, θ₂, ξ₂)` on `𝒟ⁿ(U)`.  Then `1_M θ ξ = 1_{M₁} θ₁ ξ₁ + 1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e.  Simon Ch. 6,
+3.2(1) with `p₁ = p₂ = 1` gives an IMRep `R' = (M', θ', ξ')` with `1_{M'} θ' ξ' = 1_{M₁} θ₁ ξ₁ +
+1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e., so `τ(R') = τ(R₁) + τ(R₂) = T`.  Uniqueness of the vector density
+(3.2(3)) gives `1_{M'} θ' ξ' = 1_M θ ξ` `Hⁿ`-a.e. on `M' ∪ M`, and off `M' ∪ M` both vanish. -/
+theorem Submission.dor_lmb_pc_cm_vector_density_add : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (T : GeometricCurrentOn U n), IsOpen U → R.Represents T → (∀ ω : TestFormOn U n, T ω = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n)) → ∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x := by
+  intro P n U R₁ R₂ R T hU hR hT
+  -- Step 1: an IMRep `R'` with `1_{M'} θ' ξ' = 1_{M₁} θ₁ ξ₁ + 1_{M₂} θ₂ ξ₂` a.e.
+  obtain ⟨R', hR'⟩ := Submission.rsdic_exists_imrep_int_combination P n U R₁ R₂ 1 1 hU
+  -- Step 2: `τ(R') = τ(R₁) + τ(R₂) = T`
+  have hR'T : R'.Represents T := by
+    intro ω
+    rw [hT ω, Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R' 1 1 hR' ω]
+    simp only [Int.cast_one, one_mul]
+  -- Step 3: `1_{M'} θ' ξ' = 1_M θ ξ` `Hⁿ`-a.e. on `M' ∪ M`
+  have hR'R := Submission.imrep_weighted_orient_indicator_ae_eq P n U T R' R hU hR'T hR
+  rw [ae_restrict_iff' (R'.measurableSet_carrier.union R.measurableSet_carrier)] at hR'R
+  filter_upwards [hR'R, hR'] with x hx hx'
+  -- Step 4: hence `1_M θ ξ = 1_{M'} θ' ξ'` at `x`, as off `M' ∪ M` both indicators vanish
+  have hxR : R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
+      R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x := by
+    by_cases hxs : x ∈ R'.carrier ∪ R.carrier
+    · exact (hx hxs).symm
+    · have h₁ : x ∉ R'.carrier := fun h => hxs (Or.inl h)
+      have h₂ : x ∉ R.carrier := fun h => hxs (Or.inr h)
+      rw [indicator_of_notMem h₂, indicator_of_notMem h₁]
+  -- Step 5: combine with step 1
+  rw [hxR, hx']
+  simp only [Int.cast_one, one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
