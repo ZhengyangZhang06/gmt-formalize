@@ -1299,6 +1299,148 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     obtain ⟨r', hr', hball⟩ := Metric.isOpen_iff.1 hW y hyW
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
+/-- **Generalized cross product in an `(m + 1)`-dimensional subspace `A₀ ⊆ ℝᴾ`** (the volume
+form of `A₀` and its `A₀`-representative; Simon Appendix B, the unit normal of a hypersurface of
+`A₀ ≅ ℝ^{m+1}` with the orientation induced from `C`, used in B.2).  Fix an orthonormal basis
+`a₀, …, a_m` of `A₀`, put `Ω(v₀, …, v_m) = det_a(P_{A₀} v₀, …, P_{A₀} v_m)`, an alternating
+`(m + 1)`-form that only sees the `A₀`-components of its arguments, and
+`N(w) = ∑ᵢ Ω(aᵢ, w) aᵢ ∈ A₀`; `N` is continuous because a multilinear map on `ℝᴾ` is a finite sum
+of products of coordinates.  Expanding `P_{A₀} u = ∑ᵢ ⟪aᵢ, u⟫ aᵢ` gives `⟪N(w), u⟫ = Ω(u, w)`, so
+`⟪N(w), w_j⟫ = Ω(w_j, w) = 0`.  For linearly independent `w_j ∈ A₀` some `u ∈ A₀` makes `(u, w)`
+a basis of `A₀`, so `⟪N(w), u⟫ = Ω(u, w) ≠ 0`.  For orthonormal `w_j ∈ A₀`, extend them to an
+orthonormal basis `(b₀, w)` of `A₀`; then `N(w) = ⟪N(w), b₀⟫ b₀` and `⟪N(w), b₀⟫ = Ω(b₀, w) = ±1`,
+the determinant of a change of orthonormal basis. -/
+theorem Submission.codim1_hcp_un_cross_product : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ A₀ = m + 1 → ∃ N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P, (∀ w : Fin m → Euclid P, N w ∈ A₀) ∧ (∀ (w : Fin m → Euclid P) (j : Fin m), inner ℝ (N w) (w j) = 0) ∧ (∀ w : Fin m → Euclid P, Orthonormal ℝ w → (∀ j, w j ∈ A₀) → ‖N w‖ = 1) ∧ ∀ w : Fin m → Euclid P, LinearIndependent ℝ w → (∀ j, w j ∈ A₀) → N w ≠ 0 := by
+  intro P m A₀ hA
+  -- step 1: an orthonormal basis `a` of `A₀` and the volume form `Ω(v) = det_a (P_{A₀} v)`
+  let a : OrthonormalBasis (Fin (m + 1)) ℝ A₀ := (stdOrthonormalBasis ℝ A₀).reindex (finCongr hA)
+  let pr : Euclid P →ₗ[ℝ] A₀ := (A₀.orthogonalProjectionOnto : Euclid P →ₗ[ℝ] A₀)
+  let Ω : Euclid P [⋀^Fin (m + 1)]→ₗ[ℝ] ℝ := a.toBasis.det.compLinearMap pr
+  have hΩ : ∀ v, Ω v = a.toBasis.det (fun j => pr (v j)) := fun v => rfl
+  -- step 2: `N(w) = ∑ᵢ Ω(aᵢ, w) aᵢ`
+  let N₀ : Euclid P [⋀^Fin m]→ₗ[ℝ] Euclid P :=
+    ∑ i, (Ω.curryLeft (a i : Euclid P)).smulRight (a i : Euclid P)
+  have hN₀ : ∀ w, N₀ w = ∑ i, Ω (Fin.cons (a i : Euclid P) w) • (a i : Euclid P) := fun w =>
+    map_sum (AddMonoidHom.mk' (fun f : Euclid P [⋀^Fin m]→ₗ[ℝ] Euclid P => f w) fun _ _ => rfl) _ _
+  -- continuity of `N₀`: expand every `w j` in the standard basis `e` of `ℝᴾ`
+  have hcont : Continuous N₀ := by
+    let e := EuclideanSpace.basisFun (Fin P) ℝ
+    have hexp : (N₀ : (Fin m → Euclid P) → Euclid P) = fun w => ∑ r : Fin m → Fin P,
+        (∏ j, inner ℝ (e (r j)) (w j)) • N₀ (fun j => e (r j)) := by
+      funext w
+      have h1 : N₀ w = N₀.toMultilinearMap (fun j => ∑ k, inner ℝ (e k) (w j) • e k) := by
+        simp only [e.sum_repr']
+        rfl
+      rw [h1, MultilinearMap.map_sum]
+      exact Finset.sum_congr rfl fun r _ => N₀.toMultilinearMap.map_smul_univ _ _
+    rw [hexp]
+    fun_prop
+  let N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P := { N₀ with cont := hcont }
+  have hN : ∀ w, N w = N₀ w := fun w => rfl
+  -- `u ↦ Ω(u, w)` is linear
+  let ℓ : (Fin m → Euclid P) → Euclid P →ₗ[ℝ] ℝ := fun w =>
+    { toFun := fun u => Ω (Fin.cons u w)
+      map_add' := fun u v => Ω.map_vecCons_add w u v
+      map_smul' := fun c u => Ω.map_vecCons_smul w c u }
+  -- step 3: `⟨N(w), u⟩ = Ω(u, w)`
+  have key : ∀ w u, inner ℝ (N₀ w) u = Ω (Fin.cons u w) := by
+    intro w u
+    -- `Ω(u, w) = Ω(P_{A₀} u, w)` and `P_{A₀} u = ∑ᵢ ⟨aᵢ, u⟩ aᵢ`
+    have hproj : Ω (Fin.cons u w) = Ω (Fin.cons (pr u : Euclid P) w) := by
+      rw [hΩ, hΩ]
+      congr 1
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · rw [Fin.cons_zero, Fin.cons_zero]
+        exact (A₀.orthogonalProjectionOnto_mem_subspace_eq_self (pr u)).symm
+      · simp
+    have hsum : (pr u : Euclid P) = ∑ i, inner ℝ (a i : Euclid P) u • (a i : Euclid P) := by
+      conv_lhs => rw [← a.sum_repr' (pr u)]
+      simp [pr]
+    rw [hproj, hsum, hN₀, sum_inner]
+    change _ = ℓ w (∑ i, _)
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, real_inner_smul_left, smul_eq_mul, mul_comm]
+    rfl
+  -- step 4 (i): `N(w) ∈ A₀`
+  have hmem : ∀ w, N₀ w ∈ A₀ := by
+    intro w
+    rw [hN₀]
+    exact A₀.sum_mem fun i _ => A₀.smul_mem _ (a i).2
+  -- step 5 (ii): `⟨N(w), w_j⟩ = Ω(w_j, w) = 0`
+  have horth : ∀ w (j : Fin m), inner ℝ (N₀ w) (w j) = 0 := by
+    intro w j
+    rw [key]
+    exact Ω.map_eq_zero_of_eq (Fin.cons (w j) w) (i := 0) (j := j.succ) (by simp)
+      (Fin.succ_ne_zero j).symm
+  refine ⟨N, hmem, horth, ?_, ?_⟩
+  · -- step 8 (iii)
+    intro w hon hw
+    let w' : Fin m → A₀ := fun j => ⟨w j, hw j⟩
+    have hon' : Orthonormal ℝ w' := hon.codRestrict A₀ hw
+    -- extend `w'` to an orthonormal basis `b` of `A₀` with `b (j + 1) = w' j`
+    let v : Fin (m + 1) → A₀ := Fin.cons 0 w'
+    have hdr : Orthonormal ℝ ((range (Fin.succ : Fin m → Fin (m + 1))).domRestrict v) := by
+      have : (range (Fin.succ : Fin m → Fin (m + 1))).domRestrict v =
+          w' ∘ (Equiv.ofInjective Fin.succ (Fin.succ_injective m)).symm := by
+        funext x
+        obtain ⟨_, j, rfl⟩ := x
+        simp [v, Set.domRestrict]
+      rw [this]
+      exact hon'.comp _ (Equiv.injective _)
+    obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp [hA]) hdr
+    have hbs : ∀ j, b j.succ = w' j := fun j =>
+      (hb _ (mem_range_self j)).trans (Fin.cons_succ _ _ _)
+    -- `Ω(b₀, w) = det_a b = ±1`
+    have hpb : (fun j => pr ((Fin.cons (b 0 : Euclid P) w : Fin (m + 1) → Euclid P) j)) = ⇑b := by
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · simp [pr]
+      · rw [Fin.cons_succ, hbs]
+        exact A₀.orthogonalProjectionOnto_mem_subspace_eq_self (w' k)
+    have hdet : Ω (Fin.cons (b 0 : Euclid P) w) = 1 ∨ Ω (Fin.cons (b 0 : Euclid P) w) = -1 := by
+      rw [hΩ, hpb]
+      exact a.det_to_matrix_orthonormalBasis_real b
+    -- `N(w) = ⟨b₀, N(w)⟩ b₀`
+    obtain ⟨n', hn'⟩ : ∃ n' : A₀, (n' : Euclid P) = N₀ w := ⟨⟨N₀ w, hmem w⟩, rfl⟩
+    have hexp : n' = inner ℝ (b 0) n' • b 0 := by
+      conv_lhs => rw [← b.sum_repr' n']
+      rw [Fin.sum_univ_succ]
+      have : ∀ j : Fin m, inner ℝ (b j.succ) n' = 0 := by
+        intro j
+        rw [hbs, Submodule.coe_inner, hn', real_inner_comm]
+        exact horth w j
+      simp [this]
+    have hn : ‖N₀ w‖ = |Ω (Fin.cons (b 0 : Euclid P) w)| := by
+      rw [← hn', Submodule.norm_coe, hexp, norm_smul, b.orthonormal.1 0, mul_one, Real.norm_eq_abs,
+        Submodule.coe_inner, hn', real_inner_comm, key]
+    rw [hN, hn]
+    rcases hdet with h | h <;> simp [h]
+  · -- step 7 (iv)
+    intro w hli hw hzero
+    let w' : Fin m → A₀ := fun j => ⟨w j, hw j⟩
+    have hli' : LinearIndependent ℝ w' := LinearIndependent.of_comp A₀.subtype hli
+    -- a vector `u ∈ A₀ \ span w'`
+    obtain ⟨u, hu⟩ : ∃ u : A₀, u ∉ Submodule.span ℝ (range w') := by
+      by_contra! hcon
+      have h1 := finrank_span_eq_card hli'
+      have htop : Submodule.span ℝ (range w') = ⊤ := eq_top_iff.2 fun x _ => hcon x
+      rw [htop, finrank_top, hA, Fintype.card_fin] at h1
+      omega
+    have hli2 : LinearIndependent ℝ (Fin.cons u w' : Fin (m + 1) → A₀) := hli'.finCons hu
+    have hdet : IsUnit (a.toBasis.det (Fin.cons u w' : Fin (m + 1) → A₀)) :=
+      (a.toBasis.is_basis_iff_det).1
+        ⟨hli2, hli2.span_eq_top_of_card_eq_finrank' (by simp [hA])⟩
+    apply hdet.ne_zero
+    have h1 : (fun j => pr ((Fin.cons (u : Euclid P) w : Fin (m + 1) → Euclid P) j)) =
+        (Fin.cons u w' : Fin (m + 1) → A₀) := by
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · simp [pr]
+      · rw [Fin.cons_succ, Fin.cons_succ]
+        exact A₀.orthogonalProjectionOnto_mem_subspace_eq_self (w' k)
+    rw [← h1, ← hΩ, ← key, ← hN, hzero, inner_zero_left]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
