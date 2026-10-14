@@ -717,6 +717,37 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- Derivatives within a set are unique on the span of its curve tangent vectors (Simon Ch. 2,
+§4, p. 55; cf. (4.6)–(4.7)), for an arbitrary set `M ⊆ ℝᴾ`.  If `f` has derivative `f'` within
+`M` at `x`, then so does `L = fderivWithin ℝ f M x`, and two derivatives within `M` agree on the
+tangent cone of `M` at `x`.  Each `w = γ'(0) ∈ T_xM` lies in that cone: as `t → 0`, `t ≠ 0`,
+`γ(t) − x → 0`, `x + (γ(t) − x) = γ(t) ∈ M` and `t⁻¹(γ(t) − x) → w`.  So `L = f'` on `T_xM`,
+hence on its linear span. -/
+theorem Submission.codim1_hcp_lsa_fderivWithin_eq_on_tangent_span : ∀ (P : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (f' : Euclid P →L[ℝ] ℝ) (x v : Euclid P), HasFDerivWithinAt f f' M x → v ∈ Submodule.span ℝ (tangentSpace M x) → fderivWithin ℝ f M x v = f' v := by
+  intro P M f f' x v hf hv
+  -- `L = fderivWithin ℝ f M x` and `f'` are both derivatives of `f` within `M` at `x`, so they
+  -- agree on the tangent cone of `M` at `x`
+  have huniq : EqOn (fderivWithin ℝ f M x) f' (tangentConeAt ℝ M x) :=
+    hf.differentiableWithinAt.hasFDerivWithinAt.unique_on hf
+  -- the velocity `w = γ'(0)` of a curve `γ` in `M` through `x` lies in the tangent cone:
+  -- take `c(t) = t⁻¹` and `d(t) = γ(t) − x` as `t → 0`, `t ≠ 0`
+  have hcone : tangentSpace M x ⊆ tangentConeAt ℝ M x := by
+    rintro w ⟨γ, -, hγM, hγ0, hγw⟩
+    refine mem_tangentConeAt_of_seq (𝓝[≠] (0 : ℝ)) (fun t => t⁻¹) (fun t => γ t - x) ?_ ?_ ?_
+    · -- `γ(t) − x → 0`, since `γ` is continuous at `0` and `γ(0) = x`
+      rw [tendsto_sub_nhds_zero_iff, ← hγ0]
+      exact hγw.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    · -- `x + (γ(t) − x) = γ(t) ∈ M` for `t ∈ (−1, 1)`
+      filter_upwards [nhdsWithin_le_nhds (Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos)]
+        with t ht
+      rw [add_sub_cancel]
+      exact hγM ht
+    · -- `t⁻¹(γ(t) − x) = t⁻¹(γ(0 + t) − γ(0)) → γ'(0) = w`
+      simpa [hγ0] using hγw.tendsto_slope_zero
+  -- `L = f'` on `T_xM`, hence on its linear span
+  exact LinearMap.eqOn_span (f := (fderivWithin ℝ f M x : Euclid P →ₗ[ℝ] ℝ))
+    (g := (f' : Euclid P →ₗ[ℝ] ℝ)) (fun w hw => huniq (hcone hw)) hv
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
