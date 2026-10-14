@@ -2188,6 +2188,70 @@ theorem Submission.rsd_isIntegerMultiplicity_int_combination : ∀ (P n : ℕ) (
   rw [hS ω, hR₁ ω, hR₂ ω,
     Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
 
+/-- Measure comparison in the minimality transfer of **Simon Lemma 7.3.5**.  Let `Sᵢ = τ(Rᵢ)` in
+`ℝᴾ` with weights `μᵢ = θᵢ Hʲ⌞Mᵢ` (`i = 1, 2`), and let `W₀ ⊆ B` be open with
+`K = spt(S₁ − S₂) ⊆ W₀`.  Then `μ₁(B) + μ₂(W₀) = μ₂(B) + μ₁(W₀)` in `[0, ∞]`.  `S₁ − S₂` is integer
+multiplicity (`rsd_isIntegerMultiplicity_int_combination`), say `S₁ − S₂ = τ(M, θ, ξ)`, and
+`Hʲ(M ∖ K) = 0` (`imrep_carrier_sdiff_support_null`).  If `spt ω ∩ K = ∅`, the integrand
+`θ⟨ω, ξ⟩` vanishes on `K`, so `S₁(ω) = S₂(ω)`.  Hence `M_O(S₁) = M_O(S₂)`, i.e. `μ₁(O) = μ₂(O)`
+(`imrep_represents_massOn_eq_measure`), for every open `O` disjoint from the closed set `K`.  Apply
+this to `B ∖ K` and `W₀ ∖ K`, and split `B` and `W₀` at the Borel set `K`. -/
+theorem Submission.dimred_cs_sos_mt_measure_comparison : ∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (W₀ B : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsOpen W₀ → IsOpen B → (S₁ - S₂).support ⊆ W₀ → W₀ ⊆ B → R₁.measure B + R₂.measure W₀ = R₂.measure B + R₁.measure W₀ := by
+  intro P j S₁ S₂ R₁ R₂ W₀ B hR₁ hR₂ hW₀ hB hKW hWB
+  -- `K = spt(S₁ − S₂) = ℝᴾ ∖ Z` is closed, `Z` being the open zero region
+  set K := (S₁ - S₂).support
+  have hKc : IsClosed K := isClosed_univ.sdiff (S₁ - S₂).isOpen_zeroRegion
+  -- `S₁ − S₂ = 1·S₁ + (−1)·S₂` is integer multiplicity; let `R = (M, θ, ξ)` represent it
+  have hsub : ∀ ω : TestFormOn (univ : Set (Euclid P)) j, (S₁ - S₂) ω = S₁ ω - S₂ ω :=
+    fun ω => LinearMap.sub_apply _ _ ω
+  obtain ⟨R, hR⟩ : IsIntegerMultiplicity (S₁ - S₂) :=
+    Submission.rsd_isIntegerMultiplicity_int_combination P j univ S₁ S₂ (S₁ - S₂) 1 (-1)
+      isOpen_univ ⟨R₁, hR₁⟩ ⟨R₂, hR₂⟩ fun ω => by
+        rw [hsub ω]
+        push_cast
+        ring
+  -- `Hʲ(M ∖ K) = 0`
+  have hnull := Submission.imrep_carrier_sdiff_support_null P j univ (S₁ - S₂) R isOpen_univ hR
+  -- `S₁(ω) = S₂(ω)` for every test form `ω` supported off `K`: the integrand of
+  -- `(S₁ − S₂)(ω) = ∫_M θ ⟨ω, ξ⟩ dHʲ` vanishes on `M ∩ K`, and `M ∖ K` is null
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) j,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) j)) K → S₁ ω = S₂ ω := by
+    intro ω hω
+    have h0 : (S₁ - S₂) ω = 0 := by
+      rw [hR ω, IMRep.action]
+      refine integral_eq_zero_of_ae ?_
+      rw [EventuallyEq, ae_restrict_iff' R.measurableSet_carrier]
+      filter_upwards [measure_eq_zero_iff_ae_notMem.mp hnull] with x hx hxM
+      have hxK : x ∈ K := by
+        by_contra hxK
+        exact hx ⟨hxM, hxK⟩
+      have hωx : (ω : DifferentialForm (Euclid P) j) x = 0 :=
+        image_eq_zero_of_notMem_tsupport fun h => hω.notMem_of_mem_left h hxK
+      simp [hωx]
+    rw [hsub ω] at h0
+    linarith
+  -- hence `M_O(S₁) = M_O(S₂)`, i.e. `R₁.measure O = R₂.measure O`, for open `O` disjoint from `K`
+  have hmeas : ∀ O : Set (Euclid P), IsOpen O → Disjoint O K → R₁.measure O = R₂.measure O := by
+    intro O hO hOK
+    rw [← Submission.imrep_represents_massOn_eq_measure P j univ O S₁ R₁ isOpen_univ hR₁ hO
+        (subset_univ O),
+      ← Submission.imrep_represents_massOn_eq_measure P j univ O S₂ R₂ isOpen_univ hR₂ hO
+        (subset_univ O)]
+    unfold GeometricCurrentOn.massOn
+    congr 1
+    refine image_congr fun ω hω => ?_
+    rw [hvan ω (hOK.mono_left hω.1)]
+  -- split `B` and `W₀` at the Borel set `K ⊆ W₀ ⊆ B` and compare
+  have hKm : MeasurableSet K := hKc.measurableSet
+  have hBK := hmeas (B \ K) (hB.sdiff hKc) disjoint_sdiff_left
+  have hWK := hmeas (W₀ \ K) (hW₀.sdiff hKc) disjoint_sdiff_left
+  rw [← measure_sdiff_add_inter (μ := R₁.measure) B hKm,
+    ← measure_sdiff_add_inter (μ := R₂.measure) W₀ hKm,
+    ← measure_sdiff_add_inter (μ := R₂.measure) B hKm,
+    ← measure_sdiff_add_inter (μ := R₁.measure) W₀ hKm,
+    inter_eq_right.mpr (hKW.trans hWB), inter_eq_right.mpr hKW, hBK, hWK]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
