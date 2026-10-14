@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+  "depth": 3,
+  "title": "The carrier is H^n-null inside a relatively compact open set on which the current vanishes",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P any set and W ⊆ ℝ^P. Let T ∈ 𝒟_n(U) be a GeometricCurrentOn U n, and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n) representing T: T(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ 𝒟^n(U) = TestFormOn U n. Assume W is open, closure W is compact, closure W ⊆ U, and T vanishes on W, i.e. T(ω) = 0 for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W. Then H^n(M ∩ W) = 0, where H^n = μHE[n] is Mathlib's normalized n-dimensional Hausdorff measure.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μHE[n] (R.carrier ∩ W) = 0",
+  "lean_name": "imrep_carrier_inter_null_of_vanishesOn",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.unit_orientation_nonzero_bounded-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584-a1",
+      "result_commit": "2e5d20d49a4a41f79e81db1a65e850fb919b38ba",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1-a1"
+}

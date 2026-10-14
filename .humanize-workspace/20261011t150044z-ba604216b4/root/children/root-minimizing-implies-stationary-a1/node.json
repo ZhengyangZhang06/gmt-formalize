@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Lemma 7.1.2: minimizing currents have stationary varifolds with bounded mean curvature",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, and T ∈ 𝒟_n(U) with spt T ⊆ N, T minimizing in N ∩ U (Simon 7.1.1, integer multiplicity competitors) and ∂T = 0 in U (vacuous for n = 0). Then for every integer multiplicity representation R = (M, θ, ξ) of T, the varifold v(M, θ) is stationary in N ∩ U (∫_M θ div_M X dH^n = 0 for all X ∈ C¹_c(U; ℝ^{n+k}) with X(x) ∈ T_xN for x ∈ N ∩ U) and has a generalized mean curvature H in U that is μ_V-essentially bounded on every compact subset of U.",
+  "lean_statement": "MinimizingImpliesStationary",
+  "lean_name": "minimizing_implies_stationary",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-a1"
+}

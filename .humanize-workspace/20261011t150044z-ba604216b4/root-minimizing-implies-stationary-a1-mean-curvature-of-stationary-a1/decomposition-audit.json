@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "mcs_trace_normal_part_eq_neg_inner|mcs_exists_c1_field_eq_proj_near|mcs_firstVariation_add|mcs_exists_meanCurvature_field",
+        "measurable_fderiv|exists_contDiff_support_eq_eq_one_iff|exists_compact_closed_between|exists_open_between_and_isCompact_closure|continuousOn_fderiv_of_isOpen|trace_eq_sum_inner|trace_comp_comm.|starProjection_apply_mem|starProjection_norm_le|starProjection_eq_self_iff|inner_starProjection_left_eq_right|adjoint_inner_left|fderiv_clm_apply|integral_withDensity_eq_integral_toReal_smul|integrable_toReal_of_lintegral_ne_top",
+        "support_fderiv_subset|HasCompactSupport.fderiv|fderiv_of_notMem_tsupport",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcs-independent-audit-dgretaqr/IndependentTypes.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcs-independent-audit-dgretaqr/CheckedProofs.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env ../../toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mcs-independent-audit-dgretaqr/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1/decomposition-v4.json",
+        "/tmp/mcs-independent-audit-dgretaqr/IndependentTypes.lean",
+        "/tmp/mcs-independent-audit-dgretaqr/CheckedProofs.lean",
+        "/tmp/mcs-independent-audit-dgretaqr/Instances.lean"
+      ],
+      "conclusion": "The four-way split appropriately separates calculus, cutoff construction, integrability, and field regularity. The snapshot contract and 12 inspected Mathlib files match the compiler sources. No proposed name occurs in the snapshot or conflicts with the 453-node DAG or another branch's records. All names are bare identifiers; all frozen types are standalone one-line propositions matching their prose and elaborate against frozen definitions alone. Dependencies are acyclic and correctly directed. Independent proof replay establishes all four children and the exact selected parent conditional only on its four frozen sibling contracts, using only propext, Classical.choice and Quot.sound. Projection, operator-norm, adjoint and measurability instances were verified. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normal_trace_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the exact trace formula match. Local equality justifies differentiating Y; the evaluation product rule gives its derivative. Projection idempotence, trace cyclicity and Q ≤ S yield the stated cancellation, and the adjoint identity gives the correct sign. Summation completes the proof, including P = 0, without circular reliance."
+    },
+    {
+      "key": "tangential_cutoff_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every openness, regularity, relative-closure and support hypothesis. The compact set construction places the cutoff inside O ∩ U. The two local cases prove global C¹ regularity and agreement near every point of N, including points outside tsupport X. Compact support and containment in U follow as claimed."
+    },
+    {
+      "key": "first_variation_additive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Projection measurability is an explicit hypothesis, so no undeclared sibling dependency is needed. The proof establishes measurable integrands, compactly supported derivative bounds and integrable domination using R.locallyIntegrable_mult. Pointwise derivative and trace additivity then legitimately permit integral_add. This proves precisely the stated identity without assuming integrability or linearity implicitly."
+    },
+    {
+      "key": "mean_curvature_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-measure statement and pointwise operator-norm bound match the Lean type. Relative closedness makes N ∩ U measurable. The continuous algebraic map and measurable_fderiv establish the indicator field's a.e. strong measurability. Compactness of K ∩ closure N inside O bounds the derivative and yields P·max(C,0), including empty intersections and P = 0."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.uniform_small-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "depth": 4,
+  "title": "Test-form convergence to 0 gives uniform smallness with a common compact support",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and (ω_j)_{j∈ℕ} a sequence in 𝒟ⁿ(U) (TestFormOn U n) with TestFormOnConverges ω_j 0. Then there is a compact C ⊆ U such that ω_j(x) = 0 for every j and every x ∉ C. Moreover, for every ε > 0, for all sufficiently large j, ‖ω_j(x)‖ ≤ ε for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε",
+  "lean_name": "dpf_pfc_testFormOnConverges_zero_uniform",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b-a1"
+}
