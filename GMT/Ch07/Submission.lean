@@ -756,6 +756,65 @@ theorem Submission.cbr_ci_iso_svol_steiner_slice_volume_eq : ∀ (d : ℕ) (j : 
       ext t
       rw [mem_ofPred_eq, mem_Icc, ← abs_le, and_iff_right hBne]
     rw [hIcc, Real.volume_Icc, sub_neg_eq_add, add_halves, ENNReal.ofReal_toReal hBfin]
+/-- **Symmetric replacement** (Simon, Ch. 1, proof of 2.10): applying the coordinate Steiner
+symmetrizations `S_i(B) = {y : B^i_y ≠ ∅, |y_i| ≤ L¹(B^i_y)/2}`, `B^i_y = {t : y[i↦t] ∈ B}`, for
+`i = 1, …, d` to a compact `A ⊆ ℝᵈ` gives a compact `K` with `Lᵈ(K) = Lᵈ(A)`, `ediam K ≤ ediam A`
+and `-K = K`.  Each `S_i` keeps compactness, Lebesgue measure (equal slice lengths and Cavalieri)
+and the diameter bound, makes the set invariant under `R_i(y) = y[i↦-y_i]` and keeps the earlier
+`R_k`-invariances; flipping the coordinates of `x ∈ K` one at a time then gives `-x ∈ K`. -/
+theorem Submission.dmcbr_ci_iso_exists_symmetric_replacement : ∀ (d : ℕ) (A : Set (Euclid d)), IsCompact A → ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧ ediam K ≤ ediam A ∧ ∀ x ∈ K, -x ∈ K := by
+  intro d A hA
+  -- Step 0: for compact `B`, `S_i(B)` is compact (the slice length is upper semicontinuous) and
+  -- `Lᵈ(S_i(B)) = Lᵈ(B)` (equal slice lengths and Cavalieri's principle)
+  have hstep : ∀ (i : Fin d) (B : Set (Euclid d)), IsCompact B →
+      IsCompact {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}.Nonempty ∧
+        |y i| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}).toReal / 2} ∧
+      volume {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}.Nonempty ∧
+        |y i| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp i t) ∈ B}).toReal / 2} =
+        volume B := by
+    intro i B hB
+    have hS := Submission.cbr_ci_iso_steiner_isCompact d i B hB
+      (Submission.cbr_ci_iso_slice_length_usc d i B hB)
+    exact ⟨hS, Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq d i _ B hS.measurableSet
+      hB.measurableSet (Submission.cbr_ci_iso_svol_steiner_slice_volume_eq d i B hB)⟩
+  -- Steps 1–3: for every finite set `F` of coordinates there is a compact `K_F` with
+  -- `Lᵈ(K_F) = Lᵈ(A)`, `ediam K_F ≤ ediam A` and `R_k(K_F) ⊆ K_F` for `k ∈ F`
+  have hclaim : ∀ F : Finset (Fin d), ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧
+      ediam K ≤ ediam A ∧
+      ∀ k ∈ F, ∀ x ∈ K, WithLp.toLp 2 (Function.update x.ofLp k (-x k)) ∈ K := by
+    intro F
+    induction F using Finset.induction_on with
+    | empty => exact ⟨A, hA, rfl, le_rfl, by simp⟩
+    | insert i F hi ih =>
+      -- `K_{insert i F} = S_i(K_F)`
+      obtain ⟨K, hK, hvol, hdiam, hsym⟩ := ih
+      obtain ⟨hSc, hSv⟩ := hstep i K hK
+      refine ⟨_, hSc, hSv.trans hvol, (Submission.cbr_ci_iso_steiner_ediam_le d i K hK).trans hdiam,
+        fun k hk x hx => ?_⟩
+      rcases Finset.mem_insert.mp hk with rfl | hk
+      · exact (Submission.cbr_ci_iso_steiner_reflection d k K).1 x hx
+      · exact (Submission.cbr_ci_iso_steiner_reflection d i K).2 k (fun h => hi (h ▸ hk))
+          (hsym k hk) x hx
+  -- Step 4: `K = K_univ` is invariant under every `R_i`
+  obtain ⟨K, hK, hvol, hdiam, hsym⟩ := hclaim Finset.univ
+  refine ⟨K, hK, hvol, hdiam, fun x hx => ?_⟩
+  -- Step 5: `x^G ∈ K` for every `G`, where `x^G` negates the coordinates in `G`, since
+  -- `x^{insert i G} = R_i(x^G)` for `i ∉ G`; and `x^univ = -x`
+  have hflip : ∀ G : Finset (Fin d),
+      (WithLp.toLp 2 (fun k => if k ∈ G then -x k else x k) : Euclid d) ∈ K := by
+    intro G
+    induction G using Finset.induction_on with
+    | empty => simpa using hx
+    | insert i G hi ih =>
+      convert hsym i (Finset.mem_univ i) _ ih using 1
+      ext k
+      by_cases hk : k = i
+      · subst hk
+        simp [hi]
+      · simp [hk]
+  convert hflip Finset.univ using 1
+  ext k
+  simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
