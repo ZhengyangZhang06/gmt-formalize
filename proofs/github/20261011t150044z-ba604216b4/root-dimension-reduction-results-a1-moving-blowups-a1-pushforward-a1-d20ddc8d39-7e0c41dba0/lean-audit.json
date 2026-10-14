@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "39cd07d0f51dcee2937ab61800368a2c315424befd68f91139a2b07ee1fd1f9d",
+  "git_delta": {
+    "base_commit": "0022163f7bfb0d8f92794cd06b057f02e8db5f84",
+    "candidate_commit": "978954c4f5f7d7582852cd3c10862d6196d66336",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8c36becbb9dae6a0a89781f852ec0a9b6b6c962d767b1ac77d021d6ea53f8c22",
+    "source_sha256": "ba7d384eeefc19fe13ddc33eeb78f42e8f021a559b7de6851f06648b770c1f21",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_pushforward_boundaryVanishes",
+      "statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (X Q : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → R.Represents X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → BoundaryVanishes Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
