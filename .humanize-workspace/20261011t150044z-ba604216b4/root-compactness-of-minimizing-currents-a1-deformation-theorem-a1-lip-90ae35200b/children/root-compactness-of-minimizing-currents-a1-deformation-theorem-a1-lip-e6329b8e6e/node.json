@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1.locality-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1",
+  "depth": 6,
+  "title": "Locality: X(η) = X(η′) when η = η′ on an open neighbourhood of spt X (from VO)",
+  "statement": "Assume (VO), the vanishing-off-support antecedent: for all P, n ∈ ℕ, U ⊆ ℝ^P, S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and ω ∈ 𝒟ⁿ(U) (TestFormOn U n) with tsupport ω disjoint from spt S, S(ω) = 0 (the exact frozen Lean antecedent). Then (LOC) for all N, k ∈ ℕ, X ∈ 𝒟_k(ℝ^N) (GeometricCurrentOn univ k), η, η' ∈ 𝒟^k(ℝ^N) and W ⊆ ℝ^N: if W is open, spt X ⊆ W and η(x) = η'(x) for all x ∈ W, then X(η) = X(η').",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η'",
+  "lean_name": "cmcdt_lpo_tk_locality",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-e6329b8e6e-a1"
+}

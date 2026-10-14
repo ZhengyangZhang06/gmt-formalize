@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.normal_closure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1",
+  "depth": 6,
+  "title": "Compactly supported normal currents are closed under differences and boundaries",
+  "statement": "(a) For all N, k ∈ ℕ and all X, Y ∈ 𝒟_k(ℝ^N) (GeometricCurrentOn univ k), suppose spt X is compact, M(X) < ∞, boundaryMassOn X univ < ∞, spt Y is compact, M(Y) < ∞ and boundaryMassOn Y univ < ∞. Then the difference current X − Y (the contract's Sub instance, (X − Y)(ω) = X(ω) − Y(ω)) satisfies: spt(X − Y) ⊆ spt X ∪ spt Y, spt(X − Y) is compact, M(X − Y) < ∞ and boundaryMassOn (X − Y) univ < ∞. (b) For all N, k ∈ ℕ and every X ∈ 𝒟_{k+1}(ℝ^N) with spt X compact: spt ∂X ⊆ spt X, spt ∂X is compact, and boundaryMassOn ∂X univ = 0. Here spt = support, M = mass, ∂ = boundary.",
+  "lean_statement": "(∀ (N k : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → (X - Y).support ⊆ X.support ∪ Y.support ∧ IsCompact (X - Y).support ∧ (X - Y).mass < ∞ ∧ boundaryMassOn (X - Y) univ < ∞) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), IsCompact X.support → X.boundary.support ⊆ X.support ∧ IsCompact X.boundary.support ∧ boundaryMassOn X.boundary univ = 0",
+  "lean_name": "cmcdt_lpo_pf_normal_closure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-d39b0ac1ae-a1"
+}
