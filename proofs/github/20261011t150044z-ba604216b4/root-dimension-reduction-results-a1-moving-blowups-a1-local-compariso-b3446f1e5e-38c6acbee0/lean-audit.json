@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b441fdf3ffd08d3857421cd7bfbffdcb27867b6f3ed8dd2c1b019bd8fafd5dcf",
+  "git_delta": {
+    "base_commit": "660c5c277f0e8d3ff321f9b4d419d017743a0064",
+    "candidate_commit": "b25c953036391385f812180fff5fcea4e6360084",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "6d226c6297d3432a126a3e16d63fcfb6abcab0def1a55b8bdde08e12da0d3fb3",
+    "source_sha256": "97b6843e24ced9491eea94c64c7ea8f7830f836e6341af9eb15827bcaa8b78c7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_region_bound",
+      "statement": "∀ (P n : ℕ) (U W F B : Set (Euclid P)) (T Z : GeometricCurrentOn U n) (R : IMRep U n) (C S Ŷ Sr Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (e : ℝ≥0∞), IsOpen U → R.Represents T → IsIntegerMultiplicity Z → IsOpen B → B ⊆ U → IsOpen W → IsCompact F → W ⊆ F → F ⊆ B → R.measure (F \\ W) = 0 → (S - C).support ⊆ W → IsIntegerMultiplicity Ŷ → Ŷ.support ⊆ F → (∀ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents Ŷ → R'.measure (F \\ W) ≤ e) → Sr.mass ≤ e → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → C ω = currentEval T (ω : DifferentialForm (Euclid P) n) + Ŷ ω + Sr ω) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Y ω = (S - C) ω + Ŷ ω) → (∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)) → ∃ b : ℝ≥0∞, T.massOn B = T.massOn W + b ∧ Z.massOn B ≤ S.massOn W + e + e + b",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
