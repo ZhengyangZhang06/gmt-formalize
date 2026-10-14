@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1.arctan_quotient-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1",
+  "depth": 6,
+  "title": "Arctangent of q/(1 + p) is within 30s'² of q",
+  "statement": "Let p, q, s' ∈ ℝ with 0 < s', 20s' < 1, |p| ≤ 3s' and |q| ≤ 3s'. Then |arctan(q/(1 + p)) − q| ≤ 30s'² (real division).",
+  "lean_statement": "∀ (p q s' : ℝ), 0 < s' → 20 * s' < 1 → |p| ≤ 3 * s' → |q| ≤ 3 * s' → |Real.arctan (q / (1 + p)) - q| ≤ 30 * s' ^ 2",
+  "lean_name": "idtp_cse_bml_rbi_arctan_quotient_estimate",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1.abs_arctan_sub_self-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.box_mass_limits-a1.box_inclusions-a1.abs_arctan_sub_self-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1b4fbdea87-a1"
+}

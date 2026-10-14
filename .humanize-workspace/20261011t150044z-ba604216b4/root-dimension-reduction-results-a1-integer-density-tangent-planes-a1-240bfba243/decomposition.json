@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'theorem .*arctan|lemma .*arctan' local-references/123e8435b4a2469b/mathlib/Mathlib | grep -iE 'le|lt|abs|sub|bound|self'",
+        "rg -n 'arctan_le_self|arctan_lt_self|abs_arctan|le_arctan|arctan_le|self_le_arctan|arctan_sub|hasDerivAt_arctan|deriv_arctan|abs_sub_arctan|arctan.*x \\^ 3|sub_arctan|lipschitz.*arctan|arctan.*Lipschitz' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n 'sub_starProjection|starProjection_eq_self_iff|norm_sq_eq_add_norm_sq_projection' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n -A3 'theorem norm_sq_eq_add_norm_sq_starProjection|theorem starProjection_orthogonal_val|norm_starProjection_apply_le|theorem norm_starProjection_le' local-references/123e8435b4a2469b/mathlib/Mathlib; rg -n -A6 'theorem norm_image_sub_le_of_norm_hasDerivWithin_le|theorem norm_image_sub_le_of_norm_deriv_le_segment' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n '^theorem exists_hasDerivAt_eq_slope|^theorem abs_real_inner_le_norm|^theorem real_inner_le_norm|^theorem norm_add_sq_real|^theorem real_inner_smul_left|^theorem real_inner_smul_right|^theorem real_inner_self_eq_norm_sq|^theorem real_inner_comm|^theorem pow_le_pow_left₀|^theorem starProjection_eq_self_iff|^theorem norm_starProjection_apply_le' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "python3 -I scan of dag.json: selected node (depth 5, status decomposing), depth histogram (200 nodes at depth 6), siblings under box_mass_limits-a1, lean_name substring search for idtp_cse_bml_rbi/arctan/norm_expansion/projection_residual (none)",
+        "for n in idtp_cse_bml_rbi_abs_arctan_sub_self_le idtp_cse_bml_rbi_arctan_quotient_estimate idtp_cse_bml_rbi_norm_expansion idtp_cse_bml_rbi_projection_residual_le idtp_cse_bml_rbi: grep -c $n dag.json; grep -rl $n nodes/; rg -l $n local-references/123e8435b4a2469b/project; grep -rl --include=*.lean $n GMT (all 0)",
+        "ls -d .swarm-worktrees/*/gmt-ch07/GMT | xargs -P 32 -I{} grep -rl --include=*.lean -e idtp_cse_bml_rbi -e abs_arctan_sub_self_le -e arctan_quotient_estimate {} (1463 worktrees, no match)",
+        "grep -n -i 'arctan|tan^{-1}|Z(s|sector|square' book/chapter-07.txt; sed -n 405,560p book/chapter-07.txt",
+        "lake env lean /tmp/rbi-decomp-x9f3/check/Stmts.lean (5 types elaborate, pp.explicit instance check); Children.lean (4 child proofs compile); Parent.lean (frozen parent from 3 children as axioms; #print axioms); Full.lean (#print axioms: propext, Classical.choice, Quot.sound only)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-240bfba243/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-240bfba243/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/rbi-decomp-x9f3/check/Stmts.lean",
+        "/tmp/rbi-decomp-x9f3/check/Children.lean",
+        "/tmp/rbi-decomp-x9f3/check/Parent.lean",
+        "/tmp/rbi-decomp-x9f3/check/Full.lean",
+        "/tmp/rbi-decomp-x9f3/review/drafts.md"
+      ],
+      "conclusion": "The manifest pins project b4d606db and Mathlib 25730c7c; the workspace Submission.lean (identical to Contract.lean) is the compiler authority, and its dilation is -(lam⁻¹ • x) + dilationCLM P lam y.\n\nThe pinned Mathlib has only first-order arctan bounds: Real.arctan_lt_self, arctan_le_self, self_le_arctan and abs_arctan_le_abs in Analysis/SpecialFunctions/Trigonometric/Bounds.lean. It has no cubic or Taylor bound for arctan z − z, so abs_arctan_sub_self is a genuine missing obligation. Its proof uses Real.hasDerivAt_arctan (ArctanDeriv.lean) and exists_hasDerivAt_eq_slope (Calculus/Deriv/MeanValue.lean).\n\nThe norm and projection children use lemmas that all exist at the pin: norm_add_sq_real, abs_real_inner_le_norm, real_inner_le_norm, real_inner_smul_left/right, real_inner_self_eq_norm_sq, Submodule.starProjection_eq_self_iff, Submodule.starProjection_orthogonal_val and Submodule.norm_starProjection_apply_le.\n\nNo project, snapshot or DAG declaration covers any child. The 4 proposed names and the prefix idtp_cse_bml_rbi have no match in dag.json, nodes/, the snapshot project, workspace GMT, or 1463 ch07 swarm worktrees, so the names are unreserved.\n\nThe book (chapter-07.txt 405–560, proof of 7.3.3) prints no counterpart of this estimate, so the child proofs are extracted from the parent-supplied proof.\n\nKernel checks: all 5 types elaborate. Trial proofs of all 4 children compile. The frozen parent compiles from the three direct children as axioms. The full development depends only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "should_split": true,
+  "rationale": "Split into 4 children, with the parent keeping only the assembly.\n\nWhy split. Step 1 of the supplied proof bundles three independent analytic obligations of different kinds. Each is a self-contained, reusable lemma with no dilation or set structure:\n- 1(d): the second-order expansion of |a + s'w| at a unit vector a. This is child norm_expansion.\n- 1(e): the estimate |arctan(q/(1+p)) − q| ≤ 30s'². This is child arctan_quotient. It rests on the generic calculus bound |arctan z − z| ≤ |z|³ (child abs_arctan_sub_self). That bound is absent from the pinned Mathlib, which only has Real.arctan_le_self and Real.abs_arctan_le_abs.\n- 1(f): the projection residual |(a + s'w) − π(a + s'w)| ≤ s'|w| for a ∈ Q. This is child projection_residual.\n\nWhat the parent keeps is routine assembly: inverting the dilation to x = a + s'·η_{s'}(x), steps 1(a)–(c) (Cauchy–Schwarz, ⟨x,a⟩ = 1 + p, ⟨x,e⟩ = q, |x| ≥ ⟨x,a⟩ > 17/20), and the inequality chains of steps 2 and 3.\n\nHow the children imply the parent. Write w := η_{s'}(x), p := s'⟨w,a⟩, q := s'⟨w,e⟩. Then f(x) = arctan(q/(1+p)) after rewriting ⟨x,e⟩ = q and ⟨x,a⟩ = 1 + p, and |p|, |q| ≤ s'|w| ≤ 3s'.\n- Step 2 (|w| < 3):\n  - norm_expansion gives ||x| − 1| ≤ |p| + 30s'² < s'(1 − η) + 30s'² < s', using 30s' < η.\n  - arctan_quotient gives |f(x)| < s' in the same way.\n  - projection_residual gives |x − πx| ≤ s'|w| < 3s' < (17/20)s < s|x|, using 6s' < s.\n- Step 3: |w| = |x − a|/s' < 3, so the children apply. norm_expansion with ||x| − 1| < s' gives |⟨w,a⟩| < 1 + 30s' < 1 + η. arctan_quotient with |f(x)| < s' gives |⟨w,e⟩| < 1 + η.\n- The children's non-strict bounds (≤ 30s'², ≤ s'|w|, hypothesis |w| ≤ 3) suffice. Every strict conclusion of the parent gets its strictness from the parent's own hypotheses.\n\nDependencies are acyclic: only arctan_quotient depends on abs_arctan_sub_self. The children sit at depth 6, the run's max_depth; the DAG already has 200 nodes at depth 6. Each child is atomic.\n\nVerification against the frozen contract (b4d606db, Mathlib 25730c7c):\n- All 5 types elaborate after `import GMT.Ch07.Submission` in namespace GMT.Ch07 with the frozen opens. With pp.explicit the instances are the standard PiLp L2 norm, WithLp smul and InnerProductSpace inner. Q.starProjection is inferred exactly as in the parent's frozen type.\n- Trial Lean proofs of all 4 children compile.\n- The frozen parent type compiles from arctan_quotient, norm_expansion and projection_residual as axioms. #print axioms shows propext, Classical.choice, Quot.sound plus only those three named axioms.\n- The full development with every proof filled in prints only [propext, Classical.choice, Quot.sound].\n- An independent reviewer subagent checked each child proof line by line, the strict/non-strict assembly, and the soundness of the split, and accepted all of them. Its randomized numerical tests of C1–C4 and both parent inclusions found no violations.\n- The 4 lean names are unreserved. There is no match for them or for the prefix idtp_cse_bml_rbi in dag.json, nodes/, the snapshot project, workspace GMT, or 1463 ch07 swarm worktrees.\n- The book has no printed counterpart: the estimate belongs to the DAG's replacement of the [Whi82] citation inside Simon 7.3.3 (chapter-07.txt lines 405–560). The child proofs are therefore extracted and specialized from the parent-supplied proof.",
+  "subproblems": [
+    {
+      "key": "abs_arctan_sub_self",
+      "title": "Cubic bound |arctan z − z| ≤ |z|³",
+      "statement": "For every real number z, |arctan z − z| ≤ |z|³.",
+      "lean_statement": "∀ z : ℝ, |Real.arctan z - z| ≤ |z| ^ 3",
+      "lean_name": "idtp_cse_bml_rbi_abs_arctan_sub_self_le",
+      "depends_on": [],
+      "natural_proof": "Extracted from step 1(e) of the parent proof (the mean-value-theorem estimate |arctan z − z| ≤ ξ²|z| ≤ |z|³), stated for every real z.\n1. If z = 0 then arctan 0 − 0 = 0 = |0|³, so the inequality holds. Assume z ≠ 0 from now on.\n2. Define g : ℝ → ℝ by g(t) := arctan t − t. Since arctan is differentiable on ℝ with arctan′(t) = 1/(1 + t²), g is differentiable (in particular continuous) on ℝ with g′(t) = 1/(1 + t²) − 1, and g(0) = arctan 0 − 0 = 0.\n3. For every ξ ∈ ℝ, 1/(1 + ξ²) − 1 = −ξ²/(1 + ξ²). Since 1 + ξ² ≥ 1, this gives |g′(ξ)| = ξ²/(1 + ξ²) ≤ ξ².\n4. Let α := min(0, z) and β := max(0, z), so α < β. By the mean value theorem for g on [α, β] there is ξ ∈ (α, β) with g(β) − g(α) = g′(ξ)(β − α). If z > 0 this reads g(z) − g(0) = g′(ξ)·z; if z < 0 it reads g(0) − g(z) = g′(ξ)·(0 − z). In both cases, since g(0) = 0, arctan z − z = g(z) = g′(ξ)·z = (1/(1 + ξ²) − 1)·z = −ξ²z/(1 + ξ²).\n5. Since ξ ∈ (α, β), ξ lies strictly between 0 and z, so |ξ| ≤ |z| and hence ξ² ≤ z².\n6. Therefore |arctan z − z| = |g′(ξ)|·|z| ≤ ξ²|z| ≤ z²|z| = |z|³. ∎",
+      "proof_key_steps": [
+        "If z = 0 both sides vanish.",
+        "g(t) := arctan t − t has g(0) = 0 and g′(t) = 1/(1 + t²) − 1 = −t²/(1 + t²), so |g′(t)| ≤ t².",
+        "The mean value theorem on [min(0, z), max(0, z)] gives arctan z − z = g′(ξ)·z for some ξ strictly between 0 and z.",
+        "|ξ| ≤ |z| gives |arctan z − z| ≤ ξ²|z| ≤ z²|z| = |z|³."
+      ]
+    },
+    {
+      "key": "arctan_quotient",
+      "title": "Arctangent of q/(1 + p) is within 30s'² of q",
+      "statement": "Let p, q, s' ∈ ℝ with 0 < s', 20s' < 1, |p| ≤ 3s' and |q| ≤ 3s'. Then |arctan(q/(1 + p)) − q| ≤ 30s'² (real division).",
+      "lean_statement": "∀ (p q s' : ℝ), 0 < s' → 20 * s' < 1 → |p| ≤ 3 * s' → |q| ≤ 3 * s' → |Real.arctan (q / (1 + p)) - q| ≤ 30 * s' ^ 2",
+      "lean_name": "idtp_cse_bml_rbi_arctan_quotient_estimate",
+      "depends_on": [
+        "abs_arctan_sub_self"
+      ],
+      "natural_proof": "Extracted from step 1(e) of the parent proof. There p = s'⟨w, a⟩ and q = s'⟨w, e⟩; here they are abstracted to real numbers satisfying the bounds of step 1(a).\n1. From |p| ≤ 3s' we get p ≥ −3s', and from 20s' < 1 we get 3s' < 3/20. Hence 1 + p ≥ 1 − 3s' > 17/20 > 0. Put z := q/(1 + p), a genuine quotient since 1 + p ≠ 0.\n2. Since 17/20 < 1 + p, we have 0 < 1/(1 + p) < 20/17.\n3. (|z| ≤ 4s'.) |z| = |q|/(1 + p) ≤ 3s'·(1/(1 + p)) ≤ 3s'·(20/17) = 60s'/17 ≤ 4s'.\n4. (|z − q| ≤ 11s'².) z − q = (q − q(1 + p))/(1 + p) = −qp/(1 + p). Since |q||p| ≤ (3s')(3s') = 9s'², we get |z − q| = |q||p|/(1 + p) ≤ 9s'²·(20/17) = 180s'²/17 ≤ 11s'².\n5. (|arctan z − z| ≤ 4s'².) Apply the sibling lemma abs_arctan_sub_self (|arctan u − u| ≤ |u|³ for every real u) with u = z. With step 3 (0 ≤ |z| ≤ 4s') this gives |arctan z − z| ≤ |z|³ ≤ (4s')³ = 64s'·s'². Since s' < 1/20, 64s' < 16/5 < 4, so |arctan z − z| ≤ 4s'².\n6. By the triangle inequality and steps 4–5, |arctan(q/(1 + p)) − q| = |(arctan z − z) + (z − q)| ≤ |arctan z − z| + |z − q| ≤ 4s'² + 11s'² = 15s'² ≤ 30s'². ∎",
+      "proof_key_steps": [
+        "1 + p ≥ 1 − 3s' > 17/20 > 0, so 0 < 1/(1 + p) < 20/17; put z := q/(1 + p).",
+        "|z| ≤ 60s'/17 ≤ 4s'.",
+        "z − q = −qp/(1 + p), so |z − q| ≤ 180s'²/17 ≤ 11s'².",
+        "By abs_arctan_sub_self, |arctan z − z| ≤ |z|³ ≤ 64s'³ ≤ 4s'² (as s' < 1/20).",
+        "Triangle inequality: |arctan(q/(1 + p)) − q| ≤ 15s'² ≤ 30s'²."
+      ]
+    },
+    {
+      "key": "norm_expansion",
+      "title": "Second-order expansion of |a + s'w| at a unit vector a",
+      "statement": "Let P ∈ ℕ, let a, w ∈ ℝ^P with |a| = 1 and |w| ≤ 3, and let s' ∈ ℝ with 0 < s' and 20s' < 1. Then ||a + s'w| − 1 − s'⟨w, a⟩| ≤ 30s'².",
+      "lean_statement": "∀ (P : ℕ) (a w : Euclid P) (s' : ℝ), ‖a‖ = 1 → ‖w‖ ≤ 3 → 0 < s' → 20 * s' < 1 → |‖a + s' • w‖ - 1 - s' * inner ℝ w a| ≤ 30 * s' ^ 2",
+      "lean_name": "idtp_cse_bml_rbi_norm_expansion",
+      "depends_on": [],
+      "natural_proof": "Extracted from steps 1(a) and 1(d) of the parent proof, where x = a + s'w.\n1. Put p := s'⟨w, a⟩. By Cauchy–Schwarz and |a| = 1, |⟨w, a⟩| ≤ |w||a| = |w| ≤ 3, so |p| = s'|⟨w, a⟩| ≤ 3s'.\n2. Expand the square of the norm, using |a| = 1, ⟨a, s'w⟩ = s'⟨w, a⟩ (symmetry of the real inner product) and |s'w| = s'|w| (s' > 0): |a + s'w|² = |a|² + 2⟨a, s'w⟩ + |s'w|² = 1 + y, where y := 2p + s'²|w|².\n3. Since 0 ≤ |w|² ≤ 9 and 9s' < 1 (from 20s' < 1), we have 9s'² ≤ s'. Hence |y| ≤ 2|p| + s'²|w|² ≤ 6s' + 9s'² ≤ 6s' + s' = 7s'.\n4. Let t := |a + s'w| ≥ 0. By step 2, t² − 1 = y, i.e. (t − 1)(t + 1) = y. As t + 1 ≥ 1, |t − 1| ≤ |t − 1|(t + 1) = |y| ≤ 7s'; hence (t − 1)² = |t − 1|² ≤ 49s'².\n5. Using t² = 1 + y: t − 1 − y/2 = t − 1 − (t² − 1)/2 = −(t − 1)²/2. Hence |t − 1 − y/2| = (t − 1)²/2 ≤ 49s'²/2.\n6. y/2 − p = s'²|w|²/2, hence 0 ≤ y/2 − p ≤ 9s'²/2.\n7. By the triangle inequality, |t − 1 − p| ≤ |t − 1 − y/2| + |y/2 − p| ≤ 49s'²/2 + 9s'²/2 = 29s'² ≤ 30s'². That is, ||a + s'w| − 1 − s'⟨w, a⟩| ≤ 30s'². ∎",
+      "proof_key_steps": [
+        "p := s'⟨w, a⟩ satisfies |p| ≤ 3s' (Cauchy–Schwarz, |a| = 1, |w| ≤ 3).",
+        "|a + s'w|² = 1 + y with y := 2p + s'²|w|² and |y| ≤ 7s'.",
+        "t := |a + s'w| satisfies (t − 1)(t + 1) = y and t + 1 ≥ 1, so |t − 1| ≤ |y| ≤ 7s'.",
+        "t − 1 − y/2 = −(t − 1)²/2 gives |t − 1 − y/2| ≤ 49s'²/2; also 0 ≤ y/2 − p = s'²|w|²/2 ≤ 9s'²/2.",
+        "Triangle inequality: |t − 1 − p| ≤ 29s'² ≤ 30s'²."
+      ]
+    },
+    {
+      "key": "projection_residual",
+      "title": "Projection residual of a + s'w for a ∈ Q",
+      "statement": "Let P ∈ ℕ, let Q be a linear subspace of ℝ^P with orthogonal projection π := Q.starProjection, and let a ∈ Q, w ∈ ℝ^P and s' ∈ ℝ with s' ≥ 0. Then |(a + s'w) − π(a + s'w)| ≤ s'|w|.",
+      "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a w : Euclid P) (s' : ℝ), a ∈ Q → 0 ≤ s' → ‖(a + s' • w) - Q.starProjection (a + s' • w)‖ ≤ s' * ‖w‖",
+      "lean_name": "idtp_cse_bml_rbi_projection_residual_le",
+      "depends_on": [],
+      "natural_proof": "Extracted from step 1(f) of the parent proof, where x = a + s'w; the factor s'|w| is kept instead of its bound 3s'.\n1. Since a ∈ Q, πa = a (the orthogonal projection onto Q fixes every vector of Q).\n2. π is linear, so π(a + s'w) = πa + s'πw = a + s'πw. Hence (a + s'w) − π(a + s'w) = s'(w − πw), and |(a + s'w) − π(a + s'w)| = |s'|·|w − πw| = s'|w − πw| because s' ≥ 0.\n3. πw ∈ Q and w − πw ⊥ Q (w − πw is the orthogonal projection of w onto Q^⊥). By Pythagoras, |w|² = |πw|² + |w − πw|² ≥ |w − πw|², i.e. |w − πw| ≤ |w|.\n4. Multiplying by s' ≥ 0: |(a + s'w) − π(a + s'w)| = s'|w − πw| ≤ s'|w|. ∎",
+      "proof_key_steps": [
+        "a ∈ Q gives πa = a.",
+        "Linearity gives (a + s'w) − π(a + s'w) = s'(w − πw), of norm s'|w − πw| (s' ≥ 0).",
+        "Pythagoras |w|² = |πw|² + |w − πw|² gives |w − πw| ≤ |w|.",
+        "Hence the residual norm is at most s'|w|."
+      ]
+    }
+  ]
+}
