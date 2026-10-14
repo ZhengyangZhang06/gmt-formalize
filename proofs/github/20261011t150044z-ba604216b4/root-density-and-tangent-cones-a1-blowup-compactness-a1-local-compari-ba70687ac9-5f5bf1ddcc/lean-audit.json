@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0bed46c9b9d0009fb618ada5abcca764e747a5b4aeb64b8805ce82c889d55094",
+  "git_delta": {
+    "base_commit": "8854b6ab467e5a4a82cbb8e6410f649aa829b8ba",
+    "candidate_commit": "e1ff8382f4153a32234f498eefd0c02df2f7961a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_boundary_mass",
+    "diff_sha256": "9c8058f909abc6e64fcc6c5bd481fc84f693a9b21b86a2e4d43788947f9dc9e9",
+    "source_sha256": "c6e73456cad8877742242711aebaf21d6df0a20eb6d7d0566927992a3be3da1f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_boundary_mass",
+      "statement": "∀ (P m : ℕ) (U V : Set (Euclid P)) (T T' : GeometricCurrentOn U (m + 1)) (R R' : IMRep U (m + 1)) (t₀ : ℝ), closedBall (0 : Euclid P) t₀ ⊆ V → R.Represents T → R'.Represents T' → R'.carrier = R.carrier ∩ ball (0 : Euclid P) t₀ → R'.mult = R.mult → R'.orient = R.orient → T'.boundary.mass ≤ 2 * T.boundary.massOn V + 2 * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * R.measure {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
