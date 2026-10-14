@@ -8,7 +8,6 @@ import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
-import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -6669,7 +6668,9 @@ Proof sketch:
 * `dtc_bc_lc_sl_ll_piece_weak_limit` then gives `∫_{Aⱼ} Dhₖ(w) → ∫_{Aⱼ} ⟨H, w⟩` for every `j`.
 * `|Dhₖ(w)|, |⟨H, w⟩| ≤ K|w|`, so both integrands are integrable on `M` and
   `∫_M f = Σⱼ ∫_{Aⱼ} f` (`integral_iUnion`).  Since `|∫_{Aⱼ} Dhₖ(w)| ≤ K ∫_{Aⱼ} |w|` and
-  `Σⱼ ∫_{Aⱼ} |w| ≤ ∫_M |w| < ∞`, Tannery's theorem exchanges `lim_k` and `Σⱼ`. -/
+  `Σⱼ ∫_{Aⱼ} |w| ≤ ∫_M |w| < ∞`, Tannery's theorem exchanges `lim_k` and `Σⱼ`; it is proved
+  inline by the `ε/3` argument of Mathlib's `tendsto_tsum_of_dominated_convergence`, whose module
+  lies outside the frozen imports. -/
 theorem Submission.dtc_bc_lc_sl_ll_weak_limit : ∀ (P n : ℕ) (M : Set (Euclid P)) (h : Euclid P → ℝ) (K : NNReal) (H : Euclid P → Euclid P) (ψ : ℕ → Euclid (n + 1) → Euclid P) (V Y : ℕ → Set (Euclid (n + 1))) (F : ℕ → Euclid (n + 1) → ℝ) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → Euclid P), MeasurableSet M → (∀ C : Set (Euclid P), IsCompact C → μHE[n + 1] (M ∩ C) ≠ ∞) → LipschitzWith K h → Measurable H → (∀ x, ‖H x‖ ≤ K) → (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ H x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ (H x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) → (∀ j, IsOpen (V j) ∧ ContDiff ℝ 1 (ψ j) ∧ InjOn (ψ j) (V j) ∧ (∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) ∧ ContDiff ℝ 1 (F j) ∧ MeasurableSet (Y j) ∧ IsCompact (closure (Y j)) ∧ closure (Y j) ⊆ V j ∧ ψ j '' Y j ⊆ M ∧ (∀ y ∈ Y j, h (ψ j y) = F j y) ∧ ∀ y ∈ Y j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → μHE[n + 1] (M \ ⋃ j, ψ j '' Y j) = 0 → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ K) → TendstoUniformly hs h atTop → IntegrableOn w M μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict M), w x ∈ approxTangentPlane (n + 1) M x) → Tendsto (fun k => ∫ x in M, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in M, inner ℝ (H x) (w x) ∂μHE[n + 1])) := by
   intro P n M h K H ψ V Y F hs w hM hloc hh hHm hHK hHgrad hpc hdisj hnull hs_C1 hs_deriv hunif
     hw hwtan
@@ -6744,10 +6745,48 @@ theorem Submission.dtc_bc_lc_sl_ll_weak_limit : ∀ (P n : ℕ) (M : Set (Euclid
       fun k => ∑' j, ∫ x in ψ j '' Y j, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1] :=
     funext fun k => hdecomp _ (hfk_int k)
   rw [hlhs, hdecomp _ hf_int]
-  -- Step 7: Tannery's theorem with the summable bound `K ∫_{Aⱼ} |w|`
+  -- Step 7: Tannery's theorem (`lim_k Σⱼ aₖⱼ = Σⱼ lim_k aₖⱼ` when `|aₖⱼ| ≤ Bⱼ`, `Σⱼ Bⱼ < ∞`),
+  -- by the `ε/3` argument: a finite block `T` plus tails of size `< ε/3`
+  have htannery : ∀ (a : ℕ → ℕ → ℝ) (b B : ℕ → ℝ), Summable B →
+      (∀ j, Tendsto (fun k => a k j) atTop (𝓝 (b j))) → (∀ k j, ‖a k j‖ ≤ B j) →
+      Tendsto (fun k => ∑' j, a k j) atTop (𝓝 (∑' j, b j)) := by
+    intro a b B hB hab hbd
+    have hb_le : ∀ j, ‖b j‖ ≤ B j := fun j =>
+      le_of_tendsto (tendsto_norm.comp (hab j)) (Eventually.of_forall fun k => hbd k j)
+    have hb_sum : Summable fun j => ‖b j‖ :=
+      hB.of_norm_bounded fun j => (norm_norm (b j)).symm ▸ hb_le j
+    have ha_sum : ∀ k, Summable fun j => ‖a k j‖ := fun k =>
+      hB.of_norm_bounded fun j => (norm_norm (a k j)).symm ▸ hbd k j
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨S, hS⟩ := hB
+    obtain ⟨T, hT⟩ : ∃ T : Finset ℕ, dist (∑ j ∈ T, B j) S < ε / 3 := by
+      rw [HasSum, Metric.tendsto_nhds] at hS
+      exact (hS _ (by positivity)).exists
+    have htail : ∑' j : ((T : Set ℕ)ᶜ : Set ℕ), B j < ε / 3 := by
+      calc _ ≤ ‖∑' j : ((T : Set ℕ)ᶜ : Set ℕ), B j‖ := Real.le_norm_self _
+        _ = ‖S - ∑ j ∈ T, B j‖ := congrArg _ ?_
+        _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+      simpa only [hS.summable.sum_add_tsum_compl, eq_sub_iff_add_eq'] using hS.tsum_eq
+    have hfin : Tendsto (fun k => ∑ j ∈ T, a k j) atTop (𝓝 (∑ j ∈ T, b j)) :=
+      tendsto_finsetSum _ fun j _ => hab j
+    rw [Metric.tendsto_nhds] at hfin
+    filter_upwards [hfin (ε / 3) (by positivity)] with k hk
+    rw [dist_eq_norm, ← (ha_sum k).of_norm.tsum_sub hb_sum.of_norm,
+      ← ((ha_sum k).of_norm.sub hb_sum.of_norm).sum_add_tsum_compl (s := T),
+      (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+    refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · simpa only [dist_eq_norm, Finset.sum_sub_distrib] using hk
+    · rw [((ha_sum k).subtype _).of_norm.tsum_sub (hb_sum.subtype _).of_norm]
+      refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+      · refine ((norm_tsum_le_tsum_norm ((ha_sum k).subtype _)).trans ?_).trans_lt htail
+        exact ((ha_sum k).subtype _).tsum_le_tsum (fun j => hbd k j) (hS.summable.subtype _)
+      · refine ((norm_tsum_le_tsum_norm (hb_sum.subtype _)).trans ?_).trans_lt htail
+        exact (hb_sum.subtype _).tsum_le_tsum (fun j => hb_le j) (hS.summable.subtype _)
+  -- the pieces' integrals are dominated by the summable bound `K ∫_{Aⱼ} |w|`
   have hsum : Summable fun j => (K : ℝ) * ∫ x in ψ j '' Y j, ‖w x‖ ∂μHE[n + 1] :=
     (hasSum_integral_iUnion hAmeas hdisj (hwn.mono_set (iUnion_subset hAM))).summable.mul_left _
-  refine tendsto_tsum_of_dominated_convergence hsum hconv (Eventually.of_forall fun k j => ?_)
+  refine htannery _ _ _ hsum hconv fun k j => ?_
   calc ‖∫ x in ψ j '' Y j, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]‖
       ≤ ∫ x in ψ j '' Y j, ‖fderiv ℝ (hs k) x (w x)‖ ∂μHE[n + 1] :=
         norm_integral_le_integral_norm _
