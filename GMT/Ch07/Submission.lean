@@ -1514,6 +1514,68 @@ theorem Submission.cmcdt_lpi_pc_scalar_weak_continuity : ∀ (m p r : ℕ) (L : 
   rw [e]
   exact hlim.congr fun j => (hsplit j).symm
 
+/-- **Weak continuity of pull-backs under uniformly convergent Lipschitz maps** (step 6 (B4) of
+the proof that Lipschitz push-forwards of integer multiplicity currents are integer multiplicity;
+Simon Ch. 6, 2.29 and 3.6).  Let `Hⱼ, H₀ : ℝᵐ → ℝ^{N'}` be `L`-Lipschitz with `Hⱼ → H₀`
+uniformly, `w ∈ L¹(ℝᵐ)` and `ω` a continuous, compactly supported `m`-form on `ℝ^{N'}`.  Then
+`∫ w ω(Hⱼ)(DHⱼ e) → ∫ w ω(H₀)(DH₀ e)`.  For `I : Fin m → Fin N'` let
+`ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (m-1)})` and `M_I(H)(u) = det ((DH(u) e_t)_{I s})_{s,t}`.
+The coordinate expansion of `m`-covectors gives `w ω(H)(DH e) = (m!)⁻¹ Σ_I w ω_I(H) M_I(H)`
+pointwise.  Every summand is integrable (`M_I(H)` is measurable and bounded by `m! Lᵐ`, and `ω_I`
+is bounded), so the integral splits over `I`; each summand converges by the scalar weak continuity
+with the continuous, compactly supported coefficient `ω_I`. -/
+theorem Submission.cmcdt_lpi_pullback_weak_continuity : ∀ (m N' : ℕ) (L : NNReal) (H : ℕ → Euclid m → Euclid N') (H₀ : Euclid m → Euclid N') (w : Euclid m → ℝ) (ω : DifferentialForm (Euclid N') m), (∀ j, LipschitzWith L (H j)) → LipschitzWith L H₀ → TendstoUniformly H H₀ atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (H j u) (fun a => fderiv ℝ (H j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H₀ u) (fun a => fderiv ℝ H₀ u (EuclideanSpace.single a 1)))) := by
+  intro m N' L H H₀ w ω hH hH₀ hHH₀ hw hωc hωs
+  -- the coefficients `ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (m-1)})` are continuous with compact support
+  have hωIc : ∀ I : Fin m → Fin N',
+      Continuous fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ)) := fun I =>
+    hωc.eval_const _
+  have hωIs : ∀ I : Fin m → Fin N',
+      HasCompactSupport fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ)) := fun I =>
+    hωs.comp_left (g := fun α : Covector (Euclid N') m =>
+      α (fun c => EuclideanSpace.single (I c) (1 : ℝ))) (by simp)
+  -- step 1: `w ω(G)(DG e) = (m!)⁻¹ Σ_I w ω_I(G) M_I(G)` pointwise (coordinate expansion)
+  have hexp : ∀ (G : Euclid m → Euclid N') (u : Euclid m),
+      w u * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) =
+        (m.factorial : ℝ)⁻¹ * ∑ I : Fin m → Fin N',
+          w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+            Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+    intro G u
+    have hm : (m.factorial : ℝ) ≠ 0 := by exact_mod_cast m.factorial_ne_zero
+    rw [← Finset.mul_sum, ← Submission.dor_lmb_fcd_jwc_covector_det_expansion N' m (ω (G u))
+      (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)), mul_left_comm (w u),
+      inv_mul_cancel_left₀ hm]
+  -- step 2: the minors are measurable and bounded by `m! Lᵐ` and `ω_I` is bounded, so every
+  -- summand is integrable and the integral splits over `I`
+  have hint : ∀ G : Euclid m → Euclid N', LipschitzWith L G →
+      ∫ u, w u * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) =
+        (m.factorial : ℝ)⁻¹ * ∑ I : Fin m → Fin N', ∫ u,
+          w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+            Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+    intro G hG
+    have hI : ∀ I : Fin m → Fin N', Integrable fun u =>
+        w u * (ω (G u) (fun c => EuclideanSpace.single (I c) (1 : ℝ)) *
+          Matrix.det (Matrix.of fun s t => fderiv ℝ G u (EuclideanSpace.single t 1) (I s))) := by
+      intro I
+      obtain ⟨hmeas, hbd⟩ :=
+        Submission.cmcdt_lpi_pc_minor_measurable_bound m N' m L G I (fun t => t) hG
+      obtain ⟨C, hC⟩ := (hωIc I).bounded_above_of_compact_support (hωIs I)
+      refine hw.mul_bdd (c := C * ((m.factorial : ℝ) * (L : ℝ) ^ m))
+        (((hωIc I).comp hG.continuous).measurable.mul hmeas).aestronglyMeasurable
+        (Eventually.of_forall fun u => ?_)
+      rw [norm_mul]
+      exact mul_le_mul (hC _) ((Real.norm_eq_abs _).trans_le (hbd u)) (norm_nonneg _)
+        ((norm_nonneg _).trans (hC 0))
+    rw [← integral_finsetSum _ fun I _ => hI I, ← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall (hexp G))
+  -- step 3: each summand converges by the scalar weak continuity with coefficient `ω_I`
+  have hlim := (tendsto_finsetSum (Finset.univ : Finset (Fin m → Fin N')) fun I _ =>
+    Submission.cmcdt_lpi_pc_scalar_weak_continuity m N' m L H H₀ I (fun t => t) w
+      (fun y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ))) hH hH₀ hHH₀ hw (hωIc I)
+      (hωIs I)).const_mul ((m.factorial : ℝ)⁻¹)
+  rw [hint H₀ hH₀]
+  exact hlim.congr fun j => (hint (H j) (hH j)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
