@@ -508,6 +508,79 @@ theorem Submission.dor_lmb_fcdr_order_stat : ∀ (P m : ℕ), m + 1 < P → ∃ 
     show |F.sup' hF (g u) - F.sup' hF (g v)| ≤ t
     rw [abs_sub_le_iff]
     constructor <;> linarith [key u v huv, key v u hvu]
+/-- **Distance to `L*(a)` from an integer translate** (Simon Ch. 6, 5.4, closed-form retraction,
+Claim C).  Let `|aᵢ - 1/2| < 1/4` for all `i`, and let `κ(u) ≥ uᵢ` for at least `m + 2` indices `i`
+(every `u`).  If `x - y ∈ ℤᴾ` then `dist(x, L*(a)) ≤ √(m + 2) κ(r(y))`, where
+`r_j(y) = max((y_j - a_j)/(1 - a_j), (a_j - y_j)/a_j)` and `L*(a)` is the set of points with at least
+`m + 2` coordinates in `aᵢ + ℤ`.  As `0 < a_j, 1 - a_j ≤ 1`, `|y_j - a_j| ≤ r_j(y)`.  On a set `J`
+of `m + 2` indices with `r_i(y) ≤ κ(r(y))` put `x*_i = x_i - y_i + a_i` (`i ∈ J`), `x*_i = x_i`
+(`i ∉ J`); then `x* ∈ L*(a)` and `|x - x*|² = Σ_{i ∈ J} (y_i - a_i)² ≤ (m + 2) κ(r(y))²`. -/
+theorem Submission.dor_lmb_fcdr_dual_dist : ∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, u i ≤ κ u) → ∀ x y : Euclid P, (∀ i, ∃ k : ℤ, x i - y i = k) → infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} ≤ Real.sqrt (m + 2) * κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) := by
+  intro P m a ha κ hκ x y hxy
+  set u : Fin P → ℝ := fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j) with hu_def
+  -- Steps 1–2: `1/4 < a_j < 3/4`, so `|y_j - a_j| ≤ r_j(y) = u j`
+  have hbound : ∀ j, |y j - a j| ≤ u j := by
+    intro j
+    obtain ⟨h1l, h1r⟩ := abs_lt.mp (ha j)
+    have ha0 : 0 < a j := by linarith
+    have ha1 : 0 < 1 - a j := by linarith
+    rcases le_total (a j) (y j) with h | h
+    · rw [abs_of_nonneg (sub_nonneg.mpr h)]
+      have hle : y j - a j ≤ (y j - a j) / (1 - a j) := by
+        rw [le_div_iff₀ ha1]
+        nlinarith
+      exact hle.trans (le_max_left _ _)
+    · rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr h)]
+      have hle : a j - y j ≤ (a j - y j) / a j := by
+        rw [le_div_iff₀ ha0]
+        nlinarith
+      exact hle.trans (le_max_right _ _)
+  -- Step 3: a set `J` of exactly `m + 2` indices with `|y_i - a_i| ≤ u i ≤ κ u`, so `κ u ≥ 0`
+  obtain ⟨s, hs_card, hs⟩ := hκ u
+  obtain ⟨J, hJs, hJcard⟩ := Finset.exists_subset_card_eq hs_card
+  choose k hk using hxy
+  have hJbound : ∀ i ∈ J, |y i - a i| ≤ κ u := fun i hi =>
+    (hbound i).trans (hs i (hJs hi))
+  have hκ_nonneg : 0 ≤ κ u := by
+    have hJne : J.Nonempty := by
+      rw [← Finset.card_pos, hJcard]; omega
+    obtain ⟨i, hi⟩ := hJne
+    exact (abs_nonneg _).trans (hJbound i hi)
+  -- Step 4: the shifted point `x*` lies in `L*(a)`
+  let xs : Euclid P := WithLp.toLp 2 (fun i => if i ∈ J then x i - y i + a i else x i)
+  have hxs_mem : xs ∈ {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧
+      ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} := by
+    refine ⟨J, hJcard.ge, fun i hi => ⟨k i, ?_⟩⟩
+    show (if i ∈ J then x i - y i + a i else x i) - a i = k i
+    rw [ite_eq_left hi, ← hk i]
+    ring
+  -- Step 5: `dist(x, L*(a)) ≤ |x - x*| = (Σ_{i ∈ J} (y_i - a_i)²)^{1/2} ≤ √(m + 2) κ u`
+  refine (infDist_le_dist_of_mem hxs_mem).trans ?_
+  rw [EuclideanSpace.dist_eq]
+  have hsum : ∑ i, dist (x i) (xs i) ^ 2 ≤ ((m : ℝ) + 2) * (κ u) ^ 2 := by
+    have h1 : ∑ i, dist (x i) (xs i) ^ 2 = ∑ i ∈ J, dist (x i) (xs i) ^ 2 := by
+      symm
+      apply Finset.sum_subset (Finset.subset_univ J)
+      intro i _ hi
+      show dist (x i) (if i ∈ J then x i - y i + a i else x i) ^ 2 = 0
+      rw [ite_eq_right hi, dist_self]
+      ring
+    rw [h1]
+    have h2 : ∑ i ∈ J, dist (x i) (xs i) ^ 2 ≤ J.card • (κ u ^ 2) := by
+      apply Finset.sum_le_card_nsmul
+      intro i hi
+      show dist (x i) (if i ∈ J then x i - y i + a i else x i) ^ 2 ≤ κ u ^ 2
+      rw [ite_eq_left hi, Real.dist_eq]
+      have hxy' : x i - (x i - y i + a i) = y i - a i := by ring
+      rw [hxy']
+      exact pow_le_pow_left₀ (abs_nonneg _) (hJbound i hi) 2
+    rw [hJcard, nsmul_eq_mul] at h2
+    push_cast at h2
+    exact h2
+  calc Real.sqrt (∑ i, dist (x i) (xs i) ^ 2)
+      ≤ Real.sqrt (((m : ℝ) + 2) * (κ u) ^ 2) := Real.sqrt_le_sqrt hsum
+    _ = Real.sqrt ((m : ℝ) + 2) * κ u := by
+      rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hκ_nonneg]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
