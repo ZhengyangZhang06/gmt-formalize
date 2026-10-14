@@ -510,6 +510,96 @@ theorem Submission.cmcdt_lpi_cyl_fubini : ∀ (n : ℕ) (A : Set (Euclid n)), Me
     · rw [← Measure.volume_eq_prod, ← hpre]
       exact (hmp.integrableOn_comp_preimage e.measurableEmbedding).2 hf
 
+/-- One piece of the cone parametrization (Simon Ch. 6, 2.30 and 3.10).  `z ↦ g(tail z)` is
+measurable, and Tonelli on the cylinder `Â = {z : z₀ ∈ (0, 1), tail z ∈ A}`
+(`cmcdt_lpi_cyl_fubini`) gives `∫_Â |g(tail z)| dz = ∫_A |g|`, so it is integrable on `Â`.  The
+integrand `g(tail z) ω(G z)(∂G z)` is measurable and bounded by `sup ‖ω‖ · K^{k+1} · |g(tail z)|`,
+so Fubini on `Â` applies.  At `z = (t, u)` it equals `g(u) t^k ω(t F(u))(F(u), ∂F(u))` by the
+hypotheses and multilinearity of `ω(t F(u))`, and `∫_{(0,1)} = ∫_0^1`. -/
+theorem Submission.ecf_cp_piece_integral : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P), MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → (∃ K : NNReal, LipschitzWith K G) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → Measurable (fun z : Euclid (k + 1) => g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) ∧ IntegrableOn (fun z : Euclid (k + 1) => (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A} ∧ ∀ ω : DifferentialForm (Euclid P) (k + 1), Continuous ω → HasCompactSupport ω → ∫ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1)) = ∫ u in A, (g u : ℝ) * ∫ t in (0 : ℝ)..1, t ^ k * ω (t • F u) (Fin.cons (F u) (fun b => fderiv ℝ F u (EuclideanSpace.single b 1))) := by
+  intro k P F A g G hA hg hgA hGL hGA
+  obtain ⟨-, hCl, hCb⟩ := Submission.cmcdt_lpi_cyl_fubini k A hA
+  set C := {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+    (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}
+  -- `τ z = tail z` is measurable, and `τ (t, u) = u`
+  have hτ : Measurable fun z : Euclid (k + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) := by
+    fun_prop
+  have hτι : ∀ (t : ℝ) (u : Euclid k), (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u) : Fin (k + 1) → ℝ)))) : Euclid k) = u := by
+    simp
+  -- (a)
+  have hgτ : Measurable fun z : Euclid (k + 1) => g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) :=
+    hg.comp hτ
+  have hgτR : Measurable fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) :=
+    measurable_from_top.comp hgτ
+  -- (b): `∫⁻_C ‖g(τ z)‖ₑ = ∫⁻_A ‖g‖ₑ · λ((0, 1)) = ∫⁻_A ‖g‖ₑ < ∞`
+  have hgτI : IntegrableOn (fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) C := by
+    refine ⟨hgτR.aestronglyMeasurable, ?_⟩
+    unfold HasFiniteIntegral
+    rw [hCl _ hgτR.enorm]
+    simp only [hτι, setLIntegral_const, Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]
+    exact hgA.2
+  refine ⟨hgτ, hgτI, ?_⟩
+  -- (c)
+  intro ω hωc hωs
+  obtain ⟨M, hM⟩ := hωs.exists_bound_of_continuous hωc
+  obtain ⟨K, hK⟩ := hGL
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hDG : ∀ (z : Euclid (k + 1)) (a : Fin (k + 1)),
+      ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖ ≤ K := by
+    intro z a
+    calc ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖
+        ≤ ‖fderiv ℝ G z‖ * ‖(EuclideanSpace.single a (1 : ℝ) : Euclid (k + 1))‖ :=
+          (fderiv ℝ G z).le_opNorm _
+      _ = ‖fderiv ℝ G z‖ := by simp
+      _ ≤ K := norm_fderiv_le_of_lipschitz ℝ hK
+  -- `z ↦ ω(G z)(∂G z)` is measurable: `(y, v) ↦ ω y v` is continuous and `fderiv` is Borel
+  have hωm : Measurable fun z => ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1)) := by
+    have h1 : Measurable fun z =>
+        (G z, fun a : Fin (k + 1) => fderiv ℝ G z (EuclideanSpace.single a 1)) :=
+      hK.continuous.measurable.prodMk <| measurable_pi_iff.mpr fun a =>
+        measurable_fderiv_apply_const ℝ G (EuclideanSpace.single a 1)
+    have h2 : Continuous fun p : Euclid P × (Fin (k + 1) → Euclid P) => ω p.1 p.2 :=
+      (hωc.comp continuous_fst).eval continuous_snd
+    exact h2.measurable.comp h1
+  -- `|g(τ z) ω(G z)(∂G z)| ≤ M K^{k+1} |g(τ z)|`, so the integrand is integrable on `C`
+  have hΦ : IntegrableOn (fun z : Euclid (k + 1) =>
+      (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) *
+        ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1))) C := by
+    refine Integrable.mono' (hgτI.norm.mul_const (M * (K : ℝ) ^ (k + 1)))
+      (hgτR.mul hωm).aestronglyMeasurable (ae_of_all _ fun z => ?_)
+    rw [norm_mul]
+    gcongr
+    calc ‖ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1))‖
+        ≤ ‖ω (G z)‖ * ∏ a, ‖fderiv ℝ G z (EuclideanSpace.single a 1)‖ := (ω (G z)).le_opNorm _
+      _ ≤ M * ∏ _a : Fin (k + 1), (K : ℝ) := by
+        gcongr with a
+        · exact hM _
+        · exact hDG z a
+      _ = M * (K : ℝ) ^ (k + 1) := by simp
+  -- Fubini on `C`, then compare the integrands for `u ∈ A` and `t ∈ (0, 1)`
+  rw [hCb _ hΦ]
+  refine setIntegral_congr_fun hA fun u hu => ?_
+  simp only
+  rw [intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo,
+    ← integral_const_mul]
+  refine setIntegral_congr_fun measurableSet_Ioo fun t ht => ?_
+  obtain ⟨h1, h2⟩ := hGA u hu t ht
+  rw [hτι, h1, h2]
+  congr 1
+  -- `(F u, t ∂F u) = (cₐ vₐ)ₐ` with `c = (1, t, …, t)`, so `ω(t F u)` scales by `∏ₐ cₐ = t^k`
+  have hc : (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) :
+      Fin (k + 1) → Euclid P) = fun a => (Fin.cons 1 fun _ => t : Fin (k + 1) → ℝ) a •
+        (Fin.cons (F u) (fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) :
+          Fin (k + 1) → Euclid P) a := by
+    funext a
+    refine Fin.cases ?_ (fun b => ?_) a <;> simp
+  rw [hc, ContinuousAlternatingMap.map_smul_univ]
+  simp [Fin.prod_univ_succ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
