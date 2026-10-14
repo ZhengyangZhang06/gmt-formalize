@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fbbaf07f10ec280ba8b28258a5d780445b246b3b10ddc736c3e4d4b433920725",
+  "git_delta": {
+    "base_commit": "29838383bd0dd3f96959bfa181a86841584f25a5",
+    "candidate_commit": "5460ac9d6cad13be19a4f831b1cd34320005a915",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_dini_measurable",
+    "diff_sha256": "69491851bf6d3e2b4036213e4d5d437c51f17b2c39fd3729012b4b4155d6b3f3",
+    "source_sha256": "35b8a012328289b89d6deab918300ef49bfc0fedc91d9765c5787db346624827",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_dini_measurable",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ r : ℝ, μ (ball (0 : Euclid P) r) < ∞) → Measurable (fun t : ℝ => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
