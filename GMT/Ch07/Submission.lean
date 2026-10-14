@@ -835,6 +835,54 @@ theorem Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : 
       have := tendsto_iff_norm_sub_tendsto_zero.1 (hx i)
       simpa using this
     simpa using this
+/-- **The coordinate covector `dx^I`** (Simon Ch. 6, §1): for `I : Fin n → Fin P` some
+`n`-covector `θ` on `ℝᴾ` has `θ(v₁, …, vₙ) = det (vⱼ(I k))_{k,j}`.  With the coordinate
+projection `p_I x = (x(I k))_k`, `θ⁰ = det ∘ p_I` is alternating, `det Mᵀ = det M` gives the
+formula, and the Leibniz formula with `|x(l)| ≤ ‖x‖` gives `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`, so
+`θ⁰` is continuous. -/
+theorem Submission.cmr_cc_det_covector_exists : ∀ (P n : ℕ) (I : Fin n → Fin P), ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+  intro P n I
+  -- Step 1: the coordinate projection `p_I x = (x(I k))_k` is linear
+  let p : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+    { toFun := fun x k => x (I k)
+      map_add' := fun x y => by
+        funext k
+        simp
+      map_smul' := fun c x => by
+        funext k
+        simp }
+  -- Step 2: `θ⁰ = Θ ∘ p_I`, with `Θ` the determinant as an alternating map in the rows
+  let θ₀ : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap p
+  -- Step 3: `θ⁰(v) = det (vⱼ(I k))_{j,k} = det (vⱼ(I k))_{k,j}` by `det Mᵀ = det M`
+  have hθ₀ : ∀ v : Fin n → Euclid P, θ₀ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+    intro v
+    rw [← Matrix.det_transpose]
+    rfl
+  -- Step 4: the Leibniz formula, `|sign σ| = 1` and `|x(l)| ≤ ‖x‖` give
+  -- `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`
+  have hbound : ∀ v : Fin n → Euclid P, ‖θ₀ v‖ ≤ (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+    intro v
+    rw [hθ₀, Real.norm_eq_abs, Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n),
+            Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j|
+        ≤ ∑ σ : Equiv.Perm (Fin n),
+            |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), ∏ j, ‖v j‖ := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hσ : |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| =
+              ∏ j, |v j (I (σ j))| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+              simp [h, Finset.abs_prod]
+          rw [hσ]
+          gcongr with j
+          rw [← Real.norm_eq_abs]
+          exact PiLp.norm_apply_le (v j) (I (σ j))
+      _ = (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+  -- Step 5: `θ = θ⁰.mkContinuous n!` is an `n`-covector with the same values as `θ⁰`
+  exact ⟨θ₀.mkContinuous (n.factorial : ℝ) hbound, hθ₀⟩
 
 /-- **The Piola identity** (the Jacobian minors are null Lagrangians): for `C²` functions
 `g₀, …, g_{r-1}` on `ℝᵏ` and directions `V₀, …, V_r`, the minors
@@ -991,6 +1039,102 @@ theorem Submission.dor_lmb_fcd_jwc_smooth_minor_ibp : ∀ (k r : ℕ) (g : Fin (
   rw [hz, zero_sub]
   simp only [integral_const_mul]
   rfl
+
+/-- **Integration by parts for Jacobian minors of Lipschitz maps** (the step "`(∗)` holds for
+Lipschitz `v`" in the weak continuity of Jacobian minors): for `L`-Lipschitz `g₀, …, g_r` on `ℝᵏ`,
+vectors `V₀, …, V_r` and `ψ ∈ C¹_c(ℝᵏ)`,
+`∫ ψ det A = −Σ_b (−1)^b ∫ ∂_{V_b}ψ · g₀ · M_b`, where `A = (Dg_c V_b)_{c,b}` and `M_b` is the minor
+`det (Dg_{c+1} V_{s_b(b')})_{c,b'}`, `s_b = b.succAbove`.  Mollify every `g_c`: `C^∞`, `L`-Lipschitz
+`g^n_c → g_c` uniformly with `Dg^n_c → Dg_c` a.e.  The identity holds for every `n` (smooth case);
+the determinants converge a.e. and are bounded by `(r+1)! (L Σ_b ‖V_b‖)^(r+1)`, resp.
+`r! (L Σ_b' ‖V_{s_b(b')}‖)^r`, so both sides converge by dominated convergence (on the right with
+`|g^n_0| ≤ |g_0| + 1` for large `n`), and the limits agree. -/
+theorem Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp : ∀ (k r : ℕ) (L : NNReal) (g : Fin (r + 1) → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (ψ : Euclid k → ℝ), (∀ c, LipschitzWith L (g c)) → ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) = -∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * ∫ x, fderiv ℝ ψ x (V b) * g 0 x * Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b'))) := by
+  intro k r L g V ψ hg hψ hψs
+  -- step 1: smooth `L`-Lipschitz approximants `fs c n` of every component `g c`
+  choose fs hfs_smooth hfs_lip hfs_unif hfs_ae using
+    fun c => Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx k L (g c) (hg c)
+  -- step 2: the identity for the smooth maps `fs · n`
+  have hid := fun n => Submission.dor_lmb_fcd_jwc_smooth_minor_ibp k r (fun c => fs c n) V ψ
+    (fun c => (hfs_smooth c n).of_le (by simp)) hψ hψs
+  -- step 3: off a null set all derivatives converge, hence so do the entries and determinants
+  have hae : ∀ᵐ x ∂(volume : Measure (Euclid k)), ∀ c,
+      Tendsto (fun n => fderiv ℝ (fs c n) x) atTop (𝓝 (fderiv ℝ (g c) x)) := ae_all_iff.2 hfs_ae
+  have hdet_lim : ∀ {m : ℕ} (σ : Fin m → Fin (r + 1)) (W : Fin m → Euclid k) (x : Euclid k),
+      (∀ c, Tendsto (fun n => fderiv ℝ (fs c n) x) atTop (𝓝 (fderiv ℝ (g c) x))) →
+      Tendsto (fun n => Matrix.det (Matrix.of fun (c b : Fin m) => fderiv ℝ (fs (σ c) n) x (W b)))
+        atTop (𝓝 (Matrix.det (Matrix.of fun (c b : Fin m) => fderiv ℝ (g (σ c)) x (W b)))) := by
+    intro m σ W x hx
+    have hM : Tendsto (fun n => (Matrix.of fun (c b : Fin m) => fderiv ℝ (fs (σ c) n) x (W b)))
+        atTop (𝓝 (Matrix.of fun (c b : Fin m) => fderiv ℝ (g (σ c)) x (W b))) := by
+      refine tendsto_pi_nhds.2 fun c => tendsto_pi_nhds.2 fun b => ?_
+      exact ((ContinuousLinearMap.apply ℝ ℝ (W b)).continuous.tendsto _).comp (hx (σ c))
+    exact ((continuous_id.matrix_det).tendsto _).comp hM
+  -- step 4: the bound `B` of the full determinants and the integrability of `ψ`
+  set B : ℝ := ((r + 1).factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ (r + 1)
+  have hψc : Continuous ψ := hψ.continuous
+  have hψi : Integrable ψ := hψc.integrable_of_hasCompactSupport hψs
+  -- step 5: the left side converges, dominated by `B |ψ|`
+  have hL : Tendsto
+      (fun n => ∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (fs c n) x (V b)))
+      atTop (𝓝 (∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)))) := by
+    refine tendsto_integral_of_dominated_convergence (fun x => B * ‖ψ x‖) (fun n => ?_)
+      (hψi.norm.const_mul B) (fun n => Eventually.of_forall fun x => ?_) ?_
+    · exact hψc.aestronglyMeasurable.mul
+        (Submission.dor_lmb_fcd_jwc_minor_measurable_bound k (r + 1) L (fun c => fs c n) V
+          (fun c => hfs_lip c n)).1.aestronglyMeasurable
+    · have h := (Submission.dor_lmb_fcd_jwc_minor_measurable_bound k (r + 1) L (fun c => fs c n) V
+        (fun c => hfs_lip c n)).2 x
+      rw [norm_mul, Real.norm_eq_abs (Matrix.det _), mul_comm]
+      exact mul_le_mul_of_nonneg_right h (norm_nonneg _)
+    · filter_upwards [hae] with x hx
+      exact tendsto_const_nhds.mul (hdet_lim id V x hx)
+  -- step 6: each term of the right side converges, dominated by `Br |∂_{V_b}ψ| (|g 0| + 1)`
+  have hR : ∀ b : Fin (r + 1), Tendsto (fun n => ∫ x, fderiv ℝ ψ x (V b) * fs 0 n x *
+      Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (fs c.succ n) x (V (b.succAbove b'))))
+      atTop (𝓝 (∫ x, fderiv ℝ ψ x (V b) * g 0 x * Matrix.det
+        (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b'))))) := by
+    intro b
+    set Br : ℝ := (r.factorial : ℝ) * ((L : ℝ) * ∑ b', ‖V (b.succAbove b')‖) ^ r
+    have hdψc : Continuous (fun x => fderiv ℝ ψ x (V b)) :=
+      (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
+    have hdψs : HasCompactSupport (fun x => fderiv ℝ ψ x (V b)) := hψs.fderiv_apply (𝕜 := ℝ) (V b)
+    have hwi : Integrable (fun x => Br * (‖fderiv ℝ ψ x (V b)‖ * (‖g 0 x‖ + 1))) := by
+      refine Integrable.const_mul ?_ _
+      exact Continuous.integrable_of_hasCompactSupport
+        (hdψc.norm.mul ((hg 0).continuous.norm.add continuous_const)) hdψs.norm.mul_right
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun x => Br * (‖fderiv ℝ ψ x (V b)‖ * (‖g 0 x‖ + 1)))
+      (Eventually.of_forall fun n => ?_) ?_ hwi ?_
+    · exact (hdψc.mul (hfs_smooth 0 n).continuous).aestronglyMeasurable.mul
+        (Submission.dor_lmb_fcd_jwc_minor_measurable_bound k r L (fun c => fs c.succ n)
+          (fun b' => V (b.succAbove b')) (fun c => hfs_lip c.succ n)).1.aestronglyMeasurable
+    · -- `|fs 0 n| ≤ |g 0| + 1` once `fs 0 n` is uniformly `1`-close to `g 0`
+      obtain ⟨N, hN⟩ :=
+        (Metric.tendstoUniformly_iff.1 (hfs_unif 0) 1 one_pos).exists_forall_of_atTop
+      refine eventually_atTop.2 ⟨N, fun n hn => Eventually.of_forall fun x => ?_⟩
+      have h1 : ‖fs 0 n x‖ ≤ ‖g 0 x‖ + 1 := by
+        have := hN n hn x
+        rw [dist_comm, dist_eq_norm] at this
+        have := norm_le_insert' (fs 0 n x) (g 0 x)
+        linarith
+      have h2 := (Submission.dor_lmb_fcd_jwc_minor_measurable_bound k r L (fun c => fs c.succ n)
+        (fun b' => V (b.succAbove b')) (fun c => hfs_lip c.succ n)).2 x
+      rw [norm_mul, norm_mul, Real.norm_eq_abs (Matrix.det _)]
+      calc ‖fderiv ℝ ψ x (V b)‖ * ‖fs 0 n x‖ * |Matrix.det _|
+          ≤ ‖fderiv ℝ ψ x (V b)‖ * (‖g 0 x‖ + 1) * Br := by gcongr
+        _ = Br * (‖fderiv ℝ ψ x (V b)‖ * (‖g 0 x‖ + 1)) := by ring
+    · filter_upwards [hae] with x hx
+      refine (tendsto_const_nhds.mul ((hfs_unif 0).tendsto_at x)).mul ?_
+      exact hdet_lim Fin.succ (fun b' => V (b.succAbove b')) x hx
+  have hRall : Tendsto (fun n => -∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) *
+      ∫ x, fderiv ℝ ψ x (V b) * fs 0 n x * Matrix.det
+        (Matrix.of fun (c b' : Fin r) => fderiv ℝ (fs c.succ n) x (V (b.succAbove b'))))
+      atTop (𝓝 (-∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * ∫ x, fderiv ℝ ψ x (V b) * g 0 x *
+        Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b'))))) :=
+    Tendsto.neg (tendsto_finsetSum _ fun b _ => (hR b).const_mul _)
+  -- step 7: both sides of step 2 agree for every `n`, so their limits agree
+  exact tendsto_nhds_unique hL (hRall.congr fun n => (hid n).symm)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
