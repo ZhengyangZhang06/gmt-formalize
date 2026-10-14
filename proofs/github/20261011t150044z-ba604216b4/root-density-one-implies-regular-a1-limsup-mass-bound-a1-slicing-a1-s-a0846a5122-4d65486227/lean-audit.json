@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "dd77ba936c41a337d93413bda29d0a73722f4cc708016b68a1d161d18edc0678",
+  "git_delta": {
+    "base_commit": "9baf39316671c23695dbe6a83fe7c72163075a01",
+    "candidate_commit": "7c07fc131eeebe4faf2ed7fe91068f1dbe5d4dfe",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "86c7c74e744abae27153a6e65ff1021b33578db80eeedede64dc0a124027f247",
+    "source_sha256": "a1bcd3819c1e7e06c8721097a1abbd0ca268e3bcf65a77148605b434f3a1fd6b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_c1_image_approxTangent",
+      "statement": "∀ (k P : ℕ) (V C : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen V → ContDiffOn ℝ 1 χ V → IsCompact C → C ⊆ V → InjOn χ C → y ∈ interior C → Injective (fderiv ℝ χ y) → HasApproximateTangentSpaceAt k (χ '' C) (χ y) (LinearMap.range (fderiv ℝ χ y : Euclid k →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
