@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0b8ee2b2e5d3358ba937bd8e870cf6d0b301f91253ee6ddbf33221f44d21d384",
+  "git_delta": {
+    "base_commit": "a0101483da25b6bf28572b364be2374f43053c00",
+    "candidate_commit": "22562d677209b561b8c14aa33a6edffef701100d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le",
+    "diff_sha256": "98fe477d12e7377a8b22bcc1c68a80e59a5e251f6bc9a8777e349839fdfea95f",
+    "source_sha256": "3d655039de384f9a91a5202835676ddb0a5c94d958a942b8cfb6860a1ee2d2e7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le",
+      "statement": "∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
