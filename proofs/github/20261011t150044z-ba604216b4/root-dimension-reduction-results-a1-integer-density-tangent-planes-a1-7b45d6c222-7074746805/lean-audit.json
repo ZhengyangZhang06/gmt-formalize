@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "54c20d63037c2f1a78fa8990ad6925df7c918a88bc68493b8d638ca8a7904893",
+  "git_delta": {
+    "base_commit": "ba130e993e84a2216ca2a3b05c5271009b5688a9",
+    "candidate_commit": "15cb93be00edc979750cba04a36acca29f8e2576",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_sp_flat_region_ae",
+    "diff_sha256": "982e1972e63efbbf7d7d7d168ea5138b5e4224713de929a1997ce90031c56c40",
+    "source_sha256": "cbea10f5abc281bb5265dbbf2522e9f931c4ecc41ede7f4f3851787a33590b7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_sp_flat_region_ae",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (G : Set (Euclid P)) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) n), Module.finrank ℝ Q = n → 1 ≤ k → (∀ y ∈ G, y ∈ Q ∧ HasMassDensity C y k ∧ ∃ r : ℝ, 0 < r ∧ (Q : Set (Euclid P)) ∩ ball y r ⊆ G ∧ C.support ∩ ball y r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ G → y ∈ R.carrier ∧ R.mult y = k ∧ approxTangentPlane n R.carrier y = Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
