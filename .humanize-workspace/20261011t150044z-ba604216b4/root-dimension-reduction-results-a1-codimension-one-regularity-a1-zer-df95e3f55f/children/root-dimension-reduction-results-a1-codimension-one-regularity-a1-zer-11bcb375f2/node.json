@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1",
+  "depth": 5,
+  "title": "Local comparison of H^m on a C¹ graph with the integral of its Jacobian (supplied step 3)",
+  "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let D ⊆ ℝ^m be open and g : ℝ^m → ℝ^k a map that is C¹ on D. Put G(w) := ιw + ι'g(w) and J(w) := √det(DG(w)*∘DG(w)) with DG(w) = fderiv ℝ G w. Let t > 1 and w₀ ∈ D. Then there is r > 0 with B_r(w₀) ⊆ D (open ball) such that for every measurable B ⊆ B_r(w₀): H^m(G(B)) ≤ t·∫_B J dL^m and ∫_B J dL^m ≤ t·H^m(G(B)). Here H^m = μHE[m] on ℝ^{m+k}, L^m = volume on ℝ^m, ∫_B J dL^m is the lower Lebesgue integral of ENNReal.ofReal∘J over B, t enters as ENNReal.ofReal t, and the inequalities hold in [0, ∞].",
+  "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (t : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 1 < t → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ B : Set (Euclid m), MeasurableSet B → B ⊆ ball w₀ r → μHE[m] ((fun w => ι w + ι' (g w)) '' B) ≤ ENNReal.ofReal t * ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ∧ ∫⁻ w in B, ENNReal.ofReal (Real.sqrt (((fderiv ℝ (fun w => ι w + ι' (g w)) w).adjoint ∘L fderiv ℝ (fun w => ι w + ι' (g w)) w).det)) ≤ ENNReal.ofReal t * μHE[m] ((fun w => ι w + ι' (g w)) '' B)",
+  "lean_name": "codim1_zsl_ga_local_comparison",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.linear_area-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.relative_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.linear_area-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.relative_lipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2-a1"
+}
