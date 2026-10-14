@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0a0c7a14388f64ea8713fb23b3ccb5706d6d247bf0b2d069175e40b966ff832e",
+  "git_delta": {
+    "base_commit": "67ddbf4f503ca4743f8b585c3293438d68aaaf25",
+    "candidate_commit": "e46c0ef764037b49bc286d158636aac7ede5356a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_pr_det_covector_laplace",
+    "diff_sha256": "23e20b031480dc63b70ac3edbd1621788aff17dc2aa104ae8fd916692860fb2c",
+    "source_sha256": "98a3a18d92225f06d6ccc495fb4460f2a5f078f2d07a9775fad64144b56a1b15",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_pr_det_covector_laplace",
+      "statement": "∀ (P d : ℕ) (g : Fin (d + 1) → Euclid P) (k : Fin (d + 1)) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a))) → ∃ α : Covector (Euclid P) d, ∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ (g k) (u i) * α (i.removeNth u))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
