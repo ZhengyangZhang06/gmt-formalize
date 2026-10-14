@@ -1002,6 +1002,108 @@ theorem Submission.dor_lmbsf_ll_tangent_wedge_field : ∀ (P n : ℕ) (U : Set (
     · rw [hWx]; exact hmem _ hx2
     · intro β; rw [hWx]; exact hidt β
 
+/-- **Simon Ch. 6, proof of Lemma 4.5(2), displays (1)–(4)** (Leibniz rule for the Lipschitz
+cut-off `h = γ ∘ f`, `γ(s) = min{1, max{0, (b − s)/(b − a)}}`): if `T = τ(M, θ, ξ)`,
+`∂T = τ(M', θ', ξ')` and the weak-limit property (G5) holds, then for `ω ∈ 𝒟ⁿ(U)` and `a < b`,
+`∫_{M'} θ' h ⟨ω, ξ'⟩ dHⁿ = ∫_M θ h ⟨dω, ξ⟩ dH^{n+1} − (b − a)⁻¹ ∫_{M ∩ {a < f < b}} θ ⟨g♭ ∧ ω, ξ⟩
+dH^{n+1}`.  Take `C^∞` functions `h_k → h` uniformly with `‖Dh_k‖ ≤ c` and `|h_k| ≤ 2`, and a
+bounded Borel field `W`, zero off `spt ω`, with `W ∈ TₓM` and `ξ(β ∧ ω) = β(W)` for
+`H^{n+1}`-a.e. `x ∈ M`.  The defect identity gives `∂T(h_k ω) = T(h_k dω) + ∫_M θ Dh_k[W]`.  As
+`k → ∞` the outer terms converge by dominated convergence and the last term by (G5), with limit
+`−(b − a)⁻¹ ∫_{M ∩ {a < f < b}} θ ⟨g, W⟩`, and `⟨g, W⟩ = ξ(g♭ ∧ ω)` a.e. on `M`. -/
+theorem Submission.dor_lmbsf_lipschitz_cutoff_leibniz : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal) (g : Euclid P → Euclid P), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → Measurable g → (∀ x, ‖g x‖ ≤ L) → (∀ (a b : ℝ), a < b → ∀ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop → ∀ (W : Euclid P → Euclid P) (K : Set (Euclid P)) (c' : ℝ), Measurable W → IsCompact K → K ⊆ U → (∀ x, x ∉ K → W x = 0) → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), W x ∈ approxTangentPlane (n + 1) RT.carrier x) → Tendsto (fun k => ∫ x in RT.carrier, (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) * (-(b - a)⁻¹ * inner ℝ (g x) (W x)) ∂μHE[n + 1]))) → ∀ (ω : TestFormOn U n) (a b : ℝ), a < b → ∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] = (∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - (b - a)⁻¹ * ∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) * RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight ((ω : DifferentialForm (Euclid P) n) x))) ∂μHE[n + 1] := by
+  intro P n U T RT RB f L g _hU hRT hRB hf _hgm _hgL hG5 ω a b hab
+  -- `ω` is continuous and bounded, and `K = spt ω` is a compact subset of `U`
+  obtain ⟨⟨hωs, hωK⟩, hωU⟩ : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ U := ω.2
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := hωs.continuous
+  obtain ⟨B, hB⟩ := hωc.bounded_above_of_compact_support hωK
+  -- Step 1: `C^∞` cut-offs `h_k → h` uniformly, with `‖Dh_k‖ ≤ c` and `|h_k| ≤ 2`
+  obtain ⟨hs, c, hs_smooth, hs_deriv, hs_bdd, hs_unif⟩ :=
+    Submission.dor_lmbsf_ll_cutoff_smooth_approx P f L a b hf hab
+  have hs_meas : ∀ k, Measurable (hs k) := fun k => (hs_smooth k).continuous.measurable
+  -- Step 4: `W` is bounded, Borel and zero off `spt ω`; `W ∈ TₓM` and `ξ(β ∧ ω) = β(W)` a.e.
+  obtain ⟨W, c', hWm, hW0, hWc, hWae⟩ :=
+    Submission.dor_lmbsf_ll_tangent_wedge_field P n U RT (ω : DifferentialForm (Euclid P) n) B
+      hωc hB
+  -- Step 4(d): (G5) for `h_k`, `W` and `K = spt ω`
+  have hmid := hG5 a b hab hs c (fun k => (hs_smooth k).of_le (by exact_mod_cast le_top))
+    hs_deriv hs_unif W (tsupport (ω : DifferentialForm (Euclid P) n)) c' hWm hωK hωU
+    (fun x hx => hW0 x (image_eq_zero_of_notMem_tsupport hx)) hWc (hWae.mono fun x hx => hx.1)
+  -- Step 3: the outer terms converge by dominated convergence
+  have hlimB : Tendsto (fun k => ∫ x in RB.carrier, (RB.mult x : ℝ) * hs k x *
+      RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) atTop
+      (𝓝 (∫ x in RB.carrier, (RB.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) *
+        RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])) :=
+    Submission.dor_lmbsf_ll_action_mul_tendsto P n U RB ω hs
+      (fun x => min 1 (max 0 ((b - f x) / (b - a)))) 2 hs_meas hs_bdd hs_unif.tendsto_at
+  have hlimT : Tendsto (fun k => ∫ x in RT.carrier, (RT.mult x : ℝ) * hs k x *
+      RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) atTop
+      (𝓝 (∫ x in RT.carrier, (RT.mult x : ℝ) * min 1 (max 0 ((b - f x) / (b - a))) *
+        RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1])) :=
+    Submission.dor_lmbsf_ll_action_mul_tendsto P (n + 1) U RT (exteriorDerivativeTestOn U n ω) hs
+      (fun x => min 1 (max 0 ((b - f x) / (b - a)))) 2 hs_meas hs_bdd hs_unif.tendsto_at
+  -- Step 2: `T = (θ ξ) H^{n+1}⌞M` and `∂T = (θ' ξ') Hⁿ⌞M'`
+  have hrepT : ∀ η : TestFormOn U (n + 1), T η = ∫ x, ((RT.mult x : ℝ) • RT.orient x)
+      ((η : DifferentialForm (Euclid P) (n + 1)) x) ∂(μHE[n + 1].restrict RT.carrier) := by
+    intro η
+    rw [hRT η]
+    simp only [IMRep.action, smul_apply, smul_eq_mul]
+  have hrepB : ∀ η : TestFormOn U n, T.boundary η = ∫ x, ((RB.mult x : ℝ) • RB.orient x)
+      ((η : DifferentialForm (Euclid P) n) x) ∂(μHE[n].restrict RB.carrier) := by
+    intro η
+    rw [hRB η]
+    simp only [IMRep.action, smul_apply, smul_eq_mul]
+  -- Steps 2 and 4(c): `∂T(h_k ω) = T(h_k dω) + T(dh_k ∧ ω)` and `ξ(dh_k ∧ ω) = Dh_k[W]` a.e.
+  have hk : ∀ k, ∫ x in RB.carrier, (RB.mult x : ℝ) * hs k x *
+      RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] =
+      (∫ x in RT.carrier, (RT.mult x : ℝ) * hs k x *
+        RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) +
+      ∫ x in RT.carrier, (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1] := by
+    intro k
+    have hid := Submission.cmcs_cd_defect_identity P n U T (μHE[n + 1].restrict RT.carrier)
+      (μHE[n].restrict RB.carrier) (fun x => (RT.mult x : ℝ) • RT.orient x)
+      (fun x => (RB.mult x : ℝ) • RB.orient x) (hs k) ω hrepT hrepB (hs_smooth k)
+    have e1 : ∫ x, hs k x * ((RT.mult x : ℝ) • RT.orient x)
+        (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x)
+          ∂(μHE[n + 1].restrict RT.carrier) =
+        ∫ x in RT.carrier, (RT.mult x : ℝ) * hs k x *
+          RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1] :=
+      integral_congr_ae (Eventually.of_forall fun x => by
+        simp only [smul_apply, smul_eq_mul]
+        ring)
+    have e2 : ∫ x, hs k x * ((RB.mult x : ℝ) • RB.orient x)
+        ((ω : DifferentialForm (Euclid P) n) x) ∂(μHE[n].restrict RB.carrier) =
+        ∫ x in RB.carrier, (RB.mult x : ℝ) * hs k x *
+          RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] :=
+      integral_congr_ae (Eventually.of_forall fun x => by
+        simp only [smul_apply, smul_eq_mul]
+        ring)
+    have e3 : ∫ x, ((RT.mult x : ℝ) • RT.orient x)
+        (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ (hs k) x).smulRight
+          ((ω : DifferentialForm (Euclid P) n) x))) ∂(μHE[n + 1].restrict RT.carrier) =
+        ∫ x in RT.carrier, (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1] := by
+      refine integral_congr_ae ?_
+      filter_upwards [hWae] with x hx
+      rw [smul_apply, smul_eq_mul, hx.2]
+    rw [e1, e2, e3] at hid
+    linarith
+  -- Step 4(e): the (G5) limit is `−(b − a)⁻¹ ∫_{M ∩ {a < f < b}} θ ξ(g♭ ∧ ω)`
+  have hval : ∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b},
+      (RT.mult x : ℝ) * (-(b - a)⁻¹ * inner ℝ (g x) (W x)) ∂μHE[n + 1] =
+      -(b - a)⁻¹ * ∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) *
+        RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight
+          ((ω : DifferentialForm (Euclid P) n) x))) ∂μHE[n + 1] := by
+    rw [← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left hWae] with x hx
+    rw [hx.2, innerSL_apply_apply]
+    ring
+  -- Step 5: let `k → ∞`; limits are unique
+  have hlim := tendsto_nhds_unique hlimB ((hlimT.add hmid).congr fun k => (hk k).symm)
+  rw [hlim, hval]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
