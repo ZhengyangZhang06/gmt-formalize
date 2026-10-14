@@ -730,6 +730,96 @@ theorem Submission.cmcdtfrbv_face_covectors : ∀ (P m : ℕ) (ι : Fin (m + 1) 
     rw [hv]
     exact hface c j
 
+/-- **Admissible test form with prescribed values on a face** (Simon Ch. 6, proof of the
+deformation theorem 5.1, displays (26)–(28), with the test forms of 2.35).  Let
+`Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` be the chart of the face `p = (ι, b)` and
+`π(x) = (x_{ι(j)} − b_{ι(j)})ⱼ` its affine left inverse.  The compact set `K = Φ_p(spt g) ⊆ N`
+has `cthickening δ K ⊆ N` for some `δ > 0`, and a smooth `χ : ℝᴾ → [0, 1]` with support
+`thickening δ K` equals `1` exactly on `K`.  So `G = χ · (g ∘ π)` is smooth, compactly supported
+in `N`, bounded by `1`, and `G ∘ Φ_p = g`.  With the face covectors `εⱼ` of `ι`
+(`Submission.cmcdtfrbv_face_covectors`), `γ(x) = Σⱼ Gⱼ(x) εⱼ` is a test form with
+`tsupport γ ⊆ N` and `|γ(x)| = ‖G x‖ ≤ 1`, and `γ(Φ_p y)(e_{ι ∘ i.succAbove}) = (-1)ⁱ gᵢ(y)`. -/
+theorem Submission.dimred_mbl_dtfrbv_face_test_form : ∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ γ : TestFormOn (univ : Set (Euclid P)) m, tsupport (γ : DifferentialForm (Euclid P) m) ⊆ N ∧ (∀ x, covectorEuclideanNorm ((γ : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ ∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), g y i = (-1 : ℝ) ^ (i : ℕ) * (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ)) := by
+  intro P m p N g hι hN hΦN hg hgc hgQ hg1
+  -- Step 1: the face chart `Φ_p`, its affine left inverse `π = L - c₀`, and `π ∘ Φ_p = id`
+  -- (the `ι(j)`-th coordinate of `Φ_p y` is `b_{ι(j)} + yⱼ`, as `ι` is injective)
+  let Φ : Euclid (m + 1) → Euclid P := fun y =>
+    WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let L : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (fun j => x (p.1 j))
+      map_add' := fun x x' => by ext j; simp
+      map_smul' := fun c x => by ext j; simp }
+  have hL : ∀ x, L x = WithLp.toLp 2 (fun j => x (p.1 j)) := fun x => rfl
+  let c₀ : Euclid (m + 1) := WithLp.toLp 2 (fun j => (p.2 (p.1 j) : ℝ))
+  let π : Euclid P → Euclid (m + 1) := fun x => L x - c₀
+  have hπΦ : ∀ y, π (Φ y) = y := by
+    intro y
+    ext j
+    simp [π, hL, c₀, Φ, Pi.single_apply, hι.injective.eq_iff]
+  have hΦc : Continuous Φ := by fun_prop
+  have hπc : ContDiff ℝ (⊤ : ℕ∞) π := L.contDiff.sub contDiff_const
+  -- Step 2: `K = Φ_p(spt g)` is a compact subset of `N`, so `cthickening δ K ⊆ N` for some `δ > 0`
+  have hKc : IsCompact (Φ '' tsupport g) := hgc.isCompact.image hΦc
+  have hKN : Φ '' tsupport g ⊆ N := by
+    rintro _ ⟨y, hy, rfl⟩
+    exact hΦN y (hgQ hy)
+  obtain ⟨δ, hδ, hδN⟩ := hKc.exists_cthickening_subset_open hN hKN
+  -- Step 3: smooth `χ` with values in `[0, 1]`, support `thickening δ K` and `χ = 1` exactly on
+  -- `K`; so `tsupport χ ⊆ cthickening δ K ⊆ N`
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := Φ '' tsupport g)) hKc.isClosed
+    (self_subset_thickening hδ _)
+  have hχK : tsupport χ ⊆ cthickening δ (Φ '' tsupport g) := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening _ _
+  -- Step 4: `G = χ · (g ∘ π)` is smooth, compactly supported in `N` and bounded by `1`, and
+  -- `G ∘ Φ_p = g`, since `χ = 1` on `K` and `g = 0` off `spt g`
+  obtain ⟨G, hG, hGc, hGN, hG1, hGΦ⟩ : ∃ G : Euclid P → Euclid (m + 1),
+      ContDiff ℝ (⊤ : ℕ∞) G ∧ HasCompactSupport G ∧ tsupport G ⊆ N ∧ (∀ x, ‖G x‖ ≤ 1) ∧
+        ∀ y, G (Φ y) = g y := by
+    refine ⟨fun x => χ x • g (π x), hχ.smul (hg.comp hπc), ?_, ?_, ?_, fun y => ?_⟩
+    · exact hKc.cthickening.of_isClosed_subset (isClosed_tsupport _)
+        ((tsupport_smul_subset_left _ _).trans hχK)
+    · exact (tsupport_smul_subset_left _ _).trans (hχK.trans hδN)
+    · intro x
+      have hx := hχr (mem_range_self x)
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hx.1]
+      exact (mul_le_of_le_one_left (norm_nonneg _) hx.2).trans (hg1 _)
+    · show χ (Φ y) • g (π (Φ y)) = g y
+      rw [hπΦ]
+      by_cases hyg : y ∈ tsupport g
+      · rw [(hχ1 (Φ y)).1 (mem_image_of_mem Φ hyg), one_smul]
+      · rw [image_eq_zero_of_notMem_tsupport hyg, smul_zero]
+  -- Step 5: the face covectors `εⱼ` of `ι = p.1`
+  obtain ⟨ε, hεn, hεf⟩ := Submission.cmcdtfrbv_face_covectors P m p.1 hι
+  -- Step 6: `γ(x) = Σⱼ Gⱼ(x) εⱼ` is smooth and `supp γ ⊆ supp G`, so `γ` is a test form on `ℝᴾ`
+  -- with `tsupport γ ⊆ tsupport G ⊆ N`
+  set γ : DifferentialForm (Euclid P) m := fun x => ∑ j, G x j • ε j with hγ
+  have hGj : ∀ j, ContDiff ℝ (⊤ : ℕ∞) fun x => G x j := fun j =>
+    (EuclideanSpace.proj j : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hG
+  have hγs : ContDiff ℝ (⊤ : ℕ∞) γ :=
+    ContDiff.sum fun j _ => (hGj j).smul contDiff_const
+  have hγG : support γ ⊆ support G := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hγ, hx]
+  have hγT : IsTestForm γ ∧ tsupport γ ⊆ (univ : Set (Euclid P)) :=
+    ⟨⟨hγs, hGc.mono hγG⟩, subset_univ _⟩
+  refine ⟨⟨γ, hγT⟩, (closure_mono hγG).trans hGN, fun x => ?_, fun y i => ?_⟩
+  · -- Step 7: `|γ(x)| = √(Σⱼ Gⱼ(x)²) = ‖G x‖ ≤ 1`
+    calc covectorEuclideanNorm (γ x) = Real.sqrt (∑ j, G x j ^ 2) := hεn fun j => G x j
+      _ = ‖G x‖ := by rw [← EuclideanSpace.real_norm_sq_eq, Real.sqrt_sq (norm_nonneg _)]
+      _ ≤ 1 := hG1 x
+  · -- Step 8: `γ(Φ_p y)(e_{ι ∘ i.succAbove}) = (-1)ⁱ Gᵢ(Φ_p y) = (-1)ⁱ gᵢ(y)`, and `((-1)ⁱ)² = 1`
+    have hface : γ (Φ y) (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ)) =
+        (-1 : ℝ) ^ (i : ℕ) * G (Φ y) i :=
+      hεf (fun j => G (Φ y) j) i
+    show g y i = (-1 : ℝ) ^ (i : ℕ) *
+      γ (Φ y) (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ))
+    rw [hface, hGΦ y]
+    rcases neg_one_pow_eq_or ℝ (i : ℕ) with h | h <;> rw [h] <;> ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
