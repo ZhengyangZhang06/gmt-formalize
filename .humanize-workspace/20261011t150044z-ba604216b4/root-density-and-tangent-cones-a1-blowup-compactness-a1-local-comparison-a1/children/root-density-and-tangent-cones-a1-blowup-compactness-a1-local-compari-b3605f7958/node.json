@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orientation_fixed-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "A map fixing the support of an integer multiplicity current fixes its approximate tangent planes and orientation almost everywhere",
+  "statement": "Let P, n ∈ ℕ, U, O ⊆ ℝ^P open, T ∈ 𝒟_n(U), and R = (M, θ, ξ) an integer multiplicity representation of T in U (IMRep U n with R.Represents T). Let f : ℝ^P → ℝ^P be differentiable at every point of O (DifferentiableOn ℝ f O) with f(y) = y for every y ∈ spt T ∩ O. Then for Hⁿ-a.e. x ∈ M ∩ O (Hⁿ = μHE[n]): f(x) = x, and ⟨α ∘ ΛⁿDf(x), ξ(x)⟩ = ⟨α, ξ(x)⟩ for every n-covector α. In Lean the last identity reads R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α.",
+  "lean_statement": "∀ (P n : ℕ) (U O : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsOpen O → R.Represents T → DifferentiableOn ℝ f O → (∀ y ∈ T.support ∩ O, f y = y) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α",
+  "lean_name": "dtc_bc_lc_orient_fixed",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b3605f7958-a1"
+}

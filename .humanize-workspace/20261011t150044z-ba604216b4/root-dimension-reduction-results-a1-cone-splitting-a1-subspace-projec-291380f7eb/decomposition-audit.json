@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|BoundaryVanishes|IsIntegerMultiplicity|namespace|import|IsUnit",
+        "measure_compl_support|subset_compl_support_of_isOpen",
+        "theorem withDensity_apply|extDeriv_eq|def extDeriv",
+        "one_of_mem_closedBall|theorem hasCompactSupport|theorem contDiff",
+        "affinePullbackForm_isSmoothForm|exteriorDerivative_affinePullbackForm",
+        "dimred_cs_sp_cp_support_subset_of_carrier_subset|dimred_cs_sp_cp_action_extDeriv_eq_zero",
+        "#print axioms support_closed_check",
+        "#print axioms cycle_exact_check",
+        "#print axioms assembly",
+        "#print axioms GMT.Ch07.Submission.dor_imrep_massOn_eq_measure_and_support"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cp-independent-audit/Types.lean",
+        "/tmp/cp-independent-audit/AcceptedMass.lean",
+        "/tmp/cp-decomp/lean/Children.lean",
+        "/tmp/cp-decomp/lean/Assembly.lean"
+      ],
+      "conclusion": "The project and dependency revisions match the pinned snapshot; the contract and inspected Mathlib files are unchanged. All three exact child types independently elaborate as propositions without their implementations. I independently read the proofs and reran the child proofs and parent assembly; their types match the proposed/frozen strings. The assembly proves the selected pushforward contract from these children and its unchanged frozen dependencies. The reused mass/support candidate also recompiles against the pinned libraries with the identical type and only propext, Classical.choice and Quot.sound; the new proofs and conditional assembly have the same standard axiom set. The dependency graph is acyclic. A scan of 6964 decomposition metadata files found the new names only in this selected branch, with no project or Chapter06 declaration collision. The split appropriately isolates the support and cutoff arguments of the supplied proof. No matrix-unit or other incorrect inline instance construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the comparator-accepted declaration with a byte-identical frozen type. The prose includes openness, representation and all IMRep hypotheses. The orientation estimate, density integral formula, mass upper bound, Lusin/extension/mollification lower bound and zero-region argument establish both conclusions without circular reliance. The argument handles arbitrary open W through W ∩ U. The bare name is reserved by precisely the declaration being reused."
+    },
+    {
+      "key": "support_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition matches every prose hypothesis and conclusion. Closedness makes Fᶜ open and measurable; carrier containment makes its weighted measure zero. The open-null-set support lemma and the declared mass_support dependency then give Y.support ⊆ F. This is a complete, non-circular proof of parent step 4, and the new bare name is unreserved."
+    },
+    {
+      "key": "cycle_exact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact one-line proposition correctly allows arbitrary smooth η without compact support. Positivity of multiplicity converts the weighted null complement into a Hausdorff-null carrier complement. The smooth compactly supported cutoff agrees with η near K, so locality of exterior differentiation and almost-everywhere integral congruence reduce the action to X(dψ), which vanishes by X.boundary = 0. All hypotheses and degree conventions are correct; no sibling or parent theorem is assumed. The proof is formalization-ready and the new bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
