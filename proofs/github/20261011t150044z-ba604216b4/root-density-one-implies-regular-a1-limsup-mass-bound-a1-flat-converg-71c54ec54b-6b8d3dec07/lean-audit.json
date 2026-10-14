@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6fe80503e2e2d88b94df0edba93ce58e3484e79cf6d98794448c4381b1229d44",
+  "git_delta": {
+    "base_commit": "baeefd234f3c26807e20cf60f46b1308c65d055e",
+    "candidate_commit": "7a711fb270f74459785e4ebd552bfaa6363e67fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_gc_cube_selection",
+    "diff_sha256": "05541889252c85ad866b446f66f497afb2b3e55820ef387d1a1477da09488a7a",
+    "source_sha256": "995b214b91e549484ccf2be62050a7c636d515544b40ccf8853865857cbfbf49",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_gc_cube_selection",
+      "statement": "∀ (P d : ℕ) (E : (Fin d → Fin P) → Set (Fin d → ℝ)), ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ e : Fin d → Fin P, Function.Injective e → (fun k => a (e k)) ∉ E e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
