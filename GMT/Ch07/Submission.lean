@@ -8514,6 +8514,122 @@ theorem Submission.idtp_cse_fa_area_formula_prod : ∀ (P : ℕ) (M Z : Set (Euc
     refine (hκ.lintegral_comp_emb hκe _).trans (hint.trans ?_)
     simp only [hgram]
 
+/-- **Fibre-sum identities for the polar map on the carrier** (Simon Ch. 3, 2.4–2.5, the weighted
+area formula, with the Jacobian computed).  Let `R = (M, θ, ξ)` be an integer multiplicity triple in
+`ℝᴾ` with `x ∈ TₓM` for `μ = θ H²⌞M`-a.e. `x`, and let `(a, e)` be an orthonormal basis of the plane
+`Q`, `π = p_Q`.  Put `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`, `F̃ = (|·|, f)`, `Ax = ⟨x, a⟩e − ⟨x, e⟩a`,
+`w(x) = |p_{TₓM}(Ax)|` and `Z_s = {⟨x, a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}`.  Then
+the fibre sums `H(p) = Σ_{x ∈ M ∩ Z_s, F̃(x) = p} θ(x) w(x)` and
+`N(p) = Σ_{x ∈ M ∩ Z_s, F̃(x) = p} θ(x)` are a.e. measurable and, for Borel `b ≥ 0`,
+`∫ b H = ∫_{Z_s} b(F̃) w²/|πx|² dμ` and `∫ b N = ∫_{Z_s} b(F̃) w/|πx|² dμ`.  `Z_s` is open and `F̃`
+is `C¹` on it, so the carrier area formula applies to `h = θ (b ∘ F̃) w` and `h = θ (b ∘ F̃)`, whose
+fibre sums are `b(p) H(p)` and `b(p) N(p)`.  `H²`-a.e. on `M`, `TₓM` is a plane containing `x`,
+along which the Jacobian of `F̃` is `w(x)/|πx|²`; and `μ = θ H²⌞M`. -/
+theorem Submission.idtp_cse_fibre_area_identities : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ᵐ x ∂R.measure, (approxTangentPlane 2 R.carrier x).starProjection x = x) → AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖) volume ∧ AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞)) volume ∧ ∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → (∫⁻ p : ℝ × ℝ, b p * ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) * ENNReal.ofReal ‖(approxTangentPlane 2 R.carrier (x : Euclid P)).starProjection (inner ℝ (x : Euclid P) a • e - inner ℝ (x : Euclid P) e • a)‖ = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) ∧ (∫⁻ p : ℝ × ℝ, b p * ∑' x : ↥(R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹' {p}), (R.mult x : ℝ≥0∞) = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure) := by
+  intro P R Q a e s hQ haQ heQ ha he hae hrad
+  -- Step 1: `M` is Borel and countably `2`-rectifiable, and `H²(M ∩ K) ≤ ∫_{M ∩ K} θ dH² < ∞` for
+  -- compact `K`, as `θ ≥ 1` on `M`
+  have hM : MeasurableSet R.carrier := R.measurableSet_carrier
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → μHE[2] (R.carrier ∩ K) ≠ ∞ := by
+    intro K hK
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK (subset_univ K)) ?_
+    calc μHE[2] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[2] := (setLIntegral_one _).symm
+      _ ≤ _ := setLIntegral_mono hθm fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  -- Step 2: `H²⌞M`-a.e., `TₓM` is a plane (`ξ` orients it) containing `x` (the hypothesis, as
+  -- `H²⌞M ≪ μ = θ H²⌞M` with `θ > 0` on `M`)
+  have hac : μHE[2].restrict R.carrier ≪ R.measure :=
+    withDensity_absolutelyContinuous' hθm.aemeasurable
+      ((ae_restrict_iff' hM).2 (ae_of_all _ fun x hx => Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'))
+  have hgood : ∀ᵐ x ∂(μHE[2].restrict R.carrier),
+      Module.finrank ℝ (approxTangentPlane 2 R.carrier x) = 2 ∧
+        (approxTangentPlane 2 R.carrier x).starProjection x = x := by
+    filter_upwards [hac.ae_le hrad,
+      Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane P 2 univ R] with x hx hξ
+    obtain ⟨τ, hτ, hspan, -⟩ := hξ
+    refine ⟨?_, hx⟩
+    rw [← hspan, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- Step 3: let `Z` be open, `F` be `C¹` on `Z` with Jacobian `J` along `TₓM` at the good points of
+  -- `M ∩ Z`, and `J c = θ g`.  The carrier area formula for `h = (b ∘ F) c` gives
+  -- `∫ b(p) Σ_{x ∈ M ∩ Z, F(x) = p} c(x) dp = ∫_{M ∩ Z} θ (b ∘ F) g dH² = ∫_Z (b ∘ F) g dμ`
+  have main : ∀ (Z : Set (Euclid P)) (F : Euclid P → ℝ × ℝ) (J : Euclid P → ℝ), IsOpen Z →
+      ContDiffOn ℝ 1 F Z → Measurable F →
+      (∀ x ∈ R.carrier ∩ Z, Module.finrank ℝ (approxTangentPlane 2 R.carrier x) = 2 →
+        (approxTangentPlane 2 R.carrier x).starProjection x = x →
+        Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ
+            (approxTangentPlane 2 R.carrier x)) =>
+          (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 R.carrier x) i)).1 *
+              (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 R.carrier x) j)).1 +
+            (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 R.carrier x) i)).2 *
+              (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 R.carrier x) j)).2)) =
+          J x) →
+      ∀ (c : Euclid P → ℝ≥0∞) (g : Euclid P → ℝ), AEMeasurable c (μHE[2].restrict R.carrier) →
+      (∀ x, ENNReal.ofReal (J x) * c x = (R.mult x : ℝ≥0∞) * ENNReal.ofReal (g x)) →
+      AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(R.carrier ∩ Z ∩ F ⁻¹' {p}), c x) volume ∧
+      ∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b →
+        ∫⁻ p : ℝ × ℝ, b p * ∑' x : ↥(R.carrier ∩ Z ∩ F ⁻¹' {p}), c x =
+          ∫⁻ x in Z, b (F x) * ENNReal.ofReal (g x) ∂R.measure := by
+    intro Z F J hZo hZF hFm hJ c g hc hcg
+    have hZm : MeasurableSet Z := hZo.measurableSet
+    -- the carrier area formula in product coordinates
+    have haf := fun (h : Euclid P → ℝ≥0∞) (hh : AEMeasurable h (μHE[2].restrict R.carrier)) =>
+      Submission.idtp_cse_fa_area_formula_prod P R.carrier Z F h hM R.rectifiable hfin hZo hZF hh
+    refine ⟨(haf c hc).1, fun b hb => ?_⟩
+    obtain ⟨-, hint⟩ := haf (fun x => b (F x) * c x) ((hb.comp hFm).aemeasurable.mul hc)
+    -- the fibre sum of `(b ∘ F) c` over `p` is `b(p)` times the fibre sum of `c`
+    have hfib : ∀ p : ℝ × ℝ, ∑' x : ↥(R.carrier ∩ Z ∩ F ⁻¹' {p}), b (F x) * c x =
+        b p * ∑' x : ↥(R.carrier ∩ Z ∩ F ⁻¹' {p}), c x := by
+      intro p
+      rw [← ENNReal.tsum_mul_left]
+      refine tsum_congr fun x => ?_
+      rw [show F x = p from x.2.2]
+    -- `∫_Z φ dμ = ∫_{M ∩ Z} θ φ dH²`, as `μ = θ H²⌞M`
+    have hμ : ∫⁻ x in Z, b (F x) * ENNReal.ofReal (g x) ∂R.measure =
+        ∫⁻ x in R.carrier ∩ Z, (R.mult x : ℝ≥0∞) * (b (F x) * ENNReal.ofReal (g x)) ∂μHE[2] := by
+      rw [IMRep.measure, setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable _ hθm _ hZm
+        (ae_of_all _ fun x => ENNReal.natCast_lt_top _), Measure.restrict_restrict hZm, inter_comm]
+      rfl
+    rw [hμ, lintegral_congr fun p => (hfib p).symm, hint]
+    -- at the good points, which are `H²`-almost all of `M ∩ Z`, the Jacobian is `J`
+    refine lintegral_congr_ae ?_
+    filter_upwards [ae_restrict_mem (hM.inter hZm),
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left hgood] with x hx hx'
+    rw [hJ x hx hx'.1 hx'.2, mul_left_comm, hcg x, mul_left_comm]
+  -- Step 4: `Z_s` is open, `F̃` is `C¹` on `Z_s ⊆ {⟨x, a⟩ > 0}` and Borel, and along a plane
+  -- `T ∋ x` its Jacobian is `|p_T(Ax)|/|πx|²`
+  obtain ⟨hZo, hFc⟩ := Submission.idtp_cse_fa_sector_open_contDiffOn P Q a e s
+  have hFm : Measurable fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) := by
+    fun_prop
+  have hJ := fun x (hx : x ∈ R.carrier ∩ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧
+      |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}) =>
+    Submission.idtp_cse_fa_polar_gram_jacobian P Q (approxTangentPlane 2 R.carrier x) a e x hQ haQ
+      heQ ha he hae hx.2.1
+  -- Step 5: `w` is `H²⌞M`-a.e. measurable, `p_{TₓM}` being so
+  have hw : AEMeasurable (fun x => ENNReal.ofReal
+      ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖)
+      (μHE[2].restrict R.carrier) := by
+    have hA : Continuous fun x : Euclid P => inner ℝ x a • e - inner ℝ x e • a := by fun_prop
+    exact ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂
+      (Submission.imrep_approxTangent_starProjection_aesm P 2 univ R)
+      hA.aestronglyMeasurable).norm.aemeasurable.ennreal_ofReal
+  -- Step 6: Step 3 with `c = θ w`, `g = w²/|πx|²` (for `H`) and `c = θ`, `g = w/|πx|²` (for `N`)
+  obtain ⟨hH, hH'⟩ := main _ _ _ hZo (hFc.mono fun x hx => hx.1) hFm hJ
+    (fun x => (R.mult x : ℝ≥0∞) * ENNReal.ofReal
+      ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖)
+    (fun x => ‖(approxTangentPlane 2 R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2)
+    (hθm.aemeasurable.mul hw) fun x => by
+      rw [mul_left_comm, ← ENNReal.ofReal_mul (by positivity)]
+      congr 2
+      ring
+  obtain ⟨hN, hN'⟩ := main _ _ _ hZo (hFc.mono fun x hx => hx.1) hFm hJ
+    (fun x => (R.mult x : ℝ≥0∞))
+    (fun x => ‖(approxTangentPlane 2 R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2)
+    hθm.aemeasurable fun x => mul_comm _ _
+  exact ⟨hH, hN, fun b hb => ⟨hH' b hb, hN' b hb⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
