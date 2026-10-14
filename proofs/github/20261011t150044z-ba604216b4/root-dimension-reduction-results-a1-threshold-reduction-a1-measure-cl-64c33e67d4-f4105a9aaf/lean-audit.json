@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ad3fba6d4d55a7585e0d0ebedc03ed61f186e0321da36c15e422353cb55aee93",
+  "git_delta": {
+    "base_commit": "511c388567bd82017ecab5d002f4a5074c0307c6",
+    "candidate_commit": "2c38ce8765b0a2776d370323bfce0a8a719e9f6a",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b0f1ac53d4dbefcbacc84cf20c58c50030df5f9ee16e1e15f54420caf8c961af",
+    "source_sha256": "93ab46f574d6358cd5d3fc2a1ce46c3b56ff9c9512fae2edf6ad178271d3f4ec",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_mcr_threshold_limit",
+      "statement": "∀ (P n : ℕ) (Λ c : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → μs j K ≠ ∞) → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) → (∀ (j : ℕ) (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μs j (ball y ρ)) (Ioo 0 R)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))) → Tendsto ws atTop (𝓝 w) → ‖w‖ < 2 → (∀ j, c ≤ (limsup (fun ρ : ℝ => μs j (ball (ws j) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → c ≤ (limsup (fun ρ : ℝ => μ (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

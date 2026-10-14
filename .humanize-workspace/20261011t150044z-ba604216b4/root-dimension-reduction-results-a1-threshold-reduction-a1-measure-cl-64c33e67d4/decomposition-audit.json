@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n --no-ignore --hidden 'dimred_tr_mcr_tl_|dimred_tr_mcr_threshold_limit|monotone_density|density_lower_bound|lower_bound_transfer' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project --glob '*.lean'",
+        "sed -n '438,474p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "sed -n '327,348p;378,400p;465,492p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "python3 -I /tmp/thl-independent-audit-3f0f07f992ee/check.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/thl-independent-audit-3f0f07f992ee/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-64c33e67d4/parent-child-handoff.json",
+        "/tmp/thl-independent-audit-3f0f07f992ee/check.py",
+        "/tmp/thl-independent-audit-3f0f07f992ee/Types.lean",
+        "/tmp/thl-independent-audit-3f0f07f992ee/monotone_density.lean",
+        "/tmp/thl-independent-audit-3f0f07f992ee/lower_bound_transfer.lean",
+        "/tmp/thl-independent-audit-3f0f07f992ee/density_lower_bound.lean",
+        "/tmp/thl-independent-audit-3f0f07f992ee/Portmanteau.lean",
+        "/tmp/thl-independent-audit-3f0f07f992ee/Assembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates three analytic obligations in the selected dimred_tr_mcr_threshold_limit proof. Snapshot revisions match the compiler environment; inspected library files and frozen definitions are byte-identical. The snapshot project search found no matching declarations. All three names are bare identifiers and unreserved in the current 2435-node DAG; proposal searches found them only within this selected node. Empty child dependency lists are correct and acyclic. All raw types elaborate without child implementations, including the intended Borel, Euclidean and filter instances. Each child proof independently compiles with only propext, Classical.choice and Quot.sound. The registered portmanteau dependency has an identical accepted frozen type and independently passes the same axiom check. The assembly compiles against the exact immutable parent type using precisely the three child assumptions and portmanteau. Thus the children establish this selected parent, without changing its contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "monotone_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including positive R and interval finiteness. The supplied proof establishes a finite infimum, checks the ENNReal reciprocal and product conditions, identifies the limsup before applying toReal, and proves both conclusions. It covers n = 0 and arbitrary Λ, requires no measure structure on m, and contains no circular reliance or missing construction."
+    },
+    {
+      "key": "lower_bound_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes the compact-set limsup hypothesis, centre convergence, continuity and uniformly eventual radius bounds. The intermediate compact ball, eventual inclusion, limsup comparison and left-limit argument prove the stated conclusion step by step, including infinite values. No compact-finiteness hypothesis is needed; s ≤ 0 is vacuous. Portmanteau is correctly supplied as a hypothesis rather than an undeclared dependency."
+    },
+    {
+      "key": "density_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree for arbitrary c and L. Positivity and finiteness of the denominator justify division; continuity and the nontrivial right-neighbourhood filter justify passing the inequality to the limit. The proof covers n = 0, c ≤ 0 and L = ∞. Bounds and convergence are explicit hypotheses, so the contextual sibling references introduce no dependency or circularity."
+    }
+  ],
+  "required_changes": []
+}
