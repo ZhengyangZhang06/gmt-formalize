@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1ca042f919346204cea3c6efb278962077cb83ba450e91dd850a3c5dceb0c373",
+  "git_delta": {
+    "base_commit": "993b9cce0c277674f94cb033b6f1d8be159f2639",
+    "candidate_commit": "00dbeacea9810d7bca77bb7dd21a18bb92ad5ba3",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8927498889fda8193495862474f815e6764a9f222a6d18e94c8225ca98209798",
+    "source_sha256": "25e4357f669522200f0f2b9de9b388cef44c02551355dc9a1f0273996df083d3",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_projected_competitor_comparison",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P d n : ℕ) (U N : Set (Euclid P)) (Z X Y : GeometricCurrentOn U n) (RZ RY : IMRep U n) (proj : Euclid P → Euclid P) (y : Euclid P) (r c ρ t : ℝ), IsOpen U → 0 < n → IsEmbeddedSubmanifold 2 d N → IsMinimizingIn Z (U ∩ N) → Z.support ⊆ N → BoundaryVanishes Z → RZ.Represents Z → IsIntegerMultiplicity X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) → (∀ ω : TestFormOn U n, Y ω = Z ω + X ω) → RY.Represents Y → y ∈ N → 0 ≤ c → 0 < ρ → 3 * ρ < r → 4 * c * ρ ≤ 1 → t < 2 * ρ → closedBall y (3 * ρ) ⊆ U → ContDiffOn ℝ 1 proj (ball y r) → MapsTo proj (ball y r) N → (∀ x ∈ N ∩ ball y r, proj x = x) → (∀ x ∈ N ∩ ball y r, ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v) → (∀ x ∈ ball y r, ‖fderiv ℝ proj x‖ ≤ 1 + c * dist x y) → RZ.measure (closedBall y t) ≤ ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (closedBall y t) + ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) * RZ.measure (ball y (3 * ρ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.fix_orient-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1",
+  "depth": 4,
+  "title": "A map fixing N to first order fixes the orientation of an integer multiplicity triple carried by N",
+  "statement": "Let P, n, d ∈ ℕ, N ⊆ ℝ^P an embedded C¹ d-dimensional submanifold (IsEmbeddedSubmanifold 1 d N), O ⊆ ℝ^P a Borel set, U ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) with Hⁿ(M ∖ N) = 0 (Hⁿ = μHE[n]), and f : ℝ^P → ℝ^P such that f(x) = x and Df(x)v = v for every x ∈ N ∩ O and every v ∈ T_xN (tangentSpace N x; Df(x) = fderiv ℝ f x). Then for Hⁿ-a.e. x ∈ M ∩ O (i.e. Hⁿ⌞(M ∩ O)-a.e.): f(x) = x and ξ(x)(α∘Df(x)) = ξ(x)(α) for every n-covector α (α∘L = α.compContinuousLinearMap L).",
+  "lean_statement": "∀ (P n d : ℕ) (U N O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 d N → MeasurableSet O → μHE[n] (R.carrier \\ N) = 0 → (∀ x ∈ N ∩ O, f x = x) → (∀ x ∈ N ∩ O, ∀ v ∈ tangentSpace N x, fderiv ℝ f x v = v) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α",
+  "lean_name": "dor_lmb_pc_imrep_orient_fixed_by_retraction",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-approx-tangent-in-submanifold-a1-a1",
+      "result_commit": "00b610c29ac1b1983a994a8a632b23db24cfb40e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-a1d5760847-a1"
+}

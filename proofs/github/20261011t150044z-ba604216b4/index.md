@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4756 | this PR | root.density_one_implies_regular-a1.limsup_mass_bound-a1.tangent_locality-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.int_combination-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_current-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_integer-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.pf_boundary-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.fix_orient-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1, root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1, root.minimizing_implies_stationary-a1.covector_gram_bounds-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1, root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1, root.regular_set_dense-a1.integer_combination-a1.combination_action-a1, root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1 |

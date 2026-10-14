@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_compContinuousLinearMap_le|continuous_compContinuousLinearMapCLM|def compContinuousLinearMapCLM|continuousOn_fderiv_of_isOpen|theorem ContinuousOn.aestronglyMeasurable|theorem enorm_integral_le_lintegral_enorm|ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "massOn|massAdmissibleOn|covectorEuclideanNorm|def Covector|abbrev Covector|def DifferentialForm|abbrev DifferentialForm|def IsTestForm|def TestFormOn",
+        "dor_lmb_pc_cm_vector_density_add",
+        "dor_lmb_pc_cm_pairing_add_of_bounded",
+        "dor_lmb_pc_cm_pullback_field_bounded",
+        "dor_lmb_pc_cm_ofReal_integral_le_measure",
+        "git show 0af9ed599cb8b131973221f740cf2b64fb2fe357:GMT/Ch07/Submission.lean",
+        "git show faacb9cb5caf6ce728ef10ab3b0f5bdd7a47b04d:GMT/Ch07/Submission.lean",
+        "git show 2d0f5bbe8de725944c1d9c73d65c6163f6d67b07:GMT/Ch07/Submission.lean",
+        "git show 5c8c6597411e77948b224fda014774beaa21ebaf:GMT/Ch07/Submission.lean",
+        "git show bc5204c8423549694cee0090ed92feaf2484f682:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/Independent.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/comb_exists.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/comb_action.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/density_unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/pairing_bound.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cm-independent-audit-j__xurps/orient_comp.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-4ad1f13c76/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-4ad1f13c76/decomposition-v1.json",
+        "/tmp/cm-independent-audit-j__xurps/Independent.lean",
+        "/tmp/cm-independent-audit-j__xurps/comb_exists.lean",
+        "/tmp/cm-independent-audit-j__xurps/comb_action.lean",
+        "/tmp/cm-independent-audit-j__xurps/density_unique.lean",
+        "/tmp/cm-independent-audit-j__xurps/pairing_bound.lean",
+        "/tmp/cm-independent-audit-j__xurps/orient_comp.lean"
+      ],
+      "conclusion": "The split appropriately isolates four obligations from the selected competitor-mass proof and reuses four accepted declarations. All eight frozen propositions elaborate independently, match their prose hypotheses and conclusions, and contain no declaration, placeholder, implementation-dependent alias, or problematic matrix construction. Every name is bare; the four new names have no DAG matches. The four reused types match both DAG contracts and accepted source declarations byte-for-byte; source hashes match acceptance records. Dependency traversal, including the resolved orient_comp dependency, is acyclic and excludes the selected parent. Fresh compilation passed for the supplied four child scripts, conditional assembly of the exact selected parent type, and all five accepted declarations used here. Their axiom checks report only propext, Classical.choice and Quot.sound. Assembly preserves the distinction between operator-norm domination for integrability and the Euclidean coefficient norm defining massOn."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vd_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from the three declared dependencies: construct the sum representative, identify its action with T, and apply representation uniqueness. Measurable-carrier restriction bookkeeping and vanishing indicators outside the carrier union correctly yield the global a.e. identity. No circular reliance occurs."
+    },
+    {
+      "key": "pairing_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-support, measurability and boundedness hypotheses match the type and supply integrability through pairing_bound. Indicator rewriting converts carrier integrals to global integrals; evaluating the a.e. vector identity and applying integral additivity proves precisely the conclusion."
+    },
+    {
+      "key": "pullback_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes derivative continuity on open O, pullback continuity on G, and indicator measurability for every measure using the applicable second-countability instance. It derives W ≥ 0 and proves the stated bound both on and off G. No continuity on closure G or finite-measure hypothesis is needed."
+    },
+    {
+      "key": "integral_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The extended-norm integral inequality, a.e. indicator domination, and withDensity identity prove the exact bound. The proof correctly handles arbitrary g through Lean's total Bochner integral and needs neither integrability nor an additional sign assumption on c."
+    },
+    {
+      "key": "comb_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration. The supplied proof constructs measurable coefficient and orientation fields, verifies every IMRep requirement, and proves the global density identity. Its accepted tangent-transfer and overlap-orientation prerequisites are correctly applied and introduce no dependency cycle."
+    },
+    {
+      "key": "comb_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The proof derives the unit-orientation bound, establishes integrability using the test form's compact support, rewrites each action as a global indicator integral, and integrates the weighted identity. It requires no unlisted openness hypothesis."
+    },
+    {
+      "key": "density_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Local multiplicity integrability controls the vector-density difference; smooth scalar test forms give vanishing Banach-valued moments. The pinned fundamental lemma applies without an extra local-finiteness assumption, and concentration on the carrier union gives exactly the stated restricted-a.e. equality."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The proof establishes measurability and integrability of the compactly supported multiplicity bound, obtains a.e. domination from the accepted orientation estimate, and computes its integral to prove both conjuncts. All measure restrictions and casts agree with the frozen type."
+    }
+  ],
+  "required_changes": []
+}
