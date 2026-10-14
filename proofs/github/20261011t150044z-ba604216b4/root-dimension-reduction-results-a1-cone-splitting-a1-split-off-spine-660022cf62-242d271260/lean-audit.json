@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9ca8f88d96c83c03d589dd79ae01ccc27dd7fe38debe4d8f9441391d7b73bd57",
+  "git_delta": {
+    "base_commit": "08bb455ed1e11fe51cf95ee71f10c05dca0e309a",
+    "candidate_commit": "250da689f5742952394f433cfca9dc62325476ec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_cp_cone_map",
+    "diff_sha256": "4709fa6c8c28b98a8ab075e5eb76df9e05f6e9a8d6e5d3190c84f9603ab9dfd9",
+    "source_sha256": "bb3cab9a2716f2853549daa8a25bfbcd0fcc61ceae184a549e2093d146679b58",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_cp_cone_map",
+      "statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (L : NNReal) (ρ : ℝ), LipschitzWith L G → ∃ H : Euclid (n + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K H) ∧ ∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ < ρ → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (DifferentiableAt ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) → (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

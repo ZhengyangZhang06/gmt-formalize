@@ -451,6 +451,122 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Truncated cone map** (Simon Ch. 6, 2.30: the cone `0 ⨯ T = h_#([[(0,1)]] × T)`,
+`h(t, x) = tx`).  Put `ρ' = max ρ 1`, let `r(y) = φ(y) y` with `φ` a smooth bump that is `1` on
+`B̄_{ρ'}(0)` and vanishes off `B_{ρ'+1}(0)`, and let `σ(s) = max 0 (min s 1)`.  Then
+`H(z) = σ(z₀) r(G(tail z))` is Lipschitz, as a product of bounded Lipschitz factors (`|σ| ≤ 1`,
+`‖r‖ ≤ ρ' + 1`).  On the open set `{z₀ ∈ (0,1), ‖G(tail z)‖ < ρ'}`, `H(z) = z₀ G(tail z)`, so
+there `DH(z)v = z₀ DG(tail z)(tail v) + v₀ G(tail z)`, which on `ê₀` and `ê_{a+1}` gives the
+`Fin.cons` tuple. -/
+theorem Submission.dimred_cs_sos_cfs_cp_cone_map : ∀ (P n : ℕ) (G : Euclid n → Euclid P) (L : NNReal) (ρ : ℝ), LipschitzWith L G → ∃ H : Euclid (n + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K H) ∧ ∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ < ρ → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (DifferentiableAt ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) → (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) := by
+  intro P n G L ρ hG
+  -- step 1: a Lipschitz, bounded `r` with `r = id` on `closedBall 0 ρ'`, `ρ' := max ρ 1`
+  set ρ' : ℝ := max ρ 1 with hρ'
+  have hρ'pos : 0 < ρ' := lt_of_lt_of_le one_pos (le_max_right _ _)
+  obtain ⟨r, ⟨Kr, hKr⟩, hr_bound, hr_id⟩ : ∃ r : Euclid P → Euclid P, (∃ K : NNReal, LipschitzWith K r) ∧
+      (∀ y, ‖r y‖ ≤ ρ' + 1) ∧ (∀ y : Euclid P, ‖y‖ ≤ ρ' → r y = y) := by
+    let φ : ContDiffBump (0 : Euclid P) := ⟨ρ', ρ' + 1, hρ'pos, by linarith⟩
+    refine ⟨fun y => φ y • y, ?_, ?_, ?_⟩
+    · have hr_smooth : ContDiff ℝ 1 (fun y : Euclid P => φ y • y) := φ.contDiff.smul contDiff_id
+      have hr_supp : HasCompactSupport (fun y : Euclid P => φ y • y) := φ.hasCompactSupport.smul_right
+      exact ContDiff.lipschitzWith_of_hasCompactSupport hr_supp hr_smooth (by simp)
+    · intro y
+      by_cases hy : ‖y‖ < ρ' + 1
+      · calc ‖φ y • y‖ = |φ y| * ‖y‖ := by rw [norm_smul, Real.norm_eq_abs]
+          _ ≤ 1 * (ρ' + 1) := by
+            gcongr
+            · rw [abs_of_nonneg φ.nonneg]; exact φ.le_one
+          _ = ρ' + 1 := one_mul _
+      · have h0 : φ y = 0 := φ.zero_of_le_dist (by simpa [dist_zero_right] using not_lt.mp hy)
+        simp [h0]; linarith
+    · intro y hy
+      have : φ y = 1 := φ.one_of_mem_closedBall (by simpa [mem_closedBall, dist_zero_right] using hy)
+      simp [this]
+  -- the clamp `σ(s) = max(0, min(s, 1))`
+  obtain ⟨σ, hσ, hσb, hσid⟩ : ∃ σ : ℝ → ℝ, LipschitzWith 1 σ ∧ (∀ s, |σ s| ≤ 1) ∧
+      ∀ s ∈ Ioo (0 : ℝ) 1, σ s = s := by
+    refine ⟨fun s => max 0 (min s 1), (LipschitzWith.id.min_const 1).const_max 0, ?_, ?_⟩
+    · intro s
+      rw [abs_le]; constructor
+      · have : (0 : ℝ) ≤ max 0 (min s 1) := le_max_left _ _
+        linarith
+      · exact max_le (by norm_num) (min_le_right _ _)
+    · intro s hs
+      simp only [min_eq_left hs.2.le, max_eq_right hs.1.le]
+  -- coordinate maps `π₀ z = z₀`, `π' z = tail z`
+  let π0 : Euclid (n + 1) →L[ℝ] ℝ := EuclideanSpace.proj 0
+  have hπ0 : ∀ z, π0 z = WithLp.ofLp z 0 := fun z => rfl
+  let πtl : Euclid (n + 1) →ₗ[ℝ] Euclid n :=
+    { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+      map_add' := fun x y => rfl
+      map_smul' := fun c x => rfl }
+  let πt : Euclid (n + 1) →L[ℝ] Euclid n := LinearMap.toContinuousLinearMap πtl
+  have hπt : ∀ z, πt z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) := fun z => rfl
+  -- step 2: the map `H(z) = σ(z₀) • r(G(tail z))`
+  refine ⟨fun z => σ (WithLp.ofLp z 0) • r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))), ?_, ?_⟩
+  · -- step 3(a): `H` is Lipschitz
+    have h1 : LipschitzWith (1 * ‖π0‖₊) (fun z : Euclid (n + 1) => σ (WithLp.ofLp z 0)) :=
+      hσ.comp π0.lipschitzWith
+    have h2 : LipschitzWith (Kr * (L * ‖πt‖₊))
+        (fun z : Euclid (n + 1) => r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))) :=
+      hKr.comp (hG.comp πt.lipschitzWith)
+    refine ⟨_, LipschitzWith.of_dist_le' (K := (ρ' + 1) * ((1 * ‖π0‖₊ : NNReal) : ℝ) +
+      ((Kr * (L * ‖πt‖₊) : NNReal) : ℝ)) fun z z' => ?_⟩
+    have e1 := h1.dist_le_mul z z'
+    have e2 := h2.dist_le_mul z z'
+    simp only [dist_eq_norm] at e1 e2 ⊢
+    set a := σ (WithLp.ofLp z 0)
+    set a' := σ (WithLp.ofLp z' 0)
+    set R := r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))
+    set R' := r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z'))))
+    have ha' : ‖a'‖ ≤ 1 := (Real.norm_eq_abs _).le.trans (hσb _)
+    calc ‖a • R - a' • R'‖ = ‖(a - a') • R + a' • (R - R')‖ := by
+          congr 1; rw [sub_smul, smul_sub]; abel
+      _ ≤ ‖a - a'‖ * ‖R‖ + ‖a'‖ * ‖R - R'‖ := by
+          refine (norm_add_le _ _).trans ?_
+          rw [norm_smul (a - a') R, norm_smul a' (R - R')]
+      _ ≤ (((1 * ‖π0‖₊ : NNReal) : ℝ) * ‖z - z'‖) * (ρ' + 1) +
+            1 * (((Kr * (L * ‖πt‖₊) : NNReal) : ℝ) * ‖z - z'‖) := by
+          gcongr
+          exact hr_bound _
+      _ = ((ρ' + 1) * ((1 * ‖π0‖₊ : NNReal) : ℝ) + ((Kr * (L * ‖πt‖₊) : NNReal) : ℝ)) *
+            ‖z - z'‖ := by ring
+  · -- step 4: value and derivative on `{z₀ ∈ (0,1), ‖G(tail z)‖ < ρ}`
+    intro z hz hzρ
+    let Ht : Euclid (n + 1) → Euclid P := fun z' => π0 z' • G (πt z')
+    let O : Set (Euclid (n + 1)) := {z' | π0 z' ∈ Ioo (0 : ℝ) 1 ∧ ‖G (πt z')‖ < ρ'}
+    have hO : IsOpen O :=
+      (isOpen_Ioo.preimage π0.continuous).inter
+        (isOpen_lt (continuous_norm.comp (hG.continuous.comp πt.continuous)) continuous_const)
+    have hzO : z ∈ O := ⟨hz, lt_of_lt_of_le hzρ (le_max_left _ _)⟩
+    have hEq : ∀ z' ∈ O, σ (WithLp.ofLp z' 0) • r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z')))) =
+        Ht z' := by
+      rintro z' ⟨h0, hρz⟩
+      rw [hπ0] at h0
+      rw [hπt] at hρz
+      show _ = π0 z' • G (πt z')
+      rw [hπ0, hπt, hσid _ h0, hr_id _ hρz.le]
+    have hev : (fun z' : Euclid (n + 1) =>
+        σ (WithLp.ofLp z' 0) • r (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z'))))) =ᶠ[𝓝 z] Ht :=
+      Filter.eventuallyEq_of_mem (hO.mem_nhds hzO) hEq
+    refine ⟨hEq z hzO, fun hGd => ?_⟩
+    have hD : HasFDerivAt Ht (π0 z • (fderiv ℝ G (πt z)).comp πt + π0.smulRight (G (πt z))) z :=
+      π0.hasFDerivAt.smul (hGd.hasFDerivAt.comp z πt.hasFDerivAt)
+    rw [hev.fderiv_eq, hD.fderiv]
+    have hs0 : π0 (EuclideanSpace.single 0 1) = 1 := by simp [π0]
+    have hss : ∀ a : Fin n, π0 (EuclideanSpace.single a.succ 1) = 0 := by
+      intro a; simp [π0, Fin.succ_ne_zero]
+    have ht0 : πt (EuclideanSpace.single 0 1) = 0 := by
+      rw [hπt]; ext j; simp [Fin.tail, Fin.succ_ne_zero]
+    have hts : ∀ a : Fin n, πt (EuclideanSpace.single a.succ 1) = EuclideanSpace.single a 1 := by
+      intro a; rw [hπt]; ext j; simp [Fin.tail]
+    funext b
+    refine Fin.cases ?_ (fun a => ?_) b
+    · simp [hs0, ht0]
+      rfl
+    · simp [hss, hts]
+      rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
