@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9205e69aab8d98d43aa269b3f39f16bf734c89df0a2b81b2fbbd6cca20e30cdd",
+  "git_delta": {
+    "base_commit": "ed0cb5d4e30a79445dbdf1fea23d5d821f454d80",
+    "candidate_commit": "9a0de8087df3886692b945fb85a691607b19cfbf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_bc_dilation_pullback_comp",
+    "diff_sha256": "ae5098ce7b544703f78a22ae28b5efa92b1bd4c2a8f7eb88d6a7d4b4604f42b0",
+    "source_sha256": "dc24d3f52e302b6e8f7231c6ed29e54caa65c9b48dfc7ee9be13fb4eb8eb2a0f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_bc_dilation_pullback_comp",
+      "statement": "∀ (P n : ℕ) (x y : Euclid P) (lam mu : ℝ), lam ≠ 0 → ∀ ω : DifferentialForm (Euclid P) n, affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) (affinePullbackForm (dilationCLM P mu) (-(mu⁻¹ • y)) ω) = affinePullbackForm (dilationCLM P (lam * mu)) (-((lam * mu)⁻¹ • (x + lam • y))) ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
