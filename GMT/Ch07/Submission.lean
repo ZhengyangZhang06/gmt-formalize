@@ -1740,6 +1740,133 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.3(2), proof of (10)** (chapter-07.txt lines 563–566, where the book leaves the
+check that a 1-dimensional minimizing cone is `m[[ℓ]]` to the reader): the competitor current.
+Given the polygonal-current construction (PC) for finitely many unit-speed segments with
+`H¹`-null mutual overlaps, the outer rays `(1, ∞)e` with multiplicity `mo(e)`, the inner segments
+`(0, 1)e` with multiplicity `mi(e)` (`e ∈ F`) and the chord `b + (0, ℓ)u` with multiplicity `1`
+form an integer multiplicity current `X` with `M_{B₂(0)}(X) ≤ Σ|mo| + Σ|mi| + ℓ`.  Two ray pieces
+meet only for a common direction and a common parameter, the chord meets each line through `0`
+at most once, and points are `H¹`-null; the mass bound is `M_W(X) = μ_R(W)` for `W = B₂(0)`,
+where an outer ray parameter `t > 1` with `|te| < 2` lies in `(1, 2)`. -/
+theorem Submission.idtp_fons_odc_antipodal_competitor : (∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, IsOpen (I k)) → (∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩ closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0) → ∃ (X : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1), R.Represents X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, (c k : ℝ) * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ k, ENNReal.ofReal |(c k : ℝ)| * volume (I k ∩ (fun t : ℝ => p k + t • v k) ⁻¹' A)) → ∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ (mo mi : Euclid P → ℤ) (b u : Euclid P) (ℓ : ℝ), 0 ≤ ℓ → ‖u‖ = 1 → (∀ (e : Euclid P) (s₁ s₂ t₁ t₂ : ℝ), b + s₁ • u = t₁ • e → b + s₂ • u = t₂ • e → s₁ = s₂) → ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1, IsIntegerMultiplicity X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ e ∈ F, (mo e : ℝ) * (∫ t in Ioi (1 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∑ e ∈ F, (mi e : ℝ) * (∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∫ s in Ioo (0 : ℝ) ℓ, (ω : DifferentialForm (Euclid P) 1) (b + s • u) (fun _ => u)) ∧ X.massOn (ball (0 : Euclid P) 2) ≤ ENNReal.ofReal (∑ e ∈ F, |(mo e : ℝ)| + ∑ e ∈ F, |(mi e : ℝ)| + ℓ) := by
+  intro PC P F hF mo mi b u ℓ hℓ hu hbu
+  -- (1) sets with at most one point are `H¹`-null: `μHE[1] = c • μH[1]`, `μH[1]` has no atoms
+  have hnull : ∀ s : Set (Euclid P), s.Subsingleton → (μHE[1] : Measure (Euclid P)) s = 0 := by
+    intro s hs
+    have := Measure.nullSingletonClass_hausdorff (Euclid P) (d := ((1 : ℕ) : ℝ)) (by norm_num)
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hs.measure_zero, smul_zero]
+  -- (2) a unit-speed line `t ↦ q + t • w` is an isometric, hence closed, embedding of `ℝ`
+  have hcl : ∀ q w : Euclid P, ‖w‖ = 1 → ∀ J : Set ℝ,
+      closure ((fun t : ℝ => q + t • w) '' J) = (fun t : ℝ => q + t • w) '' closure J := by
+    intro q w hw J
+    refine (Isometry.isClosedEmbedding (Isometry.of_dist_eq fun x y => ?_)).closure_image_eq J
+    rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hw, mul_one, Real.dist_eq,
+      Real.norm_eq_abs]
+  -- (3) ray pieces `Ae`, `Be'` with `A ⊆ (0, ∞)`, `B ⊆ [0, ∞)` are disjoint unless `e = e'` and
+  -- `A ∩ B ≠ ∅`: `te = se'` forces `t = |te| = |se'| = s`, then `e = e'`
+  have hray : ∀ e e' : Euclid P, ‖e‖ = 1 → ‖e'‖ = 1 → ∀ A B : Set ℝ, A ⊆ Ioi 0 → B ⊆ Ici 0 →
+      (e = e' → Disjoint A B) → ((fun t : ℝ => (0 : Euclid P) + t • e) '' A ∩
+        (fun t : ℝ => (0 : Euclid P) + t • e') '' B).Subsingleton := by
+    rintro e e' he he' A B hA hB hAB x ⟨⟨t, ht, rfl⟩, s, hs, hst⟩
+    simp only [zero_add] at hst
+    have hts : s = t := by
+      have h := congrArg norm hst
+      rwa [norm_smul, norm_smul, he, he', mul_one, mul_one, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_nonneg (hB hs), abs_of_pos (hA ht)] at h
+    subst hts
+    exact ((hAB ((smul_right_inj (hA ht).ne').1 hst).symm).ne_of_mem ht hs rfl).elim
+  -- (4) the chord meets every line through `0` at most once
+  have hch : ∀ (e : Euclid P) (A B : Set ℝ), ((fun t : ℝ => b + t • u) '' A ∩
+      (fun t : ℝ => (0 : Euclid P) + t • e) '' B).Subsingleton := by
+    rintro e A B x ⟨⟨s₁, -, rfl⟩, t₁, -, h₁⟩ y ⟨⟨s₂, -, rfl⟩, t₂, -, h₂⟩
+    simp only [zero_add] at h₁ h₂
+    rw [hbu e s₁ s₂ t₁ t₂ h₁.symm h₂.symm]
+  have hch' : ∀ (e : Euclid P) (A B : Set ℝ), ((fun t : ℝ => (0 : Euclid P) + t • e) '' A ∩
+      (fun t : ℝ => b + t • u) '' B).Subsingleton := fun e A B => by
+    rw [inter_comm]
+    exact hch e B A
+  -- (5) the configuration on `F ⊕ F ⊕ Unit`: outer rays, inner segments and the chord
+  let p : (F ⊕ F) ⊕ Unit → Euclid P := Sum.elim (fun _ => 0) (fun _ => b)
+  let v : (F ⊕ F) ⊕ Unit → Euclid P :=
+    Sum.elim (Sum.elim (fun e => (e : Euclid P)) (fun e => (e : Euclid P))) (fun _ => u)
+  let I : (F ⊕ F) ⊕ Unit → Set ℝ :=
+    Sum.elim (Sum.elim (fun _ => Ioi 1) (fun _ => Ioo 0 1)) (fun _ => Ioo 0 ℓ)
+  let c : (F ⊕ F) ⊕ Unit → ℤ := Sum.elim (Sum.elim (fun e => mo e) (fun e => mi e)) (fun _ => 1)
+  have hv : ∀ k, ‖v k‖ = 1 := by
+    rintro ((e | e) | _)
+    · exact hF e e.2
+    · exact hF e e.2
+    · exact hu
+  have hI : ∀ k, IsOpen (I k) := by
+    rintro ((e | e) | _)
+    · exact isOpen_Ioi
+    · exact isOpen_Ioo
+    · exact isOpen_Ioo
+  -- (6) the overlap hypothesis of (PC): each of the nine intersections has at most one point
+  have hover : ∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩
+      closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0 := by
+    intro j k hjk
+    rw [hcl (p k) (v k) (hv k) (I k)]
+    apply hnull
+    have h1 : Ioi (1 : ℝ) ⊆ Ioi 0 := Ioi_subset_Ioi zero_le_one
+    have h2 : Ioo (0 : ℝ) 1 ⊆ Ioi 0 := Ioo_subset_Ioi_self
+    have h3 : closure (Ioi (1 : ℝ)) ⊆ Ici 0 := by
+      rw [closure_Ioi]
+      exact Ici_subset_Ici.2 zero_le_one
+    have h4 : closure (Ioo (0 : ℝ) 1) ⊆ Ici 0 := by
+      rw [closure_Ioo zero_ne_one]
+      exact Icc_subset_Ici_self
+    rcases j with ((e | e) | ⟨⟩) <;> rcases k with ((e' | e') | ⟨⟩)
+    · exact hray e e' (hF e e.2) (hF e' e'.2) _ _ h1 h3 fun h =>
+        (hjk (by rw [Subtype.ext h])).elim
+    · refine hray e e' (hF e e.2) (hF e' e'.2) (Ioi 1) (closure (Ioo 0 1)) h1 h4 fun _ => ?_
+      rw [closure_Ioo zero_ne_one]
+      exact disjoint_left.2 fun t ht ht' => not_le.2 ht ht'.2
+    · exact hch' e _ _
+    · refine hray e e' (hF e e.2) (hF e' e'.2) (Ioo 0 1) (closure (Ioi 1)) h2 h3 fun _ => ?_
+      rw [closure_Ioi]
+      exact disjoint_left.2 fun t ht ht' => not_le.2 ht.2 ht'
+    · exact hray e e' (hF e e.2) (hF e' e'.2) _ _ h2 h4 fun h =>
+        (hjk (by rw [Subtype.ext h])).elim
+    · exact hch' e _ _
+    · exact hch e' _ _
+    · exact hch e' _ _
+    · exact (hjk rfl).elim
+  -- (7) apply (PC)
+  obtain ⟨X, R, hR, hX, hRm⟩ := PC P ((F ⊕ F) ⊕ Unit) p v I c hv hI hover
+  refine ⟨X, ⟨R, hR⟩, fun ω => ?_, ?_⟩
+  -- (8) regroup the sum over `F ⊕ F ⊕ Unit`
+  · rw [hX ω, ← Finset.sum_coe_sort (s := F), ← Finset.sum_coe_sort (s := F)]
+    simp only [Fintype.sum_sum_type, Fintype.sum_unique, p, v, I, c, Sum.elim_inl, Sum.elim_inr,
+      zero_add, Int.cast_one, one_mul]
+  -- (9) `M_{B₂(0)}(X) = μ_R(B₂(0))`, estimated piece by piece
+  · rw [(Submission.dimred_im_mass_measure P 1 univ X R isOpen_univ hR).1 _ isOpen_ball
+      (subset_univ _), hRm _ measurableSet_ball]
+    simp only [Fintype.sum_sum_type, Fintype.sum_unique, p, v, I, c, Sum.elim_inl, Sum.elim_inr,
+      zero_add, Int.cast_one, abs_one, ENNReal.ofReal_one, one_mul]
+    have hS₁ : 0 ≤ ∑ e ∈ F, |(mo e : ℝ)| := Finset.sum_nonneg fun _ _ => abs_nonneg _
+    have hS₂ : 0 ≤ ∑ e ∈ F, |(mi e : ℝ)| := Finset.sum_nonneg fun _ _ => abs_nonneg _
+    rw [ENNReal.ofReal_add (add_nonneg hS₁ hS₂) hℓ, ENNReal.ofReal_add hS₁ hS₂,
+      ENNReal.ofReal_sum_of_nonneg fun _ _ => abs_nonneg _,
+      ENNReal.ofReal_sum_of_nonneg fun _ _ => abs_nonneg _,
+      ← Finset.sum_coe_sort (s := F), ← Finset.sum_coe_sort (s := F)]
+    refine add_le_add (add_le_add (Finset.sum_le_sum fun e _ => mul_le_of_le_one_right' ?_)
+      (Finset.sum_le_sum fun e _ => mul_le_of_le_one_right' ?_)) ?_
+    · -- an outer ray parameter `t > 1` with `|te| < 2` lies in `(1, 2)`
+      calc volume (Ioi (1 : ℝ) ∩ (fun t : ℝ => t • (e : Euclid P)) ⁻¹' ball 0 2)
+          ≤ volume (Ioo (1 : ℝ) 2) := measure_mono fun t ⟨ht₁, ht₂⟩ => ⟨ht₁, by
+            have h := mem_ball_zero_iff.1 ht₂
+            rwa [norm_smul, hF e e.2, mul_one, Real.norm_eq_abs,
+              abs_of_pos (zero_lt_one.trans ht₁)] at h⟩
+        _ = 1 := by rw [Real.volume_Ioo]; norm_num
+    · calc volume (Ioo (0 : ℝ) 1 ∩ (fun t : ℝ => t • (e : Euclid P)) ⁻¹' ball 0 2)
+          ≤ volume (Ioo (0 : ℝ) 1) := measure_mono inter_subset_left
+        _ = 1 := by rw [Real.volume_Ioo]; norm_num
+    · calc volume (Ioo (0 : ℝ) ℓ ∩ (fun t : ℝ => b + t • u) ⁻¹' ball 0 2)
+          ≤ volume (Ioo (0 : ℝ) ℓ) := measure_mono inter_subset_left
+        _ = ENNReal.ofReal ℓ := by rw [Real.volume_Ioo, sub_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
