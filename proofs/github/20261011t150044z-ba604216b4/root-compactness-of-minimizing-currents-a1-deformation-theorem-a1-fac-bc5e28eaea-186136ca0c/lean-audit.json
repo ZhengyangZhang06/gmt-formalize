@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7aca70023bed17dd0c0c1272081bbc3a2c3afa4db3deb477fc12ea7be3697a83",
+  "git_delta": {
+    "base_commit": "a78b7599356165e38c64fe141a0166fb12b85d9b",
+    "candidate_commit": "ebce55d5099a400268f38b1693d381ccd3279f1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrcb_cube_partial_ftc",
+    "diff_sha256": "5314732c61fbd59a16a9562888dff8e913654e2a03ba4c4a5d42123319e01d67",
+    "source_sha256": "2464fa2138d8ddb6adbab31753c566ec1d91f525d9fc0523620f1f02518bd194",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrcb_cube_partial_ftc",
+      "statement": "∀ (k : ℕ) (i : Fin (k + 1)) (G : Euclid (k + 1) → ℝ), ContDiff ℝ 1 G → IntegrableOn (fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1} ∧ ∫ y in {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1}, fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = (∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (1 : ℝ) (WithLp.ofLp y)))) - ∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (0 : ℝ) (WithLp.ofLp y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
