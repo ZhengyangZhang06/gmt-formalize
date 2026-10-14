@@ -17170,6 +17170,120 @@ theorem Submission.dimred_cs_sos_cone_filling_in_subspace : ∀ (P m : ℕ) (X :
   obtain ⟨s, -, x, hx, rfl⟩ := hYsub hy
   exact V.smul_mem s (hXV hx)
 
+/-- **Simon Lemma 7.3.5 (p. 190), minimality of `S₀`.**  If the minimizing `S ∈ 𝒟ₙ(ℝᴾ)` is the
+product `[[L]] × S₀` (measure identity and action formula; `d = dim L ≥ 1`, `f` an orthonormal
+frame of `L`) of `L` with an integer multiplicity cycle `S₀ ∈ 𝒟ₘ(ℝᴾ)`, `m = n − d`, concentrated
+on `L^⊥`, then `S₀` is minimizing in `L^⊥`.
+
+Suppose `M_{W₀}(S₀') < M_{W₀}(S₀)` for a competitor `S₀'` with `spt(S₀' − S₀)` a compact subset
+of `L^⊥ ∩ W₀`.  The cycle `X₀ = S₀' − S₀` is integer multiplicity and bounds a cone `Y₀` with
+compact support in `L^⊥`.  For `r > 0` the cube cycle `Z = [[Q_r]] × X₀ + E'` gives the
+competitor `S + Z` for `S`, so `(2r)^d M_{W₀}(S₀) ≤ (2r)^d M_{W₀}(S₀') + 2d(2r)^{d−1} M(Y₀)`.
+Both masses are finite, so this fails for `r > d M(Y₀)/(M_{W₀}(S₀) − M_{W₀}(S₀'))`. -/
+theorem Submission.dimred_cs_sos_minimality_transfer : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (f : Fin (Module.finrank ℝ L) → Euclid P) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (hd : Module.finrank ℝ L < n), 0 < Module.finrank ℝ L → Orthonormal ℝ f → (∀ i, f i ∈ L) → IsMinimizingIn S univ → R.Represents S → R₀.Represents S₀ → BoundaryVanishes S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) (n - Module.finrank ℝ L), (∀ (α : Covector (Euclid P) n) (v : Fin (n - Module.finrank ℝ L) → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast (Nat.add_sub_of_le hd.le).symm)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (L : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[Module.finrank ℝ L]) → IsMinimizingIn S₀ (Lᗮ : Set (Euclid P)) := by
+  intro P n S R L f S₀ R₀ hd hk hf hfL hSmin hR hR₀ hS₀ hR₀L hmeas hprod
+  have hm : 0 < n - Module.finrank ℝ L := Nat.sub_pos_of_lt hd
+  -- `f` is an orthonormal family of `dim L` vectors of `L`, so it spans `L`.
+  have hspan : Submodule.span ℝ (Set.range f) = L := by
+    refine Submodule.eq_of_le_of_finrank_eq
+      (Submodule.span_le.2 (Set.range_subset_iff.2 hfL)) ?_
+    rw [finrank_span_eq_card hf.linearIndependent, Fintype.card_fin]
+  refine ⟨⟨R₀, hR₀⟩, ?_⟩
+  intro W₀ S₀' hW₀ hW₀cc hS₀' hsame hXc hXsupp
+  by_contra hlt
+  rw [not_le] at hlt
+  -- `X₀ = S₀' − S₀` is an integer multiplicity cycle with compact support in `L^⊥`.
+  have hXIM : IsIntegerMultiplicity (S₀' - S₀) :=
+    Submission.rsd_isIntegerMultiplicity_int_combination P _ univ S₀' S₀ (S₀' - S₀) 1 (-1)
+      isOpen_univ hS₀' ⟨R₀, hR₀⟩ fun ω => by
+        change S₀' ω - S₀ ω = _
+        push_cast
+        ring
+  have hXbd : BoundaryVanishes (S₀' - S₀) := by
+    have key : ∀ (j : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid P)) j),
+        SameBoundary A B → BoundaryVanishes B → BoundaryVanishes (A - B) := by
+      intro j A B hAB hB
+      cases j with
+      | zero => trivial
+      | succ j =>
+        have hAB' : A.boundary = B.boundary := hAB
+        refine GeometricCurrentOn.ext fun ω => ?_
+        rw [GeometricCurrentOn.zero_apply]
+        change A.boundary ω - B.boundary ω = 0
+        rw [hAB', sub_self]
+    exact key _ S₀' S₀ hsame hS₀
+  -- The cone `Y₀` over `X₀`: `∂Y₀ = X₀`, `spt Y₀` compact in `L^⊥`.
+  obtain ⟨Y₀, ⟨RY, hRY⟩, hYbd, hYc, hYL⟩ :=
+    Submission.dimred_cs_sos_cone_filling_in_subspace P _ (S₀' - S₀) Lᗮ hm hXIM hXbd hXc
+      fun x hx => (hXsupp hx).1
+  -- `M_{W₀}(S₀) = μ₀(W₀) ≤ μ₀(closure W₀) < ∞`.
+  have hu : S₀.massOn W₀ ≠ ∞ := by
+    have hcl : MeasurableSet (closure W₀) := isClosed_closure.measurableSet
+    rw [Submission.imrep_represents_massOn_eq_measure P _ univ W₀ S₀ R₀ isOpen_univ hR₀ hW₀
+      (subset_univ _)]
+    refine ne_top_of_le_ne_top ?_ (measure_mono subset_closure)
+    rw [IMRep.measure, withDensity_apply _ hcl, Measure.restrict_restrict hcl, inter_comm]
+    exact R₀.locallyIntegrable_mult _ hW₀cc.1 (subset_univ _)
+  have hv : S₀'.massOn W₀ ≠ ∞ := ne_top_of_lt hlt
+  -- `M(Y₀) = μ_{Y₀}(ℝᴾ) = μ_{Y₀}(spt Y₀) < ∞`.
+  have hM : Y₀.mass ≠ ∞ := by
+    have hYm : MeasurableSet Y₀.support := hYc.isClosed.measurableSet
+    have hnull : RY.measure (Y₀.support)ᶜ = 0 := by
+      rw [IMRep.measure, withDensity_apply _ hYm.compl, Measure.restrict_restrict hYm.compl]
+      refine setLIntegral_measure_zero _ _ ?_
+      rw [inter_comm, ← sdiff_eq]
+      exact Submission.imrep_carrier_sdiff_support_null P _ univ Y₀ RY isOpen_univ hRY
+    change Y₀.massOn univ ≠ ∞
+    rw [Submission.imrep_represents_massOn_eq_measure P _ univ univ Y₀ RY isOpen_univ hRY
+      isOpen_univ subset_rfl, ← measure_add_measure_compl hYm, hnull, add_zero,
+      IMRep.measure, withDensity_apply _ hYm, Measure.restrict_restrict hYm, inter_comm]
+    exact RY.locallyIntegrable_mult _ hYc (subset_univ _)
+  -- For every `r > 0`, the cube cycle `Z = [[Q_r]] × X₀ + E'` and minimality of `S` give
+  -- `(2r)^d M_{W₀}(S₀) ≤ (2r)^d M_{W₀}(S₀') + 2d(2r)^{d−1} M(Y₀)`.
+  have hYL' : Y₀.support ⊆ ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P)) := by
+    rw [hspan]
+    exact hYL
+  obtain ⟨R₀', hR₀'⟩ := hS₀'
+  have hbox : ∀ r : ℝ, 0 < r →
+      ENNReal.ofReal ((2 * r) ^ Module.finrank ℝ L) * S₀.massOn W₀ ≤
+        ENNReal.ofReal ((2 * r) ^ Module.finrank ℝ L) * S₀'.massOn W₀ +
+          ENNReal.ofReal (2 * (Module.finrank ℝ L : ℝ) * (2 * r) ^ (Module.finrank ℝ L - 1)) *
+            Y₀.mass := by
+    intro r hr
+    obtain ⟨Z, E', hZ, hZbd, hZc, hZsupp, hE', hZact⟩ :=
+      Submission.dimred_cs_sos_mt_cube_cycle P _ _ n f (Nat.add_sub_of_le hd.le).symm
+        (S₀' - S₀) Y₀ r hk hm hf hXIM ⟨RY, hRY⟩ hYbd hYc hYL' hr
+    exact (Submission.dimred_cs_sos_mt_competitor_mass P _ _ n f
+      (Nat.add_sub_of_le hd.le).symm L S R S₀ S₀' R₀ R₀' W₀ Y₀.support Z E' r hk hm hf hspan
+      hSmin hR hR₀ hR₀' hR₀L hmeas hprod hW₀ hW₀cc.1 hXsupp hYc hr hZ hZbd hZc hZsupp
+      hZact).trans (add_le_add le_rfl hE')
+  -- In real numbers, `r = (d M(Y₀) + 1)/(M_{W₀}(S₀) − M_{W₀}(S₀'))` violates this.
+  have huv : (S₀'.massOn W₀).toReal < (S₀.massOn W₀).toReal :=
+    (ENNReal.toReal_lt_toReal hv hu).2 hlt
+  obtain ⟨r, hr, hrr⟩ : ∃ r : ℝ, 0 < r ∧
+      r * ((S₀.massOn W₀).toReal - (S₀'.massOn W₀).toReal) =
+        (Module.finrank ℝ L : ℝ) * Y₀.mass.toReal + 1 :=
+    ⟨_, div_pos (by positivity) (sub_pos.2 huv), div_mul_cancel₀ _ (sub_pos.2 huv).ne'⟩
+  have hfin₁ : ENNReal.ofReal ((2 * r) ^ Module.finrank ℝ L) * S₀'.massOn W₀ ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top hv
+  have hfin₂ : ENNReal.ofReal (2 * (Module.finrank ℝ L : ℝ) *
+      (2 * r) ^ (Module.finrank ℝ L - 1)) * Y₀.mass ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top hM
+  have hreal := ENNReal.toReal_mono (ENNReal.add_ne_top.2 ⟨hfin₁, hfin₂⟩) (hbox r hr)
+  rw [ENNReal.toReal_add hfin₁ hfin₂, ENNReal.toReal_mul, ENNReal.toReal_mul,
+    ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity),
+    ENNReal.toReal_ofReal (by positivity)] at hreal
+  have hpow : (2 * r) ^ Module.finrank ℝ L = 2 * r * (2 * r) ^ (Module.finrank ℝ L - 1) := by
+    rw [← pow_succ', Nat.sub_add_cancel (by omega : 1 ≤ Module.finrank ℝ L)]
+  rw [hpow] at hreal
+  have hc : 0 < (2 * r) ^ (Module.finrank ℝ L - 1) := pow_pos (by positivity) _
+  have h4 : (2 * r) ^ (Module.finrank ℝ L - 1) *
+      (r * ((S₀.massOn W₀).toReal - (S₀'.massOn W₀).toReal)) =
+        (2 * r) ^ (Module.finrank ℝ L - 1) *
+          ((Module.finrank ℝ L : ℝ) * Y₀.mass.toReal + 1) := by
+    rw [hrr]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
