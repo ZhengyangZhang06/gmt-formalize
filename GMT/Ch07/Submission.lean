@@ -1740,6 +1740,33 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- Simon 6.2.24(1), `∂f_#X = f_#∂X`, for a map `f` that is only `C¹` on an open `O ⊇ K`: if
+`X = τ(M, θ, ξ)` has `∂X = 0` in `U`, `Hⁿ(M ∖ K) = 0` and
+`Q(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`, then `∂Q = 0` in `U`.  Cut `f` off on `O ∩ U` to a `C¹`
+map `φ` with `φ = f`, `Dφ = Df` on an open `V ⊇ K` and `φ = id` off a compact `K' ⊆ O ∩ U`.  The
+integrands for `f` and `φ` agree on `M ∩ K`, hence `Hⁿ⌞M`-a.e., so `Q` is the push-forward
+formula for `φ`, and `∂Q = 0` by the `C¹` push-forward boundary formula. -/
+theorem Submission.dimred_mbl_pf_pushforward_boundaryVanishes : ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (X Q : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → R.Represents X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → BoundaryVanishes Q := by
+  intro P n U K O R f X Q hU hK hKU hnull hO hKO hf hRX hX hQ
+  -- Step 1: cut `f` off on `O ∩ U`: `φ = f`, `Dφ = Df` on an open `V ⊇ K`, `φ = id` off a
+  -- compact `K' ⊆ O ∩ U`
+  obtain ⟨φ, V, K', -, hKV, hK', hK'OU, hφ, hφf, hφid⟩ :=
+    Submission.dimred_mbl_pfb_c1_compact_perturbation P (O ∩ U) K f (hO.inter hU) hK
+      (subset_inter hKO hKU) (hf.mono inter_subset_left)
+  -- Step 2: `Hⁿ`-a.e. point of `M` lies in `K`, as `Hⁿ(M ∖ K) = 0`
+  have hae : ∀ᵐ x ∂μHE[n], x ∈ R.carrier → x ∈ K := by
+    rw [ae_iff]
+    exact measure_mono_null (fun x hx => not_imp.1 hx) hnull
+  -- Step 3: `∂Q = 0` by the push-forward boundary formula for `φ`, once
+  -- `Q(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ`: the integrands agree on `M ∩ K ⊆ V`
+  refine Submission.dpf_pushforward_formula_boundaryVanishes P n U K' X Q R φ hU hRX hK'
+    (hK'OU.trans inter_subset_right) hφ hφid (fun ω => ?_) hX
+  rw [hQ ω]
+  refine setIntegral_congr_ae R.measurableSet_carrier ?_
+  filter_upwards [hae] with x hxK hxM
+  obtain ⟨h1, h2⟩ := hφf x (hKV (hxK hxM))
+  rw [h1, h2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
