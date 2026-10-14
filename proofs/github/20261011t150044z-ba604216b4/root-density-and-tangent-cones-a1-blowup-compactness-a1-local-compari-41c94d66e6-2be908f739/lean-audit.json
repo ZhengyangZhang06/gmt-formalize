@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e6c9906188411cd2be2dab15c078daf8d72db6eac34a98dc57d84e3fee2dd945",
+  "git_delta": {
+    "base_commit": "80eb64bc19d4912c04bf78121f393299fbdfb5f0",
+    "candidate_commit": "5acd9c2d6291cbe52c8c4a3f3025761c7272bdd1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_approx_differentiable",
+    "diff_sha256": "da3f0794a3f0de179220d80b6d2ab80a8bff32cb1acc4c9f434868bb3615a1c4",
+    "source_sha256": "be6d292b3fb48372ff66eb857b54811647af5df11e41bceade6b8b7ffcfdc006",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_approx_differentiable",
+      "statement": "∀ (P d : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (ψ : ℕ → Euclid d → Euclid P) (V Y : ℕ → Set (Euclid d)) (F : ℕ → Euclid d → ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[d] (M ∩ K) ≠ ∞) → (∀ j, ContDiff ℝ 1 (ψ j)) → (∀ j, InjOn (ψ j) (V j)) → (∀ j, ∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) → (∀ j, ContDiff ℝ 1 (F j)) → (∀ j, IsCompact (closure (Y j))) → (∀ j, closure (Y j) ⊆ V j) → (∀ j, MeasurableSet (ψ j '' Y j)) → (∀ j, ψ j '' Y j ⊆ M) → (∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y) → (∀ j, ∀ y ∈ Y j, HasApproximateTangentSpaceAt d M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P))) → (∀ j, ∀ y ∈ Y j, G (ψ j y) ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (G (ψ j y)) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e) → μHE[d] (M \\ ⋃ j, ψ j '' Y j) = 0 → ∀ᵐ x ∂(μHE[d].restrict M), HasApproximateTangentSpaceAt d M x (approxTangentPlane d M x) ∧ G x ∈ approxTangentPlane d M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[d] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ d)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
