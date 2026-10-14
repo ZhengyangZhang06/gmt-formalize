@@ -451,6 +451,88 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Left slopes at a point of differentiability** (Simon Ch. 6, 4.9 and (2) in the proof of
+8.2).  If `F : ℝ → ℝ` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * ofReal (F(t) - F(t - h)) ≤ ofReal (F′(t))`.  The left difference
+quotients `h⁻¹ (F(t) - F(t - h))` tend to `F′(t)` as `h ↓ 0`; for `h > 0` the product above is
+`ofReal` of the quotient, so it tends to `ofReal (F′(t))`, and along `𝓝[>] 0` the liminf of a
+convergent function is its limit.  Monotonicity of `F` is not needed. -/
+theorem Submission.cbr_smm_liminf_left_slope_le_deriv : ∀ (F : ℝ → ℝ) (t : ℝ), DifferentiableAt ℝ F t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h))) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv F t) := by
+  intro F t hF
+  -- `h ↦ -h` maps `𝓝[>] 0` into `𝓝[<] 0`, turning left slopes into the quotients above
+  have hneg : Tendsto (fun h : ℝ => -h) (𝓝[>] 0) (𝓝[<] 0) := by
+    simpa using tendsto_neg_nhdsGT (a := (0 : ℝ))
+  have hlim : Tendsto (fun h : ℝ => h⁻¹ * (F t - F (t - h))) (𝓝[>] 0) (𝓝 (deriv F t)) := by
+    refine (hF.hasDerivAt.tendsto_slope_zero_left.comp hneg).congr fun h => ?_
+    simp only [Function.comp_apply, smul_eq_mul]
+    rw [← sub_eq_add_neg, inv_neg]
+    ring
+  -- for `h > 0`, `ofReal h⁻¹ * ofReal (F t - F (t - h)) = ofReal (h⁻¹ * (F t - F (t - h)))`
+  have hlim' : Tendsto (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h)))
+      (𝓝[>] 0) (𝓝 (ENNReal.ofReal (deriv F t))) := by
+    refine (ENNReal.tendsto_ofReal hlim).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    exact ENNReal.ofReal_mul (inv_nonneg.2 hh.le)
+  exact hlim'.liminf_eq.le
+/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
+nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
+`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
+(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
+`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
+theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  set G := hF.stieltjesFunction
+  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
+  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
+  have hGb : leftLim G b ≤ F b := by
+    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
+    exact hF.rightLim_le hy
+  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
+      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
+        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
+        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
+        filter_upwards [hF.ae_hasDerivAt] with t ht
+        rw [ht.deriv]
+        exact ENNReal.ofReal_toReal_le
+    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
+    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
+    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
+    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- **Left slice density at a point of differentiability of the distribution function** (Simon
+Ch. 6, remark after 4.9 and (10) in the proof of 5.1).  For a finite measure `μ`, a measurable
+`f` and `F(s) = (μ {f < s}).toReal`: if `F` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * μ {t - h < f < t} ≤ ofReal (F′(t))`.  For `h > 0`,
+`{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, whose measure is `ofReal (F(t) - F(t - h))` since `μ`
+is finite; so the claim follows from `Submission.cbr_smm_liminf_left_slope_le_deriv`. -/
+theorem Submission.cmcsd_gr_liminf_slice_le_deriv : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) := by
+  intro α _ μ f t _ hf hF
+  -- `μ` is finite, so `μ {f < s} = ofReal F(s)` with `F(s) = (μ {f < s}).toReal ≥ 0`
+  have hA : ∀ s : ℝ, μ {x | f x < s} = ENNReal.ofReal (μ {x | f x < s}).toReal := fun s =>
+    (ENNReal.ofReal_toReal (measure_ne_top μ _)).symm
+  -- for `h > 0`, `{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, of measure `ofReal (F(t) - F(t - h))`
+  have hslice : ∀ h : ℝ, 0 < h → ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t} ≤
+      ENNReal.ofReal h⁻¹ *
+        ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+    intro h hh
+    gcongr
+    calc μ {x | t - h < f x ∧ f x < t}
+        ≤ μ ({x | f x < t} \ {x | f x < t - h}) :=
+          measure_mono fun x hx => ⟨hx.2, fun hx' => lt_asymm hx.1 hx'⟩
+      _ = μ {x | f x < t} - μ {x | f x < t - h} :=
+          measure_sdiff (fun x (hx : f x < t - h) => hx.trans (by linarith))
+            (measurableSet_lt hf measurable_const).nullMeasurableSet (measure_ne_top μ _)
+      _ = ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+          rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ← hA, ← hA]
+  -- compare the liminfs along `𝓝[>] 0`, then use the left slopes of `F` at `t`
+  calc liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0)
+      ≤ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ *
+          ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal)) (𝓝[>] 0) :=
+        liminf_le_liminf (eventually_nhdsWithin_of_forall hslice)
+    _ ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) :=
+        Submission.cbr_smm_liminf_left_slope_le_deriv (fun s => (μ {x | f x < s}).toReal) t hF
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
