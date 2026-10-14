@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d8c81bee0cce375f1b94af863b729cd7050f1451079351c8565a4548630f0ed9",
+  "git_delta": {
+    "base_commit": "f34fb7fcbf1bb390a5bafc60eaeccd743f2ec31f",
+    "candidate_commit": "1a62200f596a8983d6241db7a44619e745255c51",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_sa_ml_l1_contraction",
+    "diff_sha256": "4b672857b2adab503ad8695c272570fab7b0d8db44c17506df597bbac46d66c0",
+    "source_sha256": "a7cd2667721b9e29fa928de5a06ca2a85cae936ed63fcf543f9454190c4a3fdf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_sa_ml_l1_contraction",
+      "statement": "∀ (n : ℕ) (k g : Euclid n → ℝ), (∀ z, 0 ≤ k z) → ∫ z, k z = 1 → AEStronglyMeasurable g volume → ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ ≤ ∫⁻ x, ‖g x‖ₑ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
