@@ -57428,4 +57428,110 @@ theorem Submission.dtc_bc_lc_fd_series_limit : ∀ (P m : ℕ) (X Z : ℕ → Ge
       _ ≤ ∑' i, (2⁻¹ : ℝ≥0∞) ^ (q + i) := ENNReal.tsum_le_tsum fun i => (hRS (q + i)).2.2.2
       _ = 2 * (2⁻¹ : ℝ≥0∞) ^ q := hgeom
 
+/-- **Simon Ch. 6, Definition 7.1 and Theorem 7.2 ("only if")** with `U = ℝᴾ`: if the integer
+multiplicity `Tⱼ ⇀ T` in `𝒟ₙ(ℝᴾ)`, `n = m + 1 < P`, and `supⱼ (M_V(Tⱼ) + M_V(∂Tⱼ)) < ∞` for every
+bounded open `V`, then for bounded open `W` there are integer multiplicity `Rⱼ`, `Sⱼ` with
+`T − Tⱼ − Sⱼ = ∂Rⱼ` and `M_W(Rⱼ) + M_W(Sⱼ) → 0`.
+
+Proof sketch:
+* `aⱼ := inf {M_W(R) + M_W(S) : R, S integer multiplicity, T − Tⱼ − S = ∂R}` is Simon's
+  `d_W(Tⱼ, T)`; it suffices that every subsequence `T_{ns j}` has a further subsequence along
+  which `a → 0` (`tendsto_of_subseq_tendsto`).
+* Localise: `T'ⱼ = T_{ns (φ j)}` on forms supported in `W`, `spt T'ⱼ ⊆ K` compact,
+  `M(T'ⱼ), M(∂T'ⱼ) ≤ Λ` (`dtc_bc_lc_fd_localize`).
+* The deformation theorem gives finite nets (`dtc_bc_lc_fd_deformation`), hence a subsequence `ψ`
+  with `T'_{ψ(r+1)} − T'_{ψ r} − S_r = ∂R_r`, `M(R_r) + M(S_r) ≤ 2^{-r}`, `spt R_r ⊆ L`
+  (`dtc_bc_lc_fd_cauchy_subseq`).
+* Summing against the weak limit, `a_{ns (φ (ψ q))} ≤ 2 · 2^{-q}` (`dtc_bc_lc_fd_series_limit`).
+* Choose decompositions with `M_W(Rⱼ) + M_W(Sⱼ) ≤ aⱼ + 2^{-j}`; if `aⱼ = ∞`, take the trivial
+  `T − Tⱼ − (T − Tⱼ) = ∂0`, where `0 = τ(∅, 1, 0)` and `T − Tⱼ` is integer multiplicity
+  (`cmc_imRep_locality_restrict_sub` (c)). -/
+theorem Submission.dtc_bc_lc_flat_decomposition : ∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), m + 1 < P → (∀ j, IsIntegerMultiplicity (Ts j)) → IsIntegerMultiplicity T → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ∃ (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsIntegerMultiplicity (R j) ∧ IsIntegerMultiplicity (S j) ∧ T - Ts j - S j = (R j).boundary) ∧ Tendsto (fun j => (R j).massOn W + (S j).massOn W) atTop (𝓝 0) := by
+  intro P m Ts T hmP hTs hT hbd hconv W _hW hWb
+  -- `D j`: the values `M_W(R) + M_W(S)` over the integer multiplicity decompositions
+  -- `T − T_j − S = ∂R`; `sInf (D j)` is Simon's `d_W(T_j, T)`
+  obtain ⟨D, hD⟩ : ∃ D : ℕ → Set ℝ≥0∞, ∀ j x, x ∈ D j ↔
+      ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+        (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧
+          IsIntegerMultiplicity S ∧ T - Ts j - S = R.boundary ∧ R.massOn W + S.massOn W = x :=
+    ⟨fun j => {x | ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+        (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧
+          IsIntegerMultiplicity S ∧ T - Ts j - S = R.boundary ∧ R.massOn W + S.massOn W = x},
+      fun _ _ => Iff.rfl⟩
+  -- `d_W(T_j, T) → 0`: every subsequence has a further subsequence with `d_W ≤ 2 · 2^{-q}`
+  have ha : Tendsto (fun j => sInf (D j)) atTop (𝓝 0) := by
+    refine tendsto_of_subseq_tendsto fun ns hns => ?_
+    -- localisation: `T'_j = T_{ns (φ j)}` on forms supported in `W`, `spt T'_j ⊆ K`,
+    -- `M(T'_j), M(∂T'_j) ≤ Λ`
+    obtain ⟨K, φ, Λ, Ts', hK, hφ, hTs'IM, hTs'K, hTs'mass, hTs'eq⟩ :=
+      Submission.dtc_bc_lc_fd_localize P m (fun j => Ts (ns j)) W hWb (fun j => hTs (ns j))
+        fun V hV hVb => lt_of_le_of_lt
+          (iSup_le fun j => le_iSup (fun i => (Ts i).massOn V + (Ts i).boundary.massOn V) (ns j))
+          (hbd V hV hVb)
+    -- finite nets from the deformation theorem, with `spt R ⊆ L = cthickening 1 K`
+    obtain ⟨c, hc⟩ := Submission.dtc_bc_lc_fd_deformation P m hmP
+    have hL : IsCompact (cthickening 1 K) := hK.cthickening
+    -- a flat-Cauchy subsequence: `T'_{ψ(r+1)} − T'_{ψ r} − S_r = ∂R_r`, `M(R_r) + M(S_r) ≤ 2^{-r}`
+    obtain ⟨ψ, hψ, hstep⟩ := Submission.dtc_bc_lc_fd_cauchy_subseq P m (cthickening 1 K) Ts' hL
+      fun ε hε => by
+        obtain ⟨𝒬, h𝒬, hnet⟩ := hc K Λ ε hK hε
+        refine ⟨𝒬, h𝒬, fun j => ?_⟩
+        obtain ⟨Q, hQ, R, S, hR, -, hdec, hmass, -, hspt⟩ :=
+          hnet (Ts' j) (hTs'IM j) (hTs'K j) (hTs'mass j).1 (hTs'mass j).2
+        exact ⟨Q, hQ, R, S, hR, hspt, hdec, hmass⟩
+    choose R S hRS using hstep
+    -- on forms supported in `W`, `T'_{ψ r} = T_{ns (φ (ψ r))} ⇀ T`; summing the series gives
+    -- `T − T_{ns (φ (ψ q))} − S' = ∂R'` with `M_W(R') + M_W(S') ≤ 2 · 2^{-q}`
+    have hlim := Submission.dtc_bc_lc_fd_series_limit P m (fun r => Ts' (ψ r))
+      (fun r => Ts (ns (φ (ψ r)))) T R S W (cthickening 1 K) Λ hmP hL hT (fun _ => hTs _)
+      (fun r => (hTs'mass (ψ r)).1) hRS fun ω hω => by
+        have hω' : ∀ r, Ts' (ψ r) ω = Ts (ns (φ (ψ r))) ω := fun r => hTs'eq (ψ r) ω hω
+        exact ⟨fun r => (hω' r).symm, ((hconv ω).comp
+          (hns.comp (hφ.tendsto_atTop.comp hψ.tendsto_atTop))).congr fun r => (hω' r).symm⟩
+    refine ⟨fun q => φ (ψ q), ?_⟩
+    have h2 : Tendsto (fun q : ℕ => 2 * (2⁻¹ : ℝ≥0∞) ^ q) atTop (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_mul (a := 2)
+        (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (r := 2⁻¹) (by norm_num))
+        (Or.inr (by norm_num))
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h2 (fun _ => zero_le)
+      fun q => ?_
+    obtain ⟨R', S', hR', hS', hdec, hmass⟩ := hlim q
+    exact (sInf_le ((hD _ _).2 ⟨R', S', hR', hS', hdec, rfl⟩)).trans hmass
+  -- the zero `(m + 2)`-current `τ(∅, 1, 0)` is integer multiplicity
+  have hIM0 : IsIntegerMultiplicity (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) := by
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 1
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset _
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun _ hx => by simp at hx
+              locallyIntegrable_mult := fun _ _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, fun ω => ?_⟩
+    simp [IMRep.action]
+  -- near-optimal decompositions: `M_W(R) + M_W(S) ≤ d_W(T_j, T) + 2^{-j}`, and the trivial
+  -- `T − T_j − (T − T_j) = ∂0` when `d_W(T_j, T) = ∞`
+  have hchoice : ∀ j, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+      (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)),
+      (IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ T - Ts j - S = R.boundary) ∧
+        R.massOn W + S.massOn W ≤ sInf (D j) + (2⁻¹ : ℝ≥0∞) ^ j := by
+    intro j
+    by_cases htop : sInf (D j) = ⊤
+    · refine ⟨0, T - Ts j, ⟨hIM0, Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ
+        T (Ts j) isOpen_univ hT (hTs j), ?_⟩, by simp [htop]⟩
+      ext ω
+      show T ω - Ts j ω - (T ω - Ts j ω) = _
+      simp
+    · obtain ⟨x, hx, hlt⟩ := sInf_lt_iff.1
+        (ENNReal.lt_add_right htop (pow_ne_zero j (by norm_num) : (2⁻¹ : ℝ≥0∞) ^ j ≠ 0))
+      obtain ⟨R, S, hR, hS, hdec, rfl⟩ := (hD j x).1 hx
+      exact ⟨R, S, ⟨hR, hS, hdec⟩, hlt.le⟩
+  choose R S hRS hle using hchoice
+  refine ⟨R, S, hRS, tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_
+    (fun _ => zero_le) hle⟩
+  simpa using ha.add (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (r := 2⁻¹) (by norm_num))
+
 end GMT.Ch07
