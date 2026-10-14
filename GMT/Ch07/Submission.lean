@@ -516,6 +516,71 @@ theorem Submission.cmcdt_lpo_cutoff_pullback : ∀ (N N' k : ℕ) (F : Euclid N 
     rw [heq.extDeriv_eq]
     exact extDeriv_pullback ((hω.differentiable (by simp)).differentiableAt) hF.contDiffAt
       (by simp)
+/-- **Mollification of Lipschitz maps**: a `Λ`-Lipschitz `F : ℝᴺ → ℝᴺ'` has `C^∞`,
+`Λ`-Lipschitz approximants `Fⱼ` with `|Fⱼ − F| ≤ Λ/(j + 1)`.  For `σ > 0` normalize the bump `b`
+of a `ContDiffBump` at `0` with `rOut = σ` to `ϕ = b/∫b` (`∫b > 0` as `volume (B_σ(0)) > 0`), so
+`ϕ ≥ 0`, `∫ϕ = 1` and `support ϕ ⊆ B_σ(0)`, and put `G = ϕ ⋆ F`.  Then `G` is `C^∞`,
+`G x − G y = ∫ ϕ(t)(F(x − t) − F(y − t)) dt` gives the constant `Λ`, and `|G − F| ≤ Λσ` since
+`|F y − F x| ≤ Λσ` on `B_σ(x)`.  Take `σ = 1/(j + 1)`. -/
+theorem Submission.cmcdt_lpo_mollify_lipschitz : ∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1) := by
+  intro N N' Λ F hF
+  -- For each `σ > 0`: a `C^∞`, `Λ`-Lipschitz `G` with `|G − F| ≤ Λσ`
+  have key : ∀ σ : ℝ, 0 < σ → ∃ G : Euclid N → Euclid N', ContDiff ℝ (⊤ : ℕ∞) G ∧
+      LipschitzWith Λ G ∧ ∀ x, dist (G x) (F x) ≤ (Λ : ℝ) * σ := by
+    intro σ hσ
+    -- Step 1: the bump `b`: `C^∞`, `b ≥ 0`, `support b = B_σ(0)`, compact support
+    let b : ContDiffBump (0 : Euclid N) := ⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩
+    have hbi : Integrable (b : Euclid N → ℝ) :=
+      b.continuous.integrable_of_hasCompactSupport b.hasCompactSupport
+    -- Step 2: `∫ b > 0`, and the normalized bump `ϕ = (∫ b)⁻¹ b`
+    have hIpos : 0 < ∫ t, b t := by
+      rw [integral_pos_iff_support_of_nonneg (fun t => b.nonneg) hbi, b.support_eq]
+      exact measure_ball_pos _ _ hσ
+    set ϕ : Euclid N → ℝ := fun t => (∫ s, b s)⁻¹ * b t with hϕ
+    have hϕd : ContDiff ℝ (⊤ : ℕ∞) ϕ := contDiff_const.mul b.contDiff
+    have hϕs : HasCompactSupport ϕ := b.hasCompactSupport.mul_left
+    have hϕn : ∀ t, 0 ≤ ϕ t := fun t => mul_nonneg (inv_nonneg.2 hIpos.le) b.nonneg
+    have hϕ1 : ∫ t, ϕ t = 1 := by
+      rw [hϕ, integral_const_mul]
+      exact inv_mul_cancel₀ hIpos.ne'
+    have hϕb : support ϕ ⊆ ball 0 σ := by
+      intro t ht
+      have : t ∈ support (b : Euclid N → ℝ) := Function.support_mul_subset_right _ _ ht
+      rwa [b.support_eq] at this
+    have hϕi : Integrable ϕ := hϕd.continuous.integrable_of_hasCompactSupport hϕs
+    -- Step 3: `G = ϕ ⋆ F` is `C^∞`; its integrands `t ↦ ϕ t • F (x - t)` are integrable
+    have hFc : Continuous F := hF.continuous
+    have hex : ∀ x, Integrable (fun t => ϕ t • F (x - t)) := by
+      intro x
+      have := (hϕs.convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) hϕd.continuous
+        hFc.locallyIntegrable (μ := volume)) x
+      simpa only [ConvolutionExistsAt, ContinuousLinearMap.lsmul_apply] using this
+    refine ⟨convolution ϕ F (ContinuousLinearMap.lsmul ℝ ℝ) volume, ?_, ?_, ?_⟩
+    · exact hϕs.contDiff_convolution_left _ hϕd hFc.locallyIntegrable
+    -- Step 4: `‖G x − G y‖ ≤ ∫ ϕ(t) Λ‖x − y‖ dt = Λ‖x − y‖`
+    · refine LipschitzWith.of_dist_le_mul fun x y => ?_
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply]
+      rw [dist_eq_norm, ← integral_sub (hex x) (hex y)]
+      calc ‖∫ t, (ϕ t • F (x - t) - ϕ t • F (y - t))‖
+          ≤ ∫ t, ϕ t * ((Λ : ℝ) * dist x y) := by
+            refine norm_integral_le_of_norm_le (hϕi.mul_const _) (Eventually.of_forall fun t => ?_)
+            rw [← smul_sub, norm_smul, Real.norm_of_nonneg (hϕn t), ← dist_eq_norm]
+            refine mul_le_mul_of_nonneg_left ?_ (hϕn t)
+            calc dist (F (x - t)) (F (y - t)) ≤ (Λ : ℝ) * dist (x - t) (y - t) :=
+                  hF.dist_le_mul _ _
+              _ = (Λ : ℝ) * dist x y := by rw [dist_sub_right]
+        _ = (Λ : ℝ) * dist x y := by rw [integral_mul_const, hϕ1, one_mul]
+    -- Step 5: `|F y − F x| ≤ Λσ` on `B_σ(x)`, so `|G x − F x| ≤ Λσ` (`ϕ ≥ 0`, `∫ϕ = 1`)
+    · intro x
+      refine dist_convolution_le (by positivity) hϕb hϕn hϕ1 hFc.aestronglyMeasurable
+        fun y hy => ?_
+      calc dist (F y) (F x) ≤ (Λ : ℝ) * dist y x := hF.dist_le_mul _ _
+        _ ≤ (Λ : ℝ) * σ := mul_le_mul_of_nonneg_left (mem_ball.1 hy).le Λ.coe_nonneg
+  -- Step 6: `σ = 1/(j + 1)`
+  choose G hG using fun j : ℕ => key (1 / ((j : ℝ) + 1)) (by positivity)
+  refine ⟨G, fun j => (hG j).1, fun j => (hG j).2.1, fun j x => ?_⟩
+  calc dist (G j x) (F x) ≤ (Λ : ℝ) * (1 / ((j : ℝ) + 1)) := (hG j).2.2 x
+    _ = (Λ : ℝ) / ((j : ℝ) + 1) := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
