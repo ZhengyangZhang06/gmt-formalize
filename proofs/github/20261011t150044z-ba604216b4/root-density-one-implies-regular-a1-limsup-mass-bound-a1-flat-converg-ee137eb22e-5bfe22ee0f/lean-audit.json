@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab159faaa8a317e568dac53184c0d730c33a164a2f82f8353a051d0532fcbffa",
+  "git_delta": {
+    "base_commit": "130300f19db02bf4fef6f36160e4715b2057b8b4",
+    "candidate_commit": "e074c16d2f36321425a2e87dc0803e8a8027722e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_im_restrict",
+    "diff_sha256": "1fec26dddcae77db07b8a04f510a23349e92efb8689fb1ffba46d3ea7ce35d50",
+    "source_sha256": "a9b0effce9e80dede5e9286ce6ef211401bc183293d7d518a45368ce44d65ee9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_im_restrict",
+      "statement": "∀ (P k : ℕ) (R : IMRep (univ : Set (Euclid P)) k), (∀ β : DifferentialForm (Euclid P) k, IsTestForm β → IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x (β x)) R.carrier μHE[k]) ∧ ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (F B : Set (Euclid P)), R.Represents X → IsClosed F → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F) → X ω = 0) → MeasurableSet B → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) ∧ Y.mass = R.measure B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F ∩ B) → Y ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
