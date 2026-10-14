@@ -744,6 +744,49 @@ theorem Submission.cbr_ci_dr_ae_unit_attained_of_mass_eq : ∀ (P n : ℕ) (Γ :
   have h1 : 1 - N (ξ x) = 0 := hx
   rw [hξβ]
   linarith
+/-- **Bounded strongly measurable modification of an `n`-vector field** (the Borel normalized
+field `ξ₀ / max(1, |ξ₀|*)` of the density representation).  If `ξ` is `μ`-a.e. strongly
+measurable and `|⟨α, ξ(x)⟩| ≤ |α|` for `μ`-a.e. `x` and every `n`-covector `α`
+(`|·| = covectorEuclideanNorm`), then some strongly measurable `ζ` satisfies the bound at every
+`x` and agrees with `ξ` `μ`-a.e.  With `N = |·|*` the dual norm of
+`cbr_ci_dr_multivector_dual_norm` and `ξ₀` a strongly measurable version of `ξ`, take
+`ζ = max(1, N ∘ ξ₀)⁻¹ • ξ₀`: it is a continuous function of `ξ₀`, `|ζ(x)(α)| ≤ |α|` because
+`N(ξ₀(x)) ≤ max(1, N(ξ₀(x)))`, and `ζ = ξ₀ = ξ` wherever `ξ₀ = ξ` and `ξ` is bounded, since
+there `N(ξ) ≤ 1` by attainment of `N` on the unit ball. -/
+theorem Submission.cbr_ci_dr_bounded_stronglyMeasurable_modification : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → ∃ ζ : Euclid P → MultiVector P n, StronglyMeasurable ζ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) ∧ ζ =ᵐ[μ] ξ := by
+  intro P n μ ξ hξm hξb
+  -- Step 1: the dual norm `N` on `n`-vectors (`dual_norm`)
+  obtain ⟨N, hNc, -, hNle, hNatt⟩ := Submission.cbr_ci_dr_multivector_dual_norm P n
+  -- Step 2: an `n`-vector `η` with `|η(α)| ≤ |α|` for all `α` has `N(η) ≤ 1` (attainment)
+  have hN1 : ∀ η : MultiVector P n,
+      (∀ α : Covector (Euclid P) n, |η α| ≤ covectorEuclideanNorm α) → N η ≤ 1 := by
+    intro η hη
+    obtain ⟨β, hβ, hηβ⟩ := hNatt η
+    calc N η = η β := hηβ.symm
+      _ ≤ |η β| := le_abs_self _
+      _ ≤ covectorEuclideanNorm β := hη β
+      _ ≤ 1 := hβ
+  -- Step 3: the normalization `η ↦ max(1, N(η))⁻¹ • η` is continuous (denominator `≥ 1`)
+  have hm : ∀ η : MultiVector P n, 0 < max 1 (N η) := fun η =>
+    zero_lt_one.trans_le (le_max_left _ _)
+  have hFc : Continuous fun η : MultiVector P n => (max 1 (N η))⁻¹ • η :=
+    ((continuous_const.max hNc).inv₀ fun η => (hm η).ne').smul continuous_id
+  -- Step 4: `ζ := max(1, N ∘ ξ₀)⁻¹ • ξ₀` for a strongly measurable version `ξ₀` of `ξ`
+  obtain ⟨ξ₀, hξ₀, hξξ₀⟩ : ∃ ξ₀ : Euclid P → MultiVector P n, StronglyMeasurable ξ₀ ∧
+      ξ =ᵐ[μ] ξ₀ :=
+    ⟨hξm.mk ξ, hξm.stronglyMeasurable_mk, hξm.ae_eq_mk⟩
+  refine ⟨fun x => (max 1 (N (ξ₀ x)))⁻¹ • ξ₀ x, hFc.comp_stronglyMeasurable hξ₀, ?_, ?_⟩
+  · -- Step 5: with `m = max(1, N(ξ₀ x))`, `|ζ(x)(α)| = m⁻¹ |ξ₀(x)(α)| ≤ m⁻¹ N(ξ₀ x) |α| ≤ |α|`
+    intro x α
+    show |((max 1 (N (ξ₀ x)))⁻¹ • ξ₀ x) α| ≤ covectorEuclideanNorm α
+    rw [smul_apply, smul_eq_mul, abs_mul, abs_of_pos (inv_pos.2 (hm (ξ₀ x))),
+      inv_mul_le_iff₀ (hm (ξ₀ x))]
+    exact (hNle (ξ₀ x) α).trans
+      (mul_le_mul_of_nonneg_right (le_max_right _ _) (covectorEuclideanNorm_nonneg α))
+  · -- Step 6: where `ξ₀ = ξ` and `ξ` is bounded, `N(ξ₀ x) ≤ 1`, so `m = 1` and `ζ(x) = ξ(x)`
+    filter_upwards [hξξ₀, hξb] with x hx hxb
+    show (max 1 (N (ξ₀ x)))⁻¹ • ξ₀ x = ξ x
+    rw [← hx, max_eq_left (hN1 (ξ x) hxb), inv_one, one_smul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
