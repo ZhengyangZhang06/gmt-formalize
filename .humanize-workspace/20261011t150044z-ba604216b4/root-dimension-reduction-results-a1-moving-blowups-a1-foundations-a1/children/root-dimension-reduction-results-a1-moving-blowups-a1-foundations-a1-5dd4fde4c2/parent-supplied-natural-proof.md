@@ -1,0 +1,87 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.top_dim_null-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 8 (Lemma TD), restricted to the case used in step 9: compact Lebesgue-null sets N, for the finite signed measure m = q_*(h ν) (so m(N) = ∫_{q⁻¹(N)} h dν). The parent derives the estimate on |∫ a dm| from the Gagliardo–Nirenberg–Sobolev inequality. That Mathlib result (eLpNorm_le_eLpNorm_fderiv_one) is not in the import closure of GMT.Ch07.Submission (verified: unknown identifier after `import GMT.Ch07.Submission`), so here the estimate is obtained by comparing a test function with its averages over balls of radius r; the remainder (smooth cut-offs of the null compact set, outer regularity of Lebesgue measure) follows the parent.
+Notation:
+- λ := volume on ℝⁿ = Euclid n;
+- div g(y) := LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y) = Σ_i ∂_i g_i(y);
+- for a bounded continuous a : ℝⁿ → ℝ, F(a) := ∫ h(x)·a(q x) dν(x), which is finite since |h·(a∘q)| ≤ sup|a|·|h| and h ∈ L¹(ν);
+- B_r := ball(0, r) and ‖h‖₁ := ∫|h| dν.
+1. (Λ ≥ 0.) Apply the hypothesis to g = 0: 0 = |∫ h·0 dν| ≤ Λ.
+2. (Directional estimate.) Let a : ℝⁿ → ℝ be C^∞ with compact support and |a| ≤ 1. We show |∫ h(x)·(a(q x + z) − a(q x)) dν(x)| ≤ Λ‖z‖ for every z ∈ ℝⁿ. This is trivial for z = 0.
+ - For z ≠ 0 let w := z/‖z‖ and, for s ∈ [0, 1], g_s(y) := a(y + s z)•w. Then g_s is C^∞ with compact support and ‖g_s(y)‖ = |a(y + s z)| ≤ 1. Since fderiv g_s(y)(v) = Da(y + s z)(v)•w and the trace of v ↦ ℓ(v)•w is ℓ(w), div g_s(y) = Da(y + s z)(w). By hypothesis, |∫ h(x)·Da(q x + s z)(w) dν(x)| ≤ Λ for every s ∈ [0, 1].
+ - The function s ↦ a(q x + s z) has the continuous derivative Da(q x + s z)(z). By the fundamental theorem of calculus (intervalIntegral.integral_eq_sub_of_hasDerivAt), a(q x + z) − a(q x) = ∫_0^1 Da(q x + s z)(z) ds.
+ - The function (x, s) ↦ h(x)·Da(q x + s z)(z) is measurable and bounded by ‖z‖·sup‖Da‖·|h(x)|, where Da is continuous with compact support. So it is integrable on ν ⊗ (Lebesgue measure on [0, 1]).
+ - By Fubini (integral_integral_swap), ∫ h(x)(a(q x + z) − a(q x)) dν(x) = ∫_0^1 ∫ h(x)·Da(q x + s z)(z) dν(x) ds = ‖z‖·∫_0^1 ∫ h(x)·Da(q x + s z)(w) dν(x) ds. Its absolute value is therefore ≤ ‖z‖Λ.
+3. (Averaging estimate.) Fix r > 0 and let ψ_r := λ(B_r)⁻¹·1_{B_r}, where 0 < λ(B_r) < ∞. Then ψ_r ≥ 0, ψ_r ≤ λ(B_r)⁻¹, ∫ψ_r dλ = 1, and ψ_r = 0 off B_r. We show that for every C^∞ compactly supported a with 0 ≤ a ≤ 1, |F(a)| ≤ rΛ + λ(B_r)⁻¹‖h‖₁·∫ a dλ.
+ - Since ∫ψ_r = 1, F(a) = F₁ + F₂ with F₁ := ∫ h(x) ∫ ψ_r(z)(a(q x) − a(q x + z)) dλ(z) dν(x) and F₂ := ∫ h(x) ∫ ψ_r(z)·a(q x + z) dλ(z) dν(x).
+ - The integrand of F₁ is bounded by 2|h(x)|ψ_r(z), which is integrable on ν ⊗ λ. By Fubini, F₁ = −∫ ψ_r(z)(∫ h(x)(a(q x + z) − a(q x)) dν(x)) dλ(z). By step 2 and ‖z‖ < r on B_r, |F₁| ≤ ∫ ψ_r(z)Λ‖z‖ dλ(z) ≤ rΛ.
+ - For each x, 0 ≤ ∫ ψ_r(z)·a(q x + z) dλ(z) ≤ λ(B_r)⁻¹∫ a(q x + z) dλ(z) = λ(B_r)⁻¹∫ a dλ, by translation invariance of λ (integral_add_right_eq_self). So |F₂| ≤ λ(B_r)⁻¹(∫ a dλ)‖h‖₁.
+4. (Cut-offs.) Let K be compact with λ(K) = 0. If K = ∅ the claim is trivial, so assume K ≠ ∅. For k ∈ ℕ let O_k := thickening(1/(k+1)) K, an open set containing K. We construct a C^∞ function a_k with compact support, 0 ≤ a_k ≤ 1, a_k = 1 on K and tsupport a_k ⊆ O_k.
+ - For each x ∈ K choose ρ_x > 0 with closedBall(x, 2ρ_x) ⊆ O_k, and a smooth bump φ_x centred at x with inner radius ρ_x and outer radius 2ρ_x (ContDiffBump). Then φ_x is C^∞, 0 ≤ φ_x ≤ 1, φ_x = 1 on closedBall(x, ρ_x), and support φ_x = ball(x, 2ρ_x).
+ - Finitely many balls ball(x_i, ρ_{x_i}) cover K. Put a_k := 1 − Π_i(1 − φ_{x_i}). Then a_k is C^∞, 0 ≤ a_k ≤ 1, and a_k = 1 on K.
+ - If a_k(y) ≠ 0 then φ_{x_i}(y) ≠ 0 for some i. So tsupport a_k ⊆ ⋃_i closedBall(x_i, 2ρ_{x_i}) ⊆ O_k, which is a compact set.
+5. (Limits.)
+ (i) a_k(q x) → 1_K(q x) for every x. If q x ∈ K then a_k(q x) = 1. If q x ∉ K then infDist(q x, K) > 0 (K is closed and nonempty), so q x ∉ O_k for large k and a_k(q x) = 0. By dominated convergence (|h·(a_k∘q)| ≤ |h|), F(a_k) → ∫ h(x)·1_K(q x) dν(x) = ∫_{q⁻¹(K)} h dν. Here q⁻¹(K) is measurable, since K is closed and q is measurable.
+ (ii) ∫ a_k dλ ≤ λ(O_k) ≤ λ(cthickening(1/(k+1)) K) → λ(K) = 0 (tendsto_measure_cthickening_of_isCompact).
+6. (Conclusion.) By steps 3 and 5, |∫_{q⁻¹(K)} h dν| = lim_k |F(a_k)| ≤ rΛ + λ(B_r)⁻¹‖h‖₁·lim_k ∫ a_k dλ = rΛ. Since r > 0 is arbitrary, ∫_{q⁻¹(K)} h dν = 0.
+
+## Key steps
+
+1. Λ ≥ 0, and the directional estimate |∫ h(x)(a(q x + z) − a(q x)) dν| ≤ Λ‖z‖ from the fields g_s = a(· + s z)·z/‖z‖, the fundamental theorem of calculus and Fubini.
+2. Ball averages: |F(a)| ≤ rΛ + λ(B_r)⁻¹‖h‖₁∫a for smooth 0 ≤ a ≤ 1.
+3. Smooth cut-offs a_k equal to 1 on K with supports in thickening(1/(k+1)) K: ∫ a_k → λ(K) = 0 and F(a_k) → ∫_{q⁻¹K} h dν.
+4. Let k → ∞, then r → 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean and Submission.lean against workspace GMT/Ch07/Contract.lean and Submission.lean  (identical)`
+- `rg -n 'dimred_mbl_fnd' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'cmr_|cmc_imRep|rsd_mw_exists|dor_ims_sua' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n -i 'massRepresentation|vector_riesz|vectorRiesz' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'structure IMRep|def IsIntegerMultiplicity|def boundaryMassOn|def CompactlyContained|abbrev MultiVector' <snapshot>/project/GMT/Ch07/Contract.lean  (lines 61, 92, 120, 127, 48)`
+- `rg -n 'def rieszMeasure|theorem integral_rieszMeasure|def toRealPositiveLinear|theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem tendsto_measure_cthickening_of_isCompact|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem integral_withDensity_eq_integral_toReal_smul|theorem exists_contDiff_tsupport_subset|theorem eLpNorm_le_eLpNorm_fderiv_one|theorem extDeriv_apply|theorem monotone_sort' <snapshot>/mathlib/Mathlib -g '*.lean'`
+- `python3 walk of `import` lines from the contract's SimonGMT imports through lake-packages simongmt (closure: Chapter01.{Basic,Hausdorff,MetricCriterion}, Chapter02.Lipschitz, Chapter03.Rectifiable, Chapter04.Basic, Chapter06.{Forms,Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward})`
+- `lake env lean /tmp/fnd-split/Probe2.lean and Probe3.lean  (#check of every cited name after `import GMT.Ch07.Submission`; unknown: simon_theorem_4_14_caratheodory, eLpNorm_le_eLpNorm_fderiv_one, ContDiffBump.normed, SignedMeasure.toJordanDecomposition, ContinuousAlternatingMap.map_perm, Measure.withDensity_rnDeriv_eq; all other cited names resolve)`
+- `lake env lean /tmp/fnd-split/check/Final.lean  (12 child types + parent type in the replayed comparator scope; conditional assembly; #print axioms)`
+- `python3 scans of dag.json: selected node, string identity parent = '(' + REP + ') ∧ (' + IMC + ')', statuses/candidate commits of reused nodes, dependency closures of reused nodes, lean_name collisions; lean_contract.validate_lean_statement on all 12 child types`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; contract_scope/child_modules in verifier/gmt-compare.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/isolated-comparator-result.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/fnd-split/check/Final.lean`
+
+The snapshot pins match: project b4d606db and mathlib 25730c7c. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace's. The snapshot contains no dimred_mbl_fnd_*, cmr_*, cmc_imRep*, rsd_mw_exists* or dor_ims_sua* declaration and no mass-representation or vector-Riesz theorem, so no snapshot declaration is reused and no fresh name collides. The snapshot mathlib has the in-scope replacement tools the children cite: RealRMK.rieszMeasure/integral_rieszMeasure, toRealPositiveLinear, IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, tendsto_measure_cthickening_of_isCompact, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, integral_withDensity_eq_integral_toReal_smul, extDeriv_apply and Tuple.monotone_sort. eLpNorm_le_eLpNorm_fderiv_one exists in the snapshot (SobolevInequality.lean:439) but is outside the import closure of GMT.Ch07.Submission, as are SimonGMT's simon_theorem_4_14_caratheodory and ContDiffBump.normed (Lean probe: unknown identifiers). Five DAG declarations are reused with byte-identical frozen types. All are accepted, with candidate commits and passed comparators, and their closures are fully accepted: cmc_imRep_locality_restrict_sub, cmr_abs_apply_le_massOn, cmr_covector_euclidean_equiv, dor_ims_sua_mollify_unit_field and rsd_mw_exists_testForm_approx. All 12 child types and the parent type elaborate in the replayed comparator scope. The conditional assembly proves the exact selected type with axioms propext, Classical.choice and Quot.sound.
