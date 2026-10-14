@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1.box_measure-a1",
+      "key": "box_measure",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1 = workspace HEAD, mathlib 25730c7c); grep -n 'abbrev Euclid|μHE\\[' snapshot project/GMT/Ch07/Contract.lean",
+              "python3 over dag.json: nodes whose lean_statement contains Orthonormal together with μHE or volume, ids containing 'frame', and nodes with the selected frozen type (only this node); lean_statement/status/candidate_commit of cbr_cipi_affine_plane_measure, idtp_pc_plane_hausdorff_eq_map, idtp_cttp_span_ball_measure, cbr_ci_pw_plane_map_volume; statements containing 'ENNReal.ofReal ((2 * r) ^'; whether dimred_cs_sos_mt_fm_box_measure is taken; count of accepted parents having children from another branch",
+              "git show 21dd628cfe1c8277775119a1cc5660485ede7dfc:GMT/Ch07/Submission.lean (declaration and proof of Submission.cbr_cipi_affine_plane_measure; other declarations carried by that history); git show 77e7ccfcf:GMT/Ch07/Submission.lean (this node's proof base: contract only)",
+              "read nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/{parent-supplied-natural-proof.md, lean-audit-v1.json, comparator-v1.log, isolated-comparator-result.json} and nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+              "grep -n over runtime.py (_decompose, _existing_lean_name_problem, _dependency_problem, _solve_children existing_by_name, _overlay_accepted_children, _accepted_checkpoint, _reference_use_problem), decomposition_scope.py, models.py (Subproblem, Decomposition), lean_contract.py",
+              "read snapshot mathlib Geometry/Euclidean/Volume/Measure.lean: EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_preimage",
+              "rg -n over snapshot mathlib: PiLp.volume_preserving_toLp, Real.volume_pi_closedBall, Real.volume_pi_ball, pi_norm_le_iff_of_nonneg, pi_norm_lt_iff, Orthonormal.inner_right_fintype, Orthonormal.inner_sum, inner_sum, Submodule.closed_of_finiteDimensional, Measure.restrict_apply, restrict_eq_self, Measure.map_apply, Isometry.isClosedEmbedding, IsOpen.measure_pos, Submodule.mem_span_range_iff_exists_fun, Finsupp.range_linearCombination, LinearMap.isometryOfOrthonormal",
+              "rg -n 'euclideanHausdorffMeasure.*(Orthonormal|parallelepiped|pi_closedBall|box)' and rg -n 'Orthonormal.*euclideanHausdorffMeasure|euclideanHausdorffMeasure.*span' over snapshot mathlib (no match)",
+              "lake env lean /tmp/fm-decomp/check/{Types,Box,Full,FromJson}.lean (Lean v4.35.0-rc3, from the workspace)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/lean-audit-v1.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/comparator-v1.log",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/isolated-comparator-result.json",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/decomposition_scope.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/models.py",
+              "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/lean_contract.py",
+              "/tmp/fm-decomp/check/Types.lean",
+              "/tmp/fm-decomp/check/Box.lean",
+              "/tmp/fm-decomp/check/Full.lean",
+              "/tmp/fm-decomp/check/FromJson.lean"
+            ],
+            "conclusion": "Pins match: the manifest records project b4d606db1 (workspace HEAD) and mathlib 25730c7c, and Euclid P = EuclideanSpace ℝ (Fin P) with μHE = Mathlib euclideanHausdorffMeasure.\n\nReuse. Part (i) is already proved. dag.json has exactly one owner of cbr_cipi_affine_plane_measure: node root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1, status accepted, candidate 21dd628c. Its lean_statement is byte-identical to child affine_plane_measure. Its comparator log ends 'Your solution is okay!', and its lean-audit-v1 records comparator_passed: true. At 21dd628c the proof uses only Mathlib (isometry J' = a + Σ u_i w_i, Isometry.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, PiLp.volume_preserving_toLp), i.e. steps 1–3 of the supplied proof with a translation. This node's proof base 77e7ccfc holds only the contract, so the declaration reaches a leaf only as a reused child, via the accepted-child overlay. 263 accepted parents in dag.json have children from another branch, including this node's parent. Related accepted nodes are not needed: idtp_pc_plane_hausdorff_eq_map is the Euclid n variant and would need an extra toLp step, and idtp_cttp_span_ball_measure concerns Euclidean balls. No node states the box measures. dimred_cs_sos_mt_fm_box_measure is unused.\n\nMathlib facts for box_measure are all in the snapshot:\n- Real.volume_pi_closedBall / Real.volume_pi_ball (Lebesgue/Basic.lean:272–282, ofReal((2r)^card ι));\n- pi_norm_le_iff_of_nonneg / pi_norm_lt_iff (Normed/Group/Constructions.lean:319, 338);\n- Orthonormal.inner_right_fintype (Orthonormal.lean:129) and Submodule.closed_of_finiteDimensional (FiniteDimension.lean:531);\n- Measure.restrict_apply (Restrict.lean:75) and Measure.map_apply (Map.lean:170).\nSnapshot mathlib has no lemma that directly gives μHE of a frame box or of a span (no match), so the box computation is genuinely new.\n\nLean checks:\n- Types.lean and FromJson.lean: both child types, taken verbatim from this JSON, elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract opens. The selected frozen type compiles from the two stubs via refine ⟨?_, box P k g hg⟩; simpa using (affine P k g 0 hg).1.\n- Box.lean: the box child is fully proved from the reused stub along its natural proof.\n- Full.lean: with the accepted proof text from 21dd628c there is no sorry, and #print axioms gives [propext, Classical.choice, Quot.sound] for all three declarations."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+        "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1.box_measure-a1",
+        "subproblem": {
+          "key": "box_measure",
+          "title": "Coordinate boxes in the span of an orthonormal frame have H^k-measure (2r)^k",
+          "statement": "Let P, k ∈ ℕ and let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P with span G := span{g_1, …, g_k}; H^k := μHE[k]. Then for every r > 0, the closed box {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and the open box {t ∈ G : |⟨g_i, t⟩| < r for all i} both have H^k-measure ENNReal.ofReal((2r)^k).",
+          "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ r : ℝ, 0 < r → μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} = ENNReal.ofReal ((2 * r) ^ k) ∧ μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} = ENNReal.ofReal ((2 * r) ^ k)",
+          "lean_name": "dimred_cs_sos_mt_fm_box_measure",
+          "depends_on": [
+            "affine_plane_measure"
+          ],
+          "natural_proof": "Source: steps 4–6 of the selected node's supplied proof. The push-forward identity they use (part (i), steps 1–3 there) is taken from the sibling affine_plane_measure at a = 0.\nNotation: ι : (Fin k → ℝ) → ℝ^P, ι(u) := Σ_i u_i·g_i, where Fin k → ℝ carries its product Lebesgue measure volume and its sup norm ‖u‖ = max_i |u_i|. Fix r > 0, and write S≤ := {t ∈ G : |⟨g_i, t⟩| ≤ r for all i} and S< := {t ∈ G : |⟨g_i, t⟩| < r for all i}.\n1. (Push-forward.) Apply the sibling affine_plane_measure (Submission.cbr_cipi_affine_plane_measure) with m = k, w = g and a = 0, and take its first conjunct: (volume).map (z ↦ 0 + Σ_i z_i g_i) = H^k⌞{y : y − 0 ∈ G}. Since 0 + x = x and y − 0 = y, the map is ι and the set is G. Hence (volume).map ι = H^k⌞G.\n2. (Regularity.) ι is continuous, being a finite sum of the continuous maps u ↦ u_i·g_i, and hence measurable. G is a finite-dimensional subspace of ℝ^P, hence closed (Submodule.closed_of_finiteDimensional). For each i, t ↦ |⟨g_i, t⟩| is continuous.\n3. (The boxes are Borel subsets of G.) S≤ ⊆ G and S< ⊆ G by definition. S≤ = G ∩ ⋂_i {t : |⟨g_i, t⟩| ≤ r} is an intersection of closed sets, hence closed and Borel. S< = G ∩ ⋂_i {t : |⟨g_i, t⟩| < r} is the intersection of the closed set G with finitely many open sets, hence Borel.\n4. (Reduction to Lebesgue measure.) Let S be S≤ or S<. Then H^k(S) = H^k(S ∩ G) = (H^k⌞G)(S), by Measure.restrict_apply (S measurable) and S ∩ G = S (S ⊆ G). By step 1 this equals ((volume).map ι)(S), and by Measure.map_apply (ι and S measurable) it equals volume(ι⁻¹(S)).\n5. (Coordinates of ι.) Let u : Fin k → ℝ. Then ι(u) ∈ G, because each g_l ∈ G and G is closed under sums and scalar multiples. For each i, ⟨g_i, ι(u)⟩ = Σ_l u_l ⟨g_i, g_l⟩ = u_i, because ⟨g_i, g_i⟩ = ‖g_i‖² = 1 and ⟨g_i, g_l⟩ = 0 for l ≠ i (orthonormality; Orthonormal.inner_right_fintype).\n6. (Preimages are sup-norm balls.) By step 5, ι⁻¹(S≤) = {u : |u_i| ≤ r for all i} and ι⁻¹(S<) = {u : |u_i| < r for all i}. Since r ≥ 0, ‖u‖ ≤ r ⟺ |u_i| ≤ r for all i (pi_norm_le_iff_of_nonneg, Real.norm_eq_abs), so ι⁻¹(S≤) = closedBall(0, r). Since r > 0, ‖u‖ < r ⟺ |u_i| < r for all i (pi_norm_lt_iff), so ι⁻¹(S<) = ball(0, r).\n7. (Volumes.) Real.volume_pi_closedBall (r ≥ 0) and Real.volume_pi_ball (r > 0) give volume(closedBall(0, r)) = volume(ball(0, r)) = ENNReal.ofReal((2r)^{card(Fin k)}) = ENNReal.ofReal((2r)^k) (Fintype.card_fin). With steps 4 and 6, H^k(S≤) = H^k(S<) = ENNReal.ofReal((2r)^k). ∎\n(For k = 0 the argument applies unchanged. Fin 0 → ℝ is a single point, ι ≡ 0, G = {0}, both boxes equal {0}, and both balls are the whole one-point space, of volume 1 = (2r)^0.)",
+          "proof_key_steps": [
+            "affine_plane_measure at a = 0 gives (volume).map ι = H^k⌞G, where ι(u) = Σ u_i g_i.",
+            "Both boxes are Borel subsets of the closed subspace G, so H^k(S) = (H^k⌞G)(S) = volume(ι⁻¹ S).",
+            "ι(u) ∈ G and ⟨g_i, ι(u)⟩ = u_i by orthonormality, so the preimages are the sup-norm closedBall(0, r) and ball(0, r).",
+            "Real.volume_pi_closedBall and Real.volume_pi_ball give ENNReal.ofReal((2r)^k)."
+          ]
+        },
+        "audit": {
+          "key": "box_measure",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The standalone one-line type exactly matches the parent's second conjunct, and its bare name is unreserved. The proof correctly uses only the declared sibling at a = 0, establishes measurable boxes contained in the span, computes their preimages using orthonormality, and applies the product-space sup-norm ball volumes. The distinct Euclidean and product-space instances are handled correctly; r > 0 covers k = 0. The sole dependency is correctly directed and acyclic. The split is appropriate: this conclusion and the sibling's first conjunct at a = 0 prove precisely the selected parent."
+        },
+        "resolved_dependencies": [
+          "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/decomposition.json": "4208ee918b998e25c0c6ce551e90e5fa525b7c1f0e9b3302eea6b6c222a68afc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/decomposition-audit.json": "46b248be5043a5717ab084e089284d667850d6a2c44d4eef507c945f47b3db2f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-child-handoff.json": "28d68e9b1f3e6a3da4014361e8f9bacf826b7d0ac407ccd3d2cf4f0bf463d914",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-plan.md": "43e8b745f79a95626d4c60a8b8e3139bddbe2f0848aa2755635d72ce8b009ba7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-natural-proof.md": "4c60634249f493e5c82ec3e4155590ccf2a5d44d1711d3fc4e6f1f07f2e9a32d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/parent-supplied-natural-proof.json": "ab08f9a5f48986859f6070d9f4f7f4ddf502780561eccc86911269d0585d1240",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/children/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-30604ea6ea/node.json": "71d433e343469c556eb9a3dc676b43bf017656f2015bb3f213557caa306f5449"
+  }
+}
