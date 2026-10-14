@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|blowUpMap|pit_|ptd_piece_image_approxTangent_ae",
+        "theorem (integral_map|integral_smul_measure|integral_smul_nnreal_measure|integral_withDensity_eq_integral_smul)|MeasurableEmbedding.integral_map",
+        "theorem (integral_comp_smul|addHaar_ball_of_pos|addHaar_closedBall|addHaar_real_closedBall|setAverage_eq|ae_tendsto_measure_inter_div|ae_tendsto_average_norm_sub)|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image_eq_normDet_mul_volume",
+        "def (blowUpMap|HasApproximateTangentSpaceAt)|theorem (weighted_area_formula_lipschitz_injOn|measurable_areaJacobianAt|areaJacobianAt_eq_normDet|euclideanHausdorffMeasure_image_le_of_lipschitzOn)",
+        "git show 713eebc5c1a6b6da58d0d5ede7e1174c7c83e7cc:GMT/Ch07/Submission.lean",
+        "validate_lean_statement(x['lean_statement'])",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit-independent-audit/Evidence.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/decomposition-v1.json",
+        "/tmp/pit-independent-audit/Types.lean",
+        "/tmp/pit-independent-audit/Evidence.lean"
+      ],
+      "conclusion": "The six-way split is appropriate for the selected image-tangent theorem. Instantiating J with areaJacobianAt F and K with L^n, the pinned area, density and differentiation results discharge the assembly premises; the children supply the exact integral limit, and derivative injectivity supplies the dimension condition. The two dependency edges are correctly directed and acyclic. All six child types and the parent type independently elaborate as propositions in the comparator's replayed scope, without child implementations. No Matrix/IsUnit construction occurs. All names are bare and distinct; scans of eight DAGs (2,649 nodes) and 10,864 stored declaration records found no conflicting reservation. The snapshot project contains none of the proposed names. The accepted blow-up declaration has a character-identical frozen type; its copied proof independently compiled without ancestor reliance. That proof and the checked library dependencies use only propext, Classical.choice and Quot.sound. Project and package revisions match the pinned context. Each supplied child proof is complete rather than a proposal for later proof search."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary M and f. Restriction evaluated on Borel test sets, Hausdorff scaling, and the measurable-embedding integral identity justify every step without measurability or integrability assumptions. The identical accepted proof was independently compiled under a fresh audit name and uses only standard axioms."
+    },
+    {
+      "key": "rescaled_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both contracts. Indicator weights establish the claimed pushforward measure identity. Continuity supplies the measurability needed for integral_map; the measurable finite nonnegative density permits the unconditional withDensity integral identity. Translation and positive dilation give exactly the stated rescaling. Only blowup_scaling is used as a child dependency."
+    },
+    {
+      "key": "density_derivative_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The missing-ball argument is valid for outer measure: only the auxiliary ball must be measurable. Positive finite ball measures justify the ratio estimate. Differentiability and the anchored lower bound yield Claim B, and the explicit epsilon choices yield the exact derivative inequality. Neither b ∈ B nor measurability of B is silently assumed; n = 0 is covered."
+    },
+    {
+      "key": "rescaled_ball_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact identity is the fixed-ball integral equals omega times R^n times the average at radius rR. The cited substitution and average identities hold for arbitrary h under Bochner integral conventions. R > 0 ensures positive finite denominators and convergence through positive radii. The proof includes dimension zero and matches the Lean proposition."
+    },
+    {
+      "key": "rescaled_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contracts match all continuity, measurability, boundedness, density and derivative assumptions. Localization places both integrands in one finite-measure ball. The three-term estimate is valid, its terms are integrable, and density plus the Jacobian-average hypothesis discharge the two rescaling applications. Differentiability and uniform continuity discharge the remaining term. The squeeze proves exactly the stated limit without circular reliance."
+    },
+    {
+      "key": "linear_range_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The all-sets image-measure hypothesis gives the restriction/pushforward identity on every Borel test set. Continuity of T and f suffices for integral_map; nonnegativity of j gives the stated real scalar after integral_smul_measure. Injectivity and integrability are unnecessary, including when j = 0. The proof establishes precisely the frozen proposition."
+    }
+  ],
+  "required_changes": []
+}
