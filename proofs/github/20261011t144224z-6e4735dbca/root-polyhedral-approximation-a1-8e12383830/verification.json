@@ -1,0 +1,25 @@
+{
+  "node_id": "root.polyhedral_approximation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/331",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "786e6c8abe438f1b9b7f8cfaf73ccf13aa010bee",
+  "integrated_commit": "",
+  "proof_base_commit": "e48d1bc73d07c8dc0241837af86260437b98ac5f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root",
+  "requires": [
+    "root.deformation-a1",
+    "root.slicing-a1",
+    "root.polyhedral_approximation-a1.pairing_expansion-a1",
+    "root.polyhedral_approximation-a1.measure_uniqueness-a1",
+    "root.polyhedral_approximation-a1.restriction_exists-a1",
+    "root.polyhedral_approximation-a1.restriction_tau-a1",
+    "root.polyhedral_approximation-a1.open_truncation-a1",
+    "root.polyhedral_approximation-a1.truncation_sequence-a1",
+    "root.polyhedral_approximation-a1.finite_mass_approximation-a1"
+  ]
+}
