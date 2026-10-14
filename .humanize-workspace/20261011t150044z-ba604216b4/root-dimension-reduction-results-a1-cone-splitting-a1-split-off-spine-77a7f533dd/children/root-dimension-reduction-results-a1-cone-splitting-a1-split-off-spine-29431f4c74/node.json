@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1.imrep_vanish_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_current-a1",
+  "depth": 6,
+  "title": "Vanishing on the carrier and the C⁰ bound |X(γ)| ≤ μ_R(ℝ^P)·sup‖γ‖ for a current represented by an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P any set, X ∈ 𝒟_n(U) (GeometricCurrentOn U n), and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n) representing X (R.Represents X). That is, X(γ) = ∫_M θ(x)·ξ(x)(γ(x)) dHⁿ(x) for every γ ∈ 𝒟ⁿ(U), where Hⁿ = μHE[n].\nThen:\n(a) if γ ∈ 𝒟ⁿ(U) and γ(x) = 0 for every x ∈ M = R.carrier, then X(γ) = 0;\n(b) if μ_R(ℝ^P) := R.measure univ = ∫_M θ dHⁿ is finite, then |X(γ)| ≤ μ_R(ℝ^P)·b for every γ ∈ 𝒟ⁿ(U) and b ∈ ℝ with ‖γ(x)‖ ≤ b for all x ∈ ℝ^P. Here ‖·‖ is the operator norm on Covector (Euclid P) n, and μ_R(ℝ^P) is read as the real number (R.measure univ).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (R : IMRep U n), R.Represents X → (∀ γ : TestFormOn U n, (∀ x ∈ R.carrier, (γ : DifferentialForm (Euclid P) n) x = 0) → X γ = 0) ∧ (R.measure univ ≠ ∞ → ∀ (γ : TestFormOn U n) (b : ℝ), (∀ x, ‖(γ : DifferentialForm (Euclid P) n) x‖ ≤ b) → |X γ| ≤ (R.measure univ).toReal * b)",
+  "lean_name": "dimred_cs_sos_cfs_cc_imrep_vanish_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-29431f4c74-a1"
+}
