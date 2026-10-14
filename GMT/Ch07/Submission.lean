@@ -515,6 +515,17 @@ theorem Submission.cbr_ci_iso_svol_steiner_slice_volume_eq : ∀ (d : ℕ) (j : 
       rw [mem_ofPred_eq, mem_Icc, ← abs_le, and_iff_right hBne]
     rw [hIcc, Real.volume_Icc, sub_neg_eq_add, add_halves, ENNReal.ofReal_toReal hBfin]
 
+/-- **Simon Ch. 1, proof of 2.10 (p. 12): Steiner symmetrization preserves Lebesgue measure.**
+Let `A ⊆ ℝ^d` be compact, `j ∈ Fin d`, `A^j_y = {t : y[j↦t] ∈ A}`.  If the Steiner symmetral
+`S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ ½ L¹(A^j_y)}` is measurable, then `L^d(S_j(A)) = L^d(A)`, "by
+Fubini": each line in direction `e_j` meets `S_j(A)` in `∅` or a centred segment of length
+`L¹(A^j_y)`, hence in a set of the same `L¹`-measure as its trace on the measurable set `A`, and
+Cavalieri's principle along `e_j` compares the volumes. -/
+theorem Submission.cbr_ci_iso_steiner_volume_eq : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → MeasurableSet {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} → volume {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} = volume A := by
+  intro d j A hA hS
+  exact Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq d j _ A hS hA.measurableSet
+    (Submission.cbr_ci_iso_svol_steiner_slice_volume_eq d j A hA)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
