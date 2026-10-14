@@ -3091,35 +3091,6 @@ theorem Submission.cmb_exists_compactly_contained_exhaustion :
             ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
         _ < infEDist x₀ Uᶜ := hi₂
         _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
-/-- A coordinate of an `n`-covector is bounded by its Euclidean coefficient norm:
-`|α(e_{β(0)}, …, e_{β(n-1)})| ≤ |α|` for every increasing multi-index `β`. -/
-theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
-    ∀ (P n : ℕ) (α : Covector (Eucl P) n) (β : SimonMultiIndex n P),
-      |euclideanCovectorCoordinate α β| ≤ covectorEuclideanNorm α := by
-  intro P n α β
-  -- `|c| = √(c²)` and `√` is monotone, so it suffices to bound `c²` by the defining sum.
-  rw [covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs]
-  refine Real.sqrt_le_sqrt ?_
-  -- `c²` is the summand of the strictly increasing tuple `β`; every summand is nonnegative.
-  refine le_trans (le_of_eq ?_) (Finset.single_le_sum (fun I _ => ?_) (Finset.mem_univ ⇑β))
-  · simp only [euclideanCovectorCoordinate, β.strictMono, ↓reduceIte,
-      EuclideanSpace.basisFun_apply]
-  · exact ite_nonneg (sq_nonneg _) le_rfl
-/-- The triangle inequality for the Euclidean coefficient norm of covectors (Simon Ch. 6, 1.15):
-`|α + γ| ≤ |α| + |γ|`.  `|a|` is the Euclidean norm of the coefficient vector
-`c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})` in `ℝ^(Fin n → Fin P)`, and `c` is
-additive, so this is `norm_add_le` in that Euclidean space. -/
-theorem Submission.cmb_rb_covectorEuclideanNorm_add_le :
-    ∀ (P n : ℕ) (α γ : Covector (Eucl P) n),
-      covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ := by
-  intro P n α γ
-  -- The coefficient vector `c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})`.
-  let c : Covector (Eucl P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun a =>
-    WithLp.toLp 2 fun I =>
-      if StrictMono I then a (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0
-  have hc : ∀ a, covectorEuclideanNorm a = ‖c a‖ := by
-    intro a
-    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
 /-- Simon Ch. 6, the estimate behind Lemma 2.36 (via Remark 2.35), for a linear map
 `L : ℝ^P → ℝⁿ`, `n = m + 1`: if `M_W(T), M_W(∂T) < ∞` and `f` is a smooth compactly supported
 cutoff with `tsupport f ⊆ W`, then every test form `φ = f · (a ∘ L) · L^*dy` satisfies
@@ -3498,149 +3469,34 @@ theorem Submission.rpn_compact_null_of_le_mul_diff : ∀ (P : ℕ) (U K : Set (E
   -- Step 3: `⋂_q W_q ⊆ closure K = K`.
   have hInter : ∀ x, (∀ q : ℕ, x ∈ thickening (r₀ / ((q : ℝ) + 1)) K) → x ∈ K := by
     intro x hx
-    simp [euclideanCovectorCoordinate, hθK x hx]
-  refine ⟨(integrableOn_iff_integrable_of_support_subset
-    (Function.support_subset_iff'.2 hf0)).1 hfK, ?_⟩
-  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hf0]
-  -- Steps 5–6: `|f| ≤ ∑_β D |v^β|` pointwise; integrate over `K`.
-  have hg : ∀ β ∈ (Finset.univ : Finset (SimonMultiIndex n P)),
-      IntegrableOn (fun x => D * |euclideanNVectorCoordinate (v x) β|) K μ := fun β _ =>
-    (hv β).abs.const_mul D
-  calc |∫ x in K, ∑ β : SimonMultiIndex n P,
-          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ|
-      ≤ ∫ x in K, |∑ β : SimonMultiIndex n P,
-          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β| ∂μ :=
-        abs_integral_le_integral_abs
-    _ ≤ ∫ x in K, ∑ β : SimonMultiIndex n P, D * |euclideanNVectorCoordinate (v x) β| ∂μ :=
-        integral_mono hfK.abs (integrable_finsetSum _ hg) fun x =>
-          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => by
-            rw [abs_mul]
-            exact mul_le_mul_of_nonneg_right (hcD β x) (abs_nonneg _))
-    _ = ∑ β : SimonMultiIndex n P, D * ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
-        rw [integral_finsetSum _ hg]
-        simp only [integral_const_mul]
-    _ = D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ :=
-        (Finset.mul_sum _ _ _).symm
-/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
-(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
-theorem Submission.cmb_abs_apply_le_of_massOn_le :
-    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
-      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
-      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
-      |T ω| ≤ B * C := by
-  intro P n U W T ω B C hB hM hW hC
-  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
-  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
-    congr 1
-    refine Finset.sum_congr rfl fun I _ => ?_
-    split_ifs
-    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
-    · simp
-  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
-  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
-  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
-  have key : ∀ c, C < c → |T ω| ≤ B * c := by
-    intro c hc
-    have hc0 : 0 < c := hC0.trans_lt hc
-    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
-      intro s hs
-      have hadm : s • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
-        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
-        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
-        exact (hC x).trans hc.le
-      have hle := (T.le_massOn hadm).trans hM
-      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
-      have hlin : T (s • ω) = s * T ω := by
-        rw [map_smul, smul_eq_mul]
-      rwa [hlin] at hle
-    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
-    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
-    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
-    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
-    rw [abs_le]
-    constructor
-    · have := mul_le_mul_of_nonneg_left h2 hc0.le
-      rw [e2] at this
-      linarith
-    · have := mul_le_mul_of_nonneg_left h1 hc0.le
-      rw [e1] at this
-      linarith
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
-/-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
-`α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
-theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
-    ∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P,
-      euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) := by
-  intro P n α
-  classical
-  -- `e v = (e_{v 0}, …, e_{v (n - 1)})` for a tuple `v` of coordinate indices.
-  set e : (Fin n → Fin P) → Fin n → Eucl P := fun v j => EuclideanSpace.single (v j) 1
-  set R : Covector (Eucl P) n := ∑ β : SimonMultiIndex n P,
-    euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) with hR
-  -- Kronecker property: `dx^β (e_γ) = δ_{βγ}`.
-  have hK : ∀ β γ : SimonMultiIndex n P,
-      wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) (e γ) = if β = γ then 1 else 0 := by
-    intro β γ
-    rw [wedgeCovectors_apply_det]
-    split_ifs with hβγ
-    · -- the matrix `[δ_{β i, β j}]` is the identity
-      subst hβγ
-      convert Matrix.det_one (n := Fin n) (R := ℝ)
-      ext i j
-      simp [e, Matrix.one_apply, PiLp.single_apply, β.injective.eq_iff]
-    · -- some `β i` is not among the `γ j`, so row `i` vanishes
-      obtain ⟨i, hi⟩ : ∃ i, ∀ j, β i ≠ γ j := by
-        by_contra! h
-        apply hβγ
-        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
-        have hsub : Set.range β ⊆ Set.range γ := by
-          rintro _ ⟨i, rfl⟩
-          obtain ⟨j, hj⟩ := h i
-          exact ⟨j, hj.symm⟩
-        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range γ)
-        rw [Set.ncard_range_of_injective γ.injective, Set.ncard_range_of_injective β.injective]
-      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [e, PiLp.single_apply, hi j]
-  -- `R` agrees with `α` on increasing tuples of basis vectors.
-  have h1 : ∀ γ : SimonMultiIndex n P, R (e γ) = α (e γ) := by
-    intro γ
-    rw [hR, ContinuousAlternatingMap.sum_apply]
-    simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-    rfl
-  -- `R` agrees with `α` on injective tuples: sort them and use `map_perm`.
-  have h2 : ∀ v : Fin n → Fin P, Function.Injective v → R (e v) = α (e v) := by
-    intro v hv
-    have hsm : StrictMono (v ∘ Tuple.sort v) :=
-      (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
-    have hγ := h1 (OrderEmbedding.ofStrictMono _ hsm)
-    have heq : e (OrderEmbedding.ofStrictMono _ hsm) = e v ∘ Tuple.sort v := rfl
-    rw [heq, ← ContinuousAlternatingMap.coe_toAlternatingMap R,
-      ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
-      AlternatingMap.map_perm] at hγ
-    exact smul_left_cancel _ hγ
-  -- Conclude by extensionality on the standard basis.
-  symm
-  apply ContinuousAlternatingMap.toAlternatingMap_injective
-  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
-  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
-    ContinuousAlternatingMap.coe_toAlternatingMap]
-  exact h2 v hv
+    rw [← hK.isClosed.closure_eq, closure_eq_iInter_thickening, mem_iInter₂]
+    intro δ hδ
+    obtain ⟨q, hq⟩ := exists_nat_gt (r₀ / δ)
+    have hqδ : r₀ / ((q : ℝ) + 1) < δ := by
+      rw [div_lt_iff₀ hδ] at hq
+      rw [div_lt_iff₀ (Nat.cast_add_one_pos q)]
+      nlinarith
+    exact thickening_mono hqδ.le K (hx q)
+  -- Step 4: the Borel sets `W_q ∖ K` decrease to `∅` and `μ(W_0 ∖ K) < ∞`, so
+  -- `μ(W_q ∖ K) → 0` by continuity from above.
+  have hdiff : Tendsto (fun q : ℕ => μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K)) atTop (𝓝 0) := by
+    have h := tendsto_measure_iInter_atTop (μ := μ)
+      (s := fun q : ℕ => thickening (r₀ / ((q : ℝ) + 1)) K \ K)
+      (fun q => (isOpen_thickening.measurableSet.diff hK.isClosed.measurableSet).nullMeasurableSet)
+      (fun p q hpq => sdiff_subset_sdiff_left (hanti hpq))
+      ⟨0, ((measure_mono sdiff_subset).trans_lt (hfin _ (hcc 0))).ne⟩
+    have hempty : ⋂ q : ℕ, (thickening (r₀ / ((q : ℝ) + 1)) K \ K) = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => ?_
+      rw [mem_iInter] at hx
+      exact (hx 0).2 (hInter x fun q => (hx q).1)
+    rw [hempty, measure_empty] at h
+    exact h
+  -- Step 5: `μ(K) ≤ μ(W_q) ≤ C μ(W_q ∖ K) → C · 0 = 0`.
+  have hlim : Tendsto (fun q : ℕ => (C : ℝ≥0∞) * μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K))
+      atTop (𝓝 0) := by
+    simpa using ENNReal.Tendsto.const_mul hdiff (Or.inr ENNReal.coe_ne_top)
+  refine le_antisymm (ge_of_tendsto' hlim fun q => ?_) bot_le
+  exact (measure_mono (self_subset_thickening (hr_pos q) K)).trans (hle _ (hcc q))
 /-- **Separability step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `closure W` is compact, a
 countable family `E` of test forms supported in `W` is dense among all test forms supported in
 `W`, uniformly in the Euclidean coefficient norm.  The coefficient vector
@@ -3764,34 +3620,6 @@ theorem Submission.cmb_exists_countable_dense_testForms : ∀ (P n : ℕ) (U W :
             - c ((η : DifferentialForm (Eucl P) n) x)‖ := by rw [hc_sub]
       _ ≤ N * (3 / ((m : ℝ) + 1)) := mul_le_mul_of_nonneg_left (hη x) hN
       _ ≤ ε := hm
-    rw [← hK.isClosed.closure_eq, closure_eq_iInter_thickening, mem_iInter₂]
-    intro δ hδ
-    obtain ⟨q, hq⟩ := exists_nat_gt (r₀ / δ)
-    have hqδ : r₀ / ((q : ℝ) + 1) < δ := by
-      rw [div_lt_iff₀ hδ] at hq
-      rw [div_lt_iff₀ (Nat.cast_add_one_pos q)]
-      nlinarith
-    exact thickening_mono hqδ.le K (hx q)
-  -- Step 4: the Borel sets `W_q ∖ K` decrease to `∅` and `μ(W_0 ∖ K) < ∞`, so
-  -- `μ(W_q ∖ K) → 0` by continuity from above.
-  have hdiff : Tendsto (fun q : ℕ => μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K)) atTop (𝓝 0) := by
-    have h := tendsto_measure_iInter_atTop (μ := μ)
-      (s := fun q : ℕ => thickening (r₀ / ((q : ℝ) + 1)) K \ K)
-      (fun q => (isOpen_thickening.measurableSet.diff hK.isClosed.measurableSet).nullMeasurableSet)
-      (fun p q hpq => sdiff_subset_sdiff_left (hanti hpq))
-      ⟨0, ((measure_mono sdiff_subset).trans_lt (hfin _ (hcc 0))).ne⟩
-    have hempty : ⋂ q : ℕ, (thickening (r₀ / ((q : ℝ) + 1)) K \ K) = ∅ := by
-      refine eq_empty_of_forall_notMem fun x hx => ?_
-      rw [mem_iInter] at hx
-      exact (hx 0).2 (hInter x fun q => (hx q).1)
-    rw [hempty, measure_empty] at h
-    exact h
-  -- Step 5: `μ(K) ≤ μ(W_q) ≤ C μ(W_q ∖ K) → C · 0 = 0`.
-  have hlim : Tendsto (fun q : ℕ => (C : ℝ≥0∞) * μ (thickening (r₀ / ((q : ℝ) + 1)) K \ K))
-      atTop (𝓝 0) := by
-    simpa using ENNReal.Tendsto.const_mul hdiff (Or.inr ENNReal.coe_ne_top)
-  refine le_antisymm (ge_of_tendsto' hlim fun q => ?_) bot_le
-  exact (measure_mono (self_subset_thickening (hr_pos q) K)).trans (hle _ (hcc q))
 /-- Simon Ch. 6, end of the proof of Lemma 2.36 and Remark 2.37(1), via Ch. 1, 1.15(2): if `U`
 is open, `μ(ℝ^P ∖ U) = 0` and `μ(W) < ∞` for every `W ⊂⊂ U`, then a Borel set `E` whose compact
 subsets inside `U` are all `μ`-null is itself `μ`-null. -/
