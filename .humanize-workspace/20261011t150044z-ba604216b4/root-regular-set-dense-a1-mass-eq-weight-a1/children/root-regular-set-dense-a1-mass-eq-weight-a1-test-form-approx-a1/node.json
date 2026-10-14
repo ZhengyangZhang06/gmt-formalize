@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+  "depth": 3,
+  "title": "L¹(ν) approximation of a unit-bounded measurable covector field by smooth unit-bounded test forms supported in an open set",
+  "statement": "Let P, n ∈ ℕ, let ν be a finite Borel measure on ℝ^P, let V ⊆ ℝ^P be open with ν(ℝ^P ∖ V) = 0, and let β : ℝ^P → Covector (Euclid P) n be ν-integrable with covectorEuclideanNorm (β x) ≤ 1 for ν-a.e. x. Then for every ε > 0 there is a smooth compactly supported n-form ω on ℝ^P (IsTestForm ω) with tsupport ω ⊆ V, covectorEuclideanNorm (ω x) ≤ 1 for every x, and ∫⁻ ofReal(covectorEuclideanNorm (ω x − β x)) dν(x) < ofReal ε.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ ε : ℝ, 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε",
+  "lean_name": "rsd_mw_exists_testForm_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-a1"
+}
