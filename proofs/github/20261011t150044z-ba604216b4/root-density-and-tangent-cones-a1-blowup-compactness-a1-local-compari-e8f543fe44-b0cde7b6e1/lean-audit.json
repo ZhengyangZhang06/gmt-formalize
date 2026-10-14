@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ebf46535fdf2afcd93188564ec224b432828e28b9492fe90a2e14b82459ba013",
+  "git_delta": {
+    "base_commit": "da3bf349f96c5a73c4a14a6293eedc480aeb7ad2",
+    "candidate_commit": "d38bd9ec895367c6d23ebb0cabcca4cee192ba2e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9413aa89b05db07eaf9b606652edbd9c89d3ce32d911d7709e61db4a7cdb5eb5",
+    "source_sha256": "dbf8bbacbe391b73ca8b57e27e051de97e9e4647807048762f1654444f77ac0d",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_localize",
+      "statement": "∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (W : Set (Euclid P)), Bornology.IsBounded W → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ V : Set (Euclid P), IsOpen V → Bornology.IsBounded V → ⨆ j, ((Ts j).massOn V + (Ts j).boundary.massOn V) < ∞) → ∃ (K : Set (Euclid P)) (φ : ℕ → ℕ) (Λ : NNReal) (Ts' : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K ∧ StrictMono φ ∧ (∀ j, IsIntegerMultiplicity (Ts' j)) ∧ (∀ j, (Ts' j).support ⊆ K) ∧ (∀ j, (Ts' j).mass ≤ Λ ∧ (Ts' j).boundary.mass ≤ Λ) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → Ts' j ω = Ts (φ j) ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
