@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3ffa3c7021bdb706c882b0a63aece9a424fff4c8b4e062858c627e7814f8326",
+  "git_delta": {
+    "base_commit": "c540e4e4559ce92c1b5d973016193fc70d4a6c79",
+    "candidate_commit": "d199e84060261d823de185952f4ced2a91e308ec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbrz_imrep_zero_local_point_sum",
+    "diff_sha256": "848b1ed6505523d970551362dee127f12d29c789d1bb39b947e8eb8cddb251bc",
+    "source_sha256": "121c58eb2a6441577be92d7b739aae4dd10f3abc0b3b2dd7f40ae0ab3d90454c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbrz_imrep_zero_local_point_sum",
+      "statement": "∀ (P : ℕ) (U B : Set (Euclid P)) (R : IMRep U 0) (S : GeometricCurrentOn U 0), R.Represents S → CompactlyContained B U → ∃ (N : ℕ) (w : ℕ → ℤ) (x : ℕ → Euclid P), (∀ l < N, x l ∈ B) ∧ (∀ l < N, w l ≠ 0) ∧ (∑ l ∈ Finset.range N, ((w l).natAbs : ℝ≥0∞)) ≤ R.measure B ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ B → S ω = ∑ l ∈ Finset.range N, (w l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (x l) (fun i => i.elim0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
