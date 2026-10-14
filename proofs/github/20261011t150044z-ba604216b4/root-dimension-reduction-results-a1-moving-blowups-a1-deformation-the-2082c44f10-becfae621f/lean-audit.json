@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4c6424725e69c4879fea2f104f6770c8e2c9fa9f81048cc3ab8d503a09aaeda3",
+  "git_delta": {
+    "base_commit": "2d70da32cc89680afffdad1ddb60556509362e31",
+    "candidate_commit": "3bc70c123c99bcec71616ef1823f33c79404c5b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_piece_measure",
+    "diff_sha256": "6a3f2b47112387e03575af1f5f1e2e1c16c213b6d0f082a584f2819704d0a912",
+    "source_sha256": "04e845dc1db003e3f7342f0b1b41de0dfa4ba61fd85a3e4d2247ebedb5578052",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_piece_measure",
+      "statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal), LipschitzWith L G → MeasurableSet A → InjOn G A → (∀ a ∈ A, DifferentiableAt ℝ G a) → μHE[n] (G '' A) ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict (G '' A))) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ (G '' A)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
