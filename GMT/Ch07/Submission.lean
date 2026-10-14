@@ -1594,6 +1594,67 @@ theorem Submission.cbr_ccisp_ae_massOn_lt_top : (∀ (P : ℕ) (μs : ℕ → Me
   have htm : t ∈ Ioo (-(m : ℝ)) m := ⟨by linarith [neg_abs_le t], by linarith [le_abs_self t]⟩
   exact ((Z t).massOn_mono (hr.trans (ball_subset_ball hk.le))).trans_lt (ht k m htm)
 
+/-- **Integer slice property** (Simon Ch. 6, 4.5(2)–(3); step V4(i) of the closure theorem
+7.2.4).  Assume (IMC), (SL), (MM), (RU) and the boundary rectifiability (BR) in degree `d + 1`.
+If `X ∈ 𝒟_{d+1}(ℝᴾ)` and `∂X` are integer multiplicity, `(μ, ξ)`, `(μ', ξ')` are admissible
+representations of `X` and `∂X` and `f` is `L`-Lipschitz, then for `L¹`-a.e. `t` every pair
+`A = X⌞{f < t}`, `B = (∂X)⌞{f < t}` has `∂A − B` integer multiplicity.  (SL) gives slices
+`A_t`, `B_t` with `M_W(∂A_t − B_t) ≤ L·liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})`, so
+`M_W(∂A_t − B_t) < ∞` for bounded `W` and a.e. `t` (`cbr_ccisp_ae_massOn_lt_top`).  `A_t` and
+`B_t` are integer multiplicity (`cbr_ccisp_restrict_isIntegerMultiplicity`);
+`M_W(B_t) ≤ μ'(closure W) < ∞` (`cmc_fcl_massOn_le_measure_inter`), so
+`M_W(∂A_t) ≤ M_W(∂A_t − B_t) + M_W(B_t) < ∞` for `W ⊂⊂ ℝᴾ` (`cbr_cc_current_algebra` (b)), and
+(BR) makes `∂A_t` integer multiplicity; (IMC)(c) then gives `∂A_t − B_t`.  Finally `A = A_t`,
+`B = B_t`, as currents are determined by their values. -/
+theorem Submission.cbr_cc_slice_property_of_im : ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → (∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → ∀ (P : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsIntegerMultiplicity X → IsIntegerMultiplicity X.boundary → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, X.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) := by
+  intro hIMC hSL hMM hRU d hBR P X hX hXb μ μ' ξ ξ' hμ hμ' hξm hξ'm hξb hξ'b hXrep hXbrep f L hf
+  obtain ⟨-, hIMCb, hIMCc, hIMCd⟩ := hIMC
+  -- Step 1: (SL) for `X` in `U = ℝᴾ` gives slices `A_t`, `B_t` with
+  -- `M_W(∂A_t − B_t) ≤ L·liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})` for open `W`
+  obtain ⟨A, B, hA, hB, -, hZ, -⟩ := hSL P d univ X μ μ' ξ ξ' f L isOpen_univ
+    (fun K hK _ => hμ K hK) (fun K hK _ => hμ' K hK) hξm hξ'm hξb hξ'b hXrep hXbrep hf
+  -- Step 2: for a.e. `t`, `M_W(∂A_t − B_t) < ∞` for every bounded `W`
+  have hfin := Submission.cbr_ccisp_ae_massOn_lt_top hMM P d univ
+    (fun t => (A t).boundary - B t) μ f L hf.continuous hμ hZ
+  filter_upwards [hfin] with t ht A' B' hA' hB'
+  have hE : MeasurableSet {x | f x < t} :=
+    measurableSet_lt hf.continuous.measurable measurable_const
+  -- Steps 3–5: `A_t = X⌞{f < t}` and `B_t = (∂X)⌞{f < t}` are integer multiplicity
+  have hAt : IsIntegerMultiplicity (A t) :=
+    Submission.cbr_ccisp_restrict_isIntegerMultiplicity hIMCb hIMCd hRU P (d + 1) univ X (A t)
+      μ ξ {x | f x < t} isOpen_univ hX (fun K hK _ => hμ K hK) hξm hξb hXrep hE (hA t)
+  have hBt : IsIntegerMultiplicity (B t) :=
+    Submission.cbr_ccisp_restrict_isIntegerMultiplicity hIMCb hIMCd hRU P d univ X.boundary
+      (B t) μ' ξ' {x | f x < t} isOpen_univ hXb (fun K hK _ => hμ' K hK) hξ'm hξ'b hXbrep hE
+      (hB t)
+  -- Step 6: `M_W(∂A_t) ≤ M_W(∂A_t − B_t) + M_W(B_t) < ∞` for `W ⊂⊂ ℝᴾ`, so `∂A_t` is integer
+  -- multiplicity by (BR)
+  have hdAt : IsIntegerMultiplicity (A t).boundary := by
+    refine hBR P univ (A t) isOpen_univ hAt fun W _ hW => ?_
+    obtain ⟨hWc, -⟩ := hW
+    have hsplit := Submission.cbr_cc_current_algebra.2.1 P d univ (A t).boundary
+      ((A t).boundary - B t) (B t) 1 1 (fun η => by
+        rw [Int.cast_one, one_mul, one_mul]
+        exact (sub_add_cancel ((A t).boundary η) (B t η)).symm) W
+    -- `M_W(∂A_t − B_t) < ∞` since `W` is bounded (step 2)
+    have hZW : ((A t).boundary - B t).massOn W < ∞ := ht W (hWc.isBounded.subset subset_closure)
+    -- `M_W(B_t) ≤ μ'({f < t} ∩ W) ≤ μ'(closure W) < ∞`
+    have hBW : (B t).massOn W < ∞ :=
+      (Submission.cmc_fcl_massOn_le_measure_inter P d univ (B t) μ' ξ' {x | f x < t} W hξ'b
+        (hB t)).trans_lt
+        ((measure_mono (inter_subset_right.trans subset_closure)).trans_lt (hμ' _ hWc))
+    refine hsplit.trans_lt ?_
+    simp only [Int.natAbs_one, Nat.cast_one, one_mul]
+    exact ENNReal.add_lt_top.2 ⟨hZW, hBW⟩
+  -- Step 7: `∂A_t − B_t` is integer multiplicity by (IMC)(c)
+  have hZt : IsIntegerMultiplicity ((A t).boundary - B t) :=
+    hIMCc P d univ _ _ isOpen_univ hdAt hBt
+  -- Step 8: the slice formulas determine `A = A_t` and `B = B_t`
+  have hAA : A' = A t := GeometricCurrentOn.ext fun ω => by rw [hA' ω, hA t ω]
+  have hBB : B' = B t := GeometricCurrentOn.ext fun η => by rw [hB' η, hB t η]
+  rw [hAA, hBB]
+  exact hZt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
