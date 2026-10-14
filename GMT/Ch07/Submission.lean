@@ -889,6 +889,45 @@ theorem Submission.idtp_fons_cc_psf_vague_closed : ∀ (P n : ℕ) (μ₀ : Meas
     _ = ‖x + lam • v‖ + ‖xs (ψ i) - x‖ + |lams (ψ i) - lam| * ‖v‖ := by
           rw [norm_smul, Real.norm_eq_abs]
     _ < 2 := by linarith
+/-- **A measure of finite positive mass is not `f Hⁿ` with `f` dilation-invariant** (`n ≥ 1`;
+non-homogeneity of the positive-scale members `η_{x,λ#}T`, `λ > 0`, of the class `𝒯` in the proof
+of Simon 7.3.3(1), chapter-07.txt lines 444–472).  If `f(tw) = f(w)` for all `t > 0`, then
+`ρ = f Hⁿ` has `ρ(B_t(0)) = tⁿ ρ(B_1(0))` for `t > 0`, by
+`Submission.dimred_cs_mi_withDensity_dilate` with `A = B_1(0)` and `tB_1(0) = B_t(0)`.  If
+`ρ(B_1(0)) = 0`, the null balls `B_{m+1}(0)` cover `ℝᴾ` and `ρ(ℝᴾ) = 0`; otherwise
+`t ρ(B_1(0)) ≤ tⁿ ρ(B_1(0)) ≤ ρ(ℝᴾ)` for `t ≥ 1`, with `t ρ(B_1(0)) → ∞`, so `ρ(ℝᴾ) = ∞`.  Either
+way `ρ ≠ ν` when `0 < ν(ℝᴾ) < ∞`. -/
+theorem Submission.idtp_fons_cc_psf_nonhomogeneous : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ≥0∞), 1 ≤ n → ν univ ≠ 0 → ν univ ≠ ∞ → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → ν ≠ (μHE[n] : Measure (Euclid P)).withDensity f := by
+  intro P n ν f hn h0 htop hf hν
+  -- Step 1: suppose `ν = ρ := f Hⁿ`; then `ρ(ℝᴾ) ≠ 0` and `ρ(ℝᴾ) ≠ ∞`.
+  subst hν
+  set ρ := (μHE[n] : Measure (Euclid P)).withDensity f
+  -- Step 2: `ρ(B_t(0)) = ofReal(tⁿ) ρ(B_1(0))` for `t > 0`, by the dilation homogeneity with
+  -- `A = B_1(0)` and `(w ↦ tw)(B_1(0)) = tB_1(0) = B_t(0)`.
+  have hball : ∀ t : ℝ, 0 < t → ρ (ball 0 t) = ENNReal.ofReal (t ^ n) * ρ (ball 0 1) := by
+    intro t ht
+    have h := Submission.dimred_cs_mi_withDensity_dilate P n f t ht (hf t ht) (ball 0 1)
+      measurableSet_ball
+    rwa [Set.image_smul, smul_unitBall_of_pos ht] at h
+  by_cases h1 : ρ (ball 0 1) = 0
+  -- Step 3: if `ρ(B_1(0)) = 0`, every ball `B_{m+1}(0)` is null, and these balls cover `ℝᴾ`.
+  · refine h0 ?_
+    rw [← iUnion_ball_nat_succ (0 : Euclid P)]
+    refine measure_iUnion_null fun m => ?_
+    rw [hball (m + 1) (by positivity), h1, mul_zero]
+  -- Step 4: otherwise `ofReal(t) ρ(B_1(0)) → ∞ · ρ(B_1(0)) = ∞`, while for `t ≥ 1` (and `n ≥ 1`)
+  -- `ofReal(t) ρ(B_1(0)) ≤ ofReal(tⁿ) ρ(B_1(0)) = ρ(B_t(0)) ≤ ρ(ℝᴾ)`; so `ρ(ℝᴾ) = ∞`.
+  · have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal t * ρ (ball 0 1)) atTop (𝓝 ∞) := by
+      have h := ENNReal.Tendsto.mul_const ENNReal.tendsto_ofReal_atTop
+        (Or.inl ENNReal.top_ne_zero) (b := ρ (ball 0 1))
+      rwa [ENNReal.top_mul h1] at h
+    refine htop (top_le_iff.mp (le_of_tendsto hlim ?_))
+    filter_upwards [eventually_ge_atTop 1] with t ht
+    calc ENNReal.ofReal t * ρ (ball 0 1) ≤ ENNReal.ofReal (t ^ n) * ρ (ball 0 1) := by
+          gcongr
+          simpa only [pow_one] using pow_le_pow_right₀ ht hn
+      _ = ρ (ball 0 t) := (hball t (by linarith)).symm
+      _ ≤ ρ univ := measure_mono (subset_univ _)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
