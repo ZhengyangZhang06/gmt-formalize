@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a5eeda12727961ca7a716df681df87706a0789551b311d6de6ecd93b79d265ae",
+  "git_delta": {
+    "base_commit": "a2e7f070bafab6f67092f55a6cda78499c32bc1a",
+    "candidate_commit": "4464719f47bf1f838625e786189e699f167db6ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sp_cp_support_subset_of_carrier_subset",
+    "diff_sha256": "7b09ad7f85fac38d6a0a21d17a5f14081c30b7fd7ab3592800f42538077ba8dd",
+    "source_sha256": "c02dc9e7439294faa5a8010a20f430f7ca89d0e072c6350a36db28b4f4ff3651",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset",
+      "statement": "∀ (P n : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents Y → IsClosed F → R.carrier ⊆ F → Y.support ⊆ F",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
