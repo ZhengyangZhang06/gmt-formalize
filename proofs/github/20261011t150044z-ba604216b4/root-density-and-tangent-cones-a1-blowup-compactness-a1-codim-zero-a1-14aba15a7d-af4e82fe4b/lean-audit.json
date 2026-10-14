@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c5e7e660c4f4c03decfd1c5b04e156137ae85823489aab2e756ba620b508e4db",
+  "git_delta": {
+    "base_commit": "6461b3fd7774a30a0704f569d5dfa9f451b412a8",
+    "candidate_commit": "41636c632ee7e7ad49c1e294e6f6cd3db79c4580",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_blowUp_eval_integral_dilation",
+    "diff_sha256": "81de76ed101fc537d80e9d6122596c69a86ccc9140cd28ec21720f6c64def5d0",
+    "source_sha256": "f2aca466a26a56669c1fd38d078c456ad2bc4fc3b2b4d7b24b3c1a58c2353800",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_blowUp_eval_integral_dilation",
+      "statement": "∀ (P : ℕ) (F : Euclid P → ℝ) (x : Euclid P) (lam : ℝ), 0 < lam → ∫ y, F (dilation x lam y) = lam ^ P * ∫ z, F z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
