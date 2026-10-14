@@ -469,6 +469,17 @@ theorem Submission.dmcbr_sl_sb_massOn_eq_of_apply_eq_neg : ∀ (P n : ℕ) (U : 
           rw [hS ω]; exact congrArg ENNReal.ofReal (map_neg S₂.toCurrent ω).symm
       _ ≤ S₂.massOn W := S₂.le_massOn hadm
   exact le_antisymm (key T₁ T₂ h) (key T₂ T₁ fun ω => by rw [h ω, neg_neg])
+/-- Superadditivity of `liminf` in `[0, ∞]`: `liminf_F u + liminf_F v ≤ liminf_F (u + v)` for every
+filter `F`, with no finiteness or boundedness hypothesis.  In the complete lattice `ℝ≥0∞`,
+`liminf_F w = sup_{s ∈ F} inf_{i ∈ s} w(i)`; for `s, t ∈ F`,
+`inf_s u + inf_t v ≤ inf_{s ∩ t} (u + v)` and `s ∩ t ∈ F`.  Both index families are nonempty
+(`univ ∈ F`), so `ENNReal.biSup_add_biSup_le'` turns these pairwise bounds into the claim. -/
+theorem Submission.dmcbr_sl_sb_ennreal_liminf_add_le : ∀ (ι : Type) (F : Filter ι) (u v : ι → ℝ≥0∞), liminf u F + liminf v F ≤ liminf (fun i => u i + v i) F := by
+  intro ι F u v
+  simp only [liminf_eq_iSup_iInf]
+  refine ENNReal.biSup_add_biSup_le' ⟨univ, univ_mem⟩ ⟨univ, univ_mem⟩ fun s hs t ht => ?_
+  exact le_iSup₂_of_le (s ∩ t) (inter_mem hs ht) <|
+    le_iInf₂ fun i hi => add_le_add (iInf₂_le i hi.1) (iInf₂_le i hi.2)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
