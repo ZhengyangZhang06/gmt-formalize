@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8 (boundary part) of the parent proof, “Fubini and the fundamental theorem of calculus on [0,1]ⁿ give [[F]](dγ) = Σ_j (−1)^{j−1}([[G_j^1]](γ) − [[G_j^0]](γ))”. Simon asserts this integrality without proof after (38) (chapter-06.txt lines 1922–1928); (37) is the corresponding mass bound. Here the indices j are 0-based, so the sign is (−1)^j.
+
+Notation. n := m + 1; Q₁^k := {y ∈ Euclid k : 0 < y_i < 1}. For a pair p = (ι, b) with ι : Fin k → Fin P: Φ_p(y) := toLp(b) + Σ_j y_j e_{ι(j)}, E_p := (e_{ι(j)})_j, and [[p]](γ) := ∫_{Q₁^k} γ(Φ_p y)(E_p) dy. For y' ∈ Euclid m, j ∈ Fin n and a real c, insertNth j c y' ∈ Euclid n is the point with j-th coordinate c and remaining coordinates y' in order.
+
+1. Faces of a face. For p = (ι, b) ∈ s, j ∈ Fin n and ε ∈ {0, 1} put q(p, j, ε) := (ι ∘ succAbove j, b + ε·𝟙_{ι(j)}), where 𝟙_{ι(j)} ∈ ℤ^P is the indicator of the coordinate ι(j). ι ∘ succAbove j : Fin m → Fin P is strictly increasing. Coordinatewise one checks Φ_{q(p,j,ε)}(y') = Φ_p(insertNth j ε y'): at ι(j) both sides equal b_{ι(j)} + ε; at ι(succAbove j l) both equal b + y'_l; elsewhere both equal b_i. Also E_{q(p,j,ε)} = E_p ∘ succAbove j.
+2. dγ as a divergence. Fix p ∈ s and a test m-form γ. Define G : Euclid n → Euclid n by G(y)_i := (−1)^i γ(Φ_p y)(E_p ∘ succAbove i). G is C^∞. By SimonGMT exteriorDerivative_apply (removeNth i v = v ∘ succAbove i) and the chain rule (DΦ_p(y)e_i = e_{ι(i)}): dγ(Φ_p y)(E_p) = Σ_i (−1)^i D[γ(·)(E_p∘succAbove i)](Φ_p y)(e_{ι(i)}) = Σ_i ∂_i G_i(y).
+3. Divergence theorem on the unit cube. Let Ĝ(z) := ofLp(G(toLp z)) on Fin n → ℝ. Apply Mathlib's integral_divergence_of_hasFDerivAt_off_countable' (with Mathlib's n := m) to f_i := (Ĝ ·)_i, a := 0, b := 1 and the empty exceptional set. Continuity, differentiability and integrability of the divergence hold because Ĝ is C^∞ and Icc 0 1 is compact. It gives
+ ∫_{Icc 0 1} Σ_i ∂_i Ĝ_i = Σ_i (∫_{Icc 0 1} Ĝ_i(insertNth i 1 z') dz' − ∫_{Icc 0 1} Ĝ_i(insertNth i 0 z') dz').
+ Transport these integrals to Euclid n and Euclid m with the measure-preserving maps ofLp (PiLp.volume_preserving_ofLp). The closed box Icc 0 1 and the open box Set.pi univ (Ioo 0 1) differ by a null set. So
+ ∫_{Q₁^n} Σ_i ∂_i G_i(y) dy = Σ_i (∫_{Q₁^m} G_i(insertNth i 1 y') dy' − ∫_{Q₁^m} G_i(insertNth i 0 y') dy').
+ (Equivalently: for each i, Fubini in the other m coordinates and the fundamental theorem of calculus in the i-th coordinate.)
+4. Cubical Stokes. By steps 1–3, G_i(insertNth i ε y') = (−1)^i γ(Φ_{q(p,i,ε)} y')(E_{q(p,i,ε)}). Hence
+ ∫_{Q₁^n} dγ(Φ_p y)(E_p) dy = Σ_{i∈Fin n} (−1)^i ([[q(p,i,1)]](γ) − [[q(p,i,0)]](γ)).
+ For m = 0, Q₁^0 = Euclid 0 is a point of volume 1 and [[q]](γ) = γ(Φ_q 0)(()), the evaluation at the vertex.
+5. Boundary of T. ∂T(γ) = T(dγ) = Σ_{p∈s} β_p Σ_{i∈Fin n} Σ_{ε∈{0,1}} (−1)^i (2ε − 1) [[q(p,i,ε)]](γ).
+6. Regrouping. Let A := s × Fin n × {0,1} (a finite set), κ(p, i, ε) := q(p, i, ε) and c(p, i, ε) := β_p (−1)^i (2ε − 1) ∈ ℤ. Put s' := κ(A) (finite) and β'_q := Σ_{a∈A, κ(a) = q} c(a) ∈ ℤ for q ∈ s' (β'_q := 0 otherwise). Every q ∈ s' has strictly increasing first component (step 1). Grouping the finite sum of step 5 by the value of κ (Finset.sum_fiberwise / sum_image') gives Σ_{a∈A} c(a)[[κ a]](γ) = Σ_{q∈s'} β'_q [[q]](γ). Therefore ∂T(γ) = Σ_{q∈s'} β'_q ∫_{Q₁^m} γ(Φ_q y)(E_q) dy for every test m-form γ. ∎
+
+## Key steps
+
+1. Faces of a face: q(p, j, ε) = (ι∘succAbove j, b + ε·𝟙_{ι(j)}). Then Φ_{q(p,j,ε)} = Φ_p ∘ insertNth j ε and e_{q(p,j,ε)} = e_ι ∘ succAbove j.
+2. dγ(Φ_p y)(e_ι) = div G(y) with G_i(y) = (−1)^i γ(Φ_p y)(e_ι∘succAbove i).
+3. Divergence theorem on [0,1]ⁿ (integral_divergence_of_hasFDerivAt_off_countable', transported by ofLp): [[p]](dγ) = Σ_j (−1)^j([[q(p,j,1)]](γ) − [[q(p,j,0)]](γ)).
+4. Regroup the finite family (p, j, ε) by the resulting face to get integer coefficients β'.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'cmcdtfr_' project mathlib/Mathlib -g '*.lean' (no match); python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name fields for cmcdtfr, polyhedral, cubical, stokes, face_ (no collision among 902 nodes; only cmcdt_face_replacement itself)`
+- `rg -n -i 'polyhedral|cubical|lattice|IsLatticeChain' project/GMT -g '*.lean'`
+- `rg -n 'theorem integral_divergence_of_hasFDerivAt_off_countable' mathlib/Mathlib`
+- `rg -n 'theorem (EuclideanSpace.euclideanHausdorffMeasure_eq_volume|Isometry.map_euclideanHausdorffMeasure|Isometry.euclideanHausdorffMeasure_image|MeasureTheory.Measure.euclideanHausdorffMeasure_zero)' mathlib/Mathlib`
+- `rg -n 'theorem (hausdorffMeasure_of_dimH_lt|dimH_univ_eq_finrank|dimH_image_le)' mathlib/Mathlib`
+- `rg -n 'theorem (AlternatingMap.eq_smul_basis_det|OrthonormalBasis.det_to_matrix_orthonormalBasis_real)' mathlib/Mathlib`
+- `grep -rn 'exists_contDiff_support_eq_eq_one_iff|IsCompact.exists_cthickening_subset_open|PiLp.volume_preserving_ofLp|volume_euclideanSpace_eq_dirac|volume_pi_Ioo|Integrable.bdd_mul|integral_biUnion_finset' mathlib/Mathlib (all found)`
+- `grep in lake-packages-25730c7c/simongmt Chapter03/Rectifiable.lean and Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean for HasApproximateTangentSpaceAt, blowUpMap, CountablyRectifiable, support_euclideanHausdorffMeasure_restrict_submodule, regular_euclideanHausdorffMeasure_restrict_submodule, exteriorDerivative_apply, tsupport_exteriorDerivative_subset, GeometricCurrentOn.support, zeroRegion, massAdmissibleOn, covectorEuclideanNorm, le_massOn, massOn_mono (all found)`
+- `sed -n 560,700p and 1700,1935p book/chapter-06.txt (Simon 2.34–2.37 and 5.1 displays (26)–(38))`
+- `lake env lean /tmp/frdecomp/lean/Types.lean (nine child types, wrapped as verifier/gmt-compare.py child_modules does after the replayed contract scope; no errors)`
+- `lake env lean /tmp/frdecomp/lean/Assembly.lean (FRAsm.check: frozen CB type + nine child types imply the selected frozen type; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/frdecomp/lean/InstCheck.lean and /tmp/frdecomp/lean/InstCheck2.lean (C^∞ not ω, pointwise Sub by rfl, trace coercion, coordinates of the face map, vol((0,1)^k) = 1, μHE[0]{x} = 1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1/decomposition-v2.json`
+- `/tmp/frdecomp/lean/Types.lean`
+- `/tmp/frdecomp/lean/Assembly.lean`
+- `/tmp/frdecomp/lean/InstCheck.lean`
+- `/tmp/frdecomp/lean/InstCheck2.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract. The only lattice-chain material is in the separate Ch06 problem (project/GMT/Ch06/Contract.lean: LatticeFaceIndex, latticeFace, latticeFaceAction, IsLatticeChain; main_theorem := by sorry). It lives in another module with another type (Eucl) and has no proofs, so it is not reusable. Its face convention ((Fin N → ℤ) × increasing multi-index, orientation fun j => EuclideanSpace.single (F.2 j) 1) matches the one adopted here. Mathlib has no polyhedral-chain, cubical-Stokes or deformation results (no match). It does provide every tool cited by the child proofs: the box divergence theorem, isometry invariance of μHE with μHE = volume on Euclid d, Hausdorff dimension bounds, eq_smul_basis_det, the ±1 determinant between orthonormal bases, the smooth Urysohn lemma, the measure-preserving ofLp, Integrable.bdd_mul and integral_biUnion_finset. SimonGMT supplies approximate tangent spaces, the support of Hⁿ on planes, exteriorDerivative_apply, support and mass. No declaration or DAG node uses the prefix cmcdtfr_. All nine child types elaborate in the comparator's replayed scope. The Lean assembly from the frozen CB type and the nine child types to the selected frozen type compiles with only standard axioms.
