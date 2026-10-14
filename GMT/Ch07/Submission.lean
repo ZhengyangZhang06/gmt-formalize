@@ -7839,6 +7839,45 @@ theorem Submission.dimred_cs_sp_imrep_linear_pushforward : ∀ (P m : ℕ) (R : 
   rw [hR' ω, ← hR₁ ω, hform ω]
   simp only [IMRep.action, affinePullbackForm, zero_add, ContinuousLinearMap.fderiv]
 
+/-- **Simon Ch. 6, 2.23–2.24 and 3.9, for a linear map `L`**: if `X = τ(M, θ, ξ)` in `ℝᴾ` has
+compact support `K`, then the push-forward `L_#X` is an integer multiplicity current `Y` with
+`spt Y ⊆ L(K)`, `∂Y = 0` if `∂X = 0`, and `Y(ω) = τ(M, θ, ξ)(L^#ω)`.  Since `K = spt μ_R`, the
+measure `μ_R` is carried by `K`; push `(M, θ, ξ)` forward to a triple `R'` carried by `L(K)` and
+let `Y = τ(R')`.  `L(K)` is compact, hence closed, so `spt Y ⊆ L(K)`; and if `∂X = 0` then
+`∂Y(φ) = τ(M, θ, ξ)(L^#dφ) = τ(M, θ, ξ)(d(L^#φ)) = 0`. -/
+theorem Submission.dimred_cs_sp_linear_pushforward : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P), 0 < m → R.Represents X → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity Y ∧ Y.support ⊆ L '' X.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m)) := by
+  intro P m X R L hm hR hK
+  -- Step 1: `spt X = spt μ_R`, so `μ_R(ℝᴾ \ spt X) = 0`
+  have hnull : R.measure X.supportᶜ = 0 := by
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P m univ X R isOpen_univ hR).2,
+      univ_inter]
+    exact Measure.measure_compl_support
+  -- Step 2: push `(M, θ, ξ)` forward to a triple `R'` carried by `L(spt X)`
+  obtain ⟨R', hR'sub, hR'act⟩ :=
+    Submission.dimred_cs_sp_imrep_linear_pushforward P m R L X.support hm hK hnull
+  -- Step 3: `Y = τ(R')`, so `Y(ω) = τ(R')(ω) = τ(M, θ, ξ)(L^#ω)`
+  obtain ⟨Y, hY⟩ := Submission.dtc_imrep_current P m univ R'
+  have hact : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m)) :=
+    fun ω => (hY ω).trans (hR'act ω)
+  refine ⟨Y, ⟨R', hY⟩, ?_, ?_, hact⟩
+  · -- Step 4: `L(spt X)` is compact, hence closed, and contains the carrier of `R'`
+    exact Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset P m Y R' (L '' X.support)
+      hY (hK.image L.continuous).isClosed hR'sub
+  · -- Step 5: for `m = k + 1`, `∂Y(φ) = τ(M, θ, ξ)(L^#dφ) = τ(M, θ, ξ)(d(L^#φ)) = 0`
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hm.ne'
+    intro hX
+    change X.boundary = 0 at hX
+    change Y.boundary = 0
+    ext φ
+    have hφ : IsSmoothForm (φ : DifferentialForm (Euclid P) k) := φ.property.1.1
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hact]
+    change R.action (affinePullbackForm L 0
+      (exteriorDerivative (φ : DifferentialForm (Euclid P) k))) = 0
+    rw [← exteriorDerivative_affinePullbackForm L 0 hφ]
+    exact Submission.dimred_cs_sp_cp_action_extDeriv_eq_zero P k X R X.support _ hR hK hnull hX
+      (affinePullbackForm_isSmoothForm L 0 hφ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
