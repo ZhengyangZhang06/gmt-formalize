@@ -2786,6 +2786,66 @@ Simon Ch. 1, Theorem 3.16 = Mathlib's `Besicovitch.ae_tendsto_measure_inter_div`
 open, `A ⊆ B ⊆ U` Borel, and `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e.
 `x` and every `ε > 0`, `Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`; the
 exceptional set does not depend on `ε`.
+/-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
+flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
+`M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
+(same support, same coefficient norm), and `(A − B)(ω) = A(ω) + B(−ω)`, so
+`ofReal ((A − B)(ω)) ≤ ofReal (A(ω)) + ofReal (B(−ω)) ≤ M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: it suffices to bound `ofReal ((A − B)(ω))` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible: same support, same coefficient norm
+  have hneg : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+/-- **Diagonal extraction** (Simon Ch. 6, proof of 7.2, chapter-06.txt lines 2101–2105:
+"apply (1) with `ε = 1, 1/2, 1/4` etc. to extract a subsequence `{T_{j_r}}` …
+`d(T_{j_{r+1}}, T_{j_r}) < 2^{-r}`", with `2^{-r}`-closeness replaced by an arbitrary relation
+`C r`).  If, for each `r`, every infinite `I ⊆ ℕ` contains an infinite `J ⊆ I` all of whose pairs
+are `C r`-related, then some strictly increasing `φ` has `C r (φ (r + 1)) (φ r)` for every `r`.
+Refining `I₀ = ℕ` gives nested infinite sets `I_{r+1} ⊆ I_r` with `I_{r+1}` pairwise
+`C r`-related; an increasing choice `φ(r) ∈ I_{r+1}` puts both `φ(r)` and `φ(r + 1)` in
+`I_{r+1}`. -/
+theorem Submission.cmc_fc_cs_diagonal_subseq : ∀ (C : ℕ → ℕ → ℕ → Prop), (∀ (r : ℕ) (I : Set ℕ), I.Infinite → ∃ J ⊆ I, J.Infinite ∧ ∀ j ∈ J, ∀ l ∈ J, C r j l) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ r, C r (φ (r + 1)) (φ r) := by
+  intro C hC
+  -- Step 1: refinements `F(r, I) ⊆ I`, infinite, with all pairs in relation `C r`
+  choose F hFsub hFinf hFC using hC
+  -- Step 2: nested infinite index sets `I₀ = ℕ`, `I_{r+1} = F(r, I_r)`
+  let I : ℕ → {s : Set ℕ // s.Infinite} := fun r =>
+    Nat.rec ⟨univ, infinite_univ⟩ (fun r s => ⟨F r s.1 s.2, hFinf r s.1 s.2⟩) r
+  have hsub : ∀ r, (I (r + 1)).1 ⊆ (I r).1 := fun r => hFsub r (I r).1 (I r).2
+  have hpair : ∀ r, ∀ j ∈ (I (r + 1)).1, ∀ l ∈ (I (r + 1)).1, C r j l :=
+    fun r => hFC r (I r).1 (I r).2
+  -- Step 3: `I_{r+1}` is unbounded: `g(r, a) ∈ I_{r+1}` and `a < g(r, a)`
+  choose g hgI hglt using fun r : ℕ => (I (r + 1)).2.exists_gt
+  -- Step 4: diagonal choice `φ(0) = g(0, 0)`, `φ(r + 1) = g(r + 1, φ(r)) ∈ I_{r+2}`
+  let φ : ℕ → ℕ := fun r => Nat.rec (g 0 0) (fun r a => g (r + 1) a) r
+  have hφI : ∀ r, φ r ∈ (I (r + 1)).1 := by
+    intro r
+    cases r with
+    | zero => exact hgI 0 0
+    | succ r => exact hgI (r + 1) (φ r)
+  have hφ : StrictMono φ := strictMono_nat_of_lt_succ fun r => hglt (r + 1) (φ r)
+  -- Step 5: `φ(r + 1) ∈ I_{r+2} ⊆ I_{r+1}` and `φ(r) ∈ I_{r+1} = F(r, I_r)`
+  exact ⟨φ, hφ, fun r => hpair r _ (hsub (r + 1) (hφI (r + 1))) _ (hφI r)⟩
+/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
+`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
+`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
+`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
 
 Proof sketch:
 * Cover `U` by countably many open balls `B_r(y)` with `B̄_r(y) ⊆ U`.
@@ -16695,6 +16755,62 @@ theorem Submission.dor_lmb_fcd_dilation : ∀ P : ℕ, ∃ dil : ∀ k : ℕ, �
       ((fun x : Euclid P => lam • x) '' A)).2.2 g
     rw [Set.preimage_image_eq A (smul_right_injective (Euclid P) hlam0)] at h
     rw [h, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_mul]
+/-- **Cauchy subsequence for the flat distance** (Simon Ch. 6, proof of 7.2, chapter-06.txt
+lines 2100–2114: "apply (1) with `ε = 1, 1/2, 1/4` etc. to extract a subsequence `{T_{j_r}}` …
+`d(T_{j_{r+1}}, T_{j_r}) < 2^{-r}`", so `T_{j_{r+1}} − T_{j_r} = ∂R_r + S_r`).  If for every
+`ε > 0` some finite `𝒬` has, for each `j`, a `Q ∈ 𝒬` and integer multiplicity `R, S` with
+`X_j − Q = ∂R + S` and `M(R) + M(S) < ε`, then some subsequence has
+`X_{θ(r+1)} − X_{θ(r)} = ∂R_r + S_r` with `R_r, S_r` integer multiplicity and
+`M(R_r) + M(S_r) ≤ 2^{-r}`.  For `ε_r = 2^{-r-1}`, every infinite `I ⊆ ℕ` has an infinite fibre
+`J` of `j ↦ Q_r(j)` (pigeonhole); for `j, l ∈ J` the differences `R_r(j) − R_r(l)`,
+`S_r(j) − S_r(l)` are integer multiplicity with `M(R_r(j) − R_r(l)) + M(S_r(j) − S_r(l)) < 2ε_r`,
+so the diagonal extraction applies. -/
+theorem Submission.dor_lmb_fc_cauchy_subseq : ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ ε : ℝ≥0∞, 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ j, ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X j ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ r, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), X (θ (r + 1)) ω - X (θ r) ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r := by
+  intro P m U X hU hnet
+  -- Step 1: for `ε_r = 2^{-r-1}`, the finite nets `𝒬_r` and decompositions
+  -- `X_j − Q_r(j) = ∂R_r(j) + S_r(j)` with `M(R_r(j)) + M(S_r(j)) < ε_r`
+  have hε : ∀ r : ℕ, (0 : ℝ≥0∞) < (2⁻¹ : ℝ≥0∞) ^ (r + 1) := fun r =>
+    ENNReal.pow_pos (ENNReal.inv_pos.2 ENNReal.ofNat_ne_top) _
+  choose Qs hQs Q hQ R S hR hS hXQ hRS using fun r => hnet _ (hε r)
+  -- Step 2: diagonal extraction for `C r j l`: `X_j − X_l = ∂R + S`, `M(R) + M(S) ≤ 2^{-r}`
+  refine Submission.cmc_fc_cs_diagonal_subseq (fun r j l =>
+    ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)),
+      IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+      (∀ ω : TestFormOn U (m + 1), X j ω - X l ω = R.boundary ω + S ω) ∧
+      R.mass + S.mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) fun r I hI => ?_
+  -- Step 3: pigeonhole: `j ↦ Q_r(j)` takes values in the finite `𝒬_r`, so some fibre
+  -- `I ∩ Q_r⁻¹(q)` is infinite
+  obtain ⟨q, -, hq⟩ : ∃ q ∈ Qs r, (I ∩ {j | Q r j = q}).Infinite := by
+    by_contra h
+    have hfin : (⋃ q ∈ Qs r, I ∩ {j | Q r j = q}).Finite :=
+      (hQs r).biUnion fun q hq => by
+        by_contra hinf
+        exact h ⟨q, hq, hinf⟩
+    exact hI (hfin.subset fun j hj => mem_biUnion (hQ r j) ⟨hj, rfl⟩)
+  refine ⟨I ∩ {j | Q r j = q}, inter_subset_left, hq, fun j hj l hl => ?_⟩
+  -- Step 4: subtract the two decompositions with the same `q`; the differences are integer
+  -- multiplicity and `M(R_r(j) − R_r(l)) + M(S_r(j) − S_r(l)) < 2ε_r = 2^{-r}`
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1
+  refine ⟨R r j - R r l, S r j - S r l, hsub P _ U _ _ hU (hR r j) (hR r l),
+    hsub P _ U _ _ hU (hS r j) (hS r l), fun ω => ?_, ?_⟩
+  · have hj' : Q r j = q := hj.2
+    have hl' : Q r l = q := hl.2
+    have h1 := hXQ r j ω
+    have h2 := hXQ r l ω
+    rw [hj'] at h1
+    rw [hl'] at h2
+    change X j ω - X l ω = ((R r j).boundary ω - (R r l).boundary ω) + (S r j ω - S r l ω)
+    linarith
+  · calc (R r j - R r l).mass + (S r j - S r l).mass
+        ≤ ((R r j).mass + (R r l).mass) + ((S r j).mass + (S r l).mass) :=
+          add_le_add (Submission.cmc_fc_cs_massOn_sub_le P (m + 2) U U (R r j) (R r l))
+            (Submission.cmc_fc_cs_massOn_sub_le P (m + 1) U U (S r j) (S r l))
+      _ = ((R r j).mass + (S r j).mass) + ((R r l).mass + (S r l).mass) :=
+          add_add_add_comm _ _ _ _
+      _ ≤ (2⁻¹ : ℝ≥0∞) ^ (r + 1) + (2⁻¹ : ℝ≥0∞) ^ (r + 1) :=
+          add_le_add (hRS r j).le (hRS r l).le
+      _ = (2⁻¹ : ℝ≥0∞) ^ r := by
+          rw [pow_succ, ← div_eq_mul_inv, ENNReal.add_halves]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
