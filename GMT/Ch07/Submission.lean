@@ -3685,6 +3685,54 @@ theorem Submission.dtc_bc_lc_pfi_piece_pushforward_image : ∀ (P n : ℕ) (U : 
       rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
       exact h
     rw [Pi.zero_apply, mul_left_comm, hσβ, h0, mul_zero, mul_zero]
+/-- **Integer density of a summable family** (step 10 of the push-forward proof, Simon
+6.3.3–3.9).  If `fⱼ : ℝᴾ → ℤ` are measurable with `Σⱼ ∫ |fⱼ| dHⁿ < ∞`, then `m = Σⱼ fⱼ` (the real
+`tsum`, `0` where the family is not summable) is measurable, integer valued everywhere and bounded
+by `Σⱼ |fⱼ|`, and `Hⁿ`-a.e. the family `(fⱼ(y))ⱼ` is summable with sum `m(y)`. -/
+theorem Submission.dtc_bc_lc_pfi_integer_density_of_summable : ∀ (P n : ℕ) (f : ℕ → Euclid P → ℤ), (∀ j, Measurable (f j)) → ∑' j, ∫⁻ y, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ → ∃ m : Euclid P → ℝ, Measurable m ∧ (∀ y, ∃ z : ℤ, m y = z) ∧ (∀ y, ENNReal.ofReal |m y| ≤ ∑' j, ((f j y).natAbs : ℝ≥0∞)) ∧ ∀ᵐ y ∂μHE[n], Summable (fun j => (f j y : ℝ)) ∧ m y = ∑' j, (f j y : ℝ) := by
+  intro P n f hf hfin
+  -- Step 3: a summable family of integers has finite support, so its tsum is a finite sum
+  have hsum : ∀ y, Summable (fun j => (f j y : ℝ)) → ∃ s : Finset ℕ,
+      ∑' j, (f j y : ℝ) = ∑ j ∈ s, (f j y : ℝ) := by
+    intro y hs
+    have hfs : {j | f j y ≠ 0}.Finite := by
+      refine eventually_cofinite.1 ?_
+      filter_upwards [hs.tendsto_cofinite_zero.eventually (ball_mem_nhds (0 : ℝ) one_pos)]
+        with j hj
+      rw [dist_zero_right, Real.norm_eq_abs] at hj
+      exact Int.abs_lt_one_iff.1 (by exact_mod_cast hj)
+    exact ⟨hfs.toFinset, tsum_eq_sum fun j hj => by simpa using hj⟩
+  have hm : ∀ j, Measurable fun y => ((f j y).natAbs : ℝ≥0∞) := fun j =>
+    (Measurable.of_discrete (f := fun z : ℤ => (z.natAbs : ℝ≥0∞))).comp (hf j)
+  refine ⟨fun y => ∑' j, (f j y : ℝ), Measurable.tsum fun j => Measurable.of_discrete.comp (hf j),
+    fun y => ?_, fun y => ?_, ?_⟩
+  · -- Step 3: integrality (the tsum is `0` if the family is not summable)
+    show ∃ z : ℤ, ∑' j, (f j y : ℝ) = z
+    by_cases hs : Summable (fun j => (f j y : ℝ))
+    · obtain ⟨s, hs⟩ := hsum y hs
+      exact ⟨∑ j ∈ s, f j y, by rw [hs, Int.cast_sum]⟩
+    · exact ⟨0, by rw [tsum_eq_zero_of_not_summable hs, Int.cast_zero]⟩
+  · -- Step 4: pointwise bound `|m| ≤ S`
+    show ENNReal.ofReal |∑' j, (f j y : ℝ)| ≤ ∑' j, ((f j y).natAbs : ℝ≥0∞)
+    by_cases hs : Summable (fun j => (f j y : ℝ))
+    · obtain ⟨s, hs⟩ := hsum y hs
+      calc ENNReal.ofReal |∑' j, (f j y : ℝ)| ≤ ENNReal.ofReal (∑ j ∈ s, |(f j y : ℝ)|) := by
+            rw [hs]; exact ENNReal.ofReal_le_ofReal (Finset.abs_sum_le_sum_abs _ _)
+        _ = ∑ j ∈ s, ((f j y).natAbs : ℝ≥0∞) := by
+            rw [ENNReal.ofReal_sum_of_nonneg fun j _ => abs_nonneg _]
+            refine Finset.sum_congr rfl fun j _ => ?_
+            rw [← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+        _ ≤ ∑' j, ((f j y).natAbs : ℝ≥0∞) := ENNReal.sum_le_tsum s
+    · rw [tsum_eq_zero_of_not_summable hs, abs_zero, ENNReal.ofReal_zero]
+      exact zero_le
+  · -- Step 5: `S = Σ_j |f_j|` has finite integral, so it is finite a.e.
+    filter_upwards [ae_lt_top (Measurable.tsum hm)
+      ((lintegral_tsum fun j => (hm j).aemeasurable).trans_ne hfin)] with y hy
+    refine ⟨summable_abs_iff.1 ?_, rfl⟩
+    have h1 : Summable fun j => ((f j y).natAbs : NNReal) := by
+      rw [← ENNReal.tsum_coe_ne_top_iff_summable]
+      simpa using hy.ne
+    simpa [Nat.cast_natAbs] using NNReal.summable_coe.2 h1
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
