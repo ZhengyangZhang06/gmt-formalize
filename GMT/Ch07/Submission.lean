@@ -4442,6 +4442,145 @@ theorem Submission.dorag_ha_approximation : ∀ n : ℕ, 0 < n → ∀ ε : ℝ,
   obtain ⟨h₁, hC₁, hΔ₁, hI₁, hD₁, hI₂, hε₁⟩ := hA _ Lw hLw₁ hE₁ hH₁
   exact Submission.dorag_haa_rescale_conclusion n ε R₀ w h₁ hR₀ hC₁ hΔ₁ hI₁ hD₁ hI₂ hε₁
 
+/-- Harmonic approximation with affine decay (Simon Ch. 5, Lemma 3.1 with the estimates 3.2–3.4).
+For `ε' > 0` let `δ_h = δ(ε')` be the constant of `Submission.dorag_ha_approximation`: it gives `h`
+smooth and harmonic on `B = B̆_{R₀}(0)` with `∫_B ‖Dh‖² ≤ R₀ⁿ` and `∫_B (h − w)² ≤ ε'R₀ⁿ⁺²`.  Since
+`h² ≤ 2w² + 2(h − w)²`, the interior estimates `Submission.dorag_ha_interior_estimates` (constant
+`C_H`) apply to `h`; put `a = h(0)` and `b = Dh(0)`.  Then `‖b‖ ≤ C_H`,
+`|a| ≤ √2C_H(√(R₀⁻ⁿ∫_B w²) + √ε'R₀)` and, as `|h(v) − a − b(v)| ≤ C_Hθ'²R₀` on `B̆_{θ'R₀}(0)`,
+`∫_{B̆_{θ'R₀}(0)} (w − a − b)² ≤ 2ε'R₀ⁿ⁺² + 2(C_Hθ'²R₀)²(θ'R₀)ⁿω` with `ω = Lⁿ(B̆₁(0))`.  So
+`C = max(√2C_H, 2, 2ωC_H²)` works. -/
+theorem Submission.dimred_cdg_harmonic_affine_approximation : ∀ n : ℕ, 0 < n → ∃ C : ℝ, 0 < C ∧ ∀ ε' : ℝ, 0 < ε' → ∃ δh : ℝ, 0 < δh ∧ ∀ (R₀ : ℝ) (w : Euclid n → ℝ) (Lw : NNReal), 0 < R₀ → LipschitzWith Lw w → ∫ v in ball (0 : Euclid n) R₀, ‖fderiv ℝ w v‖ ^ 2 ≤ R₀ ^ n → (∀ ζ : Euclid n → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid n) R₀ → ∀ G : ℝ, (∀ v, ‖fderiv ℝ ζ v‖ ≤ G) → |∫ v in ball (0 : Euclid n) R₀, ∑ i : Fin n, fderiv ℝ w v (EuclideanSpace.single i (1 : ℝ)) * fderiv ℝ ζ v (EuclideanSpace.single i (1 : ℝ))| ≤ δh * R₀ ^ n * G) → ∃ (a : ℝ) (b : Euclid n →L[ℝ] ℝ), ‖b‖ ≤ C ∧ |a| ≤ C * Real.sqrt ((∫ v in ball (0 : Euclid n) R₀, w v ^ 2) / R₀ ^ n) + C * Real.sqrt ε' * R₀ ∧ ∀ θ' : ℝ, 0 < θ' → θ' ≤ 1 / 4 → ∫ v in ball (0 : Euclid n) (θ' * R₀), (w v - a - b v) ^ 2 ≤ C * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * R₀) ^ (n + 2) := by
+  intro n hn
+  obtain ⟨CH, hCH, hIE⟩ := Submission.dorag_ha_interior_estimates n hn
+  -- `ω = Lⁿ(B̆₁(0))` and `Lⁿ(B̆_r(0)) = rⁿω`
+  obtain ⟨ω, hω_def⟩ : ∃ ω : ℝ, (volume (ball (0 : Euclid n) 1)).toReal = ω := ⟨_, rfl⟩
+  have hvol : ∀ r : ℝ, 0 < r → volume.real (ball (0 : Euclid n) r) = r ^ n * ω := by
+    intro r hr
+    rw [measureReal_def, Measure.addHaar_ball_of_pos volume 0 hr, finrank_euclideanSpace_fin,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity), hω_def]
+  -- `C = max(√2·C_H, 2, 2ωC_H²)`
+  have hs2 : (1 : ℝ) ≤ Real.sqrt 2 := Real.one_le_sqrt.2 one_le_two
+  obtain ⟨C, hC_def⟩ : ∃ C : ℝ, max (max (Real.sqrt 2 * CH) 2) (2 * ω * CH ^ 2) = C := ⟨_, rfl⟩
+  have hC1 : Real.sqrt 2 * CH ≤ C := hC_def ▸ (le_max_left _ _).trans (le_max_left _ _)
+  have hC2 : (2 : ℝ) ≤ C := hC_def ▸ (le_max_right _ _).trans (le_max_left _ _)
+  have hC3 : 2 * ω * CH ^ 2 ≤ C := hC_def ▸ le_max_right _ _
+  have hCHC : CH ≤ C := (le_mul_of_one_le_left hCH.le hs2).trans hC1
+  refine ⟨C, by linarith, fun ε' hε' => ?_⟩
+  -- `δ_h = δ(ε')` from the harmonic approximation lemma
+  obtain ⟨δ, hδ, hHA⟩ := Submission.dorag_ha_approximation n hn ε' hε'
+  refine ⟨δ, hδ, fun R₀ w Lw hR₀ hLw hE hH => ?_⟩
+  obtain ⟨h, hC, hΔ, hI, hD, hI2, hε⟩ := hHA R₀ w Lw hR₀ hLw hE hH
+  -- `w²` is continuous, hence integrable on `B_{R₀}`; `h² ≤ 2w² + 2(h − w)²` makes `h²` integrable
+  have hw2 : IntegrableOn (fun y => w y ^ 2) (ball (0 : Euclid n) R₀) :=
+    ((hLw.continuous.pow 2).continuousOn.integrableOn_compact (isCompact_closedBall _ _)).mono_set
+      ball_subset_closedBall
+  have hpt : ∀ y, h y ^ 2 ≤ 2 * w y ^ 2 + 2 * (h y - w y) ^ 2 := fun y => by
+    nlinarith [sq_nonneg (h y - 2 * w y)]
+  have hg : IntegrableOn (fun y => 2 * w y ^ 2 + 2 * (h y - w y) ^ 2) (ball (0 : Euclid n) R₀) :=
+    (hw2.const_mul 2).add (hI2.const_mul 2)
+  have hh2 : IntegrableOn (fun y => h y ^ 2) (ball (0 : Euclid n) R₀) :=
+    Integrable.mono' hg (((hC 0).continuousOn.pow 2).aestronglyMeasurable measurableSet_ball)
+      (ae_of_all _ fun y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+        exact hpt y)
+  -- interior estimates for `h`; put `a = h(0)`, `b = Dh(0)`
+  obtain ⟨ha, hb, htay⟩ := hIE R₀ h hR₀ hC hΔ hI hD hh2
+  refine ⟨h 0, fderiv ℝ h 0, hb.trans hCHC, ?_, ?_⟩
+  · -- `R₀⁻ⁿ∫_{B_{R₀}} h² ≤ 2X + 2ε'R₀²` with `X = R₀⁻ⁿ∫_{B_{R₀}} w²`
+    have hRn : 0 < R₀ ^ n := pow_pos hR₀ n
+    have hint : ∫ y in ball (0 : Euclid n) R₀, h y ^ 2 ≤
+        2 * (∫ y in ball (0 : Euclid n) R₀, w y ^ 2) + 2 * (ε' * R₀ ^ (n + 2)) :=
+      calc ∫ y in ball (0 : Euclid n) R₀, h y ^ 2
+          ≤ ∫ y in ball (0 : Euclid n) R₀, (2 * w y ^ 2 + 2 * (h y - w y) ^ 2) :=
+            setIntegral_mono_on hh2 hg measurableSet_ball fun y _ => hpt y
+        _ = 2 * (∫ y in ball (0 : Euclid n) R₀, w y ^ 2) +
+              2 * ∫ y in ball (0 : Euclid n) R₀, (h y - w y) ^ 2 := by
+            rw [integral_add (hw2.const_mul 2) (hI2.const_mul 2), integral_const_mul,
+              integral_const_mul]
+        _ ≤ _ := by linarith
+    obtain ⟨X, hX_def⟩ : ∃ X : ℝ, (∫ y in ball (0 : Euclid n) R₀, w y ^ 2) / R₀ ^ n = X :=
+      ⟨_, rfl⟩
+    have hX : 0 ≤ X :=
+      hX_def ▸ div_nonneg (setIntegral_nonneg measurableSet_ball fun y _ => sq_nonneg _) hRn.le
+    have hquot : (∫ y in ball (0 : Euclid n) R₀, h y ^ 2) / R₀ ^ n ≤ 2 * X + 2 * ε' * R₀ ^ 2 := by
+      rw [div_le_iff₀ hRn, ← hX_def]
+      calc _ ≤ _ := hint
+        _ = _ := by
+          rw [add_mul, mul_assoc 2, div_mul_cancel₀ _ hRn.ne', pow_add]
+          ring
+    -- `√(x + y) ≤ √x + √y`
+    have hsub : Real.sqrt (2 * X + 2 * ε' * R₀ ^ 2) ≤
+        Real.sqrt (2 * X) + Real.sqrt (2 * ε' * R₀ ^ 2) := by
+      rw [Real.sqrt_le_left (by positivity), add_sq, Real.sq_sqrt (by positivity),
+        Real.sq_sqrt (by positivity)]
+      nlinarith [Real.sqrt_nonneg (2 * X), Real.sqrt_nonneg (2 * ε' * R₀ ^ 2)]
+    have hsqrt : Real.sqrt ((∫ y in ball (0 : Euclid n) R₀, h y ^ 2) / R₀ ^ n) ≤
+        Real.sqrt 2 * Real.sqrt X + Real.sqrt 2 * Real.sqrt ε' * R₀ :=
+      calc _ ≤ Real.sqrt (2 * X + 2 * ε' * R₀ ^ 2) := Real.sqrt_le_sqrt hquot
+        _ ≤ Real.sqrt (2 * X) + Real.sqrt (2 * ε' * R₀ ^ 2) := hsub
+        _ = _ := by
+          rw [Real.sqrt_mul zero_le_two, Real.sqrt_mul' _ (sq_nonneg R₀),
+            Real.sqrt_mul zero_le_two, Real.sqrt_sq hR₀.le]
+    rw [hX_def]
+    calc |h 0| ≤ CH * Real.sqrt ((∫ y in ball (0 : Euclid n) R₀, h y ^ 2) / R₀ ^ n) := ha
+      _ ≤ CH * (Real.sqrt 2 * Real.sqrt X + Real.sqrt 2 * Real.sqrt ε' * R₀) :=
+        mul_le_mul_of_nonneg_left hsqrt hCH.le
+      _ = Real.sqrt 2 * CH * Real.sqrt X + Real.sqrt 2 * CH * Real.sqrt ε' * R₀ := by ring
+      _ ≤ C * Real.sqrt X + C * Real.sqrt ε' * R₀ := by gcongr
+  · -- affine decay on `B_{θ'R₀}`
+    intro θ' hθ' hθ'4
+    have hr : 0 < θ' * R₀ := mul_pos hθ' hR₀
+    have hsubset : ball (0 : Euclid n) (θ' * R₀) ⊆ ball (0 : Euclid n) R₀ :=
+      ball_subset_ball (by nlinarith)
+    -- Taylor: `|h(v) − a − b(v)| ≤ C_H θ'² R₀ =: K` on `B_{θ'R₀}`
+    obtain ⟨K, hK_def⟩ : ∃ K : ℝ, CH * θ' ^ 2 * R₀ = K := ⟨_, rfl⟩
+    have hpt2 : ∀ v ∈ ball (0 : Euclid n) (θ' * R₀),
+        (w v - h 0 - fderiv ℝ h 0 v) ^ 2 ≤ 2 * (h v - w v) ^ 2 + 2 * K ^ 2 := by
+      intro v hv
+      have hv' : ‖v‖ < θ' * R₀ := mem_ball_zero_iff.1 hv
+      have hvn : ‖v‖ ^ 2 ≤ (θ' * R₀) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hv'.le 2
+      have hT : |h v - h 0 - fderiv ℝ h 0 v| ≤ K := by
+        refine (htay v (by nlinarith)).trans ?_
+        rw [← hK_def, div_le_iff₀ hR₀]
+        nlinarith
+      have hsq : (h v - h 0 - fderiv ℝ h 0 v) ^ 2 ≤ K ^ 2 := by
+        rw [← sq_abs]
+        exact pow_le_pow_left₀ (abs_nonneg _) hT 2
+      nlinarith [sq_nonneg (w v - h v - (h v - h 0 - fderiv ℝ h 0 v))]
+    have hcont : Continuous fun v => (w v - h 0 - fderiv ℝ h 0 v) ^ 2 :=
+      ((hLw.continuous.sub continuous_const).sub (fderiv ℝ h 0).continuous).pow 2
+    have hL : IntegrableOn (fun v => (w v - h 0 - fderiv ℝ h 0 v) ^ 2)
+        (ball (0 : Euclid n) (θ' * R₀)) :=
+      (hcont.continuousOn.integrableOn_compact (isCompact_closedBall _ _)).mono_set
+        ball_subset_closedBall
+    have hI2' : IntegrableOn (fun v => (h v - w v) ^ 2) (ball (0 : Euclid n) (θ' * R₀)) :=
+      hI2.mono_set hsubset
+    have hK2 : IntegrableOn (fun _ => 2 * K ^ 2) (ball (0 : Euclid n) (θ' * R₀)) :=
+      integrableOn_const measure_ball_lt_top.ne
+    have hR : IntegrableOn (fun v => 2 * (h v - w v) ^ 2 + 2 * K ^ 2)
+        (ball (0 : Euclid n) (θ' * R₀)) :=
+      (hI2'.const_mul 2).add hK2
+    calc ∫ v in ball (0 : Euclid n) (θ' * R₀), (w v - h 0 - fderiv ℝ h 0 v) ^ 2
+        ≤ ∫ v in ball (0 : Euclid n) (θ' * R₀), (2 * (h v - w v) ^ 2 + 2 * K ^ 2) :=
+          setIntegral_mono_on hL hR measurableSet_ball hpt2
+      _ = 2 * (∫ v in ball (0 : Euclid n) (θ' * R₀), (h v - w v) ^ 2) +
+            2 * K ^ 2 * ((θ' * R₀) ^ n * ω) := by
+          rw [integral_add (hI2'.const_mul 2) hK2, integral_const_mul, setIntegral_const,
+            hvol _ hr, smul_eq_mul]
+          ring
+      _ ≤ 2 * (ε' * R₀ ^ (n + 2)) + 2 * K ^ 2 * ((θ' * R₀) ^ n * ω) := by
+          gcongr
+          exact (setIntegral_mono_set hI2 (ae_of_all _ fun _ => sq_nonneg _)
+            hsubset.eventuallyLE).trans hε
+      _ = (2 * (ε' / θ' ^ (n + 2)) + 2 * ω * CH ^ 2 * θ' ^ 2) * (θ' * R₀) ^ (n + 2) := by
+          rw [← hK_def]
+          field_simp
+          ring
+      _ ≤ (C * (ε' / θ' ^ (n + 2)) + C * θ' ^ 2) * (θ' * R₀) ^ (n + 2) := by
+          gcongr
+      _ = C * (ε' / θ' ^ (n + 2) + θ' ^ 2) * (θ' * R₀) ^ (n + 2) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
