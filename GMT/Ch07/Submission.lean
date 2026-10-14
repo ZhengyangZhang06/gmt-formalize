@@ -1358,6 +1358,150 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **The cone `0 ⨯ S` over a cycle** (Simon 6.2.25, 6.2.30–6.2.32).  If `S ∈ 𝒟_{n+1}(ℝᴾ)` has
+finite mass, compact support and `∂S = 0`, then `R(ω) = S(ζ · K_{n+2} ω)` defines
+`R ∈ 𝒟_{n+2}(ℝᴾ)` with `spt R` compact and `∂R = S`, where
+`K_{m+1} β(x) = ∫₀¹ tᵐ ι_x β(tx) dt` is the radial homotopy operator and `ζ ∈ C^∞_c` equals `1` on
+an open `N ⊇ spt S`.  `R` is linear (`K` is), and `|R(ω)| ≤ ρ M(S) sup |ω|` with
+`ρ = sup_{spt ζ} ‖x‖` (`|K β(x)| ≤ ‖x‖ sup |β|`), so `R` is a current.  The homotopy formula
+`d K_{n+1} ω + K_{n+2} dω = ω` gives `ζ K_{n+2} dω + d(ζ K_{n+1} ω) - ω = 0` on `N`, hence
+`∂R(ω) = S(ω) - ∂S(ζ K_{n+1} ω) = S(ω)` because `S` vanishes on forms supported off `spt S`.  If
+`spt ω` misses the compact cone `C₀ = {t x : t ∈ [0, 1], x ∈ spt S}`, then `K_{n+2} ω` vanishes on
+a neighbourhood of `spt S` (tube lemma), so `R(ω) = 0` and `spt R ⊆ C₀`.  On `spt S`, `ζ = 1` and
+`γ = ζ K_{n+2} ω` is the stated integral. -/
+theorem Submission.ecf_cone_current : ∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), S.mass ≠ ∞ → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsCompact R.support ∧ R.boundary = S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v) := by
+  intro n P S hM hS hbd
+  -- Step 1: a cutoff `ζ ∈ C^∞_c`, `0 ≤ ζ ≤ 1`, with `ζ = 1` on an open `N ⊇ spt S`
+  obtain ⟨ζ, N, hζ, hζc, -, hζ01, hNo, hSN, hζN⟩ :=
+    Submission.cbrcs_ce_smooth_cutoff P univ S.support isOpen_univ hS (subset_univ _)
+  -- `ζ • f` is a test form for every smooth form `f`
+  have hcut : ∀ (k : ℕ) (f : DifferentialForm (Euclid P) k), ContDiff ℝ (⊤ : ℕ∞) f →
+      (fun x => ζ x • f x) ∈ TestFormOn (univ : Set (Euclid P)) k := fun k f hf =>
+    ⟨⟨hζ.smul hf, hζc.smul_right⟩, subset_univ _⟩
+  have hcont : ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2),
+      Continuous (ω : DifferentialForm (Euclid P) (n + 2)) := fun ω => ω.property.1.1.continuous
+  -- the cut-off homotopy operator `G β = ζ • K_{n+2} β` and `Γ ω = G ω ∈ 𝒟^{n+1}`
+  let G : DifferentialForm (Euclid P) (n + 2) → DifferentialForm (Euclid P) (n + 1) :=
+    fun β x => ζ x • ∫ t in (0 : ℝ)..1, t ^ (n + 1) • (β (t • x)).curryLeft x
+  have hGmem : ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2),
+      G ω ∈ TestFormOn (univ : Set (Euclid P)) (n + 1) := fun ω =>
+    hcut (n + 1) _ (Submission.ecf_cc_radial_homotopy_formula P (n + 1) ω ω.property.1.1).1
+  let Γ : TestFormOn (univ : Set (Euclid P)) (n + 2) →
+      TestFormOn (univ : Set (Euclid P)) (n + 1) := fun ω => ⟨G ω, hGmem ω⟩
+  -- `G` is additive and homogeneous on continuous forms
+  have hGadd : ∀ β β' : DifferentialForm (Euclid P) (n + 2), Continuous β → Continuous β' →
+      G (β + β') = G β + G β' := by
+    intro β β' hβ hβ'
+    funext x
+    exact (congrArg (ζ x • ·)
+      ((Submission.ecf_cc_radial_homotopy_toolkit P (n + 1) β hβ).2.2.2.1 β' hβ' x)).trans
+      (smul_add _ _ _)
+  have hGsmul : ∀ (c : ℝ) (β : DifferentialForm (Euclid P) (n + 2)), Continuous β →
+      G (c • β) = c • G β := by
+    intro c β hβ
+    funext x
+    exact (congrArg (ζ x • ·)
+      ((Submission.ecf_cc_radial_homotopy_toolkit P (n + 1) β hβ).2.2.2.2 c x)).trans
+      (smul_comm _ _ _)
+  -- `R₀(ω) = S(ζ • K_{n+2} ω)` is linear
+  let R₀ : TestFormOn (univ : Set (Euclid P)) (n + 2) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => S (Γ ω)
+      map_add' := fun ω ω' => by
+        have h : Γ (ω + ω') = Γ ω + Γ ω' := Subtype.ext (hGadd _ _ (hcont ω) (hcont ω'))
+        show S (Γ (ω + ω')) = S (Γ ω) + S (Γ ω')
+        rw [h]
+        exact S.toCurrent.map_add _ _
+      map_smul' := fun c ω => by
+        have h : Γ (c • ω) = c • Γ ω := Subtype.ext (hGsmul c _ (hcont ω))
+        show S (Γ (c • ω)) = c • S (Γ ω)
+        rw [h]
+        exact S.toCurrent.map_smul c _ }
+  -- Step 2: `|R₀ ω| ≤ ρ M(S) c` whenever `|ω| ≤ c` everywhere, so `R₀` is a current `R`
+  obtain ⟨ρ, hρ⟩ := hζc.isCompact.isBounded.exists_norm_le
+  have hhom := (Submission.rsd_mw_tfa_norm_props P (n + 1)).2.1
+  have hbound : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (n + 2)) (c : ℝ),
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (n + 2)) x) ≤ c) →
+        |R₀ ω| ≤ (max ρ 0 * (S.massOn univ).toReal) * c := by
+    intro ω c hc
+    have hc0 : 0 ≤ c := (covectorEuclideanNorm_nonneg _).trans (hc 0)
+    have hK := (Submission.ecf_cc_radial_homotopy_toolkit P (n + 1) ω (hcont ω)).2.1 c
+    have hpt : ∀ x, covectorEuclideanNorm ((Γ ω : DifferentialForm (Euclid P) (n + 1)) x) ≤
+        max ρ 0 * c := by
+      intro x
+      show covectorEuclideanNorm (ζ x • _) ≤ _
+      rw [hhom]
+      by_cases hx : x ∈ tsupport ζ
+      · calc |ζ x| * covectorEuclideanNorm _ ≤ 1 * (‖x‖ * c) := by
+              refine mul_le_mul ?_ (hK x hc) (covectorEuclideanNorm_nonneg _) zero_le_one
+              rw [abs_of_nonneg (hζ01 x).1]
+              exact (hζ01 x).2
+          _ ≤ max ρ 0 * c := by
+              rw [one_mul]
+              exact mul_le_mul_of_nonneg_right ((hρ x hx).trans (le_max_left _ _)) hc0
+      · rw [image_eq_zero_of_notMem_tsupport hx, abs_zero, zero_mul]
+        exact mul_nonneg (le_max_right _ _) hc0
+    have h := Submission.cmr_abs_apply_le_massOn P (n + 1) univ univ S (Γ ω) (max ρ 0 * c) hM
+      (subset_univ _) hpt
+    calc |R₀ ω| = |S (Γ ω)| := rfl
+      _ ≤ max ρ 0 * c * (S.massOn univ).toReal := h
+      _ = max ρ 0 * (S.massOn univ).toReal * c := by ring
+  obtain ⟨R, hR, -⟩ := Submission.cmcdt_lpo_tk_bounded_current P (n + 2) R₀ _ hbound
+  -- Step 3: `∂R = S`
+  have hbdR : R.boundary = S := by
+    ext ω
+    rw [GeometricCurrentOn.boundary_apply, hR]
+    obtain ⟨hK1, hF⟩ := Submission.ecf_cc_radial_homotopy_formula P n ω ω.property.1.1
+    -- `η = ζ • K_{n+1} ω ∈ 𝒟ⁿ`, with `S(dη) = ∂S(η) = 0`
+    let η : TestFormOn (univ : Set (Euclid P)) n := ⟨_, hcut n _ hK1⟩
+    have hη0 : S (exteriorDerivativeTestOn univ n η) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hbd]
+      rfl
+    -- `Γ(dω) + dη - ω` vanishes on `N ⊇ spt S`
+    have hvanish : S (Γ (exteriorDerivativeTestOn univ (n + 1) ω) +
+        exteriorDerivativeTestOn univ n η - ω) = 0 := by
+      apply Submission.dtc_vanish_off_support
+      refine Disjoint.mono_left ?_ (disjoint_compl_left_iff_subset.mpr hSN)
+      refine closure_minimal (fun y hy hyN => hy ?_) hNo.isClosed_compl
+      have hloc : (η : DifferentialForm (Euclid P) n) =ᶠ[𝓝 y] fun z => ∫ t in (0 : ℝ)..1,
+          t ^ n • ((ω : DifferentialForm (Euclid P) (n + 1)) (t • z)).curryLeft z := by
+        filter_upwards [hNo.mem_nhds hyN] with z hz
+        show ζ z • _ = _
+        rw [hζN z hz, one_smul]
+      show ζ y • _ + extDeriv (η : DifferentialForm (Euclid P) n) y -
+        (ω : DifferentialForm (Euclid P) (n + 1)) y = 0
+      rw [hloc.extDeriv_eq, hζN y hyN, one_smul, sub_eq_zero]
+      exact (add_comm _ _).trans (hF y)
+    have hlin : S (Γ (exteriorDerivativeTestOn univ (n + 1) ω) +
+        exteriorDerivativeTestOn univ n η - ω) = S (Γ (exteriorDerivativeTestOn univ (n + 1) ω)) +
+          S (exteriorDerivativeTestOn univ n η) - S ω := by
+      rw [map_sub S.toCurrent, map_add S.toCurrent]
+    show S (Γ (exteriorDerivativeTestOn univ (n + 1) ω)) = S ω
+    linarith
+  -- Step 4: `spt R ⊆ C₀ = {t x : t ∈ [0, 1], x ∈ spt S}`, which is compact
+  have hC₀ : IsCompact ((fun p : ℝ × Euclid P => p.1 • p.2) '' (Icc (0 : ℝ) 1 ×ˢ S.support)) :=
+    (isCompact_Icc.prod hS).image (continuous_fst.smul continuous_snd)
+  have hRsupp : IsCompact R.support := by
+    refine (Submission.rsd_cmr_support_subset_of_vanish P (n + 2) univ _ R isOpen_univ hC₀
+      (subset_univ _) fun ω hω => ?_).2
+    rw [hR]
+    show S (Γ ω) = 0
+    apply Submission.dtc_vanish_off_support
+    -- an open `v ⊇ spt S` with `t y ∉ spt ω` for all `t ∈ [0, 1]`, `y ∈ v` (tube lemma)
+    obtain ⟨u, v, -, hv, hIu, hSv, huv⟩ := generalized_tube_lemma isCompact_Icc hS
+      ((continuous_fst.smul continuous_snd).isOpen_preimage _ (isClosed_tsupport _).isOpen_compl)
+      (fun p hp hmem => hω.ne_of_mem hmem ⟨p, hp, rfl⟩ rfl)
+    refine Disjoint.mono_left ?_ (disjoint_compl_left_iff_subset.mpr hSv)
+    refine closure_minimal (fun y hy hyv => hy ?_) hv.isClosed_compl
+    show ζ y • _ = 0
+    rw [(Submission.ecf_cc_radial_homotopy_toolkit P (n + 1) ω (hcont ω)).2.2.1 y
+      (fun t ht => image_eq_zero_of_notMem_tsupport (huv (Set.mk_mem_prod (hIu ht) hyv))),
+      smul_zero]
+  -- Step 5: `γ = Γ ω`; on `spt S ⊆ N`, `ζ = 1`
+  refine ⟨R, hRsupp, hbdR, fun ω => ⟨Γ ω, hR ω, fun x hx v => ?_⟩⟩
+  show (ζ x • _ : Covector (Euclid P) (n + 1)) v = _
+  rw [hζN x (hSN hx), one_smul]
+  exact (Submission.ecf_cc_radial_homotopy_toolkit P (n + 1) ω (hcont ω)).1 x v
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
