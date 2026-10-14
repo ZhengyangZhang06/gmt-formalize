@@ -1589,6 +1589,44 @@ theorem Submission.dimred_mbl_pf_imrep_carrier_mass_support : ∀ (P n : ℕ), (
     show Y₁ ω - Y₂ ω = 0
     rw [hY₁ ω (hω.trans inter_subset_left), hY₂ ω (hω.trans inter_subset_right), sub_zero]
 
+/-- **Simon Ch. 6, 2.23 and Remark 2.24(2)**: the pulled-back integral `∫_M θ ξ(f^#ω) dHⁿ` is the
+limit of `Y(ωⱼ)` for test forms `ωⱼ` chosen before `Y` and its representation.  The cut-off
+`h = χ f^#ω` is continuous, compactly supported and equal to `f^#ω` on `K`, and test forms
+`ωⱼ → h` uniformly; both depend only on `f`, `ω`, `O` and `K`.  If `Y = τ(M, θ, ξ)` with
+`spt Y ⊆ K`, then `Hⁿ(M \ K) = 0`, so `Y(ωⱼ) = τ(M, θ, ξ)(ωⱼ) → τ(M, θ, ξ)(h)`, and
+`τ(M, θ, ξ)(h) = ∫_M θ ξ(f^#ω) dHⁿ` since `h = f^#ω` on `K`. -/
+theorem Submission.dimred_mbl_pf_pullback_integral_extension : ∀ (P n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → Y.support ⊆ K → Tendsto (fun j => Y (ωs j)) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n])) := by
+  intro P n O K f ω hO hf hK hKO
+  -- (1) the cut-off `h = χ f^#ω`: continuous, compactly supported, `h = f^#ω` on `K`
+  obtain ⟨h, hc, hs, hhK⟩ := Submission.dimred_mbl_pf_ext_pullback_cutoff P n O K f
+    (ω : DifferentialForm (Euclid P) n) ω.property.1.1.continuous hO hf hK hKO
+  -- (2) test forms `ωⱼ → h` uniformly on `ℝᴾ`, chosen before `Y` and `R`
+  obtain ⟨ωs, hu⟩ := Submission.dimred_mbl_pf_ext_testForm_uniform_approx P n h hc hs
+  refine ⟨ωs, fun Y R hR hYK => ?_⟩
+  -- (3) `Hⁿ(M \ K) = 0`, since `Hⁿ(M \ spt Y) = 0` and `spt Y ⊆ K`
+  have hnull : μHE[n] (R.carrier \ K) = 0 :=
+    measure_mono_null (Set.sdiff_subset_sdiff_right hYK)
+      ((Submission.dimred_mbl_pf_imrep_carrier_mass_support P n).1 Y R hR).1
+  -- (4) `τ(M, θ, ξ)(ωⱼ) → τ(M, θ, ξ)(h)`
+  have hlim := Submission.dimred_mbl_pf_ext_action_tendsto P n univ K R
+    (fun j => (ωs j : DifferentialForm (Euclid P) n)) h hK (subset_univ K) hnull
+    (fun j => (ωs j).property.1.1.continuous) hc hu.tendstoUniformlyOn
+  -- (5) `τ(M, θ, ξ)(h) = ∫_M θ ξ(f^#ω) dHⁿ`, as `Hⁿ⌞M`-a.e. point lies in `K`
+  have hμK : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null ?_ hnull
+    exact fun x hx => ⟨hx.2, hx.1⟩
+  have heq : R.action h = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x
+      (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x))
+        ∂μHE[n] := by
+    rw [IMRep.action]
+    refine integral_congr_ae ?_
+    filter_upwards [hμK] with x hx
+    rw [hhK x hx]
+  -- (6) `Y(ωⱼ) = τ(M, θ, ξ)(ωⱼ)`
+  rw [← heq]
+  exact hlim.congr fun j => (hR (ωs j)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
