@@ -534,6 +534,61 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
     constructor <;> linarith
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+/-- **Simon §6.1** (the test-form topology, the case `β = 0`): if `ωⱼ → 0` in `𝒟ⁿ(U)`, the
+`ωⱼ` vanish outside one compact `C ⊆ U`, and `supₓ ‖ωⱼ(x)‖ → 0`.  The compact set is the one in
+`TestFormOnConverges`; uniform convergence of the `0`-th iterated derivatives on `C` gives the
+bound on `C`, and `ωⱼ = 0` off `C`. -/
+theorem Submission.dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε := by
+  intro P n U ωs h
+  obtain ⟨C, hC, hCU, hsupp, -, hderiv⟩ := h
+  have hzero : ∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0 := fun j x hx =>
+    image_eq_zero_of_notMem_tsupport fun hx' => hx (hsupp j hx')
+  refine ⟨C, hC, hCU, hzero, fun ε hε => ?_⟩
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hderiv 0) ε hε] with j hj x
+  by_cases hx : x ∈ C
+  · have hjx := hj x hx
+    simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
+      norm_iteratedFDeriv_zero] at hjx
+    exact hjx.le
+  · rw [hzero j x hx, norm_zero]
+    exact hε.le
+
+/-- **A linear functional on test forms dominated by the coefficient sup norm is a current**
+(Simon Ch. 6, proof of 7.2, where the `M`-absolutely convergent series define currents; the
+topology of `𝒟ⁿ(U)` is that of §6.1).  Suppose `|L ω| ≤ c A` whenever `|ω(x)| ≤ c` for all `x`.
+Then `A ≥ 0` (take `ω = 0`).  If `ωⱼ → 0` in `𝒟ⁿ(U)`, then for large `j` and all `x`,
+`|ωⱼ(x)| ≤ C ‖ωⱼ(x)‖ ≤ (C + 1) ε`, so `|L ωⱼ| ≤ (C + 1) ε A < η` for
+`ε = η / (2 (C + 1) (A + 1))`.  Hence `L` is sequentially continuous, and `⟨L, ·⟩` is the
+current. -/
+theorem Submission.cmc_fc_sc_current_of_coeff_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ) (A : ℝ), (∀ (ω : TestFormOn U n) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |L ω| ≤ c * A) → ∃ Y : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, Y ω = L ω := by
+  intro P n U L A hL
+  -- Step 1: `A ≥ 0`, from the bound at `ω = 0`, `c = 1`
+  have hA : 0 ≤ A := by simpa using hL 0 1 one_pos fun x => by simp
+  -- Step 2: `|α| ≤ C ‖α‖`
+  obtain ⟨C, hC0, hC⟩ := (Submission.rsd_mw_tfa_norm_props P n).2.2.1
+  -- Step 4: `Y = ⟨L, ·⟩`; its continuity is Step 3
+  refine ⟨⟨L, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+  -- Step 3: eventually `supₓ ‖ωⱼ(x)‖ ≤ ε`, hence `|L ωⱼ| ≤ (C + 1) ε A < η`
+  obtain ⟨K, -, -, -, hunif⟩ := Submission.dpf_pfc_testFormOnConverges_zero_uniform P n U ωs hωs
+  rw [Metric.tendsto_atTop]
+  intro η hη
+  have hC1 : 0 < C + 1 := by linarith
+  have hA1 : 0 < A + 1 := by linarith
+  set ε : ℝ := η / (2 * (C + 1) * (A + 1)) with hε
+  have hεpos : 0 < ε := div_pos hη (by positivity)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif ε hεpos)
+  refine ⟨N, fun j hj => ?_⟩
+  have hbound : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Euclid P) n) x) ≤
+      (C + 1) * ε := fun x =>
+    (hC _).trans <| (mul_le_mul_of_nonneg_left (hN j hj x) hC0).trans <| by nlinarith
+  have hkey : (C + 1) * ε * (A + 1) = η / 2 := by
+    rw [hε]
+    field_simp
+  rw [Real.dist_eq, sub_zero]
+  calc |L (ωs j)| ≤ (C + 1) * ε * A := hL (ωs j) _ (by positivity) hbound
+    _ ≤ (C + 1) * ε * (A + 1) := by nlinarith
+    _ = η / 2 := hkey
+    _ < η := by linarith
 
 /-- **Test forms are Lipschitz in the Euclidean coefficient norm** (the constant `c` of the cone
 inequality, Simon Ch. 6, 2.27/2.30 as used in 8.2(4)–(6)).  `ω` is `C^∞` with compact support, so
