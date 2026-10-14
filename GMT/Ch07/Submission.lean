@@ -1319,6 +1319,139 @@ theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s
   rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
   exact hpos.ne' hkey.symm
 
+/-- **Cone chart** (steps 1–6 of the parent proof).  `Q = span T_pM` (`p = r₀u`) is a plane
+containing `u`; pick a unit `e ∈ Q` with `⟨u, e⟩ = 0`, so `Q = span {u, e}`.  The polar
+coordinates `F x = (‖x‖, arctan (⟨x, e⟩ / ⟨x, u⟩))` on `U = B_ρ(p) ∩ {⟨x, u⟩ > 0}` have `DF(p)`
+injective on `Q`, so `F` has a local inverse `G` on `M` near `p`.  Shrinking to a square
+`R_s = (r₀ − s, r₀ + s) × (−s, s)`, put `γ(α) = r₀⁻¹ G(r₀, α)`.  Radial invariance gives
+`G(t, α) = tγ(α)` on `R_s`, hence `span T_{tγ(α)}M = span {γ(α), γ′(α)}`; then `γ′(0) ∈ Q`,
+`⟨γ′(0), u⟩ = 0` and `⟨γ′(0), e⟩ = 1` (angle curve) give `γ′(0) = e`. -/
+theorem Submission.idtp_ccd_scsp_cone_chart : ∀ (P : ℕ) (M : Set (Euclid P)) (u : Euclid P) (r₀ ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → ‖u‖ = 1 → 0 < r₀ → r₀ • u ∈ M → 0 < ρ → (∀ x ∈ M ∩ ball (r₀ • u) ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball (r₀ • u) ρ → t • x ∈ M) → ∃ (e : Euclid P) (s : ℝ) (N : Set (Euclid P)) (γ : ℝ → Euclid P), ‖e‖ = 1 ∧ inner ℝ u e = 0 ∧ 0 < s ∧ s < r₀ ∧ IsOpen N ∧ r₀ • u ∈ N ∧ N ⊆ ball (r₀ • u) ρ ∧ (∀ x ∈ N, 0 < inner ℝ x u) ∧ ContDiffOn ℝ 1 γ (Ioo (-s) s) ∧ γ 0 = u ∧ deriv γ 0 = e ∧ (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) ∧ M ∩ N = (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) ∧ ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, Submodule.span ℝ (tangentSpace M (t • γ α)) = Submodule.span ℝ {γ α, deriv γ α} := by
+  intro P M u r₀ ρ hM hu hr₀ hp hρ hrad
+  have huu : inner ℝ u u = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hu, one_pow]
+  -- Step 1: `Q = span T_pM` is a plane containing `p = r₀u`, hence `u`
+  obtain ⟨hQ2, hpQ⟩ := Submission.idtp_ccd_scsp_tangent_plane_mem P M (r₀ • u) ρ hM hp hρ hrad
+  have huQ : u ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)) := by
+    simpa [inv_smul_smul₀ hr₀.ne'] using Submodule.smul_mem _ r₀⁻¹ hpQ
+  -- Step 2: a unit `e ∈ Q` with `⟨u, e⟩ = 0`, so that `v = ⟨v, u⟩u + ⟨v, e⟩e` on `Q`
+  obtain ⟨e, -, he1, hue, hdec⟩ :=
+    Submission.idtp_ccd_scsp_cc_plane_orthonormal P _ u hQ2 huQ hu
+  -- Step 3: polar coordinates `F` on `U = B_ρ(p) ∩ {⟨x, u⟩ > 0}`, `DF(p)h = (⟨u, h⟩, ⟨e, h⟩/r₀)`
+  obtain ⟨hFcd, hDF⟩ := Submission.idtp_ccd_scsp_cc_polar_map P u e r₀ hu hue hr₀
+  set F : Euclid P → Euclid 2 := fun x => !₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)]
+    with hF
+  set U : Set (Euclid P) := ball (r₀ • u) ρ ∩ {x | 0 < inner ℝ x u}
+  have hUo : IsOpen U := isOpen_ball.inter (isOpen_lt continuous_const (by fun_prop))
+  have hpU : r₀ • u ∈ U := by
+    refine ⟨mem_ball_self hρ, show 0 < inner ℝ (r₀ • u) u from ?_⟩
+    rw [real_inner_smul_left, huu, mul_one]
+    exact hr₀
+  have hUball : U ⊆ ball (r₀ • u) ρ := inter_subset_left
+  have hFU : ContDiffOn ℝ 1 F U := hFcd.mono fun x hx => hx.2
+  have hFp : F (r₀ • u) = !₂[r₀, 0] := by
+    simp only [hF, norm_smul, Real.norm_eq_abs, abs_of_pos hr₀, hu, mul_one, real_inner_smul_left,
+      hue, mul_zero, zero_div, Real.arctan_zero]
+  -- Step 4: `DF(p)` is injective on `Q`
+  have htrans : ∀ v ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)),
+      fderiv ℝ F (r₀ • u) v = 0 → v = 0 := by
+    intro v hv hv0
+    rw [hDF v] at hv0
+    have h0 : inner ℝ u v = (0 : ℝ) := congrArg (fun w : Euclid 2 => w 0) hv0
+    have h1 : inner ℝ e v = (0 : ℝ) := by
+      have h := congrArg (fun w : Euclid 2 => w 1) hv0
+      simpa [hr₀.ne'] using h
+    calc v = inner ℝ v u • u + inner ℝ v e • e := hdec v hv
+      _ = 0 := by rw [real_inner_comm u v, real_inner_comm e v, h0, h1, zero_smul, zero_smul,
+        add_zero]
+  -- Step 5: a local inverse `G` of `F` on `M` near `p`
+  obtain ⟨O, N₀, G, hO, hN₀, hFpO, hpN₀, hN₀U, hGcd, hGO, hFG, hTG⟩ :=
+    Submission.idtp_ccd_scsp_local_inverse P M (r₀ • u) U F hM hp hUo hpU hFU htrans
+  have hGp : G (F (r₀ • u)) = r₀ • u := by
+    obtain ⟨w, hw, hGw⟩ : r₀ • u ∈ G '' O := by rw [hGO]; exact ⟨hp, hpN₀⟩
+    rw [← hGw, hFG w hw]
+  -- Step 6: the square `R_s ⊆ O` and `N ⊆ U` with `M ∩ N = G(R_s)`
+  obtain ⟨s, N, hs0, hsr₀, hNo, hpN, hNU, hRO, hMN⟩ :=
+    Submission.idtp_ccd_scsp_cc_square_shrink P M U N₀ O F G (r₀ • u) r₀ hr₀ hUo
+      hFU.continuousOn hO hN₀ hFp hFpO hpN₀ hN₀U hGO hFG
+  set R : Set (Euclid 2) := {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s}
+  have hRo : IsOpen R :=
+    (isOpen_Ioo.preimage (by fun_prop)).inter (isOpen_Ioo.preimage (by fun_prop))
+  have hlineR : ∀ α ∈ Ioo (-s) s, (!₂[r₀, α] : Euclid 2) ∈ R := fun α hα =>
+    ⟨show r₀ ∈ Ioo (r₀ - s) (r₀ + s) from ⟨by linarith, by linarith⟩, hα⟩
+  -- Step 7: the curve `γ(α) = r₀⁻¹ G(r₀, α)`
+  set γ : ℝ → Euclid P := fun α => r₀⁻¹ • G !₂[r₀, α]
+  have hline : ContDiff ℝ 1 fun α : ℝ => (!₂[r₀, α] : Euclid 2) := by
+    rw [contDiff_piLp]
+    intro i
+    fin_cases i
+    · exact contDiff_const
+    · exact contDiff_id
+  have hγcd : ContDiffOn ℝ 1 γ (Ioo (-s) s) :=
+    (hGcd.comp hline.contDiffOn fun α hα => hRO (hlineR α hα)).const_smul r₀⁻¹
+  have hγ1 : ∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧
+      Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α := by
+    intro α hα
+    have hxN : G !₂[r₀, α] ∈ M ∩ N := by rw [hMN]; exact mem_image_of_mem G (hlineR α hα)
+    have hFx : F (G !₂[r₀, α]) = !₂[r₀, α] := hFG _ (hRO (hlineR α hα))
+    have hn : ‖G !₂[r₀, α]‖ = r₀ := congrArg (fun z : Euclid 2 => z 0) hFx
+    have ha : Real.arctan (inner ℝ (G !₂[r₀, α]) e / inner ℝ (G !₂[r₀, α]) u) = α :=
+      congrArg (fun z : Euclid 2 => z 1) hFx
+    have hpos : 0 < inner ℝ (G !₂[r₀, α]) u := (hNU hxN.2).2
+    refine ⟨?_, ?_, ?_⟩
+    · show ‖r₀⁻¹ • G !₂[r₀, α]‖ = 1
+      rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr₀, hn, inv_mul_cancel₀ hr₀.ne']
+    · show 0 < inner ℝ (r₀⁻¹ • G !₂[r₀, α]) u
+      rw [real_inner_smul_left]
+      exact mul_pos (inv_pos.mpr hr₀) hpos
+    · show Real.arctan (inner ℝ (r₀⁻¹ • G !₂[r₀, α]) e / inner ℝ (r₀⁻¹ • G !₂[r₀, α]) u) = α
+      rw [real_inner_smul_left, real_inner_smul_left,
+        mul_div_mul_left _ _ (inv_ne_zero hr₀.ne'), ha]
+  have hγ0 : γ 0 = u := by
+    show r₀⁻¹ • G !₂[r₀, 0] = u
+    rw [← hFp, hGp, inv_smul_smul₀ hr₀.ne']
+  -- Step 8: radial structure `G(t, α) = tγ(α)` on `R_s`, so `M ∩ N = {tγ(α)}`
+  have hγrad : ∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ G !₂[r₀, α] = r₀ • γ α ∧
+      ∀ t : ℝ, 0 < t → F (t • γ α) = !₂[t, α] := by
+    intro α hα
+    obtain ⟨hn, -, ha⟩ := hγ1 α hα
+    refine ⟨hn, (smul_inv_smul₀ hr₀.ne' _).symm, fun t ht => ?_⟩
+    show !₂[‖t • γ α‖, Real.arctan (inner ℝ (t • γ α) e / inner ℝ (t • γ α) u)] = !₂[t, α]
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht, hn, mul_one, real_inner_smul_left (γ α) e t,
+      real_inner_smul_left (γ α) u t, mul_div_mul_left _ _ ht.ne', ha]
+  obtain ⟨hGrad, hMNimg⟩ :=
+    Submission.idtp_ccd_scsp_cc_radial_extension P M N (r₀ • u) ρ r₀ s F G γ hs0 hsr₀ hNo
+      (hNU.trans hUball) hrad (hGcd.continuousOn.mono hRO) hMN
+      (fun w h0 h1 => hFG w (hRO ⟨h0, h1⟩)) hγrad
+  -- Step 9: tangent planes `span T_{tγ(α)}M = span {γ(α), γ′(α)}`
+  have hTan : ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s,
+      Submodule.span ℝ (tangentSpace M (t • γ α)) = Submodule.span ℝ {γ α, deriv γ α} := by
+    intro t ht α hα
+    have hwR : (!₂[t, α] : Euclid 2) ∈ R := ⟨ht, hα⟩
+    have hGw : G !₂[t, α] = t • γ α := hGrad _ ht hα
+    have hγd : DifferentiableAt ℝ γ α :=
+      (hγcd.differentiableOn one_ne_zero).differentiableAt (Ioo_mem_nhds hα.1 hα.2)
+    have ht0 : t ≠ 0 := (show 0 < t by linarith [ht.1]).ne'
+    rw [← hGw, hTG _ (hRO hwR),
+      Submission.idtp_ccd_scsp_cc_scaled_curve_range P γ G R t α hRo hwR
+        (fun w hw => hGrad w hw.1 hw.2) hγd ht0, Submodule.span_eq]
+  -- Step 10: `γ′(0) ∈ Q = span {u, e}` with `⟨γ′(0), u⟩ = 0` and `⟨γ′(0), e⟩ = 1`, so `γ′(0) = e`
+  have h0I : (0 : ℝ) ∈ Ioo (-s) s := ⟨by linarith, hs0⟩
+  obtain ⟨horth, hkey, -⟩ := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγcd hγ1 0 h0I
+  rw [hγ0, huu, hue] at hkey
+  rw [hγ0] at horth
+  have hde : inner ℝ (deriv γ 0) e = (1 : ℝ) := by linarith
+  have hdQ : deriv γ 0 ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)) := by
+    have h := hTan r₀ ⟨by linarith, by linarith⟩ 0 h0I
+    rw [hγ0] at h
+    rw [h]
+    exact Submodule.subset_span (mem_insert_of_mem _ (mem_singleton _))
+  have hγ'0 : deriv γ 0 = e := by
+    calc deriv γ 0 = inner ℝ (deriv γ 0) u • u + inner ℝ (deriv γ 0) e • e := hdec _ hdQ
+      _ = e := by rw [real_inner_comm u, horth, hde, zero_smul, one_smul, zero_add]
+  -- Step 11: collect
+  exact ⟨e, s, N, γ, he1, hue, hs0, hsr₀, hNo, hpN, hNU.trans hUball, fun x hx => (hNU hx).2,
+    hγcd, hγ0, hγ'0, hγ1, hMNimg, hTan⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
