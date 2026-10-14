@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f00b084a4a3a5a49a9092be2d91dcdb4815067bea2248b0a59c8f2a7ce71d982",
+  "git_delta": {
+    "base_commit": "a34dcaeae683302954a90af0dd60c2864d7ae572",
+    "candidate_commit": "c81ac4038949216ff4eb2170ada46c00181aa606",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "e001c2a88ad49105a54ed6443b9d360b3205293ea0cc8d856faca4384fa38b96",
+    "source_sha256": "7c9961c32fff4a1cb0030787c44f7b9ef57de3a17e35de616401bee6e5ed7488",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_radial_slice_bound",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ t σ : ℝ, R / 4 < t ∧ t < R / 2 ∧ ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ σ * s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
