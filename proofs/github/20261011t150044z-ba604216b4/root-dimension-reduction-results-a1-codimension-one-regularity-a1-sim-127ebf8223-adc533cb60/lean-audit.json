@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "106afcd27068c4c4e525991e4e0c88a24e36d5cb7e140f6df9281908261ebc18",
+  "git_delta": {
+    "base_commit": "a06f71a09ee87bb3782851aad6aae22cc1188b73",
+    "candidate_commit": "eca6ba6a718bf705cd88312d7a258c5e1765ccf6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_lsa_tangential_derivative_aesm",
+    "diff_sha256": "23efdea745e668a77a76144d21067fcc4f55c88fa860d04c1383171b98095809",
+    "source_sha256": "b627bb216cd0765c3887e719cd6d67aba10159d20bcbf5cb6787a487c908a022",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_lsa_tangential_derivative_aesm",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (ζ : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M ζ → AEStronglyMeasurable (fun x => (fderivWithin ℝ ζ M x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection) (μHE[m].restrict M)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
