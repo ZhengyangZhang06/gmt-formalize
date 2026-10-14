@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean and Submission.lean (all identical)",
+        "python3 over dag.json: list lean_name/lean_statement of root.lipschitz_pushforward_im-a1 children and all 235 lean_names; check lpf_tde_* candidates (no match); inspect lpf_c1_local_antilipschitz, lpf_lipschitz_localization, lpf_lli_countable_lipschitz_cover, lpf_raf_chart_preimage_null, lpf_raf_lla_disjoint_lipschitz_pieces, lpf_wtc_cat_fderiv_lower_bound (none has an identical type)",
+        "grep -rn lpf_tde GMT/ issue-workers.json DAG.md /tmp/all_names.json (no match)",
+        "verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') -> child scope prefix; verifier/lean_contract.validate_lean_statement on the 5 child statements (all valid)",
+        "grep -n 'def |theorem ' simongmt Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt, HasWeightedApproximateTangentSpaceAt.unique), Chapter03/Differential.lean, Chapter02/Lipschitz.lean (rademacher_ae_differentiableAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn)",
+        "grep Mathlib/Analysis/Calculus/Rademacher.lean (LipschitzOnWith.ae_differentiableWithinAt_of_mem); rg 'LocallyLipschitzOn' (LocallyLipschitzOn.exists_lipschitzOnWith_of_compact)",
+        "grep measurable_fderiv Mathlib/Analysis/Calculus/FDeriv/Measurable.lean; ContinuousLinearMap.instMeasurableSpace (borel) in MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean; Measurable.find in MeasureTheory/MeasurableSpace/Constructions.lean",
+        "grep NormedRing.inverse_continuousAt (Analysis/Normed/Ring/Units.lean); adjoint API incl. adjoint_comp_self_injective_iff (Analysis/InnerProductSpace/Adjoint.lean)",
+        "grep IsCompact.exists_cthickening_subset_open (Topology/MetricSpace/Thickening.lean); TopologicalSpace.isOpen_biUnion_countable (Topology/Bases.lean); EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean)",
+        "grep MeasurableSet.image_of_continuousOn_injOn (MeasureTheory/Constructions/Polish/Basic.lean); ContinuousOn.measurable_piecewise, Continuous.measurable2 (BorelSpace/Basic.lean); hasDerivAt_iff_isLittleO, HasDerivAt.le_of_lip' (Deriv/Basic.lean); HasFDerivAt.comp_hasDerivAt_of_eq (Deriv/Comp.lean); hasDerivAt_iff_tendsto_slope (Deriv/Slope.lean)",
+        "no-match: rg 'IsOpen.isSigmaCompact|IsSigmaCompact.measurableSet' in Mathlib snapshot (absent; Lusin–Souslin used instead)",
+        "sed -n 320,400p book/chapter-03.txt (Simon Ch. 3 §2, 2.1–2.2)",
+        "lake build GMT.Ch06.Submission; lake env lean /tmp/tde-decomp/{Stmts,Assembly,Proofs,ProofC1,ProofC3,ProofC5,Combined,FinalCheck,AssemblyExact}.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/tde-decomp/scope_prefix.txt",
+        "/tmp/tde-decomp/Stmts.lean",
+        "/tmp/tde-decomp/AssemblyExact.lean",
+        "/tmp/tde-decomp/FinalCheck.lean",
+        "/tmp/tde-decomp/Combined.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract. It is byte-identical to the workspace Contract and Submission.\n\nIn the comparator child scope (import GMT.Ch06.Submission plus the namespace and opens from contract_scope), the five proposed child statements elaborate and pass the lexical validator. The lpf_tde_* names are unused in the DAG, and no existing node has an identical type.\n\nWhat the proofs rely on:\n- **SimonGMT:** HasWeightedApproximateTangentSpaceAt and its .unique, Rademacher, and the Lipschitz image bound for μHE (Chapter02/Lipschitz euclideanHausdorffMeasure_image_le_of_lipschitzOn).\n- **Mathlib, analysis:** LipschitzOnWith.ae_differentiableWithinAt_of_mem, LocallyLipschitzOn.exists_lipschitzOnWith_of_compact, IsCompact.exists_cthickening_subset_open, hasDerivAt_iff_isLittleO, HasDerivAt.le_of_lip'.\n- **Mathlib, measurability:** measurable_fderiv (valid for an arbitrary f), the Borel instance on continuous linear maps, Measurable.find, Lusin–Souslin MeasurableSet.image_of_continuousOn_injOn, and μHE[n] = volume on Eucl n.\n- **Mathlib, linear algebra:** NormedRing.inverse_continuousAt and the adjoint API.\n\nIsOpen.isSigmaCompact and IsSigmaCompact.measurableSet are absent from this snapshot, so the C5 proof uses Lusin–Souslin (or the elementary rational-ball σ-compact argument) instead.\n\nKernel checks: the parent's exact frozen type was derived from the 5 child types plus the 2 uncle DAG types, with sorryAx coming only from those stubs. All 5 child statements were proved in scratch Lean using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1",
+  "child_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.chart_directional_deriv-a1",
+  "subproblem": {
+    "key": "chart_directional_deriv",
+    "title": "Directional derivative of a Lipschitz map along a chart (fact (DD))",
+    "statement": "Let ρ > 0, let f : ℝ^P → ℝ^Q be K-Lipschitz on the open ball B_ρ(Φ(w)) (K ≥ 0), let Φ : ℝⁿ → ℝ^P have Fréchet derivative A at w, and let f∘Φ have Fréchet derivative B at w. Then for every s ∈ ℝⁿ the map t ↦ f(Φ(w) + t·As) is differentiable at t = 0 with derivative Bs, and |Bs| ≤ K|As|.",
+    "lean_statement": "∀ (P Q n : ℕ) (f : Eucl P → Eucl Q) (Φ : Eucl n → Eucl P) (w : Eucl n) (A : Eucl n →L[ℝ] Eucl P) (B : Eucl n →L[ℝ] Eucl Q) (K : ℝ≥0) (ρ : ℝ), 0 < ρ → LipschitzOnWith K f (ball (Φ w) ρ) → HasFDerivAt Φ A w → HasFDerivAt (f ∘ Φ) B w → ∀ s : Eucl n, HasDerivAt (fun t : ℝ => f (Φ w + t • A s)) (B s) 0 ∧ ‖B s‖ ≤ (K : ℝ) * ‖A s‖",
+    "lean_name": "lpf_tde_chart_directional_deriv",
+    "depends_on": [],
+    "natural_proof": "Conventions. ℝ^m = EuclideanSpace ℝ (Fin m) (Lean `Eucl m`) with Euclidean norm |·| = ‖·‖; L(E, F) is the space of (continuous) linear maps with the operator norm; Hⁿ = μHE[n] is Mathlib's normalized n-dimensional Hausdorff measure (on ℝⁿ it equals Lebesgue measure Lⁿ = volume); B_ρ(x) is the open ball. This is the fact (DD) of the parent proof (Simon Ch. 2, 4.7–4.10; Simon Ch. 3 §2, p. 76), stated for a single chart point. Hypotheses: ρ > 0; f : ℝ^P → ℝ^Q is K-Lipschitz on B_ρ(Φ(w)) (K ≥ 0); Φ : ℝⁿ → ℝ^P has Fréchet derivative A at w; f∘Φ has Fréchet derivative B at w. Fix s ∈ ℝⁿ and write x := Φ(w). We prove (i) t ↦ f(x + tAs) has derivative Bs at t = 0 and (ii) |Bs| ≤ K|As|.\n\n1. (Chain rule along a line.) The affine map ℓ(t) := w + ts (t ∈ ℝ) has derivative s at t = 0 and ℓ(0) = w. By the chain rule for a Fréchet-differentiable map composed with a differentiable curve (Mathlib HasFDerivAt.comp_hasDerivAt_of_eq), γ(t) := Φ(w + ts) has derivative As at t = 0, and g(t) := (f∘Φ)(w + ts) = f(Φ(w + ts)) has derivative Bs at t = 0. In little-o form (Mathlib hasDerivAt_iff_isLittleO), as t → 0:\n   r(t) := Φ(w + ts) − x − tAs = o(t),   q(t) := f(Φ(w + ts)) − f(x) − tBs = o(t).\n\n2. (Both curves stay in the ball.) The curve t ↦ x + tAs is continuous with value x at t = 0, and γ is continuous at t = 0 (a curve with a derivative at a point is continuous there) with γ(0) = x. Since B_ρ(x) is an open neighbourhood of x (ρ > 0), there is δ > 0 such that x + tAs ∈ B_ρ(x) and Φ(w + ts) ∈ B_ρ(x) whenever |t| < δ.\n\n3. (The two curves have the same image under f up to o(t).) For |t| < δ both points lie in B_ρ(x), so the Lipschitz hypothesis gives\n   |f(x + tAs) − f(Φ(w + ts))| ≤ K|(x + tAs) − Φ(w + ts)| = K|−r(t)| = K|r(t)|.\n   Hence d(t) := f(x + tAs) − f(Φ(w + ts)) = O(r(t)), and since r(t) = o(t), d(t) = o(t) (big-O composed with little-o).\n\n4. (Derivative.) For every t, f(x + tAs) − f(x + 0·As) − (t − 0)Bs = d(t) + q(t), which is o(t) as the sum of two o(t) terms (steps 1 and 3). By hasDerivAt_iff_isLittleO this is exactly the statement HasDerivAt (t ↦ f(Φ(w) + t·As)) (Bs) 0, proving (i).\n\n5. (Bound.) For |t| < δ both x + tAs and x = x + 0·As lie in B_ρ(x), so |f(x + tAs) − f(x + 0·As)| ≤ K|tAs| = (K|As|)·|t − 0|. A function h : ℝ → ℝ^Q with derivative h′(0) at 0 that satisfies |h(t) − h(0)| ≤ C|t − 0| for all t in a neighbourhood of 0, with C ≥ 0, has |h′(0)| ≤ C: the difference quotients (h(t) − h(0))/t tend to h′(0) as t → 0, t ≠ 0, and all have norm ≤ C (Mathlib HasDerivAt.le_of_lip'). Applying this with h(t) = f(x + tAs), h′(0) = Bs (step 4) and C = K|As| ≥ 0 gives |Bs| ≤ K|As|, proving (ii). ∎",
+    "proof_key_steps": [
+      "Chain rule along the line t ↦ w + ts: Φ(w+ts) = Φ(w) + tAs + o(t) and f(Φ(w+ts)) = f(Φ(w)) + tBs + o(t).",
+      "For small |t| both Φ(w) + tAs and Φ(w+ts) lie in B_ρ(Φ(w)).",
+      "Lipschitz estimate: f(Φ(w)+tAs) − f(Φ(w+ts)) = O(Φ(w+ts) − Φ(w) − tAs) = o(t).",
+      "Adding the two o(t) terms gives HasDerivAt (t ↦ f(Φ(w)+tAs)) (Bs) 0.",
+      "|f(Φ(w)+tAs) − f(Φ(w))| ≤ K|As||t| near 0, so the derivative satisfies |Bs| ≤ K|As| (HasDerivAt.le_of_lip')."
+    ]
+  },
+  "audit": {
+    "key": "chart_directional_deriv",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and Lean type match, including the positive radius and both specified Fréchet derivatives. The chain rule, eventual ball membership, and Lipschitz comparison establish the required little-o remainder. The difference-quotient bound proves the norm inequality. This is a complete, non-circular proof."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-ch-4f8efa2336/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-ch-4f8efa2336/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-ch-4f8efa2336/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1",
+  "depth": 4,
+  "title": "Antilipschitz on an open neighbourhood gives the derivative lower bound c|s| ≤ |DΦ(w)s|",
+  "statement": "Let Q, n ∈ ℕ, Φ : ℝⁿ → ℝ^Q, Ω ⊆ ℝⁿ open, c ∈ ℝ and w ∈ Ω. Assume Φ is differentiable at w and c|v − v′| ≤ |Φ(v) − Φ(v′)| for all v, v′ ∈ Ω. Then c|s| ≤ |DΦ(w)s| for every s ∈ ℝⁿ, where DΦ(w) = fderiv ℝ Φ w and |·| is the Euclidean norm. (No sign condition on c is needed.)",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω : Set (Eucl n)) (c : ℝ) (w : Eucl n), IsOpen Ω → w ∈ Ω → DifferentiableAt ℝ Φ w → (∀ v ∈ Ω, ∀ v' ∈ Ω, c * ‖v - v'‖ ≤ ‖Φ v - Φ v'‖) → ∀ s : Eucl n, c * ‖s‖ ≤ ‖fderiv ℝ Φ w s‖",
+  "lean_name": "lpf_wtc_cat_fderiv_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9-a1"
+}

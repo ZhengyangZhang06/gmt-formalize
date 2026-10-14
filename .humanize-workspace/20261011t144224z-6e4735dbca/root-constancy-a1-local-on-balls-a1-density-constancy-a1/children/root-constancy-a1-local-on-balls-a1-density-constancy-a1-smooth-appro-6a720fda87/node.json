@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1.smooth_approx_identity-a1",
+  "parent_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1",
+  "depth": 4,
+  "title": "A smooth mollifier sequence whose mollifications converge a.e. for every locally integrable function",
+  "statement": "Let n ∈ ℕ. There are functions ψ_k : ℝⁿ → ℝ (k ∈ ℕ) such that for every k: ψ_k is C^∞; ψ_k has compact support; spt ψ_k ⊆ B̄_{1/(k+1)}(0), where spt is the closed support (Lean: tsupport); ψ_k ≥ 0; and ∫ ψ_k dLⁿ = 1. Moreover, for every locally Lⁿ-integrable g : ℝⁿ → ℝ, (g ∗ ψ_k)(x) := ∫ g(t) ψ_k(x − t) dLⁿ(t) → g(x) as k → ∞, for Lⁿ-a.e. x ∈ ℝⁿ. Here ℝⁿ = EuclideanSpace ℝ (Fin n), Lⁿ is Lebesgue measure (volume), and (g ∗ ψ_k)(x) is Lean's convolution g (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume x.",
+  "lean_statement": "∀ n : ℕ, ∃ ψ : ℕ → Eucl n → ℝ, (∀ k, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ψ k)) ∧ (∀ k, HasCompactSupport (ψ k)) ∧ (∀ k : ℕ, tsupport (ψ k) ⊆ closedBall 0 (1 / ((k : ℝ) + 1))) ∧ (∀ k y, 0 ≤ ψ k y) ∧ (∀ k, ∫ y, ψ k y ∂volume = 1) ∧ ∀ g : Eucl n → ℝ, LocallyIntegrable g volume → ∀ᵐ x ∂volume, Tendsto (fun k => convolution g (ψ k) (ContinuousLinearMap.lsmul ℝ ℝ) volume x) atTop (𝓝 (g x))",
+  "lean_name": "constancy_mdc_smooth_approx_identity_ae_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87-a1"
+}
