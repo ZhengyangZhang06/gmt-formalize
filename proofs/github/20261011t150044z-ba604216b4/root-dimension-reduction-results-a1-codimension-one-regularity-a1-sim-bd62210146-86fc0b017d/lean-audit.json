@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b71ac257d097ef3bb6527c1cc637398a8390999ccd4f34065a4633819f2fbbfd",
+  "git_delta": {
+    "base_commit": "71d1223139012c519f0d3cc1f041d331fbd65f7c",
+    "candidate_commit": "21ca36f7aa333d1cdefeaa486ea0f46e174a8110",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sr_graph_chart",
+    "diff_sha256": "880ce946c550d8a884509b342cc3baf8fe1efa1461808d4f0981e5b1c42e174c",
+    "source_sha256": "2fe516f5d0164445229bd75d7eb6e51832a5ec31ecc57dd3d6feb833f9a55ac1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sr_graph_chart",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (y : Euclid P), 1 ≤ m → IsEmbeddedSubmanifold 1 m M → y ∈ M → ∃ (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid (P - m) →ₗᵢ[ℝ] Euclid P), (∀ a b, inner ℝ (ι a) (ι' b) = 0) ∧ (∀ z : Euclid P, ∃ a b, z = ι a + ι' b) ∧ ∀ ε δ : ℝ, 0 < ε → 0 < δ → ∃ (s t : ℝ) (u : Euclid m → Euclid (P - m)), 0 < s ∧ 0 < t ∧ s + t ≤ δ ∧ ContDiffOn ℝ 1 u (ball 0 s) ∧ u 0 = 0 ∧ (∀ a ∈ ball (0 : Euclid m) s, ‖fderiv ℝ u a‖ ≤ ε ∧ ‖u a‖ < t) ∧ IsOpen {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} ∧ M ∩ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b} = (fun a => y + ι a + ι' (u a)) '' ball 0 s ∧ InjOn (fun a => y + ι a + ι' (u a)) (ball 0 s) ∧ (∀ a ∈ ball (0 : Euclid m) s, Injective (fderiv ℝ (fun a => y + ι a + ι' (u a)) a) ∧ tangentSpace M (y + ι a + ι' (u a)) = Set.range (fderiv ℝ (fun a => y + ι a + ι' (u a)) a)) ∧ ∀ K ⊆ {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t, z = y + ι a + ι' b}, IsCompact K → IsCompact (ball (0 : Euclid m) s ∩ (fun a => y + ι a + ι' (u a)) ⁻¹' K)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
