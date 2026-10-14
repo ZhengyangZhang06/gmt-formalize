@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Countable bi-Lipschitz partition.**  If `H : ℝⁿ → ℝᴾ` is differentiable with injective
+derivative at every point of a Borel set `B`, then `B` is the disjoint union of Borel sets `Cₗ`
+with `mₗ|a − a'| ≤ |H(a) − H(a')|` on `Cₗ` for some `mₗ > 0`.  An injective `A` satisfies
+`c(A)|v| ≤ |Av|` for some `c(A) > 0` (finite dimension); Mathlib's partition lemma, with radius
+`c(A)/2`, cuts `B` into Borel pieces on which `H` is `c(Aₗ)/2`-close to some `Aₗ = DH(y)`,
+`y ∈ B`, and the triangle inequality gives the bound with `mₗ = c(Aₗ)/2`. -/
+theorem Submission.dimred_mbl_pfi_bilipschitz_partition : ∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ (C : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ l, MeasurableSet (C l)) ∧ Pairwise (fun k l => Disjoint (C k) (C l)) ∧ (⋃ l, C l) = B ∧ (∀ l, 0 < m l) ∧ ∀ l, ∀ a ∈ C l, ∀ a' ∈ C l, m l * ‖a - a'‖ ≤ ‖H a - H a'‖ := by
+  intro P n H B hB hd
+  classical
+  -- coercivity constants of injective linear maps
+  have hcoer : ∀ A : Euclid n →L[ℝ] Euclid P, Injective A →
+      ∃ c : ℝ, 0 < c ∧ ∀ v, c * ‖v‖ ≤ ‖A v‖ := by
+    intro A hA
+    obtain ⟨K, hK0, hK⟩ := (A : Euclid n →ₗ[ℝ] Euclid P).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.mpr hA)
+    refine ⟨(K : ℝ)⁻¹, inv_pos.mpr hK0, fun v => ?_⟩
+    have h := hK.le_mul_dist v 0
+    simp only [dist_zero_right, map_zero, ContinuousLinearMap.coe_coe] at h
+    have hK0' : (0 : ℝ) < K := by exact_mod_cast hK0
+    rw [inv_mul_le_iff₀ hK0']
+    exact h
+  let c : (Euclid n →L[ℝ] Euclid P) → ℝ := fun A =>
+    if h : Injective A then Classical.choose (hcoer A h) else 1
+  have hc : ∀ A, 0 < c A := by
+    intro A
+    by_cases h : Injective A
+    · simp only [c, dite_eq_left h]; exact (Classical.choose_spec (hcoer A h)).1
+    · simp only [c, dite_eq_right h]; exact one_pos
+  have hcA : ∀ A : Euclid n →L[ℝ] Euclid P, Injective A → ∀ v, c A * ‖v‖ ≤ ‖A v‖ := by
+    intro A h v
+    simp only [c, dite_eq_left h]
+    exact (Classical.choose_spec (hcoer A h)).2 v
+  -- the partition radius `r(A) = c(A)/2`
+  let r : (Euclid n →L[ℝ] Euclid P) → NNReal := fun A => (c A / 2).toNNReal
+  have hr : ∀ A, (r A : ℝ) = c A / 2 := fun A => Real.coe_toNNReal _ (by linarith [hc A])
+  have rpos : ∀ A, r A ≠ 0 := fun A => (Real.toNNReal_pos.mpr (by linarith [hc A])).ne'
+  obtain ⟨t, A, hdisj, htm, hcov, happ, hrep⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt H B (fderiv ℝ H)
+      (fun x hx => (hd x hx).1.hasFDerivAt.hasFDerivWithinAt) r rpos
+  -- pieces `Cₗ = B ∩ tₗ`, constants `mₗ = r(Aₗ)`
+  refine ⟨fun l => B ∩ t l, fun l => r (A l), fun l => hB.inter (htm l), ?_, ?_,
+    fun l => ?_, fun l a ha a' ha' => ?_⟩
+  · intro k l hkl
+    exact (hdisj hkl).mono inter_subset_right inter_subset_right
+  · rw [← inter_iUnion]
+    exact inter_eq_left.mpr hcov
+  · have := hc (A l)
+    show 0 < (r (A l) : ℝ)
+    rw [hr]
+    linarith
+  -- lower bound: `Aₗ = DH(y)` is injective, and `H` is `c(Aₗ)/2`-close to `Aₗ` on `Cₗ`
+  · have hne : B.Nonempty := ⟨a, ha.1⟩
+    obtain ⟨y, hy, hAy⟩ := hrep hne l
+    have hinjA : Injective (A l) := hAy ▸ (hd y hy).2
+    have h1 := happ l a ha a' ha'
+    have h2 := hcA (A l) hinjA (a - a')
+    have h3 : ‖A l (a - a')‖ ≤ ‖H a - H a'‖ + ‖H a - H a' - A l (a - a')‖ := by
+      have := norm_sub_le (H a - H a') (H a - H a' - A l (a - a'))
+      simpa using this
+    show (r (A l) : ℝ) * ‖a - a'‖ ≤ ‖H a - H a'‖
+    rw [hr] at h1 ⊢
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
