@@ -490,6 +490,105 @@ theorem Submission.idtp_cse_etp_loc_frame_projection : ∀ (P : ℕ) (Q : Submod
       hea]
     ring
 
+/-- **Distance to `a` in polar form near the frame `(a, e)`.**  Let `Q ⊆ ℝᴾ` have dimension `2`,
+`a, e ∈ Q` be orthonormal and `π = π_Q`.  If `⟨x, a⟩ > 0`, then
+`|x − a| ≤ ||x| − 1| + |arctan(⟨x, e⟩/⟨x, a⟩)| + η + η²` with `η = |x − πx|/|x|`.  With `r = |x|`,
+`ρ = |πx|`, `x − a = (1 − r⁻¹)x + r⁻¹(x − πx) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a)`.  The first two terms
+have norms `|r − 1|` and `η`; Pythagoras gives `(ρ/r)² = 1 − η²`, so the third has norm
+`1 − ρ/r ≤ η²`.  As `πx = ⟨x, a⟩a + ⟨x, e⟩e`, `cos f = ⟨x, a⟩/ρ` for `f = arctan(⟨x, e⟩/⟨x, a⟩)`
+and `|ρ⁻¹πx − a|² = 2 − 2 cos f ≤ f²`. -/
+theorem Submission.idtp_cse_etp_loc_dist_bound : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ x : Euclid P, 0 < inner ℝ x a → dist x a ≤ |‖x‖ - 1| + |Real.arctan (inner ℝ x e / inner ℝ x a)| + ‖x - Q.starProjection x‖ / ‖x‖ + (‖x - Q.starProjection x‖ / ‖x‖) ^ 2 := by
+  intro P Q a e hQ ha he hna hne hae x hxa
+  -- Step 1: `⟨x, a⟩ > 0 = ⟨0, a⟩`, so `x ≠ 0` and `r = |x| > 0`
+  have hr0 : 0 < ‖x‖ := norm_pos_iff.2 fun hx0 => by
+    rw [hx0, inner_zero_left] at hxa
+    exact lt_irrefl _ hxa
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 2: the frame formula `πx = αa + βe`
+  have hπ : Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e :=
+    Submission.idtp_cse_etp_loc_frame_projection P Q a e hQ ha he hna hne hae x
+  -- Step 3: `πx ∈ Q` and `x − πx ⊥ Q`, so `⟨πx, x − πx⟩ = 0`
+  have horth : inner ℝ (Q.starProjection x) (x - Q.starProjection x) = (0 : ℝ) := by
+    rw [real_inner_comm]
+    exact Submodule.starProjection_inner_eq_zero x _ (Q.starProjection_apply_mem x)
+  generalize Q.starProjection x = p at hπ horth ⊢
+  generalize inner ℝ x a = α at hxa hπ ⊢
+  generalize inner ℝ x e = β at hπ ⊢
+  -- `⟨πx, a⟩ = α` and `ρ² = α² + β² > 0`
+  have hpa : inner ℝ p a = α := by
+    rw [hπ, inner_add_left, real_inner_smul_left, real_inner_smul_left, haa, hea]
+    ring
+  have hap : inner ℝ a p = α := by rw [real_inner_comm, hpa]
+  have hρsq : ‖p‖ ^ 2 = α ^ 2 + β ^ 2 := by
+    rw [← real_inner_self_eq_norm_sq, hπ]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hρ0 : 0 < ‖p‖ := norm_pos_iff.2 fun hp0 => by
+    rw [hp0, norm_zero] at hρsq
+    nlinarith [sq_nonneg β]
+  -- Step 3: Pythagoras `r² = ρ² + |x − πx|²`, so `ρ ≤ r`, `(ρ/r)² = 1 − η²` and `1 − ρ/r ≤ η²`
+  have hpyth : ‖x‖ ^ 2 = ‖p‖ ^ 2 + ‖x - p‖ ^ 2 := by
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+    rw [add_sub_cancel] at h
+    rw [sq, sq, sq, h]
+  have hρr : ‖p‖ ≤ ‖x‖ :=
+    (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      (by rw [hpyth]; exact le_add_of_nonneg_right (sq_nonneg _))
+  have hη2 : 1 - ‖p‖ / ‖x‖ ≤ (‖x - p‖ / ‖x‖) ^ 2 := by
+    have ht0 : 0 ≤ ‖p‖ / ‖x‖ := div_nonneg (norm_nonneg _) (norm_nonneg _)
+    have ht1 : ‖p‖ / ‖x‖ ≤ 1 := (div_le_one hr0).2 hρr
+    have htsq : (‖p‖ / ‖x‖) ^ 2 = 1 - (‖x - p‖ / ‖x‖) ^ 2 := by
+      rw [div_pow, div_pow, eq_sub_iff_add_eq, ← add_div, ← hpyth,
+        div_self (pow_ne_zero 2 hr0.ne')]
+    nlinarith [mul_le_mul_of_nonneg_left ht1 ht0]
+  -- Step 4: `√(1 + (β/α)²) = ρ/α`, so `cos f = α/ρ`
+  have hcos : Real.cos (Real.arctan (β / α)) = α / ‖p‖ := by
+    have h : 1 + (β / α) ^ 2 = (‖p‖ / α) ^ 2 := by
+      rw [div_pow, div_pow, hρsq, add_div, div_self (pow_ne_zero 2 hxa.ne')]
+    rw [Real.cos_arctan, h, Real.sqrt_sq (div_nonneg (norm_nonneg _) hxa.le), one_div_div]
+  -- Step 5: `x − a = (1 − r⁻¹)x + r⁻¹(x − πx) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a)`
+  have hdecomp : x - a = (1 - ‖x‖⁻¹) • x + ‖x‖⁻¹ • (x - p) + (‖x‖⁻¹ - ‖p‖⁻¹) • p +
+      (‖p‖⁻¹ • p - a) := by
+    module
+  -- Step 6(a): `|(1 − r⁻¹)x| = |r − 1|`
+  have h1 : ‖(1 - ‖x‖⁻¹) • x‖ = |‖x‖ - 1| := by
+    have h : (1 - ‖x‖⁻¹) * ‖x‖ = ‖x‖ - 1 := by rw [sub_mul, one_mul, inv_mul_cancel₀ hr0.ne']
+    rw [norm_smul, Real.norm_eq_abs, ← h, abs_mul, abs_norm]
+  -- Step 6(b): `|r⁻¹(x − πx)| = η`
+  have h2 : ‖‖x‖⁻¹ • (x - p)‖ = ‖x - p‖ / ‖x‖ := by
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_eq_div]
+  -- Step 6(c): `|(r⁻¹ − ρ⁻¹)πx| = 1 − ρ/r ≤ η²`
+  have h3 : ‖(‖x‖⁻¹ - ‖p‖⁻¹) • p‖ ≤ (‖x - p‖ / ‖x‖) ^ 2 := by
+    have h : |‖x‖⁻¹ - ‖p‖⁻¹| * ‖p‖ = 1 - ‖p‖ / ‖x‖ := by
+      rw [abs_of_nonpos (sub_nonpos.2 (inv_anti₀ hρ0 hρr)), neg_sub, sub_mul,
+        inv_mul_cancel₀ hρ0.ne', inv_mul_eq_div]
+    rw [norm_smul, Real.norm_eq_abs, h]
+    exact hη2
+  -- Step 6(d): `|ρ⁻¹πx − a|² = 2 − 2 cos f ≤ f²`
+  have h4 : ‖‖p‖⁻¹ • p - a‖ ≤ |Real.arctan (β / α)| := by
+    have hsq : ‖‖p‖⁻¹ • p - a‖ ^ 2 = 2 - 2 * (α / ‖p‖) := by
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, hpa,
+        hap, haa]
+      rw [real_inner_self_eq_norm_sq]
+      field_simp
+      ring
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (abs_nonneg _) two_ne_zero).1 ?_
+    rw [hsq, sq_abs, ← hcos]
+    linarith [Real.one_sub_sq_div_two_le_cos (x := Real.arctan (β / α))]
+  -- Step 7: the triangle inequality
+  calc dist x a = ‖x - a‖ := dist_eq_norm x a
+    _ = ‖(1 - ‖x‖⁻¹) • x + ‖x‖⁻¹ • (x - p) + (‖x‖⁻¹ - ‖p‖⁻¹) • p + (‖p‖⁻¹ • p - a)‖ := by
+      rw [← hdecomp]
+    _ ≤ ‖(1 - ‖x‖⁻¹) • x‖ + ‖‖x‖⁻¹ • (x - p)‖ + ‖(‖x‖⁻¹ - ‖p‖⁻¹) • p‖ + ‖‖p‖⁻¹ • p - a‖ :=
+      norm_add₄_le
+    _ ≤ |‖x‖ - 1| + |Real.arctan (β / α)| + ‖x - p‖ / ‖x‖ + (‖x - p‖ / ‖x‖) ^ 2 := by
+      rw [h1, h2]
+      linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
