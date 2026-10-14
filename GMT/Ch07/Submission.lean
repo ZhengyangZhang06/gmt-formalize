@@ -451,6 +451,29 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Mean deviation is bounded by the double-integral oscillation** (step 4 of the BV Poincaré
+inequality on cubes, cf. Simon Ch. 2, 2.7).  If `vol(S) = 1` and `u` is integrable on `S`, then,
+with `c = ∫_S u`, `∫_S |u − c| ≤ ∫_S ∫_S |u(x) − u(y)| dy dx`.  `μ = vol⌞S` is a probability
+measure, so `u(x) − c = ∫_S (u(x) − u(y)) dy` and `|u(x) − c| ≤ ∫_S |u(x) − u(y)| dy`; the right
+side is integrable in `x` (Fubini), and integrating over `S` gives the claim. -/
+theorem Submission.cmcdt_cbm_bvp_mean_dev_le_osc : ∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y| := by
+  intro m S u hS hu
+  -- `μ = vol⌞S` is a probability measure, since `μ univ = vol S = 1`
+  have : IsProbabilityMeasure (volume.restrict S) := ⟨by rw [Measure.restrict_apply_univ, hS]⟩
+  have hSr : volume.real S = 1 := by rw [measureReal_def, hS, ENNReal.toReal_one]
+  have huS : Integrable u (volume.restrict S) := hu
+  -- Fubini: `x ↦ ∫_S |u x - u y| dy` is integrable on `S`
+  have hg : Integrable (fun x => ∫ y in S, |u x - u y|) (volume.restrict S) :=
+    ((huS.comp_fst (volume.restrict S)).sub
+      (huS.comp_snd (volume.restrict S))).abs.integral_prod_left
+  refine integral_mono_of_nonneg (Eventually.of_forall fun x => abs_nonneg _) hg
+    (Eventually.of_forall fun x => ?_)
+  -- for fixed `x`, `u x - c = ∫_S (u x - u y) dy`, hence `|u x - c| ≤ ∫_S |u x - u y| dy`
+  have hx : ∫ y in S, (u x - u y) = u x - ∫ y in S, u y := by
+    rw [integral_sub (integrable_const _) huS, setIntegral_const, hSr, one_smul]
+  calc |u x - ∫ y in S, u y| = |∫ y in S, (u x - u y)| := by rw [hx]
+    _ ≤ ∫ y in S, |u x - u y| := abs_integral_le_integral_abs
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
