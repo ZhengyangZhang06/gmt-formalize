@@ -1489,6 +1489,104 @@ theorem Submission.codim1_hcp_fv_jacobian_minimal_stationary : ∀ (P m : ℕ) (
     simp only [hτ_def, hD, ContinuousLinearMap.toLinearMap_zero, LinearMap.comp_zero, map_zero]
   rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMmeas inter_subset_left hzero]
   exact hI0
+/-- Simon Ch. 2, §5 (p. 63), stationarity tested with `C¹` fields: if `M` is an embedded `C¹`
+`m`-submanifold with `Hᵐ(M ∩ K) < ∞` for compact `K ⊆ U` and `∫_M div_M Z dHᵐ = 0` for every `C^∞`
+field `Z` with compact support in `U`, then the same holds for every `C¹` such field `X`.  The `C^∞`
+maps `ψₖ → id + X` of `dpf_smooth_approx_compact_perturbation` equal `id` off one compact `K' ⊆ U`,
+so `Xₖ = ψₖ − id` are admissible, `‖DXₖ‖ ≤ C + 1`, `DXₖ = 0` off `K'` and `DXₖ → DX` pointwise.
+With `dim T_xM = m`, `|div_M Xₖ| ≤ m(C + 1)·1_{K'}`, which is `Hᵐ⌞M`-integrable, so dominated
+convergence gives `∫_M div_M X = lim ∫_M div_M Xₖ = 0`. -/
+theorem Submission.codim1_hcp_fv_smooth_to_C1_stationary : ∀ (P m : ℕ) (U M : Set (Euclid P)), IsOpen U → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ Z x).toLinearMap) ∂μHE[m] = 0) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0 := by
+  intro P m U M hU hM hfin hsmooth X hX hXc hXU
+  -- Step 1: `M` is Borel, `dim T_xM = m` on `M`, and `div_M Y` is continuous on `M` for `C¹` `Y`
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  obtain ⟨hfr, -, hdivc⟩ := Submission.codim1_hcp_fv_tangent_projection_continuousOn P m M hM
+  -- Step 2: `C^∞` maps `ψ k` equal to `id` off one compact `K' ⊆ U`, with `‖Dψ k‖ ≤ C` and
+  -- `Dψ k → D(id + X)` pointwise
+  obtain ⟨ψ, K', C, hK', hK'U, hψs, hψid, hψC, -, hψD⟩ :=
+    Submission.dpf_smooth_approx_compact_perturbation P U (tsupport X) (fun x => x + X x) hU hXc
+      hXU (contDiff_id.add hX) (fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx])
+  -- Step 3: the `C^∞` fields `Xk k = ψ k - id` vanish off `K'`, so `∫_M div_M (Xk k) = 0`
+  set Xk : ℕ → Euclid P → Euclid P := fun k x => ψ k x - x
+  have hXks : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (Xk k) := fun k => (hψs k).sub contDiff_id
+  have hXk0 : ∀ k x, x ∉ K' → Xk k x = 0 := fun k x hx => by simp [Xk, hψid k x hx]
+  have hXkts : ∀ k, tsupport (Xk k) ⊆ K' := fun k =>
+    closure_minimal (support_subset_iff'.2 (hXk0 k)) hK'.isClosed
+  have hstat : ∀ k, ∫ x in M, LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ (Xk k) x).toLinearMap) ∂μHE[m] = 0 := fun k =>
+    hsmooth (Xk k) (hXks k) (HasCompactSupport.intro hK' (hXk0 k)) ((hXkts k).trans hK'U)
+  -- Step 4: `D(Xk k) = Dψ k - I`, so `‖D(Xk k)‖ ≤ C + 1`, `D(Xk k) → DX` and `D(Xk k) = 0` off `K'`
+  have hψd : ∀ k, Differentiable ℝ (ψ k) := fun k => (hψs k).differentiable (by simp)
+  have hDXk : ∀ k x, fderiv ℝ (Xk k) x = fderiv ℝ (ψ k) x - ContinuousLinearMap.id ℝ (Euclid P) :=
+    fun k x => ((hψd k x).hasFDerivAt.sub (hasFDerivAt_id x)).fderiv
+  have hDφ : ∀ x, fderiv ℝ (fun x => x + X x) x =
+      ContinuousLinearMap.id ℝ (Euclid P) + fderiv ℝ X x :=
+    fun x => ((hasFDerivAt_id x).add ((hX.differentiable one_ne_zero) x).hasFDerivAt).fderiv
+  have hconv : ∀ x, Tendsto (fun k => fderiv ℝ (Xk k) x) atTop (𝓝 (fderiv ℝ X x)) := by
+    intro x
+    have h := (hψD x).sub_const (ContinuousLinearMap.id ℝ (Euclid P))
+    rw [hDφ x, add_sub_cancel_left] at h
+    simpa only [hDXk] using h
+  have hDXkb : ∀ k x, ‖fderiv ℝ (Xk k) x‖ ≤ C + 1 := by
+    intro k x
+    rw [hDXk]
+    exact (norm_sub_le _ _).trans (add_le_add (hψC k x) ContinuousLinearMap.norm_id_le)
+  have hDXk0 : ∀ k x, x ∉ K' → fderiv ℝ (Xk k) x = 0 := fun k x hx =>
+    fderiv_of_notMem_tsupport ℝ fun h => hx (hXkts k h)
+  -- Step 5: the dominating function `g = m (C + 1) 1_{K'}` is integrable, `Hᵐ(M ∩ K') < ∞`
+  set g : Euclid P → ℝ := K'.indicator (fun _ => (m : ℝ) * (C + 1)) with hg_def
+  have hg : Integrable g (μHE[m].restrict M) := by
+    rw [hg_def, integrable_indicator_iff hK'.isClosed.measurableSet]
+    refine integrableOn_const ?_
+    rw [Measure.restrict_apply hK'.isClosed.measurableSet, inter_comm]
+    exact hfin K' hK' hK'U
+  -- `|div_M (Xk k)| ≤ dim T_xM ‖D(Xk k)‖ ≤ m (C + 1)` on `M ∩ K'`, and `div_M (Xk k) = 0` off `K'`
+  have hbound : ∀ k, ∀ᵐ x ∂(μHE[m].restrict M), ‖LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ (Xk k) x).toLinearMap)‖ ≤ g x := by
+    intro k
+    filter_upwards [ae_restrict_mem hMmeas] with x hx
+    by_cases hxK : x ∈ K'
+    · rw [hg_def, indicator_of_mem hxK, Real.norm_eq_abs]
+      have h := Submission.codim1_hcp_fv_trace_comp_abs_le P
+        (Submodule.span ℝ (tangentSpace M x)) (fderiv ℝ (Xk k) x)
+      rw [hfr x hx] at h
+      exact h.trans (mul_le_mul_of_nonneg_left (hDXkb k x) (Nat.cast_nonneg m))
+    · rw [hg_def, indicator_of_notMem hxK, hDXk0 k x hxK]
+      simp
+  -- Step 6: `div_M (Xk k) → div_M X` pointwise, `L ↦ trace (P_x ∘ L)` being linear on a
+  -- finite-dimensional space
+  have hlim : ∀ᵐ x ∂(μHE[m].restrict M), Tendsto (fun k => LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ (Xk k) x).toLinearMap)) atTop
+      (𝓝 (LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ X x).toLinearMap))) := by
+    refine Eventually.of_forall fun x => ?_
+    have htr : Continuous (fun T : Euclid P →L[ℝ] Euclid P =>
+        LinearMap.trace ℝ (Euclid P) (T : Euclid P →ₗ[ℝ] Euclid P)) :=
+      LinearMap.continuous_of_finiteDimensional
+        ((LinearMap.trace ℝ (Euclid P)).comp (ContinuousLinearMap.coeLM ℝ))
+    have hF : Continuous (fun L : Euclid P →L[ℝ] Euclid P => LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ L.toLinearMap)) := by
+      have := htr.comp (Continuous.clm_comp
+        (g := fun _ : Euclid P →L[ℝ] Euclid P =>
+          (Submodule.span ℝ (tangentSpace M x)).starProjection)
+        (f := id) continuous_const continuous_id)
+      refine this.congr fun L => ?_
+      simp only [Function.comp_apply, id]
+      rfl
+    exact (hF.tendsto _).comp (hconv x)
+  -- Step 7: `div_M (Xk k)` is continuous on the Borel set `M`, hence measurable
+  have hmeas : ∀ k, AEStronglyMeasurable (fun x => LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ (Xk k) x).toLinearMap)) (μHE[m].restrict M) :=
+    fun k => (hdivc (Xk k) ((hXks k).of_le (by exact_mod_cast le_top))).aestronglyMeasurable hMmeas
+  -- Step 8: dominated convergence, `∫_M div_M X = lim ∫_M div_M (Xk k) = 0`
+  have hT := tendsto_integral_of_dominated_convergence g hmeas hg hbound hlim
+  simp only [hstat] at hT
+  exact tendsto_nhds_unique hT tendsto_const_nhds
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
