@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5055cbf82ef6fc5b66f989cca8716b25dead80efd0b649e0dda9f87395a5885d",
+  "git_delta": {
+    "base_commit": "bf0a7bbede0eb3cf0dccede15e881fcdfff1612d",
+    "candidate_commit": "678116071ec9916c76b548a1f15bb922636c3d2f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4ca45a01598adddb6036a476f8d508137ae6c2c15ecea7e4237fa3059ad591ac",
+    "source_sha256": "3d6284376d7bffc0faaae99e52d408d838a60ffaad1a880eaca69caff4a15eab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_jacobian_weak_continuity",
+      "statement": "∀ (k N' : ℕ) (A : Set (Euclid k)) (w : Euclid k → ℝ) (L : NNReal) (Hs : ℕ → Euclid k → Euclid N') (H : Euclid k → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k), MeasurableSet A → IntegrableOn w A → (∀ j, LipschitzWith L (Hs j)) → LipschitzWith L H → TendstoUniformly Hs H atTop → Tendsto (fun j => ∫ u in A, w u * (ω : DifferentialForm (Euclid N') k) (Hs j u) (fun i => fderiv ℝ (Hs j) u (EuclideanSpace.single i (1 : ℝ)))) atTop (𝓝 (∫ u in A, w u * (ω : DifferentialForm (Euclid N') k) (H u) (fun i => fderiv ℝ H u (EuclideanSpace.single i (1 : ℝ)))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
