@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1eba39fdf29d7239e904ec36803072fd7739bf0d4421b5c2d153ab1204d501d7",
+  "git_delta": {
+    "base_commit": "6b742b4cddce67ebe957c8ead489228dfa4b7bd3",
+    "candidate_commit": "8c17685546420f4008d11090e579d524263584b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_tm_support_blowup",
+    "diff_sha256": "58a7df66908563eba19ac94439b36d3f755b0f71e6cab2214b1aa1113c282f0b",
+    "source_sha256": "6403b45f24488fa5adba6dfd23f6a2b38adb2e9063ba24a070af5c72234f157c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_tm_support_blowup",
+      "statement": "DensityAndTangentCones → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → p ∈ T.support → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ IsConeCurrent C ∧ RC.Represents C ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
