@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_to_rectifiable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "Uniform density and cone bounds imply countable n-rectifiability (Simon Ch. 3, proof of 1.6 ⇐: net, (10), Lipschitz graphs)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, E ⊆ ℝ^P, Q : ℝ^P → linear subspaces and a, b, δ real with a > 0, b·16ⁿ < a and δ > 0. Assume dim Q(x) = n for x ∈ E, ofReal(aρⁿ) ≤ μ(B̄_ρ(y)) for all y ∈ E and 0 < ρ < δ, and μ(X(x) ∩ B_ρ(x)) ≤ ofReal(bρⁿ) for all x ∈ E and 0 < ρ < δ, where X(x) := {z : 2|p_{Q(x)}(z − x)| < |z − x|}. Then E is countably n-rectifiable (SimonGMT CountablyRectifiable n E).",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → 0 < δ → (∀ x ∈ E, Module.finrank ℝ (Q x) = n) → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → CountablyRectifiable n E",
+  "lean_name": "cbrr_rectifiable_of_uniform_density",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.plane_net-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_claim-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.lipschitz_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.plane_net-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_claim-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.lipschitz_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2b6879f8f2-a1"
+}
