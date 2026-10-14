@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d35bf397918b610c07ce3d1ba0797747e5a8f18355355bd253b45a492c08c09d",
+  "git_delta": {
+    "base_commit": "21c09cbfd29d3c76892df1a210bce2712d6c9d67",
+    "candidate_commit": "44f67ec41753ecf3810cb7fe6bb9f69af321743c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cc_support_subset_iff_measure",
+    "diff_sha256": "bafddcae586eb30038edd438aa2f14c84a633a6328d3541b130671dc65d3a773",
+    "source_sha256": "3c3ddd9e1a7a66d6027e0c6089b1369481db5e65e80801eca90d643861efafd9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure",
+      "statement": "∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents T → IsClosed F → (T.support ⊆ F ↔ R.measure Fᶜ = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
