@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "normDet_nonneg|normDet_sq_eq_det_gram|def gram|basisFun_apply",
+        "lipschitzOnWith_of_nnnorm_fderiv_le|image_of_continuousOn_injOn|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integrableOn_of_bounded|bounded_above_of_compact_support|IsBounded.measure_lt_top|fderivWithin_of_isOpen|euclideanHausdorffMeasure_eq_volume",
+        "rg -n --glob '*.lean' 'lpf_wtc_caf|chart_area_formula|areaJacobianWithin|weighted_area_formula|normDet' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "sed -n '1,175p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "lpf_wtc_caf_lipschitz_localization",
+        "lpf_wtc_caf_signed_of_lintegral",
+        "python3 run_lean.py Scope.lean",
+        "python3 run_lean.py Challenge1.lean",
+        "python3 run_lean.py Challenge2.lean",
+        "python3 run_lean.py ChallengeParent.lean",
+        "python3 run_lean.py Child1.lean",
+        "python3 run_lean.py Child2.lean",
+        "python3 run_lean.py Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8d37e9b354/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-8d37e9b354/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-1f4173ea67/rlcr-plan-v1.md",
+        ".humanize/swarm-configs/d4189542010e4a94b179db9735b9ab4d.json",
+        "/tmp/caf_independent_audit__6vnzstg/Scope.lean",
+        "/tmp/caf_independent_audit__6vnzstg/Challenge1.lean",
+        "/tmp/caf_independent_audit__6vnzstg/Challenge2.lean",
+        "/tmp/caf_independent_audit__6vnzstg/ChallengeParent.lean",
+        "/tmp/caf_independent_audit__6vnzstg/Child1.lean",
+        "/tmp/caf_independent_audit__6vnzstg/Child2.lean",
+        "/tmp/caf_independent_audit__6vnzstg/Assembly.lean"
+      ],
+      "conclusion": "Confirmed the project and Mathlib pins and byte compatibility of the inspected Mathlib files; SimonGMT is at 2b3663083f3fe399b6296fb8eaee52169170e197 with no tracked changes. The snapshot project search found no matching chart-area or proposed child declaration. Neither name is reserved in the DAG, other decomposition proposals, or 275 run branch heads. Both are valid bare identifiers. Comparator-generated challenge types elaborate against the unchanged base, with neither child implemented. Independently recompiling both supplied child proofs, the exact frozen parent assembly, and its comparator target succeeded; their axiom dependencies are only propext, Classical.choice and Quot.sound, as are those of the reused weighted area formula. The split is appropriate: independent import-free localization and signed-transfer obligations support this selected parent, while its Jacobian identification and nonnegative identity use the additional AreaDomain import. Dependencies are acyclic and correctly directed. The active configuration allows 1000 nodes and depth 6, permitting these two depth-4 children. The frozen Matrix.of Gram determinant is preserved; no problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree on all hypotheses and conclusions. The proof handles the empty case, constructs the bounded open piece using the positive lower Lipschitz bound, and bounds the derivative on a compact convex ball. Global C¹ regularity justifies using that ball even outside Ω. The mean value inequality and restriction prove the required Lipschitz conclusion. No parent or sibling theorem is assumed."
+    },
+    {
+      "key": "signed_of_lintegral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact one-line proposition agree, including the nonnegative identity for every measurable ENNReal-valued weight. Applying it to 1 proves finite image measure; compactness and continuity provide the bounds needed for both integrability claims. Applying it to ofReal(h) and ofReal(−h), using J ≥ 0, proves the signed identity. Lusin–Souslin and support containment justify extension to Ω and Φ(Ω). The parent independently supplies the assumed nonnegative identity from the pinned weighted area formula, so there is no circularity or missing child dependency."
+    }
+  ],
+  "required_changes": []
+}

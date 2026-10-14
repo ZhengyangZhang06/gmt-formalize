@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward_im-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1",
+  "depth": 4,
+  "title": "Lipschitz push-forwards of integer multiplicity currents are integer multiplicity, given (S5′) (supplied 2.6, 5.9; parent I.7)",
+  "statement": "Assume (S5′), verbatim the premise of the parent statement: for all P, Q, k, every X = τ(M, θ, ξ) ∈ D_k(ℝ^P) (IsRectifiableTriple univ k M θ ξ, θ natural-valued on M, X(ω) = tauAction k M θ ξ ω for all ω) and every Λ-Lipschitz g : ℝ^P → ℝ^Q with g⁻¹(K) ∩ spt X compact for compact K, there is S ∈ D_k(ℝ^Q) with IsLipschitzPushforward X g S, IsIntegerMultiplicity S, and ∫_M θ(x)·nVectorPushforward k (fderiv ℝ g_j x) (ξ x) (ω(g_j x)) dH^k(x) → S(ω) for every sequence of C¹ maps g_j with a common Lipschitz bound converging uniformly to g and every ω. For g : ℝ^p → ℝ^q, ω ∈ D^j(ℝ^q), η ∈ D^j(ℝ^p) and A ⊆ ℝ^p, 'η is compatible with (g, ω) near A' means: there is an open N ⊇ A with η(x) = ω(g(x)).compContinuousLinearMap (fderiv ℝ g x) for all x ∈ N. For X ∈ D_k(ℝ^m), G : ℝ^m → ℝ^{m′} and S ∈ D_k(ℝ^{m′}), LipPF(X, G, S) means: for every sequence (G_n) of C^∞ maps ℝ^m → ℝ^{m′} (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)), every open O ⊇ spt X and every L ∈ ℝ such that eventually ‖fderiv ℝ G_n x‖ ≤ L for all x ∈ O, and G_n → G uniformly on O, and for every ω ∈ D^k(ℝ^{m′}) and every sequence (η_n) in D^k(ℝ^m) such that eventually η_n is compatible with (G_n, ω) near spt X, the sequence X(η_n) converges to S(ω). Then for all m, m′, k ∈ ℕ, every integer multiplicity X ∈ D_k(ℝ^m), G : ℝ^m → ℝ^{m′}, Λ ∈ ℝ≥0, r > 0 such that G is Λ-Lipschitz on thickening r (spt X) and G⁻¹(K) ∩ spt X is compact for every compact K, and every S ∈ D_k(ℝ^{m′}) with LipPF(X, G, S): S is integer multiplicity.",
+  "lean_statement": "(∀ (P Q k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) k) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → (∀ x ∈ M, ∃ j : ℕ, θ x = j) → (∀ ω : TestFormOn (univ : Set (Eucl P)) k, X ω = tauAction k M θ ξ ω) → ∀ (g : Eucl P → Eucl Q) (Λ : ℝ≥0), LipschitzWith Λ g → (∀ K : Set (Eucl Q), IsCompact K → IsCompact (g ⁻¹' K ∩ X.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl Q)) k, IsLipschitzPushforward X g S ∧ IsIntegerMultiplicity S ∧ ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : TestFormOn (univ : Set (Eucl Q)) k, Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) ((ω : DifferentialForm (Eucl Q) k) (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (S ω))) → ∀ (m m' k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (S : GeometricCurrentOn (univ : Set (Eucl m')) k), IsIntegerMultiplicity X → 0 < r → LipschitzOnWith Λ G (thickening r X.support) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ X.support)) → (∀ (Gj : ℕ → Eucl m → Eucl m') (O : Set (Eucl m)) (L : ℝ), IsOpen O → X.support ⊆ O → (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) → (∀ᶠ n in atTop, ∀ x ∈ O, ‖fderiv ℝ (Gj n) x‖ ≤ L) → TendstoUniformlyOn Gj G atTop O → ∀ (ω : TestFormOn (univ : Set (Eucl m')) k) (ηj : ℕ → TestFormOn (univ : Set (Eucl m)) k), (∀ᶠ n in atTop, ∃ N : Set (Eucl m), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (ηj n : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (Gj n x)).compContinuousLinearMap (fderiv ℝ (Gj n) x)) → Tendsto (fun n => X (ηj n)) atTop (𝓝 (S ω))) → IsIntegerMultiplicity S",
+  "lean_name": "dph_lipschitz_pushforward_im",
+  "depends_on": [
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_approx-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1-a1",
+      "result_commit": "fd5f1e29719e3bfa62df774678e3c6879599f8f9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1-a1",
+      "result_commit": "05cea8b8ad1f07d303f70474c979079534afe1bf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-a632d9c646-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.structure_projection-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "A rotation making all coordinate projections of a purely unrectifiable set null (Simon 3, Structure Theorem 3.6, as used in 8.1)",
+  "statement": "For P, m ∈ ℕ and n := m + 1, let A ⊆ ℝ^P be purely n-unrectifiable (every countably n-rectifiable subset of A has Hⁿ-measure 0) and Hⁿ-σ-finite (A ⊆ ⋃_{j∈ℕ} S_j with Hⁿ(S_j) < ∞ for all j). Then there is a linear isometry Q of ℝ^P such that Lⁿ(p_α(Q(A))) = 0 for every α ∈ I(n,P), where p_α(x) = (x^{α(1)}, …, x^{α(n)}) and Lⁿ is Lebesgue measure on ℝⁿ.",
+  "lean_statement": "∀ (P m : ℕ) (A : Set (Eucl P)), Poincare.SimonGMT.Chapter03.PurelyUnrectifiable (m + 1) A → (∃ S : ℕ → Set (Eucl P), A ⊆ ⋃ j, S j ∧ ∀ j, (μHE[m + 1] : Measure (Eucl P)) (S j) < ∞) → ∃ Q : Eucl P ≃ₗᵢ[ℝ] Eucl P, ∀ α : SimonMultiIndex (m + 1) P, (volume : Measure (Eucl (m + 1))) ((fun x : Eucl P => (WithLp.toLp 2 (fun i : Fin (m + 1) => Q x (α i)) : Eucl (m + 1))) '' A) = 0",
+  "lean_name": "rectifiability_structure_projection",
+  "depends_on": [
+    "root.rectifiability-a1.bf_projection_null_ae-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.bf_projection_null_ae-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-structure-projection-a1-a1"
+}

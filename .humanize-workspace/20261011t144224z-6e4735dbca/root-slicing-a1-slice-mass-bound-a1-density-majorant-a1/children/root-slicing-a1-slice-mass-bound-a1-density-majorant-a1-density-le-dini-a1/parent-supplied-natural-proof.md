@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_mass_bound-a1.density_majorant-a1`
+- Child DAG node: `root.slicing-a1.slice_mass_bound-a1.density_majorant-a1.density_le_dini-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 4 ((5a): Λ(t) ≤ D(t)), parts (a)–(d), together with Step 2(a),(b) (monotonicity and increments of G). Here it is stated for an arbitrary Borel measure ν with ν((a,b)) < ∞. In the parent, the right-hand side is D(t) and the claim is Λ(t) ≤ D(t).
+
+Setting. Fix t ∈ (a,b). For r ∈ ℝ let A_r := (a,b) ∩ (−∞, r] and G(r) := (ν(A_r)).toReal. For h ∈ ℝ put φ(h) := ν([t − h, t])/ofReal(h) and Λ := liminf_{h→0+} φ(h). For k ∈ ℝ put F(k) := ofReal((G(t) − G(t − k))/k) and D := liminf_{k→0+} F(k). Both liminfs are along 𝓝[>] 0 in [0, ∞].
+
+1. (Finiteness and monotonicity; Step 2(a).) For every r, A_r ⊆ (a,b), so ν(A_r) ≤ ν((a,b)) < ∞. If r ≤ r′, then A_r ⊆ A_{r′}, so ν(A_r) ≤ ν(A_{r′}). Both values are finite, so G(r) ≤ G(r′) (`ENNReal.toReal_mono`). Thus G is nondecreasing.
+
+2. (Increments; Step 2(b).) Let s′ ≤ s and B := (a,b) ∩ (s′, s].
+ (i) Every x ∈ A_s satisfies either x ≤ s′ (so x ∈ A_{s′}) or s′ < x ≤ s (so x ∈ B). Conversely, A_{s′} ⊆ A_s because s′ ≤ s, and B ⊆ A_s. Hence A_s = A_{s′} ∪ B.
+ (ii) The union is disjoint (x ≤ s′ and s′ < x are incompatible), and B is Borel.
+ (iii) By additivity (`measure_union`), ν(A_s) = ν(A_{s′}) + ν(B).
+ (iv) All three values are finite, since they are ≤ ν((a,b)). Taking real parts (`ENNReal.toReal_add`) gives G(s) = G(s′) + (ν(B)).toReal, i.e. (ν(B)).toReal = G(s) − G(s′).
+ (v) Therefore ν((a,b) ∩ (s′, s]) = ofReal(G(s) − G(s′)) (`ENNReal.ofReal_toReal`).
+
+3. (Band comparison; Step 4(a).) Fix a real c > 1. Let k ∈ (0, t − a), which is nonempty because t > a, and put h := k/c.
+ (i) 0 < h < k because c > 1, hence a < t − k < t − h. Also t < b. So every x ∈ [t − h, t] satisfies a < t − k < t − h ≤ x ≤ t < b, i.e. [t − h, t] ⊆ (a,b) ∩ (t − k, t].
+ (ii) By monotonicity of ν and step 2 (with s′ = t − k ≤ s = t): ν([t − h, t]) ≤ ν((a,b) ∩ (t − k, t]) = ofReal(G(t) − G(t − k)).
+ (iii) Put Δ := (G(t) − G(t − k))/k. By step 1, G(t − k) ≤ G(t), so Δ ≥ 0. Since k = c·h, G(t) − G(t − k) = k·Δ = c·Δ·h.
+ (iv) As c ≥ 0 and c·Δ ≥ 0, ofReal is multiplicative here (`ENNReal.ofReal_mul`, applied twice): ofReal(c·Δ·h) = ofReal(c)·ofReal(Δ)·ofReal(h). Hence ν([t − h, t]) ≤ ofReal(c)·F(k)·ofReal(h).
+ (v) Dividing by ofReal(h) (`ENNReal.div_le_of_le_mul`) gives φ(k/c) ≤ ofReal(c)·F(k) for every k ∈ (0, t − a).
+ Since (0, t − a) ∈ 𝓝[>] 0 (`Ioo_mem_nhdsGT`), this inequality holds eventually along 𝓝[>] 0.
+
+4. (Reparametrization; Step 4(b).) The map k ↦ k/c is continuous, sends 0 to 0/c = 0, and maps (0, ∞) into (0, ∞) because c > 0. So it tends from 𝓝[>] 0 to 𝓝[>] 0 (`tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within`). Composing a function with a map that tends to the filter can only increase the liminf (`Filter.Tendsto.liminf_le_liminf_comp`; in the complete lattice [0, ∞] all boundedness side conditions hold). So Λ = liminf_{h→0+} φ(h) ≤ liminf_{k→0+} φ(k/c).
+
+5. (Constant factor; Step 4(c).) By step 3 and `Filter.liminf_le_liminf`, liminf_{k→0+} φ(k/c) ≤ liminf_{k→0+} ofReal(c)·F(k). Since ofReal(c) ≠ ∞ and 𝓝[>] 0 is a nontrivial filter, the constant factors out (`ENNReal.liminf_const_mul_of_ne_top`): liminf_{k→0+} ofReal(c)·F(k) = ofReal(c)·D. Together with step 4: Λ ≤ ofReal(c)·D for every c > 1.
+
+6. (Letting c ↓ 1; Step 4(d).) If D = ∞, then Λ ≤ D trivially. Otherwise let c_n := 1 + 1/(n+1) > 1. Then c_n → 1, so ofReal(c_n) → ofReal(1) = 1 (`ENNReal.tendsto_ofReal`). Since D ≠ ∞, ofReal(c_n)·D → 1·D = D (`ENNReal.Tendsto.mul_const`). By step 5, Λ ≤ ofReal(c_n)·D for every n, so Λ ≤ D (`ge_of_tendsto`).
+
+7. (Conclusion.) Λ ≤ D, i.e. liminf_{h→0+} ν([t − h, t])/ofReal(h) ≤ liminf_{k→0+} ofReal((G(t) − G(t − k))/k). This is the parent's comparison of the closed band [t − h, t] with the slightly wider half-open band (t − k, t], first at a fixed width ratio k/h = c and then as c ↓ 1. ∎
+
+## Key steps
+
+1. G(r) = ν((a,b) ∩ (−∞,r]).toReal is finite and nondecreasing. For s′ ≤ s, disjoint additivity gives ν((a,b) ∩ (s′, s]) = ofReal(G(s) − G(s′)).
+2. For c > 1, 0 < k < t − a and h = k/c: [t−h, t] ⊆ (a,b) ∩ (t−k, t], so φ(k/c) = ν([t−h,t])/ofReal(h) ≤ ofReal(c)·ofReal((G(t) − G(t−k))/k).
+3. k ↦ k/c maps 𝓝[>] 0 to 𝓝[>] 0, so Λ ≤ liminf φ(k/c) ≤ liminf ofReal(c)·F(k) = ofReal(c)·D (Tendsto.liminf_le_liminf_comp, liminf_le_liminf, ENNReal.liminf_const_mul_of_ne_top).
+4. With c_n = 1 + 1/(n+1) ↓ 1, ofReal(c_n)·D → D when D < ∞, so Λ ≤ D.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean workspaces/gmt-ch06/GMT/Ch06/Submission.lean (identical); cmp GMT/Ch06/Submission.lean GMT/Ch06/Contract.lean (identical)`
+- `grep -n 'theorem\|lemma' mathlib/Mathlib/Analysis/Calculus/Monotone.lean mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean (Monotone.ae_differentiableAt l.209; MonotoneOn.intervalIntegrable_deriv l.86; MonotoneOn.intervalIntegral_deriv_mem_uIcc l.100)`
+- `grep -rln -i dini mathlib/Mathlib/{Analysis,MeasureTheory,Order,Topology} (only Topology/UniformSpace/Dini.lean = Dini's uniform-convergence theorem; no Dini-derivative API)`
+- `grep -rn 'theorem Measurable.liminf' mathlib/Mathlib/MeasureTheory (Constructions/BorelSpace/Order.lean:998, 1058)`
+- `grep for liminf_const_mul_of_ne_top (Order/Filter/ENNReal.lean:190), tendsto_measure_biInter_gt (MeasureTheory/Measure/Continuity.lean:266), ofReal_integral_eq_lintegral_ofReal (MeasureTheory/Integral/Bochner/Basic.lean:739), Monotone.deriv_nonneg (Analysis/Calculus/Deriv/Slope.lean:191), lintegral_liminf_le (MeasureTheory/Integral/Lebesgue/Add.lean:233), nhdsGT_basis (Topology/Order/LeftRightNhds.lean:80), liminf_eq_iSup_iInf / liminf_le_liminf_comp (Order/LiminfLimsup.lean)`
+- `grep -rn -E 'slicing_mb_dm_|lowerLeftDini|LowerDini|lowerDini|dini' --include=*.lean lake-packages-25730c7c/simongmt/Poincare workspaces/gmt-ch06/GMT local-references/197bdd4b88278494/project (no match)`
+- `python3 scan of dag.json (226 nodes): the four proposed lean_names are unreserved; reserved slicing_mb_* names are cutoff, cutoff_defect_bound, density_majorant, leibniz_bound, pointwise, smooth_approx, wedge_norm_le`
+- `lake env printenv LEAN_PATH; lean -o /tmp/dm_split_Cu6Gop/out/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean`
+- `lean /tmp/dm_split_Cu6Gop/check/Closure.lean (only import GMT.Ch06.Submission: Monotone.ae_differentiableAt, Monotone.ae_hasDerivAt, lintegral_liminf_le, tendsto_measure_biInter_gt, ENNReal.liminf_const_mul_of_ne_top, Tendsto.liminf_le_liminf_comp, HasBasis.liminf_eq_iSup_iInf, Monotone.deriv_nonneg available; MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc unknown)`
+- `lean /tmp/dm_split_Cu6Gop/check/Names.lean (#check of every lemma cited in the child proofs, with the DerivIntegrable import)`
+- `contract_scope() of verifier/gmt-compare.py on GMT/Ch06/Contract.lean (replayed child scope) and validate_lean_statement() of verifier/lean_contract.py on the four child types and the parent type (all pass)`
+- `lean /tmp/dm_split_Cu6Gop/check/Ch_*.lean (each child type as a NodeChallenge in the comparator scope: 0 errors)`
+- `lean /tmp/dm_split_Cu6Gop/check/Assembly.lean (exact parent type from the four sorry'd children) and lean /tmp/dm_split_Cu6Gop/check/TrialFull.lean (trial proofs of all four children + parent; #print axioms [propext, Classical.choice, Quot.sound])`
+- `lean -o of /tmp/dm_split_Cu6Gop/cand/GMT/Ch06/Submission.lean (frozen Submission + import Mathlib.MeasureTheory.Integral.IntervalIntegral.DerivIntegrable + the five theorems), then NodeSolution-style `exact Submission.X` files for each child and the parent (axioms [propext, Classical.choice, Quot.sound])`
+- `git log --all -p -- GMT/Ch06/Submission.lean | grep '^+import' (accepted 'Prove' commits b4c070e, b9f9acd, 2f36576 add imports); read verifier/gmt-compare.py frozen_inputs/candidate_inputs (only the contract and build inputs are byte-checked)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/Dini.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare`
+- `/tmp/dm_split_Cu6Gop/check/Closure.lean`
+- `/tmp/dm_split_Cu6Gop/check/Names.lean`
+- `/tmp/dm_split_Cu6Gop/check/Assembly.lean`
+- `/tmp/dm_split_Cu6Gop/check/TrialFull.lean`
+- `/tmp/dm_split_Cu6Gop/cand/GMT/Ch06/Submission.lean`
+
+The pinned snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, and it is byte-identical to the workspace Submission. Neither Mathlib, SimonGMT nor the project has a Dini-derivative API. The only Dini file is Topology/UniformSpace/Dini.lean, which is Dini's uniform-convergence theorem. The four children therefore state the needed facts inline about liminf along 𝓝[>] 0. The frozen import closure provides Lebesgue's theorem Monotone.ae_differentiableAt, continuity from above tendsto_measure_biInter_gt, ENNReal.liminf_const_mul_of_ne_top, Filter.Tendsto.liminf_le_liminf_comp, HasBasis.liminf_eq_iSup_iInf with nhdsGT_basis, Monotone.measurable, Monotone.deriv_nonneg, Measurable.iInf_Prop/iInf/iSup and ofReal_integral_eq_lintegral_ofReal. Two lemmas need import Mathlib.MeasureTheory.Integral.IntervalIntegral.DerivIntegrable: MonotoneOn.intervalIntegrable_deriv and MonotoneOn.intervalIntegral_deriv_mem_uIcc. The comparator permits adding this import, and accepted Ch06 children have added imports. All four child types and the parent type elaborate in the exact comparator child scope and pass validate_lean_statement. Trial proofs of all four children compile. The exact frozen parent type follows from them, and comparator-style `exact Submission.X` checks pass in a simulated candidate with axioms [propext, Classical.choice, Quot.sound]. No proposed name is reserved among the 226 DAG nodes or present in the snapshot, SimonGMT or Mathlib.

@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "def covectorEuclideanNorm|def massAdmissibleOn|def massOn|theorem le_massOn|structure GeometricCurrentOn|def TestFormOnConverges|def simpleNVector|abbrev NVector|def NVector|theorem HasWeightedApproximateTangentSpaceAt.unique|countablyRectifiable_iUnion|CountablyRectifiable.mono",
+        "eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|exists_open_between_and_isCompact_closure",
+        "aestronglyMeasurable_iUnion_iff|aestronglyMeasurable_of_tendsto_ae|aestronglyMeasurable_indicator_iff₀|measurableSet_eq_fun",
+        "hasSum_integral_of_summable_integral_norm|theorem integral_tsum",
+        "measure_null_of_locally_null|theorem lintegral_tsum|theorem ae_lt_top|theorem lintegral_const_mul",
+        "ae_restrict_iff.*₀|ae_restrict_mem₀|restrict_restrict.|ae_restrict_of_ae_restrict_of_subset",
+        "3\\.13|multiplicities|seminorm",
+        "validate_lean_statement(s['lean_statement'])"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/ims_independent_audit.txqgk5fu/Contracts.lean",
+        "/tmp/ims_independent_audit.txqgk5fu/Assembly.lean",
+        "/tmp/ims_independent_audit.txqgk5fu/Instances.lean"
+      ],
+      "conclusion": "Verified the pinned project, Mathlib and SimonGMT compatibility. All seven exact child types independently elaborate in the comparator scope without child implementations. The supplied NVector constructions for measurability, equality sets, gluing, evaluation, scalar multiplication and indicators compile. Checked library lemmas and these constructions use only standard axioms. A conditional assembly proves the exact frozen fiw_im_series type from series_current, im_combine and the two frozen prerequisites, with only propext, Classical.choice and Quot.sound. The split is appropriate; its dependencies are acyclic and correctly directed. Scanning the DAG and 49 decomposition files found no competing reservation of these seven bare names. No child contract contains a matrix-unit construction or implementation-dependent alias."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary U and V and C > 0. Absolute homogeneity, admissibility of the signed rescaling, le_massOn and multiplication by ofReal C prove the exact bound, including infinite mass."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes absolute summability, linearity, the precise sequential continuity required by GeometricCurrentOn, and the mass bound for every set. Zero coefficients and infinite individual masses are handled correctly. Its sole child dependency is mass_bound."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The common-span orthonormal bases give a determinant factor independent of the covector, and orthogonality makes it ±1. Extensionality proves the stated simpleNVector equality, including n = 0. The pinned determinant lemmas support the argument."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly transfers both orientation conditions to the restricted overlap measure, obtains θ₂ ≠ 0 from positivity and almost-everywhere membership, applies tangent uniqueness, and combines signs using frame_sign. No openness assumption is needed."
+    },
+    {
+      "key": "overlap_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localized measurability and lintegral_tsum establish finite integrals on compact subsets. The locally-null argument globalizes the exceptional set without assuming ambient σ-finiteness. Each active index contributes at least one, proving finite overlaps; outside U the index set is empty."
+    },
+    {
+      "key": "tsum_tau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact localization supplies measurability and an integrable majorant. The orthonormal-frame operator-norm bound yields summable integrals of absolute values. The cited HasSum theorem and null-measurable indicator identity then give exactly the stated unconditional sum."
+    },
+    {
+      "key": "im_combine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied construction proves measurable reference orientations and signs, finite integer-valued multiplicity sums, the pointwise integrand identity, and every triple condition. Positivity and local integrability of the new multiplicity are established before applying tangent locality, avoiding circularity. Its three dependencies suffice, and the resulting representation supplies precisely the parent's remaining integrality conclusion."
+    }
+  ],
+  "required_changes": []
+}

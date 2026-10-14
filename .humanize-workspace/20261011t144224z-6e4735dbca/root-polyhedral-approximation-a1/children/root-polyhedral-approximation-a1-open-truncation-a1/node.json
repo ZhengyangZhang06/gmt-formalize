@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.open_truncation-a1",
+  "parent_id": "root.polyhedral_approximation-a1",
+  "depth": 2,
+  "title": "τ(M∩V,θ,ξ) for V ⊂⊂ U is an integer multiplicity current on ℝ^P of finite mass",
+  "statement": "Let P, n ∈ ℕ, U, V, M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_n(ℝ^P) with IsRectifiableTriple U n M θ ξ and θ(x) ∈ ℕ for all x ∈ M. Suppose V ⊂⊂ U, i.e. V is open, closure V is compact and closure V ⊆ U. Then there is an integer multiplicity current X ∈ D_n(ℝ^P) with M(X) < ∞ and X(ω) = ∫_{M∩V} θ⟨ω,ξ⟩ dHⁿ = tauAction n (M ∩ V) θ ξ ω for every ω ∈ Dⁿ(ℝ^P).",
+  "lean_statement": "∀ (P n : ℕ) (U V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ x ∈ M, ∃ k : ℕ, θ x = k) → CompactlyContainedOpen V U → ∃ X : GeometricCurrentOn (univ : Set (Eucl P)) n, IsIntegerMultiplicity X ∧ X.mass < ∞ ∧ ∀ ω : TestFormOn (univ : Set (Eucl P)) n, X ω = tauAction n (M ∩ V) θ ξ ω",
+  "lean_name": "polyhedral_approx_open_truncation",
+  "depends_on": [
+    "root.polyhedral_approximation-a1.pairing_expansion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-open-truncation-a1-a1"
+}

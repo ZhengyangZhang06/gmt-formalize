@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.boundary_formula-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+  "depth": 3,
+  "title": "Boundary commutes with smooth push-forward (Simon 2.24(1))",
+  "statement": "Let P, Q, k ∈ ℕ, U ⊆ ℝ^P, V ⊆ ℝ^Q, X ∈ D_{k+1}(U), S ∈ D_{k+1}(V), and let f : ℝ^P → ℝ^Q be of class C^∞. Suppose S(ω′) = X(η′) whenever ω′ ∈ D^{k+1}(V), η′ ∈ D^{k+1}(U) and η′ = f^#ω′ on some open set containing spt X. Then ∂S(ω) = ∂X(η) whenever ω ∈ D^k(V), η ∈ D^k(U) and η = f^#ω on some open set containing spt X. Here (f^#ω)(x) := ω(f(x)).compContinuousLinearMap (Df(x)).",
+  "lean_statement": "∀ (P Q k : ℕ) (U : Set (Eucl P)) (V : Set (Eucl Q)) (X : GeometricCurrentOn U (k + 1)) (S : GeometricCurrentOn V (k + 1)) (f : Eucl P → Eucl Q), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ (ω : TestFormOn V (k + 1)) (η : TestFormOn U (k + 1)), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) (k + 1)) x = ((ω : DifferentialForm (Eucl Q) (k + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S ω = X η) → ∀ (ω : TestFormOn V k) (η : TestFormOn U k), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl P) k) x = ((ω : DifferentialForm (Eucl Q) k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) → S.boundary ω = X.boundary η",
+  "lean_name": "iwl_sp_boundary_apply_eq_of_compatible",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-boundary-formula-a1-a1"
+}

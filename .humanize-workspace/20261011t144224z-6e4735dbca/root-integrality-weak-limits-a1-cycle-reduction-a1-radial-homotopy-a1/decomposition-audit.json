@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "alternatizeUncurryFin_apply|alternatizeUncurryFin_curryLeft|def alternatizeUncurryFin|curryLeft_apply_apply|^def extDeriv |extDeriv_apply",
+        "theorem integral_eq_sub_of_hasDerivAt\\b|theorem integral_finsetSum|theorem integral_const_mul|theorem integral_add\\b|theorem continuous_fderiv|theorem ContDiff.continuous_fderiv",
+        "theorem cons_comp_succ_succAbove|theorem removeNth_zero|def removeNth|def apply \\(|ContinuousEvalConst",
+        "radial homotopy|poincare_lemma|poincaré lemma|homotopy formula|coneOperator|radialHomotopy",
+        "rg -n 'iwl_cr_rh_integrand_identity|iwl_cr_rh_radial_ftc|iwl_cr_rh_degree_zero' GMT/Ch06",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rh-independent-audit-1hkgugok/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/CurveIntegral/Poincare.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-radial-homotopy-a1/decomposition-v1.json",
+        "GMT/Ch06/Submission.lean",
+        "/tmp/rh-independent-audit-1hkgugok/integrand_identity_TypeOnly.lean",
+        "/tmp/rh-independent-audit-1hkgugok/radial_ftc_TypeOnly.lean",
+        "/tmp/rh-independent-audit-1hkgugok/degree_zero_TypeOnly.lean",
+        "/tmp/rh-independent-audit-1hkgugok/Full.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte compatibility of the consulted Mathlib files; the snapshot Contract and workspace Contract/Submission are identical. The library confirms unnormalized alternatization, total extDeriv, continuous evaluation and the stated FTC hypotheses. Searches found the separate 1-form Poincaré result, but no matching arbitrary-degree radial formula. Scanning 449 DAG nodes and 1049 decomposition/handoff/candidate files found no competing reservation of any proposed name; GMT/Ch06 also had no matches. All three exact one-line types passed validation and independently elaborated without child implementations. Recompilation of the supplied scratch proofs and exact frozen parent assembly succeeded; all four declarations use only propext, Classical.choice and Quot.sound. The split is appropriate: integrand_identity and radial_ftc, instantiated with n=k+1 and m=k, establish part (a) through justified integral linearity and extensionality; degree_zero establishes part (b). All children are independent, so the empty dependency lists are correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integrand_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the prose, including arbitrary continuous linear L and arbitrary real t. The proof correctly splits the alternatization sum, identifies removed tuples and signs, derives the (k+1) factor from curryLeft, distributes powers and cancels cross terms. Integer scalar actions convert correctly to real multiplication. No smoothness assumption or circular dependency is hidden; the bare name is unreserved."
+    },
+    {
+      "key": "radial_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly preserves all quantified parameters and the specified C∞ hypothesis. The proof establishes differentiability and continuous fderiv, applies continuous linear evaluation and the chain/product rules, proves interval integrability, and applies FTC with the correct endpoints. The positive exponent m+1 eliminates the value at zero for every degree n. The proof is complete and independent; the bare name is unreserved."
+    },
+    {
+      "key": "degree_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly the selected parent's second conjunct, with no additional regularity requirement on χ. The proof correctly reduces alternatization to the sole Fin 1 term, identifies the empty tuple, rewrites the integral hypothesis, establishes the continuous scalar derivative, applies FTC and concludes by extensionality. It uses neither the parent theorem nor another child. The frozen type is independently usable and the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

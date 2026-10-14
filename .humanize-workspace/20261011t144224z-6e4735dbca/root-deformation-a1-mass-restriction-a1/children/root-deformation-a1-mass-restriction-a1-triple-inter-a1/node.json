@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.mass_restriction-a1.triple_inter-a1",
+  "parent_id": "root.deformation-a1.mass_restriction-a1",
+  "depth": 3,
+  "title": "Restriction of a rectifiable triple to a Borel set (Simon Ch. 6, 3.1; integer multiplicity of T⌞A)",
+  "statement": "Let N, k ∈ ℕ and let (M, θ, ξ) satisfy IsRectifiableTriple univ k M θ ξ (Simon Ch. 6, 3.1 in U = ℝ^N: M is μHE[k]-null-measurable and countably k-rectifiable, θ > 0 on M and locally μHE[k]-integrable on M, ξ is μHE[k]⌞M-a.e. strongly measurable, and for μHE[k]⌞M-a.e. x, ξ(x) = ±τ₁∧⋯∧τ_k for an orthonormal τ spanning a weighted approximate tangent space of (M, θ) at x). Let A ⊆ ℝ^N be a Borel set. Then IsRectifiableTriple univ k (M ∩ A) θ ξ.",
+  "lean_statement": "∀ (N k : ℕ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k) (A : Set (Eucl N)), IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ → MeasurableSet A → IsRectifiableTriple (univ : Set (Eucl N)) k (M ∩ A) θ ξ",
+  "lean_name": "dmr_rectifiableTriple_inter",
+  "depends_on": [
+    "root.deformation-a1.mass_restriction-a1.tangent_inter-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.mass_restriction-a1.tangent_inter-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-mass-restriction-a1-triple-inter-a1-a1"
+}

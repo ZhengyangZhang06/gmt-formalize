@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.localization-a1",
+  "parent_id": "root.flat_iff_weak-a1",
+  "depth": 2,
+  "title": "Localization at a good superlevel set of a distance function (Simon 7.2 proof, (4))",
+  "statement": "Assume the Slicing Theorem (SlicingTheorem) and the Boundary Rectifiability Theorem (BoundaryRectifiability). Let P, m ∈ ℕ, U ⊆ ℝ^P open, T, T_j ∈ D_{m+1}(U) integer multiplicity with sup_j (M_V(T_j) + M_V(∂T_j)) < ∞ for every open V ⊂⊂ U and T_j ⇀ T, and let W ⊂⊂ U be open. Then there exist a strictly increasing ψ : ℕ → ℕ, a compact K ⊆ U, a finite B ∈ [0, ∞) and currents T', T'_j ∈ D_{m+1}(U) such that: every T'_j and every ∂T'_j is integer multiplicity; spt T'_j ⊆ K; M(T'_j) + M(∂T'_j) ≤ B (M = M_U); T'_j ⇀ T'; and for every j and all integer multiplicity R ∈ D_{m+2}(U), S ∈ D_{m+1}(U) with T'_j − T' = ∂R + S, flatDistance W (T_{ψ(j)}) T ≤ M_W(S) + M_W(R).",
+  "lean_statement": "SlicingTheorem → BoundaryRectifiability → ∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U (m + 1)) (Tj : ℕ → GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity T → (∀ j, IsIntegerMultiplicity (Tj j)) → (∀ W, CompactlyContainedOpen W U → (⨆ j, ((Tj j).massOn W + (Tj j).boundary.massOn W)) < ∞) → WeaklyConvergesOn Tj T → ∀ W, CompactlyContainedOpen W U → ∃ (ψ : ℕ → ℕ) (K : Set (Eucl P)) (B : ℝ≥0∞) (T' : GeometricCurrentOn U (m + 1)) (T'j : ℕ → GeometricCurrentOn U (m + 1)), StrictMono ψ ∧ IsCompact K ∧ K ⊆ U ∧ B ≠ ∞ ∧ (∀ j, IsIntegerMultiplicity (T'j j)) ∧ (∀ j, IsIntegerMultiplicity (T'j j).boundary) ∧ (∀ j, (T'j j).support ⊆ K) ∧ (∀ j, (T'j j).mass + (T'j j).boundary.mass ≤ B) ∧ WeaklyConvergesOn T'j T' ∧ ∀ (j : ℕ) (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R → IsIntegerMultiplicity S → (∀ ω, T'j j ω - T' ω = R.boundary ω + S ω) → flatDistance W (Tj (ψ j)) T ≤ S.massOn W + R.massOn W",
+  "lean_name": "fiw_localization",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_lincomb-a1",
+    "root.flat_iff_weak-a1.im_mass_formula-a1",
+    "root.flat_iff_weak-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_lincomb-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.im_mass_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-localization-a1-a1"
+}

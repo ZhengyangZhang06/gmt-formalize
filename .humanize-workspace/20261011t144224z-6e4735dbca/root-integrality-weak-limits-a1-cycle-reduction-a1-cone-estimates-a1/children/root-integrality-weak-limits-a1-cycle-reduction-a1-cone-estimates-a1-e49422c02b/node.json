@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.cone_support-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1",
+  "depth": 4,
+  "title": "Support of a cone over a current supported in a closed ball",
+  "statement": "Let P, m ∈ ℕ, R ∈ ℝ, X ∈ D_m(ℝ^P) = GeometricCurrentOn univ m and C ∈ D_{m+1}(ℝ^P) = GeometricCurrentOn univ (m+1) with spt X ⊆ B̄_R(0) and Cone(X, C), i.e. C(ω) = X(ψ) whenever ω ∈ D^{m+1}(ℝ^P), ψ ∈ D^m(ℝ^P) and ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x in some open set N ⊇ spt X and all v ∈ (ℝ^P)^m ((x, v) := Fin.cons x v). Then spt C ⊆ B̄_R(0).",
+  "lean_statement": "∀ (P m : ℕ) (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → C.support ⊆ closedBall 0 R",
+  "lean_name": "iwl_cr_cest_cone_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-estimates-a1-e49422c02b-a1"
+}

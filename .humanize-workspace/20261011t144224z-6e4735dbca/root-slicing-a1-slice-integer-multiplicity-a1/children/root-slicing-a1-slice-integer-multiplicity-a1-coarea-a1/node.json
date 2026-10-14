@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Co-area formula for a Lipschitz function on a countably rectifiable carrier (Simon Ch. 3, 2.7–2.9)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ L-Lipschitz, and G : ℝ^P → ℝ^P Borel with |G(x)| ≤ L for all x and with the tangential-gradient property: for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x, G(x) ∈ Q and s ↦ f(x + su) has derivative ⟨G(x), u⟩ at 0 for all u ∈ Q. Then for every Borel g : ℝ^P → [0, ∞] the function t ↦ ∫_{M∩f⁻¹{t}} g dH^m (the integral of g against the restriction of H^m to M ∩ f⁻¹{t}) is a.e.-measurable for Lebesgue measure on ℝ, and ∫_ℝ ∫_{M∩f⁻¹{t}} g dH^m dt = ∫_M |G| g dHⁿ (Hᵏ := μHE[k]).",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → LipschitzWith L f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt (m + 1) M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => f (x + s • u)) (inner ℝ (G x) u) 0) → ∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))",
+  "lean_name": "slicing_im_coarea",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-a1"
+}

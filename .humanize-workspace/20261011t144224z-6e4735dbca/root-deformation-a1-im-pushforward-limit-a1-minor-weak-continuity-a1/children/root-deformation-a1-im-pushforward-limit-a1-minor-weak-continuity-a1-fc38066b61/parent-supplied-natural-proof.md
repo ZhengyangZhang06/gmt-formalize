@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1`
+- Child DAG node: `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step (3.0) of the parent proof (“Smooth test functions suffice. Assume the convergence for all φ ∈ C_c^∞(Ω) … Given η integrable on Ω and ε > 0, choose φ ∈ C_c^∞(Ω) with ∫_Ω|η − φ| < ε (C_c^∞(Ω) is dense in L¹(Ω) …). By Step 0, |∫ηM_{a,b}(v_j) − ∫ηM_{a,b}(v)| ≤ 2·r!C^r·ε + |∫φ(M_{a,b}(v_j) − M_{a,b}(v))|, and the claim for η follows”), stated for an arbitrary sequence bounded by B in place of the minors and for the larger test class C¹ (a C^∞ approximant is in particular C¹). The density of compactly supported smooth functions in L¹(Ω) is proved by exhaustion, truncation and mollification with the reused, comparator-accepted sibling ae_mollifier (in place of the parent's “approximate by a continuous function with compact support and mollify”, since Mathlib's continuous-density file is not in the frozen import closure).
+
+Notation. λ = Lebesgue measure on ℝ^k (volume); ∫_Ω = integral with respect to λ restricted to Ω; for f, ψ : ℝ^k → ℝ, (f ∗ ψ)(x) := ∫ f(t)ψ(x − t) dλ(t) = convolution f ψ (ContinuousLinearMap.lsmul ℝ ℝ) volume x.
+
+1. (Density lemma.) Claim: for every η integrable on Ω and every ε > 0 there is a C^∞ function φ : ℝ^k → ℝ with compact support and tsupport φ ⊆ Ω such that ∫_Ω |η − φ| dλ < ε. (A C^∞ function is C¹: `h.of_le (WithTop.coe_le_coe.2 le_top)` turns ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) into ContDiff ℝ 1; compiled against the frozen import.)
+ (a) Exhaustion. For n ∈ ℕ let K_n := closedBall(0, n) ∩ (thickening(1/(n+1), Ωᶜ))ᶜ. It is closed (thickenings are open, Metric.isOpen_thickening) and bounded, hence compact (Metric.isCompact_of_isClosed_isBounded). K_n ⊆ Ω, since a point of Ωᶜ lies in every positive thickening of Ωᶜ (Metric.self_subset_thickening). K_n ⊆ K_{n+1}. Every w ∈ Ω lies in K_n for all large n: choose ρ > 0 with ball(w, ρ) ⊆ Ω (Ω is open); if n ≥ ‖w‖ and 1/(n+1) ≤ ρ, then w ∉ thickening(1/(n+1), Ωᶜ), for otherwise some z ∈ Ωᶜ satisfies dist(w, z) < 1/(n+1) ≤ ρ, i.e. z ∈ ball(w, ρ) ⊆ Ω, a contradiction.
+ (b) Truncation. For n ∈ ℕ put η_n(w) := 1_{K_n}(w)·max(−n, min(n, η(w))). Then |η_n| ≤ |η|, and η_n(w) → η(w) for every w ∈ Ω (for large n, w ∈ K_n and |η(w)| ≤ n). Each η_n is a.e.-strongly measurable for λ restricted to Ω. By dominated convergence on Ω (majorant 2|η|, integrable on Ω), ∫_Ω |η − η_n| dλ → 0. Fix n with ∫_Ω |η − η_n| dλ < ε/2 and put h := η_n, K := K_n. Then h vanishes outside the compact set K ⊆ Ω and |h| ≤ n everywhere. Moreover h is a.e.-strongly measurable for λ on all of ℝ^k: it is the indicator of the measurable set K of the function max(−n, min(n, η)), which is a.e.-strongly measurable for λ restricted to Ω and hence for λ restricted to K ⊆ Ω (aestronglyMeasurable_indicator_iff). Consequently h is λ-integrable (bounded, with support in a set of finite measure), in particular locally integrable.
+ (c) Mollification. Let ψ_m (m ∈ ℕ) be the kernels of the sibling ae_mollifier for n := k: ψ_m is C^∞ with compact support, tsupport ψ_m ⊆ closedBall(0, 1/(m+1)), ψ_m ≥ 0, ∫ψ_m dλ = 1, and (f ∗ ψ_m)(x) → f(x) for λ-a.e. x whenever f is locally integrable. Put h_m := h ∗ ψ_m.
+ (i) h_m is C^∞: Mathlib HasCompactSupport.contDiff_convolution_right (ψ_m is C^∞ with compact support and h is locally integrable).
+ (ii) Support. If x ∉ cthickening(1/(m+1), K), then for every t either t ∉ K, so h(t) = 0, or t ∈ K and ‖x − t‖ > 1/(m+1), so x − t ∉ tsupport ψ_m and ψ_m(x − t) = 0; hence h_m(x) = 0. So tsupport h_m ⊆ cthickening(1/(m+1), K), a closed set. Since K is compact and Ω is open, there is d > 0 with cthickening(d, K) ⊆ Ω (IsCompact.exists_cthickening_subset_open), and L := cthickening(d, K) is compact (IsCompact.cthickening). For every m with 1/(m+1) ≤ d: tsupport h_m ⊆ L ⊆ Ω, so h_m has compact support.
+ (iii) Bound. |h_m(x)| ≤ ∫ |h(t)|ψ_m(x − t) dλ(t) ≤ n·∫ ψ_m(x − t) dλ(t) = n, using ψ_m ≥ 0 and the invariance of λ under t ↦ x − t (integral_sub_left_eq_self).
+ (iv) Convergence. h_m → h λ-a.e. (ae_mollifier applied to the locally integrable function h).
+ (v) L¹ convergence. Let m₀ satisfy 1/(m₀+1) ≤ d. For m ≥ m₀ the function |h_m − h| vanishes outside L and is bounded by 2n, and 2n·1_L is integrable (L is compact). By (iv) and dominated convergence (tendsto_integral_filter_of_dominated_convergence), ∫ |h_m − h| dλ → 0.
+ Choose m ≥ m₀ with ∫ |h_m − h| dλ < ε/2 and put φ := h_m. Then φ is C^∞, has compact support, tsupport φ ⊆ Ω, and ∫_Ω |η − φ| ≤ ∫_Ω |η − h| + ∫_Ω |h − φ| ≤ ∫_Ω |η − h| + ∫ |h − φ| < ε.
+
+2. (Integrability.) Let ζ be integrable on Ω (ζ = η, or ζ = φ from Step 1: φ is continuous with compact support, hence integrable). Since f_j and f₀ are a.e.-strongly measurable for λ restricted to Ω and bounded by B on Ω (hence a.e. for λ restricted to Ω), ζ·f_j and ζ·f₀ are integrable on Ω (Integrable.mul_bdd), and |∫_Ω ζ·f_j| ≤ B·∫_Ω|ζ|, |∫_Ω ζ·f₀| ≤ B·∫_Ω|ζ| (norm_integral_le_of_norm_le).
+
+3. (ε/3 argument.) Let η be integrable on Ω and δ > 0. If Ω = ∅ every integral is 0 and the sequence is constant. Otherwise B ≥ |f₀(w)| ≥ 0 for some w ∈ Ω, so B ≥ 0. Choose ε > 0 with 2Bε < δ/2, then φ by Step 1 with ∫_Ω|η − φ| < ε, and — by the hypothesis applied to this φ (C¹, compact support, tsupport φ ⊆ Ω) — an N such that |∫_Ω φ·f_j − ∫_Ω φ·f₀| < δ/2 for all j ≥ N. For j ≥ N, by linearity (Step 2),
+ ∫_Ω η·f_j − ∫_Ω η·f₀ = ∫_Ω (η − φ)·f_j + (∫_Ω φ·f_j − ∫_Ω φ·f₀) − ∫_Ω (η − φ)·f₀,
+ so |∫_Ω η·f_j − ∫_Ω η·f₀| ≤ Bε + δ/2 + Bε < δ. Hence ∫_Ω η·f_j → ∫_Ω η·f₀ (Metric.tendsto_atTop). ∎
+
+Formalization notes. Available under the frozen import (checked; do not add imports): HasCompactSupport.contDiff_convolution_right, support_convolution_subset, convolution_def, integral_sub_left_eq_self, IsCompact.exists_cthickening_subset_open, IsCompact.cthickening, Metric.isOpen_thickening, Metric.self_subset_thickening, Metric.isCompact_of_isClosed_isBounded, aestronglyMeasurable_indicator_iff, Integrable.mul_bdd, Integrable.mono', tendsto_integral_filter_of_dominated_convergence, tendsto_integral_of_dominated_convergence. NOT available: Mathlib's ContinuousMapDense file (Integrable.exists_hasCompactSupport_integral_sub_le) and BumpFunction/Convolution file (ContDiffBump.normed, ae_convolution_tendsto_right_of_locallyIntegrable); the sibling ae_mollifier replaces them.
+
+## Key steps
+
+1. Exhaust Ω by compact K_n = closedBall(0,n) ∖ thickening(1/(n+1), Ωᶜ) and truncate: ∫_Ω|η − η_n| → 0 with η_n bounded and supported in K_n ⊆ Ω.
+2. Mollify h = η_n with the kernels of ae_mollifier: h ∗ ψ_m is C^∞, supported in cthickening(1/(m+1), K_n) ⊆ Ω for large m, bounded by n, and → h a.e.
+3. Dominated convergence on a fixed compact set gives ∫|h ∗ ψ_m − h| → 0; hence C_c^∞(Ω) is dense in L¹(Ω).
+4. ε/3 argument: |∫_Ω ηf_j − ∫_Ω ηf₀| ≤ 2B∫_Ω|η − φ| + |∫_Ω φf_j − ∫_Ω φf₀|, and the hypothesis for φ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886 = git HEAD; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both byte-identical)`
+- `python3 -I over dag.json: this node (depth 3, status decomposing, attempt 1, depends_on root.compactness_mass_bounds-a1.covector_expansion-a1) and the parent's decomposition-v3.json (format of reused children)`
+- `python3 -I regex over dag.json titles/statements/lean statements: mollif|Piola|dense in|density of|C_c|integration by parts|weak-*|weak star|cofactor|convolution|minors|smooth approximation|ContDiffBump`
+- `python3 -I over dag.json: status, candidate_commit, title/statement/lean_statement equality with the handoff for constancy_mdc_smooth_approx_identity_ae_tendsto, slicing_mb_sa_mollify_lipschitz_hasFDerivAt, slicing_mb_sa_mollify_lipschitz_close, cmb_covector_eq_sum_coord_smul_wedge (all accepted, equal); lean_name collisions for deformation_ipl_mwc_* (none)`
+- `grep -rn deformation_ipl_mwc over GMT/, the snapshot project, simongmt/Poincare and the snapshot Mathlib (no match)`
+- `rg -n 'abbrev Covector|SimonMultiIndex|def wedgeCovectors|theorem wedgeCovectors_apply_det|def euclideanCovectorCoordinate' simongmt/Poincare/SimonGMT`
+- `rg -n 'theorem norm_fderiv_le_of_lipschitzOn|LipschitzOnWith.extend_real|extend_finite_dimension|lipschitzExtensionConstant' snapshot Mathlib`
+- `rg -n '^theorem' Mathlib/Analysis/Calculus/Rademacher.lean and Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean; sed ContinuousMapDense.lean 135-240, LineDeriv/IntegrationByParts.lean 215-245, ContDiff/Convolution.lean 50-100 and 415-435, Matrix/AbsoluteValue.lean det_le, ContDiff/RCLike.lean lipschitzWith_of_hasCompactSupport, FDeriv/Mul.lean finsetProd`
+- `git log --all -G'^import' -- GMT/Ch06/Submission.lean; git show cdfc95dc (leaf gate rejects added imports); git show 2219dd32 (accepted ae-mollifier proof uses IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub)`
+- `lake env lean /tmp/mwc_decomp/build/Avail.lean, build_v2/Avail2.lean, build_v2/Avail3.lean, build_v2/Small2.lean (#check availability under import GMT.Ch06.Submission)`
+- `python3 -I /tmp/mwc_decomp/gen.py (verifier lean_contract.validate_lean_statement + gmt-compare child_modules, contract mode) and lake env lean on the eleven /tmp/mwc_decomp/build_final/*_challenge.lean (all exit 0, sorry warnings only)`
+- `lake env lean /tmp/mwc_decomp/build/Assembly.lean, build_v2/F_from_E.lean, build_v2/E_from_AD.lean, build_v2/RefImpl.lean (#print axioms: propext, Classical.choice, Quot.sound)`
+- `grep 'Your solution is okay' in comparator-v1.log and isolated-comparator-result.json (passed: true) of the four reused nodes`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1/speculative-prompt-v4.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-covector-expansion-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-fderiv-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-smooth-approx-a1-mollify-close-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/mwc_decomp/build_final`
+- `/tmp/mwc_decomp/build/Assembly.lean`
+- `/tmp/mwc_decomp/build_v2/F_from_E.lean`
+- `/tmp/mwc_decomp/build_v2/E_from_AD.lean`
+- `/tmp/mwc_decomp/build_v2/RefImpl.lean`
+- `/tmp/mwc_decomp/build/Avail.lean`
+- `/tmp/mwc_decomp/build_v2/Avail2.lean`
+- `/tmp/mwc_decomp/build_v2/Avail3.lean`
+
+Pinned revisions are confirmed (HEAD = project_commit), and Contract = Submission = the snapshot Contract byte-for-byte.
+No existing proof: neither Mathlib, SimonGMT nor any accepted DAG node proves weak continuity of Jacobian minors, the Piola identity or L¹-density by smooth functions. (The r = 1 analogue slicing_im_ll_gradient_weak_star and the density node slicing_im_ll_gws_smooth_dense are not accepted.) Hence seven new children; their names deformation_ipl_mwc_* collide with nothing.
+Reused, with byte-identical types and comparator-passed: cmb_covector_eq_sum_coord_smul_wedge, constancy_mdc_smooth_approx_identity_ae_tendsto, slicing_mb_sa_mollify_lipschitz_hasFDerivAt, slicing_mb_sa_mollify_lipschitz_close.
+Import closure: the leaf gate forbids new imports (commit cdfc95dc).
+- Available in the frozen closure: SimonGMT wedgeCovectors_apply_det; Mathlib norm_fderiv_le_of_lipschitzOn, LipschitzOnWith.extend_real, extend_finite_dimension, LipschitzOnWith.ae_differentiableWithinAt_of_mem, LipschitzWith.integral_lineDeriv_mul_eq, HasCompactSupport.contDiff_convolution_left/right, ContDiffAt.isSymmSndFDerivAt, HasFDerivAt.finsetProd, Matrix.det_succ_row_zero, Matrix.det_apply, measurable_fderiv(_apply_const), tendsto_integral_filter_of_dominated_convergence, IsCompact.exists_cthickening_subset_open, ContDiff.lipschitzWith_of_hasCompactSupport.
+- Not available: ContDiffBump.normed and BumpFunction/Convolution, ContinuousMapDense, LineDeriv/IntegrationByParts, Matrix.det_le. The children replace them by the reused siblings or by short arguments.
+Lean checks:
+- All eleven statements validate and elaborate in the exact comparator scope.
+- Three links compile with only propext, Classical.choice and Quot.sound: parent ⇐ coeff_minor_continuity + covector expansion; coeff_minor_continuity ⇐ minor_weak_star; minor_weak_star ⇐ test_density + minor_ibp_lipschitz.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1.wedge_cons_linear-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_form_derivative-a1",
+  "depth": 4,
+  "title": "The wedge γ∧β_0∧⋯∧β_{m−1} is linear in its first factor γ",
+  "statement": "Let P, m ∈ ℕ and let β_0, …, β_{m−1} be continuous linear functionals on ℝ^P (β : Fin m → (ℝ^P)^*). Consider the map (ℝ^P)^* → Λ^{m+1}(ℝ^P)^* given by γ ↦ wedgeCovectors (m+1) (Fin.cons γ β) = γ∧β_0∧⋯∧β_{m−1}. This map is ℝ-linear (IsLinearMap ℝ): for all γ, δ ∈ (ℝ^P)^* and c ∈ ℝ, wedge(Fin.cons (γ+δ) β) = wedge(Fin.cons γ β) + wedge(Fin.cons δ β), and wedge(Fin.cons (c•γ) β) = c•wedge(Fin.cons γ β).",
+  "lean_statement": "∀ (P m : ℕ) (β : Fin m → (Eucl P →L[ℝ] ℝ)), IsLinearMap ℝ (fun γ : Eucl P →L[ℝ] ℝ => wedgeCovectors (m + 1) (Fin.cons γ β : Fin (m + 1) → (Eucl P →L[ℝ] ℝ)))",
+  "lean_name": "rpn_pfd_wedge_cons_isLinearMap",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-form-derivative-a-3ac24e3c8c-a1"
+}

@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.polyhedral_approximation-a1.truncation_sequence-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-polyhedral-approximation-a1-truncation-sequence-a1",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.boundary_mass_cutoff-a1",
+      "key": "boundary_mass_cutoff",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp snapshot project/GMT/Ch06/Contract.lean and Submission.lean vs workspace GMT/Ch06/Contract.lean and Submission.lean (byte-identical; Submission = Contract)",
+              "rg -n 'exhaustion|cutoff|cut-off' snapshot project/GMT (no match)",
+              "grep -c / grep -rl 'polyhedral_approx_exhaustion_function' and 'polyhedral_approx_boundary_mass_cutoff' in dag.json, nodes/, snapshot project/, GMT/ (0 matches)",
+              "python3 dag.json node listing (statuses, lean_names; accepted: cmb_exists_compactly_contained_exhaustion, cmb_exists_countable_dense_testForms)",
+              "grep -n '^def |^theorem ' simongmt Chapter06/Mass.lean, Currents.lean, CurrentLocalEquality.lean, Forms.lean",
+              "grep -rn 'covectorEuclideanNorm_smul|massOn_add|massOn_le_add' simongmt (no match)",
+              "grep -rn 'exists_contMDiffMap_one_nhds_of_subset_interior|exists_cthickening_subset_open|Filter.EventuallyEq.extDeriv_eq|Filter.EventuallyEq.fderiv_eq|setIntegral_congr_fun₀|setIntegral_indicator|lipschitz_infDist_pt|LipschitzWith.min|notMem_iff_infDist_pos|norm_fderiv_le_of_lipschitz|ae_lt_top|ae_restrict_mem|ae_neBot|exists_nat_one_div_lt|closure_lt_subset_le' Mathlib",
+              "cmp snapshot mathlib files vs lake-packages-25730c7c/mathlib (12 cited files identical)",
+              "sed -n 1955,2000p book/chapter-06.txt (Simon 6.2 printed proof)",
+              "python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on both child statements (both pass unchanged)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/ts_decomp_1791763526 = git archive d8d46c9 + pinned packages)",
+              "lake env lean Scratch/Stmts.lean; Scratch/C1.lean; Scratch/C2.lean; Scratch/C2NoImport.lean; Scratch/Assembly.lean; Scratch/Full.lean; Scratch/Inst.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1/decomposition-v1.json",
+              "/tmp/ts_decomp_1791763526/Scratch/Stmts.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C1.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C2.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C2NoImport.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Assembly.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Full.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Inst.lean"
+            ],
+            "conclusion": "Snapshot provenance:\n- The snapshot is project d8d46c95 with Mathlib 25730c7c. Its Contract and Submission are byte-identical to the workspace, and Submission equals Contract, with no Submission.* declarations.\n- The 12 cited snapshot Mathlib files are byte-identical to the pinned packages.\n\nWhat the sources provide:\n- SimonGMT supplies massOn/mass (sSup over massAdmissibleOn), GeometricCurrentOn.le_massOn, boundary_apply/exteriorDerivativeTestOn (∂T(ψ) = T(dψ) with d = extDeriv), testFormOnInclusion_coe and covectorEuclideanNorm.\n- SimonGMT has no covectorEuclideanNorm homogeneity lemma and no massOn subadditivity. The first is proved inside child boundary_mass_cutoff; the second is a short inline step of the parent.\n- Mathlib at the pin provides every tool used:\n  - smooth Urysohn: exists_contMDiffMap_one_nhds_of_subset_interior, reachable from the existing imports;\n  - IsCompact.exists_cthickening_subset_open and Filter.EventuallyEq.extDeriv_eq;\n  - integration: setIntegral_congr_fun₀ and setIntegral_indicator;\n  - Lipschitz and distance lemmas: lipschitz_infDist_pt, LipschitzWith.min, IsClosed.notMem_iff_infDist_pos and norm_fderiv_le_of_lipschitz;\n  - measure-theory lemmas: ae_lt_top, ae_restrict_mem and ae_neBot;\n  - exists_nat_one_div_lt and closure_lt_subset_le.\n- Book p. 169 (chapter-06.txt, lines 1962–1996) prints only the existence of φ and the appeal to 4.5. The children's proofs are therefore extracted from the supplied parent proof.\n\nNames and reuse:\n- Neither proposed name occurs anywhere in the DAG, the node files or the project.\n- The accepted exhaustion lemma cmb_exists_compactly_contained_exhaustion has a different type, so it is not reused.\n\nScratch Lean checks:\n- Both child statements pass validate_lean_statement and elaborate in the comparator child scope.\n- Trial proofs of both exact child types compile with [propext, Classical.choice, Quot.sound].\n- The parent's exact frozen type compiles, with no sorry, from the two children plus the parent's three declared sibling dependencies (exact frozen types).\n- Combined comparator-style targets confirm the exact types match."
+          }
+        ],
+        "parent_id": "root.polyhedral_approximation-a1.truncation_sequence-a1",
+        "child_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.boundary_mass_cutoff-a1",
+        "subproblem": {
+          "key": "boundary_mass_cutoff",
+          "title": "Boundary mass transfer through a smooth cut-off (locality of d)",
+          "statement": "Let P, m ∈ ℕ and U₁, U₂, W, V ⊆ ℝ^P. Let X ∈ D_{m+1}(U₁) and A ∈ D_{m+1}(U₂) be currents (GeometricCurrentOn). Assume:\n- W is open and W ⊆ U₂;\n- the closure of V is compact and closure V ⊆ W;\n- (H) X(η) = A(η′) for every η ∈ D^{m+1}(U₁) and η′ ∈ D^{m+1}(U₂) with η(x) = η′(x) for every x ∈ V.\nThen M(∂X) ≤ M_W(∂A). Here M(∂X) = M_{U₁}(∂X) is the mass of ∂X ∈ D_m(U₁), and M_W(∂A) is the mass in W of ∂A ∈ D_m(U₂). Both are the suprema of the current over test forms supported in the indicated set with Euclidean coefficient norm ≤ 1 everywhere (SimonGMT massOn).",
+          "lean_statement": "∀ (P m : ℕ) (U₁ U₂ W V : Set (Eucl P)) (X : GeometricCurrentOn U₁ (m + 1)) (A : GeometricCurrentOn U₂ (m + 1)), IsOpen W → W ⊆ U₂ → IsCompact (closure V) → closure V ⊆ W → (∀ (η : TestFormOn U₁ (m + 1)) (η' : TestFormOn U₂ (m + 1)), (∀ x ∈ V, (η : DifferentialForm (Eucl P) (m + 1)) x = (η' : DifferentialForm (Eucl P) (m + 1)) x) → X η = A η') → X.boundary.mass ≤ A.boundary.massOn W",
+          "lean_name": "polyhedral_approx_boundary_mass_cutoff",
+          "depends_on": [],
+          "natural_proof": "Source: Step 5(c)–(f) of the parent proof (the cut-off ψ′ = χψ, its admissibility, locality of d, and the supremum), stated for arbitrary domains. The parent applies it with:\n- U₁ = ℝ^P and U₂ = U;\n- W = W_k = {φ > 1/(2(k+2))} and V = V_{λ_k} = {φ > λ_k};\n- X = X_k = τ(M ∩ V_{λ_k}, θ, ξ) and A = T⌞(U ∩ V_{λ_k}).\nThere, X(η) = ∫_{M∩V} θ⟨η,ξ⟩ dHⁿ = A(η′) whenever η = η′ on V.\n\nSetting and notation.\n- P, m ∈ ℕ and U₁, U₂, W, V ⊆ ℝ^P; X ∈ D_{m+1}(U₁) and A ∈ D_{m+1}(U₂).\n- W is open, W ⊆ U₂, closure V is compact and closure V ⊆ W.\n- Hypothesis (H): X(η) = A(η′) whenever η ∈ D^{m+1}(U₁), η′ ∈ D^{m+1}(U₂) and η(x) = η′(x) for every x ∈ V. V need not be open or measurable.\n- For an m-covector α, |α| := covectorEuclideanNorm α = (Σ_I α(e_{I(1)}, …, e_{I(m)})²)^{1/2}, summed over strictly increasing I.\n- For a current R ∈ D_m(U′) and a set W′, M_{W′}(R) := sup{R(ψ) : ψ ∈ D^m(U′), tsupport ψ ⊆ W′, |ψ(x)| ≤ 1 for all x} (massAdmissibleOn U′ m W′). Lean takes the supremum of ofReal R(ψ) in [0, ∞]. M(R) := M_{U′}(R).\n- ∂R(ψ) = R(dψ), where (dψ)(x) = extDeriv ψ x = alternatizeUncurryFin(Dψ(x)).\n\n1. (Room around closure V.) closure V is compact, W is open and closure V ⊆ W. So there is δ > 0 with C := {x : dist(x, closure V) ≤ δ} = cthickening δ (closure V) ⊆ W (IsCompact.exists_cthickening_subset_open). C is closed and bounded, hence compact (IsCompact.cthickening). Moreover closure V ⊆ {x : dist(x, closure V) < δ} = thickening δ (closure V), an open subset of C. Hence closure V ⊆ interior C.\n\n2. (Smooth cut-off.) Apply the smooth Urysohn lemma (Mathlib exists_contMDiffMap_one_nhds_of_subset_interior, model 𝓘(ℝ, ℝ^P), smoothness ⊤ : ℕ∞) to the closed set closure V and to C, using closure V ⊆ interior C. It gives a C^∞ function χ : ℝ^P → ℝ with:\n (a) 0 ≤ χ(x) ≤ 1 for all x;\n (b) χ = 1 on a neighbourhood of closure V (∀ᶠ x in 𝓝ˢ(closure V), χ x = 1);\n (c) χ(x) = 0 for every x ∉ C.\n By (c), the support of χ lies in the closed set C, so tsupport χ ⊆ C ⊆ W, and χ has compact support because C is compact. χ is C^∞ as a function between normed spaces (contMDiff_iff_contDiff).\n\n3. (Homogeneity of |·|.) For c ∈ ℝ and an m-covector α, |cα| = |c|·|α|. Indeed (cα)(e_I) = c·α(e_I) for each increasing I, so Σ_I (cα)(e_I)² = c²·Σ_I α(e_I)². Also √(c²S) = √(c²)·√S = |c|·√S for S ≥ 0.\n\n4. (The cut-off form.) Let ψ ∈ D^m(U₁) be admissible for M(∂X) = M_{U₁}(∂X), i.e. |ψ(x)| ≤ 1 for all x. Define ψ′(x) := χ(x)·ψ(x).\n (a) ψ′ is C^∞, as the product of the C^∞ scalar function χ and the C^∞ form ψ.\n (b) If ψ′(x) ≠ 0 then χ(x) ≠ 0, so support ψ′ ⊆ support χ. Hence tsupport ψ′ ⊆ tsupport χ ⊆ C ⊆ W ⊆ U₂ by step 2, and ψ′ has compact support. Therefore ψ′ ∈ D^m(U₂) and tsupport ψ′ ⊆ W.\n (c) By step 3 and 2(a), |ψ′(x)| = |χ(x)|·|ψ(x)| ≤ 1·1 = 1 for all x.\n By (b) and (c), ψ′ is admissible for M_W(∂A).\n\n5. (Locality of d.) Let x ∈ V. Then x ∈ closure V, so by 2(b) there is a neighbourhood N of x on which χ = 1; hence ψ′ = ψ on N. The Fréchet derivative at x depends only on the germ at x (Filter.EventuallyEq.fderiv_eq), so Dψ′(x) = Dψ(x). Therefore (dψ′)(x) = alternatizeUncurryFin(Dψ′(x)) = alternatizeUncurryFin(Dψ(x)) = (dψ)(x) (Filter.EventuallyEq.extDeriv_eq). Thus the test forms dψ ∈ D^{m+1}(U₁) and dψ′ ∈ D^{m+1}(U₂) agree at every point of V.\n\n6. (Comparison.) By step 5, hypothesis (H) applies with η := dψ and η′ := dψ′: ∂X(ψ) = X(dψ) = A(dψ′) = ∂A(ψ′). By step 4, ψ′ is admissible for M_W(∂A), so ofReal(∂A(ψ′)) ≤ M_W(∂A) (GeometricCurrentOn.le_massOn). Hence ofReal(∂X(ψ)) ≤ M_W(∂A).\n\n7. (Supremum.) Step 6 holds for every ψ admissible in the supremum that defines M(∂X) = M_{U₁}(∂X). Therefore M(∂X) ≤ M_W(∂A) (sSup_le). ∎\n\nFormalization notes:\n- Besides the lemmas named above, the trial proof uses HasCompactSupport.intro, ContDiff.smul, HasCompactSupport.smul_right, tsupport_smul_subset_left, nhds_le_nhdsSet and GeometricCurrentOn.boundary_apply.\n- exists_contMDiffMap_one_nhds_of_subset_interior is reachable from the contract's existing imports.\n- A trial Lean proof of exactly this frozen statement compiles in the comparator scope with axioms [propext, Classical.choice, Quot.sound].",
+          "proof_key_steps": [
+            "Choose δ > 0 with C := cthickening δ (closure V) ⊆ W; C is compact and closure V ⊆ interior C.",
+            "Smooth Urysohn lemma: a C^∞ χ with 0 ≤ χ ≤ 1, χ = 1 near closure V and χ = 0 off C, so tsupport χ ⊆ C ⊆ W is compact.",
+            "Homogeneity of the Euclidean coefficient norm: |cα| = |c|·|α|.",
+            "For ψ admissible for M_{U₁}(∂X), ψ′ := χψ ∈ D^m(U₂) is admissible for M_W(∂A).",
+            "ψ′ = ψ near every x ∈ V, so dψ′ = dψ on V (fderiv/extDeriv depend only on germs).",
+            "By (H), ∂X(ψ) = X(dψ) = A(dψ′) = ∂A(ψ′) ≤ M_W(∂A); taking the supremum over ψ gives M(∂X) ≤ M_W(∂A)."
+          ]
+        },
+        "audit": {
+          "key": "boundary_mass_cutoff",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact Lean type agree. The specified Metric.cthickening construction, including empty V, provides room for the smooth cutoff. Support control and coefficient-norm homogeneity give an admissible cutoff form; germ locality gives equality of exterior derivatives on V; hypothesis H and the mass supremum yield the stated inequality. Ambient TestFormOn definitions require no additional openness assumptions on U₁ or U₂. The proof is complete and non-circular, and the parent's integral representations establish H, making this bound sufficient for its finite-boundary-mass step."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.exhaustion_function-a1",
+      "key": "exhaustion_function",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "cmp snapshot project/GMT/Ch06/Contract.lean and Submission.lean vs workspace GMT/Ch06/Contract.lean and Submission.lean (byte-identical; Submission = Contract)",
+              "rg -n 'exhaustion|cutoff|cut-off' snapshot project/GMT (no match)",
+              "grep -c / grep -rl 'polyhedral_approx_exhaustion_function' and 'polyhedral_approx_boundary_mass_cutoff' in dag.json, nodes/, snapshot project/, GMT/ (0 matches)",
+              "python3 dag.json node listing (statuses, lean_names; accepted: cmb_exists_compactly_contained_exhaustion, cmb_exists_countable_dense_testForms)",
+              "grep -n '^def |^theorem ' simongmt Chapter06/Mass.lean, Currents.lean, CurrentLocalEquality.lean, Forms.lean",
+              "grep -rn 'covectorEuclideanNorm_smul|massOn_add|massOn_le_add' simongmt (no match)",
+              "grep -rn 'exists_contMDiffMap_one_nhds_of_subset_interior|exists_cthickening_subset_open|Filter.EventuallyEq.extDeriv_eq|Filter.EventuallyEq.fderiv_eq|setIntegral_congr_fun₀|setIntegral_indicator|lipschitz_infDist_pt|LipschitzWith.min|notMem_iff_infDist_pos|norm_fderiv_le_of_lipschitz|ae_lt_top|ae_restrict_mem|ae_neBot|exists_nat_one_div_lt|closure_lt_subset_le' Mathlib",
+              "cmp snapshot mathlib files vs lake-packages-25730c7c/mathlib (12 cited files identical)",
+              "sed -n 1955,2000p book/chapter-06.txt (Simon 6.2 printed proof)",
+              "python3 contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py; lean_contract.validate_lean_statement on both child statements (both pass unchanged)",
+              "lake build GMT.Ch06.Submission (scratch /tmp/ts_decomp_1791763526 = git archive d8d46c9 + pinned packages)",
+              "lake env lean Scratch/Stmts.lean; Scratch/C1.lean; Scratch/C2.lean; Scratch/C2NoImport.lean; Scratch/Assembly.lean; Scratch/Full.lean; Scratch/Inst.lean"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Filter.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1/decomposition-v1.json",
+              "/tmp/ts_decomp_1791763526/Scratch/Stmts.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C1.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C2.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/C2NoImport.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Assembly.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Full.lean",
+              "/tmp/ts_decomp_1791763526/Scratch/Inst.lean"
+            ],
+            "conclusion": "Snapshot provenance:\n- The snapshot is project d8d46c95 with Mathlib 25730c7c. Its Contract and Submission are byte-identical to the workspace, and Submission equals Contract, with no Submission.* declarations.\n- The 12 cited snapshot Mathlib files are byte-identical to the pinned packages.\n\nWhat the sources provide:\n- SimonGMT supplies massOn/mass (sSup over massAdmissibleOn), GeometricCurrentOn.le_massOn, boundary_apply/exteriorDerivativeTestOn (∂T(ψ) = T(dψ) with d = extDeriv), testFormOnInclusion_coe and covectorEuclideanNorm.\n- SimonGMT has no covectorEuclideanNorm homogeneity lemma and no massOn subadditivity. The first is proved inside child boundary_mass_cutoff; the second is a short inline step of the parent.\n- Mathlib at the pin provides every tool used:\n  - smooth Urysohn: exists_contMDiffMap_one_nhds_of_subset_interior, reachable from the existing imports;\n  - IsCompact.exists_cthickening_subset_open and Filter.EventuallyEq.extDeriv_eq;\n  - integration: setIntegral_congr_fun₀ and setIntegral_indicator;\n  - Lipschitz and distance lemmas: lipschitz_infDist_pt, LipschitzWith.min, IsClosed.notMem_iff_infDist_pos and norm_fderiv_le_of_lipschitz;\n  - measure-theory lemmas: ae_lt_top, ae_restrict_mem and ae_neBot;\n  - exists_nat_one_div_lt and closure_lt_subset_le.\n- Book p. 169 (chapter-06.txt, lines 1962–1996) prints only the existence of φ and the appeal to 4.5. The children's proofs are therefore extracted from the supplied parent proof.\n\nNames and reuse:\n- Neither proposed name occurs anywhere in the DAG, the node files or the project.\n- The accepted exhaustion lemma cmb_exists_compactly_contained_exhaustion has a different type, so it is not reused.\n\nScratch Lean checks:\n- Both child statements pass validate_lean_statement and elaborate in the comparator child scope.\n- Trial proofs of both exact child types compile with [propext, Classical.choice, Quot.sound].\n- The parent's exact frozen type compiles, with no sorry, from the two children plus the parent's three declared sibling dependencies (exact frozen types).\n- Combined comparator-style targets confirm the exact types match."
+          }
+        ],
+        "parent_id": "root.polyhedral_approximation-a1.truncation_sequence-a1",
+        "child_id": "root.polyhedral_approximation-a1.truncation_sequence-a1.exhaustion_function-a1",
+        "subproblem": {
+          "key": "exhaustion_function",
+          "title": "1-Lipschitz exhaustion function of an open set U ⊆ ℝ^P (Simon 6.2 proof: φ > 0 in U, {φ > λ} ⊂⊂ U)",
+          "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P be open. Then there is a function φ : ℝ^P → ℝ such that:\n(i) φ is 1-Lipschitz for the Euclidean metric: |φ(x) − φ(y)| ≤ |x − y| for all x, y ∈ ℝ^P;\n(ii) for every t > 0 the superlevel set {x ∈ ℝ^P : φ(x) ≥ t} is compact and contained in U;\n(iii) for every compact K ⊆ U there is δ > 0 with φ(x) ≥ δ for all x ∈ K.",
+          "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ φ : Eucl P → ℝ, LipschitzWith 1 φ ∧ (∀ t : ℝ, 0 < t → IsCompact {x | t ≤ φ x} ∧ {x | t ≤ φ x} ⊆ U) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ K, δ ≤ φ x",
+          "lean_name": "polyhedral_approx_exhaustion_function",
+          "depends_on": [],
+          "natural_proof": "Source: Step 1 of the parent proof. It constructs the exhaustion function of Simon 6.2, second paragraph of the printed proof (p. 169): \"take any Lipschitz function φ on ℝ^{n+ℓ} such that φ > 0 in U, φ ≡ 0 in ℝ^{n+ℓ} ∖ U and such that {x : φ(x) > λ} ⊂⊂ U ∀ λ > 0\". Errata: 'ans' = and; '{x D φ(x) > λ}' = {x : φ(x) > λ}. The book does not construct φ. This child states exactly the properties of φ that the parent uses.\n\nSetting and notation. P ∈ ℕ and U ⊆ ℝ^P is open. |x| is the Euclidean norm. dist(x, F) := inf{|x − y| : y ∈ F} is Mathlib's Metric.infDist x F, with the convention infDist x ∅ = 0. B̄(0, r) is the closed ball of radius r about 0.\n\n1. (Auxiliary function.) Let g(x) := 1/(1 + |x|). Then g(x) > 0 for every x.\n (a) g is 1-Lipschitz. For x, y ∈ ℝ^P, g(x) − g(y) = (|y| − |x|)/((1 + |x|)(1 + |y|)). Since (1 + |x|)(1 + |y|) ≥ 1 and ||y| − |x|| ≤ |x − y| (reverse triangle inequality), |g(x) − g(y)| ≤ |x − y|.\n (b) For t > 0, {x : g(x) ≥ t} ⊆ B̄(0, 1/t). Indeed, if 1/(1 + |x|) ≥ t then 1 ≥ t(1 + |x|) ≥ t|x|, so |x| ≤ 1/t.\n\n2. (Case U = ℝ^P.) Put φ := g.\n (a) Property (i) holds by 1(a).\n (b) Property (ii). Let t > 0 and K_t := {x : φ(x) ≥ t}. K_t is closed, being the preimage of [t, ∞) under the continuous φ, and K_t ⊆ B̄(0, 1/t) by 1(b). Closed balls in ℝ^P are compact (Heine–Borel), so the closed subset K_t is compact. Trivially K_t ⊆ ℝ^P = U.\n (c) Property (iii). Let K ⊆ U be compact. If K = ∅, δ := 1 works vacuously. Otherwise the continuous φ attains its minimum on the nonempty compact set K at some x₀ ∈ K. Then δ := φ(x₀) = g(x₀) > 0 and φ(x) ≥ δ for all x ∈ K.\n\n3. (Case U ≠ ℝ^P.) Then F := ℝ^P ∖ U is nonempty, and it is closed because U is open. Put φ(x) := min{dist(x, F), g(x)}.\n (a) Property (i). x ↦ dist(x, F) is 1-Lipschitz (Mathlib lipschitz_infDist_pt), and g is 1-Lipschitz by 1(a). The pointwise minimum of an L₁-Lipschitz and an L₂-Lipschitz function is max(L₁, L₂)-Lipschitz (LipschitzWith.min), so φ is 1-Lipschitz. In particular φ is continuous.\n (b) φ > 0 on U. If x ∈ U then x ∉ F. Since F is closed and nonempty, dist(x, F) > 0 (IsClosed.notMem_iff_infDist_pos). Also g(x) > 0, so φ(x) > 0.\n (c) Property (ii). Let t > 0 and K_t := {x : φ(x) ≥ t}.\n  - K_t is closed because φ is continuous.\n  - If x ∈ K_t then g(x) ≥ φ(x) ≥ t, so K_t ⊆ B̄(0, 1/t) by 1(b). Being closed and bounded, K_t is compact.\n  - Suppose x ∈ K_t but x ∉ U. Then x ∈ F, so dist(x, F) = 0 (infDist_zero_of_mem). Hence φ(x) = min{0, g(x)} ≤ 0 < t ≤ φ(x), a contradiction. Therefore K_t ⊆ U.\n (d) Property (iii). Let K ⊆ U be compact. If K = ∅, δ := 1 works. Otherwise the continuous φ attains its minimum on K at some x₀ ∈ K ⊆ U. Then δ := φ(x₀) > 0 by (b), and φ(x) ≥ δ for all x ∈ K.\n\n4. (Conclusion.) In either case φ satisfies (i), (ii) and (iii). ∎\n\nFormalization notes:\n- The two cases are `by_cases U = univ`; nonempty_compl turns U ≠ univ into (Uᶜ).Nonempty.\n- Compactness of K_t: (isCompact_closedBall 0 (1/t)).of_isClosed_subset (isClosed_le continuous_const hφ.continuous).\n- Minimum on K: IsCompact.exists_isMinOn.\n- A trial Lean proof of exactly this frozen statement compiles in the comparator scope with axioms [propext, Classical.choice, Quot.sound].",
+          "proof_key_steps": [
+            "g(x) = 1/(1+|x|) is positive and 1-Lipschitz, and {g ≥ t} ⊆ B̄(0, 1/t) for t > 0.",
+            "If U = ℝ^P, take φ = g. Its superlevel sets are closed subsets of compact balls; a positive minimum on a nonempty compact K gives δ.",
+            "If U ≠ ℝ^P, take φ = min(dist(·, ℝ^P∖U), g). It is 1-Lipschitz as a minimum of 1-Lipschitz functions, and positive on U because ℝ^P∖U is closed and nonempty.",
+            "{φ ≥ t} is closed, lies in B̄(0, 1/t), and lies in U because dist(·, ℝ^P∖U) = 0 off U; hence it is compact and contained in U.",
+            "The continuous φ, positive on U, attains a positive minimum δ on each nonempty compact K ⊆ U (δ = 1 if K = ∅)."
+          ]
+        },
+        "audit": {
+          "key": "exhaustion_function",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean proposition match, including every hypothesis. The reciprocal-norm estimate, separate whole-space case, nonempty closed-complement distance argument, compact superlevels and positive compact minima establish all conclusions, including empty-domain and empty-compact-set cases. The proof is constructive in its mathematical steps, non-circular and sufficiently detailed. Its conclusions supply both relatively compact truncation regions and eventual containment of test-form supports."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/decomposition.json": "c64de010d044c36cda6dedeed13b465cb6da6dd93c105da863a16a46717d114e",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/decomposition-audit.json": "6b779c7ea69338e405ae8155ba891d4435fa073984d34ddfbd06474615f1276c",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-child-handoff.json": "5d8685fab0f4d8de1ec76f2bf3eb9146782d74f12daf8553968c3e5916cd580f",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-plan.md": "4035fb07eeb04218b0377d093b88b93397a62979e041785cb34aec92cbb4742b",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-natural-proof.md": "f9a84fe3e7798ac286b452529b1af0b53ab87a95a076425f80d2cc32905a81ca",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/parent-supplied-natural-proof.json": "29c42327951ebc361e6f8bd6839828b98fe8097f02fce6af2a5126673758ecbf",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-boundary-mass-cutoff-a1/node.json": "0d2db8b5f84036dfaaaa578ae38c5602dcf9f58f1cacd76ac9759d3a5e53aaae",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-child-handoff.json": "a781ddbd597c3dc890949f69ab492228810a0ddf9e0539178871b8b249daa637",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-plan.md": "e76d0a5c21613b6d279c74546d2d9802c070be89918513a8700ab33db812bdc5",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-natural-proof.md": "6d6bce6d4eca754faf30948308e49c51084464545b7897bf012c866901445947",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/parent-supplied-natural-proof.json": "f7a4872bbf96da630f3adc1a5697b74d74629aa3e7ede6554814598b27d64e31",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-truncation-sequence-a1/children/root-polyhedral-approximation-a1-truncation-sequence-a1-exhaustion-function-a1/node.json": "a8c21e96dd7b165dc8fb6cb33023257aa199007f831c172edc592392cd5a29c3"
+  }
+}

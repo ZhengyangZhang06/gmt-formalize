@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.flat_cauchy_limit-a1",
+  "parent_id": "root.flat_iff_weak-a1",
+  "depth": 2,
+  "title": "Flat-Cauchy subsequence summed to the weak limit (Simon 7.2 proof, (5) and 3.13)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open and T_j, T ∈ D_n(U). Assume (total boundedness) that for every ε ∈ (0, ∞] and every infinite J ⊆ ℕ there is an infinite J' ⊆ J such that for all i, j ∈ J' there are integer multiplicity R ∈ D_{n+1}(U), S ∈ D_n(U) with T_i − T_j = ∂R + S and M(R) + M(S) < ε (M = M_U), and assume T_j ⇀ T. Then there is a strictly increasing φ : ℕ → ℕ such that for every ℓ ∈ ℕ there are integer multiplicity R ∈ D_{n+1}(U), S ∈ D_n(U) with T_{φ(ℓ)} − T = ∂R + S and M(R) + M(S) ≤ 2·2^{−ℓ}.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Tj : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n), (∀ ε : ℝ≥0∞, 0 < ε → ∀ J : Set ℕ, J.Infinite → ∃ J' ⊆ J, J'.Infinite ∧ ∀ i ∈ J', ∀ j ∈ J', ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, Tj i ω - Tj j ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε) → WeaklyConvergesOn Tj T → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ ℓ : ℕ, ∃ (R : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω, Tj (φ ℓ) ω - T ω = R.boundary ω + S ω) ∧ R.mass + S.mass ≤ 2 * 2⁻¹ ^ ℓ",
+  "lean_name": "fiw_flat_cauchy_limit",
+  "depends_on": [
+    "root.flat_iff_weak-a1.im_series-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-flat-cauchy-limit-a1-a1"
+}

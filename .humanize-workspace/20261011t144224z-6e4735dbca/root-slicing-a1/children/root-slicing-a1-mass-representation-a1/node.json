@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1",
+  "parent_id": "root.slicing-a1",
+  "depth": 2,
+  "title": "Mass representation and restrictions of currents with locally finite mass (Simon 6.2.7–2.9)",
+  "statement": "For all P, k ∈ ℕ, every open U ⊆ ℝ^P and every X ∈ D_k(U) with M_W(X) < ∞ for every open W whose closure is a compact subset of U, there are a Borel measure μ on ℝ^P and v : ℝ^P → Λ_k(ℝ^P) (k-vectors, i.e. continuous linear functionals on k-covectors) such that: (a) IsMeasureRepresentation X μ v, i.e. for every test form ω ∈ D^k(U) the function x ↦ v(x)(ω(x)) is μ-integrable and X(ω) = ∫ v(x)(ω(x)) dμ(x); (b) μ(ℝ^P ∖ U) = 0; (c) μ(K) < ∞ for every compact K ⊆ U; (d) |v(x)(α)| ≤ |α| for every x ∈ ℝ^P and every k-covector α, where |α| is the Euclidean coefficient norm (covectorEuclideanNorm); (e) for every Borel A ⊆ ℝ^P there is S ∈ D_k(U) with S(ω) = ∫_A v(x)(ω(x)) dμ(x) for all ω ∈ D^k(U); (f) for every Borel A, every S ∈ D_k(U) with S(ω) = ∫_A v(x)(ω(x)) dμ(x) for all ω, and every open W ⊆ U, M_W(S) = μ(W ∩ A) in [0,∞].",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ W, CompactlyContainedOpen W U → X.massOn W < ∞) → ∃ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) k), IsMeasureRepresentation X μ v ∧ μ Uᶜ = 0 ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ (x : Eucl P) (α : Covector (Eucl P) k), |v x α| ≤ covectorEuclideanNorm α) ∧ (∀ A : Set (Eucl P), MeasurableSet A → ∃ S : GeometricCurrentOn U k, ∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) ∧ ∀ A : Set (Eucl P), MeasurableSet A → ∀ S : GeometricCurrentOn U k, (∀ ω : TestFormOn U k, S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) k) x) ∂μ) → ∀ W : Set (Eucl P), IsOpen W → W ⊆ U → S.massOn W = μ (W ∩ A)",
+  "lean_name": "slicing_mass_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-a1"
+}

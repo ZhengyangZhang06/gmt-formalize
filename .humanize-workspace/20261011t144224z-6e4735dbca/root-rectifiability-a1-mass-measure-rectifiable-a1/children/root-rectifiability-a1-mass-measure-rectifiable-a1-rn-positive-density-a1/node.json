@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mass_measure_rectifiable-a1.rn_positive_density-a1",
+  "parent_id": "root.rectifiability-a1.mass_measure_rectifiable-a1",
+  "depth": 3,
+  "title": "σ-finite Radon-Nikodym with a positive real density on a measurable carrier (Simon 6, proof of 8.1, (8))",
+  "statement": "Let X be a measurable space, let ν and μ be measures on X, and let B ⊆ X be a measurable set. Assume the restriction ν⌞B (A ↦ ν(A ∩ B)) is σ-finite, μ is σ-finite, μ(X ∖ B) = 0, and μ ≪ ν (ν(A) = 0 implies μ(A) = 0). Then there are a measurable set M ⊆ B and a measurable function θ : X → ℝ with the following properties: θ(x) > 0 for every x ∈ M; θ is ν-integrable on M ∩ K for every measurable K ⊆ X with μ(K) < ∞; and μ = (ν⌞M).withDensity(x ↦ ofReal θ(x)), i.e. μ(A) = ∫_{A∩M} θ dν for every measurable A ⊆ X.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (ν μ : Measure X) (B : Set X), MeasurableSet B → SigmaFinite (ν.restrict B) → SigmaFinite μ → μ Bᶜ = 0 → μ ≪ ν → ∃ (M : Set X) (θ : X → ℝ), M ⊆ B ∧ MeasurableSet M ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ K : Set X, MeasurableSet K → μ K < ∞ → IntegrableOn θ (M ∩ K) ν) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+  "lean_name": "rectifiability_rn_positive_real_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mass-measure-rectifiable-a1-rn-positive-density-a1-a1"
+}

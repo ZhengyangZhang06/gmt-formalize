@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.slice_orientation_aesm-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1",
+  "depth": 5,
+  "title": "For L¹-a.e. t the sliced orientation x ↦ ξ(x) ∘ ι(G(x)/|G(x)|) is a.e. strongly measurable for H^m on M ∩ f⁻¹{t}",
+  "statement": "Let P, m ∈ ℕ. For k ∈ ℕ let Λ^k := Covector (Eucl P) k be the space of continuous alternating k-forms on ℝ^P and Λ_k := NVector (Eucl P) k = Λ^k →L ℝ the space of k-vectors (both with operator norms). Let M ⊆ ℝ^P, let ξ : ℝ^P → Λ_{m+1} be a.e. strongly measurable for H^{m+1} restricted to M, let f : ℝ^P → ℝ be an arbitrary function (no measurability assumed) and let G : ℝ^P → ℝ^P be Borel measurable. Write Hᵏ := μHE[k] (Euclidean Hausdorff measure on ℝ^P) and L¹ for Lebesgue measure on ℝ, and assume the null-transfer property for (M, f): every predicate that holds for H^{m+1}-a.e. x ∈ M holds, for L¹-a.e. t, for H^m-a.e. x ∈ M ∩ f⁻¹{t}. With ι(v) := (alternatizeUncurryFinCLM ℝ ℝ^P ℝ) ∘ (smulRightL ℝ ℝ^P Λ^m (innerSL ℝ v)) (ι(v)α = v♭∧α), put ξ'(x) := ξ(x) ∘ ι(|G(x)|⁻¹G(x)) ∈ Λ_m (with |0|⁻¹·0 = 0). Then for L¹-a.e. t ∈ ℝ, ξ' is a.e. strongly measurable for H^m restricted to M ∩ f⁻¹{t}.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Eucl P)) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (G : Eucl P → Eucl P), AEStronglyMeasurable ξ ((μHE[m + 1] : Measure (Eucl P)).restrict M) → Measurable G → (∀ p : Eucl P → Prop, (∀ᵐ x ∂((μHE[m + 1] : Measure (Eucl P)).restrict M), p x) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ᵐ x ∂((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t})), p x) → ∀ᵐ t ∂(volume : Measure ℝ), AEStronglyMeasurable (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ((μHE[m] : Measure (Eucl P)).restrict (M ∩ f ⁻¹' {t}))",
+  "lean_name": "slicing_im_st_mf_slice_orientation_aesm",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.contraction_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.contraction_lipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-ae11d089ba-a1"
+}

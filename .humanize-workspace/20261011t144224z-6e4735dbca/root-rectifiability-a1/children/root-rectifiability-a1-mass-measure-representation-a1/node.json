@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.mass_measure_representation-a1",
+  "parent_id": "root.rectifiability-a1",
+  "depth": 2,
+  "title": "Riesz representation of a locally finite mass current with respect to its mass measure (Simon 6, (2.7)-(2.8))",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be open and let T ∈ D_k(U) (GeometricCurrentOn U k) satisfy M_W(T) < ∞ for every open W ⊂⊂ U. Then (i) there is a Borel measure μ on ℝ^P with IsMassMeasure T μ, i.e. μ(ℝ^P∖U) = 0 and μ(W) = M_W(T) for every open W ⊂⊂ U; and (ii) for every Borel measure μ on ℝ^P with IsMassMeasure T μ there is a strongly measurable k-vector field ξ : ℝ^P → Λ_k(ℝ^P) (NVector) of Euclidean coefficient norm 1 μ-a.e., i.e. Σ_{α ∈ I(k,P)} ξ(x)(dx^α)² = 1 for μ-a.e. x (dx^α = dx^{α(1)}∧⋯∧dx^{α(k)}, euclideanNVectorCoordinate), such that for every ω ∈ D^k(U) the function x ↦ ⟨ω(x), ξ(x)⟩ = ξ(x)(ω(x)) is μ-integrable and T(ω) = ∫⟨ω(x), ξ(x)⟩ dμ(x) (IsMeasureRepresentation T μ ξ).",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U k, (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞) → (∃ μ : Measure (Eucl P), IsMassMeasure T μ) ∧ ∀ μ : Measure (Eucl P), IsMassMeasure T μ → ∃ ξ : Eucl P → NVector (Eucl P) k, StronglyMeasurable ξ ∧ (∀ᵐ x ∂μ, ∑ α : SimonMultiIndex k P, (euclideanNVectorCoordinate (ξ x) α) ^ 2 = 1) ∧ IsMeasureRepresentation T μ ξ",
+  "lean_name": "rectifiability_mass_measure_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-mass-measure-representation-a1-a1"
+}

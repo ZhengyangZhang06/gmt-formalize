@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.mass_restriction-a1.mass_measure_facts-a1",
+  "parent_id": "root.deformation-a1.mass_restriction-a1",
+  "depth": 3,
+  "title": "The mass measure of a current on ℝ^N vanishes off its support and is finite when the mass is finite (Simon 2.8, 2.12)",
+  "statement": "Let N, k ∈ ℕ, let X ∈ D_k(ℝ^N) (GeometricCurrentOn univ k) and let μ be a Borel measure on ℝ^N with IsMassMeasure X μ, i.e. μ(ℝ^N ∖ ℝ^N) = 0 and μ(W) = M_W(X) (X.massOn W) for every open W ⊆ ℝ^N whose closure is compact (CompactlyContainedOpen W univ). Then (i) μ(ℝ^N ∖ spt X) = 0, where spt X = X.support = ℝ^N ∖ Z(X) and the zero region Z(X) = X.zeroRegion is the union of all open W with compact closure on which X vanishes (X(ω) = 0 for every test form ω with tsupport ω ⊆ W); and (ii) if M(X) = X.mass < ∞, then μ is a finite measure (IsFiniteMeasure μ).",
+  "lean_statement": "∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ : Measure (Eucl N)), IsMassMeasure X μ → μ X.supportᶜ = 0 ∧ (X.mass < ∞ → IsFiniteMeasure μ)",
+  "lean_name": "dmr_massMeasure_support_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-mass-restriction-a1-mass-measure-facts-a1-a1"
+}

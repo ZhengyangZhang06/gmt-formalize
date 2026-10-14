@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.test_density-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Test-function reduction for bounded sequences: convergence against C¹_c(Ω) implies convergence against L¹(Ω) (density of C_c^∞(Ω) in L¹(Ω), parent step (3.0))",
+  "statement": "Let k ∈ ℕ, let Ω ⊆ ℝ^k (ℝ^k = Eucl k) be open, B ∈ ℝ, and let f_j : ℝ^k → ℝ (j ∈ ℕ) and f₀ : ℝ^k → ℝ be a.e.-strongly measurable for Lebesgue measure restricted to Ω, with |f_j(w)| ≤ B and |f₀(w)| ≤ B for all j and all w ∈ Ω. Suppose that ∫_Ω φ(w)·f_j(w) dw → ∫_Ω φ(w)·f₀(w) dw as j → ∞ for every φ : ℝ^k → ℝ of class C¹ (ContDiff ℝ 1) with compact support and tsupport φ ⊆ Ω. Then ∫_Ω η(w)·f_j(w) dw → ∫_Ω η(w)·f₀(w) dw as j → ∞ for every η : ℝ^k → ℝ that is Lebesgue-integrable on Ω (dw = Lebesgue measure, volume).",
+  "lean_statement": "∀ (k : ℕ) (Ω : Set (Eucl k)) (B : ℝ) (f : ℕ → Eucl k → ℝ) (f₀ : Eucl k → ℝ), IsOpen Ω → (∀ j, AEStronglyMeasurable (f j) ((volume : Measure (Eucl k)).restrict Ω)) → AEStronglyMeasurable f₀ ((volume : Measure (Eucl k)).restrict Ω) → (∀ j, ∀ w ∈ Ω, |f j w| ≤ B) → (∀ w ∈ Ω, |f₀ w| ≤ B) → (∀ φ : Eucl k → ℝ, ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ω → Tendsto (fun j => ∫ w in Ω, φ w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, φ w * f₀ w ∂(volume : Measure (Eucl k))))) → ∀ η : Eucl k → ℝ, IntegrableOn η Ω (volume : Measure (Eucl k)) → Tendsto (fun j => ∫ w in Ω, η w * f j w ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, η w * f₀ w ∂(volume : Measure (Eucl k))))",
+  "lean_name": "deformation_ipl_mwc_test_density",
+  "depends_on": [
+    "root.constancy-a1.local_on_balls-a1.density_constancy-a1.smooth_approx_identity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1.smooth_approx_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-density-constancy-a1-smooth-appro-6a720fda87-a1",
+      "result_commit": "2219dd324b47f4276f090e8ece62441b2f58fb58",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-fc38066b61-a1"
+}

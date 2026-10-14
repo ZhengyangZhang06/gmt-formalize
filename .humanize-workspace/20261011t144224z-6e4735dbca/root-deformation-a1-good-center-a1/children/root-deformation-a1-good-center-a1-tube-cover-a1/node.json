@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.tube_cover-a1",
+  "parent_id": "root.deformation-a1.good_center-a1",
+  "depth": 3,
+  "title": "σ-tubes about the dual skeleton L(a) lie in periodic coordinate cylinders (printed identity after (5) of 5.1)",
+  "statement": "Let d, k ∈ ℕ with k ≤ d, let a ∈ ℝ^d = Eucl d (Euclidean distance) and L := {y ∈ ℝ^d : there is J ⊆ {1,…,d} with |J| = k and y_i − a_i ∈ ℤ for all i ∈ J}. If σ ∈ ℝ, x ∈ ℝ^d and dist(x, L) < σ, where dist(x, L) = inf_{y∈L}|x − y| (Mathlib infDist), then there are J ⊆ {1,…,d} with |J| = k and integers z_i (i ∈ J) such that Σ_{i∈J}(x_i − a_i − z_i)² < σ², i.e. x ∈ p_J⁻¹(B_σ(p_J(a) + z)) with z = Σ_{i∈J} z_i e_i and p_J the orthogonal projection onto S_J = span{e_i : i ∈ J}.",
+  "lean_statement": "∀ (d k : ℕ), k ≤ d → ∀ (a : Eucl d) (La : Set (Eucl d)), La = {y | ∃ J : Finset (Fin d), J.card = k ∧ ∀ i ∈ J, ∃ n : ℤ, y i - a i = n} → ∀ (σ : ℝ) (x : Eucl d), infDist x La < σ → ∃ J : Finset (Fin d), J.card = k ∧ ∃ z : J → ℤ, ∑ i : J, (x i - a i - z i) ^ 2 < σ ^ 2",
+  "lean_name": "dgc_tube_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-tube-cover-a1-a1"
+}
