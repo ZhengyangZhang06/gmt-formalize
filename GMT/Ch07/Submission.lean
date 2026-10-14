@@ -567,6 +567,23 @@ theorem Submission.cmcdt_lpo_tk_boundary_support_subset : ∀ (N k : ℕ) (X : G
   rw [GeometricCurrentOn.boundary_apply]
   exact hXW (exteriorDerivativeTestOn univ k ω)
     ((tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid N) k)).trans hω)
+/-- **Locality of a current** (Simon 6.2.11, chapter-06.txt lines 296–303): if every current
+`S ∈ 𝒟ₙ(U)` kills the test forms whose support misses `spt S`, then `X ∈ 𝒟ₖ(ℝᴺ)` takes the same
+value on test forms `η`, `η'` that agree on an open set `W ⊇ spt X`.  The difference
+`ψ = η − η'` vanishes on `W`, so `tsupport ψ` lies in the closed set `Wᶜ`, which misses
+`spt X ⊆ W`; hence `X(η) − X(η') = X(ψ) = 0`. -/
+theorem Submission.cmcdt_lpo_tk_locality : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η' := by
+  intro hVO N k X η η' W hW hXW hηη'
+  -- Step 1: `ψ = η − η'` vanishes on `W`, so `tsupport ψ` lies in the closed set `Wᶜ`.
+  have hψ : tsupport ((η - η' : TestFormOn (univ : Set (Euclid N)) k) :
+      DifferentialForm (Euclid N) k) ⊆ Wᶜ := by
+    refine closure_minimal (fun x hx hxW => hx ?_) hW.isClosed_compl
+    rw [Submodule.coe_sub, Pi.sub_apply, hηη' x hxW, sub_self]
+  -- Step 2: `tsupport ψ ⊆ Wᶜ` misses `spt X ⊆ W`, so `X(ψ) = 0` by the vanishing hypothesis.
+  have h0 : X (η - η') = 0 := hVO N k univ X (η - η') (disjoint_compl_left.mono hψ hXW)
+  -- Step 3: `X(ψ) = X(η) − X(η')` by linearity of `X`.
+  rw [map_sub X.toCurrent] at h0
+  exact sub_eq_zero.mp h0
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
