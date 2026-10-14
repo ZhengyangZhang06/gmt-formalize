@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c2347280ac871bc33b4e124f54ec73583c310f64879f9c06fef4521acda577d",
+  "git_delta": {
+    "base_commit": "18452f8951f4a6990bae8cee6df29eceab7ae671",
+    "candidate_commit": "cf0348b43ab7c16630876aa2b1ba893a78c63ca0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_proj_smooth_cutoff",
+    "diff_sha256": "8cb6d0c8b74c313a615eed02df915d1481112d9b9e509fa5507f4b73c29f0da9",
+    "source_sha256": "3f25d35c5b34cb2fc4ee46551d14fd8b0741c8c17007340808033ff8400e77a5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_proj_smooth_cutoff",
+      "statement": "∀ (P : ℕ) (K O : Set (Euclid P)), IsCompact K → IsOpen O → K ⊆ O → ∃ (χ : Euclid P → ℝ) (O' : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ tsupport χ ⊆ O ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ IsOpen O' ∧ K ⊆ O' ∧ ∀ x ∈ O', χ x = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
