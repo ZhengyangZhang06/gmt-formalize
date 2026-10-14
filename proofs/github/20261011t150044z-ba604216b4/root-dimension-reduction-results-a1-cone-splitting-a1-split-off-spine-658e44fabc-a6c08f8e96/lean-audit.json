@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "594153fdd814e4b81e86cbf4dec22f43eb9eaa78bcdcf0842222469aaa57469e",
+  "git_delta": {
+    "base_commit": "385b5fca5e77ab78c6a9fe410b738f2e380f7029",
+    "candidate_commit": "cd625d1934cf01b9498f26dff504f3cd7bd405a5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_fc_box_face",
+    "diff_sha256": "25b00d0773b374f455cba2533a5393a90ea1ae5373426da27091fe46affe7eea",
+    "source_sha256": "5c750a71f6559350fb8df37ae4e57b88909982fb969248253134678f99a772a9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_fc_box_face",
+      "statement": "∀ (P k m' n' : ℕ) (f : Fin k → Euclid P) (h : n' = k + m') (w : Euclid P) (Y : GeometricCurrentOn (univ : Set (Euclid P)) m') (RY : IMRep (univ : Set (Euclid P)) m') (r : ℝ), 0 < m' → Orthonormal ℝ f → w ∈ (Submodule.span ℝ (Set.range f))ᗮ → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ B : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity B ∧ B.mass = ENNReal.ofReal ((2 * r) ^ k) * RY.measure univ ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m', (∀ (α : Covector (Euclid P) n') (v : Fin m' → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', B ω = ∫ s in {s | s ∈ Submodule.span ℝ (Set.range f) ∧ ∀ c, |inner ℝ (f c) s| ≤ r}, currentEval Y (fun y => flat ((ω : DifferentialForm (Euclid P) n') (s + w + y))) ∂μHE[k]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
