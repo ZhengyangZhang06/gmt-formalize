@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b64fabb69ef68103ef4eaf6d751c9e7d23b53b50631b81080cfad0072415ce4f",
+  "git_delta": {
+    "base_commit": "9dc5f1b14a83656655cde64157cb1be3acd292a8",
+    "candidate_commit": "73cb7c77fcce02968522b54bb874a6542ccbadb7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_c1c_c1_range_cover",
+    "diff_sha256": "10fd241eeb3ef64768c75121fa3f97cbc33340ee3c19189142845ffe108d06cd",
+    "source_sha256": "4fdccabf160d7f76063193ee4d16300ce136981bb676d48538ea05d1cfc1aca3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_c1c_c1_range_cover",
+      "statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P), ContDiff ℝ 1 G → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ Set.range G ⊆ N₀ ∪ ⋃ l, N l",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
