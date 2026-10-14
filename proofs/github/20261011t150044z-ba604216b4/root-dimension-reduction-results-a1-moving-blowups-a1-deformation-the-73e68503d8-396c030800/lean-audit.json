@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fa024af128467e82a6fa5a66962d531ec96777c31a7e9d6e9905394d0f83741e",
+  "git_delta": {
+    "base_commit": "5d1c5777188b290f0a4cb5ba35d1f1f6c0460fc2",
+    "candidate_commit": "48e60596b4c9a1508d2786ad9499adf45c2003ba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_orientation",
+    "diff_sha256": "4d74e0a95712d310d1bd0e2a2964f617f7f36d78aebc4579e4933a04b393fac6",
+    "source_sha256": "628f7ebdcf88a6da1632a9b3b64e2efc0ca0950e8424d18eb1d2bbca1d646822",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_orientation",
+      "statement": "∀ (N n : ℕ) (ξ : MultiVector N n) (ξ' : MultiVector (N + 1) (n + 1)) (Q : Submodule ℝ (Euclid N)), IsUnitOrientationOf ξ Q → (∀ (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ξ' α = ξ β) → IsUnitOrientationOf ξ' (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N)))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
