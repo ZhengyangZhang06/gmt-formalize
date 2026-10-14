@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.action_integral_formula-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Integral formula T(ω) = ∫⟨ω, ξ⟩ dμ_R for an integer multiplicity triple",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P, R = (M, θ, ξ) : IMRep U n, and ω ∈ 𝒟ⁿ(U) (TestFormOn U n: a C^∞ n-form on ℝ^P with compact support and tsupport ω ⊆ U). Let μ_R = R.measure = (Hⁿ⌞M).withDensity θ. Then the function x ↦ ξ(x)(ω(x)) is μ_R-integrable, and R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) equals ∫ ξ(x)(ω(x)) dμ_R(x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => R.orient x ((ω : DifferentialForm (Euclid P) n) x)) R.measure ∧ R.action (ω : DifferentialForm (Euclid P) n) = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+  "lean_name": "dor_ims_action_eq_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-action-188f3b5994-a1"
+}

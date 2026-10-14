@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.mollify_unit_field-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+  "depth": 4,
+  "title": "Mollification of a compactly supported continuous unit covector field",
+  "statement": "Let P, n be natural numbers, Λ := Covector (Euclid P) n with operator norm ‖·‖, and |·| := covectorEuclideanNorm. Let V ⊆ ℝ^P be open. Let g : ℝ^P → Λ be continuous with compact support, tsupport g ⊆ V and |g(x)| ≤ 1 for every x. Let ε > 0. Then there is an n-form ω : ℝ^P → Λ that is C^∞ with compact support (IsTestForm ω), with tsupport ω ⊆ V, |ω(x)| ≤ 1 for every x, and |ω(x) − g(x)| ≤ ε for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (V : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsOpen V → Continuous g → HasCompactSupport g → tsupport g ⊆ V → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (ω x - g x) ≤ ε",
+  "lean_name": "dor_ims_sua_mollify_unit_field",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.coeff_norm_rep-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.coeff_norm_rep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305-a1"
+}
