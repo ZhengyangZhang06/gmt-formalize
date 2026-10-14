@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bbdd8f5fd4204678c5902faf48af4becf8c2121cc0437fa7cf07d35c3c7a4a58",
+  "git_delta": {
+    "base_commit": "6c7bd1b268531897dfb66702801639ca7d17552c",
+    "candidate_commit": "c561ba857507e9877a31a2ac96d0158d651e1b0a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_tm_zero_cycle",
+    "diff_sha256": "b9c43c6d9940fd065de9d82129209594630a7a98974cc99a895d72e3905e4b49",
+    "source_sha256": "22acb333e0db7ce03f199453c797e592b700e7f351e4bdb020400243c45ee76c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_tm_zero_cycle",
+      "statement": "∀ (P n : ℕ), ∃ (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ RC.measure = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
