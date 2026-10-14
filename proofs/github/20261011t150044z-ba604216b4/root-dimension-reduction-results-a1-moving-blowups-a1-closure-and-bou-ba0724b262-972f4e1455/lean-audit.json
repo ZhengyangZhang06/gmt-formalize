@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f3881ee054ced84c783c9d2d67e3e096702f8bb714c21cc68bcd89e0c3a3fad2",
+  "git_delta": {
+    "base_commit": "02098561a05d98e5ad631dfcee5efe676a818382",
+    "candidate_commit": "b2d2c1bbdd2ae2a70fa33263b65e1c4791fc9e43",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_bim_extension_mass_bounds",
+    "diff_sha256": "8f5d8208165dada007e1647afc5fc0f2d76bac3dcbefa0d4778633a13100e0b2",
+    "source_sha256": "6b8c153db38c68cdeede7d6a6157e9789e0195219799d925915d6056eb6c651b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_bim_extension_mass_bounds",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U C : Set (Euclid P)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), IsOpen U → IsCompact C → C ⊆ U → Y.support ⊆ C → Y.mass ≤ (Y.restrictDomain (subset_univ U)).mass ∧ Y.boundary.mass ≤ (Y.restrictDomain (subset_univ U)).boundary.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
