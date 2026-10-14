@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "abbrev Euclid|abbrev MultiVector|def IsUnitOrientationOf|^import|^namespace|^open|^end",
+        "cmcdt_lpi_unit_orientation_span|dpf_exists_orthonormal_frame_det_gram|dgoj_covector_eq_det_mul_of_mem_span|rsdic_unitOrientation_eq_or_eq_neg",
+        "gramSchmidt_ne_zero|span_gramSchmidt_Iic|theorem span_gramSchmidt |span_gramSchmidtNormed_range|gramSchmidtNormed_orthonormal|gramSchmidt_inv_triangular",
+        "eq_smul_basis_det|theorem det_apply|toMatrix_apply",
+        "det_of_isUpperTriangular",
+        "theorem Orthonormal.linearIndependent|theorem Orthonormal.inner_right_fintype",
+        "det_to_matrix_orthonormalBasis_real|sum_inner_mul_inner",
+        "def apply \\(m : ι → E\\)|lemma apply_apply",
+        "git show --format= 93ec31ab686fa25a7af150db4f17b9bcc26da7df -- GMT/Ch07/Submission.lean",
+        "git show --format= 73310ec921452a01670f397b34d1cf3cd7135598 -- GMT/Ch07/Submission.lean",
+        "git show --format= fe95347baaed6a2cf2ecde4455e2b32f361fde51 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt_span_orientation_independent_audit/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt_span_orientation_independent_audit/AcceptedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Block.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-acb6377c81/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-acb6377c81/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/accepted-candidate.json",
+        "/tmp/cmcdt_span_orientation_independent_audit/ContractsAndAssembly.lean",
+        "/tmp/cmcdt_span_orientation_independent_audit/AcceptedProofs.lean"
+      ],
+      "conclusion": "Relative paths are rooted at the supplied workspace. The pinned contract matches the workspace definitions, and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d matches the manifest. No selected or child theorem names occur in the snapshot; the supporting Gram–Schmidt, determinant, orthonormality and continuous-evaluation declarations were found and inspected. Each proposed name has exactly one existing DAG owner, comparator-accepted with a byte-identical frozen type and no dependencies or children. Independent Lean checks using the frozen definitions passed: all three standalone propositions elaborate, their conclusions imply the exact selected parent, and the accepted proof bodies compile. Each proof and the assembled parent use only propext, Classical.choice and Quot.sound. Matrix.of multiplication was explicitly checked against matrix multiplication, and continuous evaluation elaborates as MultiVector. The split appropriately isolates the supplied proof's three substantive obligations; sign normalization remains in the parent and establishes its existence clause."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orthonormal_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches all prose hypotheses and conclusions. Prefix-span preservation makes the Gram–Schmidt coordinate matrix triangular; coordinate expansion gives G = AᵀA, independence gives nonzero determinant, and Cauchy–Schwarz bounds its diagonal product. The proof covers n = 0 and contains no circular reliance or deferred proof construction. The bare name validly reuses comparator-accepted commit 93ec31a with identical frozen type."
+    },
+    {
+      "key": "frame_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly includes orthonormality, membership of every b_j in the span, and universal quantification over covectors. Restriction to the span, the basis-determinant identity, and identification of coordinates by inner products prove the stated formula, including dependent b and n = 0. The proof is complete and independent of its siblings and parent. The bare name validly reuses comparator-accepted commit 73310ec with identical frozen type."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the two unit-orientation hypotheses and conclusion. The actual predicate supplies global signs and spanning orthonormal frames; the proof derives OᵀO = I, det O = ±1, and the covector expansion, obtaining a sign independent of α before applying extensionality. It explicitly handles n = 0. Its self-contained expansion justifies the empty dependency list without circularity. The bare name validly reuses comparator-accepted commit fe95347 with identical frozen type."
+    }
+  ],
+  "required_changes": []
+}
