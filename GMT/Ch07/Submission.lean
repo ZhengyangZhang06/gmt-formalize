@@ -3279,6 +3279,185 @@ theorem Submission.codim1_hcp_stab_det_second_order : ∀ (N : ℕ) (κ : ℝ), 
     _ ≤ |t| ^ 2 * (N * β * |t|) + |t| ^ 3 * (3 * (N * |κ|) ^ 2) := by gcongr
     _ = (N * β + 3 * (N * |κ|) ^ 2) * |t| ^ 3 := by ring
 
+/-- Second-order bound for the area Jacobian (Simon Ch. 2, 5.2–5.4, in the second variation of
+area, Appendix B): if `‖L‖ ≤ Λ`, `trace(P_S L) = 0` and `|t| ≤ 1`, then
+`√det(((I + tL)ι_S)*((I + tL)ι_S)) ≤ 1 + (t²/2) Σⱼ (|L uⱼ − P_S L uⱼ|² − uⱼ · L(P_S L uⱼ)) + C|t|³`,
+`uⱼ = P_S eⱼ`.  In an orthonormal basis `τ` of `S` the Gram matrix of `T = (I + tL)ι_S` is
+`1 + tX + t²Y` with `Xᵢⱼ = τᵢ · Lτⱼ + Lτᵢ · τⱼ`, `Yᵢⱼ = Lτᵢ · Lτⱼ`, entries bounded by `2|Λ| + Λ²`,
+so `det_second_order` expands its determinant to second order.  Computing `trace(P_S R)` in the
+bases `τ` and `(eⱼ)` gives `tr X = 2 trace(P_S L) = 0` and identifies the `t²`-coefficient with
+the sum above (`R = L*L − L*P_S L − L P_S L`).  Finally `det(T*T) ≥ 0` (its eigenvalues are
+`|Tv|² ≥ 0`) and `√y ≤ (1 + y)/2`. -/
+theorem Submission.codim1_hcp_stab_jacobian_bound : ∀ (P : ℕ) (Λ : ℝ), ∃ C : ℝ, ∀ (S : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), ‖L‖ ≤ Λ → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = 0 → ∀ t : ℝ, |t| ≤ 1 → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL)).det) ≤ 1 + t ^ 2 / 2 * ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) + C * |t| ^ 3 := by
+  intro P Λ
+  -- step 1: the constant `C₁` of `det_second_order` for `N = P`, `κ = 2|Λ| + Λ²`; `C = C₁ / 2`
+  obtain ⟨C₁, hC₁⟩ := Submission.codim1_hcp_stab_det_second_order P (2 * |Λ| + Λ ^ 2)
+  refine ⟨C₁ / 2, ?_⟩
+  intro S L hL htr t ht
+  have hΛ : 0 ≤ Λ := (norm_nonneg L).trans hL
+  -- step 2: an orthonormal basis `τ` of `S` (`dim S ≤ P`), and `P_S w = ∑ₖ (τₖ · w) τₖ`
+  set n := Module.finrank ℝ S
+  have hnP : n ≤ P := (Submodule.finrank_le S).trans_eq finrank_euclideanSpace_fin
+  let τ : OrthonormalBasis (Fin n) ℝ S := stdOrthonormalBasis ℝ S
+  have hτn : ∀ i, ‖(τ i : Euclid P)‖ = 1 := fun i => by
+    rw [Submodule.norm_coe]; exact τ.norm_eq_one i
+  have hτδ : ∀ i j, inner ℝ (τ i : Euclid P) (τ j : Euclid P) = if i = j then 1 else 0 :=
+    fun i j => by rw [← Submodule.coe_inner]; exact τ.inner_eq_ite i j
+  have hPexp : ∀ w : Euclid P,
+      S.starProjection w = ∑ k, inner ℝ (τ k : Euclid P) w • (τ k : Euclid P) := by
+    intro w
+    rw [Submodule.starProjection_apply]
+    conv_lhs => rw [← τ.sum_repr' (S.orthogonalProjectionOnto w)]
+    simp only [Submodule.coe_sum, Submodule.coe_smul,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+  -- step 3: `trace(P_S ∘ R) = ∑ᵢ τᵢ · Rτᵢ = ∑ⱼ uⱼ · R uⱼ` for every linear `R` (`uⱼ = P_S eⱼ`)
+  have htrτ : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ R) =
+        ∑ i, inner ℝ (τ i : Euclid P) (R (τ i)) := by
+    intro R
+    -- `P_S = ι_S ∘ π_S`, so `trace(P_S ∘ R) = trace_S(π_S ∘ R ∘ ι_S)`
+    have h1 : S.starProjection.toLinearMap ∘ₗ R =
+        S.subtype ∘ₗ (S.orthogonalProjectionOnto.toLinearMap ∘ₗ R) :=
+      LinearMap.ext fun _ => rfl
+    rw [h1, LinearMap.trace_comp_comm', LinearMap.trace_eq_sum_inner _ τ]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, ContinuousLinearMap.coe_coe,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+  have htrE : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ R) =
+        ∑ j : Fin P, inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (R (S.starProjection (EuclideanSpace.single j 1))) := by
+    intro R
+    -- `P_S ∘ R = P_S ∘ (P_S ∘ R)`, so `trace(P_S ∘ R) = trace(P_S ∘ R ∘ P_S)`
+    have hPP : S.starProjection.toLinearMap ∘ₗ R =
+        S.starProjection.toLinearMap ∘ₗ (S.starProjection.toLinearMap ∘ₗ R) :=
+      LinearMap.ext fun x => by
+        simp [Submodule.starProjection_eq_self_iff.mpr (S.starProjection_apply_mem (R x))]
+    rw [hPP, LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, EuclideanSpace.basisFun_apply]
+    exact (Submodule.inner_starProjection_left_eq_right S _ _).symm
+  have hstar : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      ∑ j : Fin P, inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (R (S.starProjection (EuclideanSpace.single j 1))) =
+        ∑ i, inner ℝ (τ i : Euclid P) (R (τ i)) :=
+    fun R => (htrE R).symm.trans (htrτ R)
+  -- step 4: the matrix of `G = T*T`, `T = (I + tL)ι_S`, in the basis `τ` is `1 + tX + t²Y`
+  set T : S →L[ℝ] Euclid P := (ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL
+  let M : Fin n → Fin n → ℝ := fun a b => inner ℝ (τ a : Euclid P) (L (τ b))
+  let X : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => M i j + M j i
+  let Y : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (L (τ i)) (L (τ j))
+  have hTapp : ∀ x : S, T x = (x : Euclid P) + t • L x := fun x => rfl
+  have hmat : LinearMap.toMatrix τ.toBasis τ.toBasis (T.adjoint ∘L T).toLinearMap =
+      1 + t • X + t ^ 2 • Y := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, τ.coe_toBasis, τ.coe_toBasis_repr_apply, τ.repr_apply_apply]
+    simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.adjoint_inner_right, hTapp, inner_add_left, inner_add_right,
+      real_inner_smul_left, real_inner_smul_right, hτδ, Matrix.add_apply, Matrix.smul_apply,
+      Matrix.one_apply, smul_eq_mul, X, Y, M, Matrix.of_apply,
+      real_inner_comm (L (τ i)) (τ j : Euclid P)]
+    ring
+  have hdetG : (T.adjoint ∘L T).det = (1 + t • X + t ^ 2 • Y).det := by
+    rw [← hmat, LinearMap.det_toMatrix]
+  -- step 5: `|Xᵢⱼ| ≤ 2Λ ≤ κ`, `|Yᵢⱼ| ≤ Λ² ≤ κ`, and the expansion of `det_second_order`
+  have hLτ : ∀ i, ‖L (τ i)‖ ≤ Λ := fun i => by
+    have := L.le_opNorm (τ i : Euclid P)
+    rw [hτn i, mul_one] at this
+    exact this.trans hL
+  have hM : ∀ a b, |M a b| ≤ Λ := fun a b => by
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    rw [hτn a, one_mul]; exact hLτ b
+  have hX : ∀ i j, |X i j| ≤ 2 * |Λ| + Λ ^ 2 := fun i j => by
+    have h1 := abs_add_le (M i j) (M j i)
+    have h2 := hM i j
+    have h3 := hM j i
+    have h4 : Λ ≤ |Λ| := le_abs_self Λ
+    simp only [X, Matrix.of_apply]
+    nlinarith [sq_nonneg Λ]
+  have hY : ∀ i j, |Y i j| ≤ 2 * |Λ| + Λ ^ 2 := fun i j => by
+    have h1 := abs_real_inner_le_norm (L (τ i)) (L (τ j))
+    have h2 : ‖L (τ i)‖ * ‖L (τ j)‖ ≤ Λ * Λ :=
+      mul_le_mul (hLτ i) (hLτ j) (norm_nonneg _) hΛ
+    have h4 : 0 ≤ |Λ| := abs_nonneg Λ
+    simp only [Y, Matrix.of_apply]
+    nlinarith
+  have hexp := hC₁ n hnP X Y hX hY t ht
+  -- step 6: `tr X = 2 ∑ᵢ τᵢ · Lτᵢ = 2 trace(P_S ∘ L) = 0`
+  have htrX : X.trace = 0 := by
+    have h1 := htrτ L.toLinearMap
+    rw [htr] at h1
+    simp only [Matrix.trace, Matrix.diag, X, Matrix.of_apply, M]
+    simp only [ContinuousLinearMap.coe_coe] at h1
+    rw [Finset.sum_add_distrib, ← h1, add_zero]
+  -- step 7: the `t²`-coefficient equals `Q`; `|w − P_S w|² = |w|² − w · P_S w`, and
+  -- `R = L*L − L*P_S L − L P_S L` has `v · Rv = |Lv − P_S Lv|² − v · L(P_S Lv)`
+  have hproj : ∀ w : Euclid P,
+      ‖w - S.starProjection w‖ ^ 2 = ‖w‖ ^ 2 - inner ℝ w (S.starProjection w) := by
+    intro w
+    have h0 := Submodule.starProjection_inner_eq_zero (K := S) w (S.starProjection w)
+      (S.starProjection_apply_mem w)
+    rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, inner_sub_right, h0,
+      sub_zero, inner_sub_left, real_inner_comm (S.starProjection w) w]
+  let R : Euclid P →ₗ[ℝ] Euclid P :=
+    (L.adjoint ∘L L - L.adjoint ∘L (S.starProjection ∘L L) -
+      L ∘L (S.starProjection ∘L L)).toLinearMap
+  have hR : ∀ v : Euclid P, inner ℝ v (R v) =
+      ‖L v - S.starProjection (L v)‖ ^ 2 - inner ℝ v (L (S.starProjection (L v))) := by
+    intro v
+    simp only [R, ContinuousLinearMap.coe_coe, sub_apply,
+      ContinuousLinearMap.comp_apply, inner_sub_right, ContinuousLinearMap.adjoint_inner_right,
+      hproj, real_inner_self_eq_norm_sq]
+  -- by `(★)`, `Q = ∑ᵢ τᵢ · Rτᵢ = ∑ᵢ (|Lτᵢ|² − ∑ₖ Mₖᵢ² − ∑ₖ MₖᵢMᵢₖ)`, `Mₐᵦ = τₐ · Lτᵦ`
+  have hQ : ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) -
+        S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 -
+        inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) =
+      ∑ i, (‖L (τ i)‖ ^ 2 - ∑ k, M k i * M k i - ∑ k, M k i * M i k) := by
+    rw [Finset.sum_congr rfl fun j _ => (hR _).symm, hstar R]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hR, hproj, hPexp (L (τ i))]
+    simp only [inner_sum, map_sum, map_smul, real_inner_smul_right, M,
+      real_inner_comm (L (τ i))]
+  -- `tr Y = ∑ᵢ |Lτᵢ|²` and `tr(X·X) = 2 ∑ᵢⱼ Mᵢⱼ² + 2 ∑ᵢⱼ MᵢⱼMⱼᵢ`
+  have hc : Y.trace + (X.trace ^ 2 - (X * X).trace) / 2 =
+      ∑ i, (‖L (τ i)‖ ^ 2 - ∑ k, M k i * M k i - ∑ k, M k i * M i k) := by
+    have hYtr : Y.trace = ∑ i, ‖L (τ i)‖ ^ 2 := by
+      simp only [Matrix.trace, Matrix.diag, Y, Matrix.of_apply, real_inner_self_eq_norm_sq]
+    have hXX : (X * X).trace = ∑ i, ∑ j, (M i j + M j i) * (M j i + M i j) := by
+      simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, X, Matrix.of_apply]
+    have hswap : ∑ i, ∑ j, M i j * M i j = ∑ i, ∑ j, M j i * M j i := Finset.sum_comm
+    have hexpand : ∑ i, ∑ j, (M i j + M j i) * (M j i + M i j) =
+        ∑ i, ∑ j, M i j * M i j + ∑ i, ∑ j, M j i * M j i + 2 * ∑ i, ∑ j, M j i * M i j := by
+      simp only [← Finset.sum_add_distrib, Finset.mul_sum]
+      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+    rw [htrX, hYtr, hXX, hexpand, hswap]
+    simp only [Finset.sum_sub_distrib]
+    ring
+  -- step 8: `det G ≥ 0`: `G` is symmetric and its eigenvalues are `v · Gv = |Tv|² ≥ 0`
+  have hsymm : (T.adjoint ∘L T).toLinearMap.IsSymmetric := by
+    intro x y
+    simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_right]
+  have hdet0 : 0 ≤ (T.adjoint ∘L T).det := by
+    show 0 ≤ LinearMap.det (T.adjoint ∘L T).toLinearMap
+    rw [hsymm.det_eq_prod_eigenvalues rfl]
+    refine Finset.prod_nonneg fun i _ => ?_
+    have := eigenvalue_nonneg_of_nonneg (hsymm.hasEigenvalue_eigenvalues rfl i) fun x => by
+      simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.adjoint_inner_right, RCLike.re_to_real]
+      exact real_inner_self_nonneg
+    simpa using this
+  -- step 9: `det G ≤ 1 + t²Q + C₁|t|³` and `√y ≤ (1 + y)/2` for `y ≥ 0`
+  rw [hdetG] at hdet0 ⊢
+  rw [hQ]
+  rw [hc, htrX] at hexp
+  have h1 := (abs_le.mp hexp).2
+  have h2 : Real.sqrt (1 + t • X + t ^ 2 • Y).det ≤ (1 + (1 + t • X + t ^ 2 • Y).det) / 2 := by
+    nlinarith [Real.sq_sqrt hdet0, sq_nonneg (Real.sqrt (1 + t • X + t ^ 2 • Y).det - 1)]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
