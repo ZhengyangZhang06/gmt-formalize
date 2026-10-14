@@ -9743,6 +9743,46 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- **Higher regularity of stationary `C¹` submanifolds** (Simon Ch. 5, Theorem 7.1, last part,
+with `N = ℝᴾ`).  Let `G` be the minimal surface operator of `codim1_hcp_sr_stationary_mss`
+(`Δu = div G(Du)` weakly, `G(0) = 0`, `DG(0) = 0`; Simon Ch. 5, §1) in codimension `P - m`, and
+`ε₀` the small-gradient threshold of the Schauder theory `codim1_hcp_sr_quasilinear_smooth` for
+`G`.  Given `y ∈ M`, take `δ > 0` with `B_δ(y) ⊆ U` and a graph chart `F(a) = y + ι a + ι' (u a)`
+of `M` over `T_yM` (`codim1_hcp_sr_graph_chart`) with `‖Du‖ ≤ ε₀` whose cylinder
+`Z = {y + ι a + ι' b : ‖a‖ < s, ‖b‖ < t}` has `s + t ≤ δ`, so `Z ⊆ B_δ(y) ⊆ U`.  Stationarity of
+`M` in `U` makes `u` a weak solution of `Δu = div G(Du)` on `B_s(0)`, hence `u` is `Cʳ` there for
+every `r`, and `(B_s(0), Z, F)` is a `Cʳ` chart of `M` at `y`. -/
+theorem Submission.codim1_hcp_stationary_c1_smooth : ∀ (P m : ℕ) (U M : Set (Euclid P)), 1 ≤ m → IsOpen U → M ⊆ U → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → ∀ r : ℕ, IsEmbeddedSubmanifold r m M := by
+  intro P m U M hm hU hMU hM hfin hstat r
+  -- step 1: the minimal surface operator `G` and the Schauder threshold `ε₀` (codimension `P - m`)
+  obtain ⟨G, hG, hG0, hDG0, hmss⟩ := Submission.codim1_hcp_sr_stationary_mss m (P - m) hm
+  obtain ⟨ε₀, hε₀, hqs⟩ := Submission.codim1_hcp_sr_quasilinear_smooth m (P - m) G hm hG hG0 hDG0
+  intro y hy
+  -- step 2: a graph chart at `y` with slope `≤ ε₀` whose cylinder `Z` lies in `B_δ(y) ⊆ U`
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.1 hU y (hMU hy)
+  obtain ⟨ι, ι', horth, hspan, hchart⟩ := Submission.codim1_hcp_sr_graph_chart P m M y hm hM hy
+  obtain ⟨s, t, u, hs, ht, hst, hu, -, hbd, hZ, hMZ, hinj, hDF, hprop⟩ := hchart ε₀ δ hε₀ hδ
+  have hZU : {z : Euclid P | ∃ a ∈ ball (0 : Euclid m) s, ∃ b ∈ ball (0 : Euclid (P - m)) t,
+      z = y + ι a + ι' b} ⊆ U := by
+    rintro z ⟨a, ha, b, hb, rfl⟩
+    rw [mem_ball_zero_iff] at ha hb
+    apply hδU
+    rw [mem_ball, dist_eq_norm, add_assoc, add_sub_cancel_left]
+    calc ‖ι a + ι' b‖ ≤ ‖ι a‖ + ‖ι' b‖ := norm_add_le _ _
+      _ = ‖a‖ + ‖b‖ := by rw [ι.norm_map, ι'.norm_map]
+      _ < s + t := add_lt_add ha hb
+      _ ≤ δ := hst
+  -- step 3: stationarity gives `Δu = div G(Du)` weakly on `B_s(0)`; Schauder theory: `u ∈ Cʳ`
+  have hweak := hmss P U M y ι ι' s t u horth hspan hs ht hU hZU hu (fun a ha => (hbd a ha).2) hMZ
+    (fun a ha => (hDF a ha).2) hfin hstat
+  have hur : ContDiffOn ℝ r u (ball 0 s) :=
+    hqs (ball 0 s) u isOpen_ball hu (fun a ha => (hbd a ha).1) hweak r
+  -- step 4: `(B_s(0), Z, a ↦ y + ι a + ι' (u a))` is a `Cʳ` chart of `M` at `y`
+  refine ⟨ball 0 s, _, fun a => y + ι a + ι' (u a), isOpen_ball, hZ,
+    ⟨0, mem_ball_self hs, 0, mem_ball_self ht, by simp⟩,
+    (contDiffOn_const.add ι.contDiff.contDiffOn).add (ι'.contDiff.comp_contDiffOn hur), hinj,
+    hMZ.symm.trans (inter_comm _ _), hprop, fun a ha => (hDF a ha).1⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
