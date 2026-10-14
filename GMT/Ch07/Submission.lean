@@ -1885,6 +1885,27 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon 7.2.4 along blow-up sequences** (minimality and convergence of the mass measures).
+Let `Sⱼ ∈ 𝒟ₙ(Uⱼ)`, `Uⱼ` open and eventually containing every ball, `Sⱼ ⇀ C` in `ℝᴾ` with `C`
+integer multiplicity, and suppose the local comparison (3) holds.  Then `C` is minimizing in `ℝᴾ`
+(`dimred_mbl_mm_isMinimizingIn_univ`, Simon (8)–(12)).  For representations `Rⱼ` of `Sⱼ` and `R`
+of `C`, `μ_R` is finite on compact sets, `limsup μ_{Rⱼ}(K) ≤ μ_R(K)` for compact `K` and
+`μ_R(G) ≤ liminf μ_{Rⱼ}(G)` for open `G` (`dimred_mbl_mm_measure_bounds`, Simon (13), (14)); the
+Radon criterion `cmc_tendsto_integral_of_limsup_liminf` with `U = ℝᴾ` then gives
+`∫ f dμ_{Rⱼ} → ∫ f dμ_R`. -/
+theorem Submission.dimred_mbl_minimizing_and_measures : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ ∧ MassMeasuresConverge Ss C := by
+  intro P n Us Ss C hUs hball hC hconv hloc
+  -- step 1: `C` is minimizing in `ℝᴾ`
+  refine ⟨Submission.dimred_mbl_mm_isMinimizingIn_univ P n Us Ss C hball hC hconv hloc, ?_⟩
+  -- step 3: the weights `μ_{Rⱼ}`, `μ_R` satisfy the hypotheses of the Radon criterion
+  intro Rs hRs R hR f hf hfc hfU
+  obtain ⟨hfin, hsup, hinf⟩ :=
+    Submission.dimred_mbl_mm_measure_bounds P n Us Ss C hUs hball hconv hloc Rs hRs R hR
+  -- step 2: the Radon criterion with `U = ℝᴾ`
+  exact Submission.cmc_tendsto_integral_of_limsup_liminf P univ (fun j => (Rs j).measure)
+    R.measure (fun K hK _ => hfin K hK) (fun K hK _ => hsup K hK) (fun G hG _ => hinf G hG)
+    f hf hfc hfU
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
