@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The mass measure of a current vanishes off its support**: assume (VO), i.e. every current
+`S ∈ 𝒟ₙ(U)` kills the test forms whose support is disjoint from `spt S`.  If `X ∈ 𝒟ₖ(ℝᴾ)` and `μ`
+is a measure with `M_W(X) = μ(W)` for every open `W`, then `μ(ℝᴾ \ spt X) = 0`.
+`(spt X)ᶜ` is the open zero region `Z` of `X`, so `μ((spt X)ᶜ) = M_Z(X)`.  Every form admissible
+for `M_Z` is supported in `Z`, away from `spt X`, so `X` kills it by (VO), and `M_Z(X) = 0`. -/
+theorem Submission.dimred_mbl_dtsd_sh_measure_compl_support_eq_zero : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)), (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) → μ X.supportᶜ = 0 := by
+  intro hVO P k X μ hμ
+  -- `(spt X)ᶜ = Z`, the open zero region of `X`
+  have hcompl : X.supportᶜ = X.zeroRegion := by
+    ext x; simp [GeometricCurrentOn.support]
+  -- `μ((spt X)ᶜ) = M_Z(X)`, the supremum of `ofReal X(ω)` over the `ω` admissible for `M_Z`
+  rw [hcompl, ← hμ _ X.isOpen_zeroRegion]
+  refine le_antisymm (sSup_le ?_) zero_le
+  -- an admissible `ω` has `tsupport ω ⊆ Z = (spt X)ᶜ`, so `X(ω) = 0` by (VO)
+  rintro _ ⟨ω, hω, rfl⟩
+  have h0 : X ω = 0 := by
+    apply hVO
+    refine Set.disjoint_of_subset_left hω.1 ?_
+    rw [← hcompl]
+    exact disjoint_compl_left
+  simp [h0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

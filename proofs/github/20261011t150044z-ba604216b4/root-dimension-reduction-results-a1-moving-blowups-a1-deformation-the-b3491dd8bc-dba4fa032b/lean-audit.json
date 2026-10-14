@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b2d64562e0b73858d756c1c6f82ceda2b89360bf283a9dcea5fc6dda1186a74f",
+  "git_delta": {
+    "base_commit": "a8e98e1b360690034c9aca2743c088bb9a5634fc",
+    "candidate_commit": "5112ca59f0ba1f2f478676fe703cf3e08805e23d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsd_sh_measure_compl_support_eq_zero",
+    "diff_sha256": "76e4e42eade68ca86f3b251f344c770c9809b3517fefa161b3128764ca26d4e7",
+    "source_sha256": "8a36bb5ac37e8368901de9ccdf9650bab59d7fbe623b540032a2c4a641846db3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsd_sh_measure_compl_support_eq_zero",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)), (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) → μ X.supportᶜ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
