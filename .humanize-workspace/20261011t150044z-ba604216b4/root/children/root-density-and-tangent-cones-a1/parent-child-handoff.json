@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n sorry local-references/123e8435b4a2469b/project/GMT -t lean -c",
+        "rg -n 'μHE\\[' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "rg -n '^(theorem|lemma|def|structure) ' simongmt/Poincare/SimonGMT/{Chapter06/Product.lean,Chapter02/BV.lean,Chapter03/FinitePerimeter.lean,AppendixA/Foundations.lean,Chapter07/Basic.lean}",
+        "rg -n -i 'allard|federer|fleming|compactness theorem|open obligation|slice' simongmt/Poincare/SimonGMT",
+        "lake env lean /tmp/ch07-attempt3/Check.lean (ten child types + conditional root assembly + #print axioms)",
+        "lake env lean /tmp/ch07-attempt3/Lib.lean (#print axioms of minimizing_summands_source, cone_simonsDefect_lower_bound, bvVariationOn_le_liminf_of_locallyL1)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-audit-v2.json",
+        "/tmp/ch07-attempt3/Check.lean",
+        "/tmp/ch07-attempt3/Lib.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; each snapshot chapter contract has only its frozen final sorry. All ten child Lean types elaborate after the contract's definitions in namespace GMT.Ch07 with its opens (only the stub sorry warnings), and the conditional assembly of the eleven-conjunct root depends only on propext, Classical.choice and Quot.sound. Reusable library lemmas, each using only standard axioms: Chapter06.WeaklyConvergesOn.massOn_le_liminf (lower semicontinuity of mass), Chapter07.minimizing_summands_source (Lemma 1.4), AppendixB.cone_simonsDefect_lower_bound (B.11) and Chapter02.bvVariationOn_le_liminf_of_locallyL1 (lower semicontinuity of variation). The library proves none of the following, so they are cited from Simon: Appendix A.4 (Foundations.lean calls the dimension-reduction proof an open obligation), Allard regularity (Chapter05/Basic.lean has only analytic foundations), Federer–Fleming compactness (Currents.lean: separate obligation), BV compactness (BV.lean does not claim subsequence compactness), and products [[ℝ^m]] × S₀ (Product.lean has only point products). μHE[n] is a nonzero finite multiple of μH[n] (Measure.lean), so H^n and μH[n] have the same null sets. The DAG contains only root, so no reserved names collide."
+    }
+  ],
+  "parent_id": "root",
+  "child_id": "root.density_and_tangent_cones-a1",
+  "subproblem": {
+    "key": "density_and_tangent_cones",
+    "title": "Theorem 7.3.1: existence and upper semicontinuity of densities; existence of minimizing tangent cones",
+    "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅, and T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N. Then (1) there is Θ: ℝ^{n+k} → ℝ such that Θ^n(μ_T, x) = Θ(x) (limit of M_{B_ρ(x)}(T)/(ω_nρ^n) as ρ ↓ 0, with Θ(x) ≥ 0) for every x ∈ U ∖ spt ∂T, and Θ is upper semicontinuous on U ∖ spt ∂T; (2) for every x ∈ spt T ∖ spt ∂T and every sequence λ_j > 0, λ_j → 0, there are a subsequence λ_{j'} and an integer multiplicity C ∈ 𝒟_n(ℝ^{n+k}), minimizing in ℝ^{n+k}, with η_{x,λ_{j'}#}T ⇀ C in ℝ^{n+k}, μ_{η_{x,λ_{j'}#}T} → μ_C (for all representations), η_{0,λ#}C = C for all λ > 0, and Θ^n(μ_C, 0) = Θ^n(μ_T, x).",
+    "lean_statement": "DensityAndTangentCones",
+    "lean_name": "density_and_tangent_cones",
+    "depends_on": [
+      "minimizing_implies_stationary"
+    ],
+    "natural_proof": "Source: Simon 7.3.1 and its proof (chapter-07.txt lines 302–364, footnote 2), Remark 2.5(2) (lines 166–174, proof \"left to the reader\", supplied in step 4), README erratum 3 ((1) on U ∖ spt ∂T, (2) for x ∈ spt T ∖ spt ∂T). For integer multiplicity S, every representation has measure μ_S (Ch. 6, 3.2(3)) and M_W(S) = μ_S(W) for open W.\n1. Case n = 0: T is minimizing in U ∩ N with spt T ⊆ N, so deleting any point of a representation would give a competitor of smaller mass; hence T = 0, Θ :≡ 0 works and (2) is vacuous. Assume n ≥ 1.\n2. Localization. U' := U ∖ spt ∂T is open and T' := T restricted to U' satisfies ∂T' = 0, spt T' ⊆ N, (N̄∖N) ∩ U' = ∅, and T' is minimizing in U' ∩ N: a competitor S' for T' in W ⊂⊂ U' differs from T' by a compactly supported current, so S := T + (S' − T') (extension by zero) is an integer multiplicity competitor for T with the same boundary and the same masses difference on W.\n3. Part (1) (book lines 326–328). By the sibling minimizing_implies_stationary applied to T' in U', V = v(M, θ) is stationary in N ∩ U', hence (Ch. 4, 2.7) has generalized mean curvature H with |H| ≤ Λ_K := √n·sup_{N∩K}|B_N| on each compact K ⊂ U'. By the monotonicity formula with bounded mean curvature (Ch. 4, 3.17; the book cites 4.7–4.9), for ξ ∈ U' and B_{R}(ξ) ⊂ K: F(ρ)ρ^{−n}μ_T(B_ρ(ξ)) is nondecreasing on (0, R) with F(ρ) ∈ [e^{−Λρ}, e^{Λρ}]. Hence Θ(ξ) := lim_{ρ↓0} μ_T(B_ρ(ξ))/(ω_nρ^n) exists in [0, ∞) for every ξ ∈ U', is upper semicontinuous on U' (Ch. 4, 3.11 argument), and Θ ≥ 1 on spt T ∩ U' (θ ≥ 1 a.e. and Ch. 4, 4.10(1)). Set Θ := 0 off U'. Since M_{B_ρ(ξ)}(T) = μ_T(B_ρ(ξ)) for B_ρ(ξ) ⊂ U, HasMassDensity T ξ (Θ ξ) holds on U' = U ∖ boundarySupport T.\n4. Lemma BC (blow-up compactness; Remark 2.5(2) for N_j = η_{x_j,λ_j}(N), \"left to the reader\", proof supplied). Let x ∈ U', x_j → x, λ_j → 0⁺, S_j := η_{x_j,λ_j#}T. A subsequence satisfies S_j ⇀ C in ℝ^{n+k}, C integer multiplicity, ∂C = 0, C minimizing in ℝ^{n+k}, μ_{S_j} → μ_C. Proof: (i) step 3 gives μ_T(B_ρ(z)) ≤ cρ^n near x, so M_{B_R(0)}(S_j) ≤ cR^n and ∂S_j = 0 on B_{r/λ_j}(0) for large j; (ii) Ch. 6, 2.15 (diagonal in R) and 3.11 give a weak limit C (every test form is eventually supported in η_{x_j,λ_j}(U), where currentEval equals S_j) with ∂C = 0, integer multiplicity; (iii) if dist(x_j,N)/λ_j is unbounded, then along a subsequence it tends to ∞, every ball B_R(0) eventually misses η_{x_j,λ_j}(N) ⊇ spt S_j, so C = 0 and μ_{S_j} → 0; otherwise dist(x_j, N) ≤ C₀λ_j for all j and some C₀ < ∞, x ∈ N and, with π the nearest point projection onto N (C¹ near x, π = id on N, Lip(π|B_s(z)) ≤ 1 + cs), the retractions π_j := η_{x_j,λ_j}∘π∘η_{x_j,λ_j}^{−1} onto η_{x_j,λ_j}(N) have Lipschitz constants L_j → 1 on each ball; (iv) run the proof of 2.4: for compact K, a cut-off ψ and W_s := {ψ > s}, Ch. 6, 7.2 gives C − S_j = ∂R_j + S'_j with masses in W_0 → 0, slicing (Ch. 6, 4.5) at a good α gives C⌞W_α = S_j⌞W_α + ∂R̃_j + S̃_j with M(R̃_j) + M(S̃_j) → 0 and boundary error P_j on {ψ = α}, M(P_j) → 0; fix G > 0 with spt ψ ∪ π_j(spt ψ) ⊆ B_G(0) for all large j (|π_j(z) − z| = dist(z, η_{x_j,λ_j}(N)) ≤ |z| + C₀, C₀ as in (iii)); for an integer multiplicity cycle X with spt X ⊆ K put Y_j := X + ∂R̃_j and Z_j := S_j + π_{j#}Y_j (π_{j#} is applied only to the compactly supported Y_j; Ch. 6, 2.24(2), 3.9): ∂Z_j = ∂S_j (as ∂π_{j#}Y_j = π_{j#}∂Y_j = 0) and spt(Z_j − S_j) ⊆ π_j(spt Y_j) ⊆ η_{x_j,λ_j}(N) ∩ B_G(0), so Z_j is a competitor for S_j in η_{x_j,λ_j}(U ∩ N) (dilations preserve minimality); since π_j is C¹ and equals the identity on spt S_j, the push-forward formula (Ch. 6, 2.24(2), 3.3–3.9) gives π_{j#}(S_j⌞B_G(0)) = S_j⌞B_G(0), so Z_j⌞B_G(0) = π_{j#}((S_j + Y_j)⌞B_G(0)) and μ_{S_j}(B_G) ≤ μ_{Z_j}(B_G) ≤ L_j^nμ_{S_j+Y_j}(B_G); comparing off {ψ ≥ α} as in 2.4 (book (9)–(11)), M_{W_α}(S_j) ≤ M_{W_α}(C+X) + M(S̃_j) + M(P_j) + (L_j^n − 1)Λ_G with Λ_G := sup_j μ_{S_j+Y_j}(B_G(0)) ≤ cG^n + M(X) + sup_j M(∂R̃_j) < ∞ (∂R̃_j = (C − S_j)⌞W_α − S̃_j); (v) lower semicontinuity gives M_{W_α}(C) ≤ M_{W_α}(C+X), hence C is minimizing in ℝ^{n+k} (localize to an arbitrary W ⊂⊂ ℝ^{n+k} as in 2.4), and with X = 0, limsup μ_{S_j}(K) ≤ μ_C(K); with lower semicontinuity on open sets and the layer-cake formula, μ_{S_j} → μ_C (for every sub-subsequence, hence for the subsequence). [This replaces footnote 2: competitors are arbitrary in ℝ^{n+k}, so no projection onto T_xN is needed.]\n5. Part (2) (book (1)–(4)). Let x ∈ spt T ∖ spt ∂T and apply Lemma BC with x_j = x: S_{j'} ⇀ C, C minimizing, μ_{S_{j'}} → μ_C. For each ρ > 0, (ω_nρ^n)^{−1}μ_{S_j}(B_ρ(0)) = (ω_n(λ_jρ)^n)^{−1}μ_T(B_{λ_jρ}(x)) → Θ(x) (book (1)). For all but countably many ρ, μ_C(∂B_ρ(0)) = 0, so μ_{S_{j'}}(B_ρ(0)) → μ_C(B_ρ(0)) (book (4)); by monotonicity in ρ and left-continuity, μ_C(B_ρ(0)) = ω_nρ^nΘ(x) for all ρ > 0. Hence HasMassDensity C 0 Θ(x) and HasMassDensity T x Θ(x).\n6. Cone property (book lines 342–360). By the sibling minimizing_implies_stationary (ℓ = k, U = N = ℝ^{n+k}), V_C is stationary in ℝ^{n+k}. Since ρ^{−n}μ_C(B_ρ(0)) is constant, the monotonicity identity (Ch. 4, 3.6) gives D^⊥r = 0 μ_C-a.e., i.e. x ∈ T_xV_C, so x ∧ C⃗(x) = 0 μ_C-a.e.; Lemma 2.33 of Ch. 6 (homotopy formula, ∂C = 0, locally finite mass) gives η_{0,λ#}C = C for all λ > 0. As dilation 0 λ '' ℝ^{n+k} = ℝ^{n+k}, currentEval(blowUp C 0 λ, ω) = C(η_{0,λ}^#ω) = C(ω): IsConeCurrent C.\n7. Output: the subsequence (strictly increasing), C, ConvergesWeakly and MassMeasuresConverge from step 5 and Lemma BC (all representations have the measures μ_{S_j}, μ_C), IsMinimizingIn C univ, IsConeCurrent C, and θ = Θ(x).",
+    "proof_key_steps": [
+      "Localize to U∖spt ∂T; stationarity and bounded mean curvature give monotonicity, existence and upper semicontinuity of Θ.",
+      "Blow-up compactness with retractions onto η(N): limits are minimizing with mass convergence.",
+      "Constant density ratios of the limit give x ∈ T_xV_C a.e., so C is a cone with Θ(C,0) = Θ(T,x)."
+    ]
+  },
+  "audit": {
+    "key": "density_and_tangent_cones",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The boundary-free domain and subsequence quantifiers match the frozen type. Lemma BC supplies the moving-submanifold comparison using compactly supported projected cycles. Mass convergence identifies the limiting density ratios, and stationarity plus the homotopy formula proves the current cone property."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/parent-supplied-natural-proof.json"
+}

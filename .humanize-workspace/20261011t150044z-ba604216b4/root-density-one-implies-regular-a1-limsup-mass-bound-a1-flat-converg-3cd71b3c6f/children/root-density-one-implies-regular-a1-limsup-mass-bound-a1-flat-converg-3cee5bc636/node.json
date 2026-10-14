@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.lipschitz_jacobian_locality-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "First-order calculus of Lipschitz maps on parameter domains: (i) the Jacobian of F∘G is at most Lip(F)ᵏ times that of G; (ii) Lipschitz maps that agree a.e. on a set have a.e. equal derivatives there (steps 6 and 7 of the selected proof)",
+  "statement": "(i) Let k, N, N' ∈ ℕ, F : ℝ^N → ℝ^{N'} Λ-Lipschitz (Λ ∈ ℝ≥0), G : ℝᵏ → ℝ^N differentiable at u ∈ ℝᵏ. Then J_{F∘G}(u) ≤ Λᵏ·J_G(u), where J_H(u) := (det[⟨DH(u)e_a, DH(u)e_b⟩]_{a,b})^{1/2}, DH(u) := fderiv ℝ H u (zero where H is not differentiable), e_a := EuclideanSpace.single a 1. (ii) Let k, N' ∈ ℕ, H, H' : ℝᵏ → ℝ^{N'} Lipschitz and B ⊆ ℝᵏ Borel with H = H' Lebesgue-a.e. on B. Then DH(u) = DH'(u) for Lebesgue-a.e. u ∈ B.",
+  "lean_statement": "(∀ (k N N' : ℕ) (F : Euclid N → Euclid N') (G : Euclid k → Euclid N) (Λ : NNReal) (u : Euclid k), LipschitzWith Λ F → DifferentiableAt ℝ G u → Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (F ∘ G) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (F ∘ G) u (EuclideanSpace.single b (1 : ℝ))))) ≤ (Λ : ℝ) ^ k * Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ G u (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∀ (k N' : ℕ) (H H' : Euclid k → Euclid N') (B : Set (Euclid k)) (L L' : NNReal), LipschitzWith L H → LipschitzWith L' H' → MeasurableSet B → (∀ᵐ u ∂(volume.restrict B), H u = H' u) → ∀ᵐ u ∂(volume.restrict B), fderiv ℝ H u = fderiv ℝ H' u",
+  "lean_name": "dor_lmb_fcd_imp_lipschitz_jacobian_locality",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cee5bc636-a1"
+}
