@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14618086dd22d62630c4e6e9e1ea00fef8094a7b4827e79ec0d0fa509a358b8e",
+  "git_delta": {
+    "base_commit": "db95a12314579dd3bc857c2c9634495c05d9ee27",
+    "candidate_commit": "2c938c369c7bf340f9cc58132f0c9193f633ef11",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsd_gr_exists_deriv_le_off_null",
+    "diff_sha256": "e54f705dd87d29794dc12344a13aa21b856e4cfd50276579247de25fb4b0f531",
+    "source_sha256": "7713c3b0b48648757fb5598c7bfe519042d98b886f2725d7a7a37443d0a016dd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsd_gr_exists_deriv_le_off_null",
+      "statement": "∀ (F : ℝ → ℝ) (ρ : ℝ) (B : ℝ≥0∞) (N : Set ℝ), Monotone F → 0 < ρ → ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B → (volume : Measure ℝ) N = 0 → ∃ r ∈ Ioo (ρ / 2) ρ, r ∉ N ∧ ENNReal.ofReal (deriv F r) ≤ ENNReal.ofReal (4 / ρ) * B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
