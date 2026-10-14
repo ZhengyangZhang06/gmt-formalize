@@ -1804,6 +1804,87 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Zero and negated currents** (Simon Ch. 6, 2.4–2.5 and 3.1).
+(a) The empty triple `(∅, 0, 0)` in `U` represents `0`, so `0` is integer multiplicity.
+(b) If `X` is integer multiplicity, so is `0 − X` (integer multiplicity calculus (c)).
+(c) `(0 − X)(ω) = X(−ω)`, and `ω ↦ −ω` permutes the admissible forms for `M_G`
+(`tsupport (−ω) = tsupport ω`, `|−ω(x)| = |ω(x)|`), so `M_G(0 − X) = M_G(X)`.
+(d) If `s > 0`, `M(X) < ∞` and `|ω(x)| ≤ s`, then `±s⁻¹ω` are admissible for `M(X) = M_U(X)`
+(the coefficient norm is absolutely homogeneous), so `|X(ω)| = s |X(s⁻¹ω)| ≤ s M(X)`. -/
+theorem Submission.dor_lmb_fcd_sd_zero_neg : ∀ (P k : ℕ) (U : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity (0 : GeometricCurrentOn U k) ∧ (∀ X : GeometricCurrentOn U k, IsIntegerMultiplicity X → IsIntegerMultiplicity (0 - X)) ∧ (∀ (X : GeometricCurrentOn U k) (G : Set (Euclid P)), (0 - X).massOn G = X.massOn G) ∧ ∀ (X : GeometricCurrentOn U k) (ω : TestFormOn U k) (s : ℝ), 0 < s → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ s) → |X ω| ≤ s * X.mass.toReal := by
+  intro P k U hU
+  -- (a) the empty triple `(∅, 0, 0)` in `U` represents the zero current
+  have h0 : IsIntegerMultiplicity (0 : GeometricCurrentOn U k) := by
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 0
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset U
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun x hx => absurd hx (notMem_empty x)
+              locallyIntegrable_mult := fun K _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, fun ω => ?_⟩
+    simp [IMRep.action]
+  -- `(0 − X)(ω) = −X(ω) = X(−ω)`
+  have hsub : ∀ (X : GeometricCurrentOn U k) (ω : TestFormOn U k), (0 - X) ω = X (-ω) := by
+    intro X ω
+    show (0 : GeometricCurrentOn U k) ω - X ω = X (-ω)
+    rw [GeometricCurrentOn.zero_apply, zero_sub]
+    exact (map_neg X.toCurrent ω).symm
+  -- `ω ↦ −ω` preserves admissibility: `tsupport (−ω) = tsupport ω`, `|−ω(x)| = |ω(x)|`
+  have hadm : ∀ (G : Set (Euclid P)) (ω : TestFormOn U k), ω ∈ massAdmissibleOn U k G →
+      -ω ∈ massAdmissibleOn U k G := by
+    intro G ω hω
+    refine ⟨?_, fun x => ?_⟩
+    · simpa using hω.1
+    · simpa using hω.2 x
+  -- (b) `0 − X` is integer multiplicity, by (IMC)(c)
+  refine ⟨h0, fun X hX => Submission.cmc_imRep_locality_restrict_sub.2.2.1 P k U 0 X hU h0 hX,
+    fun X G => ?_, ?_⟩
+  · -- (c) `M_G(0 − X) = M_G(X)`
+    apply le_antisymm
+    · apply sSup_le
+      rintro r ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal ((0 - X) ω) ≤ X.massOn G
+      rw [hsub]
+      exact X.le_massOn (hadm G ω hω)
+    · apply sSup_le
+      rintro r ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (X ω) ≤ (0 - X).massOn G
+      have h := (0 - X).le_massOn (hadm G ω hω)
+      rwa [hsub, show -(-ω) = ω from neg_neg ω] at h
+  · -- (d) `|X(ω)| ≤ s M(X)` when `|ω(x)| ≤ s`
+    intro X ω s hs hX hω
+    -- homogeneity of the coefficient norm
+    have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) k),
+        covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+      intro c α
+      simp only [covectorEuclideanNorm, ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs <;> ring
+    -- `s⁻¹ω` is admissible for `M(X) = M_U(X)`
+    have hω' : s⁻¹ • ω ∈ massAdmissibleOn U k U := by
+      refine ⟨(s⁻¹ • ω).property.2, fun x => ?_⟩
+      rw [Submodule.coe_smul, Pi.smul_apply, hsmul, abs_of_pos (inv_pos.2 hs)]
+      calc s⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ s⁻¹ * s :=
+            mul_le_mul_of_nonneg_left (hω x) (inv_nonneg.2 hs.le)
+        _ = 1 := inv_mul_cancel₀ hs.ne'
+    have h1 : X (s⁻¹ • ω) ≤ X.mass.toReal :=
+      (ENNReal.ofReal_le_iff_le_toReal hX).1 (X.le_massOn hω')
+    have h2 : X (-(s⁻¹ • ω)) ≤ X.mass.toReal :=
+      (ENNReal.ofReal_le_iff_le_toReal hX).1 (X.le_massOn (hadm U _ hω'))
+    have hlin : X (s⁻¹ • ω) = s⁻¹ * X ω := map_smul X.toCurrent s⁻¹ ω
+    have hneg : X (-(s⁻¹ • ω)) = -X (s⁻¹ • ω) := map_neg X.toCurrent _
+    have habs : |X (s⁻¹ • ω)| ≤ X.mass.toReal := abs_le.2 ⟨by linarith, h1⟩
+    calc |X ω| = |s * X (s⁻¹ • ω)| := by rw [hlin, ← mul_assoc, mul_inv_cancel₀ hs.ne', one_mul]
+      _ = s * |X (s⁻¹ • ω)| := by rw [abs_mul, abs_of_pos hs]
+      _ ≤ s * X.mass.toReal := mul_le_mul_of_nonneg_left habs hs.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
