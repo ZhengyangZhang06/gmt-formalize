@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.portmanteau-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Part (T1) steps 5-6 (Urysohn approximation from above on compact sets and from below on open sets), stated for an arbitrary vaguely converging sequence. Simon does not print this implication as a separate item (said explicitly): it is the converse of the “standard approximation argument” that closes the proof of Simon 7.2.4 (book/chapter-07.txt lines 285-288), and step 2 below is the ε-neighbourhood argument by which that proof obtains its (13) (lines 267-276: lim sup μ_{T_j}(K) ≤ M_{{x : dist(x,K) < ε}}(T), then ε ↓ 0). Standard reference: Evans–Gariepy, Measure Theory and Fine Properties of Functions, §1.9 (weak convergence and compactness for Radon measures). Notation: for nonempty A ⊆ ℝ^P, dist(x, A) := inf_{y∈A} |x − y|; thickening(r, A) := {dist(·, A) < r} (open) and cthickening(r, A) := {dist(·, A) ≤ r} (closed; compact when A is compact, IsCompact.cthickening).
+
+0. Integral-versus-measure comparisons. Let ρ be a Borel measure on ℝ^P and h : ℝ^P → ℝ continuous with 0 ≤ h ≤ 1 and compact support, with ρ(tsupport h) < ∞. Then h is ρ-integrable (bounded, zero off a set of finite measure) and ofReal(∫ h dρ) = ∫⁻ ofReal(h) dρ (ofReal_integral_eq_lintegral_ofReal). Consequently: (i) if h = 1 on a closed set B, then ρ(B) ≤ ofReal(∫ h dρ), since 1_B ≤ ofReal ∘ h; (ii) if h = 0 off a Borel set V, then ofReal(∫ h dρ) ≤ ρ(V), since ofReal ∘ h ≤ 1_V. (Inequality (ii) holds even without integrability, because then ∫ h dρ = 0.) By hypothesis, ρ(tsupport h) < ∞ holds for ρ = ν_j (every j) and ρ = μ whenever tsupport h is a compact subset of U.
+
+1. Cut-off functions. For a nonempty compact C ⊆ ℝ^P and r > 0 put h_{C,r}(x) := max(0, 1 − dist(x, C)/r). It is continuous (dist(·, C) is 1-Lipschitz), takes values in [0, 1], equals 1 on C, and vanishes off thickening(r, C); hence tsupport h_{C,r} ⊆ cthickening(r, C), which is compact. (Mathlib's Urysohn lemma exists_continuous_one_zero_of_isCompact may be used instead.)
+
+2. Compact sets. Let K ⊆ U be compact. If K = ∅ both sides are 0. Otherwise choose δ > 0 with cthickening(δ, K) ⊆ U (IsCompact.exists_cthickening_subset_open); cthickening(δ, K) is a compact subset of U, so μ(cthickening(δ, K)) < ∞. Fix r ∈ (0, δ] and h := h_{K,r}; tsupport h ⊆ cthickening(r, K) ⊆ cthickening(δ, K) ⊆ U. By step 0(i) with ρ = ν_j and B = K (closed), ν_j(K) ≤ ofReal(∫ h dν_j) for every j. By hypothesis ∫ h dν_j → ∫ h dμ, and ofReal is continuous, so limsup_j ν_j(K) ≤ limsup_j ofReal(∫ h dν_j) = ofReal(∫ h dμ) ≤ μ(cthickening(r, K)), the last step by step 0(ii) with V = cthickening(r, K) (h = 0 off thickening(r, K) ⊆ V). Finally μ(cthickening(r, K)) → μ(closure K) = μ(K) as r → 0 (Mathlib tendsto_measure_cthickening, applicable because μ(cthickening(δ, K)) < ∞; K is closed). Letting r ↓ 0 gives limsup_j ν_j(K) ≤ μ(K).
+
+3. Compact subsets of open sets. Let G ⊆ U be open and C ⊆ G compact; we show μ(C) ≤ liminf_j ν_j(G). If C = ∅ this is trivial. Otherwise choose δ > 0 with cthickening(δ, C) ⊆ G (IsCompact.exists_cthickening_subset_open) and let h := h_{C,δ}: continuous, 0 ≤ h ≤ 1, h = 1 on C, tsupport h ⊆ cthickening(δ, C), a compact subset of G ⊆ U. By step 0(i) for ρ = μ, the hypothesis, and step 0(ii) for ρ = ν_j with V = G (h = 0 off G, G Borel):
+μ(C) ≤ ofReal(∫ h dμ) = lim_j ofReal(∫ h dν_j) = liminf_j ofReal(∫ h dν_j) ≤ liminf_j ν_j(G).
+
+4. Open sets. Let G ⊆ U be open. For n ∈ ℕ put C_n := closedBall(0, n) ∖ thickening((n+1)⁻¹, ℝ^P ∖ G) (with thickening(r, ∅) := ∅). Each C_n is closed and bounded, hence compact; C_n ⊆ G (a point of ℝ^P ∖ G lies in thickening((n+1)⁻¹, ℝ^P ∖ G)); C_n ⊆ C_{n+1}; and ⋃_n C_n = G: for x ∈ G pick r > 0 with ball(x, r) ⊆ G and n ≥ |x| with (n+1)⁻¹ ≤ r; any y with |x − y| < (n+1)⁻¹ lies in G, so x ∈ C_n. By continuity of μ from below along the increasing sequence C_n (tendsto_measure_iUnion_atTop), μ(G) = lim_n μ(C_n), and μ(C_n) ≤ liminf_j ν_j(G) for all n by step 3; hence μ(G) ≤ liminf_j ν_j(G) (le_of_tendsto'). ∎
+
+## Key steps
+
+1. For continuous 0 ≤ h ≤ 1 with tsupport in a compact subset of U: ρ(B) ≤ ofReal ∫ h dρ if h = 1 on B, and ofReal ∫ h dρ ≤ ρ(V) if h = 0 off V.
+2. Compact K: with h = 1 on K and tsupport h ⊆ cthickening(r, K), limsup_j ν_j(K) ≤ μ(cthickening(r, K)) → μ(K) (tendsto_measure_cthickening).
+3. Compact C ⊆ open G: with h = 1 on C and tsupport h ⊆ G, μ(C) ≤ lim ofReal ∫ h dν_j ≤ liminf_j ν_j(G).
+4. Exhaust G by increasing compact sets C_n and use continuity from below.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `grep -n '^def\|^structure\|^abbrev\|^theorem' SimonGMT Chapter06/Forms.lean Chapter06/Currents.lean; grep -rn covectorEuclideanNorm SimonGMT; sed Chapter06/Mass.lean and Chapter06/FormSupNorm.lean (IsTestForm = ContDiff ℝ ∞ ∧ HasCompactSupport; TestFormOn; WeaklyConvergesOn; covectorEuclideanNorm)`
+- `grep -rn simon_theorem_4_16 SimonGMT (Chapter01/CompactMetrizableCompactness.lean simon_theorem_4_16_compact_metrizable; Chapter01/SequentialCompactnessCounterexample.lean simon_theorem_4_16_counterexample); grep -rn 'theorem .*limsup\|theorem .*liminf' SimonGMT (only WeaklyConvergesOn.massOn_le_liminf and Chapter08/VarifoldConvergence RadonConverges.*; no portmanteau or Radon compactness on open subsets of ℝ^P)`
+- `grep -rn in snapshot mathlib/Mathlib: exists_contDiff_support_eq_eq_one_iff, exists_contDiff_tsupport_subset, 'def rieszMeasure', 'theorem integral_rieszMeasure', regular_rieszMeasure, exists_continuous_one_zero_of_isCompact, 'theorem Monotone.ae_differentiableAt', 'theorem measurable_deriv', 'theorem MonotoneOn.intervalIntegrable_deriv', 'theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc', 'theorem lintegral_liminf_le', 'theorem measure_inter_add_sdiff', liminf_const_mul_of_ne_top, Monotone.map_liminf_of_continuousAt, extend_zero / continuous_extend_one / tsupport_extend_zero_subset, PositiveLinearMap.mk₀, apply_continuousLinearMap`
+- `python3 scan of dag.json: 722 lean_names, none equal to cbr_vague_convergent_subseq, cbr_vague_limit_measure, cbr_vague_portmanteau, cbr_sublevel_restriction_tendsto, cbr_slice_mass_majorant; statements containing StrictMono/∫/limsup/liminf/rieszMeasure/deriv (found cmc_tendsto_integral_of_limsup_liminf [accepted, converse direction], cmc_rcc_ae_tendsto_measure_superlevel, dtc_bc_tendsto_integral_of_limsup_liminf, cmcs_smi_lintegral_ofReal_deriv_le [other branch, not accepted]); parent and sibling statuses and depends_on`
+- `git grep of the five proposed names over all refs (GMT/*.lean) and grep -rl over the snapshot project and the SimonGMT package (no match); git show f9e4df7c999140c4c105810dbdfa2b7b37f1f1a3 (Submission.X declaration layout); survey of imports added to Submission.lean on other branches`
+- `verifier/gmt-compare.py contract_scope and child_modules (challenge = import GMT.Ch07.Submission + replayed contract scope + theorem _root_.X : (stmt) := by exact Submission.name); verifier/lean_contract.py validate_lean_statement on the five statements (pass)`
+- `lake env lean /tmp/cvt-decomp-x9f3/lean/Types.lean and Final.lean (each exact child string elaborates in the replayed scope; hypothesis-only assembly of the exact frozen parent type compiles; #print axioms: propext, Classical.choice, Quot.sound); Avail.lean..Avail4.lean (#check of every cited lemma; simon_theorem_4_16_compact_metrizable needs import Poincare.SimonGMT.Chapter01.CompactMetrizableCompactness, MonotoneOn.*deriv* need import Mathlib.MeasureTheory.Integral.IntervalIntegral.DerivIntegrable); Avail5.lean (smooth cut-off via exists_contDiff_support_eq_eq_one_iff (n := ⊤), χ • ω is IsSmoothForm)`
+- `awk/sed of book/chapter-01.txt lines 1522-1535 and 1740-1779 (Simon 1.4.12, 1.4.16); book/chapter-06.txt lines 1215-1300 (4.4-4.5), 1330-1400 (4.6-4.11), 2290-2420 (8.2-8.3); book/chapter-07.txt lines 245-300 (7.2.4 (13)-(14)); PROBLEM.md citation policy`
+- `independent reviewer subagent over /tmp/cvt-decomp-x9f3/draft/subproblems.json and /tmp/cvt-decomp-x9f3/lean/Final.lean (verdict ACCEPT; non-blocking notes applied)`
+- `WebSearch: Evans Gariepy weak convergence Radon measures limsup compact liminf open (Section 1.9)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/PROBLEM.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9923fb52f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9923fb52f/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/SequentialCompactnessCounterexample.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/VarifoldConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/cvt-decomp-x9f3/lean/Types.lean`
+- `/tmp/cvt-decomp-x9f3/lean/Final.lean`
+- `/tmp/cvt-decomp-x9f3/lean/Avail5.lean`
+- `/tmp/cvt-decomp-x9f3/draft/subproblems.json`
+
+The snapshot contract is identical to the workspace Contract.lean and Submission.lean. The DAG and branches contain no accepted declaration that proves T1, T2 or MM. The closest are cmc_tendsto_integral_of_limsup_liminf (accepted), which is the converse of the portmanteau, and cmcs_smi_lintegral_ofReal_deriv_le, a monotone-derivative bound in another branch that is not accepted. SimonGMT has only the compact-metrizable form of Simon 4.16, which applies on compact pieces, and no Radon-measure portmanteau. Every Mathlib/SimonGMT lemma cited in the child proofs exists: RMK (RealRMK.rieszMeasure, integral_rieszMeasure, regular_rieszMeasure), extend-by-zero support lemmas, exists_contDiff_support_eq_eq_one_iff, Monotone.ae_differentiableAt, measurable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, lintegral_liminf_le, ENNReal.liminf_const_mul_of_ne_top, tendsto_measure_cthickening and others. Exactly two need an added import, both verified to load with GMT.Ch07.Submission. The five proposed exact statements elaborate in the replayed contract scope and pass the verifier's lexical check; their names are unused. A hypothesis-only assembly proves the exact frozen parent type from them with axioms propext, Classical.choice and Quot.sound only. Book anchors: Simon 1.4.16 (chapter-01 lines 1750-1778), 1.4.12 (1522-1527), 6.4.5(2) cut-off (chapter-06 lines 1262-1281), 6.4.9-4.10 (1356-1377), 6.8.2-8.3 (2303-2347), 7.2.4 (13)-(14) (chapter-07 lines 264-288).
