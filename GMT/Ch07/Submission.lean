@@ -474,6 +474,56 @@ theorem Submission.dimred_mbl_pf_ext_pullback_cutoff : ∀ (P n : ℕ) (O K : Se
     (χ.continuous.continuousOn.smul hγ).continuous_of_tsupport_subset hO
       ((tsupport_smul_subset_left _ _).trans hχO), hχc.smul_right, fun x hx => ?_⟩
   simp only [hχK hx, Pi.one_apply, one_smul]
+/-- **Simon Ch. 6, remark after 2.14**, with the mollifiers of Ch. 2, §2: test forms approximate
+a continuous compactly supported `n`-covector field `h` on `ℝᴾ` uniformly.  Normalise smooth bumps
+`φⱼ` with `spt φⱼ = B_{1/(j+1)}(0)` to `ρⱼ = φⱼ / ∫ φⱼ` (`ρⱼ ≥ 0`, `∫ ρⱼ = 1`).  Then `ωⱼ = ρⱼ ⋆ h`
+is `C^∞` with compact support, and uniform continuity of `h` gives `‖ωⱼ(x) − h(x)‖ ≤ ε/2` for every
+`x` once `1/(j+1) < δ(ε/2)`. -/
+theorem Submission.dimred_mbl_pf_ext_testForm_uniform_approx : ∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop := by
+  intro P n h hc hs
+  -- (1) `h` is locally integrable and uniformly continuous
+  have hli : LocallyIntegrable h volume := hc.locallyIntegrable
+  have huc : UniformContinuous h := hs.uniformContinuous_of_continuous hc
+  -- (2) radii `1/(j+1)` and smooth bumps `φ j` with `support (φ j) = ball 0 (1/(j+1))`
+  have hr : ∀ j : ℕ, (0 : ℝ) < 1 / ((j : ℝ) + 1) := fun j => Nat.one_div_pos_of_nat
+  let φ : ℕ → ContDiffBump (0 : Euclid P) := fun j =>
+    ⟨1 / ((j : ℝ) + 1) / 2, 1 / ((j : ℝ) + 1), half_pos (hr j), half_lt_self (hr j)⟩
+  have hφpos : ∀ j, 0 < ∫ y, φ j y := fun j => by
+    refine (integral_pos_iff_support_of_nonneg (φ j).nonneg'
+      ((φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport)).mpr ?_
+    rw [(φ j).support_eq]
+    exact measure_ball_pos volume 0 (hr j)
+  -- the normalised mollifiers `ρ j = φ j / ∫ φ j`
+  let ρ : ℕ → Euclid P → ℝ := fun j y => φ j y / ∫ y, φ j y
+  have hρφ : ∀ j, support (ρ j) ⊆ support (φ j) := fun j y hy h0 => hy (by simp [ρ, h0])
+  have hρs : ∀ j, support (ρ j) ⊆ ball 0 (1 / ((j : ℝ) + 1)) := fun j =>
+    (hρφ j).trans (φ j).support_eq.subset
+  have hρc : ∀ j, HasCompactSupport (ρ j) := fun j => (φ j).hasCompactSupport.mono (hρφ j)
+  have hρ0 : ∀ j y, 0 ≤ ρ j y := fun j y => div_nonneg (φ j).nonneg (hφpos j).le
+  have hρ1 : ∀ j, ∫ y, ρ j y = 1 := fun j => by
+    simp only [ρ]
+    rw [integral_div, div_self (hφpos j).ne']
+  -- (3) the test forms `ω j = ρ j ⋆ h`: smooth with compact support
+  let ω : ℕ → DifferentialForm (Euclid P) n := fun j =>
+    convolution (ρ j) h (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hωmem : ∀ j, ω j ∈ TestFormOn (univ : Set (Euclid P)) n := fun j =>
+    ⟨⟨(hρc j).contDiff_convolution_left _ ((φ j).contDiff.div_const _) hli,
+      (hρc j).convolution _ hs⟩, subset_univ _⟩
+  refine ⟨fun j => ⟨ω j, hωmem j⟩, ?_⟩
+  -- (4) the uniform estimate `dist (ω j x) (h x) ≤ ε/2` for `j ≥ J`
+  rw [Metric.tendstoUniformly_iff]
+  intro ε hε
+  obtain ⟨δ, hδ, hhδ⟩ := Metric.uniformContinuous_iff.mp huc (ε / 2) (half_pos hε)
+  obtain ⟨J, hJ⟩ := exists_nat_one_div_lt hδ
+  refine eventually_atTop.mpr ⟨J, fun j hj x => ?_⟩
+  have hrj : 1 / ((j : ℝ) + 1) ≤ 1 / ((J : ℝ) + 1) := by
+    gcongr
+  have hd : dist (ω j x) (h x) ≤ ε / 2 :=
+    dist_convolution_le (half_pos hε).le (hρs j) (hρ0 j) (hρ1 j) hc.aestronglyMeasurable
+      fun y hy => (hhδ ((mem_ball.mp hy).trans_le (hrj.trans hJ.le))).le
+  -- (5) conclusion
+  rw [dist_comm]
+  exact hd.trans_lt (half_lt_self hε)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
