@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4930e88c48a93d019945513f237a595186faeb89f989eebe2bc081beabe0fc70",
+  "git_delta": {
+    "base_commit": "c130a5abdcce43779920bdedc1632b352d27177d",
+    "candidate_commit": "f31cb836035c6085ecb6b7813fafbc3067bf3bb2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a37c154aa229047278cdb15dcb5655eb173101ab83f5ab7abafc20384a97d625",
+    "source_sha256": "6238fcfecba60e4a8742de73b92bebc3b288e6d0ea7e593d3570ff19a1f99dde",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_retraction_comparison",
+      "statement": "∀ (P m : ℕ) (U A : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G L : ℝ), IsOpen U → IsMinimizingIn S A → S.support ⊆ A → 0 < G → closedBall (0 : Euclid P) G ⊆ U → 0 ≤ L → ContDiffOn ℝ 1 π (ball 0 (2 * G)) → MapsTo π (ball 0 (2 * G)) A → (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) → (∀ y ∈ ball 0 (2 * G), ‖π y‖ ≤ 2 * ‖y‖) → (∀ y ∈ ball 0 (2 * G), ∀ z ∈ ball 0 (2 * G), ‖π y - π z‖ ≤ L * ‖y - z‖) → IsIntegerMultiplicity Y → Y.boundary = 0 → IsCompact Y.support → Y.support ⊆ ball 0 (G / 2) → S.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * (S - (0 - Y.restrictDomain (subset_univ U))).massOn (ball 0 G)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
