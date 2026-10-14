@@ -565,6 +565,65 @@ theorem Submission.dimred_mbl_dtfrcb_cube_partial_ftc : ∀ (k : ℕ) (i : Fin (
         integral_congr_ae (Eventually.of_forall hftc)
     _ = _ := integral_sub (hface 1) (hface 0)
 
+/-- **Stokes' formula for one oriented lattice unit cube, from a divergence representation of
+`dγ`** (the cubes `z + C`, `z ∈ ℤᴾ`, of the lattice of Simon Ch. 6, §5, p. 159).  Let
+`Φ(y) = b + Σⱼ yⱼ e_{ι(j)}` on the open unit cube `Q^{m+1}` (`b ∈ ℤᴾ`, `ι` arbitrary),
+`E = (e_{ι(0)}, …, e_{ι(m)})`, `E'ᵢ = (e_{ι(succAbove i l)})ₗ`, and let `G` be a `C¹` field with
+`Gᵢ(y) = (−1)ⁱ γ(Φ y)(E'ᵢ)` and `dγ(Φ y)(E) = tr DG(y)` (no regularity of `γ` is needed).  Then
+`∫_{Q^{m+1}} dγ(Φ y)(E) = Σᵢ (−1)ⁱ (∫_{Q^m} γ(Φ¹ᵢ)(E'ᵢ) − ∫_{Q^m} γ(Φ⁰ᵢ)(E'ᵢ))`, where
+`Φᶜᵢ(y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}`.
+By the orthonormal trace formula and the chain rule for `Gᵢ = projᵢ ∘ G`, `tr DG = Σᵢ ∂ᵢGᵢ`;
+`dimred_mbl_dtfrcb_cube_partial_ftc` integrates each `∂ᵢGᵢ` to the difference of the integrals of
+`Gᵢ` over the faces `yᵢ = 1` and `yᵢ = 0`, and `Φ(insertNth i c y') = Φᶜᵢ(y')`. -/
+theorem Submission.dimred_mbl_dtfrcb_cube_stokes : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m) (G : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 G → (∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), G y i = (-1 : ℝ) ^ (i : ℕ) * γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun l => EuclideanSpace.single (ι (Fin.succAbove i l)) (1 : ℝ))) → (∀ y : Euclid (m + 1), exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) - ∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) := by
+  intro P m ι b γ G hG hGi hdγ
+  -- each coordinate `Gᵢ = projᵢ ∘ G` is `C¹`
+  have hC1 : ∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y => G y i) := fun i =>
+    (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hG
+  -- `tr DG(y) = Σᵢ ⟪eᵢ, DG(y) eᵢ⟫ = Σᵢ ∂ᵢGᵢ(y)`
+  have htr : ∀ y : Euclid (m + 1), LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) =
+      ∑ i, fderiv ℝ (fun z => G z i) y (EuclideanSpace.single i (1 : ℝ)) := by
+    intro y
+    have hd : HasFDerivAt G (fderiv ℝ G y) y :=
+      ((hG.differentiable one_ne_zero) y).hasFDerivAt
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have hi : HasFDerivAt (fun z => G z i)
+        ((EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).comp (fderiv ℝ G y)) y :=
+      (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).hasFDerivAt.comp y hd
+    rw [hi.fderiv]
+    simp [EuclideanSpace.inner_single_left]
+  -- so `dγ(Φ y)(E) = Σᵢ ∂ᵢGᵢ(y)`, and each `∂ᵢGᵢ` is integrable on the cube
+  simp only [hdγ, htr]
+  rw [integral_finsetSum _ fun i _ =>
+    (Submission.dimred_mbl_dtfrcb_cube_partial_ftc m i _ (hC1 i)).1]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- `∫ ∂ᵢGᵢ` is the difference of the integrals of `Gᵢ` over the faces `yᵢ = 1` and `yᵢ = 0`
+  rw [(Submission.dimred_mbl_dtfrcb_cube_partial_ftc m i _ (hC1 i)).2]
+  simp only [hGi]
+  -- `Φ(insertNth i c y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}`
+  have hface : ∀ (c : ℝ) (y : Euclid m),
+      WithLp.toLp 2 (fun k => (b k : ℝ)) +
+          ∑ j, (WithLp.toLp 2 (Fin.insertNth i c (WithLp.ofLp y)) : Euclid (m + 1)) j •
+            EuclideanSpace.single (ι j) (1 : ℝ) =
+        WithLp.toLp 2 (fun k => (b k : ℝ)) + c • EuclideanSpace.single (ι i) (1 : ℝ) +
+          ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ) := by
+    intro c y
+    rw [Fin.sum_univ_succAbove _ i, add_assoc]
+    simp
+  -- the front face is based at `b + e_{ι(i)}`
+  have hbase : WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) =
+      WithLp.toLp 2 (fun k => (b k : ℝ)) + EuclideanSpace.single (ι i) (1 : ℝ) := by
+    ext k
+    by_cases hk : k = ι i
+    · subst hk
+      simp
+    · simp [hk]
+  simp only [hface, one_smul, zero_smul, add_zero, ← hbase]
+  -- `(−1)ⁱ` leaves both integrals; `ι (succAbove i l) = (ι ∘ succAbove i) l` by definition
+  rw [integral_const_mul, integral_const_mul, mul_sub]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
