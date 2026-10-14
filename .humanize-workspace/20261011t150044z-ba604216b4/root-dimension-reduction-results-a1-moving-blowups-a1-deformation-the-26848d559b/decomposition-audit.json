@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'telescop' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "def boundaryMassOn|instance.*Sub|def IsIntegerMultiplicity|namespace|^import|open",
+        "summable_toReal|tsum_toReal_eq|ne_top_of_tsum_ne_top|tendsto_toReal|Tendsto.const_mul|mem_cthickening_of_dist_le|isClosed_cthickening|def cthickening|of_norm_bounded|bounded_above_of_compact_support",
+        "git rev-parse HEAD",
+        "LEAN_PATH=/tmp/gmt-telescoping-audit-s71zyesx/imports /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-telescoping-audit-s71zyesx/Challenges.lean",
+        "LEAN_PATH=/tmp/gmt-telescoping-audit-s71zyesx/imports /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-telescoping-audit-s71zyesx/Full.lean",
+        "LEAN_PATH=/tmp/gmt-telescoping-audit-s71zyesx/imports /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/gmt-telescoping-audit-s71zyesx/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-26848d559b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-26848d559b/decomposition-v2.json",
+        "/tmp/gmt-telescoping-audit-s71zyesx/Challenges.lean",
+        "/tmp/gmt-telescoping-audit-s71zyesx/Full.lean",
+        "/tmp/gmt-telescoping-audit-s71zyesx/Assembly.lean"
+      ],
+      "conclusion": "Pinned project, Mathlib and SimonGMT revisions match. The snapshot project has no 'telescop' match; inspected definitions and analytic lemmas support the supplied arguments. All eight bare names have comparator-passing acceptance records with byte-identical frozen types and matching accepted proof bodies; no conflicting active reservation exists. Dependencies are acyclic and correctly directed. Independent Lean checks completed successfully: every raw proposition elaborates without referencing a Submission declaration, current subtraction selects GMT.Ch07.instSubGeometricCurrentOnEuclid, and all eight proofs use only propext, Classical.choice and Quot.sound. Assembly proves the exact frozen dimred_mbl_dtsd_telescoping_deformation type from shell_deformation, series_sum and the selected node's existing support-calculus dependency. The split appropriately separates shell deformation from summation, with relevant analytic auxiliaries."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. The finite coefficient-vector construction proves both algebraic inequalities, the operator-norm bound and continuity, including degenerate dimensions. The proof is complete and independent."
+    },
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-domain statement matches its type. Continuity from norm_props, compact support and the explicit positive enlargement of a uniform bound prove the claim without additional hypotheses."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives r ≥ 0, verifies both signed rescalings are admissible, uses finite mass correctly and passes to the limit. It covers r = 0 and requires no unstated openness assumption."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract subtraction is used. Admissibility of the negative test form, linearity, ofReal subadditivity and the supremum argument prove the inequality without finiteness assumptions."
+    },
+    {
+      "key": "telescoping_real",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The induction gives the correctly indexed partial sum −k_N. Shifting the HasSum limit and applying uniqueness proves precisely s = 0, without circularity."
+    },
+    {
+      "key": "mass_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match the prose and are fully proved. Eventual finiteness handles mass-null sequences; finite mass sums justify real summability, comparison and the supremum bound. Its two declared dependencies suffice."
+    },
+    {
+      "key": "shell_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All PF and support-calculus assumptions are explicit. The proof establishes normality of differences, including degree zero, checks common Lipschitz constants, and derives the correct reversed-homotopy signs, integrality, mass bounds and supports. Every stated conclusion follows without using the parent theorem."
+    },
+    {
+      "key": "series_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit hypotheses match the type. IMS constructs the three positive-degree sums; the two telescoping arguments establish the current identity and boundary series. Mass and support follow from mass_eval, VO and S-i. Specializing the sequences, weights and closed sets yields every conclusion of the selected parent."
+    }
+  ],
+  "required_changes": []
+}
