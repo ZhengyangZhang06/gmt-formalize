@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/5449 | this PR | root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1, root.compactness_of_minimizing_currents-a1.im_calculus-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1, root.compactness_of_minimizing_currents-a1.im_calculus-a1, root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_univ-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.eq_of_vanish_off-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.extend_boundary-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.cell_chains_finite-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.zero_im-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.high_degree_zero-a1 |
