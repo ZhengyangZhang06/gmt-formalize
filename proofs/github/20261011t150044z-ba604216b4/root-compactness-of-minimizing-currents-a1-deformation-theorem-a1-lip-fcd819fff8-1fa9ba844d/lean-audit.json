@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06d1a65c26fa049b54ed8eae82d3ea4dbad077d614c23228caf228299c904439",
+  "git_delta": {
+    "base_commit": "8a0e18851263cd9bfee9bcf6db435bd2cbff41a8",
+    "candidate_commit": "8263ec7a44981a47086bf703f9690f65463c31f9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pr_lintegral_pullback",
+    "diff_sha256": "ff5d8dd824dbe18ec3fc3a72194c5bf6cbd3a9271bf6ddc20c109f8c52201681",
+    "source_sha256": "f577a88c5e8a9acb650d0b0bca7b08bdd6ffa7cbcf59a28ccfea816953324f8c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pr_lintegral_pullback",
+      "statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ f : Euclid P → ℝ≥0∞, Measurable f → ∫⁻ u in A, f (G u) ≤ ENNReal.ofReal ((m ^ n)⁻¹) * ∫⁻ x in G '' A, f x ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
