@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "curryLeft_apply_apply|norm_curryLeft|def curryLeft|map_insertNth|eq_smul_basis_det|trace_eq_matrix_trace|extDeriv_apply|fderiv_continuousAlternatingMap_apply_const_apply",
+        "cmr_df_det_update_sum_trace|cmr_df_cons_sum_trace|cmr_df_extDeriv_smul_curryLeft|rsd_mw_tfa_norm_props",
+        "fderiv_of_notMem_tsupport|HasCompactSupport.fderiv|tsupport_fderiv_subset|bounded_above_of_compact_support|tsupport_smul_subset_left|HasCompactSupport.mono",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmr-independent-audit-um_i013_/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmr-independent-audit-um_i013_/NormReuse.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmr-independent-audit-um_i013_/Contraction.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-div-abe89aabd1/parent-child-handoff.json",
+        "/tmp/cmr-independent-audit-um_i013_/Types.lean",
+        "/tmp/cmr-independent-audit-um_i013_/NormReuse.lean",
+        "/tmp/cmr-independent-audit-um_i013_/Contraction.lean"
+      ],
+      "conclusion": "The handoff matches the selected contract. The snapshot contract and inspected Mathlib files match the build sources. All four frozen types independently elaborate and pass validate_lean_statement. Recompilation of the accepted norm proof and the supplied contraction argument reports only propext, Classical.choice and Quot.sound. No new child-name reservation was found; norm_props is identical-type accepted reuse. The split is appropriate and acyclic: coordinate_trace depends on jacobi_trace. Together with contraction_extderiv, it identifies ζ with the db term; norm_props then supplies bounds with K independent of g. The parent's remaining smoothness, support and norm arguments establish the exact selected conclusion. Matrix.of and WithLp constructions have the intended types; no matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "jacobi_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the universally quantified prose. Slotwise multilinearity, cancellation under swapping equal columns, reduction to the basis determinant, and diagonal evaluation prove the trace identity, including n = 0. The proof is complete and non-circular; the bare declaration name is unreserved."
+    },
+    {
+      "key": "coordinate_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The insertion sign agrees with the pinned map_insertNth convention. Entrywise projection converts each summand to the declared Jacobi obligation, and the determinant hypothesis recovers θ(w). Neither injectivity of I nor linearity of L is needed. The type matches all prose hypotheses, and its sole dependency is correctly directed."
+    },
+    {
+      "key": "contraction_extderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Pointwise differentiability of b and G suffices: curryLeft is continuous linear, the scalar product rule computes Dη, and evaluation commutes with differentiation. Substitution into exteriorDerivative_apply yields exactly the stated signs and summands. The supplied argument independently compiles with a routine function-type annotation and no additional axioms."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient-vector argument proves each stated property, including the operator-norm bound and Lipschitz continuity, with empty-index cases covered. The frozen type is identical to the comparator-accepted declaration at f492ba4a003c8f1324077e050d48667ae23c7100. Its proof recompiles without sorryAx or parent dependence, so reuse is valid."
+    }
+  ],
+  "required_changes": []
+}
