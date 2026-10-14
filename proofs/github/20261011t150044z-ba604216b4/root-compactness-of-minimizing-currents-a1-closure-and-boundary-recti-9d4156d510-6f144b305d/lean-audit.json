@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2415a2389df3b60bd1ff63b1ed909fe5506ce4d8f4e125241d277fb3aaf0bf6",
+  "git_delta": {
+    "base_commit": "aea4694e090f5fe07067a55552f01ab30ec59e1d",
+    "candidate_commit": "75f48e6cd460ef31a6181b5a292551644c2d0f1e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_cc_compact_im_filling",
+    "diff_sha256": "b5f943bd1c86fc0355134465efefcec5d9001354378ed3910ab7103f73f25799",
+    "source_sha256": "36ed8369ea9f66569e73d8b48c546da4c0574e5ba9eed4a0a93e70ce1ba6e799",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cc_compact_im_filling",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (d P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsCompact T.support → T.boundary.mass < ∞ → IsIntegerMultiplicity T.boundary → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), IsIntegerMultiplicity Y ∧ Y.boundary = T.boundary ∧ Y.mass < ∞ ∧ IsCompact Y.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
