@@ -648,6 +648,42 @@ theorem Submission.cbr_ci_cp_atm_sum_planes_of_carried : ∀ (P n : ℕ) (ν σ 
         rw [← hpre, (isometry_add_right (w : Euclid P)).euclideanHausdorffMeasure_preimage,
           (add_right_surjective (w : Euclid P)).range_eq, inter_univ]
 
+/-- **A transversal measure with lower density `≥ c` is atomic** (B. White's tangent-plane proof of
+the closure theorem used for Simon 7.2.4: a cycle with constant orientation is a sum of parallel
+planes).  Let `V ⊆ ℝᴾ` be an `n`-dimensional subspace, `σ` a measure carried by `Vᗮ` and finite on
+compact sets, and `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)` for Borel `A`.  If
+`ofReal c ≤ liminf_{r ↓ 0} ν(B_r(y))/(ωₙrⁿ)` for `ν`-a.e. `y`, then
+`ν = Σ_{w ∈ Z} σ({w}) Hⁿ⌞(w + V)` for the set `Z ⊆ Vᗮ` of atoms of `σ` of mass `≥ c`.
+`Z ∩ B̄_j(0)` is finite, since infinitely many atoms of mass `≥ c` have infinite `σ`-measure while
+`σ(B̄_j(0)) < ∞`; so `Z` is countable.  For `x ∈ ℝᴾ`, `ν(B_r(x)) ≤ ωₙrⁿσ(B_r(x − p x))`
+(`p` the projection onto `V`), so the lower density of `ν` at `x` is at most `σ({x − p x})`;
+hence `x − p x ∈ Z` for `ν`-a.e. `x`, `σ` is carried by `Z`, and `ν` is the sum of the planes. -/
+theorem Submission.cbr_ci_cp_atomic_transversal : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (c : ℝ), 0 < c → Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → ∃ Z : Set (Euclid P), Z.Countable ∧ Z ⊆ (Vᗮ : Set (Euclid P)) ∧ (∀ w ∈ Z, ENNReal.ofReal c ≤ σ {w}) ∧ ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) := by
+  intro P n ν σ V c hc hn hσV hσK hD hdens
+  -- `Z`: the atoms of `σ` in `Vᗮ` of mass at least `c`
+  set Z : Set (Euclid P) := {w | w ∈ (Vᗮ : Set (Euclid P)) ∧ ENNReal.ofReal c ≤ σ {w}}
+  -- `Z ∩ B̄_j(0)` is finite: infinitely many atoms of mass `≥ c` would have infinite measure
+  have hZc : Z.Countable := by
+    rw [← iUnion_inter_closedBall_nat Z (0 : Euclid P)]
+    refine countable_iUnion fun j => Set.Finite.countable ?_
+    by_contra hinf
+    have hlt : σ (Z ∩ closedBall (0 : Euclid P) j) < ∞ :=
+      (measure_mono inter_subset_right).trans_lt (hσK _ (isCompact_closedBall _ _))
+    exact hlt.ne (Set.Infinite.meas_eq_top hinf
+      ⟨ENNReal.ofReal c, (ENNReal.ofReal_pos.2 hc).ne', fun w hw => hw.1.2⟩)
+  -- `ν`-a.e. `x`: the density bound and `ν(B_r(x)) ≤ ωₙrⁿσ(B_r(x − p x))` give `x − p x ∈ Z`
+  have hae : ∀ᵐ x ∂ν, x - V.starProjection x ∈ Z := by
+    filter_upwards [hdens] with x hx
+    exact ⟨V.sub_starProjection_mem_orthogonal x, hx.trans
+      (Submission.cbr_ci_cp_atm_liminf_density_le_atom P n σ (x - V.starProjection x)
+        (fun r => ν (ball x r)) hσK
+        (Submission.cbr_ci_cp_atm_ball_le_transversal_ball P n ν σ V hn hσV hD x))⟩
+  -- `σ` is carried by the countable set `Z`, so `ν` is the sum of the planes `w + V`, `w ∈ Z`
+  have hσZ : σ Zᶜ = 0 :=
+    Submission.cbr_ci_cp_atm_transversal_carried P n ν σ V Z hn hσV hD hZc.measurableSet hae
+  exact ⟨Z, hZc, fun w hw => hw.1, fun w hw => hw.2,
+    Submission.cbr_ci_cp_atm_sum_planes_of_carried P n ν σ V Z hZc hσZ hD⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
