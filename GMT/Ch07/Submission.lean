@@ -6955,6 +6955,72 @@ theorem Submission.dtc_bc_tc_cl_foundations : (∀ (P n : ℕ) (U : Set (Euclid 
       fun E ω hE => by rw [hset E ω hE, Measure.restrict_zero, integral_zero_measure, add_zero]
     exact ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hB, hrestr.trans hRB, hae⟩
 
+/-- **Closure theorem in degree `d + 1 < P`, by localization** (Simon 6.8.3(1); parent V1–V2).
+Assume (MR), (IMC), (VO), `BR_P(d)` and `CL*_{P,d+1}`.  Let `Tⱼ ∈ 𝒟_{d+1}(U)` be integer
+multiplicity with `supⱼ (M_W(Tⱼ) + M_W(∂Tⱼ)) < ∞` for open `W ⊂⊂ U`, and `Tⱼ ⇀ T`.  By lower
+semicontinuity `M_W(T) < ∞`.  At `x₀ ∈ U`, `cbrcs_localize_at_point` ((REP), (T1), (T2), (MM) of
+`dtc_bc_tc_cl_foundations`, slicing `cmc_slice_mass_bounds`) gives a good radius `r` and integer
+multiplicity `Sⱼ`, carried by and vanishing off `B̄_r(x₀)`, with `supⱼ (M(Sⱼ) + M(∂Sⱼ)) < ∞` and
+`Sⱼ ⇀ A`, where `A = T` on `B_r(x₀)`.  The cutoff extension `E X(ω) = X(ζω)` of
+`cbrcs_cutoff_extension` turns them into integer multiplicity currents in `ℝᴾ` supported in
+`B̄_r(x₀)`, with `M(E Sⱼ) ≤ M(Sⱼ)`, `M(∂(E Sⱼ)) ≤ M(∂Sⱼ)` and `E Sⱼ ⇀ E A`; their boundaries are
+integer multiplicity by `BR_P(d)`, so `E A` is integer multiplicity by `CL*_{P,d+1}`.  As `E A = A = T` on `B_r(x₀)`,
+`T` is integer multiplicity near `x₀` by (IML)(2), and hence in `U` by (IML)(1).  The argument
+uses neither (VO) nor `d + 1 < P` directly. -/
+theorem Submission.dtc_bc_tc_cl_closure_succ : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P d : ℕ), d + 1 < P → (∀ (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → (∀ (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (K : Set (Euclid P)), IsCompact K → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ j, IsIntegerMultiplicity (Ts j).boundary) → (∀ j, (Ts j).support ⊆ K) → ⨆ j, ((Ts j).mass + (Ts j).boundary.mass) < ∞ → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U (d + 1)) (T : GeometricCurrentOn U (d + 1)), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) := by
+  intro hMR hIMC _hVO P d _hdP hBR hCL U Ts T hU hTs hbd hconv
+  obtain ⟨hREP, hTOOLS, hIML⟩ := Submission.dtc_bc_tc_cl_foundations
+  -- Step 1: `M_W(T) ≤ liminfⱼ M_W(Tⱼ) < ∞` for open `W ⊂⊂ U` (lower semicontinuity)
+  have hlocT : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞ := by
+    intro W hW hWU
+    have h2 : liminf (fun j => (Ts j).massOn W) atTop ≤
+        ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) :=
+      (liminf_le_limsup).trans (limsup_le_iSup.trans (iSup_mono fun j => le_self_add))
+    exact lt_of_le_of_lt ((hconv.massOn_le_liminf W).trans h2) (hbd W hW hWU)
+  -- Step 6: by (IML)(1) it suffices that `T` is integer multiplicity near every `x₀ ∈ U`
+  refine (hIML hREP hMR hIMC P (d + 1) U T hU).1 hlocT fun x₀ hx₀ => ?_
+  -- Steps 2–4: a good radius `r`, integer multiplicity `Sⱼ` carried by and vanishing off
+  -- `B̄_r(x₀)` with `supⱼ (M(Sⱼ) + M(∂Sⱼ)) < ∞`, and `Sⱼ ⇀ A` with `A = T` on `B_r(x₀)`
+  obtain ⟨r, Ss, Rs, A, hr, hrU, hRs, hSvan, hSbd, hSconv, hAT⟩ :=
+    Submission.cbrcs_localize_at_point hREP hMR hIMC Submission.cmc_slice_mass_bounds hTOOLS d P
+      U Ts T x₀ hU hTs hbd hconv hx₀
+  -- Step 5: extension to `ℝᴾ` by a cutoff `ζ = 1` near `K = B̄_r(x₀)`
+  have hK : IsCompact (closedBall x₀ r) := isCompact_closedBall x₀ r
+  obtain ⟨E, hE1, hE2, hE3, hE4, hE5⟩ :=
+    Submission.cbrcs_cutoff_extension P d U (closedBall x₀ r) hU hK hrU
+  have hEIM : ∀ j, IsIntegerMultiplicity (E (Ss j)) := fun j =>
+    hE5 (Ss j) (Rs j) (hRs j).1 (hRs j).2
+  have hEspt : ∀ j, (E (Ss j)).support ⊆ closedBall x₀ r ∧
+      (E (Ss j)).boundary.mass ≤ (Ss j).boundary.mass := fun j => hE4 (Ss j) (hSvan j)
+  have hEbd : ⨆ j, ((E (Ss j)).mass + (E (Ss j)).boundary.mass) < ∞ :=
+    lt_of_le_of_lt (iSup_mono fun j => add_le_add (hE3 (Ss j)) (hEspt j).2) hSbd
+  -- `∂(E Sⱼ)` is integer multiplicity by `BR_P(d)` in `ℝᴾ`: `M_W(∂(E Sⱼ)) ≤ M(∂Sⱼ) < ∞`
+  have hEbIM : ∀ j, IsIntegerMultiplicity (E (Ss j)).boundary := by
+    intro j
+    refine hBR univ (E (Ss j)) isOpen_univ (hEIM j) fun W _ _ => ?_
+    refine lt_of_le_of_lt (((E (Ss j)).boundary.massOn_mono (subset_univ W)).trans
+      (hEspt j).2) ?_
+    exact lt_of_le_of_lt (le_add_self.trans
+      (le_iSup (fun i => (Ss i).mass + (Ss i).boundary.mass) j)) hSbd
+  -- Step 6: `CL*_{P,d+1}` makes `E A` integer multiplicity
+  have hEA : IsIntegerMultiplicity (E A) :=
+    hCL (fun j => E (Ss j)) (E A) (closedBall x₀ r) hK hEIM hEbIM (fun j => (hEspt j).1) hEbd
+      (hE2 Ss A hSconv)
+  -- `T = A = E A` on `B_r(x₀)`, so `T|B_r(x₀)` is integer multiplicity by (IML)(2) for `E A`
+  have hball : ball x₀ r ⊆ U := ball_subset_closedBall.trans hrU
+  have heq : T.restrictDomain hball = (E A).restrictDomain (subset_univ (ball x₀ r)) := by
+    ext ω
+    have hω : tsupport (ω : DifferentialForm (Euclid P) (d + 1)) ⊆ ball x₀ r := ω.property.2
+    have hEω : E A (testFormOnInclusion (subset_univ U) (d + 1)
+        (testFormOnInclusion hball (d + 1) ω)) = A (testFormOnInclusion hball (d + 1) ω) :=
+      hE1 A (testFormOnInclusion hball (d + 1) ω) (hω.trans ball_subset_closedBall)
+    simp only [GeometricCurrentOn.restrictDomain_apply]
+    exact (hAT (testFormOnInclusion hball (d + 1) ω) hω).symm.trans hEω.symm
+  refine ⟨r, hr, hball, ?_⟩
+  rw [heq]
+  exact (hIML hREP hMR hIMC P (d + 1) univ (E A) isOpen_univ).2 (ball x₀ r) (subset_univ _)
+    isOpen_ball hEA
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
