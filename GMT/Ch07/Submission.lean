@@ -864,6 +864,66 @@ theorem Submission.cmcdt_lpo_slice_forms : (∀ (N k : ℕ) (ω : TestFormOn (un
     Submission.cmcdt_lpo_slice_homotopy_succ, Submission.cmcdt_lpo_slice_homotopy_zero,
     Submission.cmcdt_lpo_slice_covector_bound⟩
 
+/-- **Slice bound for the homotopy integrand** (Simon 6.2.27, the pointwise estimate of the
+integrand of the homotopy formula).  Write `ι(t, x) = (t, x₁, …, x_N)`,
+`e₀ = EuclideanSpace.single 0 1`, `Jv = ι(0, v)` and `|·|` for the Euclidean coefficient norm.
+Given (L1) `|β ∘ A| ≤ ‖A‖ᵏ |β|` and (L2) `|β ⌟ v| ≤ ‖v‖ |β|`, if `α(v) = ∫₀¹ σ(ι(t, x))(e₀, Jv) dt`
+and for each `t ∈ [0, 1]` the integrand is `γ(u, Av)` with `‖A‖ ≤ Λ`, `‖u‖ ≤ δ` and `|γ| ≤ c`,
+then `|α| ≤ Λᵐ δ c`.  The integrand is `f(t) = (σ(ι(t, x)) ⌟ e₀) ∘ J`, continuous in `t`; on
+`[0, 1]` it equals `(γ ⌟ u) ∘ A`, so `|f(t)| ≤ ‖A‖ᵐ ‖u‖ |γ| ≤ Λᵐ δ c` by (L1) and (L2), and the
+Minkowski bound (conjunct (e) of `cmcdt_lpo_slice_forms`) concludes. -/
+theorem Submission.cmcdt_lpo_she_slice_bound : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N N' m : ℕ) (σ : DifferentialForm (Euclid (N + 1)) (m + 1)) (x : Euclid N) (α : Covector (Euclid N) m) (Λ δ c : ℝ), Continuous σ → (∀ v : Fin m → Euclid N, α v = ∫ t in (0 : ℝ)..1, σ (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → (∀ t ∈ Icc (0 : ℝ) 1, ∃ (γ : Covector (Euclid N') (m + 1)) (u : Euclid N') (A : Euclid N →L[ℝ] Euclid N'), ‖A‖ ≤ Λ ∧ ‖u‖ ≤ δ ∧ covectorEuclideanNorm γ ≤ c ∧ ∀ v : Fin m → Euclid N, σ (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = γ (Fin.cons u (fun i => A (v i)))) → covectorEuclideanNorm α ≤ Λ ^ m * δ * c := by
+  intro hcomp hcurry N N' m σ x α Λ δ c hσ hα hγ
+  -- (1) `Λ, δ ≥ 0`, from the hypothesis at `t = 0`
+  obtain ⟨-, u₀, A₀, hA₀, hu₀, -, -⟩ := hγ 0 ⟨le_rfl, zero_le_one⟩
+  have hΛ : 0 ≤ Λ := (norm_nonneg _).trans hA₀
+  have hδ : 0 ≤ δ := (norm_nonneg _).trans hu₀
+  -- (2) the embedding `J v = ι(0, v)` is continuous linear (finite dimension)
+  let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+      map_add' := fun v w => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun r v => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  -- (3) the integrand `f t = (σ(ι(t, x)) ⌟ e₀) ∘ J`, so `f t v = σ(ι(t, x))(e₀, Jv₁, …, Jvₘ)`
+  let f : ℝ → Covector (Euclid N) m := fun t =>
+    ((σ (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))).curryLeft
+      (EuclideanSpace.single 0 1)).compContinuousLinearMap J
+  have hfv : ∀ (t : ℝ) (v : Fin m → Euclid N), f t v =
+      σ (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1)
+        (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) := by
+    intro t v
+    simp only [f, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply]
+    rfl
+  -- (4) `f` is continuous
+  have hι : Continuous fun t : ℝ =>
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) :=
+    (PiLp.continuous_toLp 2 _).comp
+      (Continuous.finCons (A := fun _ => ℝ) continuous_id continuous_const)
+  have hf : Continuous f :=
+    (ContinuousAlternatingMap.compContinuousLinearMapCLM J).continuous.comp
+      ((ContinuousAlternatingMap.curryLeftLI.continuous.comp (hσ.comp hι)).clm_apply
+        continuous_const)
+  -- (5) `α v = ∫₀¹ f t v dt`, and (7) the Minkowski bound (conjunct (e) of `slice_forms`)
+  refine Submission.cmcdt_lpo_slice_forms.2.2.2.2 N m α f (Λ ^ m * δ * c) hf
+    (fun v => (hα v).trans (intervalIntegral.integral_congr fun t _ => (hfv t v).symm)) ?_
+  -- (6) `f t = (γ ⌟ u) ∘ A`, so `|f t| ≤ ‖A‖ᵐ ‖u‖ |γ| ≤ Λᵐ δ c` on `[0, 1]`
+  intro t ht
+  obtain ⟨γ, u, A, hA, hu, hγc, hγv⟩ := hγ t ht
+  have hft : f t = (γ.curryLeft u).compContinuousLinearMap A := by
+    ext v
+    rw [hfv, hγv]
+    rfl
+  rw [hft]
+  calc covectorEuclideanNorm ((γ.curryLeft u).compContinuousLinearMap A)
+      ≤ ‖A‖ ^ m * covectorEuclideanNorm (γ.curryLeft u) := hcomp N N' m A _
+    _ ≤ ‖A‖ ^ m * (‖u‖ * covectorEuclideanNorm γ) :=
+        mul_le_mul_of_nonneg_left (hcurry N' m u γ) (pow_nonneg (norm_nonneg A) m)
+    _ ≤ Λ ^ m * (δ * c) :=
+        mul_le_mul (pow_le_pow_left₀ (norm_nonneg A) hA m)
+          (mul_le_mul hu hγc (covectorEuclideanNorm_nonneg γ) hδ)
+          (mul_nonneg (norm_nonneg u) (covectorEuclideanNorm_nonneg γ)) (pow_nonneg hΛ m)
+    _ = Λ ^ m * δ * c := (mul_assoc _ _ _).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
