@@ -675,6 +675,53 @@ theorem Submission.idtp_cse_ah_product_integral_reduce : ∀ (a b c d : ℝ) (H 
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hvan, hO, hprod,
     setIntegral_eq_integral_of_forall_compl_eq_zero hψ, hψ1, mul_one,
     setIntegral_eq_integral_of_forall_compl_eq_zero hfh]
+/-- **Almost-everywhere scaling from a weak scaling identity.**  Let `r > 0` and let `h : ℝ → ℝ`
+be integrable on `J = (a, b)` and on `(ra, rb)`.  If `∫ l(t/r) h(t) dt = r² ∫ l(t) h(t) dt` for
+every `C¹` function `l` with `spt l ⊆ J`, then `h(ru) = r h(u)` for a.e. `u ∈ J`.  The change of
+variables `t = ru` gives `∫ l(t/r) h(t) dt = r ∫ l(u) h(ru) du`, so `∫ l(u) F(u) du = 0` for
+`F(u) = h(ru) − r h(u)`, which is integrable on `J` (`u ↦ h(ru)` agrees there with
+`1_{(ra, rb)} h (r ·)`).  The fundamental lemma on the open set `J` gives `F = 0` a.e. on `J`. -/
+theorem Submission.idtp_cse_ah_ae_scaling_of_weak_scaling : ∀ (a b r : ℝ) (h : ℝ → ℝ), 0 < r → IntegrableOn h (Ioo a b) → IntegrableOn h (Ioo (r * a) (r * b)) → (∀ l : ℝ → ℝ, ContDiff ℝ 1 l → tsupport l ⊆ Ioo a b → ∫ t, l (t / r) * h t = r ^ 2 * ∫ t, l t * h t) → ∀ᵐ u, u ∈ Ioo a b → h (r * u) = r * h u := by
+  intro a b r h hr hJ hrJ hw
+  -- `u ↦ h (r u)` is integrable on `J = (a, b)`: it agrees there with `1_{(ra, rb)} h (r ·)`
+  have hhr : IntegrableOn (fun u => h (r * u)) (Ioo a b) := by
+    have h2 : Integrable (fun u => (Ioo (r * a) (r * b)).indicator h (r * u)) :=
+      (hrJ.integrable_indicator measurableSet_Ioo).comp_mul_left' hr.ne'
+    refine h2.integrableOn.congr_fun (fun u hu => ?_) measurableSet_Ioo
+    exact indicator_of_mem (show r * u ∈ Ioo (r * a) (r * b) from
+      ⟨mul_lt_mul_of_pos_left hu.1 hr, mul_lt_mul_of_pos_left hu.2 hr⟩) h
+  -- `F(u) = h (r u) - r h u` is integrable on `J`
+  have hF : IntegrableOn (fun u => h (r * u) - r * h u) (Ioo a b) := hhr.sub (hJ.const_mul r)
+  -- fundamental lemma on `J`
+  have key := isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero hF.locallyIntegrableOn ?_
+  · filter_upwards [key] with u hu hmem
+    exact sub_eq_zero.mp (hu hmem)
+  intro g hg hgc hgs
+  have hgcont : Continuous g := hg.continuous
+  obtain ⟨C, hC⟩ := hgc.exists_bound_of_continuous hgcont
+  have hgz : ∀ u, u ∉ Ioo a b → g u = 0 := fun u hu =>
+    image_eq_zero_of_notMem_tsupport fun hu' => hu (hgs hu')
+  -- `g h(r ·)` and `g h` are integrable on `ℝ` (`g` is bounded and vanishes off `J`)
+  have hI : ∀ k : ℝ → ℝ, IntegrableOn k (Ioo a b) → Integrable (fun u => g u * k u) := by
+    intro k hk
+    refine ((hk.integrable_indicator measurableSet_Ioo).bdd_mul hgcont.aestronglyMeasurable
+      (Eventually.of_forall hC)).congr (Eventually.of_forall fun u => ?_)
+    by_cases hu : u ∈ Ioo a b
+    · simp only [indicator_of_mem hu]
+    · simp only [hgz u hu, zero_mul]
+  -- change of variables `t = r u`: `∫ g(u) h(r u) du = r⁻¹ ∫ g(t/r) h(t) dt`
+  have hcv : ∫ u, g u * h (r * u) = r⁻¹ * ∫ t, g (t / r) * h t := by
+    have := Measure.integral_comp_mul_left (fun t => g (t / r) * h t) r
+    simp only [mul_div_cancel_left₀ _ hr.ne'] at this
+    rw [this, abs_of_pos (inv_pos.mpr hr), smul_eq_mul]
+  have hid := hw g (hg.of_le (by exact_mod_cast le_top)) hgs
+  calc ∫ u, g u • (h (r * u) - r * h u)
+      = ∫ u, (g u * h (r * u) - r * (g u * h u)) := by
+        congr 1; ext u; rw [smul_eq_mul]; ring
+    _ = (∫ u, g u * h (r * u)) - r * ∫ u, g u * h u := by
+        rw [integral_sub (hI _ hhr) ((hI _ hJ).const_mul r), integral_const_mul]
+    _ = 0 := by
+        rw [hcv, hid, ← mul_assoc, pow_two, ← mul_assoc, inv_mul_cancel₀ hr.ne', one_mul, sub_self]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
