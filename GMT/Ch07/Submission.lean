@@ -497,6 +497,31 @@ theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Eucli
   rw [ho, NNReal.smul_def, smul_eq_mul]
   norm_cast
 
+/-- **Mass measure of an integer multiplicity current** (Simon Ch. 6, 3.1–3.2; proof of 6.5.1,
+(8)–(10)).  If `T = τ(M, θ, ξ)` in `ℝᴾ` has `M(T) < ∞`, then `μ_T = θ Hⁿ⌞M` and `ξ` satisfy:
+`μ_T` is finite (`μ_T(ℝᴾ) = M(T)`), `ξ` is `μ_T`-measurable with `|⟨α, ξ⟩| ≤ |α|` `μ_T`-a.e.,
+`T(ω) = ∫ ⟨ω, ξ⟩ dμ_T`, `M_W(T) = μ_T(W)` for open `W`, `μ_T(ℝᴾ \ spt T) = 0`, and for Borel
+`E` every `X = T⌞E` is integer multiplicity, being represented by `(M ∩ E, θ, ξ)`. -/
+theorem Submission.cmcsd_sh_im_mass_measure : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity T → T.mass < ∞ → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), IsFiniteMeasure μ ∧ AEStronglyMeasurable ξ μ ∧ (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ μ T.supportᶜ = 0 ∧ (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), MeasurableSet E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → IsIntegerMultiplicity X) := by
+  intro hVO hMR hIMC P n T hT hmass
+  -- `T = τ(M, θ, ξ)`; take `μ = μ_T = θ Hⁿ⌞M` and the orientation `ξ`
+  obtain ⟨R, hR⟩ := hT
+  obtain ⟨hac, hξm, hrestr⟩ := Submission.lcmp_imRep_measure_restrict P n univ R
+  -- `M_W(T) = μ_T(W)` for open `W`
+  have hW : ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W :=
+    hMR P n univ T R isOpen_univ hR
+  refine ⟨R.measure, R.orient, ⟨?_⟩, hξm, hac.ae_le (hIMC.2.2.2 P n univ R), fun ω => ?_, hW,
+    Submission.cmcsd_sh_measure_compl_support_eq_zero hVO P n T R.measure hW,
+    fun E X hE hX => ?_⟩
+  · -- `μ_T(ℝᴾ) = M(T) < ∞`
+    rw [← hW univ isOpen_univ]
+    exact hmass
+  · -- `T(ω) = τ(M, θ, ξ)(ω) = ∫_{ℝᴾ} ⟨ω, ξ⟩ dμ_T`
+    rw [hR ω, (hrestr univ R MeasurableSet.univ (inter_univ _).symm rfl rfl).2, setIntegral_univ]
+  · -- `X = τ(M ∩ E, θ, ξ)`
+    obtain ⟨_, R', _, hc, hm, ho⟩ := hIMC.2.1 P n univ R E isOpen_univ hE
+    exact ⟨R', fun ω => by rw [hX ω, (hrestr E R' hE hc hm ho).2]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
