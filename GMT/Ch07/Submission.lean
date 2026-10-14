@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Local `C¹` globalization by a bump cutoff** (the cut-off step letting the globally `C¹`
+results apply to a map that is only `C¹` on an open set).  Let `W` be open, `χ` be `C¹` on `W`
+and `y ∈ W`; choose `B_ρ(y) ⊆ W` and the smooth bump `φ` centred at `y` with `φ = 1` on
+`B̄_{ρ/4}(y)` and `tsupport φ = B̄_{ρ/2}(y) ⊆ W`.  Then `g = φ χ` is `C¹` near points of `W`
+(product of a `C^∞` and a `C¹` map) and vanishes near points outside `W`, so `g` is `C¹` on
+`ℝᵏ`; and `g = χ` on `B_ε(y)`, `ε = ρ/4`. -/
+theorem Submission.dor_lmbsf_cit_c1_local_extension : ∀ (P k : ℕ) (W : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen W → ContDiffOn ℝ 1 χ W → y ∈ W → ∃ (g : Euclid k → Euclid P) (ε : ℝ), 0 < ε ∧ ball y ε ⊆ W ∧ ContDiff ℝ 1 g ∧ EqOn g χ (ball y ε) := by
+  intro P k W χ y hW hχ hy
+  -- Step 1, a ball `B_ρ(y) ⊆ W`.
+  obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.1 hW y hy
+  -- Step 2, the bump `φ`: `φ = 1` on `B̄_{ρ/4}(y)` and `tsupport φ = B̄_{ρ/2}(y) ⊆ W`.
+  let φ : ContDiffBump y := ⟨ρ / 4, ρ / 2, by positivity, by linarith⟩
+  have hsupp : tsupport φ ⊆ W := by
+    rw [φ.tsupport_eq]
+    exact (closedBall_subset_ball (by change ρ / 2 < ρ; linarith)).trans hball
+  -- Step 3, `g = φ χ` and `ε = ρ/4`, so `B_ε(y) ⊆ W`.
+  refine ⟨fun x => φ x • χ x, ρ / 4, by positivity,
+    (ball_subset_ball (by linarith)).trans hball, ?_, fun x hx => ?_⟩
+  · -- Steps 4–6, `g` is `C¹` at every point.
+    refine contDiff_iff_contDiffAt.2 fun x => ?_
+    by_cases hx : x ∈ W
+    · -- Step 4, on `W`, `g` is the product of the `C^∞` map `φ` and the `C¹` map `χ`.
+      exact φ.contDiffAt.fun_smul (hχ.contDiffAt (hW.mem_nhds hx))
+    · -- Step 5, off `W`, `x ∉ tsupport φ` and `g = 0` near `x`.
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [(isClosed_tsupport φ).compl_mem_nhds fun h => hx (hsupp h)] with z hz
+      rw [image_eq_zero_of_notMem_tsupport hz, zero_smul]
+  · -- `φ = 1` on `B_ε(y) ⊆ B̄_{ρ/4}(y)`, so `g = χ` there.
+    change φ x • χ x = χ x
+    rw [φ.one_of_mem_closedBall (ball_subset_closedBall hx), one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
