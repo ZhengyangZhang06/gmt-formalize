@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdtfrbvbsf|rsd_cmr_support_subset_of_vanish",
+        "isCompact_of_isClosed_isBounded|isBounded_iff_subset_closedBall|theorem IsCompact.diff|theorem IsCompact.of_isClosed_subset|theorem IsCompact.image|theorem Finset.isCompact_biUnion|theorem norm_eq|setIntegral_eq_zero_of_forall_eq_zero|image_eq_one_of_notMem_mulTSupport",
+        "sed -n '85,140p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "sed -n '115,210p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '315,345p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/bsfaudit/check.py",
+        "python3 -I /tmp/bsfaudit/compile.py /tmp/bsfaudit/Types.lean",
+        "python3 -I /tmp/bsfaudit/compile.py /tmp/bsfaudit/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7d4441241e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7d4441241e/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/isolated-comparator-result.json",
+        "/tmp/bsfaudit/check.py",
+        "/tmp/bsfaudit/Types.lean",
+        "/tmp/bsfaudit/Proofs.lean",
+        "/tmp/bsfaudit/Types.out",
+        "/tmp/bsfaudit/Proofs.out"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected declarations. Snapshot searches found no proposed-name declarations. The DAG and comparator records confirm identical-type reuse of rsd_cmr_support_subset_of_vanish at commit 02c6122c94d0280a6288d299659b2dab7b59e109; both new names are unreserved. All three names are bare identifiers. Every frozen type independently elaborates as Prop in the comparator scope, without referencing its implementation. Independent Lean checks of all three proofs and the exact selected parent assembly passed, using only propext, Classical.choice and Quot.sound. The split appropriately separates support localization, compactness and boundary vanishing. All sibling dependency lists are correctly empty, reuse introduces no cycle, and their conclusions imply the selected frozen contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type include openness, compactness, containment and the precise vanishing hypothesis. The half-radius ball has compact closure inside U, and supported tests miss K, placing every point of U outside K in the zero region. The identity F.support = K ∖ F.zeroRegion then proves compactness. The proof is complete and non-circular. Reuse preserves the comparator-accepted frozen type exactly."
+    },
+    {
+      "key": "closed_faces_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly describes the stated union. Coordinate inequalities make the cube closed and bound its Euclidean norm by √(m+1); properness gives compactness. Each displayed affine map is continuous, and its compact image participates in a finite compact union. No injectivity or dimension assumption is needed. The proof is complete, independent and matches the inferred Euclidean constructions."
+    },
+    {
+      "key": "boundary_vanish_off_faces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type preserve the full representation hypothesis and support-disjointness condition. Exterior differentiation produces the required test form and shrinks its support. Every open-cube image lies in Z, forcing the evaluated derivative and each integrand to vanish. The cited set-integral lemma requires no additional integrability or measurability assumption. The resulting finite sum proves exactly Q₀.boundary γ = 0, without relying on compactness, the parent conclusion or another child."
+    }
+  ],
+  "required_changes": []
+}
