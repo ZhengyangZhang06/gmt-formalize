@@ -641,6 +641,64 @@ theorem Submission.dimred_mbl_dt_lpo_cutoff_pullback : ∀ (N N' k : ℕ) (F : E
     filter_upwards [isOpen_thickening.mem_nhds hx] with y hy
     show ζ y • _ = _
     rw [hW y hy, one_smul]
+/-- **Smooth `Λ`-Lipschitz mollifications of a `Λ`-Lipschitz map.**  For `σ = 1/(j+1)` let `φ` be
+a `C^∞` bump with support `B(0, σ)` and `ρⱼ = (∫ φ)⁻¹ φ` its normalization (`ρⱼ ≥ 0`,
+`∫ ρⱼ = 1`).  Then `Fⱼ = ρⱼ ⋆ F`, `Fⱼ(x) = ∫ ρⱼ(t) F(x − t) dt`, is `C^∞` (convolution with a
+compactly supported smooth kernel), `Λ`-Lipschitz (an average of the `Λ`-Lipschitz translates of
+`F`), and `|Fⱼ(x) − F(x)| ≤ Λσ`, since `|F(y) − F(x)| ≤ Λσ` on `B(x, σ)`. -/
+theorem Submission.dimred_mbl_dt_lpo_mollify_lipschitz : ∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1) := by
+  intro N N' Λ F hF
+  -- for each `j` a mollifier `ρ j`: `C^∞`, compactly supported, `≥ 0`, `∫ ρ j = 1`,
+  -- `spt ρ j ⊆ B(0, 1/(j+1))`; it is the normalized bump `(∫ φ)⁻¹ φ`
+  have hmoll : ∀ j : ℕ, ∃ ρ : Euclid N → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧
+      (∀ y, 0 ≤ ρ y) ∧ ∫ y, ρ y = 1 ∧ support ρ ⊆ ball 0 (1 / ((j : ℝ) + 1)) := by
+    intro j
+    have hσ : (0 : ℝ) < 1 / ((j : ℝ) + 1) := by positivity
+    let φ : ContDiffBump (0 : Euclid N) :=
+      ⟨1 / ((j : ℝ) + 1) / 2, 1 / ((j : ℝ) + 1), half_pos hσ, half_lt_self hσ⟩
+    have hφi : Integrable φ := φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+    -- `∫ φ > 0`, as `φ ≥ 0` and `support φ = B(0, σ)` has positive measure
+    have hφp : 0 < ∫ y, φ y := by
+      rw [integral_pos_iff_support_of_nonneg (fun y => φ.nonneg) hφi, φ.support_eq]
+      exact measure_ball_pos volume 0 φ.rOut_pos
+    have hsupp : support (fun y => (∫ z, φ z)⁻¹ * φ y) ⊆ support φ :=
+      support_mul_subset_right _ _
+    refine ⟨fun y => (∫ z, φ z)⁻¹ * φ y, contDiff_const.mul φ.contDiff,
+      φ.hasCompactSupport.mono hsupp, fun y => mul_nonneg (inv_nonneg.2 hφp.le) φ.nonneg, ?_,
+      hsupp.trans φ.support_eq.subset⟩
+    rw [integral_const_mul, inv_mul_cancel₀ hφp.ne']
+  choose ρ hρs hρc hρn hρi hρsupp using hmoll
+  -- `Fs j = ρ j ⋆ F`
+  refine ⟨fun j => convolution (ρ j) F (ContinuousLinearMap.lsmul ℝ ℝ) volume, fun j => ?_,
+    fun j => ?_, fun j x => ?_⟩
+  · -- `C^∞`: `ρ j` is `C^∞` with compact support and `F` is continuous, so locally integrable
+    exact (hρc j).contDiff_convolution_left _ (hρs j) hF.continuous.locallyIntegrable
+  · -- `Λ`-Lipschitz: `Fs j x - Fs j x' = ∫ ρ j t • (F (x - t) - F (x' - t)) dt`
+    refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+    have hint : ∀ z, Integrable (fun t => ρ j t • F (z - t)) := fun z =>
+      ((hρs j).continuous.smul (hF.continuous.comp (continuous_const.sub continuous_id))
+        ).integrable_of_hasCompactSupport ((hρc j).smul_right (f' := fun t => F (z - t)))
+    show dist (∫ t, ρ j t • F (x - t)) (∫ t, ρ j t • F (x' - t)) ≤ Λ * dist x x'
+    rw [dist_eq_norm, ← integral_sub (hint x) (hint x')]
+    calc ‖∫ t, ρ j t • F (x - t) - ρ j t • F (x' - t)‖
+        ≤ ∫ t, ρ j t * ((Λ : ℝ) * dist x x') := by
+          refine norm_integral_le_of_norm_le
+            (((hρs j).continuous.integrable_of_hasCompactSupport (hρc j)).mul_const _)
+            (Eventually.of_forall fun t => ?_)
+          rw [← smul_sub, norm_smul, Real.norm_of_nonneg (hρn j t), ← dist_eq_norm]
+          refine mul_le_mul_of_nonneg_left ?_ (hρn j t)
+          calc dist (F (x - t)) (F (x' - t)) ≤ Λ * dist (x - t) (x' - t) := hF.dist_le_mul _ _
+            _ = Λ * dist x x' := by rw [dist_sub_right]
+      _ = (Λ : ℝ) * dist x x' := by rw [integral_mul_const, hρi j, one_mul]
+  · -- distance: `dist (F y) (F x) ≤ Λ / (j + 1)` on `B(x, 1/(j+1))`, and `ρ j` is a mollifier
+    have hg : ∀ y ∈ ball x (1 / ((j : ℝ) + 1)), dist (F y) (F x) ≤ Λ * (1 / ((j : ℝ) + 1)) :=
+      fun y hy => (hF.dist_le_mul y x).trans
+        (mul_le_mul_of_nonneg_left (mem_ball.1 hy).le Λ.coe_nonneg)
+    calc dist (convolution (ρ j) F (ContinuousLinearMap.lsmul ℝ ℝ) volume x) (F x)
+        ≤ Λ * (1 / ((j : ℝ) + 1)) :=
+          dist_convolution_le (by positivity) (hρsupp j) (hρn j) (hρi j)
+            hF.continuous.aestronglyMeasurable hg
+      _ = Λ / ((j : ℝ) + 1) := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
