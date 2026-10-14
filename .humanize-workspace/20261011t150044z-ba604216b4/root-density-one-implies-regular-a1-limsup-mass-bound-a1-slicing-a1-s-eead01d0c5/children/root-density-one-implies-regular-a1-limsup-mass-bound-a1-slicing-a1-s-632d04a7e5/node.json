@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.weak_smooth-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Weak convergence of derivatives of uniformly Lipschitz, uniformly convergent functions against C¹ compactly supported test fields",
+  "statement": "Let d ∈ ℕ and K ≥ 0. Let u_k : ℝ^d → ℝ (k ∈ ℕ) be K-Lipschitz functions converging uniformly on ℝ^d to u : ℝ^d → ℝ, and let Ψ : ℝ^d → ℝ^d be C¹ with compact support. Write Dv(y) for the Fréchet derivative (fderiv) of v at y, which is 0 where v is not differentiable, and use Lebesgue measure on ℝ^d (volume on Euclid d) and Bochner integrals. Then ∫ Du_k(y)[Ψ(y)] dy → ∫ Du(y)[Ψ(y)] dy as k → ∞.",
+  "lean_statement": "∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Ψ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Ψ y)))",
+  "lean_name": "dor_lmbsf_pwl_fderiv_weak_smooth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-632d04a7e5-a1"
+}

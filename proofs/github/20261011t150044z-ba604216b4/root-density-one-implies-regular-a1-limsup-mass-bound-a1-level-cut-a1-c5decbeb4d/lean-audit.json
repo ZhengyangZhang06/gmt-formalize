@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "dc896bc70d19acc5b9742c2db82831b77cc05493ed22342a0f6d5d58c0161ba0",
+  "git_delta": {
+    "base_commit": "5f2fa483c643d25474aede3b549380c567aad99e",
+    "candidate_commit": "ff7a29e04ab1ad6c4a2ecfbfd6a6cd3e9bb00140",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5e49c8c8d5787dfce9b8960ac3cef4d68abedc4d6051fd164d791ff72bf3d2ab",
+    "source_sha256": "8213809d7f77fea173f208726cf5a8d713eb07c074a205dc28fb3f638d1f1434",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_good_level_cut",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T T' S : GeometricCurrentOn U n) (R : GeometricCurrentOn U (n + 1)) (y : Euclid P) (ρ ρ' : ℝ), IsOpen U → 0 < n → IsIntegerMultiplicity T → IsIntegerMultiplicity T' → IsIntegerMultiplicity S → IsIntegerMultiplicity R → (∀ ω : TestFormOn U n, T ω - T' ω = R.boundary ω + S ω) → 0 < ρ → ρ < ρ' → closedBall y ρ' ⊆ U → ∃ (t : ℝ) (X Y : GeometricCurrentOn U n) (RY : IMRep U n), ρ < t ∧ t < ρ' ∧ IsIntegerMultiplicity X ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ (∀ ω : TestFormOn U n, Y ω = T' ω + X ω) ∧ RY.Represents Y ∧ RY.measure (closedBall y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') + ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
