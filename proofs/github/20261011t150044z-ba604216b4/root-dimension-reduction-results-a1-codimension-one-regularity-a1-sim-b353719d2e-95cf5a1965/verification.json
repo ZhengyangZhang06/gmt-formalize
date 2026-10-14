@@ -1,0 +1,18 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.shape_operator-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/6897",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "9f436e0062e23dae20264cb1a5e708f25f5e9693",
+  "integrated_commit": "",
+  "proof_base_commit": "b246dd1991fe43add1aae9f84c1acdf566f3a406",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "requires": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.tangent_projection-a1"
+  ]
+}
