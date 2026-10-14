@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c2b2f9968f65092379bbcde7f1ac03066aebf12b01e996d12dffee58810f8ecc",
+  "git_delta": {
+    "base_commit": "ccd7298801f9d5c70f8203564044b798587e388b",
+    "candidate_commit": "a1e4377c09bf452f5570d441cf65e93dfa4e3cab",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_si_coarea_signed_integral",
+    "diff_sha256": "4d3c786487c9792a04c43be29fb251b7fec9026092d2431a57b2566e008b01ef",
+    "source_sha256": "4d041ab76b65b2d90c3cb24f64eee4edeb271defbb7974d0eb41b5dd44195b1b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_si_coarea_signed_integral",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (q : Euclid P → ℝ), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → Measurable w → Measurable q → ∫⁻ x, w x * ‖q x‖ₑ ∂μ ≠ ∞ → Integrable (fun t => ∫ x, q x ∂(ν t)) ∧ ∫ t, ∫ x, q x ∂(ν t) = ∫ x, (w x).toReal * q x ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
