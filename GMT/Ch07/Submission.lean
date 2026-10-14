@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **`L¹` squeeze through mollifications**: let `R > 0`, `φ` continuous with compact support,
+`u k` integrable on `B_{2R}(0)` and `w k x = ∫_{B_{2R}(0)} u k y φ(x - y) dy`.  If `w k → c`
+uniformly on `closedBall 0 R`, `a k → 0` and eventually `∫_{B_R(0)} |u k - w k| ≤ a k`, then
+`∫_{B_R(0)} |u k - c| → 0`.  Each `w k` is continuous (dominated continuity with bound
+`|u k| sup |φ|`), hence integrable on `B_R(0)`; the triangle inequality gives
+`∫_{B_R} |u k - c| ≤ ∫_{B_R} |u k - w k| + ∫_{B_R} |w k - c| ≤ a k + η |B_R|` once
+`|w k - c| < η` on `closedBall 0 R`, and `η = ε / (2 (|B_R| + 1))` makes this `< ε`. -/
+theorem Submission.cbr_ci_pw_l1_squeeze_of_mollified : ∀ (n : ℕ) (R c : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ) (a : ℕ → ℝ), 0 < R → Continuous φ → HasCompactSupport φ → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c) atTop (closedBall 0 R) → Tendsto a atTop (𝓝 0) → (∀ᶠ k in atTop, ∫ x in ball 0 R, |u k x - ∫ y in ball 0 (2 * R), u k y * φ (x - y)| ≤ a k) → Tendsto (fun k => ∫ x in ball 0 R, |u k x - c|) atTop (𝓝 0) := by
+  intro n R c φ u a hR hφ hφc hint hunif ha hbound
+  obtain ⟨C, hC⟩ := hφ.bounded_above_of_compact_support hφc
+  -- continuity of the mollifications
+  have hwcont : ∀ k, Continuous (fun x => ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) := by
+    intro k
+    refine continuous_of_dominated (bound := fun y => ‖u k y‖ * C) (fun x => ?_) (fun x => ?_) ?_ ?_
+    · exact (hint k).aestronglyMeasurable.mul
+        (hφ.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+    · refine Eventually.of_forall fun y => ?_
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_left (hC _) (norm_nonneg _)
+    · exact (hint k).norm.mul_const C
+    · exact Eventually.of_forall fun y => continuous_const.mul (hφ.comp (continuous_id.sub continuous_const))
+  have hBR : ball (0 : Euclid n) R ⊆ ball 0 (2 * R) := ball_subset_ball (by linarith)
+  have hvol : volume (ball (0 : Euclid n) R) < ∞ := measure_ball_lt_top
+  have hwint : ∀ k, IntegrableOn (fun x => ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) (ball 0 R) :=
+    fun k => ((hwcont k).continuousOn.integrableOn_compact (isCompact_closedBall 0 R)).mono_set
+      ball_subset_closedBall
+  have huint : ∀ k, IntegrableOn (u k) (ball 0 R) := fun k => (hint k).mono_set hBR
+  have hcint : IntegrableOn (fun _ : Euclid n => c) (ball 0 R) := integrableOn_const hvol.ne
+  have htri : ∀ k, ∫ x in ball 0 R, |u k x - c| ≤
+      (∫ x in ball 0 R, |u k x - ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)|) +
+        ∫ x in ball 0 R, |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c| := by
+    intro k
+    have hA : IntegrableOn (fun x => |u k x - ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)|)
+        (ball 0 R) := ((huint k).sub (hwint k)).abs
+    have hB : IntegrableOn (fun x => |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c|)
+        (ball 0 R) := ((hwint k).sub hcint).abs
+    rw [← integral_add hA hB]
+    exact integral_mono_of_nonneg (Eventually.of_forall fun x => abs_nonneg _) (hA.add hB)
+      (Eventually.of_forall fun x => abs_sub_le _ _ _)
+  set m := (volume (ball (0 : Euclid n) R)).toReal with hm
+  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hη0 : 0 < ε / (2 * (m + 1)) := by positivity
+  have h1 := Metric.tendstoUniformlyOn_iff.1 hunif _ hη0
+  have h2 := Metric.tendsto_nhds.1 ha (ε / 2) (by positivity)
+  filter_upwards [h1, h2, hbound] with k hk1 hk2 hk3
+  have hwc : ∫ x in ball 0 R, |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c| ≤
+      ε / (2 * (m + 1)) * m := by
+    have := norm_setIntegral_le_of_norm_le_const hvol (C := ε / (2 * (m + 1)))
+      (f := fun x => |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c|) (fun x hx => by
+        have := hk1 x (ball_subset_closedBall hx)
+        rw [Real.dist_eq] at this
+        rw [Real.norm_eq_abs, abs_abs, abs_sub_comm]
+        exact this.le)
+    exact (le_abs_self _).trans ((Real.norm_eq_abs _).symm ▸ this)
+  have hnn : 0 ≤ ∫ x in ball 0 R, |u k x - c| := integral_nonneg fun x => abs_nonneg _
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn]
+  rw [Real.dist_eq, sub_zero] at hk2
+  have hak : a k < ε / 2 := (le_abs_self _).trans_lt hk2
+  have hlast : ε / (2 * (m + 1)) * m < ε / 2 := by
+    rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  have := htri k
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
