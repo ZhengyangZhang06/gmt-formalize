@@ -451,6 +451,65 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Regrouping the faces of a lattice chain (boundary of an integer polyhedral chain
+`∑_{F ∈ Lₙ} β_F [[F]]`, Simon Ch. 6, 5.1): index an oriented lattice `(m+1)`-cube by `p = (ι, b)`
+with `ι` strictly increasing, and its `i`-th front and back faces by
+`(ι ∘ succAbove i, b + 𝟙_{ι i})` and `(ι ∘ succAbove i, b)`.  Then the signed face sum
+`∑_p β_p ∑_i (-1)ⁱ (I(front) - I(back))` is an integer combination `∑_{q ∈ s'} β'_q I(q)` of
+lattice `m`-cube indices, uniformly in `I`: take for `s'` all the faces and
+`β'_q = ∑_{p,i} β_p (-1)ⁱ ([front = q] - [back = q])`; the `q`-sum then picks out the two faces. -/
+theorem Submission.cmcdtfrcb_face_regroup : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ q ∈ s', StrictMono q.1) ∧ ∀ I : (Fin m → Fin P) × (Fin P → ℤ) → ℝ, ∑ p ∈ s, (β p : ℝ) * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (I (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1) - I (p.1 ∘ Fin.succAbove i, p.2)) = ∑ q ∈ s', (β' q : ℝ) * I q := by
+  classical
+  intro P m s β hs
+  -- the front and back copies of the `i`-th face of `p`
+  set fr : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Fin (m + 1) → (Fin m → Fin P) × (Fin P → ℤ) :=
+    fun p i => (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1)
+  set bk : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Fin (m + 1) → (Fin m → Fin P) × (Fin P → ℤ) :=
+    fun p i => (p.1 ∘ Fin.succAbove i, p.2)
+  -- `s'` is the set of all faces
+  set S : Finset ((Fin m → Fin P) × (Fin P → ℤ)) :=
+    s.biUnion fun p => Finset.univ.biUnion fun i => {fr p i, bk p i} with hS
+  have hfS : ∀ p ∈ s, ∀ i, fr p i ∈ S := fun p hp i =>
+    Finset.mem_biUnion.2 ⟨p, hp, Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, by simp⟩⟩
+  have hbS : ∀ p ∈ s, ∀ i, bk p i ∈ S := fun p hp i =>
+    Finset.mem_biUnion.2 ⟨p, hp, Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, by simp⟩⟩
+  refine ⟨S, fun q => ∑ p ∈ s, ∑ i : Fin (m + 1), β p * (-1) ^ (i : ℕ) *
+      ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)), ?_, ?_⟩
+  · -- a face `ι ∘ succAbove i` of a strictly increasing `ι` is strictly increasing
+    intro q hq
+    simp only [hS, Finset.mem_biUnion, Finset.mem_univ, true_and, Finset.mem_insert,
+      Finset.mem_singleton] at hq
+    obtain ⟨p, hp, i, rfl | rfl⟩ := hq
+    · exact (hs p hp).comp (Fin.strictMono_succAbove i)
+    · exact (hs p hp).comp (Fin.strictMono_succAbove i)
+  · intro I
+    -- the `q`-sum over `S` picks out the two faces
+    have key : ∀ p ∈ s, ∀ i : Fin (m + 1),
+        ∑ q ∈ S, (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q =
+          (β p : ℝ) * ((-1) ^ (i : ℕ) * (I (fr p i) - I (bk p i))) := by
+      intro p hp i
+      simp only [mul_sub, sub_mul, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
+        Finset.sum_sub_distrib, Finset.sum_ite_eq, hfS p hp i, hbS p hp i, ite_true]
+      ring
+    calc ∑ p ∈ s, (β p : ℝ) * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+            (I (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1) - I (p.1 ∘ Fin.succAbove i, p.2))
+        = ∑ p ∈ s, ∑ i : Fin (m + 1), ∑ q ∈ S, (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q := by
+          refine Finset.sum_congr rfl fun p hp => ?_
+          rw [Finset.mul_sum]
+          exact Finset.sum_congr rfl fun i _ => (key p hp i).symm
+      _ = ∑ q ∈ S, ∑ p ∈ s, ∑ i : Fin (m + 1), (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q :=
+          (Finset.sum_congr rfl fun p _ => Finset.sum_comm).trans Finset.sum_comm
+      _ = ∑ q ∈ S, ((∑ p ∈ s, ∑ i : Fin (m + 1), β p * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) : ℤ) : ℝ) * I q := by
+          refine Finset.sum_congr rfl fun q _ => ?_
+          push_cast
+          rw [Finset.sum_mul]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [Finset.sum_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
