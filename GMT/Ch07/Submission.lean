@@ -4390,6 +4390,294 @@ theorem Submission.dor_lmb_imrep_restrict_current : ∀ (P n : ℕ) (U A : Set (
   simp only [IMRep.measure, hc, hm]
   rw [restrict_withDensity hA, Measure.restrict_restrict hA, inter_comm]
 
+/-- **The class of measures for the dimension reduction in Simon 7.3.3** (proof of 7.3.3(1),
+chapter-07.txt lines 445–478: the class `𝒯` with (6)–(12), and proof of 7.3.3(2), lines
+511–533).  Assume (DEM), (MON), (DTC) and (PS).  Let `T` be minimizing in `U ∩ N` with `∂T = 0`,
+and let `closedBall z (2r) ⊆ U` with `B_{2r}(z)` meeting `spt T`.  The class `𝓜` consists of the
+rescalings `μ₀^{x,λ} = λ⁻ⁿ η_{x,λ#}μ₀` (`0 < λ ≤ 1`, `‖x‖ ≤ 1 − λ`) of
+`μ₀ = r⁻ⁿ η_{z,r#}(μ_T⌞B_{2r}(z))`, with domain `η_{x,λ}(B_2(0))`.  It also contains the weights of
+all minimizing cycles of `ℝ^{n+k}`, with domain `ℝ^{n+k}`.  A positive-scale member has finite
+positive mass and determines `(x, λ)`.  The weight of a cycle has mass `0` or `∞`, so `D` is well
+defined.  Rescalings compose, and blow-ups of cycles are cycles.  Tangent measures are weights of
+minimizing cone cycles.  (F9) gives `μ = Hⁿ⌞dens μ`, and the lower bounds come from monotonicity.
+A member with `0`-homogeneous density has mass `0` or `∞`, so it is the weight of a cycle; then
+(PS) gives the planar support. -/
+theorem Submission.idtp_fons_cone_closed_class : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x))) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → DensityAndTangentCones → (∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), n ≤ P → Module.finrank ℝ L + 1 = n → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ S.support ⊆ (Q : Set (Euclid P))) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (z : Euclid (n + k)) (r : ℝ) (dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ), 0 < r → closedBall z (2 * r) ⊆ U → (T.support ∩ ball z (2 * r)).Nonempty → (∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → ∃ (𝓜 : Set (Measure (Euclid (n + k)))) (D : Measure (Euclid (n + k)) → Set (Euclid (n + k))) (μ₀ : Measure (Euclid (n + k))) (Λ : ℝ), μ₀ ∈ 𝓜 ∧ D μ₀ = ball 0 2 ∧ (∀ w ∈ ball (0 : Euclid (n + k)) 2, ((∀ ε : ℝ, 0 < ε → μ₀ (ball w ε) ≠ 0) ↔ z + r • w ∈ T.support)) ∧ (∀ μ ∈ 𝓜, ∀ K : Set (Euclid (n + k)), IsCompact K → μ K ≠ ∞) ∧ (∀ μ ∈ 𝓜, μ = (μHE[n] : Measure (Euclid (n + k))).withDensity (fun x => ENNReal.ofReal (dens μ x))) ∧ (∀ μ ∈ 𝓜, ∀ (y : Euclid (n + k)) (lam : ℝ), 0 < lam → lam < 1 → ‖y‖ ≤ 1 - lam → ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam) ∈ 𝓜 ∧ D (ENNReal.ofReal (lam⁻¹ ^ n) • μ.map (dilation y lam)) = dilation y lam '' D μ) ∧ (∀ μ ∈ 𝓜, ∀ y : Euclid (n + k), ‖y‖ < 1 → ∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → StrictAnti lams → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (ν : Measure (Euclid (n + k))), StrictMono sub ∧ ν ∈ 𝓜 ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), dens ν (t • w) = dens ν w) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • μ.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂ν))) ∧ (∀ μ ∈ 𝓜, IsOpen (D μ) ∧ ball (0 : Euclid (n + k)) 2 ⊆ D μ) ∧ (∀ μ ∈ 𝓜, ∀ μs : ℕ → Measure (Euclid (n + k)), (∀ j, μs j ∈ 𝓜) → (∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))) → ∀ K : Set (Euclid (n + k)), IsCompact K → K ⊆ D μ → ∀ᶠ j in atTop, K ⊆ D (μs j)) ∧ (∀ μ ∈ 𝓜, ∀ (y : Euclid (n + k)) (ρ : ℝ), 0 < ρ → closedBall y ρ ⊆ D μ → (∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ μ (ball y ρ)) ∧ (∀ ν ∈ 𝓜, ∀ L : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ L + 1 = n → (∀ y ∈ L, ∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), dens ν (y + t • w) = dens ν w) → ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ w : Euclid (n + k), (∀ ε : ℝ, 0 < ε → ν (ball w ε) ≠ 0) → w ∈ Q) ∧ (∀ ν ∈ 𝓜, (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), dens ν (t • w) = dens ν w) → D ν = univ) := by
+  intro hDEM hMON hDTC hPS n k ℓ hℓk U N T hn hU hN hNU hTmin hTspt hTbd z r dens hr hzU hTz hdens
+  classical
+  -- the children: dilation calculus, (F9), monotonicity bounds and tangent measures
+  obtain ⟨-, hAC2, -, -, hAC5, hAC6, hAC7, hAC8, -⟩ := Submission.idtp_fons_cc_ambient_calculus
+  obtain ⟨hMBA, hMBB⟩ := Submission.idtp_fons_cc_monotonicity_bounds hMON
+  obtain ⟨hTMA, hTMB⟩ := Submission.idtp_fons_cc_tangent_measures hDTC
+  have hDR := Submission.idtp_fons_cc_density_representation hDEM
+  have hnP : n ≤ n + k := Nat.le_add_right n k
+  -- Step 1: a representation `R_T` of `T`; its weight `μ_T` detects `spt T` (IM-b)
+  obtain ⟨RT, hRT⟩ := hTmin.1
+  have hTsupp := (Submission.dimred_im_mass_measure (n + k) n U T RT hU hRT).2.1
+  -- weights of integer multiplicity triples are finite on compact subsets of the domain
+  have hIMfin : ∀ (V : Set (Euclid (n + k))) (R : IMRep V n) (K : Set (Euclid (n + k))),
+      IsCompact K → K ⊆ V → R.measure K ≠ ∞ := by
+    intro V R K hK hKV
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK hKV
+  -- (F9): a locally finite weight is `Hⁿ` with density `dens`
+  have hDens : ∀ (V : Set (Euclid (n + k))) (R : IMRep V n),
+      (∀ K : Set (Euclid (n + k)), IsCompact K → R.measure K ≠ ∞) →
+      R.measure = (μHE[n] : Measure (Euclid (n + k))).withDensity
+        (fun x => ENNReal.ofReal (dens R.measure x)) := by
+    intro V R hR
+    simp only [hdens]
+    exact hDR (n + k) n V R hn hR
+  -- Step 4(c3): the weight of a minimizing cycle of `ℝ^{n+k}` has total mass `0` or `∞`
+  have hcyc : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+      (R : IMRep (univ : Set (Euclid (n + k))) n), IsMinimizingIn S univ → BoundaryVanishes S →
+      R.Represents S → R.measure univ = 0 ∨ R.measure univ = ∞ :=
+    fun S R hS hSb hR => (hMBB (n + k) n S R hn hnP hS hSb hR).2.1
+  -- Step 2: `0 < μ_T(B_{2r}(z)) < ∞`, as `B_{2r}(z)` meets `spt T` and `closedBall z (2r) ⊆ U`
+  have hB0 : RT.measure (ball z (2 * r)) ≠ 0 := by
+    obtain ⟨x₀, hx₀T, hx₀B⟩ := hTz
+    obtain ⟨ε, hε, hεB⟩ := Metric.isOpen_iff.1 isOpen_ball x₀ hx₀B
+    exact fun h0 => (hTsupp x₀ (hzU (ball_subset_closedBall hx₀B))).1 hx₀T ε hε
+      (measure_mono_null hεB h0)
+  have hBtop : RT.measure (ball z (2 * r)) ≠ ∞ :=
+    ne_top_of_le_ne_top (hIMfin U RT _ (isCompact_closedBall z (2 * r)) hzU)
+      (measure_mono ball_subset_closedBall)
+  -- Step 1(d): the lower bound `μ_T(B_σ(p)) ≥ e^{−Λ₀σ}ωₙσⁿ` on `K = closedBall z (2r)`
+  obtain ⟨Λ₀, hΛ₀, hlow⟩ := hMBA (n + k) n (n + ℓ) U N T RT (closedBall z (2 * r)) hn
+    (Nat.le_add_right n ℓ) (Nat.add_le_add_left hℓk n) hU hN hNU hTmin hTspt hTbd hRT
+    (isCompact_closedBall z (2 * r)) hzU
+  -- Step 2: `μ₀ = r⁻ⁿ η_{z,r#}(μ_T⌞B_{2r}(z))` and its rescalings `μ₀^{x,λ}` (Step 3)
+  obtain ⟨μ₀, hμ₀⟩ : ∃ μ₀ : Measure (Euclid (n + k)),
+      μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation z r) :=
+    ⟨_, rfl⟩
+  obtain ⟨hPF1, hPF2, hPF3, hPF4, hPF5, hPF6, hPF7⟩ :=
+    Submission.idtp_fons_cc_positive_scale_family (n + k) n RT.measure μ₀ z r hn hr hB0 hBtop hμ₀
+  -- Step 3(h): `μ₀^{x,λ} = (μ_T⌞B_{2r}(z))^{z+rx,rλ}` is the weight of a representation of the
+  -- blow-up of `T⌞B_{2r}(z)` at `z + rx` with scale `rλ`
+  have hposrep : ∀ (x : Euclid (n + k)) (lam : ℝ), 0 < lam →
+      ∃ (V : Set (Euclid (n + k))) (R' : IMRep V n),
+        R'.measure = ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam) := by
+    intro x lam hlam
+    have hs : 0 < r * lam := mul_pos hr hlam
+    obtain ⟨SB, RB, hRB, -, -, -, hRBm⟩ := Submission.dor_lmb_imrep_restrict_current (n + k) n U
+      (ball z (2 * r)) RT hU measurableSet_ball
+    obtain ⟨-, hrep, -⟩ :=
+      Submission.dtc_blowUp_scaling (n + k) n U U SB (z + r • x) (r * lam) hs hU (by omega)
+    obtain ⟨R', -, hR'⟩ := hrep RB hRB
+    refine ⟨_, R', ?_⟩
+    rw [hμ₀, hAC7 (n + k) n _ z x r lam hr hlam]
+    ext s hsm
+    rw [hR' s hsm, hAC2 (n + k) n _ (z + r • x) (r * lam) s hs hsm, hRBm]
+  -- Step 6: the class `𝓜`: the positive-scale members `μ₀^{x,λ}` (`0 < λ ≤ 1`, `‖x‖ ≤ 1 − λ`)
+  -- and the weights of all minimizing cycles of `ℝ^{n+k}` ([D3])
+  obtain ⟨𝓜, h𝓜⟩ : ∃ 𝓜 : Set (Measure (Euclid (n + k))), ∀ ν, ν ∈ 𝓜 ↔
+      ((∃ (x : Euclid (n + k)) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧
+          ν = ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∨
+        ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+          (R : IMRep (univ : Set (Euclid (n + k))) n),
+          IsMinimizingIn S univ ∧ BoundaryVanishes S ∧ R.Represents S ∧ ν = R.measure) :=
+    ⟨{ν | (∃ (x : Euclid (n + k)) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧
+          ν = ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∨
+        ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+          (R : IMRep (univ : Set (Euclid (n + k))) n),
+          IsMinimizingIn S univ ∧ BoundaryVanishes S ∧ R.Represents S ∧ ν = R.measure},
+      fun _ => Iff.rfl⟩
+  -- the domain `D(μ₀^{x,λ}) = η_{x,λ}(B_2(0))`, and `D = ℝ^{n+k}` otherwise
+  obtain ⟨D, hD⟩ : ∃ D : Measure (Euclid (n + k)) → Set (Euclid (n + k)), ∀ ν, D ν =
+      if h : ∃ q : Euclid (n + k) × ℝ, (0 < q.2 ∧ q.2 ≤ 1 ∧ ‖q.1‖ ≤ 1 - q.2) ∧
+          ν = ENNReal.ofReal (q.2⁻¹ ^ n) • μ₀.map (dilation q.1 q.2)
+        then dilation h.choose.1 h.choose.2 '' ball 0 2 else univ :=
+    ⟨_, fun _ => rfl⟩
+  have hmem_pos : ∀ (x : Euclid (n + k)) (lam : ℝ), 0 < lam → lam ≤ 1 → ‖x‖ ≤ 1 - lam →
+      ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam) ∈ 𝓜 :=
+    fun x lam h1 h2 h3 => (h𝓜 _).2 (Or.inl ⟨x, lam, ⟨h1, h2, h3⟩, rfl⟩)
+  have hmem_cyc : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n)
+      (R : IMRep (univ : Set (Euclid (n + k))) n), IsMinimizingIn S univ → BoundaryVanishes S →
+      R.Represents S → R.measure ∈ 𝓜 :=
+    fun S R h1 h2 h3 => (h𝓜 _).2 (Or.inr ⟨S, R, h1, h2, h3, rfl⟩)
+  -- Step 3(c): the parameters of `μ₀^{x,λ}` are unique, so `D` is well defined on these members
+  have hDpos : ∀ (x : Euclid (n + k)) (lam : ℝ), 0 < lam → lam ≤ 1 → ‖x‖ ≤ 1 - lam →
+      D (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) = dilation x lam '' ball 0 2 := by
+    intro x lam h1 h2 h3
+    rw [hD]
+    split_ifs with h
+    · obtain ⟨hx, hl⟩ :=
+        hPF2 x h.choose.1 lam h.choose.2 h1 h.choose_spec.1.1 h.choose_spec.2
+      rw [← hx, ← hl]
+    · exact absurd ⟨(x, lam), ⟨h1, h2, h3⟩, rfl⟩ h
+  -- Step 6: a measure of total mass `0` or `∞` is not positive-scale (Step 3(b)), so its domain is
+  -- `ℝ^{n+k}`
+  have hDuniv : ∀ ν : Measure (Euclid (n + k)), (ν univ = 0 ∨ ν univ = ∞) → D ν = univ := by
+    intro ν hν
+    rw [hD]
+    split_ifs with h
+    · exfalso
+      obtain ⟨q, ⟨hq, -, -⟩, hνq⟩ := h
+      rw [hνq] at hν
+      exact hν.elim (hPF3 q.1 q.2 hq).1 (hPF3 q.1 q.2 hq).2
+    · rfl
+  -- Step 8, (M1): positive-scale members are finite, and weights are locally finite
+  have hM1 : ∀ ν ∈ 𝓜, ∀ K : Set (Euclid (n + k)), IsCompact K → ν K ≠ ∞ := by
+    intro ν hν K hK
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl, -, -⟩, rfl⟩ | ⟨S, R, -, -, -, rfl⟩
+    · exact ne_top_of_le_ne_top (hPF3 x lam hl).2 (measure_mono (subset_univ K))
+    · exact hIMfin univ R K hK (subset_univ K)
+  -- Step 8, (M2): every member is a locally finite weight, so (F9) applies
+  have hM2 : ∀ ν ∈ 𝓜, ν = (μHE[n] : Measure (Euclid (n + k))).withDensity
+      (fun x => ENNReal.ofReal (dens ν x)) := by
+    intro ν hν
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl, -, -⟩, rfl⟩ | ⟨S, R, -, -, -, rfl⟩
+    · obtain ⟨V, R', hR'⟩ := hposrep x lam hl
+      rw [← hR']
+      refine hDens V R' fun K _ => ?_
+      rw [hR']
+      exact ne_top_of_le_ne_top (hPF3 x lam hl).2 (measure_mono (subset_univ K))
+    · exact hDens univ R fun K hK => hIMfin univ R K hK (subset_univ K)
+  -- Step 7: `μ₀ = μ₀^{0,1}` and `D(μ₀) = η_{0,1}(B_2(0)) = B_2(0)`
+  have hμ₀01 : ENNReal.ofReal ((1 : ℝ)⁻¹ ^ n) • μ₀.map (dilation 0 1) = μ₀ :=
+    (hAC8 (n + k) n μ₀).1
+  have h01 : ‖(0 : Euclid (n + k))‖ ≤ 1 - 1 := by rw [norm_zero, sub_self]
+  refine ⟨𝓜, D, μ₀, r * Λ₀, ?_, ?_, ?_, hM1, hM2, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [← hμ₀01]
+    exact hmem_pos 0 1 one_pos le_rfl h01
+  · rw [← hμ₀01, hDpos 0 1 one_pos le_rfl h01, (hAC8 (n + k) n μ₀).2]
+  · -- Step 7: the support relation, via positive_scale_family (1) and (IM-b)
+    intro w hw
+    have hwU : z + r • w ∈ U := by
+      refine hzU ?_
+      rw [mem_ball, dist_zero_right] at hw
+      rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr.le]
+      nlinarith
+    rw [hPF1 w hw, hTsupp _ hwU]
+  · -- Step 9, (M3): closure under the rescalings `ν ↦ ν^{y,t}`
+    intro ν hν y t ht ht1 hy
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, hl2, hl3⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · -- Step 3(e): `(μ₀^{x,λ})^{y,t} = μ₀^{x+λy,λt}`, and `(x + λy, λt)` is admissible
+      have ha1 : 0 < lam * t := mul_pos hl1 ht
+      have ha2 : lam * t ≤ 1 := (mul_le_mul hl2 ht1.le ht.le zero_le_one).trans_eq (one_mul 1)
+      have ha3 : ‖x + lam • y‖ ≤ 1 - lam * t := by
+        calc ‖x + lam • y‖ ≤ ‖x‖ + ‖lam • y‖ := norm_add_le _ _
+          _ = ‖x‖ + lam * ‖y‖ := by rw [norm_smul, Real.norm_of_nonneg hl1.le]
+          _ ≤ (1 - lam) + lam * (1 - t) :=
+            add_le_add hl3 (mul_le_mul_of_nonneg_left hy hl1.le)
+          _ = 1 - lam * t := by ring
+      rw [hAC7 (n + k) n μ₀ x y lam t hl1 ht, hDpos _ _ ha1 ha2 ha3, hDpos x lam hl1 hl2 hl3,
+        hAC6 (n + k) x y lam t _ hl1 ht]
+      exact ⟨hmem_pos _ _ ha1 ha2 ha3, rfl⟩
+    · -- Step 4(d): `(μ_S)^{y,t}` is the weight of the minimizing cycle `η_{y,t#}S`
+      obtain ⟨S', R', hS'min, hS'bd, hR'S', hR'm⟩ :=
+        Submission.idtp_fons_cc_cycle_rescale (n + k) n S R y t hn ht hSmin hSbd hRS
+      rw [← hR'm, hDuniv _ (hcyc S' R' hS'min hS'bd hR'S'), hDuniv _ (hcyc S R hSmin hSbd hRS),
+        (hAC5 (n + k) y t ht).1]
+      exact ⟨hmem_cyc S' R' hS'min hS'bd hR'S', rfl⟩
+  · -- Step 10, (M4): tangent measures are weights of minimizing cone cycles
+    intro ν hν y hy lams hlams _ hlim
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, hl2, hl3⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · -- Step 5: `(μ₀^{x,λ})^{y,λⱼ} = (μ_T⌞B_{2r}(z))^{p,rλλⱼ}` with `p = z + r(x + λy) ∈ B_r(z)`
+      have hxy : ‖x + lam • y‖ < 1 := by
+        calc ‖x + lam • y‖ ≤ ‖x‖ + ‖lam • y‖ := norm_add_le _ _
+          _ = ‖x‖ + lam * ‖y‖ := by rw [norm_smul, Real.norm_of_nonneg hl1.le]
+          _ < (1 - lam) + lam * 1 := add_lt_add_of_le_of_lt hl3 (mul_lt_mul_of_pos_left hy hl1)
+          _ = 1 := by ring
+      have hpB : z + r • (x + lam • y) ∈ ball z (2 * r) := by
+        rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr.le]
+        nlinarith
+      have hslim : Tendsto (fun j => r * (lam * lams j)) atTop (𝓝 0) := by
+        simpa using (hlim.const_mul lam).const_mul r
+      obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, hconv⟩ :=
+        hTMA n k ℓ hℓk U N (ball z (2 * r)) T RT (z + r • (x + lam • y))
+          (fun j => r * (lam * lams j)) hn hU hN hNU hTmin hTspt hTbd hRT isOpen_ball
+          (hzU (ball_subset_closedBall hpB)) hpB (fun j => mul_pos hr (mul_pos hl1 (hlams j)))
+          hslim
+      refine ⟨sub, RC.measure, hsub, hmem_cyc C RC hCmin hCbd hRC,
+        fun t ht w => by rw [hdens, hdens, hhom t ht w], fun f hf hfc => ?_⟩
+      refine (hconv f hf hfc).congr fun j => ?_
+      rw [hAC7 (n + k) n μ₀ x y lam (lams (sub j)) hl1 (hlams _), hμ₀,
+        hAC7 (n + k) n _ z (x + lam • y) r (lam * lams (sub j)) hr (mul_pos hl1 (hlams _))]
+    · -- Step 4(e): tangent measures of the weight of a minimizing cycle
+      obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, hconv⟩ :=
+        hTMB n k S R y lams hn hSmin hSbd hRS hlams hlim
+      exact ⟨sub, RC.measure, hsub, hmem_cyc C RC hCmin hCbd hRC,
+        fun t ht w => by rw [hdens, hdens, hhom t ht w], hconv⟩
+  · -- Step 11, (M5): domains are open and contain `B_2(0)`
+    intro ν hν
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, hl2, hl3⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · rw [hDpos x lam hl1 hl2 hl3]
+      exact hPF4 x lam hl1 hl2 hl3
+    · rw [hDuniv _ (hcyc S R hSmin hSbd hRS)]
+      exact ⟨isOpen_univ, subset_univ _⟩
+  · -- Step 12, (M6): if `K ⊄ D(μⱼ)` frequently, these `μⱼ` are positive-scale, and
+    -- positive_scale_family (5) contradicts `K ⊆ D(μ)`
+    intro ν hν μs hμs hconv K hK hKD
+    by_contra hcon
+    obtain ⟨φ, hφ, hφK⟩ := Filter.extraction_of_frequently_atTop (Filter.not_eventually.1 hcon)
+    have hpar : ∀ i, ∃ q : Euclid (n + k) × ℝ, (0 < q.2 ∧ q.2 ≤ 1 ∧ ‖q.1‖ ≤ 1 - q.2) ∧
+        μs (φ i) = ENNReal.ofReal (q.2⁻¹ ^ n) • μ₀.map (dilation q.1 q.2) := by
+      intro i
+      rcases (h𝓜 _).1 (hμs (φ i)) with ⟨x, lam, hadm, heq⟩ | ⟨S, R, hSmin, hSbd, hRS, heq⟩
+      · exact ⟨(x, lam), hadm, heq⟩
+      · refine absurd ?_ (hφK i)
+        rw [heq, hDuniv _ (hcyc S R hSmin hSbd hRS)]
+        exact subset_univ K
+    choose q hq hqeq using hpar
+    have hconvq : ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f →
+        Tendsto (fun i => ∫ x, f x ∂(ENNReal.ofReal (((q i).2)⁻¹ ^ n) •
+          μ₀.map (dilation (q i).1 (q i).2))) atTop (𝓝 (∫ x, f x ∂ν)) := by
+      intro f hf hfc
+      refine ((hconv f hf hfc).comp hφ.tendsto_atTop).congr fun i => ?_
+      show ∫ x, f x ∂(μs (φ i)) = _
+      rw [hqeq i]
+    have hKq : ∀ i, ¬ K ⊆ dilation (q i).1 (q i).2 '' ball 0 2 := by
+      intro i
+      rw [← hDpos _ _ (hq i).1 (hq i).2.1 (hq i).2.2, ← hqeq i]
+      exact hφK i
+    obtain ⟨x, lam, ⟨hl1, hl2, hl3⟩, hνeq, hKx⟩ :=
+      hPF5 (fun i => (q i).1) (fun i => (q i).2) ν K hq (hM1 ν hν) hconvq hK hKq
+    rw [hνeq, hDpos x lam hl1 hl2 hl3] at hKD
+    exact hKx hKD
+  · -- Step 13, (M7): the lower density bound with `Λ = rΛ₀`
+    intro ν hν y ρ hρ hyD hyν
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, hl2, hl3⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · -- transferred from the bound for `μ_T` (positive_scale_family (7))
+      rw [hDpos x lam hl1 hl2 hl3] at hyD
+      exact hPF7 Λ₀ hΛ₀ hlow x y lam ρ hl1 hl2 hρ hyD hyν
+    · -- Step 4(c1): `ωₙρⁿ ≤ μ_S(B_ρ(y))`, and `e^{−Λρ} ≤ 1`
+      have hexp : ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) ≤ 1 :=
+        ENNReal.ofReal_le_one.2 (Real.exp_le_one_iff.2
+          (neg_nonpos.2 (mul_nonneg (mul_nonneg hr.le hΛ₀) hρ.le)))
+      exact (mul_le_of_le_one_left zero_le hexp).trans
+        ((hMBB (n + k) n S R hn hnP hSmin hSbd hRS).1 y hyν ρ hρ)
+  · -- Step 15, (M8): an `(n−1)`-invariant member is the weight of a minimizing cycle with
+    -- invariant density, so (PS) applies
+    intro ν hν L hL hinv
+    have hhom : ∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), dens ν (t • w) = dens ν w := by
+      intro t ht w
+      rw [← zero_add (t • w)]
+      exact hinv 0 L.zero_mem t ht w
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, -, -⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · -- Step 14: by (M2), a positive-scale member would be `Hⁿ` with a `0`-homogeneous density
+      exfalso
+      refine hPF6 x lam (fun w => ENNReal.ofReal (dens _ w)) hl1 (fun t ht w => ?_) (hM2 _ hν)
+      exact congrArg ENNReal.ofReal (hhom t ht w)
+    · have hB3 := (hMBB (n + k) n S R hn hnP hSmin hSbd hRS).2.2
+      have hSinv : ∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid (n + k)) (θ : ℝ),
+          HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ := by
+        intro y hy lam hlam w θ hθ
+        rw [hB3] at hθ ⊢
+        rw [hθ, ← hdens, ← hdens, hinv y hy lam hlam w]
+      obtain ⟨Q, hQ, hSQ⟩ := hPS (n + k) n S L hnP hL hSmin hSbd hSinv
+      refine ⟨Q, hQ, fun w hw => hSQ ?_⟩
+      exact ((Submission.dimred_im_mass_measure (n + k) n univ S R isOpen_univ hRS).2.1 w
+        (mem_univ w)).2 hw
+  · -- Step 14, (M9): a member with `0`-homogeneous density is the weight of a cycle
+    intro ν hν hhom
+    rcases (h𝓜 ν).1 hν with ⟨x, lam, ⟨hl1, -, -⟩, rfl⟩ | ⟨S, R, hSmin, hSbd, hRS, rfl⟩
+    · exfalso
+      refine hPF6 x lam (fun w => ENNReal.ofReal (dens _ w)) hl1 (fun t ht w => ?_) (hM2 _ hν)
+      exact congrArg ENNReal.ofReal (hhom t ht w)
+    · exact hDuniv _ (hcyc S R hSmin hSbd hRS)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
