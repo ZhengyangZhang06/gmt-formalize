@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T144224Z-6e4735dbca",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch06/20261011t144224z-6e4735dbca/dispatch/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1",
+  "source_commit": "d8d46c9587747dee0751a1f780fcafdba16a3886",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit d8d46c9587747dee0751a1f780fcafdba16a3886 {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch06/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.scaling_limit-a1",
+      "key": "scaling_limit",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum GMT/Ch06/{Contract,Submission}.lean in workspace and in local-references/197bdd4b88278494/project (all ea3ee0ddd08be5db…)",
+              "grep -n 'blowUpMap\\|HasWeightedApproximateTangentSpaceAt\\|^namespace\\|^open' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -rln blowUpMap simongmt/Poincare; grep -n '^theorem\\|^import' Chapter04/WeightedBlowUp.lean; lean #eval env.header.moduleNames after import GMT.Ch06.Submission (5050 modules; only Poincare.SimonGMT.Chapter04.Basic from Ch04/Ch08)",
+              "grep -n in snapshot mathlib: 'theorem integral_indicator₀' Bochner/Set.lean; 'theorem Integrable.bdd_mul' L1Space/Integrable.lean; 'theorem IntegrableOn.integrable_indicator₀' Integral/IntegrableOn.lean; 'theorem enorm_integral_le_lintegral_enorm' Bochner/Basic.lean; 'theorem lintegral_indicator' Lebesgue/Basic.lean; 'theorem lintegral_const_mul'' Lebesgue/Add.lean; 'Continuous.bounded_above_of_compact_support|exists_pos_le_norm' Normed/Group/Bounded.lean; 'lemma indicator_mul_right' GroupWithZero/Indicator.lean",
+              "grep ofReal_norm Mathlib/Analysis/Normed/Group/Basic.lean; grep indicator_of_notMem Mathlib/Algebra/Notation/Indicator.lean; grep 'notation\\|^theorem' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "python3 -I scan of dag.json for tangent/transfer/blowup/growth nodes (lean_name, status, lean_statement of lpf_wtc_* accepted lemmas)",
+              "python3 -I scan of dag.json (360 nodes), nodes/*/decomposition-v*.json (334 files), all node files (4731) for fiw_tl_tr_weighted_diff_bound|fiw_tl_tr_scaling_limit|fiw_tl_tr_",
+              "for r in $(git for-each-ref): git grep -E 'fiw_tl_tr_(weighted_diff_bound|scaling_limit)' $r -- '*.lean' (1147 refs, no match)",
+              "git archive d8d46c9587747dee0751a1f780fcafdba16a3886 | tar -x -C /tmp/fiw_tl_tr_split_CA4Dkj; LEAN_PATH=… lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (exit 0)",
+              "python3 -I /tmp/fiw_tl_tr_split_scripts/gen.py (verifier lean_contract.validate_lean_statement + gmt-compare.child_modules(mode='contract')); lean Cmp/*_Challenge.lean (3 files, exit 0)",
+              "lean Audit/ChildA.lean, Audit/ChildB.lean, Audit/Assembly.lean (#print axioms: [propext, Classical.choice, Quot.sound])",
+              "python3 -I /tmp/fiw_tl_tr_split_scripts/sim.py; lean simulated GMT/Ch06/Submission.lean, Cmp/*_Solution.lean, Cmp/Axioms.lean (exit 0)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/GroupWithZero/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Algebra/Notation/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-v3.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/ChildA.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/ChildB.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/Assembly.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/Closure.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_tr_weighted_diff_bound_Challenge.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_tr_scaling_limit_Challenge.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_transfer_Challenge.lean",
+              "/tmp/fiw_tl_tr_sim_XsLkVq/GMT/Ch06/Submission.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace and snapshot Contract.lean/Submission.lean are byte-identical (sha256 ea3ee0dd…).\n\nDefinitions. SimonGMT Chapter03 defines blowUpMap x r y = r⁻¹ • (y − x). HasWeightedApproximateTangentSpaceAt is finrank Q = n together with ∀ f : C_c, Tendsto (∫_{blowUpMap x r '' M} f(y)·θ(x + r•y) dμHE[n]) (𝓝[>] 0) (𝓝 (θ x·∫_Q f)). Both match the supplied proof. SimonGMT's Chapter04 WeightedBlowUp lemmas lie outside the frozen import closure (only Chapter04.Basic is imported), and neither child needs them.\n\nMathlib lemmas. Every lemma used by the children exists with the used signature:\n- integral_indicator₀, indicator_mul_right, IntegrableOn.integrable_indicator₀;\n- Integrable.bdd_mul (ae bound form), integral_sub, integral_const_mul;\n- enorm_integral_le_lintegral_enorm, enorm_mul, lintegral_indicator, lintegral_const_mul';\n- ofReal_norm (ofReal_norm_eq_enorm is now a deprecated alias), ENNReal.ofReal_mul, ENNReal.ofReal_le_ofReal_iff;\n- tendsto_nhdsWithin_iff, Metric.tendsto_nhds.\nFor the glue: HasCompactSupport.exists_pos_le_norm, Continuous.bounded_above_of_compact_support, Real.enorm_eq_ofReal.\n\nReuse. No accepted declaration has a type identical to either child. lpf_wtc_wtt_remainder_vanishes is related but needs θ ≥ 0 and a density hypothesis, so it is not reusable. The two new names occur nowhere in the DAG, in decomposition proposals, in node files or in git refs.\n\nLean checks. In a fresh build of the frozen commit:\n- both child types and the parent type elaborate in the comparator's challenge layout;\n- full proofs of both children compile using only propext, Classical.choice and Quot.sound;\n- FiwTlTrAudit.assembly_exact derives the byte-exact frozen parent type from the byte-exact child types plus the dag.json types of fiw_tl_blowup_setIntegral and fiw_tl_growth_bound, with the same axioms;\n- a simulated Submission passes all generated NodeSolution checks.\nAn independent reviewer replayed all of this and accepted."
+          }
+        ],
+        "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+        "child_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.scaling_limit-a1",
+        "subproblem": {
+          "key": "scaling_limit",
+          "title": "Little-o scaling limit: r^{−n}·K·E(Rr) → 0 when E = o(G) and G = O(sⁿ) at 0⁺",
+          "statement": "Let n ∈ ℕ, D : ℝ → ℝ, E, G : ℝ → [0, ∞] and R, K, C ∈ ℝ with R > 0. Assume:\n(a) for every ε > 0, E(s) ≤ ofReal(ε)·G(s) for all sufficiently small s > 0 (∀ᶠ s in 𝓝[>] 0);\n(b) G(s) ≤ ofReal(C·sⁿ) for all sufficiently small s > 0;\n(c) ‖D(r)‖ₑ ≤ ofReal((rⁿ)⁻¹)·ofReal(K)·E(R·r) for all sufficiently small r > 0.\nThen D(r) → 0 as r → 0⁺, i.e. Tendsto D (𝓝[>] 0) (𝓝 0). No sign condition on K or C is assumed.",
+          "lean_statement": "∀ (n : ℕ) (D : ℝ → ℝ) (E G : ℝ → ℝ≥0∞) (R K C : ℝ), 0 < R → (∀ ε : ℝ, 0 < ε → ∀ᶠ s in 𝓝[>] (0 : ℝ), E s ≤ ENNReal.ofReal ε * G s) → (∀ᶠ s in 𝓝[>] (0 : ℝ), G s ≤ ENNReal.ofReal (C * s ^ n)) → (∀ᶠ r in 𝓝[>] (0 : ℝ), ‖D r‖ₑ ≤ ENNReal.ofReal ((r ^ n)⁻¹) * ENNReal.ofReal K * E (R * r)) → Tendsto D (𝓝[>] 0) (𝓝 0)",
+          "lean_name": "fiw_tl_tr_scaling_limit",
+          "depends_on": [],
+          "natural_proof": "Source: step 7 of the parent-supplied proof of fiw_tl_transfer. The two integrals there are abstracted to E(s) (the L¹ error on B̄_s(x)) and G(s) (the θ₁-mass of M₁ ∩ B̄_s(x)), and I₂(r) − c·I₁(r) to D(r). Notation: t⁺ := ENNReal.ofReal t.\n\n1. Rescaling the filter. The map r ↦ R·r tends to R·0 = 0 as r → 0 (Tendsto.const_mul applied to tendsto_id), hence also along 𝓝[>] 0, which is finer than 𝓝 0 (Tendsto.mono_left nhdsWithin_le_nhds); and R·r > 0 whenever r > 0 because R > 0. By tendsto_nhdsWithin_iff, r ↦ R·r tends to 𝓝[>] 0 along 𝓝[>] 0. Hence if a property holds for all sufficiently small s > 0, it holds at s = R·r for all sufficiently small r > 0 (Tendsto.eventually).\n\n2. Constants. Let K₁ := max(K, 0) ≥ 0, C₁ := max(C, 0) ≥ 0 and A := K₁·C₁·Rⁿ ≥ 0.\n\n3. Let ε > 0 and put ε' := ε/(2(A + 1)) > 0. Combine (filter_upwards) the following facts: r > 0 eventually in 𝓝[>] 0 (self_mem_nhdsWithin); hypothesis (c); hypothesis (a) with ε', transported to s = R·r by step 1; and hypothesis (b), transported to s = R·r by step 1. So for all sufficiently small r > 0 we have simultaneously: r > 0; ‖D(r)‖ₑ ≤ ((rⁿ)⁻¹)⁺·K⁺·E(Rr); E(Rr) ≤ ε'⁺·G(Rr); and G(Rr) ≤ (C·(Rr)ⁿ)⁺.\n\n4. Fix such an r. We have K ≤ K₁ and, since (Rr)ⁿ ≥ 0, C·(Rr)ⁿ ≤ C₁·(Rr)ⁿ. ENNReal.ofReal is monotone and multiplication in [0, ∞] is monotone in each factor, so\n‖D(r)‖ₑ ≤ ((rⁿ)⁻¹)⁺·K₁⁺·(ε'⁺·(C₁·(Rr)ⁿ)⁺).\nThe factors (rⁿ)⁻¹, K₁, ε' and C₁·(Rr)ⁿ are all ≥ 0. So by ENNReal.ofReal_mul the right side equals ((rⁿ)⁻¹·K₁·(ε'·(C₁·(Rr)ⁿ)))⁺. Since (Rr)ⁿ = Rⁿ·rⁿ and rⁿ > 0, the real number inside equals K₁·C₁·Rⁿ·ε' = A·ε'. Thus ‖D(r)‖ₑ ≤ (A·ε')⁺.\n\n5. Back to ℝ. We have ‖D(r)‖ₑ = ‖D(r)‖⁺ (ofReal_norm) and A·ε' ≥ 0. So ENNReal.ofReal_le_ofReal_iff gives |D(r)| = ‖D(r)‖ ≤ A·ε'. Moreover A·ε' = A·ε/(2(A + 1)) < ε, because A·ε < 2(A + 1)·ε for ε > 0 and A ≥ 0. Hence dist(D(r), 0) = |D(r)| < ε.\n\n6. Since ε > 0 was arbitrary, Metric.tendsto_nhds gives D(r) → 0 as r → 0⁺. ∎",
+          "proof_key_steps": [
+            "r ↦ R·r maps 𝓝[>] 0 into 𝓝[>] 0 because R > 0, so (a) and (b) hold at s = R·r for small r > 0.",
+            "Put A := max(K,0)·max(C,0)·Rⁿ and, for ε > 0, ε' := ε/(2(A+1)).",
+            "For small r > 0: ‖D(r)‖ₑ ≤ ofReal((rⁿ)⁻¹)·ofReal(K)·ofReal(ε')·ofReal(C(Rr)ⁿ) ≤ ofReal(A·ε'), using (Rr)ⁿ = Rⁿrⁿ and (rⁿ)⁻¹rⁿ = 1.",
+            "ofReal_norm and ENNReal.ofReal_le_ofReal_iff give |D(r)| ≤ A·ε' < ε.",
+            "Metric.tendsto_nhds gives D → 0 along 𝓝[>] 0."
+          ]
+        },
+        "audit": {
+          "key": "scaling_limit",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and standalone one-line Lean proposition agree exactly. Positivity of R correctly transports eventual estimates along r ↦ Rr. Replacing K and C by their nonnegative maxima handles arbitrary signs; cancellation uses r^n > 0, including n = 0. The nonnegative finite bound permits conversion from ENNReal to the real norm, and the explicit epsilon choice proves the stated limit. All three hypotheses are used correctly, with no circular reliance or deferred proof construction."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.weighted_diff_bound-a1",
+      "key": "weighted_diff_bound",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf-a1",
+      "bundle_path": ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+              "sha256sum GMT/Ch06/{Contract,Submission}.lean in workspace and in local-references/197bdd4b88278494/project (all ea3ee0ddd08be5db…)",
+              "grep -n 'blowUpMap\\|HasWeightedApproximateTangentSpaceAt\\|^namespace\\|^open' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "grep -rln blowUpMap simongmt/Poincare; grep -n '^theorem\\|^import' Chapter04/WeightedBlowUp.lean; lean #eval env.header.moduleNames after import GMT.Ch06.Submission (5050 modules; only Poincare.SimonGMT.Chapter04.Basic from Ch04/Ch08)",
+              "grep -n in snapshot mathlib: 'theorem integral_indicator₀' Bochner/Set.lean; 'theorem Integrable.bdd_mul' L1Space/Integrable.lean; 'theorem IntegrableOn.integrable_indicator₀' Integral/IntegrableOn.lean; 'theorem enorm_integral_le_lintegral_enorm' Bochner/Basic.lean; 'theorem lintegral_indicator' Lebesgue/Basic.lean; 'theorem lintegral_const_mul'' Lebesgue/Add.lean; 'Continuous.bounded_above_of_compact_support|exists_pos_le_norm' Normed/Group/Bounded.lean; 'lemma indicator_mul_right' GroupWithZero/Indicator.lean",
+              "grep ofReal_norm Mathlib/Analysis/Normed/Group/Basic.lean; grep indicator_of_notMem Mathlib/Algebra/Notation/Indicator.lean; grep 'notation\\|^theorem' Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "python3 -I scan of dag.json for tangent/transfer/blowup/growth nodes (lean_name, status, lean_statement of lpf_wtc_* accepted lemmas)",
+              "python3 -I scan of dag.json (360 nodes), nodes/*/decomposition-v*.json (334 files), all node files (4731) for fiw_tl_tr_weighted_diff_bound|fiw_tl_tr_scaling_limit|fiw_tl_tr_",
+              "for r in $(git for-each-ref): git grep -E 'fiw_tl_tr_(weighted_diff_bound|scaling_limit)' $r -- '*.lean' (1147 refs, no match)",
+              "git archive d8d46c9587747dee0751a1f780fcafdba16a3886 | tar -x -C /tmp/fiw_tl_tr_split_CA4Dkj; LEAN_PATH=… lean -o .lake/build/lib/lean/GMT/Ch06/Submission.olean GMT/Ch06/Submission.lean (exit 0)",
+              "python3 -I /tmp/fiw_tl_tr_split_scripts/gen.py (verifier lean_contract.validate_lean_statement + gmt-compare.child_modules(mode='contract')); lean Cmp/*_Challenge.lean (3 files, exit 0)",
+              "lean Audit/ChildA.lean, Audit/ChildB.lean, Audit/Assembly.lean (#print axioms: [propext, Classical.choice, Quot.sound])",
+              "python3 -I /tmp/fiw_tl_tr_split_scripts/sim.py; lean simulated GMT/Ch06/Submission.lean, Cmp/*_Solution.lean, Cmp/Axioms.lean (exit 0)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/GroupWithZero/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Algebra/Notation/Indicator.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1/decomposition-v3.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/ChildA.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/ChildB.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/Assembly.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Audit/Closure.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_tr_weighted_diff_bound_Challenge.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_tr_scaling_limit_Challenge.lean",
+              "/tmp/fiw_tl_tr_split_CA4Dkj/Cmp/fiw_tl_transfer_Challenge.lean",
+              "/tmp/fiw_tl_tr_sim_XsLkVq/GMT/Ch06/Submission.lean"
+            ],
+            "conclusion": "Snapshot pins project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The workspace and snapshot Contract.lean/Submission.lean are byte-identical (sha256 ea3ee0dd…).\n\nDefinitions. SimonGMT Chapter03 defines blowUpMap x r y = r⁻¹ • (y − x). HasWeightedApproximateTangentSpaceAt is finrank Q = n together with ∀ f : C_c, Tendsto (∫_{blowUpMap x r '' M} f(y)·θ(x + r•y) dμHE[n]) (𝓝[>] 0) (𝓝 (θ x·∫_Q f)). Both match the supplied proof. SimonGMT's Chapter04 WeightedBlowUp lemmas lie outside the frozen import closure (only Chapter04.Basic is imported), and neither child needs them.\n\nMathlib lemmas. Every lemma used by the children exists with the used signature:\n- integral_indicator₀, indicator_mul_right, IntegrableOn.integrable_indicator₀;\n- Integrable.bdd_mul (ae bound form), integral_sub, integral_const_mul;\n- enorm_integral_le_lintegral_enorm, enorm_mul, lintegral_indicator, lintegral_const_mul';\n- ofReal_norm (ofReal_norm_eq_enorm is now a deprecated alias), ENNReal.ofReal_mul, ENNReal.ofReal_le_ofReal_iff;\n- tendsto_nhdsWithin_iff, Metric.tendsto_nhds.\nFor the glue: HasCompactSupport.exists_pos_le_norm, Continuous.bounded_above_of_compact_support, Real.enorm_eq_ofReal.\n\nReuse. No accepted declaration has a type identical to either child. lpf_wtc_wtt_remainder_vanishes is related but needs θ ≥ 0 and a density hypothesis, so it is not reusable. The two new names occur nowhere in the DAG, in decomposition proposals, in node files or in git refs.\n\nLean checks. In a fresh build of the frozen commit:\n- both child types and the parent type elaborate in the comparator's challenge layout;\n- full proofs of both children compile using only propext, Classical.choice and Quot.sound;\n- FiwTlTrAudit.assembly_exact derives the byte-exact frozen parent type from the byte-exact child types plus the dag.json types of fiw_tl_blowup_setIntegral and fiw_tl_growth_bound, with the same axioms;\n- a simulated Submission passes all generated NodeSolution checks.\nAn independent reviewer replayed all of this and accepted."
+          }
+        ],
+        "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1",
+        "child_id": "root.flat_iff_weak-a1.tangent_locality-a1.pointwise_transfer-a1.weighted_diff_bound-a1",
+        "subproblem": {
+          "key": "weighted_diff_bound",
+          "title": "L¹ comparison of two weighted integrals against a bounded test weight supported in a closed ball",
+          "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P = Eucl P. Let M₁, M₂ ⊆ ℝ^P be H-null-measurable, θ₁, θ₂, φ : ℝ^P → ℝ, x ∈ ℝ^P and c, ρ, s, K ∈ ℝ. Assume: θ_i is H-integrable on M_i ∩ B̄_ρ(x) for i = 1, 2; φ is continuous; ‖φ(z)‖ ≤ K for every z; φ(z) = 0 for every z ∉ B̄_s(x); and s ≤ ρ. Then, in [0, ∞],\n‖∫_{M₂} φθ₂ dH − c·∫_{M₁} φθ₁ dH‖ₑ ≤ ofReal(K) · ∫⁻_{B̄_s(x)} ‖1_{M₂}θ₂ − c·1_{M₁}θ₁‖ₑ dH,\nwhere ∫_{M_i} denotes the Bochner set integral. No sign condition on θ_i, c or φ is assumed.",
+          "lean_statement": "∀ (P n : ℕ) (M₁ M₂ : Set (Eucl P)) (θ₁ θ₂ φ : Eucl P → ℝ) (x : Eucl P) (c ρ s K : ℝ), NullMeasurableSet M₁ (μHE[n] : Measure (Eucl P)) → NullMeasurableSet M₂ (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₁ (M₁ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → IntegrableOn θ₂ (M₂ ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → Continuous φ → (∀ z, ‖φ z‖ ≤ K) → (∀ z, z ∉ closedBall x s → φ z = 0) → s ≤ ρ → ‖(∫ z in M₂, φ z * θ₂ z ∂(μHE[n] : Measure (Eucl P))) - c * ∫ z in M₁, φ z * θ₁ z ∂(μHE[n] : Measure (Eucl P))‖ₑ ≤ ENNReal.ofReal K * ∫⁻ z in closedBall x s, ‖M₂.indicator θ₂ z - c * M₁.indicator θ₁ z‖ₑ ∂(μHE[n] : Measure (Eucl P))",
+          "lean_name": "fiw_tl_tr_weighted_diff_bound",
+          "depends_on": [],
+          "natural_proof": "Source: the second half of step 4 and steps 5–6 of the parent-supplied proof of fiw_tl_transfer, specialized so that the test weight f∘η_r is replaced by an arbitrary continuous φ and the radius R·r by an arbitrary s ≤ ρ (no blow-up change of variables occurs here). Notation: H := μHE[n], B_t := B̄_t(x) = closedBall x t, h := 1_{M₂}θ₂ − c·1_{M₁}θ₁, t⁺ := ENNReal.ofReal t.\n\n1. φ vanishes off B_ρ. Since s ≤ ρ, B_s ⊆ B_ρ (closedBall_subset_closedBall). Hence if z ∉ B_ρ then z ∉ B_s, so φ(z) = 0 by hypothesis.\n\n2. Indicator form. Let i ∈ {1, 2}. Because M_i is H-null-measurable, integral_indicator₀ gives ∫_{M_i} φθ_i dH = ∫ 1_{M_i}(φθ_i) dH, and 1_{M_i}(φθ_i)(z) = φ(z)·(1_{M_i}θ_i)(z) for every z (indicator_mul_right). Put G_i(z) := φ(z)·(1_{M_i}θ_i)(z). Thus ∫_{M_i} φθ_i dH = ∫ G_i dH.\n\n3. Integrability of G_i. The set M_i ∩ B_ρ is H-null-measurable (M_i is, and closed balls are measurable: NullMeasurableSet.inter with measurableSet_closedBall). So the hypothesis that θ_i is H-integrable on M_i ∩ B_ρ gives that 1_{M_i∩B_ρ}θ_i is H-integrable (IntegrableOn.integrable_indicator₀). φ is continuous, hence AE-strongly measurable, and ‖φ(z)‖ ≤ K for all z. Therefore z ↦ φ(z)·(1_{M_i∩B_ρ}θ_i)(z) is H-integrable (Integrable.bdd_mul). This function equals G_i at every z: if z ∈ B_ρ, then (1_{M_i∩B_ρ}θ_i)(z) = (1_{M_i}θ_i)(z), both being θ_i(z) when z ∈ M_i and 0 otherwise; if z ∉ B_ρ, then φ(z) = 0 by step 1 and both products are 0. Hence G_i is H-integrable (Integrable.congr).\n\n4. Linearity. By step 2, ∫_{M₂} φθ₂ dH − c·∫_{M₁} φθ₁ dH = ∫ G₂ dH − c·∫ G₁ dH. By integral_const_mul, c·∫ G₁ dH = ∫ c·G₁ dH. By step 3 (G₂ and c·G₁ are integrable) and integral_sub, ∫ G₂ dH − ∫ c·G₁ dH = ∫ (G₂ − c·G₁) dH. Pointwise, G₂(z) − c·G₁(z) = φ(z)·h(z) by ring arithmetic. Hence ∫_{M₂} φθ₂ dH − c·∫_{M₁} φθ₁ dH = ∫ φ·h dH.\n\n5. Pointwise bound. For every z, ‖φ(z)h(z)‖ₑ ≤ 1_{B_s}(z)·K⁺·‖h(z)‖ₑ. If z ∈ B_s, then ‖φ(z)h(z)‖ₑ = ‖φ(z)‖ₑ·‖h(z)‖ₑ (enorm_mul) and ‖φ(z)‖ₑ = ‖φ(z)‖⁺ ≤ K⁺ (ofReal_norm and ENNReal.ofReal_le_ofReal applied to ‖φ(z)‖ ≤ K). If z ∉ B_s, then φ(z) = 0, so the left side is 0.\n\n6. Conclusion. By step 4 and enorm_integral_le_lintegral_enorm,\n‖∫_{M₂} φθ₂ dH − c·∫_{M₁} φθ₁ dH‖ₑ = ‖∫ φ·h dH‖ₑ ≤ ∫⁻ ‖φ·h‖ₑ dH.\nBy step 5 and lintegral_mono this is at most ∫⁻ 1_{B_s}·(K⁺‖h‖ₑ) dH. That equals ∫⁻_{B_s} K⁺‖h‖ₑ dH by lintegral_indicator, since B_s is measurable. Finally it equals K⁺·∫⁻_{B_s} ‖h‖ₑ dH by lintegral_const_mul', since K⁺ ≠ ∞. This is the claimed inequality. ∎",
+          "proof_key_steps": [
+            "s ≤ ρ gives B̄_s(x) ⊆ B̄_ρ(x), so φ = 0 off B̄_ρ(x).",
+            "integral_indicator₀ and indicator_mul_right give ∫_{M_i} φθ_i dH = ∫ φ·1_{M_i}θ_i dH.",
+            "φ·1_{M_i}θ_i = φ·1_{M_i∩B̄_ρ(x)}θ_i is H-integrable by IntegrableOn.integrable_indicator₀ and Integrable.bdd_mul.",
+            "integral_const_mul and integral_sub give ∫_{M₂}φθ₂ − c∫_{M₁}φθ₁ = ∫ φ·(1_{M₂}θ₂ − c·1_{M₁}θ₁) dH.",
+            "‖φh‖ₑ ≤ 1_{B̄_s(x)}·ofReal(K)·‖h‖ₑ pointwise.",
+            "enorm_integral_le_lintegral_enorm, lintegral_indicator and lintegral_const_mul' give the bound ofReal(K)·∫⁻_{B̄_s(x)} ‖h‖ₑ dH."
+          ]
+        },
+        "audit": {
+          "key": "weighted_diff_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. Steps 1–3 correctly localize the indicator products and establish integrability. Step 4 therefore legitimately subtracts the integrals. Steps 5–6 yield the exact ENNReal estimate, with finite ofReal K justifying constant extraction without additional measurability assumptions. Arbitrary signs and nonpositive radii cause no gap. The proof is complete, non-circular, and directly supplies the parent's required error bound."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/task.md": "851788007dc8c3751d2eb432e671ed309656d733cb7f0945095ef6d498b86aea",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/problem.md": "2a7a835f77ed0c2d2d9344f4d74d4aca5aba45b602f54cca55c26b05d42f07c7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/problem.json": "c524959c2b363f8a0061c212b44cd7e69bb1645bf27826cb3a6bf3b6c474c290",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/reference-manifest.json": "754178a610ec50f104bdcaf2bcf3c0ceacdeda598b67255aba00da6a8cdbcdf7",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/decomposition.json": "efb1f331c72d2a21a4689c797d8bed76670a3d46f7ae5fe616ab9723ba361c80",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/decomposition-audit.json": "f9b4f9c8a4337b86e6419a1e6ee8ef1c010cb7bdc51159e58ab3b00baacc8618",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/controller-contract.json": "6753c097b624229cd25c20ce9ff1dd35a6c88a2084eb3ccb57d6c14f531038f6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-child-handoff.json": "c06713aa11c5577115504b9ee7246a36dd493736ecc00fe513b3141087e1b77a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-plan.md": "b48e5c9a4ec73bb902855d2597b0a68c9afe06b6ef0918076f9e06b9fe34f485",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-natural-proof.md": "6f420c1f2efe5a7d916058ebe8e276f36fb81fba5e79ac32e03fd0e41bcaf901",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/parent-supplied-natural-proof.json": "52dff969532c0040ee5b0be9dd46e15fef30e94b594fb7ed38787348063ef28a",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-scaling-limit-a1/node.json": "5c8832fa0c9c3953060d749dba7b5ff41a425e69f3f3ace0b989fde712b976b9",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-child-handoff.json": "1112715e0343b0be292e3711b7821a146fb887fd2dbbd08fa98915a2462e73f9",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-plan.md": "8620832c1f65ca3e5c8f71a34c222bb05dd4d25c1932fe637f570ceb29564319",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-natural-proof.md": "83e766d9dc30aaffe9ec882faa32bfbd4bf3e2f9633a1d24600fc55f2d14f1c6",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/parent-supplied-natural-proof.json": "3953aeb94503152d07f962078cede70ed1817e9235429fa75906d373714aabfc",
+    ".humanize-workspace/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/children/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1-weigh-bf77e528cf/node.json": "6f9e7eb4f0ee5fed9e6d5e683a6df4414fdf0d414d4197d4dfed42ea393174f0"
+  }
+}

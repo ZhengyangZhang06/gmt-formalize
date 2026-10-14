@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'LatticeFaceIndex|latticeFace|IsLatticeChain|Eucl|namespace|^open|^import' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n 'isoperimetric_lattice_chain_mass_ge|fiw_tb_lcc|local_isolating|face_integral_pos|lattice_face_cutoff' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "rg -n 'IsClosedEmbedding.setIntegral_map|MeasurableEmbedding.setIntegral_map|setIntegral_preimage_emb' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "git show b1a770c375be212de585c186965d7d1f653fb13a:GMT/Ch06/Submission.lean",
+        "git show 3d98b1871057eeff6b4d78f84c5665e21780c082:GMT/Ch06/Submission.lean",
+        "git show b27494a624bd7cb016c2462cf743040f38ce4183:GMT/Ch06/Submission.lean",
+        "git show 0561b355216f4041a30f4aaf2a4b139abdf038ca:GMT/Ch06/Submission.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcc-independent-audit-lg7wwgl_/Challenge.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcc-independent-audit-lg7wwgl_/All.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-lattice-chain-coeff-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-lattice-chain-coeff-a1/decomposition-v1.json",
+        "/tmp/lcc-independent-audit-lg7wwgl_/Challenge.lean",
+        "/tmp/lcc-independent-audit-lg7wwgl_/All.lean"
+      ],
+      "conclusion": "Verified project d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot contains the required definitions but no matching coefficient lemma or proposed helper names. DAG inspection confirms four accepted reuses with string-identical frozen types, two unreserved new names, and no dependency cycle or reliance on the selected parent. All names are bare identifiers. Every one-line type independently elaborates without its declaration existing. Independently reconstructed proofs and the exact parent assembly compile with only propext, Classical.choice and Quot.sound. Smoothness denotes C∞; covector operations and measure instances match the prose. No problematic matrix-unit construction occurs. The split is appropriate: localized isolation proves support containment, and mass_ge supplies the other conjunct."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_ge",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree with the accepted declaration. The supplied proof establishes finite face measures, admissible isolating cutoffs, both coefficient-sign cases, and the limiting bound. It requires neither a nonzero coefficient nor finite current mass and is non-circular."
+    },
+    {
+      "key": "coord_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant argument proves both frame evaluations; injectivity and equal finite range cardinalities justify the zero-row case. The norm sum reduces to c², giving |c|. The proof covers degree zero and matches the accepted frozen type."
+    },
+    {
+      "key": "face_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact box and interior inclusions justify smooth Urysohn with compact support. Integer coordinate separation proves vanishing on every other parallel face. All stated hypotheses suffice for every δ > 0, including empty shrunken faces and degree zero."
+    },
+    {
+      "key": "face_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The isometry, range inclusion, cube preimage and measure-preserving coordinate conversion prove the exact integral identity. The pinned embedding change-of-variables lemmas apply to arbitrary g, so no measurability or integrability hypothesis is missing. Arbitrary ρ and degree zero are covered."
+    },
+    {
+      "key": "face_integral_pos",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Using face_param, the proof obtains a continuous nonnegative function integrable on the compact parameter cube. Its support intersects the open cube in a nonempty open set of positive Lebesgue measure, including degree zero. This proves precisely the stated positivity without assuming ambient Hausdorff measure is locally finite."
+    },
+    {
+      "key": "local_isolating_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Moving toward the centre produces a relative-interior point inside W. The bump-cutoff product has the required support; the coordinate covector and cutoff eliminate all other faces; face_integral_pos proves positive evaluation. Dependencies are correctly directed. The supplied zeroRegion contradiction then establishes the selected parent's support conjunct."
+    }
+  ],
+  "required_changes": []
+}
