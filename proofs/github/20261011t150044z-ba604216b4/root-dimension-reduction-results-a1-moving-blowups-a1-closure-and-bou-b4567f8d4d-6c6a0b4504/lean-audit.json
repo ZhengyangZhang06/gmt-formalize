@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a86de54904d11896e32a28a5c0a75cbf22c8ef9258c2fad13a361b9eb1b27e29",
+  "git_delta": {
+    "base_commit": "84690fc0351e759f946f99f3b24915171c0f0c35",
+    "candidate_commit": "9763487e4a64079738c21073dc2ca258b11db776",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_pw_single_plane_of_unit_weights",
+    "diff_sha256": "f1808dda1e396acbfdacdd911e5d08b45143852d26454b41167fb2468b089662",
+    "source_sha256": "d2ae38690612f2810413c2830cbebafda88cc0fd591238d5706b4c731688d3b7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_pw_single_plane_of_unit_weights",
+      "statement": "∀ (P N : ℕ) (m ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, 1 ≤ α i) → ∑ i, α i ≤ 1 → (∃ i, w i = 0) → ν = ∑ i, ENNReal.ofReal (α i) • m.restrict {y : Euclid P | y - w i ∈ V} → ν = m.restrict (V : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
