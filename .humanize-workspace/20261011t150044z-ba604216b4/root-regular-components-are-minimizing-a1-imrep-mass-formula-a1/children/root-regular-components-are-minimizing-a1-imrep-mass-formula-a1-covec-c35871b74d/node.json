@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Normalisation of the Euclidean coefficient norm: Σ_j α(f∘j)² = n!·|α|_E² for every orthonormal basis f",
+  "statement": "Let P, n ∈ ℕ, let α be an n-covector on ℝ^P (a continuous alternating n-linear form, Covector (Euclid P) n) and let f = (f_0, …, f_{P−1}) be an orthonormal basis of ℝ^P indexed by Fin P. Then Σ_{j : Fin n → Fin P} α(f_{j(0)}, …, f_{j(n−1)})² = n!·|α|_E², where |α|_E = covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} and e is the standard basis.",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2",
+  "lean_name": "regcomp_covector_sq_sum_orthonormalBasis",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.zero_dim_minimizer_zero-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Minimizing 0-dimensional currents vanish",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, and T ∈ 𝒟_0(U) minimizing in U in the sense of the contract's IsMinimizingIn T U (Simon 7.1.1): T is integer multiplicity, and M_W(T) ≤ M_W(S) for every open W with closure(W) compact and contained in U and every integer multiplicity S ∈ 𝒟_0(U) such that spt(S − T) is a compact subset of U ∩ W (the condition ∂S = ∂T is vacuous in degree 0). Then T = 0.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T U → T = 0",
+  "lean_name": "cmc_zeroDim_minimizing_eq_zero",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_equals_rep_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-zero-dim-minimizer-zero-a1-a1"
+}

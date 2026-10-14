@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "Locality of approximate tangent planes for nested Borel sets (Simon Ch. 3, Remarks 1.5(2), 1.8(1))",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let A ⊆ B ⊆ U be Borel sets with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]). Then for Hⁿ-a.e. x ∈ A (that is, for μHE[n]⌞A-almost every x) the following holds simultaneously for every linear subspace Q of ℝ^P: B has approximate tangent space Q at x (HasApproximateTangentSpaceAt n B x Q, Simon Ch. 3, Definition 1.4) if and only if A has approximate tangent space Q at x.",
+  "lean_statement": "∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "rsdic_ae_tangent_iff_of_subset",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.tangent_growth-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_growth-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-a1"
+}

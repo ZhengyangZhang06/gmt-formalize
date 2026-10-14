@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+  "parent_id": "root.regular_set_dense-a1",
+  "depth": 2,
+  "title": "The mass density of an integer multiplicity current equals its multiplicity almost everywhere",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U), and let R = (M, θ, ξ) be an integer multiplicity representation of T in U (an IMRep with R.Represents T), with weight μ_T = R.measure = θH^n⌞M. Then HasMassDensity T x θ(x) holds for μ_T-a.e. x. That is, θ(x) ≥ 0 and M_{B_ρ(x)}(T)/(ω_nρ^n) → θ(x) in [0, ∞] as ρ ↓ 0, where B_ρ(x) is the open ball and ω_n is the Lebesgue measure of the unit ball of ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ᵐ x ∂R.measure, HasMassDensity T x (R.mult x)",
+  "lean_name": "rsd_ae_hasMassDensity_mult",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-a1"
+}

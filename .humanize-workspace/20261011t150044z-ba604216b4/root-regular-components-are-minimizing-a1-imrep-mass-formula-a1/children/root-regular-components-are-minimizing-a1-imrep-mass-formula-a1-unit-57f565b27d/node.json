@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "A unit orientation ±τ₁∧⋯∧τₙ has dual coefficient norm exactly 1",
+  "statement": "Let P, n ∈ ℕ, let ξ ∈ MultiVector P n (a continuous linear functional on n-covectors) and let Q be a subspace of ℝ^P such that IsUnitOrientationOf ξ Q holds, i.e. there is an orthonormal τ : Fin n → ℝ^P spanning Q with either ξ(α) = α(τ) for all α or ξ(α) = −α(τ) for all α. Then (i) |ξ(α)| ≤ |α|_E for every n-covector α, and (ii) there is an n-covector β with |β|_E ≤ 1 and ξ(β) = 1.",
+  "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ β = 1",
+  "lean_name": "regcomp_unit_orientation_pairing",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-unit-57f565b27d-a1"
+}

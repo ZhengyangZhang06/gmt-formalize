@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.imrep_split-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Additivity of weight measure and action under a splitting of the multiplicity",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P, and let R = (C, θ, ξ), R₁ = (C₁, θ₁, ξ₁) and R₂ = (C₂, θ₂, ξ₂) be integer multiplicity triples in U (IMRep U n). Assume:\n- C₁ ⊆ C and C₂ ⊆ C;\n- ξ₁ = ξ and ξ₂ = ξ (as functions);\n- θ(x) = 1_{C₁}(x)θ₁(x) + 1_{C₂}(x)θ₂(x) in ℕ for every x ∈ C.\nThen the weight measures add: θHⁿ⌞C = θ₁Hⁿ⌞C₁ + θ₂Hⁿ⌞C₂, i.e. R.measure = R₁.measure + R₂.measure. The actions add: R.action ω = R₁.action ω + R₂.action ω for every ω ∈ 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R R₁ R₂ : IMRep U n), R₁.carrier ⊆ R.carrier → R₂.carrier ⊆ R.carrier → R₁.orient = R.orient → R₂.orient = R.orient → (∀ x ∈ R.carrier, R.mult x = R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → R.measure = R₁.measure + R₂.measure ∧ ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n)",
+  "lean_name": "regcomp_rim_imrep_split",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multipl-0c57fb054e-a1"
+}

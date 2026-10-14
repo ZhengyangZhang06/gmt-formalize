@@ -1,0 +1,101 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)",
+        "python3 -I scan of dag.json (132 nodes) for lean_name collisions with the eight proposed regcomp_ names (none) and for related nodes (dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure, covectorEuclideanNorm_gram_bounds: all still decomposing, with different types)",
+        "git worktree list; grep -nE '^(theorem|lemma|def) ' .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no regcomp_ declarations)",
+        "grep -n 'covectorEuclideanNorm|massAdmissibleOn|GeometricCurrentOn.massOn|le_massOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "grep -n 'wedgeCovectors|wedgeCovectors_apply_det|euclideanCovectorCoordinate' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "grep -n 'IsTestForm|testFormOnSubmodule|TestFormOn|GeometricCurrentOn' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean Currents.lean",
+        "grep -rn 'exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right|sum_inner_mul_inner' Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "grep -rn 'Integrable.exists_hasCompactSupport_lintegral_sub_le|MemLp.exists_hasCompactSupport_eLpNorm_sub_le|MemLp.exist_eLpNorm_sub_le' Mathlib",
+        "grep -rn 'dist_normed_convolution_le|contDiff_convolution_left|support_convolution_subset|convolution_def|Continuous.exists_contDiff_approx|UniformContinuous.exists_contDiff_dist_le' Mathlib",
+        "grep -n 'Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure' Mathlib/MeasureTheory/Measure/Regular.lean",
+        "grep -rn 'map_eq_zero_of_not_injective|theorem map_perm|theorem Module.Basis.ext_multilinear|theorem det_permutation|def sort|monotone_sort' Mathlib",
+        "grep -rn 'IsSeparable.exists_countable_dense_subset|IsSeparable.mono|exists_compact_between|IsOpen.exists_iUnion_isClosed|exists_cthickening_subset_open|exists_continuous_one_zero_of_isCompact|uniformContinuous_of_continuous' Mathlib",
+        "grep -rn 'enorm_integral_le_lintegral_enorm|theorem withDensity_apply|lintegral_withDensity_eq_lintegral_mul₀' Mathlib/MeasureTheory",
+        "lake env lean /tmp/imrep-mass-split/Inst.lean and Inst2.lean (#synth FiniteDimensional ℝ (Covector (Euclid P) n): fails; SeparableSpace: fails; CompleteSpace: found; ν.Regular for finite ν: found; signatures of the cited lemmas)",
+        "lake env lean /tmp/imrep-mass-split/CheckFinal2.lean (eight frozen child types + le_antisymm parent assembly; #print axioms)",
+        "lake env lean /tmp/imrep-mass-split/Check2.lean, Check3.lean, Check4.lean (unit_orientation_pairing from stubs; full proof of mass_le_measure; skeleton of measure_le_mass)",
+        "python3 -I /tmp/imrep-mass-split/scripts/numcheck2.py (numeric check of the three covector facts for (P,n) in {(4,2),(5,3),(3,3),(4,1),(3,0),(2,3)})",
+        "sed -n 755,770p book/chapter-06.txt (Remark 3.2(3))"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Permutation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/imrep-mass-split/CheckFinal2.lean",
+        "/tmp/imrep-mass-split/Check2.lean",
+        "/tmp/imrep-mass-split/Check3.lean",
+        "/tmp/imrep-mass-split/Check4.lean",
+        "/tmp/imrep-mass-split/Inst.lean",
+        "/tmp/imrep-mass-split/Inst2.lean",
+        "/tmp/imrep-mass-split/scripts/numcheck2.py"
+      ],
+      "conclusion": "The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Submission.lean. None of the eight proposed regcomp_ names occurs in dag.json or in any speculative Submission. No comparator-accepted declaration with an identical type exists to reuse: the related nodes dtc_mass_eq_measure, rsd_massOn_eq_measure, dor_imrep_massOn_eq_measure_and_support, imrep_represents_massOn_eq_measure and covectorEuclideanNorm_gram_bounds are all still decomposing and have different types.\n\nSimonGMT Chapter06 provides covectorEuclideanNorm (with _zero, _neg, _nonneg), massAdmissibleOn, GeometricCurrentOn.massOn and le_massOn (Mass.lean), and wedgeCovectors with wedgeCovectors_apply_det (FormsDuality.lean). FormsDuality is not in the import closure of GMT.Ch07.Submission; the covector_norming child carries an import note.\n\nMathlib supplies: orthonormal-basis extension and Parseval (PiL2); C_c-density in L¹ for regular measures (ContinuousMapDense, not imported by the contract); regularity of finite Borel measures on Euclid P (Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure, which resolves); bump-function convolution (contDiff_convolution_left, dist_normed_convolution_le, support_convolution_subset); Continuous.exists_contDiff_approx; alternating-map lemmas (map_perm, map_eq_zero_of_not_injective, Basis.ext_multilinear/ext_alternating); Tuple.sort; Matrix.det_permutation; separability and exhaustion lemmas; and enorm_integral_le_lintegral_enorm, withDensity_apply, lintegral_withDensity_eq_lintegral_mul₀.\n\nMathlib has no FiniteDimensional or SeparableSpace instance for Covector (Euclid P) n (#synth fails), so near_maximizer proves finite-dimensionality locally; CompleteSpace and NormedSpace are found.\n\nVerification:\n- All eight frozen child types elaborate after import GMT.Ch07.Submission in the contract's namespace and opens.\n- The le_antisymm assembly of regcomp_imrep_mass_formula compiles, using only propext, Classical.choice and Quot.sound, plus sorryAx from the child stubs.\n- unit_orientation_pairing was proved from stubs of its two dependencies, and mass_le_measure was proved completely from unit_orientation_pairing.\n- A skeleton of measure_le_mass applying near_maximizer and smooth_form_approx typechecks.\n- A pure-Python check confirmed covector_sq_sum, covector_eval_le and covector_norming numerically, including n = 0, n = P and n > P.\n- An independent reviewer subagent re-ran these checks and accepted the split."
+    }
+  ],
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "child_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.mass_le_measure-a1",
+  "subproblem": {
+    "key": "mass_le_measure",
+    "title": "Upper mass bound for an integer multiplicity current: M_W(τ(M, θ, ξ)) ≤ ∫_{M∩W} θ dHⁿ",
+    "statement": "Let U ⊆ ℝ^P be any set, T ∈ GeometricCurrentOn U n and R = (C, θ, ξ) an IMRep in U with R.Represents T (T(ω) = ∫_C θ ξ(ω) dHⁿ for all test forms ω in U). Then for every set W ⊆ ℝ^P, M_W(T) = T.massOn W ≤ R.measure W = (θ Hⁿ⌞C)(W).",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W",
+    "lean_name": "regcomp_imrep_massOn_le_measure",
+    "depends_on": [
+      "unit_orientation_pairing"
+    ],
+    "natural_proof": "Source: step 2 of the parent node's supplied proof of the mass formula M_W(T) = R.measure W (Simon Ch. 6, Remark 3.2(3); mass (6.2.5)). Notation: C := R.carrier, θ := R.mult, ξ := R.orient, μ_C := μHE[n].restrict C, so R.action ω = ∫ θ ξ(ω) dμ_C and R.measure = μ_C.withDensity θ; |·|_E := covectorEuclideanNorm. Uses the sibling lemma regcomp_unit_orientation_pairing (part (i)). Openness of U or W is not needed.\n\n1. (Reduction.) T.massOn W = sSup {ofReal(T ω) : ω ∈ massAdmissibleOn U n W}, where ω is admissible iff ω ∈ TestFormOn U n, tsupport ω ⊆ W and |ω(z)|_E ≤ 1 for all z. By sSup_le it suffices to prove ofReal(T ω) ≤ R.measure W for each admissible ω.\n\n2. (Setup.) Fix an admissible ω and put S := tsupport ω; S is closed, hence a Borel set, and S ⊆ W.\n\n3. (Pointwise bound.) By R.orients, for μ_C-a.e. x there is Q with IsUnitOrientationOf (ξ x) Q, so by regcomp_unit_orientation_pairing (i), |ξ(x)(α)| ≤ |α|_E for all α. For such x: if x ∈ S then |θ(x)·ξ(x)(ω(x))| ≤ θ(x)·|ω(x)|_E ≤ θ(x); if x ∉ S then ω(x) = 0 (image_eq_zero_of_notMem_tsupport) and θ(x)·ξ(x)(0) = 0. Hence ‖θ(x)·ξ(x)(ω(x))‖ₑ ≤ S.indicator θ (x) (in [0, ∞]) for μ_C-a.e. x.\n\n4. (Integral estimate.) By R.Represents T, T ω = R.action ω = ∫ θ ξ(ω) dμ_C. Then ofReal(T ω) ≤ ofReal|T ω| = ‖T ω‖ₑ ≤ ∫⁻ ‖θ ξ(ω)‖ₑ dμ_C (enorm_integral_le_lintegral_enorm, valid without any integrability hypothesis) ≤ ∫⁻ S.indicator θ dμ_C (lintegral_mono_ae and step 3) = ∫⁻_S θ dμ_C (lintegral_indicator, S measurable) = (μ_C.withDensity θ)(S) = R.measure S (withDensity_apply, S measurable) ≤ R.measure W (measure_mono, S ⊆ W).\n\n5. (Conclusion.) Taking the supremum over admissible ω, T.massOn W ≤ R.measure W. ∎",
+    "proof_key_steps": [
+      "Reduce to ofReal(T ω) ≤ R.measure W for each admissible ω.",
+      "A.e. on C, ‖θ ξ(ω)‖ₑ ≤ θ·1_{tsupport ω} by the unit orientation pairing and |ω|_E ≤ 1.",
+      "ofReal(T ω) ≤ ∫⁻ ‖θ ξ(ω)‖ₑ dHⁿ⌞C ≤ R.measure(tsupport ω) ≤ R.measure W."
+    ]
+  },
+  "audit": {
+    "key": "mass_le_measure",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The closed support S supplies measurability even for arbitrary W. The orientation bound and nonnegative multiplicity give the indicator estimate, and the unconditional Bochner-integral inequality bounds every admissible evaluation by R.measure W. No openness assumption is needed; the conditional Lean proof checks."
+  },
+  "resolved_dependencies": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.unit_orientation_pairing-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-mass-ad7433f21a/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-mass-ad7433f21a/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-mass-ad7433f21a/parent-supplied-natural-proof.json"
+}

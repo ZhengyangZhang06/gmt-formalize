@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.integer_combination-a1`
+- Child DAG node: `root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof (Simon Ch. 3, Remarks 1.5(2) and 1.8(1), chapter-03.txt lines 86–90 and 298–305; density theorem Ch. 1, Theorem 3.16, chapter-01.txt lines 905–925). The parent's nested sets B ⊆ C ⊆ A are renamed here: the small set is A, the large set is B, and the parent's ambient locally finite set is taken to be B itself. Notation: μ := μHE[n]; B̄_r(z), B_r(z) are the closed and open balls; for ρ > 0, η_ρ(y) := ρ⁻¹(y − x) (blowUpMap x ρ); all integrals are Bochner integrals.
+
+1. Countable compact cover. Let 𝒟 ⊆ ℝ^P be a countable dense set and 𝒥 := {(c, r) ∈ 𝒟 × ℚ : r > 0, B̄_r(c) ⊆ U}, a countable set. For j = (c, r) ∈ 𝒥 put K_j := B̄_r(c), a compact subset of U. Every y ∈ U lies in the open ball B_r(c) for some (c, r) ∈ 𝒥: choose ε > 0 with B̄_ε(y) ⊆ U (U is open), c ∈ 𝒟 with |y − c| < ε/3 and a rational r with ε/3 < r < 2ε/3; then |y − c| < r, and for |z − c| ≤ r we get |z − y| ≤ r + |y − c| < ε, so B̄_r(c) ⊆ B̄_ε(y) ⊆ U.
+
+2. Density theorem. For j ∈ 𝒥 let λ_j := μ⌞(B ∩ K_j). Its total mass μ(B ∩ K_j) is finite by hypothesis, so λ_j is a finite, hence locally finite, Borel measure on ℝ^P. Besicovitch's density theorem (Simon Ch. 1, Theorem 3.16; Mathlib Besicovitch.ae_tendsto_measure_inter_div, valid on the finite-dimensional space ℝ^P) applied to λ_j and the set A gives: for λ_j⌞A-a.e. x, λ_j(A ∩ B̄_ρ(x))/λ_j(B̄_ρ(x)) → 1 as ρ ↓ 0 (quotients in [0, ∞]). Since A ⊆ B, λ_j⌞A = μ⌞(A ∩ K_j), so there is a μ-null set N_j such that this convergence holds at every x ∈ (A ∩ K_j) ∖ N_j. Put N := ⋃_{j∈𝒥} N_j, a μ-null set (𝒥 is countable).
+
+3. Local notation. Fix x ∈ A ∖ N. As x ∈ A ⊆ U, step 1 gives j = (c, r) ∈ 𝒥 with x ∈ B_r(c); put δ₀ := (r − |x − c|)/2 > 0, so B̄_{δ₀}(x) ⊆ B_r(c) ⊆ K_j. Then x ∈ (A ∩ K_j) ∖ N_j, so the quotient of step 2 tends to 1. For 0 < ρ ≤ δ₀ and every Z ⊆ B we have λ_j(Z ∩ B̄_ρ(x)) = μ(B ∩ K_j ∩ Z ∩ B̄_ρ(x)) = μ(Z ∩ B̄_ρ(x)). Write a(ρ) := μ(B ∩ B̄_ρ(x)) and b(ρ) := μ(A ∩ B̄_ρ(x)); both are finite for ρ ≤ δ₀ (they are at most μ(B ∩ K_j)), and b(ρ)/a(ρ) → 1 as ρ ↓ 0.
+
+4. Small excess relative to a(ρ). For each ε ∈ (0, 1) there is ρ_ε ∈ (0, δ₀] such that μ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε·a(ρ) for 0 < ρ < ρ_ε. Indeed, choose ρ_ε with b(ρ)/a(ρ) > 1 − ε for 0 < ρ < ρ_ε. Then a(ρ) > 0 (if a(ρ) = 0 then b(ρ) = 0 and the quotient is 0/0 = 0 in [0, ∞]), hence b(ρ) ≥ (1 − ε)a(ρ). Since A ⊆ B and all quantities are finite, μ((B ∖ A) ∩ B̄_ρ(x)) = a(ρ) − b(ρ) ≤ ε·a(ρ).
+
+5. Growth of a(ρ) and vanishing excess density. Suppose that A or B has an approximate tangent space at x, and let D ∈ {A, B} be such a set, with tangent space Q. D is Borel and μ(D ∩ B̄_{δ₀}(x)) ≤ a(δ₀) < ∞, so the sibling lemma tangent_growth (applied with r₀ := δ₀) gives K₀ ∈ ℝ and r₁ > 0 with μ(D ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(K₀ρⁿ) for 0 < ρ < r₁; replacing K₀ by max(K₀, 0) we may assume K₀ ≥ 0, so μ(D ∩ B̄_ρ(x)) ≤ K₀ρⁿ for 0 < ρ < r₁. If D = B, then a(ρ) ≤ K₀ρⁿ for 0 < ρ < r₁. If D = A, then for 0 < ρ < min(r₁, ρ_{1/2}) step 4 gives a(ρ) = b(ρ) + μ((B ∖ A) ∩ B̄_ρ(x)) ≤ K₀ρⁿ + a(ρ)/2, hence (a(ρ) being finite) a(ρ) ≤ 2K₀ρⁿ. In both cases there are K ≥ 0 and r₂ > 0 with a(ρ) ≤ Kρⁿ for 0 < ρ < r₂. Combining with step 4: for every ε ∈ (0, 1), μ((B ∖ A) ∩ B̄_ρ(x)) ≤ εKρⁿ for 0 < ρ < min(r₂, ρ_ε). Hence
+   (†) ρ^{−n} μ((B ∖ A) ∩ B̄_ρ(x)) → 0 as ρ ↓ 0.
+
+6. Comparison of blow-ups. Assume (†). Let g ∈ C_c(ℝ^P, ℝ), choose R ≥ 1 with g = 0 outside B̄_R(0), and put M_g := sup|g| < ∞. Let 0 < ρ < δ₀/R. As in step 1 of tangent_growth, μ(η_ρ(Z) ∩ B̄_R(0)) = ρ^{−n} μ(Z ∩ B̄_{Rρ}(x)) for every Z (translation invariance and μ(cW) = |c|ⁿμ(W)). Hence μ(η_ρ(B) ∩ B̄_R(0)) = ρ^{−n} a(Rρ) < ∞, so g is integrable on η_ρ(B) and on its Borel subsets η_ρ(A) and η_ρ(B ∖ A). Since η_ρ is injective, η_ρ(B) is the disjoint union of η_ρ(A) and η_ρ(B ∖ A), and therefore
+   ∫_{η_ρ(B)} g dμ − ∫_{η_ρ(A)} g dμ = ∫_{η_ρ(B∖A)} g dμ,
+   |∫_{η_ρ(B∖A)} g dμ| ≤ M_g μ(η_ρ(B ∖ A) ∩ B̄_R(0)) = M_g ρ^{−n} μ((B ∖ A) ∩ B̄_{Rρ}(x)) = M_g Rⁿ (Rρ)^{−n} μ((B ∖ A) ∩ B̄_{Rρ}(x)),
+which tends to 0 as ρ ↓ 0 by (†) (Rρ ↓ 0). Thus ∫_{η_ρ(B)} g dμ − ∫_{η_ρ(A)} g dμ → 0.
+
+7. Conclusion. Let x ∈ A ∖ N and let Q be a linear subspace. If HasApproximateTangentSpaceAt n B x Q, then dim Q = n, step 5 applies with D = B, and by step 6, for every g ∈ C_c(ℝ^P, ℝ), ∫_{η_ρ(A)} g dμ = ∫_{η_ρ(B)} g dμ + o(1) → ∫_Q g dμ; hence HasApproximateTangentSpaceAt n A x Q. Conversely, if HasApproximateTangentSpaceAt n A x Q, then step 5 applies with D = A and step 6 gives ∫_{η_ρ(B)} g dμ → ∫_Q g dμ for every g, so HasApproximateTangentSpaceAt n B x Q. The null set N does not depend on Q, and μ⌞A(N) = 0; hence the equivalence holds for μ⌞A-a.e. x and all Q simultaneously. For n = 0 the argument is unchanged. ∎
+
+## Key steps
+
+1. Cover U by countably many compact balls K_j ⊆ U whose interiors cover U.
+2. Besicovitch density theorem for the finite measures Hⁿ⌞(B ∩ K_j): Hⁿ(A ∩ B̄_ρ(x))/Hⁿ(B ∩ B̄_ρ(x)) → 1 for a.e. x ∈ A.
+3. Hence Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x)) for small ρ.
+4. If A or B has a tangent plane at x, tangent_growth gives Hⁿ(B ∩ B̄_ρ(x)) = O(ρⁿ), so Hⁿ((B ∖ A) ∩ B̄_ρ(x)) = o(ρⁿ).
+5. Then |∫_{η(B)} g − ∫_{η(A)} g| ≤ sup|g| ρ^{−n}Hⁿ((B ∖ A) ∩ B̄_{Rρ}(x)) → 0, so the limits in Definition 1.4 coincide.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean`
+- `cat local-references/123e8435b4a2469b/manifest.json`
+- `grep -n 'HasApproximateTangentSpaceAt|def CountablyRectifiable|^theorem ' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n '^def |^abbrev |^structure |^theorem ' simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean`
+- `grep -n 'theorem ae_tendsto_measure_inter_div |theorem ae_tendsto_measure_inter_div_of_measurableSet' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `grep -n 'euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_homothety_image|IsAddRightInvariant' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rn 'det_to_matrix_orthonormalBasis_real' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'theorem AlternatingMap.eq_smul_basis_det' local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `grep -n 'theorem le_opNorm' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `grep -n "span_eq_top_of_card_eq_finrank'|finrank_span_eq_card|measurableSet_eq_fun|ae_restrict_iff'|ae_restrict_of_ae_restrict_of_subset" in local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rln 'IMRep|IsIntegerMultiplicity' local-references/123e8435b4a2469b/project/GMT`
+- `python3 listing of dag.json lean_name/lean_statement; grep -c rsdic dag.json; grep -rl rsdic GMT .humanize/.../nodes; grep -rl rsdic --include=*.lean simongmt`
+- `python3 string comparison of the tangent_locality type with dag node root.regular_components_are_minimizing-a1.approx_tangent_locality-a1`
+- `sed -n 750,760p chapter-06.txt; sed -n 86,145p chapter-03.txt; sed -n 296,316p chapter-03.txt; sed -n 900,928p chapter-01.txt`
+- `lake env lean /tmp/rsdic-check/Axioms.lean (#check / #print axioms of cited lemmas)`
+- `lake env lean /tmp/rsdic-check/Sign.lean (sorry-free proof of the orientation_sign type)`
+- `lake env lean /tmp/rsdic-check/Final3.lean (7 frozen child types in the replayed contract scope + parent assembly + glue proofs)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orientation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/rsdic-check/Axioms.lean`
+- `/tmp/rsdic-check/Sign.lean`
+- `/tmp/rsdic-check/Final3.lean`
+- `/tmp/rsdic-scripts/children.py`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+No match for a reusable proof of Simon 6.3.2(1) for this contract's IMRep:
+- GMT/Ch06/Contract.lean has its own unproved IsIntegerMultiplicity, in a module Ch07 does not import.
+- SimonGMT has no IMRep.
+
+Reusable facts found, all depending only on propext, Classical.choice and Quot.sound:
+- SimonGMT Chapter03: HasApproximateTangentSpaceAt (Def. 1.4 with Bochner integrals over blowUpMap images), HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono, countablyRectifiable_iUnion.
+- Mathlib: Besicovitch.ae_tendsto_measure_inter_div, Measure.euclideanHausdorffMeasure_smul₀, OrthonormalBasis.det_to_matrix_orthonormalBasis_real (PiL2.lean:992), AlternatingMap.eq_smul_basis_det, ContinuousAlternatingMap.le_opNorm, LinearIndependent.span_eq_top_of_card_eq_finrank', finrank_span_eq_card, StronglyMeasurable.measurableSet_eq_fun.
+
+FiniteDimensional ℝ (MultiVector P n) is not an available instance, so the child proofs avoid it; strong measurability into a metrizable space suffices.
+
+Names: the rsdic_ prefix occurs nowhere in dag.json, the node directories, GMT or SimonGMT. The tangent_locality type is string-identical to regcomp_approx_tangent_locality, which is still decomposing and so cannot be reused yet.
+
+Lean checks:
+- All seven frozen child types elaborate after import GMT.Ch07.Submission in the comparator's replayed contract scope.
+- The frozen parent type is proved from combination_construction and combination_action.
+- imrep_tangent_transfer is proved from tangent_locality, and overlap_orientation_sign from imrep_tangent_transfer and orientation_sign.
+- These use only the standard axioms plus sorryAx from the child stubs.
+- The orientation_sign type has a complete sorry-free proof using only standard axioms.

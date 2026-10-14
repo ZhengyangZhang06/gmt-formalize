@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1.basis_invariance-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+  "depth": 4,
+  "title": "Orthonormal-basis invariance of the full squared-tuple sum Σ_j α(b∘j)²",
+  "statement": "Let P, n ∈ ℕ, let α be an n-covector on ℝ^P (α ∈ Covector (Euclid P) n, a continuous alternating n-linear form on ℝ^P = EuclideanSpace ℝ (Fin P)), and let b = (b_0, …, b_{P−1}) and b' = (b'_0, …, b'_{P−1}) be orthonormal bases of ℝ^P indexed by Fin P. Then Σ_{j : Fin n → Fin P} α(b_{j(0)}, …, b_{j(n−1)})² = Σ_{j : Fin n → Fin P} α(b'_{j(0)}, …, b'_{j(n−1)})².",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n) (b b' : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2 = ∑ j : Fin n → Fin P, (α (fun k => b' (j k))) ^ 2",
+  "lean_name": "regcomp_covector_sq_sum_basis_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-6f2e161361-a1"
+}
