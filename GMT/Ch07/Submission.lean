@@ -573,6 +573,31 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
   exact ge_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
+/-- **Telescoping series** (Simon Ch. 6, proof of 5.1: the passage from the limits (19) to the
+identity (21), chapter-06.txt lines 1792–1820): if `∑ⱼ aⱼ = s`, `a₀ = −k₀`, `aⱼ₊₁ = kⱼ − kⱼ₊₁`
+and `kⱼ → 0`, then `s = 0`.  The partial sums telescope, `∑_{i ≤ N} aᵢ = −k_N`; they tend to `s`
+because the series converges, and to `−0 = 0` because `k_N → 0`, so `s = 0` by uniqueness of
+limits. -/
+theorem Submission.cmcsdtd_hasSum_telescoping_eq_zero : ∀ (a k : ℕ → ℝ) (s : ℝ), HasSum a s → a 0 = -k 0 → (∀ j, a (j + 1) = k j - k (j + 1)) → Tendsto k atTop (𝓝 0) → s = 0 := by
+  intro a k s hs h0 hsucc hk
+  -- Step 1: the partial sums telescope, `∑_{i ≤ N} aᵢ = −k_N`
+  have hpart : ∀ N, ∑ i ∈ Finset.range (N + 1), a i = -k N := by
+    intro N
+    induction N with
+    | zero => simp [h0]
+    | succ N ih =>
+      rw [Finset.sum_range_succ, ih, hsucc]
+      ring
+  -- Step 2: the series converges, so its partial sums `∑_{i ≤ N} aᵢ` tend to `s`
+  have h1 : Tendsto (fun N => ∑ i ∈ Finset.range (N + 1), a i) atTop (𝓝 s) :=
+    hs.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+  -- Step 3: by step 1 they are `−k_N`, which tends to `−0 = 0`
+  have h2 : Tendsto (fun N => ∑ i ∈ Finset.range (N + 1), a i) atTop (𝓝 0) := by
+    simp_rw [hpart]
+    simpa using hk.neg
+  -- Step 4: limits in `ℝ` are unique
+  exact tendsto_nhds_unique h1 h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
