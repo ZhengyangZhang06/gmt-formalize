@@ -706,6 +706,137 @@ theorem Submission.dor_lmb_fcdr_cube_periodic : ∀ (P m : ℕ), m + 1 < P → �
     ring
   · rw [h0, h1, hρ1 i, max_eq_left hκle]
     ring
+/-- **Claim B** (Simon Ch. 6, Lemma 5.4, step 6 of the corrected closed-form proof: Lipschitz bound
+for the cube retraction `Φ`).  Let `|aᵢ − 1/2| < 1/4`, let `κ` be `1`-Lipschitz for the sup norm,
+`rⱼ(y) = max((yⱼ − aⱼ)/(1 − aⱼ), (aⱼ − yⱼ)/aⱼ)` and `Φ(y)ᵢ = aᵢ + (yᵢ − aᵢ)/max(rᵢ(y), κ(r(y)))`.
+If `κ(r(y)) > 0` then `|Φ(y) − Φ(y')| ≤ 4√P |y − y'| / κ(r(y))`: each `rⱼ` is `4`-Lipschitz, so the
+denominators `μ = max(rᵢ(y), κ(r(y)))` and `μ'` differ by at most `4|y − y'|`; `|y'ᵢ − aᵢ| ≤ (3/4)μ'`,
+and `u/μ − u'/μ' = (u − u')/μ + (u'/μ')(μ' − μ)/μ` bounds each coordinate by
+`4|y − y'|/κ(r(y))`. -/
+theorem Submission.dor_lmb_fcdr_cube_lipschitz : ∀ (P : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u v : Fin P → ℝ, ∀ t : ℝ, (∀ i, |u i - v i| ≤ t) → |κ u - κ v| ≤ t) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y y' : Euclid P, 0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) → dist (Φ y) (Φ y') ≤ 4 * Real.sqrt P / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) * dist y y' := by
+  intro P a ha κ hκ Φ hΦ y y' hk
+  -- Step 1: `1/4 < aᵢ < 3/4`, and `|yⱼ − y'ⱼ| ≤ dist y y'`
+  have a_bounds : ∀ c : ℝ, |c - 1 / 2| < 1 / 4 → 1 / 4 < c ∧ c < 3 / 4 := fun c hc => by
+    rcases abs_lt.mp hc with ⟨h1, h2⟩
+    constructor <;> linarith
+  have hcoord : ∀ j, |y j - y' j| ≤ dist y y' := fun j => by
+    have := PiLp.dist_apply_le y y' j
+    rwa [Real.dist_eq] at this
+  -- Step 2: `rⱼ` is `4`-Lipschitz in `yⱼ`, so `|κ(r(y)) − κ(r(y'))| ≤ 4 dist y y'`
+  have div_lip : ∀ s x x' δ : ℝ, 1 / 4 < s → |x - x'| ≤ δ → |x / s - x' / s| ≤ 4 * δ := by
+    intro s x x' δ hs h
+    have hs0 : (0 : ℝ) < s := by linarith
+    have hδ : 0 ≤ δ := le_trans (abs_nonneg _) h
+    rw [← sub_div, abs_div, abs_of_pos hs0, div_le_iff₀ hs0]
+    nlinarith [mul_nonneg hδ (by linarith : (0 : ℝ) ≤ 4 * s - 1)]
+  have r_lip : ∀ c b b' δ : ℝ, |c - 1 / 2| < 1 / 4 → |b - b'| ≤ δ →
+      |max ((b - c) / (1 - c)) ((c - b) / c) - max ((b' - c) / (1 - c)) ((c - b') / c)|
+        ≤ 4 * δ := by
+    intro c b b' δ hc h
+    obtain ⟨hc1, hc2⟩ := a_bounds c hc
+    refine le_trans (abs_max_sub_max_le_max _ _ _ _) (max_le ?_ ?_)
+    · apply div_lip _ _ _ _ (by linarith)
+      rwa [sub_sub_sub_cancel_right]
+    · apply div_lip _ _ _ _ hc1
+      rw [sub_sub_sub_cancel_left, abs_sub_comm]
+      exact h
+  have hkk : |κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j))
+      - κ (fun j => max ((y' j - a j) / (1 - a j)) ((a j - y' j) / a j))| ≤ 4 * dist y y' :=
+    hκ _ _ _ (fun j => r_lip _ _ _ _ (ha j) (hcoord j))
+  -- Step 3: `|b − c| ≤ (3/4) r(b)`; in particular `r(b) ≥ 0`, and `r(b) = 0` forces `b = c`
+  have abs_le_r : ∀ c b : ℝ, |c - 1 / 2| < 1 / 4 →
+      |b - c| ≤ 3 / 4 * max ((b - c) / (1 - c)) ((c - b) / c) := by
+    intro c b hc
+    obtain ⟨hc1, hc2⟩ := a_bounds c hc
+    have h1c : (0 : ℝ) < 1 - c := by linarith
+    have hc0 : (0 : ℝ) < c := by linarith
+    rcases le_total c b with h | h
+    · rw [abs_of_nonneg (sub_nonneg.mpr h)]
+      have hq : 0 ≤ (b - c) / (1 - c) := div_nonneg (sub_nonneg.mpr h) h1c.le
+      have he : (b - c) / (1 - c) * (1 - c) = b - c := div_mul_cancel₀ _ h1c.ne'
+      have hm := le_max_left ((b - c) / (1 - c)) ((c - b) / c)
+      nlinarith [mul_nonneg hq (by linarith : (0 : ℝ) ≤ c - 1 / 4)]
+    · rw [abs_of_nonpos (sub_nonpos.mpr h)]
+      have hq : 0 ≤ (c - b) / c := div_nonneg (sub_nonneg.mpr h) hc0.le
+      have he : (c - b) / c * c = c - b := div_mul_cancel₀ _ hc0.ne'
+      have hm := le_max_right ((b - c) / (1 - c)) ((c - b) / c)
+      nlinarith [mul_nonneg hq (by linarith : (0 : ℝ) ≤ 3 / 4 - c)]
+  -- Step 4: `|u/μ − u'/μ'| ≤ 4δ/μ`
+  have key : ∀ u u' μ μ' δ : ℝ, 0 < μ → 0 ≤ μ' → |u'| ≤ 3 / 4 * μ' → |u - u'| ≤ δ →
+      |μ - μ'| ≤ 4 * δ → |u / μ - u' / μ'| ≤ 4 * δ / μ := by
+    intro u u' μ μ' δ hμ hμ'0 hu' huu hμμ
+    have hX : u / μ * μ = u := div_mul_cancel₀ u hμ.ne'
+    have hX' : u' / μ' * μ' = u' ∧ |u' / μ'| ≤ 3 / 4 := by
+      rcases hμ'0.eq_or_lt with h | h
+      · -- (b) `μ' = 0` forces `u' = 0`
+        subst h
+        have hu0 : u' = 0 := abs_nonpos_iff.mp (by linarith)
+        subst hu0
+        norm_num
+      · -- (a) `μ' > 0` gives `|u'|/μ' ≤ 3/4`
+        refine ⟨div_mul_cancel₀ u' h.ne', ?_⟩
+        rw [abs_div, abs_of_pos h, div_le_iff₀ h]
+        exact hu'
+    rw [le_div_iff₀ hμ]
+    have hsplit : (u / μ - u' / μ') * μ = (u - u') - u' / μ' * (μ - μ') := by
+      linear_combination hX - hX'.1
+    have habs : |u / μ - u' / μ'| * μ = |(u / μ - u' / μ') * μ| := by
+      rw [abs_mul, abs_of_pos hμ]
+    rw [habs, hsplit]
+    have h1 : |u' / μ' * (μ - μ')| ≤ 3 / 4 * (4 * δ) := by
+      rw [abs_mul]
+      exact mul_le_mul hX'.2 hμμ (abs_nonneg _) (by norm_num)
+    have h2 := abs_le.mp h1
+    have h3 := abs_le.mp huu
+    rw [abs_le]
+    constructor <;> linarith [h2.1, h2.2, h3.1, h3.2]
+  -- Steps 3–5 for one coordinate: `|Φ(y)ᵢ − Φ(y')ᵢ| ≤ 4δ/κ(r(y))`
+  have coord_bound : ∀ c b b' k k' δ : ℝ, |c - 1 / 2| < 1 / 4 → 0 < k → |b - b'| ≤ δ →
+      |k - k'| ≤ 4 * δ →
+      |(c + (b - c) / max (max ((b - c) / (1 - c)) ((c - b) / c)) k) -
+        (c + (b' - c) / max (max ((b' - c) / (1 - c)) ((c - b') / c)) k')| ≤ 4 * δ / k := by
+    intro c b b' k k' δ hc hk hbb hkk
+    have hδ : 0 ≤ δ := le_trans (abs_nonneg _) hbb
+    have hr' : |b' - c| ≤ 3 / 4 * max ((b' - c) / (1 - c)) ((c - b') / c) := abs_le_r c b' hc
+    have hr'0 : 0 ≤ max ((b' - c) / (1 - c)) ((c - b') / c) := by
+      have := abs_nonneg (b' - c)
+      linarith
+    have hμk : k ≤ max (max ((b - c) / (1 - c)) ((c - b) / c)) k := le_max_right _ _
+    have hμ : 0 < max (max ((b - c) / (1 - c)) ((c - b) / c)) k := lt_of_lt_of_le hk hμk
+    have hμ' : max ((b' - c) / (1 - c)) ((c - b') / c)
+        ≤ max (max ((b' - c) / (1 - c)) ((c - b') / c)) k' := le_max_left _ _
+    have huu : |(b - c) - (b' - c)| ≤ δ := by
+      rw [sub_sub_sub_cancel_right]
+      exact hbb
+    have hμμ : |max (max ((b - c) / (1 - c)) ((c - b) / c)) k
+        - max (max ((b' - c) / (1 - c)) ((c - b') / c)) k'| ≤ 4 * δ :=
+      le_trans (abs_max_sub_max_le_max _ _ _ _) (max_le (r_lip c b b' δ hc hbb) hkk)
+    have hu' : |b' - c| ≤ 3 / 4 * max (max ((b' - c) / (1 - c)) ((c - b') / c)) k' := by
+      linarith
+    rw [add_sub_add_left_eq_sub]
+    exact le_trans (key _ _ _ _ _ hμ (le_trans hr'0 hμ') hu' huu hμμ)
+      (div_le_div_of_nonneg_left (by linarith) hk hμk)
+  have hi : ∀ i, |Φ y i - Φ y' i|
+      ≤ 4 * dist y y' / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) := by
+    intro i
+    rw [hΦ y i, hΦ y' i]
+    exact coord_bound _ _ _ _ _ _ (ha i) hk (hcoord i) hkk
+  -- Step 5: sum the squares over the `P` coordinates
+  rw [EuclideanSpace.dist_eq]
+  calc Real.sqrt (∑ i, dist (Φ y i) (Φ y' i) ^ 2)
+      ≤ Real.sqrt (∑ _i : Fin P,
+          (4 * dist y y' / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j))) ^ 2) := by
+        apply Real.sqrt_le_sqrt
+        apply Finset.sum_le_sum
+        intro i _
+        rw [Real.dist_eq]
+        exact pow_le_pow_left₀ (abs_nonneg _) (hi i) 2
+    _ = 4 * Real.sqrt P / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j))
+          * dist y y' := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+          Real.sqrt_mul (Nat.cast_nonneg _),
+          Real.sqrt_sq (div_nonneg (by positivity) hk.le)]
+        ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
