@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.good_center-a1.tube_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.good_center-a1",
+  "depth": 5,
+  "title": "Tube cover of the shifted dual skeleton (step 1, inclusion ⊆; Simon 6.5.1, identity before (6))",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P, let a, x ∈ ℝ^P (Euclid P, with its Euclidean distance) and r ∈ ℝ. Let L*(a) := {w ∈ ℝ^P : there is a finite set s of coordinate indices with |s| ≥ m + 2 and w_i − a_i ∈ ℤ for all i ∈ s}. If Metric.infDist(x, L*(a)) < r, then there are an injective map e : Fin (m + 2) → Fin P and integers z : Fin (m + 2) → ℤ such that Σ_{k ∈ Fin (m+2)} (x_{e(k)} − a_{e(k)} − z_k)² < r².",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∀ (a x : Euclid P) (r : ℝ), infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r → ∃ e : Fin (m + 2) → Fin P, Function.Injective e ∧ ∃ z : Fin (m + 2) → ℤ, ∑ k, (x (e k) - a (e k) - z k) ^ 2 < r ^ 2",
+  "lean_name": "dimred_mbl_dt_gc_tube_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d64ef202d1-a1"
+}
