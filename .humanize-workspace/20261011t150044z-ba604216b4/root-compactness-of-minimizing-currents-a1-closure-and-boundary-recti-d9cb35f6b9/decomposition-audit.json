@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "abbrev Euclid|def IsUnitOrientationOf|structure IMRep|def action|def measure|def Represents|def IsIntegerMultiplicity|CountablyRectifiable|HasApproximateTangentSpaceAt|namespace|open ",
+        "euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|notation.*μHE|def euclideanHausdorffMeasure",
+        "MeasurableEmbedding.integral_map",
+        "theorem MeasurableEmbedding.integral_map|setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|integral_Ioc_eq_integral_Ioo",
+        "theorem integral_eq_sub_of_hasDerivAt|theorem integral_of_le",
+        "cbr_cc_seg_(line_hausdorff|open_segment_tangent|zero_form_ftc|segment_imrep)",
+        "segment_same|segment_eq_image|isCompact_segment",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/seg-decomp-q9/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/segment-decomposition-independent-audit-n_hyi4ql/ChallengeTypes.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Segment.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9cb35f6b9/decomposition-v1.json",
+        "/tmp/seg-decomp-q9/All.lean",
+        "/tmp/segment-decomposition-independent-audit-n_hyi4ql/ChallengeTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected segment-current theorem. Independently confirmed the binding digest, pinned revisions, source compatibility, and all four proofs. All frozen child types elaborate in comparator scope without child implementations; all names are valid bare identifiers with no conflicting reservation or exact-type reuse candidate. The dependency graph is acyclic: segment_imrep uses line_hausdorff and open_segment_tangent; zero_form_ftc is independent. The children, together with the selected node's existing prerequisites, establish its exact frozen conclusion, including coincident endpoints, boundary, finite mass under MR, and support. Recompiled the supplied complete proofs and assembly successfully; their axiom reports contain only propext, Classical.choice, and Quot.sound. Inline multivector evaluation has the intended continuous-linear-map type. The inspected segment API provides segment_eq_image and segment_same, with no isCompact_segment match in that file; the supplied compact-image argument suffices."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "line_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the unit-direction, Borel-set, and arbitrary-integrand contract. The proof establishes the isometry and measurable embedding, verifies Hausdorff normalization, derives the restricted push-forward identity, and applies integral_map without an unjustified measurability or integrability assumption. It is complete and non-circular."
+    },
+    {
+      "key": "open_segment_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose; membership in the open segment supplies positive length, so no hypothesis is missing. The proof establishes dimension one and eventual equality of the blow-up and line integrals using the compact-support bound and delta/rho estimate. The cited integral lemma requires only the larger line to be null-measurable. No undeclared dependency is used."
+    },
+    {
+      "key": "zero_form_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition precisely captures smooth zero-forms, arbitrary direction, and nonnegative length. Continuous linear evaluation gives the scalar smooth function; the one-tuple exterior-derivative formula, chain rule, continuous derivative, and interval-integral conversion prove the endpoint identity. Zero length and zero direction are covered without extra assumptions or circularity."
+    },
+    {
+      "key": "segment_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all three promised properties. The proof explicitly verifies every IMRep field, including rectifiability, positive integer multiplicity, local integrability, measurable orientation, and approximate tangent orientation. Its only child dependencies are the declared measure and tangent lemmas. Carrier containment, finite total measure, and the action formula for arbitrary forms follow as stated, and provide the required construction for the parent."
+    }
+  ],
+  "required_changes": []
+}
