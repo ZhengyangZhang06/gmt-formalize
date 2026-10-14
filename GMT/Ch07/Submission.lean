@@ -451,6 +451,300 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Smooth pull-backs and the homotopy formula on forms** (Simon 6.2.23–6.2.26, dual form).
+(a) The pull-back `Φ^#α(x) = α(Φ x) ∘ DΦ(x)` of a smooth form by a `C^∞` map is smooth.
+(b) Let `F, G` be `C^∞`, `h(t, x) = F x + t(G x - F x)` the affine homotopy (6.2.26) and `ω` a
+smooth `(k+1)`-form.  Then `Kω(x) = ∫₀¹ (ι_{G x - F x} ω(h(t, x))) ∘ D_x h(t, x) dt` is smooth and
+`G^#ω - F^#ω = d(Kω) + K(dω)`, the homotopy formula 6.2.25 tested on `ω`.  The precomposition
+`L ↦ (γ ↦ γ ∘ L)` is analytic, which gives (a).  For (b) we work on a proper normed space `E`:
+with `H = h` on `ℝ × E`, `Θ = H^#ω` and `e = (1, 0)`, `dΘ = H^#(dω)` and Cartan's formula
+`d(ι_e Θ) + ι_e dΘ = DΘ[e]` hold; pulling back by `y ↦ (t, y)` turns `ι_e Θ` and `ι_e dΘ` into the
+integrands of `Kω` and `K(dω)` and `DΘ[e]` into `∂_t (h_t^#ω)`.  Integrating over `t ∈ [0, 1]`
+and differentiating under the integral sign gives the formula. -/
+theorem Submission.dor_lmb_fcdp_smooth_homotopy : (∀ (N N' m : ℕ) (Φ : Euclid N → Euclid N') (α : DifferentialForm (Euclid N') m), ContDiff ℝ (⊤ : ℕ∞) Φ → IsSmoothForm α → IsSmoothForm (fun x => (α (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x))) ∧ ∀ (P k : ℕ) (F G : Euclid P → Euclid P) (ω : DifferentialForm (Euclid P) (k + 1)), ContDiff ℝ (⊤ : ℕ∞) F → ContDiff ℝ (⊤ : ℕ∞) G → IsSmoothForm ω → IsSmoothForm (fun x => ∫ t in (0 : ℝ)..1, ((ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x))) ∧ ∀ x, (ω (G x)).compContinuousLinearMap (fderiv ℝ G x) - (ω (F x)).compContinuousLinearMap (fderiv ℝ F x) = exteriorDerivative (fun x' => ∫ t in (0 : ℝ)..1, ((ω (F x' + t • (G x' - F x'))).curryLeft (G x' - F x')).compContinuousLinearMap (fderiv ℝ F x' + t • (fderiv ℝ G x' - fderiv ℝ F x'))) x + ∫ t in (0 : ℝ)..1, ((exteriorDerivative ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)) := by
+  -- the pull-back `x ↦ α(x) ∘ L(x)` is `C^∞` when `α` and `L` are, as `L ↦ (γ ↦ γ ∘ L)` is analytic
+  have hpb : ∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
+      [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃]
+      (m : ℕ) (α : E₁ → E₂ [⋀^Fin m]→L[ℝ] ℝ) (L : E₁ → E₃ →L[ℝ] E₂),
+      ContDiff ℝ (⊤ : ℕ∞) α → ContDiff ℝ (⊤ : ℕ∞) L →
+        ContDiff ℝ (⊤ : ℕ∞) (fun x => (α x).compContinuousLinearMap (L x)) := by
+    intro E₁ E₂ E₃ _ _ _ _ _ _ m α L hα hL
+    have hΨ : ContDiff ℝ (⊤ : ℕ∞) (ContinuousAlternatingMap.compContinuousLinearMapCLM :
+        (E₃ →L[ℝ] E₂) → (E₂ [⋀^Fin m]→L[ℝ] ℝ) →L[ℝ] (E₃ [⋀^Fin m]→L[ℝ] ℝ)) :=
+      (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).contDiff
+    exact (hΨ.comp hL).clm_apply hα
+  -- (a) `Φ^#α(x) = α(Φ x) ∘ DΦ(x)`
+  refine ⟨fun N N' m Φ α hΦ hα => hpb (Euclid N) (Euclid N') (Euclid N) m (fun x => α (Φ x))
+    (fderiv ℝ Φ) (hα.comp hΦ) (contDiff_infty_iff_fderiv.mp hΦ).2, ?_⟩
+  -- (b) on an abstract proper normed space `E`, then for `E = ℝᴾ`
+  suffices key : ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] [ProperSpace E] (k : ℕ)
+      (F G : E → E) (ω : DifferentialForm E (k + 1)), ContDiff ℝ (⊤ : ℕ∞) F →
+      ContDiff ℝ (⊤ : ℕ∞) G → IsSmoothForm ω → IsSmoothForm (fun x => ∫ t in (0 : ℝ)..1,
+        ((ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap
+          (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x))) ∧
+      ∀ x, (ω (G x)).compContinuousLinearMap (fderiv ℝ G x) -
+        (ω (F x)).compContinuousLinearMap (fderiv ℝ F x) =
+        exteriorDerivative (fun x' => ∫ t in (0 : ℝ)..1,
+          ((ω (F x' + t • (G x' - F x'))).curryLeft (G x' - F x')).compContinuousLinearMap
+            (fderiv ℝ F x' + t • (fderiv ℝ G x' - fderiv ℝ F x'))) x +
+        ∫ t in (0 : ℝ)..1, ((exteriorDerivative ω (F x + t • (G x - F x))).curryLeft
+          (G x - F x)).compContinuousLinearMap (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)) by
+    intro P k F G ω hF hG hω
+    exact key (Euclid P) k F G ω hF hG hω
+  intro E _ _ _ k F G ω hF hG hω
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) ω := hω
+  have hne : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  have hr : minSmoothness ℝ 2 ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by simp
+  have hF1 : Differentiable ℝ F := hF.differentiable hne
+  have hG1 : Differentiable ℝ G := hG.differentiable hne
+  have hω1 : Differentiable ℝ ω := hωs.differentiable hne
+  -- `γ ↦ γ.curryLeft` is a linear isometry, hence `C^∞`
+  have hcl : ∀ (E₁ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] (m : ℕ),
+      ContDiff ℝ (⊤ : ℕ∞) (fun γ : E₁ [⋀^Fin (m + 1)]→L[ℝ] ℝ => γ.curryLeft) := by
+    intro E₁ _ _ m
+    have h := LinearIsometry.contDiff (𝕜 := ℝ) (E := E₁ [⋀^Fin (m + 1)]→L[ℝ] ℝ)
+      (F := E₁ →L[ℝ] E₁ [⋀^Fin m]→L[ℝ] ℝ) (n := ((⊤ : ℕ∞) : WithTop ℕ∞))
+      ContinuousAlternatingMap.curryLeftLI
+    exact h
+  -- differentiation under the integral sign: `D_x ∫₀¹ f(t, x) dt = ∫₀¹ Df(t, x) ∘ J dt`, `J = inr`,
+  -- with the bound `sup ‖Df ∘ J‖` over the compact set `[0, 1] × B̄(x₀, 1)`
+  have hpar : ∀ (Y : Type) [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+      (f : ℝ × E → Y), ContDiff ℝ (⊤ : ℕ∞) f → ∀ x₀ : E,
+      HasFDerivAt (fun x => ∫ t in (0 : ℝ)..1, f (t, x))
+        (∫ t in (0 : ℝ)..1, (fderiv ℝ f (t, x₀)).comp (ContinuousLinearMap.inr ℝ ℝ E)) x₀ := by
+    intro Y _ _ _ f hf x₀
+    have : SecondCountableTopologyEither ℝ (E →L[ℝ] Y) := ⟨Or.inl inferInstance⟩
+    have hf1 : Differentiable ℝ f := hf.differentiable hne
+    have hDf : Continuous (fun p : ℝ × E => (fderiv ℝ f p).comp (ContinuousLinearMap.inr ℝ ℝ E)) :=
+      (hf.continuous_fderiv hne).clm_comp continuous_const
+    have hjt : ∀ x : E, Continuous (fun t : ℝ => ((t, x) : ℝ × E)) :=
+      fun x => continuous_id.prodMk continuous_const
+    obtain ⟨C, hC⟩ := ((isCompact_Icc (a := (0 : ℝ)) (b := 1)).prod
+      (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn hDf.continuousOn
+    refine hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => f (t, x))
+      (F' := fun x t => (fderiv ℝ f (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ E))
+      (bound := fun _ => C) (ball_mem_nhds x₀ one_pos)
+      (Eventually.of_forall fun x => (hf.continuous.comp (hjt x)).aestronglyMeasurable)
+      ((hf.continuous.comp (hjt x₀)).intervalIntegrable 0 1)
+      (hDf.comp (hjt x₀)).aestronglyMeasurable ?_ intervalIntegrable_const ?_
+    · rw [ae_restrict_iff' measurableSet_uIoc]
+      refine Eventually.of_forall fun t ht x hx => hC (t, x) ⟨?_, ?_⟩
+      · rw [uIoc_of_le zero_le_one] at ht
+        exact Ioc_subset_Icc_self ht
+      · exact ball_subset_closedBall hx
+    · exact Eventually.of_forall fun t x _ =>
+        (hf1 (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)
+  -- `x ↦ ∫₀¹ f(t, x) dt` is `C^n` for every `n`, by induction (for all `Y` at once)
+  have hsm : ∀ (n : ℕ) (Y : Type) [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+      (f : ℝ × E → Y), ContDiff ℝ (⊤ : ℕ∞) f →
+      ContDiff ℝ n (fun x => ∫ t in (0 : ℝ)..1, f (t, x)) := by
+    intro n
+    induction n with
+    | zero =>
+      intro Y _ _ _ f hf
+      rw [Nat.cast_zero, contDiff_zero]
+      exact intervalIntegral.continuous_parametric_intervalIntegral_of_continuous'
+        (f := fun x t => f (t, x)) (hf.continuous.comp continuous_swap) 0 1
+    | succ n ih =>
+      intro Y _ _ _ f hf
+      rw [Nat.cast_succ, contDiff_succ_iff_hasFDerivAt]
+      exact ⟨fun x => ∫ t in (0 : ℝ)..1, (fderiv ℝ f (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ E),
+        ih (E →L[ℝ] Y) (fun p => (fderiv ℝ f p).comp (ContinuousLinearMap.inr ℝ ℝ E))
+          ((contDiff_infty_iff_fderiv.mp hf).2.clm_comp contDiff_const), hpar Y f hf⟩
+  have hcc : ∀ (m : ℕ) (g : Covector E m) (L : ℝ × E →L[ℝ] E) (L' : E →L[ℝ] ℝ × E),
+      (g.compContinuousLinearMap L).compContinuousLinearMap L' =
+        g.compContinuousLinearMap (L.comp L') := fun _ _ _ _ => rfl
+  -- the homotopy `H(t, y) = F y + t • (G y - F y)` on `ℝ × E`: `DH(t, y) e = G y - F y` for
+  -- `e = (1, 0)`, and `DH(t, y) ∘ J = DF y + t • (DG y - DF y)`
+  obtain ⟨H, hHdef⟩ : ∃ H : ℝ × E → E, H = fun p => F p.2 + p.1 • (G p.2 - F p.2) := ⟨_, rfl⟩
+  have hHapp : ∀ (t : ℝ) (y : E), H (t, y) = F y + t • (G y - F y) := fun t y => by rw [hHdef]
+  have hHs : ContDiff ℝ (⊤ : ℕ∞) H := by
+    rw [hHdef]
+    exact (hF.comp contDiff_snd).add
+      (contDiff_fst.smul ((hG.comp contDiff_snd).sub (hF.comp contDiff_snd)))
+  have hH1 : Differentiable ℝ H := hHs.differentiable hne
+  have hDHe : ∀ (t : ℝ) (y : E), fderiv ℝ H (t, y) (1, 0) = G y - F y := by
+    intro t y
+    have h1 : HasDerivAt (fun s : ℝ => H (s, y)) (fderiv ℝ H (t, y) (1, 0)) t :=
+      (hH1 (t, y)).hasFDerivAt.comp_hasDerivAt t ((hasDerivAt_id t).prodMk (hasDerivAt_const t y))
+    have h2 := ((hasDerivAt_id' t).smul_const (G y - F y)).const_add (F y)
+    rw [one_smul] at h2
+    simp only [← hHapp] at h2
+    exact h1.unique h2
+  have hDHJ : ∀ (t : ℝ) (y : E), (fderiv ℝ H (t, y)).comp (ContinuousLinearMap.inr ℝ ℝ E) =
+      fderiv ℝ F y + t • (fderiv ℝ G y - fderiv ℝ F y) := by
+    intro t y
+    have h1 : HasFDerivAt (fun y' : E => H (t, y'))
+        ((fderiv ℝ H (t, y)).comp (ContinuousLinearMap.inr ℝ ℝ E)) y :=
+      (hH1 (t, y)).hasFDerivAt.comp y (hasFDerivAt_prodMk_right t y)
+    have h2 : HasFDerivAt (fun y' : E => F y' + t • (G y' - F y'))
+        (fderiv ℝ F y + t • (fderiv ℝ G y - fderiv ℝ F y)) y :=
+      (hF1 y).hasFDerivAt.add (((hG1 y).hasFDerivAt.sub (hF1 y).hasFDerivAt).const_smul t)
+    simp only [← hHapp] at h2
+    exact h1.unique h2
+  -- `Θ = H^#ω` is `C^∞` with `dΘ = H^#(dω)`, and `ι_e Θ` is `C^∞`
+  obtain ⟨Θ, hΘdef⟩ : ∃ Θ : DifferentialForm (ℝ × E) (k + 1),
+      Θ = fun p => (ω (H p)).compContinuousLinearMap (fderiv ℝ H p) := ⟨_, rfl⟩
+  have hΘs : ContDiff ℝ (⊤ : ℕ∞) Θ := by
+    rw [hΘdef]
+    exact hpb (ℝ × E) E (ℝ × E) (k + 1) (fun p => ω (H p)) (fderiv ℝ H) (hωs.comp hHs)
+      (contDiff_infty_iff_fderiv.mp hHs).2
+  have hΘ1 : Differentiable ℝ Θ := hΘs.differentiable hne
+  have hdΘ : ∀ p, extDeriv Θ p = (extDeriv ω (H p)).compContinuousLinearMap (fderiv ℝ H p) := by
+    intro p
+    rw [hΘdef]
+    exact extDeriv_pullback (hω1 (H p)) hHs.contDiffAt hr
+  obtain ⟨ιΘ, hιΘdef⟩ : ∃ ιΘ : DifferentialForm (ℝ × E) k,
+      ιΘ = fun p => (Θ p).curryLeft (1, 0) := ⟨_, rfl⟩
+  have hιΘs : ContDiff ℝ (⊤ : ℕ∞) ιΘ := by
+    rw [hιΘdef]
+    exact ((hcl (ℝ × E) k).comp hΘs).clm_apply contDiff_const
+  have hιΘ1 : Differentiable ℝ ιΘ := hιΘs.differentiable hne
+  -- the integrands `κ` of `Kω` and `κd` of `K(dω)` are `ι_e Θ ∘ J` and `ι_e dΘ ∘ J`
+  obtain ⟨κ, hκdef⟩ : ∃ κ : ℝ × E → Covector E k, κ = fun p =>
+      ((ω (F p.2 + p.1 • (G p.2 - F p.2))).curryLeft (G p.2 - F p.2)).compContinuousLinearMap
+        (fderiv ℝ F p.2 + p.1 • (fderiv ℝ G p.2 - fderiv ℝ F p.2)) := ⟨_, rfl⟩
+  have hκapp : ∀ (t : ℝ) (x : E), κ (t, x) =
+      ((ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap
+        (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)) := fun t x => by rw [hκdef]
+  obtain ⟨κd, hκddef⟩ : ∃ κd : ℝ × E → Covector E (k + 1), κd = fun p =>
+      ((extDeriv ω (F p.2 + p.1 • (G p.2 - F p.2))).curryLeft
+        (G p.2 - F p.2)).compContinuousLinearMap
+        (fderiv ℝ F p.2 + p.1 • (fderiv ℝ G p.2 - fderiv ℝ F p.2)) := ⟨_, rfl⟩
+  have hκdapp : ∀ (t : ℝ) (x : E), κd (t, x) =
+      ((exteriorDerivative ω (F x + t • (G x - F x))).curryLeft
+        (G x - F x)).compContinuousLinearMap
+        (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)) := fun t x => by rw [hκddef]
+  have hκeq : ∀ (t : ℝ) (y : E),
+      (ιΘ (t, y)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) = κ (t, y) := by
+    intro t y
+    rw [hκapp, hιΘdef, hΘdef]
+    simp only [ContinuousAlternatingMap.curryLeft_compContinuousLinearMap, hDHe, hcc, hDHJ, hHapp]
+  have hκdeq : ∀ (t : ℝ) (y : E), ((extDeriv Θ (t, y)).curryLeft (1, 0)).compContinuousLinearMap
+      (ContinuousLinearMap.inr ℝ ℝ E) = κd (t, y) := by
+    intro t y
+    rw [hκddef, hdΘ]
+    simp only [ContinuousAlternatingMap.curryLeft_compContinuousLinearMap, hDHe, hcc, hDHJ, hHapp]
+  have hκs : ContDiff ℝ (⊤ : ℕ∞) κ := by
+    have hκfun : κ = fun p => (ιΘ p).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) :=
+      funext fun p => (hκeq p.1 p.2).symm
+    rw [hκfun]
+    exact hpb (ℝ × E) (ℝ × E) E k ιΘ (fun _ => ContinuousLinearMap.inr ℝ ℝ E) hιΘs contDiff_const
+  -- `Kω` is `C^∞`
+  simp only [← hκapp, ← hκdapp]
+  refine ⟨contDiff_infty.mpr fun n => hsm n _ κ hκs, fun x => ?_⟩
+  -- Cartan's formula for the constant field `e`: `d(ι_e Θ) + ι_e dΘ = DΘ[e]`
+  have hcartan : ∀ p, extDeriv ιΘ p + (extDeriv Θ p).curryLeft (1, 0) = fderiv ℝ Θ p (1, 0) := by
+    intro p
+    ext v
+    have h0 : Fin.removeNth 0 (Matrix.vecCons ((1 : ℝ), (0 : E)) v) = v := by simp
+    have hs : ∀ i : Fin (k + 1), Fin.removeNth i.succ (Matrix.vecCons ((1 : ℝ), (0 : E)) v) =
+        Matrix.vecCons ((1 : ℝ), (0 : E)) (Fin.removeNth i v) :=
+      fun i => Fin.cons_comp_succ_succAbove _ v i
+    rw [ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      extDeriv_apply (hιΘ1 p), extDeriv_apply (hΘ1 p), Fin.sum_univ_succ (n := k + 1)]
+    simp only [hιΘdef, ContinuousAlternatingMap.curryLeft_apply_apply, h0, hs, Fin.val_zero,
+      pow_zero, one_smul, Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.val_succ]
+    rw [fderiv_continuousAlternatingMap_apply_const_apply (hΘ1 p), add_left_comm,
+      ← Finset.sum_add_distrib, Finset.sum_eq_zero, add_zero]
+    intro i _
+    rw [pow_succ, mul_neg_one, neg_smul, add_neg_cancel]
+  -- pulling back by `y ↦ (t, y)`: `d(κ(t, ·))(x) = d(ι_e Θ)(t, x) ∘ J`
+  have hj : ∀ (t : ℝ) (y : E),
+      fderiv ℝ (fun y' : E => ((t, y') : ℝ × E)) y = ContinuousLinearMap.inr ℝ ℝ E :=
+    fun t y => (hasFDerivAt_prodMk_right t y).fderiv
+  have hpull : ∀ t : ℝ, extDeriv (fun x' => κ (t, x')) x =
+      (extDeriv ιΘ (t, x)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) := by
+    intro t
+    have h := extDeriv_pullback (ω := ιΘ) (f := fun y' : E => ((t, y') : ℝ × E)) (x := x)
+      (hιΘ1 (t, x)) (contDiff_const.prodMk contDiff_id : ContDiff ℝ (⊤ : ℕ∞)
+        (fun y' : E => ((t, y') : ℝ × E))).contDiffAt hr
+    simp only [hj, hκeq] at h
+    exact h
+  -- `Θ ∘ J` is `C^∞` with `D(Θ ∘ J)[e] = DΘ[e] ∘ J = d(κ(t, ·))(x) + κd(t, x)` at `(t, x)`
+  have hΘ's : ContDiff ℝ (⊤ : ℕ∞)
+      (fun p => (Θ p).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E)) :=
+    hpb (ℝ × E) (ℝ × E) E (k + 1) Θ (fun _ => ContinuousLinearMap.inr ℝ ℝ E) hΘs contDiff_const
+  have hΘ'1 : Differentiable ℝ
+      (fun p => (Θ p).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E)) :=
+    hΘ's.differentiable hne
+  have hΘ'e : ∀ p, fderiv ℝ (fun p => (Θ p).compContinuousLinearMap
+      (ContinuousLinearMap.inr ℝ ℝ E)) p (1, 0) =
+      (fderiv ℝ Θ p (1, 0)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) := by
+    intro p
+    ext v
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ← fderiv_continuousAlternatingMap_apply_const_apply (hΘ'1 p),
+      ← fderiv_continuousAlternatingMap_apply_const_apply (hΘ1 p)]
+    rfl
+  have hpt : ∀ t : ℝ, fderiv ℝ (fun p => (Θ p).compContinuousLinearMap
+      (ContinuousLinearMap.inr ℝ ℝ E)) (t, x) (1, 0) =
+      extDeriv (fun x' => κ (t, x')) x + κd (t, x) := by
+    intro t
+    rw [hΘ'e, ← hcartan, hpull, ← hκdeq]
+    ext v
+    rfl
+  -- the fundamental theorem of calculus for `t ↦ Θ(t, x) ∘ J`
+  have hjt : Continuous (fun t : ℝ => ((t, x) : ℝ × E)) := continuous_id.prodMk continuous_const
+  have hc1 : Continuous (fun t : ℝ => fderiv ℝ (fun p => (Θ p).compContinuousLinearMap
+      (ContinuousLinearMap.inr ℝ ℝ E)) (t, x) (1, 0)) :=
+    ((hΘ's.continuous_fderiv hne).comp hjt).clm_apply continuous_const
+  have hβd : ∀ t : ℝ, HasDerivAt
+      (fun s : ℝ => (Θ (s, x)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E))
+      (fderiv ℝ (fun p => (Θ p).compContinuousLinearMap
+        (ContinuousLinearMap.inr ℝ ℝ E)) (t, x) (1, 0)) t := by
+    intro t
+    have h := (hΘ'1 (t, x)).hasFDerivAt.comp_hasDerivAt t
+      ((hasDerivAt_id t).prodMk (hasDerivAt_const t x))
+    exact h
+  have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hβd t)
+    (hc1.intervalIntegrable 0 1)
+  -- `d(Kω)(x) = ∫₀¹ d(κ(t, ·))(x) dt`, as `d = alternatizeUncurryFin ∘ D` with a CLM
+  have hκ1 : Differentiable ℝ κ := hκs.differentiable hne
+  have hκt : ∀ t : ℝ, fderiv ℝ (fun x' => κ (t, x')) x =
+      (fderiv ℝ κ (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ E) :=
+    fun t => ((hκ1 (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).fderiv
+  have hc3 : Continuous (fun t : ℝ => (fderiv ℝ κ (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ E)) :=
+    ((hκs.continuous_fderiv hne).comp hjt).clm_comp continuous_const
+  have hi3 := Continuous.intervalIntegrable (E := E →L[ℝ] Covector E k) (μ := volume) hc3 0 1
+  have hc4 : Continuous (fun t : ℝ => extDeriv (fun x' => κ (t, x')) x) := by
+    simp only [extDeriv, hκt]
+    exact (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ E ℝ).continuous.comp hc3
+  have hc2 : Continuous (fun t : ℝ => κd (t, x)) := by
+    refine (hc1.sub hc4).congr fun t => ?_
+    simp only [Pi.sub_apply]
+    rw [hpt t, add_sub_cancel_left]
+  have hdK : extDeriv (fun x' => ∫ t in (0 : ℝ)..1, κ (t, x')) x =
+      ∫ t in (0 : ℝ)..1, extDeriv (fun x' => κ (t, x')) x := by
+    simp only [extDeriv, hκt]
+    rw [(hpar _ κ hκs x).fderiv]
+    have hcomm := ContinuousLinearMap.intervalIntegral_comp_comm (𝕜 := ℝ)
+      (E := E →L[ℝ] Covector E k) (F := Covector E (k + 1))
+      (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ E ℝ) hi3
+    exact hcomm.symm
+  -- `Θ(1, x) ∘ J = G^#ω(x)` and `Θ(0, x) ∘ J = F^#ω(x)`
+  have hβ : ∀ t : ℝ, (Θ (t, x)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) =
+      (ω (F x + t • (G x - F x))).compContinuousLinearMap
+        (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)) := by
+    intro t
+    rw [hΘdef]
+    simp only [hcc, hDHJ, hHapp]
+  have hβ1 : (Θ (1, x)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) =
+      (ω (G x)).compContinuousLinearMap (fderiv ℝ G x) := by
+    rw [hβ, one_smul, one_smul, add_sub_cancel, add_sub_cancel]
+  have hβ0 : (Θ (0, x)).compContinuousLinearMap (ContinuousLinearMap.inr ℝ ℝ E) =
+      (ω (F x)).compContinuousLinearMap (fderiv ℝ F x) := by
+    rw [hβ, zero_smul ℝ (G x - F x), zero_smul ℝ (fderiv ℝ G x - fderiv ℝ F x), add_zero,
+      add_zero]
+  -- `G^#ω - F^#ω = ∫₀¹ (d(κ(t, ·))(x) + κd(t, x)) dt = d(Kω)(x) + K(dω)(x)`
+  show (ω (G x)).compContinuousLinearMap (fderiv ℝ G x) -
+      (ω (F x)).compContinuousLinearMap (fderiv ℝ F x) =
+    extDeriv (fun x' => ∫ t in (0 : ℝ)..1, κ (t, x')) x + ∫ t in (0 : ℝ)..1, κd (t, x)
+  rw [← hβ1, ← hβ0, ← hftc, hdK, ← intervalIntegral.integral_add (hc4.intervalIntegrable 0 1)
+    (hc2.intervalIntegrable 0 1)]
+  exact intervalIntegral.integral_congr fun t _ => hpt t
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
