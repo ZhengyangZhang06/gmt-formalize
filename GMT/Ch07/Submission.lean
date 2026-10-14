@@ -451,6 +451,59 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Markov selection of a good parameter** (Simon, Ch. 6, proof of 5.1, (10): a slicing radius
+in `(σ/2, σ)`).  If `g : ℝ → [0, ∞]` is a.e.-measurable, `p` holds for a.e. `t`, `a < b` and
+`∫_{(a,b)} g ≤ I`, then some `t ∈ (a, b)` has `p t` and `(b − a) g(t) ≤ 2I`.  Otherwise
+`2I < (b − a) g` a.e. on `(a, b)`, which is impossible for `I = ∞` as `(a, b)` is not null; for
+`I < ∞` integration gives `2I(b − a) ≤ (b − a)I`, so `I = 0`, whence `g = 0` a.e. on `(a, b)`,
+contradicting `0 < (b − a) g` a.e. there. -/
+theorem Submission.dor_lmb_fcd_sd_markov_point : ∀ (g : ℝ → ℝ≥0∞) (p : ℝ → Prop) (a b : ℝ) (I : ℝ≥0∞), a < b → AEMeasurable g → (∀ᵐ t, p t) → ∫⁻ t in Ioo a b, g t ≤ I → ∃ t ∈ Ioo a b, p t ∧ ENNReal.ofReal (b - a) * g t ≤ 2 * I := by
+  intro g p a b I hab hg hp hI
+  set c : ℝ≥0∞ := ENNReal.ofReal (b - a) with hc
+  have hc0 : c ≠ 0 := by simpa [hc] using hab
+  have hctop : c ≠ ∞ := ENNReal.ofReal_ne_top
+  have hvol : volume (Ioo a b) = c := Real.volume_Ioo
+  -- Step 1: otherwise `2I < c g(t)` for every `t ∈ (a, b)` with `p t`
+  by_contra hcon
+  have hbad : ∀ t ∈ Ioo a b, p t → 2 * I < c * g t := fun t ht hpt =>
+    not_le.1 fun hle => hcon ⟨t, ht, hpt, hle⟩
+  -- Step 2: `2I < c g` almost everywhere on `(a, b)`
+  have hae : ∀ᵐ t ∂(volume.restrict (Ioo a b)), 2 * I < c * g t := by
+    rw [ae_restrict_iff' measurableSet_Ioo]
+    filter_upwards [hp] with t ht htI
+    exact hbad t htI ht
+  -- Step 3: `(a, b)` is not null
+  have hnull : ¬ ∀ᵐ _t ∂(volume.restrict (Ioo a b)), False := by
+    intro h
+    have h0 : volume.restrict (Ioo a b) = 0 := ae_eq_bot.1 (eventually_false_iff_eq_bot.1 h)
+    rw [Measure.restrict_eq_zero, hvol] at h0
+    exact hc0 h0
+  rcases eq_or_ne I ∞ with hItop | hItop
+  · -- Step 4: `I = ∞`
+    apply hnull
+    filter_upwards [hae] with t ht
+    rw [hItop] at ht
+    simp at ht
+  · -- Step 5: `I < ∞` forces `I = 0`
+    have h1 : ∫⁻ _t in Ioo a b, 2 * I ≤ ∫⁻ t in Ioo a b, c * g t :=
+      lintegral_mono_ae (hae.mono fun t ht => ht.le)
+    rw [setLIntegral_const, lintegral_const_mul'' _ hg.restrict, hvol] at h1
+    have h2 : 2 * I * c ≤ I * c :=
+      calc 2 * I * c ≤ c * ∫⁻ t in Ioo a b, g t := h1
+        _ ≤ c * I := by gcongr
+        _ = I * c := mul_comm c I
+    have h3 : 2 * I ≤ I := (ENNReal.mul_le_mul_iff_left hc0 hctop).1 h2
+    have hI0 : I = 0 := by
+      have h4 : I + I ≤ 0 + I := by rw [zero_add, ← two_mul]; exact h3
+      exact nonpos_iff_eq_zero.1 (ENNReal.le_of_add_le_add_right hItop h4)
+    -- Step 6: `g = 0` a.e. on `(a, b)` contradicts `0 < c g` a.e.
+    have hg0 : ∀ᵐ t ∂(volume.restrict (Ioo a b)), g t = 0 :=
+      (lintegral_eq_zero_iff' hg.restrict).1 (nonpos_iff_eq_zero.1 (hI.trans hI0.le))
+    apply hnull
+    filter_upwards [hae, hg0] with t ht ht0
+    rw [hI0, ht0] at ht
+    simp at ht
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
