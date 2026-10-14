@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg --no-ignore --hidden -n 'cbr_ci_cp_prod_|idtp_tdc_subspace_ball_measure' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project GMT",
+        "rg -n 'cbr_ci_cp_prod_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "isMulLeftInvariant_eq_smul|isAddLeftInvariant_eq_smul|haarScalarFactor",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_preimage|euclideanHausdorffMeasure_eq_volume|prod_apply|ext_of_generateFrom_of_iUnion|sigmaFinite_of_locallyFinite|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts",
+        "iSup_mul|inv_mul_cancel",
+        "git show a029156d2b71053da5c6d27b9abcc46011c9cfac:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/prod-decomp/FromJson.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-product-audit/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a04eee6688/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a04eee6688/decomposition-v1.json",
+        "/tmp/prod-decomp/FromJson.lean",
+        "/tmp/gmt-product-audit/Contracts.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, identical snapshot/workspace contracts, and the requested parent digest. No new child names occur in the searched project or DAG; all names are bare identifiers. The reused ball theorem is accepted with the byte-identical frozen type. All four statements are standalone one-line propositions, independently elaborated without child implementations. The complete proof harness and independently generated hypotheses-only parent assembly compiled successfully; axiom reports contain only propext, Classical.choice and Quot.sound. Explicit instance checks confirm ENNReal scaling of measures, continuous linear projections, and SFinite σ from compact-finiteness. The split is appropriate, substantive and acyclic, and establishes exactly the selected parent. The classical uniqueness input was also cross-checked against [Elekes–Keleti, Theorem 0.1](https://arxiv.org/html/1109.5306v1)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "subspace_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including dimension, center membership and positive radius. The supplied proof derives the formula through isometric inclusion, intrinsic volume, Haar scaling and orthonormal coordinates, including dimension zero. Reuse is valid: the accepted declaration has the identical frozen type, and its proof passes the independent compilation and axiom check."
+    },
+    {
+      "key": "subspace_haar",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis is explicit and correctly used. The projection pushforward is proved invariant and finite on compact sets before Haar uniqueness is invoked. Concentration on V justifies recovering m, and the isometric inclusion identifies intrinsic volume with Hⁿ⌞V. This proves the exact scalar-measure identity without circular reliance or undeclared child dependencies."
+    },
+    {
+      "key": "rectangle_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly constructs σ and establishes its concentration and compact-finiteness. Bounded projected slices satisfy every subspace_haar hypothesis; subspace_ball supplies normalization, with positivity and finiteness justifying cancellation. Monotone exhaustion and ENNReal.iSup_mul cover arbitrary Borel B, including infinite measure values. The exact type matches the prose, and both declared dependencies are correctly directed."
+    },
+    {
+      "key": "product_of_rectangles",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes SFinite σ, the product-section formula, rectangle agreement, Borel generation and a finite-measure countable cover before applying measure uniqueness. Compact-finiteness of ν is correctly derived on covering rectangles rather than silently assumed. Only subspace_ball is needed as a child dependency. Applied to rectangle_formula's witness, this conclusion yields the exact frozen parent."
+    }
+  ],
+  "required_changes": []
+}
