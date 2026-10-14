@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "75367cc9c79c917e11f74126be9caf12a669a872016691cfa2887320f7c92c2c",
+  "git_delta": {
+    "base_commit": "b83cf2ebffe6298428c675fbc61ee0fef31038ee",
+    "candidate_commit": "c3eb2e06322bc6f5134f45129ec4863d58c35882",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_rc_massOn_restrict_univ",
+    "diff_sha256": "b82eaae142403dac217742836ce03580d33264cb34c3ce739235ed13e2c58c4d",
+    "source_sha256": "6897e4956be5f630915c793d047144331fc30798e3ac30f430cd8611d6582cd3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_rc_massOn_restrict_univ",
+      "statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (Z : GeometricCurrentOn U n), (X.restrictDomain (subset_univ U)).massOn G ≤ X.massOn G ∧ (G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → X (testFormOnInclusion (subset_univ U) n ω) = Z ω) → X.massOn G ≤ Z.massOn G)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
