@@ -2992,6 +2992,60 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
       (fun k => (hGo k).measurableSet.nullMeasurableSet) hanti ⟨0, hfin0⟩
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
+/-- **A cycle supported in `A ∩ W` gives an admissible competitor** (Simon 7.1.1; 7.2.4 and
+Remark 7.2.5(2)).  Let `U` be open, `T ∈ 𝒟ₙ(U)` (`n = m + 1`) minimizing in `A`, `W ⊂⊂ U` open,
+and `X ∈ 𝒟ₙ(ℝᴾ)` integer multiplicity with `∂X = 0` and `spt X` a compact subset of `A ∩ W`.  If
+`Z₁(ω) = T(ω) + X(ω)` for `ω ∈ 𝒟ⁿ(U)`, then `M_W(T) ≤ M_W(Z₁)`.  `Z₁ = T − ((X|_U − X|_U) − X|_U)`
+is integer multiplicity, and `∂Z₁ = ∂T + ∂X = ∂T`.  As `(Z₁ − T)(ω) = X(ω)`, each point of `U`
+outside `spt X` has a small neighbourhood, compactly contained in `U`, on which `Z₁ − T`
+vanishes.  So `spt(Z₁ − T) ⊆ spt X ⊆ A ∩ W`, and `spt(Z₁ − T) = spt X ∖ Z_{Z₁−T}` is compact. -/
+theorem Submission.dimred_mbl_lc_rc_cycle_competitor : ∀ (P m : ℕ) (U A W : Set (Euclid P)) (T Z₁ : GeometricCurrentOn U (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen U → IsMinimizingIn T A → IsOpen W → CompactlyContained W U → IsIntegerMultiplicity X → X.boundary = 0 → IsCompact X.support → X.support ⊆ A ∩ W → (∀ ω : TestFormOn U (m + 1), Z₁ ω = T ω + X (testFormOnInclusion (subset_univ U) (m + 1) ω)) → T.massOn W ≤ Z₁.massOn W := by
+  intro P m U A W T Z₁ X hU hT hW hWU hXim hXb hXc hXA hZ
+  obtain ⟨hTim, hmin⟩ := hT
+  -- Step 1: `X|_U` is integer multiplicity (RO), hence so is `Z₁ = T − ((X|_U − X|_U) − X|_U)`
+  set XU : GeometricCurrentOn U (m + 1) := X.restrictDomain (subset_univ U) with hXU
+  have hXUim : IsIntegerMultiplicity XU :=
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ U (subset_univ U) X hU hXim
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) U
+  have hZeq : T - ((XU - XU) - XU) = Z₁ := by
+    ext ω
+    show T ω - ((XU ω - XU ω) - XU ω) = Z₁ ω
+    rw [hZ ω, hXU, GeometricCurrentOn.restrictDomain_apply]
+    ring
+  have hZim : IsIntegerMultiplicity Z₁ :=
+    hZeq ▸ hsub T _ hU hTim (hsub _ XU hU (hsub XU XU hU hXUim hXUim) hXUim)
+  -- Step 2: `∂Z₁(η) = T(dη) + X(dη) = ∂T(η) + ∂X(η) = ∂T(η)`
+  have hbd : SameBoundary Z₁ T := by
+    show Z₁.boundary = T.boundary
+    ext η
+    have hd : testFormOnInclusion (subset_univ U) (m + 1) (exteriorDerivativeTestOn U m η) =
+        exteriorDerivativeTestOn univ m (testFormOnInclusion (subset_univ U) m η) := rfl
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hZ, hd,
+      ← X.boundary_apply, hXb, GeometricCurrentOn.zero_apply, add_zero]
+  -- Step 3: `(Z₁ − T)(ω) = X(ω)`, so `spt(Z₁ − T) ⊆ spt X`
+  have hspt : (Z₁ - T).support ⊆ X.support := by
+    rintro x ⟨hxU, hxZ⟩
+    refine ⟨mem_univ x, fun hxX => hxZ ?_⟩
+    obtain ⟨V, ⟨hVo, -, -, hVX⟩, hxV⟩ := mem_sUnion.1 hxX
+    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
+    have hcl : closure (V ∩ ball x (r / 2)) ⊆ closedBall x (r / 2) :=
+      (closure_mono inter_subset_right).trans closure_ball_subset_closedBall
+    refine mem_sUnion.2 ⟨V ∩ ball x (r / 2), ⟨hVo.inter isOpen_ball,
+      (isCompact_closedBall x (r / 2)).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball (half_lt_self hr)).trans hrU), fun ω hω => ?_⟩,
+      hxV, mem_ball_self (half_pos hr)⟩
+    show Z₁ ω - T ω = 0
+    rw [hZ ω, hVX (testFormOnInclusion (subset_univ U) (m + 1) ω) (hω.trans inter_subset_left),
+      add_zero, sub_self]
+  -- Step 4: `spt(Z₁ − T) = spt X ∖ Z_{Z₁−T}` is compact, as `spt X ⊆ W ⊆ closure W ⊆ U`
+  have hcpt : IsCompact (Z₁ - T).support := by
+    have heq : (Z₁ - T).support = X.support ∩ ((Z₁ - T).zeroRegion)ᶜ :=
+      Subset.antisymm (fun x hx => ⟨hspt hx, hx.2⟩)
+        fun x hx => ⟨hWU.2 (subset_closure (hXA hx.1).2), hx.2⟩
+    rw [heq]
+    exact hXc.inter_right (Z₁ - T).isOpen_zeroRegion.isClosed_compl
+  -- Step 5: minimality of `T` against the competitor `Z₁` in `W`
+  exact hmin W Z₁ hW hWU hZim hbd hcpt (hspt.trans hXA)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
