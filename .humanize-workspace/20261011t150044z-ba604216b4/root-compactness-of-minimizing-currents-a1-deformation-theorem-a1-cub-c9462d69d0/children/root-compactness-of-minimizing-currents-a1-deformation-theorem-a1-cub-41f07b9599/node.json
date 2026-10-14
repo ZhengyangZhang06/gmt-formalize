@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1.convex_slice_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_poincare-a1",
+  "depth": 5,
+  "title": "Slice bound on a convex set: ∫⁻_Q∫⁻_Q g((1 − t)y + tx) ≤ 2ⁿ Lⁿ(Q) ∫⁻_Q g",
+  "statement": "Let n ∈ ℕ, ℝⁿ := Euclid n with Lebesgue measure Lⁿ (volume), Q ⊆ ℝⁿ convex and measurable, g : ℝⁿ → [0, ∞] measurable, and t ∈ [0, 1]. Then ∫⁻_{x∈Q} ∫⁻_{y∈Q} g((1 − t)y + tx) dy dx ≤ 2ⁿ · Lⁿ(Q) · ∫⁻_Q g. All integrals are lower Lebesgue integrals in [0, ∞] (outer variable x, inner variable y), and the right side is computed in [0, ∞] with 0 · ∞ = 0.",
+  "lean_statement": "∀ (n : ℕ) (Q : Set (Euclid n)) (g : Euclid n → ℝ≥0∞), Convex ℝ Q → MeasurableSet Q → Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in Q, ∫⁻ y in Q, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume Q * ∫⁻ z in Q, g z",
+  "lean_name": "cmcdt_cbm_sp_convex_slice_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-41f07b9599-a1"
+}

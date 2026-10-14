@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 4,
+  "title": "Integer polyhedral chains on unit lattice faces are integer multiplicity with mass Σ|β_F|",
+  "statement": "Assume as a hypothesis (MR), the exact frozen Lean type of Submission.cmc_massOn_eq_imRep_measure. Let P, k ∈ ℕ, s a finite set of index pairs p = (ι, b) with ι : Fin k → Fin P strictly increasing, and β assigning an integer to each pair. Let T ∈ 𝒟_k(ℝ^P) satisfy T(ω) = Σ_{p∈s} β_p ∫_{(0,1)^k} ω(Φ_p y)(e_{ι(0)}, …, e_{ι(k−1)}) dy for all test k-forms ω (for k = 0 this is evaluation at the lattice point b). Then T is integer multiplicity, M(T) = ENNReal.ofReal(Σ_{p∈s}|β_p|), and T = 0 or M(T) ≥ 1.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P k : ℕ) (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → IsIntegerMultiplicity T ∧ T.mass = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) ∧ (T = 0 ∨ 1 ≤ T.mass)",
+  "lean_name": "cmcdtfr_polyhedral_im",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-9de237faed-a1"
+}

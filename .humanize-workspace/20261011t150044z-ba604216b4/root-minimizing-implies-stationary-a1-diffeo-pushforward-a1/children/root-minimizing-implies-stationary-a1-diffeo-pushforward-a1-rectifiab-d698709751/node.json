@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Area formula for an injective Lipschitz C¹ map on a rectifiable set with the tangential Jacobian",
+  "statement": "Let U ⊆ ℝ^P be open, M ⊆ U Borel and countably n-rectifiable with H^n(M ∩ C) < ∞ for every compact C ⊆ U, and φ : ℝ^P → ℝ^P a C¹, Lipschitz, injective map. For x ∈ ℝ^P let Q(x) := approxTangentPlane n M x, e = (e_a) the standard orthonormal basis of Q(x) (stdOrthonormalBasis) and J(x) := (det(Dφ(x)e_a · Dφ(x)e_b)_{a,b})^{1/2}. Then for every g : ℝ^P → [0, ∞] (no measurability required), ∫⁻_{φ(M)} g dH^n = ∫⁻_M J(x) g(φ(x)) dH^n(x).",
+  "lean_statement": "∀ (P n : ℕ) (U M : Set (Euclid P)) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable n M → (∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (M ∩ C) ≠ ∞) → ContDiff ℝ 1 φ → LipschitzWith Λ φ → Injective φ → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in φ '' M, g y ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ φ x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * g (φ x) ∂μHE[n]",
+  "lean_name": "dpf_area_formula_bilipschitz_rectifiable",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-rectifiab-d698709751-a1"
+}
