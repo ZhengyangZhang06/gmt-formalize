@@ -574,6 +574,51 @@ theorem Submission.cbr_ci_cp_gd_le_of_pow_bound : ∀ (r n : ℕ) (a b : ℝ), 0
   have hMa := le_of_mul_le_mul_right hle (pow_pos (zero_lt_one.trans_le hM) n)
   linarith
 
+/-- **Growth forces `dim V ≤ n`** (step 4 of the constant-planes argument, with `ωₙ` replaced by an
+arbitrary finite constant `C`).  Let `r = dim V` and `m₀ = ν(B₁(0))`, so `0 < m₀ ≤ C < ∞` (growth at
+`R = 1`).  Fix `M ≥ 1`.  The sibling `lattice_packing` gives `(2M+1)ʳ` points of `V` of norm
+`≤ 2M√r` with pairwise distances `≥ 2`; by the sibling `ball_count` (translation invariance and
+disjointness of their unit balls) and the growth bound at `R = 2M√r + 1`,
+`(2M+1)ʳ m₀ ≤ ν(B_{2M√r+1}(0)) ≤ C (2M√r+1)ⁿ`.  As `M ≤ 2M+1` and `2M√r + 1 ≤ (2√r+1)M`, this gives
+`m₀ Mʳ ≤ C (2√r+1)ⁿ Mⁿ` for every `M ≥ 1`, and the sibling `pow_bound` yields `r ≤ n`. -/
+theorem Submission.cbr_ci_cp_finrank_le_of_growth : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (C : ℝ≥0∞), C ≠ ∞ → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ C * ENNReal.ofReal (R ^ n)) → 0 < ν (ball 0 1) → Module.finrank ℝ V ≤ n := by
+  intro P n ν V C hC hinv hgrowth hpos
+  -- Step 1: `m₀ = ν(B₁(0))` is finite, by the growth bound at `R = 1`
+  have hfin : ν (ball 0 1) ≠ ∞ :=
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top hC ENNReal.ofReal_ne_top) (hgrowth 1 one_pos)
+  -- Step 2: by the sibling `pow_bound` it suffices that `m₀ Mʳ ≤ C (2√r+1)ⁿ Mⁿ` for all `M ≥ 1`
+  refine Submission.cbr_ci_cp_gd_le_of_pow_bound (Module.finrank ℝ V) n (ν (ball 0 1)).toReal
+    (C.toReal * (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n)
+    (ENNReal.toReal_pos hpos.ne' hfin) fun M hM => ?_
+  -- Step 3: `(2M+1)ʳ` points of `V` of norm `≤ 2M√r`, pairwise `2`-separated (`lattice_packing`)
+  obtain ⟨S, hcard, hSV, hSnorm, hSsep⟩ := Submission.cbr_ci_cp_gd_subspace_lattice_packing P V M
+  -- Step 4: `(2M+1)ʳ m₀ ≤ ν(B_{2M√r+1}(0)) ≤ C (2M√r+1)ⁿ` (`ball_count`, then growth)
+  have hρ : 0 ≤ 2 * (M : ℝ) * Real.sqrt (Module.finrank ℝ V) := by positivity
+  have hle := (Submission.cbr_ci_cp_gd_translated_ball_count P ν V S _ hinv hSV hSnorm hSsep).trans
+    (hgrowth (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) (by linarith))
+  have hpow : 0 ≤ (2 * (M : ℝ) * Real.sqrt (Module.finrank ℝ V) + 1) ^ n := by positivity
+  have hreal := ENNReal.toReal_mono (ENNReal.mul_ne_top hC ENNReal.ofReal_ne_top) hle
+  rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal hpow, hcard,
+    ENNReal.toReal_natCast] at hreal
+  push_cast at hreal
+  -- Step 5: `Mʳ ≤ (2M+1)ʳ` and `2M√r + 1 ≤ (2√r+1)M`, since `M ≥ 1`
+  have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast hM
+  have h1 : (M : ℝ) ^ Module.finrank ℝ V ≤ (2 * M + 1) ^ Module.finrank ℝ V :=
+    pow_le_pow_left₀ (by positivity) (by linarith) _
+  have h2 : (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) ^ n ≤
+      (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by positivity)
+      (by nlinarith [Real.sqrt_nonneg (Module.finrank ℝ V : ℝ)]) _
+  calc (ν (ball 0 1)).toReal * (M : ℝ) ^ Module.finrank ℝ V
+      ≤ (2 * M + 1) ^ Module.finrank ℝ V * (ν (ball 0 1)).toReal := by
+        rw [mul_comm]
+        exact mul_le_mul_of_nonneg_right h1 ENNReal.toReal_nonneg
+    _ ≤ C.toReal * (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) ^ n := hreal
+    _ ≤ C.toReal * ((2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n) :=
+        mul_le_mul_of_nonneg_left h2 ENNReal.toReal_nonneg
+    _ = C.toReal * (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
