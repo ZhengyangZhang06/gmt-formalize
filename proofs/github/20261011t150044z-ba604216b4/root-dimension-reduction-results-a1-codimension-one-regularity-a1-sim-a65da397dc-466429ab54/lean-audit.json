@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b25c1b41f224cb16714465d1d6db25b59d689ef0656875acae33ced5fbc62fa1",
+  "git_delta": {
+    "base_commit": "c536a83c9942e8ea66b838abebf026075f75aad5",
+    "candidate_commit": "12e6f02b9c46dc0be874379dddbf6c3eba676df1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_normal_variation_algebra",
+    "diff_sha256": "1b1bdaaf9648039fa016ece07e57800db21d3510d67860f979a4d4e1bfaf3b49",
+    "source_sha256": "3e464aff50603c452b38e525ea7f24f5aa940b50495cb23f86e88d5f4874f2b0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_normal_variation_algebra",
+      "statement": "∀ (P : ℕ) (S : Submodule ℝ (Euclid P)) (ν₀ : Euclid P) (N L : Euclid P →L[ℝ] Euclid P) (g : Euclid P →L[ℝ] ℝ) (ζ : ℝ), ‖ν₀‖ = 1 → (∀ v ∈ S, inner ℝ ν₀ v = 0) → (∀ τ ∈ S, N τ ∈ S) → (∀ τ ∈ S, ∀ η ∈ S, inner ℝ η (N τ) = inner ℝ τ (N η)) → (∀ τ ∈ S, L τ = g τ • ν₀ + ζ • N τ) → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = ζ * LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ N.toLinearMap) ∧ ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) = ∑ j : Fin P, (g (S.starProjection (EuclideanSpace.single j 1))) ^ 2 - ζ ^ 2 * ∑ j : Fin P, ‖N (S.starProjection (EuclideanSpace.single j 1))‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
