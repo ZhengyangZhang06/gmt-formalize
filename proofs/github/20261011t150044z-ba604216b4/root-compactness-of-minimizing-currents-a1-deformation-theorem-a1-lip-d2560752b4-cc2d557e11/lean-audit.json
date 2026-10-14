@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "46b4d2f95a5457f03f166c69e3d8becb8c04bfaedfe2d16d63f0c0efb3178b76",
+  "git_delta": {
+    "base_commit": "20c71d95259487e8b006ae22f0bb8f8ff12a9339",
+    "candidate_commit": "c409608fda52cd97d405d401d6cb5568a304ee7b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "172310008e1a81c8b2153dcebebd06a203c99096182b224f644f68dd4a5cb982",
+    "source_sha256": "8d974c29e9bc11b996f7aa42d90a794005b1ed0d5a15c272b611f5a1ef96a50e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pullback_weak_continuity",
+      "statement": "∀ (m N' : ℕ) (L : NNReal) (H : ℕ → Euclid m → Euclid N') (H₀ : Euclid m → Euclid N') (w : Euclid m → ℝ) (ω : DifferentialForm (Euclid N') m), (∀ j, LipschitzWith L (H j)) → LipschitzWith L H₀ → TendstoUniformly H H₀ atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (H j u) (fun a => fderiv ℝ (H j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H₀ u) (fun a => fderiv ℝ H₀ u (EuclideanSpace.single a 1))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
