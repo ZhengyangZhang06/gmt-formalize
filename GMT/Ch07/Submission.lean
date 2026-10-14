@@ -753,6 +753,151 @@ theorem Submission.cmcdt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid
     Submission.cmcdt_lpo_tk_bounded_current, Submission.cmcdt_lpo_tk_boundary_support_subset,
     Submission.cmcdt_lpo_tk_locality hVO⟩
 
+/-- **Mass bound and support of the Lipschitz push-forward** (Simon 6.2.29).  Assume (VO), (REP)
+and the covector bounds, and let `lpush` be any family satisfying the approximation property (PA):
+`X(G_j^# ω) → lpush(F, X)(ω)` along smooth `G_j → F` uniformly on `spt X` with bounded derivatives.
+Then `M(lpush(F, X)) ≤ Λᵏ M(X)` and `spt lpush(F, X) ⊆ F(spt X)` for `Λ`-Lipschitz `F` and
+compactly supported `X` with `M(X) + M(∂X) < ∞`.  The approximations come from
+`cmcdt_lpo_pf_approx_data`; locality (LOC) and the support mass bound (MSB) are derived from (VO)
+and (REP) as in Simon 6.2.7–2.12. -/
+theorem Submission.cmcdt_lpo_pf_mass_support : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (lpush N N' k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ (lpush N N' k F X).support ⊆ F '' X.support := by
+  intro hVO hREP hLB lpush hPA N N' k Λ F X hF hX1 hX2 hX3
+  -- (LOC), Simon 6.2.11 with (VO): `X(η) = X(η')` if `η = η'` on an open set containing `spt X`.
+  have hLOC : ∀ (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W →
+      X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x =
+        (η' : DifferentialForm (Euclid N) k) x) → X η = X η' := by
+    intro η η' W hW hXW hηη'
+    have hsub : tsupport ((η - η' : TestFormOn (univ : Set (Euclid N)) k) :
+        DifferentialForm (Euclid N) k) ⊆ Wᶜ := by
+      refine closure_minimal (fun x hx hxW => hx ?_) hW.isClosed_compl
+      simp [hηη' x hxW]
+    have h0 := hVO N k univ X (η - η') (Disjoint.mono hsub hXW disjoint_compl_left)
+    rw [show X (η - η') = X η - X η' from map_sub X.toCurrent η η'] at h0
+    linarith
+  -- (MSB), Simon 6.2.7–2.12 with (VO), (REP): `|X(ψ)| ≤ c M(X)` if `|ψ| ≤ c` on `spt X`.
+  have hMSB : ∀ (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ),
+      (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) →
+        |X ψ| ≤ c * X.mass.toReal := by
+    obtain ⟨μ, ξ, -, -, hμW, -, hξ, hXμ, -⟩ := hREP N k univ X isOpen_univ
+      (fun W _ _ => lt_of_le_of_lt (X.massOn_mono (subset_univ W)) hX2)
+    have hμ : μ univ = X.mass := (hμW univ isOpen_univ).symm
+    have : IsFiniteMeasure μ := ⟨hμ ▸ hX2⟩
+    have hZ : μ X.zeroRegion = 0 := by
+      rw [← hμW _ X.isOpen_zeroRegion]
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, hω, rfl⟩
+      dsimp only
+      rw [hVO N k univ X ω (disjoint_left.2 fun x hx hxs => hxs.2 (hω.1 hx)),
+        ENNReal.ofReal_zero]
+    intro ψ c hψ
+    have hae : ∀ᵐ x ∂μ, ‖ξ x ((ψ : DifferentialForm (Euclid N) k) x)‖ ≤ c := by
+      rw [ae_iff]
+      refine measure_mono_null (fun x hx => ?_) hZ
+      by_contra hxZ
+      exact hx ((Real.norm_eq_abs _).le.trans
+        ((hξ x _).trans (hψ x (mem_sdiff_of_mem (mem_univ x) hxZ))))
+    have h := norm_integral_le_of_norm_le_const hae
+    rwa [Real.norm_eq_abs, ← hXμ ψ, measureReal_def, hμ] at h
+  have hL1 := hLB.1
+  obtain ⟨G, hG, -, hDG, hdistG, hUG, hηG⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  choose θ hθs using hηG k
+  have hθ : ∀ ω j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+      (θ ω j : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (G j x)).compContinuousLinearMap
+          (fderiv ℝ (G j) x) := fun ω j => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hθs ω j
+    exact ⟨W, hW, hKW, h1⟩
+  have hconv : ∀ ω, Tendsto (fun j => X (θ ω j)) atTop (𝓝 (lpush N N' k F X ω)) := fun ω =>
+    hPA N N' k Λ Λ F G X ω (θ ω) hF hX1 hX2 hX3 hG (fun j x _ => hDG j x)
+      hUG.tendstoUniformlyOn (hθ ω)
+  have hrate : Tendsto (fun i : ℕ => (Λ : ℝ) / ((i : ℝ) + 1)) atTop (𝓝 0) := by
+    have := (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul (Λ : ℝ)
+    rw [mul_zero] at this
+    exact this.congr (fun j => mul_one_div _ _)
+  refine ⟨?_, ?_⟩
+  · apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    have hj : ∀ j, |X (θ ω j)| ≤ (Λ : ℝ) ^ k * 1 * X.mass.toReal := by
+      intro j
+      apply hMSB (θ ω j) ((Λ : ℝ) ^ k * 1)
+      intro x hx
+      obtain ⟨W, -, hKW, h⟩ := hθ ω j
+      rw [h x (hKW hx)]
+      refine (hL1 N N' k (fderiv ℝ (G j) x) _).trans ?_
+      exact mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) (hDG j x) k) (hω.2 _)
+        (covectorEuclideanNorm_nonneg _) (pow_nonneg Λ.2 k)
+    have hlim : lpush N N' k F X ω ≤ (Λ : ℝ) ^ k * 1 * X.mass.toReal :=
+      (le_abs_self _).trans (le_of_tendsto' (hconv ω).abs hj)
+    dsimp only
+    calc ENNReal.ofReal (lpush N N' k F X ω)
+        ≤ ENNReal.ofReal ((Λ : ℝ) ^ k * 1 * X.mass.toReal) := ENNReal.ofReal_le_ofReal hlim
+      _ = ENNReal.ofReal (((Λ ^ k : NNReal) : ℝ) * X.mass.toReal) := by
+        rw [NNReal.coe_pow, mul_one]
+      _ = ((Λ ^ k : NNReal) : ℝ≥0∞) * X.mass := by
+        rw [ENNReal.ofReal_mul NNReal.zero_le_coe, ENNReal.ofReal_coe_nnreal,
+          ENNReal.ofReal_toReal hX2.ne]
+      _ = (Λ : ℝ≥0∞) ^ k * X.mass := by
+        rw [ENNReal.coe_pow]
+  · rintro y ⟨-, hy⟩
+    by_contra hyF
+    apply hy
+    by_cases hXe : X.support = ∅
+    · have hX0 : ∀ η : TestFormOn (univ : Set (Euclid N)) k, X η = 0 := by
+        intro η
+        rw [hLOC η 0 ∅ isOpen_empty (by rw [hXe]) (fun x hx => hx.elim), map_zero]
+      have hT0 : ∀ ω, lpush N N' k F X ω = 0 := by
+        intro ω
+        have h := hconv ω
+        simp only [hX0] at h
+        exact tendsto_nhds_unique h tendsto_const_nhds
+      refine ⟨ball y 1, ⟨isOpen_ball, ?_, subset_univ _, fun ω _ => hT0 ω⟩, mem_ball_self one_pos⟩
+      exact (isCompact_closedBall y 1).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · have hne : (F '' X.support).Nonempty := (nonempty_iff_ne_empty.2 hXe).image F
+      have hcpt : IsCompact (F '' X.support) := hX1.image hF.continuous
+      have hr : 0 < infDist y (F '' X.support) :=
+        (hcpt.isClosed.notMem_iff_infDist_pos hne).1 hyF
+      set r := infDist y (F '' X.support) with hrdef
+      refine ⟨ball y (r / 3), ⟨isOpen_ball, ?_, subset_univ _, ?_⟩, mem_ball_self (by linarith)⟩
+      · exact (isCompact_closedBall y (r / 3)).of_isClosed_subset isClosed_closure
+          closure_ball_subset_closedBall
+      · intro ω hω
+        have hev : ∀ᶠ j in atTop, X (θ ω j) = 0 := by
+          filter_upwards [hrate.eventually (gt_mem_nhds (by linarith : (0 : ℝ) < r / 3))]
+            with j hj
+          obtain ⟨W, hW, hKW, h⟩ := hθ ω j
+          have hO : IsOpen {x | r / 3 < dist (G j x) y} :=
+            isOpen_lt continuous_const ((hG j).continuous.dist continuous_const)
+          have hKO : X.support ⊆ {x | r / 3 < dist (G j x) y} := by
+            intro x hx
+            have h1 : r ≤ dist (F x) y := by
+              rw [dist_comm]
+              exact infDist_le_dist_of_mem (mem_image_of_mem F hx)
+            have h2 : dist (G j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1) := hdistG j x
+            have h3 := dist_triangle (F x) (G j x) y
+            rw [dist_comm (F x) (G j x)] at h3
+            show r / 3 < dist (G j x) y
+            linarith
+          have hzero : ∀ x ∈ {x | r / 3 < dist (G j x) y} ∩ W,
+              (θ ω j : DifferentialForm (Euclid N) k) x =
+                ((0 : TestFormOn (univ : Set (Euclid N)) k) : DifferentialForm (Euclid N) k) x := by
+            intro x hx
+            rw [h x hx.2]
+            have h0 : (ω : DifferentialForm (Euclid N') k) (G j x) = 0 := by
+              apply image_eq_zero_of_notMem_tsupport
+              intro hmem
+              have hb := hω hmem
+              rw [mem_ball] at hb
+              exact absurd hb (not_lt.2 hx.1.le)
+            rw [h0]
+            ext v
+            simp
+          rw [hLOC (θ ω j) 0 _ (hO.inter hW) (subset_inter hKO hKW) hzero, map_zero]
+        have h0 : Tendsto (fun j => X (θ ω j)) atTop (𝓝 0) :=
+          tendsto_const_nhds.congr' (hev.mono fun j hj => hj.symm)
+        exact tendsto_nhds_unique (hconv ω) h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
