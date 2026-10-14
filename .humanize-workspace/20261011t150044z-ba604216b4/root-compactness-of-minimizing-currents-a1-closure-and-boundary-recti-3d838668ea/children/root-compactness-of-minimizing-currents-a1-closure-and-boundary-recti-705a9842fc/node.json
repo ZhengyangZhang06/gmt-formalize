@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.ball_support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "depth": 5,
+  "title": "Support of the current obtained by integrating over a ball",
+  "statement": "Let P, n ∈ ℕ, let μ be any measure on ℝ^P and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) any function. Let x ∈ ℝ^P and ρ ∈ ℝ, and let A ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) satisfy A(ω) = ∫_{B_ρ(x)} ξ(y)(ω(y)) dμ(y) for every test form ω ∈ 𝒟^n(ℝ^P), where B_ρ(x) is the open ball. Then spt A ⊆ B̄_ρ(x), the closed ball (spt is GeometricCurrentOn.support).",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (ρ : ℝ), (∀ ω : TestFormOn (univ : Set (Euclid P)) n, A ω = ∫ y in ball x ρ, ξ y ((ω : DifferentialForm (Euclid P) n) y) ∂μ) → A.support ⊆ closedBall x ρ",
+  "lean_name": "cbrld_ns_ball_current_support_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-705a9842fc-a1"
+}
