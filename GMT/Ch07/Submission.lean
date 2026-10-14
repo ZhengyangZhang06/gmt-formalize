@@ -727,6 +727,92 @@ theorem Submission.cbr_ci_pw_orthonormal_covector_bounds : ∀ (P n : ℕ) (v : 
   exact ⟨fun β => Submission.regcomp_covector_eval_orthonormal_le P n β v hv,
     fun l γ => (Submission.cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq P n v pL hv hpL l γ).le⟩
 
+/-- **Integral estimate for the projected current** (integrability and the estimate of step 3 in
+White's projection argument, from (N2) and (N3)): let `F ⊆ S` be measurable with `S ∩ pL⁻¹(K)`
+compact, `μ` finite on compact sets, `ξ` `μ`-a.e. strongly measurable with `|⟨β, ξ(x)⟩| ≤ |β|_E`
+`μ`-a.e., and `|γ ∘ pL|_E ≤ |γ|_E` for every `l`-covector `γ` on `ℝᵐ`.  With
+`C = √#(Fin l → Fin m)`, so that `|α|_E ≤ C ‖α‖` (`le_opNorm` on unit basis vectors), and
+`c = C μ(S ∩ pL⁻¹(K))`: for every continuous `l`-form `ω` on `ℝᵐ` vanishing off `K` with
+`‖ω‖ ≤ M`, `|⟨ω(pL x) ∘ pL, ξ(x)⟩| ≤ C M 1_{S ∩ pL⁻¹(K)}(x)` for `μ⌞F`-a.e. `x`, so the integrand
+is `μ⌞F`-integrable and `|∫_F ⟨ω(pL x) ∘ pL, ξ(x)⟩ dμ| ≤ C M μ(F ∩ S ∩ pL⁻¹(K)) ≤ c M`. -/
+theorem Submission.cbr_ci_pw_proj_integral_estimate : ∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (S F : Set (Euclid P)) (K : Set (Euclid m)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l), MeasurableSet F → F ⊆ S → IsCompact (S ∩ pL ⁻¹' K) → (∀ K' : Set (Euclid P), IsCompact K' → μ K' < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → ∃ c : ℝ, 0 ≤ c ∧ ∀ (ω : DifferentialForm (Euclid m) l) (M : ℝ), Continuous ω → (∀ y, y ∉ K → ω y = 0) → (∀ y, ‖ω y‖ ≤ M) → Integrable (fun x => ξ x ((ω (pL x)).compContinuousLinearMap pL)) (μ.restrict F) ∧ |∫ x in F, ξ x ((ω (pL x)).compContinuousLinearMap pL) ∂μ| ≤ c * M := by
+  intro P m l pL S F K μ ξ hF hFS hSK hμ hξm hξb hN3
+  -- Step 1 (N2): `|α|_E ≤ C ‖α‖` with `C = √#(Fin l → Fin m)`, since `|α(e_I)| ≤ ‖α‖`
+  set C : ℝ := Real.sqrt (Fintype.card (Fin l → Fin m)) with hCdef
+  have hC0 : 0 ≤ C := Real.sqrt_nonneg _
+  have hN2 : ∀ α : Covector (Euclid m) l, covectorEuclideanNorm α ≤ C * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hCdef, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (Nat.cast_nonneg _)]
+    apply Real.sqrt_le_sqrt
+    calc (∑ I : Fin l → Fin m, if StrictMono I then
+            (α (fun i ↦ EuclideanSpace.basisFun (Fin m) ℝ (I i))) ^ 2 else 0)
+        ≤ ∑ _I : Fin l → Fin m, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h1 := α.le_opNorm (fun i ↦ EuclideanSpace.basisFun (Fin m) ℝ (I i))
+            have hprod : ∏ i, ‖EuclideanSpace.basisFun (Fin m) ℝ (I i)‖ = 1 := by
+              simp
+            rw [hprod, mul_one] at h1
+            have h2 : |α (fun i ↦ EuclideanSpace.basisFun (Fin m) ℝ (I i))| ≤ ‖α‖ := by
+              simpa [Real.norm_eq_abs] using h1
+            rw [← sq_abs]
+            exact pow_le_pow_left₀ (abs_nonneg _) h2 2
+          · positivity
+      _ = (Fintype.card (Fin l → Fin m) : ℝ) * ‖α‖ ^ 2 := by simp
+  -- Step 2: `A = S ∩ pL⁻¹(K)` is compact, so measurable with `μ(A) < ∞`; `c = C μ(A)`
+  set μK : ℝ := (μ (S ∩ pL ⁻¹' K)).toReal with hμKdef
+  have hSKm : MeasurableSet (S ∩ pL ⁻¹' K) := hSK.isClosed.measurableSet
+  have hμKfin : μ (S ∩ pL ⁻¹' K) < ∞ := hμ _ hSK
+  refine ⟨C * μK, mul_nonneg hC0 ENNReal.toReal_nonneg, fun ω M hω hωK hωM => ?_⟩
+  -- Step 3: `M ≥ ‖ω(0)‖ ≥ 0`, and `β(x) = ω(pL x) ∘ pL` is continuous
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hωM 0)
+  set β : Euclid P → Covector (Euclid P) l := fun x => (ω (pL x)).compContinuousLinearMap pL
+    with hβdef
+  have hβc : Continuous β := by
+    have := (ContinuousAlternatingMap.compContinuousLinearMapCLM (ι := Fin l) (F := ℝ)
+      pL).continuous.comp (hω.comp pL.continuous)
+    simpa [Function.comp_def] using this
+  -- Step 4: `x ↦ ξ(x)(β(x))` is the continuous evaluation of `(ξ, β)`, so a.e. strongly measurable
+  have hΦm : AEStronglyMeasurable (fun x => ξ x (β x)) μ :=
+    (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) l)
+      (F := ℝ)).continuous.comp_aestronglyMeasurable (hξm.prodMk hβc.aestronglyMeasurable)
+  -- Step 5: `|ξ(x)(β(x))| ≤ g(x) = C M 1_A(x)` for `μ⌞F`-a.e. `x`
+  set g : Euclid P → ℝ := (S ∩ pL ⁻¹' K).indicator (fun _ => C * M) with hgdef
+  have hb : ∀ᵐ x ∂(μ.restrict F), ‖ξ x (β x)‖ ≤ g x := by
+    filter_upwards [ae_restrict_mem hF, ae_restrict_of_ae hξb] with x hxF hx
+    by_cases hxK : pL x ∈ K
+    · rw [hgdef, indicator_of_mem (show x ∈ S ∩ pL ⁻¹' K from ⟨hFS hxF, hxK⟩), Real.norm_eq_abs]
+      calc |ξ x (β x)| ≤ covectorEuclideanNorm (β x) := hx _
+        _ ≤ covectorEuclideanNorm (ω (pL x)) := hN3 _
+        _ ≤ C * ‖ω (pL x)‖ := hN2 _
+        _ ≤ C * M := mul_le_mul_of_nonneg_left (hωM _) hC0
+    · have h0 : ω (pL x) = 0 := hωK _ hxK
+      have hβ0 : β x = 0 := by
+        ext v
+        simp [hβdef, h0]
+      rw [hgdef, indicator_of_notMem (fun h => hxK h.2), hβ0, map_zero, norm_zero]
+  -- Step 6: `g` is `μ⌞F`-integrable since `μ(A ∩ F) ≤ μ(A) < ∞`; domination gives integrability
+  have hgint : Integrable g (μ.restrict F) := by
+    rw [hgdef, integrable_indicator_iff hSKm]
+    refine integrableOn_const ?_
+    rw [Measure.restrict_apply hSKm]
+    exact (lt_of_le_of_lt (measure_mono inter_subset_left) hμKfin).ne
+  refine ⟨Integrable.mono' hgint hΦm.restrict hb, ?_⟩
+  -- Step 7: `|∫_F ξ(β)| ≤ ∫ g d(μ⌞F) = C M μ(A ∩ F) ≤ C M μ(A) = c M`
+  have hle := norm_integral_le_of_norm_le hgint hb
+  rw [Real.norm_eq_abs] at hle
+  refine hle.trans ?_
+  rw [hgdef, integral_indicator hSKm, setIntegral_const, smul_eq_mul]
+  have hle2 : (μ.restrict F).real (S ∩ pL ⁻¹' K) ≤ μK := by
+    rw [Measure.real, Measure.restrict_apply hSKm, hμKdef]
+    exact ENNReal.toReal_mono hμKfin.ne (measure_mono inter_subset_left)
+  have hCM : 0 ≤ C * M := mul_nonneg hC0 hM0
+  calc (μ.restrict F).real (S ∩ pL ⁻¹' K) * (C * M) ≤ μK * (C * M) :=
+        mul_le_mul_of_nonneg_right hle2 hCM
+    _ = C * μK * M := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
