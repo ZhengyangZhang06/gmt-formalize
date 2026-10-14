@@ -739,6 +739,108 @@ theorem Submission.idtp_cse_rc_tf_product_fderiv : ∀ (P : ℕ) (f ζ : Euclid 
   simp only [add_apply, smul_apply, smul_eq_mul, hNv]
   ring
 
+/-- **`C¹` angular test function adapted to the gap hypothesis** (steps 4, 5 and 7 of the parent
+proof).  With `f(y) = arctan(⟨y,e⟩/⟨y,a⟩)`, the cutoff `ζ` of `idtp_cse_rc_cone_cutoff` and
+`h = ψ(f)·l(|·|)·ζ`, take `g = 1_U·h` for `U = {⟨y,a⟩ > 0}`.  Where `h ≠ 0` in `U`, the support
+hypotheses on `ψ`, `l` and `ζ` put `y` in `Z`, hence in the compact set
+`K = {⟨y,a⟩ ≥ 1/2} ∩ B̄(0, 5/4) ⊆ U`; so `g` is `C¹` with compact support, `Dg = Dh` on `U` and
+`Dg = 0` off `U`.  For `⟨x,v⟩ = 0`, `Dh(x)v = ψ(f x)·l(|x|)·Dζ(x)v + ζ(x)·l(|x|)·ψ'(f x)·Df(x)v`.
+On `Z` the gap forces `|x − πx| < (s/2)|x|`, so `ζ(x) = 1` and `Dζ(x) = 0`; off `Z` the first term
+vanishes by the gap and the second because its factors cannot all be nonzero. -/
+theorem Submission.idtp_cse_rc_test_function : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (ψ l : ℝ → ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∃ g : Euclid P → ℝ, ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∈ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2)) ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∉ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = 0) := by
+  intro P Q a e s ψ l hQ ha he hna hne hae hs hs4 hψ hl hψs hls
+  -- step 1: the cutoff `ζ`, the identity `|πy|² = ⟨y,a⟩² + ⟨y,e⟩²` and `Df` on `⟨x,a⟩ > 0`
+  obtain ⟨ζ, hζC, hζ1, hζ0, hζD⟩ := Submission.idtp_cse_rc_cone_cutoff P Q s hs
+  obtain ⟨hπ, hf⟩ := Submission.idtp_cse_rc_angle_fderiv P Q a e hQ ha he hna hne hae
+  have hne0 : ∀ x : Euclid P, 0 < inner ℝ x a → x ≠ 0 := by
+    rintro x hx rfl
+    simp at hx
+  -- `f(y) ∈ (-s, s)` where `ψ(f y) ≠ 0` or `ψ'(f y) ≠ 0`, and `||y| - 1| < s` where `l(|y|) ≠ 0`
+  have hψ_lt : ∀ t : ℝ, ψ t ≠ 0 → |t| < s := fun t ht => abs_lt.2 (hψs (subset_tsupport ψ ht))
+  have hψ'_lt : ∀ t : ℝ, deriv ψ t ≠ 0 → |t| < s := fun t ht =>
+    abs_lt.2 (hψs (support_deriv_subset ht))
+  have hl_lt : ∀ y : Euclid P, l ‖y‖ ≠ 0 → |‖y‖ - 1| < s := fun y hy => by
+    obtain ⟨h1, h2⟩ := hls (subset_tsupport l hy)
+    exact abs_lt.2 ⟨by linarith, by linarith⟩
+  -- `ζ(y) ≠ 0` forces `|y − πy| < s|y|` (by (c))
+  have hζ_lt : ∀ y : Euclid P, y ≠ 0 → ζ y ≠ 0 → ‖y - Q.starProjection y‖ < s * ‖y‖ :=
+    fun y hy hζy => lt_of_not_ge fun hc => hζy (hζ0 y hy hc)
+  -- step 2: `h = ψ(f)·l(|·|)·ζ`, extended by zero off `U = {⟨y,a⟩ > 0}`
+  set U : Set (Euclid P) := {y | 0 < inner ℝ y a}
+  set K : Set (Euclid P) := {y | 1 / 2 ≤ inner ℝ y a} ∩ closedBall 0 (5 / 4)
+  set h : Euclid P → ℝ := fun y => ψ (Real.arctan (inner ℝ y e / inner ℝ y a)) * l ‖y‖ * ζ y
+  have hU : IsOpen U := isOpen_lt continuous_const (by fun_prop)
+  have hK : IsCompact K :=
+    (isCompact_closedBall 0 (5 / 4)).inter_left (isClosed_le continuous_const (by fun_prop))
+  have hKU : K ⊆ U := fun y hy => lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2) hy.1
+  -- step 7: `h` is `C¹` at each point of `U`
+  have hC : ∀ x ∈ U, ContDiffAt ℝ 1 h x := fun x hx =>
+    ((hψ.contDiffAt.comp x (hf x hx).1).mul
+      (hl.contDiffAt.comp x (contDiffAt_norm ℝ (hne0 x hx)))).mul (hζC x (hne0 x hx))
+  -- steps 3–5: where `h ≠ 0` in `U`, `y ∈ Z`, so `⟨y,a⟩ > 1/2` and `|y| < 5/4`
+  have hsupp : ∀ y ∈ U, h y ≠ 0 → y ∈ K := by
+    intro y hy hhy
+    have h1 : ψ (Real.arctan (inner ℝ y e / inner ℝ y a)) ≠ 0 := fun h0 => hhy (by simp [h, h0])
+    have h2 : l ‖y‖ ≠ 0 := fun h0 => hhy (by simp [h, h0])
+    have h3 : ζ y ≠ 0 := fun h0 => hhy (by simp [h, h0])
+    obtain ⟨hya, hyn⟩ := Submission.idtp_cse_rc_tf_support_bound P Q a e y s hs hs4 (hπ y) hy
+      (hl_lt y h2) (hψ_lt _ h1) (hζ_lt y (hne0 y hy) h3)
+    exact ⟨hya.le, mem_closedBall_zero_iff.2 hyn.le⟩
+  obtain ⟨hg, hgc, hDin, hDout⟩ :=
+    Submission.idtp_cse_rc_tf_indicator_extension P U K h hU hK hKU hC hsupp
+  -- step 8, formula (★): for `⟨x,a⟩ > 0` and `⟨x,v⟩ = 0` the radial term drops
+  have hprod : ∀ x v : Euclid P, 0 < inner ℝ x a → inner ℝ x v = 0 →
+      fderiv ℝ h x v = ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * fderiv ℝ ζ x v +
+        ζ x * l ‖x‖ * (deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) *
+          (inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2)) := by
+    intro x v hxa hxv
+    rw [← (hf x hxa).2 v]
+    exact Submission.idtp_cse_rc_tf_product_fderiv P
+      (fun y => Real.arctan (inner ℝ y e / inner ℝ y a)) ζ ψ l x v (hne0 x hxa) hxv
+      (hf x hxa).1.differentiableAt_one (hψ.differentiable_one _) (hl.differentiable_one _)
+      (hζC x (hne0 x hxa)).differentiableAt_one
+  refine ⟨U.indicator h, hg, hgc, ?_, ?_⟩
+  · -- step 9: on `Z` the gap forces `|x − πx| < (s/2)|x|`, so `ζ(x) = 1` and `Dζ(x) = 0`
+    intro x v hxv hgap hxZ
+    obtain ⟨hxa, hx1, hfx, hq⟩ := hxZ
+    have hx0 := hne0 x hxa
+    have hsx : 0 < s * ‖x‖ := mul_pos hs (norm_pos_iff.2 hx0)
+    have hq2 : ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ := by
+      rcases hgap hxa hx1 hfx with hq' | hq'
+      · exact hq'
+      · exact absurd hq' (by linarith)
+    rw [hDin x hxa, hprod x v hxa hxv, hζ1 x hx0 hq2.le, hζD x hx0 (Or.inl hq2),
+      zero_apply]
+    ring
+  · -- step 10: off `Z` both terms of (★) vanish
+    intro x v hxv hgap hxZ
+    by_cases hxa : 0 < inner ℝ x a
+    · have hx0 := hne0 x hxa
+      have hsx : 0 < s * ‖x‖ := mul_pos hs (norm_pos_iff.2 hx0)
+      rw [hDin x hxa, hprod x v hxa hxv]
+      -- first term: where `ψ(f x)·l(|x|) ≠ 0` the gap gives `Dζ(x) = 0` by (d)
+      have t1 : ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * fderiv ℝ ζ x v = 0 := by
+        by_cases h1 : ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) = 0
+        · simp [h1]
+        by_cases h2 : l ‖x‖ = 0
+        · simp [h2]
+        rw [hζD x hx0 ?_, zero_apply, mul_zero]
+        rcases hgap hxa (hl_lt x h2) (hψ_lt _ h1) with hq | hq
+        · exact Or.inl hq
+        · exact Or.inr (by linarith)
+      -- second term: `ζ(x)`, `l(|x|)`, `ψ'(f x)` all nonzero would put `x` in `Z`
+      have t2 : ζ x * l ‖x‖ * (deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) *
+          (inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2)) = 0 := by
+        by_cases h3 : ζ x = 0
+        · simp [h3]
+        by_cases h2 : l ‖x‖ = 0
+        · simp [h2]
+        by_cases h4 : deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) = 0
+        · simp [h4]
+        exact absurd ⟨hxa, hl_lt x h2, hψ'_lt _ h4, hζ_lt x hx0 h3⟩ hxZ
+      rw [t1, t2, add_zero]
+    · rw [hDout x hxa, zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
