@@ -567,6 +567,120 @@ theorem Submission.dimred_mbl_dt_cbm_sp_convex_slice_bound : ∀ (n : ℕ) (Q : 
           rw [setLIntegral_const]
           ring
 
+/-- **Poincaré inequality on a convex set, double-integral form** (the "usual Poincaré inequality
+for smooth functions" of Gilbarg–Trudinger, Lemma 7.16, invoked in Simon's proof of Ch. 2, 2.7).
+For `v ∈ C¹(ℝⁿ)` and convex measurable `Q ⊆ ℝⁿ` with `‖x - y‖ ≤ d` on `Q`,
+`∫_Q ∫_Q |v(x) - v(y)| ≤ 2ⁿ d Lⁿ(Q) ∫_Q ‖Dv‖`.  For `x, y ∈ Q`,
+`dimred_mbl_dt_cbm_sp_segment_bound` gives `|v(x) - v(y)| ≤ d ∫₀¹ ‖Dv((1 - t)y + tx)‖ dt`.
+Integrate over `Q × Q` and move the `t`-integral outside (Tonelli); then
+`dimred_mbl_dt_cbm_sp_convex_slice_bound` bounds each slice by `2ⁿ Lⁿ(Q) ∫_Q ‖Dv‖`.  As `Q` is
+bounded and `‖Dv‖` is continuous, the bound is finite, so it passes from `ℝ≥0∞` to `ℝ`. -/
+theorem Submission.dimred_mbl_dt_cbm_sp_convex_poincare : ∀ (n : ℕ) (Q : Set (Euclid n)) (v : Euclid n → ℝ) (d : ℝ), Convex ℝ Q → MeasurableSet Q → 0 ≤ d → (∀ x ∈ Q, ∀ y ∈ Q, ‖x - y‖ ≤ d) → ContDiff ℝ 1 v → ∫ x in Q, ∫ y in Q, |v x - v y| ≤ 2 ^ n * d * (volume Q).toReal * ∫ z in Q, ‖fderiv ℝ v z‖ := by
+  intro n Q v d hQc hQm hd hdiam hv
+  have hseg := Submission.dimred_mbl_dt_cbm_sp_segment_bound n v
+  have hslice := Submission.dimred_mbl_dt_cbm_sp_convex_slice_bound n Q
+  have hcont : Continuous v := hv.continuous
+  -- Step 1: `F = ‖Dv‖` is continuous and `Q` is bounded, so `Lⁿ(Q) < ∞`, `F ≤ C` on `Q`, and
+  -- `g = ofReal ∘ F` has finite integral over `Q`
+  have hFc : Continuous fun z => ‖fderiv ℝ v z‖ := (hv.continuous_fderiv one_ne_zero).norm
+  have hQb : Bornology.IsBounded Q :=
+    Metric.isBounded_iff.2 ⟨d, fun x hx y hy => by rw [dist_eq_norm]; exact hdiam x hx y hy⟩
+  have hQfin : volume Q < ∞ := hQb.measure_lt_top
+  obtain ⟨C, hC⟩ : ∃ C, ∀ z ∈ closure Q, ‖‖fderiv ℝ v z‖‖ ≤ C :=
+    hQb.isCompact_closure.exists_bound_of_continuousOn hFc.continuousOn
+  obtain ⟨g, hg_def⟩ : ∃ g : Euclid n → ℝ≥0∞, g = fun z => ENNReal.ofReal ‖fderiv ℝ v z‖ :=
+    ⟨_, rfl⟩
+  have hgx : ∀ z, g z = ENNReal.ofReal ‖fderiv ℝ v z‖ := fun z => congrFun hg_def z
+  have hg : Measurable g := hg_def ▸ hFc.measurable.ennreal_ofReal
+  have hJ : ∫⁻ z in Q, g z ≠ ∞ := by
+    have h1 : ∫⁻ z in Q, g z ≤ ∫⁻ _ in Q, ENNReal.ofReal C :=
+      setLIntegral_mono' hQm fun z hz => by
+        rw [hgx]
+        exact ENNReal.ofReal_le_ofReal (by simpa using hC z (subset_closure hz))
+    rw [setLIntegral_const] at h1
+    exact (h1.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hQfin)).ne
+  -- Step 2: for `x, y ∈ Q`, `|v x - v y| ≤ d ∫_(0,1] ‖Dv((1 - t) y + t x)‖ dt`
+  have hpt : ∀ x ∈ Q, ∀ y ∈ Q, ENNReal.ofReal |v x - v y| ≤
+      ENNReal.ofReal d * ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) := by
+    intro x hx y hy
+    set G := ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v ((1 - t) • y + t • x)‖ with hG_def
+    have hG : 0 ≤ G := intervalIntegral.integral_nonneg zero_le_one fun t _ => norm_nonneg _
+    have h1 : |v x - v y| ≤ d * G :=
+      (hseg x y hv).trans (mul_le_mul_of_nonneg_right (hdiam x hx y hy) hG)
+    -- `G` is the integral over `(0, 1]` of a nonnegative continuous function
+    have hmt : AEStronglyMeasurable (fun t : ℝ => ‖fderiv ℝ v ((1 - t) • y + t • x)‖)
+        (volume.restrict (Ioc 0 1)) := by
+      have h : Continuous fun t : ℝ => (1 - t) • y + t • x := by fun_prop
+      exact (hFc.comp h).aestronglyMeasurable
+    have hGle : ENNReal.ofReal G ≤ ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) := by
+      rw [hG_def, intervalIntegral.integral_of_le zero_le_one,
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun t => norm_nonneg _) hmt]
+      simp only [hgx]
+      exact ENNReal.ofReal_toReal_le
+    calc ENNReal.ofReal |v x - v y| ≤ ENNReal.ofReal (d * G) := ENNReal.ofReal_le_ofReal h1
+      _ = ENNReal.ofReal d * ENNReal.ofReal G := ENNReal.ofReal_mul hd
+      _ ≤ _ := by gcongr
+  -- Step 3: move the `t`-integral outside (Tonelli, twice)
+  have hmeas_yt : ∀ x : Euclid n,
+      Measurable (uncurry fun (y : Euclid n) (t : ℝ) => g ((1 - t) • y + t • x)) := fun x =>
+    hg.comp (by fun_prop : Continuous fun p : Euclid n × ℝ => (1 - p.2) • p.1 + p.2 • x).measurable
+  have hmeas_xt : Measurable (uncurry fun (x : Euclid n) (t : ℝ) =>
+      ∫⁻ y in Q, g ((1 - t) • y + t • x)) :=
+    Measurable.lintegral_prod_right'
+      (f := fun q : (Euclid n × ℝ) × Euclid n => g ((1 - q.1.2) • q.2 + q.1.2 • q.1.1))
+      (hg.comp (by fun_prop : Continuous fun q : (Euclid n × ℝ) × Euclid n =>
+        (1 - q.1.2) • q.2 + q.1.2 • q.1.1).measurable)
+  have hswap : ∫⁻ x in Q, ∫⁻ y in Q, ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) =
+      ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ x in Q, ∫⁻ y in Q, g ((1 - t) • y + t • x) := by
+    calc _ = ∫⁻ x in Q, ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ y in Q, g ((1 - t) • y + t • x) :=
+          lintegral_congr fun x => lintegral_lintegral_swap (hmeas_yt x).aemeasurable
+      _ = _ := lintegral_lintegral_swap hmeas_xt.aemeasurable
+  -- Step 4: integrate step 2 over `Q × Q`; the convex slice bound controls each `t`-slice
+  have hI : ∫⁻ x in Q, ∫⁻ y in Q, ENNReal.ofReal |v x - v y| ≤
+      ENNReal.ofReal d * (2 ^ n * volume Q * ∫⁻ z in Q, g z) := by
+    calc ∫⁻ x in Q, ∫⁻ y in Q, ENNReal.ofReal |v x - v y|
+        ≤ ∫⁻ x in Q, ∫⁻ y in Q,
+            ENNReal.ofReal d * ∫⁻ t in Ioc (0 : ℝ) 1, g ((1 - t) • y + t • x) :=
+          setLIntegral_mono' hQm fun x hx => setLIntegral_mono' hQm fun y hy => hpt x hx y hy
+      _ = ENNReal.ofReal d * ∫⁻ t in Ioc (0 : ℝ) 1, ∫⁻ x in Q, ∫⁻ y in Q,
+            g ((1 - t) • y + t • x) := by
+          simp only [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+          rw [hswap]
+      _ ≤ ENNReal.ofReal d * ∫⁻ _ in Ioc (0 : ℝ) 1, 2 ^ n * volume Q * ∫⁻ z in Q, g z := by
+          gcongr ENNReal.ofReal d * ?_
+          exact setLIntegral_mono' measurableSet_Ioc fun t ht =>
+            hslice g hQc hQm hg t (Ioc_subset_Icc_self ht)
+      _ = ENNReal.ofReal d * (2 ^ n * volume Q * ∫⁻ z in Q, g z) := by
+          rw [setLIntegral_const, Real.volume_Ioc, sub_zero, ENNReal.ofReal_one, mul_one]
+  -- Step 5: back to Bochner integrals; the bound is finite by step 1
+  have hK : Measurable fun x : Euclid n => ∫⁻ y in Q, ENNReal.ofReal |v x - v y| := by
+    have h : Continuous fun p : Euclid n × Euclid n => |v p.1 - v p.2| := by fun_prop
+    exact Measurable.lintegral_prod_right'
+      (f := fun p : Euclid n × Euclid n => ENNReal.ofReal |v p.1 - v p.2|)
+      h.measurable.ennreal_ofReal
+  have hinner : ∀ x : Euclid n, ∫ y in Q, |v x - v y| =
+      (∫⁻ y in Q, ENNReal.ofReal |v x - v y|).toReal := fun x =>
+    integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun y => abs_nonneg _)
+      (by fun_prop : Continuous fun y => |v x - v y|).aestronglyMeasurable
+  have hrhs : ∫ z in Q, ‖fderiv ℝ v z‖ = (∫⁻ z in Q, g z).toReal := by
+    rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun z => norm_nonneg _)
+      hFc.aestronglyMeasurable]
+    simp only [hgx]
+  have hfin : ENNReal.ofReal d * (2 ^ n * volume Q * ∫⁻ z in Q, g z) ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top (ENNReal.mul_ne_top (ENNReal.mul_ne_top
+      (ENNReal.pow_ne_top ENNReal.ofNat_ne_top) hQfin.ne) hJ)
+  calc ∫ x in Q, ∫ y in Q, |v x - v y|
+      = ∫ x in Q, (∫⁻ y in Q, ENNReal.ofReal |v x - v y|).toReal := by simp only [hinner]
+    _ = (∫⁻ x in Q, ENNReal.ofReal (∫⁻ y in Q, ENNReal.ofReal |v x - v y|).toReal).toReal :=
+        integral_eq_lintegral_of_nonneg_ae (ae_of_all _ fun x => ENNReal.toReal_nonneg)
+          hK.ennreal_toReal.aestronglyMeasurable
+    _ ≤ (ENNReal.ofReal d * (2 ^ n * volume Q * ∫⁻ z in Q, g z)).toReal :=
+        ENNReal.toReal_mono hfin ((lintegral_mono fun x => ENNReal.ofReal_toReal_le).trans hI)
+    _ = 2 ^ n * d * (volume Q).toReal * ∫ z in Q, ‖fderiv ℝ v z‖ := by
+        rw [hrhs, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_pow,
+          ENNReal.toReal_ofNat, ENNReal.toReal_ofReal hd]
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
