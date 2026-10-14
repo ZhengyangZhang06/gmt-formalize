@@ -451,6 +451,53 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A top-degree test form with positive integral**: for `p ∈ ℝⁿ` and `r > 0` some
+`ω ∈ 𝒟ⁿ(ℝⁿ)` has `spt ω ⊆ B̄_r(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0`, `e` the standard basis.
+Take `ω = a e*`: `e* = det_e` is continuous (`det_e v = det (vⱼ(k))_{k,j}`) with `e*(e) = 1`,
+and `a` is a smooth bump with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`.  Then
+`ω(y)(e) = a(y)`, and `∫ a > 0` as `a ≥ 0` is continuous, compactly supported, `a(p) = 1`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_bump_form : ∀ (n : ℕ) (p : Euclid n) (r : ℝ), 0 < r → ∃ ω : TestFormOn (univ : Set (Euclid n)) n, tsupport (ω : DifferentialForm (Euclid n) n) ⊆ closedBall p r ∧ 0 < ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n p r hr
+  -- Step 1: the covector `e* = det_e`; `det_e v = det (vⱼ(k))_{k,j}` is continuous in `v`
+  let e := EuclideanSpace.basisFun (Fin n) ℝ
+  let D : Euclid n [⋀^Fin n]→ₗ[ℝ] ℝ := e.toBasis.det
+  have hD : ∀ v : Fin n → Euclid n, D v = (Matrix.of fun k j => v j k).det := by
+    intro v
+    have hM : e.toBasis.toMatrix v = Matrix.of fun k j => v j k := by
+      ext k j
+      simp [e, Module.Basis.toMatrix_apply]
+    rw [Module.Basis.det_apply, hM]
+  have hDcont : Continuous fun v : Fin n → Euclid n => D v := by
+    simp_rw [hD]
+    exact Continuous.matrix_det (continuous_matrix fun k j =>
+      (PiLp.continuous_apply 2 _ k).comp (continuous_apply j))
+  let estar : Covector (Euclid n) n := { D with cont := hDcont }
+  have hestar : estar ⇑e = 1 := by
+    change D ⇑e = 1
+    rw [← OrthonormalBasis.coe_toBasis]
+    exact e.toBasis.det_self
+  -- Step 2: a smooth bump `a` with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`
+  let a : ContDiffBump p := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  -- Step 3: the test form `ω = a e*`, with `tsupport ω ⊆ tsupport a = B̄_r(p)`
+  let ω : DifferentialForm (Euclid n) n := fun y => a y • estar
+  have hωsmooth : IsSmoothForm ω := (a.contDiff (n := ⊤)).smul contDiff_const
+  have hωcpt : HasCompactSupport ω := a.hasCompactSupport.smul_right
+  have hωsupp : tsupport ω ⊆ closedBall p r :=
+    (tsupport_smul_subset_left (fun y => a y) fun _ => estar).trans a.tsupport_eq.subset
+  refine ⟨⟨ω, ⟨hωsmooth, hωcpt⟩, subset_univ _⟩, hωsupp, ?_⟩
+  -- Step 4: `ω(y)(e) = a(y) e*(e) = a(y)`, and `∫ a > 0` since `a ≥ 0` is continuous with
+  -- compact support and `a(p) = 1`
+  have hωe : ∀ y, ω y ⇑e = a y := by
+    intro y
+    simp only [ω, ContinuousAlternatingMap.smul_apply, hestar, smul_eq_mul, mul_one]
+  have hap : a p ≠ 0 := by
+    rw [a.one_of_mem_closedBall (mem_closedBall_self (half_pos hr).le)]
+    exact one_ne_zero
+  change 0 < ∫ y, ω y ⇑e
+  simp_rw [hωe]
+  exact a.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero a.hasCompactSupport
+    (fun _ => a.nonneg) hap
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
