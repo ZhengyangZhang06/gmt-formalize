@@ -1898,6 +1898,105 @@ theorem Submission.dtc_bc_lc_pf_ext_mollify_tendstoUniformly : ∀ (P n : ℕ) (
   refine lt_of_le_of_lt ?_ (half_lt_self hε)
   exact dist_convolution_le (half_pos hε).le (hψs j) (hψ0 j) (hψ1 j) hhc.aestronglyMeasurable
     fun y hy => (hhδ ((mem_ball.mp hy).trans_le ((Nat.one_div_le_one_div hj).trans hJ.le))).le
+/-- **Limit of `IMRep` integrals under uniform convergence on a compact carrier set** (Simon
+Ch. 6, 2.24(2) with the integral representation 6.3.1 (‡); chapter-06.txt lines 415–424, 271).
+Let `R = (M, θ, ξ)` be an `IMRep` in `U`, `K ⊆ U` compact with `Hⁿ(M \ K) = 0`, and `gⱼ`, `g`
+continuous `n`-covector fields with `gⱼ → g` uniformly on `K`.  Then
+`∫_M θ ⟨gⱼ, ξ⟩ dHⁿ → ∫_M θ ⟨g, ξ⟩ dHⁿ`.
+
+Write `μ = Hⁿ⌞M`.  `μ`-a.e. `x` lies in `K`, and `M =ᵐ M ∩ K`, so `θ` is `μ`-integrable by the
+local integrability of `θ` on `K`.  A unit orientation has `|ξ(x)(β)| = |β(τ)| ≤ ‖β‖` (`τ`
+orthonormal), so for continuous `G` the integrand `θ ξ(G)` is a.e. strongly measurable and
+dominated by `(sup_K ‖G‖) θ`, hence integrable.  Finally
+`|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ ∫ θ ‖gⱼ − g‖ dμ ≤ Θ ε/(Θ + 1) < ε` for large `j`,
+where `Θ = ∫ θ dμ`. -/
+theorem Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (gs : ℕ → Euclid P → Covector (Euclid P) n) (g : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → (∀ j, Continuous (gs j)) → Continuous g → TendstoUniformlyOn gs g atTop K → Tendsto (fun j => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (gs j x) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (g x) ∂μHE[n])) := by
+  intro P n U K R gs g hK hKU hnull hgs hg hunif
+  set μ := μHE[n].restrict R.carrier with hμ
+  -- (1) `μ`-a.e. point lies in `K`, as `Hⁿ(M \ K) = 0`
+  have hae : ∀ᵐ x ∂μ, x ∈ K := by
+    rw [hμ, ae_restrict_iff' R.measurableSet_carrier, ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hnull
+    simp only [mem_ofPred_eq, not_imp] at hx
+    exact hx
+  -- (2) a unit orientation has norm at most one
+  have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    intro α
+    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
+    have hατ : |α τ| ≤ ‖α‖ := by
+      have h := α.le_opNorm τ
+      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    rcases hξ with h | h
+    · rw [h]; exact hατ
+    · rw [h, abs_neg]; exact hατ
+  -- (3) `θ` is `μ`-integrable: `μ = Hⁿ⌞(M ∩ K)` and `∫_{M ∩ K} θ dHⁿ < ∞`
+  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
+    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
+  have hμK : μ = μHE[n].restrict (R.carrier ∩ K) := by
+    rw [hμ]
+    refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
+    · rw [sdiff_self_inter]
+      exact hnull
+    · rw [sdiff_eq_empty.2 inter_subset_left]
+      exact measure_empty
+  have hθint : Integrable (fun x => (R.mult x : ℝ)) μ := by
+    refine ⟨hθmeas, ?_⟩
+    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂μ < ∞
+    rw [hμK]
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
+  -- (4) measurability of the integrand for continuous `G`
+  have hmeas : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    have h2 : AEStronglyMeasurable (fun x => R.orient x (G x)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
+        R.aestronglyMeasurable_orient hG.aestronglyMeasurable
+    exact hθmeas.mul h2
+  -- (5) integrability of the integrand for continuous `G`: it is dominated by `(sup_K ‖G‖) θ`
+  have hint : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hG.continuousOn
+    refine Integrable.mono' (hθint.const_mul C) (hmeas G hG) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (G x)| ≤ (R.mult x : ℝ) * ‖G x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x hxK
+      _ = C * (R.mult x : ℝ) := mul_comm _ _
+  -- (6) the estimate `|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ Θ ε/(Θ + 1) < ε` for large `j`
+  set Θ := ∫ x, (R.mult x : ℝ) ∂μ with hΘdef
+  have hΘ : 0 ≤ Θ := integral_nonneg fun x => Nat.cast_nonneg _
+  rw [Metric.tendstoUniformlyOn_iff] at hunif
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hε' : 0 < ε / (Θ + 1) := div_pos hε (by linarith)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif (ε / (Θ + 1)) hε')
+  refine ⟨N, fun j hj => ?_⟩
+  rw [Real.dist_eq, ← integral_sub (hint _ (hgs j)) (hint _ hg), ← Real.norm_eq_abs]
+  have hle : ‖∫ x, ((R.mult x : ℝ) * R.orient x (gs j x) - (R.mult x : ℝ) * R.orient x (g x)) ∂μ‖
+      ≤ ∫ x, ε / (Θ + 1) * (R.mult x : ℝ) ∂μ := by
+    refine norm_integral_le_of_norm_le (hθint.const_mul _) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [← mul_sub, ← (R.orient x).map_sub, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (gs j x - g x)| ≤ (R.mult x : ℝ) * ‖gs j x - g x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * (ε / (Θ + 1)) := by
+          gcongr
+          have h := hN j hj x hxK
+          rw [dist_comm, dist_eq_norm] at h
+          exact h.le
+      _ = ε / (Θ + 1) * (R.mult x : ℝ) := mul_comm _ _
+  rw [integral_const_mul, ← hΘdef] at hle
+  refine hle.trans_lt ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
