@@ -841,6 +841,68 @@ theorem Submission.cmcdtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → F
   · exact Or.inr fun α => by rw [h1, h2]
   · exact Or.inl fun α => by rw [h1, h2, neg_neg]
 
+/-- **On a Borel subset of a coordinate `n`-plane the orientation is a Borel sign times
+`e_{ι(1)} ∧ ⋯ ∧ e_{ι(n)}`** (Simon Ch. 6, proof of 5.1, (26)–(28): the orientation of `T` on a
+face `F̆` of the cube lattice).  Assume (IMC-b), the restriction `τ(M ∩ E, θ, ξ)` of `τ(M, θ, ξ)`
+to a Borel set `E` (`U` open), and (PO), `cmcdtfr_plane_orientation`.  Let `E` lie in the
+coordinate plane through `c` spanned by `e_ι = (e_{ι(0)}, …, e_{ι(n-1)})`.  The restriction
+orients the approximate tangent planes `Q` of `M ∩ E` by `ξ(x)` a.e., and points of `M ∩ E` agree
+with `x` off `range ι`, so (PO) gives `ξ(x) = ±e` a.e. on `M ∩ E`, where `e = (α ↦ α(e_ι))`.  For
+a strongly measurable version `ξ̃` of `ξ`, the sign `σ = 1` on `{ξ̃ = e}`, `-1` on
+`{ξ̃ ≠ e, ξ̃ = -e}`, `0` elsewhere is Borel with `|σ| ≤ 1`, and `ξ(x)(α) = σ(x) α(e_ι)` a.e. on
+`M ∩ E`. -/
+theorem Submission.cmcdtfrsd_coordinate_plane_orientation_sign : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)))) → ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ι : Fin n → Fin P) (c : Euclid P) (E : Set (Euclid P)), IsOpen U → StrictMono ι → MeasurableSet E → (∀ a ∈ E, ∀ i, (∀ j, ι j ≠ i) → a i = c i) → ∃ σ : Euclid P → ℤ, Measurable σ ∧ (∀ x, |σ x| ≤ 1) ∧ ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ E)), ∀ α : Covector (Euclid P) n, R.orient x α = (σ x : ℝ) * α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) := by
+  intro hIMC hPO P n U R ι c E hU hι hE hEc
+  classical
+  -- Step 1: (IMC-b) restricts `R` to `M ∩ E` keeping `ξ`, and `R'.orients` orients its tangents
+  obtain ⟨-, R', -, hcarr, -, horient⟩ := hIMC P n U R E hU hE
+  have hor := R'.orients
+  rw [hcarr, horient] at hor
+  -- Step 2: points of `M ∩ E` agree with `x ∈ M ∩ E` off `range ι`, so (PO) gives `ξ(x) = ±e_ι`
+  have hME : MeasurableSet (R.carrier ∩ E) := R.measurableSet_carrier.inter hE
+  have hsign : ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ E)),
+      (∀ α : Covector (Euclid P) n,
+          R.orient x α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨
+        ∀ α : Covector (Euclid P) n,
+          R.orient x α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) := by
+    filter_upwards [hor, ae_restrict_mem hME] with x ⟨Q, hQ, hξ⟩ hx
+    refine hPO P n ι (R.carrier ∩ E) x Q (R.orient x) hι (fun a ha i hi => ?_) hQ hξ
+    rw [hEc a ha.2 i hi, hEc x hx.2 i hi]
+  -- Step 3: a strongly measurable version `ξ̃` of `ξ`, equal to `ξ` a.e. on `M ∩ E ⊆ M`
+  set ξ' := R.aestronglyMeasurable_orient.mk R.orient
+  have hξ'm : StronglyMeasurable ξ' := R.aestronglyMeasurable_orient.stronglyMeasurable_mk
+  have hξξ' : R.orient =ᵐ[μHE[n].restrict (R.carrier ∩ E)] ξ' :=
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left R.aestronglyMeasurable_orient.ae_eq_mk
+  -- Step 4: the coordinate `n`-vector `e = (α ↦ α(e_ι))`
+  set e : MultiVector P n :=
+    ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  -- Step 5: the sign `σ`; `{ξ̃ = ±e}` are Borel, as `MultiVector P n` is metrizable (the
+  -- pseudometrizability of its normed structure is not found by instance search)
+  have hT0 : T0Space (MultiVector P n) := inferInstance
+  have : TopologicalSpace.MetrizableSpace (MultiVector P n) :=
+    let m : PseudoMetricSpace (MultiVector P n) := inferInstance
+    { toPseudoMetrizableSpace := ⟨⟨m.toUniformSpace, rfl,
+        @EMetric.instIsCountablyGeneratedUniformity _ m.toPseudoEMetricSpace⟩⟩
+      toT0Space := hT0 }
+  refine ⟨fun x => if ξ' x = e then 1 else if ξ' x = -e then -1 else 0,
+    Measurable.ite (hξ'm.measurableSet_eq_fun stronglyMeasurable_const) measurable_const
+      (Measurable.ite (hξ'm.measurableSet_eq_fun stronglyMeasurable_const) measurable_const
+        measurable_const), fun x => ?_, ?_⟩
+  · dsimp only
+    split_ifs <;> norm_num
+  -- Step 6: case analysis on `ξ(x) = ±e`
+  filter_upwards [hsign, hξξ'] with x hx hxx' α
+  rcases hx with h | h
+  · -- `ξ(x) = e`, so `ξ̃(x) = e` and `σ(x) = 1`
+    have hxe : ξ' x = e := hxx' ▸ ContinuousLinearMap.ext fun β => h β
+    rw [h α, ite_eq_left hxe, Int.cast_one, one_mul]
+  · -- `ξ(x) = -e`, so `ξ̃(x) = -e`; `σ(x) = 1` if also `ξ̃(x) = e`, else `σ(x) = -1`
+    have hxe : ξ' x = -e := hxx' ▸ ContinuousLinearMap.ext fun β => h β
+    by_cases hxe' : ξ' x = e
+    · rw [ite_eq_left hxe', Int.cast_one, one_mul, hxx', hxe']
+      rfl
+    · rw [h α, ite_eq_right hxe', ite_eq_left hxe, Int.cast_neg, Int.cast_one, neg_one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
