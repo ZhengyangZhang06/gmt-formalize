@@ -17369,6 +17369,21 @@ theorem Submission.dimred_cs_sos_minimality_transfer : ∀ (P n : ℕ) (S : Geom
     rw [hrr]
   linarith
 
+/-- **Simon Lemma 7.3.5 (p. 190), minimality of `S₀`.**  If the minimizing `S ∈ 𝒟ₙ(ℝᴾ)` is the
+product `[[L]] × S₀` (measure identity and action formula; `d = dim L ≥ 1`, `f` an orthonormal
+frame of `L`) of `L` with an integer multiplicity cycle `S₀ ∈ 𝒟ₘ(ℝᴾ)`, `m = n − d`, concentrated
+on `L^⊥`, then `S₀` is minimizing in `L^⊥`.
+The frozen type is identical to that of the accepted `dimred_cs_sos_minimality_transfer`, an
+inherited prerequisite of this node that formalizes the same proof: a competitor `S₀'` with
+`M_{W₀}(S₀') < M_{W₀}(S₀)` gives the integer multiplicity cycle `X₀ = S₀' − S₀`, which bounds a
+cone `Y₀` with compact support in `L^⊥`; the cube cycle `[[Q_r]] × X₀ + E'` turns it into a
+competitor `S + Z` for `S`, so `(2r)^d M_{W₀}(S₀) ≤ (2r)^d M_{W₀}(S₀') + 2d(2r)^{d−1} M(Y₀)`,
+which fails for `r > d M(Y₀)/(M_{W₀}(S₀) − M_{W₀}(S₀'))`. -/
+theorem Submission.idtp_fons_cs_sos_minimality_transfer : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (f : Fin (Module.finrank ℝ L) → Euclid P) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (hd : Module.finrank ℝ L < n), 0 < Module.finrank ℝ L → Orthonormal ℝ f → (∀ i, f i ∈ L) → IsMinimizingIn S univ → R.Represents S → R₀.Represents S₀ → BoundaryVanishes S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) (n - Module.finrank ℝ L), (∀ (α : Covector (Euclid P) n) (v : Fin (n - Module.finrank ℝ L) → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast (Nat.add_sub_of_le hd.le).symm)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (L : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[Module.finrank ℝ L]) → IsMinimizingIn S₀ (Lᗮ : Set (Euclid P)) := by
+  intro P n S R L f S₀ R₀ hd hk hf hfL hSmin hR hR₀ hS₀ hR₀L hmeas hprod
+  exact Submission.dimred_cs_sos_minimality_transfer P n S R L f S₀ R₀ hd hk hf hfL hSmin hR hR₀
+    hS₀ hR₀L hmeas hprod
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
