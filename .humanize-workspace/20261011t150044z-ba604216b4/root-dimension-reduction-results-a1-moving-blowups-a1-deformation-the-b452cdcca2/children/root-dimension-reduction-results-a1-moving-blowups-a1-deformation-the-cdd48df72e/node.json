@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 5,
+  "title": "Divergence theorem with trace estimate on Q_δ for C¹ functions (0 ≤ δ ≤ 1/4)",
+  "statement": "Let m ∈ ℕ, n := m + 1, 0 ≤ δ ≤ 1/4 and Q_δ := {y ∈ ℝⁿ : δ < y_i < 1 − δ for all i} ⊆ Euclid n (Lebesgue measure), div G := trace DG. For every C¹ function v : ℝⁿ → ℝ and every C¹ map G : ℝⁿ → ℝⁿ with |G(y)| ≤ 1 for all y: |∫_{Q_δ} v · div G| ≤ (2n + 1)∫_{Q_δ}‖Dv‖ + 4n∫_{Q_δ}|v|, where 2n + 1 = 2(m + 1) + 1 and 4n = 4(m + 1).",
+  "lean_statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), ContDiff ℝ 1 v → ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → 0 ≤ δ → δ ≤ 1 / 4 → |∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x)| ≤ (2 * (m + 1) + 1) * (∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖) + 4 * (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x|",
+  "lean_name": "dimred_mbl_dt_cbm_smooth_trace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-cdd48df72e-a1"
+}
