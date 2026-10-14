@@ -2643,6 +2643,47 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Homogeneous measures have dilation-invariant upper density ratios** (the weight of a
+tangent cone in the proof of Simon 7.3.3, homogeneous of degree `n` by
+`cone_current_imrep_measure_smul_image` since `η_{0,λ#}C = C`, 7.3.1(2)).  If `ν(λA) = λⁿ ν(A)`
+for every `λ > 0` and Borel `A`, then for `t > 0` the ratios `r_ν(y, ρ) = ν(B_ρ(y))/(ωₙρⁿ)` (in
+`[0, ∞]`, no finiteness of `ωₙ` used) satisfy `limsup_{ρ↓0} r_ν(tw, ρ) = limsup_{ρ↓0} r_ν(w, ρ)`:
+`B_ρ(tw) = t B_{ρ/t}(w)` and `ωₙρⁿ = tⁿ ωₙ(ρ/t)ⁿ`, so cancelling the finite nonzero factor `tⁿ`
+gives `r_ν(tw, ρ) = r_ν(w, ρ/t)` for `ρ > 0`, and `ρ ↦ ρ/t` maps `𝓝[>] 0` onto itself. -/
+theorem Submission.idtp_fons_cc_tm_density_homogeneous : ∀ (P n : ℕ) (ν : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * ν A) → ∀ t : ℝ, 0 < t → ∀ w : Euclid P, limsup (fun ρ : ℝ => ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) := by
+  intro P n ν hν t ht w
+  -- steps 1–4: `r_ν(tw, ρ) = r_ν(w, ρ/t)` for every `ρ > 0`
+  have hratio : ∀ ρ : ℝ, 0 < ρ →
+      ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) =
+        ν (ball w (ρ / t)) / (unitBallVolume n * ENNReal.ofReal ((ρ / t) ^ n)) := by
+    intro ρ _
+    -- step 1: `B_ρ(tw) = t • B_{ρ/t}(w)`, as `‖t‖ (ρ/t) = ρ`
+    have hball : ball (t • w) ρ = (fun x => t • x) '' ball w (ρ / t) := by
+      rw [image_smul, smul_ball ht.ne', Real.norm_of_nonneg ht.le, mul_div_cancel₀ ρ ht.ne']
+    -- step 3: `ωₙρⁿ = tⁿ (ωₙ(ρ/t)ⁿ)`, as `ρⁿ = tⁿ(ρ/t)ⁿ`
+    have hden : unitBallVolume n * ENNReal.ofReal (ρ ^ n) =
+        ENNReal.ofReal (t ^ n) * (unitBallVolume n * ENNReal.ofReal ((ρ / t) ^ n)) := by
+      rw [mul_left_comm, ← ENNReal.ofReal_mul (pow_nonneg ht.le n), ← mul_pow,
+        mul_div_cancel₀ ρ ht.ne']
+    -- steps 2 and 4: `ν(B_ρ(tw)) = tⁿ ν(B_{ρ/t}(w))`, and cancel the finite nonzero `tⁿ`
+    rw [hball, hν t ht _ measurableSet_ball, hden,
+      ENNReal.mul_div_mul_left _ _ (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne' ENNReal.ofReal_ne_top]
+  -- step 7: `ρ ↦ ρ/t` maps `𝓝[>] 0` onto itself, its inverse being `ρ ↦ tρ`
+  have hmap : map (fun ρ : ℝ => ρ / t) (𝓝[>] 0) = 𝓝[>] 0 := by
+    rw [map_eq_comap_of_inverse (m := fun ρ : ℝ => ρ / t) (n := fun ρ : ℝ => t * ρ)
+      (funext fun ρ => mul_div_cancel_left₀ ρ ht.ne') (funext fun ρ => mul_div_cancel₀ ρ ht.ne'),
+      comap_mulLeft_nhdsGT_zero ht]
+  -- steps 5, 6 and 8: eventual equality along `𝓝[>] 0`, then change variables `ρ ↦ ρ/t`
+  calc limsup (fun ρ : ℝ => ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+        (𝓝[>] 0)
+      = limsup ((fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) ∘
+          fun ρ => ρ / t) (𝓝[>] 0) :=
+        limsup_congr (eventually_nhdsWithin_of_forall fun ρ hρ => hratio ρ hρ)
+    _ = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+          (map (fun ρ => ρ / t) (𝓝[>] 0)) := limsup_comp _ _ _
+    _ = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)))
+          (𝓝[>] 0) := by rw [hmap]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
