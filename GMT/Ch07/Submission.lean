@@ -4518,6 +4518,207 @@ theorem Submission.dtc_bc_lc_sl_cc_slice_disks : ∀ (P n : ℕ) (ψ : Euclid (n
     show ψ (Θ (Nat.unpair j).1 (c t w)) = ψ (Θ k z)
     rw [hjk, hcw]
 
+/-- **Co-area formula on a `C¹` chart** (Simon Ch. 2, 6.3, 6.4 and 6.6, in the parametrised form).
+Let `ψ : ℝ^{n+1} → ℝᴾ` be `C¹`, injective with injective derivative on the open `V`, `F` `C¹`, and
+`Y` Borel with `closure Y` a compact subset of `V`.  Let `G ∘ ψ` represent `DF` along `ψ` on `Y`.
+Then (i) for Borel `g ≥ 0`, `t ↦ ∫_{ψ(Y ∩ F⁻¹t)} g dHⁿ` is a.e.-measurable with
+`∫_ℝ ∫_{ψ(Y ∩ F⁻¹t)} g dHⁿ dt = ∫_{ψ(Y)} |G| g dH^{n+1}`, and (ii) for a.e. `t` the slice
+`S_t = ψ(Y ∩ F⁻¹t)` is countably `n`-rectifiable, and `Hⁿ`-a.e. on `S_t`, `G ≠ 0` and
+`T_x S_t = Dψ(y)(ℝ^{n+1}) ∩ G(x)^⊥` for `ψ(y) = x`.
+
+Proof sketch:
+* Split `Y = Y_r ⊔ Y_c` by `DF ≠ 0` and `DF = 0`; `G ∘ ψ = 0` on `Y_c`, `G ∘ ψ ≠ 0` on `Y_r`.
+* `ψ` is Lipschitz on `closure Y`, so Eilenberg's inequality (via `critical_null`) gives
+  `Hⁿ(ψ(Y_c ∩ F⁻¹t)) = 0` for a.e. `t`.
+* (i): `regular_coarea` on `Y_r`; the slices of `Y` and `Y_r` agree up to the null critical slice,
+  and `∫_{ψ(Y_c)} |G| g = 0`.
+* `|G| ≤ Γ` on `ψ(Y)` (`chart_gradient`, continuity on the compact `closure Y`) and
+  `H^{n+1}(ψ(Y)) < ∞`, so (i) with `g = 1` gives `Hⁿ(S_t) < ∞` for a.e. `t`.
+* For such `t`, `slice_disks` covers the regular part of `S_t` by `C¹` disks `χⱼ(Bⱼ)`: this gives
+  rectifiability, and `c1_tangent` with tangent locality (`cmc_imRep_locality_restrict_sub` (a))
+  on `S_t ∩ χⱼ(Bⱼ)` gives the tangent planes. -/
+theorem Submission.dtc_bc_lc_sl_chart_coarea : ∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n] = ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) ∧ ∀ᵐ t, CountablyRectifiable n (ψ '' (Y ∩ F ⁻¹' {t})) ∧ ∀ᵐ x ∂(μHE[n].restrict (ψ '' (Y ∩ F ⁻¹' {t}))), G x ≠ 0 ∧ ∀ y ∈ Y, ψ y = x → HasApproximateTangentSpaceAt n (ψ '' (Y ∩ F ⁻¹' {t})) x (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ G x)ᗮ) := by
+  intro P n ψ V Y F G hV hψ hψV hDψ hF hY hYcpt hYV hG
+  have hYsV : Y ⊆ V := subset_closure.trans hYV
+  -- `ψ` maps Borel subsets of `V` onto Borel sets (Lusin–Souslin)
+  have himg : ∀ s ⊆ V, MeasurableSet s → MeasurableSet (ψ '' s) := fun s hsV hs =>
+    hs.image_of_continuousOn_injOn hψ.continuous.continuousOn (hψV.mono hsV)
+  -- `G ∘ ψ` represents `DF` along `ψ` on `Y`, so it vanishes exactly at the critical points
+  have hG0 : ∀ y ∈ Y, fderiv ℝ F y = 0 → G (ψ y) = 0 := by
+    intro y hy hy0
+    obtain ⟨w, hw⟩ := (hG y hy).1
+    have h1 := (hG y hy).2 w
+    rw [ContinuousLinearMap.coe_coe] at hw
+    rw [hy0, zero_apply, hw] at h1
+    exact inner_self_eq_zero.1 h1
+  have hGne : ∀ y ∈ Y, fderiv ℝ F y ≠ 0 → G (ψ y) ≠ 0 := by
+    intro y hy hy0 h0
+    refine hy0 (ContinuousLinearMap.ext fun e => ?_)
+    rw [zero_apply, ← (hG y hy).2 e, h0, inner_zero_left]
+  -- the regular part `Y_r` and the critical part `Y_c` of `Y`
+  have hZ : MeasurableSet {y : Euclid (n + 1) | fderiv ℝ F y = 0} :=
+    (isClosed_eq (hF.continuous_fderiv one_ne_zero) continuous_const).measurableSet
+  set Yr : Set (Euclid (n + 1)) := Y ∩ {y | fderiv ℝ F y ≠ 0}
+  set Yc : Set (Euclid (n + 1)) := Y ∩ {y | fderiv ℝ F y = 0}
+  have hYrm : MeasurableSet Yr := hY.inter hZ.compl
+  have hYcm : MeasurableSet Yc := hY.inter hZ
+  have hYrV : Yr ⊆ V := inter_subset_left.trans hYsV
+  have hYcV : Yc ⊆ V := inter_subset_left.trans hYsV
+  have hYrc : Yr ∪ Yc = Y := by
+    ext y
+    constructor
+    · rintro (⟨hy, -⟩ | ⟨hy, -⟩) <;> exact hy
+    · intro hy
+      by_cases hy0 : fderiv ℝ F y = 0
+      exacts [Or.inr ⟨hy, hy0⟩, Or.inl ⟨hy, hy0⟩]
+  -- `ψ` is Lipschitz on `closure Y`
+  obtain ⟨R, hR⟩ := hYcpt.isBounded.subset_closedBall (0 : Euclid (n + 1))
+  obtain ⟨K, hK⟩ := (hψ.contDiffOn (s := closedBall (0 : Euclid (n + 1)) R)).exists_lipschitzOnWith
+    one_ne_zero (convex_closedBall _ _) (isCompact_closedBall _ _)
+  have hKY : LipschitzOnWith K ψ (closure Y) := hK.mono hR
+  -- Step 1 (Sard-type 6.4): the critical slices are `Hⁿ`-null for a.e. `t`
+  obtain ⟨C, hC⟩ := Submission.dtc_bc_lc_sl_eilenberg n
+  have hcrit : ∀ᵐ t, μHE[n] (ψ '' (Yc ∩ F ⁻¹' {t})) = 0 := by
+    filter_upwards [Submission.dtc_bc_lc_sl_cc_critical_null n C
+      (fun A f L hL => hC (n + 1) A f L hL) F Yc hF fun y hy => hy.2] with t ht
+    refine le_antisymm ?_ zero_le
+    calc μHE[n] (ψ '' (Yc ∩ F ⁻¹' {t})) ≤ (K : ℝ≥0∞) ^ n * μHE[n] (Yc ∩ F ⁻¹' {t}) :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+            (hKY.mono fun y hy => subset_closure hy.1.1)
+      _ = 0 := by rw [ht, mul_zero]
+  -- Step 4: the slices of `Y` and of `Y_r` agree up to the null critical slice
+  have hslice : ∀ t, ψ '' (Y ∩ F ⁻¹' {t}) = ψ '' (Yr ∩ F ⁻¹' {t}) ∪ ψ '' (Yc ∩ F ⁻¹' {t}) := by
+    intro t
+    rw [← image_union, ← union_inter_distrib_right, hYrc]
+  have hslice_ae : ∀ g : Euclid P → ℝ≥0∞,
+      (fun t => ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n]) =ᵐ[volume]
+        fun t => ∫⁻ x in ψ '' (Yr ∩ F ⁻¹' {t}), g x ∂μHE[n] := by
+    intro g
+    filter_upwards [hcrit] with t ht
+    rw [hslice t]
+    refine le_antisymm ?_ (lintegral_mono_set subset_union_left)
+    calc ∫⁻ x in ψ '' (Yr ∩ F ⁻¹' {t}) ∪ ψ '' (Yc ∩ F ⁻¹' {t}), g x ∂μHE[n]
+        ≤ ∫⁻ x in ψ '' (Yr ∩ F ⁻¹' {t}), g x ∂μHE[n] +
+            ∫⁻ x in ψ '' (Yc ∩ F ⁻¹' {t}), g x ∂μHE[n] := lintegral_union_le _ _ _
+      _ = ∫⁻ x in ψ '' (Yr ∩ F ⁻¹' {t}), g x ∂μHE[n] := by
+          rw [setLIntegral_measure_zero _ _ ht, add_zero]
+  -- `G = 0` on `ψ(Y_c)`, so only `ψ(Y_r)` contributes to the right side
+  have hrhs : ∀ g : Euclid P → ℝ≥0∞,
+      ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] =
+        ∫⁻ x in ψ '' Yr, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+    intro g
+    have hzero : ∫⁻ x in ψ '' Yc, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] = 0 := by
+      rw [setLIntegral_congr_fun (himg Yc hYcV hYcm)
+        (show EqOn (fun x => ENNReal.ofReal ‖G x‖ * g x) (fun _ => 0) (ψ '' Yc) from ?_),
+        lintegral_zero]
+      rintro x ⟨y, hy, rfl⟩
+      simp [hG0 y hy.1 hy.2]
+    conv_lhs => rw [← hYrc, image_union]
+    refine le_antisymm ?_ (lintegral_mono_set subset_union_left)
+    calc _ ≤ _ := lintegral_union_le _ _ _
+      _ = _ := by rw [hzero, add_zero]
+  -- (i): `regular_coarea` on `Y_r`
+  have hi : ∀ g : Euclid P → ℝ≥0∞, Measurable g →
+      AEMeasurable (fun t => ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧
+        ∫⁻ t, ∫⁻ x in ψ '' (Y ∩ F ⁻¹' {t}), g x ∂μHE[n] =
+          ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+    intro g hg
+    obtain ⟨hmeas, hint⟩ := Submission.dtc_bc_lc_sl_cc_regular_coarea P n ψ V Yr F G hV hψ hψV hDψ
+      hF hYrm hYrV (fun y hy => hy.2) (fun y hy => hG y hy.1) g hg
+    exact ⟨hmeas.aemeasurable.congr (hslice_ae g).symm, by
+      rw [lintegral_congr_ae (hslice_ae g), hint, hrhs g]⟩
+  refine ⟨hi, ?_⟩
+  -- Step 5: `|G| ≤ Γ` on `ψ(Y)` and `H^{n+1}(ψ(Y)) < ∞`, so a.e. slice has finite `Hⁿ`-measure
+  obtain ⟨Gh, -, hGhc, hGh⟩ :=
+    Submission.dtc_bc_lc_sl_cc_chart_gradient P (n + 1) ψ V F hV hψ hDψ hF
+  obtain ⟨Γ, hΓ⟩ := hYcpt.exists_bound_of_continuousOn (hGhc.mono hYV)
+  have hGΓ : ∀ x ∈ ψ '' Y, ENNReal.ofReal ‖G x‖ ≤ ENNReal.ofReal Γ := by
+    rintro x ⟨y, hy, rfl⟩
+    rw [(hGh y (hYsV hy)).2.2.1 (G (ψ y)) (hG y hy).1 (hG y hy).2]
+    exact ENNReal.ofReal_le_ofReal (hΓ y (subset_closure hy))
+  have hψY : μHE[n + 1] (ψ '' Y) ≠ ∞ := by
+    refine ne_top_of_le_ne_top ?_
+      (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (n + 1)
+        (hKY.mono subset_closure))
+    refine ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) ?_
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact ne_top_of_le_ne_top hYcpt.measure_lt_top.ne (measure_mono subset_closure)
+  have hfin : ∀ᵐ t, μHE[n] (ψ '' (Y ∩ F ⁻¹' {t})) < ∞ := by
+    obtain ⟨h1m, h1⟩ := hi (fun _ => 1) measurable_const
+    simp only [setLIntegral_one, mul_one] at h1m h1
+    have hle : ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ ∂μHE[n + 1] ≤
+        ENNReal.ofReal Γ * μHE[n + 1] (ψ '' Y) :=
+      calc ∫⁻ x in ψ '' Y, ENNReal.ofReal ‖G x‖ ∂μHE[n + 1]
+          ≤ ∫⁻ x in ψ '' Y, ENNReal.ofReal Γ ∂μHE[n + 1] :=
+            setLIntegral_mono measurable_const hGΓ
+        _ = ENNReal.ofReal Γ * μHE[n + 1] (ψ '' Y) := setLIntegral_const _ _
+    refine ae_lt_top' h1m ?_
+    rw [h1]
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hψY) hle
+  -- (ii) for every `t` with a finite slice and a null critical slice
+  filter_upwards [hfin, hcrit] with t hSfin hNt
+  obtain ⟨U, a, r, χ, hχ, hcover⟩ :=
+    Submission.dtc_bc_lc_sl_cc_slice_disks P n ψ V F t hV hψ hψV hDψ hF
+  have hSm : MeasurableSet (ψ '' (Y ∩ F ⁻¹' {t})) :=
+    himg _ (inter_subset_left.trans hYsV)
+      (hY.inter (hF.continuous.measurable (measurableSet_singleton t)))
+  -- every point of `S_t` is critical or lies on one of the disks `χⱼ(Bⱼ)`
+  have hScover : ψ '' (Y ∩ F ⁻¹' {t}) ⊆
+      ψ '' (Yc ∩ F ⁻¹' {t}) ∪ ⋃ j, (ψ '' (Y ∩ F ⁻¹' {t}) ∩ χ j '' ball (a j) (r j)) := by
+    rintro x ⟨y, ⟨hyY, hyt⟩, rfl⟩
+    by_cases hy0 : fderiv ℝ F y = 0
+    · exact Or.inl ⟨y, ⟨⟨hyY, hy0⟩, hyt⟩, rfl⟩
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 (hcover ⟨y, ⟨hYsV hyY, hyt, hy0⟩, rfl⟩)
+      exact Or.inr (mem_iUnion.2 ⟨j, ⟨y, ⟨hyY, hyt⟩, rfl⟩, hj⟩)
+  refine ⟨?_, ?_⟩
+  · -- Step 6: rectifiability, from the countably rectifiable disks and the null critical slice
+    obtain ⟨M₀, hM₀, f, hf, hM⟩ := Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
+      (fun j => χ j '' U j) fun j => (hχ j).2.2.2.2.1
+    refine ⟨M₀ ∪ ψ '' (Yc ∩ F ⁻¹' {t}), measure_union_null hM₀ hNt, f, hf, fun x hx => ?_⟩
+    rcases hScover hx with hx | hx
+    · exact Or.inl (Or.inr hx)
+    · obtain ⟨j, -, hj⟩ := mem_iUnion.1 hx
+      rcases hM (mem_iUnion.2 ⟨j, image_mono (ball_subset_closedBall.trans (hχ j).2.1) hj⟩)
+        with h | h
+      · exact Or.inl (Or.inl h)
+      · exact Or.inr h
+  · -- Step 7: tangent planes on each piece `S_t ∩ χⱼ(Bⱼ)`
+    have hSloc : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+        μHE[n] (ψ '' (Y ∩ F ⁻¹' {t}) ∩ K) ≠ ∞ := fun K _ _ =>
+      ((measure_mono inter_subset_left).trans_lt hSfin).ne
+    refine ae_restrict_of_ae_restrict_of_subset hScover ?_
+    rw [ae_restrict_union_iff, ae_restrict_iUnion_iff]
+    refine ⟨?_, fun j => ?_⟩
+    · rw [ae_restrict_eq_bot.2 hNt]
+      exact Filter.eventually_bot
+    obtain ⟨hUo, hBU, hχC, hχinj, -, hχfin, hχw⟩ := hχ j
+    have hbU : ball (a j) (r j) ⊆ U j := ball_subset_closedBall.trans hBU
+    have hAm : MeasurableSet (ψ '' (Y ∩ F ⁻¹' {t}) ∩ χ j '' ball (a j) (r j)) :=
+      hSm.inter (measurableSet_ball.image_of_continuousOn_injOn (hχC.continuousOn.mono hbU)
+        (hχinj.mono hbU))
+    have hDm : MeasurableSet (χ j '' closedBall (a j) (r j)) :=
+      measurableSet_closedBall.image_of_continuousOn_injOn (hχC.continuousOn.mono hBU)
+        (hχinj.mono hBU)
+    -- tangent locality for `S_t ∩ χⱼ(Bⱼ) ⊆ χⱼ(B̄ⱼ)` and for `S_t ∩ χⱼ(Bⱼ) ⊆ S_t`
+    have hTL1 := Submission.cmc_imRep_locality_restrict_sub.1 P n univ _ _ isOpen_univ hAm hDm
+      (inter_subset_right.trans (image_mono ball_subset_closedBall)) (subset_univ _)
+      fun K _ _ => ((measure_mono inter_subset_left).trans_lt hχfin.lt_top).ne
+    have hTL2 := Submission.cmc_imRep_locality_restrict_sub.1 P n univ _ _ isOpen_univ hAm hSm
+      inter_subset_left (subset_univ _) hSloc
+    have htan := Submission.dtc_bc_lc_sl_c1_tangent P n (χ j) (U j) (a j) (r j) hUo hBU hχC
+      (hχinj.mono hBU) fun z hz => (hχw z (hBU hz)).1
+    filter_upwards [hTL1, hTL2, ae_restrict_mem hAm] with x h1 h2 hx
+    obtain ⟨⟨y₀, ⟨hy₀Y, -⟩, rfl⟩, w, hw, hwx⟩ := hx
+    obtain ⟨-, y, hyV, hyw, -, hdy, hrange⟩ := hχw w (hbU hw)
+    have hyy : y = y₀ := hψV hyV (hYsV hy₀Y) (hyw.trans hwx)
+    rw [hyy] at hdy hrange
+    refine ⟨hGne y₀ hy₀Y hdy, fun y' hy'Y hy' => ?_⟩
+    have hy'y : y' = y₀ := hψV (hYsV hy'Y) (hYsV hy₀Y) hy'
+    rw [hy'y, ← hrange (G (ψ y₀)) (hG y₀ hy₀Y).1 (hG y₀ hy₀Y).2]
+    have h3 := htan w hw
+    rw [hwx] at h3
+    exact (h2 _).1 ((h1 _).2 h3)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
