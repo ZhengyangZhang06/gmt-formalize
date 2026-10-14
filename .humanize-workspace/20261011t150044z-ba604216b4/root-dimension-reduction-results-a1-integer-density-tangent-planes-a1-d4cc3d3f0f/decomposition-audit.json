@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def dilation(CL[M])?|def unitBallVolume|abbrev Euclid|namespace Submission|sorry|^axiom",
+        "ext_of_integral_eq_on_compactlySupported|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|theorem cthickening_closedBall|exists_cthickening_subset_open|theorem integral_smul_measure|theorem integral_map|theorem tendsto_integral_of_dominated_convergence|theorem pow_left_inj₀|theorem smul_unitBall|theorem IsCompact.tendsto_subseq",
+        "withDensity_apply|theorem withDensity|def withDensity",
+        "lean_name",
+        "lean_statement",
+        "depends_on",
+        "children",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git show fc55b7480dccf7e48261ad5b085ddd0c0cc9f1d6 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psf_independent_audit_0w_2w_p_/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psf_independent_audit_0w_2w_p_/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/psf_independent_audit_0w_2w_p_/FullVerified.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d4cc3d3f0f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d4cc3d3f0f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6/isolated-comparator-result.json",
+        "/tmp/psf_dec_9q4/Full.lean",
+        "/tmp/psf_independent_audit_0w_2w_p_/Assembly.lean",
+        "/tmp/psf_independent_audit_0w_2w_p_/Reuse.lean",
+        "/tmp/psf_independent_audit_0w_2w_p_/FullVerified.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest, and the snapshot contract matches the workspace contract. The binding digest independently recomputes correctly. All ten frozen types elaborate independently and match their prose; all names are bare identifiers. No DAG matches exist for the nine fresh names. The sole reused name has an identical accepted type and accepted prerequisite. Adding the proposed edges preserves acyclicity. The split appropriately separates the selected theorem's analytic obligations: an independent Lean assembly proves all seven parent clauses. The supplied scratch proofs were also rechecked with the actual accepted reuse proofs substituted; every child and the exact parent compile with only propext, Classical.choice, and Quot.sound. No self-reference, ancestor dependence, placeholder type, or matrix-instance issue was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "domain_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all three prose conclusions. The explicit inverse proves membership, continuity proves openness, and the norm estimates establish both inclusions with the required strict margin. Negative R and P = 0 cause no gap."
+    },
+    {
+      "key": "total_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable pushforward and restriction calculations establish finite positive seed mass, concentration, and finite positive member masses. Positivity and ENNReal finiteness are justified; n ≥ 1 is unnecessary for this child."
+    },
+    {
+      "key": "support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball-preimage formula and interior radius margin justify removing the restriction. Both implications use positive minimum radii and measure monotonicity correctly. The weaker hypotheses exactly match the proof and Lean proposition."
+    },
+    {
+      "key": "injective",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite nonzero total mass permits cancellation; n ≥ 1 makes the positive power injective. Concentration supplies integrability of the identity, so the barycenter computation and all scalar cancellations are justified. No parent theorem is used."
+    },
+    {
+      "key": "vague_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact finiteness yields local finiteness and regularity in Euclidean space. The Urysohn-function comparison uses integrable functions and finite indicator integrals, then regularity extends equality to all Borel sets. The pinned uniqueness theorem has the required hypotheses."
+    },
+    {
+      "key": "param_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral transformation is valid for the continuous maps involved. Compact support bounds f uniformly, and finite seed mass makes that bound integrable. Pointwise convergence, dominated convergence, and convergence of the positive-scale factors prove the exact sequential statement."
+    },
+    {
+      "key": "vague_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Domain noncontainment bounds scales away from zero. Parameter compactness gives an admissible subsequential limit; the declared continuity and uniqueness dependencies identify its measure. The compact maximum and uniform parameter estimate preserve noncontainment. All three dependencies are necessary and correctly directed."
+    },
+    {
+      "key": "withdensity_dilate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid byte-identical reuse of the comparator-accepted declaration. Its existing change-of-variables dependency is accepted and acyclic. The proof applies to arbitrary densities: the measurable embedding and withDensity_apply require no measurability of f. Recompilation confirms only standard axioms."
+    },
+    {
+      "key": "nonhomogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared scaling dependency gives the ball formula for every positive radius. The zero case uses a countable ball cover; the nonzero case uses n ≥ 1 and valid ENNReal limit multiplication to force infinite total mass. Both contradict the stated mass hypotheses."
+    },
+    {
+      "key": "lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the exact ball formula, transferred support, and closed-ball containment. Compact thickening provides the larger radius required by the original strict-radius hypothesis. Positive rescaling cancels correctly, and Λ₀ ≥ 0 with λ ≤ 1 gives the claimed exponential bound. Only domain_geometry is used."
+    }
+  ],
+  "required_changes": []
+}
