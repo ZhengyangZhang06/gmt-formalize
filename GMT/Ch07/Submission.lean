@@ -517,6 +517,42 @@ theorem Submission.dpf_pfc_imrep_pairing_integrable_abs_le : ∀ (P n : ℕ) (U 
   rw [← Real.norm_eq_abs, ← hgval]
   exact norm_integral_le_of_norm_le hg hdom
 
+/-- **Additivity of the pairing with a bounded field** (the identity
+`∫ ⟨φ, ν_Y⟩ dHⁿ = ∫ ⟨φ, ν_Z + ν_X⟩ dHⁿ` in the competitor mass bound of Simon 7.2.4 (8)–(9)).
+Write `ν_R = 1_M θ ξ` for `R = (M, θ, ξ)`.  If `ν_R = ν_{R₁} + ν_{R₂}` `Hⁿ`-a.e. and `F` is
+`Hⁿ`-a.e. strongly measurable, vanishes off the compact `K ⊆ U` and `‖F‖ ≤ B`, then
+`∫_M θ ⟨F, ξ⟩ dHⁿ = ∫_{M₁} θ₁ ⟨F, ξ₁⟩ dHⁿ + ∫_{M₂} θ₂ ⟨F, ξ₂⟩ dHⁿ`.  Each side is the integral
+over `ℝᴾ` of `⟨F, ν⟩ = 1_M θ ⟨F, ξ⟩`, integrable by `dpf_pfc_imrep_pairing_integrable_abs_le`. -/
+theorem Submission.dor_lmb_pc_cm_pairing_add_of_bounded : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact K → K ⊆ U → AEStronglyMeasurable F μHE[n] → (∀ x, x ∉ K → F x = 0) → (∀ x, ‖F x‖ ≤ B) → (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n] = ∫ x in R₁.carrier, (R₁.mult x : ℝ) * R₁.orient x (F x) ∂μHE[n] + ∫ x in R₂.carrier, (R₂.mult x : ℝ) * R₂.orient x (F x) ∂μHE[n] := by
+  intro P n U K R₁ R₂ R F B hK hKU hF hF0 hFB hvd
+  -- Steps 1–3: for each `R'`, `⟨F, ν_{R'}⟩` is `Hⁿ`-integrable with integral `∫_{M'} θ' ⟨F, ξ'⟩`
+  have key : ∀ R' : IMRep U n,
+      Integrable (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x))
+        μHE[n] ∧
+      ∫ x, R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x) ∂μHE[n] =
+        ∫ x in R'.carrier, (R'.mult x : ℝ) * R'.orient x (F x) ∂μHE[n] := by
+    intro R'
+    -- Step 2: `⟨F, ν_{R'}⟩ = 1_{M'} θ' ⟨F, ξ'⟩`
+    have hfun : (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x)) =
+        R'.carrier.indicator (fun y => (R'.mult y : ℝ) * R'.orient y (F y)) := by
+      funext x
+      by_cases hx : x ∈ R'.carrier
+      · simp [indicator_of_mem hx]
+      · simp [indicator_of_notMem hx]
+    -- Steps 1 and 3: integrability on `M'` from the pairing bound, then `integral_indicator`
+    rw [hfun, integrable_indicator_iff R'.measurableSet_carrier,
+      integral_indicator R'.measurableSet_carrier]
+    exact ⟨(Submission.dpf_pfc_imrep_pairing_integrable_abs_le P n U K R' F B hK hKU hF.restrict
+      hF0 hFB).1, rfl⟩
+  obtain ⟨-, he⟩ := key R
+  obtain ⟨hi₁, he₁⟩ := key R₁
+  obtain ⟨hi₂, he₂⟩ := key R₂
+  -- Steps 4–5: evaluate `ν_R = ν_{R₁} + ν_{R₂}` at `F` a.e. and integrate additively
+  rw [← he, ← he₁, ← he₂, ← integral_add hi₁ hi₂]
+  refine integral_congr_ae ?_
+  filter_upwards [hvd] with x hx
+  rw [hx, add_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
