@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.slice_covector_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "Contraction by e₀ followed by pull-back along J does not increase the covector norm (supplied step 5, first two items)",
+  "statement": "Assume (L1): for all N, N', k ∈ ℕ, every continuous linear A : ℝ^N → ℝ^{N'} and every k-covector β on ℝ^{N'}, |β.compContinuousLinearMap A| ≤ ‖A‖^k·|β|; and (L2): for all N, k ∈ ℕ, v ∈ ℝ^N and every (k+1)-covector β on ℝ^N, |β.curryLeft v| ≤ ‖v‖·|β|; here |·| = covectorEuclideanNorm. Let N, n ∈ ℕ, let γ be an (n+1)-covector on ℝ^{N+1}, v = (v_0, …, v_{n−1}) ∈ (ℝ^N)ⁿ and c ≥ 0 with |α(v)| ≤ c·|α| for every n-covector α on ℝ^N. Then |γ(e₀, Jv_0, …, Jv_{n−1})| ≤ c·|γ|, where e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}, J x := (0, x) = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x)) and the argument tuple is Fin.cons e₀ (i ↦ J v_i).",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (γ : Covector (Euclid (N + 1)) (n + 1)) (v : Fin n → Euclid N) (c : ℝ), 0 ≤ c → (∀ α : Covector (Euclid N) n, |α v| ≤ c * covectorEuclideanNorm α) → |γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))| ≤ c * covectorEuclideanNorm γ",
+  "lean_name": "cmcdt_lpi_cyl_slice_covector_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3bc79a23b2-a1"
+}
