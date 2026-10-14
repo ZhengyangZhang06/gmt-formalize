@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "3c3dc229ace995ef537d0cda751e1a4fd265864f4f3718e6e76070dfceae892d",
+  "git_delta": {
+    "base_commit": "64619eec828f1f1e2620f8c05d02e9ed2943c708",
+    "candidate_commit": "675e5db1e88c3c8a6a2831f2844dea992dc0ad94",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "14449db166b04c078627090444c6078ba750b7b0c1edbc4f164bede7fbec0b0b",
+    "source_sha256": "544352f20f98c01701e473af57fca07acb3187ff1c2d37f40df65ee04cbc0033",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_eilenberg",
+      "statement": "∀ n : ℕ, ∃ C : NNReal, ∀ (P : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), LipschitzOnWith L f A → ∃ φ : ℝ → ℝ≥0∞, Measurable φ ∧ (∀ t, μHE[n] (A ∩ f ⁻¹' {t}) ≤ φ t) ∧ ∫⁻ t, φ t ≤ (C : ℝ≥0∞) * (L : ℝ≥0∞) * μHE[n + 1] A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
