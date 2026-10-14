@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "98e8379395872268e7021727d8fa1b646c11d80c4544dc1079379f3416ab4895",
+  "git_delta": {
+    "base_commit": "37a7e5e595a9fe2710eace1ba51f096b633c8c26",
+    "candidate_commit": "062fcf7ba5598016d6b9752d0ec95caa0054b78c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_st_slice_integral",
+    "diff_sha256": "39b36e3e78434df0d19dac080766627dc8ead274bd7c82e389f88816a6f7bf7f",
+    "source_sha256": "57153c073404dd971250440242685c54ef69242b5f71dda32a171c463eb4790e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_st_slice_integral",
+      "statement": "∀ (m : ℕ) (i : Fin (m + 1)) (a b : ℝ) (h : Euclid (m + 1) → ℝ), a ≤ b → IntegrableOn h {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b} → IntegrableOn (fun y : Fin m → ℝ => ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y))) {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b} ∧ ∫ x in {z : Euclid (m + 1) | ∀ j, a < z j ∧ z j < b}, h x = ∫ y in {y : Fin m → ℝ | ∀ j, a < y j ∧ y j < b}, ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
