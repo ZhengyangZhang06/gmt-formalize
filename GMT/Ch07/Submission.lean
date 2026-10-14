@@ -879,6 +879,48 @@ theorem Submission.cbr_ci_dr_euclideanHausdorff_lt_top_of_lower_density : ∀ (P
   -- `μHE[n] = s • μH[n]` with a finite scalar `s`
   rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
   exact ENNReal.mul_lt_top ENNReal.coe_lt_top (hH.trans_lt hΛtop)
+/-- Radon–Nikodym with a carrier: if `μ` is finite, `μ(M₀ᶜ) = 0`, `ν(M₀) < ∞` and `μ ≪ ν`, then
+`μ = (ν⌞M)·θ` for a Borel `M ⊆ M₀` and a Borel `θ > 0` on `M`.  With `ν₀ = ν⌞M₀` (finite) and
+`h = dμ/dν₀`, `μ ≪ ν₀` gives `μ = ν₀·h` with `h < ∞` `ν₀`-a.e.; take
+`M = M₀ ∩ {0 < h < ∞}` and `θ = 1_M · h.toReal`, so that `h = 1_M · ofReal θ` `ν₀`-a.e. -/
+theorem Submission.cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M₀ : Set (Euclid P)), μ univ < ∞ → MeasurableSet M₀ → ν M₀ < ∞ → μ M₀ᶜ = 0 → (∀ E : Set (Euclid P), ν E = 0 → μ E = 0) → ∃ (M : Set (Euclid P)) (θ : Euclid P → ℝ), MeasurableSet M ∧ M ⊆ M₀ ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) := by
+  intro P μ ν M₀ hμ hM₀ hνM₀ hμM₀c hac
+  -- `μ` and `ν₀ = ν⌞M₀` are finite
+  have : IsFiniteMeasure μ := ⟨hμ⟩
+  have : IsFiniteMeasure (ν.restrict M₀) := isFiniteMeasure_restrict.mpr hνM₀.ne
+  -- `μ ≪ ν₀`: `ν₀(E) = ν(E ∩ M₀)` and `μ(M₀ᶜ) = 0`
+  have hμν₀ : μ ≪ ν.restrict M₀ := by
+    intro E hE
+    rw [Measure.restrict_apply' hM₀] at hE
+    rw [← inter_union_compl E M₀]
+    exact measure_union_null (hac _ hE) (measure_mono_null inter_subset_right hμM₀c)
+  -- Radon–Nikodym: `μ = ν₀·h` with `h = dμ/dν₀` Borel and `h < ∞` `ν₀`-a.e.
+  obtain ⟨h, hh, hμh, hh_lt⟩ : ∃ h : Euclid P → ℝ≥0∞, Measurable h ∧
+      μ = (ν.restrict M₀).withDensity h ∧ ∀ᵐ x ∂(ν.restrict M₀), h x < ∞ := by
+    refine ⟨μ.rnDeriv (ν.restrict M₀), Measure.measurable_rnDeriv _ _, ?_,
+      Measure.rnDeriv_lt_top _ _⟩
+    have hdec := Measure.haveLebesgueDecomposition_add μ (ν.restrict M₀)
+    rwa [Measure.singularPart_eq_zero_of_ac hμν₀, zero_add] at hdec
+  -- the carrier `M = M₀ ∩ {0 < h} ∩ {h < ∞}` and the density `θ = 1_M · h.toReal`
+  set M : Set (Euclid P) := M₀ ∩ {x | 0 < h x} ∩ {x | h x < ∞}
+  have hM : MeasurableSet M :=
+    (hM₀.inter (measurableSet_lt measurable_const hh)).inter (measurableSet_lt hh measurable_const)
+  have hMM₀ : M ⊆ M₀ := fun x hx => hx.1.1
+  refine ⟨M, M.indicator fun x => (h x).toReal, hM, hMM₀, hh.ennreal_toReal.indicator hM,
+    fun x hx => ?_, ?_⟩
+  · rw [indicator_of_mem hx]
+    exact ENNReal.toReal_pos hx.1.2.ne' hx.2.ne
+  -- `h = 1_M · ofReal θ` `ν₀`-a.e., since `ν₀`-a.e. `x ∈ M₀` and `h x < ∞`
+  have hae : h =ᵐ[ν.restrict M₀]
+      M.indicator fun x => ENNReal.ofReal (M.indicator (fun x => (h x).toReal) x) := by
+    filter_upwards [ae_restrict_mem hM₀, hh_lt] with x hxM₀ hxlt
+    by_cases hxM : x ∈ M
+    · rw [indicator_of_mem hxM, indicator_of_mem hxM, ENNReal.ofReal_toReal hxlt.ne]
+    · rw [indicator_of_notMem hxM]
+      exact nonpos_iff_eq_zero.mp (not_lt.mp fun hpos => hxM ⟨⟨hxM₀, hpos⟩, hxlt⟩)
+  -- `μ = ν₀·(1_M · ofReal θ) = (ν₀⌞M)·ofReal θ = (ν⌞M)·ofReal θ`
+  rw [hμh, withDensity_congr_ae hae, withDensity_indicator hM,
+    Measure.restrict_restrict_of_subset hMM₀]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
