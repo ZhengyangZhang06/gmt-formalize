@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Coefficient bounds for the Euclidean covector norm** (Simon Ch. 6, 1.15; facts used for the
+face currents in the proof of the Deformation Theorem 6.5.1, displays (29)–(30) and (34)).  With
+`e` the standard basis of `ℝᴾ`, let `f J = α(e_{J(0)}, …, e_{J(k-1)})²` for strictly increasing
+`J : Fin k → Fin P` and `f J = 0` otherwise, so `|α|² = ∑_J f J` is a sum of nonnegative terms.
+(i) The single term `f I = α(e_I)²` is at most the sum.  (ii) For strictly increasing
+`ι : Fin (k+1) → Fin P` the faces `ι ∘ i.succAbove` are strictly increasing and pairwise
+distinct, so `∑_i α(e_{ι ∘ i.succAbove})²` is a sub-sum of `∑_J f J`. -/
+theorem Submission.cmcdtfrfic_coeff_bounds : ∀ (P k : ℕ) (α : Covector (Euclid P) k), (∀ I : Fin k → Fin P, StrictMono I → |α (fun j => EuclideanSpace.single (I j) (1 : ℝ))| ≤ covectorEuclideanNorm α) ∧ ∀ ι : Fin (k + 1) → Fin P, StrictMono ι → ∑ i : Fin (k + 1), (α (fun j => EuclideanSpace.single (ι (i.succAbove j)) (1 : ℝ))) ^ 2 ≤ covectorEuclideanNorm α ^ 2 := by
+  intro P k α
+  -- Step 1: `|α| = √(∑_J f J)` with `f ≥ 0` and `f J = α(e_J)²` for strictly increasing `J`
+  obtain ⟨f, hf0, hfJ, hnorm⟩ : ∃ f : (Fin k → Fin P) → ℝ, (∀ J, 0 ≤ f J) ∧
+      (∀ J, StrictMono J → f J = (α (fun j => EuclideanSpace.single (J j) (1 : ℝ))) ^ 2) ∧
+      covectorEuclideanNorm α = √(∑ J, f J) := by
+    refine ⟨_, fun J => ?_, fun J hJ => ?_, rfl⟩
+    · split_ifs <;> positivity
+    · rw [ite_eq_left hJ]
+      simp only [EuclideanSpace.basisFun_apply]
+  have hS : 0 ≤ ∑ J, f J := Finset.sum_nonneg fun J _ => hf0 J
+  refine ⟨fun I hI => ?_, fun ι hι => ?_⟩
+  -- Step 2 (i): the single term `f I = α(e_I)²` is at most the sum, so `|α(e_I)| ≤ √(∑_J f J)`
+  · rw [hnorm]
+    exact Real.abs_le_sqrt ((hfJ I hI).symm.trans_le
+      (Finset.single_le_sum (fun J _ => hf0 J) (Finset.mem_univ I)))
+  -- Step 3 (ii): the faces `ι ∘ i.succAbove` are strictly increasing and pairwise distinct
+  · have hinj : Function.Injective fun i : Fin (k + 1) => ι ∘ i.succAbove :=
+      fun i i' h => Fin.succAbove_left_injective (hι.injective.comp_left h)
+    -- Step 4: so the left side is the sub-sum of `∑_J f J = |α|²` over the faces
+    rw [hnorm, Real.sq_sqrt hS]
+    calc ∑ i : Fin (k + 1), (α (fun j => EuclideanSpace.single (ι (i.succAbove j)) (1 : ℝ))) ^ 2
+        = ∑ i : Fin (k + 1), f (ι ∘ i.succAbove) :=
+          Finset.sum_congr rfl fun i _ => (hfJ _ (hι.comp (Fin.strictMono_succAbove i))).symm
+      _ = ∑ J ∈ Finset.univ.image fun i : Fin (k + 1) => ι ∘ i.succAbove, f J :=
+          (Finset.sum_image fun i _ i' _ h => hinj h).symm
+      _ ≤ ∑ J, f J := Finset.sum_le_univ_sum_of_nonneg hf0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
