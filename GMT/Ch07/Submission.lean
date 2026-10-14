@@ -2704,6 +2704,100 @@ theorem Submission.dtc_bc_lc_sl_co_coarea_glue : ∀ (P n : ℕ) (M : Set (Eucli
         exact iUnion_subset hAM
       rw [hsub, measure_empty]
     · exact hM0
+/-- **Slices glue over a countable Borel partition** (Simon Ch. 3, 2.10(2); Ch. 6, Lemma 4.1).
+Let `M` be Borel with `Hⁿ⁺¹(M ∩ K) < ∞` for compact `K`, `f` Borel, `|G| ≤ L`, and assume the
+co-area formula `∫ ∫_{M ∩ f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dHⁿ⁺¹` for Borel `g ≥ 0`.  Let `A_j ⊆ M` be
+Borel with `(M \ ⋃_j A_j) ∩ f⁻¹(t)` `Hⁿ`-null for a.e. `t`, and suppose that for each `j` and a.e.
+`t` the slice `A_j ∩ f⁻¹(t)` is countably `n`-rectifiable with `G(x) ≠ 0` and approximate tangent
+space `T(x) ∩ G(x)^⊥` at `Hⁿ`-a.e. point.  Then for a.e. `t` the same holds for `M ∩ f⁻¹(t)`.
+
+Proof sketch:
+* Co-area with `g = 1_{B̄_k(0)}` gives `∫ Hⁿ(M ∩ f⁻¹(t) ∩ B̄_k(0)) dt ≤ L Hⁿ⁺¹(M ∩ B̄_k(0)) < ∞`;
+  hence for a.e. `t` the slice `M ∩ f⁻¹(t)` is locally `Hⁿ`-finite.
+* `M ∩ f⁻¹(t)` is covered by the null set `(M \ ⋃_j A_j) ∩ f⁻¹(t)` and the countably many
+  rectifiable pieces `A_j ∩ f⁻¹(t)`, so it is countably `n`-rectifiable.
+* Tangent locality (`cmc_imRep_locality_restrict_sub` (a)) for `A_j ∩ f⁻¹(t) ⊆ M ∩ f⁻¹(t)`
+  transfers the approximate tangent space a.e. on each piece; the null part is negligible. -/
+theorem Submission.dtc_bc_lc_sl_co_slice_glue : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (T : Euclid P → Submodule ℝ (Euclid P)) (A : ℕ → Set (Euclid P)) (L : NNReal), MeasurableSet M → Measurable f → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → (∀ x, ‖G x‖ ≤ L) → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → (∀ᵐ t, μHE[n] ((M \ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ᵐ t, CountablyRectifiable n (A j ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (A j ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (A j ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ)) → ∀ᵐ t, CountablyRectifiable n (M ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (M ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ) := by
+  intro P n M f G T A L hM hf hMK hGL hco hA hAM hslice hAj
+  -- tangent locality, part (a) of the integer multiplicity calculus
+  obtain ⟨hTL, -, -, -⟩ := Submission.cmc_imRep_locality_restrict_sub
+  have hfib : ∀ t : ℝ, MeasurableSet (f ⁻¹' {t}) := fun t => hf (measurableSet_singleton t)
+  have hSt : ∀ t : ℝ, MeasurableSet (M ∩ f ⁻¹' {t}) := fun t => hM.inter (hfib t)
+  have hSj : ∀ t : ℝ, ∀ j, MeasurableSet (A j ∩ f ⁻¹' {t}) := fun t j => (hA j).inter (hfib t)
+  -- Step 1: for a.e. `t` the slice has finite measure in every closed ball `closedBall 0 k`
+  have hfin : ∀ k : ℕ, ∀ᵐ t, μHE[n] (M ∩ f ⁻¹' {t} ∩ closedBall (0 : Euclid P) (k : ℝ)) < ∞ := by
+    intro k
+    have hB : MeasurableSet (closedBall (0 : Euclid P) (k : ℝ)) := measurableSet_closedBall
+    have hg : Measurable ((closedBall (0 : Euclid P) (k : ℝ)).indicator (1 : Euclid P → ℝ≥0∞)) :=
+      measurable_one.indicator hB
+    obtain ⟨hgm, hgeq⟩ := hco _ hg
+    have hint : ∀ t : ℝ, ∫⁻ x in M ∩ f ⁻¹' {t},
+        (closedBall (0 : Euclid P) (k : ℝ)).indicator (1 : Euclid P → ℝ≥0∞) x ∂μHE[n]
+        = μHE[n] (M ∩ f ⁻¹' {t} ∩ closedBall (0 : Euclid P) (k : ℝ)) := by
+      intro t
+      rw [lintegral_indicator_one hB, Measure.restrict_apply hB,
+        inter_comm (closedBall (0 : Euclid P) (k : ℝ))]
+    have hbound : ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t},
+        (closedBall (0 : Euclid P) (k : ℝ)).indicator (1 : Euclid P → ℝ≥0∞) x ∂μHE[n] ≠ ∞ := by
+      rw [hgeq]
+      have hfin' : (L : ℝ≥0∞) * μHE[n + 1] (M ∩ closedBall (0 : Euclid P) (k : ℝ)) ≠ ∞ :=
+        ENNReal.mul_ne_top ENNReal.coe_ne_top (hMK _ (isCompact_closedBall 0 (k : ℝ)))
+      refine ne_top_of_le_ne_top hfin' ?_
+      calc ∫⁻ x in M, ENNReal.ofReal ‖G x‖
+              * (closedBall (0 : Euclid P) (k : ℝ)).indicator (1 : Euclid P → ℝ≥0∞) x ∂μHE[n + 1]
+          ≤ ∫⁻ x in M, (L : ℝ≥0∞)
+              * (closedBall (0 : Euclid P) (k : ℝ)).indicator (1 : Euclid P → ℝ≥0∞) x ∂μHE[n + 1] := by
+            refine lintegral_mono fun x => ?_
+            gcongr
+            rw [← ENNReal.ofReal_coe_nnreal]
+            exact ENNReal.ofReal_le_ofReal (hGL x)
+        _ = (L : ℝ≥0∞) * μHE[n + 1] (M ∩ closedBall (0 : Euclid P) (k : ℝ)) := by
+            rw [lintegral_const_mul _ hg, lintegral_indicator_one hB, Measure.restrict_apply hB,
+              inter_comm (closedBall (0 : Euclid P) (k : ℝ))]
+    filter_upwards [ae_lt_top' hgm hbound] with t ht
+    rwa [hint t] at ht
+  -- Step 2: good `t`: locally finite slice, null slice of `M \ ⋃ j, A j`, all pieces good
+  filter_upwards [ae_all_iff.2 hfin, hslice, ae_all_iff.2 hAj] with t h1 h2 h3
+  have hcover : M ∩ f ⁻¹' {t} ⊆ ((M \ ⋃ j, A j) ∩ f ⁻¹' {t}) ∪ ⋃ j, A j ∩ f ⁻¹' {t} := by
+    rintro y ⟨hyM, hyf⟩
+    by_cases hy : y ∈ ⋃ j, A j
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 hy
+      exact Or.inr (mem_iUnion.2 ⟨j, hj, hyf⟩)
+    · exact Or.inl ⟨⟨hyM, hy⟩, hyf⟩
+  refine ⟨?_, ?_⟩
+  · -- Step 3: rectifiability, from the null slice and the countably many rectifiable pieces
+    have hE : ∀ i : ℕ, CountablyRectifiable n
+        (if i = 0 then (M \ ⋃ j, A j) ∩ f ⁻¹' {t} else A (i - 1) ∩ f ⁻¹' {t}) := by
+      intro i
+      split_ifs
+      · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero h2
+      · exact (h3 (i - 1)).1
+    have hsub : M ∩ f ⁻¹' {t} ⊆ ⋃ i : ℕ,
+        (if i = 0 then (M \ ⋃ j, A j) ∩ f ⁻¹' {t} else A (i - 1) ∩ f ⁻¹' {t}) := by
+      intro y hy
+      rcases hcover hy with hy0 | hy1
+      · exact mem_iUnion.2 ⟨0, by simpa using hy0⟩
+      · obtain ⟨j, hj⟩ := mem_iUnion.1 hy1
+        exact mem_iUnion.2 ⟨j + 1, by simpa using hj⟩
+    exact (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ hE).mono hsub
+  · -- Steps 4-5: approximate tangent planes, by tangent locality on each piece
+    have hlocfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+        μHE[n] (M ∩ f ⁻¹' {t} ∩ K) ≠ ∞ := by
+      intro K hK _
+      obtain ⟨r, hr⟩ := hK.isBounded.subset_closedBall (0 : Euclid P)
+      obtain ⟨k, hk⟩ := exists_nat_ge r
+      exact ne_top_of_le_ne_top (h1 k).ne
+        (measure_mono (inter_subset_inter_right _ (hr.trans (closedBall_subset_closedBall hk))))
+    refine ae_restrict_of_ae_restrict_of_subset hcover ?_
+    rw [ae_restrict_union_iff, ae_restrict_iUnion_iff]
+    refine ⟨?_, fun j => ?_⟩
+    · rw [Measure.restrict_eq_zero.2 h2]
+      simp
+    · have hloc := hTL P n univ (A j ∩ f ⁻¹' {t}) (M ∩ f ⁻¹' {t}) isOpen_univ (hSj t j) (hSt t)
+        (inter_subset_inter_left _ (hAM j)) (subset_univ _) hlocfin
+      filter_upwards [hloc, (h3 j).2] with x hx1 hx2
+      exact ⟨hx2.1, (hx1 _).1 hx2.2⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
