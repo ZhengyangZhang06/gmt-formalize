@@ -1448,6 +1448,90 @@ theorem codim1_rdo_dg_sp_mollifier_adjoint : ∀ (P : ℕ) (η u : Euclid P → 
       rw [← neg_sub x z, hodd, neg_apply]
       ring
 
+/-- Simon Ch. 2, Lemma 2.5 on the cube `Q₁ = (0, 1)^{m+1}`: if `∫_{Q₁} u div g ≤ V` for every
+smooth `g` with compact support in `Q₁` and `|g| ≤ 1`, then `u_η = η * 1_{Q₁} u` is smooth and
+`∫_{Q_δ} |Du_η| ≤ V` whenever `spt η ⊆ B_δ(0)`.  For `g` with compact support in `Q_δ`, the
+mollified field `G = η * g` is admissible, and `∫ Du_η · g = −∫_{Q₁} u div G = ∫_{Q₁} u div(−G)`. -/
+theorem dor_lmb_fcd_cp_mollified_variation : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ) (η : Euclid (m + 1) → ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → ContDiff ℝ (⊤ : ℕ∞) η → HasCompactSupport η → (∀ z, 0 ≤ η z) → (∀ z, η (-z) = η z) → ∫ z, η z = 1 → support η ⊆ ball (0 : Euclid (m + 1)) δ → ContDiff ℝ (⊤ : ℕ∞) (convolution η (Set.indicator {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} u) (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ‖fderiv ℝ (convolution η (Set.indicator {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} u) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤ V := by
+  intro m u V δ η hu hH hδ hη hηc hη0 heven hη1 hηs
+  -- Step 0: `{y : a < yᵢ < b for all i}` is open, a finite intersection of open slabs.
+  have hopen : ∀ a b : ℝ, IsOpen {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} := by
+    intro a b
+    rw [ofPred_forall]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hQ₁ : MeasurableSet {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+    (hopen 0 1).measurableSet
+  have hũ : Integrable ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}.indicator u) :=
+    hu.integrable_indicator hQ₁
+  -- Step 1: `1_{Q₁} u` is integrable, so `u_η` is smooth.
+  have hsmooth : ContDiff ℝ (⊤ : ℕ∞) (convolution η
+      ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}.indicator u)
+      (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hηc.contDiff_convolution_left _ hη hũ.locallyIntegrable
+  -- Step 2: `Q_δ` is open and bounded: it lies in the closed ball of radius `√(m + 1)`.
+  have hbdd : Bornology.IsBounded {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} := by
+    refine (isBounded_closedBall (x := (0 : Euclid (m + 1))) (r := √((m : ℝ) + 1))).subset ?_
+    intro y hy
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := by
+          refine Finset.sum_le_sum fun i _ => ?_
+          have h0 : 0 < y i := by linarith [(hy i).1]
+          have h1 : y i < 1 := by linarith [(hy i).2]
+          rw [Real.norm_eq_abs, sq_abs]
+          nlinarith
+      _ = (m : ℝ) + 1 := by simp
+  -- Step 3: by `smooth_duality` it suffices to bound `∫ Du_η · g` for admissible `g` in `Q_δ`.
+  refine ⟨hsmooth, Submission.dor_lmb_fcd_cp_smooth_duality (m + 1) _ _ V (hopen δ (1 - δ)) hbdd
+    hsmooth fun g hg hgc hgs hg1 => ?_⟩
+  -- Step 4: `G = η * g` is smooth, compactly supported in `Q₁`, and `|G| ≤ 1`.
+  have hGsmooth : ContDiff ℝ (⊤ : ℕ∞) (convolution η g (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hηc.contDiff_convolution_left _ hη hg.continuous.locallyIntegrable
+  have hGc : HasCompactSupport (convolution η g (ContinuousLinearMap.lsmul ℝ ℝ) volume) :=
+    hηc.convolution _ hgc
+  have hGs : tsupport (convolution η g (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    -- `spt G ⊆ spt η + spt g ⊆ B̄_δ(0) + Q_δ ⊆ Q₁`, the middle set being compact.
+    refine (closure_minimal ((support_convolution_subset (μ := volume)
+      (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid (m + 1) →L[ℝ] Euclid (m + 1))).trans
+      (add_subset_add (subset_tsupport η) (subset_tsupport g)))
+      (hηc.isCompact.add hgc.isCompact).isClosed).trans ?_
+    rintro _ ⟨z, hz, q, hq, rfl⟩ i
+    have hz' : ‖z‖ ≤ δ :=
+      mem_closedBall_zero_iff.mp (closure_ball_subset_closedBall (closure_mono hηs hz))
+    have hzi : |z i| ≤ δ := by
+      rw [← Real.norm_eq_abs]
+      exact (PiLp.norm_apply_le z i).trans hz'
+    have hqi := hgs hq i
+    rw [PiLp.add_apply]
+    constructor <;> linarith [(abs_le.mp hzi).1, (abs_le.mp hzi).2, hqi.1, hqi.2]
+  have hG1 : ∀ x, ‖convolution η g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ ≤ 1 := by
+    intro x
+    rw [convolution_def]
+    calc ‖∫ t, ContinuousLinearMap.lsmul ℝ ℝ (η t) (g (x - t))‖ ≤ ∫ t, η t :=
+          norm_integral_le_of_norm_le (hη.continuous.integrable_of_hasCompactSupport hηc)
+            (Eventually.of_forall fun t => by
+              rw [ContinuousLinearMap.lsmul_apply, norm_smul, Real.norm_eq_abs,
+                abs_of_nonneg (hη0 t)]
+              exact mul_le_of_le_one_right (hη0 t) (hg1 _))
+      _ = 1 := hη1
+  -- Step 5: `mollifier_adjoint` gives `∫ Du_η · g = −∫ 1_{Q₁} u div G`.
+  have hadj := codim1_rdo_dg_sp_mollifier_adjoint (m + 1) η
+    ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}.indicator u) g
+    (hη.of_le (by exact_mod_cast le_top)) hηc heven hũ
+    (hg.continuous.integrable_of_hasCompactSupport hgc)
+  -- Step 6: (H) for `−G` reads `−∫_{Q₁} u div G ≤ V`, since `div(−G) = −div G`.
+  have hneg := hH (-convolution η g (ContinuousLinearMap.lsmul ℝ ℝ) volume) hGsmooth.neg hGc.neg
+    (by rwa [tsupport_neg]) fun y => by rw [Pi.neg_apply, norm_neg]; exact hG1 y
+  simp only [fderiv_neg, ContinuousLinearMap.toLinearMap_neg, map_neg, mul_neg,
+    integral_neg] at hneg
+  rw [← integral_indicator hQ₁] at hneg
+  simp_rw [indicator_mul_left] at hneg
+  rw [hadj]
+  exact hneg
+
 end Submission
 
 end GMT.Ch07
