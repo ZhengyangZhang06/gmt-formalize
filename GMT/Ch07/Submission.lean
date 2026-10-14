@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A set of finite `H⁰`-measure is countably `0`-rectifiable (Simon Ch. 3, Definition 1.1, case
+`n = 0`).  `H⁰ = μH[0]` gives every point mass `1`, so an infinite `M` would contain `k`-point
+subsets of measure `k` for every `k ∈ ℕ`; hence `M` is finite.  Each point `x` is the range of the
+constant (`0`-Lipschitz) map `ℝ⁰ → ℝᴾ`, and `M = ⋃₀ {{x} : x ∈ M}` is a countable union of such
+ranges. -/
+theorem Submission.cbrr_rectifiable_dim_zero : ∀ (P : ℕ) (M : Set (Euclid P)), μHE[0] M ≠ ∞ → CountablyRectifiable 0 M := by
+  intro P M hM
+  -- Step 1: `μHE[0] = μH[0]`, and `μH[0] {x} = 1`
+  rw [Measure.euclideanHausdorffMeasure_zero] at hM
+  -- Step 2: `M` is finite; otherwise it has `⌈r⌉₊`-point subsets for every `r`, so `μH[0] M = ∞`
+  have hfin : M.Finite := by
+    by_contra hinf
+    refine hM (ENNReal.eq_top_of_forall_nnreal_le fun r => ?_)
+    obtain ⟨s, hsM, hs⟩ := Set.Infinite.exists_subset_card_eq hinf ⌈r⌉₊
+    calc (r : ℝ≥0∞) ≤ (⌈r⌉₊ : ℝ≥0∞) := by exact_mod_cast Nat.le_ceil r
+      _ = ∑ x ∈ s, μH[0] ({x} : Set (Euclid P)) := by
+        simp only [Measure.hausdorffMeasure_zero_singleton, Finset.sum_const, nsmul_eq_mul,
+          mul_one, hs]
+      _ = μH[0] (s : Set (Euclid P)) := sum_measure_singleton
+      _ ≤ μH[0] M := measure_mono hsM
+  -- Step 3: each `{x}` is the range of the constant `0`-Lipschitz map `ℝ⁰ → ℝᴾ`
+  have hpt : ∀ S ∈ (fun x : Euclid P => ({x} : Set (Euclid P))) '' M,
+      CountablyRectifiable 0 S := by
+    rintro _ ⟨x, -, rfl⟩
+    simpa only [range_const] using Poincare.SimonGMT.Chapter03.countablyRectifiable_range (n := 0)
+      (LipschitzWith.const (α := Euclid 0) x)
+  -- Step 4: `M = ⋃₀ {{x} : x ∈ M}` is a countable union of countably `0`-rectifiable sets
+  have h := Poincare.SimonGMT.Chapter03.countablyRectifiable_sUnion (hfin.countable.image _) hpt
+  rwa [Set.sUnion_image, Set.biUnion_of_singleton] at h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
