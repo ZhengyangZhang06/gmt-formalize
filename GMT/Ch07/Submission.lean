@@ -653,6 +653,107 @@ theorem Submission.cbr_ci_pw_noi_restrict_eq_of_smooth_test : ∀ (n : ℕ) (U :
   · rw [Measure.restrict_apply_univ, Measure.restrict_apply_univ]
     simpa using hopen univ isOpen_univ
 
+/-- A smooth-test identity between a density and a push-forward holds on Borel subsets of `U`
+(closure theorem argument, Simon Ch. 6, as used for 7.2.4): if `∫_U b u dLⁿ = ∫ (b ∘ q) h dσ` for
+every smooth `b` with compact support in `U`, then `∫_B u dLⁿ = ∫_{q⁻¹ B} h dσ` for every Borel
+`B ⊆ U`.  The finite measures `μ₁ = u⁺ Lⁿ⌞U + q_♯(h⁻ σ)` and `μ₂ = u⁻ Lⁿ⌞U + q_♯(h⁺ σ)` have the
+same integral against every such `b`, hence agree on `U`; evaluating them on `B` and splitting `u`
+and `h` into positive and negative parts gives the identity. -/
+theorem Submission.cbr_ci_pw_noi_setIntegral_eq_preimage : ∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ), IsOpen U → Measurable q → IntegrableOn u U → Integrable h σ → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → ∫ y in B, u y = ∫ x in q ⁻¹' B, h x ∂σ := by
+  intro P n U u σ q h hU hq hu hh htest B hB hBU
+  -- Step 1: the finite measures `λ± = u± Lⁿ⌞U` and `m± = q_♯(h± σ)`.
+  set lp : Measure (Euclid n) := (volume.restrict U).withDensity fun y => ENNReal.ofReal (u y)
+    with hlp
+  set lm : Measure (Euclid n) := (volume.restrict U).withDensity fun y => ENNReal.ofReal (-u y)
+    with hlm
+  set mp : Measure (Euclid n) := (σ.withDensity fun x => ENNReal.ofReal (h x)).map q with hmp
+  set mm : Measure (Euclid n) := (σ.withDensity fun x => ENNReal.ofReal (-h x)).map q with hmm
+  have hlpf : IsFiniteMeasure lp := isFiniteMeasure_withDensity_ofReal hu.2
+  have hlmf : IsFiniteMeasure lm := isFiniteMeasure_withDensity_ofReal hu.neg.2
+  have hmpf : IsFiniteMeasure mp := by
+    have : IsFiniteMeasure (σ.withDensity fun x => ENNReal.ofReal (h x)) :=
+      isFiniteMeasure_withDensity_ofReal hh.2
+    exact Measure.isFiniteMeasure_map _ _
+  have hmmf : IsFiniteMeasure mm := by
+    have : IsFiniteMeasure (σ.withDensity fun x => ENNReal.ofReal (-h x)) :=
+      isFiniteMeasure_withDensity_ofReal hh.neg.2
+    exact Measure.isFiniteMeasure_map _ _
+  -- Step 2: integrals of a function `b` against `λ±` and `m±`.
+  have hlam : ∀ (f : Euclid n → ℝ) (b : Euclid n → ℝ), IntegrableOn f U →
+      ∫ y, b y ∂((volume.restrict U).withDensity fun y => ENNReal.ofReal (f y)) =
+        ∫ y in U, max (f y) 0 * b y := by
+    intro f b hf
+    rw [integral_withDensity_eq_integral_toReal_smul₀ hf.aemeasurable.ennreal_ofReal
+      (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+    simp only [ENNReal.toReal_ofReal', smul_eq_mul]
+  have hpush : ∀ (g : Euclid P → ℝ) (b : Euclid n → ℝ), Integrable g σ → Continuous b →
+      ∫ y, b y ∂((σ.withDensity fun x => ENNReal.ofReal (g x)).map q) =
+        ∫ x, max (g x) 0 * b (q x) ∂σ := by
+    intro g b hg hb
+    rw [integral_map hq.aemeasurable hb.aestronglyMeasurable,
+      integral_withDensity_eq_integral_toReal_smul₀ hg.aemeasurable.ennreal_ofReal
+        (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+    simp only [ENNReal.toReal_ofReal', smul_eq_mul]
+  -- Step 3: `λ₊ + m₋` and `λ₋ + m₊` have the same integral against every test function, since
+  -- `u = u⁺ - u⁻`, `h = h⁺ - h⁻` and `∫_U b u = ∫ (b ∘ q) h dσ`.
+  have hkey : ∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U →
+      ∫ y, b y ∂(lp + mm) = ∫ y, b y ∂(lm + mp) := by
+    intro b hb hbc hbU
+    have hbcont : Continuous b := hb.continuous
+    obtain ⟨C, hC⟩ := hbcont.bounded_above_of_compact_support hbc
+    have hbm : AEStronglyMeasurable b (volume.restrict U) := hbcont.aestronglyMeasurable
+    have hbqm : AEStronglyMeasurable (fun x => b (q x)) σ :=
+      (hbcont.measurable.comp hq).aestronglyMeasurable
+    rw [integral_add_measure (hbcont.integrable_of_hasCompactSupport hbc)
+        (hbcont.integrable_of_hasCompactSupport hbc),
+      integral_add_measure (hbcont.integrable_of_hasCompactSupport hbc)
+        (hbcont.integrable_of_hasCompactSupport hbc),
+      hlam u b hu, hlam (fun y => -u y) b hu.neg, hpush h b hh hbcont,
+      hpush (fun x => -h x) b hh.neg hbcont]
+    have I1 : (∫ y in U, max (u y) 0 * b y) - ∫ y in U, max (-u y) 0 * b y =
+        ∫ y in U, b y * u y := by
+      have hsub := integral_sub (hu.pos_part.mul_bdd hbm (Eventually.of_forall hC))
+        (hu.neg_part.mul_bdd hbm (Eventually.of_forall hC))
+      refine hsub.symm.trans (integral_congr_ae (Eventually.of_forall fun y => ?_))
+      simp only
+      rw [← sub_mul, max_zero_sub_max_neg_zero_eq_self, mul_comm]
+    have I2 : ∫ x, max (h x) 0 * b (q x) ∂σ - ∫ x, max (-h x) 0 * b (q x) ∂σ =
+        ∫ x, b (q x) * h x ∂σ := by
+      have hsub := integral_sub (hh.pos_part.mul_bdd hbqm (Eventually.of_forall fun x => hC (q x)))
+        (hh.neg_part.mul_bdd hbqm (Eventually.of_forall fun x => hC (q x)))
+      refine hsub.symm.trans (integral_congr_ae (Eventually.of_forall fun x => ?_))
+      simp only
+      rw [← sub_mul, max_zero_sub_max_neg_zero_eq_self, mul_comm]
+    have := htest b hb hbc hbU
+    linarith
+  -- Step 4: uniqueness, so the two measures agree on the measurable subset `B` of `U`.
+  have hres := Submission.cbr_ci_pw_noi_restrict_eq_of_smooth_test n U (lp + mm) (lm + mp) hU
+    inferInstance inferInstance hkey
+  have hBeq : (lp + mm) B = (lm + mp) B := by
+    have := congrArg (fun μ : Measure (Euclid n) => μ B) hres
+    simpa only [Measure.restrict_apply hB, inter_eq_left.mpr hBU] using this
+  -- Step 5: `λ±(B) = ∫⁻_B (±u)⁺` and `m±(B) = ∫⁻_{q⁻¹ B} (±h)⁺ dσ`.
+  have hlB : ∀ f : Euclid n → ℝ, ((volume.restrict U).withDensity fun y => ENNReal.ofReal (f y)) B =
+      ∫⁻ y in B, ENNReal.ofReal (f y) := by
+    intro f
+    rw [withDensity_apply _ hB, Measure.restrict_restrict hB, inter_eq_left.mpr hBU]
+  have hmB : ∀ g : Euclid P → ℝ, ((σ.withDensity fun x => ENNReal.ofReal (g x)).map q) B =
+      ∫⁻ x in q ⁻¹' B, ENNReal.ofReal (g x) ∂σ := by
+    intro g
+    rw [Measure.map_apply hq hB, withDensity_apply _ (hq hB)]
+  -- Step 6: all four values are finite, so the identity of Step 4 passes to real numbers, and
+  -- both set integrals are differences of positive and negative parts.
+  rw [Measure.add_apply, Measure.add_apply] at hBeq
+  have hreal : (lp B).toReal + (mm B).toReal = (lm B).toReal + (mp B).toReal := by
+    rw [← ENNReal.toReal_add (measure_ne_top _ _) (measure_ne_top _ _),
+      ← ENNReal.toReal_add (measure_ne_top _ _) (measure_ne_top _ _), hBeq]
+  have hL : ∫ y in B, u y = (lp B).toReal - (lm B).toReal := by
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part (hu.mono_set hBU), hlp, hlm, hlB, hlB]
+  have hR : ∫ x in q ⁻¹' B, h x ∂σ = (mp B).toReal - (mm B).toReal := by
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hh.integrableOn, hmp, hmm, hmB, hmB]
+  rw [hL, hR]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
