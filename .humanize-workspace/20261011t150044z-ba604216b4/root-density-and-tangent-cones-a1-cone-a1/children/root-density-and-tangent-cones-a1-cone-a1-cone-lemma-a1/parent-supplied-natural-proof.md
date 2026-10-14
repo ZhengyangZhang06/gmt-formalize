@@ -1,0 +1,138 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.cone-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.cone-a1.cone_lemma-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Sources.
+- Simon Ch. 6, Lemma 2.33 and its proof (chapter-06.txt lines 557–567), via the homotopy formula 2.25–2.27 for the affine homotopy h(t, x) = tλ⁻¹x + (1 − t)x (lines 441–478), made explicit as in steps 6–7 of the parent proof.
+- Simon 7.3.1 (chapter-07.txt line 359): "hence we can apply Lemma 2.33 to deduce that C is a cone".
+Simon's hypothesis M_{B_R(0)}(C) < ∞ is supplied by the integer multiplicity representation. Uses sibling euler_cartan (child 5).
+
+Notation. Write n = m + 1 (n ≥ 1). M = R.carrier, θ = R.mult, ξ = R.orient, ν := Hⁿ⌞M and μ := R.measure = ν.withDensity θ. For a test form φ ∈ 𝒟ⁿ(ℝ^P), R.action φ = ∫_M θ ξ(φ) dHⁿ, and C(φ) = R.action φ because R.Represents C.
+
+0. Preliminaries.
+(a) ‖ξ(x)‖ ≤ 1 for ν-a.e. x. By `orients`, ξ(x)(α) = ±α(τ) with τ orthonormal, and |α(τ)| ≤ ‖α‖·Π_i|τ_i| = ‖α‖.
+(b) For φ ∈ 𝒟ⁿ(ℝ^P), x ↦ θ(x)ξ(x)(φ(x)) is ν-integrable. It is AEStronglyMeasurable (θ measurable, ξ AEStronglyMeasurable, φ continuous, evaluation continuous bilinear). It is bounded by sup|φ|·θ·1_{tsupport φ}, and ∫_{M∩tsupport φ} θ dHⁿ < ∞ by locallyIntegrable_mult.
+(c) The hypothesis holds ν-a.e. θ is measurable and θ ≥ 1 on M, so (∀ᵐ x ∂μ, Q x) ⟺ ∀ᵐ x ∂ν, (θ x ≠ 0 → Q x) (ae_withDensity_iff), and ν-a.e. x lies in M, where θ x ≠ 0.
+(d) Linearity and boundary. C(φ₁ + φ₂) = C(φ₁) + C(φ₂) for φ₁, φ₂ ∈ 𝒟ⁿ. For ψ ∈ 𝒟^m, C(dψ) = (∂C)(ψ) = 0: BoundaryVanishes C means C.boundary = 0 (n = m+1), and C.boundary ψ = C(exteriorDerivativeTestOn ψ) = C(dψ).
+
+1. Setup.
+- Fix λ > 0 and ω ∈ 𝒟ⁿ(ℝ^P), and choose R_ω > 0 with tsupport ω ⊆ B̄_{R_ω}(0).
+- Let c(s) := 1 + s(λ⁻¹ − 1) for s ∈ ℝ, so c(0) = 1, c(1) = λ⁻¹ and c' ≡ λ⁻¹ − 1. The set J := {s : c(s) > 0} is an open interval containing [0, 1].
+- For s ∈ J let h_s(y) := c(s)y and β_s := h_s^#ω, that is, β_s(y)(v_1, …, v_n) := ω(c(s)y)(c(s)v_1, …, c(s)v_n) = c(s)ⁿω(c(s)y)(v). Equivalently, β_s(y) = (ω(c(s)y)).compContinuousLinearMap(c(s)·Id).
+- β_s is smooth and tsupport β_s ⊆ c(s)⁻¹·tsupport ω, which is compact, so β_s ∈ 𝒟ⁿ(ℝ^P). Also β_0 = ω and β_1(y) = ω(λ⁻¹y)∘(λ⁻¹·).
+- Put F(s) := R.action β_s = ∫_M θ ξ(β_s) dHⁿ, which equals C(β_s) for s ∈ J.
+
+2. s-derivative. For fixed y, s ↦ β_s(y) ∈ Λⁿ is differentiable with ∂_sβ_s(y) = c'·[n c(s)^{n−1}ω(c(s)y) + c(s)ⁿDω(c(s)y)[y]]. Since Dβ_s(y)[u] = c(s)^{n+1}Dω(c(s)y)[u], this equals ∂_sβ_s(y) = (c'/c(s))·Lβ_s(y), where Lβ(y) := nβ(y) + Dβ(y)[y].
+
+3. Differentiation under the integral sign. Fix s₀ ∈ J and δ > 0 with [s₀ − δ, s₀ + δ] ⊆ J, and let 0 < m₀ ≤ c(s) ≤ M₀ on this interval.
+- For such s and all y, β_s(y) and ∂_sβ_s(y) vanish unless c(s)y ∈ tsupport ω, in particular unless |y| ≤ R_ω/m₀. (Dω vanishes off tsupport ω.)
+- |∂_sβ_s(y)| ≤ |c'|(nM₀^{n−1}sup|ω| + M₀ⁿsup|Dω|R_ω/m₀) =: K; here ω and Dω are continuous with compact support.
+- With (a), g(s,y) := θ(y)ξ(y)(β_s(y)) satisfies |∂_s g(s,y)| ≤ K·θ(y)·1_{B̄_{R_ω/m₀}(0)}(y) for ν-a.e. y and all such s. This bound is ν-integrable, and g(s₀,·) is ν-integrable by (b).
+- By the dominated differentiation theorem (hasDerivAt_integral_of_dominated_loc_of_deriv_le), F is differentiable at s₀ with
+ F'(s₀) = ∫_M θ ξ(∂_sβ_{s₀}) dHⁿ = (c'/c(s₀))·∫_M θ ξ(Lβ_{s₀}) dHⁿ.
+
+4. Cartan. Let ψ(y) := β_{s₀}(y).curryLeft y (an m-form) and χ(y) := (dβ_{s₀}(y)).curryLeft y (an n-form).
+- Both are smooth (compositions of smooth maps with continuous bilinear maps; dβ_{s₀} is smooth) and have tsupport ⊆ tsupport β_{s₀}. So ψ ∈ 𝒟^m, dψ ∈ 𝒟ⁿ and χ ∈ 𝒟ⁿ.
+- By child 5 (with β := β_{s₀}, which is differentiable at every y), dψ(y) + χ(y) = (m+1)β_{s₀}(y) + Dβ_{s₀}(y)[y] = Lβ_{s₀}(y) for all y.
+- Hence Lβ_{s₀} = dψ + χ ∈ 𝒟ⁿ, and by (d), ∫_M θ ξ(Lβ_{s₀}) dHⁿ = C(Lβ_{s₀}) = C(dψ) + C(χ).
+
+5. Both terms vanish.
+- C(dψ) = 0 by (d), since ∂C = 0.
+- C(χ) = ∫_M θ(y)ξ(y)((dβ_{s₀}(y)).curryLeft y) dHⁿ(y) = 0: apply the hypothesis with the (n+1)-covector dβ_{s₀}(y) and use (c); the integrand vanishes for ν-a.e. y.
+Hence F'(s₀) = 0 for every s₀ ∈ J.
+
+6. Constancy. F is differentiable on J ⊇ [0, 1] with zero derivative, so F(1) = F(0) by the mean value theorem. Here F(0) = C(β_0) = C(ω) and F(1) = C(β_1).
+
+7. IsConeCurrent.
+- For λ > 0, the map dilation 0 λ, y ↦ −λ⁻¹·0 + λ⁻¹y, is surjective: y = dilation 0 λ (λy). So tsupport ω ⊆ dilation 0 λ '' ℝ^P.
+- Unfolding currentEval, blowUp, affinePushforward and restrictDomain gives currentEval(blowUp C 0 λ, ω) = C(affinePullbackForm L b ω), with L = dilationCLM P λ = λ⁻¹·Id and b = −(λ⁻¹·0) = 0.
+- affinePullbackForm L b ω (y) = (ω(b + Ly)).compContinuousLinearMap L = ω(λ⁻¹y)∘(λ⁻¹·) = β_1(y). (This unfolding was checked in Lean during decomposition.)
+- Hence currentEval(blowUp C 0 λ, ω) = F(1) = F(0) = C(ω) for every λ > 0 and ω ∈ 𝒟ⁿ(ℝ^P), i.e. IsConeCurrent C. ∎
+
+Remark. The parametrization c(s) = λ^{−s} (s ∈ ℝ) works verbatim, with c'/c ≡ −log λ and J = ℝ.
+
+## Key steps
+
+1. Write C(β_s), β_s = h_s^#ω with h_s(y) = c(s)y and c(s) = 1 + s(λ⁻¹ − 1), as ∫_M θξ(β_s)dHⁿ; ‖ξ‖ ≤ 1 a.e. and local integrability of θ supply domination.
+2. ∂_sβ_s = (c'/c)(nβ_s + Dβ_s[y]); differentiation under the integral gives F'(s) = (c'/c)·C(Lβ_s).
+3. Cartan (child 5): Lβ_s = d(ι_Xβ_s) + ι_X dβ_s; C(d ι_Xβ_s) = ∂C(ι_Xβ_s) = 0 and C(ι_X dβ_s) = 0 by x ∧ C⃗ = 0 a.e.
+4. F(1) = F(0), and currentEval(η_{0,λ#}C, ω) = C(β_1) by unfolding blowUp/affinePushforward; hence IsConeCurrent C.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp … GMT/Ch07/Submission.lean (identical); git rev-parse HEAD = b4d606db; git -C lake-packages-25730c7c/simongmt rev-parse HEAD = 2b366308; git -C lake-packages-25730c7c/mathlib rev-parse HEAD = 25730c7c`
+- `grep -nE '^(theorem|def)' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean (IsStationaryIn.satisfiesStationaryMonotonicity, SatisfiesStationaryMonotonicity, normalizedBallMass, monotonicityDefect, radialNormalSq_eq, tangentialDivergence_integrable_of_isAdmissible); sed -n 1,230p Chapter04/Basic.lean (structure RectifiableVarifold); sed -n 1,80p Chapter04/MultiplicityBridge.lean (weight_eq_carrier_withDensity, ae_weight_iff_ae_carrier)`
+- `grep -nE '^(theorem|def)' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique, approximateTangentField_ae_eq, IsLocallyIntegrableMultiplicity)`
+- `cat simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,AffineCurrentPushforward,CurrentLocalEquality}.lean; sed -n 100,200p Chapter06/FormsDuality.lean (wedgeCovectors, wedgeCovectors_apply_det); sed -n 20,60p Chapter06/Mass.lean (covectorEuclideanNorm)`
+- `grep -rln Binet mathlib/Mathlib (only GoldenRatio, CrossProduct: no Cauchy–Binet); Mathlib/Analysis/Normed/Module/Alternating/Curry.lean (curryLeft, curryLeftLI, curryLeft_same); grep theorem Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean (alternatizeUncurryFin_apply, alternatizeUncurryFin_curryLeft, map_insertNth); grep 'def extDeriv' Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean; head Mathlib/Analysis/Calculus/DifferentialForm/VectorField.lean; grep theorem Mathlib/Analysis/InnerProductSpace/NormDet.lean; grep det_mul Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean; grep 'lemma removeNth_' Mathlib/Data/Fin/Tuple/Basic.lean`
+- `inventory of all lean_name values in runs/20261011T150044Z-ba604216b4 (dag.json and node JSON files): 100 reserved names; grep -rl for each of the six proposed names: 0 hits`
+- `sed -n 300,370p book/chapter-07.txt (7.3.1 and proof, lines 326-360); sed -n 85,112p, 430,480p, 540,580p, 733,760p book/chapter-06.txt (1.5-1.7, 2.25-2.27, 2.33, 3.1); sed -n 205,320p book/chapter-04.txt (3.1-3.6); grep -n 'approximate tangent' book/chapter-03.txt (1.4-1.5)`
+- `python3 -I scripts/gen.py: verifier gmt-compare.contract_scope + child_modules(mode=contract) and lean_contract.validate_lean_statement on the six child types; lake env lean Check/Ch_*.lean and Check/Sol_*.lean`
+- `lake env lean Check/Types.lean, Check/Assembly.lean, Check/Cartan.lean, Check/Wedge.lean, Check/Unfold.lean, Check/Mono.lean, Check/Radial.lean, each with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-cone-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MultiplicityBridge.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/VectorField.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Types.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Assembly.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Cartan.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Wedge.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Unfold.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Mono.lean`
+- `/tmp/cone-decomp-iFw2Y3/proj/Check/Radial.lean`
+- `/tmp/cone-decomp-iFw2Y3/scripts/gen.py`
+- `/tmp/cone-decomp-iFw2Y3/scripts/children.json`
+
+The snapshot contract (project b4d606d, Mathlib 25730c7c, simongmt 2b36630) is byte-identical to the workspace Contract.lean and Submission.lean, so all six child types elaborate after `import GMT.Ch07.Submission` in the contract scope (namespace GMT.Ch07 with its opens).
+
+SimonGMT supplies:
+- the exact stationary monotonicity identity (Chapter04 RectifiableVarifold.IsStationaryIn.satisfiesStationaryMonotonicity, closed balls, all n);
+- the weight bridge weight_eq_carrier_withDensity;
+- HasApproximateTangentSpaceAt.unique;
+- wedgeCovectors_apply_det;
+- the proper affine push-forward used by blowUp.
+The monotonicity results are stated for the strengthened RectifiableVarifold, whose tangent-projection measurability field is exactly what child 1 provides; a scratch bridge proved child 2 from child 1 with standard axioms. The submission may import Chapter04.FirstVariation and MultiplicityBridge (the comparator only byte-checks frozen inputs).
+
+Mathlib supplies extDeriv = alternatizeUncurryFin ∘ fderiv, ContinuousAlternatingMap.curryLeft/curryLeftLI and alternatizeUncurryFin_curryLeft; with these the Euler-field Cartan identity (child 5) and the x ∧ ξ = 0 lemma (child 4) were proved outright. Mathlib has no Cauchy–Binet theorem and no Lie derivative or Cartan formula, so child 1 proves its Gram identity by the Leibniz expansion.
+
+The conditional assembly of the selected type from dtc_mass_eq_measure and children 3, 4 and 6 compiles with propext, Classical.choice and Quot.sound only. None of the six names occurs anywhere else in the run.
