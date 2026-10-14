@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6262408eb585dbda50512fc2a77ce017be547fe309602fe909239fa5d4889852",
+  "git_delta": {
+    "base_commit": "9afc0570fd74ec1893d70111b96539e9b1bdf756",
+    "candidate_commit": "db6081b6228e7b8e9fd976302e3237d4e7ca3364",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_tangent_complement_density",
+    "diff_sha256": "ba0d6fb4f9edfc0fdcc1547788746c2c929e329ff4eb6d671b0b71ac36659fc3",
+    "source_sha256": "08171701449709bd1c9e172c87b2149ad4527d7168208b7e69ffd0a2c975c032",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_tangent_complement_density",
+      "statement": "∀ (P N : ℕ) (A M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), MeasurableSet A → A ⊆ M → 0 < s → μHE[N] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt N M x Q → HasApproximateTangentSpaceAt N A x Q → Tendsto (fun r : ℝ => μHE[N] ((M \\ A) ∩ ball x r) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
