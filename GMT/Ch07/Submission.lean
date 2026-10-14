@@ -451,6 +451,314 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Testing `∂C = 0` against `df` along rays** (Simon Ch. 6, (6.2.3) `∂T(φ) = T(dφ)`, applied to
+the `0`-form of `f`).  Let `C ∈ 𝒟₁(ℝᴾ)` with `∂C = 0` be given by densities `G e` along the rays
+`t ↦ te`, `e ∈ F`: `C(ω) = Σ_{e∈F} ∫_{(0,∞)} G e t · ω(te)[e] dt`.  For `f ∈ C^∞_c(ℝᴾ)` the
+`0`-form `f̂(x) = f(x)` is a test form with `df̂(x)[v] = Df(x)v`, so
+`0 = ∂C(f̂) = C(df̂) = Σ_{e∈F} ∫_{(0,∞)} G e t · Df(te)e dt`, and by the chain rule
+`Df(te)e = (d/dt) f(te)`. -/
+theorem Submission.idtp_fons_odc_rc_boundary_ray_test : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ (F : Finset (Euclid P)) (G : Euclid P → ℝ → ℝ), (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * deriv (fun s : ℝ => f (s • e)) t = 0 := by
+  intro P C hC F G hrep f hf hfc
+  -- Step 1: the test `0`-form `f̂(x) = constOfIsEmpty (f x)`.
+  have hfhat : (fun x => ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (f x)) ∈
+      TestFormOn (univ : Set (Euclid P)) 0 :=
+    ⟨⟨(ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)).contDiff.comp hf,
+      hfc.comp_left (map_zero (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (Euclid P) ℝ (Fin 0)))⟩,
+      subset_univ _⟩
+  -- Step 2: `df̂(x)[v] = Df(x)v`.
+  have hd : ∀ x v : Euclid P, ((exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩ :
+      TestFormOn (univ : Set (Euclid P)) 1) : DifferentialForm (Euclid P) 1) x (fun _ => v) =
+      fderiv ℝ f x v := by
+    intro x v
+    change extDeriv (fun x => ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (f x)) x
+      (fun _ => v) = _
+    rw [extDeriv_constOfIsEmpty, ContinuousAlternatingMap.ofSubsingleton_apply_apply]
+  -- Step 3: `0 = ∂C(f̂) = C(df̂)`.
+  have h0 : C (exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩) = 0 := by
+    rw [← GeometricCurrentOn.boundary_apply, hC, GeometricCurrentOn.zero_apply]
+  -- Step 4: the chain rule `deriv (s ↦ f(se)) t = Df(te)e`.
+  have hderiv : ∀ (e : Euclid P) (t : ℝ), deriv (fun s : ℝ => f (s • e)) t = fderiv ℝ f (t • e) e := by
+    intro e t
+    have hs : HasDerivAt (fun s : ℝ => s • e) e t := by
+      simpa using (hasDerivAt_id t).smul_const e
+    exact ((hf.differentiable (by simp) (t • e)).hasFDerivAt.comp_hasDerivAt t hs).deriv
+  -- Step 5: substitute both into the ray representation of `C(df̂)`.
+  have h1 := hrep (exteriorDerivativeTestOn (univ : Set (Euclid P)) 0 ⟨_, hfhat⟩)
+  simp only [hd] at h1
+  simp only [hderiv]
+  exact h1.symm.trans h0
+/-- **A smooth cutoff that sees only one ray** (ray constancy for one-dimensional cones).
+If `F` is a finite set of unit vectors, `‖e₀‖ = 1` and `ψ` is smooth with compact support in
+`(0, ∞)`, then `f(x) = ψ(⟨x, e₀⟩) χ(‖x‖² − ⟨x, e₀⟩²)`, for a smooth `χ` with `χ(0) = 1` and
+`χ = 0` on `[κ, ∞)` (`κ > 0` small), is smooth with compact support, `f(s e₀) = ψ(s)`, and `f`
+vanishes on the open rays `{t e : t > 0}`, `e ∈ F`, `e ≠ e₀`. -/
+theorem Submission.idtp_fons_odc_rc_ray_cutoff : ∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ e₀ : Euclid P, ‖e₀‖ = 1 → ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 → ∃ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ HasCompactSupport f ∧ (∀ s : ℝ, f (s • e₀) = ψ s) ∧ ∀ e ∈ F, e ≠ e₀ → ∀ t : ℝ, 0 < t → f (t • e) = 0 := by
+  intro P F hF e₀ he₀ ψ hψ hψc hψpos
+  -- Step 1: `ψ s ≠ 0` forces `α ≤ s ≤ β`, with `0 < α`.
+  obtain ⟨α, hα0, hα⟩ : ∃ α : ℝ, 0 < α ∧ ∀ s ∈ tsupport ψ, α ≤ s :=
+    hψc.isCompact.exists_forall_le' continuousOn_id fun s hs => hψpos hs
+  obtain ⟨β, hβ⟩ : ∃ β : ℝ, ∀ s ∈ tsupport ψ, s ≤ β := hψc.isCompact.bddAbove
+  have hψne : ∀ s : ℝ, ψ s ≠ 0 → α ≤ s ∧ s ≤ β := fun s hs =>
+    ⟨hα s (subset_tsupport ψ hs), hβ s (subset_tsupport ψ hs)⟩
+  -- Step 2: `0 < κ < α² (1 - ⟨e, e₀⟩²)` for the finitely many `e ∈ F` with `0 < ⟨e, e₀⟩ < 1`.
+  obtain ⟨κ, hκ0, hκ⟩ : ∃ κ : ℝ, 0 < κ ∧ ∀ e ∈ F, 0 < inner ℝ e e₀ → inner ℝ e e₀ < 1 →
+      κ < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+    have h : ∀ᶠ κ in 𝓝[>] (0 : ℝ), ∀ e ∈ F, 0 < inner ℝ e e₀ → inner ℝ e e₀ < 1 →
+        κ < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+      refine (eventually_all_finset F).2 fun e _ => ?_
+      by_cases hc : 0 < inner ℝ e e₀ ∧ inner ℝ e e₀ < 1
+      · have hpos : 0 < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+          have h1 : inner ℝ e e₀ ^ 2 < 1 := by nlinarith [hc.1, hc.2]
+          have h2 : 0 < α ^ 2 := by positivity
+          nlinarith
+        exact ((eventually_lt_nhds hpos).filter_mono nhdsWithin_le_nhds).mono
+          fun κ hκ _ _ => hκ
+      · exact Eventually.of_forall fun κ h1 h2 => absurd ⟨h1, h2⟩ hc
+    have h0 : ∀ᶠ κ in 𝓝[>] (0 : ℝ), 0 < κ := self_mem_nhdsWithin
+    obtain ⟨κ, hκ, hκ0⟩ := (h.and h0).exists
+    exact ⟨κ, hκ0, hκ⟩
+  -- Step 3: a smooth profile `χ` with `χ 0 = 1` and `χ = 0` on `[κ, ∞)`.
+  obtain ⟨χ, hχ, hχ0, hχκ⟩ : ∃ χ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧ χ 0 = 1 ∧
+      ∀ s, κ ≤ s → χ s = 0 := by
+    refine ⟨fun s => Real.smoothTransition ((κ - s) / κ),
+      Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const κ), ?_, ?_⟩
+    · simp only [sub_zero, div_self hκ0.ne']
+      exact Real.smoothTransition.one_of_one_le le_rfl
+    · intro s hs
+      exact Real.smoothTransition.zero_of_nonpos
+        (div_nonpos_of_nonpos_of_nonneg (by linarith) hκ0.le)
+  -- Step 4: `f x = ψ ⟨x, e₀⟩ * χ (‖x‖² - ⟨x, e₀⟩²)` is smooth.
+  refine ⟨fun x => ψ (inner ℝ x e₀) * χ (‖x‖ ^ 2 - inner ℝ x e₀ ^ 2), ?_, ?_, ?_, ?_⟩
+  · have hL : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : Euclid P => inner ℝ x e₀ :=
+      contDiff_id.inner ℝ contDiff_const
+    exact (hψ.comp hL).mul (hχ.comp ((contDiff_norm_sq ℝ).sub (hL.pow 2)))
+  -- Step 5: `f` vanishes outside `closedBall 0 (β + κ + 1)`.
+  · refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) (β + κ + 1)) ?_
+    intro x hx
+    by_contra hfx
+    obtain ⟨hl, hu⟩ := hψne _ (left_ne_zero_of_mul hfx)
+    have h3 : ‖x‖ ^ 2 - inner ℝ x e₀ ^ 2 < κ :=
+      lt_of_not_ge fun h => right_ne_zero_of_mul hfx (hχκ _ h)
+    have h4 : inner ℝ x e₀ ^ 2 ≤ β ^ 2 := by nlinarith
+    have h5 : ‖x‖ ^ 2 < (β + κ + 1) ^ 2 := by nlinarith
+    apply hx
+    rw [mem_closedBall, dist_zero_right]
+    nlinarith [norm_nonneg x]
+  -- Step 6: values on the line `ℝ e₀`.
+  · intro s
+    have h1 : inner ℝ (s • e₀) e₀ = s := by
+      rw [real_inner_smul_left, real_inner_self_eq_norm_sq, he₀, one_pow, mul_one]
+    have h2 : ‖s • e₀‖ ^ 2 = s ^ 2 := by
+      rw [norm_smul, he₀, mul_one, Real.norm_eq_abs, sq_abs]
+    simp only [h1, h2, sub_self, hχ0, mul_one]
+  -- Step 7: vanishing on the other rays: `ψ (t c) ≠ 0` forces `0 < c < 1` and `α ≤ t`.
+  · intro e he hne t ht
+    have he1 : ‖e‖ = 1 := hF e he
+    have h1 : inner ℝ (t • e) e₀ = t * inner ℝ e e₀ := real_inner_smul_left e e₀ t
+    have h2 : ‖t • e‖ ^ 2 = t ^ 2 := by
+      rw [norm_smul, he1, mul_one, Real.norm_eq_abs, sq_abs]
+    show ψ (inner ℝ (t • e) e₀) * χ (‖t • e‖ ^ 2 - inner ℝ (t • e) e₀ ^ 2) = 0
+    rw [h1, h2]
+    by_cases hψt : ψ (t * inner ℝ e e₀) = 0
+    · rw [hψt, zero_mul]
+    obtain ⟨hl, -⟩ := hψne _ hψt
+    have hc0 : 0 < inner ℝ e e₀ := by
+      by_contra h
+      have : t * inner ℝ e e₀ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos ht.le (not_lt.1 h)
+      linarith
+    have hc1 : inner ℝ e e₀ < 1 := by
+      have hsub : 0 < ‖e - e₀‖ := norm_pos_iff.2 (sub_ne_zero.2 hne)
+      have h3 := norm_sub_sq_real e e₀
+      rw [he1, he₀] at h3
+      nlinarith
+    have hκ' := hκ e he hc0 hc1
+    have htα : α ≤ t := by nlinarith
+    have h5 : α ^ 2 ≤ t ^ 2 := by nlinarith
+    have h6 : 0 < 1 - inner ℝ e e₀ ^ 2 := by nlinarith
+    have h7 : α ^ 2 * (1 - inner ℝ e e₀ ^ 2) ≤ t ^ 2 * (1 - inner ℝ e e₀ ^ 2) :=
+      mul_le_mul_of_nonneg_right h5 h6.le
+    rw [hχκ _ (by nlinarith), mul_zero]
+/-- **Fundamental theorem of calculus along a ray** (the ray computation of the Constancy
+Theorem, Simon Ch. 6, 2.34, for the one-dimensional cones in the proof of 7.3.3): if `f` is
+smooth with compact support on `ℝᴾ` and `|e| = 1`, then `∫_{(0,∞)} (d/dt) f(te) dt = −f(0)`.
+As `e ≠ 0`, `s ↦ se` is a closed embedding `ℝ → ℝᴾ`, so `h(s) = f(se)` is `C¹` with compact
+support; hence `h'` is integrable on `(0, ∞)`, `h(t) → 0` as `t → ∞`, and
+`∫_{(0,∞)} h' = 0 − h(0) = −f(0)`. -/
+theorem Submission.idtp_fons_odc_rc_ray_ftc : ∀ (P : ℕ) (f : Euclid P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∀ e : Euclid P, ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), deriv (fun s : ℝ => f (s • e)) t = -f 0 := by
+  intro P f hf hfc e he
+  -- `e ≠ 0`, so `s ↦ s • e` is a closed embedding `ℝ → ℝᴾ`
+  have he0 : e ≠ 0 := ne_zero_of_norm_ne_zero (by rw [he]; exact one_ne_zero)
+  -- `h(s) = f(s • e)` is `C¹`, and has compact support as `f` does
+  have hh : ContDiff ℝ 1 fun s : ℝ => f (s • e) :=
+    (hf.of_le (by exact_mod_cast le_top)).comp (contDiff_id.smul contDiff_const)
+  have hhc : HasCompactSupport fun s : ℝ => f (s • e) :=
+    hfc.comp_isClosedEmbedding (isClosedEmbedding_smul_left (𝕜 := ℝ) he0)
+  -- FTC on `(0, ∞)`: `∫_{(0,∞)} h' = 0 - h(0) = -f(0)`
+  rw [hhc.integral_Ioi_deriv_eq hh 0, zero_smul]
+/-- **One-dimensional constancy theorem** (du Bois-Reymond; Simon Ch. 6, 2.34 for `n = 1`): if `g`
+is locally integrable on `U = (0, ∞)` and `∫_U g φ' = 0` for every `C^∞` function `φ` with compact
+support in `U`, then `g` is a.e. constant on `U`.  Fix a bump `b` supported in `[1/2, 3/2]`.  A
+test `f` with `∫ f = 0` is the derivative of the test `Ψ(t) = ∫_0^t f`, so `∫ g f = 0`; applied
+to `f = ψ − (∫ ψ / ∫ b) b` this gives `∫ ψ (g − c) = 0` with `c = ∫ g b / ∫ b`, so by the
+fundamental lemma of the calculus of variations `g = c` a.e. on `U`. -/
+theorem Submission.idtp_fons_odc_du_bois_reymond : ∀ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) → (∀ φ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g t * deriv φ t = 0) → ∃ c : ℝ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g t = c := by
+  intro g hg h
+  -- Step 1: a bump `b` with `b(1) = 1` and `tsupport b = [1/2, 3/2] ⊆ U`, so `∫ b > 0`
+  obtain ⟨b, hb⟩ : ∃ b : ContDiffBump (1 : ℝ), b.rOut = 1 / 2 :=
+    ⟨⟨1 / 4, 1 / 2, by norm_num, by norm_num⟩, rfl⟩
+  have hbs : tsupport b ⊆ Ioi 0 := by
+    rw [b.tsupport_eq, hb, Real.closedBall_eq_Icc]
+    exact fun x hx => show (0 : ℝ) < x by linarith [hx.1]
+  have hI : 0 < ∫ t, b t :=
+    b.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := volume)
+      b.hasCompactSupport (fun x => b.nonneg' x) (x := 1)
+      (by rw [b.one_of_mem_closedBall (mem_closedBall_self b.rIn_pos.le)]; exact one_ne_zero)
+  have hbi := b.continuous.integrable_of_hasCompactSupport (μ := volume) b.hasCompactSupport
+  -- Step 2: `g ψ` is integrable for continuous `ψ` with compact support in `U`
+  have hint : ∀ ψ : ℝ → ℝ, Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 →
+      Integrable (fun t => g t * ψ t) := by
+    intro ψ hψ hψc hψs
+    rw [← integrableOn_iff_integrable_of_support_subset (s := tsupport ψ)]
+    · exact (hg.integrableOn_compact_subset hψs hψc).mul_continuousOn hψ.continuousOn hψc
+    · exact (support_mul_subset_right _ _).trans (subset_tsupport ψ)
+  have hgb := hint b b.continuous b.hasCompactSupport hbs
+  -- Step 3: a test `f` with `∫ f = 0` and `tsupport f ⊆ [α, β]` has the primitive
+  -- `Ψ(t) = ∫_0^t f`, which is `C^∞` with `Ψ' = f` and vanishes off `[α, β]`
+  have hprim : ∀ f : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f →
+      tsupport f ⊆ Ioi 0 → ∫ t, f t = 0 → ∃ Ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Ψ ∧
+        HasCompactSupport Ψ ∧ tsupport Ψ ⊆ Ioi 0 ∧ deriv Ψ = f := by
+    intro f hf hfc hfs hf0
+    obtain ⟨α, hα, hαf⟩ := hfc.isCompact.exists_forall_le' continuousOn_id fun x hx => hfs hx
+    obtain ⟨β, hβ⟩ := hfc.isCompact.bddAbove
+    have hderiv : ∀ t, HasDerivAt (fun u => ∫ x in (0 : ℝ)..u, f x) (f t) t :=
+      fun t => (hf.continuous.integral_hasStrictDerivAt 0 t).hasDerivAt
+    have hd : deriv (fun u => ∫ x in (0 : ℝ)..u, f x) = f := funext fun t => (hderiv t).deriv
+    have hvan : ∀ t ∉ Icc α β, ∫ x in (0 : ℝ)..t, f x = 0 := by
+      intro t ht
+      by_cases htα : t < α
+      · rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)),
+          intervalIntegral.integral_zero]
+        intro x hx
+        refine image_eq_zero_of_notMem_tsupport fun hxs => ?_
+        rw [uIcc, mem_Icc] at hx
+        exact (hαf x hxs).not_gt (hx.2.trans_lt (max_lt hα htα))
+      · have hβt : β < t := not_le.1 fun h' => ht ⟨not_lt.1 htα, h'⟩
+        rw [intervalIntegral.integral_of_le (hα.le.trans (not_lt.1 htα)),
+          setIntegral_eq_integral_of_forall_compl_eq_zero, hf0]
+        intro x hx
+        exact image_eq_zero_of_notMem_tsupport fun hxs => hx ⟨hfs hxs, (hβ hxs).trans hβt.le⟩
+    refine ⟨fun u => ∫ x in (0 : ℝ)..u, f x, ?_, HasCompactSupport.intro isCompact_Icc hvan,
+      ?_, hd⟩
+    · exact contDiff_infty_iff_deriv.2 ⟨fun t => (hderiv t).differentiableAt, by rwa [hd]⟩
+    · exact (closure_minimal (support_subset_iff'.2 hvan) isClosed_Icc).trans
+        fun x hx => hα.trans_le hx.1
+  -- Step 4: `g` annihilates tests with zero integral: `∫ g f = ∫_U g Ψ' = 0`
+  have key : ∀ f : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f →
+      tsupport f ⊆ Ioi 0 → ∫ t, f t = 0 → ∫ t, g t * f t = 0 := by
+    intro f hf hfc hfs hf0
+    obtain ⟨Ψ, hΨ, hΨc, hΨs, rfl⟩ := hprim f hf hfc hfs hf0
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioi 0)]
+    · exact h Ψ hΨ hΨc hΨs
+    · intro x hx
+      rw [image_eq_zero_of_notMem_tsupport (fun h' => hx (hfs h')), mul_zero]
+  -- the constant `c = ∫ g b / ∫ b`
+  refine ⟨(∫ t, g t * b t) / ∫ t, b t, ?_⟩
+  -- Steps 6–7: by the fundamental lemma on the open set `U` and `ae_restrict_iff'`, it suffices
+  -- that `∫ ψ (g − c) = 0` for every `C^∞` test `ψ` with compact support in `U`
+  have hU := isOpen_Ioi.ae_eq_zero_of_integral_contDiff_smul_eq_zero (μ := volume)
+    (f := fun t => g t - (∫ t, g t * b t) / ∫ t, b t) (hg.sub (locallyIntegrableOn_const _)) ?_
+  · exact (ae_restrict_iff' measurableSet_Ioi).2 (hU.mono fun t ht ht' => sub_eq_zero.1 (ht ht'))
+  -- Step 5: with `a = ∫ ψ / ∫ b`, the test `f = ψ − a b` has `∫ f = 0`, so Step 4 gives
+  -- `0 = ∫ g f = ∫ g ψ − a ∫ g b = ∫ ψ (g − c)`
+  intro ψ hψ hψc hψs
+  have hψi := hψ.continuous.integrable_of_hasCompactSupport (μ := volume) hψc
+  have hgψ := hint ψ hψ.continuous hψc hψs
+  set a := (∫ t, ψ t) / ∫ t, b t with ha
+  have hs : tsupport (fun t => ψ t - a * b t) ⊆ Ioi 0 := by
+    refine (closure_minimal (support_subset_iff'.2 fun x hx => ?_)
+      ((isClosed_tsupport ψ).union (isClosed_tsupport b))).trans (union_subset hψs hbs)
+    simp only [mem_union, not_or] at hx
+    simp [image_eq_zero_of_notMem_tsupport hx.1, image_eq_zero_of_notMem_tsupport hx.2]
+  have H : ∫ t, g t * (ψ t - a * b t) = 0 :=
+    key _ (hψ.sub (contDiff_const.mul b.contDiff)) (hψc.sub b.hasCompactSupport.mul_left) hs
+      (by rw [integral_sub hψi (hbi.const_mul a), integral_const_mul, ha,
+        div_mul_cancel₀ _ hI.ne', sub_self])
+  have e1 : (fun t => g t * (ψ t - a * b t)) = fun t => g t * ψ t - a * (g t * b t) := by
+    funext t; ring
+  have e2 : (fun t => ψ t • (g t - (∫ t, g t * b t) / ∫ t, b t)) =
+      fun t => g t * ψ t - (∫ t, g t * b t) / (∫ t, b t) * ψ t := by
+    funext t; rw [smul_eq_mul]; ring
+  rw [e1, integral_sub hgψ (hgb.const_mul a), integral_const_mul] at H
+  rw [e2, integral_sub hgψ (hψi.const_mul _), integral_const_mul, ← H, ha]
+  ring
+
+/-- **Simon Ch. 6, 2.34 (constancy theorem) on finitely many rays.**  Let `C ∈ 𝒟₁(ℝᴾ)` with
+`∂C = 0` be given on the open rays `{te : t > 0}`, `e ∈ F` (unit vectors), by densities `g_e` that
+are locally integrable and a.e. integer-valued on `(0, ∞)`.  Testing `∂C = 0` with `f ∈ C^∞_c(ℝᴾ)`
+gives `Σ_e ∫₀^∞ g_e(t) (d/dt) f(te) dt = 0`.  A cutoff `f` equal to `ψ ∈ C^∞_c((0, ∞))` on `ℝe₀`
+and vanishing on the other open rays reduces this to `∫₀^∞ g_{e₀} ψ' = 0`, so `g_{e₀}` is a.e. a
+constant (du Bois-Reymond), which is an integer `m(e₀)` by integrality.  A bump `b` with
+`b(0) = 1` and `∫₀^∞ (d/dt) b(te) dt = −b(0)` then gives `Σ_e m(e) = 0`. -/
+theorem Submission.idtp_fons_odc_ray_constancy : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) → ∀ g : Euclid P → ℝ → ℝ, (∀ e ∈ F, LocallyIntegrableOn (g e) (Ioi 0)) → (∀ e ∈ F, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g e t = k) → (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), g e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ m : Euclid P → ℤ, ∑ e ∈ F, m e = 0 ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+  intro P C hC F hF g hg hgZ hrep
+  -- (1.1) `Σ_e ∫₀^∞ g_e(t) (d/dt) f(te) dt = 0` for every `f ∈ C^∞_c(ℝᴾ)`
+  have htest := Submission.idtp_fons_odc_rc_boundary_ray_test P C hC F g hrep
+  -- `(0, ∞)` has positive measure, so an a.e. property on it holds at some point
+  have : (ae (volume.restrict (Ioi (0 : ℝ)))).NeBot :=
+    ae_neBot.2 (by rw [Ne, Measure.restrict_eq_zero, Real.volume_Ioi]; exact ENNReal.top_ne_zero)
+  -- each density is a.e. an integer constant on `(0, ∞)`
+  have hconst : ∀ e₀ ∈ F, ∃ k : ℤ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g e₀ t = k := by
+    intro e₀ he₀
+    -- `∫₀^∞ g_{e₀} ψ' = 0` for every `ψ ∈ C^∞_c((0, ∞))`
+    have hdbr : ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g e₀ t * deriv ψ t = 0 := by
+      intro ψ hψ hψc hψs
+      obtain ⟨f, hf, hfc, hfe₀, hfe⟩ :=
+        Submission.idtp_fons_odc_rc_ray_cutoff P F hF e₀ (hF e₀ he₀) ψ hψ hψc hψs
+      -- on the other rays `t ↦ f(te)` vanishes on the open set `(0, ∞)`, so does its derivative
+      have hother : ∀ e ∈ F, e ≠ e₀ →
+          ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => f (s • e)) t = 0 := by
+        intro e he hne
+        refine setIntegral_eq_zero_of_forall_eq_zero fun t ht => ?_
+        have hzero : (fun s : ℝ => f (s • e)) =ᶠ[𝓝 t] fun _ => (0 : ℝ) :=
+          eventually_of_mem (Ioi_mem_nhds ht) fun s hs => hfe e he hne s hs
+        rw [hzero.deriv_eq, deriv_const, mul_zero]
+      have h := htest f hf hfc
+      rw [Finset.sum_eq_single_of_mem e₀ he₀ hother,
+        show (fun s : ℝ => f (s • e₀)) = ψ from funext hfe₀] at h
+      exact h
+    obtain ⟨c, hc⟩ := Submission.idtp_fons_odc_du_bois_reymond (g e₀) (hg e₀ he₀) hdbr
+    obtain ⟨t, htc, k, hk⟩ := (hc.and (hgZ e₀ he₀)).exists
+    exact ⟨k, hc.mono fun s hs => hs.trans (htc.symm.trans hk)⟩
+  choose! m hm using hconst
+  refine ⟨m, ?_, fun ω => ?_⟩
+  · -- a bump `b ∈ C^∞_c(ℝᴾ)` with `b(0) = 1`; `∫₀^∞ (d/dt) b(te) dt = −b(0)` on each ray
+    let b : ContDiffBump (0 : Euclid P) := ⟨1, 2, one_pos, one_lt_two⟩
+    have hb0 : b 0 = 1 := b.eventuallyEq_one.eq_of_nhds
+    have hterm : ∀ e ∈ F,
+        ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => b (s • e)) t = -(m e : ℝ) := by
+      intro e he
+      calc ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => b (s • e)) t
+          = ∫ t in Ioi (0 : ℝ), (m e : ℝ) * deriv (fun s : ℝ => b (s • e)) t := by
+            refine integral_congr_ae ?_
+            filter_upwards [hm e he] with t ht
+            rw [ht]
+        _ = (m e : ℝ) * -b 0 := by
+            rw [integral_const_mul, Submission.idtp_fons_odc_rc_ray_ftc P b b.contDiff
+              b.hasCompactSupport e (hF e he)]
+        _ = -(m e : ℝ) := by rw [hb0, mul_neg, mul_one]
+    have hsum : ∑ e ∈ F, -(m e : ℝ) = 0 :=
+      (Finset.sum_congr rfl hterm).symm.trans (htest b b.contDiff b.hasCompactSupport)
+    rw [Finset.sum_neg_distrib, neg_eq_zero] at hsum
+    exact_mod_cast hsum
+  · -- `g_e = m(e)` a.e. on `(0, ∞)`, and the constant comes out of the integral
+    rw [hrep ω]
+    refine Finset.sum_congr rfl fun e he => ?_
+    rw [← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [hm e he] with t ht
+    rw [ht]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
