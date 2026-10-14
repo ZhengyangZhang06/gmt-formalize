@@ -690,6 +690,112 @@ theorem Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound : ∀ (Q : ℕ) (F : Ty
   simp only [ContinuousLinearMap.lsmul_apply] at h
   exact h.trans (mul_le_of_le_one_left hsum hB)
 
+/-- **Cut-off pull-backs of a null sequence of test forms tend to `0`** (Simon Ch. 6: the
+topology of `𝒟ⁿ(U)` in §1, before 1.15, and the cut-off pull-back `ω ↦ ζ f^#ω` of 2.23, here for
+linear `f`).  Let `L : ℝ^Q → ℝᴾ` be linear and `ζ` smooth with compact support.  If `ωⱼ → 0` in
+`𝒟ᵈ(ℝᴾ)` and `ηⱼ = ζ · L^#ωⱼ`, then `ηⱼ → 0` in `𝒟ᵈ(ℝ^Q)`.  Every `ηⱼ` is supported in the
+compact `spt ζ`.  Each `D^l ωⱼ → 0` uniformly on all of `ℝᴾ`, since it vanishes off the common
+compact set.  The chain rule gives `‖D^l(L^#ωⱼ)(y)‖ ≤ ‖L‖ᵈ ‖L‖ˡ ‖D^l ωⱼ(Ly)‖`, and the
+derivatives of `ζ` are bounded.  The Leibniz bound then gives `supᵧ ‖D^k ηⱼ(y)‖ → 0`. -/
+theorem Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges : ∀ (P Q d : ℕ) (L : Euclid Q →L[ℝ] Euclid P) (ζ : Euclid Q → ℝ), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → ∀ (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d) (ηs : ℕ → TestFormOn (univ : Set (Euclid Q)) d), (∀ (j : ℕ) (y : Euclid Q), (ηs j : DifferentialForm (Euclid Q) d) y = ζ y • ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L) → TestFormOnConverges ωs 0 → TestFormOnConverges ηs 0 := by
+  intro P Q d L ζ hζ hζc ωs ηs hη hω
+  -- Step 1: a compact `C ⊇ tsupport ωⱼ` on which every `D^l ωⱼ → 0` uniformly
+  obtain ⟨C, -, -, hωC, -, hωD⟩ := hω
+  have hωs : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (ωs j : DifferentialForm (Euclid P) d) := fun j =>
+    (ωs j).property.1.1
+  -- Step 2: `D^l ωⱼ → 0` uniformly on all of `ℝᴾ`, since it vanishes off `C`
+  have hdecay : ∀ (l : ℕ) (ε : ℝ), 0 < ε → ∀ᶠ j in atTop, ∀ x : Euclid P,
+      ‖iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d) x‖ < ε := by
+    intro l ε hε
+    filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hωD l) ε hε] with j hj x
+    by_cases hx : x ∈ C
+    · have hjx := hj x hx
+      simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left] at hjx
+      exact hjx
+    · have hx' : x ∉ tsupport (iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d)) :=
+        fun h => hx (hωC j (tsupport_iteratedFDeriv_subset l h))
+      rw [image_eq_zero_of_notMem_tsupport hx', norm_zero]
+      exact hε
+  -- Step 3: `ηⱼ = ζ • gⱼ` with `gⱼ = Λ ∘ ωⱼ ∘ L` smooth, where `Λ α = α ∘ (L × ⋯ × L)`
+  let Λ : Covector (Euclid P) d →L[ℝ] Covector (Euclid Q) d :=
+    ContinuousAlternatingMap.compContinuousLinearMapCLM L
+  let g : ℕ → Euclid Q → Covector (Euclid Q) d := fun j y =>
+    ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L
+  have hgΛ : ∀ j, g j = Λ ∘ ((ωs j : DifferentialForm (Euclid P) d) ∘ L) := fun j => rfl
+  have hηg : ∀ j, (ηs j : DifferentialForm (Euclid Q) d) = fun y => ζ y • g j y := fun j =>
+    funext (hη j)
+  have hgs : ∀ j, ContDiff ℝ (⊤ : ℕ∞) (g j) := fun j => by
+    rw [hgΛ j]
+    exact Λ.contDiff.comp ((hωs j).comp L.contDiff)
+  -- Step 4: `‖D^l gⱼ(y)‖ ≤ ‖L‖ᵈ ‖L‖ˡ ‖D^l ωⱼ(Ly)‖`, as `D^l gⱼ(y) = Λ ∘ D^l ωⱼ(Ly) ∘ (L, …, L)`
+  have hΛ : ∀ (l : ℕ) (A : ContinuousMultilinearMap ℝ (fun _ : Fin l => Euclid Q)
+      (Covector (Euclid P) d)), ‖Λ.compContinuousMultilinearMap A‖ ≤ ‖L‖ ^ d * ‖A‖ := by
+    intro l A
+    refine ContinuousMultilinearMap.opNorm_le_bound (by positivity) fun m => ?_
+    calc ‖Λ.compContinuousMultilinearMap A m‖ = ‖(A m).compContinuousLinearMap L‖ := rfl
+      _ ≤ ‖A m‖ * ‖L‖ ^ Fintype.card (Fin d) := (A m).norm_compContinuousLinearMap_le L
+      _ ≤ ‖A‖ * (∏ i, ‖m i‖) * ‖L‖ ^ d := by
+          rw [Fintype.card_fin]
+          gcongr
+          exact A.le_opNorm m
+      _ = ‖L‖ ^ d * ‖A‖ * ∏ i, ‖m i‖ := by ring
+  have hgD : ∀ (l j : ℕ) (y : Euclid Q), ‖iteratedFDeriv ℝ l (g j) y‖ ≤
+      ‖L‖ ^ d * (‖iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) d) (L y)‖ * ‖L‖ ^ l) := by
+    intro l j y
+    rw [hgΛ j, Λ.iteratedFDeriv_comp_left (i := l) ((hωs j).comp L.contDiff).contDiffAt (by simp),
+      L.iteratedFDeriv_comp_right (i := l) (hωs j) y (by simp)]
+    refine (hΛ l _).trans ?_
+    gcongr
+    refine (ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _).trans_eq ?_
+    simp
+  -- Step 5: every `D^i ζ` is bounded
+  have hZ : ∀ i : ℕ, ∃ Z : ℝ, ∀ y, ‖iteratedFDeriv ℝ i ζ y‖ ≤ Z := fun i =>
+    (hζ.continuous_iteratedFDeriv (m := i) (by simp)).bounded_above_of_compact_support
+      (hζc.iteratedFDeriv i)
+  choose Z hZ using hZ
+  -- Steps 6 and 8: all supports lie in the compact set `tsupport ζ`
+  refine ⟨tsupport ζ, hζc.isCompact, subset_univ _, fun j => ?_, ?_, fun k => ?_⟩
+  · rw [hηg j]
+    exact tsupport_smul_subset_left _ _
+  · simp
+  -- Step 7: eventually `‖D^k ηⱼ(y)‖ ≤ S δ < ε` for all `y`, with `δ = ε / (S + 1)`
+  refine Metric.tendstoUniformlyOn_iff.mpr fun ε hε => ?_
+  obtain ⟨S, hS⟩ : ∃ S : ℝ, S = ∑ i ∈ Finset.range (k + 1),
+      (k.choose i : ℝ) * |Z i| * (‖L‖ ^ d * ‖L‖ ^ (k - i)) := ⟨_, rfl⟩
+  have hS0 : 0 ≤ S := by
+    rw [hS]
+    exact Finset.sum_nonneg fun i _ => by positivity
+  have hδ : 0 < ε / (S + 1) := div_pos hε (by linarith)
+  have hev : ∀ᶠ j in atTop, ∀ i ∈ Finset.range (k + 1), ∀ x : Euclid P,
+      ‖iteratedFDeriv ℝ (k - i) (ωs j : DifferentialForm (Euclid P) d) x‖ < ε / (S + 1) :=
+    (Filter.eventually_all_finset _).2 fun i _ => hdecay (k - i) _ hδ
+  filter_upwards [hev] with j hj y _
+  simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left]
+  rw [hηg j]
+  calc ‖iteratedFDeriv ℝ k (fun y => ζ y • g j y) y‖
+      ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i ζ y‖ *
+          ‖iteratedFDeriv ℝ (k - i) (g j) y‖ :=
+        Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound Q (Covector (Euclid Q) d) ζ (g j) hζ
+          (hgs j) k y
+    _ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * |Z i| *
+          (‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1))) := by
+        refine Finset.sum_le_sum fun i hi => ?_
+        have h1 : ‖iteratedFDeriv ℝ i ζ y‖ ≤ |Z i| := (hZ i y).trans (le_abs_self _)
+        have h2 : ‖iteratedFDeriv ℝ (k - i) (g j) y‖ ≤
+            ‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1)) := by
+          refine (hgD (k - i) j y).trans ?_
+          have h3 := (hj i hi (L y)).le
+          calc ‖L‖ ^ d * (‖iteratedFDeriv ℝ (k - i) (ωs j : DifferentialForm (Euclid P) d) (L y)‖ *
+                ‖L‖ ^ (k - i)) ≤ ‖L‖ ^ d * (ε / (S + 1) * ‖L‖ ^ (k - i)) := by gcongr
+            _ = ‖L‖ ^ d * ‖L‖ ^ (k - i) * (ε / (S + 1)) := by ring
+        gcongr
+    _ = S * (ε / (S + 1)) := by
+        rw [hS, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun i _ => by ring
+    _ < ε := by
+        rw [← mul_div_assoc, div_lt_iff₀ (by linarith)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
