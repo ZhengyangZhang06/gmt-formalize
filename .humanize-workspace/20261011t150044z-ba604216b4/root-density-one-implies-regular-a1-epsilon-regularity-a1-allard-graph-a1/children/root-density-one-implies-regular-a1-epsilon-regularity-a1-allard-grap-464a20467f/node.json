@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.lipschitz_approximation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1",
+  "depth": 4,
+  "title": "Lipschitz approximation and graph criterion (Simon 5.2.6–5.2.7)",
+  "statement": "For n ≥ 1, k ≥ 0 and C₆ ≥ 1 there are δ₅ ∈ (0, 1/8], 0 < β' ≤ β ≤ 1/4 and C₇ > 0 such that for every δ ∈ (0, δ₅] and all data satisfying (SA_δ): U, W ⊆ ℝ^{n+k} with W open and W ⊆ U; R = (M, θ, ξ_R) an integer multiplicity triple in U (IMRep U n; ξ_R = R.orient is its orientation, and ξ below denotes a point) with μ := R.measure = θHⁿ⌞M; H : ℝ^{n+k} → ℝ^{n+k} μ-a.e. strongly measurable with |H(x)| ≤ κ for all x; R.firstVariation X = −∫⟨X, H⟩dμ for every C¹ compactly supported X with tsupport X ⊆ W; ρ > 0 with the closed ball B_ρ(z) ⊆ W; z ∈ spt μ; μ(B_ρ(z)) ≤ (1 + δ)ω_nρⁿ (ω_n = unitBallVolume n); κρ ≤ δ: for every ξ ∈ spt μ ∩ B_{δρ}(z), σ₀ ∈ (0, δρ], L ∈ (0, 1] with δ^α ≤ βL (α := 1/(2n+2)) and every n-dimensional subspace T₀ with (i) ∫_{B_{σ₀}(ξ)} |p_x − p_{T₀}|² dμ ≤ C₆δ^{2α}σ₀ⁿ and (ii) |(x − ξ) − p_{T₀}(x − ξ)| ≤ C₆δ^ασ₀ for all x ∈ spt μ ∩ B_{σ₀}(ξ), there are linear isometries ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} with ⟨ιv, ι'w⟩ = 0 and ι(v) ∈ T₀ for all v, w, and f : ℝⁿ → ℝᵏ with |f(v) − f(w)| ≤ L|v − w| and |f(v)| ≤ C₇δ^ασ₀ for all v, w, such that, with F := {ξ + ιv + ι'f(v) : v ∈ ℝⁿ}: (5A) μ(B_{σ₀/2}(ξ) ∖ F) + Hⁿ((F ∖ spt μ) ∩ B_{σ₀/4}(ξ)) ≤ (C₇/L²)∫_{B_{σ₀}(ξ)} |p_x − p_{T₀}|² dμ; and (5B) if ∫_{B_t(y)} |p_x − p_{T₀}|² dμ ≤ β'²L²tⁿ for all y ∈ spt μ ∩ B_{σ₀/2}(ξ) and t ∈ (0, σ₀/2], then spt μ ∩ B_{σ₀/8}(ξ) = F ∩ B_{σ₀/8}(ξ). Here p_x is the orthogonal projection onto approxTangentPlane n M x, p_x^⊥ := I − p_x, p_S the orthogonal projection onto a subspace S, |A|² := Σ_i |Ae_i|² the Hilbert–Schmidt norm (the Lean sum over EuclideanSpace.single i 1), B_t(y) the closed ball, and integrals of nonnegative functions are lower Lebesgue integrals in [0, ∞] (Lean ∫⁻ of ENNReal.ofReal).",
+  "lean_statement": "∀ (n k : ℕ), 0 < n → ∀ C₆ : ℝ, 1 ≤ C₆ → ∃ δ₅ β β' C₇ : ℝ, 0 < δ₅ ∧ δ₅ ≤ 1 / 8 ∧ 0 < β' ∧ β' ≤ β ∧ β ≤ 1 / 4 ∧ 0 < C₇ ∧ ∀ δ : ℝ, 0 < δ → δ ≤ δ₅ → ∀ (U W : Set (Euclid (n + k))) (R : IMRep U n) (H : Euclid (n + k) → Euclid (n + k)) (κ ρ : ℝ) (z : Euclid (n + k)), IsOpen W → W ⊆ U → 0 < ρ → closedBall z ρ ⊆ W → AEStronglyMeasurable H R.measure → (∀ x, ‖H x‖ ≤ κ) → (∀ X : Euclid (n + k) → Euclid (n + k), ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → R.firstVariation X = -∫ x, inner ℝ (X x) (H x) ∂R.measure) → z ∈ R.measure.support → R.measure (closedBall z ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume n * ENNReal.ofReal (ρ ^ n) → κ * ρ ≤ δ → ∀ ξ ∈ R.measure.support ∩ closedBall z (δ * ρ), ∀ (σ₀ L : ℝ) (T₀ : Submodule ℝ (Euclid (n + k))), 0 < σ₀ → σ₀ ≤ δ * ρ → Module.finrank ℝ T₀ = n → 0 < L → L ≤ 1 → δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) ≤ β * L → ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (C₆ * (δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2))) ^ 2 * σ₀ ^ n) → (∀ x ∈ R.measure.support ∩ closedBall ξ σ₀, ‖(x - ξ) - T₀.starProjection (x - ξ)‖ ≤ C₆ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) → ∃ (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (f : Euclid n → Euclid k), (∀ v w, inner ℝ (ι v) (ι' w) = 0) ∧ (∀ v, ι v ∈ T₀) ∧ (∀ v w, ‖f v - f w‖ ≤ L * ‖v - w‖) ∧ (∀ v, ‖f v‖ ≤ C₇ * δ ^ ((1 : ℝ) / (2 * (n : ℝ) + 2)) * σ₀) ∧ R.measure (closedBall ξ (σ₀ / 2) \\ range (fun v => ξ + ι v + ι' (f v))) + μHE[n] ((range (fun v => ξ + ι v + ι' (f v)) \\ R.measure.support) ∩ closedBall ξ (σ₀ / 4)) ≤ ENNReal.ofReal (C₇ / L ^ 2) * ∫⁻ x in closedBall ξ σ₀, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ∧ ((∀ y ∈ R.measure.support ∩ closedBall ξ (σ₀ / 2), ∀ t : ℝ, 0 < t → t ≤ σ₀ / 2 → ∫⁻ x in closedBall y t, ENNReal.ofReal (∑ i : Fin (n + k), ‖(approxTangentPlane n R.carrier x).starProjection (EuclideanSpace.single i (1 : ℝ)) - T₀.starProjection (EuclideanSpace.single i (1 : ℝ))‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (β' ^ 2 * L ^ 2 * t ^ n)) → R.measure.support ∩ closedBall ξ (σ₀ / 8) = range (fun v => ξ + ι v + ι' (f v)) ∩ closedBall ξ (σ₀ / 8))",
+  "lean_name": "dorag_lipschitz_approximation",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.density_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.affine_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-464a20467f-a1"
+}
