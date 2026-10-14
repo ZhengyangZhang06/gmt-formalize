@@ -703,6 +703,159 @@ theorem Submission.dimred_mbl_dtfr_skeleton_null : ∀ (P m : ℕ), μHE[m + 1] 
   -- (5) countable subadditivity
   exact measure_mono_null hcover
     (measure_iUnion_null fun s => measure_iUnion_null fun z => hplane s.1 s.2 z)
+/-- **Simon Ch. 3, Definition 1.4** (the test-function argument of Remark 1.5(3)): if
+`a − x ∈ V` for every `a ∈ A`, where `V` is a linear subspace, then every approximate tangent
+space `Q` of `A` at `x` is contained in `V`.  Every blow-up `η_{x,r}(A) = r⁻¹(A − x)` lies in
+`V`.  For `q ∈ Q \ V` let `d = dist(q, V) > 0` (`V` is closed); the bump
+`g = max(0, d/2 − |· − q|) ∈ C_c` vanishes on `V`, so all blow-up integrals of `g` vanish and
+in the limit `∫_Q g dHⁿ = 0`.  Since `dim Q = n`, `Hⁿ⌞Q` is regular with support `Q ∋ q`, and
+`g ≥ 0` has support `B_{d/2}(q)`, so `∫_Q g dHⁿ > 0`, a contradiction. -/
+theorem Submission.dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem : ∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V := by
+  intro P n A x Q V hAV hQ q hqQ
+  by_contra hqV
+  -- `d = dist(q, V) > 0`: `V` is closed (finite dimension) and contains `0`
+  have hd : 0 < infDist q (V : Set (Euclid P)) :=
+    (V.closed_of_finiteDimensional.notMem_iff_infDist_pos ⟨0, V.zero_mem⟩).mp hqV
+  set d := infDist q (V : Set (Euclid P))
+  -- the bump `g = max(0, d/2 − dist(·, q))`
+  set g : Euclid P → ℝ := fun y => max 0 (d / 2 - dist y q)
+  have hg_cont : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.dist continuous_const))
+  have hg_nonneg : 0 ≤ g := fun y => le_max_left 0 _
+  have hg_far : ∀ y, d / 2 ≤ dist y q → g y = 0 := fun y hy =>
+    max_eq_left (sub_nonpos.mpr hy)
+  have hg_supp : Function.support g = ball q (d / 2) := by
+    ext y
+    rw [Function.mem_support, mem_ball]
+    constructor
+    · intro hy
+      by_contra hy'
+      exact hy (hg_far y (not_lt.mp hy'))
+    · intro hy
+      exact (lt_max_of_lt_right (sub_pos.mpr hy)).ne'
+  have hg_cpt : HasCompactSupport g := by
+    refine HasCompactSupport.intro (isCompact_closedBall q (d / 2)) fun y hy => hg_far y ?_
+    rw [mem_closedBall, not_le] at hy
+    exact hy.le
+  -- `g` vanishes on `V`, as `dist(v, q) ≥ dist(q, V) = d` there
+  have hg_V : ∀ v ∈ V, g v = 0 := by
+    intro v hv
+    refine hg_far v ?_
+    have h : d ≤ dist q v := infDist_le_dist_of_mem (SetLike.mem_coe.mpr hv)
+    rw [dist_comm] at h
+    linarith
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_cpt⟩
+  -- the blow-up `η_{x,r}(A)` lies in `V`, so its integral of `f` is `0` (no measurability)
+  have hblow : ∀ r : ℝ,
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n] = 0 := by
+    intro r
+    refine setIntegral_eq_zero_of_forall_eq_zero ?_
+    rintro _ ⟨a, ha, rfl⟩
+    exact hg_V _ (V.smul_mem r⁻¹ (hAV a ha))
+  -- uniqueness of limits along `𝓝[>] 0`: `∫_Q g dHⁿ = 0`
+  have hQ_zero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := by
+    refine tendsto_nhds_unique (hQ.2 f) ?_
+    simp only [hblow]
+    exact tendsto_const_nhds
+  -- `dim Q = n`: `Hⁿ⌞Q` is regular with support `Q ∋ q`, so `∫_Q g dHⁿ > 0`
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Euclid P) hQ.1
+  have hg_int : Integrable g (μHE[n].restrict (Q : Set (Euclid P))) :=
+    hg_cont.integrable_of_hasCompactSupport hg_cpt
+  have hq_supp : q ∈ (μHE[n].restrict (Q : Set (Euclid P))).support := by
+    rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ.1]
+    exact hqQ
+  have hball : 0 < μHE[n].restrict (Q : Set (Euclid P)) (ball q (d / 2)) :=
+    (Measure.mem_support_iff_forall q).mp hq_supp _ (ball_mem_nhds q (half_pos hd))
+  have hQ_pos : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hg_nonneg hg_int, hg_supp]
+    exact hball
+  exact hQ_pos.ne' hQ_zero
+/-- **Two orthonormal frames of one plane evaluate covectors equally up to one sign** (Simon
+Ch. 6, §1 and §3: an `n`-plane is oriented by `±τ₁ ∧ ⋯ ∧ τₙ` for any orthonormal basis `τ` of
+it).  If the orthonormal `n`-frames `τ` and `e` of `ℝᴾ` span the same subspace `W`, then
+`α(τ) = α(e) · c` for every `n`-covector `α`, where `c = det_e(τ)` is the determinant of `τ` in
+the basis `e` of `W` (`AlternatingMap.eq_smul_basis_det` for `α` restricted to `W`).  As the
+change-of-basis determinant between two orthonormal bases of `W`, `c = ±1`. -/
+theorem Submission.dimred_mbl_dtfrpo_orthonormal_frame_sign : ∀ (P n : ℕ) (τ e : Fin n → Euclid P), Orthonormal ℝ τ → Orthonormal ℝ e → Submodule.span ℝ (Set.range τ) = Submodule.span ℝ (Set.range e) → (∀ α : Covector (Euclid P) n, α τ = α e) ∨ (∀ α : Covector (Euclid P) n, α τ = -α e) := by
+  intro P n τ e hτ he hspan
+  -- Step 1: `W = span (range e)` has the basis `b = Basis.span` with `b j = e j`, so `finrank W = n`
+  let W : Submodule ℝ (Euclid P) := Submodule.span ℝ (Set.range e)
+  have he_li : LinearIndependent ℝ e := he.linearIndependent
+  let b : Module.Basis (Fin n) ℝ W := Module.Basis.span he_li
+  have hb : ∀ j, (b j : Euclid P) = e j := Module.Basis.coe_span_apply he_li
+  have hrank : Module.finrank ℝ W = n := by
+    rw [Module.finrank_eq_card_basis b, Fintype.card_fin]
+  -- Step 2: each `τ j` lies in `span (range τ) = W`, giving the family `τW` in `W`
+  have hτW : ∀ j, τ j ∈ W := fun j => hspan.le (Submodule.subset_span (Set.mem_range_self j))
+  let τW : Fin n → W := Set.codRestrict τ W hτW
+  -- Step 3: restricting `α` to `W`, `eq_smul_basis_det` gives `α(τ) = α(e) · det_b(τW)`
+  have hdet : ∀ α : Covector (Euclid P) n, α τ = α e * b.det τW := by
+    intro α
+    have h := congrArg (fun f : W [⋀^Fin n]→ₗ[ℝ] ℝ => f τW)
+      ((α.toAlternatingMap.compLinearMap W.subtype).eq_smul_basis_det b)
+    have hτ' : (fun j => W.subtype (τW j)) = τ := rfl
+    have he' : (fun j => W.subtype (b j)) = e := funext hb
+    simp only [AlternatingMap.compLinearMap_apply, AlternatingMap.smul_apply, smul_eq_mul] at h
+    rw [hτ', he'] at h
+    exact h
+  -- Step 4: `b` and `τW` are orthonormal bases of `W`, so `det_b(τW) = ±1`
+  have hb_on : Orthonormal ℝ b := by
+    have h := orthonormal_span he
+    convert h using 1
+    funext j
+    exact Module.Basis.span_apply he_li j
+  have hτW_on : Orthonormal ℝ τW := hτ.codRestrict W hτW
+  have hτW_sp : ⊤ ≤ Submodule.span ℝ (Set.range τW) :=
+    (hτW_on.linearIndependent.span_eq_top_of_card_eq_finrank'
+      (by rw [Fintype.card_fin, hrank])).ge
+  have hc : b.det τW = 1 ∨ b.det τW = -1 := by
+    have h := (b.toOrthonormalBasis hb_on).det_to_matrix_orthonormalBasis_real
+      (OrthonormalBasis.mk hτW_on hτW_sp)
+    rwa [Module.Basis.toBasis_toOrthonormalBasis, OrthonormalBasis.coe_mk] at h
+  -- Step 5: the sign `det_b(τW)` does not depend on `α`
+  rcases hc with hc | hc
+  · exact Or.inl fun α => by rw [hdet α, hc, mul_one]
+  · exact Or.inr fun α => by rw [hdet α, hc, mul_neg_one]
+
+/-- **Orientation of a set lying in a coordinate plane** (Simon Ch. 6, §5, (26)–(27): on a face
+of the lattice the orientation is `±e₁ ∧ ⋯ ∧ eₙ`; Ch. 3, Definition 1.4).  If `a_i = x_i` for
+every `a ∈ A` and every `i ∉ range ι`, and `ξ` is a unit orientation of an approximate tangent
+space `Q` of `A` at `x`, then `ξ = ±e_{ι 0} ∧ ⋯ ∧ e_{ι (n−1)}`.  Every `a − x` lies in
+`V = span {e_{ι j}}`, so `Q ≤ V`; as `dim Q = n = dim V`, `Q = V`.  Then `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for
+an orthonormal basis `τ` of `V`, and `α(τ) = ±α(e_ι)` with one sign for all `n`-covectors `α`. -/
+theorem Submission.dimred_mbl_dtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) := by
+  intro P n ι A x Q ξ hι hA hQ hξ
+  -- Step 1: the coordinate frame `e j = e_{ι j}` is orthonormal (`ι` is injective)
+  set e : Fin n → Euclid P := fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  have he : Orthonormal ℝ e :=
+    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).comp ι hι.injective
+  -- Step 2: `v = ∑ i, v i • e_i` lies in `V = span (range e)` if `v i = 0` for `i ∉ range ι`
+  have hmem : ∀ v : Euclid P, (∀ i, (∀ j, ι j ≠ i) → v i = 0) →
+      v ∈ Submodule.span ℝ (Set.range e) := by
+    intro v hv
+    rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr v]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    by_cases h : ∃ j, ι j = i
+    · obtain ⟨j, rfl⟩ := h
+      refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, ?_⟩)
+      rw [EuclideanSpace.basisFun_apply]
+    · rw [EuclideanSpace.basisFun_repr, hv i (fun j hj => h ⟨j, hj⟩), zero_smul]
+      exact Submodule.zero_mem _
+  -- Step 3: `a − x ∈ V` for `a ∈ A`, so `Q ≤ V`; `dim Q = n = dim V` gives `Q = V`
+  have hAV : ∀ a ∈ A, a - x ∈ Submodule.span ℝ (Set.range e) := fun a ha =>
+    hmem _ fun i hi => by rw [PiLp.sub_apply, hA a ha i hi, sub_self]
+  have hQV := Submission.dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem P n A x Q _ hAV hQ
+  have hQeq : Q = Submodule.span ℝ (Set.range e) := Submodule.eq_of_le_of_finrank_eq hQV (by
+    rw [hQ.1, finrank_span_eq_card he.linearIndependent, Fintype.card_fin])
+  -- Step 4: `ξ = ±τ` for an orthonormal frame `τ` of `Q = V`, and `α(τ) = ±α(e)` uniformly
+  obtain ⟨τ, hτ, hτQ, hσ⟩ := hξ
+  rcases Submission.dimred_mbl_dtfrpo_orthonormal_frame_sign P n τ e hτ he (hτQ.trans hQeq)
+    with hc | hc <;> rcases hσ with hσ | hσ
+  · exact Or.inl fun α => by rw [hσ α, hc α]
+  · exact Or.inr fun α => by rw [hσ α, hc α]
+  · exact Or.inr fun α => by rw [hσ α, hc α]
+  · exact Or.inl fun α => by rw [hσ α, hc α, neg_neg]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
