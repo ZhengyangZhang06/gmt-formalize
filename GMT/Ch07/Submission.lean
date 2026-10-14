@@ -543,6 +543,35 @@ theorem Submission.cbr_vague_portmanteau : ∀ (P : ℕ) (U : Set (Euclid P)) (�
     _ ≤ liminf (fun j => νs j G) atTop := iSup_le fun n =>
         hCG G hG hGU _ ((isCompact_closedBall 0 n).inter_left (hFc n))
           (inter_subset_left.trans (hFG n))
+/-- **Rescaled push-forward under a dilation** (Simon 7.3, the scaling `μ_{η_{a,λ#}T}` of blow-ups).
+For `λ > 0`, `η = η_{a,λ}` is the homeomorphism `y ↦ −λ⁻¹a + λ⁻¹y`.  Hence `ν = η_#(λ⁻²μ)` is
+finite on compact sets when `μ` is (preimages of compact sets are compact), `ν(S) = λ⁻²μ(η⁻¹S)`
+for measurable `S`, and `∫ g dν = λ⁻² ∫ g ∘ η dμ` for continuous `g` (change of variables). -/
+theorem Submission.idtp_cse_bml_rpm_dilation_map : ∀ (P : ℕ) (μ : Measure (Euclid P)) (a : Euclid P) (lam : ℝ), IsFiniteMeasureOnCompacts μ → 0 < lam → (∀ K : Set (Euclid P), IsCompact K → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) K < ∞) ∧ (∀ S : Set (Euclid P), MeasurableSet S → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S = ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S)) ∧ ∀ g : Euclid P → ℝ, Continuous g → ∫ x, g x ∂(Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ)) = lam⁻¹ ^ 2 * ∫ x, g (dilation a lam x) ∂μ := by
+  intro P μ a lam hμ hlam
+  -- Step 1: `η_{a,λ}` is the homeomorphism `y ↦ −λ⁻¹a + λ⁻¹y`, so it is measurable and
+  -- preimages of compact sets are compact
+  let e : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • a)))
+  have he : ⇑e = dilation a lam := by
+    funext y
+    simp [e, dilation, dilationCLM]
+  have hη : Measurable (dilation a lam) := he ▸ e.continuous.measurable
+  -- Step 2: `ν(S) = (λ⁻²μ)(η⁻¹S) = λ⁻²μ(η⁻¹S)` for measurable `S`
+  have hset : ∀ S : Set (Euclid P), MeasurableSet S →
+      Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S =
+        ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S) := fun S hS => by
+    rw [Measure.map_apply hη hS, Measure.smul_apply, smul_eq_mul]
+  refine ⟨fun K hK => ?_, hset, fun g hg => ?_⟩
+  · -- Step 3: a compact `K` is closed, hence measurable, and `μ(η⁻¹K) < ∞` as `η⁻¹K` is compact
+    have hK' : IsCompact (dilation a lam ⁻¹' K) := by
+      rw [← he]
+      exact e.isCompact_preimage.mpr hK
+    rw [hset K hK.isClosed.measurableSet]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hK'.measure_lt_top
+  · -- Step 4: change of variables, then `∫ f d(cμ) = c.toReal ∫ f dμ` with `c.toReal = λ⁻²`
+    rw [integral_map hη.aemeasurable hg.aestronglyMeasurable, integral_smul_measure,
+      ENNReal.toReal_ofReal (sq_nonneg _), smul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
