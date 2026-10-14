@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.lipschitz_localization-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "Countable Lipschitz localization of a C¹ map on an open set (parent step 1(a)–(b))",
+  "statement": "Let P, n ∈ ℕ, let Z ⊆ ℝ^P (= Euclid P) be open and let F : ℝ^P → ℝ^n (= Euclid n) be C¹ on Z (ContDiffOn ℝ 1 F Z). Then there are open sets V_l ⊆ Z, Borel sets Z_l ⊆ V_l and maps G_l : ℝ^P → ℝ^n (l ∈ ℕ) such that the Z_l are pairwise disjoint, ⋃_l Z_l = Z, every G_l is Lipschitz (LipschitzWith K_l G_l for some K_l ∈ ℝ≥0), and F = G_l on V_l for every l.",
+  "lean_statement": "∀ (P n : ℕ) (Z : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → ∃ (V Zs : ℕ → Set (Euclid P)) (G : ℕ → Euclid P → Euclid n), (∀ l, IsOpen (V l)) ∧ (∀ l, V l ⊆ Z) ∧ (∀ l, MeasurableSet (Zs l)) ∧ (∀ l, Zs l ⊆ V l) ∧ Pairwise (fun l l' => Disjoint (Zs l) (Zs l')) ∧ (⋃ l, Zs l) = Z ∧ (∀ l, ∃ K : NNReal, LipschitzWith K (G l)) ∧ ∀ l, EqOn F (G l) (V l)",
+  "lean_name": "idtp_caf_lipschitz_localization",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f9cefd17ea-a1"
+}
