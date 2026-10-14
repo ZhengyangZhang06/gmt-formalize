@@ -2201,8 +2201,8 @@ theorem Submission.dtc_bc_lc_sl_co_approx_differentiable : ∀ (P d : ℕ) (M : 
         |F j y' - F j y - inner ℝ g (ψ j y' - ψ j y)| ≤ 2 * η * ‖y' - y‖ := by
     intro j g y hg η hη
     have hκ : 0 < η / (‖g‖ + 1) := div_pos hη (by positivity)
-    have h1 := (((hF j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.def hη
-    have h2 := (((hψ j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.def hκ
+    have h1 := (((hF j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.bound hη
+    have h2 := (((hψ j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.bound hκ
     obtain ⟨δ, hδ, hδ'⟩ := Metric.eventually_nhds_iff.mp (h1.and h2)
     refine ⟨δ, hδ, fun y' hy' => ?_⟩
     have hdist : dist y' y < δ := by rwa [dist_eq_norm]
