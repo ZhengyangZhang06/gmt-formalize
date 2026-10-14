@@ -641,6 +641,108 @@ theorem Submission.dimred_mbl_dt_lpo_cutoff_pullback : ∀ (N N' k : ℕ) (F : E
     filter_upwards [isOpen_thickening.mem_nhds hx] with y hy
     show ζ y • _ = _
     rw [hW y hy, one_smul]
+/-- **Affine homotopies `ℝ^{N+1} → ℝ^{N'}`.**  Write `ι(t, x) = (t, x₁, …, x_N)`,
+`e₀ = ι(1, 0)` and `J v = ι(0, v)`.  (i) For `C^∞` maps `F, G : ℝ^N → ℝ^{N'}`, the map
+`H(y) = F(tail y) + y₀ • (G(tail y) − F(tail y))` is `C^∞` with
+`H(ι(t, x)) = F(x) + t • (G(x) − F(x))`.  (ii) If `H(ι(s, z)) = F(z) + s • (G(z) − F(z))` for all
+`s, z`, with `F, G` differentiable at `x` and `H` differentiable at `ι(t, x)`, then the chain rule
+along `s ↦ ι(s, x)` and along `z ↦ ι(t, z)` gives `DH e₀ = G(x) − F(x)` and
+`DH ∘ J = DF(x) + t • (DG(x) − DF(x))`.  Since `w = w₀ • e₀ + J(tail w)` with
+`|w₀|, ‖tail w‖ ≤ ‖w‖`, we get `‖DH‖ ≤ ‖G(x) − F(x)‖ + ‖DF(x) + t • (DG(x) − DF(x))‖`. -/
+theorem Submission.dimred_mbl_dt_lpo_affine_homotopy : (∀ (N N' : ℕ) (F G : Euclid N → Euclid N'), ContDiff ℝ (⊤ : ℕ∞) F → ContDiff ℝ (⊤ : ℕ∞) G → ∃ H : Euclid (N + 1) → Euclid N', ContDiff ℝ (⊤ : ℕ∞) H ∧ ∀ (t : ℝ) (x : Euclid N), H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) ∧ ∀ (N N' : ℕ) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (t : ℝ) (x : Euclid N), DifferentiableAt ℝ F x → DifferentiableAt ℝ G x → DifferentiableAt ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) → (∀ (s : ℝ) (z : Euclid N), H (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp z))) = F z + s • (G z - F z)) → fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) = G x - F x ∧ (∀ v : Euclid N, fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ F x v + t • (fderiv ℝ G x v - fderiv ℝ F x v)) ∧ ‖fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ ‖G x - F x‖ + ‖fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)‖ := by
+  constructor
+  · intro N N' F G hF hG
+    -- the coordinates `y ↦ y₀` and `y ↦ tail y = (y₁, …, y_N)` are continuous linear
+    obtain ⟨p, hp⟩ : ∃ p : Euclid (N + 1) →L[ℝ] ℝ, ∀ y, p y = WithLp.ofLp y 0 :=
+      ⟨EuclideanSpace.proj 0, fun y => rfl⟩
+    obtain ⟨T, hT⟩ : ∃ T : Euclid (N + 1) →L[ℝ] Euclid N,
+        ∀ y, T y = WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)) :=
+      ⟨LinearMap.toContinuousLinearMap
+        { toFun := fun y => WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))
+          map_add' := fun a b => rfl
+          map_smul' := fun c a => rfl }, fun y => rfl⟩
+    -- `H(y) = F(tail y) + y₀ • (G(tail y) − F(tail y))` is `C^∞`, and `tail ι(t, x) = x`
+    refine ⟨fun y => F (T y) + p y • (G (T y) - F (T y)), ?_, fun t x => ?_⟩
+    · exact (hF.comp T.contDiff).add
+        (p.contDiff.smul ((hG.comp T.contDiff).sub (hF.comp T.contDiff)))
+    · simp only [hp, hT, Fin.tail_cons, Fin.cons_zero, WithLp.toLp_ofLp]
+  · intro N N' F G H t x hF hG hH hHFG
+    -- `J v = ι(0, v)` is continuous linear
+    obtain ⟨J, hJ⟩ : ∃ J : Euclid N →L[ℝ] Euclid (N + 1),
+        ∀ v, J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) :=
+      ⟨LinearMap.toContinuousLinearMap
+        { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+          map_add' := fun a b => by ext i; cases i using Fin.cases <;> simp
+          map_smul' := fun c a => by ext i; cases i using Fin.cases <;> simp }, fun v => rfl⟩
+    set D := fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) with hD
+    set A := fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x) with hA
+    -- (a) chain rule along the line `s ↦ ι(s, x) = s • e₀ + J x`: `D e₀ = G(x) − F(x)`
+    have he : D (EuclideanSpace.single 0 1) = G x - F x := by
+      have hc : HasDerivAt
+          (fun s : ℝ => (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1)))
+          (EuclideanSpace.single 0 1) t := by
+        have : (fun s : ℝ => (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1))) =
+            fun s => s • EuclideanSpace.single 0 1 + J x := by
+          funext s; ext i; cases i using Fin.cases <;> simp [hJ]
+        rw [this]
+        simpa using ((hasDerivAt_id t).smul_const
+          (EuclideanSpace.single 0 1 : Euclid (N + 1))).add_const (J x)
+      have h1 := hH.hasFDerivAt.comp_hasDerivAt t hc
+      have h2 : HasDerivAt (fun s : ℝ => F x + s • (G x - F x)) (G x - F x) t := by
+        simpa using ((hasDerivAt_id t).smul_const (G x - F x)).const_add (F x)
+      have h3 : (H ∘ fun s : ℝ => (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1))) =
+          fun s => F x + s • (G x - F x) := by
+        funext s; exact hHFG s x
+      rw [h3] at h1
+      exact h1.unique h2
+    -- (b) chain rule along the affine map `z ↦ ι(t, z) = J z + t • e₀`: `D ∘ J = A`
+    have hDJ : D.comp J = A := by
+      have hl : HasFDerivAt
+          (fun z : Euclid N => (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp z)) : Euclid (N + 1)))
+          J x := by
+        have : (fun z : Euclid N => (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp z)) : Euclid (N + 1))) =
+            fun z => J z + t • EuclideanSpace.single 0 1 := by
+          funext z; ext i; cases i using Fin.cases <;> simp [hJ]
+        rw [this]
+        exact J.hasFDerivAt.add_const _
+      have h1 := hH.hasFDerivAt.comp x hl
+      have h2 := hF.hasFDerivAt.add ((hG.hasFDerivAt.sub hF.hasFDerivAt).const_smul t)
+      have h3 : (H ∘ fun z : Euclid N => (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp z)) :
+          Euclid (N + 1))) = fun z => F z + t • (G z - F z) := by
+        funext z; exact hHFG t z
+      rw [h3] at h1
+      exact h1.unique h2
+    have hDJv : ∀ v, D (J v) = A v := fun v => by
+      rw [← ContinuousLinearMap.comp_apply, hDJ]
+    refine ⟨he, fun v => ?_, ?_⟩
+    · rw [← hJ, hDJv, hA]
+      simp
+    -- (c) `w = w₀ • e₀ + J (tail w)`, so `D w = w₀ • (G(x) − F(x)) + A (tail w)`
+    · refine ContinuousLinearMap.opNorm_le_bound _ (add_nonneg (norm_nonneg _) (norm_nonneg _))
+        fun w => ?_
+      have hw : w = WithLp.ofLp w 0 • EuclideanSpace.single 0 1 +
+          J (WithLp.toLp 2 (Fin.tail (WithLp.ofLp w))) := by
+        ext i; cases i using Fin.cases <;> simp [hJ, Fin.tail]
+      have hDw : D w = WithLp.ofLp w 0 • (G x - F x) +
+          A (WithLp.toLp 2 (Fin.tail (WithLp.ofLp w))) := by
+        rw [congrArg D hw, map_add, map_smul, he, hDJv]
+      -- `|w₀| ≤ ‖w‖` and `‖tail w‖ ≤ ‖w‖`
+      have h0 : |WithLp.ofLp w 0| ≤ ‖w‖ := by
+        simpa using PiLp.norm_apply_le w 0
+      have h1 : ‖(WithLp.toLp 2 (Fin.tail (WithLp.ofLp w)) : Euclid N)‖ ≤ ‖w‖ := by
+        rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
+        apply Real.sqrt_le_sqrt
+        rw [Fin.sum_univ_succ]
+        exact le_add_of_nonneg_left (sq_nonneg _)
+      calc ‖D w‖ ≤ ‖WithLp.ofLp w 0 • (G x - F x)‖ +
+            ‖A (WithLp.toLp 2 (Fin.tail (WithLp.ofLp w)))‖ := by
+            rw [hDw]; exact norm_add_le _ _
+        _ ≤ |WithLp.ofLp w 0| * ‖G x - F x‖ +
+            ‖A‖ * ‖(WithLp.toLp 2 (Fin.tail (WithLp.ofLp w)) : Euclid N)‖ := by
+            rw [norm_smul, Real.norm_eq_abs]
+            exact add_le_add le_rfl (A.le_opNorm _)
+        _ ≤ ‖w‖ * ‖G x - F x‖ + ‖A‖ * ‖w‖ := by gcongr
+        _ = (‖G x - F x‖ + ‖A‖) * ‖w‖ := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
