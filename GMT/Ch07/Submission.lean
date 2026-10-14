@@ -950,6 +950,675 @@ theorem Submission.dimred_rpd_submanifold_density_one : ∀ (P n : ℕ) (M : Set
     filter_upwards [hbounds ε hε0 hε1] with s hs
     exact lt_of_le_of_lt hs.2 hεb
 
+/-- Profile for the Hardy test functions of Simon B.2, a smooth variant of the printed
+`ψ = r^{1+ε} r₁^{1−n/2−2ε}` (`ε = 1/10`): with `a = 1 + ε = 11/10`, `b = 2 − m/2 − ε`,
+`p(ρ) = ρᵃ / (1 + ρ^{a−b})` is smooth on `(0, ∞)`, positive, `ρ|p'(ρ)| ≤ (11/10) p(ρ)` (since
+`ρp'/p = (a + bρ^{a−b}) / (1 + ρ^{a−b})` lies between `b ≥ −11/10` and `a = 11/10`),
+`p(ρ) ≤ ρᵃ` and `p(ρ) ≤ ρᵇ`, i.e. `p² ≤ ρ^{−9/5} ρ⁴` and `p² ≤ ρ^{−m−1/5} ρ⁴`. -/
+theorem Submission.codim1_hcp_sc_hardy_profile (m : ℕ) (hm2 : 2 ≤ m) (hm6 : m ≤ 6) :
+    ∃ p p' : ℝ → ℝ, (∀ ρ : ℝ, 0 < ρ → ContDiffAt ℝ 1 p ρ) ∧
+      (∀ ρ : ℝ, 0 < ρ → HasDerivAt p (p' ρ) ρ) ∧ (∀ ρ : ℝ, 0 < ρ → 0 < p ρ) ∧
+      (∀ ρ : ℝ, 0 < ρ → (ρ * p' ρ) ^ 2 ≤ 121 / 100 * p ρ ^ 2) ∧
+      (∀ ρ : ℝ, 0 < ρ → p ρ ^ 2 ≤ ρ ^ (-(9 / 5) : ℝ) * ρ ^ 4) ∧
+      (∀ ρ : ℝ, 0 < ρ → p ρ ^ 2 ≤ ρ ^ (-(m : ℝ) - 1 / 5) * ρ ^ 4) := by
+  have hm2' : (2 : ℝ) ≤ m := by exact_mod_cast hm2
+  have hm6' : (m : ℝ) ≤ 6 := by exact_mod_cast hm6
+  set a : ℝ := 11 / 10 with ha
+  set b : ℝ := 19 / 10 - (m : ℝ) / 2 with hb
+  set c : ℝ := a - b with hc
+  have hc0 : 0 < c := by rw [hc, ha, hb]; linarith
+  -- `(ρ^e)² = ρ^{2e−4} ρ⁴`
+  have hsq : ∀ ρ : ℝ, 0 < ρ → ∀ e : ℝ, (ρ ^ e) ^ 2 = ρ ^ (2 * e - 4) * ρ ^ 4 := by
+    intro ρ hρ e
+    rw [← Real.rpow_two, ← Real.rpow_mul hρ.le, ← Real.rpow_natCast ρ 4, ← Real.rpow_add hρ]
+    congr 1
+    push_cast
+    ring
+  refine ⟨fun r => r ^ a / (1 + r ^ c),
+    fun r => (a * r ^ (a - 1) * (1 + r ^ c) - r ^ a * (c * r ^ (c - 1))) / (1 + r ^ c) ^ 2,
+    ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro ρ hρ
+    exact (Real.contDiffAt_rpow_const_of_ne hρ.ne').div
+      (contDiffAt_const.add (Real.contDiffAt_rpow_const_of_ne hρ.ne')) (by positivity)
+  · intro ρ hρ
+    have h1 := Real.hasDerivAt_rpow_const (p := a) (Or.inl hρ.ne')
+    have h2 := (Real.hasDerivAt_rpow_const (p := c) (Or.inl hρ.ne')).const_add 1
+    exact h1.div h2 (by positivity)
+  · intro ρ hρ
+    positivity
+  · intro ρ hρ
+    have hX : 0 < ρ ^ a := Real.rpow_pos_of_pos hρ a
+    have ht : 0 < ρ ^ c := Real.rpow_pos_of_pos hρ c
+    simp only
+    rw [Real.rpow_sub_one hρ.ne', Real.rpow_sub_one hρ.ne']
+    set X := ρ ^ a
+    set t := ρ ^ c
+    have key : ρ * ((a * (X / ρ) * (1 + t) - X * (c * (t / ρ))) / (1 + t) ^ 2) =
+        X / (1 + t) * ((a + b * t) / (1 + t)) := by
+      rw [hc]
+      field_simp
+      ring
+    rw [key, mul_pow]
+    have hq : ((a + b * t) / (1 + t)) ^ 2 ≤ 121 / 100 := by
+      rw [div_pow, div_le_iff₀ (by positivity)]
+      have h1 : -(11 / 10) * (1 + t) ≤ a + b * t := by rw [ha, hb]; nlinarith
+      have h2 : a + b * t ≤ 11 / 10 * (1 + t) := by rw [ha, hb]; nlinarith
+      nlinarith
+    have := sq_nonneg (X / (1 + t))
+    nlinarith
+  · intro ρ hρ
+    have hX : 0 ≤ ρ ^ a := Real.rpow_nonneg hρ.le a
+    have ht : 0 < ρ ^ c := Real.rpow_pos_of_pos hρ c
+    have hle : ρ ^ a / (1 + ρ ^ c) ≤ ρ ^ a := div_le_self hX (by linarith)
+    calc (ρ ^ a / (1 + ρ ^ c)) ^ 2 ≤ (ρ ^ a) ^ 2 := pow_le_pow_left₀ (by positivity) hle 2
+      _ = ρ ^ (-(9 / 5) : ℝ) * ρ ^ 4 := by rw [hsq ρ hρ a, ha]; norm_num
+  · intro ρ hρ
+    have hX : 0 ≤ ρ ^ a := Real.rpow_nonneg hρ.le a
+    have ht : 0 < ρ ^ c := Real.rpow_pos_of_pos hρ c
+    have hle : ρ ^ a / (1 + ρ ^ c) ≤ ρ ^ b := by
+      calc ρ ^ a / (1 + ρ ^ c) ≤ ρ ^ a / ρ ^ c := div_le_div_of_nonneg_left hX ht (by linarith)
+        _ = ρ ^ b := by rw [← Real.rpow_sub hρ, hc]; ring_nf
+    calc (ρ ^ a / (1 + ρ ^ c)) ^ 2 ≤ (ρ ^ b) ^ 2 := pow_le_pow_left₀ (by positivity) hle 2
+      _ = ρ ^ (-(m : ℝ) - 1 / 5) * ρ ^ 4 := by rw [hsq ρ hρ b, hb]; ring_nf
+
+/-- Piecewise-linear radial cut-off of Simon B.2 (printed `γ_ε`, here with parameter `κ ∈ (0, 1)`):
+`g = 0` on `(−∞, κ/2]`, `g(ρ) = 2ρ/κ − 1` on `[κ/2, κ]`, `g = 1` on `[κ, 1/κ]`,
+`g(ρ) = 2 − κρ` on `[1/κ, 2/κ]`, `g = 0` on `[2/κ, ∞)`.  It is Lipschitz with values in `[0, 1]`,
+differentiable off the four break points with derivative `g'`, and `|ρ g'(ρ)| ≤ 2`. -/
+theorem Submission.codim1_hcp_sc_hardy_cutoff (κ : ℝ) (hκ0 : 0 < κ) (hκ1 : κ < 1) :
+    ∃ g g' : ℝ → ℝ, (∃ K, LipschitzWith K g) ∧ (∀ ρ, 0 ≤ g ρ ∧ g ρ ≤ 1) ∧
+      (∀ ρ, ρ < κ / 2 ∨ 2 / κ < ρ → g ρ = 0) ∧
+      (∀ ρ, ρ ≠ κ / 2 → ρ ≠ κ → ρ ≠ 1 / κ → ρ ≠ 2 / κ → HasDerivAt g (g' ρ) ρ) ∧
+      Measurable g' ∧ (∀ ρ, 0 < ρ → (ρ * g' ρ) ^ 2 ≤ 4) ∧
+      (∀ ρ, κ < ρ → ρ < 1 / κ → g ρ = 1 ∧ g' ρ = 0) := by
+  classical
+  set g : ℝ → ℝ := fun ρ => max 0 (min 1 (min (2 * ρ / κ - 1) (2 - κ * ρ))) with hg
+  set g' : ℝ → ℝ := fun ρ =>
+    if ρ ∈ Ioo (κ / 2) κ then 2 / κ else if ρ ∈ Ioo (1 / κ) (2 / κ) then -κ else 0 with hg'
+  -- the break points are ordered: `κ/2 < κ < 1/κ < 2/κ`
+  have hb1 : κ / 2 < κ := by linarith
+  have hb2 : κ < 1 / κ := by rw [lt_div_iff₀ hκ0]; nlinarith
+  have hb3 : 1 / κ < 2 / κ := div_lt_div_of_pos_right one_lt_two hκ0
+  -- `2ρ/κ − 1` and `2 − κρ` against the break points
+  have hA0 : ∀ ρ, ρ ≤ κ / 2 → 2 * ρ / κ - 1 ≤ 0 := fun ρ hρ => by
+    rw [sub_nonpos, div_le_one hκ0]; linarith
+  have hA0' : ∀ ρ, κ / 2 ≤ ρ → 0 ≤ 2 * ρ / κ - 1 := fun ρ hρ => by
+    rw [sub_nonneg, le_div_iff₀ hκ0]; linarith
+  have hA1 : ∀ ρ, ρ ≤ κ → 2 * ρ / κ - 1 ≤ 1 := fun ρ hρ => by
+    rw [sub_le_iff_le_add, div_le_iff₀ hκ0]; linarith
+  have hA1' : ∀ ρ, κ ≤ ρ → 1 ≤ 2 * ρ / κ - 1 := fun ρ hρ => by
+    rw [le_sub_iff_add_le, le_div_iff₀ hκ0]; linarith
+  have hB1 : ∀ ρ, ρ ≤ 1 / κ → 1 ≤ 2 - κ * ρ := fun ρ hρ => by
+    rw [le_div_iff₀ hκ0] at hρ; linarith
+  have hB1' : ∀ ρ, 1 / κ ≤ ρ → 2 - κ * ρ ≤ 1 := fun ρ hρ => by
+    rw [div_le_iff₀ hκ0] at hρ; linarith
+  have hB0 : ∀ ρ, ρ ≤ 2 / κ → 0 ≤ 2 - κ * ρ := fun ρ hρ => by
+    rw [le_div_iff₀ hκ0] at hρ; linarith
+  have hB0' : ∀ ρ, 2 / κ ≤ ρ → 2 - κ * ρ ≤ 0 := fun ρ hρ => by
+    rw [div_le_iff₀ hκ0] at hρ; linarith
+  -- values of `g` on the five pieces
+  have hv1 : ∀ ρ, ρ ≤ κ / 2 → g ρ = 0 := fun ρ hρ =>
+    max_eq_left ((min_le_right _ _).trans ((min_le_left _ _).trans (hA0 ρ hρ)))
+  have hv2 : ∀ ρ, κ / 2 ≤ ρ → ρ ≤ κ → g ρ = 2 * ρ / κ - 1 := fun ρ hρ hρ' => by
+    have h1 := hA1 ρ hρ'
+    have h2 := hB1 ρ (hρ'.trans hb2.le)
+    simp only [hg, min_eq_left (h1.trans h2), min_eq_right h1, max_eq_right (hA0' ρ hρ)]
+  have hv3 : ∀ ρ, κ ≤ ρ → ρ ≤ 1 / κ → g ρ = 1 := fun ρ hρ hρ' => by
+    have h := le_min (hA1' ρ hρ) (hB1 ρ hρ')
+    simp only [hg, min_eq_left h, max_eq_right zero_le_one]
+  have hv4 : ∀ ρ, 1 / κ ≤ ρ → ρ ≤ 2 / κ → g ρ = 2 - κ * ρ := fun ρ hρ hρ' => by
+    have h1 := hB1' ρ hρ
+    have h2 := hA1' ρ (hb2.le.trans hρ)
+    simp only [hg, min_eq_right (h1.trans h2), min_eq_right h1, max_eq_right (hB0 ρ hρ')]
+  have hv5 : ∀ ρ, 2 / κ ≤ ρ → g ρ = 0 := fun ρ hρ =>
+    max_eq_left ((min_le_right _ _).trans ((min_le_right _ _).trans (hB0' ρ hρ)))
+  refine ⟨g, g', ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Lipschitz: `max 0 (min 1 (min ℓ₁ ℓ₂))` with `ℓ₁, ℓ₂` affine
+    have hl1 : LipschitzWith (Real.toNNReal (2 / κ)) (fun ρ : ℝ => 2 * ρ / κ - 1) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro x y
+      rw [Real.coe_toNNReal _ (by positivity), Real.dist_eq, Real.dist_eq,
+        show 2 * x / κ - 1 - (2 * y / κ - 1) = 2 / κ * (x - y) by ring, abs_mul,
+        abs_of_pos (by positivity)]
+    have hl2 : LipschitzWith (Real.toNNReal κ) (fun ρ : ℝ => 2 - κ * ρ) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro x y
+      rw [Real.coe_toNNReal _ hκ0.le, Real.dist_eq, Real.dist_eq,
+        show 2 - κ * x - (2 - κ * y) = -κ * (x - y) by ring, abs_mul, abs_neg, abs_of_pos hκ0]
+    exact ⟨_, ((hl1.min hl2).const_min 1).const_max 0⟩
+  · intro ρ
+    exact ⟨le_max_left _ _, max_le zero_le_one (min_le_left _ _)⟩
+  · rintro ρ (hρ | hρ)
+    · exact hv1 ρ hρ.le
+    · exact hv5 ρ hρ.le
+  · intro ρ h1 h2 h3 h4
+    rcases lt_or_gt_of_ne h1 with hρ1 | hρ1
+    · -- `ρ < κ/2`: `g = 0` near `ρ`
+      have hev : g =ᶠ[𝓝 ρ] fun _ => 0 :=
+        Filter.eventually_of_mem (Iio_mem_nhds hρ1) fun t ht => hv1 t (le_of_lt ht)
+      have hval : g' ρ = 0 := by
+        simp only [hg', mem_Ioo]
+        rw [ite_eq_right (by intro h; linarith [h.1]), ite_eq_right (by intro h; linarith [h.1])]
+      rw [hval]
+      exact (hasDerivAt_const ρ (0 : ℝ)).congr_of_eventuallyEq hev
+    rcases lt_or_gt_of_ne h2 with hρ2 | hρ2
+    · -- `κ/2 < ρ < κ`: `g(t) = 2t/κ − 1` near `ρ`
+      have hev : g =ᶠ[𝓝 ρ] fun t => 2 * t / κ - 1 :=
+        Filter.eventually_of_mem (Ioo_mem_nhds hρ1 hρ2) fun t ht => hv2 t ht.1.le ht.2.le
+      have hval : g' ρ = 2 / κ := by
+        simp only [hg', mem_Ioo]
+        rw [ite_eq_left ⟨hρ1, hρ2⟩]
+      rw [hval]
+      have hd : HasDerivAt (fun t : ℝ => 2 * t / κ - 1) (2 * 1 / κ) ρ :=
+        (((hasDerivAt_id ρ).const_mul 2).div_const κ).sub_const 1
+      rw [mul_one] at hd
+      exact hd.congr_of_eventuallyEq hev
+    rcases lt_or_gt_of_ne h3 with hρ3 | hρ3
+    · -- `κ < ρ < 1/κ`: `g = 1` near `ρ`
+      have hev : g =ᶠ[𝓝 ρ] fun _ => 1 :=
+        Filter.eventually_of_mem (Ioo_mem_nhds hρ2 hρ3) fun t ht => hv3 t ht.1.le ht.2.le
+      have hval : g' ρ = 0 := by
+        simp only [hg', mem_Ioo]
+        rw [ite_eq_right (by intro h; linarith [h.2]), ite_eq_right (by intro h; linarith [h.1])]
+      rw [hval]
+      exact (hasDerivAt_const ρ (1 : ℝ)).congr_of_eventuallyEq hev
+    rcases lt_or_gt_of_ne h4 with hρ4 | hρ4
+    · -- `1/κ < ρ < 2/κ`: `g(t) = 2 − κt` near `ρ`
+      have hev : g =ᶠ[𝓝 ρ] fun t => 2 - κ * t :=
+        Filter.eventually_of_mem (Ioo_mem_nhds hρ3 hρ4) fun t ht => hv4 t ht.1.le ht.2.le
+      have hval : g' ρ = -κ := by
+        simp only [hg', mem_Ioo]
+        rw [ite_eq_right (by intro h; linarith [h.2]), ite_eq_left ⟨hρ3, hρ4⟩]
+      rw [hval]
+      have hd : HasDerivAt (fun t : ℝ => 2 - κ * t) (-(κ * 1)) ρ :=
+        ((hasDerivAt_id ρ).const_mul κ).const_sub 2
+      rw [mul_one] at hd
+      exact hd.congr_of_eventuallyEq hev
+    · -- `ρ > 2/κ`: `g = 0` near `ρ`
+      have hev : g =ᶠ[𝓝 ρ] fun _ => 0 :=
+        Filter.eventually_of_mem (Ioi_mem_nhds hρ4) fun t ht => hv5 t (le_of_lt ht)
+      have hval : g' ρ = 0 := by
+        simp only [hg', mem_Ioo]
+        rw [ite_eq_right (by intro h; linarith [h.2]), ite_eq_right (by intro h; linarith [h.2])]
+      rw [hval]
+      exact (hasDerivAt_const ρ (0 : ℝ)).congr_of_eventuallyEq hev
+  · exact Measurable.ite measurableSet_Ioo measurable_const
+      (Measurable.ite measurableSet_Ioo measurable_const measurable_const)
+  · intro ρ hρ
+    simp only [hg', mem_Ioo]
+    split_ifs with h h'
+    · have : ρ * (2 / κ) ≤ 2 := by
+        rw [mul_div_assoc', div_le_iff₀ hκ0]; linarith [h.2]
+      have h0 : 0 ≤ ρ * (2 / κ) := by positivity
+      nlinarith
+    · have : ρ * κ ≤ 2 := by
+        have := h'.2; rw [lt_div_iff₀ hκ0] at this; linarith
+      have h0 : 0 ≤ ρ * κ := by positivity
+      nlinarith
+    · norm_num
+  · intro ρ hρ hρ'
+    refine ⟨hv3 ρ hρ.le hρ'.le, ?_⟩
+    simp only [hg', mem_Ioo]
+    rw [ite_eq_right (by intro h; linarith [h.2]), ite_eq_right (by intro h; linarith [h.1])]
+
+/-- The product of two bounded Lipschitz functions on `s` is Lipschitz on `s`. -/
+theorem Submission.codim1_hcp_sc_hardy_lipschitzOnWith_mul {α : Type*} [PseudoMetricSpace α]
+    {f g : α → ℝ} {s : Set α} {Kf Kg : NNReal} {Bf Bg : ℝ} (hf : LipschitzOnWith Kf f s)
+    (hg : LipschitzOnWith Kg g s) (hBf : ∀ x ∈ s, |f x| ≤ Bf) (hBg : ∀ x ∈ s, |g x| ≤ Bg) :
+    LipschitzOnWith (Real.toNNReal Bf * Kg + Real.toNNReal Bg * Kf) (fun x => f x * g x) s := by
+  apply LipschitzOnWith.of_dist_le_mul
+  intro x hx y hy
+  have hBf0 : 0 ≤ Bf := (abs_nonneg _).trans (hBf x hx)
+  have hBg0 : 0 ≤ Bg := (abs_nonneg _).trans (hBg y hy)
+  have h1 := hf.dist_le_mul x hx y hy
+  have h2 := hg.dist_le_mul x hx y hy
+  rw [Real.dist_eq] at h1 h2 ⊢
+  push_cast
+  rw [Real.coe_toNNReal _ hBf0, Real.coe_toNNReal _ hBg0]
+  have e : f x * g x - f y * g y = f x * (g x - g y) + g y * (f x - f y) := by ring
+  rw [e]
+  calc |f x * (g x - g y) + g y * (f x - f y)| ≤ |f x| * |g x - g y| + |g y| * |f x - f y| := by
+        rw [← abs_mul, ← abs_mul]; exact abs_add_le _ _
+    _ ≤ Bf * (Kg * dist x y) + Bg * (Kf * dist x y) := by
+        gcongr
+        · exact hBf x hx
+        · exact hBg y hy
+    _ = (Bf * Kg + Bg * Kf) * dist x y := by ring
+
+/-- **Radial test functions** (step 2 of the proof): if `x ≠ 0`, `x ∈ T_xM` and `u` has
+derivative `d` at `|x|`, then `Σⱼ (δⱼ(u ∘ |·|)(x))² = d²`.  Indeed `D(u ∘ |·|)(x)v = d ⟪x, v⟫/|x|`,
+`δⱼ(u ∘ |·|)(x) = D(u ∘ |·|)(x)(P_x eⱼ)` (`Submission.codim1_hcp_sc_fderivWithin_tangent_eq`),
+`⟪x, P_x eⱼ⟫ = ⟪P_x x, eⱼ⟫ = xⱼ` and `Σⱼ xⱼ² = |x|²`. -/
+theorem Submission.codim1_hcp_sc_hardy_radial (P : ℕ) (M : Set (Euclid P)) (x : Euclid P)
+    (u : ℝ → ℝ) (d : ℝ) (hx : x ≠ 0) (hxT : x ∈ tangentSpace M x) (hu : HasDerivAt u d ‖x‖) :
+    ∑ j : Fin P, (fderivWithin ℝ (fun y => u ‖y‖) M x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 =
+      d ^ 2 := by
+  have hr : 0 < ‖x‖ := norm_pos_iff.2 hx
+  -- derivative of the norm at `x ≠ 0`
+  have hnorm : HasFDerivAt (fun y : Euclid P => ‖y‖) ((1 / (2 * ‖x‖)) • (2 • innerSL ℝ x)) x := by
+    have h1 := (hasStrictFDerivAt_norm_sq x).hasFDerivAt.sqrt (by positivity)
+    simp only [Real.sqrt_sq (norm_nonneg _)] at h1
+    exact h1
+  have hφ : HasFDerivWithinAt (fun y => u ‖y‖) (d • ((1 / (2 * ‖x‖)) • (2 • innerSL ℝ x))) M x :=
+    (hu.comp_hasFDerivAt x hnorm).hasFDerivWithinAt
+  have hPx : (Submodule.span ℝ (tangentSpace M x)).starProjection x = x :=
+    Submodule.starProjection_eq_self_iff.2 (Submodule.subset_span hxT)
+  have key : ∀ j : Fin P, fderivWithin ℝ (fun y => u ‖y‖) M x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) =
+      d / ‖x‖ * x.ofLp j := by
+    intro j
+    rw [Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x hφ _
+      (Submodule.starProjection_apply_mem _ _)]
+    simp only [smul_apply, innerSL_apply_apply, smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat]
+    rw [← Submodule.inner_starProjection_left_eq_right, hPx, EuclideanSpace.inner_single_right,
+      one_mul, conj_trivial]
+    field_simp
+  simp_rw [key]
+  have hs := EuclideanSpace.real_norm_sq_eq x
+  calc ∑ j : Fin P, (d / ‖x‖ * x.ofLp j) ^ 2 = (d / ‖x‖) ^ 2 * ∑ j : Fin P, x.ofLp j ^ 2 := by
+        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ => by ring
+    _ = (d / ‖x‖) ^ 2 * ‖x‖ ^ 2 := by rw [hs]
+    _ = d ^ 2 := by field_simp
+
+/-- **Simon, Appendix B, end of the proof of B.2** (the extension of (3) under (4), the cut-offs
+`γ_ε`, and the choice (6); `chapter-B.txt` lines 250–282).  Let `M ⊆ A₀ ≅ ℝ^{m+1}`, `2 ≤ m ≤ 6`,
+be a smooth embedded hypercone (`0 ∉ M`, `tM = M`, `M̄ ⊆ M ∪ {0}`, locally `Hᵐ`-finite) with unit
+normal `ν`, density one at each of its points, and the Hardy-type inequality (3)
+`2∫ψ²|A|²/|x|² ≤ ∫|A|²|∇^Mψ|²` for compactly supported locally Lipschitz `ψ`.  Then
+`Dν(x)v = 0` for `x ∈ M`, `v ∈ T_xM`.
+
+Proof.  `|A|² = Σⱼ|Dν(x)(P_xeⱼ)|²` is continuous on `M`, homogeneous of degree `−2`, so
+`|A|² ≤ c|x|⁻²`.  With the profile `p` (`Submission.codim1_hcp_sc_hardy_profile`), the function
+`F = |A|²p(|x|)²/|x|²` is `Hᵐ`-integrable on `M` by the dyadic estimates of
+`Submission.codim1_hcp_sc_cone_annuli_measure` (replacing the polar formula (5)).  Applying (3) to
+`ψₙ = p(|x|)gₙ(|x|)` with the cut-offs `gₙ` of `Submission.codim1_hcp_sc_hardy_cutoff`
+(`κₙ = 1/(n+2)`), using `|∇^Mψₙ|² = (p'gₙ + pgₙ')²` off the null spheres
+(`Submission.codim1_hcp_sc_hardy_radial`), `(a + b)² ≤ (3/2)a² + 3b²` and `(ρp')² ≤ (11/10)²p²`,
+gives `(37/200)∫gₙ²F ≤ 3∫|A|²p²gₙ'²`; dominated convergence yields `(37/200)∫_M F ≤ 0`.  Hence
+`|A|² = 0` a.e. on `M`, so everywhere on `M` by continuity and density one, and finally
+`Dν(x) = 0` on `T_xM`. -/
+theorem Submission.codim1_hcp_sc_hardy_cone_flat : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ z ∈ M, Tendsto (fun s : ℝ => μHE[m] (M ∩ ball z s) / (unitBallVolume m * ENNReal.ofReal (s ^ m))) (𝓝[>] 0) (𝓝 1)) → (∀ ψ : Euclid P → ℝ, LocallyLipschitzOn M ψ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ψ x = 0) → 2 * (∫ x in M, ψ x ^ 2 * (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) / ‖x‖ ^ 2 ∂μHE[m]) ≤ ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * (∑ j : Fin P, (fderivWithin ℝ ψ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) → ∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0 := by
+  intro P m A₀ M ν hm2 hm6 hA₀ hMA₀ h0M hMsub hcl hcone hfin hνO hν hdens hH3
+  -- Step 1(a): cone facts; `M = M̄ \ {0}` is Borel
+  have hM1 : IsEmbeddedSubmanifold 1 m M := hMsub 1
+  have hx0 : ∀ x ∈ M, x ≠ 0 := fun x hx h => h0M (h ▸ hx)
+  have hxpos : ∀ x ∈ M, 0 < ‖x‖ := fun x hx => norm_pos_iff.2 (hx0 x hx)
+  have hclM : ∀ x ∈ closure M, x ≠ 0 → x ∈ M := fun x hx hx' =>
+    (Set.mem_insert_iff.1 (hcl hx)).resolve_left hx'
+  have hMmeas : MeasurableSet M := by
+    have hMeq : M = closure M \ {0} := by
+      ext x
+      exact ⟨fun hx => ⟨subset_closure hx, hx0 x hx⟩, fun hx => hclM x hx.1 hx.2⟩
+    rw [hMeq]
+    exact isClosed_closure.measurableSet.diff (measurableSet_singleton 0)
+  -- the sibling results
+  have hNC := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hA₀ hMA₀ hM1 hν
+  have hCN :=
+    Submission.codim1_hcp_sc_cone_normal_homogeneous P m A₀ M ν hA₀ hMA₀ hM1 hcone hνO hν
+  obtain ⟨hsph, hint_in, hint_out⟩ :=
+    Submission.codim1_hcp_sc_cone_annuli_measure P m M h0M hcl hcone hfin
+  obtain ⟨O, hO, hMO, hνC⟩ := hνO
+  -- Step 1(b): `T_x = A₀ ∩ ν(x)^⊥` is a linear subspace
+  have hspan : ∀ x ∈ M, ∀ w ∈ Submodule.span ℝ (tangentSpace M x), w ∈ tangentSpace M x := by
+    intro x hx w hw
+    have hT := (hNC x hx).1
+    have hle : Submodule.span ℝ (tangentSpace M x) ≤ A₀ ⊓ LinearMap.ker (innerₛₗ ℝ (ν x)) := by
+      rw [hT, Submodule.span_le]
+      rintro v ⟨hvA, hvν⟩
+      exact ⟨hvA, hvν⟩
+    have hw' := hle hw
+    rw [hT]
+    exact ⟨hw'.1, hw'.2⟩
+  -- `|A|²`, nonnegative and continuous on `M` (`P_x = Π_{A₀} − ν(x) ⊗ ν(x)`)
+  set A2 : Euclid P → ℝ := fun x => ∑ j : Fin P,
+    ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+      (EuclideanSpace.single j 1))‖ ^ 2 with hA2
+  have hA2nn : ∀ x, 0 ≤ A2 x := fun x => Finset.sum_nonneg fun j _ => sq_nonneg _
+  have hA2cont : ContinuousOn A2 M := by
+    have hD : ContinuousOn (fderiv ℝ ν) O := hνC.continuousOn_fderiv_of_isOpen hO (by simp)
+    have hνc : ContinuousOn ν O := hνC.continuousOn
+    have hÃ : ContinuousOn (fun y => ∑ j : Fin P, ‖fderiv ℝ ν y (A₀.starProjection
+        (EuclideanSpace.single j 1) - inner ℝ (ν y) (EuclideanSpace.single j 1) • ν y)‖ ^ 2) O := by
+      refine continuousOn_finsetSum _ fun j _ => ?_
+      have hinner : ContinuousOn
+          (fun y => inner ℝ (ν y) (EuclideanSpace.single j (1 : ℝ) : Euclid P)) O :=
+        hνc.inner continuousOn_const
+      have hvec : ContinuousOn (fun y => A₀.starProjection (EuclideanSpace.single j (1 : ℝ) : Euclid P) -
+          inner ℝ (ν y) (EuclideanSpace.single j (1 : ℝ) : Euclid P) • ν y) O :=
+        continuousOn_const.sub (hinner.smul hνc)
+      exact ((hD.clm_apply hvec).norm).pow 2
+    refine (hÃ.mono hMO).congr fun x hx => ?_
+    simp only [hA2, (hNC x hx).2]
+  -- Step 1(d): `|A|²(tx) = t⁻²|A|²(x)`
+  have hhom : ∀ x ∈ M, ∀ t : ℝ, 0 < t → A2 (t • x) = (t ^ 2)⁻¹ * A2 x := by
+    intro x hx t ht
+    have htx : t • x ∈ M := hcone t ht x hx
+    obtain ⟨-, hνt, hD⟩ := (hCN x hx).2.2 t ht
+    simp only [hA2, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hP : (Submodule.span ℝ (tangentSpace M (t • x))).starProjection
+        (EuclideanSpace.single j 1) = (Submodule.span ℝ (tangentSpace M x)).starProjection
+        (EuclideanSpace.single j 1) := by
+      rw [(hNC _ htx).2, (hNC x hx).2, hνt]
+    have hv := hspan x hx _ (Submodule.starProjection_apply_mem
+      (Submodule.span ℝ (tangentSpace M x)) (EuclideanSpace.single j 1))
+    have h := hD _ hv
+    rw [hP, ← h, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs, ← mul_assoc,
+      inv_mul_cancel₀ (pow_pos ht 2).ne', one_mul]
+  -- Step 1(e): `|A|²(x) ≤ c|x|⁻²`, `c = max_{M ∩ S¹} |A|²`
+  obtain ⟨cA, hcA0, hcA⟩ : ∃ c : ℝ, 0 ≤ c ∧ ∀ x ∈ M, A2 x ≤ c / ‖x‖ ^ 2 := by
+    have hSph : IsCompact (closure M ∩ sphere (0 : Euclid P) 1) :=
+      (isCompact_sphere 0 1).inter_left isClosed_closure
+    have hSphM : closure M ∩ sphere (0 : Euclid P) 1 ⊆ M := fun y hy =>
+      hclM y hy.1 (by rintro rfl; simp at hy)
+    obtain ⟨c, hc⟩ := hSph.exists_bound_of_continuousOn (hA2cont.mono hSphM)
+    refine ⟨max c 0, le_max_right _ _, fun x hx => ?_⟩
+    have hr := hxpos x hx
+    have hyM : ‖x‖⁻¹ • x ∈ M := hcone _ (inv_pos.2 hr) x hx
+    have hy1 : ‖x‖⁻¹ • x ∈ sphere (0 : Euclid P) 1 := by
+      rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hr.ne']
+    have hxy : ‖x‖ • (‖x‖⁻¹ • x) = x := by rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+    have hb := hc _ ⟨subset_closure hyM, hy1⟩
+    rw [Real.norm_eq_abs, abs_of_nonneg (hA2nn _)] at hb
+    calc A2 x = A2 (‖x‖ • (‖x‖⁻¹ • x)) := by rw [hxy]
+      _ = (‖x‖ ^ 2)⁻¹ * A2 (‖x‖⁻¹ • x) := hhom _ hyM _ hr
+      _ ≤ (‖x‖ ^ 2)⁻¹ * max c 0 := by gcongr; exact hb.trans (le_max_left _ _)
+      _ = max c 0 / ‖x‖ ^ 2 := by rw [inv_mul_eq_div]
+  -- Step 3: spheres are null
+  have hae : ∀ c : ℝ, 0 < c → ∀ᵐ x ∂(μHE[m].restrict M), ‖x‖ ≠ c := by
+    intro c hc
+    rw [ae_restrict_iff' hMmeas]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 (hsph c hc)] with x hx hxM hxc
+    exact hx ⟨hxM, mem_sphere_zero_iff_norm.2 hxc⟩
+  -- Step 4: the profile `p`
+  obtain ⟨p, p', hpC, hp, hp0, hp', hpα, hpβ⟩ := Submission.codim1_hcp_sc_hardy_profile m hm2 hm6
+  have hm2' : (2 : ℝ) ≤ m := by exact_mod_cast hm2
+  -- Step 5: `F = |A|² p(r)²/r²` is integrable on `M`
+  set F : Euclid P → ℝ := fun x => A2 x * p ‖x‖ ^ 2 / ‖x‖ ^ 2 with hF
+  have hFnn : ∀ x, 0 ≤ F x := fun x =>
+    div_nonneg (mul_nonneg (hA2nn x) (sq_nonneg _)) (sq_nonneg _)
+  have hpc : ContinuousOn (fun x : Euclid P => p ‖x‖) M := fun x hx =>
+    ((hp _ (hxpos x hx)).continuousAt.comp continuous_norm.continuousAt).continuousWithinAt
+  have hFcont : ContinuousOn F M :=
+    (hA2cont.mul (hpc.pow 2)).div (continuous_norm.continuousOn.pow 2)
+      fun x hx => (pow_pos (hxpos x hx) 2).ne'
+  have hFle : ∀ x ∈ M, ∀ e : ℝ, p ‖x‖ ^ 2 ≤ ‖x‖ ^ e * ‖x‖ ^ 4 → F x ≤ cA * ‖x‖ ^ e := by
+    intro x hx e he
+    have hr := hxpos x hx
+    have hr2 : 0 < ‖x‖ ^ 2 := by positivity
+    show A2 x * p ‖x‖ ^ 2 / ‖x‖ ^ 2 ≤ cA * ‖x‖ ^ e
+    rw [div_le_iff₀ hr2]
+    calc A2 x * p ‖x‖ ^ 2 ≤ (cA / ‖x‖ ^ 2) * (‖x‖ ^ e * ‖x‖ ^ 4) :=
+          mul_le_mul (hcA x hx) he (sq_nonneg _) (by positivity)
+      _ = cA * ‖x‖ ^ e * ‖x‖ ^ 2 := by field_simp
+  have hFint : Integrable F (μHE[m].restrict M) := by
+    refine ⟨hFcont.aestronglyMeasurable hMmeas, ?_⟩
+    rw [hasFiniteIntegral_iff_ofReal (ae_of_all _ hFnn),
+      ← lintegral_inter_add_sdiff _ M (measurableSet_ball (x := (0 : Euclid P)) (ε := 1))]
+    refine ENNReal.add_lt_top.2 ⟨?_, ?_⟩
+    · calc ∫⁻ x in M ∩ ball 0 1, ENNReal.ofReal (F x) ∂μHE[m]
+          ≤ ∫⁻ x in M ∩ ball 0 1, ENNReal.ofReal cA * ENNReal.ofReal (‖x‖ ^ (-(9 / 5) : ℝ))
+              ∂μHE[m] := by
+            refine setLIntegral_mono' (hMmeas.inter measurableSet_ball) fun x hx => ?_
+            rw [← ENNReal.ofReal_mul hcA0]
+            exact ENNReal.ofReal_le_ofReal (hFle x hx.1 _ (hpα _ (hxpos x hx.1)))
+        _ = ENNReal.ofReal cA * ∫⁻ x in M ∩ ball 0 1, ENNReal.ofReal (‖x‖ ^ (-(9 / 5) : ℝ))
+              ∂μHE[m] := lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+        _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+            (lt_top_iff_ne_top.2 (hint_in _ (by linarith)))
+    · calc ∫⁻ x in M \ ball 0 1, ENNReal.ofReal (F x) ∂μHE[m]
+          ≤ ∫⁻ x in M \ ball 0 1, ENNReal.ofReal cA * ENNReal.ofReal (‖x‖ ^ (-(m : ℝ) - 1 / 5))
+              ∂μHE[m] := by
+            refine setLIntegral_mono' (hMmeas.diff measurableSet_ball) fun x hx => ?_
+            rw [← ENNReal.ofReal_mul hcA0]
+            exact ENNReal.ofReal_le_ofReal (hFle x hx.1 _ (hpβ _ (hxpos x hx.1)))
+        _ = ENNReal.ofReal cA * ∫⁻ x in M \ ball 0 1, ENNReal.ofReal (‖x‖ ^ (-(m : ℝ) - 1 / 5))
+              ∂μHE[m] := lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+        _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+            (lt_top_iff_ne_top.2 (hint_out _ (by linarith)))
+  -- Step 6: the cut-offs `gₙ`, `κₙ = 1/(n+2)`
+  have hκ0 : ∀ n : ℕ, (0 : ℝ) < 1 / ((n : ℝ) + 2) := fun n => by positivity
+  have hκ1 : ∀ n : ℕ, 1 / ((n : ℝ) + 2) < 1 := fun n => by
+    rw [div_lt_one (by positivity)]
+    linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+  choose g g' hgL hg01 hgsupp hgd hg'meas hg'bd hg1 using
+    fun n : ℕ => Submission.codim1_hcp_sc_hardy_cutoff (1 / ((n : ℝ) + 2)) (hκ0 n) (hκ1 n)
+  have hXbd : ∀ n x, ‖g n ‖x‖ ^ 2 * F x‖ ≤ F x := by
+    intro n x
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (hFnn x))]
+    have h01 := hg01 n ‖x‖
+    have h1 : g n ‖x‖ ^ 2 ≤ 1 := by nlinarith [h01.1, h01.2]
+    calc g n ‖x‖ ^ 2 * F x ≤ 1 * F x := mul_le_mul_of_nonneg_right h1 (hFnn x)
+      _ = F x := one_mul _
+  have hYbd : ∀ n, ∀ x ∈ M, ‖A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2‖ ≤ 4 * F x := by
+    intro n x hx
+    have hr := hxpos x hx
+    have hb := hg'bd n ‖x‖ hr
+    rw [Real.norm_eq_abs, abs_of_nonneg
+      (mul_nonneg (mul_nonneg (hA2nn x) (sq_nonneg _)) (sq_nonneg _))]
+    have h4 : g' n ‖x‖ ^ 2 ≤ 4 / ‖x‖ ^ 2 := by
+      rw [le_div_iff₀ (by positivity)]
+      nlinarith [hb]
+    calc A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2 ≤ A2 x * p ‖x‖ ^ 2 * (4 / ‖x‖ ^ 2) :=
+          mul_le_mul_of_nonneg_left h4 (mul_nonneg (hA2nn x) (sq_nonneg _))
+      _ = 4 * F x := by simp only [hF]; ring
+  have hXint : ∀ n, Integrable (fun x => g n ‖x‖ ^ 2 * F x) (μHE[m].restrict M) := by
+    intro n
+    obtain ⟨K, hK⟩ := hgL n
+    exact hFint.mono' ((((hK.continuous.comp continuous_norm).continuousOn.pow 2).mul
+      hFcont).aestronglyMeasurable hMmeas) (ae_of_all _ (hXbd n))
+  have hYint : ∀ n, Integrable (fun x => A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2) (μHE[m].restrict M) := by
+    intro n
+    refine (hFint.const_mul 4).mono' (((hA2cont.mul (hpc.pow 2)).aestronglyMeasurable
+      hMmeas).mul (((hg'meas n).comp measurable_norm).pow_const 2).aestronglyMeasurable) ?_
+    rw [ae_restrict_iff' hMmeas]
+    exact ae_of_all _ (hYbd n)
+  -- Step 6(c)–(e): (3) for `ψₙ = p(r)gₙ(r)` gives `(37/200)∫gₙ²F ≤ 3∫|A|²p²gₙ'²`
+  have hkey : ∀ n : ℕ, 37 / 200 * (∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m]) ≤
+      3 * ∫ x in M, A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2 ∂μHE[m] := by
+    intro n
+    set κ : ℝ := 1 / ((n : ℝ) + 2) with hκ
+    have hκ' : 0 < κ := hκ0 n
+    obtain ⟨K, hK⟩ := hgL n
+    -- (a) `ψₙ` is locally Lipschitz on `M`
+    have hφL : LocallyLipschitzOn M (fun y : Euclid P => p ‖y‖ * g n ‖y‖) := by
+      intro x hx
+      obtain ⟨K₁, t, ht, hK₁⟩ :=
+        ((hpC ‖x‖ (hxpos x hx)).comp x (contDiffAt_norm ℝ (hx0 x hx))).exists_lipschitzOnWith
+      have hxt : x ∈ t := mem_of_mem_nhds ht
+      refine ⟨_, t ∩ ball x 1, mem_nhdsWithin_of_mem_nhds (inter_mem ht (ball_mem_nhds x one_pos)),
+        Submission.codim1_hcp_sc_hardy_lipschitzOnWith_mul (Bf := |p ‖x‖| + K₁) (Bg := 1)
+          (hK₁.mono inter_subset_left) ((hK.comp lipschitzWith_one_norm).lipschitzOnWith) ?_ ?_⟩
+      · intro y hy
+        have h1 := hK₁.dist_le_mul y hy.1 x hxt
+        have h2 : dist y x < 1 := hy.2
+        rw [Real.dist_eq] at h1
+        have h3 : (K₁ : ℝ) * dist y x ≤ K₁ := by
+          calc (K₁ : ℝ) * dist y x ≤ K₁ * 1 := mul_le_mul_of_nonneg_left h2.le K₁.2
+            _ = K₁ := mul_one _
+        have h4 := abs_sub_abs_le_abs_sub (p ‖y‖) (p ‖x‖)
+        simp only [Function.comp] at h1 ⊢
+        linarith
+      · intro y _
+        have h01 := hg01 n ‖y‖
+        rw [abs_of_nonneg h01.1]
+        exact h01.2
+    -- (b) `ψₙ` vanishes on `M` outside the compact `M̄ ∩ {κ/2 ≤ r ≤ 2/κ} ⊆ M`
+    have hφsupp : ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧
+        ∀ x ∈ M, x ∉ C → p ‖x‖ * g n ‖x‖ = 0 := by
+      refine ⟨closure M ∩ (closedBall 0 (2 / κ) \ ball 0 (κ / 2)),
+        ((isCompact_closedBall 0 _).diff isOpen_ball).inter_left isClosed_closure, ?_, ?_⟩
+      · rintro x ⟨hx, -, hx2⟩
+        refine hclM x hx ?_
+        rintro rfl
+        exact hx2 (mem_ball_self (by positivity))
+      · intro x hx hxC
+        have hout : ‖x‖ < κ / 2 ∨ 2 / κ < ‖x‖ := by
+          rcases lt_or_ge ‖x‖ (κ / 2) with h | h
+          · exact Or.inl h
+          rcases lt_or_ge (2 / κ) ‖x‖ with h' | h'
+          · exact Or.inr h'
+          exact absurd ⟨subset_closure hx, mem_closedBall_zero_iff.2 h', fun hb => by
+            rw [mem_ball_zero_iff] at hb; linarith⟩ hxC
+        rw [hgsupp n ‖x‖ hout, mul_zero]
+    -- (c) apply (3)
+    have h3 := hH3 (fun y : Euclid P => p ‖y‖ * g n ‖y‖) hφL hφsupp
+    -- (d) the right side off the null spheres `r ∈ {κ/2, κ, 1/κ, 2/κ}`
+    have hbound : ∫ x in M, A2 x * (p' ‖x‖ * g n ‖x‖ + p ‖x‖ * g' n ‖x‖) ^ 2 ∂μHE[m] ≤
+        ∫ x in M, (363 / 200 * (g n ‖x‖ ^ 2 * F x) + 3 * (A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2))
+          ∂μHE[m] := by
+      refine integral_mono_of_nonneg (ae_of_all _ fun x => mul_nonneg (hA2nn x) (sq_nonneg _))
+        (((hXint n).const_mul _).add ((hYint n).const_mul _)) ?_
+      rw [EventuallyLE, ae_restrict_iff' hMmeas]
+      refine ae_of_all _ fun x hx => ?_
+      have hr := hxpos x hx
+      have hpp := hp' ‖x‖ hr
+      have h1 : (p' ‖x‖ * g n ‖x‖ + p ‖x‖ * g' n ‖x‖) ^ 2 ≤
+          3 / 2 * (p' ‖x‖ * g n ‖x‖) ^ 2 + 3 * (p ‖x‖ * g' n ‖x‖) ^ 2 := by
+        nlinarith [sq_nonneg (p' ‖x‖ * g n ‖x‖ - 2 * (p ‖x‖ * g' n ‖x‖))]
+      have h2 : p' ‖x‖ ^ 2 ≤ 121 / 100 * (p ‖x‖ ^ 2 / ‖x‖ ^ 2) := by
+        rw [mul_div_assoc', le_div_iff₀ (by positivity)]
+        nlinarith [hpp]
+      have h2' : (p' ‖x‖ * g n ‖x‖) ^ 2 ≤ 121 / 100 * (g n ‖x‖ ^ 2 * (p ‖x‖ ^ 2 / ‖x‖ ^ 2)) := by
+        calc (p' ‖x‖ * g n ‖x‖) ^ 2 = g n ‖x‖ ^ 2 * p' ‖x‖ ^ 2 := by ring
+          _ ≤ g n ‖x‖ ^ 2 * (121 / 100 * (p ‖x‖ ^ 2 / ‖x‖ ^ 2)) :=
+            mul_le_mul_of_nonneg_left h2 (sq_nonneg _)
+          _ = 121 / 100 * (g n ‖x‖ ^ 2 * (p ‖x‖ ^ 2 / ‖x‖ ^ 2)) := by ring
+      calc A2 x * (p' ‖x‖ * g n ‖x‖ + p ‖x‖ * g' n ‖x‖) ^ 2
+          ≤ A2 x * (3 / 2 * (121 / 100 * (g n ‖x‖ ^ 2 * (p ‖x‖ ^ 2 / ‖x‖ ^ 2))) +
+              3 * (p ‖x‖ * g' n ‖x‖) ^ 2) := by
+            apply mul_le_mul_of_nonneg_left _ (hA2nn x)
+            linarith
+        _ = 363 / 200 * (g n ‖x‖ ^ 2 * F x) + 3 * (A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2) := by
+            simp only [hF]; ring
+    have hsplit : ∫ x in M, (363 / 200 * (g n ‖x‖ ^ 2 * F x) +
+          3 * (A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2)) ∂μHE[m] =
+        363 / 200 * (∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m]) +
+          3 * ∫ x in M, A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2 ∂μHE[m] := by
+      rw [integral_add ((hXint n).const_mul _) ((hYint n).const_mul _), integral_const_mul,
+        integral_const_mul]
+    have hineq : 2 * (∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m]) ≤
+        363 / 200 * (∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m]) +
+          3 * ∫ x in M, A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2 ∂μHE[m] := by
+      calc 2 * (∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m])
+          = 2 * ∫ x in M, (p ‖x‖ * g n ‖x‖) ^ 2 * A2 x / ‖x‖ ^ 2 ∂μHE[m] := by
+            congr 1
+            refine integral_congr_ae (ae_of_all _ fun x => ?_)
+            simp only [hF]
+            ring
+        _ ≤ ∫ x in M, A2 x * ∑ j : Fin P, (fderivWithin ℝ (fun y : Euclid P => p ‖y‖ * g n ‖y‖)
+              M x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+                (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m] := h3
+        _ = ∫ x in M, A2 x * (p' ‖x‖ * g n ‖x‖ + p ‖x‖ * g' n ‖x‖) ^ 2 ∂μHE[m] := by
+            refine integral_congr_ae ?_
+            filter_upwards [hae (κ / 2) (by positivity), hae κ hκ', hae (1 / κ) (by positivity),
+              hae (2 / κ) (by positivity), self_mem_ae_restrict hMmeas] with x h1 h2 h3 h4 hxM
+            have hrad := Submission.codim1_hcp_sc_hardy_radial P M x (fun r => p r * g n r) _
+              (hx0 x hxM) (hCN x hxM).1 ((hp _ (hxpos x hxM)).mul (hgd n _ h1 h2 h3 h4))
+            exact congrArg (fun s => A2 x * s) hrad
+        _ ≤ _ := hbound
+        _ = _ := hsplit
+    linarith
+  -- Step 7: `κₙ → 0`; for `x ∈ M`, eventually `gₙ(|x|) = 1` and `gₙ'(|x|) = 0`
+  have hev : ∀ x ∈ M, ∀ᶠ n : ℕ in atTop, g n ‖x‖ = 1 ∧ g' n ‖x‖ = 0 := by
+    intro x hx
+    have hr := hxpos x hx
+    obtain ⟨N, hN⟩ := exists_nat_gt (max (1 / ‖x‖) ‖x‖)
+    filter_upwards [eventually_ge_atTop N] with n hn
+    have hn' : (N : ℝ) ≤ n := by exact_mod_cast hn
+    have hm1 := le_max_left (1 / ‖x‖) ‖x‖
+    have hm2 := le_max_right (1 / ‖x‖) ‖x‖
+    have h1 : 1 / ((n : ℝ) + 2) < ‖x‖ := by
+      rw [div_lt_iff₀ (by positivity)]
+      have h : 1 / ‖x‖ < n + 2 := by linarith
+      rw [div_lt_iff₀ hr] at h
+      linarith
+    have h2 : ‖x‖ < 1 / (1 / ((n : ℝ) + 2)) := by
+      rw [one_div_one_div]
+      linarith
+    exact hg1 n ‖x‖ h1 h2
+  have hXlim : Tendsto (fun n => ∫ x in M, g n ‖x‖ ^ 2 * F x ∂μHE[m]) atTop
+      (𝓝 (∫ x in M, F x ∂μHE[m])) := by
+    refine tendsto_integral_of_dominated_convergence F (fun n => (hXint n).aestronglyMeasurable)
+      hFint (fun n => ae_of_all _ (hXbd n)) ?_
+    rw [ae_restrict_iff' hMmeas]
+    refine ae_of_all _ fun x hx => tendsto_const_nhds.congr' ?_
+    filter_upwards [hev x hx] with n hn
+    rw [hn.1]
+    ring
+  have hYlim : Tendsto (fun n => ∫ x in M, A2 x * p ‖x‖ ^ 2 * g' n ‖x‖ ^ 2 ∂μHE[m]) atTop
+      (𝓝 0) := by
+    have h := tendsto_integral_of_dominated_convergence (μ := μHE[m].restrict M)
+      (f := fun _ => (0 : ℝ)) (fun x => 4 * F x) (fun n => (hYint n).aestronglyMeasurable)
+      (hFint.const_mul 4) (fun n => (ae_restrict_iff' hMmeas).2 (ae_of_all _ (hYbd n))) ?_
+    · simpa using h
+    rw [ae_restrict_iff' hMmeas]
+    refine ae_of_all _ fun x hx => tendsto_const_nhds.congr' ?_
+    filter_upwards [hev x hx] with n hn
+    rw [hn.2]
+    ring
+  -- Step 8: `(37/200)∫_M F ≤ 0`, so `∫_M F = 0`
+  have hJ0 : ∫ x in M, F x ∂μHE[m] = 0 := by
+    have hlim := le_of_tendsto_of_tendsto' (hXlim.const_mul (37 / 200)) (hYlim.const_mul 3) hkey
+    rw [mul_zero] at hlim
+    have hJnn : 0 ≤ ∫ x in M, F x ∂μHE[m] := integral_nonneg hFnn
+    linarith
+  -- Step 9: `|A|² = 0` a.e. on `M`
+  have hAE : ∀ᵐ x ∂μHE[m], x ∈ M → A2 x = 0 := by
+    have h := (integral_eq_zero_iff_of_nonneg_ae (ae_of_all _ hFnn) hFint).1 hJ0
+    rw [EventuallyEq, ae_restrict_iff' hMmeas] at h
+    filter_upwards [h] with x hx hxM
+    have hFx : A2 x * p ‖x‖ ^ 2 / ‖x‖ ^ 2 = 0 := hx hxM
+    have hr := hxpos x hxM
+    have hpx := hp0 ‖x‖ hr
+    rcases div_eq_zero_iff.1 hFx with h1 | h1
+    · rcases mul_eq_zero.1 h1 with h2 | h2
+      · exact h2
+      · exact absurd h2 (pow_pos hpx 2).ne'
+    · exact absurd h1 (pow_pos hr 2).ne'
+  -- Step 10: `|A|² ≡ 0` on `M` (continuity and density one)
+  have hA2zero : ∀ x ∈ M, A2 x = 0 := by
+    intro x₀ hx₀
+    by_contra hne
+    have hpos : 0 < A2 x₀ := lt_of_le_of_ne (hA2nn x₀) (Ne.symm hne)
+    obtain ⟨δ, hδ, hδA⟩ := Metric.continuousOn_iff.1 hA2cont x₀ hx₀ (A2 x₀) hpos
+    have hev1 : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+        0 < μHE[m] (M ∩ ball x₀ s) / (unitBallVolume m * ENNReal.ofReal (s ^ m)) :=
+      (hdens x₀ hx₀).eventually (lt_mem_nhds zero_lt_one)
+    have hev2 : ∀ᶠ s in 𝓝[>] (0 : ℝ), s < δ :=
+      eventually_nhdsWithin_of_eventually_nhds (eventually_lt_nhds hδ)
+    obtain ⟨s, hs1, hs2⟩ := (hev1.and hev2).exists
+    have hnull : μHE[m] (M ∩ ball x₀ s) = 0 := by
+      refine measure_mono_null (fun y hy => ?_) (ae_iff.1 hAE)
+      simp only [mem_ofPred_eq, not_imp]
+      refine ⟨hy.1, ?_⟩
+      have hd := hδA y hy.1 (lt_trans (mem_ball.1 hy.2) hs2)
+      rw [Real.dist_eq] at hd
+      have := (abs_lt.1 hd).1
+      linarith
+    rw [hnull, ENNReal.zero_div] at hs1
+    exact lt_irrefl 0 hs1
+  -- Step 11: `Dν(x)(P_xeⱼ) = 0` for all `j`, hence `Dν(x) = 0` on `T_x`
+  intro x hx v hv
+  have hA2x : A2 x = 0 := hA2zero x hx
+  simp only [hA2] at hA2x
+  have hj : ∀ j : Fin P, fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+      (EuclideanSpace.single j 1)) = 0 := by
+    intro j
+    have h := (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => sq_nonneg _)).1 hA2x j
+      (Finset.mem_univ j)
+    exact norm_eq_zero.1 ((pow_eq_zero_iff two_ne_zero).1 h)
+  have hcomp : (fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection = 0 := by
+    apply ContinuousLinearMap.coe_injective
+    refine (EuclideanSpace.basisFun (Fin P) ℝ).toBasis.ext fun j => ?_
+    simp [hj j]
+  have hPv : (Submodule.span ℝ (tangentSpace M x)).starProjection v = v :=
+    Submodule.starProjection_eq_self_iff.2 (Submodule.subset_span hv)
+  have h := congrArg (fun L : Euclid P →L[ℝ] Euclid P => L v) hcomp
+  simp only [ContinuousLinearMap.comp_apply, hPv, zero_apply] at h
+  exact h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
