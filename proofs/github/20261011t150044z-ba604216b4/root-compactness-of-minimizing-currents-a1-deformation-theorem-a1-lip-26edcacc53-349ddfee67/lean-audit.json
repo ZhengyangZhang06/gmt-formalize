@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2bbc1407880768c4f73a91e5e59b1ba16e89bf530b3be6c30a3ae801d153ea7d",
+  "git_delta": {
+    "base_commit": "65120d27f002c2339a7093a8ec1366703238eefc",
+    "candidate_commit": "85b258f190d5ddd6798438b1705df5c47665b54c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_mollify_lipschitz",
+    "diff_sha256": "beffbb9dd5295f1d2f54d0280685f80891a8b68d10a13f45fdb6c3ec63a68443",
+    "source_sha256": "585b0f833bde7793f63b0efd44008e888ea5fc6f81f342434d5524b66c7361be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_mollify_lipschitz",
+      "statement": "∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
