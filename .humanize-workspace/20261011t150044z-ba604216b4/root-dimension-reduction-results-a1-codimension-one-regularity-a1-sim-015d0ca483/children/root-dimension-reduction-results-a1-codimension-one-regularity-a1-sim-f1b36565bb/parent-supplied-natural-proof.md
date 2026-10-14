@@ -1,0 +1,120 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_partition-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the supplied proof of the selected node (countable chart cover {W_k} of M and the disjoint Borel pieces E_k := (E ∩ W_k) ∖ (W_1 ∪ ⋯ ∪ W_{k−1})), packaged with the chart data that its step 8 uses.
+
+1. (Charts.) By IsEmbeddedSubmanifold 1 m M, for every y ∈ M choose V_y ⊆ ℝ^m, W_y ⊆ ℝ^P and ψ_y : ℝ^m → ℝ^P such that V_y and W_y are open, y ∈ W_y, ψ_y is C¹ on V_y, ψ_y is injective on V_y, ψ_y(V_y) = W_y ∩ M, V_y ∩ ψ_y⁻¹(K) is compact for every compact K ⊆ W_y, and Dψ_y(z) is injective for every z ∈ V_y. (The definition states smoothness as ContDiffOn with the natural number 1 cast to the smoothness-order type; this is the same condition as C¹, since ((1 : ℕ) : WithTop ℕ∞) = 1.)
+
+2. (Countable subcover.) The sets W_y (y ∈ M) are open and ℝ^P is second countable, so by the Lindelöf property there is a countable set S ⊆ M with ⋃_{y∈S} W_y = ⋃_{y∈M} W_y (TopologicalSpace.isOpen_biUnion_countable). As y ∈ W_y for y ∈ M, we get M ⊆ ⋃_{y∈S} W_y.
+
+3. (Case S = ∅.) Then M ⊆ ⋃_{y∈∅} W_y = ∅, so M = ∅ and E = ∅ because E ⊆ M. Put E_k := ∅, V_k := ∅, W_k := ∅ and ψ_k := 0 for all k. Then each E_k is Borel, the E_k are pairwise disjoint, ⋃_k E_k = ∅ = E, V_k and W_k are open, ψ_k is C¹ and injective on ∅, ψ_k(∅) = ∅ = ∅ ∩ M, for every compact K ⊆ ∅ the set V_k ∩ ψ_k⁻¹(K) = ∅ is compact, the derivative condition is vacuous, and E_k = ∅ ⊆ W_k ∩ M.
+
+4. (Case S ≠ ∅: enumeration.) A nonempty countable set is the range of a sequence, so S = {y_0, y_1, y_2, …} for some sequence (y_k)_{k∈ℕ} (repetitions allowed; Set.Countable.exists_eq_range). Put V_k := V_{y_k}, W_k := W_{y_k}, ψ_k := ψ_{y_k}. Since y_k ∈ S ⊆ M, step 1 shows that each (V_k, W_k, ψ_k) satisfies all chart conditions of the conclusion. Moreover ⋃_k W_k = ⋃_{y∈S} W_y ⊇ M by step 2.
+
+5. (Pieces.) Put A_k := E ∩ W_k, which is Borel since E is Borel and W_k is open, and E_k := A_k ∖ ⋃_{j<k} A_j (Mathlib disjointed A k). Each E_k is Borel, as a finite Boolean combination of Borel sets (MeasurableSet.disjointed). The E_k are pairwise disjoint: for j < k, E_j ⊆ A_j and E_k ∩ A_j = ∅ (disjoint_disjointed). Their union is ⋃_k A_k (iUnion_disjointed: a point of ⋃_k A_k lies in E_k for the least k with x ∈ A_k). Finally ⋃_k A_k = E ∩ ⋃_k W_k = E, because E ⊆ M ⊆ ⋃_k W_k by step 4.
+
+6. (Pieces lie in their chart.) E_k ⊆ A_k = E ∩ W_k ⊆ W_k ∩ M, since E ⊆ M. Together with steps 4 and 5 this gives every conclusion. ∎
+
+## Key steps
+
+1. Choose a chart (V_y, W_y, ψ_y) with y ∈ W_y for every y ∈ M.
+2. Lindelöf (second countability of ℝ^P): countably many W_y, y ∈ S ⊆ M, already cover M.
+3. If S = ∅ then M = E = ∅ and empty charts and pieces work; otherwise enumerate S = {y_k}.
+4. E_k := disjointed(E ∩ W_{y_k}) are Borel, pairwise disjoint, have union E, and E_k ⊆ W_{y_k} ∩ M.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-015d0ca483/parent-child-handoff.json parent-supplied-plan.md`
+- `cat <snapshot>/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, Euclid, μHE)`
+- `lean /tmp/hcp-af-split/check/Closure.lean: #check @Poincare.SimonGMT.Chapter02.injective_area_formula_of_injective_derivative, @LinearMap.normDet (unknown); @ContinuousLinearMap.adjoint, @ContinuousLinearMap.det, @MeasurableSet.image_of_continuousOn_injOn, @measurable_fderiv, @Submodule.subtypeL (available)`
+- `lean /tmp/hcp-af-split/check/Mods.lean and Mods2.lean: (← getEnv).header.moduleNames of the GMT.Ch07.Submission import closure`
+- `lean /tmp/hcp-af-split/check/Avail.lean: #check euclideanHausdorffMeasure_eq_volume, Measure.addHaar_image_linearMap, Isometry.hausdorffMeasure_image, lintegral_abs_det_fderiv_eq_addHaar_image, LipschitzOnWith.hausdorffMeasure_image_le, ApproximatesLinearOn, hausdorffMeasure_pi_real (available); Real.hausdorffMeasure_of_finrank_lt, Matrix.gram, LinearMap.IsPositive (unknown)`
+- `python3 transitive import walk from Poincare.SimonGMT.Chapter02.AreaFormula in .lake/packages/simongmt (13 modules, 2286 lines, needs Mathlib NormDet)`
+- `cat simongmt/Poincare/SimonGMT/Chapter02/{Area,AreaParametrization,AreaWeighted,AreaLinearWeighted,AreaMultiplicity,AreaCurve,AreaApproximation,AreaDerivative,AreaFormula}.lean; sed -n 200,245p Chapter02/Lipschitz.lean`
+- `cat mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean; grep -n 'theorem|lemma' mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `sed -n 1380,1720p /runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py (_decompose max_depth gate); _existing_lean_name_problem; _solve_children; leaf_verification.py check_source_delta; prompts.py (imports preserved)`
+- `python3 scans of dag.json (1519 nodes at scan time): selected node; accepted nodes whose types mention area|jacobian|adjoint|Matrix.of|IsEmbeddedSubmanifold; sizes of accepted leaf commits; exact lean_statement extraction of the three reused declarations`
+- `git show d626082a69a0 / d5ba41d68f1c / d596f85ab9a9:GMT/Ch07/Submission.lean (exact reused declaration text present); git log -1 d5ba41d68f1c d596f85ab9a9`
+- `git for-each-ref --format='%(objectname)' | sort -u (2631 at check time) | xargs git grep -l codim1_hcp_af_ -- 'GMT/*.lean' (no match); grep -rln codim1_hcp_af_ simongmt GMT <snapshot>/project (no match); 'codim1_hcp_af_' in dag.json (no match)`
+- `rg -n 'theorem ContinuousOn.measurable_piecewise|theorem fderiv_comp \{|theorem ContDiffOn.differentiableOn \(|theorem ContDiff.differentiable \(|theorem setLIntegral_one|theorem setLIntegral_congr_fun \{|theorem lintegral_iUnion \[|theorem MeasurableSet.image_of_continuousOn_injOn|theorem isOpen_biUnion_countable|theorem Countable.exists_eq_range|protected theorem MeasurableSet.disjointed|theorem disjoint_disjointed \(|theorem iUnion_disjointed|theorem disjointed_subset|theorem det_toMatrix \(|theorem adjoint_inner_right|theorem repr_apply_apply|theorem coe_toBasis_repr_apply|theorem orthonormal_iff_ite|theorem Orthonormal.comp_linearIsometry \{|theorem map_subtype_top|theorem sqrt_mul. |theorem ofReal_mul \{|theorem lintegral_sum_measure' <snapshot>/mathlib/Mathlib`
+- `lean -DautoImplicit=false /tmp/hcp-af-split/v3/{Types,Assembly,SubGram,Partition,ChartJac,ChartArea,Combined,Inst}.lean; /tmp/hcp-af-split/full/{FullTest,FullTestHB50000,FullTestHB100000}.lean`
+- `python3: _recursive_lean.leaf_verification.check_source_delta(base, base + one theorem, name) for the four new children`
+- `independent reviewer agent in /tmp/hcp-af-review: recompiled FullTest.lean, FullTestHB50000.lean and v3/*.lean; byte-compared all 7 lean_statements with dag.json and the Lean files; re-ran check_source_delta; recomputed the parent contract digest; git grep codim1_hcp_af_ over 2689 ref tips (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-015d0ca483/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-015d0ca483/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-12e3a7fde6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDerivative.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaWeighted.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLinearWeighted.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/prompts.py`
+- `/tmp/hcp-af-split/check/Closure.lean`
+- `/tmp/hcp-af-split/check/Mods2.lean`
+- `/tmp/hcp-af-split/check/Avail.lean`
+- `/tmp/hcp-af-split/v3/Types.lean`
+- `/tmp/hcp-af-split/v3/Assembly.lean`
+- `/tmp/hcp-af-split/v3/SubGram.lean`
+- `/tmp/hcp-af-split/v3/Partition.lean`
+- `/tmp/hcp-af-split/v3/ChartJac.lean`
+- `/tmp/hcp-af-split/v3/ChartArea.lean`
+- `/tmp/hcp-af-split/v3/Combined.lean`
+- `/tmp/hcp-af-split/v3/Inst.lean`
+- `/tmp/hcp-af-split/full/FullTest.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to the workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+Import closure. Submission's closure lacks SimonGMT Chapter02.{Area,…,AreaFormula}. It therefore lacks injective_area_formula_of_injective_derivative, which step 5 of the supplied proof cites. It also lacks Mathlib InnerProductSpace.NormDet (LinearMap.normDet), GramMatrix and PosDef. It contains Mathlib MeasureTheory.Function.Jacobian (exists_partition_approximatesLinearOn_of_hasFDerivWithinAt), FDeriv.Measurable, Polish.Basic (MeasurableSet.image_of_continuousOn_injOn), Topology.Bases (isOpen_biUnion_countable), Order.Disjointed, InnerProductSpace.{Adjoint,PiL2,Orthonormal}, LinearAlgebra.Determinant, and SimonGMT Chapter02.Lipschitz (euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+Leaf gate. leaf_verification.check_source_delta forbids import, helper declarations and set_option in a leaf. Accepted d5ba41d68f1c had to drop an added import for this reason.
+DAG. Three accepted declarations are reused with byte-identical types.
+- chart_tangentSpace_eq_range_fderiv (d626082a69a0).
+- codim1_lura_gram_area_formula (d5ba41d68f1c): the weighted injective Euclidean area formula with Gram Jacobian, valid for every weight g and proved under the frozen imports.
+- codim1_lura_gram_det_comp_orthonormal (d596f85ab9a9).
+Each type text occurs verbatim in its candidate commit. The node codim1_ac_submanifold_area_formula is similar but unaccepted and has a different type, so it is not reused. The four new codim1_hcp_af_ names are free.
+Lean. All 7 child types elaborate. The selected type is kernel-checked from chart_partition and chart_area (Assembly.lean). All four new children have complete prototype proofs. With the real accepted proof blocks spliced into a copy of Submission (FullTest.lean), the selected theorem depends only on propext, Classical.choice and Quot.sound. Each new proof fits within 50000 heartbeats and passes check_source_delta. Snapshot Mathlib lemma locations used by the proofs:
+- ContinuousOn.measurable_piecewise (BorelSpace/Basic.lean:523), MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821);
+- setLIntegral_one, setLIntegral_congr_fun and lintegral_iUnion (Lebesgue/Basic.lean:124, 298, 597). lintegral_iUnion rests on lintegral_sum_measure (:456), and neither needs measurability of the integrand;
+- fderiv_comp (FDeriv/Comp.lean:179), ContDiffOn.differentiableOn and ContDiff.differentiable (ContDiff/Defs.lean:578, 1159);
+- isOpen_biUnion_countable (Topology/Bases.lean:942), Set.Countable.exists_eq_range (Data/Set/Countable.lean:149);
+- MeasurableSet.disjointed (MeasurableSpace/Constructions.lean:113), disjoint_disjointed, disjointed_subset, iUnion_disjointed (Order/Disjointed.lean:206, 316, 320);
+- LinearMap.det_toMatrix (LinearAlgebra/Determinant.lean:206), ContinuousLinearMap.adjoint_inner_right (Adjoint.lean:125), OrthonormalBasis.repr_apply_apply and coe_toBasis_repr_apply (PiL2.lean:440, 490);
+- orthonormal_iff_ite and Orthonormal.comp_linearIsometry (Orthonormal.lean:82, 315), Submodule.map_subtype_top (Submodule/Range.lean:316), Real.sqrt_mul' (Real/Sqrt.lean:369), ENNReal.ofReal_mul (ENNReal/Real.lean:297).
