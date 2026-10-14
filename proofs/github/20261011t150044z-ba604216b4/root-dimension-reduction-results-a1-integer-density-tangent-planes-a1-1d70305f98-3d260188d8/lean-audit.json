@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2953729d07a5c3194b98678a23e976eb9c6a982e9d83567ece06decdccf58473",
+  "git_delta": {
+    "base_commit": "53884f605bbf764e06190ba6138ccd8aad086538",
+    "candidate_commit": "a02aceefdf51c2eac16c65b052cc763ea8db8f30",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_support_limit",
+    "diff_sha256": "9f7ad04f2db1ab6613fb8945f669bd464222a495fb5d18d9c925cf09ce31e246",
+    "source_sha256": "17f98fa39234bf608180f22ecf32b96a94b1a59341f171325dc3729a8b96591e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_support_limit",
+      "statement": "∀ (P n : ℕ) (Λ : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (U : Set (Euclid P)) (Ds : ℕ → Set (Euclid P)) (ys : ℕ → Euclid P) (y : Euclid P), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → μs k K ≠ ∞) → IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (k : ℕ) (z : Euclid P) (ρ : ℝ), 0 < ρ → closedBall z ρ ⊆ Ds k → (∀ ε : ℝ, 0 < ε → μs k (ball z ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ μs k (ball z ρ)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(μs k)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ (k : ℕ) (ε : ℝ), 0 < ε → μs k (ball (ys k) ε) ≠ 0) → Tendsto ys atTop (𝓝 y) → y ∈ U → ∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
