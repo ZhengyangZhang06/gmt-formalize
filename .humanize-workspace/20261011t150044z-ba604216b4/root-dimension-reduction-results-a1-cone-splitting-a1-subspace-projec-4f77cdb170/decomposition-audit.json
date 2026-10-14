@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,180p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "idtp_fons_cs_sp_projected_massOn_le|dor_imrep_massOn_eq_measure_and_support|dimred_cs_sp_projected_massOn_le",
+        "measure_compl_support|HereditarilyLindelof",
+        "enorm_integral_le_lintegral_enorm|integrable_indicator_iff|bounded_above_of_compact_support",
+        "git show e40117e51ee59977ed9abe72e2a6dc55a0f65ffe:GMT/Ch07/Submission.lean",
+        "git show d49dda91b75b7417d67a10053e6dc4b65d4f0312:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pm-independent-audit-tfjkkdda/Assembly.lean",
+        "#print axioms GMT.Ch07.Submission.idtp_fons_cs_sp_projected_massOn_le",
+        "#print axioms GMT.Ch07.Submission.dor_imrep_massOn_eq_measure_and_support"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-4f77cdb170/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-fba272cc7e/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/isolated-comparator-result.json",
+        "/tmp/pm-independent-audit-tfjkkdda/Assembly.lean",
+        "/tmp/pm-independent-audit-tfjkkdda/Projected.lean",
+        "/tmp/pm-independent-audit-tfjkkdda/Projected.log",
+        "/tmp/pm-independent-audit-tfjkkdda/MassSupport.lean",
+        "/tmp/pm-independent-audit-tfjkkdda/MassSupport.log"
+      ],
+      "conclusion": "The pinned revisions and contract match the installed sources. Snapshot searches found no reused declarations; both occur uniquely in the DAG as comparator-accepted declarations with byte-identical frozen types. Their accepted dependency closures exclude the selected node and its ancestors, and the proposed dependency graph is acyclic. Both candidates recompiled; their declarations and the independent parent assembly depend only on propext, Classical.choice and Quot.sound. The standalone child propositions elaborate without their implementations, and projection/support instances were checked. The split is appropriate: mass_support and measure_compl_support give RX.measure X.supportᶜ = 0, allowing the first child to establish exactly the selected parent with K := X.support. The Lusin step was also checked against [Simon, §1.17](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "projected_mass_null_off_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact one-line proposition. The proof establishes carrier concentration, integrability for test forms and noncompact pullbacks, vector-density additivity, projection invariance, and the mass estimate for arbitrary O. Its cited lemmas are independent accepted dependencies. The bare name validly reuses the identical accepted type; specializing K := X.support supplies precisely the selected conclusion."
+    },
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including open U and arbitrary ambient open W. The duality calculation, weighted integral formula, upper bound, Lusin–extension–mollification lower bound, and zero-region argument establish both conclusions. The integral estimates require only the stated almost-everywhere orientation identities. The proof is non-circular and sufficiently detailed. The bare name uniquely reuses the identical accepted type; its support conclusion supplies the null-complement hypothesis needed by the first child."
+    }
+  ],
+  "required_changes": []
+}
