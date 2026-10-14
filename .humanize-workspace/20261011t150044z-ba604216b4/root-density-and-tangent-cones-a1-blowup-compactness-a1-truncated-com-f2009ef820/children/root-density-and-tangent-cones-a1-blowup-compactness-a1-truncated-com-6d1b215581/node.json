@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1.limit_current-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1",
+  "depth": 5,
+  "title": "The pointwise limit of currents with uniform local sup-norm bounds is a current and their weak limit",
+  "statement": "Let P, n ∈ ℕ and S_i ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, i ∈ ℕ); ‖·‖ is the operator norm on Covector (Euclid P) n. Assume (a) for every compact K ⊆ ℝ^P there is a real c ≥ 0 with |S_i(ω)| ≤ c·s for all i ∈ ℕ, all ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with tsupport ω ⊆ K and all s ∈ ℝ with ‖ω(x)‖ ≤ s for every x; and (b) for every ω ∈ 𝒟ⁿ(ℝ^P) the real sequence (S_i(ω))_{i∈ℕ} converges. Then there is C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with S_i ⇀ C, i.e. S_i(ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) (WeaklyConvergesOn S C).",
+  "lean_statement": "∀ (P n : ℕ) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |S i ω| ≤ c * s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ L : ℝ, Tendsto (fun i => S i ω) atTop (𝓝 L)) → ∃ C : GeometricCurrentOn (univ : Set (Euclid P)) n, WeaklyConvergesOn S C",
+  "lean_name": "dtc_bc_tc_wc_limit_current",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_zero_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_zero_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-7244aadae8-a1",
+      "result_commit": "493589396f764fe4188e236e4a99686eee7b2614",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-6d1b215581-a1"
+}

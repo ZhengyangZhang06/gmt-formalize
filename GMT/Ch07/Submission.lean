@@ -819,6 +819,32 @@ theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid
       rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
       nlinarith [abs_nonneg c]
 
+/-- **Uniform local mass bounds give uniform evaluation bounds** (Simon Ch. 6, 2.5; first step
+of the weak compactness Lemma 2.15).  With `N ≥ 0` such that `|α| ≤ N ‖α‖` and a ball
+`W = B_R(0) ⊇ K`, the constant is `c = N · supⱼ M_W(Tⱼ)`: if `spt ω ⊆ K` and `‖ω(x)‖ ≤ s` then
+`|ω(x)| ≤ N s`, so the evaluation bound gives `|Tⱼ(ω)| ≤ N s M_W(Tⱼ) ≤ c s`. -/
+theorem Submission.dtc_bc_tc_wc_local_bound : ∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |Ts j ω| ≤ c * s := by
+  intro P n Ts hTs K hK
+  -- `|α| ≤ N ‖α‖` for the Euclidean coefficient norm
+  obtain ⟨N, hN0, hN⟩ := (Submission.rsd_mw_tfa_norm_props P n).2.2.1
+  -- `K ⊆ W := B_R(0)`, and `m := supⱼ M_W(Tⱼ) < ∞`
+  obtain ⟨R, hKR⟩ := hK.isBounded.subset_ball (0 : Euclid P)
+  have hm := hTs (ball 0 R) isOpen_ball isBounded_ball
+  refine ⟨N * (⨆ j, (Ts j).massOn (ball 0 R)).toReal, mul_nonneg hN0 ENNReal.toReal_nonneg, ?_⟩
+  intro j ω s hωK hωs
+  -- `M_W(Tⱼ) ≤ m < ∞`
+  have hj : (Ts j).massOn (ball 0 R) ≤ ⨆ j, (Ts j).massOn (ball 0 R) :=
+    le_iSup (fun j => (Ts j).massOn (ball 0 R)) j
+  have hs : 0 ≤ s := (norm_nonneg _).trans (hωs 0)
+  -- the evaluation bound with `r = N s`
+  have hev := Submission.cmr_abs_apply_le_massOn P n univ (ball 0 R) (Ts j) ω (N * s)
+    (hj.trans_lt hm).ne (hωK.trans hKR)
+    fun x => (hN _).trans (mul_le_mul_of_nonneg_left (hωs x) hN0)
+  calc |Ts j ω| ≤ N * s * ((Ts j).massOn (ball 0 R)).toReal := hev
+    _ ≤ N * s * (⨆ j, (Ts j).massOn (ball 0 R)).toReal :=
+        mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hm.ne hj) (mul_nonneg hN0 hs)
+    _ = N * (⨆ j, (Ts j).massOn (ball 0 R)).toReal * s := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1.dense_extension-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1",
+  "depth": 5,
+  "title": "Convergence on a sup-norm-dense family of test forms extends to all test forms under uniform local bounds",
+  "statement": "Let P, n ∈ ℕ, let S_i ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, i ∈ ℕ) and let D be a set of test forms in 𝒟ⁿ(ℝ^P) (TestFormOn univ n); ‖·‖ is the operator norm on Covector (Euclid P) n. Assume: (a) for every compact K ⊆ ℝ^P there is a real c ≥ 0 with |S_i(ω)| ≤ c·s for all i ∈ ℕ, all ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ K and all s ∈ ℝ with ‖ω(x)‖ ≤ s for every x; (b) for every ω ∈ 𝒟ⁿ(ℝ^P) there are a compact K ⊆ ℝ^P with tsupport ω ⊆ K and a sequence (ω_k)_{k∈ℕ} with ω_k ∈ D and tsupport ω_k ⊆ K for every k, such that ω_k → ω uniformly on ℝ^P; (c) for every δ ∈ D the real sequence (S_i(δ))_{i∈ℕ} converges. Then for every ω ∈ 𝒟ⁿ(ℝ^P) the real sequence (S_i(ω))_{i∈ℕ} converges.",
+  "lean_statement": "∀ (P n : ℕ) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (D : Set (TestFormOn (univ : Set (Euclid P)) n)), (∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |S i ω| ≤ c * s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n), IsCompact K ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop) → (∀ δ ∈ D, ∃ L : ℝ, Tendsto (fun i => S i δ) atTop (𝓝 L)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ L : ℝ, Tendsto (fun i => S i ω) atTop (𝓝 L)",
+  "lean_name": "dtc_bc_tc_wc_dense_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-2a96e99837-a1"
+}

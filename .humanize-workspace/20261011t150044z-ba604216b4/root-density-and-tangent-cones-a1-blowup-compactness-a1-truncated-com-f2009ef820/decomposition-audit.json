@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (TestFormOn|TestFormOnConverges|WeaklyConvergesOn|massAdmissibleOn|GeometricCurrentOn.massOn|covectorEuclideanNorm)|structure GeometricCurrentOn|le_massOn|abbrev Covector",
+        "instSeparableSpace|instSecondCountableTopology|FirstCountableTopology|tendsto_subseq|bounded_above_of_compact_support|cauchySeq_tendsto_of_complete",
+        "ofReal_le_iff_le_toReal|toReal_mono",
+        "dtc_bc_tc_wc_",
+        "git show 7a706164baaf42fc7f55751247396a8836928310:GMT/Ch07/Submission.lean",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show b7ecbda9150d7985c7094c40f6aebfb81c4ec24b:GMT/Ch07/Submission.lean",
+        "git show 0108f79246c75f0e500c4cb4893843fa6a8c4ce7:GMT/Ch07/Submission.lean",
+        "git show 493589396f764fe4188e236e4a99686eee7b2614:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wc_independent_audit_mtng_js_/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wc_independent_audit_mtng_js_/AssemblyExact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wc_independent_audit_mtng_js_/testform_dense.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f2009ef820/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f2009ef820/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T082519Z-ch07-root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_boun-vsn3dnsz/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T190028Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1-uewbgrnd/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa29/20261013T150150Z-ch07-root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_lim-se8cibky/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa15/20261013T092435Z-ch07-root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_-k4hp8_7w/comparator.log",
+        "/tmp/wc_independent_audit_mtng_js_/Types.lean",
+        "/tmp/wc_independent_audit_mtng_js_/AssemblyExact.lean",
+        "/tmp/wc_independent_audit_mtng_js_/testform_dense.lean"
+      ],
+      "conclusion": "The split is appropriate and proves the exact selected parent. All eight one-line propositions elaborate independently in the frozen comparator scope. Fresh compilation checked the exact parent assembly and the three new proofs using only propext, Classical.choice and Quot.sound. The five reused declarations match their accepted frozen types and candidate-source hashes; their permitted-axiom kernel checks were verified through a fresh density-theorem compilation and the original comparator records. The pinned definitions and norm instances match the prose. All names are bare identifiers; no new-name reservation was found in the DAG, and the searched Submission files contain no dtc_bc_tc_wc_ declaration. Dependencies, including reused declarations' child closures, are acyclic and do not rely on the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary U and W and finite mass. The proof derives r ≥ 0, bounds both signed rescalings, and lets ε decrease to zero, covering r = 0. Reuse has the identical accepted type."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient-vector construction proves all four stated conjuncts: triangle inequality, homogeneity, domination by the operator norm, and Lipschitz continuity. It works for all P and n without a positive-dimension assumption. The reused type is identical."
+    },
+    {
+      "key": "testform_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion and separability on each fixed-support piece yield a countable family approximating both ω and dω uniformly with common compact support, exactly as typed. The empty-domain case is covered. Reuse and its accepted dependency closure are valid; the parent legitimately discards derivative convergence."
+    },
+    {
+      "key": "diagonal_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded evaluations lie in a compact product, and countability supplies first countability. Subsequence extraction followed by coordinate evaluation proves the exact conclusion, including an empty index type. The reused type is identical."
+    },
+    {
+      "key": "order_zero_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Order-zero uniform convergence on the common compact support, together with vanishing outside it, gives the precise continuous' field. The choice δ/(|c|+1) correctly avoids assuming c ≥ 0. The proof constructs the current with the required evaluations, and reuse is type-identical."
+    },
+    {
+      "key": "local_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A bounded open ball contains K. Finite supremum mass, the covector norm comparison, and the evaluation bound give c = N·m.toReal ≥ 0. The proof explicitly derives s ≥ 0 before multiplying inequalities. It uses exactly its declared dependencies."
+    },
+    {
+      "key": "dense_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Common support controls ω−ω_k, and uniform approximation gives an evaluation error below ε/3 uniformly in i. Convergence on the chosen approximant then makes every evaluation sequence Cauchy; completeness of ℝ supplies its limit. All hypotheses match, with no sibling or parent reliance."
+    },
+    {
+      "key": "limit_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniqueness of pointwise real limits proves linearity. Passing the uniform local bounds to the limit supplies exactly order_zero_current's hypothesis, and its resulting current has the chosen limiting evaluations. This proves WeaklyConvergesOn directly using only the declared dependency."
+    }
+  ],
+  "required_changes": []
+}
