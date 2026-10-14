@@ -681,6 +681,63 @@ theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid 
     _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
     _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
 
+/-- **Mass controls evaluation** (Simon Ch. 6, 2.4–2.5; used in proving the deformation theorem
+5.1, chapter-06.txt lines 1792–1838: mass-Cauchy deformed pieces converge weakly, (19), and the
+masses of the limits are estimated as in (24)–(25)).  If `|ω(x)| ≤ c` for all `x`
+(`cmc_fc_sc_testForm_coeff_bound`), then 6.2.5 with `W = U` (`cmr_abs_apply_le_massOn`) gives
+`|X_j(ω)| ≤ c M(X_j)` whenever `M(X_j) < ∞`.  (i) If `M(X_j) → 0`, then `M(X_j)` is eventually
+finite and `c M(X_j) → 0`, so `X_j(ω) → 0` by squeezing.  (ii) If `Σ_j M(X_j) < ∞`, every
+`M(X_j)` is finite and `Σ_j X_j(ω)` converges by comparison with `Σ_j c M(X_j)`; for `ω`
+admissible for `M(Y)`, `Y(ω) = Σ_j X_j(ω) ≤ Σ_j |X_j(ω)| ≤ Σ_j M(X_j)`, and the supremum over
+such `ω` gives `M(Y) ≤ Σ_j M(X_j)`. -/
+theorem Submission.cmcsdtd_mass_controls_eval : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), (Tendsto (fun j => (X j).mass) atTop (𝓝 0) → ∀ ω : TestFormOn U n, Tendsto (fun j => X j ω) atTop (𝓝 0)) ∧ (∑' j, (X j).mass < ∞ → (∀ ω : TestFormOn U n, Summable (fun j => X j ω)) ∧ ∀ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun j => X j ω) (Y ω)) → Y.mass ≤ ∑' j, (X j).mass) := by
+  intro P n U X
+  -- Step 1: `|X_j(ω)| ≤ r M(X_j)` if `M(X_j) < ∞` and `|ω(x)| ≤ r` (6.2.5 with `W = U`)
+  have hEB : ∀ (ω : TestFormOn U n) (r : ℝ) (j : ℕ), (X j).mass ≠ ∞ →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) →
+      |X j ω| ≤ r * (X j).mass.toReal := fun ω r j hj hr =>
+    Submission.cmr_abs_apply_le_massOn P n U U (X j) ω r hj ω.property.2 hr
+  refine ⟨fun hlim ω => ?_, fun hsum => ?_⟩
+  · -- Step 2: (i), `M(X_j)` is eventually finite and `c M(X_j) → 0`; squeeze
+    obtain ⟨c, -, hc⟩ := Submission.cmc_fc_sc_testForm_coeff_bound P n U ω
+    have hfin : ∀ᶠ j in atTop, (X j).mass ≠ ∞ :=
+      (hlim.eventually (gt_mem_nhds zero_lt_one)).mono fun j hj =>
+        (hj.trans ENNReal.one_lt_top).ne
+    have hreal : Tendsto (fun j => (X j).mass.toReal) atTop (𝓝 0) := by
+      have h := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hlim
+      rwa [ENNReal.toReal_zero] at h
+    have hbound : Tendsto (fun j => c * (X j).mass.toReal) atTop (𝓝 0) := by
+      simpa using hreal.const_mul c
+    refine squeeze_zero_norm' ?_ hbound
+    filter_upwards [hfin] with j hj
+    rw [Real.norm_eq_abs]
+    exact hEB ω c j hj hc
+  · -- Step 3: every `M(X_j)` is finite and `Σ_j M(X_j)` is a summable real series
+    have hfin : ∀ j, (X j).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hsum.ne
+    have hsumR : Summable fun j => (X j).mass.toReal := ENNReal.summable_toReal hsum.ne
+    refine ⟨fun ω => ?_, fun Y hY => ?_⟩
+    · -- Step 4: (ii)(a), comparison with `Σ_j c M(X_j)`
+      obtain ⟨c, -, hc⟩ := Submission.cmc_fc_sc_testForm_coeff_bound P n U ω
+      refine Summable.of_norm_bounded (hsumR.mul_left c) fun j => ?_
+      rw [Real.norm_eq_abs]
+      exact hEB ω c j (hfin j) hc
+    · -- Step 5: (ii)(b), `Y(ω) = Σ_j X_j(ω) ≤ Σ_j |X_j(ω)| ≤ Σ_j M(X_j)` for admissible `ω`
+      refine sSup_le ?_
+      rintro _ ⟨ω, hω, rfl⟩
+      have hb : ∀ j, |X j ω| ≤ (X j).mass.toReal := fun j =>
+        (hEB ω 1 j (hfin j) hω.2).trans_eq (one_mul _)
+      have habs : Summable fun j => |X j ω| :=
+        Summable.of_nonneg_of_le (fun j => abs_nonneg _) hb hsumR
+      have hle : Y ω ≤ ∑' j, (X j).mass.toReal := by
+        rw [← (hY ω).tsum_eq]
+        calc ∑' j, X j ω ≤ ∑' j, |X j ω| :=
+              Summable.tsum_le_tsum (fun j => le_abs_self _) (hY ω).summable habs
+          _ ≤ ∑' j, (X j).mass.toReal := Summable.tsum_le_tsum hb habs hsumR
+      calc ENNReal.ofReal (Y ω) ≤ ENNReal.ofReal (∑' j, (X j).mass.toReal) :=
+            ENNReal.ofReal_le_ofReal hle
+        _ = ∑' j, (X j).mass := by
+            rw [← ENNReal.tsum_toReal_eq hfin, ENNReal.ofReal_toReal hsum.ne]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
