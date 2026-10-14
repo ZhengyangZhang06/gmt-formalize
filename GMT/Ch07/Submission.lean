@@ -1613,6 +1613,90 @@ theorem Submission.dimred_mbl_dt_cbm_smooth_trace : ∀ (m : ℕ) (v : Euclid (m
         push_cast
         ring
 
+/-- **Simon, proof of Ch. 6, 5.1** (displays (26)–(35), the cube estimate: Poincaré inequality,
+integer median and boundary mass of `(u − β)[[Q₁]]`).  For `n = m + 1` there is `c > 0` such that
+if `u` is integer-valued and integrable on the open unit cube `Q₁ ⊆ ℝⁿ` and `∫_{Q₁} u div g ≤ V`
+for every smooth `g` with compact support in `Q₁` and `|g| ≤ 1`, then some `β ∈ ℤ` has
+`∫_{Q₁} |u − β| ≤ cV`, `|β| ≤ 2 ∫_{Q₁} |u|` and `|∫_{Q₁} (u − β) div G| ≤ cV` for every smooth `G`
+with `|G| ≤ 1`.  Take `c = A + (2n + 1) + 4nA` with `A = 2ⁿ⁺¹ √n`.  Testing with `g = 0` gives
+`V ≥ 0`.  The integer median `β` minimizes `c' ↦ ∫_{Q₁} |u − c'|`, so the BV Poincaré inequality
+gives `∫_{Q₁} |u − β| ≤ AV`.  As `∫_{Q₁} div g = 0`, `u − β` satisfies the hypothesis with the
+same `V`, and the BV trace inequality gives `|∫_{Q₁} (u − β) div G| ≤ (2n + 1)V + 4nAV`. -/
+theorem Submission.dimred_mbl_dt_cube_bv_median : ∀ m : ℕ, ∃ c : ℝ, 0 < c ∧ ∀ (u : Euclid (m + 1) → ℝ) (V : ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ β : ℤ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ c * V ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| ∧ ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (u y - β) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ c * V := by
+  intro m
+  -- `A = 2ⁿ⁺¹ √n ≥ 0` (`n = m + 1`) and `c = A + (2n + 1) + 4nA > 0`
+  have hA : (0 : ℝ) ≤ 2 ^ (m + 2) * Real.sqrt (m + 1) := by positivity
+  have hAc : (2 : ℝ) ^ (m + 2) * Real.sqrt (m + 1) ≤ 2 ^ (m + 2) * Real.sqrt (m + 1) +
+      (2 * (m + 1) + 1) + 4 * (m + 1) * (2 ^ (m + 2) * Real.sqrt (m + 1)) := by
+    have : (0 : ℝ) ≤ 4 * (m + 1) * (2 ^ (m + 2) * Real.sqrt (m + 1)) := by positivity
+    linarith
+  refine ⟨2 ^ (m + 2) * Real.sqrt (m + 1) + (2 * (m + 1) + 1) +
+    4 * (m + 1) * (2 ^ (m + 2) * Real.sqrt (m + 1)), by positivity, ?_⟩
+  intro u V hu hint hV
+  -- `V ≥ 0`: test the hypothesis with `g = 0`
+  have hV0 : 0 ≤ V := by
+    simpa using hV 0 contDiff_zero_fun HasCompactSupport.zero (by simp) (by simp)
+  -- the integer median `β` and the Poincaré constant `c₀`: `∫ |u − β| ≤ ∫ |u − c₀| ≤ AV`
+  obtain ⟨β, hβmin, hβabs⟩ := Submission.dimred_mbl_dt_cbm_integer_median m u hu hint
+  obtain ⟨c₀, hc₀⟩ := Submission.dimred_mbl_dt_cbm_bv_poincare m u V hint hV
+  have h1 := (hβmin c₀).trans hc₀
+  refine ⟨β, h1.trans (mul_le_mul_of_nonneg_right hAc hV0), hβabs, fun G hG hG1 => ?_⟩
+  -- `u − β` is integrable on `Q₁`, whose volume is finite: `Q₁` is the preimage of the box
+  -- `∏ᵢ (0, 1)` under the volume-preserving `ofLp`
+  have hQ : volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ≠ ∞ := by
+    have hpre : {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} =
+        WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin (m + 1) => Ioo (0 : ℝ) 1) := by
+      ext y
+      simp [Set.mem_pi]
+    rw [hpre, (PiLp.volume_preserving_ofLp (Fin (m + 1))).measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+    simp
+  have hwint : IntegrableOn (fun y => u y - (β : ℝ))
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+    hint.fun_sub (integrableOn_const hQ)
+  -- `u − β` satisfies the hypothesis with the same `V`, since `∫_{Q₁} div g = 0`
+  have hwV : ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g →
+      HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} →
+      (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        (u y - β) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V := by
+    intro g hg hgc hgs hg1
+    have hg' : ContDiff ℝ 1 g := hg.of_le (by exact_mod_cast le_top)
+    -- `div g` is continuous with compact support, hence bounded and integrable
+    let T : (Euclid (m + 1) →L[ℝ] Euclid (m + 1)) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+      ((LinearMap.trace ℝ (Euclid (m + 1))).comp (ContinuousLinearMap.coeLM ℝ))
+    have hdc : Continuous fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) :=
+      T.continuous.comp (hg'.continuous_fderiv one_ne_zero)
+    have hds : HasCompactSupport fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) :=
+      (hgc.fderiv ℝ).comp_left (g := T) (map_zero T)
+    obtain ⟨C, hC⟩ := hdc.bounded_above_of_compact_support hds
+    have hdi : IntegrableOn (fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y))
+        {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+      (hdc.integrable_of_hasCompactSupport hds).integrableOn
+    have hui : IntegrableOn (fun y => u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y))
+        {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+      hint.integrable.mul_bdd hdc.aestronglyMeasurable (ae_of_all _ hC)
+    calc ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+          (u y - β) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)
+        = (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)) -
+          β * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+          simp_rw [sub_mul]
+          rw [integral_sub hui (hdi.const_mul (β : ℝ)), integral_const_mul]
+      _ = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+          rw [Submission.dimred_mbl_dt_cbm_integral_div_eq_zero m g hg' hgc hgs, mul_zero,
+            sub_zero]
+      _ ≤ V := hV g hg hgc hgs hg1
+  -- the BV trace inequality for `u − β`, with `∫_{Q₁} |u − β| ≤ AV`
+  have h3 := Submission.dimred_mbl_dt_cbm_bv_trace m (fun y => u y - β) V hwint hwV G
+    (hG.of_le (by exact_mod_cast le_top)) hG1
+  have hAV : (0 : ℝ) ≤ 2 ^ (m + 2) * Real.sqrt (m + 1) * V := mul_nonneg hA hV0
+  calc _ ≤ _ := h3
+    _ ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * (2 ^ (m + 2) * Real.sqrt (m + 1) * V) := by
+      gcongr
+    _ ≤ _ := by linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
