@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4b63f60f2fb5d2f1f94b1420999a6e36a354067eeadd08a83fa0ecf96a094990",
+  "git_delta": {
+    "base_commit": "1454bb852037a0730785723bb4cd2b2df4c26181",
+    "candidate_commit": "de36dc40cff82bc2346227d153f17d9cab17b214",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ac265f20b3ea262df42f455fb9ef7d247fe3bb7083a07183d2cf0dc0ef21e1c1",
+    "source_sha256": "3eb6b222b244c3efcad729ae25cdb665cadbacf625b219e7229df91731dcaf11",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_finrank_le_of_growth",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (C : ℝ≥0∞), C ≠ ∞ → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ C * ENNReal.ofReal (R ^ n)) → 0 < ν (ball 0 1) → Module.finrank ℝ V ≤ n",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
