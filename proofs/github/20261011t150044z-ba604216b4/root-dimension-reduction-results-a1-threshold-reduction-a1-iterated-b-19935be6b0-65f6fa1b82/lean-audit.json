@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "477bcdbb1261067267ed80f3a6af4d84e01ecb85e61976b8afc32e0523dc2642",
+  "git_delta": {
+    "base_commit": "7866edba6c728c5002fa5e3ab2da437b3817d96a",
+    "candidate_commit": "b1f2ab3096cfa2211c22064483cb7ec243724c52",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_ibl_countable_tests",
+    "diff_sha256": "52683fc54d569f5ac7a1b8fdc32252fbce02f30fa1481deff33113fe6aac60a7",
+    "source_sha256": "733db186d3e03d107d2bcd3df8994da3a5fb391a466cf3d59807bc974c043e84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_ibl_countable_tests",
+      "statement": "∀ (P n : ℕ), ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Vs : ℕ → Set (Euclid P)) (As : (k : ℕ) → GeometricCurrentOn (Vs k) n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℕ, ∃ (k₀ : ℕ) (Γ : ℝ≥0∞), Γ ≠ ∞ ∧ A.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ ∧ ∀ k, k₀ ≤ k → ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k ∧ (As k).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ) → (∀ m, Tendsto (fun k => currentEval (As k) ((ωs m : TestFormOn (univ : Set (Euclid P)) n) : DifferentialForm (Euclid P) n)) atTop (𝓝 (A (ωs m)))) → ConvergesWeakly As A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
