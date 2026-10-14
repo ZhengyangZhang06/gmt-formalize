@@ -4332,6 +4332,46 @@ theorem Submission.codim1_hcp_smooth_charts : ∀ (P m : ℕ) (M : Set (Euclid P
       (hM (n + 1)) hD hW₀ hG1 hGinj hGD hGprop hDG hπG).of_le (by exact_mod_cast Nat.le_succ n)
   exact ⟨D, W₀, G, hD, hW₀, hψvy ▸ hyW₀, hGsmooth, hGinj, hGD, hGprop, hDG⟩
 
+/-- **Simon B.1 (stability inequality)**: let `M ⊆ A₀ ∩ U` be a smooth embedded hypersurface of
+the `(m + 1)`-plane `A₀`, of locally finite `Hᵐ`-measure in `U`, with smooth unit normal `ν` and
+zero mean curvature `trace(Pₓ ∘ Dν(x)) = 0`, whose area does not decrease under the deformations
+`x ↦ x + tZ(x)`, `Z ∈ C^∞_c(U)`, `|t|` small.  Then `∫_M |A|²ζ² dHᵐ ≤ ∫_M |∇^Mζ|² dHᵐ` for every
+`ζ` locally Lipschitz on `M` and vanishing on `M` off a compact subset of `M`.  `M` is Borel, and
+`Pₓ = Π_{A₀} − ν(x) ⊗ ν(x)` makes `x ↦ Pₓu`, hence `|A|²`, continuous on `M`.  The second
+variation of area along `Z = ζ̃ν` (Simon Ch. 2, 5.4), with `Hᵐ(Φ_t(M ∩ K))` given by the area
+formula, proves B.1 for `C^∞` compactly supported `ζ̃`; smooth approximations converging uniformly
+on `M`, with gradients converging in `L²(Hᵐ⌞M)`, extend it to locally Lipschitz `ζ`. -/
+theorem Submission.codim1_hcp_stability_inequality : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ U → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))) → ∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m] := by
+  intro P m U A₀ M ν hU hMU hA₀ hMA hM hfin hνO hν htr hmin ζ hζ hC
+  -- `M` is Borel
+  have hMmeas : MeasurableSet M :=
+    (Submission.dimred_rpd_embedded_locally_closed P 1 m M (hM 1)).1
+  obtain ⟨O, hO, hMO, hνC⟩ := hνO
+  -- `x ↦ Pₓu` is continuous on `M`, since `Pₓu = Π_{A₀}u − (ν(x) · u) ν(x)` there
+  have hproj := (Submission.codim1_hcp_stab_tangent_projection P m A₀ M ν hA₀ hMA (hM 1) hν).2
+    (hνC.continuousOn.mono hMO)
+  -- `Dν` is continuous on the open set `O ⊇ M`, so `|A|²(x) = Σⱼ |Dν(x)(Pₓeⱼ)|²` is continuous
+  -- on `M`
+  have hDν : ContinuousOn (fderiv ℝ ν) O :=
+    hνC.continuousOn_fderiv_of_isOpen hO (by exact_mod_cast le_top)
+  have hA : ContinuousOn (fun x => ∑ j : Fin P,
+      ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+        (EuclideanSpace.single j 1))‖ ^ 2) M := by
+    refine continuousOn_finsetSum _ fun j _ => ?_
+    exact (((hDν.mono hMO).clm_apply (hproj _)).norm).pow 2
+  -- compact subsets of `M ⊆ U` have finite `Hᵐ`-measure
+  have hfinM : ∀ K : Set (Euclid P), IsCompact K → K ⊆ M → μHE[m] K ≠ ∞ := by
+    intro K hK hKM
+    have hK' := hfin K hK (hKM.trans hMU)
+    rwa [Set.inter_eq_right.2 hKM] at hK'
+  -- step 1: B.1 for `C^∞` compactly supported `ζ̃`, the area formula giving `Hᵐ(Φ_t(M ∩ K))`
+  have hsmooth := Submission.codim1_hcp_stab_smooth_case P m U A₀ M ν hU hMU hA₀ hMA hM hMmeas
+    hfin ⟨O, hO, hMO, hνC⟩ hν htr hmin fun E Φ hE hEM hΦ hinj hDΦ =>
+      (Submission.codim1_hcp_submanifold_area_formula P m M E Φ (hM 1) hE hEM hΦ hinj hDΦ).le
+  -- step 2: locally Lipschitz `ζ`, through the smooth approximations of lipschitz_approx
+  exact Submission.codim1_hcp_stab_lipschitz_extension P m M _ hMmeas hfinM hA hproj
+    (Submission.codim1_hcp_lipschitz_smooth_approx P m M (hM 1)) hsmooth ζ hζ hC
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
