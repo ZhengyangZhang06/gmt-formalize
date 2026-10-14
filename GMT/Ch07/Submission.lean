@@ -504,30 +504,6 @@ theorem Submission.idtp_fons_odc_fr_cone_disjoint : ∀ (P : ℕ) (σ σ' : Eucl
     rw [hid]
     nlinarith [sq_nonneg (t - s), mul_pos ht hs]
   nlinarith [norm_nonneg (t • σ - s • σ')]
-/-- **Simon, proof of 7.3.3(2), (10)** (finite rays, "open cones scale"): if `μ(λW) = λ μ(W)`
-for every `λ > 0` and every open `W ⊆ ℝᴾ`, and `K` is an open cone (`cx ∈ K` whenever `c > 0`,
-`x ∈ K`), then `μ(K ∩ B_r(0)) = r μ(K ∩ B_1(0))` for `r > 0`: `K ∩ B_r(0)` is the dilate
-`r (K ∩ B_1(0))` of the open set `K ∩ B_1(0)` (`y ↦ r⁻¹y` and `x ↦ rx`, `|rx| = r|x|`). -/
-theorem Submission.idtp_fons_odc_fr_cone_scaling : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → ∀ K : Set (Euclid P), IsOpen K → (∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K) → ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1) := by
-  intro P μ hhom K hK hcone r hr
-  -- `K ∩ B_r(0) = r (K ∩ B_1(0))`
-  have hset : (fun x => r • x) '' (K ∩ ball 0 1) = K ∩ ball 0 r := by
-    ext y
-    constructor
-    · rintro ⟨x, ⟨hxK, hx1⟩, rfl⟩
-      refine ⟨hcone r hr x hxK, ?_⟩
-      rw [mem_ball_zero_iff] at hx1 ⊢
-      rw [norm_smul, Real.norm_of_nonneg hr.le]
-      simpa using mul_lt_mul_of_pos_left hx1 hr
-    · rintro ⟨hyK, hyr⟩
-      refine ⟨r⁻¹ • y, ⟨hcone r⁻¹ (inv_pos.mpr hr) y hyK, ?_⟩, smul_inv_smul₀ hr.ne' y⟩
-      rw [mem_ball_zero_iff] at hyr ⊢
-      rw [norm_smul, Real.norm_of_nonneg (inv_pos.mpr hr).le, inv_mul_lt_one₀ hr]
-      exact hyr
-  -- homogeneity on the open set `K ∩ B_1(0)`
-  rw [← hset]
-  exact hhom r hr _ (hK.inter isOpen_ball)
-
 /-- A thin cone around a direction carrying density has mass at least `1/2` (Simon 7.3.3; the
 finite-rays step for `1`-dimensional minimizing cones).  Let `μ(λW) = λ μ(W)` for `λ > 0` and open
 `W`, `μ(B_1(0)) < ∞`, `|σ| = 1`, `0 < ρ < 1` and `ρ ≤ μ(B_ρ(σ))`.  The cone
