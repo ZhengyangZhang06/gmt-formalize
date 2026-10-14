@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e25046418573762deaed66b34c3b2de9fd94775717fb5472b8bfaec65f97af27",
+  "git_delta": {
+    "base_commit": "b62f249fc40d0f8883a9000ed5790f3be7a7fa0e",
+    "candidate_commit": "94710426f84e86ffd7d6432e6e061a122ae11777",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_coarea_glue",
+    "diff_sha256": "a54499bed35325962dac9bf5cedf58814ef8a19165cc8cf5092c20f05254578e",
+    "source_sha256": "616ed1d857873e8573e15aebd7c5fc869a4e0d84f9691235f5fdab9105b26e61",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_coarea_glue",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (A : ℕ → Set (Euclid P)), MeasurableSet M → Measurable f → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n + 1] (M \\ ⋃ j, A j) = 0 → (∀ᵐ t, μHE[n] ((M \\ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in A j, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
