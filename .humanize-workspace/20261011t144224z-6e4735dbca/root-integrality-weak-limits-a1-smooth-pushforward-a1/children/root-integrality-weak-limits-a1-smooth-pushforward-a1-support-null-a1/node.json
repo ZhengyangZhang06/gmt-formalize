@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1",
+  "depth": 3,
+  "title": "Rectifiable representations carry no Hⁿ-measure off the support",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let T ∈ D_n(U) (GeometricCurrentOn U n), and let M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → Λ_n(ℝ^P) (NVector) satisfy IsRectifiableTriple U n M θ ξ. That is:\n- M ⊆ U is Hⁿ-null-measurable and countably n-rectifiable;\n- θ(x) > 0 for x ∈ M, and θ is Hⁿ-integrable on M ∩ K for every compact K ⊆ U;\n- ξ is Hⁿ⌞M-a.e. strongly measurable;\n- for Hⁿ-a.e. x ∈ M there is an orthonormal τ : Fin n → ℝ^P such that span τ is a weighted approximate tangent space of (M, θ) at x and ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ (= ±simpleNVector τ).\nIf T(ω) = τ(M, θ, ξ)(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ Dⁿ(U), then Hⁿ(M ∖ spt T) = 0. Here Hⁿ = μHE[n], and spt T = T.support = U ∖ T.zeroRegion, where T.zeroRegion is the union of all open W with closure W compact and contained in U such that T(ψ) = 0 for every ψ ∈ Dⁿ(U) with tsupport ψ ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M \\ T.support) = 0",
+  "lean_name": "iwl_sp_rectifiable_support_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1-a1"
+}
