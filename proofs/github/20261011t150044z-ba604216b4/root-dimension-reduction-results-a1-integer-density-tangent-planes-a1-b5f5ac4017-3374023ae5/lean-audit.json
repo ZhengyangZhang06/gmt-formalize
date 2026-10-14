@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea330dc8ad52d1631cf774af2e4e93a8101c9074a5fb22a3851a2fcf981e863f",
+  "git_delta": {
+    "base_commit": "1a95440dfe1fe14af56f1e91c990953798e5cc61",
+    "candidate_commit": "c7a8459ca5313b3573c93a4b2c6663abaac16d23",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_rpm_dilation_map",
+    "diff_sha256": "751ba0cf674d626d34a4c42f4cf45beaa455fafa30687199107fffa9236e31f3",
+    "source_sha256": "9d26ef7a32298b7d03dc9add7f5be84bf4c506012e6729ecdcabff69d464b5bb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_rpm_dilation_map",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (a : Euclid P) (lam : ℝ), IsFiniteMeasureOnCompacts μ → 0 < lam → (∀ K : Set (Euclid P), IsCompact K → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) K < ∞) ∧ (∀ S : Set (Euclid P), MeasurableSet S → Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ) S = ENNReal.ofReal (lam⁻¹ ^ 2) * μ (dilation a lam ⁻¹' S)) ∧ ∀ g : Euclid P → ℝ, Continuous g → ∫ x, g x ∂(Measure.map (dilation a lam) (ENNReal.ofReal (lam⁻¹ ^ 2) • μ)) = lam⁻¹ ^ 2 * ∫ x, g (dilation a lam x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
