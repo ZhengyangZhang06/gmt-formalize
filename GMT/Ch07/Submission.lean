@@ -525,6 +525,54 @@ theorem Submission.idtp_cse_bml_rbi_arctan_quotient_estimate : ∀ (p q s' : ℝ
   calc |Real.arctan z - q| ≤ |Real.arctan z - z| + |z - q| := abs_sub_le _ _ _
     _ ≤ 4 * s' ^ 2 + 11 * s' ^ 2 := add_le_add hat hzq
     _ ≤ 30 * s' ^ 2 := by nlinarith [sq_nonneg s']
+/-- **Second-order expansion of `|a + s'w|` at a unit vector `a`** (steps 1(a), 1(d) of the
+box-inclusion estimate in the proof of Simon 7.3.3).  With `t = |a + s'w|`, `p = s'⟨w, a⟩` and
+`y = 2p + s'²|w|²` one has `t² = 1 + y`, `|y| ≤ 7s'`, hence `(t − 1)² ≤ y² ≤ 49s'²` (as
+`(t + 1)² ≥ 1`), and `t − 1 − p = (s'²|w|² − (t − 1)²) / 2` lies in `[−49s'²/2, 9s'²/2]`. -/
+theorem Submission.idtp_cse_bml_rbi_norm_expansion : ∀ (P : ℕ) (a w : Euclid P) (s' : ℝ), ‖a‖ = 1 → ‖w‖ ≤ 3 → 0 < s' → 20 * s' < 1 → |‖a + s' • w‖ - 1 - s' * inner ℝ w a| ≤ 30 * s' ^ 2 := by
+  intro P a w s' ha hw hs hs20
+  -- Step 1: `|⟨w, a⟩| ≤ |w| |a| = |w| ≤ 3` (Cauchy–Schwarz), so `|p| ≤ 3s'`
+  have hinner : |inner ℝ w a| ≤ 3 := by
+    calc |inner ℝ w a| ≤ ‖w‖ * ‖a‖ := abs_real_inner_le_norm w a
+      _ = ‖w‖ := by rw [ha, mul_one]
+      _ ≤ 3 := hw
+  have hp : |s' * inner ℝ w a| ≤ 3 * s' := by
+    rw [abs_mul, abs_of_pos hs, mul_comm]
+    exact mul_le_mul_of_nonneg_right hinner hs.le
+  -- Step 2: `t² = 1 + y`, `y = 2p + s'²|w|²`
+  have hsq : ‖a + s' • w‖ ^ 2 = 1 + (2 * (s' * inner ℝ w a) + s' ^ 2 * ‖w‖ ^ 2) := by
+    rw [norm_add_sq_real, ha, real_inner_smul_right, real_inner_comm w a, norm_smul,
+      Real.norm_eq_abs, abs_of_pos hs]
+    ring
+  set t := ‖a + s' • w‖
+  set p := s' * inner ℝ w a
+  have ht0 : 0 ≤ t := norm_nonneg _
+  have hw0 : 0 ≤ ‖w‖ := norm_nonneg w
+  -- Step 3: `0 ≤ s'²|w|² ≤ 9s'² ≤ s'`, hence `|y| ≤ 6s' + s' = 7s'`
+  have hW : s' ^ 2 * ‖w‖ ^ 2 ≤ 9 * s' ^ 2 := by
+    have : ‖w‖ ^ 2 ≤ 3 ^ 2 := pow_le_pow_left₀ hw0 hw 2
+    nlinarith [sq_nonneg s']
+  have hW0 : 0 ≤ s' ^ 2 * ‖w‖ ^ 2 := by positivity
+  have h9 : 9 * s' ^ 2 ≤ s' := by nlinarith
+  have hy : |2 * p + s' ^ 2 * ‖w‖ ^ 2| ≤ 7 * s' := by
+    rw [abs_le] at hp ⊢
+    constructor <;> linarith [hp.1, hp.2]
+  -- Step 4: `(t − 1)(t + 1) = y` and `(t + 1)² ≥ 1`, so `(t − 1)² ≤ y² ≤ 49s'²`
+  have hty : (t - 1) * (t + 1) = 2 * p + s' ^ 2 * ‖w‖ ^ 2 := by linear_combination hsq
+  have htsq : (t - 1) ^ 2 ≤ 49 * s' ^ 2 := by
+    have h1 : (t - 1) ^ 2 ≤ ((t - 1) * (t + 1)) ^ 2 := by
+      rw [mul_pow]
+      have : 1 ≤ (t + 1) ^ 2 := by nlinarith
+      nlinarith [sq_nonneg (t - 1)]
+    have h2 : (2 * p + s' ^ 2 * ‖w‖ ^ 2) ^ 2 ≤ (7 * s') ^ 2 :=
+      sq_le_sq' (abs_le.1 hy).1 (abs_le.1 hy).2
+    rw [hty] at h1
+    nlinarith
+  -- Steps 5–7: `t − 1 − p = (s'²|w|² − (t − 1)²) / 2 ∈ [−49s'²/2, 9s'²/2]`
+  have hkey : t - 1 - p = (s' ^ 2 * ‖w‖ ^ 2 - (t - 1) ^ 2) / 2 := by
+    linear_combination hsq / 2
+  rw [hkey, abs_le]
+  constructor <;> nlinarith [sq_nonneg (t - 1), sq_nonneg s']
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
