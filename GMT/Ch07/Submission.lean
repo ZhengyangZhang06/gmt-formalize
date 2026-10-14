@@ -505,6 +505,56 @@ theorem Submission.dmcbr_ci_bl_pairing_error_le : ∀ (P n : ℕ) (ν' : Measure
         ENNReal.toReal_mono (hlint.trans_lt hE.lt_top).ne (enorm_integral_le_lintegral_enorm _)
     _ ≤ _ := ENNReal.toReal_mono hE hlint
 
+/-- **Pairings with a compactly supported covector field converge** (steps 4 and 6 of the proof
+of `Submission.dmcbr_ci_blowup_limit`, for a single form `w`).  Let `νₖ, ν` be measures on `ℝᴾ`,
+each `νₖ` finite on compact sets, with `∫ f dνₖ → ∫ f dν` for every continuous compactly
+supported `f`, and let `τₖ : ℝᴾ → Λₙ` be `νₖ`-a.e. strongly measurable with
+`δₖ(R) = ∫_{B̄_R(0)} ‖τₖ − ζ₀‖ dνₖ → 0` for every `R > 0`.  Then `∫ ⟨w, τₖ⟩ dνₖ → ∫ ⟨w, ζ₀⟩ dν`
+for every continuous compactly supported `w : ℝᴾ → Λⁿ`.  Take `A ≥ ‖w‖` and `R > 0` with `w = 0`
+off `B̄_R(0)`.  Then `f = ⟨w, ζ₀⟩` is continuous with compact support, hence `νₖ`-integrable.
+Since `eₖ = A δₖ(R) → 0`, eventually `eₖ < ∞`, and `Submission.dmcbr_ci_bl_pairing_error_le`
+gives `|∫ ⟨w, τₖ⟩ dνₖ − ∫ f dνₖ| ≤ eₖ → 0`; finally `∫ f dνₖ → ∫ f dν` by hypothesis. -/
+theorem Submission.dmcbr_ci_bl_pairing_tendsto : ∀ (P n : ℕ) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → Continuous w → HasCompactSupport w → Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k)) atTop (𝓝 (∫ x, ζ₀ (w x) ∂ν)) := by
+  intro P n νs ν τs ζ₀ w hνK hconv hτ hδ hw hwc
+  -- Step 1: a bound `‖w‖ ≤ A` and a radius `R > 0` with `w = 0` off `B̄_R(0)`
+  obtain ⟨A, hA⟩ := hw.bounded_above_of_compact_support hwc
+  obtain ⟨R₀, hR₀⟩ := hwc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  obtain ⟨R, hR, hwR⟩ : ∃ R : ℝ, 0 < R ∧ tsupport w ⊆ closedBall (0 : Euclid P) R :=
+    ⟨max R₀ 1, lt_max_of_lt_right one_pos,
+      hR₀.trans (closedBall_subset_closedBall (le_max_left R₀ 1))⟩
+  have hw0 : ∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun hxw => hx (hwR hxw)
+  -- Step 2: `f = ⟨w, ζ₀⟩` is continuous with compact support, hence `νₖ`-integrable
+  have hfc : Continuous fun x => ζ₀ (w x) := ζ₀.continuous.comp hw
+  have hfs : HasCompactSupport fun x => ζ₀ (w x) := hwc.comp_left (map_zero ζ₀)
+  have hfi : ∀ k, Integrable (fun x => ζ₀ (w x)) (νs k) := fun k => by
+    have : IsFiniteMeasureOnCompacts (νs k) := ⟨fun K hK => hνK k K hK⟩
+    exact hfc.integrable_of_hasCompactSupport hfs
+  -- Step 3: `eₖ = A δₖ(R) → 0`, so eventually `eₖ < 1` (hence `eₖ ≠ ∞`), and `eₖ.toReal → 0`
+  have he : Tendsto (fun k => ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0) := by
+    simpa only [mul_zero] using
+      ENNReal.Tendsto.const_mul (a := ENNReal.ofReal A) (hδ R hR) (Or.inr ENNReal.ofReal_ne_top)
+  have he1 : ∀ᶠ k in atTop, ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k) < 1 :=
+    (tendsto_order.1 he).2 1 one_pos
+  have heR : Tendsto (fun k => (ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)).toReal) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, ENNReal.toReal_zero] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp he
+  -- Step 4: `dₖ = ∫ ⟨w, τₖ⟩ dνₖ − ∫ f dνₖ` has `|dₖ| ≤ eₖ.toReal` once `eₖ < 1`, so `dₖ → 0`
+  have hd : Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k) - ∫ x, ζ₀ (w x) ∂(νs k)) atTop
+      (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ heR
+    filter_upwards [he1] with k hk
+    rw [Real.norm_eq_abs]
+    exact Submission.dmcbr_ci_bl_pairing_error_le P n (νs k) (τs k) ζ₀ w A R (hτ k) hw hA hw0
+      (hfi k) (ne_top_of_lt hk)
+  -- Step 5: `∫ ⟨w, τₖ⟩ dνₖ = dₖ + ∫ f dνₖ → 0 + ∫ f dν`
+  have hsum := hd.add (hconv (fun x => ζ₀ (w x)) hfc hfs)
+  rw [zero_add] at hsum
+  exact hsum.congr fun k => sub_add_cancel _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
