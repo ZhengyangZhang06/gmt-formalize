@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.left_inverse_immersion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+  "depth": 6,
+  "title": "A map with a linear left inverse is an injective immersion with π ∘ Dg = id",
+  "statement": "Let P, d ∈ ℕ, let D ⊆ ℝ^d be open, g : ℝ^d → ℝ^P differentiable on D, π : ℝ^P → ℝ^d a continuous linear map and c ∈ ℝ^P such that π(g(a) − c) = a for every a ∈ D. Then g is injective on D, and for every a ∈ D the derivative Dg(a) = fderiv ℝ g a satisfies π ∘ Dg(a) = id_{ℝ^d} and is injective.",
+  "lean_statement": "∀ (P d : ℕ) (D : Set (Euclid d)) (g : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P), IsOpen D → DifferentiableOn ℝ g D → (∀ a ∈ D, π (g a - c) = a) → InjOn g D ∧ ∀ a ∈ D, π ∘L fderiv ℝ g a = ContinuousLinearMap.id ℝ (Euclid d) ∧ Injective (fderiv ℝ g a)",
+  "lean_name": "codim1_hcp_sc_left_inverse_immersion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-43df00e436-a1"
+}
