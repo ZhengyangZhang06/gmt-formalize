@@ -451,6 +451,94 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Exterior derivative along a slice.**  Write `ι(t, x) = (t, x)`, `e₀ = (1, 0, …, 0)` and
+`J v = (0, v)`.  (a) If `η_t(x)(v) = ω(ι(t, x))(e₀, Jv)` for a test form `ω` of degree `k + 1`,
+then `dω(ι(t, x))(e₀, Jv) = (Dω(ι(t, x))e₀)(Jv) − d(η_t)(x)(v)`.  (b) In degree `0`,
+`dω(ι(t, x))(e₀) = (Dω(ι(t, x))e₀)()`. -/
+theorem Submission.dimred_mbl_dt_lpc_slice_extDeriv : ((∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (η : ℝ → TestFormOn (univ : Set (Euclid N)) k), (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ∀ (t : ℝ) (x : Euclid N) (v : Fin (k + 1) → Euclid N), exteriorDerivative (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) - exteriorDerivative (η t : DifferentialForm (Euclid N) k) x v) ∧ ∀ (N : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) 0) (t : ℝ) (x : Euclid N) (v : Fin 0 → Euclid N), exteriorDerivative (ω : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) := by
+  refine ⟨?_, ?_⟩
+  -- (a)
+  · intro N k ω η hη
+    -- the continuous linear map `J v = (0, v)`, with `ι(t, x) = single 0 t + J x`
+    obtain ⟨J, hJ, hι⟩ : ∃ J : Euclid N →L[ℝ] Euclid (N + 1),
+        (∀ v, J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) ∧
+        ∀ (t : ℝ) (x : Euclid N), (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) =
+          EuclideanSpace.single 0 t + J x := by
+      let Jl : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
+        { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+          map_add' := by
+            intro a b
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          map_smul' := by
+            intro c a
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+      refine ⟨LinearMap.toContinuousLinearMap Jl, fun v => rfl, fun t x => ?_⟩
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp [Jl]
+      · simp [Jl]
+    intro t x v
+    have hωd : Differentiable ℝ (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) :=
+      ω.property.1.1.differentiable (by simp)
+    have hηd : Differentiable ℝ (η t : DifferentialForm (Euclid N) k) :=
+      (η t).property.1.1.differentiable (by simp)
+    -- coordinate formula for `d`, split into the term `i = 0` and the terms `i = j + 1`
+    rw [exteriorDerivative_apply (hωd _), exteriorDerivative_apply (hηd _), Fin.sum_univ_succ]
+    -- chain rule through the affine slice map `x ↦ ι(t, x)`
+    have hchain : ∀ (u : Fin k → Euclid N) (w : Euclid N),
+        fderiv ℝ (fun x' => (η t : DifferentialForm (Euclid N) k) x' u) x w =
+          fderiv ℝ (fun y => (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y
+            (Fin.cons (EuclideanSpace.single 0 1)
+              (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (u i))))))
+            (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (J w) := by
+      intro u w
+      have hfun : (fun x' => (η t : DifferentialForm (Euclid N) k) x' u) =
+          (fun y => (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y
+            (Fin.cons (EuclideanSpace.single 0 1)
+              (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (u i))))))
+            ∘ (fun x' => EuclideanSpace.single 0 t + J x') := by
+        funext x'
+        simp only [Function.comp_apply, ← hι]
+        exact hη t x' u
+      have hg : DifferentiableAt ℝ (fun y => (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y
+            (Fin.cons (EuclideanSpace.single 0 1)
+              (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (u i))))))
+            (EuclideanSpace.single 0 t + J x) :=
+        (hωd _).continuousAlternatingMap_apply_const _
+      have hA : HasFDerivAt (fun x' : Euclid N => EuclideanSpace.single 0 t + J x') J x :=
+        J.hasFDerivAt.const_add _
+      rw [hfun, (hg.hasFDerivAt.comp x hA).fderiv, ← hι]
+      rfl
+    -- the term `i = 0` is `(Dω(ι(t, x))e₀)(Jv)`
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.val_succ, Fin.cons_zero, Fin.cons_succ,
+      Fin.removeNth_zero, Fin.tail_cons]
+    rw [fderiv_continuousAlternatingMap_apply_const (hωd _)]
+    simp only [ContinuousLinearMap.flipAlternating_apply_apply]
+    -- the terms `i = j + 1` are minus the terms of `d(η_t)(x)(v)`
+    rw [sub_eq_add_neg, ← Finset.sum_neg_distrib]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [hchain, hJ]
+    have hrm : Fin.removeNth j.succ (Fin.cons (EuclideanSpace.single 0 1)
+        (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) :
+          Fin (k + 1 + 1) → Euclid (N + 1)) =
+        Fin.cons (EuclideanSpace.single 0 1)
+          (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (Fin.removeNth j v i)))) :=
+      Fin.cons_comp_succ_succAbove _ _ j
+    rw [hrm, pow_succ]
+    simp only [mul_neg, mul_one, neg_smul]
+  -- (b): in degree `0` only the term `i = 0` occurs
+  · intro N ω t x v
+    have hωd : Differentiable ℝ (ω : DifferentialForm (Euclid (N + 1)) 0) :=
+      ω.property.1.1.differentiable (by simp)
+    rw [exteriorDerivative_apply (hωd _), Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero]
+    simp only [Fin.val_zero, pow_zero, one_smul, Fin.cons_zero, Fin.removeNth_zero]
+    rw [fderiv_continuousAlternatingMap_apply_const (hωd _)]
+    simp only [ContinuousLinearMap.flipAlternating_apply_apply]
+    congr 1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
