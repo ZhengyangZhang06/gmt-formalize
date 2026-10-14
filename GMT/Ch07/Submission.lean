@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The operator norm of an `n`-covector is at most `Pⁿ` times its Euclidean coefficient norm**
+(fact (F1) in the proof of `Submission.dmcbr_ci_blowup_limit`; `|·|_E` is `covectorEuclideanNorm`).
+Let `e` be the standard basis of `ℝᴾ`.  Each coefficient satisfies
+`|α(e_{J(0)}, …, e_{J(n−1)})| ≤ |α|_E`: it vanishes if `J` repeats an index, and otherwise
+`I = J ∘ σ` with `σ = Tuple.sort J` is strictly increasing, `α(e ∘ I) = sgn σ · α(e ∘ J)`, and
+`α(e ∘ I)²` is one of the summands of `|α|_E²`.  Expanding every `v_k` in `e` gives
+`α(v) = Σ_J (Π_k v_k(J k)) α(e ∘ J)` over the `Pⁿ` maps `J : Fin n → Fin P`; with
+`|v_k(i)| ≤ ‖v_k‖` this gives `|α(v)| ≤ Pⁿ |α|_E Π_k ‖v_k‖`, hence `‖α‖ ≤ Pⁿ |α|_E`. -/
+theorem Submission.dmcbr_ci_bl_covector_opNorm_le : ∀ (P n : ℕ) (α : Covector (Euclid P) n), ‖α‖ ≤ (P : ℝ) ^ n * covectorEuclideanNorm α := by
+  intro P n α
+  classical
+  set e := EuclideanSpace.basisFun (Fin P) ℝ
+  -- Step 1: `|α(e_{J(0)}, …, e_{J(n−1)})| ≤ |α|_E` for every `J : Fin n → Fin P`
+  have hcoef : ∀ J : Fin n → Fin P, |α (fun k => e (J k))| ≤ covectorEuclideanNorm α := by
+    intro J
+    by_cases hJ : Injective J
+    · -- `I = J ∘ σ` with `σ = Tuple.sort J` is strictly increasing, `α(e ∘ I) = sgn σ · α(e ∘ J)`
+      set σ := Tuple.sort J
+      have hI : StrictMono (J ∘ σ) :=
+        (Tuple.monotone_sort J).strictMono_of_injective (hJ.comp σ.injective)
+      have hperm : α ((fun k => e (J k)) ∘ σ) = Equiv.Perm.sign σ • α (fun k => e (J k)) :=
+        α.toAlternatingMap.map_perm (fun k => e (J k)) σ
+      have habs : |α (fun k => e (J k))| = |α (fun k => e ((J ∘ σ) k))| := by
+        change _ = |α ((fun k => e (J k)) ∘ σ)|
+        rw [hperm]
+        rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+      -- `α(e ∘ I)²` is one of the nonnegative summands of `|α|_E²`
+      rw [habs]
+      unfold covectorEuclideanNorm
+      refine Real.abs_le_sqrt (le_trans (le_of_eq ?_)
+        (Finset.single_le_sum (fun I _ => ?_) (Finset.mem_univ (J ∘ σ))))
+      · rw [ite_eq_left hI]
+      · positivity
+    · -- a repeated index: `α(e ∘ J) = 0` by alternation
+      have h0 : α (fun k => e (J k)) = 0 :=
+        α.map_eq_zero_of_not_injective _ fun h => hJ (Injective.of_comp (f := ⇑e) h)
+      rw [h0, abs_zero]
+      exact covectorEuclideanNorm_nonneg α
+  refine α.opNorm_le_bound (mul_nonneg (pow_nonneg (Nat.cast_nonneg P) n)
+    (covectorEuclideanNorm_nonneg α)) fun v => ?_
+  -- Step 2: `α(v) = Σ_J (Π_k v_k(J k)) α(e ∘ J)` by multilinearity
+  have hexp : α v = ∑ J : Fin n → Fin P, (∏ k, v k (J k)) * α (fun k => e (J k)) := by
+    conv_lhs => rw [show v = fun k => ∑ i, v k i • e i from
+      funext fun k => (e.sum_repr (v k)).symm]
+    rw [α.map_sum]
+    refine Finset.sum_congr rfl fun J _ => ?_
+    rw [← smul_eq_mul]
+    exact α.map_smul_univ (fun k => v k (J k)) (fun k => e (J k))
+  -- Step 3: each term is at most `(Π_k ‖v_k‖) |α|_E`, and there are `P ^ n` terms
+  rw [hexp, Real.norm_eq_abs]
+  calc |∑ J : Fin n → Fin P, (∏ k, v k (J k)) * α (fun k => e (J k))|
+      ≤ ∑ J : Fin n → Fin P, |(∏ k, v k (J k)) * α (fun k => e (J k))| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _J : Fin n → Fin P, (∏ k, ‖v k‖) * covectorEuclideanNorm α := by
+        refine Finset.sum_le_sum fun J _ => ?_
+        rw [abs_mul, Finset.abs_prod]
+        refine mul_le_mul (Finset.prod_le_prod₀ (fun k _ => abs_nonneg _) fun k _ => ?_)
+          (hcoef J) (abs_nonneg _) (Finset.prod_nonneg fun k _ => norm_nonneg _)
+        rw [← Real.norm_eq_abs]
+        exact PiLp.norm_apply_le (v k) (J k)
+    _ = (P : ℝ) ^ n * covectorEuclideanNorm α * ∏ k, ‖v k‖ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, nsmul_eq_mul]
+        simp only [Fintype.card_fin]
+        push_cast
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
