@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8908cd2272f865b69ebade50bb420142846c9c304180e5674911769152ab1ce5",
+  "git_delta": {
+    "base_commit": "1539444f2cf8631294b4cf534a931bac677f8619",
+    "candidate_commit": "7d3d549f2200ae2bb6a3f4969e17a56536bc3bba",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_noi_smooth_cutoff_seq",
+    "diff_sha256": "83108882ff643de9b18a8231b20652b23fbbe5e364e0373b0f2c9e549e144710",
+    "source_sha256": "5207dcbfb3cd9fe520e3632d14b1cecb747b6c1de07dc5297bc9897ffc75780b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_noi_smooth_cutoff_seq",
+      "statement": "∀ (n : ℕ) (V : Set (Euclid n)), IsOpen V → ∃ b : ℕ → Euclid n → ℝ, (∀ j, ContDiff ℝ (⊤ : ℕ∞) (b j)) ∧ (∀ j, HasCompactSupport (b j)) ∧ (∀ j, tsupport (b j) ⊆ V) ∧ (∀ j y, 0 ≤ b j y ∧ b j y ≤ 1) ∧ ∀ y, Tendsto (fun j => b j y) atTop (𝓝 (V.indicator (fun _ => (1 : ℝ)) y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
