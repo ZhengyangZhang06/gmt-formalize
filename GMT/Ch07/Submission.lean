@@ -7916,6 +7916,158 @@ theorem Submission.dor_lmb_fc_im_series : ∀ (P m : ℕ) (U : Set (Euclid P)) (
   exact hasSum_le (fun r => (ENNReal.ofReal_le_iff_le_toReal (hne r)).1 ((X r).le_massOn hω))
     (hsum ω) (ENNReal.summable_toReal hfin).hasSum
 
+/-- **Lipschitz push-forward of a finite-mass integer multiplicity triple** (Simon Ch. 6,
+3.3–3.9 with Remark 2.24 and Lemma 2.29).  For `R = (M, θ, ξ)` with `μ_R(ℝᴺ) < ∞` there is
+`F ↦ Y(F)` with `Y(F)` integer multiplicity for Lipschitz `F`, `R(Fⱼ^#ω) → Y(F)(ω)` for
+`C¹` maps `Fⱼ → F` uniformly with a common Lipschitz constant, and `Y(F) = Y(F')` when
+`F = F'` `Hᵏ`-a.e. on `M`.
+* `k = 0`: `dor_lmb_fcd_imp_degree_zero`.
+* `k = d ≥ 1`: `dor_lmb_fcd_imp_parametric_rep` gives `Gᵢ`, `Bᵢ`, integer `wᵢ` with
+  `R(γ) = ∑ᵢ ∫_{Bᵢ} wᵢ γ(Gᵢ)(DGᵢ e)` for bounded continuous `γ` and
+  `∑ᵢ mᵢ ≤ μ_R(ℝᴺ)`, `mᵢ = ∫⁻_{Bᵢ} |wᵢ| J_{Gᵢ}`.  For Lipschitz `F`, (IMS) and (IMC) give the
+  integer multiplicity `Y(F)` of `dor_lmb_fcd_imp_image_series_im` with
+  `Y(F)(ω) = ∑ᵢ Tᵢ(F)(ω)`, `Tᵢ(F)(ω) = ∫_{Bᵢ} wᵢ ω(F ∘ Gᵢ)(D(F ∘ Gᵢ) e)`; `Y(F) = 0` otherwise.
+* Limit: `Fⱼ^#ω` is continuous and bounded by `sup |ω| Λᵈ`, and the chain rule on `Bᵢ` gives
+  `R(Fⱼ^#ω) = ∑ᵢ Tᵢ(Fⱼ)(ω)`; `Tᵢ(Fⱼ)(ω) → Tᵢ(F)(ω)` by the weak continuity of pulled-back forms
+  (`dor_lmb_fcd_jacobian_weak_continuity`), and `|Tᵢ(Fⱼ)(ω)| ≤ c Λᵈ mᵢ` is summable, so dominated
+  convergence for series (the counting measure) gives `R(Fⱼ^#ω) → Y(F)(ω)`.
+* Locality: `F ∘ Gᵢ = F' ∘ Gᵢ` a.e. on `Bᵢ` (pull-back of `Hᵏ⌞M`-null sets), hence
+  `D(F ∘ Gᵢ) = D(F' ∘ Gᵢ)` a.e. on `Bᵢ` (`dor_lmb_fcd_imp_lipschitz_jacobian_locality`), so
+  `Tᵢ(F) = Tᵢ(F')` and `Y(F) = Y(F')`. -/
+theorem Submission.dor_lmb_fcd_im_pushforward : (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (N N' k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) k, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) k, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[k].restrict R.carrier), F x = F' x) → Y F = Y F' := by
+  intro hIMS N N' k R hR
+  obtain _ | k := k
+  · exact Submission.dor_lmb_fcd_imp_degree_zero N N' R hR
+  -- the parametric representation `R(γ) = ∑ᵢ ∫_{Bᵢ} wᵢ γ(Gᵢ)(DGᵢ e)`, `∑ᵢ mᵢ ≤ μ_R(ℝᴺ) < ∞`
+  obtain ⟨G, B, w, hGlip, hBm, hGd, hwm, hwZ, hw0, hwi, hsum, hact, hpull⟩ :=
+    Submission.dor_lmb_fcd_imp_parametric_rep N (k + 1) R hR
+  choose L hL using hGlip
+  have hfin := ne_top_of_le_ne_top hR hsum
+  -- `Y(F)`: the integer multiplicity sum `∑ᵢ Tᵢ(F)` for Lipschitz `F`, and `0` otherwise
+  have hex : ∀ F : Euclid N → Euclid N', ∃ Y : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1),
+      ∀ Λ : NNReal, LipschitzWith Λ F → IsIntegerMultiplicity Y ∧
+        ∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), HasSum (fun i => ∫ u in B i, w i u *
+          (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)
+            (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))) (Y ω) := by
+    intro F
+    by_cases hF : ∃ Λ : NNReal, LipschitzWith Λ F
+    · obtain ⟨Λ, hΛ⟩ := hF
+      obtain ⟨Y, hYIM, hYω, -⟩ := Submission.dor_lmb_fcd_imp_image_series_im hIMS
+        Submission.cmc_imRep_locality_restrict_sub N N' k G B w F Λ (fun i => ⟨L i, hL i⟩) hBm
+        hGd hwm hwZ hw0 hwi hfin hΛ
+      exact ⟨Y, fun _ _ => ⟨hYIM, hYω⟩⟩
+    · exact ⟨0, fun Λ hΛ => absurd ⟨Λ, hΛ⟩ hF⟩
+  choose Y hY using hex
+  refine ⟨Y, fun F Λ hF => ⟨(hY F Λ hF).1, ?_⟩, ?_⟩
+  · intro Fs hFs hFsL hFsU ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid N') (k + 1)) := ω.property.1.1.continuous
+    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+    -- `Tᵢ(Fⱼ)(ω)`, `Tᵢ(F)(ω)` and `mᵢ`
+    let f : ℕ → ℕ → ℝ := fun j i => ∫ u in B i, w i u *
+      (ω : DifferentialForm (Euclid N') (k + 1)) ((Fs j ∘ G i) u)
+        (fun a => fderiv ℝ (Fs j ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))
+    let g : ℕ → ℝ := fun i => ∫ u in B i, w i u *
+      (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)
+        (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))
+    let m : ℕ → ℝ := fun i => (∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det
+      (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))
+          (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ))))))).toReal
+    -- (a) `R(Fⱼ^#ω) = ∑ᵢ Tᵢ(Fⱼ)(ω)`: `Fⱼ^#ω` is continuous and bounded, and on `Bᵢ`
+    -- `(Fⱼ^#ω)(Gᵢ)(DGᵢ e) = ω(Fⱼ ∘ Gᵢ)(D(Fⱼ ∘ Gᵢ) e)` by the chain rule
+    have htr : ∀ j, HasSum (f j) (R.action (fun x =>
+        ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x))) := by
+      intro j
+      have hγc : Continuous (fun x =>
+          ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x)) :=
+        (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp
+          ((hFs j).continuous_fderiv one_ne_zero)).clm_apply (hωc.comp (hFs j).continuous)
+      have hγb : ∃ C' : ℝ, ∀ x,
+          ‖((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x)‖ ≤ C' := by
+        refine ⟨C * (Λ : ℝ) ^ (k + 1), fun x => ?_⟩
+        refine (ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _).trans ?_
+        rw [Fintype.card_fin]
+        exact mul_le_mul (hC _)
+          (pow_le_pow_left₀ (norm_nonneg _) (norm_fderiv_le_of_lipschitz ℝ (hFsL j)) _)
+          (by positivity) ((norm_nonneg _).trans (hC 0))
+      convert hact _ hγc hγb using 1
+      funext i
+      refine setIntegral_congr_fun (hBm i) fun u hu => ?_
+      rw [fderiv_comp u ((hFs j).differentiable one_ne_zero (G i u)) (hGd i u hu)]
+      rfl
+    -- (b) `Tᵢ(Fⱼ)(ω) → Tᵢ(F)(ω)`: weak continuity of pulled-back forms
+    have hterm : ∀ i, Tendsto (fun j => f j i) atTop (𝓝 (g i)) := fun i =>
+      Submission.dor_lmb_fcd_jacobian_weak_continuity (k + 1) N' (B i) (w i) (Λ * L i)
+        (fun j => Fs j ∘ G i) (F ∘ G i) ω (hBm i) (hwi i) (fun j => (hFsL j).comp (hL i))
+        (hF.comp (hL i)) (hFsU.comp (G i))
+    -- (c) `|Tᵢ(Fⱼ)(ω)| ≤ c Λᵈ mᵢ` with `c > sup |ω|`
+    have hcont : Continuous fun α : Covector (Euclid N') (k + 1) => covectorEuclideanNorm α := by
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      split_ifs
+      · exact (continuous_eval_const _).pow 2
+      · exact continuous_const
+    obtain ⟨c, hc⟩ := (hcont.comp hωc).bounded_above_of_compact_support
+      (ω.property.1.2.comp_left (covectorEuclideanNorm_zero N' (k + 1)))
+    have hc' : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x) ≤
+        max c 0 + 1 := by
+      intro x
+      have := hc x
+      rw [Function.comp_apply, Real.norm_of_nonneg (covectorEuclideanNorm_nonneg _)] at this
+      linarith [le_max_left c 0]
+    have hbd : ∀ j i, ‖f j i‖ ≤ (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i := by
+      intro j
+      obtain ⟨-, -, -, hb⟩ := Submission.dor_lmb_fcd_imp_image_series_im hIMS
+        Submission.cmc_imRep_locality_restrict_sub N N' k G B w (Fs j) Λ (fun i => ⟨L i, hL i⟩)
+        hBm hGd hwm hwZ hw0 hwi hfin (hFsL j)
+      intro i
+      rw [Real.norm_eq_abs]
+      exact hb ω _ (by positivity) hc' i
+    have hbs : Summable fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i :=
+      (ENNReal.summable_toReal hfin).mul_left _
+    -- (d) dominated convergence for series, via the counting measure on `ℕ`
+    have hbi : Integrable (fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i) Measure.count := by
+      rw [integrable_count_iff]
+      refine hbs.congr fun i => ?_
+      exact (Real.norm_of_nonneg ((norm_nonneg _).trans (hbd 0 i))).symm
+    have hfi : ∀ j, Integrable (f j) Measure.count := fun j =>
+      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ (hbd j))
+    have hgi : Integrable g Measure.count :=
+      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ fun i =>
+        le_of_tendsto (tendsto_norm.comp (hterm i)) (Eventually.of_forall fun j => hbd j i))
+    have hlim := tendsto_integral_of_dominated_convergence _
+      (fun j => (hfi j).aestronglyMeasurable) hbi (fun j => ae_of_all _ (hbd j))
+      (ae_of_all _ hterm)
+    have e1 : ∀ j, ∫ i, f j i ∂Measure.count = R.action (fun x =>
+        ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x)) := by
+      intro j
+      rw [integral_countable (hfi j)]
+      simp only [count_real_singleton, one_smul]
+      exact (htr j).tsum_eq
+    have e2 : ∫ i, g i ∂Measure.count = Y F ω := by
+      rw [integral_countable hgi]
+      simp only [count_real_singleton, one_smul]
+      exact ((hY F Λ hF).2 ω).tsum_eq
+    rw [e2] at hlim
+    exact hlim.congr e1
+  · -- locality: `F ∘ Gᵢ = F' ∘ Gᵢ` and `D(F ∘ Gᵢ) = D(F' ∘ Gᵢ)` a.e. on `Bᵢ`
+    intro F F' Λ hF hF' hae
+    ext ω
+    refine ((hY F Λ hF).2 ω).unique ?_
+    convert (hY F' Λ hF').2 ω using 1
+    funext i
+    have h1 : ∀ᵐ u ∂(volume.restrict (B i)), (F ∘ G i) u = (F' ∘ G i) u :=
+      hpull (fun x => F x = F' x) hae i
+    have h2 := (Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality).2 (k + 1) N' (F ∘ G i)
+      (F' ∘ G i) (B i) (Λ * L i) (Λ * L i) (hF.comp (hL i)) (hF'.comp (hL i)) (hBm i) h1
+    refine integral_congr_ae ?_
+    filter_upwards [h1, h2] with u hu1 hu2
+    rw [hu1, hu2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
