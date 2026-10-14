@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.lipschitz_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Extension of B.1 from smooth to locally Lipschitz test functions (density argument)",
+  "statement": "Density extension of a stability-type inequality. Data: P, m ∈ ℕ; M ⊆ ℝ^P; w : ℝ^P → ℝ. Hypotheses: M is measurable; H^m(K) < ∞ for every compact K ⊆ M; w is continuous on M; x ↦ P_xu is continuous on M for every u ∈ ℝ^P (P_x the orthogonal projection onto span(tangentSpace M x)); (hApprox) the conclusion of lipschitz_approx for M: (i) for every ζ locally Lipschitz on M and every j, x ↦ d^M_xζ(P_xe_j) is a.e.-strongly measurable w.r.t. H^m⌞M, and (ii) for every ζ locally Lipschitz on M vanishing on M outside a compact C ⊆ M there are a compact C' ⊆ M and C^∞ compactly supported ζ_k vanishing on M ∖ C' with ζ_k → ζ uniformly on M and ∫⁻_M ofReal(Σ_j(Dζ_k(x)(P_xe_j) − d^M_xζ(P_xe_j))²) dH^m → 0; (hSmooth) ∫_M w·ζ̃² dH^m ≤ ∫_M Σ_j(Dζ̃(x)(P_xe_j))² dH^m for every C^∞ compactly supported ζ̃ that vanishes on M outside some compact subset of M. Conclusion: for every ζ : ℝ^P → ℝ locally Lipschitz on M that vanishes on M outside some compact C ⊆ M, ∫_M w·ζ² dH^m ≤ ∫_M Σ_j(d^M_xζ(P_xe_j))² dH^m. Here d^M_xζ = fderivWithin ℝ ζ M x, D = fderiv ℝ, e_j = EuclideanSpace.single j 1, H^m = μHE[m], Bochner integrals over M.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (w : Euclid P → ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ M → μHE[m] K ≠ ∞) → ContinuousOn w M → (∀ u : Euclid P, ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection u) M) → ((∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0)) → (∀ ζ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, w x * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderiv ℝ ζ x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m]) → ∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, w x * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m]",
+  "lean_name": "codim1_hcp_stab_lipschitz_extension",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.energy_convergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.energy_convergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-12a8a76704-a1"
+}
