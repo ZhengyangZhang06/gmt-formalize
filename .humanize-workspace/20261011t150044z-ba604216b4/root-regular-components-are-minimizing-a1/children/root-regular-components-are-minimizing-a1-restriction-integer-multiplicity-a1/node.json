@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Restriction of an integer multiplicity current to a measurable part of its carrier: integrality and mass additivity",
+  "statement": "Let U ⊆ ℝ^P be open, let the IMRep R = (C, θ, ξ) in U represent T ∈ 𝒟_n(U), let A ⊆ ℝ^P be Borel with H^n(A ∖ C) = 0, and let T₁ ∈ 𝒟_n(U) satisfy T₁(ω) = ∫_A ⟨ω, ξ⟩ dH^n for all ω ∈ 𝒟^n(U). Then T₁ and T − T₁ are integer multiplicity, M_W(T₁) + M_W(T − T₁) = M_W(T) for every open W, and M_W(T − T₁) < ∞ for every open W ⊂⊂ U.",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T T₁ : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet A → μHE[n] (A \\ R.carrier) = 0 → (∀ ω : TestFormOn U n, T₁ ω = ∫ x in A, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → IsIntegerMultiplicity T₁ ∧ IsIntegerMultiplicity (T - T₁) ∧ (∀ W : Set (Euclid P), IsOpen W → T₁.massOn W + (T - T₁).massOn W = T.massOn W) ∧ ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → (T - T₁).massOn W ≠ ∞",
+  "lean_name": "regcomp_restriction_integer_multiplicity",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multiplicity-a1-a1"
+}
