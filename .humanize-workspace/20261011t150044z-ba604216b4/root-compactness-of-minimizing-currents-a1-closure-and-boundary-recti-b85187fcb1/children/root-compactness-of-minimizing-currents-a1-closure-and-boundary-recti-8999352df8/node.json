@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1.diagonal-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1",
+  "depth": 5,
+  "title": "Diagonal argument: one subsequence along which countably many families of real sequences all converge",
+  "statement": "Let ι be a type, (F_m)_{m∈ℕ} a sequence of subsets of ι, and s : ι → ℕ → ℝ. Suppose that for every m ∈ ℕ and every strictly increasing ψ : ℕ → ℕ there is a strictly increasing θ : ℕ → ℕ such that for every i ∈ F_m the real sequence (s(i, ψ(θ(j))))_{j∈ℕ} converges. Then there is a strictly increasing φ : ℕ → ℕ such that for every m ∈ ℕ and every i ∈ F_m the real sequence (s(i, φ(j)))_{j∈ℕ} converges.",
+  "lean_statement": "∀ (ι : Type) (F : ℕ → Set ι) (s : ι → ℕ → ℝ), (∀ (m : ℕ) (ψ : ℕ → ℕ), StrictMono ψ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (ψ (θ j))) atTop (𝓝 c)) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ m : ℕ, ∀ i ∈ F m, ∃ c : ℝ, Tendsto (fun j => s i (φ j)) atTop (𝓝 c)",
+  "lean_name": "cbr_ct_vs_diagonal_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8999352df8-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.rectifiable-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes almost everywhere imply countable rectifiability (Simon Ch. 3, 1.6 ⇐, corrected constant; parent V13)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel with Hⁿ(M) < ∞ (Hⁿ = μHE[n]) and Q : ℝ^P → linear subspaces such that x ↦ (orthogonal projection onto Q(x)) is Hⁿ⌞M-a.e. strongly measurable and HasApproximateTangentSpaceAt n M x (Q x) holds for Hⁿ-a.e. x ∈ M. Then M is countably n-rectifiable (SimonGMT CountablyRectifiable n M).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M",
+  "lean_name": "dtc_bc_tc_cl_rectifiable_of_approx_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-bce97ac404-a1"
+}
