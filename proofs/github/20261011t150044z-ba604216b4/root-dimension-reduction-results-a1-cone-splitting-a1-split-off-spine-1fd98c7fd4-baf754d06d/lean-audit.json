@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23121ae4c35d6f9595b2aad02bf0b4301a40fd224f4c1381cd3ef6f992dd6634",
+  "git_delta": {
+    "base_commit": "e774d8f07b9c8ab2eb42bdb064c0107a2044ceab",
+    "candidate_commit": "51cbdac07e585a1aeadf1611b661bc16d38a16ac",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_measure_comparison",
+    "diff_sha256": "478dffee3ddca0ba4016cda0d6a8ca81e5b280978dd0439b52199ee666c9afb4",
+    "source_sha256": "ef7d79ef194ddc368d3b951d6062e9f88ad40cec3d76b3f898a91006cae640b9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_measure_comparison",
+      "statement": "∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (W₀ B : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsOpen W₀ → IsOpen B → (S₁ - S₂).support ⊆ W₀ → W₀ ⊆ B → R₁.measure B + R₂.measure W₀ = R₂.measure B + R₁.measure W₀",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
