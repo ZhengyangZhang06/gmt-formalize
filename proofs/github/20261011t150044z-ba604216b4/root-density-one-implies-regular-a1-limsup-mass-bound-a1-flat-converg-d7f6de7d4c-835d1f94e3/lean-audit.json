@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "64f85982411f00bfb721c7c6ee392d6b7f99760e4f5f09c2081e21dc9d10a69b",
+  "git_delta": {
+    "base_commit": "9ebec8870239be2669c805d20d9bee1be7bd1138",
+    "candidate_commit": "c6153c4c560a8acf491f1051cc8f249bbd7d0fec",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_jwc_piola_identity",
+    "diff_sha256": "74e230404ce591aca841ace500aaaf8c5820565b833441cfd7795507fc64b3c6",
+    "source_sha256": "4a4c3c297bf4de40f94e5d42ca600b198f107e43bfeb3e26ac124bcb273ae098",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_jwc_piola_identity",
+      "statement": "∀ (k r : ℕ) (g : Fin r → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (x : Euclid k), (∀ c, ContDiff ℝ 2 (g c)) → ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (fun y => Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c) y (V (b.succAbove b')))) x (V b) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
