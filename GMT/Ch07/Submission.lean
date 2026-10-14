@@ -2645,6 +2645,60 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
   obtain ⟨-, hbd, him, -, -, -⟩ := hdc P d a lam hlam
   obtain ⟨-, -, -, hrepd, -, -⟩ := hdc P (d + 1) a lam hlam
   -- Step 2: `∂X' = 0`, testing `∂X` against `φ ∘ η`
+  have hX'bd : ∀ φ : TestFormOn (univ : Set (Euclid P)) d, X'.boundary φ = 0 := by
+    intro φ
+    obtain ⟨φ', hφ'⟩ := hcomp P d a lam hlam φ
+    rw [hbd X X' hdil φ φ' hφ', hXbd, GeometricCurrentOn.zero_apply, mul_zero]
+  -- Step 3: the slices `A_X(t)` of `X` by `{f ∘ η < t}` have integer multiplicity boundary
+  -- for a.e. `t`
+  have hηL : LipschitzWith ‖lam⁻¹‖₊ (dilation a lam) := by
+    refine LipschitzWith.of_dist_le_mul fun x y => le_of_eq ?_
+    simp [dilation, dilationCLM, dist_smul₀]
+  filter_upwards [hcyc SL P d X μX ξX hXbd hμXK hξXm hξXb hXrep hISP (f ∘ dilation a lam)
+    (L * ‖lam⁻¹‖₊) (hf.comp hηL)] with t ht
+  obtain ⟨AX, hAX, hAXim⟩ := ht
+  intro A B hA hB
+  have hft : MeasurableSet {x | f x < t} :=
+    measurableSet_lt hf.continuous.measurable measurable_const
+  -- Step 4: by (RU), `A` is also the slice of the representation of Step 1
+  have hRU1 : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ =
+        ∫ y in {x | f x < t}, ξX (a + lam • y) ((ω : DifferentialForm (Euclid P) (d + 1)) y)
+          ∂(ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μX) := by
+    intro ω
+    have h := RU P (d + 1) univ μ
+      (ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μX) 0 ξ
+      (fun y => ξX (a + lam • y)) (fun _ => 0) isOpen_univ (fun K hK _ => hμK K hK)
+      (fun K hK _ => hμ₂K K hK) (fun K _ _ => by simp) hξm hξ₂m aestronglyMeasurable_const
+      hξb hξ₂b (by simp)
+      (fun ω => by rw [← hrep ω, hrepd X X' μX ξX hdil hXrep ω, integral_zero_measure, add_zero])
+      {x | f x < t} ω hft
+    simpa only [Measure.restrict_zero, integral_zero_measure, add_zero] using h
+  -- Step 5: change of variables by `η`: `A` is the dilation of `A_X(t)`
+  have hAdil : ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) (d + 1)) y =
+        (ω : DifferentialForm (Euclid P) (d + 1)) (dilation a lam y)) →
+      A ω = lam⁻¹ ^ (d + 1) * AX ω' := by
+    intro ω ω' hω'
+    rw [hA ω, hRU1 ω, hchg {x | f x < t} (ω : DifferentialForm (Euclid P) (d + 1)), hAX ω']
+    simp only [hω']
+    rfl
+  -- Step 6: by (RU) and `∂X' = 0`, the boundary slice `B` vanishes
+  have hB0 : ∀ φ : TestFormOn (univ : Set (Euclid P)) d, B φ = 0 := by
+    intro φ
+    have h := RU P d univ μ' 0 0 ξ' (fun _ => 0) (fun _ => 0) isOpen_univ
+      (fun K hK _ => hμ'K K hK) (fun K _ _ => by simp) (fun K _ _ => by simp) hξ'm
+      aestronglyMeasurable_const aestronglyMeasurable_const hξ'b (by simp) (by simp)
+      (fun φ => by rw [← hbrep φ, hX'bd φ, integral_zero_measure, add_zero])
+      {x | f x < t} φ hft
+    rw [hB φ, h, Measure.restrict_zero, integral_zero_measure, add_zero]
+  -- Step 7: `∂A − B = ∂A` is the dilation of the integer multiplicity `∂A_X(t)`
+  have hsub : A.boundary - B = A.boundary := by
+    refine GeometricCurrentOn.ext fun φ => ?_
+    show A.boundary φ - B φ = A.boundary φ
+    rw [hB0 φ, sub_zero]
+  rw [hsub]
+  exact him AX.boundary A.boundary (hbd AX A hAdil) hAXim
 /-- **Dilation invariance of the integer slice property** (step 2 of the proof that a cycle with
 the integer slice property is integer multiplicity, for the closure theorem Simon Ch. 6, 8.2,
 whose proof slices the blow-ups `η_{x,λⱼ#}T` (8.2 (7), (8)); slices as in Ch. 6, 4.6–4.10;
@@ -2676,8 +2730,6 @@ theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set 
     intro φ
     obtain ⟨φ', hφ'⟩ := hcomp P d a lam hlam φ
     rw [hbd X X' hdil φ φ' hφ', hXbd, GeometricCurrentOn.zero_apply, mul_zero]
-  -- Step 3: the slices `A_X(t)` of `X` by `{f ∘ η < t}` have integer multiplicity boundary
-  -- for a.e. `t`
   -- Steps 5 and 6: `g = f ∘ η` is `Lλ⁻¹`-Lipschitz, and by (SL) and the ISP of `X` (with the
   -- representations `(μ_X, ξ_X)` and `(0, 0)` of `X` and `∂X = 0`) the slices `A_X(t)` of `X` by
   -- `{g < t}` have integer multiplicity boundary for `t` outside an `L¹`-null set
@@ -2687,10 +2739,6 @@ theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set 
   filter_upwards [hcyc SL P d X μX ξX hXbd hμXK hξXm hξXb hXrep hISP (f ∘ dilation a lam)
     (L * ‖lam⁻¹‖₊) (hf.comp hηL)] with t ht
   obtain ⟨AX, hAX, hAXim⟩ := ht
-  intro A B hA hB
-  have hft : MeasurableSet {x | f x < t} :=
-    measurableSet_lt hf.continuous.measurable measurable_const
-  -- Step 4: by (RU), `A` is also the slice of the representation of Step 1
   -- Step 4: slices `A` of `X'` and `B` of `∂X'` by `{f < t}`
   intro A B hA hB
   have hft : MeasurableSet {x | f x < t} :=
@@ -2710,7 +2758,6 @@ theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set 
       (fun ω => by rw [← hrep ω, hrepd X X' μX ξX hdil hXrep ω, integral_zero_measure, add_zero])
       {x | f x < t} ω hft
     simpa only [Measure.restrict_zero, integral_zero_measure, add_zero] using h
-  -- Step 5: change of variables by `η`: `A` is the dilation of `A_X(t)`
   -- Step 7, change of variables along `η`: `A` is the dilation of `A_X(t)`
   have hAdil : ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (d + 1),
       (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) (d + 1)) y =
@@ -2720,7 +2767,6 @@ theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set 
     rw [hA ω, hRU1 ω, hchg {x | f x < t} (ω : DifferentialForm (Euclid P) (d + 1)), hAX ω']
     simp only [hω']
     rfl
-  -- Step 6: by (RU) and `∂X' = 0`, the boundary slice `B` vanishes
   -- Step 8: (RU) with `(μ', ξ')`, `(0, 0)`, `(0, 0)`, `∂X' = 0` and `{f < t}`: `B = 0`
   have hB0 : ∀ φ : TestFormOn (univ : Set (Euclid P)) d, B φ = 0 := by
     intro φ
@@ -2730,7 +2776,6 @@ theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set 
       (fun φ => by rw [← hbrep φ, hX'bd φ, integral_zero_measure, add_zero])
       {x | f x < t} φ hft
     rw [hB φ, h, Measure.restrict_zero, integral_zero_measure, add_zero]
-  -- Step 7: `∂A − B = ∂A` is the dilation of the integer multiplicity `∂A_X(t)`
   -- Step 9: `∂A − B = ∂A` is the dilation of the integer multiplicity current `∂A_X(t)`
   -- (the dilation calculus (2) and (3))
   have hsub : A.boundary - B = A.boundary := by
