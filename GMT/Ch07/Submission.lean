@@ -667,6 +667,62 @@ theorem Submission.idtp_cse_fc_fibre_pointwise : ∀ (P : ℕ) (R : IMRep (univ 
   · obtain ⟨hin, hif⟩ := hfib i i.2.2
     exact (hA (approxTangentPlane 2 R.carrier i) i).1.trans_lt
       (hlt i i.2.1.2.1 hin hif fun h => hi (Subtype.ext h))
+/-- **Lower bound for `∫⁻ N` over the square** `Sq = (1 − r, 1 + r) × (−r, r)` (parent step 5).
+Let `U = {p : p₂ > 0}` and `g = m + 1_U`.  The two hypotheses give `g ≤ N` a.e. on `Sq`, so
+`∫⁻_{Sq} N ≥ ∫⁻_{Sq} g = m·λ(Sq) + λ(U ∩ Sq)` (`U` is measurable, so `lintegral_add_left` and
+`lintegral_indicator_one` apply; `N` itself need not be measurable).  Since `r > 0`,
+`U ∩ Sq = (1 − r, 1 + r) × (0, r)`, and `Measure.prod_prod` with `Real.volume_Ioo` gives
+`λ(Sq) = 4r²` and `λ(U ∩ Sq) = 2r²`.  Hence `∫⁻_{Sq} g = 4m r² + 2r² = (4m + 2) r²`. -/
+theorem Submission.idtp_cse_fc_square_lintegral_lower : ∀ (N : ℝ × ℝ → ℝ≥0∞) (m : ℕ) (r : ℝ), 0 < r → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → (m : ℝ≥0∞) ≤ N p) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r → 0 < p.2 → (m : ℝ≥0∞) + 1 ≤ N p) → ENNReal.ofReal ((4 * (m : ℝ) + 2) * r ^ 2) ≤ ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r, N p := by
+  intro N m r hr hm hm1
+  -- Measurability of `Sq` and of `U = {p₂ > 0}`.
+  have hSq : MeasurableSet (Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r : Set (ℝ × ℝ)) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  have hU : MeasurableSet {p : ℝ × ℝ | 0 < p.2} := measurableSet_lt measurable_const measurable_snd
+  -- `g = m + 1_U ≤ N` a.e. on `Sq`.
+  have hg : ∀ᵐ p ∂(volume.restrict (Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r)),
+      (m : ℝ≥0∞) + {p : ℝ × ℝ | 0 < p.2}.indicator 1 p ≤ N p := by
+    rw [ae_restrict_iff' hSq]
+    filter_upwards [hm, hm1] with p hp hp1 hpSq
+    by_cases hp2 : 0 < p.2
+    · rw [indicator_of_mem (show p ∈ {p : ℝ × ℝ | 0 < p.2} from hp2), Pi.one_apply]
+      exact hp1 hpSq hp2
+    · rw [indicator_of_notMem (show p ∉ {p : ℝ × ℝ | 0 < p.2} from hp2), add_zero]
+      exact hp hpSq
+  -- `U ∩ Sq = (1 − r, 1 + r) × (0, r)`, and the two volumes.
+  have hUSq : {p : ℝ × ℝ | 0 < p.2} ∩ Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r =
+      Ioo (1 - r) (1 + r) ×ˢ Ioo 0 r := by
+    ext p
+    simp only [mem_inter_iff, mem_ofPred_eq, mem_prod, mem_Ioo]
+    constructor
+    · rintro ⟨h2, h1, -, h2r⟩
+      exact ⟨h1, h2, h2r⟩
+    · rintro ⟨h1, h2, h2r⟩
+      exact ⟨h2, h1, by linarith, h2r⟩
+  have hSqvol : volume (Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r : Set (ℝ × ℝ)) =
+      ENNReal.ofReal (4 * r ^ 2) := by
+    rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo,
+      ← ENNReal.ofReal_mul (by linarith)]
+    congr 1
+    ring
+  have hUvol : volume (Ioo (1 - r) (1 + r) ×ˢ Ioo 0 r : Set (ℝ × ℝ)) =
+      ENNReal.ofReal (2 * r ^ 2) := by
+    rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo,
+      ← ENNReal.ofReal_mul (by linarith)]
+    congr 1
+    ring
+  -- `∫⁻_{Sq} g = m·λ(Sq) + λ(U ∩ Sq) = (4m + 2) r² ≤ ∫⁻_{Sq} N`.
+  calc ENNReal.ofReal ((4 * (m : ℝ) + 2) * r ^ 2)
+      = (m : ℝ≥0∞) * ENNReal.ofReal (4 * r ^ 2) + ENNReal.ofReal (2 * r ^ 2) := by
+        rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity)]
+        congr 1
+        ring
+    _ = ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r,
+          ((m : ℝ≥0∞) + {p : ℝ × ℝ | 0 < p.2}.indicator 1 p) := by
+        rw [lintegral_add_left measurable_const, setLIntegral_const, lintegral_indicator_one hU,
+          Measure.restrict_apply hU, hUSq, hSqvol, hUvol]
+    _ ≤ ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r, N p := lintegral_mono_ae hg
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
