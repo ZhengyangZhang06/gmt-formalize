@@ -587,6 +587,77 @@ theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (�
   rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
     (EuclideanSpace.basisFun (Fin P) ℝ)]
   exact Submission.regcomp_covector_sq_sum_basisFun P n α
+/-- **Hilbert–Schmidt bound for precomposing every slot with `A`** (the estimate behind
+`|α ∘ L|_E ≤ ‖L‖ⁿ |α|_E` and the push-forward mass bound, Simon 6.2.24(2), 6.2.29, 6.3.3): for a
+continuous linear `A : ℝᴺ → ℝᴺ'` and an `n`-linear `γ` on `ℝᴺ'`,
+`Σ_{j : Fin n → Fin N} γ(Ae_{j 0}, …, Ae_{j (n-1)})² ≤ (‖A‖²)ⁿ Σ_{j : Fin n → Fin N'} γ(e'_{j 0}, …, e'_{j (n-1)})²`.
+One slot: a linear `φ = ⟨g, ·⟩` has `Σᵢ φ(Aeᵢ)² = |A*g|² ≤ ‖A‖² |g|² = ‖A‖² Σₐ φ(e'ₐ)²`; the
+other slots follow by induction on `n`, splitting each index tuple as `Fin.cons i j'`. -/
+theorem Submission.dimred_mbl_pf_oc_multilinear_hs_comp_le : ∀ (N N' n : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : MultilinearMap ℝ (fun _ : Fin n => Euclid N') ℝ), ∑ j : Fin n → Fin N, (γ (fun k => A (EuclideanSpace.basisFun (Fin N) ℝ (j k)))) ^ 2 ≤ (‖A‖ ^ 2) ^ n * ∑ j : Fin n → Fin N', (γ (fun k => EuclideanSpace.basisFun (Fin N') ℝ (j k))) ^ 2 := by
+  intro N N' n A γ
+  set e := EuclideanSpace.basisFun (Fin N) ℝ
+  set e' := EuclideanSpace.basisFun (Fin N') ℝ
+  -- one slot: `φ = ⟨g, ·⟩` with `g = Σₐ φ(e'ₐ) e'ₐ`; Parseval for `e` and `e'`, and `‖A*‖ = ‖A‖`
+  have hone : ∀ φ : Euclid N' →ₗ[ℝ] ℝ,
+      ∑ i : Fin N, (φ (A (e i))) ^ 2 ≤ ‖A‖ ^ 2 * ∑ a : Fin N', (φ (e' a)) ^ 2 := by
+    intro φ
+    set g : Euclid N' := ∑ a, φ (e' a) • e' a with hg_def
+    have hφ : ∀ v, φ v = inner ℝ g v := by
+      intro v
+      conv_lhs => rw [← e'.sum_repr' v]
+      simp only [hg_def, map_sum, map_smul, smul_eq_mul, sum_inner, real_inner_smul_left]
+      exact Finset.sum_congr rfl fun a _ => mul_comm _ _
+    have hg : ∑ a : Fin N', (φ (e' a)) ^ 2 = ‖g‖ ^ 2 := by
+      rw [← e'.sum_sq_inner_left g]
+      simp only [hφ]
+    have hAg : ∑ i : Fin N, (φ (A (e i))) ^ 2 = ‖(ContinuousLinearMap.adjoint A) g‖ ^ 2 := by
+      rw [← e.sum_sq_inner_left]
+      simp only [hφ, ContinuousLinearMap.adjoint_inner_left]
+    have hnorm : ‖(ContinuousLinearMap.adjoint A) g‖ ≤ ‖A‖ * ‖g‖ := by
+      calc ‖(ContinuousLinearMap.adjoint A) g‖
+          ≤ ‖ContinuousLinearMap.adjoint A‖ * ‖g‖ := (ContinuousLinearMap.adjoint A).le_opNorm g
+        _ = ‖A‖ * ‖g‖ := by rw [LinearIsometryEquiv.norm_map]
+    rw [hAg, hg, ← mul_pow]
+    exact pow_le_pow_left₀ (norm_nonneg _) hnorm 2
+  induction n with
+  | zero =>
+    simp only [pow_zero, one_mul]
+    apply le_of_eq
+    rw [Fintype.sum_unique, Fintype.sum_unique]
+    congr 2
+    exact Subsingleton.elim _ _
+  | succ n ih =>
+    -- split each index tuple as `Fin.cons i j'`
+    have hsplit : ∀ (M : ℕ) (c : Fin M → Euclid N'),
+        ∑ j : Fin (n + 1) → Fin M, (γ (fun k => c (j k))) ^ 2 =
+          ∑ i : Fin M, ∑ j' : Fin n → Fin M, (γ (Fin.cons (c i) fun k => c (j' k))) ^ 2 := by
+      intro M c
+      rw [← (Fin.consEquiv (fun _ : Fin (n + 1) => Fin M)).sum_comp, Fintype.sum_prod_type]
+      refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j' _ => ?_
+      congr 2
+      funext k
+      refine Fin.cases ?_ (fun k => ?_) k <;> simp
+    rw [hsplit N (fun i => A (e i)), hsplit N' e']
+    calc ∑ i : Fin N, ∑ j' : Fin n → Fin N, (γ (Fin.cons (A (e i)) fun k => A (e (j' k)))) ^ 2
+        ≤ ∑ i : Fin N, (‖A‖ ^ 2) ^ n *
+            ∑ j' : Fin n → Fin N', (γ (Fin.cons (A (e i)) fun k => e' (j' k))) ^ 2 := by
+          -- the last `n` slots: the induction hypothesis for `γ(Aeᵢ, ·)`
+          refine Finset.sum_le_sum fun i _ => ?_
+          simpa only [MultilinearMap.curryLeft_apply] using ih (γ.curryLeft (A (e i)))
+      _ = (‖A‖ ^ 2) ^ n *
+            ∑ j' : Fin n → Fin N', ∑ i : Fin N, (γ (Fin.cons (A (e i)) fun k => e' (j' k))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm]
+      _ ≤ (‖A‖ ^ 2) ^ n * ∑ j' : Fin n → Fin N',
+            ‖A‖ ^ 2 * ∑ a : Fin N', (γ (Fin.cons (e' a) fun k => e' (j' k))) ^ 2 := by
+          -- the first slot: `hone` for the linear map `v ↦ γ(v, e'_{j' 0}, …)`
+          refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun j' _ => ?_) (by positivity)
+          have h := hone (γ.toLinearMap (Fin.cons 0 fun k => e' (j' k)) 0)
+          simp only [MultilinearMap.toLinearMap_apply, Fin.update_cons_zero] at h
+          exact h
+      _ = (‖A‖ ^ 2) ^ (n + 1) *
+            ∑ a : Fin N', ∑ j' : Fin n → Fin N', (γ (Fin.cons (e' a) fun k => e' (j' k))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm]
+          ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
