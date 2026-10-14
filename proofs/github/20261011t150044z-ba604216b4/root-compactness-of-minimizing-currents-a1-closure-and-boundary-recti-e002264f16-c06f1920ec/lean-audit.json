@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6727ae20c4548b3d7cb1a9714090f5e74a48e55e3102b9ad0dbb005c125bdf97",
+  "git_delta": {
+    "base_commit": "c0ad8e576c0afce1fef80129115ce1fb79ff5470",
+    "candidate_commit": "fb0a782cea30728f601b573a69a64df478bdaa1c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_proj_mass_le",
+    "diff_sha256": "b6b9ab735dcab19baa90b9ad106304e8e75b7c1841ba24134865783afff8e338",
+    "source_sha256": "e959cb758bcec4ecb3228eec2e5c78cf55e815e16b61142b56320a46de8c53cc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_proj_mass_le",
+      "statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l) (Y : GeometricCurrentOn U l), IsOpen U → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → (∀ ω : TestFormOn U l, Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ) → Y.massOn U ≤ μ (F ∩ pL ⁻¹' U)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
