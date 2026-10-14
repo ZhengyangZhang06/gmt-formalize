@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.14** (lower semicontinuity of mass) for currents `Sⱼ ∈ 𝒟ₙ(Uⱼ)` on domains
+exhausting `ℝᴾ`, along any subsequence: if `Sⱼ ⇀ C` then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})`.
+`M_O(C)` is a supremum over admissible `ω ∈ 𝒟ⁿ(ℝᴾ)`.  Each such `spt ω` is compact, so it lies in
+a closed ball `B̄_R(0) ⊆ U_{φ(i)}` for all large `i`; there `ω` is admissible for `S_{φ(i)}` in
+`O`, whence `S_{φ(i)}(ω) ≤ M_O(S_{φ(i)})`, and `S_{φ(i)}(ω) → C(ω)`. -/
+theorem Submission.dimred_mbl_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
+  intro P n Us Ss C hU hconv φ hφ O
+  -- `M_O(C)` is the supremum of `C(ω)` over the admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- `spt ω` is compact, hence contained in a closed ball `B̄_R(0)`
+  have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
+  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
+  -- so `spt ω ⊆ U_{φ(i)}` for all large `i`
+  have hev : ∀ᶠ i in atTop, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) :=
+    (hφ.tendsto_atTop.eventually (hU R)).mono fun i hi => hR.trans hi
+  -- `S_{φ(i)}(ω) → C(ω)`
+  have hlim : Tendsto (fun i => currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))
+      atTop (𝓝 (C ω)) :=
+    (hconv ω).comp hφ.tendsto_atTop
+  calc ENNReal.ofReal (C ω)
+      = liminf (fun i => ENNReal.ofReal
+          (currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))) atTop :=
+        (ENNReal.tendsto_ofReal hlim).liminf_eq.symm
+    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
+        refine liminf_le_liminf (hev.mono fun i hi => ?_)
+        -- for such `i`, `ω` is an admissible form for `S_{φ(i)}` in `O`
+        have hmem : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+            tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) := ⟨ω.property.1, hi⟩
+        have heval : currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n) =
+            Ss (φ i) ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩ := by
+          unfold currentEval
+          exact dite_eq_left hmem
+        rw [heval]
+        exact (Ss (φ i)).le_massOn (omega := ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩) hω
 /-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
 `spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
 `S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
@@ -1705,6 +1740,33 @@ theorem Submission.dimred_mbl_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ 
       ((measure_mono (thickening_subset_cthickening 1 K)).trans_lt
         (hfin _ hK.cthickening)).ne⟩ hK.isClosed
   exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall fun r hr => hclaim r hr)
+
+/-- **Simon 7.2.4, proof, (8)–(12) and the lower semicontinuity step after (12)** (p. 186):
+the weak limit `C` of currents `Sⱼ` with the local comparison property is minimizing in `ℝᴾ`.
+Let `W ⊂⊂ ℝᴾ` be open and `S` an integer multiplicity competitor with `∂S = ∂C` and
+`K = spt(S − C)` a compact subset of `W`; choose `ε > 0` with `K_ε ⊆ W`.  The comparison
+hypothesis with `ψ = id` gives an open `W'` with `K ⊆ W' ⊆ K_ε` and `φ'` with
+`lim sup_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`, so lower semicontinuity of mass gives
+`M_{W'}(C) ≤ lim inf_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`, and minimality localizes from `W'` to
+`W ⊇ W'`. -/
+theorem Submission.dimred_mbl_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → IsIntegerMultiplicity C → ConvergesWeakly Ss C → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), IsOpen W ∧ K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ ∀ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S → SameBoundary S C → (S - C).support ⊆ K → limsup (fun j => (Ss (ψ (φ' j))).massOn W) atTop ≤ S.massOn W) → IsMinimizingIn C univ := by
+  intro P n Us Ss C hUs hC hconv hloc
+  refine ⟨hC, fun W S hW hWU hS hSC hKc hKW => ?_⟩
+  -- `K = spt(S − C)` is a compact subset of the open set `W`, so `K_ε ⊆ W` for some `ε > 0`
+  have hKW' : (S - C).support ⊆ W := fun x hx => (hKW hx).2
+  obtain ⟨ε, hε, hεW⟩ := hKc.exists_thickening_subset_open hW hKW'
+  -- the comparison hypothesis with `ψ = id`, for the admissible competitor `S`
+  obtain ⟨W', hW', hKW'', hW'ε, φ', hφ', hcomp⟩ :=
+    hloc (S - C).support ε hKc hε id strictMono_id
+  -- `M_{W'}(C) ≤ lim inf_i M_{W'}(S_{φ'(i)}) ≤ lim sup_i M_{W'}(S_{φ'(i)}) ≤ M_{W'}(S)`
+  have hle : C.massOn W' ≤ S.massOn W' :=
+    calc C.massOn W' ≤ liminf (fun i => (Ss (φ' i)).massOn W') atTop :=
+          Submission.dimred_mbl_mm_massOn_le_liminf P n Us Ss C hUs hconv φ' hφ' W'
+      _ ≤ limsup (fun i => (Ss (φ' i)).massOn W') atTop := liminf_le_limsup
+      _ ≤ S.massOn W' := hcomp S hS hSC subset_rfl
+  -- minimality localizes from `W'` to `W ⊇ W'`, as `K ⊆ W'` and `W ⊂⊂ ℝᴾ`
+  exact Submission.cmc_massOn_le_of_le_near_support P n univ S C (S - C).support W' W
+    isOpen_univ hS hC hKc subset_rfl hW' hW hKW'' (hW'ε.trans hεW) hWU hle
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
