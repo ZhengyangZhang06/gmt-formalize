@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Transfer of null sets to almost every slice (Simon 7.4.3, slicing step; co-area formula of
+Ch. 2, 6.6 and slices of Ch. 6, 4.3): if the slice measures `ν_t` satisfy the co-area identity
+`∫_ℝ ∫ φ dν_t dt = ∫ w φ dμ` for every Borel `φ ≥ 0`, then a property holding `μ`-a.e. holds
+`ν_t`-a.e. for a.e. `t`.  With `Z ⊇ {¬p}` a Borel `μ`-null hull and `φ = 1_Z`, the right side
+vanishes, so `ν_t(Z) = ∫ 1_Z dν_t = 0` for a.e. `t`. -/
+theorem Submission.dor_lmbsf_si_coarea_ae_transfer : ∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (p : Euclid P → Prop), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → (∀ᵐ x ∂μ, p x) → ∀ᵐ t, ∀ᵐ x ∂(ν t), p x := by
+  intro P μ ν w p hco hp
+  -- a Borel `μ`-null hull `Z` of `{x | ¬p x}`
+  set Z := toMeasurable μ {x | ¬p x} with hZ
+  have hZm : MeasurableSet Z := measurableSet_toMeasurable _ _
+  have hμZ : μ Z = 0 := by rw [hZ, measure_toMeasurable]; exact ae_iff.mp hp
+  -- co-area identity for `φ = 1_Z`: `∫_ℝ ν_t(Z) dt = ∫ w 1_Z dμ = 0`
+  obtain ⟨hae, heq⟩ := hco (Z.indicator 1) (measurable_one.indicator hZm)
+  have hzero : ∫⁻ x, w x * Z.indicator 1 x ∂μ = 0 := by
+    refine (lintegral_congr_ae ?_).trans lintegral_zero
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hμZ] with x hx
+    simp [indicator_of_notMem hx]
+  rw [hzero, lintegral_eq_zero_iff' hae] at heq
+  -- for a.e. `t`, `ν_t(Z) = 0`, so `ν_t`-a.e. `x` lies outside `Z ⊇ {¬p}`
+  filter_upwards [heq] with t ht
+  have hνZ : ν t Z = 0 := by
+    rw [← lintegral_indicator_one hZm]; exact ht
+  filter_upwards [measure_eq_zero_iff_ae_notMem.mp hνZ] with x hx
+  by_contra hpx
+  exact hx (subset_toMeasurable μ {x | ¬p x} hpx)
+
 /-- Orthonormal frame of `Q` adapted to a unit vector `ν ∈ Q` (Simon Ch. 6, 4.3, used for the
 orientation of the slices in 7.4): if `dim Q = n + 1`, then `Q' = Q ∩ ν^⊥` has an orthonormal
 basis `σ = (σ₁, …, σₙ)`, so that `(ν, σ₁, …, σₙ)` is an orthonormal basis of `Q`.  The dimension
