@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25b4d99ebcc49370bcf8d381fe16b537aa792da5eb8dea71d8b52596be01f287",
+  "git_delta": {
+    "base_commit": "36985c51836102e51a80bdd7e31d9f5587fd7bb2",
+    "candidate_commit": "e9a02d460dd823f8c5074c1b5f713d32c76940b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_saf_lintegral_image_of_local",
+    "diff_sha256": "c99e612792c2cc5395eae97dcca56a96360c960adb9c035bc18afe16ecd05cc4",
+    "source_sha256": "7407137e2155e71b00c76ac8cf86c1b093aece13dce7b6035d572cd40ee5f012",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_saf_lintegral_image_of_local",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (w : Euclid P → ℝ≥0∞), Continuous Φ → Injective Φ → (∀ y ∈ N, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧ ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ) → ∀ B : Set (Euclid P), B ⊆ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
