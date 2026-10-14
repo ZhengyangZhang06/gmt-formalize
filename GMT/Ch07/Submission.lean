@@ -1370,6 +1370,118 @@ theorem Submission.regcomp_rim_action_integrable : ∀ (P n : ℕ) (U : Set (Euc
   /- Step 6: dominated by an integrable function. -/
   exact hg.mono' hF hbound
 
+/-- **Unit-face decomposition of an integer multiplicity current on the `(m+1)`-skeleton**
+(Simon Ch. 6, proof of the deformation theorem 5.1, (26)–(28) and (33)).  Let `Q₀ = τ(M, θ, ξ)` in
+`ℝᴾ`, `n = m + 1`, with `spt Q₀ ⊆ K` compact and `spt Q₀ ⊆ L_n`.  The faces `p = (ι, b)` whose
+closed face `Φ_p([0,1]ⁿ)` meets `spt Q₀` form a finite set `s`, and distinct open faces
+`F̆_p = Φ_p((0,1)ⁿ)` are disjoint Borel sets (`Φ_p` is an isometry).  `M ∖ ⋃_{p ∈ s} F̆_p` lies in
+`(M ∖ spt Q₀) ∪ L_m`, which is `Hⁿ`-null: off `L_m`, a point of `spt Q₀ ⊆ L_n` lies on an open
+face.  On each face `face_density` gives an integer density `u_p` with
+`∫_{M ∩ F̆_p} θ ⟨ω, ξ⟩ dHⁿ = ∫_{(0,1)ⁿ} u_p(y) ω(Φ_p y)(E_p) dy` and `∫ |u_p| ≤ μ(F̆_p)`,
+`μ = θ Hⁿ⌞M`.  Summing over the disjoint faces gives the representation of `Q₀(ω)`, and
+`Σ_p ∫ |u_p| ≤ μ(ℝᴾ) = M(Q₀)` by the mass hypothesis (MR). -/
+theorem Submission.cmcdtfr_skeleton_decomposition : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P m : ℕ) (K : Set (Euclid P)) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity Q₀ → Q₀.support ⊆ K → Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} → ∃ (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∀ y, ∃ z : ℤ, u p y = z) ∧ (∀ p ∈ s, IntegrableOn (u p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y|) ≤ Q₀.mass ∧ (∀ p ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ Q₀.support) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro _hVO hMR hIMC P m K Q₀ hK hQ₀ hQK hQL
+  -- Step 1: an integer multiplicity representation `R = (M, θ, ξ)` of `Q₀`
+  obtain ⟨R, hR⟩ := hQ₀
+  -- the face maps `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` and the open unit cube `Q₁`
+  let Φ : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → Euclid P := fun p y =>
+    WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1}
+  -- Step 8: `Φ_p` is an isometry (`face_geometry` (a)), so the open face `F̆_p = Φ_p(Q₁)` is Borel
+  have hiso : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 → Isometry (Φ p) :=
+    fun p hp => Isometry.of_dist_eq ((Submission.cmcdtfr_face_geometry P (m + 1)).2 p p hp hp).1
+  have hQ₁ : MeasurableSet Q₁ := by
+    have hpre : Q₁ = WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin (m + 1) => Ioo (0 : ℝ) 1) := by
+      ext y
+      simp [Q₁, Set.mem_pi]
+    rw [hpre]
+    exact (PiLp.volume_preserving_ofLp (Fin (m + 1))).measurable
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo)
+  have hF : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 →
+      MeasurableSet (Φ p '' Q₁) :=
+    fun p hp => (hiso p hp).isClosedEmbedding.measurableEmbedding.measurableSet_image' hQ₁
+  -- Step 6: distinct open faces are disjoint (`face_geometry` (c))
+  have hdisj : ∀ p q : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 →
+      p ≠ q → Disjoint (Φ p '' Q₁) (Φ q '' Q₁) := by
+    intro p q hp hq hpq
+    rw [Set.disjoint_left]
+    rintro _ ⟨y, hy, rfl⟩ ⟨y', hy', hyy'⟩
+    have h : 1 ≤ dist (Φ p y) (Φ q y') ∨ ∃ j, min (y j) (1 - y j) ≤ dist (Φ p y) (Φ q y') :=
+      ((Submission.cmcdtfr_face_geometry P (m + 1)).2 p q hp hq).2.2 hpq y y' hy
+        fun i => ⟨(hy' i).1.le, (hy' i).2.le⟩
+    rw [hyy', dist_self] at h
+    rcases h with h | ⟨j, hj⟩
+    · exact absurd h (by norm_num)
+    · obtain ⟨hy₀, hy₁⟩ := hy j
+      exact absurd hj (not_le.mpr (lt_min hy₀ (by linarith)))
+  -- Step 5: the finite set `s` of faces `p` whose closed face meets `spt Q₀ ⊆ K`
+  obtain ⟨s, hs⟩ : ∃ s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ)), ∀ p, p ∈ s ↔
+      StrictMono p.1 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ Φ p y ∈ Q₀.support := by
+    have hfin : {p : (Fin (m + 1) → Fin P) × (Fin P → ℤ) | StrictMono p.1 ∧
+        ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ Φ p y ∈ Q₀.support}.Finite :=
+      (Submission.cmcdtfrsd_faces_meeting_compact_finite P (m + 1) K hK).subset
+        fun p ⟨_, y, hy, hyQ⟩ => ⟨y, hy, hQK hyQ⟩
+    exact ⟨hfin.toFinset, fun p => hfin.mem_toFinset⟩
+  -- Steps 9–11: the integer densities `u_p` on the faces (`face_density`)
+  have hfd : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 →
+      ∃ u : Euclid (m + 1) → ℝ, (∀ y, ∃ z : ℤ, u y = z) ∧ IntegrableOn u Q₁ ∧
+        ENNReal.ofReal (∫ y in Q₁, |u y|) ≤ R.measure (Φ p '' Q₁) ∧
+        ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+          ∫ x in R.carrier ∩ Φ p '' Q₁, (R.mult x : ℝ) *
+              R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] =
+            ∫ y in Q₁, u y * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y)
+              (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) :=
+    fun p hp => Submission.cmcdtfrsd_face_density hIMC.2.1 Submission.cmcdtfr_plane_orientation
+      P (m + 1) R p hp (hiso p hp)
+  choose! u hu_int hu_integ hu_mass hu_rep using hfd
+  refine ⟨s, u, fun p hp => ((hs p).1 hp).1, fun p hp => hu_int p ((hs p).1 hp).1,
+    fun p hp => hu_integ p ((hs p).1 hp).1, ?_, fun p hp => ((hs p).1 hp).2, fun ω => ?_⟩
+  · -- Step 11: `Σ_p ∫|u_p| ≤ Σ_p μ(F̆_p) = μ(⋃_p F̆_p) ≤ μ(ℝᴾ) = M(Q₀)`, the last step by (MR)
+    calc ENNReal.ofReal (∑ p ∈ s, ∫ y in Q₁, |u p y|)
+        = ∑ p ∈ s, ENNReal.ofReal (∫ y in Q₁, |u p y|) :=
+          ENNReal.ofReal_sum_of_nonneg fun p _ => integral_nonneg fun y => abs_nonneg (u p y)
+      _ ≤ ∑ p ∈ s, R.measure (Φ p '' Q₁) :=
+          Finset.sum_le_sum fun p hp => hu_mass p ((hs p).1 hp).1
+      _ = R.measure (⋃ p ∈ s, Φ p '' Q₁) :=
+          (measure_biUnion_finset (fun p hp q hq hpq =>
+            hdisj p q ((hs p).1 hp).1 ((hs q).1 hq).1 hpq) fun p hp => hF p ((hs p).1 hp).1).symm
+      _ ≤ R.measure univ := measure_mono (subset_univ _)
+      _ = Q₀.mass := (hMR P (m + 1) univ Q₀ R isOpen_univ hR univ isOpen_univ).symm
+  · -- Step 7: `M ∖ ⋃_{p ∈ s} (M ∩ F̆_p) ⊆ (M ∖ spt Q₀) ∪ L_m`, an `Hⁿ`-null set
+    have hnull : μHE[m + 1] (R.carrier \ ⋃ p ∈ s, (R.carrier ∩ Φ p '' Q₁)) = 0 := by
+      refine measure_mono_null ?_ (measure_union_null
+        (Submission.imrep_carrier_sdiff_support_null P (m + 1) univ Q₀ R isOpen_univ hR)
+        (Submission.cmcdtfr_skeleton_null P m))
+      rintro x ⟨hxM, hx⟩
+      by_cases hxS : x ∈ Q₀.support
+      · -- `x ∈ spt Q₀ ⊆ L_{m+1}`; off `L_m` it lies on an open face `F̆_p` with `p ∈ s`
+        refine Or.inr (by_contra fun hxL => ?_)
+        obtain ⟨p, y, hp, hy, rfl⟩ :=
+          Submission.cmcdtfrsd_skeleton_point_on_open_face P m _ (hQL hxS) hxL
+        exact hx (mem_iUnion₂.2 ⟨p, (hs p).2 ⟨hp, y, fun i => ⟨(hy i).1.le, (hy i).2.le⟩, hxS⟩,
+          hxM, y, hy, rfl⟩)
+      · exact Or.inl ⟨hxM, hxS⟩
+    have hae : R.carrier =ᵐ[μHE[m + 1]] ⋃ p ∈ s, (R.carrier ∩ Φ p '' Q₁) := by
+      refine ae_eq_set.2 ⟨hnull, ?_⟩
+      rw [Set.sdiff_eq_empty.2 (iUnion₂_subset fun p _ => inter_subset_left), measure_empty]
+    -- Step 12: split `Q₀(ω) = ∫_M θ ⟨ω, ξ⟩ dHⁿ` over the disjoint faces and change variables
+    have hint := Submission.regcomp_rim_action_integrable P (m + 1) univ R ω
+    calc Q₀ ω = ∫ x in R.carrier,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] :=
+          hR ω
+      _ = ∫ x in ⋃ p ∈ s, (R.carrier ∩ Φ p '' Q₁),
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] :=
+          setIntegral_congr_set hae
+      _ = ∑ p ∈ s, ∫ x in R.carrier ∩ Φ p '' Q₁,
+          (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] :=
+          integral_biUnion_finset s
+            (fun p hp => R.measurableSet_carrier.inter (hF p ((hs p).1 hp).1))
+            (fun p hp q hq hpq => (hdisj p q ((hs p).1 hp).1 ((hs q).1 hq).1 hpq).mono
+              inter_subset_right inter_subset_right)
+            fun p _ => IntegrableOn.mono_set hint inter_subset_left
+      _ = _ := Finset.sum_congr rfl fun p hp => hu_rep p ((hs p).1 hp).1 ω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
