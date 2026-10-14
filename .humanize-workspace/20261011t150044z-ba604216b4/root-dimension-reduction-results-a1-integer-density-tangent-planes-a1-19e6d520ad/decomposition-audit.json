@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (Euclid|dilation|blowUp|IsConeCurrent|MassMeasuresConverge|IsIntegerMultiplicity)|structure IMRep|locallyIntegrable_mult|namespace|^open|^import",
+        "ext_of_integral_eq_on_compactlySupported|theorem integral_map |theorem integral_smul_measure|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|integrable_of_hasCompactSupport|exists_continuousMap_one_of_isCompact_subset_isOpen",
+        "idtp_cttp_bti_rescaled_tests_tendsto|idtp_cttp_bti_blowup_translate_integral",
+        "abbrev EuclideanSpace|def EuclideanSpace|theorem.*smul_apply|instance.*SMul|borel",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bti_independent_audit/NamedAssumptions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bti_independent_audit/AcceptedDtc.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UrysohnsLemma.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19e6d520ad/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-19e6d520ad/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-rep-pushforward-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-abstract-dimension-reduction-a1-weak-tendsto-comp-affine-a1-resc-03a6c5b658/accepted-candidate.json",
+        "/tmp/bti_dec/verify/EndToEnd.lean",
+        "/tmp/bti_independent_audit/NamedAssumptions.lean",
+        "/tmp/bti_independent_audit/AcceptedDtc.lean"
+      ],
+      "conclusion": "The split is appropriate for Submission.idtp_cttp_blowup_limit_translation_invariant. Project and mathlib revisions match the manifest; inspected definitions and measure-theory APIs match the pinned snapshot. Both exact child types elaborate as Prop before either child is declared. Independently compiled child proofs use only propext, Classical.choice and Quot.sound. The parent assembly proves the exact frozen parent type using precisely the three accepted GMT prerequisites; replacing their stubs with named assumptions confirms no other unsupported dependency. Reused types match their accepted contracts, and axiom checks passed. Dependency closures are acyclic and do not reach the selected parent. No competing name reservations were found in the DAG or 2,274 searched worktree Lean files; both names are bare identifiers. Scalar multiplication is the intended real action on Euclid P. Combining the children with eventual positivity, uniqueness of limits and regular-measure uniqueness establishes the required invariance for every representation, span vector and Borel set."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rescaled_tests_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary limiting μ and unrestricted early signs of s_j. Each proof step is justified: eventual positivity gives common compact support; uniform continuity gives uniform convergence; Urysohn supplies an integrable majorant; convergence bounds its integrals; the explicit epsilon estimate controls the integral difference. Adding the fixed-test limit proves the exact conclusion without assuming local finiteness of μ. The proof is complete, non-circular and directly supplies parent step 5. Empty sibling dependencies are correct."
+    },
+    {
+      "key": "blowup_translate_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes both positivity assumptions, Borel homogeneity, the blow-up formula and continuity of f. The scalar identities and both inclusions of the preimage/image identity are correct, including the translation sign and s^n factor. Applying the hypotheses yields equality of push-forward measures. The inspected integral_map and integral_smul_measure APIs justify integration without integrability or sigma-finiteness assumptions. The supplied proof is complete and non-circular, needs no sibling, and supplies the identity required in parent steps 3–4."
+    }
+  ],
+  "required_changes": []
+}
