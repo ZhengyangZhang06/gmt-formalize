@@ -1341,6 +1341,150 @@ theorem Submission.dimred_mbl_dt_lp_jc_minor_weak_continuity : ∀ (k r : ℕ) (
     funext x
     ring
 
+/-- **Weak continuity of Jacobians** (step (B4) of the Lipschitz push-forward): if
+`H_j, H : ℝⁿ → ℝ^{N'}` are `L`-Lipschitz, `H_j → H` uniformly, `w ∈ L¹` and `ω` is a continuous
+compactly supported `n`-form, then `∫ w ω(H_j)(DH_j e₁, …, DH_j eₙ) → ∫ w ω(H)(DH e₁, …, DH eₙ)`.
+With `ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (n-1)})` and the Jacobian minors
+`Δ_I(K) = det (D(K^{I c}) e_b)_{c,b}` (`I : Fin n → Fin N'`, `K^i` the coordinates of `K`), the
+coordinate expansion of covectors and the chain rule `D(K^i) = (DK)^i` give
+`n! ω(K)(DK e) = Σ_I ω_I(K) Δ_I(K)` wherever `K` is differentiable, hence a.e. (Rademacher).
+For each `I` write `w ω_I(H_j) Δ_I(H_j) = w (ω_I(H_j) − ω_I(H)) Δ_I(H_j) + w ω_I(H) Δ_I(H_j)`:
+the first integral tends to `0` by dominated convergence (`|ω_I| ≤ C`,
+`|Δ_I| ≤ n! (L Σ_b ‖e_b‖)ⁿ`, `ω_I` continuous), the second converges by the weak continuity of
+Jacobian minors with the `L¹` weight `w ω_I(H)`.  No separate case `n = 0` is needed. -/
+theorem Submission.dimred_mbl_dt_lp_jacobian_weak_continuity : ∀ (n N' : ℕ) (L : NNReal) (Hs : ℕ → Euclid n → Euclid N') (H : Euclid n → Euclid N') (w : Euclid n → ℝ) (ω : DifferentialForm (Euclid N') n), (∀ j, LipschitzWith L (Hs j)) → LipschitzWith L H → TendstoUniformly Hs H atTop → Integrable w → Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ u, w u * ω (Hs j u) (fun a => fderiv ℝ (Hs j) u (EuclideanSpace.single a 1))) atTop (𝓝 (∫ u, w u * ω (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)))) := by
+  intro n N' L Hs H w ω hHs hH hconv hw hωc hωs
+  -- `ω_I(y) = ω(y)(e'_{I 0}, …, e'_{I (n-1)})` and `Δ_I(K)(u) = det (D(K^{I c})(u) e_b)_{c,b}`
+  set ωI : (Fin n → Fin N') → Euclid N' → ℝ :=
+    fun I y => ω y (fun c => EuclideanSpace.single (I c) (1 : ℝ)) with hωI
+  set Δ : (Fin n → Fin N') → (Euclid n → Euclid N') → Euclid n → ℝ := fun I K u =>
+    Matrix.det (Matrix.of fun c b => fderiv ℝ (fun y => K y (I c)) u (EuclideanSpace.single b 1))
+    with hΔ
+  -- the coordinates `K^i` of an `L`-Lipschitz map are `L`-Lipschitz; `H_j^i → H^i` uniformly
+  have hcoord : ∀ K : Euclid n → Euclid N', LipschitzWith L K → ∀ i : Fin N',
+      LipschitzWith L (fun y => K y i) := by
+    intro K hK i
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    rw [Real.dist_eq, ← Real.norm_eq_abs, ← PiLp.sub_apply]
+    exact (PiLp.norm_apply_le _ _).trans ((dist_eq_norm (K x) (K y)).symm.le.trans
+      (hK.dist_le_mul x y))
+  have hcoordconv : ∀ i : Fin N', TendstoUniformly (fun j y => Hs j y i) (fun y => H y i) atTop :=
+    fun i => (EuclideanSpace.proj i : Euclid N' →L[ℝ] ℝ).uniformContinuous.comp_tendstoUniformly
+      hconv
+  -- Step 1: `ω_I` is continuous with `|ω_I| ≤ C_I`; `Δ_I(K)` is measurable with `|Δ_I(K)| ≤ B`
+  obtain ⟨Cω, hCω⟩ := hωc.bounded_above_of_compact_support hωs
+  set CI : (Fin n → Fin N') → ℝ :=
+    fun I => Cω * ∏ c, ‖(EuclideanSpace.single (I c) (1 : ℝ) : Euclid N')‖ with hCI
+  have hωIc : ∀ I, Continuous (ωI I) := fun I => hωc.eval_const _
+  have hωIb : ∀ I y, |ωI I y| ≤ CI I := by
+    intro I y
+    rw [← Real.norm_eq_abs]
+    exact ((ω y).le_opNorm _).trans
+      (mul_le_mul_of_nonneg_right (hCω y) (Finset.prod_nonneg fun c _ => norm_nonneg _))
+  set B : ℝ := (n.factorial : ℝ) *
+    ((L : ℝ) * ∑ b : Fin n, ‖(EuclideanSpace.single b (1 : ℝ) : Euclid n)‖) ^ n with hB
+  have hΔmb : ∀ I K, LipschitzWith L K → Measurable (Δ I K) ∧ ∀ u, |Δ I K u| ≤ B :=
+    fun I K hK => Submission.dor_lmb_fcd_jwc_minor_measurable_bound n n L (fun c y => K y (I c))
+      (fun b => EuclideanSpace.single b 1) fun c => hcoord K hK (I c)
+  -- Step 4: `n! ω(K u)(DK(u) e) = Σ_I ω_I(K u) Δ_I(K)(u)` wherever `K` is differentiable
+  have hexp : ∀ (K : Euclid n → Euclid N') (u : Euclid n), DifferentiableAt ℝ K u →
+      (n.factorial : ℝ) * ω (K u) (fun a => fderiv ℝ K u (EuclideanSpace.single a 1)) =
+        ∑ I : Fin n → Fin N', ωI I (K u) * Δ I K u := by
+    intro K u hK
+    have hcd : ∀ (i : Fin N') (v : Euclid n),
+        fderiv ℝ (fun y => K y i) u v = fderiv ℝ K u v i := by
+      intro i v
+      have h := ((EuclideanSpace.proj i : Euclid N' →L[ℝ] ℝ).hasFDerivAt.comp u
+        hK.hasFDerivAt).fderiv
+      exact congrArg (fun T : Euclid n →L[ℝ] ℝ => T v) h
+    rw [Submission.dor_lmb_fcd_jwc_covector_det_expansion N' n (ω (K u))
+      (fun a => fderiv ℝ K u (EuclideanSpace.single a 1))]
+    simp only [hΔ, hωI, hcd]
+  -- Step 4: hence `∫ w ω(K)(DK e) = (n!)⁻¹ Σ_I ∫ w ω_I(K) Δ_I(K)` (Rademacher)
+  have hint : ∀ K : Euclid n → Euclid N', LipschitzWith L K →
+      ∫ u, w u * ω (K u) (fun a => fderiv ℝ K u (EuclideanSpace.single a 1)) =
+        (n.factorial : ℝ)⁻¹ * ∑ I : Fin n → Fin N', ∫ u, w u * (ωI I (K u) * Δ I K u) := by
+    intro K hK
+    have hfac : (n.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.2 (Nat.factorial_ne_zero n)
+    have hterm : ∀ I, Integrable (fun u => w u * (ωI I (K u) * Δ I K u)) := fun I =>
+      hw.mul_bdd (((hωIc I).comp hK.continuous).aestronglyMeasurable.mul
+        (hΔmb I K hK).1.aestronglyMeasurable) (Eventually.of_forall fun u => by
+          rw [Real.norm_eq_abs, abs_mul]
+          exact mul_le_mul (hωIb I (K u)) ((hΔmb I K hK).2 u) (abs_nonneg _)
+            ((abs_nonneg _).trans (hωIb I (K u))))
+    rw [← integral_finsetSum _ fun I _ => hterm I, ← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [hK.ae_differentiableAt (μ := volume)] with u hu
+    rw [← Finset.mul_sum, ← hexp K u hu, mul_left_comm, inv_mul_cancel_left₀ hfac]
+  -- Step 5: convergence for a fixed `I`
+  have hI : ∀ I : Fin n → Fin N', Tendsto (fun j => ∫ u, w u * (ωI I (Hs j u) * Δ I (Hs j) u))
+      atTop (𝓝 (∫ u, w u * (ωI I (H u) * Δ I H u))) := by
+    intro I
+    -- the weight `w ω_I(H)` is integrable
+    have hφ : Integrable (fun u => w u * ωI I (H u)) :=
+      hw.mul_bdd ((hωIc I).comp hH.continuous).aestronglyMeasurable
+        (Eventually.of_forall fun u => by rw [Real.norm_eq_abs]; exact hωIb I (H u))
+    have hφΔ : ∀ j, Integrable (fun u => (w u * ωI I (H u)) * Δ I (Hs j) u) := fun j =>
+      hφ.mul_bdd (hΔmb I (Hs j) (hHs j)).1.aestronglyMeasurable (Eventually.of_forall fun u => by
+        rw [Real.norm_eq_abs]; exact (hΔmb I (Hs j) (hHs j)).2 u)
+    -- the error term `w (ω_I(H_j) − ω_I(H)) Δ_I(H_j)` is dominated by `2 C_I B |w|`
+    have hdiff : ∀ y y', |ωI I y - ωI I y'| ≤ CI I + CI I := fun y y' =>
+      (abs_sub _ _).trans (add_le_add (hωIb I y) (hωIb I y'))
+    have hG : ∀ j u, ‖(ωI I (Hs j u) - ωI I (H u)) * Δ I (Hs j) u‖ ≤ (CI I + CI I) * B := by
+      intro j u
+      rw [Real.norm_eq_abs, abs_mul]
+      exact mul_le_mul (hdiff _ _) ((hΔmb I (Hs j) (hHs j)).2 u) (abs_nonneg _)
+        ((abs_nonneg _).trans (hdiff (H u) (H u)))
+    have hGm : ∀ j, AEStronglyMeasurable (fun u => (ωI I (Hs j u) - ωI I (H u)) * Δ I (Hs j) u)
+        volume := fun j =>
+      ((((hωIc I).comp (hHs j).continuous).sub
+        ((hωIc I).comp hH.continuous)).aestronglyMeasurable).mul
+          (hΔmb I (Hs j) (hHs j)).1.aestronglyMeasurable
+    have hF : ∀ j, Integrable (fun u => w u * ((ωI I (Hs j u) - ωI I (H u)) * Δ I (Hs j) u)) :=
+      fun j => hw.mul_bdd (hGm j) (Eventually.of_forall (hG j))
+    -- first term `→ 0` by dominated convergence
+    have h1 : Tendsto (fun j => ∫ u, w u * ((ωI I (Hs j u) - ωI I (H u)) * Δ I (Hs j) u)) atTop
+        (𝓝 0) := by
+      have h := tendsto_integral_of_dominated_convergence (μ := volume)
+        (F := fun j u => w u * ((ωI I (Hs j u) - ωI I (H u)) * Δ I (Hs j) u))
+        (f := fun _ => (0 : ℝ)) (fun u => ‖w u‖ * ((CI I + CI I) * B))
+        (fun j => (hF j).aestronglyMeasurable) (hw.norm.mul_const _)
+        (fun j => Eventually.of_forall fun u => by
+          rw [norm_mul]
+          exact mul_le_mul_of_nonneg_left (hG j u) (norm_nonneg _))
+        (Eventually.of_forall fun u => by
+          refine squeeze_zero_norm' (Eventually.of_forall fun j => ?_) (a := fun j =>
+            ‖w u‖ * (|ωI I (Hs j u) - ωI I (H u)| * B)) ?_
+          · rw [norm_mul, Real.norm_eq_abs (_ * _), abs_mul]
+            exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+              ((hΔmb I (Hs j) (hHs j)).2 u) (abs_nonneg _)) (norm_nonneg _)
+          · have h := (((((hωIc I).tendsto (H u)).comp (hconv.tendsto_at u)).sub_const
+              (ωI I (H u))).abs.mul_const B).const_mul ‖w u‖
+            simpa using h)
+      simpa using h
+    -- second term by the weak continuity of Jacobian minors, with the `L¹` weight `w ω_I(H)`
+    have h2 : Tendsto (fun j => ∫ u, (w u * ωI I (H u)) * Δ I (Hs j) u) atTop
+        (𝓝 (∫ u, (w u * ωI I (H u)) * Δ I H u)) :=
+      Submission.dimred_mbl_dt_lp_jc_minor_weak_continuity n n L (fun j c y => Hs j y (I c))
+        (fun c y => H y (I c)) (fun b => EuclideanSpace.single b 1)
+        (fun u => w u * ωI I (H u)) hφ (fun j c => hcoord (Hs j) (hHs j) (I c))
+        (fun c => hcoord H hH (I c)) (fun c => hcoordconv (I c))
+    have h3 := h1.add h2
+    rw [zero_add] at h3
+    have hlim : ∫ u, w u * (ωI I (H u) * Δ I H u) = ∫ u, (w u * ωI I (H u)) * Δ I H u := by
+      congr 1; funext u; ring
+    rw [hlim]
+    refine h3.congr' (Eventually.of_forall fun j => ?_)
+    rw [← integral_add (hF j) (hφΔ j)]
+    congr 1; funext u; ring
+  -- Step 7: sum over `I` and multiply by `(n!)⁻¹`
+  have hj : (fun j => ∫ u, w u * ω (Hs j u) (fun a => fderiv ℝ (Hs j) u
+      (EuclideanSpace.single a 1))) = fun j => (n.factorial : ℝ)⁻¹ *
+        ∑ I : Fin n → Fin N', ∫ u, w u * (ωI I (Hs j u) * Δ I (Hs j) u) :=
+    funext fun j => hint (Hs j) (hHs j)
+  rw [hj, hint H hH]
+  exact (tendsto_finsetSum _ fun I _ => hI I).const_mul _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
