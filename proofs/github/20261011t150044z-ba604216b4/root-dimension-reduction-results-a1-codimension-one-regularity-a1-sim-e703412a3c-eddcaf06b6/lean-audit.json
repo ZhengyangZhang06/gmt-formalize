@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "39f235192d1dffffa9607f63d9ea1e4c1f6eac02fdac2e4be7381ab1a743ad11",
+  "git_delta": {
+    "base_commit": "e1bdbb27c63fd844478cced62f8ad8c25119db61",
+    "candidate_commit": "8ae3846d21b109b6a389364502d2053783c3cb1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_af_chart_area_formula",
+    "diff_sha256": "7c6571788472125311bfa62a68d9694567b62c37b1efd2d02839170d9b2bd442",
+    "source_sha256": "116a979c558d68b5412311ebd7eecda5b68eebe85d3287dec9b5a171bf1870ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_af_chart_area_formula",
+      "statement": "∀ (P m : ℕ) (M E W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Φ : Euclid P → Euclid P), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → MeasurableSet E → E ⊆ W ∩ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) = ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
