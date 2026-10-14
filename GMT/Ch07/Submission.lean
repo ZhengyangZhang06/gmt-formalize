@@ -3399,95 +3399,6 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
       exact hατ
     · rw [h α, abs_neg]
       exact hατ
-/-- **`∫_Q g dHⁿ > 0` for a nonnegative `C_c` function `g` with `g(w) > 0` at a point `w` of an
-`n`-plane `Q`** (step 4 of the proof that approximate tangent planes of a submanifold lie in its
-tangent spaces; Simon Ch. 3, 1.4).  `Hⁿ⌞Q` is regular with support `Q` (SimonGMT Ch. 3), so `g` is
-`Hⁿ⌞Q`-integrable and the open set `{g ≠ 0} ∋ w` has positive `Hⁿ⌞Q`-measure. -/
-theorem Submission.dsmc_att_setIntegral_submodule_pos : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (w : Euclid P), Module.finrank ℝ Q = n → Continuous g → HasCompactSupport g → (∀ y, 0 ≤ g y) → w ∈ Q → 0 < g w → 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
-  intro P n Q g w hQ hg hgc hg0 hw hgw
-  -- `Hⁿ⌞Q` is regular, hence finite on compact sets, so the `C_c` function `g` is integrable.
-  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ
-  rw [integral_pos_iff_support_of_nonneg hg0 (hg.integrable_of_hasCompactSupport hgc)]
-  -- `w ∈ Q = spt(Hⁿ⌞Q)` and `{g ≠ 0}` is an open neighbourhood of `w`.
-  have hwμ : w ∈ ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).support := by
-    rwa [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ]
-  exact (Measure.mem_support_iff_forall _).1 hwμ _ (hg.isOpen_support.mem_nhds hgw.ne')
-/-- Blow-up maps preserve `Hⁿ`-null sets: if `λ ≠ 0` and `Hⁿ(E) = 0`, then `Hⁿ(η_{x,λ}(E)) = 0`.
-Since `η_{x,λ}(E) = λ⁻¹ · (E − x)`, the translation `y ↦ y − x` is an isometry (so
-`Hⁿ(E − x) = Hⁿ(E) = 0`) and the dilation by `λ⁻¹ ≠ 0` multiplies `Hⁿ` by `|λ⁻¹|ⁿ`. -/
-theorem Submission.dsmc_att_blowUpMap_image_null : ∀ (P n : ℕ) (E : Set (Euclid P)) (x : Euclid P) (lam : ℝ), lam ≠ 0 → μHE[n] E = 0 → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E) = 0 := by
-  intro P n E x lam hlam hE
-  -- Step 1: `η_{x,λ}(E) = λ⁻¹ · τ(E)`, where `τ y = y − x`
-  have himage : Poincare.SimonGMT.Chapter03.blowUpMap x lam '' E =
-      (fun z : Euclid P => lam⁻¹ • z) '' ((fun y : Euclid P => y - x) '' E) := by
-    rw [Set.image_image]
-    rfl
-  -- Step 2: `τ` is an isometry, so `Hⁿ(τ(E)) = Hⁿ(E) = 0`
-  have hτ : Isometry (fun y : Euclid P => y - x) := (IsometryEquiv.subRight x).isometry
-  have htrans : μHE[n] ((fun y : Euclid P => y - x) '' E) = 0 := by
-    rw [hτ.euclideanHausdorffMeasure_image, hE]
-  -- Steps 3–4: `Hⁿ(λ⁻¹ · τ(E)) = ‖λ⁻¹‖₊ⁿ • Hⁿ(τ(E)) = 0`
-  rw [himage, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam), htrans,
-    smul_zero]
-
-/-- **Blow-ups of `M ∩ N` approach every vector of an approximate tangent space** (Simon Ch. 3,
-Definition 1.4, chapter-03.txt lines 77–83, tested as in Remark 1.5(3), lines 90–92).  If
-`Hⁿ(M \ N) = 0`, `Q` is an approximate tangent space of `M` at `x`, `w ∈ Q` and `s > 0`, then for
-all small `λ > 0` some `y ∈ M ∩ N` has `|λ⁻¹(y − x) − w| < s`.  The tent `f = max(0, s − |· − w|)`
-lies in `C_c`, vanishes off `B_s(w)` and has `∫_Q f dHⁿ > 0`, so `∫_{η_{x,λ}(M)} f dHⁿ > 0` for
-small `λ`; hence `Hⁿ(η_{x,λ}(M) ∩ B_s(w)) ≠ 0`, and since `η_{x,λ}(M \ N)` is `Hⁿ`-null,
-`η_{x,λ}(M ∩ N)` meets `B_s(w)`. -/
-theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M N : Set (Euclid P)) (x w : Euclid P) (Q : Submodule ℝ (Euclid P)), μHE[n] (M \ N) = 0 → HasApproximateTangentSpaceAt n M x Q → w ∈ Q → ∀ s : ℝ, 0 < s → ∃ lam₀ : ℝ, 0 < lam₀ ∧ ∀ lam : ℝ, 0 < lam → lam < lam₀ → ∃ y ∈ M ∩ N, ‖lam⁻¹ • (y - x) - w‖ < s := by
-  intro P n M N x w Q hMN hQ hw s hs
-  -- the tent `g = max(0, s − |· − w|)`: continuous, `g ≥ 0`, `g(w) = s` and `{g ≠ 0} ⊆ B_s(w)`
-  set g : Euclid P → ℝ := fun y => max 0 (s - ‖y - w‖)
-  have hg_cont : Continuous g :=
-    continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).norm)
-  have hg_nonneg : ∀ y, 0 ≤ g y := fun y => le_max_left _ _
-  have hg_ball : ∀ y, g y ≠ 0 → y ∈ ball w s := by
-    intro y hy
-    rw [mem_ball, dist_eq_norm]
-    by_contra h
-    exact hy (max_eq_left (by linarith [not_lt.mp h]))
-  have hg_supp : HasCompactSupport g :=
-    HasCompactSupport.intro (isCompact_closedBall w s) fun y hy =>
-      not_not.mp fun h => hy (ball_subset_closedBall (hg_ball y h))
-  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_supp⟩
-  -- `∫_Q f dHⁿ > 0`, hence `∫_{η_{x,λ}(M)} f dHⁿ > 0` for every `λ ∈ (0, λ₀)`
-  have hI : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] :=
-    Submission.dsmc_att_setIntegral_submodule_pos P n Q g w hQ.1 hg_cont hg_supp hg_nonneg hw
-      (by simp [g, hs])
-  obtain ⟨lam₀, hlam₀, hpos⟩ :=
-    mem_nhdsGT_iff_exists_Ioo_subset.mp ((hQ.2 f).eventually (lt_mem_nhds hI))
-  refine ⟨lam₀, hlam₀, fun lam hlam hlam₀' => ?_⟩
-  set η := Poincare.SimonGMT.Chapter03.blowUpMap x lam with hη
-  -- a positive integral of `f` over `η(M)` forces `Hⁿ(η(M) ∩ B_s(w)) ≠ 0`
-  have hball : μHE[n] (η '' M ∩ ball w s) ≠ 0 := by
-    intro h0
-    have hF : 0 < ∫ y in η '' M, f y ∂μHE[n] := hpos ⟨hlam, hlam₀'⟩
-    have hF0 : ∫ y in η '' M, f y ∂μHE[n] = 0 := by
-      apply integral_eq_zero_of_ae
-      rw [EventuallyEq, ae_iff]
-      refine measure_mono_null (fun y hy => hg_ball y hy) ?_
-      rw [Measure.restrict_apply measurableSet_ball, inter_comm]
-      exact h0
-    exact hF.ne' hF0
-  -- `η(M \ N)` is `Hⁿ`-null and `η(M) ∩ B_s(w) ⊆ (η(M ∩ N) ∩ B_s(w)) ∪ η(M \ N)`
-  have hnull : μHE[n] (η '' (M \ N)) = 0 :=
-    Submission.dsmc_att_blowUpMap_image_null P n (M \ N) x lam hlam.ne' hMN
-  have hcov : η '' M ∩ ball w s ⊆ (η '' (M ∩ N) ∩ ball w s) ∪ η '' (M \ N) := by
-    rintro z ⟨⟨y, hyM, rfl⟩, hz⟩
-    by_cases hyN : y ∈ N
-    · exact Or.inl ⟨⟨y, ⟨hyM, hyN⟩, rfl⟩, hz⟩
-    · exact Or.inr ⟨y, ⟨hyM, hyN⟩, rfl⟩
-  have hne : μHE[n] (η '' (M ∩ N) ∩ ball w s) ≠ 0 := fun h0 =>
-    hball (measure_mono_null hcov (measure_union_null h0 hnull))
-  -- so `η(M ∩ N)` meets `B_s(w)`
-  obtain ⟨z, ⟨y, hy, rfl⟩, hz⟩ := nonempty_of_measure_ne_zero hne
-  refine ⟨y, hy, ?_⟩
-  rw [mem_ball, dist_eq_norm] at hz
-  simpa [hη, Poincare.SimonGMT.Chapter03.blowUpMap] using hz
-
 /-- **A unit orientation paired with a pulled-back covector** (Simon Ch. 6, 1.8–1.10 and
 3.3–3.4: `⟨L^#α, ξ⟩ = ⟨α, L_#ξ⟩` with `L_#(τ₁ ∧ ⋯ ∧ τₙ) = Lτ₁ ∧ ⋯ ∧ Lτₙ`).  Write
 `ξ(β) = ±β(τ)` with `τ` an orthonormal basis of `Q`, and `α ∘ L = α.compContinuousLinearMap L`.
@@ -3725,34 +3636,6 @@ theorem Submission.dimred_mbl_pf_pushforward_mass_le : ∀ (P n : ℕ) (O : Set 
         ENNReal.ofReal_le_ofReal ((Real.le_norm_self _).trans hZω)
     _ = ENNReal.ofReal (L ^ n) * R.measure univ := by
         rw [ENNReal.ofReal_mul' ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hfin']
-/-- **A unit orientation paired with a pulled-back covector** (Simon Ch. 6, 1.8–1.10 and
-3.3–3.4: `⟨L^#α, ξ⟩ = ⟨α, L_#ξ⟩` with `L_#(τ₁ ∧ ⋯ ∧ τₙ) = Lτ₁ ∧ ⋯ ∧ Lτₙ`).  Write
-`ξ(β) = ±β(τ)` with `τ` an orthonormal basis of `Q`, and `α ∘ L = α.compContinuousLinearMap L`.
-(a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E` (`regcomp_covector_eval_orthonormal_le`,
-then `dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le`).  (b) If `L` fixes `Q` pointwise, then
-`Lτᵢ = τᵢ` since `τᵢ ∈ span τ = Q`, so `(α ∘ L)(τ) = α(Lτ₁, …, Lτₙ) = α(τ)` and
-`ξ(α ∘ L) = ξ(α)`. -/
-theorem Submission.dimred_mbl_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α) := by
-  intro P n ξ Q L hξ
-  -- `ξ(β) = ±β(τ)` with one sign, `τ` an orthonormal basis of `Q`; hence `|ξ(β)| = |β(τ)|`
-  obtain ⟨τ, hτ, hspan, hsign⟩ := hξ
-  have habs : ∀ β : Covector (Euclid P) n, |ξ β| = |β τ| := by
-    intro β
-    rcases hsign with h | h
-    · rw [h]
-    · rw [h, abs_neg]
-  refine ⟨fun α => ?_, fun hL α => ?_⟩
-  · -- (a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E`
-    rw [habs, mul_comm]
-    exact (Submission.regcomp_covector_eval_orthonormal_le P n (α.compContinuousLinearMap L) τ
-      hτ).trans (Submission.dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le P P n L α)
-  · -- (b) `τᵢ ∈ span τ = Q` is fixed by `L`, so `(α ∘ L)(τ) = α(L ∘ τ) = α(τ)`
-    have hLτ : ⇑L ∘ τ = τ := funext fun i =>
-      hL (τ i) (hspan ▸ Submodule.subset_span ⟨i, rfl⟩)
-    have hτα : (α.compContinuousLinearMap L) τ = α τ := by
-      rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
-    rcases hsign with h | h <;> rw [h, h, hτα]
-
 /-- **A push-forward by a `C¹` map fixing `spt Y` pointwise is `Y`** (Simon Ch. 6, 2.24(2)–(3)
 and 3.3; approximate tangent spaces as in Ch. 3, 1.4).  Let `Y = τ(M, θ, ξ)`, `spt Y ⊆ O` with `O`
 open, `f ∈ C¹(O)` fix `spt Y` pointwise and `Z(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ`.  Since
