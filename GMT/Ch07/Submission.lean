@@ -8134,6 +8134,51 @@ theorem Submission.dor_lmb_imrep_restrict_current : ∀ (P n : ℕ) (U A : Set (
   simp only [IMRep.measure, hc, hm]
   rw [restrict_withDensity hA, Measure.restrict_restrict hA, inter_comm]
 
+/-- **Slicing by a Lipschitz function** (Simon Ch. 6, 4.1–4.5, chapter-06.txt lines 1156–1310),
+assuming (C1): `M_W(T) = μ_R(W)` for open `W` and `spt T = U ∩ spt μ_R` whenever `R` represents
+`T`.  If `T = τ(M, θ, ξ) ∈ 𝒟_{n+1}(U)`, `∂T = τ(M', θ', ξ')` and `f` is `L`-Lipschitz, there are
+`P_t ∈ 𝒟ₙ(U)` with `∫ M_W(P_t) dt ≤ L M_W(T)` for every open `W` such that, for `L¹`-a.e. `t`,
+`P_t` is integer multiplicity, `P_t(ω) = 0` if `spt ω ∩ f⁻¹(t) = ∅`, and
+`P_t(ω) = ∫_{M ∩ {f < t}} θ⟨dω, ξ⟩ dH^{n+1} − ∫_{M' ∩ {f < t}} θ'⟨ω, ξ'⟩ dHⁿ` (Simon 4.5(2)).
+
+The slices `R_t = (M_t, θ_t, ξ_t)`, `M_t ⊆ f⁻¹(t)`, satisfy `∫ μ_{R_t}(W) dt ≤ L μ_T(W)` (co-area)
+and the averaged identity for the cut-offs `γ_{a,b}(f)`.  `P_t` is the current represented by
+`R_t ⌞ ℝᴾ`, which has the data of `R_t`, so `M_W(P_t) = μ_{R_t}(W)` by (C1).  `P_t(ω) = 0` when
+`ω` vanishes on `M_t ⊆ f⁻¹(t)`.  Lebesgue differentiation of the averaged identity, with a null
+set independent of `ω`, gives the slice identity for a.e. `t`. -/
+theorem Submission.dor_lmb_slicing_lipschitz : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+  intro hC1 P n U T RT RB f L hU hRT hRB hf
+  -- Steps 1, 2(a)–(c), 4(b)–(c), 5(a)–(f): slices `R_t = (M_t, θ_t, ξ_t)` with `M_t ⊆ f⁻¹(t)`,
+  -- the co-area mass bound and the averaged slice identity
+  obtain ⟨Rs, hcarrier, hmass, hint, havg⟩ := Submission.dor_lmbs_imrep_slice_family
+    Submission.dor_lmb_approx_tangent_locality P n U T RT RB f L hU hRT hRB hf
+  -- Step 2(d): `P_t` is the current represented by `R_t ⌞ ℝᴾ` (borel_restriction, `A = ℝᴾ`)
+  choose Ps Rs' hrep hcarrier' hmult' horient' hmeasure' using fun t =>
+    Submission.dor_lmb_imrep_restrict_current P n U univ (Rs t) hU MeasurableSet.univ
+  -- `R_t ⌞ ℝᴾ` has the carrier, multiplicity and orientation of `R_t`, so `P_t(ω) = τ(R_t)(ω)`
+  have hPs : ∀ t (ω : TestFormOn U n),
+      Ps t ω = (Rs t).action (ω : DifferentialForm (Euclid P) n) := by
+    intro t ω
+    rw [hrep t ω]
+    simp only [IMRep.action, hcarrier' t, hmult' t, horient' t, inter_univ]
+  refine ⟨Ps, fun W hW => ?_, ?_⟩
+  · -- Step 4: `M_W(P_t) = μ_{R_t ⌞ ℝᴾ}(W) = μ_{R_t}(W)` and `M_W(T) = μ_T(W)` by (C1)
+    have hPW : (fun t => (Ps t).massOn W) = fun t => (Rs t).measure W := by
+      funext t
+      rw [(hC1 P n U (Ps t) (Rs' t) hU (hrep t)).1 W hW, hmeasure' t, Measure.restrict_univ]
+    rw [hPW, (hC1 P (n + 1) U T RT hU hRT).1 W hW]
+    exact hmass W hW.measurableSet
+  · -- Steps 5(g) and 6: the slice identity for a.e. `t`, for all `ω` at once
+    filter_upwards [Submission.dor_lmbs_slice_identity_of_averages P n U RT RB Rs f hU
+      hf.continuous.measurable (fun ω => (hint ω).locallyIntegrable) havg] with t ht
+    -- Step 2(c): `R_t ⌞ ℝᴾ` is an integer multiplicity triple representing `P_t`
+    refine ⟨⟨Rs' t, hrep t⟩, fun ω hω => ?_, fun ω => (hPs t ω).trans (ht ω)⟩
+    -- Step 3: if `spt ω ∩ f⁻¹(t) = ∅`, then `ω = 0` on `M_t ⊆ f⁻¹(t)`
+    rw [hPs t ω, IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport fun hxω => disjoint_left.1 hω hxω (hcarrier t hx),
+      map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
