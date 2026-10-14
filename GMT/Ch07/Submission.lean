@@ -2937,6 +2937,277 @@ theorem Submission.cmcdtfr_polyhedral_im : (∀ (P n : ℕ) (U : Set (Euclid P))
     calc (1 : ℝ) ≤ |(β p : ℝ)| := by exact_mod_cast Int.one_le_abs (hS p hp).2
       _ ≤ ∑ q ∈ s, |(β q : ℝ)| :=
         Finset.single_le_sum (f := fun q => |(β q : ℝ)|) (fun q _ => abs_nonneg _) (hS p hp).1
+/-- **Fundamental theorem of calculus in one coordinate on the open unit cube.**  For `G ∈ C¹` on
+`ℝ^{k+1}` and a coordinate `i`, `∂ᵢG = DG(·)eᵢ` is integrable on `Q^{k+1} = (0, 1)^{k+1}` and
+`∫_{Q^{k+1}} ∂ᵢG = ∫_{Q^k} G(·, xᵢ = 1) − ∫_{Q^k} G(·, xᵢ = 0)`.  The measure-preserving `toLp`
+carries the open boxes of `Fin d → ℝ` onto the cubes, `(t, z) ↦ insertNth i t z` splits off the
+`i`-th coordinate, Fubini puts the `t`-integral inside, and along each line
+`t ↦ insertNth i t z = insertNth i 0 z + t eᵢ` the fundamental theorem of calculus applies. -/
+theorem Submission.cmcdtfrcb_cube_partial_ftc : ∀ (k : ℕ) (i : Fin (k + 1)) (G : Euclid (k + 1) → ℝ), ContDiff ℝ 1 G → IntegrableOn (fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ))) {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1} ∧ ∫ y in {y : Euclid (k + 1) | ∀ j, 0 < y j ∧ y j < 1}, fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) = (∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (1 : ℝ) (WithLp.ofLp y)))) - ∫ y in {y : Euclid k | ∀ j, 0 < y j ∧ y j < 1}, G (WithLp.toLp 2 (Fin.insertNth i (0 : ℝ) (WithLp.ofLp y))) := by
+  intro k i G hG
+  have hGd : Differentiable ℝ G := hG.differentiable one_ne_zero
+  have hg : Continuous fun y => fderiv ℝ G y (EuclideanSpace.single i (1 : ℝ)) :=
+    (hG.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  -- the open box of `Fin d → ℝ` lies in the compact box `Icc 0 1`
+  have hBsub : ∀ d : ℕ, {x : Fin d → ℝ | ∀ j, 0 < x j ∧ x j < 1} ⊆ Icc 0 1 :=
+    fun d x hx => ⟨fun j => (hx j).1.le, fun j => (hx j).2.le⟩
+  -- `toLp` transports the open box of `Fin d → ℝ` onto the open cube of `Euclid d`
+  have htr : ∀ (d : ℕ) (f : Euclid d → ℝ), ∫ y in {y : Euclid d | ∀ j, 0 < y j ∧ y j < 1}, f y
+      = ∫ x in {x : Fin d → ℝ | ∀ j, 0 < x j ∧ x j < 1}, f (WithLp.toLp 2 x) := fun d f =>
+    ((PiLp.volume_preserving_toLp (Fin d)).setIntegral_preimage_emb
+      (MeasurableEquiv.toLp 2 (Fin d → ℝ)).measurableEmbedding f _).symm
+  -- the faces `xᵢ = c` in the coordinates of `Fin k → ℝ`
+  have hface : ∀ c : ℝ, IntegrableOn (fun z : Fin k → ℝ => G (WithLp.toLp 2 (Fin.insertNth i c z)))
+      {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1} := fun c =>
+    ((hG.continuous.comp ((PiLp.continuous_toLp 2 _).comp
+      (Continuous.finInsertNth i continuous_const continuous_id))).continuousOn.integrableOn_compact
+        isCompact_Icc).mono_set (hBsub k)
+  refine ⟨?_, ?_⟩
+  · refine (hg.continuousOn.integrableOn_compact
+      ((isCompact_Icc (a := (0 : Fin (k + 1) → ℝ)) (b := 1)).image
+        (PiLp.continuous_toLp 2 _))).mono_set ?_
+    intro y hy
+    exact ⟨WithLp.ofLp y, ⟨fun j => (hy j).1.le, fun j => (hy j).2.le⟩, rfl⟩
+  -- the line `t ↦ insertNth i t z` is affine with direction `eᵢ`
+  have hline : ∀ (z : Fin k → ℝ) (t : ℝ), (WithLp.toLp 2 (Fin.insertNth i t z) : Euclid (k + 1))
+      = WithLp.toLp 2 (Fin.insertNth i 0 z) + t • EuclideanSpace.single i (1 : ℝ) := by
+    intro z t
+    ext j
+    rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨l, rfl⟩
+    · simp
+    · simp [Fin.succAbove_ne]
+  -- the fundamental theorem of calculus along each line
+  have hftc : ∀ z : Fin k → ℝ, ∫ t in Ioo (0 : ℝ) 1,
+      fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ))
+        = G (WithLp.toLp 2 (Fin.insertNth i 1 z)) - G (WithLp.toLp 2 (Fin.insertNth i 0 z)) := by
+    intro z
+    have hderiv : ∀ t : ℝ, HasDerivAt (fun t : ℝ => G (WithLp.toLp 2 (Fin.insertNth i t z)))
+        (fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ))) t := by
+      intro t
+      have hγ : HasDerivAt (fun t : ℝ => (WithLp.toLp 2 (Fin.insertNth i t z) : Euclid (k + 1)))
+          (EuclideanSpace.single i (1 : ℝ)) t := by
+        have h := ((hasDerivAt_id t).smul_const (EuclideanSpace.single i (1 : ℝ))).const_add
+          (WithLp.toLp 2 (Fin.insertNth i 0 z) : Euclid (k + 1))
+        rw [one_smul] at h
+        convert h using 1
+        funext s
+        exact hline z s
+      exact (hGd _).hasFDerivAt.comp_hasDerivAt t hγ
+    rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le zero_le_one]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      ((hg.comp ((PiLp.continuous_toLp 2 _).comp
+        (Continuous.finInsertNth i continuous_id continuous_const))).intervalIntegrable 0 1)
+  -- splitting off the `i`-th coordinate
+  have hmp : MeasurePreserving
+      (fun p : ℝ × (Fin k → ℝ) => (Fin.insertNth i p.1 p.2 : Fin (k + 1) → ℝ)) volume volume :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (k + 1) => ℝ) i).symm _
+  have hemb : MeasurableEmbedding
+      (fun p : ℝ × (Fin k → ℝ) => (Fin.insertNth i p.1 p.2 : Fin (k + 1) → ℝ)) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (k + 1) => ℝ) i).symm.measurableEmbedding
+  have hpre : (fun p : ℝ × (Fin k → ℝ) => (Fin.insertNth i p.1 p.2 : Fin (k + 1) → ℝ)) ⁻¹'
+      {x | ∀ j, 0 < x j ∧ x j < 1} = Ioo (0 : ℝ) 1 ×ˢ {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1} := by
+    ext ⟨t, z⟩
+    simp only [mem_preimage, mem_ofPred_eq, mem_prod, mem_Ioo]
+    rw [Fin.forall_iff_succAbove i]
+    simp only [Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove]
+  have hint : Integrable
+      (fun p : ℝ × (Fin k → ℝ) =>
+        fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i p.1 p.2)) (EuclideanSpace.single i (1 : ℝ)))
+      ((volume.restrict (Ioo (0 : ℝ) 1)).prod
+        (volume.restrict {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1})) := by
+    rw [Measure.prod_restrict]
+    exact ((hg.comp ((PiLp.continuous_toLp 2 _).comp
+      (Continuous.finInsertNth i continuous_fst continuous_snd))).continuousOn.integrableOn_compact
+        (isCompact_Icc.prod isCompact_Icc)).mono_set (prod_mono Ioo_subset_Icc_self (hBsub k))
+  rw [htr (k + 1), htr k, htr k]
+  calc ∫ x in {x : Fin (k + 1) → ℝ | ∀ j, 0 < x j ∧ x j < 1},
+        fderiv ℝ G (WithLp.toLp 2 x) (EuclideanSpace.single i (1 : ℝ))
+      = ∫ p in Ioo (0 : ℝ) 1 ×ˢ {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1},
+          fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i p.1 p.2))
+            (EuclideanSpace.single i (1 : ℝ)) := by
+        rw [← hpre]
+        exact (hmp.setIntegral_preimage_emb hemb
+          (fun x => fderiv ℝ G (WithLp.toLp 2 x) (EuclideanSpace.single i (1 : ℝ))) _).symm
+    _ = ∫ z in {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1}, ∫ t in Ioo (0 : ℝ) 1,
+          fderiv ℝ G (WithLp.toLp 2 (Fin.insertNth i t z)) (EuclideanSpace.single i (1 : ℝ)) := by
+        rw [Measure.volume_eq_prod, ← Measure.prod_restrict]
+        exact integral_prod_symm _ hint
+    _ = ∫ z in {z : Fin k → ℝ | ∀ j, 0 < z j ∧ z j < 1},
+          (G (WithLp.toLp 2 (Fin.insertNth i 1 z)) - G (WithLp.toLp 2 (Fin.insertNth i 0 z))) :=
+        integral_congr_ae (Eventually.of_forall hftc)
+    _ = _ := integral_sub (hface 1) (hface 0)
+/-- Along the affine coordinate cube `Φ y = a + Σⱼ yⱼ e_{ι j}`, the exterior derivative of a `C¹`
+`m`-form `γ` on `E = (e_{ι j})ⱼ` is the divergence `Σᵢ ∂ᵢFᵢ` of the coefficient fields
+`Fᵢ(y) = (-1)ⁱ γ(Φ y)(E ∘ succAbove i)`, and each `Fᵢ` is `C¹`.  `Φ = a + L` with `L` continuous
+linear and `L eᵢ = e_{ι i}`; expand `dγ(Φ y)(E)` by `exteriorDerivative_apply`
+(`removeNth i E = E ∘ succAbove i`) and apply the chain rule to `Fᵢ`. -/
+theorem Submission.cmcdtfrcb_pullback_divergence : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (a : Euclid P) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → (∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), fderiv ℝ (fun z : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) y (EuclideanSpace.single i (1 : ℝ)) := by
+  intro P m ι a γ hγ
+  -- `Φ y = a + L y` with `L v = Σⱼ vⱼ e_{ι j}` continuous linear, and `L eᵢ = e_{ι i}`
+  let L : Euclid (m + 1) →L[ℝ] Euclid P :=
+    ∑ j, (EuclideanSpace.proj j).smulRight (EuclideanSpace.single (ι j) (1 : ℝ))
+  have hL : ∀ v : Euclid (m + 1),
+      a + L v = a + ∑ j, v j • EuclideanSpace.single (ι j) (1 : ℝ) := by
+    intro v
+    simp [L]
+  have hΦ : ∀ y : Euclid (m + 1), HasFDerivAt
+      (fun z : Euclid (m + 1) => a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) L y := by
+    intro y
+    simpa only [hL] using (L.hasFDerivAt (x := y)).const_add a
+  have hΦc : ContDiff ℝ 1
+      fun z : Euclid (m + 1) => a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ) := by
+    simpa only [hL] using (contDiff_const (c := a)).add L.contDiff
+  have hLe : ∀ i : Fin (m + 1),
+      L (EuclideanSpace.single i (1 : ℝ)) = EuclideanSpace.single (ι i) (1 : ℝ) := by
+    intro i
+    simp [L]
+  refine ⟨fun i => ?_, fun y => ?_⟩
+  · -- `Fᵢ = (-1)ⁱ · ev_{E ∘ succAbove i} ∘ γ ∘ Φ`, evaluation being continuous linear
+    exact contDiff_const.mul ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+      fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)).contDiff.comp
+        (hγ.comp hΦc))
+  · -- `dγ(Φ y)(E) = Σᵢ (-1)ⁱ D[γ(·)(removeNth i E)](Φ y)(e_{ι i})`; match the terms with the
+    -- chain rule `DFᵢ(y) eᵢ = (-1)ⁱ D[γ(·)(E ∘ succAbove i)](Φ y)(L eᵢ)`
+    rw [exteriorDerivative_apply ((hγ.differentiable one_ne_zero) _)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    set x := a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)
+    set u : Fin m → Euclid P := fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)
+    have hg : HasFDerivAt (fun x' => γ x' u) (fderiv ℝ (fun x' => γ x' u) x) x :=
+      (((hγ.differentiable one_ne_zero) x).continuousAlternatingMap_apply_const u).hasFDerivAt
+    have hF : HasFDerivAt
+        (fun z : Euclid (m + 1) =>
+          (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) u)
+        ((-1 : ℝ) ^ (i : ℕ) • (fderiv ℝ (fun x' => γ x' u) x).comp L) y :=
+      (hg.comp y (hΦ y)).const_mul _
+    -- `removeNth i E = E ∘ succAbove i = u` and `E i = e_{ι i}`
+    show (-1 : ℤ) ^ (i : ℕ) •
+      fderiv ℝ (fun x' => γ x' u) x (EuclideanSpace.single (ι i) (1 : ℝ)) = _
+    rw [hF.fderiv]
+    simp [hLe]
+
+/-- **Stokes' formula for one oriented lattice unit cube** (the cubes of the lattice of Simon
+Ch. 6, §5).  For `Φ(y) = b + Σⱼ yⱼ e_{ι(j)}` on the open unit cube `Q^{m+1}` (`b ∈ ℤᴾ`, `ι`
+arbitrary) and a `C¹` `m`-form `γ`,
+`∫_{Q^{m+1}} dγ(Φ y)(e_{ι(0)}, …, e_{ι(m)}) = Σᵢ (−1)ⁱ (∫_{Q^m} γ(Φ¹ᵢ)(E'ᵢ) − ∫_{Q^m} γ(Φ⁰ᵢ)(E'ᵢ))`,
+where `Φᶜᵢ(y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}` and `E'ᵢ = (e_{ι(succAbove i l)})ₗ`.
+By `cmcdtfrcb_pullback_divergence` the integrand is `Σᵢ ∂ᵢFᵢ` with the `C¹` functions
+`Fᵢ(y) = (−1)ⁱ γ(Φ y)(E'ᵢ)`; `cmcdtfrcb_cube_partial_ftc` integrates each `∂ᵢFᵢ` to the
+difference of the integrals of `Fᵢ` over the faces `yᵢ = 1` and `yᵢ = 0`, and
+`Φ(insertNth i c y') = Φᶜᵢ(y')`. -/
+theorem Submission.cmcdtfrcb_cube_stokes : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) - ∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) := by
+  intro P m ι b γ hγ
+  -- `dγ(Φ y)(E) = Σᵢ ∂ᵢFᵢ(y)`, with every `Fᵢ` of class `C¹`
+  obtain ⟨hC1, hpt⟩ := Submission.cmcdtfrcb_pullback_divergence P m ι
+    (WithLp.toLp 2 (fun k => (b k : ℝ))) γ hγ
+  simp only [hpt]
+  -- each `∂ᵢFᵢ` is integrable on the cube, so the finite sum leaves the integral
+  rw [integral_finsetSum _ fun i _ => (Submission.cmcdtfrcb_cube_partial_ftc m i _ (hC1 i)).1]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- `∫ ∂ᵢFᵢ` is the difference of the face integrals of `Fᵢ` at `yᵢ = 1` and `yᵢ = 0`
+  rw [(Submission.cmcdtfrcb_cube_partial_ftc m i _ (hC1 i)).2]
+  -- `Φ(insertNth i c y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}`
+  have hface : ∀ (c : ℝ) (y : Euclid m),
+      WithLp.toLp 2 (fun k => (b k : ℝ)) +
+          ∑ j, (WithLp.toLp 2 (Fin.insertNth i c (WithLp.ofLp y)) : Euclid (m + 1)) j •
+            EuclideanSpace.single (ι j) (1 : ℝ) =
+        WithLp.toLp 2 (fun k => (b k : ℝ)) + c • EuclideanSpace.single (ι i) (1 : ℝ) +
+          ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ) := by
+    intro c y
+    rw [Fin.sum_univ_succAbove _ i, add_assoc]
+    simp
+  -- the front face is based at `b + e_{ι(i)}`
+  have hbase : WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) =
+      WithLp.toLp 2 (fun k => (b k : ℝ)) + EuclideanSpace.single (ι i) (1 : ℝ) := by
+    ext k
+    by_cases hk : k = ι i
+    · subst hk
+      simp
+    · simp [hk]
+  simp only [hface, one_smul, zero_smul, add_zero, ← hbase]
+  rw [integral_const_mul, integral_const_mul, mul_sub]
+/-- Regrouping the faces of a lattice chain (boundary of an integer polyhedral chain
+`∑_{F ∈ Lₙ} β_F [[F]]`, Simon Ch. 6, 5.1): index an oriented lattice `(m+1)`-cube by `p = (ι, b)`
+with `ι` strictly increasing, and its `i`-th front and back faces by
+`(ι ∘ succAbove i, b + 𝟙_{ι i})` and `(ι ∘ succAbove i, b)`.  Then the signed face sum
+`∑_p β_p ∑_i (-1)ⁱ (I(front) - I(back))` is an integer combination `∑_{q ∈ s'} β'_q I(q)` of
+lattice `m`-cube indices, uniformly in `I`: take for `s'` all the faces and
+`β'_q = ∑_{p,i} β_p (-1)ⁱ ([front = q] - [back = q])`; the `q`-sum then picks out the two faces. -/
+theorem Submission.cmcdtfrcb_face_regroup : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ q ∈ s', StrictMono q.1) ∧ ∀ I : (Fin m → Fin P) × (Fin P → ℤ) → ℝ, ∑ p ∈ s, (β p : ℝ) * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (I (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1) - I (p.1 ∘ Fin.succAbove i, p.2)) = ∑ q ∈ s', (β' q : ℝ) * I q := by
+  classical
+  intro P m s β hs
+  -- the front and back copies of the `i`-th face of `p`
+  set fr : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Fin (m + 1) → (Fin m → Fin P) × (Fin P → ℤ) :=
+    fun p i => (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1)
+  set bk : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Fin (m + 1) → (Fin m → Fin P) × (Fin P → ℤ) :=
+    fun p i => (p.1 ∘ Fin.succAbove i, p.2)
+  -- `s'` is the set of all faces
+  set S : Finset ((Fin m → Fin P) × (Fin P → ℤ)) :=
+    s.biUnion fun p => Finset.univ.biUnion fun i => {fr p i, bk p i} with hS
+  have hfS : ∀ p ∈ s, ∀ i, fr p i ∈ S := fun p hp i =>
+    Finset.mem_biUnion.2 ⟨p, hp, Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, by simp⟩⟩
+  have hbS : ∀ p ∈ s, ∀ i, bk p i ∈ S := fun p hp i =>
+    Finset.mem_biUnion.2 ⟨p, hp, Finset.mem_biUnion.2 ⟨i, Finset.mem_univ _, by simp⟩⟩
+  refine ⟨S, fun q => ∑ p ∈ s, ∑ i : Fin (m + 1), β p * (-1) ^ (i : ℕ) *
+      ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)), ?_, ?_⟩
+  · -- a face `ι ∘ succAbove i` of a strictly increasing `ι` is strictly increasing
+    intro q hq
+    simp only [hS, Finset.mem_biUnion, Finset.mem_univ, true_and, Finset.mem_insert,
+      Finset.mem_singleton] at hq
+    obtain ⟨p, hp, i, rfl | rfl⟩ := hq
+    · exact (hs p hp).comp (Fin.strictMono_succAbove i)
+    · exact (hs p hp).comp (Fin.strictMono_succAbove i)
+  · intro I
+    -- the `q`-sum over `S` picks out the two faces
+    have key : ∀ p ∈ s, ∀ i : Fin (m + 1),
+        ∑ q ∈ S, (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q =
+          (β p : ℝ) * ((-1) ^ (i : ℕ) * (I (fr p i) - I (bk p i))) := by
+      intro p hp i
+      simp only [mul_sub, sub_mul, mul_ite, mul_one, mul_zero, ite_mul, zero_mul,
+        Finset.sum_sub_distrib, Finset.sum_ite_eq, hfS p hp i, hbS p hp i, ite_true]
+      ring
+    calc ∑ p ∈ s, (β p : ℝ) * ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) *
+            (I (p.1 ∘ Fin.succAbove i, p.2 + Pi.single (p.1 i) 1) - I (p.1 ∘ Fin.succAbove i, p.2))
+        = ∑ p ∈ s, ∑ i : Fin (m + 1), ∑ q ∈ S, (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q := by
+          refine Finset.sum_congr rfl fun p hp => ?_
+          rw [Finset.mul_sum]
+          exact Finset.sum_congr rfl fun i _ => (key p hp i).symm
+      _ = ∑ q ∈ S, ∑ p ∈ s, ∑ i : Fin (m + 1), (β p : ℝ) * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) * I q :=
+          (Finset.sum_congr rfl fun p _ => Finset.sum_comm).trans Finset.sum_comm
+      _ = ∑ q ∈ S, ((∑ p ∈ s, ∑ i : Fin (m + 1), β p * (-1) ^ (i : ℕ) *
+            ((if fr p i = q then 1 else 0) - (if bk p i = q then 1 else 0)) : ℤ) : ℝ) * I q := by
+          refine Finset.sum_congr rfl fun q _ => ?_
+          push_cast
+          rw [Finset.sum_mul]
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [Finset.sum_mul]
+
+/-- **Boundary of a lattice chain** (Simon Ch. 6, 5.1, step 8 of the deformation theorem: the
+boundary of an integer lattice chain is an integer lattice chain).  Index an oriented lattice
+`(m+1)`-cube by `p = (ι, b)`, `Φ_p y = b + Σⱼ yⱼ e_{ι j}`, and let `T = Σ_{p ∈ s} β_p [[p]]`.  For a
+test `m`-form `γ`, `∂T(γ) = T(dγ) = Σ_p β_p ∫_{(0,1)^{m+1}} dγ(Φ_p y)(e_ι) dy`; cubical Stokes
+turns each integral into the signed face sum
+`Σᵢ (-1)ⁱ ([[ι ∘ succAbove i, b + 𝟙_{ι i}]](γ) - [[ι ∘ succAbove i, b]](γ))`, and regrouping
+these faces gives integers `β'_q` on strictly increasing indices `q ∈ s'`, chosen independently
+of `γ`. -/
+theorem Submission.cmcdtfr_chain_boundary : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s', StrictMono p.1) ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) m, T.boundary γ = ∑ p ∈ s', (β' p : ℝ) * ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro P m s β T hs hT
+  -- one regrouping `(s', β')` of the signed faces serves every face functional `I`
+  obtain ⟨s', β', hs', hI⟩ := Submission.cmcdtfrcb_face_regroup P m s β hs
+  refine ⟨s', β', hs', fun γ => ?_⟩
+  -- test forms are smooth, in particular `C¹`
+  have hγ : ContDiff ℝ 1 (γ : DifferentialForm (Euclid P) m) := γ.property.1.1.of_le (by simp)
+  -- `∂T(γ) = T(dγ)`; expand `T`, and the right side as the regrouped face sum of `I q = [[q]](γ)`
+  rw [GeometricCurrentOn.boundary_apply, hT, ← hI fun q =>
+    ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m)
+      (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ))
+      (fun j => EuclideanSpace.single (q.1 j) (1 : ℝ))]
+  -- cube by cube, `[[p]](dγ)` is the signed sum of the faces of `p` (cubical Stokes)
+  refine Finset.sum_congr rfl fun p _ => ?_
+  congr 1
+  exact Submission.cmcdtfrcb_cube_stokes P m p.1 p.2 γ hγ
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
