@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "36c3e1fc1ad696465eedaa5d184e9a86d71a8b75c63266c8dacb89c23d11d198",
+  "git_delta": {
+    "base_commit": "64a231fd11aeb7f35715531197eeda2f8a8103df",
+    "candidate_commit": "765a3cc027ff53073fc5c33d4b2f9610380593f4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_bc_ct_uniform_mass_bound",
+    "diff_sha256": "7b75268e19a6d5dfdb3961293d449058e4d1f4987ac68a65654816f447aca475",
+    "source_sha256": "de3d59394c2b5c83f9ad75b205af3ff88a3cbdaab30d18cd537d4957ab593322",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_bc_ct_uniform_mass_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (z : Euclid P) (r Λ : ℝ), 0 < r → 0 ≤ Λ → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall z (2 * r) → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → T.massOn (ball z (2 * r)) ≠ ∞ → ∃ δ Γ : ℝ, 0 < δ ∧ ∀ b ∈ closedBall z r, ∀ x' ∈ ball b δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

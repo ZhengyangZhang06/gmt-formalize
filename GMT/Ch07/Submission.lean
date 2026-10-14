@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform local mass bound near `B̄_r(z)`** (the mass hypothesis of the blow-up lemma at the
+points `b ∈ B̄_r(z)`).  Let `r > 0`, `Λ ≥ 0`, let `ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T)` be monotone on
+`(0, R)` whenever `B̄_R(y) ⊆ B̄_{2r}(z)`, and let `M_{B_{2r}(z)}(T) < ∞`.  Then
+`M_{B_ρ(x′)}(T) ≤ Γρⁿ` for all `b ∈ B̄_r(z)`, `x′ ∈ B_δ(b)` and `0 < ρ < δ`, with `δ = r/4` and
+`Γ = e^{Λr/4}(r/4)⁻ⁿ M_{B_{2r}(z)}(T)`: since `|x′ − z| < 5r/4`, `B̄_{r/2}(x′) ⊆ B̄_{2r}(z)` and
+`B_{r/4}(x′) ⊆ B_{2r}(z)`, so `ρ⁻ⁿ M_{B_ρ(x′)}(T) ≤ e^{Λρ}ρ⁻ⁿ M_{B_ρ(x′)}(T)
+≤ e^{Λr/4}(r/4)⁻ⁿ M_{B_{r/4}(x′)}(T) ≤ Γ`. -/
+theorem Submission.dimred_tr_bc_ct_uniform_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (z : Euclid P) (r Λ : ℝ), 0 < r → 0 ≤ Λ → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall z (2 * r) → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → T.massOn (ball z (2 * r)) ≠ ∞ → ∃ δ Γ : ℝ, 0 < δ ∧ ∀ b ∈ closedBall z r, ∀ x' ∈ ball b δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball x' ρ) ≤ ENNReal.ofReal (Γ * ρ ^ n) := by
+  intro P n U T z r Λ hr hΛ hmon hfin
+  -- Step 1: `Γ′ = ofReal(e^{Λr/4}/(r/4)ⁿ) · M_{B_{2r}(z)}(T)` is finite; `δ = r/4`, `Γ = Γ′.toReal`
+  have hΓ' : ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) *
+      T.massOn (ball z (2 * r)) ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin
+  refine ⟨r / 4, (ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) *
+    T.massOn (ball z (2 * r))).toReal, by linarith, fun b hb x' hx' ρ hρ hρδ => ?_⟩
+  -- Step 2: `|x′ − z| < 5r/4`, so (i) `B̄_{r/2}(x′) ⊆ B̄_{2r}(z)` and (ii) `B_{r/4}(x′) ⊆ B_{2r}(z)`
+  have hxz : dist x' z < 5 * r / 4 := by
+    linarith [dist_triangle x' b z, mem_ball.mp hx', mem_closedBall.mp hb]
+  have hsub₁ : closedBall x' (r / 2) ⊆ closedBall z (2 * r) := fun w hw => by
+    rw [mem_closedBall] at hw ⊢
+    linarith [dist_triangle w x' z]
+  have hsub₂ : ball x' (r / 4) ⊆ ball z (2 * r) := fun w hw => by
+    rw [mem_ball] at hw ⊢
+    linarith [dist_triangle w x' z]
+  -- Step 3: by (i), monotonicity on `(0, r/2)` compares the radii `ρ ≤ r/4`
+  have h₃ : ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball x' ρ) ≤
+      ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) * T.massOn (ball x' (r / 4)) :=
+    hmon x' (r / 2) hsub₁ ⟨hρ, by linarith⟩ ⟨by linarith, by linarith⟩ hρδ.le
+  -- Step 4: by (ii), `M_{B_{r/4}(x′)}(T) ≤ M_{B_{2r}(z)}(T)`
+  have h₄ := mul_le_mul_right (T.massOn_mono hsub₂)
+    (ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n))
+  -- Step 5: `e^{Λρ} ≥ 1` removes the exponential
+  have hρn : 0 < ρ ^ n := pow_pos hρ n
+  have h₅ : ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball x' ρ) ≤
+      ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) * T.massOn (ball z (2 * r)) :=
+    (mul_le_mul_left (ENNReal.ofReal_le_ofReal (div_le_div_of_nonneg_right
+      (Real.one_le_exp (mul_nonneg hΛ hρ.le)) hρn.le)) _).trans (h₃.trans h₄)
+  -- Step 6: multiply by `ofReal(ρⁿ)`, using `ofReal(ρⁿ) · ofReal(1/ρⁿ) = 1` and `Γ′ = ofReal(Γ)`
+  calc T.massOn (ball x' ρ)
+      = ENNReal.ofReal (ρ ^ n) * (ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball x' ρ)) := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul hρn.le, mul_one_div_cancel hρn.ne',
+          ENNReal.ofReal_one, one_mul]
+    _ ≤ ENNReal.ofReal (ρ ^ n) * (ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) *
+        T.massOn (ball z (2 * r))) := mul_le_mul_right h₅ _
+    _ = ENNReal.ofReal ((ENNReal.ofReal (Real.exp (Λ * (r / 4)) / (r / 4) ^ n) *
+        T.massOn (ball z (2 * r))).toReal * ρ ^ n) := by
+        rw [ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hΓ']
+        exact mul_comm _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
