@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d230c54a878c425d23b18b49163831d9b2c3881014302cfd66277f2de678a2b",
+  "git_delta": {
+    "base_commit": "fcdf001d7b0b015207ede2d9fe7197579f39bc1e",
+    "candidate_commit": "b020a7ed020aff8f8f9d5225fff58c6d5b1fc4c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cc_product_support",
+    "diff_sha256": "4d7ae9876c3ba9e656e76cb8b9708f341a024dc6db0a948e6b5b203afcdaf908",
+    "source_sha256": "585175c5005487a5c202f248b03d88193963618dc2da9044732e65bfb2efeb2b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cc_product_support",
+      "statement": "∀ (P k m' n' : ℕ) (E : Set (Euclid P)) (A : GeometricCurrentOn (univ : Set (Euclid P)) m') (RA : IMRep (univ : Set (Euclid P)) m') (B : GeometricCurrentOn (univ : Set (Euclid P)) n') (RB : IMRep (univ : Set (Euclid P)) n'), IsCompact E → IsCompact A.support → RA.Represents A → RB.Represents B → (∀ C : Set (Euclid P), MeasurableSet C → RB.measure C = ∫⁻ t in E, RA.measure ((fun y => t + y) ⁻¹' C) ∂μHE[k]) → B.support ⊆ Set.image2 (fun t y => t + y) E A.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
