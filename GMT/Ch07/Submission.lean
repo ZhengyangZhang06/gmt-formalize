@@ -1191,6 +1191,18 @@ theorem Submission.dimred_cs_sos_mt_fm_box_measure : ∀ (P k : ℕ) (g : Fin k 
       exact hGc.measurableSet.inter (MeasurableSet.iInter fun i =>
         (isOpen_lt (hcont i) continuous_const).measurableSet)
 
+/-- **The frame map of an orthonormal family pushes Lebesgue measure to `Hᵏ` on its span**
+(Simon Ch. 1, 2.9, `Hᵏ = Lᵏ` on `ℝᵏ`; the coordinates of the splitting lemma, Ch. 7, 3.5).  Let
+`G = span g` and `ι(u) = Σᵢ uᵢ gᵢ` for `u : Fin k → ℝ`.  (i) is
+`Submission.cbr_cipi_affine_plane_measure` at `a = 0`, `ι_*(Lᵏ) = Hᵏ⌞G`, and (ii) is
+`Submission.dimred_cs_sos_mt_fm_box_measure`: the closed and open coordinate boxes of `G` of
+half-width `r` both have `Hᵏ`-measure `(2r)ᵏ`. -/
+theorem Submission.dimred_cs_sos_mt_frame_measure : ∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → (volume : Measure (Fin k → ℝ)).map (fun u => ∑ i, u i • g i) = μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) ∧ ∀ r : ℝ, 0 < r → μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} = ENNReal.ofReal ((2 * r) ^ k) ∧ μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} = ENNReal.ofReal ((2 * r) ^ k) := by
+  intro P k g hg
+  refine ⟨?_, Submission.dimred_cs_sos_mt_fm_box_measure P k g hg⟩
+  -- (i): the affine plane measure at `a = 0`, where `0 + ι(u) = ι(u)` and `y − 0 = y`
+  simpa using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
