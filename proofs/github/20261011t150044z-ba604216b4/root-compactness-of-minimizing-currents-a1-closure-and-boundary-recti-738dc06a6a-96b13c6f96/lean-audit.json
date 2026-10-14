@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5cc38535bf44ea8ba737fedd45f1b8caaf2112f60c03307f38feb613df19ece4",
+  "git_delta": {
+    "base_commit": "54204bfc3cb46d2d095ed6771b71891a6fdd4dde",
+    "candidate_commit": "8323e7374a6be8d786ad83bae8a5d57b467883b4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_fp_exists_offset_eq_zero",
+    "diff_sha256": "dfce3c4a5027a5f6ec2682307d55db85b865a2bfa45cf5eaea5f9acfadea4874",
+    "source_sha256": "3e3748811f3d4c965778f8a350a813ee24deb7b45da3a837fba12a9c7cfd1c0f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_fp_exists_offset_eq_zero",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, w i ∈ Vᗮ) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ i, w i = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
