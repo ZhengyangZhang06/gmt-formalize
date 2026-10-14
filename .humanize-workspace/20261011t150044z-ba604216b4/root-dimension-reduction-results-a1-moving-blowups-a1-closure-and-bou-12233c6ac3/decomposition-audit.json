@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "regcomp_covector_eval_orthonormal_le|regcomp_exists_covector_eval_orthonormal_eq_one|idtp_tdc_subspace_ball_measure|dgcr_bwd_extDeriv_smul_const|cbr_ci_cp_|dmcbr_ci_constant_cycle_planes",
+        "ext_of_integral_eq_on_compactlySupported|isMulLeftInvariant_eq_smul|ext_of_generateFrom_of_iUnion|tendsto_measure_biInter_gt|euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_preimage",
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|exists_contDiff_tsupport_subset|dist_convolution_le|contDiff_convolution_left|exists_orthonormalBasis_extension_of_card_eq|det_succ_column|eq_smul_basis_det|alternatizeUncurryFin_apply",
+        "def covectorEuclideanNorm|abbrev Covector|abbrev exteriorDerivative|def TestFormOn|abbrev TestFormOn|def IsTestForm|def IsSmoothForm|theorem exteriorDerivative_apply",
+        "python3 -I /tmp/constant_planes_independent_audit/prepare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constant_planes_independent_audit/ChallengeAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constant_planes_independent_audit/AcceptedMerge.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-12233c6ac3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-12233c6ac3/decomposition-v2.json",
+        "/tmp/constant_planes_independent_audit/prepare.py",
+        "/tmp/constant_planes_independent_audit/evidence.json",
+        "/tmp/constant_planes_independent_audit/ChallengeAssembly.lean",
+        "/tmp/constant_planes_independent_audit/AcceptedMerge.lean"
+      ],
+      "conclusion": "The split appropriately factors the selected proof: eight principal obligations establish the parent, and four standard facts support their proofs. The pinned revisions match; relevant library results and definitions were inspected. No proposed declaration occurs in the snapshot project or SimonGMT sources. All 12 names instead identify comparator-accepted DAG declarations with byte-identical frozen types and verified candidate source hashes; no active-name conflict exists. Proposed dependencies and accepted dependency closures are acyclic and exclude the selected parent. All names are bare identifiers, and all types are closed, one-line propositions matching their prose and elaborating independently of implementations. No matrix-unit instance issue occurs. An independently generated assembly proves the exact parent from the child hypotheses. A separately reconstructed merge of 43 accepted declarations also compiles, and every child and the parent use only propext, Classical.choice and Quot.sound. The handoff digest was independently recomputed and matches the requested binding."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The supplied Hilbert–Schmidt calculation, orthonormal extension, permutation comparison and cancellation of positive n! prove the exact bound, including n = 0."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction gives a continuous alternating covector evaluating to 1 on the frame. The independently supplied basis-invariance and counting argument establishes its coefficient norm is exactly 1, including the empty frame."
+    },
+    {
+      "key": "subspace_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inclusion isometry, normalized Hausdorff-volume identity, Haar scaling and volume-preserving coordinates prove precisely the stated formula. The dimension, center-membership and positive-radius hypotheses are sufficient; n = 0 is covered."
+    },
+    {
+      "key": "extderiv_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at the specified point suffices for the exterior-derivative expansion. Differentiating each scalar evaluation and converting integer scalar multiplication yields the exact signs and factors in the Lean proposition."
+    },
+    {
+      "key": "translation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact finiteness supplies integrability and a common compact bound for differentiation under the integral. The derivative hypothesis makes translated smooth-test integrals constant; mollification, dominated convergence and regular-measure uniqueness then prove the stated translation identity."
+    },
+    {
+      "key": "directional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared exterior-derivative prerequisite constructs the wedge formula. Riesz representatives generate V; the cycle condition and justified integral linearity give vanishing on its span. Orthogonality proves the second conclusion without additional normalization assumptions."
+    },
+    {
+      "key": "projection_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adapted-basis expansion and explicit Laplace minors express every excluded coefficient as a wedge covered by the hypothesis. Surviving coefficients are unchanged by orthogonal projection, proving the exact identity. The d = 0 case is explicitly handled."
+    },
+    {
+      "key": "growth_dimension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Growth makes the positive unit-ball mass finite. Translation invariance and the explicit lattice packing produce the polynomial inequality forcing finrank V ≤ n. The zero-dimensional case is separated, and no compact-finiteness hypothesis is missing."
+    },
+    {
+      "key": "normalization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norming witness excludes dimension below d+1. Top-degree uniqueness gives a scalar multiple of frame evaluation; the two declared norm prerequisites force scalar ±1. Since d+1 is positive, reversing one frame vector supplies the required orientation."
+    },
+    {
+      "key": "product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Haar uniqueness applies to the locally finite coordinate measures. The explicit transverse pushforward defines σ with the required concentration and compact finiteness. Rectangle agreement, generation and a finite-measure covering establish the exact ambient integral formula."
+    },
+    {
+      "key": "atoms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball estimate and continuity from above turn the density hypothesis into the singleton-mass bound. Compact finiteness makes Z countable and measurable; the product identity shows σ is carried by Z. Countable integration and translation isometries yield the required measure sum."
+    },
+    {
+      "key": "finite_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The full proof separates intersecting and empty plane-ball sections, covering n = 0. Growth bounds every finite subfamily's weight; the positive lower weight forces arbitrary Z to be finite. Finite weights justify real conversion, and positivity of all origin balls forces a zero offset."
+    }
+  ],
+  "required_changes": []
+}
