@@ -825,6 +825,41 @@ theorem Submission.cbr_cc_seg_open_segment_tangent : ∀ (P : ℕ) (a τ : Eucli
   refine hy.2 ⟨a + (s₀ + r * c) • τ, ⟨s₀ + r * c, ⟨by linarith, by linarith⟩, rfl⟩, ?_⟩
   rw [hη, add_sub_cancel_left, inv_mul_cancel_left₀ hr0.ne']
 
+/-- **Fundamental theorem of calculus for a `0`-form along a segment** (Simon Ch. 6, 2.3: Stokes'
+theorem `∂T(ω) = T(dω)` in dimension one).  For a smooth `0`-form `g` on `ℝᴾ`, `a, v ∈ ℝᴾ` and
+`ℓ ≥ 0`, `∫_{(0,ℓ)} dg(a + uv)(v) du = g(a + ℓv)⟨⟩ − g(a)⟨⟩`.  The function `ĝ = g(·)⟨⟩` is
+smooth, and `dg(y)(v) = Dĝ(y)v` since `removeNth 0` of a `1`-tuple is the empty tuple `⟨⟩`.  By
+the chain rule `u ↦ ĝ(a + uv)` has the continuous derivative `Dĝ(a + uv)v`, and the FTC on
+`[0, ℓ]` concludes (`(0, ℓ)` and `(0, ℓ]` differ by a null set). -/
+theorem Submission.cbr_cc_seg_zero_form_ftc : ∀ (P : ℕ) (g : DifferentialForm (Euclid P) 0), IsSmoothForm g → ∀ (a v : Euclid P) (ℓ : ℝ), 0 ≤ ℓ → ∫ u in Ioo 0 ℓ, exteriorDerivative g (a + u • v) (fun _ => v) = g (a + ℓ • v) (fun i => i.elim0) - g a (fun i => i.elim0) := by
+  intro P g hg a v ℓ hℓ
+  set e : Fin 0 → Euclid P := fun i => i.elim0
+  -- (1) `ĝ = g(·)⟨⟩ = ev_⟨⟩ ∘ g` is smooth
+  have hĝ := (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ e).contDiff.comp hg
+  have hĝd : Differentiable ℝ (fun y => g y e) := hĝ.differentiable (by simp)
+  -- (2) `dg(y)(v) = Dĝ(y)v`: `removeNth 0` of a `1`-tuple is the empty tuple
+  have hd : ∀ y, exteriorDerivative g y (fun _ => v) = fderiv ℝ (fun z => g z e) y v := by
+    intro y
+    rw [exteriorDerivative_apply ((hg.differentiable (by simp)) y), Fin.sum_univ_one]
+    have hrm : (Fin.removeNth (0 : Fin 1) fun _ : Fin 1 => v) = e := Subsingleton.elim _ _
+    simp [hrm]
+  -- (3) chain rule: `d/du ĝ(a + uv) = Dĝ(a + uv)v`
+  have hderiv : ∀ u : ℝ, HasDerivAt (fun u => g (a + u • v) e)
+      (fderiv ℝ (fun z => g z e) (a + u • v) v) u := by
+    intro u
+    have h1 : HasDerivAt (fun u : ℝ => a + u • v) v u := by
+      simpa using ((hasDerivAt_id u).smul_const v).const_add a
+    exact (hĝd (a + u • v)).hasFDerivAt.comp_hasDerivAt u h1
+  -- (4) the derivative is continuous in `u`, hence interval integrable
+  have hcont : Continuous (fun u : ℝ => fderiv ℝ (fun z => g z e) (a + u • v) v) :=
+    ((hĝ.continuous_fderiv (by simp)).comp
+      (continuous_const.add (continuous_id.smul continuous_const))).clm_apply continuous_const
+  -- (5) `∫_{(0,ℓ)} = ∫_0^ℓ` for `ℓ ≥ 0`, then the FTC
+  rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hℓ]
+  simp only [hd]
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hderiv u)
+    (hcont.intervalIntegrable 0 ℓ), zero_smul, add_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
