@@ -15352,61 +15352,6 @@ theorem Submission.codim1_lur_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F 
     filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
     exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
       hJmeas (fun a => (hJ a).1) harea hr (map_continuous f)).symm
-/-- **Simon 7.5.2 (Remark)**, via Ch. 6, 2.35 and De Giorgi (Ch. 3, 4.3): near any `x ∈ N ∩ U`,
-the boundary `T = ∂[[E]]` is a multiplicity-one current.  Over the graph chart
-`G(v) = x + ιv + u(v)` of `N` on `D = B_{δ₁}(0) ⊆ ℝⁿ⁺¹`, the set `F = D ∩ G⁻¹(E)` has locally
-finite perimeter in `D`, and De Giorgi gives its reduced boundary `B` with unit normal `ν`.  Put
-`π(w) = ι*(w − x)` and `Z₀ = {‖π(w)‖ < δ₁/2, ‖w − x − ιπ(w)‖ < δ₂} ⊆ B̄_{δ₁+δ₂}(x) ⊆ U`, and let
-`Φ_ω` be the vector field of `G^#ω`.  If `spt ω ⊆ Z₀`, then
-`T(ω) = ∫_F div Φ_ω = −∫_B ⟨Φ_ω, ν⟩ dHⁿ = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ`, where `M' ⊆ Z₀` and `ξ'` are the
-push-forwards along `G` of `B ∩ B_{δ₁/2}(0)` and of the orientation of `ν^⊥`. -/
-theorem Submission.codim1_rdo_local_unit_representation : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → x ∈ N ∩ U → ∃ (Z₀ M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), IsOpen Z₀ ∧ x ∈ Z₀ ∧ Z₀ ⊆ U ∧ MeasurableSet M' ∧ M' ⊆ Z₀ ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Z₀ → T ω = ∫ w in M', ξ' w ((ω : DifferentialForm (Euclid P) n) w) ∂μHE[n] := by
-  intro P n U N E ξN T x hn hU hN hE hEN hT hIM hx
-  -- Step 0: the graph chart `G(v) = x + ιv + u(v)` of `N` near `x`, over `D = B_{δ₁}(0)`
-  obtain ⟨ι, u, δ₁, δ₂, hδ₁, hδ₂, hball, -, hu, hchart, hgraph⟩ :=
-    Submission.codim1_rdo_graph_chart P n U N ξN x hU hN.1 hN.2.1 hx
-  -- Step 2: `F = D ∩ G⁻¹(E)` is Borel with locally finite perimeter in `D`
-  obtain ⟨hF, hper⟩ := Submission.codim1_lur_chart_locally_finite_perimeter P n U N E ξN T x ι u
-    δ₁ δ₂ hE hEN hT hIM hδ₁ hδ₂ hball hu hchart hgraph
-  -- Step 3: De Giorgi: `∫_F div φ = −∫_B ⟨φ, ν⟩ dHⁿ` for `φ ∈ C¹_c(D)`
-  obtain ⟨B, ν, hB, hBD, hBrect, hBfin, hν, hν1, hνtan, hGG⟩ :=
-    Submission.codim1_rdo_de_giorgi_gauss_green n (ball 0 δ₁) _ hn isOpen_ball hF hper
-  -- Step 4: push `B ∩ B_{δ₁/2}(0)` forward along `G` to the carrier `M'`
-  obtain ⟨M', ξ', hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'or, hrep⟩ :=
-    Submission.codim1_lur_gauss_green_pushforward P n x ι u δ₁ δ₂ B ν hn hδ₁
-      (hu.of_le (by norm_num))
-      (fun v hv => ⟨(hchart v hv).1, (hchart v hv).2.2.1.trans (half_lt_self hδ₂)⟩)
-      hB hBD hBrect hBfin hν hν1 hνtan
-  refine ⟨{w | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧
-      ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂},
-    M', ξ', ?_, ?_, ?_, hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'or, fun ω hω => ?_⟩
-  · -- `Z₀` is open
-    have hπ : Continuous fun w => ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x) :=
-      (ContinuousLinearMap.adjoint ι.toContinuousLinearMap).continuous.comp
-        (continuous_id.sub continuous_const)
-    exact (isOpen_lt (continuous_norm.comp hπ) continuous_const).inter
-      (isOpen_lt (continuous_norm.comp ((continuous_id.sub continuous_const).sub
-        (ι.continuous.comp hπ))) continuous_const)
-  · -- `x ∈ Z₀`
-    simp [half_pos hδ₁, hδ₂]
-  · -- `Z₀ ⊆ B̄_{δ₁+δ₂}(x) ⊆ U`, since `‖w − x‖ ≤ ‖ιπ(w)‖ + ‖w − x − ιπ(w)‖`
-    intro w hw
-    refine hball (mem_closedBall_iff_norm.2 ?_)
-    calc ‖w - x‖ = ‖ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)) +
-          (w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)))‖ := by
-          rw [add_sub_cancel]
-      _ ≤ ‖ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ +
-          ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ :=
-          norm_add_le _ _
-      _ ≤ δ₁ + δ₂ := by
-          rw [ι.norm_map]
-          linarith [hw.1, hw.2]
-  · -- Steps 1, 3, 4: `T(ω) = ∫_F div Φ_ω = −∫_B ⟨Φ_ω, ν⟩ dHⁿ = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ`
-    obtain ⟨hΦ, hΦc, hΦD, hTω⟩ := Submission.codim1_lur_chart_divergence_formula P n U N E ξN T
-      x ι u δ₁ δ₂ hE hEN hT hδ₁ hδ₂ hu hchart hgraph ω _
-      (hω.trans fun w hw => ⟨hw.1.trans (half_lt_self hδ₁), hw.2⟩) rfl
-    rw [hTω, hGG _ hΦ hΦc hΦD]
-    exact hrep _ hω
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
@@ -16246,5 +16191,61 @@ theorem Submission.codim1_lur_gauss_green_pushforward : ∀ (P n : ℕ) (x : Euc
           rw [hπG v hvD] at h1
           exact hvB' ⟨hvB, mem_ball_zero_iff.mpr h1⟩
         rw [indicator_of_notMem hvB', image_eq_zero_of_notMem_tsupport hGv, map_zero]
+
+/-- **Simon 7.5.2 (Remark)**, via Ch. 6, 2.35 and De Giorgi (Ch. 3, 4.3): near any `x ∈ N ∩ U`,
+the boundary `T = ∂[[E]]` is a multiplicity-one current.  Over the graph chart
+`G(v) = x + ιv + u(v)` of `N` on `D = B_{δ₁}(0) ⊆ ℝⁿ⁺¹`, the set `F = D ∩ G⁻¹(E)` has locally
+finite perimeter in `D`, and De Giorgi gives its reduced boundary `B` with unit normal `ν`.  Put
+`π(w) = ι*(w − x)` and `Z₀ = {‖π(w)‖ < δ₁/2, ‖w − x − ιπ(w)‖ < δ₂} ⊆ B̄_{δ₁+δ₂}(x) ⊆ U`, and let
+`Φ_ω` be the vector field of `G^#ω`.  If `spt ω ⊆ Z₀`, then
+`T(ω) = ∫_F div Φ_ω = −∫_B ⟨Φ_ω, ν⟩ dHⁿ = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ`, where `M' ⊆ Z₀` and `ξ'` are the
+push-forwards along `G` of `B ∩ B_{δ₁/2}(0)` and of the orientation of `ν^⊥`. -/
+theorem Submission.codim1_rdo_local_unit_representation : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → x ∈ N ∩ U → ∃ (Z₀ M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), IsOpen Z₀ ∧ x ∈ Z₀ ∧ Z₀ ⊆ U ∧ MeasurableSet M' ∧ M' ⊆ Z₀ ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Z₀ → T ω = ∫ w in M', ξ' w ((ω : DifferentialForm (Euclid P) n) w) ∂μHE[n] := by
+  intro P n U N E ξN T x hn hU hN hE hEN hT hIM hx
+  -- Step 0: the graph chart `G(v) = x + ιv + u(v)` of `N` near `x`, over `D = B_{δ₁}(0)`
+  obtain ⟨ι, u, δ₁, δ₂, hδ₁, hδ₂, hball, -, hu, hchart, hgraph⟩ :=
+    Submission.codim1_rdo_graph_chart P n U N ξN x hU hN.1 hN.2.1 hx
+  -- Step 2: `F = D ∩ G⁻¹(E)` is Borel with locally finite perimeter in `D`
+  obtain ⟨hF, hper⟩ := Submission.codim1_lur_chart_locally_finite_perimeter P n U N E ξN T x ι u
+    δ₁ δ₂ hE hEN hT hIM hδ₁ hδ₂ hball hu hchart hgraph
+  -- Step 3: De Giorgi: `∫_F div φ = −∫_B ⟨φ, ν⟩ dHⁿ` for `φ ∈ C¹_c(D)`
+  obtain ⟨B, ν, hB, hBD, hBrect, hBfin, hν, hν1, hνtan, hGG⟩ :=
+    Submission.codim1_rdo_de_giorgi_gauss_green n (ball 0 δ₁) _ hn isOpen_ball hF hper
+  -- Step 4: push `B ∩ B_{δ₁/2}(0)` forward along `G` to the carrier `M'`
+  obtain ⟨M', ξ', hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'or, hrep⟩ :=
+    Submission.codim1_lur_gauss_green_pushforward P n x ι u δ₁ δ₂ B ν hn hδ₁
+      (hu.of_le (by norm_num))
+      (fun v hv => ⟨(hchart v hv).1, (hchart v hv).2.2.1.trans (half_lt_self hδ₂)⟩)
+      hB hBD hBrect hBfin hν hν1 hνtan
+  refine ⟨{w | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧
+      ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂},
+    M', ξ', ?_, ?_, ?_, hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'or, fun ω hω => ?_⟩
+  · -- `Z₀` is open
+    have hπ : Continuous fun w => ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x) :=
+      (ContinuousLinearMap.adjoint ι.toContinuousLinearMap).continuous.comp
+        (continuous_id.sub continuous_const)
+    exact (isOpen_lt (continuous_norm.comp hπ) continuous_const).inter
+      (isOpen_lt (continuous_norm.comp ((continuous_id.sub continuous_const).sub
+        (ι.continuous.comp hπ))) continuous_const)
+  · -- `x ∈ Z₀`
+    simp [half_pos hδ₁, hδ₂]
+  · -- `Z₀ ⊆ B̄_{δ₁+δ₂}(x) ⊆ U`, since `‖w − x‖ ≤ ‖ιπ(w)‖ + ‖w − x − ιπ(w)‖`
+    intro w hw
+    refine hball (mem_closedBall_iff_norm.2 ?_)
+    calc ‖w - x‖ = ‖ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)) +
+          (w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)))‖ := by
+          rw [add_sub_cancel]
+      _ ≤ ‖ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ +
+          ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ :=
+          norm_add_le _ _
+      _ ≤ δ₁ + δ₂ := by
+          rw [ι.norm_map]
+          linarith [hw.1, hw.2]
+  · -- Steps 1, 3, 4: `T(ω) = ∫_F div Φ_ω = −∫_B ⟨Φ_ω, ν⟩ dHⁿ = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ`
+    obtain ⟨hΦ, hΦc, hΦD, hTω⟩ := Submission.codim1_lur_chart_divergence_formula P n U N E ξN T
+      x ι u δ₁ δ₂ hE hEN hT hδ₁ hδ₂ hu hchart hgraph ω _
+      (hω.trans fun w hw => ⟨hw.1.trans (half_lt_self hδ₁), hw.2⟩) rfl
+    rw [hTω, hGG _ hΦ hΦc hΦD]
+    exact hrep _ hω
 
 end GMT.Ch07
