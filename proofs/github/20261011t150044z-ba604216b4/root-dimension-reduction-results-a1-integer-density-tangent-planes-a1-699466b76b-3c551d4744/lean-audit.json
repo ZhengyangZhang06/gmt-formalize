@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "507526101d524f8dbe94fc93ccb049fbaef80107565ea91caf3a9cd9244cd9d6",
+  "git_delta": {
+    "base_commit": "f778069a470af5d97cc5810f5f556f63752bdfa2",
+    "candidate_commit": "1f0fe9f81dcb1f46cbf39c3a7d57d22c47fcf1e5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_density_representation",
+    "diff_sha256": "b907ac0353b06dd848560999ef42e3f0d39555912bbff51f85eae70467c73ed0",
+    "source_sha256": "39d25ed7f7ab6b15f375b24c17a7d34a4df6362f0ee98ccb8d8c107cba98bb4c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_density_representation",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x))) → ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal ((limsup (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
