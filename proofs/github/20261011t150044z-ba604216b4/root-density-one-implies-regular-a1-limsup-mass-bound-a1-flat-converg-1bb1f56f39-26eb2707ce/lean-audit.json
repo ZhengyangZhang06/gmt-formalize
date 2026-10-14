@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f3f25d9d43646c9c753a58279945e94a98e38dd836cf0697d75abce954e2c61c",
+  "git_delta": {
+    "base_commit": "b2e11f2f26c8690ec54b740048d3980f1d4e7f2e",
+    "candidate_commit": "78264e5b152d4ce7679fabe32be542bdb603abae",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_shells",
+    "diff_sha256": "a2e6b71663038fe8820d4271832c9c4e0527baadda9c1ff1c75667c5188f4ee7",
+    "source_sha256": "5ddaca01c36cf534cf9900c8b6d4f35c73b1110197aeb5080fee1883cb98f56f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_shells",
+      "statement": "∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RT : IMRep (univ : Set (Euclid P)) (m + 1)) (RB : IMRep (univ : Set (Euclid P)) m) (K : Set (Euclid P)) (f : Euclid P → ℝ) (r : ℕ → ℝ) (Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), RT.Represents T → RB.Represents T.boundary → IsClosed K → Continuous f → Antitone r → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Z j ω = (∫ x in RT.carrier ∩ {x | f x < r j}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < r j}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ (W A : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ j, IsIntegerMultiplicity (W j)) ∧ (∀ j, IsIntegerMultiplicity (D j)) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K ∩ {x | r j ≤ f x}) → W j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → D j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → Z j ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω) ∧ (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), W j ω = T ω - A N ω) ∧ (W 0).mass = RT.measure {x | r 0 ≤ f x} ∧ (∀ j, (W (j + 1)).mass = RT.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ (D 0).mass = RB.measure {x | r 0 ≤ f x} ∧ (∀ j, (D (j + 1)).mass = RB.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ ∀ N, (A N).mass = RT.measure {x | f x < r N}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
