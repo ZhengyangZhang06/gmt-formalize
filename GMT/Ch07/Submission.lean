@@ -9029,6 +9029,204 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.1, footnote 2** (orthogonal projection onto a subspace does not increase area).
+If `T ∈ 𝒟ₘ(ℝᴾ)`, `m ≥ 1`, is minimizing in the subspace `V` and `spt T ⊆ V`, then `T` is
+minimizing in `ℝᴾ`.  Let `q` be the orthogonal projection onto `V`, so `μ_T` lives on `V`.  For a
+competitor `S` with `K' = spt(S − T) ⊆ W` compact, `S'' := T + q_#(S − T)` is integer
+multiplicity, `∂S'' = ∂T` and `spt(S'' − T) ⊆ q(K') ⊆ V ∩ W*` for the window
+`W* = q⁻¹(q(W)) ∩ {x : |x − qx| < 1}`, which is open with compact closure.  Minimality in `V` and
+`|Λₘq ξ| ≤ 1` give `μ_T(W*) ≤ M_{W*}(S'') ≤ μ_S(q⁻¹(q(W)))`.  As `μ_S = μ_T` off `K'`, `μ_T` lives
+on `V` and `W ⊆ q⁻¹(q(W))`, cancelling the finite term `μ_T(q⁻¹(q(W)) ∖ W)` leaves
+`M_W(T) = μ_T(W) ≤ μ_S(W) = M_W(S)`. -/
+theorem Submission.idtp_fons_cs_minimizing_of_minimizing_in_subspace : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsMinimizingIn T (V : Set (Euclid P)) → T.support ⊆ (V : Set (Euclid P)) → IsMinimizingIn T univ := by
+  intro P m T V hm hTV hTsptV
+  obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
+  set q : Euclid P →L[ℝ] Euclid P := V.starProjection with hq
+  -- `q ∘ q = q`, as `q` takes values in `V` and fixes `V`
+  have hqq : ∀ x, q (q x) = q x := fun x =>
+    V.starProjection_eq_self_iff.2 (V.starProjection_apply_mem x)
+  -- Step 1: `μ_T(ℝᴾ ∖ V) = 0`, since `spt μ_T = spt T ⊆ V`
+  obtain ⟨RT, hRT⟩ := hTV.1
+  have hmsT :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P (k + 1) univ T RT isOpen_univ hRT
+  have hTV0 : RT.measure ((V : Set (Euclid P))ᶜ) = 0 := by
+    refine measure_mono_null (compl_subset_compl.2 fun x hx => hTsptV ?_)
+      (Measure.measure_compl_support (μ := RT.measure))
+    rw [hmsT.2]
+    exact ⟨mem_univ x, hx⟩
+  refine ⟨⟨RT, hRT⟩, ?_⟩
+  intro W S hW hWc hS hbd hKc hKW
+  -- Step 2: `X := S − T` is integer multiplicity, with compact support `K' ⊆ W` carrying `μ_X`
+  set X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1) := S - T with hX
+  obtain ⟨RX, hRX⟩ := Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ S T isOpen_univ
+    (Nat.succ_pos k) hS ⟨RT, hRT⟩
+  set K' : Set (Euclid P) := X.support with hK'
+  have hX0 : RX.measure K'ᶜ = 0 := by
+    rw [hK', (Submission.dor_imrep_massOn_eq_measure_and_support P (k + 1) univ X RX isOpen_univ
+      hRX).2, univ_inter]
+    exact Measure.measure_compl_support
+  have hK'W : K' ⊆ W := fun x hx => (hKW hx).2
+  have hXbd : X.boundary = 0 := by
+    have hbd' : S.boundary = T.boundary := hbd
+    ext ω
+    have h1 := congrArg (fun Z : GeometricCurrentOn (univ : Set (Euclid P)) k => Z ω) hbd'
+    simp only [GeometricCurrentOn.boundary_apply] at h1
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    show S _ - T _ = 0
+    rw [h1, sub_self]
+  -- the push-forward `Y := q_#X`, with `Y(ω) = ∫ ⟨q^#ω, ξ_X⟩ dμ_X`
+  obtain ⟨push, hpush, -⟩ := Submission.dtc_bc_lc_pushforward P k univ (q : Euclid P → Euclid P)
+    isOpen_univ q.contDiff.contDiffOn
+  obtain ⟨hYform, hYim, hYspt, -, hYbd⟩ := hpush X RX hRX hKc (subset_univ _)
+  set Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1) := push X with hY
+  have hYact : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+      Y ω = RX.action (affinePullbackForm q 0 (ω : DifferentialForm (Euclid P) (k + 1))) := by
+    intro ω
+    rw [hYform ω, IMRep.action]
+    simp only [affinePullbackForm, zero_add, ContinuousLinearMap.fderiv]
+  -- the competitor `S'' := T − ((Y − Y) − Y) = T + q_#(S − T)`
+  set S'' : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1) := T - ((Y - Y) - Y) with hS''
+  have hS''app : ∀ ω, S'' ω = T ω + Y ω := by
+    intro ω
+    show T ω - ((Y ω - Y ω) - Y ω) = T ω + Y ω
+    ring
+  have hS''im : IsIntegerMultiplicity S'' := by
+    have h1 := Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ Y Y isOpen_univ
+      (Nat.succ_pos k) hYim hYim
+    have h2 := Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ (Y - Y) Y isOpen_univ
+      (Nat.succ_pos k) h1 hYim
+    exact Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ T ((Y - Y) - Y) isOpen_univ
+      (Nat.succ_pos k) ⟨RT, hRT⟩ h2
+  have hS''bd : SameBoundary S'' T := by
+    show S''.boundary = T.boundary
+    ext ω
+    have hY0 := congrArg (fun Z : GeometricCurrentOn (univ : Set (Euclid P)) k => Z ω) (hYbd hXbd)
+    simp only [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply] at hY0
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hS''app, hY0,
+      add_zero]
+  have hS''T : S'' - T = Y := by
+    ext ω
+    show S'' ω - T ω = Y ω
+    rw [hS''app]
+    ring
+  have hS''Tc : IsCompact (S'' - T).support := by
+    rw [hS''T]
+    exact (hKc.image q.continuous).of_isClosed_subset (isClosed_univ.sdiff Y.isOpen_zeroRegion)
+      hYspt
+  -- Step 3: the window `W* := q⁻¹(q(W)) ∩ {x : |x − q x| < 1}`
+  set A' : Set (Euclid P) := q ⁻¹' (q '' W) with hA'
+  have hA'open : IsOpen A' := by
+    have hA'eq : A' = ⋃ v ∈ {v : Euclid P | q v = 0}, (fun x => x + v) ⁻¹' W := by
+      ext x
+      simp only [hA', mem_preimage, mem_image, mem_iUnion, mem_ofPred_eq, exists_prop]
+      constructor
+      · rintro ⟨w, hw, hwx⟩
+        exact ⟨w - x, by rw [map_sub, hwx, sub_self], by simpa using hw⟩
+      · rintro ⟨v, hv, hxv⟩
+        exact ⟨x + v, hxv, by rw [map_add, hv, add_zero]⟩
+    rw [hA'eq]
+    exact isOpen_biUnion fun v _ => hW.preimage (continuous_id.add continuous_const)
+  have hWA' : W ⊆ A' := fun w hw => ⟨w, hw, rfl⟩
+  set Wst : Set (Euclid P) := A' ∩ {x | ‖x - q x‖ < 1} with hWst
+  have hWst_open : IsOpen Wst :=
+    hA'open.inter (isOpen_lt (continuous_id.sub q.continuous).norm continuous_const)
+  obtain ⟨R₀, hR₀⟩ := (hWc.1.isBounded.subset subset_closure).subset_closedBall (0 : Euclid P)
+  have hWst_ball : Wst ⊆ closedBall (0 : Euclid P) (R₀ + 1) := by
+    rintro x ⟨⟨w, hw, hwx⟩, hx1⟩
+    have hx1' : ‖x - q x‖ < 1 := hx1
+    have hqx : ‖q x‖ ≤ R₀ := by
+      rw [← hwx]
+      exact (V.norm_starProjection_apply_le w).trans (mem_closedBall_zero_iff.1 (hR₀ hw))
+    rw [mem_closedBall_zero_iff]
+    calc ‖x‖ = ‖(x - q x) + q x‖ := by rw [sub_add_cancel]
+      _ ≤ ‖x - q x‖ + ‖q x‖ := norm_add_le _ _
+      _ ≤ R₀ + 1 := by linarith
+  have hWst_cc : CompactlyContained Wst univ :=
+    ⟨(isCompact_closedBall (0 : Euclid P) (R₀ + 1)).of_isClosed_subset isClosed_closure
+      (closure_minimal hWst_ball isClosed_closedBall), subset_univ _⟩
+  have hS''Tsub : (S'' - T).support ⊆ (V : Set (Euclid P)) ∩ Wst := by
+    rw [hS''T]
+    intro x hx
+    obtain ⟨y, hy, rfl⟩ := hYspt hx
+    refine ⟨V.starProjection_apply_mem y, ⟨y, hK'W hy, (hqq y).symm⟩, ?_⟩
+    show ‖q y - q (q y)‖ < 1
+    rw [hqq, sub_self, norm_zero]
+    exact one_pos
+  -- minimality of `T` in `V`: `M_{W*}(T) ≤ M_{W*}(S'')`
+  have hmin := hTV.2 Wst S'' hWst_open hWst_cc hS''im hS''bd hS''Tc hS''Tsub
+  -- Step 4: projection does not increase mass, `M_{W*}(S'') ≤ μ_S(q⁻¹(W*))`
+  obtain ⟨R, hRact, hRmass⟩ := Submission.idtp_fons_cs_sp_projected_massOn_le P (k + 1) T X S''
+    RT RX V K' hRT hRX hTV0 hKc hX0 (fun ω => by rw [hS''app, hYact])
+  have hRS : R.Represents S := by
+    intro ω
+    rw [hRact ω]
+    show S ω = T ω + (S ω - T ω)
+    ring
+  have hpre : q ⁻¹' Wst = A' := by
+    ext x
+    constructor
+    · rintro ⟨hx, -⟩
+      show q x ∈ q '' W
+      rw [← hqq x]
+      exact hx
+    · intro hx
+      refine ⟨?_, ?_⟩
+      · show q (q x) ∈ q '' W
+        rw [hqq x]
+        exact hx
+      · show ‖q x - q (q x)‖ < 1
+        rw [hqq, sub_self, norm_zero]
+        exact one_pos
+  -- Step 5: `μ_S = μ_T` off `K'`, `μ_T` lives on `V`, and the common finite term cancels
+  have hloc := Submission.idtp_fons_cs_sp_measure_restrict_eq_of_agree P (k + 1) S T R RT K'ᶜ
+    hKc.isClosed.isOpen_compl hRS hRT (fun ω hω => by
+      have h0 := Submission.dtc_vanish_off_support P (k + 1) univ X ω
+        ((disjoint_compl_left (a := K')).mono_left hω)
+      have hXω : X ω = S ω - T ω := rfl
+      linarith)
+  have hmsS := Submission.dor_imrep_massOn_eq_measure_and_support P (k + 1) univ S R isOpen_univ hRS
+  have hA'V : A' ∩ (V : Set (Euclid P)) = Wst ∩ V := by
+    ext x
+    constructor
+    · rintro ⟨hxA, hxV⟩
+      refine ⟨⟨hxA, ?_⟩, hxV⟩
+      show ‖x - q x‖ < 1
+      rw [V.starProjection_eq_self_iff.2 hxV, sub_self, norm_zero]
+      exact one_pos
+    · rintro ⟨⟨hxA, -⟩, hxV⟩
+      exact ⟨hxA, hxV⟩
+  have hTA' : RT.measure A' = RT.measure Wst := by
+    rw [← measure_inter_conull (s := A') hTV0, hA'V, measure_inter_conull hTV0]
+  have hsub' : A' \ W ⊆ K'ᶜ := fun x hx hxK => hx.2 (hK'W hxK)
+  have hSA'W : R.measure (A' \ W) = RT.measure (A' \ W) := by
+    rw [← Measure.restrict_eq_self (μ := R.measure) hsub', hloc,
+      Measure.restrict_eq_self (μ := RT.measure) hsub']
+  have hfin : RT.measure (A' \ W) ≠ ∞ := by
+    have hC : RT.measure (closure Wst) ≠ ∞ := by
+      rw [IMRep.measure, withDensity_apply _ isClosed_closure.measurableSet,
+        Measure.restrict_restrict isClosed_closure.measurableSet, inter_comm]
+      exact RT.locallyIntegrable_mult _ hWst_cc.1 (subset_univ _)
+    refine ne_top_of_le_ne_top hC ?_
+    calc RT.measure (A' \ W) ≤ RT.measure A' := measure_mono sdiff_subset
+      _ = RT.measure Wst := hTA'
+      _ ≤ RT.measure (closure Wst) := measure_mono subset_closure
+  rw [hmsT.1 W hW, hmsS.1 W hW]
+  refine ENNReal.le_of_add_le_add_right hfin ?_
+  calc RT.measure W + RT.measure (A' \ W) = RT.measure A' := by
+        rw [measure_add_sdiff hW.measurableSet.nullMeasurableSet,
+          union_eq_self_of_subset_left hWA']
+    _ = RT.measure Wst := hTA'
+    _ = T.massOn Wst := (hmsT.1 Wst hWst_open).symm
+    _ ≤ S''.massOn Wst := hmin
+    _ ≤ R.measure (q ⁻¹' Wst) := hRmass Wst
+    _ = R.measure A' := by rw [hpre]
+    _ ≤ R.measure (W ∪ (A' \ W)) := measure_mono fun x hx => by
+        by_cases hxW : x ∈ W
+        · exact Or.inl hxW
+        · exact Or.inr ⟨hx, hxW⟩
+    _ ≤ R.measure W + R.measure (A' \ W) := measure_union_le _ _
+    _ = R.measure W + RT.measure (A' \ W) := by rw [hSA'W]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
