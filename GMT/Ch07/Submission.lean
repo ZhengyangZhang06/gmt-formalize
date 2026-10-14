@@ -501,6 +501,29 @@ theorem Submission.cbr_ci_cp_pr_inner_det_covector : ∀ (P n : ℕ) (g : Fin n 
     fun_prop
   exact ⟨⟨⟨f.toMultilinearMap, hc.congr fun u => (hf u).symm⟩, f.map_eq_zero_of_eq'⟩, hf⟩
 
+/-- Laplace expansion of a determinant covector along column `k`.  If the `(d + 1)`-covector `γ`
+is `u ↦ det (⟨g b, u a⟩)_{a b}`, then `γ u = ∑ᵢ (-1)ⁱ ⟨g k, u i⟩ α (u₀, …, ûᵢ, …, u_d)` with
+`α = (-1)ᵏ γ'`, where `γ'` is the `d`-covector `v ↦ det (⟨g (k.succAbove b), v a⟩)_{a b}` of the
+tuple `g` with `g k` deleted (`cbr_ci_cp_pr_inner_det_covector`): the `(i, k)` minor of
+`(⟨g b, u a⟩)_{a b}` is that matrix for `v = i.removeNth u`. -/
+theorem Submission.cbr_ci_cp_pr_det_covector_laplace : ∀ (P d : ℕ) (g : Fin (d + 1) → Euclid P) (k : Fin (d + 1)) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a))) → ∃ α : Covector (Euclid P) d, ∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ (g k) (u i) * α (i.removeNth u)) := by
+  intro P d g k γ hγ
+  -- Step 1: the minor covector `γ'` of `g` with its `k`-th entry deleted, and `α = (-1)ᵏ γ'`.
+  obtain ⟨γ', hγ'⟩ := Submission.cbr_ci_cp_pr_inner_det_covector P d (fun b => g (k.succAbove b))
+  refine ⟨((-1 : ℝ) ^ (k : ℕ)) • γ', fun u => ?_⟩
+  -- Step 2: Laplace expansion of `det (⟨g b, u a⟩)_{a b}` along column `k`.
+  rw [hγ u, Matrix.det_succ_column _ k]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [ContinuousAlternatingMap.smul_apply, hγ' (i.removeNth u), smul_eq_mul]
+  -- Step 3: the `(i, k)` minor is the matrix of `i.removeNth u` against `g ∘ k.succAbove`.
+  have hsub : (Matrix.of fun a b => inner ℝ (g b) (u a)).submatrix i.succAbove k.succAbove =
+      Matrix.of fun a b => inner ℝ (g (k.succAbove b)) (i.removeNth u a) := by
+    ext a b
+    simp [Fin.removeNth]
+  -- Step 4: `(-1) ^ (i + k) = (-1) ^ i * (-1) ^ k`.
+  rw [hsub, Matrix.of_apply, pow_add]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
