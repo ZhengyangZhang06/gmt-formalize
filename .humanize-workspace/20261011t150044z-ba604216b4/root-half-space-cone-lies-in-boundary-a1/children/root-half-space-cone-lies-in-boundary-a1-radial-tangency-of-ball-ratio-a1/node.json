@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.radial_tangency_of_ball_ratio-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "Constant density ratio of a stationary integer multiplicity varifold forces radial tangency (monotonicity identity, parent step 3)",
+  "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n), μ = θH^n⌞M (R.measure), and p_x the orthogonal projection onto T_x = approxTangentPlane n M x. Assume (i) v(M, θ) is stationary in ℝ^P: R.firstVariation X = ∫_M θ div_M X dH^n = 0 for every C¹ vector field X : ℝ^P → ℝ^P with compact support (div_M X(x) = trace(p_x ∘ DX(x))); (ii) x ↦ p_x is μ-a.e. measurable; (iii) μ(B̄_ρ(0)) = ρ^n μ(B̄_1(0)) for every ρ > 0 (closed balls). Then p_x(x) = x for μ-a.e. x.",
+  "lean_statement": "∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n), (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → AEMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) R.measure → (∀ ρ : ℝ, 0 < ρ → R.measure (closedBall (0 : Euclid P) ρ) = ENNReal.ofReal (ρ ^ n) * R.measure (closedBall (0 : Euclid P) 1)) → ∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection x = x",
+  "lean_name": "stationary_imrep_radial_tangency_of_ball_ratio",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-radial-tangency-of-ball-ratio-a1-a1"
+}
