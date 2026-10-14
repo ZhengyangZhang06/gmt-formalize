@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def (BoundaryVanishes|currentEval|ConvergesWeakly|blowUp|IsConeCurrent|IsTangentConeAt|HasTangentPlaneAt|DensityAndTangentCones)|IsUnit|idtp_tpf",
+        "class HasOrthogonalProjection|def starProjection|eq_starProjection_of_mem_of_inner_eq_zero|norm_starProjection_apply_le|starProjection_orthogonal_val",
+        "isAddHaarMeasure_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_def",
+        "starProjection_eq_sum_rankOne|orthonormal_iff_ite",
+        "theorem IsCompact.tendsto_subseq",
+        "idtp_tpf_|tangent_plane_of_flat|blowUp_limit_boundaryVanishes|cone_support_smul|weak_limit_support_disjoint",
+        "dtc_blowUp_algebra",
+        "dtc_vanish_off_support",
+        "dimred_im_mass_measure",
+        "idtp_planar_cycle_eq_const_mul",
+        "axioms|sorryAx|Classical.choice|propext",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtpf_independent_audit_20261013/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtpf_independent_audit_20261013/Integrated.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca3ec8cf49/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca3ec8cf49/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261012T131954Z-ch07-root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1-h246i251/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa62/20261011T234948Z-ch07-root.density_and_tangent_cones-a1.vanish_off_support-a1-_ym43_uw/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa54/20261013T025140Z-ch07-root.dimension_reduction_results-a1.im_mass_measure-a1-8ckfwp1g/comparator.log",
+        "/tmp/idtpf_check/Feas.lean",
+        "/tmp/idtpf_check/Feas2.lean",
+        "/tmp/idtpf_check/Assembly.lean",
+        "/tmp/idtpf_independent_audit_20261013/Contracts.lean",
+        "/tmp/idtpf_independent_audit_20261013/Integrated.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes the exact selected contract. Project and mathlib revisions match the manifest; the snapshot contract and workspace contract/submission are byte-identical. All seven one-line propositions independently elaborate without child implementations. Their names are bare identifiers, with no reservations found in the DAG or other branches' decompositions; the snapshot search found no matching declarations. Recompiling the supplied child proofs together with the exact parent assembly succeeded. External DAG contracts were represented explicitly as named assumptions; axiom inspection found only standard axioms and the cited prerequisites, with no sorryAx or reliance on an ancestor theorem. Reused accepted declarations match their comparator challenge types and passed the standard-axiom checks. The sibling dependency is correctly directed from blowup_limit_cycle to blowup_domain_eventually; cited external dependencies do not lead back to the selected node. Planar constancy is an inherited prerequisite, and its pending acceptance gate remains necessary, as do those for monotonicity and tangent-cone existence. Projection and intrinsic Hausdorff-measure instances match the intended mathematics; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_subsequence_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Compactness of the finite family of basis vectors yields a strictly increasing subsequence; orthonormality passes to the limit. The projection formulas and termwise estimate give exactly the stated uniform bound with κ tending to zero. The proof also covers n = 0."
+    },
+    {
+      "key": "blowup_domain_eventually",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact bounded-set conclusion follows from an interior ball around x, a uniform norm bound on K, and the inverse image y = x + λ_i w. Positivity justifies the norm calculation and inverse dilation. No compactness or additional domain hypothesis is silently assumed."
+    },
+    {
+      "key": "blowup_limit_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles degree zero separately. In positive degree, the declared domain-exhaustion dependency makes each test form and its derivative admissible eventually. Blow-up algebra gives zero boundary, and weak convergence gives C(dω) = 0. This proves the exact BoundaryVanishes conclusion without circularity."
+    },
+    {
+      "key": "blowup_support_slab",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted support transformation supplies y with y − x = σu. The norm bound permits application of flatness, and linearity of starProjection followed by division by positive σ proves the conclusion. The argument correctly allows arbitrary β and arbitrary U, as stated."
+    },
+    {
+      "key": "weak_limit_support_exclusion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eventual domain inclusion and support disjointness make every relevant currentEval eventually zero. Weak convergence transfers vanishing to S; relatively compact balls inside W then place every point of W in its zero region. This directly proves the exact support conclusion and validly avoids the parent's mass-bound detour."
+    },
+    {
+      "key": "cone_support_dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Choosing the reciprocal blow-up parameter produces multiplication by the requested positive scalar. The proof establishes that its domain is univ and uses the cone identity to identify vanishing regions and supports. The accepted support transformation then yields precisely the stated inclusion."
+    },
+    {
+      "key": "planar_support_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses required by inherited planar constancy are supplied, including connectedness. Nonzero open-set mass forces nonzero multiplicity. Orthonormality gives dimension n, so intrinsic Hausdorff measure charges every plane ball; isometry invariance transfers this positivity to the ambient intersection. The zero-region contradiction proves equality of supports. The cited constancy prerequisite must retain its existing acceptance gate."
+    }
+  ],
+  "required_changes": []
+}
