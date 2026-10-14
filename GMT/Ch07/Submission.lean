@@ -589,6 +589,46 @@ theorem Submission.idtp_cse_etp_loc_dist_bound : ∀ (P : ℕ) (Q : Submodule �
       rw [h1, h2]
       linarith
 
+/-- **Localization near the frame `(a, e)` from the cusp bound.**  Let `Q ⊆ ℝᴾ` have dimension `2`,
+`a, e ∈ Q` be orthonormal, `π = π_Q`, and suppose `|x − πx| ≤ |x − a|/20` for `x ∈ Z` with
+`|x − a| < s₁`.  Take `s₀ = min(1/4, s₁/6)`.  If `0 < s' ≤ s₀`, `x ∈ Z`, `⟨x, a⟩ > 0`,
+`||x| − 1| < s'`, `|arctan(⟨x, e⟩/⟨x, a⟩)| < s'` and `|x − πx| ≤ 2s₀|x|`, then `|x| > 3/4` and
+`η = |x − πx|/|x| ≤ 2s₀ ≤ 1/2`, so `η² ≤ η/2` and the polar distance bound gives
+`|x − a| < 2s' + (3/2)η ≤ 5s₀ < s₁`.  The cusp bound then yields
+`(3/4)η ≤ |x − πx| < s'/10 + (3/40)η`, i.e. `η < (4/27)s'`; hence `|x − πx| < (s'/4)|x|` and
+`|x − a| < 2s' + (2/9)s' < 3s'`. -/
+theorem Submission.idtp_cse_etp_localization : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (Z : Set (Euclid P)) (s₁ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s₁ → (∀ x ∈ Z, dist x a < s₁ → ‖x - Q.starProjection x‖ ≤ 1 / 20 * dist x a) → ∃ s₀ : ℝ, 0 < s₀ ∧ s₀ ≤ 1 / 4 ∧ (∀ s' : ℝ, 0 < s' → s' ≤ s₀ → ∀ x ∈ Z, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s₀ * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') := by
+  intro P Q a e Z s₁ hQ ha he hna hne hae hs₁ hcusp
+  -- Step 1: `s₀ = min(1/4, s₁/6)`, so `0 < s₀ ≤ 1/4` and `6s₀ ≤ s₁`
+  refine ⟨min (1 / 4) (s₁ / 6), lt_min (by norm_num) (by linarith), min_le_left _ _, ?_⟩
+  intro s' hs' hs's₀ x hxZ hxa hr hf hq
+  have hs₀4 : min (1 / 4 : ℝ) (s₁ / 6) ≤ 1 / 4 := min_le_left _ _
+  have hs₀6 : min (1 / 4 : ℝ) (s₁ / 6) ≤ s₁ / 6 := min_le_right _ _
+  generalize min (1 / 4 : ℝ) (s₁ / 6) = s₀ at hs₀4 hs₀6 hs's₀ hq
+  -- Step 2: `|x| > 1 − s' ≥ 3/4`
+  have hr34 : 3 / 4 < ‖x‖ := by linarith [(abs_lt.1 hr).1]
+  have hr0 : 0 < ‖x‖ := by linarith
+  -- Step 3: `η = |x − πx|/|x|` has `|x − πx| = η|x|` and `0 ≤ η ≤ 2s₀ ≤ 1/2`, so `η² ≤ η/2`
+  have hqη : ‖x - Q.starProjection x‖ = ‖x - Q.starProjection x‖ / ‖x‖ * ‖x‖ :=
+    (div_mul_cancel₀ _ hr0.ne').symm
+  have hη0 : 0 ≤ ‖x - Q.starProjection x‖ / ‖x‖ := div_nonneg (norm_nonneg _) hr0.le
+  have hη2s₀ : ‖x - Q.starProjection x‖ / ‖x‖ ≤ 2 * s₀ := (div_le_iff₀ hr0).2 hq
+  -- Step 4: the polar distance bound `|x − a| ≤ ||x| − 1| + |f| + η + η²`
+  have hd := Submission.idtp_cse_etp_loc_dist_bound P Q a e hQ ha he hna hne hae x hxa
+  generalize ‖x - Q.starProjection x‖ / ‖x‖ = η at hqη hη0 hη2s₀ hd
+  have hηsq : η ^ 2 ≤ η / 2 := by
+    have hη12 : η ≤ 1 / 2 := by linarith
+    nlinarith [mul_le_mul_of_nonneg_left hη12 hη0]
+  -- Step 5: `|x − a| < 2s' + (3/2)η ≤ 5s₀ < s₁`
+  have hdist : dist x a < 2 * s' + 3 / 2 * η := by linarith
+  -- Step 6: the cusp bound `(3/4)η ≤ η|x| = |x − πx| ≤ |x − a|/20 < s'/10 + (3/40)η`, so
+  -- `η < (4/27)s'`
+  have hc := hcusp x hxZ (by linarith)
+  rw [hqη] at hc ⊢
+  have hη : η < 4 / 27 * s' := by nlinarith [mul_le_mul_of_nonneg_left hr34.le hη0]
+  -- Step 7: `η|x| < (4/27)s'|x| ≤ (s'/4)|x|` and `|x − a| < 2s' + (2/9)s' < 3s'`
+  exact ⟨by nlinarith [mul_lt_mul_of_pos_right hη hr0, mul_pos hs' hr0], by linarith⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
