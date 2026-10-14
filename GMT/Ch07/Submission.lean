@@ -2761,6 +2761,171 @@ theorem Submission.dtc_bc_lc_sl_ll_grad_weak_limit : ∀ (N : ℕ) (us : ℕ →
   rw [Real.dist_eq, abs_lt]
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2, h3.1, h3.2]
 
+/-- **Uniqueness of approximate differentials along a set** (supplied step 4(b), "Uniqueness
+along A"; cf. Simon Ch. 3, the remark after Definition 2.1): let `A` have approximate tangent
+space `Q` at `x`, and let `u, u' ∈ Q` both satisfy, for every `ε > 0`,
+`r⁻ᴺHᴺ(A ∩ B_r(x) ∩ {ε|y − x| < |h(y) − h(x) − ⟨u, y − x⟩|}) → 0` as `r ↓ 0`.  Then `u = u'`.
+Otherwise put `d = u − u'`, `c = d/(2|d|) ∈ Q` and `ε = |d|/8`.  If `y ∈ A` and
+`z = η_{x,r}(y) ∈ B̄_{1/8}(c)`, then `|z| ≤ 5/8` and `⟨d, z⟩ ≥ 3|d|/8`, so `y ∈ B_r(x)` and the
+difference `⟨d, y − x⟩` of the two remainders exceeds `2ε|y − x|`: `y` lies in one of the two
+exceptional sets.  As `Hᴺ(η_{x,r}(S)) = r⁻ᴺHᴺ(S)`, the bump `φ(z) = max(0, 1 − 8|z − c|)`,
+`0 ≤ φ ≤ 1_{B̄_{1/8}(c)}`, has `∫_{η_{x,r}(A)} φ dHᴺ → 0`, whereas the limit `∫_Q φ dHᴺ` is
+positive because `c ∈ Q = spt(Hᴺ⌞Q)` and `φ(c) = 1`. -/
+theorem Submission.dtc_bc_lc_sl_ll_approx_grad_unique : ∀ (P N : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (h : Euclid P → ℝ) (u u' : Euclid P), HasApproximateTangentSpaceAt N A x Q → u ∈ Q → u' ∈ Q → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → u = u' := by
+  intro P N A x Q h u u' hT hu hu' hdu hdu'
+  by_contra hne
+  -- Step 1: `d = u − u' ≠ 0`, `c = (2|d|)⁻¹ d = e/2 ∈ Q` (so `|c| = 1/2`, `⟨d, c⟩ = |d|/2`) and
+  -- `ε = |d|/8`
+  set d : Euclid P := u - u' with hd_def
+  have hd0 : 0 < ‖d‖ := norm_pos_iff.2 (sub_ne_zero.2 hne)
+  set c : Euclid P := (2 * ‖d‖)⁻¹ • d with hc_def
+  have hcQ : c ∈ Q := Q.smul_mem _ (Q.sub_mem hu hu')
+  have hc_norm : ‖c‖ = 1 / 2 := by
+    rw [hc_def, norm_smul, norm_inv, Real.norm_of_nonneg (by positivity)]
+    field_simp
+  have hdc : inner ℝ d c = ‖d‖ / 2 := by
+    rw [hc_def, real_inner_smul_right, real_inner_self_eq_norm_sq]
+    field_simp
+  set ε : ℝ := ‖d‖ / 8 with hε_def
+  have hε : 0 < ε := by positivity
+  -- Steps 2–5 (cone, inclusion, rescaled sets): for `r > 0`,
+  -- `B̄_{1/8}(c) ∩ η_{x,r}(A) ⊆ η_{x,r}(E_r) ∪ η_{x,r}(E'_r)`
+  have hincl : ∀ r : ℝ, 0 < r →
+      closedBall c (1 / 8) ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' A ⊆
+        Poincare.SimonGMT.Chapter03.blowUpMap x r ''
+            (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) ∪
+          Poincare.SimonGMT.Chapter03.blowUpMap x r ''
+            (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|}) := by
+    rintro r hr _ ⟨hzc, y, hyA, rfl⟩
+    have hyx : y - x = r • Poincare.SimonGMT.Chapter03.blowUpMap x r y :=
+      (smul_inv_smul₀ hr.ne' (y - x)).symm
+    set z := Poincare.SimonGMT.Chapter03.blowUpMap x r y with hz_def
+    rw [mem_closedBall, dist_eq_norm] at hzc
+    -- `z ∈ C₀ ∩ B₁(0)`: `|z| ≤ 5/8` and `⟨d, z⟩ ≥ |d|/2 − |d|/8 = 3|d|/8`
+    have hz_norm : ‖z‖ ≤ 5 / 8 := by
+      have := norm_le_norm_add_norm_sub' z c
+      linarith
+    have hdz : 3 * ‖d‖ / 8 ≤ inner ℝ d z := by
+      have h1 := neg_abs_le (inner ℝ d (z - c))
+      have h2 := abs_real_inner_le_norm d (z - c)
+      have h3 : ‖d‖ * ‖z - c‖ ≤ ‖d‖ * (1 / 8) := mul_le_mul_of_nonneg_left hzc (norm_nonneg d)
+      have h4 := inner_sub_right (𝕜 := ℝ) d z c
+      linarith
+    -- `y − x = r z`, so `|y − x| = r|z| < r` and `⟨d, y − x⟩ = r⟨d, z⟩`
+    have hyx_norm : ‖y - x‖ = r * ‖z‖ := by rw [hyx, norm_smul, Real.norm_of_nonneg hr.le]
+    have hyx_inner : inner ℝ d (y - x) = r * inner ℝ d z := by rw [hyx, real_inner_smul_right]
+    have hball : y ∈ ball x r := by
+      rw [mem_ball, dist_eq_norm, hyx_norm]
+      nlinarith
+    by_cases h1 : ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|
+    · exact Or.inl ⟨y, ⟨⟨hyA, hball⟩, h1⟩, rfl⟩
+    by_cases h2 : ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|
+    · exact Or.inr ⟨y, ⟨⟨hyA, hball⟩, h2⟩, rfl⟩
+    -- otherwise `⟨d, y − x⟩ = a' − a ≤ |a| + |a'| ≤ 2ε|y − x| ≤ 5r|d|/32 < 3r|d|/8 ≤ ⟨d, y − x⟩`
+    exfalso
+    rw [not_lt] at h1 h2
+    have hsplit : inner ℝ d (y - x) = inner ℝ u (y - x) - inner ℝ u' (y - x) :=
+      inner_sub_left u u' (y - x)
+    have h1' := abs_le.1 h1
+    have h2' := abs_le.1 h2
+    have hkey : ε * ‖y - x‖ ≤ ‖d‖ / 8 * (r * (5 / 8)) := by
+      rw [hyx_norm, hε_def]
+      exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hz_norm hr.le) (by positivity)
+    have hrd : 0 < r * ‖d‖ := mul_pos hr hd0
+    have hdz' : r * (3 * ‖d‖ / 8) ≤ r * inner ℝ d z := mul_le_mul_of_nonneg_left hdz hr.le
+    linarith
+  -- Step 4 (scaling): `Hᴺ(η_{x,r}(S)) = Hᴺ(S) / rᴺ` for `r > 0`; `η_{x,r}` is the homothety of
+  -- centre `x` and ratio `r⁻¹` followed by the translation by `−x`, an isometry
+  have hscale : ∀ r : ℝ, 0 < r → ∀ S : Set (Euclid P),
+      μHE[N] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) =
+        μHE[N] S / ENNReal.ofReal (r ^ N) := by
+    intro r hr S
+    have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
+        (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
+      funext z
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
+      euclideanHausdorffMeasure_homothety_image N x (inv_ne_zero hr.ne') S, ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
+      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le, ENNReal.ofReal_pow hr.le,
+      div_eq_mul_inv, ENNReal.inv_pow, mul_comm]
+  -- Step 5 (test function): `φ(z) = max(0, 1 − 8|z − c|) ∈ C_c`, `0 ≤ φ ≤ 1_{B̄_{1/8}(c)}`,
+  -- `φ(c) = 1`
+  have hout : ∀ z : Euclid P, z ∉ closedBall c (1 / 8) → max 0 (1 - 8 * ‖z - c‖) = 0 := by
+    intro z hz
+    rw [mem_closedBall, dist_eq_norm, not_le] at hz
+    exact max_eq_left (by linarith)
+  let φ : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+    ⟨⟨fun z => max 0 (1 - 8 * ‖z - c‖), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall c (1 / 8)) hout⟩
+  have hφ0 : ∀ z, 0 ≤ φ z := fun z => le_max_left _ _
+  have hφle : ∀ z, ENNReal.ofReal (φ z) ≤ (closedBall c (1 / 8)).indicator 1 z := by
+    intro z
+    by_cases hz : z ∈ closedBall c (1 / 8)
+    · rw [Set.indicator_of_mem hz, Pi.one_apply, ← ENNReal.ofReal_one]
+      refine ENNReal.ofReal_le_ofReal (max_le zero_le_one ?_)
+      have := norm_nonneg (z - c)
+      linarith
+    · rw [Set.indicator_of_notMem hz]
+      show ENNReal.ofReal (max 0 (1 - 8 * ‖z - c‖)) ≤ 0
+      rw [hout z hz, ENNReal.ofReal_zero]
+  -- Step 6 (upper bound): `∫⁻_{η_{x,r}(A)} φ dHᴺ ≤ Hᴺ(B̄_{1/8}(c) ∩ η_{x,r}(A))
+  -- ≤ Hᴺ(E_r)/rᴺ + Hᴺ(E'_r)/rᴺ` for `r > 0`
+  have hbound : ∀ r : ℝ, 0 < r →
+      ∫⁻ z in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, ENNReal.ofReal (φ z) ∂μHE[N] ≤
+        μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) /
+            ENNReal.ofReal (r ^ N) +
+          μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|}) /
+            ENNReal.ofReal (r ^ N) := by
+    intro r hr
+    calc ∫⁻ z in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, ENNReal.ofReal (φ z) ∂μHE[N]
+        ≤ ∫⁻ z in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A,
+            (closedBall c (1 / 8)).indicator 1 z ∂μHE[N] := lintegral_mono fun z => hφle z
+      _ = μHE[N] (closedBall c (1 / 8) ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' A) := by
+          rw [lintegral_indicator_one measurableSet_closedBall,
+            Measure.restrict_apply measurableSet_closedBall]
+      _ ≤ μHE[N] (Poincare.SimonGMT.Chapter03.blowUpMap x r ''
+              (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) ∪
+            Poincare.SimonGMT.Chapter03.blowUpMap x r ''
+              (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|})) :=
+          measure_mono (hincl r hr)
+      _ ≤ _ := (measure_union_le _ _).trans_eq (by rw [hscale r hr, hscale r hr])
+  -- by the two hypotheses with this `ε`, `∫_{η_{x,r}(A)} φ dHᴺ → 0` as `r ↓ 0`
+  have hlim0 : Tendsto (fun r : ℝ =>
+      ∫⁻ z in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, ENNReal.ofReal (φ z) ∂μHE[N])
+      (𝓝[>] 0) (𝓝 0) := by
+    have hsum := (hdu ε hε).add (hdu' ε hε)
+    rw [add_zero] at hsum
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hsum
+      (Eventually.of_forall fun r => zero_le) ?_
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    exact hbound r hr
+  have hint0 : Tendsto (fun r : ℝ =>
+      ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, φ z ∂μHE[N]) (𝓝[>] 0) (𝓝 0) := by
+    have hlim := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hlim0
+    rw [ENNReal.toReal_zero] at hlim
+    refine hlim.congr fun r => ?_
+    exact (integral_eq_lintegral_of_nonneg_ae (ae_of_all _ hφ0)
+      φ.continuous.aestronglyMeasurable).symm
+  -- Step 7 (lower bound): `∫_Q φ dHᴺ > 0`, since `Hᴺ⌞Q` is finite on compacts, `c ∈ Q = spt(Hᴺ⌞Q)`
+  -- and `φ(c) = 1`
+  have hdim : Module.finrank ℝ Q = N := hT.1
+  have := (Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    hdim).toIsFiniteMeasureOnCompacts
+  have hpos : 0 < ∫ z in (Q : Set (Euclid P)), φ z ∂μHE[N] := by
+    have hint : Integrable (fun z => φ z) (μHE[N].restrict (Q : Set (Euclid P))) :=
+      φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport
+    rw [integral_pos_iff_support_of_nonneg (fun z => hφ0 z) hint]
+    have hsupp : c ∈ (μHE[N].restrict (Q : Set (Euclid P))).support := by
+      rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hdim]
+      exact hcQ
+    refine (Measure.mem_support_iff_forall c).1 hsupp _ (φ.continuous.isOpen_support.mem_nhds ?_)
+    show max 0 (1 - 8 * ‖c - c‖) ≠ 0
+    rw [sub_self, norm_zero]
+    norm_num
+  -- Step 8: limits along `𝓝[>] 0` are unique, so `∫_Q φ dHᴺ = 0`, a contradiction
+  exact hpos.ne' (tendsto_nhds_unique (hT.2 φ) hint0)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
