@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def (CompactlyContainedOpen|IsMeasureRepresentation|IsRestriction|IsMassMeasure|IsSlice|SlicingTheorem)|ind_pi_ss_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06",
+        "lintegral_liminf_le|theorem Measurable.liminf|theorem ae_lt_top|frequently_lt_of_liminf_lt|liminf_le_of_frequently_le|extraction_of_frequently_atTop|norm_fderiv_le_of_lipschitz",
+        "Countable.measure_zero|theorem volume_Ioo|theorem ae_neBot|theorem lt_add_right|theorem add_lt_top|theorem mul_lt_top|theorem integrable_zero_measure",
+        "git show b9f9acdc41eaa29f36e54d7e570ae94d8ca8b4a6:GMT/Ch06/Submission.lean",
+        "ind_pi_ss_restriction_massOn_le",
+        "ind_pi_ss_cycle_slice_boundary",
+        "ind_pi_ss_cycle_slice_family",
+        "ind_pi_ss_fatou_level_selection",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ssel-independent-audit/Statements.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ssel-independent-audit/AcceptedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-plane-integer-a1-s-253346ea31/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/tmp/ssel-decomp/Asm.lean",
+        "/tmp/ssel-independent-audit/Statements.lean",
+        "/tmp/ssel-independent-audit/AcceptedAssembly.lean"
+      ],
+      "conclusion": "The split appropriately separates four genuine obligations contributing to the selected slice-selection theorem. All four frozen types pass lexical validation and elaborate independently in the exact comparator scope; none contains a declaration, proof, placeholder, implementation-dependent alias, or problematic matrix construction. Their names are bare identifiers, with no collisions among 572 DAG nodes or 189 other unaccepted-branch decomposition files. The sibling dependencies are correctly directed and acyclic. The reused restriction theorem's accepted type is byte-identical to its DAG type, and its dependency closure excludes the selected node. The pinned definitions remain unchanged. Independently compiling the supplied proof checks, instantiated with the actual accepted restriction theorem, proves all four exact child contracts and the byte-identical selected parent contract, retaining SlicingTheorem and the exact RWL antecedent. Every audited theorem reports only propext, Classical.choice and Quot.sound; none depends on sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restriction_mass_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. IsRestriction supplies the measure representation needed for accepted R0, so local finite mass is derived without an omitted hypothesis. R2, compact containment and measure monotonicity then prove the exact inequality. The proof is complete and non-circular."
+    },
+    {
+      "key": "cycle_slice_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including arbitrary f. IsSlice supplies measurability of the sublevel set; the zero-measure representation constructs the zero restriction. Accepted uniqueness removes the boundary restriction, and current extensionality proves A.boundary = S. No additional regularity hypothesis or circular reliance is needed."
+    },
+    {
+      "key": "cycle_slice_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract follows from the supplied proof: zero boundary mass supplies the slicing hypotheses, cycle_slice_boundary provides the restriction family, and the Lipschitz derivative bound and measurable band permit the slicing mass clause. restriction_mass_le gives the stated integral bound. Both declared sibling dependencies are necessary to this proof and correctly directed."
+    },
+    {
+      "key": "fatou_level_selection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match. Fatou yields an almost-everywhere finite liminf; countable nullity and positive interval measure supply a level outside E. The finite bound F(γ)+1 gives frequent bounded values and a strictly increasing subsequence. All side conditions are justified, and the proof is complete independently of currents and the parent."
+    }
+  ],
+  "required_changes": []
+}
