@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git show bdf34f91edfa2642928ed59a139dd914ab9326d5:GMT/Ch07/Submission.lean | cmp - GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n \"theorem measure_null_of_locally_null|theorem smul_ball |theorem image_smul |theorem eventually_all_finset|theorem measure_biUnion_finset |theorem Infinite.exists_subset_card_eq|theorem exists_nat_gt|theorem norm_sub_sq_real|theorem Ioo_mem_nhdsGT |theorem mem_ball_zero_iff|theorem dist_smul₀|lemma dist_smul₀|lemma smul_ball |lemma Ioo_mem_nhdsGT \" <snapshot>/mathlib/Mathlib",
+        "rg -n \"(theorem|lemma) (Ioo_mem_nhdsGT|image_smul|mem_ball_zero_iff|measure_union_null|measure_mono_null|ENNReal.tendsto_ofReal|tendsto_ofReal)\\b\" <snapshot>/mathlib/Mathlib; rg -n \"Ioo_mem_nhdsGT|theorem mem_ball_zero_iff|lemma mem_ball_zero_iff\" <snapshot>/mathlib/Mathlib",
+        "rg -n -i \"homogeneous|finite.?rays|cone_inter_ball|\\bray\\b\" <snapshot>/project/GMT; rg -n -il \"IsCone|cone\" <snapshot>/project/GMT",
+        "python3 -I /tmp/fr_split_check/scan.py dag.json (selected node record: depth 5, status decomposing, children []; lean_name and node-id collisions for idtp_fons_odc_fr_{cone_scaling,cone_disjoint,cone_mass,card_le,origin_null}; nodes whose lean_statement contains the homogeneity hypothesis)",
+        "git log --all --oneline -S idtp_fons_odc_fr_ (no match)",
+        "git show 75f499358:GMT/Ch07/Submission.lean | sed -n 860,1073p (speculative draft Submission.odc_finiterays_* helpers of the identical theorem)",
+        "grep -n _machine_leaf|leaf_lean_agent_review|max_depth|max_nodes in /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py, prompts.py, config.github-theorems.example.yaml; grep -n helper|set_option|declaration leaf_verification.py; grep -n 'def check_parent_git_delta' -A 60 parent_verification.py",
+        "grep -n \"1-dimensional minimizing cone|union of rays|rays\" book/chapter-07.txt; sed -n 555,580p book/chapter-07.txt",
+        "lake env lean /tmp/fr_split_check/Types.lean; lake env lean /tmp/fr_split_check/Assembly.lean (with #print axioms for all six declarations)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/MulAction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-supplied-plan.md",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/parent_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/prompts.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/config.github-theorems.example.yaml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/fr_split_check/Types.lean",
+        "/tmp/fr_split_check/Assembly.lean",
+        "/tmp/fr_split_check/scan.py"
+      ],
+      "conclusion": "Version pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c. At the node's proof base bdf34f91, Submission.lean is byte-identical to Contract.lean, so children elaborate in namespace GMT.Ch07 with the contract's opens. The snapshot Mathlib supplies every library fact used: measure_null_of_locally_null (MeasureTheory/OuterMeasure/Basic.lean:150), measure_mono_null (:54), measure_union_null (:128), smul_ball (Analysis/Normed/Module/Ball/Pointwise.lean:79), Set image_smul (Algebra/Group/Pointwise/Set/Scalar.lean:155), eventually_all_finset (Order/Filter/Finite.lean:258), measure_biUnion_finset (MeasureTheory/Measure/Basic.lean:150), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862), ENNReal.exists_nat_gt (Basic/ENNReal/Basic.lean:622), norm_sub_sq_real (Analysis/InnerProductSpace/Basic.lean:437), dist_smul₀ (Analysis/Normed/MulAction.lean:153), ENNReal.tendsto_ofReal (Topology/Instances/ENNReal/Lemmas.lean:72), and Ioo_mem_nhdsGT (used at MeasureTheory/Integral/DominatedConvergence.lean:527). No project or library declaration states any of the five child statements: the project/GMT search for homogeneous-measure and cone lemmas found nothing relevant. dag.json has no node with these names or ids, and the only node with the homogeneity hypothesis is the selected one. git log --all -S idtp_fons_odc_fr_ found nothing. The speculative draft 75f499358 proves the identical theorem using the same five-lemma structure (as Submission.odc_finiterays_* helpers, which were never reserved as nodes). runtime.py:3966 and leaf_verification.py:98-108, with leaf_lean_agent_review false, make a childless node a single-theorem leaf with no helpers or set_option, and depth 5 < max_depth 6 permits this split. Lean: all five child types elaborate. Each child is proved as one theorem referencing only its listed siblings, and the frozen parent type follows from card_le and origin_null, with only the axioms propext, Classical.choice and Quot.sound. The book (chapter-07.txt:563-566) only says the 1-dimensional cone form m[[ℓ]] is 'easy to check'."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.card_le-a1",
+  "subproblem": {
+    "key": "card_le",
+    "title": "Counting unit directions with density at least 1 via disjoint thin cones (parent step 5)",
+    "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P (where λW := {λx : x ∈ W}), and μ(B_1(0)) < ∞. Let T be a finite set of unit vectors of ℝ^P such that, for each σ ∈ T, ρ ≤ μ(B_ρ(σ)) holds for all sufficiently small ρ > 0 (eventually as ρ ↓ 0). Then #T ≤ 2·μ(B_1(0)).",
+    "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ T : Finset (Euclid P), (∀ σ ∈ T, ‖σ‖ = 1) → (∀ σ ∈ T, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball σ ρ)) → (T.card : ℝ≥0∞) ≤ 2 * μ (ball 0 1)",
+    "lean_name": "idtp_fons_odc_fr_card_le",
+    "depends_on": [
+      "cone_disjoint",
+      "cone_mass"
+    ],
+    "natural_proof": "Source: parent step 5 (first part: \"#T ≤ 2·μ(B_1(0))\"). For a unit vector e and ρ > 0, write K_ρ(e) := ⋃_{t>0} B(te, tρ).\n1. (Density bounds hold together.) T is finite, so the finitely many eventual statements \"ρ ≤ μ(B_ρ(σ))\" (σ ∈ T) hold simultaneously for all sufficiently small ρ > 0.\n2. (Separation.) For distinct σ, σ' ∈ T, |σ − σ'| > 0, so 2ρ ≤ |σ − σ'| for every ρ ∈ (0, |σ − σ'|/2). There are finitely many pairs, so eventually as ρ ↓ 0, 2ρ ≤ |σ − σ'| holds for all distinct σ, σ' ∈ T. Also, eventually ρ ∈ (0, 1).\n3. (Fix ρ.) The filter of right neighbourhoods of 0 in ℝ is proper: every interval (0, δ) with δ > 0 is nonempty. So the conjunction of the eventual statements in steps 1–2 is satisfied by some ρ. Fix ρ with 0 < ρ < 1, ρ ≤ μ(B_ρ(σ)) for every σ ∈ T, and 2ρ ≤ |σ − σ'| for all distinct σ, σ' ∈ T.\n4. For σ ∈ T, put C_σ := K_ρ(σ) ∩ B_1(0). Each C_σ is open (a union of open balls intersected with an open ball), hence Borel, and C_σ ⊆ B_1(0).\n5. (Disjointness.) Let σ, σ' ∈ T be distinct. Apply the sibling lemma cone_disjoint (Submission.idtp_fons_odc_fr_cone_disjoint) with |σ| = |σ'| = 1, 0 < ρ ≤ 1 and 2ρ ≤ |σ − σ'|. It gives K_ρ(σ) ∩ K_ρ(σ') = ∅, hence C_σ ∩ C_σ' = ∅.\n6. (Mass.) Let σ ∈ T. Apply the sibling lemma cone_mass (Submission.idtp_fons_odc_fr_cone_mass) with the homogeneity hypothesis, μ(B_1(0)) < ∞, |σ| = 1, 0 < ρ < 1 and ρ ≤ μ(B_ρ(σ)). It gives 1 ≤ 2·μ(C_σ).\n7. (Count.) Work in [0, ∞]. Use step 6, then finite additivity of μ on the pairwise disjoint Borel sets C_σ (steps 4–5), then monotonicity (C_σ ⊆ B_1(0)). This gives #T = Σ_{σ∈T} 1 ≤ Σ_{σ∈T} 2·μ(C_σ) = 2·μ(⋃_{σ∈T} C_σ) ≤ 2·μ(B_1(0)). ∎",
+    "proof_key_steps": [
+      "Choose one ρ ∈ (0, 1) such that ρ ≤ μ(B_ρ(σ)) for every σ ∈ T and 2ρ ≤ |σ − σ'| for all distinct σ, σ' ∈ T; this conjoins finitely many eventual statements in a proper filter.",
+      "By cone_disjoint, the sets C_σ := K_ρ(σ) ∩ B_1(0), σ ∈ T, are pairwise disjoint open subsets of B_1(0).",
+      "By cone_mass, 1 ≤ 2·μ(C_σ) for each σ ∈ T.",
+      "#T ≤ Σ_σ 2·μ(C_σ) = 2·μ(⋃_σ C_σ) ≤ 2·μ(B_1(0))."
+    ]
+  },
+  "audit": {
+    "key": "card_le",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The type matches the finite-set statement, including individual eventual density bounds and the ENNReal cardinality cast. Finite conjunction and the proper right-neighborhood filter supply one positive radius satisfying every density and separation condition. Both listed siblings apply with their exact hypotheses. Finite additivity on the disjoint open cone sections proves the bound, also when T is empty."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_disjoint-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_mass-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f54a5d73d9/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f54a5d73d9/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f54a5d73d9/parent-supplied-natural-proof.json"
+}

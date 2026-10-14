@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem measure_null_of_locally_null|theorem measure_mono_null|theorem measure_union_null",
+        "smul_ball|norm_sub_sq_real|dist_smul₀|eventually_all_finset|measure_biUnion_finset|Infinite.exists_subset_card_eq|exists_nat_gt|tendsto_ofReal",
+        "idtp_fons_odc_fr_|finite.?rays|cone_inter_ball|homogeneous",
+        "Ioo_mem_nhdsGT|nhdsGT_neBot",
+        "theorem Tendsto.mul_const|protected theorem Tendsto.mul_const|lemma Tendsto.mul_const|def EuclideanSpace|abbrev EuclideanSpace",
+        "rg -n 'idtp_fons_odc_fr_(cone_scaling|cone_disjoint|cone_mass|card_le|origin_null)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT/Ch07",
+        "sed -n '1,265p' /tmp/fr_split_check/Assembly.lean",
+        "lake env lean /tmp/finite_rays_independent_audit/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/DenselyOrdered.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/decomposition-v1.json",
+        "/tmp/fr_split_check/Assembly.lean",
+        "/tmp/finite_rays_independent_audit/Types.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest. The frozen Euclid uses the Euclidean inner-product norm. Inspected library statements support ball scaling, finite conjunctions of eventual bounds, nontrivial right-neighborhood filters, finite measure additivity, cardinality bounds, and local nullity. The project search found no relevant existing finite-rays helper; the DAG contains no reservation or identical accepted type for any proposed child. All five names are bare identifiers, and all five types are standalone one-line propositions without implementation-dependent references. The split is appropriate: cone_scaling → cone_mass → card_le, cone_disjoint → card_le, and independent origin_null form an acyclic graph. The cardinality bound makes the unit support finite; normalization and ball scaling, origin_null, and local nullity then prove the selected parent's exact conclusion. No previously accepted child declaration is reused. Review was by independent mathematical and source inspection: the attempted compiler check failed because lake is unavailable, so no fresh elaboration or axiom-check result is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include exactly open-set homogeneity, openness of K, positive-scaling closure, and r > 0. The proof establishes both inclusions using r and its positive inverse, then applies homogeneity to the open intersection. It requires neither finiteness nor any parent or sibling result."
+    },
+    {
+      "key": "cone_disjoint",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states disjointness of the two positive-parameter unions, with both unit-norm assumptions and all radius and separation bounds. The Euclidean inner-product identity is correct. Positivity permits squaring the separation bound, and ρ ≤ 1 supplies the remaining quadratic estimate. This contradicts the strict triangle-inequality bound, including at ρ = 1."
+    },
+    {
+      "key": "cone_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the ENNReal conclusion match the prose. The proof verifies the open-cone hypotheses before applying cone_scaling, its sole dependency. The inclusions, disjointness, and measurable additivity give the stated inequality. The finite upper bound (1 + ρ)a makes all intervening measures finite, justifying real subtraction and division by positive ρ. No additional finiteness assumption is hidden."
+    },
+    {
+      "key": "card_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the finite-set statement, including individual eventual density bounds and the ENNReal cardinality cast. Finite conjunction and the proper right-neighborhood filter supply one positive radius satisfying every density and separation condition. Both listed siblings apply with their exact hypotheses. Finite additivity on the disjoint open cone sections proves the bound, also when T is empty."
+    },
+    {
+      "key": "origin_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on homogeneity, finite unit-ball mass, and the null singleton conclusion. Ball scaling is proved directly within this child. Monotonicity bounds the singleton mass by r times a finite constant; this tends to zero along the nontrivial right-neighborhood filter. The proof is complete and independent of the parent and siblings."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_disjoint-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1",
+  "depth": 6,
+  "title": "Thin cones around 2ρ-separated unit directions are disjoint (parent step 4)",
+  "statement": "Let P ∈ ℕ, let σ, σ' ∈ ℝ^P be unit vectors (|σ| = |σ'| = 1), and let ρ ∈ ℝ satisfy 0 < ρ ≤ 1 and 2ρ ≤ |σ − σ'|. Write B(z, s) := {y : |y − z| < s} and K_ρ(e) := ⋃_{t>0} B(te, tρ). Then the sets K_ρ(σ) and K_ρ(σ') are disjoint.",
+  "lean_statement": "∀ (P : ℕ) (σ σ' : Euclid P) (ρ : ℝ), ‖σ‖ = 1 → ‖σ'‖ = 1 → 0 < ρ → ρ ≤ 1 → 2 * ρ ≤ ‖σ - σ'‖ → Disjoint (⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) (⋃ (s : ℝ) (_ : 0 < s), ball (s • σ') (s * ρ))",
+  "lean_name": "idtp_fons_odc_fr_cone_disjoint",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bd241d2442-a1"
+}

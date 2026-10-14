@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1",
+  "depth": 6,
+  "title": "A thin cone around a direction of density at least 1 has mass at least 1/2 in the unit ball (parent step 3)",
+  "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P (where λW := {λx : x ∈ W}), and μ(B_1(0)) < ∞. Let σ ∈ ℝ^P be a unit vector, and let 0 < ρ < 1 satisfy ρ ≤ μ(B_ρ(σ)). Put K_ρ(σ) := ⋃_{t>0} B(tσ, tρ). Then 1 ≤ 2·μ(K_ρ(σ) ∩ B_1(0)).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ σ : Euclid P, ‖σ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → ρ < 1 → ENNReal.ofReal ρ ≤ μ (ball σ ρ) → 1 ≤ 2 * μ ((⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) ∩ ball 0 1)",
+  "lean_name": "idtp_fons_odc_fr_cone_mass",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bd17716168-a1"
+}
