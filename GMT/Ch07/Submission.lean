@@ -926,6 +926,37 @@ theorem Submission.codim1_hcp_sc_graph_contDiffOn : ∀ (P d r : ℕ) (M W₀ : 
   -- `g` is `Cʳ` at `a₀` (`U` is open), and `G = g` near `a₀`
   exact (hg.contDiffAt (hU.mem_nhds ha₁)).congr_of_eventuallyEq hGg
 
+/-- **`C^∞` charts** (Simon Ch. 2, §4, 4.1–4.4): if `M ⊆ ℝᴾ` is an embedded `Cʳ` `m`-dimensional
+submanifold for every `r` (the charts may depend on `r`), then every `y ∈ M` has a `C^∞` local
+representation.  Take a `C¹` chart `ψ₁` with `ψ₁(v_y) = y` and a continuous linear left inverse
+`π` of the injective `Dψ₁(v_y)`.  Re-parametrizing `ψ₁` over `π` gives a `C¹` chart
+`G : D → W₀ ∩ M` with `π(G(a) − y) = a`, and such a graph chart of the `C^{n+1}` submanifold `M`
+is `C^{n+1}` on `D`.  So `G` is `Cⁿ` on `D` for every `n`, i.e. `C^∞`. -/
+theorem Submission.codim1_hcp_smooth_charts : ∀ (P m : ℕ) (M : Set (Euclid P)), (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → ∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ (⊤ : ℕ∞) ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ ∀ z ∈ V, Injective (fderiv ℝ ψ z) := by
+  intro P m M hM y hy
+  -- Step 1: a `C¹` chart `(V₁, W₁, ψ₁)` at `y`, and `v_y ∈ V₁` with `ψ₁(v_y) = y`
+  obtain ⟨V₁, W₁, ψ₁, hV₁, hW₁, hyW₁, hψ₁, hinj₁, hψ₁V, hprop₁, hD₁⟩ := hM 1 y hy
+  obtain ⟨vy, hvy, hψvy⟩ : y ∈ ψ₁ '' V₁ := hψ₁V ▸ ⟨hyW₁, hy⟩
+  -- Step 2: a continuous linear left inverse `π` of the injective `Dψ₁(v_y)`
+  obtain ⟨π₀, hπ₀⟩ := (fderiv ℝ ψ₁ vy : Euclid m →ₗ[ℝ] Euclid P).exists_leftInverse_of_injective
+    (LinearMap.ker_eq_bot.2 (hD₁ vy hvy))
+  set π : Euclid P →L[ℝ] Euclid m := LinearMap.toContinuousLinearMap π₀
+  have hπA : π ∘L fderiv ℝ ψ₁ vy = ContinuousLinearMap.id ℝ (Euclid m) :=
+    ContinuousLinearMap.ext fun v => LinearMap.congr_fun hπ₀ v
+  have hπ : Injective (π ∘L fderiv ℝ ψ₁ vy) := by
+    rw [hπA]
+    exact fun a b hab => hab
+  -- Step 3: the `C¹` graph chart `G : D → W₀ ∩ M` over `π`, with `π(G(a) − y) = a`
+  obtain ⟨D, W₀, G, hD, hW₀, hyW₀, -, hG, hGinj, hGD, hGprop, hDG, hπG⟩ :=
+    Submission.codim1_hcp_sc_graph_reparam P m 1 M W₁ V₁ ψ₁ π y vy le_rfl hV₁ hW₁ hψ₁ hinj₁ hψ₁V
+      hprop₁ hvy hπ
+  -- Step 4: `G` is `C^{n+1}` on `D` for every `n` (`M` is `C^{n+1}`), hence `C^∞`
+  have hG1 : ContDiffOn ℝ 1 G D := by exact_mod_cast hG
+  have hGsmooth : ContDiffOn ℝ (⊤ : ℕ∞) G D := contDiffOn_infty.2 fun n =>
+    (Submission.codim1_hcp_sc_graph_contDiffOn P m (n + 1) M W₀ D G π y (Nat.le_add_left 1 n)
+      (hM (n + 1)) hD hW₀ hG1 hGinj hGD hGprop hDG hπG).of_le (by exact_mod_cast Nat.le_succ n)
+  exact ⟨D, W₀, G, hD, hW₀, hψvy ▸ hyW₀, hGsmooth, hGinj, hGD, hGprop, hDG⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
