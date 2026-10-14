@@ -647,6 +647,31 @@ theorem Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq : ∀ (P : ℕ)
   rw [heq] at hlimμ
   exact tendsto_nhds_unique hlimμ (hdom ν (hν K hK))
 
+/-- **Translation invariance from vanishing directional derivatives** (step 2 of the
+constant-planes argument): if `ν` on `ℝᴾ` is finite on compact sets and `∫ Dφ(y)[v] dν(y) = 0`
+for every `C^∞` `φ` with compact support, then `ν(τ⁻¹A) = ν(A)` for every Borel `A`, where
+`τ(x) = v + x`.  `τ` is a homeomorphism, so `τ_#ν` is finite on compact sets
+(`τ_#ν(K) = ν(τ⁻¹K)`, `τ⁻¹K = K − v` compact) and `∫ φ d(τ_#ν) = ∫ φ(v + y) dν(y)`, which is
+`∫ φ dν` for `φ ∈ C_c^∞(ℝᴾ)` (`cbr_ci_cp_tr_smooth_translate_integral_eq`).  Hence `τ_#ν = ν`
+(`cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq`), and `ν(τ⁻¹A) = τ_#ν(A) = ν(A)`. -/
+theorem Submission.cbr_ci_cp_translation_invariant_of_fderiv : ∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A := by
+  intro P ν v hν hD A hA
+  -- `τ(x) = v + x` is a homeomorphism of `ℝᴾ`, hence a measurable embedding
+  have hτ : MeasurableEmbedding (fun x : Euclid P => v + x) :=
+    (Homeomorph.addLeft v).measurableEmbedding
+  -- steps 4–7: `τ_#ν = ν`, both being finite on compacts with equal `C_c^∞` integrals
+  have hμ : Measure.map (fun x : Euclid P => v + x) ν = ν := by
+    refine Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq P
+      (Measure.map (fun x : Euclid P => v + x) ν) ν (fun K hK => ?_) hν (fun φ hφ hφs => ?_)
+    · -- `τ_#ν(K) = ν(τ⁻¹K) < ∞`, `τ⁻¹K = K − v` being compact
+      rw [hτ.map_apply]
+      exact hν _ ((Homeomorph.addLeft v).isCompact_preimage.2 hK)
+    · -- steps 1–3: `∫ φ d(τ_#ν) = ∫ φ(v + y) dν(y) = ∫ φ dν` for `φ ∈ C_c^∞(ℝᴾ)`
+      rw [hτ.integral_map]
+      exact Submission.cbr_ci_cp_tr_smooth_translate_integral_eq P ν v hν hD φ hφ hφs
+  -- step 8: `ν(τ⁻¹A) = τ_#ν(A) = ν(A)` for Borel `A`
+  rw [← Measure.map_apply hτ.measurable hA, hμ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
