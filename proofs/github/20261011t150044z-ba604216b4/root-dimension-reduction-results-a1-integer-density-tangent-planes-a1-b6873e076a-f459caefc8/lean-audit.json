@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fe485adf6ddfa87103c78e9c49727518ac248fb27f81482a226910ee856bcbf0",
+  "git_delta": {
+    "base_commit": "963513d99332491cd47ecd7ef84fd53b051c1df1",
+    "candidate_commit": "35fcb6bfd3f48783faa5630e8813e80ea075a40e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "d1aab0df67840b85a0788fbc2869058fe899e4a671c4bd9632c5521b317a18d6",
+    "source_sha256": "a1e8a4d000e1b830aa9f77ad0d387ce073b89022834a0b0f0a8e6aefc27d722a",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fa_polar_gram_jacobian",
+      "statement": "∀ (P : ℕ) (Q T : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < inner ℝ x a → Module.finrank ℝ T = 2 → T.starProjection x = x → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).1 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).1 + (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).2 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).2)) = ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

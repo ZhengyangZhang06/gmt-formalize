@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "depth": 4,
+  "title": "Weighted fibre-sum area formula on one bi-Lipschitz piece for a locally Lipschitz map into ℝ^n (parent steps 0, 5, 6, 7 on a piece)",
+  "statement": "Let P, n ∈ ℕ; g : ℝ^n → ℝ^P Lipschitz; A ⊆ ℝ^n Borel with g injective on A and differentiable at every point of A; V ⊆ ℝ^P open with g(A) ⊆ V; G : ℝ^P → ℝ^n Lipschitz; F : ℝ^P → ℝ^n with F = G on V and F differentiable at every point of g(A); T : ℝ^P → {linear subspaces of ℝ^P} with T(g(a)) = range Dg(a) for Lebesgue-a.e. a ∈ A (Dg(a) = fderiv ℝ g a); and h : ℝ^P → [0, ∞] a.e. measurable for H^n⌞g(A) (H^n = μHE[n]). For x ∈ ℝ^P let J_T(x) := (det(⟨DF(x)u_i, DF(x)u_j⟩)_{i,j})^{1/2}, where DF(x) = fderiv ℝ F x and (u_i) is the standard orthonormal basis (stdOrthonormalBasis) of T(x), indexed by Fin(dim T(x)). Then the fibre-sum function y ↦ Σ_{x ∈ g(A), F(x) = y} h(x) (the tsum over the subtype g(A) ∩ F^{−1}{y}) is a.e. measurable for Lebesgue measure L^n (volume) on ℝ^n, and ∫_{ℝ^n} Σ_{x ∈ g(A), F(x) = y} h(x) dL^n(y) = ∫_{g(A)} J_T(x)·h(x) dH^n(x), the factor J_T entering through ENNReal.ofReal.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (Lg : NNReal) (V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (T : Euclid P → Submodule ℝ (Euclid P)) (h : Euclid P → ℝ≥0∞), LipschitzWith Lg g → MeasurableSet A → InjOn g A → (∀ a ∈ A, DifferentiableAt ℝ g a) → IsOpen V → g '' A ⊆ V → LipschitzWith LG G → EqOn F G V → (∀ x ∈ g '' A, DifferentiableAt ℝ F x) → (∀ᵐ a ∂(volume.restrict A), T (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)) → AEMeasurable h (μHE[n].restrict (g '' A)) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(g '' A ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in g '' A, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (T x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (T x) j))))) * h x ∂μHE[n]",
+  "lean_name": "idtp_caf_piece_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba-a1"
+}
