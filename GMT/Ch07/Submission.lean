@@ -890,6 +890,34 @@ theorem Submission.cbr_ci_iso_exists_symmetric_replacement : ∀ (d : ℕ) (A : 
   ext k
   simp
 
+/-- **Simon 2.10** (isodiametric inequality, Ch. 1, p. 11): `Lᵈ(A) ≤ ω_d (diam A / 2)ᵈ` for every
+`A ⊆ ℝᵈ`.  If `ediam A = ∞` then `d ≠ 0` (subsets of `ℝ⁰` are subsingletons) and the right side is
+`ω_d · ∞ = ∞`, as `ω_d > 0`.  Otherwise the closure `Ā` is compact, `ediam Ā = ediam A` and
+`Lᵈ(A) ≤ Lᵈ(Ā)`; a centrally symmetric compact `K` with `Lᵈ(K) = Lᵈ(Ā)` and `ediam K ≤ ediam Ā`
+satisfies the bound, and the bound is monotone in the diameter. -/
+theorem Submission.cbr_ci_iso_volume_le_ediam_pow : ∀ (d : ℕ) (A : Set (Euclid d)), volume A ≤ unitBallVolume d * (ediam A / 2) ^ d := by
+  intro d A
+  by_cases hA : ediam A = ⊤
+  · -- unbounded `A`: then `d ≠ 0`, and the right side is `ω_d · ∞ = ∞`
+    have hd : d ≠ 0 := by
+      rintro rfl
+      exact ENNReal.zero_ne_top ((ediam_subsingleton Set.subsingleton_of_subsingleton).symm.trans hA)
+    have hω : unitBallVolume d ≠ 0 := (measure_ball_pos volume (0 : Euclid d) one_pos).ne'
+    have h2 : ediam A / 2 = ⊤ := by
+      rw [hA]
+      exact ENNReal.top_div_of_ne_top ENNReal.ofNat_ne_top
+    rw [h2, ENNReal.top_pow hd, ENNReal.mul_top hω]
+    exact le_top
+  · -- bounded `A`: pass to the compact closure, then to a centrally symmetric replacement
+    have hc : IsCompact (closure A) := (isBounded_iff_ediam_ne_top.2 hA).isCompact_closure
+    obtain ⟨K, -, hKA, hKd, hKs⟩ :=
+      Submission.cbr_ci_iso_exists_symmetric_replacement d (closure A) hc
+    rw [ediam_closure] at hKd
+    calc volume A ≤ volume (closure A) := measure_mono subset_closure
+      _ = volume K := hKA.symm
+      _ ≤ unitBallVolume d * (ediam K / 2) ^ d := Submission.cbr_ci_iso_volume_le_of_neg_mem d K hKs
+      _ ≤ unitBallVolume d * (ediam A / 2) ^ d := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
