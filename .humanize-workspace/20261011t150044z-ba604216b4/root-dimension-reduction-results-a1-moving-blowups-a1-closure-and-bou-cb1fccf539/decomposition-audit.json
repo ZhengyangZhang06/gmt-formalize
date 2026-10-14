@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'IMRep|MultiVector|instance.*Sub|CompactlyContained|namespace|^open' project/GMT/Ch07/Contract.lean",
+        "rg -n 'dmcbr_cc|cbr_ccisp|cmc_fcl_|cbr_cc_' project -g '*.lean'",
+        "rg -n 'integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous|theorem ae_lt_top|enorm_integral_le_lintegral_enorm|theorem restrict_withDensity|theorem restrict_apply ' mathlib/Mathlib/MeasureTheory",
+        "git rev-parse HEAD",
+        "cmc_fcl_imrep_integral_data",
+        "cmc_fcl_imrep_restrict_formula",
+        "cmc_fcl_massOn_le_measure_inter",
+        "cbr_ccisp_restrict_isIntegerMultiplicity",
+        "cbr_ccisp_ae_massOn_lt_top",
+        "cbr_cc_current_algebra",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-isp-audit-bqggblk0/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-isp-audit-bqggblk0/Supplied.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-isp-audit-bqggblk0/Accepted.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-cb1fccf539/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-cb1fccf539/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-2bdc65f87f/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-a5cfc87778/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-be968f7b5a/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-cc3788be20/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-40399ad363/lean-audit-v1.json",
+        "/tmp/independent-isp-audit-bqggblk0/Types.lean",
+        "/tmp/independent-isp-audit-bqggblk0/Supplied.lean",
+        "/tmp/independent-isp-audit-bqggblk0/Accepted.lean"
+      ],
+      "conclusion": "The five-child split is appropriate for the selected ISP theorem. Project and Mathlib pins match the snapshot; the snapshot project contains none of the searched reused declarations. Each proposed bare name has exactly one accepted DAG owner, a passed comparator record, and a byte-identical frozen type and accepted declaration type. Dependencies match the proofs and are acyclic. All five types elaborate independently without child implementations. Both the supplied proof appendices and the accepted-checkpoint proofs compile with the assembly proving the exact selected parent type; every checked declaration uses only propext, Classical.choice and Quot.sound. The assembly obtains integer restrictions and almost-everywhere finite defect mass, applies the declared current_algebra dependency and BR(d), then IMC(c) and extensionality. No matrix-instance ambiguity occurs. The requested parent binding digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including the conditional orientation bound. Compact finiteness follows from locallyIntegrable_mult; absolute continuity transfers measurability and the bound; the measurable NNReal density identity proves the action formula without an integrability assumption. The proof is complete and non-circular."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Borel measurability and all representation-field equalities are explicit. Restriction and withDensity identities prove the measure equality; the declared imrep_data dependency then proves the action formula. Both conclusions follow with no additional hypotheses."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support-indicator estimate and supremum over admissible forms establish exactly μ(E ∩ V). Arbitrary E and V are valid: the tested support is closed and measurable, and the Bochner integral inequality requires no integrability assumption. The proof matches the coefficient norm and mass definitions."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All IMC(b), IMC(d), RU and representation hypotheses are stated explicitly and match the Lean type. The proof verifies RU's hypotheses using imrep_data and the zero third pair, identifies restricted actions using imrep_restrict, and supplies an IMRep witnessing A. Its dependencies are sufficient and non-circular."
+    },
+    {
+      "key": "ae_mass_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Constant-sequence MM gives measurable finite majorants on each integer interval and ball. A countable intersection followed by bounded-set containment and mass monotonicity proves the exact almost-everywhere universal conclusion. No measurability of the slice-mass function is silently assumed."
+    }
+  ],
+  "required_changes": []
+}
