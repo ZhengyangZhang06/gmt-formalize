@@ -513,6 +513,57 @@ theorem Submission.cmcdtfrpo_approxTangent_le_of_sub_mem : ∀ (P n : ℕ) (A : 
     rw [integral_pos_iff_support_of_nonneg hg_nonneg hint, hg_supp]
     exact hball
   exact hpos.ne' hQint
+/-- **Orthonormal frames of one plane agree up to a global sign** (Simon Ch. 6, §1 and §3: an
+`n`-plane is oriented by `±τ₁ ∧ ⋯ ∧ τₙ` for any orthonormal basis `τ` of it).  If `τ` and `e` are
+orthonormal `n`-frames in `ℝᴾ` spanning the same subspace `W`, then for every `n`-covector `α`,
+`α(τ) = c α(e)` with `c = det_e(τ)`, the determinant of `τ` in the basis `e` of `W`
+(`AlternatingMap.eq_smul_basis_det` for `α` restricted to `W`); `c = ±1`, being the change-of-basis
+determinant between two orthonormal bases of `W`. -/
+theorem Submission.cmcdtfrpo_orthonormal_frame_sign : ∀ (P n : ℕ) (τ e : Fin n → Euclid P), Orthonormal ℝ τ → Orthonormal ℝ e → Submodule.span ℝ (Set.range τ) = Submodule.span ℝ (Set.range e) → (∀ α : Covector (Euclid P) n, α τ = α e) ∨ (∀ α : Covector (Euclid P) n, α τ = -α e) := by
+  intro P n τ e hτ he hspan
+  -- Step 1: the basis `b` of `W = span (range e)` with `b j = e j`, so `finrank W = n`
+  let W : Submodule ℝ (Euclid P) := Submodule.span ℝ (Set.range e)
+  have hli : LinearIndependent ℝ e := he.linearIndependent
+  let b : Module.Basis (Fin n) ℝ W := Module.Basis.span hli
+  have hb : ∀ j, (b j : Euclid P) = e j := Module.Basis.coe_span_apply hli
+  have hfin : Module.finrank ℝ W = n := by
+    rw [Module.finrank_eq_card_basis b, Fintype.card_fin]
+  -- Step 2: `τ` as a family `τW` in `W`
+  have hτW : ∀ j, τ j ∈ W := fun j => hspan.le (Submodule.subset_span (Set.mem_range_self j))
+  let τW : Fin n → W := fun j => ⟨τ j, hτW j⟩
+  -- Step 3: `α(τ) = det_b(τW) α(e)` for every `n`-covector `α`
+  have key : ∀ α : Covector (Euclid P) n, α τ = b.det τW * α e := by
+    intro α
+    let αW : W [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap W.subtype
+    have h := congrArg (fun f : W [⋀^Fin n]→ₗ[ℝ] ℝ => f τW) (αW.eq_smul_basis_det b)
+    have hτ' : (fun j => W.subtype (τW j)) = τ := rfl
+    have he' : (fun j => W.subtype (b j)) = e := funext hb
+    simp only [αW, AlternatingMap.compLinearMap_apply, AlternatingMap.smul_apply, smul_eq_mul] at h
+    rw [hτ', he'] at h
+    rw [mul_comm]
+    exact h
+  -- Step 4: `det_b(τW) = ±1`, since `b` and `τW` are orthonormal bases of `W`
+  have hbon : Orthonormal ℝ b := by
+    rw [orthonormal_iff_ite] at he ⊢
+    intro i j
+    rw [Submodule.coe_inner, hb, hb]
+    exact he i j
+  have hτWon : Orthonormal ℝ τW := by
+    rw [orthonormal_iff_ite] at hτ ⊢
+    intro i j
+    rw [Submodule.coe_inner]
+    exact hτ i j
+  have hsp : ⊤ ≤ Submodule.span ℝ (Set.range τW) :=
+    (hτWon.linearIndependent.span_eq_top_of_card_eq_finrank'
+      (by rw [Fintype.card_fin, hfin])).ge
+  have hc : b.det τW = 1 ∨ b.det τW = -1 := by
+    have h := (b.toOrthonormalBasis hbon).det_to_matrix_orthonormalBasis_real
+      (OrthonormalBasis.mk hτWon hsp)
+    rwa [Module.Basis.toBasis_toOrthonormalBasis, OrthonormalBasis.coe_mk] at h
+  -- Step 5: the sign `det_b(τW)` does not depend on `α`
+  rcases hc with h | h
+  · exact Or.inl fun α => by rw [key, h, one_mul]
+  · exact Or.inr fun α => by rw [key, h, neg_one_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
