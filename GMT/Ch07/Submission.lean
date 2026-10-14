@@ -1223,6 +1223,125 @@ theorem Submission.dor_lmb_fcd_jwc_weak_star_l1_upgrade : ∀ (k : ℕ) (C : ℝ
   have := key (∫ x, (φ - ψ) x * Fs j x) (∫ x, ψ x * Fs j x) (∫ x, (φ - ψ) x * F x) (∫ x, ψ x * F x)
   linarith
 
+/-- **Weak continuity of Jacobian minors** (null Lagrangians; Reshetnyak 1967, Ball 1977): if the
+`L`-Lipschitz `gʲ_c` converge uniformly to the `L`-Lipschitz `g_c` on `ℝᵏ` (`c < r`), then
+`∫ φ det(Dgʲ_c V_b) → ∫ φ det(Dg_c V_b)` for every `φ ∈ L¹`.  Induction on `r`; for `r = 0` both
+determinants are `1`.  For `r + 1` the minors are measurable and bounded by
+`(r+1)! (L Σ_b ‖V_b‖)^{r+1}`, so by the weak-* to `L¹` upgrade it suffices to take `φ = ψ ∈ C^∞_c`.
+Integration by parts in the first row writes `∫ ψ det(Dg_c V_b)` as
+`−Σ_b (−1)^b ∫ ∂_{V_b}ψ · g₀ · M_b`, `M_b` the minor of the rows `c ≥ 1` and the columns `≠ b`.
+Split `gʲ₀ = (gʲ₀ − g₀) + g₀`: the first part is at most
+`r! (L Σ_{b'} ‖V_{b'}‖)^r sup |gʲ₀ − g₀| ∫ |∂_{V_b}ψ| → 0`, and the second converges by the
+induction hypothesis with the continuous compactly supported weight `∂_{V_b}ψ · g₀`. -/
+theorem Submission.dor_lmb_fcd_jwc_minor_weak_continuity : ∀ (k r : ℕ) (L : NNReal) (gs : ℕ → Fin r → Euclid k → ℝ) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k) (φ : Euclid k → ℝ), Integrable φ → (∀ j c, LipschitzWith L (gs j c)) → (∀ c, LipschitzWith L (g c)) → (∀ c, TendstoUniformly (fun j => gs j c) (g c) atTop) → Tendsto (fun j => ∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b))) atTop (𝓝 (∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)))) := by
+  intro k r
+  induction r with
+  | zero =>
+    -- the empty determinant is `1`
+    intro L gs g V φ hφ hgs hg hU
+    simp only [Matrix.det_isEmpty, mul_one]
+    exact tendsto_const_nhds
+  | succ r ih =>
+    intro L gs g V φ hφ hgs hg hU
+    -- Step 2: the minors are bounded, so it suffices to test against `ψ ∈ C^∞_c`
+    have hb := fun (G : Fin (r + 1) → Euclid k → ℝ) (hG : ∀ c, LipschitzWith L (G c)) =>
+      Submission.dor_lmb_fcd_jwc_minor_measurable_bound k (r + 1) L G V hG
+    refine Submission.dor_lmb_fcd_jwc_weak_star_l1_upgrade k
+      (((r + 1).factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ (r + 1))
+      (fun j x => Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b)))
+      (fun x => Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)))
+      (fun j => (hb (gs j) (hgs j)).1.aestronglyMeasurable) (hb g hg).1.aestronglyMeasurable
+      (fun j => (hb (gs j) (hgs j)).2) (hb g hg).2 ?_ φ hφ
+    intro ψ hψ hψs
+    -- Step 3: integrate by parts in the first row
+    have hψ1 : ContDiff ℝ 1 ψ := hψ.of_le (by exact_mod_cast le_top)
+    have hIBPj := fun j =>
+      Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp k r L (gs j) V ψ (hgs j) hψ1 hψs
+    have hIBP := Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp k r L g V ψ hg hψ1 hψs
+    simp only [hIBPj, hIBP]
+    refine Tendsto.neg (tendsto_finsetSum _ fun b _ => Tendsto.const_mul _ ?_)
+    -- the minors `Mʲ_b`, `M_b` and their bound
+    set Mj : ℕ → Euclid k → ℝ := fun j x => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+      fderiv ℝ (gs j c.succ) x (V (b.succAbove b'))) with hMj
+    set M : Euclid k → ℝ := fun x => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+      fderiv ℝ (g c.succ) x (V (b.succAbove b'))) with hM
+    set Br : ℝ := (r.factorial : ℝ) * ((L : ℝ) * ∑ b', ‖V (b.succAbove b')‖) ^ r with hBr
+    have hbr := fun j => Submission.dor_lmb_fcd_jwc_minor_measurable_bound k r L
+      (fun c => gs j c.succ) (fun b' => V (b.succAbove b')) (fun c => hgs j c.succ)
+    -- Step 4: the weight `θ_b = ∂_{V_b}ψ · g₀` is continuous with compact support
+    have hdψc : Continuous (fun x => fderiv ℝ ψ x (V b)) :=
+      (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
+    have hdψs : HasCompactSupport (fun x => fderiv ℝ ψ x (V b)) :=
+      (hψs.fderiv (𝕜 := ℝ)).comp_left (g := fun T : Euclid k →L[ℝ] ℝ => T (V b)) (by simp)
+    have hdψi : Integrable (fun x => fderiv ℝ ψ x (V b)) :=
+      hdψc.integrable_of_hasCompactSupport hdψs
+    have hθi : Integrable (fun x => fderiv ℝ ψ x (V b) * g 0 x) :=
+      (hdψc.mul (hg 0).continuous).integrable_of_hasCompactSupport hdψs.mul_right
+    -- Step 6: the induction hypothesis with the weight `θ_b`
+    have hih := ih L (fun j c => gs j c.succ) (fun c => g c.succ) (fun b' => V (b.succAbove b'))
+      (fun x => fderiv ℝ ψ x (V b) * g 0 x) hθi (fun j c => hgs j c.succ) (fun c => hg c.succ)
+      (fun c => hU c.succ)
+    -- Step 5: `|∫ ∂_{V_b}ψ (gʲ₀ − g₀) Mʲ_b| ≤ Br sup |gʲ₀ − g₀| ∫ |∂_{V_b}ψ| → 0`
+    have herr : Tendsto (fun j => ∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x) atTop
+        (𝓝 0) := by
+      rw [Metric.tendsto_atTop]
+      intro ε hε
+      set K : ℝ := Br * (∫ x, ‖fderiv ℝ ψ x (V b)‖) + 1 with hK
+      have hBr0 : 0 ≤ Br := by positivity
+      have hK0 : 0 < K := by
+        have : 0 ≤ ∫ x, ‖fderiv ℝ ψ x (V b)‖ := integral_nonneg fun _ => norm_nonneg _
+        positivity
+      have hδ : 0 < ε / (2 * K) := by positivity
+      obtain ⟨N, hN⟩ :=
+        (Metric.tendstoUniformly_iff.1 (hU 0) (ε / (2 * K)) hδ).exists_forall_of_atTop
+      refine ⟨N, fun j hj => ?_⟩
+      rw [Real.dist_eq, sub_zero]
+      have hbd : ∀ x, ‖fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x‖ ≤
+          (ε / (2 * K) * Br) * ‖fderiv ℝ ψ x (V b)‖ := by
+        intro x
+        have h1 : |gs j 0 x - g 0 x| ≤ ε / (2 * K) := by
+          have := hN j hj x
+          rw [dist_comm, Real.dist_eq] at this
+          exact this.le
+        have h2 : |Mj j x| ≤ Br := (hbr j).2 x
+        rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul]
+        calc |fderiv ℝ ψ x (V b)| * |gs j 0 x - g 0 x| * |Mj j x|
+            ≤ |fderiv ℝ ψ x (V b)| * (ε / (2 * K)) * Br := by gcongr
+          _ = (ε / (2 * K) * Br) * |fderiv ℝ ψ x (V b)| := by ring
+      calc |∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x|
+          = ‖∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ∫ x, (ε / (2 * K) * Br) * ‖fderiv ℝ ψ x (V b)‖ :=
+            norm_integral_le_of_norm_le (hdψi.norm.const_mul _) (Eventually.of_forall hbd)
+        _ = (ε / (2 * K)) * (Br * ∫ x, ‖fderiv ℝ ψ x (V b)‖) := by
+            rw [integral_const_mul]; ring
+        _ ≤ (ε / (2 * K)) * K := by gcongr; linarith
+        _ = ε / 2 := by field_simp
+        _ < ε := by linarith
+    -- Step 7: `∫ ∂_{V_b}ψ gʲ₀ Mʲ_b = ∫ ∂_{V_b}ψ (gʲ₀ − g₀) Mʲ_b + ∫ θ_b Mʲ_b → 0 + ∫ θ_b M_b`
+    have hsum := herr.add hih
+    rw [zero_add] at hsum
+    refine hsum.congr' (Eventually.of_forall fun j => ?_)
+    have i2 : Integrable (fun x => fderiv ℝ ψ x (V b) * g 0 x * Mj j x) := by
+      have h1 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * g 0 x)) :=
+        Integrable.bdd_mul (c := Br) hθi (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      exact h1.congr (Eventually.of_forall fun x => by simp only; ring)
+    have i1 : Integrable (fun x => fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x) := by
+      have hgj : Integrable (fun x => fderiv ℝ ψ x (V b) * gs j 0 x) :=
+        (hdψc.mul (hgs j 0).continuous).integrable_of_hasCompactSupport hdψs.mul_right
+      have h1 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * gs j 0 x)) :=
+        Integrable.bdd_mul (c := Br) hgj (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      have h2 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * g 0 x)) :=
+        Integrable.bdd_mul (c := Br) hθi (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      exact (h1.sub h2).congr (Eventually.of_forall fun x => by simp only [Pi.sub_apply]; ring)
+    simp only
+    rw [← integral_add i1 i2]
+    congr 1
+    funext x
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
