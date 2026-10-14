@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "889c0b5ce2f3e3741470d324bd08d280c95bf49fd7cf60e56e28eaac7a71f307",
+  "git_delta": {
+    "base_commit": "29f596ee820e64791d6944dc1b963e3a3567773f",
+    "candidate_commit": "d616a207f48b269daf4a25b6b2e1243d7674b48f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_iso_exists_symmetric_replacement",
+    "diff_sha256": "9ce8728075822eb511a9b0e9131b9648b9343efd1db97bdef1330a316c6cb68e",
+    "source_sha256": "79eed43c36f81d58188e67bab5080c417d6bbd45199e21c334ad3e5698082dc3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_iso_exists_symmetric_replacement",
+      "statement": "∀ (d : ℕ) (A : Set (Euclid d)), IsCompact A → ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧ ediam K ≤ ediam A ∧ ∀ x ∈ K, -x ∈ K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
