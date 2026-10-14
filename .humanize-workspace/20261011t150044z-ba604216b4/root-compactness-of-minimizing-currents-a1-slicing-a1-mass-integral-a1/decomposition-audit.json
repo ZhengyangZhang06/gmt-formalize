@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_differentiableAt|deriv_nonneg",
+        "tendsto_slope_zero_left|hasDerivAt_iff_tendsto_slope",
+        "liminf_le_liminf|Tendsto.liminf_eq",
+        "cmcs_smi_|lintegral_left_density_le|lintegral_left_dini_le|lintegral_ofReal_deriv_le",
+        "cmcs_smi_lintegral_ofReal_deriv_le",
+        "cmcs_smi_lintegral_left_dini_le",
+        "cmcs_smi_lintegral_left_density_le",
+        ". GMT/Scratch/cmcs_mass_integral_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_mass_integral_decomposition/Children.lean",
+        ". GMT/Scratch/cmcs_mass_integral_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_mass_integral_decomposition/TypeCheck.lean",
+        ". GMT/Scratch/cmcs_mass_integral_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_mass_integral_decomposition/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Group/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_mass_integral_decomposition/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_mass_integral_decomposition/TypeCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_mass_integral_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "conclusion": "The split is appropriate: three reusable analytic obligations form the correctly directed acyclic chain lebesgue_deriv → left_dini → left_density. Their supplied proofs are complete, not deferred proof-search plans. The manifest pins project b4d606db and Mathlib 25730c7c; the installed Mathlib revision and checked source files match the snapshot. No proposed declaration names were found in the snapshot project or among the current 673 DAG nodes; no existing declaration is being reused. All three names are bare identifiers. All child types are standalone one-line propositions, elaborate without child implementations, and match their prose. Explicit elaboration confirms real Lebesgue measure, real right-hand neighborhoods of zero, ENNReal liminf, and ordinary ENNReal multiplication. Independently recompiled Children.lean: all children and the exact frozen parent use only propext, Classical.choice and Quot.sound. Assembly.lean also compiles, with sorryAx confined to its stated child stubs. Byte comparisons confirm all four declaration types match the frozen contracts. The additional DerivIntegrable import is explicitly supplied in the first child's proof. Parent assembly correctly uses ν = Measure.map f (μ.restrict W), measurable interval preimages, and finite-constant extraction from the lower integral; it preserves the parent hypotheses and handles arbitrary m, L = 0, empty intervals and infinite mass. MeasurableSet W is redundant in this assembly, which is harmless. Public corroboration of the monotone derivative inequality appears in [ETSU §6.2, Corollary 6.4](https://faculty.etsu.edu/gardnerr/5210/notes/6-2.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree for every monotone real F and all endpoints. The proof handles b ≤ a, establishes derivative nonnegativity and integrability using the pinned library results, converts the lower integral to the real integral, removes the endpoint using Lebesgue atomlessness, and extracts the upper endpoint of the interval-integral bound. All side conditions are justified. This is a genuine independent obligation with no parent or sibling reliance."
+    },
+    {
+      "key": "left_dini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ENNReal liminf and Lebesgue integral match the prose. Almost-everywhere differentiability, the negative-increment slope limit composed with negation, and the correct quotient identity identify D with ofReal(deriv F) almost everywhere. Continuity of ofReal and nontriviality of the right-neighborhood filter justify liminf identification. Restriction and lintegral_congr_ae require no measurability of D. The sole child dependency is lebesgue_deriv, used in the correct direction."
+    },
+    {
+      "key": "left_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary Borel measures without finiteness or integrand measurability assumptions. After the infinite-mass case, the truncated distribution function is finite and monotone with the stated endpoint values. Disjoint open strips give the required inequality without discarding atoms through an unjustified equality; finite ENNReal subtraction and ofReal multiplication are valid. Eventual strip comparison yields the liminf bound, and lower-integral monotonicity followed by left_dini proves the conclusion, including empty intervals. The supplied pushforward assembly then establishes precisely the selected parent."
+    }
+  ],
+  "required_changes": []
+}

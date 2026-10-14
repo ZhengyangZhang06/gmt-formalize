@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1.markov_point-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1",
+  "depth": 6,
+  "title": "Markov choice of r ∈ (ρ/2, ρ) off a null set with ofReal(F′(r)) ≤ (4/ρ)·B (Simon 6.5.1 (10))",
+  "statement": "Let F : ℝ → ℝ be monotone (nondecreasing), let ρ > 0 be real, let B ∈ [0, ∞], and let N ⊆ ℝ be Lebesgue-null (volume N = 0). Suppose ofReal(F(ρ) − F(ρ/2)) ≤ B. Then there is r with ρ/2 < r < ρ and r ∉ N such that ofReal(F′(r)) ≤ ofReal(4/ρ)·B. Here F′ = deriv F (Mathlib's derivative, equal to 0 where F is not differentiable), ofReal = ENNReal.ofReal, and the product is taken in [0, ∞].",
+  "lean_statement": "∀ (F : ℝ → ℝ) (ρ : ℝ) (B : ℝ≥0∞) (N : Set ℝ), Monotone F → 0 < ρ → ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B → (volume : Measure ℝ) N = 0 → ∃ r ∈ Ioo (ρ / 2) ρ, r ∉ N ∧ ENNReal.ofReal (deriv F r) ≤ ENNReal.ofReal (4 / ρ) * B",
+  "lean_name": "dimred_mbl_dtsd_gr_exists_deriv_le_off_null",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-f8cc50fd1b-a1",
+      "result_commit": "6efe397f182ee5f93e5be9c4b09eb298c3f56ad8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5b663becf4-a1"
+}

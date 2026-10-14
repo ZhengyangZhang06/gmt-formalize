@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1.slice_liminf-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1",
+  "depth": 6,
+  "title": "Left slice density bounded by the derivative of the distribution function, for a finite measure on any measurable space (Simon 6.4.9–4.10, used in 6.5.1 (10))",
+  "statement": "Let α be a measurable space (a type α : Type with a σ-algebra, given by the instance [MeasurableSpace α]), let μ be a finite measure on α (IsFiniteMeasure μ), let f : α → ℝ be measurable and let t ∈ ℝ. Put F(s) := (μ({x ∈ α : f(x) < s})).toReal for s ∈ ℝ, the distribution function of f under μ, read in ℝ. If F is differentiable at t, then liminf_{h → 0+} ofReal(h⁻¹)·μ({x : t − h < f(x) < t}) ≤ ofReal(F′(t)). Here F′ = deriv F, ofReal = ENNReal.ofReal, values lie in [0, ∞], and the liminf is taken along the filter 𝓝[>] 0 of right neighbourhoods of 0.",
+  "lean_statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t)",
+  "lean_name": "dimred_mbl_dtsd_gr_liminf_slice_le_deriv",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c-a1",
+      "result_commit": "9e4623f7949b6e8a31421369c9b6bcbc190d2c41",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-fcac1a937b-a1"
+}
