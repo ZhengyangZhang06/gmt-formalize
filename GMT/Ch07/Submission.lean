@@ -6355,16 +6355,6 @@ theorem Submission.cmc_fc_sc_testForm_coeff_bound : ∀ (P n : ℕ) (U : Set (Eu
   rw [Real.norm_eq_abs] at hx
   linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)),
     le_max_left C 0]
-/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
-`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
-homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
-`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
-theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
-  intro P n U W T ω r hM hW hr
-  -- homogeneity of the Euclidean coefficient norm
-  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
-      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
-    intro c α
 /-- **Simon §6.1** (the test-form topology, the case `β = 0`): if `ωⱼ → 0` in `𝒟ⁿ(U)`, the
 `ωⱼ` vanish outside one compact `C ⊆ U`, and `supₓ ‖ωⱼ(x)‖ → 0`.  The compact set is the one in
 `TestFormOnConverges`; uniform convergence of the `0`-th iterated derivatives on `C` gives the
@@ -7392,33 +7382,84 @@ theorem Submission.cmcdt_lp_covector_curryLeft_norm_le : ∀ (N k : ℕ) (v : Eu
     split_ifs
     · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
     · rw [mul_zero]
-  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
-  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
-  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
-    intro s hs hrs
-    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
-      intro c hc
-      have hmem : c • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
-        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
-        rw [hsmul]
-        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
-              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
-                (inv_nonneg.2 hs.le)
-          _ = 1 := inv_mul_cancel₀ hs.ne'
-      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
-      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
-    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
-    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
-    rw [neg_mul, ← mul_neg] at h2
-    rw [abs_le]
-    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
-  -- let `s ↓ r`
-  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
-      (𝓝 (r * (T.massOn W).toReal)) :=
-    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
-  exact ge_of_tendsto hlim
-    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
+  -- `N ≥ 1` as `ℝ⁰ = {0}`; an orthonormal basis `f` of `ℝᴺ` with `f i₀ = ‖v‖⁻¹ v`
+  have hN : 0 < N := Nat.pos_of_ne_zero fun h => hv (by subst h; exact Subsingleton.elim v 0)
+  set i₀ : Fin N := ⟨0, hN⟩
+  obtain ⟨f, hf⟩ : ∃ f : OrthonormalBasis (Fin N) ℝ (Euclid N), f i₀ = ‖v‖⁻¹ • v := by
+    have hon : Orthonormal ℝ (({i₀} : Set (Fin N)).domRestrict fun _ => ‖v‖⁻¹ • v) := by
+      refine ⟨fun _ => ?_, fun i j hij => absurd (Subsingleton.elim i j) hij⟩
+      rw [Set.domRestrict_apply, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvpos.ne']
+    obtain ⟨b, hb⟩ := hon.exists_orthonormalBasis_extension_of_card_eq (by simp)
+    exact ⟨b, hb i₀ rfl⟩
+  -- `|ι_v β|_E = ‖v‖ |ι_{f i₀} β|_E`, so it suffices to show `|ι_{f i₀} β|_E ≤ |β|_E`
+  have hvu : β.curryLeft v = ‖v‖ • β.curryLeft (f i₀) := by
+    rw [hf, map_smul, smul_smul, mul_inv_cancel₀ hvpos.ne', one_smul]
+  rw [hvu, hhom, abs_of_pos hvpos]
+  refine mul_le_mul_of_nonneg_left ?_ hvpos.le
+  -- `g J = β(f ∘ J)²` and the position sums `R p = Σ_{J p = i₀} g J`
+  set g : (Fin (k + 1) → Fin N) → ℝ := fun J => (β fun t => f (J t)) ^ 2 with hg
+  set R : Fin (k + 1) → ℝ := fun p => ∑ J, if J p = i₀ then g J else 0 with hR
+  -- `R 0 = Σ_j (ι_{f i₀} β)(f ∘ j)² = k! |ι_{f i₀} β|_E²` (reindex `J = Fin.cons a j`)
+  have hR0 : R 0 = (k.factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 := by
+    rw [← Submission.regcomp_covector_sq_sum_orthonormalBasis N k (β.curryLeft (f i₀)) f]
+    simp only [hR]
+    rw [← (Fin.consEquiv fun _ : Fin (k + 1) => Fin N).sum_comp, Fintype.sum_prod_type,
+      Finset.sum_eq_single i₀]
+    · refine Finset.sum_congr rfl fun j _ => ?_
+      simp only [Fin.consEquiv_apply, Fin.cons_zero, ↓reduceIte, hg]
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext t
+      refine Fin.cases ?_ (fun s => ?_) t <;> simp
+    · intro a _ ha
+      exact Finset.sum_eq_zero fun j _ => by simp [ha]
+    · intro h
+      exact absurd (Finset.mem_univ i₀) h
+  -- `R p = R 0`: reindex `J ↦ J ∘ (0 p)`, and `β(f ∘ J ∘ (0 p)) = ±β(f ∘ J)`
+  have hRp : ∀ p, R p = R 0 := by
+    intro p
+    simp only [hR]
+    refine Fintype.sum_equiv (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N))) _ _
+      fun J => ?_
+    have hJ : ∀ t, Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J t =
+        J (Equiv.swap 0 p t) := fun t => by
+      simp [Equiv.arrowCongr_apply]
+    have hperm : β (fun t => f (J (Equiv.swap 0 p t))) =
+        Equiv.Perm.sign (Equiv.swap 0 p) • β (fun t => f (J t)) :=
+      β.toAlternatingMap.map_perm (fun t => f (J t)) (Equiv.swap 0 p)
+    have hgJ : g (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J) = g J := by
+      simp only [hg, hJ, hperm]
+      rcases Int.units_eq_one_or (Equiv.Perm.sign (Equiv.swap (0 : Fin (k + 1)) p)) with h | h <;>
+        simp [h]
+    rw [hgJ, hJ, Equiv.swap_apply_left]
+  -- `Σ_p R p ≤ Σ_J g J`: a tuple `J` with `i₀` in two slots has `β(f ∘ J) = 0`
+  have hsum : ∑ p, R p ≤ ∑ J, g J := by
+    simp only [hR]
+    rw [Finset.sum_comm]
+    refine Finset.sum_le_sum fun J _ => ?_
+    rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul]
+    by_cases h : (Finset.univ.filter fun p => J p = i₀).card ≤ 1
+    · exact mul_le_of_le_one_left (sq_nonneg _) (by exact_mod_cast h)
+    · obtain ⟨p, hp, q, hq, hpq⟩ := Finset.one_lt_card.mp (not_le.mp h)
+      rw [Finset.mem_filter] at hp hq
+      have h0 : β (fun t => f (J t)) = 0 :=
+        β.map_eq_zero_of_eq _ (by rw [hp.2, hq.2]) hpq
+      simp [hg, h0]
+  -- `(k+1)! |ι_{f i₀} β|_E² = Σ_p R p ≤ Σ_J g J = (k+1)! |β|_E²`
+  have key : ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 ≤
+      ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 :=
+    calc ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2
+        = ∑ p, R p := by
+          rw [Finset.sum_congr rfl fun p _ => hRp p, Finset.sum_const, Finset.card_univ,
+            Fintype.card_fin, nsmul_eq_mul, hR0, Nat.factorial_succ]
+          push_cast
+          ring
+      _ ≤ ∑ J, g J := hsum
+      _ = ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 := by
+          simp only [hg]
+          exact Submission.regcomp_covector_sq_sum_orthonormalBasis N (k + 1) β f
+  exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _) (covectorEuclideanNorm_nonneg _)
+    two_ne_zero).mp (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
 
 /-- **Shell decomposition** (Simon Ch. 6, proof of the Deformation Theorem 5.1, (8) and
 (17)–(19)).  Let `X(ω) = ∫ ⟨ω, ξ⟩ dμ` with `μ` finite and carried by `spt X`, `|ξ| ≤ 1` `μ`-a.e.,
@@ -9891,84 +9932,6 @@ theorem Submission.cmcdt_good_center : ∀ (P m : ℕ), m + 1 < P → ∃ C : NN
           congr 1
           ring
   exact ⟨key μ fun e he h => hgood e he (Or.inl h), key μ' fun e he h => hgood e he (Or.inr h)⟩
-  -- `N ≥ 1` as `ℝ⁰ = {0}`; an orthonormal basis `f` of `ℝᴺ` with `f i₀ = ‖v‖⁻¹ v`
-  have hN : 0 < N := Nat.pos_of_ne_zero fun h => hv (by subst h; exact Subsingleton.elim v 0)
-  set i₀ : Fin N := ⟨0, hN⟩
-  obtain ⟨f, hf⟩ : ∃ f : OrthonormalBasis (Fin N) ℝ (Euclid N), f i₀ = ‖v‖⁻¹ • v := by
-    have hon : Orthonormal ℝ (({i₀} : Set (Fin N)).domRestrict fun _ => ‖v‖⁻¹ • v) := by
-      refine ⟨fun _ => ?_, fun i j hij => absurd (Subsingleton.elim i j) hij⟩
-      rw [Set.domRestrict_apply, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvpos.ne']
-    obtain ⟨b, hb⟩ := hon.exists_orthonormalBasis_extension_of_card_eq (by simp)
-    exact ⟨b, hb i₀ rfl⟩
-  -- `|ι_v β|_E = ‖v‖ |ι_{f i₀} β|_E`, so it suffices to show `|ι_{f i₀} β|_E ≤ |β|_E`
-  have hvu : β.curryLeft v = ‖v‖ • β.curryLeft (f i₀) := by
-    rw [hf, map_smul, smul_smul, mul_inv_cancel₀ hvpos.ne', one_smul]
-  rw [hvu, hhom, abs_of_pos hvpos]
-  refine mul_le_mul_of_nonneg_left ?_ hvpos.le
-  -- `g J = β(f ∘ J)²` and the position sums `R p = Σ_{J p = i₀} g J`
-  set g : (Fin (k + 1) → Fin N) → ℝ := fun J => (β fun t => f (J t)) ^ 2 with hg
-  set R : Fin (k + 1) → ℝ := fun p => ∑ J, if J p = i₀ then g J else 0 with hR
-  -- `R 0 = Σ_j (ι_{f i₀} β)(f ∘ j)² = k! |ι_{f i₀} β|_E²` (reindex `J = Fin.cons a j`)
-  have hR0 : R 0 = (k.factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 := by
-    rw [← Submission.regcomp_covector_sq_sum_orthonormalBasis N k (β.curryLeft (f i₀)) f]
-    simp only [hR]
-    rw [← (Fin.consEquiv fun _ : Fin (k + 1) => Fin N).sum_comp, Fintype.sum_prod_type,
-      Finset.sum_eq_single i₀]
-    · refine Finset.sum_congr rfl fun j _ => ?_
-      simp only [Fin.consEquiv_apply, Fin.cons_zero, ↓reduceIte, hg]
-      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
-      congr 2
-      funext t
-      refine Fin.cases ?_ (fun s => ?_) t <;> simp
-    · intro a _ ha
-      exact Finset.sum_eq_zero fun j _ => by simp [ha]
-    · intro h
-      exact absurd (Finset.mem_univ i₀) h
-  -- `R p = R 0`: reindex `J ↦ J ∘ (0 p)`, and `β(f ∘ J ∘ (0 p)) = ±β(f ∘ J)`
-  have hRp : ∀ p, R p = R 0 := by
-    intro p
-    simp only [hR]
-    refine Fintype.sum_equiv (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N))) _ _
-      fun J => ?_
-    have hJ : ∀ t, Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J t =
-        J (Equiv.swap 0 p t) := fun t => by
-      simp [Equiv.arrowCongr_apply]
-    have hperm : β (fun t => f (J (Equiv.swap 0 p t))) =
-        Equiv.Perm.sign (Equiv.swap 0 p) • β (fun t => f (J t)) :=
-      β.toAlternatingMap.map_perm (fun t => f (J t)) (Equiv.swap 0 p)
-    have hgJ : g (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J) = g J := by
-      simp only [hg, hJ, hperm]
-      rcases Int.units_eq_one_or (Equiv.Perm.sign (Equiv.swap (0 : Fin (k + 1)) p)) with h | h <;>
-        simp [h]
-    rw [hgJ, hJ, Equiv.swap_apply_left]
-  -- `Σ_p R p ≤ Σ_J g J`: a tuple `J` with `i₀` in two slots has `β(f ∘ J) = 0`
-  have hsum : ∑ p, R p ≤ ∑ J, g J := by
-    simp only [hR]
-    rw [Finset.sum_comm]
-    refine Finset.sum_le_sum fun J _ => ?_
-    rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul]
-    by_cases h : (Finset.univ.filter fun p => J p = i₀).card ≤ 1
-    · exact mul_le_of_le_one_left (sq_nonneg _) (by exact_mod_cast h)
-    · obtain ⟨p, hp, q, hq, hpq⟩ := Finset.one_lt_card.mp (not_le.mp h)
-      rw [Finset.mem_filter] at hp hq
-      have h0 : β (fun t => f (J t)) = 0 :=
-        β.map_eq_zero_of_eq _ (by rw [hp.2, hq.2]) hpq
-      simp [hg, h0]
-  -- `(k+1)! |ι_{f i₀} β|_E² = Σ_p R p ≤ Σ_J g J = (k+1)! |β|_E²`
-  have key : ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 ≤
-      ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 :=
-    calc ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2
-        = ∑ p, R p := by
-          rw [Finset.sum_congr rfl fun p _ => hRp p, Finset.sum_const, Finset.card_univ,
-            Fintype.card_fin, nsmul_eq_mul, hR0, Nat.factorial_succ]
-          push_cast
-          ring
-      _ ≤ ∑ J, g J := hsum
-      _ = ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 := by
-          simp only [hg]
-          exact Submission.regcomp_covector_sq_sum_orthonormalBasis N (k + 1) β f
-  exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _) (covectorEuclideanNorm_nonneg _)
-    two_ne_zero).mp (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
 /-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
 Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
 of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
