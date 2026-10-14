@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5e21adaa965a17d8c767edadbb5cae131839ceda612a6ea218663d7367208cde",
+  "git_delta": {
+    "base_commit": "f72acb33a2d22661e815d1eb467a4f515e4f5501",
+    "candidate_commit": "c26a61f04fc649bfcae697923aa44a8e9b430d10",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_slice_glue",
+    "diff_sha256": "730b13673e65de87dee24905eb99dd0a657d8975caac0fcaa2a303e6150c9056",
+    "source_sha256": "5b982b3be844109ae12dafe74338ccc656375ed4b1421d348894f55e444dd3d0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_slice_glue",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (T : Euclid P → Submodule ℝ (Euclid P)) (A : ℕ → Set (Euclid P)) (L : NNReal), MeasurableSet M → Measurable f → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → (∀ x, ‖G x‖ ≤ L) → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → (∀ᵐ t, μHE[n] ((M \\ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ᵐ t, CountablyRectifiable n (A j ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (A j ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (A j ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ)) → ∀ᵐ t, CountablyRectifiable n (M ∩ f ⁻¹' {t}) ∧ ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), G x ≠ 0 ∧ HasApproximateTangentSpaceAt n (M ∩ f ⁻¹' {t}) x (T x ⊓ (ℝ ∙ G x)ᗮ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
