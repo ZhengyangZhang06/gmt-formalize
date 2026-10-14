@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, 2.8–2.9, smooth case on the cube** (step 5 of the proof of
+`dimred_mbl_dt_cube_bv_median`).  Let `n = m + 1`, `0 ≤ δ ≤ 1/4` and `Q_δ = (δ, 1 − δ)ⁿ`.  For `C¹`
+maps `v : ℝⁿ → ℝ` and `G : ℝⁿ → ℝⁿ` with `|G| ≤ 1`,
+`|∫_{Q_δ} v div G| ≤ (2n + 1)∫_{Q_δ}‖Dv‖ + 4n∫_{Q_δ}|v|`.  By the product rule
+`v div G = Σᵢ ∂ᵢ(vGᵢ) − Dv(G)`.  The divergence theorem on the box and the face estimate bound each
+`|∫_{Q_δ} ∂ᵢ(vGᵢ)|` by `4∫_{Q_δ}|v| + 2∫_{Q_δ}‖Dv‖`, and `|∫_{Q_δ} Dv(G)| ≤ ∫_{Q_δ}‖Dv‖` since
+`|G| ≤ 1`.  Summing over the `n` coordinates gives the bound. -/
+theorem Submission.dimred_mbl_dt_cbm_smooth_trace : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), ContDiff ℝ 1 v → ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → 0 ≤ δ → δ ≤ 1 / 4 → |∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x)| ≤ (2 * (m + 1) + 1) * (∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖) + 4 * (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x| := by
+  intro m v G δ hv hG hGb hδ0 hδ1
+  set Q : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- the coordinates `Gᵢ = projᵢ ∘ G` are `C¹`, with `|Gᵢ| ≤ |G| ≤ 1`
+  have hGi : ∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y => G y i) := fun i =>
+    (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hG
+  have hGib : ∀ (i : Fin (m + 1)) (y : Euclid (m + 1)), |G y i| ≤ 1 := by
+    intro i y
+    have h := PiLp.norm_apply_le (G y) i
+    rw [Real.norm_eq_abs] at h
+    exact h.trans (hGb y)
+  -- the integrands `Fᵢ = ∂ᵢ(vGᵢ)`, `D = Dv(G)` and `‖Dv‖` are continuous, hence integrable on `Q`
+  set F : Fin (m + 1) → Euclid (m + 1) → ℝ :=
+    fun i x => fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1)
+  set D : Euclid (m + 1) → ℝ := fun x => fderiv ℝ v x (G x)
+  have hFint : ∀ i, IntegrableOn (F i) Q := fun i =>
+    Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _
+      (((hv.mul (hGi i)).continuous_fderiv one_ne_zero).clm_apply continuous_const)
+  have hDint : IntegrableOn D Q :=
+    Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _
+      ((hv.continuous_fderiv one_ne_zero).clm_apply hG.continuous)
+  have hDvint : IntegrableOn (fun x => ‖fderiv ℝ v x‖) Q :=
+    Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _
+      (hv.continuous_fderiv one_ne_zero).norm
+  -- step 1: `v div G = Σᵢ Fᵢ - D` pointwise, so `∫_Q v div G = Σᵢ ∫_Q Fᵢ - ∫_Q D`
+  have hpt : ∀ x, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) = (∑ i, F i x) - D x :=
+    fun x => Submission.dimred_mbl_dt_cbm_st_div_product m v G x
+      (hv.differentiable one_ne_zero x) (hG.differentiable one_ne_zero x)
+  have hsplit : ∫ x in Q, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) =
+      (∑ i, ∫ x in Q, F i x) - ∫ x in Q, D x := by
+    simp_rw [hpt]
+    rw [integral_sub (integrable_finsetSum _ fun i _ => hFint i) hDint,
+      integral_finsetSum _ fun i _ => hFint i]
+  -- steps 2 and 4, one coordinate at a time: `|∫_Q Fᵢ| ≤ 4∫_Q|v| + 2∫_Q‖Dv‖`
+  have hFb : ∀ i, |∫ x in Q, F i x| ≤ 4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖ :=
+    fun i => Submission.dimred_mbl_dt_cbm_st_coord_bound m v (fun y => G y i) i δ hv (hGi i)
+      (hGib i) hδ0 hδ1
+  -- `|∫_Q D| ≤ ∫_Q ‖Dv‖`, since `|Dv(x)(G x)| ≤ ‖Dv(x)‖ |G x| ≤ ‖Dv(x)‖`
+  have hDb : |∫ x in Q, D x| ≤ ∫ x in Q, ‖fderiv ℝ v x‖ := by
+    refine abs_integral_le_integral_abs.trans (integral_mono_of_nonneg
+      (Eventually.of_forall fun x => abs_nonneg _) hDvint (Eventually.of_forall fun x => ?_))
+    calc |D x| = ‖fderiv ℝ v x (G x)‖ := (Real.norm_eq_abs _).symm
+      _ ≤ ‖fderiv ℝ v x‖ * ‖G x‖ := (fderiv ℝ v x).le_opNorm (G x)
+      _ ≤ ‖fderiv ℝ v x‖ * 1 := mul_le_mul_of_nonneg_left (hGb x) (norm_nonneg _)
+      _ = ‖fderiv ℝ v x‖ := mul_one _
+  -- steps 3 and 5: sum over the `m + 1` coordinates
+  rw [hsplit]
+  calc |(∑ i, ∫ x in Q, F i x) - ∫ x in Q, D x|
+      ≤ |∑ i, ∫ x in Q, F i x| + |∫ x in Q, D x| := abs_sub _ _
+    _ ≤ (∑ i, |∫ x in Q, F i x|) + ∫ x in Q, ‖fderiv ℝ v x‖ :=
+        add_le_add (Finset.abs_sum_le_sum_abs _ _) hDb
+    _ ≤ (∑ _i : Fin (m + 1), (4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖)) +
+          ∫ x in Q, ‖fderiv ℝ v x‖ :=
+        add_le_add (Finset.sum_le_sum fun i _ => hFb i) le_rfl
+    _ = (2 * (m + 1) + 1) * (∫ x in Q, ‖fderiv ℝ v x‖) + 4 * (m + 1) * ∫ x in Q, |v x| := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
