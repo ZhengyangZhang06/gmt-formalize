@@ -906,6 +906,56 @@ theorem Submission.dimred_mbl_dtsd_sh_boundaryMassOn_calculus : ∀ (P m : ℕ) 
     · show X.boundary.boundary.massOn G = 0
       rw [GeometricCurrentOn.boundary_boundary]
       exact hzero G
+/-- **Support calculus in `ℝᴾ`** (Simon 6.2.11, 6.2.3).  For currents in `ℝᴾ`: (i) if `E` is
+closed and `X(ω) = 0` whenever `spt ω ∩ E = ∅`, then `spt X ⊆ E`; (ii) `spt X` is closed;
+(iii) `spt(A − B) ⊆ spt A ∪ spt B`; (iv) `spt 0 = ∅`; (v) `spt ∂A ⊆ spt A`. -/
+theorem Submission.dimred_mbl_dtsd_support_calculus : ∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support) := by
+  intro P n
+  -- every ball of the proper space `ℝᴾ` is open with compact closure (inside `univ`)
+  have hball : ∀ (x : Euclid P) (ε : ℝ), IsOpen (ball x ε) ∧ IsCompact (closure (ball x ε)) ∧
+      closure (ball x ε) ⊆ (univ : Set (Euclid P)) := fun x ε =>
+    ⟨isOpen_ball, (isCompact_closedBall x ε).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, subset_univ _⟩
+  -- off the support means in the zero region
+  have hzero : ∀ {m : ℕ} (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (x : Euclid P),
+      x ∉ X.support → x ∈ X.zeroRegion := fun X x hx => by
+    by_contra h
+    exact hx ⟨mem_univ x, h⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- (i) a ball around `x ∉ E` inside `Eᶜ` is a zero neighbourhood
+    intro E X hE hX x hx
+    by_contra hxE
+    obtain ⟨ε, hε, hεE⟩ := Metric.isOpen_iff.mp hE.isOpen_compl x hxE
+    refine hx.2 (mem_sUnion_of_mem (mem_ball_self hε) ⟨(hball x ε).1, (hball x ε).2.1,
+      (hball x ε).2.2, fun ω hω => hX ω ?_⟩)
+    exact subset_compl_iff_disjoint_right.mp (hω.trans hεE)
+  · -- (ii) the support is the complement of the open zero region
+    intro X
+    have hsupp : X.support = X.zeroRegionᶜ := by
+      rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff]
+    rw [hsupp]
+    exact X.isOpen_zeroRegion.isClosed_compl
+  · -- (iii) intersect zero neighbourhoods of `A` and `B`
+    intro A B x hx
+    by_contra hAB
+    rw [mem_union, not_or] at hAB
+    obtain ⟨WA, ⟨hWAo, hWAc, -, hWAv⟩, hxWA⟩ := mem_sUnion.mp (hzero A x hAB.1)
+    obtain ⟨WB, ⟨hWBo, -, -, hWBv⟩, hxWB⟩ := mem_sUnion.mp (hzero B x hAB.2)
+    refine hx.2 (mem_sUnion_of_mem (t := WA ∩ WB) ⟨hxWA, hxWB⟩ ⟨hWAo.inter hWBo,
+      hWAc.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩)
+    change A ω - B ω = 0
+    rw [hWAv ω (hω.trans inter_subset_left), hWBv ω (hω.trans inter_subset_right), sub_zero]
+  · -- (iv) every ball is a zero neighbourhood of the zero current
+    refine eq_empty_of_forall_notMem fun x hx => hx.2 (mem_sUnion_of_mem (mem_ball_self one_pos)
+      ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2, fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
+  · -- (v) `tsupport dη ⊆ tsupport η`, so zero neighbourhoods of `A` are ones of `∂A`
+    intro A x hx
+    by_contra hxA
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp (hzero A x hxA)
+    refine hx.2 (mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩)
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
