@@ -1020,6 +1020,42 @@ theorem Submission.idtp_ccd_rps_submanifold_subset_support : ∀ (P n : ℕ) (U 
   rw [hTrep] at hT0
   exact mul_ne_zero (Int.cast_ne_zero.2 hm) hIpos.ne' hT0
 
+/-- **Simon 7.4.1 and 6.2.11: the support near a regular point.**  If `y ∈ reg T`, there are
+`ρ > 0` with `B_ρ(y) ⊆ U` and an embedded `C¹` `n`-submanifold `M ∋ y`, of locally finite
+`Hⁿ`-measure in `B_ρ(y)`, with `spt T ∩ B_ρ(y) = M ∩ B_ρ(y)`.  Unpack `T = m[[M]]` (`m ≠ 0`) on
+`B_{ρ₀}(y)` and take `ρ = min(ρ₀, ε)`, where `M ∩ closedBall y ε` is compact.  In `B_ρ(y)`,
+`spt T` lies in `closure M`, which there is contained in the closed set `M ∩ closedBall y ε`;
+conversely `M ∩ B_{ρ₀}(y) ⊆ spt T` because `m ≠ 0`. -/
+theorem Submission.idtp_ccd_regular_point_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y : Euclid P), IsOpen U → y ∈ regularSet T → ∃ (ρ : ℝ) (M : Set (Euclid P)), 0 < ρ ∧ ball y ρ ⊆ U ∧ y ∈ M ∧ IsEmbeddedSubmanifold 1 n M ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ ball y ρ → μHE[n] (M ∩ K) ≠ ∞) ∧ T.support ∩ ball y ρ = M ∩ ball y ρ := by
+  intro P n U T y _hU hy
+  -- step 1: unpack `y ∈ reg T`: `T = m[[M]]` (`m ≠ 0`) for forms supported in `B_{ρ₀}(y) ⊆ U`
+  obtain ⟨-, ρ₀, hρ₀, hball₀, m, M, ξ, hm, hyM, hM, hξ, hfin, hrep⟩ := hy
+  -- step 2: `M ∩ closedBall y ε` is compact for some `ε > 0`
+  obtain ⟨-, hloc⟩ := Submission.dimred_rpd_embedded_locally_closed P 1 n M hM
+  obtain ⟨ε, hε, hcpt⟩ := hloc y hyM
+  -- step 3: the radius `ρ = min(ρ₀, ε)`
+  have hρ : 0 < min ρ₀ ε := lt_min hρ₀ hε
+  have hsub₀ : ball y (min ρ₀ ε) ⊆ ball y ρ₀ := ball_subset_ball (min_le_left _ _)
+  have hsubε : ball y (min ρ₀ ε) ⊆ ball y ε := ball_subset_ball (min_le_right _ _)
+  refine ⟨min ρ₀ ε, M, hρ, hsub₀.trans hball₀, hyM, hM,
+    fun K hK hKs => hfin K hK (hKs.trans hsub₀), ?_⟩
+  apply Subset.antisymm
+  · -- step 4: `spt T ∩ B_ρ(y) ⊆ closure M ∩ B_ε(y) ⊆ closure (M ∩ closedBall y ε) ⊆ M`
+    rintro z ⟨hzT, hzb⟩
+    have hzcl : z ∈ closure M :=
+      Submission.idtp_ccd_rps_support_subset_closure P n U (ball y ρ₀) M T m ξ isOpen_ball
+        hball₀ hrep ⟨hzT, hsub₀ hzb⟩
+    have h2 := isOpen_ball.inter_closure (⟨hsubε hzb, hzcl⟩ : z ∈ ball y ε ∩ closure M)
+    have h3 : z ∈ closure (M ∩ closedBall y ε) :=
+      closure_mono (show ball y ε ∩ M ⊆ M ∩ closedBall y ε from
+        fun x hx => ⟨hx.2, ball_subset_closedBall hx.1⟩) h2
+    rw [hcpt.isClosed.closure_eq] at h3
+    exact ⟨h3.1, hzb⟩
+  · -- step 5: `M ∩ B_ρ(y) ⊆ M ∩ B_{ρ₀}(y) ⊆ spt T`
+    rintro z ⟨hzM, hzb⟩
+    exact ⟨Submission.idtp_ccd_rps_submanifold_subset_support P n U (ball y ρ₀) M T m ξ
+      isOpen_ball hball₀ hm hM hξ hfin hrep ⟨hzM, hsub₀ hzb⟩, hzb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
