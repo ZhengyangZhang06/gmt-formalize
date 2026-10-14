@@ -524,6 +524,48 @@ theorem Submission.idtp_cse_fa_pj_gram_det_two_plane : ∀ (P : ℕ) (T : Submod
   rw [b.sum_sq_inner_left, b.sum_sq_inner_left, hpq, Submodule.coe_inner, ← Submodule.norm_coe,
     ← Submodule.norm_coe, Submodule.coe_orthogonalProjectionOnto_apply,
     Submodule.coe_orthogonalProjectionOnto_apply]
+/-- **Squared norm of the projection onto a 2-plane in an orthonormal frame.**  If `Q ⊆ ℝᴾ` has
+dimension `2` and `a, e ∈ Q` are orthonormal, then `‖π_Q x‖² = ⟨x, a⟩² + ⟨x, e⟩²` for every `x`.
+The family `(a, e)` is orthonormal, hence linearly independent, so `span {a, e} ≤ Q` has
+dimension `2` and equals `Q`.  The point `w₀ = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q` and
+`⟨x − w₀, a⟩ = ⟨x − w₀, e⟩ = 0`, so `x − w₀ ⊥ Q` and `π_Q x = w₀`; expanding `⟨w₀, w₀⟩`
+bilinearly gives `⟨x, a⟩² + ⟨x, e⟩²`. -/
+theorem Submission.idtp_cse_fa_pj_starProjection_norm_sq : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ‖Q.starProjection x‖ ^ 2 = inner ℝ x a ^ 2 + inner ℝ x e ^ 2 := by
+  intro P Q a e x hQ ha he hna hne hae
+  have hea : inner ℝ e a = 0 := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = 1 := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = 1 := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 1: `![a, e]` is orthonormal, hence linearly independent
+  have hon : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hna, hne, hae, hea]
+  -- Step 2: `span {a, e} ≤ Q` and both have dimension `2`, so `span {a, e} = Q`
+  have hle : Submodule.span ℝ (range ![a, e]) ≤ Q := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    fin_cases i
+    · exact ha
+    · exact he
+  have hspan : Submodule.span ℝ (range ![a, e]) = Q :=
+    Submodule.eq_of_le_of_finrank_eq hle
+      (by rw [finrank_span_eq_card hon.linearIndependent, hQ]; simp)
+  -- Step 3: `π_Q x = w₀ = ⟨x, a⟩a + ⟨x, e⟩e`, since `w₀ ∈ Q` and `⟨x − w₀, w⟩ = 0` for `w ∈ Q`
+  have hproj : Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+    · intro w hw
+      rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+      obtain ⟨c, rfl⟩ := hw
+      simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, inner_add_right,
+        real_inner_smul_right, inner_sub_left, inner_add_left, real_inner_smul_left, haa, hee,
+        hae, hea]
+      ring
+  -- Step 4: `‖w₀‖² = ⟨w₀, w₀⟩ = ⟨x, a⟩² + ⟨x, e⟩²` by bilinearity and orthonormality
+  rw [hproj, ← real_inner_self_eq_norm_sq]
+  simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+    hee, hae, hea]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
