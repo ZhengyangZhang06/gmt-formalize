@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.testform_extension-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Extension of T to compactly supported continuous coefficient fields (parent step 2)",
+  "statement": "Let P, n, d ∈ ℕ, U ⊆ ℝ^P open, and T ∈ 𝒟_n(U) (GeometricCurrentOn U n) with M_W(T) < ∞ for every open W ⊂⊂ U (CompactlyContained W U: closure W is compact and contained in U). Let c : Λⁿ(ℝ^P) → ℝ^d (Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) be a continuous linear equivalence with covectorEuclideanNorm α = ‖c α‖ for all α. Then there is a real linear functional L on C_c(U, ℝ^d) (CompactlySupportedContinuousMap ↥U (EuclideanSpace ℝ (Fin d)), U with the subspace topology) such that:\n(i) L(g) = T(ω) whenever ω ∈ 𝒟ⁿ(U), g ∈ C_c(U, ℝ^d) and g(x) = c(ω(x)) for all x ∈ U;\n(ii) for every compact K ⊆ U (a compact subset of the subtype) there is M ∈ ℝ with |L(g)| ≤ M for every g ∈ C_c(U, ℝ^d) with tsupport g ⊆ K and ‖g(x)‖ ≤ 1 for all x.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → ∃ L : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ, (∀ (ω : TestFormOn U n) (g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d))), (∀ x : U, g x = c ((ω : DifferentialForm (Euclid P) n) x)) → L g = T ω) ∧ ∀ K : Set U, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap U (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M",
+  "lean_name": "cmr_testForm_extension_functional",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.mollify_unit_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.mollify_unit_field-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305-a1",
+      "result_commit": "8abce3204fc05f00ae9a4047981f27a9f9a6ba3b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-tes-dd42d587af-a1"
+}
