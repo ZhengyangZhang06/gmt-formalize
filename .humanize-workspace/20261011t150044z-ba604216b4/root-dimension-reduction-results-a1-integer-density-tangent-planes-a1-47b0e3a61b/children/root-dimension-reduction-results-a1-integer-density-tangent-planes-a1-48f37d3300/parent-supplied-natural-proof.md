@@ -1,0 +1,69 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.localization-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.edge_tangent_plane-a1.localization-a1.dist_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 4–7 of the supplied localization proof (normalization, direction of πx̂, the three estimates and the triangle inequality), for an arbitrary x with ⟨x, a⟩ > 0. The bound is kept in the form η + η². The simplification η² ≤ η/2, which needs η ≤ 1/2, stays in the parent. Notation: π := Q.starProjection, q(x) := x − πx, r := |x|, α := ⟨x, a⟩, β := ⟨x, e⟩, f := arctan(β/α), η := |q(x)|/r, and dist x a = |x − a|. ⟨·,·⟩ is real, so it is symmetric.
+1. (Positivity.) Since α = ⟨x, a⟩ > 0 and ⟨0, a⟩ = 0, x ≠ 0. So r > 0 and η ≥ 0.
+2. (Frame formula, from the sibling frame_projection.) Apply the sibling lemma Submission.idtp_cse_etp_loc_frame_projection to P, Q, a, e and x; its hypotheses are exactly ours. It gives πx = αa + βe. Let ρ := |πx|. Expanding ⟨αa + βe, αa + βe⟩ with |a| = |e| = 1 and ⟨a, e⟩ = ⟨e, a⟩ = 0 gives ρ² = α² + β². So ρ² ≥ α² > 0, hence ρ > 0.
+3. (Pythagoras.) πx ∈ Q (Submodule.starProjection_apply_mem) and ⟨x − πx, w⟩ = 0 for all w ∈ Q (Submodule.starProjection_inner_eq_zero), so ⟨πx, q(x)⟩ = 0. Since x = πx + q(x), norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero gives r² = ρ² + |q(x)|². So ρ² ≤ r², and since both are nonnegative, ρ ≤ r. Dividing by r² > 0 gives (ρ/r)² = 1 − η². Since 0 ≤ ρ/r ≤ 1, ρ/r ≥ (ρ/r)² = 1 − η².
+4. (Angle.) By Real.cos_arctan, cos f = 1/√(1 + (β/α)²). Since α > 0, 1 + (β/α)² = (α² + β²)/α² = ρ²/α² = (ρ/α)·(ρ/α) with ρ/α > 0. So √(1 + (β/α)²) = ρ/α (Real.sqrt_eq_iff_mul_self_eq_of_pos), and cos f = α/ρ.
+5. (Decomposition.) Since r⁻¹q(x) = r⁻¹x − r⁻¹πx, the right-hand side below telescopes as x − r⁻¹x + r⁻¹x − r⁻¹πx + r⁻¹πx − ρ⁻¹πx + ρ⁻¹πx − a = x − a. Hence
+x − a = (1 − r⁻¹)x + r⁻¹q(x) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a).
+In the parent's notation, with x̂ := x/|x|, v := πx/|πx| = ρ⁻¹πx and π linear, these four terms are x − x̂, q(x̂), πx̂ − v and v − a.
+6. (Four estimates.)
+(a) Since r > 0, |(1 − r⁻¹)x| = |1 − r⁻¹|·r = |(r − 1)/r|·r = |r − 1|.
+(b) |r⁻¹q(x)| = |q(x)|/r = η.
+(c) Since 0 < ρ ≤ r, r⁻¹ ≤ ρ⁻¹. So |(r⁻¹ − ρ⁻¹)πx| = (ρ⁻¹ − r⁻¹)ρ = 1 − ρ/r ≤ 1 − (1 − η²) = η², by step 3.
+(d) By step 2, ρ⁻¹πx − a = (α/ρ − 1)a + (β/ρ)e. So |ρ⁻¹πx − a|² = (α/ρ − 1)² + (β/ρ)² = (α² + β²)/ρ² − 2α/ρ + 1 = 2 − 2α/ρ = 2 − 2cos f, by steps 2 and 4. Since cos f ≥ 1 − f²/2 (Real.one_sub_sq_div_two_le_cos), |ρ⁻¹πx − a|² ≤ f² = |f|². Both |ρ⁻¹πx − a| and |f| are nonnegative, so |ρ⁻¹πx − a| ≤ |f| (pow_le_pow_iff_left₀).
+7. (Triangle inequality.) Step 5, the triangle inequality and (a)–(d) give
+dist x a = |x − a| ≤ |r − 1| + η + η² + |f| = ||x| − 1| + |arctan(⟨x, e⟩/⟨x, a⟩)| + |x − πx|/|x| + (|x − πx|/|x|)². ∎
+
+## Key steps
+
+1. Since ⟨x,a⟩ > 0, x ≠ 0 and r = |x| > 0. By frame_projection, πx = αa + βe, so ρ² := |πx|² = α² + β² > 0.
+2. Pythagoras gives r² = ρ² + |q(x)|², so ρ ≤ r, (ρ/r)² = 1 − η², and 1 − ρ/r ≤ η².
+3. Since α > 0, cos arctan(β/α) = α/ρ, so |ρ⁻¹πx − a|² = 2 − 2cos f ≤ f² (one_sub_sq_div_two_le_cos).
+4. x − a = (1 − r⁻¹)x + r⁻¹q(x) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a). The four norms are bounded by |r − 1|, η, η² and |f|, and the triangle inequality gives the bound.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 scan of dag.json: node record of idtp_cse_etp_localization (depth 5, status decomposing; max_depth 6 in swarm-project.json), its six siblings under edge_tangent_plane-a1, and a depth/status census (178 accepted depth-6 nodes)`
+- `python3 regex scan of dag.json lean_statements: 'starProjection' (short statements), 'starProjection [a-z] = inner', '= inner ℝ [a-z] [a-z] • [a-z] \+ inner ℝ [a-z] [a-z] • [a-z]', '‖Q.starProjection [a-z]‖ \^ 2 = inner', 'arctan', 'Orthonormal ℝ !\['`
+- `grep -o 'idtp_cse_etp_loc[a-z_]*' dag.json; grep -rl 'idtp_cse_etp_loc_' nodes/ GMT/ local-references/123e8435b4a2469b/project; ls ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean | xargs -P 16 grep -l 'idtp_cse_etp_loc_\|idtp_cse_etp_localization'`
+- `rg -n 'starProjection [a-z] = inner|inner ℝ x a • a \+ inner ℝ x e • e|Orthonormal ℝ !\[a, e\]' project mathlib/Mathlib; rg -c arctan project/GMT (both: no match)`
+- `grep/rg in local-references/123e8435b4a2469b/mathlib for: eq_starProjection_of_mem_of_inner_eq_zero, starProjection_inner_eq_zero, starProjection_apply_mem, norm_sq_eq_add_norm_sq_starProjection, norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero, eq_of_le_of_finrank_eq, finrank_span_eq_card, Orthonormal.linearIndependent, orthonormal_iff_ite, Submodule.mem_span_range_iff_exists_fun, cos_arctan, one_sub_sq_div_two_le_cos, sqrt_eq_iff_mul_self_eq_of_pos, pow_le_pow_iff_left₀, inv_anti₀, div_le_one, real_inner_comm, real_inner_self_eq_norm_sq`
+- `git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD; git -C local-references/123e8435b4a2469b/project rev-parse HEAD; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean`
+- `lake env lean /tmp/loc_split_check/A.lean; lake env lean /tmp/loc_split_check/B.lean; lake env lean /tmp/loc_split_check/Full.lean; lake env lean /tmp/loc_split_check/FullAx.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-47b0e3a61b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-47b0e3a61b/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Field/Basic.lean`
+- `/tmp/loc_split_check/A.lean`
+- `/tmp/loc_split_check/B.lean`
+- `/tmp/loc_split_check/Full.lean`
+- `/tmp/loc_split_check/FullAx.lean`
+
+Pins match the manifest: project b4d606db1da5… and mathlib 25730c7c759d…. The snapshot's Ch07 Submission.lean is byte-identical to the workspace contract. Nothing in the snapshot, the DAG, the node records or any worktree declares the orthonormal-frame projection formula or the polar distance bound; the rg and regex searches found no match. The closest DAG statements, idtp_cse_rc_angle_fderiv and idtp_tdc_dlc_ld_orthonormal_partner, have different types and are not accepted, so both children are new. The names idtp_cse_etp_loc_frame_projection and idtp_cse_etp_loc_dist_bound appear nowhere: not in dag.json, nodes/, GMT/, the snapshot, or the 1467 worktree Submission.lean files. Every Mathlib lemma cited in the child proofs exists at the pinned revision with the signature used. Running lake env lean at the pins, both child types elaborate after import GMT.Ch07.Submission inside namespace GMT.Ch07 with the contract's opens. Both children are fully proved, and the parent's exact frozen type is proved from child B alone (B from A), with axioms [propext, Classical.choice, Quot.sound] only.
