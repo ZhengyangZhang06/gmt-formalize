@@ -14654,153 +14654,6 @@ theorem Submission.dor_lmb_fcd_dilation : ∀ P : ℕ, ∃ dil : ∀ k : ℕ, �
     rw [Set.preimage_image_eq A (smul_right_injective (Euclid P) hlam0)] at h
     rw [h, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_mul]
 
-/-- **Simon Ch. 6, Deformation Theorem 5.3** (5.1 after a change of scale) for an integer
-multiplicity `T ∈ 𝒟ₙ(ℝᴾ)`, `n = m + 1 < P`, with integer multiplicity `∂T`, vanishing off a compact
-`K`: `T − Π = ∂R + S` with `Π = Σ_{p ∈ s} β_p [[F_p]]` an integer combination of the oriented
-faces `F_p = ρ(z_p + F_{ι_p})` of the cubical grid of side `ρ`, `(Σ|β_p|)ρⁿ ≤ c M(T)`,
-`M(R) ≤ cρ M(T)`, `M(S) ≤ cρ M(∂T)`, and everything within `2√P ρ` of `K`.  As printed before 5.3:
-change scale by `x ↦ ρ⁻¹x`, apply the unit-scale theorem 5.1 to `T' = δ_{ρ⁻¹#}T` (integer
-multiplicity, `∂T' = δ_{ρ⁻¹#}∂T` integer multiplicity, vanishing off the compact `ρ⁻¹K`) and
-change scale back by `δ_ρ(x) = ρx`.  `δ_ρ` maps the unit faces onto the faces of side `ρ`, with
-`∫_{ρA} g dHⁿ = ρⁿ ∫_A g(ρx) dHⁿ(x)` and `δ_{ρ#}X(ω) = X(ρⁿ ω(ρ ·))`; masses of `k`-currents scale
-by `ρᵏ`; and `ρ · cthickening(2√P, ρ⁻¹K) ⊆ cthickening(2√P ρ, K)`. -/
-theorem Submission.dor_lmb_fc_deformation : ((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 0 < ρ → IsCompact K → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → T ω = 0) → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Pc ω = R.boundary ω + S ω) ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1)) ≤ ENNReal.ofReal c * T.mass ∧ R.mass ≤ ENNReal.ofReal (c * ρ) * T.mass ∧ S.mass ≤ ENNReal.ofReal (c * ρ) * T.boundary.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ cthickening (2 * Real.sqrt P * ρ) K) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (cthickening (2 * Real.sqrt P * ρ) K) → R ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (2 * Real.sqrt P * ρ) K) → S ω = 0 := by
-  intro hSL P m hPm
-  -- Theorem 5.1 at unit scale, and the dilations `δ_λ(x) = λx`
-  obtain ⟨c, hc, hunit⟩ :=
-    Submission.dor_lmb_fcd_unit_deformation hSL Submission.dor_lmb_fc_im_series P m hPm
-  obtain ⟨dil, hdil⟩ := Submission.dor_lmb_fcd_dilation P
-  refine ⟨c, hc, fun ρ K T hρ hK hT hbT hTK => ?_⟩
-  have hρ' : 0 < ρ⁻¹ := inv_pos.mpr hρ
-  obtain ⟨-, hinv, hmass, hIM, -, hvan, -, -⟩ := hdil (m + 1) ρ⁻¹ hρ'
-  obtain ⟨-, -, hmass₀, hIM₀, hbd₀, -, -, -⟩ := hdil m ρ⁻¹ hρ'
-  obtain ⟨-, -, hmassρ, hIMρ, hbdρ, hvanρ, hactρ, hcovρ⟩ := hdil (m + 1) ρ hρ
-  obtain ⟨-, -, hmassρ₂, hIMρ₂, -, hvanρ₂, -, -⟩ := hdil (m + 2) ρ hρ
-  -- `T' = δ_{ρ⁻¹#}T` is integer multiplicity with integer multiplicity boundary
-  -- `∂T' = δ_{ρ⁻¹#}∂T`, and it vanishes off the compact `ρ⁻¹K`
-  have hK' : IsCompact ((fun x : Euclid P => ρ⁻¹ • x) '' K) := hK.image (continuous_const_smul ρ⁻¹)
-  have hbT' : (dil (m + 1) ρ⁻¹ T).boundary = dil m ρ⁻¹ T.boundary := hbd₀ T
-  have hbT'IM : IsIntegerMultiplicity (dil (m + 1) ρ⁻¹ T).boundary := by
-    rw [hbT']
-    exact hIM₀ _ hbT
-  obtain ⟨s, β, Pc', R', S', hmono, hPc', hR', hS', hTPc', hβ, hR'mass, hS'mass, hface',
-      hR'van, hS'van⟩ := hunit _ (dil (m + 1) ρ⁻¹ T) hK' (hIM T hT) hbT'IM (hvan T K hTK)
-  -- `δ_{ρ#}T' = T`
-  have hTT : dil (m + 1) ρ (dil (m + 1) ρ⁻¹ T) = T := by
-    simpa only [inv_inv] using hinv T
-  -- `δ_{ρ#}X(ω) = X(η)` with the same test form `η = ρ^{m+1} ω(ρ ·)` for every `X`
-  have hpull : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
-      ∃ η : TestFormOn (univ : Set (Euclid P)) (m + 1),
-        (∀ x, (η : DifferentialForm (Euclid P) (m + 1)) x =
-          ρ ^ (m + 1) • (ω : DifferentialForm (Euclid P) (m + 1)) (ρ • x)) ∧
-        ∀ X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), dil (m + 1) ρ X ω = X η := by
-    intro ω
-    obtain ⟨η, hη, -⟩ := hactρ T ω
-    refine ⟨η, hη, fun X => ?_⟩
-    obtain ⟨η', hη', hX⟩ := hactρ X ω
-    rw [hX, show η' = η from Subtype.ext (funext fun x => (hη' x).trans (hη x).symm)]
-  -- the faces of side `ρ` are the images under `δ_ρ` of the unit faces
-  have hface : ∀ p : (Fin P → ℤ) × (Fin (m + 1) → Fin P),
-      {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧
-        (i ∉ Set.range p.2 → x i = ρ * p.1 i)} =
-      (fun x => ρ • x) '' {x : Euclid P | ∀ i : Fin P,
-        (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧
-          (i ∉ Set.range p.2 → x i = p.1 i)} := by
-    intro p
-    ext x
-    simp only [Set.mem_ofPred_eq, Set.mem_image]
-    constructor
-    · intro hx
-      refine ⟨ρ⁻¹ • x, fun i => ?_, smul_inv_smul₀ hρ.ne' x⟩
-      rw [PiLp.smul_apply, smul_eq_mul]
-      refine ⟨fun hi => ?_, fun hi => ?_⟩
-      · obtain ⟨h₁, h₂⟩ := (hx i).1 hi
-        exact ⟨(le_inv_mul_iff₀ hρ).mpr h₁, (inv_mul_le_iff₀ hρ).mpr h₂⟩
-      · rw [(hx i).2 hi, inv_mul_cancel_left₀ hρ.ne']
-    · rintro ⟨y, hy, rfl⟩ i
-      rw [PiLp.smul_apply, smul_eq_mul]
-      refine ⟨fun hi => ?_, fun hi => ?_⟩
-      · obtain ⟨h₁, h₂⟩ := (hy i).1 hi
-        exact ⟨mul_le_mul_of_nonneg_left h₁ hρ.le, mul_le_mul_of_nonneg_left h₂ hρ.le⟩
-      · rw [(hy i).2 hi]
-  -- `δ_ρ(cthickening(2√P, ρ⁻¹K)) ⊆ cthickening(2√P ρ, K)`
-  have hthick : (fun x => ρ • x) '' cthickening (2 * Real.sqrt P)
-      ((fun x : Euclid P => ρ⁻¹ • x) '' K) ⊆ cthickening (2 * Real.sqrt P * ρ) K := by
-    rintro _ ⟨y, hy, rfl⟩
-    rw [hK'.cthickening_eq_biUnion_closedBall (by positivity)] at hy
-    obtain ⟨_, ⟨k, hk, rfl⟩, hyk⟩ := mem_iUnion₂.mp hy
-    refine mem_cthickening_of_dist_le _ k _ K hk ?_
-    calc dist (ρ • y) k = dist (ρ • y) (ρ • ρ⁻¹ • k) := by rw [smul_inv_smul₀ hρ.ne']
-      _ = ρ * dist y (ρ⁻¹ • k) := by rw [dist_smul₀, Real.norm_of_nonneg hρ.le]
-      _ ≤ ρ * (2 * Real.sqrt P) := by
-        gcongr
-        exact mem_closedBall.mp hyk
-      _ = 2 * Real.sqrt P * ρ := by ring
-  -- `Π = δ_{ρ#}Π'`, `R = δ_{ρ#}R'`, `S = δ_{ρ#}S'`
-  refine ⟨s, β, dil (m + 1) ρ Pc', dil (m + 2) ρ R', dil (m + 1) ρ S', hmono, fun ω => ?_,
-    hIMρ₂ R' hR', hIMρ S' hS', fun ω => ?_, ?_, ?_, ?_, fun p hp => ?_,
-    fun ω hω => hvanρ₂ R' _ hR'van ω (hω.mono_right hthick),
-    fun ω hω => hvanρ S' _ hS'van ω (hω.mono_right hthick)⟩
-  · -- `Π(ω) = Π'(ρ^{m+1} ω(ρ ·)) = Σ_p β_p ρ^{m+1} ∫_{F¹_p} ω(ρx)(e_{ι_p}) dHⁿ(x)`, which is
-    -- `Σ_p β_p [[F_p]](ω)` by the change of variables `x ↦ ρx`
-    obtain ⟨η, hη, hX⟩ := hpull ω
-    rw [hX, hPc']
-    simp_rw [hη, ContinuousAlternatingMap.smul_apply, smul_eq_mul, integral_const_mul]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    rw [hface p, hcovρ]
-  · -- `T − Π = δ_{ρ#}(T' − Π') = δ_{ρ#}(∂R' + S') = ∂R + S`
-    obtain ⟨η, -, hX⟩ := hpull ω
-    have hRb : (dil (m + 2) ρ R').boundary = dil (m + 1) ρ R'.boundary := hbdρ R'
-    rw [← hTT, hRb]
-    simp only [hX]
-    exact hTPc' η
-  · -- `(Σ|β_p|)ρⁿ ≤ c M(T')ρⁿ = c M(T)`
-    have h1 : ENNReal.ofReal (ρ⁻¹ ^ (m + 1)) * ENNReal.ofReal (ρ ^ (m + 1)) = 1 := by
-      rw [← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ⁻¹ ^ (m + 1)), ← mul_pow,
-        inv_mul_cancel₀ hρ.ne', one_pow, ENNReal.ofReal_one]
-    calc (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1))
-        ≤ ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).mass * ENNReal.ofReal (ρ ^ (m + 1)) := by
-          gcongr
-      _ = ENNReal.ofReal c * T.mass *
-          (ENNReal.ofReal (ρ⁻¹ ^ (m + 1)) * ENNReal.ofReal (ρ ^ (m + 1))) := by
-          rw [hmass T]
-          ring
-      _ = ENNReal.ofReal c * T.mass := by rw [h1, mul_one]
-  · -- `M(R) = ρ^{m+2} M(R') ≤ ρ^{m+2} c M(T') = cρ M(T)`
-    have h2 : ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) =
-        ENNReal.ofReal (c * ρ) := by
-      rw [← ENNReal.ofReal_mul hc, ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ ^ (m + 2))]
-      congr 1
-      calc ρ ^ (m + 2) * (c * ρ⁻¹ ^ (m + 1)) = c * ρ * (ρ * ρ⁻¹) ^ (m + 1) := by ring
-        _ = c * ρ := by rw [mul_inv_cancel₀ hρ.ne', one_pow, mul_one]
-    calc (dil (m + 2) ρ R').mass = ENNReal.ofReal (ρ ^ (m + 2)) * R'.mass := hmassρ₂ R'
-      _ ≤ ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).mass) := by
-          gcongr
-      _ = ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) *
-          T.mass := by
-          rw [hmass T]
-          ring
-      _ = ENNReal.ofReal (c * ρ) * T.mass := by rw [h2]
-  · -- `M(S) = ρ^{m+1} M(S') ≤ ρ^{m+1} c M(∂T') = cρ M(∂T)`
-    have h3 : ENNReal.ofReal (ρ ^ (m + 1)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ m)) =
-        ENNReal.ofReal (c * ρ) := by
-      rw [← ENNReal.ofReal_mul hc, ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ ^ (m + 1))]
-      congr 1
-      calc ρ ^ (m + 1) * (c * ρ⁻¹ ^ m) = c * ρ * (ρ * ρ⁻¹) ^ m := by ring
-        _ = c * ρ := by rw [mul_inv_cancel₀ hρ.ne', one_pow, mul_one]
-    calc (dil (m + 1) ρ S').mass = ENNReal.ofReal (ρ ^ (m + 1)) * S'.mass := hmassρ S'
-      _ ≤ ENNReal.ofReal (ρ ^ (m + 1)) *
-          (ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).boundary.mass) := by
-          gcongr
-      _ = ENNReal.ofReal (ρ ^ (m + 1)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ m)) *
-          T.boundary.mass := by
-          rw [hbT', hmass₀]
-          ring
-      _ = ENNReal.ofReal (c * ρ) * T.boundary.mass := by rw [h3]
-  · -- `F_p = δ_ρ(F¹_p) ⊆ δ_ρ(cthickening(2√P, ρ⁻¹K)) ⊆ cthickening(2√P ρ, K)`
-    rw [hface p]
-    exact (image_mono (hface' p hp)).trans hthick
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -16206,5 +16059,152 @@ theorem Submission.dor_lmb_fcd_unit_deformation : ((∀ (P n : ℕ) (U : Set (Eu
     have h₂ := hQPcK ω (hω.mono_right hK₂)
     simp only [hsub] at h₂ ⊢
     linarith
+
+/-- **Simon Ch. 6, Deformation Theorem 5.3** (5.1 after a change of scale) for an integer
+multiplicity `T ∈ 𝒟ₙ(ℝᴾ)`, `n = m + 1 < P`, with integer multiplicity `∂T`, vanishing off a compact
+`K`: `T − Π = ∂R + S` with `Π = Σ_{p ∈ s} β_p [[F_p]]` an integer combination of the oriented
+faces `F_p = ρ(z_p + F_{ι_p})` of the cubical grid of side `ρ`, `(Σ|β_p|)ρⁿ ≤ c M(T)`,
+`M(R) ≤ cρ M(T)`, `M(S) ≤ cρ M(∂T)`, and everything within `2√P ρ` of `K`.  As printed before 5.3:
+change scale by `x ↦ ρ⁻¹x`, apply the unit-scale theorem 5.1 to `T' = δ_{ρ⁻¹#}T` (integer
+multiplicity, `∂T' = δ_{ρ⁻¹#}∂T` integer multiplicity, vanishing off the compact `ρ⁻¹K`) and
+change scale back by `δ_ρ(x) = ρx`.  `δ_ρ` maps the unit faces onto the faces of side `ρ`, with
+`∫_{ρA} g dHⁿ = ρⁿ ∫_A g(ρx) dHⁿ(x)` and `δ_{ρ#}X(ω) = X(ρⁿ ω(ρ ·))`; masses of `k`-currents scale
+by `ρᵏ`; and `ρ · cthickening(2√P, ρ⁻¹K) ⊆ cthickening(2√P ρ, K)`. -/
+theorem Submission.dor_lmb_fc_deformation : ((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (ρ : ℝ) (K : Set (Euclid P)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 0 < ρ → IsCompact K → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → T ω = 0) → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Pc ω = R.boundary ω + S ω) ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1)) ≤ ENNReal.ofReal c * T.mass ∧ R.mass ≤ ENNReal.ofReal (c * ρ) * T.mass ∧ S.mass ≤ ENNReal.ofReal (c * ρ) * T.boundary.mass ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ cthickening (2 * Real.sqrt P * ρ) K) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (cthickening (2 * Real.sqrt P * ρ) K) → R ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (2 * Real.sqrt P * ρ) K) → S ω = 0 := by
+  intro hSL P m hPm
+  -- Theorem 5.1 at unit scale, and the dilations `δ_λ(x) = λx`
+  obtain ⟨c, hc, hunit⟩ :=
+    Submission.dor_lmb_fcd_unit_deformation hSL Submission.dor_lmb_fc_im_series P m hPm
+  obtain ⟨dil, hdil⟩ := Submission.dor_lmb_fcd_dilation P
+  refine ⟨c, hc, fun ρ K T hρ hK hT hbT hTK => ?_⟩
+  have hρ' : 0 < ρ⁻¹ := inv_pos.mpr hρ
+  obtain ⟨-, hinv, hmass, hIM, -, hvan, -, -⟩ := hdil (m + 1) ρ⁻¹ hρ'
+  obtain ⟨-, -, hmass₀, hIM₀, hbd₀, -, -, -⟩ := hdil m ρ⁻¹ hρ'
+  obtain ⟨-, -, hmassρ, hIMρ, hbdρ, hvanρ, hactρ, hcovρ⟩ := hdil (m + 1) ρ hρ
+  obtain ⟨-, -, hmassρ₂, hIMρ₂, -, hvanρ₂, -, -⟩ := hdil (m + 2) ρ hρ
+  -- `T' = δ_{ρ⁻¹#}T` is integer multiplicity with integer multiplicity boundary
+  -- `∂T' = δ_{ρ⁻¹#}∂T`, and it vanishes off the compact `ρ⁻¹K`
+  have hK' : IsCompact ((fun x : Euclid P => ρ⁻¹ • x) '' K) := hK.image (continuous_const_smul ρ⁻¹)
+  have hbT' : (dil (m + 1) ρ⁻¹ T).boundary = dil m ρ⁻¹ T.boundary := hbd₀ T
+  have hbT'IM : IsIntegerMultiplicity (dil (m + 1) ρ⁻¹ T).boundary := by
+    rw [hbT']
+    exact hIM₀ _ hbT
+  obtain ⟨s, β, Pc', R', S', hmono, hPc', hR', hS', hTPc', hβ, hR'mass, hS'mass, hface',
+      hR'van, hS'van⟩ := hunit _ (dil (m + 1) ρ⁻¹ T) hK' (hIM T hT) hbT'IM (hvan T K hTK)
+  -- `δ_{ρ#}T' = T`
+  have hTT : dil (m + 1) ρ (dil (m + 1) ρ⁻¹ T) = T := by
+    simpa only [inv_inv] using hinv T
+  -- `δ_{ρ#}X(ω) = X(η)` with the same test form `η = ρ^{m+1} ω(ρ ·)` for every `X`
+  have hpull : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      ∃ η : TestFormOn (univ : Set (Euclid P)) (m + 1),
+        (∀ x, (η : DifferentialForm (Euclid P) (m + 1)) x =
+          ρ ^ (m + 1) • (ω : DifferentialForm (Euclid P) (m + 1)) (ρ • x)) ∧
+        ∀ X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), dil (m + 1) ρ X ω = X η := by
+    intro ω
+    obtain ⟨η, hη, -⟩ := hactρ T ω
+    refine ⟨η, hη, fun X => ?_⟩
+    obtain ⟨η', hη', hX⟩ := hactρ X ω
+    rw [hX, show η' = η from Subtype.ext (funext fun x => (hη' x).trans (hη x).symm)]
+  -- the faces of side `ρ` are the images under `δ_ρ` of the unit faces
+  have hface : ∀ p : (Fin P → ℤ) × (Fin (m + 1) → Fin P),
+      {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧
+        (i ∉ Set.range p.2 → x i = ρ * p.1 i)} =
+      (fun x => ρ • x) '' {x : Euclid P | ∀ i : Fin P,
+        (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧
+          (i ∉ Set.range p.2 → x i = p.1 i)} := by
+    intro p
+    ext x
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
+    constructor
+    · intro hx
+      refine ⟨ρ⁻¹ • x, fun i => ?_, smul_inv_smul₀ hρ.ne' x⟩
+      rw [PiLp.smul_apply, smul_eq_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hx i).1 hi
+        exact ⟨(le_inv_mul_iff₀ hρ).mpr h₁, (inv_mul_le_iff₀ hρ).mpr h₂⟩
+      · rw [(hx i).2 hi, inv_mul_cancel_left₀ hρ.ne']
+    · rintro ⟨y, hy, rfl⟩ i
+      rw [PiLp.smul_apply, smul_eq_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hy i).1 hi
+        exact ⟨mul_le_mul_of_nonneg_left h₁ hρ.le, mul_le_mul_of_nonneg_left h₂ hρ.le⟩
+      · rw [(hy i).2 hi]
+  -- `δ_ρ(cthickening(2√P, ρ⁻¹K)) ⊆ cthickening(2√P ρ, K)`
+  have hthick : (fun x => ρ • x) '' cthickening (2 * Real.sqrt P)
+      ((fun x : Euclid P => ρ⁻¹ • x) '' K) ⊆ cthickening (2 * Real.sqrt P * ρ) K := by
+    rintro _ ⟨y, hy, rfl⟩
+    rw [hK'.cthickening_eq_biUnion_closedBall (by positivity)] at hy
+    obtain ⟨_, ⟨k, hk, rfl⟩, hyk⟩ := mem_iUnion₂.mp hy
+    refine mem_cthickening_of_dist_le _ k _ K hk ?_
+    calc dist (ρ • y) k = dist (ρ • y) (ρ • ρ⁻¹ • k) := by rw [smul_inv_smul₀ hρ.ne']
+      _ = ρ * dist y (ρ⁻¹ • k) := by rw [dist_smul₀, Real.norm_of_nonneg hρ.le]
+      _ ≤ ρ * (2 * Real.sqrt P) := by
+        gcongr
+        exact mem_closedBall.mp hyk
+      _ = 2 * Real.sqrt P * ρ := by ring
+  -- `Π = δ_{ρ#}Π'`, `R = δ_{ρ#}R'`, `S = δ_{ρ#}S'`
+  refine ⟨s, β, dil (m + 1) ρ Pc', dil (m + 2) ρ R', dil (m + 1) ρ S', hmono, fun ω => ?_,
+    hIMρ₂ R' hR', hIMρ S' hS', fun ω => ?_, ?_, ?_, ?_, fun p hp => ?_,
+    fun ω hω => hvanρ₂ R' _ hR'van ω (hω.mono_right hthick),
+    fun ω hω => hvanρ S' _ hS'van ω (hω.mono_right hthick)⟩
+  · -- `Π(ω) = Π'(ρ^{m+1} ω(ρ ·)) = Σ_p β_p ρ^{m+1} ∫_{F¹_p} ω(ρx)(e_{ι_p}) dHⁿ(x)`, which is
+    -- `Σ_p β_p [[F_p]](ω)` by the change of variables `x ↦ ρx`
+    obtain ⟨η, hη, hX⟩ := hpull ω
+    rw [hX, hPc']
+    simp_rw [hη, ContinuousAlternatingMap.smul_apply, smul_eq_mul, integral_const_mul]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    rw [hface p, hcovρ]
+  · -- `T − Π = δ_{ρ#}(T' − Π') = δ_{ρ#}(∂R' + S') = ∂R + S`
+    obtain ⟨η, -, hX⟩ := hpull ω
+    have hRb : (dil (m + 2) ρ R').boundary = dil (m + 1) ρ R'.boundary := hbdρ R'
+    rw [← hTT, hRb]
+    simp only [hX]
+    exact hTPc' η
+  · -- `(Σ|β_p|)ρⁿ ≤ c M(T')ρⁿ = c M(T)`
+    have h1 : ENNReal.ofReal (ρ⁻¹ ^ (m + 1)) * ENNReal.ofReal (ρ ^ (m + 1)) = 1 := by
+      rw [← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ⁻¹ ^ (m + 1)), ← mul_pow,
+        inv_mul_cancel₀ hρ.ne', one_pow, ENNReal.ofReal_one]
+    calc (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1))
+        ≤ ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).mass * ENNReal.ofReal (ρ ^ (m + 1)) := by
+          gcongr
+      _ = ENNReal.ofReal c * T.mass *
+          (ENNReal.ofReal (ρ⁻¹ ^ (m + 1)) * ENNReal.ofReal (ρ ^ (m + 1))) := by
+          rw [hmass T]
+          ring
+      _ = ENNReal.ofReal c * T.mass := by rw [h1, mul_one]
+  · -- `M(R) = ρ^{m+2} M(R') ≤ ρ^{m+2} c M(T') = cρ M(T)`
+    have h2 : ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) =
+        ENNReal.ofReal (c * ρ) := by
+      rw [← ENNReal.ofReal_mul hc, ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ ^ (m + 2))]
+      congr 1
+      calc ρ ^ (m + 2) * (c * ρ⁻¹ ^ (m + 1)) = c * ρ * (ρ * ρ⁻¹) ^ (m + 1) := by ring
+        _ = c * ρ := by rw [mul_inv_cancel₀ hρ.ne', one_pow, mul_one]
+    calc (dil (m + 2) ρ R').mass = ENNReal.ofReal (ρ ^ (m + 2)) * R'.mass := hmassρ₂ R'
+      _ ≤ ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).mass) := by
+          gcongr
+      _ = ENNReal.ofReal (ρ ^ (m + 2)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) *
+          T.mass := by
+          rw [hmass T]
+          ring
+      _ = ENNReal.ofReal (c * ρ) * T.mass := by rw [h2]
+  · -- `M(S) = ρ^{m+1} M(S') ≤ ρ^{m+1} c M(∂T') = cρ M(∂T)`
+    have h3 : ENNReal.ofReal (ρ ^ (m + 1)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ m)) =
+        ENNReal.ofReal (c * ρ) := by
+      rw [← ENNReal.ofReal_mul hc, ← ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ ρ ^ (m + 1))]
+      congr 1
+      calc ρ ^ (m + 1) * (c * ρ⁻¹ ^ m) = c * ρ * (ρ * ρ⁻¹) ^ m := by ring
+        _ = c * ρ := by rw [mul_inv_cancel₀ hρ.ne', one_pow, mul_one]
+    calc (dil (m + 1) ρ S').mass = ENNReal.ofReal (ρ ^ (m + 1)) * S'.mass := hmassρ S'
+      _ ≤ ENNReal.ofReal (ρ ^ (m + 1)) *
+          (ENNReal.ofReal c * (dil (m + 1) ρ⁻¹ T).boundary.mass) := by
+          gcongr
+      _ = ENNReal.ofReal (ρ ^ (m + 1)) * (ENNReal.ofReal c * ENNReal.ofReal (ρ⁻¹ ^ m)) *
+          T.boundary.mass := by
+          rw [hbT', hmass₀]
+          ring
+      _ = ENNReal.ofReal (c * ρ) * T.boundary.mass := by rw [h3]
+  · -- `F_p = δ_ρ(F¹_p) ⊆ δ_ρ(cthickening(2√P, ρ⁻¹K)) ⊆ cthickening(2√P ρ, K)`
+    rw [hface p]
+    exact (image_mono (hface' p hp)).trans hthick
 
 end GMT.Ch07
