@@ -1,0 +1,359 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.chart_image_nhds-a1",
+      "key": "chart_image_nhds",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+              "grep -n IsEmbeddedSubmanifold -A 30 GMT/Ch07/Contract.lean (definition at lines 221-225)",
+              "grep -n 'theorem|def ' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean; grep -n 'theorem to_localInverse|def localInverse|def toOpenPartialHomeomorph|theorem localInverse_def' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "grep -rn contDiffAt_symm mathlib/Mathlib (OpenPartialHomeomorph.contDiffAt_symm at Analysis/Calculus/ContDiff/Operations.lean:881); grep -rn hasStrictFDerivAt' mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "grep -n norm_image_sub_le_of_norm_fderiv_le mathlib/Mathlib/Analysis/Calculus/MeanValue.lean (line 499); grep -rn ContDiffOn.continuousOn_fderiv_of_isOpen mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean (line 916)",
+              "grep -n 'orthogonalProjectionOnto|starProjection_norm_le|orthogonalProjection_mem_subspace_eq_self|def starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; grep -n 'def ofInjective' mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "grep -n 'oneSub|subset_compl_ball' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; grep -n unitsEquiv mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "grep -rln 'localInverse|toOpenPartialHomeomorph|orthogonalProjectionOnto|starProjection|norm_image_sub_le_of_norm_fderiv_le|isCompact_insert_range' simongmt/Poincare --include=*.lean; grep -rn retraction simongmt/Poincare; read Chapter08/ConstancyNormalCharts.lean and Chapter02/SubmanifoldTopology.lean",
+              "python3 -I over dag.json: lean_name inventory and title/type regex 'retract|chart|nearest|tubular|inverse func|localInverse|proper'; grep -c dtc_bc_lr dag.json (0 matches)",
+              "python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules (contract mode) on the four child types and the parent type",
+              "lake env lean /tmp/lrdecomp/check/ChildA.lean ChildB.lean ChildC.lean ChildD.lean Assembly.lean EndToEnd.lean and /tmp/lrdecomp/challenges/Challenge_*.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/lrdecomp/check/EndToEnd.lean",
+              "/tmp/lrdecomp/check/Assembly.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; IsEmbeddedSubmanifold is defined at Contract.lean:221-225. Every Mathlib ingredient named in the four child proofs exists at the pin:\n- inverse function theorem: ContDiffAt.hasStrictFDerivAt', HasStrictFDerivAt.toOpenPartialHomeomorph, HasStrictFDerivAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.isOpen_inter_preimage_symm, nonunits.subset_compl_ball, ContinuousLinearEquiv.unitsEquiv;\n- calculus: ContDiffOn.continuousOn_fderiv_of_isOpen, Convex.norm_image_sub_le_of_norm_fderiv_le;\n- orthogonal projection: Submodule.orthogonalProjectionOnto and its _mem_subspace_eq_self lemma, Submodule.starProjection and starProjection_norm_le, LinearEquiv.ofInjective;\n- compactness: Filter.Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq.\nSimonGMT has only analogues with different predicates or weaker conclusions, so no library lemma is reused verbatim. Chapter08 exists_local_coordinate_leftInverse is a pointwise C² left inverse with no ‖L∘A‖ ≤ 1 bound and no inverse that is C¹ on a neighbourhood. Chapter02 IsSimonLocalRepresentation.exists_open_image_eq_inter is stated for the IsSimonLocalRepresentation predicate. The related accepted DAG nodes dsmc_chart_inverse_continuity and atsm_chart_image_flat are on other branches and absent from this node's proof base e34a71c, which contains only the frozen contract. So fresh dtc_bc_lr_* names are used, and none collides with any lean_name in dag.json. All four child types pass validate_lean_statement and elaborate in the comparator's contract scope. Scratch proofs of the four children, plus the parent assembled from them, compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.chart_image_nhds-a1",
+        "subproblem": {
+          "key": "chart_image_nhds",
+          "title": "Properness makes the chart image of an open parameter set a neighbourhood of ψ(v₀) in N",
+          "statement": "Let P, d ∈ ℕ, N, W ⊆ ℝ^P, V, V₀ ⊆ ℝ^d, ψ : ℝ^d → ℝ^P and v₀ ∈ ℝ^d. Suppose W is open, ψ is continuous on V and injective on V, ψ(V) = W ∩ N, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, V₀ is open, V₀ ⊆ V and v₀ ∈ V₀. Then there is ρ > 0 such that N ∩ B_ρ(ψ(v₀)) ⊆ ψ(V₀).",
+          "lean_statement": "∀ (P d : ℕ) (N W : Set (Euclid P)) (V V₀ : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₀ → V₀ ⊆ V → v₀ ∈ V₀ → ∃ ρ : ℝ, 0 < ρ ∧ N ∩ ball (ψ v₀) ρ ⊆ ψ '' V₀",
+          "lean_name": "dtc_bc_lr_chart_image_nhds",
+          "depends_on": [],
+          "natural_proof": "Source: step 4 of the parent proof. There, with F := V ∖ V₀, ψ(F) is relatively closed in W, so W₀ := W ∖ ψ(F) is an open neighbourhood of x = ψ(v₀) with W₀ ∩ N = ψ(V₀), and B_δ(x) ⊆ W₀ for small δ. Here the same compactness argument is run at the single point x as a proof by contradiction, which is all the parent uses. Continuity of ψ on V is the only regularity needed. No dependencies.\n1. (x lies in W.) Put x := ψ(v₀). Since v₀ ∈ V₀ ⊆ V, x ∈ ψ(V) = W ∩ N, so x ∈ W. As W is open, choose r_W > 0 with B_{r_W}(x) ⊆ W.\n2. (Contradiction hypothesis and a sequence.) Suppose that no ρ > 0 satisfies N ∩ B_ρ(x) ⊆ ψ(V₀). For every i ∈ ℕ, apply this to ρ_i := min(r_W, 1/(i+1)) > 0: there is y_i ∈ N with |y_i − x| < ρ_i and y_i ∉ ψ(V₀). Then y_i ∈ B_{r_W}(x) ⊆ W and |y_i − x| < 1/(i+1). So y_i → x as i → ∞: given ε > 0, pick i₀ with 1/(i₀+1) < ε; then |y_i − x| < 1/(i+1) ≤ 1/(i₀+1) < ε for i ≥ i₀.\n3. (Preimages outside V₀.) For each i, y_i ∈ W ∩ N = ψ(V), so choose f_i ∈ V with ψ(f_i) = y_i. Then f_i ∉ V₀, for otherwise y_i = ψ(f_i) ∈ ψ(V₀).\n4. (A compact set in W.) Let K := {x} ∪ {y_i : i ∈ ℕ}. K is compact, being a convergent sequence together with its limit (Mathlib Filter.Tendsto.isCompact_insert_range), and K ⊆ W because x ∈ W (step 1) and every y_i ∈ W (step 2). By the properness hypothesis, V ∩ ψ⁻¹(K) is compact. It contains every f_i, since f_i ∈ V and ψ(f_i) = y_i ∈ K.\n5. (Convergent subsequence.) Compact subsets of ℝ^d are sequentially compact (IsCompact.tendsto_subseq). So there are a ∈ V ∩ ψ⁻¹(K) and a strictly increasing φ : ℕ → ℕ with f_{φ(i)} → a. In particular a ∈ V.\n6. (a ∉ V₀.) The complement ℝ^d ∖ V₀ is closed because V₀ is open, and it contains every f_{φ(i)} (step 3). Hence it contains the limit a, i.e. a ∉ V₀.\n7. (ψ(a) = x.) ψ is continuous within V at a ∈ V, and f_{φ(i)} ∈ V with f_{φ(i)} → a, so ψ(f_{φ(i)}) → ψ(a). On the other hand ψ(f_{φ(i)}) = y_{φ(i)} → x, being a subsequence of the convergent sequence (y_i) (φ is strictly increasing, so φ(i) → ∞). Limits in ℝ^P are unique, so ψ(a) = x = ψ(v₀).\n8. (Contradiction.) a ∈ V, v₀ ∈ V and ψ is injective on V, so a = v₀ ∈ V₀, contradicting step 6. Hence the assumption of step 2 is false, and there is ρ > 0 with N ∩ B_ρ(ψ(v₀)) ⊆ ψ(V₀). ∎",
+          "proof_key_steps": [
+            "x := ψ(v₀) ∈ W; fix r_W > 0 with B_{r_W}(x) ⊆ W.",
+            "If no ρ works, pick y_i ∈ N ∩ B_{min(r_W, 1/(i+1))}(x) ∖ ψ(V₀); then y_i → x and y_i = ψ(f_i) with f_i ∈ V ∖ V₀.",
+            "K := {x} ∪ {y_i} is a compact subset of W, so the f_i lie in the compact set V ∩ ψ⁻¹(K) and a subsequence converges to some a ∈ V.",
+            "a ∉ V₀ because the complement of V₀ is closed; ψ(a) = x by continuity of ψ on V and uniqueness of limits.",
+            "Injectivity of ψ on V gives a = v₀ ∈ V₀, a contradiction."
+          ]
+        },
+        "audit": {
+          "key": "chart_image_nhds",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type match, without an unstated openness assumption on V or global continuity assumption on ψ. The contradiction sequence gives a compact K contained in W; properness yields a subsequential limit inside V. Closedness of the complement of V₀ excludes that limit from V₀, while continuity within V and injectivity identify it with v₀. This proves the exact neighbourhood inclusion without circularity."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.left_inverse_projection-a1",
+      "key": "left_inverse_projection",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+              "grep -n IsEmbeddedSubmanifold -A 30 GMT/Ch07/Contract.lean (definition at lines 221-225)",
+              "grep -n 'theorem|def ' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean; grep -n 'theorem to_localInverse|def localInverse|def toOpenPartialHomeomorph|theorem localInverse_def' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "grep -rn contDiffAt_symm mathlib/Mathlib (OpenPartialHomeomorph.contDiffAt_symm at Analysis/Calculus/ContDiff/Operations.lean:881); grep -rn hasStrictFDerivAt' mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "grep -n norm_image_sub_le_of_norm_fderiv_le mathlib/Mathlib/Analysis/Calculus/MeanValue.lean (line 499); grep -rn ContDiffOn.continuousOn_fderiv_of_isOpen mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean (line 916)",
+              "grep -n 'orthogonalProjectionOnto|starProjection_norm_le|orthogonalProjection_mem_subspace_eq_self|def starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; grep -n 'def ofInjective' mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "grep -n 'oneSub|subset_compl_ball' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; grep -n unitsEquiv mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "grep -rln 'localInverse|toOpenPartialHomeomorph|orthogonalProjectionOnto|starProjection|norm_image_sub_le_of_norm_fderiv_le|isCompact_insert_range' simongmt/Poincare --include=*.lean; grep -rn retraction simongmt/Poincare; read Chapter08/ConstancyNormalCharts.lean and Chapter02/SubmanifoldTopology.lean",
+              "python3 -I over dag.json: lean_name inventory and title/type regex 'retract|chart|nearest|tubular|inverse func|localInverse|proper'; grep -c dtc_bc_lr dag.json (0 matches)",
+              "python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules (contract mode) on the four child types and the parent type",
+              "lake env lean /tmp/lrdecomp/check/ChildA.lean ChildB.lean ChildC.lean ChildD.lean Assembly.lean EndToEnd.lean and /tmp/lrdecomp/challenges/Challenge_*.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/lrdecomp/check/EndToEnd.lean",
+              "/tmp/lrdecomp/check/Assembly.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; IsEmbeddedSubmanifold is defined at Contract.lean:221-225. Every Mathlib ingredient named in the four child proofs exists at the pin:\n- inverse function theorem: ContDiffAt.hasStrictFDerivAt', HasStrictFDerivAt.toOpenPartialHomeomorph, HasStrictFDerivAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.isOpen_inter_preimage_symm, nonunits.subset_compl_ball, ContinuousLinearEquiv.unitsEquiv;\n- calculus: ContDiffOn.continuousOn_fderiv_of_isOpen, Convex.norm_image_sub_le_of_norm_fderiv_le;\n- orthogonal projection: Submodule.orthogonalProjectionOnto and its _mem_subspace_eq_self lemma, Submodule.starProjection and starProjection_norm_le, LinearEquiv.ofInjective;\n- compactness: Filter.Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq.\nSimonGMT has only analogues with different predicates or weaker conclusions, so no library lemma is reused verbatim. Chapter08 exists_local_coordinate_leftInverse is a pointwise C² left inverse with no ‖L∘A‖ ≤ 1 bound and no inverse that is C¹ on a neighbourhood. Chapter02 IsSimonLocalRepresentation.exists_open_image_eq_inter is stated for the IsSimonLocalRepresentation predicate. The related accepted DAG nodes dsmc_chart_inverse_continuity and atsm_chart_image_flat are on other branches and absent from this node's proof base e34a71c, which contains only the frozen contract. So fresh dtc_bc_lr_* names are used, and none collides with any lean_name in dag.json. All four child types pass validate_lean_statement and elaborate in the comparator's contract scope. Scratch proofs of the four children, plus the parent assembled from them, compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.left_inverse_projection-a1",
+        "subproblem": {
+          "key": "left_inverse_projection",
+          "title": "Left inverse A of an injective linear map L with ‖L∘A‖ ≤ 1",
+          "statement": "Let P, d ∈ ℕ and let L : ℝ^d → ℝ^P be an injective continuous linear map. Then there is a continuous linear map A : ℝ^P → ℝ^d such that A∘L = id_{ℝ^d} and the operator norm of L∘A : ℝ^P → ℝ^P satisfies ‖L∘A‖ ≤ 1.",
+          "lean_statement": "∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1",
+          "lean_name": "dtc_bc_lr_left_inverse_projection",
+          "depends_on": [],
+          "natural_proof": "Source: step 1 of the parent proof (Q := L(ℝ^d), p the orthogonal projection onto Q with ‖p‖ ≤ 1 and p(Lw) = Lw, A := L⁻¹∘p), together with the identity L∘A = p used in step 7. No dependencies.\n1. (The range and its orthogonal projection.) Let Q := L(ℝ^d) (Mathlib LinearMap.range L), a linear subspace of ℝ^P. Q is finite-dimensional, hence complete, so the orthogonal projection p : ℝ^P → Q onto Q exists (Submodule.orthogonalProjectionOnto Q). It is continuous and linear, and p(q) = q for every q ∈ Q (Submodule.orthogonalProjectionOnto_mem_subspace_eq_self). Let ι : Q → ℝ^P be the inclusion. The composite ι∘p : ℝ^P → ℝ^P is the orthogonal projection of ℝ^P onto Q regarded as an endomorphism of ℝ^P (Q.starProjection, which is by definition Q.subtypeL ∘ Q.orthogonalProjectionOnto). Its operator norm is at most 1 (Submodule.starProjection_norm_le; indeed y = ι(p(y)) + (y − ι(p(y))) with orthogonal summands, so |ι(p(y))| ≤ |y|).\n2. (L is an isomorphism onto Q.) Since L is injective, e : ℝ^d → Q, e(w) := L(w), is a linear bijection (LinearEquiv.ofInjective), and ι(e(w)) = L(w) for all w ∈ ℝ^d. Because ℝ^d and Q are finite-dimensional, e and its inverse e⁻¹ : Q → ℝ^d are continuous (LinearEquiv.toContinuousLinearEquiv).\n3. (Definition of A.) Let A := e⁻¹∘p : ℝ^P → ℝ^d. It is a composite of continuous linear maps, hence continuous linear.\n4. (A∘L = id.) Let w ∈ ℝ^d. Then L(w) ∈ Q, so p(L(w)) = L(w), i.e. p(L(w)) is the element e(w) of Q. Therefore A(L(w)) = e⁻¹(e(w)) = w. As w is arbitrary, A∘L = id_{ℝ^d} as continuous linear maps.\n5. (L∘A = ι∘p.) Let y ∈ ℝ^P. Then L(A(y)) = ι(e(A(y))) = ι(e(e⁻¹(p(y)))) = ι(p(y)). Hence L∘A = ι∘p = Q.starProjection.\n6. (Norm bound.) By steps 5 and 1, ‖L∘A‖ = ‖ι∘p‖ ≤ 1. Steps 3, 4 and 6 prove the claim. (For d = 0 the argument is unchanged: Q = {0}, A = 0 and L∘A = 0.) ∎",
+          "proof_key_steps": [
+            "Q := range L is finite-dimensional, so the orthogonal projection p : ℝ^P → Q exists, fixes Q, and ι∘p has operator norm ≤ 1.",
+            "Injectivity makes e : ℝ^d → Q, w ↦ Lw, a linear isomorphism with continuous inverse.",
+            "A := e⁻¹∘p satisfies A(Lw) = e⁻¹(e w) = w, so A∘L = id.",
+            "L∘A = ι∘p is the orthogonal projection onto Q, so ‖L∘A‖ ≤ 1."
+          ]
+        },
+        "audit": {
+          "key": "left_inverse_projection",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type match exactly. Finite dimensionality supplies a continuous inverse onto the range and an orthogonal projection. The explicit construction A = e⁻¹ ∘ p proves A.comp L = id and identifies L.comp A with the ambient orthogonal projection, giving the required norm bound. The argument includes zero-dimensional spaces and uses no child or parent conclusion."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.lipschitz_near_point-a1",
+      "key": "lipschitz_near_point",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+              "grep -n IsEmbeddedSubmanifold -A 30 GMT/Ch07/Contract.lean (definition at lines 221-225)",
+              "grep -n 'theorem|def ' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean; grep -n 'theorem to_localInverse|def localInverse|def toOpenPartialHomeomorph|theorem localInverse_def' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "grep -rn contDiffAt_symm mathlib/Mathlib (OpenPartialHomeomorph.contDiffAt_symm at Analysis/Calculus/ContDiff/Operations.lean:881); grep -rn hasStrictFDerivAt' mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "grep -n norm_image_sub_le_of_norm_fderiv_le mathlib/Mathlib/Analysis/Calculus/MeanValue.lean (line 499); grep -rn ContDiffOn.continuousOn_fderiv_of_isOpen mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean (line 916)",
+              "grep -n 'orthogonalProjectionOnto|starProjection_norm_le|orthogonalProjection_mem_subspace_eq_self|def starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; grep -n 'def ofInjective' mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "grep -n 'oneSub|subset_compl_ball' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; grep -n unitsEquiv mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "grep -rln 'localInverse|toOpenPartialHomeomorph|orthogonalProjectionOnto|starProjection|norm_image_sub_le_of_norm_fderiv_le|isCompact_insert_range' simongmt/Poincare --include=*.lean; grep -rn retraction simongmt/Poincare; read Chapter08/ConstancyNormalCharts.lean and Chapter02/SubmanifoldTopology.lean",
+              "python3 -I over dag.json: lean_name inventory and title/type regex 'retract|chart|nearest|tubular|inverse func|localInverse|proper'; grep -c dtc_bc_lr dag.json (0 matches)",
+              "python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules (contract mode) on the four child types and the parent type",
+              "lake env lean /tmp/lrdecomp/check/ChildA.lean ChildB.lean ChildC.lean ChildD.lean Assembly.lean EndToEnd.lean and /tmp/lrdecomp/challenges/Challenge_*.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/lrdecomp/check/EndToEnd.lean",
+              "/tmp/lrdecomp/check/Assembly.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; IsEmbeddedSubmanifold is defined at Contract.lean:221-225. Every Mathlib ingredient named in the four child proofs exists at the pin:\n- inverse function theorem: ContDiffAt.hasStrictFDerivAt', HasStrictFDerivAt.toOpenPartialHomeomorph, HasStrictFDerivAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.isOpen_inter_preimage_symm, nonunits.subset_compl_ball, ContinuousLinearEquiv.unitsEquiv;\n- calculus: ContDiffOn.continuousOn_fderiv_of_isOpen, Convex.norm_image_sub_le_of_norm_fderiv_le;\n- orthogonal projection: Submodule.orthogonalProjectionOnto and its _mem_subspace_eq_self lemma, Submodule.starProjection and starProjection_norm_le, LinearEquiv.ofInjective;\n- compactness: Filter.Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq.\nSimonGMT has only analogues with different predicates or weaker conclusions, so no library lemma is reused verbatim. Chapter08 exists_local_coordinate_leftInverse is a pointwise C² left inverse with no ‖L∘A‖ ≤ 1 bound and no inverse that is C¹ on a neighbourhood. Chapter02 IsSimonLocalRepresentation.exists_open_image_eq_inter is stated for the IsSimonLocalRepresentation predicate. The related accepted DAG nodes dsmc_chart_inverse_continuity and atsm_chart_image_flat are on other branches and absent from this node's proof base e34a71c, which contains only the frozen contract. So fresh dtc_bc_lr_* names are used, and none collides with any lean_name in dag.json. All four child types pass validate_lean_statement and elaborate in the comparator's contract scope. Scratch proofs of the four children, plus the parent assembled from them, compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.lipschitz_near_point-a1",
+        "subproblem": {
+          "key": "lipschitz_near_point",
+          "title": "A C¹ map is (c + η)-Lipschitz on small balls around a point where ‖Df‖ ≤ c",
+          "statement": "Let P ∈ ℕ, f : ℝ^P → ℝ^P, x ∈ ℝ^P and δ, c ∈ ℝ with δ > 0. Suppose f is C¹ on the open ball B_δ(x) and its Fréchet derivative at x (Mathlib fderiv ℝ f x) has operator norm ‖Df(x)‖ ≤ c. Then for every η > 0 there is s with 0 < s ≤ δ such that |f(y) − f(z)| ≤ (c + η)|y − z| for all y, z ∈ B_s(x).",
+          "lean_statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (x : Euclid P) (δ c : ℝ), 0 < δ → ContDiffOn ℝ 1 f (ball x δ) → ‖fderiv ℝ f x‖ ≤ c → ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖f y - f z‖ ≤ (c + η) * ‖y - z‖",
+          "lean_name": "dtc_bc_lr_lipschitz_near_point",
+          "depends_on": [],
+          "natural_proof": "Source: step 7 of the parent proof (continuity of Dπ at x and the mean value inequality), stated for an arbitrary map f that is C¹ on the ball and an arbitrary bound c in place of π and ‖Dπ(x)‖ ≤ 1. No dependencies.\n1. (Differentiability and continuity of the derivative on the ball.) The ball B_δ(x) is open and f is C¹ on it. Hence f is differentiable within B_δ(x) at each y ∈ B_δ(x) (C¹ implies differentiable; Mathlib ContDiffOn.differentiableOn with 1 ≠ 0), and since B_δ(x) is a neighbourhood of each of its points, f is differentiable at y with derivative Df(y) = fderiv ℝ f y (DifferentiableWithinAt.differentiableAt). Moreover y ↦ Df(y) is continuous on B_δ(x), because a C¹ function on an open set has continuous derivative there (ContDiffOn.continuousOn_fderiv_of_isOpen with 1 ≤ 1).\n2. (Choice of s.) Since δ > 0, x ∈ B_δ(x), and as B_δ(x) is open, the continuity of y ↦ Df(y) on B_δ(x) gives continuity at x. Let η > 0. By continuity at x choose s₁ > 0 such that ‖Df(y) − Df(x)‖ < η for every y with |y − x| < s₁ (Metric.continuousAt_iff). Put s := min(s₁, δ). Then s > 0 and s ≤ δ.\n3. (Derivative bound on B_s(x).) Let y ∈ B_s(x). Since |y − x| < s ≤ s₁, ‖Df(y) − Df(x)‖ < η, so by the triangle inequality for the operator norm ‖Df(y)‖ = ‖Df(x) + (Df(y) − Df(x))‖ ≤ ‖Df(x)‖ + ‖Df(y) − Df(x)‖ ≤ c + η. Since B_s(x) ⊆ B_δ(x), f is differentiable at y by step 1.\n4. (Mean value inequality.) The ball B_s(x) is convex. By step 3, f is differentiable at every point of B_s(x) and ‖Df‖ ≤ c + η on B_s(x). The mean value inequality on convex sets says: if f is differentiable at every point of a convex set S and ‖Df‖ ≤ C on S, then |f(y) − f(z)| ≤ C|y − z| for all y, z ∈ S (Mathlib Convex.norm_image_sub_le_of_norm_fderiv_le). Applied with S = B_s(x) and C = c + η, it gives |f(y) − f(z)| ≤ (c + η)|y − z| for all y, z ∈ B_s(x).\n5. Steps 2 and 4 give, for the arbitrary η > 0, a number s with 0 < s ≤ δ and the required inequality. ∎",
+          "proof_key_steps": [
+            "C¹ on the open ball B_δ(x): f is differentiable at each point of the ball and y ↦ Df(y) is continuous there.",
+            "Continuity of Df at x gives s₁ > 0 with ‖Df(y) − Df(x)‖ < η for |y − x| < s₁; take s := min(s₁, δ).",
+            "Triangle inequality: ‖Df(y)‖ ≤ ‖Df(x)‖ + η ≤ c + η on B_s(x).",
+            "Mean value inequality on the convex ball B_s(x) gives |f(y) − f(z)| ≤ (c + η)|y − z|."
+          ]
+        },
+        "audit": {
+          "key": "lipschitz_near_point",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and one-line Lean type match exactly. Openness converts C¹ regularity into differentiability and continuity of fderiv at x. Taking s = min(s₁, δ), bounding the derivative by c + η, and applying the convex mean-value inequality proves every quantified conclusion. No additional sign hypothesis on c is needed: the assumed norm bound implies c ≥ 0. The proof is complete and non-circular."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.local_inverse-a1",
+      "key": "local_inverse",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)",
+              "grep -n IsEmbeddedSubmanifold -A 30 GMT/Ch07/Contract.lean (definition at lines 221-225)",
+              "grep -n 'theorem|def ' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean; grep -n 'theorem to_localInverse|def localInverse|def toOpenPartialHomeomorph|theorem localInverse_def' mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "grep -rn contDiffAt_symm mathlib/Mathlib (OpenPartialHomeomorph.contDiffAt_symm at Analysis/Calculus/ContDiff/Operations.lean:881); grep -rn hasStrictFDerivAt' mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "grep -n norm_image_sub_le_of_norm_fderiv_le mathlib/Mathlib/Analysis/Calculus/MeanValue.lean (line 499); grep -rn ContDiffOn.continuousOn_fderiv_of_isOpen mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean (line 916)",
+              "grep -n 'orthogonalProjectionOnto|starProjection_norm_le|orthogonalProjection_mem_subspace_eq_self|def starProjection' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; grep -n 'def ofInjective' mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "grep -n 'oneSub|subset_compl_ball' mathlib/Mathlib/Analysis/Normed/Ring/Units.lean; grep -n unitsEquiv mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "grep -rln 'localInverse|toOpenPartialHomeomorph|orthogonalProjectionOnto|starProjection|norm_image_sub_le_of_norm_fderiv_le|isCompact_insert_range' simongmt/Poincare --include=*.lean; grep -rn retraction simongmt/Poincare; read Chapter08/ConstancyNormalCharts.lean and Chapter02/SubmanifoldTopology.lean",
+              "python3 -I over dag.json: lean_name inventory and title/type regex 'retract|chart|nearest|tubular|inverse func|localInverse|proper'; grep -c dtc_bc_lr dag.json (0 matches)",
+              "python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope/child_modules (contract mode) on the four child types and the parent type",
+              "lake env lean /tmp/lrdecomp/check/ChildA.lean ChildB.lean ChildC.lean ChildD.lean Assembly.lean EndToEnd.lean and /tmp/lrdecomp/challenges/Challenge_*.lean with #print axioms"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Equiv.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Equiv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/tmp/lrdecomp/check/EndToEnd.lean",
+              "/tmp/lrdecomp/check/Assembly.lean"
+            ],
+            "conclusion": "The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; IsEmbeddedSubmanifold is defined at Contract.lean:221-225. Every Mathlib ingredient named in the four child proofs exists at the pin:\n- inverse function theorem: ContDiffAt.hasStrictFDerivAt', HasStrictFDerivAt.toOpenPartialHomeomorph, HasStrictFDerivAt.to_localInverse, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.isOpen_inter_preimage_symm, nonunits.subset_compl_ball, ContinuousLinearEquiv.unitsEquiv;\n- calculus: ContDiffOn.continuousOn_fderiv_of_isOpen, Convex.norm_image_sub_le_of_norm_fderiv_le;\n- orthogonal projection: Submodule.orthogonalProjectionOnto and its _mem_subspace_eq_self lemma, Submodule.starProjection and starProjection_norm_le, LinearEquiv.ofInjective;\n- compactness: Filter.Tendsto.isCompact_insert_range, IsCompact.tendsto_subseq.\nSimonGMT has only analogues with different predicates or weaker conclusions, so no library lemma is reused verbatim. Chapter08 exists_local_coordinate_leftInverse is a pointwise C² left inverse with no ‖L∘A‖ ≤ 1 bound and no inverse that is C¹ on a neighbourhood. Chapter02 IsSimonLocalRepresentation.exists_open_image_eq_inter is stated for the IsSimonLocalRepresentation predicate. The related accepted DAG nodes dsmc_chart_inverse_continuity and atsm_chart_image_flat are on other branches and absent from this node's proof base e34a71c, which contains only the frozen contract. So fresh dtc_bc_lr_* names are used, and none collides with any lean_name in dag.json. All four child types pass validate_lean_statement and elaborate in the comparator's contract scope. Scratch proofs of the four children, plus the parent assembled from them, compile with axioms [propext, Classical.choice, Quot.sound] only."
+          }
+        ],
+        "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+        "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.local_inverse-a1",
+        "subproblem": {
+          "key": "local_inverse",
+          "title": "Inverse function theorem with a C¹ inverse on an open neighbourhood",
+          "statement": "Let d ∈ ℕ, h : ℝ^d → ℝ^d, V ⊆ ℝ^d open and v₀ ∈ V. Suppose h is C¹ on V and its Fréchet derivative at v₀ is the identity, Dh(v₀) = id_{ℝ^d}. Then there are open sets V₀, O ⊆ ℝ^d and a map k : ℝ^d → ℝ^d such that V₀ ⊆ V, v₀ ∈ V₀, h(V₀) ⊆ O, k(O) ⊆ V₀, k(h(v)) = v for all v ∈ V₀, h(k(u)) = u for all u ∈ O, k is C¹ on O, and the Fréchet derivative of k at h(v₀) is the identity.",
+          "lean_statement": "∀ (d : ℕ) (h : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 h V → fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) → ∃ (V₀ O : Set (Euclid d)) (k : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ V₀ ⊆ V ∧ v₀ ∈ V₀ ∧ MapsTo h V₀ O ∧ MapsTo k O V₀ ∧ (∀ v ∈ V₀, k (h v) = v) ∧ (∀ u ∈ O, h (k u) = u) ∧ ContDiffOn ℝ 1 k O ∧ fderiv ℝ k (h v₀) = ContinuousLinearMap.id ℝ (Euclid d)",
+          "lean_name": "dtc_bc_lr_local_inverse",
+          "depends_on": [],
+          "natural_proof": "Source: step 2 of the parent proof (inverse function theorem for h := A(ψ − x) at v₀, giving open V₀ ⊆ V, O and the C¹ inverse k : O → V₀), together with Dk(h(v₀)) = Dh(v₀)⁻¹ = id, used in step 3. Only C¹ regularity of h is needed. No dependencies.\n1. (Regularity of h.) V is open and h is C¹ on V, so h is C¹ at every v ∈ V (ContDiffOn.contDiffAt), in particular differentiable at v. The derivative map v ↦ Dh(v) is continuous on V (ContDiffOn.continuousOn_fderiv_of_isOpen). At v₀, Dh(v₀) = id is the underlying map of the identity continuous linear equivalence, so h has that equivalence as derivative at v₀; since h is C¹ at v₀, this derivative is strict (ContDiffAt.hasStrictFDerivAt').\n2. (Inverse function theorem.) By the inverse function theorem (Mathlib HasStrictFDerivAt.toOpenPartialHomeomorph) there is a partial homeomorphism e of ℝ^d whose underlying function is h, with open source S, open target T and v₀ ∈ S (HasStrictFDerivAt.mem_toOpenPartialHomeomorph_source). Let g : ℝ^d → ℝ^d be its inverse function (e.symm). Then h(S) ⊆ T, g(T) ⊆ S, g(h(v)) = v for v ∈ S, h(g(u)) = u for u ∈ T, and g is continuous on T. Moreover g is by definition the local inverse of h at v₀, and it has strict, hence ordinary, derivative id⁻¹ = id at h(v₀) (HasStrictFDerivAt.to_localInverse).\n3. (Where Dh is invertible.) Let G := {v ∈ V : ‖Dh(v) − id‖ < 1}. G is open: it is the intersection of the open set V with the preimage of the open unit ball around id under v ↦ Dh(v), which is continuous on V (ContinuousOn.isOpen_inter_preimage). Also v₀ ∈ G, because Dh(v₀) = id. For v ∈ G, Dh(v) is invertible. In the complete normed algebra of continuous linear endomorphisms of ℝ^d, any T with ‖T − 1‖ < 1 is a unit: T = 1 − (1 − T) with ‖1 − T‖ < 1, and the Neumann series Σₙ (1 − T)ⁿ converges to its inverse (Mathlib nonunits.subset_compl_ball). A unit U of this algebra is the underlying map of a continuous linear equivalence (ContinuousLinearEquiv.unitsEquiv).\n4. (Definition of V₀, O, k.) Put V₀ := S ∩ G, O := {u ∈ T : g(u) ∈ V₀} and k := g. V₀ is open (S and G are open), V₀ ⊆ G ⊆ V, and v₀ ∈ V₀ by steps 2 and 3. O is open because g is continuous on the open set T and V₀ is open (OpenPartialHomeomorph.isOpen_inter_preimage_symm).\n5. (Mapping and inverse identities.) Let v ∈ V₀. Then v ∈ S, so h(v) ∈ T and k(h(v)) = g(h(v)) = v ∈ V₀; hence h(v) ∈ O and k(h(v)) = v. Let u ∈ O. Then k(u) = g(u) ∈ V₀ by the definition of O, and h(k(u)) = u because u ∈ T. Thus h(V₀) ⊆ O, k(O) ⊆ V₀, k∘h = id on V₀ and h∘k = id on O.\n6. (k is C¹ on O.) Let u ∈ O and a := k(u) ∈ V₀. Then a ∈ V, so h is C¹ at a (step 1), and a ∈ G, so Dh(a) is the underlying map of a continuous linear equivalence (step 3). Thus h has an invertible derivative at a = g(u), and u ∈ T. The C¹ inverse rule for partial homeomorphisms (Mathlib OpenPartialHomeomorph.contDiffAt_symm) says: if u lies in the target, the function has a continuous linear equivalence as derivative at g(u) and is Cⁿ at g(u), then the inverse g is Cⁿ at u. Hence k = g is C¹ at u. So k is C¹ at every point of O, hence C¹ on O.\n7. (Derivative at h(v₀).) By step 2, k = g is differentiable at h(v₀) with derivative id, so Dk(h(v₀)) = id. Steps 4–7 give all the asserted properties. (The case d = 0 needs no change.) ∎",
+          "proof_key_steps": [
+            "C¹ on the open set V: h is C¹ at each point of V, Dh is continuous on V, and h has strict derivative id at v₀.",
+            "Inverse function theorem: a partial homeomorphism e = h with open source S ∋ v₀ and open target T; its inverse g has derivative id at h(v₀).",
+            "G := {v ∈ V : ‖Dh(v) − id‖ < 1} is open, contains v₀, and Dh(v) is invertible for v ∈ G (Neumann series).",
+            "V₀ := S ∩ G, O := T ∩ g⁻¹(V₀) and k := g satisfy the mapping and two-sided inverse identities.",
+            "The C¹ inverse rule at each u ∈ O makes k C¹ on O, and Dk(h(v₀)) = id."
+          ]
+        },
+        "audit": {
+          "key": "local_inverse",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose includes all hypotheses and exactly matches the Lean type. The proof constructs the partial homeomorphism, restricts to the open region where the derivative is invertible, verifies both mapping properties and inverse identities, and proves C¹ regularity at every target point. The inverse-function theorem supplies the derivative identity at h(v₀). Invertibility is correctly interpreted in the composition algebra of continuous linear endomorphisms. No hidden dependency or missing construction remains."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/decomposition.json": "978b4bfb5c892c51005ab8257068eacfaa26da7e23024c2d04949d6e54549649",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/decomposition-audit.json": "7a3f5b57836df11bd465c8fa8c70afb84915df047863d1420dcfab591b1f9e2e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-child-handoff.json": "19bfc8dd82bba603d3d89376cb6e15076c8ee59f3ed16e7c8342235c095fd858",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-plan.md": "2d8c31565e9ca172d095eb3e5edb7882b3366baf1af04c16e91427b86269e953",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-natural-proof.md": "2a20d9478ac57600ac2c00ed25e0a00818294d9bad95e11eb9c7cf13ec89fa53",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/parent-supplied-natural-proof.json": "c456625ccc37323a9fddf082cff440657dfc86b059db06200e81c73fb20c7f35",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/node.json": "9399d5c003a33686f9d4544fd7d3bacc71c857853f5263711b3f6a2bcde78e7a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-child-handoff.json": "1c0cb35115f4a4792a523de8c4f8b2293c69df9ef9c2ddc26dd9246ec1e799b5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-plan.md": "d10fde89f9443e55b333be71a63a68db289c09e21d9918845cd52f7e35d68e6d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-natural-proof.md": "c70243a36cf0e1301da58a1b089a1163b1421b5fbbf49ffffbf19039b55b98ca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/parent-supplied-natural-proof.json": "61f695201a571ddf9d989208fdd53a452bb04e3b0ccc63c7eb27371256910622",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cb4d5330a9/node.json": "b8f24cf35597df7dbc3404184a3b2d6b1fea15c2241ac26cc47ec736831fa992",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-child-handoff.json": "538ba510a1d3f27b0215141d97a5c12d8f6fe38149c0ad9ab04fee3916c88b3d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-plan.md": "6d1d134e1d08a287853d88921f17d62d9773d7f5b3cb7c8ca40e7c583b763ad5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-natural-proof.md": "73b0225812c03fe00d3cd46372e56db9d87d5a6d28a7a7b3da8ae785b176918a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/parent-supplied-natural-proof.json": "8c8458ec5929f1c806e4fac97800ed275b2969a8b6f0b186fc53c119873b6004",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-a333c9ec7d/node.json": "6f572c659d693b117ec46a285c690568f5c20b1629566fca9fdcd7a5d08db542",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-child-handoff.json": "6610f5e22cb60b53233ba47d33b970eec1df469bff6f4febe4cdd9fd35399be0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-plan.md": "f01d17b7c7a6c96c9cbc50e56b5bd0a1b4f0ef5a1e6de35166229a647e4df4dc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-natural-proof.md": "1b8cdadcb702faa8dbc48279e4b833de932a8065f5ba35e5d589f62bbfb7d1dc",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/parent-supplied-natural-proof.json": "c9795a9064a81b056f26fe2ac6ed805467143dc8d6253cb8e7d5716e2dfc2f59",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retraction-a1/children/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea/node.json": "7dee13740bde37bfe28491550835ab4684bebe74c0e7ca9adc6f12dbbafdde62"
+  }
+}
