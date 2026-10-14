@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsEmbeddedSubmanifold|def tangentSpace|abbrev Euclid|^(open|namespace|noncomputable|end)",
+        "nearest.point|tubular|nearestPoint|metric projection",
+        "class HasOrthogonalProjection|def starProjection|starProjection_norm_le|starProjection_apply_eq_zero_iff|eq_starProjection_of_mem_of_inner_eq_zero|sub_starProjection_mem_orthogonal",
+        "contDiffAt_symm|toOpenPartialHomeomorph|Nontrivial|CompleteSpace",
+        "mul_def|instance.*[Ss]emiring|instance.*[Rr]ing|mul_apply",
+        "fderiv_of_isOpen|continuousOn_fderiv_of_isOpen|exists_bound_of_continuousOn",
+        "dor_lmb_ret_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dor-ret-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dor-ret-independent-audit/FullAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a1/decomposition-v1.json",
+        "/tmp/dor-ret-decomp/Full.lean",
+        "/tmp/dor-ret-independent-audit/Types.lean",
+        "/tmp/dor-ret-independent-audit/FullAudit.lean"
+      ],
+      "conclusion": "The pinned definitions match the selected contract; workspace Contract.lean and Submission.lean are byte-identical to the frozen contract. Relevant Mathlib files match revision 25730c7c. The search found no applicable nonlinear tubular-retraction theorem. Projection and calculus APIs support the supplied arguments: starProjection is a bundled continuous linear map, and endomorphism multiplication is composition. All eight exact one-line propositions independently elaborate as Prop in comparator scope without child implementations. Names are bare identifiers, with no collisions in the examined 702-node DAG or 1359 branch-tip commits. Dependencies are acyclic and match actual proof usage. Independently recompiling the supplied proofs against all frozen types succeeded; every child and dor_lmb_c1_retraction depends only on propext, Classical.choice and Quot.sound. The split is appropriate: the children and retained compact bounds/radius choice establish every property of the selected parent. The closure-difference hypothesis is legitimately unused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses agree. Properness supplies the compact preimage; injectivity separates the base point from the compact bad image. The radius choice proves localization, and the explicit image equality proves compactness. No openness assumption on V is needed."
+    },
+    {
+      "key": "tangent_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact projection-valued proposition matches the prose. Injectivity makes the Gram operator invertible; smooth inversion and operator composition give C¹ regularity. The orthogonality calculation identifies the constructed operator with starProjection. Instances and the zero-dimensional case are sound."
+    },
+    {
+      "key": "normal_space_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The factor-two lower bound proves injectivity of the restricted normal map. Equal complementary dimensions imply surjectivity and give the required preimage estimate. All hypotheses and conclusions match the Lean proposition."
+    },
+    {
+      "key": "normal_coordinates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The product-space derivative is an isomorphism. The inverse function theorem and nearby invertibility justify a C¹ inverse on the chosen image. Halving the radius correctly accommodates the normal-transfer factor two and ensures closed-ball containment. Only the two declared siblings are used."
+    },
+    {
+      "key": "nearest_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact minimization and the exterior-distance estimate establish global nearestness. First-order optimality gives normality; the declared recovery lemma identifies g and proves all exported properties. The proof is complete and matches the type. Its regularity agrees with [Leobacher–Steinicke](https://arxiv.org/html/1811.10578v4)."
+    },
+    {
+      "key": "tangent_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly the frozen curve-velocity definition of tangentSpace. Continuity places the curve in O near zero; local agreement, the chain rule and derivative uniqueness prove the identity. No additional manifold hypothesis is required."
+    },
+    {
+      "key": "derivative_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiated normality and Q∘Dψ=Dψ yield the stated operator identity. The nested operator-norm estimates use precisely the supplied bounds. The final polynomial inequality is valid for every 0≤s≤1/2, including endpoints, and proves the exact conclusion without circularity."
+    },
+    {
+      "key": "uniform_injectivity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous Gram left inverse gives the uniform compact bound. The alternative unit-sphere proof is also complete and explicitly handles empty K and dimension zero. The prose and Lean quantifiers and inequalities coincide."
+    }
+  ],
+  "required_changes": []
+}

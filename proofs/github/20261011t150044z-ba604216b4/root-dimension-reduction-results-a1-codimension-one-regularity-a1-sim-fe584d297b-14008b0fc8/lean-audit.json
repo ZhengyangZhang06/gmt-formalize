@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97e51b47d0539e00ef76c592ac0a4a0be5479ebb97f0df8bdde4ade082106b0f",
+  "git_delta": {
+    "base_commit": "e1928a5dd4669be82f1a564fcef2982c0e3c1715",
+    "candidate_commit": "94ad545ae997561636d894a30c22d96c4f8ae4c7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fcp_local_plane",
+    "diff_sha256": "62c9239eae9fbfb4d7bddd0ae720874e9fd7ffe5eab6c151156c72c5d163f132",
+    "source_sha256": "7489496f823a618c7e328ef55a2437f90e3abc262df793479b0a60c3ff56395e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fcp_local_plane",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
