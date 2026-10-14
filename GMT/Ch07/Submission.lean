@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Near an isolated point of an open line piece, a union of line pieces is the line**
+(parent step 3e).  Let `S_j = {p_j + t v_j : t ∈ I_j}` for `j` in a finite `ι`.  If
+`‖v_k‖ = 1`, `I_k` is open, `S_k ⊆ M ⊆ ⋃_j S_j`, `x ∈ S_k` and `x ∉ closure S_j` for all
+`j ≠ k`, then `M ∩ B_r(x) = (x + span{v_k}) ∩ B_r(x)` for some `r > 0`.  Write
+`x = p_k + t₀ v_k` with `(t₀ − ε, t₀ + ε) ⊆ I_k`; finiteness of `ι` gives `δ > 0` with
+`B_δ(x) ∩ S_j = ∅` for `j ≠ k`; take `r = min ε δ`.  A point `y = x + s v_k` of the ball has
+`|s| = ‖y − x‖ < ε` (as `‖v_k‖ = 1`), so `y = p_k + (t₀ + s) v_k ∈ S_k ⊆ M`. -/
+theorem Submission.idtp_fons_odc_pc_piece_locally_line : ∀ (P : ℕ) (ι : Type) [Finite ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (M : Set (Euclid P)) (k : ι) (x : Euclid P), ‖v k‖ = 1 → IsOpen (I k) → M ⊆ (⋃ j, (fun t : ℝ => p j + t • v j) '' I j) → (fun t : ℝ => p k + t • v k) '' I k ⊆ M → x ∈ (fun t : ℝ => p k + t • v k) '' I k → (∀ j, j ≠ k → x ∉ closure ((fun t : ℝ => p j + t • v j) '' I j)) → ∃ r : ℝ, 0 < r ∧ M ∩ ball x r = {y | y - x ∈ Submodule.span ℝ {v k}} ∩ ball x r := by
+  intro P ι _ p v I M k x hv hI hM hkM hx hcl
+  -- Step 1: `x = p_k + t₀ v_k` with `t₀ ∈ I_k`, and `(t₀ − ε, t₀ + ε) ⊆ I_k`
+  obtain ⟨t₀, ht₀, hx⟩ := hx
+  change p k + t₀ • v k = x at hx
+  obtain ⟨ε, hε, hεI⟩ := Metric.isOpen_iff.1 hI t₀ ht₀
+  -- Step 2: as `ι` is finite, some `B_δ(x)` misses every piece `S_j` with `j ≠ k`
+  obtain ⟨δ, hδ, hδS⟩ := Metric.eventually_nhds_iff.1 <| Filter.eventually_all.2 fun j =>
+    Filter.eventually_imp_distrib_left.2 fun hj =>
+      Filter.not_frequently.1 (mt mem_closure_iff_frequently.2 (hcl j hj))
+  -- Step 3: `r := min ε δ`
+  refine ⟨min ε δ, lt_min hε hδ, Set.ext fun y => ⟨fun hy => ⟨?_, hy.2⟩, fun hy => ⟨?_, hy.2⟩⟩⟩
+  · -- (⊆): `y ∈ S_j` with `dist y x < δ` forces `j = k`, so `y − x = (t − t₀) v_k`
+    obtain ⟨hyM, hyr⟩ := hy
+    obtain ⟨j, t, ht, rfl⟩ := mem_iUnion.1 (hM hyM)
+    obtain rfl : j = k := by
+      by_contra hj
+      exact hδS ((Metric.mem_ball.1 hyr).trans_le (min_le_right _ _)) j hj ⟨t, ht, rfl⟩
+    refine Submodule.mem_span_singleton.2 ⟨t - t₀, ?_⟩
+    rw [← hx, sub_smul]
+    dsimp only
+    abel
+  · -- (⊇): `y − x = s v_k` with `|s| = ‖y − x‖ < ε`, so `y = p_k + (t₀ + s) v_k ∈ S_k ⊆ M`
+    obtain ⟨hy, hyr⟩ := hy
+    obtain ⟨s, hs⟩ := Submodule.mem_span_singleton.1 hy
+    have hsε : |s| < ε := by
+      have h : ‖s • v k‖ < ε := by
+        rw [hs, ← dist_eq_norm_sub]
+        exact (Metric.mem_ball.1 hyr).trans_le (min_le_left _ _)
+      rwa [norm_smul, hv, mul_one, Real.norm_eq_abs] at h
+    refine hkM ⟨t₀ + s, hεI ?_, ?_⟩
+    · rwa [Metric.mem_ball, Real.dist_eq, add_sub_cancel_left]
+    · change p k + (t₀ + s) • v k = y
+      rw [add_smul, ← add_assoc, hx, hs, add_sub_cancel]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

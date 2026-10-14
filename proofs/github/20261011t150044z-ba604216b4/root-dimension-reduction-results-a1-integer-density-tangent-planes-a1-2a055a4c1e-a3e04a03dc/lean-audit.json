@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "537e5bb29abd1cb4d71e817b93c10444e3283b8c2a9ac2a6152b37e70c0d27a8",
+  "git_delta": {
+    "base_commit": "62c45415039c8378e1b73153ad9de0eb3fb2e58a",
+    "candidate_commit": "b13291e91e3ac44a6ff483bf0ed29f8a6408db65",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_pc_piece_locally_line",
+    "diff_sha256": "58c60e36efb00d6a62108be357fee3c832badf9bfd4366b6edfb799e2743884a",
+    "source_sha256": "26df5acb88ed0c9aeef05990ee9a29f62e59dd39c543596589c64b1e18423223",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_pc_piece_locally_line",
+      "statement": "∀ (P : ℕ) (ι : Type) [Finite ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (M : Set (Euclid P)) (k : ι) (x : Euclid P), ‖v k‖ = 1 → IsOpen (I k) → M ⊆ (⋃ j, (fun t : ℝ => p j + t • v j) '' I j) → (fun t : ℝ => p k + t • v k) '' I k ⊆ M → x ∈ (fun t : ℝ => p k + t • v k) '' I k → (∀ j, j ≠ k → x ∉ closure ((fun t : ℝ => p j + t • v j) '' I j)) → ∃ r : ℝ, 0 < r ∧ M ∩ ball x r = {y | y - x ∈ Submodule.span ℝ {v k}} ∩ ball x r",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
