@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1a6676db4e50d59809281910e2533885872b24a63489d78f60d51293edd3cd93",
+  "git_delta": {
+    "base_commit": "a77873c82d645c55b6d2b3d0c9ddb99e935ad085",
+    "candidate_commit": "46359f0360175f543c37afccd9673dba7d89cf10",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_pf_form_bounds",
+    "diff_sha256": "d3791d20308cd1fea2b4858d9a4e0d6283d3a85436120af5e961eea53253adde",
+    "source_sha256": "00d3663f6e25204f87174758c5e9311a653c198f17791dbe971b3c2490932f7d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_pf_form_bounds",
+      "statement": "∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid N)) k), (∃ a : ℝ, ∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) y) ≤ a) ∧ ∃ b : ℝ, ∀ y, covectorEuclideanNorm (exteriorDerivative (ω : DifferentialForm (Euclid N) k) y) ≤ b",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

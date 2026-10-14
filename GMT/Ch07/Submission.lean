@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Test forms and their exterior derivatives are bounded** in the Euclidean coefficient norm
+`|α|` of Simon (6.1.15), as used for the Lipschitz push-forward (Simon Ch. 6, 2.28–2.29).  For a
+test form `θ ∈ 𝒟ᵐ(ℝᴺ)`, `y ↦ |θ(y)|` is the square root of a finite sum of squares of the
+continuous evaluations `y ↦ θ(y)(e_{I 1}, …, e_{I m})`, hence continuous, and has compact support
+since `|0| = 0`; so it is bounded.  Apply this to `ω` and to `dω`, a test form by
+`exteriorDerivative_isTestForm`. -/
+theorem Submission.cmcdt_lpo_pf_form_bounds : ∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid N)) k), (∃ a : ℝ, ∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) y) ≤ a) ∧ ∃ b : ℝ, ∀ y, covectorEuclideanNorm (exteriorDerivative (ω : DifferentialForm (Euclid N) k) y) ≤ b := by
+  intro N k ω
+  -- a test form has bounded Euclidean coefficient norm
+  have hbd : ∀ (m : ℕ) (θ : DifferentialForm (Euclid N) m), IsTestForm θ →
+      ∃ a : ℝ, ∀ y, covectorEuclideanNorm (θ y) ≤ a := by
+    intro m θ hθ
+    have hθc : Continuous θ := hθ.1.continuous
+    have hcont : Continuous (covectorEuclideanNorm ∘ θ) := by
+      show Continuous fun y => covectorEuclideanNorm (θ y)
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      exact continuous_if_const _ (fun _ => (hθc.eval_const _).pow 2) (fun _ => continuous_const)
+    have hsupp : HasCompactSupport (covectorEuclideanNorm ∘ θ) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) hθ.2 (covectorEuclideanNorm_zero N m)
+    obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hsupp
+    refine ⟨C, fun y => (le_abs_self _).trans ?_⟩
+    have := hC y
+    rwa [Real.norm_eq_abs] at this
+  exact ⟨hbd k _ ω.property.1, hbd (k + 1) _ (exteriorDerivative_isTestForm ω.property.1)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
