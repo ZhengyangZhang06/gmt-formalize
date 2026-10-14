@@ -451,6 +451,313 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Density points see every direction.**  If `y` is a Lebesgue density point of an arbitrary set
+`Z ⊆ ℝᵈ`, i.e. `Lᵈ(Z ∩ B̄_r(y)) / Lᵈ(B̄_r(y)) → 1` as `r ↓ 0`, then every unit vector `v` is a limit
+of secant directions `(yᵢ - y)/|yᵢ - y|` with `yᵢ ∈ Z ∖ {y}` and `yᵢ → y`.  For `0 < η ≤ 1` and
+`r > 0` the ball `B_{ηr/4}(y + (r/2)v)` lies in `B̄_r(y) ∖ {y}` and in the `η`-cone around `v`, and
+it has measure `(η/4)ᵈ Lᵈ(B̄_r(y))`, so density one forces `Z` to meet it for all small `r`; take
+`η = 1/(i+1)` and `r < 1/(i+1)`. -/
+theorem Submission.dor_lmbsf_density_directions : ∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v) := by
+  intro d Z y hdens v hv
+  -- the ball `B_{ηr/4}(y + (r/2)v)` lies in `B_r(y) ∖ {y}`, inside the `η`-cone around `v`
+  have cone : ∀ η r : ℝ, 0 < η → η ≤ 1 → 0 < r → ∀ z ∈ ball (y + (r / 2) • v) (η * r / 4),
+      ‖z - y‖ < r ∧ z ≠ y ∧ ‖‖z - y‖⁻¹ • (z - y) - v‖ < η := by
+    intro η r hη hη1 hr z hz
+    have hs : (0 : ℝ) < r / 2 := by positivity
+    -- the offset `w = z - y - (r/2)v` of `z` from the centre has `‖w‖ < ηr/4 ≤ r/4`
+    have hw : ‖z - y - (r / 2) • v‖ < η * r / 4 := by
+      rwa [mem_ball, dist_eq_norm, sub_add_eq_sub_sub] at hz
+    have hw' : ‖z - y - (r / 2) • v‖ < r / 4 := hw.trans_le (by nlinarith)
+    have hsv : ‖(r / 2) • v‖ = r / 2 := by rw [norm_smul, hv, mul_one, Real.norm_of_nonneg hs.le]
+    have hdiff : |‖z - y‖ - r / 2| ≤ ‖z - y - (r / 2) • v‖ := by
+      simpa only [hsv] using abs_norm_sub_norm_le (z - y) ((r / 2) • v)
+    obtain ⟨hlo, hhi⟩ := abs_le.1 hdiff
+    have hpos : 0 < ‖z - y‖ := by linarith
+    refine ⟨by linarith, fun h => by rw [h, sub_self, norm_zero] at hpos; exact lt_irrefl _ hpos,
+      ?_⟩
+    -- `‖z - y‖⁻¹ (z - y) - v = (‖z - y‖⁻¹ - (r/2)⁻¹) (z - y) + (r/2)⁻¹ w`
+    have hdecomp : ‖z - y‖⁻¹ • (z - y) - v
+        = (‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y) + (r / 2)⁻¹ • (z - y - (r / 2) • v) := by
+      rw [sub_smul ‖z - y‖⁻¹ (r / 2)⁻¹ (z - y), smul_sub (r / 2)⁻¹ (z - y) ((r / 2) • v), smul_smul,
+        inv_mul_cancel₀ hs.ne', one_smul]
+      abel
+    have h1 : ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) := by
+      have hne : ‖z - y‖ ≠ 0 := hpos.ne'
+      have e : (‖z - y‖⁻¹ - (r / 2)⁻¹) * ‖z - y‖ = (r / 2 - ‖z - y‖) / (r / 2) := by
+        field_simp
+      calc ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ = |(‖z - y‖⁻¹ - (r / 2)⁻¹) * ‖z - y‖| := by
+            rw [norm_smul, Real.norm_eq_abs, abs_mul, abs_norm]
+        _ = |‖z - y‖ - r / 2| / (r / 2) := by rw [e, abs_div, abs_of_pos hs, abs_sub_comm]
+        _ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) := by gcongr
+    have h2 : ‖(r / 2)⁻¹ • (z - y - (r / 2) • v)‖ = ‖z - y - (r / 2) • v‖ / (r / 2) := by
+      rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs.le), inv_mul_eq_div]
+    calc ‖‖z - y‖⁻¹ • (z - y) - v‖
+        ≤ ‖(‖z - y‖⁻¹ - (r / 2)⁻¹) • (z - y)‖ + ‖(r / 2)⁻¹ • (z - y - (r / 2) • v)‖ := by
+          rw [hdecomp]; exact norm_add_le _ _
+      _ ≤ ‖z - y - (r / 2) • v‖ / (r / 2) + ‖z - y - (r / 2) • v‖ / (r / 2) := by
+          rw [h2]; linarith
+      _ < η := by rw [← add_div, div_lt_iff₀ hs]; linarith
+  -- for `0 < η ≤ 1`, `Z` meets `B_{ηr/4}(y + (r/2)v)` for all small `r > 0`: otherwise
+  -- `Lᵈ(Z ∩ B̄_r(y)) ≤ Lᵈ(B̄_r(y)) - Lᵈ(B_{ηr/4}(y + (r/2)v)) = (1 - (η/4)ᵈ) Lᵈ(B̄_r(y))`
+  have hit : ∀ η : ℝ, 0 < η → η ≤ 1 → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ →
+      ∃ z ∈ Z, z ∈ ball (y + (r / 2) • v) (η * r / 4) := by
+    intro η hη hη1
+    have hκ : ENNReal.ofReal ((η / 4) ^ d) ≠ 0 := by
+      rw [Ne, ENNReal.ofReal_eq_zero, not_le]; positivity
+    obtain ⟨r₀, hr₀, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1
+      (hdens.eventually_const_lt (ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero hκ))
+    refine ⟨r₀, hr₀, fun r hr hrr₀ => ?_⟩
+    by_contra! hZ
+    have hB : ball (y + (r / 2) • v) (η * r / 4) ⊆ closedBall y r := fun z hz => by
+      rw [mem_closedBall, dist_eq_norm]; exact (cone η r hη hη1 hr z hz).1.le
+    have hvol : volume (ball (y + (r / 2) • v) (η * r / 4))
+        = ENNReal.ofReal ((η / 4) ^ d) * volume (closedBall y r) := by
+      rw [Measure.addHaar_ball_of_pos volume _ (by positivity : (0 : ℝ) < η * r / 4),
+        Measure.addHaar_closedBall volume _ hr.le, finrank_euclideanSpace_fin, ← mul_assoc,
+        ← ENNReal.ofReal_mul (by positivity), ← mul_pow, show η / 4 * r = η * r / 4 by ring]
+    have hle : volume (Z ∩ closedBall y r)
+        ≤ (1 - ENNReal.ofReal ((η / 4) ^ d)) * volume (closedBall y r) :=
+      calc volume (Z ∩ closedBall y r)
+          ≤ volume (closedBall y r \ ball (y + (r / 2) • v) (η * r / 4)) :=
+            measure_mono fun z hz => ⟨hz.2, hZ z hz.1⟩
+        _ = volume (closedBall y r) - volume (ball (y + (r / 2) • v) (η * r / 4)) :=
+            measure_sdiff hB measurableSet_ball.nullMeasurableSet measure_ball_lt_top.ne
+        _ = (1 - ENNReal.ofReal ((η / 4) ^ d)) * volume (closedBall y r) := by
+            rw [hvol, ENNReal.sub_mul fun _ _ => measure_closedBall_lt_top.ne, one_mul]
+    have hgt : 1 - ENNReal.ofReal ((η / 4) ^ d)
+        < volume (Z ∩ closedBall y r) / volume (closedBall y r) := hsub ⟨hr, hrr₀⟩
+    exact lt_irrefl _ (hgt.trans_le (ENNReal.div_le_of_le_mul hle))
+  -- take `η = 1/(i+1)` and `0 < rᵢ < min(r₀, 1/(i+1))`
+  have hη : ∀ i : ℕ, (0 : ℝ) < 1 / ((i : ℝ) + 1) := fun i => by positivity
+  have hη1 : ∀ i : ℕ, 1 / ((i : ℝ) + 1) ≤ 1 := fun i =>
+    (div_le_one (by positivity)).2 (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)])
+  have hseq : ∀ i : ℕ, ∃ z ∈ Z, ∃ r : ℝ, 0 < r ∧ r < 1 / ((i : ℝ) + 1) ∧
+      z ∈ ball (y + (r / 2) • v) (1 / ((i : ℝ) + 1) * r / 4) := by
+    intro i
+    obtain ⟨r₀, hr₀, h⟩ := hit _ (hη i) (hη1 i)
+    have hm : 0 < min r₀ (1 / ((i : ℝ) + 1)) := lt_min hr₀ (hη i)
+    obtain ⟨z, hzZ, hz⟩ := h (min r₀ (1 / ((i : ℝ) + 1)) / 2) (by positivity)
+      (by linarith [min_le_left r₀ (1 / ((i : ℝ) + 1))])
+    exact ⟨z, hzZ, _, by positivity, by linarith [min_le_right r₀ (1 / ((i : ℝ) + 1))], hz⟩
+  choose ys hysZ rs hrs hrsi hysB using hseq
+  have hcone := fun i => cone _ (rs i) (hη i) (hη1 i) (hrs i) (ys i) (hysB i)
+  refine ⟨ys, fun i => ⟨hysZ i, (hcone i).2.1⟩, ?_, ?_⟩
+  · rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun i => norm_nonneg _) (fun i => ((hcone i).1.trans (hrsi i)).le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+  · rw [tendsto_iff_norm_sub_tendsto_zero]
+    exact squeeze_zero (fun i => norm_nonneg _) (fun i => (hcone i).2.2.le)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+
+/-- **Weak convergence of derivatives against `C¹` test fields.**  If the `uₖ : ℝᵈ → ℝ` are
+`K`-Lipschitz and converge uniformly to `u`, and `Ψ : ℝᵈ → ℝᵈ` is `C¹` with compact support, then
+`∫ Duₖ[Ψ] → ∫ Du[Ψ]`.  The limit `u` is again `K`-Lipschitz.  Writing `Ψ = Σₗ Ψₗ eₗ`,
+Rademacher's theorem and integration by parts give `∫ Dv[Ψ] = Σₗ ∫ qₗ v` for every Lipschitz `v`,
+where `qₗ = DΨₗ[-eₗ]` is continuous with compact support; dominated convergence with the bound
+`|qₗ| (|u| + 1)` gives `∫ qₗ uₖ → ∫ qₗ u`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_weak_smooth : ∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Ψ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → ContDiff ℝ 1 Ψ → HasCompactSupport Ψ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Ψ y))) := by
+  intro d K us u Ψ hus hU hΨ hΨc
+  -- the uniform limit `u` is again `K`-Lipschitz
+  have hu : LipschitzWith K u := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    exact le_of_tendsto ((hU.tendsto_at x).dist (hU.tendsto_at y))
+      (Eventually.of_forall fun k => (hus k).dist_le_mul x y)
+  -- coordinates `Ψₗ = ⟨Ψ, eₗ⟩`: `C¹` with compact support
+  set e : Fin d → Euclid d := fun l => EuclideanSpace.single l 1
+  set g : Fin d → Euclid d → ℝ := fun l y => Ψ y l
+  have hg_smooth : ∀ l, ContDiff ℝ 1 (g l) := fun l =>
+    (EuclideanSpace.proj l : Euclid d →L[ℝ] ℝ).contDiff.comp hΨ
+  have hg_supp : ∀ l, HasCompactSupport (g l) := fun l =>
+    hΨc.comp_left (g := fun v : Euclid d => v l) (by simp)
+  have hdecomp : ∀ (L : Euclid d →L[ℝ] ℝ) (x : Euclid d), L x = ∑ l, L (e l) * x l := by
+    intro L x
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin d) ℝ).sum_repr x]
+    simp [map_sum, map_smul, e, EuclideanSpace.basisFun_apply, mul_comm]
+  -- `qₗ = DΨₗ[-eₗ]` is continuous with compact support
+  set q : Fin d → Euclid d → ℝ := fun l y => lineDeriv ℝ (g l) y (-(e l))
+  have hq_eq : ∀ l, q l = fun y => fderiv ℝ (g l) y (-(e l)) := fun l => funext fun y =>
+    ((hg_smooth l).differentiable one_ne_zero y).lineDeriv_eq_fderiv
+  have hq_cont : ∀ l, Continuous (q l) := by
+    intro l
+    rw [hq_eq l]
+    exact ((hg_smooth l).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hq_supp : ∀ l, HasCompactSupport (q l) := by
+    intro l
+    rw [hq_eq l]
+    exact ((hg_supp l).fderiv (𝕜 := ℝ)).comp_left (g := fun L : Euclid d →L[ℝ] ℝ => L (-(e l)))
+      (by simp)
+  -- for Lipschitz `v`, `∫ Dv[Ψ] = Σₗ ∫ Dv[eₗ] Ψₗ = Σₗ ∫ qₗ v` (Rademacher, integration by parts)
+  have hsum : ∀ (v : Euclid d → ℝ) (C : NNReal), LipschitzWith C v →
+      ∫ y, fderiv ℝ v y (Ψ y) = ∑ l, ∫ y, q l y * v y := by
+    intro v C hv
+    have h1 : (fun y => fderiv ℝ v y (Ψ y)) = fun y => ∑ l, fderiv ℝ v y (e l) * g l y := by
+      funext y
+      exact hdecomp _ _
+    rw [h1, integral_finsetSum]
+    · refine Finset.sum_congr rfl fun l _ => ?_
+      obtain ⟨D, hD⟩ := (hg_smooth l).lipschitzWith_of_hasCompactSupport (hg_supp l) one_ne_zero
+      rw [← hv.integral_lineDeriv_mul_eq hD (hg_supp l) (e l)]
+      apply integral_congr_ae
+      filter_upwards [hv.ae_differentiableAt] with y hy
+      rw [hy.lineDeriv_eq_fderiv]
+    · intro l _
+      have hgi : Integrable (g l) :=
+        (hg_smooth l).continuous.integrable_of_hasCompactSupport (hg_supp l)
+      refine Integrable.bdd_mul (c := C * ‖e l‖) hgi
+        (measurable_fderiv_apply_const ℝ v (e l)).aestronglyMeasurable
+        (Eventually.of_forall fun y => ?_)
+      exact (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hv) (norm_nonneg _))
+  rw [hsum u K hu]
+  have hk : (fun k => ∫ y, fderiv ℝ (us k) y (Ψ y)) = fun k => ∑ l, ∫ y, q l y * us k y := by
+    funext k
+    exact hsum (us k) K (hus k)
+  rw [hk]
+  -- dominated convergence for each `∫ qₗ uₖ`, with bound `|qₗ| (|u| + 1)`
+  refine tendsto_finsetSum _ fun l _ => ?_
+  apply tendsto_integral_filter_of_dominated_convergence (fun y => ‖q l y‖ * (‖u y‖ + 1))
+  · exact Eventually.of_forall fun k => ((hq_cont l).mul (hus k).continuous).aestronglyMeasurable
+  · rw [Metric.tendstoUniformly_iff] at hU
+    filter_upwards [hU 1 one_pos] with k hk
+    refine Eventually.of_forall fun y => ?_
+    rw [norm_mul]
+    gcongr
+    have h1 := hk y
+    rw [dist_eq_norm] at h1
+    have h2 : ‖us k y‖ ≤ ‖u y‖ + ‖u y - us k y‖ := by
+      have := norm_sub_norm_le (us k y) (u y)
+      rw [norm_sub_rev] at this
+      linarith
+    linarith
+  · exact ((hq_cont l).norm.mul (hu.continuous.norm.add continuous_const))
+      |>.integrable_of_hasCompactSupport (hq_supp l).norm.mul_right
+  · exact Eventually.of_forall fun y => ((hU.tendsto_at y).const_mul (q l y))
+
+/-- **Weak convergence of derivatives against `L¹` fields.**  If the `uₖ : ℝᵈ → ℝ` are
+`K`-Lipschitz and converge uniformly to `u`, then `∫ Duₖ[Φ] → ∫ Du[Φ]` for every integrable
+`Φ : ℝᵈ → ℝᵈ`.  The limit `u` is `K`-Lipschitz, and for `K`-Lipschitz `v` and integrable `Θ` the
+field `Dv[Θ]` is integrable with `|∫ Dv[Θ]| ≤ K ∫ |Θ|`.  Given `ε > 0`, take a `C¹` compactly
+supported `Ψ` with `∫ |Φ - Ψ| ≤ ε/(4K + 1)`: such fields are dense in `L¹`, as each `c 1_s` with
+`|s| < ∞` is approximated by `f c`, `f` a smooth Urysohn function for a compact `L ⊆ s` inside an
+open `W ⊇ s` with `|W \ L|` small.  Then `|∫ Dv[Φ] - ∫ Dv[Ψ]| ≤ ε/4` for `v = uₖ, u`, and
+`∫ Duₖ[Ψ] → ∫ Du[Ψ]` by `dor_lmbsf_pwl_fderiv_weak_smooth`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_weak_integrable : ∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Φ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → Integrable Φ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Φ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Φ y))) := by
+  intro d K us u Φ hus hU hΦ
+  -- the uniform limit `u` is `K`-Lipschitz
+  have hu : LipschitzWith K u := LipschitzWith.of_dist_le_mul fun x z =>
+    le_of_tendsto ((hU.tendsto_at x).dist (hU.tendsto_at z))
+      (Eventually.of_forall fun k => (hus k).dist_le_mul x z)
+  -- `‖Dv‖ ≤ K` for `K`-Lipschitz `v`, so `Dv[Θ]` is integrable and `|∫ Dv[Θ]| ≤ K ∫ |Θ|`
+  have hbound : ∀ v : Euclid d → ℝ, LipschitzWith K v → ∀ Θ : Euclid d → Euclid d,
+      Integrable Θ → Integrable (fun y => fderiv ℝ v y (Θ y)) ∧
+        ‖∫ y, fderiv ℝ v y (Θ y)‖ ≤ K * ∫ y, ‖Θ y‖ := by
+    intro v hv Θ hΘ
+    have hmeas : AEStronglyMeasurable (fun y => fderiv ℝ v y (Θ y)) volume :=
+      Continuous.comp_aestronglyMeasurable
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Euclid d) (F := ℝ)).continuous
+        ((measurable_fderiv ℝ v).aestronglyMeasurable.prodMk hΘ.aestronglyMeasurable)
+    have hle : ∀ y, ‖fderiv ℝ v y (Θ y)‖ ≤ K * ‖Θ y‖ := fun y =>
+      (ContinuousLinearMap.le_opNorm _ _).trans
+        (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hv) (norm_nonneg _))
+    refine ⟨(hΘ.norm.const_mul K).mono' hmeas (Eventually.of_forall hle), ?_⟩
+    calc ‖∫ y, fderiv ℝ v y (Θ y)‖ ≤ ∫ y, (K : ℝ) * ‖Θ y‖ :=
+          norm_integral_le_of_norm_le (hΘ.norm.const_mul K) (Eventually.of_forall hle)
+      _ = K * ∫ y, ‖Θ y‖ := integral_const_mul _ _
+  -- `C¹` compactly supported fields are dense in `L¹`.  By `MemLp.induction_dense` it suffices to
+  -- approximate `c 1_s` for `s` of finite measure: take a compact `L ⊆ s` and an open `W ⊇ s` with
+  -- `|W \ L| < δ/|c|`, and a smooth `f : ℝᵈ → [0, 1]` with `f = 1` on `L` and support
+  -- `W ∩ B_R(0) ⊇ L`; then `|f c - c 1_s| ≤ |c| 1_{W \ L}`.
+  have hdense : ∀ ε : ℝ≥0∞, ε ≠ 0 → ∃ Ψ : Euclid d → Euclid d,
+      eLpNorm (Φ - Ψ) 1 volume ≤ ε ∧ ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ := by
+    intro ε hε
+    refine (memLp_one_iff_integrable.2 hΦ).induction_dense ENNReal.one_ne_top
+      (fun Ψ => ContDiff ℝ 1 Ψ ∧ HasCompactSupport Ψ) ?_ ?_ hε
+    · intro c s hs hμs δ hδ
+      rcases eq_or_ne c 0 with rfl | hc
+      · exact ⟨0, by simp, contDiff_const, HasCompactSupport.zero⟩
+      have hc0 : ‖c‖ₑ ≠ 0 := enorm_ne_zero.2 hc
+      have hη : δ / ‖c‖ₑ / 2 ≠ 0 := by simp [ENNReal.div_eq_zero_iff, hδ]
+      obtain ⟨W, hsW, hWo, -, hW⟩ := hs.exists_isOpen_sdiff_lt hμs.ne hη
+      obtain ⟨L, hLs, hLc, hL⟩ := hs.exists_isCompact_sdiff_lt hμs.ne hη
+      obtain ⟨R, hR⟩ := hLc.isBounded.subset_ball 0
+      obtain ⟨f, hfs, hf01, hfsupp, hf1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+        (hWo.inter isOpen_ball) hLc.isClosed (subset_inter (hLs.trans hsW) hR)
+      have hf0 : ∀ x, x ∉ W ∩ ball 0 R → f x = 0 := fun x hx =>
+        notMem_support.1 (hfsupp.symm ▸ hx)
+      refine ⟨fun x => f x • c, ?_, hfs.smul contDiff_const, ?_⟩
+      · have hpt : ∀ x, ‖((fun x => f x • c) - s.indicator fun _ => c) x‖
+            ≤ ‖(W \ L).indicator (fun _ => c) x‖ := by
+          intro x
+          obtain ⟨hfx0, hfx1⟩ := hf01 (mem_range_self x)
+          by_cases hxs : x ∈ s
+          · by_cases hxL : x ∈ L
+            · simp [indicator_of_mem hxs, (hf1 x).1 hxL]
+            · rw [Pi.sub_apply, indicator_of_mem hxs,
+                indicator_of_mem (mem_sdiff_of_mem (hsW hxs) hxL),
+                show f x • c - c = (f x - 1) • c by rw [sub_smul, one_smul], norm_smul,
+                Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+              exact mul_le_of_le_one_left (norm_nonneg _) (by linarith)
+          · by_cases hxW : x ∈ W
+            · rw [Pi.sub_apply, indicator_of_notMem hxs,
+                indicator_of_mem (mem_sdiff_of_mem hxW fun h => hxs (hLs h)), sub_zero, norm_smul,
+                Real.norm_eq_abs, abs_of_nonneg hfx0]
+              exact mul_le_of_le_one_left (norm_nonneg _) hfx1
+            · simp [indicator_of_notMem hxs, hf0 x fun h => hxW h.1]
+        have hWL : volume (W \ L) ≤ δ / ‖c‖ₑ := by
+          calc volume (W \ L) ≤ volume ((W \ s) ∪ (s \ L)) := measure_mono fun x hx => by
+                by_cases h : x ∈ s
+                · exact Or.inr ⟨h, hx.2⟩
+                · exact Or.inl ⟨hx.1, h⟩
+            _ ≤ volume (W \ s) + volume (s \ L) := measure_union_le _ _
+            _ ≤ δ / ‖c‖ₑ / 2 + δ / ‖c‖ₑ / 2 := add_le_add hW.le hL.le
+            _ = δ / ‖c‖ₑ := ENNReal.add_halves _
+        calc eLpNorm ((fun x => f x • c) - s.indicator fun _ => c) 1 volume
+            ≤ eLpNorm ((W \ L).indicator fun _ => c) 1 volume :=
+              eLpNorm_mono ((hfs.continuous.smul continuous_const).aestronglyMeasurable.sub
+                (aestronglyMeasurable_const.indicator hs)) hpt
+          _ ≤ ‖c‖ₑ * volume (W \ L) := by
+              simpa using eLpNorm_indicator_const_le c 1
+                (μ := volume) (hWo.measurableSet.diff hLc.measurableSet).nullMeasurableSet
+          _ ≤ ‖c‖ₑ * (δ / ‖c‖ₑ) := by gcongr
+          _ = δ := ENNReal.mul_div_cancel hc0 enorm_ne_top
+      · refine HasCompactSupport.intro (isCompact_closedBall 0 R) fun x hx => ?_
+        rw [hf0 x fun h => hx (ball_subset_closedBall h.2), zero_smul]
+    · rintro f g ⟨hf, hf'⟩ ⟨hg, hg'⟩
+      exact ⟨hf.add hg, hf'.add hg'⟩
+  refine Metric.tendsto_atTop.2 fun ε hε => ?_
+  -- a `C¹` compactly supported `Ψ` with `∫ |Φ - Ψ| ≤ η`, where `Kη ≤ ε/4`
+  set η : ℝ := ε / (4 * K + 1) with hη
+  have hηpos : 0 < η := div_pos hε (by positivity)
+  have hKη : (K : ℝ) * η ≤ ε / 4 := by
+    rw [hη, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [K.2]
+  obtain ⟨Ψ, hΨε, hΨs, hΨc⟩ := hdense (ENNReal.ofReal η) (ENNReal.ofReal_pos.2 hηpos).ne'
+  have hΨi : Integrable Ψ := hΨs.continuous.integrable_of_hasCompactSupport hΨc
+  have hdiff : ∫ y, ‖(Φ - Ψ) y‖ ≤ η := by
+    rw [integral_norm_eq_lintegral_enorm (hΦ.sub hΨi).aestronglyMeasurable,
+      ← eLpNorm_one_eq_lintegral_enorm (hΦ.sub hΨi).aestronglyMeasurable]
+    exact ENNReal.toReal_le_of_le_ofReal hηpos.le hΨε
+  -- replacing `Φ` by `Ψ` moves `∫ Dv[Φ]` by at most `Kη ≤ ε/4`
+  have hclose : ∀ v : Euclid d → ℝ, LipschitzWith K v →
+      dist (∫ y, fderiv ℝ v y (Φ y)) (∫ y, fderiv ℝ v y (Ψ y)) ≤ ε / 4 := by
+    intro v hv
+    rw [dist_eq_norm, ← integral_sub (hbound v hv Φ hΦ).1 (hbound v hv Ψ hΨi).1]
+    calc ‖∫ y, (fderiv ℝ v y (Φ y) - fderiv ℝ v y (Ψ y))‖
+        = ‖∫ y, fderiv ℝ v y ((Φ - Ψ) y)‖ := by simp only [Pi.sub_apply, map_sub]
+      _ ≤ K * ∫ y, ‖(Φ - Ψ) y‖ := (hbound v hv (Φ - Ψ) (hΦ.sub hΨi)).2
+      _ ≤ K * η := mul_le_mul_of_nonneg_left hdiff K.2
+      _ ≤ ε / 4 := hKη
+  -- `∫ Duₖ[Ψ] → ∫ Du[Ψ]` for the `C¹` compactly supported field `Ψ`
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1
+    (Submission.dor_lmbsf_pwl_fderiv_weak_smooth d K us u Ψ hus hU hΨs hΨc) (ε / 2) (half_pos hε)
+  refine ⟨N, fun k hk => ?_⟩
+  have h1 := hclose (us k) (hus k)
+  have h2 : dist (∫ y, fderiv ℝ (us k) y (Ψ y)) (∫ y, fderiv ℝ u y (Ψ y)) < ε / 2 := hN k hk
+  have h3 := hclose u hu
+  rw [dist_comm] at h3
+  linarith [dist_triangle4 (∫ y, fderiv ℝ (us k) y (Φ y)) (∫ y, fderiv ℝ (us k) y (Ψ y))
+    (∫ y, fderiv ℝ u y (Ψ y)) (∫ y, fderiv ℝ u y (Φ y))]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,127 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent Step 9 (a)–(c) and (e), and Step 0; Simon Ch. 6, proof of Lemma 4.5(2), displays (1)–(4) (chapter-06.txt lines 1235–1300). Fix ω ∈ 𝒟ⁿ(U) and a < b. Put γ := γ_{a,b}, h := γ∘f and K := tsupport ω (compact, K ⊆ U).
+
+0. Preliminaries.
+ (a) Orientation a.e. By the field `orients` of RT and uniqueness of approximate tangent spaces (Ch. 3, Remark 1.5(1); HasApproximateTangentSpaceAt.unique), for H^{n+1}-a.e. x ∈ M, ξ(x) is a unit orientation of T_xM: the space Q given by `orients` equals approxTangentPlane (n+1) M x. Likewise for RB.
+ (b) Unit orientations have norm ≤ 1. If ζ is a unit orientation of a k-dimensional subspace (orthonormal τ), then |ζ(α)| = |α(τ)| ≤ ‖α‖ ∏|τ_i| = ‖α‖ (ContinuousMultilinearMap.le_opNorm).
+ (c) Mass bounds. θ ≥ 1 on M and ∫_{M∩K'} θ dH^{n+1} < ∞ for compact K' ⊆ U (locallyIntegrable_mult). Same for RB.
+ (d) Integrability. If β is a continuous k-form with tsupport β ⊆ K' (compact ⊆ U), then x ↦ θ(x)ξ(x)(β(x)) is H^{n+1}⌞M-integrable, bounded by sup‖β‖·θ1_{K'} a.e. It is a.e. strongly measurable because ξ is, β is continuous, and evaluation is continuous bilinear. Same for RB with k = n.
+ (e) Strongly measurable version. ξ is a.e. strongly measurable for H^{n+1}⌞M (field aestronglyMeasurable_orient). Let ξ₁ := RT.aestronglyMeasurable_orient.mk, a strongly measurable map with ξ₁ = ξ H^{n+1}-a.e. on M. Put ξ₀(x) := ξ₁(x) if ‖ξ₁(x)‖ ≤ 1 and ξ₀(x) := 0 otherwise. {‖ξ₁‖ ≤ 1} is measurable, so ξ₀ is strongly measurable (StronglyMeasurable.piecewise). By (a) and (b), ξ₀ = ξ H^{n+1}-a.e. on M, and ‖ξ₀(x)‖ ≤ 1 for all x.
+ [Formalization note: MultiVector P k = (Covector (Euclid P) k →L[ℝ] ℝ) has a Borel σ-algebra, but SecondCountableTopology/FiniteDimensional instances are not synthesized automatically. So work with StronglyMeasurable maps and their compositions with continuous (bi)linear maps (Continuous.comp_stronglyMeasurable, StronglyMeasurable.prodMk), not with “Borel ⇒ strongly measurable”. Real-, ℝ^P- or [0,∞]-valued strongly measurable maps are measurable (.measurable).]
+ [Lean construction hints:
+ - Write RT.aestronglyMeasurable_orient.mk RT.orient (mk takes the function explicitly).
+ - Norms of MultiVector-valued maps may need explicit types, e.g. StronglyMeasurable.norm (β := MultiVector P (n+1)).
+ - Nested continuous-linear-map types over Covector may fail instance synthesis. So build α ↦ v♭∧α as a continuous linear map with LinearMap.mkContinuous, or via ContinuousAlternatingMap.alternatizeUncurryFinCLM. Get the bound from norm_alternatizeUncurryFin_le, and get joint continuity in (v, α) and (ζ, v) from isBoundedBilinearMap_comp, isBoundedBilinearMap_smulRight and isBoundedBilinearMap_apply.]
+
+1. Mollified cut-offs. h takes values in [0, 1] and is (L/(b − a))-Lipschitz. Let ρ be a smooth mollifier (C^∞, ≥ 0, ∫ρ = 1, spt ρ ⊆ B_1(0)), ρ_δ := δ^{−P}ρ(·/δ), δ_k := 1/(k+1), and h_k := h ∗ ρ_{δ_k}. Then:
+ - h_k is C^∞, in particular C¹;
+ - 0 ≤ h_k ≤ 1;
+ - h_k is (L/(b − a))-Lipschitz (average of translates of h), so ‖Dh_k(x)‖ ≤ L/(b − a);
+ - |h_k(x) − h(x)| ≤ ∫ρ_{δ_k}(z)|h(x − z) − h(x)|dz ≤ (L/(b − a))δ_k, so h_k → h uniformly on ℝ^P.
+
+2. Leibniz identity for smooth cut-offs.
+ - h_kω is C^∞ with tsupport(h_kω) ⊆ K ⊆ U and compact support, so h_kω ∈ 𝒟ⁿ(U).
+ - By the product rule, fderiv(h_k•ω)(x) = Dh_k(x).smulRight ω(x) + h_k(x)•Dω(x). By linearity of alternatizeUncurryFin, d(h_kω) = dh_k∧ω + h_k dω, where dh_k∧ω := alternatizeUncurryFin(Dh_k(x).smulRight ω(x)) and exteriorDerivative = extDeriv = alternatizeUncurryFin ∘ fderiv.
+ - RB represents ∂T, ∂T(η) = T(dη), and RT represents T. All three integrands are integrable by 0(d). Hence
+ (i) ∫_{M'} θ' h_k ξ'(ω) dHⁿ = RB.action(h_kω) = T(d(h_kω)) = ∫_M θ ξ(dh_k∧ω) dH^{n+1} + ∫_M θ h_k ξ(dω) dH^{n+1}.
+
+3. Outer terms. h_k → h pointwise, |θ'h_kξ'(ω)| ≤ θ'|ξ'(ω)| (integrable on M') and |θh_kξ(dω)| ≤ θ|ξ(dω)| (integrable on M). By dominated convergence,
+ ∫_{M'} θ'h_kξ'(ω) → ∫_{M'} θ'hξ'(ω) and ∫_M θh_kξ(dω) → ∫_M θhξ(dω).
+
+4. The middle term (Simon's display (3)). Let e_1, …, e_P be the standard basis and
+ Ṽ(x) := Σ_{l=1}^{P} ξ₀(x)(e_l♭∧ω(x)) e_l.
+ - Ṽ is measurable: each coefficient x ↦ ξ₀(x)(e_l♭∧ω(x)) is strongly measurable, as continuous bilinear evaluation applied to the strongly measurable ξ₀ and the continuous x ↦ e_l♭∧ω(x). Ṽ vanishes outside K, since ω = 0 there.
+ - |Ṽ(x)| ≤ Σ_l ‖e_l♭∧ω(x)‖ ≤ P(n+1) sup‖ω‖ =: c', using ‖β∧α‖ ≤ (n+1)‖β‖‖α‖ from the alternating-sum formula.
+ (a) Linear algebra. Every 1-covector β satisfies β = Σ_l β(e_l) e_l♭, and β ↦ β∧α is linear. Hence for every x, ξ₀(x)(β∧ω(x)) = Σ_l β(e_l) ξ₀(x)(e_l♭∧ω(x)) = β(Ṽ(x)).
+ (b) Tangency. Ṽ(x) ∈ T_xM for H^{n+1}-a.e. x ∈ M. Take x with ξ₀(x) = ξ(x) a unit orientation of Q := T_xM, given by an orthonormal basis τ of Q (0(a), (e)). If β vanishes on Q, then ξ(x)(β∧ω(x)) = ±Σ_i (−1)^i β(τ_i)(…) = 0. So by (a), ⟨v, Ṽ(x)⟩ = 0 for every v ∈ Q^⊥ (take β = ⟨v, ·⟩), i.e. Ṽ(x) ∈ Q^⊥⊥ = Q.
+ (c) By (a) with β = Dh_k(x), and ξ = ξ₀ a.e. on M: ξ(x)(dh_k(x)∧ω(x)) = Dh_k(x)[Ṽ(x)] for H^{n+1}-a.e. x ∈ M.
+ (d) Apply (G5) with this a < b, the sequence h_k (step 1, c := L/(b − a)), W := Ṽ, K and c'. It gives
+ ∫_M θ ξ(dh_k∧ω) dH^{n+1} = ∫_M θ Dh_k[Ṽ] dH^{n+1} → ∫_{M∩{a<f<b}} θ·(−(b − a)⁻¹⟨g, Ṽ⟩) dH^{n+1}.
+ (e) By (a) with β = g(x)♭ = innerSL ℝ g(x): ⟨g(x), Ṽ(x)⟩ = ξ₀(x)(g(x)♭∧ω(x)) = ξ(x)(g(x)♭∧ω(x)) for a.e. x ∈ M. Pulling out the constant, the limit in (d) equals −(b − a)⁻¹∫_{M∩{a<f<b}} θ ξ(g♭∧ω) dH^{n+1}.
+
+5. Passing to the limit (Simon's display after (4), with t = b and ε = b − a). Let k → ∞ in (i) and use steps 3 and 4. Uniqueness of limits gives
+ ∫_{M'} θ' h ξ'(ω) dHⁿ = −(b − a)⁻¹∫_{M∩{a<f<b}} θ ξ(g♭∧ω) dH^{n+1} + ∫_M θ h ξ(dω) dH^{n+1}.
+ Since h(x) = γ(f(x)) = min{1, max{0, (b − f(x))/(b − a)}}, this is the claimed identity, after rearranging the multiplications inside the integrands. ∎
+
+## Key steps
+
+1. Preliminaries: ξ orients T_xM a.e., unit orientations have norm ≤ 1, integrability of θξ(β), and a strongly measurable version ξ₀ (from aestronglyMeasurable_orient.mk) with ‖ξ₀‖ ≤ 1.
+2. Mollify h = γ∘f: h_k smooth, 0 ≤ h_k ≤ 1, ‖Dh_k‖ ≤ L/(b − a), h_k → h uniformly.
+3. Leibniz: d(h_kω) = dh_k∧ω + h_k dω, and ∂T(h_kω) = T(d(h_kω)) gives identity (i).
+4. Dominated convergence for the two outer terms.
+5. ξ(dh_k∧ω) = Dh_k[Ṽ] with the bounded, compactly supported, a.e. tangent field Ṽ = Σ_l ξ₀(e_l♭∧ω)e_l.
+6. (G5) gives the limit of the middle term, and ⟨g, Ṽ⟩ = ξ(g♭∧ω) a.e.
+7. Pass to the limit in (i) to get the identity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I transitive import scan of the Contract's Poincare.SimonGMT imports (public import ...)`
+- `grep -n '^theorem |^def ' simongmt Chapter03/Rectifiable.lean, Chapter02/{AreaFormula,WeightedArea,AreaCritical,AreaLipschitz,AreaDomain,CoareaProjection,CoareaLinear,WhitneyExtension,WhitneyJet,Lipschitz}.lean, Chapter03/{SubmanifoldCover,DisjointCover,Differential}.lean, Chapter06/{Forms,Currents}.lean`
+- `grep -rn 'HasApproximateTangentSpaceAt.unique|exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility|area_image_criticalSet_eq_zero|integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|map_withDensity_areaJacobian_eq|integrableOn_image_iff_integrableOn_areaJacobian_smul|exists_isClosed_continuousOn_of_measurable|countablyRectifiable_iUnion' simongmt`
+- `grep -rn 'ae_tendsto_measure_inter_div_of_measurableSet|LipschitzWith.integral_lineDeriv_mul_eq|Lp.dense_hasCompactSupport_contDiff|tendsto_tsum_of_dominated_convergence|alternatizeUncurryFin_apply|AlternatingMap.eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|volume_preserving_piFinSuccAbove|PiLp.volume_preserving_ofLp|Measurable.lintegral_prod_right|exists_cthickening_subset_open|tendstoUniformlyOn_of_ae_tendsto|euclideanHausdorffMeasure_eq_volume|norm_alternatizeUncurryFin_le' mathlib`
+- `#check probes in contract scope: ContinuousAlternatingMap.alternatizeUncurryFin, innerSL, ContinuousLinearMap.smulRight, (ℝ ∙ v)ᗮ, ‖v‖ₑ, GeometricCurrentOn.boundary, exists_measurable_superset_of_null`
+- `dag.json scans: regex 'co-?area|area formula|Rademacher|tangential gradient|C¹ approx|Lusin|Jacobian|implicit function' over node statements; lean_name collision check for dor_lmbsf_* (1022 nodes, none)`
+- `git grep dor_lmbsf_ over all local branches (no match)`
+- `python3 -I verifier lean_contract.validate_lean_statement and gmt-compare.child_modules on the 12 statements; lake env lean /tmp/dor-sf-decomp/v2/All.lean (#print axioms DorSf.parent_from_children)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dor-sf-decomp/v2/All.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and the snapshot mathlib matches the package tree.
+
+No existing declaration states a rectifiable co-area formula, a tangential gradient of a Lipschitz function, a slice family or the Lipschitz-cut-off Leibniz limit. Related nodes in other branches are unaccepted, reserved and have different types:
+- codim1_rdo_c1_approximation;
+- codim1_rdo_c1_piece_approxTangent;
+- codim1_lur_rectifiable_area_formula;
+- dimred_cs_sos_spine_coarea.
+So all 12 children get fresh dor_lmbsf_ names.
+
+Reusable library facts for the child proofs:
+- SimonGMT Chapter02: injective area formulas in lintegral, Bochner and measure form (WeightedArea, AreaFormula); critical images null (AreaCritical); Whitney C¹ extension (WhitneyExtension/WhitneyJet); Rademacher and Lipschitz images (Lipschitz).
+- SimonGMT Chapter01.Lusin.
+- SimonGMT Chapter03: HasApproximateTangentSpaceAt.unique, countablyRectifiable_iUnion.
+- Mathlib: Besicovitch density theorem, LipschitzWith.integral_lineDeriv_mul_eq, Lp.dense_hasCompactSupport_contDiff, Tannery's theorem, alternatizeUncurryFin_apply, volume-preserving coordinate splits.
+- Some of these need extra imports, which are listed in the child proofs.
+
+Lean checks:
+- All 12 child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- The Lean assembly of the exact frozen parent type from tangential_gradient, slice_imreps and lipschitz_leibniz compiles with only propext, Classical.choice and Quot.sound.
+- Interface checks (chart_pieces → piece lemmas; Besicovitch → density_directions) compile.
+- MultiVector lacks SecondCountable/FiniteDimensional instance synthesis, so the child proofs use StronglyMeasurable compositions.
