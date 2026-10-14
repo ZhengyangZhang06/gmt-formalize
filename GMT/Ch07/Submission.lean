@@ -1876,6 +1876,147 @@ theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Eucli
   rw [ho, NNReal.smul_def, smul_eq_mul]
   norm_cast
 
+/-- **Truncation at a good radius** (Simon Ch. 6, 2.9, 3.2 and the slice bound 4.6–4.10).  Let
+`S = τ(M, θ, ξ)` in the open `U` with weight `μ`, `∂S = 0` in `B_s ⊆ U`, `0 < ρ < s`, and
+`A(ω) = ∫_{B_ρ} ⟨ω, ξ⟩ dμ` with `M_{B_s}(∂A) < ∞`.  Then `Ŝ = τ(M ∩ B_ρ, θ, ξ)`, read as a
+current in `ℝᴾ`, has weight `μ⌞B_ρ` and agrees with `S` on forms supported in `B_ρ`, so `∂Ŝ = 0`
+there.  For `|β| ≤ 1` and a bump `χ` with `χ = 1` near `B̄_ρ` and `spt χ ⊆ B_s`, the forms `dβ`
+and `d(χβ)` agree on `B_ρ`, so `∂Ŝ(β) = ∂A(χβ) ≤ M_{B_s}(∂A)` (6.2.5); hence
+`M(∂Ŝ) ≤ M_{B_s}(∂A)`. -/
+theorem Submission.dimred_mbl_tc_truncate_at_good_radius : ∀ (P m : ℕ) (U : Set (Euclid P)) (S A : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (ρ s : ℝ), IsOpen U → R.Represents S → (∀ β : TestFormOn U m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 s → S.boundary β = 0) → 0 < ρ → ρ < s → ball (0 : Euclid P) s ⊆ U → (∀ ω : TestFormOn U (m + 1), A ω = ∫ x in ball (0 : Euclid P) ρ, R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂R.measure) → A.boundary.massOn (ball 0 s) ≠ ∞ → ∃ (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R' : IMRep (univ : Set (Euclid P)) (m + 1)), R'.Represents Ŝ ∧ R'.measure = R.measure.restrict (ball 0 ρ) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ → Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1))) ∧ (∀ β : TestFormOn (univ : Set (Euclid P)) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧ Ŝ.boundary.massOn univ ≤ A.boundary.massOn (ball 0 s) := by
+  have hE1 := Submission.cmr_abs_apply_le_massOn
+  have hIMC := Submission.cmc_imRep_locality_restrict_sub
+  have hRS := Submission.lcmp_imRep_measure_restrict
+  intro P m U S A R ρ s hU hSR hSb hρ hρs hsU hA hAfin
+  have hcb : closedBall (0 : Euclid P) ρ ⊆ U := (closedBall_subset_ball hρs).trans hsU
+  -- Step 1: restriction of R to ball 0 ρ, in U
+  obtain ⟨-, R₁, -, hR₁c, hR₁m, hR₁o⟩ := hIMC.2.1 P (m + 1) U R (ball 0 ρ) hU measurableSet_ball
+  -- Step 2: the same data as an IMRep in ℝ^P
+  let R₂ : IMRep (univ : Set (Euclid P)) (m + 1) :=
+    { carrier := R₁.carrier
+      mult := R₁.mult
+      orient := R₁.orient
+      measurableSet_carrier := R₁.measurableSet_carrier
+      carrier_subset := subset_univ _
+      rectifiable := R₁.rectifiable
+      measurable_mult := R₁.measurable_mult
+      mult_pos := R₁.mult_pos
+      locallyIntegrable_mult := fun K _ _ => by
+        refine ne_top_of_le_ne_top
+          (R.locallyIntegrable_mult _ (isCompact_closedBall 0 ρ) hcb) ?_
+        rw [hR₁c, hR₁m]
+        exact lintegral_mono_set (fun x hx => ⟨hx.1.1, ball_subset_closedBall hx.1.2⟩)
+      aestronglyMeasurable_orient := R₁.aestronglyMeasurable_orient
+      orients := R₁.orients }
+  -- Step 3: the current represented in ℝ^P
+  obtain ⟨Ŝ, R', hR'rep, hR'c, hR'm, hR'o⟩ :=
+    hIMC.2.1 P (m + 1) univ R₂ univ isOpen_univ MeasurableSet.univ
+  -- Step 4: weight and action
+  obtain ⟨-, -, hrestr⟩ := hRS P (m + 1) U R
+  obtain ⟨hmeas₁, hact₁⟩ := hrestr (ball 0 ρ) R₁ measurableSet_ball hR₁c hR₁m hR₁o
+  have hR'meas : R'.measure = R.measure.restrict (ball 0 ρ) := by
+    rw [← hmeas₁]
+    unfold IMRep.measure
+    rw [hR'c, hR'm, inter_univ]
+  have hact : ∀ ω : DifferentialForm (Euclid P) (m + 1),
+      R'.action ω = ∫ x in ball (0 : Euclid P) ρ, R.orient x (ω x) ∂R.measure := by
+    intro ω
+    rw [← hact₁ ω]
+    unfold IMRep.action
+    rw [hR'c, hR'm, hR'o, inter_univ]
+  have hŜ : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Ŝ ω = ∫ x in ball (0 : Euclid P) ρ,
+        R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂R.measure := fun ω => by
+    rw [hR'rep ω, hact]
+  -- Step 5: agreement
+  have hagree : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ →
+        Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1)) := by
+    intro ω hω
+    have hωU : IsTestForm (ω : DifferentialForm (Euclid P) (m + 1)) ∧
+        tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ U :=
+      ⟨ω.property.1, hω.trans (ball_subset_closedBall.trans hcb)⟩
+    rw [currentEval, dite_eq_left hωU, hSR, hŜ,
+      (hrestr univ R MeasurableSet.univ (by simp) rfl rfl).2, Measure.restrict_univ]
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => ?_)
+    show R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) = 0
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hω h)), map_zero]
+  -- Step 6: vanishing boundary inside
+  have hbdry : ∀ β : TestFormOn (univ : Set (Euclid P)) m,
+      tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0 := by
+    intro β hβ
+    have hdβ : tsupport (exteriorDerivative (β : DifferentialForm (Euclid P) m)) ⊆ ball 0 ρ :=
+      (tsupport_exteriorDerivative_subset _).trans hβ
+    have hβU : (β : DifferentialForm (Euclid P) m) ∈ TestFormOn U m :=
+      ⟨β.property.1, hβ.trans (ball_subset_closedBall.trans hcb)⟩
+    rw [GeometricCurrentOn.boundary_apply, hagree _ hdβ]
+    have hdU : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) m)) ∧
+        tsupport (exteriorDerivative (β : DifferentialForm (Euclid P) m)) ⊆ U :=
+      ⟨exteriorDerivative_isTestForm β.property.1,
+        hdβ.trans (ball_subset_closedBall.trans hcb)⟩
+    have := hSb ⟨_, hβU⟩ (hβ.trans (ball_subset_ball hρs.le))
+    rw [GeometricCurrentOn.boundary_apply] at this
+    show currentEval S (exteriorDerivative (β : DifferentialForm (Euclid P) m)) = 0
+    rw [currentEval, dite_eq_left hdU]
+    exact this
+  -- Step 7: cutoff
+  have hmid : ρ < (ρ + s) / 2 := by linarith
+  let χ : ContDiffBump (0 : Euclid P) := ⟨ρ, (ρ + s) / 2, hρ, hmid⟩
+  have hχsupp : tsupport (χ : Euclid P → ℝ) ⊆ ball 0 s := by
+    rw [χ.tsupport_eq]
+    exact closedBall_subset_ball (by show (ρ + s) / 2 < s; linarith)
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) m),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl (fun I _ => ?_)
+    split_ifs <;> simp [ContinuousAlternatingMap.smul_apply, mul_pow]
+  -- Step 8: boundary mass
+  have hmass : Ŝ.boundary.massOn univ ≤ A.boundary.massOn (ball 0 s) := by
+    unfold GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro _ ⟨β, hβ, rfl⟩
+    show ENNReal.ofReal (Ŝ.boundary β) ≤ _
+    set b : DifferentialForm (Euclid P) m := (β : DifferentialForm (Euclid P) m)
+    let γ : DifferentialForm (Euclid P) m := fun x => (χ x) • b x
+    have hγtest : IsTestForm γ := by
+      refine ⟨?_, ?_⟩
+      · exact (χ.contDiff).smul β.property.1.1
+      · exact χ.hasCompactSupport.smul_right
+    have hγsupp : tsupport γ ⊆ ball 0 s :=
+      (tsupport_smul_subset_left (fun x => χ x) b).trans hχsupp
+    have hγU : γ ∈ TestFormOn U m := ⟨hγtest, hγsupp.trans hsU⟩
+    have hγnorm : ∀ x, covectorEuclideanNorm (γ x) ≤ 1 := by
+      intro x
+      show covectorEuclideanNorm (χ x • b x) ≤ 1
+      rw [hsmul, abs_of_nonneg (χ.nonneg)]
+      calc χ x * covectorEuclideanNorm (b x) ≤ 1 * 1 :=
+            mul_le_mul χ.le_one (hβ.2 x) (covectorEuclideanNorm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    have hloc : ∀ x ∈ ball (0 : Euclid P) ρ, exteriorDerivative b x = exteriorDerivative γ x := by
+      intro x hx
+      have h1 : (χ : Euclid P → ℝ) =ᶠ[𝓝 x] 1 := χ.eventuallyEq_one_of_mem_ball hx
+      have h2 : b =ᶠ[𝓝 x] γ := by
+        filter_upwards [h1] with y hy
+        show b y = χ y • b y
+        rw [hy]; simp
+      exact h2.extDeriv_eq
+    have hkey : Ŝ.boundary β = A.boundary ⟨γ, hγU⟩ := by
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hŜ, hA]
+      refine setIntegral_congr_fun measurableSet_ball (fun x hx => ?_)
+      show R.orient x (exteriorDerivative b x) = R.orient x (exteriorDerivative γ x)
+      rw [hloc x hx]
+    have hle := hE1 P m U (ball 0 s) A.boundary ⟨γ, hγU⟩ 1 hAfin hγsupp hγnorm
+    rw [one_mul] at hle
+    rw [hkey]
+    calc ENNReal.ofReal (A.boundary ⟨γ, hγU⟩)
+        ≤ ENNReal.ofReal (A.boundary.massOn (ball 0 s)).toReal :=
+          ENNReal.ofReal_le_ofReal ((le_abs_self _).trans hle)
+      _ = A.boundary.massOn (ball 0 s) := ENNReal.ofReal_toReal hAfin
+  exact ⟨Ŝ, R', hR'rep, hR'meas, hagree, hbdry, hmass⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
