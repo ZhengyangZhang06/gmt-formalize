@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b7cae915b0df11e0030ca95bd1c2a27d3c3e49d34d1643baa9ec712319e3e47e",
+  "git_delta": {
+    "base_commit": "e6b5cb48b16509da81addb9af62f02955a51b799",
+    "candidate_commit": "d28a552484794c1f34a6df26a87e60754db05a98",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "dc1068688fe27fc791603caf3e23976cf23994fb772835a67e865d835fa67f56",
+    "source_sha256": "f6207c3002161f07546b1c31264c0800aedc9d193c0d7c141ce59253c999a9c7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_euclideanHausdorff_le_isodiametric",
+      "statement": "∀ (P n : ℕ), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
