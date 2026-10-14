@@ -1888,6 +1888,57 @@ theorem Submission.idtp_fons_cr_support_limit : ∀ (P n : ℕ) (Λ : ℝ) (μ :
     by_contra h
     exact hx (mem_ball.2 ((hfsupp x h).trans_le h4r))
   linarith
+/-- **Simon 7.3.3, proof of 3.3(2)** (with A.3): for closed `S`, open `D` and `β > 0`, the set of
+points of `S ∩ D` that are not `β`-flat, together with `ℝᴾ ∖ D`, is closed.  Here `w` is `β`-flat
+if `B_ρ(w) ⊆ D` and `sup_{y ∈ S ∩ B_ρ(w)} |q(y − w)| ≤ s < βρ` for some `ρ > 0`, some
+`n`-dimensional `Q` and `q = id − p_Q` (the quantity `h(spt S, L, ρ, x)` of (3)).  Off `S` the open
+set `D ∖ S` misses this set; at a flat `w ∈ S` (so `s ≥ 0`) every `w'` with
+`t = |w' − w| < (βρ − s)/(1 + β)` is flat with witnesses `(ρ − t, Q, s + t)`, since `q` is linear
+and `|q(v)| ≤ |v|`. -/
+theorem Submission.idtp_fons_cr_nonflat_closed : ∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)), 0 < β → IsClosed S → IsOpen Dset → IsClosed (((S ∩ Dset) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ) := by
+  intro P n β S Dset hβ hS hD
+  rw [← isOpen_compl_iff, Metric.isOpen_iff]
+  intro w hw
+  -- a point off the set lies in `D`, and is either off `S` or `β`-flat
+  have hwD : w ∈ Dset := by_contra fun h => hw (Or.inr h)
+  by_cases hwS : w ∈ S
+  · obtain ⟨ρ, hρ, hball, Q, hQ, s, hs, hflat⟩ : ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧
+        ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧
+          ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s :=
+      by_contra fun h => hw (Or.inl ⟨⟨hwS, hwD⟩, h⟩)
+    -- `y = w` gives `s ≥ 0`
+    have hs0 : 0 ≤ s := (norm_nonneg _).trans (hflat w hwS (mem_ball_self hρ))
+    refine ⟨(β * ρ - s) / (1 + β), div_pos (by linarith) (by linarith), fun w' hw' => ?_⟩
+    have ht : (1 + β) * dist w' w < β * ρ - s := by
+      rw [mem_ball, lt_div_iff₀ (by linarith)] at hw'
+      linarith
+    have ht0 : 0 ≤ dist w' w := dist_nonneg
+    have htρ : dist w' w < ρ := by nlinarith
+    -- `B_{ρ − t}(w') ⊆ B_ρ(w) ⊆ D`
+    have hsub : ball w' (ρ - dist w' w) ⊆ ball w ρ := fun z hz => by
+      rw [mem_ball] at hz ⊢
+      linarith [dist_triangle z w' w]
+    rintro (⟨-, hnR⟩ | hnD)
+    · refine hnR ⟨ρ - dist w' w, by linarith, hsub.trans hball, Q, hQ, s + dist w' w,
+        by linarith, fun y hy hyb => ?_⟩
+      -- `q(y − w') = q(y − w) + q(w − w')` and `|q(w − w')| ≤ |w − w'|`
+      have hlin : (y - w') - Q.starProjection (y - w') =
+          ((y - w) - Q.starProjection (y - w)) + ((w - w') - Q.starProjection (w - w')) := by
+        rw [show y - w' = (y - w) + (w - w') by abel, map_add]
+        abel
+      have hq : ‖(w - w') - Q.starProjection (w - w')‖ ≤ dist w' w := by
+        rw [← Submodule.starProjection_orthogonal_val, dist_comm, dist_eq_norm]
+        exact Submodule.norm_starProjection_apply_le _ _
+      rw [hlin]
+      exact (norm_add_le _ _).trans (add_le_add (hflat y hy (hsub hyb)) hq)
+    · exact hnD (hball (mem_ball.2 htρ))
+  · -- off `S`: the open set `D ∖ S` misses the set
+    obtain ⟨ε, hε, hεsub⟩ := Metric.isOpen_iff.1 (hD.inter hS.isOpen_compl) w ⟨hwD, hwS⟩
+    refine ⟨ε, hε, fun w' hw' => ?_⟩
+    obtain ⟨hw'D, hw'S⟩ := hεsub hw'
+    rintro (⟨⟨hw'S', -⟩, -⟩ | hnD)
+    · exact hw'S hw'S'
+    · exact hnD hw'D
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
