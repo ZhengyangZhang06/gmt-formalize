@@ -451,6 +451,58 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **L¹ limit of an affine bound** (step 2 of the BV trace estimate).  If
+`|∫_S v_k h| ≤ A + B ∫_S |v_k|` for all `k`, `B ≥ 0`, `|h| ≤ M` on `S` and `v_k → w` in `L¹(S)`,
+then `|∫_S w h| ≤ A + B ∫_S |w|`: with `ε_k = ∫_S |v_k − w|`,
+`|∫_S w h − ∫_S v_k h| ≤ M ε_k` and `∫_S |v_k| ≤ ∫_S |w| + ε_k`, so
+`|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k` for every `k`; let `k → ∞`. -/
+theorem Submission.cmcdt_cbm_bvt_l1_limit : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (S : Set α) (v : ℕ → α → ℝ) (w h : α → ℝ) (A B M : ℝ), MeasurableSet S → 0 ≤ B → (∀ k, IntegrableOn (v k) S μ) → IntegrableOn w S μ → AEStronglyMeasurable h (μ.restrict S) → (∀ x ∈ S, |h x| ≤ M) → Tendsto (fun k => ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 0) → (∀ k, |∫ x in S, v k x * h x ∂μ| ≤ A + B * ∫ x in S, |v k x| ∂μ) → |∫ x in S, w x * h x ∂μ| ≤ A + B * ∫ x in S, |w x| ∂μ := by
+  intro α _ μ S v w h A B M hS hB hv hw hh hM hlim hbd
+  -- `|h| ≤ M` holds `μ⌞S`-a.e., so `w h` and `v_k h` are integrable on `S`
+  have hMae : ∀ᵐ x ∂(μ.restrict S), ‖h x‖ ≤ M :=
+    (ae_restrict_iff' hS).2 (Eventually.of_forall fun x hx => by
+      rw [Real.norm_eq_abs]
+      exact hM x hx)
+  have hwh : IntegrableOn (fun x => w x * h x) S μ := Integrable.mul_bdd hw hh hMae
+  have hvh : ∀ k, IntegrableOn (fun x => v k x * h x) S μ := fun k =>
+    Integrable.mul_bdd (hv k) hh hMae
+  -- for every `k`: `|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k`
+  have hk : ∀ k, |∫ x in S, w x * h x ∂μ| ≤
+      A + B * (∫ x in S, |w x| ∂μ) + (B + M) * ∫ x in S, |v k x - w x| ∂μ := by
+    intro k
+    -- `|∫_S w h − ∫_S v_k h| ≤ M ε_k`
+    have hdiff : |(∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ| ≤
+        M * ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_sub hwh (hvh k)]
+      calc |∫ x in S, (w x * h x - v k x * h x) ∂μ|
+          ≤ ∫ x in S, |w x * h x - v k x * h x| ∂μ := abs_integral_le_integral_abs
+        _ ≤ ∫ x in S, M * |v k x - w x| ∂μ := by
+          refine integral_mono_ae (hwh.sub (hvh k)).abs (((hv k).sub hw).abs.const_mul M) ?_
+          filter_upwards [hMae] with x hx
+          rw [← sub_mul, abs_mul, abs_sub_comm, mul_comm]
+          exact mul_le_mul_of_nonneg_right (by rwa [Real.norm_eq_abs] at hx) (abs_nonneg _)
+        _ = M * ∫ x in S, |v k x - w x| ∂μ := integral_const_mul M _
+    -- `∫_S |v_k| ≤ ∫_S |w| + ε_k`
+    have hwi : IntegrableOn (fun x => |w x|) S μ := hw.abs
+    have hvwi : IntegrableOn (fun x => |v k x - w x|) S μ := ((hv k).sub hw).abs
+    have hvw : ∫ x in S, |v k x| ∂μ ≤ (∫ x in S, |w x| ∂μ) + ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_add hwi hvwi]
+      refine integral_mono (hv k).abs (hwi.add hvwi) fun x => ?_
+      calc |v k x| = |w x + (v k x - w x)| := by rw [add_sub_cancel]
+        _ ≤ |w x| + |v k x - w x| := abs_add_le _ _
+    have htri : |∫ x in S, w x * h x ∂μ| ≤
+        |∫ x in S, v k x * h x ∂μ| + |(∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ| := by
+      have := abs_add_le (∫ x in S, v k x * h x ∂μ)
+        ((∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ)
+      rwa [add_sub_cancel] at this
+    linarith [hbd k, mul_le_mul_of_nonneg_left hvw hB]
+  -- let `k → ∞`: `ε_k → 0`
+  have hT : Tendsto (fun k => A + B * (∫ x in S, |w x| ∂μ) + (B + M) * ∫ x in S, |v k x - w x| ∂μ)
+      atTop (𝓝 (A + B * (∫ x in S, |w x| ∂μ) + (B + M) * 0)) :=
+    tendsto_const_nhds.add (hlim.const_mul (B + M))
+  rw [mul_zero, add_zero] at hT
+  exact ge_of_tendsto' hT hk
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
