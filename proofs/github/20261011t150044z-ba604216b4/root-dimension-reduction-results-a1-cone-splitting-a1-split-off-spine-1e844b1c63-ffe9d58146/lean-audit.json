@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "949771f3fc308f75875d7d8af6eba6e1998ed6803b4fd9f071150bdf9538ffa7",
+  "git_delta": {
+    "base_commit": "38e836c6a9b8b12757f4c29f371422327c981455",
+    "candidate_commit": "9308923e2e8106fea74e751a64c473fb331ff71b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_frame_box_compact",
+    "diff_sha256": "cdf34306dda06d1acb777418358a2c0ffb068dd62b410ff722cdb449ee0512d4",
+    "source_sha256": "8f467bfab5476ed054d88461de42f378b6d2ceb5722753e3645265e86a6530fd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_frame_box_compact",
+      "statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ), Orthonormal ℝ g → IsCompact {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
