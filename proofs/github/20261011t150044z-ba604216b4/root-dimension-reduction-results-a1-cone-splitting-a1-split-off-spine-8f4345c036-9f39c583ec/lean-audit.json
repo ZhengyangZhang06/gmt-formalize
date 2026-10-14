@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d933ff05aa1301504bbf06371b2920663ec111a422020a4900e50283fc6b32ad",
+  "git_delta": {
+    "base_commit": "0cbdf10abce868c3cd4cc1ce70d580cdc5a51986",
+    "candidate_commit": "cf5b19439c17984f01ca938ab8232f2bd9ac7f84",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated",
+    "diff_sha256": "a04568db099ac9bd4f2ec2fe5a2da9013d1aed17bd7cc3f1ec2c0e8d11e6b1b2",
+    "source_sha256": "560f7a57c305d2bddde3cf307951021282ff5c6f9d84fa8cc3d35e9ae4bd74df",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated",
+      "statement": "∀ (P j : ℕ) (G : Submodule ℝ (Euclid P)) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), HasCompactSupport η → R.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → ∃ K : Set (Euclid P), IsCompact K ∧ ∀ t ∈ G, t ∉ K → R.action (fun y => η (t + y)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
