@@ -451,6 +451,72 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Disjoint neighbourhoods of the open unit faces** (Simon Ch. 6, §5, proof of 5.1, step 1: the
+interiors `F̆` of the faces get pairwise disjoint neighbourhoods).  For `p = (ι, b)` with `ι`
+strictly increasing let `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`, and for `t ∈ (0,1)ᵏ` let `B_p(t)` be the set
+of `x` with `2|x − Φ_p(t)| < 1` and `2|x − Φ_p(t)| < min(tⱼ, 1 − tⱼ)` for all `j`.  Then
+`N_p = ⋃_{t ∈ (0,1)ᵏ} B_p(t)` is a union of finite intersections of open sets, hence open, and it
+contains `Φ_p((0,1)ᵏ)` (take `t = y`).  The separation hypothesis gives
+`2|x − Φ_p(t)| < |Φ_p(t) − Φ_q(y')|` for `x ∈ B_p(t)`, `q ≠ p` and `y' ∈ [0,1]ᵏ`.  For
+`x = Φ_q(y')` this reads `2|x − Φ_p(t)| < |x − Φ_p(t)|`, so `Φ_q([0,1]ᵏ)` misses `N_p`; for
+`x ∈ B_p(t) ∩ B_q(t')` the bounds for `(p, q, t, t')` and `(q, p, t', t)` contradict the triangle
+inequality. -/
+theorem Submission.dimred_mbl_dtfrbv_face_neighbourhoods : ∀ (P k : ℕ), (∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ))) → ∃ N : (Fin k → Fin P) × (Fin P → ℤ) → Set (Euclid P), ∀ p : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → IsOpen (N p) ∧ (∀ y : Euclid k, (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N p) ∧ ∀ q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono q.1 → q ≠ p → (∀ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∉ N p) ∧ Disjoint (N p) (N q) := by
+  intro P k hS
+  -- the face maps `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : (Fin k → Fin P) × (Fin P → ℤ) → Euclid k → Euclid P, ∀ p y,
+      Φ p y = WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) := ⟨_, fun _ _ => rfl⟩
+  simp only [← hΦ] at hS ⊢
+  -- step 1: `B_p(t) = {x : 2|x − Φ_p t| < 1, 2|x − Φ_p t| < min(tⱼ, 1 − tⱼ) ∀ j}` and
+  -- `N_p = ⋃_{t ∈ (0,1)ᵏ} B_p(t)`
+  obtain ⟨B, hB⟩ : ∃ B : (Fin k → Fin P) × (Fin P → ℤ) → Euclid k → Set (Euclid P), ∀ p t,
+      B p t = {x | 2 * dist x (Φ p t) < 1} ∩
+        ⋂ j, {x | 2 * dist x (Φ p t) < min (t j) (1 - t j)} := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : (Fin k → Fin P) × (Fin P → ℤ) → Set (Euclid P), ∀ p,
+      N p = ⋃ t ∈ {t : Euclid k | ∀ j, 0 < t j ∧ t j < 1}, B p t := ⟨_, fun _ => rfl⟩
+  -- step 4: `2|x − Φ_p t| < |Φ_p t − Φ_q y'|` for `x ∈ B_p(t)`, `q ≠ p` and `y' ∈ [0,1]ᵏ`
+  have hkey : ∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → p ≠ q →
+      ∀ t : Euclid k, (∀ j, 0 < t j ∧ t j < 1) → ∀ y' : Euclid k, (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) →
+        ∀ x ∈ B p t, 2 * dist x (Φ p t) < dist (Φ p t) (Φ q y') := by
+    intro p q hp hq hpq t ht y' hy' x hx
+    simp only [hB, Set.mem_inter_iff, Set.mem_iInter, Set.mem_ofPred_eq] at hx
+    rcases hS p q hp hq hpq t y' ht hy' with h | ⟨j, h⟩
+    · exact lt_of_lt_of_le hx.1 h
+    · exact lt_of_lt_of_le (hx.2 j) h
+  refine ⟨N, fun p hp => ⟨?_, fun y hy => ?_, fun q hq hqp => ⟨fun y hy hx => ?_, ?_⟩⟩⟩
+  · -- step 2: each `B_p(t)` is a finite intersection of open sets `{x : 2|x − Φ_p t| < c}`
+    rw [hN]
+    refine isOpen_biUnion fun t _ => ?_
+    have hd : Continuous fun x : Euclid P => 2 * dist x (Φ p t) :=
+      continuous_const.mul (continuous_id.dist continuous_const)
+    rw [hB]
+    exact (isOpen_lt hd continuous_const).inter
+      (isOpen_iInter_of_finite fun j => isOpen_lt hd continuous_const)
+  · -- step 3: `Φ_p(y) ∈ B_p(y)`, as `|Φ_p y − Φ_p y| = 0 < min(yⱼ, 1 − yⱼ)`
+    rw [hN]
+    refine Set.mem_biUnion (show y ∈ {t : Euclid k | ∀ j, 0 < t j ∧ t j < 1} from hy) ?_
+    simp only [hB, Set.mem_inter_iff, Set.mem_iInter, Set.mem_ofPred_eq, dist_self, mul_zero]
+    exact ⟨one_pos, fun j => lt_min (hy j).1 (sub_pos.mpr (hy j).2)⟩
+  · -- step 5: for `x = Φ_q(y) ∈ B_p(t)`, step 4 with `y' = y` gives `2|x − Φ_p t| < |x − Φ_p t|`
+    rw [hN] at hx
+    obtain ⟨t, ht, hxt⟩ := Set.mem_iUnion₂.mp hx
+    rw [Set.mem_ofPred_eq] at ht
+    have h := hkey p q hp hq hqp.symm t ht y hy (Φ q y) hxt
+    rw [dist_comm (Φ p t)] at h
+    linarith [dist_nonneg (x := Φ q y) (y := Φ p t)]
+  · -- step 6: step 4 for `(p, q, t, t')` and `(q, p, t', t)` contradicts the triangle inequality
+    rw [Set.disjoint_left]
+    intro x hxp hxq
+    rw [hN] at hxp hxq
+    obtain ⟨t, ht, hxt⟩ := Set.mem_iUnion₂.mp hxp
+    obtain ⟨t', ht', hxt'⟩ := Set.mem_iUnion₂.mp hxq
+    rw [Set.mem_ofPred_eq] at ht ht'
+    have h₁ := hkey p q hp hq hqp.symm t ht t' (fun i => ⟨(ht' i).1.le, (ht' i).2.le⟩) x hxt
+    have h₂ := hkey q p hq hp hqp t' ht' t (fun i => ⟨(ht i).1.le, (ht i).2.le⟩) x hxt'
+    have h₃ := dist_triangle (Φ p t) x (Φ q t')
+    linarith [dist_comm (Φ p t) x, dist_comm (Φ q t') (Φ p t)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
