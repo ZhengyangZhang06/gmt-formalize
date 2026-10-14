@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a4910a10500c83df1180bd99b6273ae93fd5c2da397173950bbd631b69a44efa",
+  "git_delta": {
+    "base_commit": "1a627de257743e3554019bc58eb3baf0adc797c9",
+    "candidate_commit": "b71a853572e27084081e4b2dafae60ef90b07d22",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_fv_smooth_to_C1_stationary",
+    "diff_sha256": "9fbd2302f96ec13a5e03d1c0185203d9504061e46a6f6f0f9d6ab146da00f2f6",
+    "source_sha256": "ec3a0ea6bdb52076a192d81b7d83ccb4ed93faf2dab8fb13fb6c30b2f108fb68",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_fv_smooth_to_C1_stationary",
+      "statement": "∀ (P m : ℕ) (U M : Set (Euclid P)), IsOpen U → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ Z x).toLinearMap) ∂μHE[m] = 0) → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
