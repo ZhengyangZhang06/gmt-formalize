@@ -1374,6 +1374,91 @@ theorem Submission.cmcdt_lpi_minor_weak_continuity : ∀ (m p r : ℕ) (L : NNRe
   rw [hcoord v₀ hv₀] at h
   exact h.congr fun j => hcoord (v j) (hv j)
 
+/-- **Weak continuity of `f(v_j) · M(v_j)` against `L¹` weights.**  Let `v_j → v₀` uniformly,
+all `L`-Lipschitz, `w ∈ L¹(ℝ^m)`, `f` continuous with compact support, and
+`M(v)(u) = det((Dv(u) e_{b t})_{a s})_{s,t}`.  Then `∫ w f(v_j) M(v_j) → ∫ w f(v₀) M(v₀)`.  Split
+`w f(v_j) M_j = w (f(v_j) - f(v₀)) M_j + c M_j` with `c = w f(v₀) ∈ L¹`.  Since `|M_j| ≤ K = r! Lʳ`
+and `f ∘ v_j → f ∘ v₀` uniformly, the first integral is eventually at most `η K ‖w‖₁` for any
+`η > 0`; the second converges by the weak continuity of Jacobian minors. -/
+theorem Submission.cmcdt_lpi_pc_scalar_weak_continuity : ∀ (m p r : ℕ) (L : NNReal) (v : ℕ → Euclid m → Euclid p) (v₀ : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m) (w : Euclid m → ℝ) (f : Euclid p → ℝ), (∀ j, LipschitzWith L (v j)) → LipschitzWith L v₀ → TendstoUniformly v v₀ atTop → Integrable w → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ u, w u * (f (v j u) * Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s)))) atTop (𝓝 (∫ u, w u * (f (v₀ u) * Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s))))) := by
+  intro m p r L v v₀ a b w f hv hv₀ hunif hw hf hfc
+  -- `f` is bounded by `C`, so the weight `c = w · f(v₀)` is integrable
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+  have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+  have hc : Integrable (fun u => w u * f (v₀ u)) :=
+    hw.mul_bdd (hf.comp hv₀.continuous).aestronglyMeasurable (Eventually.of_forall fun u => hC (v₀ u))
+  -- the minors are measurable and bounded by `r! Lʳ`, and their `c`-integrals converge
+  suffices key : ∀ (M : ℕ → Euclid m → ℝ) (M₀ : Euclid m → ℝ) (K : ℝ), (∀ j, Measurable (M j)) →
+      (∀ j u, |M j u| ≤ K) →
+      Tendsto (fun j => ∫ u, w u * f (v₀ u) * M j u) atTop (𝓝 (∫ u, w u * f (v₀ u) * M₀ u)) →
+      Tendsto (fun j => ∫ u, w u * (f (v j u) * M j u)) atTop (𝓝 (∫ u, w u * (f (v₀ u) * M₀ u))) from
+    key (fun j u => Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s)))
+      (fun u => Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s)))
+      ((r.factorial : ℝ) * (L : ℝ) ^ r)
+      (fun j => (Submission.cmcdt_lpi_pc_minor_measurable_bound m p r L (v j) a b (hv j)).1)
+      (fun j => (Submission.cmcdt_lpi_pc_minor_measurable_bound m p r L (v j) a b (hv j)).2)
+      (Submission.cmcdt_lpi_minor_weak_continuity m p r L v v₀ a b (fun u => w u * f (v₀ u)) hv hv₀
+        hunif hc)
+  intro M M₀ K hM hMK hS
+  have hK : 0 ≤ K := (abs_nonneg _).trans (hMK 0 0)
+  have hfv : ∀ j, Continuous (fun u => f (v j u)) := fun j => hf.comp (hv j).continuous
+  have hfv₀ : Continuous (fun u => f (v₀ u)) := hf.comp hv₀.continuous
+  -- split `w f(v_j) M_j = w (f(v_j) - f(v₀)) M_j + c M_j`; both pieces are integrable
+  have hI₁ : ∀ j, Integrable (fun u => w u * ((f (v j u) - f (v₀ u)) * M j u)) := fun j =>
+    hw.mul_bdd (c := (C + C) * K) (((hfv j).sub hfv₀).measurable.mul (hM j)).aestronglyMeasurable
+      (Eventually.of_forall fun u => by
+        rw [norm_mul, Real.norm_eq_abs (M j u)]
+        exact mul_le_mul ((norm_sub_le _ _).trans (add_le_add (hC _) (hC _))) (hMK j u)
+          (abs_nonneg _) (by linarith))
+  have hI₂ : ∀ j, Integrable (fun u => w u * f (v₀ u) * M j u) := fun j =>
+    hc.mul_bdd (c := K) (hM j).aestronglyMeasurable
+      (Eventually.of_forall fun u => (Real.norm_eq_abs _).le.trans (hMK j u))
+  have hsplit : ∀ j, (∫ u, w u * (f (v j u) * M j u)) =
+      (∫ u, w u * ((f (v j u) - f (v₀ u)) * M j u)) + ∫ u, w u * f (v₀ u) * M j u := by
+    intro j
+    rw [← integral_add (hI₁ j) (hI₂ j)]
+    congr 1
+    funext u
+    ring
+  -- the first piece tends to `0`
+  have hT : Tendsto (fun j => ∫ u, w u * ((f (v j u) - f (v₀ u)) * M j u)) atTop (𝓝 0) := by
+    have hU := (hfc.uniformContinuous_of_continuous hf).comp_tendstoUniformly hunif
+    have hW : 0 ≤ ∫ u, ‖w u‖ := integral_nonneg fun u => norm_nonneg (w u)
+    have hD : 0 < K * (∫ u, ‖w u‖) + 1 := by nlinarith [mul_nonneg hK hW]
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨η, hη, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η * K * (∫ u, ‖w u‖) < ε := by
+      refine ⟨ε / (K * (∫ u, ‖w u‖) + 1), div_pos hε hD, ?_⟩
+      rw [mul_assoc, div_mul_eq_mul_div, div_lt_iff₀ hD]
+      nlinarith [mul_nonneg hK hW]
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.1 (Metric.tendstoUniformly_iff.1 hU η hη)
+    refine ⟨N, fun n hn => ?_⟩
+    have hpt : ∀ u, ‖w u * ((f (v n u) - f (v₀ u)) * M n u)‖ ≤ η * K * ‖w u‖ := by
+      intro u
+      have h₁ : ‖f (v n u) - f (v₀ u)‖ ≤ η := by
+        rw [← dist_eq_norm, dist_comm]
+        exact (hN n hn u).le
+      calc ‖w u * ((f (v n u) - f (v₀ u)) * M n u)‖
+          = ‖w u‖ * (‖f (v n u) - f (v₀ u)‖ * |M n u|) := by
+            rw [norm_mul, norm_mul, Real.norm_eq_abs (M n u)]
+        _ ≤ ‖w u‖ * (η * K) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul h₁ (hMK n u) (abs_nonneg _) hη.le) (norm_nonneg _)
+        _ = η * K * ‖w u‖ := mul_comm _ _
+    rw [dist_zero_right]
+    calc ‖∫ u, w u * ((f (v n u) - f (v₀ u)) * M n u)‖ ≤ ∫ u, η * K * ‖w u‖ :=
+          norm_integral_le_of_norm_le (hw.norm.const_mul _) (Eventually.of_forall hpt)
+      _ = η * K * (∫ u, ‖w u‖) := integral_const_mul _ _
+      _ < ε := hηε
+  -- the second piece converges to `∫ c M₀`; add the limits
+  have hlim := hT.add hS
+  rw [zero_add] at hlim
+  have e : (∫ u, w u * (f (v₀ u) * M₀ u)) = ∫ u, w u * f (v₀ u) * M₀ u := by
+    congr 1
+    funext u
+    ring
+  rw [e]
+  exact hlim.congr fun j => (hsplit j).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
