@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f538bd24e8eed06b20fbbe214bcd2fa01438b14c1f069119a95e829c36eee32e",
+  "git_delta": {
+    "base_commit": "a4c154f1a4787b7ae965102630a68b5106e31104",
+    "candidate_commit": "0585aa0e4b8c177b51ae8a6139e91b40b4449658",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_rc_ray_ftc",
+    "diff_sha256": "ea948326cd3c5e4223f4ac8f10dc3e8e64d47ef3d6bcbdf9073cf38923704a30",
+    "source_sha256": "7edd7df106c61386a8935c106b3f1d0d84c63b3c5db5b68379506f709adea0ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_rc_ray_ftc",
+      "statement": "∀ (P : ℕ) (f : Euclid P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∀ e : Euclid P, ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), deriv (fun s : ℝ => f (s • e)) t = -f 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

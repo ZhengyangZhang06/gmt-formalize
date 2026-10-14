@@ -451,6 +451,24 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Fundamental theorem of calculus along a ray** (the ray computation of the Constancy
+Theorem, Simon Ch. 6, 2.34, for the one-dimensional cones in the proof of 7.3.3): if `f` is
+smooth with compact support on `ℝᴾ` and `|e| = 1`, then `∫_{(0,∞)} (d/dt) f(te) dt = −f(0)`.
+As `e ≠ 0`, `s ↦ se` is a closed embedding `ℝ → ℝᴾ`, so `h(s) = f(se)` is `C¹` with compact
+support; hence `h'` is integrable on `(0, ∞)`, `h(t) → 0` as `t → ∞`, and
+`∫_{(0,∞)} h' = 0 − h(0) = −f(0)`. -/
+theorem Submission.idtp_fons_odc_rc_ray_ftc : ∀ (P : ℕ) (f : Euclid P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∀ e : Euclid P, ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), deriv (fun s : ℝ => f (s • e)) t = -f 0 := by
+  intro P f hf hfc e he
+  -- `e ≠ 0`, so `s ↦ s • e` is a closed embedding `ℝ → ℝᴾ`
+  have he0 : e ≠ 0 := ne_zero_of_norm_ne_zero (by rw [he]; exact one_ne_zero)
+  -- `h(s) = f(s • e)` is `C¹`, and has compact support as `f` does
+  have hh : ContDiff ℝ 1 fun s : ℝ => f (s • e) :=
+    (hf.of_le (by exact_mod_cast le_top)).comp (contDiff_id.smul contDiff_const)
+  have hhc : HasCompactSupport fun s : ℝ => f (s • e) :=
+    hfc.comp_isClosedEmbedding (isClosedEmbedding_smul_left (𝕜 := ℝ) he0)
+  -- FTC on `(0, ∞)`: `∫_{(0,∞)} h' = 0 - h(0) = -f(0)`
+  rw [hhc.integral_Ioi_deriv_eq hh 0, zero_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
