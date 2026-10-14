@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b23ef8c90da59955ae03095769fe2998e1335814304f64e2567c8d81767e4613",
+  "git_delta": {
+    "base_commit": "68f91bbe474ce1e25a0bfda829ce76439c729dc7",
+    "candidate_commit": "62ed0b760af66fbf7632ad1ec7909fc7a7cb751c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_cp_shrinking",
+    "diff_sha256": "6093aba877dc7ff3515161351bc163c4ad5204fdd57b12399f95c500206d0959",
+    "source_sha256": "3fe94711b333252f17ba1c0250309501f958c8e2fb23abb8b4a89db18d60257e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_cp_shrinking",
+      "statement": "∀ (m : ℕ) (f : Euclid (m + 1) → ℝ), IntegrableOn f {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 4 ∧ volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} ≤ 1 ∧ volume ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} \\ {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}) ≤ 1 / 4 ∧ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |f y|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
