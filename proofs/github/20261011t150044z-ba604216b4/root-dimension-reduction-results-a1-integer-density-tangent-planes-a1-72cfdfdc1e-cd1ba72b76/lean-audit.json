@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "10efd131ca4b3b15f7eafdd048946d8b2f1cc8705b6e2b967e34c1dc0c96aee5",
+  "git_delta": {
+    "base_commit": "f50d6bcd93016e6289fba4abe8c1e5472c6504f8",
+    "candidate_commit": "4784e040f92c108d413892247beeb22f79e0242e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_sp_sector_rel_open",
+    "diff_sha256": "61e6abb344160e6e73213fa114832e8433252654ef34080e6b5cc66f93f4fd3d",
+    "source_sha256": "b925fbd47097af504870b1fae297847722d33380d1beb3eab876466ce81af7a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_sp_sector_rel_open",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ t φ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → δ ≤ Real.pi → 0 < t → 0 < φ → φ < δ → ∃ r : ℝ, 0 < r ∧ ∀ y : Euclid P, y ∈ Q → dist y (t • (Real.cos φ • a + Real.sin φ • e)) < r → ∃ t' φ' : ℝ, 0 < t' ∧ 0 < φ' ∧ φ' < δ ∧ y = t' • (Real.cos φ' • a + Real.sin φ' • e)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

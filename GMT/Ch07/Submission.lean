@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- An open polar sector of angle at most `π` in a plane is relatively open in the plane (used to
+show that the planar sector in the proof of Simon 7.3.3 is open in `Q`): if `(a, e)` is an
+orthonormal pair in the `2`-dimensional subspace `Q`, `δ ≤ π`, `t > 0` and `0 < φ < δ`, then
+every `y ∈ Q` near `t(cos φ·a + sin φ·e)` is `t'(cos φ'·a + sin φ'·e)` with `t' > 0` and
+`0 < φ' < δ`.  The pair `(a, e)` spans `Q`, so `y = ⟨y, a⟩a + ⟨y, e⟩e` on `Q`; the continuous
+coordinates `y ↦ (⟨y, a⟩, ⟨y, e⟩)` pull back the image of the open set
+`(0, ∞) × (0, δ) ⊆ polarCoord.target` under `polarCoord.symm`, which is open. -/
+theorem Submission.idtp_cse_sp_sector_rel_open : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ t φ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → δ ≤ Real.pi → 0 < t → 0 < φ → φ < δ → ∃ r : ℝ, 0 < r ∧ ∀ y : Euclid P, y ∈ Q → dist y (t • (Real.cos φ • a + Real.sin φ • e)) < r → ∃ t' φ' : ℝ, 0 < t' ∧ 0 < φ' ∧ φ' < δ ∧ y = t' • (Real.cos φ' • a + Real.sin φ' • e) := by
+  intro P Q a e δ t φ hQ haQ heQ ha he hae hδ ht hφ hφδ
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- `⟨s a + u e, a⟩ = s` and `⟨s a + u e, e⟩ = u`
+  have hca : ∀ s u : ℝ, inner ℝ (s • a + u • e) a = s := fun s u => by
+    rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, haa, hea, mul_one, mul_zero,
+      add_zero]
+  have hce : ∀ s u : ℝ, inner ℝ (s • a + u • e) e = u := fun s u => by
+    rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, hae, hee, mul_one, mul_zero,
+      zero_add]
+  -- `(a, e)` is a basis of `Q`, so `y = ⟨y, a⟩a + ⟨y, e⟩e` for `y ∈ Q`
+  have hli : LinearIndependent ℝ ![a, e] := by
+    rw [LinearIndependent.pair_iff]
+    intro s u hsu
+    exact ⟨by rw [← hca s u, hsu, inner_zero_left], by rw [← hce s u, hsu, inner_zero_left]⟩
+  have hspan : Submodule.span ℝ (Set.range ![a, e]) = Q := by
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rw [Submodule.span_le, Set.range_subset_iff]
+      intro i
+      fin_cases i
+      · simpa using haQ
+      · simpa using heQ
+    · rw [finrank_span_eq_card hli, hQ, Fintype.card_fin]
+  have hexp : ∀ y ∈ Q, y = inner ℝ y a • a + inner ℝ y e • e := by
+    intro y hy
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hy
+    obtain ⟨c, rfl⟩ := hy
+    simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
+    rw [hca, hce]
+  -- the image of `(0, ∞) × (0, δ) ⊆ polarCoord.target` under `polarCoord.symm` is open
+  have hWo : IsOpen (Ioi (0 : ℝ) ×ˢ Ioo 0 δ) := isOpen_Ioi.prod isOpen_Ioo
+  have hWs : Ioi (0 : ℝ) ×ˢ Ioo 0 δ ⊆ polarCoord.symm.source := by
+    rintro ⟨p1, p2⟩ ⟨h1, h2, h3⟩
+    rw [OpenPartialHomeomorph.symm_source, polarCoord_target]
+    exact ⟨h1, by linarith [Real.pi_pos], by linarith⟩
+  have hO := polarCoord.symm.isOpen_image_of_subset_source hWo hWs
+  -- pull it back by the continuous coordinates `y ↦ (⟨y, a⟩, ⟨y, e⟩)`
+  let c : Euclid P → ℝ × ℝ := fun y => (inner ℝ y a, inner ℝ y e)
+  have hc : Continuous c :=
+    (continuous_id.inner continuous_const).prodMk (continuous_id.inner continuous_const)
+  have hx : c (t • (Real.cos φ • a + Real.sin φ • e)) ∈ polarCoord.symm '' Ioi 0 ×ˢ Ioo 0 δ := by
+    refine ⟨(t, φ), ⟨ht, hφ, hφδ⟩, ?_⟩
+    simp only [c, polarCoord_symm_apply, smul_add, smul_smul, hca, hce]
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp (hO.preimage hc) _ hx
+  refine ⟨r, hr, fun y hy hdist => ?_⟩
+  obtain ⟨⟨t', φ'⟩, ⟨ht', hφ', hφ'δ⟩, hpy⟩ := hball (Metric.mem_ball.mpr hdist)
+  refine ⟨t', φ', ht', hφ', hφ'δ, ?_⟩
+  simp only [polarCoord_symm_apply, c, Prod.mk.injEq] at hpy
+  calc y = inner ℝ y a • a + inner ℝ y e • e := hexp y hy
+    _ = (t' * Real.cos φ') • a + (t' * Real.sin φ') • e := by rw [hpy.1, hpy.2]
+    _ = t' • (Real.cos φ' • a + Real.sin φ' • e) := by rw [smul_add, smul_smul, smul_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
