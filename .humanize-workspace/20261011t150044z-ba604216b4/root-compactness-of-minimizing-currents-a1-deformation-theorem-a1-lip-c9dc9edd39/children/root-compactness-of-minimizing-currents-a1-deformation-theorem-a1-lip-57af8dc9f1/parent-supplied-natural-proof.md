@@ -1,0 +1,73 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1.restriction-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 (pointwise bounds) of the parent proof, with the operators Φ(γ) = (γ.curryLeft e₀).compContinuousLinearMap J and Ψ(γ) = γ.compContinuousLinearMap J made explicit. Notation as in the statement.
+1. J is continuous linear. Fix N. For u, v ∈ ℝ^N and a ∈ ℝ, the coordinates of J(u + v) are 0 at index 0 and u_j + v_j at index j + 1, which are the coordinates of Ju + Jv; likewise J(a·v) = a·Jv (compare coordinates, splitting the index with Fin.cases). So v ↦ Jv is ℝ-linear, and a linear map between finite-dimensional normed spaces is continuous (LinearMap.toContinuousLinearMap). Call the resulting continuous linear map J : ℝ^N →L[ℝ] ℝ^{N+1}; by construction J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)).
+2. ‖J‖ ≤ 1. For v ∈ ℝ^N, ‖Jv‖² = Σ_{i : Fin (N+1)} |(Jv)_i|² = |0|² + Σ_{j : Fin N} |v_j|² = ‖v‖² (EuclideanSpace.norm_eq and Fin.sum_univ_succ), so ‖Jv‖ = ‖v‖ ≤ 1·‖v‖, and ContinuousLinearMap.opNorm_le_bound gives ‖J‖ ≤ 1. Since 0 ≤ ‖J‖ ≤ 1, also ‖J‖^m ≤ 1 for every m ∈ ℕ (pow_le_one₀).
+3. ‖e₀‖ = ‖EuclideanSpace.single 0 1‖ = |1| = 1.
+4. Proof of (R1). Fix N, k. Let Φ be the composite of three continuous linear maps: γ ↦ γ.curryLeft (the linear isometry ContinuousAlternatingMap.curryLeftLI, viewed as a continuous linear map from (k+1)-covectors on ℝ^{N+1} to ℝ^{N+1} →L[ℝ] (k-covectors on ℝ^{N+1})), evaluation at e₀ (ContinuousLinearMap.apply ℝ _ e₀), and β ↦ β.compContinuousLinearMap J (ContinuousAlternatingMap.compContinuousLinearMapCLM J). Then Φ is continuous linear and Φ(γ) = (γ.curryLeft e₀).compContinuousLinearMap J. For v ∈ (ℝ^N)^k, Φ(γ)(v) = (γ.curryLeft e₀)(J ∘ v) = γ(Matrix.vecCons e₀ (J ∘ v)) (compContinuousLinearMap_apply and curryLeft_apply_apply). The tuples Matrix.vecCons e₀ (J ∘ v) and Fin.cons e₀ (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) agree at index 0 (both are e₀) and at every index i + 1 (both are J(v i), by step 1), so Φ(γ)(v) = γ(e₀, Jv_1, …, Jv_k), the required formula. For the bound, (L1) with dimensions N and N + 1, degree k, A := J and β := γ.curryLeft e₀ gives |Φ(γ)| ≤ ‖J‖^k·|γ.curryLeft e₀| ≤ 1·|γ.curryLeft e₀| = |γ.curryLeft e₀|, by step 2 and |γ.curryLeft e₀| ≥ 0 (covectorEuclideanNorm_nonneg). Then (L2) with dimension N + 1, degree k, v := e₀ and β := γ gives |γ.curryLeft e₀| ≤ ‖e₀‖·|γ| = |γ| by step 3. Hence |Φ(γ)| ≤ |γ|.
+5. Proof of (R2). Fix N, k. Let Ψ := ContinuousAlternatingMap.compContinuousLinearMapCLM J, a continuous linear map with Ψ(γ) = γ.compContinuousLinearMap J; so Ψ(γ)(v) = γ(J ∘ v) = γ(Jv_1, …, Jv_k) by step 1. (L1) with dimensions N and N + 1, degree k, A := J and β := γ gives |Ψ(γ)| ≤ ‖J‖^k·|γ| ≤ |γ| by step 2 and |γ| ≥ 0.
+6. Steps 4 and 5 hold for all N and k, which is the conclusion (R1) ∧ (R2). □
+
+## Key steps
+
+1. J v := ι(0, v) is a continuous linear map ℝ^N → ℝ^{N+1} with ‖Jv‖ = ‖v‖, so ‖J‖ ≤ 1 and ‖J‖^k ≤ 1; ‖e₀‖ = 1.
+2. Φ := compContinuousLinearMapCLM J ∘ (evaluation at e₀) ∘ curryLeftLI is continuous linear with Φ(γ)(v) = γ(e₀, Jv_1, …, Jv_k).
+3. (L1) with A = J and (L2) with v = e₀ give |Φ(γ)| ≤ ‖J‖^k·|γ.curryLeft e₀| ≤ ‖e₀‖·|γ| = |γ|.
+4. Ψ := compContinuousLinearMapCLM J satisfies Ψ(γ)(v) = γ(Jv) and |Ψ(γ)| ≤ ‖J‖^k·|γ| ≤ |γ| by (L1).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: ancestors and depends_on of the selected node, frozen lean_statement of slice-a1 (cmcdt_lpo_slice_forms) and toolkit-a1 (cmcdt_lpo_current_toolkit), and lean_name collision check for the five proposed cmcdt_lpo_cyl_* names (no collision)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n cmcdt_lpo_cyl local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n -i 'cylinder|productWithInterval|homotopy' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)`
+- `rg -n 'GeometricCurrentOn|zeroRegion|massAdmissibleOn' local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `rg -n 'def compContinuousLinearMapCLM|def curryLeftLI|theorem curryLeft_apply_apply|theorem compContinuousLinearMapCLM_apply' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `rg -n continuous_eval_const mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean; rg -ln 'class ContinuousEvalConst' mathlib/Mathlib`
+- `rg -n 'theorem Continuous.finCons|theorem IsCompact.of_isClosed_subset|closure_ball_subset_closedBall' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'theorem integral_add|theorem integral_const_mul' mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean`
+- `sed -n 345,420p book/chapter-06.txt; grep -n 'homotopy formula' book/chapter-06.txt (Simon 6.2.17-2.21, 2.25)`
+- `lake env lean /tmp/cyl-decomp-m3x9/Probe.lean and Probe2.lean (#check of cited Mathlib lemmas; fun_prop proves continuity of t ↦ ι(t, x))`
+- `lake env lean /tmp/cyl-decomp-m3x9/Children.lean (all five child types elaborate after import GMT.Ch07.Submission; sorry-free assembly Submission.cmcdt_lpo_cyl_assembly_check of the exact selected frozen type from the children and the two stubbed sibling dependencies)`
+- `lake env lean /tmp/cyl-decomp-m3x9/Child1.lean ... Child5.lean and Consolidated.lean (complete scratch proofs of all five children; #print axioms)`
+- `sed of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py, prompts.py and runtime.py (inherited-prerequisite citation rule; depth gate node.depth >= max_depth = 6)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Hom/ContinuousEvalConst.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cyl-decomp-m3x9/Children.lean`
+- `/tmp/cyl-decomp-m3x9/Child1.lean`
+- `/tmp/cyl-decomp-m3x9/Child2.lean`
+- `/tmp/cyl-decomp-m3x9/Child3.lean`
+- `/tmp/cyl-decomp-m3x9/Child4.lean`
+- `/tmp/cyl-decomp-m3x9/Child5.lean`
+- `/tmp/cyl-decomp-m3x9/Consolidated.lean`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py`
+
+Nothing in the snapshot can be reused. The snapshot is project b4d606d with Mathlib 25730c7c, and its Ch07 Contract.lean is identical to the workspace Submission.lean. It has no product-with-[[0,1]], cylinder or homotopy construction for GeometricCurrentOn (rg cylinder|homotopy in project/GMT: no match). It has no declaration with prefix cmcdt_lpo_cyl (no match), and dag.json reserves none of the five proposed names. Every tool the child proofs cite is in the frozen import closure. From Mathlib: ContinuousAlternatingMap.compContinuousLinearMapCLM (Topology/Algebra/Module/Alternating/Topology.lean:281), curryLeftLI and curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean:77, :57), continuous_eval_const (Topology/Hom/ContinuousEvalConst.lean), Continuous.finCons (Topology/Constructions.lean:983), IsCompact.of_isClosed_subset (Topology/Compactness/Compact.lean:105), closure_ball_subset_closedBall (Topology/MetricSpace/Pseudo/Lemmas.lean:73), and intervalIntegral.integral_add / integral_const_mul (IntervalIntegral/Basic.lean:774, :817). From SimonGMT Chapter06: GeometricCurrentOn.ext, boundary_apply, isOpen_zeroRegion, zeroRegion/support, massAdmissibleOn and mass. All five child types elaborate after import GMT.Ch07.Submission. Each child has a complete sorry-free scratch proof with axioms propext, Classical.choice and Quot.sound. The exact selected frozen type is assembled from the five children and the two sibling dependencies, stubbed, with no other sorry. Simon 6.2.17–2.21 and the homotopy formula 2.25 in book/chapter-06.txt match the construction.
