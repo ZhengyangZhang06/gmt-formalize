@@ -1,0 +1,98 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "abbrev Euclid|def unitBallVolume|def dilationCLM|def dilation |dimred_tr_mcr_|idtp_fons_cr_density|idtp_fons_cc_tm_density_homogeneous|idtp_fons_cc_psf_nonhomogeneous|cbr_vague_portmanteau",
+        "integral_withDensity_eq_integral_smul|integral_withDensity_eq_integral_toReal_smul|lintegral_map|euclideanHausdorffMeasure_smul₀",
+        "HasBasis.limsup_eq_iInf_iSup|theorem LowerSemicontinuous.measurable|lemma LowerSemicontinuous.measurable|tendsto_measure_cthickening|exists_cthickening_subset_open|extraction_of_frequently_atTop|IsCompact.tendsto_subseq|preimage_closure",
+        "dimred_tr_mcr_threshold_limit|dimred_tr_mcr_eventually_near|dimred_tr_mcr_homogeneous_infinite_mass",
+        "/tmp/mcr-independent-audit-gy79dsec/lean-4.35.0-rc3-linux/bin/lake env lean -j2 /tmp/mcr-independent-audit-gy79dsec/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-095240e0d0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-095240e0d0/decomposition-v1.json",
+        "/tmp/mcr-independent-audit-gy79dsec/Types.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/Assembly.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/N1.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/Small.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/idtp_fons_cr_density_measurable.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/idtp_fons_cr_density_rescale.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/idtp_fons_cc_tm_density_homogeneous.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/idtp_fons_cr_density_normalization.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/idtp_fons_cc_psf_nonhomogeneous.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/cbr_vague_portmanteau.lean",
+        "/tmp/mcr-independent-audit-gy79dsec/audit-checks.json"
+      ],
+      "conclusion": "The nine-child split is appropriate and establishes exactly dimred_tr_measure_class_reduction, retaining ADR as a hypothesis. Snapshot revisions match the workspace; the six reused candidates preserve the frozen definitions and pinned dependencies, have passing comparator records, and have identical frozen types. The three new names are absent from the snapshot project and remain unreserved in the DAG. All names are bare identifiers. The dependency graph, including retained reuse dependencies, is acyclic and correctly directed. All nine one-line propositions elaborate independently; none references its own implementation or contains a matrix-unit construction. Fresh Lean checks passed for the exact parent assembly, all three new proofs, and all six reused candidates. Reused target axiom reports contain only propext, Classical.choice and Quot.sound; proof harnesses use exactly the expected child assumptions, without sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary measures, including n = 0. Lower semicontinuity justifies the unrestricted radius suprema; the countable neighbourhood basis and measurable toReal complete the proof without a finiteness assumption. Accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "density_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball-preimage formula and finite nonzero scaling factor prove the ratio identity. Positive radius multiplication preserves the right-neighbourhood filter and proves both support implications. Both conclusions are proved, including the support clause unused by this parent."
+    },
+    {
+      "key": "density_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypothesis applies to measurable balls. Cancelling the finite nonzero factor ofReal(t^n), then substituting ρ/t in the limsup, proves the exact statement without an unstated finiteness assumption."
+    },
+    {
+      "key": "density_normalization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The positive normalization constant is correctly uniform over the subsequent data. Measurability, nonnegativity and compact-set finiteness justify local integrability; the verified withDensity integral identity proves the pairing formula without a hidden integrability gap."
+    },
+    {
+      "key": "nonhomogeneous_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse retains its existing accepted withdensity_dilate dependency, which permits nonmeasurable densities. Scaling balls forces total mass to be zero or infinity, contradicting the stated finite positive mass. The proof correctly uses n ≥ 1."
+    },
+    {
+      "key": "vague_portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cutoffs supported in compact subsets of U establish the compact-set inequality; compact exhaustion establishes the open-set inequality. The proof supplies the required integrability and shrinking-neighbourhood finiteness arguments and proves both clauses."
+    },
+    {
+      "key": "threshold_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Monotonicity and compact finiteness establish finite density limits before applying toReal. The declared portmanteau dependency transfers the moving-ball lower bounds, and the subsequent limits prove the threshold inequality. The cases c ≤ 0 and n = 0 are covered, with no circular use of semicontinuity."
+    },
+    {
+      "key": "eventually_near",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Failure yields strictly increasing bad indices. Compactness of the closed unit ball supplies a convergent further subsequence; the hypothesis places its limit in S, contradicting uniform separation. No closedness assumption on S is missing."
+    },
+    {
+      "key": "homogeneous_infinite_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The defining density equation and positivity at x₀ rule out zero total mass. Homogeneity passes to ofReal ∘ g, so the declared nonhomogeneous_mass dependency excludes finite positive mass. This proves the exact conclusion and supports both stated parent applications."
+    }
+  ],
+  "required_changes": []
+}
