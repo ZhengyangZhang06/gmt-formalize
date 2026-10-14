@@ -1,0 +1,76 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "read GMT/Ch06/Contract.lean (IsRectifiableTriple fields subset, nullMeasurableSet, countablyRectifiable, pos, integrableOn, orients) and verifier/gmt-compare.py contract_scope/child_modules (child challenge = import GMT.Ch06.Submission + replayed namespace GMT.Ch06 scope, solution = exact Submission.X)",
+        "python3 scan of dag.json (554 nodes; rechecked at 572 nodes before submission): status/candidate_commit/lean_statement of lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart, lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse, lpf_wtc_cat_fderiv_lower_bound (all accepted), lpf_chart_chain_rule, lpf_ccr_hasDerivAt_line_of_comp, lpf_tde_chart_directional_deriv, lpf_raf_chart_preimage_null, lpf_wtc_chart_image_measurable_locally_finite, lpf_wtc_cat_gram_jacobian_continuous (accepted, not needed), slicing_im_ll_gradient_weak_star (decomposing, parent-level dependency)",
+        "read the six reused nodes' parent-child-handoff.json (subproblem key/natural_proof/proof_key_steps) and compare title/statement/lean_statement with dag.json (byte-identical)",
+        "collision check: python3 over dag.json lean_name/lean_statement and rg 'slicing_im_ll_twl' in the snapshot and lake-packages-25730c7c/simongmt (no match)",
+        "git show d38f8d26:GMT/Ch06/Submission.lean (proof base = bare contract, no lpf declarations); git show <candidate>:GMT/Ch06/Submission.lean for the six reused candidates (declarations, imports); git merge-base --is-ancestor checks",
+        "union-merge simulation of the six reused candidate commits on d38f8d26 in a git clone --shared temp copy (git merge + git merge-file --union, as in the controller's _union_lean_conflicts)",
+        "grep snapshot Mathlib: LipschitzOnWith.ae_differentiableWithinAt_of_mem (Analysis/Calculus/Rademacher.lean), tendsto_tsum_of_dominated_convergence (Analysis/Normed/Group/Tannery.lean, not in import closure), hasSum_integral_iUnion, measurable_fderiv, integral_withDensity_eq_integral_smul, integrable_withDensity_iff_integrable_smul, withDensity_apply', Measure.map_apply_of_aemeasurable, integral_map, integrable_map_measure, MeasurableSet.image_of_continuousOn_injOn, disjointed/iUnion_disjointed/disjoint_disjointed, integrable_indicator_iff₀, ContinuousLinearMap.aestronglyMeasurable_comp₂, AEStronglyMeasurable.inner (StronglyMeasurable/Inner.lean, not imported; continuous_inner.comp_aestronglyMeasurable₂ used instead)",
+        "read SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt, HasWeightedApproximateTangentSpaceAt.unique)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Stmts.lean (13 types: 5 new, 6 reused, gradient_weak_star, parent; no errors)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyParent.lean (parent type from partition_tendsto, chart_representation, R1, R2, gradient_weak_star types; axioms propext, Classical.choice, Quot.sound)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/AssemblyT.lean, AssemblyCV.lean, AssemblyCF.lean, AssemblyDI.lean, AssemblyCR.lean (each new child from its declared dependencies' exact types; same axioms)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/twl_split/check/Integrated.lean (union of the six reused candidates + five new children + parent, gradient_weak_star stubbed; EXIT 0; new children axioms propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Inner.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/twl_split/check/Stmts.lean",
+        "/tmp/twl_split/check/AssemblyParent.lean",
+        "/tmp/twl_split/check/AssemblyT.lean",
+        "/tmp/twl_split/check/AssemblyCV.lean",
+        "/tmp/twl_split/check/AssemblyCF.lean",
+        "/tmp/twl_split/check/AssemblyDI.lean",
+        "/tmp/twl_split/check/AssemblyCR.lean",
+        "/tmp/twl_split/check/Integrated.lean"
+      ],
+      "conclusion": "The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract, so child types use only contract, SimonGMT and Mathlib names. All 13 relevant types elaborate in the exact comparator scope. The proof base d38f8d26 is the bare contract, so accepted lpf declarations can only be used as reused children. Six accepted declarations have exactly the types this proof needs: lpf_countably_rectifiable_c1_cover, lpf_weighted_tangent_on_c1_chart (both speculative when the handoff was written, accepted now), lpf_raf_chart_change_of_variables, lpf_ccr_ae_pullback, lpf_tde_continuous_left_inverse and lpf_wtc_cat_fderiv_lower_bound. They are reused byte-for-byte. No library has the Bochner chart area formula, the coefficient-field lift, the a.e. chart differential of a Lipschitz function with tangential gradient, or the partition/Tannery convergence lemma; these are the five new children. Mathlib supplies Rademacher on sets, countable additivity of the integral, withDensity/map integral transfer, measurable fderiv and Lusin–Souslin images. Tannery's file is outside the import closure, so its proof is inlined. Scratch Lean proves the parent type from the child types plus gradient_weak_star, and each new child from exactly its declared dependencies. A union-merge of the six reused candidates, together with all new children and the parent, compiles. Axioms are propext, Classical.choice, Quot.sound (sorryAx only from the gradient_weak_star stub). No new name occurs in the DAG, the snapshot or SimonGMT."
+    }
+  ],
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "child_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.partition_tendsto-a1",
+  "subproblem": {
+    "key": "partition_tendsto",
+    "title": "Integrals converge if they converge on every piece of a countable measurable partition, under integrable domination (Tannery)",
+    "statement": "Let X be a measurable space, ν a measure on X, V_j ⊆ X (j ∈ ℕ) measurable and pairwise disjoint with ν(X ∖ ⋃_j V_j) = 0, b : X → ℝ ν-integrable, F_k : X → ℝ (k ∈ ℕ) ν-integrable with |F_k(x)| ≤ b(x) for ν-a.e. x (for every k), and F_∞ : X → ℝ ν-integrable. If ∫_{V_j} F_k dν → ∫_{V_j} F_∞ dν as k → ∞ for every j, then ∫_X F_k dν → ∫_X F_∞ dν as k → ∞.",
+    "lean_statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (V : ℕ → Set X) (b : X → ℝ) (F : ℕ → X → ℝ) (Flim : X → ℝ), (∀ j, MeasurableSet (V j)) → Pairwise (Function.onFun Disjoint V) → ν (⋃ j, V j)ᶜ = 0 → Integrable b ν → (∀ k, Integrable (F k) ν) → (∀ k, ∀ᵐ x ∂ν, ‖F k x‖ ≤ b x) → Integrable Flim ν → (∀ j, Tendsto (fun k => ∫ x in V j, F k x ∂ν) atTop (𝓝 (∫ x in V j, Flim x ∂ν))) → Tendsto (fun k => ∫ x, F k x ∂ν) atTop (𝓝 (∫ x, Flim x ∂ν))",
+    "lean_name": "slicing_im_ll_twl_partition_tendsto",
+    "depends_on": [],
+    "natural_proof": "Source: step 4 of the parent proof (countable additivity of the integral over the disjoint chart pieces, then dominated convergence for series), stated for an abstract measure. Notation: Fl := F_∞; all integrals are Bochner integrals and ∫_V H dν := ∫ H d(ν⌞V).\n1. (ν lives on ⋃_j V_j.) The set (⋃_j V_j)ᶜ is ν-null, i.e. ν-a.e. x lies in ⋃_j V_j. Hence ν⌞(⋃_j V_j) = ν (Mathlib `Measure.restrict_eq_self_of_ae_mem`, after rewriting with `ae_iff`).\n2. (Countable additivity.) Let H : X → ℝ be ν-integrable. Then H is integrable on ⋃_j V_j, and because the V_j are measurable and pairwise disjoint, the series Σ_j ∫_{V_j} H dν converges with sum ∫_{⋃_j V_j} H dν (Mathlib `hasSum_integral_iUnion`). By step 1 this sum is ∫_X H dν. So HasSum (j ↦ ∫_{V_j} H dν) (∫_X H dν).\n3. (Summable majorant.) Step 2 for H = b shows that B_j := ∫_{V_j} b dν is summable. For all k, j: |∫_{V_j} F_k dν| ≤ ∫_{V_j} |F_k| dν ≤ ∫_{V_j} b dν = B_j. The first inequality is `norm_integral_le_integral_norm`. The second is monotonicity of the integral (`integral_mono_ae`): |F_k| and b are integrable on V_j, and |F_k| ≤ b holds ν-a.e., hence ν⌞V_j-a.e. (`ae_restrict_of_ae`).\n4. (Tannery's theorem.) Let a_k(j), a(j) ∈ ℝ with a_k(j) → a(j) as k → ∞ for every j, and |a_k(j)| ≤ B_j for all k, j, where Σ_j B_j < ∞. Then Σ_j a_k(j) → Σ_j a(j).\nProof. First, |a(j)| ≤ B_j by passing to the limit, so all series converge absolutely. Given ε > 0, choose a finite set T ⊆ ℕ with Σ_{j∉T} B_j < ε/3. Choose k₀ with |Σ_{j∈T}(a_k(j) − a(j))| < ε/3 for k ≥ k₀; this is a finite sum of convergent sequences. For k ≥ k₀,\n|Σ_j a_k(j) − Σ_j a(j)| ≤ |Σ_{j∈T}(a_k(j) − a(j))| + Σ_{j∉T}|a_k(j)| + Σ_{j∉T}|a(j)| < ε.\nThis is Mathlib's `tendsto_tsum_of_dominated_convergence` (Mathlib/Analysis/Normed/Group/Tannery.lean). That file is not in the import closure of GMT.Ch06.Submission, so inline this ε/3 argument as a local `have` for f : ℕ → ℕ → ℝ along `atTop`; Mathlib's proof compiles verbatim with the existing imports. Adding `import Mathlib.Analysis.Normed.Group.Tannery` to Submission.lean is an alternative.\n5. (Conclusion.) Put a_k(j) := ∫_{V_j} F_k dν and a(j) := ∫_{V_j} Fl dν. The hypothesis gives a_k(j) → a(j) for every j, and step 3 gives |a_k(j)| ≤ B_j with Σ_j B_j < ∞. By step 4, Σ_j a_k(j) → Σ_j a(j). Step 2, applied to H = F_k and to H = Fl (both ν-integrable), gives Σ_j a_k(j) = ∫_X F_k dν for every k and Σ_j a(j) = ∫_X Fl dν (`HasSum.tsum_eq`). Hence ∫_X F_k dν → ∫_X Fl dν. ∎",
+    "proof_key_steps": [
+      "ν is concentrated on ⋃_j V_j, so ∫_X H dν = Σ_j ∫_{V_j} H dν for every ν-integrable H (hasSum_integral_iUnion).",
+      "|∫_{V_j} F_k dν| ≤ B_j := ∫_{V_j} b dν, and Σ_j B_j = ∫_X b dν < ∞.",
+      "Tannery's theorem (dominated convergence for series, ε/3 argument) gives Σ_j ∫_{V_j} F_k dν → Σ_j ∫_{V_j} F_∞ dν.",
+      "Both series equal the full integrals ∫_X F_k dν and ∫_X F_∞ dν."
+    ]
+  },
+  "audit": {
+    "key": "partition_tendsto",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The standalone proposition matches all prose hypotheses. Countable integral additivity produces the summable majorant, and the supplied finite-tail argument proves convergence of the sums. No sigma-finiteness or unstated domination of Flim is required."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-2aebefd87c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-2aebefd87c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-2aebefd87c/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1.near_optimal_cover-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1",
+  "depth": 5,
+  "title": "Near-optimal small-diameter covers by subsets for a set of finite Hausdorff measure",
+  "statement": "Let X be an extended metric space whose measurable structure is its Borel σ-algebra, let d ∈ ℝ with d ≥ 0, let A ⊆ X be an arbitrary set with μH[d](A) < ∞ (Mathlib's unnormalized d-dimensional Hausdorff measure, evaluated as an outer measure), and let r, ε ∈ [0, ∞] with r > 0 and ε > 0. Then there are sets S_i ⊆ A (i ∈ ℕ) with A ⊆ ⋃_i S_i, ediam S_i ≤ r for every i, and Σ_i ⨆_{S_i ≠ ∅} (ediam S_i)^d ≤ μH[d](A) + ε, where ediam is the extended diameter and the supremum over the proposition S_i ≠ ∅ equals (ediam S_i)^d if S_i ≠ ∅ and 0 if S_i = ∅.",
+  "lean_statement": "∀ (X : Type) [EMetricSpace X] [MeasurableSpace X] [BorelSpace X] (d : ℝ) (A : Set X) (r ε : ℝ≥0∞), 0 ≤ d → 0 < r → 0 < ε → (μH[d] : Measure X) A ≠ ∞ → ∃ S : ℕ → Set X, (∀ i, S i ⊆ A) ∧ A ⊆ ⋃ i, S i ∧ (∀ i, ediam (S i) ≤ r) ∧ ∑' i, ⨆ (_ : (S i).Nonempty), ediam (S i) ^ d ≤ (μH[d] : Measure X) A + ε",
+  "lean_name": "slicing_im_coarea_eil_near_optimal_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-eilenberg-a1-7f6e8f0ff4-a1"
+}

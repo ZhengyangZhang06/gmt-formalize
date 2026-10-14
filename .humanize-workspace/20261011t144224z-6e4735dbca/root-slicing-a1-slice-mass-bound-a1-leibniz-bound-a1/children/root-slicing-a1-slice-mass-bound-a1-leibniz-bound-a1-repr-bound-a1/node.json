@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.repr_bound-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1",
+  "depth": 4,
+  "title": "Mass estimate from a normalized measure representation: ofReal|T(η)| ≤ ∫⁻ |η| dμ",
+  "statement": "For all P, n ∈ ℕ, every U ⊆ ℝ^P, every T ∈ D_n(U) (GeometricCurrentOn U n), every measure μ on ℝ^P and every v : ℝ^P → Λ_n(ℝ^P) (NVector (Eucl P) n) such that IsMeasureRepresentation T μ v holds (for every η ∈ D^n(U), x ↦ v(x)(η(x)) is μ-integrable and T(η) = ∫ v(x)(η(x)) dμ(x)) and |v(x)(α)| ≤ covectorEuclideanNorm(α) for all x ∈ ℝ^P and all n-covectors α: for every test form η ∈ D^n(U), ENNReal.ofReal|T(η)| ≤ ∫⁻ ENNReal.ofReal(covectorEuclideanNorm(η(x))) dμ(x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → (∀ (x : Eucl P) (α : Covector (Eucl P) n), |v x α| ≤ covectorEuclideanNorm α) → ∀ η : TestFormOn U n, ENNReal.ofReal |T η| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x)) ∂μ",
+  "lean_name": "slicing_mb_lb_repr_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1-repr-bound-a1-a1"
+}
