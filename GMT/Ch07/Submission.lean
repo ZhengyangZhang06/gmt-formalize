@@ -4154,6 +4154,238 @@ theorem Submission.codim1_hcp_sr_c1alpha_estimate : ∀ (m k : ℕ) (α : ℝ), 
         (mul_nonneg zero_le_two (Real.sqrt_nonneg _)) h3)).trans_eq (mul_assoc _ _ _).symm).trans
         (mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (le_max_right _ _))
           (Real.rpow_nonneg (norm_nonneg _) _))))
+/-- **Difference quotients and `C^{1,α}`** (Hölder form of the difference-quotient method,
+Gilbarg–Trudinger §7.11).  If, for unit `v` and `0 < |t| < h₀`, the quotients
+`t⁻¹ (f (x + t v) - f x)` are bounded by `C` and `α`-Hölder with constant `C` on `B = B_R(x₀)`,
+then `f` is `C¹` on `B`, `‖Df‖ ≤ C` and `‖Df(x) - Df(y)‖ ≤ C ‖x - y‖^α`.
+With `w = t v` the hypotheses say `‖f(x + w) - f(x)‖ ≤ C‖w‖` and
+`‖f(x + w) - f(x) - (f(y + w) - f(y))‖ ≤ C‖w‖ ‖x - y‖^α` for `‖w‖ < h₀`; with `y = x + a` this
+bounds the second differences of `f` at `x` by `C‖w‖ ‖a‖^α`.  The segment averages and coordinate
+increments of the accepted proof are replaced by Hyers' dyadic limits (PNAS 27 (1941), 222–224):
+consecutive quotients `2ⁿ(f(x + 2⁻ⁿw) - f(x))` differ by `2ⁿ` times a second difference with
+increments `2⁻ⁿ⁻¹w`, of size `≤ (C/2)‖w‖^(1+α) ρⁿ⁺¹`, `ρ = 2^(-α) < 1`.  So they converge to some
+`L w` with `‖f(x + w) - f(x) - L w‖ = O(‖w‖^(1+α))`.  `L` is additive (second differences vanish in
+the limit) and `‖L w‖ ≤ C‖w‖`, so it is continuous linear and `Df(x) = L`.  The bounds `C` and
+`C‖x - y‖^α` pass to the limit, and Hölder continuity of `Df` gives `C¹`.  Continuity of `f` is not
+used: the first bound already makes `f` Lipschitz near each point of `B`. -/
+theorem Submission.codim1_hcp_sr_difference_quotient : ∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → ∀ (f : Euclid m → (Euclid m →L[ℝ] Euclid k)) (x₀ : Euclid m) (R h₀ C : ℝ), 0 < R → 0 < h₀ → ContinuousOn f (ball x₀ R) → (∀ v : Euclid m, ‖v‖ = 1 → ∀ t : ℝ, t ≠ 0 → |t| < h₀ → (∀ x ∈ ball x₀ R, ‖t⁻¹ • (f (x + t • v) - f x)‖ ≤ C) ∧ ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖t⁻¹ • (f (x + t • v) - f x) - t⁻¹ • (f (y + t • v) - f y)‖ ≤ C * ‖x - y‖ ^ α) → ContDiffOn ℝ 1 f (ball x₀ R) ∧ (∀ x ∈ ball x₀ R, ‖fderiv ℝ f x‖ ≤ C) ∧ ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖fderiv ℝ f x - fderiv ℝ f y‖ ≤ C * ‖x - y‖ ^ α := by
+  intro m k α hm hα f x₀ R h₀ C hR hh₀ _ hq
+  -- the hypotheses in increment form, `w = t • v`
+  have H : ∀ w : Euclid m, ‖w‖ < h₀ → (∀ x ∈ ball x₀ R, ‖f (x + w) - f x‖ ≤ C * ‖w‖) ∧
+      ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R,
+        ‖f (x + w) - f x - (f (y + w) - f y)‖ ≤ C * ‖w‖ * ‖x - y‖ ^ α := by
+    intro w hw
+    rcases eq_or_ne w 0 with rfl | hw0
+    · simp
+    have hn : 0 < ‖w‖ := norm_pos_iff.2 hw0
+    have hv : ‖‖w‖⁻¹ • w‖ = 1 := by
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hn.ne']
+    have hw' : ‖w‖ • ‖w‖⁻¹ • w = w := by
+      rw [smul_smul, mul_inv_cancel₀ hn.ne', one_smul]
+    obtain ⟨h1, h2⟩ := hq _ hv ‖w‖ hn.ne' (by rwa [abs_norm])
+    rw [hw'] at h1 h2
+    refine ⟨fun x hx => ?_, fun x hx y hy => ?_⟩
+    · have := h1 x hx
+      rw [norm_smul, norm_inv, norm_norm, inv_mul_le_iff₀ hn] at this
+      linarith
+    · have := h2 x hx y hy
+      rw [← smul_sub (‖w‖⁻¹) (f (x + w) - f x) (f (y + w) - f y), norm_smul, norm_inv, norm_norm,
+        inv_mul_le_iff₀ hn] at this
+      exact this.trans (le_of_eq (by ring))
+  -- `C ≥ 0`, tested on a unit vector
+  have hC : 0 ≤ C := by
+    have hv : ‖EuclideanSpace.single (⟨0, hm⟩ : Fin m) (1 : ℝ)‖ = 1 := by simp
+    exact (norm_nonneg _).trans ((hq _ hv (h₀ / 2) (by positivity)
+      (by rw [abs_of_pos (by positivity)]; linarith)).1 x₀ (mem_ball_self hR))
+  -- dyadic scaling: `‖2⁻ⁿ w‖ = 2⁻ⁿ ‖w‖`, `‖2⁻ⁿ w‖ ^ α = ρⁿ ‖w‖ ^ α` with `ρ = 2^(-α) < 1`
+  set ρ : ℝ := ((2 : ℝ) ^ α)⁻¹ with hρ
+  have hρ0 : 0 ≤ ρ := by positivity
+  have hρ1 : ρ < 1 := inv_lt_one_of_one_lt₀ (Real.one_lt_rpow one_lt_two hα)
+  have h2n : ∀ n : ℕ, ‖(2 : ℝ) ^ n‖ = (2 : ℝ) ^ n := fun n => Real.norm_of_nonneg (by positivity)
+  have hnorm : ∀ (n : ℕ) (w : Euclid m), ‖((2 : ℝ) ^ n)⁻¹ • w‖ = ((2 : ℝ) ^ n)⁻¹ * ‖w‖ :=
+    fun n w => norm_smul_of_nonneg (by positivity) w
+  have hpow : ∀ (n : ℕ) (w : Euclid m), ‖((2 : ℝ) ^ n)⁻¹ • w‖ ^ α = ρ ^ n * ‖w‖ ^ α := by
+    intro n w
+    rw [hnorm, Real.mul_rpow (by positivity) (norm_nonneg _), Real.inv_rpow (by positivity),
+      ← Real.rpow_natCast_mul (by norm_num), mul_comm (n : ℝ) α,
+      Real.rpow_mul_natCast (by norm_num), hρ, inv_pow]
+  have hsmall : ∀ (w : Euclid m) (ε : ℝ), 0 < ε → ∀ᶠ n : ℕ in atTop, ‖((2 : ℝ) ^ n)⁻¹ • w‖ < ε := by
+    intro w ε hε
+    have h : Tendsto (fun n : ℕ => ((2 : ℝ) ^ n)⁻¹ * ‖w‖) atTop (𝓝 (0 * ‖w‖)) :=
+      (tendsto_inv_atTop_zero.comp (tendsto_pow_atTop_atTop_of_one_lt one_lt_two)).mul_const _
+    rw [zero_mul] at h
+    filter_upwards [h.eventually (gt_mem_nhds hε)] with n hn
+    rwa [hnorm]
+  -- at each `x ∈ B`: the dyadic quotients `2ⁿ (f (x + 2⁻ⁿ w) - f x)` converge to `L w`, and
+  -- `f` has derivative `L` at `x`
+  have main : ∀ x ∈ ball x₀ R, ∃ L : Euclid m →L[ℝ] (Euclid m →L[ℝ] Euclid k), HasFDerivAt f L x ∧
+      (∀ w, ‖L w‖ ≤ C * ‖w‖) ∧
+      ∀ w, Tendsto (fun n : ℕ => (2 : ℝ) ^ n • (f (x + ((2 : ℝ) ^ n)⁻¹ • w) - f x)) atTop
+        (𝓝 (L w)) := by
+    intro x hx
+    set r := min h₀ (R - dist x x₀) with hr
+    have hr0 : 0 < r := lt_min hh₀ (sub_pos.2 (mem_ball.1 hx))
+    have hrh : r ≤ h₀ := min_le_left _ _
+    have hrB : ∀ a : Euclid m, ‖a‖ < r → x + a ∈ ball x₀ R := by
+      intro a ha
+      rw [mem_ball]
+      calc dist (x + a) x₀ ≤ dist (x + a) x + dist x x₀ := dist_triangle _ _ _
+        _ = ‖a‖ + dist x x₀ := by rw [dist_eq_norm, add_sub_cancel_left]
+        _ < R := by linarith [min_le_right h₀ (R - dist x x₀)]
+    -- increments `Φ w = f (x + w) - f x` and their second differences
+    set Φ : Euclid m → (Euclid m →L[ℝ] Euclid k) := fun w => f (x + w) - f x with hΦ
+    have hS : ∀ a b : Euclid m, ‖a‖ < r → ‖b‖ < h₀ →
+        ‖Φ (a + b) - Φ a - Φ b‖ ≤ C * ‖b‖ * ‖a‖ ^ α := by
+      intro a b ha hb
+      have h := (H b hb).2 (x + a) (hrB a ha) x hx
+      rw [add_sub_cancel_left] at h
+      convert h using 2
+      simp only [hΦ, add_assoc]
+      abel
+    -- the dyadic quotients `u w n = 2ⁿ Φ (2⁻ⁿ w)`
+    set u : Euclid m → ℕ → (Euclid m →L[ℝ] Euclid k) :=
+      fun w n => (2 : ℝ) ^ n • Φ (((2 : ℝ) ^ n)⁻¹ • w) with hu
+    -- `u w n - u w (n + 1) = 2ⁿ (Φ (2w') - 2 Φ w')`, `w' = 2⁻ⁿ⁻¹ w`: a geometric Cauchy estimate
+    have hgeo : ∀ w : Euclid m, ‖w‖ < r → ∀ n : ℕ,
+        dist (u w n) (u w (n + 1)) ≤ (C / 2 * ‖w‖ * ‖w‖ ^ α * ρ) * ρ ^ n := by
+      intro w hw n
+      have hw'w : ‖((2 : ℝ) ^ (n + 1))⁻¹ • w‖ ≤ ‖w‖ := by
+        rw [hnorm]
+        exact mul_le_of_le_one_left (norm_nonneg _) (inv_le_one_of_one_le₀ (one_le_pow₀ one_le_two))
+      have h2 : ((2 : ℝ) ^ n)⁻¹ • w = ((2 : ℝ) ^ (n + 1))⁻¹ • w + ((2 : ℝ) ^ (n + 1))⁻¹ • w := by
+        rw [← add_smul]; congr 1; rw [pow_succ]; field_simp; ring
+      have hdiff : u w n - u w (n + 1) = (2 : ℝ) ^ n • (Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w +
+          ((2 : ℝ) ^ (n + 1))⁻¹ • w) - Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w) -
+          Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w)) := by
+        simp only [hu]
+        rw [h2]
+        module
+      rw [dist_eq_norm, hdiff, norm_smul, h2n]
+      calc (2 : ℝ) ^ n * ‖Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w + ((2 : ℝ) ^ (n + 1))⁻¹ • w) -
+            Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w) - Φ (((2 : ℝ) ^ (n + 1))⁻¹ • w)‖
+          ≤ (2 : ℝ) ^ n * (C * ‖((2 : ℝ) ^ (n + 1))⁻¹ • w‖ * ‖((2 : ℝ) ^ (n + 1))⁻¹ • w‖ ^ α) :=
+            mul_le_mul_of_nonneg_left (hS _ _ (hw'w.trans_lt hw)
+              ((hw'w.trans_lt hw).trans_le hrh)) (by positivity)
+        _ = (C / 2 * ‖w‖ * ‖w‖ ^ α * ρ) * ρ ^ n := by
+            rw [hpow, hnorm]; field_simp; ring
+    -- for small `w` the limit exists and is within `O(‖w‖ ^ (1 + α))` of `Φ w`
+    have hlim0 : ∀ w : Euclid m, ‖w‖ < r → ∃ a, Tendsto (u w) atTop (𝓝 a) ∧
+        ‖Φ w - a‖ ≤ C / 2 * ‖w‖ * ‖w‖ ^ α * ρ / (1 - ρ) := by
+      intro w hw
+      obtain ⟨a, ha⟩ :=
+        cauchySeq_tendsto_of_complete (cauchySeq_of_le_geometric ρ _ hρ1 (hgeo w hw))
+      refine ⟨a, ha, ?_⟩
+      have h := dist_le_of_le_geometric_of_tendsto₀ ρ _ hρ1 (hgeo w hw) ha
+      have hu0 : u w 0 = Φ w := by simp [hu]
+      rwa [dist_eq_norm, hu0] at h
+    -- for every `w`: `u w (n + N) = 2ᴺ u (2⁻ᴺ w) n`
+    have hlim : ∀ w : Euclid m, ∃ a, Tendsto (u w) atTop (𝓝 a) := by
+      intro w
+      obtain ⟨N, hN⟩ := (hsmall w r hr0).exists
+      obtain ⟨a, ha, -⟩ := hlim0 _ hN
+      refine ⟨(2 : ℝ) ^ N • a, (tendsto_add_atTop_iff_nat N).1 ?_⟩
+      have e : ∀ n, u w (n + N) = (2 : ℝ) ^ N • u (((2 : ℝ) ^ N)⁻¹ • w) n := by
+        intro n
+        have e1 : ((2 : ℝ) ^ (n + N))⁻¹ • w = ((2 : ℝ) ^ n)⁻¹ • ((2 : ℝ) ^ N)⁻¹ • w := by
+          rw [smul_smul, pow_add, mul_inv]
+        simp only [hu]
+        rw [e1, smul_smul, pow_add, mul_comm ((2 : ℝ) ^ n), mul_smul]
+      simp_rw [e]
+      exact ha.const_smul _
+    choose Lf hLf using hlim
+    -- `Lf` is additive: second differences of `u` vanish in the limit
+    have hadd : ∀ a b, Lf (a + b) = Lf a + Lf b := by
+      intro a b
+      have h1 : Tendsto (fun n => u (a + b) n - u a n - u b n) atTop
+          (𝓝 (Lf (a + b) - Lf a - Lf b)) := ((hLf _).sub (hLf _)).sub (hLf _)
+      have h2 : Tendsto (fun n => u (a + b) n - u a n - u b n) atTop (𝓝 0) := by
+        rw [tendsto_iff_norm_sub_tendsto_zero]
+        simp only [sub_zero]
+        refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_
+          (g := fun n => C * ‖b‖ * (ρ ^ n * ‖a‖ ^ α)) ?_
+        · filter_upwards [hsmall a r hr0, hsmall b h₀ hh₀] with n ha hb
+          have e : u (a + b) n - u a n - u b n = (2 : ℝ) ^ n • (Φ (((2 : ℝ) ^ n)⁻¹ • a +
+              ((2 : ℝ) ^ n)⁻¹ • b) - Φ (((2 : ℝ) ^ n)⁻¹ • a) - Φ (((2 : ℝ) ^ n)⁻¹ • b)) := by
+            simp only [hu, smul_add]
+            module
+          rw [e, norm_smul, h2n]
+          calc (2 : ℝ) ^ n * ‖Φ (((2 : ℝ) ^ n)⁻¹ • a + ((2 : ℝ) ^ n)⁻¹ • b) -
+                Φ (((2 : ℝ) ^ n)⁻¹ • a) - Φ (((2 : ℝ) ^ n)⁻¹ • b)‖
+              ≤ (2 : ℝ) ^ n * (C * ‖((2 : ℝ) ^ n)⁻¹ • b‖ * ‖((2 : ℝ) ^ n)⁻¹ • a‖ ^ α) :=
+                mul_le_mul_of_nonneg_left (hS _ _ ha hb) (by positivity)
+            _ = C * ‖b‖ * (ρ ^ n * ‖a‖ ^ α) := by rw [hpow, hnorm]; field_simp
+        · have h := ((tendsto_pow_atTop_nhds_zero_of_lt_one hρ0 hρ1).mul_const (‖a‖ ^ α)).const_mul
+            (C * ‖b‖)
+          rwa [zero_mul, mul_zero] at h
+      have h := tendsto_nhds_unique h1 h2
+      rwa [sub_sub, sub_eq_zero] at h
+    -- `‖Lf w‖ ≤ C ‖w‖`
+    have hbd : ∀ w, ‖Lf w‖ ≤ C * ‖w‖ := by
+      intro w
+      refine le_of_tendsto (hLf w).norm ?_
+      filter_upwards [hsmall w h₀ hh₀] with n hn
+      simp only [hu]
+      rw [norm_smul, h2n]
+      calc (2 : ℝ) ^ n * ‖Φ (((2 : ℝ) ^ n)⁻¹ • w)‖
+          ≤ (2 : ℝ) ^ n * (C * ‖((2 : ℝ) ^ n)⁻¹ • w‖) :=
+            mul_le_mul_of_nonneg_left ((H _ hn).1 x hx) (by positivity)
+        _ = C * ‖w‖ := by rw [hnorm]; field_simp
+    -- the continuous linear map
+    let Lm : Euclid m →+ (Euclid m →L[ℝ] Euclid k) := AddMonoidHom.mk' Lf hadd
+    have hLc : Continuous Lm := AddMonoidHomClass.continuous_of_bound Lm C hbd
+    refine ⟨Lm.toRealLinearMap hLc, ?_, hbd, hLf⟩
+    -- differentiability: `‖Φ w - Lf w‖ ≤ K ‖w‖ ^ α ‖w‖` for small `w`
+    rw [hasFDerivAt_iff_isLittleO_nhds_zero, Asymptotics.isLittleO_iff]
+    intro ε hε
+    have hK : Tendsto (fun w : Euclid m => C / 2 * ρ / (1 - ρ) * ‖w‖ ^ α) (𝓝 0) (𝓝 0) := by
+      have h := ((continuous_norm.rpow_const (fun _ => Or.inr hα.le)).tendsto
+        (0 : Euclid m)).const_mul (C / 2 * ρ / (1 - ρ))
+      rwa [norm_zero, Real.zero_rpow hα.ne', mul_zero] at h
+    filter_upwards [hK.eventually (ge_mem_nhds hε), ball_mem_nhds (0 : Euclid m) hr0] with w hw hwr
+    rw [mem_ball_zero_iff] at hwr
+    obtain ⟨a, ha, hab⟩ := hlim0 w hwr
+    have hae : a = Lf w := tendsto_nhds_unique ha (hLf w)
+    calc ‖f (x + w) - f x - (Lm.toRealLinearMap hLc) w‖ = ‖Φ w - a‖ := by rw [hae]; rfl
+      _ ≤ C / 2 * ‖w‖ * ‖w‖ ^ α * ρ / (1 - ρ) := hab
+      _ = (C / 2 * ρ / (1 - ρ) * ‖w‖ ^ α) * ‖w‖ := by ring
+      _ ≤ ε * ‖w‖ := mul_le_mul_of_nonneg_right hw (norm_nonneg _)
+  choose! L hL hLb hLt using main
+  have hfd : ∀ x ∈ ball x₀ R, fderiv ℝ f x = L x := fun x hx => (hL x hx).fderiv
+  -- the α-Hölder bound passes to the limit of the dyadic quotients
+  have hhold : ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ∀ w,
+      ‖(L x - L y) w‖ ≤ C * ‖x - y‖ ^ α * ‖w‖ := by
+    intro x hx y hy w
+    rw [sub_apply]
+    refine le_of_tendsto ((hLt x hx w).sub (hLt y hy w)).norm ?_
+    filter_upwards [hsmall w h₀ hh₀] with n hn
+    rw [← smul_sub ((2 : ℝ) ^ n) (f (x + ((2 : ℝ) ^ n)⁻¹ • w) - f x)
+      (f (y + ((2 : ℝ) ^ n)⁻¹ • w) - f y), norm_smul, h2n]
+    calc (2 : ℝ) ^ n * ‖f (x + ((2 : ℝ) ^ n)⁻¹ • w) - f x - (f (y + ((2 : ℝ) ^ n)⁻¹ • w) - f y)‖
+        ≤ (2 : ℝ) ^ n * (C * ‖((2 : ℝ) ^ n)⁻¹ • w‖ * ‖x - y‖ ^ α) :=
+          mul_le_mul_of_nonneg_left ((H _ hn).2 x hx y hy) (by positivity)
+      _ = C * ‖x - y‖ ^ α * ‖w‖ := by rw [hnorm]; field_simp
+  refine ⟨?_, fun x hx => ?_, fun x hx y hy => ?_⟩
+  · rw [← zero_add (1 : WithTop ℕ∞), contDiffOn_succ_iff_fderiv_of_isOpen isOpen_ball,
+      contDiffOn_zero]
+    refine ⟨fun x hx => (hL x hx).differentiableAt.differentiableWithinAt, by simp, fun x hx => ?_⟩
+    rw [ContinuousWithinAt, tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_
+      (g := fun y => C * ‖y - x‖ ^ α) ?_
+    · filter_upwards [self_mem_nhdsWithin] with y hy
+      rw [hfd y hy, hfd x hx]
+      exact ContinuousLinearMap.opNorm_le_bound _
+        (mul_nonneg hC (Real.rpow_nonneg (norm_nonneg _) _)) (hhold y hy x hx)
+    · have hc : Continuous fun y : Euclid m => C * ‖y - x‖ ^ α :=
+        continuous_const.mul ((continuous_norm.comp (continuous_id.sub continuous_const)).rpow_const
+          fun _ => Or.inr hα.le)
+      have h := hc.tendsto x
+      rw [sub_self, norm_zero, Real.zero_rpow hα.ne', mul_zero] at h
+      exact h.mono_left nhdsWithin_le_nhds
+  · rw [hfd x hx]
+    exact ContinuousLinearMap.opNorm_le_bound _ hC (hLb x hx)
+  · rw [hfd x hx, hfd y hy]
+    exact ContinuousLinearMap.opNorm_le_bound _ (mul_nonneg hC (Real.rpow_nonneg (norm_nonneg _) _))
+      (hhold x hx y hy)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
