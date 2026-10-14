@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.tangent_subset_range-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+  "depth": 4,
+  "title": "Under a secant estimate, curve velocities lie in the range of A",
+  "statement": "Let P, d ∈ ℕ, N ⊆ ℝ^P, q ∈ ℝ^P, and A : ℝ^d → ℝ^P a continuous linear map. Assume that for every ε > 0 there is δ > 0 such that every y ∈ N with |y − q| < δ admits some a ∈ ℝ^d with |y − q − Aa| ≤ ε|y − q|. Then tangentSpace N q ⊆ A(ℝ^d). Here tangentSpace N q is the set of w ∈ ℝ^P for which some γ : ℝ → ℝ^P is C¹ on (−1, 1), maps (−1, 1) into N, and satisfies γ(0) = q and γ'(0) = w (HasDerivAt γ w 0).",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)) (q : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y q < δ → ∃ a : Euclid d, ‖y - q - A a‖ ≤ ε * ‖y - q‖) → tangentSpace N q ⊆ Set.range A",
+  "lean_name": "dsmc_tangentSpace_subset_range_of_secant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-992de505d1-a1"
+}
