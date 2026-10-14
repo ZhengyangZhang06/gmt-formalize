@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ff4125895fefbb0b24f8fd6c2d5983d198089a62b7b6e3a2f7bd928c4a276630",
+  "git_delta": {
+    "base_commit": "84a71e4f839637ba2f14400b943eb39ac7080d18",
+    "candidate_commit": "8fb9a5124f7a8b5f96d20ca16498c75d1ab296e5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_fr_plane_orientation",
+    "diff_sha256": "83f3849637c33c483dd23837ca76a7cd7b93aecfb2df4ecf82c915b7e596d61d",
+    "source_sha256": "f22c8afcf2aaa5b79638f3d7eafa8b87fcc2d34e9a48260fab4d221e085d4e24",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_fr_plane_orientation",
+      "statement": "∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
