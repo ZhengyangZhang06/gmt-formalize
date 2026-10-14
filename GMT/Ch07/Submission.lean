@@ -917,6 +917,47 @@ theorem Submission.cbr_ci_iso_volume_le_ediam_pow : ∀ (d : ℕ) (A : Set (Eucl
       _ ≤ unitBallVolume d * (ediam K / 2) ^ d := Submission.cbr_ci_iso_volume_le_of_neg_mem d K hKs
       _ ≤ unitBallVolume d * (ediam A / 2) ^ d := by gcongr
 
+/-- Lebesgue measure on `ℝ^d` is at most `(ω_d / 2^d) • μH[d]` (Simon Ch. 1, "Completion of the
+proof of 2.9", pp. 12–13, in Mathlib's unnormalised `μH[d]`, whose weight is `diam^d`).  Put
+`c = ω_d / 2^d`; `c ≠ 0, ∞` since `0 < ω_d < ∞`.  The isodiametric inequality
+`L^d(s) ≤ ω_d (diam s / 2)^d = c · diam(s)^d` gives `c⁻¹ L^d(s) ≤ diam(s)^d` for every `s`, so
+`c⁻¹ • L^d ≤ μH[d]` (`Measure.le_hausdorffMeasure`: cover by sets `C_k` of small diameter,
+`c⁻¹ L^d(B) ≤ Σ c⁻¹ L^d(C_k) ≤ Σ diam(C_k)^d`).  Multiplying back by `c` gives
+`L^d ≤ c • μH[d]` setwise. -/
+theorem Submission.cbr_ci_iso_volume_le_smul_hausdorff : ∀ (d : ℕ), (volume : Measure (Euclid d)) ≤ (unitBallVolume d / 2 ^ d) • (μH[(d : ℝ)] : Measure (Euclid d)) := by
+  intro d
+  -- Step 1: `c = ω_d / 2^d` is neither `0` nor `∞`
+  set c : ℝ≥0∞ := unitBallVolume d / 2 ^ d with hc
+  have hω0 : unitBallVolume d ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Euclid d) one_pos).ne'
+  have hωtop : unitBallVolume d ≠ ∞ := measure_ball_lt_top.ne
+  have hc0 : c ≠ 0 := ENNReal.div_ne_zero.2 ⟨hω0, ENNReal.pow_ne_top ENNReal.ofNat_ne_top⟩
+  have hctop : c ≠ ∞ := ENNReal.div_ne_top hωtop (pow_ne_zero d two_ne_zero)
+  -- Step 2: the isodiametric inequality gives `c⁻¹ L^d(s) ≤ diam(s)^d` for every `s`
+  have hdiam : ∀ s : Set (Euclid d), c⁻¹ * volume s ≤ ediam s ^ d := by
+    intro s
+    have hiso : volume s ≤ c * ediam s ^ d :=
+      calc volume s ≤ unitBallVolume d * (ediam s / 2) ^ d :=
+            Submission.cbr_ci_iso_volume_le_ediam_pow d s
+        _ = c * ediam s ^ d := by
+            rw [hc, div_eq_mul_inv, div_eq_mul_inv, mul_pow, ENNReal.inv_pow]
+            ring
+    calc c⁻¹ * volume s ≤ c⁻¹ * (c * ediam s ^ d) := by gcongr
+      _ = ediam s ^ d := by rw [← mul_assoc, ENNReal.inv_mul_cancel hc0 hctop, one_mul]
+  -- Step 3: `ν = c⁻¹ • L^d ≤ μH[d]`; the bound is needed only for sets of diameter `≤ 1`
+  have hν : c⁻¹ • (volume : Measure (Euclid d)) ≤ μH[(d : ℝ)] := by
+    refine Measure.le_hausdorffMeasure (d : ℝ) _ 1 one_pos fun s _ => ?_
+    rw [Measure.smul_apply, smul_eq_mul, ENNReal.rpow_natCast]
+    exact hdiam s
+  -- Step 4: `L^d(s) = c · ν(s) ≤ c · μH[d](s)` for every set `s`
+  refine Measure.le_iff'.2 fun s => ?_
+  rw [Measure.smul_apply, smul_eq_mul]
+  calc volume s = c * (c⁻¹ * volume s) := by
+        rw [← mul_assoc, ENNReal.mul_inv_cancel hc0 hctop, one_mul]
+    _ ≤ c * μH[(d : ℝ)] s := by
+        gcongr
+        simpa only [Measure.smul_apply, smul_eq_mul] using Measure.le_iff'.1 hν s
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
