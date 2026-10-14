@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The integral form of the mass bound **Simon Ch. 6, 2.29**, `M_W(f_#T) ≤ (sup |Df|)ⁿ M(T)`: if
+`|g| ≤ c 1_G` holds `Hⁿ⌞M`-a.e. with `G` measurable, then `ofReal(∫_M θ g dHⁿ) ≤ ofReal(c) μ_R(G)`,
+where `μ_R = (Hⁿ⌞M).withDensity θ`.  Indeed `ofReal(∫ θg) ≤ ‖∫ θg‖ₑ ≤ ∫⁻ ‖θg‖ₑ`, and a.e.
+`‖θg‖ₑ ≤ 1_G ofReal(c) θ` (on `G` since `|g| ≤ c`, off `G` since `g = 0`), whose lower integral
+over `Hⁿ⌞M` is `ofReal(c) μ_R(G)`. -/
+theorem Submission.dor_lmb_pc_cm_ofReal_integral_le_measure : ∀ (P n : ℕ) (U G : Set (Euclid P)) (R : IMRep U n) (g : Euclid P → ℝ) (c : ℝ), MeasurableSet G → (∀ᵐ x ∂(μHE[n].restrict R.carrier), |g x| ≤ G.indicator (fun _ => c) x) → ENNReal.ofReal (∫ x in R.carrier, (R.mult x : ℝ) * g x ∂μHE[n]) ≤ ENNReal.ofReal c * R.measure G := by
+  intro P n U G R g c hG hg
+  -- the weight `θ` is measurable into `[0, ∞]`, being measurable into `ℕ`
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  calc ENNReal.ofReal (∫ x in R.carrier, (R.mult x : ℝ) * g x ∂μHE[n])
+      ≤ ‖∫ x in R.carrier, (R.mult x : ℝ) * g x ∂μHE[n]‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in R.carrier, ‖(R.mult x : ℝ) * g x‖ₑ ∂μHE[n] := enorm_integral_le_lintegral_enorm _
+    -- `‖θg‖ₑ ≤ 1_G ofReal(c) θ` holds `Hⁿ⌞M`-a.e.
+    _ ≤ ∫⁻ x in R.carrier, G.indicator (fun x => ENNReal.ofReal c * (R.mult x : ℝ≥0∞)) x
+          ∂μHE[n] := by
+        refine lintegral_mono_ae ?_
+        filter_upwards [hg] with x hx
+        by_cases hxG : x ∈ G
+        · rw [Set.indicator_of_mem hxG] at hx ⊢
+          rw [Real.enorm_eq_ofReal_abs, abs_mul, Nat.abs_cast]
+          calc ENNReal.ofReal ((R.mult x : ℝ) * |g x|) ≤ ENNReal.ofReal ((R.mult x : ℝ) * c) :=
+                ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hx (Nat.cast_nonneg _))
+            _ = ENNReal.ofReal c * (R.mult x : ℝ≥0∞) := by
+                rw [ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast, mul_comm]
+        · rw [Set.indicator_of_notMem hxG] at hx ⊢
+          have : g x = 0 := abs_nonpos_iff.mp hx
+          simp [this]
+    -- `∫⁻_G ofReal(c) θ d(Hⁿ⌞M) = ofReal(c) (Hⁿ⌞M).withDensity θ (G)`
+    _ = ENNReal.ofReal c * R.measure G := by
+        rw [lintegral_indicator hG, lintegral_const_mul _ hθ, IMRep.measure,
+          withDensity_apply _ hG]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
