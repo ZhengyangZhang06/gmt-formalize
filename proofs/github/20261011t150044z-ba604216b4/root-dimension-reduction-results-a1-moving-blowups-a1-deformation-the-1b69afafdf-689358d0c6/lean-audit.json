@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06ef9a5fbef15019bdf9b23db321da815af98b8474eecfeeb249a844baf4fd3b",
+  "git_delta": {
+    "base_commit": "72d0a7f421e046786fa71ab0f173d08b5fe1b060",
+    "candidate_commit": "d73e1c54a8c23c85b2f3a371dbab41cccfa64daa",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfrpi_isometry_image_integral",
+    "diff_sha256": "4a5042cd9c9d74a792221eece71619942289758f447dc4ee0bb9fcc9fe4800ab",
+    "source_sha256": "2dfd5595943fe9f67aad79e7efd78427b5fa999a01eee4b04306644ecd5479bd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfrpi_isometry_image_integral",
+      "statement": "∀ (P k : ℕ) (Φ : Euclid k → Euclid P) (A : Set (Euclid k)), Isometry Φ → MeasurableSet A → MeasurableSet (Φ '' A) ∧ μHE[k] (Φ '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in Φ '' A, h x ∂μHE[k] = ∫ y in A, h (Φ y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
