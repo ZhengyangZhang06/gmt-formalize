@@ -555,6 +555,31 @@ theorem Submission.idtp_fons_cc_psf_nonhomogeneous : ∀ (P n : ℕ) (ν : Measu
       _ = ρ (ball 0 t) := (hball t (by linarith)).symm
       _ ≤ ρ univ := measure_mono (subset_univ _)
 
+/-- **A measure `g Hⁿ` whose own density `g` is dilation-invariant and positive somewhere has
+infinite mass** (`n ≥ 1`; used for the density-threshold `sing` in the dimension-reducing argument
+of Simon Appendix A for 7.3.3: hypothesis A.3(1), chapter-A.txt lines 26–27, and the final step
+`ν(B_{tR}(0)) = tⁿ ν(B_R(0)) → ∞`).  Let `g(x) = (limsup_{ρ↓0} μ(B_ρ(x))/(ωₙρⁿ)).toReal` for every
+`x`, `μ = (ofReal ∘ g) Hⁿ`, `g(tx) = g(x)` for `t > 0`, and `g(x₀) > 0`.  If `μ(ℝᴾ) = 0`, then
+`μ = 0`, every ratio `μ(B_ρ(x₀))/(ωₙρⁿ)` is `0` and `g(x₀) = 0`; so `μ(ℝᴾ) ≠ 0`, and
+`Submission.idtp_fons_cc_psf_nonhomogeneous` with the dilation-invariant `f = ofReal ∘ g` excludes
+`μ(ℝᴾ) < ∞`. -/
+theorem Submission.dimred_tr_mcr_homogeneous_infinite_mass : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (x₀ : Euclid P), 1 ≤ n → (∀ x, g x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → (∀ t : ℝ, 0 < t → ∀ x, g (t • x) = g x) → 0 < g x₀ → μ univ = ∞ := by
+  intro P n μ g x₀ hn hg hμ hhom hx₀
+  -- Step 1: `μ(ℝᴾ) ≠ 0`.  Otherwise `μ = 0`, so every ratio `μ(B_ρ(x₀))/(ωₙρⁿ)` is `0`, its
+  -- limsup along the nontrivial filter `𝓝[>] 0` is `0`, and `g(x₀) = 0 < g(x₀)`.
+  have h0 : μ univ ≠ 0 := by
+    intro h
+    rw [Measure.measure_univ_eq_zero] at h
+    have hgx₀ : g x₀ = 0 := by
+      rw [hg x₀, h]
+      simp
+    exact hx₀.ne' hgx₀
+  -- Step 2: `μ(ℝᴾ) = ∞`.  Otherwise `0 < μ(ℝᴾ) < ∞` while `μ = f Hⁿ` with `f = ofReal ∘ g` and
+  -- `f(tw) = f(w)` for `t > 0`, which the sibling non-homogeneity lemma excludes.
+  by_contra htop
+  exact Submission.idtp_fons_cc_psf_nonhomogeneous P n μ (fun x => ENNReal.ofReal (g x)) hn h0
+    htop (fun t ht w => congrArg ENNReal.ofReal (hhom t ht w)) hμ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
