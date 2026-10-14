@@ -905,6 +905,103 @@ theorem Submission.dor_lmbsf_ll_wedge_representing_vector : ∀ (P n : ℕ) (ζ 
   rw [hzero u hu, innerSL_apply_apply] at this
   exact this.symm
 
+/-- **A bounded Borel tangent field representing `β ↦ ⟨β ∧ ω, ξ⟩`** (Simon Ch. 6, proof of
+Lemma 4.5(2), display (3)).  Let `R = (M, θ, ξ)` be an integer multiplicity `(n+1)`-triple and `ω`
+a continuous `n`-form with `‖ω‖ ≤ B`.  Let `ξ₀` be a strongly measurable version of `ξ`, replaced
+by `0` where its norm exceeds `1`.  Then `W = Σₗ ξ₀(eₗ♭ ∧ ω) eₗ` is Borel, vanishes where `ω` does
+and is bounded by `P (n+1) B`.  For `H^{n+1}`-a.e. `x ∈ M`, `ξ(x)` orients `TₓM`, so `‖ξ(x)‖ ≤ 1`
+and `ξ₀(x) = ξ(x)`; there `W(x)` is the representing vector of `β ↦ ⟨β ∧ ω(x), ξ(x)⟩`, which
+lies in `TₓM`. -/
+theorem Submission.dor_lmbsf_ll_tangent_wedge_field : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U (n + 1)) (ω : DifferentialForm (Euclid P) n) (B : ℝ), Continuous ω → (∀ x, ‖ω x‖ ≤ B) → ∃ (W : Euclid P → Euclid P) (c' : ℝ), Measurable W ∧ (∀ x, ω x = 0 → W x = 0) ∧ (∀ x, ‖W x‖ ≤ c') ∧ ∀ᵐ x ∂(μHE[n + 1].restrict R.carrier), W x ∈ approxTangentPlane (n + 1) R.carrier x ∧ ∀ β : Euclid P →L[ℝ] ℝ, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight (ω x))) = β (W x) := by
+  intro P n U R ω B hω hB
+  classical
+  -- a strongly measurable version `ξ₁` of `ξ`, and its truncation `ξ₀` to the closed unit ball
+  have hξm := R.aestronglyMeasurable_orient
+  set ξ₁ : Euclid P → MultiVector P (n + 1) := hξm.mk R.orient with hξ₁_def
+  have hξ₁ : StronglyMeasurable ξ₁ := hξm.stronglyMeasurable_mk
+  have hξ₁ae : R.orient =ᵐ[μHE[n + 1].restrict R.carrier] ξ₁ := hξm.ae_eq_mk
+  set S : Set (Euclid P) := {x | ‖ξ₁ x‖ ≤ 1} with hS_def
+  have hS : MeasurableSet S :=
+    measurableSet_le (hξ₁.norm (β := MultiVector P (n + 1))).measurable measurable_const
+  set ξ₀ : Euclid P → MultiVector P (n + 1) := S.piecewise ξ₁ 0 with hξ₀_def
+  have hξ₀ : StronglyMeasurable ξ₀ := hξ₁.piecewise hS stronglyMeasurable_const
+  have hξ₀norm : ∀ x, ‖ξ₀ x‖ ≤ 1 := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [hξ₀_def, Set.piecewise_eq_of_mem _ _ _ hx]; exact hx
+    · rw [hξ₀_def, Set.piecewise_eq_of_notMem _ _ _ hx, Pi.zero_apply]
+      exact (norm_zero (E := MultiVector P (n + 1))).le.trans zero_le_one
+  -- the coefficient forms `Aₗ = eₗ♭ ∧ ω` are continuous
+  set e : Fin P → Euclid P := fun l => EuclideanSpace.single l (1 : ℝ) with he_def
+  set A : Fin P → Euclid P → Covector (Euclid P) (n + 1) := fun l x =>
+    ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (e l)).smulRight (ω x)) with hA_def
+  have hA : ∀ l, Continuous (A l) := by
+    intro l
+    have h1 : Continuous (fun x => (innerSL ℝ (e l)).smulRight (ω x)) :=
+      (isBoundedBilinearMap_smulRight (𝕜 := ℝ) (E := Euclid P)).continuous.comp
+        (continuous_const.prodMk hω)
+    have h2 := (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ (n := n)).continuous.comp h1
+    simpa [Function.comp_def, ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply] using h2
+  -- the coefficients `ξ₀(Aₗ)` are strongly measurable
+  have hcoef : ∀ l, StronglyMeasurable (fun x => ξ₀ x (A l x)) := by
+    intro l
+    have h2 : StronglyMeasurable (A l) := (hA l).stronglyMeasurable
+    exact (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) (n + 1)) (F := ℝ)).continuous.comp_stronglyMeasurable
+      (hξ₀.prodMk h2)
+  set W : Euclid P → Euclid P := fun x => ∑ l : Fin P, ξ₀ x (A l x) • e l with hW_def
+  -- `‖Aₗ‖ ≤ (n+1) ‖eₗ♭‖ ‖ω‖ ≤ (n+1) B`
+  have hAnorm : ∀ l x, ‖A l x‖ ≤ (n + 1) * B := by
+    intro l x
+    have h1 := ContinuousAlternatingMap.norm_alternatizeUncurryFin_le ((innerSL ℝ (e l)).smulRight (ω x))
+    have h2 : ‖(innerSL ℝ (e l)).smulRight (ω x)‖ = ‖innerSL ℝ (e l)‖ * ‖ω x‖ :=
+      ContinuousLinearMap.norm_smulRight_apply _ _
+    have h3 : ‖innerSL ℝ (e l)‖ = 1 := by
+      rw [innerSL_apply_norm]; simp [e]
+    calc ‖A l x‖ ≤ (n + 1) * ‖(innerSL ℝ (e l)).smulRight (ω x)‖ := h1
+      _ = (n + 1) * ‖ω x‖ := by rw [h2, h3, one_mul]
+      _ ≤ (n + 1) * B := by gcongr; exact hB x
+  refine ⟨W, (P : ℝ) * ((n + 1) * B), ?_, ?_, ?_, ?_⟩
+  · exact Finset.measurable_sum _ (fun l _ => (hcoef l).measurable.smul_const (e l))
+  · intro x hx
+    have hA0 : ∀ l, A l x = 0 := by
+      intro l
+      have h0 : (innerSL ℝ (e l)).smulRight (0 : Covector (Euclid P) n) = 0 := by ext; simp
+      ext v
+      simp only [hA_def, hx, h0, ContinuousAlternatingMap.alternatizeUncurryFin_apply]
+      simp
+    simp only [hW_def, hA0, map_zero, zero_smul, Finset.sum_const_zero]
+  · intro x
+    calc ‖W x‖ ≤ ∑ l : Fin P, ‖ξ₀ x (A l x) • e l‖ := norm_sum_le _ _
+      _ ≤ ∑ l : Fin P, (n + 1) * B := by
+          apply Finset.sum_le_sum
+          intro l _
+          rw [norm_smul]
+          have he1 : ‖e l‖ = 1 := by simp [e]
+          rw [he1, mul_one]
+          calc ‖ξ₀ x (A l x)‖ ≤ ‖ξ₀ x‖ * ‖A l x‖ := (ξ₀ x).le_opNorm _
+            _ ≤ 1 * ((n + 1) * B) := by
+                gcongr
+                · exact hξ₀norm x
+                · exact hAnorm l x
+            _ = (n + 1) * B := one_mul _
+      _ = (P : ℝ) * ((n + 1) * B) := by simp
+  -- a.e. on `M`: `ξ` orients `TₓM`, so `‖ξ‖ ≤ 1` and `ξ₀ = ξ₁ = ξ`; then `W` is the representing
+  -- vector of `β ↦ ξ(β ∧ ω)`
+  · filter_upwards [hξ₁ae, Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane P (n + 1) U R] with x hx1 hx2
+    have hnorm : ‖R.orient x‖ ≤ 1 := Submission.unit_orientation_norm_le_one P (n + 1) _ _ hx2
+    have hxS : x ∈ S := by
+      show ‖ξ₁ x‖ ≤ 1
+      rw [← hx1]; exact hnorm
+    have hξ₀x : ξ₀ x = R.orient x := by
+      rw [hξ₀_def, Set.piecewise_eq_of_mem _ _ _ hxS, hx1]
+    obtain ⟨hidt, hmem⟩ := Submission.dor_lmbsf_ll_wedge_representing_vector P n (R.orient x) (ω x)
+    have hWx : W x = ∑ l : Fin P, R.orient x (ContinuousAlternatingMap.alternatizeUncurryFin
+        ((innerSL ℝ (EuclideanSpace.single l (1 : ℝ))).smulRight (ω x))) • EuclideanSpace.single l (1 : ℝ) := by
+      simp only [hW_def, hA_def, he_def, hξ₀x]
+    refine ⟨?_, ?_⟩
+    · rw [hWx]; exact hmem _ hx2
+    · intro β; rw [hWx]; exact hidt β
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
