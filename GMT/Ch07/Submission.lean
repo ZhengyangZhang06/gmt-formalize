@@ -528,6 +528,26 @@ theorem Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite : ∀ (ν : ℕ → Measur
   -- a measurable function with finite integral is finite a.e.
   filter_upwards [ae_lt_top hFm (ne_top_of_le_ne_top hΛ hFint)] with t ht
   exact ht.ne
+/-- **Simon 7.2.4, good slices** (comparison of difference quotients): for `a < t < b`,
+`liminf_{h ↓ 0} h⁻¹ μ((t − h, t)) ≤ liminf_n (n + 1) (μ⌞[a, b])((t − 1/(n + 1), t))`.  Along
+`hₙ = 1/(n + 1) → 0⁺` the liminf can only grow; once `hₙ < t − a` the window `(t − hₙ, t)` lies in
+`[a, b]`, where `μ⌞[a, b]` agrees with `μ`, and `ofReal hₙ⁻¹ = n + 1`. -/
+theorem Submission.cmc_fc_gs_aqf_liminf_le_seq : ∀ (μ : Measure ℝ) (a b t : ℝ), t ∈ Ioo a b → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t)) (𝓝[>] 0) ≤ liminf (fun n : ℕ => ((n : ℝ≥0∞) + 1) * (μ.restrict (Icc a b)) (Ioo (t - 1 / ((n : ℝ) + 1)) t)) atTop := by
+  intro μ a b t ht
+  -- `hₙ = 1/(n + 1) → 0` through positive values
+  have hv : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 1)) atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨tendsto_one_div_add_atTop_nhds_zero_nat,
+      Eventually.of_forall fun n => Set.mem_Ioi.2 (by positivity)⟩
+  refine (hv.liminf_le_liminf_comp
+    (u := fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (Ioo (t - h) t))).trans_eq (liminf_congr ?_)
+  -- eventually `hₙ < t − a`, so the window lies in `[a, b]`
+  filter_upwards [(tendsto_order.1 (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))).2 _
+    (sub_pos.2 ht.1)] with n hn
+  have hsub : Ioo (t - 1 / ((n : ℝ) + 1)) t ⊆ Icc a b := fun x hx =>
+    ⟨by linarith [hx.1], by linarith [hx.2, ht.2]⟩
+  simp only [Function.comp_apply]
+  rw [Measure.restrict_apply measurableSet_Ioo, Set.inter_eq_left.2 hsub, one_div, inv_inv,
+    ENNReal.ofReal_add (Nat.cast_nonneg n) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
