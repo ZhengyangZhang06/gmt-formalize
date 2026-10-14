@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Flux density, identifying the constant** (steps 7–9 of the proof of
+`idtp_cse_flux_density_eq`).  Let `0 < s ≤ 1`, `B = (1 − s/8, 1 + s/8) × (−s, s)` and
+`B' = (1 − s/8, 1 + s/8) × (−s/8, s/8)`.  If `H < ∞` a.e., `toReal ∘ H = c·p₁` a.e. on `B`, and the
+box integrals `I(s') = ∫_{(1−s', 1+s') × (−s', s')} H` (`0 < s' ≤ s/8`) satisfy `I(s')/s'² → 4m` as
+`s' ↓ 0`, then `H = m·p₁` a.e. on `B'`.  Indeed `H = c·p₁` a.e. on `B`, so `c ≥ 0` (`p₁ > 0` on the
+non-null `B' ⊆ B`); by Tonelli `I(s') = 4c·s'²`, and uniqueness of limits gives `c = m`. -/
+theorem Submission.idtp_cse_fd_identify_constant : ∀ (s c : ℝ) (m : ℕ) (H : ℝ × ℝ → ℝ≥0∞) (I : ℝ → ℝ≥0∞), 0 < s → s ≤ 1 → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → (H p).toReal = c * p.1) → (∀ s' : ℝ, 0 < s' → s' ≤ s / 8 → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = I s') → Tendsto (fun s' : ℝ => I s' / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞))) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-(s / 8)) (s / 8) → H p = ENNReal.ofReal ((m : ℝ) * p.1) := by
+  intro s c m H I hs hs1 hfin hH hI hlim
+  -- step 1: `H = ofReal (c p₁)` a.e. on `B`
+  have h1 : ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s →
+      H p = ENNReal.ofReal (c * p.1) := by
+    filter_upwards [hfin, hH] with p hp1 hp2 hpB
+    rw [← hp2 hpB, ENNReal.ofReal_toReal hp1]
+  -- step 2: `c ≥ 0`, since `B' ⊆ B` has positive measure and `p₁ > 0` on it
+  have hc : 0 ≤ c := by
+    refine le_of_not_gt fun hneg => ?_
+    have hpos : volume (Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-(s / 8)) (s / 8)) ≠ 0 := by
+      rw [Measure.volume_eq_prod, Measure.prod_prod, Real.volume_Ioo, Real.volume_Ioo]
+      refine mul_ne_zero ?_ ?_ <;> rw [ne_eq, ENNReal.ofReal_eq_zero, not_le] <;> linarith
+    apply hpos
+    rw [measure_eq_zero_iff_ae_notMem]
+    filter_upwards [hH] with p hp hpB'
+    have h0 := hp ⟨hpB'.1, by linarith [hpB'.2.1], by linarith [hpB'.2.2]⟩
+    have hp1 : 0 < p.1 := by linarith [hpB'.1.1]
+    have := mul_neg_of_neg_of_pos hneg hp1
+    linarith [ENNReal.toReal_nonneg (a := H p)]
+  -- step 3: the box integrals, `I s' = ofReal (4c) · ofReal (s'²)`
+  have h3 : ∀ s' : ℝ, 0 < s' → s' ≤ s / 8 →
+      I s' = ENNReal.ofReal (4 * c) * ENNReal.ofReal (s' ^ 2) := by
+    intro s' hs' hs'8
+    have hsub : Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s' ⊆
+        Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s :=
+      prod_mono (Ioo_subset_Ioo (by linarith) (by linarith))
+        (Ioo_subset_Ioo (by linarith) (by linarith))
+    rw [← hI s' hs' hs'8, setLIntegral_congr_fun_ae (measurableSet_Ioo.prod measurableSet_Ioo)
+      (h1.mono fun p hp hpS => hp (hsub hpS)), Measure.volume_eq_prod,
+      setLIntegral_prod (fun p : ℝ × ℝ => ENNReal.ofReal (c * p.1)) (by fun_prop)]
+    simp only [setLIntegral_const, Real.volume_Ioo]
+    have hint : ∫ x in Ioo (1 - s') (1 + s'), c * x = 2 * c * s' := by
+      rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le (by linarith),
+        intervalIntegral.integral_const_mul, integral_id]
+      ring
+    have hlint : ∫⁻ x in Ioo (1 - s') (1 + s'), ENNReal.ofReal (c * x) =
+        ENNReal.ofReal (2 * c * s') := by
+      rw [← hint, ofReal_integral_eq_lintegral_ofReal]
+      · exact (by fun_prop : Continuous fun x : ℝ => c * x).integrableOn_Icc.mono_set
+          Ioo_subset_Icc_self
+      · exact (ae_restrict_iff' measurableSet_Ioo).mpr
+          (Eventually.of_forall fun x hx => mul_nonneg hc (by linarith [hx.1]))
+    rw [lintegral_mul_const' _ _ ENNReal.ofReal_ne_top, hlint,
+      ← ENNReal.ofReal_mul (mul_nonneg (mul_nonneg (by norm_num) hc) hs'.le),
+      ← ENNReal.ofReal_mul (by linarith)]
+    congr 1
+    ring
+  -- step 4: `c = m`, by uniqueness of limits along `𝓝[>] 0`
+  have h4 : ENNReal.ofReal (4 * c) = 4 * (m : ℝ≥0∞) := by
+    have hev : (fun _ : ℝ => ENNReal.ofReal (4 * c)) =ᶠ[𝓝[>] 0]
+        fun s' : ℝ => I s' / ENNReal.ofReal (s' ^ 2) := by
+      filter_upwards [Ioc_mem_nhdsGT (show (0 : ℝ) < s / 8 by positivity)] with s' hs'
+      rw [h3 s' hs'.1 hs'.2, ENNReal.mul_div_cancel_right _ ENNReal.ofReal_ne_top]
+      rw [ne_eq, ENNReal.ofReal_eq_zero, not_le]
+      exact pow_pos hs'.1 2
+    exact tendsto_nhds_unique (tendsto_const_nhds.congr' hev) hlim
+  have hcm : c = m := by
+    have h4' : ENNReal.ofReal (4 * c) = ENNReal.ofReal (4 * (m : ℝ)) := by
+      rw [h4, ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_natCast, ENNReal.ofReal_ofNat]
+    rw [ENNReal.ofReal_eq_ofReal_iff (by positivity) (by positivity)] at h4'
+    linarith
+  -- step 5: conclusion on `B' ⊆ B`
+  filter_upwards [h1] with p hp hpB'
+  rw [hp ⟨hpB'.1, by linarith [hpB'.2.1], by linarith [hpB'.2.2]⟩, hcm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
