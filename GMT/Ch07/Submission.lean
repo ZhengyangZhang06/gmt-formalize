@@ -568,6 +568,42 @@ theorem Submission.idtp_cse_fa_pj_starProjection_norm_sq : ∀ (P : ℕ) (Q : Su
     hee, hae, hea]
   ring
 
+/-- **Area-formula Jacobian of the polar map along a 2-plane through `x`.**  Let `Q ⊆ ℝᴾ` be a
+`2`-plane with orthonormal frame `a, e ∈ Q`, `⟨x, a⟩ > 0`, and `T ⊆ ℝᴾ` a `2`-plane containing
+`x`.  For `F(y) = (|y|, arctan(⟨y, e⟩ / ⟨y, a⟩))` and the orthonormal basis `uᵢ` of `T`,
+`√det(DF(x)uᵢ · DF(x)uⱼ) = |p_T(⟨x, a⟩e − ⟨x, e⟩a)| / |π_Q x|²`.  With `A = ⟨x, a⟩e − ⟨x, e⟩a` and
+`ρ = ⟨x, a⟩² + ⟨x, e⟩²`, `DF(x)v = (⟨|x|⁻¹x, v⟩, ⟨ρ⁻¹A, v⟩)`, so the Gram determinant over `T` is
+`|p_T(|x|⁻¹x)|² |p_T(ρ⁻¹A)|² − ⟨p_T(|x|⁻¹x), p_T(ρ⁻¹A)⟩²`.  As `p_T x = x`, the first factor is `1`
+and, `p_T` being self-adjoint, the cross term is `|x|⁻¹ρ⁻¹⟨x, A⟩ = 0`; so the determinant is
+`(|p_T A| / ρ)²`, and `ρ = |π_Q x|²`. -/
+theorem Submission.idtp_cse_fa_polar_gram_jacobian : ∀ (P : ℕ) (Q T : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < inner ℝ x a → Module.finrank ℝ T = 2 → T.starProjection x = x → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).1 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).1 + (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).2 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).2)) = ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2 := by
+  intro P Q T a e x hQ ha he hna hne hae hxa hT hxT
+  -- P1: `x ≠ 0` and `ρ = ⟨x, a⟩² + ⟨x, e⟩² > 0`
+  have hx : x ≠ 0 := by
+    rintro rfl
+    exact hxa.ne' (inner_zero_left a)
+  have hnx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  have hρ : 0 < inner ℝ x a ^ 2 + inner ℝ x e ^ 2 := by positivity
+  -- P2: `DF(x)v = (⟨|x|⁻¹x, v⟩, ⟨ρ⁻¹A, v⟩)`
+  have hD : ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x v = (inner ℝ (‖x‖⁻¹ • x) v, inner ℝ ((inner ℝ x a ^ 2 + inner ℝ x e ^ 2)⁻¹ • (inner ℝ x a • e - inner ℝ x e • a)) v) := by
+    intro v
+    rw [Submission.idtp_cse_fa_pj_polar_fderiv_apply P a e x hxa.ne' v, real_inner_smul_left,
+      real_inner_smul_left, inv_mul_eq_div, inv_mul_eq_div]
+  simp only [hD]
+  -- P5–P6: the cross term vanishes, `⟨x, p_T A⟩ = ⟨p_T x, A⟩ = ⟨x, A⟩ = 0`
+  have hxA : inner ℝ x (T.starProjection (inner ℝ x a • e - inner ℝ x e • a)) = 0 := by
+    rw [← Submodule.inner_starProjection_left_eq_right, hxT, inner_sub_right,
+      real_inner_smul_right, real_inner_smul_right]
+    ring
+  -- P3–P4, P7–P9: Gram determinant over `T`, `p_T x = x` and `ρ = |π_Q x|²`
+  rw [Submission.idtp_cse_fa_pj_gram_det_two_plane P T _ _ hT, map_smul, map_smul, hxT, norm_smul,
+    norm_smul, real_inner_smul_left, real_inner_smul_right, hxA, norm_inv, norm_inv, norm_norm,
+    Real.norm_of_nonneg hρ.le, inv_mul_cancel₀ hnx,
+    Submission.idtp_cse_fa_pj_starProjection_norm_sq P Q a e x hQ ha he hna hne hae,
+    ← Real.sqrt_sq (div_nonneg (norm_nonneg _) hρ.le)]
+  congr 1
+  ring
+
 /-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
 `f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
 `V l ⊆ Z` cover `Z`, `F` agrees on `V l` with a Lipschitz `G l : ℝᴾ → ℝⁿ`, and the Borel sets
