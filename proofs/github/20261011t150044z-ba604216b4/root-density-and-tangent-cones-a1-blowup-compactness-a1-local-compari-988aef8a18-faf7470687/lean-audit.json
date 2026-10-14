@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8a5f50b52e49ee4cb872cf716c8a2f1f314867a1a82d9b49a542f81d4bc37625",
+  "git_delta": {
+    "base_commit": "88202afa73a899dc36d2fd02a38120ea42c1da61",
+    "candidate_commit": "3d6160e579445b29a713cd81f33ff8cdd82110b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_truncate",
+    "diff_sha256": "1e1a6e91fd9f8da968a46e69959c907dabd84f2ca722acee5bf964063221212a",
+    "source_sha256": "96e97a9f4c84d908145389b2284d06d756d50ce7ec836a041a6e9362bb045cab",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_truncate",
+      "statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → MeasurableSet E → R.Represents T → ∃ (T' : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents T' ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R'.measure = R.measure.restrict E ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → T' ω = T ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → T' ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
