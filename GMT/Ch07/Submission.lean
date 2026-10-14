@@ -451,6 +451,215 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Convolving with a probability density `k ≥ 0`, `∫ k = 1`, does not increase the `L¹` norm:
+`∫⁻ ‖k ⋆ g‖ₑ ≤ ∫⁻ ‖g‖ₑ` (Young's inequality `‖k ⋆ g‖₁ ≤ ‖k‖₁ ‖g‖₁`).  As `∫ k = 1 ≠ 0`, `k` is
+integrable and `∫⁻ ‖k‖ₑ = ofReal (∫ k) = 1`.  Pointwise `‖(k ⋆ g)(x)‖ₑ ≤ ∫⁻ ‖k t‖ₑ ‖g (x - t)‖ₑ dt`;
+Tonelli and translation invariance of Lebesgue measure turn the right side, integrated in `x`,
+into `(∫⁻ ‖k‖ₑ) (∫⁻ ‖g‖ₑ)`. -/
+theorem Submission.cmcdt_cbm_sa_ml_l1_contraction : ∀ (n : ℕ) (k g : Euclid n → ℝ), (∀ z, 0 ≤ k z) → ∫ z, k z = 1 → AEStronglyMeasurable g volume → ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ ≤ ∫⁻ x, ‖g x‖ₑ := by
+  intro n k g hk0 hk1 hg
+  -- `k` is integrable because `∫ k = 1 ≠ 0`, and it has unit mass `∫⁻ ‖k‖ₑ = 1`.
+  have hk_int : Integrable k := integrable_of_integral_eq_one hk1
+  have hk_mass : ∫⁻ t, ‖k t‖ₑ = 1 := by
+    rw [lintegral_enorm_of_nonneg hk0,
+      ← ofReal_integral_eq_lintegral_ofReal hk_int (ae_of_all _ hk0), hk1, ENNReal.ofReal_one]
+  -- The convolution integrand is jointly a.e.-measurable, as Tonelli requires.
+  have hmeas : AEMeasurable (uncurry fun (x t : Euclid n) => ‖k t‖ₑ * ‖g (x - t)‖ₑ)
+      (volume.prod volume) := by
+    refine (hk_int.aestronglyMeasurable.convolution_integrand
+      (ContinuousLinearMap.lsmul ℝ ℝ) hg).enorm.congr (ae_of_all _ fun p => ?_)
+    simp [uncurry]
+  calc ∫⁻ x, ‖convolution k g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ
+      ≤ ∫⁻ x, ∫⁻ t, ‖k t‖ₑ * ‖g (x - t)‖ₑ := by
+        refine lintegral_mono fun x => ?_
+        rw [convolution_def]
+        refine (enorm_integral_le_lintegral_enorm _).trans (le_of_eq ?_)
+        refine lintegral_congr fun t => ?_
+        simp
+    _ = ∫⁻ t, ∫⁻ x, ‖k t‖ₑ * ‖g (x - t)‖ₑ := lintegral_lintegral_swap hmeas
+    _ = ∫⁻ t, ‖k t‖ₑ * ∫⁻ x, ‖g x‖ₑ := by
+        refine lintegral_congr fun t => ?_
+        rw [lintegral_const_mul' _ _ enorm_ne_top,
+          lintegral_sub_right_eq_self (fun x => ‖g x‖ₑ) t]
+    _ = (∫⁻ t, ‖k t‖ₑ) * ∫⁻ x, ‖g x‖ₑ := lintegral_mul_const'' _ hk_int.aestronglyMeasurable.enorm
+    _ = ∫⁻ x, ‖g x‖ₑ := by rw [hk_mass, one_mul]
+/-- Uniform `L¹` approximate identity for a continuous compactly supported `h : ℝⁿ → ℝ`: for
+`ε > 0` there is `r > 0` with `∫⁻ ‖ρ ⋆ h - h‖ₑ ≤ ε` for every `ρ ≥ 0` with `∫ ρ = 1` and
+`spt ρ ⊆ B_r(0)`.  Take `tsupport h ⊆ B̄_R(0)`, `S = B̄_{R+1}(0)`, `η = ε / (Lⁿ(S) + 1)`, and by
+uniform continuity `r ≤ 1` with `|h(y) - h(x)| < η` for `|y - x| < r`.  On `S`,
+`dist_convolution_le` gives `|ρ ⋆ h - h| ≤ η`; off `S`, `h` and `ρ ⋆ h` vanish.  Integrating,
+`∫⁻ ‖ρ ⋆ h - h‖ₑ ≤ η Lⁿ(S) ≤ ε`. -/
+theorem Submission.cmcdt_cbm_sa_ml_compact_support_approx : ∀ (n : ℕ) (h : Euclid n → ℝ), Continuous h → HasCompactSupport h → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤ ENNReal.ofReal ε := by
+  intro n h hc hcs ε hε
+  -- `tsupport h ⊆ B̄_R(0)`; the error lives in the compact set `S = B̄_{R+1}(0)`
+  obtain ⟨R, hR⟩ := hcs.isCompact.isBounded.subset_closedBall (0 : Euclid n)
+  set S : Set (Euclid n) := closedBall (0 : Euclid n) (R + 1) with hS
+  have hSm : MeasurableSet S := measurableSet_closedBall
+  have hSfin : volume S ≠ ∞ := measure_closedBall_lt_top.ne
+  set V : ℝ := (volume S).toReal with hV
+  have hV0 : 0 ≤ V := ENNReal.toReal_nonneg
+  -- the pointwise tolerance `η = ε / (V + 1)`, and `r ≤ 1` from uniform continuity
+  set η : ℝ := ε / (V + 1) with hη
+  have hη0 : 0 < η := div_pos hε (by linarith)
+  obtain ⟨δ, hδ, hδh⟩ :=
+    Metric.uniformContinuous_iff.1 (hcs.uniformContinuous_of_continuous hc) η hη0
+  refine ⟨min δ 1, lt_min hδ one_pos, ?_⟩
+  intro ρ hρ0 hρ1 hρs
+  have hzero : ∀ y : Euclid n, R < ‖y‖ → h y = 0 := by
+    intro y hy
+    by_contra hne
+    have : y ∈ closedBall (0 : Euclid n) R := hR (subset_tsupport h hne)
+    rw [mem_closedBall_zero_iff] at this
+    linarith
+  -- pointwise bound by `η` on `S`, and `0` off `S`
+  have hpt : ∀ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤
+      S.indicator (fun _ => ENNReal.ofReal η) x := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx, ← ofReal_norm, ← dist_eq_norm]
+      refine ENNReal.ofReal_le_ofReal (dist_convolution_le hη0.le hρs hρ0 hρ1
+        hc.aestronglyMeasurable fun y hy => (hδh ?_).le)
+      exact lt_of_lt_of_le (mem_ball.1 hy) (min_le_left _ _)
+    · rw [indicator_of_notMem hx]
+      rw [hS, mem_closedBall_zero_iff, not_le] at hx
+      have hconv : convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0 := by
+        rw [convolution_def]
+        refine integral_eq_zero_of_ae (ae_of_all _ fun t => ?_)
+        by_cases ht : ρ t = 0
+        · simp [ht]
+        · have ht' : ‖t‖ < 1 :=
+            lt_of_lt_of_le (mem_ball_zero_iff.1 (hρs ht)) (min_le_right _ _)
+          have hxt : R < ‖x - t‖ := by
+            have := norm_sub_norm_le x t
+            linarith
+          simp [hzero _ hxt]
+      rw [hconv, hzero x (by linarith), sub_zero, enorm_zero]
+  calc ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ
+      ≤ ∫⁻ x, S.indicator (fun _ => ENNReal.ofReal η) x := lintegral_mono hpt
+    _ = ENNReal.ofReal η * volume S := lintegral_indicator_const hSm _
+    _ = ENNReal.ofReal (η * V) := by
+        rw [ENNReal.ofReal_mul hη0.le, hV, ENNReal.ofReal_toReal hSfin]
+    _ ≤ ENNReal.ofReal ε := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [hη, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+        nlinarith
+
+/-- **`L¹` approximate identity** (Simon 2.5: mollifications converge in `L¹`).  For integrable
+`f` on `ℝⁿ` and `ε > 0` there is `r > 0` with `∫ |ρ ⋆ f − f| ≤ ε` for every continuous `ρ ≥ 0`
+with `∫ ρ = 1` and `spt ρ ⊆ B_r(0)`.  `volume` is regular, so `f` is `L¹`-close to a continuous
+compactly supported `h` (indicators of sets of finite measure are approximated by Urysohn
+functions); `Submission.cmcdt_cbm_sa_ml_compact_support_approx` gives `r` for `h`, and in
+`ρ ⋆ f − f = ρ ⋆ (f − h) + (ρ ⋆ h − h) − (f − h)` the first term is at most `∫ |f − h|` by
+`Submission.cmcdt_cbm_sa_ml_l1_contraction`. -/
+theorem Submission.cmcdt_cbm_sa_mollify_l1 : ∀ (n : ℕ) (f : Euclid n → ℝ), Integrable f → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ ≤ ENNReal.ofReal ε := by
+  intro n f hf ε hε
+  have hε4 : 0 < ε / 4 := by positivity
+  -- Density: `volume` is regular, so for measurable `s` of finite measure an Urysohn function
+  -- `φ`, equal to `1` on a compact `F ⊆ s` and to `0` off an open `V ⊇ s`, has compact support
+  -- and `|φ c − 1_s c| ≤ |1_{V \ F} c|` with `vol (V \ F)` small; hence some continuous `h` with
+  -- compact support has `∫ |f − h| ≤ ε / 4`
+  have hind : ∀ (c : ℝ) ⦃s : Set (Euclid n)⦄, MeasurableSet s → volume s < ∞ →
+      ∀ {δ : ℝ≥0∞}, δ ≠ 0 → ∃ φ : Euclid n → ℝ,
+        eLpNorm (φ - s.indicator fun _ => c) 1 volume ≤ δ ∧
+          (Continuous φ ∧ HasCompactSupport φ) := by
+    intro c s hs hsfin δ hδ
+    obtain ⟨η, hη, hηδ⟩ := exists_eLpNorm_indicator_le (μ := (volume : Measure (Euclid n)))
+      ENNReal.one_ne_top c hδ
+    have hη2 : (η : ℝ≥0∞) / 2 ≠ 0 := (ENNReal.half_pos (ENNReal.coe_pos.2 hη).ne').ne'
+    obtain ⟨F, hFs, hF, hsF⟩ := hs.exists_isCompact_sdiff_lt hsfin.ne hη2
+    obtain ⟨V, hsV, hV, -, hVs⟩ := hs.exists_isOpen_sdiff_lt hsfin.ne hη2
+    obtain ⟨φ, hφF, hφV, hφcs, hφ⟩ :=
+      exists_continuous_one_zero_of_isCompact hF hV.isClosed_compl
+        (disjoint_compl_right_iff_subset.2 (hFs.trans hsV))
+    have hφc : Continuous fun x => φ x * c := φ.continuous.mul continuous_const
+    refine ⟨fun x => φ x * c, (eLpNorm_mono (hφc.aestronglyMeasurable.sub
+      (aestronglyMeasurable_const.indicator hs)) fun x => ?_).trans (hηδ (V \ F) ?_
+      (hV.measurableSet.diff hF.measurableSet).nullMeasurableSet), hφc, hφcs.mul_right⟩
+    · -- pointwise: `0` on `F` and off `V`, at most `|c|` on `V \ F`
+      show ‖φ x * c - s.indicator (fun _ => c) x‖ ≤ ‖(V \ F).indicator (fun _ => c) x‖
+      by_cases hxF : x ∈ F
+      · rw [hφF hxF, indicator_of_mem (hFs hxF), Pi.one_apply, one_mul, sub_self, norm_zero]
+        exact norm_nonneg _
+      by_cases hxV : x ∈ V
+      · rw [indicator_of_mem (show x ∈ V \ F from ⟨hxV, hxF⟩)]
+        by_cases hxs : x ∈ s
+        · rw [indicator_of_mem hxs]
+          calc ‖φ x * c - c‖ = |φ x - 1| * ‖c‖ := by
+                rw [← sub_one_mul, norm_mul, Real.norm_eq_abs]
+            _ ≤ 1 * ‖c‖ := by
+                gcongr
+                rw [abs_le]
+                constructor <;> linarith [(hφ x).1, (hφ x).2]
+            _ = ‖c‖ := one_mul _
+        · rw [indicator_of_notMem hxs, sub_zero, norm_mul, Real.norm_eq_abs,
+            abs_of_nonneg (hφ x).1]
+          exact mul_le_of_le_one_left (norm_nonneg _) (hφ x).2
+      · rw [hφV (mem_compl hxV), Pi.zero_apply, zero_mul,
+          indicator_of_notMem fun h => hxV (hsV h), sub_zero, norm_zero]
+        exact norm_nonneg _
+    · -- `V \ F ⊆ (V \ s) ∪ (s \ F)`
+      calc volume (V \ F) ≤ volume ((V \ s) ∪ (s \ F)) := measure_mono fun x hx => by
+            by_cases hxs : x ∈ s
+            exacts [Or.inr ⟨hxs, hx.2⟩, Or.inl ⟨hx.1, hxs⟩]
+        _ ≤ volume (V \ s) + volume (s \ F) := measure_union_le _ _
+        _ ≤ η / 2 + η / 2 := add_le_add hVs.le hsF.le
+        _ = η := ENNReal.add_halves _
+  obtain ⟨h, hfh, hhc, hhcs⟩ := (memLp_one_iff_integrable.2 hf).induction_dense
+    ENNReal.one_ne_top (fun g => Continuous g ∧ HasCompactSupport g) hind
+    (fun _ _ h₁ h₂ => ⟨h₁.1.add h₂.1, h₁.2.add h₂.2⟩) (ENNReal.ofReal_pos.2 hε4).ne'
+  have hh : Integrable h := hhc.integrable_of_hasCompactSupport hhcs
+  have hfh' : Integrable (f - h) := hf.sub hh
+  rw [eLpNorm_one_eq_lintegral_enorm hfh'.aestronglyMeasurable] at hfh
+  -- The compactly supported case gives `r`, chosen before `ρ`
+  obtain ⟨r, hr, hB⟩ :=
+    Submission.cmcdt_cbm_sa_ml_compact_support_approx n h hhc hhcs (ε / 4) hε4
+  refine ⟨r, hr, fun ρ hρc hρ0 hρ1 hρs => ?_⟩
+  have hρcs : HasCompactSupport ρ :=
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) r) fun x hx =>
+      by_contra fun hne => hx (ball_subset_closedBall (hρs hne))
+  -- `ρ ⋆ f = ρ ⋆ (f − h) + ρ ⋆ h`; both convolutions exist everywhere and are continuous
+  have hex₁ := hρcs.convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) hρc
+    hfh'.locallyIntegrable
+  have hex₂ := hρcs.convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) hρc
+    hh.locallyIntegrable
+  have hc₁ := hρcs.continuous_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hρc
+    hfh'.locallyIntegrable
+  have hc₂ := hρcs.continuous_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) hρc
+    hh.locallyIntegrable
+  -- The triangle inequality, then `ε / 4` for each of the three terms
+  have hpt : ∀ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ ≤
+      ‖convolution ρ (f - h) (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ +
+        ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ + ‖(f - h) x‖ₑ := by
+    intro x
+    have hsplit := (hex₁ x).distrib_add (hex₂ x)
+    rw [sub_add_cancel] at hsplit
+    rw [hsplit, show ∀ a b : ℝ, a + b - f x = a + (b - h x) - (f - h) x from fun a b => by
+      rw [Pi.sub_apply]; ring]
+    exact enorm_sub_le.trans (add_le_add (enorm_add_le _ _) le_rfl)
+  have hm₁ : AEMeasurable
+      (fun x => ‖convolution ρ (f - h) (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ) volume :=
+    hc₁.enorm.measurable.aemeasurable
+  have hm₂ : AEMeasurable
+      (fun x => ‖convolution ρ (f - h) (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ +
+        ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ) volume :=
+    (hc₁.enorm.add (hc₂.sub hhc).enorm).measurable.aemeasurable
+  calc ∫⁻ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ
+      ≤ ∫⁻ x, (‖convolution ρ (f - h) (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ +
+          ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ + ‖(f - h) x‖ₑ) :=
+        lintegral_mono hpt
+    _ = (∫⁻ x, ‖convolution ρ (f - h) (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ) +
+          (∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ) +
+          ∫⁻ x, ‖(f - h) x‖ₑ := by
+        rw [lintegral_add_left' hm₂, lintegral_add_left' hm₁]
+    _ ≤ ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := by
+        gcongr
+        · exact (Submission.cmcdt_cbm_sa_ml_l1_contraction n ρ (f - h) hρ0 hρ1
+            hfh'.aestronglyMeasurable).trans hfh
+        · exact hB ρ hρ0 hρ1 hρs
+    _ ≤ ENNReal.ofReal ε := by
+        rw [← ENNReal.ofReal_add hε4.le hε4.le, ← ENNReal.ofReal_add (by positivity) hε4.le]
+        exact ENNReal.ofReal_le_ofReal (by linarith)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
