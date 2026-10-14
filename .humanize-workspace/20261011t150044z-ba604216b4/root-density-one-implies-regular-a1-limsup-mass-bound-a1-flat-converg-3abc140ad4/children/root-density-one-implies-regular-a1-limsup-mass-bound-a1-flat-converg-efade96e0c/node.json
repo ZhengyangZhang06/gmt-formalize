@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1.proj_covector_norm-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1",
+  "depth": 6,
+  "title": "Pull-back along the coordinate projection ℝ^{P+1} → ℝ^P preserves the Euclidean coefficient norm of covectors",
+  "statement": "Let P, d ∈ ℕ and write ℝ^N = Euclid N = EuclideanSpace ℝ (Fin N). Let p : ℝ^{P+1} → ℝ^P be a continuous linear map with (py)_i = y_{castSucc i} for every y ∈ ℝ^{P+1} and i ∈ Fin P. For a d-covector β of ℝ^N (β ∈ Covector (Euclid N) d, a continuous alternating d-linear form on ℝ^N) let |β| := covectorEuclideanNorm β = (Σ_J c_J(β))^{1/2}. The sum runs over all J : Fin d → Fin N, with c_J(β) = β(e_{J(0)}, …, e_{J(d−1)})² if J is strictly increasing and c_J(β) = 0 otherwise, and e_j = EuclideanSpace.basisFun (Fin N) ℝ j = EuclideanSpace.single j 1. Then every d-covector α of ℝ^P satisfies |p^*α| = |α|, where p^*α := α.compContinuousLinearMap p, i.e. (p^*α)(v_0, …, v_{d−1}) = α(pv_0, …, pv_{d−1}).",
+  "lean_statement": "∀ (P d : ℕ) (p : Euclid (P + 1) →L[ℝ] Euclid P), (∀ (y : Euclid (P + 1)) (i : Fin P), p y i = y (Fin.castSucc i)) → ∀ α : Covector (Euclid P) d, covectorEuclideanNorm (α.compContinuousLinearMap p) = covectorEuclideanNorm α",
+  "lean_name": "dor_lmb_fc_dtop_cp_proj_covector_norm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-efade96e0c-a1"
+}

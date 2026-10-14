@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1.leibniz_smul-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1",
+  "depth": 6,
+  "title": "Leibniz bound for iterated derivatives of a scalar function times a vector-valued function on ℝ^Q",
+  "statement": "Let Q ∈ ℕ and let F be a real normed space (F : Type with NormedAddCommGroup F and NormedSpace ℝ F). Let f : ℝ^Q → ℝ and g : ℝ^Q → F be C^∞ (ContDiff ℝ ⊤). Write D^m = iteratedFDeriv ℝ m, with ‖·‖ the operator norm of continuous multilinear maps. Then for every k ∈ ℕ and x ∈ ℝ^Q: ‖D^k(y ↦ f(y)·g(y))(x)‖ ≤ Σ_{i=0}^{k} C(k, i)·‖D^i f(x)‖·‖D^{k−i} g(x)‖.",
+  "lean_statement": "∀ (Q : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid Q → ℝ) (g : Euclid Q → F), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (k : ℕ) (x : Euclid Q), ‖iteratedFDeriv ℝ k (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (k - i) g x‖",
+  "lean_name": "dor_lmb_fc_dtop_cp_leibniz_smul_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-c39de99ae1-a1"
+}
