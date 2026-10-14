@@ -1678,6 +1678,86 @@ theorem Submission.cmcdt_lpoh_cyl_eval_bound : (∀ (P n : ℕ) (U : Set (Euclid
         Submission.cmcdt_lpoh_phi_bound hL1 hL2 N N' k γ D (f t) a b hb hDe hDJ
           fun v => by rw [hfv, hβeq]
     _ ≤ b ^ k * a * c := mul_le_mul_of_nonneg_left hγ (mul_nonneg (pow_nonneg hb k) ha)
+/-- **Lipschitz homotopy formula** (Simon 6.2.25 for the affine homotopy 6.2.26, with the
+Lipschitz push-forward of 6.2.29), conjuncts (10) and (11): for `Λ`-Lipschitz `F, G` and an
+`L`-Lipschitz `H` with `H(t, x) = F(x) + t(G(x) − F(x))` on `[0, 1] × spt X`,
+`G_#X − F_#X = ∂H_#(cyl X)` in degree `0`, and `G_#X − F_#X − H_#(cyl ∂X) = ∂H_#(cyl X)` in
+positive degree.  For a test form `ω`, `Submission.cmcdt_lpoh_pullback_limits` (with
+`K = spt X`) gives forms `β_j` whose end slices `ρ_{1,j}, ρ_{0,j}` give `X(ρ_{1,j}) → G_#X(ω)`,
+`X(ρ_{0,j}) → F_#X(ω)`, while `cyl(X)(dβ_j) → H_#(cyl X)(dω)` and
+`cyl(∂X)(β_j) → H_#(cyl ∂X)(ω)`; `Submission.cmcdt_lpoh_cyl_identity` gives
+`cyl(X)(dβ_j) = X(ρ_{1,j}) − X(ρ_{0,j}) [− cyl(∂X)(β_j)]`, and limits are unique.  `∂X` is
+normal: `spt ∂X ⊆ spt X` because `d` does not enlarge supports, and `∂∂X = 0`. -/
+theorem Submission.cmcdt_lpoh_homotopy_formula : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k) (cyl : ∀ (N k : ℕ), GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact (cyl N k X).support ∧ (cyl N k X).mass < ∞ ∧ (cyl N k X).boundary.mass < ∞ ∧ (cyl N k X).support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ cyl N k X ω = X η) → (∀ (N N' : ℕ) (Λ L : NNReal) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) 0), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith L H → IsCompact X.support → X.mass < ∞ → (∀ x ∈ X.support, ∀ t ∈ Icc (0 : ℝ) 1, H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) → lpush N N' 0 G X - lpush N N' 0 F X = (lpush (N + 1) N' (0 + 1) H (cyl N 0 X)).boundary) ∧ (∀ (N N' k : ℕ) (Λ L : NNReal) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith L H → IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → (∀ x ∈ X.support, ∀ t ∈ Icc (0 : ℝ) 1, H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) → lpush N N' (k + 1) G X - lpush N N' (k + 1) F X - lpush (N + 1) N' (k + 1) H (cyl N k X.boundary) = (lpush (N + 1) N' (k + 1 + 1) H (cyl N (k + 1) X)).boundary) := by
+  intro _hVO _hREP lpush cyl hPA h7 h9
+  have hID := Submission.cmcdt_lpoh_cyl_identity cyl h9
+  refine ⟨?_, ?_⟩
+  · intro N N' Λ L F G H X hF hG hH hXc hXm hHX
+    -- in degree `0`, `M(∂X) = 0` by convention
+    have hXb : boundaryMassOn X univ < ∞ := by
+      show (0 : ℝ≥0∞) < ∞
+      exact ENNReal.zero_lt_top
+    obtain ⟨hc1, hc2, hc3, hc4⟩ := h7 N 0 X hXc hXm hXb
+    apply GeometricCurrentOn.ext
+    intro ω
+    obtain ⟨β, ρ₁, ρ₀, hρ₁, hρ₀, hlimX, -, hlimY', -⟩ :=
+      Submission.cmcdt_lpoh_pullback_limits lpush hPA N N' 0 Λ L F G H X.support ω hF hG hH hXc
+        hHX
+    have h1 := hlimY' (cyl N 0 X) hc1 hc2 hc3 hc4
+    obtain ⟨h2, h3⟩ := hlimX X hXc hXm hXb subset_rfl
+    have h4 : Tendsto
+        (fun j => cyl N 0 X (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) 0 (β j)))
+        atTop (𝓝 (lpush N N' 0 G X ω - lpush N N' 0 F X ω)) :=
+      (h2.sub h3).congr fun j => (hID.1 N X (β j) (ρ₁ j) (ρ₀ j) hXc hXm (hρ₁ j) (hρ₀ j)).symm
+    exact tendsto_nhds_unique h4 h1
+  · intro N N' k Λ L F G H X hF hG hH hXc hXm hXbm hHX
+    have hXb : boundaryMassOn X univ < ∞ := hXbm
+    -- `spt ∂X ⊆ spt X`: `d` does not enlarge supports
+    have hSBX : X.boundary.support ⊆ X.support := by
+      intro x hx
+      simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_univ, true_and] at hx ⊢
+      intro hxz
+      apply hx
+      obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := hxz
+      exact ⟨W, ⟨hWo, hWc, hWU, fun ω hω => hWv (exteriorDerivativeTestOn univ k ω)
+        ((tsupport_exteriorDerivative_subset _).trans hω)⟩, hxW⟩
+    have hbc : IsCompact X.boundary.support :=
+      hXc.of_isClosed_subset (isClosed_univ.sdiff X.boundary.isOpen_zeroRegion) hSBX
+    -- `M(∂∂X) = 0`
+    have hbb : boundaryMassOn X.boundary univ < ∞ := by
+      cases k with
+      | zero =>
+        show (0 : ℝ≥0∞) < ∞
+        exact ENNReal.zero_lt_top
+      | succ k' =>
+        show X.boundary.boundary.massOn univ < ∞
+        rw [GeometricCurrentOn.boundary_boundary]
+        refine lt_of_le_of_lt ?_ ENNReal.zero_lt_top
+        apply sSup_le
+        rintro _ ⟨ω', -, rfl⟩
+        simp
+    obtain ⟨hc1, hc2, hc3, hc4⟩ := h7 N (k + 1) X hXc hXm hXb
+    obtain ⟨hd1, hd2, hd3, hd4⟩ := h7 N k X.boundary hbc hXbm hbb
+    have hd4' : (cyl N k X.boundary).support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1,
+        ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+      intro y hy
+      obtain ⟨t, ht, x, hx, rfl⟩ := hd4 hy
+      exact ⟨t, ht, x, hSBX hx, rfl⟩
+    apply GeometricCurrentOn.ext
+    intro ω
+    obtain ⟨β, ρ₁, ρ₀, hρ₁, hρ₀, hlimX, hlimY, hlimY', -⟩ :=
+      Submission.cmcdt_lpoh_pullback_limits lpush hPA N N' (k + 1) Λ L F G H X.support ω hF hG hH
+        hXc hHX
+    have h1 := hlimY' (cyl N (k + 1) X) hc1 hc2 hc3 hc4
+    have h5 := hlimY (cyl N k X.boundary) hd1 hd2 hd3 hd4'
+    obtain ⟨h2, h3⟩ := hlimX X hXc hXm hXb subset_rfl
+    have h4 : Tendsto (fun j => cyl N (k + 1) X
+        (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) (k + 1) (β j)))
+        atTop (𝓝 (lpush N N' (k + 1) G X ω - lpush N N' (k + 1) F X ω -
+          lpush (N + 1) N' (k + 1) H (cyl N k X.boundary) ω)) :=
+      ((h2.sub h3).sub h5).congr fun j => (hID.2 N k X (β j) (ρ₁ j) (ρ₀ j) hXc hXm hXbm hbc hbb
+        (hρ₁ j) (hρ₀ j)).symm
+    exact tendsto_nhds_unique h4 h1
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
