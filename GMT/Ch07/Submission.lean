@@ -2019,6 +2019,49 @@ theorem Submission.cmcdt_lpo_pf_smooth_approx : ∀ (lpush : ∀ (N N' k : ℕ),
   exact ⟨ηs, hη', hPA N N' k Λ Λ F Fs X ω ηs hF hX1 hX2 hX3 hFs (fun j x _ => hD j x)
     hU.tendstoUniformlyOn hη'⟩
 
+/-- **The Lipschitz push-forward** (Simon 6.2.28–2.29).  For `F` Lipschitz and `X` with compact
+support, `M(X) < ∞` and `M(∂X) < ∞`, `lpush F X` is the current `T` of `cmcdt_lpo_pf_current`:
+`T(ω) = lim X(ηⱼ)` whenever `Fⱼ` are `C^∞`, `Fⱼ → F` uniformly on `spt X` with `‖DFⱼ‖` bounded
+there, and `ηⱼ = Fⱼ^#ω` near `spt X`; otherwise `lpush F X = 0`.  This limit property (PA) does not
+mention the Lipschitz constant used to build `T`, so it holds for every `Λ`.  Conjuncts (1)–(6) are
+derived from (PA) for an arbitrary family `lpush` (the mass bound also uses (VO), (REP), (LB)). -/
+theorem Submission.cmcdt_lpo_lipschitz_pushforward : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ∃ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → lpush N N k (fun x => x) X = X) ∧ (∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → lpush N N' k F (X - Y) = lpush N N' k F X - lpush N N' k F Y) ∧ (∀ (N N' k : ℕ) (Λ : NNReal) (F G : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → EqOn F G X.support → lpush N N' k F X = lpush N N' k G X) ∧ (∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (lpush N N' k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ (lpush N N' k F X).support ⊆ F '' X.support) ∧ (∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → (lpush N N' (k + 1) F X).boundary = lpush N N' k F X.boundary) ∧ (∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ TendstoUniformly Fs F atTop ∧ ∀ ω : TestFormOn (univ : Set (Euclid N')) k, ∃ ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k, (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) ∧ Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) ∧ ∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω)) := by
+  intro hVO hREP hLB
+  classical
+  choose T hT using Submission.cmcdt_lpo_pf_current hVO hREP hLB
+  -- `lpush F X = T` if `F` is Lipschitz and `X` is normal with compact support, `0` otherwise
+  obtain ⟨lpush, hlpush⟩ : ∃ lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') →
+      GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k,
+      ∀ (N N' k : ℕ) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k)
+        (h : (∃ Λ : NNReal, LipschitzWith Λ F) ∧ IsCompact X.support ∧ X.mass < ∞ ∧
+          boundaryMassOn X univ < ∞),
+        lpush N N' k F X = T N N' k h.1.choose F X h.1.choose_spec h.2.1 h.2.2.1 h.2.2.2 :=
+    ⟨fun N N' k F X => if h : (∃ Λ : NNReal, LipschitzWith Λ F) ∧ IsCompact X.support ∧
+        X.mass < ∞ ∧ boundaryMassOn X univ < ∞ then
+        T N N' k h.1.choose F X h.1.choose_spec h.2.1 h.2.2.1 h.2.2.2 else 0,
+      fun N N' k F X h => dite_eq_left h⟩
+  -- (PA): the limit property of `T` holds for any Lipschitz constant of `F`
+  have hPA : ∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N')
+      (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k)
+      (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k),
+      LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ →
+      (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') →
+      TendstoUniformlyOn Fs F atTop X.support →
+      (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+        (ηs j : DifferentialForm (Euclid N) k) x =
+          ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x)) →
+      Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω)) := by
+    intro N N' k Λ Λ' F Fs X ω ηs hF hXc hXm hXb hFs hDF hU hη
+    rw [hlpush N N' k F X ⟨⟨Λ, hF⟩, hXc, hXm, hXb⟩]
+    exact hT _ _ _ _ _ _ _ _ _ _ Λ' Fs ω ηs hFs hDF hU hη
+  -- conjuncts (1)–(6) from (PA)
+  exact ⟨lpush, Submission.cmcdt_lpo_pf_identity lpush hPA,
+    Submission.cmcdt_lpo_pf_sub lpush hPA, Submission.cmcdt_lpo_pf_congr lpush hPA,
+    Submission.cmcdt_lpo_pf_mass_support hVO hREP hLB lpush hPA,
+    Submission.cmcdt_lpo_pf_boundary lpush hPA, Submission.cmcdt_lpo_pf_smooth_approx lpush hPA,
+    hPA⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
