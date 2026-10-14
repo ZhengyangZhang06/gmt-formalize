@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d92e3eb9b52f302058fef9c3f2f619c9db7ab8586bdae312a4b892424e57f83",
+  "git_delta": {
+    "base_commit": "3e4f8ebc1109bd7e7a87cfc5688e9d562d19f86c",
+    "candidate_commit": "22c4401e05830026dab3a9013866226f3e0a965a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_covector_opNorm_le",
+    "diff_sha256": "5588a89cb4646c9c0c86a4dff6f4d19bab95ff0507d193fc0f816ef31de6e8f3",
+    "source_sha256": "410c98966512fc5b688d64ed0b4b1141c189eab26edb9cacbfa95c1f0792ee60",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_covector_opNorm_le",
+      "statement": "∀ (P n : ℕ) (α : Covector (Euclid P) n), ‖α‖ ≤ (P : ℝ) ^ n * covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
