@@ -6531,6 +6531,841 @@ theorem Submission.idtp_fons_cs_sos_lipschitz_approx_tangent : ∀ (P k : ℕ) (
   obtain ⟨n, hn⟩ := mem_iUnion.1 (hcov huG)
   exact hu n ⟨huG, hn⟩
 
+/-- **Coarea formula along a spine, from bi-Lipschitz pieces** (Federer 3.2.22 for `p = p_L` on
+`M`; the slicing step behind Simon 7.3.5, chapter-07.txt lines 407–418).  Let `M ⊆ ℝᴾ` be Borel
+and locally `Hⁿ`-finite, covered up to an `Hⁿ`-null set by disjoint pieces `Fᵢ(Bᵢ) ⊆ M` with
+`Fᵢ` Lipschitz, bi-Lipschitz on `Bᵢ` and `DFᵢ` injective on `Bᵢ`, with an approximate tangent
+plane containing `L` at `Hⁿ`-a.e. point, `d = dim L < n` and `m = n − d`.  Then for `Hᵈ`-a.e.
+`t ∈ L` the slice `Mₜ = M ∩ p⁻¹(t)` is countably `m`-rectifiable with `Tan(Mₜ, x) = TₓM ∩ L⊥`
+for `Hᵐ`-a.e. `x ∈ Mₜ`, and `∫_M g dHⁿ = ∫_L ∫_{Mₜ} g dHᵐ dHᵈ(t)` for Borel `g ≥ 0`.
+
+The given pieces are refined to pieces `H(Ω)` with `H` Lipschitz and bi-Lipschitz on
+`Ω ⊆ ℝⁿ ≅ L × ℝᵐ` and `p ∘ H = (first coordinate)`: a part `Fᵢ(T)` on which `Fᵢ` is close to a
+linear map `A` with `L ⊆ range A` is reparametrized by `u ↦ (pFᵢ(u), π_{ker pA}(u))`.  Because
+`L ⊆ range DH`, a shear shows `JH = J(H(t, ·))` (the coarea factor is `1`), so the area formula
+for `H` and for its slices and Fubini give the identity on each piece; `Hⁿ`-null sets have
+`Hᵐ`-null slices for a.e. `t` (covering argument and Fatou).  The slices are covered by the slice
+maps `H(t, ·)`, and `lipschitz_tangent` applied to them gives the tangent planes.  The argument
+runs over abstract finite-dimensional spaces `V, F, B` and is instantiated at `ℝⁿ, ℝᴾ, ℝᵐ`. -/
+theorem Submission.dimred_cs_sos_sc_coarea_of_pieces : ∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), Module.finrank ℝ L < n → MeasurableSet M → (∃ (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ i, ∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, 0 < m i) ∧ (∀ i, ∀ a ∈ B i, ∀ a' ∈ B i, m i * ‖a - a'‖ ≤ ‖F i a - F i a'‖) ∧ (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (F i) a ∧ Injective (fderiv ℝ (F i) a)) ∧ (∀ i, MeasurableSet (F i '' B i)) ∧ (∀ i, F i '' B i ⊆ M) ∧ Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) ∧ μHE[n] (M \ ⋃ i, F i '' B i) = 0) → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ L ≤ Q) → (∀ᵐ t ∂(μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))), CountablyRectifiable (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) ∧ ∀ᵐ x ∂(μHE[n - Module.finrank ℝ L].restrict (M ∩ {x | L.starProjection x = t})), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) x (Q ⊓ Lᗮ)) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L]) (μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))) ∧ ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set (Euclid P)), ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L] ∂μHE[Module.finrank ℝ L] := by
+  intro P n L M hdn hM hpieces hloc htan
+  -- The argument runs over abstract spaces `V = ℝⁿ`, `F = ℝᴾ`, `B = ℝᵐ`; the Euclidean inputs
+  -- (bi-Lipschitz pieces, pull-back of null sets along a piece, `lipschitz_tangent` in dimensions
+  -- `n` and `m`, a.e. transfer through pieces) enter as hypotheses.
+  have master : ∀ (V F B : Type) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+      [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [NormedAddCommGroup F]
+      [InnerProductSpace ℝ F] [FiniteDimensional ℝ F] [MeasurableSpace F] [BorelSpace F]
+      [NormedAddCommGroup B] [InnerProductSpace ℝ B] [FiniteDimensional ℝ B] [MeasurableSpace B]
+      [BorelSpace B] (n d m : ℕ) (L : Submodule ℝ F) (M : Set F),
+      Module.finrank ℝ V = n → Module.finrank ℝ B = m → Module.finrank ℝ ↥L = d → d < n →
+      n - d = m → MeasurableSet M → (∀ K : Set F, IsCompact K → μHE[n] (M ∩ K) ≠ ∞) →
+      (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ F, HasApproximateTangentSpaceAt n M x Q ∧
+        L ≤ Q) →
+      (∃ (Fp : ℕ → V → F) (Bp : ℕ → Set V) (mm : ℕ → ℝ),
+        (∀ i, ∃ K : NNReal, LipschitzWith K (Fp i)) ∧ (∀ i, MeasurableSet (Bp i)) ∧
+        (∀ i, 0 < mm i) ∧ (∀ i, ∀ a ∈ Bp i, ∀ a' ∈ Bp i, mm i * ‖a - a'‖ ≤ ‖Fp i a - Fp i a'‖) ∧
+        (∀ i, ∀ a ∈ Bp i, DifferentiableAt ℝ (Fp i) a ∧ Injective (fderiv ℝ (Fp i) a)) ∧
+        (∀ i, MeasurableSet (Fp i '' Bp i)) ∧ (∀ i, Fp i '' Bp i ⊆ M) ∧
+        Pairwise (fun i j => Disjoint (Fp i '' Bp i) (Fp j '' Bp j)) ∧
+        μHE[n] (M \ ⋃ i, Fp i '' Bp i) = 0) →
+      (∀ (G : V → F) (S : Set V) (K : NNReal) (c : ℝ), LipschitzWith K G → MeasurableSet S →
+        0 < c → (∀ a ∈ S, ∀ a' ∈ S, c * ‖a - a'‖ ≤ ‖G a - G a'‖) → MeasurableSet (G '' S) ∧
+        ∀ p : F → Prop, (∀ᵐ y ∂(μHE[n].restrict (G '' S)), p y) →
+          ∀ᵐ b ∂(volume.restrict S), p (G b)) →
+      (∀ (G : V → F) (Y : Set F) (K : NNReal), LipschitzWith K G → MeasurableSet Y →
+        (∀ C : Set F, IsCompact C → μHE[n] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure V), G u ∈ Y →
+        DifferentiableAt ℝ G u → Injective (fderiv ℝ G u) →
+        HasApproximateTangentSpaceAt n Y (G u) (LinearMap.range (fderiv ℝ G u : V →ₗ[ℝ] F))) →
+      (∀ (G : B → F) (Y : Set F) (K : NNReal), LipschitzWith K G → MeasurableSet Y →
+        (∀ C : Set F, IsCompact C → μHE[m] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure B), G u ∈ Y →
+        DifferentiableAt ℝ G u → Injective (fderiv ℝ G u) →
+        HasApproximateTangentSpaceAt m Y (G u) (LinearMap.range (fderiv ℝ G u : B →ₗ[ℝ] F))) →
+      (∀ (S : Set F) (G : ℕ → B → F) (T : ℕ → Set B) (p : F → Prop), MeasurableSet S →
+        (∀ i, ∃ K : NNReal, LipschitzWith K (G i)) → μHE[m] (S \ ⋃ i, G i '' T i) = 0 →
+        (∀ i, ∀ᵐ b ∂(volume.restrict (T i)), p (G i b)) → ∀ᵐ x ∂(μHE[m].restrict S), p x) →
+      (∀ᵐ t ∂(μHE[d].restrict (L : Set F)), (∃ M₀ : Set F, μHE[m] M₀ = 0 ∧ ∃ G : ℕ → B → F,
+          (∀ j, ∃ K : NNReal, LipschitzWith K (G j)) ∧
+          M ∩ {x | L.starProjection x = t} ⊆ M₀ ∪ ⋃ j, range (G j)) ∧
+        ∀ᵐ x ∂(μHE[m].restrict (M ∩ {x | L.starProjection x = t})), ∀ Q : Submodule ℝ F,
+          HasApproximateTangentSpaceAt n M x Q →
+          HasApproximateTangentSpaceAt m (M ∩ {x | L.starProjection x = t}) x (Q ⊓ Lᗮ)) ∧
+      ∀ g : F → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[m])
+          (μHE[d].restrict (L : Set F)) ∧
+        ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set F),
+          ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[m] ∂μHE[d] := by
+    intro V F B _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ n d m L M hV hBm hd hdn hmd hM hloc htan hpieces
+      hptd hchV hchB hitt
+    have hm0 : 0 < m := hmd ▸ Nat.sub_pos_of_lt hdn
+    have hnd : n = d + m := by rw [← hmd, Nat.add_sub_cancel' hdn.le]
+    -- the parameter splitting `V ≅ L × B`
+    have hfinE : Module.finrank ℝ V = Module.finrank ℝ (WithLp 2 (↥L × B)) := by
+      rw [(WithLp.linearEquiv 2 ℝ (↥L × B)).finrank_eq, Module.finrank_prod, hd, hBm, hV, hnd]
+    obtain ⟨Θ⟩ : Nonempty (V ≃ₗᵢ[ℝ] WithLp 2 (↥L × B)) :=
+      ⟨(stdOrthonormalBasis ℝ V).equiv (stdOrthonormalBasis ℝ _) (finCongr hfinE)⟩
+    -- the base: `volume` on `L` is `Hᵈ⌞L`
+    have hLmeas : MeasurableSet (L : Set F) := L.closed_of_finiteDimensional.measurableSet
+    have hemb : MeasurableEmbedding (Subtype.val : ↥L → F) := MeasurableEmbedding.subtype_coe hLmeas
+    have hmap : (volume : Measure ↥L).map Subtype.val = μHE[d].restrict (L : Set F) := by
+      rw [← InnerProductSpace.euclideanHausdorffMeasure_eq_volume, hd,
+        isometry_subtype_coe.map_euclideanHausdorffMeasure, Subtype.range_coe]
+    -- Fubini in the parameters
+    have hmp : MeasurePreserving (fun x : ↥L × B => Θ.symm (WithLp.toLp 2 x)) (volume.prod volume)
+        volume :=
+      Θ.symm.measurePreserving.comp (WithLp.volume_preserving_toLp _ _)
+    have hvolV : (μHE[n] : Measure V) = volume := by
+      rw [← hV]
+      exact InnerProductSpace.euclideanHausdorffMeasure_eq_volume
+    -- the first coordinate `π₁ z = (Θ z).1 ∈ L` and the slice inclusion `jL s = Θ⁻¹(0, s)`
+    obtain ⟨π₁, hπ₁⟩ : ∃ π₁ : V →L[ℝ] F, ∀ z, π₁ z = (((Θ z).fst : ↥L) : F) :=
+      ⟨L.subtypeL.comp ((ContinuousLinearMap.fst ℝ ↥L B).comp
+        ((WithLp.prodContinuousLinearEquiv 2 ℝ ↥L B).toContinuousLinearMap.comp
+          (Θ.toContinuousLinearEquiv : V →L[ℝ] WithLp 2 (↥L × B)))), fun z => rfl⟩
+    have hpπ : ∀ z, L.starProjection (π₁ z) = π₁ z := fun z =>
+      Submodule.starProjection_eq_self_iff.mpr (by rw [hπ₁]; exact ((Θ z).fst).2)
+    obtain ⟨jL, hjL⟩ : ∃ jL : B →L[ℝ] V, ∀ s, jL s = Θ.symm (WithLp.toLp 2 (0, s)) :=
+      ⟨(Θ.symm.toContinuousLinearEquiv : WithLp 2 (↥L × B) →L[ℝ] V).comp
+        ((WithLp.prodContinuousLinearEquiv 2 ℝ ↥L B).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.inr ℝ ↥L B)), fun s => rfl⟩
+    have hjinj : Injective jL := fun s s' h => by
+      rw [hjL, hjL] at h
+      exact congrArg Prod.snd (WithLp.toLp_injective 2 (Θ.symm.injective h))
+    have hjsplit : ∀ (t : ↥L) s, Θ.symm (WithLp.toLp 2 (t, s)) =
+        Θ.symm (WithLp.toLp 2 (t, 0)) + jL s := fun t s => by
+      rw [hjL, ← map_add, ← WithLp.toLp_add, Prod.mk_add_mk, add_zero, zero_add]
+    -- **the Jacobian identity**: `J(DH) = J(DH ∘ jL)` when `p ∘ DH = π₁` and `L ⊆ range DH`
+    have hLA : ∀ D : V →ₗ[ℝ] F, (∀ v, L.starProjection (D v) = π₁ v) → L ≤ LinearMap.range D →
+        D.normDet = (D ∘ₗ (jL : B →ₗ[ℝ] V)).normDet ∧
+        LinearMap.range (D ∘ₗ (jL : B →ₗ[ℝ] V)) = LinearMap.range D ⊓ Lᗮ := by
+      intro D h1 h2
+      have h1 : ∀ v, L.starProjection (D v) = ((Θ v).fst : F) := fun v => (h1 v).trans (hπ₁ v)
+      obtain ⟨Y, hYdef⟩ : ∃ Y : B →ₗ[ℝ] F, Y = D ∘ₗ (jL : B →ₗ[ℝ] V) := ⟨_, rfl⟩
+      rw [← hYdef]
+      have hY : ∀ s, Y s = D (Θ.symm (WithLp.toLp 2 (0, s))) := fun s => by
+        rw [hYdef]
+        exact congrArg D (hjL s)
+      have hYorth : ∀ s, Y s ∈ Lᗮ := fun s => by
+        rw [← Submodule.orthogonalProjectionOnto_eq_zero_iff]
+        apply Subtype.ext
+        rw [← Submodule.starProjection_apply, hY, h1, LinearIsometryEquiv.apply_symm_apply]
+        rfl
+      have hsplit : ∀ w, D (Θ.symm w) = D (Θ.symm (WithLp.toLp 2 (w.fst, 0))) + Y w.snd :=
+          fun w => by
+        rw [hY, ← map_add, ← map_add, ← WithLp.toLp_add, Prod.mk_add_mk, add_zero, zero_add]
+        rfl
+      refine ⟨?_, ?_⟩
+      · have hXY : ∀ τ : ↥L, D (Θ.symm (WithLp.toLp 2 (τ, 0))) - (τ : F) ∈ LinearMap.range Y := by
+          intro τ
+          obtain ⟨v, hv⟩ := h2 τ.2
+          have hfst : (Θ v).fst = τ := Subtype.ext (by
+            rw [← h1 v, show D v = (τ : F) from hv]
+            exact Submodule.starProjection_eq_self_iff.mpr τ.2)
+          refine ⟨-(Θ v).snd, ?_⟩
+          have hs := hsplit (Θ v)
+          rw [LinearIsometryEquiv.symm_apply_apply, hfst, show D v = (τ : F) from hv] at hs
+          rw [map_neg, eq_sub_of_add_eq hs.symm]
+          abel
+        obtain ⟨Bm, hBm⟩ := Module.projective_lifting_property Y.rangeRestrict
+          ((D ∘ₗ Θ.symm.toLinearIsometry.toLinearMap ∘ₗ
+            (WithLp.linearEquiv 2 ℝ (↥L × B)).symm.toLinearMap
+            ∘ₗ LinearMap.inl ℝ ↥L B - L.subtype).codRestrict (LinearMap.range Y) hXY)
+          Y.surjective_rangeRestrict
+        have hB : ∀ τ, Y (Bm τ) = D (Θ.symm (WithLp.toLp 2 (τ, 0))) - (τ : F) := fun τ =>
+          congrArg Subtype.val (LinearMap.congr_fun hBm τ)
+        obtain ⟨U, hU⟩ : ∃ U : WithLp 2 (↥L × B) →ₗ[ℝ] WithLp 2 (↥L × B), U = LinearMap.id +
+            ((WithLp.linearEquiv 2 ℝ (↥L × B)).symm.toLinearMap ∘ₗ LinearMap.inr ℝ ↥L B ∘ₗ Bm) ∘ₗ
+            (LinearMap.fst ℝ ↥L B ∘ₗ (WithLp.linearEquiv 2 ℝ (↥L × B)).toLinearMap) := ⟨_, rfl⟩
+        have hdetU : LinearMap.det U = 1 := by
+          classical
+          have hA : (LinearMap.fst ℝ ↥L B ∘ₗ (WithLp.linearEquiv 2 ℝ (↥L × B)).toLinearMap) ∘ₗ
+              ((WithLp.linearEquiv 2 ℝ (↥L × B)).symm.toLinearMap ∘ₗ LinearMap.inr ℝ ↥L B ∘ₗ Bm) =
+                0 :=
+            LinearMap.ext fun τ => rfl
+          let b := Module.finBasis ℝ (WithLp 2 (↥L × B))
+          let c := Module.finBasis ℝ ↥L
+          rw [← LinearMap.det_toMatrix b, hU, map_add, LinearMap.toMatrix_id,
+            LinearMap.toMatrix_comp b c b, Matrix.det_one_add_mul_comm,
+            ← LinearMap.toMatrix_comp c b c, hA, map_zero, add_zero, Matrix.det_one]
+        obtain ⟨D₀, hD₀⟩ : ∃ D₀ : WithLp 2 (↥L × B) →ₗ[ℝ] F, ∀ w, D₀ w = (w.fst : F) + Y w.snd :=
+          ⟨L.subtype ∘ₗ LinearMap.fst ℝ ↥L B ∘ₗ (WithLp.linearEquiv 2 ℝ (↥L × B)).toLinearMap +
+            Y ∘ₗ LinearMap.snd ℝ ↥L B ∘ₗ (WithLp.linearEquiv 2 ℝ (↥L × B)).toLinearMap,
+            fun w => rfl⟩
+        have hfac : D ∘ₗ Θ.symm.toLinearIsometry.toLinearMap = D₀ ∘ₗ U := by
+          refine LinearMap.ext fun w => ?_
+          have hUw : U w = WithLp.toLp 2 (w.fst, w.snd + Bm w.fst) := by
+            rw [hU]
+            exact WithLp.ofLp_injective 2 (Prod.ext (add_zero _) rfl)
+          change D (Θ.symm w) = D₀ (U w)
+          rw [hUw, hD₀, hsplit w]
+          change D (Θ.symm (WithLp.toLp 2 (w.fst, 0))) + Y w.snd =
+            (w.fst : F) + Y (w.snd + Bm w.fst)
+          rw [map_add, hB]
+          abel
+        have hD₀Y : D₀.normDet = Y.normDet := by
+          classical
+          let bA := stdOrthonormalBasis ℝ ↥L
+          let bB := stdOrthonormalBasis ℝ B
+          have hg := LinearMap.normDet_sq_eq_det_gram D₀ (bA.prod bB)
+          have hgY := LinearMap.normDet_sq_eq_det_gram Y bB
+          have hb1 : ∀ i, D₀ (bA.prod bB (Sum.inl i)) = (bA i : F) := fun i => by
+            rw [OrthonormalBasis.prod_apply, hD₀]
+            change (bA i : F) + Y 0 = _
+            rw [map_zero, add_zero]
+          have hb2 : ∀ j, D₀ (bA.prod bB (Sum.inr j)) = Y (bB j) := fun j => by
+            rw [OrthonormalBasis.prod_apply, hD₀]
+            change ((0 : ↥L) : F) + Y (bB j) = _
+            rw [Submodule.coe_zero, zero_add]
+          have hG : Matrix.gram ℝ (fun i => D₀ (bA.prod bB i)) =
+              Matrix.fromBlocks 1 0 0 (Matrix.gram ℝ (fun j => Y (bB j))) := by
+            ext (i | i) (j | j)
+            · rw [Matrix.gram_apply, hb1, hb1, Matrix.fromBlocks_apply₁₁, Matrix.one_apply,
+                ← Submodule.coe_inner, bA.inner_eq_ite]
+            · rw [Matrix.gram_apply, hb1, hb2, Matrix.fromBlocks_apply₁₂]
+              exact Submodule.inner_right_of_mem_orthogonal (bA i).2 (hYorth _)
+            · rw [Matrix.gram_apply, hb1, hb2, Matrix.fromBlocks_apply₂₁]
+              exact Submodule.inner_left_of_mem_orthogonal (bA j).2 (hYorth _)
+            · rw [Matrix.gram_apply, hb2, hb2, Matrix.fromBlocks_apply₂₂, Matrix.gram_apply]
+          rw [hG, Matrix.det_fromBlocks_zero₂₁, Matrix.det_one, one_mul, ← hgY] at hg
+          exact (sq_eq_sq₀ (LinearMap.normDet_nonneg _) (LinearMap.normDet_nonneg _)).mp
+            (by exact_mod_cast hg)
+        have e1 : (D ∘ₗ Θ.symm.toLinearIsometry.toLinearMap).normDet = D.normDet := by
+          rw [LinearMap.normDet_comp_of_finrank_eq _ _ Θ.symm.toLinearEquiv.finrank_eq,
+            Θ.symm.toLinearIsometry.normDet_eq_one, mul_one]
+        rw [← e1, hfac, LinearMap.normDet_comp_of_finrank_eq U D₀ rfl,
+          LinearMap.normDet_eq_abs_det U,
+          hdetU, abs_one, mul_one, hD₀Y]
+      · apply le_antisymm
+        · rintro y ⟨s, rfl⟩
+          exact ⟨⟨Θ.symm (WithLp.toLp 2 (0, s)), (hY s).symm⟩, hYorth s⟩
+        · rintro y ⟨⟨v, rfl⟩, hy⟩
+          have h0 : (Θ v).fst = 0 := by
+            apply Subtype.ext
+            rw [← h1 v, Submodule.starProjection_apply]
+            exact congrArg Subtype.val (Submodule.orthogonalProjectionOnto_eq_zero_iff.mpr hy)
+          refine ⟨(Θ v).snd, ?_⟩
+          have hv : WithLp.toLp 2 ((0 : ↥L), (Θ v).snd) = Θ v :=
+            WithLp.ofLp_injective 2 (Prod.ext h0.symm rfl)
+          rw [hY, hv, LinearIsometryEquiv.symm_apply_apply]
+
+    -- the constants of the reparametrization of a piece
+    have hC : ∀ A : V →L[ℝ] F, ∃ C : NNReal, 0 < C ∧ ∀ v : V,
+        ‖v‖ ≤ C * max ‖L.starProjection (A v)‖
+          ‖(LinearMap.ker ((L.starProjection.comp A : V →L[ℝ] F) : V →ₗ[ℝ] F)).starProjection
+            v‖ := by
+      intro A
+      obtain ⟨C, hC0, hCa⟩ := LinearMap.exists_antilipschitzWith
+        (((L.starProjection.comp A : V →L[ℝ] F) : V →ₗ[ℝ] F).prod
+          ((LinearMap.ker ((L.starProjection.comp A : V →L[ℝ] F) : V →ₗ[ℝ] F)).starProjection :
+            V →ₗ[ℝ] V))
+        (LinearMap.ker_eq_bot'.mpr fun v hv => by
+          obtain ⟨h1, h2⟩ := Prod.ext_iff.mp hv
+          exact (Submodule.starProjection_eq_self_iff.mpr (LinearMap.mem_ker.mpr h1)).symm.trans h2)
+      exact ⟨C, hC0, fun v => (ZeroHomClass.bound_of_antilipschitz _ hCa v).trans_eq (by
+        rw [Prod.norm_def]; rfl)⟩
+    choose C hCpos hCb using hC
+    have hdim : Module.finrank ℝ V = Module.finrank ℝ ↥L + Module.finrank ℝ B := by
+      rw [hV, hd, hBm, hnd]
+    -- **one piece**: reparametrize `F'` on `T` over `L × B`, with `p ∘ H' = π₁`
+    have hPCL : ∀ (F' : V → F) (K' : NNReal) (T : Set V) (A' : V →L[ℝ] F) (m' : ℝ),
+        LipschitzWith K' F' → MeasurableSet T → 0 < m' →
+        (∀ a ∈ T, ∀ a' ∈ T, m' * ‖a - a'‖ ≤ ‖F' a - F' a'‖) →
+        ApproximatesLinearOn F' A' T (2 * C A')⁻¹ →
+        (T.Nonempty → L ≤ LinearMap.range (A' : V →ₗ[ℝ] F)) →
+        ∃ (H' : V → F) (Ω' : Set V), (∃ K : NNReal, LipschitzWith K H') ∧ MeasurableSet Ω' ∧
+          (∃ c : ℝ, 0 < c ∧ ∀ z ∈ Ω', ∀ z' ∈ Ω', c * ‖z - z'‖ ≤ ‖H' z - H' z'‖) ∧
+          H' '' Ω' = F' '' T ∧ ∀ z, L.starProjection (H' z) = π₁ z := by
+      intro F' K' T A' m' hF' hT hm' hbil' happ hLA'
+      rcases T.eq_empty_or_nonempty with hT0 | hTne
+      · exact ⟨π₁, ∅, ⟨_, π₁.lipschitzWith⟩, MeasurableSet.empty,
+          ⟨1, one_pos, fun z hz => absurd hz (Set.notMem_empty z)⟩,
+          by rw [hT0, Set.image_empty, Set.image_empty], hpπ⟩
+      have hLA'' := hLA' hTne
+      -- `K = ker (p ∘ A')` has dimension `dim B`
+      have hrange : LinearMap.range ((L.starProjection.comp A' : V →L[ℝ] F) : V →ₗ[ℝ] F) = L := by
+        apply le_antisymm
+        · rintro _ ⟨v, rfl⟩
+          change L.starProjection (A' v) ∈ L
+          rw [Submodule.starProjection_apply]
+          exact (L.orthogonalProjectionOnto (A' v)).2
+        · intro ℓ hℓ
+          obtain ⟨w, hw⟩ := hLA'' hℓ
+          refine ⟨w, ?_⟩
+          change L.starProjection (A' w) = ℓ
+          rw [show A' w = ℓ from hw]
+          exact Submodule.starProjection_eq_self_iff.mpr hℓ
+      have hKfin : Module.finrank ℝ (LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) :
+          V →ₗ[ℝ] F)) = Module.finrank ℝ B := by
+        have h := LinearMap.finrank_range_add_finrank_ker
+          ((L.starProjection.comp A' : V →L[ℝ] F) : V →ₗ[ℝ] F)
+        rw [hrange, hdim] at h
+        exact Nat.add_left_cancel h
+      obtain ⟨κ⟩ : Nonempty (↥(LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) : V →ₗ[ℝ] F))
+          ≃ₗᵢ[ℝ] B) := ⟨(stdOrthonormalBasis ℝ _).equiv (stdOrthonormalBasis ℝ B) (finCongr hKfin)⟩
+      obtain ⟨Λ, hΛ⟩ : ∃ Λ : F × V →L[ℝ] V, ∀ x y, Λ (x, y) =
+          Θ.symm (WithLp.toLp 2 (L.orthogonalProjectionOnto x,
+            κ ((LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) :
+              V →ₗ[ℝ] F)).orthogonalProjectionOnto y))) :=
+        ⟨(Θ.symm.toContinuousLinearEquiv : WithLp 2 (↥L × B) →L[ℝ] V).comp
+          ((WithLp.prodContinuousLinearEquiv 2 ℝ ↥L B).symm.toContinuousLinearMap.comp
+            (L.orthogonalProjectionOnto.prodMap
+              ((κ.toContinuousLinearEquiv : _ →L[ℝ] B).comp
+                (LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) :
+                  V →ₗ[ℝ] F)).orthogonalProjectionOnto))), fun x y => rfl⟩
+      have hΛ1 : ∀ x y, ‖L.starProjection x‖ ≤ ‖Λ (x, y)‖ := fun x y => by
+        rw [hΛ, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply]
+        exact WithLp.norm_fst_le (x := WithLp.toLp 2 (L.orthogonalProjectionOnto x, _))
+      have hΛ2 : ∀ x y, ‖(LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) :
+          V →ₗ[ℝ] F)).starProjection y‖ ≤ ‖Λ (x, y)‖ := fun x y => by
+        rw [hΛ, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply]
+        exact (κ.norm_map _).symm.trans_le (WithLp.norm_snd_le (x := WithLp.toLp 2 (_, _)))
+      obtain ⟨Φ, hΦ⟩ : ∃ Φ : V → V, ∀ u, Φ u = Λ (F' u, u) := ⟨_, fun u => rfl⟩
+      have hΦL : LipschitzWith (‖Λ‖₊ * max K' 1) Φ := by
+        rw [show Φ = fun u => Λ (F' u, u) from funext hΦ]
+        exact Λ.lipschitzWith.comp (hF'.prodMk LipschitzWith.id)
+      have hΦsub : ∀ u u', Φ u - Φ u' = Λ (F' u - F' u', u - u') := fun u u' => by
+        rw [hΦ, hΦ, ← map_sub]
+        rfl
+      have hCr : (C A' : ℝ) * ((2 * C A')⁻¹ : NNReal) = 1 / 2 := by
+        have := (hCpos A').ne'
+        push_cast
+        field_simp
+      have hkey : ∀ v ∈ T, ∀ w ∈ T, ‖v - w‖ ≤ 2 * C A' * ‖Φ v - Φ w‖ := by
+        intro v hv w hw
+        have h2 : ‖L.starProjection (A' (v - w))‖ ≤
+            ‖Φ v - Φ w‖ + ((2 * C A')⁻¹ : NNReal) * ‖v - w‖ := by
+          rw [show A' (v - w) = (F' v - F' w) - (F' v - F' w - A' (v - w)) from
+            (sub_sub_cancel _ _).symm, map_sub, hΦsub]
+          exact (norm_sub_le _ _).trans (add_le_add (hΛ1 _ _)
+            ((L.norm_starProjection_apply_le _).trans (happ v hv w hw)))
+        have h3 : ‖(LinearMap.ker ((L.starProjection.comp A' : V →L[ℝ] F) :
+            V →ₗ[ℝ] F)).starProjection (v - w)‖ ≤
+            ‖Φ v - Φ w‖ + ((2 * C A')⁻¹ : NNReal) * ‖v - w‖ := by
+          rw [hΦsub]
+          exact (hΛ2 _ _).trans (le_add_of_nonneg_right
+            (mul_nonneg (NNReal.coe_nonneg _) (norm_nonneg _)))
+        have h5 := (hCb A' (v - w)).trans (mul_le_mul_of_nonneg_left (max_le h2 h3) (C A').2)
+        rw [mul_add, ← mul_assoc, hCr] at h5
+        linarith only [h5]
+      have hΦinj : InjOn Φ T := fun v hv w hw hvw => by
+        have := hkey v hv w hw
+        rw [hvw, sub_self, norm_zero, mul_zero] at this
+        exact sub_eq_zero.mp (norm_le_zero_iff.mp this)
+      have hψ : ∀ u ∈ T, Function.invFunOn Φ T (Φ u) = u := fun u hu => hΦinj.leftInvOn_invFunOn hu
+      have hH₀ : LipschitzOnWith (K' * (2 * C A')) (fun z => F' (Function.invFunOn Φ T z))
+          (Φ '' T) := by
+        apply LipschitzOnWith.of_dist_le_mul
+        rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+        rw [hψ u hu, hψ u' hu', dist_eq_norm, dist_eq_norm]
+        calc ‖F' u - F' u'‖ ≤ K' * ‖u - u'‖ := hF'.norm_sub_le u u'
+          _ ≤ K' * (2 * C A' * ‖Φ u - Φ u'‖) := mul_le_mul_of_nonneg_left (hkey u hu u' hu') K'.2
+          _ = _ := by push_cast; ring
+      obtain ⟨h₁, hh₁L, hh₁eq⟩ := hH₀.extend_finite_dimension
+      have hpq : ∀ y, L.starProjection (Lᗮ.starProjection y) = 0 := fun y => by
+        rw [Submodule.starProjection_apply L, Submodule.orthogonalProjectionOnto_eq_zero_iff.mpr
+          (by rw [Submodule.starProjection_apply]; exact (Lᗮ.orthogonalProjectionOnto y).2)]
+        rfl
+      have hH'Φ : ∀ u ∈ T, π₁ (Φ u) + Lᗮ.starProjection (h₁ (Φ u)) = F' u := by
+        intro u hu
+        have e1 : π₁ (Φ u) = L.starProjection (F' u) := by
+          rw [hπ₁, hΦ, hΛ, LinearIsometryEquiv.apply_symm_apply, Submodule.starProjection_apply]
+          rfl
+        have e2 : h₁ (Φ u) = F' u := by
+          rw [← hh₁eq ⟨u, hu, rfl⟩]
+          exact congrArg F' (hψ u hu)
+        rw [e1, e2]
+        exact L.starProjection_add_starProjection_orthogonal (F' u)
+      have hK1 : (0 : ℝ) < ((‖Λ‖₊ * max K' 1 : NNReal) : ℝ) + 1 :=
+        add_pos_of_nonneg_of_pos (NNReal.coe_nonneg _) one_pos
+      refine ⟨fun z => π₁ z + Lᗮ.starProjection (h₁ z), Φ '' T,
+        ⟨_, π₁.lipschitzWith.add (Lᗮ.starProjection.lipschitzWith.comp hh₁L)⟩,
+        hT.image_of_continuousOn_injOn hΦL.continuous.continuousOn hΦinj,
+        ⟨m' * (((‖Λ‖₊ * max K' 1 : NNReal) : ℝ) + 1)⁻¹, mul_pos hm' (inv_pos.mpr hK1), ?_⟩, ?_, ?_⟩
+      · rintro _ ⟨u, hu, rfl⟩ _ ⟨u', hu', rfl⟩
+        dsimp only
+        rw [hH'Φ u hu, hH'Φ u' hu']
+        calc m' * (((‖Λ‖₊ * max K' 1 : NNReal) : ℝ) + 1)⁻¹ * ‖Φ u - Φ u'‖
+            ≤ m' * (((‖Λ‖₊ * max K' 1 : NNReal) : ℝ) + 1)⁻¹ *
+              ((((‖Λ‖₊ * max K' 1 : NNReal) : ℝ) + 1) * ‖u - u'‖) :=
+              mul_le_mul_of_nonneg_left ((hΦL.norm_sub_le u u').trans (mul_le_mul_of_nonneg_right
+                (le_add_of_nonneg_right zero_le_one) (norm_nonneg _)))
+                (mul_nonneg hm'.le (inv_nonneg.mpr hK1.le))
+          _ = m' * ‖u - u'‖ := by rw [mul_assoc, inv_mul_cancel_left₀ hK1.ne']
+          _ ≤ ‖F' u - F' u'‖ := hbil' u hu u' hu'
+      · rw [Set.image_image]
+        exact Set.image_congr hH'Φ
+      · intro z
+        rw [map_add, hpq, add_zero, hpπ]
+
+    -- **the pieces**: `M` is, up to a null set, the disjoint union of the `H k '' Ω k`
+    obtain ⟨H, Ω, hHL, hΩm, hHbil, hHM, hdisj, hnull, hpH⟩ : ∃ (H : ℕ → V → F) (Ω : ℕ → Set V),
+        (∀ k, ∃ K : NNReal, LipschitzWith K (H k)) ∧ (∀ k, MeasurableSet (Ω k)) ∧
+        (∀ k, ∃ c : ℝ, 0 < c ∧ ∀ z ∈ Ω k, ∀ z' ∈ Ω k, c * ‖z - z'‖ ≤ ‖H k z - H k z'‖) ∧
+        (∀ k, H k '' Ω k ⊆ M) ∧ Pairwise (fun k k' => Disjoint (H k '' Ω k) (H k' '' Ω k')) ∧
+        μHE[n] (M \ ⋃ k, H k '' Ω k) = 0 ∧ (∀ k z, L.starProjection (H k z) = π₁ z) := by
+      obtain ⟨Fp, Bp, mm, hFL, hBm, hmpos, hbil, hdiff, -, hFBM, hFdisj, hFnull⟩ := hpieces
+      choose KF hKF using hFL
+      -- a.e. on `Bp i`, the tangent plane `range DFp i` contains `L`
+      have hgood : ∀ i, ∃ G : Set V, MeasurableSet G ∧ G ⊆ Bp i ∧ volume (Bp i \ G) = 0 ∧
+          ∀ a ∈ G, L ≤ LinearMap.range (fderiv ℝ (Fp i) a : V →ₗ[ℝ] F) := by
+        intro i
+        have h1 := (hptd (Fp i) (Bp i) (KF i) (mm i) (hKF i) (hBm i) (hmpos i) (hbil i)).2 _
+          (ae_restrict_of_ae_restrict_of_subset (hFBM i) htan)
+        have h2 := ae_restrict_of_ae (s := Bp i) (hchV (Fp i) M (KF i) (hKF i) hM hloc)
+        have h3 : ∀ᵐ a ∂(volume.restrict (Bp i)),
+            L ≤ LinearMap.range (fderiv ℝ (Fp i) a : V →ₗ[ℝ] F) := by
+          filter_upwards [h1, h2, ae_restrict_mem (hBm i)] with a ha1 ha2 haB
+          obtain ⟨Q, hQ, hLQ⟩ := ha1
+          rw [← hQ.unique (ha2 (hFBM i ⟨a, haB, rfl⟩) (hdiff i a haB).1 (hdiff i a haB).2)]
+          exact hLQ
+        rw [ae_restrict_iff' (hBm i)] at h3
+        refine ⟨Bp i \ toMeasurable volume {a | ¬(a ∈ Bp i →
+            L ≤ LinearMap.range (fderiv ℝ (Fp i) a : V →ₗ[ℝ] F))},
+          (hBm i).diff (measurableSet_toMeasurable _ _), sdiff_subset, ?_, ?_⟩
+        · refine measure_mono_null (fun a ha => ?_) ((measure_toMeasurable _).trans (ae_iff.mp h3))
+          exact not_not.mp fun h => ha.2 ⟨ha.1, h⟩
+        · rintro a ⟨haB, haN⟩
+          by_contra hc
+          exact haN (subset_toMeasurable _ _ fun h => hc (h haB))
+      choose G hGm hGB hGnull hGL using hgood
+      have hpart : ∀ i, ∃ (t : ℕ → Set V) (A : ℕ → V →L[ℝ] F),
+          Pairwise (Disjoint on t) ∧ (∀ k, MeasurableSet (t k)) ∧ G i ⊆ ⋃ k, t k ∧
+          (∀ k, ApproximatesLinearOn (Fp i) (A k) (G i ∩ t k) (2 * C (A k))⁻¹) ∧
+          ((G i).Nonempty → ∀ k, ∃ y ∈ G i, A k = fderiv ℝ (Fp i) y) := fun i =>
+        exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (Fp i) (G i)
+          (fun a => fderiv ℝ (Fp i) a)
+          (fun a ha => (hdiff i a (hGB i ha)).1.hasFDerivAt.hasFDerivWithinAt)
+          (fun A => (2 * C A)⁻¹) (fun A => inv_ne_zero (mul_ne_zero two_ne_zero (hCpos A).ne'))
+      choose t A htdisj htm hGt hAapp hAeq using hpart
+      -- the pieces, indexed by `q ↦ (q.unpair.1, q.unpair.2)`
+      have hpc : ∀ q : ℕ, ∃ (H' : V → F) (Ω' : Set V), (∃ K : NNReal, LipschitzWith K H') ∧
+          MeasurableSet Ω' ∧
+          (∃ c : ℝ, 0 < c ∧ ∀ z ∈ Ω', ∀ z' ∈ Ω', c * ‖z - z'‖ ≤ ‖H' z - H' z'‖) ∧
+          H' '' Ω' = Fp q.unpair.1 '' (G q.unpair.1 ∩ t q.unpair.1 q.unpair.2) ∧
+          ∀ z, L.starProjection (H' z) = π₁ z := fun q =>
+        hPCL _ _ _ _ _ (hKF _) ((hGm _).inter (htm _ _)) (hmpos _)
+          (fun a ha a' ha' => hbil _ a (hGB _ ha.1) a' (hGB _ ha'.1)) (hAapp _ _)
+          (fun ⟨a, ha⟩ => by
+            obtain ⟨y, hy, hAy⟩ := hAeq _ ⟨a, ha.1⟩ q.unpair.2
+            rw [hAy]
+            exact hGL _ y hy)
+      choose H Ω hHL hΩm hHbil hHimg hpH using hpc
+      have hinj : ∀ i, InjOn (Fp i) (Bp i) := fun i a ha a' ha' h => by
+        have h0 := hbil i a ha a' ha'
+        rw [h, sub_self, norm_zero, ← mul_zero (mm i)] at h0
+        exact sub_eq_zero.mp (norm_le_zero_iff.mp (le_of_mul_le_mul_left h0 (hmpos i)))
+      refine ⟨H, Ω, hHL, hΩm, hHbil, fun q => ?_, fun q q' hqq' => ?_, ?_, hpH⟩
+      · rw [hHimg]
+        exact (image_mono (inter_subset_left.trans (hGB _))).trans (hFBM _)
+      · show Disjoint (H q '' Ω q) (H q' '' Ω q')
+        rw [hHimg, hHimg]
+        rcases eq_or_ne q.unpair.1 q'.unpair.1 with hi | hi
+        · have hk : q.unpair.2 ≠ q'.unpair.2 := fun hk => hqq' (by
+            rw [← Nat.pair_unpair q, ← Nat.pair_unpair q', hi, hk])
+          rw [Set.disjoint_left]
+          rintro _ ⟨a, ha, rfl⟩ ⟨a', ha', hFa⟩
+          rw [← hi] at ha' hFa
+          have := hinj _ (hGB _ ha'.1) (hGB _ ha.1) hFa
+          subst this
+          exact Set.disjoint_left.mp (htdisj _ hk) ha.2 ha'.2
+        · exact (hFdisj hi).mono (image_mono (inter_subset_left.trans (hGB _)))
+            (image_mono (inter_subset_left.trans (hGB _)))
+      · refine measure_mono_null (t := (M \ ⋃ i, Fp i '' Bp i) ∪ ⋃ i, Fp i '' (Bp i \ G i)) ?_
+          (measure_union_null hFnull (measure_iUnion_null fun i => ?_))
+        · rintro x ⟨hxM, hx⟩
+          by_cases hxF : x ∈ ⋃ i, Fp i '' Bp i
+          · obtain ⟨i, a, haB, rfl⟩ := mem_iUnion.mp hxF
+            by_cases haG : a ∈ G i
+            · obtain ⟨k, hk⟩ := mem_iUnion.mp (hGt i haG)
+              exact absurd (mem_iUnion.mpr ⟨Nat.pair i k, by
+                rw [hHimg, Nat.unpair_pair]; exact ⟨a, ⟨haG, hk⟩, rfl⟩⟩) hx
+            · exact Or.inr (mem_iUnion.mpr ⟨i, a, ⟨haB, haG⟩, rfl⟩)
+          · exact Or.inl ⟨hxM, hxF⟩
+        · refine le_antisymm
+            ((Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn
+            n (hKF i).lipschitzOnWith).trans ?_) bot_le
+          rw [hvolV, hGnull i, mul_zero]
+    choose KH hKH using hHL
+    choose cH hcH hbH using hHbil
+    -- **coarea on one piece**
+    have hPP : ∀ k, (∀ g : F → ℝ≥0∞, Measurable g →
+          AEMeasurable (fun t => ∫⁻ x in H k '' Ω k ∩ {x | L.starProjection x = t}, g x ∂μHE[m])
+            (μHE[d].restrict (L : Set F)) ∧
+          ∫⁻ x in H k '' Ω k, g x ∂μHE[n] = ∫⁻ t in (L : Set F),
+            ∫⁻ x in H k '' Ω k ∩ {x | L.starProjection x = t}, g x ∂μHE[m] ∂μHE[d]) ∧
+        (∀ᵐ t : ↥L ∂volume, ∀ᵐ s ∂(volume : Measure B), Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k →
+          HasFDerivAt (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s))))
+            ((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s)))).comp jL) s ∧
+          Injective ((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s)))).comp jL) ∧
+          HasApproximateTangentSpaceAt n M (H k (Θ.symm (WithLp.toLp 2 (t, s))))
+            (LinearMap.range (fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s))) : V →ₗ[ℝ] F)) ∧
+          LinearMap.range (((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s)))).comp jL :
+              B →L[ℝ] F) : B →ₗ[ℝ] F) =
+            LinearMap.range (fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s))) : V →ₗ[ℝ] F) ⊓ Lᗮ) ∧
+        (∀ t : ↥L,
+          (∃ K' : NNReal, LipschitzWith K' (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s))))) ∧
+          MeasurableSet {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} ∧
+          (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s)))) ''
+              {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} =
+            H k '' Ω k ∩ {x | L.starProjection x = t}) := by
+      intro k
+      have hinj : InjOn (H k) (Ω k) := fun z hz z' hz' h => by
+        have h0 := hbH k z hz z' hz'
+        rw [h, sub_self, norm_zero, ← mul_zero (cH k)] at h0
+        exact sub_eq_zero.mp (norm_le_zero_iff.mp (le_of_mul_le_mul_left h0 (hcH k)))
+      obtain ⟨-, hpull⟩ := hptd (H k) (Ω k) (KH k) (cH k) (hKH k) (hΩm k) (hcH k) (hbH k)
+      -- almost every parameter is good
+      have hgood : ∀ᵐ w ∂(volume.restrict (Ω k)), DifferentiableAt ℝ (H k) w ∧
+          Injective (fderiv ℝ (H k) w) ∧
+          HasApproximateTangentSpaceAt n M (H k w)
+            (LinearMap.range (fderiv ℝ (H k) w : V →ₗ[ℝ] F)) ∧
+          L ≤ LinearMap.range (fderiv ℝ (H k) w : V →ₗ[ℝ] F) := by
+        have hz := Poincare.SimonGMT.Chapter02.area_image_compl_regularSet_eq_zero (hKH k) (Ω k)
+        rw [hV] at hz
+        filter_upwards [hpull _ (ae_restrict_of_ae (measure_eq_zero_iff_ae_notMem.mp hz)),
+          hpull _ (ae_restrict_of_ae_restrict_of_subset (hHM k) htan),
+          ae_restrict_of_ae (hchV (H k) M (KH k) (hKH k) hM hloc), ae_restrict_mem (hΩm k)]
+          with w hw1 hw2 hw3 hwΩ
+        have hreg : DifferentiableAt ℝ (H k) w ∧ Injective (fderiv ℝ (H k) w) := by
+          by_contra hcon
+          exact hw1 ⟨w, ⟨hwΩ, hcon⟩, rfl⟩
+        have hT := hw3 (hHM k ⟨w, hwΩ, rfl⟩) hreg.1 hreg.2
+        obtain ⟨Q, hQ, hLQ⟩ := hw2
+        exact ⟨hreg.1, hreg.2, hT, hQ.unique hT ▸ hLQ⟩
+      -- `p ∘ DH = π₁`
+      have hpD : ∀ w, DifferentiableAt ℝ (H k) w →
+          ∀ v, L.starProjection (fderiv ℝ (H k) w v) = π₁ v := by
+        intro w hw v
+        have h1 : HasFDerivAt (fun z => L.starProjection (H k z))
+            (L.starProjection.comp (fderiv ℝ (H k) w)) w :=
+          L.starProjection.hasFDerivAt.comp w hw.hasFDerivAt
+        have h2 : HasFDerivAt (fun z => L.starProjection (H k z)) π₁ w := by
+          rw [show (fun z => L.starProjection (H k z)) = π₁ from funext (hpH k)]
+          exact π₁.hasFDerivAt
+        exact ContinuousLinearMap.ext_iff.mp (h1.unique h2) v
+      have hjd : ∀ (t : ↥L) s, HasFDerivAt (fun s : B => Θ.symm (WithLp.toLp 2 (t, s))) jL s := by
+        intro t s
+        rw [show (fun s : B => Θ.symm (WithLp.toLp 2 (t, s))) =
+          fun s => Θ.symm (WithLp.toLp 2 (t, 0)) + jL s from funext (hjsplit t)]
+        exact jL.hasFDerivAt.const_add _
+      have hsg := Measure.ae_ae_of_ae_prod
+        (hmp.quasiMeasurePreserving.ae ((ae_restrict_iff' (hΩm k)).mp hgood))
+      have hslice : ∀ t : ↥L,
+          (∃ K' : NNReal, LipschitzWith K' (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s))))) ∧
+          MeasurableSet {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} ∧
+          (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s)))) ''
+              {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} =
+            H k '' Ω k ∩ {x | L.starProjection x = t} := by
+        intro t
+        have hjL' : LipschitzWith (0 + ‖jL‖₊) (fun s : B => Θ.symm (WithLp.toLp 2 (t, s))) := by
+          rw [show (fun s : B => Θ.symm (WithLp.toLp 2 (t, s))) =
+            fun s => Θ.symm (WithLp.toLp 2 (t, 0)) + jL s from funext (hjsplit t)]
+          exact (LipschitzWith.const _).add jL.lipschitzWith
+        refine ⟨⟨_, (hKH k).comp hjL'⟩, (hΩm k).preimage hjL'.continuous.measurable, ?_⟩
+        apply le_antisymm
+        · rintro _ ⟨s, hs, rfl⟩
+          refine ⟨⟨_, hs, rfl⟩, ?_⟩
+          change L.starProjection (H k _) = t
+          rw [hpH, hπ₁, LinearIsometryEquiv.apply_symm_apply]
+          rfl
+        · rintro _ ⟨⟨z, hz, rfl⟩, hzt⟩
+          have hzt' : (Θ z).fst = t := by
+            apply Subtype.ext
+            rw [← hπ₁, ← hpH]
+            exact hzt
+          have hz' : Θ.symm (WithLp.toLp 2 (t, (Θ z).snd)) = z := by
+            rw [← hzt']
+            exact Θ.symm_apply_apply z
+          exact ⟨(Θ z).snd, show Θ.symm (WithLp.toLp 2 (t, (Θ z).snd)) ∈ Ω k from hz'.symm ▸ hz,
+            congrArg (H k) hz'⟩
+      refine ⟨fun g hg => ?_, ?_, hslice⟩
+      · -- the Jacobian identity at good parameters
+        have hJ : ∀ (t : ↥L) s, DifferentiableAt ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s))) →
+            L ≤ LinearMap.range (fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s))) : V →ₗ[ℝ] F) →
+            Poincare.SimonGMT.Chapter02.areaJacobianAt
+                (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s)))) s =
+              Poincare.SimonGMT.Chapter02.areaJacobianAt (H k) (Θ.symm (WithLp.toLp 2 (t, s))) := by
+          intro t s h1 h4
+          have hd' : HasFDerivAt (fun s => H k (Θ.symm (WithLp.toLp 2 (t, s))))
+              ((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (t, s)))).comp jL) s :=
+            h1.hasFDerivAt.comp s (hjd t s)
+          rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet,
+            Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_normDet, hd'.fderiv]
+          exact (hLA _ (hpD _ h1) h4).1.symm
+        obtain ⟨f, hf⟩ : ∃ f : V → ℝ≥0∞, f = (Ω k).indicator fun w =>
+            ENNReal.ofReal (Poincare.SimonGMT.Chapter02.areaJacobianAt (H k) w) * g (H k w) :=
+          ⟨_, rfl⟩
+        have hfm : Measurable f := by
+          rw [hf]
+          exact ((Poincare.SimonGMT.Chapter02.measurable_areaJacobianAt (H k)).ennreal_ofReal.mul
+            (hg.comp (hKH k).continuous.measurable)).indicator (hΩm k)
+        have hfm2 : Measurable fun x : ↥L × B => f (Θ.symm (WithLp.toLp 2 x)) :=
+          hfm.comp hmp.measurable
+        -- the inner integrals agree for a.e. `t`
+        have hinner : ∀ᵐ t : ↥L ∂volume, ∫⁻ s, f (Θ.symm (WithLp.toLp 2 (t, s))) =
+            ∫⁻ x in H k '' Ω k ∩ {x | L.starProjection x = t}, g x ∂μHE[m] := by
+          filter_upwards [hsg] with t ht
+          obtain ⟨⟨K', hK'⟩, hΩt, himg⟩ := hslice t
+          have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn hK' hΩt
+            (fun s hs s' hs' h => hjinj (by
+              have := hinj hs hs' h
+              rwa [hjsplit t s, hjsplit t s', add_right_inj] at this)) g
+          rw [hBm, himg] at harea
+          rw [harea, ← lintegral_indicator hΩt]
+          refine lintegral_congr_ae (ht.mono fun s hs => ?_)
+          show f (Θ.symm (WithLp.toLp 2 (t, s))) = _
+          by_cases hsΩ : Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k
+          · obtain ⟨h1, -, -, h4⟩ := hs hsΩ
+            rw [hf, indicator_of_mem hsΩ, indicator_of_mem
+              (show s ∈ {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} from hsΩ), hJ t s h1 h4]
+          · rw [hf, indicator_of_notMem hsΩ, indicator_of_notMem
+              (show s ∉ {s | Θ.symm (WithLp.toLp 2 (t, s)) ∈ Ω k} from hsΩ)]
+        have hint : ∫⁻ x in H k '' Ω k, g x ∂μHE[n] =
+            ∫⁻ t : ↥L, ∫⁻ s, f (Θ.symm (WithLp.toLp 2 (t, s))) := by
+          have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn (hKH k)
+            (hΩm k) hinj g
+          rw [hV] at harea
+          rw [harea, ← lintegral_indicator (hΩm k), ← hf, ← hmp.lintegral_comp hfm,
+            lintegral_prod _ hfm2.aemeasurable]
+        constructor
+        · rw [← hmap, hemb.aemeasurable_map_iff]
+          exact hfm2.lintegral_prod_right'.aemeasurable.congr hinner
+        · rw [hint, ← hmap, hemb.lintegral_map]
+          exact lintegral_congr_ae hinner
+      · filter_upwards [hsg] with t ht
+        filter_upwards [ht] with s hs hsΩ
+        obtain ⟨h1, h2, h3, h4⟩ := hs hsΩ
+        exact ⟨h1.hasFDerivAt.comp s (hjd t s), h2.comp hjinj, h3, (hLA _ (hpD _ h1) h4).2⟩
+    -- **null sets have null slices** (Eilenberg's inequality for `p`, `Hⁿ`-null case)
+    have hT4 : ∀ Z : Set F, μHE[n] Z = 0 → ∀ᵐ t ∂(μHE[d].restrict (L : Set F)),
+        μHE[m] (Z ∩ {x | L.starProjection x = t}) = 0 := by
+      intro Z hZ
+      have hcH : ∀ k : ℕ, ∀ S : Set F, μHE[k] S = 0 ↔ μH[(k : ℝ)] S = 0 := fun k S => by
+        rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+          smul_eq_mul,
+          mul_eq_zero, ENNReal.coe_eq_zero]
+        exact or_iff_right (Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero k)
+      rw [hcH] at hZ
+      -- fine covers of `Z` with small `∑ diamⁿ`
+      have hcov : ∀ j : ℕ, ∃ C : ℕ → Set F, Z ⊆ ⋃ k, C k ∧
+          (∀ k, ediam (C k) ≤ ((j : ℝ≥0∞) + 1)⁻¹) ∧
+          ∑' k, ⨆ (_ : (C k).Nonempty), ediam (C k) ^ (n : ℝ) < ((j : ℝ≥0∞) + 1)⁻¹ := by
+        intro j
+        have hpos : (0 : ℝ≥0∞) < ((j : ℝ≥0∞) + 1)⁻¹ := ENNReal.inv_pos.mpr (by simp)
+        have h0 : (⨅ (C : ℕ → Set F) (_ : Z ⊆ ⋃ k, C k)
+            (_ : ∀ k, ediam (C k) ≤ ((j : ℝ≥0∞) + 1)⁻¹),
+            ∑' k, ⨆ (_ : (C k).Nonempty), ediam (C k) ^ (n : ℝ)) < ((j : ℝ≥0∞) + 1)⁻¹ := by
+          refine lt_of_le_of_lt ?_ hpos
+          rw [← hZ, Measure.hausdorffMeasure_apply]
+          exact le_iSup₂_of_le (f := fun (r : ℝ≥0∞) (_ : 0 < r) => ⨅ (C : ℕ → Set F)
+            (_ : Z ⊆ ⋃ k, C k) (_ : ∀ k, ediam (C k) ≤ r),
+            ∑' k, ⨆ (_ : (C k).Nonempty), ediam (C k) ^ (n : ℝ)) _ hpos le_rfl
+        obtain ⟨C, hC⟩ := iInf_lt_iff.mp h0
+        obtain ⟨hZC, hC⟩ := iInf_lt_iff.mp hC
+        obtain ⟨hdiam, hC⟩ := iInf_lt_iff.mp hC
+        exact ⟨C, hZC, hdiam, hC⟩
+      choose C hZC hdiam hsum using hcov
+      have hfin : ∀ j k, ediam (C j k) ≠ ⊤ := fun j k =>
+        ((hdiam j k).trans_lt (ENNReal.inv_lt_top.mpr (by simp))).ne
+      have hctr : ∀ j k, ∃ x : F, ∀ y ∈ C j k,
+          dist (L.starProjection y) (L.starProjection x) ≤ Metric.diam (C j k) := by
+        intro j k
+        rcases (C j k).eq_empty_or_nonempty with h | ⟨x, hx⟩
+        · exact ⟨0, fun y hy => absurd (h ▸ hy) (Set.notMem_empty y)⟩
+        · refine ⟨x, fun y hy => ?_⟩
+          rw [dist_eq_norm, ← map_sub]
+          exact (L.norm_starProjection_apply_le _).trans
+            ((dist_eq_norm y x).symm.trans_le (Metric.dist_le_diam_of_mem' (hfin j k) hy hx))
+      choose x hx using hctr
+      obtain ⟨ψ, hψdef⟩ : ∃ ψ : ℕ → F → ℝ≥0∞, ψ = fun j t => ∑' k,
+          (closedBall (L.starProjection (x j k)) (Metric.diam (C j k))).indicator
+            (fun _ => ediam (C j k) ^ (m : ℝ)) t := ⟨_, rfl⟩
+      have hψm : ∀ j, Measurable (ψ j) := fun j => by
+        rw [hψdef]
+        exact Measurable.tsum fun k => measurable_const.indicator measurableSet_closedBall
+      -- the slice covers
+      have hslice : ∀ t, μH[(m : ℝ)] (Z ∩ {x | L.starProjection x = t}) ≤
+          liminf (fun j => ψ j t) atTop := by
+        intro t
+        rw [hψdef]
+        refine (Measure.hausdorffMeasure_le_liminf_tsum (m : ℝ) _ (fun j : ℕ => ((j : ℝ≥0∞) + 1)⁻¹)
+          ?_ (fun (j k : ℕ) => C j k ∩ {x | L.starProjection x = t})
+          (Eventually.of_forall fun j k => (ediam_mono inter_subset_left).trans (hdiam j k))
+          (Eventually.of_forall fun j y hy => ?_)).trans
+          (liminf_le_liminf (Eventually.of_forall fun j => ENNReal.tsum_le_tsum fun k => ?_))
+        · exact (ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)).congr fun j => by
+            simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one]
+        · obtain ⟨k, hk⟩ := mem_iUnion.mp (hZC j hy.1)
+          exact mem_iUnion.mpr ⟨k, hk, hy.2⟩
+        · rcases (C j k ∩ {x | L.starProjection x = t}).eq_empty_or_nonempty with h | ⟨y, hyC, hyt⟩
+          · rw [h, ediam_empty, ENNReal.zero_rpow_of_pos (by exact_mod_cast hm0)]
+            exact bot_le
+          · rw [indicator_of_mem
+              (show t ∈ closedBall (L.starProjection (x j k)) (Metric.diam (C j k))
+              from hyt ▸ hx j k y hyC)]
+            exact ENNReal.rpow_le_rpow (ediam_mono inter_subset_left) (by positivity)
+      -- integral bound
+      obtain ⟨cB, hcB⟩ : ∃ c, (volume : Measure ↥L) (closedBall 0 1) = c := ⟨_, rfl⟩
+      have hcBfin : cB ≠ ⊤ := hcB ▸ measure_closedBall_lt_top.ne
+      have hψint : ∀ j, ∫⁻ t in (L : Set F), ψ j t ∂μHE[d] ≤ cB * ((j : ℝ≥0∞) + 1)⁻¹ := by
+        intro j
+        rw [hψdef, ← hmap,
+          lintegral_tsum fun k =>
+            (measurable_const.indicator measurableSet_closedBall).aemeasurable]
+        calc ∑' k, ∫⁻ t, (closedBall (L.starProjection (x j k)) (Metric.diam (C j k))).indicator
+              (fun _ => ediam (C j k) ^ (m : ℝ)) t ∂(volume.map Subtype.val)
+            ≤ ∑' k, cB * ⨆ (_ : (C j k).Nonempty), ediam (C j k) ^ (n : ℝ) := by
+              refine ENNReal.tsum_le_tsum fun k => ?_
+              rw [lintegral_indicator_const measurableSet_closedBall, Measure.map_apply
+                measurable_subtype_coe measurableSet_closedBall]
+              have hball : (Subtype.val : ↥L → F) ⁻¹' closedBall (L.starProjection (x j k))
+                  (Metric.diam (C j k)) = closedBall ⟨L.starProjection (x j k), by
+                    rw [Submodule.starProjection_apply]; exact Submodule.coe_mem _⟩
+                  (Metric.diam (C j k)) :=
+                Set.ext fun _ => Iff.rfl
+              rw [hball, Measure.addHaar_closedBall' _ _ Metric.diam_nonneg, hd, hcB]
+              rcases (C j k).eq_empty_or_nonempty with h | h
+              · rw [h, ediam_empty, ENNReal.zero_rpow_of_pos (by exact_mod_cast hm0), zero_mul]
+                exact bot_le
+              · rw [iSup_pos h, ENNReal.ofReal_pow Metric.diam_nonneg, Metric.diam,
+                  ENNReal.ofReal_toReal (hfin j k), ← hmd, ENNReal.rpow_natCast,
+                  ENNReal.rpow_natCast,
+                  mul_comm cB, ← mul_assoc, ← pow_add, Nat.sub_add_cancel hdn.le]
+          _ = cB * ∑' k, ⨆ (_ : (C j k).Nonempty), ediam (C j k) ^ (n : ℝ) := ENNReal.tsum_mul_left
+          _ ≤ cB * ((j : ℝ≥0∞) + 1)⁻¹ := mul_le_mul_right (hsum j).le _
+      have hlim : ∫⁻ t in (L : Set F), liminf (fun j => ψ j t) atTop ∂μHE[d] = 0 := by
+        refine le_antisymm ((lintegral_liminf_le hψm).trans ?_) bot_le
+        have ht : Tendsto (fun j : ℕ => cB * ((j : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) := by
+          have := ENNReal.Tendsto.const_mul (ENNReal.tendsto_inv_nat_nhds_zero.comp
+            (tendsto_add_atTop_nat 1)) (Or.inr hcBfin)
+          rw [mul_zero] at this
+          exact this.congr fun j => by simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one]
+        exact (liminf_le_liminf (Eventually.of_forall hψint)).trans_eq ht.liminf_eq
+      filter_upwards [(lintegral_eq_zero_iff (Measurable.liminf hψm)).mp hlim] with t ht
+      rw [hcH]
+      exact le_antisymm ((hslice t).trans_eq ht) bot_le
+
+    -- integrals over a disjoint union of pieces, up to a null set
+    have hraf : ∀ (k : ℕ) (S : Set F) (A : ℕ → Set F), (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ S) →
+        Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[k] (S \ ⋃ i, A i) = 0 →
+        ∀ g : F → ℝ≥0∞, ∫⁻ y in S, g y ∂μHE[k] = ∑' i, ∫⁻ y in A i, g y ∂μHE[k] := by
+      intro k S A hA hAS hdisj hnull g
+      rw [← lintegral_iUnion hA hdisj]
+      exact setLIntegral_congr (ae_eq_set.mpr ⟨hnull, by
+        rw [sdiff_eq_empty.mpr (iUnion_subset hAS), measure_empty]⟩)
+    have hPmeas : ∀ k, MeasurableSet (H k '' Ω k) := fun k =>
+      (hptd (H k) (Ω k) (KH k) (cH k) (hKH k) (hΩm k) (hcH k) (hbH k)).1
+    have hpm : ∀ t : F, MeasurableSet {x : F | L.starProjection x = t} := fun t =>
+      measurableSet_eq_fun L.starProjection.continuous.measurable measurable_const
+    have hZ := hT4 _ hnull
+    -- **(ii)**
+    have hii : ∀ g : F → ℝ≥0∞, Measurable g →
+        AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[m])
+          (μHE[d].restrict (L : Set F)) ∧
+        ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set F),
+          ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[m] ∂μHE[d] := by
+      intro g hg
+      have hsplitt : ∀ᵐ t ∂(μHE[d].restrict (L : Set F)),
+          ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[m] =
+            ∑' k, ∫⁻ x in H k '' Ω k ∩ {x | L.starProjection x = t}, g x ∂μHE[m] := by
+        filter_upwards [hZ] with t ht
+        refine hraf m _ (fun k => H k '' Ω k ∩ {x | L.starProjection x = t})
+          (fun k => (hPmeas k).inter (hpm t)) (fun k => inter_subset_inter_left _ (hHM k))
+          (fun k k' hkk' => (hdisj hkk').mono inter_subset_left inter_subset_left)
+          (measure_mono_null (fun x hx => ?_) ht) g
+        exact ⟨⟨hx.1.1, fun hx' => hx.2 (by
+          obtain ⟨k, hk⟩ := mem_iUnion.mp hx'
+          exact mem_iUnion.mpr ⟨k, hk, hx.1.2⟩)⟩, hx.1.2⟩
+      refine ⟨(AEMeasurable.tsum fun k => ((hPP k).1 g hg).1).congr
+        (hsplitt.mono fun t ht => ht.symm), ?_⟩
+      rw [hraf n M (fun k => H k '' Ω k) hPmeas hHM hdisj hnull g, lintegral_congr_ae hsplitt,
+        lintegral_tsum fun k => ((hPP k).1 g hg).1]
+      exact tsum_congr fun k => ((hPP k).1 g hg).2
+    -- local finiteness of almost every slice
+    have hlocfin : ∀ᵐ t ∂(μHE[d].restrict (L : Set F)), ∀ C : Set F, IsCompact C →
+        μHE[m] (M ∩ {x | L.starProjection x = t} ∩ C) ≠ ∞ := by
+      have h1 : ∀ j : ℕ, ∀ᵐ t ∂(μHE[d].restrict (L : Set F)),
+          μHE[m] (M ∩ {x | L.starProjection x = t} ∩ closedBall 0 j) ≠ ∞ := by
+        intro j
+        obtain ⟨hae, heq⟩ := hii ((closedBall (0 : F) j).indicator 1)
+          (measurable_one.indicator measurableSet_closedBall)
+        have hfin : ∫⁻ t in (L : Set F), ∫⁻ x in M ∩ {x | L.starProjection x = t},
+            (closedBall (0 : F) j).indicator 1 x ∂μHE[m] ∂μHE[d] ≠ ∞ := by
+          rw [← heq, lintegral_indicator_one measurableSet_closedBall,
+            Measure.restrict_apply measurableSet_closedBall, inter_comm]
+          exact hloc _ (isCompact_closedBall _ _)
+        filter_upwards [ae_lt_top' hae hfin] with t ht
+        rw [lintegral_indicator_one measurableSet_closedBall,
+          Measure.restrict_apply measurableSet_closedBall, inter_comm] at ht
+        exact ht.ne
+      filter_upwards [ae_all_iff.mpr h1] with t ht C hC
+      obtain ⟨r, hr⟩ := hC.isBounded.subset_closedBall 0
+      obtain ⟨j, hj⟩ := exists_nat_ge r
+      exact ne_top_of_le_ne_top (ht j) (measure_mono (inter_subset_inter_right _
+        (hr.trans (closedBall_subset_closedBall hj))))
+    -- **(i)**
+    refine ⟨?_, hii⟩
+    have hslg : ∀ᵐ t ∂(μHE[d].restrict (L : Set F)), ∀ h : t ∈ L, ∀ k,
+        ∀ᵐ s ∂(volume : Measure B), Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s)) ∈ Ω k →
+          HasFDerivAt (fun s => H k (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s))))
+            ((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s)))).comp jL) s ∧
+          Injective ((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s)))).comp jL) ∧
+          HasApproximateTangentSpaceAt n M (H k (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s))))
+            (LinearMap.range (fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s))) : V →ₗ[ℝ] F)) ∧
+          LinearMap.range (((fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s)))).comp jL :
+              B →L[ℝ] F) : B →ₗ[ℝ] F) =
+            LinearMap.range (fderiv ℝ (H k) (Θ.symm (WithLp.toLp 2 (⟨t, h⟩, s))) : V →ₗ[ℝ] F) ⊓
+              Lᗮ := by
+      rw [← hmap, hemb.ae_map_iff]
+      filter_upwards [ae_all_iff.mpr fun k => (hPP k).2.1] with t ht _
+      exact ht
+    filter_upwards [hslg, hZ, hlocfin, ae_restrict_mem hLmeas] with t ht hZt hfin htL
+    have hMt : MeasurableSet (M ∩ {x | L.starProjection x = t}) := hM.inter (hpm t)
+    have hcov : (M ∩ {x | L.starProjection x = t}) \ ⋃ k,
+        (fun s => H k (Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s)))) ''
+          {s | Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s)) ∈ Ω k} ⊆
+        (M \ ⋃ k, H k '' Ω k) ∩ {x | L.starProjection x = t} := by
+      rintro x ⟨⟨hxM, hxt⟩, hx⟩
+      refine ⟨⟨hxM, fun hx' => hx ?_⟩, hxt⟩
+      obtain ⟨k, hk⟩ := mem_iUnion.mp hx'
+      exact mem_iUnion.mpr ⟨k, by rw [((hPP k).2.2 ⟨t, htL⟩).2.2]; exact ⟨hk, hxt⟩⟩
+    refine ⟨⟨(M \ ⋃ k, H k '' Ω k) ∩ {x | L.starProjection x = t}, hZt,
+      fun k s => H k (Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s))), fun k => ((hPP k).2.2 ⟨t, htL⟩).1,
+      fun x hx => ?_⟩, ?_⟩
+    · by_cases hx' : x ∈ ⋃ k, H k '' Ω k
+      · obtain ⟨k, hk⟩ := mem_iUnion.mp hx'
+        have hk' : x ∈ (fun s => H k (Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s)))) ''
+            {s | Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s)) ∈ Ω k} := by
+          rw [((hPP k).2.2 ⟨t, htL⟩).2.2]
+          exact ⟨hk, hx.2⟩
+        exact Or.inr (mem_iUnion.mpr ⟨k, image_subset_range _ _ hk'⟩)
+      · exact Or.inl ⟨⟨hx.1, hx'⟩, hx.2⟩
+    · refine hitt (M ∩ {x | L.starProjection x = t})
+        (fun k s => H k (Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s))))
+        (fun k => {s | Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s)) ∈ Ω k}) _ hMt
+        (fun k => ((hPP k).2.2 ⟨t, htL⟩).1) (measure_mono_null hcov hZt) fun k => ?_
+      obtain ⟨⟨K', hK'⟩, hBk, himg⟩ := (hPP k).2.2 ⟨t, htL⟩
+      filter_upwards [ae_restrict_of_ae (ht htL k), ae_restrict_of_ae
+        (hchB _ _ K' hK' hMt hfin), ae_restrict_mem hBk] with s hs1 hs2 hsB
+      obtain ⟨hD, hinj, hT, hrange⟩ := hs1 hsB
+      intro Q hQ
+      have hmem : H k (Θ.symm (WithLp.toLp 2 (⟨t, htL⟩, s))) ∈ M ∩ {x | L.starProjection x = t} :=
+        (inter_subset_inter_left _ (hHM k)) (himg ▸ mem_image_of_mem _ hsB)
+      have hTm := hs2 hmem hD.differentiableAt (by rw [hD.fderiv]; exact hinj)
+      rw [hD.fderiv, hrange] at hTm
+      rw [hQ.unique hT]
+      exact hTm
+
+  -- instantiate at `ℝⁿ, ℝᴾ, ℝᵐ` with the given pieces, the accepted lemmas and the sibling
+  -- `lipschitz_tangent`
+  exact master (Euclid n) (Euclid P) (Euclid (n - Module.finrank ℝ L)) n (Module.finrank ℝ L)
+    (n - Module.finrank ℝ L) L M finrank_euclideanSpace_fin finrank_euclideanSpace_fin rfl hdn rfl
+    hM hloc htan hpieces (Submission.ptd_piece_image_measurable_ae_pullback P n)
+    (fun G Y K hG hY hYl => Submission.idtp_fons_cs_sos_lipschitz_approx_tangent P n G Y K
+      (Nat.lt_of_le_of_lt (Nat.zero_le _) hdn) hG hY hYl)
+    (fun G Y K hG hY hYl => Submission.idtp_fons_cs_sos_lipschitz_approx_tangent P _ G Y K
+      (Nat.sub_pos_of_lt hdn) hG hY hYl)
+    (Submission.dpf_itt_ae_of_ae_pieces P _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
