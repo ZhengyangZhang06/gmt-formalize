@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2ee9d89a03c5c87281abef7d843e163db20fd36423a882947d5e908fb4123d16",
+  "git_delta": {
+    "base_commit": "cf7932963f51687c6352e740ae5c888796b824e5",
+    "candidate_commit": "755894649f9d3fe96e15fd2186e54cda6b0fe606",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_cp_gc_det_orth",
+    "diff_sha256": "2df5f2b4e1cd04856fd11ca07e41e48ebb7818a125e8b4402a5017a9b0f39f17",
+    "source_sha256": "d4e85008d674ee04aa2a1cda38cef3e64ce6df51aa61450776855a4d74a09081",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cp_gc_det_orth",
+      "statement": "∀ (P k : ℕ) (b : Euclid P) (w : Fin k → Euclid P), (∀ j : Fin k, inner ℝ b (w j) = 0) → Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons b w : Fin (k + 1) → Euclid P) i) ((Fin.cons b w : Fin (k + 1) → Euclid P) j)) = ‖b‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
