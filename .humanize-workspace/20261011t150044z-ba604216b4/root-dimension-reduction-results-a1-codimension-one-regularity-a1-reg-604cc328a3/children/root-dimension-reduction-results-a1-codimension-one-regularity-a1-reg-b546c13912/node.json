@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.regular_ball_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "A C¹ image is covered, up to an H^n-null set, by countably many images of balls carrying lower Lipschitz bounds",
+  "statement": "Let P, n ∈ ℕ and let G : ℝ^n → ℝ^P be a C¹ map. Then there are points c_k ∈ ℝ^n, reals r_k and constants m_k > 0 (k ∈ ℕ) with two properties. (i) m_k|a − b| ≤ |G(a) − G(b)| for all a, b in the open ball B_{r_k}(c_k), which is empty when r_k ≤ 0. (ii) H^n(G(ℝ^n) ∖ ⋃_k G(B_{r_k}(c_k))) = 0, where H^n = μHE[n] on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P), ContDiff ℝ 1 G → ∃ (c : ℕ → Euclid n) (r m : ℕ → ℝ), (∀ k, 0 < m k) ∧ (∀ k, ∀ a ∈ ball (c k) (r k), ∀ b ∈ ball (c k) (r k), m k * ‖a - b‖ ≤ ‖G a - G b‖) ∧ μHE[n] (range G \\ ⋃ k, G '' ball (c k) (r k)) = 0",
+  "lean_name": "codim1_rdo_c1cov_regular_ball_cover",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b546c13912-a1"
+}
