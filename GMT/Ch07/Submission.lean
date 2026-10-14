@@ -4512,6 +4512,272 @@ theorem Submission.dor_lmb_fcdp_homotopy_maps : ∀ (P : ℕ) (Λ La Lχ : NNRea
     rw [hHz, hι, ContinuousAlternatingMap.curryLeft_compContinuousLinearMap, hDe, ← hDJ]
     rfl
 
+/-- **The affine homotopy operator** `h_#([[(0,1)]] × X)` (Simon 6.2.25–6.2.27).  Assume the
+Lipschitz push-forward (IPF) of finite-mass integer multiplicity representations.  Fix an integer
+multiplicity `X` vanishing off a compact `E₀`, represented by `R₀`, and let `R'` be the product
+representation of `[[(0,1)]] × X` (`dor_lmb_fcdp_product_imrep`) and `Y'` its push-forward.  With
+a smooth cut-off `χ = 1` near `E₀` and a smooth bounded `s` with `s(t) = t` on `(-1,2)`, put
+`Ĥ(y) = F(pr y) + s(y₀)χ(pr y)(G − F)(pr y)` and `homot k F G X := Y'(Ĥ)`.  The cut-offs of the
+definition are already smooth, so no separate a.e. comparison with a smooth `Ĥ*` is needed.  `Ĥ` is
+Lipschitz and the smooth `Ĥⱼ` built from `Fⱼ, Gⱼ` converge to it (`dor_lmb_fcdp_homotopy_maps`), so
+`homot` is integer multiplicity and local, and the product action formula with the pulled-back
+integrand identity gives `R₀.action(Kⱼω) → homot(ω)`; locality of `R₀` on `E` gives (H3).  For (H4)
+the segments `hⱼ(t,x)` eventually avoid `spt ω`, and for (H5) Hadamard's inequality gives
+`|Kⱼω(x)(τ)| ≤ (δ + ε)Λᵏ` on `E` (`dor_lmb_fcdp_toolkit_push`). -/
+theorem Submission.dor_lmb_fcdp_homot_operator : (∀ (N N' k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) k, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) k, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[k].restrict R.carrier), F x = F' x) → Y F = Y F') → ∀ P : ℕ, ∃ homot : ∀ k : ℕ, (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), ∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X ω = 0) → IsIntegerMultiplicity (homot k F G X) ∧ (∀ F' G' : Euclid P → Euclid P, LipschitzWith Λ F' → LipschitzWith Λ G' → EqOn F F' E → EqOn G G' E → homot k F G X = homot k F' G' X) ∧ (∀ (Fs Gs : ℕ → Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) (k + 1)) (ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k), (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, ContDiff ℝ 1 (Gs j)) → (∀ j, LipschitzWith Λ (Fs j)) → (∀ j, LipschitzWith Λ (Gs j)) → TendstoUniformly Fs F atTop → TendstoUniformly Gs G atTop → (∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x = ∫ t in (0 : ℝ)..1, (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft (Gs j x - Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x))) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (homot k F G X ω))) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) {y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)} → homot k F G X ω = 0) ∧ ∀ δ : ℝ, (∀ x ∈ E, dist (F x) (G x) ≤ δ) → (homot k F G X).mass ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass := by
+  intro hIPF P
+  obtain ⟨hT1, hT2, hT3, hT4, hT5⟩ := Submission.dor_lmb_fcdp_toolkit_push.1
+  have h1top : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast le_top
+  -- a.e. membership in `S` on a carrier `C` with `Hᵈ(C \ S) = 0`
+  have hgen : ∀ (N d : ℕ) (C S : Set (Euclid N)), MeasurableSet C → μHE[d] (C \ S) = 0 →
+      ∀ᵐ y ∂(μHE[d].restrict C), y ∈ S := by
+    intro N d C S hC hS
+    refine (ae_restrict_iff' hC).2 (ae_iff.2 (measure_mono_null (fun y hy => ?_) hS))
+    exact not_imp.1 hy
+  -- step 1: a `C¹` bounded Lipschitz `s : ℝ → ℝ` with `s t = t` on `(-1, 2)`, `s(t) = tφ(t)`
+  obtain ⟨s, hs1, ⟨Ls, hsL⟩, ⟨As, hsA⟩, hsid⟩ : ∃ s : ℝ → ℝ, ContDiff ℝ 1 s ∧
+      (∃ L : NNReal, LipschitzWith L s) ∧ (∃ A : ℝ, ∀ t, |s t| ≤ A) ∧
+      ∀ t ∈ Ioo (-1 : ℝ) 2, s t = t := by
+    let φ : ContDiffBump (1 / 2 : ℝ) := ⟨3 / 2, 5 / 2, by norm_num, by norm_num⟩
+    have hc : ContDiff ℝ 1 (fun t : ℝ => t * φ t) := contDiff_id.mul (φ.contDiff (n := 1))
+    have hcs : HasCompactSupport (fun t : ℝ => t * φ t) := φ.hasCompactSupport.mul_left (f := id)
+    obtain ⟨A, hA⟩ := hc.continuous.bounded_above_of_compact_support hcs
+    refine ⟨fun t => t * φ t, hc, ContDiff.lipschitzWith_of_hasCompactSupport hcs hc one_ne_zero,
+      ⟨A, fun t => by simpa [Real.norm_eq_abs] using hA t⟩, fun t ht => ?_⟩
+    have hmem : t ∈ closedBall (1 / 2 : ℝ) (3 / 2) := by
+      rw [Metric.mem_closedBall, Real.dist_eq, abs_le]
+      constructor <;> linarith [ht.1, ht.2]
+    have hφ : φ t = 1 := φ.one_of_mem_closedBall hmem
+    simp only [hφ, mul_one]
+  -- step 2: for each current `X` choose the homotopy operator `F, G ↦ Y'(Ĥ_{F,G})`
+  have key : ∀ (k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), ∃ H : (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), ∀ (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X ω = 0) → IsIntegerMultiplicity (H F G) ∧ (∀ F' G' : Euclid P → Euclid P, LipschitzWith Λ F' → LipschitzWith Λ G' → EqOn F F' E → EqOn G G' E → H F G = H F' G') ∧ (∀ (Fs Gs : ℕ → Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) (k + 1)) (ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k), (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, ContDiff ℝ 1 (Gs j)) → (∀ j, LipschitzWith Λ (Fs j)) → (∀ j, LipschitzWith Λ (Gs j)) → TendstoUniformly Fs F atTop → TendstoUniformly Gs G atTop → (∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x = ∫ t in (0 : ℝ)..1, (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft (Gs j x - Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x))) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (H F G ω))) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) {y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)} → H F G ω = 0) ∧ ∀ δ : ℝ, (∀ x ∈ E, dist (F x) (G x) ≤ δ) → (H F G).mass ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass := by
+    intro k X
+    by_cases hX : ∃ E₀ : Set (Euclid P), IsCompact E₀ ∧ IsIntegerMultiplicity X ∧
+        ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+          Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E₀ → X ω = 0
+    swap
+    · exact ⟨fun _ _ => 0, fun Λ F G E _ _ hE hXI hXE => absurd ⟨E, hE, hXI, hXE⟩ hX⟩
+    -- `X = τ(R₀)` vanishes off the compact `E₀`; `R'` is the product representation of
+    -- `[[(0,1)]] × X`, `Y'` its push-forward, `χ = 1` on an open `W ⊇ E₀`
+    obtain ⟨E₀, hE₀, ⟨R₀, hR₀⟩, hXE₀⟩ := hX
+    obtain ⟨-, hmass, hR₀fin, hlocE₀⟩ := hT1 P k X R₀ E₀ hR₀ hE₀ hXE₀
+    obtain ⟨R', hR'fin, hR'ae, hR'act⟩ := Submission.dor_lmb_fcdp_product_imrep P k R₀ hR₀fin
+    obtain ⟨Y, hYa, hYb⟩ := hIPF (P + 1) P (k + 1) R' hR'fin
+    obtain ⟨χ, W, hχs, hχc, -, hWo, hE₀W, hχW⟩ := hT5 P E₀ hE₀
+    have hχ1 : ContDiff ℝ 1 χ := hχs.of_le h1top
+    obtain ⟨Lχ, hχL⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hχc hχ1 one_ne_zero
+    -- pull-backs of test forms by `C¹` Lipschitz maps are continuous and bounded
+    have hpull : ∀ (Φ : Euclid (P + 1) → Euclid P) (LΦ : NNReal), ContDiff ℝ 1 Φ →
+        LipschitzWith LΦ Φ → ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+        Continuous (fun y => ((ω : DifferentialForm (Euclid P) (k + 1)) (Φ y)).compContinuousLinearMap
+          (fderiv ℝ Φ y)) ∧
+        ∃ C : ℝ, ∀ y, ‖((ω : DifferentialForm (Euclid P) (k + 1)) (Φ y)).compContinuousLinearMap
+          (fderiv ℝ Φ y)‖ ≤ C := by
+      intro Φ LΦ hΦ hΦL ω
+      have hωc : Continuous (ω : DifferentialForm (Euclid P) (k + 1)) := ω.property.1.1.continuous
+      obtain ⟨Cω, hCω⟩ := hωc.bounded_above_of_compact_support ω.property.1.2
+      have hcomp : Continuous (ContinuousAlternatingMap.compContinuousLinearMapCLM :
+          (Euclid (P + 1) →L[ℝ] Euclid P) →
+            (Euclid P [⋀^Fin (k + 1)]→L[ℝ] ℝ) →L[ℝ] (Euclid (P + 1) [⋀^Fin (k + 1)]→L[ℝ] ℝ)) :=
+        continuousOn_univ.1
+          (ContinuousAlternatingMap.analyticOnNhd_compContinuousLinearMapCLM univ).continuousOn
+      refine ⟨(hcomp.comp (hΦ.continuous_fderiv one_ne_zero)).clm_apply (hωc.comp hΦ.continuous),
+        Cω * (LΦ : ℝ) ^ (k + 1), fun y => ?_⟩
+      calc ‖((ω : DifferentialForm (Euclid P) (k + 1)) (Φ y)).compContinuousLinearMap
+            (fderiv ℝ Φ y)‖
+          ≤ ‖(ω : DifferentialForm (Euclid P) (k + 1)) (Φ y)‖ *
+              ‖fderiv ℝ Φ y‖ ^ Fintype.card (Fin (k + 1)) :=
+            ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _
+        _ ≤ Cω * (LΦ : ℝ) ^ (k + 1) := by
+            rw [Fintype.card_fin]
+            exact mul_le_mul (hCω _)
+              (pow_le_pow_left₀ (norm_nonneg _) (norm_fderiv_le_of_lipschitz ℝ hΦL) _)
+              (by positivity) ((norm_nonneg _).trans (hCω 0))
+    refine ⟨fun F G => Y (fun y => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))), ?_⟩
+    intro Λ F G E hF hG hE _ hXE
+    -- step 3: `Hᵏ(M \ E) = 0`, `M(X) = μ_{R₀}(ℝᴾ) < ∞` and `R₀` is local on `E`
+    obtain ⟨hR₀E, -, -, hlocE⟩ := hT1 P k X R₀ E hR₀ hE hXE
+    have hHM := Submission.dor_lmb_fcdp_homotopy_maps P Λ Ls Lχ As s χ F G hF hG hsL hsA hχL hχc
+    -- step 4: `Ĥ` is Lipschitz
+    obtain ⟨L₀, hL₀⟩ := hHM.1
+    -- step 7: `R₀.action(Kⱼω) → homot k F G X (ω)`
+    have hchar : ∀ (Fs Gs : ℕ → Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) (k + 1)), (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, ContDiff ℝ 1 (Gs j)) → (∀ j, LipschitzWith Λ (Fs j)) → (∀ j, LipschitzWith Λ (Gs j)) → TendstoUniformly Fs F atTop → TendstoUniformly Gs G atTop → Tendsto (fun j => R₀.action (fun x => ∫ t in (0 : ℝ)..1, (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft (Gs j x - Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)))) atTop (𝓝 (Y (fun y : Euclid (P + 1) => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))) ω)) := by
+      intro Fs Gs ω hFs hGs hFsL hGsL hFsu hGsu
+      -- the smooth `Ĥⱼ` are `C¹`, uniformly Lipschitz and converge uniformly to `Ĥ`
+      obtain ⟨hHj1, ⟨L, hHjL⟩, hHju⟩ := hHM.2.1 hs1 hχ1 Fs Gs hFs hGs hFsL hGsL hFsu hGsu
+      have hlim := (hYa _ (max L₀ L) (hL₀.weaken (le_max_left _ _))).2 _ hHj1
+        (fun j => (hHjL j).weaken (le_max_right _ _)) hHju ω
+      refine Tendsto.congr (fun j => ?_) hlim
+      -- product action formula, then the pulled-back integrand identity on `W ⊇ E₀`
+      obtain ⟨hβc, hβb⟩ := hpull _ _ (hHj1 j) (hHjL j) ω
+      refine (hR'act _ hβc hβb).trans
+        (hlocE₀ _ _ (fun x hx => intervalIntegral.integral_congr (fun t ht => ?_)))
+      rw [uIcc_of_le zero_le_one] at ht
+      exact hHM.2.2 (Fs j) (Gs j) W k (ω : DifferentialForm (Euclid P) (k + 1)) t x hs1 hχ1
+        (hFs j) (hGs j) hWo hχW hsid (hE₀W hx) ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    -- step 9: smooth Lipschitz approximations of `F` and `G`
+    obtain ⟨Fa, hFa, hFaL, hFau⟩ := hT4 P P Λ F hF
+    obtain ⟨Ga, hGa, hGaL, hGau⟩ := hT4 P P Λ G hG
+    have hFa1 : ∀ j, ContDiff ℝ 1 (Fa j) := fun j => (hFa j).of_le h1top
+    have hGa1 : ∀ j, ContDiff ℝ 1 (Ga j) := fun j => (hGa j).of_le h1top
+    -- step 10 (H4): the segments `hⱼ(t,x)` eventually avoid `spt ω`
+    have hH4 : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) {y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)} → Y (fun y : Euclid (P + 1) => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))) ω = 0 := by
+      intro ω hω
+      -- the trace `Σ` is compact
+      have hTr : IsCompact {y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)} := by
+        have hTreq : {y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)} =
+            (fun p : ℝ × Euclid P => F p.2 + p.1 • (G p.2 - F p.2)) '' (Icc 0 1 ×ˢ E) := by
+          ext y
+          constructor
+          · rintro ⟨x, hx, t, ht, rfl⟩
+            exact ⟨(t, x), ⟨ht, hx⟩, rfl⟩
+          · rintro ⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩
+            exact ⟨x, hx, t, ht, rfl⟩
+        rw [hTreq]
+        exact (isCompact_Icc.prod hE).image ((hF.continuous.comp continuous_snd).add
+          (continuous_fst.smul ((hG.continuous.comp continuous_snd).sub
+            (hF.continuous.comp continuous_snd))))
+      obtain ⟨d, hd, hdisj⟩ := Disjoint.exists_thickenings hω.symm hTr (isClosed_tsupport _)
+      refine tendsto_nhds_unique (hchar Fa Ga ω hFa1 hGa1 hFaL hGaL hFau hGau)
+        (tendsto_const_nhds.congr' ?_)
+      filter_upwards [Metric.tendstoUniformly_iff.1 hFau d hd,
+        Metric.tendstoUniformly_iff.1 hGau d hd] with j hjF hjG
+      have h0 : R₀.action (0 : DifferentialForm (Euclid P) k) = 0 := by simp [IMRep.action]
+      refine ((hlocE _ 0 (fun x hx => ?_)).trans h0).symm
+      simp only [Pi.zero_apply]
+      refine (intervalIntegral.integral_congr (g := fun _ => 0) (fun t ht => ?_)).trans
+        intervalIntegral.integral_zero
+      rw [uIcc_of_le zero_le_one] at ht
+      -- `hⱼ(t,x)` lies within `d` of `F x + t(G x − F x) ∈ Σ`
+      have hnot : Fa j x + t • (Ga j x - Fa j x) ∉
+          tsupport (ω : DifferentialForm (Euclid P) (k + 1)) := by
+        intro hmem
+        refine Set.disjoint_left.1 hdisj ?_ (Metric.self_subset_thickening hd _ hmem)
+        rw [Metric.mem_thickening_iff]
+        refine ⟨F x + t • (G x - F x), ⟨x, hx, t, ht, rfl⟩, ?_⟩
+        have e : Fa j x + t • (Ga j x - Fa j x) - (F x + t • (G x - F x)) =
+            (1 - t) • (Fa j x - F x) + t • (Ga j x - G x) := by
+          simp only [smul_sub, sub_smul, one_smul]
+          abel
+        have ha : ‖Fa j x - F x‖ < d := by rw [← dist_eq_norm, dist_comm]; exact hjF x
+        have hb : ‖Ga j x - G x‖ < d := by rw [← dist_eq_norm, dist_comm]; exact hjG x
+        rw [dist_eq_norm, e]
+        calc ‖(1 - t) • (Fa j x - F x) + t • (Ga j x - G x)‖
+            ≤ ‖(1 - t) • (Fa j x - F x)‖ + ‖t • (Ga j x - G x)‖ := norm_add_le _ _
+          _ = (1 - t) * ‖Fa j x - F x‖ + t * ‖Ga j x - G x‖ := by
+              rw [norm_smul, norm_smul, Real.norm_of_nonneg (by linarith [ht.2]),
+                Real.norm_of_nonneg ht.1]
+          _ ≤ (1 - t) * max ‖Fa j x - F x‖ ‖Ga j x - G x‖ +
+                t * max ‖Fa j x - F x‖ ‖Ga j x - G x‖ :=
+              add_le_add (mul_le_mul_of_nonneg_left (le_max_left _ _) (by linarith [ht.2]))
+                (mul_le_mul_of_nonneg_left (le_max_right _ _) ht.1)
+          _ = max ‖Fa j x - F x‖ ‖Ga j x - G x‖ := by ring
+          _ < d := max_lt ha hb
+      have hz : (ω : DifferentialForm (Euclid P) (k + 1)) (Fa j x + t • (Ga j x - Fa j x)) = 0 :=
+        image_eq_zero_of_notMem_tsupport hnot
+      simp only [hz]
+      ext v
+      simp
+    refine ⟨(hYa _ L₀ hL₀).1, ?_, ?_, hH4, ?_⟩
+    -- step 6 (H2): `Ĥ_{F,G} = Ĥ_{F',G'}` on `ι([0,1] × E)`, which carries `R'` a.e.
+    · intro F' G' hF' hG' hFF' hGG'
+      obtain ⟨L₁, hL₁⟩ :=
+        (Submission.dor_lmb_fcdp_homotopy_maps P Λ Ls Lχ As s χ F' G' hF' hG' hsL hsA hχL hχc).1
+      refine hYb _ _ (max L₀ L₁) (hL₀.weaken (le_max_left _ _)) (hL₁.weaken (le_max_right _ _)) ?_
+      filter_upwards [hgen (P + 1) (k + 1) R'.carrier _ R'.measurableSet_carrier
+        (hR'ae E hE.isClosed.measurableSet hR₀E)] with y hy
+      obtain ⟨⟨t, x⟩, ⟨-, hx⟩, rfl⟩ := hy
+      have hx' : x ∈ E := hx
+      simp only [Fin.tail_cons, WithLp.toLp_ofLp, hFF' hx', hGG' hx']
+    -- step 8 (H3): `X(ηⱼ) = R₀.action(ηⱼ) = R₀.action(Kⱼω)` by locality on `E`
+    · intro Fs Gs ω ηs hFs hGs hFsL hGsL hFsu hGsu hη
+      refine Tendsto.congr (fun j => ?_) (hchar Fs Gs ω hFs hGs hFsL hGsL hFsu hGsu)
+      exact (hlocE _ _ (fun x hx => (hη j x hx).symm)).trans (hR₀ (ηs j)).symm
+    -- step 11 (H5): `|R₀.action(Kⱼω)| ≤ (δ + ε)Λᵏ M(X)` eventually, by Hadamard's inequality
+    · intro δ hδ
+      rcases E.eq_empty_or_nonempty with hE0 | ⟨x₀, hx₀⟩
+      · refine le_trans (sSup_le ?_) zero_le
+        rintro _ ⟨ω, -, rfl⟩
+        simp only [hH4 ω (by simp [hE0]), ENNReal.ofReal_zero, le_refl]
+      have hδ0 : 0 ≤ δ := dist_nonneg.trans (hδ x₀ hx₀)
+      refine sSup_le ?_
+      rintro _ ⟨ω, hωadm, rfl⟩
+      have hωb : ∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (k + 1)) y) ≤ 1 :=
+        hωadm.2
+      have hε : ∀ ε : ℝ, 0 < ε → Y (fun y : Euclid (P + 1) => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))) ω ≤ (δ + ε) * ((Λ : ℝ) ^ k * (R₀.measure univ).toReal) := by
+        intro ε hε
+        refine le_of_tendsto (hchar Fa Ga ω hFa1 hGa1 hFaL hGaL hFau hGau) ?_
+        filter_upwards [Metric.tendstoUniformly_iff.1 hFau (ε / 2) (half_pos hε),
+          Metric.tendstoUniformly_iff.1 hGau (ε / 2) (half_pos hε)] with j hjF hjG
+        refine (le_abs_self _).trans ((hT3 P k univ R₀ _ ((δ + ε) * (Λ : ℝ) ^ k) hR₀fin
+          (mul_nonneg (by linarith) (by positivity)) ?_).trans (le_of_eq (mul_assoc _ _ _)))
+        filter_upwards [hgen P k R₀.carrier E R₀.measurableSet_carrier hR₀E] with x hx τ hτ
+        beta_reduce
+        rw [← Real.norm_eq_abs]
+        refine (ContinuousAlternatingMap.le_opNorm _ _).trans ?_
+        rw [Finset.prod_eq_one (fun i _ => hτ.1 i), mul_one]
+        refine (intervalIntegral.norm_integral_le_of_norm_le_const
+          (C := (δ + ε) * (Λ : ℝ) ^ k) (fun t ht => ?_)).trans (le_of_eq (by simp))
+        rw [uIoc_of_le zero_le_one] at ht
+        -- `|ω(hⱼ)| ≤ 1`, `‖Gⱼx − Fⱼx‖ ≤ δ + ε` and `‖DFⱼ(x) + t(DGⱼ(x) − DFⱼ(x))‖ ≤ Λ`
+        have hωh : ‖(ω : DifferentialForm (Euclid P) (k + 1)) (Fa j x + t • (Ga j x - Fa j x))‖ ≤ 1 := by
+          refine ContinuousAlternatingMap.opNorm_le_bound _ zero_le_one (fun v => ?_)
+          rw [Real.norm_eq_abs, one_mul]
+          exact (hT2 P (k + 1) _ v).trans (mul_le_of_le_one_left
+            (Finset.prod_nonneg (fun i _ => norm_nonneg _)) (hωb _))
+        have hV : ‖Ga j x - Fa j x‖ ≤ δ + ε := by
+          have e : Ga j x - Fa j x = (Ga j x - G x) + (G x - F x) + (F x - Fa j x) := by abel
+          have h1 : ‖Ga j x - G x‖ < ε / 2 := by rw [← dist_eq_norm, dist_comm]; exact hjG x
+          have h2 : ‖G x - F x‖ ≤ δ := by rw [← dist_eq_norm, dist_comm]; exact hδ x hx
+          have h3 : ‖F x - Fa j x‖ < ε / 2 := by rw [← dist_eq_norm]; exact hjF x
+          rw [e]
+          calc ‖(Ga j x - G x) + (G x - F x) + (F x - Fa j x)‖
+              ≤ ‖(Ga j x - G x) + (G x - F x)‖ + ‖F x - Fa j x‖ := norm_add_le _ _
+            _ ≤ ‖Ga j x - G x‖ + ‖G x - F x‖ + ‖F x - Fa j x‖ :=
+                add_le_add (norm_add_le _ _) le_rfl
+            _ ≤ δ + ε := by linarith
+        have hA : ‖fderiv ℝ (Fa j) x + t • (fderiv ℝ (Ga j) x - fderiv ℝ (Fa j) x)‖ ≤ Λ :=
+          mem_closedBall_zero_iff.1 ((convex_closedBall (0 : Euclid P →L[ℝ] Euclid P) Λ).add_smul_sub_mem
+            (mem_closedBall_zero_iff.2 (norm_fderiv_le_of_lipschitz ℝ (hFaL j)))
+            (mem_closedBall_zero_iff.2 (norm_fderiv_le_of_lipschitz ℝ (hGaL j))) ⟨ht.1.le, ht.2⟩)
+        calc ‖(((ω : DifferentialForm (Euclid P) (k + 1)) (Fa j x + t • (Ga j x - Fa j x))).curryLeft
+              (Ga j x - Fa j x)).compContinuousLinearMap
+              (fderiv ℝ (Fa j) x + t • (fderiv ℝ (Ga j) x - fderiv ℝ (Fa j) x))‖
+            ≤ ‖((ω : DifferentialForm (Euclid P) (k + 1)) (Fa j x + t • (Ga j x - Fa j x))).curryLeft
+                (Ga j x - Fa j x)‖ *
+              ‖fderiv ℝ (Fa j) x + t • (fderiv ℝ (Ga j) x - fderiv ℝ (Fa j) x)‖ ^
+                Fintype.card (Fin k) :=
+              ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _
+          _ ≤ (1 * (δ + ε)) * (Λ : ℝ) ^ k := by
+              rw [Fintype.card_fin]
+              refine mul_le_mul ?_ (pow_le_pow_left₀ (norm_nonneg _) hA k) (by positivity)
+                (by linarith)
+              refine (ContinuousLinearMap.le_opNorm _ _).trans ?_
+              rw [ContinuousAlternatingMap.norm_curryLeft]
+              exact mul_le_mul hωh hV (norm_nonneg _) zero_le_one
+          _ = (δ + ε) * (Λ : ℝ) ^ k := by ring
+      -- let `ε → 0`
+      have hY : Y (fun y : Euclid (P + 1) => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))) ω ≤ δ * ((Λ : ℝ) ^ k * (R₀.measure univ).toReal) := by
+        have hc : Tendsto (fun ε : ℝ => (δ + ε) * ((Λ : ℝ) ^ k * (R₀.measure univ).toReal))
+            (𝓝[>] 0) (𝓝 (δ * ((Λ : ℝ) ^ k * (R₀.measure univ).toReal))) := by
+          have h := ((tendsto_const_nhds (x := δ)).add (tendsto_id (x := 𝓝 (0 : ℝ)))).mul
+            (tendsto_const_nhds (x := (Λ : ℝ) ^ k * (R₀.measure univ).toReal))
+          rw [add_zero] at h
+          exact h.mono_left nhdsWithin_le_nhds
+        exact ge_of_tendsto hc (eventually_nhdsWithin_of_forall (fun ε hε' => hε ε hε'))
+      calc ENNReal.ofReal (Y (fun y : Euclid (P + 1) => F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) + (s (WithLp.ofLp y 0) * χ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)))) • (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))) - F (WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))))) ω)
+          ≤ ENNReal.ofReal (δ * ((Λ : ℝ) ^ k * (R₀.measure univ).toReal)) :=
+            ENNReal.ofReal_le_ofReal hY
+        _ = ENNReal.ofReal δ * (Λ : ℝ≥0∞) ^ k * X.mass := by
+            rw [ENNReal.ofReal_mul hδ0, ENNReal.ofReal_mul (pow_nonneg (NNReal.coe_nonneg Λ) k),
+              ENNReal.ofReal_pow (NNReal.coe_nonneg Λ), ENNReal.ofReal_coe_nnreal,
+              ENNReal.ofReal_toReal hR₀fin, hmass, mul_assoc]
+        _ ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass := by
+            gcongr
+            exact le_mul_of_one_le_left zero_le one_le_two
+  choose H hH using key
+  exact ⟨fun k F G X => H k X F G, fun k Λ F G E X hF hG hE hXI hXE => hH k X Λ F G E hF hG hE hXI hXE⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
