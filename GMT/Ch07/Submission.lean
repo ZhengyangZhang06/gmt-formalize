@@ -9135,6 +9135,60 @@ theorem Submission.dimred_minimizing_monotonicity : ∀ (P n d : ℕ) (U N : Set
   obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P n U T R hU hR
   have hp := Submission.dsmc_approxTangentPlane_starProjection_aemeasurable P n U R hU
   -- (i) on `K`, `δV(X) = -∫ X · H dμ_R` with `|H| ≤ Λ` everywhere, so 3.17 applies on `B_r(y)`
+  have hi : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧
+      ∀ (y : Euclid P) (r : ℝ), closedBall y r ⊆ K → MonotoneOn (fun ρ : ℝ =>
+        ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
+    intro K hK hKU
+    obtain ⟨Λ, hΛ, H, hHm, hHΛ, hfv⟩ :=
+      Submission.dimred_mono_truncated_mean_curvature P n U R hstat.2 K hK hKU
+    refine ⟨Λ, hΛ, fun y r hyr => ?_⟩
+    intro σ hσ ρ hρ hσρ
+    have hBU : ∀ s, s ≤ r → ball y s ⊆ U := fun s hs =>
+      (ball_subset_ball hs).trans (ball_subset_closedBall.trans (hyr.trans hKU))
+    dsimp only
+    rw [hmass _ isOpen_ball (hBU σ hσ.2.le), hmass _ isOpen_ball (hBU ρ hρ.2.le)]
+    exact Submission.dsmc_exp_ball_mass_monotone P n U R H Λ y r (hyr.trans hKU) hp hHm hHΛ
+      (fun X hX hXc hXs => hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hyr)))
+      σ ρ hσ.1 hσρ hρ.2.le
+  -- (ii) if `N = ℝᴾ`, then `TₓN = ℝᴾ` (`γ(t) = x + tv`), so `δV = 0` in `U`: take `H = 0`
+  have hii : N = univ → ∀ (y : Euclid P) (r : ℝ), ball y r ⊆ U → MonotoneOn (fun ρ : ℝ =>
+      ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
+    rintro rfl y r hyr σ hσ ρ hρ hσρ
+    have hfv : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+        tsupport X ⊆ U → R.firstVariation X = 0 := fun X hX hXc hXU =>
+      hstat.1 X hX hXc hXU fun x _ => ⟨fun t => x + t • X x,
+        (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn, mapsTo_univ _ _,
+        by simp, by simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X x)).const_add x⟩
+    -- 3.17 with `H = 0` and `κ = 0` on `B̄_{(ρ+r)/2}(y) ⊆ B_r(y)`
+    have hr : closedBall y ((ρ + r) / 2) ⊆ U :=
+      (closedBall_subset_ball (by linarith [hρ.2])).trans hyr
+    have h := Submission.dsmc_exp_ball_mass_monotone P n U R 0 0 y ((ρ + r) / 2) hr hp
+      aestronglyMeasurable_zero (fun _ => by simp) (fun X hX hXc hXs => by
+        rw [hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hr))]
+        simp) σ ρ hσ.1 hσρ (by linarith [hρ.2])
+    simp only [zero_mul, Real.exp_zero] at h
+    dsimp only
+    rw [hmass _ isOpen_ball ((ball_subset_ball hσ.2.le).trans hyr),
+      hmass _ isOpen_ball ((ball_subset_ball hρ.2.le).trans hyr)]
+    exact h
+  -- (iii) `M_{B_{ε/2}(y)}(T) ≤ μ_R(B̄_{ε/2}(y)) = ∫_{M ∩ B̄_{ε/2}(y)} θ dHⁿ < ∞` when
+  -- `B_ε(y) ⊆ U`; monotone limits then give `Θ`, upper semicontinuous on `U`
+  have hfin : ∀ y ∈ U, ∃ r : ℝ, 0 < r ∧ T.massOn (ball y r) ≠ ∞ := by
+    intro y hy
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU y hy
+    have hcU : closedBall y (ε / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hε)).trans hεU
+    refine ⟨ε / 2, half_pos hε, ?_⟩
+    rw [hmass _ isOpen_ball (ball_subset_closedBall.trans hcU)]
+    refine ne_top_of_le_ne_top ?_ (measure_mono ball_subset_closedBall)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall y (ε / 2)) hcU
+  obtain ⟨Θ, hΘ, hΘusc⟩ := Submission.dimred_mono_density_usc_of_monotone P n U T hU hfin hi
+  -- (iv) `Θ ≥ 1` `μ_R`-a.e. and `Θ` is upper semicontinuous, so `Θ ≥ 1` on `spt T`
+  refine ⟨hi, hii, ⟨Θ, hΘ, hΘusc⟩, ?_⟩
+  exact Submission.dimred_mono_support_density_ge_one_of_usc P n U T R.measure Θ hU hmass
+    (fun x hx => (hsupp x (hspt hx).1).1 hx)
+    (Submission.dimred_mono_ae_ball_density_ge_one P n U R hU) hΘ hΘusc
 /-- **Simon, proof of A.4** (the rescaled secants): if `S ∩ B_σ(0)` is infinite for some `σ < 1`,
 there are `x` with `|x| < 1`, scales `λ_k ↓ 0` with `λ_k < 1` and `|x| ≤ 1 − λ_k`, and points
 `z_k → z` with `|z_k| = |z| = 1/2` and `x + λ_k z_k ∈ S`.  Distinct points of `S ∩ B_σ(0)`
@@ -10396,40 +10450,6 @@ theorem Submission.idtp_fons_minimizing_monotonicity : ∀ (P n d : ℕ) (U N : 
       ∀ (y : Euclid P) (r : ℝ), closedBall y r ⊆ K → MonotoneOn (fun ρ : ℝ =>
         ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
     intro K hK hKU
-    obtain ⟨Λ, hΛ, H, hHm, hHΛ, hfv⟩ :=
-      Submission.dimred_mono_truncated_mean_curvature P n U R hstat.2 K hK hKU
-    refine ⟨Λ, hΛ, fun y r hyr => ?_⟩
-    intro σ hσ ρ hρ hσρ
-    have hBU : ∀ s, s ≤ r → ball y s ⊆ U := fun s hs =>
-      (ball_subset_ball hs).trans (ball_subset_closedBall.trans (hyr.trans hKU))
-    dsimp only
-    rw [hmass _ isOpen_ball (hBU σ hσ.2.le), hmass _ isOpen_ball (hBU ρ hρ.2.le)]
-    exact Submission.dsmc_exp_ball_mass_monotone P n U R H Λ y r (hyr.trans hKU) hp hHm hHΛ
-      (fun X hX hXc hXs => hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hyr)))
-      σ ρ hσ.1 hσρ hρ.2.le
-  -- (ii) if `N = ℝᴾ`, then `TₓN = ℝᴾ` (`γ(t) = x + tv`), so `δV = 0` in `U`: take `H = 0`
-  have hii : N = univ → ∀ (y : Euclid P) (r : ℝ), ball y r ⊆ U → MonotoneOn (fun ρ : ℝ =>
-      ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 r) := by
-    rintro rfl y r hyr σ hσ ρ hρ hσρ
-    have hfv : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
-        tsupport X ⊆ U → R.firstVariation X = 0 := fun X hX hXc hXU =>
-      hstat.1 X hX hXc hXU fun x _ => ⟨fun t => x + t • X x,
-        (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn, mapsTo_univ _ _,
-        by simp, by simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X x)).const_add x⟩
-    -- 3.17 with `H = 0` and `κ = 0` on `B̄_{(ρ+r)/2}(y) ⊆ B_r(y)`
-    have hr : closedBall y ((ρ + r) / 2) ⊆ U :=
-      (closedBall_subset_ball (by linarith [hρ.2])).trans hyr
-    have h := Submission.dsmc_exp_ball_mass_monotone P n U R 0 0 y ((ρ + r) / 2) hr hp
-      aestronglyMeasurable_zero (fun _ => by simp) (fun X hX hXc hXs => by
-        rw [hfv X hX hXc (hXs.trans (ball_subset_closedBall.trans hr))]
-        simp) σ ρ hσ.1 hσρ (by linarith [hρ.2])
-    simp only [zero_mul, Real.exp_zero] at h
-    dsimp only
-    rw [hmass _ isOpen_ball ((ball_subset_ball hσ.2.le).trans hyr),
-      hmass _ isOpen_ball ((ball_subset_ball hρ.2.le).trans hyr)]
-    exact h
-  -- (iii) `M_{B_{ε/2}(y)}(T) ≤ μ_R(B̄_{ε/2}(y)) = ∫_{M ∩ B̄_{ε/2}(y)} θ dHⁿ < ∞` when
-  -- `B_ε(y) ⊆ U`; monotone limits then give `Θ`, upper semicontinuous on `U`
     obtain ⟨Λ, hΛ, H, hHm, hHΛ, hδV⟩ :=
       Submission.dimred_mono_truncated_mean_curvature P n U R hV.2 K hK hKU
     refine ⟨Λ, hΛ, fun y r hyK σ hσ ρ hρ hσρ => ?_⟩
@@ -10478,10 +10498,6 @@ theorem Submission.idtp_fons_minimizing_monotonicity : ∀ (P n d : ℕ) (U N : 
       Measure.restrict_restrict measurableSet_closedBall, inter_comm]
     exact R.locallyIntegrable_mult _ (isCompact_closedBall y (ε / 2)) hcU
   obtain ⟨Θ, hΘ, hΘusc⟩ := Submission.dimred_mono_density_usc_of_monotone P n U T hU hfin hi
-  -- (iv) `Θ ≥ 1` `μ_R`-a.e. and `Θ` is upper semicontinuous, so `Θ ≥ 1` on `spt T`
-  refine ⟨hi, hii, ⟨Θ, hΘ, hΘusc⟩, ?_⟩
-  exact Submission.dimred_mono_support_density_ge_one_of_usc P n U T R.measure Θ hU hmass
-    (fun x hx => (hsupp x (hspt hx).1).1 hx)
   -- Step 7, (iv): `Θ ≥ 1` `μ`-a.e., `μ(B_ε(y)) > 0` for `y ∈ spt T`, and `Θ` is upper
   -- semicontinuous, so every density at a point of `spt T` is `≥ 1`
   refine ⟨hi, hii, ⟨Θ, hΘ, hΘusc⟩, ?_⟩
