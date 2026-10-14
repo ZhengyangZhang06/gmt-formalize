@@ -451,6 +451,53 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Segment estimate for `C¹` functions.**  For `v ∈ C¹(ℝⁿ)` and `x, y ∈ ℝⁿ`,
+`|v(x) − v(y)| ≤ ‖x − y‖ ∫₀¹ ‖Dv((1 − t)y + tx)‖ dt`.  Along `p(t) = (1 − t)y + tx` the chain rule
+gives `(v ∘ p)'(t) = Dv(p(t))(x − y)`, which is continuous in `t`; the fundamental theorem of
+calculus, `|∫ f| ≤ ∫ |f|` and the operator-norm bound `|Dv(p(t))(x − y)| ≤ ‖x − y‖ ‖Dv(p(t))‖`
+finish the proof. -/
+theorem Submission.cmcdt_cbm_sp_segment_bound : ∀ (n : ℕ) (v : Euclid n → ℝ) (x y : Euclid n), ContDiff ℝ 1 v → |v x - v y| ≤ ‖x - y‖ * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v ((1 - t) • y + t • x)‖ := by
+  intro n v x y hv
+  have hdiff : Differentiable ℝ v := hv.differentiable one_ne_zero
+  have hcont : Continuous (fderiv ℝ v) := hv.continuous_fderiv one_ne_zero
+  -- the segment `p(t) = (1 - t) • y + t • x`, with `p 0 = y`, `p 1 = x` and `p' = x - y`
+  obtain ⟨p, hp⟩ : ∃ p : ℝ → Euclid n, p = fun t => (1 - t) • y + t • x := ⟨_, rfl⟩
+  have hpc : Continuous p := by rw [hp]; fun_prop
+  have hpd : ∀ t, HasDerivAt p (x - y) t := by
+    intro t
+    have h1 : HasDerivAt (fun t : ℝ => (1 - t) • y) ((-1 : ℝ) • y) t :=
+      ((hasDerivAt_id t).const_sub 1).smul_const y
+    have h2 : HasDerivAt (fun t : ℝ => t • x) ((1 : ℝ) • x) t := (hasDerivAt_id t).smul_const x
+    rw [hp]
+    convert h1.add h2 using 1
+    simp only [neg_smul, one_smul]
+    abel
+  -- chain rule: `(v ∘ p)'(t) = Dv(p(t))(x - y)`, a continuous function of `t`
+  have hγ : ∀ t, HasDerivAt (fun t => v (p t)) (fderiv ℝ v (p t) (x - y)) t := fun t =>
+    (hdiff (p t)).hasFDerivAt.comp_hasDerivAt t (hpd t)
+  have hγc : Continuous fun t => fderiv ℝ v (p t) (x - y) :=
+    (hcont.comp hpc).clm_apply continuous_const
+  -- fundamental theorem of calculus
+  have hftc : ∫ t in (0 : ℝ)..1, fderiv ℝ v (p t) (x - y) = v x - v y := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hγ t)
+      (hγc.intervalIntegrable 0 1)]
+    simp [hp]
+  have hpt : ∀ t, (1 - t) • y + t • x = p t := fun t => by rw [hp]
+  simp only [hpt]
+  rw [← hftc, ← Real.norm_eq_abs]
+  calc ‖∫ t in (0 : ℝ)..1, fderiv ℝ v (p t) (x - y)‖
+      ≤ ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v (p t) (x - y)‖ :=
+        intervalIntegral.norm_integral_le_integral_norm zero_le_one
+    _ ≤ ∫ t in (0 : ℝ)..1, ‖x - y‖ * ‖fderiv ℝ v (p t)‖ := by
+        apply intervalIntegral.integral_mono_on zero_le_one
+        · exact hγc.norm.intervalIntegrable 0 1
+        · exact (continuous_const.mul (hcont.comp hpc).norm).intervalIntegrable 0 1
+        · intro t _
+          rw [mul_comm]
+          exact (fderiv ℝ v (p t)).le_opNorm (x - y)
+    _ = ‖x - y‖ * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v (p t)‖ :=
+        intervalIntegral.integral_const_mul _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
