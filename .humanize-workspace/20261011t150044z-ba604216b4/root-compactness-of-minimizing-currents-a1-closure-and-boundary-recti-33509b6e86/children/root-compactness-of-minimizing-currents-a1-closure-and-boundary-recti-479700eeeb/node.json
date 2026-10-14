@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.good_points-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1",
+  "depth": 4,
+  "title": "Hⁿ-almost every point of M has upper density ≤ 1 and is a Lebesgue point of θζ",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel with Hⁿ(M) < ∞ (Hⁿ = μHE[n]), θ : ℝ^P → ℝ Borel with θ > 0 on M and ∫_Mθ dHⁿ < ∞ (as ∫⁻_M ofReal θ), and ζ : ℝ^P → Λ_n(ℝ^P) strongly measurable with |ζ(x)(α)| ≤ |α| (covectorEuclideanNorm) for all x, α. Then for Hⁿ-a.e. a ∈ M: (i) limsup_{r↓0}Hⁿ(M ∩ B̄_r(a))/(ω_nrⁿ) ≤ 1, and (ii) (∫⁻_{M∩B̄_r(a)}‖θ(x)ζ(x) − θ(a)ζ(a)‖dHⁿ(x))/(ω_nrⁿ) → 0 as r ↓ 0, where ‖·‖ is the operator norm of Λ_n(ℝ^P) = (n-covectors →L ℝ) and ω_n = unitBallVolume n.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 ∧ Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "cbr_ci_ae_good_points",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-479700eeeb-a1"
+}
