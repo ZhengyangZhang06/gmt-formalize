@@ -903,6 +903,60 @@ theorem Submission.dimred_mbl_dt_cbm_smooth_trace : ∀ (m : ℕ) (v : Euclid (m
         push_cast
         ring
 
+/-- **Simon, proof of Ch. 6, 5.1** (second line of display (32), in place of the appeal to Ch. 2,
+2.8–2.9): if `w` is integrable on the open unit cube `Q₁ ⊆ ℝⁿ` and `∫_{Q₁} w div g ≤ V` for every
+smooth `g` with compact support in `Q₁` and `|g| ≤ 1`, then
+`|∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫_{Q₁}|w|` for every `C¹` field `G` with `|G| ≤ 1`.  On
+`Q_δ = {δ < yᵢ < 1 - δ}`, `0 < δ ≤ 1/4`, the smooth estimate for the approximations `v_k` of `w`
+passes to the `L¹(Q_δ)` limit `w` (`div G` is continuous, hence bounded on `Q₁`); letting `δ ↓ 0`
+gives the estimate on `Q₁`. -/
+theorem Submission.dimred_mbl_dt_cbm_bv_trace : ∀ (m : ℕ) (w : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn w {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+  intro m w V hw hV G hG hGb
+  -- the cubes `{a < yᵢ < b}` are open, and `Q_δ ⊆ Q₁` for `δ ≥ 0`
+  have hopen : ∀ a b : ℝ, IsOpen {z : Euclid (m + 1) | ∀ i, a < z i ∧ z i < b} := fun a b => by
+    rw [show {z : Euclid (m + 1) | ∀ i, a < z i ∧ z i < b} = ⋂ i, {z | a < z i ∧ z i < b} by
+      ext; simp]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hsub : ∀ δ : ℝ, 0 ≤ δ → {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun δ hδ z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- `div G = trace ∘ DG` is continuous, hence bounded by `M` on `Q₁`, so `w div G ∈ L¹(Q₁)`
+  have hdiv : Continuous fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
+    (LinearMap.continuous_of_finiteDimensional
+      ((LinearMap.trace ℝ (Euclid (m + 1))).comp (ContinuousLinearMap.coeLM ℝ))).comp
+      (hG.continuous_fderiv one_ne_zero)
+  obtain ⟨⟨M, hM⟩, -⟩ := Submission.dimred_mbl_dt_cbm_bvt_cube_cont_bound (m + 1) _ hdiv
+  have hwdiv : IntegrableOn (fun y => w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y))
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+    Integrable.mul_bdd hw hdiv.aestronglyMeasurable
+      (ae_restrict_of_forall_mem (hopen 0 1).measurableSet fun y hy =>
+        (Real.norm_eq_abs _).trans_le (hM y hy))
+  -- the estimate on `Q_δ`, `0 < δ ≤ 1/4`: the `L¹(Q_δ)` limit of the smooth estimate
+  have hQδ : ∀ δ ∈ Ioc (0 : ℝ) (1 / 4),
+      |∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
+          w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤
+        (2 * (m + 1) + 1) * V +
+          4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+    rintro δ ⟨hδ0, hδ⟩
+    have hs := hsub δ hδ0.le
+    obtain ⟨v, hvC, hvD, hvw⟩ := Submission.dimred_mbl_dt_cbm_smooth_approx m w V δ hw hV hδ0
+    have hl1 := Submission.dimred_mbl_dt_cbm_bvt_l1_limit volume _ v w _
+      ((2 * (m + 1) + 1) * V) (4 * (m + 1)) M (hopen δ (1 - δ)).measurableSet (by positivity)
+      (fun k => (Submission.dimred_mbl_dt_cbm_bvt_cube_cont_bound (m + 1) (v k)
+        (hvC k).continuous).2.mono_set hs)
+      (hw.mono_set hs) hdiv.aestronglyMeasurable (fun y hy => hM y (hs hy)) hvw fun k =>
+        (Submission.dimred_mbl_dt_cbm_smooth_trace m (v k) G δ (hvC k) hG hGb hδ0.le hδ).trans
+          (by gcongr; exact hvD k)
+    refine hl1.trans ?_
+    gcongr _ + _ * ?_
+    exact setIntegral_mono_set (Integrable.abs hw) (ae_of_all _ fun y => abs_nonneg (w y))
+      (ae_of_all _ hs)
+  -- `δ ↓ 0`
+  exact le_of_tendsto (Submission.dimred_mbl_dt_cbm_bvt_cube_exhaust (m + 1) _ hwdiv).abs
+    (eventually_of_mem (Ioc_mem_nhdsGT (by norm_num)) hQδ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
