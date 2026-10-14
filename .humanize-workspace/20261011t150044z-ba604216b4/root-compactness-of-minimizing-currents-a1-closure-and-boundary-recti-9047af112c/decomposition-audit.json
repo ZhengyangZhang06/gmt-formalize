@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem Monotone.ae_hasDerivAt",
+        "theorem measurable_deriv",
+        "theorem measure_inter_add_sdiff",
+        "theorem measure_Ioo|def stieltjesFunction|theorem.*stieltjesFunction",
+        "withDensity_rnDeriv_le",
+        "liminf_const_mul_of_ne_top",
+        "cbr_smm_|cbr_slice_mass_majorant|cmcs_smi_lintegral_ofReal_deriv_le",
+        "git show 6efe397f182ee5f93e5be9c4b09eb298c3f56ad8:GMT/Ch07/Submission.lean",
+        "def check_source_delta",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mm-independent-audit-te_lb39e/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mm-independent-audit-te_lb39e/Availability.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/leaf_verification.py",
+        "/tmp/mm-independent-audit-te_lb39e/Combined.lean",
+        "/tmp/mm-independent-audit-te_lb39e/Combined.log",
+        "/tmp/mm-independent-audit-te_lb39e/Availability.log",
+        "/tmp/mm-independent-audit-te_lb39e/scope.json"
+      ],
+      "conclusion": "The split is appropriate: its four analytic obligations establish exactly the selected parent, with acyclic dependencies directed from lintegral_deriv and left_slope to monotone_majorant. The parent digest recomputes exactly. All names are bare identifiers; scans of 1055 DAG nodes and 928 other saved decompositions found no collisions. The snapshot project search found no matching declarations. The accepted derivative lemma has a byte-identical frozen type. Workspace contracts and inspected Mathlib implementations match the pinned snapshot. Independently compiled all exact propositions before child declarations, then all four proofs, the exact parent proof, and hypothesis-only assemblies with autoImplicit disabled. Compilation succeeded; every checked proof uses only propext, Classical.choice and Quot.sound. Euclidean Borel-space and right-neighborhood nontriviality instances synthesized successfully. No matrix-unit construction occurs. The availability check confirmed that the two interval-derivative lemmas require unavailable imports; the complete Stieltjes proof avoids that header-policy issue."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "strip_distribution",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the prose, including arbitrary nonmeasurable G and unrestricted endpoint order. The proof establishes finiteness and monotonicity of the truncated distribution, handles b ≤ a, and splits only along a measurable strip. Finite ENNReal subtraction and conversion to real values are justified. This is a complete independent obligation."
+    },
+    {
+      "key": "lintegral_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated inequality without extra integrability or endpoint-order assumptions. The Stieltjes/Radon–Nikodym argument supplies the a.e. derivative comparison, measure domination, and both endpoint inequalities. It remains valid when b ≤ a. Its frozen type matches the accepted declaration, and the supplied proof is complete and non-circular."
+    },
+    {
+      "key": "left_slope",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability alone suffices, exactly as stated. The proof correctly substitutes h ↦ −h, identifies the real difference quotients, uses positivity of h only for the ofReal product identity, and passes convergence to liminf on the nontrivial right-neighborhood filter. No monotonicity or unstated sign hypothesis is needed."
+    },
+    {
+      "key": "monotone_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The proof uses precisely its two declared siblings, constructs a measurable derivative liminf, intersects countably many full-measure differentiability sets, and applies finite-constant liminf commutation and Fatou correctly, including L = 0. The strip-distribution child supplies its hypotheses and endpoint identity, yielding the exact frozen parent conclusion."
+    }
+  ],
+  "required_changes": []
+}
