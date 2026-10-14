@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f1e06f4df657542d0b809fd53dbd06e039473cfca36cc5e3604b30241dcf2a4",
+  "git_delta": {
+    "base_commit": "87f332336792f561d7fc26387cdf7f099b053556",
+    "candidate_commit": "a8d70d3f4c9452d2f61c51ff515b9e404c7f58ed",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sp_measure_restrict_eq_of_agree",
+    "diff_sha256": "9881285ad4641fd47ae9f22c5581ec9f8abdba59b42ef83bc48eb7bce6aa2b85",
+    "source_sha256": "bbe2d50f308ba67813b0d37ec40dca770eed0a92fa89a29c58f620442925d606",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_measure_restrict_eq_of_agree",
+      "statement": "∀ (P m : ℕ) (S T : GeometricCurrentOn (univ : Set (Euclid P)) m) (RS RT : IMRep (univ : Set (Euclid P)) m) (O : Set (Euclid P)), IsOpen O → RS.Represents S → RT.Represents T → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → S ω = T ω) → RS.measure.restrict O = RT.measure.restrict O",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
