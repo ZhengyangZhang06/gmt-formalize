@@ -451,6 +451,66 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A `C¹` graph of slope `≤ 1/4` over a ball is a graph over the quarter-radius cylinder (turns
+the ball-graph conclusion of Allard's theorem, Simon Ch. 5, 5.2, into the cylinder form used for
+`reg T`, Simon 7.4.1).  Let `ι, ι'` be orthogonal linear isometries and
+`Φ(v) = z + ιv + ι'u(v)`, where `u(0) = 0` and `‖Du‖ ≤ 1/4` on `B_r(0)`.  If
+`S ∩ B_r(z) = Φ(B_r(0)) ∩ B_r(z)`, then `S` meets the cylinder `{z + ιv + ι'w : |v|, |w| < r/4}`
+exactly in `Φ(B_{r/4}(0))`.  The mean value inequality gives `|u(v)| ≤ |v|/4`, the cylinder lies
+in `B_r(z)`, and orthogonality makes the cylinder coordinates `(v, w)` unique. -/
+theorem Submission.dimred_cdg_or_ball_graph_to_cylinder_graph : ∀ (n k : ℕ) (S : Set (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (r : ℝ), 0 < r → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → u 0 = 0 → ContDiffOn ℝ 1 u (ball 0 r) → (∀ v ∈ ball (0 : Euclid n) r, ‖fderiv ℝ u v‖ ≤ 1 / 4) → S ∩ ball z r = ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) r) ∩ ball z r → S ∩ {x | ∃ v ∈ ball (0 : Euclid n) (r / 4), ∃ w ∈ ball (0 : Euclid k) (r / 4), x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) (r / 4) := by
+  intro n k S ι ι' u z r hr horth hu0 hC1 hDu hS
+  -- slope bound: `|u(v)| ≤ |v|/4` on `B_r(0)`, by the mean value inequality from `u(0) = 0`
+  have hslope : ∀ v ∈ ball (0 : Euclid n) r, ‖u v‖ ≤ 1 / 4 * ‖v‖ := by
+    intro v hv
+    have hdiff : ∀ y ∈ ball (0 : Euclid n) r, DifferentiableAt ℝ u y := fun y hy =>
+      (hC1.differentiableOn one_ne_zero y hy).differentiableAt (isOpen_ball.mem_nhds hy)
+    simpa [hu0] using (convex_ball (0 : Euclid n) r).norm_image_sub_le_of_norm_fderiv_le hdiff hDu
+      (mem_ball_self hr) hv
+  -- the cylinder of radius `r/4` about `z` lies in `B_r(z)`
+  have hcyl : ∀ v ∈ ball (0 : Euclid n) (r / 4), ∀ w ∈ ball (0 : Euclid k) (r / 4),
+      z + ι v + ι' w ∈ ball z r := by
+    intro v hv w hw
+    rw [mem_ball_zero_iff] at hv hw
+    rw [mem_ball, dist_eq_norm, add_assoc, add_sub_cancel_left]
+    calc ‖ι v + ι' w‖ ≤ ‖ι v‖ + ‖ι' w‖ := norm_add_le _ _
+      _ = ‖v‖ + ‖w‖ := by rw [LinearIsometry.norm_map, LinearIsometry.norm_map]
+      _ < r := by linarith
+  -- cylinder coordinates are unique, by orthogonality of `ι` and `ι'`
+  have huniq : ∀ v v' w w', ι v + ι' w = ι v' + ι' w' → v = v' ∧ w = w' := by
+    intro v v' w w' h
+    have h1 : ι (v - v') = ι' (w' - w) := by
+      rw [map_sub, map_sub, sub_eq_sub_iff_add_eq_add, h]
+      exact add_comm _ _
+    have h2 : ‖v - v'‖ ^ 2 = 0 := by
+      calc ‖v - v'‖ ^ 2 = ‖ι (v - v')‖ ^ 2 := by rw [LinearIsometry.norm_map]
+        _ = inner ℝ (ι (v - v')) (ι (v - v')) := (real_inner_self_eq_norm_sq _).symm
+        _ = inner ℝ (ι (v - v')) (ι' (w' - w)) := by rw [← h1]
+        _ = 0 := horth _ _
+    have hv : v = v' := sub_eq_zero.mp (norm_eq_zero.mp ((pow_eq_zero_iff two_ne_zero).mp h2))
+    subst hv
+    exact ⟨rfl, ι'.injective (add_left_cancel h)⟩
+  ext x
+  constructor
+  · -- a point of `S` in the cylinder is `Φ(v)` with `|v| < r/4`
+    rintro ⟨hxS, v, hv, w, hw, rfl⟩
+    have hx : z + ι v + ι' w ∈ S ∩ ball z r := ⟨hxS, hcyl v hv w hw⟩
+    rw [hS] at hx
+    obtain ⟨⟨v', -, hv'⟩, -⟩ := hx
+    have h : ι v' + ι' (u v') = ι v + ι' w := by simpa [add_assoc] using hv'
+    obtain ⟨rfl, rfl⟩ := huniq _ _ _ _ h
+    exact ⟨v', hv, rfl⟩
+  · -- `Φ(v)` with `|v| < r/4` lies in the cylinder, hence in `B_r(z)`, hence in `S`
+    rintro ⟨v, hv, rfl⟩
+    have hvr : v ∈ ball (0 : Euclid n) r := ball_subset_ball (by linarith) hv
+    have huv : u v ∈ ball (0 : Euclid k) (r / 4) := by
+      rw [mem_ball_zero_iff] at hv ⊢
+      linarith [hslope v hvr]
+    have hmem : z + ι v + ι' (u v) ∈ S ∩ ball z r := by
+      rw [hS]
+      exact ⟨⟨v, hvr, rfl⟩, hcyl v hv (u v) huv⟩
+    exact ⟨hmem.1, v, hv, u v, huv, rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
