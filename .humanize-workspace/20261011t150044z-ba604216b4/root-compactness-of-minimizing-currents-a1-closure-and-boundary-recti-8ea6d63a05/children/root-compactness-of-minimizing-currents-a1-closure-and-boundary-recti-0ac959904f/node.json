@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1.localize-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.cone-a1",
+  "depth": 5,
+  "title": "A current takes the same value on test forms that agree on an open neighbourhood of its support",
+  "statement": "Assume (VO), the exact frozen statement of dtc_vanish_off_support, which appears verbatim as the first hypothesis of the Lean statement: for all P, n ∈ ℕ, every U ⊆ ℝ^P, every current S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and every test form ω ∈ 𝒟^n(U) (TestFormOn U n) whose topological support is disjoint from spt S, S(ω) = 0. Let P, k ∈ ℕ, let U and G be subsets of ℝ^P, let X ∈ 𝒟_k(U) (GeometricCurrentOn U k) be a current and let φ₁, φ₂ ∈ 𝒟^k(U) (TestFormOn U k) be test forms. Suppose G is open, spt X ⊆ G (X.support, Simon 6.2.11), and φ₁(x) = φ₂(x) for every x ∈ G. Then X(φ₁) = X(φ₂).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn U k) (φ₁ φ₂ : TestFormOn U k), IsOpen G → X.support ⊆ G → EqOn (φ₁ : DifferentialForm (Euclid P) k) (φ₂ : DifferentialForm (Euclid P) k) G → X φ₁ = X φ₂",
+  "lean_name": "cbrld_cone_eval_eq_of_eqOn_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0ac959904f-a1"
+}

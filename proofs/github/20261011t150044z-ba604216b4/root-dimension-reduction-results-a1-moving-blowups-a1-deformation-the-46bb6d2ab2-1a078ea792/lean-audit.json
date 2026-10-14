@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11a555dd3db2bc0a2431c88cd1a7d650b4e96254d561d0d3ca302b589305a74f",
+  "git_delta": {
+    "base_commit": "fbf9749bd3a574e837cd8a0ca5a59c3828358724",
+    "candidate_commit": "211a6e4f70b9e2bc3cb7626d720f859877c0e7c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lpc_cylinder_current",
+    "diff_sha256": "43bfde8a0ab3a7a6f1e72f57a4e190f1b57edf6d5c74a32799ac3488d389d42b",
+    "source_sha256": "33705b0d5c9974d2a3db45ac823f8308f6197296fe7980bc954f1b1cb46a2f7d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lpc_cylinder_current",
+      "statement": "((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), X.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1), Y.mass ≤ X.mass ∧ (IsCompact X.support → IsCompact Y.support ∧ Y.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (η : ℝ → TestFormOn (univ : Set (Euclid N)) k), (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → Continuous (fun t => X (η t)) ∧ Y ω = ∫ t in (0 : ℝ)..1, X (η t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
