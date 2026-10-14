@@ -1,0 +1,127 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1`
+- Child DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Part B (B1–B6) of the selected parent's supplied proof, i.e. Simon Ch. 6, 2.25 (homotopy formula for the affine homotopy h(t, x) = tx from f = 0 to g = id), 2.30 (the cone 0 ⨯ S := h_#([[(0,1)]] × S)), 2.31 (∂(0 ⨯ S) = S − 0 ⨯ ∂S) and 2.32 (book/chapter-06.txt lines 441–451 and 528–551). As in the supplied proof, h_#([[(0,1)]] × ·) is written at the level of forms through the Poincaré homotopy operator K. One specialization: the continuity step B4 uses the hypothesis S.mass ≠ ∞ (in the selected parent S is integer multiplicity with compact support, and its finite mass is delivered by the sibling im_parametrization) instead of the general C^m estimate of the supplied B4; only sup-norm bounds are then needed.
+
+Notation and tools.
+- k := n + 1 ≥ 1. For p ∈ ℕ, Λ^p := Covector (Euclid P) p (continuous alternating p-linear maps (ℝ^P)^p → ℝ) and 𝒟^p := TestFormOn univ p (C^∞ maps ℝ^P → Λ^p with compact support). For α ∈ Λ^p, ‖α‖ is the operator norm (Mathlib norm of ContinuousAlternatingMap) and |α|_E := covectorEuclideanNorm α is the Euclidean coefficient norm (|α|_E² = Σ_I α(e_{I_1}, …, e_{I_p})² over strictly increasing I).
+- d = exteriorDerivative = Mathlib extDeriv. At a point x where β is differentiable, dβ(x)(w_0, …, w_p) = Σ_{i=0}^p (−1)^i Dβ(x)[w_i](w_0, …, ŵ_i, …, w_p) (exteriorDerivative_apply / extDeriv_apply: ∑ i, (−1)^i • fderiv ℝ (fun y => β y (i.removeNth w)) x (w i)). In particular dβ(x) depends only on β on a neighbourhood of x.
+- For p ≥ 1, α ∈ Λ^p and x ∈ ℝ^P, ι_xα := α.curryLeft x ∈ Λ^{p−1}, so ι_xα(v) = α(Fin.cons x v) =: α(x, v). The map (α, x) ↦ ι_xα is continuous bilinear and ‖ι_xα‖ ≤ ‖α‖‖x‖.
+- spt X = X.support = univ ∖ Z_X, where the zero region Z_X is the union of the open W with compact closure on which X vanishes; Z_X is open (GeometricCurrentOn.isOpen_zeroRegion), so spt X is closed.
+- Sibling support_vanishing (Submission.dtc_vanish_off_support): if X ∈ 𝒟_p(U), γ ∈ 𝒟^p(U) and tsupport γ is disjoint from spt X, then X(γ) = 0. Consequence (L), locality: if γ, γ' ∈ 𝒟^p agree on an open set V ⊇ spt X, then X(γ) = X(γ'). Indeed γ − γ' vanishes on V, so its support lies in the closed set ℝ^P ∖ V, hence tsupport(γ − γ') ⊆ ℝ^P ∖ V is disjoint from spt X; by support_vanishing and linearity X(γ) − X(γ') = X(γ − γ') = 0.
+- Sibling param_integral (Submission.cmcdt_lpo_slice_param_integral): if V is a complete real normed space and h : ℝ × ℝ^P → V is C^∞, then x ↦ ∫_0^1 h(t, x) dt is C^∞, and its derivative at x is ∫_0^1 D_x h(t, x) dt (the integral of the partial derivatives fderiv ℝ (fun x' => h (t, x')) x).
+
+Step 1 (the homotopy operator; B1). For p ≥ 1 and a C^∞ map β : ℝ^P → Λ^p put h_β(t, x) := t^{p−1} • ι_x(β(t • x)) ∈ Λ^{p−1} and (K_pβ)(x) := ∫_0^1 h_β(t, x) dt (interval integral in the finite-dimensional, hence complete, space Λ^{p−1}).
+ (a) h_β is C^∞ on ℝ × ℝ^P: t ↦ t^{p−1} and (t, x) ↦ β(t • x) are C^∞ and (α, x) ↦ ι_xα is continuous bilinear. By param_integral, K_pβ is C^∞ and D(K_pβ)(x) = ∫_0^1 D_x h_β(t, x) dt for every x.
+ (b) Evaluation at a fixed v ∈ (ℝ^P)^{p−1} is a continuous linear map Λ^{p−1} → ℝ and commutes with the interval integral, so (K_pβ)(x)(v) = ∫_0^1 t^{p−1} β(tx)(x, v) dt. By (a), the product rule for the bilinear ι and the chain rule D_x[β(tx)][w] = t·Dβ(tx)[w], for every w: D[y ↦ (K_pβ)(y)(v)](x)[w] = ∫_0^1 t^{p−1}[t·Dβ(tx)[w](x, v) + β(tx)(w, v)] dt.
+ (c) If β(tx) = 0 for every t ∈ [0, 1], then h_β(t, x) = 0 for t ∈ [0, 1], so (K_pβ)(x) = 0.
+ (d) β ↦ K_pβ is linear.
+
+Step 2 (homotopy formula; B2). For p ≥ 1 and every C^∞ p-form β: β = d(K_pβ) + K_{p+1}(dβ). Fix x and v = (v_1, …, v_p).
+ - By the formula for d (with w_{i−1} = v_i) and Step 1(b): d(K_pβ)(x)(v) = Σ_{i=1}^p (−1)^{i−1} ∫_0^1 t^{p−1}[t·Dβ(tx)[v_i](x, v_1, …, v̂_i, …, v_p) + β(tx)(v_i, v_1, …, v̂_i, …, v_p)] dt. Moving v_i to the front costs i − 1 transpositions: β(tx)(v_i, v_1, …, v̂_i, …, v_p) = (−1)^{i−1}β(tx)(v). Hence d(K_pβ)(x)(v) = ∫_0^1 [p·t^{p−1}β(tx)(v) + t^p Σ_{i=1}^p (−1)^{i−1}Dβ(tx)[v_i](x, v_1, …, v̂_i, …, v_p)] dt.
+ - dβ is C^∞, and by Step 1(b) with p + 1 and the formula for d with w_0 = x, w_i = v_i: K_{p+1}(dβ)(x)(v) = ∫_0^1 t^p dβ(tx)(x, v) dt = ∫_0^1 t^p[Dβ(tx)[x](v) + Σ_{i=1}^p (−1)^i Dβ(tx)[v_i](x, v_1, …, v̂_i, …, v_p)] dt.
+ - Adding, the two sums cancel: d(K_pβ)(x)(v) + K_{p+1}(dβ)(x)(v) = ∫_0^1 φ'(t) dt with φ(t) := t^p β(tx)(v), since φ'(t) = p·t^{p−1}β(tx)(v) + t^p Dβ(tx)[x](v) (chain rule; φ is C¹). By the fundamental theorem of calculus this is φ(1) − φ(0) = β(x)(v), because p ≥ 1.
+
+Step 3 (cutoff and definition; B3). If spt S = ∅ put V := ∅ and ζ := 0. Otherwise let O := thickening 2 (spt S) (open, bounded since spt S is compact) and C := cthickening 1 (spt S) (closed, C ⊆ O), and apply Mathlib exists_contDiff_support_eq_eq_one_iff (ℝ^P is finite-dimensional): there is a C^∞ ζ : ℝ^P → [0, 1] with support ζ = O and ζ(x) = 1 ⟺ x ∈ C. Then tsupport ζ ⊆ closure O is compact, and V := thickening 1 (spt S) is open with spt S ⊆ V ⊆ C, so ζ = 1 on V. In both cases: V is open, spt S ⊆ V, ζ = 1 on V, 0 ≤ ζ ≤ 1 and tsupport ζ is compact.
+ For ω ∈ 𝒟^{k+1} put Γ(ω) := ζ • K_{k+1}ω. It is C^∞ (Step 1(a)) and vanishes off support ζ, so tsupport Γ(ω) ⊆ tsupport ζ is compact: Γ(ω) ∈ 𝒟^k, and Γ is linear (Step 1(d)). Define R₀(ω) := S(Γ(ω)); R₀ is a linear functional on 𝒟^{k+1}.
+
+Step 4 (R₀ is a current; B4 under finite mass). Let M := (S.mass).toReal; S.mass ≠ ∞ by hypothesis.
+ (a) Mass bound. If γ ∈ 𝒟^k, c > 0 and |γ(x)|_E ≤ c for all x, then |S(γ)| ≤ c·M: the forms ±c⁻¹γ are admissible for S.mass = S.massOn univ (tsupport in univ, coefficient norm ≤ 1 everywhere), so ±c⁻¹S(γ) ≤ M (GeometricCurrentOn.le_massOn and S.mass ≠ ∞).
+ (b) Coefficient versus operator norm. For α ∈ Λ^k and increasing I, |α(e_{I_1}, …, e_{I_k})| ≤ ‖α‖ (the e_i are unit vectors), so |α|_E ≤ c_0‖α‖ with c_0 := (number of increasing maps Fin k → Fin P)^{1/2}.
+ (c) For ω ∈ 𝒟^{k+1} put ‖ω‖_∞ := sup_y ‖ω(y)‖ (finite: ω is continuous with compact support). For every x, ‖(K_{k+1}ω)(x)‖ ≤ ∫_0^1 t^k‖ι_x ω(tx)‖ dt ≤ ‖x‖·‖ω‖_∞. Let ρ_ζ := sup{‖x‖ : x ∈ tsupport ζ} (0 if tsupport ζ = ∅). Since 0 ≤ ζ ≤ 1 and Γ(ω) = 0 off tsupport ζ, |Γ(ω)(x)|_E ≤ c_0ρ_ζ‖ω‖_∞ for all x. By (a) applied with c := c_0ρ_ζ‖ω‖_∞ + ε for every ε > 0, |R₀(ω)| ≤ M·c_0·ρ_ζ·‖ω‖_∞.
+ (d) Continuity. Let ω_j → 0 in the sense of TestFormOnConverges (ω_j) 0: there is a compact K₁ containing every tsupport ω_j, and every iterated derivative of ω_j tends to 0 uniformly on K₁; the 0-th one gives ω_j → 0 uniformly on K₁ (‖iteratedFDeriv ℝ 0 f x‖ = ‖f x‖). Off K₁ every ω_j vanishes. Hence ‖ω_j‖_∞ → 0 and R₀(ω_j) → 0 by (c). Therefore R := ⟨R₀, continuity⟩ is a GeometricCurrentOn univ (k + 1) = GeometricCurrentOn univ (n + 2), with R(ω) = S(ζ • K_{k+1}ω) for every ω ∈ 𝒟^{k+1}.
+
+Step 5 (∂R = S; B5). Let ω ∈ 𝒟^k. By definition of the boundary, R.boundary(ω) = R(dω) = S(ζ • K_{k+1}(dω)). By Step 2 with p = k ≥ 1 and β = ω, K_{k+1}(dω) = ω − d(K_kω), so R.boundary(ω) = S(ζ • ω) − S(ζ • d(K_kω)); here ζ • ω and ζ • d(K_kω) are test k-forms (C^∞, tsupport ⊆ tsupport ζ).
+ (a) ζ • ω and ω agree on the open set V ⊇ spt S, so S(ζ • ω) = S(ω) by (L).
+ (b) ζ • K_kω ∈ 𝒟^{k−1} (C^∞ by Step 1(a), tsupport ⊆ tsupport ζ). For y ∈ V the forms ζ • K_kω and K_kω coincide on the neighbourhood V of y, so d(ζ • K_kω)(y) = d(K_kω)(y) = ζ(y)·d(K_kω)(y) (ζ(y) = 1). Thus the test k-forms ζ • d(K_kω) and d(ζ • K_kω) agree on V, and by (L) and ∂S = 0: S(ζ • d(K_kω)) = S(d(ζ • K_kω)) = S.boundary(ζ • K_kω) = 0, where S.boundary ∈ 𝒟_n is the current γ ↦ S(dγ) of degree k − 1 = n.
+ Hence R.boundary(ω) = S(ω) for every ω ∈ 𝒟^k. A GeometricCurrentOn is determined by its underlying linear functional (the continuity field is a proposition), so R.boundary = S.
+
+Step 6 (spt R is compact; B6). C₀ := {t • x : t ∈ [0, 1], x ∈ spt S} is the image of the compact set [0, 1] × spt S under the continuous map (t, x) ↦ t • x, hence compact (and closed).
+ (a) Let ω ∈ 𝒟^{k+1} with tsupport ω ∩ C₀ = ∅. W := {x : t • x ∉ tsupport ω for all t ∈ [0, 1]} is open: its complement is the projection to ℝ^P of the closed set {(t, x) ∈ [0, 1] × ℝ^P : t • x ∈ tsupport ω}, and the projection [0, 1] × ℝ^P → ℝ^P is a closed map because [0, 1] is compact. spt S ⊆ W, since t • x ∈ C₀ for x ∈ spt S. By Step 1(c), K_{k+1}ω = 0 on W, so Γ(ω) vanishes on the open set W and tsupport Γ(ω) ⊆ ℝ^P ∖ W, which is disjoint from spt S. By support_vanishing, R(ω) = S(Γ(ω)) = 0.
+ (b) Let x ∉ C₀. As C₀ is closed there is r > 0 with closedBall(x, r) ∩ C₀ = ∅. The open ball B := ball(x, r) has compact closure contained in closedBall(x, r) ⊆ univ, and every ω ∈ 𝒟^{k+1} with tsupport ω ⊆ B satisfies tsupport ω ∩ C₀ = ∅, hence R(ω) = 0 by (a). So B is one of the sets forming the zero region of R, and x ∉ spt R.
+ (c) Thus spt R ⊆ C₀. spt R is closed, so it is a closed subset of the compact set C₀, hence compact.
+
+Step 7 (the formula). Let ω ∈ 𝒟^{k+1} and γ := Γ(ω) = ζ • K_{k+1}ω ∈ 𝒟^k (Step 3). Then R(ω) = S(γ) by Step 4. For x ∈ spt S ⊆ V we have ζ(x) = 1, so by Step 1(b) with p = k + 1 = n + 2, for every v : Fin (n + 1) → ℝ^P: γ(x)(v) = (K_{k+1}ω)(x)(v) = ∫_0^1 t^{n+1} ω(t • x)(Fin.cons x v) dt.
+
+Steps 4–7 give R ∈ 𝒟_{n+2}(ℝ^P) with IsCompact R.support, R.boundary = S and the stated formula. ∎
+
+## Key steps
+
+1. Homotopy operator (K_pβ)(x) = ∫_0^1 t^{p−1} β(tx)(x, ·) dt: C^∞ with derivatives under the integral by the sibling param_integral; it vanishes at x when β vanishes on the segment [0, x].
+2. Homotopy formula β = d(K_pβ) + K_{p+1}(dβ) for p ≥ 1: the two alternating sums cancel and the rest is ∫_0^1 d/dt[t^p β(tx)(v)] dt = β(x)(v).
+3. Cutoff ζ ∈ C^∞_c, ζ ≡ 1 on an open V ⊇ spt S (exists_contDiff_support_eq_eq_one_iff); R(ω) := S(ζ·K_{n+2}ω) is linear.
+4. Continuity from finite mass: |S(γ)| ≤ M(S)·sup|γ|_E, |γ|_E ≤ c_0‖γ‖ and ‖ζK ω‖ ≤ ρ_ζ sup‖ω‖, and test-form convergence forces sup‖ω_j‖ → 0.
+5. ∂R = S: K(dω) = ω − dKω, locality from support_vanishing (S(ζω) = S(ω), S(ζ dKω) = S(d(ζKω))) and ∂S = 0.
+6. spt R ⊆ C₀ = {tx : t ∈ [0,1], x ∈ spt S} (compact): forms supported off C₀ give ζKω supported off spt S; closed subset of a compact set.
+7. Formula: on spt S, ζ = 1, so γ := ζK_{n+2}ω satisfies γ(x)(v) = ∫_0^1 t^{n+1} ω(tx)(Fin.cons x v) dt and R(ω) = S(γ).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'theorem exists_contDiff_support_eq_eq_one_iff|lemma measure_compl_support|theorem volume_preserving_piFinSuccAbove|theorem EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp|theorem norm_fderiv_le_of_lipschitz|theorem measurable_to_countable.|theorem enorm_integral_le_lintegral_enorm|theorem setIntegral_congr_set|theorem measurable_fderiv |def curryLeft|theorem extDeriv_apply|theorem hasFDerivAt_integral_of_dominated_of_fderiv_le..' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `grep -rln 'contDiff_parametric|ContDiff.*intervalIntegral|contDiff_integral' mathlib/Mathlib (no match)`
+- `python3 -I over dag.json (2375 nodes): keyword search homotop|cone|parametri|Lipschitz|Gram|orientation|approximate tangent|density|area formula|pushforward; status, candidate_commit and child/dependency closure of the reuse targets; byte equality of lean_statement with each handoff; replay of Runtime._existing_lean_name_problem for all 12 names`
+- `git show <candidate>:GMT/Ch07/Submission.lean | grep -n 'theorem Submission.<name>|sorry' for the 8 reused candidates; cross-candidate comparison of 77 shared theorem headers`
+- `lake env lean /tmp/cone-split-check/Final.lean (12 exact child types; parent assembly; Lean proofs of ecf_im_lipschitz_parametrization and ecf_isIntegerMultiplicity_of_parametrization from the reused types; Fin.cons, enorm and inner meaning checks; #print axioms)`
+- `sed -n 441,551p and 850,866p book/chapter-06.txt`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|def ensure|_overlay_accepted_children|cited_inherited|_reference_use_problem' /runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/{runtime,store,inherited}.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-1df3e47686/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-53b6b2be95/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cone-split-check/Final.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) Ch07 contract is byte-identical (sha256 e4148e7f…) to the workspace Contract.lean and Submission.lean.
+
+Availability of the cited Mathlib facts:
+- The pinned Mathlib contains every Mathlib fact the new children cite: exists_contDiff_support_eq_eq_one_iff, Measure.measure_compl_support, volume_preserving_piFinSuccAbove, EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp, ContinuousAlternatingMap.curryLeft, extDeriv_apply, measurable_to_countable', enorm_integral_le_lintegral_enorm, setIntegral_congr_set, measurable_fderiv, norm_fderiv_le_of_lipschitz and hasFDerivAt_integral_of_dominated_of_fderiv_le''.
+- It has no C^∞ parametric-integral lemma (no match). B1 therefore reuses the accepted cmcdt_lpo_slice_param_integral.
+- No cone construction, homotopy operator or general integrality-of-parametrization theorem exists in the snapshot project or in SimonGMT.
+
+Reuse of DAG checkpoints:
+- The DAG holds comparator-accepted checkpoints that are exactly E2–E4, E1/(MR), G2–G6 for one piece, the G4–G6 summation, (IMC), A2a and (VO). These are dor_lmb_fcd_imp_parametric_rep, dor_imrep_massOn_eq_measure_and_support, dimred_mbl_dt_lpip_lipschitz_piece_current, cmcdt_im_series, cmc_imRep_locality_restrict_sub, covectorEuclideanNorm_gram_bounds and dtc_vanish_off_support.
+- Their frozen types match byte for byte. Their candidate commits contain the declared theorems, with the only sorry in main_theorem. Their closures are fully accepted, and the shared theorem headers are identical across candidates.
+- The runtime permits identical-type reuse of accepted checkpoints across branches. The four new ecf_ names are unreserved.
+
+Lean checks:
+- All 12 child types elaborate.
+- The parent assembly compiles.
+- Both glue children are proved in Lean from the exact reused types, with 0 errors and only stub sorries.
