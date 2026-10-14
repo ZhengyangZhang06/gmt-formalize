@@ -2009,6 +2009,113 @@ theorem Submission.dor_lmb_fc_dtop_cutoff_pullback : ∀ (P d : ℕ) (p : Euclid
   · intro ωs hωs
     exact Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges P (P + 1) d p ζ ζ.contDiff
       ζ.hasCompactSupport ωs (fun j => E (ωs j)) (fun j y => hE (ωs j) y) hωs
+/-- **Projected cells of the cubical grid of side `ρ` in `ℝ^{N+1}`** (parent steps 5(c) and 9;
+the top-dimensional case of the Deformation Theorem, Simon Ch. 6, 5.1).  `p : ℝ^{N+1} → ℝᴺ`
+forgets the last coordinate, `ι : Fin N → Fin (N + 1)` is strictly increasing, `F̃` is the cell
+at `z` spanned by the directions `ι`, and `G` is the cube at `z ∘ castSucc`.  (a) If
+`last ∈ range ι`, one argument of `ω(py)(pe_{ι 0}, …, pe_{ι (N−1)})` is `p e_last = 0`, so the
+integrand vanishes.  (b) Otherwise `ι = castSucc` and `p e_{castSucc k} = e_k`; the isometric
+embedding `j(x) = (x, ρ z_last)` has `p ∘ j = id` and `j(G) = F̃`, so
+`μHE[N].map j = μHE[N]⌞range j` turns `∫_{F̃} ⋯ dHᴺ` into `∫_G ω(x)(e_0, …, e_{N−1}) dHᴺ`, and
+`G = p(F̃)`. -/
+theorem Submission.dor_lmb_fc_dtop_projected_cell_integral : ∀ (N : ℕ) (ρ : ℝ) (p : Euclid (N + 1) →L[ℝ] Euclid N) (z : Fin (N + 1) → ℤ) (ι : Fin N → Fin (N + 1)), (∀ (y : Euclid (N + 1)) (i : Fin N), p y i = y (Fin.castSucc i)) → StrictMono ι → (Fin.last N ∈ Set.range ι → ∀ ω : DifferentialForm (Euclid N) N, ∫ y in {y : Euclid (N + 1) | ∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)}, ω (p y) (fun k => p (EuclideanSpace.single (ι k) (1 : ℝ))) ∂μHE[N] = 0) ∧ (Fin.last N ∉ Set.range ι → (∀ ω : DifferentialForm (Euclid N) N, ∫ y in {y : Euclid (N + 1) | ∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)}, ω (p y) (fun k => p (EuclideanSpace.single (ι k) (1 : ℝ))) ∂μHE[N] = ∫ x in {x : Euclid N | ∀ i : Fin N, ρ * z (Fin.castSucc i) ≤ x i ∧ x i ≤ ρ * (z (Fin.castSucc i) + 1)}, ω x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[N]) ∧ ∀ x : Euclid N, (∀ i : Fin N, ρ * z (Fin.castSucc i) ≤ x i ∧ x i ≤ ρ * (z (Fin.castSucc i) + 1)) → ∃ y : Euclid (N + 1), (∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)) ∧ p y = x) := by
+  intro N ρ p z ι hp hι
+  -- Step 1: `p e_last = 0` and `p e_{castSucc k} = e_k`.
+  have hplast : p (EuclideanSpace.single (Fin.last N) (1 : ℝ)) = 0 := by
+    ext i
+    rw [hp]
+    simp only [PiLp.single_apply, Fin.castSucc_ne_last, ↓reduceIte, PiLp.zero_apply]
+  have hpcs : ∀ k : Fin N,
+      p (EuclideanSpace.single (Fin.castSucc k) (1 : ℝ)) = EuclideanSpace.single k (1 : ℝ) := by
+    intro k
+    ext i
+    rw [hp]
+    simp only [PiLp.single_apply, Fin.castSucc_inj]
+  refine ⟨?_, fun hlast => ?_⟩
+  · -- (a) Step 2: if `ι k₀ = last`, the `k₀`-th argument `p e_last` is `0`, so the integrand
+    -- vanishes identically.
+    rintro ⟨k₀, hk₀⟩ ω
+    have h0 : ∀ y : Euclid (N + 1),
+        ω (p y) (fun k => p (EuclideanSpace.single (ι k) (1 : ℝ))) = 0 := fun y =>
+      (ω (p y)).map_coord_zero k₀ (by simp only [hk₀, hplast])
+    simp only [h0, integral_zero]
+  · -- (b) Step 3: `ι` avoids `last`, so `ι = castSucc ∘ ι'` with `ι' : Fin N → Fin N` strictly
+    -- increasing, hence injective, hence surjective, hence `ι' = id`.
+    let ι' : Fin N → Fin N := fun k => (ι k).castPred fun h => hlast ⟨k, h⟩
+    have hι' : StrictMono ι' := fun a b hab => by
+      simpa [ι', Fin.castPred_lt_castPred_iff] using hι hab
+    have hι'id : ι' = id := by
+      refine (hι'.range_inj_of_wellFoundedLT strictMono_id).1 ?_
+      rw [range_id]
+      exact (Finite.injective_iff_surjective.1 hι'.injective).range_eq
+    have hιcs : ι = Fin.castSucc := by
+      funext k
+      exact (Fin.castSucc_castPred (ι k) fun h => hlast ⟨k, h⟩).symm.trans
+        (congrArg Fin.castSucc (congrFun hι'id k))
+    subst hιcs
+    -- Step 4: the isometric embedding `j(x) = (x, ρ z_last)`, with `p ∘ j = id`.
+    let j : Euclid N → Euclid (N + 1) := fun x =>
+      WithLp.toLp 2 (Fin.snoc (α := fun _ => ℝ) (fun i => x i) (ρ * z (Fin.last N)))
+    have hj_cs : ∀ (x : Euclid N) (i : Fin N), j x (Fin.castSucc i) = x i := by
+      intro x i
+      simp [j]
+    have hj_last : ∀ x : Euclid N, j x (Fin.last N) = ρ * z (Fin.last N) := by
+      intro x
+      simp [j]
+    have hpj : ∀ x : Euclid N, p (j x) = x := by
+      intro x
+      ext i
+      rw [hp, hj_cs]
+    have hjiso : Isometry j := by
+      refine Isometry.of_dist_eq fun x x' => ?_
+      rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq, Fin.sum_univ_castSucc]
+      simp only [hj_cs, hj_last, dist_self]
+      simp
+    have hjme : MeasurableEmbedding j := hjiso.isClosedEmbedding.measurableEmbedding
+    set S : Set (Euclid (N + 1)) := {y : Euclid (N + 1) | ∀ i : Fin (N + 1),
+      (i ∈ Set.range Fin.castSucc → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧
+        (i ∉ Set.range Fin.castSucc → y i = ρ * z i)}
+    set G : Set (Euclid N) := {x : Euclid N | ∀ i : Fin N,
+      ρ * z (Fin.castSucc i) ≤ x i ∧ x i ≤ ρ * (z (Fin.castSucc i) + 1)}
+    -- `j⁻¹(F̃) = G` and `F̃ ⊆ range j`, i.e. `F̃ = j(G)`.
+    have hnotlast : ∀ i : Fin (N + 1), i ∉ Set.range Fin.castSucc → i = Fin.last N := by
+      intro i hi
+      by_contra hne
+      exact hi ⟨i.castPred hne, Fin.castSucc_castPred i hne⟩
+    have hpre : j ⁻¹' S = G := by
+      ext x
+      simp only [S, G, Set.mem_preimage, Set.mem_ofPred_eq]
+      constructor
+      · intro h i
+        have h' := (h (Fin.castSucc i)).1 ⟨i, rfl⟩
+        rwa [hj_cs] at h'
+      · intro h i
+        refine ⟨?_, fun hi => ?_⟩
+        · rintro ⟨i', rfl⟩
+          rw [hj_cs]
+          exact h i'
+        · obtain rfl := hnotlast i hi
+          rw [hj_last]
+    have hSsub : S ⊆ Set.range j := by
+      intro y hy
+      refine ⟨p y, ?_⟩
+      ext i
+      induction i using Fin.lastCases with
+      | last =>
+        rw [hj_last]
+        exact ((hy (Fin.last N)).2 fun ⟨k, hk⟩ => Fin.castSucc_ne_last k hk).symm
+      | cast i => rw [hj_cs, hp]
+    -- Step 5: `Hᴺ⌞F̃ = j_#(Hᴺ⌞G)` since `μHE[N].map j = μHE[N]⌞range j`; change variables.
+    have hmeas : (μHE[N] : Measure (Euclid (N + 1))).restrict S =
+        ((μHE[N] : Measure (Euclid N)).restrict G).map j := by
+      rw [← hpre, ← hjme.restrict_map, hjiso.map_euclideanHausdorffMeasure,
+        Measure.restrict_restrict_of_subset hSsub]
+    refine ⟨fun ω => ?_, fun x hx => ⟨j x, ?_, hpj x⟩⟩
+    · rw [hmeas, hjme.integral_map]
+      simp only [hpj, hpcs]
+    · show j x ∈ S
+      rw [← Set.mem_preimage, hpre]
+      exact hx
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
