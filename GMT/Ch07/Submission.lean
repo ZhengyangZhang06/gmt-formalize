@@ -451,6 +451,143 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Dilation invariance of a cone `C ∈ 𝒟ₙ(ℝᴾ)` (used in the proof of Simon 7.3.3(1), p. 191, for
+2-dimensional minimizing cones): for `s > 0`, `M_{sW}(C) = sⁿ M_W(C)` for every `W ⊆ ℝᴾ`,
+`sx ∈ spt C ⟺ x ∈ spt C`, and `Θⁿ(μ_C, sx) = θ ⟺ Θⁿ(μ_C, x) = θ`.  The pullback by
+`η_{0,1/t}(y) = ty` multiplies `n`-covectors by `tⁿ`, so the cone identity `η_{0,1/t#}C = C`
+gives `C(ω(t⁻¹ ·)) = tⁿ C(ω)` for `t > 0`.  The substitution `ω ↦ ω(s⁻¹ ·)` maps the forms
+admissible for `M_W` onto those admissible for `M_{sW}`, and the forms supported in `V` onto those
+supported in `sV`; this gives the mass scaling and the invariance of `spt C`.  As
+`sB_{ρ/s}(x) = B_ρ(sx)`, the density ratio at `sx` and radius `ρ` is the ratio at `x` and radius
+`ρ/s`.  The integer multiplicity hypothesis is not needed. -/
+theorem Submission.idtp_tdc_cone_dilation : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity C → IsConeCurrent C → ∀ s : ℝ, 0 < s → (∀ W : Set (Euclid P), C.massOn ((fun x => s • x) '' W) = ENNReal.ofReal (s ^ n) * C.massOn W) ∧ (∀ x : Euclid P, s • x ∈ C.support ↔ x ∈ C.support) ∧ ∀ (x : Euclid P) (θ : ℝ), HasMassDensity C (s • x) θ ↔ HasMassDensity C x θ := by
+  intro P n C _hIM hcone s hs
+  -- `x ↦ ω(t • x)` is again a test form on `ℝᴾ` for `t ≠ 0`
+  have hscale : ∀ t : ℝ, t ≠ 0 → ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+      (fun x => (ω : DifferentialForm (Euclid P) n) (t • x)) ∈
+        TestFormOn (univ : Set (Euclid P)) n := by
+    intro t ht ω
+    change IsTestForm _ ∧ _
+    exact ⟨⟨ω.property.1.1.comp (contDiff_const_smul t), ω.property.1.2.comp_smul ht⟩,
+      subset_univ _⟩
+  -- the cone identity for `λ = t⁻¹`: `η_{0,λ}^#(ω(t⁻¹ ·)) = tⁿ ω`, so `C(ω(t⁻¹ ·)) = tⁿ C(ω)`
+  have hkey : ∀ (t : ℝ) (ht : 0 < t) (ω : TestFormOn (univ : Set (Euclid P)) n),
+      C ⟨_, hscale t⁻¹ (inv_ne_zero ht.ne') ω⟩ = t ^ n * C ω := by
+    intro t ht ω
+    have hdom : IsTestForm (fun x => (ω : DifferentialForm (Euclid P) n) (t⁻¹ • x)) ∧
+        tsupport (fun x => (ω : DifferentialForm (Euclid P) n) (t⁻¹ • x)) ⊆
+          dilation (0 : Euclid P) t⁻¹ '' univ := by
+      refine ⟨(hscale t⁻¹ (inv_ne_zero ht.ne') ω).1, fun y _ => ⟨t⁻¹ • y, mem_univ _, ?_⟩⟩
+      simp [dilation, dilationCLM, ht.ne']
+    have hlin : C (t ^ n • ω) = t ^ n * C ω := by
+      simpa only [smul_eq_mul] using C.toCurrent.map_smul (t ^ n) ω
+    rw [← hcone t⁻¹ (inv_pos.mpr ht) ⟨_, hscale t⁻¹ (inv_ne_zero ht.ne') ω⟩, currentEval,
+      dite_eq_left hdom, ← hlin, blowUp, GeometricCurrentOn.affinePushforward_apply,
+      GeometricCurrentOn.restrictDomain_apply]
+    congr 1
+    apply Subtype.ext
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    funext x
+    ext v
+    have hmul := ((ω : DifferentialForm (Euclid P) n) x).map_smul_univ (fun _ => t) v
+    simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul] at hmul
+    simp only [affinePullbackForm, inv_inv, smul_zero, neg_zero, dilationCLM, smul_apply,
+      ContinuousLinearMap.id_apply, zero_add, ne_eq, ht.ne', not_false_eq_true, inv_smul_smul₀,
+      ContinuousAlternatingMap.compContinuousLinearMap_apply, FunLike.coe_smul,
+      ContinuousLinearMap.coe_id', SetLike.val_smul, Pi.smul_apply,
+      ContinuousAlternatingMap.coe_smul, smul_eq_mul]
+    rw [← hmul]
+    rfl
+  -- (1) `M_{sW}(C) = sⁿ M_W(C)`: `ω ↦ ω(s⁻¹ ·)` maps the forms admissible for `M_W` onto those
+  -- admissible for `M_{sW}`
+  have hmass : ∀ W : Set (Euclid P),
+      C.massOn ((fun x => s • x) '' W) = ENNReal.ofReal (s ^ n) * C.massOn W := by
+    intro W
+    apply le_antisymm
+    · apply sSup_le
+      rintro _ ⟨ω', hω', rfl⟩
+      have hω : (⟨_, hscale s hs.ne' ω'⟩ : TestFormOn (univ : Set (Euclid P)) n) ∈
+          massAdmissibleOn univ n W := by
+        refine ⟨fun y hy => ?_, fun y => hω'.2 (s • y)⟩
+        exact (smul_right_injective (Euclid P) hs.ne').mem_set_image.mp
+          (hω'.1 (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
+            (continuous_const_smul s) hy))
+      have heq : ω' = ⟨_, hscale s⁻¹ (inv_ne_zero hs.ne') ⟨_, hscale s hs.ne' ω'⟩⟩ := by
+        apply Subtype.ext
+        funext x
+        simp [smul_smul, hs.ne']
+      dsimp only
+      rw [heq, hkey s hs, ENNReal.ofReal_mul (pow_nonneg hs.le n)]
+      gcongr
+      exact C.le_massOn hω
+    · calc ENNReal.ofReal (s ^ n) * C.massOn W
+          = ⨆ r ∈ (fun ω => ENNReal.ofReal (C ω)) '' massAdmissibleOn univ n W,
+              ENNReal.ofReal (s ^ n) * r := ENNReal.mul_sSup
+        _ ≤ C.massOn ((fun x => s • x) '' W) := by
+          refine iSup₂_le ?_
+          rintro _ ⟨ω, hω, rfl⟩
+          rw [← ENNReal.ofReal_mul (pow_nonneg hs.le n), ← hkey s hs ω]
+          apply C.le_massOn
+          refine ⟨fun y hy => ?_, fun y => hω.2 (s⁻¹ • y)⟩
+          exact ⟨s⁻¹ • y, hω.1 (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) n)
+            (continuous_const_smul s⁻¹) hy), smul_inv_smul₀ hs.ne' y⟩
+  -- the zero region (complement of `spt C`) is invariant under `x ↦ t • x`, `t > 0`
+  have hzero : ∀ t : ℝ, 0 < t → ∀ y : Euclid P, y ∈ C.zeroRegion → t • y ∈ C.zeroRegion := by
+    intro t ht y hy
+    obtain ⟨V, ⟨hVo, hVc, -, hV0⟩, hyV⟩ := hy
+    have hcpt : IsCompact ((fun x => t • x) '' closure V) := hVc.image (continuous_const_smul t)
+    refine ⟨(fun x => t • x) '' V, ⟨isOpenMap_smul₀ ht.ne' V hVo,
+      hcpt.of_isClosed_subset isClosed_closure
+        (closure_minimal (image_mono subset_closure) hcpt.isClosed), subset_univ _, ?_⟩,
+      mem_image_of_mem _ hyV⟩
+    intro ω' hω'
+    have hω : tsupport ((⟨_, hscale t ht.ne' ω'⟩ : TestFormOn (univ : Set (Euclid P)) n) :
+        DifferentialForm (Euclid P) n) ⊆ V := fun z hz =>
+      (smul_right_injective (Euclid P) ht.ne').mem_set_image.mp
+        (hω' (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
+          (continuous_const_smul t) hz))
+    have heq : ω' = ⟨_, hscale t⁻¹ (inv_ne_zero ht.ne') ⟨_, hscale t ht.ne' ω'⟩⟩ := by
+      apply Subtype.ext
+      funext x
+      simp [smul_smul, ht.ne']
+    rw [heq, hkey t ht, hV0 _ hω, mul_zero]
+  refine ⟨hmass, fun x => ?_, fun x θ => ?_⟩
+  -- (2) `s • x ∈ spt C ↔ x ∈ spt C`
+  · simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_univ, true_and]
+    refine ⟨fun h hx => h (hzero s hs x hx), fun h hsx => h ?_⟩
+    simpa [hs.ne'] using hzero s⁻¹ (inv_pos.mpr hs) _ hsx
+  -- (3) the density ratio at `s • x` and radius `ρ` is the ratio at `x` and radius `ρ / s`
+  · have hball : ∀ ρ : ℝ, (fun y => s • y) '' ball x (ρ / s) = ball (s • x) ρ := by
+      intro ρ
+      rw [image_smul, smul_ball hs.ne', Real.norm_of_nonneg hs.le, mul_div_cancel₀ ρ hs.ne']
+    have hs0 : ENNReal.ofReal (s ^ n) ≠ 0 := (ENNReal.ofReal_pos.mpr (pow_pos hs n)).ne'
+    have hratio : ∀ ρ : ℝ,
+        C.massOn (ball (s • x) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) =
+          C.massOn (ball x (ρ / s)) / (unitBallVolume n * ENNReal.ofReal ((ρ / s) ^ n)) := by
+      intro ρ
+      rw [← hball, hmass, show ρ ^ n = s ^ n * (ρ / s) ^ n by
+          rw [← mul_pow, mul_div_cancel₀ ρ hs.ne'],
+        ENNReal.ofReal_mul (pow_nonneg hs.le n), mul_left_comm (unitBallVolume n),
+        ENNReal.mul_div_mul_left _ _ hs0 ENNReal.ofReal_ne_top]
+    have hto : Tendsto (fun ρ : ℝ => ρ / s) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.mpr
+        ⟨?_, eventually_nhdsWithin_of_forall fun ρ hρ => div_pos hρ hs⟩
+      have h0 : Tendsto (fun ρ : ℝ => ρ / s) (𝓝 0) (𝓝 (0 / s)) := tendsto_id.div_const s
+      rw [zero_div] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    have hfrom : Tendsto (fun ρ : ℝ => s * ρ) (𝓝[>] 0) (𝓝[>] 0) := by
+      refine tendsto_nhdsWithin_iff.mpr
+        ⟨?_, eventually_nhdsWithin_of_forall fun ρ hρ => mul_pos hs hρ⟩
+      have h0 : Tendsto (fun ρ : ℝ => s * ρ) (𝓝 0) (𝓝 (s * 0)) := tendsto_id.const_mul s
+      rw [mul_zero] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    unfold HasMassDensity
+    refine and_congr_right fun _ => ⟨fun h => ?_, fun h => ?_⟩
+    · refine (h.comp hfrom).congr fun ρ => ?_
+      simp only [Function.comp_apply]
+      rw [hratio, mul_div_cancel_left₀ ρ hs.ne']
+    · exact (h.comp hto).congr fun ρ => (hratio ρ).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
