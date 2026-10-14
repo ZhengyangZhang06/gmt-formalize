@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coordinates for the products `[[(0,1)]] × T` and `{p} × T` (Simon 6.2.17, 6.2.21–2.22),
+`ℝ × ℝᴺ ≅ ℝᴺ⁺¹`, `(t, x) ↦ (t, x₁, …, x_N)`: the composite of `id × ofLp`, `Fin.consLinearEquiv`
+and `toLp` is a linear equivalence, continuous in finite dimension, with `L(1, 0) = e₀` and
+`‖L(0, x)‖ = ‖x‖`. -/
+theorem Submission.cmcdt_lpo_slice_coords : ∀ N : ℕ, ∃ L : (ℝ × Euclid N) ≃L[ℝ] Euclid (N + 1), (∀ (t : ℝ) (x : Euclid N), L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) ∧ L (1, 0) = EuclideanSpace.single 0 1 ∧ ∀ x : Euclid N, ‖L (0, x)‖ = ‖x‖ := by
+  intro N
+  -- `(t, x) ↦ (t, ofLp x) ↦ Fin.cons t (ofLp x) ↦ toLp 2 (Fin.cons t (ofLp x))`
+  let e : (ℝ × Euclid N) ≃ₗ[ℝ] Euclid (N + 1) :=
+    ((LinearEquiv.refl ℝ ℝ).prodCongr (WithLp.linearEquiv 2 ℝ (Fin N → ℝ))).trans
+      ((Fin.consLinearEquiv ℝ (fun _ : Fin (N + 1) => ℝ)).trans
+        (WithLp.linearEquiv 2 ℝ (Fin (N + 1) → ℝ)).symm)
+  -- `e` is continuous in finite dimension; (i) holds by unfolding the three maps
+  have hL : ∀ (t : ℝ) (x : Euclid N),
+      e.toContinuousLinearEquiv (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) :=
+    fun _ _ => rfl
+  refine ⟨e.toContinuousLinearEquiv, hL, ?_, fun x => ?_⟩
+  · -- (ii): compare coordinates, splitting the index into `0` and `j.succ`
+    rw [hL]
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp
+    · simp [Fin.succ_ne_zero]
+  · -- (iii): `‖L (0, x)‖² = ‖0‖² + ∑ⱼ ‖xⱼ‖² = ‖x‖²`
+    rw [hL, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq x, Fin.sum_univ_succ]
+    simp
+
+/-- **Slice homotopy identity in degree `0`** (Simon 6.2.21 without the `∂T` term).  For
+`β ∈ 𝒟⁰(ℝ^{N+1})`, `x ∈ ℝ^N` and the empty tuple `w = J ∘ v`,
+`∫₀¹ dβ(ι(t, x))(e₀) dt = β(ι(1, x))(w) − β(ι(0, x))(w)`, where `ι(t, x) = (t, x)`.
+With the coordinates `L(t, x) = ι(t, x)`, `L(1, 0) = e₀` of `cmcdt_lpo_slice_coords`, the path
+`φ(s) = β(L(s, x))(w)` is smooth with `φ′(s) = D[y ↦ β(y)(w)](L(s, x))(e₀)`, the single term
+`i = 0` of `exteriorDerivative_apply` (as `removeNth 0 (e₀, w) = w`); the fundamental theorem of
+calculus concludes. -/
+theorem Submission.cmcdt_lpo_slice_homotopy_zero : ∀ (N : ℕ) (β : TestFormOn (univ : Set (Euclid (N + 1))) 0) (x : Euclid N) (v : Fin 0 → Euclid N), ∫ t in (0 : ℝ)..1, exteriorDerivative (β : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = (β : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) - (β : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) := by
+  intro N β x v
+  obtain ⟨L, hL, hL1, -⟩ := Submission.cmcdt_lpo_slice_coords N
+  set ω : DifferentialForm (Euclid (N + 1)) 0 := (β : DifferentialForm (Euclid (N + 1)) 0)
+  set w : Fin 0 → Euclid (N + 1) := fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))
+  have hω : ContDiff ℝ (⊤ : ℕ∞) ω := β.property.1.1
+  -- `y ↦ ω y w` is `ω` followed by the continuous linear evaluation at `w`
+  have hωw : ContDiff ℝ (⊤ : ℕ∞) (fun y => ω y w) :=
+    (ContinuousAlternatingMap.apply ℝ (Euclid (N + 1)) ℝ w).contDiff.comp hω
+  -- chain rule along the path `s ↦ L (s, x)`, whose velocity is `L (1, 0)`
+  have hpath : ∀ s : ℝ, HasDerivAt (fun s : ℝ => L (s, x)) (L (1, 0)) s := fun s =>
+    L.hasFDerivAt.comp_hasDerivAt s ((hasDerivAt_id s).prodMk (hasDerivAt_const s x))
+  have hφ : ∀ s : ℝ, HasDerivAt (fun s : ℝ => ω (L (s, x)) w)
+      (fderiv ℝ (fun y => ω y w) (L (s, x)) (L (1, 0))) s := fun s =>
+    ((hωw.differentiable (by simp)) _).hasFDerivAt.comp_hasDerivAt s (hpath s)
+  -- in degree `0` the exterior derivative is the single term `i = 0`
+  have hpt : ∀ s : ℝ, exteriorDerivative ω (L (s, x)) (Fin.cons (L (1, 0)) w) =
+      fderiv ℝ (fun y => ω y w) (L (s, x)) (L (1, 0)) := by
+    intro s
+    rw [exteriorDerivative_apply ((hω.differentiable (by simp)) _)]
+    simp only [Nat.reduceAdd, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Int.reduceNeg,
+      Fin.val_eq_zero, pow_zero, one_smul, Finset.sum_singleton, Fin.removeNth_zero,
+      Fin.tail_cons, Fin.cons_zero]
+  have hderiv : deriv (fun s : ℝ => ω (L (s, x)) w) =
+      fun s => exteriorDerivative ω (L (s, x)) (Fin.cons (L (1, 0)) w) := by
+    funext s
+    rw [(hφ s).deriv, hpt]
+  have hsmooth : ContDiff ℝ (⊤ : ℕ∞) (fun s : ℝ => ω (L (s, x)) w) :=
+    hωw.comp (L.contDiff.comp (contDiff_id.prodMk contDiff_const))
+  -- fundamental theorem of calculus, then back to the coordinates of the statement
+  have key := intervalIntegral.integral_deriv_eq_sub' (a := 0) (b := 1) _ hderiv
+    (fun s _ => (hφ s).differentiableAt)
+    (hderiv ▸ (hsmooth.continuous_deriv (by simp)).continuousOn)
+  rw [hL1] at key
+  simpa only [hL] using key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
