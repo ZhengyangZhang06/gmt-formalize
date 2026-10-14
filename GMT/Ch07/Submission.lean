@@ -5316,6 +5316,135 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Push-forward of an integer multiplicity current by a `C¹` map** (Simon Ch. 6, 3.3–3.9, with
+the area formula of Ch. 3, 2.4–2.6).  Let `R = (M, θ, ξ)` be an integer multiplicity triple in the
+open `U` with `Hⁿ(M ∖ K) = 0` for a compact `K ⊆ U`, let `f` be `C¹` on an open `O ⊇ K` with
+`f(K) ⊆ U`, and let `Q(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ(x)` for `ω ∈ 𝒟ⁿ(U)`.  Replace `f`
+by a globally `Λ`-Lipschitz `C¹` map `φ` with `φ = f` and `Dφ = Df` on `K`, and cut
+`M₁ = M ∩ K` (with `∫_{M₁} θ < ∞`), up to an `Hⁿ`-null set, into disjoint bi-Lipschitz pieces
+`Gⱼ(Aⱼ)` on which `φ ∘ Gⱼ` either is bi-Lipschitz with injective derivative or has nowhere
+injective derivative.  On each piece `ξ ∘ Gⱼ = ±DGⱼ#e / J_{Gⱼ}` a.e., and the area formula turns
+the contribution of `Gⱼ(Aⱼ)` to `Q(ω)` into `∫_{Nⱼ} gⱼ ⟨ω, ηⱼ⟩ dHⁿ`, with
+`Nⱼ ⊆ φ(Gⱼ(Aⱼ)) ⊆ f(K) ⊆ U`, an integer `gⱼ ≠ 0` on `Nⱼ`, an orientation `ηⱼ` of `TNⱼ`, and
+`∫_{Nⱼ} |gⱼ| ≤ Λⁿ ∫_{Gⱼ(Aⱼ)} θ`.  As `|⟨β, ξ⟩| ≤ ‖β‖` a.e. on `M` and `‖Dφ‖ ≤ Λ`, the integrand
+`θ ⟨ω(φ) ∘ Dφ, ξ⟩` is `Hⁿ⌞M₁`-integrable, so `Q(ω) = Σⱼ ∫_{Nⱼ} gⱼ ⟨ω, ηⱼ⟩ dHⁿ` with
+`Σⱼ ∫_{Nⱼ} |gⱼ| ≤ Λⁿ ∫_{M₁} θ < ∞`; gluing the pieces gives an integer multiplicity triple
+representing `Q`. -/
+theorem Submission.dtc_bc_lc_pf_pushforward_isIntegerMultiplicity : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (Q : GeometricCurrentOn U n), IsOpen U → 0 < n → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → IsIntegerMultiplicity Q := by
+  intro hTL P n U K O R f Q hU _hn hK hKU hMK hO hKO hf hfK hQ
+  -- Step 1(b): a globally Lipschitz `C¹` map `φ` with `φ = f` and `Dφ = Df` on `K`
+  obtain ⟨φ, Λ, hφ, hφL, hφK⟩ :=
+    Submission.dtc_bc_lc_pfi_c1_cutoff_lipschitz P O K f hO hK hKO hf
+  have hφd : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  -- Step 1(a): `M₁ = M ∩ K` is Borel with `∫_{M₁} θ dHⁿ < ∞`
+  have hM₁ : MeasurableSet (R.carrier ∩ K) :=
+    R.measurableSet_carrier.inter hK.isClosed.measurableSet
+  have hθM₁ : ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ :=
+    R.locallyIntegrable_mult K hK hKU
+  -- Step 2: disjoint bi-Lipschitz pieces `Gⱼ(Aⱼ)` covering `M₁` up to a null set, on which
+  -- `φ ∘ Gⱼ` is bi-Lipschitz with injective derivative or has nowhere injective derivative
+  obtain ⟨G, A, κ, hGL, hA, hκ, hGκ, hGd, hGA, hGAM, hdisj, hnull, hφG⟩ :=
+    Submission.dtc_bc_lc_pfi_refined_bilipschitz_pieces P n (R.carrier ∩ K) φ hM₁
+      (R.rectifiable.mono inter_subset_left) hφd
+  choose L hL using hGL
+  have hGAR : ∀ j, G j '' A j ⊆ R.carrier := fun j => (hGAM j).trans inter_subset_left
+  -- Step 4: `ξ ∘ Gⱼ = ±DGⱼ#e / J_{Gⱼ}` a.e. on `Aⱼ`; Steps 5–8: the image pieces
+  -- `Nⱼ ⊆ φ(Gⱼ(Aⱼ))` with integer multiplicities `gⱼ` and orientations `ηⱼ`
+  have hpiece := fun j =>
+    Submission.dtc_bc_lc_pfi_piece_pushforward_image P n U R (G j) (A j) (L j) (κ j) φ Λ
+      (hL j) (hA j) (hκ j) (hGκ j) (hGd j) (hGAR j)
+      (ne_top_of_le_ne_top hθM₁ (lintegral_mono_set (hGAM j)))
+      (Submission.dtc_bc_lc_pfi_piece_orientation_sign P n U R (G j) (A j) (L j) (κ j) hU
+        (hL j) (hA j) (hκ j) (hGκ j) (hGd j) (hGAR j))
+      hφd hφL (hφG j)
+  choose N g η hN hNφ hNr hg hg0 hη hηT hgθ hNint using hpiece
+  -- Steps 9–11: glue the image pieces into one integer multiplicity triple in `U`
+  refine Submission.dtc_bc_lc_pfi_isIntegerMultiplicity_of_pieces hTL P n U N g η Q hU hN ?_
+    hNr hg hg0 hη hηT ?_ ?_
+  · -- `Nⱼ ⊆ φ(Gⱼ(Aⱼ)) ⊆ φ(K) = f(K) ⊆ U`
+    intro j y hy
+    obtain ⟨x, hx, rfl⟩ := hNφ j hy
+    have hxK : x ∈ K := (hGAM j hx).2
+    rw [(hφK x hxK).1]
+    exact hfK (mem_image_of_mem f hxK)
+  · -- `Σⱼ ∫_{Nⱼ} |gⱼ| ≤ Λⁿ Σⱼ ∫_{Gⱼ(Aⱼ)} θ = Λⁿ ∫_{⋃ⱼ Gⱼ(Aⱼ)} θ ≤ Λⁿ ∫_{M₁} θ < ∞`
+    have hle : ∑' j, ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n] ≤
+        (Λ : ℝ≥0∞) ^ n * ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+      calc ∑' j, ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n]
+          ≤ ∑' j, (Λ : ℝ≥0∞) ^ n * ∫⁻ x in G j '' A j, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+            ENNReal.tsum_le_tsum hgθ
+        _ = (Λ : ℝ≥0∞) ^ n * ∫⁻ x in ⋃ j, G j '' A j, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+            rw [ENNReal.tsum_mul_left, lintegral_iUnion hGA hdisj]
+        _ ≤ (Λ : ℝ≥0∞) ^ n * ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+            gcongr
+            exact iUnion_subset hGAM
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) hθM₁) hle
+  · -- `Q(ω) = ∫_{M₁} θ ⟨ω(φ) ∘ Dφ, ξ⟩ = Σⱼ ∫_{Gⱼ(Aⱼ)} θ ⟨ω(φ) ∘ Dφ, ξ⟩ = Σⱼ ∫_{Nⱼ} gⱼ ⟨ω, ηⱼ⟩`
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ω.property.1.1.continuous
+    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+    have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+    -- Step 1(c): `x ↦ θ(x) ⟨ω(φ(x)) ∘ Dφ(x), ξ(x)⟩` is `Hⁿ⌞M₁`-integrable, being bounded by
+    -- `C Λⁿ θ` (`|⟨β, ξ⟩| ≤ ‖β‖` a.e. on `M`, `‖β ∘ Dφ‖ ≤ ‖β‖ ‖Dφ‖ⁿ`, `‖Dφ‖ ≤ Λ`)
+    have hβ : Continuous fun x =>
+        ((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x) := by
+      have h := (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp
+        (hφ.continuous_fderiv one_ne_zero)).clm_apply (hωc.comp hφ.continuous)
+      simpa only [Function.comp_apply,
+        ContinuousAlternatingMap.compContinuousLinearMapCLM_apply] using h
+    have hθ : Measurable fun x => (R.mult x : ℝ) :=
+      (measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult
+    have hθi : Integrable (fun x => (R.mult x : ℝ)) (μHE[n].restrict (R.carrier ∩ K)) := by
+      refine ⟨hθ.aestronglyMeasurable, ?_⟩
+      show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂(μHE[n].restrict (R.carrier ∩ K)) < ∞
+      simp only [Real.enorm_natCast]
+      exact lt_top_iff_ne_top.mpr hθM₁
+    have hint : IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)))
+        (R.carrier ∩ K) μHE[n] := by
+      refine Integrable.mono' (hθi.const_mul (C * (Λ : ℝ) ^ n))
+        (hθ.aestronglyMeasurable.mul ?_) ?_
+      · exact Continuous.comp_aestronglyMeasurable₂
+          (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+          (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
+          (R.aestronglyMeasurable_orient.mono_set inter_subset_left) hβ.aestronglyMeasurable
+      · filter_upwards [ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients]
+          with x hx
+        obtain ⟨T, -, hT⟩ := hx
+        have h1 := (Submission.dtc_bc_lc_pfi_unitOrientation_algebra P n).2.1 _ T hT
+          (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x))
+        have h2 := ContinuousAlternatingMap.norm_compContinuousLinearMap_le
+          ((ω : DifferentialForm (Euclid P) n) (φ x)) (fderiv ℝ φ x)
+        rw [Fintype.card_fin] at h2
+        have h3 : ‖fderiv ℝ φ x‖ ^ n ≤ (Λ : ℝ) ^ n :=
+          pow_le_pow_left₀ (norm_nonneg _) (norm_fderiv_le_of_lipschitz ℝ hφL) n
+        rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm (C * (Λ : ℝ) ^ n)]
+        gcongr
+        exact h1.trans (h2.trans (mul_le_mul (hC _) h3 (by positivity) hC0))
+    calc Q ω = ∫ x in R.carrier ∩ K, (R.mult x : ℝ) * R.orient x
+          (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap
+            (fderiv ℝ φ x)) ∂μHE[n] := by
+          -- `Hⁿ(M ∖ K) = 0`, and `φ = f`, `Dφ = Df` on `M₁ ⊆ K`
+          rw [hQ ω, setIntegral_congr_set (ae_eq_set.mpr
+            ⟨by rw [sdiff_self_inter]; exact hMK,
+              by rw [sdiff_eq_empty.mpr inter_subset_left, measure_empty]⟩)]
+          refine setIntegral_congr_fun hM₁ fun x hx => ?_
+          simp only [(hφK x hx.2).1, (hφK x hx.2).2]
+      _ = ∫ x in ⋃ j, G j '' A j, (R.mult x : ℝ) * R.orient x
+          (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap
+            (fderiv ℝ φ x)) ∂μHE[n] :=
+          -- the pieces cover `M₁` up to an `Hⁿ`-null set
+          setIntegral_congr_set (ae_eq_set.mpr ⟨hnull,
+            by rw [sdiff_eq_empty.mpr (iUnion_subset hGAM), measure_empty]⟩)
+      _ = ∑' j, ∫ x in G j '' A j, (R.mult x : ℝ) * R.orient x
+          (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap
+            (fderiv ℝ φ x)) ∂μHE[n] :=
+          integral_iUnion hGA hdisj (hint.mono_set (iUnion_subset hGAM))
+      _ = ∑' j, ∫ y in N j, (g j y : ℝ) * η j y ((ω : DifferentialForm (Euclid P) n) y)
+          ∂μHE[n] :=
+          tsum_congr fun j => hNint j _ hωc.stronglyMeasurable
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
