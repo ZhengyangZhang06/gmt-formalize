@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def currentEval|def ConvergesWeakly|def blowUp|def dilation |def dilationCLM|namespace|^open|^import",
+        "theorem extraction_forall_of_eventually|theorem Countable.exists_eq_range|lemma Countable.exists_eq_range|theorem eventually_all_finite|theorem secondCountable_of_countable_discretization|theorem tendsto_one_div_add_atTop_nhds_zero_nat",
+        "dimred_tr_ibl_countable_tests|dimred_tr_ibl_diagonal_limit|dimred_tr_iterated_blowup_limit|dor_lmbs_testForm_countable_approx|rsd_mw_tfa_norm_props|cmr_abs_apply_le_massOn|idtp_convergesWeakly_massOn_le|dtc_bc_cz_blowUp_eval_dilation_ball",
+        "python3 /tmp/ibl-independent-audit-cfanfr71/verify_metadata.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ibl-independent-audit-cfanfr71/StandaloneContracts.lean",
+        "python3 /tmp/ibl-independent-audit-cfanfr71/verify_serial.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ibl-independent-audit-cfanfr71/ReusedCandidates.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-iterated-b-94298ffd19/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-iterated-b-94298ffd19/decomposition-v1.json",
+        "/tmp/ibl-independent-audit-cfanfr71/StandaloneContracts.lean",
+        "/tmp/ibl-independent-audit-cfanfr71/AssemblyWithPrerequisites.lean",
+        "/tmp/ibl-independent-audit-cfanfr71/AssemblyWithPrerequisites.log",
+        "/tmp/ibl-independent-audit-cfanfr71/ReusedCandidates.lean",
+        "/tmp/ibl-independent-audit-cfanfr71/metadata-results.json"
+      ],
+      "conclusion": "The pinned revisions and frozen contract bytes match, and the requested parent digest was independently reproduced. The definitions and cited library facts support the arguments. Source searches found no proposed declarations in the snapshot project or current project sources. DAG checks confirm five comparator-accepted reuses at string-identical frozen types and two unreserved names; all names are bare identifiers and dependencies are acyclic. All seven exact propositions elaborate without their implementations. The five reused proof bodies compile together and each depends only on propext, Classical.choice and Quot.sound. The two new proofs and exact selected parent assembly compile with precisely the declared prerequisites represented as audit axioms, without sorryAx. The split is appropriate: the countable-test criterion and diagonal selection, together with the reused facts and registered blowup_calculus dependency, establish this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "testform_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including openness, common compact support, and uniform approximation of both forms and exterior derivatives. Compact exhaustion, finite-dimensional covectors, finite-net coding of C(K,F), and dense-image selection provide a complete non-circular proof. Reuse preserves the accepted frozen type."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions match the prose. The coefficient vector explicitly uses the Euclidean norm via WithLp.toLp 2; its linearity proves the seminorm identities, coefficient bounds give operator-norm domination, and the resulting Lipschitz estimate proves continuity. No dimension restriction is missing. Accepted reuse is type-identical."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary domains, support regions and real r. The proof derives r ≥ 0, uses finite mass for conversion to toReal, and bounds both signed rescalings by r + ε before taking ε to zero. This covers r = 0 without assuming norm definiteness. Accepted reuse is type-identical."
+    },
+    {
+      "key": "countable_tests",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact quantifiers and finite ENNReal bounds match the prose. The test sequence is fixed independently of the currents. A common compact support fixes the radius and mass bound independently of ε; eventual support containment justifies ordinary current evaluation and linearity. The three error estimates prove convergence on every test form using exactly the three declared dependencies."
+    },
+    {
+      "key": "diagonal_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the type, including H3's quantifier order. Each row imposes finitely many eventual test, domain and mass conditions, permitting strictly increasing extraction. For fixed R, k ≥ max(R,k₀(R)) supplies the required bounds; squeezing test errors and applying countable_tests proves the diagonal limit. The checked parent assembly verifies all hypotheses for the specified blow-ups."
+    },
+    {
+      "key": "weak_limit_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact statement for arbitrary domains and B, including B = ∞. Eventual containment makes each fixed admissible form valid on the approximating domains. Continuity of ofReal and closedness of the order interval pass its evaluation bound to the limit; taking the supremum proves the mass bound. Accepted reuse is type-identical."
+    },
+    {
+      "key": "dilation_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both identities match the prose for every real radius and positive scale. Positive inverse scaling proves the preimage identity, and the explicit inverse z ↦ x + λz proves surjectivity onto the ball. Nonpositive radii are covered without an unstated hypothesis. Accepted reuse is type-identical."
+    }
+  ],
+  "required_changes": []
+}
