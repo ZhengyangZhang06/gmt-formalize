@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1",
+  "depth": 4,
+  "title": "Riesz–Markov–Kakutani representation of a vague limit on an open set",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, and (ν_j)_{j∈ℕ} Borel measures on ℝ^P with ν_j(K) < ∞ for every j and every compact K ⊆ U. Suppose that for every continuous f : ℝ^P → ℝ with compact support and tsupport f ⊆ U the real sequence (∫ f dν_j)_j converges. Then there is a Borel measure μ on ℝ^P with μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, and ∫ f dν_j → ∫ f dμ for every continuous f with compact support and tsupport f ⊆ U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 c)) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+  "lean_name": "cbr_vague_limit_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c-a1"
+}
