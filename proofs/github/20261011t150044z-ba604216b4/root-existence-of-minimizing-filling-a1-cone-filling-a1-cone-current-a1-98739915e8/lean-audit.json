@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "4596021ce47a800dbed575714e02f56d86e1b303320d4864ff5aaf2d2812f156",
+  "git_delta": {
+    "base_commit": "b20444b188158e00ca349082f6536d86ed9f7c49",
+    "candidate_commit": "3950455da2325084b78ef481c4e22feda4f9c37b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5675ce016e05c0e7ad10bcd93d4d05f1fc69cabf9fb04cc5322061301d11b538",
+    "source_sha256": "4eb416ec863a8765961f836d491aa18e1a12e58bcb754dcc2c278287f9c3bddf",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cone_current",
+      "statement": "∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), S.mass ≠ ∞ → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsCompact R.support ∧ R.boundary = S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
