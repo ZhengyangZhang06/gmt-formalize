@@ -469,6 +469,123 @@ theorem Submission.cbrz_finset_integral_hausdorff_zero : ∀ (P : ℕ) (F : Fins
   · rw [lintegral_finset]
     simp [Measure.hausdorffMeasure_zero_singleton]
 
+/-- A `0`-dimensional integer multiplicity current is a finite weighted point sum on `B ⊂⊂ U`
+(Simon 6.3.1 and the case `n = 0` of 6.8.2): `H⁰` gives every point mass `1` and `θ ≥ 1` on `M`,
+so `∫_{M ∩ closure B} θ dH⁰ < ∞` makes `M ∩ B` finite; the a.e. orientation condition holds at
+every point of `M`, so `ξ(p) = ±⟨·⟩` there.  Hence `S(ω) = Σ_{p ∈ M ∩ B} ±θ(p)⟨ω(p)⟩` when
+`spt ω ⊆ B`, and `Σ_{p ∈ M ∩ B} θ(p) = μ_R(M ∩ B) ≤ μ_R(B)`. -/
+theorem Submission.cbrz_imrep_zero_local_point_sum : ∀ (P : ℕ) (U B : Set (Euclid P)) (R : IMRep U 0) (S : GeometricCurrentOn U 0), R.Represents S → CompactlyContained B U → ∃ (N : ℕ) (w : ℕ → ℤ) (x : ℕ → Euclid P), (∀ l < N, x l ∈ B) ∧ (∀ l < N, w l ≠ 0) ∧ (∑ l ∈ Finset.range N, ((w l).natAbs : ℝ≥0∞)) ≤ R.measure B ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ B → S ω = ∑ l ∈ Finset.range N, (w l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (x l) (fun i => i.elim0) := by
+  have hCI := Submission.cbrz_finset_integral_hausdorff_zero
+  intro P U B R S hRS hB
+  classical
+  -- `M ∩ closure B` is finite: `n` of its points give `∫_{M ∩ closure B} θ dH⁰ ≥ n`
+  have hfinK : (R.carrier ∩ closure B).Finite := by
+    by_contra hinf
+    have hint := R.locallyIntegrable_mult (closure B) hB.1 hB.2
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt hint
+    obtain ⟨F', hF'sub, hF'card⟩ := Set.Infinite.exists_subset_card_eq hinf n
+    have h1 : (n : ℝ≥0∞) ≤ ∫⁻ x in R.carrier ∩ closure B, (R.mult x : ℝ≥0∞) ∂μHE[0] := by
+      calc (n : ℝ≥0∞) = ∑ x ∈ F', (1 : ℝ≥0∞) := by simp [hF'card]
+        _ ≤ ∑ x ∈ F', (R.mult x : ℝ≥0∞) := by
+          apply Finset.sum_le_sum
+          intro x hx
+          exact Nat.one_le_cast.mpr (R.mult_pos x (hF'sub hx).1)
+        _ = ∫⁻ x in (F' : Set (Euclid P)), (R.mult x : ℝ≥0∞) ∂μHE[0] :=
+          ((hCI P F' (fun _ => 0) _).2).symm
+        _ ≤ ∫⁻ x in R.carrier ∩ closure B, (R.mult x : ℝ≥0∞) ∂μHE[0] := lintegral_mono_set hF'sub
+    exact absurd (hn.trans_le h1) (lt_irrefl _)
+  -- the a.e. orientation condition holds at each `p ∈ M`, as `H⁰{p} = 1`
+  have hor : ∀ p ∈ R.carrier, ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt 0 R.carrier p Q ∧ IsUnitOrientationOf (R.orient p) Q := by
+    intro p hp
+    by_contra hcon
+    have h := R.orients
+    rw [ae_iff] at h
+    have h0 : (μHE[0].restrict R.carrier) {p} = 0 :=
+      measure_mono_null (fun z hz => by rw [mem_singleton_iff.mp hz]; exact hcon) h
+    rw [Measure.restrict_apply (measurableSet_singleton p),
+      inter_eq_left.mpr (singleton_subset_iff.mpr hp), Measure.euclideanHausdorffMeasure_zero,
+      Measure.hausdorffMeasure_zero_singleton] at h0
+    exact one_ne_zero h0
+  -- so `ξ(p) = ε(p)⟨·⟩` with `ε(p) = ±1`, the only family `Fin 0 → ℝᴾ` being empty
+  have hsign : ∀ p ∈ R.carrier, ∃ s : ℤ, (s = 1 ∨ s = -1) ∧
+      ∀ α : Covector (Euclid P) 0, R.orient p α = (s : ℝ) * α (fun i => i.elim0) := by
+    intro p hp
+    obtain ⟨Q, -, τ, -, -, hτ⟩ := hor p hp
+    have hτe : τ = fun i => i.elim0 := funext fun i => i.elim0
+    subst hτe
+    rcases hτ with h | h
+    · exact ⟨1, Or.inl rfl, fun α => by simp [h α]⟩
+    · exact ⟨-1, Or.inr rfl, fun α => by simp [h α]⟩
+  choose! ε hε1 hε using hsign
+  -- the finite set `G = M ∩ B` and its enumeration `e`
+  have hG : (R.carrier ∩ B).Finite := hfinK.subset (inter_subset_inter_right _ subset_closure)
+  set Gf := hG.toFinset
+  have hGfmem : ∀ p, p ∈ Gf ↔ p ∈ R.carrier ∩ B := fun p => hG.mem_toFinset
+  have hGfcoe : (Gf : Set (Euclid P)) = R.carrier ∩ B := hG.coe_toFinset
+  let e : ℕ → Euclid P := fun l => if h : l < Gf.card then (Gf.equivFin.symm ⟨l, h⟩ : Euclid P) else 0
+  have he : ∀ l < Gf.card, e l ∈ Gf := by
+    intro l hl
+    simp only [e, dite_eq_left hl]
+    exact (Gf.equivFin.symm ⟨l, hl⟩).2
+  have hsum : ∀ {β : Type} [AddCommMonoid β] (h : Euclid P → β),
+      ∑ l ∈ Finset.range Gf.card, h (e l) = ∑ p ∈ Gf, h p := by
+    intro β _ h
+    rw [Finset.sum_range]
+    have h' : ∀ l : Fin Gf.card, e l = (Gf.equivFin.symm l : Euclid P) := by
+      intro l
+      simp only [e, dite_eq_left l.isLt, Fin.eta]
+    simp_rw [h']
+    rw [Equiv.sum_comp Gf.equivFin.symm (fun p : Gf => h p)]
+    exact Finset.sum_coe_sort Gf h
+  have hnat : ∀ p ∈ R.carrier, (ε p * (R.mult p : ℤ)).natAbs = R.mult p := by
+    intro p hp
+    rcases hε1 p hp with h | h <;> simp [h]
+  -- `w_l = ε(x_l) θ(x_l)` at the points `x_l = e l` of `G`
+  refine ⟨Gf.card, fun l => ε (e l) * (R.mult (e l) : ℤ), e, ?_, ?_, ?_, ?_⟩
+  · intro l hl
+    exact ((hGfmem _).mp (he l hl)).2
+  · intro l hl
+    have hp := ((hGfmem _).mp (he l hl)).1
+    have hm := R.mult_pos _ hp
+    rcases hε1 _ hp with h | h <;> simp [h] <;> omega
+  -- `Σ_l |w_l| = Σ_{p ∈ G} θ(p) = μ_R(G) ≤ μ_R(B)`
+  · calc (∑ l ∈ Finset.range Gf.card, (((ε (e l) * (R.mult (e l) : ℤ)).natAbs : ℕ) : ℝ≥0∞))
+        = ∑ p ∈ Gf, (((ε p * (R.mult p : ℤ)).natAbs : ℕ) : ℝ≥0∞) :=
+          hsum (fun p => (((ε p * (R.mult p : ℤ)).natAbs : ℕ) : ℝ≥0∞))
+      _ = ∑ p ∈ Gf, (R.mult p : ℝ≥0∞) := by
+          refine Finset.sum_congr rfl fun p hp => ?_
+          rw [hnat p ((hGfmem p).mp hp).1]
+      _ = ∫⁻ x in (Gf : Set (Euclid P)), (R.mult x : ℝ≥0∞) ∂μHE[0] :=
+          ((hCI P Gf (fun _ => 0) _).2).symm
+      _ = R.measure (Gf : Set (Euclid P)) := by
+          have hmeas : MeasurableSet (Gf : Set (Euclid P)) := Gf.finite_toSet.measurableSet
+          rw [IMRep.measure, withDensity_apply _ hmeas, Measure.restrict_restrict hmeas,
+            inter_eq_left.mpr (by rw [hGfcoe]; exact inter_subset_left)]
+      _ ≤ R.measure B := measure_mono (by rw [hGfcoe]; exact inter_subset_right)
+  -- for `spt ω ⊆ B` the action integral over `M` reduces to the sum over `G`
+  · intro ω hω
+    rw [hRS ω, IMRep.action]
+    have hGsub : (Gf : Set (Euclid P)) ⊆ R.carrier := by rw [hGfcoe]; exact inter_subset_left
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier hGsub]
+    · rw [(hCI P Gf _ (fun _ => 0)).1]
+      symm
+      rw [hsum (fun p => ((ε p * (R.mult p : ℤ) : ℤ) : ℝ) *
+        (ω : DifferentialForm (Euclid P) 0) p (fun i => i.elim0))]
+      refine Finset.sum_congr rfl fun p hp => ?_
+      rw [hε p ((hGfmem p).mp hp).1]
+      push_cast
+      ring
+    · intro z hz
+      have hzB : z ∉ B := by
+        intro hzB
+        apply hz.2
+        rw [hGfcoe]
+        exact ⟨hz.1, hzB⟩
+      have hω0 : (ω : DifferentialForm (Euclid P) 0) z = 0 :=
+        image_eq_zero_of_notMem_tsupport (fun h => hzB (hω h))
+      simp [hω0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
