@@ -1413,6 +1413,200 @@ theorem Submission.polyhedral_approx_truncation_seq : SlicingTheorem → ∀ (P 
     intro x hx
     refine hKV (subset_tsupport _ fun h0 => hx ?_)
     simp [h0]
+/-- Mass estimate (Simon Ch. 6, 2.4–2.5): if `M(Y) < ∞` and `|ω(x)| ≤ C` everywhere (Euclidean
+coefficient norm) with `C > 0`, then `|Y(ω)| ≤ C · M(Y)`. -/
+theorem Submission.br_la_abs_apply_le_mul_mass :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U n) (ω : TestFormOn U n) (C : ℝ),
+      0 < C → (∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      Y.mass ≠ ∞ → |Y ω| ≤ C * Y.mass.toReal := by
+  intro P n U Y ω C hC hω hY
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- If `|η| ≤ C` pointwise, then `C⁻¹ η` is mass-admissible, hence `Y(η) ≤ C · M(Y)`.
+  have hone : ∀ η : TestFormOn U n,
+      (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C) →
+        Y η ≤ C * Y.mass.toReal := by
+    intro η hη
+    have hadm : C⁻¹ • η ∈ massAdmissibleOn U n U := by
+      refine ⟨(C⁻¹ • η).property.2, fun x => ?_⟩
+      change covectorEuclideanNorm (C⁻¹ • (η : DifferentialForm (Eucl P) n) x) ≤ 1
+      rw [hsmul, abs_of_pos (inv_pos.mpr hC), inv_mul_le_iff₀ hC, mul_one]
+      exact hη x
+    have hle : ENNReal.ofReal (Y (C⁻¹ • η)) ≤ Y.mass := Y.le_massOn hadm
+    rwa [ENNReal.ofReal_le_iff_le_toReal hY, map_smul, smul_eq_mul, inv_mul_le_iff₀ hC] at hle
+  -- Apply this to `ω` and to `-ω`, using `|-ω(x)| = |ω(x)|` and `Y(-ω) = -Y(ω)`.
+  have hneg := hone (-ω) fun x => by
+    change covectorEuclideanNorm (-(ω : DifferentialForm (Eucl P) n) x) ≤ C
+    rw [covectorEuclideanNorm_neg]
+    exact hω x
+  have hYneg : Y (-ω) = -Y ω := map_neg Y.toCurrent ω
+  rw [hYneg] at hneg
+  exact abs_le.mpr ⟨by linarith, hone ω hω⟩
+/-- **Test forms have bounded Euclidean coefficient norm** (Simon Ch. 6, 1.15 and 2.4; the
+finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `Pₖ(ω) → T(ω)`" in the proof of
+6.2, p. 169): for `ω ∈ 𝒟ⁿ(U)` there is `C > 0` with `|ω(x)| ≤ C` for all `x`.
+`α ↦ |α|` is continuous (a square root of a finite sum of squares of evaluations) and `ω` is
+smooth, so `x ↦ |ω(x)|` is continuous; it has compact support since `|0| = 0`.  Hence it is
+bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` works. -/
+theorem Submission.polyhedral_approx_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `α ↦ |α|` is continuous on `Λⁿ`: evaluations are continuous, and so are squares, finite
+  -- sums and the square root.
+  have hnorm : Continuous (covectorEuclideanNorm : Covector (Eucl P) n → ℝ) :=
+    Real.continuous_sqrt.comp <| continuous_finsetSum _ fun I _ =>
+      continuous_if_const _ (fun _ => (continuous_eval_const _).pow 2) fun _ => continuous_const
+  -- `x ↦ |ω(x)|` is continuous, since `ω` is smooth.
+  have hcont : Continuous fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) :=
+    hnorm.comp ω.property.1.1.continuous
+  -- `x ↦ |ω(x)|` vanishes where `ω` does, so it inherits the compact support of `ω`.
+  have hsupp : HasCompactSupport fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) :=
+    ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h => hx (by simp [h])
+  -- A continuous compactly supported real function is bounded by some `C₀ ≥ ‖|ω(0)|‖ ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ := hcont.bounded_above_of_compact_support hsupp
+  refine ⟨C₀ + 1, by linarith [norm_nonneg (covectorEuclideanNorm
+    ((ω : DifferentialForm (Eucl P) n) 0)), hC₀ 0], fun x => ?_⟩
+  linarith [Real.le_norm_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
+    hC₀ x]
+/-- Scales for the polyhedral approximation (Simon Ch. 6, 6.2, choice of `ρ_k ↓ 0`): for any real
+sequence `a` there are scales `ρ_k > 0` decreasing to `0` with `ρ_k a_k ≤ 1/(k+1)`. -/
+theorem Submission.polyhedral_approx_scale_seq :
+    ∀ a : ℕ → ℝ, ∃ ρ : ℕ → ℝ, (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧
+      ∀ k, ρ k * a k ≤ 1 / ((k : ℝ) + 1) := by
+  intro a
+  -- Weights `b_k = 1 + |a_k| ≥ 1`.
+  obtain ⟨b, hb⟩ : ∃ b : ℕ → ℝ, ∀ k, b k = 1 + |a k| := ⟨fun k => 1 + |a k|, fun _ => rfl⟩
+  have hb1 : ∀ k, 1 ≤ b k := fun k => by rw [hb]; exact le_add_of_nonneg_right (abs_nonneg _)
+  have hab : ∀ k, |a k| ≤ b k := fun k => by rw [hb]; exact le_add_of_nonneg_left zero_le_one
+  have hbpos : ∀ k, 0 < b k := fun k => one_pos.trans_le (hb1 k)
+  -- Scales `ρ_0 = 1/b_0` and `ρ_{j+1} = min(ρ_j, 1/((j+2) b_{j+1}))`.
+  obtain ⟨ρ, hρ0, hρs⟩ : ∃ ρ : ℕ → ℝ, ρ 0 = 1 / b 0 ∧
+      ∀ j : ℕ, ρ (j + 1) = min (ρ j) (1 / (((j : ℝ) + 2) * b (j + 1))) :=
+    ⟨fun k => Nat.rec (motive := fun _ => ℝ) (1 / b 0)
+      (fun j r => min r (1 / (((j : ℝ) + 2) * b (j + 1)))) k, rfl, fun _ => rfl⟩
+  -- Positivity, by induction.
+  have hpos : ∀ k, 0 < ρ k := by
+    intro k
+    induction k with
+    | zero => rw [hρ0]; exact one_div_pos.mpr (hbpos 0)
+    | succ j ih =>
+      rw [hρs]
+      exact lt_min ih (one_div_pos.mpr (mul_pos (by positivity) (hbpos _)))
+  -- `ρ_k ≤ 1/((k+1) b_k)`.
+  have hup : ∀ k, ρ k ≤ 1 / (((k : ℝ) + 1) * b k) := by
+    intro k
+    cases k with
+    | zero => rw [hρ0]; simp
+    | succ j =>
+      have hcast : ((j + 1 : ℕ) : ℝ) + 1 = (j : ℝ) + 2 := by push_cast; ring
+      rw [hρs, hcast]
+      exact min_le_right _ _
+  -- Hence `ρ_k ≤ 1/(k+1)`, since `b_k ≥ 1`.
+  have hle : ∀ k, ρ k ≤ 1 / ((k : ℝ) + 1) := fun k =>
+    (hup k).trans (one_div_le_one_div_of_le (by positivity)
+      (le_mul_of_one_le_right (by positivity) (hb1 k)))
+  refine ⟨ρ, hpos, antitone_nat_of_succ_le fun j => ?_, ?_, fun k => ?_⟩
+  · rw [hρs]
+    exact min_le_left _ _
+  · exact squeeze_zero (fun k => (hpos k).le) hle tendsto_one_div_add_atTop_nhds_zero_nat
+  · -- `ρ_k a_k ≤ ρ_k |a_k| ≤ |a_k| / ((k+1) b_k) ≤ b_k / ((k+1) b_k) = 1/(k+1)`.
+    have hk : (k : ℝ) + 1 ≠ 0 := by positivity
+    have hkb : 0 < ((k : ℝ) + 1) * b k := mul_pos (by positivity) (hbpos k)
+    calc ρ k * a k ≤ ρ k * |a k| := mul_le_mul_of_nonneg_left (le_abs_self _) (hpos k).le
+      _ ≤ 1 / (((k : ℝ) + 1) * b k) * |a k| :=
+        mul_le_mul_of_nonneg_right (hup k) (abs_nonneg _)
+      _ ≤ 1 / (((k : ℝ) + 1) * b k) * b k :=
+        mul_le_mul_of_nonneg_left (hab k) (one_div_pos.mpr hkb).le
+      _ = 1 / ((k : ℝ) + 1) := by field_simp [hk, (hbpos k).ne']
+
+/-- Simon Ch. 6, 6.2 (p. 169), "(1), (2) give `P_k(ω) → T(ω)`": if `X_k − Pc_k = ∂R_k + S_k`
+with `M(R_k) → 0` and `M(S_k) → 0`, then `Pc_k(ω) − X_k(ω) → 0` for every test form `ω`. -/
+theorem Submission.polyhedral_approx_flat_seq_tendsto :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (X Pc S : ℕ → GeometricCurrentOn U n)
+      (R : ℕ → GeometricCurrentOn U (n + 1)),
+      (∀ (k : ℕ) (ω : TestFormOn U n), X k ω - Pc k ω = (R k).boundary ω + S k ω) →
+      Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) →
+      ∀ ω : TestFormOn U n, Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0) := by
+  intro P n U X Pc S R hXPc hR hS ω
+  -- Uniform bounds `|ω| ≤ C₀` and `|dω| ≤ C₁`; note `∂R_k(ω) = R_k(dω)`.
+  obtain ⟨C₀, hC₀, hω⟩ := Submission.polyhedral_approx_testForm_covectorNorm_bounded P n U ω
+  obtain ⟨C₁, hC₁, hdω⟩ := Submission.polyhedral_approx_testForm_covectorNorm_bounded P (n + 1) U
+    (exteriorDerivativeTestOn U n ω)
+  -- `M(R_k)` and `M(S_k)` are eventually finite, and their real values tend to `0`.
+  have hRfin : ∀ᶠ k in atTop, (R k).mass ≠ ∞ :=
+    hR.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hSfin : ∀ᶠ k in atTop, (S k).mass ≠ ∞ :=
+    hS.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hRreal : Tendsto (fun k => (R k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hR
+  have hSreal : Tendsto (fun k => (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hS
+  have hbound :
+      Tendsto (fun k => C₁ * (R k).mass.toReal + C₀ * (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa using (hRreal.const_mul C₁).add (hSreal.const_mul C₀)
+  -- Eventually `|Pc_k(ω) − X_k(ω)| = |R_k(dω) + S_k(ω)| ≤ C₁ M(R_k) + C₀ M(S_k)`; squeeze.
+  refine squeeze_zero_norm' ?_ hbound
+  filter_upwards [hRfin, hSfin] with k hRk hSk
+  rw [Real.norm_eq_abs, abs_sub_comm, hXPc k ω, GeometricCurrentOn.boundary_apply]
+  exact (abs_add_le _ _).trans (add_le_add
+    (Submission.br_la_abs_apply_le_mul_mass P (n + 1) U (R k) (exteriorDerivativeTestOn U n ω)
+      C₁ hC₁ hdω hRk)
+    (Submission.br_la_abs_apply_le_mul_mass P n U (S k) ω C₀ hC₀ hω hSk))
+
+/-- Simon Ch. 6, 6.2 (p. 169), first paragraph of the proof, for a sequence `X_k` of integer
+multiplicity currents with `M(X_k) + M(∂X_k) < ∞`: deforming `X_k` at a scale `ρ_k ↓ 0` with
+`ρ_k (M(X_k) + M(∂X_k)) ≤ 1/(k+1)` gives lattice chains `Pc_k` with integer coefficients and
+`Pc_k(ω) − X_k(ω) → 0` for every test form `ω`. -/
+theorem Submission.polyhedral_approx_finite_mass_seq : DeformationTheorem → ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ X : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), (∀ k, IsIntegerMultiplicity (X k)) → (∀ k, (X k).mass + (X k).boundary.mass < ∞) → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℤ) (Pc : ℕ → GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), (∀ k, 0 < ρ k) ∧ Antitone ρ ∧ Tendsto ρ atTop (𝓝 0) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pc k)) ∧ ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Tendsto (fun k => Pc k ω - X k ω) atTop (𝓝 0) := by
+  intro hDT m ℓ hℓ X hXint hXfin
+  -- The constant `C = C(m + 1, ℓ)` of the deformation theorem.
+  obtain ⟨C, hC⟩ := hDT m ℓ hℓ
+  -- Scales `ρ_k ↓ 0` with `ρ_k a_k ≤ 1/(k+1)`, where `a_k = M(X_k) + M(∂X_k) < ∞`.
+  obtain ⟨a, ha⟩ : ∃ a : ℕ → ℝ, ∀ k, a k = ((X k).mass + (X k).boundary.mass).toReal :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨ρ, hρpos, hρanti, hρlim, hρa⟩ := Submission.polyhedral_approx_scale_seq a
+  -- Deform `X_k` at scale `ρ_k`: `X_k − Pc_k = ∂R_k + S_k`, `M(R_k) ≤ C ρ_k M(X_k)`,
+  -- `M(S_k) ≤ C ρ_k M(∂X_k)`, and the coefficients are integers as `X_k` is integer multiplicity.
+  choose Pc β' R S hlat hXPc _ _ hR hS _ _ hint _ using
+    fun k => hC (X k) (hXfin k) (ρ k) (hρpos k)
+  choose β hβ using fun k => (hint k (hXint k)).1
+  refine ⟨ρ, β, Pc, hρpos, hρanti, hρlim, fun k => ?_, ?_⟩
+  · have hβk : β' k = fun F => (β k F : ℝ) := funext (hβ k)
+    simpa only [hβk] using hlat k
+  -- `M(R_k), M(S_k) ≤ C ρ_k a_k ≤ C/(k+1) → 0`; conclude by the flat convergence lemma.
+  have hmass : ∀ k (x : ℝ≥0∞), x ≤ (X k).mass + (X k).boundary.mass →
+      (C : ℝ≥0∞) * ENNReal.ofReal (ρ k) * x ≤ C * ENNReal.ofReal (1 / ((k : ℝ) + 1)) := by
+    intro k x hx
+    have hsum : (X k).mass + (X k).boundary.mass = ENNReal.ofReal (a k) := by
+      rw [ha, ENNReal.ofReal_toReal (hXfin k).ne]
+    calc (C : ℝ≥0∞) * ENNReal.ofReal (ρ k) * x
+        ≤ C * ENNReal.ofReal (ρ k) * ENNReal.ofReal (a k) :=
+          mul_le_mul_right (hsum ▸ hx) _
+      _ = C * ENNReal.ofReal (ρ k * a k) := by
+          rw [mul_assoc, ENNReal.ofReal_mul (hρpos k).le]
+      _ ≤ C * ENNReal.ofReal (1 / ((k : ℝ) + 1)) :=
+          mul_le_mul_right (ENNReal.ofReal_le_ofReal (hρa k)) _
+  have hlim : Tendsto (fun k : ℕ => (C : ℝ≥0∞) * ENNReal.ofReal (1 / ((k : ℝ) + 1))) atTop
+      (𝓝 0) := by
+    have h := ENNReal.Tendsto.const_mul
+      (ENNReal.tendsto_ofReal tendsto_one_div_add_atTop_nhds_zero_nat)
+      (Or.inr (ENNReal.coe_ne_top (r := C)))
+    rwa [ENNReal.ofReal_zero, mul_zero] at h
+  exact Submission.polyhedral_approx_flat_seq_tendsto _ _ _ X Pc S R hXPc
+    (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun k => (hR k).trans (hmass k _ le_self_add))
+    (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun _ => zero_le)
+      fun k => (hS k).trans (hmass k _ le_add_self))
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 

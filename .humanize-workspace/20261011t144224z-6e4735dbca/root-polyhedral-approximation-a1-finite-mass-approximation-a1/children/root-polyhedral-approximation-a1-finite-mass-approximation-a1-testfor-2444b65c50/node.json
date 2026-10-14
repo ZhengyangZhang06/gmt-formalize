@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1",
+  "parent_id": "root.polyhedral_approximation-a1.finite_mass_approximation-a1",
+  "depth": 3,
+  "title": "Every test form has a finite Euclidean coefficient sup norm",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set and let ω ∈ Dⁿ(U) (a TestFormOn U n: a smooth (ContDiff ℝ ∞), compactly supported n-form on ℝ^P with tsupport ω ⊆ U). Then there is a real number C > 0 such that |ω(x)| ≤ C for every x ∈ ℝ^P, where |α| = covectorEuclideanNorm α = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} is Simon's Euclidean coefficient norm.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C",
+  "lean_name": "polyhedral_approx_testForm_covectorNorm_bounded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-finite-mass-approximation-a1-testfor-2444b65c50-a1"
+}
