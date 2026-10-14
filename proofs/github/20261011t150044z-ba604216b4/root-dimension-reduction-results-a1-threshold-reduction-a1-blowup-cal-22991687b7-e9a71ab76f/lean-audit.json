@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "da6db9e93c2419572a68d15c086e8f5040d47c257320f8d6819b432b92766d72",
+  "git_delta": {
+    "base_commit": "b2ed7d3988032d7349a205758e17e6705dc6875c",
+    "candidate_commit": "cf30ddd24411055a652425b440e9431d9bdeae29",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_bc_currentEval_blowUp",
+    "diff_sha256": "2e79fb829c040dd492babf3bd97bd3c4758a67db0c4b41b741db31d302af8076",
+    "source_sha256": "656125f0db78601d4ca9f95a4822663aa968fe5793e268126d236a31836ec783",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_bc_currentEval_blowUp",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
