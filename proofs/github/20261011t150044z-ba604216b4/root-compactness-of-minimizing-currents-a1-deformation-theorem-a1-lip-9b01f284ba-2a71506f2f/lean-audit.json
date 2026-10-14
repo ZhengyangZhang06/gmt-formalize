@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6b25e4565e495458b5ac8950c32294d5ded482e9efff9501c415998e3a6ce98f",
+  "git_delta": {
+    "base_commit": "b07648c4ed4f4995911ac09fc4c8d586c633b24d",
+    "candidate_commit": "0c3f4aa30efa4767c522b0e4d3b765b9598b22fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_tk_bounded_current",
+    "diff_sha256": "6c362bf7e838cd0647a30638dc338e7ec8cc0ee30b621878188ceca98b0cdae1",
+    "source_sha256": "6e83875b75afc5ac9bdbac2f00f86e381794c2ce056d41961be38e23052c4513",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_tk_bounded_current",
+      "statement": "∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
