@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "boundary_affinePushforward|restrictDomain_apply|zeroRegion|support_subset_domain",
+        "ext_of_integral_eq_on_compactlySupported|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|withDensity_apply|withDensity_indicator|withDensity_congr_ae|theorem restrict_map|euclideanHausdorffMeasure_smul₀|tendsto_integral_filter_of_dominated_convergence",
+        "extraction_of_frequently_atTop|theorem IsCompact.tendsto_subseq|lemma IsCompact.tendsto_subseq|exists_cthickening_subset_open",
+        "limsup_comp",
+        "idtp_fons_cc_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_class_independent_audit_nbevtw0i/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees",
+        "/tmp/cone_class_independent_audit_nbevtw0i/reuse_checks.json",
+        "/tmp/cone_class_independent_audit_nbevtw0i/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes this selected parent, including all M1–M9. Project and package pins match. The dependency graph, including reused dependency closures, is acyclic and has no reliance on the selected theorem or its ancestors. All names are bare identifiers; the six fresh names have no reservation matches in the DAG or 1089 registered worktree Submission files. All six reused types are identical to their accepted contracts; verified source comparisons and comparator evidence confirm compatibility and only standard permitted axioms. The independent Lean assembly check passed: all twelve exact child propositions elaborated without their implementations, and the exact frozen parent followed using only proposed child assumptions and standard axioms. No matrix-unit construction occurs. The pinned withDensity and change-of-variables results support arbitrary densities without an omitted measurability hypothesis. Public background was cross-checked against [Simon, Chapter 7 §3](https://web.stanford.edu/class/math285/ts-gmt#page=98)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "ambient_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All nine clauses match their quantified hypotheses, including arbitrary real ball radii. The identity chart, explicit affine inverse, norm identities, and measure map/restriction formulas prove the exact proposition without circular reliance."
+    },
+    {
+      "key": "cycle_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The registered scaling dependency supplies minimality and the representing measure. The proof independently establishes boundary vanishing through restriction and affine push-forward, then explicitly transports both current and representation along the domain equality."
+    },
+    {
+      "key": "density_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DEM is included explicitly with its full hypotheses. The finite indicator limit identifies the limsup along the nontrivial filter; ofReal/toReal cancellation, withDensity_congr_ae and withDensity_indicator establish precisely the stated measure equality."
+    },
+    {
+      "key": "monotonicity_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both parts match the prose. Positive radii and compact containment place the relevant support point inside U. The monotone-limit argument proves the lower bounds; unbounded growth or local nullity proves the mass dichotomy, and MON's finite density gives both directions of B3."
+    },
+    {
+      "key": "tangent_measures",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers support and off-support cases, including construction of the zero representation. Localization gives eventual equality of test integrals; DTC and registered dependencies provide the limiting minimizing cycle and homogeneous ENNReal limsup. Part B is a justified specialization of A."
+    },
+    {
+      "key": "positive_scale_family",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All seven clauses match. Finite bounded seed mass justifies the barycenter and dominated convergence. Mass and barycenter recover parameters; compactness and uniqueness of vague limits prove domain recovery. The arbitrary-density homogeneity argument and transferred lower bound include the necessary positivity and radius margins."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type. Pointwise duality and the Lusin/extension/mollification argument establish both mass inequalities; local regularity then establishes the support characterization and representation independence. No parent conclusion is used."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type. The test-form correspondence proves scaling for arbitrary W; the rescaled triple satisfies the representation fields, and inverse push-forward carries competitors, boundaries and supports correctly to prove minimality."
+    },
+    {
+      "key": "cone_measure_homogeneous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type, including degree zero. Hausdorff scaling constructs the rescaled representation; the cone identity makes it represent the same current, and accepted measure uniqueness gives the required Borel-set homogeneity."
+    },
+    {
+      "key": "blowup_limit_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type. Degree zero is handled explicitly. In positive degree, eventual domain containment makes evaluation on dω a vanishing boundary evaluation; weak convergence then gives C(dω)=0 for every test form."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type. Local finiteness supplies the hypotheses of the accepted tangent-locality result. The restricted triple retains its orientation, its action defines a continuous current, and the weight equals the Borel restriction."
+    },
+    {
+      "key": "withdensity_dilate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse at the identical accepted type. The accepted change-of-variables contract applies to arbitrary ENNReal-valued functions, so no measurability assumption is missing. Measurability of the image set and cancellation of finite positive scaling factors complete the proof."
+    }
+  ],
+  "required_changes": []
+}

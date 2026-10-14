@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.monotonicity_bounds-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent step 1(c),(d) and step 4(b),(c) ((c1)–(c3)); Simon 7.3.1(1) and its proof (chapter-07.txt lines 302–310 and 326–330: the monotonicity formula 4.7 of Ch. 4 gives existence and upper semicontinuity of Θ), and Simon 7.3.3, proof of 3.3(1), (2), (4) and (11) (lines 420–470: density bounds for T and for every member of 𝒯).
+Conventions. ω_n := unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n; for n ≥ 1 it satisfies 0 < ω_n < ∞ (nonempty open bounded set). For τ > 0, ofReal(τ^n) ∈ (0, ∞). All divisions in [0, ∞] below are by such finite nonzero quantities, so the usual cancellations hold (ENNReal.div_mul_cancel, ENNReal.mul_div_mul_left).
+Part (A).
+A1. Apply (MON) to P, n, d, U, N, T; its hypotheses are among ours. Part (i) with our compact K ⊆ U gives Λ ≥ 0 such that, whenever closedBall p ρ ⊆ K, f_p(τ) := ofReal(e^{Λτ}/τ^n)·M_{B_τ(p)}(T) is nondecreasing on (0, ρ). Part (iii) gives Θ with HasMassDensity T q (Θ q) for all q ∈ U, and part (iv) gives 1 ≤ θ whenever q ∈ spt T and HasMassDensity T q θ. Fix this Λ; it depends only on K.
+A2. Let p, σ, ρ be as in (A). Since 0 < σ < ρ, p ∈ closedBall p ρ ⊆ K ⊆ U. By the sibling im_mass_measure (Submission.dimred_im_mass_measure; U open, R represents T), part (b): p ∈ U and R.measure(B_ε(p)) ≠ 0 for every ε > 0 give p ∈ spt T; part (a): M_{B_τ(p)}(T) = R.measure(B_τ(p)) for every τ ∈ (0, ρ) (B_τ(p) is open and ⊆ closedBall p ρ ⊆ U).
+A3. (Limit at 0⁺.) HasMassDensity T p Θ(p) means 0 ≤ Θ(p) and q(τ) := M_{B_τ(p)}(T)/(ω_n·ofReal(τ^n)) → ofReal Θ(p) as τ → 0⁺. For τ > 0, ofReal(e^{Λτ}/τ^n) = ofReal(e^{Λτ})/ofReal(τ^n) (ENNReal.ofReal_div_of_pos), so f_p(τ) = ofReal(e^{Λτ})·ω_n·q(τ). As τ → 0⁺, ofReal(e^{Λτ}) → ofReal(e^0) = 1 (continuity), hence f_p(τ) → ω_n·ofReal Θ(p) (ENNReal.Tendsto.mul and Tendsto.const_mul; all limits are finite).
+A4. (Monotone lower bound.) For τ ∈ (0, σ], f_p(τ) ≤ f_p(σ) because f_p is nondecreasing on (0, ρ) and σ < ρ. The set (0, σ] belongs to 𝓝[>]0, so letting τ → 0⁺ (le_of_tendsto) gives ω_n·ofReal Θ(p) ≤ f_p(σ). By A1 (iv) with p ∈ spt T, Θ(p) ≥ 1, so ω_n ≤ ω_n·ofReal Θ(p) ≤ f_p(σ) = ofReal(e^{Λσ}/σ^n)·R.measure(B_σ(p)).
+A5. Multiply both sides by ofReal(e^{−Λσ}σ^n) = ofReal(e^{−(Λσ)})·ofReal(σ^n). Since ofReal(e^{−Λσ}σ^n)·ofReal(e^{Λσ}/σ^n) = ofReal(1) = 1 (ENNReal.ofReal_mul, Real.exp_neg), we obtain ofReal(e^{−(Λσ)})·(ω_n·ofReal(σ^n)) ≤ R.measure(B_σ(p)). This proves (A).
+Part (B). Let S, R be as in (B).
+B0. ((MON) for S.) Apply (MON) with P, n, d := P, U = N := ℝ^P and T := S: 1 ≤ n ≤ P ≤ P; ℝ^P is open; IsEmbeddedSubmanifold 2 P univ by the sibling ambient_calculus (1); (closure univ ∖ univ) ∩ univ = ∅; univ ∩ univ = univ, so IsMinimizingIn S (univ ∩ univ) and spt S ⊆ univ ∩ univ; ∂S = 0. It gives: (ii) since N = univ, for every w and every R₀ (B_{R₀}(w) ⊆ univ), τ ↦ ofReal(1/τ^n)·M_{B_τ(w)}(S) is nondecreasing on (0, R₀); (iii) Θ_S with HasMassDensity S w (Θ_S w) for every w; (iv) 1 ≤ θ for w ∈ spt S and HasMassDensity S w θ. By im_mass_measure with U = univ: M_W(S) = R.measure(W) for every open W, and w ∈ spt S ⟺ R.measure(B_ε(w)) ≠ 0 for all ε > 0.
+B1. Let w satisfy R.measure(B_ε(w)) ≠ 0 for all ε > 0; then w ∈ spt S by B0. Let ρ > 0 and R₀ := ρ + 1. Exactly as in A3–A5 with Λ = 0 (ofReal(1/τ^n) = ofReal(e^{0·τ}/τ^n)): g(τ) := ofReal(1/τ^n)·R.measure(B_τ(w)) is nondecreasing on (0, ρ + 1), tends to ω_n·ofReal Θ_S(w) ≥ ω_n as τ → 0⁺, hence ω_n ≤ g(ρ), i.e. ω_n·ofReal(ρ^n) ≤ R.measure(B_ρ(w)).
+B2. If some w has R.measure(B_ε(w)) ≠ 0 for all ε > 0, then by B1, R.measure(ℝ^P) ≥ R.measure(B_ρ(w)) ≥ ω_n·ofReal(ρ^n) for every ρ > 0; as ω_n > 0 and ρ^n → ∞ (n ≥ 1), R.measure(ℝ^P) = ∞. Otherwise every w has ε_w > 0 with R.measure(B_{ε_w}(w)) = 0; B_{ε_w}(w) is a neighbourhood of w and ℝ^P is second countable, so R.measure(ℝ^P) = 0 (measure_null_of_locally_null with s = univ). Hence R.measure(univ) = 0 ∨ R.measure(univ) = ∞.
+B3 (⇒). Assume HasMassDensity S w θ: 0 ≤ θ and M_{B_ρ(w)}(S)/(ω_n·ofReal(ρ^n)) → ofReal θ as ρ → 0⁺. By B0, M_{B_ρ(w)}(S) = R.measure(B_ρ(w)) for every ρ (balls are open), so the ratio formed with R.measure tends to ofReal θ; along the nontrivial filter 𝓝[>]0 its limsup is ofReal θ (Filter.Tendsto.limsup_eq), and (ofReal θ).toReal = θ because θ ≥ 0 (ENNReal.toReal_ofReal).
+B3 (⇐). Assume θ = (limsup …).toReal. By B0 (iii), HasMassDensity S w (Θ_S w), so by (⇒) Θ_S w = (limsup …).toReal = θ. Hence HasMassDensity S w θ. ∎
+
+## Key steps
+
+1. (MON)(i),(iii),(iv) at p ∈ spt T: the nondecreasing quantity ofReal(e^{Λτ}/τ^n)·M_{B_τ(p)}(T) tends to ω_nΘ(p) ≥ ω_n as τ → 0⁺, so it is ≥ ω_n at every σ < ρ; im_mass_measure turns mass into weight and measure-support into spt T.
+2. For minimizing cycles of ℝ^P, (MON) applies with U = N = ℝ^P (ambient_calculus (1)); part (ii) gives the bound with Λ = 0 at every radius.
+3. The bound ω_nρ^n forces infinite total mass at a support point; with no support point the weight is locally null, hence zero.
+4. HasMassDensity is convergence of the ratio, so θ is the toReal of the limsup; (iii) supplies the converse.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I -c json.load(local-references/123e8435b4a2469b/manifest.json); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `python3 scan of dag.json lean_statement fields for 'BoundaryVanishes (blowUp', 'blowUp', 'restrict', 'withDensity', 'map (dilation', 'IsEmbeddedSubmanifold 2 (n + k) univ', 'HasCompactSupport f → ∫', with status, candidate_commit and depends_on of each match`
+- `python3 extraction of subproblem.lean_statement/natural_proof/proof_key_steps from the parent-child-handoff.json of the six reused accepted nodes; isolated-comparator-result.json of borel-restriction-a1 and of blowup_limit_cycle (node dir ...-34a94daa02)`
+- `grep -n '^theorem|^def|^structure|^instance' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,AffineCurrentPushforward,Mass}.lean; sed -n 20,120p Chapter03/Rectifiable.lean`
+- `grep -rn 'ext_of_integral_eq_on_compactlySupported|Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|theorem restrict_map|measure_null_of_locally_null|extraction_of_frequently_atTop|IsCompact.tendsto_subseq|continuous_of_dominated|tendsto_integral_filter_of_dominated_convergence|euclideanHausdorffMeasure_smul₀|ext_of_forall_integral_eq' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -c 'idtp_fons_cc_\|idtp_fcc_' dag.json; grep -rl nodes/; grep -rl --include=Submission.lean ../.swarm-worktrees/*/gmt-ch07/GMT/Ch07/; git log --all -S idtp_fons_cc_ (all empty)`
+- `sed -n 300,330p and 420,535p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt (Simon 7.3.1 and the proof of 7.3.3)`
+- `lake env lean /tmp/ccd_k7q2/final/Types.lean; lake env lean /tmp/ccd_k7q2/final/AssemblyAx.lean (#print axioms); lake env lean /tmp/ccd_k7q2/final/AC.lean, DR.lean, CR.lean, TMB.lean`
+- `python3 replay of Runtime._dependency_problem, Runtime._topological and Runtime._existing_lean_name_problem on /tmp/ccd_k7q2/final/subproblems_final.json against dag.json (updated_at 2026-10-13T19:24:44Z)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4fcbfb5d62/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/tmp/ccd_k7q2/final/Types.lean`
+- `/tmp/ccd_k7q2/final/AssemblyAx.lean`
+- `/tmp/ccd_k7q2/final/AC.lean`
+- `/tmp/ccd_k7q2/final/DR.lean`
+- `/tmp/ccd_k7q2/final/CR.lean`
+- `/tmp/ccd_k7q2/final/TMB.lean`
+
+Pins match: manifest project b4d606db1 = workspace HEAD, Mathlib 25730c7c; SimonGMT 2b36630; the snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Reusable accepted declarations (dag.json; candidate commits present locally; isolated comparator passed): dimred_im_mass_measure (01ae2c59), dtc_blowUp_scaling (a94d596c), cone_current_imrep_measure_smul_image (e183b985), idtp_tpf_blowUp_limit_boundaryVanishes (f498a8ef; exactly the parent's (F7)), dor_lmb_imrep_restrict_current (90d679af; Borel restriction of an IMRep with weight μ⌞A, used for 3(h)) and dimred_cs_mi_withDensity_dilate (fc55b748; n-homogeneity of Hⁿ.withDensity f, used for step 14). Their types are copied byte for byte. No accepted or library declaration states the ambient-submanifold fact, the dilation calculus of rescaled measures, (F9) from DEM, the monotonicity consequences, the tangent-measure statement or the positive-scale family, so these enter as the six fresh children (fresh idtp_fons_cc_ names occur nowhere). Library facts used in the child proofs: SimonGMT GeometricCurrentOn.boundary_affinePushforward (Chapter06/AffineCurrentPushforward.lean:188), restrictDomain_apply, zeroRegion and support (CurrentLocalEquality.lean), massOn (Mass.lean:68), countablyRectifiable_of_measure_zero (Chapter03/Rectifiable.lean:45). Snapshot Mathlib: Measure.ext_of_integral_eq_on_compactlySupported (RieszMarkovKakutani/Real.lean:412), Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Measure/Regular.lean:1183), MeasurableEmbedding.restrict_map (Measure/Restrict.lean:890), measure_null_of_locally_null (OuterMeasure/Basic.lean:150), extraction_of_frequently_atTop (AtTopBot/Basic.lean:114), IsCompact.tendsto_subseq (Topology/Sequences.lean:298), tendsto_integral_filter_of_dominated_convergence, euclideanHausdorffMeasure_smul₀ (Euclidean/Volume/Measure.lean:152). Lean: all 12 types elaborate. The parent's frozen type compiles from the child types (stated as axioms) and uses exactly the six new children plus dimred_im_mass_measure, dtc_blowUp_scaling, dor_lmb_imrep_restrict_current and the standard axioms. ambient_calculus and density_representation are fully proved; cycle_rescale is proved from its siblings' frozen types; tangent_measures (B) is derived from (A). The runtime replay accepts the split.
