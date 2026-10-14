@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1.multiplier_limit-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.cutoff_defect_bound-a1",
+  "depth": 4,
+  "title": "Dominated convergence for the bounded continuous multipliers χ(g_j) against an integrable density",
+  "statement": "For every P ∈ ℕ, every measure ν on ℝ^P, every ν-integrable F : ℝ^P → ℝ, every set K ⊆ ℝ^P with F(x) = 0 for every x ∉ K, every function f : ℝ^P → ℝ, every sequence (g_j)_{j∈ℕ} of measurable functions ℝ^P → ℝ with g_j(x) → f(x) for every x ∈ K, and every continuous χ : ℝ → ℝ with |χ(s)| ≤ 1 for all s: ∫ χ(g_j(x))·F(x) dν(x) → ∫ χ(f(x))·F(x) dν(x) as j → ∞ (Bochner integrals).",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Eucl P)) (F : Eucl P → ℝ) (K : Set (Eucl P)) (f : Eucl P → ℝ) (g : ℕ → Eucl P → ℝ) (χ : ℝ → ℝ), Integrable F ν → (∀ x, x ∉ K → F x = 0) → (∀ j, Measurable (g j)) → (∀ x ∈ K, Tendsto (fun j => g j x) atTop (𝓝 (f x))) → Continuous χ → (∀ s, |χ s| ≤ 1) → Tendsto (fun j => ∫ x, χ (g j x) * F x ∂ν) atTop (𝓝 (∫ x, χ (f x) * F x ∂ν))",
+  "lean_name": "slicing_mb_cdb_multiplier_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-cutoff-defect-bound-a1-multiplier-limit-a1-a1"
+}

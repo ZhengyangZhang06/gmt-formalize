@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1.coord_sum_wedge-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+  "depth": 4,
+  "title": "Coordinates of a combination of coordinate wedges: the J-coordinate of Σ_I c_I·dx^I is c_J (dx^I(e_J) = δ_IJ)",
+  "statement": "Let P, k ∈ ℕ. Write ℝ^P = Eucl P = EuclideanSpace ℝ (Fin P) and b_i := EuclideanSpace.single i 1 (i ∈ Fin P) for the standard basis. Let SimonMultiIndex k P = Fin k ↪o Fin P be the finite type of strictly increasing multi-indices (order embeddings). For I ∈ SimonMultiIndex k P let dx^I := wedgeCovectors k (fun j ↦ EuclideanSpace.proj (I j)) ∈ Covector (Eucl P) k be the coordinate k-covector dx^{I(0)} ∧ ⋯ ∧ dx^{I(k−1)}, where EuclideanSpace.proj i is the i-th coordinate functional. For a k-covector γ and J ∈ SimonMultiIndex k P let euclideanCovectorCoordinate γ J := γ(b_{J(0)}, …, b_{J(k−1)}). Then for every family of real coefficients c : SimonMultiIndex k P → ℝ and every J ∈ SimonMultiIndex k P, euclideanCovectorCoordinate (Σ_{I ∈ SimonMultiIndex k P} c_I · dx^I) J = c_J. In particular dx^I(b_{J(0)}, …, b_{J(k−1)}) = δ_{IJ}.",
+  "lean_statement": "∀ (P k : ℕ) (c : SimonMultiIndex k P → ℝ) (J : SimonMultiIndex k P), euclideanCovectorCoordinate (∑ I : SimonMultiIndex k P, c I • wedgeCovectors k (fun j => EuclideanSpace.proj (I j)) : Covector (Eucl P) k) J = c J",
+  "lean_name": "smr_ci_coord_sum_smul_wedge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-covector-isometry-a1-coord-sum-wedge-a1-a1"
+}

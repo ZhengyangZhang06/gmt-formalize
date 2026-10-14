@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "retract|radial|gauge|skeleton",
+        "deformation_retraction_",
+        "abbrev Eucl|abbrev LatticeFaceIndex|def latticeFace|^open|^namespace|^noncomputable",
+        "abbrev SimonMultiIndex|theorem dist_eq|norm_sq_eq|sum_sq",
+        "theorem (infDist_image|infDist_le_infDist_add_dist|infDist_zero_of_mem|lipschitz_infDist_pt)|lemma le_infDist|def orderEmbOfFin|theorem range_orderEmbOfFin|theorem image_norm_le_of_liminf_right_slope_norm_lt_deriv_boundary|of_dist_le_mul",
+        "isClosedEmbedding_coe_real",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/retraction-independent-audit-eaiy506l/ExactChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Finset/Sort.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Instances/Int.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/retraction-a2-scratch/AllProofs.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/ExactChecks.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/Challenge_dini_segment.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/Challenge_skeleton_mem.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/Challenge_cube_core.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/Challenge_periodic_extension.lean",
+        "/tmp/retraction-independent-audit-eaiy506l/Challenge_globalize.lean"
+      ],
+      "conclusion": "The five-child split is appropriate and establishes exactly the selected retraction theorem. Pinned project/mathlib revisions and byte-identical Contract/Submission sources were confirmed; the handoff type and proof hash match the frozen scope. Searches found no relevant project retraction implementation or proposed-name declaration. The inspected definitions confirm Euclidean norms, increasing face indices, and the required infDist conventions. All five one-line types independently elaborate in comparator challenge scope, with only expected challenge-placeholder warnings. Rechecking the supplied auxiliary Lean proofs against the exact strings, including cube_core type → frozen parent type, succeeded with only propext, Classical.choice and Quot.sound; cube_core itself was reviewed analytically, not claimed kernel-proved. All names are bare identifiers suitable for Submission.X and unreserved in the refreshed 265-node DAG. The sole sibling dependency, globalize depending on dini_segment, is correctly directed and acyclic. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dini_segment",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary real K and endpoint neighborhoods. Local bounds imply continuity; the compact maximum argument extends the endpoint estimate unless the maximum is 1, and letting ε decrease proves the conclusion. No nonnegativity assumption or circular reliance is hidden."
+    },
+    {
+      "key": "skeleton_mem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complement has exactly m+1 indices, its increasing enumeration has the required SimonMultiIndex type, and coordinate floors satisfy both defining latticeFace conditions. The argument also covers ℓ=0. The standalone proposition exactly matches the prose and supplies the parent's skeleton-membership step."
+    },
+    {
+      "key": "cube_core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type faithfully includes coordinate bounds on a, the defining equality for La, uniform choice of c₁ before a, and all three conclusions. The supplied proof fully constructs the face retractions and composite, proves translation compatibility, and derives the pointwise estimate by finite-face union and composition rules. The similarity bound correctly handles fixed-coordinate witnesses, nonzero integer shifts, and zero-shift dilation; positivity of distances and denominators is justified. The dimension induction terminates and its constants are independent of a. This is a genuine, complete core obligation, without reliance on the parent or a future proof search."
+    },
+    {
+      "key": "periodic_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three cube properties are explicit hypotheses, so no dependency on cube_core is required. Integer periodicity of La, isometric invariance of infDist, and compatibility on overlapping closed cubes establish the extension formula. That formula proves all three conclusions with the same c₁. The proof needs neither ℓ≥1 nor c₁≥0 and remains valid under the stated empty-set convention."
+    },
+    {
+      "key": "globalize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary N and L. Cube preservation supplies the displacement estimate for far pairs; for near pairs, the segment stays at positive distance from L and the explicit one-sided cubes yield the exact dini_segment hypothesis. Zero displacement is handled, c₁≥0 is used correctly, and positive σ justifies the NNReal division conversion. The constant is chosen before L and ψ. Its only sibling reliance is the declared dini_segment dependency, and no closedness or nonemptiness assumption on L is missing."
+    }
+  ],
+  "required_changes": []
+}

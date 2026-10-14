@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "^(def|theorem) (GeometricCurrentOn\\.(massOn|massOn_mono|VanishesOn|zeroRegion|support)|massAdmissibleOn|IsSmoothForm|IsTestForm|CountablyRectifiable.mono|HasWeightedApproximateTangentSpaceAt)",
+        "isOpen_sUnion_countable|measure_sUnion_null_iff|iUnion_ball_nat|Monotone.measure_iUnion|exists_contDiff_support_eq_eq_one_iff",
+        "def withDensity|theorem withDensity_apply|theorem lintegral_indicator₀|theorem restrict_restrict₀",
+        "dmr_massMeasure_support_finite|dmr_measureRepresentation_unique|dmr_weightedTangent_inter|dmr_rectifiableTriple_inter",
+        "git show b9f9acdc41eaa29f36e54d7e570ae94d8ca8b4a6:GMT/Ch06/Submission.lean",
+        "git show b4c070e133558037c3c81c1866ab2f4ed72b3455:GMT/Ch06/Submission.lean",
+        "git show 48beb763c9e51aafa51490411902729988f41445:GMT/Ch06/Submission.lean",
+        "git show d0bdb40ee3ab32e70fda8a3af0e9cc5f6d0883d3:GMT/Ch06/Submission.lean",
+        "git show 12d217bba2a42bdf5072eede11b18f9349b61094:GMT/Ch06/Submission.lean",
+        "git show 96e830881dafe74af53547d1e5de4de197719c25:GMT/Ch06/Submission.lean",
+        "/tmp/dmr3/scripts/runlean.sh /tmp/dmr-independent-audit-y3nurs7e/AllTypes.lean",
+        "/tmp/dmr3/scripts/runlean.sh /tmp/dmr3/lean/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-scope-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-v3.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-restriction-tau-a1/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/comparator-v1.log",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/comparator-v1.log",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/tmp/dmr-independent-audit-y3nurs7e/AllTypes.lean",
+        "/tmp/dmr3/lean/Full.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected deformation_mass_restriction contract. Independently confirmed the pinned revisions, unchanged contract, six accepted reuses with identical frozen types, matching candidate source hashes, and comparator kernel acceptance with only propext, Classical.choice and Quot.sound permitted. The four new names are unreserved; their search in the snapshot project and SimonGMT Chapter06 returned no matches. Dependencies, including inherited dependencies of reused nodes, are acyclic and do not reach the selected parent. All ten one-line propositions elaborate in the frozen comparator scope without child implementations; every name is a bare identifier. The supplied scratch proof also compiled independently: its four new proofs and exact parent assembly use only the six reused assumptions and standard axioms, with no sorryAx. The assembly establishes every selected parent conjunct without additional named helpers. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restriction_theory",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen R0–R2 type agree. Coordinate cutoffs establish local integrability; coefficient-measure uniqueness proves R1; extension, Riesz representation and Lusin approximation prove restriction existence and the mass identity. This exact accepted reuse supplies the parent's restrictions and mass measure without circularity."
+    },
+    {
+      "key": "mass_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match the prose. The proof handles zero-dimensional coefficient spaces, constructs the Riesz measure, identifies every IsMassMeasure witness by measure uniqueness, and produces a strongly measurable unit field with integrable test pairings. Exact accepted reuse was verified."
+    },
+    {
+      "key": "local_uniqueness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact localization makes the coefficient densities integrable. Mollification, equality of finite positive measures and bounded Borel testing justify the coordinate expansion and the stated set-integral equality. No finiteness or measurability hypothesis on the original representations is silently added."
+    },
+    {
+      "key": "restriction_tau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation, triple and restriction hypotheses exactly match the type. Local integrability, the explicitly identified accepted uniqueness and expansion dependencies, and the restriction-of-measure identity prove the formula on M ∩ A. Its inherited dependency graph is non-circular."
+    },
+    {
+      "key": "zero_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly constructs withDensity for arbitrary g; its measurable-set formula requires no omitted measurability assumption on g. The null-measurable carrier hull, countable compact localization, Upper Density Theorem and normalization establish the exact right-hand limit, including n = 0."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Null-measurability justifies indicator integrals, and local integrability ensures the blow-up integrals can be subtracted for sufficiently small positive radii. Similarity scaling and the assumed defect decay prove equivalent limits; equality of the pointwise multiplicities supplies the common target."
+    },
+    {
+      "key": "mass_measure_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support complement is exactly the zero region on univ. Lindelöf reduction and vanishing local masses prove its nullity without assuming finite mass. Increasing balls, mass monotonicity and continuity from below separately prove finiteness under the stated additional hypothesis."
+    },
+    {
+      "key": "representation_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Part (a) follows from the declared local_uniqueness dependency with U = W = univ. Boundedness supplies a compact bounding ball; the correctly typed smooth cutoff makes φα a test form equal to α on A, proving part (b). No extra mass hypothesis is needed."
+    },
+    {
+      "key": "tangent_inter",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are used correctly: null-measurability permits restrictions, local integrability gives finite weighted mass, and positivity identifies the defect norm with the removed density. Rescaling zero_density supplies every radius factor required by tangent_locality. The exceptional set is independent of L."
+    },
+    {
+      "key": "triple_inter",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies all seven frozen triple fields. Subset monotonicity transfers rectifiability, integrability and measurable orientation data; the declared tangent_inter dependency transfers the tangent condition while retaining the same orthonormal frame and sign. This supplies the parent's integer-multiplicity conclusion."
+    }
+  ],
+  "required_changes": []
+}

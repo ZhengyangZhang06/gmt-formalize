@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.partition_tannery-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "depth": 4,
+  "title": "Dominated convergence of set integrals along a countable partition (countable additivity and Tannery's theorem; steps 5 and 7)",
+  "statement": "Let (X, μ) be a measure space, let S ⊆ X, and let (E_i)_{i∈ℕ} be pairwise disjoint μ-null-measurable subsets of X with S = ⋃_i E_i μ-almost everywhere. Let G : X → ℝ be μ-integrable on S, and let f_j : X → ℝ (j ∈ ℕ) and f₀ : X → ℝ be a.e.-strongly measurable for μ⌞S. Assume that |f_j| ≤ G μ⌞S-a.e. for all sufficiently large j, that |f₀| ≤ G μ⌞S-a.e., and that ∫_{E_i} f_j dμ → ∫_{E_i} f₀ dμ as j → ∞ for every i. Then ∫_S f_j dμ → ∫_S f₀ dμ as j → ∞.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (S : Set X) (E : ℕ → Set X) (f : ℕ → X → ℝ) (f₀ G : X → ℝ), (∀ i, NullMeasurableSet (E i) μ) → Pairwise (Function.onFun Disjoint E) → S =ᵐ[μ] (⋃ i, E i) → IntegrableOn G S μ → (∀ j, AEStronglyMeasurable (f j) (μ.restrict S)) → AEStronglyMeasurable f₀ (μ.restrict S) → (∀ᶠ j in atTop, ∀ᵐ x ∂(μ.restrict S), |f j x| ≤ G x) → (∀ᵐ x ∂(μ.restrict S), |f₀ x| ≤ G x) → (∀ i, Tendsto (fun j => ∫ x in E i, f j x ∂μ) atTop (𝓝 (∫ x in E i, f₀ x ∂μ))) → Tendsto (fun j => ∫ x in S, f j x ∂μ) atTop (𝓝 (∫ x in S, f₀ x ∂μ))",
+  "lean_name": "deformation_ipl_cc_tendsto_setIntegral_of_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-part-0e604c3ec5-a1"
+}

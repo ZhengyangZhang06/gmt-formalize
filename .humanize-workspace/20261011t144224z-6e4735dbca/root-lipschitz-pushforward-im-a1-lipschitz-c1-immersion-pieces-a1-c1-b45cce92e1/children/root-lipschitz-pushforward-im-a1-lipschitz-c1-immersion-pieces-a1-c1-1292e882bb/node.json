@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1.egoroff_closed-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_real-a1",
+  "depth": 4,
+  "title": "Egoroff's theorem on ℝⁿ: a closed set of almost full measure with uniform convergence on bounded parts",
+  "statement": "Let n ∈ ℕ, let C ⊆ ℝⁿ (ℝⁿ = EuclideanSpace ℝ (Fin n)) be a Borel set, and let f_k : ℝⁿ → ℝ (k ∈ ℕ) and g : ℝⁿ → ℝ be Borel measurable with f_k(x) → g(x) for every x ∈ C. Let ε ∈ (0, ∞]. Then there is a closed set A ⊆ ℝⁿ with A ⊆ C and Lⁿ(C ∖ A) < ε (Lⁿ = volume) such that, for every R ∈ ℝ, f_k → g uniformly on A ∩ B̄_R(0).",
+  "lean_statement": "∀ (n : ℕ) (C : Set (Eucl n)) (f : ℕ → Eucl n → ℝ) (g : Eucl n → ℝ), MeasurableSet C → (∀ k, Measurable (f k)) → Measurable g → (∀ x ∈ C, Tendsto (fun k => f k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Eucl n), IsClosed A ∧ A ⊆ C ∧ (volume : Measure (Eucl n)) (C \\ A) < ε ∧ ∀ R : ℝ, TendstoUniformlyOn f g atTop (A ∩ closedBall 0 R)",
+  "lean_name": "lpf_c1r_egoroff_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-lipschitz-c1-immersion-pieces-a1-c1-1292e882bb-a1"
+}

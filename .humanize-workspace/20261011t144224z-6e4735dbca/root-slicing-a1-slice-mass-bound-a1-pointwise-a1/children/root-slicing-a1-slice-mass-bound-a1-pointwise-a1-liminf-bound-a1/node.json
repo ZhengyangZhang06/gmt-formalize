@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.pointwise-a1.liminf_bound-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.pointwise-a1",
+  "depth": 4,
+  "title": "Passing the bound ofReal|X_ε(h)| ≤ ofReal((1+ε)/h)·LW·a(h) to the liminf as h → 0+ and then letting ε ↓ 0, in [0,∞] (parent Steps 5–6)",
+  "statement": "Let a : ℝ → [0,∞], LW ∈ ℝ≥0 and r ∈ ℝ, and write ofReal(x) := max(x, 0) ∈ [0,∞] for x ∈ ℝ (ENNReal.ofReal). Suppose that for every ε > 0 there is X : ℝ → ℝ with X(h) → r as h → 0+ (along 𝓝[>] 0) and ofReal|X(h)| ≤ ofReal((1+ε)/h)·LW·a(h) for every h > 0 (products in [0,∞]). Then ofReal|r| ≤ LW·liminf_{h→0+} a(h)/ofReal(h) in [0,∞], with 0·∞ = 0 and the liminf taken along 𝓝[>] 0.",
+  "lean_statement": "∀ (a : ℝ → ℝ≥0∞) (LW : ℝ≥0) (r : ℝ), (∀ ε : ℝ, 0 < ε → ∃ X : ℝ → ℝ, Tendsto X (𝓝[>] 0) (𝓝 r) ∧ ∀ h : ℝ, 0 < h → ENNReal.ofReal |X h| ≤ ENNReal.ofReal ((1 + ε) / h) * (LW : ℝ≥0∞) * a h) → ENNReal.ofReal |r| ≤ (LW : ℝ≥0∞) * liminf (fun h : ℝ => a h / ENNReal.ofReal h) (𝓝[>] 0)",
+  "lean_name": "slicing_mb_pointwise_liminf_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-pointwise-a1-liminf-bound-a1-a1"
+}

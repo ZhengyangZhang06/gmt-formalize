@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_combination-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Integer combinations of integer multiplicity currents (Simon 3.2(1))",
+  "statement": "Integer combinations of integer multiplicity currents (Simon 3.2(1)). For N, k ∈ ℕ, integer multiplicity X, Y ∈ D_k(ℝ^N), integers a, b and Z ∈ D_k(ℝ^N) with Z(ω) = a·X(ω) + b·Y(ω) for every test form ω, Z is integer multiplicity.",
+  "lean_statement": "∀ (N k : ℕ) (X Y Z : GeometricCurrentOn (univ : Set (Eucl N)) k) (a b : ℤ), IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω, Z ω = a * X ω + b * Y ω) → IsIntegerMultiplicity Z",
+  "lean_name": "deformation_im_combination",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-combination-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1.disjoint_lipschitz_pieces-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.local_lipschitz_area-a1",
+  "depth": 4,
+  "title": "Countable partition of a null-measurable D ⊆ Ω into disjoint null-measurable pieces inside open sets on which a locally Lipschitz map is Lipschitz",
+  "statement": "Let n, Q ∈ ℕ, Ω ⊆ ℝⁿ open, u : ℝⁿ → ℝ^Q locally Lipschitz on Ω, and D ⊆ Ω Lⁿ-null-measurable. Then there are sets V_m, B_m ⊆ ℝⁿ and constants K_m ∈ ℝ≥0 (m ∈ ℕ) such that every V_m is open, V_m ⊆ Ω, u is K_m-Lipschitz on V_m, B_m ⊆ D ∩ V_m, the B_m are pairwise disjoint, every B_m is Lⁿ-null-measurable, and D ⊆ ⋃_m B_m.",
+  "lean_statement": "∀ (n Q : ℕ) (Ω D : Set (Eucl n)) (u : Eucl n → Eucl Q), IsOpen Ω → LocallyLipschitzOn Ω u → D ⊆ Ω → NullMeasurableSet D (volume : Measure (Eucl n)) → ∃ (V B : ℕ → Set (Eucl n)) (K : ℕ → ℝ≥0), (∀ m, IsOpen (V m)) ∧ (∀ m, V m ⊆ Ω) ∧ (∀ m, LipschitzOnWith (K m) u (V m)) ∧ (∀ m, B m ⊆ D ∩ V m) ∧ Pairwise (Function.onFun Disjoint B) ∧ (∀ m, NullMeasurableSet (B m) (volume : Measure (Eucl n))) ∧ D ⊆ ⋃ m, B m",
+  "lean_name": "lpf_raf_lla_disjoint_lipschitz_pieces",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60-a1",
+      "result_commit": "6941b70febfeca396a5e8105097428578fe61416",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-1721d1b1cf-a1"
+}

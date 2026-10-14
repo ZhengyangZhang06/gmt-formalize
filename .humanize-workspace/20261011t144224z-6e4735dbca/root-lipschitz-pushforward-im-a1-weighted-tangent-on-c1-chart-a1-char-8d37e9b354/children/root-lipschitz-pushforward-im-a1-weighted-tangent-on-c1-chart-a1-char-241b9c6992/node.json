@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1.signed_of_lintegral-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1",
+  "depth": 4,
+  "title": "From the nonnegative area identity on a bounded piece to the signed area formula for compactly supported continuous functions",
+  "statement": "Let Φ : ℝⁿ → ℝ^Q be continuous, let Ω, s ⊆ ℝⁿ be open with s ⊆ Ω and s bounded, and assume Φ is injective on Ω. Let J : ℝⁿ → ℝ be continuous with J ≥ 0, and let h : ℝ^Q → ℝ be continuous with compact support such that Ω ∩ Φ⁻¹(tsupport h) ⊆ s. Suppose that for every Borel g : ℝ^Q → [0, ∞], ∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s ofReal(J(v))·g(Φ(v)) dLⁿ(v). Then ∫_{Φ(Ω)} h dHⁿ = ∫_Ω J(v)h(Φ(v)) dLⁿ(v). Here Hⁿ = μHE[n] on ℝ^Q, Lⁿ = volume on ℝⁿ, ∫ is the Bochner set integral and ∫⁻ the lintegral.",
+  "lean_statement": "∀ (Q n : ℕ) (Φ : Eucl n → Eucl Q) (Ω s : Set (Eucl n)) (J : Eucl n → ℝ) (h : Eucl Q → ℝ), IsOpen Ω → IsOpen s → s ⊆ Ω → Bornology.IsBounded s → Continuous Φ → InjOn Φ Ω → Continuous J → (∀ v, 0 ≤ J v) → Continuous h → HasCompactSupport h → Ω ∩ Φ ⁻¹' tsupport h ⊆ s → (∀ g : Eucl Q → ℝ≥0∞, Measurable g → ∫⁻ y in Φ '' s, g y ∂(μHE[n] : Measure (Eucl Q)) = ∫⁻ v in s, ENNReal.ofReal (J v) * g (Φ v) ∂(volume : Measure (Eucl n))) → ∫ x in Φ '' Ω, h x ∂(μHE[n] : Measure (Eucl Q)) = ∫ v in Ω, J v * h (Φ v) ∂(volume : Measure (Eucl n))",
+  "lean_name": "lpf_wtc_caf_signed_of_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-241b9c6992-a1"
+}

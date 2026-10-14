@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_completeness-a1.mass_lower_bound-a1",
+  "parent_id": "root.deformation-a1.im_completeness-a1",
+  "depth": 3,
+  "title": "Mass lower bound for a current with a measure representation (printed (1) of Simon 3.13)",
+  "statement": "Let N, k ∈ ℕ, let Y ∈ D_k(ℝ^N) (GeometricCurrentOn univ k), let μ be a measure on ℝ^N and κ : ℝ^N → Λ_k(ℝ^N) a field of k-vectors (NVector (Eucl N) k) such that (μ, κ) represents Y (IsMeasureRepresentation Y μ κ): for every test form ω ∈ D^k(ℝ^N) the function x ↦ κ(x)(ω(x)) is μ-integrable and Y(ω) = ∫ κ(x)(ω(x)) dμ(x). Then ∫ |κ(x)| dμ(x) ≤ M(Y) in [0, ∞], where |w| := (Σ_γ w(dx^γ)²)^{1/2} is the Euclidean norm of a k-vector w (w(dx^γ) = euclideanNVectorCoordinate w γ, dx^γ = wedgeCovectors k (proj ∘ γ), γ ranging over the strictly increasing multi-indices SimonMultiIndex k N) and M(Y) = Y.mass = Y.massOn univ.",
+  "lean_statement": "∀ (N k : ℕ) (Y : GeometricCurrentOn (univ : Set (Eucl N)) k) (μ : Measure (Eucl N)) (κ : Eucl N → NVector (Eucl N) k), IsMeasureRepresentation Y μ κ → ∫⁻ x, ENNReal.ofReal (Real.sqrt (∑ γ : SimonMultiIndex k N, (euclideanNVectorCoordinate (κ x) γ) ^ 2)) ∂μ ≤ Y.mass",
+  "lean_name": "imc_lintegral_coordNorm_le_mass",
+  "depends_on": [
+    "root.polyhedral_approximation-a1.pairing_expansion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.polyhedral_approximation-a1.pairing_expansion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-polyhedral-approximation-a1-pairing-expansion-a1-a1",
+      "result_commit": "c4c0086a7ea3389e9e961d3c9df987255f8c064a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-completeness-a1-mass-lower-bound-a1-a1"
+}

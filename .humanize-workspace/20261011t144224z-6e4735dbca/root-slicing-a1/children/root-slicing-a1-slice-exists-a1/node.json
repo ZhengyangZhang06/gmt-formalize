@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_exists-a1",
+  "parent_id": "root.slicing-a1",
+  "depth": 2,
+  "title": "Existence of the slices ⟨T,f,t₋⟩ (Simon 4.6)",
+  "statement": "For all P, m, every open U ⊆ ℝ^P, every T ∈ D_{m+1}(U) with M_W(T) < ∞ and M_W(∂T) < ∞ for all open W ⊂⊂ U, every f : ℝ^P → ℝ which is L-Lipschitz on U and every t ∈ ℝ, there is S ∈ D_m(U) with IsSlice T f t S, i.e. S = ∂(T⌞{x ∈ U : f(x) < t}) − (∂T)⌞{x ∈ U : f(x) < t} for some restriction currents in the sense of IsRestriction.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : GeometricCurrentOn U (m + 1), (∀ W, CompactlyContainedOpen W U → T.massOn W < ∞ ∧ T.boundary.massOn W < ∞) → ∀ (f : Eucl P → ℝ) (L : ℝ≥0), LipschitzOnWith L f U → ∀ t : ℝ, ∃ S : GeometricCurrentOn U m, IsSlice T f t S",
+  "lean_name": "slicing_exists",
+  "depends_on": [
+    "root.slicing-a1.mass_representation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.mass_representation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-exists-a1-a1"
+}

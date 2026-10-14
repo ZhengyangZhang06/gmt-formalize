@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique|sorry|axiom' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "ae_differentiableWithinAt_of_mem|ae_differentiableAt|measurable_fderiv|measurableSet_of_differentiableAt",
+        "simon_theorem_3_6|exists_isClosed_continuousOn_of_measurable|area_image_eq_zero_of_critical|weighted_area_formula_lipschitz_injOn|injective_area_formula_lipschitzOn|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "inverse_continuousAt|normDet_sq_eq_det_gram|normDet_nonneg|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero",
+        "rg -n 'slicing_im_tg_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT .lake/packages/simongmt/Poincare/SimonGMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tg_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tg_split/CProof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tg_independent_audit/AssemblyNoSorry.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-tangential-gradient-a1/decomposition-v1.json",
+        "/tmp/tg_independent_audit/Types.lean",
+        "/tmp/tg_independent_audit/AssemblyNoSorry.lean",
+        "/tmp/tg_independent_audit/ReuseEvidence.json",
+        "/tmp/tg_split/CProof.lean"
+      ],
+      "conclusion": "The pinned revisions and contract match the workspace. All four frozen propositions pass the statement validator and independently elaborate in comparator scope without child implementations. All names are bare, unreserved identifiers; the name search found no matches. The two identical-type twins remain speculative, and their names are not reused. The 19 cited accepted supporting declarations have matching frozen contracts and passing comparator evidence permitting only propext, Quot.sound and Classical.choice. The split is appropriate: chart_gradient depends on line_deriv, with no reverse dependency or cycle. Replaying the supplied assembly with explicit child hypotheses proves the exact selected parent contract using only standard axioms, without sorryAx. The line_deriv proof also compiles using only standard axioms. No proposed type contains a problematic inline matrix-unit construction. The analytic arguments agree with the checked definitions and cited results, including [Simon, Chapters 2–3](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose, including global C¹ maps, open domains, both Lipschitz bounds and null uncovered remainder. The proof supplies the approximation argument through Rademacher, Lusin, Egoroff and the accepted Whitney theorem, removes critical images using the area theorem, and enumerates regular bi-Lipschitz patches. Degenerate dimensions and an empty chart family are covered. It is complete and non-circular."
+    },
+    {
+      "key": "chart_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match the frozen proposition. The proof derives injectivity, dimension and local chart-measure finiteness; proves chart blow-up convergence by the area formula and dominated convergence; and uses compact Lusin pieces and zero-density estimates to obtain the weighted limit. Exceptional sets are independent of the test function. Local integrability suffices throughout, and no global upper Lipschitz hypothesis is silently assumed. The proof establishes the exact weighted tangent predicate without circular reliance."
+    },
+    {
+      "key": "line_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated ambient line derivative. The chain-rule expansion and Lipschitz control of the difference between the chart curve and its tangent line give the required two-sided little-o estimate, including the zero direction. The supplied exact-type Lean proof independently compiles with only standard axioms."
+    },
+    {
+      "key": "chart_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type agree, including Borel measurability, the everywhere bound and the universal clause over chart preimages. Rademacher and null-image transfer give the full-measure good set. The injective chart differential makes the Gram operator invertible; the Riesz representative and measurable inverse construction produce the asserted Borel field. The declared line_deriv dependency proves the directional identities, and testing against the field itself proves the bound. The argument is complete, non-circular and covers dimension zero."
+    }
+  ],
+  "required_changes": []
+}

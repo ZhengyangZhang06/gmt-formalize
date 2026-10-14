@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1.jacobian_measurable-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+  "depth": 6,
+  "title": "Borel measurability of the Gram-determinant Jacobian √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩) of an arbitrary map ℝⁿ → ℝ^P",
+  "statement": "Let P, n ∈ ℕ and let Φ : ℝⁿ → ℝ^P be an arbitrary map, with no regularity assumed. Here ℝᵏ = Eucl k = EuclideanSpace ℝ (Fin k), DΦ(w) = fderiv ℝ Φ w (which is 0 where Φ is not differentiable) and e_i = EuclideanSpace.single i 1. Then the function w ↦ √det(⟨DΦ(w)e_i, DΦ(w)e_j⟩)_{i,j<n} is Borel measurable on ℝⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P), Measurable (fun w : Eucl n => Real.sqrt (Matrix.of fun i j => inner ℝ (fderiv ℝ Φ w (EuclideanSpace.single i 1)) (fderiv ℝ Φ w (EuclideanSpace.single j 1))).det)",
+  "lean_name": "slicing_im_ll_twl_cie_jacobian_measurable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-eb34e93b3d-a1"
+}

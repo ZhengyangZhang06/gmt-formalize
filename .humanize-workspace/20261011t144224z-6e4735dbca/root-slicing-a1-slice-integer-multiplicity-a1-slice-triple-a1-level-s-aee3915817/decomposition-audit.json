@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "implicitFunction|eventually_apply_eq_iff_implicitFunction|contDiffAt_implicitFunction|implicitFunction_apply_self",
+        "theorem ContDiffAt.eventually|theorem ContDiffOn.exists_lipschitzOnWith|theorem isOpen_iUnion_countable|exists_eq_range|one_of_mem_closedBall|zero_of_le_dist|hasContDiffBump_of_innerProductSpace",
+        "toDual_symm_apply|stdOrthonormalBasis|norm_add_sq_real|finrank_range_of_inj|finrank_range_add_finrank_ker|eq_of_le_of_finrank_eq|tendsto_slope_zero_right|theorem fderiv_comp|theorem range_comp|def IsInvertible",
+        "slicing_im_st_lsc_|lpf_wtc_cat_fderiv_lower_bound|slicing_im_st_level_set_charts",
+        "git show 8cfbc487a3d10545b0ea005ad58122242bbcc072 -- GMT/Ch06/Submission.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Invertible.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Set/Countable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-level-s-aee3915817/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-level-s-aee3915817/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/lsc-independent-audit-0bnbmbyh/FrozenTypes.lean",
+        "/tmp/lsc-independent-audit-0bnbmbyh/candidate/GMT/Ch06/Submission.lean",
+        "/tmp/lsc-independent-audit-0bnbmbyh/CombinedChecks.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected level-set-chart theorem. The pinned snapshot supplies the cited analytic and linear-algebra APIs; its Contract is byte-identical to the workspace Contract and Submission. New-name searches found no conflicting reservation in the 518-node DAG or other node proposals. The reused declaration is accepted with an identical frozen type. Dependencies are exactly local_graph → kernel_frame,c1_extension and tangent_range → fderiv_lower_bound, hence acyclic. All names are bare identifiers. All five one-line propositions independently elaborated against the frozen baseline without child implementations. I independently compiled the supplied proof scripts, comparator-style exact Submission.X checks, and the exact parent assembly; target proofs use only propext, Classical.choice and Quot.sound. The assembly handles empty regular sets, countable enumeration, both Lipschitz bounds and tangent ranges. The planned ImplicitContDiff import is available and permitted."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "kernel_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree on every hypothesis and conclusion. Riesz representation constructs e; surjectivity and rank–nullity give a kernel of dimension m; an orthonormal basis constructs the norm-preserving ι; and corestricting u ↦ u − ℓ(u)e constructs p with the required identity. Orthogonality and continuity are justified, including m = 0. No child or parent theorem is assumed."
+    },
+    {
+      "key": "c1_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ContDiffAt hypothesis and global ContDiff conclusion match the prose. Finite-order local regularity supplies the ε-ball, and the bump with radii ε/3 and 2ε/3 gives agreement on the smaller ball. The product argument inside the ε-ball and local vanishing outside it cover every point, including boundaries. The supplied proof is complete and independent."
+    },
+    {
+      "key": "local_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement contains all hypotheses and exactly the required chart properties. The proof uses only its two declared siblings: the adapted frame makes the scalar partial derivative the identity; the implicit-function theorem and extension lemma produce a global C¹ graph; orthogonality proves the global lower bound; shrinking preserves U-membership and regularity; and the coordinate preimage W proves coverage. The product norm and ContinuousLinearMap.IsInvertible construction are correct. No matrix-unit construction occurs."
+    },
+    {
+      "key": "fderiv_lower_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is valid reuse of the accepted declaration at commit 8cfbc487a3d10545b0ea005ad58122242bbcc072: its frozen type, statement and title match exactly, and the accepted proof is preserved. Independently, openness keeps short line segments in Ω, differentiability gives the slope limit, and division by positive t transfers the lower bound to the derivative. No sign condition on c is needed. Compatibility and standard-axiom checks passed."
+    },
+    {
+      "key": "tangent_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including all pointwise differentiability, openness, positivity, regularity and constancy assumptions. The declared derivative-bound dependency proves injectivity. Local constancy and the chain rule give range containment; injectivity and rank–nullity give equal dimensions; and the final chain rule gives precisely the stated Submodule.map identity. The argument includes m = 0 and uses no parent conclusion."
+    }
+  ],
+  "required_changes": []
+}

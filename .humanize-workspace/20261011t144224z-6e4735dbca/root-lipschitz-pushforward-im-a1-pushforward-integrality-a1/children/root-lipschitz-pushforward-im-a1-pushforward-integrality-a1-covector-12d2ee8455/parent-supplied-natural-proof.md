@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.covector_finite_dimensional-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions: ℝ^P = EuclideanSpace ℝ (Fin P) (Lean `Eucl P`); ℝⁿ = `Eucl n`. An n-covector on E is a continuous alternating n-linear map α : Eⁿ → ℝ (`Covector E n` = `E [⋀^Fin n]→L[ℝ] ℝ`, a real vector space under pointwise operations). Countably n-rectifiable (`CountablyRectifiable n S`, SimonGMT Ch. 3, Def. 1.1) means: there are an Hⁿ-null set S₀ and Lipschitz maps F_j : ℝⁿ → ℝ^Q (j ∈ ℕ) with S ⊆ S₀ ∪ ⋃_j F_j(ℝⁿ). The child proof is written in a file whose imports are fixed (`import GMT.Ch06.Submission`); every result cited below is available there.
+
+This is the finite-dimensionality of the space of n-covectors used for the measurability of the image density in Step 8 of the parent proof (there via a basis β_1,…,β_N of n-covectors). It is proved by embedding Covector(ℝ^Q, n) linearly and injectively into a finite-dimensional coordinate space.
+
+1. Let e_1,…,e_Q be the standard basis of ℝ^Q (e_j = `EuclideanSpace.single j 1`). Define F : Covector(ℝ^Q, n) → ℝ^{(Fin n → Fin Q)} by F(α)(r) := α(e_{r(1)}, …, e_{r(n)}) for every map r : Fin n → Fin Q. Evaluation of α at a fixed n-tuple is linear in α, so F is linear.
+2. (F is injective.) Let a, b be n-covectors with F(a) = F(b), and let v = (v_1,…,v_n) ∈ (ℝ^Q)ⁿ. Each v_i = Σ_j v_i(j) e_j (expansion in the standard orthonormal basis, `EuclideanSpace.basisFun` with `OrthonormalBasis.sum_repr`). For any n-covector c, multilinearity (`MultilinearMap.map_sum` applied to c.toMultilinearMap) gives c(v) = Σ_{r : Fin n → Fin Q} c(i ↦ v_i(r(i)) • e_{r(i)}), and pulling the scalars out of each slot (`map_smul_univ`) gives c(i ↦ v_i(r(i)) • e_{r(i)}) = (Π_i v_i(r(i))) · c(i ↦ e_{r(i)}) = (Π_i v_i(r(i))) · F(c)(r). Applying this to c = a and c = b and using F(a)(r) = F(b)(r) for every r gives a(v) = b(v). As v was arbitrary, a = b (extensionality of continuous alternating maps).
+3. The codomain ℝ^{(Fin n → Fin Q)} consists of real functions on a finite type, so it is finite-dimensional. A real vector space that admits an injective linear map into a finite-dimensional space is finite-dimensional (`Module.Finite.of_injective`; the codomain is a Noetherian ℝ-module, being finite-dimensional over the field ℝ). Hence Covector(ℝ^Q, n) is finite-dimensional. (The degenerate cases need no separate treatment: for n = 0 the index type Fin 0 → Fin Q has one element and F(α) records α(∅); for Q = 0 and n ≥ 1 both sides vanish.) ∎
+
+Do not use `Module.Finite.multilinearMap` (its module Mathlib.LinearAlgebra.Multilinear.FiniteDimensional is not imported by GMT.Ch06.Submission).
+
+Verified Lean script (engineering aid; the mathematics is the numbered proof above). On 2026-10-12 the script below was compiled as the complete proof of `theorem Submission.lpf_pi_covector_finiteDimensional : <the frozen Lean statement> := by` in the child context: `import GMT.Ch06.Submission`, inside `namespace GMT.Ch06` with the contract's `open` commands. It was compiled in one file together with the other ten children's proofs, which were real proofs, not stubs. `#print axioms` gives exactly propext, Classical.choice, Quot.sound. The script adds no helper declarations; all auxiliary facts are local `have`s. It uses no sibling lemma. The remaining compiler output consists only of style-linter and deprecation warnings.
+```
+  intro Q n
+  classical
+  let e : Fin Q → Eucl Q := fun j => EuclideanSpace.single j 1
+  let F : Covector (Eucl Q) n →ₗ[ℝ] ((Fin n → Fin Q) → ℝ) :=
+    { toFun := fun α idx => α (fun i => e (idx i))
+      map_add' := by intro a b; ext idx; simp
+      map_smul' := by intro c a; ext idx; simp }
+  refine Module.Finite.of_injective F ?_
+  intro a b hab
+  ext v
+  have hv : v = fun i => ∑ j, (v i j) • e j := by
+    funext i
+    exact ((EuclideanSpace.basisFun (Fin Q) ℝ).sum_repr (v i)).symm.trans (by simp [e])
+  have key : ∀ c : Covector (Eucl Q) n, c (fun i => ∑ j, (v i j) • e j) = ∑ r : Fin n → Fin Q, c (fun i => (v i (r i)) • e (r i)) :=
+    fun c => c.toMultilinearMap.map_sum (fun i j => (v i j) • e j)
+  rw [hv, key a, key b]
+  refine Finset.sum_congr rfl fun r _ => ?_
+  have h1 := congrFun hab r
+  simp only [F, LinearMap.coe_mk, AddHom.coe_mk] at h1
+  rw [a.map_smul_univ, b.map_smul_univ, h1]
+```
+
+## Key steps
+
+1. F(α)(r) := α(e_{r(1)},…,e_{r(n)}) is a linear map Covector(ℝ^Q, n) → ℝ^{(Fin n → Fin Q)}
+2. Multilinear expansion of v_i in the standard basis shows α is determined by F(α), so F is injective
+3. The finite coordinate space is finite-dimensional; Module.Finite.of_injective transfers this to Covector(ℝ^Q, n)
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/{Contract,Submission}.lean against workspace GMT/Ch06/{Contract,Submission}.lean (identical)`
+- `python3 over dag.json: frozen lean_statement/status of the 8 uncle nodes; all lean_name fields (226 unique); grep -c 'lpf_pi_' dag.json (0 matches)`
+- `contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (replay: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)`
+- `lean_contract.validate_lean_statement on all 11 child statements`
+- `grep -n 'def CountablyRectifiable|theorem CountablyRectifiable.mono|theorem countablyRectifiable_range|theorem countablyRectifiable_iUnion|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'abbrev NVector|def covectorPullback|def nVectorPushforward|def simpleNVector|theorem nVectorPushforward_simple' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean; 'abbrev Covector|abbrev DifferentialForm|def IsTestForm' Chapter06/Forms.lean; 'abbrev TestFormOn|structure GeometricCurrentOn' Chapter06/Currents.lean; 'def GeometricCurrentOn.support|theorem GeometricCurrentOn.support_subset_domain' Chapter06/CurrentLocalEquality.lean`
+- `grep -n 'theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (line 216)`
+- `grep -n 'LocallyLipschitzOn.comp|protected lemma comp' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean (only LocallyLipschitz.comp exists)`
+- `lake build GMT.Ch06.Submission in /tmp/lpi3_scratch (scratch copy, .lake/packages linked to the pinned package tree)`
+- `lake env lean Scratch/Stmts.lean (11 statements in comparator scope, only sorry warnings)`
+- `lake env lean Scratch/Names.lean (#check of ~90 cited Mathlib/SimonGMT names; #synth Norm (NVector (Eucl 3) 2) = ContinuousLinearMap.hasOpNorm, ENorm via SeminormedAddGroup.toContinuousENorm, MeasureSpace (Eucl 3) = measureSpaceOfInnerProductSpace, Norm (Covector ..) = ContinuousAlternatingMap.instNormedAddCommGroup.toNorm)`
+- `lake env lean Scratch/Inst.lean (#synth ContinuousAdd / PseudoMetrizableSpace / ContinuousENorm (NVector (Eucl 3) 2) fail; documented workarounds compile)`
+- `lake env lean Scratch/Assembly.lean (parent from 19 stubs; #print axioms propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean Scratch/AllChildren.lean and Scratch/E2E.lean (all 11 children proved in dependency order + parent assembly; per-child #print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-inner-com-6be04fd41f/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lpi3_scratch/Scratch/Stmts.lean`
+- `/tmp/lpi3_scratch/Scratch/Names.lean`
+- `/tmp/lpi3_scratch/Scratch/Inst.lean`
+- `/tmp/lpi3_scratch/Scratch/Assembly.lean`
+- `/tmp/lpi3_scratch/Scratch/AllChildren.lean`
+- `/tmp/lpi3_scratch/Scratch/E2E.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) is byte-identical to the workspace Contract and Submission. The child scope is import GMT.Ch06.Submission plus the replayed namespace and opens. It provides the contract notions (IsRectifiableTriple, tauAction, IsIntegerMultiplicity) and SimonGMT Ch03 Rectifiable (CountablyRectifiable with mono/range/iUnion, HasWeightedApproximateTangentSpaceAt, .unique for θ x ≠ 0). It also provides Ch06 n-vectors (NVector = Covector →L[ℝ] ℝ with the operator norm, simpleNVector, nVectorPushforward_simple), test forms, currents and support_subset_domain, plus Ch02 euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+
+It does not provide:
+- SimonGMT SubmanifoldCover (countablyRectifiable_image_contDiffOn_open) or Mathlib's Multilinear.FiniteDimensional; both facts are therefore separate import-free leaves.
+- LocallyLipschitzOn.comp.
+- Instance search on NVector for ContinuousAdd, PseudoMetrizableSpace, ContinuousENorm and NormSMulClass; the verified workarounds are recorded in the child texts.
+
+No lpf_pi_* name is reserved in dag.json, and leaf plans forbid helper declarations, so every child script is a single theorem. All 11 frozen statements validate and elaborate in the comparator scope. All 11 children are fully proved in Lean with only propext, Classical.choice and Quot.sound, using only their declared siblings. The frozen parent type follows from them and the eight uncles by the stated assembly; its only sorryAx comes from the uncle stubs.

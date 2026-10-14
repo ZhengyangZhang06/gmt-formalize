@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.mass_restriction-a1`
+- Child DAG node: `root.deformation-a1.mass_restriction-a1.representation_unique-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 7 and the uniqueness part of Step 8 of the selected parent's supplied proof (Simon, Ch. 6, 2.7–2.9: the vector measure T⃗μ_T is determined by T). The measure-theoretic core of Step 7(b) and Step 8, namely that the set integrals ∫_A v_i(ω) dμ_i of two representations agree, is the sibling local_uniqueness (accepted theorem slicing_representation_unique). Step 7(a)'s test forms φα give the covector version.
+
+Conventions. ℝ^N := Eucl N. A test form is an element of TestFormOn univ k: a k-form ω : ℝ^N → Covector(ℝ^N, k) that is C^∞ (ContDiff ℝ ∞, the order ∞ = ((⊤ : ℕ∞) : WithTop ℕ∞) used by IsSmoothForm), has compact support, and has tsupport ω ⊆ ℝ^N (automatic). Integrals ∫_A f dμ are Bochner set integrals.
+
+Sibling used. local_uniqueness (slicing_representation_unique): for P, k ∈ ℕ, an open U ⊆ ℝ^P, Borel measures μ₁, μ₂ and maps v₁, v₂ such that x ↦ v_i(x)(ω(x)) is μ_i-integrable for every ω ∈ TestFormOn U k, and an open W with ∫ v₁(ω) dμ₁ = ∫ v₂(ω) dμ₂ for every ω ∈ TestFormOn U k with tsupport ω ⊆ W, one has ∫_A v₁(ω) dμ₁ = ∫_A v₂(ω) dμ₂ for every Borel A and every ω ∈ TestFormOn U k with tsupport ω ⊆ W.
+
+Fix N, k, X and representations (μ₁, v₁), (μ₂, v₂) of X.
+
+1. (Part (a).) Apply local_uniqueness with P := N, U := ℝ^N (open), the given μ₁, μ₂, v₁, v₂ and W := ℝ^N (open).
+ - Integrability hypotheses: for every test form ω, x ↦ v_i(x)(ω(x)) is μ_i-integrable. This is the first component of IsMeasureRepresentation X μ_i v_i.
+ - Agreement hypothesis: for every test form ω (trivially tsupport ω ⊆ ℝ^N), the second components of the two representations give ∫ v₁(ω) dμ₁ = X(ω) = ∫ v₂(ω) dμ₂.
+ - Conclusion: for every Borel A ⊆ ℝ^N and every test form ω (tsupport ω ⊆ ℝ^N), ∫_A v₁(x)(ω(x)) dμ₁ = ∫_A v₂(x)(ω(x)) dμ₂. This is (a).
+
+2. (Part (b): a bounding ball.) Let A be a bounded Borel set and α a k-covector. Since A is bounded, A ⊆ closedBall(0, R) for some real R (Bornology.IsBounded.subset_closedBall).
+
+3. (A smooth cutoff.) The ball B := ball(0, R + 1) is open, the closed ball C := closedBall(0, R) is closed, and C ⊆ B. By the smooth Urysohn lemma on the finite-dimensional space ℝ^N (Mathlib exists_contDiff_support_eq_eq_one_iff, with smoothness order (⊤ : ℕ∞)), there is a C^∞ function φ : ℝ^N → [0, 1] with support φ = B and φ(x) = 1 for every x ∈ C. Every x with φ(x) ≠ 0 lies in B ⊆ closedBall(0, R + 1); hence φ vanishes outside the compact set closedBall(0, R + 1) and φ has compact support (HasCompactSupport.intro).
+
+4. (The test form φα.) Define ω(x) := φ(x)·α. It is C^∞, as the product of the C^∞ function φ with the constant covector α (ContDiff.smul with contDiff_const). It has compact support (HasCompactSupport.smul_right), and tsupport ω ⊆ ℝ^N. Hence ω ∈ TestFormOn univ k.
+
+5. (Agreement on A.) For x ∈ A ⊆ C, φ(x) = 1, so ω(x) = α and v_i(x)(ω(x)) = v_i(x)(α) for i = 1, 2. As A is measurable, functions that agree on A have equal set integrals over A (setIntegral_congr_fun), whether or not they are integrable:
+ ∫_A v_i(x)(α) dμ_i = ∫_A v_i(x)(ω(x)) dμ_i (i = 1, 2).
+
+6. (Conclusion (b).) By (a) for A and ω, ∫_A v₁(ω) dμ₁ = ∫_A v₂(ω) dμ₂. Together with step 5:
+ ∫_A v₁(x)(α) dμ₁ = ∫_A v₁(x)(ω(x)) dμ₁ = ∫_A v₂(x)(ω(x)) dμ₂ = ∫_A v₂(x)(α) dμ₂.
+ This is (b). ∎
+
+## Key steps
+
+1. (a): local_uniqueness with U = W = ℝ^N; its hypotheses are the integrability parts of the two representations and ∫v₁(ω)dμ₁ = X(ω) = ∫v₂(ω)dμ₂.
+2. (b): A ⊆ closedBall(0,R); a C^∞ cutoff φ with support ball(0,R+1) and φ = 1 on closedBall(0,R) has compact support.
+3. ω := φα is a test form, and ω = α on A, so ∫_A v_i(α)dμ_i = ∫_A v_i(ω)dμ_i (setIntegral_congr_fun).
+4. Apply (a) to A and ω.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean; cmp GMT/Ch06/Contract.lean local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean (both identical); git -C .lake/packages/{mathlib,simongmt} rev-parse HEAD (25730c7c…, 2b366308…)`
+- `python3 -I over dag.json: nodes with status accepted/integrating/merged and a candidate_commit whose lean_statement matches IsMassMeasure|IsRestriction|IsMeasureRepresentation|HasWeightedApproximateTangentSpaceAt|∃ … : TestFormOn|supportᶜ|IsBounded`
+- `git show <candidate_commit>:GMT/Ch06/Submission.lean | grep 'theorem Submission.<name>' for iwl_restriction_theory, rectifiability_mass_measure_representation, slicing_representation_unique, polyhedral_approx_restriction_tau, lpf_wtc_ae_zero_density_off_set, iwl_weighted_tangent_locality (types byte-identical)`
+- `cat nodes/<node>/isolated-comparator-result.json for the six reused nodes (passed = true, same candidate commits)`
+- `rg -n 'def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.massOn_mono|def massAdmissibleOn' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; rg -n 'def GeometricCurrentOn.(VanishesOn|zeroRegion|support)' simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; rg -n 'def IsSmoothForm|def IsTestForm' simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `rg -n 'theorem CountablyRectifiable.mono|def HasWeightedApproximateTangentSpaceAt' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `rg -n 'theorem isOpen_sUnion_countable|theorem measure_sUnion_null_iff|theorem iUnion_ball_nat|Monotone.measure_iUnion|theorem exists_contDiff_support_eq_eq_one_iff|theorem lintegral_indicator₀|theorem restrict_restrict₀|theorem ofReal_inv_of_pos' local-references/197bdd4b88278494/mathlib/Mathlib`
+- `git for-each-ref (931 ref tips) | xargs git grep -l -E 'dmr_|deformation_mass_restriction' -- 'GMT/*.lean' (no match); dag.json lean_name and node-id scan for the four new names (free)`
+- `grep github_selected_issue 1104 .humanize/swarm-configs/*.json (1d5c18b4… max_nodes 1000); cat .humanize/issue-claims/22ac3a995036b376/1104.json (pid 31860); len(dag.json nodes) = 528`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py child_modules(contract mode) for all ten children; lean /tmp/dmr3/nc/NC_<key>.lean (exit 0, only the sorry warning)`
+- `lean /tmp/dmr3/lean/Full.lean: six reused types as axioms, four new children proved, frozen parent type proved; #print axioms Submission.deformation_mass_restriction`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-mass-restriction-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-restriction-theory-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-rectifiability-a1-mass-measure-representation-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-representation-unique-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-restriction-tau-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-polyhedral-approximation-a1-restriction-tau-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/swarm-configs/1d5c18b476c6436d8f2d8d63aa0120ff.json`
+- `/tmp/dmr3/nc/NC_restriction_theory.lean`
+- `/tmp/dmr3/lean/Full.lean`
+
+Pinned revisions are confirmed, and Contract = Submission = snapshot Contract. Six accepted theorems in other branches cover the heavy parts of the supplied proof: Riesz representation and mass measure, restriction existence, uniqueness and mass identity, local π–λ uniqueness, τ-restriction, the upper-density zero set, and weighted-tangent locality. Each is status accepted with a candidate commit and a passing isolated comparator, and each candidate Submission.lean declares Submission.<name> with exactly the type reused here. The remaining obligations are four new nodes with free names: mass-measure support and finiteness, bounded covector uniqueness, a.e. tangent transfer, and the restricted triple. All ten types pass validate_lean_statement and elaborate in the exact comparator NodeChallenge scope. A scratch file proves the four new children from exactly their declared dependencies and the exact frozen parent type from the ten children. Its axioms are only propext, Classical.choice and Quot.sound plus the six reused accepted declarations; there is no sorryAx and no parent helper declaration. The SimonGMT definitions used (massOn, massOn_mono, zeroRegion, support, IsSmoothForm order ∞, CountablyRectifiable.mono) and the Mathlib lemmas cited in the child proofs are present in the pinned sources.

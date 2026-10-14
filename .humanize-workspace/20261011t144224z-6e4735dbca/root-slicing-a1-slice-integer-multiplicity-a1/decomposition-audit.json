@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "sed -n '31,146p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "rg -n 'slicing_im_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project -g '*.lean'",
+        "alternatizeUncurryFinCLM|alternatizeUncurryFin_apply",
+        "ae_tendsto_average|exists_measurable_subset_ae_eq|instSecondCountableTopology",
+        "sed -n '220,395p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "sed -n '110,178p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "sed -n '1150,1333p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Review/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Review/IndependentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Review/IndependentApi.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1/parent-child-handoff.json",
+        "/tmp/sim_split/Review/IndependentTypes.lean",
+        "/tmp/sim_split/Review/IndependentAssembly.lean",
+        "/tmp/sim_split/Review/IndependentApi.lean"
+      ],
+      "conclusion": "The split appropriately separates the selected theorem's geometric, analytic and continuity obligations. All seven frozen types independently elaborate as propositions in the comparator scope, match their prose hypotheses and conclusions, and require no child implementation or post-hoc alias. All names are bare identifiers; none collides with the 261-node DAG or occurs in the snapshot project. Dependencies are acyclic and correctly directed. The exact selected parent follows from the child contracts by a kernel-checked assembly using only propext, Classical.choice and Quot.sound. The contraction expression evaluates to the intended wedge pairing, including its sign and normalization. The API check succeeds with the SecondCountableSpace import explicitly identified in the proof; the original optional probe omitted that import. Package revisions match the manifest. The analytic arguments were independently checked against the supplied proofs and [Simon's text](https://web.stanford.edu/class/math285/ts-gmt.pdf); the null-remainder argument is supported by [Esmayli–Hajłasz, Theorem 1.1](https://arxiv.org/pdf/2006.00419). These compilation checks establish contract validity and conditional assembly, not completed Lean implementations of the analytic children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "tangential_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel chart construction supplies G with the required everywhere Lipschitz bound. The explicit o(s) comparison proves the exact ambient line-derivative predicate, and weighted tangent identification and uniqueness extend it to every eligible Q. The proof is non-circular and matches the frozen type."
+    },
+    {
+      "key": "coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "C¹ approximation and tangent identification establish the Jacobian |G| on disjoint Borel pieces. Eilenberg's inequality handles the null remainder independently of the desired coarea identity. Summation proves both a.e. measurability and the integral equality for arbitrary nonnegative Borel g."
+    },
+    {
+      "key": "slice_triple",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies all seven rectifiable-triple fields using the declared coarea dependency. Tangent identification is applied on the compatible chart pieces outside Z₂. The counting-measure argument covers m = 0, and positivity with local integrability suffices without integer-valued θ. The inline contraction matches the stated orientation."
+    },
+    {
+      "key": "lipschitz_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact support justifies integrability even for unbounded h. Mollification gives the correctly signed smooth identity in the supplied representations. The chartwise L¹ coefficient argument and weak-* gradient convergence justify the limiting tangent integral without assuming the child or parent conclusion."
+    },
+    {
+      "key": "slice_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies establish null transfer, the signed slice density and the cutoff identity. Endpoint levels are handled by G vanishing there almost everywhere. One-sided differentiation and dominated convergence yield the exact equality, with the exceptional set independent of S and its representations."
+    },
+    {
+      "key": "testform_determining",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable product of continuous derivative spaces provides countable dense families on fixed compact supports. Approximating differences satisfy the exact TestFormOnConverges definition. Linearity and the currents' built-in sequential continuity then prove equality."
+    },
+    {
+      "key": "tau_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Unit-simple orientation bounds the integrand by the locally integrable multiplicity on each test form's compact support. Integral linearity and the uniform zeroth-derivative estimate construct a current with exactly the required action. No openness assumption or additional dependency is needed."
+    }
+  ],
+  "required_changes": []
+}

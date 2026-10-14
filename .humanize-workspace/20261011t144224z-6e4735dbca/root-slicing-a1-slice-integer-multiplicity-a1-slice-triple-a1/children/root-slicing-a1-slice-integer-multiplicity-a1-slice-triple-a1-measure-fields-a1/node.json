@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1",
+  "depth": 4,
+  "title": "Null-measurability of M_t, local integrability of θ on M_t and a.e. strong measurability of ξ_t for a.e. t",
+  "statement": "Let P, m ∈ ℕ, n := m+1, U ⊆ ℝ^P open, (M, θ, ξ) with IsRectifiableTriple U n M θ ξ, f : ℝ^P → ℝ Borel measurable, L ≥ 0 and G : ℝ^P → ℝ^P Borel measurable with |G(x)| ≤ L for all x. Write Hᵏ := μHE[k] and assume the co-area identity for (M, f, G): for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M∩f⁻¹{t}} g dH^m is L¹-a.e.-measurable and ∫_ℝ ∫_{M∩f⁻¹{t}} g dH^m dt = ∫_M |G| g dHⁿ. For t ∈ ℝ let M_t := {x ∈ M : f(x) = t, G(x) ≠ 0} and ξ_t(x) := ξ(x) ∘ ι(|G(x)|⁻¹G(x)), where ι(v) := (alternatizeUncurryFinCLM ℝ ℝ^P ℝ) ∘ (smulRightL ℝ ℝ^P Λ^m (innerSL ℝ v)) : Λ^m → Λ^{m+1} (ι(v)α = v♭∧α). Then for L¹-a.e. t ∈ ℝ: (a) M_t is H^m-null-measurable; (b) θ is H^m-integrable on M_t ∩ K for every compact K ⊆ U; (c) ξ_t is a.e. strongly measurable for H^m restricted to M_t.",
+  "lean_statement": "∀ (P m : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) (m + 1)) (f : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), IsOpen U → IsRectifiableTriple U (m + 1) M θ ξ → Measurable f → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in M, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))) → ∀ᵐ t ∂(volume : Measure ℝ), NullMeasurableSet {x | x ∈ M ∧ f x = t ∧ G x ≠ 0} (μHE[m] : Measure (Eucl P)) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → IntegrableOn θ ({x | x ∈ M ∧ f x = t ∧ G x ≠ 0} ∩ K) (μHE[m] : Measure (Eucl P))) ∧ AEStronglyMeasurable (fun x => (ξ x).comp ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Eucl P) ℝ).comp (ContinuousLinearMap.smulRightL ℝ (Eucl P) (Covector (Eucl P) m) (innerSL ℝ (‖G x‖⁻¹ • G x))))) ((μHE[m] : Measure (Eucl P)).restrict {x | x ∈ M ∧ f x = t ∧ G x ≠ 0})",
+  "lean_name": "slicing_im_st_measure_fields",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.ae_transfer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.ae_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-measure-fields-a1-a1"
+}

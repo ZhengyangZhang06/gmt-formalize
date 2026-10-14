@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_radial-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1",
+  "depth": 4,
+  "title": "The cut-off radial operator Φ(ω) = ζ·Hω on test forms",
+  "statement": "Let P, m ∈ ℕ and r ∈ ℝ. Assume (H): for every C^∞ (m+1)-form ω : ℝ^P → Λ_{m+1} there is a C^∞ m-form ψ : ℝ^P → Λ_m such that\n(i) ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x ∈ ℝ^P and v ∈ (ℝ^P)^m;\n(iii) for all j ∈ ℕ and R, D ∈ ℝ with D ≥ 0: if ‖D^iω(y)‖ ≤ D for every i ≤ j and every y with ‖y‖ ≤ R, then ‖D^jψ(x)‖ ≤ (R + j)·D for every x with ‖x‖ ≤ R.\nThen there is an ℝ-linear map Φ : D^{m+1}(ℝ^P) → D^m(ℝ^P) (test forms on univ) such that:\n(a) for every sequence (ω_l) of (m+1)-test forms, TestFormOnConverges ω 0 implies TestFormOnConverges (l ↦ Φ(ω_l)) 0;\n(b) Φ(ω)(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for every ω ∈ D^{m+1}(ℝ^P), every x in the open ball B_r(0) and every v ∈ (ℝ^P)^m.\nHere (x, v) := Fin.cons x v. Hypothesis (H) is exactly the statement of iwl_cr_radial_operator instantiated at k := m, a := m, with its fderiv item (ii) removed. iwl_cr_radial_operator is the parent's own frozen dependency, not a child of this decomposition, and the parent discharges (H) with it.",
+  "lean_statement": "∀ (P m : ℕ) (r : ℝ), (∀ ω : DifferentialForm (Eucl P) (m + 1), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ ψ : DifferentialForm (Eucl P) m, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ ∧ (∀ (x : Eucl P) (v : Fin m → Eucl P), ψ x v = ∫ t in (0 : ℝ)..1, t ^ m * ω (t • x) (Fin.cons x v)) ∧ ∀ (j : ℕ) (R D : ℝ), 0 ≤ D → (∀ i ≤ j, ∀ y ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ i ω y‖ ≤ D) → ∀ x ∈ closedBall (0 : Eucl P) R, ‖iteratedFDeriv ℝ j ψ x‖ ≤ (R + j) * D) → ∃ Φ : TestFormOn (univ : Set (Eucl P)) (m + 1) →ₗ[ℝ] TestFormOn (univ : Set (Eucl P)) m, (∀ ωs : ℕ → TestFormOn (univ : Set (Eucl P)) (m + 1), TestFormOnConverges ωs 0 → TestFormOnConverges (fun l => Φ (ωs l)) 0) ∧ ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (x : Eucl P), x ∈ ball (0 : Eucl P) r → ∀ v : Fin m → Eucl P, (Φ ω : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)",
+  "lean_name": "iwl_cr_ce_cutoff_radial_operator",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-cut-96c7a5e3c7-a1"
+}
