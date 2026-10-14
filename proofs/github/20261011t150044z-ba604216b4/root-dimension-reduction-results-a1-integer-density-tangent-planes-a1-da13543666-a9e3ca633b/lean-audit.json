@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b9c4132ad21958fb0275354670a9c93b9a3bd6fad46ff4512fae19dd469e126f",
+  "git_delta": {
+    "base_commit": "a8beb10d2ce34bffe4f77264e2be278d39dca46e",
+    "candidate_commit": "4aa9ba8dc9ec5fe22643a88f4a53931e8190119e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sos_product_current",
+    "diff_sha256": "20e82b9d20a32034fed5435599aa0659520650bd9306b63cc494cfe425ca240e",
+    "source_sha256": "c10b09b0f8161b79aeff85d340f535511e374e328742c7259eca963b06ad4021",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sos_product_current",
+      "statement": "∀ (P k m' n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m') (E : Set (Euclid P)) (A : GeometricCurrentOn (univ : Set (Euclid P)) m') (RA : IMRep (univ : Set (Euclid P)) m'), 0 < m' → Orthonormal ℝ g → MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → RA.Represents A → RA.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → ∃ (B : GeometricCurrentOn (univ : Set (Euclid P)) n') (RB : IMRep (univ : Set (Euclid P)) n'), RB.Represents B ∧ (∀ C : Set (Euclid P), MeasurableSet C → RB.measure C = ∫⁻ t in E, RA.measure ((fun y => t + y) ⁻¹' C) ∂μHE[k]) ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m', (∀ (α : Covector (Euclid P) n') (v : Fin m' → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', B ω = ∫ t in E, currentEval A (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[k]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
