@@ -1,0 +1,124 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.estimate-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.estimate-a1.affine_homotopy-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 (Interpolation) of the parent proof, i.e. the affine homotopy h(t, x) = f(x) + t(g(x) − f(x)) of Simon 6.2.26, realized on ℝ^{N+1} = ℝ × ℝ^N.
+Notation: ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), e₀ := EuclideanSpace.single 0 1, Jv := ι(0, v), D := fderiv ℝ.
+
+1. Coordinate maps.
+   - Define tail : ℝ^{N+1} → ℝ^N by tail(y) := WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)), i.e. (y_0, …, y_N) ↦ (y_1, …, y_N).
+   - tail is ℝ-linear: the j-th coordinate of tail(y + z) is y_{j+1} + z_{j+1}, and that of tail(c·y) is c·y_{j+1} (Lean: `ext i; simp [Fin.tail]` for map_add' and map_smul').
+   - ℝ^{N+1} is finite-dimensional, so tail is a continuous linear map (LinearMap.toContinuousLinearMap), and tail(y) = WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)) holds definitionally.
+   - Let π₀ := EuclideanSpace.proj 0 : ℝ^{N+1} →L[ℝ] ℝ, so π₀(y) = (WithLp.ofLp y) 0 = y_0.
+
+2. Values at the special points.
+   - For all t ∈ ℝ and x ∈ ℝ^N: tail(ι(t, x)) = x (Fin.tail_cons and WithLp.toLp_ofLp) and π₀(ι(t, x)) = t (Fin.cons_zero).
+   - In particular tail(Jv) = v and π₀(Jv) = 0 for every v ∈ ℝ^N.
+   - The coordinates of e₀ are (e₀)_j = 1 if j = 0 and 0 otherwise. Hence tail(e₀) = 0, because its j-th coordinate is (e₀)_{j.succ} = 0 as j.succ ≠ 0 (Fin.succ_ne_zero). Also π₀(e₀) = 1.
+
+3. Definition. Put H(y) := F(tail y) + π₀(y)·(G(tail y) − F(tail y)).
+
+4. Smoothness.
+   - tail and π₀ are continuous linear maps, hence C^∞ (ContinuousLinearMap.contDiff).
+   - So F ∘ tail and G ∘ tail are C^∞ (ContDiff.comp), and so is their difference (ContDiff.sub).
+   - The product of that difference with the C^∞ scalar function π₀ is C^∞ (ContDiff.smul), and so is its sum with F ∘ tail (ContDiff.add).
+   - Thus ContDiff ℝ (⊤ : ℕ∞) H.
+
+5. Formula (i). By step 2, H(ι(t, x)) = F(tail ι(t,x)) + π₀(ι(t,x))·(G(tail ι(t,x)) − F(tail ι(t,x))) = F(x) + t·(G(x) − F(x)).
+
+6. The derivative of H.
+   - F and G are C^∞ with ⊤ ≠ 0, so they are differentiable (ContDiff.differentiable).
+   - Fix y ∈ ℝ^{N+1}. By the chain rule (HasFDerivAt.comp with tail.hasFDerivAt), F ∘ tail has derivative DF(tail y) ∘L tail at y, and G ∘ tail has derivative DG(tail y) ∘L tail.
+   - Combining the difference rule (HasFDerivAt.sub), the product rule for a scalar function times a vector-valued function (HasFDerivAt.smul with π₀.hasFDerivAt) and the sum rule (HasFDerivAt.add), H has at y the derivative
+     L_y := DF(tail y) ∘L tail + (π₀(y)·(DG(tail y) ∘L tail − DF(tail y) ∘L tail) + π₀.smulRight (G(tail y) − F(tail y))).
+   - Explicitly, for h ∈ ℝ^{N+1}: L_y(h) = DF(tail y)(tail h) + π₀(y)·(DG(tail y)(tail h) − DF(tail y)(tail h)) + π₀(h)·(G(tail y) − F(tail y)).
+   - Hence DH(y) = L_y for every y (HasFDerivAt.fderiv).
+
+7. Formula (ii). Let y = ι(t, x), so tail y = x and π₀ y = t (step 2). For h = e₀ we have tail h = 0 and π₀ h = 1. By linearity of DF(x) and DG(x):
+   DH(y)e₀ = DF(x)0 + t·(DG(x)0 − DF(x)0) + 1·(G(x) − F(x)) = G(x) − F(x).
+
+8. Formula (iii). With y = ι(t, x) and h = Jv we have tail h = v and π₀ h = 0, so
+   DH(y)(Jv) = DF(x)v + t·(DG(x)v − DF(x)v) + 0·(G(x) − F(x)) = DF(x)v + t·(DG(x)v − DF(x)v).
+
+Steps 3–8 show that H has all the required properties. □
+
+Lean remark: with hder : ∀ y, HasFDerivAt H L_y y, after `rw [(hder _).fderiv]` both (ii) and (iii) close by `simp` using the value lemmas of step 2. These are tail(ι(t,x)) = x, π₀(ι(t,x)) = t, tail(e₀) = 0 and π₀(e₀) = 1, the last two proved by `ext i; simp [Fin.tail, EuclideanSpace.single, Fin.succ_ne_zero]` and `simp [EuclideanSpace.single]`.
+
+## Key steps
+
+1. tail(y) = (y_1, …, y_N) and π₀(y) = y_0 are continuous linear maps. tail(ι(t,x)) = x, π₀(ι(t,x)) = t, tail(Jv) = v, π₀(Jv) = 0, tail(e₀) = 0, π₀(e₀) = 1.
+2. H(y) := F(tail y) + π₀(y)(G(tail y) − F(tail y)) is C^∞ and H(ι(t,x)) = F(x) + t(G(x) − F(x)).
+3. By the chain and product rules, DH(y)h = DF(tail y)(tail h) + π₀(y)(DG(tail y) − DF(tail y))(tail h) + π₀(h)(G(tail y) − F(tail y)).
+4. Evaluating at y = ι(t,x) with h = e₀ gives G(x) − F(x), and with h = Jv gives DF(x)v + t(DG(x)v − DF(x)v).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (IDENTICAL)`
+- `git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, as in manifest.json; project_commit b4d606db1)`
+- `rg -n cmcdt_lpo project mathlib/Mathlib -g '*.lean' (no match)`
+- `rg -n -i 'homotopy|straight.line|cylinder' project/GMT -g '*.lean' (no match)`
+- `rg -n 'theorem comp_cons|theorem curryLeft_apply_apply|def compContinuousLinearMapCLM|def curryLeftLI|theorem Continuous.finCons|theorem continuous_toLp|theorem HasFDerivAt.smul |theorem ContDiff.differentiable |theorem pow_le_pow_left₀|theorem abs_add_le|theorem integral_congr ' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'def toContinuousLinearMap' mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `sed -n 1,116p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,420p .../Chapter06/Currents.lean; sed -n 25,126p .../Chapter06/Forms.lean; sed -n 95,142p .../Chapter06/CurrentLocalEquality.lean`
+- `grep -n '2.25|2.26|2.27|homotopy' book/chapter-06.txt; sed -n 425,500p book/chapter-06.txt`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: sibling frozen types of operators-a1 (cutoff, slice, toolkit, covector_bounds) and lean_name collision check for cmcdt_lpo_she_* (none among 2138 names)`
+- `diff and grep of /runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/inherited.py, runtime.py, swarm_broker.py (cited_inherited)`
+- `lake env lean /tmp/she-decomp-q9x4/Avail.lean, T1.lean, T2.lean, T3.lean (API availability; `module` closes A + t(B − A) = (1 − t)A + tB; rw [map_sub] fails on X.toCurrent of a test-form difference while the term X.toCurrent.map_sub works)`
+- `lake env lean /tmp/she-decomp-q9x4/Stmts.lean (three child types elaborate)`
+- `lake env lean /tmp/she-decomp-q9x4/Assembly.lean and Combined.lean (sorry-free assembly of the exact selected frozen type from the three children plus the CP and toolkit types; #print axioms)`
+- `lake env lean /tmp/she-decomp-q9x4/ChildA.lean, ChildB.lean, ChildC.lean (prototype proofs of the three children)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-74954b5c40/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-74954b5c40/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/runtime/flows/gmt-claude-6c9908f72f7f/_recursive_lean/inherited.py`
+- `/tmp/she-decomp-q9x4/Stmts.lean`
+- `/tmp/she-decomp-q9x4/Assembly.lean`
+- `/tmp/she-decomp-q9x4/Combined.lean`
+- `/tmp/she-decomp-q9x4/ChildA.lean`
+- `/tmp/she-decomp-q9x4/ChildB.lean`
+- `/tmp/she-decomp-q9x4/ChildC.lean`
+
+Snapshot facts:
+- The snapshot is project b4d606d with Mathlib 25730c7c, and its Ch07 contract is byte-identical to the workspace Submission.lean.
+- The snapshot has no cmcdt_lpo declarations and no homotopy or cylinder material, so no proof can be reused from it.
+
+Available tools:
+- Every Mathlib tool the child proofs use is present in the frozen import closure: Fin.comp_cons, ContinuousAlternatingMap.curryLeft_apply_apply (stated with Matrix.vecCons, which is definitionally Fin.cons), curryLeftLI, compContinuousLinearMapCLM, compContinuousLinearMap_apply, Continuous.finCons, PiLp.continuous_toLp/ofLp, Continuous.clm_apply, HasFDerivAt.comp/add/sub/smul, ContDiff.differentiable (with n ≠ 0), LinearMap.toContinuousLinearMap, EuclideanSpace.proj, intervalIntegral.integral_congr, pow_le_pow_left₀, abs_add_le and the `module` tactic.
+- SimonGMT Chapter 6 supplies GeometricCurrentOn.boundary_apply (rfl), exteriorDerivativeTestOn (coercion definitionally equal to exteriorDerivative), exteriorDerivative_isTestForm, covectorEuclideanNorm_nonneg, and massOn/mass as an sSup of ofReal values.
+- Simon 6.2.25 (homotopy formula), 6.2.26 (affine homotopy) and 6.2.27 (integrand estimate) correspond to children C, A and B.
+
+Lean verification:
+- All three child types elaborate.
+- The exact selected frozen type follows from them together with the cutoff and toolkit types without sorry; the axioms are propext, Classical.choice and Quot.sound.
+- Child prototypes compile: A is sorry-free, and B and C use only the stubbed frozen sibling Submission.cmcdt_lpo_slice_forms.
+
+Runtime and names:
+- The running flow's inherited.py makes that sibling a prerequisite of B and C, because their proofs cite it.
+- The names cmcdt_lpo_she_affine_homotopy, cmcdt_lpo_she_slice_bound and cmcdt_lpo_she_cylinder_homotopy are unused in the DAG.
