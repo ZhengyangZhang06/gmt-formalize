@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4c8a3835460da045957ded46fe89aa549ecfcadcc1347a1c7ab85848acb866ba",
+  "git_delta": {
+    "base_commit": "f63fe164a46aea7ba26db6cfaa375481bfd10bbb",
+    "candidate_commit": "bbf7bafb9f2d269f8163cda5667ab5fcf4a81fcd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_td_excess_bound",
+    "diff_sha256": "f8393eadff1100bffaea49f69399ed3b5db5253f8816578ba5e2691179078307",
+    "source_sha256": "013a3ea2a909319b803c8a76450d88ddab620d543fec674079984a326a2ccbd8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_td_excess_bound",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (d ϑ : Euclid P → ℝ) (a : Euclid P) (t : ℝ), 0 < t → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable d μ → (∀ᵐ x ∂μ, |d x| ≤ 1) → Continuous ϑ → HasCompactSupport ϑ → (∀ x, 0 ≤ ϑ x) → (∀ x : Euclid P, ‖x‖ < 3 → ϑ x = 1) → (∫⁻ x in ball a (3 * t), ENNReal.ofReal (1 - |d x|) ∂μ) / ENNReal.ofReal (t ^ 2) ≤ ENNReal.ofReal (t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) ∂μ - |t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) * d x ∂μ|)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
