@@ -451,6 +451,343 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The Euclidean coefficient norm is a pulled-back Euclidean norm** (Simon Ch. 6, 1.2 and 1.5;
+used by the smooth unit approximation behind the mass of `τ(M, θ, ξ)`).  With `e` the standard
+basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})` for strictly increasing `I : Fin n → Fin P`
+and `c_I = 0` otherwise.  Each `c_I` is a continuous linear functional, so
+`A α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)` is continuous linear, and termwise
+`‖A α‖ = √(∑_I c_I(α)²)` is the defining sum of `covectorEuclideanNorm α`. -/
+theorem Submission.dor_ims_sua_coeff_norm_rep : ∀ (P n : ℕ), ∃ A : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖A α‖ := by
+  intro P n
+  -- Step 1: the coefficient functionals `c_I : α ↦ α(e_I)` for increasing `I`, else `0`
+  let c : (Fin n → Fin P) → Covector (Euclid P) n →L[ℝ] ℝ := fun I =>
+    if StrictMono I then
+      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
+    else 0
+  -- Step 2: `A α = (c_I α)_I`, moved into `EuclideanSpace ℝ (Fin n → Fin P)`
+  refine ⟨(EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
+    (ContinuousLinearMap.pi c), fun α => ?_⟩
+  -- Step 3: `‖A α‖ = √(∑_I |c_I α|²)` and `|c_I α|² = [StrictMono I] α(e_I)²` termwise
+  rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+  congr 1
+  refine Finset.sum_congr rfl fun I _ => ?_
+  by_cases hI : StrictMono I <;> simp [c, hI]
+
+/-- **Mollifying a unit covector field** (smooth unit approximation, step 6).  A continuous,
+compactly supported `n`-covector field `g` with `tsupport g ⊆ V` (`V` open) and `|g| ≤ 1` for the
+Euclidean coefficient norm `|·|` is uniformly `ε`-approximated in `|·|` by a test form `ω` with
+`tsupport ω ⊆ V` and `|ω| ≤ 1`.
+
+Write `|α| = ‖Aα‖` for a continuous linear coefficient map `A` (`dor_ims_sua_coeff_norm_rep`), so
+`|α| ≤ ‖A‖‖α‖`.  Take `r > 0` with `cthickening r (tsupport g) ⊆ V`, and `s ≤ r` such that
+`‖g y − g x‖ < ε/(‖A‖+1)` when `dist y x < s` (uniform continuity).  Let `ω = ψ ⋆ g`, where
+`ψ = φ / ∫ φ` normalizes a smooth bump `φ ≥ 0` with `support φ = B_s(0)`.  Then `ω` is `C^∞` with
+compact support and `tsupport ω ⊆ cthickening s (tsupport g) ⊆ V`; `Aω(x) = (ψ ⋆ (A ∘ g))(x)` is
+an average of values of norm `|g| ≤ 1`; and `‖ω(x) − g(x)‖ ≤ ε/(‖A‖+1)`, whence
+`|ω(x) − g(x)| ≤ ε`. -/
+theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsOpen V → Continuous g → HasCompactSupport g → tsupport g ⊆ V → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (ω x - g x) ≤ ε := by
+  intro P n V g ε hV hgc hgs hgV hg1 hε
+  -- (1) the coefficient map `A` with `|α| = ‖A α‖ ≤ ‖A‖ ‖α‖`
+  obtain ⟨A, hA⟩ := Submission.dor_ims_sua_coeff_norm_rep P n
+  have hC : 0 < ‖A‖ + 1 := by positivity
+  -- (2) a support margin `r`
+  obtain ⟨r, hr, hrV⟩ := hgs.isCompact.exists_cthickening_subset_open hV hgV
+  -- (3) uniform continuity of `g`, and the radius `s = min s₀ r`
+  obtain ⟨s₀, hs₀, hgs₀⟩ := Metric.uniformContinuous_iff.mp
+    (hgs.uniformContinuous_of_continuous hgc) (ε / (‖A‖ + 1)) (div_pos hε hC)
+  have hs : 0 < min s₀ r := lt_min hs₀ hr
+  -- (4) a smooth bump `φ` with `support φ = B_s(0)`, and `ψ = φ / ∫ φ`: `ψ ≥ 0`, `∫ ψ = 1`
+  let φ : ContDiffBump (0 : Euclid P) := ⟨min s₀ r / 2, min s₀ r, half_pos hs, half_lt_self hs⟩
+  have hφ : 0 < ∫ y, φ y := by
+    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
+      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).mpr ?_
+    rw [φ.support_eq]
+    exact measure_ball_pos volume 0 hs
+  let ψ : Euclid P → ℝ := fun y => φ y / ∫ y, φ y
+  have hψφ : support ψ ⊆ support φ := fun y hy h => hy (by simp [ψ, h])
+  have hψs : support ψ ⊆ ball 0 (min s₀ r) := hψφ.trans φ.support_eq.subset
+  have hψc : HasCompactSupport ψ := φ.hasCompactSupport.mono hψφ
+  have hψ0 : ∀ y, 0 ≤ ψ y := fun y => div_nonneg φ.nonneg hφ.le
+  have hψ1 : ∫ y, ψ y = 1 := by rw [integral_div, div_self hφ.ne']
+  -- (5) `ω = ψ ⋆ g`
+  let ω : DifferentialForm (Euclid P) n :=
+    convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  have hgi : LocallyIntegrable g volume := hgc.locallyIntegrable
+  have hω : ConvolutionExists ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
+    hψc.convolutionExists_left _ (φ.continuous.div_const _) hgi
+  refine ⟨ω, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
+  · -- (6) smoothness
+    exact hψc.contDiff_convolution_left _ (φ.contDiff.div_const _) hgi
+  · exact hψc.convolution _ hgs
+  · -- (7) `spt ω ⊆ cthickening s (tsupport g) ⊆ V`
+    have hsupp : support ω ⊆ thickening (min s₀ r) (tsupport g) := by
+      refine (support_convolution_subset _).trans ?_
+      rintro _ ⟨t, ht, z, hz, rfl⟩
+      have ht' : ‖t‖ < min s₀ r := mem_ball_zero_iff.mp (hψs ht)
+      exact mem_thickening_iff.mpr ⟨z, subset_tsupport g hz, by
+        rwa [dist_eq_norm, add_sub_cancel_right]⟩
+    calc tsupport ω ⊆ closure (thickening (min s₀ r) (tsupport g)) := closure_mono hsupp
+      _ ⊆ cthickening (min s₀ r) (tsupport g) := closure_thickening_subset_cthickening _ _
+      _ ⊆ cthickening r (tsupport g) := cthickening_mono (min_le_right _ _) _
+      _ ⊆ V := hrV
+  · -- (8) `|ω x| = ‖(ψ ⋆ (A ∘ g)) x‖ ≤ 1`
+    intro x
+    have hAω : A (ω x) = convolution ψ (fun y => A (g y))
+        (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
+      calc A (ω x) = ∫ t, A (ContinuousLinearMap.lsmul ℝ ℝ (ψ t) (g (x - t))) :=
+            (A.integral_comp_comm (hω x).integrable).symm
+        _ = _ := by simp only [convolution_def, ContinuousLinearMap.lsmul_apply, map_smul]
+    rw [hA, hAω, ← dist_zero_right]
+    exact dist_convolution_le zero_le_one hψs hψ0 hψ1
+      (A.continuous.comp hgc).aestronglyMeasurable fun y _ => by
+        rw [dist_zero_right, ← hA]
+        exact hg1 y
+  · -- (9) `‖ω x − g x‖ ≤ ε/(‖A‖+1)`, hence `|ω x − g x| ≤ ‖A‖ ε/(‖A‖+1) ≤ ε`
+    intro x
+    have hd : dist (ω x) (g x) ≤ ε / (‖A‖ + 1) :=
+      dist_convolution_le (div_pos hε hC).le hψs hψ0 hψ1 hgc.aestronglyMeasurable fun y hy =>
+        (hgs₀ ((mem_ball.mp hy).trans_le (min_le_left _ _))).le
+    calc covectorEuclideanNorm (ω x - g x) = ‖A (ω x - g x)‖ := hA _
+      _ ≤ ‖A‖ * dist (ω x) (g x) := by rw [dist_eq_norm]; exact A.le_opNorm _
+      _ ≤ ‖A‖ * (ε / (‖A‖ + 1)) := by gcongr
+      _ ≤ ε := by
+        rw [mul_div_assoc', div_le_iff₀ hC]
+        nlinarith [norm_nonneg A]
+
+/-- **Uniform approximation by test forms** (extension of a current of locally finite mass to
+continuous fields, approximating sequences).  Let `|α| = covectorEuclideanNorm α = ‖c α‖` for a
+continuous linear equivalence `c` onto a Euclidean space.  A continuous, compactly supported
+`n`-covector field `G` with `tsupport G ⊆ V` (`V` open) is uniformly `ε`-approximated in `|·|` by a
+test form `ω` with `tsupport ω ⊆ V`.
+
+Since `c` is linear, `|t • α| = |t| |α|`.  The field `c ∘ G` is continuous with compact support,
+hence bounded, so `|G| ≤ s` for some `s > 0`.  Mollifying the unit field `g = s⁻¹ • G` with error
+`ε / s` (`dor_ims_sua_mollify_unit_field`) gives a test form `ω₀` with `tsupport ω₀ ⊆ V`; then
+`ω = s • ω₀` is a test form with `tsupport ω ⊆ V` and `|ω x − G x| = s |ω₀ x − g x| ≤ ε`. -/
+theorem Submission.cmr_tfe_uniform_testForm_approx : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (V : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (ε : ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → IsOpen V → Continuous G → HasCompactSupport G → tsupport G ⊆ V → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - G x) ≤ ε := by
+  intro P n d c V G ε hc hV hG hGs hGV hε
+  -- (1) homogeneity: `|t • α| = ‖c (t • α)‖ = |t| ‖c α‖ = |t| |α|`
+  have hsm : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := fun t α => by
+    rw [hc, hc, map_smul, norm_smul, Real.norm_eq_abs]
+  -- (2) `c ∘ G` is continuous with compact support, so `|G| ≤ s` for some `s > 0`
+  obtain ⟨C, hC⟩ := (hGs.comp_left (map_zero c)).exists_bound_of_continuous (c.continuous.comp hG)
+  obtain ⟨s, hs, hGs'⟩ : ∃ s : ℝ, 0 < s ∧ ∀ x, covectorEuclideanNorm (G x) ≤ s :=
+    ⟨max C 0 + 1, by positivity, fun x => by
+      rw [hc]
+      exact (hC x).trans ((le_max_left C 0).trans (le_add_of_nonneg_right zero_le_one))⟩
+  -- (3) the normalized field `g = s⁻¹ • G` has `|g| ≤ 1`
+  have hg1 : ∀ x, covectorEuclideanNorm (s⁻¹ • G x) ≤ 1 := fun x => by
+    rw [hsm, abs_of_pos (inv_pos.mpr hs), inv_mul_le_iff₀ hs, mul_one]
+    exact hGs' x
+  -- (4) mollify `g` with error `ε / s`
+  obtain ⟨ω₀, hω₀, hω₀V, -, hω₀g⟩ := Submission.dor_ims_sua_mollify_unit_field P n V
+    (s⁻¹ • G) (ε / s) hV (hG.const_smul s⁻¹) (hGs.comp_left (smul_zero s⁻¹))
+    ((tsupport_smul_subset_right (fun _ => s⁻¹) G).trans hGV) hg1 (div_pos hε hs)
+  -- (5) `ω = s • ω₀` is a test form with `tsupport ω ⊆ V`
+  refine ⟨s • ω₀, (testFormSubmodule n).smul_mem s hω₀,
+    (tsupport_smul_subset_right (fun _ => s) ω₀).trans hω₀V, fun x => ?_⟩
+  -- (6) `ω x - G x = s • (ω₀ x - g x)`, so `|ω x - G x| = s |ω₀ x - g x| ≤ s (ε / s) = ε`
+  have hω : (s • ω₀) x - G x = s • (ω₀ x - s⁻¹ • G x) := by
+    rw [Pi.smul_apply, smul_sub, smul_inv_smul₀ hs.ne']
+  rw [hω, hsm, abs_of_pos hs]
+  exact (le_div_iff₀' hs).mp (hω₀g x)
+/-- **Limit functional along uniformly convergent test forms** (test-form extension, steps 4–5).
+Let `|α| = ‖c α‖` for a continuous linear equivalence `c`, and let `|T ω| ≤ r m(W)` whenever
+`W ⊂⊂ U` is open, `spt ω ⊆ W` and `|ω(x)| ≤ r` for all `x`.  Then there is `Φ` with
+`T(ωₖ) → Φ(G)` whenever `spt ωₖ ⊆ W` for one open `W ⊂⊂ U` and all `k`, and
+`|ωₖ(x) − G(x)| ≤ εₖ` for all `k`, `x`, with `εₖ → 0`.
+
+For two such data `(W, ωₖ, εₖ)`, `(W', ω'ₗ, ε'ₗ)` of the same `G`, `ωₖ − ω'ₗ` is a test form with
+`spt ⊆ W ∪ W' ⊂⊂ U` and `|ωₖ − ω'ₗ| ≤ εₖ + ε'ₗ`, so `|T(ωₖ) − T(ω'ₗ)| ≤ (εₖ + ε'ₗ) m(W ∪ W')`.
+With equal data, `(T(ωₖ))` is Cauchy, hence convergent.  `Φ(G)` is the limit along chosen data
+(`0` if there are none), and the estimate with `l = k` shows that every approximating sequence
+of `G` tends to `Φ(G)`. -/
+theorem Submission.cmr_tfe_exists_limit_functional : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : Set (Euclid P) → ℝ), (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → (∀ (W : Set (Euclid P)) (ω : TestFormOn U n) (r : ℝ), IsOpen W → CompactlyContained W U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * m W) → ∃ Φ : (Euclid P → Covector (Euclid P) n) → ℝ, ∀ (G : Euclid P → Covector (Euclid P) n) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ), IsOpen W → CompactlyContained W U → (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) → (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) → Tendsto εs atTop (𝓝 0) → Tendsto (fun k => T (ωs k)) atTop (𝓝 (Φ G)) := by
+  intro P n d c U T m hc hm
+  classical
+  -- (1) `|α − β| ≤ |α| + |β|`, since `|·| = ‖c ·‖` with `c` linear
+  have htri : ∀ α β : Covector (Euclid P) n,
+      covectorEuclideanNorm (α - β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β := by
+    intro α β
+    rw [hc, hc, hc, map_sub]
+    exact norm_sub_le _ _
+  -- (2)–(3) the key estimate for two approximating data of the same `G`
+  have hkey : ∀ (G : Euclid P → Covector (Euclid P) n) (W W' : Set (Euclid P))
+      (ωs ωs' : ℕ → TestFormOn U n) (εs εs' : ℕ → ℝ), IsOpen W → CompactlyContained W U →
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) →
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) →
+      IsOpen W' → CompactlyContained W' U →
+      (∀ k, tsupport (ωs' k : DifferentialForm (Euclid P) n) ⊆ W') →
+      (∀ k x, covectorEuclideanNorm ((ωs' k : DifferentialForm (Euclid P) n) x - G x) ≤ εs' k) →
+      ∀ k l, |T (ωs k) - T (ωs' l)| ≤ (εs k + εs' l) * m (W ∪ W') := by
+    intro G W W' ωs ωs' εs εs' hW hWU hωW hωG hW' hW'U hω'W hω'G k l
+    -- `W ∪ W'` is open and `W ∪ W' ⊂⊂ U`
+    have hWW'U : CompactlyContained (W ∪ W') U := by
+      rw [CompactlyContained, closure_union]
+      exact ⟨hWU.1.union hW'U.1, union_subset hWU.2 hW'U.2⟩
+    -- the bound for `δ = ωs k − ωs' l`, and `T δ = T (ωs k) − T (ωs' l)` by linearity
+    have h := hm (W ∪ W') (ωs k - ωs' l) (εs k + εs' l) (hW.union hW') hWW'U ?_ ?_
+    · rwa [map_sub T.toCurrent] at h
+    · rw [Submodule.coe_sub]
+      exact (tsupport_sub _ _).trans (union_subset_union (hωW k) (hω'W l))
+    · intro x
+      rw [Submodule.coe_sub, Pi.sub_apply,
+        ← sub_sub_sub_cancel_right ((ωs k : DifferentialForm (Euclid P) n) x) _ (G x)]
+      exact (htri _ _).trans (add_le_add (hωG k x) (hω'G l x))
+  -- (4) along approximating data, `(T (ωs k))` is Cauchy, hence convergent
+  have hconv : ∀ (G : Euclid P → Covector (Euclid P) n) (W : Set (Euclid P))
+      (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ), IsOpen W → CompactlyContained W U →
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) →
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) →
+      Tendsto εs atTop (𝓝 0) → ∃ L, Tendsto (fun k => T (ωs k)) atTop (𝓝 L) := by
+    intro G W ωs εs hW hWU hωW hωG hε
+    refine cauchySeq_tendsto_of_complete (cauchySeq_iff_tendsto_dist_atTop_0.mpr ?_)
+    have h0 := ((hε.comp tendsto_fst).add (hε.comp tendsto_snd)).mul_const (m (W ∪ W))
+    rw [add_zero, zero_mul, prod_atTop_atTop_eq] at h0
+    refine squeeze_zero (fun _ => dist_nonneg) (fun p => ?_) h0
+    rw [Real.dist_eq]
+    exact hkey G W W ωs ωs εs εs hW hWU hωW hωG hW hWU hωW hωG p.1 p.2
+  -- (5) `Φ G` is the limit along chosen approximating data of `G` (`0` if there are none)
+  refine ⟨fun G => if h : ∃ (L : ℝ) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n)
+      (εs : ℕ → ℝ), IsOpen W ∧ CompactlyContained W U ∧
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) ∧
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) ∧
+      Tendsto εs atTop (𝓝 0) ∧ Tendsto (fun k => T (ωs k)) atTop (𝓝 L) then h.choose else 0, ?_⟩
+  -- (6) every approximating sequence of `G` tends to `Φ G`
+  intro G W ωs εs hW hWU hωW hωG hε
+  obtain ⟨L, hL⟩ := hconv G W ωs εs hW hWU hωW hωG hε
+  have h : ∃ (L : ℝ) (W : Set (Euclid P)) (ωs : ℕ → TestFormOn U n) (εs : ℕ → ℝ),
+      IsOpen W ∧ CompactlyContained W U ∧
+      (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) ∧
+      (∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤ εs k) ∧
+      Tendsto εs atTop (𝓝 0) ∧ Tendsto (fun k => T (ωs k)) atTop (𝓝 L) :=
+    ⟨L, W, ωs, εs, hW, hWU, hωW, hωG, hε, hL⟩
+  dsimp only
+  rw [dite_eq_left h]
+  obtain ⟨W', ωs', εs', hW', hW'U, hω'W, hω'G, hε', hL'⟩ := h.choose_spec
+  have h0 := (hε.add hε').mul_const (m (W ∪ W'))
+  rw [add_zero, zero_mul] at h0
+  have hdiff : Tendsto (fun k => T (ωs k) - T (ωs' k)) atTop (𝓝 0) :=
+    squeeze_zero_norm (fun k => (Real.norm_eq_abs _).trans_le
+      (hkey G W W' ωs ωs' εs εs' hW hWU hωW hωG hW' hW'U hω'W hω'G k k)) h0
+  have hlim := hL'.add hdiff
+  rw [add_zero] at hlim
+  exact hlim.congr fun k => add_sub_cancel _ _
+
+/-- **Extending a locally bounded current to continuous covector fields.**  Let `|α| = ‖c α‖` for
+a continuous linear equivalence `c` onto `ℝᵈ`, and let `m` bound `T` locally: `|T(ω)| ≤ r m(W)`
+whenever `W ⊂⊂ U` is open, `spt ω ⊆ W` and `|ω| ≤ r`.  Take `Φ` with `T(ωₖ) → Φ(G)` along test
+forms `ωₖ` supported in one open `W ⊂⊂ U` with `|ωₖ − G| ≤ εₖ → 0`
+(`cmr_tfe_exists_limit_functional`).  A compact subset of `U` lies in an open `W ⊂⊂ U`, and a
+continuous `G` with compact support in `W` has such approximants with `εₖ = 1/(k+1)`
+(`cmr_tfe_uniform_testForm_approx`).  Sums and multiples of approximants approximate `G₁ + G₂`
+(in `W₁ ∪ W₂`) and `t G`, so additivity and homogeneity follow from the linearity of `T` and
+uniqueness of limits; the constant sequence `ω` gives `Φ(ω) = T(ω)`; and `|ωₖ| ≤ r + 1/(k+1)`
+gives `|T(ωₖ)| ≤ (r + 1/(k+1)) m(W)`, whence `|Φ(G)| ≤ r m(W)`. -/
+theorem Submission.cmr_tfe_ambient_extension : ∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : Set (Euclid P) → ℝ), IsOpen U → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → (∀ (W : Set (Euclid P)) (ω : TestFormOn U n) (r : ℝ), IsOpen W → CompactlyContained W U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * m W) → ∃ Φ : (Euclid P → Covector (Euclid P) n) → ℝ, (∀ G₁ G₂ : Euclid P → Covector (Euclid P) n, Continuous G₁ → HasCompactSupport G₁ → tsupport G₁ ⊆ U → Continuous G₂ → HasCompactSupport G₂ → tsupport G₂ ⊆ U → Φ (G₁ + G₂) = Φ G₁ + Φ G₂) ∧ (∀ (t : ℝ) (G : Euclid P → Covector (Euclid P) n), Continuous G → HasCompactSupport G → tsupport G ⊆ U → Φ (t • G) = t * Φ G) ∧ (∀ ω : TestFormOn U n, Φ (ω : DifferentialForm (Euclid P) n) = T ω) ∧ ∀ (W : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (r : ℝ), IsOpen W → CompactlyContained W U → Continuous G → HasCompactSupport G → tsupport G ⊆ W → (∀ x, covectorEuclideanNorm (G x) ≤ r) → |Φ G| ≤ r * m W := by
+  intro P n d c U T m hU hc hm
+  -- (1) the limit functional `Φ`
+  obtain ⟨Φ, hΦ⟩ := Submission.cmr_tfe_exists_limit_functional P n d c U T m hc hm
+  -- `|α + β| ≤ |α| + |β|` and `|t • α| = |t| |α|`, read through `c`
+  have hadd : ∀ α β : Covector (Euclid P) n,
+      covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β := by
+    intro α β
+    rw [hc, hc, hc, map_add]
+    exact norm_add_le _ _
+  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    rw [hc, hc, map_smul, norm_smul, Real.norm_eq_abs]
+  -- (2) a compact subset of `U` lies in an open `W ⊂⊂ U`; and `W ⊂⊂ U` gives `W ⊆ U`
+  have hnbhd : ∀ S : Set (Euclid P), IsCompact S → S ⊆ U →
+      ∃ W, IsOpen W ∧ S ⊆ W ∧ CompactlyContained W U := by
+    intro S hS hSU
+    obtain ⟨W, hWo, hSW, hWU, hWc⟩ := exists_open_between_and_isCompact_closure hS hU hSU
+    exact ⟨W, hWo, hSW, hWc, hWU⟩
+  have hsub : ∀ W, CompactlyContained W U → W ⊆ U := fun W hW => subset_closure.trans hW.2
+  -- (3) approximants `ωₖ ∈ 𝒟ⁿ(U)` with `spt ωₖ ⊆ W` and `|ωₖ − G| ≤ 1/(k+1)`
+  have happrox : ∀ (W : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n), IsOpen W →
+      CompactlyContained W U → Continuous G → HasCompactSupport G → tsupport G ⊆ W →
+      ∃ ωs : ℕ → TestFormOn U n, (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ W) ∧
+        ∀ k x, covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x - G x) ≤
+          1 / ((k : ℝ) + 1) := by
+    intro W G hW hWU hG hGc hGW
+    have hk : ∀ k : ℕ, ∃ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W ∧
+        ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x - G x) ≤
+          1 / ((k : ℝ) + 1) := by
+      intro k
+      obtain ⟨ω, hωt, hωW, hωe⟩ := Submission.cmr_tfe_uniform_testForm_approx P n d c
+        W G (1 / ((k : ℝ) + 1)) hc hW hG hGc hGW (by positivity)
+      exact ⟨⟨ω, hωt, hωW.trans (hsub W hWU)⟩, hωW, hωe⟩
+    choose ωs hωW hωe using hk
+    exact ⟨ωs, hωW, hωe⟩
+  have hlim : Tendsto (fun k : ℕ => 1 / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  refine ⟨Φ, ?_, ?_, ?_, ?_⟩
+  · -- (4) additivity: `ω¹ₖ + ω²ₖ` approximates `G₁ + G₂` in `W₁ ∪ W₂ ⊂⊂ U`
+    intro G₁ G₂ hG₁ hG₁c hG₁U hG₂ hG₂c hG₂U
+    obtain ⟨W₁, hW₁o, hG₁W₁, hW₁U⟩ := hnbhd _ hG₁c hG₁U
+    obtain ⟨W₂, hW₂o, hG₂W₂, hW₂U⟩ := hnbhd _ hG₂c hG₂U
+    obtain ⟨ω₁, hω₁W, hω₁e⟩ := happrox W₁ G₁ hW₁o hW₁U hG₁ hG₁c hG₁W₁
+    obtain ⟨ω₂, hω₂W, hω₂e⟩ := happrox W₂ G₂ hW₂o hW₂U hG₂ hG₂c hG₂W₂
+    have hWU : CompactlyContained (W₁ ∪ W₂) U := by
+      refine ⟨?_, ?_⟩ <;> rw [closure_union]
+      exacts [hW₁U.1.union hW₂U.1, union_subset hW₁U.2 hW₂U.2]
+    have h := hΦ (G₁ + G₂) (W₁ ∪ W₂) (fun k => ω₁ k + ω₂ k)
+      (fun k => 1 / ((k : ℝ) + 1) + 1 / ((k : ℝ) + 1)) (hW₁o.union hW₂o) hWU
+      (fun k => by
+        simp only [Submodule.coe_add]
+        exact (tsupport_add _ _).trans (union_subset_union (hω₁W k) (hω₂W k)))
+      (fun k x => by
+        simp only [Submodule.coe_add, Pi.add_apply]
+        rw [add_sub_add_comm]
+        exact (hadd _ _).trans (add_le_add (hω₁e k x) (hω₂e k x)))
+      (by simpa only [add_zero] using hlim.add hlim)
+    have h' : Tendsto (fun k => T (ω₁ k + ω₂ k)) atTop (𝓝 (Φ G₁ + Φ G₂)) :=
+      ((hΦ G₁ W₁ ω₁ _ hW₁o hW₁U hω₁W hω₁e hlim).add
+        (hΦ G₂ W₂ ω₂ _ hW₂o hW₂U hω₂W hω₂e hlim)).congr fun k =>
+          (T.toCurrent.map_add (ω₁ k) (ω₂ k)).symm
+    exact tendsto_nhds_unique h h'
+  · -- (5) homogeneity: `t ωₖ` approximates `t G` with errors `|t|/(k+1)`
+    intro t G hG hGc hGU
+    obtain ⟨W, hWo, hGW, hWU⟩ := hnbhd _ hGc hGU
+    obtain ⟨ωs, hωW, hωe⟩ := happrox W G hWo hWU hG hGc hGW
+    have h := hΦ (t • G) W (fun k => t • ωs k) (fun k => |t| * (1 / ((k : ℝ) + 1))) hWo hWU
+      (fun k => by
+        simp only [Submodule.coe_smul]
+        exact (tsupport_smul_subset_right (fun _ => t) _).trans (hωW k))
+      (fun k x => by
+        simp only [Submodule.coe_smul, Pi.smul_apply]
+        have e : t • (ωs k : DifferentialForm (Euclid P) n) x - t • G x =
+            t • ((ωs k : DifferentialForm (Euclid P) n) x - G x) := (smul_sub t _ _).symm
+        rw [e, hsmul]
+        exact mul_le_mul_of_nonneg_left (hωe k x) (abs_nonneg t))
+      (by simpa only [mul_zero] using hlim.const_mul |t|)
+    have h' : Tendsto (fun k => T (t • ωs k)) atTop (𝓝 (t * Φ G)) :=
+      ((hΦ G W ωs _ hWo hWU hωW hωe hlim).const_mul t).congr fun k => by
+        rw [T.toCurrent.map_smul, smul_eq_mul]
+    exact tendsto_nhds_unique h h'
+  · -- (6) agreement: the constant sequence `ω`, with errors `0`
+    intro ω
+    obtain ⟨W, hWo, hωW, hWU⟩ := hnbhd _ ω.property.1.2 ω.property.2
+    exact tendsto_nhds_unique (hΦ (ω : DifferentialForm (Euclid P) n) W (fun _ => ω) (fun _ => 0)
+      hWo hWU (fun _ => hωW) (fun _ x => by simp) tendsto_const_nhds) tendsto_const_nhds
+  · -- (7) bound: `|ωₖ| ≤ r + 1/(k+1)`, so `|T(ωₖ)| ≤ (r + 1/(k+1)) m(W)`; let `k → ∞`
+    intro W G r hWo hWU hG hGc hGW hr
+    obtain ⟨ωs, hωW, hωe⟩ := happrox W G hWo hWU hG hGc hGW
+    have hb : ∀ k : ℕ, |T (ωs k)| ≤ (r + 1 / ((k : ℝ) + 1)) * m W := by
+      intro k
+      refine hm W (ωs k) _ hWo hWU (hωW k) fun x => ?_
+      calc covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) n) x)
+          = covectorEuclideanNorm (((ωs k : DifferentialForm (Euclid P) n) x - G x) + G x) := by
+            rw [sub_add_cancel]
+        _ ≤ 1 / ((k : ℝ) + 1) + r := (hadd _ _).trans (add_le_add (hωe k x) (hr x))
+        _ = r + 1 / ((k : ℝ) + 1) := add_comm _ _
+    have hmW : Tendsto (fun k : ℕ => (r + 1 / ((k : ℝ) + 1)) * m W) atTop (𝓝 (r * m W)) := by
+      simpa only [add_zero] using ((tendsto_const_nhds (x := r)).add hlim).mul_const (m W)
+    exact le_of_tendsto_of_tendsto' (hΦ G W ωs _ hWo hWU hωW hωe hlim).abs hmW hb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
