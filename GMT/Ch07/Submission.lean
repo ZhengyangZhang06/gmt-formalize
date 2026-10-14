@@ -2427,5 +2427,56 @@ theorem Submission.idtp_ccd_scsp_cone_area : ∀ (P : ℕ) (r₀ s : ℝ) (γ : 
       (z.1 * ‖deriv γ z.2‖) ^ 2 := by ring
   rw [h10, h01, hnorm, norm_smul, Real.norm_eq_abs, abs_of_pos hz1, real_inner_smul_right, horth,
     hJ, Real.sqrt_sq (mul_nonneg hz1.le (norm_nonneg _))]
+/-- **Great-circle arc** (step 11 of the parent proof: Cauchy–Schwarz and Bessel, then the polar
+form).  Put `x = ⟨γ, u⟩ > 0`, `y = ⟨γ, e⟩`, `q = x² + y²` and `w = x e − y u`.  The sibling
+`angle_curve` gives `⟨w, γ′⟩ = x ⟨γ′, e⟩ − y ⟨γ′, u⟩ = q`, and orthonormality gives `‖w‖² = q`, so
+Cauchy–Schwarz with `‖γ′‖ = q` yields `‖w‖ ≥ 1`, i.e. `q ≥ 1`.  Bessel:
+`‖γ − (x u + y e)‖² = 1 − q ≥ 0`, so `q = 1` and `γ = x u + y e`.  Finally `α = arctan (y / x)`
+with `x > 0` and `√(1 + (y / x)²) = 1 / x` give `cos α = x` and `sin α = y`. -/
+theorem Submission.idtp_ccd_scsp_arc_planarity : ∀ (P : ℕ) (u e : Euclid P) (s : ℝ) (γ : ℝ → Euclid P), ‖u‖ = 1 → ‖e‖ = 1 → inner ℝ u e = 0 → ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → (∀ α ∈ Ioo (-s) s, ‖deriv γ α‖ = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) → ∀ α ∈ Ioo (-s) s, γ α = Real.cos α • u + Real.sin α • e := by
+  intro P u e s γ hu he hue hγ hcurve hspeed α hα
+  obtain ⟨hnorm, hx, harc⟩ := hcurve α hα
+  obtain ⟨-, hrot, -⟩ := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγ hcurve α hα
+  have heu : inner ℝ e u = (0 : ℝ) := by rw [real_inner_comm]; exact hue
+  -- pointwise statement for `g = γ(α)`, `d = γ′(α)`, `x = ⟨g, u⟩`, `y = ⟨g, e⟩`
+  suffices key : ∀ (g d : Euclid P) (x y : ℝ), ‖g‖ = 1 → inner ℝ g u = x → inner ℝ g e = y →
+      0 < x → x * inner ℝ d e - y * inner ℝ d u = x ^ 2 + y ^ 2 → ‖d‖ = x ^ 2 + y ^ 2 →
+      g = Real.cos (Real.arctan (y / x)) • u + Real.sin (Real.arctan (y / x)) • e by
+    have h := key (γ α) (deriv γ α) _ _ hnorm rfl rfl hx hrot (hspeed α hα)
+    rwa [harc] at h
+  intro g d x y hg hgx hgy hx hrot hd
+  have hq : 0 < x ^ 2 + y ^ 2 := by positivity
+  -- `w = x e − y u` has `⟨w, d⟩ = q` (the angle identity) and `‖w‖² = q` (orthonormality)
+  have hwd : inner ℝ (x • e - y • u) d = x ^ 2 + y ^ 2 := by
+    rw [inner_sub_left, real_inner_smul_left, real_inner_smul_left, real_inner_comm d e,
+      real_inner_comm d u]
+    exact hrot
+  have hw : ‖x • e - y • u‖ ^ 2 = x ^ 2 + y ^ 2 := by
+    rw [norm_sub_sq_real, real_inner_smul_left, real_inner_smul_right, heu, norm_smul, norm_smul,
+      he, hu, Real.norm_eq_abs, Real.norm_eq_abs, mul_one, mul_one, sq_abs, sq_abs]
+    ring
+  -- Cauchy–Schwarz: `q = ⟨w, d⟩ ≤ ‖w‖ ‖d‖ = ‖w‖ q`, so `‖w‖ ≥ 1` and `q = ‖w‖² ≥ 1`
+  have hw1 : 1 ≤ ‖x • e - y • u‖ := by
+    refine (le_mul_iff_one_le_left hq).mp ?_
+    calc x ^ 2 + y ^ 2 = inner ℝ (x • e - y • u) d := hwd.symm
+      _ ≤ ‖x • e - y • u‖ * ‖d‖ := real_inner_le_norm _ _
+      _ = ‖x • e - y • u‖ * (x ^ 2 + y ^ 2) := by rw [hd]
+  have hq1 : 1 ≤ x ^ 2 + y ^ 2 := by nlinarith
+  -- Bessel: `‖g − (x u + y e)‖² = 1 − q ≥ 0`, so `q = 1` and `g = x u + y e`
+  have hb : ‖g - (x • u + y • e)‖ ^ 2 = 1 - (x ^ 2 + y ^ 2) := by
+    simp only [norm_sub_sq_real, norm_add_sq_real, inner_add_right, real_inner_smul_left,
+      real_inner_smul_right, hue, hgx, hgy, hg, norm_smul, hu, he, Real.norm_eq_abs, mul_one,
+      sq_abs]
+    ring
+  have hq' : x ^ 2 + y ^ 2 = 1 :=
+    le_antisymm (by linarith [sq_nonneg ‖g - (x • u + y • e)‖]) hq1
+  have hgxy : g = x • u + y • e := by
+    rw [← sub_eq_zero, ← norm_eq_zero, ← sq_eq_zero_iff, hb, hq', sub_self]
+  -- polar form: `√(1 + (y / x)²) = 1 / x`, so `arctan (y / x)` has cosine `x` and sine `y`
+  have hsqrt : √(1 + (y / x) ^ 2) = 1 / x := by
+    rw [show 1 + (y / x) ^ 2 = (1 / x) ^ 2 by field_simp; linarith]
+    exact Real.sqrt_sq (by positivity)
+  rw [Real.cos_arctan, Real.sin_arctan, hsqrt, one_div_one_div, div_div_eq_mul_div, div_one,
+    div_mul_cancel₀ y hx.ne', hgxy]
 
 end GMT.Ch07
