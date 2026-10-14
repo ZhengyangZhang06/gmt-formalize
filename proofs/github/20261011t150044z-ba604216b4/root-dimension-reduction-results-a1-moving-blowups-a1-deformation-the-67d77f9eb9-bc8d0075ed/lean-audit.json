@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "abb5c5dc759ff0169bbc9be4f8738c81c96c51a5a9183f726fdde1ac948486e0",
+  "git_delta": {
+    "base_commit": "72d0a7f421e046786fa71ab0f173d08b5fe1b060",
+    "candidate_commit": "dd30bd16c422b4ebd44431312df2c8b869cc6830",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfrpi_local_plane_tangent",
+    "diff_sha256": "7a0119dd48fab77d572110be0ccf3084f8a32ea8876119f5551976e086aaed47",
+    "source_sha256": "0c7851b616652ba2d8bd5bfe5dfbcda1f6db4df0b6bff336e9f71589e2cf1e2e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfrpi_local_plane_tangent",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (δ : ℝ), Module.finrank ℝ V = n → 0 < δ → (∀ z : Euclid P, dist z x < δ → (z ∈ M ↔ z - x ∈ V)) → HasApproximateTangentSpaceAt n M x V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

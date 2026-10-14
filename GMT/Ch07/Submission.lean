@@ -451,6 +451,55 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.4, flat case** (step 4(iii) of the proof of `dimred_mbl_dtfr_polyhedral_im`):
+if `M` agrees with the affine plane `x + V` on `B_δ(x)`, i.e. `z ∈ M ⇔ z − x ∈ V` whenever
+`|z − x| < δ`, then `V` is the approximate tangent space of `M` at `x`.  If `f ∈ C_c(ℝᴾ)` vanishes
+off `B_R(0)`, then for `0 < r < δ/R` the blow-up `η_{x,r}(M)` agrees with `V` on `B_R(0)`, so
+`∫_{η_{x,r}(M)} f dHⁿ = ∫_V f dHⁿ`: the integrals are eventually constant as `r ↓ 0`.  No
+measurability of `M` is needed. -/
+theorem Submission.dimred_mbl_dtfrpi_local_plane_tangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (δ : ℝ), Module.finrank ℝ V = n → 0 < δ → (∀ z : Euclid P, dist z x < δ → (z ∈ M ↔ z - x ∈ V)) → HasApproximateTangentSpaceAt n M x V := by
+  intro P n M x V δ hV hδ hM
+  refine ⟨hV, fun f => ?_⟩
+  -- `f` vanishes outside some ball `B(0, R)`
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isBounded.subset_closedBall 0
+  obtain ⟨R, hRpos, hfz⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y ∉ ball (0 : Euclid P) R, f y = 0 := by
+    refine ⟨max R₀ 0 + 1, by positivity,
+      fun y hy => image_eq_zero_of_notMem_tsupport fun hy' => hy ?_⟩
+    have hy'' := hR₀ hy'
+    rw [mem_closedBall, dist_zero_right] at hy''
+    rw [mem_ball, dist_zero_right]
+    linarith [le_max_left R₀ 0]
+  -- restricting to the Borel ball `B(0, R)` does not change `∫ f`
+  have hloc : ∀ S : Set (Euclid P),
+      ∫ y in S, f y ∂μHE[n] = ∫ y in ball (0 : Euclid P) R ∩ S, f y ∂μHE[n] := by
+    intro S
+    rw [← Measure.restrict_restrict measurableSet_ball,
+      setIntegral_eq_integral_of_forall_compl_eq_zero hfz]
+  -- for `0 < r < δ / R`, `η_{x,r}(M)` agrees with `V` on `B(0, R)`
+  apply (Filter.tendsto_congr' ?_).2 tendsto_const_nhds
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hRpos)] with r ⟨hr0, hrR⟩
+  rw [lt_div_iff₀ hRpos] at hrR
+  have hset : ball (0 : Euclid P) R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' M =
+      ball (0 : Euclid P) R ∩ (V : Set (Euclid P)) := by
+    ext y
+    constructor
+    · rintro ⟨hyB, z, hzM, rfl⟩
+      refine ⟨hyB, V.smul_mem _ ((hM z ?_).1 hzM)⟩
+      rw [mem_ball, dist_zero_right, Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul,
+        norm_inv, Real.norm_of_nonneg hr0.le, inv_mul_lt_iff₀ hr0] at hyB
+      rw [dist_eq_norm]
+      linarith
+    · rintro ⟨hyB, hyV⟩
+      refine ⟨hyB, x + r • y, (hM _ ?_).2 ?_, ?_⟩
+      · rw [mem_ball, dist_zero_right] at hyB
+        rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hr0.le]
+        calc r * ‖y‖ ≤ r * R := by gcongr
+          _ < δ := hrR
+      · rw [add_sub_cancel_left]
+        exact V.smul_mem r hyV
+      · rw [Poincare.SimonGMT.Chapter03.blowUpMap, add_sub_cancel_left, inv_smul_smul₀ hr0.ne']
+  rw [hloc (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M), hset, ← hloc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
