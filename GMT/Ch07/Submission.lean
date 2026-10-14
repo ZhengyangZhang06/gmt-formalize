@@ -451,6 +451,53 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Countable gluing of the co-area identity over disjoint Borel pieces** (Simon Ch. 3, 2.8–2.9
+summed over the decomposition `M = ⋃ⱼ Mⱼ` of Remark 1.3).  If `g` vanishes off the pairwise disjoint
+Borel pieces `S j ⊆ M` and each piece satisfies `∫ ∫_{(S j)_t} φ dν dt = ∫_{S j} |g| φ dμ` (with an
+a.e.-measurable slice integral), then so does `M`: the slice `M_t = M ∩ {g ≠ 0} ∩ f⁻¹(t)` is the
+disjoint union of the `(S j)_t`, both sides are series over `j`, and monotone convergence exchanges
+`∫ dt` with `∑ⱼ`. -/
+theorem Submission.dor_lmbsf_tg_coarea_gluing : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (g : Euclid P → Euclid P) (f : Euclid P → ℝ) (φ : Euclid P → ℝ≥0∞), MeasurableSet M → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → Measurable g → (∀ x, (∀ j, x ∉ S j) → g x = 0) → Measurable f → (∀ j, AEMeasurable (fun t => ∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in S j, ‖g x‖ₑ * φ x ∂μ) → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in M, ‖g x‖ₑ * φ x ∂μ := by
+  intro P μ ν M S g f φ _ hS hdisj hSM hg hg0 hf hpiece
+  -- Step 1: `M_t = ⋃ⱼ (S j)_t`, since `g = 0` off `⋃ⱼ S j` and `S j ⊆ M`
+  have hset : ∀ t : ℝ,
+      M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} = ⋃ j, S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} := by
+    intro t
+    ext x
+    simp only [mem_inter_iff, mem_ofPred_eq, mem_preimage, mem_singleton_iff, mem_iUnion]
+    constructor
+    · rintro ⟨⟨-, hgx⟩, hfx⟩
+      obtain ⟨j, hj⟩ : ∃ j, x ∈ S j := by
+        by_contra h
+        exact hgx (hg0 x fun j hj => h ⟨j, hj⟩)
+      exact ⟨j, ⟨hj, hgx⟩, hfx⟩
+    · rintro ⟨j, ⟨hj, hgx⟩, hfx⟩
+      exact ⟨⟨hSM j hj, hgx⟩, hfx⟩
+  -- Step 2: the slices `(S j)_t` are Borel and pairwise disjoint
+  have hmeas : ∀ (t : ℝ) j, MeasurableSet (S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) := fun t j =>
+    ((hS j).inter (hg (measurableSet_singleton 0).compl)).inter (hf (measurableSet_singleton t))
+  have hdisj' : ∀ t : ℝ, Pairwise (Disjoint on fun j => S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) :=
+    fun t i j hij => (hdisj hij).mono (inter_subset_left.trans inter_subset_left)
+      (inter_subset_left.trans inter_subset_left)
+  -- Step 3: `∫_{M_t} φ dν = ∑ⱼ ∫_{(S j)_t} φ dν` for every `t`
+  have hslice : ∀ t : ℝ, ∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν =
+      ∑' j, ∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν := fun t => by
+    rw [hset t, lintegral_iUnion (hmeas t) (hdisj' t)]
+  -- Step 6: `|g| φ` vanishes off `⋃ⱼ S j ⊆ M`, so `∫_M |g| φ dμ = ∑ⱼ ∫_{S j} |g| φ dμ`
+  have hsupp : support (fun x => ‖g x‖ₑ * φ x) ⊆ ⋃ j, S j := by
+    intro x hx
+    rw [mem_support] at hx
+    by_contra h
+    exact hx (by simp [hg0 x fun j hj => h (mem_iUnion.2 ⟨j, hj⟩)])
+  have hrhs : ∫⁻ x in M, ‖g x‖ₑ * φ x ∂μ = ∑' j, ∫⁻ x in S j, ‖g x‖ₑ * φ x ∂μ := by
+    rw [setLIntegral_eq_of_support_subset (hsupp.trans (iUnion_subset hSM)),
+      ← setLIntegral_eq_of_support_subset hsupp, lintegral_iUnion hS hdisj]
+  -- Steps 4, 5 and 7: the series is a.e.-measurable, and monotone convergence for series
+  simp only [hslice]
+  refine ⟨AEMeasurable.tsum fun j => (hpiece j).1, ?_⟩
+  rw [lintegral_tsum fun j => (hpiece j).1, hrhs]
+  exact tsum_congr fun j => (hpiece j).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
