@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1.support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1",
+  "depth": 6,
+  "title": "Support of a slice-composed current lies in ι([0, 1] × spt X) and is compact",
+  "statement": "Notation: ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) ∈ ℝ^{N+1} for t ∈ ℝ, x ∈ ℝ^N; Jv := ι(0, v) = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}; |α| := covectorEuclideanNorm α; 𝒟^m(ℝ^P) := TestFormOn univ m and 𝒟_m(ℝ^P) := GeometricCurrentOn univ m (forms and currents on all of ℝ^P = Euclid P); M(T) := T.mass = T.massOn univ; spt T := T.support. Assume (VO): for all P, n ∈ ℕ, U ⊆ ℝ^P, S ∈ GeometricCurrentOn U n and ω ∈ TestFormOn U n with tsupport ω disjoint from spt S, S(ω) = 0. Let N, k ∈ ℕ, X ∈ 𝒟_k(ℝ^N) with spt X compact, Z ∈ 𝒟_{k+1}(ℝ^{N+1}), and let S : 𝒟^{k+1}(ℝ^{N+1}) → 𝒟^k(ℝ^N) be any map such that tsupport S(ω) ⊆ {x ∈ ℝ^N : ∃ t ∈ [0, 1], ι(t, x) ∈ tsupport ω} for every ω, and Z(ω) = X(S(ω)) for every ω. Then spt Z is compact and spt Z ⊆ {ι(t, x) : t ∈ [0, 1], x ∈ spt X}.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (Z : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)) (S : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) → TestFormOn (univ : Set (Euclid N)) k), IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), tsupport (S ω : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}) → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), Z ω = X (S ω)) → IsCompact Z.support ∧ Z.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}",
+  "lean_name": "cmcdt_lpo_cyl_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c89f56fcc3-a1"
+}
