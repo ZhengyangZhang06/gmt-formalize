@@ -2861,6 +2861,207 @@ theorem Submission.dor_lmb_fcd_sd_im_restrict : ∀ (P k : ℕ) (R : IMRep (univ
       rw [image_eq_zero_of_notMem_tsupport (disjoint_right.1 hω ⟨hxF, hxB⟩), map_zero, mul_zero,
         Pi.zero_apply]
 
+/-- **Shells along the level sets of `f`** (Simon Ch. 6, proof of the Deformation Theorem 5.1:
+the shells `T_ρ − T_{ρ/2}` of (8)–(13), here cut along the level sets of `f`).  Let
+`T = τ(M, θ, ξ)` vanish off the closed set `K`, `∂T = τ(M', θ', ξ')`, and let
+`Zⱼ = ∂(T⌞{f < rⱼ}) − (∂T)⌞{f < rⱼ}` (the slice `⟨T, f, rⱼ−⟩` of 4.6), i.e.
+`Zⱼ(ω) = ∫_{M ∩ {f < rⱼ}} θ⟨dω, ξ⟩ dHᵐ⁺¹ − ∫_{M' ∩ {f < rⱼ}} θ'⟨ω, ξ'⟩ dHᵐ`.  The shells
+`Wⱼ = T⌞Sⱼ`, `Dⱼ = (∂T)⌞Sⱼ` (`S₀ = {f ≥ r₀}`, `Sⱼ₊₁ = {rⱼ₊₁ ≤ f < rⱼ}`) and `A_N = T⌞{f < r_N}`
+are integer multiplicity with masses `μ_T(Sⱼ)`, `μ_{∂T}(Sⱼ)` and `μ_T({f < r_N})`.  Splitting the
+integrals over `M` and `M'` along `{f < rⱼ}` gives `∂W₀ = D₀ − Z₀`, `∂Wⱼ₊₁ = Dⱼ₊₁ + Zⱼ − Zⱼ₊₁`
+and `Σ_{j ≤ N} Wⱼ = T − A_N`.  `Wⱼ`, `Dⱼ` and (by induction on `j`, as `Eⱼ ⊆ Eⱼ₊₁` for antitone
+`r`) `Zⱼ` vanish off `Eⱼ = K ∩ {f ≥ rⱼ}`. -/
+theorem Submission.dor_lmb_fcd_sd_shells : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RT : IMRep (univ : Set (Euclid P)) (m + 1)) (RB : IMRep (univ : Set (Euclid P)) m) (K : Set (Euclid P)) (f : Euclid P → ℝ) (r : ℕ → ℝ) (Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), RT.Represents T → RB.Represents T.boundary → IsClosed K → Continuous f → Antitone r → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Z j ω = (∫ x in RT.carrier ∩ {x | f x < r j}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < r j}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ (W A : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ j, IsIntegerMultiplicity (W j)) ∧ (∀ j, IsIntegerMultiplicity (D j)) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K ∩ {x | r j ≤ f x}) → W j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → D j ω = 0) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) → Z j ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω) ∧ (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω) ∧ (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), W j ω = T ω - A N ω) ∧ (W 0).mass = RT.measure {x | r 0 ≤ f x} ∧ (∀ j, (W (j + 1)).mass = RT.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ (D 0).mass = RB.measure {x | r 0 ≤ f x} ∧ (∀ j, (D (j + 1)).mass = RB.measure {x | r (j + 1) ≤ f x ∧ f x < r j}) ∧ ∀ N, (A N).mass = RT.measure {x | f x < r N} := by
+  intro P m T RT RB K f r Z hRT hRB hK hf hr hTK hZ
+  -- Step 1: `∂T` vanishes off `K`, because `spt dω ⊆ spt ω`
+  have hbK : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → T.boundary ω = 0 := by
+    intro ω hω
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hTK _
+      (hω.mono_left (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) m)))
+  -- Step 2 (im_restrict (A)): `g_ω = θ⟨dω, ξ⟩` and `k_η = θ⟨η, ξ⟩` are integrable on `M`,
+  -- `h_ω = θ'⟨ω, ξ'⟩` on `M'`
+  obtain ⟨hintT, hresT⟩ := Submission.dor_lmb_fcd_sd_im_restrict P (m + 1) RT
+  obtain ⟨hintB, hresB⟩ := Submission.dor_lmb_fcd_sd_im_restrict P m RB
+  have hg : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, IntegrableOn (fun x => (RT.mult x : ℝ) *
+      RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x)) RT.carrier
+        μHE[m + 1] :=
+    fun ω => hintT _ (exteriorDerivative_isTestForm ω.property.1)
+  have hh : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, IntegrableOn (fun x => (RB.mult x : ℝ) *
+      RB.orient x ((ω : DifferentialForm (Euclid P) m) x)) RB.carrier μHE[m] :=
+    fun ω => hintB _ ω.property.1
+  have hk : ∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), IntegrableOn (fun x =>
+      (RT.mult x : ℝ) * RT.orient x ((η : DifferentialForm (Euclid P) (m + 1)) x)) RT.carrier
+        μHE[m + 1] :=
+    fun η => hintT _ η.property.1
+  -- Step 3: `T(η) = ∫_M k_η` and `∂T(ω) = T(dω) = ∫_M g_ω = ∫_{M'} h_ω`
+  have hTη : ∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), T η = ∫ x in RT.carrier,
+      (RT.mult x : ℝ) * RT.orient x ((η : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] :=
+    hRT
+  have hbT : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, T.boundary ω = ∫ x in RT.carrier,
+      (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x)
+        ∂μHE[m + 1] :=
+    fun ω => hRT (exteriorDerivativeTestOn univ m ω)
+  have hbB : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, T.boundary ω = ∫ x in RB.carrier,
+      (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] :=
+    hRB
+  -- Step 4: splitting integrals along the (Borel) level sets of the continuous `f`
+  have hle : ∀ a : ℝ, MeasurableSet {x | a ≤ f x} := fun a =>
+    measurableSet_le measurable_const hf.measurable
+  have hlt : ∀ a : ℝ, MeasurableSet {x | f x < a} := fun a =>
+    measurableSet_lt hf.measurable measurable_const
+  have hband : ∀ a b : ℝ, MeasurableSet {x | a ≤ f x ∧ f x < b} := fun a b =>
+    (hle a).inter (hlt b)
+  -- (i) `∫_{G ∩ {a ≤ f}} u = ∫_G u − ∫_{G ∩ {f < a}} u`
+  have split₁ : ∀ (μ : Measure (Euclid P)) (G : Set (Euclid P)) (u : Euclid P → ℝ) (a : ℝ),
+      IntegrableOn u G μ → ∫ x in G ∩ {x | a ≤ f x}, u x ∂μ =
+        (∫ x in G, u x ∂μ) - ∫ x in G ∩ {x | f x < a}, u x ∂μ := by
+    intro μ G u a hu
+    have h := integral_inter_add_sdiff (hle a) hu
+    have hd : G \ {x | a ≤ f x} = G ∩ {x | f x < a} := by
+      ext x
+      simp only [Set.mem_sdiff, mem_inter_iff, mem_ofPred_eq, not_le]
+    rw [hd] at h
+    linarith
+  -- (ii) for `b ≤ a`, `∫_{G ∩ {b ≤ f < a}} u = ∫_{G ∩ {f < a}} u − ∫_{G ∩ {f < b}} u`
+  have split₂ : ∀ (μ : Measure (Euclid P)) (G : Set (Euclid P)) (u : Euclid P → ℝ) (a b : ℝ),
+      b ≤ a → IntegrableOn u G μ → ∫ x in G ∩ {x | b ≤ f x ∧ f x < a}, u x ∂μ =
+        (∫ x in G ∩ {x | f x < a}, u x ∂μ) - ∫ x in G ∩ {x | f x < b}, u x ∂μ := by
+    intro μ G u a b hba hu
+    have h := integral_inter_add_sdiff (hlt b)
+      (hu.mono_set inter_subset_left : IntegrableOn u (G ∩ {x | f x < a}) μ)
+    have h₁ : G ∩ {x | f x < a} ∩ {x | f x < b} = G ∩ {x | f x < b} := by
+      ext x
+      simp only [mem_inter_iff, mem_ofPred_eq]
+      exact ⟨fun hx => ⟨hx.1.1, hx.2⟩, fun hx => ⟨⟨hx.1, hx.2.trans_le hba⟩, hx.2⟩⟩
+    have h₂ : (G ∩ {x | f x < a}) \ {x | f x < b} = G ∩ {x | b ≤ f x ∧ f x < a} := by
+      ext x
+      simp only [Set.mem_sdiff, mem_inter_iff, mem_ofPred_eq, not_lt]
+      exact ⟨fun hx => ⟨hx.1.1, hx.2, hx.1.2⟩, fun hx => ⟨⟨hx.1, hx.2.2⟩, hx.2.1⟩⟩
+    rw [h₁, h₂] at h
+    linarith
+  -- Step 5 (im_restrict (B)): the restrictions `T⌞B` and `(∂T)⌞B` to Borel sets `B`, which are
+  -- integer multiplicity, have mass `μ_T(B)`, `μ_{∂T}(B)` and vanish off `K ∩ B`
+  choose YT hYT_im hYT_eq hYT_mass hYT_van using
+    fun (B : Set (Euclid P)) (hB : MeasurableSet B) => hresT T K B hRT hK hTK hB
+  choose YB hYB_im hYB_eq hYB_mass hYB_van using
+    fun (B : Set (Euclid P)) (hB : MeasurableSet B) => hresB T.boundary K B hRB hK hbK hB
+  obtain ⟨W, hW0, hWs⟩ : ∃ W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      W 0 = YT {x | r 0 ≤ f x} (hle (r 0)) ∧
+        ∀ j, W (j + 1) = YT {x | r (j + 1) ≤ f x ∧ f x < r j} (hband _ _) :=
+    ⟨fun j => Nat.casesOn j (YT {x | r 0 ≤ f x} (hle (r 0)))
+      fun i => YT {x | r (i + 1) ≤ f x ∧ f x < r i} (hband _ _), rfl, fun _ => rfl⟩
+  obtain ⟨D, hD0, hDs⟩ : ∃ D : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m,
+      D 0 = YB {x | r 0 ≤ f x} (hle (r 0)) ∧
+        ∀ j, D (j + 1) = YB {x | r (j + 1) ≤ f x ∧ f x < r j} (hband _ _) :=
+    ⟨fun j => Nat.casesOn j (YB {x | r 0 ≤ f x} (hle (r 0)))
+      fun i => YB {x | r (i + 1) ≤ f x ∧ f x < r i} (hband _ _), rfl, fun _ => rfl⟩
+  obtain ⟨A, hA⟩ : ∃ A : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      ∀ N, A N = YT {x | f x < r N} (hlt (r N)) :=
+    ⟨fun N => YT {x | f x < r N} (hlt (r N)), fun _ => rfl⟩
+  -- Step 6: `Wⱼ` and `Dⱼ` vanish off `Eⱼ = K ∩ {rⱼ ≤ f}`, which contains `K ∩ Sⱼ`
+  have hWv : ∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K ∩ {x | r j ≤ f x}) →
+        W j ω = 0 := by
+    rintro (_ | j) ω hω
+    · rw [hW0]
+      exact hYT_van _ _ ω hω
+    · rw [hWs]
+      exact hYT_van _ _ ω (hω.mono_right (inter_subset_inter_right K fun x hx => hx.1))
+  have hDv : ∀ j (ω : TestFormOn (univ : Set (Euclid P)) m),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) →
+        D j ω = 0 := by
+    rintro (_ | j) ω hω
+    · rw [hD0]
+      exact hYB_van _ _ ω hω
+    · rw [hDs]
+      exact hYB_van _ _ ω (hω.mono_right (inter_subset_inter_right K fun x hx => hx.1))
+  -- Step 7: `∂W₀(ω) = ∫_M g_ω − ∫_{M ∩ {f < r₀}} g_ω = D₀(ω) − Z₀(ω)`
+  have hbW0 : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω := by
+    intro ω
+    have e₁ : (W 0).boundary ω = ∫ x in RT.carrier ∩ {x | r 0 ≤ f x}, (RT.mult x : ℝ) *
+        RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1] := by
+      rw [GeometricCurrentOn.boundary_apply, hW0, hYT_eq]
+      rfl
+    have e₂ : D 0 ω = ∫ x in RB.carrier ∩ {x | r 0 ≤ f x}, (RB.mult x : ℝ) *
+        RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+      rw [hD0, hYB_eq]
+    rw [e₁, e₂, hZ 0 ω, split₁ _ _ _ (r 0) (hg ω), split₁ _ _ _ (r 0) (hh ω)]
+    linarith [hbT ω, hbB ω]
+  -- Step 8: `∂Wⱼ₊₁(ω) = ∫_{M ∩ {f < rⱼ}} g_ω − ∫_{M ∩ {f < rⱼ₊₁}} g_ω = Dⱼ₊₁(ω) + Zⱼ(ω) − Zⱼ₊₁(ω)`
+  have hbWs : ∀ j (ω : TestFormOn (univ : Set (Euclid P)) m),
+      (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω := by
+    intro j ω
+    have hrj : r (j + 1) ≤ r j := hr (Nat.le_succ j)
+    have e₁ : (W (j + 1)).boundary ω = ∫ x in RT.carrier ∩ {x | r (j + 1) ≤ f x ∧ f x < r j},
+        (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x)
+          ∂μHE[m + 1] := by
+      rw [GeometricCurrentOn.boundary_apply, hWs, hYT_eq]
+      rfl
+    have e₂ : D (j + 1) ω = ∫ x in RB.carrier ∩ {x | r (j + 1) ≤ f x ∧ f x < r j},
+        (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+      rw [hDs, hYB_eq]
+    rw [e₁, e₂, hZ j ω, hZ (j + 1) ω, split₂ _ _ _ (r j) (r (j + 1)) hrj (hg ω),
+      split₂ _ _ _ (r j) (r (j + 1)) hrj (hh ω)]
+    ring
+  -- Step 9: `Σ_{j ≤ N} Wⱼ = T − A_N`, by induction on `N`
+  have hsum : ∀ N (η : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      ∑ j ∈ Finset.range (N + 1), W j η = T η - A N η := by
+    intro N η
+    induction N with
+    | zero =>
+      rw [Finset.sum_range_one, hW0, hA, hYT_eq, hYT_eq, hTη, split₁ _ _ _ (r 0) (hk η)]
+    | succ N ih =>
+      rw [Finset.sum_range_succ, ih, hWs, hA, hA, hYT_eq, hYT_eq, hYT_eq,
+        split₂ _ _ _ (r N) (r (N + 1)) (hr (Nat.le_succ N)) (hk η)]
+      ring
+  -- Step 10: `Zⱼ` vanishes off `Eⱼ`, by induction on `j` (`Eⱼ ⊆ Eⱼ₊₁` as `r` is antitone)
+  have hZv : ∀ j (ω : TestFormOn (univ : Set (Euclid P)) m),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (K ∩ {x | r j ≤ f x}) →
+        Z j ω = 0 := by
+    intro j
+    induction j with
+    | zero =>
+      intro ω hω
+      have h₁ : (W 0).boundary ω = 0 := by
+        rw [GeometricCurrentOn.boundary_apply]
+        exact hWv 0 _ (hω.mono_left
+          (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) m)))
+      linarith [hbW0 ω, hDv 0 ω hω]
+    | succ j ih =>
+      intro ω hω
+      have h₁ : (W (j + 1)).boundary ω = 0 := by
+        rw [GeometricCurrentOn.boundary_apply]
+        exact hWv (j + 1) _ (hω.mono_left
+          (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) m)))
+      have h₂ : Z j ω = 0 := ih ω (hω.mono_right (inter_subset_inter_right K
+        fun x hx => (hr (Nat.le_succ j)).trans hx))
+      linarith [hbWs j ω, hDv (j + 1) ω hω]
+  -- Step 11: integrality and masses of the shells (im_restrict (B))
+  refine ⟨W, A, D, ?_, ?_, hWv, hDv, hZv, hbW0, hbWs, hsum, ?_, fun j => ?_, ?_, fun j => ?_,
+    fun N => ?_⟩
+  · rintro (_ | j)
+    · rw [hW0]
+      exact hYT_im _ _
+    · rw [hWs]
+      exact hYT_im _ _
+  · rintro (_ | j)
+    · rw [hD0]
+      exact hYB_im _ _
+    · rw [hDs]
+      exact hYB_im _ _
+  · rw [hW0]
+    exact hYT_mass _ _
+  · rw [hWs]
+    exact hYT_mass _ _
+  · rw [hD0]
+    exact hYB_mass _ _
+  · rw [hDs]
+    exact hYB_mass _ _
+  · rw [hA]
+    exact hYT_mass _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
