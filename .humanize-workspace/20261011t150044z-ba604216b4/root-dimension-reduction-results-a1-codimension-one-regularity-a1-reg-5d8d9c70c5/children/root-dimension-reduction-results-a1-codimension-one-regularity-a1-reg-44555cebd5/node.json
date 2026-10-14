@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "depth": 5,
+  "title": "An orthonormal frame σ of ν^⊥ with β(σ) = −⟨φ_β, ν⟩ for all n-covectors β",
+  "statement": "Let n ≥ 1 and ν ∈ ℝ^{n+1} with |ν| = 1, and let e_0, …, e_n be the standard basis of ℝ^{n+1} and j.succAbove the increasing enumeration of {0, …, n} ∖ {j}. Then there is an orthonormal family σ = (σ_0, …, σ_{n−1}) in ℝ^{n+1} with span{σ_k} = (span{ν})^⊥ such that every n-covector β on ℝ^{n+1} satisfies β(σ_0, …, σ_{n−1}) = −Σ_{j=0}^{n} (−1)^j β(e_{j.succAbove 0}, …, e_{j.succAbove(n−1)})·⟨e_j, ν⟩.",
+  "lean_statement": "∀ (n : ℕ) (ν : Euclid (n + 1)), 1 ≤ n → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid (n + 1), Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = (Submodule.span ℝ {ν})ᗮ ∧ ∀ β : Covector (Euclid (n + 1)) n, β σ = -∑ j : Fin (n + 1), (-1 : ℝ) ^ (j : ℕ) * β (fun k => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) * inner ℝ (EuclideanSpace.single j (1 : ℝ)) ν",
+  "lean_name": "codim1_lur_normal_covector_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5-a1"
+}

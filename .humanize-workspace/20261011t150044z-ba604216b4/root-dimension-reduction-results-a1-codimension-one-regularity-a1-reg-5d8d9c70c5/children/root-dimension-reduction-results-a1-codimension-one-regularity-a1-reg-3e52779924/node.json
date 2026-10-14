@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "depth": 5,
+  "title": "Area formula on a countably rectifiable set for an injective C¹ immersion (Simon Ch. 3, 2.1–2.6)",
+  "statement": "Let m, d, P ∈ ℕ with m ≥ 1, D ⊆ ℝ^d open and G : ℝ^d → ℝ^P C¹ on D, injective on D, with DG(v) injective for every v ∈ D. Let B ⊆ D be Borel and countably m-rectifiable with H^m(B ∩ K) < ∞ for every compact K ⊆ D (H^m = μHE[m]), and let Q assign to each v ∈ ℝ^d a linear subspace Q(v) such that, for H^m-a.e. v ∈ B, Q(v) is the approximate tangent space of B at v (Simon Ch. 3, 1.4). Then G(B) is countably m-rectifiable, H^m(G(B ∩ K)) < ∞ for every compact K ⊆ D, and there is a Borel J : ℝ^d → [0, ∞) such that: for H^m-a.e. v ∈ B and every orthonormal family σ = (σ_0, …, σ_{m−1}) spanning Q(v), J(v) = (det[⟨DG(v)σ_i, DG(v)σ_k⟩]_{i,k})^{1/2}; ∫⁻_{G(B)} g dH^m = ∫⁻_B J(v)g(G(v)) dH^m(v) for every g : ℝ^P → [0, ∞]; and ∫_{G(B)} f dH^m = ∫_B J(v)f(G(v)) dH^m(v) for every f : ℝ^P → ℝ (Bochner integrals).",
+  "lean_statement": "∀ (m d P : ℕ) (D B : Set (Euclid d)) (G : Euclid d → Euclid P) (Q : Euclid d → Submodule ℝ (Euclid d)), 1 ≤ m → IsOpen D → ContDiffOn ℝ 1 G D → InjOn G D → (∀ v ∈ D, Injective (fderiv ℝ G v)) → MeasurableSet B → B ⊆ D → CountablyRectifiable m B → (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → μHE[m] (B ∩ K) ≠ ∞) → (∀ᵐ v ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B v (Q v)) → CountablyRectifiable m (G '' B) ∧ (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → μHE[m] (G '' (B ∩ K)) ≠ ∞) ∧ ∃ J : Euclid d → ℝ, Measurable J ∧ (∀ v, 0 ≤ J v) ∧ (∀ᵐ v ∂(μHE[m].restrict B), ∀ σ : Fin m → Euclid d, Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = Q v → J v = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (σ i)) (fderiv ℝ G v (σ j))))) ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m]) ∧ ∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μHE[m] = ∫ v in B, J v * f (G v) ∂μHE[m]",
+  "lean_name": "codim1_lur_rectifiable_area_formula",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+    "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.piece_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8-a1",
+      "result_commit": "a2ba78fca36b5fe8a0051278d30da09823c8b59c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-a1",
+      "result_commit": "048ff2b9b9037a03e4daa8d5ce0db106c1f592a3",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1",
+      "result_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.piece_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3e52779924-a1"
+}

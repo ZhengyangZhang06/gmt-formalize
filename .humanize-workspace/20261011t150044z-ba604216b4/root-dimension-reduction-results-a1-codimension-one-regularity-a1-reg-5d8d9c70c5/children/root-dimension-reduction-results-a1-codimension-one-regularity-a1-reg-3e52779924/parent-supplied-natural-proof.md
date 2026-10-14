@@ -1,0 +1,128 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. The area formula on a countably rectifiable set, Simon Ch. 3, 2.1–2.6 (chapter-03.txt lines 330–420: 2.4 and its consequences 2.5–2.6 for injective maps), as used in step 4(e) of the supplied proof ('apply the area formula on the rectifiable set B′ (Simon Ch. 3, 2.3–2.6) … the Jacobian along T_vB′ = T_vB = ν(v)^⊥'). Departure from the printed proof: Simon decomposes M into pieces of C¹ submanifolds (Lemma 1.2 and Remark 1.3, which need the C¹ Approximation Theorem of Ch. 2, 1.5) and uses T_xM = T_xN_j (Remark 1.5(2)). Here B is decomposed into bi-Lipschitz Lipschitz pieces by the accepted sibling bilipschitz_pieces, and the tangent identification on each piece comes from piece_tangent, tangent_locality and piece_pullback. The area formula on the pieces, the Jacobian chain rule and the summation follow Simon. Siblings used: bilipschitz_pieces, tangent_locality, piece_pullback, piece_tangent.
+
+Notation. H^m := μHE[m]; on ℝ^m it equals Lebesgue measure λ = volume. For a linear map Λ on ℝ^m, normDet Λ := (det(Λ*Λ))^{1/2} = (det[⟨Λe_k, Λe_l⟩])^{1/2} (SimonGMT areaJacobianAt f a = normDet Df(a)). For a linear Γ : ℝ^d → ℝ^P and σ : Fin m → ℝ^d, Gr(Γ, σ) := det[⟨Γσ_i, Γσ_k⟩] ≥ 0 (a Gram determinant).
+
+0. (Local Lipschitz bounds; first two conclusions.)
+(a) G is Lipschitz on every compact K ⊆ D. For v₀ ∈ D choose r > 0 with closedBall(v₀, 2r) ⊆ D; DG is continuous on D, hence bounded by some L₀ on this compact convex ball, and the mean value inequality makes G L₀-Lipschitz on it. Cover K by finitely many balls B(v_k, r_k) of this kind (constants L_k), and let ρ := min_k r_k, L := max_k L_k and M_K := sup_K|G| < ∞. If v, v′ ∈ K and |v − v′| < ρ, then v ∈ B(v_k, r_k) for some k, v′ ∈ B(v_k, 2r_k), and |G(v) − G(v′)| ≤ L|v − v′|. If |v − v′| ≥ ρ, then |G(v) − G(v′)| ≤ 2M_K ≤ (2M_K/ρ)|v − v′|.
+(b) Hence H^m(G(S)) ≤ L_K^m H^m(S) for S ⊆ K (SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn). With the compact exhaustion K_j := {v ∈ ℝ^d : |v| ≤ j, dist(v, ℝ^d ∖ D) ≥ 1/j} of D (K_j := closedBall(0, j) if D = ℝ^d), H^m(G(S)) = 0 for every H^m-null S ⊆ D.
+(c) For compact K ⊆ D, H^m(G(B ∩ K)) ≤ L_K^m H^m(B ∩ K) < ∞. This is the second conclusion.
+(d) By countable rectifiability, B ⊆ M₀ ∪ ⋃_k range Ψ_k with H^m(M₀) = 0 and Ψ_k : ℝ^m → ℝ^d Lipschitz. For each j, G|_{K_j} is Lipschitz and extends to a Lipschitz map G̃_j : ℝ^d → ℝ^P (Mathlib LipschitzOnWith.extend_finite_dimension). Then G(B ∩ K_j) = G̃_j(B ∩ K_j) ⊆ G̃_j(M₀) ∪ ⋃_k range(G̃_j∘Ψ_k), where H^m(G̃_j(M₀)) = 0 and each G̃_j∘Ψ_k is Lipschitz. So G(B ∩ K_j) is countably m-rectifiable, and so is G(B) = ⋃_j G(B ∩ K_j) (SimonGMT countablyRectifiable_iUnion, CountablyRectifiable.mono, countablyRectifiable_of_measure_zero, countablyRectifiable_range). This is the first conclusion.
+1. (Pieces.) bilipschitz_pieces (with P := d, n := m, M := B) gives Lipschitz F_i : ℝ^m → ℝ^d, Borel B_i ⊆ ℝ^m and c_i > 0 (i ∈ ℕ) with c_i|a − a′| ≤ |F_i(a) − F_i(a′)| on B_i, F_i differentiable with DF_i(b) injective at every b ∈ B_i, the sets A_i := F_i(B_i) Borel, contained in B and pairwise disjoint, and N := B ∖ ⋃_i A_i H^m-null. F_i is injective on B_i. As A_i ⊆ B ⊆ D and G is C¹ on the open set D, G∘F_i is differentiable at every b ∈ B_i with D(G∘F_i)(b) = DG(F_i(b))∘DF_i(b), which is injective; and G∘F_i is injective on B_i.
+2. (Tangent identification.) Fix i. Claim: for λ-a.e. b ∈ B_i, Q(F_i(b)) = range DF_i(b).
+(a) piece_tangent (F := F_i, B := B_i, m := c_i): for λ-a.e. b ∈ B_i, A_i has approximate tangent space range DF_i(b) at F_i(b).
+(b) tangent_locality (U := D, A := A_i, B := B; A_i ⊆ B ⊆ D are Borel and H^m(B ∩ K) < ∞ for compact K ⊆ D): for H^m-a.e. x ∈ A_i and every subspace Q′, B has approximate tangent space Q′ at x iff A_i has.
+(c) The hypothesis holds H^m⌞B-a.e., hence H^m⌞A_i-a.e. (A_i ⊆ B): for H^m-a.e. x ∈ A_i, B has approximate tangent space Q(x) at x.
+(d) piece_pullback (F := F_i, B := B_i, m := c_i) transfers the H^m⌞A_i-a.e. statement (b) ∧ (c) at x = F_i(b) to λ-a.e. b ∈ B_i.
+(e) For b satisfying (a), (b) and (c): B has approximate tangent space Q(F_i(b)) at F_i(b), hence so does A_i by (b); A_i also has range DF_i(b) by (a); by uniqueness (SimonGMT HasApproximateTangentSpaceAt.unique), Q(F_i(b)) = range DF_i(b).
+3. (Jacobian chain rule.) Let Λ : ℝ^m → ℝ^d be injective linear, Γ : ℝ^d → ℝ^P linear and σ : Fin m → ℝ^d orthonormal with span σ = range Λ. Then normDet(ΓΛ) = Gr(Γ, σ)^{1/2}·normDet Λ. Proof: let R_{kl} := ⟨σ_k, Λe_l⟩, so Λe_l = Σ_k R_{kl}σ_k. Then [⟨Λe_k, Λe_l⟩] = RᵀR and [⟨ΓΛe_k, ΓΛe_l⟩] = Rᵀ[⟨Γσ_a, Γσ_b⟩]R. Taking determinants, (normDet Λ)² = det(R)² and (normDet ΓΛ)² = det(R)²·Gr(Γ, σ); take nonnegative square roots.
+4. (Definition of J.) For b ∈ B_i let j_i(b) := normDet D(G∘F_i)(b)/normDet DF_i(b); the denominator is > 0 as DF_i(b) is injective. F_i restricted to B_i is a measurable embedding (Mathlib ContinuousOn.measurableEmbedding: F_i continuous and injective on the Borel set B_i), so ψ_i := (F_i|_{B_i})^{-1} : A_i → B_i is Borel; b ↦ normDet DF_i(b) and b ↦ normDet D(G∘F_i)(b) are Borel (SimonGMT measurable_areaJacobianAt). Define J(v) := j_i(ψ_i(v)) for v ∈ A_i and J(v) := 0 for v ∉ ⋃_i A_i; this is well defined because the A_i are disjoint. J is Borel, J ≥ 0, and (‡) J(F_i(b))·normDet DF_i(b) = normDet D(G∘F_i)(b) for every b ∈ B_i.
+5. (Third conclusion.) For b as in step 2(e), Q(F_i(b)) = range DF_i(b), so for every orthonormal σ spanning Q(F_i(b)), step 3 with Λ := DF_i(b) and Γ := DG(F_i(b)) gives J(F_i(b)) = normDet(DG(F_i(b))DF_i(b))/normDet DF_i(b) = Gr(DG(F_i(b)), σ)^{1/2}. The exceptional b form a λ-null set E_i ⊆ B_i, and F_i(E_i) is H^m-null (F_i is Lipschitz; SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn with μHE[m] = λ on ℝ^m). So the Gram identity holds for H^m-a.e. v ∈ A_i, for every i, hence for H^m-a.e. v ∈ B = N ∪ ⋃_i A_i.
+6. (Fourth conclusion.) Fix g : ℝ^P → [0, ∞] (no measurability needed).
+(a) (One piece.) SimonGMT weighted_area_formula_of_injective_derivative (finrank ℝ^m = m, any weight), applied first to G∘F_i on B_i (step 1) and then to F_i on B_i with the weight h(v) := ofReal(J(v))·g(G(v)), together with (‡) and ofReal(st) = ofReal(s)·ofReal(t) for s, t ≥ 0, gives
+ ∫⁻_{G(A_i)} g dH^m = ∫⁻_{B_i} ofReal(normDet D(G∘F_i)(b))·g(G(F_i(b))) db = ∫⁻_{B_i} ofReal(normDet DF_i(b))·h(F_i(b)) db = ∫⁻_{A_i} ofReal(J(v))·g(G(v)) dH^m(v),
+ using G(A_i) = (G∘F_i)(B_i).
+(b) (Summation.) The sets G(A_i) are Borel (Lusin–Souslin: A_i Borel, G continuous and injective on D) and pairwise disjoint (G injective on D), G(B) = G(N) ∪ ⋃_i G(A_i), and H^m(G(N)) = 0 by 0(b). Hence H^m⌞G(B) = Σ_i H^m⌞G(A_i) and H^m⌞B = Σ_i H^m⌞A_i as measures, and lintegrals of arbitrary functions are additive over such sums (lintegral_sum_measure). So ∫⁻_{G(B)} g = Σ_i ∫⁻_{G(A_i)} g = Σ_i ∫⁻_{A_i} ofReal(J)·(g∘G) = ∫⁻_B ofReal(J)·(g∘G).
+7. (Fifth conclusion.) Let μ_J := (H^m⌞B).withDensity(ofReal∘J). By step 6 with g := 1_T for Borel T ⊆ ℝ^P, H^m(G(B) ∩ T) = μ_J(B ∩ G^{-1}(T)). G restricted to the Borel set B is a measurable embedding (ContinuousOn.measurableEmbedding), so H^m⌞G(B) is the image of μ_J (carried by B) under G|_B. MeasurableEmbedding.integral_map gives ∫_{G(B)} f dH^m = ∫ f(G(v)) dμ_J(v) for every f : ℝ^P → ℝ, and integral_withDensity_eq_integral_smul (Borel density J ≥ 0) gives ∫ f(G(v)) dμ_J(v) = ∫_B J(v)f(G(v)) dH^m(v). Both identities hold for arbitrary f (non-integrable sides are 0 together). ∎
+
+## Key steps
+
+1. G is Lipschitz on compact subsets of D: G(B) is countably m-rectifiable, H^m(G(B ∩ K)) < ∞, and G maps H^m-null subsets of D to null sets.
+2. bilipschitz_pieces splits B, up to a null set, into disjoint Borel pieces A_i = F_i(B_i) with F_i bi-Lipschitz on B_i and DF_i injective there.
+3. piece_tangent, tangent_locality, piece_pullback and uniqueness give Q(F_i(b)) = range DF_i(b) for a.e. b ∈ B_i.
+4. J := normDet D(G∘F_i)/normDet DF_i on A_i is Borel and equals the Gram Jacobian of DG along Q a.e. (Jacobian chain rule).
+5. The injective area formula for G∘F_i and for F_i on each piece, summed over the disjoint pieces, gives the lintegral formula; the measurable embedding G|_B gives the Bochner formula.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; python3 read of snapshot project/lake-manifest.json`
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'theorem extDeriv_pullback|theorem extDeriv_apply|theorem LipschitzOnWith.extend_finite_dimension|theorem ContinuousOn.measurableEmbedding|theorem MeasurableSet.image_of_continuousOn_injOn|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume|theorem det_succ_column_zero|theorem det_le |theorem ae_tendsto_average_norm_sub|theorem ae_tendsto_measure_inter_div|theorem gramSchmidtNormed_orthonormal|theorem integral_withDensity_eq_integral_smul ' <snapshot>/mathlib/Mathlib`
+- `rg -n 'Cauchy-Binet|Cauchy–Binet|cauchyBinet' <snapshot>/mathlib/Mathlib (no match); rg -n 'eq_smul_basis_det' <snapshot>/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `grep -n '^theorem|^def' simongmt Chapter06/{Forms,Currents,Mass}.lean, Chapter03/{Rectifiable,SubmanifoldCover,FinitePerimeter,Differential}.lean, Chapter02/{WeightedArea,Area,AreaFormula,AreaLipschitz,AreaCritical,AreaApproximation,Lipschitz,WhitneyExtension}.lean`
+- `grep -rln 'C¹ approximation|C1 approximation|Lusin' simongmt/Poincare (no C¹ Approximation Theorem); grep -n for integral_area_formula_of_injective_derivative, weighted_area_formula_of_injective_derivative, areaJacobianAt_eq_sqrt_det_adjoint_comp, measurable_areaJacobianAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn, tsupport_exteriorDerivative_subset, HasApproximateTangentSpaceAt.unique, exists_contDiff_one_extension_of_whitney, area_image_criticalSet_eq_zero`
+- `python3 scans of dag.json (673→719 nodes): frozen types/status of codim1_rdo_graph_chart, codim1_rdo_de_giorgi_gauss_green, dor_ims_massOn_le_measure and the selected node; keyword scan 'C¹ approximation|area formula|approximate tangent|Lemma 1.2|bilipschitz'; diffeo_pushforward subtree statuses; lean_name lookup of the 7 new codim1_lur_* names (no hits)`
+- `git grep -l codim1_lur <1377 unique ref tips> -- 'GMT/*.lean' (no match)`
+- `git show {fae4fd1e,a2ba78fc,048ff2b9,bed5b849}:GMT/Ch07/Submission.lean + '#print axioms' for dor_ims_massOn_le_measure, dpf_rectifiable_bilipschitz_pieces, regcomp_approx_tangent_locality, ptd_piece_image_measurable_ae_pullback; lean -DautoImplicit=false (LEAN_PATH from .lake/build/lib/lean/GMT/Ch07/Submission.trace)`
+- `lean -DautoImplicit=false /tmp/lup-split/final/Types.lean; lean -DautoImplicit=false /tmp/lup-split/final/Assembly.lean (#print axioms Submission.codim1_rdo_local_unit_representation); lean /tmp/lup-split/final/Inst.lean (rfl instance checks)`
+- `sed -n 1,480p book/chapter-03.txt (Ch. 3, 1.1–2.10); sed -n 160,175p book/chapter-02.txt (C¹ Approximation Theorem 1.5, Whitney 1.6)`
+- `read nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-{5d8d9c70c5,de9c9e6c74} (handoff, decomposition-v1.json) and the parent-supplied natural proofs of the four reused nodes and of ptd_piece_image_approxTangent_ae`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-5d8d9c70c5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-de9c9e6c74/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/lup-split/final/Types.lean`
+- `/tmp/lup-split/final/Assembly.lean`
+- `/tmp/lup-split/final/Inst.lean`
+- `/tmp/lup-split/reuse/Check_dor_ims_massOn_le_measure.lean`
+- `/tmp/lup-split/reuse/Check_dpf_rectifiable_bilipschitz_pieces.lean`
+- `/tmp/lup-split/reuse/Check_regcomp_approx_tangent_locality.lean`
+- `/tmp/lup-split/reuse/Check_ptd_piece_image_measurable_ae_pullback.lean`
+
+Pins match.
+- Snapshot manifest: project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib.
+- Snapshot lake-manifest: simongmt 2b366308, equal to .lake/packages/simongmt.
+- Snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library (what exists).
+- Snapshot Mathlib: extDeriv_pullback and extDeriv_apply (Analysis/Calculus/DifferentialForm/Basic.lean:259, 198); LipschitzOnWith.extend_finite_dimension (Analysis/Normed/Module/FiniteDimension.lean:207); MeasurableSet.image_of_continuousOn_injOn and ContinuousOn.measurableEmbedding (MeasureTheory/Constructions/Polish/Basic.lean:821, 865); LinearMap.euclideanHausdorffMeasure_image_eq_normDet_mul_volume (Analysis/InnerProductSpace/NormDet.lean:433); Matrix.det_succ_column_zero, Matrix.det_le and AlternatingMap.eq_smul_basis_det; ae_tendsto_average_norm_sub (MeasureTheory/Covering/DensityTheorem.lean:150); integral_withDensity_eq_integral_smul.
+- SimonGMT: integral_area_formula_of_injective_derivative and weighted_area_formula_of_injective_derivative (Chapter02/WeightedArea.lean:151, 76); areaJacobianAt_eq_sqrt_det_adjoint_comp; measurable_areaJacobianAt; euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz.lean:216); tsupport_exteriorDerivative_subset (Chapter06/Currents.lean:182); HasApproximateTangentSpaceAt.unique (Chapter03/Rectifiable.lean:232); the Whitney C¹ extension theorem (Chapter02/WhitneyExtension.lean:373).
+
+Library (what is missing).
+- The snapshot Mathlib has no Cauchy–Binet (rg: no match).
+- SimonGMT has no C¹ Approximation Theorem (Ch. 2, 1.5) and no area formula on rectifiable sets; the Chapter03/Rectifiable.lean header says the area/coarea theorems are not asserted.
+- LinearMap.normDet and the Chapter02 area modules are not imported by GMT.Ch07.Submission, so the child statements use Matrix.det Gram determinants instead.
+
+DAG.
+- The 7 new codim1_lur_* names occur in no dag.json node (719 nodes) and in no GMT/*.lean at any of 1377 unique ref tips.
+- Reused with byte-identical types, all accepted: dor_ims_massOn_le_measure (fae4fd1e), dpf_rectifiable_bilipschitz_pieces (a2ba78fc), regcomp_approx_tangent_locality (048ff2b9) and ptd_piece_image_measurable_ae_pullback (bed5b849). A fresh compilation of each candidate Submission.lean with #print axioms gives only propext, Classical.choice and Quot.sound.
+- ptd_piece_image_approxTangent_ae (decomposing) has the same type as the new piece_tangent but is not accepted. dpf_area_formula_bilipschitz_rectifiable (speculative-ready) concerns self-maps of ℝ^P and is not accepted either.
+
+Lean.
+- Types.lean elaborates all 11 child types after import GMT.Ch07.Submission with the contract opens (exit 0, sorry warnings only).
+- Inst.lean confirms by rfl that the Gram determinants are Matrix.det over Matrix (Fin k) (Fin k) ℝ, that .indicator is Set.indicator, and that the adjoint term is the continuous linear map ι* applied to w − x.
+- Assembly.lean proves Submission.codim1_rdo_local_unit_representation (frozen type copied from dag.json). It takes codim1_rdo_graph_chart and codim1_rdo_de_giorgi_gauss_green (frozen types from dag.json) and chart_divergence, chart_perimeter and pushforward_rep as axioms. #print axioms lists only these five plus propext, Classical.choice and Quot.sound; no sorryAx occurs.
