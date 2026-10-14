@@ -1,0 +1,20 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/7935",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "661821d398016851a4fb52cbb3491b66a9d7acdd",
+  "integrated_commit": "",
+  "proof_base_commit": "2d804b9a879961ad1611673215b1239f653059fd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "requires": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.mass_scaling-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1.currenteval_pullback-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1.pullback_composition-a1"
+  ]
+}
