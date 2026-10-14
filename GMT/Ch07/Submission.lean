@@ -24956,4 +24956,66 @@ theorem Submission.dor_graph_supported_cycle_regular : ∀ (n k : ℕ) (U : Set 
   exact ⟨hzT, ρ, hρ, hballC.trans hCU, m, (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) s, ξ,
     hm0, hzS, hemb, hor, hfin, fun ω hω => hrepm ω (hω.trans hballC)⟩
 
+/-- **A minimizing cycle with density close to `1` at a point of its support is regular there**
+(Simon 7.4.3 and the proof of 7.4.4(8): "by Allard's Theorem 5.2 of Ch. 5 we have `y ∈ reg T`",
+with 7.1.2 justifying the use of 5.2 of Ch. 5).  Let `1 ≤ j ≤ P = j + k`, and let `δ := δ₀` be
+Allard's constant for `n = j` and `ε = 1/4`.  If `C ∈ 𝒟_j(ℝᴾ)` is minimizing in `ℝᴾ`, `∂C = 0`,
+`0 ∈ spt C` and `M_{B_ρ(0)}(C) ≤ (1 + δ)ω_jρʲ` for `0 < ρ ≤ 1`, then `0 ∈ reg C`.  For
+`C = τ(M, θ, ξ)` with `μ = θHʲ⌞M`: `M_W(C) = μ(W)` for open `W` and `spt C = spt μ`; `μ` is
+stationary (flat 7.1.2); letting `ρ ↓ 1/2` gives `μ(B̄_{1/2}(0)) ≤ (1 + δ₀)ω_j(1/2)ʲ`.  Allard
+with `H = 0`, `ρ = 1/2`, `z = 0` makes `spt μ ∩ B_r(0)`, `r = γ/2`, the graph of
+`Φ(v) = ιv + ι'u(v)` with `u(0) = 0` and `‖Du‖ ≤ 1/4`; over the cylinder of radius `r/4` it is
+`Φ(B_{r/4}(0))`, and the graph-regularity theorem gives `0 ∈ reg C`. -/
+theorem Submission.dimred_cdg_minimizing_origin_regular : ∀ (P j : ℕ), 1 ≤ j → j ≤ P → ∃ δ : ℝ, 0 < δ ∧ ∀ C : GeometricCurrentOn (univ : Set (Euclid P)) j, IsMinimizingIn C univ → BoundaryVanishes C → (0 : Euclid P) ∈ C.support → (∀ ρ : ℝ, 0 < ρ → ρ ≤ 1 → C.massOn (ball 0 ρ) ≤ ENNReal.ofReal (1 + δ) * unitBallVolume j * ENNReal.ofReal (ρ ^ j)) → (0 : Euclid P) ∈ regularSet C := by
+  intro P j hj hjP
+  -- step 1: `P = j + k`; `δ := δ₀`, Allard's constant for `n = j` and `ε = 1/4`
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hjP
+  obtain ⟨δ₀, γ, hδ₀, hγ, -, hallard⟩ :=
+    Submission.dimred_cdg_allard_bounded_curvature_graph j k hj (1 / 4) (by norm_num)
+  refine ⟨δ₀, hδ₀, fun C hmin hbd h0 hmass => ?_⟩
+  -- step 2: `C = τ(M, θ, ξ)`, `M_W(C) = μ(W)` for open `W` and `spt C = spt μ`, so `0 ∈ spt μ`
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨hmassW, hsupp⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support (j + k) j univ C R isOpen_univ hR
+  have h0μ : (0 : Euclid (j + k)) ∈ R.measure.support := by
+    have h := h0
+    rw [hsupp] at h
+    exact h.2
+  -- step 3: `δV(X) = 0` for every `X ∈ C¹_c(ℝ^{j+k}; ℝ^{j+k})` (Simon 7.1.2, `N = ℝ^{j+k}`)
+  have hstat :=
+    Submission.dimred_cdg_or_minimizing_firstVariation_eq_zero (j + k) j C R hmin hbd hR ⟨0, h0⟩
+  -- step 4: `μ(B̄_{1/2}(0)) ≤ μ(B_ρ(0)) = M_{B_ρ(0)}(C) ≤ (1 + δ₀)ω_jρʲ` for `1/2 < ρ < 1`;
+  -- let `ρ ↓ 1/2`
+  have hclosed : R.measure (closedBall 0 (1 / 2)) ≤
+      ENNReal.ofReal (1 + δ₀) * unitBallVolume j * ENNReal.ofReal ((1 / 2 : ℝ) ^ j) := by
+    have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (1 + δ₀) * unitBallVolume j *
+        ENNReal.ofReal (ρ ^ j)) (𝓝[>] (1 / 2))
+        (𝓝 (ENNReal.ofReal (1 + δ₀) * unitBallVolume j * ENNReal.ofReal ((1 / 2 : ℝ) ^ j))) := by
+      refine ENNReal.Tendsto.const_mul ?_ (Or.inl ?_)
+      · exact (ENNReal.tendsto_ofReal ((continuous_pow j).tendsto (1 / 2 : ℝ))).mono_left
+          nhdsWithin_le_nhds
+      · rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+        positivity
+    refine ge_of_tendsto hlim ?_
+    filter_upwards [Ioo_mem_nhdsGT (show (1 / 2 : ℝ) < 1 by norm_num)] with ρ hρ
+    calc R.measure (closedBall 0 (1 / 2)) ≤ R.measure (ball 0 ρ) :=
+          measure_mono (closedBall_subset_ball hρ.1)
+      _ = C.massOn (ball 0 ρ) := (hmassW _ isOpen_ball).symm
+      _ ≤ _ := hmass ρ (by linarith [hρ.1]) hρ.2.le
+  -- step 5: Allard at `z = 0` with `ρ = 1/2`, `H = 0` and `κ = 0`: `spt μ ∩ B_r(0)`, `r = γ/2`, is
+  -- the graph of `Φ(v) = ιv + ι'u(v)` over `B_r(0)`, with `u(0) = 0` and `‖Du‖ ≤ 1/4`
+  obtain ⟨ι, ι', u, horth, hu0, hu, hDu, hgraph⟩ :=
+    hallard univ univ R (fun _ => 0) 0 (1 / 2) 0 isOpen_univ subset_rfl (by norm_num)
+      (subset_univ _) aestronglyMeasurable_const (fun _ => by simp)
+      (fun X hX hXc _ => by simp [hstat X hX hXc]) h0μ hclosed (by rw [zero_mul]; exact hδ₀.le)
+  -- step 6: over the cylinder `{ιv + ι'w : |v|, |w| < r/4}`, `spt μ` is the graph `Φ(B_{r/4}(0))`
+  have hr : 0 < γ * (1 / 2) := by positivity
+  have hcyl := Submission.dimred_cdg_or_ball_graph_to_cylinder_graph j k R.measure.support ι ι' u 0
+    (γ * (1 / 2)) hr horth hu0 hu hDu hgraph
+  -- step 7: the graph-regularity theorem with `s = h = r/4` gives `0 ∈ reg C`
+  have hs : 0 < γ * (1 / 2) / 4 := by positivity
+  exact Submission.dor_graph_supported_cycle_regular j k univ C R ι ι' u 0 (γ * (1 / 2) / 4)
+    (γ * (1 / 2) / 4) hj isOpen_univ hR hbd horth hs hs
+    (hu.mono (ball_subset_ball (by linarith))) hu0 (subset_univ _) hcyl h0
+
 end GMT.Ch07
