@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "det_succ_row_zero|det_of_isLowerTriangular|det_transpose|det_diagonal|theorem det_mul \\(|det_fin_zero|def IsLowerTriangular|abbrev IsLowerTriangular|def BlockTriangular",
+        "mem_span_range_iff_exists_fun",
+        "HasOrthogonalProjection|starProjection_apply_mem|sub_starProjection_mem_orthogonal",
+        "inner_left_of_mem_orthogonal",
+        "norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero",
+        "theorem sqrt_mul |theorem sqrt_sq ",
+        "gram|det|shear|orthogonal",
+        "rg -n 'ecf_cp_gc_(det_smul|det_shear|det_orth|orth_residual)' GMT/Ch07/Submission.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "rg -l 'ecf_cp_gc_(det_smul|det_shear|det_orth|orth_residual)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes GMT .lake/packages/simongmt -g '*.json' -g '*.lean' -g '*.md'",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git show fe459a5a5bca60181bfad6b54943c4001fe016b0:GMT/Ch07/Submission.lean | sha256sum",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gram-cone-audit-3766d5e2/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gram-cone-split/Full.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Block.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/decomposition-review-retry.json",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/gram-cone-audit-3766d5e2/ContractsAndAssembly.lean",
+        "/tmp/gram-cone-split/Full.lean"
+      ],
+      "conclusion": "The split is appropriate: it isolates four distinct, genuine proof obligations, all used to establish the selected Gram-cone theorem. Empty sibling dependency lists correctly describe independent proofs and yield an acyclic decomposition. The stored binding matches the requested node and digest. All names are bare identifiers, with no existing DAG owners or identical frozen-type matches; the broader name search found only this node's proposal artifacts. No accepted declaration is reused. The snapshot pins project b4d606db1 and Mathlib 25730c7c; the live Mathlib revision and inspected supporting files match. Snapshot, workspace and proof-base contracts are byte-identical. The pinned determinant, projection, span and square-root lemmas support the supplied arguments; GramMatrix.lean contains no matching shear or orthogonal-block determinant theorem. Independently generated checks compiled every exact child proposition before any child implementation, verified projection-instance inference, pointwise scalar action and ordinary Matrix.of multiplication, and proved the exact frozen parent using only the four child contracts as hypotheses. The inspected complete proofs also recompiled successfully at string-identical frozen types. Both compiler checks reported only propext, Classical.choice and Quot.sound as axioms, with no sorryAx. Every supplied natural proof is complete enough for direct formalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose for arbitrary real t. The proof explicitly identifies the scaled family, establishes diagonal congruence, computes det D = t^k and obtains the squared factor. It needs no sign or independence hypothesis, includes k = 0, and uses neither the child nor parent theorem."
+    },
+    {
+      "key": "det_shear",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches arbitrary coefficients and all stated dimensions. The specified columns of E give precisely the claimed vector recombination; bilinearity yields Eᵀ M E with the correct index orientation. Lower triangularity and unit diagonal give determinant one. This proves the exact identity, including empty and dependent families, without circular reliance."
+    },
+    {
+      "key": "det_orth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes exactly the required orthogonality hypothesis. That hypothesis annihilates the noninitial entries of row zero, so Laplace expansion leaves the norm-squared entry times the correctly identified Fin.succ minor. The empty determinant convention handles k = 0. The supplied proof is complete and independent."
+    },
+    {
+      "key": "orth_residual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The existential proposition exactly matches both prose conclusions. Finite dimensionality supplies the projection; span membership supplies coefficients with the required sum equality. Orthogonal-complement membership proves every required inner-product equality, and Pythagoras plus nonnegative norms proves the norm bound. No independence assumption or circular theorem use is hidden, including when k = 0."
+    }
+  ],
+  "required_changes": []
+}
