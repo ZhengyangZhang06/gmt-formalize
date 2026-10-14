@@ -639,6 +639,79 @@ theorem Submission.idtp_tdc_csfp_planes_eq_or_inf_bot : ∀ (P : ℕ) (S : Set (
     _ = (Q₂ : Set (Euclid P)) ∩ ball u ε₂ ∩ ball u t := by rw [h₂]
     _ = (Q₂ : Set (Euclid P)) ∩ ball u t := hshrink _ _ ht₂
 
+/-- Finitely many planes in the proof of Simon 7.3.3(1) (p. 191: `spt S₀` lies in 2-planes
+`P₁, …, P_q` with `Pᵢ ∩ Pⱼ = {0}` for `i ≠ j`): a closed dilation-invariant set `S ⊆ ℝᴾ` that is
+a 2-plane near each `p ∈ S ∖ {0}` has `S ∖ {0}` inside finitely many 2-planes meeting pairwise
+only in `0`.  Choose `δ_p`, `Q_p` with `S ∩ B_{δ_p}(p) = Q_p ∩ B_{δ_p}(p)` (so `p ∈ Q_p`).  The
+link `Σ = S ∩ 𝕊` is compact, so finitely many balls `B_{δ_p}(p)`, `p ∈ F ⊆ Σ`, cover it; enumerate
+the finite set `{Q_p : p ∈ F}` injectively.  Distinct planes of it meet only in `0`
+(`idtp_tdc_csfp_planes_eq_or_inf_bot`).  For `x ∈ S ∖ {0}`, `x̂ = |x|⁻¹ x ∈ Σ` by dilation
+invariance; it lies in some `S ∩ B_{δ_p}(p) = Q_p ∩ B_{δ_p}(p)`, `p ∈ F`, so `x = |x| x̂ ∈ Q_p`. -/
+theorem Submission.idtp_tdc_cone_set_finite_planes : ∀ (P : ℕ) (S : Set (Euclid P)), IsClosed S → (∀ x ∈ S, ∀ s : ℝ, 0 < s → s • x ∈ S) → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → ∃ (q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)), (∀ i, Module.finrank ℝ (Ps i) = 2) ∧ (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) ∧ ∀ x ∈ S, x ≠ 0 → ∃ i, x ∈ Ps i := by
+  intro P S hS hdil hloc
+  classical
+  -- Step 1: a radius `δ p` and a plane `Q p` with `S ∩ B_{δ p}(p) = Q p ∩ B_{δ p}(p)` for every
+  -- `p ∈ S ∖ {0}`; then `p ∈ Q p`
+  have hloc' := hloc
+  choose! δ Q hδ hQ hSQ using hloc'
+  have hpQ : ∀ p ∈ S, p ≠ 0 → p ∈ Q p := by
+    intro p hp hp0
+    have h : p ∈ S ∩ ball p (δ p) := ⟨hp, mem_ball_self (hδ p hp hp0)⟩
+    rw [hSQ p hp hp0] at h
+    exact h.1
+  -- Step 2: the link `L = S ∩ 𝕊` is compact and consists of nonzero unit vectors of `S`
+  set L : Set (Euclid P) := S ∩ sphere 0 1
+  have hLc : IsCompact L := (isCompact_sphere 0 1).inter_left hS
+  have hL : ∀ p ∈ L, p ∈ S ∧ p ≠ 0 ∧ ‖p‖ = 1 := by
+    rintro p ⟨hp, hp1⟩
+    rw [mem_sphere_zero_iff_norm] at hp1
+    exact ⟨hp, norm_ne_zero_iff.1 (by rw [hp1]; exact one_ne_zero), hp1⟩
+  -- Step 3: finitely many balls `B_{δ p}(p)`, `p ∈ F ⊆ L`, cover `L`
+  obtain ⟨F, hFL, hcov⟩ := hLc.elim_nhds_subcover (fun p => ball p (δ p))
+    fun p hp => ball_mem_nhds p (hδ p (hL p hp).1 (hL p hp).2.1)
+  -- Step 4: enumerate the finite set of planes `{Q p : p ∈ F}` injectively by `Fin q`
+  set planes : Finset (Submodule ℝ (Euclid P)) := F.image Q
+  have hplanes : ∀ R ∈ planes, ∃ p ∈ L, Q p = R := by
+    intro R hR
+    obtain ⟨p, hp, rfl⟩ := Finset.mem_image.1 hR
+    exact ⟨p, hFL p hp, rfl⟩
+  refine ⟨planes.card, fun i => planes.equivFin.symm i, fun i => ?_, fun i j hij => ?_,
+    fun x hx hx0 => ?_⟩
+  · -- each plane is some `Q p`, `p ∈ L`, of dimension 2
+    obtain ⟨p, hp, hpR⟩ := hplanes _ (planes.equivFin.symm i).2
+    show Module.finrank ℝ (planes.equivFin.symm i : Submodule ℝ (Euclid P)) = 2
+    rw [← hpR]
+    exact hQ p (hL p hp).1 (hL p hp).2.1
+  · -- distinct planes `Q p ≠ Q p'` meet only in `0`
+    obtain ⟨p, hp, hpR⟩ := hplanes _ (planes.equivFin.symm i).2
+    obtain ⟨p', hp', hp'R⟩ := hplanes _ (planes.equivFin.symm j).2
+    obtain ⟨hpS, hp0, hp1⟩ := hL p hp
+    obtain ⟨hp'S, hp'0, hp'1⟩ := hL p' hp'
+    show (planes.equivFin.symm i : Submodule ℝ (Euclid P)) ⊓ planes.equivFin.symm j = ⊥
+    rw [← hpR, ← hp'R]
+    refine (Submission.idtp_tdc_csfp_planes_eq_or_inf_bot P S (Q p) (Q p') p p' (δ p) (δ p') hS
+      hloc (hQ p hpS hp0) (hQ p' hp'S hp'0) (hpQ p hpS hp0) hp1 (hδ p hpS hp0) (hSQ p hpS hp0)
+      (hpQ p' hp'S hp'0) hp'1 (hδ p' hp'S hp'0) (hSQ p' hp'S hp'0)).resolve_left fun h => hij ?_
+    exact planes.equivFin.symm.injective (Subtype.ext (hpR.symm.trans (h.trans hp'R)))
+  · -- `x̂ = |x|⁻¹ x ∈ L` lies in a ball `B_{δ p}(p)`, `p ∈ F`, so `x̂ ∈ Q p` and `x = |x| x̂ ∈ Q p`
+    have hxn : 0 < ‖x‖ := norm_pos_iff.2 hx0
+    have hxL : ‖x‖⁻¹ • x ∈ L := ⟨hdil x hx _ (inv_pos.2 hxn), by
+      rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hxn.ne']⟩
+    obtain ⟨p, hpF, hxp⟩ := mem_iUnion₂.1 (hcov hxL)
+    obtain ⟨hpS, hp0, -⟩ := hL p (hFL p hpF)
+    have hxQ : ‖x‖⁻¹ • x ∈ Q p := by
+      have h : ‖x‖⁻¹ • x ∈ S ∩ ball p (δ p) := ⟨hxL.1, hxp⟩
+      rw [hSQ p hpS hp0] at h
+      exact h.1
+    have hxQ' : x ∈ Q p := by
+      have h := (Q p).smul_mem ‖x‖ hxQ
+      rwa [smul_inv_smul₀ hxn.ne'] at h
+    have hQp : Q p ∈ planes := Finset.mem_image_of_mem Q hpF
+    refine ⟨planes.equivFin ⟨Q p, hQp⟩, ?_⟩
+    show x ∈ (planes.equivFin.symm (planes.equivFin ⟨Q p, hQp⟩) : Submodule ℝ (Euclid P))
+    rw [Equiv.symm_apply_apply]
+    exact hxQ'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
