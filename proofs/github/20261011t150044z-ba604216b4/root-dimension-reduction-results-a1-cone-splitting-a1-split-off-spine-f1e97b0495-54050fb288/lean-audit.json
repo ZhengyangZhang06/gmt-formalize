@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5d1a90e7cf0298f3bc0b92b3c22337cd0a273ea8e00c45cd68c7d825e21cabd8",
+  "git_delta": {
+    "base_commit": "38e836c6a9b8b12757f4c29f371422327c981455",
+    "candidate_commit": "57dae9e6f0d920eaa654f7a8eeef0fedb6fe4578",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_coord_box_ftc",
+    "diff_sha256": "959eee66d22ba2505106c8045a308c0ff26c62731374d30ac4cd9336348d29d1",
+    "source_sha256": "b7944b7d57d6be5a392494b2592804cfc308b92d84d9a83d48f80a6f3faa6c96",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_coord_box_ftc",
+      "statement": "∀ (j : ℕ) (a : Fin (j + 1)) (r : ℝ) (φ ψ : (Fin (j + 1) → ℝ) → ℝ), 0 < r → Continuous φ → (∀ (u : Fin j → ℝ) (τ : ℝ), HasDerivAt (fun σ : ℝ => ψ (Fin.insertNth a σ u)) (φ (Fin.insertNth a τ u)) τ) → ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, φ u = ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, (ψ (Fin.insertNth a r u) - ψ (Fin.insertNth a (-r) u))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
