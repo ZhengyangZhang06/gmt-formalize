@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "11d8a459c8f3b78f89917eb50bedc03dc6d4d3dfb6fd98cc28c6a18ca11a2288",
+  "git_delta": {
+    "base_commit": "e0e18334daa0117fde58336b72f39be876649874",
+    "candidate_commit": "5c994751b769571bb25d4488b4a7b03a8b02ff90",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pf_gram_det_le_prod_norm_sq",
+    "diff_sha256": "29d3f8f3b18c45aab66030833dff15a0c2e7f203a098925b6cc062faca0dfcdf",
+    "source_sha256": "65c5346a03300a6c313978d1f8e806f336592a3b198230c08b263d62ae8b225b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pf_gram_det_le_prod_norm_sq",
+      "statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ ∏ i, ‖v i‖ ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
