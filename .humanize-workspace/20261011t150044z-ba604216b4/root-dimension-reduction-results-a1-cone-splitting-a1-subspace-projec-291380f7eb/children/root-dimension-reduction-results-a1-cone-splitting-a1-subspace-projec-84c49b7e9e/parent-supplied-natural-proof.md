@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.subspace_projection-a1.current_pushforward-a1.support_closed-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof, which is Simon Ch. 6, 2.11–2.12 (chapter-06.txt lines 297–307: spt T = U ∖ ⋃W, and spt T = spt μ_T). The parent applies the lemma with F = L(spt X), a closed set containing the carrier N of the pushed-forward triple R'.
+Sibling used: mass_support (dor_imrep_massOn_eq_measure_and_support). For U open and R representing T in U, it gives spt T = U ∩ spt μ_R.
+Notation: M = R.carrier, θ = R.mult, H^n = μHE[n], μ_R = R.measure = θH^n⌞M (the measure H^n⌞M with density θ).
+1. (μ_R(ℝ^P ∖ F) = 0.)
+ - F is closed, so G := ℝ^P ∖ F is open, hence Borel.
+ - By the definition of μ_R as a measure with density (withDensity_apply, then Measure.restrict_restrict): μ_R(G) = ∫_{G ∩ M} θ dH^n.
+ - Since M ⊆ F, G ∩ M = ∅. The integral against the zero measure H^n⌞∅ vanishes (Measure.restrict_empty, lintegral_zero_measure).
+ - So μ_R(G) = 0.
+2. (An open null set misses the support.) G is open and μ_R(G) = 0 by step 1. Every point of G therefore has the neighbourhood G of μ_R-measure 0, so it does not lie in spt μ_R. Thus G ⊆ ℝ^P ∖ spt μ_R (Mathlib Measure.subset_compl_support_of_isOpen), i.e. spt μ_R ⊆ F.
+3. (Conclusion.)
+ - By mass_support with U = ℝ^P (open) and R representing Y: spt Y = ℝ^P ∩ spt μ_R = spt μ_R.
+ - Let x ∈ spt Y. If x ∉ F, then x ∈ G ⊆ ℝ^P ∖ spt μ_R by step 2, contradicting x ∈ spt μ_R.
+ - So x ∈ F, i.e. spt Y ⊆ F. ∎
+
+## Key steps
+
+1. μ_R(ℝ^P ∖ F) = ∫_{(ℝ^P ∖ F) ∩ M} θ dH^n = 0, because M ⊆ F.
+2. An open μ_R-null set is disjoint from spt μ_R, so spt μ_R ⊆ F.
+3. spt Y = ℝ^P ∩ spt μ_R by sibling mass_support.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'def IMRep.measure|def IMRep.action|def IMRep.Represents|def BoundaryVanishes|mult_pos|measurableSet_carrier' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `rg -n '^(noncomputable )?def extDeriv\b|EventuallyEq.extDeriv' <snapshot>/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/`
+- `rg -n 'theorem one_of_mem_closedBall|protected theorem hasCompactSupport|protected theorem contDiff|theorem tsupport_eq' <snapshot>/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `rg -n 'measure_compl_support|subset_compl_support_of_isOpen' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'theorem withDensity_apply' <snapshot>/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `rg -n 'theorem HasCompactSupport.smul_right|theorem HasCompactSupport.smul_left' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `rg -n 'isBounded_iff_subset_ball' <snapshot>/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `rg -n "theorem setLIntegral_one|theorem setLIntegral_mono'|theorem ae_restrict_iff'|theorem integral_congr_ae" <snapshot>/mathlib/Mathlib/MeasureTheory`
+- `for f in DifferentialForm/Basic BumpFunction/Basic Measure/Support Measure/WithDensity Topology/Algebra/Support MetricSpace/Bounded: cmp <snapshot>/mathlib/Mathlib/$f .lake/packages/mathlib/Mathlib/$f (all identical)`
+- `grep -n '^theorem|^def|^abbrev' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,CurrentLocalEquality,AffineCurrentPushforward,Mass}.lean; cat Forms.lean AffineCurrentPushforward.lean CurrentLocalEquality.lean Mass.lean`
+- `python3 over dag.json: status, lean_name and lean_statement of the selected node and its frozen dependencies (imrep_pushforward decomposing; mass_support and imrep_current accepted); every node type containing IsSmoothForm, affinePullbackForm, 'action (exteriorDerivative', or '.support ⊆' with 'carrier ⊆' (no reusable equivalent); pushforward / boundaryVanishes nodes (dtc_bc_lc_pushforward accepted, dimred_mbl_pf_pushforward_boundaryVanishes accepted); nodes whose depends_on contains imrep_pushforward (only this node)`
+- `git show 2f77cee10b1d24bcd515ffe5a9f58f12e115348e:GMT/Ch07/Submission.lean (node proof base = bare contract); git show b1757de56800bfad9f11c71168e87756f47b6004:GMT/Ch07/Submission.lean (dtc_bc_lc_pushforward proof; only sorry is main_theorem; median accepted declaration ≈ 55 lines)`
+- `grep -c dimred_cs_sp_cp_ dag.json; grep -rlF dimred_cs_sp_cp_ nodes/ GMT/ .lake/packages/simongmt/Poincare; grep -lF dimred_cs_sp_cp_ over the Submission.lean of the 2606 .swarm-worktrees (no match)`
+- `grep -n '^2.11|^2.12|^2.23|2.24 Remarks' book/chapter-06.txt; sed -n 280,310p and 400,442p book/chapter-06.txt`
+- `lake env lean /tmp/cp-decomp/lean/{Probe,Assembly,Children,Final,Shortcut}.lean (#check of cited API; parent assembly; child proofs; exact-string check; shortcut observation; #print axioms)`
+- `independent adversarial review subagent over /tmp/cp-decomp/draft/subproblems.json and the Lean files (verdict ACCEPT; wording notes incorporated)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-291380f7eb/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projection-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d20ddc8d39/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cp-decomp/lean/Assembly.lean`
+- `/tmp/cp-decomp/lean/Children.lean`
+- `/tmp/cp-decomp/lean/Final.lean`
+- `/tmp/cp-decomp/lean/Shortcut.lean`
+- `/tmp/cp-decomp/draft/subproblems.json`
+
+Pins and contract.
+- The snapshot pins match: project b4d606d (= workspace HEAD), mathlib 25730c7c, simongmt 2b36630.
+- The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+- The six Mathlib files used by the child proofs are identical in the snapshot and the build.
+
+Library support. Every API name cited by the child proofs exists in the snapshot:
+- extDeriv is defined at DifferentialForm/Basic.lean:72; Filter.EventuallyEq.extDeriv_eq is at line 188;
+- ContDiffBump.one_of_mem_closedBall, .contDiff and .hasCompactSupport;
+- Measure.measure_compl_support and Measure.subset_compl_support_of_isOpen (Measure/Support.lean);
+- withDensity_apply, HasCompactSupport.smul_right, Metric.isBounded_iff_subset_ball, setLIntegral_one, setLIntegral_mono', ae_restrict_iff', integral_congr_ae.
+From SimonGMT the parent uses exteriorDerivative_affinePullbackForm and affinePullbackForm_isSmoothForm, and the children use exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply and GeometricCurrentOn.ext (AffineCurrentPushforward.lean, Currents.lean).
+SimonGMT has no lemma that a compactly carried cycle annihilates exact smooth forms, and none bounding the support of τ(M, θ, ξ) by a closed set containing M. dag.json has no node with either type (no match).
+
+DAG state.
+- The selected node's proof base 2f77cee is the bare contract.
+- The reused declaration dor_imrep_massOn_eq_measure_and_support is accepted, its type is byte-identical, and its comparator passed. It is already a frozen dependency of this node.
+- The new names dimred_cs_sp_cp_support_subset_of_carrier_subset and dimred_cs_sp_cp_action_extDeriv_eq_zero collide with nothing in the DAG, the project, SimonGMT or the 2606 swarm worktrees.
+
+Lean checks.
+- Assembly.lean proves the frozen parent type from the three children plus imrep_pushforward and imrep_current using only standard axioms.
+- Children.lean and Final.lean prove both new children (cycle_exact with standard axioms only).
+
+Observation. The accepted dtc_bc_lc_pushforward also implies the parent type directly (Shortcut.lean, standard axioms). This node is the only consumer of imrep_pushforward. The observation is reported but not used, because the supplied proof is frozen.
