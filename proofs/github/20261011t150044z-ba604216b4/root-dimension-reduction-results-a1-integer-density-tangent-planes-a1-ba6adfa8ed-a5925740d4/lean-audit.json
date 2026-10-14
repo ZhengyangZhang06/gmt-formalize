@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0f2aa30293201449f61d129c8f55c827d09b8d850327fb9ccfdbed5b026cb233",
+  "git_delta": {
+    "base_commit": "63a91b46d4ace423837e58170ffa73eb5a265327",
+    "candidate_commit": "b981a09a79f16d331b955f78598cc42053c815f3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_caf_piece_approxTangentPlane_ae",
+    "diff_sha256": "9a11e3cf354bf473005c05416a659d977f692dbe7e2678bb223944e5f06d3433",
+    "source_sha256": "bade2d9e6022c3d003f62e1e7b08523b81722f20ee843872078c1b8a639f3481",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_caf_piece_approxTangentPlane_ae",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → g '' A ⊆ M → ∀ᵐ a ∂(volume.restrict A), approxTangentPlane n M (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
