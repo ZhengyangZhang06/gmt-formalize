@@ -527,6 +527,63 @@ theorem Submission.dimred_mbl_dt_cbm_im_integer_median_exists : ∀ (X : Type) [
     omega
   rw [hset, probReal_compl_eq_one_sub₀ (hnm _)]
   linarith
+/-- **Simon 6.5.1** (proof, (31)–(32): the median `β` minimizes the `L¹` deviation, which replaces
+the median hypothesis 2.7(‡) of Ch. 2): if `μ` is a probability measure, `u` is `μ`-integrable
+and `β` is a median of `u` (`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2`), then
+`∫ |u - β| dμ ≤ ∫ |u - c| dμ` for every `c`.  If `β ≤ c`, then
+`|u - c| - |u - β| ≥ (c - β)(2 · 1_{u ≤ β} - 1)` pointwise (equality on `{u ≤ β}`, the triangle
+inequality off it), and integrating gives `∫ |u - c| - ∫ |u - β| ≥ (c - β)(2μ{u ≤ β} - 1) ≥ 0`.
+The case `c < β` is symmetric, with `{β ≤ u}` and `β - c`. -/
+theorem Submission.dimred_mbl_dt_cbm_im_median_minimizes : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → ∀ c : ℝ, ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+  intro X _ μ u β hμ hu hge hle c
+  -- every `|u - a|` is integrable
+  have habs : ∀ a : ℝ, Integrable (fun x => |u x - a|) μ := fun a =>
+    (hu.sub (integrable_const a)).abs
+  -- key lemma: integrate `d (2 · 1_s - 1) ≤ |u - c| - |u - β|`, using `∫ 1_s = μ(s)`, `∫ 1 = 1`
+  have key : ∀ (s : Set X) (d : ℝ), NullMeasurableSet s μ → 1 / 2 ≤ μ.real s → 0 ≤ d →
+      (∀ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ≤ |u x - c| - |u x - β|) →
+      ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+    intro s d hs hs2 hd hpt
+    have hind : Integrable (s.indicator fun _ => (1 : ℝ)) μ :=
+      (integrable_const (1 : ℝ)).indicator₀ hs
+    have hI : ∫ x, s.indicator (fun _ => (1 : ℝ)) x ∂μ = μ.real s := by
+      rw [integral_indicator₀ hs, setIntegral_const, smul_eq_mul, mul_one]
+    have hL : ∫ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ∂μ = d * (2 * μ.real s - 1) := by
+      rw [integral_const_mul, integral_sub (hind.const_mul 2) (integrable_const 1),
+        integral_const_mul, hI, integral_const, probReal_univ, smul_eq_mul, mul_one]
+    have hR : ∫ x, (|u x - c| - |u x - β|) ∂μ = ∫ x, |u x - c| ∂μ - ∫ x, |u x - β| ∂μ :=
+      integral_sub (habs c) (habs β)
+    have hmono : ∫ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ∂μ ≤
+        ∫ x, (|u x - c| - |u x - β|) ∂μ :=
+      integral_mono (((hind.const_mul 2).sub (integrable_const 1)).const_mul d)
+        ((habs c).sub (habs β)) hpt
+    have hnn : 0 ≤ d * (2 * μ.real s - 1) := mul_nonneg hd (by linarith)
+    linarith
+  -- `u` is a.e.-measurable, so `{u ≤ β}` and `{β ≤ u}` are null-measurable
+  have hmeas : AEMeasurable u μ := hu.aemeasurable
+  rcases le_or_gt β c with hc | hc
+  · -- `β ≤ c`: `s = {u ≤ β}`, `d = c - β`
+    refine key {x | u x ≤ β} (c - β) (hmeas.nullMeasurableSet_preimage measurableSet_Iic) hle
+      (sub_nonneg.mpr hc) fun x => ?_
+    by_cases hx : u x ≤ β
+    · rw [Set.indicator_of_mem (show x ∈ {x | u x ≤ β} from hx),
+        abs_of_nonpos (by linarith : u x - c ≤ 0), abs_of_nonpos (by linarith : u x - β ≤ 0)]
+      linarith
+    · rw [Set.indicator_of_notMem (show x ∉ {x | u x ≤ β} from hx)]
+      have h1 := abs_sub_le (u x) c β
+      rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ c - β)] at h1
+      linarith
+  · -- `c < β`: `s = {β ≤ u}`, `d = β - c`
+    refine key {x | β ≤ u x} (β - c) (hmeas.nullMeasurableSet_preimage measurableSet_Ici) hge
+      (sub_nonneg.mpr hc.le) fun x => ?_
+    by_cases hx : β ≤ u x
+    · rw [Set.indicator_of_mem (show x ∈ {x | β ≤ u x} from hx),
+        abs_of_nonneg (by linarith : 0 ≤ u x - c), abs_of_nonneg (by linarith : 0 ≤ u x - β)]
+      linarith
+    · rw [Set.indicator_of_notMem (show x ∉ {x | β ≤ u x} from hx)]
+      have h1 := abs_sub_le (u x) c β
+      rw [abs_of_nonpos (by linarith : c - β ≤ 0)] at h1
+      linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
