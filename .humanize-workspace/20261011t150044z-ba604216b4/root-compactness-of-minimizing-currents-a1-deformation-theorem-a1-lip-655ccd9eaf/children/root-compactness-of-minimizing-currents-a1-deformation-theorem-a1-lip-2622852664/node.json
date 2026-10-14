@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.support_rep-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1",
+  "depth": 6,
+  "title": "An integer multiplicity current has a representation carried by its support (supplied step 1)",
+  "statement": "Assume, as a hypothesis, (IMC b), the second conjunct of the frozen type of Submission.cmc_imRep_locality_restrict_sub (exact Lean text, as antecedent): for all P, n, U ⊆ ℝ^P, every IMRep R in U and every set E, if U is open and E is Borel, then there are A ∈ 𝒟_n(U) (GeometricCurrentOn U n) and an IMRep R' in U with R' representing A, R'.carrier = R.carrier ∩ E, R'.mult = R.mult and R'.orient = R.orient. Let N, n ∈ ℕ, let U ⊆ ℝ^N be open, and let X ∈ 𝒟_n(U) be integer multiplicity. Then there is an IMRep R in U with R.Represents X and R.carrier ⊆ spt X (X.support).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → ∀ (N n : ℕ) (U : Set (Euclid N)) (X : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity X → ∃ R : IMRep U n, R.Represents X ∧ R.carrier ⊆ X.support",
+  "lean_name": "cmcdt_lpi_pr_imrep_in_support",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.support_null-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.support_null-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-a1",
+      "result_commit": "d15b5cf486116871dce9295932632b12f0af96e0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-2622852664-a1"
+}
