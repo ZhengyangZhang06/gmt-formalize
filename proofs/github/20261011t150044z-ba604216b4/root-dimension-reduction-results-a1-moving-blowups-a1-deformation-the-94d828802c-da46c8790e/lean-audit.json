@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "773a3f5846797b69974b997316a4736e1acb94d1b0b28c28f440de9709c26111",
+  "git_delta": {
+    "base_commit": "81a6faf9da147b7d6b4d0884167f4f874397c3b0",
+    "candidate_commit": "a581605cca7b68f566b71a3aa3f75d3bbefc48eb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_jc_lipschitz_minor_ibp",
+    "diff_sha256": "26095240b3680e920a3f335fddb0deba013e9293001bbcc672ac3e047c9fe82e",
+    "source_sha256": "11741fb516fd783ed04cb6a9df1438054684e2e3ca3cc59ac5220c346eb24c11",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_jc_lipschitz_minor_ibp",
+      "statement": "∀ (k r : ℕ) (L : NNReal) (g : Fin (r + 1) → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (ψ : Euclid k → ℝ), (∀ c, LipschitzWith L (g c)) → ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) = -∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * ∫ x, fderiv ℝ ψ x (V b) * g 0 x * Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b')))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
