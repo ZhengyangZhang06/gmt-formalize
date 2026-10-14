@@ -1927,6 +1927,216 @@ theorem Submission.cbr_ci_cp_invariant_measure_product : ∀ (P n : ℕ) (ν : M
   -- `ν` agrees with the image of `(Hⁿ⌞V) ⊗ σ` on rectangles, hence on all Borel sets
   exact ⟨σ, hσV, hσcpt, Submission.cbr_ci_cp_prod_of_rectangles P n ν σ V hn hσV hσcpt hrect⟩
 
+/-- `ν(B_r(x)) ≤ ωₙrⁿ σ(B_r(x − p_V x))` when `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)` for a
+subspace `V` with `dim V = n` and a measure `σ` carried by `Vᗮ`.  Write `x = p₀ + q₀` with
+`p₀ = p_V x ∈ V` and `q₀ = x − p_V x ∈ Vᗮ`.  For `t ∈ V` and `z ∈ Vᗮ`, Pythagoras gives
+`|t + z − x|² = |t − p₀|² + |z − q₀|²`, so `t + z ∈ B_r(x)` forces `t ∈ B_r(p₀)` and
+`z ∈ B_r(q₀)`.  Hence `σ({y : t + y ∈ B_r(x)}) ≤ 1_{B_r(p₀)}(t) σ(B_r(q₀))`, and integrating over
+`V` gives `ν(B_r(x)) ≤ σ(B_r(q₀)) Hⁿ(V ∩ B_r(p₀)) = ωₙrⁿ σ(B_r(q₀))`. -/
+theorem Submission.cbr_ci_cp_atm_ball_le_transversal_ball : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ∀ (x : Euclid P) (r : ℝ), 0 < r → ν (ball x r) ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball (x - V.starProjection x) r) := by
+  intro P n ν σ V hn hσ hν x r hr
+  -- `x = p₀ + q₀` with `p₀ = p_V x ∈ V` and `q₀ = x − p₀ ∈ Vᗮ`
+  set p₀ := V.starProjection x
+  have hp₀ : p₀ ∈ V := V.starProjection_apply_mem x
+  have hq₀ : x - p₀ ∈ Vᗮ := V.sub_starProjection_mem_orthogonal x
+  -- Pythagoras: for `t ∈ V` and `z ∈ Vᗮ`, `t + z ∈ B_r(x)` forces `t ∈ B_r(p₀)`, `z ∈ B_r(q₀)`
+  have hpyth : ∀ t ∈ V, ∀ z ∈ Vᗮ, t + z ∈ ball x r →
+      t ∈ ball p₀ r ∧ z ∈ ball (x - p₀) r := by
+    intro t ht z hz htz
+    have hpy := norm_add_sq_eq_norm_sq_add_norm_sq_real
+      (V.inner_right_of_mem_orthogonal (V.sub_mem ht hp₀) (Vᗮ.sub_mem hz hq₀))
+    rw [show t - p₀ + (z - (x - p₀)) = t + z - x by abel] at hpy
+    simp only [mem_ball, dist_eq_norm] at htz ⊢
+    have hlt : ‖t + z - x‖ * ‖t + z - x‖ < r * r := mul_self_lt_mul_self (norm_nonneg _) htz
+    constructor
+    · exact (mul_self_lt_mul_self_iff (norm_nonneg _) hr.le).2
+        (by linarith [mul_self_nonneg ‖z - (x - p₀)‖])
+    · exact (mul_self_lt_mul_self_iff (norm_nonneg _) hr.le).2
+        (by linarith [mul_self_nonneg ‖t - p₀‖])
+  -- `σ` is carried by `Vᗮ`, so `σ({y : t + y ∈ B_r(x)}) ≤ 1_{B_r(p₀)}(t) σ(B_r(q₀))` on `V`
+  have hslice : ∀ t ∈ (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' ball x r) ≤
+      (ball p₀ r).indicator (fun _ => σ (ball (x - p₀) r)) t := by
+    intro t ht
+    rw [← measure_inter_conull (s := (fun y => t + y) ⁻¹' ball x r) hσ]
+    by_cases htp : t ∈ ball p₀ r
+    · rw [indicator_of_mem htp]
+      exact measure_mono fun z hz => (hpyth t ht z hz.2 hz.1).2
+    · have hempty : (fun y => t + y) ⁻¹' ball x r ∩ (Vᗮ : Set (Euclid P)) = ∅ :=
+        eq_empty_of_forall_notMem fun z hz => htp (hpyth t ht z hz.2 hz.1).1
+      rw [indicator_of_notMem htp, hempty, measure_empty]
+  -- integrate over `V` and use `Hⁿ(V ∩ B_r(p₀)) = ωₙrⁿ`
+  calc ν (ball x r)
+      = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' ball x r) ∂μHE[n] :=
+        hν _ measurableSet_ball
+    _ ≤ ∫⁻ t in (V : Set (Euclid P)),
+          (ball p₀ r).indicator (fun _ => σ (ball (x - p₀) r)) t ∂μHE[n] :=
+        setLIntegral_mono' V.closed_of_finiteDimensional.measurableSet hslice
+    _ = σ (ball (x - p₀) r) * μHE[n] ((V : Set (Euclid P)) ∩ ball p₀ r) := by
+        rw [lintegral_indicator_const measurableSet_ball, Measure.restrict_apply measurableSet_ball,
+          inter_comm]
+    _ = unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball (x - p₀) r) := by
+        rw [Submission.idtp_tdc_subspace_ball_measure P n V p₀ r hn hp₀ hr, mul_comm]
+/-- If `σ` is finite on compact sets and `f(r) ≤ ωₙrⁿσ(B_r(z))` for every `r > 0`, then
+`liminf_{r↓0} f(r)/(ωₙrⁿ) ≤ σ({z})` (used in the closure step of the proof of Simon 7.2.4,
+p. 184, to show that the transversal measure of a measure invariant along a plane is atomic).
+For `r > 0`, `f(r)/(ωₙrⁿ) ≤ σ(B_r(z))` in `[0, ∞]`; and `σ(B_r(z)) → σ({z})` as `r ↓ 0` by
+continuity from above, the balls decreasing to `{z}` and `σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞`. -/
+theorem Submission.cbr_ci_cp_atm_liminf_density_le_atom : ∀ (P n : ℕ) (σ : Measure (Euclid P)) (z : Euclid P) (f : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ r : ℝ, 0 < r → f r ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball z r)) → liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ σ {z} := by
+  intro P n σ z f hσ hf
+  -- the balls `B_r(z)` decrease to `{z}` as `r ↓ 0`
+  have hinter : (⋂ r > (0 : ℝ), ball z r) = {z} := by
+    ext y
+    simp only [mem_iInter, mem_ball, mem_singleton_iff]
+    refine ⟨fun hy => ?_, fun hy r hr => by rwa [hy, dist_self]⟩
+    by_contra hne
+    exact lt_irrefl _ (hy (dist y z) (dist_pos.2 hne))
+  -- continuity from above, with `σ(B_1(z)) ≤ σ(B̄_1(z)) < ∞`
+  have hlim : Tendsto (fun r : ℝ => σ (ball z r)) (𝓝[>] 0) (𝓝 (σ {z})) := by
+    rw [← hinter]
+    exact tendsto_measure_biInter_gt (fun r _ => measurableSet_ball.nullMeasurableSet)
+      (fun i j _ hij => ball_subset_ball hij)
+      ⟨1, one_pos, ((measure_mono ball_subset_closedBall).trans_lt
+        (hσ _ (isCompact_closedBall z 1))).ne⟩
+  -- `f(r)/(ωₙrⁿ) ≤ σ(B_r(z))` for `r > 0`, then monotonicity of `liminf`
+  calc liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)
+      ≤ liminf (fun r : ℝ => σ (ball z r)) (𝓝[>] 0) :=
+        liminf_le_liminf (eventually_mem_nhdsWithin.mono fun r hr =>
+          ENNReal.div_le_of_le_mul' (hf r hr))
+    _ = σ {z} := hlim.liminf_eq
+/-- If `ν(A) = ∫_V σ(A − t) dHⁿ(t)` for Borel `A`, where `V` is an `n`-dimensional subspace of
+`ℝᴾ` and `σ` is carried by `Vᗮ`, and `x − p_V x ∈ Z` for `ν`-a.e. `x` with `Z` Borel, then
+`σ(ℝᴾ ∖ Z) = 0` (used for the translation-invariant blow-up measures in B. White's proof of the
+closure theorem, part of Simon 7.2.4).  The Borel set `E = {y : y − p_V y ∉ Z}` is `ν`-null and
+invariant under translation by `V`, so `0 = ν(E) = σ(E) Hⁿ(V)`;
+`Hⁿ(V) ≥ Hⁿ(V ∩ B_1(0)) = ωₙ > 0` gives `σ(E) = 0`, and `ℝᴾ ∖ Z ⊆ E ∪ (ℝᴾ ∖ Vᗮ)` because
+`p_V w = 0` for `w ∈ Vᗮ`. -/
+theorem Submission.cbr_ci_cp_atm_transversal_carried : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → MeasurableSet Z → (∀ᵐ x ∂ν, x - V.starProjection x ∈ Z) → σ Zᶜ = 0 := by
+  intro P n ν σ V Z hn hσ hD hZ hae
+  -- `E = {y : y − p_V y ∉ Z}` is Borel and `ν`-null
+  set E : Set (Euclid P) := (fun y => y - V.starProjection y) ⁻¹' Zᶜ with hE_def
+  have hE : MeasurableSet E := (continuous_id.sub V.starProjection.continuous).measurable hZ.compl
+  have hνE : ν E = 0 := ae_iff.mp hae
+  -- `p_V (t + y) = t + p_V y` for `t ∈ V`, so `E` is invariant under translation by `V`
+  -- and the product formula gives `ν(E) = σ(E) Hⁿ(V)`
+  have hprod : ν E = σ E * μHE[n] (V : Set (Euclid P)) := by
+    rw [hD E hE, ← setLIntegral_const]
+    refine setLIntegral_congr_fun V.closed_of_finiteDimensional.measurableSet fun t ht => ?_
+    congr 1
+    ext y
+    simp [hE_def, Submodule.starProjection_eq_self_iff.mpr ht]
+  -- `Hⁿ(V) ≥ Hⁿ(V ∩ B_1(0)) = ωₙ > 0`
+  have hV : μHE[n] (V : Set (Euclid P)) ≠ 0 := by
+    have hball := Submission.idtp_tdc_subspace_ball_measure P n V 0 1 hn V.zero_mem one_pos
+    rw [one_pow, ENNReal.ofReal_one, mul_one] at hball
+    have hω : 0 < unitBallVolume n := measure_ball_pos volume (0 : Euclid n) one_pos
+    refine (hω.trans_le ?_).ne'
+    rw [← hball]
+    exact measure_mono Set.inter_subset_left
+  have hσE : σ E = 0 := by
+    rw [hνE, eq_comm, mul_eq_zero] at hprod
+    exact hprod.resolve_right hV
+  -- `ℝᴾ ∖ Z ⊆ E ∪ (ℝᴾ ∖ Vᗮ)`, since `p_V w = 0` for `w ∈ Vᗮ`
+  refine measure_mono_null (fun w hw => ?_) (measure_union_null hσE hσ)
+  by_cases hw' : w ∈ Vᗮ
+  · left
+    show w - V.starProjection w ∈ Zᶜ
+    rwa [(V.starProjection_apply_eq_zero_iff).mpr hw', sub_zero]
+  · exact Or.inr hw'
+/-- A measure `ν` on `ℝᴾ` with `ν(A) = ∫⁻_{t ∈ V} σ({y : t + y ∈ A}) dHⁿ(t)` for Borel `A`, whose
+transversal measure `σ` is carried by a countable set `Z`, is the countable sum of weighted parallel
+planes `ν = Σ_{w ∈ Z} σ({w}) Hⁿ⌞(w + V)` (a step of the proof of Simon 7.2.4, for cycles with a
+constant orientation).  `σ` is the sum of its atoms on `Z`; inserting this into the product
+formula, monotone convergence exchanges sum and integral, and the translation by `w` is an isometry
+carrying `{t : t + w ∈ A} ∩ V` onto `A ∩ (w + V)`, under which `Hⁿ` is invariant. -/
+theorem Submission.cbr_ci_cp_atm_sum_planes_of_carried : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Z.Countable → σ Zᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) := by
+  intro P n ν σ V Z hZ hσ hν
+  have := hZ.to_subtype
+  -- `σ` is carried by the countable set `Z`, hence is the sum of its atoms there
+  have hatom : ∀ S : Set (Euclid P), MeasurableSet S →
+      σ S = ∑' w : Z, S.indicator (fun x => σ {x}) (w : Euclid P) := by
+    intro S hS
+    have hSZ : S ∩ Z = ⋃ w : Z, S ∩ {(w : Euclid P)} := by
+      ext y
+      simp
+    rw [← measure_inter_conull hσ, hSZ, measure_iUnion]
+    · congr 1
+      ext w
+      by_cases hw : (w : Euclid P) ∈ S
+      · simp [hw]
+      · simp [hw]
+    · intro w w' hww'
+      exact Disjoint.mono inter_subset_right inter_subset_right
+        (disjoint_singleton.2 (Subtype.coe_injective.ne hww'))
+    · exact fun w => hS.inter (measurableSet_singleton _)
+  ext A hA
+  rw [hν A hA, Measure.sum_apply _ hA]
+  calc ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]
+      = ∫⁻ t in (V : Set (Euclid P)), ∑' w : Z,
+          ((fun t => t + (w : Euclid P)) ⁻¹' A).indicator (fun _ => σ {(w : Euclid P)}) t ∂μHE[n] := by
+        refine lintegral_congr fun t => ?_
+        rw [hatom _ (measurable_const_add t hA)]
+        refine tsum_congr fun w => ?_
+        by_cases hw : t + (w : Euclid P) ∈ A
+        · rw [indicator_of_mem (show (w : Euclid P) ∈ (fun y => t + y) ⁻¹' A from hw),
+            indicator_of_mem (show t ∈ (fun t => t + (w : Euclid P)) ⁻¹' A from hw)]
+        · rw [indicator_of_notMem (show (w : Euclid P) ∉ (fun y => t + y) ⁻¹' A from hw),
+            indicator_of_notMem (show t ∉ (fun t => t + (w : Euclid P)) ⁻¹' A from hw)]
+    -- monotone convergence for the countable sum, then integrate the indicators
+    _ = ∑' w : Z, σ {(w : Euclid P)} *
+          (μHE[n]).restrict (V : Set (Euclid P)) ((fun t => t + (w : Euclid P)) ⁻¹' A) := by
+        rw [lintegral_tsum fun w : Z => (measurable_const.indicator
+          (measurable_add_const (w : Euclid P) hA)).aemeasurable]
+        simp only [lintegral_indicator_const (measurable_add_const _ hA)]
+    _ = ∑' w : Z, (σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) A := by
+        congr 1
+        ext w
+        rw [Measure.restrict_apply (measurable_add_const _ hA), Measure.smul_apply, smul_eq_mul,
+          Measure.restrict_apply hA]
+        congr 1
+        -- the translation by `w` is an isometry carrying `{t : t + w ∈ A} ∩ V` onto `A ∩ (w + V)`
+        have hpre : (fun t => t + (w : Euclid P)) ⁻¹' (A ∩ {y : Euclid P | y - w ∈ V}) =
+            (fun t => t + (w : Euclid P)) ⁻¹' A ∩ V := by
+          ext t
+          simp
+        rw [← hpre, (isometry_add_right (w : Euclid P)).euclideanHausdorffMeasure_preimage,
+          (add_right_surjective (w : Euclid P)).range_eq, inter_univ]
+
+/-- **A transversal measure with lower density `≥ c` is atomic** (B. White's tangent-plane proof of
+the closure theorem used for Simon 7.2.4: a cycle with constant orientation is a sum of parallel
+planes).  Let `V ⊆ ℝᴾ` be an `n`-dimensional subspace, `σ` a measure carried by `Vᗮ` and finite on
+compact sets, and `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)` for Borel `A`.  If
+`ofReal c ≤ liminf_{r ↓ 0} ν(B_r(y))/(ωₙrⁿ)` for `ν`-a.e. `y`, then
+`ν = Σ_{w ∈ Z} σ({w}) Hⁿ⌞(w + V)` for the set `Z ⊆ Vᗮ` of atoms of `σ` of mass `≥ c`.
+`Z ∩ B̄_j(0)` is finite, since infinitely many atoms of mass `≥ c` have infinite `σ`-measure while
+`σ(B̄_j(0)) < ∞`; so `Z` is countable.  For `x ∈ ℝᴾ`, `ν(B_r(x)) ≤ ωₙrⁿσ(B_r(x − p x))`
+(`p` the projection onto `V`), so the lower density of `ν` at `x` is at most `σ({x − p x})`;
+hence `x − p x ∈ Z` for `ν`-a.e. `x`, `σ` is carried by `Z`, and `ν` is the sum of the planes. -/
+theorem Submission.cbr_ci_cp_atomic_transversal : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (c : ℝ), 0 < c → Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → ∃ Z : Set (Euclid P), Z.Countable ∧ Z ⊆ (Vᗮ : Set (Euclid P)) ∧ (∀ w ∈ Z, ENNReal.ofReal c ≤ σ {w}) ∧ ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) := by
+  intro P n ν σ V c hc hn hσV hσK hD hdens
+  -- `Z`: the atoms of `σ` in `Vᗮ` of mass at least `c`
+  set Z : Set (Euclid P) := {w | w ∈ (Vᗮ : Set (Euclid P)) ∧ ENNReal.ofReal c ≤ σ {w}}
+  -- `Z ∩ B̄_j(0)` is finite: infinitely many atoms of mass `≥ c` would have infinite measure
+  have hZc : Z.Countable := by
+    rw [← iUnion_inter_closedBall_nat Z (0 : Euclid P)]
+    refine countable_iUnion fun j => Set.Finite.countable ?_
+    by_contra hinf
+    have hlt : σ (Z ∩ closedBall (0 : Euclid P) j) < ∞ :=
+      (measure_mono inter_subset_right).trans_lt (hσK _ (isCompact_closedBall _ _))
+    exact hlt.ne (Set.Infinite.meas_eq_top hinf
+      ⟨ENNReal.ofReal c, (ENNReal.ofReal_pos.2 hc).ne', fun w hw => hw.1.2⟩)
+  -- `ν`-a.e. `x`: the density bound and `ν(B_r(x)) ≤ ωₙrⁿσ(B_r(x − p x))` give `x − p x ∈ Z`
+  have hae : ∀ᵐ x ∂ν, x - V.starProjection x ∈ Z := by
+    filter_upwards [hdens] with x hx
+    exact ⟨V.sub_starProjection_mem_orthogonal x, hx.trans
+      (Submission.cbr_ci_cp_atm_liminf_density_le_atom P n σ (x - V.starProjection x)
+        (fun r => ν (ball x r)) hσK
+        (Submission.cbr_ci_cp_atm_ball_le_transversal_ball P n ν σ V hn hσV hD x))⟩
+  -- `σ` is carried by the countable set `Z`, so `ν` is the sum of the planes `w + V`, `w ∈ Z`
+  have hσZ : σ Zᶜ = 0 :=
+    Submission.cbr_ci_cp_atm_transversal_carried P n ν σ V Z hn hσV hD hZc.measurableSet hae
+  exact ⟨Z, hZc, fun w hw => hw.1, fun w hw => hw.2,
+    Submission.cbr_ci_cp_atm_sum_planes_of_carried P n ν σ V Z hZc hσZ hD⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
