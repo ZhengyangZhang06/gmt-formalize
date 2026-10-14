@@ -594,6 +594,19 @@ theorem Submission.cmcdtfrbvbsf_boundary_vanish_off_faces : ∀ (P m : ℕ) (s :
   rw [image_eq_zero_of_notMem_tsupport hx, ContinuousAlternatingMap.coe_zero, Pi.zero_apply,
     mul_zero]
 
+/-- **The boundary of a sum of face integrals is supported on the closed faces.**  Let
+`Q₀(ω) = Σ_{p ∈ s} ∫_{(0,1)^{m+1}} u_p(y) ω(Φ_p y)(e_{ι_p(0)}, …, e_{ι_p(m)}) dy` with
+`Φ_p(y) = b_p + Σ_j y_j e_{ι_p(j)}`.  Then `spt ∂Q₀ ⊆ Z := ⋃_{q ∈ s} Φ_q([0,1]^{m+1})`.  `Z` is
+compact, and `∂Q₀(γ) = Q₀(dγ) = 0` whenever `spt γ ∩ Z = ∅`, because `spt dγ ⊆ spt γ` misses every
+`Φ_p((0,1)^{m+1})`.  Hence `spt ∂Q₀ ⊆ Z` by Simon 6.2.11. -/
+theorem Submission.cmcdtfrbv_boundary_support_subset_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ Q₀.boundary.support, ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x := by
+  intro P m s u Q₀ hQ₀ x hx
+  -- `Z` is a compact subset of `ℝ^P` and `∂Q₀` kills every test form whose support misses `Z`,
+  -- so `spt ∂Q₀ ⊆ Z`; membership in `Z` is the conclusion
+  exact (Submission.rsd_cmr_support_subset_of_vanish P m univ _ Q₀.boundary isOpen_univ
+    (Submission.cmcdtfrbvbsf_closed_faces_isCompact P m s) (subset_univ _)
+    (Submission.cmcdtfrbvbsf_boundary_vanish_off_faces P m s u Q₀ hQ₀)).1 hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
