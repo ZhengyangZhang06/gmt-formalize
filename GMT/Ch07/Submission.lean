@@ -451,6 +451,20 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Level sets of a measure finite on compact sets are null at almost every level: if `ν` is a
+measure on `ℝᴾ` with `ν(K) < ∞` for every compact `K` and `f : ℝᴾ → ℝ` is measurable, then
+`ν{f = t} = 0` for `L¹`-a.e. `t ∈ ℝ`.  `ν` is locally finite, hence σ-finite (`ℝᴾ` is second
+countable), so only countably many of the disjoint level sets `{f = t}` have positive measure,
+and a countable subset of `ℝ` is Lebesgue-null. -/
+theorem Submission.dtc_bc_tc_cl_sl_ae_level_set_null : ∀ (P : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), Measurable f → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ∀ᵐ t ∂(volume : Measure ℝ), ν {x | f x = t} = 0 := by
+  intro P ν f hf hν
+  -- `ν` is finite on compact sets, hence locally finite and σ-finite (so s-finite) on `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  -- `{t | ν{f = t} ≠ 0} = {t | 0 < ν{f = t}}` is countable, hence Lebesgue-null
+  rw [ae_iff]
+  exact measure_mono_null (fun t ht => pos_iff_ne_zero.2 ht)
+    ((Measure.countable_meas_level_set_pos hf).measure_zero volume)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
