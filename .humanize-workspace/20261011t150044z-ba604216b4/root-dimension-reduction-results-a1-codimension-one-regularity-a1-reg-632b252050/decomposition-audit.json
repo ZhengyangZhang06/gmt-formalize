@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "blowUp|blowup|symmDiff|GaussGreen|gaussGreen|reducedBoundary|rescal|L1loc|halfspace|DeGiorgi",
+        "tendsto_of_subseq_tendsto|integral_comp_smul|addHaar_preimage_smul|trace_smulRight|fderiv_smul_const|symmDiff_triangle|norm_setIntegral_le_of_norm_le_const|setIntegral_eq_integral_of_forall_compl_eq_zero|norm_integral_le_of_norm_le",
+        "HasCompactSupport.fderiv_apply|theorem HasCompactSupport.fderiv|theorem ContDiff.continuous_fderiv|tsupport_comp_subset_preimage|HasCompactSupport.comp_homeomorph|tendsto_nhds \\{|lemma tendsto_nhds |theorem tendsto_nhds |Integrable.of_bound|integral_comp_comm|isFiniteMeasure_restrict",
+        "rg -l -F 'codim1_rdo_dg_bh_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes .humanize/publication-intents .humanize/issue-claims GMT .lake/packages/simongmt/Poincare --glob '*.json' --glob '*.lean' --glob '*.txt'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/bh-independent-audit-q_0jjxse/Assembly.lean > /tmp/bh-independent-audit-q_0jjxse/Assembly.log 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/SymmDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-632b252050/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-632b252050/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-632b252050/bh-split-v2-lean-prototype.lean.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/bh-independent-audit-q_0jjxse/Assembly.lean",
+        "/tmp/bh-independent-audit-q_0jjxse/Assembly.log",
+        "/tmp/bh-independent-audit-q_0jjxse/AuditChecks.json"
+      ],
+      "conclusion": "The selected handoff and DAG type agree. Project b4d606db and Mathlib 25730c7c match the manifest; the contract copies and all 15 inspected Mathlib source files match their compiler-side counterparts. The searched project files provide no compatible proved replacement for these obligations: Chapter 3's DeGiorgiTheorem is a specification with a sorry-backed main theorem, while FinitePerimeter.lean supplies definitions rather than the blow-up result. Pinned Mathlib supplies the required scaling, trace, integration, support and convergence lemmas. Independently extracted all nine supplied Lean appendices, checked exact textual equality with their frozen types, elaborated every child proposition before declaring any child, and compiled their proofs successfully. Every child has only propext, Classical.choice and Quot.sound as axioms. The supplied assembly also compiled with exactly the four frozen prerequisites as explicit assumptions, without sorry or additional axioms. Thus the nine-child split establishes this selected parent, conditionally on its declared prerequisites. Internal and prerequisite dependencies are acyclic and correctly directed. All names are bare identifiers; the final 1203-node DAG scan found no reservations or identical-type declarations. Euclidean, derivative, measure and trace constructions have the intended interpretations; no Matrix/IsUnit construction occurs. Simon's local proof supports the decomposition; the inward-normal orientation also agrees with the ancillary public discussion in [Stefani, §1.3](https://arxiv.org/html/2511.03854v1)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rescaled_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches all prose hypotheses. Affine support transport makes the test field admissible; the chain rule and volume scaling give exactly the factor −(r^m)⁻¹. Totalized integrals and R ≤ 0 are handled correctly. The supplied proof is complete and independent."
+    },
+    {
+      "key": "directional_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose, including arbitrary w and R. Compact support is inherited from ζ, and the rank-one trace identity gives div(ζw) = Dζ(w). Applying the sole declared dependency proves the exact conclusion, including w = 0."
+    },
+    {
+      "key": "normal_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual Lean statement is equivalent to the prose's positive-radius threshold, uniformly for all orthogonal w. Local finiteness justifies integrability and the defect identity; zero mass is treated separately. Both the Cauchy–Schwarz argument and the supplied elementary alternative establish the stated bounds without circularity."
+    },
+    {
+      "key": "perimeter_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All mass, support, positivity and unit-normal hypotheses match. The rescaled integrand vanishes outside the controlled closed ball and has modulus at most one. Finite mass and cancellation of r^m yield precisely C₁R^m, using only rescaled_gauss_green."
+    },
+    {
+      "key": "tangential_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the claimed right-hand limit. Finiteness at ρ₁/2 supplies the normal-defect prerequisite. Support localization, the directional identity and the explicit δ = η/(1 + M‖w‖C₁R^m) estimate prove convergence, including vanishing constants. Dependencies are exactly those declared."
+    },
+    {
+      "key": "normal_limsup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual inequality matches the prose. Nonnegativity of ζ and of the normal defect gives the correctly signed upper estimate; finite-ball integrability justifies integration. The explicit tolerance choice proves asymptotic nonpositivity, which is sufficient for the parent's limit passage."
+    },
+    {
+      "key": "rescaled_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves both density inequalities without adding positivity assumptions on c₂ or ρ₂. Affine preimages transform the ball, intersection and difference exactly. Haar scaling and the ENNReal.ofReal calculation prove both conclusions, including c₂ ≤ 0."
+    },
+    {
+      "key": "l1loc_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conclusions match the prose. The indicator estimate proves convergence of compactly supported continuous-test integrals; symmetric-difference inclusions and finite ball volumes prove both ENNReal volume limits. This suffices for the parent because its derivative tests are continuous and compactly supported."
+    },
+    {
+      "key": "offset_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the complete trichotomy and two-sided positivity assumptions. Null-set monotonicity excludes the trivial cases; the unit-normal bound excludes positive and negative offsets using B_c and B_−c. No measurability assumption is needed for these arguments, and c = 0 gives the exact conclusion."
+    }
+  ],
+  "required_changes": []
+}
