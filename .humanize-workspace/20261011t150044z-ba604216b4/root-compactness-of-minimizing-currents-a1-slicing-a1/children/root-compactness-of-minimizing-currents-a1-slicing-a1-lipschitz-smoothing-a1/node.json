@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Mollification of a Lipschitz function: smooth, same gradient bound, uniformly close, local (Simon's f^(σ))",
+  "statement": "Let P ∈ ℕ, K ≥ 0, g : ℝ^P → ℝ K-Lipschitz and σ > 0. Then there is a C^∞ function g' : ℝ^P → ℝ such that ‖Dg'(x)‖ ≤ K for every x (operator norm of fderiv ℝ g' x), |g'(x) − g(x)| ≤ K·σ for every x, and g'(x) = c whenever x ∈ ℝ^P and c ∈ ℝ are such that g(y) = c for every y in the open ball B_σ(x).",
+  "lean_statement": "∀ (P : ℕ) (g : Euclid P → ℝ) (K : NNReal) (σ : ℝ), LipschitzWith K g → 0 < σ → ∃ g' : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g' ∧ (∀ x, ‖fderiv ℝ g' x‖ ≤ K) ∧ (∀ x, |g' x - g x| ≤ K * σ) ∧ ∀ (x : Euclid P) (c : ℝ), (∀ y ∈ ball x σ, g y = c) → g' x = c",
+  "lean_name": "cmcs_lipschitz_smoothing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoothing-a1-a1"
+}
