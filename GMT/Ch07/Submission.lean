@@ -553,6 +553,177 @@ theorem Submission.dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U
   · rw [hzero j x hx, norm_zero]
     exact hε.le
 
+/-- **Simon Ch. 6, 2.4** (the `M`-absolutely convergent series in the proof of 7.2): assume (VO),
+that a current vanishes on test forms supported off its support.  If `U` is open and
+`X_r ∈ 𝒟ₙ(U)` with `∑ᵣ M(X_r) < ∞`, then `Y(ω) = ∑ᵣ X_r(ω)` is a current `Y ∈ 𝒟ₙ(U)` with
+`M(Y) ≤ ∑ᵣ M(X_r)` and `spt Y ⊆ closure (⋃ᵣ spt X_r)`.  Admissibility of `±c⁻¹ω` gives
+`|Z(ω)| ≤ c M(Z)` whenever `|ω(x)| ≤ c`, so the series converges absolutely; uniform smallness of
+test forms tending to `0` makes the sum sequentially continuous; for admissible `ω`,
+`ofReal(Y(ω)) ≤ ∑ᵣ ofReal(X_r(ω)) ≤ ∑ᵣ M(X_r)`; and (VO) makes `Y` vanish on a small ball around
+each point of `U ∖ closure (⋃ᵣ spt X_r)`. -/
+theorem Submission.cmcdt_ims_series_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), IsOpen U → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass ∧ Y.support ⊆ closure (⋃ r, (X r).support) := by
+  intro hVO P n U X hU hX
+  -- Step 1 (reused rsd_mw_tfa_norm_props): `|t α| = |t| |α|`, `|α| ≤ C ‖α‖`, `|·|` continuous
+  have hhom := (Submission.rsd_mw_tfa_norm_props P n).2.1
+  -- Step 3: `|Z(ω)| ≤ c M(Z)` whenever `|ω(x)| ≤ c` for all `x`
+  have h3 : ∀ (Z : GeometricCurrentOn U n) (ω : TestFormOn U n) (c : ℝ), 0 < c → Z.mass ≠ ∞ →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      |Z ω| ≤ c * Z.mass.toReal := by
+    intro Z ω c hc hZ hω
+    have key : ∀ s : ℝ, |s| = c⁻¹ → s * Z ω ≤ Z.mass.toReal := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n U := by
+        refine ⟨(s • ω).property.2, fun x => ?_⟩
+        have hx : ((s • ω : TestFormOn U n) : DifferentialForm (Euclid P) n) x =
+            s • ((ω : DifferentialForm (Euclid P) n) x) := rfl
+        rw [hx, hhom, hs]
+        calc c⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)
+            ≤ c⁻¹ * c := mul_le_mul_of_nonneg_left (hω x) (inv_nonneg.mpr hc.le)
+          _ = 1 := inv_mul_cancel₀ hc.ne'
+      have h1 : ENNReal.ofReal (Z (s • ω)) ≤ Z.mass := Z.le_massOn hadm
+      rw [ENNReal.ofReal_le_iff_le_toReal hZ] at h1
+      have hlin : Z (s • ω) = s * Z ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at h1
+    have hp := key c⁻¹ (abs_of_pos (inv_pos.mpr hc))
+    have hn := key (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc)])
+    rw [abs_le]
+    constructor
+    · have h' : c * (-c⁻¹ * Z ω) ≤ c * Z.mass.toReal := mul_le_mul_of_nonneg_left hn hc.le
+      have : c * (-c⁻¹ * Z ω) = -(Z ω) := by field_simp
+      linarith
+    · have h' : c * (c⁻¹ * Z ω) ≤ c * Z.mass.toReal := mul_le_mul_of_nonneg_left hp hc.le
+      have : c * (c⁻¹ * Z ω) = Z ω := by field_simp
+      linarith
+  -- Step 2: every test form has bounded coefficient norm
+  have h4 : ∀ ω : TestFormOn U n, ∃ c : ℝ, 0 < c ∧
+      ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c := by
+    intro ω
+    have hsmooth : IsSmoothForm (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+    have hcont : Continuous (fun x => covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)) :=
+      (Submission.rsd_mw_tfa_norm_props P n).2.2.2.comp (ContDiff.continuous hsmooth)
+    have hcs : HasCompactSupport (fun x => covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)) :=
+      HasCompactSupport.comp_left (g := covectorEuclideanNorm) ω.property.1.2 (covectorEuclideanNorm_zero P n)
+    obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hcs
+    refine ⟨max C 0 + 1, by positivity, fun x => ?_⟩
+    have h := hC x
+    rw [Real.norm_eq_abs] at h
+    linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)), le_max_left C 0]
+  -- Step 7: a linear functional with `|L(ω)| ≤ c A` whenever `|ω| ≤ c` is a current
+  have h5 : ∀ (L : TestFormOn U n →ₗ[ℝ] ℝ) (A : ℝ), (∀ (ω : TestFormOn U n) (c : ℝ), 0 < c →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) → |L ω| ≤ c * A) →
+      ∃ Y : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, Y ω = L ω := by
+    intro L A hL
+    obtain ⟨C, hC0, hC⟩ := (Submission.rsd_mw_tfa_norm_props P n).2.2.1
+    have hA : 0 ≤ A := by
+      have h0 := hL 0 1 one_pos (fun x => by simp)
+      simpa using h0
+    refine ⟨⟨L, fun ωs hωs => ?_⟩, fun ω => rfl⟩
+    obtain ⟨K, -, -, -, hunif⟩ := Submission.dpf_pfc_testFormOnConverges_zero_uniform P n U ωs hωs
+    rw [Metric.tendsto_atTop]
+    intro η hη
+    set ε : ℝ := η / (2 * (C + 1) * (A + 1)) with hε
+    have hεpos : 0 < ε := by positivity
+    obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif ε hεpos)
+    refine ⟨N, fun j hj => ?_⟩
+    have hb : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Euclid P) n) x) ≤ (C + 1) * ε := by
+      intro x
+      calc covectorEuclideanNorm ((ωs j : DifferentialForm (Euclid P) n) x)
+          ≤ C * ‖(ωs j : DifferentialForm (Euclid P) n) x‖ := hC _
+        _ ≤ C * ε := mul_le_mul_of_nonneg_left (hN j hj x) hC0
+        _ ≤ (C + 1) * ε := by nlinarith
+    have hLj := hL (ωs j) ((C + 1) * ε) (by positivity) hb
+    rw [Real.dist_eq, sub_zero]
+    have hkey : (C + 1) * ε * A < η := by
+      have h1 : (C + 1) * ε * (A + 1) = η / 2 := by
+        rw [hε]; field_simp
+      nlinarith
+    exact lt_of_le_of_lt hLj hkey
+  -- Steps 4-6: absolute summability, the linear functional `L = Σ X_r`, its bound
+  have hXr : ∀ r, (X r).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hX
+  have hm : Summable (fun r => (X r).mass.toReal) := ENNReal.summable_toReal hX
+  have hms : (∑' r, (X r).mass).toReal = ∑' r, (X r).mass.toReal := ENNReal.tsum_toReal_eq hXr
+  have hbound : ∀ (ω : TestFormOn U n) (c : ℝ), 0 < c →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      ∀ r, |X r ω| ≤ c * (X r).mass.toReal :=
+    fun ω c hc hω r => h3 (X r) ω c hc (hXr r) hω
+  have hsumm_abs : ∀ ω : TestFormOn U n, Summable (fun r => |X r ω|) := by
+    intro ω
+    obtain ⟨c, hc, hω⟩ := h4 ω
+    exact Summable.of_nonneg_of_le (fun r => abs_nonneg _) (hbound ω c hc hω) (hm.mul_left c)
+  have hsumm : ∀ ω : TestFormOn U n, Summable (fun r => X r ω) := fun ω =>
+    Summable.of_norm_bounded (hsumm_abs ω) (fun r => by rw [Real.norm_eq_abs])
+  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑' r, X r ω
+      map_add' := fun ω ω' => by
+        simp only [map_add]
+        exact (hsumm ω).tsum_add (hsumm ω')
+      map_smul' := fun t ω => by
+        simp only [map_smul, smul_eq_mul, RingHom.id_apply]
+        exact tsum_mul_left }
+  have hLbound : ∀ (ω : TestFormOn U n) (c : ℝ), 0 < c →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ c) →
+      |L ω| ≤ c * (∑' r, (X r).mass).toReal := by
+    intro ω c hc hω
+    show |∑' r, X r ω| ≤ _
+    rw [hms]
+    calc |∑' r, X r ω| ≤ ∑' r, |X r ω| := by
+          simpa [Real.norm_eq_abs] using
+            norm_tsum_le_tsum_norm (f := fun r => X r ω) (by simpa [Real.norm_eq_abs] using hsumm_abs ω)
+      _ ≤ ∑' r, c * (X r).mass.toReal :=
+          Summable.tsum_le_tsum (hbound ω c hc hω) (hsumm_abs ω) (hm.mul_left c)
+      _ = c * ∑' r, (X r).mass.toReal := tsum_mul_left
+  obtain ⟨Y, hY⟩ := h5 L _ hLbound
+  have hYsum : ∀ ω : TestFormOn U n, HasSum (fun r => X r ω) (Y ω) := by
+    intro ω
+    rw [hY ω]
+    exact (hsumm ω).hasSum
+  refine ⟨Y, hYsum, ?_, ?_⟩
+  · -- Step 8: the mass bound
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    have hpos_summ : Summable (fun r => max (X r ω) 0) :=
+      Summable.of_nonneg_of_le (fun r => le_max_right _ _)
+        (fun r => max_le (le_abs_self _) (abs_nonneg _)) (hsumm_abs ω)
+    calc ENNReal.ofReal (Y ω) = ENNReal.ofReal (∑' r, X r ω) := by rw [(hYsum ω).tsum_eq]
+      _ ≤ ENNReal.ofReal (∑' r, max (X r ω) 0) :=
+          ENNReal.ofReal_le_ofReal
+            (Summable.tsum_le_tsum (fun r => le_max_left _ _) (hsumm ω) hpos_summ)
+      _ = ∑' r, ENNReal.ofReal (max (X r ω) 0) :=
+          ENNReal.ofReal_tsum_of_nonneg (fun r => le_max_right _ _) hpos_summ
+      _ = ∑' r, ENNReal.ofReal (X r ω) := by
+          congr 1
+          funext r
+          rw [ENNReal.ofReal_max, ENNReal.ofReal_zero, max_eq_left zero_le]
+      _ ≤ ∑' r, (X r).mass := ENNReal.tsum_le_tsum (fun r => (X r).le_massOn hω)
+  · -- Step 9: the support bound, from (VO)
+    intro x hx
+    by_contra hxE
+    set E := closure (⋃ r, (X r).support) with hEdef
+    have hxU : x ∈ U := Y.support_subset_domain hx
+    have hopen : IsOpen (U \ E) := hU.sdiff isClosed_closure
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hopen x ⟨hxU, hxE⟩
+    set W := ball x (ε / 2) with hWdef
+    have hclW : closure W ⊆ ball x ε :=
+      (closure_ball_subset_closedBall).trans (closedBall_subset_ball (by linarith))
+    have hWzero : W ⊆ Y.zeroRegion := by
+      refine subset_sUnion_of_mem ⟨isOpen_ball, ?_, ?_, ?_⟩
+      · exact isBounded_ball.isCompact_closure
+      · exact hclW.trans (hball.trans sdiff_subset)
+      · intro ω hω
+        have hX0 : ∀ r, X r ω = 0 := by
+          intro r
+          apply hVO
+          rw [Set.disjoint_iff]
+          intro y ⟨hy1, hy2⟩
+          have hyE : y ∈ E := subset_closure (mem_iUnion.mpr ⟨r, hy2⟩)
+          have hyW : y ∈ U \ E := hball (hclW (subset_closure (hω hy1)))
+          exact hyW.2 hyE
+        have h0 : HasSum (fun r => X r ω) 0 := by
+          simp only [hX0]; exact hasSum_zero
+        exact (hYsum ω).unique h0
+    exact hx.2 (hWzero (mem_ball_self (by linarith)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
