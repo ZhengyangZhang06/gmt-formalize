@@ -2044,6 +2044,139 @@ theorem Submission.dor_lmb_fcd_sd_telescoping : ∀ (P m : ℕ) (push : ∀ k : 
       have h₂ := (hZZ N).2 ω
       have h₃ := ih ω
       linarith
+/-- **Limits of the deformation series** (Simon Ch. 6, proof of the Deformation Theorem 5.1,
+(19)–(21), (24), (25); used for the flat convergence in the proof of 7.5.1).  By (IMS) the series
+`Q = ∑ⱼ Vⱼ`, `R₁ = ∑ⱼ (0 − Hⱼ)` and `S₁ = ∑ⱼ (0 − E′ⱼ)` converge on every test form to integer
+multiplicity currents with `M(Q) ≤ ∑ⱼ M(Vⱼ)`, `M(R₁) ≤ ∑ⱼ M(Hⱼ)` and `M(S₁) ≤ ∑ⱼ M(E′ⱼ)`.  A
+current of small mass is small on each test form, `|X(ω)| ≤ s M(X)` when `|ω| ≤ s`; so `A_N(ω)` and
+`K_N(ω)` tend to `0`, and letting `N → ∞` in (h1) gives `T − Q = ∂R₁ + S₁`.  For an admissible
+`ω`, `∂Q(ω) = lim_N ∑_{j≤N} ∂Vⱼ(ω) = lim_N (∑_{j≤N} Yⱼ(ω) − L_N(ω))` by (h2), and the latter is
+at most `c M(∂T) + M(L_N) → c M(∂T)`; hence `M(∂Q) ≤ c M(∂T)`.  Sums of currents vanishing off
+`F₁` (or `F₂`) vanish off the same set. -/
+theorem Submission.dor_lmb_fcd_sd_series_limit : (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ) (c : ℝ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (V E' A Kc : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (H : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (Y L : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m) (F₁ F₂ : Set (Euclid P)), T.mass ≠ ∞ → T.boundary.mass ≠ ∞ → (∀ j, IsIntegerMultiplicity (V j)) → (∀ j, IsIntegerMultiplicity (H j)) → (∀ j, IsIntegerMultiplicity (E' j)) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), V j ω - T ω + A N ω - ∑ j ∈ Finset.range (N + 1), (H j).boundary ω = ∑ j ∈ Finset.range (N + 1), E' j ω - Kc N ω) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) m), ∑ j ∈ Finset.range (N + 1), (V j).boundary ω = ∑ j ∈ Finset.range (N + 1), Y j ω - L N ω) → Tendsto (fun N => (A N).mass) atTop (𝓝 0) → Tendsto (fun N => (Kc N).mass) atTop (𝓝 0) → Tendsto (fun N => (L N).mass) atTop (𝓝 0) → ∑' j, (V j).mass ≤ ENNReal.ofReal c * T.mass → ∑' j, (H j).mass ≤ ENNReal.ofReal c * T.mass → ∑' j, (E' j).mass ≤ ENNReal.ofReal c * T.boundary.mass → ∑' j, (Y j).mass ≤ ENNReal.ofReal c * T.boundary.mass → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₁) → V j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 2)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (F₂) → H j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₂) → E' j ω = 0) → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R₁ ∧ IsIntegerMultiplicity S₁ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Q ω = R₁.boundary ω + S₁ ω) ∧ Q.mass ≤ ENNReal.ofReal c * T.mass ∧ Q.boundary.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ R₁.mass ≤ ENNReal.ofReal c * T.mass ∧ S₁.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₁) → Q ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (F₂) → R₁ ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₂) → S₁ ω = 0 := by
+  intro IMS P m c T V E' A Kc H Y L F₁ F₂ hT hbT hV hH hE' h1 h2 hA hK hL hVm hHm hE'm hYm hVF hHF
+    hE'F
+  -- `0 − X` acts as `−X` on test forms
+  have hneg_apply : ∀ {k : ℕ} (X : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (ω : TestFormOn (univ : Set (Euclid P)) k), (0 - X) ω = -X ω :=
+    fun X ω => zero_sub (X ω)
+  -- zero_neg in the degrees `m`, `m + 1` and `m + 2`
+  obtain ⟨-, -, hnegm₀, -⟩ := Submission.dor_lmb_fcd_sd_zero_neg P m univ isOpen_univ
+  obtain ⟨-, hneg₁, hnegm₁, hsmall₁⟩ :=
+    Submission.dor_lmb_fcd_sd_zero_neg P (m + 1) univ isOpen_univ
+  obtain ⟨-, hneg₂, hnegm₂, -⟩ := Submission.dor_lmb_fcd_sd_zero_neg P (m + 1 + 1) univ isOpen_univ
+  -- Step 1: the bounds `c M(T)` and `c M(∂T)` are finite
+  have hcT : ENNReal.ofReal c * T.mass ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top hT
+  have hcbT : ENNReal.ofReal c * T.boundary.mass ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top hbT
+  -- Step 2: `Q = ∑ⱼ Vⱼ`
+  obtain ⟨Q, hQ, hQsum, hQm⟩ := IMS P m univ V isOpen_univ hV (ne_top_of_le_ne_top hcT hVm)
+  -- Step 3: `R₁ = ∑ⱼ (0 − Hⱼ)`, with `M(0 − Hⱼ) = M(Hⱼ)`
+  have eH : ∑' j, (0 - H j : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1 + 1)).mass =
+      ∑' j, (H j).mass := tsum_congr fun j => hnegm₂ (H j) univ
+  obtain ⟨R₁, hR₁, hR₁sum, hR₁m⟩ := IMS P (m + 1) univ (fun j => 0 - H j) isOpen_univ
+    (fun j => hneg₂ (H j) (hH j)) (ne_top_of_le_ne_top hcT (eH.le.trans hHm))
+  -- Step 4: `S₁ = ∑ⱼ (0 − E′ⱼ)`, with `M(0 − E′ⱼ) = M(E′ⱼ)`
+  have eE : ∑' j, (0 - E' j).mass = ∑' j, (E' j).mass := tsum_congr fun j => hnegm₁ (E' j) univ
+  obtain ⟨S₁, hS₁, hS₁sum, hS₁m⟩ := IMS P m univ (fun j => 0 - E' j) isOpen_univ
+    (fun j => hneg₁ (E' j) (hE' j)) (ne_top_of_le_ne_top hcbT (eE.le.trans hE'm))
+  -- Step 5: if `M(X_N) → 0` then `X_N(ω) → 0`, since `|X_N(ω)| ≤ s M(X_N)` for a bound `s` of `|ω|`
+  have hweak : ∀ X : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      Tendsto (fun N => (X N).mass) atTop (𝓝 0) →
+      ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Tendsto (fun N => X N ω) atTop (𝓝 0) := by
+    intro X hX ω
+    -- `x ↦ |ω(x)| = √(∑_I ω(x)(e_I)²)` is continuous, since each coefficient `ω(x)(e_I)` is
+    have hcont : Continuous fun x =>
+        covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 1)) x) := by
+      have hω : Continuous (ω : DifferentialForm (Euclid P) (m + 1)) := ω.property.1.1.continuous
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      split_ifs
+      · exact ((continuous_eval_const _).comp hω).pow 2
+      · exact continuous_const
+    have hcs : HasCompactSupport fun x =>
+        covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 1)) x) := by
+      refine ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h0 => hx ?_
+      simp only [h0, covectorEuclideanNorm_zero]
+    obtain ⟨s₀, hs₀⟩ := hcont.bddAbove_range_of_hasCompactSupport hcs
+    have hs : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 1)) x) ≤
+        max s₀ 1 := fun x => (hs₀ (mem_range_self x)).trans (le_max_left _ _)
+    have hlim : Tendsto (fun N => max s₀ 1 * (X N).mass.toReal) atTop (𝓝 0) := by
+      simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hX).const_mul (max s₀ 1)
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [hX.eventually (gt_mem_nhds zero_lt_one)] with N hN
+    rw [Real.norm_eq_abs]
+    exact hsmall₁ (X N) ω (max s₀ 1) (lt_max_of_lt_right one_pos) (ne_top_of_lt hN) hs
+  -- Step 6: letting `N → ∞` in (h1) gives `T − Q = ∂R₁ + S₁`
+  have hid : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      T ω - Q ω = R₁.boundary ω + S₁ ω := by
+    intro ω
+    have sH : HasSum (fun j => (H j).boundary ω) (-R₁.boundary ω) := by
+      have e : (fun j => (H j).boundary ω) =
+          fun j => -(0 - H j) (exteriorDerivativeTestOn univ (m + 1) ω) := by
+        funext j
+        rw [hneg_apply, neg_neg]
+        rfl
+      rw [e]
+      exact (hR₁sum _).neg
+    have sE : HasSum (fun j => E' j ω) (-S₁ ω) := by
+      have e : (fun j => E' j ω) = fun j => -(0 - E' j) ω := by
+        funext j
+        rw [hneg_apply, neg_neg]
+      rw [e]
+      exact (hS₁sum ω).neg
+    have tV : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), V j ω) atTop (𝓝 (Q ω)) :=
+      (hQsum ω).tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    have tH : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), (H j).boundary ω) atTop
+        (𝓝 (-R₁.boundary ω)) := sH.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    have tE : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), E' j ω) atTop (𝓝 (-S₁ ω)) :=
+      sE.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    have tl : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), V j ω - T ω + A N ω -
+        ∑ j ∈ Finset.range (N + 1), (H j).boundary ω) atTop
+        (𝓝 (Q ω - T ω + 0 - -R₁.boundary ω)) :=
+      ((tV.sub tendsto_const_nhds).add (hweak A hA ω)).sub tH
+    have tr : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), V j ω - T ω + A N ω -
+        ∑ j ∈ Finset.range (N + 1), (H j).boundary ω) atTop (𝓝 (-S₁ ω - 0)) :=
+      (tE.sub (hweak Kc hK ω)).congr fun N => (h1 N ω).symm
+    have := tendsto_nhds_unique tl tr
+    linarith
+  -- Step 7: `M(∂Q) ≤ c M(∂T)`, tested on each admissible `ω`
+  have hbQ : Q.boundary.mass ≤ ENNReal.ofReal c * T.boundary.mass := by
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    have t1 : Tendsto (fun N => ∑ j ∈ Finset.range (N + 1), Y j ω - L N ω) atTop
+        (𝓝 (Q.boundary ω)) :=
+      ((hQsum (exteriorDerivativeTestOn univ m ω)).tendsto_sum_nat.comp
+        (tendsto_add_atTop_nat 1)).congr fun N => h2 N ω
+    have t2 : Tendsto (fun N => ENNReal.ofReal c * T.boundary.mass + (L N).mass) atTop
+        (𝓝 (ENNReal.ofReal c * T.boundary.mass)) := by
+      simpa using (tendsto_const_nhds (x := ENNReal.ofReal c * T.boundary.mass)).add hL
+    refine le_of_tendsto_of_tendsto' (ENNReal.tendsto_ofReal t1) t2 fun N => ?_
+    calc ENNReal.ofReal (∑ j ∈ Finset.range (N + 1), Y j ω - L N ω)
+        = ENNReal.ofReal (∑ j ∈ Finset.range (N + 1), Y j ω + (0 - L N) ω) := by
+          rw [hneg_apply, ← sub_eq_add_neg]
+      _ ≤ ENNReal.ofReal (∑ j ∈ Finset.range (N + 1), Y j ω) + ENNReal.ofReal ((0 - L N) ω) :=
+          ENNReal.ofReal_add_le
+      _ ≤ ∑ j ∈ Finset.range (N + 1), ENNReal.ofReal (Y j ω) + (0 - L N).massOn univ :=
+          add_le_add (Finset.le_sum_of_subadditive ENNReal.ofReal ENNReal.ofReal_zero.le
+            (fun _ _ => ENNReal.ofReal_add_le) _ _) ((0 - L N).le_massOn hω)
+      _ ≤ ∑ j ∈ Finset.range (N + 1), (Y j).mass + (L N).mass :=
+          add_le_add (Finset.sum_le_sum fun j _ => (Y j).le_massOn hω) (hnegm₀ (L N) univ).le
+      _ ≤ ENNReal.ofReal c * T.boundary.mass + (L N).mass :=
+          add_le_add ((ENNReal.sum_le_tsum _).trans hYm) le_rfl
+  -- Steps 8–9: the vanishing sets, and all conclusions
+  refine ⟨Q, R₁, S₁, hQ, hR₁, hS₁, hid, hQm.trans hVm, hbQ, hR₁m.trans (eH.le.trans hHm),
+    hS₁m.trans (eE.le.trans hE'm), fun ω hω => ?_, fun ω hω => ?_, fun ω hω => ?_⟩
+  · have hz : ∀ j, V j ω = 0 := fun j => hVF j ω hω
+    rw [← (hQsum ω).tsum_eq]
+    simp [hz]
+  · have hz : ∀ j, (0 - H j : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1 + 1)) ω = 0 :=
+      fun j => by rw [hneg_apply, hHF j ω hω, neg_zero]
+    rw [← (hR₁sum ω).tsum_eq]
+    simp [hz]
+  · have hz : ∀ j, (0 - E' j) ω = 0 := fun j => by rw [hneg_apply, hE'F j ω hω, neg_zero]
+    rw [← (hS₁sum ω).tsum_eq]
+    simp [hz]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
