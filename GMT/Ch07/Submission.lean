@@ -549,6 +549,66 @@ theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ
   · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
   · exact (support_mul_subset_right _ _).trans B.support_eq.subset
 
+/-- **Smooth approximation of `g ∈ C_c(ℝᴾ)`** (steps 4–5 of the translation-invariance proof):
+mollify, `u_k = ρ_k ⋆ g` with `ρ_k` the normalized mollifier of radius `1/(k+1)`.  Each `u_k` is
+`C^∞` (smooth compactly supported kernel against a locally integrable `g`), vanishes off
+`K = B̄_{R₀+1}(0)` where `tsupport g ⊆ B̄_{R₀}(0)`, and the averaging estimate
+`dist_convolution_le` gives `|u_k| ≤ M = sup ‖g‖` and, by continuity of `g`, `u_k(x) → g(x)`. -/
+theorem Submission.cbr_ci_cp_tr_smooth_approx_of_continuous : ∀ (P : ℕ) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclid P)) (C : ℝ) (u : ℕ → Euclid P → ℝ), IsCompact K ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (u k)) ∧ (∀ k x, x ∉ K → u k x = 0) ∧ (∀ k x, |u k x| ≤ C) ∧ ∀ x, Tendsto (fun k => u k x) atTop (𝓝 (g x)) := by
+  intro P g hg hgc
+  -- mollifiers `ρ k ≥ 0`, `∫ ρ k = 1`, supported in `B_{1/(k+1)}(0)`
+  choose ρ hρs hρc hρn hρi hρb using fun k : ℕ =>
+    Submission.dgcr_stc_exists_normalized_mollifier P (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat
+  -- `tsupport g ⊆ B̄_{R₀}(0)` and `‖g‖ ≤ M`
+  obtain ⟨R₀, hR₀⟩ := hgc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgm : AEStronglyMeasurable g volume := hg.aestronglyMeasurable
+  refine ⟨closedBall 0 (R₀ + 1), M,
+    fun k => convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+    isCompact_closedBall 0 (R₀ + 1),
+    fun k => (hρc k).contDiff_convolution_left _ (hρs k) hg.locallyIntegrable, ?_, ?_, ?_⟩
+  · -- vanishing off `K = B̄_{R₀+1}(0)`
+    intro k x hx
+    show convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0
+    rw [convolution_def]
+    have h0 : ∀ t, ContinuousLinearMap.lsmul ℝ ℝ (ρ k t) (g (x - t)) = 0 := by
+      intro t
+      by_cases ht : ρ k t = 0
+      · simp [ht]
+      · have ht' : ‖t‖ < 1 / ((k : ℝ) + 1) := mem_ball_zero_iff.1 (hρb k ht)
+        have hk : 1 / ((k : ℝ) + 1) ≤ 1 := by
+          rw [div_le_one (by positivity)]
+          linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+        have hxt : x - t ∉ tsupport g := by
+          intro hmem
+          have h1 : ‖x - t‖ ≤ R₀ := mem_closedBall_zero_iff.1 (hR₀ hmem)
+          apply hx
+          rw [mem_closedBall_zero_iff]
+          calc ‖x‖ = ‖(x - t) + t‖ := by rw [sub_add_cancel]
+            _ ≤ ‖x - t‖ + ‖t‖ := norm_add_le _ _
+            _ ≤ R₀ + 1 := by linarith
+        simp [image_eq_zero_of_notMem_tsupport hxt]
+    simp only [h0, integral_zero]
+  · -- uniform bound `|u k| ≤ M`
+    intro k x
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := (0 : ℝ))
+      ((norm_nonneg _).trans (hM 0)) (hρb k) (hρn k) (hρi k) hgm
+      (fun y _ => by rw [dist_zero_right]; exact hM y)
+    rw [Real.dist_eq, sub_zero] at h
+    exact h
+  · -- pointwise convergence `u k x → g x`
+    intro x
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨δ, hδ, hgδ⟩ := Metric.continuous_iff.1 hg x (ε / 2) (half_pos hε)
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hδ
+    refine ⟨N, fun k hk => ?_⟩
+    have hkN : 1 / ((k : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := Nat.one_div_le_one_div hk
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := g x)
+      (half_pos hε).le (hρb k) (hρn k) (hρi k) hgm
+      (fun y hy => (hgδ y ((mem_ball.1 hy).trans_le hkN |>.trans hN)).le)
+    exact h.trans_lt (half_lt_self hε)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
