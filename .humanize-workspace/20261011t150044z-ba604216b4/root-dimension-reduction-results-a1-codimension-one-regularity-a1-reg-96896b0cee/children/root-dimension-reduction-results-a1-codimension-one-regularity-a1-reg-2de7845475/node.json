@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1.test_upper_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+  "depth": 6,
+  "title": "Markov-type upper bound for rescaled measures from a nonnegative compactly supported test function",
+  "statement": "Let N, m ∈ ℕ, μ a measure on the Borel sets of ℝ^N = Euclid N, and y ∈ ℝ^N. Let f : ℝ^N → ℝ be continuous with compact support and f ≥ 0, let A ⊆ ℝ^N be any set with f ≥ 1 on A, and let L, L' be reals with L < L'. Assume μ(B̄_{r₀}(y)) < ∞ for some r₀ > 0, and that r^{-m} ∫ f(r^{-1}(z − y)) dμ(z) → L as r ↓ 0 (Bochner integral, limit along 𝓝[>] 0). Then for all sufficiently small r > 0 (eventually along 𝓝[>] 0), μ({z : r^{-1}(z − y) ∈ A}) ≤ ENNReal.ofReal(L' · r^m). (A need not be measurable; μ is evaluated on {z : r^{-1}(z − y) ∈ A} as an outer measure.)",
+  "lean_statement": "∀ (N m : ℕ) (μ : Measure (Euclid N)) (y : Euclid N) (f : Euclid N → ℝ) (A : Set (Euclid N)) (L L' : ℝ), (∃ r₀ : ℝ, 0 < r₀ ∧ μ (closedBall y r₀) ≠ ∞) → Continuous f → HasCompactSupport f → (∀ w, 0 ≤ f w) → (∀ w ∈ A, 1 ≤ f w) → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) → L < L' → ∀ᶠ r in 𝓝[>] (0 : ℝ), μ {z | r⁻¹ • (z - y) ∈ A} ≤ ENNReal.ofReal (L' * r ^ m)",
+  "lean_name": "codim1_rdo_dg_ftd_test_upper_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-2de7845475-a1"
+}
