@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d530ca7bcd8f7c57138df48c04f8cf1d82e096ed0269e48efc7ef3864aa05fa4",
+  "git_delta": {
+    "base_commit": "c608787c3dbde1d59429c7b6f4bf3c0ea829c7f8",
+    "candidate_commit": "d33acb3a6e797e8bedddafb525afc64ce4d9fe44",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_cp_leibniz_smul_bound",
+    "diff_sha256": "f5f690a98e853bd42743d3c092e84f60a8cab849edabd15209761ea9a99ae94f",
+    "source_sha256": "0337edaea7d0627ef5fd5f2956fbf15bbb351a4ee8c86f763dc270a14be9c9c3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cp_leibniz_smul_bound",
+      "statement": "∀ (Q : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid Q → ℝ) (g : Euclid Q → F), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∀ (k : ℕ) (x : Euclid Q), ‖iteratedFDeriv ℝ k (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (k + 1), (k.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (k - i) g x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
