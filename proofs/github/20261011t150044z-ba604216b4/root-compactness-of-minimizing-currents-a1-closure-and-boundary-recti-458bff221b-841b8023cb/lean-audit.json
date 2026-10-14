@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "af8746686c70584768e9a7bc9bbdce0729efc1d9e542c2534f6137a311ec214f",
+  "git_delta": {
+    "base_commit": "6eae2b83b8699e40d4a7389cbe1ffdd78b5f162c",
+    "candidate_commit": "5af3533e470ebd2a6de279f2f778f7affabb388d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_svol_steiner_slice_volume_eq",
+    "diff_sha256": "b492b8c41666224d03aaf9b6b01a82003bb3b31e50a20899337de1290aaf9fcf",
+    "source_sha256": "2769fe7eeb45ff973c876caaaca257acb3d15dcaa2693b36b8a54f392d1895e9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_svol_steiner_slice_volume_eq",
+      "statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ {x : Euclid d | {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}.Nonempty ∧ |x j| ≤ (volume {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}).toReal / 2}} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
