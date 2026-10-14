@@ -451,6 +451,178 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.5.1** (proof, (31): `Lⁿ` of the interior of a unit face is `1`): the open unit cube
+`{y : 0 < yᵢ < 1}` of `ℝᵏ` has volume `1`.  It is the preimage of the box `∏ᵢ (0, 1)` under the
+volume-preserving `ofLp : ℝᵏ → (Fin k → ℝ)`, and the box has volume `∏ᵢ (1 - 0) = 1` (the empty
+product if `k = 0`). -/
+theorem Submission.cmcdtfrfg_cube_volume : ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+  intro k
+  -- the box `∏ᵢ (0, 1)` in `Fin k → ℝ`
+  have hB : MeasurableSet (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Ioo
+  -- the cube is `ofLp⁻¹` of the box
+  have hpre : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} =
+      WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Set.mem_pi]
+  rw [hpre, (PiLp.volume_preserving_ofLp (Fin k)).measure_preimage hB.nullMeasurableSet,
+    Real.volume_pi_Ioo]
+  simp
+/-- **Simon 6.5.1** (proof, (31): the integer median `β`): if `μ` is a probability measure and `u`
+is `μ`-a.e. measurable and integer-valued, then some `β ∈ ℤ` has `μ{u ≥ β} ≥ 1/2` and
+`μ{u ≤ β} ≥ 1/2`.  Take the least integer `β` with `F(β) ≥ 1/2`, `F(t) = μ{u ≤ t}`; it exists
+because `F(n) → 1` and `F(-n) → 0` (continuity of `μ` from below and above).  Then
+`F(β - 1) < 1/2`, and `{u ≥ β} = {u ≤ β - 1}ᶜ` since `u` is integer-valued. -/
+theorem Submission.dimred_mbl_dt_cbm_im_integer_median_exists : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)} := by
+  intro X _ μ u _ hu hint
+  -- each `{u ≤ t}` is null-measurable
+  have hnm : ∀ t : ℝ, NullMeasurableSet {x | u x ≤ t} μ := fun t =>
+    hu.nullMeasurableSet_preimage measurableSet_Iic
+  -- `F(t) = μ.real {u ≤ t}` is nondecreasing
+  have hmono : ∀ s t : ℝ, s ≤ t → μ.real {x | u x ≤ s} ≤ μ.real {x | u x ≤ t} := fun s t hst =>
+    measureReal_mono fun x hx => le_trans (show u x ≤ s from hx) hst
+  -- upper tail: `F(n) → 1`, so `F(n₁) > 1/2` for some `n₁ : ℕ`
+  obtain ⟨n₁, hn₁⟩ : ∃ n₁ : ℕ, 1 / 2 < μ.real {x | u x ≤ (n₁ : ℝ)} := by
+    have hA : Monotone fun n : ℕ => {x | u x ≤ (n : ℝ)} := fun a b hab x hx =>
+      le_trans (show u x ≤ (a : ℝ) from hx) (Nat.cast_le.mpr hab)
+    have hU : (⋃ n : ℕ, {x | u x ≤ (n : ℝ)}) = univ :=
+      eq_univ_of_forall fun x => mem_iUnion.mpr (exists_nat_ge (u x))
+    have h1 := tendsto_measure_iUnion_atTop (μ := μ) hA
+    rw [hU, measure_univ] at h1
+    have h2 : Tendsto (fun n : ℕ => μ.real {x | u x ≤ (n : ℝ)}) atTop (𝓝 1) := by
+      simpa [Function.comp_def, Measure.real] using (ENNReal.tendsto_toReal ENNReal.one_ne_top).comp h1
+    exact (h2.eventually (lt_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1))).exists
+  -- lower tail: `F(-n) → 0`, so `F(-n₀) < 1/2` for some `n₀ : ℕ`
+  obtain ⟨n₀, hn₀⟩ : ∃ n₀ : ℕ, μ.real {x | u x ≤ -(n₀ : ℝ)} < 1 / 2 := by
+    have hB : Antitone fun n : ℕ => {x | u x ≤ -(n : ℝ)} := fun a b hab x hx =>
+      le_trans (show u x ≤ -(b : ℝ) from hx) (neg_le_neg (Nat.cast_le.mpr hab))
+    have hI : (⋂ n : ℕ, {x | u x ≤ -(n : ℝ)}) = ∅ := by
+      refine eq_empty_of_forall_notMem fun x hx => ?_
+      obtain ⟨n, hn⟩ := exists_nat_gt (-u x)
+      have : u x ≤ -(n : ℝ) := mem_iInter.mp hx n
+      linarith
+    have h1 := tendsto_measure_iInter_atTop (μ := μ) (fun n : ℕ => hnm (-(n : ℝ))) hB
+      ⟨0, measure_ne_top μ _⟩
+    rw [hI, measure_empty] at h1
+    have h2 : Tendsto (fun n : ℕ => μ.real {x | u x ≤ -(n : ℝ)}) atTop (𝓝 0) := by
+      simpa [Function.comp_def, Measure.real] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h1
+    exact (h2.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).exists
+  -- `β` is the least integer with `F(β) ≥ 1/2`; the set is nonempty and bounded below by `-n₀`
+  obtain ⟨β, hβ, hmin⟩ := Int.exists_least_of_bdd
+    (P := fun z : ℤ => 1 / 2 ≤ μ.real {x | u x ≤ (z : ℝ)})
+    ⟨-(n₀ : ℤ), fun z hz => by
+      by_contra hlt
+      have hz' : (z : ℝ) ≤ -(n₀ : ℝ) := by exact_mod_cast (not_le.mp hlt).le
+      linarith [hmono _ _ hz']⟩
+    ⟨n₁, by simpa using hn₁.le⟩
+  refine ⟨β, ?_, hβ⟩
+  -- minimality: `F(β - 1) < 1/2`
+  have hβ1 : μ.real {x | u x ≤ ((β - 1 : ℤ) : ℝ)} < 1 / 2 :=
+    lt_of_not_ge fun h => by linarith [hmin (β - 1) h]
+  -- `u` is integer-valued, so `{β ≤ u} = {u ≤ β - 1}ᶜ`
+  have hset : {x | (β : ℝ) ≤ u x} = {x | u x ≤ ((β - 1 : ℤ) : ℝ)}ᶜ := by
+    ext x
+    obtain ⟨z, hz⟩ := hint x
+    simp only [mem_ofPred_eq, mem_compl_iff, hz, Int.cast_le, not_le]
+    omega
+  rw [hset, probReal_compl_eq_one_sub₀ (hnm _)]
+  linarith
+/-- **Simon 6.5.1** (proof, (31)–(32): the median `β` minimizes the `L¹` deviation, which replaces
+the median hypothesis 2.7(‡) of Ch. 2): if `μ` is a probability measure, `u` is `μ`-integrable
+and `β` is a median of `u` (`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2`), then
+`∫ |u - β| dμ ≤ ∫ |u - c| dμ` for every `c`.  If `β ≤ c`, then
+`|u - c| - |u - β| ≥ (c - β)(2 · 1_{u ≤ β} - 1)` pointwise (equality on `{u ≤ β}`, the triangle
+inequality off it), and integrating gives `∫ |u - c| - ∫ |u - β| ≥ (c - β)(2μ{u ≤ β} - 1) ≥ 0`.
+The case `c < β` is symmetric, with `{β ≤ u}` and `β - c`. -/
+theorem Submission.dimred_mbl_dt_cbm_im_median_minimizes : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → ∀ c : ℝ, ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+  intro X _ μ u β hμ hu hge hle c
+  -- every `|u - a|` is integrable
+  have habs : ∀ a : ℝ, Integrable (fun x => |u x - a|) μ := fun a =>
+    (hu.sub (integrable_const a)).abs
+  -- key lemma: integrate `d (2 · 1_s - 1) ≤ |u - c| - |u - β|`, using `∫ 1_s = μ(s)`, `∫ 1 = 1`
+  have key : ∀ (s : Set X) (d : ℝ), NullMeasurableSet s μ → 1 / 2 ≤ μ.real s → 0 ≤ d →
+      (∀ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ≤ |u x - c| - |u x - β|) →
+      ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+    intro s d hs hs2 hd hpt
+    have hind : Integrable (s.indicator fun _ => (1 : ℝ)) μ :=
+      (integrable_const (1 : ℝ)).indicator₀ hs
+    have hI : ∫ x, s.indicator (fun _ => (1 : ℝ)) x ∂μ = μ.real s := by
+      rw [integral_indicator₀ hs, setIntegral_const, smul_eq_mul, mul_one]
+    have hL : ∫ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ∂μ = d * (2 * μ.real s - 1) := by
+      rw [integral_const_mul, integral_sub (hind.const_mul 2) (integrable_const 1),
+        integral_const_mul, hI, integral_const, probReal_univ, smul_eq_mul, mul_one]
+    have hR : ∫ x, (|u x - c| - |u x - β|) ∂μ = ∫ x, |u x - c| ∂μ - ∫ x, |u x - β| ∂μ :=
+      integral_sub (habs c) (habs β)
+    have hmono : ∫ x, d * (2 * s.indicator (fun _ => (1 : ℝ)) x - 1) ∂μ ≤
+        ∫ x, (|u x - c| - |u x - β|) ∂μ :=
+      integral_mono (((hind.const_mul 2).sub (integrable_const 1)).const_mul d)
+        ((habs c).sub (habs β)) hpt
+    have hnn : 0 ≤ d * (2 * μ.real s - 1) := mul_nonneg hd (by linarith)
+    linarith
+  -- `u` is a.e.-measurable, so `{u ≤ β}` and `{β ≤ u}` are null-measurable
+  have hmeas : AEMeasurable u μ := hu.aemeasurable
+  rcases le_or_gt β c with hc | hc
+  · -- `β ≤ c`: `s = {u ≤ β}`, `d = c - β`
+    refine key {x | u x ≤ β} (c - β) (hmeas.nullMeasurableSet_preimage measurableSet_Iic) hle
+      (sub_nonneg.mpr hc) fun x => ?_
+    by_cases hx : u x ≤ β
+    · rw [Set.indicator_of_mem (show x ∈ {x | u x ≤ β} from hx),
+        abs_of_nonpos (by linarith : u x - c ≤ 0), abs_of_nonpos (by linarith : u x - β ≤ 0)]
+      linarith
+    · rw [Set.indicator_of_notMem (show x ∉ {x | u x ≤ β} from hx)]
+      have h1 := abs_sub_le (u x) c β
+      rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ c - β)] at h1
+      linarith
+  · -- `c < β`: `s = {β ≤ u}`, `d = β - c`
+    refine key {x | β ≤ u x} (β - c) (hmeas.nullMeasurableSet_preimage measurableSet_Ici) hge
+      (sub_nonneg.mpr hc.le) fun x => ?_
+    by_cases hx : β ≤ u x
+    · rw [Set.indicator_of_mem (show x ∈ {x | β ≤ u x} from hx),
+        abs_of_nonneg (by linarith : 0 ≤ u x - c), abs_of_nonneg (by linarith : 0 ≤ u x - β)]
+      linarith
+    · rw [Set.indicator_of_notMem (show x ∉ {x | β ≤ u x} from hx)]
+      have h1 := abs_sub_le (u x) c β
+      rw [abs_of_nonpos (by linarith : c - β ≤ 0)] at h1
+      linarith
+/-- **Simon 6.5.1** (proof, (35): `|β_F| ≤ 2 ∫_{F̊} |F| dLⁿ` from the median choice (31)): if
+`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2` for an integrable `u` on a probability space, then
+`|β| ≤ 2 ∫ |u| dμ`.  By Markov's inequality `|β| μ{|β| ≤ |u|} ≤ ∫ |u| dμ`, and `{|β| ≤ |u|}`
+contains `{β ≤ u}` if `β ≥ 0` and `{u ≤ β}` if `β < 0`, so it has measure `≥ 1/2`. -/
+theorem Submission.dimred_mbl_dt_cbm_im_median_abs_le : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → |β| ≤ 2 * ∫ x, |u x| ∂μ := by
+  intro X _ μ u β _ hu hge hle
+  -- Markov's inequality for `|u|` at level `|β|`
+  have hmarkov : |β| * μ.real {x | |β| ≤ |u x|} ≤ ∫ x, |u x| ∂μ :=
+    mul_meas_ge_le_integral_of_nonneg (ae_of_all _ fun x => abs_nonneg (u x)) hu.abs |β|
+  -- `{|β| ≤ |u|}` contains `{β ≤ u}` if `β ≥ 0` and `{u ≤ β}` if `β < 0`
+  have hhalf : 1 / 2 ≤ μ.real {x | |β| ≤ |u x|} := by
+    rcases le_or_gt 0 β with hβ | hβ
+    · refine hge.trans (measureReal_mono fun x (hx : β ≤ u x) => ?_)
+      rw [abs_of_nonneg hβ]
+      exact hx.trans (le_abs_self (u x))
+    · refine hle.trans (measureReal_mono fun x (hx : u x ≤ β) => ?_)
+      rw [abs_of_neg hβ]
+      exact (neg_le_neg hx).trans (neg_le_abs (u x))
+  calc |β| = 2 * (|β| * (1 / 2)) := by ring
+    _ ≤ 2 * (|β| * μ.real {x | |β| ≤ |u x|}) := by gcongr
+    _ ≤ 2 * ∫ x, |u x| ∂μ := by gcongr
+
+/-- **Simon 6.5.1** (proof, (31) and (35): the integer median `β_F` and `|β_F| ≤ 2∫_{F̊}|F|`):
+if `u` is integer-valued and integrable on the open unit cube `Q₁ = (0, 1)ⁿ`, some `β ∈ ℤ`
+minimizes `c ↦ ∫_{Q₁} |u - c|` and satisfies `|β| ≤ 2 ∫_{Q₁} |u|`.  Since `vol(Q₁) = 1`, Lebesgue
+measure restricted to `Q₁` is a probability measure; an integer median `β` of `u` for it exists,
+minimizes the `L¹` deviation, and is bounded by twice the `L¹` norm. -/
+theorem Submission.dimred_mbl_dt_cbm_integer_median : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, (∀ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c|) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| := by
+  intro m u hu hint
+  -- `μ := volume.restrict Q₁` is a probability measure, as `vol(Q₁) = 1`
+  have hμ : IsProbabilityMeasure
+      (volume.restrict {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact Submission.cmcdtfrfg_cube_volume (m + 1)⟩
+  -- an integer median `β` of `u` for `μ` (`IntegrableOn u Q₁` is `Integrable u μ`)
+  obtain ⟨β, hβu, huβ⟩ := Submission.dimred_mbl_dt_cbm_im_integer_median_exists _ _ u hμ
+    hint.integrable.aemeasurable hu
+  exact ⟨β, Submission.dimred_mbl_dt_cbm_im_median_minimizes _ _ u β hμ hint.integrable hβu huβ,
+    Submission.dimred_mbl_dt_cbm_im_median_abs_le _ _ u β hμ hint.integrable hβu huβ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
