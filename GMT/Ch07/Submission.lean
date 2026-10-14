@@ -864,6 +864,57 @@ theorem Submission.cmcdt_lpo_slice_forms : (∀ (N k : ℕ) (ω : TestFormOn (un
     Submission.cmcdt_lpo_slice_homotopy_succ, Submission.cmcdt_lpo_slice_homotopy_zero,
     Submission.cmcdt_lpo_slice_covector_bound⟩
 
+/-- **Homotopy identity for a cylinder operator** (Simon Ch. 6, 2.17–2.22, and the homotopy
+formula 2.25–2.27).  Let `cyl` take `X ∈ 𝒟ₖ(ℝᴺ)` to `cyl X ∈ 𝒟ₖ₊₁(ℝᴺ⁺¹)` with the slice property
+(9): for `X` with compact support, `M(X) < ∞` and `M(∂X) < ∞`, and `ω ∈ 𝒟ᵏ⁺¹(ℝᴺ⁺¹)`,
+`cyl X (ω) = X(η)` with `η(x)(v) = ∫₀¹ ω(ι(t, x))(e₀, Jv) dt`.  (a) In degree `0`, where
+`boundaryMassOn X univ = 0`, (9) for `dβ` and the slice identity (d) of `cmcdt_lpo_slice_forms`
+give `η = ρ₁ − ρ₀`, so `cyl X (dβ) = X(ρ₁) − X(ρ₀)`.  (b) In degree `k + 1`, (9) for `X` and `dβ`
+gives `η`, (9) for `∂X` and `β` gives `θ` with `cyl ∂X (β) = ∂X(θ) = X(dθ)`, and the slice
+identity (c) gives `η = ρ₁ − ρ₀ − dθ`; by linearity of `X`,
+`cyl X (dβ) = X(ρ₁) − X(ρ₀) − cyl ∂X (β)`. -/
+theorem Submission.cmcdt_lpoh_cyl_identity : ∀ (cyl : ∀ (N k : ℕ), GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)), (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ cyl N k X ω = X η) → (∀ (N : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) 0) (β : TestFormOn (univ : Set (Euclid (N + 1))) 0) (ρ₁ ρ₀ : TestFormOn (univ : Set (Euclid N)) 0), IsCompact X.support → X.mass < ∞ → (∀ (x : Euclid N) (v : Fin 0 → Euclid N), (ρ₁ : DifferentialForm (Euclid N) 0) x v = (β : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → (∀ (x : Euclid N) (v : Fin 0 → Euclid N), (ρ₀ : DifferentialForm (Euclid N) 0) x v = (β : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → cyl N 0 X (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) 0 β) = X ρ₁ - X ρ₀) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)) (β : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (ρ₁ ρ₀ : TestFormOn (univ : Set (Euclid N)) (k + 1)), IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → IsCompact X.boundary.support → boundaryMassOn X.boundary univ < ∞ → (∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), (ρ₁ : DifferentialForm (Euclid N) (k + 1)) x v = (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → (∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), (ρ₀ : DifferentialForm (Euclid N) (k + 1)) x v = (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → cyl N (k + 1) X (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) (k + 1) β) = X ρ₁ - X ρ₀ - cyl N k X.boundary β := by
+  intro cyl h9
+  -- the slice identities (c) and (d) of `cmcdt_lpo_slice_forms`
+  obtain ⟨-, -, hc, hd, -⟩ := Submission.cmcdt_lpo_slice_forms
+  refine ⟨?_, ?_⟩
+  · intro N X β ρ₁ ρ₀ hXc hXm hρ₁ hρ₀
+    -- Step 1: `boundaryMassOn X univ = 0` in degree `0`, so `X` is normal
+    have hXb : boundaryMassOn X univ < ∞ := by
+      show (0 : ℝ≥0∞) < ∞
+      exact ENNReal.zero_lt_top
+    -- Step 2: (9) for `X` and `dβ`
+    obtain ⟨η, hη, hcyl⟩ := h9 N 0 X hXc hXm hXb
+      (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) 0 β)
+    -- Step 3: `η = ρ₁ − ρ₀` by the slice identity (d); then linearity of `X`
+    have hηeq : η = ρ₁ - ρ₀ := by
+      apply Subtype.ext
+      funext x
+      ext v
+      rw [hη x v]
+      have := hd N β x v
+      simp only [Submodule.coe_sub, Pi.sub_apply, ContinuousAlternatingMap.sub_apply, hρ₁, hρ₀]
+      exact this
+    rw [hcyl, hηeq]
+    exact map_sub X.toCurrent ρ₁ ρ₀
+  · intro N k X β ρ₁ ρ₀ hXc hXm hXbm hbc hbb hρ₁ hρ₀
+    -- Steps 4–5: `boundaryMassOn X univ = M(∂X)`; (9) for `X` and `dβ`, and for `∂X` and `β`
+    obtain ⟨η, hη, hcyl⟩ := h9 N (k + 1) X hXc hXm hXbm
+      (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) (k + 1) β)
+    obtain ⟨θ, hθ, hcylb⟩ := h9 N k X.boundary hbc hXbm hbb β
+    -- Step 6: `η = ρ₁ − ρ₀ − dθ` by the slice identity (c)
+    have hηeq : η = ρ₁ - ρ₀ - exteriorDerivativeTestOn (univ : Set (Euclid N)) k θ := by
+      apply Subtype.ext
+      funext x
+      ext v
+      rw [hη x v]
+      have := hc N k β θ hθ x v
+      simp only [Submodule.coe_sub, Pi.sub_apply, ContinuousAlternatingMap.sub_apply, hρ₁, hρ₀]
+      exact this
+    -- Step 7: `cyl ∂X (β) = ∂X(θ) = X(dθ)`, and linearity of `X`
+    rw [hcyl, hcylb, hηeq]
+    exact (map_sub X.toCurrent _ _).trans (by rw [map_sub X.toCurrent ρ₁ ρ₀]; rfl)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
