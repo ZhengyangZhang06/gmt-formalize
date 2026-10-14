@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.pullback_le-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1",
+  "depth": 6,
+  "title": "Pull-back bound |A^#β| ≤ ‖A‖^k·|β| for the Euclidean coefficient norm of covectors (parent (L1))",
+  "statement": "Let N, N', k ∈ ℕ, let A : ℝ^N → ℝ^{N'} be a continuous linear map (A : Euclid N →L[ℝ] Euclid N') with operator norm ‖A‖ (for the Euclidean norms), and let β be a k-covector on ℝ^{N'} (β : Covector (Euclid N') k). Let A^#β := β.compContinuousLinearMap A be its pull-back, (A^#β)(w_1, …, w_k) = β(Aw_1, …, Aw_k). Then |A^#β| ≤ ‖A‖^k·|β|, where for a covector α on ℝ^M, |α| = covectorEuclideanNorm α is the Euclidean norm of the values of α on the strictly increasing tuples of standard basis vectors of ℝ^M.",
+  "lean_statement": "∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β",
+  "lean_name": "dimred_mbl_dt_lp_cb_pullback_le",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-18613ed895-a1"
+}

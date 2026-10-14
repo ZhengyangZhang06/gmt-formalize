@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "covectorEuclideanNorm|curryLeft|compContinuousLinearMap",
+        "abbrev Covector|def covectorEuclideanNorm|theorem covectorEuclideanNorm|lemma covectorEuclideanNorm",
+        "curryLeft_apply_apply|curryLeft_compContinuousLinearMap|norm_curryLeft|norm_compContinuousLinearMap_le",
+        "sum_inner_mul_inner|exists_orthonormalBasis_extension_of_card_eq|toDual_symm_apply|basisFun|norm_eq",
+        "dimred_mbl_dt_lp_cb_pullback_le|dimred_mbl_dt_lp_cb_curryLeft_le|regcomp_covector_sq_sum_orthonormalBasis",
+        "git show 16144a475b272196ba8b2bd15f104028282dbcfc:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp-cb-decomp/lean/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp-cb-decomp/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/covector-independent-audit-8soqx1ac/Types.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d372b22d2b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d372b22d2b/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/isolated-comparator-result.json",
+        "/tmp/dmlp-cb-decomp/lean/Final.lean",
+        "/tmp/dmlp-cb-decomp/lean/Assembly.lean",
+        "/tmp/dmlp-cb-decomp/lean/Challenge_sq_sum.lean",
+        "/tmp/dmlp-cb-decomp/lean/Challenge_pullback_le.lean",
+        "/tmp/dmlp-cb-decomp/lean/Challenge_curry_le.lean",
+        "/tmp/covector-independent-audit-8soqx1ac/Types.lean"
+      ],
+      "conclusion": "Project and Mathlib revisions match the manifest; Submission.lean matches the frozen contract. The snapshot project search returned no relevant matches. Imported definitions confirm the coefficient norm and specified pull-back/interior-product operations. Independent elaboration confirms PiLp.instNorm 2 for vectors and ContinuousLinearMap.hasOpNorm for maps. All three frozen types elaborate without child implementations. The complete supplied proofs and exact parent assembly compile with only propext, Classical.choice and Quot.sound. Splitting is appropriate: both bounds are precisely the selected parent's conjuncts, and both use sq_sum. Dependencies, including the accepted reuse's dependency closure, are acyclic. All names are bare identifiers; both new names are unreserved."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the universally quantified prose. Reuse is valid: candidate 16144a475b272196ba8b2bd15f104028282dbcfc passed its comparator with an identical frozen type, and its code was independently recompiled. The supplied proof establishes basis independence, eliminates repeated indices, proves the increasing-tuple/permutation bijection, and counts n! contributions. It is complete and non-circular, including zero and excessive degrees."
+    },
+    {
+      "key": "pullback_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states L1 with all hypotheses. Parseval and operator-norm submultiplicativity establish the one-slot estimate. The induction is correctly generalized over the degree and covector; first-slot reindexing and curry/pull-back compatibility justify its step. Using only sq_sum, positive-factorial cancellation and nonnegative square comparison yield the exact conclusion, including zero-dimensional and degree-zero cases. The name is fresh."
+    },
+    {
+      "key": "curry_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states L2 with all hypotheses. Homogeneity and the zero-vector case justify normalization; nonzero v supplies the positive dimension needed for the basis extension. First-slot reindexing gives R_0, permutation signs give R_p = R_0, and repeated-index vanishing proves the multiplicity bound. Applying only sq_sum, cancelling the positive factorial and rescaling proves the conclusion without circularity or omitted edge cases. The name is fresh."
+    }
+  ],
+  "required_changes": []
+}
