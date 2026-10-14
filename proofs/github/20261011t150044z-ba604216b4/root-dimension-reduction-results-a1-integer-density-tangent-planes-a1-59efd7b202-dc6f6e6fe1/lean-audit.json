@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9d5e42bf3007e8ec57678a117a5ef413b2591c91a07ec25fc7309e153094b3e2",
+  "git_delta": {
+    "base_commit": "4919b2c22bb3ebf3cf760a991a416325fa7dfe5b",
+    "candidate_commit": "cbd2d4f78272f7b38fdbb7e6fb1c85944ff154eb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_density_measurable",
+    "diff_sha256": "5b2dc40384268ba68fad8adb539033230f197594e6f1c753d39f61eca885aadc",
+    "source_sha256": "bf9bfd3729c6a19c9a8740ffa45fe6c44a31eaed247fecd60acf948873b557d5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_density_measurable",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)), Measurable (fun x : Euclid P => (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
