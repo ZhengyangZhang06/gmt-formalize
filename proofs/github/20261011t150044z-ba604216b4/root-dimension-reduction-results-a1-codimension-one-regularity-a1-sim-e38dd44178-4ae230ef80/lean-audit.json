@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "978f558ec3314ce9ca99376979582d02cce49c91aff0aae7274b2d45c2c01638",
+  "git_delta": {
+    "base_commit": "89cf9f2b3617d7eea59901d1b5c82186090530e8",
+    "candidate_commit": "ab3c453843eb750aa42f4ca77c858ec69f241963",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_af_adjoint_det_eq_gram",
+    "diff_sha256": "35fd90f20c92733114e6df383c292126674abc62d68e6ef12569f8a1a7161ab4",
+    "source_sha256": "561ba8e4b5928f253c6a799683b5faf4ca2e030c3a03b6088d9fe945ac7b343f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_af_adjoint_det_eq_gram",
+      "statement": "∀ (P k : ℕ) (T : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P) (σ : Fin k → Euclid P), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = T → ((B.comp T.subtypeL).adjoint ∘L (B.comp T.subtypeL)).det = Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (B (σ i)) (B (σ j)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
