@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b36255f4f66c6bb6542a739fc3da917fb9ee3184296b40900b576ae48efe7399",
+  "git_delta": {
+    "base_commit": "59636c599c61d3496a78674250fe1301c9d17d86",
+    "candidate_commit": "bd08731627efa88391cfcf3cab235cf8b4ebfabf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_acont_real_induction",
+    "diff_sha256": "400ac9ef88575df78353e4fc857b642bc9bc3a4824314e24bd8070d3f1bdd6c9",
+    "source_sha256": "dbf504af11e8e6aa0728237c39c05d048772ee2f7fceb6fd9db10a96ee362352",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_acont_real_induction",
+      "statement": "∀ (G : ℝ → Prop) (L : ℝ), G 0 → (∀ φ : ℝ, 0 ≤ φ → φ < L → G φ → ∃ ε : ℝ, 0 < ε ∧ ∀ ψ : ℝ, φ < ψ → ψ < φ + ε → G ψ) → (∀ φ : ℝ, 0 < φ → φ < L → (∀ ψ : ℝ, 0 ≤ ψ → ψ < φ → G ψ) → G φ) → ∀ φ : ℝ, 0 ≤ φ → φ < L → G φ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
