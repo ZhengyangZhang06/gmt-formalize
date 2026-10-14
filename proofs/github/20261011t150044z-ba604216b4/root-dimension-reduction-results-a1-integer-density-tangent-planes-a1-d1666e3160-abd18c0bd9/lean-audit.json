@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f62528f6890d615d2962f572b1811f84391521761cbbb32bc7bd2f208d5f922c",
+  "git_delta": {
+    "base_commit": "0487ac0a96977361c537881d36b3d21f75364670",
+    "candidate_commit": "f62e9a92095d504adae871c150d50946704186db",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_rc_tf_indicator_extension",
+    "diff_sha256": "ba3763229521dc8149a5c08dfba568148b5df15b62870b81084ea22d40a73b65",
+    "source_sha256": "ac61ad521e0393aff67312a39cafe57204ef5441ff357d09d5c0d93ce9f8fd07",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_rc_tf_indicator_extension",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → IsCompact K → K ⊆ U → (∀ x ∈ U, ContDiffAt ℝ 1 h x) → (∀ y ∈ U, h y ≠ 0 → y ∈ K) → ContDiff ℝ 1 (U.indicator h) ∧ HasCompactSupport (U.indicator h) ∧ (∀ x ∈ U, fderiv ℝ (U.indicator h) x = fderiv ℝ h x) ∧ (∀ x ∉ U, fderiv ℝ (U.indicator h) x = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
