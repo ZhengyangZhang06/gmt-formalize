@@ -451,6 +451,85 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Translation invariance on smooth tests** (steps 1–3 of the translation argument): if `ν` is
+finite on compact sets and `∫ Dφ(y)[v] dν(y) = 0` for every `φ ∈ C_c^∞(ℝᴾ)`, then
+`∫ φ(v + y) dν(y) = ∫ φ dν` for every `φ ∈ C_c^∞(ℝᴾ)`.  `F(s) = ∫ φ(y + sv) dν(y)` is
+differentiable with `F'(s₀) = ∫ Dφ(y + s₀v)[v] dν(y)` (differentiation under the integral sign;
+for `|s − s₀| < 1` the derivative is dominated by `C‖v‖ 1_{K₀}`, `K₀ = B̄_{R + (|s₀| + 1)‖v‖}(0)`,
+`tsupport φ ⊆ B̄_R(0)`, `‖Dφ‖ ≤ C`), and `F'(s₀) = 0` by the hypothesis applied to the translate
+`φ(· + s₀v)`.  So `F` is constant and `F(1) = F(0)`. -/
+theorem Submission.cbr_ci_cp_tr_smooth_translate_integral_eq : ∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ (v + y) ∂ν = ∫ y, φ y ∂ν := by
+  intro P ν v hν hD φ hφ hφs
+  -- step 1: `ν` is finite on compact sets
+  have hνK : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  -- step 2: `Dφ` is continuous, vanishes off `tsupport φ` and is bounded by `C`;
+  -- `tsupport φ ⊆ B̄_R(0)`
+  have hφd : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hφc : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  obtain ⟨C, hC⟩ := hφc.bounded_above_of_compact_support (hφs.fderiv ℝ)
+  obtain ⟨R, hR⟩ := hφs.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  -- step 5: `F(s) = ∫ φ(y + s v) dν` has derivative `∫ Dφ(y + s v)[v] dν` at every `s₀`
+  have hF : ∀ s₀ : ℝ, HasDerivAt (fun s : ℝ => ∫ y, φ (y + s • v) ∂ν)
+      (∫ y, fderiv ℝ φ (y + s₀ • v) v ∂ν) s₀ := by
+    intro s₀
+    have hK₀ : IsCompact (closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)) :=
+      isCompact_closedBall _ _
+    refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+      (F := fun (s : ℝ) (y : Euclid P) => φ (y + s • v))
+      (F' := fun (s : ℝ) (y : Euclid P) => fderiv ℝ φ (y + s • v) v)
+      (bound := (closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)).indicator fun _ => C * ‖v‖)
+      (ball_mem_nhds s₀ one_pos) ?_ ?_ ?_ ?_ ?_ ?_).2
+    · -- (a) `y ↦ φ(y + s v)` is continuous
+      exact Eventually.of_forall fun s =>
+        (hφ.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable
+    · -- (b) `y ↦ φ(y + s₀ v)` is continuous with compact support
+      exact (hφ.continuous.comp (continuous_id.add continuous_const)).integrable_of_hasCompactSupport
+        (hφs.comp_homeomorph (Homeomorph.addRight (s₀ • v)))
+    · -- (c) `y ↦ Dφ(y + s₀ v)[v]` is continuous
+      exact ((ContinuousLinearMap.apply ℝ ℝ v).continuous.comp
+        (hφc.comp (continuous_id.add continuous_const))).aestronglyMeasurable
+    · -- (d) the domination `|Dφ(y + s v)[v]| ≤ C ‖v‖ 1_{K₀}(y)` for `|s - s₀| < 1`
+      refine Eventually.of_forall fun y s hs => ?_
+      by_cases hy : y ∈ closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)
+      · rw [indicator_of_mem hy]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (hC _) (norm_nonneg _))
+      · rw [indicator_of_notMem hy]
+        -- step 4: `y ∉ K₀` forces `y + s v ∉ tsupport φ`
+        have hys : y + s • v ∉ tsupport φ := by
+          intro h
+          apply hy
+          have h1 := hR h
+          rw [mem_closedBall_zero_iff] at h1 ⊢
+          rw [mem_ball, Real.dist_eq] at hs
+          have hs' : |s| ≤ |s₀| + 1 := by
+            linarith [abs_sub_abs_le_abs_sub s s₀]
+          calc ‖y‖ = ‖(y + s • v) - s • v‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖y + s • v‖ + ‖s • v‖ := norm_sub_le _ _
+            _ = ‖y + s • v‖ + |s| * ‖v‖ := by rw [norm_smul, Real.norm_eq_abs]
+            _ ≤ R + (|s₀| + 1) * ‖v‖ :=
+              add_le_add h1 (mul_le_mul_of_nonneg_right hs' (norm_nonneg _))
+        rw [fderiv_of_notMem_tsupport ℝ hys]
+        simp
+    · -- (e) `C ‖v‖ 1_{K₀}` is integrable since `ν(K₀) < ∞`
+      exact IntegrableOn.integrable_indicator (integrableOn_const hK₀.measure_lt_top.ne)
+        measurableSet_closedBall
+    · -- (f) chain rule for `s ↦ φ(y + s v)`
+      refine Eventually.of_forall fun y s _ => ?_
+      have h1 : HasDerivAt (fun s : ℝ => y + s • v) v s := by
+        simpa using ((hasDerivAt_id s).smul_const v).const_add y
+      exact (hφd (y + s • v)).hasFDerivAt.comp_hasDerivAt s h1
+  -- step 6: `F' ≡ 0`, by the hypothesis applied to the translate `φ(· + s₀ v)`
+  have hF0 : ∀ s₀ : ℝ, ∫ y, fderiv ℝ φ (y + s₀ • v) v ∂ν = 0 := by
+    intro s₀
+    have h := hD (fun y => φ (y + s₀ • v)) (hφ.comp (contDiff_id.add contDiff_const))
+      (hφs.comp_homeomorph (Homeomorph.addRight (s₀ • v)))
+    simpa only [fderiv_comp_add_right] using h
+  -- step 7: `F` is constant, so `F(1) = F(0)`
+  have h := is_const_of_deriv_eq_zero (fun s => (hF s).differentiableAt)
+    (fun s => by rw [(hF s).deriv, hF0 s]) 1 0
+  simpa [add_comm] using h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
