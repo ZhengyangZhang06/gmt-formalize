@@ -646,6 +646,34 @@ theorem Submission.imrep_carrier_sdiff_support_null : ∀ (P n : ℕ) (U : Set (
   obtain ⟨hWo, hWc, hWU, hTW⟩ := h𝒮W hW
   exact Submission.imrep_carrier_inter_null_of_vanishesOn P n U W T R hRT hWo hWc hWU hTW
 
+/-- **Simon 6.2.11, 6.3.2(3)**: assuming (IMC b), that an integer multiplicity triple in an open
+`U` restricts to every Borel `E` (carrier `M ∩ E`, same `θ` and `ξ`), an integer multiplicity
+current `X = τ(M₀, θ, ξ)` in `U` has a representation carried by `spt X`.  `spt X = U ∖ Z` is
+Borel (`Z` open), and `Hⁿ(M₀ ∖ spt X) = 0` (`imrep_carrier_sdiff_support_null`), so
+`M₀ ∩ spt X = M₀` `Hⁿ`-a.e.  (IMC b) with `E = spt X` gives `R' = (M₀ ∩ spt X, θ, ξ)`; set
+integrals over a.e.-equal sets agree, so `R'` has the action of `R`, i.e. represents `X`. -/
+theorem Submission.cmcdt_lpi_pr_imrep_in_support : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → ∀ (N n : ℕ) (U : Set (Euclid N)) (X : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity X → ∃ R : IMRep U n, R.Represents X ∧ R.carrier ⊆ X.support := by
+  intro hIMCb N n U X hU hXim
+  obtain ⟨R, hR⟩ := hXim
+  -- `spt X = U ∖ Z` is Borel, the zero region `Z` being open
+  have hSm : MeasurableSet X.support := by
+    rw [show X.support = U \ X.zeroRegion from rfl]
+    exact hU.measurableSet.diff X.isOpen_zeroRegion.measurableSet
+  -- `Hⁿ(M₀ ∖ spt X) = 0`
+  have hnull : μHE[n] (R.carrier \ X.support) = 0 :=
+    Submission.imrep_carrier_sdiff_support_null N n U X R hU hR
+  -- restrict the representation to `spt X`: `R' = (M₀ ∩ spt X, θ, ξ)`
+  obtain ⟨_, R', -, hcar, hmult, hor⟩ := hIMCb N n U R X.support hU hSm
+  refine ⟨R', fun ω => ?_, hcar ▸ inter_subset_right⟩
+  -- `M₀ ∩ spt X = M₀` `Hⁿ`-a.e., so the two actions agree
+  rw [hR ω]
+  unfold IMRep.action
+  rw [hcar, hmult, hor]
+  refine setIntegral_congr_set (ae_eq_set.mpr ⟨measure_mono_null ?_ hnull, ?_⟩)
+  · rintro x ⟨hxM, hxMS⟩
+    exact ⟨hxM, fun hxS => hxMS ⟨hxM, hxS⟩⟩
+  · rw [sdiff_eq_empty.mpr inter_subset_left, measure_empty]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
