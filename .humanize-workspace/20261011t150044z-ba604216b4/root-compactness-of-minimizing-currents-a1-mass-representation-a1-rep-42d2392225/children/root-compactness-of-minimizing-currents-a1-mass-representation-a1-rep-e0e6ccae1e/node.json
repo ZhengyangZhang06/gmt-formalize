@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1.polar_pushforward-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.representation_core-a1",
+  "depth": 4,
+  "title": "Polar normalization of a vector Riesz density and push-forward to ℝ^P (parent steps 4–9)",
+  "statement": "Let P, n, d ∈ ℕ and let U ⊆ ℝ^P be open; the subtype ↥U carries the subspace topology and σ-algebra. Write |α| := covectorEuclideanNorm α. Let c : Λⁿ(ℝ^P) → ℝ^d (Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) be a continuous linear equivalence with |α| = ‖c(α)‖ for every n-covector α. Let μ₀ be a measure on ↥U and ν : ↥U → ℝ^d a measurable map that is μ₀-integrable on every compact subset of ↥U. Then there are a measure μ on ℝ^P and maps ξ : ℝ^P → Λ_n (MultiVector P n) and β : ℝ^P → Λⁿ (Covector (Euclid P) n) such that:\n(a) μ(ℝ^P ∖ U) = 0;\n(b) μ(K) < ∞ for every compact K ⊆ U;\n(c) ξ is μ-a.e. strongly measurable;\n(d) |ξ(x)(α)| ≤ |α| for every x and every n-covector α;\n(e) β is μ-a.e. strongly measurable;\n(f) there is C ∈ ℝ with ‖β(x)‖ ≤ C for every x, in the operator norm of Λⁿ;\n(g) |β(x)| ≤ 1 for every x;\n(h) ξ(x)(β(x)) = 1 for μ-a.e. x;\n(i) for every map ω : ℝ^P → Λⁿ (DifferentialForm (Euclid P) n), ∫_{↥U} ⟨c(ω(x)), ν(x)⟩ dμ₀(x) = ∫ ξ(y)(ω(y)) dμ(y), as Bochner integrals.",
+  "lean_statement": "∀ (P n d : ℕ) (U : Set (Euclid P)) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (μ₀ : Measure U) (ν : U → EuclideanSpace ℝ (Fin d)), IsOpen U → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → Measurable ν → (∀ K : Set U, IsCompact K → IntegrableOn ν K μ₀) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (β : Euclid P → Covector (Euclid P) n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ AEStronglyMeasurable β μ ∧ (∃ C : ℝ, ∀ x, ‖β x‖ ≤ C) ∧ (∀ x, covectorEuclideanNorm (β x) ≤ 1) ∧ (∀ᵐ x ∂μ, ξ x (β x) = 1) ∧ ∀ ω : DifferentialForm (Euclid P) n, ∫ x, inner ℝ (c (ω x)) (ν x) ∂μ₀ = ∫ x, ξ x (ω x) ∂μ",
+  "lean_name": "cmrc_polar_pushforward",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-rep-e0e6ccae1e-a1"
+}
