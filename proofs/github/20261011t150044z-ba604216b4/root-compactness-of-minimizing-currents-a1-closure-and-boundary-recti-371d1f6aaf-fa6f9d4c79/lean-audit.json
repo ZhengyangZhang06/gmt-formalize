@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b930d7e1cf7bd8f7596fdd18da72738a7c244a16ff30b306f1de658b6169eb5b",
+  "git_delta": {
+    "base_commit": "2f5352d075de758b7a5dcf3bb5275377b5190224",
+    "candidate_commit": "fde775c792803a581b783e5a791cc9befd7f6b75",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_dir_cycle_fderiv_integral_zero",
+    "diff_sha256": "85152ad45502da5bb0a10b109aab4635cf111c6b692bae0672d6cc1b0d141791",
+    "source_sha256": "b82e98defd02b145cbe9ddf087d080fde137bd2122a01307409e15e59f1845e8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_dir_cycle_fderiv_integral_zero",
+      "statement": "∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d) (v : Euclid P) (φ : Euclid P → ℝ), (∀ ψ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (ψ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
