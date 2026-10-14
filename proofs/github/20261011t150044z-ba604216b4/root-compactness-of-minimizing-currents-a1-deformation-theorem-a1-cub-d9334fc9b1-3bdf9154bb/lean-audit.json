@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3bcd5cb0c45f0147ef97ae4045b1d0cc4fa7de206e6e10500f8a0c902c73c32e",
+  "git_delta": {
+    "base_commit": "37a7e5e595a9fe2710eace1ba51f096b633c8c26",
+    "candidate_commit": "293456301ea61c4ac7a3607ee482e7aeb8ee347c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_st_interval_bound",
+    "diff_sha256": "ba84bbe37657aa2e17ab394554f98e248ce8b78bf36dee7d5ef1fe3f0169ac14",
+    "source_sha256": "756ba872dbff612e2f8137c87194db33eae14be63a10346590d2956ac9620ba1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_st_interval_bound",
+      "statement": "∀ (φ γ : ℝ → ℝ) (a b : ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 γ → (∀ t, |γ t| ≤ 1) → a < b → |∫ t in a..b, deriv (fun s => φ s * γ s) t| ≤ 2 / (b - a) * (∫ t in a..b, |φ t|) + 2 * ∫ t in a..b, |deriv φ t|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
