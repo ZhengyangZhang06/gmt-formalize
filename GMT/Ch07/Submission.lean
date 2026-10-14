@@ -451,6 +451,142 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Helly selection with no concentration on left intervals (the compactness ingredient of the
+choice of the slicing level in the proof of Simon 6.7.2, "an argument as in 6.7(2) of Ch. 2"): if
+`μⱼ([a, b]) ≤ Λ < ∞`, then along a subsequence `φ` and off a countable set `N`, every
+`s ∈ (a, b) \ N` and `ε > 0` admit `δ > 0` with `μ_{φ j}([s - δ, s]) ≤ ε` for all large `j`.
+By Tychonoff, `μ_{φ j}([a, d]) → G(d)` for every rational `d ∈ (a, b)`; `N` is the discontinuity
+set of the nondecreasing `G̃(t) = sup ({0} ∪ {G(d) : d < t})`, and `[s - δ, s] ⊆ [a, d₂] \ [a, d₁]`
+for rationals `d₁ < s - δ`, `s < d₂` with `G(d₂) - G(d₁) < ε`. -/
+theorem Submission.cmc_fc_gs_helly_no_concentration : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (φ : ℕ → ℕ) (N : Set ℝ), StrictMono φ ∧ N.Countable ∧ ∀ s ∈ Ioo a b, s ∉ N → ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro μ a b Λ hΛ hμ
+  -- `μⱼ([a, x]) ≤ μⱼ([a, b]) ≤ Λ < ∞` for `x ≤ b`
+  have hle : ∀ j x, x ≤ b → μ j (Icc a x) ≤ Λ := fun j x hx =>
+    (measure_mono (Icc_subset_Icc_right hx)).trans (hμ j)
+  have hfin : ∀ j x, x ≤ b → μ j (Icc a x) ≠ ∞ := fun j x hx =>
+    ((hle j x hx).trans_lt hΛ.lt_top).ne
+  -- Helly selection: `d ↦ μⱼ([a, d])` lies in the compact box `∏_{d ∈ ℚ ∩ (a, b)} [0, Λ]` of
+  -- the first countable space `ℝ^(ℚ ∩ (a, b))`
+  have hK : IsCompact (univ.pi fun _ : {q : ℚ // (q : ℝ) ∈ Ioo a b} => Icc (0 : ℝ) Λ.toReal) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  obtain ⟨G, hGK, φ, hφ, hlim⟩ := hK.tendsto_subseq
+    (x := fun j d => (μ j (Icc a (d.1 : ℝ))).toReal)
+    fun j d _ => ⟨ENNReal.toReal_nonneg, ENNReal.toReal_mono hΛ (hle j _ d.2.2.le)⟩
+  have hGd : ∀ d : {q : ℚ // (q : ℝ) ∈ Ioo a b},
+      Tendsto (fun j => (μ (φ j) (Icc a (d.1 : ℝ))).toReal) atTop (𝓝 (G d)) :=
+    tendsto_pi_nhds.1 hlim
+  -- `G` is nondecreasing
+  have hGmono : ∀ d d' : {q : ℚ // (q : ℝ) ∈ Ioo a b}, (d.1 : ℝ) ≤ d'.1 → G d ≤ G d' :=
+    fun d d' h => le_of_tendsto_of_tendsto' (hGd d) (hGd d') fun j =>
+      ENNReal.toReal_mono (hfin _ _ d'.2.2.le) (measure_mono (Icc_subset_Icc_right h))
+  -- `G̃(t) = sup ({0} ∪ {G(d) : d < t})`
+  obtain ⟨Gt, hGt⟩ : ∃ Gt : ℝ → ℝ, ∀ t, Gt t = sSup (insert 0 (G '' {d | (d.1 : ℝ) < t})) :=
+    ⟨_, fun _ => rfl⟩
+  have hbdd : ∀ t, BddAbove (insert 0 (G '' {d | (d.1 : ℝ) < t})) := fun t =>
+    ⟨Λ.toReal, by
+      rintro x (rfl | ⟨d, -, rfl⟩)
+      exacts [ENNReal.toReal_nonneg, (hGK d (mem_univ d)).2]⟩
+  -- (α) `G(d) ≤ G̃(t)` if `d < t`; (β) `G̃(t) ≤ G(d)` if `t < d`
+  have hα : ∀ d t, (d.1 : ℝ) < t → G d ≤ Gt t := fun d t h => by
+    rw [hGt]
+    exact le_csSup (hbdd t) (mem_insert_of_mem _ ⟨d, h, rfl⟩)
+  have hβ : ∀ d t, t < (d.1 : ℝ) → Gt t ≤ G d := fun d t h => by
+    rw [hGt]
+    refine csSup_le (insert_nonempty _ _) ?_
+    rintro x (rfl | ⟨d', hd', rfl⟩)
+    exacts [(hGK d (mem_univ d)).1, hGmono d' d (lt_trans hd' h).le]
+  have hmono : Monotone Gt := fun t t' h => by
+    rw [hGt, hGt]
+    exact csSup_le_csSup (hbdd t') (insert_nonempty _ _)
+      (insert_subset_insert (image_mono fun d hd => lt_of_lt_of_le hd h))
+  -- `N` is the countable set of discontinuities of the monotone `G̃`
+  refine ⟨φ, {t | ¬ContinuousAt Gt t}, hφ, hmono.countable_not_continuousAt, ?_⟩
+  intro s hs hsN ε hε
+  have hcont : ContinuousAt Gt s := by
+    by_contra h
+    exact hsN h
+  rcases eq_or_ne ε ∞ with rfl | hε'
+  · exact ⟨1, one_pos, Eventually.of_forall fun _ => le_top⟩
+  have he : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hε'
+  obtain ⟨η₀, hη₀, hcη⟩ := Metric.continuousAt_iff.1 hcont (ε.toReal / 2) (half_pos he)
+  -- `δ = η = min (η₀ / 3, (s - a) / 3, (b - s) / 2)`
+  obtain ⟨hsa, hsb⟩ := hs
+  set η := min (η₀ / 3) (min ((s - a) / 3) ((b - s) / 2))
+  have h1 : η ≤ η₀ / 3 := min_le_left _ _
+  have h2 : η ≤ (s - a) / 3 := (min_le_right _ _).trans (min_le_left _ _)
+  have h3 : η ≤ (b - s) / 2 := (min_le_right _ _).trans (min_le_right _ _)
+  have hη : 0 < η := lt_min (by linarith) (lt_min (by linarith) (by linarith))
+  -- rationals `d₁ ∈ (s - 2η, s - η)` and `d₂ ∈ (s, s + η)`, both in `(a, b)`
+  obtain ⟨q₁, hq₁, hq₁'⟩ := exists_rat_btwn (show s - 2 * η < s - η by linarith)
+  obtain ⟨q₂, hq₂, hq₂'⟩ := exists_rat_btwn (show s < s + η by linarith)
+  have hd₁ : (q₁ : ℝ) ∈ Ioo a b := ⟨by linarith, by linarith⟩
+  have hd₂ : (q₂ : ℝ) ∈ Ioo a b := ⟨by linarith, by linarith⟩
+  -- `G(d₂) - G(d₁) ≤ G̃(s + η) - G̃(s - 2η) < ε`
+  have hup := @hcη (s + η) (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  have hdown := @hcη (s - 2 * η) (by rw [Real.dist_eq, abs_lt]; constructor <;> linarith)
+  rw [Real.dist_eq, abs_lt] at hup hdown
+  have hlt : G ⟨q₂, hd₂⟩ - G ⟨q₁, hd₁⟩ < ε.toReal := by
+    have := hα ⟨q₂, hd₂⟩ (s + η) hq₂'
+    have := hβ ⟨q₁, hd₁⟩ (s - 2 * η) hq₁
+    linarith [hup.2, hdown.1]
+  -- `μ_{φ j}([s - η, s]) ≤ μ_{φ j}([a, d₂] \ [a, d₁])`, which tends to `G(d₂) - G(d₁) < ε`
+  refine ⟨η, hη, (((hGd ⟨q₂, hd₂⟩).sub (hGd ⟨q₁, hd₁⟩)).eventually_lt_const hlt).mono
+    fun j hj => ?_⟩
+  have hsub : Icc (s - η) s ⊆ Icc a (q₂ : ℝ) \ Icc a (q₁ : ℝ) := by
+    rintro x ⟨hx1, hx2⟩
+    exact ⟨⟨by linarith, by linarith⟩, fun hx => by linarith [hx.2]⟩
+  calc μ (φ j) (Icc (s - η) s) ≤ μ (φ j) (Icc a (q₂ : ℝ) \ Icc a (q₁ : ℝ)) := measure_mono hsub
+    _ = μ (φ j) (Icc a (q₂ : ℝ)) - μ (φ j) (Icc a (q₁ : ℝ)) :=
+      measure_sdiff (Icc_subset_Icc_right (by linarith)) measurableSet_Icc.nullMeasurableSet
+        (hfin _ _ hd₁.2.le)
+    _ = ENNReal.ofReal ((μ (φ j) (Icc a (q₂ : ℝ))).toReal - (μ (φ j) (Icc a (q₁ : ℝ))).toReal) := by
+      rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ENNReal.ofReal_toReal (hfin _ _ hd₂.2.le),
+        ENNReal.ofReal_toReal (hfin _ _ hd₁.2.le)]
+    _ ≤ ENNReal.ofReal ε.toReal := ENNReal.ofReal_le_ofReal hj.le
+    _ = ε := ENNReal.ofReal_toReal hε'
+
+/-- Choice of a good cutting level (the Helly extraction, Fatou's lemma for the slice masses and the
+choice of the level in the localization step of the proof of Simon 6.7.2, stated abstractly): if
+`νⱼ([a, b]) ≤ Λ`, `∫ Fⱼ ≤ Λ < ∞` and `Goodⱼ` holds a.e. for every `j`, then there are
+`s ∈ (a, b)`, a subsequence `φ` and `C < ∞` with `Goodⱼ(s)` for all `j`, `F_{φ j}(s) ≤ C`, and for
+every `ε > 0` some `δ > 0` with `ν_{φ j}([s - δ, s]) ≤ ε` for all large `j`.
+Helly selection gives `φ₁` and a countable `N`; by Fatou `h = liminf F_{φ₁ i}` has `∫ h ≤ Λ`, so
+a.e. `t` has every `Goodⱼ(t)`, `h(t) < ∞` and `t ∉ N`.  Such an `s` lies in `(a, b)`, and `φ₂`
+extracts `F_{φ₁ (φ₂ j)}(s) < h(s) + 1 = C`; `φ = φ₁ ∘ φ₂`. -/
+theorem Submission.dor_lmb_fcl_good_level : ∀ (ν : ℕ → Measure ℝ) (F : ℕ → ℝ → ℝ≥0∞) (Good : ℕ → ℝ → Prop) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, ν j (Icc a b) ≤ Λ) → (∀ j, AEMeasurable (F j)) → (∀ j, ∫⁻ t, F j t ≤ Λ) → (∀ j, ∀ᵐ t, Good j t) → ∃ s ∈ Ioo a b, ∃ (φ : ℕ → ℕ) (C : ℝ≥0∞), StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, Good j s) ∧ (∀ j, F (φ j) s ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, ν (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro ν F Good a b Λ hab hΛ hν hF hFΛ hGood
+  -- Step 1 (Helly): `φ₁` and a countable `N` off which `ν_{φ₁ i}` does not concentrate
+  obtain ⟨φ₁, N, hφ₁, hN, hH⟩ := Submission.cmc_fc_gs_helly_no_concentration ν a b Λ hΛ hν
+  -- Step 2 (Fatou along `φ₁`): `∫ h ≤ liminf ∫ F_{φ₁ i} ≤ Λ` for `h = liminf F_{φ₁ i}`
+  have hmeas : ∀ i, AEMeasurable (F (φ₁ i)) := fun i => hF (φ₁ i)
+  have hfatou : ∫⁻ t, liminf (fun i => F (φ₁ i) t) atTop ≤ Λ :=
+    (lintegral_liminf_le' hmeas).trans
+      (liminf_le_of_frequently_le' (Frequently.of_forall fun i => hFΛ (φ₁ i)))
+  -- Step 3: `h` is a.e.-measurable with finite integral, hence finite a.e.
+  have hfin : ∀ᵐ t, liminf (fun i => F (φ₁ i) t) atTop < ∞ :=
+    ae_lt_top' (AEMeasurable.liminf hmeas) (hfatou.trans_lt hΛ.lt_top).ne
+  -- Step 4: a.e. `t` has `Goodⱼ(t)` for all `j`, `h(t) < ∞` and `t ∉ N` (`N` is countable)
+  have hae : ∀ᵐ t, (∀ j, Good j t) ∧ liminf (fun i => F (φ₁ i) t) atTop < ∞ ∧ t ∉ N := by
+    filter_upwards [ae_all_iff.2 hGood, hfin,
+      measure_eq_zero_iff_ae_notMem.1 (hN.measure_zero volume)] with t h1 h2 h3
+    exact ⟨h1, h2, h3⟩
+  -- Step 5: `(a, b)` has positive measure, so it meets this full-measure set
+  obtain ⟨s, hs, hGs, hhs, hsN⟩ : ∃ s ∈ Ioo a b,
+      (∀ j, Good j s) ∧ liminf (fun i => F (φ₁ i) s) atTop < ∞ ∧ s ∉ N := by
+    by_contra hcon
+    refine (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne' ?_
+    rw [← Real.volume_Ioo]
+    exact measure_mono_null (fun t ht hPt => hcon ⟨t, ht, hPt⟩) (ae_iff.1 hae)
+  -- Step 6: `h(s) < h(s) + 1 = C`, so `F_{φ₁ i}(s) < C` frequently; extract `φ₂`
+  obtain ⟨φ₂, hφ₂, hC⟩ := extraction_of_frequently_atTop
+    (frequently_lt_of_liminf_lt (h := ENNReal.lt_add_right hhs.ne one_ne_zero))
+  -- Step 7: `φ = φ₁ ∘ φ₂`; no concentration passes to `φ` since `φ₂ j ≥ j`
+  refine ⟨s, hs, φ₁ ∘ φ₂, liminf (fun i => F (φ₁ i) s) atTop + 1, hφ₁.comp hφ₂,
+    ENNReal.add_ne_top.2 ⟨hhs.ne, ENNReal.one_ne_top⟩, hGs, fun j => (hC j).le, fun ε hε => ?_⟩
+  obtain ⟨δ, hδ, hev⟩ := hH s hs hsN ε hε
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+  exact ⟨δ, hδ, eventually_atTop.2 ⟨J, fun j hj => hJ (φ₂ j) (le_trans hj (hφ₂.id_le j))⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
