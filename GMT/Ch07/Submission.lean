@@ -2646,6 +2646,64 @@ theorem Submission.dtc_bc_lc_sl_co_approx_differentiable : ∀ (P d : ℕ) (M : 
     calc 2 * (ε * m / 2) * ‖y' - y‖ = ε * (m * ‖y' - y‖) := by ring
       _ ≤ ε * ‖ψ j y' - ψ j y‖ := mul_le_mul_of_nonneg_left hlow hε.le
   linarith
+/-- **Co-area formula: gluing the pieces** (Simon Ch. 3, 2.8–2.9: the general case "follows from
+the C¹ case … by using the decomposition `M = ⋃_j M_j`").  Let `f` be Borel and `A_j ⊆ M`
+(`j ∈ ℕ`) pairwise disjoint Borel sets whose remainder `M₀ = M \ ⋃_j A_j` satisfies
+`H^{n+1}(M₀) = 0` and `Hⁿ(M₀ ∩ f⁻¹(t)) = 0` for a.e. `t`.  If, for every Borel `g ≥ 0`, each
+`t ↦ ∫_{A_j ∩ f⁻¹(t)} g dHⁿ` is a.e.-measurable with
+`∫_ℝ ∫_{A_j ∩ f⁻¹(t)} g dHⁿ dt = ∫_{A_j} |G| g dH^{n+1}`, then the same holds for `M`.
+
+Proof sketch:
+* For a.e. `t`, `M ∩ f⁻¹(t)` and `⋃_j A_j ∩ f⁻¹(t)` differ by the `Hⁿ`-null set `M₀ ∩ f⁻¹(t)`, so
+  `∫_{M ∩ f⁻¹(t)} g dHⁿ = Σ_j ∫_{A_j ∩ f⁻¹(t)} g dHⁿ` (countable additivity).
+* Hence the slice integral is a.e.-measurable, and integrating the series term by term gives
+  `Σ_j ∫_{A_j} |G| g dH^{n+1}`.
+* `H^{n+1}(M₀) = 0` and countable additivity identify this sum with `∫_M |G| g dH^{n+1}`. -/
+theorem Submission.dtc_bc_lc_sl_co_coarea_glue : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (A : ℕ → Set (Euclid P)), MeasurableSet M → Measurable f → (∀ j, MeasurableSet (A j)) → (∀ j, A j ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[n + 1] (M \ ⋃ j, A j) = 0 → (∀ᵐ t, μHE[n] ((M \ ⋃ j, A j) ∩ f ⁻¹' {t}) = 0) → (∀ j, ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in A j, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+  intro P n M f G A hM hf hA hAM hdisj hM0 hslice hAj g hg
+  -- the slices `A_j ∩ f⁻¹(t)` are Borel and pairwise disjoint
+  have hSj : ∀ t : ℝ, ∀ j, MeasurableSet (A j ∩ f ⁻¹' {t}) := fun t j =>
+    (hA j).inter (hf (measurableSet_singleton t))
+  have hdisjt : ∀ t : ℝ, Pairwise (Disjoint on fun j => A j ∩ f ⁻¹' {t}) := fun t i j hij =>
+    (hdisj hij).mono inter_subset_left inter_subset_left
+  -- for a.e. `t`: `∫_{M ∩ f⁻¹(t)} g dHⁿ = Σ_j ∫_{A_j ∩ f⁻¹(t)} g dHⁿ`
+  have hdec : ∀ᵐ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]
+      = ∑' j, ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n] := by
+    filter_upwards [hslice] with t ht
+    rw [← lintegral_iUnion (hSj t) (hdisjt t) g]
+    apply setLIntegral_congr
+    rw [ae_eq_set]
+    constructor
+    · -- `(M ∩ f⁻¹(t)) \ ⋃_j (A_j ∩ f⁻¹(t)) ⊆ M₀ ∩ f⁻¹(t)`
+      refine measure_mono_null ?_ ht
+      rintro y ⟨⟨hyM, hyf⟩, hy⟩
+      refine ⟨⟨hyM, ?_⟩, hyf⟩
+      intro hyA
+      obtain ⟨j, hj⟩ := mem_iUnion.1 hyA
+      exact hy (mem_iUnion.2 ⟨j, hj, hyf⟩)
+    · -- `⋃_j (A_j ∩ f⁻¹(t)) ⊆ M ∩ f⁻¹(t)`
+      have hsub : (⋃ j, A j ∩ f ⁻¹' {t}) \ (M ∩ f ⁻¹' {t}) = ∅ := by
+        rw [sdiff_eq_empty]
+        exact iUnion_subset fun j => inter_subset_inter_left _ (hAM j)
+      rw [hsub, measure_empty]
+  refine ⟨?_, ?_⟩
+  · -- a.e.-measurability passes to the series and to a.e.-equal functions
+    exact (AEMeasurable.tsum fun j => (hAj j g hg).1).congr (hdec.mono fun t ht => ht.symm)
+  · -- `∫_ℝ Σ_j ∫_{A_j ∩ f⁻¹(t)} g dHⁿ dt = Σ_j ∫_{A_j} |G| g dH^{n+1}`
+    rw [lintegral_congr_ae hdec, lintegral_tsum fun j => (hAj j g hg).1]
+    have hj : ∀ j, ∫⁻ t, ∫⁻ x in A j ∩ f ⁻¹' {t}, g x ∂μHE[n]
+        = ∫⁻ x in A j, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := fun j => (hAj j g hg).2
+    simp_rw [hj]
+    -- `= ∫_{⋃_j A_j} |G| g dH^{n+1} = ∫_M |G| g dH^{n+1}`, as `H^{n+1}(M₀) = 0`
+    rw [← lintegral_iUnion hA hdisj (fun x => ENNReal.ofReal ‖G x‖ * g x)]
+    apply setLIntegral_congr
+    rw [ae_eq_set]
+    constructor
+    · have hsub : (⋃ j, A j) \ M = ∅ := by
+        rw [sdiff_eq_empty]
+        exact iUnion_subset hAM
+      rw [hsub, measure_empty]
+    · exact hM0
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
