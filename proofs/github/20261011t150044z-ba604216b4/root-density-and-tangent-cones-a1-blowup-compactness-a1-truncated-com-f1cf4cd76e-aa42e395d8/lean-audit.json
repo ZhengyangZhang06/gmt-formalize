@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "adb7c71624ded516212bfa882031167d68e83aee1c3967d35a21d1b33d48ad4a",
+  "git_delta": {
+    "base_commit": "733a1547a4a6b5f18286605fb5a93872631f10f7",
+    "candidate_commit": "e040276dcf3abc30bf515a052c8cd2a8e4b852c4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_truncation",
+    "diff_sha256": "840dd295809d6346578745fa1d405a9c87d0286074dccc07e249997fba826d17",
+    "source_sha256": "1dfa3a428da234b3c1e210682ff18a5d52a027ccdabb58aecdf7d0f6e7273484",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_truncation",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → IsIntegerMultiplicity S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ (ρ : ℝ) (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), R / 4 < ρ ∧ ρ < R / 2 ∧ IsIntegerMultiplicity Ŝ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ → Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1))) ∧ (∀ β : TestFormOn (univ : Set (Euclid P)) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧ (∀ O : Set (Euclid P), IsOpen O → Ŝ.massOn O ≤ S.massOn O) ∧ Ŝ.mass < ∞ ∧ Ŝ.boundary.mass < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
