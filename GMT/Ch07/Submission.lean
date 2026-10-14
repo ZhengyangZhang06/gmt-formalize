@@ -516,6 +516,52 @@ theorem Submission.cmcdt_lpi_pc_regular_part_reduction : ∀ (P n : ℕ) (L : NN
       fun h => hu.2 ⟨hu.1, hdiff, hinj _ h, hgu⟩
     rw [← ContinuousAlternatingMap.coe_toAlternatingMap,
       AlternatingMap.map_linearDependent _ _ hni, mul_zero]
+/-- Countable bi-Lipschitz partition: if `H : ℝⁿ → ℝᴾ` is differentiable with injective derivative
+at every point of the Borel set `B`, then `B` is the disjoint union of countably many Borel pieces
+`C l` with `κ l ‖a - a'‖ ≤ ‖H a - H a'‖` on `C l`, `κ l > 0`.  For injective `A` pick `c(A) > 0`
+with `2 c(A) ‖v‖ ≤ ‖A v‖` (an antilipschitz constant), else `c(A) = 1`.  Mathlib's partition of `B`
+into Borel `t l` with `‖H a - H a' - A l (a - a')‖ ≤ c(A l) ‖a - a'‖` on `B ∩ t l`, where
+`A l = DH(y)` for some `y ∈ B`, gives `κ l = c(A l)` by the triangle inequality. -/
+theorem Submission.cmcdt_lpi_pc_bilipschitz_partition : ∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ (C : ℕ → Set (Euclid n)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (C l)) ∧ Pairwise (fun l l' => Disjoint (C l) (C l')) ∧ (⋃ l, C l) = B ∧ (∀ l, 0 < κ l) ∧ ∀ l, ∀ a ∈ C l, ∀ a' ∈ C l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖ := by
+  intro P n H B hB hH
+  -- coercivity constants: `2 c(A) ‖v‖ ≤ ‖A v‖` for injective `A`
+  have hcoer : ∀ A : Euclid n →L[ℝ] Euclid P, ∃ c : NNReal, 0 < c ∧
+      (Injective A → ∀ v, 2 * (c : ℝ) * ‖v‖ ≤ ‖A v‖) := by
+    intro A
+    by_cases hA : Injective A
+    · obtain ⟨K, hK, hKA⟩ := LinearMap.exists_antilipschitzWith (A : Euclid n →ₗ[ℝ] Euclid P)
+        (LinearMap.ker_eq_bot.mpr hA)
+      refine ⟨K⁻¹ / 2, div_pos (inv_pos.mpr hK) two_pos, fun _ v => ?_⟩
+      have hK' : (0 : ℝ) < K := hK
+      have hv : ‖v‖ ≤ K * ‖A v‖ := by
+        simpa using hKA.le_mul_dist v 0
+      calc 2 * ((K⁻¹ / 2 : NNReal) : ℝ) * ‖v‖ = (K : ℝ)⁻¹ * ‖v‖ := by push_cast; ring
+        _ ≤ (K : ℝ)⁻¹ * (K * ‖A v‖) := by gcongr
+        _ = ‖A v‖ := by rw [← mul_assoc, inv_mul_cancel₀ hK'.ne', one_mul]
+    · exact ⟨1, one_pos, fun h => absurd h hA⟩
+  choose c hcpos hc using hcoer
+  -- pieces `B ∩ t l` on which `H` is `c(A l)`-close to the linear map `A l = DH(y_l)`
+  obtain ⟨t, A, htdisj, htmeas, hBt, hAapprox, hAder⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt H B (fderiv ℝ H)
+      (fun x hx => (hH x hx).1.hasFDerivAt.hasFDerivWithinAt) c fun A => (hcpos A).ne'
+  refine ⟨fun l => B ∩ t l, fun l => c (A l), fun l => hB.inter (htmeas l), ?_, ?_,
+    fun l => hcpos (A l), ?_⟩
+  · intro l l' hll'
+    exact (htdisj hll').mono inter_subset_right inter_subset_right
+  · show (⋃ l, B ∩ t l) = B
+    rw [← inter_iUnion]
+    exact inter_eq_left.mpr hBt
+  · intro l a ha a' ha'
+    show (c (A l) : ℝ) * ‖a - a'‖ ≤ ‖H a - H a'‖
+    obtain ⟨y, hy, hAy⟩ := hAder ⟨a, ha.1⟩ l
+    have hinj : Injective (A l) := by
+      rw [hAy]
+      exact (hH y hy).2
+    have h1 := hc (A l) hinj (a - a')
+    have h2 := hAapprox l a ha a' ha'
+    have h3 := norm_sub_le (H a - H a') (H a - H a' - A l (a - a'))
+    rw [sub_sub_cancel] at h3
+    linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
