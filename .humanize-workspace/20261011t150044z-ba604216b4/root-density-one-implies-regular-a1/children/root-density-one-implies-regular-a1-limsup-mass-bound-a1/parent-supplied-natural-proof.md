@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent proof (Lemma M), which is the part of Simon 7.2.4 and Remark 7.2.5(2) used in the book's proof of 7.4.3. It follows the proof of 2.4 (chapter-07.txt lines 176–290, displays (1)–(13)), with the competitor projected into N by the nearest point retraction (README erratum 5: N_i = N, and the mass bound is a hypothesis). Uses the siblings imrep_mass_and_support (C1) and mean_curvature_monotonicity (C3). Book results cited: Ch. 6, 7.2 (flat convergence, chapter-06.txt lines 2020–2035); Ch. 6, §4 and 4.5 (slicing, lines 1156–1260); Ch. 6, 2.23–2.24 and 3.9 (push-forward, lines 408–440 and 857–860); Ch. 6, 3.2(1) (sums of integer multiplicity currents). Notation: μ_S is the mass (total variation) measure of a current S of locally finite mass; M_W(S) = μ_S(W) for open W (C1 (i) when S is integer multiplicity; Ch. 6, 2.7–2.8 in general); S⌞A is the restriction to a Borel set A; μ_{S₁+S₂} ≤ μ_{S₁} + μ_{S₂}.
+1. Constants. (a) Nearest point retraction. Using a C² chart of N at y, (N̄ ∖ N) ∩ U = ∅ and the tubular neighbourhood theorem (Foote, Proc. AMS 92 (1984); Leobacher–Steinicke, Ann. Global Anal. Geom. 60 (2021), arXiv:1811.10578), there are r_π > 0 and β ≥ 0 with the following properties. B̄_{8r_π}(y) ⊆ U, and N ∩ B̄_{8r_π}(y) is compact and contained in one chart piece. The orthogonal projection P(q) onto T_qN is C¹ along N ∩ B_{8r_π}(y), with ‖DP‖ ≤ β there. Every x ∈ B_{4r_π}(y) has a unique nearest point π(x) ∈ N; π : B_{4r_π}(y) → N is C¹, π = id on N ∩ B_{4r_π}(y), and Dπ(q) = P(q) for q ∈ N. Decreasing r_π, also 8βr_π ≤ 1. Derivative bound: for x ∈ B_{4r_π}(y), let p = π(x) and ν = x − p, so ν ⊥ T_pN and |ν| = dist(x, N) ≤ |x − y|. Differentiating P(π(x))(x − π(x)) = 0 in a direction h, and using Dπ(x)h ∈ T_pN, gives Dπ(x)h − (DP(p)[Dπ(x)h])ν = P(p)h. Hence |Dπ(x)h|(1 − β|ν|) ≤ |h|, and ‖Dπ(x)‖ ≤ 1/(1 − β|x − y|) ≤ 1 + 2β|x − y|. Put c_π := 2β. By the mean value inequality on balls, Lip(π restricted to B_s(y)) ≤ 1 + c_π s for 0 < s ≤ 4r_π; also π(y) = y. (b) Monotonicity. Apply C3 with y₀ := y. It gives r₀ > 0 and κ ≥ 0 with B̄_{3r₀}(y) ⊆ U. For every j and every representation R_j of T_j (stationary by hypothesis, and spt T_j ⊆ N): e^{κσ}σ^{−n}μ_{R_j}(B_σ(y)) ≤ e^{κρ}ρ^{−n}μ_{R_j}(B_ρ(y)) for 0 < σ ≤ ρ ≤ r₀. (c) Uniform bound. Λ₀ := sup_j M_{B_{r₀}(y)}(T_j) < ∞ by hypothesis, since B_{r₀}(y) has compact closure in U. By C1 (i), μ_{T_j}(B_s(y)) = M_{B_s(y)}(T_j). Applying (b) with σ = s, ρ = r₀ and using e^{κs} ≥ 1 gives μ_{T_j}(B_s(y)) ≤ c₂sⁿ for 0 < s ≤ r₀ and all j, where c₂ := e^{κr₀}r₀^{−n}Λ₀. (d) Put c := 3c_π, r₁ := min{r₀/3, r_π, 1/(6c_π + 1)} and c₁ := n·c·(3/2)^{n−1}·3ⁿ·c₂. For 0 < ρ < r₁ we have 3ρ < r₀, 3ρ < 4r_π and cρ < 1/2.
+2. Fix 0 < ε < ρ < r₁. Choose ψ ∈ C^∞_c(ℝ^{n+k}) with 0 ≤ ψ ≤ 1, ψ = 1 on a neighbourhood of B̄_ρ(y) and spt ψ ⊆ B_{ρ+ε}(y). For s ∈ [0, 1) let W_s := {ψ > s}; it is open and B̄_ρ(y) ⊆ W_s ⊆ B_{ρ+ε}(y) ⊆ B_{2ρ}(y). Let G := B_{3ρ}(y); it is open with Ḡ ⊆ B̄_{r₀}(y) ⊆ U compact. Let W' := B_{2ρ}(y) and L := (1 + cρ)ⁿμ_T(B_{ρ+ε}(y)) + c₁ρ^{n+1}.
+3. Reduction to subsequences. It suffices to show that every subsequence of (T_j) has a further subsequence along which limsup μ_{T_j}(B_ρ(y)) ≤ L. Indeed, if limsup_j μ_{T_j}(B_ρ(y)) > L (a finite number by 1(c)), take a subsequence along which μ_{T_j}(B_ρ(y)) converges to this limsup; then no further subsequence satisfies the bound. All hypotheses pass to subsequences. Fix a subsequence and keep writing (T_j).
+4. Flat convergence. T_j and T are integer multiplicity, ∂T_j = 0 = ∂T, sup_j M_W(T_j) < ∞ for W ⊂⊂ U, and T_j ⇀ T. By Simon Ch. 6, 7.2, d_W(T_j, T) → 0 for every open W ⊂⊂ U. Hence there are integer multiplicity R_j ∈ 𝒟_{n+1}(U) and S_j ∈ 𝒟_n(U) with T − T_j = ∂R_j + S_j and M_{W'}(R_j) + M_{W'}(S_j) → 0. ∂R_j = T − T_j − S_j has locally finite mass.
+5. Slicing (book (3)–(7)). Apply Ch. 6, 4.5(1),(2) and the integrality of slices of integer multiplicity currents (Ch. 6, §4) to R_j and ψ, and note that μ_{R_j}({ψ = α}) = μ_{∂R_j}({ψ = α}) = 0 for a.e. α. For every j and a.e. α ∈ (0, 1), ∂(R_j⌞W_α) = (∂R_j)⌞W_α + P_j^α, where P_j^α = −⟨R_j, ψ, α⟩ is integer multiplicity with spt P_j^α ⊆ {ψ = α}. Moreover ∫_0^1 M(P_j^α) dα ≤ Lip(ψ)·M_{W'}(R_j) → 0, so after passing to a further subsequence M(P_j^α) → 0 for a.e. α. Each of the countably many finite measures μ_T⌞W', μ_{T_j}⌞W', μ_{R_j}⌞W', μ_{∂R_j}⌞W' charges at most countably many level sets {ψ = α}. Fix α ∈ (0, 1) with all these properties and write P_j := P_j^α and R̃_j := R_j⌞W_α. Then M(R̃_j) ≤ M_{W'}(R_j) → 0, M(P_j) → 0, and μ_{T_j}({ψ = α}) = μ_T({ψ = α}) = 0. Also ∂R̃_j = (∂R_j)⌞W_α + P_j = (T − T_j − S_j)⌞W_α + P_j is an integer multiplicity cycle with spt ∂R̃_j ⊆ F := {ψ ≥ α} ⊆ B̄_{ρ+ε}(y), and (∂R̃_j)⌞{ψ = α} = P_j, since W_α ∩ {ψ = α} = ∅.
+6. The competitor. π is C¹ on B_{4r_π}(y) ⊇ B̄_{ρ+ε}(y), and it is proper on the compact set spt ∂R̃_j. So Q_j := π_#∂R̃_j is an integer multiplicity n-current (Ch. 6, 3.9 and 2.24(2)), ∂Q_j = π_#∂∂R̃_j = 0 (2.24(1)), and spt Q_j ⊆ π(spt ∂R̃_j) ⊆ π(B̄_{ρ+ε}(y)). For x ∈ B̄_{ρ+ε}(y) ⊆ B_{2ρ}(y), |π(x) − y| = |π(x) − π(y)| ≤ (1 + 2c_πρ)|x − y| < (3/2)(2ρ) = 3ρ, and π(x) ∈ N. Hence spt Q_j is a compact subset of N ∩ G ⊆ U. Let Z_j := T_j + Q_j ∈ 𝒟_n(U). It is integer multiplicity (Ch. 6, 3.2(1)), ∂Z_j = ∂T_j, and spt(Z_j − T_j) = spt Q_j is a compact subset of (U ∩ N) ∩ G. As T_j is minimizing in U ∩ N and G ⊂⊂ U is open, M_G(T_j) ≤ M_G(Z_j).
+7. Mass of the competitor. Let (M_j, θ_j, ξ_j) represent T_j. For μ_{T_j}-a.e. x ∈ G: x ∈ N, because μ_{T_j} is carried by spt T_j ⊆ N (C1 (ii)); hence π(x) = x; and T_xM_j ⊆ T_xN. For the last claim: Hⁿ(M_j ∖ N) = 0, so the blow-ups of M_j at x are those of M_j ∩ N; each unit v ∈ T_xM_j is a limit of (x_i − x)/λ_i with x_i ∈ M_j ∩ N, λ_i ↓ 0 and |x_i − x|/λ_i → 1, and such limits lie in T_xN since N is C¹ at x. Therefore Dπ(x) = P(x) is the identity on T_xM_j, and (∧_nDπ(x))ξ_j(x) = ξ_j(x). The push-forward formula 2.24(2), applied to the compactly supported finite-mass current T_j⌞G, gives π_#(T_j⌞G)(ω) = ∫_G⟨ω(π(x)), (∧_nDπ(x))ξ_j(x)⟩ dμ_{T_j} = (T_j⌞G)(ω). Since spt ∂R̃_j ⊆ G and spt Q_j ⊆ G, Z_j⌞G = T_j⌞G + Q_j = π_#((T_j + ∂R̃_j)⌞G). For a finite-mass current X with compact support in B̄_{3ρ}(y), M(π_#X) ≤ ∫|(∧_nDπ)ξ_X| dμ_X ≤ (sup_{B̄_{3ρ}(y)}‖Dπ‖)ⁿ M(X) ≤ (1 + 3c_πρ)ⁿ M(X), by Hadamard's inequality |Lτ₁∧⋯∧Lτₙ| ≤ ‖L‖ⁿ for orthonormal τ. Hence μ_{T_j}(G) = M_G(T_j) ≤ M_G(Z_j) = M(Z_j⌞G) ≤ (1 + cρ)ⁿμ_{T_j+∂R̃_j}(G).
+8. Splitting off G ∖ F. T_j + ∂R̃_j = T_j on the open set ℝ^{n+k} ∖ F ⊇ G ∖ F, so μ_{T_j+∂R̃_j}(G ∖ F) = μ_{T_j}(G ∖ F). Subtracting this finite quantity: μ_{T_j}(F) ≤ (1 + cρ)ⁿμ_{T_j+∂R̃_j}(F) + ((1 + cρ)ⁿ − 1)μ_{T_j}(G).
+9. Comparison with T on F (book (9)–(11)). F = W_α ∪ {ψ = α}. On W_α: (T_j + ∂R̃_j)⌞W_α = T_j⌞W_α + (∂R_j)⌞W_α = T⌞W_α − S_j⌞W_α, by step 4 and P_j⌞W_α = 0. So μ_{T_j+∂R̃_j}(W_α) ≤ μ_T(W_α) + M_{W'}(S_j). On {ψ = α}: μ_{T_j+∂R̃_j}({ψ = α}) ≤ μ_{T_j}({ψ = α}) + μ_{∂R̃_j}({ψ = α}) = 0 + M(P_j). Hence μ_{T_j+∂R̃_j}(F) ≤ μ_T(B_{ρ+ε}(y)) + M_{W'}(S_j) + M(P_j).
+10. Conclusion. B_ρ(y) ⊆ W_α ⊆ F, μ_{T_j}(G) ≤ c₂(3ρ)ⁿ by 1(c) (3ρ < r₀), and (1 + cρ)ⁿ − 1 ≤ ncρ(1 + cρ)^{n−1} ≤ ncρ(3/2)^{n−1}. Steps 8–9 give μ_{T_j}(B_ρ(y)) ≤ (1 + cρ)ⁿ[μ_T(B_{ρ+ε}(y)) + M_{W'}(S_j) + M(P_j)] + c₁ρ^{n+1}. Along the subsequence M_{W'}(S_j) + M(P_j) → 0, so limsup μ_{T_j}(B_ρ(y)) ≤ L. By step 3 the bound holds for the original sequence. Finally, μ_{T_j}(B_ρ(y)) = M_{B_ρ(y)}(T_j) and μ_T(B_{ρ+ε}(y)) = M_{B_{ρ+ε}(y)}(T) by C1 (i). This is the asserted inequality in [0, ∞].
+
+## Key steps
+
+1. Constants: C¹ nearest point retraction with Lip(π|B_s(y)) ≤ 1 + c_π s, and the uniform bound μ_{T_j}(B_s(y)) ≤ c₂sⁿ from monotonicity and the mass hypothesis.
+2. Flat convergence (Ch. 6, 7.2) and slicing at a good level α give T⌞W_α = T_j⌞W_α + ∂R̃_j + S̃_j with vanishing error masses.
+3. The competitor T_j + π_#∂R̃_j is admissible in U ∩ N ∩ B_{3ρ}(y), and π_# fixes T_j⌞G, so μ_{T_j}(G) ≤ (1 + cρ)ⁿμ_{T_j+∂R̃_j}(G).
+4. Splitting off G ∖ {ψ ≥ α} and comparing with T on W_α gives the limsup bound along subsequences, hence for the whole sequence.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -c sorry local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n -i 'allard|constancy theorem|slice|flat metric|nearest.point|nearestPoint|tubular' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean -l`
+- `rg -n 'massOn.*=.*measure|massOn_eq|mass_eq_' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean`
+- `rg -n 'measure_compl_support|mem_support_iff' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure|class|abbrev) ' simongmt Chapter04/{Basic,Density,MeanCurvature,FirstVariation}.lean Chapter05/Basic.lean Chapter06/{Mass,Currents,CurrentLocalEquality,AffineCurrentPushforward}.lean`
+- `rg -n -i 'pushforward|slice|slicing|constancy' simongmt Chapter06/*.lean`
+- `rg -l 'dor_imrep|dor_zero_dim|dor_stationary|dor_minimizing' simongmt GMT dag.json (name-collision check: no match)`
+- `lake env lean /tmp/ch07-dor-decomp/Check.lean (contract text + five child types)`
+- `lean -o /tmp/ch07-dor-decomp/build/DorContract.olean (byte copy of Contract.lean); lean /tmp/ch07-dor-decomp/Final.lean (#check of the exact frozen strings)`
+- `lean /tmp/ch07-dor-decomp/Assembly2.lean (#print axioms dor_assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/ch07-dor-decomp/Check.lean`
+- `/tmp/ch07-dor-decomp/Final.lean`
+- `/tmp/ch07-dor-decomp/Assembly2.lean`
+- `/tmp/ch07-dor-decomp/spec/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and its only sorry is the final main_theorem.
+
+Reusable facts found:
+- Mathlib Measure.measure_compl_support and mem_support_iff_forall (Support.lean). Used for the support identity and for showing that μ_R is carried by spt T.
+- Mathlib hausdorffMeasure_zero_singleton and euclideanHausdorffMeasure_zero. H⁰ is the counting measure, which the n = 0 child uses.
+- SimonGMT Chapter04/MeanCurvature.lean HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn: closed-ball monotonicity of e^{Λρ}ρ^{−n}μ(B̄_ρ) for the library RectifiableVarifold, usable for mean_curvature_monotonicity once IMRep is bridged.
+
+Not available, so cited from Simon as in the parent proof:
+- Allard regularity: Chapter05/Basic.lean states that Lipschitz approximation, excess decay and Allard are not formalized.
+- The current Constancy Theorem 6.2.34: the Chapter08 Constancy* files concern the stationary-varifold constancy theorem.
+- Slicing of integer multiplicity currents and flat convergence (6.4.5, 6.7.2): no matches.
+- C¹ or Lipschitz push-forward of currents: only GeometricCurrentOn.affinePushforward for proper affine maps.
+- The mass formula M_W(T) = μ_T(W) for the contract's Euclidean coefficient norm: Chapter06/Representation.lean only has the assumed field MassRepresentation.mass_characterization, for the comass Current API.
+
+Lean checks:
+- All five child types elaborate with the frozen definitions.
+- The conditional assembly of DensityOneImpliesRegular from three of them plus MinimizingImpliesStationary depends only on propext, Classical.choice, Quot.sound and the stub sorryAx.
+- The DAG reserves only the root's ten children, and the five dor_-prefixed names have no matches.
