@@ -1,0 +1,127 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^def (IsMinimizingIn|IsConeCurrent|BoundaryVanishes|SameBoundary|blowUp|currentEval|approxTangentPlane)|^structure IMRep|^def IMRep\\.(measure|Represents|action)",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|isOpen_injective",
+        "measurableSet_of_differentiableAt|measurable_fderiv",
+        "euclideanHausdorffMeasure_zero|measurePreserving_measurableEquivProd",
+        "coarea|cartesian product of currents|slice of a current",
+        "idtp_fons_cs_sos_|dtc_imrep_current|imrep_weighted_orient_indicator_ae_eq|dimred_im_mass_measure|rsd_isIntegerMultiplicity_int_combination|dpf_approxTangent_ae_bilipschitz_piece",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git show 2d0f5bbe8de725944c1d9c73d65c6163f6d67b07:GMT/Ch07/Submission.lean",
+        "git show 01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a:GMT/Ch07/Submission.lean",
+        "git show 568bfe5f73347cadf50a6748d118063fc5ea5bd2:GMT/Ch07/Submission.lean",
+        "git show a21680472b6919972de04d02dc3e1395a15d4171:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_sos_decomp/check/Assembly3.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_sos_review/LipCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_sos_independent_audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ac0f702949/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ac0f702949/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-vect-8c0391929c/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/comparator-v1.log",
+        "/tmp/idtp_sos_decomp/check/Assembly3.lean",
+        "/tmp/idtp_sos_review/LipCheck.lean",
+        "/tmp/idtp_sos_independent_audit/LibraryAxioms.lean",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py"
+      ],
+      "conclusion": "The split is appropriate for this selected contract. Project, Mathlib and SimonGMT revisions match the snapshot; the frozen definitions are preserved. Snapshot searches found no proposed declarations and no general coarea or current-slicing result. The cited partition, measurability and normalized Hausdorff-measure facts exist. All 12 exact propositions and the parent assembly recompiled successfully; the assembly uses child stubs, so this verifies interfaces, not the new child proofs. The Lipschitz reduction also compiled from the exact accepted dpf_piece type. Direct axiom checks of the area formula, regular-image nullity, tangent uniqueness and partition theorem returned only standard axioms. All five reuses have identical frozen types and passing comparator records with the same permitted axioms. All names are bare identifiers; the seven fresh names are unreserved. Dependencies are acyclic, including retained reuse dependencies, and contain no reliance on the selected parent. The positive-rank assembly uses product_decomposition, boundary_cone_transfer and minimality_transfer; the zero-rank case is proved directly. No matrix-unit construction occurs. The mathematical target also agrees with [Simon, Chapter 7, Lemma 3.5](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The measurable regular set, positive lower bounds, countable approximately linear partition and accepted dpf_piece yield the stated almost-everywhere conclusion without circularity."
+    },
+    {
+      "key": "spine_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match. The proof establishes null-fiber control, adapted parametrizations, the Jacobian identity, measurable coarea integrals and slice tangents through area formulas and countable exceptional-set arguments."
+    },
+    {
+      "key": "product_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable slice kernel and both translation directions justify the Fubini selection of a base slice. Its translated representation supplies support, concentration, measure and action identities. The construction is independent of the subsequently quantified flat map."
+    },
+    {
+      "key": "boundary_cone_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The constructed contraction and lifts satisfy the required identities. Concentration forces tangent directions into the orthogonal complement; the exterior-derivative sign and dilation change of variables then prove exactly the two stated implications."
+    },
+    {
+      "key": "cone_filling_subspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff homotopy construction proves continuity, boundary equality and compact support inside V. The supplied parametrization and orientation arguments establish integer multiplicity. The positive-degree hypothesis correctly removes the homotopy endpoint term."
+    },
+    {
+      "key": "product_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit degree equality and all concentration hypotheses match the prose. The Hausdorff product formula, local integrability, product tangent planes and orientations construct the required IMRep and both identities, including the empty-frame case."
+    },
+    {
+      "key": "minimality_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The filling and product contracts supply admissible integer-multiplicity competitors in the required degrees. The boundary sign, compact support, finite mass estimates and measure comparison off the defect support justify the large-cube contradiction and the exact minimizing predicate."
+    },
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. The orientation bound and compact-set integrability prove linearity and the precise sequential continuity required by GeometricCurrentOn, without needing U open."
+    },
+    {
+      "key": "orient_data_unique",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse with its retained dependency. The proof establishes local integrability and vanishing vector-valued moments, then applies the fundamental lemma on open U to obtain the exact restricted-measure equality."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Pointwise duality, smooth approximation and Radon regularity establish mass equality; the support argument and measure uniqueness prove the remaining conjuncts."
+    },
+    {
+      "key": "int_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Tangent locality aligns orientations on overlaps, and the signed integer density constructs a positive-multiplicity representation after cancellation. The action and degree-zero cases are covered."
+    },
+    {
+      "key": "dpf_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Density estimates control the extra portion of Y, while the area formula computes the image blow-up; null-set pullback transfers this to almost every parameter. The proof includes dimension zero, and its accepted import supplies the required area-formula library."
+    }
+  ],
+  "required_changes": []
+}
