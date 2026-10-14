@@ -3667,6 +3667,194 @@ theorem Submission.codim1_hcp_stab_perturbation_injective : ∀ (P : ℕ) (Z : E
     have : 1 ≤ |t| * Λ := le_of_mul_le_mul_right (by rwa [one_mul]) hpos
     linarith
 
+/-- **Simon, Appendix B, (B.1)**, the stability inequality for smooth `ζ`.  `M ⊆ A₀` is a smooth
+`m`-dimensional hypersurface of the `(m + 1)`-plane `A₀` with unit normal `ν`, zero mean curvature
+`trace(P_x ∘ Dν(x)) = 0`, and area not decreased by the deformations `x ↦ x + tZ(x)`; then
+`∫_M |A|²ζ² ≤ ∫_M |∇^M ζ|²`, `|A|²(x) = Σⱼ |Dν(x)P_xeⱼ|²`, `|∇^M ζ|²(x) = Σⱼ (Dζ(x)P_xeⱼ)²`.
+Take `Z = ζν` on `M`, compactly supported in `U`.  On `T_xM`, `DZ = (Dζ)ν + ζDν`, so
+`trace(P_x ∘ DZ(x)) = ζ(x) trace(P_x ∘ Dν(x)) = 0`, and the Jacobian `J_t` of `Φ_t = id + tZ`
+along `T_xM` satisfies `J_t ≤ 1 + (t²/2)q + C|t|³` with `q = |∇^M ζ|² − |A|²ζ²`.  On
+`E = M ∩ spt Z`, minimality and the area formula give `Hᵐ(E) ≤ Hᵐ(Φ_t(E)) ≤ ∫_E J_t` for small
+`|t|`, so `∫_E q ≥ 0`; and `q = 0` on `M \ E`. -/
+theorem Submission.codim1_hcp_stab_smooth_case : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ U → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))) → (∀ (E : Set (Euclid P)) (Φ : Euclid P → Euclid P), MeasurableSet E → E ⊆ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) ≤ ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]) → ∀ ζ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderiv ℝ ζ x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m] := by
+  intro P m U A₀ M ν hU hMU hA₀ hMA hM hMeas hfin hO hν htr hdef hArea ζ hζ hζc hC
+  obtain ⟨O, hOo, hMO, hνO⟩ := hO
+  obtain ⟨C', hC'c, hC'M, hζC'⟩ := hC
+  have h1top : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := WithTop.coe_le_coe.mpr le_top
+  -- `f₁ = Σⱼ (Dζ(x) P_x eⱼ)² = |∇^M ζ|²` and `g₂ = (Σⱼ |Dν(x) P_x eⱼ|²) ζ² = |A|² ζ²`
+  obtain ⟨f₁, hf₁⟩ : ∃ f : Euclid P → ℝ, ∀ x, f x = ∑ j : Fin P,
+      (fderiv ℝ ζ x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+        (EuclideanSpace.single j 1))) ^ 2 := ⟨_, fun _ => rfl⟩
+  obtain ⟨g₂, hg₂⟩ : ∃ g : Euclid P → ℝ, ∀ x, g x = (∑ j : Fin P,
+      ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+        (EuclideanSpace.single j 1))‖ ^ 2) * ζ x ^ 2 := ⟨_, fun _ => rfl⟩
+  -- step 1: the variation field `Z = ζν` on `M`
+  obtain ⟨Z, hZ, hZc, hZU, -, hDZ, hZout⟩ := Submission.codim1_hcp_stab_variation_field P U O M C'
+    ν ζ hU hOo hMU hMO hνO (fun x hx => (hν x hx).2.1) hζ hC'c hC'M hζC'
+  -- step 2: `‖DZ‖ ≤ Λ`, the constant `C₀` of the Jacobian bound, and the time `t₀`
+  have hZ1 : ContDiff ℝ 1 Z := hZ.of_le h1top
+  obtain ⟨Λ, hΛ⟩ := (hZ1.continuous_fderiv one_ne_zero).bounded_above_of_compact_support
+    (hZc.fderiv (𝕜 := ℝ))
+  obtain ⟨C₀, hC₀⟩ := Submission.codim1_hcp_stab_jacobian_bound P Λ
+  obtain ⟨t₀, ht₀, hdefZ⟩ := hdef Z hZ hZc hZU
+  -- step 3: `x ↦ P_x u` is continuous on `M`, `Dν(x)` is a symmetric endomorphism of `T_xM`
+  have hPcont : ∀ u : Euclid P,
+      ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection u) M :=
+    (Submission.codim1_hcp_stab_tangent_projection P m A₀ M ν hA₀ hMA (hM 1) hν).2
+      (hνO.continuousOn.mono hMO)
+  have hshape := Submission.codim1_hcp_stab_shape_operator P m A₀ M O ν hA₀ hMA (hM 2) hOo hMO
+    (hνO.of_le h1top) hν
+  have hνD : ContinuousOn (fderiv ℝ ν) O := hνO.continuousOn_fderiv_of_isOpen hOo h1top
+  have hζD : Continuous (fderiv ℝ ζ) := (hζ.of_le h1top).continuous_fderiv one_ne_zero
+  -- step 4: the second-order bound for the Jacobian of `id + tDZ(x)` along `T_xM`, `x ∈ M`
+  have hpt : ∀ x ∈ M, ∀ t : ℝ, |t| ≤ 1 →
+      Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x).comp
+        (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+        ((ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x).comp
+          (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det) ≤
+        1 + t ^ 2 / 2 * (f₁ x - g₂ x) + C₀ * |t| ^ 3 := by
+    intro x hx t ht
+    obtain ⟨-, hνn, hνT⟩ := hν x hx
+    -- `ν(x) ⊥ T_xM` extends to the span
+    have hνS : ∀ v ∈ Submodule.span ℝ (tangentSpace M x), inner ℝ (ν x) v = 0 := by
+      have hle : Submodule.span ℝ (tangentSpace M x) ≤ (ℝ ∙ ν x)ᗮ := Submodule.span_le.mpr
+        fun w hw => Submodule.mem_orthogonal_singleton_iff_inner_right.mpr (hνT w hw)
+      exact fun v hv => Submodule.mem_orthogonal_singleton_iff_inner_right.mp (hle hv)
+    obtain ⟨htrZ, hQ⟩ := Submission.codim1_hcp_stab_normal_variation_algebra P
+      (Submodule.span ℝ (tangentSpace M x)) (ν x) (fderiv ℝ ν x) (fderiv ℝ Z x) (fderiv ℝ ζ x)
+      (ζ x) hνn hνS (fun τ hτ => (hshape x hx τ hτ).1)
+      (fun τ hτ η hη => (hshape x hx τ hτ).2 η hη) (hDZ x hx)
+    have htr0 : LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ Z x).toLinearMap) = 0 := by
+      rw [htrZ, htr x hx, mul_zero]
+    have h := hC₀ (Submodule.span ℝ (tangentSpace M x)) (fderiv ℝ Z x) (hΛ x) htr0 t ht
+    rw [hQ] at h
+    exact h.trans_eq (by rw [hf₁, hg₂]; ring)
+  -- step 5: `E = M ∩ spt Z` is measurable with `Hᵐ(E) < ∞`; for `|t| < t₁`, `|t| < t₀`,
+  -- `|t| ≤ 1` and `|t|Λ < 1`
+  have hEmeas : MeasurableSet (M ∩ tsupport Z) := hMeas.inter (isClosed_tsupport Z).measurableSet
+  have hEfin : μHE[m] (M ∩ tsupport Z) ≠ ∞ := hfin (tsupport Z) hZc hZU
+  have hΛ0 : 0 ≤ Λ := (norm_nonneg _).trans (hΛ 0)
+  obtain ⟨t₁, ht₁pos, ht₁⟩ : ∃ t₁ : ℝ, 0 < t₁ ∧
+      ∀ t : ℝ, |t| < t₁ → |t| < t₀ ∧ |t| ≤ 1 ∧ |t| * Λ < 1 := by
+    refine ⟨min (min t₀ 1) (1 / (Λ + 1)), lt_min (lt_min ht₀ one_pos) (by positivity),
+      fun t ht => ?_⟩
+    have h1 : |t| < min t₀ 1 := ht.trans_le (min_le_left _ _)
+    have h2 : |t| < 1 / (Λ + 1) := ht.trans_le (min_le_right _ _)
+    rw [lt_div_iff₀ (by linarith)] at h2
+    refine ⟨h1.trans_le (min_le_left _ _), (h1.trans_le (min_le_right _ _)).le, ?_⟩
+    nlinarith [abs_nonneg t]
+  -- step 6: `Hᵐ(E) ≤ Hᵐ(Φ_t(E)) ≤ ∫_E J_t` and `J_t ≤ 1 + (t²/2)q + C₀|t|³` on `E`
+  have harea : ∀ t : ℝ, |t| < t₁ → μHE[m] (M ∩ tsupport Z) ≤ ∫⁻ x in M ∩ tsupport Z,
+      ENNReal.ofReal (Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp
+        (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+        ((fderiv ℝ (fun y => y + t • Z y) x).comp
+          (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m] := by
+    intro t ht
+    obtain ⟨ht0, -, htΛ⟩ := ht₁ t ht
+    obtain ⟨hinj, -, hDinj⟩ :=
+      Submission.codim1_hcp_stab_perturbation_injective P Z Λ t hZ1 hΛ htΛ
+    exact (hdefZ t ht0).trans (hArea (M ∩ tsupport Z) (fun y => y + t • Z y) hEmeas
+      inter_subset_left (contDiff_id.add (hZ1.const_smul t)) hinj.injOn fun x _ => hDinj x)
+  have hJ : ∀ t : ℝ, |t| < t₁ → ∀ x ∈ M ∩ tsupport Z,
+      Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp
+        (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+        ((fderiv ℝ (fun y => y + t • Z y) x).comp
+          (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det) ≤
+        1 + t ^ 2 / 2 * (f₁ x - g₂ x) + C₀ * |t| ^ 3 := by
+    intro t ht x hx
+    obtain ⟨-, ht1, htΛ⟩ := ht₁ t ht
+    obtain ⟨-, hD, -⟩ := Submission.codim1_hcp_stab_perturbation_injective P Z Λ t hZ1 hΛ htΛ
+    rw [hD x]
+    exact hpt x hx.1 t ht1
+  -- step 7: `f₁`, `g₂` are continuous on `M`; `0 ≤ f₁ ≤ P B₁²` and `|g₂| ≤ P B₃² B₂²` on `M`
+  have hf₁cont : ContinuousOn f₁ M :=
+    (continuousOn_finsetSum _ fun j _ => (hζD.continuousOn.clm_apply (hPcont _)).pow 2).congr
+      fun x _ => hf₁ x
+  have hg₂cont : ContinuousOn g₂ M :=
+    ((continuousOn_finsetSum _ fun j _ => ((hνD.mono hMO).clm_apply (hPcont _)).norm.pow 2).mul
+      (hζ.continuous.continuousOn.pow 2)).congr fun x _ => hg₂ x
+  have hopbd : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (L : Euclid P →L[ℝ] F)
+      (B : ℝ) (u : Euclid P), ‖L‖ ≤ B → ‖u‖ ≤ 1 → ‖L u‖ ^ 2 ≤ B ^ 2 := by
+    intro F _ _ L B u hL hu
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      ((L.le_opNorm u).trans ((mul_le_of_le_one_right (norm_nonneg _) hu).trans hL)) 2
+  have hPe : ∀ x (j : Fin P),
+      ‖(Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)‖ ≤ 1 :=
+    fun x j => ((Submodule.span ℝ (tangentSpace M x)).norm_starProjection_apply_le _).trans
+      (by simp)
+  obtain ⟨B₁, hB₁⟩ := hζD.bounded_above_of_compact_support (hζc.fderiv (𝕜 := ℝ))
+  obtain ⟨B₂, hB₂⟩ := hζ.continuous.bounded_above_of_compact_support hζc
+  obtain ⟨B₃, hB₃⟩ := hC'c.exists_bound_of_continuousOn (hνD.mono (hC'M.trans hMO))
+  have hf₁nn : ∀ x, 0 ≤ f₁ x := fun x => by rw [hf₁]; positivity
+  have hf₁bd : ∀ x, f₁ x ≤ P * B₁ ^ 2 := by
+    intro x
+    rw [hf₁]
+    calc _ ≤ ∑ _j : Fin P, B₁ ^ 2 := Finset.sum_le_sum fun j _ => by
+          simpa [Real.norm_eq_abs, sq_abs] using hopbd (fderiv ℝ ζ x) B₁ _ (hB₁ x) (hPe x j)
+      _ = P * B₁ ^ 2 := by simp
+  have hg₂bd : ∀ x ∈ M, |g₂ x| ≤ P * B₃ ^ 2 * B₂ ^ 2 := by
+    intro x hx
+    rw [hg₂]
+    by_cases hxC : x ∈ C'
+    · have ha : ∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+          (EuclideanSpace.single j 1))‖ ^ 2 ≤ P * B₃ ^ 2 := by
+        calc _ ≤ ∑ _j : Fin P, B₃ ^ 2 := Finset.sum_le_sum fun j _ =>
+              hopbd (fderiv ℝ ν x) B₃ _ (hB₃ x hxC) (hPe x j)
+          _ = P * B₃ ^ 2 := by simp
+      have hz : ζ x ^ 2 ≤ B₂ ^ 2 := by
+        simpa [Real.norm_eq_abs, sq_abs] using pow_le_pow_left₀ (norm_nonneg (ζ x)) (hB₂ x) 2
+      rw [abs_of_nonneg (by positivity)]
+      exact mul_le_mul ha hz (sq_nonneg _) (by positivity)
+    · -- off `C'`, `ζ = 0`
+      rw [hζC' x hx hxC, zero_pow two_ne_zero, mul_zero, abs_zero]
+      positivity
+  have hq_bd : ∀ x ∈ M ∩ tsupport Z, |f₁ x - g₂ x| ≤ P * B₁ ^ 2 + P * B₃ ^ 2 * B₂ ^ 2 := by
+    intro x hx
+    have h1 := hf₁nn x
+    have h2 := hf₁bd x
+    have h3 := abs_le.mp (hg₂bd x hx.1)
+    rw [abs_le]
+    constructor <;> linarith [h3.1, h3.2]
+  have hf₁meas : AEStronglyMeasurable f₁ (μHE[m].restrict (M ∩ tsupport Z)) :=
+    (hf₁cont.mono inter_subset_left).aestronglyMeasurable hEmeas
+  have hg₂meas : AEStronglyMeasurable g₂ (μHE[m].restrict (M ∩ tsupport Z)) :=
+    (hg₂cont.mono inter_subset_left).aestronglyMeasurable hEmeas
+  -- step 8: the second variation is nonnegative, `∫_E q ≥ 0`
+  have hE : 0 ≤ ∫ x in M ∩ tsupport Z, (f₁ x - g₂ x) ∂μHE[m] :=
+    Submission.codim1_hcp_stab_second_variation_nonneg P μHE[m] (M ∩ tsupport Z)
+      (fun t x => Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp
+        (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+        ((fderiv ℝ (fun y => y + t • Z y) x).comp
+          (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det))
+      (fun x => f₁ x - g₂ x) (P * B₁ ^ 2 + P * B₃ ^ 2 * B₂ ^ 2) C₀ t₁ hEmeas hEfin ht₁pos
+      (hf₁meas.sub hg₂meas) hq_bd harea hJ
+  -- step 9: `f₁ = g₂ = 0` on `M \ E`, since `ζ` and `Dζ` on `T_xM` vanish off `spt Z`
+  have hout : ∀ x ∈ M \ (M ∩ tsupport Z), f₁ x = 0 ∧ g₂ x = 0 := by
+    rintro x ⟨hxM, hxE⟩
+    obtain ⟨hζ0, hDζ0⟩ := hZout x hxM fun h => hxE ⟨hxM, h⟩
+    refine ⟨?_, by rw [hg₂, hζ0, zero_pow two_ne_zero, mul_zero]⟩
+    rw [hf₁]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [hDζ0 _ ((Submodule.span ℝ (tangentSpace M x)).starProjection_apply_mem _),
+      zero_pow two_ne_zero]
+  -- step 10: `∫_M g₂ = ∫_E g₂ ≤ ∫_E f₁ = ∫_M f₁`
+  have hf₁int : IntegrableOn f₁ (M ∩ tsupport Z) μHE[m] :=
+    IntegrableOn.of_bound hEfin.lt_top hf₁meas (P * B₁ ^ 2) (ae_restrict_of_forall_mem hEmeas
+      fun x _ => by rw [Real.norm_eq_abs, abs_of_nonneg (hf₁nn x)]; exact hf₁bd x)
+  have hg₂int : IntegrableOn g₂ (M ∩ tsupport Z) μHE[m] :=
+    IntegrableOn.of_bound hEfin.lt_top hg₂meas (P * B₃ ^ 2 * B₂ ^ 2) (ae_restrict_of_forall_mem
+      hEmeas fun x hx => by rw [Real.norm_eq_abs]; exact hg₂bd x hx.1)
+  have key : ∫ x in M, g₂ x ∂μHE[m] ≤ ∫ x in M, f₁ x ∂μHE[m] := by
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMeas inter_subset_left
+        fun x hx => (hout x hx).1,
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hMeas inter_subset_left
+        fun x hx => (hout x hx).2]
+    rw [integral_sub hf₁int hg₂int] at hE
+    linarith
+  simpa only [hf₁, hg₂] using key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
