@@ -1769,6 +1769,54 @@ theorem Submission.codim1_hcp_un_normal_local_smooth : ∀ (P m : ℕ) (A₀ : S
   rintro z ⟨hzM, hzO₁, hzy⟩
   rw [← hsign z ⟨hzM, hzO₁⟩ hzy]
   exact (hrep z ⟨hzM, hzO₁⟩).1.symm
+/-- **Gluing local `C^∞` extensions** (Simon 7.5.8 via Appendix B: the step that makes the unit
+normal of the hypercone plane `C^∞` on a neighbourhood of `M`; smooth partitions of unity, cf.
+Simon Ch. 1, 4.5).  If every `y ∈ M` has an open `O_y ∋ y` and a map `g_y` that is `C^∞` on `O_y`
+with `g_y = f` on `M ∩ O_y`, then some `ν` is `C^∞` on the open set `O = ⋃_{y ∈ M} O_y ⊇ M` and
+`ν = f` on `M`.  `O` is open in `ℝᴾ`, hence a σ-compact Hausdorff `C^∞` manifold, and a smooth
+partition of unity `(λᵢ)` on `O` subordinate to `{O_y}` glues the `g_y` to
+`G = ∑ᵢ λᵢ g_{y(i)}`, which is `C^∞` on `O` with `G(x) = ∑ᵢ λᵢ(x) f(x) = f(x)` for `x ∈ M`
+(`exists_contMDiffMap_forall_mem_convex_of_local` with the convex constraints `{f(p)}` for
+`p ∈ M` and `F` otherwise).  Take `ν = G` on `O` and `ν = 0` off `O`. -/
+theorem Submission.codim1_hcp_un_smooth_glue : ∀ (P : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (M : Set (Euclid P)) (f : Euclid P → F), (∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → F), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = f z) → ∃ (ν : Euclid P → F) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ ∀ x ∈ M, ν x = f x := by
+  intro P F _ _ M f hloc
+  classical
+  -- step 1: the local extensions `g_y` on `O_y ∋ y`, and the open set `O = ⋃_{y ∈ M} O_y ⊇ M`
+  choose! Oy g hOy hyO hg hgf using hloc
+  let O : TopologicalSpace.Opens (Euclid P) := ⟨⋃ y ∈ M, Oy y, isOpen_biUnion hOy⟩
+  have hMO : M ⊆ O := fun x hx => mem_biUnion hx (hyO x hx)
+  -- step 2: `O` is locally compact (open in `ℝᴾ`), so it is a σ-compact Hausdorff `C^∞`
+  -- manifold modelled on `ℝᴾ`
+  have : LocallyCompactSpace O := O.isOpen.locallyCompactSpace
+  -- step 3: a smooth partition of unity on `O` subordinate to `{O_y}` glues the `g_y` to a
+  -- `C^∞` map `G` on `O` with `G p ∈ {f p}` for `p ∈ M`
+  obtain ⟨G, hG⟩ := exists_contMDiffMap_forall_mem_convex_of_local
+    (modelWithCornersSelf ℝ (Euclid P)) (M := O) (n := ⊤)
+    (t := fun p => if (p : Euclid P) ∈ M then {f p} else univ)
+    (fun p => by split_ifs <;> [exact convex_singleton _; exact convex_univ])
+    (fun p => by
+      -- near `p ∈ O_y`, `g_y` is `C^∞` on the open set `O ∩ O_y` and equals `f` on `M ∩ O_y`
+      obtain ⟨y, hy, hpy⟩ := mem_iUnion₂.1 p.2
+      refine ⟨Subtype.val ⁻¹' Oy y, (hOy y hy).preimage continuous_subtype_val |>.mem_nhds hpy,
+        fun q => g y q, fun q hq => ?_, fun q hq => ?_⟩
+      · exact (contMDiffAt_subtype_iff.2 (contMDiffAt_iff_contDiffAt.2
+          ((hg y hy).contDiffAt ((hOy y hy).mem_nhds hq)))).contMDiffWithinAt
+      · split_ifs with hqM
+        · exact hgf y hy q ⟨hqM, hq⟩
+        · exact mem_univ _)
+  -- step 4: extend `G` by `0` off `O`, so `ν = G` on `O`
+  set ν : Euclid P → F := fun z => if hz : z ∈ O then G ⟨z, hz⟩ else 0
+  have hνG : ∀ p : O, ν p = G p := fun p => dite_eq_left p.2
+  refine ⟨ν, O, O.isOpen, hMO, fun z hz => ?_, fun x hx => ?_⟩
+  · -- `ν` is `C^∞` at `z ∈ O`, because it agrees with `G` on the open submanifold `O`
+    have h : ContMDiffAt (modelWithCornersSelf ℝ (Euclid P)) (modelWithCornersSelf ℝ F) (⊤ : ℕ∞)
+        (fun p : O => ν p) ⟨z, hz⟩ :=
+      G.contMDiff.contMDiffAt.congr_of_eventuallyEq (Eventually.of_forall hνG)
+    exact (contMDiffAt_iff_contDiffAt.1 (contMDiffAt_subtype_iff.1 h)).contDiffWithinAt
+  · -- for `x ∈ M`, `ν x = G x ∈ {f x}`
+    have h := hG ⟨x, hMO hx⟩
+    rw [ite_eq_left hx] at h
+    exact (hνG ⟨x, hMO hx⟩).trans h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
