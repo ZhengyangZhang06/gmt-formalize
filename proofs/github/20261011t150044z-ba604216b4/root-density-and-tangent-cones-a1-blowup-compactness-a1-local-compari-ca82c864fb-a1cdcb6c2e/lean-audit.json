@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0404ad4e3a0124fecc1c411190ef66997321720c308619d5003bddd88841d24a",
+  "git_delta": {
+    "base_commit": "010f9925aa952288abee6c32ef099a5c2d24749b",
+    "candidate_commit": "91fa16c7bcc57787a7518752a6d4c2529c2427df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_series_limit",
+    "diff_sha256": "8bfc6aa0c60bfb35e92010f2a62d60df82a0f5d86d98d24fc266bd92e2d66928",
+    "source_sha256": "f6b4509acb7e9f665cc649709ec04898fcea6d5d6f23ed6d064eaf529ce47838",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_series_limit",
+      "statement": "∀ (P m : ℕ) (X Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (V L : Set (Euclid P)) (Λ : NNReal), m + 1 < P → IsCompact L → IsIntegerMultiplicity Y → (∀ r, IsIntegerMultiplicity (Z r)) → (∀ r, (X r).mass ≤ Λ) → (∀ r, IsIntegerMultiplicity (R r) ∧ (R r).support ⊆ L ∧ X (r + 1) - X r - S r = (R r).boundary ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ V → (∀ r, Z r ω = X r ω) ∧ Tendsto (fun r => X r ω) atTop (𝓝 (Y ω))) → ∀ q : ℕ, ∃ (R' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ Y - Z q - S' = R'.boundary ∧ R'.massOn V + S'.massOn V ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
