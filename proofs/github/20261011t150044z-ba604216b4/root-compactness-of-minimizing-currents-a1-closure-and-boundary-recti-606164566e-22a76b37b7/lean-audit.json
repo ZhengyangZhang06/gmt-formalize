@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "320bd008e1bff515a559e2048d85688bc608029f3a10637e4e303a2571f13b77",
+  "git_delta": {
+    "base_commit": "bddc37f5b9ea616ba2ad2169d48fc6c92fc3a849",
+    "candidate_commit": "45502d3cd0f016c0907031e4adf9303fde6e06af",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_gp_weighted_field_l1",
+    "diff_sha256": "4be4024feb1d102850a5cc94ddadd8529e33762a2433b1d97a5d5631f316b872",
+    "source_sha256": "116a06f3e612326110b43e6bb52b6884abc2a11e563195f55dfd6cdf7b29509c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_gp_weighted_field_l1",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μ < ∞ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → StronglyMeasurable (fun x => θ x • ζ x) ∧ ∫⁻ x in M, ‖θ x • ζ x‖ₑ ∂μ < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
