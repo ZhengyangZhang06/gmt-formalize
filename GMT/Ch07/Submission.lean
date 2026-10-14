@@ -3467,6 +3467,132 @@ theorem Submission.cbr_vague_convergent_subseq : ∀ (P : ℕ) (U : Set (Euclid 
   refine ⟨φ, hφ, fun f hf hfc hfU => ?_⟩
   obtain ⟨m, hm⟩ := hKC (tsupport f) hfc.isCompact hfU
   exact hconv m f ⟨hf, hm⟩
+/-- A continuous function `f` with compact support in `U` is `ν`-integrable for every measure `ν`
+finite on compact subsets of `U` (Simon Ch. 1, 4.16: `∫ f dμ` is finite for `f ∈ K(X)`).
+`S = spt f` is a compact subset of `U`, so `ν(S) < ∞` and `ν⌞S` is a finite measure; `f` is
+`ν⌞S`-integrable, and since `f` vanishes off `S` it is `ν`-integrable. -/
+theorem Submission.cbr_vl_integrable_of_tsupport_subset : ∀ (P : ℕ) (U : Set (Euclid P)) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable f ν := by
+  intro P U ν f hν hf hcf hU
+  -- Step 1: `S = tsupport f` is a compact subset of `U`, so `ν(S) < ∞`.
+  have hS : ν (tsupport f) < ∞ := hν _ hcf hU
+  -- Step 2: `ν⌞S` has total mass `ν(S) < ∞`.
+  have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  -- Steps 3–4: `f` is `ν⌞S`-integrable and vanishes off `S`, hence is `ν`-integrable.
+  exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).mp
+    (hf.integrable_of_hasCompactSupport hcf)
+/-- **Simon 1.4.12 on `U`** (Riesz representation, as invoked in the proof of 1.4.16): a positive
+linear functional `Λ` on the continuous functions with compact support in the open set `U ⊆ ℝᴾ`
+is `f ↦ ∫ f dμ` for a measure `μ` on `ℝᴾ` with `μ(ℝᴾ \ U) = 0` that is finite on compact subsets
+of `U`.  Mathlib's `RealRMK.rieszMeasure` on the locally compact subtype `U`, applied to
+`g ↦ Λ(ĝ)` (`ĝ` the extension of `g` by zero), is pushed forward to `ℝᴾ`. -/
+theorem Submission.cbr_vl_riesz_measure_on_open : ∀ (P : ℕ) (U : Set (Euclid P)) (Λ : (Euclid P → ℝ) → ℝ), IsOpen U → (∀ f g : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (f + g) = Λ f + Λ g) → (∀ (c : ℝ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Λ (c • f) = c * Λ f) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → (∀ x, 0 ≤ f x) → 0 ≤ Λ f) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∫ x, f x ∂μ = Λ f := by
+  intro P U Λ hU hadd hsmul hpos
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
+  -- the extension `ĝ = Subtype.val.extend g 0` of `g : U → ℝ` by zero
+  have hext_val : ∀ (g : U → ℝ) (y : U), Subtype.val.extend g (0 : Euclid P → ℝ) y = g y :=
+    fun g y => Subtype.val_injective.extend_apply g 0 y
+  have hext_out : ∀ (g : U → ℝ) (x : Euclid P), x ∉ U →
+      Subtype.val.extend g (0 : Euclid P → ℝ) x = 0 := by
+    intro g x hx
+    have hx' : ¬∃ y : U, (y : Euclid P) = x := by
+      rintro ⟨y, rfl⟩
+      exact hx y.2
+    rw [extend_apply' g (0 : Euclid P → ℝ) x hx']
+    rfl
+  -- `ĝ` is continuous with compact support in `U` for `g ∈ C_c(U, ℝ)`
+  have hext : ∀ g : CompactlySupportedContinuousMap U ℝ,
+      Continuous (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
+        HasCompactSupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
+        tsupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ⊆ U := fun g =>
+    ⟨HasCompactSupport.continuous_extend_zero hU g.continuous g.hasCompactSupport,
+      g.hasCompactSupport.extend_zero continuous_subtype_val,
+      (g.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val).trans
+        (Subtype.coe_image_subset _ _)⟩
+  -- `Λ_U(g) = Λ(ĝ)` is a positive linear functional on `C_c(U, ℝ)`
+  let L : CompactlySupportedContinuousMap U ℝ →ₗ[ℝ] ℝ :=
+    { toFun := fun g => Λ (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ))
+      map_add' := fun g₁ g₂ => by
+        have h := extend_add (Subtype.val : U → Euclid P) (g₁ : U → ℝ) g₂ (0 : Euclid P → ℝ) 0
+        rw [add_zero] at h
+        simp only [CompactlySupportedContinuousMap.coe_add]
+        rw [h]
+        exact hadd _ _ (hext g₁).1 (hext g₁).2.1 (hext g₁).2.2 (hext g₂).1 (hext g₂).2.1
+          (hext g₂).2.2
+      map_smul' := fun c g => by
+        have h := extend_smul c (Subtype.val : U → Euclid P) (g : U → ℝ) (0 : Euclid P → ℝ)
+        rw [smul_zero] at h
+        simp only [CompactlySupportedContinuousMap.coe_smul, RingHom.id_apply, smul_eq_mul]
+        rw [h]
+        exact hsmul c _ (hext g).1 (hext g).2.1 (hext g).2.2 }
+  let ΛU := PositiveLinearMap.mk₀ L fun g hg => by
+    refine hpos _ (hext g).1 (hext g).2.1 (hext g).2.2 fun x => ?_
+    by_cases hx : x ∈ U
+    · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
+      exact hg ⟨x, hx⟩
+    · rw [hext_out _ x hx]
+  -- the Riesz measure of `Λ_U` on `U`, pushed forward to `ℝᴾ`
+  have hme : MeasurableEmbedding (Subtype.val : U → Euclid P) :=
+    MeasurableEmbedding.subtype_coe hU.measurableSet
+  have hcpt : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      IsCompact ((Subtype.val : U → Euclid P) ⁻¹' K) := by
+    intro K hK hKU
+    rw [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.mpr hKU]
+    exact hK
+  refine ⟨(RealRMK.rieszMeasure ΛU).map Subtype.val, ?_, fun K hK hKU => ?_,
+    fun f hf hfc hfU => ?_⟩
+  · rw [hme.map_apply, Subtype.preimage_coe_compl, measure_empty]
+  · rw [hme.map_apply]
+    exact (hcpt K hK hKU).measure_lt_top
+  · -- `f = ĝ` for `g = f ∘ Subtype.val ∈ C_c(U, ℝ)`
+    let g : CompactlySupportedContinuousMap U ℝ :=
+      ⟨⟨f ∘ Subtype.val, hf.comp continuous_subtype_val⟩,
+        IsCompact.of_isClosed_subset (hcpt _ hfc hfU) (isClosed_tsupport _)
+          (tsupport_comp_subset_preimage f continuous_subtype_val)⟩
+    have hfg : Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ) = f := by
+      funext x
+      by_cases hx : x ∈ U
+      · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
+        rfl
+      · rw [hext_out _ x hx, image_eq_zero_of_notMem_tsupport fun h => hx (hfU h)]
+    rw [hme.integral_map]
+    calc ∫ y, f y ∂RealRMK.rieszMeasure ΛU = ∫ y, g y ∂RealRMK.rieszMeasure ΛU := rfl
+      _ = ΛU g := RealRMK.integral_rieszMeasure ΛU g
+      _ = Λ f := congrArg Λ hfg
+
+/-- **Simon 1.4.16, last step** (the vague limit is a Radon measure on `U`): if every `ν_j` is
+finite on compact subsets of the open set `U ⊆ ℝᴾ` and `∫ f dν_j` converges for every continuous
+`f` with compact support in `U`, then `Λ(f) = lim_j ∫ f dν_j` is additive, homogeneous and
+non-negative on these `f` (such `f` are `ν_j`-integrable; uniqueness of limits), so Simon 1.4.12
+on `U` gives `μ` with `μ(ℝᴾ \ U) = 0`, finite on compact subsets of `U`, and
+`∫ f dμ = Λ(f) = lim_j ∫ f dν_j`. -/
+theorem Submission.cbr_vague_limit_measure : ∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 c)) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P U νs hU hν hlim
+  -- the limit functional `Λ(f) = lim_j ∫ f dν_j`
+  let Λ : (Euclid P → ℝ) → ℝ := fun f => limUnder atTop fun j => ∫ x, f x ∂(νs j)
+  have hΛ : ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U →
+      Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (Λ f)) :=
+    fun f hf hfc hfU => tendsto_nhds_limUnder (hlim f hf hfc hfU)
+  -- such `f` are `ν_j`-integrable, so `∫ · dν_j` is linear on them
+  have hint : ∀ (j : ℕ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f →
+      tsupport f ⊆ U → Integrable f (νs j) :=
+    fun j f => Submission.cbr_vl_integrable_of_tsupport_subset P U (νs j) f (hν j)
+  -- `Λ` is additive, homogeneous and non-negative, so it is integration against some `μ`
+  obtain ⟨μ, hμU, hμK, hμΛ⟩ := Submission.cbr_vl_riesz_measure_on_open P U Λ hU
+    (fun f g hf hfc hfU hg hgc hgU => by
+      refine tendsto_nhds_unique (hΛ _ (hf.add hg) (hfc.add hgc)
+        ((tsupport_add f g).trans (union_subset hfU hgU))) ?_
+      refine ((hΛ f hf hfc hfU).add (hΛ g hg hgc hgU)).congr fun j => ?_
+      exact (integral_add (hint j f hf hfc hfU) (hint j g hg hgc hgU)).symm)
+    (fun c f hf hfc hfU => by
+      have hcf : support (c • f) ⊆ support f := support_const_smul_subset c f
+      refine tendsto_nhds_unique (hΛ _ (hf.const_smul c) (hfc.mono hcf)
+        ((closure_mono hcf).trans hfU)) ?_
+      refine ((hΛ f hf hfc hfU).const_mul c).congr fun j => ?_
+      exact (integral_smul c f).symm)
+    (fun f hf hfc hfU hf0 => ge_of_tendsto' (hΛ f hf hfc hfU) fun j => integral_nonneg hf0)
+  refine ⟨μ, hμU, hμK, fun f hf hfc hfU => ?_⟩
+  rw [hμΛ f hf hfc hfU]
+  exact hΛ f hf hfc hfU
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
