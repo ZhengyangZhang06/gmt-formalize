@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.finite_piece_imrep-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 5,
+  "title": "A finite disjoint family of oriented rectifiable pieces gives an IMRep with additive action and mass",
+  "statement": "Let P, k ∈ ℕ, I a type, U ⊆ ℝ^P, S ⊆ I finite, and for p ∈ S: F_p ⊆ ℝ^P Borel with F_p ⊆ U and Hᵏ(F_p) < ∞, the F_p pairwise disjoint, m_p ∈ ℕ positive, ξ_p a k-vector, G_p : ℝ^k → ℝ^P Lipschitz with F_p ⊆ range G_p, and at every x ∈ F_p some subspace Q with HasApproximateTangentSpaceAt k C x Q (C := ⋃_{q∈S} F_q) and IsUnitOrientationOf ξ_p Q. Then there is an IMRep R in U of dimension k with R.action(ω) = Σ_{p∈S} m_p ∫_{F_p} ξ_p(ω(x)) dHᵏ(x) for every test form ω ∈ 𝒟ᵏ(U), and R.measure(ℝ^P) = Σ_{p∈S} m_p Hᵏ(F_p).",
+  "lean_statement": "∀ (P k : ℕ) (I : Type) (U : Set (Euclid P)) (S : Finset I) (F : I → Set (Euclid P)) (m : I → ℕ) (ξ : I → MultiVector P k) (G : I → Euclid k → Euclid P), (∀ p ∈ S, MeasurableSet (F p)) → (∀ p ∈ S, F p ⊆ U) → (∀ p ∈ S, μHE[k] (F p) ≠ ∞) → (∀ p ∈ S, ∀ q ∈ S, p ≠ q → Disjoint (F p) (F q)) → (∀ p ∈ S, 0 < m p) → (∀ p ∈ S, ∃ K : NNReal, LipschitzWith K (G p)) → (∀ p ∈ S, F p ⊆ range (G p)) → (∀ p ∈ S, ∀ x ∈ F p, ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k (⋃ q ∈ S, F q) x Q ∧ IsUnitOrientationOf (ξ p) Q) → ∃ R : IMRep U k, (∀ ω : TestFormOn U k, R.action (ω : DifferentialForm (Euclid P) k) = ∑ p ∈ S, (m p : ℝ) * ∫ x in F p, ξ p ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) ∧ R.measure univ = ∑ p ∈ S, (m p : ℝ≥0∞) * μHE[k] (F p)",
+  "lean_name": "cmcdtfrpi_finite_piece_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-d892dc0ddc-a1"
+}

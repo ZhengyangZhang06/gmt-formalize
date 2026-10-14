@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.suspension_map-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "The suspension Ĝ(t, u) = (t, G(u)): value, Lipschitz bound and derivative (supplied step 2(a), 2(d))",
+  "statement": "Let N, n ∈ ℕ, G : ℝⁿ → ℝ^N, and Ĝ : ℝ^{n+1} → ℝ^{N+1} with Ĝ(z) = ι(z_0, G(tail z)) for all z, where ι(t, x) := (t, x) (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), z_0 := WithLp.ofLp z 0 and tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)). Then (a) for every L ≥ 0 (NNReal), if G is L-Lipschitz then Ĝ is max(1, L)-Lipschitz; (b) Ĝ(ι(t, u)) = ι(t, G(u)) for all t ∈ ℝ, u ∈ ℝⁿ; (c) if G is differentiable at u, then for every t ∈ ℝ the tuple (DĜ(ι(t, u)) ê_a)_{a ∈ Fin (n+1)} equals Fin.cons e₀ (b ↦ J(DG(u) e_b)), where D = fderiv ℝ, ê_a := EuclideanSpace.single a 1 ∈ ℝ^{n+1}, e_b := EuclideanSpace.single b 1 ∈ ℝⁿ, e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1} and J x := ι(0, x).",
+  "lean_statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (Gh : Euclid (n + 1) → Euclid (N + 1)), (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → (∀ L : NNReal, LipschitzWith L G → LipschitzWith (max 1 L) Gh) ∧ (∀ (t : ℝ) (u : Euclid n), Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (G u)))) ∧ ∀ (t : ℝ) (u : Euclid n), DifferentiableAt ℝ G u → (fun a => fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = Fin.cons (EuclideanSpace.single 0 1) (fun b => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1)))))",
+  "lean_name": "cmcdt_lpi_cyl_suspension_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-f6a895615e-a1"
+}

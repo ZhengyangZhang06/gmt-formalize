@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent proof, smooth part (divergence theorem on the box Q_δ for the field vG and the elementary face/trace inequality), applied to a C¹ function v in place of the mollified w_σ. It is the smooth case of the extension/trace estimate Ch. 2, 2.8–2.9 of Simon (book/chapter-02.txt lines 663–676), specialized to the cube.
+
+Notation (used throughout). m ∈ ℕ and n := m + 1 ≥ 1. ℝⁿ means Euclid n = EuclideanSpace ℝ (Fin n) with its Lebesgue measure (volume); y_i is the i-th coordinate. Q₁ := {y : 0 < y_i < 1 for all i}; for δ ∈ ℝ, Q_δ := {y : δ < y_i < 1 − δ for all i} (so Q_0 = Q₁). div G(x) := trace DG(x) (LinearMap.trace of fderiv). Integrals over a set are Lebesgue (Bochner) integrals of the restricted measure. Under the measure-preserving linear isometry Euclid n ≃ (Fin n → ℝ) (Mathlib EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp / PiLp.volume_preserving_ofLp) Q_δ corresponds to the box ∏_i (δ, 1 − δ), so vol(Q_δ) = (1 − 2δ)ⁿ for 0 ≤ δ < 1/2, vol(Q₁) = 1, and Q_δ = ∅ for δ ≥ 1/2. Each Q_δ is open, convex and bounded; for 0 ≤ δ' ≤ δ, Q_δ ⊆ Q_δ' ⊆ Q₁. "hyp(u, V)" abbreviates: ∫_{Q₁} u · div g ≤ V for every C^∞ (ContDiff ℝ (⊤ : ℕ∞)) map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g(y)| ≤ 1 for all y.
+
+Let v, G be C¹ with |G| ≤ 1 and 0 ≤ δ ≤ 1/4. Put a := δ, b := 1 − δ, s := b − a = 1 − 2δ ∈ [1/2, 1], Q := Q_δ = (a, b)ⁿ, Q̄ := [a, b]ⁿ (compact). Write ∂_i v(x) := Dv(x)e_i and G_i := ⟨e_i, G⟩ for the standard orthonormal basis e_1, …, e_n. For i ∈ {1, …, n}, t ∈ ℝ and x' ∈ ℝ^{n−1} let ι_i(t, x') ∈ ℝⁿ be the point whose i-th coordinate is t and whose other coordinates are x' in order (Mathlib Fin.insertNth); put Q' := (a, b)^{n−1} (for n = 1, ℝ⁰ is a point of measure 1).
+
+Facts. (F1) div G(x) = trace DG(x) = Σ_i ⟨e_i, DG(x)e_i⟩ = Σ_i ∂_iG_i(x) (Mathlib LinearMap.trace_eq_sum_inner). (F2) Fubini in coordinate i: the map (t, x') ↦ ι_i(t, x') is a measure-preserving bijection ℝ × ℝ^{n−1} → ℝⁿ (Mathlib MeasureTheory.volume_preserving_piFinSuccAbove composed with the measure-preserving identification Euclid n ≃ (Fin n → ℝ)) mapping (a, b) × Q' onto Q; hence ∫_Q h = ∫_{Q'} ∫_a^b h(ι_i(t, x')) dt dx' for every h integrable on Q or nonnegative measurable. (F3) v, Dv, G, DG are continuous, hence bounded on Q̄; every function below is a bounded measurable function on a set of finite measure, so all integrals are finite and Fubini applies.
+
+1. Product rule. H := vG is C¹ with DH(x)h = (Dv(x)h) G(x) + v(x) DG(x)h. Hence ∂_i H_i = (∂_i v) G_i + v ∂_i G_i and, by (F1), Σ_i ∂_i H_i(x) = Dv(x)(G(x)) + v(x) div G(x).
+
+2. Divergence theorem on the box. For each i and x' ∈ Q', t ↦ H_i(ι_i(t, x')) is C¹ on [a, b] with derivative ∂_i H_i(ι_i(t, x')), so by the fundamental theorem of calculus ∫_a^b ∂_iH_i(ι_i(t, x')) dt = H_i(ι_i(b, x')) − H_i(ι_i(a, x')). Integrating over x' ∈ Q' and using (F2): ∫_Q ∂_iH_i = ∫_{Q'} [H_i(ι_i(b, x')) − H_i(ι_i(a, x'))] dx'. (This is Mathlib MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable on the box [a, b]^{Fin n}, transported through the measure-preserving identification Euclid n ≃ (Fin n → ℝ); that lemma lives in Mathlib.MeasureTheory.Integral.DivergenceTheorem, which must be added as an import to GMT/Ch07/Submission.lean if this route is used. The coordinatewise route of steps 2 and 4 needs only intervalIntegral.integral_eq_sub_of_hasDerivAt, MeasureTheory.volume_preserving_piFinSuccAbove and PiLp.volume_preserving_ofLp, all available under `import GMT.Ch07.Submission`.)
+
+3. Summing over i with step 1: ∫_Q v div G = Σ_i ∫_{Q'}[H_i(ι_i(b, x')) − H_i(ι_i(a, x'))] dx' − ∫_Q Dv(x)(G(x)) dx. Since |H_i| ≤ |v||G| ≤ |v| and |Dv(x)(G(x))| ≤ ‖Dv(x)‖|G(x)| ≤ ‖Dv(x)‖: |∫_Q v div G| ≤ ∫_Q ‖Dv‖ + Σ_i Σ_{c ∈ {a, b}} ∫_{Q'} |v(ι_i(c, x'))| dx'.
+
+4. Face (trace) estimate. Fix i, c ∈ {a, b} and x' ∈ Q'. For t ∈ [a, b], the fundamental theorem of calculus along the segment between c and t gives |v(ι_i(c, x'))| ≤ |v(ι_i(t, x'))| + ∫_a^b |∂_i v(ι_i(r, x'))| dr. Averaging over t ∈ [a, b] (divide by s > 0): |v(ι_i(c, x'))| ≤ s^{−1} ∫_a^b |v(ι_i(t, x'))| dt + ∫_a^b |∂_i v(ι_i(r, x'))| dr. Integrating over x' ∈ Q' and using (F2): ∫_{Q'} |v(ι_i(c, x'))| dx' ≤ s^{−1} ∫_Q |v| + ∫_Q |∂_i v| ≤ 2 ∫_Q |v| + ∫_Q ‖Dv‖, because s ≥ 1/2 and |∂_i v(x)| = |Dv(x)e_i| ≤ ‖Dv(x)‖.
+
+5. Conclusion. There are 2n pairs (i, c), so by steps 3 and 4: |∫_Q v div G| ≤ ∫_Q ‖Dv‖ + 2n(2∫_Q |v| + ∫_Q ‖Dv‖) = (2n + 1) ∫_Q ‖Dv‖ + 4n ∫_Q |v|. With n = m + 1: (2(m + 1) + 1) ∫_{Q_δ} ‖Dv‖ + 4(m + 1) ∫_{Q_δ} |v|. ∎
+
+## Key steps
+
+1. Product rule: div(vG) = Dv(G) + v div G, with div = Σ_i ∂_i(·)_i in the standard basis.
+2. Divergence theorem on the box [δ, 1 − δ]ⁿ (FTC in each coordinate plus Fubini): ∫_{Q_δ} ∂_i(vG_i) = face integrals.
+3. |∫ v div G| ≤ ∫‖Dv‖ + Σ over the 2n faces of ∫_face |v|.
+4. Face estimate by FTC and averaging over a side of length s ≥ 1/2: ∫_face |v| ≤ 2∫_{Q_δ}|v| + ∫_{Q_δ}‖Dv‖.
+5. Summing: (2n + 1)∫‖Dv‖ + 4n∫|v|.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'cmcdt_cbm' local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match); python3 scan of runs/20261011T150044Z-ba604216b4/dag.json (902 nodes) for the seven proposed lean names and all theorems fields (no collision)`
+- `rg -n -i 'poincar[eé] inequality|poincare_ineq|median|trace inequality|mollif|bounded variation|IsLocallyBV|integral_divergence' local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `rg -n -i 'mollif|poincar[eé]_ineq|poincare inequality|median|integral_divergence|divergence theorem|trace_ineq|convolution_tendsto|tendsto_convolution' lake-packages-25730c7c/simongmt/Poincare -g '*.lean'`
+- `rg -n 'theorem (integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable|integral_bilinear_hasFDerivAt_right_eq_neg_left_of_integrable|integral_bilinear_fderiv_right_eq_neg_left_of_integrable|integral_fderiv_eq_zero|integral_lineDeriv_eq_zero)' mathlib/Mathlib`
+- `rg -n 'theorem (_root_\.)?HasCompactSupport\.(hasFDerivAt_convolution_right|hasFDerivAt_convolution_left|contDiff_convolution_right|contDiff_convolution_left|fderiv_convolution_right)' mathlib/Mathlib`
+- `rg -n 'convolution_tendsto|tendsto_convolution|eLpNorm.*convolution|convolution.*eLpNorm|integral_norm_convolution|norm_convolution_le' mathlib/Mathlib`
+- `rg -n 'exists_hasCompactSupport_integral_sub_le|exists_hasCompactSupport_eLpNorm_sub_le|exists_continuous_integral_sub_le' mathlib/Mathlib`
+- `rg -n 'theorem integral_divergence_of_hasFDerivAt_off_countable' mathlib/Mathlib`
+- `rg -n 'theorem (EuclideanSpace\.)?volume_preserving|PiLp.volume_preserving_ofLp|theorem volume_preserving_piFinSuccAbove|theorem integral_comp_smul\b|theorem setIntegral_comp_smul_of_pos|addHaar_preimage_smul|theorem support_fderiv_subset|lemma trace_eq_sum_inner|theorem volume_pi_Ioo' mathlib/Mathlib`
+- `lake env lean /tmp/cbm-decomp/build/ExactTypes.lean (seven child types elaborate after import GMT.Ch07.Submission in the contract namespace/opens); lake env lean /tmp/cbm-decomp/PPCheck.lean (iterated set integrals as intended; ContDiff ℝ (⊤ : ℕ∞) is C^∞, not ω; C^∞ → C¹ via of_le); lake env lean /tmp/cbm-decomp/build/AssemblyExact.lean (frozen parent type from the exact child types; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/cbm-decomp/imports/Avail.lean and /tmp/cbm-decomp/imports/Names2.lean (which cited lemmas lie in the import closure of GMT.Ch07.Submission); lake env lean /tmp/cbm-decomp/imports/WithImports.lean (with LineDeriv.IntegrationByParts, BumpFunction.Normed, BumpFunction.Convolution, ContinuousMapDense, Integral.DivergenceTheorem and Gradient.Basic imported, every cited lemma and HasContDiffBump (Euclid n) resolve and the seven child types elaborate unchanged)`
+- `git show <candidate_commit>:GMT/Ch07/Submission.lean over accepted DAG nodes (17 accepted nodes add imports to Submission.lean, e.g. Mathlib.MeasureTheory.Function.ContinuousMapDense); read verifier/gmt-compare.py candidate_inputs (only the frozen contract and build inputs are byte-checked)`
+- `grep -n '(26)|(27)|(28)|(29)|(30)|(31)|(32)|(33)|2.35|2.36|2.37' book/chapter-06.txt; grep -n '^2\.[5-9] |Poincar' book/chapter-02.txt (Simon Ch. 6 proof of 5.1 displays (26)-(36) at chapter-06.txt lines 1841-1913; Ch. 2, 2.5 and 2.7-2.9 at chapter-02.txt lines 543-676)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c373840d71/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/cbm-decomp/build/ExactTypes.lean`
+- `/tmp/cbm-decomp/build/AssemblyExact.lean`
+- `/tmp/cbm-decomp/PPCheck.lean`
+- `/tmp/cbm-decomp/imports/WithImports.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same contract as the workspace Contract.lean and Submission.lean.
+
+Nothing in the snapshot can be reused for this node:
+- The only BV Poincaré and BV extension statements are the Ch02 contracts BVPoincare (Simon 2.7) and BVExtensionEstimate (2.8). They are unsolved (main_theorem := by sorry), belong to another chapter, and cannot be imported into Ch07.
+- SimonGMT Chapter02/BV.lean has only definitions (IsLocallyBV, bvVariationOn). Chapter08 has only an a.e. mollifier convergence.
+- Mathlib has no BV Poincaré, BV trace inequality, integer median or L¹ convergence of mollifiers.
+
+Mathlib does supply every tool the child proofs cite:
+- integration by parts against a constant;
+- convolution smoothness and derivatives (already in the Submission closure);
+- normed bumps and dist_normed_convolution_le;
+- density of continuous compactly supported functions in L¹ (ContinuousMapDense);
+- the box divergence theorem;
+- Euclidean and pi volume preservation and piFinSuccAbove Fubini;
+- the scaling change of variables;
+- support_fderiv_subset and trace_eq_sum_inner.
+
+Six of these modules are outside the frozen Submission import closure. Importing them works: all cited lemmas resolve, and the seven child types elaborate unchanged. Accepted nodes of this run already add imports this way, and each affected child proof carries an explicit import note.
+
+No cmcdt_cbm_* name exists in the snapshot or the DAG. The parent's frozen type is derived in Lean from the exact child types integral_div_zero, bv_poincare, integer_median and bv_trace, using standard axioms only.

@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpi_pr_",
+        "measurable_fderiv_apply_const|theorem measurable_fderiv",
+        "norm_image_sub_le|def apply|apply_apply",
+        "theorem hasSum_integral_iUnion|theorem setIntegral_congr_set|theorem lintegral_iUnion|theorem lintegral_map|theorem lintegral_smul_measure|theorem measurableSet_eq_fun|theorem euclideanHausdorffMeasure_eq_volume|theorem hausdorffMeasure_image_le|euclideanHausdorffMeasure_def",
+        "git show 0501e07ced47186792005c0a22c976aafdb0ebdf:GMT/Ch07/Submission.lean",
+        "git show bed5b8494a351297a2be8f0a0b63079868d53507:GMT/Ch07/Submission.lean",
+        "git show d15b5cf486116871dce9295932632b12f0af96e0:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/piece_rep_independent_audit/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/piece_rep_independent_audit/ConditionalProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/piece_rep_independent_audit/bilipschitz_measure_accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/piece_rep_independent_audit/ae_pullback_accepted.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/piece_rep_independent_audit/support_null_accepted.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-655ccd9eaf/decomposition-v1.json",
+        "/tmp/piece_rep_independent_audit/StandaloneTypes.lean",
+        "/tmp/piece_rep_independent_audit/ConditionalProofs.lean",
+        "/tmp/piece_rep_independent_audit/bilipschitz_measure_accepted.lean",
+        "/tmp/piece_rep_independent_audit/ae_pullback_accepted.lean",
+        "/tmp/piece_rep_independent_audit/support_null_accepted.lean"
+      ],
+      "conclusion": "The pinned revisions and requested contract digest match. The eight-child split is appropriate: its obligations support the selected theorem, and the supplied assembly proves its exact frozen type. All eight types independently elaborate before child declarations. The five supplied Lean proofs and parent assembly compile using precisely the frozen prerequisite contracts as explicit test axioms, without sorryAx. The three reused declarations have identical frozen types, preserve the contract definitions, and independently compile with only propext, Classical.choice and Quot.sound. No new cmcdt_lpi_pr_ name occurs in the searched snapshot or DAG; all names are bare identifiers. Sibling and inherited dependencies are correctly directed and acyclic. The pending span-orientation theorem remains an explicit inherited prerequisite. The measurable-sign topology construction checks, and Gram determinants use Matrix.of; no prohibited matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the identical accepted type. Direct and inverse Lipschitz Hausdorff estimates, normalized by μHE[n] = volume on Euclid n, prove both inequalities. Positivity justifies inverse rescaling, including n = 0; no measurability assumption on E is needed."
+    },
+    {
+      "key": "ae_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type is reused unchanged. The lower bound gives injectivity, Lusin–Souslin gives the Borel image, and the inverse-Lipschitz estimate pulls arbitrary null exceptional sets back to volume-null sets. All hypotheses and both conclusions are covered."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the accepted frozen type. Countable reduction to relatively compact zero regions, finite-measure testing against smooth scalar multiples of covectors, and finite-dimensional separation establish carrier nullity. Unit orientations are nonzero, supplying the final contradiction without using this parent theorem."
+    },
+    {
+      "key": "support_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The IMC(b) antecedent is copied exactly. The support is Borel, support_null makes the restricted carrier a.e. equal to the original carrier, and set-integral congruence preserves every test-form action. This proves both requested properties with the correctly directed dependency."
+    },
+    {
+      "key": "lintegral_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The positive lower Lipschitz constant permits ENNReal rescaling of bilipschitz_measure. Applying the resulting set bound to measurable preimages proves measure domination; lintegral_map and scalar-measure integration give exactly the stated inequality."
+    },
+    {
+      "key": "piece_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit, including the exact IMC(a) antecedent. The proof transports locality and orientation a.e., identifies the tangent plane by uniqueness and the standard-basis span identity, and pulls back a strongly measurable representative. Both conclusions follow using the declared and inherited prerequisites."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurable derivative evaluations and a strongly measurable comparison functional even for arbitrary G. Its topology-instance construction compiles. On one conull set, injectivity and the inherited span-orientation theorem give J > 0 and the two possible orientations; the measurable case split proves the identity uniformly for every covector."
+    },
+    {
+      "key": "oriented_piece_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose faithfully includes the absence of measurability and integrability assumptions. Both inherited frozen area formulas allow arbitrary integrands. The identity |w| = θ∘G proves the first equation; substituting ω(G(u)) into the uniformly quantified a.e. orientation identity and applying integral congruence proves the second."
+    }
+  ],
+  "required_changes": []
+}
