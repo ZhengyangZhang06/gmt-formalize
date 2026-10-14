@@ -53933,6 +53933,134 @@ theorem Submission.dtc_bc_lc_fd_deformation : ∀ (P m : ℕ), m + 1 < P → ∃
       _ ≤ ρ * Real.sqrt P := mul_le_mul_of_nonneg_left (mem_closedBall.1 hxa) hρ.le
       _ ≤ 1 := hρP
 
+/-- **Boundary rectifiability for compactly supported currents of finite mass** (Simon Ch. 6,
+Theorem 6.3 = 6.2 + 3.11, needed only for cycles by Remark 6.4; in codimension zero Simon 3.14).
+Let `m + 1 < P` and let `R ∈ 𝒟_{m+2}(ℝᴾ)` be integer multiplicity with compact support,
+`M(R) < ∞` and `M(∂R) < ∞`.  Then `∂R` is integer multiplicity.
+* `P ≥ m + 3` (first case of Simon's proof of 6.2): the deformation theorem with `K = spt R`,
+  `Λ = max(M(R), M(∂R))` and `ε = (k+1)⁻¹` gives `R − Q_k − S_k = ∂R_k` with
+  `M(R_k) + M(S_k) ≤ (k+1)⁻¹`, `∂Q_k` integer multiplicity and `M(∂Q_k) ≤ c M(∂R)`.  For
+  `η ∈ 𝒟^{m+1}`, evaluating at `dη` and using `ddη = 0` gives `∂Q_k(η) = ∂R(η) − S_k(dη)`, and
+  `|S_k(dη)| ≤ sup|dη| M(S_k) → 0`.  So the integer multiplicity cycles `∂Q_k` have bounded mass
+  and converge weakly to `∂R`, and the closure theorem for cycles (Simon 8.2) applies.
+* `P = m + 2` (Simon 3.14): the layers `U_j = {θ̃ ≥ j}` of the integer density of `R` give
+  `∂R = Σ_j ∂[[U_j]]` with all partial sums of mass `≤ M(∂R)`, and a sum of boundaries of nested
+  sets with bounded partial masses is integer multiplicity (Simon 3.14 (8)–(9)). -/
+theorem Submission.dtc_bc_lc_fd_boundary_im : ∀ (P m : ℕ) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)), m + 1 < P → IsIntegerMultiplicity R → IsCompact R.support → R.mass < ∞ → R.boundary.mass < ∞ → IsIntegerMultiplicity R.boundary := by
+  intro P m R hmP hR hRc hRm hRb
+  rcases Nat.lt_or_ge (m + 2) P with hP | hP
+  · -- Case 1: `P ≥ m + 3`.
+    -- Step 1: the deformation theorem at degree `m + 2` with `ε = (k+1)⁻¹`
+    obtain ⟨c, hc⟩ := Submission.dtc_bc_lc_fd_deformation P (m + 1) hP
+    set Λ : NNReal := max R.mass.toNNReal R.boundary.mass.toNNReal
+    have hRΛ : R.mass ≤ Λ := by
+      rw [← ENNReal.coe_toNNReal hRm.ne]
+      exact ENNReal.coe_le_coe.2 (le_max_left _ _)
+    have hbΛ : R.boundary.mass ≤ Λ := by
+      rw [← ENNReal.coe_toNNReal hRb.ne]
+      exact ENNReal.coe_le_coe.2 (le_max_right _ _)
+    have hk : ∀ k : ℕ, ∃ (Q S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+        (R' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 3)),
+        IsIntegerMultiplicity Q.boundary ∧ R - Q - S = R'.boundary ∧
+          R'.mass + S.mass ≤ ENNReal.ofReal (1 / ((k : ℝ) + 1)) ∧
+          Q.boundary.mass ≤ c * R.boundary.mass := by
+      intro k
+      obtain ⟨𝒬, -, h𝒬⟩ := hc R.support Λ (ENNReal.ofReal (1 / ((k : ℝ) + 1))) hRc
+        (ENNReal.ofReal_pos.2 (by positivity))
+      obtain ⟨Q, -, R', S, -, hQ, hdec, hmass, hQb, -⟩ := h𝒬 R hR subset_rfl hRΛ hbΛ
+      exact ⟨Q, S, R', hQ, hdec, hmass, hQb⟩
+    choose Q S R' hQ hdec hmass hQb using hk
+    -- the evaluation bound `|T(ω)| ≤ b M(T)` when the coefficient norm of `ω` is `≤ b`
+    obtain ⟨A, hA⟩ := Submission.dor_ims_sua_coeff_norm_rep P (m + 2)
+    have hbound : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), ∃ b : ℝ, 0 < b ∧
+        ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 2)) x) ≤ b := by
+      intro ω
+      have hcont : Continuous fun x => A ((ω : DifferentialForm (Euclid P) (m + 2)) x) :=
+        A.continuous.comp ω.property.1.1.continuous
+      have hcs : HasCompactSupport fun x => A ((ω : DifferentialForm (Euclid P) (m + 2)) x) :=
+        ω.property.1.2.comp_left (map_zero A)
+      obtain ⟨C, hC⟩ := hcont.bounded_above_of_compact_support hcs
+      refine ⟨|C| + 1, by positivity, fun x => ?_⟩
+      rw [hA]
+      linarith [hC x, le_abs_self C]
+    have heval : ∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2))
+        (ω : TestFormOn (univ : Set (Euclid P)) (m + 2)) (b : ℝ), 0 < b →
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 2)) x) ≤ b) →
+        ENNReal.ofReal |T ω| ≤ ENNReal.ofReal b * T.mass := by
+      intro T ω b hb hωb
+      -- `±b⁻¹ ω` are admissible for `M(T)`
+      have hadm : ∀ s : ℝ, |s| = b⁻¹ →
+          s • ω ∈ massAdmissibleOn (univ : Set (Euclid P)) (m + 2) univ := by
+        intro s hs
+        refine ⟨subset_univ _, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Euclid P) (m + 2)) x) ≤ 1
+        rw [hA, map_smul, norm_smul, ← hA, Real.norm_eq_abs, hs]
+        calc b⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 2)) x)
+            ≤ b⁻¹ * b := by gcongr; exact hωb x
+          _ = 1 := inv_mul_cancel₀ hb.ne'
+      have hT : ∀ s : ℝ, T (s • ω) = s * T ω := fun s => by
+        rw [map_smul, smul_eq_mul]
+      have hb' : 0 < b⁻¹ := inv_pos.2 hb
+      have h₁ := T.le_massOn (hadm b⁻¹ (abs_of_pos hb'))
+      have h₂ := T.le_massOn (hadm (-b⁻¹) (by rw [abs_neg, abs_of_pos hb']))
+      rw [hT] at h₁ h₂
+      have h₃ : ENNReal.ofReal (b⁻¹ * |T ω|) ≤ T.mass := by
+        rcases abs_cases (T ω) with ⟨h, -⟩ | ⟨h, -⟩
+        · rw [h]
+          exact h₁
+        · rw [h, mul_neg, ← neg_mul]
+          exact h₂
+      calc ENNReal.ofReal |T ω| = ENNReal.ofReal (b * (b⁻¹ * |T ω|)) := by
+            rw [mul_inv_cancel_left₀ hb.ne']
+        _ = ENNReal.ofReal b * ENNReal.ofReal (b⁻¹ * |T ω|) := ENNReal.ofReal_mul hb.le
+        _ ≤ ENNReal.ofReal b * T.mass := by gcongr
+    -- Steps 2–3: `∂Q_k(η) = ∂R(η) − S_k(dη)`, since `∂(R − Q_k − S_k) = ∂∂R_k = 0`
+    have hid : ∀ (k : ℕ) (η : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+        (Q k).boundary η = R.boundary η - S k (exteriorDerivativeTestOn univ (m + 1) η) := by
+      intro k η
+      have h0 : (R' k).boundary.boundary η = 0 := by
+        rw [GeometricCurrentOn.boundary_boundary]
+        rfl
+      have h1 : (R - Q k - S k).boundary η = (R' k).boundary.boundary η := by
+        rw [hdec k]
+      rw [h0] at h1
+      change R (exteriorDerivativeTestOn univ (m + 1) η) -
+        Q k (exteriorDerivativeTestOn univ (m + 1) η) -
+          S k (exteriorDerivativeTestOn univ (m + 1) η) = 0 at h1
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+      linarith
+    -- `∂Q_k ⇀ ∂R`, as `|S_k(dη)| ≤ sup|dη| M(S_k) ≤ sup|dη| (k+1)⁻¹ → 0`
+    have hweak : WeaklyConvergesOn (fun k => (Q k).boundary) R.boundary := by
+      intro η
+      obtain ⟨b, hb, hωb⟩ := hbound (exteriorDerivativeTestOn univ (m + 1) η)
+      have hb0 : Tendsto (fun k : ℕ => b * (1 / ((k : ℝ) + 1))) atTop (𝓝 0) := by
+        have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul b
+        rwa [mul_zero] at h
+      have hS : Tendsto (fun k => S k (exteriorDerivativeTestOn univ (m + 1) η)) atTop (𝓝 0) := by
+        refine squeeze_zero_norm (fun k => ?_) hb0
+        rw [Real.norm_eq_abs]
+        have h₂ : ENNReal.ofReal b * (S k).mass ≤ ENNReal.ofReal (b * (1 / ((k : ℝ) + 1))) := by
+          rw [ENNReal.ofReal_mul hb.le]
+          gcongr
+          exact le_add_self.trans (hmass k)
+        exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).1
+          ((heval (S k) _ b hb hωb).trans h₂)
+      have hlim := (tendsto_const_nhds (x := R.boundary η)).sub hS
+      rw [sub_zero] at hlim
+      exact hlim.congr fun k => (hid k η).symm
+    -- Step 4: closure for the integer multiplicity cycles `∂Q_k` of mass `≤ c M(∂R)`
+    refine Submission.dtc_bc_lc_fd_bim_closure_cycles P (m + 1) (fun k => (Q k).boundary)
+      R.boundary hmP hQ (fun k => ?_) ?_ hweak
+    · show (Q k).boundary.boundary = 0
+      exact GeometricCurrentOn.boundary_boundary (Q k)
+    · exact (iSup_le hQb).trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hRb)
+  · -- Case 2: `P = m + 2`, codimension zero (Simon 3.14).
+    obtain rfl : P = m + 1 + 1 := by omega
+    obtain ⟨U, X, hU, hUmono, hX, hsum, hXb, hpart⟩ :=
+      Submission.dtc_bc_lc_fd_bim_layers (m + 1) R hR hRc
+    exact Submission.dtc_bc_lc_fd_bim_nested_im (m + 1) U X R.boundary R.boundary.mass
+      (by omega) hU hUmono hX (fun j => (hXb j).trans_lt hRb) hsum hRb hpart
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
