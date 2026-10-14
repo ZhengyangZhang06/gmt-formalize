@@ -2446,6 +2446,25 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Evaluation bound** (Simon Ch. 6, 4.11).  If `R = (M, θ, ξ)` represents `T`, then
+`|T(ω)| ≤ ∫ |ω| dμ_R` for every `ω ∈ 𝒟ⁿ(U)`, where `μ_R = θ Hⁿ⌞M` and `|·|` is the Euclidean
+coefficient norm: `T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ`, `|∫ F| ≤ ∫ |F|` (no integrability is needed), and
+`|⟨ω(x), ξ(x)⟩| ≤ |ω(x)|` for `Hⁿ`-a.e. `x ∈ M` (`cmc_imRep_locality_restrict_sub` (d)). -/
+theorem Submission.dtc_bc_lc_fd_lz_action_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (ω : TestFormOn U n), R.Represents T → ENNReal.ofReal |T ω| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)) ∂R.measure := by
+  intro P n U T R ω hT
+  -- `μ_R = θ Hⁿ⌞M`, the density `θ` being measurable and finite
+  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  rw [IMRep.measure, lintegral_withDensity_eq_lintegral_mul_non_measurable _ hθ
+    (ae_of_all _ fun x => ENNReal.natCast_lt_top _)]
+  -- `T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ`
+  rw [hT ω, IMRep.action, ← Real.enorm_eq_ofReal_abs]
+  refine (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono_ae ?_)
+  -- `|⟨ω(x), ξ(x)⟩| ≤ |ω(x)|` for `Hⁿ`-a.e. `x ∈ M`
+  filter_upwards [Submission.cmc_imRep_locality_restrict_sub.2.2.2 P n U R] with x hx
+  rw [enorm_mul, Real.enorm_natCast, Real.enorm_eq_ofReal_abs, Pi.mul_apply]
+  gcongr
+  exact hx _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
