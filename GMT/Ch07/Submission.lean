@@ -855,6 +855,182 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **The cylinder `[[(0, 1)]] × X`** (Simon Ch. 6, 2.17–2.21, the product current of the
+homotopy formula 2.25).  Write `ι(t, x) = (t, x)`, `Jv = ι(0, v)`, and call `η : ℝ → 𝒟ᵏ(ℝᴺ)` a
+slice family of `ω ∈ 𝒟ᵏ⁺¹(ℝᴺ⁺¹)` if `η_t(x)(v) = ω(ι(t, x))(e₀, Jv₁, …, Jvₖ)`.  Every `ω` has
+a slice family `η^ω`, which is unique, and `|η_s(x) − η_t(x)| ≤ c|s − t|` makes `t ↦ X(η_t)`
+`c M(X)`-Lipschitz (`dimred_mbl_dt_lpc_slice_forms`).  So `L(ω) = ∫₀¹ X(η^ω_t) dt` is linear,
+and `|η^ω_t(x)| ≤ |ω(ι(t, x))|` gives `|L(ω)| ≤ c M(X)` when `|ω| ≤ c`: `L` is a current `Y`
+with `M(Y) ≤ M(X)` (cf. 2.20).  If `spt X` is compact and `spt ω` misses the compact set
+`E = ι([0, 1] × spt X)`, each slice `η^ω_t`, `t ∈ [0, 1]`, misses `spt X`, so `Y(ω) = 0`; hence
+`spt Y ⊆ E` is compact. -/
+theorem Submission.dimred_mbl_dt_lpc_cylinder_current : ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), X.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1), Y.mass ≤ X.mass ∧ (IsCompact X.support → IsCompact Y.support ∧ Y.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (η : ℝ → TestFormOn (univ : Set (Euclid N)) k), (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → Continuous (fun t => X (η t)) ∧ Y ω = ∫ t in (0 : ℝ)..1, X (η t) := by
+  intro hCB hVO N k X hX
+  classical
+  have hS := (Submission.dimred_mbl_dt_lpc_slice_forms hCB).1 N k
+  have hXm : X.mass ≠ ∞ := hX.ne
+  -- Step 1: a slice family `η^ω` of every `ω`; every slice family of `ω` equals `η^ω`
+  choose ηf hηf using fun ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) => (hS ω).1
+  have huniq : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1))
+      (η : ℝ → TestFormOn (univ : Set (Euclid N)) k),
+      (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N),
+        (η t : DifferentialForm (Euclid N) k) x v =
+          (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+            (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))
+            (Fin.cons (EuclideanSpace.single 0 1)
+              (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) →
+      η = ηf ω := by
+    intro ω η hη
+    funext t
+    apply Subtype.ext
+    funext x
+    ext v
+    rw [hη, hηf]
+  -- Step 2: `|X(η_s) − X(η_t)| ≤ c M(X) |s − t|`, so `t ↦ X(η_t)` is continuous
+  have hcont : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1))
+      (η : ℝ → TestFormOn (univ : Set (Euclid N)) k),
+      (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N),
+        (η t : DifferentialForm (Euclid N) k) x v =
+          (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+            (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))
+            (Fin.cons (EuclideanSpace.single 0 1)
+              (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) →
+      Continuous (fun t => X (η t)) := by
+    intro ω η hη
+    obtain ⟨c, hc0, hc⟩ := (hS ω).2
+    obtain ⟨-, hlip, -⟩ := hc η hη
+    have hM : 0 ≤ X.mass.toReal := ENNReal.toReal_nonneg
+    have hL : ∀ s t, dist (X (η s)) (X (η t)) ≤ (c * X.mass.toReal) * dist s t := by
+      intro s t
+      rw [Real.dist_eq, Real.dist_eq]
+      have hsub : X (η s) - X (η t) = X (η s - η t) := (map_sub X.toCurrent _ _).symm
+      rw [hsub]
+      -- (a)–(b): `|(η_s − η_t)(x)| ≤ c|s − t| + ε`, so `|X(η_s − η_t)| ≤ (c|s − t| + ε) M(X)`
+      have hε : ∀ ε > 0, |X (η s - η t)| ≤ (c * |s - t| + ε) * X.mass.toReal := by
+        intro ε hε
+        apply Submission.cmc_fc_sc_abs_le_mul_mass N k univ X (η s - η t) (c * |s - t| + ε)
+          (by positivity) hXm
+        intro x
+        simp only [Submodule.coe_sub, Pi.sub_apply]
+        linarith [hlip s t x]
+      -- (c): let `ε ↓ 0`
+      refine le_of_forall_pos_le_add (fun δ hδ => ?_)
+      have h := hε (δ / (X.mass.toReal + 1)) (by positivity)
+      have h2 : (δ / (X.mass.toReal + 1)) * X.mass.toReal ≤ δ := by
+        rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+        nlinarith
+      nlinarith
+    have hL' : LipschitzWith (Real.toNNReal (c * X.mass.toReal)) (fun t => X (η t)) := by
+      refine LipschitzWith.of_dist_le_mul (fun s t => ?_)
+      rw [Real.coe_toNNReal _ (by positivity)]
+      exact hL s t
+    exact hL'.continuous
+  -- Step 3: `L(ω) = ∫₀¹ X(η^ω_t) dt` is linear: by Step 1, `η^{ω₁ + ω₂} = η^{ω₁} + η^{ω₂}` and
+  -- `η^{aω} = a η^ω`, and the integrands are continuous by Step 2
+  let L : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ t in (0 : ℝ)..1, X (ηf ω t)
+      map_add' := by
+        intro ω₁ ω₂
+        have h : ηf (ω₁ + ω₂) = fun t => ηf ω₁ t + ηf ω₂ t := by
+          refine (huniq (ω₁ + ω₂) (fun t => ηf ω₁ t + ηf ω₂ t) ?_).symm
+          intro t x v
+          simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply]
+          rw [hηf ω₁, hηf ω₂]
+        simp only [h, map_add]
+        exact intervalIntegral.integral_add ((hcont ω₁ _ (hηf ω₁)).intervalIntegrable 0 1)
+          ((hcont ω₂ _ (hηf ω₂)).intervalIntegrable 0 1)
+      map_smul' := by
+        intro a ω
+        have h : ηf (a • ω) = fun t => a • ηf ω t := by
+          refine (huniq (a • ω) (fun t => a • ηf ω t) ?_).symm
+          intro t x v
+          simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply]
+          rw [hηf ω]
+        simp only [h, map_smul, RingHom.id_apply]
+        exact intervalIntegral.integral_const_mul a _ }
+  have hLω : ∀ ω, L ω = ∫ t in (0 : ℝ)..1, X (ηf ω t) := fun ω => rfl
+  -- Step 4: if `|ω| ≤ c`, then `|η^ω_t(x)| ≤ |ω(ι(t, x))| ≤ c`, so `|X(η^ω_t)| ≤ c M(X)` and
+  -- `|L(ω)| ≤ c M(X)`
+  have hbound : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (c : ℝ), 0 < c →
+      (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y) ≤ c) →
+      |L ω| ≤ c * X.mass.toReal := by
+    intro ω c hc hω
+    obtain ⟨c', -, hc'⟩ := (hS ω).2
+    obtain ⟨hpt, -, -⟩ := hc' (ηf ω) (hηf ω)
+    have h1 : ∀ t, ‖X (ηf ω t)‖ ≤ c * X.mass.toReal := fun t => by
+      rw [Real.norm_eq_abs]
+      exact Submission.cmc_fc_sc_abs_le_mul_mass N k univ X (ηf ω t) c hc hXm
+        (fun x => (hpt t x).trans (hω _))
+    have h2 := intervalIntegral.norm_integral_le_of_norm_le_const (a := (0 : ℝ)) (b := 1)
+      (fun t _ => h1 t)
+    rw [hLω, ← Real.norm_eq_abs]
+    simpa using h2
+  -- Step 5: `L` is a current `Y`; with Steps 1–2 this is (c)
+  obtain ⟨Y, hY⟩ := Submission.cmc_fc_sc_current_of_coeff_bound (N + 1) (k + 1) univ L
+    X.mass.toReal (fun ω c hc hω => hbound ω c hc hω)
+  refine ⟨Y, ?_, ?_, fun ω η hη => ⟨hcont ω η hη, ?_⟩⟩
+  · -- Step 6, (a): an admissible `ω` has `|ω| ≤ 1`, so `Y(ω) = L(ω) ≤ M(X)`
+    show Y.massOn univ ≤ X.mass
+    unfold GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    have h := hbound ω 1 one_pos hω.2
+    show ENNReal.ofReal (Y ω) ≤ X.mass
+    rw [hY ω]
+    calc ENNReal.ofReal (L ω) ≤ ENNReal.ofReal (X.mass.toReal) :=
+          ENNReal.ofReal_le_ofReal (by linarith [le_abs_self (L ω)])
+      _ = X.mass := ENNReal.ofReal_toReal hXm
+  · -- Step 7, (b): `Y` vanishes on forms missing the compact set `E = ι([0, 1] × spt X)`
+    intro hXc
+    -- (a) `E` is the continuous image of the compact set `[0, 1] × spt X`
+    have hE : {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support,
+        y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} =
+        (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :
+          Euclid (N + 1))) '' (Icc (0 : ℝ) 1 ×ˢ X.support) := by
+      ext y
+      simp only [mem_ofPred_eq, mem_image, mem_prod, Prod.exists]
+      constructor
+      · rintro ⟨t, ht, x, hx, rfl⟩
+        exact ⟨t, x, ⟨ht, hx⟩, rfl⟩
+      · rintro ⟨t, x, ⟨ht, hx⟩, rfl⟩
+        exact ⟨t, ht, x, hx, rfl⟩
+    have hιc : Continuous (fun p : ℝ × Euclid N =>
+        (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) := by
+      refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i => ?_)
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simpa using continuous_fst
+      · simp only [Fin.cons_succ]
+        exact (continuous_apply j).comp ((PiLp.continuous_ofLp 2 _).comp continuous_snd)
+    have hEc : IsCompact {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support,
+        y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+      rw [hE]
+      exact (isCompact_Icc.prod hXc).image hιc
+    -- (b)–(d) if `spt ω ∩ E = ∅`, every slice `η^ω_t`, `t ∈ [0, 1]`, misses `spt X`, so
+    -- `X(η^ω_t) = 0` and `Y(ω) = 0`
+    have hvan : ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1),
+        Disjoint (tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1)))
+          {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support,
+            y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} →
+        Y ω = 0 := by
+      intro ω hω
+      rw [hY ω, hLω]
+      obtain ⟨c, -, hc⟩ := (hS ω).2
+      obtain ⟨-, -, hsup⟩ := hc (ηf ω) (hηf ω)
+      have h0 : ∀ t ∈ uIcc (0 : ℝ) 1, X (ηf ω t) = 0 := by
+        intro t ht
+        rw [uIcc_of_le zero_le_one] at ht
+        apply hVO N k univ X (ηf ω t)
+        rw [Set.disjoint_left]
+        intro x hx hxX
+        exact Set.disjoint_left.1 hω (hsup t hx) ⟨t, ht, x, hxX, rfl⟩
+      rw [intervalIntegral.integral_congr h0]
+      simp
+    -- (e) hence `spt Y ⊆ E` and `spt Y` is compact
+    obtain ⟨h1, h2⟩ := Submission.rsd_cmr_support_subset_of_vanish (N + 1) (k + 1) univ _ Y
+      isOpen_univ hEc (subset_univ _) hvan
+    exact ⟨h2, h1⟩
+  · rw [hY ω, hLω, huniq ω η hη]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
