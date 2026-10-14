@@ -15442,55 +15442,6 @@ theorem Submission.codim1_lur_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F 
     exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
       hJmeas (fun a => (hJ a).1) harea hr (map_continuous f)).symm
 
-/-- **Simon 7.5.2 (‡)** (chapter-07.txt lines 757–770; Ch. 6, 2.35; Ch. 3, 1.8(2)–1.9 and 4.3):
-if `T = ∂[[E]]` in `U` (`N ∈ 𝒪`, `E ⊆ N ∩ U`) is integer multiplicity, then the points `y` with
-`Θⁿ(μ_T, y) = 1` are dense in `spt T`.  Let `x ∈ spt T ⊆ U ∩ N` and `ρ > 0`.  Near `x`, `T` is
-the multiplicity-one current `[[M']]` of a countably `n`-rectifiable `M' ⊆ Z₀` with
-`Hⁿ(M') < ∞` (graph chart of `N` over `TₓN`, De Giorgi's structure theorem for `G⁻¹(E)`), so
-`M_W(T) = Hⁿ(M' ∩ W)` for open `W ⊆ Z₀`, and `Θⁿ(μ_T, y) = 1` wherever `M'` has density one,
-i.e. `Hⁿ`-a.e. on `M'`.  `W' = Z₀ ∩ B_ρ(x)` is an open neighbourhood of `x ∈ spt T`, so
-`Hⁿ(M' ∩ W') = M_{W'}(T) > 0` and some `y ∈ M' ∩ W'` has `Θⁿ(μ_T, y) = 1`; positive density
-forces `y ∈ spt T`. -/
-theorem Submission.codim1_region_density_one_dense : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → ∀ x ∈ T.support, ∀ ρ : ℝ, 0 < ρ → ∃ y ∈ T.support ∩ ball x ρ, HasMassDensity T y 1 := by
-  intro P n U N E ξN T hn hU hO hE hEU hT hIM x hx ρ hρ
-  -- `x ∈ spt T ⊆ U ∩ N`
-  obtain ⟨-, hspt, -⟩ := Submission.codim1_region_support_cycle P n U N E ξN T hU hO hEU hT
-  obtain ⟨hxU, hxN⟩ := hspt hx
-  -- near `x`, `T = [[M']]`: `T(ω) = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ` whenever `spt ω ⊆ Z₀`
-  obtain ⟨Z₀, M', ξ', hZ₀, hxZ₀, hZ₀U, hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'Q, hrep⟩ :=
-    Submission.codim1_rdo_local_unit_representation P n U N E ξN T x hn hU hO hE hEU hT hIM
-      ⟨hxN, hxU⟩
-  -- `M_W(T) = Hⁿ(M' ∩ W)` for open `W ⊆ Z₀` (multiplicity `θ' ≡ 1`; finite as `Hⁿ(M') < ∞`)
-  have hmass : ∀ W : Set (Euclid P), IsOpen W → W ⊆ Z₀ → T.massOn W = μHE[n] (M' ∩ W) := by
-    intro W hW hWZ₀
-    have h := (Submission.codim1_massOn_eq_lintegral_of_oriented_rep P n U Z₀ M' T (fun _ => 1)
-      ξ' hZ₀ hZ₀U hM' hM'Z₀ measurable_const (fun _ => zero_le_one) hξ' hξ'Q
-      (fun ω hω => by simpa only [one_mul] using hrep ω hω) W hW hWZ₀).2
-    simp only [ENNReal.ofReal_one, setLIntegral_one] at h
-    exact h (measure_ne_top_of_subset inter_subset_left hM'fin)
-  -- `W' = Z₀ ∩ B_ρ(x)` is an open neighbourhood of `x ∈ spt T`, so `Hⁿ(M' ∩ W') = M_{W'}(T) > 0`
-  have hW' : IsOpen (Z₀ ∩ ball x ρ) := hZ₀.inter isOpen_ball
-  have hpos : μHE[n] (M' ∩ (Z₀ ∩ ball x ρ)) ≠ 0 := by
-    rw [← hmass _ hW' inter_subset_left]
-    exact (Submission.codim1_rdo_massOn_pos_of_mem_support P n U _ T x hU hW'
-      ⟨hxZ₀, mem_ball_self hρ⟩ hx).ne'
-  -- `M'` has density one `Hⁿ`-a.e., and `Hⁿ⌞(M' ∩ W') ≠ 0`, so some such point lies in `W'`
-  have := ae_neBot.mpr (mt Measure.restrict_eq_zero.mp hpos)
-  obtain ⟨y, ⟨-, hyZ₀, hyx⟩, hy⟩ := ((ae_restrict_mem (hM'.inter hW'.measurableSet)).and
-    ((Submission.codim1_rdo_rectifiable_ae_density_one P n M' hn hM' hM'rect hM'fin).filter_mono
-      (ae_mono (Measure.restrict_mono inter_subset_left le_rfl)))).exists
-  -- `Θⁿ(μ_T, y) = 1`: `M_{B_t(y)}(T) = Hⁿ(M' ∩ B_t(y))` once `B_t(y) ⊆ Z₀`
-  obtain ⟨ε, hε, hεZ₀⟩ := Metric.isOpen_iff.mp hZ₀ y hyZ₀
-  have hdens : HasMassDensity T y 1 := by
-    refine ⟨zero_le_one, ?_⟩
-    rw [ENNReal.ofReal_one]
-    refine hy.congr' ?_
-    filter_upwards [Ioo_mem_nhdsGT hε] with t ht
-    rw [hmass (ball y t) isOpen_ball ((ball_subset_ball ht.2.le).trans hεZ₀)]
-  -- positive density forces `y ∈ spt T`
-  exact ⟨y, ⟨Submission.codim1_rdo_density_pos_mem_support P n U T y 1 (hZ₀U hyZ₀) one_pos hdens,
-    hyx⟩, hdens⟩
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -16385,5 +16336,54 @@ theorem Submission.codim1_rdo_local_unit_representation : ∀ (P n : ℕ) (U N E
       (hω.trans fun w hw => ⟨hw.1.trans (half_lt_self hδ₁), hw.2⟩) rfl
     rw [hTω, hGG _ hΦ hΦc hΦD]
     exact hrep _ hω
+
+/-- **Simon 7.5.2 (‡)** (chapter-07.txt lines 757–770; Ch. 6, 2.35; Ch. 3, 1.8(2)–1.9 and 4.3):
+if `T = ∂[[E]]` in `U` (`N ∈ 𝒪`, `E ⊆ N ∩ U`) is integer multiplicity, then the points `y` with
+`Θⁿ(μ_T, y) = 1` are dense in `spt T`.  Let `x ∈ spt T ⊆ U ∩ N` and `ρ > 0`.  Near `x`, `T` is
+the multiplicity-one current `[[M']]` of a countably `n`-rectifiable `M' ⊆ Z₀` with
+`Hⁿ(M') < ∞` (graph chart of `N` over `TₓN`, De Giorgi's structure theorem for `G⁻¹(E)`), so
+`M_W(T) = Hⁿ(M' ∩ W)` for open `W ⊆ Z₀`, and `Θⁿ(μ_T, y) = 1` wherever `M'` has density one,
+i.e. `Hⁿ`-a.e. on `M'`.  `W' = Z₀ ∩ B_ρ(x)` is an open neighbourhood of `x ∈ spt T`, so
+`Hⁿ(M' ∩ W') = M_{W'}(T) > 0` and some `y ∈ M' ∩ W'` has `Θⁿ(μ_T, y) = 1`; positive density
+forces `y ∈ spt T`. -/
+theorem Submission.codim1_region_density_one_dense : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → ∀ x ∈ T.support, ∀ ρ : ℝ, 0 < ρ → ∃ y ∈ T.support ∩ ball x ρ, HasMassDensity T y 1 := by
+  intro P n U N E ξN T hn hU hO hE hEU hT hIM x hx ρ hρ
+  -- `x ∈ spt T ⊆ U ∩ N`
+  obtain ⟨-, hspt, -⟩ := Submission.codim1_region_support_cycle P n U N E ξN T hU hO hEU hT
+  obtain ⟨hxU, hxN⟩ := hspt hx
+  -- near `x`, `T = [[M']]`: `T(ω) = ∫_{M'} ⟨ω, ξ'⟩ dHⁿ` whenever `spt ω ⊆ Z₀`
+  obtain ⟨Z₀, M', ξ', hZ₀, hxZ₀, hZ₀U, hM', hM'Z₀, hM'rect, hM'fin, hξ', hξ'Q, hrep⟩ :=
+    Submission.codim1_rdo_local_unit_representation P n U N E ξN T x hn hU hO hE hEU hT hIM
+      ⟨hxN, hxU⟩
+  -- `M_W(T) = Hⁿ(M' ∩ W)` for open `W ⊆ Z₀` (multiplicity `θ' ≡ 1`; finite as `Hⁿ(M') < ∞`)
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → W ⊆ Z₀ → T.massOn W = μHE[n] (M' ∩ W) := by
+    intro W hW hWZ₀
+    have h := (Submission.codim1_massOn_eq_lintegral_of_oriented_rep P n U Z₀ M' T (fun _ => 1)
+      ξ' hZ₀ hZ₀U hM' hM'Z₀ measurable_const (fun _ => zero_le_one) hξ' hξ'Q
+      (fun ω hω => by simpa only [one_mul] using hrep ω hω) W hW hWZ₀).2
+    simp only [ENNReal.ofReal_one, setLIntegral_one] at h
+    exact h (measure_ne_top_of_subset inter_subset_left hM'fin)
+  -- `W' = Z₀ ∩ B_ρ(x)` is an open neighbourhood of `x ∈ spt T`, so `Hⁿ(M' ∩ W') = M_{W'}(T) > 0`
+  have hW' : IsOpen (Z₀ ∩ ball x ρ) := hZ₀.inter isOpen_ball
+  have hpos : μHE[n] (M' ∩ (Z₀ ∩ ball x ρ)) ≠ 0 := by
+    rw [← hmass _ hW' inter_subset_left]
+    exact (Submission.codim1_rdo_massOn_pos_of_mem_support P n U _ T x hU hW'
+      ⟨hxZ₀, mem_ball_self hρ⟩ hx).ne'
+  -- `M'` has density one `Hⁿ`-a.e., and `Hⁿ⌞(M' ∩ W') ≠ 0`, so some such point lies in `W'`
+  have := ae_neBot.mpr (mt Measure.restrict_eq_zero.mp hpos)
+  obtain ⟨y, ⟨-, hyZ₀, hyx⟩, hy⟩ := ((ae_restrict_mem (hM'.inter hW'.measurableSet)).and
+    ((Submission.codim1_rdo_rectifiable_ae_density_one P n M' hn hM' hM'rect hM'fin).filter_mono
+      (ae_mono (Measure.restrict_mono inter_subset_left le_rfl)))).exists
+  -- `Θⁿ(μ_T, y) = 1`: `M_{B_t(y)}(T) = Hⁿ(M' ∩ B_t(y))` once `B_t(y) ⊆ Z₀`
+  obtain ⟨ε, hε, hεZ₀⟩ := Metric.isOpen_iff.mp hZ₀ y hyZ₀
+  have hdens : HasMassDensity T y 1 := by
+    refine ⟨zero_le_one, ?_⟩
+    rw [ENNReal.ofReal_one]
+    refine hy.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hε] with t ht
+    rw [hmass (ball y t) isOpen_ball ((ball_subset_ball ht.2.le).trans hεZ₀)]
+  -- positive density forces `y ∈ spt T`
+  exact ⟨y, ⟨Submission.codim1_rdo_density_pos_mem_support P n U T y 1 (hZ₀U hyZ₀) one_pos hdens,
+    hyx⟩, hdens⟩
 
 end GMT.Ch07
