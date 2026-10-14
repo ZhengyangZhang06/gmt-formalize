@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f996bf00b7ef22798ac6f96b4d6eefdb6d1bfaeacec720e1c72264e0ce42ad50",
+  "git_delta": {
+    "base_commit": "84b0fdd34df734d32d089212f9e95e321c344311",
+    "candidate_commit": "8aa9d8729b8efee107f3a41ff8dbf785169d960f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_action_bound",
+    "diff_sha256": "5f79c39e53e73ef93cc155cfae6e7ff7dc7d91a4ba7172f14b4676fc19b2484c",
+    "source_sha256": "42871412b77af6cebfb5d9b3014a55f8dc6c95cab1e1c48484a9d111c5b993ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_action_bound",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (ω : TestFormOn U n), R.Represents T → ENNReal.ofReal |T ω| ≤ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x)) ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
