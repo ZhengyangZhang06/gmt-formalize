@@ -1926,11 +1926,15 @@ theorem Submission.dor_lmb_fcd_sd_series_limit : (∀ (P m : ℕ) (U : Set (Eucl
       Tendsto (fun N => (X N).mass) atTop (𝓝 0) →
       ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Tendsto (fun N => X N ω) atTop (𝓝 0) := by
     intro X hX ω
-    obtain ⟨B, hB⟩ := Submission.dor_ims_sua_coeff_norm_rep P (m + 1)
+    -- `x ↦ |ω(x)| = √(∑_I ω(x)(e_I)²)` is continuous, since each coefficient `ω(x)(e_I)` is
     have hcont : Continuous fun x =>
         covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 1)) x) := by
-      simp only [hB]
-      exact (B.continuous.comp ω.property.1.1.continuous).norm
+      have hω : Continuous (ω : DifferentialForm (Euclid P) (m + 1)) := ω.property.1.1.continuous
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      split_ifs
+      · exact ((continuous_eval_const _).comp hω).pow 2
+      · exact continuous_const
     have hcs : HasCompactSupport fun x =>
         covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (m + 1)) x) := by
       refine ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h0 => hx ?_
