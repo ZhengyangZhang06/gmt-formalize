@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.countable_lipschitz_cover-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+  "depth": 3,
+  "title": "Countable open cover with Lipschitz pieces for a map locally Lipschitz on an arbitrary set (parent step 1)",
+  "statement": "For all P, Q ∈ ℕ, every set U ⊆ ℝ^P and every map f : ℝ^P → ℝ^Q that is locally Lipschitz on U, there are open sets O_i ⊆ ℝ^P and constants K_i ∈ ℝ≥0 (i ∈ ℕ) such that U ⊆ ⋃_i O_i and f is K_i-Lipschitz on O_i ∩ U for every i. Here 'locally Lipschitz on U' means: every x ∈ U has a neighbourhood t within U (t ∈ 𝓝[U] x) and a constant K ≥ 0 such that f is K-Lipschitz on t.",
+  "lean_statement": "∀ (P Q : ℕ) (U : Set (Eucl P)) (f : Eucl P → Eucl Q), LocallyLipschitzOn U f → ∃ (O : ℕ → Set (Eucl P)) (K : ℕ → ℝ≥0), (∀ i, IsOpen (O i)) ∧ U ⊆ ⋃ i, O i ∧ ∀ i, LipschitzOnWith (K i) f (O i ∩ U)",
+  "lean_name": "lpf_lli_countable_lipschitz_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60-a1"
+}
