@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a29295957dce5201b3883790c80bd61e66f5b9b4cb28d8885d9dc76695101fb8",
+  "git_delta": {
+    "base_commit": "646728f85776f5d5c96ef98c74384dec252e2b50",
+    "candidate_commit": "d6da89d224f06b9d2f2f92fc5a1364ed843ab46e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_lsa_c1_graph_chart",
+    "diff_sha256": "2bd1acaaa79a150a9445d7e1f51ec2d53c449088e9d4f6a90d694381fc45fcd8",
+    "source_sha256": "af9fe067f43c795dfaa2e7e7224edde0f38e00e80d204321fedf0e1086a23ab4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_lsa_c1_graph_chart",
+      "statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (p : Euclid P), IsEmbeddedSubmanifold 1 m M → p ∈ M → ∃ (pr : Euclid P →L[ℝ] Euclid m) (G : Euclid m → Euclid P) (r : ℝ) (W : Set (Euclid P)) (Λ : NNReal), 0 < r ∧ IsOpen W ∧ p ∈ W ∧ ‖pr‖ ≤ 1 ∧ G 0 = p ∧ ContDiffOn ℝ 1 G (ball 0 r) ∧ LipschitzOnWith Λ G (ball 0 r) ∧ M ∩ W = G '' ball 0 r ∧ (∀ a ∈ ball (0 : Euclid m) r, pr (G a - p) = a) ∧ (∀ a ∈ ball (0 : Euclid m) r, pr ∘L fderiv ℝ G a = ContinuousLinearMap.id ℝ (Euclid m)) ∧ ∀ a ∈ ball (0 : Euclid m) r, tangentSpace M (G a) = Set.range (fderiv ℝ G a)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
