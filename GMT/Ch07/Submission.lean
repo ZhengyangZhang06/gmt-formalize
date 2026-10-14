@@ -628,6 +628,160 @@ theorem Submission.cmcdtfr_face_geometry : ∀ (P k : ℕ), volume {y : Euclid k
   -- `(c)`: the open face of `p` against the closed face of `q ≠ p`
   exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
 
+/-- **A finite disjoint family of oriented rectifiable pieces is an integer multiplicity triple**
+(Simon Ch. 6, 3.1 and (‡) of 6.3.1; used for the faces of the deformation theorem 6.5.1).  Let
+`F_p ⊆ U` (`p ∈ S`, `S` finite) be pairwise disjoint Borel sets with `Hᵏ(F_p) < ∞` and
+`F_p ⊆ G_p(ℝᵏ)` for Lipschitz `G_p`, `m_p > 0`, and `ξ_p` orient an approximate tangent space of
+`C = ⋃_{q ∈ S} F_q` at every point of `F_p`.  Then `(C, θ, ξ)` with `θ = Σ_q m_q 1_{F_q}` and
+`ξ = ξ_p` on `F_p` (`0` off `C`) is an `IMRep`; the action and `μ_T(ℝᴾ) = ∫_C θ dHᵏ` split over the
+disjoint pieces, where `θ = m_p` and `ξ = ξ_p`. -/
+theorem Submission.cmcdtfrpi_finite_piece_imrep : ∀ (P k : ℕ) (I : Type) (U : Set (Euclid P)) (S : Finset I) (F : I → Set (Euclid P)) (m : I → ℕ) (ξ : I → MultiVector P k) (G : I → Euclid k → Euclid P), (∀ p ∈ S, MeasurableSet (F p)) → (∀ p ∈ S, F p ⊆ U) → (∀ p ∈ S, μHE[k] (F p) ≠ ∞) → (∀ p ∈ S, ∀ q ∈ S, p ≠ q → Disjoint (F p) (F q)) → (∀ p ∈ S, 0 < m p) → (∀ p ∈ S, ∃ K : NNReal, LipschitzWith K (G p)) → (∀ p ∈ S, F p ⊆ range (G p)) → (∀ p ∈ S, ∀ x ∈ F p, ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k (⋃ q ∈ S, F q) x Q ∧ IsUnitOrientationOf (ξ p) Q) → ∃ R : IMRep U k, (∀ ω : TestFormOn U k, R.action (ω : DifferentialForm (Euclid P) k) = ∑ p ∈ S, (m p : ℝ) * ∫ x in F p, ξ p ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) ∧ R.measure univ = ∑ p ∈ S, (m p : ℝ≥0∞) * μHE[k] (F p) := by
+  intro P k I U S F m ξ G hFm hFU hFfin hdisj hmpos hGlip hFG htan
+  classical
+  -- step 1: the carrier `C = ⋃_{q ∈ S} F_q` is Borel and lies in `U`
+  have hCm : MeasurableSet (⋃ q ∈ S, F q) := Finset.measurableSet_biUnion S hFm
+  have hCU : (⋃ q ∈ S, F q) ⊆ U := by
+    intro x hx
+    obtain ⟨p, hp, hxp⟩ := Set.mem_iUnion₂.mp hx
+    exact hFU p hp hxp
+  -- step 2: a point of `C` lies in exactly one piece
+  have huniq : ∀ p ∈ S, ∀ q ∈ S, ∀ x ∈ F p, x ∈ F q → q = p := by
+    intro p hp q hq x hxp hxq
+    by_contra hne
+    exact Set.disjoint_left.mp (hdisj p hp q hq (Ne.symm hne)) hxp hxq
+  -- step 3: the multiplicity `θ = Σ_q m_q 1_{F_q}` is measurable and equals `m_p` on `F_p`
+  let θ : Euclid P → ℕ := fun x => ∑ q ∈ S, (F q).indicator (fun _ => m q) x
+  have hθm : Measurable θ :=
+    Finset.measurable_sum S (fun q hq => measurable_const.indicator (hFm q hq))
+  have hθeq : ∀ p ∈ S, ∀ x ∈ F p, θ x = m p := by
+    intro p hp x hx
+    simp only [θ]
+    rw [Finset.sum_eq_single p]
+    · simp [Set.indicator_of_mem hx]
+    · intro q hq hqp
+      have hxq : x ∉ F q := fun h => hqp (huniq p hp q hq x hx h)
+      simp [Set.indicator_of_notMem hxq]
+    · intro hp'; exact absurd hp hp'
+  -- step 4: the orientation `ξ = ξ_p` on `F_p`, `0` off `C`, as a fold of `if x ∈ F_q` over a
+  -- list of `S` (a `Finset` sum of indicators would need `ContinuousAdd (MultiVector P k)`)
+  let fold : List I → Euclid P → MultiVector P k := fun L x =>
+    L.foldr (fun q acc => if x ∈ F q then ξ q else acc) 0
+  have hfold_sm : ∀ L : List I, (∀ q ∈ L, q ∈ S) → StronglyMeasurable (fold L) := by
+    intro L
+    induction L with
+    | nil => intro _; exact stronglyMeasurable_const
+    | cons a L ih =>
+      intro hL
+      have ha : a ∈ S := hL a List.mem_cons_self
+      have hrest : ∀ q ∈ L, q ∈ S := fun q hq => hL q (List.mem_cons_of_mem a hq)
+      show StronglyMeasurable (fun x => if x ∈ F a then ξ a else fold L x)
+      exact StronglyMeasurable.ite (hFm a ha) stronglyMeasurable_const (ih hrest)
+  have hfold_eq : ∀ L : List I, (∀ q ∈ L, q ∈ S) → ∀ p ∈ S, p ∈ L → ∀ x ∈ F p,
+      fold L x = ξ p := by
+    intro L
+    induction L with
+    | nil => intro _ p _ hpL; simp at hpL
+    | cons a L ih =>
+      intro hL p hp hpL x hx
+      have ha : a ∈ S := hL a List.mem_cons_self
+      have hrest : ∀ q ∈ L, q ∈ S := fun q hq => hL q (List.mem_cons_of_mem a hq)
+      simp only [fold, List.foldr_cons]
+      by_cases hxa : x ∈ F a
+      · obtain rfl : a = p := huniq p hp a ha x hx hxa
+        simp only [hxa, ↓reduceIte]
+      · simp only [hxa, ↓reduceIte]
+        have hpa : p ≠ a := fun h => hxa (h ▸ hx)
+        have hpL' : p ∈ L := by
+          rcases List.mem_cons.mp hpL with h | h
+          · exact absurd h hpa
+          · exact h
+        exact ih hrest p hp hpL' x hx
+  let ξf : Euclid P → MultiVector P k := fold S.toList
+  have hξsm : StronglyMeasurable ξf := hfold_sm S.toList (fun q hq => Finset.mem_toList.mp hq)
+  have hξeq : ∀ p ∈ S, ∀ x ∈ F p, ξf x = ξ p := fun p hp x hx =>
+    hfold_eq S.toList (fun q hq => Finset.mem_toList.mp hq) p hp (Finset.mem_toList.mpr hp) x hx
+  -- step 5: `C` is countably `k`-rectifiable, covered by the ranges of the Lipschitz `G_p`
+  -- (listed along `S.toList`, padded with constant maps) up to `M₀ = ∅`
+  have hrect : CountablyRectifiable k (⋃ q ∈ S, F q) := by
+    refine ⟨∅, measure_empty, fun j => if h : j < S.toList.length then G (S.toList.get ⟨j, h⟩)
+      else fun _ => 0, ?_, ?_⟩
+    · intro j
+      by_cases h : j < S.toList.length
+      · simp only [h, ↓reduceDIte]
+        exact hGlip _ (Finset.mem_toList.mp (List.get_mem _ _))
+      · simp only [h, ↓reduceDIte]
+        exact ⟨0, LipschitzWith.const 0⟩
+    · intro x hx
+      obtain ⟨p, hp, hxp⟩ := Set.mem_iUnion₂.mp hx
+      right
+      obtain ⟨y, hy⟩ := hFG p hp hxp
+      obtain ⟨⟨j, hj⟩, hjp⟩ := List.mem_iff_get.mp (Finset.mem_toList.mpr hp)
+      refine Set.mem_iUnion.mpr ⟨j, y, ?_⟩
+      simp only [hj, ↓reduceDIte, hjp, hy]
+  -- step 6: `∫_C θ dHᵏ = Σ_p m_p Hᵏ(F_p) < ∞`, splitting over the disjoint pieces
+  have hpd : Set.PairwiseDisjoint (↑S) F := fun p hp q hq hpq => hdisj p hp q hq hpq
+  have hlint : ∫⁻ x in ⋃ q ∈ S, F q, (θ x : ℝ≥0∞) ∂μHE[k] =
+      ∑ p ∈ S, (m p : ℝ≥0∞) * μHE[k] (F p) := by
+    rw [lintegral_biUnion_finset hpd hFm]
+    refine Finset.sum_congr rfl (fun p hp => ?_)
+    rw [setLIntegral_congr_fun (hFm p hp) (g := fun _ => (m p : ℝ≥0∞))
+      (fun x hx => by simp only [hθeq p hp x hx]), lintegral_const,
+      Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
+  have hsum_ne : ∑ p ∈ S, (m p : ℝ≥0∞) * μHE[k] (F p) ≠ ∞ :=
+    ENNReal.sum_ne_top.mpr (fun p hp => ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (hFfin p hp))
+  -- step 8: `ξ` orients an approximate tangent space at every point of `C`, hence a.e.
+  have horients : ∀ᵐ x ∂(μHE[k].restrict (⋃ q ∈ S, F q)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt k (⋃ q ∈ S, F q) x Q ∧ IsUnitOrientationOf (ξf x) Q := by
+    refine ae_restrict_of_forall_mem hCm (fun x hx => ?_)
+    obtain ⟨p, hp, hxp⟩ := Set.mem_iUnion₂.mp hx
+    obtain ⟨Q, hQ, hor⟩ := htan p hp x hxp
+    exact ⟨Q, hQ, by rw [hξeq p hp x hxp]; exact hor⟩
+  -- step 9: the triple `(C, θ, ξ)`; step 7 (local integrability) is `∫_{C ∩ K} θ ≤ ∫_C θ < ∞`
+  let R : IMRep U k :=
+    { carrier := ⋃ q ∈ S, F q
+      mult := θ
+      orient := ξf
+      measurableSet_carrier := hCm
+      carrier_subset := hCU
+      rectifiable := hrect
+      measurable_mult := hθm
+      mult_pos := by
+        intro x hx
+        obtain ⟨p, hp, hxp⟩ := Set.mem_iUnion₂.mp hx
+        rw [hθeq p hp x hxp]; exact hmpos p hp
+      locallyIntegrable_mult := by
+        intro K _ _
+        exact ne_top_of_le_ne_top (hlint ▸ hsum_ne) (lintegral_mono_set Set.inter_subset_left)
+      aestronglyMeasurable_orient := hξsm.aestronglyMeasurable
+      orients := horients }
+  refine ⟨R, ?_, ?_⟩
+  -- step 10: the action splits over the pieces, on which the integrand is the continuous,
+  -- compactly supported `m_p ξ_p(ω)`, integrable for the finite measure `Hᵏ⌞F_p`
+  · intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) k) := ω.2.1.1.continuous
+    have hωs : HasCompactSupport (ω : DifferentialForm (Euclid P) k) := ω.2.1.2
+    show ∫ x in ⋃ q ∈ S, F q, (θ x : ℝ) * ξf x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k] = _
+    have hint : ∀ p ∈ S, IntegrableOn
+        (fun x => (θ x : ℝ) * ξf x ((ω : DifferentialForm (Euclid P) k) x)) (F p) μHE[k] := by
+      intro p hp
+      have : IsFiniteMeasure (μHE[k].restrict (F p)) :=
+        ⟨by rw [Measure.restrict_apply_univ]; exact lt_top_iff_ne_top.mpr (hFfin p hp)⟩
+      have hg : Integrable (fun x => (m p : ℝ) * ξ p ((ω : DifferentialForm (Euclid P) k) x))
+          (μHE[k].restrict (F p)) := by
+        refine Continuous.integrable_of_hasCompactSupport
+          (continuous_const.mul ((ξ p).continuous.comp hωc)) ?_
+        exact (hωs.comp_left (map_zero (ξ p))).mul_left
+      refine IntegrableOn.congr_fun hg (fun x hx => ?_) (hFm p hp)
+      simp only [hθeq p hp x hx, hξeq p hp x hx]
+    rw [integral_biUnion_finset S hFm (fun p hp q hq hpq => hdisj p hp q hq hpq) hint]
+    refine Finset.sum_congr rfl (fun p hp => ?_)
+    rw [← integral_const_mul]
+    refine setIntegral_congr_fun (hFm p hp) (fun x hx => ?_)
+    simp only [hθeq p hp x hx, hξeq p hp x hx]
+  -- step 11: `μ_T(ℝᴾ) = ∫ θ d(Hᵏ⌞C) = Σ_p m_p Hᵏ(F_p)` by step 6
+  · show ((μHE[k].restrict (⋃ q ∈ S, F q)).withDensity fun x => (θ x : ℝ≥0∞)) univ = _
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, hlint]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
