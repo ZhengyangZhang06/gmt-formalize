@@ -1402,6 +1402,38 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon Ch. 6, 3.2(3)**, localized: if `S = τ(RS)` and `T = τ(RT)` in `ℝᴾ` agree on every test
+form supported in the open set `O`, then `μ_S⌞O = μ_T⌞O`.  Admissible forms for `M_W` with
+`W ⊆ O` are supported in `O`, so `μ_S(W) = M_W(S) = M_W(T) = μ_T(W)` for open `W ⊆ O`; both
+measures are finite on balls, and open sets form a generating π-system. -/
+theorem Submission.idtp_fons_cs_sp_measure_restrict_eq_of_agree : ∀ (P m : ℕ) (S T : GeometricCurrentOn (univ : Set (Euclid P)) m) (RS RT : IMRep (univ : Set (Euclid P)) m) (O : Set (Euclid P)), IsOpen O → RS.Represents S → RT.Represents T → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → S ω = T ω) → RS.measure.restrict O = RT.measure.restrict O := by
+  intro P m S T RS RT O hO hRS hRT hST
+  -- Step 1: `M_W(S) = M_W(T)` for `W ⊆ O`, the admissible forms being supported in `O`
+  have hmass : ∀ W : Set (Euclid P), W ⊆ O → S.massOn W = T.massOn W := fun W hW =>
+    congrArg sSup (Set.image_congr fun ω hω => by rw [hST ω (hω.1.trans hW)])
+  -- Step 2: `μ_S(W) = M_W(S) = M_W(T) = μ_T(W)` for open `W ⊆ O`
+  have hopen : ∀ W : Set (Euclid P), IsOpen W → W ⊆ O → RS.measure W = RT.measure W := by
+    intro W hWo hWO
+    rw [← (Submission.dor_imrep_massOn_eq_measure_and_support P m univ S RS isOpen_univ hRS).1 W hWo,
+      ← (Submission.dor_imrep_massOn_eq_measure_and_support P m univ T RT isOpen_univ hRT).1 W hWo]
+    exact hmass W hWO
+  -- Step 3: `μ_R` is finite on closed balls (`θ` is locally `Hᵐ`-integrable)
+  have hfin : ∀ (R : IMRep (univ : Set (Euclid P)) m) (r : ℝ), R.measure (closedBall 0 r) ≠ ∞ := by
+    intro R r
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall 0 r) (subset_univ _)
+  -- Step 4: the open sets form a generating π-system covered by the balls `B(0, i + 1)`
+  refine Measure.ext_of_generateFrom_of_iUnion {s : Set (Euclid P) | IsOpen s}
+    (fun i : ℕ => ball (0 : Euclid P) (i + 1)) BorelSpace.measurable_eq isPiSystem_isOpen
+    (iUnion_ball_nat_succ 0) (fun _ => isOpen_ball (x := (0 : Euclid P))) (fun i => ?_)
+    (fun G (hG : IsOpen G) => ?_)
+  · rw [Measure.restrict_apply measurableSet_ball]
+    exact ne_top_of_le_ne_top (hfin RS (i + 1))
+      (measure_mono (inter_subset_left.trans ball_subset_closedBall))
+  · rw [Measure.restrict_apply hG.measurableSet, Measure.restrict_apply hG.measurableSet]
+    exact hopen _ (hG.inter hO) inter_subset_right
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
