@@ -766,6 +766,38 @@ theorem Submission.dimred_mbl_dtfr_face_divergence : ∀ (P m : ℕ) (ι : Fin (
     rw [hfd]
     simp [Matrix.diag, LinearMap.toMatrix_apply, hcoord, hL, ev, w, zsmul_eq_mul]
 
+/-- **The boundary of an integer lattice chain is an integer lattice chain** (cubical Stokes).
+Let `T(ω) = Σ_{p ∈ s} β_p ∫_{Q^{m+1}} ω(Φ_p y)(e_{p.1(0)}, …, e_{p.1(m)}) dy`, where
+`Φ_p(y) = p.2 + Σⱼ yⱼ e_{p.1(j)}` and each `p.1` is strictly increasing.  Then
+`∂T(γ) = Σ_{q ∈ s'} β'_q ∫_{Q^m} γ(Φ_q y)(e_{q.1(0)}, …, e_{q.1(m-1)}) dy` for integers `β'_q` and
+lattice `m`-cube indices `q ∈ s'` that do not depend on `γ`.
+Indeed `∂T(γ) = T(dγ)`.  On the cube `p`, `dγ(Φ_p y)(E_p) = tr DG(y)` for the smooth field
+`Gᵢ(y) = (-1)ⁱ γ(Φ_p y)(E_p ∘ succAbove i)` (`dimred_mbl_dtfr_face_divergence`), and
+`dimred_mbl_dtfrcb_cube_stokes` integrates this to the signed sum of the integrals over the front
+and back faces of `p`.  `dimred_mbl_dtfrcb_face_regroup` collects these faces with integer
+coefficients. -/
+theorem Submission.dimred_mbl_dtfr_chain_boundary : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (β : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∃ (s' : Finset ((Fin m → Fin P) × (Fin P → ℤ))) (β' : (Fin m → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s', StrictMono p.1) ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) m, T.boundary γ = ∑ p ∈ s', (β' p : ℝ) * ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro P m s β T hs hT
+  -- the faces of the cubes of `s`, regrouped with integer coefficients independent of `γ`
+  obtain ⟨s', β', hs', hI⟩ := Submission.dimred_mbl_dtfrcb_face_regroup P m s β hs
+  refine ⟨s', β', hs', fun γ => ?_⟩
+  -- `∂T(γ) = T(dγ) = Σ_p β_p ∫_{Q^{m+1}} dγ(Φ_p y)(E_p) dy`
+  rw [GeometricCurrentOn.boundary_apply, hT, ← hI fun q =>
+    ∫ y in {y : Euclid m | ∀ i, 0 < y i ∧ y i < 1}, (γ : DifferentialForm (Euclid P) m)
+      (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ))
+      (fun j => EuclideanSpace.single (q.1 j) (1 : ℝ))]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  congr 1
+  -- Stokes on the cube `p`, with `dγ(Φ_p y)(E_p) = tr DG(y)` for `Gᵢ(y) = (-1)ⁱ γ(Φ_p y)(E'ᵢ)`
+  obtain ⟨hG, -, htr⟩ := Submission.dimred_mbl_dtfr_face_divergence P m p.1 p.2
+    (γ : DifferentialForm (Euclid P) m)
+    (fun y => WithLp.toLp 2 fun i => (-1 : ℝ) ^ (i : ℕ) * (γ : DifferentialForm (Euclid P) m)
+      (WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+      (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ)))
+    (hs p hp) γ.property.1.1 fun _ _ => rfl
+  exact Submission.dimred_mbl_dtfrcb_cube_stokes P m p.1 p.2 _ _
+    (hG.of_le (by exact_mod_cast le_top)) (fun _ _ => rfl) htr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
