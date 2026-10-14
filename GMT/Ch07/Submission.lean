@@ -696,6 +696,58 @@ theorem Submission.dimred_cs_ti_translate_action_hasDerivAt : ∀ (P n : ℕ) (R
     ((hθB.integrable_indicator hBm).const_mul K) h_diff
   exact key.2
 
+/-- Differentiation of the slices `σ ↦ Y(Φ(ω(s + σv + ·)))` (step (5c) of the cube Stokes
+argument): for `Y = τ(M, θ, ξ)` in `ℝᴾ`, a continuous linear `Φ : Λ^{n'} → Λ^q` and a test
+`n'`-form `ω`, the derivative at `τ` is `Y(D(Φ ∘ ω)(s + τv + ·)[v])`.  The translate
+`ω_s = Φ ∘ ω ∘ (s + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b)), so
+`dimred_cs_ti_translate_action_hasDerivAt` differentiates `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))`; here
+`ω_s(σv + y) = Φ(ω(s + σv + y))` and `Dω_s(z) = D(Φ ∘ ω)(s + z)`, and on these test forms
+`currentEval Y` is `τ(M, θ, ξ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt : ∀ (P q n' : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) q) (RY : IMRep (univ : Set (Euclid P)) q) (Φ : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) q) (ω : TestFormOn (univ : Set (Euclid P)) n') (s v : Euclid P) (τ : ℝ), RY.Represents Y → HasDerivAt (fun σ : ℝ => currentEval Y (fun y => Φ ((ω : DifferentialForm (Euclid P) n') (s + σ • v + y)))) (currentEval Y (fun y => fderiv ℝ (fun z => Φ ((ω : DifferentialForm (Euclid P) n') z)) (s + τ • v + y) v)) τ := by
+  intro P q n' Y RY Φ ω s v τ hRY
+  set w : DifferentialForm (Euclid P) n' := (ω : DifferentialForm (Euclid P) n') with hw_def
+  have hw : IsTestForm w := ω.property.1
+  have hb := (Submission.dimred_cs_sos_mt_interior_product P).2
+  -- Step 1: on a test form `ψ`, `currentEval Y ψ = Y ψ = τ(M, θ, ξ)(ψ)`
+  have hEval : ∀ ψ : DifferentialForm (Euclid P) q, IsTestForm ψ →
+      currentEval Y ψ = RY.action ψ := by
+    intro ψ hψ
+    have h : IsTestForm ψ ∧ tsupport ψ ⊆ (univ : Set (Euclid P)) := ⟨hψ, subset_univ _⟩
+    rw [currentEval, dite_eq_left h]
+    exact hRY ⟨ψ, h⟩
+  -- Step 2: `β = Φ ∘ ω` and its translate `ω_s = β(s + ·)` are test forms
+  set β : DifferentialForm (Euclid P) q := fun z => Φ (w z) with hβ_def
+  have hβ : IsTestForm β := by
+    simpa only [zero_add] using (hb n' q Φ w 0 hw).1
+  set ωs : DifferentialForm (Euclid P) q := fun y => Φ (w (s + y)) with hωs_def
+  have hωs : IsTestForm ωs ∧ tsupport ωs ⊆ (univ : Set (Euclid P)) :=
+    ⟨(hb n' q Φ w s hw).1, subset_univ _⟩
+  -- Step 3: `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))` has derivative `τ(M, θ, ξ)(Dω_s(τv + ·)[v])` at `τ`
+  have key := Submission.dimred_cs_ti_translate_action_hasDerivAt P q RY ⟨ωs, hωs⟩ v τ
+  -- Step 4: the function, as `ω_s(σv + y) = Φ(ω(s + σv + y))`
+  have hfun : (fun σ : ℝ => currentEval Y (fun y => Φ (w (s + σ • v + y)))) =
+      fun σ : ℝ => RY.action (fun y => ωs (σ • v + y)) := by
+    funext σ
+    rw [hEval _ (hb n' q Φ w (s + σ • v) hw).1]
+    simp only [hωs_def, add_assoc]
+  -- Step 5: the derivative, as `Dω_s(z) = Dβ(s + z)`; `y ↦ Dβ(s + τv + y)[v]` is a test form
+  have hderiv : currentEval Y (fun y => fderiv ℝ β (s + τ • v + y) v) =
+      RY.action (fun y => fderiv ℝ ωs (τ • v + y) v) := by
+    have hβv : IsTestForm (fun z => fderiv ℝ β z v) :=
+      Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P q β v hβ
+    have htr : IsTestForm (fun y => fderiv ℝ β (s + τ • v + y) v) := by
+      simpa only [ContinuousLinearMap.id_apply] using
+        (hb q q (ContinuousLinearMap.id ℝ (Covector (Euclid P) q)) _ (s + τ • v) hβv).1
+    have hDs : ∀ z, fderiv ℝ ωs z = fderiv ℝ β (s + z) := fun z =>
+      fderiv_comp_add_left (f := β) (x := z) s
+    rw [hEval _ htr]
+    congr 1
+    funext y
+    rw [hDs, add_assoc]
+  -- Step 6: rewrite the function and the derivative in step 3
+  rw [hfun, hderiv]
+  exact key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
