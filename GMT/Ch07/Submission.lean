@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.1, 6.2.4** (bounded functionals are currents): a linear functional `T₀` on
+`𝒟ᵏ(ℝᴺ)` with `|T₀(ω)| ≤ C c` whenever `|ω(x)| ≤ c` for all `x` (Euclidean coefficient norm) is
+a current `T ∈ 𝒟ₖ(ℝᴺ)` with `M(T) ≤ C`.  Each coefficient of a covector `α` is its value on unit
+vectors, so `|α| ≤ √(Nᵏ) ‖α‖`; hence `ωⱼ → 0` uniformly (supports in a fixed compact set) forces
+`T₀(ωⱼ) → 0`.  The zero form gives `C ≥ 0`, and admissible forms give `T(ω) ≤ C`. -/
+theorem Submission.cmcdt_lpo_tk_bounded_current : ∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C := by
+  intro N k T₀ C hT
+  -- `|α| ≤ √(Nᵏ) ‖α‖`: each of the `Nᵏ` summands is at most `‖α‖²`
+  have hA : 0 ≤ Real.sqrt (Fintype.card (Fin k → Fin N)) := Real.sqrt_nonneg _
+  have hcoef : ∀ α : Covector (Euclid N) k,
+      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin k → Fin N)) * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    calc _ ≤ Real.sqrt (∑ _I : Fin k → Fin N, ‖α‖ ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h2 := α.le_opNorm (fun i ↦ EuclideanSpace.basisFun (Fin N) ℝ (I i))
+            simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+              Real.norm_eq_abs] at h2
+            exact sq_le_sq' (abs_le.mp h2).1 (abs_le.mp h2).2
+          · positivity
+      _ = Real.sqrt (Fintype.card (Fin k → Fin N)) * ‖α‖ := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  -- the zero form gives `0 ≤ C`
+  have hC : 0 ≤ C := by
+    have h := hT 0 1 (fun x => by simp)
+    simpa using h
+  -- continuity: only the uniform convergence of the forms themselves (`m = 0`) is needed
+  have hcont : ∀ (omegaSeq : ℕ → TestFormOn (univ : Set (Euclid N)) k),
+      TestFormOnConverges omegaSeq 0 → Tendsto (fun j ↦ T₀ (omegaSeq j)) atTop (𝓝 0) := by
+    intro omegaSeq hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := Metric.tendstoUniformlyOn_iff.mp (hunif 0)
+    have hsmall : ∀ δ > 0, ∀ᶠ j in atTop,
+        ∀ x, ‖(omegaSeq j : DifferentialForm (Euclid N) k) x‖ ≤ δ := by
+      intro δ hδ
+      filter_upwards [h0 δ hδ] with j hj
+      intro x
+      by_cases hx : x ∈ K
+      · have hz : iteratedFDeriv ℝ 0
+            ((0 : TestFormOn (univ : Set (Euclid N)) k) : DifferentialForm (Euclid N) k) x = 0 := by
+          rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+          simp
+        have h1 := hj x hx
+        rw [hz, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+        exact h1.le
+      · rw [image_eq_zero_of_notMem_tsupport (fun hx' => hx (hsupp j hx')), norm_zero]
+        exact hδ.le
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hCA : 0 ≤ C * Real.sqrt (Fintype.card (Fin k → Fin N)) := mul_nonneg hC hA
+    have hδ : 0 < ε / (C * Real.sqrt (Fintype.card (Fin k → Fin N)) + 1) :=
+      div_pos hε (by linarith)
+    filter_upwards [hsmall _ hδ] with j hj
+    have hb := hT (omegaSeq j) _
+      (fun x => (hcoef _).trans (mul_le_mul_of_nonneg_left (hj x) hA))
+    rw [Real.dist_eq, sub_zero]
+    refine hb.trans_lt ?_
+    rw [← mul_assoc, mul_div_assoc', div_lt_iff₀ (by linarith)]
+    nlinarith
+  -- the current, and its mass bound from admissible forms
+  refine ⟨⟨T₀, hcont⟩, fun ω => rfl, ?_⟩
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  apply ENNReal.ofReal_le_ofReal
+  have h := hT ω 1 hω.2
+  rw [mul_one] at h
+  exact (le_abs_self _).trans h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
