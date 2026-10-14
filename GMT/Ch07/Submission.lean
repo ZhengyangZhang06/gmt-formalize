@@ -451,6 +451,59 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cut-off of a `C¹` map to a compactly supported perturbation of the identity** (the cutoff
+step of the `C¹` push-forward, Simon 6.2.24).  Let `O` be open, `K ⊆ O` compact and `f` `C¹` on
+`O`.  Take `δ > 0` with `cthickening δ K ⊆ O` and a smooth cutoff `χ` with
+`support χ = thickening δ K` and `χ = 1` exactly on `cthickening (δ/2) K`.  Then
+`φ = χ f + (1 − χ) id` is `C¹` on `ℝᴾ`, equals `f` on the open neighbourhood
+`V = thickening (δ/2) K` of `K` (so `Dφ = Df` on `V`), and equals `id` off the compact set
+`K' = spt χ ⊆ cthickening δ K ⊆ O`. -/
+theorem Submission.dimred_mbl_pfb_c1_compact_perturbation : ∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (V K' : Set (Euclid P)), IsOpen V ∧ K ⊆ V ∧ IsCompact K' ∧ K' ⊆ O ∧ ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧ ∀ x, x ∉ K' → φ x = x := by
+  intro P O K f hO hK hKO hf
+  -- Step 1: a margin `δ > 0` with `cthickening δ K ⊆ O`
+  obtain ⟨δ, hδ, hδO⟩ := hK.exists_cthickening_subset_open hO hKO
+  -- Step 2: smooth Urysohn cutoff `χ` with `support χ = thickening δ K` and
+  -- `χ x = 1 ↔ x ∈ cthickening (δ/2) K`
+  obtain ⟨χ, hχ, -, hχs, hχt⟩ := exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞))
+    (isOpen_thickening : IsOpen (thickening δ K))
+    (isClosed_cthickening : IsClosed (cthickening (δ / 2) K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have hχ1 : ContDiff ℝ 1 χ := hχ.of_le (by exact_mod_cast le_top)
+  -- Step 3: `K' = spt χ ⊆ cthickening δ K ⊆ O` is compact
+  have hK'δ : tsupport χ ⊆ cthickening δ K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening δ K
+  have hK'O : tsupport χ ⊆ O := hK'δ.trans hδO
+  have hK' : IsCompact (tsupport χ) :=
+    hK.cthickening.of_isClosed_subset (isClosed_tsupport χ) hK'δ
+  -- Step 4: `φ = χ f + (1 − χ) id`, `V = thickening (δ/2) K`
+  refine ⟨fun x => χ x • f x + (1 - χ x) • x, thickening (δ / 2) K, tsupport χ,
+    isOpen_thickening, self_subset_thickening (half_pos hδ) K, hK', hK'O, ?_, ?_, ?_⟩
+  · -- Step 7: `φ` is `C¹` at every point
+    rw [contDiff_iff_contDiffAt]
+    intro x
+    by_cases hx : x ∈ O
+    · -- (a) on `O`, `φ` is a `C¹` combination of `χ`, `f` and `id`
+      have hfx : ContDiffAt ℝ 1 f x := hf.contDiffAt (hO.mem_nhds hx)
+      exact (hχ1.contDiffAt.smul hfx).add
+        ((contDiffAt_const.sub hχ1.contDiffAt).smul contDiffAt_id)
+    · -- (b) off `O ⊇ K'`, `φ = id` near `x`
+      have hxK' : x ∉ tsupport χ := fun h => hx (hK'O h)
+      have hev : (fun y => χ y • f y + (1 - χ y) • y) =ᶠ[𝓝 x] id := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hxK'] with y hy
+        simp [hy]
+      exact contDiffAt_id.congr_of_eventuallyEq hev
+  · -- Step 6: `χ = 1` on the open set `V`, so `φ = f` near each `x ∈ V`
+    intro x hx
+    have hev : (fun y => χ y • f y + (1 - χ y) • y) =ᶠ[𝓝 x] f := by
+      filter_upwards [isOpen_thickening.mem_nhds hx] with y hy
+      have hy1 : χ y = 1 := (hχt y).1 (thickening_subset_cthickening _ _ hy)
+      simp [hy1]
+    exact ⟨hev.eq_of_nhds, hev.fderiv_eq⟩
+  · -- Step 5: `χ = 0` off `K'`, so `φ = id` there
+    intro x hx
+    simp [image_eq_zero_of_notMem_tsupport hx]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
