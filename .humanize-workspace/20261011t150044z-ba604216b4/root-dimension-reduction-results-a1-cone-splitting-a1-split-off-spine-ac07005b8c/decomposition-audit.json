@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "coarea|eilenberg|starProjection x = t|dimred_cs_sos_sc_coarea_of_pieces",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|hausdorffMeasure_apply|hausdorffMeasure_le_liminf_tsum|ae_imp_of_ae_restrict|normDet_sq_eq_det_gram|normDet_comp_of_finrank_eq|normDet_eq_abs_det|addHaar_closedBall",
+        "def areaRegularSet|measurableSet_areaRegularSet|area_image_compl_regularSet_eq_zero|weighted_area_formula_lipschitz_injOn",
+        "git show 2626c7a:GMT/Ch07/Submission.lean",
+        "git show d35a0320a1655c5aa9479b8fdfc9adcba5c25d5b:GMT/Ch07/Submission.lean",
+        "rg --max-depth 2 -l 'dimred_cs_sos_sc_coarea_of_pieces' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes --glob 'decomposition-v*.json'",
+        "permitted_axioms",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/spine-independent-audit-sklwokdm/Core.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/spine-independent-audit-sklwokdm/Challenges.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-ac07005b8c/parent-child-handoff.json",
+        "/tmp/spine-independent-audit-sklwokdm/ReuseEvidence.json",
+        "/tmp/spine-independent-audit-sklwokdm/Core.lean",
+        "/tmp/spine-independent-audit-sklwokdm/Core.log",
+        "/tmp/spine-independent-audit-sklwokdm/Challenges.lean",
+        "/tmp/spine-independent-audit-sklwokdm/Challenges.log"
+      ],
+      "conclusion": "Pins and inspected library files match. The snapshot contains unproved coarea specifications in Chapters 2 and 3, but no usable proof of the selected theorem. All five one-line propositions independently elaborate in comparator contract scope with autoImplicit disabled. Fresh Lean checks passed: the parent assembly uses only bilipschitz_pieces and coarea_of_pieces; the extracted coarea proof uses exactly piece_pullback, ae_transfer and tangent_along_lipschitz, with no sorryAx or parent-theorem dependency. The four reused declarations have identical frozen and implemented types, matching source hashes, and immutable passing comparator receipts permitting only propext, Quot.sound and Classical.choice. Their retained dependencies are accepted and acyclic. Candidate 2626c7a supplies the required area-formula import. Every name is a bare identifier; the new name has no competing reservation. The five-child split is appropriate and establishes the exact selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match. Regular-set removal, the coercive partition, Lusin–Souslin and least-index disjointification prove every asserted clause. The proof correctly handles n = 0 and n > P. Reuse is of an accepted declaration with identical type."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. The lower bound gives injectivity and a Lipschitz inverse on the image; Lusin–Souslin gives its Borel measurability. Applying the null-image bound to the inverse proves the stated pullback for arbitrary predicates, without an unstated measurability assumption."
+    },
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type correctly allows arbitrary B_i and predicates. The pinned ae_imp_of_ae_restrict lemma justifies null exceptional parameters without B_i measurability. Lipschitz null-image preservation and the explicit exceptional-set inclusion prove the required restricted-a.e. conclusion."
+    },
+    {
+      "key": "tangent_along_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel regular-set partition produces the required lower Lipschitz bounds. Every hypothesis of the accepted bi-Lipschitz-piece tangent theorem is checked with U = univ; countable a.e. aggregation proves the exact implication. The reused node retains its accepted, acyclic dependency closure and does not depend on the selected parent."
+    },
+    {
+      "key": "coarea_of_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match the frozen type. Projection-preserving parametrizations, the shear/Gram Jacobian identity, area/Tonelli, the null-slice covering argument and summation establish (ii); this then supplies slice local finiteness for (i). Tangent uniqueness proves the universal Q conclusion at each good point. Empty pieces and d = 0 are covered. The proof is complete and non-circular, and its Lean replay uses exactly the declared dependencies. No pointwise matrix-unit construction occurs."
+    }
+  ],
+  "required_changes": []
+}
