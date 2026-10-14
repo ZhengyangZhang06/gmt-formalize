@@ -41646,6 +41646,219 @@ theorem Submission.lipschitz_pushforward_integer_multiplicity :
     Submission.lpf_pushforward_integrality P Q n U V hU hV T M θ ξ f L S hMθξ hθ hTrep hf hfUV
       hproper hLderiv hLmeas hS⟩
 
+/-- **Simon Ch. 6, 5.3 (Deformation Theorem, scaled version, p. 160); `ρ = 1` is 5.1.**
+Assembly of the decomposition (Part D and display (38) of the accepted proof): rescale `T` by
+`x ↦ ρ⁻¹x` (`T′ = (η_{1/ρ})_# T`), deform `T′` onto the unit `n`-skeleton
+(`T′ − Q = ∂R₁ + S₁`, `deformation_onto_skeleton`, which uses the slicing theorem and Lemma 3.9),
+replace `Q` by a lattice chain (`Q − P = S′`, `deformation_skeleton_polyhedral`), and push
+`P`, `R₁`, `S₁ + S′` forward by `x ↦ ρx` (`deformation_dilation`).  With `C₁`, `C₂` the constants
+of the two deformation steps, `C = C₁ + C₁C₂`; the supports lie within `√n + √(n+ℓ) < 2√(n+ℓ)`
+of `spt T′`, `spt ∂T′` before rescaling. -/
+theorem Submission.deformation_theorem : DeformationTheorem := by
+  intro m ℓ hℓ
+  obtain ⟨C₁, hC₁⟩ := Submission.deformation_onto_skeleton Submission.slicing_theorem
+    Submission.lipschitz_pushforward_integer_multiplicity m ℓ hℓ
+  obtain ⟨C₂, hC₂⟩ := Submission.deformation_skeleton_polyhedral m ℓ hℓ
+  refine ⟨C₁ + C₁ * C₂, fun T hT ρ hρ => ?_⟩
+  set sd : ℝ := Real.sqrt ((m + 1 + ℓ : ℕ) : ℝ)
+  set sn : ℝ := Real.sqrt ((m + 1 : ℕ) : ℝ)
+  have hsn0 : 0 ≤ sn := Real.sqrt_nonneg _
+  have hsd0 : 0 ≤ sd := Real.sqrt_nonneg _
+  have hsnd : sn < sd := Real.sqrt_lt_sqrt (Nat.cast_nonneg _) (Nat.cast_lt.mpr (by omega))
+  have hρ0 : ρ ≠ 0 := hρ.ne'
+  have hρi : 0 < ρ⁻¹ := inv_pos.mpr hρ
+  -- Dilation by `ρ⁻¹` (degrees `m + 1`, `m`) and by `ρ` (degrees `m + 1`, `m`, `m + 2`).
+  obtain ⟨-, dilI, propI, -⟩ := Submission.deformation_dilation (m + 1 + ℓ) ρ⁻¹ hρi (m + 1)
+  obtain ⟨-, -, propIb, bdI⟩ := Submission.deformation_dilation (m + 1 + ℓ) ρ⁻¹ hρi m
+  obtain ⟨pull, dil, prop, bdR⟩ := Submission.deformation_dilation (m + 1 + ℓ) ρ hρ (m + 1)
+  obtain ⟨-, -, propb, bd⟩ := Submission.deformation_dilation (m + 1 + ℓ) ρ hρ m
+  obtain ⟨-, dilR, propR, -⟩ := Submission.deformation_dilation (m + 1 + ℓ) ρ hρ (m + 2)
+  -- Step 1: `T′ = (η_{1/ρ})_# T`, `∂T′ = (η_{1/ρ})_# ∂T`, with scaled masses and supports.
+  obtain ⟨T', hT'⟩ := dilI T
+  have hbT' := bdI T T' hT'
+  obtain ⟨hT'm, hT's, hT'im, -⟩ := propI T T' hT'
+  obtain ⟨hbT'm, hbT's, hbT'im, -⟩ := propIb T.boundary T'.boundary hbT'
+  obtain ⟨hTm, hTbm⟩ := ENNReal.add_lt_top.mp hT
+  have hT'fin : T'.mass + T'.boundary.mass < ∞ := by
+    rw [hT'm, hbT'm]
+    exact ENNReal.add_lt_top.mpr
+      ⟨ENNReal.mul_lt_top ENNReal.ofReal_lt_top hTm, ENNReal.mul_lt_top ENNReal.ofReal_lt_top hTbm⟩
+  -- Step 2: deformation onto the unit skeleton, `T′ − Q = ∂R₁ + S₁`.
+  obtain ⟨Q, R₁, S₁, hTQ, hQskel, hQface, hQm, hQbm, hR₁m, hS₁m, hQR₁s, hQbS₁s, hIM₁, hIM₂⟩ :=
+    hC₁ T' hT'fin
+  -- Step 3: the lattice chain `P = ∑ β_F [[F]]` with `Q − P = S′`.
+  have hQfin : Q.mass + Q.boundary.mass < ∞ :=
+    ENNReal.add_lt_top.mpr
+      ⟨hQm.trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top (ENNReal.add_lt_top.mp hT'fin).1),
+        hQbm.trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top (ENNReal.add_lt_top.mp hT'fin).2)⟩
+  obtain ⟨β, P, S', hPβ, hQP, hPm, hPbm, hS'm, hPs, hPbS's, hIMP⟩ := hC₂ Q hQfin hQskel hQface
+  -- Step 4: the current `S″ = S₁ + S′`, with `M(S″) ≤ M(S₁) + M(S′)` and
+  -- `spt S″ ⊆ spt S₁ ∪ spt S′`.
+  obtain ⟨S'', hS''⟩ : ∃ S'' : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1),
+      ∀ ω, S'' ω = S₁ ω + S' ω :=
+    ⟨⟨S₁.toCurrent + S'.toCurrent, fun seq hseq => by
+      simpa using (S₁.continuous' seq hseq).add (S'.continuous' seq hseq)⟩, fun _ => rfl⟩
+  have hS''m : S''.mass ≤ S₁.mass + S'.mass := by
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    simp only [hS'']
+    exact ENNReal.ofReal_add_le.trans (add_le_add (S₁.le_massOn hω) (S'.le_massOn hω))
+  have hS''s : S''.support ⊆ S₁.support ∪ S'.support := by
+    rintro x ⟨-, hx⟩
+    by_contra hx'
+    rw [mem_union, not_or] at hx'
+    have h₁ : x ∈ S₁.zeroRegion := by_contra fun h => hx'.1 ⟨mem_univ x, h⟩
+    have h₂ : x ∈ S'.zeroRegion := by_contra fun h => hx'.2 ⟨mem_univ x, h⟩
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁⟩, hxW₁⟩ := h₁
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂⟩, hxW₂⟩ := h₂
+    refine hx (mem_sUnion.mpr ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o,
+      hW₁c.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left),
+      subset_univ _, fun ω hω => ?_⟩, hxW₁, hxW₂⟩)
+    rw [hS'', hW₁ ω (hω.trans inter_subset_left), hW₂ ω (hω.trans inter_subset_right), add_zero]
+  -- Step 5: `Pc = (η_ρ)_# P`, `R = (η_ρ)_# R₁`, `S = (η_ρ)_# S″`.
+  obtain ⟨Pc, hPc⟩ := dil P
+  obtain ⟨S, hS⟩ := dil S''
+  obtain ⟨R, hR⟩ := dilR R₁
+  have hbPc := bd P Pc hPc
+  have hbR := bdR R₁ R hR
+  obtain ⟨hPcm, hPcs, hPcim, hPcβ⟩ := prop P Pc hPc
+  obtain ⟨hbPcm, hbPcs, -, -⟩ := propb P.boundary Pc.boundary hbPc
+  obtain ⟨hSm, hSs, hSim, -⟩ := prop S'' S hS
+  obtain ⟨hRm, hRs, hRim, -⟩ := propR R₁ R hR
+  -- Constants and scaling of masses.
+  have hC12 : (C₁ : ℝ≥0∞) * C₂ ≤ ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) := by
+    rw [ENNReal.coe_add, ENNReal.coe_mul]
+    exact le_add_self
+  have hC1 : (C₁ : ℝ≥0∞) ≤ ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) := by
+    rw [ENNReal.coe_add]
+    exact le_self_add
+  have hcancel : ∀ k : ℕ, ENNReal.ofReal (ρ ^ k) * ENNReal.ofReal (ρ⁻¹ ^ k) = 1 := by
+    intro k
+    rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow, mul_inv_cancel₀ hρ0, one_pow,
+      ENNReal.ofReal_one]
+  have hpow1 : ENNReal.ofReal (ρ ^ (m + 1)) = ENNReal.ofReal ρ * ENNReal.ofReal (ρ ^ m) := by
+    rw [← ENNReal.ofReal_mul hρ.le, pow_succ']
+  have hpow2 : ENNReal.ofReal (ρ ^ (m + 2)) = ENNReal.ofReal ρ * ENNReal.ofReal (ρ ^ (m + 1)) := by
+    rw [← ENNReal.ofReal_mul hρ.le]
+    congr 1
+    ring
+  -- Supports: `cthickening (√n + √(n+ℓ))` around `ρ⁻¹ A`, pushed forward by `x ↦ ρx`, lies in
+  -- `thickening (2√(n+ℓ) ρ) A`.
+  have hscale : ∀ A B : Set (Eucl (m + 1 + ℓ)),
+      B ⊆ cthickening (sn + sd) ((fun x => ρ⁻¹ • x) '' A) →
+        (fun x => ρ • x) '' B ⊆ thickening (2 * sd * ρ) A := by
+    intro A B hB
+    rintro _ ⟨y, hy, rfl⟩
+    have hy' : y ∈ thickening (2 * sd) ((fun x => ρ⁻¹ • x) '' A) :=
+      cthickening_subset_thickening' (by linarith) (by linarith) _ (hB hy)
+    obtain ⟨_, ⟨a, ha, rfl⟩, hya⟩ := mem_thickening_iff.mp hy'
+    refine mem_thickening_iff.mpr ⟨a, ha, ?_⟩
+    calc dist (ρ • y) a = dist (ρ • y) (ρ • ρ⁻¹ • a) := by
+          rw [smul_smul, mul_inv_cancel₀ hρ0, one_smul]
+      _ = ρ * dist y (ρ⁻¹ • a) := by rw [dist_smul₀, Real.norm_of_nonneg hρ.le]
+      _ < ρ * (2 * sd) := mul_lt_mul_of_pos_left hya hρ
+      _ = 2 * sd * ρ := by ring
+  have hcc : ∀ A B : Set (Eucl (m + 1 + ℓ)), B ⊆ cthickening sd A →
+      cthickening sn B ⊆ cthickening (sn + sd) A := fun A B h =>
+    (cthickening_subset_of_subset sn h).trans (cthickening_cthickening_subset hsn0 hsd0 A)
+  have hc1 : ∀ A : Set (Eucl (m + 1 + ℓ)), cthickening sd A ⊆ cthickening (sn + sd) A :=
+    fun A => cthickening_mono (le_add_of_nonneg_left hsn0) A
+  have hQs : Q.support ⊆ cthickening sd T'.support := subset_union_left.trans hQR₁s
+  have hR₁s : R₁.support ⊆ cthickening sd T'.support := subset_union_right.trans hQR₁s
+  have hQbs : Q.boundary.support ⊆ cthickening sd T'.boundary.support :=
+    subset_union_left.trans hQbS₁s
+  have hS₁s : S₁.support ⊆ cthickening sd T'.boundary.support := subset_union_right.trans hQbS₁s
+  have hPbs : P.boundary.support ⊆ cthickening sn Q.boundary.support :=
+    subset_union_left.trans hPbS's
+  have hS's : S'.support ⊆ cthickening sn Q.boundary.support := subset_union_right.trans hPbS's
+  refine ⟨Pc, β, R, S, hPcβ β hPβ, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Display (38) rescaled: `T − Pc = ∂R + S`, tested on `η = η_ρ^# ω`.
+    intro ω
+    obtain ⟨η, hη⟩ := pull ω
+    have hηω : ∀ x, (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) x =
+        ρ⁻¹ ^ (m + 1) • (η : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) (ρ⁻¹ • x) := by
+      intro x
+      rw [hη]
+      simp only [smul_smul, ← mul_pow, inv_mul_cancel₀ hρ0, mul_inv_cancel₀ hρ0, one_pow,
+        one_smul]
+    rw [(hT' η ω hηω).symm, hPc ω η hη, hbR ω η hη, hS ω η hη, hS'']
+    linarith [hTQ η, hQP η]
+  · calc Pc.mass = ENNReal.ofReal (ρ ^ (m + 1)) * P.mass := hPcm
+      _ ≤ ENNReal.ofReal (ρ ^ (m + 1)) * (C₂ * (C₁ * T'.mass)) := by
+          gcongr
+          exact hPm.trans (by gcongr)
+      _ = (C₁ : ℝ≥0∞) * C₂ * (ENNReal.ofReal (ρ ^ (m + 1)) * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) *
+          T.mass := by
+          rw [hT'm]
+          ring
+      _ = (C₁ : ℝ≥0∞) * C₂ * T.mass := by rw [hcancel, mul_one]
+      _ ≤ ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) * T.mass := mul_le_mul_left hC12 _
+  · calc Pc.boundary.mass = ENNReal.ofReal (ρ ^ m) * P.boundary.mass := hbPcm
+      _ ≤ ENNReal.ofReal (ρ ^ m) * (C₂ * (C₁ * T'.boundary.mass)) := by
+          gcongr
+          exact hPbm.trans (by gcongr)
+      _ = (C₁ : ℝ≥0∞) * C₂ * (ENNReal.ofReal (ρ ^ m) * ENNReal.ofReal (ρ⁻¹ ^ m)) *
+          T.boundary.mass := by
+          rw [hbT'm]
+          ring
+      _ = (C₁ : ℝ≥0∞) * C₂ * T.boundary.mass := by rw [hcancel, mul_one]
+      _ ≤ ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) * T.boundary.mass := mul_le_mul_left hC12 _
+  · calc R.mass = ENNReal.ofReal (ρ ^ (m + 2)) * R₁.mass := hRm
+      _ ≤ ENNReal.ofReal (ρ ^ (m + 2)) * (C₁ * T'.mass) := by gcongr
+      _ = (C₁ : ℝ≥0∞) * ENNReal.ofReal ρ *
+          (ENNReal.ofReal (ρ ^ (m + 1)) * ENNReal.ofReal (ρ⁻¹ ^ (m + 1))) * T.mass := by
+          rw [hT'm, hpow2]
+          ring
+      _ = (C₁ : ℝ≥0∞) * ENNReal.ofReal ρ * T.mass := by rw [hcancel, mul_one]
+      _ ≤ ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) * ENNReal.ofReal ρ * T.mass :=
+          mul_le_mul_left (mul_le_mul_left hC1 _) _
+  · calc S.mass = ENNReal.ofReal (ρ ^ (m + 1)) * S''.mass := hSm
+      _ ≤ ENNReal.ofReal (ρ ^ (m + 1)) *
+          (C₁ * T'.boundary.mass + C₂ * (C₁ * T'.boundary.mass)) := by
+          gcongr
+          calc S''.mass ≤ S₁.mass + S'.mass := hS''m
+            _ ≤ C₁ * T'.boundary.mass + C₂ * Q.boundary.mass := add_le_add hS₁m hS'm
+            _ ≤ C₁ * T'.boundary.mass + C₂ * (C₁ * T'.boundary.mass) := by gcongr
+      _ = ((C₁ : ℝ≥0∞) + C₁ * C₂) * ENNReal.ofReal ρ *
+          (ENNReal.ofReal (ρ ^ m) * ENNReal.ofReal (ρ⁻¹ ^ m)) * T.boundary.mass := by
+          rw [hbT'm, hpow1]
+          ring
+      _ = ((C₁ + C₁ * C₂ : ℝ≥0) : ℝ≥0∞) * ENNReal.ofReal ρ * T.boundary.mass := by
+          rw [hcancel, mul_one, ENNReal.coe_add, ENNReal.coe_mul]
+  · rw [hPcs, hRs]
+    refine union_subset (hscale _ _ ?_) (hscale _ _ ?_)
+    · rw [← hT's]
+      exact hPs.trans (hcc _ _ hQs)
+    · rw [← hT's]
+      exact hR₁s.trans (hc1 _)
+  · rw [hbPcs, hSs]
+    refine union_subset (hscale _ _ ?_) (hscale _ _ ?_)
+    · rw [← hbT's]
+      exact hPbs.trans (hcc _ _ hQbs)
+    · rw [← hbT's]
+      exact hS''s.trans (union_subset (hS₁s.trans (hc1 _)) (hS's.trans (hcc _ _ hQbs)))
+  · intro hTim
+    obtain ⟨hQim, hR₁im⟩ := hIM₁ (hT'im hTim)
+    obtain ⟨hβ, hPim⟩ := hIMP hQim
+    exact ⟨hβ, hPcim hPim, hRim hR₁im⟩
+  · intro hTim hTbim
+    have hT'im' := hT'im hTim
+    have hS₁im := hIM₂ hT'im' (hbT'im hTbim)
+    have hQim := (hIM₁ hT'im').1
+    have hPim := (hIMP hQim).2
+    -- `S′ = 1·Q + (−1)·P` and `S″ = 1·S₁ + 1·S′` are integer multiplicity (Simon 3.2(1)).
+    have hS'im : IsIntegerMultiplicity S' :=
+      Submission.deformation_im_combination _ _ Q P S' 1 (-1) hQim hPim fun ω => by
+        rw [← hQP ω]
+        push_cast
+        ring
+    have hS''im : IsIntegerMultiplicity S'' :=
+      Submission.deformation_im_combination _ _ S₁ S' S'' 1 1 hS₁im hS'im fun ω => by
+        rw [hS'']
+        push_cast
+        ring
+    exact hSim hS''im
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
