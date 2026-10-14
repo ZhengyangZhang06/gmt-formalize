@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1.homotopy_toolkit-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1",
+  "depth": 4,
+  "title": "Radial homotopy operator K_{m+1}: evaluation formula, coefficient-norm bound, vanishing and linearity",
+  "statement": "Let P, m ∈ ℕ and let β : ℝ^P → Λ^{m+1}(ℝ^P) be a continuous (m+1)-form on ℝ^P = Euclid P (β : DifferentialForm (Euclid P) (m + 1), Continuous β). For a continuous (m+1)-form γ and x ∈ ℝ^P put (Kγ)(x) := ∫_0^1 t^m • ι_x(γ(t x)) dt ∈ Λ^m (interval integral over [0, 1] in Covector (Euclid P) m), where ι_xα := α.curryLeft x, i.e. ι_xα(v) = α(Fin.cons x v). Write |α|_E := covectorEuclideanNorm α (Euclidean coefficient norm). Then:\n(1) (Kβ)(x)(v) = ∫_0^1 t^m · β(t x)(Fin.cons x v) dt for all x ∈ ℝ^P and v : Fin m → ℝ^P;\n(2) for every c ∈ ℝ with |β(y)|_E ≤ c for all y ∈ ℝ^P, |(Kβ)(x)|_E ≤ ‖x‖·c for every x ∈ ℝ^P;\n(3) for every x ∈ ℝ^P with β(t x) = 0 for all t ∈ [0, 1], (Kβ)(x) = 0;\n(4) for every continuous (m+1)-form β' and every x, K(β + β')(x) = (Kβ)(x) + (Kβ')(x), where β + β' is the pointwise sum;\n(5) for every c ∈ ℝ and every x, K(c β)(x) = c • (Kβ)(x), where c β is the pointwise scalar multiple.",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), Continuous β → (∀ (x : Euclid P) (v : Fin m → Euclid P), (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) v = ∫ t in (0 : ℝ)..1, t ^ m * β (t • x) (Fin.cons x v)) ∧ (∀ (c : ℝ) (x : Euclid P), (∀ y : Euclid P, covectorEuclideanNorm (β y) ≤ c) → covectorEuclideanNorm (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) ≤ ‖x‖ * c) ∧ (∀ x : Euclid P, (∀ t ∈ Icc (0 : ℝ) 1, β (t • x) = 0) → (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) = 0) ∧ (∀ β' : DifferentialForm (Euclid P) (m + 1), Continuous β' → ∀ x : Euclid P, (∫ t in (0 : ℝ)..1, t ^ m • ((β + β') (t • x)).curryLeft x) = (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) + ∫ t in (0 : ℝ)..1, t ^ m • (β' (t • x)).curryLeft x) ∧ ∀ (c : ℝ) (x : Euclid P), (∫ t in (0 : ℝ)..1, t ^ m • ((c • β) (t • x)).curryLeft x) = c • ∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x",
+  "lean_name": "ecf_cc_radial_homotopy_toolkit",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.covector_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.covector_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-f92df94753-a1",
+      "result_commit": "e34943dcf2d843f80c2c7a2776993496e8010cb8",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6-a1",
+      "result_commit": "0ea228e4341594546bf57438f6b9c6dbb180422d",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-current-4ab75949e3-a1"
+}

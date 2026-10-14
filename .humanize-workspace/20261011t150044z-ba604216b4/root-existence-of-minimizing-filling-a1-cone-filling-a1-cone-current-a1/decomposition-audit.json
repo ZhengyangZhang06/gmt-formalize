@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "curryLeft_apply_apply|curryLeftLI|alternatizeUncurryFin_curryLeft|alternatizeUncurryFinCLM_apply|def extDeriv|extDeriv_smul|EventuallyEq.extDeriv_eq|extDeriv_apply|exists_contDiff_support_eq_eq_one_iff|isClosedMap_snd_of_compactSpace",
+        "exists_contDiff_support_eq_eq_one_iff|hasFDerivAt_integral_of_dominated_of_fderiv_le..|SmoothPartitionOfUnity.exists_isSubordinate|theorem exists_isSubordinate",
+        "poincar[eé].*homotop|radial.*homotop|coneCurrent|cone_current|homotopyFormula",
+        "rg -n 'ecf_cc_radial_homotopy_formula|ecf_cc_radial_homotopy_toolkit' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "python3 /tmp/cone-current-audit/audit_reuse.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/cone-current-audit /tmp/cone-current-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/cone-current-audit /tmp/cone-current-audit/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean --root=/tmp/cone-current-audit /tmp/cone-current-audit/Full.lean",
+        "sed -n '441,456p;528,551p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lakefile.toml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-current-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-current-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cone-current-audit/audit_reuse.py",
+        "/tmp/cone-current-audit/Types.lean",
+        "/tmp/cone-current-audit/Instances.lean",
+        "/tmp/cone-current-audit/Full.lean",
+        "/tmp/cone-current-audit/Full.log"
+      ],
+      "conclusion": "The frozen contract and dependency configuration match the workspace and pinned revisions. Source inspection confirms the contraction, exterior-derivative, smoothness, mass and support conventions. The homotopy search found no reusable radial homotopy construction; project matches concerned the unrelated IsConeCurrent predicate. The split is appropriate: two analytic obligations and ten accepted checkpoints establish this exact selected parent. All names are bare identifiers; the two new names are unreserved, and all ten reused frozen types are byte-identical to accepted declarations. Dependency directions and inherited closures are acyclic. All twelve propositions independently elaborate before child implementations exist. Inline contraction, scalar operations, completeness and smoothness-order checks pass. The supplied new proofs, accepted reused proofs and supplied parent assembly independently compile against a freshly compiled frozen contract. Every child, inherited helper and selected parent depends only on propext, Classical.choice and Quot.sound, with no sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including completeness. Compact local domination proves the derivative formula; induction over complete target spaces proves every finite smoothness order. Identical accepted reuse, with no circular dependency."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bilinear product rule and explicit alternating-sum cancellation prove the stated identity using only differentiability at y. The coefficient m+1 and contraction signs match the pinned definitions. Identical accepted reuse."
+    },
+    {
+      "key": "homotopy_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies establish smoothness and the pointwise Cartan identity. Commuting alternation with integration and applying FTC to t^(m+1)β(tx) proves the exact identity, including m=0. Both conjuncts are proved without invoking the parent."
+    },
+    {
+      "key": "covector_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coefficient-vector construction identifies the specified norm with a Euclidean norm. Coordinatewise integration and the integral norm bound prove the conclusion. No separate positivity hypothesis on c is missing. Identical accepted reuse."
+    },
+    {
+      "key": "curry_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof handles v=0, rotates a nonzero vector into an orthonormal basis, and counts squared coefficients before cancelling a positive factorial. Its sq_sum dependency and both underlying children are accepted and acyclic; exact checkpoint reuse preserves that closure."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The linear coefficient vector proves subadditivity and homogeneity; coordinate estimates give operator-norm domination and then Lipschitz continuity. All four formal conjuncts match the prose and are proved. Identical accepted reuse."
+    },
+    {
+      "key": "homotopy_toolkit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity supplies integrability. Evaluation commutes with integration; the three declared dependencies prove the coefficient bound; vanishing and integral linearity prove the remaining clauses. All five conclusions match the one-line proposition, including degree-zero output."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Two relatively compact neighborhoods and the smooth Urysohn lemma establish every support, range and neighborhood condition. Empty K requires no additional hypothesis. Prose and exact accepted type agree."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norm bound implies r≥0. Rescaling both signs by r+ε gives admissible forms; finite mass permits conversion to real bounds, and ε↓0 proves the conclusion. Arbitrary U and W are correctly supported by the proof."
+    },
+    {
+      "key": "bounded_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypothesis forces C≥0. Coefficient/operator-norm comparison and uniform convergence of zeroth derivatives prove the required sequential continuity. Taking the admissible supremum proves the mass bound. Both conclusions match the accepted frozen type."
+    },
+    {
+      "key": "support_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact test support lies in the zero region and admits a finite open cover there. A subordinate smooth partition splits the form into annihilated test forms. This proves the exact statement even for nonopen U, without invoking the parent."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Relatively compact balls exclude U∖K from the support. The resulting identity support=K∖zeroRegion proves compactness. Openness of U, compactness of K and K⊆U are used correctly; both formal conclusions follow."
+    }
+  ],
+  "required_changes": []
+}
