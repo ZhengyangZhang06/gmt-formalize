@@ -2209,6 +2209,61 @@ theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Se
     · exact measure_mono_null hsub hnullimg
   rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
 
+/-- **Simon 7.3.3, proof (flat part of a cone sector)**: let `C = τ(M, θ, ξ)` in `ℝᴾ`, `Q` an
+`n`-plane, `k ≥ 1`, and `G` a set of points `y ∈ Q` with `Θⁿ(μ_C, y) = k` such that, for some
+`r > 0`, `Q ∩ B_r(y) ⊆ G` and `spt C ∩ B_r(y) ⊆ Q`.  Then `Hⁿ`-a.e. `y ∈ G` lies in `M` with
+`θ(y) = k` and `TᵧM = Q`.  By `idtp_cse_sp_density_mult_ae`, `Hⁿ`-a.e. `y ∈ G` lies in `M` with
+`θ(y) = k`, so `Hⁿ(G ∖ M) = 0`; `Hⁿ`-a.e. `y ∈ M` has an approximate tangent plane `T`, and
+`Hⁿ(M ∖ spt C) = 0` (`imrep_carrier_sdiff_support_null`).  In `B_r(y)`, `M ∖ Q ⊆ M ∖ spt C` and
+`Q ∖ M ⊆ G ∖ M` are `Hⁿ`-null, so `T` and `Q` are both approximate tangent planes of `M ∩ Q` at
+`y` (`dtc_approxTangent_of_null_diff`), and uniqueness (Ch. 3, Remark 1.5(1)) gives `T = Q`. -/
+theorem Submission.idtp_cse_sp_flat_region_ae : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (Q : Submodule ℝ (Euclid P)) (G : Set (Euclid P)) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) n), Module.finrank ℝ Q = n → 1 ≤ k → (∀ y ∈ G, y ∈ Q ∧ HasMassDensity C y k ∧ ∃ r : ℝ, 0 < r ∧ (Q : Set (Euclid P)) ∩ ball y r ⊆ G ∧ C.support ∩ ball y r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ G → y ∈ R.carrier ∧ R.mult y = k ∧ approxTangentPlane n R.carrier y = Q := by
+  intro P n C Q G k R hQ hk hG hR
+  -- `Hⁿ`-a.e. `y ∈ G` lies in `M` with `θ(y) = k`, since `Θⁿ(μ_C, y) = k ≥ 1`
+  have hGM : ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ G → y ∈ R.carrier ∧ R.mult y = k := by
+    filter_upwards [Submission.idtp_cse_sp_density_mult_ae P n C R hR] with y hy hyG
+    exact hy k hk (hG y hyG).2.1
+  -- hence `Hⁿ(G ∖ M) = 0`
+  have hGnull : μHE[n] (G \ R.carrier) = 0 := by
+    refine measure_mono_null ?_ (ae_iff.mp hGM)
+    intro y hy h
+    exact hy.2 (h hy.1).1
+  -- `Hⁿ`-a.e. `y ∈ M` has an approximate tangent plane `TᵧM`
+  have htan : ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ R.carrier →
+      ∃ T : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R.carrier y T := by
+    have hor := R.orients
+    rw [ae_restrict_iff' R.measurableSet_carrier] at hor
+    filter_upwards [hor] with y hy hyM
+    obtain ⟨T, hT, -⟩ := hy hyM
+    exact ⟨T, hT⟩
+  -- `Hⁿ(M ∖ spt C) = 0`
+  have hMnull := Submission.imrep_carrier_sdiff_support_null P n univ C R isOpen_univ hR
+  filter_upwards [hGM, htan] with y hyGM hytan hyG
+  obtain ⟨hyM, hθ⟩ := hyGM hyG
+  obtain ⟨T, hT⟩ := hytan hyM
+  obtain ⟨hyQ, -, r, hr, hQG, hCQ⟩ := hG y hyG
+  -- `T` is an approximate tangent plane of `M ∩ Q`: in `B_r(y)`, `M ∖ Q ⊆ M ∖ spt C`
+  have hT' : HasApproximateTangentSpaceAt n (R.carrier ∩ (Q : Set (Euclid P))) y T := by
+    refine Submission.dtc_approxTangent_of_null_diff P n R.carrier
+      (R.carrier ∩ (Q : Set (Euclid P))) (ball y r) y T inter_subset_left isOpen_ball
+      (mem_ball_self hr) (measure_mono_null ?_ hMnull) hT
+    rintro z ⟨⟨hzM, hzMQ⟩, hzB⟩
+    exact ⟨hzM, fun hzC => hzMQ ⟨hzM, hCQ ⟨hzC, hzB⟩⟩⟩
+  -- `Q` is an approximate tangent plane of `M ∩ Q`: in `B_r(y)`, `Q ∖ M ⊆ G ∖ M`
+  have hQ' : HasApproximateTangentSpaceAt n (R.carrier ∩ (Q : Set (Euclid P))) y Q := by
+    refine Submission.dtc_approxTangent_of_null_diff P n (Q : Set (Euclid P))
+      (R.carrier ∩ (Q : Set (Euclid P))) (ball y r) y Q inter_subset_right isOpen_ball
+      (mem_ball_self hr) (measure_mono_null ?_ hGnull)
+      (Poincare.SimonGMT.Chapter03.hasApproximateTangentSpaceAt_submodule hQ hyQ)
+    rintro z ⟨⟨hzQ, hzMQ⟩, hzB⟩
+    exact ⟨hQG ⟨hzQ, hzB⟩, fun hzM => hzMQ ⟨hzM, hzQ⟩⟩
+  -- uniqueness gives `T = Q`, so `TᵧM = Q`
+  rw [hT'.unique hQ'] at hT
+  have hex : ∃ Q', HasApproximateTangentSpaceAt n R.carrier y Q' := ⟨Q, hT⟩
+  refine ⟨hyM, hθ, ?_⟩
+  rw [approxTangentPlane, dite_eq_left hex]
+  exact hex.choose_spec.unique hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
