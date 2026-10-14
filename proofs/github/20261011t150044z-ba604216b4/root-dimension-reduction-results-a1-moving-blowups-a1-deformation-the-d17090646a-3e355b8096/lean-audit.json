@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65b38963840484c998f643a3c1b53e0be9743e70d0171589d22de900c77b0681",
+  "git_delta": {
+    "base_commit": "9032c9bd73015f6d10c124714b709bf032b43db8",
+    "candidate_commit": "665db6a6a56862e865e428b64c3aa2e24d94b8fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_product_null",
+    "diff_sha256": "dcce3670f2f6bec08ba512d5a69b7ece7baa60b7c947de0d28783a884bb52b01",
+    "source_sha256": "8f2be74cdc442bd4a68d2bcc7bbc15b9b18014e8794645fd5a1ea3d3b9fe95b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_product_null",
+      "statement": "∀ (N n : ℕ) (Z : Set (Euclid N)), μHE[n] Z = 0 → μHE[n + 1] ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (univ ×ˢ Z)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
