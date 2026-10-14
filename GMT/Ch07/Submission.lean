@@ -803,6 +803,63 @@ theorem Submission.dimred_mbl_dtfr_face_divergence : ∀ (P m : ℕ) (ι : Fin (
     rw [hfd]
     simp [Matrix.diag, LinearMap.toMatrix_apply, hcoord, hL, ev, w, zsmul_eq_mul]
 
+/-- **Currents given by integrable densities on finitely many unit faces** (Simon Ch. 6, proof of
+Theorem 5.1, displays (27)–(30) and (34)).  Let `Q₁ ⊆ ℝ^{m+1}` be the open unit cube and, for
+`p = (ι, b) ∈ s` with `ι` strictly increasing, `Φₚ(y) = b + Σⱼ yⱼ e_{ι j}`, `Eₚ = (e_{ι j})ⱼ`,
+with `wₚ` integrable on `Q₁`.  Then (I) each `y ↦ wₚ(y) ω(Φₚ y)(Eₚ)` is integrable on `Q₁`;
+(II) `D(ω) = Σₚ ∫_{Q₁} wₚ(y) ω(Φₚ y)(Eₚ) dy` defines a current; and every such `D` has
+(a) `M(D) ≤ Σₚ ∫_{Q₁} |wₚ|`, (b) `M(∂D) ≤ Σₚ Bₚ` whenever `|∫_{Q₁} wₚ div G| ≤ Bₚ` for every
+smooth `G` with `|G| ≤ 1`, and (c) `spt D` in the closed faces `Φₚ([0,1]^{m+1})` with
+`∫_{Q₁} |wₚ| ≠ 0`.  For (b), an admissible `γ` gives on each face the smooth field
+`Gₚ(y)ᵢ = (−1)ⁱ γ(Φₚ y)(Eₚ ∘ succAbove i)`, with `|Gₚ| ≤ |γ ∘ Φₚ| ≤ 1` and
+`dγ(Φₚ y)(Eₚ) = div Gₚ(y)`; so `∂D(γ) = D(dγ) = Σₚ ∫_{Q₁} wₚ div Gₚ ≤ Σₚ Bₚ`. -/
+theorem Submission.dimred_mbl_dtfr_face_integral_current : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, StrictMono p.1) → (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s, IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ (∃ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) ∧ ∀ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → D.mass ≤ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ∧ (∀ B : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℝ, (∀ p ∈ s, ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ B p) → D.boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, B p)) ∧ (∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x) := by
+  intro P m s w hmono hint
+  -- Step 1: (I) and (II), by `dimred_mbl_dtfric_current_exists`
+  obtain ⟨hI, D₀, hD₀⟩ := Submission.dimred_mbl_dtfric_current_exists P m s w hint
+  refine ⟨hI, ⟨D₀, hD₀⟩, fun D hD => ⟨?_, ?_, ?_⟩⟩
+  -- Step 2: (III)(a), by `dimred_mbl_dtfric_mass_le`
+  · exact Submission.dimred_mbl_dtfric_mass_le P m s w D hmono hint hD
+  -- Step 3: (III)(b).  `M(∂D)` is the supremum of `∂D(γ)` over admissible `γ`; bound each
+  -- `∂D(γ) = D(dγ)` face by face
+  · intro B hB
+    change D.boundary.massOn univ ≤ _
+    unfold GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro r ⟨γ, hγ, rfl⟩
+    apply ENNReal.ofReal_le_ofReal
+    rw [GeometricCurrentOn.boundary_apply, hD]
+    apply Finset.sum_le_sum
+    intro p hp
+    -- the field `Gₚ(y)ᵢ = (−1)ⁱ γ(Φₚ y)(Eₚ ∘ succAbove i)` of `dimred_mbl_dtfr_face_divergence`
+    -- is smooth, with `‖Gₚ(y)‖ ≤ |γ(Φₚ y)|` and `dγ(Φₚ y)(Eₚ) = div Gₚ(y)`
+    set G : Euclid (m + 1) → Euclid (m + 1) := fun y => WithLp.toLp 2 (fun i : Fin (m + 1) =>
+      (-1 : ℝ) ^ (i : ℕ) * (γ : DifferentialForm (Euclid P) m)
+        (WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ)))
+    obtain ⟨hGsmooth, hGnorm, hGdiv⟩ := Submission.dimred_mbl_dtfr_face_divergence P m p.1 p.2
+      (γ : DifferentialForm (Euclid P) m) G (hmono p hp) γ.property.1.1 (fun y i => rfl)
+    -- `‖Gₚ‖ ≤ 1`, since `γ` is admissible
+    have hG1 : ∀ y, ‖G y‖ ≤ 1 := fun y => (hGnorm y).trans (hγ.2 _)
+    -- the form underlying the test form `dγ` is `exteriorDerivative γ`
+    have hdiv : ∀ y, w p y * ((exteriorDerivativeTestOn (univ : Set (Euclid P)) m γ :
+        TestFormOn (univ : Set (Euclid P)) (m + 1)) : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) =
+        w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) := by
+      intro y
+      rw [← hGdiv y]
+      rfl
+    -- the `p`-th face term is `∫_{Q₁} wₚ div Gₚ ≤ |∫_{Q₁} wₚ div Gₚ| ≤ Bₚ`
+    calc _ = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
+          integral_congr_ae (Eventually.of_forall hdiv)
+      _ ≤ |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| := le_abs_self _
+      _ ≤ B p := hB p hp G hGsmooth hG1
+  -- Step 4: (III)(c), by `dimred_mbl_dtfric_support_faces`
+  · exact Submission.dimred_mbl_dtfric_support_faces P m s w D hint hD
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
