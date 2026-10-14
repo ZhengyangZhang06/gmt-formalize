@@ -17785,6 +17785,266 @@ theorem Submission.cmc_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Euclid P)) 
       (fun t => ((A t).boundary - B t).massOn W) a b hf.continuous.measurable hW.measurableSet
       fun t _ => hpt W t
 
+/-- **Deformation onto the `n`-skeleton** (Simon Ch. 6, proof of the Deformation Theorem 5.1,
+displays (1)–(25), chapter-06.txt lines 1405–1928), `n = m + 1`: an integer multiplicity
+`T ∈ 𝒟ₙ(ℝᴾ)` with compact support and `M(T), M(∂T) < ∞` has `T − Q₀ − S₁ = ∂R₁` with `Q₀`, `R₁`
+integer multiplicity, `spt Q₀` in the `n`-skeleton `L_n` of the unit cubical grid, masses at most
+`c M(T)` resp. `c M(∂T)`, and supports within `√P` of `spt T` resp. `spt ∂T`.  If `n ≥ P` then
+`L_n = ℝᴾ`, and `Q₀ = T`, `R₁ = S₁ = 0`.  Otherwise the good centre `a` (`cmcdt_good_center` for
+the finite mass measures of `T` and `∂T`) gives `M_{d<r}(T) ≤ C r^{n+1} M(T)` and
+`M_{d<r}(∂T) ≤ C r^{n+1} M(∂T)` for `d = dist(·, L*(a))`; `cmcsd_shell_decomposition` cuts `T`
+into integer multiplicity shells `W_j` at radii `r_j ∈ (2^{-j-3}, 2^{-j-2})`; the retraction `ψ` of
+`cmcdt_skeleton_retraction` is `(c_R/r_j)`-Lipschitz on `{d ≥ r_j}`, and its McShane extension
+`φ_j` is `Λ_j`-Lipschitz, `Λ_j = max(1, √P c_R/r_j) ≤ c₄ 2^j` for `c₄ = 1 + 8√P c_R`;
+`cmcsd_dyadic_series_bounds` sums the mass series, and `cmcsd_telescoping_deformation` (with the
+push-forwards and homotopies of `cmcdt_lipschitz_pushforward_homotopy`, the series of
+`cmcdt_im_series` and `δ = √P`) deforms and sums the shells, with
+`c = (1 + √P)(2c₄)^{m+1}(1 + C)`. -/
+theorem Submission.cmcdt_skeleton_deformation : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞ → T.boundary.mass < ∞ → ∃ (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q₀ ∧ IsIntegerMultiplicity R₁ ∧ T - Q₀ - S₁ = R₁.boundary ∧ Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∧ Q₀.mass ≤ c * T.mass ∧ Q₀.boundary.mass ≤ c * T.boundary.mass ∧ R₁.mass ≤ c * T.mass ∧ S₁.mass ≤ c * T.boundary.mass ∧ Q₀.support ∪ R₁.support ⊆ cthickening (Real.sqrt P) T.support ∧ Q₀.boundary.support ∪ S₁.support ⊆ cthickening (Real.sqrt P) T.boundary.support := by
+  intro hVO hMR hREP hIMC hSL P m
+  -- `M(0) = 0` in every degree
+  have hzero : ∀ k : ℕ, (0 : GeometricCurrentOn (univ : Set (Euclid P)) k).mass = 0 := by
+    intro k
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  by_cases hPm : m + 1 < P
+  swap
+  · -- Step 1: for `n = m + 1 ≥ P`, `L_n = ℝᴾ` (take `s = ∅`); `Q₀ = T`, `R₁ = S₁ = 0`, `c = 1`
+    have hPm' : P ≤ m + 1 := not_lt.1 hPm
+    have hsc := Submission.cmcsd_support_calculus P
+    refine ⟨1, le_rfl, fun T hT _ _ _ => ⟨T, 0, 0, hT,
+      Submission.cmcsd_zero_isIntegerMultiplicity P (m + 2) univ, ?_,
+      fun x _ => ⟨∅, by simpa using hPm', by simp⟩, by rw [ENNReal.coe_one, one_mul],
+      by rw [ENNReal.coe_one, one_mul], by rw [hzero]; exact zero_le, by rw [hzero]; exact zero_le,
+      ?_, ?_⟩⟩
+    · ext ω
+      change T ω - T ω - 0 = 0
+      ring
+    · rw [(hsc (m + 2)).2.2.2.1, union_empty]
+      exact self_subset_cthickening _
+    · rw [(hsc (m + 1)).2.2.2.1, union_empty]
+      exact self_subset_cthickening _
+  -- Step 2: the constants `c_R` (RET), `C` (GC); the operators `push`, `homot` (PF); (IMS)
+  obtain ⟨cR, hcR, hRET⟩ := Submission.cmcdt_skeleton_retraction P m hPm
+  obtain ⟨C, hGC⟩ := Submission.cmcdt_good_center P m hPm
+  obtain ⟨push, homot, hPF⟩ :=
+    Submission.cmcdt_lipschitz_pushforward_homotopy hVO hMR hREP hIMC P
+  have hIMS := Submission.cmcdt_im_series hVO hMR hIMC P
+  -- `c₄ = 1 + 8√P c_R`, `X = (2c₄)^{m+1}(1 + C)` and `c = (1 + √P) X`
+  obtain ⟨c₄, hc₄⟩ : ∃ c₄ : NNReal, c₄ = 1 + 8 * NNReal.sqrt P * Real.toNNReal cR := ⟨_, rfl⟩
+  obtain ⟨X, hX⟩ : ∃ X : NNReal, X = (2 * c₄) ^ (m + 1) * (1 + C) := ⟨_, rfl⟩
+  have h2c₄ : 1 ≤ 2 * c₄ := by
+    rw [hc₄]
+    calc (1 : NNReal) ≤ 2 * 1 := by norm_num
+      _ ≤ 2 * (1 + 8 * NNReal.sqrt P * Real.toNNReal cR) := mul_le_mul_right le_self_add 2
+  have hX1 : 1 ≤ X := by
+    rw [hX]
+    exact one_le_mul_of_one_le_of_one_le (one_le_pow₀ h2c₄) le_self_add
+  have hXc : X ≤ (1 + NNReal.sqrt P) * X := le_mul_of_one_le_left zero_le le_self_add
+  have hYX : (2 * c₄) ^ m * (1 + C) ≤ X := by
+    rw [hX]
+    exact mul_le_mul_left (pow_le_pow_right₀ h2c₄ (Nat.le_succ m)) _
+  have hYc : (2 * c₄) ^ m * (1 + C) ≤ (1 + NNReal.sqrt P) * X := hYX.trans hXc
+  have hXcast : (2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C) = (X : ℝ≥0∞) := by
+    rw [hX]
+    norm_cast
+  have hYcast : (2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C) = (((2 * c₄) ^ m * (1 + C) : NNReal) : ℝ≥0∞) := by
+    norm_cast
+  have hsqrt : ENNReal.ofReal (Real.sqrt P) = (NNReal.sqrt P : ℝ≥0∞) := by
+    rw [← ENNReal.ofReal_coe_nnreal, Real.coe_sqrt, NNReal.coe_natCast]
+  refine ⟨(1 + NNReal.sqrt P) * X, one_le_mul_of_one_le_of_one_le le_self_add hX1,
+    fun T hT hTc hTm hbTm => ?_⟩
+  -- Step 3: the finite mass measures `μ_T` (IMRep, MR) and `μ_∂T` (REP)
+  obtain ⟨μ, -, hμfin, -, -, -, hμW, -, -⟩ :=
+    Submission.cmcsd_sh_im_mass_measure hVO hMR hIMC P (m + 1) T hT hTm
+  obtain ⟨μ', -, hμ'fin, -, -, -, hμ'W, -⟩ :=
+    Submission.cmcsd_sh_finite_mass_measure hVO hREP P m T.boundary hbTm
+  -- the good centre `a` (GC) and the retraction `ψ` (RET) for `L*(a)`
+  obtain ⟨a, ha, hdens⟩ := hGC μ μ' hμfin hμ'fin
+  obtain ⟨ψ, hψL, hψLip⟩ := hRET a ha
+  set Ls : Set (Euclid P) :=
+    {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  -- `M_{d<r}(T) = μ_T{d < r}` (`{d < r}` is open) and `M(T) = μ_T(ℝᴾ)`, likewise for `∂T`
+  have hdens' : ∀ r : ℝ, 0 < r → r ≤ 1 / 4 →
+      T.massOn {x | infDist x Ls < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * T.mass ∧
+        T.boundary.massOn {x | infDist x Ls < r} ≤
+          C * ENNReal.ofReal (r ^ (m + 2)) * T.boundary.mass := by
+    intro r hr hr4
+    have hopen : IsOpen {x : Euclid P | infDist x Ls < r} :=
+      isOpen_lt (continuous_infDist_pt Ls) continuous_const
+    have hTμ : T.mass = μ univ := hμW univ isOpen_univ
+    have hbTμ : T.boundary.mass = μ' univ := hμ'W univ isOpen_univ
+    rw [hμW _ hopen, hμ'W _ hopen, hTμ, hbTμ]
+    exact hdens r hr hr4
+  -- Step 4: the shells `W_j`, `D_j` and slices `Z_j` at radii `r_j ∈ (2^{-j-3}, 2^{-j-2})`
+  obtain ⟨r, W, D, Z, hr, hWsum, hW0, hWs, hWim, hWfin, hDfin, hZfin, hWspt, hDspt, hZspt,
+      hW0m, hWm, hD0m, hDm, hZm⟩ :=
+    Submission.cmcsd_shell_decomposition hVO hMR hREP hIMC hSL P m T (fun x => infDist x Ls) C
+      hT hTc hTm hbTm (lipschitz_infDist_pt Ls) hdens'
+  have hrpos : ∀ j, 0 < r j := fun j => (pow_pos (by norm_num) _).trans (hr j).1
+  have hr4 : ∀ j, r j ≤ 1 / 4 := fun j =>
+    (hr j).2.le.trans
+      (calc (1 / 2 : ℝ) ^ (j + 2) ≤ (1 / 2 : ℝ) ^ 2 :=
+            pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+        _ = 1 / 4 := by norm_num)
+  have hrdec : ∀ j, r (j + 1) < r j := fun j =>
+    calc r (j + 1) < (1 / 2 : ℝ) ^ (j + 1 + 2) := (hr (j + 1)).2
+      _ = (1 / 2 : ℝ) ^ (j + 3) := by ring
+      _ < r j := (hr j).1
+  -- Step 5: `ψ` is `(c_R/r_j)`-Lipschitz on `{d ≥ r_j}`; `φ_j` is its McShane extension
+  have hψon : ∀ j, LipschitzOnWith (Real.toNNReal (cR / r j)) ψ {x | r j ≤ infDist x Ls} := by
+    intro j
+    refine LipschitzOnWith.of_dist_le_mul fun x hx y hy => ?_
+    rw [Real.coe_toNNReal _ (div_pos hcR (hrpos j)).le]
+    exact hψLip (r j) (hrpos j) (hr4 j) x y hx hy
+  choose φ hφ hφψ using fun j =>
+    Submission.cmcsd_lipschitz_extension P {x | r j ≤ infDist x Ls} ψ _ (hψon j)
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℕ → NNReal,
+      Λ = fun j => max 1 (NNReal.sqrt P * Real.toNNReal (cR / r j)) := ⟨_, rfl⟩
+  have hΛ1 : ∀ j, 1 ≤ Λ j := fun j => by
+    rw [hΛ]
+    exact le_max_left _ _
+  have hΛmono : ∀ j, Λ j ≤ Λ (j + 1) := fun j => by
+    rw [hΛ]
+    exact max_le_max le_rfl (mul_le_mul_right (Real.toNNReal_le_toNNReal
+      (div_le_div_of_nonneg_left hcR.le (hrpos (j + 1)) (hrdec j).le)) _)
+  have hΛφ : ∀ j, LipschitzWith (Λ j) (φ j) := fun j => by
+    rw [hΛ]
+    exact (hφ j).weaken (le_max_right _ _)
+  -- `Λ_j ≤ c₄ 2^j`, as `1/r_j < 2^{j+3}`
+  have hΛc₄ : ∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j := by
+    intro j
+    have h2j : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+    have hsq : (0 : ℝ) ≤ Real.sqrt P := Real.sqrt_nonneg _
+    have hr8 : 1 ≤ 8 * 2 ^ j * r j := by
+      have h1 : (1 / 2 : ℝ) ^ (j + 3) * (8 * 2 ^ j) = 1 := by
+        rw [show (8 : ℝ) * 2 ^ j = 2 ^ (j + 3) by ring, ← mul_pow]
+        norm_num
+      have h2 : (1 / 2 : ℝ) ^ (j + 3) * (8 * 2 ^ j) < r j * (8 * 2 ^ j) :=
+        mul_lt_mul_of_pos_right (hr j).1 (by positivity)
+      linarith
+    have hcRr : cR / r j ≤ 8 * cR * 2 ^ j := by
+      rw [div_le_iff₀ (hrpos j)]
+      nlinarith [mul_le_mul_of_nonneg_left hr8 hcR.le]
+    have hΛj : (Λ j : ℝ) = max 1 (Real.sqrt P * (cR / r j)) := by
+      rw [hΛ]
+      simp only [NNReal.coe_max, NNReal.coe_one, NNReal.coe_mul, Real.coe_sqrt,
+        NNReal.coe_natCast, Real.coe_toNNReal _ (div_pos hcR (hrpos j)).le]
+    have hc₄r : (c₄ : ℝ) = 1 + 8 * Real.sqrt P * cR := by
+      rw [hc₄]
+      simp only [NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul, NNReal.coe_ofNat,
+        Real.coe_sqrt, NNReal.coe_natCast, Real.coe_toNNReal _ hcR.le]
+    rw [hΛj, hc₄r]
+    have h8 : (0 : ℝ) ≤ 8 * Real.sqrt P * cR * 2 ^ j := by positivity
+    refine max_le (by nlinarith) ?_
+    calc Real.sqrt P * (cR / r j) ≤ Real.sqrt P * (8 * cR * 2 ^ j) :=
+          mul_le_mul_of_nonneg_left hcRr hsq
+      _ ≤ (1 + 8 * Real.sqrt P * cR) * 2 ^ j := by nlinarith
+  -- Step 6: `φ_j = ψ` on `{d ≥ r_j}`, which contains `spt W_j ∪ spt D_j ∪ spt Z_j`
+  have hφeq : ∀ j x, r j ≤ infDist x Ls → φ j x = ψ x := fun j x hx => hφψ j hx
+  have hZeq : ∀ j, EqOn (φ (j + 1)) (φ j) (Z j).support := by
+    intro j x hx
+    have hxd : infDist x Ls = r j := (hZspt j hx).2
+    rw [hφeq (j + 1) x ((hrdec j).le.trans hxd.ge), hφeq j x hxd.ge]
+  have hsptd : ∀ j, ∀ x ∈ (W j).support ∪ (D j).support ∪ (Z j).support,
+      r j ≤ infDist x Ls := by
+    intro j x hx
+    rcases hx with (hx | hx) | hx
+    · exact (hWspt j hx).2
+    · exact (hDspt j hx).2
+    · exact ((hZspt j hx).2 : infDist x Ls = r j).ge
+  have hdist : ∀ j, ∀ x ∈ (W j).support ∪ (D j).support ∪ (Z j).support,
+      dist (φ j x) x ≤ Real.sqrt P := by
+    intro j x hx
+    rw [hφeq j x (hsptd j x hx)]
+    exact (hψL x ((hrpos j).trans_le (hsptd j x hx))).2
+  have hLmap : ∀ j, ∀ x ∈ (W j).support, φ j x ∈
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} := by
+    intro j x hx
+    have hxd : r j ≤ infDist x Ls := (hWspt j hx).2
+    rw [hφeq j x hxd]
+    exact (hψL x ((hrpos j).trans_le hxd)).1
+  -- `L_n` is closed: a finite union of finite intersections of preimages of `ℤ ⊆ ℝ`
+  have hcoord : ∀ i : Fin P, Continuous fun x : Euclid P => x i := fun i =>
+    (EuclideanSpace.proj (𝕜 := ℝ) i).continuous
+  have hZcl : IsClosed (range (Int.cast : ℤ → ℝ)) := Int.isClosedEmbedding_coe_real.isClosed_range
+  have hLcl : IsClosed
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} := by
+    have hU :
+        {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} =
+          ⋃ s : Finset (Fin P),
+            {x : Euclid P | P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} := by
+      ext x
+      simp only [mem_ofPred_eq, mem_iUnion]
+    rw [hU]
+    refine isClosed_iUnion_of_finite fun s => ?_
+    by_cases hs : P ≤ m + 1 + s.card
+    · have hS : {x : Euclid P | P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} =
+          ⋂ i ∈ s, (fun x : Euclid P => x i) ⁻¹' range (Int.cast : ℤ → ℝ) := by
+        ext x
+        simp only [mem_ofPred_eq, mem_iInter, mem_preimage, mem_range, hs, true_and]
+        exact forall₂_congr fun i _ => exists_congr fun z => eq_comm
+      rw [hS]
+      exact isClosed_biInter fun i _ => hZcl.preimage (hcoord i)
+    · have hS : {x : Euclid P | P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = ∅ := by
+        ext x
+        simp only [mem_ofPred_eq, hs, false_and, mem_empty_iff_false]
+      rw [hS]
+      exact isClosed_empty
+  -- Step 7: the dyadic mass series
+  obtain ⟨hdy1, hdy2⟩ := Submission.cmcsd_dyadic_series_bounds c₄ Λ hΛc₄
+  have hWser : ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ (m + 1) * (W j).mass ≤
+      (2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C) * T.mass :=
+    hdy1 C T.mass (m + 1) (m + 1) (fun j => (W j).mass) le_rfl hW0m hWm
+  have hDser : ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ m * (D j).mass ≤
+      (2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C) * T.boundary.mass :=
+    hdy1 C T.boundary.mass m (m + 1) (fun j => (D j).mass) (Nat.le_succ m) hD0m hDm
+  have hZlim : Tendsto (fun j => (2 * (Λ j : ℝ≥0∞)) ^ m * (Z j).mass) atTop (𝓝 0) :=
+    hdy2 (4 * C) T.mass m (fun j => (Z j).mass)
+      (ENNReal.mul_ne_top (by norm_num) ENNReal.coe_ne_top) hTm.ne hZm
+  have hWfin' : ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ (m + 1) * (W j).mass < ∞ := by
+    refine hWser.trans_lt ?_
+    rw [hXcast]
+    exact ENNReal.mul_lt_top ENNReal.coe_lt_top hTm
+  have hDfin' : ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ m * (D j).mass < ∞ := by
+    refine hDser.trans_lt ?_
+    rw [hYcast]
+    exact ENNReal.mul_lt_top ENNReal.coe_lt_top hbTm
+  -- Step 8: deform the shells by `φ_j` and sum (PF, IMS), with `δ = √P`
+  obtain ⟨Q₀, R₁, S₁, hQim, hRim, hid, hQspt, hRspt, hbQspt, hSspt, hQm, hbQm, hRm, hSm⟩ :=
+    Submission.cmcsd_telescoping_deformation hVO P m push homot hPF hIMS T W D Z φ Λ (Real.sqrt P)
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z}
+      T.support T.boundary.support hWsum hW0 hWs hWim hWfin hDfin hZfin hΛφ hΛ1 hΛmono hZeq hdist
+      hLcl hLmap (fun j => (hWspt j).trans inter_subset_left)
+      (fun j => (hDspt j).trans inter_subset_left) hWfin' hDfin' hZlim
+  refine ⟨Q₀, R₁, S₁, hQim, hRim, hid, fun x hx => (hQspt hx).1, ?_, ?_, ?_, ?_,
+    union_subset (fun x hx => (hQspt hx).2) hRspt, union_subset hbQspt hSspt⟩
+  · -- `M(Q₀) ≤ Σ_j (2Λ_j)^{m+1} M(W_j) ≤ X M(T) ≤ c M(T)`
+    calc Q₀.mass ≤ (X : ℝ≥0∞) * T.mass := hQm.trans (hWser.trans_eq (by rw [hXcast]))
+      _ ≤ _ := mul_le_mul_left (ENNReal.coe_le_coe.2 hXc) _
+  · -- `M(∂Q₀) ≤ Σ_j (2Λ_j)^m M(D_j) ≤ (2c₄)^m (1 + C) M(∂T) ≤ c M(∂T)`
+    calc Q₀.boundary.mass ≤ (((2 * c₄) ^ m * (1 + C) : NNReal) : ℝ≥0∞) * T.boundary.mass :=
+          hbQm.trans (hDser.trans_eq (by rw [hYcast]))
+      _ ≤ _ := mul_le_mul_left (ENNReal.coe_le_coe.2 hYc) _
+  · -- `M(R₁) ≤ √P Σ_j (2Λ_j)^{m+1} M(W_j) ≤ √P X M(T) ≤ c M(T)`
+    calc R₁.mass ≤ ENNReal.ofReal (Real.sqrt P) * ((X : ℝ≥0∞) * T.mass) :=
+          hRm.trans (mul_le_mul_right (hWser.trans_eq (by rw [hXcast])) _)
+      _ = ((NNReal.sqrt P * X : NNReal) : ℝ≥0∞) * T.mass := by
+          rw [hsqrt]
+          push_cast
+          ring
+      _ ≤ _ := mul_le_mul_left (ENNReal.coe_le_coe.2 (mul_le_mul_left le_add_self X)) _
+  · -- `M(S₁) ≤ √P Σ_j (2Λ_j)^m M(D_j) ≤ √P (2c₄)^m (1 + C) M(∂T) ≤ c M(∂T)`
+    calc S₁.mass ≤ ENNReal.ofReal (Real.sqrt P) *
+          ((((2 * c₄) ^ m * (1 + C) : NNReal) : ℝ≥0∞) * T.boundary.mass) :=
+          hSm.trans (mul_le_mul_right (hDser.trans_eq (by rw [hYcast])) _)
+      _ = ((NNReal.sqrt P * ((2 * c₄) ^ m * (1 + C)) : NNReal) : ℝ≥0∞) * T.boundary.mass := by
+          rw [hsqrt]
+          push_cast
+          ring
+      _ ≤ _ := mul_le_mul_left (ENNReal.coe_le_coe.2 (mul_le_mul' le_add_self hYX)) _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
