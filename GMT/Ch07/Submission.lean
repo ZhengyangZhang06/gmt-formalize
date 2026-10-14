@@ -3225,6 +3225,41 @@ theorem Submission.idtp_cse_sp_sector_rel_open : ∀ (P : ℕ) (Q : Submodule �
   calc y = inner ℝ y a • a + inner ℝ y e • e := hexp y hy
     _ = (t' * Real.cos φ') • a + (t' * Real.sin φ') • e := by rw [hpy.1, hpy.2]
     _ = t' • (Real.cos φ' • a + Real.sin φ' • e) := by rw [smul_add, smul_smul, smul_smul]
+/-- **Simon 7.3.3, proof (points of a planar sector)**: let `C = τ(M, θ, ξ)` in `ℝᴾ`, `(a, e)` an
+orthonormal pair in the `2`-plane `Q`, `δ > 0` and `k ≥ 1`, and suppose that every
+`y = t(cos φ·a + sin φ·e)` with `t > 0`, `0 < φ < δ` has `Θ²(μ_C, y) = k` and `spt C ∩ B_r(y) ⊆ Q`
+for some `r > 0`.  Then for Lebesgue-a.e. `(t, α)` with `t > 0` and `0 < α < min(δ, 1)` the point
+`x = t(cos α·a + sin α·e)` lies in `M` with `θ(x) = k` and `TₓM = Q`.  The sector
+`S = {t(cos φ·a + sin φ·e) : t > 0, 0 < φ < min(δ, 1)}` is relatively open in `Q`
+(`idtp_cse_sp_sector_rel_open`, as `min(δ, 1) ≤ 1 < π`), so each `y ∈ S` has a ball `B_r(y)` with
+`Q ∩ B_r(y) ⊆ S` and `spt C ∩ B_r(y) ⊆ Q`.  Hence `H²`-a.e. `y ∈ S` lies in `M` with `θ(y) = k` and
+`TᵧM = Q` (`idtp_cse_sp_flat_region_ae`), and the polar parametrization pulls the `H²`-null
+exceptional set back to a Lebesgue-null set of `(t, α)` (`idtp_cse_sp_polar_null_preimage`). -/
+theorem Submission.idtp_cse_sector_carrier_points : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ) (R : IMRep (univ : Set (Euclid P)) 2), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → R.Represents C → ∀ᵐ p : ℝ × ℝ, 0 < p.1 → 0 < p.2 → p.2 < δ → p.2 < 1 → (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) ∈ R.carrier ∧ R.mult (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = k ∧ approxTangentPlane 2 R.carrier (p.1 • (Real.cos p.2 • a + Real.sin p.2 • e)) = Q := by
+  intro P C Q a e δ k R hQ haQ heQ ha he hae _ hk hsec hR
+  have hδπ : min δ 1 ≤ Real.pi := (min_le_right δ 1).trans (by linarith [Real.two_le_pi])
+  -- every point `y` of the sector `S` lies in `Q` and has density `k`, and for some `r > 0`,
+  -- `Q ∩ B_r(y) ⊆ S` (`S` is relatively open in `Q`) and `spt C ∩ B_r(y) ⊆ Q`
+  have hS : ∀ y ∈ {y : Euclid P | ∃ t φ : ℝ, 0 < t ∧ 0 < φ ∧ φ < min δ 1 ∧
+      y = t • (Real.cos φ • a + Real.sin φ • e)}, y ∈ Q ∧ HasMassDensity C y k ∧ ∃ r : ℝ, 0 < r ∧
+      (Q : Set (Euclid P)) ∩ ball y r ⊆ {y : Euclid P | ∃ t φ : ℝ, 0 < t ∧ 0 < φ ∧
+        φ < min δ 1 ∧ y = t • (Real.cos φ • a + Real.sin φ • e)} ∧
+      C.support ∩ ball y r ⊆ (Q : Set (Euclid P)) := by
+    rintro y ⟨t, φ, ht, hφ, hφδ, rfl⟩
+    obtain ⟨hdens, r₂, hr₂, hCQ⟩ := hsec t φ ht hφ (hφδ.trans_le (min_le_left δ 1))
+    obtain ⟨r₁, hr₁, hopen⟩ := Submission.idtp_cse_sp_sector_rel_open P Q a e (min δ 1) t φ hQ
+      haQ heQ ha he hae hδπ ht hφ hφδ
+    refine ⟨Q.smul_mem t (add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ)), hdens, min r₁ r₂,
+      lt_min hr₁ hr₂, fun z hz => hopen z hz.1 ((mem_ball.1 hz.2).trans_le (min_le_left r₁ r₂)),
+      (inter_subset_inter_right _ (ball_subset_ball (min_le_right r₁ r₂))).trans hCQ⟩
+  -- `H²`-a.e. point of `S` lies in `M` with `θ = k` and `TᵧM = Q`
+  have hflat := Submission.idtp_cse_sp_flat_region_ae P 2 C Q _ k R hQ hk hS hR
+  -- the polar parametrization pulls the `H²`-null exceptional set back to a Lebesgue-null set
+  filter_upwards [Submission.idtp_cse_sp_polar_null_preimage P a e _ ha he hae (ae_iff.1 hflat)]
+    with p hp h1 h2 h3 h4
+  have hgood := hp h1 (by linarith [Real.pi_pos]) (by linarith [Real.two_le_pi])
+  simp only [not_not] at hgood
+  exact hgood ⟨p.1, p.2, h1, h2, lt_min h3 h4, rfl⟩
 
 /-- **Simon Ch. 3, Remarks 1.8(1)–(2) and Theorem 1.9** (with the upper density theorem, Ch. 1,
 3.6–3.7(2)): if `R = (M, θ, ξ)` has weight `μ_R = θ Hⁿ⌞M` finite on compact sets, then for
