@@ -681,6 +681,41 @@ theorem Submission.cmcdt_lpo_pf_normal_closure : (∀ (N k : ℕ) (X Y : Geometr
       rintro r ⟨ω, -, rfl⟩
       simp
 
+/-- **Simon 6.2.29: the Lipschitz push-forward is additive** on currents `X` with `spt X` compact
+and `M(X), M(∂X) < ∞`.  Suppose `lpush` has the approximation property (PA): `X(ηⱼ) → f#X(ω)`
+whenever smooth `Fⱼ → F` uniformly on `spt X`, `‖DFⱼ‖ ≤ Λ'` there, and `ηⱼ = Fⱼ^#ω` on an open
+`W ⊇ spt X`.  Then `f#(X − Y) = f#X − f#Y`.  `X − Y` is again such a current, with
+`spt(X − Y) ⊆ spt X ∪ spt Y` (`cmcdt_lpo_pf_normal_closure`).  So one approximating sequence
+`Fⱼ`, `ηⱼ` for `K = spt X ∪ spt Y` (`cmcdt_lpo_pf_approx_data`, `Λ' = Λ`) serves `X`, `Y` and
+`X − Y`, and `(X − Y)(ηⱼ) = X(ηⱼ) − Y(ηⱼ)`.  Apply (PA) three times; limits are unique. -/
+theorem Submission.cmcdt_lpo_pf_sub : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → lpush N N' k F (X - Y) = lpush N N' k F X - lpush N N' k F Y := by
+  intro lpush hPA N N' k Λ F X Y hF hX1 hX2 hX3 hY1 hY2 hY3
+  -- `X − Y` is normal, with `spt(X − Y) ⊆ spt X ∪ spt Y`
+  obtain ⟨hsupp, hZ1, hZ2, hZ3⟩ :=
+    Submission.cmcdt_lpo_pf_normal_closure.1 N k X Y hX1 hX2 hX3 hY1 hY2 hY3
+  ext ω
+  -- one approximation `Fⱼ → F`, `ηⱼ = Fⱼ^#ω` near `K = spt X ∪ spt Y`
+  obtain ⟨Fs, hFs, -, hD, -, hU, hη⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F (X.support ∪ Y.support) hF (hX1.union hY1)
+  obtain ⟨ηs, hηs⟩ := hη k ω
+  have hη' : ∀ (S : Set (Euclid N)), S ⊆ X.support ∪ Y.support → ∀ j, ∃ W : Set (Euclid N),
+      IsOpen W ∧ S ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x) := fun S hS j => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hηs j
+    exact ⟨W, hW, hS.trans hKW, h1⟩
+  -- (PA) for `X`, `Y` and `X − Y`, all with `Λ' = Λ`
+  have hX := hPA N N' k Λ Λ F Fs X ω ηs hF hX1 hX2 hX3 hFs (fun j x _ => hD j x)
+    hU.tendstoUniformlyOn (hη' _ subset_union_left)
+  have hY := hPA N N' k Λ Λ F Fs Y ω ηs hF hY1 hY2 hY3 hFs (fun j x _ => hD j x)
+    hU.tendstoUniformlyOn (hη' _ subset_union_right)
+  have hZ := hPA N N' k Λ Λ F Fs (X - Y) ω ηs hF hZ1 hZ2 hZ3 hFs (fun j x _ => hD j x)
+    hU.tendstoUniformlyOn (hη' _ hsupp)
+  -- `(X − Y)(ηⱼ) = X(ηⱼ) − Y(ηⱼ)` by definition of the difference
+  have hXY : Tendsto (fun j => (X - Y) (ηs j)) atTop
+      (𝓝 (lpush N N' k F X ω - lpush N N' k F Y ω)) := hX.sub hY
+  exact tendsto_nhds_unique hZ hXY
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
