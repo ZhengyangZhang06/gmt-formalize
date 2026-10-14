@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2, 4, 5 and 6 of the parent proof, i.e. the book's appeal to Allard's theorem in 7.4.3 (chapter-07.txt lines 624–631) and 7.4.2. The ingredients are: the mean curvature of a varifold stationary in N (Ch. 4, 2.7); Allard's Regularity Theorem (Ch. 5, 5.1–5.2, chapter-05.txt lines 1008–1032, with p = 2n; in Ch. 5, B_ρ denotes a closed ball); the Constancy Theorem (Ch. 6, 2.34, chapter-06.txt line 571); and push-forward (Ch. 6, 2.23–2.24, 3.9). Uses the siblings imrep_mass_and_support (C1) and mean_curvature_monotonicity (C3).
+1. Constants. Apply C3 at y₀. It gives r_c > 0 and κ ≥ 0 with B̄_{3r_c}(y₀) ⊆ U and, for each (T, R) as in the statement, a μ_R-measurable H with |H| ≤ κ and δV(X) = −∫⟨X, H⟩ dμ_R for every X ∈ C¹_c(B_{2r_c}(y₀)). Let p := 2n > n, and let δ₀ = δ₀(n, k, p), γ = γ(n, k, p) ∈ (0, 1) and C = C(n, k, p) be the constants of Allard's theorem 5.2 in ℝ^{n+k}. Decreasing δ₀ keeps the theorem valid, so we may assume δ₀ ≤ 1/2 and Cδ₀^{1/(2n+2)} ≤ 1/4. Put δ := δ₀/4 and r₀ := min{r_c/2, δ₀/((κ + 1)(2ω_n)^{1/(2n)})}.
+2. Fix T, R = (M, θ, ξ), z and ρ as in the statement; V := v(M, θ), so μ_V = μ_R. Choose ρ' ∈ (0, ρ) with (ρ/ρ')ⁿ(1 + δ) ≤ 1 + δ₀. Since |z − y₀| + ρ < 2r₀ ≤ r_c, the closed ball B̄ := B̄_{ρ'}(z) satisfies B̄ ⊆ B_ρ(z) ⊆ U' := B_{2r_c}(y₀) ⊆ U.
+3. Allard's hypotheses 5.1 hold for V in U', with centre z, radius ρ' and δ₀: (i) V has generalized mean curvature H in U' (step 1), and H is bounded; (ii) θ ≥ 1 μ_V-a.e., since θ is a positive integer on M; (iii) z ∈ spt μ_V, because z ∈ spt T = U ∩ spt μ_R by C1 (ii); (iv) B̄ ⊆ U'; (v) μ_V(B̄) ≤ μ_R(B_ρ(z)) = M_{B_ρ(z)}(T) (C1 (i)) ≤ (1 + δ)ω_nρⁿ ≤ (1 + δ₀)ω_nρ'ⁿ; (vi) ρ'^{1−n/p}(∫_{B̄}|H|^p dμ_V)^{1/p} ≤ κρ'^{1−n/p}μ_V(B̄)^{1/p} ≤ κρ'((1 + δ₀)ω_n)^{1/(2n)} ≤ κr₀(2ω_n)^{1/(2n)} ≤ δ₀.
+4. Allard's theorem 5.2 (translated to centre z) gives a linear isometry q of ℝ^{n+k} and u ∈ C^{1,1/2}(B^n_{γρ'}(0); ℝ^k) with spt μ_V ∩ B_{γρ'}(z) = (z + q(graph u)) ∩ B_{γρ'}(z) and sup|Du| ≤ Cδ₀^{1/(2n+2)} ≤ 1/4, where graph u = {(v, u(v))} ⊆ ℝⁿ × ℝ^k = ℝ^{n+k}. As z ∈ spt μ_V, z = z + q(v, u(v)) for some v, so v = 0 and u(0) = 0; hence |u(v)| ≤ |v|/4. By C1 (ii), spt μ_V ∩ B_{γρ'}(z) = spt T ∩ B_{γρ'}(z).
+5. The graph manifold. Let σ := γρ'/4, D := B^n_σ(0), and C_z := z + q(D × B^k_σ(0)), an open cylinder with C_z ⊆ B_{√2σ}(z) ⊆ B_{γρ'}(z) ⊆ U. Let Φ(v) := z + q(v, u(v)) (extended arbitrarily outside B^n_{γρ'}(0)), let Pr(x) be the first n coordinates of q⁻¹(x − z), and let Σ := Φ(D). For v ∈ D we have |u(v)| < σ, so Φ(D) ⊆ C_z, and each Φ(v) lies in spt T. Conversely, a point of spt T ∩ C_z equals Φ(v) with (v, u(v)) ∈ D × B^k_σ(0), so v ∈ D. Thus spt T ∩ C_z = Σ, and Σ is relatively closed in C_z. (a) IsEmbeddedSubmanifold 1 n Σ holds, with the chart (D, C_z, Φ) at every point: D and C_z are open; Φ is C¹ on D and injective (Pr∘Φ = id); Φ(D) = C_z ∩ Σ; DΦ(v) = q∘(id, Du(v)) is injective; and for compact K ⊆ C_z, D ∩ Φ⁻¹(K) = Pr(K ∩ Σ) is compact, since K ∩ Σ is compact. (b) For x = Φ(v) ∈ Σ, tangentSpace Σ x = DΦ(v)(ℝⁿ). A C¹ curve γ in Σ equals Φ∘(Pr∘γ), so γ'(0) = DΦ(v)(Pr∘γ)'(0); conversely, t ↦ Φ(v + tw) with |w| small realizes DΦ(v)w. (c) Orientation: ξ_Σ(x)(α) := α(τ₁(x), …, τₙ(x)), where τ(x) is the Gram–Schmidt orthonormalization of (DΦ(Pr x)e₁, …, DΦ(Pr x)eₙ), and ξ_Σ := 0 off Σ. ξ_Σ is continuous on Σ, and ξ_Σ(x) is a unit orientation of T_xΣ; so IsOrientation n Σ ξ_Σ. (d) Hⁿ(Σ) = ∫_D JΦ dLⁿ ≤ (17/16)^{n/2}ω_nσⁿ < ∞, by the area formula and JΦ ≤ (1 + |Du|²)^{n/2}.
+6. Constancy. Regard T as a current in 𝒟_n(C_z) by restricting its domain; its boundary is 0. Pr is affine, Pr(C_z) = D, and Pr restricted to Σ is a homeomorphism onto D with inverse Φ restricted to D. So Pr is proper on the support Σ, and Q := Pr_#(T restricted to C_z) ∈ 𝒟_n(D) is defined (2.23), integer multiplicity (3.9), with ∂Q = 0 (2.24(1)). By the Constancy Theorem 2.34 (D is a connected open subset of ℝⁿ), Q = c[[D]] for a constant c. As Q is integer multiplicity, c ∈ ℤ: if c ≠ 0, |c| equals the positive integer multiplicity of Q a.e. on D. The map Φ∘Pr is C¹ on C_z and equals the identity on Σ. For μ_R-a.e. x ∈ C_z we have x ∈ Σ, because μ_R is carried by spt μ_R. At such points the approximate tangent space of M is T_xΣ (Simon Ch. 3, 1.5(2), chapter-03.txt lines 86–90: a.e. on a subset of the C¹ n-manifold Σ the approximate tangent space is T_xΣ), and D(Φ∘Pr)(x) is the identity on it. Hence, by the push-forward formula 2.24(2), T restricted to C_z equals (Φ∘Pr)_#(T restricted to C_z) = Φ_#Q = c·Φ_#[[D]] = c[[Σ]]. Here Φ_#[[D]](ω) = ∫_D⟨ω(Φ(v)), DΦ(v)e₁∧⋯∧DΦ(v)eₙ⟩ dv = ∫_Σ⟨ω, ξ_Σ⟩ dHⁿ, by the area formula and DΦ(v)e₁∧⋯∧DΦ(v)eₙ = JΦ(v)ξ_Σ(Φ(v)). That is, T(ω) = c∫_Σ ξ_Σ(x)(ω(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ C_z. If c were 0, T would vanish on a ball B_s(z) with B̄_s(z) ⊆ C_z ⊆ U, so z would lie in the zero region, contradicting z ∈ spt T. Hence c ≠ 0.
+7. Conclusion. Choose ρ'' > 0 with B_{ρ''}(z) ⊆ C_z ⊆ U. Then z ∈ spt T; B_{ρ''}(z) ⊆ U; m := c ∈ ℤ ∖ {0}; z = Φ(0) ∈ Σ; Σ is an embedded C¹ n-submanifold with the continuous orientation ξ_Σ; Hⁿ(Σ ∩ K) ≤ Hⁿ(Σ) < ∞ for compact K ⊆ B_{ρ''}(z); and T(ω) = m∫_Σ ξ_Σ(x)(ω(x)) dHⁿ for every ω ∈ 𝒟ⁿ(U) with spt ω ⊆ B_{ρ''}(z). This is exactly z ∈ regularSet T.
+
+## Key steps
+
+1. Constants: the mean-curvature bound κ from stationarity in N, Allard's δ₀, γ for p = 2n, δ = δ₀/4, and r₀ small so that κr₀(2ω_n)^{1/(2n)} ≤ δ₀.
+2. The mass formula turns the open-ball hypothesis into the closed-ball Allard hypotheses at a slightly smaller radius; z ∈ spt μ_R by the support identity.
+3. Allard gives spt T near z as a C¹ graph with |Du| ≤ 1/4, hence an embedded oriented C¹ n-manifold Σ in a cylinder.
+4. Pushing forward to the base disc and applying the Constancy Theorem gives T = c[[Σ]] near z with c ∈ ℤ ∖ {0}, so z ∈ reg T.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -c sorry local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n -i 'allard|constancy theorem|slice|flat metric|nearest.point|nearestPoint|tubular' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean -l`
+- `rg -n 'massOn.*=.*measure|massOn_eq|mass_eq_' lake-packages-25730c7c/simongmt/Poincare/SimonGMT -t lean`
+- `rg -n 'measure_compl_support|mem_support_iff' local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `rg -n 'hausdorffMeasure_zero_singleton|euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure|class|abbrev) ' simongmt Chapter04/{Basic,Density,MeanCurvature,FirstVariation}.lean Chapter05/Basic.lean Chapter06/{Mass,Currents,CurrentLocalEquality,AffineCurrentPushforward}.lean`
+- `rg -n -i 'pushforward|slice|slicing|constancy' simongmt Chapter06/*.lean`
+- `rg -l 'dor_imrep|dor_zero_dim|dor_stationary|dor_minimizing' simongmt GMT dag.json (name-collision check: no match)`
+- `lake env lean /tmp/ch07-dor-decomp/Check.lean (contract text + five child types)`
+- `lean -o /tmp/ch07-dor-decomp/build/DorContract.olean (byte copy of Contract.lean); lean /tmp/ch07-dor-decomp/Final.lean (#check of the exact frozen strings)`
+- `lean /tmp/ch07-dor-decomp/Assembly2.lean (#print axioms dor_assembly)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyCorrected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/ch07-dor-decomp/Check.lean`
+- `/tmp/ch07-dor-decomp/Final.lean`
+- `/tmp/ch07-dor-decomp/Assembly2.lean`
+- `/tmp/ch07-dor-decomp/spec/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean, and its only sorry is the final main_theorem.
+
+Reusable facts found:
+- Mathlib Measure.measure_compl_support and mem_support_iff_forall (Support.lean). Used for the support identity and for showing that μ_R is carried by spt T.
+- Mathlib hausdorffMeasure_zero_singleton and euclideanHausdorffMeasure_zero. H⁰ is the counting measure, which the n = 0 child uses.
+- SimonGMT Chapter04/MeanCurvature.lean HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn: closed-ball monotonicity of e^{Λρ}ρ^{−n}μ(B̄_ρ) for the library RectifiableVarifold, usable for mean_curvature_monotonicity once IMRep is bridged.
+
+Not available, so cited from Simon as in the parent proof:
+- Allard regularity: Chapter05/Basic.lean states that Lipschitz approximation, excess decay and Allard are not formalized.
+- The current Constancy Theorem 6.2.34: the Chapter08 Constancy* files concern the stationary-varifold constancy theorem.
+- Slicing of integer multiplicity currents and flat convergence (6.4.5, 6.7.2): no matches.
+- C¹ or Lipschitz push-forward of currents: only GeometricCurrentOn.affinePushforward for proper affine maps.
+- The mass formula M_W(T) = μ_T(W) for the contract's Euclidean coefficient norm: Chapter06/Representation.lean only has the assumed field MassRepresentation.mass_characterization, for the comass Current API.
+
+Lean checks:
+- All five child types elaborate with the frozen definitions.
+- The conditional assembly of DensityOneImpliesRegular from three of them plus MinimizingImpliesStationary depends only on propext, Classical.choice, Quot.sound and the stub sorryAx.
+- The DAG reserves only the root's ten children, and the five dor_-prefixed names have no matches.
