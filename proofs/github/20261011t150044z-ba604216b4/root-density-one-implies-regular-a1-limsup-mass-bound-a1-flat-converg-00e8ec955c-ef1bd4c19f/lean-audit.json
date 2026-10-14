@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "adb015a71168f974e6c569e42ad529eda1b4edfcdc414d6a6dc8623e1a13a8b9",
+  "git_delta": {
+    "base_commit": "84a71e4f839637ba2f14400b943eb39ac7080d18",
+    "candidate_commit": "33d1fb208a4d36ded42e134eb250625e0a2bba1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_fr_local_plane_tangent",
+    "diff_sha256": "4c56ad279eed343026d386a99ef5e65c930b9a80f5146d3349437342b34ef868",
+    "source_sha256": "349c449fa765f2174bc331fd94ba9cb5d459a76b18da0757fe7d46b1667461c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_fr_local_plane_tangent",
+      "statement": "∀ (P n : ℕ) (N : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (r : ℝ), Module.finrank ℝ V = n → 0 < r → (∀ y ∈ Metric.ball x r, y ∈ N ↔ y - x ∈ V) → HasApproximateTangentSpaceAt n N x V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
