@@ -918,6 +918,50 @@ theorem Submission.dtc_bc_tc_wc_limit_current : ∀ (P n : ℕ) (S : ℕ → Geo
   rw [hC ω]
   exact hL ω
 
+/-- **Weak compactness under local mass bounds** (Simon Ch. 6, Lemma 2.15 for `U = ℝᴾ`, the
+subsequence step of 3.11): the sequential Banach–Alaoglu argument.  The mass bounds give
+`|Tⱼ(ω)| ≤ c_K s` whenever `spt ω ⊆ K` and `‖ω(x)‖ ≤ s` for all `x` (`dtc_bc_tc_wc_local_bound`).
+A countable `D ⊆ 𝒟ⁿ(ℝᴾ)` approximates every test form uniformly with supports in a common compact
+set (`dor_lmbs_testForm_countable_approx`).  Every test form is bounded with compact support, so
+each `(Tⱼ(δ))ⱼ` is bounded, and a diagonal subsequence `σ` makes `T_{σ(i)}(δ)` converge for every
+`δ ∈ D` (`codim1_zsl_pc_diagonal_subseq`).  The uniform bounds extend the convergence to every
+test form (`dtc_bc_tc_wc_dense_extension`), and the pointwise limit is a current `C` with
+`T_{σ(i)} ⇀ C` (`dtc_bc_tc_wc_limit_current`). -/
+theorem Submission.dtc_bc_tc_weak_compactness : ∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun j => Ts (φ j)) C := by
+  intro P n Ts hT
+  -- Step 1: `|Tⱼ(ω)| ≤ c_K s` whenever `spt ω ⊆ K` and `‖ω(x)‖ ≤ s` for all `x`
+  have hbound := Submission.dtc_bc_tc_wc_local_bound P n Ts hT
+  -- Step 2: a countable `D` approximating every test form uniformly, with common compact supports
+  obtain ⟨D, hDc, hD⟩ := Submission.dor_lmbs_testForm_countable_approx P n univ isOpen_univ
+  -- Step 3: a test form `δ` has `‖δ(x)‖ ≤ s` and compact support, so `|Tⱼ(δ)| ≤ c s` for all `j`
+  have hbdd : ∀ δ : TestFormOn (univ : Set (Euclid P)) n, ∃ M : ℝ, ∀ j, |Ts j δ| ≤ M := by
+    intro δ
+    obtain ⟨s, hs⟩ := δ.property.1.1.continuous.bounded_above_of_compact_support δ.property.1.2
+    obtain ⟨c, -, hc⟩ := hbound _ δ.property.1.2
+    exact ⟨c * s, fun j => hc j δ s subset_rfl hs⟩
+  choose M hM using hbdd
+  -- Step 4: a diagonal subsequence `σ` along which `Tⱼ(δ)` converges for every `δ ∈ D`
+  have : Countable D := hDc.to_subtype
+  obtain ⟨σ, hσ, hσD⟩ := Submission.codim1_zsl_pc_diagonal_subseq D
+    (fun δ j => Ts j δ) (fun δ => M δ) fun δ j => hM δ j
+  -- Step 5: `Sᵢ = T_{σ(i)}` inherits the bounds of step 1
+  have hSbound : ∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧
+      ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ),
+        tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K →
+          (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |Ts (σ i) ω| ≤ c * s := by
+    intro K hK
+    obtain ⟨c, hc0, hc⟩ := hbound K hK
+    exact ⟨c, hc0, fun i => hc (σ i)⟩
+  -- Step 6: `T_{σ(i)}(ω)` converges for every test form `ω` (drop `K ⊆ univ` and the `dω` clause)
+  have hconv := Submission.dtc_bc_tc_wc_dense_extension P n (fun i => Ts (σ i)) D hSbound
+    (fun ω => by
+      obtain ⟨K, ωs, hK, -, hωK, hωsD, hωsK, hunif, -⟩ := hD ω
+      exact ⟨K, ωs, hK, hωK, hωsD, hωsK, hunif⟩)
+    fun δ hδD => hσD ⟨δ, hδD⟩
+  -- Step 7: the pointwise limit is a current `C` with `T_{σ(i)} ⇀ C`
+  obtain ⟨C, hC⟩ := Submission.dtc_bc_tc_wc_limit_current P n (fun i => Ts (σ i)) hSbound hconv
+  exact ⟨σ, C, hσ, hC⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
