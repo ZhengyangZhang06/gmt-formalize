@@ -1561,6 +1561,45 @@ theorem Submission.codim1_hcp_un_chart_retraction : ∀ (P d : ℕ) (M W : Set (
     -- `π(ψ(c)) = Φ(c)` and `Φ⁻¹(Φ(c)) = c`
     show ψ (Φ.symm (Φ c)) = ψ c
     rw [Φ.left_inv hcS.1]
+/-- **Orthogonal projection onto a hyperplane of `A₀`** (Simon Ch. 2, §4, the splitting
+`X = X^⊤ + X^⊥` with `X^⊥ = Σ_α (ν_α · X) ν_α` before 4.29, here with one unit normal inside
+`A₀`; step 1 of the unit normal construction for the hypercone in Simon Appendix B, B.2, giving
+`P_x = P_{A₀} − ν(x) ⊗ ν(x)`).  Let `Q ⊆ A₀ ⊆ ℝᴾ` be subspaces with `dim A₀ = m + 1` and
+`dim Q = m`, and let `n ∈ A₀` be a unit vector orthogonal to `Q`.  Then
+`P_Q w = P_{A₀} w − ⟪n, w⟫ n` for every `w`.  The line `ℝ ∙ n` lies in `A₀`, so
+`(ℝ ∙ n)ᗮ ⊓ A₀` has dimension `m` and contains `Q`; hence `Q = (ℝ ∙ n)ᗮ ⊓ A₀`.  Now
+`u = P_{A₀} w − ⟪n, w⟫ n` lies in `A₀` with `⟪n, u⟫ = ⟪P_{A₀} n, w⟫ − ⟪n, w⟫ = 0`, so `u ∈ Q`, and
+`w − u = (w − P_{A₀} w) + ⟪n, w⟫ n` is orthogonal to `Q ⊆ A₀`; so `u = P_Q w`. -/
+theorem Submission.codim1_hcp_un_hyperplane_projection : ∀ (P m : ℕ) (A₀ Q : Submodule ℝ (Euclid P)) (n : Euclid P), Module.finrank ℝ A₀ = m + 1 → Module.finrank ℝ Q = m → Q ≤ A₀ → n ∈ A₀ → ‖n‖ = 1 → (∀ v ∈ Q, inner ℝ n v = 0) → ∀ w : Euclid P, Q.starProjection w = A₀.starProjection w - inner ℝ n w • n := by
+  intro P m A₀ Q n hA₀ hQ hQA hnA hn hnQ w
+  -- Step 1: `Q = (ℝ ∙ n)ᗮ ⊓ A₀`, since `Q ≤ (ℝ ∙ n)ᗮ ⊓ A₀` and both have dimension `m`
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    simp at hn
+  have hle : Q ≤ (ℝ ∙ n)ᗮ ⊓ A₀ := fun v hv =>
+    ⟨Submodule.mem_orthogonal_singleton_iff_inner_right.2 (hnQ v hv), hQA hv⟩
+  have hdim : Module.finrank ℝ ((ℝ ∙ n)ᗮ ⊓ A₀ : Submodule ℝ (Euclid P)) = m := by
+    have h := Submodule.finrank_add_inf_finrank_orthogonal
+      ((Submodule.span_singleton_le_iff_mem n A₀).2 hnA)
+    rw [finrank_span_singleton hn0, hA₀] at h
+    omega
+  have hQeq : Q = (ℝ ∙ n)ᗮ ⊓ A₀ := Submodule.eq_of_le_of_finrank_eq hle (hQ.trans hdim.symm)
+  -- Step 2: `u := P_{A₀} w − ⟪n, w⟫ n` lies in `A₀` and is orthogonal to `n`, so `u ∈ Q`
+  have hu : A₀.starProjection w - inner ℝ n w • n ∈ Q := by
+    rw [hQeq]
+    refine ⟨Submodule.mem_orthogonal_singleton_iff_inner_right.2 ?_,
+      A₀.sub_mem (A₀.starProjection_apply_mem w) (A₀.smul_mem _ hnA)⟩
+    rw [inner_sub_right, real_inner_smul_right, ← Submodule.inner_starProjection_left_eq_right,
+      Submodule.starProjection_eq_self_iff.2 hnA, real_inner_self_eq_norm_sq, hn]
+    ring
+  -- Steps 3–4: `w − u = (w − P_{A₀} w) + ⟪n, w⟫ n` is orthogonal to `Q`, so `P_Q w = u`
+  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero hu fun v hv => ?_
+  have h₁ : inner ℝ (w - A₀.starProjection w) v = 0 :=
+    Submodule.inner_left_of_mem_orthogonal (hQA hv) (A₀.sub_starProjection_mem_orthogonal w)
+  have h₂ : w - (A₀.starProjection w - inner ℝ n w • n) =
+      (w - A₀.starProjection w) + inner ℝ n w • n := by
+    abel
+  rw [h₂, inner_add_left, real_inner_smul_left, h₁, hnQ v hv, mul_zero, add_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
