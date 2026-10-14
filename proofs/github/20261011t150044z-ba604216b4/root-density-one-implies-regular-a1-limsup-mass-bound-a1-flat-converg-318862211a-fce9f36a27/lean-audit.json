@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bce6792c313876c0ebdb1c44b5b0eaecbc78bed57be0262dead449aba1c1cdc1",
+  "git_delta": {
+    "base_commit": "68f91bbe474ce1e25a0bfda829ce76439c729dc7",
+    "candidate_commit": "d3a58c2f50f9ce5049832477badf0929bdf0b145",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_cp_mixed_point_integral",
+    "diff_sha256": "fccdb1d9499304670eed01818d2522885801c2a2b1b6c3ae055103fbd9219d36",
+    "source_sha256": "ed5d592ab670eb1d38cc4f8ff6519df39a3fd5bc6d0a2277f7130c1f7ed58102",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_cp_mixed_point_integral",
+      "statement": "∀ (m : ℕ) (δ : ℝ) (k : Fin (m + 1)) (h : Euclid (m + 1) → ℝ), IntegrableOn h {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h (WithLp.toLp 2 (fun j => if j < k then y j else x j)) = (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
