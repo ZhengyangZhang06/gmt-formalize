@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.tangent_line-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+  "depth": 6,
+  "title": "If M lies near x in the line x + ℝv up to an H¹-null set, every 1-dimensional approximate tangent space of M at x is ℝv (parent step 4)",
+  "statement": "Let P ∈ ℕ, let M, N ⊆ ℝ^P be arbitrary sets, let x, v ∈ ℝ^P with v ≠ 0, let δ > 0, and let Q be a linear subspace of ℝ^P. Assume:\n- H¹(N) = 0, where H¹ = μHE[1];\n- M ∩ B_δ(x) ⊆ {x + s·v : s ∈ ℝ} ∪ N, where B_δ(x) is the open ball;\n- HasApproximateTangentSpaceAt 1 M x Q (SimonGMT; Simon Ch. 3 Def. 1.4). This means finrank Q = 1 and, for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(M)} f dH¹ → ∫_Q f dH¹ as r ↓ 0, where η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r.\nThen Q = span{v} = ℝv.",
+  "lean_statement": "∀ (P : ℕ) (M N : Set (Euclid P)) (x v : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), v ≠ 0 → 0 < δ → (μHE[1] : Measure (Euclid P)) N = 0 → M ∩ ball x δ ⊆ range (fun s : ℝ => x + s • v) ∪ N → HasApproximateTangentSpaceAt 1 M x Q → Q = Submodule.span ℝ {v}",
+  "lean_name": "idtp_fons_odc_ro_tangent_line",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.line_integral_pos-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.line_integral_pos-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-709f6b6261-a1"
+}
