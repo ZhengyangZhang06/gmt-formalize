@@ -1276,6 +1276,47 @@ theorem Submission.cbrr_cone_claim : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (
   rw [h16] at key'
   have : a ≤ b * 16 ^ n := le_of_mul_le_mul_right key' hs
   linarith
+/-- Lipschitz cover under the cone condition (Simon Ch. 3, proof of 1.6, with the extension
+theorem Ch. 2, 1.2): if `T ⊆ ℝᴾ` is an `n`-dimensional subspace and `|y − x| ≤ C |p_T(y − x)|` for
+all `x, y ∈ D`, then `D ⊆ F(ℝⁿ)` for a Lipschitz `F : ℝⁿ → ℝᴾ`.  With a linear isometry
+`ι : T ≅ ℝⁿ` put `L = ι ∘ p_T`, so `|Lv − Lw| = |p_T(v − w)|`; `L` is injective on `D` and its
+inverse on `L(D)` is `max C 0`-Lipschitz.  Extend this inverse (McShane, coordinatewise) to a
+Lipschitz `F : ℝⁿ → ℝᴾ`; then `F(Lx) = x` for `x ∈ D`. -/
+theorem Submission.cbrr_lipschitz_cover_of_cone_condition : ∀ (P n : ℕ) (T : Submodule ℝ (Euclid P)) (D : Set (Euclid P)) (C : ℝ), Module.finrank ℝ T = n → (∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ C * ‖T.starProjection (y - x)‖) → ∃ F : Euclid n → Euclid P, (∃ K : NNReal, LipschitzWith K F) ∧ D ⊆ range F := by
+  intro P n T D C hT hD
+  -- Step 1: the cone condition with the constant `K = max C 0 ≥ 0`
+  obtain ⟨K, hK⟩ : ∃ K : NNReal, ∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ K * ‖T.starProjection (y - x)‖ :=
+    ⟨C.toNNReal, fun x hx y hy => (hD x hx y hy).trans <| by
+      rw [Real.coe_toNNReal']
+      exact mul_le_mul_of_nonneg_right (le_max_left _ _) (norm_nonneg _)⟩
+  -- Step 2: the chart `L = ι ∘ p_T : ℝᴾ → ℝⁿ`, `ι : T ≅ ℝⁿ` a linear isometry
+  let ι : T ≃ₗᵢ[ℝ] Euclid n := ((stdOrthonormalBasis ℝ T).reindex (finCongr hT)).repr
+  let L : Euclid P → Euclid n := fun v => ι (T.orthogonalProjectionOnto v)
+  have hL : ∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ K * ‖L y - L x‖ := by
+    intro x hx y hy
+    have h : ‖L y - L x‖ = ‖T.starProjection (y - x)‖ := by
+      simp only [L, ← map_sub, LinearIsometryEquiv.norm_map, Submodule.starProjection_apply,
+        Submodule.norm_coe]
+    rw [h]
+    exact hK x hx y hy
+  -- Step 3: `L` is injective on `D`, with a `K`-Lipschitz inverse `g` on `L(D)`
+  have hinj : InjOn L D := by
+    intro x hx y hy hxy
+    have h := hL x hx y hy
+    rw [hxy, sub_self, norm_zero, mul_zero] at h
+    exact (sub_eq_zero.mp (norm_le_zero_iff.mp h)).symm
+  let g : Euclid n → Euclid P := invFunOn L D
+  have hgL : ∀ x ∈ D, g (L x) = x := fun x hx => hinj.leftInvOn_invFunOn hx
+  have hg : LipschitzOnWith K g (L '' D) := by
+    refine LipschitzOnWith.of_dist_le_mul ?_
+    rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+    rw [hgL x hx, hgL y hy, dist_eq_norm, dist_eq_norm]
+    exact hL y hy x hx
+  -- Step 4: extend `g` to a Lipschitz `F : ℝⁿ → ℝᴾ` (McShane in each coordinate)
+  obtain ⟨F, hF, hFg⟩ := hg.extend_finite_dimension
+  -- Step 5: `F (L x) = g (L x) = x` for `x ∈ D`
+  refine ⟨F, ⟨_, hF⟩, fun x hx => ⟨L x, ?_⟩⟩
+  rw [← hFg (mem_image_of_mem L hx), hgL x hx]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
