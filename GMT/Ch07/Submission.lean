@@ -2727,6 +2727,48 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Simon Ch. 6, 2.27 and 2.29** (pointwise estimate behind the push-forward; step 1(a) of the
+local comparison in the proof of 7.3.1): let `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` be a unit orientation of `Q`
+(`τ` orthonormal, `span τ = Q`) and `L` a continuous linear map.  (a) `⟨α ∘ ΛⁿL, ξ⟩ = ±α(L ∘ τ)`,
+and `|α(v)| ≤ |α|_E det(⟨vᵢ, vⱼ⟩)^{1/2}` (Cauchy–Binet and Cauchy–Schwarz,
+`covectorEuclideanNorm_gram_bounds`), `det(⟨vᵢ, vⱼ⟩) ≤ ∏ᵢ |vᵢ|²` (Hadamard) and
+`|Lτᵢ| ≤ ‖L‖ |τᵢ| = ‖L‖` give `|⟨α ∘ ΛⁿL, ξ⟩| ≤ |α|_E ‖L‖ⁿ`.  (b) If `L` fixes `Q` pointwise,
+then `L ∘ τ = τ` since each `τᵢ ∈ Q`, so `⟨α ∘ ΛⁿL, ξ⟩ = ±α(τ) = ⟨α, ξ⟩`. -/
+theorem Submission.dtc_bc_lc_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α) := by
+  rintro P n ξ Q L ⟨τ, hτ, hspan, hsign⟩
+  -- `(α ∘ ΛⁿL)(τ) = α(L ∘ τ)`
+  have hcomp : ∀ α : Covector (Euclid P) n, α.compContinuousLinearMap L τ = α (⇑L ∘ τ) :=
+    fun α => ContinuousAlternatingMap.compContinuousLinearMap_apply α L τ
+  refine ⟨fun α => ?_, fun hL α => ?_⟩
+  · -- (a) `|⟨α ∘ ΛⁿL, ξ⟩| = |α(L ∘ τ)|` for either sign
+    have habs : |ξ (α.compContinuousLinearMap L)| = |α (⇑L ∘ τ)| := by
+      rcases hsign with h | h
+      · rw [h, hcomp]
+      · rw [h, hcomp, abs_neg]
+    -- `|Lτᵢ| ≤ ‖L‖ |τᵢ| = ‖L‖`
+    have hLτ : ∀ i, ‖(⇑L ∘ τ) i‖ ≤ ‖L‖ := fun i => by
+      simpa only [Function.comp_apply, hτ.norm_eq_one i, mul_one] using L.le_opNorm (τ i)
+    have hα := covectorEuclideanNorm_nonneg α
+    rw [habs]
+    calc |α (⇑L ∘ τ)|
+        ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j =>
+            inner ℝ ((⇑L ∘ τ) i) ((⇑L ∘ τ) j))) :=
+          (Submission.covectorEuclideanNorm_gram_bounds P n).1 α (⇑L ∘ τ)
+      _ ≤ covectorEuclideanNorm α * Real.sqrt (∏ i, ‖(⇑L ∘ τ) i‖ ^ 2) :=
+          mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt
+            (Submission.dtc_bc_lc_pf_gram_det_le_prod_norm_sq P n (⇑L ∘ τ))) hα
+      _ = covectorEuclideanNorm α * ∏ i, ‖(⇑L ∘ τ) i‖ := by
+          rw [Finset.prod_pow, Real.sqrt_sq (Finset.prod_nonneg fun i _ => norm_nonneg _)]
+      _ ≤ covectorEuclideanNorm α * ‖L‖ ^ n := by
+          rw [← Fin.prod_const]
+          exact mul_le_mul_of_nonneg_left
+            (Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => hLτ i) hα
+  · -- (b) each `τᵢ` lies in `Q = span (range τ)`, so `L ∘ τ = τ`
+    have hLτ : ⇑L ∘ τ = τ := by
+      funext i
+      exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
+    rcases hsign with h | h <;> rw [h, h, hcomp, hLτ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
