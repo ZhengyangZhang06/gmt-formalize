@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.dirac_mass_bound-a1",
+  "parent_id": "root.boundary_rectifiability-a1.zero_dim_weak_limit-a1",
+  "depth": 3,
+  "title": "Mass lower bound for locally finite Dirac sums",
+  "statement": "Let P ∈ ℕ and U, W, N ⊆ ℝ^P = Eucl P with W open and W ⊆ U. Let Y ∈ D_0(U) (GeometricCurrentOn U 0) and c : ℝ^P → ℤ. Assume N ∩ K is finite for every compact K ⊆ U, and Y(ω) = ∑ᶠ_{x∈N} c(x)·ω(x)(![]) for every ω ∈ D⁰(U) (TestFormOn U 0). Then every finite set S (a Finset) with S ⊆ N ∩ W satisfies ENNReal.ofReal(Σ_{x∈S} |c(x)|) ≤ M_W(Y) = Y.massOn W.",
+  "lean_statement": "∀ (P : ℕ) (U W N : Set (Eucl P)) (Y : GeometricCurrentOn U 0) (c : Eucl P → ℤ), IsOpen W → W ⊆ U → (∀ K : Set (Eucl P), IsCompact K → K ⊆ U → (N ∩ K).Finite) → (∀ ω : TestFormOn U 0, Y ω = ∑ᶠ x ∈ N, (c x : ℝ) * (ω : DifferentialForm (Eucl P) 0) x ![]) → ∀ S : Finset (Eucl P), (↑S : Set (Eucl P)) ⊆ N ∩ W → ENNReal.ofReal (∑ x ∈ S, |(c x : ℝ)|) ≤ Y.massOn W",
+  "lean_name": "br_zd_dirac_massOn_ge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-zero-dim-weak-limit-a1-dirac-mass-bound-a1-a1"
+}
