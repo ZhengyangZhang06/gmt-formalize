@@ -2577,4 +2577,90 @@ theorem Submission.idtp_ccd_scsp_arc_planarity : ∀ (P : ℕ) (u e : Euclid P) 
   rw [Real.cos_arctan, Real.sin_arctan, hsqrt, one_div_one_div, div_div_eq_mul_div, div_one,
     div_mul_cancel₀ y hx.ne', hgxy]
 
+/-- **Stationary cone sheets are planar** (steps 1–12 of the parent proof).  Write `p = r₀ u` with
+`r₀ = ‖p‖ > 0` and `‖u‖ = 1`.  The sibling `cone_chart` gives a unit `e ⊥ u`, an open `N ∋ p`
+inside `B_ρ(p)` and a unit curve `γ` with `γ(0) = u`, `γ′(0) = e`, `M ∩ N = {t γ(α) : (t, α) ∈ R}`
+for `R = (r₀ − s, r₀ + s) × (−s, s)` and `T_{tγ(α)}M = span {γ(α), γ′(α)}`.  For `tsupport X ⊆ N`
+the integrand vanishes off `N`, so stationarity on `M ∩ B_ρ(p)` is stationarity on `M ∩ N`, and
+`cone_conservation` gives `∫ φ′ κ = 0` for `κ = (⟨γ, u⟩² + ⟨γ, e⟩²) / ‖γ′‖`, continuous because
+`γ′ ≠ 0` (`angle_curve`).  By `du_bois_reymond` `κ` is constant, so `κ ≡ κ(0) = 1`, i.e.
+`‖γ′‖ = ⟨γ, u⟩² + ⟨γ, e⟩²`; `arc_planarity` gives `γ(α) = cos α u + sin α e`, and `sector_plane`
+gives `δ > 0` with `M ∩ B_δ(p) = span {u, e} ∩ B_δ(p)`.  Finally `span {u, e} = T_pM`, which is
+`2`-dimensional and contains `p` (`tangent_plane_mem`). -/
+theorem Submission.idtp_ccd_stationary_cone_sheet_planar : ∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → p ∈ M → p ≠ 0 → 0 < ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[2] = 0) → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ p ∈ Q ∧ M ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ := by
+  intro P M p ρ hM hp hp0 hρ hcone hstat
+  -- polar form `p = r₀ u` with `r₀ = ‖p‖ > 0` and `‖u‖ = 1`
+  obtain ⟨u, r₀, hu, hr₀, rfl⟩ : ∃ (u : Euclid P) (r₀ : ℝ), ‖u‖ = 1 ∧ 0 < r₀ ∧ r₀ • u = p :=
+    ⟨‖p‖⁻¹ • p, ‖p‖,
+      by rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.mpr hp0)],
+      norm_pos_iff.mpr hp0, by rw [smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.mpr hp0), one_smul]⟩
+  -- the cone sheet `M ∩ N = {t γ(α)}` with `T_{tγ(α)}M = span {γ(α), γ′(α)}`
+  obtain ⟨e, s, N, γ, he, hue, hs, hsr, hN, hpN, hNball, hNu, hγ, hγ0, hγ'0, hcurve, hMN, hTM⟩ :=
+    Submission.idtp_ccd_scsp_cone_chart P M u r₀ ρ hM hu hr₀ hp hρ hcone
+  have hr₀R : r₀ ∈ Ioo (r₀ - s) (r₀ + s) := ⟨by linarith, by linarith⟩
+  have h0 : (0 : ℝ) ∈ Ioo (-s) s := ⟨by linarith, hs⟩
+  have hRN : ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, t • γ α ∈ N := by
+    intro t ht α hα
+    have h : t • γ α ∈ M ∩ N := by rw [hMN]; exact ⟨(t, α), ⟨ht, hα⟩, rfl⟩
+    exact h.2
+  -- stationarity on `M ∩ B_ρ(p)` restricts to `M ∩ N`: the integrand vanishes off `tsupport X ⊆ N`
+  have hstatN : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+      tsupport X ⊆ N → ∫ x in (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s),
+        LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ X x).toLinearMap) ∂μHE[2] = 0 := by
+    intro X hX hXc hXN
+    have hf : ∀ x, x ∉ N → LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ X x).toLinearMap) = 0 := by
+      intro x hx
+      rw [fderiv_of_notMem_tsupport ℝ fun h => hx (hXN h)]
+      simp
+    have hset : N ∩ (M ∩ ball (r₀ • u) ρ) = M ∩ N := by
+      ext x
+      exact ⟨fun h => ⟨h.2.1, h.1⟩, fun h => ⟨h.2, h.1, hNball h.2⟩⟩
+    rw [← hMN, ← hset, ← Measure.restrict_restrict hN.measurableSet,
+      setIntegral_eq_integral_of_forall_compl_eq_zero hf]
+    exact hstat X hX hXc (hXN.trans hNball)
+  -- conservation law `∫ φ′ κ = 0` for `κ = (⟨γ, u⟩² + ⟨γ, e⟩²) / ‖γ′‖`
+  have hκ := Submission.idtp_ccd_scsp_cone_conservation P u e r₀ s N γ
+    (fun x => Submodule.span ℝ (tangentSpace M x)) hu he hue hs hsr hN hNu hγ hcurve
+    (fun t ht α hα => ⟨hRN t ht α hα, hTM t ht α hα⟩) hstatN
+  have hγ'ne : ∀ α ∈ Ioo (-s) s, deriv γ α ≠ 0 := fun α hα =>
+    (Submission.idtp_ccd_scsp_angle_curve P u e s γ hγ hcurve α hα).2.2
+  have hcont : ContinuousOn
+      (fun α => (inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖) (Ioo (-s) s) := by
+    have hγc := hγ.continuousOn
+    refine ContinuousOn.div₀ ?_ (hγ.continuousOn_deriv_of_isOpen isOpen_Ioo le_rfl).norm
+      fun α hα => norm_ne_zero_iff.mpr (hγ'ne α hα)
+    exact ((hγc.inner continuousOn_const).pow 2).add ((hγc.inner continuousOn_const).pow 2)
+  -- du Bois-Reymond: `κ` is constant, and `κ(0) = 1` since `γ(0) = u`, `γ′(0) = e`
+  obtain ⟨c, hc⟩ := Submission.idtp_ccd_scsp_du_bois_reymond (-s) s _ hcont hκ
+  have hc1 : c = 1 := by
+    have h : (inner ℝ (γ 0) u ^ 2 + inner ℝ (γ 0) e ^ 2) / ‖deriv γ 0‖ = c := hc 0 h0
+    rw [hγ0, hγ'0, he, real_inner_self_eq_norm_sq, hu, hue] at h
+    rw [← h]
+    norm_num
+  have hspeed : ∀ α ∈ Ioo (-s) s, ‖deriv γ α‖ = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by
+    intro α hα
+    have h : (inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖ = 1 := (hc α hα).trans hc1
+    exact ((div_eq_one_iff_eq (norm_ne_zero_iff.mpr (hγ'ne α hα))).mp h).symm
+  -- great-circle arc, hence the sheet is a planar sector
+  have harc := Submission.idtp_ccd_scsp_arc_planarity P u e s γ hu he hue hγ hcurve hspeed
+  have hMN' : M ∩ N = (fun q : ℝ × ℝ => q.1 • (Real.cos q.2 • u + Real.sin q.2 • e)) ''
+      (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) := by
+    rw [hMN]
+    exact Set.image_congr fun q hq => by simp only [harc q.2 hq.2]
+  obtain ⟨δ, hδ, hδeq⟩ :=
+    Submission.idtp_ccd_scsp_sector_plane P M N u e r₀ s hu he hue hs hsr hN hpN hMN'
+  -- `span {u, e} = T_pM`, a 2-plane containing `p`
+  obtain ⟨hdim, hpT⟩ := Submission.idtp_ccd_scsp_tangent_plane_mem P M (r₀ • u) ρ hM hp hρ hcone
+  have hT : Submodule.span ℝ (tangentSpace M (r₀ • u)) = Submodule.span ℝ {u, e} := by
+    have h := hTM r₀ hr₀R 0 h0
+    rwa [hγ0, hγ'0] at h
+  refine ⟨δ, Submodule.span ℝ {u, e}, hδ, ?_, ?_, hδeq⟩
+  · rw [← hT]
+    exact hdim
+  · rw [← hT]
+    exact hpT
+
 end GMT.Ch07
