@@ -628,6 +628,29 @@ theorem Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_inner_cubes : ∀ (m : ℕ) (
     refine h.congr fun j => ?_
     exact setIntegral_prod _ (hF.mono_set (prod_mono (hQsub j) (hQsub j)))
   exact le_of_tendsto' hlim fun j => hK (δ j) (hδpos j) (hδlt j)
+/-- **Simon Ch. 2, 2.7** (BV Poincaré inequality, applied to the unit faces of 6.5.1 at (32)):
+the mean deviation over a set `S` with `vol(S) = 1` is at most the double-integral oscillation.
+As `vol⌞S` is a probability measure, `u x - ∫_S u = ∫_S (u x - u y) dy`, so
+`|u x - ∫_S u| ≤ ∫_S |u x - u y| dy`; the right side is integrable in `x` by Fubini, and
+integrating over `S` gives the claim. -/
+theorem Submission.dimred_mbl_dt_cbm_bvp_mean_dev_le_osc : ∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y| := by
+  intro m S u hS hu
+  -- `vol⌞S` is a probability measure
+  have : IsProbabilityMeasure (volume.restrict S) := ⟨by rw [Measure.restrict_apply_univ, hS]⟩
+  -- Fubini: `|u x - u y|` is integrable on `S × S`, so `x ↦ ∫_S |u x - u y| dy` is integrable
+  have hosc : Integrable (fun x => ∫ y in S, |u x - u y|) (volume.restrict S) :=
+    ((hu.integrable.comp_fst (volume.restrict S)).sub
+      (hu.integrable.comp_snd (volume.restrict S))).abs.integral_prod_left
+  -- pointwise bound: `u x - ∫_S u = ∫_S (u x - u y) dy` since `vol(S) = 1`
+  have hpt : ∀ x, |u x - ∫ y in S, u y| ≤ ∫ y in S, |u x - u y| := by
+    intro x
+    have hmean : ∫ y in S, (u x - u y) = u x - ∫ y in S, u y := by
+      rw [integral_sub (integrable_const (u x)) hu.integrable, integral_const, probReal_univ,
+        one_smul]
+    rw [← hmean]
+    exact abs_integral_le_integral_abs
+  exact integral_mono_of_nonneg (Eventually.of_forall fun x => abs_nonneg _) hosc
+    (Eventually.of_forall hpt)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
