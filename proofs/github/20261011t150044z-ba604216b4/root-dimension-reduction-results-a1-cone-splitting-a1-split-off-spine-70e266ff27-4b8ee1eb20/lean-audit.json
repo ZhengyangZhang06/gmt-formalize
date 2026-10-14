@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8b37e9b0e94c2a2122537c27cd963379e38b2915a8a18d639ed1370887bf5441",
+  "git_delta": {
+    "base_commit": "5340ba627252c9f36da8ffdf2b95ebdd3e606bf2",
+    "candidate_commit": "b18a57fc514c218810d61c411998cb4e4d641b01",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cm_carried_transfer",
+    "diff_sha256": "bf8f174fc11566e0dcc394b9191ad9894fe38c96b7c352101871b64f2d0984f7",
+    "source_sha256": "eddcff4b691d0b227a0bb97ad7697862434bff0c5380b6c3c6f5ee9e425b7c15",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cm_carried_transfer",
+      "statement": "∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (F : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsClosed F → R₂.measure Fᶜ = 0 → (S₁ - S₂).support ⊆ F → R₁.measure Fᶜ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
