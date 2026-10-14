@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d3c7586fbbacf52204f472f567c61bab2956a7c866b98609a0cca723f1d0b084",
+  "git_delta": {
+    "base_commit": "9944c66a5098a971a2611146b4fc5aff3712afa4",
+    "candidate_commit": "6b7e716991efa48498bdcf07b5e8c30153fe449a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_sp_density_mult_ae",
+    "diff_sha256": "c89a8a25a954a4136d4bcdd4730bbe511a87562a0e88d4069aa6b10a1b67f837",
+    "source_sha256": "01f1eeb1f4b89b885f19b34d0752932ca582ff5eb8b21b1d31446fd25ff2b88c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_sp_density_mult_ae",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents C → ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), ∀ k : ℕ, 1 ≤ k → HasMassDensity C y k → y ∈ R.carrier ∧ R.mult y = k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
