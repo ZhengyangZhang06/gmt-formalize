@@ -486,6 +486,62 @@ theorem Submission.cmcdtfrfic_coeff_bounds : ∀ (P k : ℕ) (α : Covector (Euc
           (Finset.sum_image fun i _ i' _ h => hinj h).symm
       _ ≤ ∑ J, f J := Finset.sum_le_univ_sum_of_nonneg hf0
 
+/-- **The divergence field of a face** (Simon Ch. 6, proof of Theorem 5.1, (29)–(30): the field
+`G_p` of the face-current construction).  Let `γ` be a smooth `m`-form on `ℝᴾ`,
+`ι : Fin (m + 1) → Fin P` strictly increasing, `a ∈ ℝᴾ`, `E = (e_{ι 0}, …, e_{ι m})` and
+`Φ(y) = a + Σⱼ yⱼ e_{ι j}`.  Put `Gᵢ(y) = (−1)ⁱ γ(Φ y)(E⁽ⁱ⁾)`, where `E⁽ⁱ⁾ = i.removeNth E` omits
+`e_{ι i}`.  Then `G` is `C^∞`; `|G(y)|² = Σᵢ γ(Φ y)(E⁽ⁱ⁾)² ≤ |γ(Φ y)|²` by the coefficient bound
+`cmcdtfrfic_coeff_bounds` (ii); and, as `DΦ(y) bᵢ = e_{ι i}`,
+`trace DG(y) = Σᵢ (DG(y) bᵢ)ᵢ = Σᵢ (−1)ⁱ D(γ(·)(E⁽ⁱ⁾))(Φ y) e_{ι i} = dγ(Φ y)(E)`
+(`exteriorDerivative_apply`). -/
+theorem Submission.cmcdtfrfic_divergence_field : ∀ (P m : ℕ) (γ : DifferentialForm (Euclid P) m) (ι : Fin (m + 1) → Fin P) (a : Euclid P), ContDiff ℝ (⊤ : ℕ∞) γ → StrictMono ι → ∃ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ (∀ y, ‖G y‖ ≤ covectorEuclideanNorm (γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)))) ∧ ∀ y, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) = exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) := by
+  intro P m γ ι a hγ hι
+  classical
+  -- the affine map `Φ = a + L`, `L y = Σⱼ yⱼ e_{ι j}`, with `L bᵢ = e_{ι i}`
+  set E : Fin (m + 1) → Euclid P := fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  let L : Euclid (m + 1) →L[ℝ] Euclid P := ∑ j, (EuclideanSpace.proj j).smulRight (E j)
+  have hL : ∀ y : Euclid (m + 1), L y = ∑ j, y j • E j := fun y => by simp [L]
+  let Φ : Euclid (m + 1) → Euclid P := fun y => a + L y
+  have hΦE : ∀ y : Euclid (m + 1),
+      a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ) = Φ y := fun y => by simp [Φ, hL, E]
+  have hΦd : ∀ y, HasFDerivAt Φ L y := fun y => L.hasFDerivAt.const_add a
+  have hΦs : ContDiff ℝ (⊤ : ℕ∞) Φ := contDiff_const.add L.contDiff
+  have hLb : ∀ i : Fin (m + 1), L (EuclideanSpace.single i 1) = E i := fun i => by simp [hL]
+  -- the coefficients `gᵢ = γ(·)(E⁽ⁱ⁾)`: evaluation at a fixed tuple is continuous linear
+  let g : Fin (m + 1) → Euclid P → ℝ := fun i x => γ x (i.removeNth E)
+  have hg : ∀ i, ContDiff ℝ (⊤ : ℕ∞) (g i) := fun i =>
+    (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (i.removeNth E)).contDiff.comp hγ
+  -- the field `Gᵢ(y) = (−1)ⁱ gᵢ(Φ y)`
+  let G : Euclid (m + 1) → Euclid (m + 1) :=
+    fun y => WithLp.toLp 2 fun i => (-1 : ℝ) ^ (i : ℕ) * g i (Φ y)
+  have hGs : ContDiff ℝ (⊤ : ℕ∞) G :=
+    contDiff_euclidean.2 fun i => contDiff_const.mul ((hg i).comp hΦs)
+  refine ⟨G, hGs, fun y => ?_, fun y => ?_⟩
+  · -- `|G(y)|² = Σᵢ γ(Φ y)(E⁽ⁱ⁾)² ≤ |γ(Φ y)|²`
+    rw [hΦE y, EuclideanSpace.norm_eq, ← Real.sqrt_sq (covectorEuclideanNorm_nonneg (γ (Φ y)))]
+    refine Real.sqrt_le_sqrt (le_of_eq_of_le (Finset.sum_congr rfl fun i _ => ?_)
+      ((Submission.cmcdtfrfic_coeff_bounds P m (γ (Φ y))).2 ι hι))
+    simp only [G, g, Real.norm_eq_abs, sq_abs, mul_pow, ← pow_mul]
+    rw [show (-1 : ℝ) ^ ((i : ℕ) * 2) = 1 by rw [mul_comm, pow_mul, neg_one_sq, one_pow], one_mul]
+    rfl
+  · -- `trace DG(y) = Σᵢ (DG(y) bᵢ)ᵢ` and `dγ(Φ y)(E) = Σᵢ (−1)ⁱ Dgᵢ(Φ y) e_{ι i}`
+    rw [hΦE y, LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ),
+      exteriorDerivative_apply (hγ.differentiable (by simp)).differentiableAt E]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [EuclideanSpace.basisFun_apply, EuclideanSpace.inner_single_left]
+    -- `(DG(y) bᵢ)ᵢ = D(Gᵢ)(y) bᵢ = (−1)ⁱ Dgᵢ(Φ y)(L bᵢ)`, by uniqueness of the derivative
+    have hGi := (PiLp.hasFDerivAt_apply (𝕜 := ℝ) 2 (G y) i).comp y
+      (hGs.differentiable (by simp) y).hasFDerivAt
+    have hGi' : HasFDerivAt ((fun f : Euclid (m + 1) => f i) ∘ G)
+        (((-1 : ℝ) ^ (i : ℕ)) • (fderiv ℝ (g i) (Φ y)).comp L) y :=
+      (((hg i).differentiable (by simp) (Φ y)).hasFDerivAt.comp y (hΦd y)).const_mul _
+    have happ := congrArg (fun T => T (EuclideanSpace.single i (1 : ℝ))) (hGi.unique hGi')
+    simp only [ContinuousLinearMap.comp_apply, FunLike.coe_smul, Pi.smul_apply, PiLp.proj_apply,
+      hLb] at happ
+    simp only [map_one, one_mul, ContinuousLinearMap.coe_coe]
+    rw [happ, zsmul_eq_mul]
+    simp [g]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
