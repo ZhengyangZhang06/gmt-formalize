@@ -774,6 +774,40 @@ theorem Submission.codim1_hcp_af_adjoint_det_eq_gram : ∀ (P k : ℕ) (T : Subm
   simp only [ContinuousLinearMap.comp_apply, Submodule.coe_subtypeL, Submodule.subtype_apply, hbσ,
     Matrix.of_apply]
 
+/-- **Jacobian factorization at a chart point** (Simon Ch. 2, 4.11 with §4, (4.3)).  Let
+`ψ : V → W` be a local representation of `M` as in (4.1), `v ∈ V`, `Λ = Dψ(v)`,
+`T = span T_{ψ(v)}M` and `B : ℝᴾ → ℝᴾ` linear.  Then
+`√det[⟨BΛeₖ, BΛeₗ⟩] = √det[⟨Λeₖ, Λeₗ⟩] · √det((B ∘ ι_T)* (B ∘ ι_T))`.  By (4.3),
+`T_{ψ(v)}M = Λ(ℝᵐ)`, so `T = range Λ`, of dimension `m` as `Λ` is injective.  For an orthonormal
+frame `σ` of `range Λ`, `det[⟨BΛeₖ, BΛeₗ⟩] = det[⟨Bσᵢ, Bσⱼ⟩] · det[⟨Λeₖ, Λeₗ⟩]` with
+`det[⟨Λeₖ, Λeₗ⟩] > 0`, and `det[⟨Bσᵢ, Bσⱼ⟩] = det((B ∘ ι_T)* (B ∘ ι_T))`; take square roots. -/
+theorem Submission.codim1_hcp_af_chart_jacobian_factor : ∀ (P m : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (B : Euclid P →L[ℝ] Euclid P) (v : Euclid m), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (B (fderiv ℝ ψ v (EuclideanSpace.single k 1))) (B (fderiv ℝ ψ v (EuclideanSpace.single l 1))))) = Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1)))) * Real.sqrt (((B.comp (Submodule.span ℝ (tangentSpace M (ψ v))).subtypeL).adjoint ∘L (B.comp (Submodule.span ℝ (tangentSpace M (ψ v))).subtypeL)).det) := by
+  intro P m M W V ψ B v hV hW hψ hinj hψV hproper hDψ hv
+  -- `T_{ψ(v)}M = range Λ`, hence `T = span (range Λ) = range Λ`
+  set L := LinearMap.range (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P) with hL
+  have hT : Submodule.span ℝ (tangentSpace M (ψ v)) = L := by
+    rw [Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW
+      (by exact_mod_cast hψ) hinj hψV hproper hDψ hv]
+    exact Submodule.span_eq L
+  -- `Λ` is injective, so `range Λ` has dimension `m`; `σ` is an orthonormal frame of `range Λ`
+  have hdim : Module.finrank ℝ L = m := by
+    rw [hL, LinearMap.finrank_range_of_inj (hDψ v hv), finrank_euclideanSpace_fin]
+  set b : OrthonormalBasis (Fin m) ℝ L := (stdOrthonormalBasis ℝ L).reindex (finCongr hdim)
+  have hσ : Orthonormal ℝ (fun a => (b a : Euclid P)) :=
+    b.orthonormal.comp_linearIsometry L.subtypeₗᵢ
+  have hspan : Submodule.span ℝ (Set.range fun a => (b a : Euclid P)) = L := by
+    rw [show (fun a => (b a : Euclid P)) = L.subtype ∘ b from rfl, Set.range_comp,
+      Submodule.span_image, ← b.coe_toBasis, b.toBasis.span_eq, Submodule.map_top,
+      Submodule.range_subtype]
+  -- `det[⟨BΛeₖ, BΛeₗ⟩] = det[⟨Bσᵢ, Bσⱼ⟩] · det[⟨Λeₖ, Λeₗ⟩]` with `det[⟨Λeₖ, Λeₗ⟩] > 0`,
+  -- and `det[⟨Bσᵢ, Bσⱼ⟩] = det((B ∘ ι_T)* (B ∘ ι_T))`
+  obtain ⟨hpos, hchain⟩ :=
+    Submission.codim1_lura_gram_det_comp_orthonormal m P P (fderiv ℝ ψ v)
+  rw [hchain B _ hσ hspan,
+    Submission.codim1_hcp_af_adjoint_det_eq_gram P m _ B _ hσ (hspan.trans hT.symm),
+    Real.sqrt_mul' _ (hpos (hDψ v hv)).le]
+  exact mul_comm _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
