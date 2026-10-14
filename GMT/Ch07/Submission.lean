@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.3.3, proof of (12)** (its final limit, left to the reader): if
+`ωₙ c tⁿ e^{−Λt} ≤ m(t)` for `0 < t < s` and `m(t)/(ωₙtⁿ) → L` as `t ↓ 0`, then `c ≤ L` (in
+`[0, ∞]`).  As `0 < ωₙtⁿ < ∞`, dividing gives `c e^{−Λt} ≤ m(t)/(ωₙtⁿ)` on `(0, s)`, and the
+left side tends to `c` as `t ↓ 0`. -/
+theorem Submission.dimred_tr_mcr_tl_density_lower_bound : ∀ (n : ℕ) (Λ c s : ℝ) (m : ℝ → ℝ≥0∞) (L : ℝ≥0∞), 0 < s → (∀ t ∈ Ioo 0 s, unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (t ^ n * Real.exp (-(Λ * t))) ≤ m t) → Tendsto (fun t : ℝ => m t / (unitBallVolume n * ENNReal.ofReal (t ^ n))) (𝓝[>] 0) (𝓝 L) → ENNReal.ofReal c ≤ L := by
+  intro n Λ c s m L hs hlow hlim
+  -- `0 < ωₙ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- dividing by `ωₙtⁿ ∈ (0, ∞)`: `c e^{−Λt} ≤ m(t)/(ωₙtⁿ)` on `(0, s)`
+  have hratio : ∀ t ∈ Ioo 0 s, ENNReal.ofReal c * ENNReal.ofReal (Real.exp (-(Λ * t))) ≤
+      m t / (unitBallVolume n * ENNReal.ofReal (t ^ n)) := by
+    intro t ht
+    have htn : 0 < t ^ n := pow_pos ht.1 n
+    rw [ENNReal.le_div_iff_mul_le (Or.inl (mul_ne_zero hω0 (ENNReal.ofReal_pos.mpr htn).ne'))
+      (Or.inl (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top))]
+    calc ENNReal.ofReal c * ENNReal.ofReal (Real.exp (-(Λ * t))) *
+          (unitBallVolume n * ENNReal.ofReal (t ^ n))
+        = unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (t ^ n * Real.exp (-(Λ * t))) := by
+          rw [ENNReal.ofReal_mul htn.le]; ring
+      _ ≤ m t := hlow t ht
+  -- the left side is continuous in `t`, with value `ofReal c` at `t = 0`
+  have hcont : Continuous fun t : ℝ => ENNReal.ofReal c * ENNReal.ofReal (Real.exp (-(Λ * t))) :=
+    (ENNReal.continuous_const_mul ENNReal.ofReal_ne_top).comp <| ENNReal.continuous_ofReal.comp <|
+      Real.continuous_exp.comp (continuous_const.mul continuous_id).neg
+  have hleft : Tendsto (fun t : ℝ => ENNReal.ofReal c * ENNReal.ofReal (Real.exp (-(Λ * t))))
+      (𝓝[>] 0) (𝓝 (ENNReal.ofReal c)) := by
+    simpa using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
+  -- `(0, s) ∈ 𝓝[>] 0`, so the bound passes to the limit
+  exact le_of_tendsto_of_tendsto hleft hlim (eventually_of_mem (Ioo_mem_nhdsGT hs) hratio)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
