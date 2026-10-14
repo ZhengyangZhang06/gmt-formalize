@@ -2218,6 +2218,41 @@ theorem Submission.cmr_vector_riesz_representation : ∀ (X : Type) [Topological
     fun i f g hg => by rw [hΛL i f g hg, hΛ i f, hρ i f]
   exact ⟨μ₀, ν, hμ₀, hνm, hνint, hν⟩
 
+/-- **Simon Ch. 6, 2.7–2.8** (Riesz representation of a current of locally finite mass): if
+`M_W(T) < ∞` for every open `W ⊂⊂ U`, then `T(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|⟨α, ξ⟩| ≤ |α|_E`,
+`μ(ℝᴾ \ U) = 0`, `μ` finite on compact subsets of `U` and `M_W(T) = μ(W)` for open `W`.
+Euclidean coordinates `c` on covectors (`|α|_E = ‖c α‖`) make `T` a locally bounded linear
+functional `L` on `C_c(U, ℝᵈ)` with `L(c ∘ ω) = T ω`.  The vector Riesz theorem on the locally
+compact space `U` gives `L g = ∫ ⟨g, ν⟩ dμ₀`.  Normalizing `ν` polarly and pushing `|ν| μ₀`
+forward to `ℝᴾ` gives `μ`, the field `ξ = ⟨ν/|ν|, c(·)⟩` and a norming field `β` with
+`ξ(β) = 1` `μ`-a.e.  Then `M_W(T) ≤ μ(W)` because `|ξ(ω)| ≤ |ω|_E ≤ 1`, while `μ(W') ≤ M_W(T)`
+for open `W' ⊂⊂ U` inside `W` (test `T` on forms approximating `β`), and these `W'` exhaust
+`W ∩ U`. -/
+theorem Submission.cmr_exists_massRepresentation_core : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) := by
+  intro P n U T hU hfin
+  -- Step 1: Euclidean coordinates `c` on covectors, `|α|_E = ‖c α‖`
+  obtain ⟨d, c, hc⟩ := Submission.cmr_covector_euclidean_equiv P n
+  -- Step 2: `T` extends to a locally bounded linear functional `L` on `C_c(U, ℝᵈ)`
+  obtain ⟨L, hLT, hLb⟩ := Submission.cmr_testForm_extension_functional P n U T d c hU hfin hc
+  -- Step 3: vector Riesz representation `L g = ∫ ⟨g, ν⟩ dμ₀` on the locally compact space `U`
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
+  obtain ⟨μ₀, ν, -, hνm, hνi, hLν⟩ := Submission.cmr_vector_riesz_representation U d L hLb
+  -- Steps 4–9: `μ = val_*(|ν| μ₀)`, `ξ = ⟨ν/|ν|, c(·)⟩` and the norming field `β`
+  obtain ⟨μ, ξ, β, hμU, hμK, hξm, hξ1, hβm, hβb, hβ1, hξβ, hμν⟩ :=
+    Submission.cmrc_polar_pushforward P n d U c μ₀ ν hU hc hνm hνi
+  -- Step 8: `T ω = L(c ∘ ω) = ∫ ⟨c ∘ ω, ν⟩ dμ₀ = ∫ ξ(ω) dμ`
+  have hT : ∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ := by
+    intro ω
+    obtain ⟨g, hg⟩ := Submission.cmrc_testForm_restrict_cc P n d U c c.continuous c.map_zero ω
+    rw [← hLT ω g hg, hLν g, ← hμν (ω : DifferentialForm (Euclid P) n)]
+    simp only [hg]
+  -- Steps 10–12: `M_W(T) ≤ μ(W)`, and `μ(W) ≤ M_W(T)` by exhausting `W ∩ U` with `W' ⊂⊂ U`
+  refine ⟨μ, ξ, hμU, hμK, fun W hW => le_antisymm
+    (Submission.cmrc_massOn_le_of_repr P n U T μ ξ hξ1 hT W) ?_, hξm, hξ1, hT⟩
+  exact Submission.cmrc_measure_le_of_compactlyContained P μ U W (T.massOn W) hU hW hμU
+    fun W' hW' hW'U hW'W => Submission.cmrc_measure_le_massOn_of_norming P n U T μ ξ β hμK hξm
+      hξ1 hT hβm hβb hβ1 hξβ W W' hW' hW'U hW'W
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
