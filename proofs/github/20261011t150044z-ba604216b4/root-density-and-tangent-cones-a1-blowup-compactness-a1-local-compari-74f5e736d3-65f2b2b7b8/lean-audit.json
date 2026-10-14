@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4dc13cb2d645849d0f5d2dcde6b6593db4333f4278b42ba9fe36ddd640bd0988",
+  "git_delta": {
+    "base_commit": "cfc72986cbf6e059239f3d5a7de3d073a560d174",
+    "candidate_commit": "82916341b493fd4098e047fefd63d42eee5d2105",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pfi_integer_density_of_summable",
+    "diff_sha256": "556b7edecf12bb3716b3628f98cacc55e13f70328988227afa29d5ac0e6b5009",
+    "source_sha256": "107702d3885752c30d62945345bf3e84a92e4bb3670184dac88f9c4d9e243b2b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pfi_integer_density_of_summable",
+      "statement": "∀ (P n : ℕ) (f : ℕ → Euclid P → ℤ), (∀ j, Measurable (f j)) → ∑' j, ∫⁻ y, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ → ∃ m : Euclid P → ℝ, Measurable m ∧ (∀ y, ∃ z : ℤ, m y = z) ∧ (∀ y, ENNReal.ofReal |m y| ≤ ∑' j, ((f j y).natAbs : ℝ≥0∞)) ∧ ∀ᵐ y ∂μHE[n], Summable (fun j => (f j y : ℝ)) ∧ m y = ∑' j, (f j y : ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
