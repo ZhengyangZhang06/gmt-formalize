@@ -628,6 +628,187 @@ theorem Submission.dor_lmb_fcd_fr_face_geometry : ∀ (P m : ℕ) (p : (Fin P �
         exact_mod_cast h
     exact Prod.ext h1.symm h2.symm
 
+/-- **The `(m + 1)`-cells of the unit cubical lattice meeting a compact set** (Simon Ch. 6, proof
+of the deformation theorem 5.1, (26)–(33), with `n = m + 1`).  `L_n` is the set of points of `ℝᴾ`
+with at least `P − n` integer coordinates, `L_{n−1}` the set of those with at least `P − m`.
+(0) `Hⁿ(L_{n−1}) = 0`: `L_{n−1}` lies in the countably many coordinate planes
+`A(t, z) = {x : xᵢ = zᵢ, i ∈ t}`, `P ≤ m + |t|`, each the Lipschitz image of a space of dimension
+`P − |t| < m + 1`.
+(1) `L_n` is a finite union of finite intersections of the closed sets `{x : xᵢ ∈ ℤ}`.
+(2) The faces `F_p` meeting the bounded set `K` have bounded integer corners, so they are finitely
+many, and (3) by `diam F_p ≤ √P` they lie in the closed `√P`-neighbourhood of `K`.
+(4) A point `x ∈ (L_n ∩ K) \ L_{n−1}` has exactly `n` non-integer coordinates; with `ι` their
+increasing enumeration and `y` their fractional parts, `x = Φ_{(⌊x⌋, ι)}(y)`, `y ∈ Q₁`, and
+`(⌊x⌋, ι)` is a face meeting `K`.  (5) By (0) this covers `Hⁿ`-a.e. point of `L_n ∩ K`. -/
+theorem Submission.dor_lmb_fcd_fr_skeleton_cells : ∀ (P m : ℕ) (K : Set (Euclid P)), m + 1 < P → IsCompact K → ∃ s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P)), (∀ p ∈ s, StrictMono p.2) ∧ (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ⊆ cthickening (Real.sqrt P) K) ∧ IsClosed {x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧ ∀ i ∈ t, ∃ z : ℤ, x i = z} ∧ ∀ᵐ x ∂(μHE[m + 1].restrict ({x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧ ∀ i ∈ t, ∃ z : ℤ, x i = z} ∩ K)), ∃ p ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) = x := by
+  intro P m K hmP hK
+  -- Step 0: `Hⁿ(L_{n−1}) = 0`, i.e. the points with at least `P − m` integer coordinates are
+  -- `μHE[m + 1]`-null
+  have hnull : μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧
+      ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0 := by
+    -- each coordinate plane `A(s, z)` with `P ≤ m + |s|` is `μH[m + 1]`-null
+    have hplane : ∀ s : Finset (Fin P), P ≤ m + s.card → ∀ z : Fin P → ℤ,
+        μH[((m + 1 : ℕ) : ℝ)] {x : Euclid P | ∀ i ∈ s, x i = z i} = 0 := by
+      intro s hs z
+      -- `A(s, z)` is the image of the Lipschitz map `g : t ↦ (zᵢ on s, tᵢ off s)`
+      let g : ({i // i ∉ s} → ℝ) → Euclid P := fun t =>
+        WithLp.toLp 2 fun i => if h : i ∈ s then (z i : ℝ) else t ⟨i, h⟩
+      have hg1 : LipschitzWith 1 fun t : {i // i ∉ s} → ℝ =>
+          fun i : Fin P => if h : i ∈ s then (z i : ℝ) else t ⟨i, h⟩ := by
+        refine LipschitzWith.of_dist_le_mul fun t t' => ?_
+        rw [NNReal.coe_one, one_mul]
+        refine (dist_pi_le_iff dist_nonneg).2 fun i => ?_
+        by_cases h : i ∈ s
+        · simp [h]
+        · simpa [h] using dist_le_pi_dist t t' ⟨i, h⟩
+      have hg : LipschitzWith _ g := (PiLp.lipschitzWith_toLp 2 fun _ : Fin P => ℝ).comp hg1
+      have hsub : {x : Euclid P | ∀ i ∈ s, x i = z i} ⊆ g '' univ := by
+        intro x hx
+        refine ⟨fun j => x j.1, mem_univ _, ?_⟩
+        ext i
+        by_cases h : i ∈ s
+        · simp [g, h, hx i h]
+        · simp [g, h]
+      -- the source of `g` has dimension `P − |s| ≤ m < m + 1`, so it is `μH[m + 1]`-null
+      have hcard : Fintype.card {i // i ∉ s} ≤ m := by
+        rw [Fintype.card_subtype_compl, Fintype.card_coe, Fintype.card_fin]
+        omega
+      have huniv : (μH[((m + 1 : ℕ) : ℝ)] : Measure ({i // i ∉ s} → ℝ)) univ = 0 := by
+        rw [← Metric.iUnion_ball_nat (0 : {i // i ∉ s} → ℝ)]
+        refine measure_iUnion_null fun n => ?_
+        refine (Measure.hausdorffMeasure_zero_or_top
+          (d₁ := (Fintype.card {i // i ∉ s} : ℝ)) ?_ _).resolve_right ?_
+        · exact_mod_cast Nat.lt_succ_of_le hcard
+        · rw [hausdorffMeasure_pi_real]
+          exact measure_ball_lt_top.ne
+      refine measure_mono_null hsub (nonpos_iff_eq_zero.1 ?_)
+      calc μH[((m + 1 : ℕ) : ℝ)] (g '' univ)
+          ≤ _ ^ ((m + 1 : ℕ) : ℝ) * μH[((m + 1 : ℕ) : ℝ)] (univ : Set ({i // i ∉ s} → ℝ)) :=
+            hg.hausdorffMeasure_image_le (Nat.cast_nonneg _) univ
+        _ = 0 := by rw [huniv, mul_zero]
+    -- the set is covered by the countably many planes `A(s, z)`, `P ≤ m + |s|`, `z ∈ ℤᴾ`
+    have hcover : {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, x i = z} ⊆ ⋃ (s : {s : Finset (Fin P) // P ≤ m + s.card})
+          (z : Fin P → ℤ), {x : Euclid P | ∀ i ∈ s.1, x i = z i} := by
+      rintro x ⟨s, hs, hx⟩
+      choose! z hz using hx
+      exact mem_iUnion₂.2 ⟨⟨s, hs⟩, z, hz⟩
+    -- countable subadditivity gives `μH[m + 1]`-nullity, and `μHE[m + 1] = c • μH[m + 1]`
+    have hnullH : μH[((m + 1 : ℕ) : ℝ)] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧
+        ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0 :=
+      measure_mono_null hcover
+        (measure_iUnion_null fun s => measure_iUnion_null fun z => hplane s.1 s.2 z)
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hnullH, smul_zero]
+  -- Step 1: `L_n` is closed, a finite union of finite intersections of the closed sets
+  -- `{x : xᵢ ∈ ℤ}`
+  have hLclosed : IsClosed {x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧
+      ∀ i ∈ t, ∃ z : ℤ, x i = z} := by
+    have hcoord : ∀ i : Fin P, IsClosed {x : Euclid P | ∃ z : ℤ, x i = z} := by
+      intro i
+      have h : {x : Euclid P | ∃ z : ℤ, x i = z} =
+          (fun x : Euclid P => x i) ⁻¹' range ((↑) : ℤ → ℝ) := by
+        ext x
+        exact ⟨fun ⟨z, hz⟩ => ⟨z, hz.symm⟩, fun ⟨z, hz⟩ => ⟨z, hz.symm⟩⟩
+      rw [h]
+      exact Int.isClosedEmbedding_coe_real.isClosed_range.preimage (by fun_prop)
+    have h : {x : Euclid P | ∃ t : Finset (Fin P), P ≤ m + 1 + t.card ∧
+        ∀ i ∈ t, ∃ z : ℤ, x i = z} = ⋃ (t : Finset (Fin P)) (_ : P ≤ m + 1 + t.card),
+          ⋂ i ∈ t, {x : Euclid P | ∃ z : ℤ, x i = z} := by
+      ext x
+      simp only [mem_ofPred_eq, mem_iUnion, mem_iInter, exists_prop]
+    rw [h]
+    exact isClosed_iUnion_of_finite fun t => isClosed_iUnion_of_finite fun _ =>
+      isClosed_iInter fun i => isClosed_iInter fun _ => hcoord i
+  classical
+  -- Step 2: the faces `F_p` meeting `K ⊆ B̄_R(0)` have corners with `|zᵢ| ≤ ⌈R⌉ + 1`, so they
+  -- form a finite set
+  obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
+  have hKcoord : ∀ x ∈ K, ∀ i : Fin P, |x i| ≤ R := fun x hx i =>
+    (Real.norm_eq_abs (x i)).symm.le.trans ((PiLp.norm_apply_le x i).trans (hR x hx))
+  let faces : Set ((Fin P → ℤ) × (Fin (m + 1) → Fin P)) := {p | StrictMono p.2 ∧ ∃ k ∈ K,
+    k ∈ {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧
+      (i ∉ Set.range p.2 → x i = p.1 i)}}
+  have hfin : faces.Finite := by
+    refine ((Set.Finite.pi (t := fun _ : Fin P => Set.Icc (-(⌈R⌉ + 1)) (⌈R⌉ + 1))
+      fun _ => Set.finite_Icc _ _).prod (Set.finite_univ (α := Fin (m + 1) → Fin P))).subset ?_
+    rintro p ⟨-, k, hkK, hkF⟩
+    have hceil := Int.le_ceil R
+    refine ⟨fun i _ => ?_, mem_univ _⟩
+    -- `zᵢ ≤ xᵢ ≤ R` and `zᵢ ≥ xᵢ − 1 ≥ −R − 1` for `x ∈ F_p ∩ K`
+    obtain ⟨hk₁, hk₂⟩ := abs_le.1 (hKcoord k hkK i)
+    have hzb : (p.1 i : ℝ) ≤ R ∧ -R - 1 ≤ (p.1 i : ℝ) := by
+      by_cases hi : i ∈ Set.range p.2
+      · obtain ⟨h₁, h₂⟩ := (hkF i).1 hi
+        constructor <;> linarith
+      · have h := (hkF i).2 hi
+        constructor <;> linarith
+    have h₁ : ((-(⌈R⌉ + 1) : ℤ) : ℝ) ≤ p.1 i := by
+      push_cast
+      linarith [hzb.2]
+    have h₂ : (p.1 i : ℝ) ≤ ((⌈R⌉ + 1 : ℤ) : ℝ) := by
+      push_cast
+      linarith [hzb.1]
+    exact ⟨by exact_mod_cast h₁, by exact_mod_cast h₂⟩
+  refine ⟨hfin.toFinset, fun p hp => (hfin.mem_toFinset.1 hp).1, fun p hp => ?_, hLclosed, ?_⟩
+  · -- Step 3: `diam F_p ≤ √P` and `F_p ∩ K ≠ ∅` give `F_p ⊆ cthickening √P K`
+    obtain ⟨hp2, k, hkK, hkF⟩ := hfin.mem_toFinset.1 hp
+    obtain ⟨-, -, -, -, -, -, hdiam, -, -⟩ := Submission.dor_lmb_fcd_fr_face_geometry P m p hp2
+    exact fun x hx => mem_cthickening_of_dist_le x k _ K hkK (hdiam x hx k hkF)
+  · -- Steps 4–5: off the null set `L_{n−1}` (step 0), every `x ∈ L_n ∩ K` is `Φ_p(y)` for a face
+    -- `p` meeting `K` and some `y ∈ Q₁`
+    rw [ae_restrict_iff' (hLclosed.inter hK.isClosed).measurableSet]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hxL' hx
+    obtain ⟨⟨t, ht, hxt⟩, hxK⟩ := hx
+    -- `T` the integer and `S` the non-integer coordinates of `x`: `|T| = P − n`, `|S| = n`
+    set T : Finset (Fin P) := Finset.univ.filter fun i => ∃ z : ℤ, x i = z with hT
+    set S : Finset (Fin P) := Finset.univ.filter fun i => ¬ ∃ z : ℤ, x i = z with hS
+    have hTS : T.card + S.card = P := by
+      rw [hT, hS, Finset.card_filter_add_card_filter_not, Finset.card_univ, Fintype.card_fin]
+    have htT : t.card ≤ T.card := Finset.card_le_card fun i hi =>
+      Finset.mem_filter.2 ⟨Finset.mem_univ i, hxt i hi⟩
+    have hT' : ¬ P ≤ m + T.card := fun h =>
+      hxL' ⟨T, h, fun i hi => (Finset.mem_filter.1 hi).2⟩
+    have hScard : S.card = m + 1 := by omega
+    -- `ι` enumerates `S` increasingly, `z = ⌊x⌋`, and `y` collects the fractional parts
+    let ι := S.orderEmbOfFin hScard
+    have hιS : Set.range ι = S := Finset.range_orderEmbOfFin S hScard
+    let y : Euclid (m + 1) := WithLp.toLp 2 fun k => Int.fract (x (ι k))
+    have hy : ∀ k, 0 < y k ∧ y k < 1 := by
+      intro k
+      have hk : ι k ∈ S := Finset.orderEmbOfFin_mem S hScard k
+      rw [hS, Finset.mem_filter] at hk
+      exact ⟨Int.fract_pos.2 fun h => hk.2 ⟨_, h⟩, Int.fract_lt_one _⟩
+    have hΦ : WithLp.toLp 2 (fun i => ((⌊x i⌋ : ℤ) : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ) = x := by
+      ext i
+      rw [PiLp.add_apply, PiLp.toLp_apply, WithLp.ofLp_sum, Finset.sum_apply]
+      simp only [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+      by_cases hi : i ∈ S
+      · -- `i = ι(j₀)`: the coordinate is `⌊xᵢ⌋ + fract xᵢ = xᵢ`
+        obtain ⟨j₀, rfl⟩ : i ∈ Set.range ι := by rw [hιS]; exact hi
+        rw [Fintype.sum_eq_single j₀, ite_eq_left rfl]
+        · exact Int.floor_add_fract _
+        · intro j hj
+          exact ite_eq_right (ι.injective.ne hj.symm)
+      · -- `i ∉ range ι`: the coordinate is `⌊xᵢ⌋ = xᵢ ∈ ℤ`
+        obtain ⟨z, hz⟩ : ∃ z : ℤ, x i = z := by
+          by_contra h
+          exact hi (Finset.mem_filter.2 ⟨Finset.mem_univ i, h⟩)
+        have h0 : ∀ j, (if i = ι j then y j else 0) = 0 := fun j =>
+          ite_eq_right fun h => hi (by rw [h]; exact Finset.orderEmbOfFin_mem S hScard j)
+        simp only [h0, Finset.sum_const_zero, add_zero, hz, Int.floor_intCast]
+    -- `x = Φ_p(y) ∈ F_p ∩ K` for `p = (⌊x⌋, ι)`, so `p` is one of the faces
+    let p : (Fin P → ℤ) × (Fin (m + 1) → Fin P) := (fun i => ⌊x i⌋, ι)
+    have hΦp : WithLp.toLp 2 (fun i => (p.1 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) = x := hΦ
+    have hp : p ∈ faces := by
+      refine ⟨ι.strictMono, x, hxK, ?_⟩
+      obtain ⟨-, -, -, -, hcube, -, -, -, -⟩ :=
+        Submission.dor_lmb_fcd_fr_face_geometry P m p ι.strictMono
+      have h := hcube y fun k => ⟨(hy k).1.le, (hy k).2.le⟩
+      rwa [hΦp] at h
+    exact ⟨p, hfin.mem_toFinset.2 hp, y, hy, hΦp⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
