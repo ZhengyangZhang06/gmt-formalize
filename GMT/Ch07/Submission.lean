@@ -453,6 +453,96 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.4.11** (Leibniz rule behind the cutoff identity
+`T(γ∘f dω) − T(d(γ∘f ω)) = −T(γ'(f) df ∧ ω)`): if `g` and the `k`-form `η` are differentiable
+at `x`, then `d(gη)(x) = g(x) dη(x) + dg(x) ∧ η(x)`, where `dg(x) ∧ η(x)` is the alternation of
+`v ↦ Dg(x)(v) η(x)`.  Unfold `d = extDeriv = alternatizeUncurryFin ∘ fderiv`, apply the product
+rule `fderiv_fun_smul`, and use additivity and `ℝ`-homogeneity of `alternatizeUncurryFin`. -/
+theorem Submission.cmcs_cd_extDeriv_smul_leibniz : ∀ (P k : ℕ) (g : Euclid P → ℝ) (η : DifferentialForm (Euclid P) k) (x : Euclid P), DifferentiableAt ℝ g x → DifferentiableAt ℝ η x → exteriorDerivative (fun y => g y • η y) x = g x • exteriorDerivative η x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight (η x)) := by
+  intro P k g η x hg hη
+  -- `d θ x = alternatizeUncurryFin (fderiv ℝ θ x)` by definition
+  show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y => g y • η y) x) =
+    g x • ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ η x) +
+      ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight (η x))
+  -- product rule, then linearity of the alternation
+  rw [fderiv_fun_smul hg hη, ContinuousAlternatingMap.alternatizeUncurryFin_add,
+    ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+/-- **Simon Ch. 6, 4.11** (the multiplier step behind `T(γ∘f dω)` and `T(d(γ∘f ω))`): test forms
+in `U` are closed under multiplication by `C^∞` functions.  For `ω ∈ 𝒟ⁿ(U)` and `g ∈ C^∞`, the
+form `gω` is `C^∞`; it vanishes wherever `ω` does, so `spt(gω) ⊆ spt ω ⊆ U`, and `spt(gω)` is
+compact as a closed subset of the compact set `spt ω`.  Neither openness of `U` nor compact
+support of `g` is needed. -/
+theorem Submission.cmcs_cd_smul_mem_testFormOn : ∀ (P n : ℕ) (U : Set (Euclid P)) (g : Euclid P → ℝ) (ω : TestFormOn U n), ContDiff ℝ (⊤ : ℕ∞) g → (fun x => g x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n := by
+  intro P n U g ω hg
+  -- `ω ∈ 𝒟ⁿ(U)`: `ω` is `C^∞`, `spt ω` is compact and `spt ω ⊆ U`
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ U := ω.property
+  have hsmooth : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := hω.1.1
+  have hcompact : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := hω.1.2
+  -- `gω` vanishes wherever `ω` does, so `spt(gω) ⊆ spt ω`
+  have hsub : tsupport (fun x => g x • (ω : DifferentialForm (Euclid P) n) x) ⊆
+      tsupport (ω : DifferentialForm (Euclid P) n) :=
+    tsupport_smul_subset_right (fun x => g x) _
+  -- `spt(gω)` is a closed subset of the compact set `spt ω`
+  have hcpt : IsCompact (tsupport fun x => g x • (ω : DifferentialForm (Euclid P) n) x) :=
+    hcompact.of_isClosed_subset (isClosed_tsupport _) hsub
+  exact ⟨⟨hg.smul hsmooth, hcpt⟩, hsub.trans hω.2⟩
+
+/-- **Simon 6.4.11, the cut-off defect identity**, with a smooth `g` in place of `γ ∘ f` and with
+`T`, `∂T` written through integral representations `T = ξ μ`, `∂T = ξ' μ'`: for `g ∈ C^∞` and
+`η ∈ 𝒟^k(U)`, `T(g dη) − ∂T(gη) = −T(dg ∧ η)`, where
+`dg ∧ η = alternatizeUncurryFin (Dg.smulRight η)`.  The forms `gη` and `g dη` are test forms by
+`cmcs_cd_smul_mem_testFormOn`, and `d(gη) − g dη = dg ∧ η` pointwise by the Leibniz rule
+`cmcs_cd_extDeriv_smul_leibniz`.  Every equality of integrals is a representation hypothesis or
+`integral_congr_ae` for a pointwise identity, so no integrability is needed. -/
+theorem Submission.cmcs_cd_defect_identity : ∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (g : Euclid P → ℝ) (η : TestFormOn U k), (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ContDiff ℝ (⊤ : ℕ∞) g → ∫ x, g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) ∂μ - ∫ x, g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ' = -∫ x, ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight ((η : DifferentialForm (Euclid P) k) x))) ∂μ := by
+  intro P k U T μ μ' ξ ξ' g η hT hbT hg
+  -- Step 1: the test forms `dη`, `gη`, `g dη` and `d(gη)`
+  let dη : TestFormOn U (k + 1) := exteriorDerivativeTestOn U k η
+  let ηg : TestFormOn U k :=
+    ⟨fun x => g x • (η : DifferentialForm (Euclid P) k) x,
+      Submission.cmcs_cd_smul_mem_testFormOn P k U g η hg⟩
+  let ωg : TestFormOn U (k + 1) :=
+    ⟨fun x => g x • (dη : DifferentialForm (Euclid P) (k + 1)) x,
+      Submission.cmcs_cd_smul_mem_testFormOn P (k + 1) U g dη hg⟩
+  let dηg : TestFormOn U (k + 1) := exteriorDerivativeTestOn U k ηg
+  -- Step 2: the first integral is `T(g dη)`
+  have h1 : ∫ x, g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) ∂μ =
+      T ωg := by
+    rw [hT ωg]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    change g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) =
+      ξ x (g x • exteriorDerivative (η : DifferentialForm (Euclid P) k) x)
+    rw [map_smul, smul_eq_mul]
+  -- Step 3: the second integral is `∂T(gη) = T(d(gη))`
+  have h2 : ∫ x, g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ' = T dηg := by
+    rw [show T dηg = T.boundary ηg from (GeometricCurrentOn.boundary_apply T ηg).symm, hbT ηg]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    change g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) =
+      ξ' x (g x • (η : DifferentialForm (Euclid P) k) x)
+    rw [map_smul, smul_eq_mul]
+  -- Step 4: pointwise, `d(gη) − g dη = dg ∧ η` by the Leibniz rule
+  have h3 : ∀ x, ((dηg - ωg : TestFormOn U (k + 1)) : DifferentialForm (Euclid P) (k + 1)) x =
+      ContinuousAlternatingMap.alternatizeUncurryFin
+        ((fderiv ℝ g x).smulRight ((η : DifferentialForm (Euclid P) k) x)) := by
+    intro x
+    have hgx : DifferentiableAt ℝ g x := hg.differentiable (by simp) x
+    have hηx : DifferentiableAt ℝ (η : DifferentialForm (Euclid P) k) x :=
+      η.property.1.1.differentiable (by simp) x
+    change exteriorDerivative (fun y => g y • (η : DifferentialForm (Euclid P) k) y) x -
+      g x • exteriorDerivative (η : DifferentialForm (Euclid P) k) x = _
+    rw [Submission.cmcs_cd_extDeriv_smul_leibniz P k g _ x hgx hηx]
+    abel
+  -- Step 5: linearity of `T`
+  have h4 : T ωg - T dηg = -T (dηg - ωg) := by
+    have hsub := LinearMap.map_sub (T.toCurrent : ↥(TestFormOn U (k + 1)) →ₗ[ℝ] ℝ) dηg ωg
+    change T.toCurrent ωg - T.toCurrent dηg = -T.toCurrent (dηg - ωg)
+    rw [hsub]
+    ring
+  -- Steps 6 and 7: `T(d(gη) − g dη)` as an integral
+  rw [h1, h2, h4, hT]
+  congr 1
+  exact integral_congr_ae (Eventually.of_forall fun x => congrArg (ξ x) (h3 x))
 /-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
 `Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
 `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
@@ -1839,36 +1929,128 @@ theorem Submission.cmcs_cd_smul_mem_testFormOn : ∀ (P n : ℕ) (U : Set (Eucli
   have hcpt : IsCompact (tsupport fun x => g x • (ω : DifferentialForm (Euclid P) n) x) :=
     hcompact.of_isClosed_subset (isClosed_tsupport _) hsub
   exact ⟨⟨hg.smul hsmooth, hcpt⟩, hsub.trans hω.2⟩
+/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
+a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
+`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
+integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
+`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
+theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+  intro n r hr
+  -- the bump `B` with `rIn = r/2`, `rOut = r`
+  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hBs : HasCompactSupport B := B.hasCompactSupport
+  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+  have hI : 0 < ∫ x, B x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+    exact measure_ball_pos volume 0 hr
+  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+/-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
+`ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
+`G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
+`ψ(y) (g(x - y) - g(x' - y))`, whose absolute value is at most `ψ(y) K ‖x - x'‖`, and
+`∫ ψ = 1`. -/
+theorem Submission.cmcs_ls_mollify_lipschitz : ∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y)) := by
+  intro P ψ g K hψc hψs hψ0 hψ1 hg
+  -- step 1: `y ↦ ψ y * g (x - y)` is continuous with support in `support ψ`, hence integrable
+  have hint : ∀ x : Euclid P, Integrable (fun y => ψ y * g (x - y)) := fun x =>
+    (hψc.mul (hg.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hψs.mul_right
+  -- step 5: it suffices to show `dist (G x) (G x') ≤ K * dist x x'`
+  refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+  -- step 2: `G x - G x'` is a single integral
+  rw [Real.dist_eq, ← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
+  calc ‖∫ y, (ψ y * g (x - y) - ψ y * g (x' - y))‖
+      ≤ ∫ y, ψ y * (K * dist x x') := by
+        -- step 4: integrate the pointwise bound of step 3 against the integrable majorant
+        refine norm_integral_le_of_norm_le
+          ((hψc.integrable_of_hasCompactSupport (μ := volume) hψs).mul_const _)
+          (Eventually.of_forall fun y => ?_)
+        -- step 3: `|ψ y (g (x - y) - g (x' - y))| = ψ y dist (g (x - y)) (g (x' - y))`
+        -- `≤ ψ y (K dist (x - y) (x' - y)) = ψ y (K dist x x')`
+        rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψ0 y), ← Real.dist_eq,
+          ← dist_sub_right x x' y]
+        exact mul_le_mul_of_nonneg_left (hg.dist_le_mul _ _) (hψ0 y)
+    _ = K * dist x x' := by rw [integral_mul_const, hψ1, one_mul]
 
-/-- **Simon 6.4.11, the cut-off defect identity**, with a smooth `g` in place of `γ ∘ f` and with
-`T`, `∂T` written through integral representations `T = ξ μ`, `∂T = ξ' μ'`: for `g ∈ C^∞` and
-`η ∈ 𝒟^k(U)`, `T(g dη) − ∂T(gη) = −T(dg ∧ η)`, where
-`dg ∧ η = alternatizeUncurryFin (Dg.smulRight η)`.  The forms `gη` and `g dη` are test forms by
-`cmcs_cd_smul_mem_testFormOn`, and `d(gη) − g dη = dg ∧ η` pointwise by the Leibniz rule
-`cmcs_cd_extDeriv_smul_leibniz`.  Every equality of integrals is a representation hypothesis or
-`integral_congr_ae` for a pointwise identity, so no integrability is needed. -/
-theorem Submission.cmcs_cd_defect_identity : ∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (g : Euclid P → ℝ) (η : TestFormOn U k), (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ θ : TestFormOn U k, T.boundary θ = ∫ x, ξ' x ((θ : DifferentialForm (Euclid P) k) x) ∂μ') → ContDiff ℝ (⊤ : ℕ∞) g → ∫ x, g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) ∂μ - ∫ x, g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ' = -∫ x, ξ x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight ((η : DifferentialForm (Euclid P) k) x))) ∂μ := by
-  intro P k U T μ μ' ξ ξ' g η hT hbT hg
-  -- Step 1: the test forms `dη`, `gη`, `g dη` and `d(gη)`
-  let dη : TestFormOn U (k + 1) := exteriorDerivativeTestOn U k η
-  let ηg : TestFormOn U k :=
-    ⟨fun x => g x • (η : DifferentialForm (Euclid P) k) x,
-      Submission.cmcs_cd_smul_mem_testFormOn P k U g η hg⟩
-  let ωg : TestFormOn U (k + 1) :=
-    ⟨fun x => g x • (dη : DifferentialForm (Euclid P) (k + 1)) x,
-      Submission.cmcs_cd_smul_mem_testFormOn P (k + 1) U g dη hg⟩
-  let dηg : TestFormOn U (k + 1) := exteriorDerivativeTestOn U k ηg
-  -- Step 2: the first integral is `T(g dη)`
-  have h1 : ∫ x, g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) ∂μ =
-      T ωg := by
-    rw [hT ωg]
+/-- **Smoothing of Lipschitz functions** (Simon Ch. 6, 4.8–4.9: use `f^{(σ)}` in place of a
+Lipschitz `f`): a `K`-Lipschitz `g` on `ℝᴾ` and `σ > 0` give a `C^∞` function `g'` with
+`‖Dg'‖ ≤ K`, `|g' − g| ≤ Kσ`, and `g'(x) = c` whenever `g ≡ c` on `B_σ(x)`.  Take the normalized
+mollifier `ψ` (`support ψ ⊆ B_σ(0)`) and `g' = ψ ⋆ g`, `g'(x) = ∫ ψ(y) g(x − y) dy`: it is `C^∞`
+(`ψ` is smooth with compact support, `g` is continuous) and `K`-Lipschitz, so `‖Dg'‖ ≤ K`.  The
+last two claims are `dist_convolution_le` on `B_σ(x)`, with `ε = Kσ`, `z₀ = g(x)` and with
+`ε = 0`, `z₀ = c`.  (`ContDiffBump.normed` and its convolution lemmas are outside the import
+closure.) -/
+theorem Submission.cmcs_lipschitz_smoothing : ∀ (P : ℕ) (g : Euclid P → ℝ) (K : NNReal) (σ : ℝ), LipschitzWith K g → 0 < σ → ∃ g' : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g' ∧ (∀ x, ‖fderiv ℝ g' x‖ ≤ K) ∧ (∀ x, |g' x - g x| ≤ K * σ) ∧ ∀ (x : Euclid P) (c : ℝ), (∀ y ∈ ball x σ, g y = c) → g' x = c := by
+  intro P g K σ hg hσ
+  obtain ⟨ψ, hψd, hψs, hψ0, hψ1, hψb⟩ := Submission.dgcr_stc_exists_normalized_mollifier P σ hσ
+  -- `g' = ψ ⋆ g`
+  have hconv : (fun x => ∫ y, ψ y * g (x - y)) =
+      convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext x
+    simp only [convolution_def, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  refine ⟨fun x => ∫ y, ψ y * g (x - y), ?_, fun x => ?_, fun x => ?_, fun x c hc => ?_⟩
+  · rw [hconv]
+    exact hψs.contDiff_convolution_left _ hψd hg.continuous.locallyIntegrable
+  · exact norm_fderiv_le_of_lipschitz ℝ
+      (Submission.cmcs_ls_mollify_lipschitz P ψ g K hψd.continuous hψs hψ0 hψ1 hg)
+  · -- `dist (g y) (g x) ≤ K ‖y − x‖ ≤ Kσ` on `B_σ(x)`
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := g x)
+      (mul_nonneg K.coe_nonneg hσ.le) hψb hψ0 hψ1 hg.continuous.aestronglyMeasurable
+      (fun y hy => (hg.dist_le_mul y x).trans
+        (mul_le_mul_of_nonneg_left (mem_ball.1 hy).le K.coe_nonneg))
+    rwa [← hconv, Real.dist_eq] at h
+  · -- `g ≡ c` on `B_σ(x)`, so `dist (g' x) c ≤ 0`
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := c) le_rfl hψb hψ0 hψ1
+      hg.continuous.aestronglyMeasurable (fun y hy => by rw [hc y hy, dist_self])
+    rw [← hconv] at h
+    exact dist_le_zero.1 h
+
+/-- **Leibniz identity with a `C^∞` multiplier** (Simon Ch. 6, proof of Lemma 4.5(2):
+`∂T(gω) − T(g dω) = T(dg ∧ ω)`), for `T = τ(M, θ, ξ)` and `∂T = τ(M', θ', ξ')` in `ℝᴾ`: for
+`g ∈ C^∞` and `ω ∈ 𝒟^{m+1}(ℝᴾ)`,
+`∫_{M'} θ' g ⟨ω, ξ'⟩ dH^{m+1} − ∫_M θ g ⟨dω, ξ⟩ dH^{m+2} = ∫_M θ ⟨dg ∧ ω, ξ⟩ dH^{m+2}`.
+For every `IMRep` `R = (M, θ, ξ)`, `∫ φ dR.measure = ∫_M θ φ dHᵈ`
+(`integral_withDensity_eq_integral_smul`, no integrability needed), so `T = ξ μ_T` and
+`∂T = ξ' μ_∂` with `μ_T = θ H^{m+2}⌞M`, `μ_∂ = θ' H^{m+1}⌞M'`.  The defect identity
+`cmcs_cd_defect_identity` with `k = m + 1` then gives the claim after rewriting back to `Hᵈ`. -/
+theorem Submission.dtc_bc_lc_sl_ll_smooth_leibniz : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (g : Euclid P → ℝ), RT.Represents T → RB.Represents T.boundary → ContDiff ℝ (⊤ : ℕ∞) g → ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), (∫ x in RB.carrier, (RB.mult x : ℝ) * g x * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) - (∫ x in RT.carrier, (RT.mult x : ℝ) * g x * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) = ∫ x in RT.carrier, (RT.mult x : ℝ) * RT.orient x (ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight ((ω : DifferentialForm (Euclid P) (m + 1)) x))) ∂μHE[m + 2] := by
+  intro P m T RT RB g hRT hRB hg ω
+  -- Steps 1 and 2: `∫ φ dR.measure = ∫_M θ φ dHᵈ` for every `IMRep` `R = (M, θ, ξ)`, the density
+  -- `θ` being measurable and `ℕ`-valued
+  have key : ∀ {d : ℕ} (R : IMRep (univ : Set (Euclid P)) d) (φ : Euclid P → ℝ),
+      ∫ x, φ x ∂R.measure = ∫ x in R.carrier, (R.mult x : ℝ) * φ x ∂μHE[d] := by
+    intro d R φ
+    have hm : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+    have hmeas : R.measure =
+        (μHE[d].restrict R.carrier).withDensity fun x => ((R.mult x : NNReal) : ℝ≥0∞) := by
+      simp [IMRep.measure]
+    rw [hmeas, integral_withDensity_eq_integral_smul hm φ]
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-    change g x * ξ x (exteriorDerivative (η : DifferentialForm (Euclid P) k) x) =
-      ξ x (g x • exteriorDerivative (η : DifferentialForm (Euclid P) k) x)
-    rw [map_smul, smul_eq_mul]
-  -- Step 3: the second integral is `∂T(gη) = T(d(gη))`
-  have h2 : ∫ x, g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ' = T dηg := by
-    rw [show T dηg = T.boundary ηg from (GeometricCurrentOn.boundary_apply T ηg).symm, hbT ηg]
+    simp [NNReal.smul_def]
+  -- Step 3: `T = ξ μ_T` and `∂T = ξ' μ_∂`
+  have hT : ∀ ω' : TestFormOn (univ : Set (Euclid P)) (m + 1 + 1),
+      T ω' = ∫ x, RT.orient x ((ω' : DifferentialForm (Euclid P) (m + 1 + 1)) x) ∂RT.measure := by
+    intro ω'
+    rw [hRT ω', key]
+    rfl
+  have hB : ∀ θ : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      T.boundary θ = ∫ x, RB.orient x ((θ : DifferentialForm (Euclid P) (m + 1)) x) ∂RB.measure := by
+    intro θ
+    rw [hRB θ, key]
+    rfl
+  -- Step 4: the defect identity with `k = m + 1`, `μ = μ_T`, `μ' = μ_∂`
+  have h := Submission.cmcs_cd_defect_identity P (m + 1) univ T RT.measure RB.measure RT.orient
+    RB.orient g ω hT hB hg
+  -- Step 5: back to Hausdorff measure, reassociate `θ (g ⟨·, ξ⟩) = (θ g) ⟨·, ξ⟩` and rearrange
+  rw [key, key, key] at h
+  have e1 : ∫ x in RT.carrier, (RT.mult x : ℝ) * (g x * RT.orient x (exteriorDerivative
+      (ω : DifferentialForm (Euclid P) (m + 1)) x)) ∂μHE[m + 2] =
+      ∫ x in RT.carrier, (RT.mult x : ℝ) * g x * RT.orient x (exteriorDerivative
+      (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2] := by
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
     change g x * ξ' x ((η : DifferentialForm (Euclid P) k) x) =
       ξ' x (g x • (η : DifferentialForm (Euclid P) k) x)
@@ -3078,6 +3260,15 @@ theorem Submission.dtc_bc_lc_sl_ll_orient_interior : ∀ (P n : ℕ) (ξ : Multi
   rcases hξ with hξ | hξ
   · rw [hξ, hzero]
   · rw [hξ, hzero, neg_zero]
+    simp only [mul_assoc]
+  have e2 : ∫ x in RB.carrier, (RB.mult x : ℝ) * (g x * RB.orient x
+      ((ω : DifferentialForm (Euclid P) (m + 1)) x)) ∂μHE[m + 1] =
+      ∫ x in RB.carrier, (RB.mult x : ℝ) * g x * RB.orient x
+      ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [mul_assoc]
+  rw [e1, e2] at h
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
