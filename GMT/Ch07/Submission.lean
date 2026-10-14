@@ -1421,14 +1421,6 @@ theorem Submission.cmcdt_lpoh_cyl_identity : ∀ (cyl : ∀ (N k : ℕ), Geometr
     -- Step 7: `cyl ∂X (β) = ∂X(θ) = X(dθ)`, and linearity of `X`
     rw [hcyl, hcylb, hηeq]
     exact (map_sub X.toCurrent _ _).trans (by rw [map_sub X.toCurrent ρ₁ ρ₀]; rfl)
-/-- **Covector bound for the `e₀`-slice of a pulled-back covector.**  Given the bounds
-(L1) `|β ∘ A| ≤ ‖A‖ᵏ |β|` and (L2) `|β(v, ·)| ≤ ‖v‖ |β|` for the Euclidean coefficient norm
-`|·| = covectorEuclideanNorm`, let `φ(v₁, …, v_k) = (D^#γ)(e₀, Jv₁, …, Jv_k)` with
-`J v = (0, v)`, `‖D e₀‖ ≤ a` and `‖D (J v)‖ ≤ b ‖v‖`.  Then `φ = γ(D e₀, ·) ∘ (D ∘ J)`, so
-`|φ| ≤ ‖D ∘ J‖ᵏ ‖D e₀‖ |γ| ≤ bᵏ a |γ|`. -/
-theorem Submission.cmcdt_lpoh_phi_bound : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N N' k : ℕ) (γ : Covector (Euclid N') (k + 1)) (D : Euclid (N + 1) →L[ℝ] Euclid N') (φ : Covector (Euclid N) k) (a b : ℝ), 0 ≤ b → ‖D (EuclideanSpace.single 0 1)‖ ≤ a → (∀ v : Euclid N, ‖D (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ b * ‖v‖) → (∀ v : Fin k → Euclid N, φ v = (γ.compContinuousLinearMap D) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → covectorEuclideanNorm φ ≤ b ^ k * a * covectorEuclideanNorm γ := by
-  intro hL1 hL2 N N' k γ D φ a b hb hDe hDJ hφ
-  /- Step 1: `J v = (0, v)` is linear (check coordinatewise), hence continuous linear. -/
 /-- **Simon Ch. 6, 2.7–2.8 with 2.12** (mass–support bound).  Let `X ∈ 𝒟ₖ(ℝᴺ)` have
 `M(X) < ∞` and let `|ψ(x)| ≤ c` on `spt X`.  The representation `X(ω) = ∫ ⟨ω, ξ⟩ dμ` with
 `M_W(X) = μ(W)` (`W` open) and `|ξ| ≤ 1` makes `μ` finite with `μ(ℝᴺ) = M(X)`.  `X` kills every
@@ -1660,32 +1652,6 @@ theorem Submission.cmcdt_lpoh_cyl_eval_bound : (∀ (P n : ℕ) (U : Set (Euclid
         ext i
         refine Fin.cases ?_ (fun i => ?_) i <;> simp }
   let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap Jl
-  /- Step 2: `φ = γ(D e₀, ·) ∘ (D ∘ J)`, since `D ∘ (e₀, Jv) = (D e₀, D (J v))`. -/
-  have hφeq : φ = (γ.curryLeft (D (EuclideanSpace.single 0 1))).compContinuousLinearMap
-      (D.comp J) := by
-    ext v
-    rw [hφ v]
-    simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply,
-      ContinuousAlternatingMap.curryLeft_apply_apply, ContinuousLinearMap.coe_comp]
-    congr 1
-    rw [Fin.comp_cons]
-    rfl
-  /- Step 3: `‖D ∘ J‖ ≤ b`. -/
-  have hA : ‖D.comp J‖ ≤ b := ContinuousLinearMap.opNorm_le_bound _ hb hDJ
-  /- Step 4: (L1) for `D ∘ J`, then (L2) for `D e₀`. -/
-  rw [hφeq]
-  calc covectorEuclideanNorm ((γ.curryLeft (D (EuclideanSpace.single 0 1))).compContinuousLinearMap
-        (D.comp J))
-      ≤ ‖D.comp J‖ ^ k * covectorEuclideanNorm (γ.curryLeft (D (EuclideanSpace.single 0 1))) :=
-        hL1 N N' k (D.comp J) _
-    _ ≤ b ^ k * (‖D (EuclideanSpace.single 0 1)‖ * covectorEuclideanNorm γ) := by
-        gcongr
-        · exact covectorEuclideanNorm_nonneg _
-        · exact hL2 N' k _ γ
-    _ ≤ b ^ k * (a * covectorEuclideanNorm γ) := by
-        gcongr
-        exact covectorEuclideanNorm_nonneg γ
-    _ = b ^ k * a * covectorEuclideanNorm γ := by ring
   let f : ℝ → Covector (Euclid N) k := fun t =>
     (((β : DifferentialForm (Euclid (N + 1)) (k + 1))
       (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))).curryLeft
