@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)",
+        "grep -rn in snapshot mathlib/Mathlib: 'theorem Monotone.ae_differentiableAt', 'theorem Monotone.ae_hasDerivAt', 'theorem measurable_deriv', 'theorem lintegral_liminf_le', liminf_const_mul, 'theorem measure_inter_add_sdiff', 'theorem HasDerivAt.tendsto_slope_zero_left', 'theorem Filter.Tendsto.liminf_eq', 'theorem Measurable.liminf', 'theorem ae_all_iff', 'theorem withDensity_apply_le', 'theorem withDensity_rnDeriv_le', 'theorem measure_Ioo', 'theorem lintegral_const_mul'; grep mul_le_mul_left/mul_le_mul_right in Algebra/Order/Monoid/Unbundled/Basic.lean",
+        "lake env lean /tmp/mm-decomp-7c1/lean/Avail.lean: #check of 40 cited lemmas after import GMT.Ch07.Submission. MonotoneOn.intervalIntegrable_deriv and tendsto_neg_nhdsGT_zero are unknown; mul_le_mul_left' is unknown, and this Mathlib's mul_le_mul_right : b ≤ c → a * b ≤ a * c",
+        "python3 scan of dag.json (983, later 1033 nodes) for lean_names and statements with deriv / Monotone / 𝓝[>] 0 / liminf / ∫⁻. Found accepted cmcs_smi_lintegral_ofReal_deriv_le (identical type to the lintegral_deriv child), cmcs_smi_lintegral_left_dini_le, cmcs_smi_lintegral_left_density_le and cmcs_smp_liminf_bound, plus cmcs_slice_mass_integral (comparing; needs MeasurableSet W). No cbr_smm_* names. Cross-parent lean_name reuse in 2353 earlier proposals: 0. Duplicated statements under fresh names: 54",
+        "git show 6efe397f1 (accepted Submission.cmcs_smi_lintegral_ofReal_deriv_le: Stieltjes/rnDeriv route, no imports, no helpers) and git show 2168e6089 (accepted cmcs_smi_lintegral_left_dini_le: tendsto_neg_nhdsGT with HasDerivAt.tendsto_slope_zero_left)",
+        "git grep -l cbr_smm_ over all 4223 refs -- 'GMT/*.lean': no match (control: cmcs_smi_lintegral_ofReal_deriv_le is found in 19 refs). grep -rl cbr_smm_ in the simongmt package and the snapshot project: no match",
+        "verifier/gmt-compare.py contract_scope and child_modules. Replayed scope: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (...); noncomputable section; end. verifier/lean_contract.py validate_lean_statement on the four child strings and the parent: all pass",
+        "lake env lean /tmp/mm-decomp-7c1/lean/Challenges.lean, Assembly.lean and Proofs.lean: all exit 0. asm_core, asm_parent, asm_total and NodeSolution0-4 depend only on propext, Classical.choice and Quot.sound",
+        "python3 regex search of other nodes' decomposition-audit-v1.json and parent-supplied-natural-proof.md for the import policy: 'leaf_verification.check_source_delta forbids new declarations and imports in leaf proofs'",
+        "sed -n 1350,1380p and 2310,2350p book/chapter-06.txt (4.9, the sentence before 4.10, 4.10, Remark 8.3(1), 8.2 (2))",
+        "independent reviewer subagent over /tmp/mm-decomp-7c1/draft/subproblems.json and the three Lean files. VERDICT: ACCEPT; it also compiled verifier-generated NodeChallenge/NodeSolution files against a copy of Submission.lean with the theorems inserted before main_theorem. Its non-blocking notes were applied",
+        "WebSearch: increasing function derivative integrable f(b) - f(a) Lebesgue theorem (mathonline.wikidot.com, 'The Lebesgue Integral of the Derivative of an Increasing Function')"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/PROBLEM.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Decomposition/Lebesgue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/mm-decomp-7c1/lean/Avail.lean",
+        "/tmp/mm-decomp-7c1/lean/Full.lean",
+        "/tmp/mm-decomp-7c1/lean/Challenges.lean",
+        "/tmp/mm-decomp-7c1/lean/Assembly.lean",
+        "/tmp/mm-decomp-7c1/lean/Proofs.lean",
+        "/tmp/mm-decomp-7c1/draft/subproblems.json"
+      ],
+      "conclusion": "The snapshot contract (project b4d606db1, Mathlib 25730c7c) is identical to the workspace Contract.lean and Submission.lean. Every lemma cited in the four child proofs exists in the frozen import closure. The supplied proof's MonotoneOn.intervalIntegrable_deriv and MonotoneOn.intervalIntegral_deriv_mem_uIcc do not: they live in Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean, which is not imported, and leaf proofs may not add imports. The import-free route uses Monotone.stieltjesFunction, StieltjesFunction.measure_Ioo, Monotone.ae_hasDerivAt, withDensity_apply_le and Measure.withDensity_rnDeriv_le. It is the route of the accepted Submission.cmcs_smi_lintegral_ofReal_deriv_le (commit 6efe397f1), whose type is identical to the lintegral_deriv child. In this Mathlib mul_le_mul_left' is gone; mul_le_mul_right : b ≤ c → a * b ≤ a * c is the left-multiplication monotonicity lemma. tendsto_neg_nhdsGT handles the substitution h ↦ −h. No accepted DAG node proves MM itself. cmcs_slice_mass_integral requires MeasurableSet W and a single measure, so it does not apply. The proposed cbr_smm_* names are unused everywhere. The four exact child types elaborate in the comparator scope and are fully proved without new imports or helpers, and they imply the frozen parent type with standard axioms only. Book anchors in chapter-06.txt: lines 1356-1377 (4.9-4.10), 2311-2316 (Remark 8.3(1)) and 2345-2347 (8.2 (2))."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1",
+  "subproblem": {
+    "key": "left_slope",
+    "title": "Left difference quotients in [0, ∞] at a point of differentiability",
+    "statement": "Let F : ℝ → ℝ be differentiable at t ∈ ℝ. Then liminf_{h→0⁺} ENNReal.ofReal(h⁻¹) · ENNReal.ofReal(F(t) − F(t − h)) ≤ ENNReal.ofReal(F′(t)), with the liminf taken along the filter 𝓝[>] 0.",
+    "lean_statement": "∀ (F : ℝ → ℝ) (t : ℝ), DifferentiableAt ℝ F t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h))) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv F t)",
+    "lean_name": "cbr_smm_liminf_left_slope_le_deriv",
+    "depends_on": [],
+    "natural_proof": "Source: step 4 of the parent proof of `cbr_slice_mass_majorant` (\"Bound at differentiability points\"): the left difference quotients h⁻¹(F(t) − F(t − h)) converge to deriv F t as h ↓ 0, and the limit passes through ofReal. This is the pointwise step behind \"M(∂(T⌞B_r(ξ))) ≤ f'(r) for L¹-a.e. r > 0 ... f'(r) exists a.e.\" in Simon's proof of 8.2 (2) (book/chapter-06.txt lines 2345-2347). Monotonicity of F is not needed. Write D := deriv F t and ofReal := ENNReal.ofReal.\n\n1. Since F is differentiable at t, F has derivative D at t (DifferentiableAt.hasDerivAt).\n\n2. Left difference quotients. By HasDerivAt.tendsto_slope_zero_left, s⁻¹ · (F(t + s) − F(t)) → D as s → 0 along 𝓝[<] 0. The map h ↦ −h sends 𝓝[>] 0 into 𝓝[<] 0 (tendsto_neg_nhdsGT at a = 0, simplifying −0 = 0). Composing the two limits, (−h)⁻¹ · (F(t + (−h)) − F(t)) → D as h → 0⁺.\nFor every real h, (−h)⁻¹ · (F(t − h) − F(t)) = −h⁻¹ · (F(t − h) − F(t)) = h⁻¹ · (F(t) − F(t − h)) (inv_neg, ring). Hence q(h) := h⁻¹ · (F(t) − F(t − h)) → D along 𝓝[>] 0.\n\n3. Passing to [0, ∞]. Since ofReal is continuous, ofReal(q(h)) → ofReal(D) along 𝓝[>] 0 (ENNReal.tendsto_ofReal). For h > 0 we have h⁻¹ ≥ 0, so ENNReal.ofReal_mul gives ofReal(q(h)) = ofReal(h⁻¹) · ofReal(F(t) − F(t − h)). The set (0, ∞) belongs to 𝓝[>] 0 (self_mem_nhdsWithin). So φ(h) := ofReal(h⁻¹) · ofReal(F(t) − F(t − h)) agrees with ofReal(q(h)) eventually along 𝓝[>] 0, and therefore φ(h) → ofReal(D) along 𝓝[>] 0 (Tendsto.congr').\n\n4. Conclusion. The filter 𝓝[>] 0 on ℝ is nontrivial, and [0, ∞] is a complete linear order with the order topology. So the liminf of a convergent function equals its limit (Filter.Tendsto.liminf_eq), and liminf_{h→0⁺} φ(h) = ofReal(D). In particular liminf_{h→0⁺} φ(h) ≤ ofReal(deriv F t). ∎",
+    "proof_key_steps": [
+      "HasDerivAt F (deriv F t) t (DifferentiableAt.hasDerivAt).",
+      "HasDerivAt.tendsto_slope_zero_left composed with h ↦ −h (tendsto_neg_nhdsGT) gives h⁻¹(F(t) − F(t − h)) → deriv F t along 𝓝[>] 0.",
+      "For h > 0, ofReal(h⁻¹)·ofReal(F(t) − F(t − h)) = ofReal(h⁻¹(F(t) − F(t − h))) (ENNReal.ofReal_mul), which tends to ofReal(deriv F t) (ENNReal.tendsto_ofReal, Tendsto.congr').",
+      "On the nontrivial filter 𝓝[>] 0 the liminf of a convergent function equals its limit (Filter.Tendsto.liminf_eq)."
+    ]
+  },
+  "audit": {
+    "key": "left_slope",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Differentiability alone suffices, exactly as stated. The proof correctly substitutes h ↦ −h, identifies the real difference quotients, uses positivity of h only for the ofReal product identity, and passes convergence to liminf on the nontrivial right-neighborhood filter. No monotonicity or unstated sign hypothesis is needed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-201a40b18c/parent-supplied-natural-proof.json"
+}

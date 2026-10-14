@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1.leibniz_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1",
+  "depth": 5,
+  "title": "Leibniz estimate for the iterated derivatives of a scalar function times a differential form",
+  "statement": "Let P, k, n ∈ ℕ, let f : ℝ^P → ℝ and g : ℝ^P → Λ^k(ℝ^P) (a k-form, DifferentialForm (Euclid P) k, i.e. a map into the continuous alternating k-linear forms on ℝ^P with their operator norm) both be C^∞, and let x ∈ ℝ^P. Then ‖D^n(f g)(x)‖ ≤ Σ_{i=0}^{n} C(n,i)·‖D^i f(x)‖·‖D^{n−i} g(x)‖, where f g is the form y ↦ f(y)·g(y), D^i = iteratedFDeriv ℝ i, C(n,i) is the binomial coefficient and ‖·‖ is the operator norm of continuous multilinear maps.",
+  "lean_statement": "∀ (P k n : ℕ) (f : Euclid P → ℝ) (g : DifferentialForm (Euclid P) k) (x : Euclid P), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ‖iteratedFDeriv ℝ n (fun y => f y • g y) x‖ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) * ‖iteratedFDeriv ℝ i f x‖ * ‖iteratedFDeriv ℝ (n - i) g x‖",
+  "lean_name": "cbrcs_ce_leibniz_smul_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-db805cd50b-a1"
+}
