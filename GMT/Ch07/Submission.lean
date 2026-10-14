@@ -2993,6 +2993,57 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
 
+/-- **Sum of integer multiplicity currents under a push-forward** (Simon 7.2.4 (8)–(9), step 4
+of the retraction comparison).  Let `push` preserve differences of integer multiplicity currents
+in `ℝᴾ` whose supports are compact subsets of `O`, and let `X`, `Y` be two such currents.  Then
+`S = X − ((X − X) − Y)` is integer multiplicity by three uses of (IMC)(c), and
+`S(ω) = X(ω) + Y(ω)`.  If `X` vanishes on `W₁ ∋ x` and `Y` on `W₂ ∋ x` (Simon 6.2.11), then `S`
+vanishes on `W₁ ∩ W₂`, whose closure lies in the compact `closure W₁`; so
+`spt S ⊆ spt X ∪ spt Y`, and `spt S`, being closed, is compact and contained in `O`.  Finally
+`S − Y = X`, so `push X = push S − push Y`. -/
+theorem Submission.dimred_mbl_lc_rc_push_add : ∀ (P n : ℕ) (O : Set (Euclid P)) (push : GeometricCurrentOn (univ : Set (Euclid P)) n → GeometricCurrentOn (univ : Set (Euclid P)) n) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → IsCompact X.support → X.support ⊆ O → IsCompact Y.support → Y.support ⊆ O → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = X ω + Y ω) ∧ S.support ⊆ X.support ∪ Y.support ∧ IsCompact S.support ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, push S ω = push X ω + push Y ω := by
+  intro P n O push X Y hpush hX hY hXc hXO hYc hYO
+  -- Step 1: `S = X − ((X − X) − Y)` is integer multiplicity by (IMC)(c), used three times
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P n univ
+  set S : GeometricCurrentOn (univ : Set (Euclid P)) n := X - ((X - X) - Y)
+  have hSim : IsIntegerMultiplicity S :=
+    hsub _ _ isOpen_univ hX (hsub _ _ isOpen_univ (hsub _ _ isOpen_univ hX hX) hY)
+  -- and `S(ω) = X(ω) − ((X(ω) − X(ω)) − Y(ω)) = X(ω) + Y(ω)`
+  have hSω : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = X ω + Y ω := by
+    intro ω
+    show X ω - ((X ω - X ω) - Y ω) = X ω + Y ω
+    ring
+  -- Step 2: `spt S ⊆ spt X ∪ spt Y`; if `X` vanishes on `W₁ ∋ x` and `Y` on `W₂ ∋ x`, then
+  -- `S` vanishes on `W₁ ∩ W₂`, whose closure lies in the compact `closure W₁`
+  have hSsupp : S.support ⊆ X.support ∪ Y.support := by
+    rintro x ⟨-, hxS⟩
+    by_contra hxXY
+    have hxX : x ∈ X.zeroRegion := not_not.1 fun h => hxXY (Or.inl ⟨mem_univ x, h⟩)
+    have hxY : x ∈ Y.zeroRegion := not_not.1 fun h => hxXY (Or.inr ⟨mem_univ x, h⟩)
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁v⟩, hxW₁⟩ := hxX
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ := hxY
+    refine hxS ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o,
+      hW₁c.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩, hxW₁, hxW₂⟩
+    rw [hSω, hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), add_zero]
+  -- Step 3: `spt S` is closed, hence compact inside `spt X ∪ spt Y`, and `spt S ⊆ O`
+  have hSc : IsCompact S.support :=
+    (hXc.union hYc).of_isClosed_subset (isClosed_univ.sdiff S.isOpen_zeroRegion) hSsupp
+  have hSO : S.support ⊆ O := hSsupp.trans (union_subset hXO hYO)
+  -- Step 4: `S − Y = X`, so the hypothesis on `push` gives `push X = push S − push Y`
+  have hSY : S - Y = X := by
+    ext ω
+    show S ω - Y ω = X ω
+    rw [hSω]
+    ring
+  have hpXY : push X = push S - push Y := by
+    rw [← hSY]
+    exact hpush S Y hSim hY hSc hSO hYc hYO
+  refine ⟨S, hSim, hSω, hSsupp, hSc, fun ω => ?_⟩
+  have h := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) n => T ω) hpXY
+  change push X ω = push S ω - push Y ω at h
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
