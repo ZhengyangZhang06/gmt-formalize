@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1bcef39502aa0c89d2166e31cf895a767ad6f89a47c8ba07ae86536c3391eeab",
+  "git_delta": {
+    "base_commit": "38e836c6a9b8b12757f4c29f371422327c981455",
+    "candidate_commit": "19734bdf61d7629533e9623a041732186043df4b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_isTestForm_fderiv_apply",
+    "diff_sha256": "43371dce7a68a30f3ef078feaefb4556c83163a431ceed22e19d800f63793027",
+    "source_sha256": "9e11b478f02af12039e6752e8905e89f8316cb3dce18c26d5faabd0d105e5447",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply",
+      "statement": "∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
