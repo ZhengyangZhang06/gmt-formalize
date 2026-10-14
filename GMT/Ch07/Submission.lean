@@ -451,6 +451,24 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Integrals over a finite set against `H⁰ = μHE[0]` are finite sums (for Simon 6.8.2, `n = 0`):
+`μHE[0] = μH[0]` is the counting measure, `μH[0]{x} = 1`, so `∫_F f dH⁰ = Σ_{x ∈ F} f(x)` (each
+`f` is integrable on the finite union `F` of singletons) and `∫⁻_F g dH⁰ = Σ_{x ∈ F} g(x)`. -/
+theorem Submission.cbrz_finset_integral_hausdorff_zero : ∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞), (∫ x in (F : Set (Euclid P)), f x ∂μHE[0]) = ∑ x ∈ F, f x ∧ (∫⁻ x in (F : Set (Euclid P)), g x ∂μHE[0]) = ∑ x ∈ F, g x := by
+  intro P F f g
+  rw [Measure.euclideanHausdorffMeasure_zero]
+  constructor
+  · -- `f` is integrable on each singleton `{x}`, `μH[0]{x} = 1`, hence on the finite union `F`
+    have hint : IntegrableOn f (F : Set (Euclid P)) μH[0] := by
+      rw [← Set.biUnion_of_singleton (F : Set (Euclid P)),
+        integrableOn_finite_biUnion F.finite_toSet]
+      intro x _
+      exact integrableOn_singleton (by simp) (by simp [Measure.hausdorffMeasure_zero_singleton])
+    rw [setIntegral_finset F hint]
+    simp [measureReal_def, Measure.hausdorffMeasure_zero_singleton]
+  · rw [lintegral_finset]
+    simp [Measure.hausdorffMeasure_zero_singleton]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
