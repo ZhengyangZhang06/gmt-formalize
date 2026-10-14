@@ -18735,6 +18735,58 @@ theorem Submission.codim1_hcp_flat_cone_is_plane : ∀ (P m : ℕ) (A₀ : Submo
   -- Steps 2, 5–8: these local planes globalize to one punctured `m`-plane `H₀ \ {0}`
   exact Submission.codim1_hcp_fcp_locally_planar_is_plane P m A₀ M hm hA₀ hne h0 hcl hloc
 
+/-- **Simon, Appendix B, B.2 (Simons' theorem) for deformation-minimal `C¹` hypercones.**  Let
+`2 ≤ m ≤ 6`, let `A₀ ⊆ ℝᴾ` be an `(m+1)`-dimensional subspace and let `M ⊆ A₀ \ {0}` be a
+nonempty oriented embedded `C¹` `m`-submanifold with `closure M ⊆ M ∪ {0}`, `tM ⊆ M` for `t > 0`
+and `Hᵐ(M ∩ K) < ∞` for compact `K`.  Suppose `Hᵐ(M ∩ K_Z) ≤ Hᵐ(Φ_t(M ∩ K_Z))` for small `|t|`,
+where `Φ_t = id + tZ`, `Z` is smooth with compact support and `0 ∉ K_Z = spt Z`.  Then
+`M = H₀ \ {0}` for an `m`-dimensional subspace `H₀`.
+The argument works in the open set `U₀ = ℝᴾ \ {0}`: it contains `M`, and every deformation
+field supported in `U₀` is admissible.
+(1) The first variation vanishes, so `v(M, 1)` is stationary in `U₀` (Simon Ch. 2, 5.1–5.3).
+(2) Allard–Schauder regularity (Simon Ch. 5, 7.1) makes `M` of class `Cʳ` for every `r`.
+(3) The orientation and a volume form of `A₀` give a smooth unit normal `ν ∈ A₀` with
+`div_M ν = 0`.
+(4) The second variation gives the stability inequality B.1 (Simon Ch. 2, 5.11–5.12).
+(5) Simons' identity B.8, the cone lemma B.11 and the test function `ψ = r^{1+ε} r₁^{1−m/2−2ε}`
+(printed proof of B.2) force `D_τν = 0` for tangent `τ`.
+(6) A cone whose unit normal has zero tangential derivative is a punctured hyperplane, as
+`m ≥ 2`. -/
+theorem Submission.codim1_deformation_minimal_hypercone_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → (0 : Euclid P) ∉ tsupport Z → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M hm2 hm6 hA₀ hne hMA h0 hM hcl hcone hor hfin hdef
+  -- the open set `U₀ = ℝᴾ \ {0}` contains `M`
+  have hU : IsOpen ({0}ᶜ : Set (Euclid P)) := isOpen_compl_singleton
+  have hMU : M ⊆ {0}ᶜ := fun x hx hx0 => h0 (mem_singleton_iff.mp hx0 ▸ hx)
+  -- local finiteness of `Hᵐ⌞M` in `U₀`
+  have hfinU : ∀ K : Set (Euclid P), IsCompact K → K ⊆ {0}ᶜ → μHE[m] (M ∩ K) ≠ ∞ :=
+    fun K hK _ => hfin K hK
+  -- a deformation field supported in `U₀` avoids the vertex, so it is admissible
+  have hdefU : ∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z →
+      tsupport Z ⊆ {0}ᶜ → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ →
+        μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z)) :=
+    fun Z hZ hZc hZU => hdef Z hZ hZc fun hZ0 => hZU hZ0 (mem_singleton 0)
+  -- (1) `v(M, 1)` is stationary in `U₀`
+  have hstat := Submission.codim1_hcp_deformation_minimal_stationary P m {0}ᶜ M hU hMU hM hfinU
+    hdefU
+  -- (2) `M` is a `Cʳ` submanifold for every `r`
+  have hsmooth := Submission.codim1_hcp_stationary_c1_smooth P m {0}ᶜ M (by omega) hU hMU hM
+    hfinU hstat
+  -- (3) a smooth unit normal `ν ∈ A₀` of `M` with `div_M ν = 0`
+  obtain ⟨ν, O, hO, hMO, hνO, hν, hdivν⟩ := Submission.codim1_hcp_minimal_unit_normal P m {0}ᶜ
+    A₀ M hU hMU hA₀ hMA hsmooth hor hfinU hstat
+  -- (4) the stability inequality B.1
+  have hstab := Submission.codim1_hcp_stability_inequality P m {0}ᶜ A₀ M ν hU hMU hA₀ hMA hsmooth
+    hfinU ⟨O, hO, hMO, hνO⟩ hν hdivν hdefU
+  -- (5) Simons' theorem: `D_τν = 0` for every tangent vector `τ`; stationarity in `U₀` is
+  -- stationarity for the fields vanishing near the vertex
+  have hflat := Submission.codim1_hcp_stable_minimal_cone_flat P m A₀ M ν hm2 hm6 hA₀ hMA h0
+    hsmooth hcl hcone hfin
+    (fun X hX hXc hX0 => hstat X hX hXc fun y hy hy0 => hX0 (mem_singleton_iff.mp hy0 ▸ hy))
+    ⟨O, hO, hMO, hνO⟩ hν hdivν hstab
+  -- (6) the flat cone `M` is a punctured `m`-plane; `ν` is differentiable on the open `O ⊇ M`
+  exact Submission.codim1_hcp_flat_cone_is_plane P m A₀ M ν hm2 hA₀ hne hMA h0 hM hcl hcone
+    (fun x hx => (hνO.contDiffAt (hO.mem_nhds (hMO hx))).differentiableAt (by simp)) hν hflat
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
