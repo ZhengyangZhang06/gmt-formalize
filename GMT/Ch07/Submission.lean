@@ -2643,6 +2643,80 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Blow-up integrals of compactly supported functions** (the rescaled weights
+`μ^{p,λ} = λ⁻ⁿ η_{p,λ#}μ` of the blow-ups `η_{p,λ#}T` of Simon 7.3.1(2), `η_{p,λ}(y) = λ⁻¹(y − p)`).
+Let `λⱼ > 0`, `λⱼ → 0`, and let `f : ℝᴾ → ℝ` have compact support (neither continuity nor
+integrability is needed).  (a) If `G` is open and `p ∈ G`, then `∫ f d(μ⌞G)^{p,λⱼ} = ∫ f dμ^{p,λⱼ}`
+for all large `j`: `(μ⌞G)^{p,s} = μ^{p,s}⌞η_{p,s}(G)` as `η_{p,s}` is a measurable embedding, and
+`η_{p,s}(G) ⊇ η_{p,s}(B_δ(p)) = B_{δ/s}(0) ⊇ spt f` once `λⱼ` is small.  (b) If `μ(B_ε(p)) = 0`,
+then `∫ f dμ^{p,λⱼ} = 0` for all large `j`: `μ^{p,s}(B_{ε/s}(0)) = s⁻ⁿ μ(B_ε(p)) = 0` and
+`spt f ⊆ B_{ε/λⱼ}(0)` once `λⱼ` is small, so `f = 0` `μ^{p,λⱼ}`-a.e. -/
+theorem Submission.idtp_fons_cc_tm_blowup_integrals : (∀ (P n : ℕ) (μ : Measure (Euclid P)) (G : Set (Euclid P)) (p : Euclid P) (lams : ℕ → ℝ) (f : Euclid P → ℝ), IsOpen G → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • (μ.restrict G).map (dilation p (lams j))) = ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j)))) ∧ ∀ (P n : ℕ) (μ : Measure (Euclid P)) (p : Euclid P) (ε : ℝ) (lams : ℕ → ℝ) (f : Euclid P → ℝ), 0 < ε → μ (ball p ε) = 0 → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → HasCompactSupport f → ∀ᶠ j in atTop, ∫ x, f x ∂(ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j))) = 0 := by
+  -- Step 1: `η_{a,s}(y) = s⁻¹(y − a)`; for `s > 0`, `η_{a,s}` is the homeomorphism
+  -- `y ↦ −s⁻¹a + s⁻¹y`, hence a measurable embedding
+  have hdil : ∀ (P : ℕ) (a : Euclid P) (s : ℝ) (y : Euclid P), dilation a s y = s⁻¹ • (y - a) := by
+    intro P a s y
+    show -(s⁻¹ • a) + s⁻¹ • y = s⁻¹ • (y - a)
+    rw [smul_sub, neg_add_eq_sub]
+  have hemb : ∀ (P : ℕ) (a : Euclid P) (s : ℝ), 0 < s → MeasurableEmbedding (dilation a s) := by
+    intro P a s hs
+    have hh : ⇑((Homeomorph.smulOfNeZero s⁻¹ (inv_ne_zero hs.ne')).trans
+        (Homeomorph.addLeft (-(s⁻¹ • a)))) = dilation a s := by
+      funext y
+      simp [dilation, dilationCLM]
+    exact hh ▸ Homeomorph.measurableEmbedding _
+  -- Step 3: `tsupport f ⊆ B̄_M(0)` and `λⱼ(|M| + 1) → 0`, so for each `r > 0`, eventually
+  -- `λⱼ‖x‖ ≤ λⱼ(|M| + 1) < r` on `tsupport f`, i.e. `tsupport f ⊆ B_{r/λⱼ}(0)`
+  have hsupp : ∀ (P : ℕ) (f : Euclid P → ℝ) (lams : ℕ → ℝ) (r : ℝ), HasCompactSupport f →
+      (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → 0 < r →
+      ∀ᶠ j in atTop, tsupport f ⊆ ball 0 (r / lams j) := by
+    intro P f lams r hf hpos hlim hr
+    obtain ⟨M, hM⟩ := hf.isCompact.isBounded.subset_closedBall 0
+    have hlim' : Tendsto (fun j => lams j * (|M| + 1)) atTop (𝓝 0) := by
+      simpa using hlim.mul_const (|M| + 1)
+    filter_upwards [hlim'.eventually (gt_mem_nhds hr)] with j hj x hx
+    have hx' : ‖x‖ ≤ |M| + 1 := by
+      linarith [mem_closedBall_zero_iff.mp (hM hx), le_abs_self M]
+    rw [mem_ball_zero_iff, lt_div_iff₀ (hpos j), mul_comm]
+    exact (mul_le_mul_of_nonneg_left hx' (hpos j).le).trans_lt hj
+  refine ⟨?_, ?_⟩
+  · -- Step 4 (a): `B_δ(p) ⊆ G`, and eventually `tsupport f ⊆ B_{δ/λⱼ}(0)`
+    intro P n μ G p lams f hG hp hpos hlim hf
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hG p hp
+    filter_upwards [hsupp P f lams δ hf hpos hlim hδ] with j hj
+    have hs := hpos j
+    -- (i) `(μ⌞G)^{p,s} = μ^{p,s}⌞η_{p,s}(G)`, as `η_{p,s}⁻¹(η_{p,s}(G)) = G`
+    rw [← (hemb P p (lams j) hs).injective.preimage_image G,
+      ← (hemb P p (lams j) hs).restrict_map, ← Measure.restrict_smul]
+    -- (ii)–(iii) `f` vanishes off `η_{p,s}(G)`: if `f(x) ≠ 0`, then `x ∈ B_{δ/s}(0)`, so
+    -- `x = η_{p,s}(p + sx)` with `‖(p + sx) − p‖ = s‖x‖ < δ` (step 2), and `p + sx ∈ G`
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
+    by_contra hfx
+    have hx' := hj (subset_tsupport f hfx)
+    rw [mem_ball_zero_iff, lt_div_iff₀ hs, mul_comm] at hx'
+    refine hx ⟨p + lams j • x, hball ?_, ?_⟩
+    · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le]
+      exact hx'
+    · rw [hdil, add_sub_cancel_left, inv_smul_smul₀ hs.ne']
+  · -- Step 5 (b): eventually `tsupport f ⊆ B_{ε/λⱼ}(0)`
+    intro P n μ p ε lams f hε hμ hpos hlim hf
+    filter_upwards [hsupp P f lams ε hf hpos hlim hε] with j hj
+    have hs := hpos j
+    -- (i) `μ^{p,s}(B_{ε/s}(0)) = s⁻ⁿ μ(η_{p,s}⁻¹(B_{ε/s}(0))) = 0`, as
+    -- `η_{p,s}⁻¹(B_{ε/s}(0)) ⊆ B_ε(p)`: `‖y − p‖ = s‖η_{p,s}(y)‖` (step 2)
+    have hnull : (ENNReal.ofReal ((lams j)⁻¹ ^ n) • μ.map (dilation p (lams j)))
+        (ball 0 (ε / lams j)) = 0 := by
+      rw [Measure.smul_apply, (hemb P p (lams j) hs).map_apply]
+      refine (congrArg _ (measure_mono_null (fun y hy => ?_) hμ)).trans (smul_zero _)
+      have hy' : y - p = lams j • dilation p (lams j) y := by
+        rw [hdil, smul_inv_smul₀ hs.ne']
+      rw [mem_preimage, mem_ball_zero_iff, lt_div_iff₀ hs] at hy
+      rw [mem_ball, dist_eq_norm, hy', norm_smul, Real.norm_of_nonneg hs.le, mul_comm]
+      exact hy
+    -- (ii) `{f ≠ 0} ⊆ tsupport f ⊆ B_{ε/s}(0)` is `μ^{p,s}`-null, so `∫ f dμ^{p,s} = 0`
+    exact integral_eq_zero_of_ae (ae_iff.2 (measure_mono_null
+      (fun x hx => hj (subset_tsupport f hx)) hnull))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
