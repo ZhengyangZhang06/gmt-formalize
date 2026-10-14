@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c0a98f7d09676516352a83eccc1c59a7963fea276636696816ce0aaf3d828fd8",
+  "git_delta": {
+    "base_commit": "2af9cc8b563052b63ea8c241faa6ed300bf4573d",
+    "candidate_commit": "0222a36bbf542a9de7ede554d7a4b1295bcd9be4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_tc_weak_compactness",
+    "diff_sha256": "2ccb0955aaedce1efbed0be613620f5b31609d9f326b86b2de9a0063db80666c",
+    "source_sha256": "dccb12904cd7076de8ce86dc93900fb47f89cbfa2bcd5fa55a064fb89e478fba",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_tc_weak_compactness",
+      "statement": "∀ (P n : ℕ) (T : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ⨆ j, (T j).massOn (ball (0 : Euclid P) R) < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun i => T (φ i)) C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

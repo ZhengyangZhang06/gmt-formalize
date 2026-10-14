@@ -451,6 +451,507 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
+`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
+homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
+`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
+theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
+  intro P n U W T ω r hM hW hr
+  -- homogeneity of the Euclidean coefficient norm
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+    intro s hs hrs
+    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+      intro c hc
+      have hmem : c • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [hsmul]
+        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                (inv_nonneg.2 hs.le)
+          _ = 1 := inv_mul_cancel₀ hs.ne'
+      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+    rw [neg_mul, ← mul_neg] at h2
+    rw [abs_le]
+    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+  -- let `s ↓ r`
+  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+      (𝓝 (r * (T.massOn W).toReal)) :=
+    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
+/-- **Simon 6.1.15, 6.3.4–3.5** (Euclidean coefficient norm versus Gram determinants):
+(1) `|α(v₁, …, vₙ)| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}` for every `n`-covector `α` on `ℝᴾ`;
+(2) every orthonormal `τ₁, …, τₙ` admits an `n`-covector `α` with `|α|_E ≤ 1` and `α(τ) = 1`.
+Expand `α(v) = Σ_I α(e_I) det V_I` over strictly increasing `I` (multilinearity, alternation,
+Leibniz).  For the determinant covector `u ↦ det(⟨uₐ, v_b⟩)` this is Cauchy–Binet,
+`det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`; then (1) is Cauchy–Schwarz over the `I`, and (2) holds for the
+determinant covector of `τ`. -/
+theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1 := by
+  intro P n
+  classical
+  set e := EuclideanSpace.basisFun (Fin P) ℝ with he
+  -- `α(v) = Σ_I α(e_I) det V_I` over strictly increasing `I`, with `(V_I)ₐⱼ = ⟨e_{I a}, vⱼ⟩`
+  have hexp : ∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P),
+      α v = ∑ I : Fin n → Fin P, if StrictMono I then
+        α (fun i => e (I i)) * Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) else 0 := by
+    intro α v
+    set c : Fin n → Fin P → ℝ := fun j k => inner ℝ (e k) (v j) with hc
+    have hv : v = fun j => ∑ k, c j k • e k := funext fun j => (e.sum_repr' (v j)).symm
+    -- multilinearity: `α(v) = Σ_f (∏ⱼ vⱼ(f j)) α(e_f)`
+    have h2 : α v = ∑ f : Fin n → Fin P, (∏ j, c j (f j)) * α (fun j => e (f j)) := by
+      conv_lhs => rw [hv]
+      rw [α.map_sum]
+      refine Finset.sum_congr rfl fun f _ => ?_
+      rw [← smul_eq_mul, ← α.map_smul_univ]
+    -- alternation: non-injective `f` contribute `0`
+    have h3 : ∀ f : Fin n → Fin P, ¬ Injective f → α (fun j => e (f j)) = 0 := fun f hf =>
+      α.map_eq_zero_of_not_injective _ (fun h => hf (Injective.of_comp (f := ⇑e) h))
+    rw [h2, ← Finset.sum_filter_of_ne (p := Injective) (fun f _ hne => by
+      by_contra hf
+      exact hne (by rw [h3 f hf, mul_zero]))]
+    rw [← Finset.sum_filter]
+    simp only [Matrix.det_apply, Matrix.of_apply, Finset.mul_sum]
+    rw [← Finset.sum_product']
+    symm
+    -- `(I, σ) ↦ I ∘ σ` is a bijection onto the injective `f`; `α(e_{I ∘ σ}) = sgn σ · α(e_I)`
+    refine Finset.sum_bij (fun p _ => fun j => p.1 (p.2 j)) ?_ ?_ ?_ ?_
+    · intro p hp
+      simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and] at hp ⊢
+      exact hp.1.injective.comp p.2.injective
+    · intro p hp q hq hpq
+      simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp hq
+      have hrange : Set.range p.1 = Set.range q.1 := by
+        have h1 : Set.range (fun j => p.1 (p.2 j)) = Set.range p.1 := (EquivLike.range_comp p.1 p.2)
+        have h2 : Set.range (fun j => q.1 (q.2 j)) = Set.range q.1 := (EquivLike.range_comp q.1 q.2)
+        rw [← h1, ← h2, hpq]
+      have hI : p.1 = q.1 := (StrictMono.range_inj_of_wellFoundedLT hp hq).mp hrange
+      have hσ : p.2 = q.2 := by
+        ext j
+        have := congr_fun hpq j
+        rw [hI] at this
+        exact congrArg Fin.val (hq.injective this)
+      exact Prod.ext hI hσ
+    · intro f hf
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hf
+      refine ⟨(f ∘ Tuple.sort f, (Tuple.sort f)⁻¹), ?_, ?_⟩
+      · simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true]
+        exact (Tuple.monotone_sort f).strictMono_of_injective (hf.comp (Tuple.sort f).injective)
+      · funext j
+        simp
+    · intro p hp
+      have hperm : α (fun j => e (p.1 (p.2 j))) = Equiv.Perm.sign p.2 • α (fun j => e (p.1 j)) :=
+        α.toAlternatingMap.map_perm (fun j => e (p.1 j)) p.2
+      rw [hperm]
+      simp only [hc, Units.smul_def, zsmul_eq_mul]
+      ring
+  -- the determinant covector `u ↦ det(⟨uₐ, τ_b⟩)`
+  have hdet : ∀ τ : Fin n → Euclid P, ∃ β : Covector (Euclid P) n,
+      ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+    intro τ
+    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+      LinearMap.pi fun b => (innerSL ℝ (τ b) : Euclid P →L[ℝ] ℝ).toLinearMap
+    let f : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+    have hf : ∀ u, f u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+      intro u
+      show Matrix.det (Matrix.of fun a b => L (u a) b) = _
+      congr 1
+      ext a b
+      simp [L, real_inner_comm]
+    have hcont : Continuous fun u : Fin n → Euclid P =>
+        Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+      apply Continuous.matrix_det
+      apply continuous_matrix
+      intro a b
+      exact Continuous.inner (f := fun u : Fin n → Euclid P => u a) (g := fun _ => τ b)
+        (continuous_apply a) continuous_const
+    refine ⟨{ f with cont := ?_ }, fun u => hf u⟩
+    have : (f : (Fin n → Euclid P) → ℝ) =
+        fun u => Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := funext hf
+    simpa [this] using hcont
+  -- Cauchy–Binet: `det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`, the expansion of the determinant covector of `v`
+  have hcb : ∀ v : Fin n → Euclid P, Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) =
+      ∑ I : Fin n → Fin P, if StrictMono I then
+        Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) ^ 2 else 0 := by
+    intro v
+    obtain ⟨β, hβ⟩ := hdet v
+    rw [← hβ v, hexp β v]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [hβ, pow_two]
+    · rfl
+  refine ⟨fun α v => ?_, fun τ hτ => ?_⟩
+  · -- (1): Cauchy–Schwarz for `Σ_I α(e_I) det V_I`
+    set a : (Fin n → Fin P) → ℝ := fun I => if StrictMono I then α (fun i => e (I i)) else 0
+      with ha
+    set d : (Fin n → Fin P) → ℝ := fun I => if StrictMono I then
+      Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) else 0 with hd
+    have hv : α v = ∑ I, a I * d I := by
+      rw [hexp α v]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [ha, hd]
+      split_ifs <;> simp
+    have hnorm : covectorEuclideanNorm α = Real.sqrt (∑ I, a I ^ 2) := by
+      unfold covectorEuclideanNorm
+      rw [← he]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [ha]
+      split_ifs <;> simp
+    have hgram : Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = ∑ I, d I ^ 2 := by
+      rw [hcb v]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [hd]
+      split_ifs <;> simp
+    rw [hv, hnorm, hgram, abs_le]
+    constructor
+    · have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ (fun I => -a I) d
+      simp only [neg_sq, neg_mul, Finset.sum_neg_distrib] at this
+      linarith
+    · exact Real.sum_mul_le_sqrt_mul_sqrt Finset.univ a d
+  · -- (2): the determinant covector `β` of `τ` has `β(τ) = det 1 = 1` and
+    -- `|β|_E² = Σ_I β(e_I)² = det(⟨τᵢ, τⱼ⟩) = 1`
+    obtain ⟨β, hβ⟩ := hdet τ
+    have hone : (Matrix.of fun a b => inner ℝ (τ a) (τ b) : Matrix (Fin n) (Fin n) ℝ) = 1 := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.one_apply]
+      exact (orthonormal_iff_ite.mp hτ) a b
+    have hβτ : β τ = 1 := by rw [hβ, hone, Matrix.det_one]
+    refine ⟨β, ?_, hβτ⟩
+    have hsum : (∑ I : Fin n → Fin P, if StrictMono I then (β (fun i => e (I i))) ^ 2 else 0) = 1 := by
+      have := hcb τ
+      rw [hone, Matrix.det_one] at this
+      rw [this]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [hβ]
+      · rfl
+    unfold covectorEuclideanNorm
+    rw [← he, hsum, Real.sqrt_one]
+
+/-- **Simon 6.1.2, 6.1.5, 6.1.15** (the coefficient norm is Euclidean): `n`-covectors on `ℝᴾ`
+with `|α|_E = (Σ_I α(e_I)²)^{1/2}`, `I` strictly increasing, form a Euclidean space `ℝᵈ`.  The
+coefficient map `A α = (α(e_I))_I` (zero off the increasing `I`) into `ℝ^{Fin n → Fin P}` has
+`‖A α‖ = |α|_E`, and it is injective by the Gram bound `|α v| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}`.
+An orthonormal basis of `range A` identifies it isometrically with `ℝᵈ`; then covectors are
+finite-dimensional, so this linear equivalence is continuous. -/
+theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖ := by
+  intro P n
+  -- the coefficient map `A α = (α(e_I))_I`, zero off the strictly increasing `I`
+  let A : Covector (Euclid P) n →ₗ[ℝ] EuclideanSpace ℝ (Fin n → Fin P) :=
+    { toFun := fun α => WithLp.toLp 2 (fun I => if StrictMono I then
+        α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0)
+      map_add' := fun α β => by
+        ext I
+        simp only [PiLp.add_apply, ContinuousAlternatingMap.add_apply]
+        split_ifs <;> simp
+      map_smul' := fun t α => by
+        ext I
+        simp only [PiLp.smul_apply, ContinuousAlternatingMap.smul_apply, RingHom.id_apply,
+          smul_eq_mul]
+        split_ifs <;> simp }
+  -- `‖A α‖ = |α|_E`
+  have hnorm : ∀ α, ‖A α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq]
+    unfold covectorEuclideanNorm
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [A, LinearMap.coe_mk, AddHom.coe_mk, PiLp.toLp_apply, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  -- `A` is injective: `|α|_E = 0` forces `α v = 0` by the Gram bound
+  have hinj : Function.Injective A := by
+    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
+    intro α hα
+    have h0 : covectorEuclideanNorm α = 0 := by rw [← hnorm, hα, norm_zero]
+    ext v
+    have hv := (Submission.covectorEuclideanNorm_gram_bounds P n).1 α v
+    rw [h0, zero_mul] at hv
+    simpa using abs_nonpos_iff.mp hv
+  -- identify `range A` isometrically with `ℝᵈ` through an orthonormal basis
+  let S := LinearMap.range A
+  let b := stdOrthonormalBasis ℝ S
+  let e₀ : Covector (Euclid P) n ≃ₗ[ℝ] S := LinearEquiv.ofInjective A hinj
+  let c₀ : Covector (Euclid P) n ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ S)) :=
+    e₀.trans b.repr.toLinearEquiv
+  have hc₀ : ∀ α, ‖c₀ α‖ = covectorEuclideanNorm α := by
+    intro α
+    have h1 : c₀ α = b.repr (e₀ α) := rfl
+    rw [h1, LinearIsometryEquiv.norm_map, ← Submodule.norm_coe, LinearEquiv.ofInjective_apply,
+      hnorm]
+  -- covectors are finite-dimensional, so `c₀` is continuous
+  have : FiniteDimensional ℝ (Covector (Euclid P) n) := LinearEquiv.finiteDimensional c₀.symm
+  refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
+  rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
+
+/-- **Simon 6.2.15** (weak compactness, `U = ℝᴾ`): if `sup_j M_{B_R}(T_j) < ∞` for every `R`, a
+subsequence of `T_j` converges weakly to a current.  By 6.2.5, `|T_j(ω)| ≤ r · sup_j M_{B_R}(T_j)`
+when `spt ω ⊆ B_R` and `|ω| ≤ r`.  Forms supported in `B_R` have a countable uniformly dense
+subset (finite nets of `B̄_R`, uniform continuity, a countable dense set in `Λⁿ ≅ ℝᵈ`); Tychonoff
+on a countable product gives a subsequence converging on it, hence on every test form.  The limit
+is linear and obeys the same bound, so it is sequentially continuous. -/
+theorem Submission.dimred_mbl_tc_weak_compactness : ∀ (P n : ℕ) (T : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ⨆ j, (T j).massOn (ball (0 : Euclid P) R) < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun i => T (φ i)) C := by
+  have hE1 := Submission.cmr_abs_apply_le_massOn
+  have hNE := Submission.cmr_covector_euclidean_equiv
+  intro P n T hT
+  obtain ⟨d, c, hc⟩ := hNE P n
+  -- c_R := (sup_j M_{B_R}(T_j)).toReal
+  let cR : ℝ → ℝ := fun R => (⨆ j, (T j).massOn (ball (0 : Euclid P) R)).toReal
+  -- (a) uniform evaluation bound (E1)
+  have hev : ∀ (R : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) n) (r : ℝ),
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) →
+      ∀ j, |T j ω| ≤ r * cR R := by
+    intro R ω r hsupp hr j
+    have hle : (T j).massOn (ball 0 R) ≤ ⨆ j, (T j).massOn (ball (0 : Euclid P) R) :=
+      le_iSup (fun j => (T j).massOn (ball (0 : Euclid P) R)) j
+    have hne : (T j).massOn (ball 0 R) ≠ ∞ := ne_top_of_le_ne_top (hT R).ne hle
+    have h1 := hE1 P n univ (ball 0 R) (T j) ω r hne hsupp hr
+    have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+    exact h1.trans (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono (hT R).ne hle) hr0)
+  -- every test form has tsupport in a ball and bounded coefficient norm
+  have hsupp : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ R : ℕ,
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R := by
+    intro ω
+    obtain ⟨r, hr⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    obtain ⟨R, hR⟩ := exists_nat_gt r
+    exact ⟨R, hr.trans (ball_subset_ball hR.le)⟩
+  have hbdd : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ r : ℝ,
+      ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r := by
+    intro ω
+    have hcont : Continuous (fun x => c ((ω : DifferentialForm (Euclid P) n) x)) :=
+      c.continuous.comp ω.property.1.1.continuous
+    have hcs : HasCompactSupport (fun x => c ((ω : DifferentialForm (Euclid P) n) x)) :=
+      ω.property.1.2.comp_left (map_zero c)
+    obtain ⟨r, hr⟩ := hcont.bounded_above_of_compact_support hcs
+    exact ⟨r, fun x => by rw [hc]; exact hr x⟩
+  -- (b) a countable set `D R`, uniformly dense in the test forms supported in `ball 0 R`
+  have hsep : ∀ R : ℕ, ∃ D : Set (TestFormOn (univ : Set (Euclid P)) n), D.Countable ∧
+      (∀ ω ∈ D, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R) ∧
+      ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+        tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R →
+        ∀ ε > 0, ∃ ω' ∈ D, ∀ x, covectorEuclideanNorm
+          ((ω : DifferentialForm (Euclid P) n) x - (ω' : DifferentialForm (Euclid P) n) x) < ε := by
+    intro R
+    -- a countable dense set `Q` of coefficient vectors
+    obtain ⟨Q, hQc, hQd⟩ := TopologicalSpace.exists_countable_dense (EuclideanSpace ℝ (Fin d))
+    have : Countable Q := hQc.to_subtype
+    -- finite `1/(m+1)`-nets `F m` of `closedBall 0 R`
+    have hnet : ∀ m : ℕ, ∃ F : Set (Euclid P), F.Finite ∧
+        closedBall (0 : Euclid P) R ⊆ ⋃ y ∈ F, ball y (1 / ((m : ℝ) + 1)) := by
+      intro m
+      obtain ⟨F, -, hF, hcov⟩ := (isCompact_closedBall (0 : Euclid P) R).finite_cover_balls
+        (by positivity : (0 : ℝ) < 1 / ((m : ℝ) + 1))
+      exact ⟨F, hF, hcov⟩
+    choose F hFfin hFcov using hnet
+    have : ∀ m, Finite (F m) := fun m => (hFfin m).to_subtype
+    -- for every `ε > 0`, a countable `ε`-net of the forms supported in `ball 0 R`
+    have hE : ∀ ε : ℝ, 0 < ε → ∃ E : Set (TestFormOn (univ : Set (Euclid P)) n), E.Countable ∧
+        (∀ ω ∈ E, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R) ∧
+        ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+          tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R →
+          ∃ ω' ∈ E, ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x -
+            (ω' : DifferentialForm (Euclid P) n) x) < ε := by
+      intro ε hε
+      have hε4 : 0 < ε / 4 := by positivity
+      -- `q ω y ∈ Q` is `ε/4`-close to the coefficient vector of `ω` at `y`
+      have hq : ∀ (ω : TestFormOn (univ : Set (Euclid P)) n) (y : Euclid P), ∃ v ∈ Q,
+          dist (c ((ω : DifferentialForm (Euclid P) n) y)) v < ε / 4 :=
+        fun ω y => hQd.exists_dist_lt _ hε4
+      choose q hqQ hq using hq
+      -- `S m`: the forms supported in `ball 0 R` whose coefficient vectors vary by `< ε/4` at
+      -- distance `< 1/(m+1)`; the code of `ω` at scale `m` is `y ↦ q ω y` on the net `F m`
+      let S : ℕ → Set (TestFormOn (univ : Set (Euclid P)) n) := fun m =>
+        {ω | tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R ∧ ∀ x y : Euclid P,
+          dist x y < 1 / ((m : ℝ) + 1) → dist (c ((ω : DifferentialForm (Euclid P) n) x))
+            (c ((ω : DifferentialForm (Euclid P) n) y)) < ε / 4}
+      let code : (m : ℕ) → TestFormOn (univ : Set (Euclid P)) n → (F m → Q) :=
+        fun m ω y => ⟨q ω y, hqQ ω y⟩
+      -- one representative in `S m` of every code that occurs (countably many codes)
+      have hrep : ∀ (m : ℕ) (γ : F m → Q), ∃ ω' : TestFormOn (univ : Set (Euclid P)) n,
+          (∃ ω ∈ S m, code m ω = γ) → ω' ∈ S m ∧ code m ω' = γ := by
+        intro m γ
+        by_cases h : ∃ ω ∈ S m, code m ω = γ
+        · obtain ⟨ω, hω, hωγ⟩ := h
+          exact ⟨ω, fun _ => ⟨hω, hωγ⟩⟩
+        · exact ⟨0, fun h' => absurd h' h⟩
+      choose rep hrep using hrep
+      refine ⟨⋃ m, range (rep m) ∩ S m,
+        countable_iUnion fun m => (countable_range (rep m)).mono inter_subset_left, ?_, ?_⟩
+      · intro ω hω
+        obtain ⟨m, -, hωS⟩ := mem_iUnion.1 hω
+        exact hωS.1
+      · intro ω hω
+        -- the coefficient vector of `ω` is uniformly continuous
+        have hcont : Continuous (fun x => c ((ω : DifferentialForm (Euclid P) n) x)) :=
+          c.continuous.comp ω.property.1.1.continuous
+        have hcs : HasCompactSupport (fun x => c ((ω : DifferentialForm (Euclid P) n) x)) :=
+          ω.property.1.2.comp_left (map_zero c)
+        obtain ⟨δ, hδ, hδε⟩ := Metric.uniformContinuous_iff.1
+          (hcs.uniformContinuous_of_continuous hcont) (ε / 4) hε4
+        obtain ⟨m, hm⟩ := exists_nat_one_div_lt hδ
+        have hωS : ω ∈ S m := ⟨hω, fun x y hxy => hδε (hxy.trans hm)⟩
+        obtain ⟨ω', hω'R, hω'S, hcode⟩ :
+            ∃ ω', ω' ∈ range (rep m) ∧ ω' ∈ S m ∧ code m ω' = code m ω :=
+          ⟨rep m (code m ω), mem_range_self _, hrep m (code m ω) ⟨ω, hωS, rfl⟩⟩
+        refine ⟨ω', mem_iUnion.2 ⟨m, hω'R, hω'S⟩, fun x => ?_⟩
+        by_cases hx : x ∈ closedBall (0 : Euclid P) R
+        · -- `x` is `1/(m+1)`-close to a point `y` of the net, where both codes agree
+          obtain ⟨y, hyF, hxy⟩ := mem_iUnion₂.1 (hFcov m hx)
+          have hxy' : dist x y < 1 / ((m : ℝ) + 1) := mem_ball.1 hxy
+          have hqy : q ω' y = q ω y := congrArg Subtype.val (congrFun hcode ⟨y, hyF⟩)
+          have h1 := hωS.2 x y hxy'
+          have h2 := hq ω y
+          have h3 := hq ω' y
+          have h4 := hω'S.2 x y hxy'
+          rw [hqy, dist_comm] at h3
+          rw [dist_comm] at h4
+          have t1 := dist_triangle (c ((ω : DifferentialForm (Euclid P) n) x))
+            (c ((ω : DifferentialForm (Euclid P) n) y)) (c ((ω' : DifferentialForm (Euclid P) n) x))
+          have t2 := dist_triangle (c ((ω : DifferentialForm (Euclid P) n) y)) (q ω y)
+            (c ((ω' : DifferentialForm (Euclid P) n) x))
+          have t3 := dist_triangle (q ω y) (c ((ω' : DifferentialForm (Euclid P) n) y))
+            (c ((ω' : DifferentialForm (Euclid P) n) x))
+          rw [hc, map_sub, ← dist_eq_norm]
+          linarith
+        · have h1 : (ω : DifferentialForm (Euclid P) n) x = 0 :=
+            image_eq_zero_of_notMem_tsupport (fun h => hx (ball_subset_closedBall (hω h)))
+          have h2 : (ω' : DifferentialForm (Euclid P) n) x = 0 :=
+            image_eq_zero_of_notMem_tsupport (fun h => hx (ball_subset_closedBall (hω'S.1 h)))
+          rw [h1, h2, sub_zero, covectorEuclideanNorm_zero]; exact hε
+    choose E hEc hEsupp hEnet using hE
+    refine ⟨⋃ k : ℕ, E (1 / ((k : ℝ) + 1)) (by positivity),
+      countable_iUnion fun k => hEc _ _, ?_, ?_⟩
+    · intro ω hω
+      obtain ⟨k, hk⟩ := mem_iUnion.1 hω
+      exact hEsupp _ _ ω hk
+    · intro ω hω ε hε
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hε
+      obtain ⟨ω', hω'E, hω'⟩ := hEnet (1 / ((k : ℝ) + 1)) (by positivity) ω hω
+      exact ⟨ω', mem_iUnion.2 ⟨k, hω'E⟩, fun x => (hω' x).trans hk⟩
+  choose D hDc hDsupp hDdense using hsep
+  -- (c) diagonal subsequence on the countable set ⋃ D_R
+  let Dall : Set (TestFormOn (univ : Set (Euclid P)) n) := ⋃ R : ℕ, D R
+  have hDall : Dall.Countable := countable_iUnion hDc
+  have : Countable Dall := hDall.to_subtype
+  have hbound : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ B : ℝ, ∀ j, |T j ω| ≤ B := by
+    intro ω
+    obtain ⟨R, hR⟩ := hsupp ω
+    obtain ⟨r, hr⟩ := hbdd ω
+    exact ⟨r * cR R, hev R ω r hR hr⟩
+  choose B hB using hbound
+  let X : ℕ → (Dall → ℝ) := fun j ω => T j ω
+  have hXmem : ∀ j, X j ∈ Set.pi univ (fun ω : Dall => Icc (-B ω) (B ω)) := by
+    intro j ω _
+    exact abs_le.1 (hB ω j)
+  obtain ⟨a, -, φ, hφ, hlimD⟩ :=
+    (isCompact_univ_pi (fun ω : Dall => isCompact_Icc)).tendsto_subseq hXmem
+  have hconvD : ∀ ω ∈ Dall, ∃ l, Tendsto (fun i => T (φ i) ω) atTop (𝓝 l) := by
+    intro ω hω
+    exact ⟨a ⟨ω, hω⟩, tendsto_pi_nhds.1 hlimD ⟨ω, hω⟩⟩
+  -- (d) Cauchy property on every test form
+  have hconv : ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+      ∃ l, Tendsto (fun i => T (φ i) ω) atTop (𝓝 l) := by
+    intro ω
+    apply cauchySeq_tendsto_of_complete
+    rw [Metric.cauchySeq_iff]
+    intro ε hε
+    obtain ⟨R, hR⟩ := hsupp ω
+    have hM0 : 0 ≤ cR R := ENNReal.toReal_nonneg
+    set δ : ℝ := ε / (4 * (cR R + 1)) with hδ
+    have hδpos : 0 < δ := by positivity
+    have hδM : δ * cR R ≤ ε / 4 := by
+      have : δ * (cR R + 1) = ε / 4 := by rw [hδ]; field_simp
+      nlinarith
+    obtain ⟨ω', hω'D, hω'⟩ := hDdense R ω hR δ hδpos
+    obtain ⟨l, hl⟩ := hconvD ω' (mem_iUnion.2 ⟨R, hω'D⟩)
+    obtain ⟨N, hN⟩ := Metric.cauchySeq_iff.1 hl.cauchySeq (ε / 2) (by positivity)
+    refine ⟨N, fun i hi i' hi' => ?_⟩
+    have hdiff : ∀ j, |T j ω - T j ω'| ≤ δ * cR R := by
+      intro j
+      rw [← map_sub]
+      apply hev R (ω - ω') δ
+      · exact (tsupport_sub _ _).trans (union_subset hR (hDsupp R ω' hω'D))
+      · intro x; exact (hω' x).le
+    have h1 := abs_le.1 (hdiff (φ i))
+    have h2 := abs_le.1 (hdiff (φ i'))
+    have h3 := hN i hi i' hi'
+    rw [Real.dist_eq] at h3 ⊢
+    have h3' := abs_lt.1 h3
+    rw [abs_lt]
+    constructor <;> linarith [h1.1, h1.2, h2.1, h2.2, h3'.1, h3'.2]
+  -- (e) the limit current
+  choose l hl using hconv
+  have hadd : ∀ ω η, l (ω + η) = l ω + l η := fun ω η =>
+    tendsto_nhds_unique (hl (ω + η)) (by simpa [map_add] using (hl ω).add (hl η))
+  have hsmul : ∀ (r : ℝ) ω, l (r • ω) = r * l ω := fun r ω =>
+    tendsto_nhds_unique (hl (r • ω)) (by simpa [map_smul] using (hl ω).const_mul r)
+  let L : TestFormOn (univ : Set (Euclid P)) n →ₗ[ℝ] ℝ :=
+    { toFun := l
+      map_add' := hadd
+      map_smul' := fun r ω => by simp [hsmul] }
+  have hLbound : ∀ (R : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) n) (r : ℝ),
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) →
+      |l ω| ≤ r * cR R := fun R ω r hs hr =>
+    le_of_tendsto' (hl ω).abs (fun i => hev R ω r hs hr (φ i))
+  have hcont : ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TestFormOnConverges ωs 0 →
+      Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    intro ωs hωs
+    obtain ⟨K, hK, -, hKsupp, -, hunif⟩ := hωs
+    obtain ⟨r, hr⟩ := hK.isBounded.subset_ball (0 : Euclid P)
+    have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨cn, hcn0, hcnle⟩ : ∃ cn : ℝ, 0 ≤ cn ∧ ∀ α : Covector (Euclid P) n, ‖c α‖ ≤ cn * ‖α‖ :=
+      ⟨‖(c : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin d))‖,
+        (c : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin d)).opNorm_nonneg,
+        fun α => (c : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin d)).le_opNorm α⟩
+    have hM0 : 0 ≤ cR r := ENNReal.toReal_nonneg
+    set η : ℝ := ε / (2 * ((cn + 1) * (cR r + 1))) with hη
+    have hηpos : 0 < η := by positivity
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (h0 η hηpos)
+    refine ⟨N, fun j hj => ?_⟩
+    have hpt : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Euclid P) n) x) ≤ cn * η := by
+      intro x
+      by_cases hx : x ∈ K
+      · have h1 := hN j hj x hx
+        have e0 : iteratedFDeriv ℝ 0
+            ((0 : TestFormOn (univ : Set (Euclid P)) n) : DifferentialForm (Euclid P) n) x = 0 := by
+          rw [← norm_eq_zero, norm_iteratedFDeriv_zero]; simp
+        rw [e0, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+        rw [hc]
+        calc ‖c ((ωs j : DifferentialForm (Euclid P) n) x)‖
+            ≤ cn * ‖(ωs j : DifferentialForm (Euclid P) n) x‖ := hcnle _
+          _ ≤ cn * η := mul_le_mul_of_nonneg_left h1.le hcn0
+      · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hKsupp j h)),
+          covectorEuclideanNorm_zero]
+        positivity
+    have hb := hLbound r (ωs j) (cn * η) ((hKsupp j).trans hr) hpt
+    rw [Real.dist_eq, sub_zero]
+    show |l (ωs j)| < ε
+    have hkey : cn * η * cR r ≤ ε / 2 := by
+      have h1 : cn * cR r ≤ (cn + 1) * (cR r + 1) := by nlinarith
+      have h2 : η * ((cn + 1) * (cR r + 1)) = ε / 2 := by rw [hη]; field_simp
+      nlinarith
+    linarith
+  exact ⟨φ, ⟨L, hcont⟩, hφ, fun ω => hl ω⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
