@@ -2834,6 +2834,262 @@ theorem Submission.dor_lmb_fcd_imp_piece_orientation_sign : ∀ (N k : ℕ) (R :
     · rw [h]
       rfl
 
+/-- **Parametric representation of an integer multiplicity triple of finite mass** (Simon Ch. 6,
+3.1 and 3.3–3.6, with Ch. 3, 1.1–1.3).  Let `R = (M, θ, ξ)` be an `IMRep` in `ℝᴺ` with
+`μ_R(ℝᴺ) = ∫_M θ dHᵏ < ∞`, and write `J_G = √det(⟨DG eₐ, DG e_b⟩)`.  Then `M` is, up to an
+`Hᵏ`-null set, the disjoint union of Borel pieces `Pᵢ = Gᵢ(Bᵢ) ⊆ M` with `Gᵢ` Lipschitz,
+`mᵢ|a − a'| ≤ |Gᵢ(a) − Gᵢ(a')|` on `Bᵢ` and `DGᵢ` injective on `Bᵢ`
+(`dpf_rectifiable_bilipschitz_pieces`); on each piece `J_{Gᵢ} ξ(Gᵢ) = sᵢ DGᵢ e` a.e. with
+`sᵢ = ±1` (`dor_lmb_fcd_imp_piece_orientation_sign`), and the integer weights are
+`wᵢ = (θ ∘ Gᵢ) sᵢ`.  The inverse of `Gᵢ|Bᵢ` is `mᵢ⁻¹`-Lipschitz, so `Gᵢ#(Lᵏ⌞Bᵢ) ≤ mᵢ^{-k} Hᵏ⌞Pᵢ`:
+this gives `∫_{Bᵢ} |wᵢ| < ∞` and pulls `Hᵏ`-a.e. statements on `M` back to `Lᵏ`-a.e. statements on
+`Bᵢ`.  The area formula `Hᵏ⌞Pᵢ = Gᵢ#((J_{Gᵢ} Lᵏ)⌞Bᵢ)` (`codim1_lura_gram_area_formula`) gives
+`Σᵢ ∫_{Bᵢ} |wᵢ| J_{Gᵢ} = ∫_{⋃ Pᵢ} θ dHᵏ ≤ μ_R(ℝᴺ)` and, for bounded continuous `γ`,
+`τ(M, θ, ξ)(γ) = Σᵢ ∫_{Pᵢ} θ ξ(γ) dHᵏ = Σᵢ ∫_{Bᵢ} wᵢ γ(Gᵢ)(DGᵢ e)` by countable additivity. -/
+theorem Submission.dor_lmb_fcd_imp_parametric_rep : ∀ (N k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ (G : ℕ → Euclid k → Euclid N) (B : ℕ → Set (Euclid k)) (w : ℕ → Euclid k → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, ∀ u ∈ B i, DifferentiableAt ℝ (G i) u) ∧ (∀ i, Measurable (w i)) ∧ (∀ i u, ∃ z : ℤ, w i u = z) ∧ (∀ i, ∀ u ∈ B i, w i u ≠ 0) ∧ (∀ i, IntegrableOn (w i) (B i)) ∧ ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) ≤ R.measure univ ∧ (∀ γ : Euclid N → Covector (Euclid N) k, Continuous γ → (∃ C : ℝ, ∀ x, ‖γ x‖ ≤ C) → HasSum (fun i => ∫ u in B i, w i u * γ (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))) (R.action γ)) ∧ ∀ p : Euclid N → Prop, (∀ᵐ x ∂(μHE[k].restrict R.carrier), p x) → ∀ i, ∀ᵐ u ∂(volume.restrict (B i)), p (G i u) := by
+  intro N k R hfin
+  -- `θ` as a Borel function with values in `ℝ≥0∞` and in `ℝ`
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun j : ℕ => (j : ℝ≥0∞))).comp R.measurable_mult
+  have hθmR : Measurable fun x => (R.mult x : ℝ) :=
+    (measurable_from_nat (f := fun j : ℕ => (j : ℝ))).comp R.measurable_mult
+  -- Step 1: `μ_R(ℝᴺ) = ∫_M θ dHᵏ`, and `Hᵏ(M) ≤ μ_R(ℝᴺ) < ∞` since `θ ≥ 1` on `M`
+  have hmass : R.measure univ = ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k] := by
+    rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  have hMfin : μHE[k] R.carrier ≠ ∞ := by
+    refine ne_top_of_le_ne_top hfin ?_
+    rw [hmass]
+    calc μHE[k] R.carrier = ∫⁻ _ in R.carrier, (1 : ℝ≥0∞) ∂μHE[k] := by rw [setLIntegral_one]
+      _ ≤ ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k] := by
+        refine setLIntegral_mono hθm fun x hx => ?_
+        exact_mod_cast R.mult_pos x hx
+  -- Step 2: disjoint Borel bi-Lipschitz pieces `Pᵢ = Gᵢ(Bᵢ) ⊆ M` covering `M` up to a null set
+  obtain ⟨G, B, m, hLip, hBm, hm, hbi, hdiff, hPm, hPM, hdisj, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces N k R.carrier R.measurableSet_carrier
+      R.rectifiable
+  choose L hL using hLip
+  have hGm : ∀ i, Measurable (G i) := fun i => (hL i).continuous.measurable
+  have hinj : ∀ i, InjOn (G i) (B i) := by
+    intro i a ha a' ha' h
+    have h1 := hbi i a ha a' ha'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖a - a'‖ ≤ 0 := by
+      by_contra hc
+      exact absurd h1 (not_le.mpr (mul_pos (hm i) (not_le.mp hc)))
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h2)
+  -- the Gram-determinant Jacobian `J_{Gᵢ}`
+  obtain ⟨J, hJ⟩ : ∃ J : ℕ → Euclid k → ℝ, ∀ i u, J i u = Real.sqrt (Matrix.det
+      (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))
+        (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ))))) :=
+    ⟨_, fun _ _ => rfl⟩
+  have hJm : ∀ i, Measurable (J i) := by
+    intro i
+    have h := (Submission.codim1_lura_gram_area_formula k N (G i)).1
+    simp only [← hJ] at h
+    exact h
+  -- Step 3: the signs `sᵢ = ±1` with `J_{Gᵢ}(u) ξ(Gᵢ u) = sᵢ(u) DGᵢ(u)e` a.e. on `Bᵢ`
+  choose s hsm hspm hsae using fun i =>
+    Submission.dor_lmb_fcd_imp_piece_orientation_sign N k R (G i) (B i) (L i) (m i) hMfin (hL i)
+      (hBm i) (hm i) (hbi i) (hdiff i) (hPM i)
+  -- Step 4: the weights `wᵢ = (θ ∘ Gᵢ) sᵢ`
+  obtain ⟨w, hw⟩ : ∃ w : ℕ → Euclid k → ℝ, ∀ i u, w i u = (R.mult (G i u) : ℝ) * s i u :=
+    ⟨_, fun _ _ => rfl⟩
+  have hwm : ∀ i, Measurable (w i) := by
+    intro i
+    have h : w i = fun u => (R.mult (G i u) : ℝ) * s i u := funext (hw i)
+    rw [h]
+    exact (hθmR.comp (hGm i)).mul (hsm i)
+  have hwz : ∀ i u, ∃ z : ℤ, w i u = z := by
+    intro i u
+    rcases hspm i u with h | h
+    · exact ⟨(R.mult (G i u) : ℤ), by rw [hw, h]; push_cast; ring⟩
+    · exact ⟨-(R.mult (G i u) : ℤ), by rw [hw, h]; push_cast; ring⟩
+  have hw0 : ∀ i, ∀ u ∈ B i, w i u ≠ 0 := by
+    intro i u hu
+    have hpos : 0 < R.mult (G i u) := R.mult_pos _ (hPM i (mem_image_of_mem _ hu))
+    rw [hw]
+    refine mul_ne_zero (by exact_mod_cast hpos.ne') ?_
+    rcases hspm i u with h | h <;> rw [h] <;> norm_num
+  have hwe : ∀ i u, ‖w i u‖ₑ = (R.mult (G i u) : ℝ≥0∞) := by
+    intro i u
+    rcases hspm i u with h | h <;> simp [hw, h]
+  -- Step 5: `Lᵏ(Bᵢ ∩ Gᵢ⁻¹ Z) ≤ mᵢ^{-k} Hᵏ(Z ∩ Pᵢ)`, the inverse of `Gᵢ|Bᵢ` being `mᵢ⁻¹`-Lipschitz
+  have hpull : ∀ i (Z : Set (Euclid N)), volume (G i ⁻¹' Z ∩ B i) ≤
+      ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k * μHE[k] (Z ∩ G i '' B i) := by
+    intro i Z
+    have hψ : LipschitzOnWith (Real.toNNReal (m i)⁻¹) (Function.invFunOn (G i) (B i))
+        (G i '' B i) := by
+      refine LipschitzOnWith.of_dist_le_mul fun y hy y' hy' => ?_
+      obtain ⟨a, ha, rfl⟩ := hy
+      obtain ⟨a', ha', rfl⟩ := hy'
+      rw [(hinj i).leftInvOn_invFunOn ha, (hinj i).leftInvOn_invFunOn ha',
+        Real.coe_toNNReal _ (inv_nonneg.mpr (hm i).le), dist_eq_norm, dist_eq_norm,
+        inv_mul_eq_div, le_div_iff₀ (hm i)]
+      linarith [hbi i a ha a' ha']
+    have hsub : G i ⁻¹' Z ∩ B i ⊆ Function.invFunOn (G i) (B i) '' (Z ∩ G i '' B i) :=
+      fun u hu => ⟨G i u, ⟨hu.1, mem_image_of_mem _ hu.2⟩, (hinj i).leftInvOn_invFunOn hu.2⟩
+    calc volume (G i ⁻¹' Z ∩ B i)
+        ≤ volume (Function.invFunOn (G i) (B i) '' (Z ∩ G i '' B i)) := measure_mono hsub
+      _ = μHE[k] (Function.invFunOn (G i) (B i) '' (Z ∩ G i '' B i)) := by
+        rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      _ ≤ _ := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k
+          (hψ.mono inter_subset_right)
+  have hmaple : ∀ i, Measure.map (G i) (volume.restrict (B i)) ≤
+      ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k • μHE[k].restrict (G i '' B i) := by
+    intro i
+    rw [Measure.le_iff]
+    intro Z hZ
+    rw [Measure.map_apply (hGm i) hZ, Measure.restrict_apply (hGm i hZ), Measure.smul_apply,
+      Measure.restrict_apply hZ, smul_eq_mul]
+    exact hpull i Z
+  -- Step 5(a): `Hᵏ`-a.e. statements on `M` pull back to `Lᵏ`-a.e. statements on `Bᵢ`
+  have hae : ∀ p : Euclid N → Prop, (∀ᵐ x ∂(μHE[k].restrict R.carrier), p x) →
+      ∀ i, ∀ᵐ u ∂(volume.restrict (B i)), p (G i u) := by
+    intro p hp i
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier] at hp
+    rw [ae_iff, Measure.restrict_apply' (hBm i)]
+    refine nonpos_iff_eq_zero.mp ?_
+    calc volume ({u | ¬p (G i u)} ∩ B i)
+        ≤ ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k * μHE[k] ({x | ¬p x} ∩ G i '' B i) :=
+          hpull i {x | ¬p x}
+      _ ≤ ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k * μHE[k] ({x | ¬p x} ∩ R.carrier) := by
+          gcongr
+          exact hPM i
+      _ = 0 := by rw [hp, mul_zero]
+  -- Step 6: `∫_{Bᵢ} |wᵢ| = ∫_{Bᵢ} θ ∘ Gᵢ ≤ mᵢ^{-k} ∫_{Pᵢ} θ dHᵏ ≤ mᵢ^{-k} μ_R(ℝᴺ) < ∞`
+  have hwint : ∀ i, IntegrableOn (w i) (B i) := by
+    intro i
+    refine ⟨(hwm i).aestronglyMeasurable, ?_⟩
+    show ∫⁻ u in B i, ‖w i u‖ₑ < ∞
+    simp only [hwe]
+    calc ∫⁻ u in B i, (R.mult (G i u) : ℝ≥0∞)
+        = ∫⁻ y, (R.mult y : ℝ≥0∞) ∂(Measure.map (G i) (volume.restrict (B i))) :=
+          (lintegral_map hθm (hGm i)).symm
+      _ ≤ ∫⁻ y, (R.mult y : ℝ≥0∞) ∂(((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k •
+            μHE[k].restrict (G i '' B i)) := lintegral_mono' (hmaple i) le_rfl
+      _ = ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k *
+            ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[k] := lintegral_smul_measure _ _
+      _ ≤ ((Real.toNNReal (m i)⁻¹ : NNReal) : ℝ≥0∞) ^ k *
+            ∫⁻ y in R.carrier, (R.mult y : ℝ≥0∞) ∂μHE[k] := by
+          gcongr
+          exact hPM i
+      _ < ∞ := by
+          rw [← hmass]
+          exact ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hfin.lt_top
+  -- Step 7: the area formula on `Pᵢ`, and `Hᵏ⌞Pᵢ = Gᵢ#((J_{Gᵢ} Lᵏ)⌞Bᵢ)`
+  have harea' : ∀ i (g : Euclid N → ℝ≥0∞), ∫⁻ y in G i '' B i, g y ∂μHE[k] =
+      ∫⁻ u in B i, ENNReal.ofReal (J i u) * g (G i u) := by
+    intro i g
+    rw [(Submission.codim1_lura_gram_area_formula k N (G i)).2 (B i) (hBm i)
+      (fun u hu => (hdiff i u hu).1) (fun u hu => (hdiff i u hu).2) (hinj i) g]
+    simp only [hJ]
+  have hμeq : ∀ i, μHE[k].restrict (G i '' B i) = Measure.map (G i)
+      ((volume.restrict (B i)).withDensity fun u => ((J i u).toNNReal : ℝ≥0∞)) := by
+    intro i
+    ext Z hZ
+    rw [Measure.map_apply (hGm i) hZ, withDensity_apply _ (hGm i hZ),
+      ← lintegral_indicator_one hZ, harea' i, ← lintegral_indicator (hGm i hZ)]
+    refine lintegral_congr fun u => ?_
+    by_cases hu : G i u ∈ Z
+    · simp [hu, indicator_of_mem, ENNReal.ofReal]
+    · simp [hu]
+  have htr : ∀ i (h : Euclid N → ℝ), AEStronglyMeasurable h (μHE[k].restrict R.carrier) →
+      ∫ y in G i '' B i, h y ∂μHE[k] = ∫ u in B i, J i u * h (G i u) := by
+    intro i h hh
+    have hh' : AEStronglyMeasurable h (Measure.map (G i)
+        ((volume.restrict (B i)).withDensity fun u => ((J i u).toNNReal : ℝ≥0∞))) := by
+      rw [← hμeq i]
+      exact hh.mono_measure (Measure.restrict_mono (hPM i) le_rfl)
+    rw [hμeq i, integral_map (hGm i).aemeasurable hh',
+      integral_withDensity_eq_integral_smul (hJm i).real_toNNReal]
+    refine integral_congr_ae (ae_of_all _ fun u => ?_)
+    simp only [NNReal.smul_def, smul_eq_mul, Real.coe_toNNReal _ (Real.sqrt_nonneg _), hJ]
+  -- Step 8: `Σᵢ ∫_{Bᵢ} |wᵢ| J_{Gᵢ} = Σᵢ ∫_{Pᵢ} θ dHᵏ = ∫_{⋃ Pᵢ} θ dHᵏ ≤ μ_R(ℝᴺ)`
+  have hmassle : ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (J i u) ≤ R.measure univ := by
+    calc ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (J i u)
+        = ∑' i, ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[k] := by
+          refine tsum_congr fun i => ?_
+          rw [harea' i]
+          refine lintegral_congr fun u => ?_
+          rw [hwe, mul_comm]
+      _ = ∫⁻ y in ⋃ i, G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[k] := (lintegral_iUnion hPm hdisj _).symm
+      _ ≤ ∫⁻ y in R.carrier, (R.mult y : ℝ≥0∞) ∂μHE[k] := lintegral_mono_set (iUnion_subset hPM)
+      _ = R.measure univ := hmass.symm
+  -- Step 9: for bounded continuous `γ`, `τ(γ) = Σᵢ ∫_{Pᵢ} θ ξ(γ) dHᵏ = Σᵢ ∫_{Bᵢ} wᵢ γ(Gᵢ)(DGᵢ e)`
+  have hsum : ∀ γ : Euclid N → Covector (Euclid N) k, Continuous γ → (∃ C : ℝ, ∀ x, ‖γ x‖ ≤ C) →
+      HasSum (fun i => ∫ u in B i, w i u * γ (G i u)
+        (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))) (R.action γ) := by
+    rintro γ hγ ⟨C, hC⟩
+    -- (a) `|ξ(x)(α)| ≤ ‖α‖` a.e. on `M`, `ξ(x)` being a unit orientation; hence `θ ξ(γ)` is
+    -- `Hᵏ`-integrable on `M`, being dominated by `C θ`
+    have hbound : ∀ᵐ x ∂(μHE[k].restrict R.carrier), ∀ α : Covector (Euclid N) k,
+        |R.orient x α| ≤ ‖α‖ := by
+      filter_upwards [R.orients] with x hx
+      obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+      intro α
+      have hτn : ∀ j, ‖τ j‖ = 1 := fun j => hτ.1 j
+      have hατ : |α τ| ≤ ‖α‖ := by
+        have h := α.le_opNorm τ
+        simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+        exact h
+      rcases hξ with h | h
+      · rw [h]; exact hατ
+      · rw [h, abs_neg]; exact hατ
+    have hθi : Integrable (fun x => (R.mult x : ℝ)) (μHE[k].restrict R.carrier) := by
+      refine ⟨hθmR.aestronglyMeasurable, ?_⟩
+      show ∫⁻ x in R.carrier, ‖(R.mult x : ℝ)‖ₑ ∂μHE[k] < ∞
+      simp only [Real.enorm_natCast]
+      rw [← hmass]
+      exact hfin.lt_top
+    have hhm : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (γ x))
+        (μHE[k].restrict R.carrier) := by
+      have h2 : AEStronglyMeasurable (fun x => R.orient x (γ x)) (μHE[k].restrict R.carrier) :=
+        Continuous.comp_aestronglyMeasurable₂
+          (g := fun (L : MultiVector N k) (α : Covector (Euclid N) k) => L α)
+          (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid N) k) (F := ℝ)).continuous
+          R.aestronglyMeasurable_orient hγ.aestronglyMeasurable
+      exact hθmR.aestronglyMeasurable.mul h2
+    have hhi : IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x (γ x)) R.carrier μHE[k] := by
+      refine Integrable.mono' (hθi.const_mul C) hhm ?_
+      filter_upwards [hbound] with x hx
+      rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x (γ x)| ≤ (R.mult x : ℝ) * ‖γ x‖ := by
+            gcongr; exact hx _
+        _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x
+        _ = C * (R.mult x : ℝ) := mul_comm _ _
+    -- (b) `τ(γ) = ∫_{⋃ Pᵢ} θ ξ(γ) dHᵏ = Σᵢ ∫_{Pᵢ} θ ξ(γ) dHᵏ`
+    have haction : R.action γ =
+        ∫ y in ⋃ i, G i '' B i, (R.mult y : ℝ) * R.orient y (γ y) ∂μHE[k] := by
+      rw [IMRep.action]
+      refine setIntegral_congr_set ?_
+      rw [ae_eq_set]
+      refine ⟨hnull, ?_⟩
+      rw [sdiff_eq_empty.mpr (iUnion_subset hPM), measure_empty]
+    have hU := hasSum_integral_iUnion hPm hdisj (hhi.mono_set (iUnion_subset hPM))
+    -- (c) `∫_{Pᵢ} θ ξ(γ) dHᵏ = ∫_{Bᵢ} J_{Gᵢ} θ(Gᵢ) ξ(Gᵢ)(γ(Gᵢ)) = ∫_{Bᵢ} wᵢ γ(Gᵢ)(DGᵢ e)`
+    have hterm : ∀ i, ∫ y in G i '' B i, (R.mult y : ℝ) * R.orient y (γ y) ∂μHE[k] =
+        ∫ u in B i, w i u * γ (G i u)
+          (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) := by
+      intro i
+      rw [htr i _ hhm]
+      refine integral_congr_ae ?_
+      filter_upwards [hsae i] with u hu
+      have h := hu (γ (G i u))
+      rw [← hJ] at h
+      rw [hw]
+      calc J i u * ((R.mult (G i u) : ℝ) * R.orient (G i u) (γ (G i u)))
+          = (R.mult (G i u) : ℝ) * (J i u * R.orient (G i u) (γ (G i u))) := by ring
+        _ = (R.mult (G i u) : ℝ) * (s i u * γ (G i u)
+              (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))) := by rw [h]
+        _ = (R.mult (G i u) : ℝ) * s i u * γ (G i u)
+              (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) := by ring
+    rw [haction, ← funext hterm]
+    exact hU
+  -- Step 10: assemble
+  refine ⟨G, B, w, fun i => ⟨L i, hL i⟩, hBm, fun i u hu => (hdiff i u hu).1, hwm, hwz, hw0,
+    hwint, ?_, hsum, hae⟩
+  simpa only [hJ] using hmassle
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
