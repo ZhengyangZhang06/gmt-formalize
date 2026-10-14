@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b0e36b954750e67ed1ae2a37d84e126b2af188053a86772658de4c616423421e",
+  "git_delta": {
+    "base_commit": "e3cbfac155d91388255ab7643b9f3098f75bfe9e",
+    "candidate_commit": "90643a2cd9bc3f6166e83bdf57236add307d42f6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_dema_density_on_carrier",
+    "diff_sha256": "3b53da126fa8db93e6a4a1a17238640a31f7c656d8e8312afe03089a5aa45209",
+    "source_sha256": "dd9e29f68cdf8b8f8cfaaa8878bd5f6e86a38cae8a297eb8c5e3334bec6ef931",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_dema_density_on_carrier",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ R.carrier → Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (R.mult x : ℝ≥0∞))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
