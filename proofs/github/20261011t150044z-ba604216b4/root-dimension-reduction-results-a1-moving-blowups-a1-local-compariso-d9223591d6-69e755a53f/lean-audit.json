@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8cfb8df1e890a2b56ad74a8546e357b10565cbbe4747a243e37251276df77c97",
+  "git_delta": {
+    "base_commit": "47cd3eeff27c923aef4a52187255ab1edc412274",
+    "candidate_commit": "a67827da0c3e1eb36ade2c5bada0f8e251e82c8f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_ic_add_restrict",
+    "diff_sha256": "ca7f34b694fecb6f7927ff9ab3dd25b6f4f61aca225ceec9afaeb6ca9e3ab1df",
+    "source_sha256": "ee6ad474c43c401f6d9b30d96854613a339067ae0087704748bff4cc68a4c91d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_add_restrict",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → IsIntegerMultiplicity T → IsIntegerMultiplicity Y → ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ ∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
