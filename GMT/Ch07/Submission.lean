@@ -11534,6 +11534,79 @@ theorem Submission.idtp_fons_cs_sos_product_current : ∀ (P k m' n' : ℕ) (g :
       (ae_restrict_of_ae_restrict_of_subset hM2sub hζae)] with y hy hyM2
     rw [hΨ, hqι a y (hM2Gp hyM2), ContinuousLinearMap.comp_apply, hy hyM2]
 
+/-- **Simon 7.3.5, proof (minimality transfers to the cross-section: competitor mass).**  Let
+`G = span g` (`g` orthonormal), `p = p_G`, `q = p_{G^⊥}`, let `S = [[G]] × S₀` be minimizing in
+`ℝᴾ` with `μ₀ = μ_{S₀}` carried by `G^⊥`, let `spt(S₀' − S₀) ⊆ G^⊥ ∩ W₀` (`W₀` open, relatively
+compact), and let `Z = [[Q_r]] × (S₀' − S₀) + E'` be an integer multiplicity cycle with compact
+support in `{|⟨gᵢ, ·⟩| ≤ r} ∩ q⁻¹(K)`.  Then `(2r)ᵏ M_{W₀}(S₀) ≤ (2r)ᵏ M_{W₀}(S₀') + M(E')`.
+`μ₀'` is carried by `G^⊥` as well.  For `B = B_ρ(0) ⊇ closure W₀ ∪ K`, the open box
+`W = p⁻¹{|⟨gᵢ, ·⟩| < r + 1} ∩ q⁻¹(B) ⊂⊂ ℝᴾ` contains `spt Z`, so `M_W(S) ≤ M_W(S + Z)` by
+minimality.  As `S + Z = [[G ∖ Q_r]] × S₀ + [[Q_r]] × S₀' + E'`, with `a = (2r + 2)ᵏ` and
+`b = (2r)ᵏ` this reads `a μ₀(B) ≤ (a − b) μ₀(B) + b μ₀'(B) + M(E')`; comparing `μ₀` and `μ₀'`
+off `W₀` and cancelling the finite `a μ₀(B)` gives the claim. -/
+theorem Submission.dimred_cs_sos_mt_competitor_mass : ∀ (P k m n : ℕ) (g : Fin k → Euclid P) (h : n = k + m) (G : Submodule ℝ (Euclid P)) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (W₀ K : Set (Euclid P)) (Z E' : GeometricCurrentOn (univ : Set (Euclid P)) n) (r : ℝ), 0 < k → 0 < m → Orthonormal ℝ g → Submodule.span ℝ (Set.range g) = G → IsMinimizingIn S univ → R.Represents S → R₀.Represents S₀ → R₀'.Represents S₀' → R₀.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (G : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (G : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) → IsOpen W₀ → IsCompact (closure W₀) → (S₀' - S₀).support ⊆ (Gᗮ : Set (Euclid P)) ∩ W₀ → IsCompact K → 0 < r → IsIntegerMultiplicity Z → BoundaryVanishes Z → IsCompact Z.support → Z.support ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval (S₀' - S₀) (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) + E' ω) → ENNReal.ofReal ((2 * r) ^ k) * S₀.massOn W₀ ≤ ENNReal.ofReal ((2 * r) ^ k) * S₀'.massOn W₀ + E'.mass := by
+  intro P k m n g h G S R S₀ S₀' R₀ R₀' W₀ K Z E' r hk hm hg hG hmin hR hR₀ hR₀' hR₀c hRμ hSf
+    hW₀o hW₀c hsupp hK hr hZim hZb hZc hZsupp hZf
+  subst hG
+  -- Step 2: `μ₀'` is carried by `G^⊥` too, as `spt(S₀' − S₀) ⊆ G^⊥` and `G^⊥` is closed
+  have hR₀'c : R₀'.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 :=
+    Submission.dimred_cs_sos_mt_cm_carried_transfer P m S₀' S₀ R₀' R₀ _ hR₀' hR₀
+      (Submodule.isClosed_orthogonal _) hR₀c (hsupp.trans inter_subset_left)
+  -- Step 3: `B = B_ρ(0) ⊇ closure W₀ ∪ K`; the open box `W ⊂⊂ ℝᴾ` contains `spt Z`
+  obtain ⟨ρ, hρ⟩ := (isBounded_iff_subset_ball (0 : Euclid P)).1 (hW₀c.union hK).isBounded
+  obtain ⟨hWo, hWcc, hZW⟩ :=
+    Submission.dimred_cs_sos_mt_cm_comparison_box P k g r (r + 1) ρ hg (by linarith)
+  have hZW' := hZW K (subset_union_right.trans hρ)
+  -- Step 4: minimality against `S' = S + Z` (`n = n' + 1`, as `m > 0`)
+  obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩
+  set W := (Submodule.span ℝ (Set.range g)).starProjection ⁻¹'
+      {x | ∀ i, |inner ℝ (g i) x| < r + 1} ∩
+    (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ
+  let S' : GeometricCurrentOn (univ : Set (Euclid P)) (n' + 1) := S - (0 - Z)
+  have hS' : ∀ ω : TestFormOn (univ : Set (Euclid P)) (n' + 1), S' ω = S ω + Z ω := by
+    intro ω
+    show S ω - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (n' + 1)) ω - Z ω) = S ω + Z ω
+    rw [GeometricCurrentOn.zero_apply]; ring
+  have hMIN : S.massOn W ≤ S'.massOn W :=
+    Submission.dimred_mbl_lc_rc_cycle_competitor P n' univ univ W S S' Z isOpen_univ hmin hWo hWcc
+      hZim hZb hZc (by rw [univ_inter]; exact hZsupp.trans hZW') (fun ω => hS' ω)
+  -- Step 5: the products `A₁ = [[G ∖ Q_r]] × S₀` and `A₂ = [[Q_r]] × S₀'`
+  have hGc : IsClosed ((Submodule.span ℝ (Set.range g) : Set (Euclid P))) :=
+    Submodule.closed_of_finiteDimensional _
+  have hQc : IsClosed
+      {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    have hset : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+        (Submodule.span ℝ (Set.range g) : Set (Euclid P)) ∩ ⋂ i, {t | |inner ℝ (g i) t| ≤ r} := by
+      ext t; simp
+    rw [hset]
+    exact hGc.inter (isClosed_iInter fun i =>
+      isClosed_le (continuous_const.inner continuous_id).abs continuous_const)
+  obtain ⟨A₁, RA₁, hRA₁, hμA₁, hA₁⟩ :=
+    Submission.idtp_fons_cs_sos_product_current P k m (n' + 1) g h _ S₀ R₀ hm hg
+      (hGc.measurableSet.diff hQc.measurableSet) sdiff_subset hR₀ hR₀c
+  obtain ⟨A₂, RA₂, hRA₂, hμA₂, hA₂⟩ :=
+    Submission.idtp_fons_cs_sos_product_current P k m (n' + 1) g h _ S₀' R₀' hm hg
+      hQc.measurableSet (fun t ht => ht.1) hR₀' hR₀'c
+  -- Steps 6–7: `S' = A₁ + A₂ + E'`, so `M_W(S') ≤ M_W(A₁) + M_W(A₂) + M(E')`
+  have hmass := Submission.dimred_cs_sos_mt_cm_split_mass P k m (n' + 1) g h S₀ S₀' R₀ R₀' S Z E'
+    A₁ A₂ S' r W hg hR₀ hR₀' hR₀c hR₀'c hSf hZf hA₁ hA₂ hS'
+  -- Step 8: masses in the box, `a = (2r + 2)ᵏ` and `b = (2r)ᵏ`
+  obtain ⟨hSW, hA₁W, hA₂W⟩ := Submission.dimred_cs_sos_mt_cm_box_masses P k m (n' + 1) g S A₁ A₂
+    R RA₁ RA₂ R₀ R₀' r (r + 1) (ball (0 : Euclid P) ρ) hg hr (by linarith) isOpen_ball hR hRA₁
+    hRA₂ hR₀c hR₀'c hRμ hμA₁ hμA₂
+  -- Steps 9–10: compare `μ₀`, `μ₀'` off `W₀` and cancel the finite `a μ₀(B)`
+  exact Submission.dimred_cs_sos_mt_cm_box_cancellation P m S₀ S₀' R₀ R₀' W₀
+    (ball (0 : Euclid P) ρ) (ENNReal.ofReal ((2 * (r + 1)) ^ k)) (ENNReal.ofReal ((2 * r) ^ k))
+    E'.mass hR₀ hR₀' hW₀o isOpen_ball isBounded_ball (hsupp.trans inter_subset_right)
+    (subset_closure.trans (subset_union_left.trans hρ))
+    (ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (by positivity) (by linarith) k))
+    ENNReal.ofReal_ne_top
+    (calc ENNReal.ofReal ((2 * (r + 1)) ^ k) * R₀.measure (ball (0 : Euclid P) ρ)
+        = S.massOn W := hSW.symm
+      _ ≤ S'.massOn W := hMIN
+      _ ≤ A₁.massOn W + A₂.massOn W + E'.mass := hmass
+      _ = _ := by rw [hA₁W, hA₂W])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
