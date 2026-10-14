@@ -3396,6 +3396,60 @@ theorem Submission.dor_lmb_fcd_imp_piece_current : ((∀ (P n : ℕ) (U M M' : S
           rw [abs_mul, Nat.abs_cast]
           exact mul_le_of_le_one_right (Nat.cast_nonneg _) ((hy _).trans (hω.2 y))
   exact ⟨Φ, ⟨R', hRep⟩, hmass, hval⟩
+/-- **Simon Ch. 3, 1.2–1.3** (bi-Lipschitz partition of the regular set): for any
+`H : ℝᵏ → ℝ^{N'}` and Borel `B ⊆ ℝᵏ`, the set `S` of `u ∈ B` at which `H` is differentiable with
+injective derivative is the disjoint union of countably many Borel pieces `Aₗ` with
+`κₗ|a − a'| ≤ |H(a) − H(a')|` on `Aₗ`, `κₗ > 0`.  `S` is Borel (`measurableSet_of_differentiableAt`,
+`measurable_fderiv`, `ContinuousLinearMap.isOpen_injective`).  For injective `L` take `K > 0` with
+`|x| ≤ K|Lx|` (`LinearMap.exists_antilipschitzWith`) and `r(L) = K⁻¹/2`; otherwise `r(L) = 1`.
+`exists_partition_approximatesLinearOn_of_hasFDerivWithinAt` gives Borel `Aₗ = S ∩ tₗ` on which
+`H` is `r(Tₗ)`-close to `Tₗ = DH(yₗ)`, `yₗ ∈ S`, so
+`|H(a) − H(a')| ≥ |Tₗ(a − a')| − r(Tₗ)|a − a'| ≥ r(Tₗ)|a − a'|` and `κₗ = r(Tₗ)`. -/
+theorem Submission.dor_lmb_fcd_imp_regular_partition : ∀ (k N' : ℕ) (H : Euclid k → Euclid N') (B : Set (Euclid k)), MeasurableSet B → ∃ (A : ℕ → Set (Euclid k)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (A l)) ∧ (∀ l, A l ⊆ B) ∧ Pairwise (fun l l' => Disjoint (A l) (A l')) ∧ (∀ l, 0 < κ l) ∧ (∀ l, ∀ a ∈ A l, ∀ a' ∈ A l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖) ∧ (∀ l, ∀ a ∈ A l, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) ∧ ∀ u ∈ B, DifferentiableAt ℝ H u → Injective (fderiv ℝ H u) → ∃ l, u ∈ A l := by
+  intro k N' H B hB
+  -- the regular set `S = B ∩ {H differentiable, DH injective}` is Borel
+  set S : Set (Euclid k) := B ∩ {u | DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u)}
+  have hS : MeasurableSet S :=
+    hB.inter ((measurableSet_of_differentiableAt ℝ H).inter
+      (measurable_fderiv ℝ H ContinuousLinearMap.isOpen_injective.measurableSet))
+  -- coercivity radius: `r(L) ≠ 0`, and `2 r(L) |x| ≤ |Lx|` for injective `L`
+  have hcoer : ∀ L : Euclid k →L[ℝ] Euclid N', ∃ c : NNReal, c ≠ 0 ∧
+      (Injective L → ∀ x, 2 * ((c : ℝ) * ‖x‖) ≤ ‖L x‖) := by
+    intro L
+    by_cases hL : Injective L
+    · obtain ⟨K, hK, hKL⟩ := LinearMap.exists_antilipschitzWith (L : Euclid k →ₗ[ℝ] Euclid N')
+        (LinearMap.ker_eq_bot.mpr hL)
+      refine ⟨K⁻¹ / 2, div_ne_zero (inv_ne_zero hK.ne') two_ne_zero, fun _ x => ?_⟩
+      have hb : ‖x‖ ≤ K * ‖L x‖ := ZeroHomClass.bound_of_antilipschitz L hKL x
+      have hK' : (0 : ℝ) < K := hK
+      calc 2 * (((K⁻¹ / 2 : NNReal) : ℝ) * ‖x‖) = (K : ℝ)⁻¹ * ‖x‖ := by push_cast; ring
+        _ ≤ (K : ℝ)⁻¹ * (K * ‖L x‖) := mul_le_mul_of_nonneg_left hb (inv_nonneg.mpr hK'.le)
+        _ = ‖L x‖ := inv_mul_cancel_left₀ hK'.ne' _
+    · exact ⟨1, one_ne_zero, fun h => absurd h hL⟩
+  choose r rpos hr using hcoer
+  -- partition of `S` into Borel pieces on which `H` is `r(Tₗ)`-close to `Tₗ = DH(yₗ)`
+  obtain ⟨t, T, htd, htm, hSt, happrox, hrep⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt H S (fderiv ℝ H)
+      (fun x hx => hx.2.1.hasFDerivAt.hasFDerivWithinAt) r rpos
+  refine ⟨fun l => S ∩ t l, fun l => (r (T l) : ℝ), fun l => hS.inter (htm l),
+    fun l x hx => hx.1.1, fun l l' hll' => (htd hll').mono inter_subset_right inter_subset_right,
+    fun l => NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr (rpos (T l))), ?_, fun l x hx => hx.1.2, ?_⟩
+  · -- `|H(a) − H(a')| ≥ |Tₗ(a − a')| − r(Tₗ)|a − a'| ≥ r(Tₗ)|a − a'|`, `Tₗ = DH(yₗ)` injective
+    intro l a ha a' ha'
+    obtain ⟨y, hyS, hy⟩ := hrep ⟨a, ha.1⟩ l
+    have hinj : Injective (T l) := by rw [hy]; exact hyS.2.2
+    have h2 : ‖H a - H a' - T l (a - a')‖ ≤ r (T l) * ‖a - a'‖ := happrox l a ha a' ha'
+    have h3 := hr (T l) hinj (a - a')
+    have h4 : ‖T l (a - a')‖ ≤ ‖H a - H a'‖ + ‖H a - H a' - T l (a - a')‖ :=
+      calc ‖T l (a - a')‖ = ‖(H a - H a') - (H a - H a' - T l (a - a'))‖ := by
+            rw [sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    show (r (T l) : ℝ) * ‖a - a'‖ ≤ ‖H a - H a'‖
+    linarith
+  · -- every regular point of `H` in `B` lies in `S ⊆ ⋃ₗ tₗ`
+    intro u hu hdiff hinj
+    obtain ⟨l, hl⟩ := mem_iUnion.mp (hSt ⟨hu, hdiff, hinj⟩)
+    exact ⟨l, ⟨hu, hdiff, hinj⟩, hl⟩
 
 /-- **First-order calculus of Lipschitz maps on parameter domains** (Simon Ch. 7, deformation step;
 Ch. 6, 2.29; Ch. 2, 3.3–3.5).  Write `J_H(u) = √det(⟨DH(u)eₐ, DH(u)e_b⟩)`.
@@ -3558,6 +3612,231 @@ theorem Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality : (∀ (k N N' : 
         rw [show (H' + fun x => H x - H' x) = H from funext fun x => add_sub_cancel (H' x) (H x)] at h1
         exact h1.differentiableAt)
       rw [fderiv_zero_of_not_differentiableAt hd, fderiv_zero_of_not_differentiableAt hd']
+
+/-- **Integrality of the parametric image series** (Simon Ch. 6, 3.6–3.9: `f#τ(M, θ, ξ)` is an
+integer multiplicity current; step 7 of the selected proof, with the bounds of step 6).  Write
+`d = k + 1`, `Hᵢ = F ∘ Gᵢ`, `J_H = √det(⟨DH eₐ, DH e_b⟩)`,
+`Tᵢ(ω) = ∫_{Bᵢ} wᵢ ω(Hᵢ)(DHᵢ e₀, …, DHᵢ eₖ)` and `mᵢ = ∫⁻_{Bᵢ} |wᵢ| J_{Gᵢ}`.
+* `J_{Hᵢ} ≤ Λᵈ J_{Gᵢ}` on `Bᵢ` (`dor_lmb_fcd_imp_lipschitz_jacobian_locality`), so
+  `∫⁻_{Bᵢ} |wᵢ| J_{Hᵢ} ≤ Λᵈ mᵢ < ∞`.
+* `dor_lmb_fcd_imp_regular_partition` gives disjoint Borel `Aᵢₗ ⊆ Bᵢ` on which `Hᵢ` is
+  bi-Lipschitz below with injective derivative, covering every `u ∈ Bᵢ` where `DHᵢ(u)` exists and
+  is injective; `dor_lmb_fcd_imp_piece_current` gives integer multiplicity `Φᵢₗ` with
+  `Φᵢₗ(ω) = ∫_{Aᵢₗ} wᵢ ω(Hᵢ)(DHᵢ e)` and `M(Φᵢₗ) ≤ ∫⁻_{Aᵢₗ} |wᵢ| J_{Hᵢ}`.
+* On `Bᵢ \ ⋃ₗ Aᵢₗ` either `DHᵢ = 0` or the columns `DHᵢ eₐ` are linearly dependent, so the
+  integrand vanishes there; it is integrable on `Bᵢ` (`|ω| ≤ C`, `‖DHᵢ‖ ≤ ΛLᵢ`).  Countable
+  additivity gives `∑ₗ Φᵢₗ(ω) = Tᵢ(ω)` and `∑ₗ M(Φᵢₗ) ≤ ∫⁻_{Bᵢ} |wᵢ| J_{Hᵢ} ≤ Λᵈ mᵢ`.
+* Enumerating the pairs `(i, l)` by `ℕ`, (IMS) gives an integer multiplicity `Y` with
+  `∑ᵢₗ Φᵢₗ(ω) = Y(ω)`; summing fibrewise, `∑ᵢ Tᵢ(ω) = Y(ω)`.
+* If `|ω(x)| ≤ c`, then `±c⁻¹ω` is admissible for the mass, so `|Φᵢₗ(ω)| ≤ c M(Φᵢₗ)` and
+  `|Tᵢ(ω)| ≤ c ∑ₗ M(Φᵢₗ) ≤ c Λᵈ mᵢ`. -/
+theorem Submission.dor_lmb_fcd_imp_image_series_im : (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (N N' k : ℕ) (G : ℕ → Euclid (k + 1) → Euclid N) (B : ℕ → Set (Euclid (k + 1))) (w : ℕ → Euclid (k + 1) → ℝ) (F : Euclid N → Euclid N') (Λ : NNReal), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (B i)) → (∀ i, ∀ u ∈ B i, DifferentiableAt ℝ (G i) u) → (∀ i, Measurable (w i)) → (∀ i u, ∃ z : ℤ, w i u = z) → (∀ i, ∀ u ∈ B i, w i u ≠ 0) → (∀ i, IntegrableOn (w i) (B i)) → ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) ≠ ∞ → LipschitzWith Λ F → ∃ Y : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), HasSum (fun i => ∫ u in B i, w i u * (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))) (Y ω)) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x) ≤ c) → ∀ i, |∫ u in B i, w i u * (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))| ≤ c * (Λ : ℝ) ^ (k + 1) * (∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ))))))).toReal := by
+  intro hIMS hIMC N N' k G B w F Λ hGlip hBm hGd hwm hwZ hw0 hwi hsum hF
+  -- Lipschitz constants `Lᵢ` of `Gᵢ`; `Hᵢ = F ∘ Gᵢ` is `ΛLᵢ`-Lipschitz
+  choose L hL using hGlip
+  have hHlip : ∀ i, LipschitzWith (Λ * L i) (F ∘ G i) := fun i => hF.comp (hL i)
+  have hΛ : (Λ : ℝ≥0∞) ^ (k + 1) ≠ ∞ := ENNReal.pow_ne_top ENNReal.coe_ne_top
+  -- `mᵢ = ∫⁻_{Bᵢ} |wᵢ| J_{Gᵢ} < ∞`
+  have hm : ∀ i, (∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det
+      (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))
+          (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ))))))) ≠ ∞ :=
+    fun i => ENNReal.ne_top_of_tsum_ne_top hsum i
+  -- (1) Jacobian comparison `J_{Hᵢ} ≤ Λᵈ J_{Gᵢ}` on `Bᵢ`: `∫⁻_{Bᵢ} |wᵢ| J_{Hᵢ} ≤ Λᵈ mᵢ`
+  have hJ : ∀ i, (∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det
+      (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))
+          (fderiv ℝ (F ∘ G i) u (EuclideanSpace.single b (1 : ℝ))))))) ≤
+      (Λ : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det
+        (Matrix.of fun a b : Fin (k + 1) =>
+          inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))
+            (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) := by
+    intro i
+    rw [← lintegral_const_mul' _ _ hΛ]
+    refine setLIntegral_mono' (hBm i) fun u hu => ?_
+    have h := ENNReal.ofReal_le_ofReal
+      ((Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality).1 (k + 1) N N' F (G i) Λ u hF
+        (hGd i u hu))
+    rw [ENNReal.ofReal_mul (p := (Λ : ℝ) ^ (k + 1)) (by positivity),
+      ENNReal.ofReal_pow NNReal.zero_le_coe, ENNReal.ofReal_coe_nnreal] at h
+    exact (mul_le_mul_of_nonneg_left h zero_le).trans_eq (mul_left_comm _ _ _)
+  -- (3) disjoint Borel pieces `Aᵢₗ ⊆ Bᵢ` covering the points of `Bᵢ` where `DHᵢ` is injective
+  choose A κ hAm hAB hAd hκ hAbl hAreg hAcov using fun i =>
+    Submission.dor_lmb_fcd_imp_regular_partition (k + 1) N' (F ∘ G i) (B i) (hBm i)
+  -- (4) the integer multiplicity piece currents `Φᵢₗ`
+  choose Φ hΦIM hΦM hΦω using fun i l =>
+    Submission.dor_lmb_fcd_imp_piece_current hIMC (k + 1) N' (F ∘ G i) (A i l) (Λ * L i) (κ i l)
+      (w i) (hHlip i) (hAm i l) (hκ i l) (hAbl i l) (hAreg i l) (hwm i) (hwZ i)
+      (fun u hu => hw0 i u (hAB i l hu))
+      (ne_top_of_le_ne_top (ENNReal.mul_ne_top hΛ (hm i))
+        ((lintegral_mono_set (hAB i l)).trans (hJ i)))
+  -- (7) `∑ₗ M(Φᵢₗ) ≤ ∫⁻_{⋃ₗ Aᵢₗ} |wᵢ| J_{Hᵢ} ≤ Λᵈ mᵢ`
+  have hmass : ∀ i, ∑' l, (Φ i l).mass ≤
+      (Λ : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det
+        (Matrix.of fun a b : Fin (k + 1) =>
+          inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))
+            (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) := by
+    intro i
+    refine (ENNReal.tsum_le_tsum fun l => hΦM i l).trans ?_
+    rw [← lintegral_iUnion (hAm i) (hAd i)]
+    exact (lintegral_mono_set (iUnion_subset (hAB i))).trans (hJ i)
+  -- linearly independent columns `T e₀, …, T eₖ` force `T` to be injective
+  have hcols : ∀ T : Euclid (k + 1) →L[ℝ] Euclid N',
+      LinearIndependent ℝ (fun a => T (EuclideanSpace.single a (1 : ℝ))) → Injective T := by
+    intro T hli
+    rw [injective_iff_map_eq_zero]
+    intro z hz
+    have hzs : ∑ a, z.ofLp a • EuclideanSpace.single a (1 : ℝ) = z := by
+      have h := (EuclideanSpace.basisFun (Fin (k + 1)) ℝ).sum_repr z
+      simp only [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr] at h
+      exact h
+    have hc : ∀ a, z.ofLp a = 0 := by
+      refine Fintype.linearIndependent_iff.mp hli _ ?_
+      calc ∑ a, z.ofLp a • T (EuclideanSpace.single a (1 : ℝ))
+          = T (∑ a, z.ofLp a • EuclideanSpace.single a (1 : ℝ)) := by
+            rw [map_sum]; simp only [map_smul]
+        _ = 0 := by rw [hzs, hz]
+    rw [← hzs]
+    exact Finset.sum_eq_zero fun a _ => by rw [hc a, zero_smul]
+  -- (2), (5), (6): `∑ₗ Φᵢₗ(ω) = Tᵢ(ω)`
+  have hfib : ∀ i (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)),
+      HasSum (fun l => Φ i l ω) (∫ u in B i, w i u * (ω : DifferentialForm (Euclid N') (k + 1))
+        ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))) := by
+    intro i ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid N') (k + 1)) := ω.property.1.1.continuous
+    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+    -- (2) the integrand is Borel and bounded by `C (ΛLᵢ)ᵈ |wᵢ|`, hence integrable on `Bᵢ`
+    have hcont : Continuous fun p : Euclid N' × (Euclid (k + 1) →L[ℝ] Euclid N') =>
+        (ω : DifferentialForm (Euclid N') (k + 1)) p.1
+          (fun a => p.2 (EuclideanSpace.single a (1 : ℝ))) :=
+      (hωc.comp continuous_fst).eval
+        (continuous_pi fun a => continuous_snd.clm_apply continuous_const)
+    have hmeas : AEStronglyMeasurable (fun u => (ω : DifferentialForm (Euclid N') (k + 1))
+        ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))))
+        (volume.restrict (B i)) :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (y : Euclid N') (T : Euclid (k + 1) →L[ℝ] Euclid N') =>
+          (ω : DifferentialForm (Euclid N') (k + 1)) y
+            (fun a => T (EuclideanSpace.single a (1 : ℝ))))
+        hcont (hHlip i).continuous.aestronglyMeasurable
+        (measurable_fderiv ℝ (F ∘ G i)).aestronglyMeasurable
+    have hbd : ∀ u, ‖(ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)
+        (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))‖ ≤
+        C * ((Λ * L i : NNReal) : ℝ) ^ (k + 1) := by
+      intro u
+      have hcol : ∀ a : Fin (k + 1),
+          ‖fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))‖ ≤ ((Λ * L i : NNReal) : ℝ) := by
+        intro a
+        calc ‖fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))‖
+            ≤ ‖fderiv ℝ (F ∘ G i) u‖ * ‖EuclideanSpace.single a (1 : ℝ)‖ :=
+              (fderiv ℝ (F ∘ G i) u).le_opNorm _
+          _ = ‖fderiv ℝ (F ∘ G i) u‖ := by simp
+          _ ≤ _ := norm_fderiv_le_of_lipschitz ℝ (hHlip i)
+      have hprod : ∏ a : Fin (k + 1), ‖fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))‖ ≤
+          ((Λ * L i : NNReal) : ℝ) ^ (k + 1) := by
+        calc ∏ a : Fin (k + 1), ‖fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))‖
+            ≤ ∏ _a : Fin (k + 1), ((Λ * L i : NNReal) : ℝ) :=
+              Finset.prod_le_prod₀ (fun a _ => norm_nonneg _) fun a _ => hcol a
+          _ = _ := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+      exact (((ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)).le_opNorm _).trans
+        (mul_le_mul (hC _) hprod (Finset.prod_nonneg fun a _ => norm_nonneg _)
+          ((norm_nonneg _).trans (hC 0)))
+    have hint : IntegrableOn (fun u => w i u * (ω : DifferentialForm (Euclid N') (k + 1))
+        ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))) (B i) := by
+      refine Integrable.mono' ((hwi i).norm.mul_const (C * ((Λ * L i : NNReal) : ℝ) ^ (k + 1)))
+        ((hwm i).aestronglyMeasurable.mul hmeas) (ae_of_all _ fun u => ?_)
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_left (hbd u) (norm_nonneg _)
+    -- (5) the integrand vanishes on `Bᵢ \ ⋃ₗ Aᵢₗ`, where `DHᵢ = 0` or `DHᵢ` is not injective
+    have hvan : ∀ u ∈ B i \ ⋃ l, A i l, w i u * (ω : DifferentialForm (Euclid N') (k + 1))
+        ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))) = 0 := by
+      rintro u ⟨huB, huA⟩
+      rw [mem_iUnion, not_exists] at huA
+      suffices h : (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)
+          (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))) = 0 by
+        rw [h, mul_zero]
+      by_cases hd : DifferentiableAt ℝ (F ∘ G i) u
+      · by_cases hinj : Injective (fderiv ℝ (F ∘ G i) u)
+        · obtain ⟨l, hl⟩ := hAcov i u huB hd hinj
+          exact absurd hl (huA l)
+        · -- the columns `DHᵢ(u) eₐ` are linearly dependent
+          exact ((ω : DifferentialForm (Euclid N') (k + 1))
+            ((F ∘ G i) u)).toAlternatingMap.map_linearDependent _ fun hli => hinj (hcols _ hli)
+      · rw [fderiv_zero_of_not_differentiableAt hd]
+        exact ((ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)).map_zero
+    -- (6) `Tᵢ(ω) = ∫_{⋃ₗ Aᵢₗ} = ∑ₗ ∫_{Aᵢₗ} = ∑ₗ Φᵢₗ(ω)`
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hBm i) (iUnion_subset (hAB i)) hvan]
+    have hfun : (fun l => Φ i l ω) = fun l => ∫ u in A i l, w i u *
+        (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u)
+          (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ))) :=
+      funext fun l => hΦω i l ω
+    rw [hfun]
+    exact hasSum_integral_iUnion (hAm i) (hAd i) (hint.mono_set (iUnion_subset (hAB i)))
+  -- (8) enumerate the pieces by `ℕ`: `Xᵣ = Φ_{π(r)}`; (IMS) gives the integer multiplicity `Y`
+  let π : ℕ ≃ ℕ × ℕ := Nat.pairEquiv.symm
+  let X : ℕ → GeometricCurrentOn (univ : Set (Euclid N')) (k + 1) := fun r => Φ (π r).1 (π r).2
+  have hXmass : ∑' r, (X r).mass ≠ ∞ := by
+    have h : ∑' r, (X r).mass = ∑' i, ∑' l, (Φ i l).mass :=
+      (Equiv.tsum_eq π fun p : ℕ × ℕ => (Φ p.1 p.2).mass).trans
+        (ENNReal.tsum_prod (f := fun i l => (Φ i l).mass))
+    rw [h]
+    refine ne_top_of_le_ne_top (ENNReal.mul_ne_top hΛ hsum) ?_
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum hmass
+  obtain ⟨Y, hYIM, hYsum, -⟩ :=
+    hIMS N' k univ X isOpen_univ (fun r => hΦIM (π r).1 (π r).2) hXmass
+  refine ⟨Y, hYIM, fun ω => ?_, fun ω c hc hωc i => ?_⟩
+  · -- (9) `HasSum ((i, l) ↦ Φᵢₗ(ω)) (Y ω)`, summed fibrewise over `l`
+    have h : HasSum ((fun p : ℕ × ℕ => Φ p.1 p.2 ω) ∘ π) (Y ω) := hYsum ω
+    exact ((Equiv.hasSum_iff π).mp h).prod_fiberwise fun i => hfib i ω
+  · -- (10) `±Tᵢ(ω) = ∑ₗ ±Φᵢₗ(ω) ≤ c ∑ₗ M(Φᵢₗ) ≤ c Λᵈ mᵢ`
+    have hc0 : c ≠ 0 := hc.ne'
+    have hsmul : ∀ (s : ℝ) (α : Covector (Euclid N') (k + 1)),
+        covectorEuclideanNorm (s • α) = |s| * covectorEuclideanNorm α := by
+      intro s α
+      unfold covectorEuclideanNorm
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg s), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      · rw [mul_zero]
+    -- `|Z(ω)| ≤ c M(Z)`: `±c⁻¹ω` is admissible for `M(Z) = M_{ℝ^{N'}}(Z)`
+    have hZω : ∀ Z : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1), Z.mass ≠ ∞ →
+        |Z ω| ≤ c * Z.mass.toReal := by
+      intro Z hZ
+      have hadm : ∀ s : ℝ, |s| = c⁻¹ → s * Z ω ≤ Z.mass.toReal := by
+        intro s hs
+        have hmem : s • ω ∈ massAdmissibleOn (univ : Set (Euclid N')) (k + 1) univ := by
+          rw [massAdmissibleOn, mem_ofPred_eq]
+          refine ⟨subset_univ _, fun x => ?_⟩
+          rw [Submodule.coe_smul, Pi.smul_apply, hsmul, hs]
+          calc c⁻¹ * covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x)
+              ≤ c⁻¹ * c := mul_le_mul_of_nonneg_left (hωc x) (inv_nonneg.mpr hc.le)
+            _ = 1 := inv_mul_cancel₀ hc0
+        have h := Z.le_massOn hmem
+        rw [map_smul, smul_eq_mul] at h
+        exact (ENNReal.ofReal_le_iff_le_toReal hZ).mp h
+      have h1 := mul_le_mul_of_nonneg_left (hadm c⁻¹ (abs_of_pos (inv_pos.mpr hc))) hc.le
+      have h2 := mul_le_mul_of_nonneg_left
+        (hadm (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc)])) hc.le
+      rw [← mul_assoc, mul_inv_cancel₀ hc0, one_mul] at h1
+      rw [neg_mul, mul_neg, ← mul_assoc, mul_inv_cancel₀ hc0, one_mul] at h2
+      rw [abs_le]
+      constructor <;> linarith
+    have hfinsum : ∑' l, (Φ i l).mass ≠ ∞ :=
+      ne_top_of_le_ne_top (ENNReal.mul_ne_top hΛ (hm i)) (hmass i)
+    have hfin : ∀ l, (Φ i l).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hfinsum
+    have hS : HasSum (fun l => c * ((Φ i l).mass).toReal) (c * (∑' l, (Φ i l).mass).toReal) := by
+      rw [ENNReal.tsum_toReal_eq hfin]
+      exact (ENNReal.summable_toReal hfinsum).hasSum.mul_left c
+    have hup := hasSum_le (fun l => (le_abs_self _).trans (hZω _ (hfin l))) (hfib i ω) hS
+    have hlo := hasSum_le (fun l => (neg_le_abs _).trans (hZω _ (hfin l))) (hfib i ω).neg hS
+    have hfinal := mul_le_mul_of_nonneg_left
+      (ENNReal.toReal_mono (ENNReal.mul_ne_top hΛ (hm i)) (hmass i)) hc.le
+    rw [ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.coe_toReal, ← mul_assoc] at hfinal
+    rw [abs_le]
+    constructor <;> linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
