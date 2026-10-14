@@ -1043,6 +1043,162 @@ theorem Submission.idtp_cse_fd_cone_integral_smul : ∀ (P n : ℕ) (C : Geometr
     smul_eq_mul, inv_pow] at h
   exact h.symm
 
+/-- **Flux-density hypotheses (α) and (β)** (steps 4–6 of the flux-density argument for
+`idtp_cse_flux_density_eq`).  Let `C` be a `2`-dimensional cone, `μ = μ_R` the weight of a
+representation `R` of `C`, `f(x) = arctan(⟨x, e⟩ / ⟨x, a⟩)`, `G(x) = |p_{Tₓ}(Ax)|² / |πx|²`
+and `Z` the sector `{⟨x, a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}`.  If the tangent
+planes are dilation invariant (TS), `H` is the density of the push-forward of `G μ⌞Z` under
+`x ↦ (|x|, f(x))` (SI), and the rotation conservation law (RC) holds, then
+(α) `∫ ψ'(p₂) l(p₁) H(p) dp = 0`, and
+(β) `∫ l(p₁ / r) ψ(p₂) H(p) dp = r² ∫ l(p₁) ψ(p₂) H(p) dp` for `|r − 1| < s / 4`.
+(α) is (SI) followed by (RC).  For (β), both radial windows lie in `(1 − s, 1 + s)`, so the
+`Z`-integrals are integrals over the dilation-invariant sector `Z'` obtained by dropping the
+radial condition; `|ry| / r = |y|`, `f(ry) = f(y)`, `1_{Z'}(ry) = 1_{Z'}(y)` and, by (TS),
+`G(ry) = G(y)` for `μ`-a.e. `y`, so the cone scaling `∫ φ(ry) dμ(y) = r⁻² ∫ φ dμ`
+(`Submission.idtp_cse_fd_cone_integral_smul`) concludes. -/
+theorem Submission.idtp_cse_fd_alpha_beta : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (H : ℝ × ℝ → ℝ), IsConeCurrent C → R.Represents C → 0 < s → s ≤ 1 / 4 → (∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, approxTangentPlane 2 R.carrier (r • x) = approxTangentPlane 2 R.carrier x) → (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * H p = ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure = 0) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) ∧ (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p) := by
+  intro P C R Q a e s H hC hR hs hs4 hTS hSI hRC
+  -- `f(x) = arctan(⟨x, e⟩ / ⟨x, a⟩)` and `G(x) = |p_{Tₓ}(Ax)|² / |πx|²`.
+  obtain ⟨f, hf⟩ : ∃ f : Euclid P → ℝ, ∀ x, Real.arctan (inner ℝ x e / inner ℝ x a) = f x :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨G, hG⟩ : ∃ G : Euclid P → ℝ, ∀ x, ‖(approxTangentPlane 2 R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2 = G x :=
+    ⟨_, fun _ => rfl⟩
+  simp only [hf, hG] at hSI hRC
+  -- Step 0: continuous functions with `tsupport` in a bounded interval, and the derivatives of
+  -- such `C¹` functions, are bounded; so are products of bounded functions.
+  have hcpt : ∀ (g : ℝ → ℝ) (u v : ℝ), tsupport g ⊆ Ioo u v → HasCompactSupport g :=
+    fun g u v hg => isCompact_Icc.of_isClosed_subset (isClosed_tsupport g)
+      (hg.trans Ioo_subset_Icc_self)
+  have hbdd : ∀ g : ℝ → ℝ, Continuous g → HasCompactSupport g → ∃ M : ℝ, ∀ t, |g t| ≤ M := by
+    intro g hg hgc
+    obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+    exact ⟨M, fun t => (Real.norm_eq_abs (g t)) ▸ hM t⟩
+  have hbdd_mul : ∀ (g₁ g₂ : ℝ × ℝ → ℝ) (M₁ M₂ : ℝ), (∀ p, |g₁ p| ≤ M₁) →
+      (∀ p, |g₂ p| ≤ M₂) → ∃ M : ℝ, ∀ p, |g₁ p * g₂ p| ≤ M := by
+    intro g₁ g₂ M₁ M₂ h₁ h₂
+    refine ⟨M₁ * M₂, fun p => ?_⟩
+    rw [abs_mul]
+    exact mul_le_mul (h₁ p) (h₂ p) (abs_nonneg _) ((abs_nonneg _).trans (h₁ p))
+  refine ⟨fun ψ l hψ hl hψs hls => ?_, fun l ψ r hl hψ hls hψs hr => ?_⟩
+  -- Step 1: (α) is (SI) applied to `b(p) = ψ'(p₂) l(p₁)`, followed by (RC).
+  · obtain ⟨A, hA⟩ := hbdd (deriv ψ) (hψ.continuous_deriv le_rfl) (hcpt ψ _ _ hψs).deriv
+    obtain ⟨B, hB⟩ := hbdd l hl.continuous (hcpt l _ _ hls)
+    obtain ⟨M, hM⟩ := hbdd_mul (fun p => deriv ψ p.2) (fun p => l p.1) A B (fun p => hA p.2)
+      (fun p => hB p.1)
+    have hmeas : Measurable fun p : ℝ × ℝ => deriv ψ p.2 * l p.1 :=
+      (((hψ.continuous_deriv le_rfl).comp continuous_snd).mul
+        (hl.continuous.comp continuous_fst)).measurable
+    exact (hSI (fun p => deriv ψ p.2 * l p.1) hmeas ⟨M, hM⟩).trans (hRC ψ l hψ hl hψs hls)
+  -- Step 2: setup for (β).
+  · obtain ⟨hr₁, hr₂⟩ := abs_lt.mp hr
+    have hr0 : 0 < r := by linarith
+    obtain ⟨A, hA⟩ := hbdd l hl.continuous (hcpt l _ _ hls)
+    obtain ⟨B, hB⟩ := hbdd ψ hψ.continuous (hcpt ψ _ _ hψs)
+    obtain ⟨M₁, hM₁⟩ := hbdd_mul (fun p => l (p.1 / r)) (fun p => ψ p.2) A B
+      (fun p => hA _) (fun p => hB _)
+    obtain ⟨M₂, hM₂⟩ := hbdd_mul (fun p => l p.1) (fun p => ψ p.2) A B
+      (fun p => hA _) (fun p => hB _)
+    have hmeas₁ : Measurable fun p : ℝ × ℝ => l (p.1 / r) * ψ p.2 :=
+      ((hl.continuous.comp (continuous_fst.div_const r)).mul
+        (hψ.continuous.comp continuous_snd)).measurable
+    have hmeas₂ : Measurable fun p : ℝ × ℝ => l p.1 * ψ p.2 :=
+      ((hl.continuous.comp continuous_fst).mul (hψ.continuous.comp continuous_snd)).measurable
+    -- (2.1): both sides of (β) are integrals over the sector `Z`.
+    have hSI₁ := hSI _ hmeas₁ ⟨M₁, hM₁⟩
+    have hSI₂ := hSI _ hmeas₂ ⟨M₂, hM₂⟩
+    -- The sector `Z` and the dilation-invariant sector `Z' ⊇ Z` without the radial condition.
+    obtain ⟨Z, hZ⟩ : ∃ Z : Set (Euclid P), Z = {x : Euclid P | 0 < inner ℝ x a ∧
+        |‖x‖ - 1| < s ∧ |f x| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := ⟨_, rfl⟩
+    obtain ⟨Z', hZ'⟩ : ∃ Z' : Set (Euclid P), Z' = {x : Euclid P | 0 < inner ℝ x a ∧
+        |f x| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := ⟨_, rfl⟩
+    rw [← hZ] at hSI₁ hSI₂
+    have hZ'meas : MeasurableSet Z' := by
+      have hia : Measurable fun y : Euclid P => inner ℝ y a :=
+        (continuous_id.inner continuous_const).measurable
+      have hie : Measurable fun y : Euclid P => inner ℝ y e :=
+        (continuous_id.inner continuous_const).measurable
+      have hfm : Measurable fun y => |f y| := by
+        simp only [← hf]
+        exact continuous_abs.measurable.comp (Real.continuous_arctan.measurable.comp (hie.div hia))
+      have hq : Measurable fun y : Euclid P => ‖y - Q.starProjection y‖ :=
+        (continuous_id.sub Q.starProjection.continuous).norm.measurable
+      have hn : Measurable fun y : Euclid P => s * ‖y‖ :=
+        (continuous_const.mul continuous_norm).measurable
+      rw [hZ']
+      exact (measurableSet_lt measurable_const hia).inter
+        ((measurableSet_lt hfm measurable_const).inter (measurableSet_lt hq hn))
+    have hZZ' : Z ⊆ Z' := by
+      rw [hZ, hZ']
+      rintro x ⟨hxa, -, hxf, hxq⟩
+      exact ⟨hxa, hxf, hxq⟩
+    -- Step 3: both integrands vanish on `Z' \ Z` (radial windows).
+    have hrad : ∀ x : Euclid P, x ∈ Z' → |‖x‖ - 1| < s → x ∈ Z := by
+      intro x hx hx1
+      rw [hZ'] at hx
+      obtain ⟨hxa, hxf, hxq⟩ := hx
+      rw [hZ]
+      exact ⟨hxa, hx1, hxf, hxq⟩
+    have hvan₁ : ∀ x ∈ Z' \ Z, l (‖x‖ / r) * ψ (f x) * G x = 0 := by
+      rintro x ⟨hxZ', hxZ⟩
+      by_cases hl0 : l (‖x‖ / r) = 0
+      · rw [hl0, zero_mul, zero_mul]
+      refine absurd (hrad x hxZ' ?_) hxZ
+      obtain ⟨ht₁, ht₂⟩ := hls (subset_tsupport l (Function.mem_support.mpr hl0))
+      have hx : ‖x‖ = r * (‖x‖ / r) := (mul_div_cancel₀ _ hr0.ne').symm
+      generalize ‖x‖ / r = t at hx ht₁ ht₂
+      have ht0 : 0 < t := by linarith
+      rw [abs_lt]
+      constructor
+      · nlinarith [mul_lt_mul_of_pos_right (show 1 - s / 4 < r by linarith) ht0,
+          mul_lt_mul_of_pos_left ht₁ (show (0 : ℝ) < 1 - s / 4 by linarith)]
+      · nlinarith [mul_lt_mul_of_pos_right (show r < 1 + s / 4 by linarith) ht0,
+          mul_lt_mul_of_pos_left ht₂ (show (0 : ℝ) < 1 + s / 4 by linarith)]
+    have hvan₂ : ∀ x ∈ Z' \ Z, l ‖x‖ * ψ (f x) * G x = 0 := by
+      rintro x ⟨hxZ', hxZ⟩
+      by_cases hl0 : l ‖x‖ = 0
+      · rw [hl0, zero_mul, zero_mul]
+      refine absurd (hrad x hxZ' ?_) hxZ
+      obtain ⟨ht₁, ht₂⟩ := hls (subset_tsupport l (Function.mem_support.mpr hl0))
+      rw [abs_lt]
+      constructor <;> linarith
+    -- Step 4: dilation invariance of `|·| / r`, `f`, `Z'` and, `μ`-a.e., of `G`.
+    have hnorm : ∀ y : Euclid P, ‖r • y‖ = r * ‖y‖ := fun y => norm_smul_of_nonneg hr0.le y
+    have hfr : ∀ y, f (r • y) = f y := fun y => by
+      rw [← hf, ← hf, real_inner_smul_left, real_inner_smul_left, mul_div_mul_left _ _ hr0.ne']
+    have hZ'r : ∀ y, r • y ∈ Z' ↔ y ∈ Z' := by
+      intro y
+      have hproj : r • y - Q.starProjection (r • y) = r • (y - Q.starProjection y) := by
+        rw [map_smul, smul_sub]
+      rw [hZ', Set.mem_ofPred_eq, Set.mem_ofPred_eq, hfr, hproj, hnorm, hnorm,
+        real_inner_smul_left, mul_pos_iff_of_pos_left hr0, mul_left_comm,
+        mul_lt_mul_iff_right₀ hr0]
+    have hGr : ∀ y, approxTangentPlane 2 R.carrier (r • y) = approxTangentPlane 2 R.carrier y →
+        G (r • y) = G y := by
+      intro y hy
+      have hA : inner ℝ (r • y) a • e - inner ℝ (r • y) e • a =
+          r • (inner ℝ y a • e - inner ℝ y e • a) := by
+        rw [real_inner_smul_left, real_inner_smul_left, smul_sub, mul_smul, mul_smul]
+      rw [← hG, ← hG, hy, hA, map_smul, map_smul, hnorm, hnorm, mul_pow, mul_pow,
+        mul_div_mul_left _ _ (pow_ne_zero 2 hr0.ne')]
+    -- `φ := 1_{Z'} h₁` satisfies `φ(ry) = (1_{Z'} h₂)(y)` for `μ`-a.e. `y`.
+    have hae : (fun y => Z'.indicator (fun x => l (‖x‖ / r) * ψ (f x) * G x) (r • y))
+        =ᵐ[R.measure] Z'.indicator fun x => l ‖x‖ * ψ (f x) * G x := by
+      filter_upwards [hTS r hr0] with y hy
+      by_cases hyZ : y ∈ Z'
+      · rw [Set.indicator_of_mem ((hZ'r y).2 hyZ), Set.indicator_of_mem hyZ, hnorm,
+          mul_div_cancel_left₀ _ hr0.ne', hfr, hGr y hy]
+      · rw [Set.indicator_of_notMem (fun h => hyZ ((hZ'r y).1 h)),
+          Set.indicator_of_notMem hyZ]
+    -- Step 5: the cone scaling of `μ`.
+    have hcone := Submission.idtp_cse_fd_cone_integral_smul P 2 C R hC hR r hr0
+      (Z'.indicator fun x => l (‖x‖ / r) * ψ (f x) * G x)
+    rw [integral_congr_ae hae, integral_indicator hZ'meas, integral_indicator hZ'meas,
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hZ'meas hZZ' hvan₁,
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hZ'meas hZZ' hvan₂] at hcone
+    -- Step 6: conclusion.
+    rw [hSI₁, hSI₂, hcone, ← mul_assoc, mul_inv_cancel₀ (pow_ne_zero 2 hr0.ne'), one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
