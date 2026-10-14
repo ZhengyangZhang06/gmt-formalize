@@ -956,6 +956,39 @@ theorem Submission.dimred_mbl_dt_cbm_smooth_poincare : ∀ (m : ℕ) (v : Euclid
         gcongr
     _ = _ := by push_cast; ring
 
+/-- **BV Poincaré inequality on the unit cube** (Simon Ch. 2, 2.7, in the form used for the first
+line of display (32) in the proof of Ch. 6, 5.1): if `u ∈ L¹(Q₁)` has `∫_{Q₁} u div g ≤ V` for all
+smooth `g` with `spt g ⊆ Q₁` and `|g| ≤ 1`, then `∫_{Q₁} |u - c| ≤ 2ⁿ⁺¹ √n V` with `c = ∫_{Q₁} u`.
+Testing with `g ≡ 0` gives `V ≥ 0`.  On every inner cube `Q_δ`, `0 < δ < 1/2`, the `C¹`
+approximations `v_k` of `u` satisfy `∫_{Q_δ}∫_{Q_δ} |v_k x - v_k y| ≤ 2ⁿ √n V` by the smooth
+Poincaré inequality, and the bound passes to the `L¹` limit `u`; exhausting `Q₁` by the `Q_δ` and
+using `|Q₁| = 1` bounds the mean deviation of `u` by the same `2ⁿ √n V ≤ 2ⁿ⁺¹ √n V`. -/
+theorem Submission.dimred_mbl_dt_cbm_bv_poincare : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c| ≤ 2 ^ (m + 2) * Real.sqrt (m + 1) * V := by
+  intro m u V hu hV
+  -- `V ≥ 0`: test the hypothesis with `g ≡ 0`
+  have hV0 : 0 ≤ V := by
+    simpa using hV (fun _ => 0) contDiff_const HasCompactSupport.zero (by simp) fun _ => by simp
+  have hK : (0 : ℝ) ≤ 2 ^ (m + 1) * Real.sqrt (m + 1) := by positivity
+  -- on each inner cube `Q_δ`, `0 < δ < 1/2`, the oscillation of `u` is at most `2ⁿ √n V`
+  have hinner : ∀ δ : ℝ, 0 < δ → δ < 1 / 2 →
+      ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
+        ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤
+        2 ^ (m + 1) * Real.sqrt (m + 1) * V := by
+    intro δ hδ _
+    obtain ⟨v, hv, hvV, hvu⟩ := Submission.dimred_mbl_dt_cbm_smooth_approx m u V δ hu hV hδ
+    refine Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_l1_approx m u v δ _ hu hδ.le
+      (fun k => (hv k).continuous) (fun k => ?_) hvu
+    exact (Submission.dimred_mbl_dt_cbm_smooth_poincare m (v k) δ (hv k) hδ.le).trans
+      (mul_le_mul_of_nonneg_left (hvV k) hK)
+  -- exhaust `Q₁` by the inner cubes
+  have hosc := Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_inner_cubes m u _ hu hinner
+  -- `c = ∫_{Q₁} u`; the mean deviation is at most the oscillation since `|Q₁| = 1`
+  refine ⟨∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y,
+    ((Submission.dimred_mbl_dt_cbm_bvp_mean_dev_le_osc m _ u
+      (Submission.cmcdtfrfg_cube_volume (m + 1)) hu).trans hosc).trans ?_⟩
+  have h2 : (2 : ℝ) ^ (m + 1) ≤ 2 ^ (m + 2) := pow_le_pow_right₀ (by norm_num) (by omega)
+  exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h2 (Real.sqrt_nonneg _)) hV0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
