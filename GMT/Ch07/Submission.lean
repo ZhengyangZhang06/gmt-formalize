@@ -15049,4 +15049,129 @@ theorem Submission.codim1_lur_rectifiable_area_formula : ∀ (m d P : ℕ) (D B 
     (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
       (hL.mono inter_subset_right))
 
+/-- **Push-forward of the De Giorgi boundary through a graph chart** (Simon 7.5, steps 3–4 of the
+local unit representation of `∂[[E]]`).  Let `G(v) = x + ιv + u(v)` on `D = B_{δ₁}(0)`, with `ι`
+a linear isometry and `u ⊥ range ι` of class `C¹`, and let `(B, ν)` be De Giorgi data in `D`.
+Then `M′ = G(B ∩ B_{δ₁/2}(0)) ⊆ Z₀` and `ξ′(w) = J(π w)⁻¹ ξ̃(π w)`, `π(w) = ι*(w − x)`, satisfy
+`−∫_B ⟨Φ_ω, ν⟩ dHⁿ = ∫_{M′} ⟨ω, ξ′⟩ dHⁿ` for every `n`-form `ω` supported in `Z₀`; here
+`ξ̃(v)(α) = −Σⱼ (−1)ʲ α(DG(v)e_{j.succAbove ·}) ⟨eⱼ, ν(v)⟩` and `J` is the Jacobian of the area
+formula.  Since `ι*ι = id` and `ι*u = 0`, `π ∘ G = id` on `D`, so `G` is an injective `C¹`
+immersion and the area formula applies.  For a.e. `v ∈ B` the normal orientation gives an
+orthonormal frame `σ` of `ν(v)^⊥` with `ξ̃(v)(α) = α(DG(v)σ)`, so `J(v) = √det⟨DG(v)σᵢ, DG(v)σₖ⟩`
+is positive and `J(v)⁻¹ ξ̃(v)` is a unit orientation.  Off `B_{δ₁/2}(0)`, `G(v) ∉ Z₀ ⊇ spt ω`. -/
+theorem Submission.codim1_lur_gauss_green_pushforward : ∀ (P n : ℕ) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ) (B : Set (Euclid (n + 1))) (ν : Euclid (n + 1) → Euclid (n + 1)), 1 ≤ n → 0 < δ₁ → ContDiffOn ℝ 1 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖u v‖ < δ₂) → MeasurableSet B → B ⊆ ball 0 δ₁ → CountablyRectifiable n B → (∀ K : Set (Euclid (n + 1)), IsCompact K → K ⊆ ball 0 δ₁ → μHE[n] (B ∩ K) ≠ ∞) → Measurable ν → (∀ y ∈ B, ‖ν y‖ = 1) → (∀ᵐ y ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B y (Submodule.span ℝ {ν y})ᗮ) → ∃ (M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), MeasurableSet M' ∧ M' ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : DifferentialForm (Euclid P) n, tsupport ω ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} → -∫ v in B, inner ℝ ((ball (0 : Euclid (n + 1)) δ₁).indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (x + ι v + u v) (fun k => fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) v) (ν v) ∂μHE[n] = ∫ w in M', ξ' w (ω w) ∂μHE[n] := by
+  intro P n x ι u δ₁ δ₂ B ν hn hδ₁ hu hperp hB hBD hBrect hBfin hν hν1 htan
+  -- Notation: `A = ι*`, `π(w) = A(w − x)`, and the chart `G(v) = x + ιv + u(v)` on `D`.
+  set A : Euclid P →L[ℝ] Euclid (n + 1) := ContinuousLinearMap.adjoint ι.toContinuousLinearMap
+    with hA_def
+  set G : Euclid (n + 1) → Euclid P := fun y => x + ι y + u y with hG_def
+  -- Step 1 (chart facts): `Aι = id` and `A u(v) = 0` on `D` (`u(v) ⊥ range ι`), so `π(G v) = v`
+  -- and `G v − x − ιπ(G v) = u v`; `G` is `C¹` on `D`, injective there, with injective `DG(v)`.
+  have hAι : ∀ v, A (ι v) = v := fun v =>
+    ContinuousLinearMap.ext_iff.mp (LinearIsometry.adjoint_comp_self ι) v
+  have hAu : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, A (u v) = 0 := by
+    intro v hv
+    refine ext_inner_right ℝ fun w => ?_
+    rw [hA_def, ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+    exact (hperp v hv).1 w
+  have hπG : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, A (G v - x) = v := by
+    intro v hv
+    have h : G v - x = ι v + u v := by
+      simp only [hG_def]
+      abel
+    rw [h, map_add, hAι, hAu v hv, add_zero]
+  have hresG : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, G v - x - ι (A (G v - x)) = u v := by
+    intro v hv
+    rw [hπG v hv]
+    simp only [hG_def]
+    abel
+  have hGC1 : ContDiffOn ℝ 1 G (ball 0 δ₁) := by
+    rw [hG_def]
+    exact (contDiffOn_const.add ι.contDiff.contDiffOn).add hu
+  obtain ⟨hGinj, hGd, -⟩ :=
+    Submission.dgce_left_inverse_chart_embedded (n + 1) P G A x δ₁ hGC1 hπG
+  have hGc : ContinuousOn G B := hGC1.continuousOn.mono hBD
+  have hGiB : InjOn G B := hGinj.mono hBD
+  -- Step 2: the area formula for `G` on `B`, with the approximate tangent planes `ν^⊥`.
+  obtain ⟨hR1, hR2, J, hJm, -, hR3, hR4, hR5⟩ :=
+    Submission.codim1_lur_rectifiable_area_formula n (n + 1) P (ball 0 δ₁) B G
+      (fun v => (Submodule.span ℝ {ν v})ᗮ) hn isOpen_ball hGC1 hGinj (fun v hv => (hGd v hv).2)
+      hB hBD hBrect hBfin htan
+  -- Step 3: `B′ = B ∩ B_{δ₁/2}(0)` and `M′ = G(B′)`, Borel by Lusin–Souslin.
+  have hB'm : MeasurableSet (B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2)) :=
+    hB.inter measurableSet_ball
+  have hB'B : B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2) ⊆ B := inter_subset_left
+  have hM'm : MeasurableSet (G '' (B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2))) :=
+    hB'm.image_of_continuousOn_injOn (hGc.mono hB'B) (hGiB.mono hB'B)
+  -- Step 4: the Borel field `ξ̃(v)(α) = −Σⱼ (−1)ʲ α(DG(v)e_{j.succAbove ·}) ⟨eⱼ, ν(v)⟩` and
+  -- `ξ′(w) = J(π w)⁻¹ ξ̃(π w)`.
+  obtain ⟨ξt, hξtm, hξt⟩ := Submission.codim1_pfr_normal_multivector_measurable P n G ν hν
+  have hπm : Measurable fun w : Euclid P => A (w - x) :=
+    (A.continuous.comp (continuous_sub_right x)).measurable
+  obtain ⟨ξ', hξ'⟩ : ∃ ξ' : Euclid P → MultiVector P n,
+      ∀ w, ξ' w = (J (A (w - x)))⁻¹ • ξt (A (w - x)) := ⟨_, fun _ => rfl⟩
+  have hξ'm : StronglyMeasurable ξ' := by
+    rw [show ξ' = fun w => (J (A (w - x)))⁻¹ • ξt (A (w - x)) from funext hξ']
+    exact (hJm.comp hπm).inv.stronglyMeasurable.smul (hξtm.comp_measurable hπm)
+  -- Step 5 (pointwise algebra): for a.e. `v ∈ B` the normal orientation gives an orthonormal
+  -- frame `σ` of `ν(v)^⊥` with `ξ̃(v)(α) = α(DG(v)σ)`; then `J(v) = √det⟨DG(v)σᵢ, DG(v)σₖ⟩ > 0`
+  -- and `J(v)⁻¹ ξ̃(v)` is a unit orientation of `span DG(v)σ`.
+  have hgood : ∀ᵐ v ∂(μHE[n].restrict B),
+      0 < J v ∧ ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ((J v)⁻¹ • ξt v) Q := by
+    filter_upwards [ae_restrict_mem hB, hR3] with v hvB hJv
+    obtain ⟨σ, hσo, hσspan, hσβ⟩ :=
+      Submission.codim1_lur_normal_covector_orientation n (ν v) hn (hν1 v hvB)
+    have hlin : LinearIndependent ℝ fun i => fderiv ℝ G v (σ i) :=
+      hσo.linearIndependent.map' (fderiv ℝ G v : Euclid (n + 1) →ₗ[ℝ] Euclid P)
+        (LinearMap.ker_eq_bot.mpr (hGd v (hBD hvB)).2)
+    obtain ⟨hdet, hunit⟩ := Submission.codim1_lur_normalized_wedge_orientation P n _ hlin
+    have hJeq := hJv σ hσo hσspan
+    refine ⟨by rw [hJeq]; exact Real.sqrt_pos.mpr hdet, _, hunit _ fun α => ?_⟩
+    -- `ξ̃(v)(α) = α(DG(v)σ)`: the normal orientation for `β = α ∘ DG(v)`
+    rw [smul_apply, smul_eq_mul, hJeq]
+    congr 1
+    rw [hξt]
+    exact (hσβ (α.compContinuousLinearMap (fderiv ℝ G v))).symm
+  -- Step 6: unit orientations `Hⁿ`-a.e. on `M′`, by transferring step 5 through `G`.
+  have horient := Submission.codim1_pfr_ae_transfer_to_image n (n + 1) P B
+    (B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2)) G J
+    (fun v => ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ((J v)⁻¹ • ξt v) Q) hB hB'm hB'B
+    hGc hGiB hR4 (hgood.mono fun v hv => hv.2)
+  refine ⟨G '' (B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2)), ξ', hM'm, ?_,
+    hR1.mono (image_mono hB'B), ?_, hξ'm.aestronglyMeasurable, ?_, ?_⟩
+  · -- `M′ ⊆ Z₀`: `π(G v) = v` and `G v − x − ιπ(G v) = u v`.
+    rintro _ ⟨v, ⟨hvB, hv2⟩, rfl⟩
+    have hvD : v ∈ ball (0 : Euclid (n + 1)) δ₁ := hBD hvB
+    rw [mem_ofPred_eq, hresG v hvD, hπG v hvD]
+    exact ⟨mem_ball_zero_iff.mp hv2, (hperp v hvD).2⟩
+  · -- `Hⁿ(M′) < ∞`: `M′ ⊆ G(B ∩ K)` for the compact `K = B̄_{δ₁/2}(0) ⊆ D`.
+    exact ne_top_of_le_ne_top
+      (hR2 _ (isCompact_closedBall 0 _) (closedBall_subset_ball (half_lt_self hδ₁)))
+      (measure_mono (image_mono (inter_subset_inter_right B ball_subset_closedBall)))
+  · filter_upwards [horient] with w hw
+    obtain ⟨v, hvB', rfl, hv⟩ := hw
+    rw [hξ', hπG v (hBD hvB'.1)]
+    exact hv
+  · -- Step 7: `−⟨Φ_ω, ν⟩ = 1_{B′} J · (ξ′(ω) ∘ G)` a.e. on `B`, then change variables.
+    intro ω hω
+    rw [← integral_neg]
+    refine Submission.codim1_pfr_setIntegral_image_transfer n (n + 1) P B
+      (B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2)) G J _ (fun w => ξ' w (ω w)) hB hB'm hB'B hGc hGiB
+      hR5 ?_
+    filter_upwards [ae_restrict_mem hB, hgood] with v hvB hv
+    have hvD : v ∈ ball (0 : Euclid (n + 1)) δ₁ := hBD hvB
+    -- `−⟨Φ_ω(v), ν(v)⟩ = ξ̃(v)(ω(G v))` on `D`
+    refine (?_ : _ = ξt v (ω (G v))).trans ?_
+    · rw [indicator_of_mem hvD, hξt, sum_inner]
+      simp only [real_inner_smul_left, hG_def]
+    · by_cases hvB' : v ∈ B ∩ ball (0 : Euclid (n + 1)) (δ₁ / 2)
+      · rw [indicator_of_mem hvB', hξ', hπG v hvD, smul_apply, smul_eq_mul,
+          ← mul_assoc, mul_inv_cancel₀ hv.1.ne', one_mul]
+      · -- off `B′`, `|π(G v)| = |v| ≥ δ₁/2`, so `G v ∉ Z₀ ⊇ tsupport ω` and `ω(G v) = 0`
+        have hGv : G v ∉ tsupport ω := fun h => by
+          have h1 := (hω h).1
+          rw [hπG v hvD] at h1
+          exact hvB' ⟨hvB, mem_ball_zero_iff.mpr h1⟩
+        rw [indicator_of_notMem hvB', image_eq_zero_of_notMem_tsupport hGv, map_zero]
+
 end GMT.Ch07
