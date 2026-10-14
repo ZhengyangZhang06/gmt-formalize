@@ -3573,6 +3573,144 @@ theorem Submission.dtc_bc_lc_sl_ll_chart_pullback : ∀ (P n : ℕ) (ψ : Euclid
     have ha' : fderiv ℝ ψ y a = w (ψ y) := ha
     rw [indicator_of_mem hyY, ← ha', ← map_smul, hLB y (hYV' hyY), map_smul, map_smul,
       smul_eq_mul]
+/-- **The approximate gradient on a `C¹` chart piece is the chart gradient** (Simon Ch. 3,
+Definition 2.1 and the remark after it, pp. 75–76: `∇^M h` agrees `Hᴺ`-a.e. on each piece with the
+gradient along a `C¹` chart).  Let `N = n + 1`, `A = ψ(Y) ⊆ M` and `B_y = Dψ(y)`, and let `H` be an
+approximate gradient of `h` along `M`.  Then for `Hᴺ`-a.e. `x ∈ A` and every `y ∈ Y` with
+`ψ(y) = x`: `H(x) ∈ B_y(ℝᴺ)` and `⟨H(x), B_y e⟩ = DF(y)e`.
+* `A` is Borel (`ψ` is continuous and injective on `Y`).  By tangent locality
+  (`cmc_imRep_locality_restrict_sub` (a)), `A` and `M` have the same approximate tangent spaces at
+  `Hᴺ`-a.e. `x ∈ A`, so `A` has tangent space `Π = B_y(ℝᴺ)` at `x`; `TₓM = Π` by uniqueness, so
+  `H(x) ∈ Π`.
+* Riesz on `Π` gives `g ∈ Π` with `⟨g, B_y e⟩ = DF(y)e`.
+* `c‖a − b‖ ≤ ‖ψ(a) − ψ(b)‖` on `closure Y` (`dtc_bc_lc_sl_ll_immersion_antilipschitz`) and the
+  differentiability of `F` and `ψ` at `y` give `|h(x') − h(x) − ⟨g, x' − x⟩| ≤ ε‖x' − x‖` for
+  `x' ∈ A` near `x`, so `g` satisfies the approximate-differential condition along `A`.
+* `H(x)` satisfies it along `A ⊆ M` by monotonicity, so `H(x) = g` by uniqueness of approximate
+  differentials (`dtc_bc_lc_sl_ll_approx_grad_unique`). -/
+theorem Submission.dtc_bc_lc_sl_ll_piece_gradient : ∀ (P n : ℕ) (M : Set (Euclid P)) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (h : Euclid P → ℝ) (H : Euclid P → Euclid P), MeasurableSet M → (∀ C : Set (Euclid P), IsCompact C → μHE[n + 1] (M ∩ C) ≠ ∞) → IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → ψ '' Y ⊆ M → (∀ y ∈ Y, h (ψ y) = F y) → (∀ y ∈ Y, HasApproximateTangentSpaceAt (n + 1) M (ψ y) (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) → (∀ᵐ x ∂(μHE[n + 1].restrict M), HasApproximateTangentSpaceAt (n + 1) M x (approxTangentPlane (n + 1) M x) ∧ H x ∈ approxTangentPlane (n + 1) M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[n + 1] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ (H x) (y - x)|}) / ENNReal.ofReal (r ^ (n + 1))) (𝓝[>] 0) (𝓝 0)) → ∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → H x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (H x) (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+  intro P n M ψ V Y F h H hM hloc hV hψ hinj hDinj hFc hY hYc hYV hYM hhF htan hHgrad
+  have hYcl : Y ⊆ closure Y := subset_closure
+  -- Step 1: `A = ψ(Y)` is Borel (`ψ` is continuous and injective on `Y`)
+  have hAmeas : MeasurableSet (ψ '' Y) :=
+    hY.image_of_continuousOn_injOn hψ.continuous.continuousOn (hinj.mono (hYcl.trans hYV))
+  -- Step 2: tangent locality for the Borel pair `A ⊆ M` (`U = ℝᴾ`)
+  have hTL := Submission.cmc_imRep_locality_restrict_sub.1 P (n + 1) univ (ψ '' Y) M isOpen_univ
+    hAmeas hM hYM (subset_univ M) (fun C hC _ => hloc C hC)
+  -- Step 4: `c‖a − b‖ ≤ ‖ψ a − ψ b‖` on `closure Y`
+  obtain ⟨c, hc, hcY⟩ := Submission.dtc_bc_lc_sl_ll_immersion_antilipschitz P (n + 1) ψ
+    (closure Y) hψ hYc (hinj.mono hYV) (fun y hy => hDinj y (hYV hy))
+  -- Step 3: the hypothesis on `H` holds a.e. on `A ⊆ M`; fix such `x = ψ y`
+  filter_upwards [hTL, ae_restrict_of_ae_restrict_of_subset hYM hHgrad] with x hTLx hHx y hy hyx
+  subst hyx
+  obtain ⟨-, hHmem, hHlim⟩ := hHx
+  have hMtan := htan y hy
+  -- Step 5(a): `A` has tangent space `Π = B_y(ℝᴺ)` at `ψ y`, and `T_{ψ y}M = Π`, so `H (ψ y) ∈ Π`
+  have hAtan : HasApproximateTangentSpaceAt (n + 1) (ψ '' Y) (ψ y)
+      (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) := (hTLx _).2 hMtan
+  have hQeq : approxTangentPlane (n + 1) M (ψ y) =
+      LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) := by
+    have hex : ∃ Q', HasApproximateTangentSpaceAt (n + 1) M (ψ y) Q' := ⟨_, hMtan⟩
+    unfold approxTangentPlane
+    rw [dite_eq_left hex]
+    exact hex.choose_spec.unique hMtan
+  rw [hQeq] at hHmem
+  -- Step 5(b): the chart gradient `g ∈ Π` with `⟨g, B_y e⟩ = DF(y)e` (Riesz on `Π`)
+  have hBinj : Injective (fderiv ℝ ψ y) := hDinj y (hYV (hYcl hy))
+  obtain ⟨g, hgP, hg⟩ : ∃ g ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P),
+      ∀ e, inner ℝ g (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+    let Lequiv := LinearEquiv.ofInjective (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) hBinj
+    let φl : LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) →ₗ[ℝ] ℝ :=
+      (fderiv ℝ F y : Euclid (n + 1) →ₗ[ℝ] ℝ).comp Lequiv.symm.toLinearMap
+    let φc := LinearMap.toContinuousLinearMap φl
+    let g0 := (InnerProductSpace.toDual ℝ _).symm φc
+    refine ⟨(g0 : Euclid P), g0.2, fun e => ?_⟩
+    have h1 : inner ℝ g0 (Lequiv e) = φc (Lequiv e) := InnerProductSpace.toDual_symm_apply
+    have h2 : ((Lequiv e : _) : Euclid P) = fderiv ℝ ψ y e := LinearEquiv.ofInjective_apply _ _
+    rw [← h2, ← Submodule.coe_inner, h1]
+    simp [φc, φl]
+  -- Step 5(c): `|h x' − h (ψ y) − ⟨g, x' − ψ y⟩| ≤ ε‖x' − ψ y‖` for `x' ∈ A` near `ψ y`
+  have hclass : ∀ ε : ℝ, 0 < ε → ∃ r₀ > 0, ∀ x' ∈ ψ '' Y, ‖x' - ψ y‖ < r₀ →
+      |h x' - h (ψ y) - inner ℝ g (x' - ψ y)| ≤ ε * ‖x' - ψ y‖ := by
+    intro ε hε
+    have hFd : HasFDerivAt F (fderiv ℝ F y) y := (hFc.differentiable one_ne_zero y).hasFDerivAt
+    have hψd : HasFDerivAt ψ (fderiv ℝ ψ y) y := (hψ.differentiable one_ne_zero y).hasFDerivAt
+    have hε₁ : 0 < c * ε / 2 := by positivity
+    have hε₂ : 0 < c * ε / (2 * (‖g‖ + 1)) := by positivity
+    obtain ⟨δ₁, hδ₁, hF1⟩ := Metric.eventually_nhds_iff.1 (hFd.isLittleO.bound hε₁)
+    obtain ⟨δ₂, hδ₂, hψ1⟩ := Metric.eventually_nhds_iff.1 (hψd.isLittleO.bound hε₂)
+    refine ⟨c * min δ₁ δ₂, by positivity, ?_⟩
+    rintro x' ⟨y', hy', rfl⟩ hx'
+    -- `c‖y' − y‖ ≤ ‖ψ y' − ψ y‖ < c min(δ₁, δ₂)`
+    have hcl := hcY y' (hYcl hy') y (hYcl hy)
+    have hyy : ‖y' - y‖ < min δ₁ δ₂ := lt_of_mul_lt_mul_left (hcl.trans_lt hx') hc.le
+    have hd1 : dist y' y < δ₁ := by rw [dist_eq_norm]; exact hyy.trans_le (min_le_left _ _)
+    have hd2 : dist y' y < δ₂ := by rw [dist_eq_norm]; exact hyy.trans_le (min_le_right _ _)
+    have e1 := hF1 hd1
+    have e2 := hψ1 hd2
+    -- `h ∘ ψ = F` on `Y` and `⟨g, ψ y' − ψ y⟩ = DF(y)(y' − y) + ⟨g, ψ y' − ψ y − B_y(y' − y)⟩`
+    rw [hhF y' hy', hhF y hy]
+    have hsplit : inner ℝ g (ψ y' - ψ y) = fderiv ℝ F y (y' - y) +
+        inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y)) := by
+      have h3 : inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y)) =
+          inner ℝ g (ψ y' - ψ y) - inner ℝ g (fderiv ℝ ψ y (y' - y)) := inner_sub_right _ _ _
+      rw [h3, hg]
+      ring
+    rw [hsplit]
+    have hgR : |inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y))| ≤
+        ‖g‖ * (c * ε / (2 * (‖g‖ + 1)) * ‖y' - y‖) := by
+      calc |inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y))|
+          ≤ ‖g‖ * ‖ψ y' - ψ y - fderiv ℝ ψ y (y' - y)‖ := abs_real_inner_le_norm _ _
+        _ ≤ ‖g‖ * (c * ε / (2 * (‖g‖ + 1)) * ‖y' - y‖) :=
+          mul_le_mul_of_nonneg_left e2 (norm_nonneg _)
+    have hgle : ‖g‖ * (c * ε / (2 * (‖g‖ + 1))) ≤ c * ε / 2 := by
+      rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
+      nlinarith [norm_nonneg g, mul_pos hc hε]
+    have hF1' : |F y' - F y - fderiv ℝ F y (y' - y)| ≤ c * ε / 2 * ‖y' - y‖ := by
+      simpa [Real.norm_eq_abs] using e1
+    calc |F y' - F y - (fderiv ℝ F y (y' - y) + inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y)))|
+        ≤ |F y' - F y - fderiv ℝ F y (y' - y)| +
+            |inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y))| := by
+          rw [show F y' - F y - (fderiv ℝ F y (y' - y) +
+              inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y))) =
+            (F y' - F y - fderiv ℝ F y (y' - y)) -
+              inner ℝ g (ψ y' - ψ y - fderiv ℝ ψ y (y' - y)) by ring]
+          exact abs_sub _ _
+      _ ≤ c * ε / 2 * ‖y' - y‖ + ‖g‖ * (c * ε / (2 * (‖g‖ + 1)) * ‖y' - y‖) :=
+          add_le_add hF1' hgR
+      _ ≤ c * ε / 2 * ‖y' - y‖ + c * ε / 2 * ‖y' - y‖ := by
+          rw [← mul_assoc]
+          exact add_le_add le_rfl (mul_le_mul_of_nonneg_right hgle (norm_nonneg _))
+      _ = ε * (c * ‖y' - y‖) := by ring
+      _ ≤ ε * ‖ψ y' - ψ y‖ := mul_le_mul_of_nonneg_left hcl hε.le
+  -- Step 5(f): uniqueness of approximate differentials along `A` gives `H (ψ y) = g`
+  have hHg : H (ψ y) = g := by
+    refine Submission.dtc_bc_lc_sl_ll_approx_grad_unique P (n + 1) (ψ '' Y) (ψ y) _ h (H (ψ y)) g
+      hAtan hHmem hgP ?_ ?_
+    · -- Step 5(e): the `A`-ratios are bounded by the `M`-ratios, which tend to `0`
+      intro ε hε
+      refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hHlim ε hε)
+        (fun r => zero_le) (fun r => ?_)
+      exact ENNReal.div_le_div_right
+        (measure_mono (inter_subset_inter_left _ (inter_subset_inter_left _ hYM))) _
+    · -- Step 5(d): by (c) the excess sets of `g` are empty for `0 < r < r₀`
+      intro ε hε
+      obtain ⟨r₀, hr₀, hr₀'⟩ := hclass ε hε
+      have hev : (fun r : ℝ => μHE[n + 1] (ψ '' Y ∩ ball (ψ y) r ∩
+          {y_1 | ε * ‖y_1 - ψ y‖ < |h y_1 - h (ψ y) - inner ℝ g (y_1 - ψ y)|}) /
+            ENNReal.ofReal (r ^ (n + 1))) =ᶠ[𝓝[>] 0] fun _ => 0 := by
+        filter_upwards [Ioo_mem_nhdsGT hr₀] with r hr
+        have hempty : ψ '' Y ∩ ball (ψ y) r ∩
+            {y_1 | ε * ‖y_1 - ψ y‖ < |h y_1 - h (ψ y) - inner ℝ g (y_1 - ψ y)|} = ∅ := by
+          refine eq_empty_iff_forall_notMem.2 ?_
+          rintro x' ⟨⟨hx', hball⟩, hlt⟩
+          exact (not_lt.2 (hr₀' x' hx' (lt_of_lt_of_le (mem_ball_iff_norm.1 hball) hr.2.le))) hlt
+        rw [hempty, measure_empty, ENNReal.zero_div]
+      exact tendsto_const_nhds.congr' hev.symm
+  -- Step 6: `H (ψ y) = g ∈ Π` and `⟨H (ψ y), B_y e⟩ = ⟨g, B_y e⟩ = DF(y)e`
+  refine ⟨hHg ▸ hgP, fun e => ?_⟩
+  rw [hHg]
+  exact hg e
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
