@@ -451,6 +451,40 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Gram determinant of a scaled cone frame** (the cone Jacobian behind Simon 6.2.30 and 6.3.10
+for `h(t, x) = t x`).  For `a ∈ ℝᴾ`, `w = (w₀, …, w_{k-1})` and every real `t`,
+`Γ(a, t w) = (tᵏ)² Γ(a, w)`, where `Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ`.  With `d = (1, t, …, t)` and
+`D = diag d`, `(a, t w)ₗ = dₗ (a, w)ₗ`, so bilinearity of the inner product gives
+`M(a, t w) = D M(a, w) D` for the Gram matrices, and `det D = ∏ₗ dₗ = tᵏ`. -/
+theorem Submission.ecf_cp_gc_det_smul : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (t : ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) = (t ^ k) ^ 2 * Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w t
+  -- Step 1: with `d = (1, t, …, t)`, `(a, t • w)_l = d_l • (a, w)_l` for every `l`
+  let d : Fin (k + 1) → ℝ := Fin.cons 1 fun _ => t
+  have hscale : ∀ l : Fin (k + 1), (Fin.cons a (t • w) : Fin (k + 1) → Euclid P) l =
+      d l • (Fin.cons a w : Fin (k + 1) → Euclid P) l := by
+    intro l
+    refine Fin.cases ?_ (fun i => ?_) l
+    · simp only [d, Fin.cons_zero, one_smul]
+    · simp only [d, Fin.cons_succ, Pi.smul_apply]
+  -- Step 2: `M(a, t • w) = D * M(a, w) * D` with `D = diagonal d`, by bilinearity
+  have hcong : (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) =
+      Matrix.diagonal d * (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) * Matrix.diagonal d := by
+    ext l m
+    simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.of_apply]
+    rw [hscale l, hscale m, real_inner_smul_left, real_inner_smul_right]
+    ring
+  -- Step 3: `det D = ∏ₗ dₗ = d₀ * ∏_{i < k} t = tᵏ`
+  have hD : (Matrix.diagonal d).det = t ^ k := by
+    rw [Matrix.det_diagonal, Fin.prod_univ_succ]
+    simp only [d, Fin.cons_zero, Fin.cons_succ, Finset.prod_const, Finset.card_fin, one_mul]
+  -- Step 4: `Γ(a, t • w) = tᵏ * Γ(a, w) * tᵏ = (tᵏ)² * Γ(a, w)`
+  rw [hcong, Matrix.det_mul, Matrix.det_mul, hD]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
