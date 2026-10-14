@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8e77ce63e77d87dce7e2392daacaf03f955f8ff8b60c565627fddd5ac7ec2d9c",
+  "git_delta": {
+    "base_commit": "f2cb2993004b039a6055fd157bb1c9ba2e98f242",
+    "candidate_commit": "e6ea7824dd57cfbcd53ef7295cabbcac31008720",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a6d9f1939302e4db3291c95ddb3d6d9ffcd7f3f66b4c29ae899c155f8e62c6f1",
+    "source_sha256": "af9cf097e1a78310e76ceee83fb9fba2462ac8fb0bcb4c8111e4d5380196017f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_ctc_minimizing_stationary",
+      "statement": "MinimizingImpliesStationary",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
