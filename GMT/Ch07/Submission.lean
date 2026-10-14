@@ -451,6 +451,145 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Support calculus** for currents in `ℝᴾ` (Simon 6.2.11): (i) if `E` is closed and `X(ω) = 0`
+whenever `spt ω ∩ E = ∅`, then `spt X ⊆ E`; (ii) `spt X` is closed; (iii)
+`spt(A − B) ⊆ spt A ∪ spt B`; (iv) `spt 0 = ∅`; (v) `spt ∂A ⊆ spt A`.  A point lies off `spt X`
+iff it has an open neighbourhood with compact closure on which `X` vanishes.  Small balls are such
+neighbourhoods in the proper space `ℝᴾ`; zero neighbourhoods of `A` and `B` intersect to one of
+`A − B`; and since `spt dη ⊆ spt η`, a zero neighbourhood of `A` is one of `∂A`. -/
+theorem Submission.cmcsd_support_calculus : ∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support) := by
+  intro P n
+  -- `B_ε(x)` is open, and its closure lies in the compact `closedBall x ε` (`ℝᴾ` is proper)
+  have hball : ∀ (x : Euclid P) (ε : ℝ), IsOpen (ball x ε) ∧ IsCompact (closure (ball x ε)) ∧
+      closure (ball x ε) ⊆ univ := fun x ε =>
+    ⟨isOpen_ball, (isCompact_closedBall x ε).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, subset_univ _⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- (i) for `x ∉ E`, a ball around `x` inside the open set `Eᶜ` is a zero neighbourhood of `x`
+    intro E X hE hX x hx
+    by_contra hxE
+    obtain ⟨ε, hε, hεE⟩ := Metric.isOpen_iff.mp hE.isOpen_compl x hxE
+    refine hx.2 (mem_sUnion_of_mem (mem_ball_self hε)
+      ⟨(hball x ε).1, (hball x ε).2.1, (hball x ε).2.2, fun ω hω => hX ω ?_⟩)
+    exact subset_compl_iff_disjoint_right.mp (hω.trans hεE)
+  · -- (ii) `spt X = univ \ X.zeroRegion`, and the zero region is open
+    intro X
+    exact isClosed_univ.sdiff X.isOpen_zeroRegion
+  · -- (iii) the intersection of zero neighbourhoods of `A` and `B` is one of `A − B`
+    intro A B x hx
+    by_contra hAB
+    have hxA : x ∈ A.zeroRegion := by
+      by_contra h
+      exact hAB (mem_union_left _ ⟨mem_univ x, h⟩)
+    have hxB : x ∈ B.zeroRegion := by
+      by_contra h
+      exact hAB (mem_union_right _ ⟨mem_univ x, h⟩)
+    obtain ⟨WA, ⟨hWAo, hWAc, -, hWAv⟩, hxWA⟩ := mem_sUnion.mp hxA
+    obtain ⟨WB, ⟨hWBo, -, -, hWBv⟩, hxWB⟩ := mem_sUnion.mp hxB
+    refine hx.2 (mem_sUnion_of_mem (⟨hxWA, hxWB⟩ : x ∈ WA ∩ WB) ⟨hWAo.inter hWBo,
+      hWAc.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩)
+    change A ω - B ω = 0
+    rw [hWAv ω (hω.trans inter_subset_left), hWBv ω (hω.trans inter_subset_right), sub_zero]
+  · -- (iv) every ball is a zero neighbourhood of the zero current
+    exact eq_empty_iff_forall_notMem.mpr fun x hx => hx.2 (mem_sUnion_of_mem
+      (mem_ball_self one_pos) ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2,
+        fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
+  · -- (v) `∂A(η) = A(dη)` with `spt dη ⊆ spt η`: a zero neighbourhood of `A` is one of `∂A`
+    intro A x hx
+    refine ⟨mem_univ x, fun hxA => hx.2 ?_⟩
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp hxA
+    refine mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
+
+/-- **Current toolkit** in `ℝᴺ` (Simon 6.2.4–6.2.11), given that a current kills forms supported
+off its support (VO) and the representation theorem (REP): (A0) `|X(ψ)| ≤ c M(X)` if `|ψ| ≤ c` on
+`spt X`; (MB) `|T(ω)| ≤ C c` whenever `|ω| ≤ c` gives `M(T) ≤ C`; (LOC) `X(η) = X(η')` if `η = η'`
+on an open `W ⊇ spt X`; (NCD) differences and (NCB) boundaries of currents with compact support,
+finite mass and finite boundary mass are again such currents.  For (A0), (REP) gives `(μ, ξ)` with
+`μ(ℝᴺ) = M(X)`, and (VO) gives `μ((spt X)ᶜ) = 0`; the rest uses mass suprema, the support calculus
+and `∂∂ = 0`. -/
+theorem Submission.dimred_mbl_dt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal) ∧ (∀ (N k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid N)) k) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T ω| ≤ C * c) → T.mass ≤ ENNReal.ofReal C) ∧ (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η') ∧ (∀ (N k : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → (X - Y).support ⊆ X.support ∪ Y.support ∧ IsCompact (X - Y).support ∧ (X - Y).mass < ∞ ∧ boundaryMassOn (X - Y) univ < ∞) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), IsCompact X.support → X.boundary.mass < ∞ → X.boundary.support ⊆ X.support ∧ IsCompact X.boundary.support ∧ boundaryMassOn X.boundary univ < ∞ := by
+  intro hVO hREP
+  -- (MB) each admissible test form has value at most `C`, so their supremum `M(T)` is at most `C`
+  have hMB : ∀ (N k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid N)) k) (C : ℝ),
+      (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ),
+        (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) →
+          |T ω| ≤ C * c) → T.mass ≤ ENNReal.ofReal C := by
+    intro N k T C hT
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    exact ENNReal.ofReal_le_ofReal ((le_abs_self _).trans ((hT ω 1 hω.2).trans_eq (mul_one C)))
+  -- `M(A − B) ≤ M(A) + M(B)`: `(A − B)(ω) = A(ω) + B(−ω)`, and `−ω` is admissible with `ω`
+  have hmass_sub : ∀ (N k : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid N)) k),
+      (A - B).mass ≤ A.mass + B.mass := by
+    intro N k A B
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    have hω' : -ω ∈ massAdmissibleOn univ k univ :=
+      ⟨subset_univ _, fun x => by simpa using hω.2 x⟩
+    have hneg : B (-ω) = -B ω := map_neg B.toCurrent ω
+    calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by
+          rw [hneg, ← sub_eq_add_neg]
+          rfl
+      _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+      _ ≤ A.mass + B.mass := add_le_add (A.le_massOn hω) (B.le_massOn hω')
+  refine ⟨?_, hMB, ?_, ?_, ?_⟩
+  · -- (A0) represent `X` by `(μ, ξ)`; `μ` is finite, with `μ(univ) = M(X)`, and carried by `spt X`
+    intro N k X ψ c hX hψ
+    obtain ⟨μ, ξ, -, -, hμW, -, hξ, hrep, -⟩ := hREP N k univ X isOpen_univ
+      fun W _ _ => (X.massOn_mono (subset_univ W)).trans_lt hX
+    have hμ : μ univ = X.mass := (hμW univ isOpen_univ).symm
+    have : IsFiniteMeasure μ := ⟨by rw [hμ]; exact hX⟩
+    -- `μ((spt X)ᶜ) = M_{(spt X)ᶜ}(X) = 0`: `X` kills the forms supported off `spt X` (VO)
+    have hZ : μ X.zeroRegion = 0 := by
+      rw [← hμW _ X.isOpen_zeroRegion]
+      refine nonpos_iff_eq_zero.mp (sSup_le ?_)
+      rintro _ ⟨ω, hω, rfl⟩
+      simp [hVO N k univ X ω (Set.disjoint_left.mpr fun x hx hxX => hxX.2 (hω.1 hx))]
+    have hspt : ∀ᵐ x ∂μ, x ∈ X.support :=
+      ae_iff.mpr (measure_mono_null (fun x hx => not_not.mp fun h => hx ⟨mem_univ x, h⟩) hZ)
+    have hb : ∀ᵐ x ∂μ, ‖ξ x ((ψ : DifferentialForm (Euclid N) k) x)‖ ≤ c := by
+      filter_upwards [hspt] with x hx
+      exact (Real.norm_eq_abs _).trans_le ((hξ x _).trans (hψ x hx))
+    calc |X ψ| = ‖∫ x, ξ x ((ψ : DifferentialForm (Euclid N) k) x) ∂μ‖ := by
+          rw [hrep ψ, Real.norm_eq_abs]
+      _ ≤ c * μ.real univ := norm_integral_le_of_norm_le_const hb
+      _ = c * X.mass.toReal := by rw [measureReal_def, hμ]
+  · -- (LOC) `η − η'` vanishes on `W`, so `spt(η − η') ⊆ Wᶜ` misses `spt X ⊆ W`; apply (VO)
+    intro N k X η η' W hW hXW hηη'
+    have hsupp : tsupport ((η - η' : TestFormOn (univ : Set (Euclid N)) k) :
+        DifferentialForm (Euclid N) k) ⊆ Wᶜ :=
+      closure_minimal (fun x hx hxW => hx (by simp [hηη' x hxW])) hW.isClosed_compl
+    have hlin : X (η - η') = X η - X η' := map_sub X.toCurrent η η'
+    rw [← sub_eq_zero, ← hlin]
+    exact hVO N k univ X (η - η') (disjoint_compl_left.mono hsupp hXW)
+  · -- (NCD) `spt(X − Y) ⊆ spt X ∪ spt Y` is closed, hence compact; masses add up, also for `∂`
+    intro N k X Y hXc hXm hXb hYc hYm hYb
+    have hspt := (Submission.cmcsd_support_calculus N k).2.2.1 X Y
+    refine ⟨hspt, (hXc.union hYc).of_isClosed_subset
+      ((Submission.cmcsd_support_calculus N k).2.1 _) hspt,
+      (hmass_sub N k X Y).trans_lt (ENNReal.add_lt_top.mpr ⟨hXm, hYm⟩), ?_⟩
+    cases k with
+    | zero => exact ENNReal.zero_lt_top
+    | succ k =>
+      -- `∂(X − Y) = ∂X − ∂Y`: both send `ω` to `X(dω) − Y(dω)`
+      have hb : (X - Y).boundary = X.boundary - Y.boundary := GeometricCurrentOn.ext fun ω => rfl
+      show (X - Y).boundary.mass < ∞
+      rw [hb]
+      exact (hmass_sub N k _ _).trans_lt (ENNReal.add_lt_top.mpr ⟨hXb, hYb⟩)
+  · -- (NCB) `spt ∂X ⊆ spt X` is closed, hence compact; `∂∂X = 0` has mass `0` by (MB)
+    intro N k X hXc hXb
+    have hspt := (Submission.cmcsd_support_calculus N k).2.2.2.2 X
+    refine ⟨hspt, hXc.of_isClosed_subset ((Submission.cmcsd_support_calculus N k).2.1 _) hspt, ?_⟩
+    cases k with
+    | zero => exact ENNReal.zero_lt_top
+    | succ k =>
+      show X.boundary.boundary.mass < ∞
+      rw [GeometricCurrentOn.boundary_boundary]
+      exact (hMB N k 0 0 fun ω c _ => by simp).trans_lt ENNReal.ofReal_lt_top
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
