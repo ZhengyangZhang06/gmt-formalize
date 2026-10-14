@@ -451,6 +451,24 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.3 and 6.2.11**: if `S(ω) = c·∂T(ω)` for every test `n`-form `ω` in `U`, then
+`spt S ⊆ spt T`.  If `x ∉ spt T`, then `x` lies in an open `W` with compact closure in `U` on
+which `T` vanishes.  For a test `n`-form `ω` with `spt ω ⊆ W`, `S(ω) = c·∂T(ω) = c·T(dω) = 0`,
+as `spt dω ⊆ spt ω ⊆ W`.  So `W` is also a zero region of `S`, and `x ∉ spt S`. -/
+theorem Submission.dimred_cs_sos_mt_cc_support_smul_boundary : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n) (c : ℝ), (∀ ω : TestFormOn U n, S ω = c * T.boundary ω) → S.support ⊆ T.support := by
+  intro P n U T S c hS x hx
+  -- `x ∈ spt S = U \ S.zeroRegion`; it remains to show `x ∉ T.zeroRegion`
+  refine ⟨hx.1, ?_⟩
+  -- step 1: otherwise `x` lies in a zero region `W` of `T`
+  rintro ⟨W, ⟨hWo, hWc, hWU, hTW⟩, hxW⟩
+  -- steps 2–3: `W` is a zero region of `S` as well, so `x ∈ S.zeroRegion`
+  refine hx.2 ⟨W, ⟨hWo, hWc, hWU, fun ω hω => ?_⟩, hxW⟩
+  -- `S(ω) = c·∂T(ω) = c·T(dω)`, and `T(dω) = 0` as `spt dω ⊆ spt ω ⊆ W`
+  rw [hS ω, GeometricCurrentOn.boundary_apply,
+    hTW (exteriorDerivativeTestOn U n ω)
+      ((tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) n)).trans hω),
+    mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
