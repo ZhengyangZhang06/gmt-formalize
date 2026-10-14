@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2efb65f70c16052a02707ae13760cec4bd777b2c1051b1d88a3607b578427fb0",
+  "git_delta": {
+    "base_commit": "7b48745bf40cf3cfdba34935053ab6dff5429d1c",
+    "candidate_commit": "ac1b0290e267b9b28d04228c23a2ce1d1ffcfe13",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_slice_coords",
+    "diff_sha256": "12d8f12026653be12b82a555ceac870aa3d5fbcca329ba3cf5028f82590286ea",
+    "source_sha256": "9135ec7335ef0e2748c67b148a5bfc5baa8d7f8bfa3755528fe2fbb2b6b271ce",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_slice_coords",
+      "statement": "∀ N : ℕ, ∃ L : (ℝ × Euclid N) ≃L[ℝ] Euclid (N + 1), (∀ (t : ℝ) (x : Euclid N), L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) ∧ L (1, 0) = EuclideanSpace.single 0 1 ∧ ∀ x : Euclid N, ‖L (0, x)‖ = ‖x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
