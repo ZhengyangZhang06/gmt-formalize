@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "001b823d684099d2234eb171193d4d552b9546961a53960c4d974ef3e8c16e72",
+  "git_delta": {
+    "base_commit": "908c3c0cd0b52fe3d998d418904e6fc51e9c1bd2",
+    "candidate_commit": "19c62e09656a2c0fa329f0762be92f9862b494cf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_lur_det_covector_clm",
+    "diff_sha256": "8aa39a501602e21ded8a34a83f192354cc8931dbdb9876ced346682be5605b7b",
+    "source_sha256": "eeb54abdb070c9f7f662005a42622ea9b1df91b8c0e5a27564e264e47a410dc3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_det_covector_clm",
+      "statement": "∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)), ∃ Λ : Euclid (n + 1) →L[ℝ] Covector (Euclid P) n, ∀ (p : Euclid (n + 1)) (a : Fin n → Euclid P), Λ p a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
