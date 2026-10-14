@@ -2039,6 +2039,50 @@ theorem Submission.dmcbr_bim_slice_localization : (∀ (P n : ℕ) (U : Set (Euc
       image_eq_zero_of_notMem_tsupport (fun h => hx (hη h))
     rw [this, map_zero]
 
+/-- **Masses of a compactly supported current and of its restriction** (Simon Ch. 6, 2.4–2.5
+and 2.11).  Assume (VO): a current kills every test form whose support misses its support.
+Let `U ⊆ ℝᴾ` be open, `C ⊆ U` compact and `Y ∈ 𝒟ₖ₊₁(ℝᴾ)` with `spt Y ⊆ C`.  By (VO), `Y` and
+`∂Y` kill every form whose support misses `C` (`d` does not enlarge supports), so mass
+localization gives `M(Y) ≤ M_U(Y)` and `M(∂Y) ≤ M_U(∂Y)`.  A form on `ℝᴾ` admissible for
+`M_U` is an admissible form on `U` with the same value, so `M_U(Y) ≤ M(Y|_U)` and
+`M_U(∂Y) ≤ M(∂(Y|_U))`. -/
+theorem Submission.dmcbr_bim_extension_mass_bounds : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (U C : Set (Euclid P)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), IsOpen U → IsCompact C → C ⊆ U → Y.support ⊆ C → Y.mass ≤ (Y.restrictDomain (subset_univ U)).mass ∧ Y.boundary.mass ≤ (Y.restrictDomain (subset_univ U)).boundary.mass := by
+  intro hVO P k U C Y hU hC hCU hYC
+  -- Step 1: `Y` kills every form whose support misses `C`, by (VO) and `spt Y ⊆ C`
+  have hvY : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) C → Y ω = 0 :=
+    fun ω hω => hVO P (k + 1) univ Y ω (hω.mono_right hYC)
+  -- Step 2: so does `∂Y`, since `∂Y(η) = Y(dη)` and `spt dη ⊆ spt η`
+  have hvB : ∀ η : TestFormOn (univ : Set (Euclid P)) k,
+      Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) C → Y.boundary η = 0 := by
+    intro η hη
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hvY _ (hη.mono_left (tsupport_exteriorDerivative_subset _))
+  -- Step 4: if `Z(ιω) = Z'(ω)` for all `ω ∈ 𝒟ᵐ(U)`, then `M_U(Z) ≤ M_U(Z') = M(Z')`
+  have hres : ∀ {m : ℕ} (Z : GeometricCurrentOn (univ : Set (Euclid P)) m)
+      (Z' : GeometricCurrentOn U m),
+      (∀ ω : TestFormOn U m, Z (testFormOnInclusion (subset_univ U) m ω) = Z' ω) →
+      Z.massOn U ≤ Z'.massOn U := by
+    intro m Z Z' hZ
+    apply sSup_le
+    rintro _ ⟨ω, ⟨hsupp, hnorm⟩, rfl⟩
+    let ω' : TestFormOn U m := ⟨ω, ω.property.1, hsupp⟩
+    have h1 : Z ω = Z' ω' := by rw [← hZ ω']; rfl
+    change ENNReal.ofReal (Z ω) ≤ Z'.massOn U
+    rw [h1]
+    exact Z'.le_massOn ⟨hsupp, hnorm⟩
+  -- Steps 3, 5, 6: localize with `lcmp_massOn_le_of_vanish_off_compact`, then compare with
+  -- `Y|_U` and `∂(Y|_U)`, which agree with `Y` and `∂Y` on forms of `U`
+  refine ⟨?_, ?_⟩
+  · calc Y.mass = Y.massOn univ := rfl
+      _ ≤ Y.massOn U :=
+        Submission.lcmp_massOn_le_of_vanish_off_compact P (k + 1) univ U C Y hC hU hCU hvY univ
+      _ ≤ (Y.restrictDomain (subset_univ U)).massOn U := hres Y _ (fun ω => rfl)
+  · calc Y.boundary.mass = Y.boundary.massOn univ := rfl
+      _ ≤ Y.boundary.massOn U :=
+        Submission.lcmp_massOn_le_of_vanish_off_compact P k univ U C Y.boundary hC hU hCU hvB univ
+      _ ≤ (Y.restrictDomain (subset_univ U)).boundary.massOn U := hres Y.boundary _ (fun ω => rfl)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
