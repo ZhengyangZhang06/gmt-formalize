@@ -451,6 +451,17 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Directional derivatives of test forms are test forms: if `φ ∈ 𝒟^q(ℝᴾ)` and `v ∈ ℝᴾ`, then
+`z ↦ Dφ(z)[v]` is again `C^∞` (`Dφ` is `C^∞`, as `∞ + 1 ≤ ∞`) with compact support
+(`spt Dφ ⊆ spt φ`, and evaluation at `v` maps `0` to `0`). -/
+theorem Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply : ∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v) := by
+  rintro P q φ v ⟨hs, hc⟩
+  refine ⟨?_, ?_⟩
+  · -- `Dφ` is `C^∞`, hence so is its evaluation at the constant vector `v`
+    exact (hs.fderiv_right (by simp)).clm_apply contDiff_const
+  · -- `Dφ` has compact support, and `L ↦ L v` maps `0` to `0`
+    exact (hc.fderiv ℝ).comp_left (g := fun L : Euclid P →L[ℝ] Covector (Euclid P) q => L v) rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
