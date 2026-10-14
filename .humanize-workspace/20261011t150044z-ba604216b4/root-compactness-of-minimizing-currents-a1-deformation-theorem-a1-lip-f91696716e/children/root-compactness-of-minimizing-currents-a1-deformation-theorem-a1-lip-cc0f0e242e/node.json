@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.approx_data-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1",
+  "depth": 6,
+  "title": "Smooth Lipschitz approximants with cut-off pull-back forms",
+  "statement": "For all N, N' ∈ ℕ, Λ ∈ ℝ≥0, every map F : ℝ^N → ℝ^{N'} with LipschitzWith Λ F and every compact K ⊆ ℝ^N, there is a sequence of maps F_j : ℝ^N → ℝ^{N'} (j ∈ ℕ) such that: (i) every F_j is C^∞ (ContDiff ℝ (⊤ : ℕ∞)); (ii) every F_j is Λ-Lipschitz; (iii) ‖fderiv ℝ F_j x‖ ≤ Λ for all j ∈ ℕ and x ∈ ℝ^N; (iv) dist(F_j x, F x) ≤ Λ/(j + 1) for all j and x; (v) F_j → F uniformly on ℝ^N (TendstoUniformly F_j F atTop); and (vi) for every k ∈ ℕ and every ω ∈ 𝒟^k(ℝ^{N'}) (TestFormOn univ k) there is a sequence η_j ∈ 𝒟^k(ℝ^N) (TestFormOn univ k) such that for every j there is an open set W ⊇ K with η_j(x) = (ω(F_j x)).compContinuousLinearMap (fderiv ℝ F_j x) and (exteriorDerivative η_j)(x) = ((exteriorDerivative ω)(F_j x)).compContinuousLinearMap (fderiv ℝ F_j x) for every x ∈ W.",
+  "lean_statement": "∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (K : Set (Euclid N)), LipschitzWith Λ F → IsCompact K → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ (∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Fs j) x‖ ≤ (Λ : ℝ)) ∧ (∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1)) ∧ TendstoUniformly Fs F atTop ∧ ∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid N')) k), ∃ ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k, ∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ K ⊆ W ∧ (∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) ∧ ∀ x ∈ W, exteriorDerivative (ηs j : DifferentialForm (Euclid N) k) x = (exteriorDerivative (ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)",
+  "lean_name": "cmcdt_lpo_pf_approx_data",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-cc0f0e242e-a1"
+}

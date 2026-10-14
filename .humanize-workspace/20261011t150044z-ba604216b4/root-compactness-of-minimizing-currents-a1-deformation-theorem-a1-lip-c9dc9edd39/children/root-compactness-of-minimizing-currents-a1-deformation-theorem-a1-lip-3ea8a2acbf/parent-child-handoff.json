@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: ancestors and depends_on of the selected node, frozen lean_statement of slice-a1 (cmcdt_lpo_slice_forms) and toolkit-a1 (cmcdt_lpo_current_toolkit), and lean_name collision check for the five proposed cmcdt_lpo_cyl_* names (no collision)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n cmcdt_lpo_cyl local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)",
+        "rg -n -i 'cylinder|productWithInterval|homotopy' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)",
+        "rg -n 'GeometricCurrentOn|zeroRegion|massAdmissibleOn' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'def compContinuousLinearMapCLM|def curryLeftLI|theorem curryLeft_apply_apply|theorem compContinuousLinearMapCLM_apply' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n continuous_eval_const mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean; rg -ln 'class ContinuousEvalConst' mathlib/Mathlib",
+        "rg -n 'theorem Continuous.finCons|theorem IsCompact.of_isClosed_subset|closure_ball_subset_closedBall' mathlib/Mathlib -g '*.lean'",
+        "rg -n 'theorem integral_add|theorem integral_const_mul' mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean",
+        "sed -n 345,420p book/chapter-06.txt; grep -n 'homotopy formula' book/chapter-06.txt (Simon 6.2.17-2.21, 2.25)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Probe.lean and Probe2.lean (#check of cited Mathlib lemmas; fun_prop proves continuity of t ↦ ι(t, x))",
+        "lake env lean /tmp/cyl-decomp-m3x9/Children.lean (all five child types elaborate after import GMT.Ch07.Submission; sorry-free assembly Submission.cmcdt_lpo_cyl_assembly_check of the exact selected frozen type from the children and the two stubbed sibling dependencies)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Child1.lean ... Child5.lean and Consolidated.lean (complete scratch proofs of all five children; #print axioms)",
+        "sed of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py, prompts.py and runtime.py (inherited-prerequisite citation rule; depth gate node.depth >= max_depth = 6)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Hom/ContinuousEvalConst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cyl-decomp-m3x9/Children.lean",
+        "/tmp/cyl-decomp-m3x9/Child1.lean",
+        "/tmp/cyl-decomp-m3x9/Child2.lean",
+        "/tmp/cyl-decomp-m3x9/Child3.lean",
+        "/tmp/cyl-decomp-m3x9/Child4.lean",
+        "/tmp/cyl-decomp-m3x9/Child5.lean",
+        "/tmp/cyl-decomp-m3x9/Consolidated.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py"
+      ],
+      "conclusion": "Nothing in the snapshot can be reused. The snapshot is project b4d606d with Mathlib 25730c7c, and its Ch07 Contract.lean is identical to the workspace Submission.lean. It has no product-with-[[0,1]], cylinder or homotopy construction for GeometricCurrentOn (rg cylinder|homotopy in project/GMT: no match). It has no declaration with prefix cmcdt_lpo_cyl (no match), and dag.json reserves none of the five proposed names. Every tool the child proofs cite is in the frozen import closure. From Mathlib: ContinuousAlternatingMap.compContinuousLinearMapCLM (Topology/Algebra/Module/Alternating/Topology.lean:281), curryLeftLI and curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean:77, :57), continuous_eval_const (Topology/Hom/ContinuousEvalConst.lean), Continuous.finCons (Topology/Constructions.lean:983), IsCompact.of_isClosed_subset (Topology/Compactness/Compact.lean:105), closure_ball_subset_closedBall (Topology/MetricSpace/Pseudo/Lemmas.lean:73), and intervalIntegral.integral_add / integral_const_mul (IntervalIntegral/Basic.lean:774, :817). From SimonGMT Chapter06: GeometricCurrentOn.ext, boundary_apply, isOpen_zeroRegion, zeroRegion/support, massAdmissibleOn and mass. All five child types elaborate after import GMT.Ch07.Submission. Each child has a complete sorry-free scratch proof with axioms propext, Classical.choice and Quot.sound. The exact selected frozen type is assembled from the five children and the two sibling dependencies, stubbed, with no other sorry. Simon 6.2.17–2.21 and the homotopy formula 2.25 in book/chapter-06.txt match the construction."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cylinder-a1.current-a1",
+  "subproblem": {
+    "key": "current",
+    "title": "Cylinder current X ↦ X ∘ S from the bounded-current constructor, with mass bound and additivity",
+    "statement": "Notation: ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) ∈ ℝ^{N+1} for t ∈ ℝ, x ∈ ℝ^N; Jv := ι(0, v) = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}; |α| := covectorEuclideanNorm α; 𝒟^m(ℝ^P) := TestFormOn univ m and 𝒟_m(ℝ^P) := GeometricCurrentOn univ m (forms and currents on all of ℝ^P = Euclid P); M(T) := T.mass = T.massOn univ; spt T := T.support. Assume (MSB): for all N, k ∈ ℕ, X ∈ 𝒟_k(ℝ^N) with M(X) < ∞, ψ ∈ 𝒟^k(ℝ^N) and c ∈ ℝ with |ψ(x)| ≤ c for every x ∈ spt X, one has |X(ψ)| ≤ c·M(X).toReal; and (BC): for all N, k ∈ ℕ, every ℝ-linear T₀ : 𝒟^k(ℝ^N) → ℝ and C ∈ ℝ such that |T₀(ω)| ≤ C·c whenever ω ∈ 𝒟^k(ℝ^N), c ∈ ℝ and |ω(x)| ≤ c for all x, there is T ∈ 𝒟_k(ℝ^N) with T(ω) = T₀(ω) for all ω and M(T) ≤ ENNReal.ofReal C. Then for all N, k ∈ ℕ and every ℝ-linear S : 𝒟^{k+1}(ℝ^{N+1}) → 𝒟^k(ℝ^N) satisfying (iii) [for every ω and c ∈ ℝ with |ω(y)| ≤ c for all y ∈ ℝ^{N+1}, |S(ω)(x)| ≤ c for all x ∈ ℝ^N], there is a map cyl : 𝒟_k(ℝ^N) → 𝒟_{k+1}(ℝ^{N+1}) such that (a) for every X with M(X) < ∞: cyl(X)(ω) = X(S(ω)) for all ω ∈ 𝒟^{k+1}(ℝ^{N+1}) and M(cyl(X)) ≤ M(X); (b) cyl(X − Y) = cyl(X) − cyl(Y) for all X, Y ∈ 𝒟_k(ℝ^N) with M(X) < ∞ and M(Y) < ∞ (X − Y is the difference of currents of the frozen contract).",
+    "lean_statement": "(∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal) → (∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C) → ∀ (N k : ℕ) (S : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid N)) k), (∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (c : ℝ), (∀ y : Euclid (N + 1), covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y) ≤ c) → ∀ x : Euclid N, covectorEuclideanNorm ((S ω : DifferentialForm (Euclid N) k) x) ≤ c) → ∃ cyl : GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1), (∀ X : GeometricCurrentOn (univ : Set (Euclid N)) k, X.mass < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), cyl X ω = X (S ω)) ∧ (cyl X).mass ≤ X.mass) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Euclid N)) k, X.mass < ∞ → Y.mass < ∞ → cyl (X - Y) = cyl X - cyl Y",
+    "lean_name": "cmcdt_lpo_cyl_current",
+    "depends_on": [],
+    "natural_proof": "Source: steps 3, 5 and 6 of the parent proof. Fix N, k and a linear S with property (iii).\n1. The bounded functional. Let X ∈ 𝒟_k(ℝ^N) with M(X) < ∞, and let T₀ := X.toCurrent ∘ S, i.e. T₀(ω) = X(S(ω)); T₀ is ℝ-linear as a composite of linear maps. Let ω ∈ 𝒟^{k+1}(ℝ^{N+1}) and c ∈ ℝ with |ω(y)| ≤ c for all y. By (iii), |S(ω)(x)| ≤ c for all x ∈ ℝ^N, in particular for all x ∈ spt X, so (MSB) with dimension N, degree k and ψ := S(ω) gives |T₀(ω)| = |X(S(ω))| ≤ c·M(X).toReal = M(X).toReal·c.\n2. Construction. By (BC) in dimension N + 1 and degree k + 1, applied to T₀ and C := M(X).toReal, there is T_X ∈ 𝒟_{k+1}(ℝ^{N+1}) with T_X(ω) = X(S(ω)) for all ω and M(T_X) ≤ ENNReal.ofReal(M(X).toReal) = M(X) (ENNReal.ofReal_toReal, since M(X) ≠ ∞).\n3. Definition of cyl. Using classical choice, put cyl(X) := T_X (the current chosen in step 2) if M(X) < ∞, and cyl(X) := 0 otherwise. Then for every X with M(X) < ∞ we have cyl(X)(ω) = X(S(ω)) for all ω and M(cyl(X)) ≤ M(X). This is (a).\n4. Finite mass of differences. Let M(X) < ∞ and M(Y) < ∞. By definition, M(X − Y) is the supremum of ENNReal.ofReal((X − Y)(ω)) over the admissible ω ∈ 𝒟^k(ℝ^N), i.e. tsupport ω ⊆ univ and |ω(x)| ≤ 1 for all x. For such ω, (X − Y)(ω) = X(ω) − Y(ω) (the difference of currents acts by the difference of the underlying linear functionals), and (MSB) with c = 1 gives |X(ω)| ≤ M(X).toReal and |Y(ω)| ≤ M(Y).toReal. Hence ENNReal.ofReal((X − Y)(ω)) ≤ ENNReal.ofReal(M(X).toReal + M(Y).toReal), and taking the supremum (sSup_le), M(X − Y) ≤ ENNReal.ofReal(M(X).toReal + M(Y).toReal) < ∞ (ENNReal.ofReal_lt_top). This is the parent's bound M(X − Y) ≤ M(X) + M(Y), obtained here through (MSB).\n5. Additivity (b). Let M(X) < ∞ and M(Y) < ∞. By step 4, (a) applies to X − Y as well as to X and Y. So for every ω, cyl(X − Y)(ω) = (X − Y)(S(ω)) = X(S(ω)) − Y(S(ω)) = cyl(X)(ω) − cyl(Y)(ω) = (cyl(X) − cyl(Y))(ω). Two currents with the same value on every test form are equal (GeometricCurrentOn.ext), so cyl(X − Y) = cyl(X) − cyl(Y). □",
+    "proof_key_steps": [
+      "For M(X) < ∞, T₀ := X ∘ S is linear and |T₀(ω)| ≤ M(X).toReal·c whenever |ω| ≤ c, by (iii) and (MSB).",
+      "(BC) yields T_X with T_X(ω) = X(S(ω)) and M(T_X) ≤ ofReal(M(X).toReal) = M(X).",
+      "cyl(X) := T_X if M(X) < ∞, else 0; this gives (a).",
+      "M(X − Y) < ∞ by (MSB) with c = 1 on admissible forms; then cyl(X − Y) = cyl(X) − cyl(Y) by evaluation on every ω and GeometricCurrentOn.ext."
+    ]
+  },
+  "audit": {
+    "key": "current",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type matches the conditional construction and finite-mass subtraction claim. MSB bounds X composed with S, BC constructs the current, and finite mass justifies ofReal_toReal. The proof establishes finite mass of X − Y before applying the cylinder evaluation formula, then uses current extensionality. The infinite-mass default causes no gap."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3ea8a2acbf/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3ea8a2acbf/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3ea8a2acbf/parent-supplied-natural-proof.json"
+}
