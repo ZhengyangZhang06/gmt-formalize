@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e57d709eea8ee1a096f627f797878a8f9fea581cdc830a9faeeb4e1c5ae35606",
+  "git_delta": {
+    "base_commit": "f90e8af8d0ff2ad40f600af415f84dbb405f5624",
+    "candidate_commit": "8aada88f592bfd9cccb3adf89e3deb55c0525457",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_cb_curryLeft_le",
+    "diff_sha256": "1e4ca9f23bce9d1d1b03570109d744b901e976e5002b83d32ad182b482500d76",
+    "source_sha256": "976ced125971d8431ba4092fc058a285d62ebabb3235bd0a81bd606ec67a24a6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_cb_curryLeft_le",
+      "statement": "∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
