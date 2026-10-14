@@ -2669,6 +2669,98 @@ theorem Submission.dimred_mbl_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Eucl
   · exact Submission.cmcs_slice_mass_integral P μ f W L (fun t => ((A t).boundary - B t).massOn W)
       a b hf.continuous.measurable hW.measurableSet fun t _ => hpt W t
 
+/-- **Half-space slices of an integer-sliced multiple of an oriented plane** (Simon 6.4.6; the
+slicing step of the integer-multiplicity criterion for planes).  Let `V₀ = span v`,
+`C = θ₀ [V₀]` with `θ₀ > 0`, and `L_t = t v₀ + span(v₁, …, v_d)`.  The half-plane Stokes formula
+`∫_{V₀ ∩ {⟨·, v₀⟩ < t}} dφ(v) dHⁿ = ∫_{L_t} φ(v₁, …, v_d) dH^d` holds for every test `d`-form `φ`
+and every `t` (`Submission.cbr_cipi_plane_halfspace_boundary`, applied to
+`Submission.cbr_cipi_affine_plane_measure` and `Submission.cbr_cipi_halfspace_partial_integral`),
+and hence `∫_{V₀} dφ(v) dHⁿ = 0` (`Submission.cbr_cipi_plane_boundary_zero`).  The pair
+`μ = θ₀ Hⁿ⌞V₀`, `ξ ≡ ξ_v` with `ξ_v(α) = α(v)` is an admissible representation of `C`: `μ` is
+finite on compact sets by `Submission.cbr_cipi_affine_plane_measure` (with `a = 0`), and
+`|α(v)| ≤ |α|_E` by `Submission.regcomp_covector_eval_orthonormal_le`.  Then
+`∂C(η) = θ₀ ∫_{V₀} dη(v) dHⁿ = 0`, so `(0, 0)` represents `∂C`, and `f = ⟨·, v₀⟩` is
+`1`-Lipschitz.  The slicing theorem (SL) gives `A_t(ω) = ∫_{f<t} ⟨ω, ξ_v⟩ dμ` and `B_t = 0`, and
+the integer slice property of `C` makes `Z_t = ∂A_t − B_t` integer multiplicity for a.e. `t`.
+Finally `Z_t(φ) = A_t(dφ) = θ₀ ∫_{V₀ ∩ {f < t}} dφ(v) dHⁿ = θ₀ ∫_{L_t} φ(v₁, …, v_d) dH^d` by the
+half-plane Stokes formula. -/
+theorem Submission.dmcbr_cipi_slice_integer_multiplicity : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P) (θ₀ : ℝ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Orthonormal ℝ v → 0 < θ₀ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = θ₀ * ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) (d + 1)) y v ∂μHE[(d + 1)]) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ᵐ t ∂(volume : Measure ℝ), ∃ Z : GeometricCurrentOn (univ : Set (Euclid P)) d, IsIntegerMultiplicity Z ∧ ∀ φ : TestFormOn (univ : Set (Euclid P)) d, Z φ = θ₀ * ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d] := by
+  intro hSL P d v θ₀ C hv hθ₀ hC hISP
+  -- Step 0: (b) the half-plane Stokes formula on `V₀ ∩ {⟨·, v₀⟩ < t}` for every test `d`-form and
+  -- every `t`, and (a) its consequence `∫_{V₀} dφ(v) dHⁿ = 0`
+  have hb := fun φ : TestFormOn (univ : Set (Euclid P)) d =>
+    Submission.cbr_cipi_plane_halfspace_boundary Submission.cbr_cipi_affine_plane_measure
+      Submission.cbr_cipi_halfspace_partial_integral P d v hv φ
+  have ha := fun φ : TestFormOn (univ : Set (Euclid P)) d =>
+    Submission.cbr_cipi_plane_boundary_zero P d v hv φ (hb φ)
+  -- Step 1: `μ = θ₀ Hⁿ⌞V₀` and `ξ ≡ ξ_v`, `ξ_v(α) = α(v)`, form an admissible representation of `C`
+  obtain ⟨μ, hμ⟩ : ∃ μ : Measure (Euclid P), μ = ENNReal.ofReal θ₀ •
+      (μHE[(d + 1)] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range v)) :=
+    ⟨_, rfl⟩
+  obtain ⟨ξv, hξv⟩ : ∃ ξv : MultiVector P (d + 1), ∀ α : Covector (Euclid P) (d + 1),
+      ξv α = α v :=
+    ⟨ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ v, fun _ => rfl⟩
+  -- `μ` is finite on compact sets (`V₀` is the plane through `a = 0`)
+  have hμK : ∀ K : Set (Euclid P), IsCompact K → μ K < ∞ := by
+    intro K hK
+    have hplane : {y : Euclid P | y - 0 ∈ Submodule.span ℝ (Set.range v)} =
+        (Submodule.span ℝ (Set.range v) : Set (Euclid P)) := by
+      ext y
+      simp
+    have h := (Submission.cbr_cipi_affine_plane_measure P (d + 1) v 0 hv).2.2.1 K hK
+    rw [hplane] at h
+    rw [hμ, Measure.smul_apply, smul_eq_mul]
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top h
+  -- `|ξ_v(α)| = |α(v)| ≤ |α|_E`, as `v` is orthonormal
+  have hξ : ∀ α : Covector (Euclid P) (d + 1), |ξv α| ≤ covectorEuclideanNorm α := fun α => by
+    rw [hξv]
+    exact Submission.regcomp_covector_eval_orthonormal_le P (d + 1) α v hv
+  -- `C(ω) = θ₀ ∫_{V₀} ω(v) dHⁿ = ∫ ⟨ω, ξ_v⟩ dμ`
+  have hrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      C ω = ∫ x, (fun _ : Euclid P => ξv) x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ := by
+    intro ω
+    rw [hC ω, hμ, integral_smul_measure, ENNReal.toReal_ofReal hθ₀.le, smul_eq_mul]
+    simp only [hξv]
+  -- Step 2: `∂C(η) = θ₀ ∫_{V₀} dη(v) dHⁿ = 0`, so `(μ', ξ') = (0, 0)` represents `∂C`
+  have hbd : ∀ η : TestFormOn (univ : Set (Euclid P)) d, C.boundary η =
+      ∫ x, (fun _ : Euclid P => (0 : MultiVector P d)) x ((η : DifferentialForm (Euclid P) d) x)
+        ∂(0 : Measure (Euclid P)) := by
+    intro η
+    rw [integral_zero_measure, GeometricCurrentOn.boundary_apply, hC]
+    show θ₀ * ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)),
+      exteriorDerivative (η : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0
+    rw [ha η, mul_zero]
+  have hξ' : ∀ᵐ x ∂(0 : Measure (Euclid P)), ∀ α : Covector (Euclid P) d,
+      |(fun _ : Euclid P => (0 : MultiVector P d)) x α| ≤ covectorEuclideanNorm α :=
+    Eventually.of_forall fun _ α => by simp [covectorEuclideanNorm_nonneg]
+  -- Step 3: the slicing function `f = ⟨·, v₀⟩` is `1`-Lipschitz
+  set f : Euclid P → ℝ := fun y => inner ℝ y (v 0) with hf_def
+  have hf : LipschitzWith 1 f := by
+    refine LipschitzWith.of_dist_le_mul fun y y' => ?_
+    rw [NNReal.coe_one, one_mul, Real.dist_eq, dist_eq_norm, hf_def, ← inner_sub_left]
+    calc |inner ℝ (y - y') (v 0)| ≤ ‖y - y'‖ * ‖v 0‖ := abs_real_inner_le_norm _ _
+      _ = ‖y - y'‖ := by rw [hv.1 0, mul_one]
+  -- Step 4: the slices `A_t(ω) = ∫_{f<t} ⟨ω, ξ_v⟩ dμ`, `B_t = 0` of (SL)
+  obtain ⟨A, B, hA, hB, -⟩ := hSL P d univ C μ 0 (fun _ => ξv) (fun _ => 0) f 1 isOpen_univ
+    (fun K hK _ => hμK K hK) (fun K _ _ => by simp) aestronglyMeasurable_const
+    aestronglyMeasurable_const (Eventually.of_forall fun _ => hξ) hξ' hrep hbd hf
+  -- Step 5: by the integer slice property, `Z_t = ∂A_t − B_t` is integer multiplicity for a.e. `t`
+  filter_upwards [hISP μ 0 (fun _ => ξv) (fun _ => 0) hμK (fun K _ => by simp)
+    aestronglyMeasurable_const aestronglyMeasurable_const (Eventually.of_forall fun _ => hξ) hξ'
+    hrep hbd f 1 hf] with t ht
+  refine ⟨(A t).boundary - B t, ht (A t) (B t) (hA t) (hB t), fun φ => ?_⟩
+  -- Step 6: `Z_t(φ) = A_t(dφ) − 0 = θ₀ ∫_{V₀ ∩ {f<t}} dφ(v) dHⁿ = θ₀ ∫_{L_t} φ(v₁, …, v_d) dH^d`
+  have hmeas : MeasurableSet {x : Euclid P | f x < t} :=
+    (isOpen_lt hf.continuous continuous_const).measurableSet
+  change (A t).boundary φ - B t φ = _
+  rw [hB t φ, Measure.restrict_zero, integral_zero_measure, sub_zero,
+    GeometricCurrentOn.boundary_apply, hA t, hμ, Measure.restrict_smul,
+    Measure.restrict_restrict hmeas, integral_smul_measure, ENNReal.toReal_ofReal hθ₀.le,
+    smul_eq_mul, ← hb φ t, Set.inter_comm {x : Euclid P | f x < t}]
+  -- `ξ_v(dφ(y)) = dφ(y)(v)`; the test form `dφ` and the set `{f < t}` agree by definition
+  simp only [hξv]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
