@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "518a59e72c747fbe939de757e5ba6194486c2a1b1a2c2fa2935960ec9a20e0b9",
+  "git_delta": {
+    "base_commit": "9bfca6622c7ea7825e93764029a1a4a25be25191",
+    "candidate_commit": "7a32da86917aef422abdb6261ea149f12cb0038b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_im_integer_median_exists",
+    "diff_sha256": "f6ea3b7c67a5422adac4259adcbf658b07b61f378783fb22e443ec4903c61835",
+    "source_sha256": "41dfd6bb56376c386fc5f3423c1fb60a4fa660cbeffd1b7c6cf1f6cf56b67a36",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_im_integer_median_exists",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
