@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.jacobian_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Second-order upper bound for the tangential Jacobian of I + tL when trace(P_S L) = 0",
+  "statement": "Second-order bound for the area Jacobian. For all P ∈ ℕ and Λ ∈ ℝ there is C ∈ ℝ such that for every linear subspace S ⊆ ℝ^P, every linear map L : ℝ^P → ℝ^P with operator norm ‖L‖ ≤ Λ and trace(P_S∘L) = 0, and every t ∈ ℝ with |t| ≤ 1:\n √det(((I + tL)∘ι_S)*((I + tL)∘ι_S)) ≤ 1 + (t²/2)·Σ_{j=1}^P (|L(P_Se_j) − P_S L(P_Se_j)|² − P_Se_j·L(P_S L(P_Se_j))) + C|t|³,\nwhere P_S is the orthogonal projection onto S, ι_S : S → ℝ^P the inclusion, * the adjoint for the inner products of S and ℝ^P, det the determinant of an endomorphism of S, and e_j = EuclideanSpace.single j 1.",
+  "lean_statement": "∀ (P : ℕ) (Λ : ℝ), ∃ C : ℝ, ∀ (S : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), ‖L‖ ≤ Λ → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = 0 → ∀ t : ℝ, |t| ≤ 1 → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL)).det) ≤ 1 + t ^ 2 / 2 * ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) + C * |t| ^ 3",
+  "lean_name": "codim1_hcp_stab_jacobian_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.det_second_order-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.det_second_order-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-9b223af990-a1"
+}

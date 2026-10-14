@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.shape_operator-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Shape operator: Dν(x) maps span T_xM into itself and is symmetric there (C² chart, Schwarz)",
+  "statement": "Shape operator of a hypersurface in A₀. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P; M, O ⊆ ℝ^P; ν : ℝ^P → ℝ^P. Hypotheses: dim A₀ = m + 1; M ⊆ A₀; M is an embedded C² m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 2 m M); O is open, M ⊆ O and ν is C¹ on O; for every x ∈ M, ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for every v ∈ tangentSpace M x. Conclusion: for every x ∈ M and every τ ∈ S_x := span(tangentSpace M x), Dν(x)τ ∈ S_x, and η·Dν(x)τ = τ·Dν(x)η for every η ∈ S_x, where Dν(x) = fderiv ℝ ν x.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M O : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 2 m M → IsOpen O → M ⊆ O → ContDiffOn ℝ 1 ν O → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ν x τ ∈ Submodule.span ℝ (tangentSpace M x) ∧ ∀ η ∈ Submodule.span ℝ (tangentSpace M x), inner ℝ η (fderiv ℝ ν x τ) = inner ℝ τ (fderiv ℝ ν x η)",
+  "lean_name": "codim1_hcp_stab_shape_operator",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.tangent_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.tangent_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b353719d2e-a1"
+}
