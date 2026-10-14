@@ -726,6 +726,70 @@ theorem Submission.cmcdt_cbm_st_div_product : ∀ (m : ℕ) (v : Euclid (m + 1) 
   simp only [hprod, Finset.sum_add_distrib]
   ring
 
+/-- **Smooth trace estimate on the cube `Q_δ`** (step 5 of the cube BV median estimate, smooth
+part; the smooth case of Simon Ch. 2, 2.8–2.9).  Let `n = m + 1`, `0 ≤ δ ≤ 1/4` and
+`Q_δ = {y : δ < y_i < 1 − δ ∀ i}`.  For `C¹` maps `v : ℝⁿ → ℝ` and `G : ℝⁿ → ℝⁿ` with `|G| ≤ 1`,
+`|∫_{Q_δ} v div G| ≤ (2n + 1) ∫_{Q_δ} ‖Dv‖ + 4n ∫_{Q_δ} |v|`, where `div G = trace DG`.
+By the product rule (`cmcdt_cbm_st_div_product`), `v div G = Σᵢ Dᵢ(v Gᵢ) − Dv(G)`, and all terms
+are continuous, hence integrable on `Q_δ` (`cmcdt_cbm_st_box_integrableOn`).  Each coordinate
+term satisfies `|∫_{Q_δ} Dᵢ(v Gᵢ)| ≤ 4 ∫_{Q_δ} |v| + 2 ∫_{Q_δ} ‖Dv‖` (`cmcdt_cbm_st_coord_bound`
+with `g = Gᵢ`, `|Gᵢ| ≤ |G| ≤ 1`), and `|Dv(G)| ≤ ‖Dv‖`.  Summing over the `n` coordinates gives
+the bound. -/
+theorem Submission.cmcdt_cbm_smooth_trace : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), ContDiff ℝ 1 v → ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → 0 ≤ δ → δ ≤ 1 / 4 → |∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x)| ≤ (2 * (m + 1) + 1) * (∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖) + 4 * (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x| := by
+  intro m v G δ hv hG hGb hδ0 hδ1
+  set Q : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} with hQ
+  -- the coordinates `Gᵢ` of `G` are `C¹`, with `|Gᵢ| ≤ ‖G‖ ≤ 1`
+  have hGi : ∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y => G y i) := fun i =>
+    (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hG
+  have hGib : ∀ (i : Fin (m + 1)) (y : Euclid (m + 1)), |G y i| ≤ 1 := fun i y => by
+    rw [← Real.norm_eq_abs]
+    exact (PiLp.norm_apply_le (G y) i).trans (hGb y)
+  -- `Fᵢ = Dᵢ(v Gᵢ)`, `D = Dv(G)` and `‖Dv‖` are continuous, hence integrable on `Q_δ`
+  set F : Fin (m + 1) → Euclid (m + 1) → ℝ :=
+    fun i x => fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1) with hF
+  set D : Euclid (m + 1) → ℝ := fun x => fderiv ℝ v x (G x) with hD
+  have hFc : ∀ i, Continuous (F i) := fun i =>
+    ((hv.mul (hGi i)).continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hDc : Continuous D := (hv.continuous_fderiv one_ne_zero).clm_apply hG.continuous
+  have hFint : ∀ i, IntegrableOn (F i) Q := fun i =>
+    Submission.cmcdt_cbm_st_box_integrableOn _ _ _ _ (hFc i)
+  have hDint : IntegrableOn D Q := Submission.cmcdt_cbm_st_box_integrableOn _ _ _ _ hDc
+  have hDvint : IntegrableOn (fun x => ‖fderiv ℝ v x‖) Q :=
+    Submission.cmcdt_cbm_st_box_integrableOn _ _ _ _ (hv.continuous_fderiv one_ne_zero).norm
+  -- step 1: `∫ v div G = Σᵢ ∫ Fᵢ − ∫ D`
+  have hpt : ∀ x, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) = (∑ i, F i x) - D x :=
+    fun x => Submission.cmcdt_cbm_st_div_product m v G x (hv.differentiable one_ne_zero x)
+      (hG.differentiable one_ne_zero x)
+  have hsplit : ∫ x in Q, v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) =
+      (∑ i, ∫ x in Q, F i x) - ∫ x in Q, D x := by
+    simp only [hpt]
+    rw [integral_sub (integrable_finsetSum _ fun i _ => hFint i) hDint,
+      integral_finsetSum _ fun i _ => hFint i]
+  -- step 2: each coordinate term is bounded by `4 ∫ |v| + 2 ∫ ‖Dv‖`
+  have hcoord : ∀ i, |∫ x in Q, F i x| ≤
+      4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖ := fun i =>
+    Submission.cmcdt_cbm_st_coord_bound m v (fun y => G y i) i δ hv (hGi i) (hGib i) hδ0 hδ1
+  -- step 3: `|∫ Dv(G)| ≤ ∫ ‖Dv‖`, since `‖G‖ ≤ 1`
+  have hDbound : |∫ x in Q, D x| ≤ ∫ x in Q, ‖fderiv ℝ v x‖ := by
+    rw [← Real.norm_eq_abs]
+    refine norm_integral_le_of_norm_le hDvint (Eventually.of_forall fun x => ?_)
+    calc ‖D x‖ ≤ ‖fderiv ℝ v x‖ * ‖G x‖ := (fderiv ℝ v x).le_opNorm (G x)
+      _ ≤ ‖fderiv ℝ v x‖ * 1 := mul_le_mul_of_nonneg_left (hGb x) (norm_nonneg _)
+      _ = ‖fderiv ℝ v x‖ := mul_one _
+  -- step 4: sum over the `m + 1` coordinates
+  rw [hsplit]
+  calc |(∑ i, ∫ x in Q, F i x) - ∫ x in Q, D x|
+      ≤ |∑ i, ∫ x in Q, F i x| + |∫ x in Q, D x| := abs_sub _ _
+    _ ≤ (∑ i, |∫ x in Q, F i x|) + |∫ x in Q, D x| :=
+        add_le_add_left (Finset.abs_sum_le_sum_abs _ _) _
+    _ ≤ (∑ _i : Fin (m + 1), (4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖)) +
+          ∫ x in Q, ‖fderiv ℝ v x‖ :=
+        add_le_add (Finset.sum_le_sum fun i _ => hcoord i) hDbound
+    _ = (2 * (m + 1) + 1) * (∫ x in Q, ‖fderiv ℝ v x‖) + 4 * (m + 1) * ∫ x in Q, |v x| := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
