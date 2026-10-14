@@ -2250,6 +2250,90 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.3(2), formula (10)** (chapter-07.txt lines 563–566; last step of the proof that a
+`1`-dimensional minimizing cone is `m[[ℓ]]`): if `C(ω) = Σ_{e ∈ F} m(e) ∫_{(0,∞)} ω(te)(e) dt` and
+only `e = ±a` carry multiplicity, with `m(a) = k`, `m(−a) = −k`, then `C = k[[ℝa]]`: `spt C ⊆ ℝa`
+and `Θ¹(μ_C, y) = k` for every `y ∈ ℝa`.  By the ray representation `μ_C = Σ_e |m(e)| H¹⌞ray(e)`,
+balls missing the closed line `ℝa` are `μ_C`-null; for `y = sa` the rays of `±a` meet `B_ρ(y)` in
+parameter sets of total length `2ρ`, so `M_{B_ρ(y)}(C) = 2kρ = k ω₁ ρ` for every `ρ > 0`, as
+`ω₁ = 2`. -/
+theorem Submission.idtp_fons_odc_line_conclusion : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ a ∈ F, -a ∈ F → (∀ e ∈ F, m e ≠ 0 → e = a ∨ e = -a) → ∀ k : ℕ, m a = k → m (-a) = -k → C.support ⊆ (Submodule.span ℝ {a} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {a}, HasMassDensity C y k := by
+  intro P C F hF m hC a ha hna hsupp k hk hk'
+  -- `C = τ(R)` with `μ_R(A) = Σ_{e ∈ F} |m(e)| ℒ¹{t > 0 : te ∈ A}`; hence `M_W(C) = μ_R(W)` for
+  -- open `W`, and `x ∈ spt C` iff `μ_R(B_ε(x)) ≠ 0` for every `ε > 0`
+  obtain ⟨R, hR, hRm⟩ := Submission.idtp_fons_odc_ray_current_rep P C F hF m hC
+  obtain ⟨hmass, hspt, -⟩ := Submission.dimred_im_mass_measure P 1 univ C R isOpen_univ hR
+  have ha1 : ‖a‖ = 1 := hF a ha
+  refine ⟨fun x hx => ?_, fun y hy => ?_⟩
+  · -- `spt C ⊆ ℝa`: a ball `B_ε(x)` missing the closed line `ℝa` misses every ray carrying
+    -- multiplicity, so `μ_R(B_ε(x)) = 0`
+    by_contra hxa
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1
+      (Submodule.closed_of_finiteDimensional (Submodule.span ℝ {a})).isOpen_compl x hxa
+    refine (hspt x (mem_univ x)).1 hx ε hε ?_
+    rw [hRm _ measurableSet_ball]
+    refine Finset.sum_eq_zero fun e he => ?_
+    by_cases hme : m e = 0
+    · simp [hme]
+    · have hempty : (fun t : ℝ => t • e) ⁻¹' ball x ε = ∅ := by
+        refine eq_empty_of_forall_notMem fun t ht => hball ht ?_
+        rcases hsupp e he hme with rfl | rfl
+        · exact Submodule.smul_mem _ t (Submodule.mem_span_singleton_self _)
+        · exact Submodule.smul_mem _ t (Submodule.neg_mem _ (Submodule.mem_span_singleton_self _))
+      simp [hempty]
+  · -- density `k` at `y = sa ∈ ℝa`
+    obtain ⟨s, rfl⟩ := Submodule.mem_span_singleton.1 hy
+    -- `a ≠ -a`, as `‖a‖ = 1`
+    have hne : a ≠ -a := fun h => by
+      have h2 : (2 : ℝ) • a = 0 := by rw [two_smul]; exact eq_neg_iff_add_eq_zero.1 h
+      rcases smul_eq_zero.1 h2 with h2 | h2
+      · norm_num at h2
+      · simp [h2] at ha1
+    -- `(0, ∞) ∩ (-s - ρ, -s + ρ)` is the reflection of `(-∞, 0) ∩ (s - ρ, s + ρ)`, so together
+    -- with `(0, ∞) ∩ (s - ρ, s + ρ)` it has length `ℒ¹(s - ρ, s + ρ) = 2ρ`
+    have hhalves : ∀ ρ : ℝ, volume (Ioi (0 : ℝ) ∩ ball s ρ) + volume (Ioi (0 : ℝ) ∩ ball (-s) ρ) =
+        ENNReal.ofReal (2 * ρ) := by
+      intro ρ
+      have hrefl : Ioi (0 : ℝ) ∩ ball (-s) ρ = Neg.neg ⁻¹' (Iic 0 ∩ ball s ρ) \ {0} := by
+        ext t
+        simp only [mem_inter_iff, mem_Ioi, mem_ball, Real.dist_eq, Set.mem_sdiff, mem_preimage,
+          mem_Iic, mem_singleton_iff]
+        constructor
+        · rintro ⟨ht, hts⟩
+          refine ⟨⟨by linarith, ?_⟩, ht.ne'⟩
+          rwa [show -t - s = -(t - -s) by ring, abs_neg]
+        · rintro ⟨⟨ht, hts⟩, ht0⟩
+          refine ⟨lt_of_le_of_ne (by linarith) (Ne.symm ht0), ?_⟩
+          rwa [show -t - s = -(t - -s) by ring, abs_neg] at hts
+      rw [hrefl, measure_sdiff_null (measure_singleton 0), Measure.measure_preimage_neg, inter_comm,
+        inter_comm (Iic 0), ← compl_Ioi, ← Set.sdiff_eq,
+        measure_inter_add_sdiff _ measurableSet_Ioi, Real.volume_ball]
+    -- `M_{B_ρ(sa)}(C) = μ_R(B_ρ(sa)) = k ℒ¹{t > 0 : |t - s| < ρ} + k ℒ¹{t > 0 : |t + s| < ρ} = 2kρ`
+    have hmassball : ∀ ρ : ℝ, C.massOn (ball (s • a) ρ) = k * ENNReal.ofReal (2 * ρ) := by
+      intro ρ
+      have h₁ : (fun t : ℝ => t • a) ⁻¹' ball (s • a) ρ = ball s ρ := by
+        ext t
+        simp [dist_eq_norm, ← sub_smul, norm_smul, ha1]
+      have h₂ : (fun t : ℝ => t • -a) ⁻¹' ball (s • a) ρ = ball (-s) ρ := by
+        ext t
+        rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, smul_neg, ← neg_add', ← add_smul,
+          norm_neg, norm_smul, ha1, mul_one, Real.dist_eq, sub_neg_eq_add, Real.norm_eq_abs]
+      have hka : ENNReal.ofReal |((m a : ℤ) : ℝ)| = k := by simp [hk]
+      have hkna : ENNReal.ofReal |((m (-a) : ℤ) : ℝ)| = k := by simp [hk']
+      rw [hmass _ isOpen_ball (subset_univ _), hRm _ measurableSet_ball,
+        Finset.sum_eq_add_of_mem a (-a) ha hna hne, h₁, h₂, hka, hkna, ← mul_add, hhalves]
+      -- the rays of `e ≠ ±a` carry no multiplicity
+      intro c hc hca
+      simp [show m c = 0 from by_contra fun hmc => (hsupp c hc hmc).elim hca.1 hca.2]
+    -- with `ω₁ = 2`, the density ratio `2kρ / (ω₁ ρ)` equals `k` for every `ρ > 0`
+    refine ⟨Nat.cast_nonneg k, (tendsto_congr' ?_).2 tendsto_const_nhds⟩
+    filter_upwards [self_mem_nhdsWithin] with ρ (hρ : 0 < ρ)
+    rw [hmassball ρ, Submission.idtp_fons_odc_line_hausdorff.1, pow_one,
+      ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat, ENNReal.mul_div_cancel_right,
+      ENNReal.ofReal_natCast]
+    · simp [hρ]
+    · simp [ENNReal.mul_eq_top]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
