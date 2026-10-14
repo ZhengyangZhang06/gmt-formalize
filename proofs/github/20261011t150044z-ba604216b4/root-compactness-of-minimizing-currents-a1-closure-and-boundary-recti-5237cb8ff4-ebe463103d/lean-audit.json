@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d5b5d3d222437a4d526b2f70daaeded1fa9976eb0051a60ab2fd48b7163bc03c",
+  "git_delta": {
+    "base_commit": "b4a45fdcff02e6a197e472e469c0b6e0b9fc07c9",
+    "candidate_commit": "c707e2859a1166e29738986f822bdbe72b0cdbbf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_prod_of_rectangles",
+    "diff_sha256": "9f15d12d4a0d15663799c9d024fbcdc4daf892d697282ea0a47839afdc36c299",
+    "source_sha256": "29c3f9022b3b46e63a54994f0f42a3513ee90919c438e17cc3e274648077c3e1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_prod_of_rectangles",
+      "statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ (V : Set (Euclid P)))) → ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

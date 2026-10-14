@@ -451,6 +451,126 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
+
+/-- If `σ` is carried by `Vᗮ` and finite on compact sets, and `ν` has the rectangle values
+`ν(p⁻¹(A) ∩ q⁻¹(B)) = σ(B) Hⁿ(A ∩ V)` for Borel `A`, `B` (`p`, `q` the orthogonal projections onto
+the `n`-dimensional subspace `V` and onto `Vᗮ`), then `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)`, i.e.
+`ν` is the image of `(Hⁿ⌞V) ⊗ σ` under `(t, y) ↦ t + y` (used, via the closure theorem, in the
+proof of Simon 7.2.4).  The rectangles form a π-system generating the Borel sets (`y = p y + q y`),
+the image measure takes the same values on them because `σ` is carried by `Vᗮ`, and the rectangles
+over the balls `B_{j+1}(0)` cover `ℝᴾ` and have finite `ν`-measure, so the two measures agree. -/
+theorem Submission.cbr_ci_cp_prod_of_rectangles : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ (V : Set (Euclid P)))) → ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+  intro P n ν σ V hn hσ hσfin hrect A hA
+  -- `σ` is finite on compact sets, hence locally finite and σ-finite on `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts σ := ⟨hσfin⟩
+  have hp : Measurable V.starProjection := V.starProjection.continuous.measurable
+  have hq : Measurable Vᗮ.starProjection := Vᗮ.starProjection.continuous.measurable
+  have hV : MeasurableSet (V : Set (Euclid P)) := V.closed_of_finiteDimensional.measurableSet
+  -- the candidate `λ = s_#((Hⁿ⌞V) ⊗ σ)` with `s(t, y) = t + y`
+  have hs : Measurable fun z : Euclid P × Euclid P => z.1 + z.2 := measurable_fst.add measurable_snd
+  have hlam : ∀ A : Set (Euclid P), MeasurableSet A →
+      ((μHE[n].restrict (V : Set (Euclid P))).prod σ).map (fun z => z.1 + z.2) A =
+        ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+    intro A hA
+    rw [Measure.map_apply hs hA, Measure.prod_apply (hs hA)]
+    rfl
+  rw [← hlam A hA]
+  congr 1
+  -- rectangles `p⁻¹(A) ∩ q⁻¹(B)` form a π-system generating the Borel σ-algebra
+  let C : Set (Set (Euclid P)) := {S | ∃ A B : Set (Euclid P), MeasurableSet A ∧ MeasurableSet B ∧
+    S = V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B}
+  have hgen : (inferInstance : MeasurableSpace (Euclid P)) = MeasurableSpace.generateFrom C := by
+    refine le_antisymm ?_ (MeasurableSpace.generateFrom_le ?_)
+    · have hp' : Measurable[MeasurableSpace.generateFrom C] V.starProjection := fun A hA =>
+        MeasurableSpace.measurableSet_generateFrom ⟨A, univ, hA, MeasurableSet.univ, by
+          rw [preimage_univ, inter_univ]⟩
+      have hq' : Measurable[MeasurableSpace.generateFrom C] Vᗮ.starProjection := fun B hB =>
+        MeasurableSpace.measurableSet_generateFrom ⟨univ, B, MeasurableSet.univ, hB, by
+          rw [preimage_univ, univ_inter]⟩
+      have hid := @Measurable.add _ _ _ _ (MeasurableSpace.generateFrom C)
+        (fun y => V.starProjection y) (fun y => Vᗮ.starProjection y) _ hp' hq'
+      have hfun : ((fun y => V.starProjection y) + fun y => Vᗮ.starProjection y) = id :=
+        funext V.starProjection_add_starProjection_orthogonal
+      rw [hfun] at hid
+      exact fun S hS => hid hS
+    · rintro _ ⟨A, B, hA, hB, rfl⟩
+      exact (hp hA).inter (hq hB)
+  have hpi : IsPiSystem C := by
+    rintro _ ⟨A, B, hA, hB, rfl⟩ _ ⟨A', B', hA', hB', rfl⟩ _
+    exact ⟨A ∩ A', B ∩ B', hA.inter hA', hB.inter hB', by
+      rw [preimage_inter, preimage_inter, inter_inter_inter_comm]⟩
+  -- the rectangles `p⁻¹(B_{j+1}(0)) ∩ q⁻¹(B_{j+1}(0))` cover `ℝᴾ` and have finite `ν`-measure
+  refine Measure.ext_of_generateFrom_of_iUnion C
+    (fun j : ℕ => V.starProjection ⁻¹' ball 0 (j + 1) ∩ Vᗮ.starProjection ⁻¹' ball 0 (j + 1))
+    hgen hpi ?_ ?_ ?_ ?_
+  · refine eq_univ_of_forall fun y => mem_iUnion.2 ?_
+    obtain ⟨j, hj⟩ := exists_nat_gt (max ‖V.starProjection y‖ ‖Vᗮ.starProjection y‖)
+    exact ⟨j, mem_ball_zero_iff.2 ((le_max_left _ _).trans_lt (hj.trans (lt_add_one _))),
+      mem_ball_zero_iff.2 ((le_max_right _ _).trans_lt (hj.trans (lt_add_one _)))⟩
+  · exact fun j => ⟨_, _, measurableSet_ball, measurableSet_ball, rfl⟩
+  · intro j
+    rw [hrect _ _ measurableSet_ball measurableSet_ball, inter_comm,
+      Submission.idtp_tdc_subspace_ball_measure P n V 0 (j + 1) hn V.zero_mem (by positivity)]
+    exact ENNReal.mul_ne_top measure_ball_lt_top.ne
+      (ENNReal.mul_ne_top (measure_ball_lt_top (μ := volume)).ne ENNReal.ofReal_ne_top)
+  -- `ν` and `λ` agree on rectangles because `σ` is carried by `Vᗮ`
+  · rintro _ ⟨A, B, hA, hB, rfl⟩
+    rw [hrect A B hA hB, hlam _ ((hp hA).inter (hq hB))]
+    have key : EqOn (fun t => σ ((fun y => t + y) ⁻¹'
+        (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B))) (A.indicator fun _ => σ B) V := by
+      intro t ht
+      have hsec : ∀ y ∈ (Vᗮ : Set (Euclid P)),
+          V.starProjection (t + y) = t ∧ Vᗮ.starProjection (t + y) = y := by
+        intro y hy
+        refine ⟨?_, ?_⟩
+        · rw [map_add, V.starProjection_eq_self_iff.mpr ht,
+            V.starProjection_apply_eq_zero_iff.mpr hy, add_zero]
+        · rw [map_add, V.starProjection_orthogonal_apply_eq_zero ht,
+            Vᗮ.starProjection_eq_self_iff.mpr hy, zero_add]
+      simp only
+      rw [← measure_inter_conull hσ]
+      by_cases htA : t ∈ A
+      · rw [indicator_of_mem htA, ← measure_inter_conull (s := B) hσ]
+        congr 1
+        ext y
+        simp only [mem_inter_iff, mem_preimage]
+        constructor
+        · rintro ⟨⟨-, hyB⟩, hy⟩
+          rw [(hsec y hy).2] at hyB
+          exact ⟨hyB, hy⟩
+        · rintro ⟨hyB, hy⟩
+          rw [(hsec y hy).1, (hsec y hy).2]
+          exact ⟨⟨htA, hyB⟩, hy⟩
+      · rw [indicator_of_notMem htA]
+        convert measure_empty (μ := σ)
+        ext y
+        simp only [mem_inter_iff, mem_preimage, mem_empty_iff_false, iff_false]
+        rintro ⟨⟨hyA, -⟩, hy⟩
+        exact htA ((hsec y hy).1 ▸ hyA)
+    rw [setLIntegral_congr_fun hV key, lintegral_indicator_const hA, Measure.restrict_apply hA]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
