@@ -579,6 +579,32 @@ theorem Submission.idod_local_uniform_ball_mass_bound : ∀ (P n : ℕ) (U : Set
   exact Submission.idod_nearby_center_ball_mass_bound P n U T y y' Λ r τ θ₁ θ₂ hΛ hτ hτr hy'y
     hτθ₂.le (hmono y' r hball) hrlt.le ρ hρ (hρδ.trans_le (min_le_right _ _))
 
+/-- **Simon 7.3.3, proof of (1), display (2) (p. 190)**, uniformly on a compact set: let `K` be
+compact, `Θⁿ(μ_T, y) < θ₁ < θ₂` and `B̄_{2σ₀}(y) ⊆ K''` for every `y ∈ K`, and let
+`ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(z)}(T)` (`Λ ≥ 0`) be nondecreasing on `(0, R)` whenever `B̄_R(z) ⊆ K''`.
+Then for some `ρ₀ > 0`, `M_{B_ρ(y)}(T) ≤ θ₂ ωₙ ρⁿ` for all `y ∈ K` and `0 < ρ < ρ₀`.
+By `idod_local_uniform_ball_mass_bound`, each `y ∈ K` has `δ_y > 0` such that the bound holds for
+`(ρ, y') ∈ B_{δ_y}(0) × B_{δ_y}(y)` with `ρ > 0`, a neighbourhood of `(0, y)` in `ℝ × ℝᴾ`.
+Compactness of `K` (`IsCompact.eventually_forall_of_forall_eventually`) gives a common `ρ₀`. -/
+theorem Submission.idod_uniform_ball_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (K K'' : Set (Euclid P)) (Λ σ₀ θ₁ θ₂ : ℝ), IsCompact K → 0 ≤ Λ → 0 < σ₀ → θ₁ < θ₂ → (∀ y ∈ K, ∃ θ : ℝ, θ < θ₁ ∧ HasMassDensity T y θ) → (∀ y ∈ K, closedBall y (2 * σ₀) ⊆ K'') → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K'' → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ ∀ y ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n U T K K'' Λ σ₀ θ₁ θ₂ hK hΛ hσ₀ hθ₁θ₂ hdens hK'' hmono
+  -- near each `(0, y)` with `y ∈ K` the bound holds: take `(ρ, y') ∈ B_δ(0) × B_δ(y)` with `δ = δ_y`
+  have hloc : ∀ y ∈ K, ∀ᶠ z : ℝ × Euclid P in 𝓝 ((0 : ℝ), y), 0 < z.1 →
+      T.massOn (ball z.2 z.1) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (z.1 ^ n) := by
+    intro y hy
+    obtain ⟨θ, hθθ₁, hθ⟩ := hdens y hy
+    obtain ⟨δ, hδ, hbound⟩ := Submission.idod_local_uniform_ball_mass_bound P n U T K'' y Λ σ₀ θ
+      θ₁ θ₂ hΛ hσ₀ hθθ₁ hθ₁θ₂ hθ (hK'' y hy) hmono
+    filter_upwards [prod_mem_nhds (ball_mem_nhds (0 : ℝ) hδ) (ball_mem_nhds y hδ)] with z hz hz₀
+    have hz₁ : |z.1| < δ := by rw [← Real.dist_0_eq_abs]; exact hz.1
+    exact hbound z.2 hz.2 z.1 hz₀ ((le_abs_self z.1).trans_lt hz₁)
+  -- compactness of `K`: the bound holds for all `y ∈ K` and all `ρ ∈ (0, ρ₀)`, for some `ρ₀ > 0`
+  obtain ⟨ρ₀, hρ₀, hρ₀K⟩ := Metric.eventually_nhds_iff.1
+    (hK.eventually_forall_of_forall_eventually (P := fun ρ y' => 0 < ρ →
+      T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) hloc)
+  refine ⟨ρ₀, hρ₀, fun y hy ρ hρ hρρ₀ => hρ₀K ?_ y hy hρ⟩
+  rwa [Real.dist_0_eq_abs, abs_of_pos hρ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
