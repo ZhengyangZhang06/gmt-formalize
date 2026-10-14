@@ -515,6 +515,31 @@ theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid
     ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
     ENNReal.ofReal_one, one_mul]
 
+/-- **Uniqueness of vague limits** (basic fact (F6) of the positive-scale family step in the proof
+of Simon 7.3.3(1), chapter-07.txt lines 443–467): two measures `ν₁`, `ν₂` on `ℝᴾ` that are finite
+on compact sets and give the same integral to every continuous compactly supported `f : ℝᴾ → ℝ`
+are equal.  Finiteness on compact sets makes `νᵢ` locally finite on the locally compact space
+`ℝᴾ`, hence regular on the σ-compact metric space `ℝᴾ`, and regular measures are determined by
+their integrals on `C_c(ℝᴾ, ℝ)` (Riesz–Markov–Kakutani uniqueness: Urysohn functions
+`1_K ≤ f ≤ 1_V` and outer regularity give `ν₁(K) = ν₂(K)` for compact `K`; inner regularity on
+open sets and outer regularity extend this to all Borel sets). -/
+theorem Submission.idtp_fons_cc_psf_vague_unique : ∀ (P : ℕ) (ν₁ ν₂ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν₁ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → ν₂ K ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x ∂ν₁ = ∫ x, f x ∂ν₂) → ν₁ = ν₂ := by
+  intro P ν₁ ν₂ h₁ h₂ hint
+  -- Step 1: `νᵢ(K) < ∞` for every compact `K`, i.e. `νᵢ` is finite on compact sets.
+  have : IsFiniteMeasureOnCompacts ν₁ := ⟨fun K hK => (h₁ K hK).lt_top⟩
+  have : IsFiniteMeasureOnCompacts ν₂ := ⟨fun K hK => (h₂ K hK).lt_top⟩
+  -- Step 2: `ℝᴾ` is locally compact (closed balls are compact), so `νᵢ` is locally finite.
+  have : IsLocallyFiniteMeasure ν₁ := isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts
+  have : IsLocallyFiniteMeasure ν₂ := isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts
+  -- Step 3: `ℝᴾ` is a σ-compact metric space with its Borel σ-algebra, so `νᵢ` is regular.
+  have : ν₁.Regular := Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure ν₁
+  have : ν₂.Regular := Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure ν₂
+  -- Steps 4–6: every `f ∈ C_c(ℝᴾ, ℝ)` is continuous with compact support, so `∫ f dν₁ = ∫ f dν₂`;
+  -- regular measures with equal integrals on `C_c(ℝᴾ, ℝ)` agree on compact sets (Urysohn and outer
+  -- regularity), hence on open sets (inner regularity) and on all Borel sets (outer regularity).
+  exact Measure.ext_of_integral_eq_on_compactlySupported fun f =>
+    hint f f.continuous f.hasCompactSupport
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
