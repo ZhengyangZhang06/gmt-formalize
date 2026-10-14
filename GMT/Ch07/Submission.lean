@@ -1125,6 +1125,51 @@ theorem Submission.cmcdtfrbv_cutoff_field : ∀ (P m : ℕ) (p : (Fin (m + 1) �
     rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ)]
     simp [EuclideanSpace.inner_single_left]
 
+/-- **The divergence test form of a face** (Simon Ch. 6, proof of the deformation theorem 5.1).
+With the face covectors `εⱼ` of `ι = p.1` (`cmcdtfrbv_face_covectors`) and the cutoff field
+`G = χ · (g ∘ π)` (`cmcdtfrbv_cutoff_field`), `γ(x) = Σⱼ Gⱼ(x) εⱼ` is a test form on `ℝᴾ` with
+`tsupport γ ⊆ tsupport G ⊆ N` and `|γ(x)| = √(Σⱼ Gⱼ(x)²) = ‖G x‖ ≤ 1`.  As
+`γ(x)(removeNth i E) = (-1)ⁱ Gᵢ(x)` for `E = (e_{ι j})ⱼ`, `exteriorDerivative_apply` gives
+`dγ(Φ_p y)(E) = Σᵢ DGᵢ(Φ_p y)(e_{ι i}) = trace Dg(y)` for `y ∈ Q₁`. -/
+theorem Submission.cmcdtfrbv_divergence_test_form : ∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ γ : TestFormOn (univ : Set (Euclid P)) m, tsupport (γ : DifferentialForm (Euclid P) m) ⊆ N ∧ (∀ x, covectorEuclideanNorm ((γ : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → exteriorDerivative (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+  intro P m p N g hι hN hΦN hg hgc hgs hg1
+  -- Step 1: the face covectors `εⱼ` of `ι = p.1`
+  obtain ⟨ε, hεn, hεf⟩ := Submission.cmcdtfrbv_face_covectors P m p.1 hι
+  -- Step 2: the cutoff field `G = χ · (g ∘ π)`
+  obtain ⟨G, hG, hGc, hGN, hG1, hGd⟩ :=
+    Submission.cmcdtfrbv_cutoff_field P m p N g hι hN hΦN hg hgc hgs hg1
+  -- Step 3: `ω(x) = Σⱼ Gⱼ(x) εⱼ`
+  set ω : DifferentialForm (Euclid P) m := fun x => ∑ j, G x j • ε j with hω
+  -- Step 4: `ω` is smooth, as each coefficient `Gⱼ = proj j ∘ G` is
+  have hGj : ∀ j, ContDiff ℝ (⊤ : ℕ∞) fun x => G x j := fun j =>
+    (EuclideanSpace.proj j : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hG
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) ω :=
+    ContDiff.sum fun j _ => (hGj j).smul contDiff_const
+  -- Step 5: `supp ω ⊆ supp G`, so `ω` has compact support and `tsupport ω ⊆ tsupport G ⊆ N`
+  have hωG : support ω ⊆ support G := by
+    intro x hx
+    rw [mem_support] at hx ⊢
+    contrapose! hx
+    simp [hω, hx]
+  have hωT : IsTestForm ω ∧ tsupport ω ⊆ (univ : Set (Euclid P)) :=
+    ⟨⟨hωs, hGc.mono hωG⟩, subset_univ _⟩
+  refine ⟨⟨ω, hωT⟩, (closure_mono hωG).trans hGN, fun x => ?_, fun y hy => ?_⟩
+  · -- Step 6: `|ω(x)| = √(Σⱼ Gⱼ(x)²) = ‖G x‖ ≤ 1`
+    calc covectorEuclideanNorm (ω x) = Real.sqrt (∑ j, G x j ^ 2) := hεn fun j => G x j
+      _ = ‖G x‖ := by rw [← EuclideanSpace.real_norm_sq_eq, Real.sqrt_sq (norm_nonneg _)]
+      _ ≤ 1 := hG1 x
+  · -- Step 7: `dω(Φ y)(E) = Σᵢ (-1)ⁱ D[ω(·)(removeNth i E)](Φ y)(e_{ι i})`; by the face
+    -- evaluation `ω(·)(removeNth i E) = (-1)ⁱ Gᵢ`, so the `i`-th term is `DGᵢ(Φ y)(e_{ι i})`
+    show exteriorDerivative ω _ _ = _
+    rw [exteriorDerivative_apply ((hωs.differentiable (by simp)) _), ← hGd y hy]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have hface : (fun x => ω x (i.removeNth fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) =
+        fun x => (-1 : ℝ) ^ (i : ℕ) * G x i :=
+      funext fun x => hεf (fun j => G x j) i
+    rw [hface, fderiv_const_mul ((hGj i).differentiable (by simp) _), smul_apply,
+      smul_eq_mul, zsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one, ← mul_assoc, ← mul_pow,
+      neg_one_mul, neg_neg, one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
