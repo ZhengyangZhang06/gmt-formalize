@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.dist_sublevel-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Compact distance sublevel sets around a compact subset of an open set",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open and let C ⊆ ℝ^P be compact and nonempty with C ⊆ U. Then there is δ₀ > 0 such that for every real r ≤ δ₀ the sublevel set {x ∈ ℝ^P : dist(x, C) ≤ r} of the distance function dist(x, C) = Metric.infDist x C is compact and contained in U.",
+  "lean_statement": "∀ (P : ℕ) (U C : Set (Euclid P)), IsOpen U → IsCompact C → C ⊆ U → C.Nonempty → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ r : ℝ, r ≤ δ₀ → IsCompact {x | infDist x C ≤ r} ∧ {x | infDist x C ≤ r} ⊆ U",
+  "lean_name": "cmc_fcl_dist_sublevel_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-77f2fff68d-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1",
+  "depth": 4,
+  "title": "Weak sequential compactness of currents in ℝ^P with locally bounded mass (Simon 6.2.15)",
+  "statement": "Let P, n ∈ ℕ and let T_j ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, j ∈ ℕ) satisfy sup_j M_W(T_j) < ∞ for every bounded open W ⊆ ℝ^P. Then there are a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^P) with T_{φ(i)} ⇀ C (WeaklyConvergesOn: T_{φ(i)}(ω) → C(ω) for every ω ∈ 𝒟ⁿ(ℝ^P)).",
+  "lean_statement": "∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun j => Ts (φ j)) C",
+  "lean_name": "dtc_bc_tc_weak_compactness",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f2009ef820-a1"
+}

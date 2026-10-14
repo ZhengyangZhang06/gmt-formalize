@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.support_from_mass-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Support of a current from a mass–measure identity",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and μ a measure on ℝ^P with M_W(T) = μ(W) for every open W ⊆ ℝ^P (M_W(T) = T.massOn W). Then spt T = U ∩ spt μ, where spt T = T.support (Simon 6.2.11) and spt μ = μ.support.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (μ : Measure (Euclid P)), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) → T.support = U ∩ μ.support",
+  "lean_name": "dor_ims_support_of_massOn_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-support-4f5a0b7736-a1"
+}

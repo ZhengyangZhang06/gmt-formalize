@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1.density_representation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1",
+  "depth": 5,
+  "title": "Locally integrable Radon–Nikodym density representing an absolutely continuous compact-finite measure on C_c",
+  "statement": "Let X be a locally compact Hausdorff space with a countable basis, equipped with its Borel σ-algebra. Let μ₀ and ξ be measures on X, both finite on compact sets, with ξ ≪ μ₀. Then there is a measurable function g : X → ℝ, μ₀-integrable on every compact subset of X, such that for every f ∈ C_c(X, ℝ) the function x ↦ f(x)·g(x) is μ₀-integrable and ∫ f dξ = ∫ f(x)·g(x) dμ₀(x).",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (μ₀ ξ : Measure X), IsFiniteMeasureOnCompacts μ₀ → IsFiniteMeasureOnCompacts ξ → ξ ≪ μ₀ → ∃ g : X → ℝ, Measurable g ∧ (∀ K : Set X, IsCompact K → IntegrableOn g K μ₀) ∧ ∀ f : CompactlySupportedContinuousMap X ℝ, Integrable (fun x => f x * g x) μ₀ ∧ ∫ x, f x ∂ξ = ∫ x, f x * g x ∂μ₀",
+  "lean_name": "cmr_vr_cd_density_representation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-d113441fe0-a1"
+}
