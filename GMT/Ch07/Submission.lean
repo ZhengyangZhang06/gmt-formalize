@@ -15424,6 +15424,55 @@ theorem Submission.dtc_bc_tc_cl_rectifiable_of_approx_tangent : ∀ (P n : ℕ) 
   · exact (hcover hxE).imp_left Or.inl
   · exact Or.inl (Or.inr ⟨hx, hxE⟩)
 
+/-- **Finite-mass cycles with the integer slice property are integer multiplicity** (B. White's
+tangent-plane argument, Comment. Math. Helv. 64 (1989), in place of Simon Ch. 6, 8.1).  Let
+`n = d + 1`, assume `SLIM_{P,d}` (weak limits of currents with the integer slice property `ISP` and
+locally bounded `M_W(Xᵢ) + M_W(∂Xᵢ)` have `ISP`) and `LD_{P,d}` (for `ISP` cycles the lower density
+of the mass measure is `≥ η₀` a.e.).  If `∂Γ = 0`, `M(Γ) < ∞` and `Γ` has `ISP`, then `Γ` is
+integer multiplicity.  `(REP)` represents `Γ` by `(μ, ξ)`, with `μ ≪ Hⁿ` since `∂Γ = 0`, and
+`LD_{P,d}` gives the lower density bound, so `μ = θHⁿ⌞M` and `Γ = ∫_M θ⟨·, ζ⟩ dHⁿ` with `|ζ|* = 1`
+on `M`.  For `Hⁿ`-a.e. `a ∈ M` the upper density of `Hⁿ⌞M` at `a` is `≤ 1` and `a` is a Lebesgue
+point of `θζ`; there the blow-ups of `Γ` give an approximate tangent plane of `M` oriented by
+`ζ(a)` and `θ(a) ∈ ℕ`.  The integer multiplicity criterion with `(RECT)` concludes. -/
+theorem Submission.dtc_bc_tc_cl_cycle_isIntegerMultiplicity : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P d : ℕ), d + 1 < P → (∀ (Xs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ i, (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Xs i ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (Xs i).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B))) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → ⨆ i, ((Xs i).massOn W + (Xs i).boundary.massOn W) < ∞) → WeaklyConvergesOn Xs X → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (X).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B))) → (∃ η₀ : ℝ, 0 < η₀ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)), C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ᵐ x ∂μ, ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0)) → (∀ (Γ : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Γ.boundary = 0 → Γ.mass < ∞ → IsCompact Γ.support → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (Γ).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → IsIntegerMultiplicity Γ) := by
+  intro hMR _hIMC _hVO P d _hdP hSLIM hLD Γ hΓb hΓm _hΓs hΓisp
+  obtain ⟨hREP, hCT, -⟩ := Submission.dtc_bc_tc_cl_foundations
+  -- Step 1: `(REP)` in `U = ℝᴾ`, using `M_W(Γ) ≤ M(Γ) < ∞`
+  obtain ⟨μ, ξ, -, hμK, hμW, hξ, hξb, hΓξ, hac⟩ := hREP P (d + 1) univ Γ isOpen_univ
+    fun W _ _ => (Γ.massOn_mono (subset_univ W)).trans_lt hΓm
+  have hμ : μ univ < ∞ := by
+    rw [← hμW univ isOpen_univ]
+    exact hΓm
+  -- `M_W(∂Γ) = M_W(0) = 0`, so `μ ≪ Hⁿ`
+  have hμac : ∀ E : Set (Euclid P), μHE[d + 1] E = 0 → μ E = 0 := hac fun W _ _ => by
+    show Γ.boundary.massOn W < ∞
+    rw [hΓb]
+    refine (sSup_le ?_).trans_lt ENNReal.zero_lt_top
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  -- Step 2: `LD_{P,d}` for the cycle `Γ` with the representation `(μ, ξ)`
+  obtain ⟨η₀, hη₀, hLD₀⟩ := hLD
+  have hdens := hLD₀ Γ μ ξ hΓb (fun K hK => hμK K hK (subset_univ K)) hμW hξ (ae_of_all μ hξb)
+    hΓξ hΓisp
+  -- Step 3: `μ = θHⁿ⌞M` and `Γ = ∫_M θ⟨·, ζ⟩ dHⁿ`, with `∫_M θ dHⁿ = μ(ℝᴾ) < ∞`
+  obtain ⟨M, θ, ζ, hM, hMfin, hθ, hζ, hμM, hθpos, hζb, hζ1, hΓM, hMdens⟩ :=
+    Submission.cbr_ci_density_representation P (d + 1) Γ μ ξ η₀ hη₀ hμ hμW hξ hξb hΓξ hμac hdens
+  have hθint : ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[d + 1] < ∞ := by
+    rwa [hμM, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ] at hμ
+  -- Step 4: by the integer multiplicity criterion with `(RECT)`, it suffices to treat `Hⁿ`-a.e.
+  -- `a ∈ M`
+  refine Submission.cbr_ci_isIntegerMultiplicity_of_ae_tangent
+    Submission.dtc_bc_tc_cl_rectifiable_of_approx_tangent P (d + 1) Γ M θ ζ hM hMfin hθ hζ hθpos
+    hθint hΓM ?_
+  -- Step 5: at the good points of `M` the blow-ups give an oriented approximate tangent plane and
+  -- an integer multiplicity
+  filter_upwards [Submission.dtc_bc_tc_cl_ci_ae_good_points P (d + 1) M θ ζ hM hMfin hθ hζ hθpos
+    hθint hζb, ae_restrict_mem hM] with a ⟨hup, hleb⟩ ha
+  exact Submission.dtc_bc_tc_cl_ci_pointwise_tangent_integer hREP hMR
+    Submission.cmc_slice_mass_bounds Submission.cbr_setIntegral_eq_of_integral_eq hCT P d hSLIM
+    ⟨η₀, hη₀, hLD₀⟩ Γ μ M θ ζ a η₀ hΓb hΓisp hμ hμW hM hMfin hθ hζ hμM hθpos hζb hζ1 hΓM ha hη₀
+    (hMdens a ha) hup hleb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
