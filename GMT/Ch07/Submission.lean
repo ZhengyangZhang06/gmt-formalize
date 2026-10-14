@@ -7265,4 +7265,24 @@ theorem Submission.cbrld_measure_eq_zero_of_small_fillings : (∀ (P n : ℕ) (U
     hpiece (E ∩ ball (0 : Euclid P) k) (ball (0 : Euclid P) (k + 1)) inter_subset_left isOpen_ball
       (fun z hz => ball_subset_ball (by linarith) hz.2) (hball_fin _ _))
 
+/-- **Lower density bound for cycles with the integer slice property** (Simon Ch. 6, proof of
+8.2, with the lower density in place of `Θ^{*n}`; `n = d + 1 < P`).  The local filling
+`dtc_bc_tc_cl_ld_exists_small_filling`, fed with (SL) = `cmc_slice_mass_bounds`, (MR) and (Isor),
+gives `η₀ > 0` such that every `x` with `liminf_{r↓0} μ(B_r(x))/(ωₙrⁿ) < η₀` has, at arbitrarily
+small scales `δ`, a radius `ρ < δ` with `μ(∂B_ρ(x)) = 0` and a filling `S` of `∂(C⌞B_ρ(x))` with
+`M(S) ≤ μ(B_ρ(x))/2` and `spt S ⊆ B̄_{(1+3√P)δ}(x)`.  The set of these points is `μ`-null by
+`cbrld_measure_eq_zero_of_small_fillings` with `κ = 1/2` and `λ = 1 + 3√P`. -/
+theorem Submission.dtc_bc_tc_cl_lower_density : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d + 1 < P → (∃ η₀ : ℝ, 0 < η₀ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)), C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ᵐ x ∂μ, ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0)) := by
+  intro hMR hVO hIsor P d hPd
+  -- steps 2–4: small fillings of sphere slices at points of lower density `< η₀`
+  obtain ⟨η₀, hη₀, hfill⟩ := Submission.dtc_bc_tc_cl_ld_exists_small_filling
+    Submission.cmc_slice_mass_bounds hMR hIsor P d hPd
+  refine ⟨η₀, hη₀, fun C μ ξ hCb hμ hCμ hξm hξb hC hISP => ?_⟩
+  -- steps 0, 5, 6: the points of lower density `< η₀` form a `μ`-null set
+  rw [ae_iff]
+  refine Submission.cbrld_measure_eq_zero_of_small_fillings hVO P d C μ ξ (1 / 2)
+    (1 + 3 * Real.sqrt P) _ (by norm_num) (by norm_num) (le_add_of_nonneg_right (by positivity))
+    hμ hCμ hξm hξb hC fun x hx δ hδ => ?_
+  exact hfill C μ ξ hCb hμ hξm hξb hC hISP x (not_le.mp hx) δ hδ
+
 end GMT.Ch07
