@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c9e00099288c7931c4ace56afdd4fa78a7db997c5ef8ef6ee9e76acb3cd4b8cc",
+  "git_delta": {
+    "base_commit": "f5fbac8aaef2bf2a1b307d2ab5905309cef26fdc",
+    "candidate_commit": "30c0163f86b6ed31e7e2de4c792a4e672b03801d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_bh_blowUp_domain_boundary",
+    "diff_sha256": "1d1f8cf0804051dd688be48e091a4b2389de871907eae6f6e761f4725a5af55b",
+    "source_sha256": "cfb5c4617dfaff4e5934db51e417ca261aba6c64b9a3611871b796d9e7aaeab0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_bh_blowUp_domain_boundary",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

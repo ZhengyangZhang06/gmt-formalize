@@ -451,6 +451,303 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+/-- **Test forms and the blow-up under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (Simon
+Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413; used for
+`η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).  `η = η_{x,λ}` is an affine
+homeomorphism of `ℝᴾ` with inverse `ι(z) = x + λz`, and `η⁻¹(η(U)) = U`.  (a) `ω ↦ ω ∘ η` maps
+`𝒟ⁿ(η(U))` to `𝒟ⁿ(U)`; (b) `ω' ↦ ω' ∘ ι` maps `𝒟ⁿ(U)` to `𝒟ⁿ(η(U))`, and `(ω' ∘ ι) ∘ η = ω'`;
+(c) if `ω' = ω ∘ η` then `η_{x,λ#}T(ω) = T(η^#ω) = λ⁻ⁿ T(ω')`, since by multilinearity
+`(η^#ω)(y) = ω(η(y)) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(η(y))`. -/
+theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ ω : TestFormOn (dilation x lam '' U) n, ∃ ω' : TestFormOn U n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ (∀ ω' : TestFormOn U n, ∃ ω : TestFormOn (dilation x lam '' U) n, ∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧ ∀ (T : GeometricCurrentOn U n) (ω : TestFormOn (dilation x lam '' U) n) (ω' : TestFormOn U n), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) n) y = (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) → blowUp T x lam hlam.ne' ω = lam⁻¹ ^ n * T ω' := by
+  intro P n U x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  -- Step 1: `η = η_{x,λ}` (`y ↦ −λ⁻¹x + λ⁻¹y`) and `ι(z) = x + λz` are mutually inverse affine
+  -- homeomorphisms, both `C^∞`.  (`∞` is `ℝ≥0∞`'s top under `open scoped ENNReal`.)
+  let η : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hne)).trans
+    (Homeomorph.addLeft (-(lam⁻¹ • x)))
+  have hη : ⇑η = dilation x lam := by
+    funext y
+    simp [η, dilation, dilationCLM]
+  let ι : Euclid P ≃ₜ Euclid P := (Homeomorph.smulOfNeZero lam hne).trans (Homeomorph.addLeft x)
+  have hι : ⇑ι = fun z => x + lam • z := by
+    funext z
+    simp [ι]
+  have hηι : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hιη : ∀ y, x + lam • dilation x lam y = y := by
+    intro y
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  have hηsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (dilation x lam) :=
+    contDiff_const.add (dilationCLM P lam).contDiff
+  have hιsmooth : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun z : Euclid P => x + lam • z) :=
+    contDiff_const.add (contDiff_id.const_smul lam)
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `ω' := ω ∘ η`: smooth, compactly supported (`η` a homeomorphism), and
+    -- `tsupport ω' ⊆ η⁻¹(tsupport ω) ⊆ η⁻¹(η(U)) = U`.
+    intro ω
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω.property
+    refine ⟨⟨fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y), ?_⟩, fun y => rfl⟩
+    change IsTestForm (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ∧
+      tsupport (fun y => (ω : DifferentialForm (Euclid P) n) (dilation x lam y)) ⊆ U
+    refine ⟨⟨hsmooth.comp hηsmooth, ?_⟩, ?_⟩
+    · have h := hcompact.comp_homeomorph η
+      rwa [hη] at h
+    · refine (tsupport_comp_subset_preimage (ω : DifferentialForm (Euclid P) n)
+        (hη ▸ η.continuous)).trans ((preimage_mono hsupp).trans ?_)
+      rw [preimage_image_eq U (hη ▸ η.injective)]
+  · -- (b) `ω := ω' ∘ ι`: a test form with `tsupport ω ⊆ ι⁻¹(U) ⊆ η(U)`, and `ω ∘ η = ω'`.
+    intro ω'
+    obtain ⟨⟨hsmooth, hcompact⟩, hsupp⟩ := ω'.property
+    refine ⟨⟨fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z), ?_⟩, fun y => ?_⟩
+    · change IsTestForm (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ∧
+        tsupport (fun z => (ω' : DifferentialForm (Euclid P) n) (x + lam • z)) ⊆ dilation x lam '' U
+      refine ⟨⟨hsmooth.comp hιsmooth, ?_⟩, ?_⟩
+      · have h := hcompact.comp_homeomorph ι
+        rwa [hι] at h
+      · refine (tsupport_comp_subset_preimage (ω' : DifferentialForm (Euclid P) n)
+          (hι ▸ ι.continuous)).trans fun z hz => ?_
+        exact ⟨x + lam • z, hsupp hz, hηι z⟩
+    · change (ω' : DifferentialForm (Euclid P) n) y =
+        (ω' : DifferentialForm (Euclid P) n) (x + lam • dilation x lam y)
+      rw [hιη]
+  · -- (c) `η_{x,λ#}T(ω) = T(η^#ω)`, and `η^#ω = λ⁻ⁿ ω'` by multilinearity; `T` is linear.
+    intro T ω ω' hω
+    unfold blowUp
+    rw [GeometricCurrentOn.affinePushforward_apply, GeometricCurrentOn.restrictDomain_apply,
+      show lam⁻¹ ^ n * T ω' = T (lam⁻¹ ^ n • ω') by rw [map_smul, smul_eq_mul]]
+    congr 1
+    apply Subtype.ext
+    funext y
+    ext v
+    rw [testFormOnInclusion_coe, affinePullbackTestOn_coe]
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
+      funext i
+      simp [dilationCLM]
+    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
+    simp
+
+/-- **Blow-ups commute with the current operations** (Simon 6.2.11, 6.2.23–6.2.24(1) for
+`η = η_{x,λ}`, `λ > 0`): `η_#(S − T) = η_#S − η_#T`, `η_#` is injective,
+`spt(η_#T) = η(spt T)` and `∂(η_#T) = η_#(∂T)`.
+
+(i) Both sides evaluate `S − T` on the same pulled-back form.  (ii) Every `ω' ∈ 𝒟ⁿ(U)` is
+`ω ∘ η` for some `ω ∈ 𝒟ⁿ(η(U))`, and `η_#Y(ω) = λ⁻ⁿ Y(ω')` (`dtc_blowUp_testForm_corr`).
+(iii) `η` is an affine homeomorphism, and `η_#T` vanishes on `W₀ ⊂⊂ η(U)` iff `T` vanishes on
+`η⁻¹(W₀) ⊂⊂ U`; so the zero regions correspond, and `spt(η_#T) = η(spt T)` as `η` is injective.
+(iv) `d` commutes with affine pull-back (`GeometricCurrentOn.boundary_affinePushforward`). -/
+theorem Submission.dtc_blowUp_algebra : ∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne' := by
+  intro P U x lam hlam
+  have hc (n : ℕ) : lam⁻¹ ^ n ≠ 0 := pow_ne_zero n (inv_ne_zero hlam.ne')
+  -- `η = η_{x,λ}` as a homeomorphism
+  obtain ⟨e, he⟩ : ∃ e : Euclid P ≃ₜ Euclid P, ⇑e = dilation x lam :=
+    ⟨(Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+      (Homeomorph.addLeft (-(lam⁻¹ • x))), by
+        funext y
+        simp [dilation, dilationCLM]⟩
+  refine ⟨fun n S T => GeometricCurrentOn.ext fun ω => rfl, fun n S T h => ?_, fun n T => ?_,
+    fun m T => ?_⟩
+  · -- (ii) `λ⁻ⁿ S(ω') = η_#S(ω) = η_#T(ω) = λ⁻ⁿ T(ω')`
+    obtain ⟨-, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    refine GeometricCurrentOn.ext fun ω' => ?_
+    obtain ⟨ω, hω⟩ := hb ω'
+    have hS := hval S ω ω' hω
+    rw [h, hval T ω ω' hω] at hS
+    exact mul_left_cancel₀ (hc n) hS.symm
+  · -- (iii) the zero regions correspond under `η`
+    obtain ⟨ha, hb, hval⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+    have hzero : (blowUp T x lam hlam.ne').zeroRegion = dilation x lam '' T.zeroRegion := by
+      ext z
+      constructor
+      · rintro ⟨W₀, ⟨hW₀o, hW₀c, hW₀U, hW₀v⟩, hz⟩
+        rw [← he] at hW₀U
+        have hW : closure (e ⁻¹' W₀) = e ⁻¹' closure W₀ := (e.preimage_closure W₀).symm
+        refine ⟨e.symm z, ⟨e ⁻¹' W₀, ⟨hW₀o.preimage e.continuous, ?_, ?_, ?_⟩, ?_⟩, ?_⟩
+        · rw [hW]
+          exact e.isCompact_preimage.2 hW₀c
+        · rw [hW]
+          exact (preimage_mono hW₀U).trans (e.preimage_image U).subset
+        · intro ω' hω'
+          obtain ⟨ω, hω⟩ := hb ω'
+          have hsupp : tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W₀ := by
+            have hfun : (ω : DifferentialForm (Euclid P) n) =
+                (ω' : DifferentialForm (Euclid P) n) ∘ e.symm := by
+              funext y
+              rw [Function.comp_apply, hω, ← congrFun he (e.symm y), e.apply_symm_apply]
+            rw [hfun]
+            refine (tsupport_comp_subset_preimage _ e.symm.continuous).trans fun y hy => ?_
+            have hy' := hω' (mem_preimage.1 hy)
+            rwa [mem_preimage, e.apply_symm_apply] at hy'
+          have h0 := hW₀v ω hsupp
+          rw [hval T ω ω' hω] at h0
+          exact (mul_eq_zero.1 h0).resolve_left (hc n)
+        · rwa [mem_preimage, e.apply_symm_apply]
+        · rw [← he]
+          exact e.apply_symm_apply z
+      · rintro ⟨w, ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hw⟩, rfl⟩
+        have hW : closure (e '' W) = e '' closure W := (e.image_closure W).symm
+        refine ⟨e '' W, ⟨e.isOpenMap W hWo, ?_, ?_, ?_⟩, ?_⟩
+        · rw [hW]
+          exact hWc.image e.continuous
+        · rw [hW, ← he]
+          exact image_mono hWU
+        · intro ω hω
+          obtain ⟨ω', hω'⟩ := ha ω
+          have hsupp : tsupport (ω' : DifferentialForm (Euclid P) n) ⊆ W := by
+            have hfun : (ω' : DifferentialForm (Euclid P) n) =
+                (ω : DifferentialForm (Euclid P) n) ∘ e := by
+              funext y
+              rw [Function.comp_apply, hω', ← congrFun he y]
+            rw [hfun, ← e.preimage_image W]
+            exact (tsupport_comp_subset_preimage _ e.continuous).trans (preimage_mono hω)
+          rw [hval T ω ω' hω', hWv ω' hsupp, mul_zero]
+        · rw [← he]
+          exact mem_image_of_mem e hw
+    have hinj : Function.Injective (dilation x lam) := he ▸ e.injective
+    simp only [GeometricCurrentOn.support]
+    rw [hzero, image_sdiff hinj]
+  · -- (iv) `d` commutes with the affine pull-back
+    unfold blowUp
+    rw [GeometricCurrentOn.boundary_affinePushforward]
+    rfl
+
+/-- **Blow-up domains and boundaries near `x ∉ spt ∂T`** (Simon 7.3.1, proof, chapter-07.txt
+lines 334–335: "`∂η_{x,λⱼ#}T = 0` in `B_R(0)` for sufficiently large `j` (because
+`x ∉ spt ∂T`)").  `ηⱼ = η_{x,λⱼ}` is an affine homeomorphism with `ηⱼ(x + λⱼz) = z`, so (1) `ηⱼ(U)`
+is open.  As `x ∈ U ∩ Z(∂T)` (`Z` the zero region, `spt ∂T = U \ Z(∂T)`), some `B_r(x)` lies in
+`U ∩ Z(∂T)`, and `λⱼR < r` for all large `j`; then (2) `B̄_R(0) ⊆ ηⱼ(B_r(x)) ⊆ ηⱼ(U)`, and (3)
+`∂(ηⱼ#T) = ηⱼ#(∂T)` has support `ηⱼ(spt ∂T)`, which misses `B_R(0) ⊆ ηⱼ(B_r(x))`, so `∂(ηⱼ#T)`
+annihilates every test form supported in `B_R(0)` (`dtc_blowUp_algebra`,
+`dtc_vanish_off_support`). -/
+theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) := by
+  intro P m U T x hU hxU hxb lams hlams hlim
+  -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
+  have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
+    intro lam y
+    simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.coe_id', id_eq, smul_sub]
+    abel
+  -- `η_{x,λ}(x + λz) = z`, and `η_{x,λ}(y) = z` forces `y = x + λz`
+  have hdil_inv : ∀ (lam : ℝ) (z : Euclid P), lam ≠ 0 → dilation x lam (x + lam • z) = z := by
+    intro lam z hlam
+    rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam, one_smul]
+  have hdil_eq : ∀ (lam : ℝ) (y z : Euclid P), lam ≠ 0 → dilation x lam y = z →
+      y = x + lam • z := by
+    intro lam y z hlam h
+    rw [← h, hdil, smul_smul, mul_inv_cancel₀ hlam, one_smul, add_sub_cancel]
+  -- `λⱼR` is eventually below any positive bound
+  have hsmall : ∀ (R t : ℝ), 0 < t → ∀ᶠ j in atTop, lams j * R < t := by
+    intro R t ht
+    have h0 : Tendsto (fun j => lams j * R) atTop (𝓝 0) := by
+      simpa using hlim.mul_const R
+    exact (tendsto_order.1 h0).2 t ht
+  -- (1) `ηⱼ(U)` is the image of the open `U` under a homeomorphism
+  have hopen : ∀ j, IsOpen (dilation x (lams j) '' U) := by
+    intro j
+    have hlam : lams j ≠ 0 := (hlams j).ne'
+    have hfun : dilation x (lams j) =
+        ((Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam)) :
+          Euclid P → Euclid P) := by
+      funext y
+      rw [hdil]
+      rfl
+    rw [hfun]
+    exact ((Homeomorph.subRight x).trans
+      (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam))).isOpenMap U hU
+  -- a ball `B_r(x)` inside `U` and inside the zero region of `∂T`
+  have hxZ : x ∈ T.boundary.zeroRegion := by
+    by_contra h
+    exact hxb ⟨hxU, h⟩
+  obtain ⟨r, hr, hrU⟩ :=
+    Metric.isOpen_iff.1 (hU.inter T.boundary.isOpen_zeroRegion) x ⟨hxU, hxZ⟩
+  refine ⟨hopen, ?_, ?_⟩
+  · -- (2) `B̄_R(0) ⊆ ηⱼ(U)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj
+    intro z hz
+    have hlam := hlams j
+    refine ⟨x + lams j • z, (hrU ?_).1, hdil_inv (lams j) z hlam.ne'⟩
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_closedBall, dist_zero_right] at hz
+    calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hz hlam.le
+      _ < r := hj
+  · -- (3) `∂(ηⱼ#T)(ω) = 0` for `spt ω ⊆ B_R(0)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj ω hω
+    have hlam := hlams j
+    have hALG := Submission.dtc_blowUp_algebra P U x (lams j) hlam
+    rw [hALG.2.2.2 m T]
+    apply Submission.dtc_vanish_off_support
+    rw [hALG.2.2.1 m T.boundary, Set.disjoint_left]
+    rintro z hz ⟨y, hy, hyz⟩
+    have hyx : y = x + lams j • z := hdil_eq (lams j) y z hlam.ne' hyz
+    have hzR := hω hz
+    rw [mem_ball, dist_zero_right] at hzR
+    have hyball : y ∈ ball x r := by
+      rw [hyx, mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hlam.le]
+      calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hzR.le hlam.le
+        _ < r := hj
+    exact hy.2 (hrU hyball).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
