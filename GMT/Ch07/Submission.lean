@@ -1673,6 +1673,38 @@ theorem Submission.dimred_mbl_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ �
           exact dite_eq_left hmem
         rw [heval]
         exact (Ss (φ i)).le_massOn (omega := ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩) hω
+/-- **Upper bound on compact sets from sub-subsequence comparisons** (Simon 7.2.4 (13) and the
+remark after it).  Let `μ` be finite on compact sets.  Suppose that for every compact `K`, every
+`ε > 0` and every subsequence `ψ` there are `K ⊆ W ⊆ thickening ε K` and a further subsequence
+`φ'` with `limsup μ_{ψ(φ' i)}(W) ≤ μ(W)`.  Then `limsup μⱼ(K) ≤ μ(K)` for every compact `K`.
+If `μ(thickening ε K) < b < limsup μⱼ(K)`, then `μⱼ(K) > b` along a subsequence `ψ`, and
+`b ≤ limsup μ_{ψ(φ' i)}(W) ≤ μ(W) ≤ μ(thickening ε K) < b`.  Hence
+`limsup μⱼ(K) ≤ μ(thickening ε K)` for all `ε > 0`, and `μ(thickening ε K) → μ(K)` as `ε ↓ 0`
+because `K` is closed and `μ(thickening 1 K) ≤ μ(cthickening 1 K) < ∞`. -/
+theorem Submission.dimred_mbl_mm_limsup_le_of_subseq : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K := by
+  intro P μs μ hfin hsub K hK
+  -- step 1: `limsup μⱼ(K) ≤ μ(thickening ε K)` for every `ε > 0`
+  have hclaim : ∀ ε : ℝ, 0 < ε → limsup (fun j => μs j K) atTop ≤ μ (thickening ε K) := by
+    intro ε hε
+    by_contra! hlt
+    -- a level `b` with `μ(thickening ε K) < b < limsup μⱼ(K)`
+    obtain ⟨b, hb, hbl⟩ := exists_between hlt
+    -- `μⱼ(K) > b` for infinitely many `j`, listed by a subsequence `ψ`
+    obtain ⟨ψ, hψ, hψb⟩ := extraction_of_frequently_atTop (frequently_lt_of_lt_limsup
+      (by isBoundedDefault) hbl)
+    obtain ⟨W, hKW, hWK, φ', -, hW⟩ := hsub K ε hK hε ψ hψ
+    -- `b < μ_{ψ(φ' i)}(K) ≤ μ_{ψ(φ' i)}(W)` for every `i`, so `b ≤ limsup μ_{ψ(φ' i)}(W)`
+    have hbW : b ≤ limsup (fun i => μs (ψ (φ' i)) W) atTop :=
+      le_limsup_of_frequently_le (Frequently.of_forall fun i =>
+        (hψb (φ' i)).le.trans (measure_mono hKW))
+    exact absurd hb (not_lt.mpr (hbW.trans (hW.trans (measure_mono hWK))))
+  -- step 2: `μ(thickening r K) → μ(K)` as `r ↓ 0`, since `K` is closed and
+  -- `μ(thickening 1 K) ≤ μ(cthickening 1 K) < ∞`
+  have htend : Tendsto (fun r => μ (thickening r K)) (𝓝[>] 0) (𝓝 (μ K)) :=
+    tendsto_measure_thickening_of_isClosed ⟨1, one_pos,
+      ((measure_mono (thickening_subset_cthickening 1 K)).trans_lt
+        (hfin _ hK.cthickening)).ne⟩ hK.isClosed
+  exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall fun r hr => hclaim r hr)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
