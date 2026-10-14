@@ -645,6 +645,28 @@ theorem Submission.cbr_ct_vs_diagonal_subseq : ∀ (ι : Type) (F : ℕ → Set 
   refine ⟨c, (tendsto_add_atTop_iff_nat m).mp ((hc.comp hσ.tendsto_atTop).congr fun k => ?_)⟩
   show s i ((ψ m).1 (τ k (m + k))) = s i (φ (k + m))
   rw [add_comm k m, hφτ]
+/-- **Simon 1.4.16, vague sequential compactness on an open `U`.**  If `supⱼ μⱼ(K) < ∞` for every
+compact `K ⊆ U`, there is a strictly increasing `φ` such that `∫ f dμ_{φ(j)}` converges for every
+continuous `f` with compact support in `U`.  Exhaust `U` by compact sets `Kₘ`; each subsequence `ψ`
+refines to one convergent on all continuous `f` with `tsupport f ⊆ Kₘ` (one compact piece, with
+`supⱼ μ_{ψ(j)}(Kₘ) ≤ supᵢ μᵢ(Kₘ) < ∞`); the diagonal subsequence serves every `Kₘ`, and the compact
+`tsupport f ⊆ U` lies in some `Kₘ`. -/
+theorem Submission.dmcbr_vague_convergent_subseq : ∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ⨆ j, μs j K < ∞) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (φ j))) atTop (𝓝 c) := by
+  intro P U μs hU hμ
+  -- Step 1: a compact exhaustion `Kₘ` of `U`
+  obtain ⟨K, hKc, hKU, hKex⟩ := Submission.cbr_ct_vs_compact_exhaustion P U hU
+  -- Steps 2–6: Claim A on `Kₘ` for the subsequence `μ ∘ ψ`, then the diagonal argument over `m`
+  obtain ⟨φ, hφ, hφconv⟩ := Submission.cbr_ct_vs_diagonal_subseq (Euclid P → ℝ)
+    (fun m => {f | Continuous f ∧ tsupport f ⊆ K m}) (fun f j => ∫ x, f x ∂(μs j))
+    fun m ψ _ => by
+      obtain ⟨θ, hθ, hθconv⟩ := Submission.cbr_ct_vs_compact_piece_subseq P (K m)
+        (fun j => μs (ψ j)) (hKc m)
+        ((iSup_comp_le (fun i => μs i (K m)) ψ).trans_lt (hμ (K m) (hKc m) (hKU m)))
+      exact ⟨θ, hθ, fun f hf => hθconv f hf.1 hf.2⟩
+  -- Step 7: the compact `tsupport f ⊆ U` lies in some `Kₘ`
+  refine ⟨φ, hφ, fun f hf hfc hfU => ?_⟩
+  obtain ⟨m, hm⟩ := hKex (tsupport f) hfc.isCompact hfU
+  exact hφconv m f ⟨hf, hm⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
