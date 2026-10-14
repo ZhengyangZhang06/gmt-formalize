@@ -451,6 +451,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lipschitz order statistic** (proof of Simon Ch. 6, Lemma 5.4, the retraction of the
+deformation theorem): for `m + 1 < P` the `ℓ`-th largest entry
+`κ u = max_{|I| = ℓ} min_{i ∈ I} u i`, `ℓ = P − (m + 1)`, of `u : Fin P → ℝ` is `≤` at least `ℓ`
+entries of `u`, `≥` at least `m + 2` entries, and is `1`-Lipschitz for the sup norm.  A maximizing
+`I` gives the first property; if at most `m + 1` entries were `≤ κ u`, then `ℓ` entries `> κ u`
+would form an `I` with `min_I u > κ u`; and each `min_I` is `1`-Lipschitz for the sup norm, hence
+so is their maximum. -/
+theorem Submission.dor_lmb_fcdr_order_stat : ∀ (P m : ℕ), m + 1 < P → ∃ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) ∧ (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, u i ≤ κ u) ∧ ∀ u v : Fin P → ℝ, ∀ t : ℝ, (∀ i, |u i - v i| ≤ t) → |κ u - κ v| ≤ t := by
+  intro P m hmP
+  classical
+  -- `𝓕` = the `ℓ`-element index sets, `ℓ = P − (m + 1) ≥ 1`; `𝓕` and its members are nonempty
+  let F : Finset (Finset (Fin P)) := Finset.powersetCard (P - (m + 1)) Finset.univ
+  have hF : F.Nonempty := Finset.powersetCard_nonempty.2 (by rw [Finset.card_fin]; omega)
+  have hFI : ∀ I ∈ F, I.Nonempty ∧ I.card = P - (m + 1) := fun I hI => by
+    have hc := (Finset.mem_powersetCard.1 hI).2
+    exact ⟨Finset.card_pos.1 (by omega), hc⟩
+  -- `g u I = min_{i ∈ I} u i` (the empty set, not in `𝓕`, gets `0`); `κ u = max_{I ∈ 𝓕} g u I`
+  let g : (Fin P → ℝ) → Finset (Fin P) → ℝ := fun u I => if h : I.Nonempty then I.inf' h u else 0
+  have hg : ∀ u I (hI : I ∈ F), g u I = I.inf' (hFI I hI).1 u := fun u I hI =>
+    dite_eq_left (hFI I hI).1
+  refine ⟨fun u => F.sup' hF (g u), fun u => ?_, fun u => ?_, fun u v t huv => ?_⟩
+  · -- (1): a maximizing `I` has `ℓ` indices with `κ u ≤ u i`
+    obtain ⟨I, hI, hIu⟩ := Finset.exists_mem_eq_sup' hF (g u)
+    refine ⟨I, by have := (hFI I hI).2; omega, fun i hi => ?_⟩
+    show F.sup' hF (g u) ≤ u i
+    rw [hIu, hg u I hI]
+    exact Finset.inf'_le u hi
+  · -- (2): otherwise `ℓ` entries `> κ u` would form `I ∈ 𝓕` with `g u I > κ u`
+    refine ⟨Finset.univ.filter (fun i => u i ≤ F.sup' hF (g u)), ?_,
+      fun i hi => (Finset.mem_filter.1 hi).2⟩
+    by_contra hlt
+    have hsum := Finset.card_filter_add_card_filter_not (s := Finset.univ)
+      (fun i => u i ≤ F.sup' hF (g u))
+    rw [Finset.card_fin] at hsum
+    obtain ⟨I, hIB, hIc⟩ := Finset.exists_subset_card_eq
+      (s := Finset.univ.filter (fun i => ¬ u i ≤ F.sup' hF (g u))) (n := P - (m + 1)) (by omega)
+    have hI : I ∈ F := Finset.mem_powersetCard.2 ⟨Finset.subset_univ I, hIc⟩
+    have h1 : g u I ≤ F.sup' hF (g u) := Finset.le_sup' (g u) hI
+    have h2 : F.sup' hF (g u) < g u I := by
+      rw [hg u I hI, Finset.lt_inf'_iff]
+      exact fun i hi => lt_of_not_ge (Finset.mem_filter.1 (hIB hi)).2
+    exact absurd h1 (not_le.2 h2)
+  · -- (3): each `g · I`, hence `κ`, is `1`-Lipschitz for the sup norm
+    have key : ∀ u v : Fin P → ℝ, (∀ i, |u i - v i| ≤ t) →
+        F.sup' hF (g u) ≤ F.sup' hF (g v) + t := by
+      intro u v huv
+      refine Finset.sup'_le hF (g u) fun I hI => ?_
+      obtain ⟨i₀, hi₀, hv⟩ := Finset.exists_mem_eq_inf' (hFI I hI).1 v
+      have h1 : g u I ≤ u i₀ := by rw [hg u I hI]; exact Finset.inf'_le u hi₀
+      have h2 : g v I = v i₀ := by rw [hg v I hI]; exact hv
+      have h3 : g v I ≤ F.sup' hF (g v) := Finset.le_sup' (g v) hI
+      have h4 := (abs_le.1 (huv i₀)).2
+      linarith
+    have hvu : ∀ i, |v i - u i| ≤ t := fun i => by rw [abs_sub_comm]; exact huv i
+    show |F.sup' hF (g u) - F.sup' hF (g v)| ≤ t
+    rw [abs_sub_le_iff]
+    constructor <;> linarith [key u v huv, key v u hvu]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1.cube_periodic-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1",
+  "depth": 6,
+  "title": "Integer-translation compatibility of Φ on the closed unit cube",
+  "statement": "Let P, m ∈ ℕ with m + 1 < P, a ∈ Euclid P with |a_i − 1/2| < 1/4 for all i, κ : (Fin P → ℝ) → ℝ such that for every u there is a finset s with P ≤ m + 1 + |s| and κ(u) ≤ u_i for all i ∈ s, and suppose Φ : Euclid P → Euclid P satisfies Φ(y)_i = a_i + (y_i − a_i)/max(r_i(y), κ(r(y))) for all y and i (real division with the convention x/0 = 0, as in Lean; the denominator vanishes only when r_i(y) = 0 and κ(r(y)) ≤ 0), where r(y) denotes the function j ↦ r_j(y) := max((y_j − a_j)/(1 − a_j), (a_j − y_j)/a_j) (= (y_j − a_j)/(1 − a_j) if y_j ≥ a_j, and = (a_j − y_j)/a_j if y_j < a_j). If y, y' ∈ Euclid P have all coordinates in [0, 1] and y'_i − y_i ∈ ℤ for every i, then Φ(y')_i = Φ(y)_i + (y'_i − y_i) for every i.",
+  "lean_statement": "∀ (P m : ℕ), m + 1 < P → ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y y' : Euclid P, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → (∀ i, ∃ k : ℤ, y' i - y i = k) → ∀ i, Φ y' i = Φ y i + (y' i - y i)",
+  "lean_name": "dor_lmb_fcdr_cube_periodic",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7956cff54e-a1"
+}
