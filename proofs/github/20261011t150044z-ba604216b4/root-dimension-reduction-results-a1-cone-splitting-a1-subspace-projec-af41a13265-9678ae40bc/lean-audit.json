@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "380aabe7d252ef567d76fc38d2f1f5cb1dc0377979fadfcce4f235d05ecea155",
+  "git_delta": {
+    "base_commit": "d40b6f02f3b355c7e265ab08411747456ba6e7d1",
+    "candidate_commit": "7eb62b1b1a76b9601518b9bdc03b8fceb5579158",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1b408f16c924541ec20496ee9a281d9b363fcd32d351ee9695b30379bafc48bb",
+    "source_sha256": "533216f002f9a8f60e50cdf867b8d0b43741d87c21b0d439739c574ed1b2552f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_orient_projection_le",
+      "statement": "∀ (P m : ℕ) (V Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P m) (α : Covector (Euclid P) m), IsUnitOrientationOf ξ Q → |ξ (α.compContinuousLinearMap V.starProjection)| ≤ covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

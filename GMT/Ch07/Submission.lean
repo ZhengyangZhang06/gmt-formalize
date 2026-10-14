@@ -451,6 +451,260 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.1.15, 6.3.4–3.5** (Euclidean coefficient norm versus Gram determinants):
+(1) `|α(v₁, …, vₙ)| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}` for every `n`-covector `α` on `ℝᴾ`;
+(2) every orthonormal `τ₁, …, τₙ` admits an `n`-covector `α` with `|α|_E ≤ 1` and `α(τ) = 1`.
+Expand `α(v) = Σ_I α(e_I) det V_I` over strictly increasing `I` (multilinearity, alternation,
+Leibniz).  For the determinant covector `u ↦ det(⟨uₐ, v_b⟩)` this is Cauchy–Binet,
+`det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`; then (1) is Cauchy–Schwarz over the `I`, and (2) holds for the
+determinant covector of `τ`. -/
+theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P), |α v| ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)))) ∧ ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → ∃ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ 1 ∧ α τ = 1 := by
+  intro P n
+  classical
+  set e := EuclideanSpace.basisFun (Fin P) ℝ with he
+  -- `α(v) = Σ_I α(e_I) det V_I` over strictly increasing `I`, with `(V_I)ₐⱼ = ⟨e_{I a}, vⱼ⟩`
+  have hexp : ∀ (α : Covector (Euclid P) n) (v : Fin n → Euclid P),
+      α v = ∑ I : Fin n → Fin P, if StrictMono I then
+        α (fun i => e (I i)) * Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) else 0 := by
+    intro α v
+    set c : Fin n → Fin P → ℝ := fun j k => inner ℝ (e k) (v j) with hc
+    have hv : v = fun j => ∑ k, c j k • e k := funext fun j => (e.sum_repr' (v j)).symm
+    -- multilinearity: `α(v) = Σ_f (∏ⱼ vⱼ(f j)) α(e_f)`
+    have h2 : α v = ∑ f : Fin n → Fin P, (∏ j, c j (f j)) * α (fun j => e (f j)) := by
+      conv_lhs => rw [hv]
+      rw [α.map_sum]
+      refine Finset.sum_congr rfl fun f _ => ?_
+      rw [← smul_eq_mul, ← α.map_smul_univ]
+    -- alternation: non-injective `f` contribute `0`
+    have h3 : ∀ f : Fin n → Fin P, ¬ Injective f → α (fun j => e (f j)) = 0 := fun f hf =>
+      α.map_eq_zero_of_not_injective _ (fun h => hf (Injective.of_comp (f := ⇑e) h))
+    rw [h2, ← Finset.sum_filter_of_ne (p := Injective) (fun f _ hne => by
+      by_contra hf
+      exact hne (by rw [h3 f hf, mul_zero]))]
+    rw [← Finset.sum_filter]
+    simp only [Matrix.det_apply, Matrix.of_apply, Finset.mul_sum]
+    rw [← Finset.sum_product']
+    symm
+    -- `(I, σ) ↦ I ∘ σ` is a bijection onto the injective `f`; `α(e_{I ∘ σ}) = sgn σ · α(e_I)`
+    refine Finset.sum_bij (fun p _ => fun j => p.1 (p.2 j)) ?_ ?_ ?_ ?_
+    · intro p hp
+      simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and] at hp ⊢
+      exact hp.1.injective.comp p.2.injective
+    · intro p hp q hq hpq
+      simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true] at hp hq
+      have hrange : Set.range p.1 = Set.range q.1 := by
+        have h1 : Set.range (fun j => p.1 (p.2 j)) = Set.range p.1 := (EquivLike.range_comp p.1 p.2)
+        have h2 : Set.range (fun j => q.1 (q.2 j)) = Set.range q.1 := (EquivLike.range_comp q.1 q.2)
+        rw [← h1, ← h2, hpq]
+      have hI : p.1 = q.1 := (StrictMono.range_inj_of_wellFoundedLT hp hq).mp hrange
+      have hσ : p.2 = q.2 := by
+        ext j
+        have := congr_fun hpq j
+        rw [hI] at this
+        exact congrArg Fin.val (hq.injective this)
+      exact Prod.ext hI hσ
+    · intro f hf
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hf
+      refine ⟨(f ∘ Tuple.sort f, (Tuple.sort f)⁻¹), ?_, ?_⟩
+      · simp only [Finset.mem_product, Finset.mem_filter, Finset.mem_univ, true_and, and_true]
+        exact (Tuple.monotone_sort f).strictMono_of_injective (hf.comp (Tuple.sort f).injective)
+      · funext j
+        simp
+    · intro p hp
+      have hperm : α (fun j => e (p.1 (p.2 j))) = Equiv.Perm.sign p.2 • α (fun j => e (p.1 j)) :=
+        α.toAlternatingMap.map_perm (fun j => e (p.1 j)) p.2
+      rw [hperm]
+      simp only [hc, Units.smul_def, zsmul_eq_mul]
+      ring
+  -- the determinant covector `u ↦ det(⟨uₐ, τ_b⟩)`
+  have hdet : ∀ τ : Fin n → Euclid P, ∃ β : Covector (Euclid P) n,
+      ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+    intro τ
+    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+      LinearMap.pi fun b => (innerSL ℝ (τ b) : Euclid P →L[ℝ] ℝ).toLinearMap
+    let f : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+    have hf : ∀ u, f u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+      intro u
+      show Matrix.det (Matrix.of fun a b => L (u a) b) = _
+      congr 1
+      ext a b
+      simp [L, real_inner_comm]
+    have hcont : Continuous fun u : Fin n → Euclid P =>
+        Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := by
+      apply Continuous.matrix_det
+      apply continuous_matrix
+      intro a b
+      exact Continuous.inner (f := fun u : Fin n → Euclid P => u a) (g := fun _ => τ b)
+        (continuous_apply a) continuous_const
+    refine ⟨{ f with cont := ?_ }, fun u => hf u⟩
+    have : (f : (Fin n → Euclid P) → ℝ) =
+        fun u => Matrix.det (Matrix.of fun a b => inner ℝ (u a) (τ b)) := funext hf
+    simpa [this] using hcont
+  -- Cauchy–Binet: `det(⟨vᵢ, vⱼ⟩) = Σ_I (det V_I)²`, the expansion of the determinant covector of `v`
+  have hcb : ∀ v : Fin n → Euclid P, Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) =
+      ∑ I : Fin n → Fin P, if StrictMono I then
+        Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) ^ 2 else 0 := by
+    intro v
+    obtain ⟨β, hβ⟩ := hdet v
+    rw [← hβ v, hexp β v]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [hβ, pow_two]
+    · rfl
+  refine ⟨fun α v => ?_, fun τ hτ => ?_⟩
+  · -- (1): Cauchy–Schwarz for `Σ_I α(e_I) det V_I`
+    set a : (Fin n → Fin P) → ℝ := fun I => if StrictMono I then α (fun i => e (I i)) else 0
+      with ha
+    set d : (Fin n → Fin P) → ℝ := fun I => if StrictMono I then
+      Matrix.det (Matrix.of fun a j => inner ℝ (e (I a)) (v j)) else 0 with hd
+    have hv : α v = ∑ I, a I * d I := by
+      rw [hexp α v]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [ha, hd]
+      split_ifs <;> simp
+    have hnorm : covectorEuclideanNorm α = Real.sqrt (∑ I, a I ^ 2) := by
+      unfold covectorEuclideanNorm
+      rw [← he]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [ha]
+      split_ifs <;> simp
+    have hgram : Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) = ∑ I, d I ^ 2 := by
+      rw [hcb v]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      simp only [hd]
+      split_ifs <;> simp
+    rw [hv, hnorm, hgram, abs_le]
+    constructor
+    · have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ (fun I => -a I) d
+      simp only [neg_sq, neg_mul, Finset.sum_neg_distrib] at this
+      linarith
+    · exact Real.sum_mul_le_sqrt_mul_sqrt Finset.univ a d
+  · -- (2): the determinant covector `β` of `τ` has `β(τ) = det 1 = 1` and
+    -- `|β|_E² = Σ_I β(e_I)² = det(⟨τᵢ, τⱼ⟩) = 1`
+    obtain ⟨β, hβ⟩ := hdet τ
+    have hone : (Matrix.of fun a b => inner ℝ (τ a) (τ b) : Matrix (Fin n) (Fin n) ℝ) = 1 := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.one_apply]
+      exact (orthonormal_iff_ite.mp hτ) a b
+    have hβτ : β τ = 1 := by rw [hβ, hone, Matrix.det_one]
+    refine ⟨β, ?_, hβτ⟩
+    have hsum : (∑ I : Fin n → Fin P, if StrictMono I then (β (fun i => e (I i))) ^ 2 else 0) = 1 := by
+      have := hcb τ
+      rw [hone, Matrix.det_one] at this
+      rw [this]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [hβ]
+      · rfl
+    unfold covectorEuclideanNorm
+    rw [← he, hsum, Real.sqrt_one]
+/-- **Orthogonal projection does not increase `m`-dimensional area** (Simon Ch. 7 §3, footnote 2;
+Gram-determinant form, cf. 6.3.4–3.5).  If `τ₁, …, τₘ` is orthonormal in `ℝᴾ` and `q` is the
+orthogonal projection onto a subspace `V`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`.  With `U eᵢ = τᵢ` (an
+isometry) and `T = q ∘ U` (a contraction), the Gram matrix is the matrix of `S = T* T` in the
+standard basis, whose eigenvalues `λₖ = ‖T uₖ‖²` lie in `[0, 1]`; so `det G = ∏ₖ λₖ ≤ 1`. -/
+theorem Submission.dimred_cs_sp_op_gram_det_starProjection_le_one : ∀ (P m : ℕ) (V : Submodule ℝ (Euclid P)) (τ : Fin m → Euclid P), Orthonormal ℝ τ → Matrix.det (Matrix.of fun i j => inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j))) ≤ 1 := by
+  intro P m V τ hτ
+  classical
+  let b := EuclideanSpace.basisFun (Fin m) ℝ
+  let v : Fin m → Euclid P := fun i => V.starProjection (τ i)
+  -- `U eᵢ = τᵢ` (an isometry since `τ` is orthonormal), `T eᵢ = q τᵢ`, so `T = q ∘ U`
+  let U : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ τ
+  let T : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ v
+  let S := LinearMap.adjoint T ∘ₗ T
+  have hS : S.IsSymmetric := LinearMap.isSymmetric_adjoint_comp_self T
+  have hn : Module.finrank ℝ (EuclideanSpace ℝ (Fin m)) = m := finrank_euclideanSpace_fin
+  have hUe : ∀ a, U (b a) = τ a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ τ a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hTe : ∀ a, T (b a) = v a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ v a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hTU : ∀ c, T c = V.starProjection (U c) := by
+    have hlin : T = (V.starProjection : Euclid P →L[ℝ] Euclid P).toLinearMap ∘ₗ U := by
+      apply b.toBasis.ext
+      intro a
+      rw [OrthonormalBasis.coe_toBasis, LinearMap.comp_apply, hTe, hUe]
+      rfl
+    intro c
+    rw [hlin]
+    rfl
+  have hUiso : ∀ c, ‖U c‖ = ‖c‖ := by
+    intro c
+    have hb : Orthonormal ℝ (b.toBasis : Fin m → EuclideanSpace ℝ (Fin m)) := by
+      rw [OrthonormalBasis.coe_toBasis]; exact b.orthonormal
+    have hf : Orthonormal ℝ (U ∘ b.toBasis) := by
+      have hcomp : (U ∘ b.toBasis) = τ := by
+        funext a
+        simp only [Function.comp_apply, OrthonormalBasis.coe_toBasis, hUe]
+      rw [hcomp]; exact hτ
+    exact (U.isometryOfOrthonormal hb hf).norm_map c
+  -- the orthogonal projection is a contraction, so `‖T c‖ ≤ ‖c‖`
+  have hcontr : ∀ c, ‖T c‖ ≤ ‖c‖ := by
+    intro c
+    rw [hTU, ← hUiso c]
+    exact V.norm_starProjection_apply_le (U c)
+  have hSinner : ∀ x y, inner ℝ x (S y) = inner ℝ (T x) (T y) := by
+    intro x y
+    simp [S, LinearMap.adjoint_inner_right]
+  -- the matrix of `S` in the standard basis is the Gram matrix `G`
+  have hmat :
+      LinearMap.toMatrix b.toBasis b.toBasis S = Matrix.of fun i j => inner ℝ (v i) (v j) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, hSinner, hTe, hTe]
+    rfl
+  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
+    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
+  -- spectral theorem: `λₖ = ⟪uₖ, S uₖ⟫ = ‖T uₖ‖² ∈ [0, 1]`
+  have hbounds : ∀ k, 0 ≤ hS.eigenvalues hn k ∧ hS.eigenvalues hn k ≤ 1 := by
+    intro k
+    have h1 := hS.apply_eigenvectorBasis hn k
+    have hu : ‖hS.eigenvectorBasis hn k‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 k
+    have h2 : inner ℝ (hS.eigenvectorBasis hn k) (S (hS.eigenvectorBasis hn k)) =
+        hS.eigenvalues hn k := by
+      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
+      simp
+    rw [← h2, hSinner, real_inner_self_eq_norm_sq]
+    have h3 := hcontr (hS.eigenvectorBasis hn k)
+    rw [hu] at h3
+    have h4 := norm_nonneg (T (hS.eigenvectorBasis hn k))
+    exact ⟨by positivity, pow_le_one₀ h4 h3⟩
+  change Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ 1
+  rw [← hdet, hS.det_eq_prod_eigenvalues hn]
+  simp only [RCLike.ofReal_real_eq_id, id]
+  exact Finset.prod_le_one₀ (fun k _ => (hbounds k).1) (fun k _ => (hbounds k).2)
+
+/-- **Simon 7.3.1, footnote 2; 6.3.4–3.5** (orthogonal projection does not increase area): if
+`ξ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `q` is the orthogonal projection onto `V`,
+then `|⟨α ∘ q, ξ⟩| = |α(qτ₁, …, qτₘ)| ≤ |α|_E · det(⟨qτᵢ, qτⱼ⟩)^{1/2} ≤ |α|_E`, by the Gram bound
+of `covectorEuclideanNorm_gram_bounds` and `det(⟨qτᵢ, qτⱼ⟩) ≤ 1` (`q` is a contraction). -/
+theorem Submission.dimred_cs_sp_orient_projection_le : ∀ (P m : ℕ) (V Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P m) (α : Covector (Euclid P) m), IsUnitOrientationOf ξ Q → |ξ (α.compContinuousLinearMap V.starProjection)| ≤ covectorEuclideanNorm α := by
+  intro P m V Q ξ α hξ
+  obtain ⟨τ, hτ, -, hsign⟩ := hξ
+  -- `ξ(α ∘ q) = ±(α ∘ q)(τ) = ±α(qτ₁, …, qτₘ)`
+  have hcomp : α.compContinuousLinearMap V.starProjection τ =
+      α fun i => V.starProjection (τ i) := rfl
+  have hval : |ξ (α.compContinuousLinearMap V.starProjection)| =
+      |α fun i => V.starProjection (τ i)| := by
+    rcases hsign with h | h
+    · rw [h, hcomp]
+    · rw [h, abs_neg, hcomp]
+  -- the Gram bound for `v = qτ`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`
+  rw [hval]
+  calc |α fun i => V.starProjection (τ i)|
+      ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j =>
+          inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j)))) :=
+        (Submission.covectorEuclideanNorm_gram_bounds P m).1 α _
+    _ ≤ covectorEuclideanNorm α :=
+        mul_le_of_le_one_right (covectorEuclideanNorm_nonneg α) (Real.sqrt_le_one.mpr
+          (Submission.dimred_cs_sp_op_gram_det_starProjection_le_one P m V τ hτ))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
