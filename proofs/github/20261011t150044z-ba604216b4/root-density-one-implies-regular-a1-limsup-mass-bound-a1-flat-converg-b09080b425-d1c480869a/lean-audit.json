@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ef8064d9eae33ed705aeb9fbdbdb57e8b690120b1e55c6e5da9e23d1139d6d99",
+  "git_delta": {
+    "base_commit": "cc4b64395af400c3e25de523ef6f16a61dd6621d",
+    "candidate_commit": "e855663ec8bcfdea8d3e73a4fff01feaf45f6abb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_projected_cell_integral",
+    "diff_sha256": "9ff3df749a93e5f0d31951c14921b62c6a9bc3da987fb680269b049edd0645b2",
+    "source_sha256": "43d5c9b2d5d7d82d3c6aea57f58e015031c4c3152130c518cceb63e2474fdf1d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_projected_cell_integral",
+      "statement": "∀ (N : ℕ) (ρ : ℝ) (p : Euclid (N + 1) →L[ℝ] Euclid N) (z : Fin (N + 1) → ℤ) (ι : Fin N → Fin (N + 1)), (∀ (y : Euclid (N + 1)) (i : Fin N), p y i = y (Fin.castSucc i)) → StrictMono ι → (Fin.last N ∈ Set.range ι → ∀ ω : DifferentialForm (Euclid N) N, ∫ y in {y : Euclid (N + 1) | ∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)}, ω (p y) (fun k => p (EuclideanSpace.single (ι k) (1 : ℝ))) ∂μHE[N] = 0) ∧ (Fin.last N ∉ Set.range ι → (∀ ω : DifferentialForm (Euclid N) N, ∫ y in {y : Euclid (N + 1) | ∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)}, ω (p y) (fun k => p (EuclideanSpace.single (ι k) (1 : ℝ))) ∂μHE[N] = ∫ x in {x : Euclid N | ∀ i : Fin N, ρ * z (Fin.castSucc i) ≤ x i ∧ x i ≤ ρ * (z (Fin.castSucc i) + 1)}, ω x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[N]) ∧ ∀ x : Euclid N, (∀ i : Fin N, ρ * z (Fin.castSucc i) ≤ x i ∧ x i ≤ ρ * (z (Fin.castSucc i) + 1)) → ∃ y : Euclid (N + 1), (∀ i : Fin (N + 1), (i ∈ Set.range ι → ρ * z i ≤ y i ∧ y i ≤ ρ * (z i + 1)) ∧ (i ∉ Set.range ι → y i = ρ * z i)) ∧ p y = x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
