@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8fed9f7ce8614c2b1952b1e7ae1609da3d1f9308f62b37367b82c818ca0953b9",
+  "git_delta": {
+    "base_commit": "cfff0333b93aeade45d4ea8c4f89077953014a22",
+    "candidate_commit": "bc77c38c76fbcc8d52c5bb0a44ffb63ab9a26397",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_cvl_pairing_tendsto",
+    "diff_sha256": "d0aed8d34b4222713ca12c464c91f5b2e127940891bf3c37cdc07c8180ff338a",
+    "source_sha256": "fcc722fd504210c58a90ed571baa1162997ff6aeec3084448ae0ea2abc2eede5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_cvl_pairing_tendsto",
+      "statement": "∀ (P n : ℕ) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → Continuous w → HasCompactSupport w → Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k)) atTop (𝓝 (∫ x, ζ₀ (w x) ∂ν))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
