@@ -1601,6 +1601,123 @@ theorem Submission.codim1_hcp_un_hyperplane_projection : ∀ (P m : ℕ) (A₀ Q
     abel
   rw [h₂, inner_add_left, real_inner_smul_left, h₁, hnQ v hv, mul_zero, add_zero]
 
+/-- **Local smoothness of the unit normal** (the step "`ν₀` is smooth along `M`" in the
+construction of the smooth unit normal of a hypersurface of `A₀`, for Simons' theorem, Simon B.2).
+Let `M ⊆ A₀`, `dim A₀ = m + 1`, have `C^∞` charts and let `ν₀` be a continuous unit normal of `M` in
+`A₀`.  Take a chart `ψ` with `ψ(v₀) = y` and the cross product `N` of `A₀`.  Then
+`n(v) = N(Dψ(v)e₁, …, Dψ(v)eₘ)` is `C^∞` on `V`, lies in `A₀`, is nonzero and is normal to
+`T_{ψ(v)}M = Dψ(v)(ℝᵐ)`, an `m`-plane `Q ⊆ A₀`.  With `n̂ = n(v)/|n(v)|`,
+`P_Q w = P_{A₀} w − (n̂ · w) n̂`, so `ν₀(ψ(v)) = σ n̂` with `σ = ν₀(ψ(v)) · n̂ = ±1`.
+A `C^∞` retraction `ρ` (`ψ(ρ(z)) = z` on `M ∩ O₁`) makes `s(z) = ν₀(z) · n(ρ(z))/|n(ρ(z))|` a
+continuous `±1`-valued function on `M ∩ O₁`, so `s = s(y)` on `M ∩ O₁ ∩ B_δ(y)`, and
+`g = s(y) n∘ρ/|n∘ρ|` is `C^∞` on `O = O₁ ∩ B_δ(y)` and equals `ν₀` on `M ∩ O`. -/
+theorem Submission.codim1_hcp_un_normal_local_smooth : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν₀ : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ (⊤ : ℕ∞) ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ ∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContinuousOn ν₀ M → (∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0) → ∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → Euclid P), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = ν₀ z := by
+  intro P m A₀ M ν₀ hA₀ hMA hcharts hν₀c hν₀ y hy
+  -- step 0: the `C^∞` charts are `C¹` charts, so `M` is an embedded `C¹` submanifold
+  have hM1 : IsEmbeddedSubmanifold 1 m M := by
+    intro x hx
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hder⟩ := hcharts x hx
+    exact ⟨V, W, ψ, hV, hW, hxW, hψ.of_le (WithTop.coe_le_coe.2 le_top), hinj, himg, hprop, hder⟩
+  -- step 1: a chart `(V, W, ψ)` with `ψ(v₀) = y`, and the cross product `N` of `A₀`
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hder⟩ := hcharts y hy
+  obtain ⟨v₀, hv₀V, hψv₀⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hyW, hy⟩
+  obtain ⟨N, hNA, hNorth, -, hNne⟩ := Submission.codim1_hcp_un_cross_product P m A₀ hA₀
+  set b := EuclideanSpace.basisFun (Fin m) ℝ
+  -- `n(v) = N(Dψ(v)e₁, …, Dψ(v)eₘ)`
+  set n : Euclid m → Euclid P := fun v => N fun j => fderiv ℝ ψ v (b j)
+  have hψ1 : ContDiffOn ℝ (1 : ℕ) ψ V := hψ.of_le (WithTop.coe_le_coe.2 le_top)
+  have hψM : ∀ v ∈ V, ψ v ∈ M := fun v hv => (himg ▸ mem_image_of_mem ψ hv : ψ v ∈ W ∩ M).2
+  -- step 2: `T_{ψ(v)}M = Dψ(v)(ℝᵐ)` for `v ∈ V`
+  have htan : ∀ v ∈ V, tangentSpace M (ψ v) = range (fderiv ℝ ψ v) := fun v hv =>
+    Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ1 hinj himg
+      hprop hder hv
+  -- step 3: `n` is `C^∞` on `V` ...
+  have hn : ContDiffOn ℝ (⊤ : ℕ∞) n V := by
+    have hfd : ContDiffOn ℝ (⊤ : ℕ∞) (fderiv ℝ ψ) V :=
+      ((contDiffOn_infty_iff_fderiv_of_isOpen hV).1 hψ).2
+    have hN : ContDiff ℝ (⊤ : ℕ∞) N := by
+      have h := N.toContinuousMultilinearMap.contDiff (n := ((⊤ : ℕ∞) : WithTop ℕ∞))
+      rwa [ContinuousAlternatingMap.coe_toContinuousMultilinearMap] at h
+    have hw : ContDiffOn ℝ (⊤ : ℕ∞) (fun v (j : Fin m) => fderiv ℝ ψ v (b j)) V :=
+      contDiffOn_pi.2 fun j => hfd.clm_apply contDiffOn_const
+    exact hN.comp_contDiffOn hw
+  -- ... and, for `v ∈ V`, `T_{ψ(v)}M` is an `m`-plane `Q ⊆ A₀` with `0 ≠ n(v) ∈ A₀`, `n(v) ⊥ Q`
+  have hnormal : ∀ v ∈ V, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M (ψ v) ∧
+      Module.finrank ℝ Q = m ∧ Q ≤ A₀ ∧ n v ∈ A₀ ∧ n v ≠ 0 ∧ ∀ t ∈ Q, inner ℝ (n v) t = 0 := by
+    intro v hv
+    obtain ⟨Q, hQ, hQm, hQA⟩ :=
+      Submission.codim1_hcp_un_tangent_subspace P m A₀ M hM1 hMA (ψ v) (hψM v hv)
+    have hQr : ∀ t, t ∈ Q ↔ t ∈ range (fderiv ℝ ψ v) := fun t => by
+      rw [← htan v hv, ← hQ, SetLike.mem_coe]
+    -- `Dψ(v)e₁, …, Dψ(v)eₘ` are linearly independent vectors of `Q ⊆ A₀`
+    have hli : LinearIndependent ℝ fun j => fderiv ℝ ψ v (b j) :=
+      b.orthonormal.linearIndependent.map' (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P)
+        (LinearMap.ker_eq_bot.2 (hder v hv))
+    have hwA : ∀ j, fderiv ℝ ψ v (b j) ∈ A₀ := fun j => hQA ((hQr _).2 (mem_range_self _))
+    refine ⟨Q, hQ, hQm, hQA, hNA _, hNne _ hli hwA, fun t ht => ?_⟩
+    -- `t = Dψ(v)a = Σⱼ aⱼ Dψ(v)eⱼ` and `n(v) ⊥ Dψ(v)eⱼ`
+    obtain ⟨a, rfl⟩ := (hQr t).1 ht
+    rw [← b.sum_repr a, map_sum, inner_sum]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [map_smul, inner_smul_right, hNorth (fun j => fderiv ℝ ψ v (b j)) j, mul_zero]
+  have hn0V : ∀ v ∈ V, n v ≠ 0 := fun v hv => by
+    obtain ⟨-, -, -, -, -, h, -⟩ := hnormal v hv
+    exact h
+  -- step 4: `ν₀(ψ(v)) = σ n(v)/|n(v)|` with `σ = ν₀(ψ(v)) · n(v)/|n(v)| = ±1`, for `v ∈ V`
+  have hline : ∀ v ∈ V, ν₀ (ψ v) = inner ℝ (‖n v‖⁻¹ • n v) (ν₀ (ψ v)) • (‖n v‖⁻¹ • n v) ∧
+      |inner ℝ (‖n v‖⁻¹ • n v) (ν₀ (ψ v))| = 1 := by
+    intro v hv
+    obtain ⟨Q, hQ, hQm, hQA, hnA, hn0, hnQ⟩ := hnormal v hv
+    obtain ⟨huA, hu1, huT⟩ := hν₀ (ψ v) (hψM v hv)
+    -- `n(v)/|n(v)|` is a unit vector of `A₀` normal to `Q`
+    have he1 : ‖‖n v‖⁻¹ • n v‖ = 1 := norm_smul_inv_norm hn0
+    have heQ : ∀ t ∈ Q, inner ℝ (‖n v‖⁻¹ • n v) t = 0 := fun t ht => by
+      rw [real_inner_smul_left, hnQ t ht, mul_zero]
+    have hproj := Submission.codim1_hcp_un_hyperplane_projection P m A₀ Q (‖n v‖⁻¹ • n v) hA₀
+      hQm hQA (A₀.smul_mem _ hnA) he1 heQ (ν₀ (ψ v))
+    -- `P_Q ν₀(ψ(v)) = 0`, as `ν₀(ψ(v)) ⊥ T_{ψ(v)}M = Q`, and `P_{A₀} ν₀(ψ(v)) = ν₀(ψ(v))`
+    have hQ0 : ν₀ (ψ v) ∈ Qᗮ := (Submodule.mem_orthogonal' Q _).2 fun t ht =>
+      huT t (by rw [← hQ]; exact ht)
+    rw [(Submodule.starProjection_apply_eq_zero_iff Q).2 hQ0,
+      Submodule.starProjection_eq_self_iff.2 huA, eq_comm, sub_eq_zero] at hproj
+    refine ⟨hproj, ?_⟩
+    have h := congrArg norm hproj
+    rwa [norm_smul, he1, mul_one, hu1, Real.norm_eq_abs, eq_comm] at h
+  -- step 5: a `C^∞` retraction `ρ : O₁ → V` with `ψ(ρ(z)) = z` for `z ∈ M ∩ O₁`
+  obtain ⟨O₁, ρ, hO₁, hyO₁, hρ, hρV, hψρ⟩ :=
+    Submission.codim1_hcp_un_chart_retraction P m M W V ψ v₀ hV hW hψ hinj himg hprop hder hv₀V
+  rw [hψv₀] at hyO₁
+  -- `n̂ = n∘ρ/|n∘ρ|` is `C^∞` on `O₁`
+  set nh : Euclid P → Euclid P := fun z => ‖n (ρ z)‖⁻¹ • n (ρ z)
+  have hnρ : ContDiffOn ℝ (⊤ : ℕ∞) (fun z => n (ρ z)) O₁ := hn.comp hρ hρV
+  have hnh : ContDiffOn ℝ (⊤ : ℕ∞) nh O₁ :=
+    ((hnρ.norm ℝ fun z hz => hn0V _ (hρV hz)).inv fun z hz =>
+      norm_ne_zero_iff.2 (hn0V _ (hρV hz))).smul hnρ
+  -- step 6: on `M ∩ O₁`, `ν₀ = s n̂` with `s = ν₀ · n̂ = ±1`; `s` is continuous at `y` ...
+  have hrep : ∀ z ∈ M ∩ O₁, ν₀ z = inner ℝ (nh z) (ν₀ z) • nh z ∧ |inner ℝ (nh z) (ν₀ z)| = 1 := by
+    intro z hz
+    have h := hline (ρ z) (hρV hz.2)
+    rw [hψρ z hz] at h
+    exact h
+  have hs : ContinuousWithinAt (fun z => inner ℝ (nh z) (ν₀ z)) (M ∩ O₁) y :=
+    (hnh.continuousOn.continuousAt (hO₁.mem_nhds hyO₁)).continuousWithinAt.inner
+      ((hν₀c y hy).mono inter_subset_left)
+  obtain ⟨δ, hδ, hδs⟩ := Metric.continuousWithinAt_iff.1 hs 1 one_pos
+  -- ... so `s(z) = s(y)` for `z ∈ M ∩ O₁ ∩ B_δ(y)`: two values `±1` closer than `1` agree
+  have hsign : ∀ z ∈ M ∩ O₁, dist z y < δ → inner ℝ (nh z) (ν₀ z) = inner ℝ (nh y) (ν₀ y) := by
+    intro z hz hzy
+    have h1 : |inner ℝ (nh z) (ν₀ z) - inner ℝ (nh y) (ν₀ y)| < 1 := by
+      simpa only [Real.dist_eq] using hδs hz hzy
+    rcases (abs_eq zero_le_one).1 (hrep z hz).2 with h | h <;>
+      rcases (abs_eq zero_le_one).1 (hrep y ⟨hy, hyO₁⟩).2 with h' | h' <;>
+      rw [h, h'] at h1 ⊢ <;> norm_num at h1
+  -- step 7: `g = s(y) n̂` is `C^∞` on `O = O₁ ∩ B_δ(y)` and equals `ν₀` on `M ∩ O`
+  refine ⟨O₁ ∩ ball y δ, fun z => inner ℝ (nh y) (ν₀ y) • nh z, hO₁.inter isOpen_ball,
+    ⟨hyO₁, mem_ball_self hδ⟩, (hnh.mono inter_subset_left).const_smul _, ?_⟩
+  rintro z ⟨hzM, hzO₁, hzy⟩
+  rw [← hsign z ⟨hzM, hzO₁⟩ hzy]
+  exact (hrep z ⟨hzM, hzO₁⟩).1.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
