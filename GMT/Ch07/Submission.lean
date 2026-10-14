@@ -954,6 +954,46 @@ theorem Submission.ecf_cp_piece_weight : ∀ (k P : ℕ) (F : Euclid k → Eucli
     _ ≤ ρ * _ := mul_le_of_le_one_left (mul_nonneg hρ (Real.sqrt_nonneg _))
         (pow_le_one₀ ht.1.le ht.2.le)
 
+/-- **Cone over a parametrized cycle** (Simon 6.2.30 and 6.3.10 with `h(t, x) = tx`).  Let `spt S`
+be compact and `S(γ) = Σⱼ ∫_{Aⱼ} gⱼ γ(Fⱼ)(∂Fⱼ)`, with Lipschitz `Fⱼ` differentiable on the Borel
+sets `Aⱼ`, `Fⱼ(Aⱼ) ⊆ spt S`, integer weights `gⱼ` integrable on `Aⱼ` and `Σⱼ ∫_{Aⱼ} |gⱼ| JFⱼ < ∞`,
+and let `R(ω) = S(γ)` for a form `γ` equal to `∫₀¹ t^{n+1} ω(tx)(x, ·) dt` on `spt S`.  Take
+`ρ > 0` with `spt S ⊆ B_ρ(0)`.  On the cylinders `Bⱼ = (0, 1) × Aⱼ` the Lipschitz cone maps `Gⱼ`
+satisfy `Gⱼ(t, u) = t Fⱼ(u)` and `∂Gⱼ(t, u) = (Fⱼ(u), t ∂Fⱼ(u))`; with the weights
+`wⱼ(t, u) = gⱼ(u)` they parametrize `R`.  The cone Jacobian bound `JGⱼ ≤ ρ JFⱼ` on `Bⱼ` gives
+`Σⱼ ∫_{Bⱼ} |wⱼ| JGⱼ ≤ ρ Σⱼ ∫_{Aⱼ} |gⱼ| JFⱼ < ∞`, and Fubini on `Bⱼ` turns the `j`-th term of the
+series for `R(ω)` into the `j`-th term of the series for `S(γ)`. -/
+theorem Submission.ecf_cone_parametrization : ∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2)) (F : ℕ → Euclid (n + 1) → Euclid P) (A : ℕ → Set (Euclid (n + 1))) (g : ℕ → Euclid (n + 1) → ℤ), IsCompact S.support → (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → (∀ j, ∀ u ∈ A j, DifferentiableAt ℝ (F j) u) → (∀ j, F j '' A j ⊆ S.support) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (S ω)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v)) → ∃ (G : ℕ → Euclid (n + 2) → Euclid P) (B : ℕ → Set (Euclid (n + 2))) (w : ℕ → Euclid (n + 2) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (G j)) ∧ (∀ j, MeasurableSet (B j)) ∧ (∀ j, Measurable (w j)) ∧ (∀ j, IntegrableOn (fun u => (w j u : ℝ)) (B j)) ∧ ∑' j, ∫⁻ u in B j, ‖(w j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (n + 2) => inner ℝ (fderiv ℝ (G j) u (EuclideanSpace.single a 1)) (fderiv ℝ (G j) u (EuclideanSpace.single b 1))))) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), HasSum (fun j => ∫ u in B j, (w j u : ℝ) * (ω : DifferentialForm (Euclid P) (n + 2)) (G j u) (fun a => fderiv ℝ (G j) u (EuclideanSpace.single a 1))) (R ω) := by
+  intro n P S R F A g hS hF hA hg hgi hdiff hFA hfin hSrep hRcone
+  -- `ρ > 0` with `spt S ⊆ B_ρ(0)`; since `Fⱼ(Aⱼ) ⊆ spt S`, `‖Fⱼ u‖ < ρ` on `Aⱼ`
+  obtain ⟨ρ, hρ, hSρ⟩ := hS.isBounded.subset_ball_lt 0 0
+  have hFρ : ∀ j, ∀ u ∈ A j, ‖F j u‖ < ρ := fun j u hu =>
+    mem_ball_zero_iff.1 (hSρ (hFA j (mem_image_of_mem (F j) hu)))
+  -- the Lipschitz cone maps: `Gⱼ(ι(t, u)) = t Fⱼ(u)` and `∂Gⱼ(ι(t, u)) = (Fⱼ u, t ∂Fⱼ(u))`
+  choose G hGlip hGcyl using fun j =>
+    Submission.ecf_cp_cone_map (n + 1) P (F j) (A j) ρ hρ (hF j) (hdiff j) (hFρ j)
+  -- one piece: `wⱼ = gⱼ ∘ τ` is measurable and integrable on `Bⱼ`, and Fubini on `Bⱼ`
+  have hpiece := fun j => Submission.ecf_cp_piece_integral (n + 1) P (F j) (A j) (g j) (G j)
+    (hA j) (hg j) (hgi j) (hGlip j) (hGcyl j)
+  refine ⟨G, fun j => {z : Euclid (n + 2) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (n + 1)) ∈ A j},
+    fun j z => g j (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))), hGlip,
+    fun j => (Submission.cmcdt_lpi_cyl_fubini (n + 1) (A j) (hA j)).1,
+    fun j => (hpiece j).1, fun j => (hpiece j).2.1, ?_, fun ω => ?_⟩
+  · -- total weight: `Σⱼ ∫⁻_{Bⱼ} |wⱼ| JGⱼ ≤ ρ Σⱼ ∫⁻_{Aⱼ} |gⱼ| JFⱼ < ∞`
+    refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.ofReal_ne_top (r := ρ)) hfin) ?_
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum fun j =>
+      Submission.ecf_cp_piece_weight (n + 1) P (F j) (A j) (g j) (G j) ρ (hA j) (hg j)
+        (fun u hu => (hFρ j u hu).le) fun u hu t ht => (hGcyl j u hu t ht).2
+  · -- representation: `R(ω) = S(γ)`, and the `j`-th terms agree by the cone formula for `γ`
+    obtain ⟨γ, hRγ, hγ⟩ := hRcone ω
+    rw [hRγ]
+    refine (hSrep γ).congr_fun fun j => ((hpiece j).2.2 (ω : DifferentialForm (Euclid P) (n + 2))
+      (ContDiff.continuous ω.property.1.1) ω.property.1.2).trans
+      (setIntegral_congr_fun (hA j) fun u hu => ?_)
+    exact congrArg ((g j u : ℝ) * ·) (hγ (F j u) (hFA j (mem_image_of_mem (F j) hu)) _).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
