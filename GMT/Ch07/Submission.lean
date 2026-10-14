@@ -5595,6 +5595,230 @@ theorem Submission.codim1_hcp_sr_difference_quotient : ∀ (m k : ℕ) (α : ℝ
   · rw [hfd x hx, hfd y hy]
     exact ContinuousLinearMap.opNorm_le_bound _ (mul_nonneg hC (Real.rpow_nonneg (norm_nonneg _) _))
       (hhold x hx y hy)
+/-- Calculus of the local Hölder classes `C^{l,α}_loc(Ω)` (`0 < α ≤ 1`, `Ω ⊆ ℝᵐ` open): `f`
+lies in the class if it is `C^l` on `Ω` and `D^l f` is `α`-Hölder on a ball about each point of
+`Ω`.  The class contains the constants, is closed under sums, continuous bilinear products and
+post-composition with `C^∞` maps, contains every `C^{l+1}` map, and for `C¹` maps `f`,
+`f ∈ C^{l+1,α}_loc ↔ Df ∈ C^{l,α}_loc`.  Locally Lipschitz maps are locally `α`-Hölder; `D^{l+1} f`
+is `D^l (Df)` up to the isometry `continuousMultilinearCurryRightEquiv'`; products and
+compositions go by induction on `l` through the product and chain rules. -/
+theorem Submission.codim1_hcp_sr_holder_algebra : ∀ (m : ℕ) (α : ℝ) (Ω : Set (Euclid m)), IsOpen Ω → 0 < α → α ≤ 1 → ∀ l : ℕ, (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (c : E), (ContDiffOn ℝ l (fun _ : Euclid m => c) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun _ : Euclid m => c) y - iteratedFDeriv ℝ l (fun _ : Euclid m => c) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f g : Euclid m → E), (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l g Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l g y - iteratedFDeriv ℝ l g z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => f x + g x) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => f x + g x) y - iteratedFDeriv ℝ l (fun x => f x + g x) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] (β : E₁ →L[ℝ] E₂ →L[ℝ] E₃) (f₁ : Euclid m → E₁) (f₂ : Euclid m → E₂), (ContDiffOn ℝ l f₁ Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f₁ y - iteratedFDeriv ℝ l f₁ z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l f₂ Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f₂ y - iteratedFDeriv ℝ l f₂ z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => β (f₁ x) (f₂ x)) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => β (f₁ x) (f₂ x)) y - iteratedFDeriv ℝ l (fun x => β (f₁ x) (f₂ x)) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E₁ E₂ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (Φ : E₁ → E₂) (f : Euclid m → E₁), ContDiff ℝ (⊤ : ℕ∞) Φ → (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => Φ (f x)) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => Φ (f x)) y - iteratedFDeriv ℝ l (fun x => Φ (f x)) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Euclid m → E), ContDiffOn ℝ (l + 1) f Ω → (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Euclid m → E), ContDiffOn ℝ 1 f Ω → ((ContDiffOn ℝ (l + 1) f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ (l + 1) f y - iteratedFDeriv ℝ (l + 1) f z‖ ≤ C * ‖y - z‖ ^ α) ↔ (ContDiffOn ℝ l (fun x => fderiv ℝ f x) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => fderiv ℝ f x) y - iteratedFDeriv ℝ l (fun x => fderiv ℝ f x) z‖ ≤ C * ‖y - z‖ ^ α))) := by
+  intro m α Ω hΩ hα0 hα1
+  -- `LH g`: `g` is locally `α`-Hölder continuous on `Ω`
+  let LH : ∀ {F : Type} [NormedAddCommGroup F], (Euclid m → F) → Prop := fun g =>
+    ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ,
+      ‖g y - g z‖ ≤ C * ‖y - z‖ ^ α
+  -- `H l g`: `g ∈ C^{l,α}_loc(Ω)`
+  let H : ℕ → ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F], (Euclid m → F) → Prop :=
+    fun l {F} [_] [_] (g : Euclid m → F) => ContDiffOn ℝ l g Ω ∧ LH (iteratedFDeriv ℝ l g)
+  -- `LH` only depends on the values in `Ω`
+  have LH_congr : ∀ {F : Type} [NormedAddCommGroup F] (g₁ g₂ : Euclid m → F),
+      (∀ y ∈ Ω, g₁ y = g₂ y) → LH g₁ → LH g₂ := by
+    intro F _ g₁ g₂ hg h x hx
+    obtain ⟨ρ, hρ, hρΩ, C, hC⟩ := h x hx
+    refine ⟨ρ, hρ, hρΩ, C, fun y hy z hz => ?_⟩
+    rw [← hg y (hρΩ hy), ← hg z (hρΩ hz)]
+    exact hC y hy z hz
+  -- locally Lipschitz maps are locally `α`-Hölder (`α ≤ 1`, radius `≤ 1/2`)
+  have LH_of_lip : ∀ {F : Type} [NormedAddCommGroup F] (g : Euclid m → F),
+      (∀ x ∈ Ω, ∃ K : NNReal, ∃ t ∈ 𝓝 x, LipschitzOnWith K g t) → LH g := by
+    intro F _ g hg x hx
+    obtain ⟨K, t, ht, hK⟩ := hg x hx
+    obtain ⟨ε, hε, hεt⟩ := Metric.mem_nhds_iff.1 (inter_mem ht (hΩ.mem_nhds hx))
+    refine ⟨min ε (1 / 2), lt_min hε (by norm_num),
+      (ball_subset_ball (min_le_left _ _)).trans (hεt.trans inter_subset_right), K,
+      fun y hy z hz => ?_⟩
+    have hyt : y ∈ t := (hεt (ball_subset_ball (min_le_left _ _) hy)).1
+    have hzt : z ∈ t := (hεt (ball_subset_ball (min_le_left _ _) hz)).1
+    have hyz : ‖y - z‖ ≤ 1 := by
+      have h1 : dist y x < 1 / 2 := (mem_ball.1 hy).trans_le (min_le_right _ _)
+      have h2 : dist z x < 1 / 2 := (mem_ball.1 hz).trans_le (min_le_right _ _)
+      rw [← dist_eq_norm]
+      linarith [dist_triangle_right y z x]
+    calc ‖g y - g z‖ ≤ K * ‖y - z‖ := hK.norm_sub_le hyt hzt
+      _ ≤ K * ‖y - z‖ ^ α := by
+        gcongr
+        calc ‖y - z‖ = ‖y - z‖ ^ (1 : ℝ) := (Real.rpow_one _).symm
+          _ ≤ ‖y - z‖ ^ α := Real.rpow_le_rpow_of_exponent_ge' (norm_nonneg _) hyz hα0.le hα1
+  -- post-composition with a Lipschitz map
+  have LH_lip : ∀ {F G : Type} [NormedAddCommGroup F] [NormedAddCommGroup G] (Ψ : F → G)
+      (K : NNReal) (g : Euclid m → F), LipschitzWith K Ψ → LH g → LH (fun x => Ψ (g x)) := by
+    intro F G _ _ Ψ K g hΨ hg x hx
+    obtain ⟨ρ, hρ, hρΩ, C, hC⟩ := hg x hx
+    refine ⟨ρ, hρ, hρΩ, K * C, fun y hy z hz => ?_⟩
+    calc ‖Ψ (g y) - Ψ (g z)‖ ≤ K * ‖g y - g z‖ := hΨ.norm_sub_le _ _
+      _ ≤ K * (C * ‖y - z‖ ^ α) := by gcongr; exact hC y hy z hz
+      _ = K * C * ‖y - z‖ ^ α := by ring
+  -- post-composition with a locally Lipschitz map, for continuous `g`
+  have LH_comp : ∀ {F G : Type} [NormedAddCommGroup F] [NormedAddCommGroup G] (Ψ : F → G)
+      (g : Euclid m → F), LocallyLipschitz Ψ → ContinuousOn g Ω → LH g →
+      LH (fun x => Ψ (g x)) := by
+    intro F G _ _ Ψ g hΨ hgc hg x hx
+    obtain ⟨ρ, hρ, hρΩ, C, hC⟩ := hg x hx
+    obtain ⟨K, t, ht, hK⟩ := hΨ (g x)
+    obtain ⟨ε, hε, hεt⟩ :=
+      Metric.mem_nhds_iff.1 ((hgc.continuousAt (hΩ.mem_nhds hx)).preimage_mem_nhds ht)
+    refine ⟨min ρ ε, lt_min hρ hε, (ball_subset_ball (min_le_left _ _)).trans hρΩ, K * C,
+      fun y hy z hz => ?_⟩
+    have hyt : g y ∈ t := hεt (ball_subset_ball (min_le_right _ _) hy)
+    have hzt : g z ∈ t := hεt (ball_subset_ball (min_le_right _ _) hz)
+    calc ‖Ψ (g y) - Ψ (g z)‖ ≤ K * ‖g y - g z‖ := hK.norm_sub_le hyt hzt
+      _ ≤ K * (C * ‖y - z‖ ^ α) := by
+        gcongr
+        exact hC y (ball_subset_ball (min_le_left _ _) hy) z (ball_subset_ball (min_le_left _ _) hz)
+      _ = K * C * ‖y - z‖ ^ α := by ring
+  -- pairs
+  have LH_pair : ∀ {F G : Type} [NormedAddCommGroup F] [NormedAddCommGroup G]
+      (g₁ : Euclid m → F) (g₂ : Euclid m → G), LH g₁ → LH g₂ → LH (fun x => (g₁ x, g₂ x)) := by
+    intro F G _ _ g₁ g₂ h₁ h₂ x hx
+    obtain ⟨ρ₁, hρ₁, hρ₁Ω, C₁, hC₁⟩ := h₁ x hx
+    obtain ⟨ρ₂, hρ₂, -, C₂, hC₂⟩ := h₂ x hx
+    refine ⟨min ρ₁ ρ₂, lt_min hρ₁ hρ₂, (ball_subset_ball (min_le_left _ _)).trans hρ₁Ω, C₁ + C₂,
+      fun y hy z hz => ?_⟩
+    have e₁ := hC₁ y (ball_subset_ball (min_le_left _ _) hy) z
+      (ball_subset_ball (min_le_left _ _) hz)
+    have e₂ := hC₂ y (ball_subset_ball (min_le_right _ _) hy) z
+      (ball_subset_ball (min_le_right _ _) hz)
+    have n₁ := (norm_nonneg _).trans e₁
+    have n₂ := (norm_nonneg _).trans e₂
+    rw [norm_prod_le_iff, add_mul]
+    exact ⟨by simp only [Prod.fst_sub]; linarith, by simp only [Prod.snd_sub]; linarith⟩
+  -- order `0`: `D⁰g` is `g` up to a linear isometry
+  have LH_zero : ∀ {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (g : Euclid m → F),
+      LH (iteratedFDeriv ℝ 0 g) ↔ LH g := by
+    intro F _ _ g
+    rw [iteratedFDeriv_zero_eq_comp]
+    constructor
+    · intro h
+      refine LH_congr _ _ (fun y _ => ?_)
+        (LH_lip (continuousMultilinearCurryFin0 ℝ (Euclid m) F) 1 _
+          (LinearIsometryEquiv.lipschitzWith _) h)
+      simp
+    · intro h
+      exact LH_lip (continuousMultilinearCurryFin0 ℝ (Euclid m) F).symm 1 _
+        (LinearIsometryEquiv.lipschitzWith _) h
+  -- `H l` only depends on the values in `Ω`
+  have H_congr : ∀ (l : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
+      (g₁ g₂ : Euclid m → F), (∀ y ∈ Ω, g₁ y = g₂ y) → H l g₁ → H l g₂ := by
+    intro l F _ _ g₁ g₂ hg h
+    refine ⟨h.1.congr fun y hy => (hg y hy).symm, LH_congr _ _ (fun y hy => ?_) h.2⟩
+    exact ((Filter.eventuallyEq_of_mem (hΩ.mem_nhds hy) hg).iteratedFDeriv ℝ l).eq_of_nhds
+  -- (5) inclusion `C^{l+1} ⊆ C^{l,α}_loc`
+  have conj5 : ∀ (l : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid m → F),
+      ContDiffOn ℝ (l + 1) f Ω → H l f := by
+    intro l F _ _ f hf
+    refine ⟨hf.of_succ, LH_of_lip _ fun x hx => ?_⟩
+    exact ((hf.contDiffAt (hΩ.mem_nhds hx)).iteratedFDeriv_right (m := 1) (i := l)
+      (add_comm _ _).le).exists_lipschitzOnWith
+  -- (1) constants
+  have conj1 : ∀ (l : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (c : F),
+      H l (fun _ : Euclid m => c) := fun l _ _ _ c => conj5 l _ contDiffOn_const
+  -- (2) sums
+  have conj2 : ∀ (l : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
+      (f g : Euclid m → F), H l f → H l g → H l (fun x => f x + g x) := by
+    intro l F _ _ f g hf hg
+    refine ⟨hf.1.add hg.1, LH_congr _ _ (fun y hy => ?_)
+      (LH_lip _ _ _ (LipschitzWith.prod_fst.add LipschitzWith.prod_snd) (LH_pair _ _ hf.2 hg.2))⟩
+    exact (iteratedFDeriv_add_apply (hf.1.contDiffAt (hΩ.mem_nhds hy))
+      (hg.1.contDiffAt (hΩ.mem_nhds hy))).symm
+  -- (6) derivative characterization
+  have conj6 : ∀ (l : ℕ) {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (f : Euclid m → F),
+      ContDiffOn ℝ 1 f Ω → ((ContDiffOn ℝ (l + 1) f Ω ∧ LH (iteratedFDeriv ℝ (l + 1) f)) ↔
+        H l (fun x => fderiv ℝ f x)) := by
+    intro l F _ _ f hf
+    have hcd : ContDiffOn ℝ (l + 1) f Ω ↔ ContDiffOn ℝ l (fun x => fderiv ℝ f x) Ω := by
+      rw [contDiffOn_succ_iff_fderiv_of_isOpen hΩ]
+      exact ⟨fun h => h.2.2, fun h => ⟨hf.differentiableOn one_ne_zero,
+        fun h' => absurd h' (WithTop.natCast_ne_top l), h⟩⟩
+    have e : ∀ y, iteratedFDeriv ℝ (l + 1) f y =
+        (continuousMultilinearCurryRightEquiv' ℝ l (Euclid m) F).symm
+          (iteratedFDeriv ℝ l (fun x => fderiv ℝ f x) y) := fun y =>
+      iteratedFDeriv_succ_eq_comp_right
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine ⟨hcd.1 h1, LH_congr _ _ (fun y _ => ?_)
+        (LH_lip (continuousMultilinearCurryRightEquiv' ℝ l (Euclid m) F) 1 _
+          (LinearIsometryEquiv.lipschitzWith _) h2)⟩
+      simp only [e, LinearIsometryEquiv.apply_symm_apply]
+    · rintro ⟨h1, h2⟩
+      refine ⟨hcd.2 h1, LH_congr _ _ (fun y _ => ?_)
+        (LH_lip (continuousMultilinearCurryRightEquiv' ℝ l (Euclid m) F).symm 1 _
+          (LinearIsometryEquiv.lipschitzWith _) h2)⟩
+      simp only [e]
+  -- (3) bilinear products, by induction on `l`
+  have conj3 : ∀ (l : ℕ) {E₁ E₂ E₃ : Type} [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
+      [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃]
+      (β : E₁ →L[ℝ] E₂ →L[ℝ] E₃) (f₁ : Euclid m → E₁) (f₂ : Euclid m → E₂),
+      H l f₁ → H l f₂ → H l (fun x => β (f₁ x) (f₂ x)) := by
+    intro l
+    induction l with
+    | zero =>
+      intro E₁ E₂ E₃ _ _ _ _ _ _ β f₁ f₂ h₁ h₂
+      refine ⟨β.isBoundedBilinearMap.contDiff.comp_contDiffOn (h₁.1.prodMk h₂.1), ?_⟩
+      rw [LH_zero]
+      exact LH_comp (fun p : E₁ × E₂ => β p.1 p.2) _
+        β.isBoundedBilinearMap.contDiff.locallyLipschitz
+        (h₁.1.continuousOn.prodMk h₂.1.continuousOn)
+        (LH_pair _ _ ((LH_zero f₁).1 h₁.2) ((LH_zero f₂).1 h₂.2))
+    | succ l ih =>
+      intro E₁ E₂ E₃ _ _ _ _ _ _ β f₁ f₂ h₁ h₂
+      have c₁ : ContDiffOn ℝ (l + 1) f₁ Ω := h₁.1
+      have c₂ : ContDiffOn ℝ (l + 1) f₂ Ω := h₂.1
+      have d₁ : ContDiffOn ℝ 1 f₁ Ω := c₁.of_le le_add_self
+      have d₂ : ContDiffOn ℝ 1 f₂ Ω := c₂.of_le le_add_self
+      have cP : ContDiffOn ℝ (l + 1) (fun x => β (f₁ x) (f₂ x)) Ω :=
+        β.isBoundedBilinearMap.contDiff.comp_contDiffOn (c₁.prodMk c₂)
+      have hD : ∀ y ∈ Ω, ContinuousLinearMap.precompR (Euclid m) β (f₁ y) (fderiv ℝ f₂ y) +
+          ContinuousLinearMap.precompL (Euclid m) β (fderiv ℝ f₁ y) (f₂ y) =
+          fderiv ℝ (fun x => β (f₁ x) (f₂ x)) y := fun y hy =>
+        (β.fderiv_of_bilinear ((d₁.differentiableOn one_ne_zero).differentiableAt (hΩ.mem_nhds hy))
+          ((d₂.differentiableOn one_ne_zero).differentiableAt (hΩ.mem_nhds hy))).symm
+      have t₁ := ih (ContinuousLinearMap.precompR (Euclid m) β) f₁ (fun x => fderiv ℝ f₂ x)
+        (conj5 l f₁ c₁) ((conj6 l f₂ d₂).1 ⟨c₂, h₂.2⟩)
+      have t₂ := ih (ContinuousLinearMap.precompL (Euclid m) β) (fun x => fderiv ℝ f₁ x) f₂
+        ((conj6 l f₁ d₁).1 ⟨c₁, h₁.2⟩) (conj5 l f₂ c₂)
+      exact (conj6 l _ (cP.of_le le_add_self)).2 (H_congr l _ _ hD (conj2 l _ _ t₁ t₂))
+  -- (4) smooth compositions, by induction on `l`
+  have conj4 : ∀ (l : ℕ) {E₁ E₂ : Type} [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
+      [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (Φ : E₁ → E₂) (f : Euclid m → E₁),
+      ContDiff ℝ (⊤ : ℕ∞) Φ → H l f → H l (fun x => Φ (f x)) := by
+    intro l
+    induction l with
+    | zero =>
+      intro E₁ E₂ _ _ _ _ Φ f hΦ hf
+      have hΦ1 : ContDiff ℝ 1 Φ := hΦ.of_le (by exact_mod_cast le_top)
+      refine ⟨(hΦ.of_le (by exact_mod_cast le_top)).comp_contDiffOn hf.1, ?_⟩
+      rw [LH_zero]
+      exact LH_comp Φ f hΦ1.locallyLipschitz hf.1.continuousOn ((LH_zero f).1 hf.2)
+    | succ l ih =>
+      intro E₁ E₂ _ _ _ _ Φ f hΦ hf
+      have hΦ1 : ContDiff ℝ 1 Φ := hΦ.of_le (by exact_mod_cast le_top)
+      have c : ContDiffOn ℝ (l + 1) f Ω := hf.1
+      have d : ContDiffOn ℝ 1 f Ω := c.of_le le_add_self
+      have cP : ContDiffOn ℝ (l + 1) (fun x => Φ (f x)) Ω :=
+        (hΦ.of_le (by exact_mod_cast le_top)).comp_contDiffOn c
+      have hD : ∀ y ∈ Ω, ContinuousLinearMap.compL ℝ (Euclid m) E₁ E₂ (fderiv ℝ Φ (f y))
+          (fderiv ℝ f y) = fderiv ℝ (fun x => Φ (f x)) y := fun y hy => by
+        rw [ContinuousLinearMap.compL_apply, fderiv_fun_comp y (hΦ1.differentiable one_ne_zero _)
+          ((d.differentiableOn one_ne_zero).differentiableAt (hΩ.mem_nhds hy))]
+      have t := ih (fderiv ℝ Φ) f (hΦ.fderiv_right (by simp)) (conj5 l f c)
+      have hprod := conj3 l (ContinuousLinearMap.compL ℝ (Euclid m) E₁ E₂)
+        (fun x => fderiv ℝ Φ (f x)) (fun x => fderiv ℝ f x) t ((conj6 l f d).1 ⟨c, hf.2⟩)
+      exact (conj6 l _ (cP.of_le le_add_self)).2 (H_congr l _ _ hD hprod)
+  intro l
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro E _ _ c
+    exact conj1 l c
+  · intro E _ _ f g
+    exact conj2 l f g
+  · intro E₁ E₂ E₃ _ _ _ _ _ _ β f₁ f₂
+    exact conj3 l β f₁ f₂
+  · intro E₁ E₂ _ _ _ _ Φ f
+    exact conj4 l Φ f
+  · intro E _ _ f
+    exact conj5 l f
+  · intro E _ _ f
+    exact conj6 l f
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
