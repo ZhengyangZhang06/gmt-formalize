@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.line_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+  "depth": 6,
+  "title": "A unit orientation of the line ℝe (‖e‖ = 1) is ±(α ↦ α(e)) (parent step 5)",
+  "statement": "Let P ∈ ℕ, let e ∈ ℝ^P with ‖e‖ = 1, and let ξ ∈ Λ_1(ℝ^P) (MultiVector P 1, the continuous linear functionals on 1-covectors) satisfy IsUnitOrientationOf ξ (span{e}). That is, there is an orthonormal τ : Fin 1 → ℝ^P with span(range τ) = span{e} such that either ξ(α) = α(τ) for all 1-covectors α, or ξ(α) = −α(τ) for all α. Then ξ = ev_e or ξ = −ev_e, where ev_e = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) is the 1-vector α ↦ α(fun _ => e).",
+  "lean_statement": "∀ (P : ℕ) (e : Euclid P) (ξ : MultiVector P 1), ‖e‖ = 1 → IsUnitOrientationOf ξ (Submodule.span ℝ {e}) → ξ = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ ξ = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)",
+  "lean_name": "idtp_fons_odc_ro_line_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-35cef043ef-a1"
+}

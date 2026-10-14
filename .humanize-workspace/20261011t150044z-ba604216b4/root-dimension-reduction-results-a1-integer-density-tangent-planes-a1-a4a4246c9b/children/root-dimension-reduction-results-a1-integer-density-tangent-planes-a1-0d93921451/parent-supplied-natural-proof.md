@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.line_integral_pos-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4a of the parent proof of the selected theorem idtp_fons_odc_ray_orientation (“∫_Q f dH¹ > 0: by line_param (p = 0, v = u, I = ℝ), H¹⌞Q = (t ↦ tu)_#ℒ¹ …”), stated here for an arbitrary nonnegative continuous compactly supported f.
+
+It uses the selected node's prerequisite line_param, Lean name Submission.idtp_fons_odc_line_hausdorff, whose frozen type is: unitBallVolume 1 = 2 ∧ ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → MeasurableEmbedding (fun t : ℝ => p + t • v) ∧ ∀ I : Set ℝ, (μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => p + t • v) '' I) = Measure.map (fun t : ℝ => p + t • v) (volume.restrict I) ∧ (μHE[1] : Measure (Euclid P)) ((fun t : ℝ => p + t • v) '' I) = volume I.
+
+Notation: γ(t) := 0 + t·u = t·u for t ∈ ℝ; ℒ¹ := volume on ℝ; H¹ := μHE[1] on ℝ^P.
+
+1. (line_param.) Apply the second conjunct of Submission.idtp_fons_odc_line_hausdorff to this P, p = 0 and v = u (‖u‖ = 1). It says that γ is a measurable embedding ℝ → ℝ^P. Taking I = ℝ (Set.univ), it also says H¹⌞γ(ℝ) = γ_#(ℒ¹⌞ℝ) = γ_#ℒ¹, since ℒ¹ restricted to all of ℝ is ℒ¹.
+2. (The line is γ(ℝ).) y ∈ span{u} iff y = a·u for some a ∈ ℝ, and a·u = γ(a). Hence span{u} = γ(ℝ) as sets.
+3. (Change of variables.) By steps 1–2, ∫_{span{u}} f dH¹ = ∫ f d(H¹⌞γ(ℝ)) = ∫ f d(γ_#ℒ¹) = ∫_ℝ f(γ(t)) dt. The last equality is the integral formula for the push-forward of a measure under a measurable embedding (Mathlib MeasurableEmbedding.integral_map), which needs no integrability hypothesis.
+4. (Properties of g := f ∘ γ.) g(t) = f(t·u) is continuous, as a composition of continuous maps, and g ≥ 0 everywhere. γ is an isometry, because ‖γ(s) − γ(t)‖ = |s − t|·‖u‖ = |s − t|, hence a closed embedding of ℝ into ℝ^P. The support of g is contained in γ⁻¹(spt f), which is compact because spt f is compact and preimages of compact sets under a closed embedding are compact. So g has compact support (Mathlib HasCompactSupport.comp_isClosedEmbedding). Finally g(1) = f(1·u) = f(u) > 0.
+5. (Positivity on ℝ.) g is integrable, being continuous with compact support while ℒ¹ is finite on compact sets. By continuity there is an open interval J ∋ 1 of positive length on which g > g(1)/2. Since g ≥ 0, ∫_ℝ g dt ≥ (g(1)/2)·ℒ¹(J) > 0 (Mathlib Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero, at the point 1).
+6. By step 3, ∫_{span{u}} f dH¹ = ∫_ℝ g dt > 0. ∎
+
+## Key steps
+
+1. Submission.idtp_fons_odc_line_hausdorff with p = 0, v = u, I = ℝ: t ↦ t·u is a measurable embedding and H¹⌞(ℝu) = (t ↦ t·u)_#ℒ¹.
+2. span{u} is the image of t ↦ t·u, so ∫_{span{u}} f dH¹ = ∫_ℝ f(t·u) dt by the push-forward formula for measurable embeddings.
+3. t ↦ f(t·u) is continuous, nonnegative, compactly supported (t ↦ t·u is an isometric closed embedding) and positive at t = 1, so its Lebesgue integral is positive.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; python3 -I read of <snapshot>/project/lake-manifest.json package revs; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean`
+- `python3 -I reads of nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/parent-child-handoff.json, parent-supplied-plan.md, parent-supplied-natural-proof.json`
+- `python3 -I scans of dag.json: selected node record (depth 5, depends_on line_param-a1, children []); the 12 children of ...one_dim_cones-a1 with status/lean_name/lean_statement; regex scans of every lean_name/lean_statement for 'IsUnitOrientationOf', 'unitOrientation|orient', 'eq_or_eq_neg', 'HasApproximateTangentSpaceAt 1 .*Submodule\.span ℝ \{', 'IsUnitOrientationOf \S+ \(Submodule\.span ℝ \{', '0 < ∫ y in \(Submodule\.span', 'ball \(t₀ • e\)', "⋃ e' ∈ F, \(fun t : ℝ => t • e'\)"; grep -c idtp_fons_odc_ro_ / idtp_fons_odc_ro_line_orientation / idtp_fons_odc_ro_line_integral_pos / idtp_fons_odc_ro_tangent_line / idtp_fons_odc_ro_ray_isolation dag.json (all 0)`
+- `git show bdf34f91edfa2642928ed59a139dd914ab9326d5:GMT/Ch07/Submission.lean | grep -n '^theorem' (proof base = contract only); git show 75f499358:GMT/Ch07/Submission.lean | sed -n 1060,1210p; sed -n 1395,1475p; sed -n 1960,2010p (odc_tangent_blowUp_image_eq, odc_tangent_blowUp_null, odc_tangent_mem_range_iff, odc_approxTangent_eq_of_subset, odc_orient_on_ray, odc_rays_orient)`
+- `grep -n 'depth|max_depth|_machine_leaf|_leaf_author_task|_existing_lean_name_problem|_inherited_prerequisites|max_nodes|awaiting accepted inherited' /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py; sed -n 90,110p leaf_verification.py; sed -n 1,50p inherited.py; python3 -I read of max_nodes/max_depth/max_children/leaf_lean_agent_review in .humanize/swarm-configs/*.json`
+- `rg -n 'theorem Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero|theorem setIntegral_eq_zero_of_ae_eq_zero|theorem map_smul_univ|lemma apply_apply|theorem eq_of_le_of_finrank_eq|theorem finrank_span_singleton|notMem_iff_infDist_pos|theorem infDist_le_dist_of_mem|theorem comp_isClosedEmbedding|theorem _root_.MeasurableEmbedding.integral_map|theorem mem_span_singleton|theorem isClosedEmbedding' <snapshot>/mathlib/Mathlib`
+- `sed -n 50,140p .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; sed -n 205,235p .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean; sed -n 25,45p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; rg -n 'def IsUnitOrientationOf|structure IMRep|orients :|abbrev MultiVector' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `grep -n 'approximate tangent space' book/chapter-03.txt; sed -n 70,108p book/chapter-03.txt`
+- `lake env lean /tmp/ro_split_check/Statements.lean; lake env lean /tmp/ro_split_check/ChildA.lean; lake env lean /tmp/ro_split_check/ChildBCD.lean (#count_heartbeats in); lake env lean /tmp/ro_split_check/All.lean; lake env lean /tmp/ro_split_check/AllAx.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/000ebfcde04a4ddbbf0d2b498fa7b64f.json`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `git object 75f499358:GMT/Ch07/Submission.lean`
+- `/tmp/ro_split_check/Statements.lean`
+- `/tmp/ro_split_check/ChildA.lean`
+- `/tmp/ro_split_check/ChildBCD.lean`
+- `/tmp/ro_split_check/All.lean`
+- `/tmp/ro_split_check/AllAx.lean`
+
+Pins and contract: the snapshot manifest records project b4d606db and Mathlib 25730c7c, matching the workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins SimonGMT 2b366308, matching .lake/packages/simongmt. The snapshot Contract.lean is byte-identical to the workspace one. The proof base bdf34f91 contains only the contract.
+
+Runtime: the selected node is at depth 5 < max_depth 6. Swarm configs set max_depth 6, max_children 12, max_nodes 5000 and leaf_lean_agent_review false, and the DAG has 2102 nodes. Its children will therefore be machine leaves, each limited to one helper-free theorem with no set_option. runtime.py _inherited_prerequisites, with inherited.py cited_inherited, waits for and merges an ancestor dependency whose exact Lean name a child's proof cites. line_integral_pos therefore cites Submission.idtp_fons_odc_line_hausdorff.
+
+Reuse: no accepted or active DAG statement matches any child. The closest are:
+- cbr_cc_seg_open_segment_tangent, the converse statement that a segment has its line as approximate tangent space;
+- rsdic_unitOrientation_eq_or_eq_neg, dgcr_unitOrientation_eq_or_neg and dor_lmbsf_io_orientation_frame_sign, which are general-n sign lemmas from other branches and are not in the proof base. Reusing one would bring in a heavier general proof than the n = 1 fact needed.
+No idtp_fons_odc_ro_ name occurs in dag.json. The speculative draft 75f499358 uses the same cut points: odc_approxTangent_eq_of_subset for the tangent line, and odc_orient_on_ray for isolation plus assembly.
+
+Library facts used, with snapshot locations:
+- Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero, MeasureTheory/Integral/Bochner/Set.lean:1031
+- setIntegral_eq_zero_of_ae_eq_zero, same file :341
+- MeasurableEmbedding.integral_map, MeasureTheory/Integral/Bochner/Basic.lean:1093
+- ContinuousAlternatingMap.map_smul_univ, Topology/Algebra/Module/Alternating/Basic.lean:518
+- ContinuousAlternatingMap.apply_apply, Topology/Algebra/Module/Alternating/Topology.lean:302
+- Submodule.eq_of_le_of_finrank_eq and finrank_span_singleton, LinearAlgebra/FiniteDimensional/Basic.lean:257 and :535
+- IsClosed.notMem_iff_infDist_pos and infDist_le_dist_of_mem, Topology/MetricSpace/HausdorffDistance.lean:584 and :500
+- HasCompactSupport.comp_isClosedEmbedding, Topology/Algebra/Support.lean:290
+- Isometry.isClosedEmbedding, Topology/MetricSpace/Isometry.lean:209
+- Submodule.mem_span_singleton, LinearAlgebra/Span/Defs.lean:447
+- the μHE notation, Geometry/Euclidean/Volume/Measure.lean:72
+- SimonGMT blowUpMap and HasApproximateTangentSpaceAt, Chapter03/Rectifiable.lean:96 and :102
+- SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn, Chapter02/Lipschitz.lean:216
+- Simon Ch. 3 Definition 1.4 and Remark 1.5(1), book/chapter-03.txt:77–90.
+
+Lean results:
+- All four child types elaborate verbatim in the contract context.
+- Each child has a complete single-theorem proof with no helpers. count_heartbeats gives 1707, 2377 and 12451 out of 200000 for ray_isolation, line_integral_pos and tangent_line.
+- The selected theorem, with its byte-identical frozen type, compiles from the four child types plus line_param's frozen type.
+- #print axioms gives propext, Classical.choice and Quot.sound, plus only the line_param stub.
