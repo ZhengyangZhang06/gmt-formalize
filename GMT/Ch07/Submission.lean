@@ -454,4 +454,77 @@ end
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+namespace Submission
+
+/-- Local Lipschitz bounds along a segment give the global bound (step (6a) of the proof of the
+skeleton retraction, Simon Ch. 6, Lemma 5.4): if every point `x + t(y − x)`, `t ∈ [0, 1]`, has a
+neighbourhood on which `|f(w) − f(x + t(y − x))| ≤ K|w − (x + t(y − x))|`, then
+`|f(y) − f(x)| ≤ K|y − x|`.  By continuous induction on `[0, 1]`, every `t ∈ [0, 1]` satisfies
+`|f(x + t(y − x)) − f(x)| ≤ K t |y − x|`. -/
+theorem dimred_mbl_dtsr_segment_lipschitz : ∀ (P : ℕ) (f : Euclid P → Euclid P) (x y : Euclid P) (K : ℝ), 0 ≤ K → (∀ t ∈ Icc (0 : ℝ) 1, ∀ᶠ w in 𝓝 (x + t • (y - x)), dist (f w) (f (x + t • (y - x))) ≤ K * dist w (x + t • (y - x))) → dist (f y) (f x) ≤ K * dist y x := by
+  intro P f x y K _hK hloc
+  -- Step 1: `g t = x + t(y − x)` is continuous and `|g s − g t| = |s − t| |y − x|`.
+  let g : ℝ → Euclid P := fun t => x + t • (y - x)
+  have hgcont : Continuous g := continuous_const.add (continuous_id.smul continuous_const)
+  have hgdist : ∀ s t : ℝ, dist (g s) (g t) = |s - t| * dist y x := by
+    intro s t
+    simp only [g, dist_eq_norm]
+    rw [show x + s • (y - x) - (x + t • (y - x)) = (s - t) • (y - x) by rw [sub_smul]; abel,
+      norm_smul, Real.norm_eq_abs]
+  -- Step 2: `f ∘ g` is continuous at each `t ∈ [0, 1]`: for `s` near `t`, `g s` lies in the
+  -- neighbourhood of `g t` given by `hloc`, so `|f(g s) − f(g t)| ≤ K |s − t| |y − x| → 0`.
+  have hfg : ∀ t ∈ Icc (0 : ℝ) 1, ContinuousAt (fun s => f (g s)) t := by
+    intro t ht
+    have hev : ∀ᶠ s in 𝓝 t, dist (f (g s)) (f (g t)) ≤ K * (|s - t| * dist y x) := by
+      filter_upwards [(hgcont.tendsto t).eventually (hloc t ht)] with s hs
+      rw [← hgdist]
+      exact hs
+    have hlim : Tendsto (fun s : ℝ => K * (|s - t| * dist y x)) (𝓝 t) (𝓝 0) :=
+      (continuous_const.mul ((continuous_id.sub continuous_const).abs.mul
+        continuous_const)).tendsto' t 0 (by simp)
+    exact tendsto_iff_dist_tendsto_zero.2
+      (squeeze_zero' (Eventually.of_forall fun s => dist_nonneg) hev hlim)
+  -- Step 3: `S = {t | |f(g t) − f(x)| ≤ K t |y − x|}` meets `[0, 1]` in a closed set, the
+  -- preimage of `(−∞, 0]` under a function continuous on `[0, 1]`.
+  let S : Set ℝ := {t | dist (f (g t)) (f x) ≤ K * t * dist y x}
+  have hS : IsClosed (S ∩ Icc 0 1) := by
+    have hcont : ContinuousOn (fun t => dist (f (g t)) (f x) - K * t * dist y x) (Icc 0 1) := by
+      intro t ht
+      have hd : ContinuousAt (fun s => dist (f (g s)) (f x)) t :=
+        (hfg t ht).dist continuousAt_const
+      have hl : Continuous fun s : ℝ => K * s * dist y x :=
+        (continuous_const.mul continuous_id).mul continuous_const
+      exact hd.continuousWithinAt.sub hl.continuousWithinAt
+    convert hcont.preimage_isClosed_of_isClosed isClosed_Icc (isClosed_Iic (a := (0 : ℝ)))
+      using 1
+    ext t
+    simp only [S, mem_inter_iff, mem_ofPred_eq, mem_preimage, mem_Iic, sub_nonpos]
+    tauto
+  -- Step 4: `0 ∈ S`, since `g 0 = x`.
+  have h0 : (0 : ℝ) ∈ S := by
+    show dist (f (x + (0 : ℝ) • (y - x))) (f x) ≤ K * 0 * dist y x
+    simp
+  -- Step 5: if `t ∈ S ∩ [0, 1)`, then `s ∈ S` for `s > t` near `t`:
+  -- `|f(g s) − f(x)| ≤ K (s − t) |y − x| + K t |y − x| = K s |y − x|`.
+  have hstep : ∀ t ∈ S ∩ Ico (0 : ℝ) 1, S ∈ 𝓝[>] t := by
+    rintro t ⟨htS, ht⟩
+    have htS' : dist (f (g t)) (f x) ≤ K * t * dist y x := htS
+    have hev : ∀ᶠ s in 𝓝 t, dist (f (g s)) (f (g t)) ≤ K * dist (g s) (g t) :=
+      (hgcont.tendsto t).eventually (hloc t ⟨ht.1, ht.2.le⟩)
+    filter_upwards [hev.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with s hs hts
+    have hts' : t < s := hts
+    show dist (f (g s)) (f x) ≤ K * s * dist y x
+    calc dist (f (g s)) (f x) ≤ dist (f (g s)) (f (g t)) + dist (f (g t)) (f x) :=
+          dist_triangle _ _ _
+      _ ≤ K * dist (g s) (g t) + K * t * dist y x := add_le_add hs htS'
+      _ = K * s * dist y x := by rw [hgdist, abs_of_pos (sub_pos.mpr hts')]; ring
+  -- Step 6: continuous induction on `[0, 1]` gives `[0, 1] ⊆ S`.
+  have hsub : Icc (0 : ℝ) 1 ⊆ S := hS.Icc_subset_of_forall_mem_nhdsWithin h0 hstep
+  -- Step 7: `1 ∈ S` and `g 1 = y`.
+  have h1 : dist (f (g 1)) (f x) ≤ K * 1 * dist y x := hsub ⟨zero_le_one, le_rfl⟩
+  have hg1 : g 1 = y := by simp [g]
+  rwa [hg1, mul_one] at h1
+
+end Submission
+
 end GMT.Ch07
