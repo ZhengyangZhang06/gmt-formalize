@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cbrg_|rsd_imrep_compact_measure_ne_top|dmcbr_|cbr_imRep_measure_basic|isIntegerMultiplicity_of_local' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "isOpen_iUnion_countable|exists_eq_range|disjointed_subset|disjoint_disjointed|iUnion_disjointed|measurable_to_countable|MeasurableSet.disjointed|withDensity_sum|restrict_withDensity|withDensity_absolutelyContinuous|ae_restrict_iUnion_iff|ae_restrict_of_ae_restrict_of_subset|restrict_eq_self_of_ae_mem|theorem restrict_iUnion|lemma restrict_iUnion|AEStronglyMeasurable.mono_ac|setLIntegral_mono|setLIntegral_one",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_glue_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_glue_independent_audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmcbr_glue_independent_audit/CheckedChain.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-a5ef5063de/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-a5ef5063de/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-92fe8158c5/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2d62aeb614/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b04724f007/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba/isolated-comparator-result.json",
+        "/tmp/dmcbr_glue_independent_audit/Types.lean",
+        "/tmp/dmcbr_glue_independent_audit/Assembly.lean",
+        "/tmp/dmcbr_glue_independent_audit/CheckedChain.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected gluing theorem. Project and Mathlib revisions match the manifest; the workspace contract and Submission match the snapshot contract. The project search found no matching helper declarations. Pinned library signatures support the supplied arguments. All four child types independently elaborate as propositions with autoImplicit disabled and pass the statement validator. Each bare lean_name has exactly one existing owner, comparator-accepted with a byte-identical frozen type; reuse is valid. Dependencies are correctly directed and acyclic: glue_pieces depends on orient_union, which depends on imrep_local_finite; cover_refine is independent. No dependency reaches the selected parent. Fresh compilation of the accepted candidate proofs, the existing imrep_measure dependency, and the exact selected parent succeeds using only propext, Classical.choice and Quot.sound. A separate hypothesis-only assembly also succeeds, establishing that the proposed contracts imply the selected parent without invoking its accepted twin. No problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cover_refine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the stated cover refinement, including an empty countable index type and arbitrary property p. The supplied proof chooses neighborhoods, obtains a countable subcover, handles the empty case, enumerates the nonempty case, and verifies every disjointed-family condition. It is complete and independent of the parent. Reuse of cbrg_exists_countable_disjoint_refinement has an identical accepted type."
+    },
+    {
+      "key": "imrep_local_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree: for these ENNReal measures, finiteness is equivalent to being unequal to infinity. Compactness supplies measurability, withDensity gives the weighted integral identity, and positive integer multiplicity bounds the unweighted measure by that finite integral. No openness hypothesis or circular dependency is needed. Reuse of rsd_imrep_compact_measure_ne_top has an identical accepted type."
+    },
+    {
+      "key": "orient_union",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including the full IMC(a) assumption, match the Lean proposition. The proof restricts each local orientation to N_i, verifies both IMC(a) applications, transfers tangency in the correct directions, substitutes the almost-everywhere orientation equality, and passes to the countable union. Local finiteness comes from the declared dependency before it is used. Reuse of cbrg_ae_orient_iUnion has an identical accepted type."
+    },
+    {
+      "key": "glue_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the prose, including arbitrary disjoint Borel A_i; A_i ⊆ W_i is unnecessary. The proof establishes measurable positive multiplicity, rectifiability including the empty-index case, and the measure identity before deriving local finiteness and reverse absolute continuity. The latter correctly transfers AEStronglyMeasurable ξ without extra metrizability assumptions. The declared orientation dependency then supplies the remaining IMRep field. Every conclusion follows without parent reliance. Reuse of cbrg_imRep_glue_disjoint has an identical accepted type."
+    }
+  ],
+  "required_changes": []
+}
