@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.chart_area_formula-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+  "depth": 6,
+  "title": "Weighted area formula for Φ on a Borel subset of one chart of N (Simon Ch. 2, 3.2, 3.5 and 4.11–4.13; parent step 7)",
+  "statement": "Let P, m, r ∈ ℕ with r ≥ 1. Let N, W ⊆ ℝ^P and V ⊆ ℝ^m, and let ψ : ℝ^m → ℝ^P be a local representation of N as in Simon (4.1). That is: V and W are open; ψ is C^r on V and injective on V; ψ(V) = W ∩ N; V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; and Dψ(z) is injective for z ∈ V. Let Q : ℝ^P → {linear subspaces of ℝ^P} satisfy Q(x) = T_xN as sets for every x ∈ N. Let Φ : ℝ^P → ℝ^P be C¹ and injective, with DΦ(x) injective for every x. Let J(x) := (det(⟨DΦ(x)τ_i(x), DΦ(x)τ_j(x)⟩)_{i,j<dim Q(x)})^{1/2}, where τ(x) = stdOrthonormalBasis ℝ (Q x). Then for every Borel set B ⊆ W ∩ N and every g : ℝ^P → [0, ∞] (not necessarily measurable), ∫⁻_{Φ(B)} g dH^m = ∫⁻_B ofReal(J(x))·g(Φ(x)) dH^m(x). Here H^m = μHE[m] and ∫⁻ is the lower Lebesgue integral.",
+  "lean_statement": "∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → Injective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in Φ '' B, g y ∂μHE[m] = ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x) ∂μHE[m]",
+  "lean_name": "codim1_ac_saf_chart_area_formula",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.chart_gram_factor-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.chart_gram_factor-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-40de0dfc89-a1"
+}

@@ -1,0 +1,94 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "sed -n '210,275p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "HasApproximateTangentSpaceAt|theorem integral_area_formula_of_injective_derivative|theorem injective_area_formula_of_injective_derivative|theorem continuous_normDet",
+        "setIntegral_eq_integral_of_forall_compl_eq_zero|theorem restrict_restrict|one_of_mem_closedBall|zero_of_le_dist|hasContDiffBump_of_innerProductSpace|theorem Filter.EventuallyEq.fderiv_eq",
+        "codim1_ac_sat_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sat-independent-audit-2tp9oke_/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sat-split/check/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/sat-split/combined/Combined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-5d24065c78/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-18e8208cd7/accepted-candidate.json",
+        "/tmp/sat-independent-audit-2tp9oke_/ChallengeTypes.lean",
+        "/tmp/sat-split/check/TypesAssembly.lean",
+        "/tmp/sat-split/check/AssemblyAx.lean",
+        "/tmp/sat-split/combined/Combined.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected contract: it reuses the accepted analytic core and supplies complete localization, extension, and assembly proofs. Project, Mathlib, and SimonGMT revisions match the pins; the inspected Mathlib files match the snapshot. The approximate-tangent definition is exactly the dimension-and-test-integral predicate stated here. Restrict.restrict_restrict requires only measurability of the outer ball, validating locality for arbitrary sets. All eight one-line propositions elaborate independently without child declarations; derivative-range coercions and the Euclidean bump instance are correct. All names are bare identifiers. The four reused types match their comparator-accepted contracts and candidate declarations exactly. No new-name collision was found in the DAG, project sources, or 2,610 ref commits. Proposed dependencies and the reused prerequisite closure are acyclic and do not reach the selected parent. Independent compiler runs validate the assembly; the full selected theorem uses only propext, Classical.choice, and Quot.sound. Its proof does not depend on the unrelated main_theorem placeholder."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. Bounded smooth curves prove the range inclusion; properness gives inverse continuity, and the derivative remainder estimate plus closedness of the range proves the converse. The accepted declaration is reused with an identical type and no circular dependence."
+    },
+    {
+      "key": "chart_inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sequential contradiction correctly places the convergent image sequence and its limit in W. Properness supplies a compact preimage; relative continuity and injectivity force the subsequential limit to equal v. No openness assumption is needed or silently used."
+    },
+    {
+      "key": "local_lower_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract follows from finite-dimensional coercivity, continuity of the derivative, and the mean-value inequality on a convex open ball. The proof explicitly covers dimension zero and establishes both positive constants."
+    },
+    {
+      "key": "c1_piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The lower bound gives injectivity of the map and its derivatives. The rescaled area formula, fixed compact support bound, dominated convergence, and linear area formula establish both conjuncts of the exact predicate. Membership z ∈ B supplies the required interior radius; an empty ball makes the conclusion vacuous."
+    },
+    {
+      "key": "c1_local_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bump construction proves the stated global C¹ extension and equality on the smaller open ball. The two cases cover every point, including the cutoff boundary; arbitrary behavior of ψ outside V is harmless because the product is locally zero there."
+    },
+    {
+      "key": "chart_ball_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three declared prerequisites suffice. Equality on a neighborhood identifies values and derivatives, the minimum radius preserves the domain and lower bound, and the accepted C¹-piece theorem transfers through equality of images. The conclusion exactly matches the frozen type."
+    },
+    {
+      "key": "chart_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis required by inverse continuity is supplied. Intersecting its radius with a ball inside W ∩ W₀ proves both set inclusions exactly as stated. Openness of V is neither assumed nor needed."
+    },
+    {
+      "key": "approx_tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable support ball justifies the restriction identities for arbitrary S and S'. For 0 < r < δ/R, the localized blown-up sets coincide, so their integrals agree eventually. This transfers the exact test-function limit while preserving the dimension conjunct, without hidden measurability assumptions."
+    }
+  ],
+  "required_changes": []
+}
