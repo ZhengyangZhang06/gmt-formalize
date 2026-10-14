@@ -2979,6 +2979,25 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
 
+/-- **The comparison current `T + Y⌞U`** (Simon 7.2.4, proof, (8); Ch. 6, 2.16 and
+Remark 3.2(1)).  Let `U ⊆ ℝᴾ` be open, and let `T ∈ 𝒟ₙ(U)` and `Y ∈ 𝒟ₙ(ℝᴾ)` be integer
+multiplicity.  Then some integer multiplicity `Z ∈ 𝒟ₙ(U)` has `Z(ω) = T(ω) + Y(ιω)` for every
+`ω ∈ 𝒟ⁿ(U)`.  The restriction `Y⌞U(ω) = Y(ιω)` is integer multiplicity in the open set `U`
+(`dtc_restrictDomain_isIntegerMultiplicity`).  Three differences
+(`cmc_imRep_locality_restrict_sub` (c)) make `Z = T − ((T − T) − Y⌞U)` integer multiplicity. -/
+theorem Submission.dimred_mbl_lc_ic_add_restrict : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → IsIntegerMultiplicity T → IsIntegerMultiplicity Y → ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ ∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω) := by
+  intro P n U T Y hU hT hY
+  -- Step 1: `Y⌞U = Y.restrictDomain (subset_univ U)` is integer multiplicity in `U`
+  have hYU : IsIntegerMultiplicity (Y.restrictDomain (subset_univ U)) :=
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P n univ U (subset_univ U) Y hU hY
+  -- Step 2: `T − T`, `(T − T) − Y⌞U` and `Z = T − ((T − T) − Y⌞U)` are integer multiplicity
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P n U
+  refine ⟨T - ((T - T) - Y.restrictDomain (subset_univ U)),
+    hsub T _ hU hT (hsub _ _ hU (hsub T T hU hT hT) hYU), fun ω => ?_⟩
+  -- Step 3: `Z(ω) = T(ω) − ((T(ω) − T(ω)) − Y(ιω)) = T(ω) + Y(ιω)`
+  show T ω - ((T ω - T ω) - Y (testFormOnInclusion (subset_univ U) n ω)) = _
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
