@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7bcdc6b25602b26763e49474863776260e01a7c3d03ef2e6447343e2b2de623",
+  "git_delta": {
+    "base_commit": "0a9fa1451b259298e3c5732d851fe8cc79018927",
+    "candidate_commit": "575b59585d1a1f4426e89306dd5ab0218acc4d83",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfr_current_calculus",
+    "diff_sha256": "c20a0e015787cba9b56ad5d98bee10e3e6eed6554898c12362f77389d48ced95",
+    "source_sha256": "b42cdebd36e2465ff87044d4372071636da17eaacab71f584377dc7625f1a9d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfr_current_calculus",
+      "statement": "(∀ (P n : ℕ) (U W : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).support ⊆ A.support ∪ B.support ∧ (A - B).massOn W ≤ A.massOn W + B.massOn W) ∧ ∀ (P m : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U (m + 1)), A.boundary.support ⊆ A.support ∧ (A - B).boundary = A.boundary - B.boundary",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
