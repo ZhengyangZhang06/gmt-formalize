@@ -3854,6 +3854,80 @@ theorem Submission.codim1_hcp_stab_smooth_case : ∀ (P m : ℕ) (U : Set (Eucli
     rw [integral_sub hf₁int hg₂int] at hE
     linarith
   simpa only [hf₁, hg₂] using key
+/-- Convergence of Dirichlet energies, for an arbitrary measure `μ`: the limit
+`∫_M |Dζₖ|² → ∫_M |∇^Mζ|²` that carries the stability inequality (Simon, App. B, B.1) from
+smooth `ζₖ` to a locally Lipschitz `ζ`, as when B.1 is applied to the Lipschitz `|A|ζ` (App. B,
+(2)).  Write `aₖ = Σⱼ Fₖⱼ²`, `b = Σⱼ Gⱼ²` and `dₖ = Σⱼ (Fₖⱼ − Gⱼ)²`.  Since `∫⁻ dₖ → 0`, `dₖ`
+is integrable for all large `k`, and `b ≤ 2aₖ + 2dₖ` makes `b` integrable; also
+`∫ dₖ = (∫⁻ dₖ).toReal → 0`.  From `x² − y² = (x − y)² + 2y(x − y)` and
+`2|y(x − y)| ≤ εy² + ε⁻¹(x − y)²`, `|aₖ − b| ≤ εb + (1 + ε⁻¹)dₖ` pointwise for every `ε > 0`, so
+`|∫ aₖ − ∫ b| ≤ ε ∫ b + (1 + ε⁻¹) ∫ dₖ`, which is small for small `ε` and then large `k`. -/
+theorem Submission.codim1_hcp_stab_energy_convergence : ∀ (P : ℕ) (μ : Measure (Euclid P)) (F : ℕ → Fin P → Euclid P → ℝ) (G : Fin P → Euclid P → ℝ), (∀ k j, AEStronglyMeasurable (F k j) μ) → (∀ j, AEStronglyMeasurable (G j) μ) → (∀ k, Integrable (fun x => ∑ j : Fin P, (F k j x) ^ 2) μ) → Tendsto (fun k => ∫⁻ x, ENNReal.ofReal (∑ j : Fin P, (F k j x - G j x) ^ 2) ∂μ) atTop (𝓝 0) → Integrable (fun x => ∑ j : Fin P, (G j x) ^ 2) μ ∧ Tendsto (fun k => ∫ x, ∑ j : Fin P, (F k j x) ^ 2 ∂μ) atTop (𝓝 (∫ x, ∑ j : Fin P, (G j x) ^ 2 ∂μ)) := by
+  intro P μ F G hF hG haint hd
+  -- `dₖ = Σⱼ (Fₖⱼ − Gⱼ)²` and `b = Σⱼ Gⱼ²` are a.e. strongly measurable, and `dₖ ≥ 0`
+  have hdm : ∀ k, AEStronglyMeasurable (fun x => ∑ j : Fin P, (F k j x - G j x) ^ 2) μ :=
+    fun k => Finset.aestronglyMeasurable_fun_sum _ fun j _ => ((hF k j).sub (hG j)).pow 2
+  have hbm : AEStronglyMeasurable (fun x => ∑ j : Fin P, (G j x) ^ 2) μ :=
+    Finset.aestronglyMeasurable_fun_sum _ fun j _ => (hG j).pow 2
+  have hd0 : ∀ k, 0 ≤ᵐ[μ] fun x => ∑ j : Fin P, (F k j x - G j x) ^ 2 :=
+    fun k => ae_of_all _ fun x => Finset.sum_nonneg fun j _ => sq_nonneg _
+  -- `∫⁻ dₖ < ∞`, so `dₖ` is integrable, for all large `k`
+  have hdint : ∀ᶠ k in atTop, Integrable (fun x => ∑ j : Fin P, (F k j x - G j x) ^ 2) μ :=
+    (hd.eventually_lt_const ENNReal.zero_lt_top).mono fun k hk =>
+      ⟨hdm k, (hasFiniteIntegral_iff_ofReal (hd0 k)).2 hk⟩
+  -- `b ≤ 2 (aₖ + dₖ)` with `aₖ = Σⱼ Fₖⱼ²`, since `y² ≤ 2x² + 2(x − y)²`; so `b` is integrable
+  have hbint : Integrable (fun x => ∑ j : Fin P, (G j x) ^ 2) μ := by
+    obtain ⟨k, hk⟩ := hdint.exists
+    refine Integrable.mono' (((haint k).add hk).const_mul 2) hbm (ae_of_all _ fun x => ?_)
+    rw [Real.norm_of_nonneg (Finset.sum_nonneg fun j _ => sq_nonneg _), Pi.add_apply,
+      ← Finset.sum_add_distrib, Finset.mul_sum]
+    exact Finset.sum_le_sum fun j _ => by nlinarith [sq_nonneg (2 * F k j x - G j x)]
+  refine ⟨hbint, ?_⟩
+  -- `∫ dₖ = (∫⁻ dₖ).toReal → 0`
+  have hs : Tendsto (fun k => ∫ x, ∑ j : Fin P, (F k j x - G j x) ^ 2 ∂μ) atTop (𝓝 0) := by
+    have h := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hd
+    rw [ENNReal.toReal_zero] at h
+    exact h.congr fun k => (integral_eq_lintegral_of_nonneg_ae (hd0 k) (hdm k)).symm
+  -- `|x² − y²| ≤ εy² + (1 + ε⁻¹)(x − y)²`, from `x² − y² = (x − y)² + 2y(x − y)` and
+  -- `ε⁻¹(εy ∓ (x − y))² = εy² ∓ 2y(x − y) + ε⁻¹(x − y)² ≥ 0`
+  have hscal : ∀ ε : ℝ, 0 < ε → ∀ x y : ℝ,
+      |x ^ 2 - y ^ 2| ≤ ε * y ^ 2 + (1 + ε⁻¹) * (x - y) ^ 2 := by
+    intro ε hε x y
+    have he : ε⁻¹ * ε = 1 := inv_mul_cancel₀ hε.ne'
+    have h1 : ε⁻¹ * (ε * y - (x - y)) ^ 2 = ε * y ^ 2 - 2 * y * (x - y) + ε⁻¹ * (x - y) ^ 2 := by
+      linear_combination (ε * y ^ 2 - 2 * y * (x - y)) * he
+    have h2 : ε⁻¹ * (ε * y + (x - y)) ^ 2 = ε * y ^ 2 + 2 * y * (x - y) + ε⁻¹ * (x - y) ^ 2 := by
+      linear_combination (ε * y ^ 2 + 2 * y * (x - y)) * he
+    have h3 := mul_nonneg (inv_nonneg.2 hε.le) (sq_nonneg (ε * y - (x - y)))
+    have h4 := mul_nonneg (inv_nonneg.2 hε.le) (sq_nonneg (ε * y + (x - y)))
+    rw [abs_le]
+    constructor <;> nlinarith [sq_nonneg (x - y)]
+  -- given `η > 0`, take `ε > 0` with `ε ∫ b < η / 2` and `k` so large that `dₖ` is integrable and
+  -- `(1 + ε⁻¹) ∫ dₖ < η / 2`; then `|∫ aₖ − ∫ b| ≤ ∫ (εb + (1 + ε⁻¹)dₖ) < η`
+  rw [Metric.tendsto_atTop]
+  intro η hη
+  obtain ⟨ε, hε, hεb⟩ := exists_pos_mul_lt (half_pos hη) (∫ x, ∑ j : Fin P, (G j x) ^ 2 ∂μ)
+  have hev : ∀ᶠ k in atTop, (1 + ε⁻¹) * ∫ x, ∑ j : Fin P, (F k j x - G j x) ^ 2 ∂μ < η / 2 := by
+    have h := hs.const_mul (1 + ε⁻¹)
+    rw [mul_zero] at h
+    exact h.eventually_lt_const (half_pos hη)
+  obtain ⟨K, hK⟩ := eventually_atTop.1 (hev.and hdint)
+  refine ⟨K, fun k hk => ?_⟩
+  obtain ⟨hk1, hk2⟩ := hK k hk
+  rw [Real.dist_eq, ← integral_sub (haint k) hbint, ← Real.norm_eq_abs]
+  calc ‖∫ x, (∑ j : Fin P, (F k j x) ^ 2) - ∑ j : Fin P, (G j x) ^ 2 ∂μ‖
+      ≤ ∫ x, ε * ∑ j : Fin P, (G j x) ^ 2 + (1 + ε⁻¹) * ∑ j : Fin P, (F k j x - G j x) ^ 2 ∂μ := by
+        refine norm_integral_le_of_norm_le ((hbint.const_mul ε).add (hk2.const_mul _))
+          (ae_of_all _ fun x => ?_)
+        rw [Real.norm_eq_abs, ← Finset.sum_sub_distrib, Finset.mul_sum, Finset.mul_sum,
+          ← Finset.sum_add_distrib]
+        exact (Finset.abs_sum_le_sum_abs _ _).trans
+          (Finset.sum_le_sum fun j _ => hscal ε hε _ _)
+    _ = ε * (∫ x, ∑ j : Fin P, (G j x) ^ 2 ∂μ) +
+          (1 + ε⁻¹) * ∫ x, ∑ j : Fin P, (F k j x - G j x) ^ 2 ∂μ := by
+        rw [integral_add (hbint.const_mul ε) (hk2.const_mul _), integral_const_mul,
+          integral_const_mul]
+    _ < η := by linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
