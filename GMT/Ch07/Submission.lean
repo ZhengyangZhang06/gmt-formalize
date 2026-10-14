@@ -1402,6 +1402,31 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
 
+/-- **Simon Ch. 6, 2.11 and 3.2(3)**: if `X = τ(M, θ, ξ)` in `ℝᴾ` and `X(ω) = 0` whenever
+`spt ω` misses the closed set `F`, then `μ_R(ℝᴾ \ F) = 0` and `M(X) ≤ M_W(X)` for every open
+`W ⊇ F`.  Admissible forms for `M_{ℝᴾ \ F}(X)` have support disjoint from `F`, so
+`μ_R(ℝᴾ \ F) = M_{ℝᴾ \ F}(X) = 0`; then `M(X) = μ_R(ℝᴾ) ≤ μ_R(W) + μ_R(ℝᴾ \ W) = μ_R(W) = M_W(X)`. -/
+theorem Submission.dor_lmb_fcd_sd_im_concentrated : ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (R : IMRep (univ : Set (Euclid P)) k) (F : Set (Euclid P)), R.Represents X → IsClosed F → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F) → X ω = 0) → R.measure Fᶜ = 0 ∧ ∀ W : Set (Euclid P), IsOpen W → F ⊆ W → X.mass ≤ X.massOn W := by
+  intro P k X R F hR hF hX
+  -- `M_W(X) = μ_R(W)` for every open `W`
+  have hmass := (Submission.dor_imrep_massOn_eq_measure_and_support P k univ X R isOpen_univ hR).1
+  -- every admissible `ω` for `M_{Fᶜ}(X)` has `spt ω` disjoint from `F`, so `X(ω) = 0`
+  have h0 : X.massOn Fᶜ = 0 := by
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (X ω) ≤ 0
+    rw [hX ω (Set.subset_compl_iff_disjoint_right.mp hω.1), ENNReal.ofReal_zero]
+  have hFc : R.measure Fᶜ = 0 := by
+    rw [← hmass Fᶜ hF.isOpen_compl, h0]
+  refine ⟨hFc, fun W hW hFW => ?_⟩
+  -- `M(X) = μ_R(W ∪ Wᶜ) ≤ μ_R(W) + μ_R(Wᶜ)`, and `μ_R(Wᶜ) ≤ μ_R(Fᶜ) = 0`
+  calc X.mass = R.measure (W ∪ Wᶜ) := by
+        rw [Set.union_compl_self]
+        exact hmass univ isOpen_univ
+    _ ≤ R.measure W + R.measure Wᶜ := measure_union_le W Wᶜ
+    _ = X.massOn W := by
+        rw [measure_mono_null (Set.compl_subset_compl.mpr hFW) hFc, add_zero, hmass W hW]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
