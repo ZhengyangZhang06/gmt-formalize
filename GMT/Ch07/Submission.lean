@@ -1454,6 +1454,95 @@ theorem Submission.dimred_mbl_dtfr_current_calculus : (∀ (P n : ℕ) (U W : Se
     ext γ
     rfl
 
+/-- **Boundary variation on the open faces of a lattice chain** (Simon Ch. 6, proof of 5.1,
+displays (27)–(28) and (32): `M(∂Q ⌞ F̆) = ∫_{F̆} |Dθ_F|` by the reasoning of 2.35).  Let
+`Q₀(ω) = Σ_{p ∈ s} ∫_{Q₁} u_p(y) ω(Φ_p y)(e_{ι(0)}, …, e_{ι(m)}) dy` with `M(∂Q₀) < ∞`.  The
+separation `(c)` of `Submission.dimred_mbl_dtfr_face_geometry` and
+`Submission.dimred_mbl_dtfrbv_face_neighbourhoods` give open `N_p ⊇ Φ_p(Q₁)`, pairwise disjoint
+and missing every other closed face; put `V_p = M_{N_p}(∂Q₀) ≤ M(∂Q₀) < ∞`.  Then
+`Σ_p V_p ≤ M(∂Q₀)` by `Submission.dimred_mbl_dtfrbv_massOn_disjoint_sum_le`.  `(i)` The test form
+`γ` of `Submission.dimred_mbl_dtfrbv_face_test_form` is admissible for `N_p` and has
+`gᵢ(y) = (-1)ⁱ γ(Φ_p y)(e_{ι ∘ i.succAbove})`, so `Submission.dimred_mbl_dtfr_face_divergence`
+(with `G := g`) gives `dγ(Φ_p y)(e_{ι(0)}, …, e_{ι(m)}) = div g(y)`.  `dγ` vanishes on the other
+faces, so `∫ u_p div g = Q₀(dγ) = ∂Q₀(γ) ≤ V_p`.  `(ii)` If `V_p ≠ 0`, some admissible `γ` for
+`N_p` has `∂Q₀(γ) > 0`; by (VO) `tsupport γ ⊆ N_p` meets `spt ∂Q₀ ⊆ spt Q₀`
+(`Submission.dimred_mbl_dtfr_current_calculus`).  By
+`Submission.dimred_mbl_dtfr_face_integral_current`, `spt Q₀` lies on the closed faces, and of
+these only the face of `p` meets `N_p`. -/
+theorem Submission.dimred_mbl_dtfr_boundary_variation : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ p ∈ s, IntegrableOn (u p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → Q₀.boundary.mass < ∞ → ∃ V : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℝ, (∀ p ∈ s, 0 ≤ V p) ∧ ENNReal.ofReal (∑ p ∈ s, V p) ≤ Q₀.boundary.mass ∧ (∀ p ∈ s, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V p) ∧ (∀ p ∈ s, V p ≠ 0 → ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ Q₀.boundary.support) := by
+  intro hVO P m s u Q₀ hs hu hQ₀ hmass
+  -- step 1: open `N_p ⊇ Φ_p(Q₁)`, pairwise disjoint and missing the other closed faces, from the
+  -- separation `(c)` of `face_geometry`
+  obtain ⟨N, hN⟩ := Submission.dimred_mbl_dtfrbv_face_neighbourhoods P (m + 1)
+    fun p q hp hq => ((Submission.dimred_mbl_dtfr_face_geometry P (m + 1)).2 p q hp hq).2.2
+  -- step 3: `M_{N_p}(∂Q₀) ≤ M(∂Q₀) < ∞`, so `V_p := M_{N_p}(∂Q₀)` is a real number
+  have hfin : ∀ p, Q₀.boundary.massOn (N p) ≠ ∞ := fun p =>
+    ne_top_of_le_ne_top hmass.ne (Q₀.boundary.massOn_mono (subset_univ (N p)))
+  refine ⟨fun p => (Q₀.boundary.massOn (N p)).toReal, fun p _ => ENNReal.toReal_nonneg, ?_, ?_,
+    ?_⟩
+  · -- step 9: the `N_p`, `p ∈ s`, are pairwise disjoint, so `Σ_p M_{N_p}(∂Q₀) ≤ M(∂Q₀)`
+    have hdisj : (s : Set ((Fin (m + 1) → Fin P) × (Fin P → ℤ))).PairwiseDisjoint N := by
+      intro p hp q hq hpq
+      exact ((hN p (hs p hp)).2.2 q (hs q hq) hpq.symm).2
+    rw [ENNReal.ofReal_sum_of_nonneg fun p _ => ENNReal.toReal_nonneg]
+    calc ∑ p ∈ s, ENNReal.ofReal (Q₀.boundary.massOn (N p)).toReal
+        = ∑ p ∈ s, Q₀.boundary.massOn (N p) :=
+          Finset.sum_congr rfl fun p _ => ENNReal.ofReal_toReal (hfin p)
+      _ ≤ Q₀.boundary.massOn (⋃ p ∈ s, N p) :=
+          Submission.dimred_mbl_dtfrbv_massOn_disjoint_sum_le P m univ Q₀.boundary _ s N hdisj
+      _ ≤ Q₀.boundary.mass := Q₀.boundary.massOn_mono (subset_univ _)
+  · intro p hp g hg hgc hgs hgb
+    obtain ⟨hNo, hNF, hNq⟩ := hN p (hs p hp)
+    -- step 5: the test form `γ` for `g` is admissible for `N_p`, so `∂Q₀(γ) ≤ V_p`
+    obtain ⟨γ, hγs, hγn, hγg⟩ := Submission.dimred_mbl_dtfrbv_face_test_form P m p (N p) g
+      (hs p hp) hNo hNF hg hgc hgs hgb
+    have hle : Q₀.boundary γ ≤ (Q₀.boundary.massOn (N p)).toReal :=
+      (ENNReal.ofReal_le_iff_le_toReal (hfin p)).1 (Q₀.boundary.le_massOn ⟨hγs, hγn⟩)
+    -- step 6: `dγ(Φ_p y)(e_{ι(0)}, …, e_{ι(m)}) = trace Dg(y)`, by `face_divergence` with `G := g`
+    have hdiv := (Submission.dimred_mbl_dtfr_face_divergence P m p.1 p.2
+      (γ : DifferentialForm (Euclid P) m) g (hs p hp) γ.property.1.1 hγg).2.2
+    -- steps 7–8: `∂Q₀(γ) = Q₀(dγ) = Σ_q ∫_{Q₁} u_q(y) dγ(Φ_q y)(E_q) dy = ∫_{Q₁} u_p div g`
+    have hval : Q₀.boundary γ = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        u p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+      rw [GeometricCurrentOn.boundary_apply, hQ₀, Finset.sum_eq_single_of_mem p hp]
+      · congr 1
+        funext y
+        change u p y * exteriorDerivative (γ : DifferentialForm (Euclid P) m) _ _ = _
+        rw [hdiv y]
+      · -- step 7: for `q ≠ p`, `Φ_q(Q₁)` misses `N_p ⊇ tsupport γ ⊇ tsupport dγ`
+        intro q hq hqp
+        refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+        have hz : exteriorDerivative (γ : DifferentialForm (Euclid P) m)
+            (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) +
+              ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = 0 :=
+          image_eq_zero_of_notMem_tsupport fun h => (hNq q (hs q hq) hqp).1 y
+            (fun i => ⟨(hy i).1.le, (hy i).2.le⟩) (hγs (tsupport_exteriorDerivative_subset _ h))
+        change u q y * exteriorDerivative (γ : DifferentialForm (Euclid P) m) _ _ = 0
+        rw [hz]
+        simp
+    rw [← hval]
+    exact hle
+  · intro p hp hV
+    -- step 10: `V_p ≠ 0` gives `M_{N_p}(∂Q₀) > 0`, so some admissible `γ` for `N_p` has
+    -- `∂Q₀(γ) > 0`
+    have hpos : 0 < Q₀.boundary.massOn (N p) := by
+      refine pos_iff_ne_zero.2 fun h => hV ?_
+      simp only [h, ENNReal.toReal_zero]
+    unfold GeometricCurrentOn.massOn at hpos
+    obtain ⟨_, ⟨γ, hγ, rfl⟩, hγpos⟩ := lt_sSup_iff.1 hpos
+    -- by (VO), `tsupport γ ⊆ N_p` meets `spt ∂Q₀` at some `x`
+    obtain ⟨x, hxγ, hx⟩ := Set.not_disjoint_iff.1 fun hd =>
+      (ENNReal.ofReal_pos.1 hγpos).ne' (hVO P m univ Q₀.boundary γ hd)
+    -- step 2: `spt ∂Q₀ ⊆ spt Q₀` (`current_calculus`), so `face_integral_current` gives
+    -- `x = Φ_q(y)` with `q ∈ s` and `y ∈ [0,1]ⁿ`; step 1: `q = p`, since `x ∈ N_p`
+    obtain ⟨q, hq, -, y, hy, rfl⟩ :=
+      ((Submission.dimred_mbl_dtfr_face_integral_current P m s u hs hu).2.2 Q₀ hQ₀).2.2 x
+        ((Submission.dimred_mbl_dtfr_current_calculus.2 P m univ Q₀ Q₀).1 hx)
+    by_cases hqp : q = p
+    · subst hqp
+      exact ⟨y, hy, hx⟩
+    · exact absurd (hγ.1 hxγ) (((hN p (hs p hp)).2.2 q (hs q hq) hqp).1 y hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
