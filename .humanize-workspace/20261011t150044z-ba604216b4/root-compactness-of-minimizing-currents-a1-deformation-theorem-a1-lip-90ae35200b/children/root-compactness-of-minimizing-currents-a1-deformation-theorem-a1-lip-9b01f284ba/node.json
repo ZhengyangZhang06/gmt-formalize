@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1.bounded_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1",
+  "depth": 6,
+  "title": "Coefficient-norm-bounded linear functionals are currents with mass ≤ C",
+  "statement": "Let N, k ∈ ℕ, let T₀ : 𝒟^k(ℝ^N) → ℝ be ℝ-linear (TestFormOn univ k →ₗ[ℝ] ℝ), and let C ∈ ℝ. Suppose that for every ω ∈ 𝒟^k(ℝ^N) and every c ∈ ℝ with |ω(x)| ≤ c for all x ∈ ℝ^N, |T₀(ω)| ≤ C·c, where |α| := covectorEuclideanNorm α. Then (BC) there is T ∈ 𝒟_k(ℝ^N) (GeometricCurrentOn univ k) with T(ω) = T₀(ω) for every ω and M(T) = T.mass ≤ ENNReal.ofReal C.",
+  "lean_statement": "∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C",
+  "lean_name": "cmcdt_lpo_tk_bounded_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9b01f284ba-a1"
+}
