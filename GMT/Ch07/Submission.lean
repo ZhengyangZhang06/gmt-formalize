@@ -2894,6 +2894,48 @@ theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Eucli
   funext x
   rw [ho, NNReal.smul_def, smul_eq_mul]
   norm_cast
+/-- **Triangle inequality for local mass** (Simon 6.2.5).  If `|c| ≤ 1` and
+`Z(ω) = X(ω) + c Y(ω)` for every `ω ∈ 𝒟ᵏ(U)` with `spt ω ⊆ G`, then
+`M_G(Z) ≤ M_G(X) + M_G(Y)`.  For `ω` admissible for `M_G`, `−ω` is admissible too, so
+`|Y(ω)| ≤ M_G(Y)`; since `c Y(ω) ≤ |Y(ω)|`, `Z(ω) ≤ X(ω) + |Y(ω)| ≤ M_G(X) + M_G(Y)`.  Taking the
+supremum over admissible `ω` gives the claim (`c = ±1`: sum and difference). -/
+theorem Submission.lcmp_massOn_le_add_of_eval_eq : ∀ (P k : ℕ) (U G : Set (Euclid P)) (X Y Z : GeometricCurrentOn U k) (c : ℝ), |c| ≤ 1 → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Euclid P) k) ⊆ G → Z ω = X ω + c * Y ω) → Z.massOn G ≤ X.massOn G + Y.massOn G := by
+  intro P k U G X Y Z c hc hZ
+  -- Step 4: `M_G(Z)` is a supremum, so bound each admissible value `ofReal (Z ω)`
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 1: `−ω` is admissible (same support, same Euclidean coefficient norm)
+  have hneg : -ω ∈ massAdmissibleOn U k G := by
+    refine ⟨?_, fun x => ?_⟩
+    · have hco : ((-ω : TestFormOn U k) : DifferentialForm (Euclid P) k) =
+          -(ω : DifferentialForm (Euclid P) k) := rfl
+      rw [hco, tsupport_neg]
+      exact hω.1
+    · have hco : ((-ω : TestFormOn U k) : DifferentialForm (Euclid P) k) x =
+          -((ω : DifferentialForm (Euclid P) k) x) := rfl
+      rw [hco, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 2: `ofReal (X ω) ≤ M_G(X)` and, as `Y(−ω) = −Y(ω)`, `ofReal |Y(ω)| ≤ M_G(Y)`
+  have hXle : ENNReal.ofReal (X ω) ≤ X.massOn G := X.le_massOn hω
+  have hYle : ENNReal.ofReal (Y ω) ≤ Y.massOn G := Y.le_massOn hω
+  have hYle' : ENNReal.ofReal (Y (-ω)) ≤ Y.massOn G := Y.le_massOn hneg
+  have hYneg : Y (-ω) = -Y ω := map_neg Y.toCurrent ω
+  rw [hYneg] at hYle'
+  have habs : ENNReal.ofReal |Y ω| ≤ Y.massOn G := by
+    rcases abs_cases (Y ω) with ⟨h, _⟩ | ⟨h, _⟩
+    · rw [h]; exact hYle
+    · rw [h]; exact hYle'
+  -- Step 3: `c Y(ω) ≤ |c| |Y(ω)| ≤ |Y(ω)|`; `ofReal` is monotone and subadditive
+  have hcy : c * Y ω ≤ |Y ω| :=
+    calc c * Y ω ≤ |c * Y ω| := le_abs_self _
+      _ = |c| * |Y ω| := abs_mul _ _
+      _ ≤ 1 * |Y ω| := by gcongr
+      _ = |Y ω| := one_mul _
+  show ENNReal.ofReal (Z ω) ≤ X.massOn G + Y.massOn G
+  calc ENNReal.ofReal (Z ω) = ENNReal.ofReal (X ω + c * Y ω) := by rw [hZ ω hω.1]
+    _ ≤ ENNReal.ofReal (X ω + |Y ω|) := ENNReal.ofReal_le_ofReal (by linarith)
+    _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal |Y ω| := ENNReal.ofReal_add_le
+    _ ≤ X.massOn G + Y.massOn G := add_le_add hXle habs
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
