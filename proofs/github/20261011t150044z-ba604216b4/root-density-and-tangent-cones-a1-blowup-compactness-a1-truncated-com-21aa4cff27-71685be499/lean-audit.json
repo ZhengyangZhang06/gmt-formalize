@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd1a5ba53d5e35e8bf905561929e1b86e6181e152ba41ad269743e66a2a51085",
+  "git_delta": {
+    "base_commit": "1cd3ab15da2be4b4e68090677f79991c5fccbb9b",
+    "candidate_commit": "3e28fda8398b466fa1c2e9c839bef56c654fe174",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_cl_sl_slices_weakly_converge",
+    "diff_sha256": "1e547b8607b6321f00c6109a0e403f62098fafb01024607598aa96bc784fc747",
+    "source_sha256": "d73a7a2693021ec638dd7b85b40784772caaea2e0f6dbdc1599f01ce3a756ccc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_cl_sl_slices_weakly_converge",
+      "statement": "(∀ (P k : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P k) (μX μ : Measure (Euclid P)) (ξX : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) k, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U k, Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) k, |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → μ {x | f x = t} = 0 → ∀ ω : TestFormOn U k, Tendsto (fun j => ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) atTop (𝓝 (∫ x in {x | f x < t}, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX))) → ∀ (P d : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U (d + 1)) (X : GeometricCurrentOn U (d + 1)) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P (d + 1)) (μs' : ℕ → Measure (Euclid P)) (ξs' : ℕ → Euclid P → MultiVector P d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (μ' : Measure (Euclid P)) (ξ' : Euclid P → MultiVector P d) (ν ν' : Measure (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (As : ℕ → GeometricCurrentOn U (d + 1)) (Bs : ℕ → GeometricCurrentOn U d) (A : GeometricCurrentOn U (d + 1)) (B : GeometricCurrentOn U d), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) (d + 1), |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U (d + 1), Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs j)) → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs' j K < ∞) → (∀ j, AEStronglyMeasurable (ξs' j) (μs' j)) → (∀ j, ∀ᵐ x ∂(μs' j), ∀ α : Covector (Euclid P) d, |ξs' j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ η : TestFormOn U d, (Xs j).boundary η = ∫ x, ξs' j x ((η : DifferentialForm (Euclid P) d) x) ∂(μs' j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ η : TestFormOn U d, X.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ ν K) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν' K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs' j K) atTop ≤ ν' K) → ν {x | f x = t} = 0 → ν' {x | f x = t} = 0 → (∀ (j : ℕ) (ω : TestFormOn U (d + 1)), As j ω = ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs j)) → (∀ (j : ℕ) (η : TestFormOn U d), Bs j η = ∫ x in {x | f x < t}, ξs' j x ((η : DifferentialForm (Euclid P) d) x) ∂(μs' j)) → (∀ ω : TestFormOn U (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn U d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → WeaklyConvergesOn (fun j => (As j).boundary - Bs j) (A.boundary - B)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
