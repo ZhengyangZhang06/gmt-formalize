@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 3.1–3.2** (the weight `θHᵏ⌞M`): for an integer multiplicity triple
+`R = (M, θ, ξ)` in `W`, `R.measure = (Hᵏ⌞M).withDensity θ` has the same null sets as `Hᵏ⌞M`
+(`θ` is measurable and `θ ≥ 1` on `M`).  For Borel `A`, `R.measure(A) = ∫_{M ∩ A} θ dHᵏ`; hence
+`R.measure(ℝᴾ \ M) = 0`, and `R.measure(K) < ∞` for compact `K ⊆ W` by local integrability of
+`θ`.  Absolute continuity makes `ξ` a.e. strongly measurable for `R.measure`, and
+`R.action ω = ∫_M θ⟨ω, ξ⟩ dHᵏ = ∫ ⟨ω, ξ⟩ dR.measure` for every form `ω`. -/
+theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure := by
+  intro P k W R
+  -- the density `θ`, as an `ℝ≥0`-valued measurable function
+  have hθ : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+  -- (a) a measure with density is absolutely continuous w.r.t. its base measure
+  have hac : R.measure ≪ μHE[k].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- (c) `μ(A) = ∫_A θ d(Hᵏ⌞M) = ∫_{M ∩ A} θ dHᵏ` for Borel `A`
+  have happly : ∀ A : Set (Euclid P), MeasurableSet A →
+      R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k] := fun A hA => by
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA, inter_comm A]
+  refine ⟨hac, ?_, happly, ?_, fun K hK hKW => ?_, R.aestronglyMeasurable_orient.mono_ac hac,
+    fun ω => ?_⟩
+  -- (b) `θ ≠ 0` on `M`, hence `Hᵏ⌞M`-a.e.
+  · refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  -- (d) `M ∩ Mᶜ = ∅`
+  · rw [happly _ R.measurableSet_carrier.compl, inter_compl_self, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- (e) local integrability of `θ`
+  · rw [happly K hK.measurableSet]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKW)
+  -- (g) `∫ ⟨ω, ξ⟩ d(θ Hᵏ⌞M) = ∫_M θ ⟨ω, ξ⟩ dHᵏ`
+  · have h := integral_withDensity_eq_integral_smul (μ := μHE[k].restrict R.carrier) hθ
+      fun x => R.orient x (ω x)
+    simp only [ENNReal.coe_natCast] at h
+    rw [IMRep.measure, h, IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
+
+/-- **Countable disjoint Borel refinement of a local open cover** (Lindelöf): if every point of
+`U ⊆ ℝᴾ` has an open neighbourhood `W ⊆ U` with property `p`, then countably many such sets `Wᵢ`
+cover `U` (`ℝᴾ` is second countable), and the pieces `Aᵢ = Wᵢ \ ⋃_{j<i} Wⱼ` are pairwise disjoint
+Borel sets with `Aᵢ ⊆ Wᵢ` and `⋃ᵢ Aᵢ = U`.  The index type is empty when `U = ∅`. -/
+theorem Submission.cbrg_exists_countable_disjoint_refinement : ∀ (P : ℕ) (U : Set (Euclid P)) (p : Set (Euclid P) → Prop), (∀ x ∈ U, ∃ W : Set (Euclid P), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ p W) → ∃ (ι : Type) (_ : Countable ι) (W A : ι → Set (Euclid P)), (∀ i, IsOpen (W i)) ∧ (∀ i, W i ⊆ U) ∧ (∀ i, p (W i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, A i ⊆ W i) ∧ Pairwise (fun i j => Disjoint (A i) (A j)) ∧ ⋃ i, A i = U := by
+  intro P U p h
+  choose! V hVo hxV hVU hpV using h
+  let s : U → Set (Euclid P) := fun x => V x
+  -- Lindelöf: countably many of the open sets `s x` already cover `⋃ x, s x = U`
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable s (fun x => hVo x x.2)
+  have hsU : ⋃ x, s x = U := by
+    apply subset_antisymm
+    · exact iUnion_subset fun x => hVU x x.2
+    · intro y hy
+      exact mem_iUnion.2 ⟨⟨y, hy⟩, hxV y hy⟩
+  rcases T.eq_empty_or_nonempty with hT | hT
+  · -- `T = ∅` forces `U = ∅`: take the empty index type
+    have hU : U = ∅ := by
+      rw [← hsU, ← hTU, hT]
+      simp
+    refine ⟨Empty, inferInstance, Empty.elim, Empty.elim, fun i => i.elim, fun i => i.elim,
+      fun i => i.elim, fun i => i.elim, fun i => i.elim, fun i => i.elim, ?_⟩
+    rw [hU]
+    exact iUnion_of_empty _
+  · -- enumerate `T = range f` and disjointify `Wₙ = s (f n)`
+    obtain ⟨f, hf⟩ := hTc.exists_eq_range hT
+    let W : ℕ → Set (Euclid P) := fun n => s (f n)
+    refine ⟨ℕ, inferInstance, W, disjointed W, fun n => hVo _ (f n).2, fun n => hVU _ (f n).2,
+      fun n => hpV _ (f n).2, MeasurableSet.disjointed (fun n => (hVo _ (f n).2).measurableSet),
+      disjointed_subset W, disjoint_disjointed W, ?_⟩
+    rw [iUnion_disjointed, ← hsU, ← hTU, hf, biUnion_range]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

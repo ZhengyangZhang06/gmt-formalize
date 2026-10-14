@@ -1,0 +1,112 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.orient_union-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the selected node's supplied proof (orientation of the glued carrier: (α) the field orients of R_i, (β) ξ = ξ_i a.e. on the piece, (γ) (IMC)(a) in W_i, (δ) (IMC)(a) in U, and the countable union via ae_restrict_iUnion_iff). Here it is stated for an arbitrary countable family of Borel pieces N_i ⊆ M_i. Notation: Hᵏ := μHE[k]. For i ∈ ι write M_i := (R i).carrier and ξ_i := (R i).orient, and put M := ⋃_i N_i. The hypotheses are those of the statement: (IMC)(a); ι countable; U open; every W_i open; every N_i Borel with N_i ⊆ M_i; M ⊆ U; Hᵏ(M ∩ K) ≠ ∞ for every compact K ⊆ U; and, for every i, ξ = ξ_i holds Hᵏ⌞N_i-a.e. The proof uses the accepted sibling rsd_imrep_compact_measure_ne_top: for any set W, any R : IMRep W k and any compact K ⊆ W, Hᵏ(R.carrier ∩ K) ≠ ∞ and R.measure K ≠ ∞.
+
+1. (Reduction to one piece.) Let Φ(x) be the property: there is a subspace Q with HasApproximateTangentSpaceAt k M x Q and IsUnitOrientationOf (ξ x) Q. Since M = ⋃_i N_i is a countable union, Φ holds Hᵏ⌞M-a.e. iff, for every i, Φ holds Hᵏ⌞N_i-a.e. (Mathlib ae_restrict_iUnion_iff). Fix i ∈ ι.
+
+2. (Borel sets.) M is Borel, being a countable union of the Borel sets N_j (MeasurableSet.iUnion). M_i is Borel by the IMRep field measurableSet_carrier. Also N_i ⊆ M (subset_iUnion).
+
+3. ((α) Orientation of M_i.) By the IMRep field orients of R_i, for Hᵏ⌞M_i-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt k M_i x Q and IsUnitOrientationOf (ξ_i x) Q. Since N_i ⊆ M_i, this also holds for Hᵏ⌞N_i-a.e. x (ae_restrict_of_ae_restrict_of_subset).
+
+4. ((γ) N_i versus M_i inside W_i.) Apply (IMC)(a) with the open set W_i and the Borel sets N_i ⊆ M_i ⊆ W_i. Here M_i ⊆ W_i is the IMRep field carrier_subset of R_i. The finiteness hypothesis of (IMC)(a) holds: for every compact K ⊆ W_i, Hᵏ(M_i ∩ K) ≠ ∞ is the first conjunct of rsd_imrep_compact_measure_ne_top applied to R_i, an IMRep in W_i, and K. Hence, for Hᵏ⌞N_i-a.e. x and every Q: HasApproximateTangentSpaceAt k N_i x Q ↔ HasApproximateTangentSpaceAt k M_i x Q.
+
+5. ((δ) N_i versus M inside U.) Apply (IMC)(a) with the open set U and the Borel sets N_i ⊆ M ⊆ U. These inclusions hold by step 2 and the hypothesis M ⊆ U. The finiteness hypothesis of (IMC)(a) is exactly the hypothesis Hᵏ(M ∩ K) ≠ ∞ for compact K ⊆ U. Hence, for Hᵏ⌞N_i-a.e. x and every Q: HasApproximateTangentSpaceAt k N_i x Q ↔ HasApproximateTangentSpaceAt k M x Q.
+
+6. ((β) The orientations agree.) By hypothesis, ξ x = ξ_i x for Hᵏ⌞N_i-a.e. x.
+
+7. (Combination.) The properties of steps 3–6 hold simultaneously for Hᵏ⌞N_i-a.e. x, since finitely many full-measure sets intersect in a full-measure set (filter_upwards). Fix such an x and take Q from step 3. Then:
+- Q is an approximate tangent space of M_i at x (step 3);
+- hence of N_i at x (step 4, right-to-left);
+- hence of M at x (step 5, left-to-right).
+Also IsUnitOrientationOf (ξ x) Q holds, because ξ x = ξ_i x (step 6) and IsUnitOrientationOf (ξ_i x) Q (step 3). So Φ(x) holds for Hᵏ⌞N_i-a.e. x.
+
+8. (Conclusion.) Since i was arbitrary, step 1 shows that Φ holds Hᵏ⌞M-a.e. This is the claim. ∎
+
+Appendix (verified Lean realization of the numbered proof above). The declaration below compiles with Lean v4.35.0-rc3 and Mathlib 25730c7c (lake env lean in the gmt-ch07 workspace). It was placed after `import GMT.Ch07.Submission` in the child comparator scope, i.e. inside `namespace GMT.Ch07` with the frozen contract's `open` commands (`open Filter Function Set MeasureTheory Metric`, `open scoped ENNReal Topology`, `open Poincare.SimonGMT.Chapter06`, `open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)`), after the contract's `noncomputable section ... end`. The only non-library declaration it uses is the accepted sibling `Submission.rsd_imrep_compact_measure_ne_top`, with exactly its frozen type. `#print axioms` reports only propext, Classical.choice and Quot.sound.
+
+```lean
+theorem Submission.cbrg_ae_orient_iUnion : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (ι : Type) [Countable ι] (P k : ℕ) (U : Set (Euclid P)) (W N : ι → Set (Euclid P)) (R : (i : ι) → IMRep (W i) k) (ξ : Euclid P → MultiVector P k), IsOpen U → (∀ i, IsOpen (W i)) → (∀ i, MeasurableSet (N i)) → (∀ i, N i ⊆ (R i).carrier) → (⋃ i, N i) ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[k] ((⋃ i, N i) ∩ K) ≠ ∞) → (∀ i, ∀ᵐ y ∂(μHE[k].restrict (N i)), ξ y = (R i).orient y) → ∀ᵐ x ∂(μHE[k].restrict (⋃ i, N i)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt k (⋃ i, N i) x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+  intro hIMC ι _ P k U W N R ξ hU hWo hNm hNR hNU hfinN hξ
+  rw [ae_restrict_iUnion_iff]
+  intro i
+  have hMm : MeasurableSet (⋃ j, N j) := MeasurableSet.iUnion hNm
+  -- (α) `ξᵢ` orients an approximate tangent space of `Mᵢ`, a.e. on `Nᵢ ⊆ Mᵢ`
+  have hα : ∀ᵐ x ∂(μHE[k].restrict (N i)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt k (R i).carrier x Q ∧ IsUnitOrientationOf ((R i).orient x) Q :=
+    ae_restrict_of_ae_restrict_of_subset (hNR i) (R i).orients
+  -- (γ) (IMC)(a) in `Wᵢ` for `Nᵢ ⊆ Mᵢ ⊆ Wᵢ`
+  have hγ := hIMC P k (W i) (N i) (R i).carrier (hWo i) (hNm i) (R i).measurableSet_carrier
+    (hNR i) (R i).carrier_subset
+    (fun K hK hKW => (Submission.rsd_imrep_compact_measure_ne_top P k (W i) (R i) K hK hKW).1)
+  -- (δ) (IMC)(a) in `U` for `Nᵢ ⊆ M ⊆ U`
+  have hδ := hIMC P k U (N i) (⋃ j, N j) hU (hNm i) hMm (subset_iUnion N i) hNU hfinN
+  filter_upwards [hα, hγ, hδ, hξ i] with x hxα hxγ hxδ hxξ
+  obtain ⟨Q, hQ, hQo⟩ := hxα
+  refine ⟨Q, (hxδ Q).1 ((hxγ Q).2 hQ), ?_⟩
+  rw [hxξ]
+  exact hQo
+```
+
+## Key steps
+
+1. By ae_restrict_iUnion_iff it suffices to prove the property Hᵏ⌞N_i-a.e. for each fixed i.
+2. (α) The field orients of R_i, restricted to N_i ⊆ M_i, gives Q tangent to M_i at x with IsUnitOrientationOf (ξ_i x) Q.
+3. (γ) (IMC)(a) in W_i for N_i ⊆ M_i ⊆ W_i (local finiteness from rsd_imrep_compact_measure_ne_top): tangent spaces of N_i and M_i agree a.e. on N_i.
+4. (δ) (IMC)(a) in U for N_i ⊆ M ⊆ U (local finiteness hypothesis): tangent spaces of N_i and M agree a.e. on N_i.
+5. (β) ξ = ξ_i a.e. on N_i; intersecting the four full-measure sets, Q is tangent to M at x and oriented by ξ x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean (identical); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib for: theorem isOpen_iUnion_countable; protected theorem MeasurableSet.disjointed; theorem iUnion_disjointed; theorem disjoint_disjointed; theorem disjointed_subset; theorem biUnion_range; theorem Countable.exists_eq_range; theorem exists_surjective_nat; theorem iUnion_comp; theorem ae_restrict_iUnion_iff; theorem ae_restrict_of_ae_restrict_of_subset; theorem ae_restrict_iff'; theorem restrict_iUnion; theorem restrict_eq_self_of_ae_mem; theorem restrict_restrict_of_subset; theorem withDensity_sum; theorem restrict_withDensity; theorem withDensity_congr_ae; lemma withDensity_absolutelyContinuous'; lemma mono_ac; theorem measurable_to_countable'; theorem setLIntegral_mono; theorem setLIntegral_one; aestronglyMeasurable_iUnion_iff; PseudoMetrizableSpace instances (Topology/Metrizable/Basic.lean); ContinuousAlternatingMap instNormedAddCommGroup`
+- `grep -n in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean for def CountablyRectifiable, countablyRectifiable_of_measure_zero, CountablyRectifiable.mono, countablyRectifiable_iUnion (ℕ-indexed only), def HasApproximateTangentSpaceAt; sed of Chapter06/Forms.lean (Covector E n := E [⋀^Fin n]→L[ℝ] ℝ)`
+- `lake env lean instance probes: #synth NormedAddCommGroup/MetricSpace (MultiVector P k) succeed; #synth TopologicalSpace.PseudoMetrizableSpace (MultiVector P k) fails (strong topology ContinuousLinearMap.topologicalSpace is not defeq to the metric topology)`
+- `python3 -I scans of /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json: lean_statements mentioning carrier ∩ K, IsUnitOrientationOf, ⋃, tangent locality, IMRep; status/candidate_commit of rsd_imrep_compact_measure_ne_top, rsdic_imrep_ae_tangent_orient_of_subset, fvmb_imrep_ae_unitOrientation_approxTangentPlane, regcomp_approx_tangent_locality, rsdic_ae_tangent_iff_of_subset, dtc_approxTangent_of_null_diff; cross-branch dependency count (240 edges); lean_name collision scan for cbrg_exists_countable_disjoint_refinement, cbrg_ae_orient_iUnion, cbrg_imRep_glue_disjoint, rsd_imrep_compact_measure_ne_top (re-run at 981 nodes); exact-type equality of the selected node, cbr_imRep_measure_basic and rsd_imrep_compact_measure_ne_top`
+- `git show 702e7082a5a7012f7a8f6efd9d272697e426f50b:GMT/Ch07/Submission.lean (theorem Submission.rsd_imrep_compact_measure_ne_top with the frozen type) and its accepted parent-child-handoff.json`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint, _install_parent_supplied_child_handoff, child id mapping by lean_name) and store.py ensure: accepted same-type declarations are reused by name and left untouched`
+- `lake env lean /tmp/glue-decomp/Types.lean, Assembly.lean, Children2.lean, Final.lean, Appendix.lean; python3 -I /tmp/glue-decomp-scripts/lexcheck.py, extract_check.py, final_checks.py (validate_lean_statement from /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py)`
+- `sed -n 733,753p and 2305,2320p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt (Simon 6.3.1 Definition; Remark 8.3(1)); web: Simon, Introduction to GMT (public copy https://web.stanford.edu/class/math285/ts-gmt.pdf), Ch. 3 §1 and Ch. 6 §3`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/Countable/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f6cee6c8d7/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/glue-decomp/Types.lean`
+- `/tmp/glue-decomp/Assembly.lean`
+- `/tmp/glue-decomp/Children2.lean`
+- `/tmp/glue-decomp/Final.lean`
+- `/tmp/glue-decomp/Appendix.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean. Neither the Mathlib snapshot, SimonGMT nor the DAG contains a countable disjoint refinement of a local cover, an orientation-locality lemma for countable unions of IMRep pieces, or an IMRep gluing lemma (no match); these are the three new children. Local finiteness of IMRep carriers is the accepted rsd_imrep_compact_measure_ne_top (candidate 702e7082), reused with its identical frozen type. Unconditional tangent-locality declarations also exist (regcomp_approx_tangent_locality, rsdic_ae_tangent_iff_of_subset, rsdic_imrep_ae_tangent_orient_of_subset). They are not needed, because the selected node carries (IMC)(a) as a hypothesis and the children pass it on. Every cited Mathlib name exists in the pinned snapshot. SimonGMT countablyRectifiable_iUnion is ℕ-indexed, so glue_pieces reindexes through exists_surjective_nat. aestronglyMeasurable_iUnion_iff is unusable for MultiVector P k: no PseudoMetrizableSpace instance is synthesized, because the strong topology of Covector →L[ℝ] ℝ is not definitionally the metric topology. glue_pieces therefore uses AEStronglyMeasurable ξ μ and Hᵏ⌞M ≪ μ, as in the supplied step 6(d). All child types elaborate and pass the lexical check. A hypothesis-only Lean proof derives the exact frozen parent type from the child types and cbr_imRep_measure_basic's type. Every child is fully proved in Lean from its declared dependencies. All of these checks use only the axioms propext, Classical.choice and Quot.sound.

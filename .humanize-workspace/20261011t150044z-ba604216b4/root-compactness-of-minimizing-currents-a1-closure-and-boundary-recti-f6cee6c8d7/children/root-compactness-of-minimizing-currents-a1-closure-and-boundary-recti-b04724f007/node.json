@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.glue_pieces-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1",
+  "depth": 5,
+  "title": "Gluing IMReps over countably many disjoint Borel pieces with prescribed weight μ",
+  "statement": "Assume (IMC)(a), passed as a hypothesis: the exact first conjunct of the frozen statement of cmc_imRep_locality_restrict_sub, namely: for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets M ⊆ M' ⊆ U with Hⁿ(M' ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), for Hⁿ-a.e. x ∈ M and every linear subspace Q, Q is an approximate tangent space of M at x iff it is one of M' at x (HasApproximateTangentSpaceAt). Let ι be a countable type, P, k ∈ ℕ and U ⊆ ℝ^P open. For each i ∈ ι let W_i ⊆ U be open, R_i an IMRep in W_i (IMRep (W i) k) with carrier M_i, multiplicity θ_i, orientation ξ_i and weight R_i.measure = (Hᵏ⌞M_i).withDensity θ_i (Hᵏ = μHE[k]), and A_i a Borel set, with the A_i pairwise disjoint. Let μ be a measure on ℝ^P and ξ : ℝ^P → Λ_k(ℝ^P) (MultiVector P k) such that: μ(ℝ^P ∖ ⋃_i A_i) = 0; μ⌞A_i = (R_i.measure)⌞A_i for every i; μ(K) < ∞ for every compact K ⊆ U; ξ is a.e. strongly measurable for μ; and, for every i, ξ(y) = ξ_i(y) for Hᵏ-a.e. y ∈ M_i ∩ A_i. Then there is an IMRep R' in U (IMRep U k) with carrier ⋃_i (M_i ∩ A_i), orientation R'.orient = ξ and weight R'.measure = μ.",
+  "lean_statement": "(∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (ι : Type) [Countable ι] (P k : ℕ) (U : Set (Euclid P)) (W A : ι → Set (Euclid P)) (R : (i : ι) → IMRep (W i) k) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsOpen U → (∀ i, IsOpen (W i)) → (∀ i, W i ⊆ U) → (∀ i, MeasurableSet (A i)) → Pairwise (fun i j => Disjoint (A i) (A j)) → μ (⋃ i, A i)ᶜ = 0 → (∀ i, μ.restrict (A i) = (R i).measure.restrict (A i)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ i, ∀ᵐ y ∂(μHE[k].restrict ((R i).carrier ∩ A i)), ξ y = (R i).orient y) → ∃ R' : IMRep U k, R'.carrier = ⋃ i, (R i).carrier ∩ A i ∧ R'.orient = ξ ∧ R'.measure = μ",
+  "lean_name": "cbrg_imRep_glue_disjoint",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.orient_union-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.glue-a1.orient_union-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b04724f007-a1"
+}
