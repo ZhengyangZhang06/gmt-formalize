@@ -1885,6 +1885,166 @@ theorem Submission.dor_lmb_fcd_sd_zero_neg : ∀ (P k : ℕ) (U : Set (Euclid P)
       _ = s * |X (s⁻¹ • ω)| := by rw [abs_mul, abs_of_pos hs]
       _ ≤ s * X.mass.toReal := mul_le_mul_of_nonneg_left habs hs.le
 
+/-- **Shell-wise push-forwards and homotopies telescope** (Simon Ch. 6, proof of 5.1, with the
+homotopy formula 2.25).  Let `push`, `homot` satisfy, on integer multiplicity currents vanishing
+off a compact set, PF(1) `push(id, X) = X`, PF(2) linearity, PF(3) locality and PF(5)
+`∂push(F, X) = push(F, ∂X)`, `push(G, X) − push(F, X) − homot(F, G, ∂X) = ∂homot(F, G, X)`.
+For shells `Wⱼ` with `∂W₀ = D₀ − Z₀`, `∂Wⱼ₊₁ = Dⱼ₊₁ + Zⱼ − Zⱼ₊₁` and maps with `φⱼ₊₁ = φⱼ` on
+`Eⱼ`, writing `hⱼ = homot(id, φⱼ, ·)`:
+(S1) `Σ_{j≤N} (push(φⱼ, Wⱼ) − Wⱼ − ∂hⱼ(Wⱼ)) = Σ_{j≤N} hⱼ(Dⱼ) − h_N(Z_N)`;
+(S2) `Σ_{j≤N} ∂push(φⱼ, Wⱼ) = Σ_{j≤N} push(φⱼ, Dⱼ) − push(φ_N, Z_N)`.
+
+On a shell, `∂X = (D′ − (0 − Z′)) − Z″` is integer multiplicity (zero_neg, (IMC)(c)), so PF(5),
+PF(1) and three applications of PF(2) give the shell identities; PF(3) identifies the
+`Zⱼ`-terms of consecutive shells, and the sums telescope by induction on `N`. -/
+theorem Submission.dor_lmb_fcd_sd_telescoping : ∀ (P m : ℕ) (push : ∀ k : ℕ, (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k) (homot : ∀ k : ℕ, (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), (∀ (k : ℕ) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → push k (fun x => x) X = X) → (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → Y ω = 0) → push k F (X - Y) = push k F X - push k F Y ∧ homot k F G (X - Y) = homot k F G X - homot k F G Y) → (∀ (k : ℕ) (Λ : NNReal) (F G F' G' : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith Λ F' → LipschitzWith Λ G' → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → EqOn F F' E → EqOn G G' E → push k F X = push k F' X ∧ homot k F G X = homot k F' G' X) → (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity X.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) (E) → X ω = 0) → (push (k + 1) F X).boundary = push k F X.boundary ∧ push (k + 1) G X - push (k + 1) F X - homot k F G X.boundary = (homot (k + 1) F G X).boundary) → ∀ (E : ℕ → Set (Euclid P)) (φ : ℕ → Euclid P → Euclid P) (Λ : ℕ → NNReal) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ j, IsCompact (E j)) → (∀ j, E j ⊆ E (j + 1)) → (∀ j, LipschitzWith (Λ j) (φ j)) → (∀ j, 1 ≤ Λ j) → (∀ j, Λ j ≤ Λ (j + 1)) → (∀ j, EqOn (φ (j + 1)) (φ j) (E j)) → (∀ j, IsIntegerMultiplicity (W j)) → (∀ j, IsIntegerMultiplicity (D j)) → (∀ j, IsIntegerMultiplicity (Z j)) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (E j) → W j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → D j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → Z j ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, (W 0).boundary ω = D 0 ω - Z 0 ω) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) m), (W (j + 1)).boundary ω = D (j + 1) ω + Z j ω - Z (j + 1) ω) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), push (m + 1) (φ j) (W j) ω - ∑ j ∈ Finset.range (N + 1), W j ω - ∑ j ∈ Finset.range (N + 1), (homot (m + 1) (fun x => x) (φ j) (W j)).boundary ω = ∑ j ∈ Finset.range (N + 1), homot m (fun x => x) (φ j) (D j) ω - homot m (fun x => x) (φ N) (Z N) ω) ∧ ∀ N (ω : TestFormOn (univ : Set (Euclid P)) m), ∑ j ∈ Finset.range (N + 1), (push (m + 1) (φ j) (W j)).boundary ω = ∑ j ∈ Finset.range (N + 1), push m (φ j) (D j) ω - push m (φ N) (Z N) ω := by
+  intro P m push homot hid hlin hloc hhom E φ Λ W D Z hEc hEs hφ hΛ1 hΛs hφE hW hD hZ hWE hDE
+    hZE hW0 hWs
+  -- values of a difference: `(A − B)(ω) = A(ω) − B(ω)`
+  have hsub : ∀ {k : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (ω : TestFormOn (univ : Set (Euclid P)) k), (A - B) ω = A ω - B ω := fun _ _ _ => rfl
+  -- Step 1: `id` is `Λⱼ`-Lipschitz and `φⱼ` is `Λⱼ₊₁`-Lipschitz
+  have hidL : ∀ j, LipschitzWith (Λ j) (fun x : Euclid P => x) := fun j =>
+    LipschitzWith.id.weaken (hΛ1 j)
+  have hφL : ∀ j, LipschitzWith (Λ (j + 1)) (φ j) := fun j => (hφ j).weaken (hΛs j)
+  -- `0` and `0 − X` are integer multiplicity (zero_neg), and so is `A − B` ((IMC)(c))
+  have hz := Submission.dor_lmb_fcd_sd_zero_neg P m univ isOpen_univ
+  have hIM : ∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity A →
+      IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B) := fun A B hA hB =>
+    Submission.cmc_imRep_locality_restrict_sub.2.2.1 P m univ A B isOpen_univ hA hB
+  -- Step 2: `push(F, 0)` and `homot(F, G, 0)` vanish (PF(2) with `X = Y = 0`, `E = ∅`)
+  have hzero : ∀ (L : NNReal) (F G : Euclid P → Euclid P), LipschitzWith L F →
+      LipschitzWith L G → (∀ ω, push m F 0 ω = 0) ∧ ∀ η, homot m F G 0 η = 0 := by
+    intro L F G hF hG
+    have h00 : (0 : GeometricCurrentOn (univ : Set (Euclid P)) m) - 0 = 0 :=
+      GeometricCurrentOn.ext fun ω => by rw [hsub, GeometricCurrentOn.zero_apply, sub_self]
+    obtain ⟨hp, hh⟩ := hlin m L F G ∅ 0 0 hF hG isCompact_empty hz.1 hz.1 (fun _ _ => rfl)
+      (fun _ _ => rfl)
+    rw [h00] at hp hh
+    refine ⟨fun ω => ?_, fun η => ?_⟩
+    · have h := congrArg (fun T => T ω) hp
+      simp only [hsub] at h
+      linarith
+    · have h := congrArg (fun T => T η) hh
+      simp only [hsub] at h
+      linarith
+  -- Step 3: the one-shell identities (i) and (ii)
+  have shell : ∀ (j : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (D' Z' Z'' : GeometricCurrentOn (univ : Set (Euclid P)) m),
+      IsIntegerMultiplicity X → IsIntegerMultiplicity D' → IsIntegerMultiplicity Z' →
+      IsIntegerMultiplicity Z'' →
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (E j) → X ω = 0) →
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → D' ω = 0) →
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → Z' ω = 0) →
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → Z'' ω = 0) →
+      (∀ ω, X.boundary ω = D' ω + Z' ω - Z'' ω) →
+      (∀ η, push (m + 1) (φ j) X η - X η - (homot (m + 1) (fun x => x) (φ j) X).boundary η =
+        homot m (fun x => x) (φ j) D' η + homot m (fun x => x) (φ j) Z' η -
+          homot m (fun x => x) (φ j) Z'' η) ∧
+      ∀ ω, (push (m + 1) (φ j) X).boundary ω =
+        push m (φ j) D' ω + push m (φ j) Z' ω - push m (φ j) Z'' ω := by
+    intro j X D' Z' Z'' hX hD' hZ' hZ'' hXE hD'E hZ'E hZ''E hbd
+    -- `0 − Z′` and `D′ − (0 − Z′)` are integer multiplicity and vanish off `Eⱼ`
+    have hnZ := hz.2.1 Z' hZ'
+    have hDnZ := hIM D' (0 - Z') hD' hnZ
+    have hnZE : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) → (0 - Z') ω = 0 :=
+      fun ω hω => by rw [hsub, hZ'E ω hω, GeometricCurrentOn.zero_apply, sub_zero]
+    have hDnZE : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (E j) →
+          (D' - (0 - Z')) ω = 0 :=
+      fun ω hω => by rw [hsub, hD'E ω hω, hnZE ω hω, sub_zero]
+    -- `∂X = (D′ − (0 − Z′)) − Z″` is integer multiplicity
+    have hbdX : X.boundary = (D' - (0 - Z')) - Z'' := GeometricCurrentOn.ext fun ω => by
+      simp only [hbd, hsub, GeometricCurrentOn.zero_apply]
+      ring
+    have hbdIM : IsIntegerMultiplicity X.boundary := by
+      rw [hbdX]
+      exact hIM _ _ hDnZ hZ''
+    -- PF(2) for `(D′ − (0 − Z′), Z″)`, `(D′, 0 − Z′)`, `(0, Z′)` expands `push(F, ∂X)` and
+    -- `homot(F, G, ∂X)`
+    have hexp : ∀ F G : Euclid P → Euclid P, LipschitzWith (Λ j) F → LipschitzWith (Λ j) G →
+        (∀ ω, push m F X.boundary ω = push m F D' ω + push m F Z' ω - push m F Z'' ω) ∧
+        ∀ η, homot m F G X.boundary η =
+          homot m F G D' η + homot m F G Z' η - homot m F G Z'' η := by
+      intro F G hF hG
+      obtain ⟨p₁, k₁⟩ := hlin m (Λ j) F G (E j) (D' - (0 - Z')) Z'' hF hG (hEc j) hDnZ hZ''
+        hDnZE hZ''E
+      obtain ⟨p₂, k₂⟩ := hlin m (Λ j) F G (E j) D' (0 - Z') hF hG (hEc j) hD' hnZ hD'E hnZE
+      obtain ⟨p₃, k₃⟩ := hlin m (Λ j) F G (E j) 0 Z' hF hG (hEc j) hz.1 hZ' (fun _ _ => rfl)
+        hZ'E
+      obtain ⟨p₀, k₀⟩ := hzero (Λ j) F G hF hG
+      rw [hbdX]
+      refine ⟨fun ω => ?_, fun η => ?_⟩
+      · rw [p₁, hsub, p₂, hsub, p₃, hsub, p₀]
+        ring
+      · rw [k₁, hsub, k₂, hsub, k₃, hsub, k₀]
+        ring
+    -- (i): PF(5) with `(F, G) = (id, φⱼ)` and PF(1); (ii): PF(5) with `(F, G) = (φⱼ, φⱼ)`
+    obtain ⟨-, h₅⟩ := hhom m (Λ j) (fun x => x) (φ j) (E j) X (hidL j) (hφ j) (hEc j) hX hbdIM
+      hXE
+    obtain ⟨h₅', -⟩ := hhom m (Λ j) (φ j) (φ j) (E j) X (hφ j) (hφ j) (hEc j) hX hbdIM hXE
+    rw [hid (m + 1) (E j) X (hEc j) hX hXE] at h₅
+    refine ⟨fun η => ?_, fun ω => ?_⟩
+    · have h := congrArg (fun T => T η) h₅
+      simp only [hsub] at h
+      have e := (hexp (fun x => x) (φ j) (hidL j) (hφ j)).2 η
+      linarith
+    · rw [h₅']
+      exact (hexp (φ j) (φ j) (hφ j) (hφ j)).1 ω
+  -- Steps 5 and 6: the shells `0` (with `Z′ = 0`) and `j + 1` (`Zⱼ` vanishes off `Eⱼ ⊆ Eⱼ₊₁`)
+  have s₀ := shell 0 (W 0) (D 0) 0 (Z 0) (hW 0) (hD 0) hz.1 (hZ 0) (hWE 0) (hDE 0)
+    (fun _ _ => rfl) (hZE 0) (fun ω => by rw [hW0 ω, GeometricCurrentOn.zero_apply, add_zero])
+  have s := fun j : ℕ => shell (j + 1) (W (j + 1)) (D (j + 1)) (Z j) (Z (j + 1)) (hW _) (hD _)
+    (hZ j) (hZ _) (hWE _) (hDE _) (fun ω hω => hZE j ω (hω.mono_right (hEs j))) (hZE _) (hWs j)
+  -- Step 7: PF(3) on `Eⱼ`, where `φⱼ₊₁ = φⱼ`, identifies the `Zⱼ`-terms of consecutive shells
+  have hZZ : ∀ j, (∀ η, homot m (fun x => x) (φ (j + 1)) (Z j) η =
+      homot m (fun x => x) (φ j) (Z j) η) ∧
+      ∀ ω, push m (φ (j + 1)) (Z j) ω = push m (φ j) (Z j) ω := by
+    intro j
+    have k := (hloc m (Λ (j + 1)) (fun x => x) (φ (j + 1)) (fun x => x) (φ j) (E j) (Z j)
+      (hidL (j + 1)) (hφ (j + 1)) (hidL (j + 1)) (hφL j) (hEc j) (hZ j) (hZE j)
+      (eqOn_refl _ _) (hφE j)).2
+    have p := (hloc m (Λ (j + 1)) (φ (j + 1)) (fun x => x) (φ j) (fun x => x) (E j) (Z j)
+      (hφ (j + 1)) (hidL (j + 1)) (hφL j) (hidL (j + 1)) (hEc j) (hZ j) (hZE j) (hφE j)
+      (eqOn_refl _ _)).1
+    exact ⟨fun η => by rw [k], fun ω => by rw [p]⟩
+  -- Step 8: telescoping by induction on `N`
+  refine ⟨fun N => ?_, fun N => ?_⟩
+  · induction N with
+    | zero =>
+      intro η
+      simp only [zero_add, Finset.sum_range_one]
+      have h₁ := s₀.1 η
+      have h₂ := (hzero (Λ 0) (fun x => x) (φ 0) (hidL 0) (hφ 0)).2 η
+      linarith
+    | succ N ih =>
+      intro η
+      rw [Finset.sum_range_succ _ (N + 1), Finset.sum_range_succ _ (N + 1),
+        Finset.sum_range_succ _ (N + 1), Finset.sum_range_succ _ (N + 1)]
+      have h₁ := (s N).1 η
+      have h₂ := (hZZ N).1 η
+      have h₃ := ih η
+      linarith
+  · induction N with
+    | zero =>
+      intro ω
+      simp only [zero_add, Finset.sum_range_one]
+      have h₁ := s₀.2 ω
+      have h₂ := (hzero (Λ 0) (φ 0) (φ 0) (hφ 0) (hφ 0)).1 ω
+      linarith
+    | succ N ih =>
+      intro ω
+      rw [Finset.sum_range_succ _ (N + 1), Finset.sum_range_succ _ (N + 1)]
+      have h₁ := (s N).2 ω
+      have h₂ := (hZZ N).2 ω
+      have h₃ := ih ω
+      linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
