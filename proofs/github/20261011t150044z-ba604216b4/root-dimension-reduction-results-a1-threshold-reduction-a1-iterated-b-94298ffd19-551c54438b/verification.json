@@ -1,0 +1,24 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/7938",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "aa9833005cc0b3aabd3dea864b5961a11ed44a70",
+  "integrated_commit": "",
+  "proof_base_commit": "2d804b9a879961ad1611673215b1239f653059fd",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1.countable_tests-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1.diagonal_limit-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.weak_limit_mass_bound-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.codim_zero-a1.blowup_eval-a1.dilation_ball-a1"
+  ]
+}
