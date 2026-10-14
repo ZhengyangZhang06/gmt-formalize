@@ -7063,6 +7063,56 @@ theorem Submission.dtc_bc_tc_cl_foundations : (∀ (P n : ℕ) (U : Set (Euclid 
       fun E ω hE => by rw [hset E ω hE, Measure.restrict_zero, integral_zero_measure, add_zero]
     exact ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hB, hrestr.trans hRB, hae⟩
 
+/-- **Simon 6.2–6.3: boundary rectifiability `BR_P(d)` from the closure theorem `CL_P(d)`**
+(`d + 1 < P`).  If `R ∈ 𝒟_{d+1}(U)` is integer multiplicity and `M_W(∂R) < ∞` for every open
+`W ⊂⊂ U`, then `∂R` is integer multiplicity.  By the local criterion (IML)(1) of the sibling
+foundations it suffices to treat a neighbourhood of each `x₀ ∈ U`.  Slicing by `|· − x₀|` gives
+`r > 0` with `B̄_r(x₀) ⊆ U` and an integer multiplicity `R' = R ⌞ B_r(x₀)` supported in
+`B̄_r(x₀)`, with `M(R'), M(∂R') < ∞` and `∂R' = ∂R` on forms supported in `B_r(x₀)`.  Its
+extension `Y` by zero to `ℝ^P` is integer multiplicity, has compact support, `M(Y) ≤ M(R')` and
+`M(∂Y) ≤ M(∂R')`, so the deformation theorem and `CL_P(d)` make `∂Y` integer multiplicity.  As
+`(∂R)|_{B_r(x₀)} = (∂Y)|_{B_r(x₀)}`, (IML)(2) concludes. -/
+theorem Submission.dtc_bc_tc_cl_boundary_isIntegerMultiplicity : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), m + 1 < P → ∃ c : NNReal, 1 ≤ c ∧ ∀ (ρ : ℝ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 0 < ρ → IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞ → T.boundary.mass < ∞ → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity Q.boundary ∧ IsIntegerMultiplicity R ∧ T - Q - S = R.boundary ∧ (Q = 0 ∨ ENNReal.ofReal (ρ ^ (m + 1)) ≤ Q.mass) ∧ Q.mass ≤ c * T.mass ∧ Q.boundary.mass ≤ c * T.boundary.mass ∧ R.mass ≤ c * ENNReal.ofReal ρ * T.mass ∧ S.mass ≤ c * ENNReal.ofReal ρ * T.boundary.mass ∧ Q.support ∪ R.support ⊆ thickening (3 * Real.sqrt P * ρ) T.support ∧ Q.boundary.support ∪ S.support ⊆ thickening (3 * Real.sqrt P * ρ) T.boundary.support) → ∀ (P d : ℕ), d + 1 < P → (∀ (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) := by
+  intro hMR hIMC _hVO hDTr P d hdP hCL U R hU hR hbd
+  -- (REP) and the locality of integer multiplicity (IML) from the sibling foundations
+  obtain ⟨hREP, -, hIML⟩ := Submission.dtc_bc_tc_cl_foundations
+  -- (IML)(1): `∂R` has locally finite mass, so it suffices to work near each `x₀ ∈ U`
+  refine (hIML hREP hMR hIMC P d U R.boundary hU).1 hbd ?_
+  intro x₀ hx₀
+  -- slicing: `R' = R ⌞ B_r(x₀)` with `∂R' = ∂R` on forms supported in `B_r(x₀)`
+  obtain ⟨r, hr, hrU, R', hR'im, hR'spt, hR'm, hR'bm, hagree⟩ :=
+    Submission.dtc_bc_tc_cl_bim_slice_localization hREP hIMC.2.1 hIMC.2.2.2
+      Submission.cmc_slice_mass_bounds P d U R x₀ hU hR hbd hx₀
+  -- the extension `Y` of `R'` by zero to `ℝ^P`
+  obtain ⟨Y, hYim, hYres, hYspt, hYm, hYbm⟩ :=
+    Submission.cmc_fc_extend_to_univ hIMC.2.1 hMR P d U (closedBall x₀ r) R' hU
+      (isCompact_closedBall x₀ r) hrU hR'im hR'spt
+  -- `spt Y = ℝ^P ∖ Z(Y)` is closed and lies in the compact `B̄_r(x₀)`
+  have hYcpt : IsCompact Y.support := by
+    have hYclosed : IsClosed Y.support := by
+      rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff]
+      exact Y.isOpen_zeroRegion.isClosed_compl
+    exact (isCompact_closedBall x₀ r).of_isClosed_subset hYclosed hYspt
+  -- the deformation theorem and `CL_P(d)` in `ℝ^P`: `∂Y` is integer multiplicity
+  have hYb : IsIntegerMultiplicity Y.boundary :=
+    Submission.dtc_bc_tc_cl_bim_boundary_im_of_compact_support hDTr P d hdP hCL Y hYim hYcpt
+      (hYm.trans_lt hR'm) (hYbm.trans_lt hR'bm)
+  have hball : ball x₀ r ⊆ U := ball_subset_closedBall.trans hrU
+  refine ⟨r, hr, hball, ?_⟩
+  -- `∂R = ∂R' = ∂Y` on forms supported in `B_r(x₀)`
+  have key : R.boundary.restrictDomain hball =
+      Y.boundary.restrictDomain (subset_univ (ball x₀ r)) := by
+    ext ω
+    have hω : tsupport ((testFormOnInclusion hball d ω : TestFormOn U d) :
+        DifferentialForm (Euclid P) d) ⊆ ball x₀ r := ω.property.2
+    rw [GeometricCurrentOn.restrictDomain_apply, GeometricCurrentOn.restrictDomain_apply,
+      ← hagree (testFormOnInclusion hball d ω) hω, ← hYres]
+    rfl
+  -- (IML)(2) in `ℝ^P`
+  rw [key]
+  exact (hIML hREP hMR hIMC P d univ Y.boundary isOpen_univ).2 (ball x₀ r) (subset_univ _)
+    isOpen_ball hYb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
