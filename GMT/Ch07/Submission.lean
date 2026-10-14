@@ -3228,6 +3228,28 @@ theorem Submission.cbr_ci_bl_db_weight_le_enorm : ∀ (P n : ℕ) (ζx ζa : Mul
     _ = ENNReal.ofReal t₀ + ENNReal.ofReal C * ‖d‖ₑ := by
       rw [ENNReal.ofReal_add ht₀ (mul_nonneg hC (norm_nonneg d)), ENNReal.ofReal_mul hC,
         ofReal_norm d]
+/-- **Mass of a Borel set under a pointwise bound on the density** (step 2, mass of balls, in the
+proof of `Submission.cbr_ci_bl_density_bounds`).  Let `μ = θ Hⁿ⌞M` with `M`, `B` Borel, `B ⊆ B'`,
+`K ≠ ∞` and `θ ≤ c + K g` on `M`.  Since `B` is Borel, `μ(B) = ∫_{M∩B} θ dHⁿ`.  Integrating the
+bound over `M ∩ B` gives `μ(B) ≤ c Hⁿ(M ∩ B) + K ∫_{M∩B} g dHⁿ`, and `M ∩ B ⊆ M ∩ B'`
+enlarges the last integral. -/
+theorem Submission.cbr_ci_bl_db_withDensity_le : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M B B' : Set (Euclid P)) (θ : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞) (c K : ℝ≥0∞), MeasurableSet M → MeasurableSet B → B ⊆ B' → K ≠ ∞ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, ENNReal.ofReal (θ x) ≤ c + K * g x) → μ B ≤ c * μHE[n] (M ∩ B) + K * ∫⁻ x in M ∩ B', g x ∂μHE[n] := by
+  intro P n μ M B B' θ g c K hM hB hBB' hK hμ hθ
+  -- Step 1: `μ(B) = ∫⁻_{M ∩ B} ofReal θ dHⁿ`
+  have hμB : μ B = ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n] := by
+    rw [hμ, withDensity_apply _ hB, Measure.restrict_restrict hB, inter_comm]
+  rw [hμB]
+  calc ∫⁻ x in M ∩ B, ENNReal.ofReal (θ x) ∂μHE[n]
+      ≤ ∫⁻ x in M ∩ B, (c + K * g x) ∂μHE[n] :=
+        -- Step 2: integrate the pointwise bound over the Borel set `M ∩ B`
+        setLIntegral_mono' (hM.inter hB) fun x hx => hθ x hx.1
+    _ = c * μHE[n] (M ∩ B) + K * ∫⁻ x in M ∩ B, g x ∂μHE[n] := by
+        -- Step 3: split off the constant and factor out the finite `K`
+        rw [lintegral_add_left measurable_const, setLIntegral_const, lintegral_const_mul' K g hK]
+    _ ≤ c * μHE[n] (M ∩ B) + K * ∫⁻ x in M ∩ B', g x ∂μHE[n] := by
+        -- Step 4: enlarge `M ∩ B` to `M ∩ B'` in the `g`-integral
+        gcongr c * μHE[n] (M ∩ B) + K * ?_
+        exact lintegral_mono_set (inter_subset_inter_right M hBB')
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
