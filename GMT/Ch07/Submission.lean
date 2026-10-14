@@ -451,6 +451,33 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The constant `2`-covector `a♭ ∧ e♭`: `f(v) = ⟨a, v₀⟩⟨e, v₁⟩ − ⟨a, v₁⟩⟨e, v₀⟩` is linear in
+each entry (each product has exactly one factor depending on `vᵢ`) and vanishes when `v₀ = v₁`, so
+it is an alternating map.  By Cauchy–Schwarz `|f(v)| ≤ 2‖a‖‖e‖‖v₀‖‖v₁‖`, so
+`AlternatingMap.mkContinuous` turns it into a continuous alternating map, i.e. an element of
+`Covector (Euclid P) 2`, with the same values. -/
+theorem Submission.idtp_cse_bml_wedge_covector : ∀ (P : ℕ) (a e : Euclid P), ∃ β : Covector (Euclid P) 2, ∀ v : Fin 2 → Euclid P, β v = inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0) := by
+  intro P a e
+  -- `f` is multilinear (two cases `i = 0, 1`) and alternating (`v₀ = v₁` forces `f v = 0`)
+  let f : Euclid P [⋀^Fin 2]→ₗ[ℝ] ℝ :=
+    { toFun := fun v => inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)
+      map_update_add' := fun v i x y => by
+        fin_cases i <;> simp [inner_add_right] <;> ring
+      map_update_smul' := fun v i c x => by
+        fin_cases i <;> simp [real_inner_smul_right] <;> ring
+      map_eq_zero_of_eq' := fun v i j hij hne => by
+        fin_cases i <;> fin_cases j <;> simp_all }
+  -- bound `‖f v‖ ≤ 2‖a‖‖e‖ ∏ᵢ ‖vᵢ‖` (triangle inequality and Cauchy–Schwarz)
+  refine ⟨f.mkContinuous (2 * ‖a‖ * ‖e‖) fun v => ?_, fun v => rfl⟩
+  rw [Fin.prod_univ_two]
+  calc ‖f v‖ = ‖inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)‖ := rfl
+    _ ≤ ‖inner ℝ a (v 0)‖ * ‖inner ℝ e (v 1)‖ + ‖inner ℝ a (v 1)‖ * ‖inner ℝ e (v 0)‖ := by
+      rw [← norm_mul, ← norm_mul]
+      exact norm_sub_le _ _
+    _ ≤ (‖a‖ * ‖v 0‖) * (‖e‖ * ‖v 1‖) + (‖a‖ * ‖v 1‖) * (‖e‖ * ‖v 0‖) := by
+      gcongr <;> exact norm_inner_le_norm _ _
+    _ = 2 * ‖a‖ * ‖e‖ * (‖v 0‖ * ‖v 1‖) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
