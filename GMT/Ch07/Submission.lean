@@ -651,6 +651,50 @@ theorem Submission.cbr_ci_pw_bv_pairing_identity : ∀ (n : ℕ) (S : Set (Eucli
   simp_rw [mul_sub]
   rw [integral_sub hubg hconv]
 
+/-- **Pairing of `u − u ∗ φ` with a test function, for `u` of bounded variation** (Claim A of the
+`BV` mollifier estimate; mollification of `BV` functions as in Simon, Ch. 2, §2).  Let `φ ≥ 0` be
+smooth with `tsupport φ ⊆ B_s(0)` and `∫ φ = 1`, let `u` be integrable on `B_{2R}(0)` with
+`|∫_{B_{2R}(0)} u(y) Df(y)(z) dy| ≤ V‖z‖M` for all smooth `f` with compact support in `B_{2R}(0)`
+and `|f| ≤ M`, and let `2s < R`.  If `g` is smooth with compact support in `B_{R+s}(0)` and
+`|g| ≤ 1`, then `|∫ (u − w) g| ≤ sV`, where `w(x) = ∫_{B_{2R}(0)} u(y) φ(x − y) dy`.  By Fubini,
+`∫ (u − w) g = ∫ φ(z) I(z) dz` with `I(z) = ∫_{B_{2R}(0)} u(y) (g(y) − g(y + z)) dy`; if
+`φ(z) ≠ 0` then `‖z‖ < s < R − s`, so `g` and its translate by `z` are supported in `B_{2R}(0)` and
+the translation estimate gives `|I(z)| ≤ V‖z‖ ≤ sV`; integrate against `φ`. -/
+theorem Submission.cbr_ci_pw_bv_smooth_test_bound : ∀ (n : ℕ) (R s V : ℝ) (φ u g : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + s) → (∀ x, |g x| ≤ 1) → |∫ x, (u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) * g x| ≤ s * V := by
+  intro n R s V φ u g _hR hs h2s hV hφ hφ0 hφs hφ1 hu hvar hg hgc hgs hgb
+  -- `φ` has compact support, and `g` vanishes off `B_{2R}(0)` since `R + s ≤ 2R`
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  have hgS : ∀ x, x ∉ ball (0 : Euclid n) (2 * R) → g x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun hx' => hx (ball_subset_ball (by linarith) (hgs hx'))
+  -- Fubini: `∫ (u - w) g = ∫ φ(z) ∫_{B_{2R}(0)} u(y) (g(y) - g(y + z)) dy dz`
+  rw [Submission.cbr_ci_pw_bv_pairing_identity n (ball 0 (2 * R)) φ u g measurableSet_ball
+    hφ.continuous hφc hφ1 hu hg.continuous hgc hgS]
+  -- `|φ(z) I(z)| ≤ φ(z) sV`: trivial if `φ(z) = 0`, else `‖z‖ < s` and translate by `z`
+  have hbound : ∀ z, ‖φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))‖ ≤
+      φ z * (s * V) := by
+    intro z
+    by_cases hz : φ z = 0
+    · simp [hz]
+    have hzs : ‖z‖ < s := mem_ball_zero_iff.1 (hφs (subset_tsupport φ hz))
+    have hT := Submission.cbr_ci_pw_bv_translate_test n (2 * R) V 1 u g z hu hvar hg hgc
+      (hgs.trans (ball_subset_ball (by linarith))) hgb
+    have hneg : ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z)) =
+        -∫ y in ball (0 : Euclid n) (2 * R), u y * (g (y + z) - g y) := by
+      rw [← integral_neg]; congr 1; funext y; ring
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg (hφ0 z), hneg, abs_neg]
+    refine mul_le_mul_of_nonneg_left (hT.trans ?_) (hφ0 z)
+    linarith [mul_le_mul_of_nonneg_left hzs.le hV]
+  -- integrate against `φ`, using `∫ φ = 1`
+  have hφi : Integrable φ := hφ.continuous.integrable_of_hasCompactSupport hφc
+  calc |∫ z, φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))|
+      = ‖∫ z, φ z * ∫ y in ball (0 : Euclid n) (2 * R), u y * (g y - g (y + z))‖ :=
+        (Real.norm_eq_abs _).symm
+    _ ≤ ∫ z, φ z * (s * V) :=
+        norm_integral_le_of_norm_le (hφi.mul_const _) (Eventually.of_forall hbound)
+    _ = s * V := by rw [integral_mul_const, hφ1, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
