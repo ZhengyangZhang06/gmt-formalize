@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dec0e4bcdc62b9f76b8de0c965d499cadf89da913a9942a55c6faeae770c20e4",
+  "git_delta": {
+    "base_commit": "4698b532b3c36d1086c9596cf0e23cbcdd045156",
+    "candidate_commit": "a4af12f66acf3a42d9d33c47133d048396bfbe21",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_good_radius",
+    "diff_sha256": "7269064a250085512fcbb7ec1aa624a433331a70d9ead02d06c430cf552912cd",
+    "source_sha256": "de0bfd4753cbabb3566a06253c4407ac3893a35a1c5c723602c350d379866a82",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_good_radius",
+      "statement": "∀ (P : ℕ) (μ : ℕ → Measure (Euclid P)) (r₀ : ℝ) (Λ₀ : NNReal), (∀ (j : ℕ) (r : ℝ), μ j (ball (0 : Euclid P) r) < ∞) → (∀ j, μ j (ball (0 : Euclid P) (r₀ + 1)) ≤ (Λ₀ : ℝ≥0∞)) → ∃ t₀ ∈ Ioo r₀ (r₀ + 1), ∃ (φ : ℕ → ℕ) (C : NNReal), StrictMono φ ∧ ∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0) ≤ (C : ℝ≥0∞)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
