@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "poincar|median|BVPoincare|BVExtension|integral_div|divergence",
+        "poincare inequality|poincaré inequality",
+        "integral_smul_fderiv_eq_neg_fderiv_smul_of_integrable|contDiff_convolution_(left|right)|hasFDerivAt_convolution_(left|right)|trace_eq_sum_inner|volume_preserving_ofLp|exists_least_of_bdd|setIntegral_comp_smul_of_pos|volume_preserving_piFinSuccAbove|exists_hasCompactSupport_integral_sub_le",
+        "dimred_mbl_dt_cbm",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cube-bv-independent-audit-b657g67o/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmdtcbm/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cube-bv-independent-audit-b657g67o/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/LineDeriv/IntegrationByParts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Int/LeastGreatest.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b452cdcca2/parent-child-handoff.json",
+        "/tmp/cube-bv-independent-audit-b657g67o/Types.lean",
+        "/tmp/cube-bv-independent-audit-b657g67o/LibraryAxioms.lean",
+        "/tmp/dmdtcbm/lean/Assembly.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest. Ch02 supplies unproved BV specifications, and the stated Mathlib Poincaré search found no match. The required analytic primitives exist; the checked library lemmas use only propext, Classical.choice and Quot.sound. All seven exact strings pass both validators and independently elaborate as propositions in the comparator scope without child implementations. Smoothness orders, Euclidean norms, volume, trace coercions and real coefficients have the intended meanings; no Matrix/IsUnit construction occurs. All proposed names are bare, distinct and unreserved. Dependencies are correctly directed and acyclic. The seven-way split is appropriate: five foundational facts support two limit arguments, and every child contributes directly or transitively to this selected parent. The supplied assembly was checked against the exact handoff and recompiled successfully with only standard axioms, establishing the frozen parent from the child contracts."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_div_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match all C¹ and support hypotheses. Compact support ensures derivative integrability; integration by parts against 1, the orthonormal trace identity and restriction to Q₁ prove the exact conclusion without circularity."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers every δ>0. Smoothing the normalized gradient produces an admissible test field with the required support margin; the signed Fubini identity proves the gradient bound. L¹ contraction and compactly supported continuous approximation give the stated sequence. V≥0 handles empty cubes."
+    },
+    {
+      "key": "smooth_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The double-integral statement and constant match exactly. Segment FTC, the two affine substitutions and their Jacobian bounds yield the factor 2ⁿ√n s^(n+1); dropping s^(n+1)≤1 proves the contract. The empty-cube case is covered."
+    },
+    {
+      "key": "bv_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uses precisely smooth_approx and smooth_poincare. Product integrability justifies the L¹ error comparison, and the two dominated-convergence passages establish the full-cube bound. Choosing the unit-volume mean and using V≥0 gives the exact claimed constant."
+    },
+    {
+      "key": "integer_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integer-valued and integrability hypotheses match. The measurable-representative argument handles distribution sets correctly. The least integer quantile exists, its two half-measure properties imply minimality against every real constant, and the sign cases prove the size bound."
+    },
+    {
+      "key": "smooth_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All regularity, norm and δ hypotheses match. Coordinate FTC and Fubini establish the flux identity; averaging each of the 2n faces over a side of length at least 1/2 yields exactly the stated constants. Integrability and the n=1 case are addressed."
+    },
+    {
+      "key": "bv_trace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uses precisely smooth_approx and smooth_trace. Continuity bounds div G on the closed cube and makes w·div G integrable. L¹ convergence at fixed δ, followed by dominated convergence over expanding cubes, proves the exact estimate for every bounded C¹ field."
+    }
+  ],
+  "required_changes": []
+}
