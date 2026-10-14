@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The action of `τ(M, θ, ξ)` is continuous under uniform convergence on a compact set carrying
+`M`** (Simon 6.3.1 (‡); used to extend push-forwards in the dimension reduction argument).  Let
+`R = (M, θ, ξ)` be a triple in `U`, `K ⊆ U` compact with `Hⁿ(M \ K) = 0`, and `hⱼ → h` uniformly
+on `K`, all continuous.  Then `R.action hⱼ → R.action h`.
+
+With `μ = Hⁿ⌞M`: `μ`-a.e. point lies in `K`; `|ξ(x)(α)| ≤ ‖α‖` `μ`-a.e. (orthonormal `τ`);
+`θ` is `μ`-integrable since `μ = Hⁿ⌞(M ∩ K)`; with `‖h‖ ≤ B` on `K` and eventually
+`‖hⱼ − h‖ < 1` on `K`, dominated convergence with bound `(B + 1) θ` applies. -/
+theorem Submission.dimred_mbl_pf_ext_action_tendsto : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (hs : ℕ → Euclid P → Covector (Euclid P) n) (h : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → (∀ j, Continuous (hs j)) → Continuous h → TendstoUniformlyOn hs h atTop K → Tendsto (fun j => R.action (hs j)) atTop (𝓝 (R.action h)) := by
+  intro P n U K R hs h hK hKU hnull hsc hc hu
+  -- (1) `μ`-a.e. point lies in `K`
+  have hμK : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null ?_ hnull
+    exact fun x hx => ⟨hx.2, hx.1⟩
+  -- (2) orientation bound `|ξ(x)(α)| ≤ ‖α‖`, from `ξ(x)(α) = ±α(τ)` with `τ` orthonormal
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n,
+      ‖R.orient x α‖ ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx α
+    obtain ⟨Q, -, τ, hτ, -, hsign⟩ := hx
+    have hτα : ‖α τ‖ ≤ ‖α‖ := (α.le_opNorm τ).trans_eq (by simp [hτ.1])
+    rcases hsign with hξα | hξα
+    · rw [hξα α]
+      exact hτα
+    · rw [hξα α, norm_neg]
+      exact hτα
+  -- (3) `θ` is `μ`-integrable, as `μ = Hⁿ⌞(M ∩ K)`
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hμ : μHE[n].restrict R.carrier = μHE[n].restrict (R.carrier ∩ K) := by
+    refine Measure.restrict_congr_set (ae_eq_set.mpr ⟨?_, ?_⟩)
+    · rwa [Set.sdiff_self_inter]
+    · refine measure_mono_null ?_ measure_empty
+      exact fun x hx => hx.2 hx.1.1
+  have hθi : Integrable (fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, hμ]
+    simp only [Real.enorm_natCast]
+    exact (R.locallyIntegrable_mult K hK hKU).lt_top
+  -- (4) `θ ξ(g)` is `μ`-a.e. strongly measurable for continuous `g`
+  have hmeas : ∀ g : Euclid P → Covector (Euclid P) n, Continuous g →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (g x))
+        (μHE[n].restrict R.carrier) := fun g hg =>
+    hθm.aestronglyMeasurable.mul
+      (Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+        isBoundedBilinearMap_apply.continuous R.aestronglyMeasurable_orient
+        hg.aestronglyMeasurable)
+  -- (5) `‖h‖ ≤ B` on `K`, and eventually `‖hⱼ − h‖ < 1` on `K`
+  obtain ⟨B, hB⟩ := hK.exists_bound_of_continuousOn hc.continuousOn
+  have hu1 := Metric.tendstoUniformlyOn_iff.mp hu 1 one_pos
+  -- (6) dominated convergence with bound `(B + 1) θ`
+  simp only [IMRep.action]
+  refine tendsto_integral_filter_of_dominated_convergence (fun x => (B + 1) * (R.mult x : ℝ))
+    (Eventually.of_forall fun j => hmeas (hs j) (hsc j)) ?_ (hθi.const_mul (B + 1)) ?_
+  · filter_upwards [hu1] with j hj
+    filter_upwards [hμK, hξ] with x hxK hxξ
+    have hjx : ‖hs j x‖ ≤ B + 1 :=
+      (norm_le_insert' (hs j x) (h x)).trans (add_le_add (hB x hxK) (by
+        rw [← dist_eq_norm, dist_comm]
+        exact (hj x hxK).le))
+    rw [norm_mul, Real.norm_natCast, mul_comm (B + 1)]
+    exact mul_le_mul_of_nonneg_left ((hxξ _).trans hjx) (Nat.cast_nonneg _)
+  · filter_upwards [hμK] with x hxK
+    exact (((R.orient x).continuous.tendsto _).comp (hu.tendsto_at hxK)).const_mul _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

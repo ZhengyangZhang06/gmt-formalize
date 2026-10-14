@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8b340725b2095a4adff92a2f2c17a1b1d3ea48c607bd1de4ea02fcdd065498b8",
+  "git_delta": {
+    "base_commit": "a8037a96885f134a6bf46c694dadae829a36772d",
+    "candidate_commit": "0d8766c6b88f011b3972cbc357959d7e4f198707",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pf_ext_action_tendsto",
+    "diff_sha256": "71d8ebae76a00337071c2adfbcf5d0d1dbd7d8d2f00afabd519ebf87f04f11c5",
+    "source_sha256": "f4117e231eaaf1b27b599c5c9dd167d788b6b57d9e5b3eac44057e5d47a3d2a2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_ext_action_tendsto",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (hs : ℕ → Euclid P → Covector (Euclid P) n) (h : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → (∀ j, Continuous (hs j)) → Continuous h → TendstoUniformlyOn hs h atTop K → Tendsto (fun j => R.action (hs j)) atTop (𝓝 (R.action h))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
