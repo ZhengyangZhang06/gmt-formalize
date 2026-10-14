@@ -585,6 +585,18 @@ theorem Submission.cmcdt_lpo_tk_locality : (∀ (P n : ℕ) (U : Set (Euclid P))
   rw [map_sub X.toCurrent] at h0
   exact sub_eq_zero.mp h0
 
+/-- **Current toolkit** (Simon 6.2.1–2.12), for currents in `ℝᴺ`.  Assume (VO): a current
+kills every test form supported off its support; and (REP): a current of locally finite mass
+is integration against a measure `μ` with `M_W(T) = μ(W)` and a pointwise bounded `ξ`.  Then:
+(MSB) `|X(ψ)| ≤ c M(X)` if `M(X) < ∞` and `|ψ| ≤ c` on `spt X`; (BC) a linear `T₀` with
+`|T₀(ω)| ≤ C c` whenever `|ω| ≤ c` is a current of mass `≤ C`; (SB) `spt ∂X ⊆ spt X`;
+(LOC) `X(η) = X(η')` if `η = η'` on an open set containing `spt X`.  The four parts are
+independent: (MSB) uses (VO) and (REP), (LOC) uses only (VO), and (BC), (SB) use neither. -/
+theorem Submission.cmcdt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal) ∧ (∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C) ∧ (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), X.boundary.support ⊆ X.support) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η' :=
+  fun hVO hREP => ⟨Submission.cmcdt_lpo_tk_mass_support_bound hVO hREP,
+    Submission.cmcdt_lpo_tk_bounded_current, Submission.cmcdt_lpo_tk_boundary_support_subset,
+    Submission.cmcdt_lpo_tk_locality hVO⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
