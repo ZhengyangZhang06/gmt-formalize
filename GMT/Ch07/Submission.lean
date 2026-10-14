@@ -1050,6 +1050,125 @@ theorem dor_lmb_fcd_cp_coordinate_step : ∀ (m : ℕ) (v : Euclid (m + 1) → �
         exact Submission.dor_lmb_fcd_cp_slice_integral m δ k
           (fun p => |fderiv ℝ v p (EuclideanSpace.single k 1)|) hI1
     _ = _ := by ring
+/-- **Poincaré inequality on the cube `Q_δ = (δ, 1 − δ)^{m+1}` for `C¹` functions** (the "usual
+Poincaré inequality for smooth functions" invoked in Simon Ch. 2, proof of Lemma 2.7, here on a
+cube of side `1 − 2δ`):
+`∫_Q ∫_Q |v(x) − v(y)| dy dx ≤ (m + 1)(1 − 2δ) Lⁿ(Q) ∫_Q ‖Dv‖`.  Along the coordinate path from
+`x` to `y`, `v x − v y` telescopes into the `m + 1` coordinate steps bounded by
+`dor_lmb_fcd_cp_coordinate_step`; every integrand is continuous on the compact cube
+`[δ, 1 − δ]^{m+1} ⊇ Q`, hence integrable, and `|Dv(x) eₖ| ≤ ‖Dv(x)‖`. -/
+theorem dor_lmb_fcd_cp_smooth_poincare : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → δ < 1 / 2 → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |v x - v y| ≤ ((m : ℝ) + 1) * (1 - 2 * δ) * (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ‖fderiv ℝ v x‖ := by
+  intro m v δ hv hδ0 hδ
+  -- Step 1: telescoping along the coordinate path `W₀ = x, …, W_{m+1} = y`
+  have htel : ∀ x y : Euclid (m + 1), v x - v y = ∑ k : Fin (m + 1),
+      (v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))) := by
+    intro x y
+    set W : ℕ → Euclid (m + 1) :=
+      fun n => WithLp.toLp 2 (fun j => if (j : ℕ) < n then y j else x j) with hW
+    have h0 : W 0 = x := by
+      simp [hW]
+    have hN : W (m + 1) = y := by
+      have hlt : ∀ j : Fin (m + 1), (j : ℕ) < m + 1 := fun j => j.is_lt
+      simp only [hW, hlt, ite_true]
+    have hk : ∀ k : Fin (m + 1),
+        v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+          v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j)) = v (W k) - v (W (k + 1)) := by
+      intro k
+      have e1 : (fun j : Fin (m + 1) => if j < k then y j else x j) =
+          (fun j : Fin (m + 1) => if (j : ℕ) < (k : ℕ) then y j else x j) := by
+        funext j
+        simp only [Fin.lt_def]
+      have e2 : (fun j : Fin (m + 1) => if j ≤ k then y j else x j) =
+          (fun j : Fin (m + 1) => if (j : ℕ) < (k : ℕ) + 1 then y j else x j) := by
+        funext j
+        simp only [Fin.le_iff_val_le_val, Nat.lt_succ_iff]
+      rw [e1, e2]
+    rw [Finset.sum_congr rfl (fun k _ => hk k),
+      Fin.sum_univ_eq_sum_range (fun n => v (W n) - v (W (n + 1))) (m + 1),
+      Finset.sum_range_sub', h0, hN]
+  have habs : ∀ x y : Euclid (m + 1), |v x - v y| ≤ ∑ k : Fin (m + 1),
+      |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| := by
+    intro x y
+    rw [htel x y]
+    exact Finset.abs_sum_le_sum_abs _ _
+  -- Step 2: integrability; `Q_δ` lies in the compact cube `K = [δ, 1 − δ]^{m+1}`
+  set Q : Set (Euclid (m + 1)) := {y | ∀ i, δ < y i ∧ y i < 1 - δ}
+  set K : Set (Euclid (m + 1)) := {y | ∀ i, δ ≤ y i ∧ y i ≤ 1 - δ}
+  have hQK : Q ⊆ K := fun y hy i => ⟨(hy i).1.le, (hy i).2.le⟩
+  have hKc : IsCompact K := by
+    have hKeq : K = WithLp.toLp 2 '' Set.pi univ (fun _ : Fin (m + 1) => Icc δ (1 - δ)) := by
+      ext y
+      constructor
+      · intro hy
+        exact ⟨WithLp.ofLp y, fun i _ => hy i, rfl⟩
+      · rintro ⟨z, hz, rfl⟩ i
+        exact hz i (mem_univ i)
+    rw [hKeq]
+    exact (isCompact_univ_pi fun _ => isCompact_Icc).image (PiLp.continuous_toLp 2 _)
+  have hint : ∀ g : Euclid (m + 1) → ℝ, Continuous g → IntegrableOn g Q :=
+    fun g hg => (hg.continuousOn.integrableOn_compact hKc).mono_set hQK
+  have hint2 : ∀ F : Euclid (m + 1) × Euclid (m + 1) → ℝ, Continuous F →
+      Integrable F ((volume.restrict Q).prod (volume.restrict Q)) := by
+    intro F hF
+    rw [Measure.prod_restrict]
+    exact (hF.continuousOn.integrableOn_compact (hKc.prod hKc)).mono_set (prod_mono hQK hQK)
+  -- the coordinate points depend continuously on `(x, y)`
+  have hlt : ∀ k : Fin (m + 1), Continuous fun p : Euclid (m + 1) × Euclid (m + 1) =>
+      (WithLp.toLp 2 (fun j => if j < k then p.2 j else p.1 j) : Euclid (m + 1)) := by
+    intro k
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun j => ?_)
+    exact continuous_if_const _ (fun _ => (PiLp.continuous_apply 2 _ j).comp continuous_snd)
+      fun _ => (PiLp.continuous_apply 2 _ j).comp continuous_fst
+  have hle : ∀ k : Fin (m + 1), Continuous fun p : Euclid (m + 1) × Euclid (m + 1) =>
+      (WithLp.toLp 2 (fun j => if j ≤ k then p.2 j else p.1 j) : Euclid (m + 1)) := by
+    intro k
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun j => ?_)
+    exact continuous_if_const _ (fun _ => (PiLp.continuous_apply 2 _ j).comp continuous_snd)
+      fun _ => (PiLp.continuous_apply 2 _ j).comp continuous_fst
+  have hF0 : Continuous fun p : Euclid (m + 1) × Euclid (m + 1) => |v p.1 - v p.2| :=
+    ((hv.continuous.comp continuous_fst).sub (hv.continuous.comp continuous_snd)).abs
+  have hFk : ∀ k : Fin (m + 1), Continuous fun p : Euclid (m + 1) × Euclid (m + 1) =>
+      |v (WithLp.toLp 2 (fun j => if j < k then p.2 j else p.1 j)) -
+        v (WithLp.toLp 2 (fun j => if j ≤ k then p.2 j else p.1 j))| :=
+    fun k => ((hv.continuous.comp (hlt k)).sub (hv.continuous.comp (hle k))).abs
+  have hfac : 0 ≤ (1 - 2 * δ) * (volume Q).toReal :=
+    mul_nonneg (by linarith) ENNReal.toReal_nonneg
+  -- Steps 3–4: integrate the telescoping bound, apply `coordinate_step`, and `|Dv eₖ| ≤ ‖Dv‖`
+  calc ∫ x in Q, ∫ y in Q, |v x - v y|
+      ≤ ∫ x in Q, ∑ k : Fin (m + 1), ∫ y in Q,
+          |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+            v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| := by
+        refine integral_mono (hint2 _ hF0).integral_prod_left
+          (integrable_finsetSum _ fun k _ => (hint2 _ (hFk k)).integral_prod_left) fun x => ?_
+        have hx : ∀ k : Fin (m + 1), IntegrableOn (fun y : Euclid (m + 1) =>
+            |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+              v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))|) Q :=
+          fun k => hint _ ((hFk k).comp (Continuous.prodMk_right x))
+        exact (integral_mono (hint _ (hF0.comp (Continuous.prodMk_right x)))
+          (integrable_finsetSum _ fun k _ => hx k) (habs x)).trans_eq
+          (integral_finsetSum _ fun k _ => hx k)
+    _ = ∑ k : Fin (m + 1), ∫ x in Q, ∫ y in Q,
+          |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+            v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| :=
+        integral_finsetSum _ fun k _ => (hint2 _ (hFk k)).integral_prod_left
+    _ ≤ ∑ k : Fin (m + 1), (1 - 2 * δ) * (volume Q).toReal *
+          ∫ x in Q, |fderiv ℝ v x (EuclideanSpace.single k 1)| :=
+        Finset.sum_le_sum fun k _ => Submission.dor_lmb_fcd_cp_coordinate_step m v δ k hv hδ0 hδ
+    _ ≤ ∑ _k : Fin (m + 1), (1 - 2 * δ) * (volume Q).toReal * ∫ x in Q, ‖fderiv ℝ v x‖ := by
+        refine Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_left ?_ hfac
+        have hDv : Continuous (fderiv ℝ v) := hv.continuous_fderiv one_ne_zero
+        refine integral_mono (hint _ (hDv.clm_apply continuous_const).abs) (hint _ hDv.norm)
+          fun x => ?_
+        calc |fderiv ℝ v x (EuclideanSpace.single k 1)|
+            = ‖fderiv ℝ v x (EuclideanSpace.single k 1)‖ := (Real.norm_eq_abs _).symm
+          _ ≤ ‖fderiv ℝ v x‖ * ‖EuclideanSpace.single k (1 : ℝ)‖ := (fderiv ℝ v x).le_opNorm _
+          _ = ‖fderiv ℝ v x‖ := by simp
+    _ = ((m : ℝ) + 1) * (1 - 2 * δ) * (volume Q).toReal * ∫ x in Q, ‖fderiv ℝ v x‖ := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        push_cast
+        ring
 
 end Submission
 
