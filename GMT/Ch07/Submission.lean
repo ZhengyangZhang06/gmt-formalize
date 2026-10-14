@@ -1057,6 +1057,76 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
+/-- **The radial homotopy operator on forms** (Simon Ch. 6, 2.25 and 2.30, at the level of forms;
+used for the cone over a current).  For a continuous `(m + 1)`-form `β` on `ℝᴾ` put
+`(Kβ)(x) = ∫₀¹ tᵐ ι_x β(t x) dt`, where `ι_x α = α.curryLeft x`.  Then
+`(Kβ)(x)(v) = ∫₀¹ tᵐ β(t x)(x, v) dt`, `|(Kβ)(x)| ≤ ‖x‖ c` whenever `|β| ≤ c` everywhere
+(Euclidean coefficient norm `|·|`), `(Kβ)(x) = 0` if `β` vanishes on the segment `[0, x]`, and
+`K` is additive and homogeneous in `β`.  The integrand is continuous in `t`, so evaluation at `v`
+commutes with the interval integral; the bound is Minkowski's integral inequality for `|·|`, with
+`|tᵐ ι_x β(t x)| ≤ ‖x‖ |β(t x)| ≤ ‖x‖ c` on `[0, 1]`; linearity comes from that of `curryLeft`
+and of the interval integral. -/
+theorem Submission.ecf_cc_radial_homotopy_toolkit : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), Continuous β → (∀ (x : Euclid P) (v : Fin m → Euclid P), (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) v = ∫ t in (0 : ℝ)..1, t ^ m * β (t • x) (Fin.cons x v)) ∧ (∀ (c : ℝ) (x : Euclid P), (∀ y : Euclid P, covectorEuclideanNorm (β y) ≤ c) → covectorEuclideanNorm (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) ≤ ‖x‖ * c) ∧ (∀ x : Euclid P, (∀ t ∈ Icc (0 : ℝ) 1, β (t • x) = 0) → (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) = 0) ∧ (∀ β' : DifferentialForm (Euclid P) (m + 1), Continuous β' → ∀ x : Euclid P, (∫ t in (0 : ℝ)..1, t ^ m • ((β + β') (t • x)).curryLeft x) = (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) + ∫ t in (0 : ℝ)..1, t ^ m • (β' (t • x)).curryLeft x) ∧ ∀ (c : ℝ) (x : Euclid P), (∫ t in (0 : ℝ)..1, t ^ m • ((c • β) (t • x)).curryLeft x) = c • ∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x := by
+  intro P m β hβ
+  -- Step 0: the integrand is continuous in `t`
+  have hf : ∀ γ : DifferentialForm (Euclid P) (m + 1), Continuous γ → ∀ x : Euclid P,
+      Continuous (fun t : ℝ => t ^ m • (γ (t • x)).curryLeft x) := by
+    intro γ hγ x
+    have h1 : Continuous (fun t : ℝ => γ (t • x)) := hγ.comp (continuous_id.smul continuous_const)
+    have h2 : Continuous (fun t : ℝ => (γ (t • x)).curryLeft) :=
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := m)).continuous.comp h1
+    exact (continuous_pow m).smul (h2.clm_apply continuous_const)
+  -- Step 1: evaluation at `v` commutes with the integral
+  have heval : ∀ (x : Euclid P) (v : Fin m → Euclid P),
+      (∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) v =
+        ∫ t in (0 : ℝ)..1, (t ^ m • (β (t • x)).curryLeft x) v := by
+    intro x v
+    exact ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ v).intervalIntegral_comp_comm
+      ((hf β hβ x).intervalIntegrable 0 1)).symm
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  -- (1): `(tᵐ • ι_x β(t x)) v = tᵐ * β(t x) (Fin.cons x v)` holds definitionally
+  · intro x v
+    rw [heval x v]
+    congr 1
+  -- (2): Minkowski's inequality, `|tᵐ ι_x β(t x)| ≤ ‖x‖ |β(t x)| ≤ ‖x‖ c` for `t ∈ [0, 1]`
+  · intro c x hc
+    refine Submission.cmcdt_lpo_slice_covector_bound P m _
+      (fun t => t ^ m • (β (t • x)).curryLeft x) (‖x‖ * c) (hf β hβ x) (heval x) ?_
+    intro t ht
+    rw [(Submission.rsd_mw_tfa_norm_props P m).2.1]
+    have h1 := Submission.cmcdt_lp_covector_curryLeft_norm_le P m x (β (t • x))
+    have h2 : |t ^ m| ≤ 1 := by
+      rw [abs_of_nonneg (pow_nonneg ht.1 m)]
+      exact pow_le_one₀ ht.1 ht.2
+    have h3 : ‖x‖ * covectorEuclideanNorm (β (t • x)) ≤ ‖x‖ * c :=
+      mul_le_mul_of_nonneg_left (hc _) (norm_nonneg x)
+    calc |t ^ m| * covectorEuclideanNorm ((β (t • x)).curryLeft x)
+        ≤ 1 * (‖x‖ * covectorEuclideanNorm (β (t • x))) :=
+          mul_le_mul h2 h1 (covectorEuclideanNorm_nonneg _) zero_le_one
+      _ ≤ ‖x‖ * c := by rw [one_mul]; exact h3
+  -- (3): the integrand vanishes on `uIcc 0 1 = [0, 1]`
+  · intro x hx
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : Covector (Euclid P) m)) ?_]
+    · simp
+    · intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      simp only
+      rw [hx t ht, ContinuousAlternatingMap.curryLeft_zero, zero_apply, smul_zero]
+  -- (4): additivity of `curryLeft` and of the integral of integrable functions
+  · intro β' hβ' x
+    rw [← intervalIntegral.integral_add ((hf β hβ x).intervalIntegrable 0 1)
+      ((hf β' hβ' x).intervalIntegrable 0 1)]
+    congr 1
+    funext t
+    rw [Pi.add_apply, ContinuousAlternatingMap.curryLeft_add, add_apply, smul_add]
+  -- (5): homogeneity of `curryLeft` and of the integral
+  · intro c x
+    rw [← intervalIntegral.integral_smul]
+    congr 1
+    funext t
+    rw [Pi.smul_apply, ContinuousAlternatingMap.curryLeft_smul, smul_apply, smul_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
