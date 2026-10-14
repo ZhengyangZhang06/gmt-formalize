@@ -527,6 +527,53 @@ theorem Submission.cmcdt_cbm_im_integer_median_exists : ∀ (X : Type) [Measurab
     omega
   rw [hset, probReal_compl_eq_one_sub₀ (hnm _)]
   linarith
+/-- **A median minimizes the mean absolute deviation.**  If `μ` is a probability measure, `u` is
+`μ`-integrable and `β` is a median of `u` (`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2`), then
+`∫ |u − β| dμ ≤ ∫ |u − c| dμ` for every `c`.  For `c ≥ β` take `s = {u ≤ β}`, `d = c − β`; for
+`c < β` take `s = {β ≤ u}`, `d = β − c`.  Then `|u − c| − |u − β|` equals `d` on `s` and is
+`≥ −d` off `s` (triangle inequality), so integrating `d (2·1_s − 1) ≤ |u − c| − |u − β|` gives
+`∫ |u − c| − ∫ |u − β| ≥ d (2μ(s) − 1) ≥ 0`. -/
+theorem Submission.cmcdt_cbm_im_median_minimizes : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → ∀ c : ℝ, ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+  intro X _ μ u β _ hu hge hle c
+  -- every `|u − a|` is integrable
+  have hint : ∀ a : ℝ, Integrable (fun x => |u x - a|) μ := fun a =>
+    (hu.sub (integrable_const a)).abs
+  -- key step: integrate `d (2·1_s − 1) ≤ |u − c| − |u − β|`, using `μ(s) ≥ 1/2` and `d ≥ 0`
+  have key : ∀ s : Set X, NullMeasurableSet s μ → 1 / 2 ≤ μ.real s → ∀ d : ℝ, 0 ≤ d →
+      (∀ x, s.indicator (fun _ => 2 * d) x - d ≤ |u x - c| - |u x - β|) →
+      ∫ x, |u x - β| ∂μ ≤ ∫ x, |u x - c| ∂μ := by
+    intro s hs hs2 d hd hpt
+    have hind : Integrable (s.indicator fun _ => 2 * d) μ :=
+      (integrable_const (2 * d)).indicator₀ hs
+    have h : ∫ x, (s.indicator (fun _ => 2 * d) x - d) ∂μ ≤ ∫ x, (|u x - c| - |u x - β|) ∂μ :=
+      integral_mono (hind.sub (integrable_const d)) ((hint c).sub (hint β)) hpt
+    rw [integral_sub hind (integrable_const d), integral_sub (hint c) (hint β),
+      integral_indicator₀ hs, setIntegral_const, integral_const, probReal_univ, smul_eq_mul,
+      smul_eq_mul, one_mul] at h
+    nlinarith
+  rcases le_or_gt β c with hc | hc
+  · -- `c ≥ β`: `s = {u ≤ β}`, `d = c − β`
+    refine key {x | u x ≤ β} (hu.aemeasurable.nullMeasurableSet_preimage measurableSet_Iic) hle
+      (c - β) (sub_nonneg.mpr hc) fun x => ?_
+    by_cases hx : u x ≤ β
+    · rw [indicator_of_mem (show x ∈ {x | u x ≤ β} from hx), abs_of_nonpos (by linarith),
+        abs_of_nonpos (by linarith)]
+      linarith
+    · rw [indicator_of_notMem (show x ∉ {x | u x ≤ β} from hx)]
+      have := abs_sub_le (u x) c β
+      rw [abs_of_nonneg (sub_nonneg.mpr hc)] at this
+      linarith
+  · -- `c < β`: `s = {β ≤ u}`, `d = β − c`
+    refine key {x | β ≤ u x} (hu.aemeasurable.nullMeasurableSet_preimage measurableSet_Ici) hge
+      (β - c) (sub_nonneg.mpr hc.le) fun x => ?_
+    by_cases hx : β ≤ u x
+    · rw [indicator_of_mem (show x ∈ {x | β ≤ u x} from hx), abs_of_nonneg (by linarith),
+        abs_of_nonneg (by linarith)]
+      linarith
+    · rw [indicator_of_notMem (show x ∉ {x | β ≤ u x} from hx)]
+      have := abs_sub_le (u x) c β
+      rw [abs_of_nonpos (sub_nonpos.mpr hc.le)] at this
+      linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
