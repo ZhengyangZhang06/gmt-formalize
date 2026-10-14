@@ -3761,6 +3761,261 @@ theorem Submission.dimred_mbl_pfi_param_series_imrep : ∀ (P n : ℕ) (U : Set 
       (f := fun p : ℕ × ℕ => (Rp p.1 p.2).action (ω : DifferentialForm (Euclid P) n))).mp (hR' ω)
   exact hprod.prod_fiberwise hfib
 
+/-- **Simon Ch. 6, 3.3–3.9**: the push-forward of an integer multiplicity current by a `C¹` map is
+integer multiplicity.  Let `R = (M, θ, ξ)` be an integer multiplicity triple in the open set `U`,
+`K ⊆ U` compact with `Hⁿ(M \ K) = 0`, `f` of class `C¹` on an open `O ⊇ K` with `f(K) ⊆ U`, and
+`Q(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ(x)`.  Then `Q = τ(N', θ', ξ')` in `U`.
+
+Proof sketch:
+* Replace `f` by a globally Lipschitz `C¹` map `g` with `g = f` and `Dg = Df` on `K`.
+* Up to an `Hⁿ`-null set, `M ∩ K` is the disjoint union of the bi-Lipschitz Borel pieces
+  `Gᵢ(Bᵢ)`, and `ξ(Gᵢ(u))` orients `DGᵢ(u)(ℝⁿ)` for a.e. `u ∈ Bᵢ`.  Hence
+  `Jᵢ(u) ξ(Gᵢ(u)) = ±DGᵢ(u)e₁ ∧ ⋯ ∧ DGᵢ(u)eₙ`, where `Jᵢ = J_{Gᵢ}` is the area Jacobian.
+* Put `Hᵢ = g ∘ Gᵢ`, `wᵢ = θ ∘ Gᵢ` and `ζᵢ(u)(α) = Jᵢ(u) ξ(Gᵢ(u))(α ∘ Dg(Gᵢ(u)))`.  The chain
+  rule gives `ζᵢ(u) = ±DHᵢ(u)e₁ ∧ ⋯ ∧ DHᵢ(u)eₙ`.  Since `J_{Hᵢ} ≤ Lip(g)ⁿ Jᵢ`, the series
+  `Σᵢ ∫_{Bᵢ} wᵢ ζᵢ(ω ∘ Hᵢ)` has mass at most `Lip(g)ⁿ ∫_{M ∩ K} θ dHⁿ < ∞`.  So it is represented
+  by one integer multiplicity triple.
+* By the area formula on each piece and countable additivity, its sum is `Q(ω)`.
+
+The tangent-locality hypothesis and `0 < n` are not needed. -/
+theorem Submission.dimred_mbl_pf_pushforward_isIntegerMultiplicity : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (Q : GeometricCurrentOn U n), IsOpen U → 0 < n → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → IsIntegerMultiplicity Q := by
+  intro _TL P n U K O R f Q hU _hn hK hKU hMK hO hKO hf hfK hQ
+  classical
+  -- Step 1(c): a globally Lipschitz `C¹` map `g` with `g = f`, `Dg = Df` on `K`
+  obtain ⟨g, Lg, hgC1, hgL, hgK⟩ :=
+    Submission.dimred_mbl_pfi_c1_lipschitz_cutoff P K O f hK hO hKO hf
+  have hgdiff : Differentiable ℝ g := hgC1.differentiable one_ne_zero
+  have hDgcont : Continuous (fderiv ℝ g) := hgC1.continuous_fderiv one_ne_zero
+  have hDg_le : ∀ x, ‖fderiv ℝ g x‖ ≤ (Lg : ℝ) := fun x => norm_fderiv_le_of_lipschitz ℝ hgL
+  -- Step 1(a): `M₁ = M ∩ K` is Borel, countably `n`-rectifiable, and `∫_{M₁} θ dHⁿ < ∞`
+  have hMmeas : MeasurableSet R.carrier := R.measurableSet_carrier
+  have hKmeas : MeasurableSet K := hK.isClosed.measurableSet
+  have hM1meas : MeasurableSet (R.carrier ∩ K) := hMmeas.inter hKmeas
+  have hM1rect : CountablyRectifiable n (R.carrier ∩ K) := R.rectifiable.mono inter_subset_left
+  have hθfin : ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ :=
+    R.locallyIntegrable_mult K hK hKU
+  -- Step 2: disjoint bi-Lipschitz Borel pieces `Gᵢ(Bᵢ) ⊆ M₁` covering `M₁` up to a null set
+  obtain ⟨G, B, m, hGL, hBmeas, hm, hlow, hdiff, hGBmeas, hGBsub, hdisj, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n (R.carrier ∩ K) hM1meas hM1rect
+  choose LG hLG using hGL
+  have hinj : ∀ i, InjOn (G i) (B i) := by
+    intro i a ha a' ha' h
+    have h3 : m i * ‖a - a'‖ ≤ m i * 0 := by simpa [h] using hlow i a ha a' ha'
+    have h4 : ‖a - a'‖ ≤ 0 := le_of_mul_le_mul_left h3 (hm i)
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h4)
+  -- Steps 3–4: `ξ ∘ Gᵢ` is measurable and orients `DGᵢ(u)(ℝⁿ)` for a.e. `u ∈ Bᵢ`
+  have hor := fun i => Submission.dimred_mbl_pfi_imrep_orient_along_piece P n U R (G i) (B i)
+    (LG i) (m i) hU (hLG i) (hBmeas i) (hm i) (hlow i) (hdiff i)
+    ((hGBsub i).trans inter_subset_left)
+  -- Step 5: the parametrized data `Hᵢ = g ∘ Gᵢ`, `wᵢ = θ ∘ Gᵢ`, `ζᵢ = Jᵢ (Dg ∘ Gᵢ)_# (ξ ∘ Gᵢ)`
+  set H : ℕ → Euclid n → Euclid P := fun i u => g (G i u) with hHdef
+  set w : ℕ → Euclid n → ℕ := fun i u => R.mult (G i u) with hwdef
+  set J : ℕ → Euclid n → ℝ := fun i u =>
+    Real.sqrt (((fderiv ℝ (G i) u).adjoint ∘L fderiv ℝ (G i) u).det) with hJdef
+  set ζ : ℕ → Euclid n → MultiVector P n := fun i u =>
+    J i u • (R.orient (G i u)).comp
+      (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ g (G i u))) with hζdef
+  have hHd : ∀ i, ∀ u ∈ B i, DifferentiableAt ℝ (H i) u ∧
+      fderiv ℝ (H i) u = (fderiv ℝ g (G i u)).comp (fderiv ℝ (G i) u) := by
+    intro i u hu
+    have h1 : DifferentiableAt ℝ g (G i u) := hgdiff _
+    have h2 : DifferentiableAt ℝ (G i) u := (hdiff i u hu).1
+    exact ⟨h1.comp u h2, fderiv_comp u h1 h2⟩
+  have hJmeas : ∀ i, Measurable (J i) := by
+    intro i
+    have hc : Continuous (fun A : Euclid n →L[ℝ] Euclid P =>
+        Real.sqrt ((A.adjoint ∘L A).det)) := by
+      refine Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp ?_)
+      exact isBoundedBilinearMap_comp.continuous.comp
+        ((ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid n) (F := Euclid P)).continuous.prodMk
+          continuous_id)
+    exact hc.measurable.comp (measurable_fderiv ℝ (G i))
+  have hcomp : Continuous (fun p : MultiVector P n × (Euclid P →L[ℝ] Euclid P) =>
+      p.1.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM (𝕜 := ℝ) (ι := Fin n)
+        (F := ℝ) p.2)) :=
+    isBoundedBilinearMap_comp.continuous.comp
+      (continuous_fst.prodMk
+        (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp continuous_snd))
+  have hζmeas : ∀ i, AEStronglyMeasurable (ζ i) (volume.restrict (B i)) := by
+    intro i
+    have h1 : AEStronglyMeasurable (fun u => R.orient (G i u)) (volume.restrict (B i)) :=
+      (hor i).1
+    have h2 : Continuous (fun u => fderiv ℝ g (G i u)) := hDgcont.comp (hLG i).continuous
+    have hsm : StronglyMeasurable (fun u => J i u • (h1.mk _ u).comp
+        (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ g (G i u)))) :=
+      (hJmeas i).stronglyMeasurable.smul
+        (hcomp.comp_stronglyMeasurable (h1.stronglyMeasurable_mk.prodMk h2.stronglyMeasurable))
+    refine hsm.aestronglyMeasurable.congr ?_
+    filter_upwards [h1.ae_eq_mk] with u hu
+    simp only [hζdef, hu]
+  -- `(★)` composed with `Dg`: `ζᵢ(u)(α) = ±α(DHᵢ(u)e₁, …, DHᵢ(u)eₙ)` for a.e. `u ∈ Bᵢ`
+  have hsign : ∀ i, ∀ᵐ u ∂(volume.restrict (B i)), ∃ s : ℝ, (s = 1 ∨ s = -1) ∧
+      ∀ α : Covector (Euclid P) n,
+        ζ i u α = s * α (fun j => fderiv ℝ (H i) u (EuclideanSpace.single j (1 : ℝ))) := by
+    intro i
+    filter_upwards [(hor i).2, ae_restrict_mem (hBmeas i)] with u hu huB
+    obtain ⟨s, hs, hsα⟩ := (Submission.dimred_mbl_pfi_gram_jacobian_algebra P n
+      (fderiv ℝ (G i) u)).2.2 (hdiff i u huB).2 (R.orient (G i u)) hu
+    refine ⟨s, hs, fun α => ?_⟩
+    have key := hsα (α.compContinuousLinearMap (fderiv ℝ g (G i u)))
+    rw [(hHd i u huB).2]
+    simp only [hζdef, hJdef, smul_apply, ContinuousLinearMap.comp_apply,
+      ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, smul_eq_mul]
+    rw [key]
+    simp [ContinuousAlternatingMap.compContinuousLinearMap_apply, Function.comp_def]
+  -- `J_{Hᵢ} ≤ ‖Dg‖ⁿ J_{Gᵢ} ≤ Lip(g)ⁿ J_{Gᵢ}` on `Bᵢ`
+  have hJH : ∀ i, ∀ u ∈ B i,
+      Real.sqrt (((fderiv ℝ (H i) u).adjoint ∘L fderiv ℝ (H i) u).det) ≤ (Lg : ℝ) ^ n * J i u := by
+    intro i u hu
+    rw [(hHd i u hu).2]
+    refine ((Submission.dimred_mbl_pfi_gram_jacobian_algebra P n (fderiv ℝ (G i) u)).1
+      (fderiv ℝ g (G i u))).trans ?_
+    gcongr
+    exact hDg_le _
+  -- Step 6: total mass `Σᵢ ∫_{Bᵢ} wᵢ J_{Hᵢ} ≤ Lip(g)ⁿ Σᵢ ∫_{Gᵢ(Bᵢ)} θ ≤ Lip(g)ⁿ ∫_{M₁} θ < ∞`
+  have hsum : ∑' i, ∫⁻ u in B i, (w i u : ℝ≥0∞) *
+      ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) u).adjoint ∘L fderiv ℝ (H i) u).det))
+        ∂volume ≠ ∞ := by
+    have hterm : ∀ i, ∫⁻ u in B i, (w i u : ℝ≥0∞) *
+        ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) u).adjoint ∘L fderiv ℝ (H i) u).det))
+          ∂volume ≤ ENNReal.ofReal ((Lg : ℝ) ^ n) *
+            ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+      intro i
+      have harea := Poincare.SimonGMT.Chapter02.weighted_area_formula_volume_of_injective_derivative
+        (hBmeas i) (fun x hx => (hdiff i x hx).1) (fun x hx => (hdiff i x hx).2) (hinj i)
+        (fun y => (R.mult y : ℝ≥0∞))
+      rw [finrank_euclideanSpace_fin] at harea
+      rw [harea, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+      refine setLIntegral_mono' (hBmeas i) (fun u hu => ?_)
+      rw [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp]
+      calc (w i u : ℝ≥0∞) *
+            ENNReal.ofReal (Real.sqrt (((fderiv ℝ (H i) u).adjoint ∘L fderiv ℝ (H i) u).det))
+          ≤ (w i u : ℝ≥0∞) * ENNReal.ofReal ((Lg : ℝ) ^ n * J i u) := by
+            gcongr
+            exact hJH i u hu
+        _ = ENNReal.ofReal ((Lg : ℝ) ^ n) * (ENNReal.ofReal (J i u) * (R.mult (G i u) : ℝ≥0∞)) := by
+            rw [ENNReal.ofReal_mul (by positivity)]
+            simp only [hwdef]
+            ring
+    have htot : ∑' i, ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[n] ≤
+        ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      rw [← lintegral_iUnion hGBmeas hdisj]
+      exact lintegral_mono_set (iUnion_subset hGBsub)
+    refine ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (ENNReal.ofReal_ne_top (r := (Lg : ℝ) ^ n)) hθfin) ?_
+    calc _ ≤ ∑' i, ENNReal.ofReal ((Lg : ℝ) ^ n) *
+            ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[n] := ENNReal.tsum_le_tsum hterm
+      _ = ENNReal.ofReal ((Lg : ℝ) ^ n) *
+            ∑' i, ∫⁻ y in G i '' B i, (R.mult y : ℝ≥0∞) ∂μHE[n] := ENNReal.tsum_mul_left
+      _ ≤ _ := by gcongr
+  -- `Hᵢ(Bᵢ) ⊆ g(K) = f(K) ⊆ U`
+  have himg : ∀ i, H i '' B i ⊆ U := by
+    rintro i _ ⟨u, hu, rfl⟩
+    have hx : G i u ∈ R.carrier ∩ K := hGBsub i ⟨u, hu, rfl⟩
+    show g (G i u) ∈ U
+    rw [(hgK _ hx.2).1]
+    exact hfK ⟨G i u, hx.2, rfl⟩
+  -- Steps 7–11: the parametrized series is represented by one integer multiplicity triple `R'`
+  obtain ⟨R', hR'⟩ := Submission.dimred_mbl_pfi_param_series_imrep P n U H B w ζ hU
+    (fun i => ⟨Lg * LG i, hgL.comp (hLG i)⟩) hBmeas (fun i u hu => (hHd i u hu).1) himg
+    (fun i => R.measurable_mult.comp (hLG i).continuous.measurable) hζmeas hsign hsum
+  refine ⟨R', fun ω => ?_⟩
+  -- Step 6: `Q(ω)` is the sum of the series (area formula on each piece)
+  have hωs : IsSmoothForm (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous hωs
+  obtain ⟨Bω, hBω⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+  set Φ : Euclid P → ℝ := fun x => (R.mult x : ℝ) * R.orient x
+    (((ω : DifferentialForm (Euclid P) n) (g x)).compContinuousLinearMap (fderiv ℝ g x))
+    with hΦdef
+  have hQ1 : Q ω = ∫ x in R.carrier ∩ K, Φ x ∂μHE[n] := by
+    rw [hQ ω]
+    have hae : (R.carrier : Set (Euclid P)) =ᵐ[μHE[n]] (R.carrier ∩ K : Set (Euclid P)) := by
+      rw [ae_eq_set]
+      constructor
+      · rw [sdiff_self_inter]; exact hMK
+      · rw [sdiff_eq_empty.mpr inter_subset_left]; exact measure_empty
+    rw [setIntegral_congr_set hae]
+    refine setIntegral_congr_fun hM1meas (fun x hx => ?_)
+    simp only [hΦdef, (hgK x hx.2).1, (hgK x hx.2).2]
+  have hQ2 : ∫ x in R.carrier ∩ K, Φ x ∂μHE[n] = ∫ x in ⋃ i, G i '' B i, Φ x ∂μHE[n] := by
+    apply setIntegral_congr_set
+    rw [ae_eq_set]
+    constructor
+    · exact hnull
+    · rw [sdiff_eq_empty.mpr (iUnion_subset hGBsub)]; exact measure_empty
+  -- integrability: `|Φ| ≤ sup|ω| · Lip(g)ⁿ · θ` a.e. on `M`, as `|ξ(x)(β)| ≤ ‖β‖`
+  have hUsub : (⋃ i, G i '' B i) ⊆ R.carrier :=
+    iUnion_subset fun i => (hGBsub i).trans inter_subset_left
+  have hβc : Continuous (fun x => ((ω : DifferentialForm (Euclid P) n) (g x)).compContinuousLinearMap
+      (fderiv ℝ g x)) := by
+    have := (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM (𝕜 := ℝ)
+      (ι := Fin n) (E := Euclid P) (F := Euclid P) (G := ℝ)).comp hDgcont
+    exact this.clm_apply (hωc.comp hgdiff.continuous)
+  have hξm := R.aestronglyMeasurable_orient
+  have hΦsm : StronglyMeasurable (fun x => (R.mult x : ℝ) * (hξm.mk _ x)
+      (((ω : DifferentialForm (Euclid P) n) (g x)).compContinuousLinearMap (fderiv ℝ g x))) := by
+    have hc : Continuous (fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2) :=
+      isBoundedBilinearMap_apply.continuous
+    exact (measurable_from_nat.comp R.measurable_mult).stronglyMeasurable.mul
+      (hc.comp_stronglyMeasurable (hξm.stronglyMeasurable_mk.prodMk hβc.stronglyMeasurable))
+  have hΦae : Φ =ᵐ[μHE[n].restrict R.carrier] (fun x => (R.mult x : ℝ) * (hξm.mk _ x)
+      (((ω : DifferentialForm (Euclid P) n) (g x)).compContinuousLinearMap (fderiv ℝ g x))) := by
+    filter_upwards [hξm.ae_eq_mk] with x hx
+    simp only [hΦdef, hx]
+  have hΦbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖Φ x‖ ≤ Bω * (Lg : ℝ) ^ n * (R.mult x : ℝ) := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Qx, -, τ, hτ, -, hsgn⟩ := hx
+    set β := ((ω : DifferentialForm (Euclid P) n) (g x)).compContinuousLinearMap (fderiv ℝ g x)
+    have hβτ : ‖β τ‖ ≤ ‖β‖ := by
+      have h := β.le_opNorm τ
+      simpa [hτ.norm_eq_one] using h
+    have hξβ : ‖R.orient x β‖ ≤ ‖β‖ := by
+      rcases hsgn with h | h
+      · rw [h β]; exact hβτ
+      · rw [h β, norm_neg]; exact hβτ
+    have hβle : ‖β‖ ≤ Bω * (Lg : ℝ) ^ n := by
+      refine (ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _).trans ?_
+      rw [Fintype.card_fin]
+      have h0 : 0 ≤ Bω := (norm_nonneg _).trans (hBω 0)
+      exact mul_le_mul (hBω _) (pow_le_pow_left₀ (norm_nonneg _) (hDg_le x) n)
+        (pow_nonneg (norm_nonneg _) n) h0
+    simp only [hΦdef, norm_mul, Real.norm_natCast]
+    calc (R.mult x : ℝ) * ‖R.orient x β‖ ≤ (R.mult x : ℝ) * (Bω * (Lg : ℝ) ^ n) :=
+          mul_le_mul_of_nonneg_left (hξβ.trans hβle) (Nat.cast_nonneg _)
+      _ = Bω * (Lg : ℝ) ^ n * (R.mult x : ℝ) := by ring
+  have hθint : IntegrableOn (fun x => (R.mult x : ℝ)) (R.carrier ∩ K) μHE[n] := by
+    refine ⟨(measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral]
+    have : ∀ x, ‖(R.mult x : ℝ)‖ₑ = (R.mult x : ℝ≥0∞) := fun x => by simp
+    simp_rw [this]
+    exact hθfin.lt_top
+  have hint : IntegrableOn Φ (⋃ i, G i '' B i) μHE[n] := by
+    have hθint' : IntegrableOn (fun x => Bω * (Lg : ℝ) ^ n * (R.mult x : ℝ))
+        (⋃ i, G i '' B i) μHE[n] :=
+      (hθint.mono_set (iUnion_subset hGBsub)).const_mul _
+    refine hθint'.mono' ?_ ?_
+    · exact (hΦsm.aestronglyMeasurable.congr hΦae.symm).mono_measure
+        (Measure.restrict_mono hUsub le_rfl)
+    · exact ae_restrict_of_ae_restrict_of_subset hUsub hΦbound
+  -- countable additivity over the disjoint pieces, and the area formula on each piece
+  have hpieces := hasSum_integral_iUnion hGBmeas hdisj hint
+  have hterm : ∀ i, ∫ x in G i '' B i, Φ x ∂μHE[n] =
+      ∫ u in B i, (w i u : ℝ) * ζ i u ((ω : DifferentialForm (Euclid P) n) (H i u)) ∂volume := by
+    intro i
+    have harea := Poincare.SimonGMT.Chapter02.integral_area_formula_of_injective_derivative
+      (hBmeas i) (fun x hx => (hdiff i x hx).1) (fun x hx => (hdiff i x hx).2) (hinj i) Φ
+    rw [finrank_euclideanSpace_fin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n] at harea
+    rw [harea]
+    refine setIntegral_congr_fun (hBmeas i) (fun u _ => ?_)
+    simp only [Poincare.SimonGMT.Chapter02.areaJacobianAt_eq_sqrt_det_adjoint_comp, hΦdef, hζdef,
+      hJdef, hHdef, hwdef, smul_eq_mul, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply]
+    ring
+  simp_rw [hterm] at hpieces
+  rw [hQ1, hQ2]
+  exact hpieces.unique (hR' ω)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
