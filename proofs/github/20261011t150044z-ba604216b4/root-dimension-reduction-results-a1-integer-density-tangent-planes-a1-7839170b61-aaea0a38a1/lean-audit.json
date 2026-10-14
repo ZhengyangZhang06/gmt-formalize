@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "914245f23bafbb87fd866aeaadf544c87e2d309407e616dfbc83f18bbbd4e988",
+  "git_delta": {
+    "base_commit": "7c54b2b2d6009be09b28f0245d34bfc00da27051",
+    "candidate_commit": "5978aac2764859ed5303a0d2843df6399ba27fb2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_etp_edge_direction_support",
+    "diff_sha256": "85f1dade6687bb110b0070189238b1cf27dcfba655df0bf46ff7f88480a665a3",
+    "source_sha256": "bb9d1a5b7b258d791a2ea21123d38763de4bcc935689bfd57e2b1ab5f51c4884",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_etp_edge_direction_support",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsIntegerMultiplicity C → 0 < δ → 1 ≤ k → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k) → ∃ l₀ : ℝ, 0 < l₀ ∧ ∀ l : ℝ, 0 < l → l < l₀ → a + l • e ∈ C.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
