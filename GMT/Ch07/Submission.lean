@@ -9,6 +9,7 @@ import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.Analysis.Calculus.BumpFunction.SmoothApprox
 import Poincare.SimonGMT.Chapter01.DensityComparison
+import Poincare.SimonGMT.Chapter08.DistributionalConstancy
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -633,6 +634,69 @@ theorem Submission.dtc_bc_cz_top_density : ∀ (n : ℕ) (V : Set (Euclid n)) (X
   obtain ⟨g, hg, hact⟩ := Submission.dtc_bc_cz_top_density_of_sign n V R σ hV hσ hσR
   -- `X ω = R.action ω` for test forms
   exact ⟨g, hg, fun ω => (hR ω).trans (hact ω)⟩
+/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
+a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
+`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
+integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
+`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
+theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+  intro n r hr
+  -- the bump `B` with `rIn = r/2`, `rOut = r`
+  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hBs : HasCompactSupport B := B.hasCompactSupport
+  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+  have hI : 0 < ∫ x, B x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+    exact measure_ball_pos volume 0 hr
+  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+/-- **An `L¹` pairing that vanishes on uniform approximants vanishes in the limit** (step 5 of the
+extension from smooth to `C¹` tests in the graph-cycle regularity step of Simon 7.4.3).  Let
+`K ⊆ ℝⁿ` be measurable, `G` integrable on `K` and `f` AE-strongly measurable with `|f| ≤ C` on `K`.
+If for every `ε > 0` some AE-strongly measurable `g` with `|f − g| ≤ ε` on `K` has `∫_K G g = 0`,
+then `∫_K G f = 0`: `|g| ≤ C + ε` on `K`, so both products are integrable on `K`, and
+`|∫_K G f| = |∫_K G (f − g)| ≤ ε ∫_K |G|` for every `ε > 0`. -/
+theorem Submission.dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx : ∀ (n : ℕ) (K : Set (Euclid n)) (G f : Euclid n → ℝ) (C : ℝ), MeasurableSet K → IntegrableOn G K volume → AEStronglyMeasurable f (volume.restrict K) → (∀ x ∈ K, |f x| ≤ C) → (∀ ε : ℝ, 0 < ε → ∃ g : Euclid n → ℝ, AEStronglyMeasurable g (volume.restrict K) ∧ (∀ x ∈ K, |f x - g x| ≤ ε) ∧ ∫ x in K, G x * g x = 0) → ∫ x in K, G x * f x = 0 := by
+  intro n K G f C hK hG hf hfC happrox
+  -- `M = ∫_K |G| ≥ 0`, and `G f` is integrable on `K` since `|f| ≤ C` on `K`.
+  have hM : 0 ≤ ∫ x in K, |G x| := integral_nonneg fun x => abs_nonneg (G x)
+  have hGf : Integrable (fun x => G x * f x) (volume.restrict K) :=
+    Integrable.mul_bdd hG hf (ae_restrict_of_forall_mem hK fun x hx => hfC x hx)
+  -- `|∫_K G f| ≤ ε M` for every `ε > 0`.
+  have hbound : ∀ ε : ℝ, 0 < ε → |∫ x in K, G x * f x| ≤ ε * ∫ x in K, |G x| := by
+    intro ε hε
+    obtain ⟨g, hg, hfg, hGg⟩ := happrox ε hε
+    -- `|g| ≤ |f| + |f − g| ≤ C + ε` on `K`, so `G g` is integrable on `K`.
+    have hGg_int : Integrable (fun x => G x * g x) (volume.restrict K) :=
+      Integrable.mul_bdd (c := C + ε) hG hg (ae_restrict_of_forall_mem hK fun x hx => by
+        have h1 := abs_le.mp (hfC x hx)
+        have h2 := abs_le.mp (hfg x hx)
+        rw [Real.norm_eq_abs]
+        exact abs_le.mpr ⟨by linarith [h1.1, h2.2], by linarith [h1.2, h2.1]⟩)
+    -- `∫_K G f = ∫_K G f − ∫_K G g = ∫_K G (f − g)`.
+    have heq : ∫ x in K, G x * f x = ∫ x in K, G x * (f x - g x) := by
+      simp_rw [mul_sub]
+      rw [integral_sub hGf hGg_int, hGg, sub_zero]
+    -- `|G (f − g)| ≤ |G| ε` on `K`.
+    rw [heq]
+    calc |∫ x in K, G x * (f x - g x)| ≤ ∫ x in K, |G x| * ε :=
+          norm_integral_le_of_norm_le ((Integrable.abs hG).mul_const ε)
+            (ae_restrict_of_forall_mem hK fun x hx => by
+              rw [Real.norm_eq_abs, abs_mul]
+              exact mul_le_mul_of_nonneg_left (hfg x hx) (abs_nonneg _))
+      _ = ε * ∫ x in K, |G x| := by rw [integral_mul_const, mul_comm]
+  -- If `a = |∫_K G f| > 0`, then `ε = a / (2(M + 1))` gives `a ≤ a M / (2(M + 1)) < a`.
+  by_contra hne
+  set M := ∫ x in K, |G x|
+  set a := |∫ x in K, G x * f x|
+  have ha : 0 < a := abs_pos.mpr hne
+  have hpos : 0 < 2 * (M + 1) := by linarith
+  have h := hbound (a / (2 * (M + 1))) (div_pos ha hpos)
+  rw [div_mul_eq_mul_div, le_div_iff₀ hpos] at h
+  nlinarith
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -2451,5 +2515,42 @@ theorem Submission.dgcr_smooth_tests_to_C1_tests : ∀ (n : ℕ) (D : Set (Eucli
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero (hvan ψ hψK),
     ← setIntegral_eq_integral_of_forall_compl_eq_zero hvanD]
   exact htest ψ hψ hψc (hψK.trans hKD) i
+
+/-- **Constancy theorem in top dimension** (Simon Ch. 6, Theorem 2.34, for `n`-currents in
+`ℝⁿ`; Lemma B of the codimension-zero blow-up step).  Let `X ∈ 𝒟ₙ(V)`, `n = m + 1`, be integer
+multiplicity and `B ⊆ V` open and connected with `∂X = 0` in `B`.  Then `X = c[[B]]` in `B` for
+some `c ∈ ℤ`: `X(ω) = c ∫ ω(e₁, …, eₙ) dLⁿ` whenever `spt ω ⊆ B`.  `X(ω) = ∫ g ω(e) dLⁿ` for an
+integer-valued `L¹_loc` density `g`; `∂X = 0` in `B` kills the weak derivatives of `g` against
+`C_c^∞(B)` tests, hence (by mollification) against `C_c¹(B)` tests, and distributional constancy
+gives `g = c₀` a.e. on `B`.  `B` has positive measure unless empty, so `c₀ ∈ ℤ`. -/
+theorem Submission.dtc_bc_cz_top_constancy : ∀ (m : ℕ) (V B : Set (Euclid (m + 1))) (X : GeometricCurrentOn V (m + 1)), IsOpen V → IsIntegerMultiplicity X → IsOpen B → IsPreconnected B → B ⊆ V → (∀ β : TestFormOn V m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ B → X.boundary β = 0) → ∃ c : ℤ, ∀ ω : TestFormOn V (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ B → X ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ) := by
+  intro m V B X hV hIM hB hBc hBV hbd
+  -- step 1: the integer density `g` of `X`, `X(ω) = ∫ g ω(e) dLⁿ`
+  obtain ⟨g, hgloc, hrep⟩ := Submission.dtc_bc_cz_top_density (m + 1) V X m.succ_pos hV hIM
+  -- steps 2–5: `∂X = 0` in `B` gives `∫_B g ∂ⱼa = 0` for every `a ∈ C_c^∞(B)`
+  have hweak := Submission.dtc_bc_cz_tc_weak_derivs m V B X (fun y => (g y : ℝ)) hBV hbd hrep
+  -- step 6: `C¹` tests by mollification; distributional constancy gives `g = c₀` a.e. on `B`
+  have hgB : LocallyIntegrableOn (fun y => (g y : ℝ)) B volume := hgloc.mono_set hBV
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℝ, ∀ᵐ y ∂(volume.restrict B), (g y : ℝ) = c₀ :=
+    Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero hgB hB hBc
+      (Submission.dgcr_smooth_tests_to_C1_tests (m + 1) B _ hB hgB hweak)
+  -- step 7: the constant is an integer, `g(y₀)` for some `y₀ ∈ B` (any `c` if `B = ∅`)
+  obtain ⟨c, hc⟩ : ∃ c : ℤ, ∀ᵐ y ∂(volume.restrict B), (g y : ℝ) = c := by
+    rcases B.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, by simp⟩
+    obtain ⟨y₀, -, hy₀⟩ :=
+      Measure.exists_mem_of_measure_ne_zero_of_ae (hB.measure_pos volume hne).ne' hc₀
+    refine ⟨g y₀, ?_⟩
+    filter_upwards [hc₀] with y hy
+    rw [hy, hy₀]
+  -- step 8: `X(ω) = ∫ g ω(e) = c ∫ ω(e)`, as `ω = 0` off `B`
+  refine ⟨c, fun ω hω => ?_⟩
+  rw [hrep ω, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [(ae_restrict_iff' hB.measurableSet).mp hc] with y hy
+  by_cases hyB : y ∈ B
+  · rw [hy hyB]
+  · rw [image_eq_zero_of_notMem_tsupport fun h => hyB (hω h)]
+    simp
 
 end GMT.Ch07
