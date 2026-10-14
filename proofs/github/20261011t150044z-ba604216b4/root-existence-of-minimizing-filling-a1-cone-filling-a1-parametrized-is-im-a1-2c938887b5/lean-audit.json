@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "12c0a7db261abf1262a3d4ade96842b68ff656111697cf692cc9e1f7ce663288",
+  "git_delta": {
+    "base_commit": "70901ef1f5a9f6cb618b1459bda76e65afbe0195",
+    "candidate_commit": "b4d27b974cb3938ed218b888055ccfaa02907f38",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_isIntegerMultiplicity_of_parametrization",
+    "diff_sha256": "b46a426f971d809e883aa343a0bd4053007499e90bc9d4bf8d3fe502f04088ea",
+    "source_sha256": "fe6719abc6bbdadc793d8f18ffb78603cd352d47fd3e91d1657d5a4e4c360180",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_isIntegerMultiplicity_of_parametrization",
+      "statement": "∀ (k P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (F : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (g : ℕ → Euclid (k + 1) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
