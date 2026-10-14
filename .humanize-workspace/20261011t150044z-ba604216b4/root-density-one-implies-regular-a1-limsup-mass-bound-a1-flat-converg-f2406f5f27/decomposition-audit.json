@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def Represents|def measure|def action|IsIntegerMultiplicity|instance.*Sub|Euclid",
+        "dor_lmb_fcd_sd_|skeleton_deformation|good_slice|shell",
+        "theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi|lintegral_const_mul|lintegral_eq_zero_iff|integral_inter_add_sdiff|tsum_geometric|one_sub_inv_two",
+        "theorem norm_eq|theorem dist_eq|lemma norm_eq|lemma dist_eq|abbrev EuclideanSpace",
+        "theorem lintegral_const_mul|lemma lintegral_const_mul",
+        "dor_imrep_massOn_eq_measure_and_support",
+        "cmc_imRep_locality_restrict_sub",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/skeleton-independent-audit/Types.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f2406f5f27/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f2406f5f27/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/skd-decomp/Assembly.lean",
+        "/tmp/skd-decomp/CoreCheck.lean",
+        "/tmp/skd-decomp/SeriesCheck.lean",
+        "/tmp/skd-decomp/TeleCheck.lean",
+        "/tmp/skd-decomp/SHCheck.lean",
+        "/tmp/skeleton-independent-audit/Types.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte-identical contract sources. The snapshot supplies the required current, Euclidean-norm, extension and integration interfaces; the project search found no matching skeleton, good-slice or shell declarations. Both reused declarations have identical frozen types and successful comparator records permitting only propext, Quot.sound and Classical.choice. All ten new names remain unreserved, all twelve names are bare identifiers, and the selected dependency closure is acyclic. Every frozen child type is a standalone one-line proposition without implementation-dependent references. The split appropriately separates the selected skeleton-deformation proof, and the child conclusions together with its resolved dependencies establish its exact contract. Supplied assembly/check types were independently compared with the frozen types. Fresh Lean replays were interrupted during prolonged library-loading and memory-pressure stalls; no fresh kernel pass is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse: the frozen type is byte-identical to the accepted declaration, with compatible contract and permitted-axiom comparator evidence. The prose matches both mass and support conclusions; reuse is non-circular."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses match the accepted frozen type. The accepted declaration's compatibility and comparator evidence validate the supplied reuse proof; its dependency closure does not rely on this selected theorem."
+    },
+    {
+      "key": "lipschitz_extend",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise McShane extension and the sum-of-squares estimate prove exactly the stated bound, including P = 0. Euclid uses PiLp 2, and the supplied WithLp construction selects the intended Euclidean metric."
+    },
+    {
+      "key": "markov_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contradiction argument correctly handles I = infinity, finite positive I, and I = 0. Restriction of the a.e. hypotheses, cancellation of the finite positive interval length, and the zero-integral argument establish the exact conclusion."
+    },
+    {
+      "key": "im_concentrated",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Closedness makes the complement open, allowing C1 to turn vanishing test evaluations into zero complementary measure. Measure subadditivity then proves the stated localization inequality, without an unstated finiteness assumption."
+    },
+    {
+      "key": "good_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The open-strip integral bound, Markov selection, and concentration on the closed level set supply every conclusion with the correct constant. No boundary-representation hypothesis on RB is needed beyond the explicitly assumed slice formula."
+    },
+    {
+      "key": "im_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes integrability using measurable orientation evaluation, a compact-support bound and local multiplicity integrability. Restriction, mass equality and vanishing follow from the declared dependencies. Vanishing off F intersect B itself is justified by the integral formula and null carrier outside F."
+    },
+    {
+      "key": "shells",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Integrability is established before splitting the integrals. The restrictions have the stated masses; antitonicity gives the shell identities and nested vanishing sets. Both inductions prove their exact conclusions, without assuming integrality of Z."
+    },
+    {
+      "key": "zero_neg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The empty representation proves zero integrality, subtraction calculus proves negation integrality, and negation preserves admissibility. Scaling by a strictly positive bound proves the evaluation estimate with the required finite-mass hypothesis."
+    },
+    {
+      "key": "telescoping",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Boundary integrality is derived before applying PF(5). The proof verifies compact vanishing sets and common Lipschitz bounds, obtains zero images from subtraction linearity, and uses locality to cancel adjacent slice terms. Both telescoping identities have the correct signs."
+    },
+    {
+      "key": "series_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "IMS is applied only in positive degrees to summable masses. Negated homotopy series give the required signs; small-mass errors vanish pointwise. The admissible-form argument proves the boundary-mass bound without a degree-zero IMS assumption, and vanishing passes through the sums."
+    },
+    {
+      "key": "core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PF's exact clauses supply the stated integrality, mass and vanishing properties. The dyadic exponent inequalities yield all four summable bounds and both vanishing residuals. Telescoping and series_limit then give exactly the conclusion needed by the selected parent's assembly."
+    }
+  ],
+  "required_changes": []
+}
