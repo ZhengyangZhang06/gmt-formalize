@@ -743,6 +743,205 @@ theorem dimred_mbl_dt_cbm_sa_grad_bound : ∀ (m : ℕ) (u : Euclid (m + 1) → 
     _ = -∫ z in Q1, u z * LinearMap.trace ℝ (Euclid (m + 1))
           (fderiv ℝ G z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) := by rw [h3]
     _ ≤ V := h1'
+/-- Mollifications converge in `L¹`, uniformly over normalized kernels: for integrable `f` and
+`ε > 0` there is `r > 0` with `∫ |ρ * f − f| ≤ ε` for every continuous `ρ ≥ 0` with `∫ ρ = 1`
+and `spt ρ ⊆ B_r(0)` (Simon Ch. 2, proof of Lemma 2.5).  Approximate `f` in `L¹` by a continuous
+compactly supported `h`; then `ρ * f − f = ρ * (f − h) + (ρ * h − h) + (h − f)`, where
+convolution with `ρ` does not increase the `L¹` norm and `ρ * h − h` is uniformly small and
+vanishes off a fixed ball. -/
+theorem dimred_mbl_dt_cbm_sa_mollify_l1 : ∀ (n : ℕ) (f : Euclid n → ℝ), Integrable f → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ ≤ ENNReal.ofReal ε := by
+  intro n f hf ε hε
+  -- Step 2: continuous compactly supported functions are dense in `L¹`.  It suffices to
+  -- approximate `c 1_s` (`MemLp.induction_dense`): take compact `K ⊆ s` and open `V ⊇ K` with
+  -- `vol(s \ K), vol(V \ K) < θ` (regularity) and an Urysohn function `φ`, `1` on `K`, `0` off `V`;
+  -- then `|φ c − c 1_s| ≤ |c| (1_{V \ K} + 1_{s \ K})`.
+  obtain ⟨h, hfh₀, hhc, hhcont⟩ : ∃ h : Euclid n → ℝ,
+      eLpNorm (f - h) 1 volume ≤ ENNReal.ofReal (ε / 4) ∧ HasCompactSupport h ∧ Continuous h := by
+    have hf1 : MemLp f 1 volume := memLp_one_iff_integrable.2 hf
+    have hε4 : ENNReal.ofReal (ε / 4) ≠ 0 := by simp; positivity
+    have hadd : ∀ g₁ g₂ : Euclid n → ℝ, HasCompactSupport g₁ ∧ Continuous g₁ →
+        HasCompactSupport g₂ ∧ Continuous g₂ → HasCompactSupport (g₁ + g₂) ∧ Continuous (g₁ + g₂) :=
+      fun g₁ g₂ h₁ h₂ => ⟨h₁.1.add h₂.1, h₁.2.add h₂.2⟩
+    refine hf1.induction_dense ENNReal.one_ne_top (fun g => HasCompactSupport g ∧ Continuous g) ?_
+      hadd hε4
+    intro c s hs hsμ δ hδ
+    obtain ⟨θ, hθ, hθδ⟩ := ENNReal.exists_nnreal_pos_mul_lt (a := 2 * ‖c‖ₑ)
+      (ENNReal.mul_ne_top ENNReal.ofNat_ne_top enorm_ne_top) hδ
+    have hθ0 : (θ : ℝ≥0∞) ≠ 0 := ENNReal.coe_ne_zero.2 hθ.ne'
+    obtain ⟨K, hKs, hK, hKcl, hsK⟩ := hs.exists_isCompact_isClosed_sdiff_lt hsμ.ne hθ0
+    obtain ⟨V, hKV, hV, -, hVK⟩ :=
+      hKcl.measurableSet.exists_isOpen_sdiff_lt ((measure_mono hKs).trans_lt hsμ).ne hθ0
+    obtain ⟨φ, hφK, hφV, hφc, hφ01⟩ :=
+      exists_continuous_one_zero_of_isCompact hK hV.isClosed_compl
+        (disjoint_compl_right_iff_subset.2 hKV)
+    have hgc : Continuous fun x => φ x * c := φ.continuous.mul continuous_const
+    have hgs : HasCompactSupport fun x => φ x * c := hφc.mul_right (f' := fun _ => c)
+    refine ⟨fun x => φ x * c, ?_, hgs, hgc⟩
+    have hpt : ∀ x, ‖φ x * c - s.indicator (fun _ => c) x‖ₑ ≤
+        (V \ K).indicator (fun _ => ‖c‖ₑ) x + (s \ K).indicator (fun _ => ‖c‖ₑ) x := by
+      intro x
+      by_cases hxK : x ∈ K
+      · have h1 : φ x = 1 := hφK hxK
+        simp [h1, hKs hxK]
+      by_cases hxV : x ∈ V
+      · rw [indicator_of_mem (mem_sdiff_of_mem hxV hxK)]
+        refine le_trans ?_ le_self_add
+        rw [enorm_le_iff_norm_le, Real.norm_eq_abs, Real.norm_eq_abs]
+        obtain ⟨h0, h1⟩ := hφ01 x
+        by_cases hxs : x ∈ s
+        · rw [indicator_of_mem hxs, show φ x * c - c = (φ x - 1) * c by ring, abs_mul]
+          exact mul_le_of_le_one_left (abs_nonneg _) (abs_le.2 ⟨by linarith, by linarith⟩)
+        · rw [indicator_of_notMem hxs, sub_zero, abs_mul, abs_of_nonneg h0]
+          exact mul_le_of_le_one_left (abs_nonneg _) h1
+      · have h0 : φ x = 0 := hφV hxV
+        rw [indicator_of_notMem (s := V \ K) fun hx => hxV hx.1, zero_add]
+        by_cases hxs : x ∈ s
+        · rw [indicator_of_mem hxs, indicator_of_mem (mem_sdiff_of_mem hxs hxK), h0]
+          simp
+        · simp [hxs, h0]
+    rw [eLpNorm_one_eq_lintegral_enorm
+      (hgc.aestronglyMeasurable.sub (aestronglyMeasurable_const.indicator hs))]
+    calc ∫⁻ x, ‖φ x * c - s.indicator (fun _ => c) x‖ₑ
+        ≤ ∫⁻ x, ((V \ K).indicator (fun _ => ‖c‖ₑ) x + (s \ K).indicator (fun _ => ‖c‖ₑ) x) :=
+          lintegral_mono hpt
+      _ = ‖c‖ₑ * volume (V \ K) + ‖c‖ₑ * volume (s \ K) := by
+          rw [lintegral_add_left
+              (measurable_const.indicator (hV.measurableSet.diff hKcl.measurableSet)),
+            lintegral_indicator_const (hV.measurableSet.diff hKcl.measurableSet),
+            lintegral_indicator_const (hs.diff hKcl.measurableSet)]
+      _ ≤ ‖c‖ₑ * θ + ‖c‖ₑ * θ := by gcongr
+      _ = θ * (2 * ‖c‖ₑ) := by ring
+      _ ≤ δ := hθδ.le
+  have hhi : Integrable h := hhcont.integrable_of_hasCompactSupport hhc
+  have hfh : ∫⁻ x, ‖f x - h x‖ₑ ≤ ENNReal.ofReal (ε / 4) := by
+    rwa [eLpNorm_one_eq_lintegral_enorm (hf.sub hhi).aestronglyMeasurable] at hfh₀
+  -- Step 3: `S` is a closed ball containing `spt h` and its `1`-neighbourhood, and `r ≤ 1` is
+  -- such that `|h(a) − h(b)| < η` whenever `|a − b| < r`.
+  obtain ⟨R, hR⟩ := hhc.isCompact.isBounded.subset_closedBall (0 : Euclid n)
+  set S : Set (Euclid n) := closedBall (0 : Euclid n) (R + 1)
+  have hSm : MeasurableSet S := measurableSet_closedBall
+  have hSfin : volume S < ∞ := measure_closedBall_lt_top
+  set η : ℝ := ε / (4 * ((volume S).toReal + 1)) with hη_def
+  have hη : 0 < η := by positivity
+  obtain ⟨r₀, hr₀, hr₀h⟩ :=
+    Metric.uniformContinuous_iff.1 (hhc.uniformContinuous_of_continuous hhcont) η hη
+  refine ⟨min r₀ 1, lt_min hr₀ one_pos, ?_⟩
+  intro ρ hρc hρnn hρint hρsupp
+  have hρcs : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid n) (min r₀ 1)) fun x hx => ?_
+    by_contra hne
+    exact hx (ball_subset_closedBall (hρsupp hne))
+  have hρi : Integrable ρ := integrable_of_integral_eq_one hρint
+  have hρ1 : ∫⁻ t, ‖ρ t‖ₑ = 1 := by
+    have h1 := ofReal_integral_eq_lintegral_ofReal hρi (Eventually.of_forall hρnn)
+    rw [hρint, ENNReal.ofReal_one] at h1
+    rw [h1]
+    congr 1; funext t
+    rw [Real.enorm_eq_ofReal (hρnn t)]
+  -- Step 1: `L¹` contraction, `∫ |ρ * g| ≤ ∫ |g|` (Tonelli and translation invariance).
+  have contraction : ∀ g : Euclid n → ℝ, AEStronglyMeasurable g volume →
+      ∫⁻ x, ‖convolution ρ g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ ≤ ∫⁻ x, ‖g x‖ₑ := by
+    intro g hg
+    have hmeas : AEMeasurable (uncurry fun x t =>
+        ‖(ContinuousLinearMap.lsmul ℝ ℝ) (ρ t) (g (x - t))‖ₑ)
+        ((volume : Measure (Euclid n)).prod volume) :=
+      (hρc.aestronglyMeasurable.convolution_integrand (ContinuousLinearMap.lsmul ℝ ℝ) hg).enorm
+    calc ∫⁻ x, ‖convolution ρ g (ContinuousLinearMap.lsmul ℝ ℝ) volume x‖ₑ
+        ≤ ∫⁻ x, ∫⁻ t, ‖(ContinuousLinearMap.lsmul ℝ ℝ) (ρ t) (g (x - t))‖ₑ :=
+          lintegral_mono fun x => by
+            rw [convolution_def]
+            exact enorm_integral_le_lintegral_enorm _
+      _ = ∫⁻ t, ∫⁻ x, ‖(ContinuousLinearMap.lsmul ℝ ℝ) (ρ t) (g (x - t))‖ₑ :=
+          lintegral_lintegral_swap hmeas
+      _ = ∫⁻ t, ‖ρ t‖ₑ * ∫⁻ x, ‖g x‖ₑ := by
+          congr 1; funext t
+          simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul, enorm_mul]
+          rw [lintegral_const_mul' _ _ enorm_ne_top,
+            lintegral_sub_right_eq_self (fun x => ‖g x‖ₑ) t]
+      _ = ∫⁻ x, ‖g x‖ₑ := by
+          rw [lintegral_mul_const _ hρc.measurable.enorm, hρ1, one_mul]
+  set L := ContinuousLinearMap.lsmul ℝ ℝ (E := ℝ)
+  have hhloc : LocallyIntegrable h volume := hhi.locallyIntegrable
+  have hfhloc : LocallyIntegrable (f - h) volume := (hf.sub hhi).locallyIntegrable
+  -- Step 5: linearity, `ρ * f − ρ * h = ρ * (f − h)`.
+  have hlin : ∀ x, convolution ρ f L volume x - convolution ρ h L volume x =
+      convolution ρ (f - h) L volume x := by
+    intro x
+    have e1 := hρcs.convolutionExists_left L hρc hhloc x
+    have e2 := hρcs.convolutionExists_left L hρc hfhloc x
+    have e3 := e1.distrib_add e2
+    rw [show h + (f - h) = f by funext y; simp] at e3
+    rw [e3]; ring
+  -- Step 4: `|ρ * h − h| ≤ η` everywhere (`dist_convolution_le`), and `ρ * h − h = 0` off `S`.
+  have hRle : min r₀ 1 ≤ r₀ := min_le_left _ _
+  have hpt : ∀ x, ‖convolution ρ h L volume x - h x‖ₑ ≤
+      S.indicator (fun _ => ENNReal.ofReal η) x := by
+    intro x
+    by_cases hx : x ∈ S
+    · rw [indicator_of_mem hx]
+      have hd := dist_convolution_le (μ := volume) (f := ρ) (g := h) (x₀ := x) (R := min r₀ 1)
+        (ε := η) (z₀ := h x) hη.le hρsupp hρnn hρint hhcont.aestronglyMeasurable
+        (fun y hy => (hr₀h (lt_of_lt_of_le (mem_ball.1 hy) hRle)).le)
+      rw [dist_eq_norm] at hd
+      rw [← ofReal_norm]
+      exact ENNReal.ofReal_le_ofReal hd
+    · rw [indicator_of_notMem hx]
+      have h1 : h x = 0 := by
+        by_contra hne
+        exact hx (closedBall_subset_closedBall (by linarith) (hR (subset_tsupport _ hne)))
+      have h2 : convolution ρ h L volume x = 0 := by
+        by_contra hne
+        obtain ⟨a, ha, t, ht, rfl⟩ := support_convolution_subset_swap L hne
+        have ha' : ‖a‖ ≤ R := mem_closedBall_zero_iff.1 (hR (subset_tsupport _ ha))
+        have ht' : ‖t‖ < min r₀ 1 := mem_ball_zero_iff.1 (hρsupp ht)
+        exact hx (mem_closedBall_zero_iff.2
+          ((norm_add_le a t).trans (by linarith [min_le_right r₀ 1])))
+      simp [h1, h2]
+  have hstep4 : ∫⁻ x, ‖convolution ρ h L volume x - h x‖ₑ ≤ ENNReal.ofReal (ε / 4) := by
+    calc ∫⁻ x, ‖convolution ρ h L volume x - h x‖ₑ
+        ≤ ∫⁻ x, S.indicator (fun _ => ENNReal.ofReal η) x := lintegral_mono hpt
+      _ = ENNReal.ofReal η * volume S := lintegral_indicator_const hSm _
+      _ = ENNReal.ofReal (η * (volume S).toReal) := by
+          rw [ENNReal.ofReal_mul hη.le, ENNReal.ofReal_toReal hSfin.ne]
+      _ ≤ ENNReal.ofReal (ε / 4) := by
+          apply ENNReal.ofReal_le_ofReal
+          have hV : 0 ≤ (volume S).toReal := ENNReal.toReal_nonneg
+          rw [hη_def, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by positivity)]
+          nlinarith
+  -- Step 6: `ρ * f − f = ρ * (f − h) + (ρ * h − h) − (f − h)`; each term is at most `ε / 4`.
+  have hpt2 : ∀ x, ‖convolution ρ f L volume x - f x‖ₑ ≤
+      ‖convolution ρ (f - h) L volume x‖ₑ + ‖convolution ρ h L volume x - h x‖ₑ +
+        ‖f x - h x‖ₑ := by
+    intro x
+    have e : convolution ρ f L volume x - f x = convolution ρ (f - h) L volume x +
+        (convolution ρ h L volume x - h x) - (f x - h x) := by
+      rw [← hlin x]; ring
+    rw [e]
+    exact (enorm_sub_le).trans (add_le_add_left (enorm_add_le _ _) _)
+  have hc1 : Continuous (convolution ρ (f - h) L volume) :=
+    hρcs.continuous_convolution_left L hρc hfhloc
+  have hc2 : Continuous (convolution ρ h L volume) :=
+    hρcs.continuous_convolution_left L hρc hhloc
+  have hm1 : AEMeasurable (fun x => ‖convolution ρ (f - h) L volume x‖ₑ) volume :=
+    hc1.measurable.enorm.aemeasurable
+  have hm2 : AEMeasurable (fun x => ‖convolution ρ h L volume x - h x‖ₑ) volume :=
+    (hc2.sub hhcont).measurable.enorm.aemeasurable
+  calc ∫⁻ x, ‖convolution ρ f L volume x - f x‖ₑ
+      ≤ ∫⁻ x, (‖convolution ρ (f - h) L volume x‖ₑ + ‖convolution ρ h L volume x - h x‖ₑ +
+          ‖f x - h x‖ₑ) := lintegral_mono hpt2
+    _ = (∫⁻ x, ‖convolution ρ (f - h) L volume x‖ₑ) +
+          (∫⁻ x, ‖convolution ρ h L volume x - h x‖ₑ) + ∫⁻ x, ‖f x - h x‖ₑ := by
+        have h12 : AEMeasurable (fun x => ‖convolution ρ (f - h) L volume x‖ₑ +
+            ‖convolution ρ h L volume x - h x‖ₑ) volume := hm1.add hm2
+        rw [lintegral_add_left' h12, lintegral_add_left' hm1]
+    _ ≤ ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) := by
+        refine add_le_add (add_le_add ?_ hstep4) hfh
+        exact (contraction (f - h) (hf.sub hhi).aestronglyMeasurable).trans hfh
+    _ = ENNReal.ofReal (3 * ε / 4) := by
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity)]
+        ring_nf
+    _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal (by linarith)
 
 end Submission
 
