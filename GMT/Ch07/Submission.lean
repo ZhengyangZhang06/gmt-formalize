@@ -565,6 +565,44 @@ theorem Submission.cmcdtfrpo_orthonormal_frame_sign : ∀ (P n : ℕ) (τ e : Fi
   · exact Or.inl fun α => by rw [key, h, one_mul]
   · exact Or.inr fun α => by rw [key, h, neg_one_mul]
 
+/-- **Faces in a coordinate plane are oriented by `±e_{ι(1)} ∧ ⋯ ∧ e_{ι(n)}`** (Simon Ch. 6, 5.1
+(26); Ch. 3, 1.4).  If `A` lies in the coordinate plane `x + V`, `V = span{e_{ι(j)}}`, then
+`A − x ⊆ V`, so every approximate tangent space `Q` of `A` at `x` satisfies `Q ≤ V`
+(`cmcdtfrpo_approxTangent_le_of_sub_mem`), hence `Q = V` as both have dimension `n`.  A unit
+orientation `ξ = ±τ` of `Q` then uses an orthonormal frame `τ` of `V`, and `α(τ) = ±α(e_ι)` with a
+sign independent of `α` (`cmcdtfrpo_orthonormal_frame_sign`). -/
+theorem Submission.cmcdtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) := by
+  intro P n ι A x Q ξ hι hA hQ hξ
+  -- the coordinate frame `e j = e_{ι(j)}` (orthonormal, `ι` being injective) and `V = span e`
+  set e : Fin n → Euclid P := fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  have he : Orthonormal ℝ e := EuclideanSpace.orthonormal_single.comp ι hι.injective
+  set V : Submodule ℝ (Euclid P) := Submodule.span ℝ (Set.range e) with hV
+  -- Step 1: `A − x ⊆ V`, since `(a − x)_i = 0` off `range ι`
+  have hAV : ∀ a ∈ A, a - x ∈ V := by
+    intro a ha
+    rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr (a - x)]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    by_cases hi : ∃ j, ι j = i
+    · obtain ⟨j, rfl⟩ := hi
+      rw [EuclideanSpace.basisFun_apply]
+      exact V.smul_mem _ (Submodule.subset_span ⟨j, rfl⟩)
+    · rw [EuclideanSpace.basisFun_repr, PiLp.sub_apply, hA a ha i fun j hj => hi ⟨j, hj⟩,
+        sub_self, zero_smul]
+      exact V.zero_mem
+  -- Step 2: `Q ≤ V`, hence `Q = V` as `dim Q = n = dim V`
+  have hQV : Q = V := by
+    refine Submodule.eq_of_le_of_finrank_eq
+      (Submission.cmcdtfrpo_approxTangent_le_of_sub_mem P n A x Q V hAV hQ) ?_
+    rw [hQ.1, hV, finrank_span_eq_card he.linearIndependent, Fintype.card_fin]
+  -- Step 3: `ξ = ±τ` for an orthonormal frame `τ` of `Q = V`, and `α(τ) = ±α(e)`
+  obtain ⟨τ, hτ, hτQ, hξτ⟩ := hξ
+  rcases hξτ with h1 | h1 <;>
+    rcases Submission.cmcdtfrpo_orthonormal_frame_sign P n τ e hτ he (hτQ.trans hQV) with h2 | h2
+  · exact Or.inl fun α => by rw [h1, h2]
+  · exact Or.inr fun α => by rw [h1, h2]
+  · exact Or.inr fun α => by rw [h1, h2]
+  · exact Or.inl fun α => by rw [h1, h2, neg_neg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
