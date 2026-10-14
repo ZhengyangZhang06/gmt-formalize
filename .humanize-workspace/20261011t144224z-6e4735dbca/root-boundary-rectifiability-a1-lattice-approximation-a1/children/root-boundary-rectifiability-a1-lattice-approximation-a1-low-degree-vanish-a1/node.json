@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.lattice_approximation-a1.low_degree_vanish-a1",
+  "parent_id": "root.boundary_rectifiability-a1.lattice_approximation-a1",
+  "depth": 3,
+  "title": "Currents of degree exceeding the ambient dimension vanish",
+  "statement": "Let P, n ∈ ℕ with P < n, let U ⊆ ℝ^P be an arbitrary set and let X ∈ D_n(U) (a GeometricCurrentOn U n). Then X(ω) = 0 for every ω ∈ Dⁿ(U) (TestFormOn U n).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U n), P < n → ∀ ω : TestFormOn U n, X ω = 0",
+  "lean_name": "br_la_apply_eq_zero_of_lt_degree",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-lattice-approximation-a1-low-degree-vanish-a1-a1"
+}

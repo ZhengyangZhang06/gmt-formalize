@@ -1652,6 +1652,125 @@ theorem Submission.br_zero_dim_weak_limit_isIntegerMultiplicity : ∀ (P : ℕ) 
   obtain ⟨Y, hY, hYD⟩ := Submission.br_zd_finite_dirac_im P U D a (hDW.trans hWU)
   exact ⟨W, isOpen_ball, mem_ball_self (half_pos hε), hWU, Y, hY,
     fun ω hω => (hXD ω hω).trans (hYD ω).symm⟩
+/-- Mass estimate (Simon Ch. 6, 2.4–2.5): if `M(Y) < ∞` and `|ω(x)| ≤ C` everywhere (Euclidean
+coefficient norm) with `C > 0`, then `|Y(ω)| ≤ C · M(Y)`. -/
+theorem Submission.br_la_abs_apply_le_mul_mass :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (Y : GeometricCurrentOn U n) (ω : TestFormOn U n) (C : ℝ),
+      0 < C → (∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      Y.mass ≠ ∞ → |Y ω| ≤ C * Y.mass.toReal := by
+  intro P n U Y ω C hC hω hY
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- If `|η| ≤ C` pointwise, then `C⁻¹ η` is mass-admissible, hence `Y(η) ≤ C · M(Y)`.
+  have hone : ∀ η : TestFormOn U n,
+      (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C) →
+        Y η ≤ C * Y.mass.toReal := by
+    intro η hη
+    have hadm : C⁻¹ • η ∈ massAdmissibleOn U n U := by
+      refine ⟨(C⁻¹ • η).property.2, fun x => ?_⟩
+      change covectorEuclideanNorm (C⁻¹ • (η : DifferentialForm (Eucl P) n) x) ≤ 1
+      rw [hsmul, abs_of_pos (inv_pos.mpr hC), inv_mul_le_iff₀ hC, mul_one]
+      exact hη x
+    have hle : ENNReal.ofReal (Y (C⁻¹ • η)) ≤ Y.mass := Y.le_massOn hadm
+    rwa [ENNReal.ofReal_le_iff_le_toReal hY, map_smul, smul_eq_mul, inv_mul_le_iff₀ hC] at hle
+  -- Apply this to `ω` and to `-ω`, using `|-ω(x)| = |ω(x)|` and `Y(-ω) = -Y(ω)`.
+  have hneg := hone (-ω) fun x => by
+    change covectorEuclideanNorm (-(ω : DifferentialForm (Eucl P) n) x) ≤ C
+    rw [covectorEuclideanNorm_neg]
+    exact hω x
+  have hYneg : Y (-ω) = -Y ω := map_neg Y.toCurrent ω
+  rw [hYneg] at hneg
+  exact abs_le.mpr ⟨by linarith, hone ω hω⟩
+/-- **Test forms have bounded Euclidean coefficient norm** (the finiteness of `sup_x |ω(x)|` behind
+"Evidently (1), (2) give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).
+`x ↦ |ω(x)|` is continuous, since `α ↦ |α|` is the square root of a finite sum of squares of
+evaluations, and has compact support, since `|0| = 0`.  A continuous compactly supported real
+function is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` is positive. -/
+theorem Submission.br_la_testForm_covectorNorm_bounded : ∀ (P n : ℕ) (U : Set (Eucl P)) (ω : TestFormOn U n), ∃ C : ℝ, 0 < C ∧ ∀ x : Eucl P, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C := by
+  intro P n U ω
+  -- `ω` is smooth, hence continuous.
+  have hω : Continuous (ω : DifferentialForm (Eucl P) n) := ω.property.1.1.continuous
+  -- `x ↦ |ω(x)|` is continuous: a square root of a finite sum of squares of evaluations.
+  have hcont : Continuous fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) := by
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    split_ifs
+    · exact (hω.eval_const _).pow 2
+    · exact continuous_const
+  -- `|ω(x)| = 0` wherever `ω(x) = 0`, so `x ↦ |ω(x)|` inherits the compact support of `ω`.
+  have hsupp : HasCompactSupport fun x =>
+      covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) := by
+    refine ω.property.1.2.mono' fun x hx => subset_tsupport _ fun h => hx ?_
+    simp [h]
+  -- A continuous compactly supported function is bounded by some `C₀ ≥ |f(0)| ≥ 0`.
+  obtain ⟨C₀, hC₀⟩ := hcont.bounded_above_of_compact_support hsupp
+  refine ⟨C₀ + 1, by linarith [(norm_nonneg _).trans (hC₀ 0)], fun x => ?_⟩
+  linarith [le_abs_self (covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x)),
+    (Real.norm_eq_abs _).symm.trans_le (hC₀ x)]
+
+/-- **Flat decompositions with vanishing masses converge weakly** (the step "Evidently (1), (2)
+give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).  Let `X − P_k = ∂R_k + S_k` with
+`M(R_k), M(S_k) → 0`, and fix `ω` with `|ω| ≤ C₁` and `|dω| ≤ C₂`.  Since `∂R_k(ω) = R_k(dω)`,
+once both masses are finite `|X(ω) − P_k(ω)| ≤ |R_k(dω)| + |S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`,
+and the right-hand side tends to `0`. -/
+theorem Submission.br_la_weaklyConvergesOn_of_flat_decomposition : ∀ (P m : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U (m + 1)) (Pk S : ℕ → GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)), (∀ (k : ℕ) (ω : TestFormOn U (m + 1)), X ω - Pk k ω = (R k).boundary ω + S k ω) → Tendsto (fun k => (R k).mass) atTop (𝓝 0) → Tendsto (fun k => (S k).mass) atTop (𝓝 0) → WeaklyConvergesOn Pk X := by
+  intro P m U X Pk S R hdec hR hS ω
+  -- `|ω| ≤ C₁` and `|dω| ≤ C₂` everywhere, where `dω ∈ 𝒟^{m+2}(U)`.
+  obtain ⟨C₁, hC₁, hω⟩ := Submission.br_la_testForm_covectorNorm_bounded P (m + 1) U ω
+  obtain ⟨C₂, hC₂, hdω⟩ := Submission.br_la_testForm_covectorNorm_bounded P (m + 2) U
+    (exteriorDerivativeTestOn U (m + 1) ω)
+  -- `M(R_k), M(S_k) → 0` in `[0, ∞]`: eventually finite, with real values tending to `0`.
+  have hRfin : ∀ᶠ k in atTop, (R k).mass ≠ ∞ :=
+    hR.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hSfin : ∀ᶠ k in atTop, (S k).mass ≠ ∞ :=
+    hS.eventually (eventually_ne_nhds ENNReal.zero_ne_top)
+  have hRreal : Tendsto (fun k => (R k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hR
+  have hSreal : Tendsto (fun k => (S k).mass.toReal) atTop (𝓝 0) := by
+    simpa [Function.comp_def] using (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hS
+  -- For large `k`: `|X(ω) − P_k(ω)| = |R_k(dω) + S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`.
+  have hbound : ∀ᶠ k in atTop,
+      ‖X ω - Pk k ω‖ ≤ C₂ * (R k).mass.toReal + C₁ * (S k).mass.toReal := by
+    filter_upwards [hRfin, hSfin] with k hRk hSk
+    rw [hdec k ω, GeometricCurrentOn.boundary_apply, Real.norm_eq_abs]
+    exact (abs_add_le _ _).trans (add_le_add
+      (Submission.br_la_abs_apply_le_mul_mass P (m + 2) U (R k)
+        (exteriorDerivativeTestOn U (m + 1) ω) C₂ hC₂ hdω hRk)
+      (Submission.br_la_abs_apply_le_mul_mass P (m + 1) U (S k) ω C₁ hC₁ hω hSk))
+  -- Squeeze: `X(ω) − P_k(ω) → 0`, hence `P_k(ω) → X(ω)`.
+  have hlim : Tendsto (fun k => C₂ * (R k).mass.toReal + C₁ * (S k).mass.toReal) atTop
+      (𝓝 0) := by
+    simpa using (hRreal.const_mul C₂).add (hSreal.const_mul C₁)
+  simpa using (tendsto_const_nhds (x := X ω)).sub (squeeze_zero_norm' hbound hlim)
+/-- Currents of degree `n > P` in `ℝ^P` vanish (step 1 of the proof of Simon Ch. 6, 6.2): any `n`
+vectors of `ℝ^P` are linearly dependent, so every `n`-covector is `0`, every test form is `0`, and
+`X(ω) = X(0) = 0`. -/
+theorem Submission.br_la_apply_eq_zero_of_lt_degree :
+    ∀ (P n : ℕ) (U : Set (Eucl P)) (X : GeometricCurrentOn U n), P < n →
+      ∀ ω : TestFormOn U n, X ω = 0 := by
+  intro P n U X hPn ω
+  -- `ω(x)(v) = 0`: `v` is linearly dependent, since otherwise `n ≤ finrank ℝ^P = P`.
+  have hω : ω = 0 := by
+    apply Subtype.ext
+    funext x
+    ext v
+    refine AlternatingMap.map_linearDependent
+      ((ω : DifferentialForm (Eucl P) n) x).toAlternatingMap v fun hv => ?_
+    have hle := hv.fintype_card_le_finrank
+    rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hle
+    exact absurd hle (Nat.not_le.2 hPn)
+  change X.toCurrent ω = 0
+  rw [hω, map_zero]
 /-- Integrals over a lattice face as integrals over the parameter cube: for every `g`,
 `∫_{latticeFace ρ G} g dHᵈ = ∫_{[0,ρ]^d} g(∑_l ρ w_l e_l + ∑_j s_j e_{γ(j)}) ds`, `G = (w, γ)`.
 The map `L(t) = ∑_l ρ w_l e_l + ∑_j t_j e_{γ(j)}` is an isometry (`(e_{γ(j)})_j` is orthonormal)
@@ -3993,6 +4112,55 @@ theorem Submission.br_top_dim_lattice_approximation : ∀ (m : ℕ) (X : Geometr
       (c * (3 * 2 ^ (m + 1) * Real.sqrt ((m : ℝ) + 1)))).mul_const Mb
     rw [mul_zero, zero_mul] at h
     exact h.congr fun k => by ring
+
+/-- **Lattice approximation with bounded boundary masses** (the first paragraph of the proof of
+Simon Ch. 6, 6.2, p. 169, for `M(X), M(∂X) < ∞`).  If `P < m + 1` every `(m+1)`-current on `ℝ^P`
+vanishes and `P_k = 0` works; `P = m + 1` is `br_top_dim_lattice_approximation`.  If
+`P = m + 1 + ℓ` with `ℓ ≥ 1`, the Deformation Theorem 5.3 at scale `ρ_k = 1/(k+1)` gives
+`X − P_k = ∂R_k + S_k` with integer `β_F`, `M(∂P_k) ≤ C M(∂X)`, `M(R_k) ≤ C ρ_k M(X) → 0` and
+`M(S_k) ≤ C ρ_k M(∂X) → 0`, so `P_k ⇀ X`. -/
+theorem Submission.br_lattice_approximation : DeformationTheorem → ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.mass < ∞ → X.boundary.mass < ∞ → ∃ (ρ : ℕ → ℝ) (β : ℕ → LatticeFaceIndex (m + 1) P → ℤ) (Pk : ℕ → GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), (∀ k, 0 < ρ k) ∧ (∀ k, IsLatticeChain (ρ k) (fun F => (β k F : ℝ)) (Pk k)) ∧ WeaklyConvergesOn Pk X ∧ (⨆ k, (Pk k).boundary.mass) < ∞ := by
+  intro hdef P m X hX hXm hXb
+  rcases lt_trichotomy P (m + 1) with hP | rfl | hP
+  · -- `P < m + 1`: `X = 0`, so `ρ_k = 1`, `β_k = 0`, `P_k = 0` work; `M(∂0) = 0`.
+    have h0 : (0 : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)).boundary.mass = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, -, rfl⟩
+      simp
+    refine ⟨fun _ => 1, fun _ _ => 0, fun _ => 0, fun _ => one_pos, fun _ ω => by simp,
+      fun ω => ?_, by simp [h0]⟩
+    rw [Submission.br_la_apply_eq_zero_of_lt_degree P (m + 1) univ X hP ω]
+    exact tendsto_const_nhds
+  · -- `P = m + 1`: the top-dimensional case.
+    exact Submission.br_top_dim_lattice_approximation m X hX hXm hXb
+  · -- `P = m + 1 + ℓ`, `ℓ ≥ 1`: the Deformation Theorem at scale `ρ_k = 1/(k+1)`.
+    obtain ⟨ℓ, rfl⟩ : ∃ ℓ, P = m + 1 + ℓ := ⟨P - (m + 1), by omega⟩
+    obtain ⟨C, hC⟩ := hdef m ℓ (by omega)
+    have hρ : ∀ k : ℕ, (0 : ℝ) < 1 / ((k : ℝ) + 1) := fun k => by positivity
+    choose Pc β' R S hlat hdec _ hPb hR hS _ _ hint _ using
+      fun k => hC X (ENNReal.add_lt_top.2 ⟨hXm, hXb⟩) _ (hρ k)
+    -- `X` is integer multiplicity, so every `β'_k(F)` is an integer `β_k(F)`.
+    choose β hβ using fun k => (hint k hX).1
+    -- `C ρ_k A → 0` in `[0, ∞]` for finite `A`.
+    have hlim : ∀ A : ℝ≥0∞, A ≠ ∞ → Tendsto
+        (fun k : ℕ => (C : ℝ≥0∞) * ENNReal.ofReal (1 / ((k : ℝ) + 1)) * A) atTop (𝓝 0) := by
+      intro A hA
+      have h := ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+      rw [ENNReal.ofReal_zero] at h
+      have h' := ENNReal.Tendsto.mul_const
+        (ENNReal.Tendsto.const_mul h (Or.inr (ENNReal.coe_ne_top (r := C)))) (Or.inr hA)
+      rwa [mul_zero, zero_mul] at h'
+    refine ⟨fun k => 1 / ((k : ℝ) + 1), β, Pc, hρ, fun k ω => ?_, ?_, ?_⟩
+    · simp only [hlat k ω, hβ]
+    · -- `M(R_k) ≤ C ρ_k M(X) → 0` and `M(S_k) ≤ C ρ_k M(∂X) → 0`.
+      exact Submission.br_la_weaklyConvergesOn_of_flat_decomposition (m + 1 + ℓ) m univ X Pc S R
+        hdec
+        (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim _ hXm.ne)
+          (fun _ => zero_le) hR)
+        (tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hlim _ hXb.ne)
+          (fun _ => zero_le) hS)
+    · -- `sup_k M(∂P_k) ≤ C M(∂X) < ∞`.
+      exact (iSup_le hPb).trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hXb)
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
