@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.zero_im-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "The zero current is integer multiplicity",
+  "statement": "For all P, n ∈ ℕ and every set U ⊆ ℝ^P, the zero current 0 ∈ 𝒟_n(U) (GeometricCurrentOn U n, whose value on every test form is 0) is integer multiplicity: some IMRep R of the contract (structure IMRep U n) represents it, i.e. 0 = R.action ω for every ω ∈ 𝒟ⁿ(U) (TestFormOn U n).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)), IsIntegerMultiplicity (0 : GeometricCurrentOn U n)",
+  "lean_name": "cmcsd_zero_isIntegerMultiplicity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-6ed76f4acb-a1"
+}
