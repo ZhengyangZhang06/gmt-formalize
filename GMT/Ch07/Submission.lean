@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lipschitz extension into `ℝᴾ` with a `√P` loss** (Simon Ch. 2, 1.2, applied to each
+coordinate; used for the deformation theorem, Ch. 6, 5.1).  Each coordinate `x ↦ ψ(x)ᵢ` is
+`K`-Lipschitz on `S` since `|vᵢ| ≤ |v|`; McShane's extension gives `K`-Lipschitz `gᵢ : ℝᴾ → ℝ`
+with `gᵢ = ψ(·)ᵢ` on `S`, and `φ = (gᵢ)ᵢ` agrees with `ψ` on `S` and satisfies
+`|φ(x) − φ(y)|² = Σᵢ |gᵢ(x) − gᵢ(y)|² ≤ P K² |x − y|²`. -/
+theorem Submission.dor_lmb_fcd_sd_lipschitz_extend : ∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S := by
+  intro P S ψ K hψ
+  -- each coordinate of `ψ` is `K`-Lipschitz on `S`, as `|v i| ≤ ‖v‖`
+  have hcoord : ∀ i : Fin P, LipschitzOnWith K (fun x => ψ x i) S := fun i =>
+    LipschitzOnWith.of_dist_le_mul fun x hx y hy =>
+      (PiLp.dist_apply_le (ψ x) (ψ y) i).trans (hψ.dist_le_mul x hx y hy)
+  -- McShane extension of every coordinate
+  choose g hg hgS using fun i => (hcoord i).extend_real
+  refine ⟨fun x => WithLp.toLp 2 fun i => g i x, LipschitzWith.of_dist_le_mul fun x y => ?_,
+    fun x hx => ?_⟩
+  · -- `dist (φ x) (φ y) = √(Σᵢ dist (gᵢ x) (gᵢ y) ^ 2) ≤ √(P (K dist x y) ^ 2)`
+    rw [EuclideanSpace.dist_eq]
+    calc _ ≤ √(∑ _i : Fin P, ((K : ℝ) * dist x y) ^ 2) := by
+          gcongr with i
+          exact (hg i).dist_le_mul x y
+      _ = ↑(NNReal.sqrt P * K) * dist x y := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (by positivity), NNReal.coe_mul,
+            Real.coe_sqrt, NNReal.coe_natCast, mul_assoc]
+  · -- agreement on `S`, coordinatewise
+    ext i
+    exact (hgS i hx).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
