@@ -1962,6 +1962,345 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
 
+/-- **Simon Ch. 6, Lemma 3.13 (steps 5–7 of the proof)**: an `Hⁿ`-a.e. limit `η` of integer
+multiplicity densities `D_q = 1_{N_q} ϑ_q ζ_q` of `IMRep`s `R_q = (N_q, ϑ_q, ζ_q)` in the open `U`,
+whose weights `μ_{R_q}(K)` are bounded uniformly in `q` on each compact `K ⊆ U`, is itself the
+density of an `IMRep` `R'`, and `R'` acts by `ω ↦ ∫ ⟨ω, η⟩ dHⁿ`.
+* `N(ζ) = √|ζ(Lζ)|`, with `L` from `dor_ims_unitOrientation_dual`, is continuous with
+  `N(cζ) = c` for unit orientations `ζ` and `c ≥ 0`; so `N(D_q) = 1_{N_q} ϑ_q ∈ ℕ` a.e., and these
+  integers are eventually equal to `θ = ⌊N(η̃)⌋` (`η̃` a Borel version of `η`) off a Borel null set.
+* `M = (⋃_q N_q) ∩ {θ ≥ 1}` and `ξ = η̃ / θ` on `M`; Fatou bounds `∫_{M ∩ K} θ dHⁿ` by the
+  weight bound.
+* On `M`, eventually `x ∈ N_q` with `TₓN_q = TₓM` (tangent locality), so `ζ_q(x) = ±e` orients
+  `TₓM` and `ζ_q(x) = D_q(x) / θ(x) → ξ(x)`; hence `ξ(x) = ±e` orients `TₓM`.
+* `D_{R'} = η` a.e., so the actions agree. -/
+theorem Submission.dor_lmb_fc_ims_ae_limit_imrep : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n) (η : Euclid P → MultiVector P n), IsOpen U → (∀ᵐ x ∂μHE[n], Tendsto (fun q => (R q).carrier.indicator (fun y => ((R q).mult y : ℝ) • (R q).orient y) x) atTop (𝓝 (η x))) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ q, (R q).measure K ≤ C) → ∃ R' : IMRep U n, (∀ᵐ x ∂μHE[n], R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x = η x) ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = ∫ x, η x (ω x) ∂μHE[n] := by
+  have hIMC := Submission.cmc_imRep_locality_restrict_sub
+  have hUOD := Submission.dor_ims_unitOrientation_dual
+  have hsign := Submission.rsdic_unitOrientation_eq_or_eq_neg
+  intro P n U R η hU hconv hbound
+  obtain ⟨L, hL⟩ := hUOD P n
+  -- Step 0: the multiplicity functional N(ζ) = √|ζ(Lζ)|
+  set N : MultiVector P n → ℝ := fun ζ => Real.sqrt |ζ (L ζ)| with hN
+  have hN_cont : Continuous N := by
+    have h1 : Continuous fun ζ : MultiVector P n => ζ (L ζ) :=
+      isBoundedBilinearMap_apply.continuous.comp (continuous_id.prodMk L.continuous)
+    exact Real.continuous_sqrt.comp (continuous_abs.comp h1)
+  have hN_smul : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (c : ℝ),
+      IsUnitOrientationOf ζ Q → 0 ≤ c → N (c • ζ) = c := by
+    intro ζ Q c hζ hc
+    have h1 := (hL ζ Q hζ).2.2
+    have h2 : (c • ζ) (L (c • ζ)) = c * c := by
+      rw [map_smul, smul_apply, map_smul, h1, smul_eq_mul, smul_eq_mul, mul_one]
+    simp only [hN, h2]
+    rw [abs_of_nonneg (mul_nonneg hc hc), Real.sqrt_mul_self hc]
+  have hN_zero : N 0 = 0 := by simp [hN]
+  -- densities and integer multiplicities
+  set D : ℕ → Euclid P → MultiVector P n := fun q x =>
+    (R q).carrier.indicator (fun y => ((R q).mult y : ℝ) • (R q).orient y) x with hD
+  set b : ℕ → Euclid P → ℕ := fun q x => (R q).carrier.indicator (R q).mult x with hb
+  have hb_meas : ∀ q, Measurable (b q) := fun q =>
+    (R q).measurable_mult.indicator (R q).measurableSet_carrier
+  have hor : ∀ q, ∀ᵐ x ∂μHE[n], x ∈ (R q).carrier → ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (R q).carrier x Q ∧ IsUnitOrientationOf ((R q).orient x) Q :=
+    fun q => (ae_restrict_iff' (R q).measurableSet_carrier).1 (R q).orients
+  -- Step 1: N(D_q(x)) = b_q(x) a.e.
+  have hND : ∀ q, ∀ᵐ x ∂μHE[n], N (D q x) = (b q x : ℝ) := by
+    intro q
+    filter_upwards [hor q] with x hx
+    by_cases hxM : x ∈ (R q).carrier
+    · obtain ⟨Q, -, hQ⟩ := hx hxM
+      simp only [hD, hb, Set.indicator_of_mem hxM]
+      exact hN_smul _ Q _ hQ (Nat.cast_nonneg _)
+    · simp only [hD, hb, Set.indicator_of_notMem hxM, Nat.cast_zero]
+      exact hN_zero
+  -- Step 2: a Borel version of η
+  have hmult_meas : ∀ q, Measurable (fun y => ((R q).mult y : ℝ)) := fun q =>
+    measurable_from_nat.comp (R q).measurable_mult
+  have hD_meas : ∀ q, AEStronglyMeasurable (D q) μHE[n] := fun q =>
+    (aestronglyMeasurable_indicator_iff (R q).measurableSet_carrier).2
+      ((hmult_meas q).aestronglyMeasurable.smul (R q).aestronglyMeasurable_orient)
+  have hmetr : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace _
+      (inferInstance : PseudoEMetricSpace (MultiVector P n))
+  have hη_meas : AEStronglyMeasurable η μHE[n] :=
+    aestronglyMeasurable_of_tendsto_ae atTop hD_meas hconv
+  set ηt := hη_meas.mk η with hηt
+  have hηt_sm : StronglyMeasurable ηt := hη_meas.stronglyMeasurable_mk
+  have hηt_ae : η =ᵐ[μHE[n]] ηt := hη_meas.ae_eq_mk
+  -- Step 3: the good set and a Borel null set Z₀ containing its complement
+  set G : Set (Euclid P) := {x | η x = ηt x ∧ Tendsto (fun q => D q x) atTop (𝓝 (η x)) ∧
+    ∀ q, N (D q x) = (b q x : ℝ) ∧ (x ∈ (R q).carrier → ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (R q).carrier x Q ∧
+        IsUnitOrientationOf ((R q).orient x) Q)} with hG
+  have hG_ae : ∀ᵐ x ∂μHE[n], x ∈ G := by
+    have h3 := ae_all_iff.2 fun q => (hND q).and (hor q)
+    filter_upwards [hηt_ae, hconv, h3] with x h1 h2 h3
+    exact ⟨h1, h2, h3⟩
+  set Z₀ := toMeasurable μHE[n] Gᶜ with hZ₀
+  have hZ₀_meas : MeasurableSet Z₀ := measurableSet_toMeasurable _ _
+  have hZ₀_null : μHE[n] Z₀ = 0 := by
+    rw [hZ₀, measure_toMeasurable]
+    exact hG_ae
+  have hgood : ∀ x, x ∉ Z₀ → x ∈ G := fun x hx => by
+    by_contra h
+    exact hx (subset_toMeasurable _ _ h)
+  -- Step 4: integer limits
+  have nat_stab : ∀ (c : ℕ → ℕ) (a : ℝ), Tendsto (fun q => (c q : ℝ)) atTop (𝓝 a) →
+      ∃ q₀, (∀ q ≥ q₀, c q = c q₀) ∧ a = c q₀ := by
+    intro c a h
+    obtain ⟨q₀, hq₀⟩ := (Metric.tendsto_atTop.1 h) (1 / 2) (by norm_num)
+    have hconst : ∀ q ≥ q₀, c q = c q₀ := by
+      intro q hq
+      have h1 := hq₀ q hq
+      have h2 := hq₀ q₀ le_rfl
+      rw [Real.dist_eq] at h1 h2
+      have h3 : |(c q : ℝ) - (c q₀ : ℝ)| < 1 := by
+        calc |(c q : ℝ) - (c q₀ : ℝ)| = |((c q : ℝ) - a) - ((c q₀ : ℝ) - a)| := by ring_nf
+          _ ≤ |(c q : ℝ) - a| + |(c q₀ : ℝ) - a| := abs_sub _ _
+          _ < 1 / 2 + 1 / 2 := add_lt_add h1 h2
+          _ = 1 := by norm_num
+      have h4 : |((c q : ℤ) - (c q₀ : ℤ))| < 1 := by
+        have : (((c q : ℤ) - (c q₀ : ℤ) : ℤ) : ℝ) = (c q : ℝ) - (c q₀ : ℝ) := by push_cast; ring
+        rw [← Int.cast_lt (R := ℝ), Int.cast_abs, this]
+        simpa using h3
+      have h5 := Int.abs_lt_one_iff.1 h4
+      omega
+    refine ⟨q₀, hconst, ?_⟩
+    have h5 : Tendsto (fun q => (c q : ℝ)) atTop (𝓝 (c q₀ : ℝ)) := by
+      apply tendsto_const_nhds.congr'
+      filter_upwards [eventually_ge_atTop q₀] with q hq
+      rw [hconst q hq]
+    exact tendsto_nhds_unique h h5
+  have hstab : ∀ x ∈ G, ∃ q₀, (∀ q ≥ q₀, b q x = b q₀ x) ∧ N (η x) = (b q₀ x : ℝ) := by
+    intro x hx
+    have h1 : Tendsto (fun q => N (D q x)) atTop (𝓝 (N (η x))) :=
+      (hN_cont.tendsto _).comp hx.2.1
+    have h2 : Tendsto (fun q => (b q x : ℝ)) atTop (𝓝 (N (η x))) :=
+      h1.congr fun q => (hx.2.2 q).1
+    exact nat_stab (fun q => b q x) _ h2
+  -- the multiplicity θ, the carrier M₊ and the orientation ξ
+  set θ : Euclid P → ℕ := Z₀ᶜ.indicator (fun y => ⌊N (ηt y)⌋₊) with hθ
+  have hθ_meas : Measurable θ :=
+    (Measurable.comp (show Measurable (Nat.floor : ℝ → ℕ) from Nat.floor_mono.measurable)
+      (hN_cont.measurable.comp hηt_sm.measurable)).indicator hZ₀_meas.compl
+  have hθ_good : ∀ x, x ∉ Z₀ → ∃ q₀, (∀ q ≥ q₀, b q x = θ x) := by
+    intro x hx
+    obtain ⟨q₀, hq₀, hNη⟩ := hstab x (hgood x hx)
+    refine ⟨q₀, fun q hq => ?_⟩
+    have h1 : θ x = b q₀ x := by
+      simp only [hθ, Set.indicator_of_mem (show x ∈ Z₀ᶜ from hx)]
+      rw [← (hgood x hx).1, hNη, Nat.floor_natCast]
+    rw [h1, hq₀ q hq]
+  set M : Set (Euclid P) := (⋃ q, (R q).carrier) ∩ Z₀ᶜ ∩ {x | 1 ≤ θ x} with hM
+  have hM_meas : MeasurableSet M :=
+    ((MeasurableSet.iUnion fun q => (R q).measurableSet_carrier).inter hZ₀_meas.compl).inter
+      (hθ_meas (MeasurableSet.of_discrete (s := {k : ℕ | 1 ≤ k})))
+  have hMU : M ⊆ U := fun x hx => by
+    obtain ⟨q, hq⟩ := mem_iUnion.1 hx.1.1
+    exact (R q).carrier_subset hq
+  set ξ : Euclid P → MultiVector P n := M.indicator (fun x => ((θ x : ℝ))⁻¹ • ηt x) with hξ
+  have hθr_meas : Measurable (fun x => ((θ x : ℝ))⁻¹) :=
+    (measurable_from_nat.comp hθ_meas : Measurable (fun x => (θ x : ℝ))).inv
+  have hξ_sm : StronglyMeasurable ξ :=
+    (hθr_meas.stronglyMeasurable.smul hηt_sm).indicator hM_meas
+  -- Step 6: Fatou and local finiteness
+  have hmeasK : ∀ q (K : Set (Euclid P)), MeasurableSet K →
+      (R q).measure K = ∫⁻ x, K.indicator (fun y => (b q y : ℝ≥0∞)) x ∂μHE[n] := by
+    intro q K hKm
+    have hNm := (R q).measurableSet_carrier
+    have h1 : K.indicator (fun y => (b q y : ℝ≥0∞)) =
+        (K ∩ (R q).carrier).indicator (fun y => ((R q).mult y : ℝ≥0∞)) := by
+      funext y
+      by_cases hyK : y ∈ K <;> by_cases hyN : y ∈ (R q).carrier <;> simp [hb, hyK, hyN]
+    rw [h1, lintegral_indicator (hKm.inter hNm), IMRep.measure, withDensity_apply _ hKm,
+      Measure.restrict_restrict hKm]
+  have hM_lint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∫⁻ x in M ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    intro K hK hKU
+    obtain ⟨C, hC, hCq⟩ := hbound K hK hKU
+    have hKm := hK.measurableSet
+    have hpt : ∀ x, (M ∩ K).indicator (fun y => (θ y : ℝ≥0∞)) x ≤
+        liminf (fun q => K.indicator (fun y => (b q y : ℝ≥0∞)) x) atTop := by
+      intro x
+      by_cases hx : x ∈ M ∩ K
+      · rw [Set.indicator_of_mem hx]
+        obtain ⟨q₀, hq₀⟩ := hθ_good x hx.1.1.2
+        have hev : (fun q => K.indicator (fun y => (b q y : ℝ≥0∞)) x) =ᶠ[atTop]
+            fun _ => (θ x : ℝ≥0∞) := by
+          filter_upwards [eventually_ge_atTop q₀] with q hq
+          rw [Set.indicator_of_mem hx.2, hq₀ q hq]
+        rw [(tendsto_const_nhds.congr' hev.symm).liminf_eq]
+      · rw [Set.indicator_of_notMem hx]
+        exact zero_le
+    have hlt : ∫⁻ x in M ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≤ C := by
+      calc ∫⁻ x in M ∩ K, (θ x : ℝ≥0∞) ∂μHE[n]
+          = ∫⁻ x, (M ∩ K).indicator (fun y => (θ y : ℝ≥0∞)) x ∂μHE[n] :=
+            (lintegral_indicator (hM_meas.inter hKm) _).symm
+        _ ≤ ∫⁻ x, liminf (fun q => K.indicator (fun y => (b q y : ℝ≥0∞)) x) atTop ∂μHE[n] :=
+            lintegral_mono hpt
+        _ ≤ liminf (fun q => ∫⁻ x, K.indicator (fun y => (b q y : ℝ≥0∞)) x ∂μHE[n]) atTop :=
+            lintegral_liminf_le fun q =>
+              ((measurable_from_nat.comp (hb_meas q) : Measurable (fun y => (b q y : ℝ≥0∞)))).indicator hKm
+        _ = liminf (fun q => (R q).measure K) atTop := by
+            congr 1
+            funext q
+            exact (hmeasK q K hKm).symm
+        _ ≤ C := liminf_le_of_frequently_le' (Frequently.of_forall hCq)
+    exact ne_top_of_le_ne_top hC hlt
+  have hNq_fin : ∀ q (K : Set (Euclid P)), IsCompact K → K ⊆ U →
+      μHE[n] ((R q).carrier ∩ K) ≠ ∞ := by
+    intro q K hK hKU
+    refine ne_top_of_le_ne_top ((R q).locallyIntegrable_mult K hK hKU) ?_
+    calc μHE[n] ((R q).carrier ∩ K) = ∫⁻ _ in (R q).carrier ∩ K, 1 ∂μHE[n] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in (R q).carrier ∩ K, ((R q).mult x : ℝ≥0∞) ∂μHE[n] := by
+          apply setLIntegral_mono' ((R q).measurableSet_carrier.inter hK.measurableSet)
+          intro x hx
+          exact_mod_cast (R q).mult_pos x hx.1
+  have hM_fin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (hM_lint K hK hKU) ?_
+    calc μHE[n] (M ∩ K) = ∫⁻ _ in M ∩ K, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in M ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] := by
+          apply setLIntegral_mono' (hM_meas.inter hK.measurableSet)
+          intro x hx
+          exact_mod_cast hx.1.2
+  -- Step 7: orientation
+  have htan : ∀ q, ∀ᵐ x ∂μHE[n], x ∈ M ∩ (R q).carrier → ∀ Q : Submodule ℝ (Euclid P),
+      (HasApproximateTangentSpaceAt n (M ∩ (R q).carrier) x Q ↔
+        HasApproximateTangentSpaceAt n (R q).carrier x Q) ∧
+      (HasApproximateTangentSpaceAt n (M ∩ (R q).carrier) x Q ↔
+        HasApproximateTangentSpaceAt n M x Q) := by
+    intro q
+    have hMq := hM_meas.inter (R q).measurableSet_carrier
+    have h1 := hIMC.1 P n U (M ∩ (R q).carrier) (R q).carrier hU hMq
+      (R q).measurableSet_carrier inter_subset_right (R q).carrier_subset (hNq_fin q)
+    have h2 := hIMC.1 P n U (M ∩ (R q).carrier) M hU hMq hM_meas inter_subset_left hMU hM_fin
+    rw [ae_restrict_iff' hMq] at h1 h2
+    filter_upwards [h1, h2] with x hx1 hx2 hx Q
+    exact ⟨hx1 hx Q, hx2 hx Q⟩
+  have htan' := ae_all_iff.2 htan
+  have horients : ∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+    rw [ae_restrict_iff' hM_meas]
+    filter_upwards [htan'] with x hx hxM
+    have hxZ : x ∉ Z₀ := hxM.1.2
+    have hxG := hgood x hxZ
+    obtain ⟨q₀, hq₀⟩ := hθ_good x hxZ
+    have hθpos : 1 ≤ θ x := hxM.2
+    have hmem : ∀ q ≥ q₀, x ∈ (R q).carrier ∧ (R q).mult x = θ x := by
+      intro q hq
+      have h1 := hq₀ q hq
+      by_cases hxq : x ∈ (R q).carrier
+      · refine ⟨hxq, ?_⟩
+        simpa [hb, hxq] using h1
+      · exfalso
+        simp only [hb, Set.indicator_of_notMem hxq] at h1
+        omega
+    have hTq : ∀ q ≥ q₀, ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf ((R q).orient x) Q := by
+      intro q hq
+      have hxq := (hmem q hq).1
+      obtain ⟨Q, hQT, hQu⟩ := (hxG.2.2 q).2 hxq
+      refine ⟨Q, ?_, hQu⟩
+      have h := hx q ⟨hxM, hxq⟩ Q
+      exact h.2.1 (h.1.2 hQT)
+    obtain ⟨Q, hQT, hQu⟩ := hTq q₀ le_rfl
+    set e := (R q₀).orient x with he
+    have hpm : ∀ q ≥ q₀, (R q).orient x ∈ ({e, -e} : Set (MultiVector P n)) := by
+      intro q hq
+      obtain ⟨Q', hQ'T, hQ'u⟩ := hTq q hq
+      have hQQ' : Q' = Q := hQ'T.unique hQT
+      rw [hQQ'] at hQ'u
+      rcases hsign P n e ((R q).orient x) Q hQu hQ'u with h | h
+      · exact Or.inl h
+      · exact Or.inr h
+    have hθx0 : (θ x : ℝ) ≠ 0 := by
+      have : θ x ≠ 0 := by omega
+      exact_mod_cast this
+    have hlim : Tendsto (fun q => (R q).orient x) atTop (𝓝 (ξ x)) := by
+      have h1 : Tendsto (fun q => ((θ x : ℝ))⁻¹ • D q x) atTop (𝓝 (((θ x : ℝ))⁻¹ • η x)) :=
+        hxG.2.1.const_smul _
+      have h2 : ξ x = ((θ x : ℝ))⁻¹ • η x := by
+        simp only [hξ, Set.indicator_of_mem hxM, hxG.1]
+      rw [h2]
+      refine h1.congr' ?_
+      filter_upwards [eventually_ge_atTop q₀] with q hq
+      obtain ⟨hxq, hmq⟩ := hmem q hq
+      simp only [hD, Set.indicator_of_mem hxq, hmq, smul_smul, inv_mul_cancel₀ hθx0, one_smul]
+    have hclosed : IsClosed ({e, -e} : Set (MultiVector P n)) :=
+      (Set.toFinite _).isClosed
+    have hξmem : ξ x ∈ ({e, -e} : Set (MultiVector P n)) :=
+      hclosed.mem_of_tendsto hlim (eventually_atTop.2 ⟨q₀, hpm⟩)
+    refine ⟨Q, hQT, ?_⟩
+    rcases hξmem with h | h
+    · rw [h]
+      exact hQu
+    · rw [Set.mem_singleton_iff.1 h]
+      obtain ⟨τ, hτ, hspan, hs⟩ := hQu
+      refine ⟨τ, hτ, hspan, ?_⟩
+      rcases hs with hs | hs
+      · right
+        intro α
+        rw [neg_apply, hs α]
+      · left
+        intro α
+        rw [neg_apply, hs α, neg_neg]
+  -- Step 8: the IMRep
+  let R' : IMRep U n :=
+    { carrier := M
+      mult := θ
+      orient := ξ
+      measurableSet_carrier := hM_meas
+      carrier_subset := hMU
+      rectifiable := (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _
+        fun q => (R q).rectifiable).mono fun x hx => hx.1.1
+      measurable_mult := hθ_meas
+      mult_pos := fun x hx => hx.2
+      locallyIntegrable_mult := hM_lint
+      aestronglyMeasurable_orient := hξ_sm.aestronglyMeasurable
+      orients := horients }
+  -- Step 9: the density of R' is η a.e., and the action formula
+  have hdens : ∀ᵐ x ∂μHE[n], M.indicator (fun y => (θ y : ℝ) • ξ y) x = η x := by
+    have hZ := measure_eq_zero_iff_ae_notMem.1 hZ₀_null
+    filter_upwards [hZ] with x hxZ
+    have hxG := hgood x hxZ
+    by_cases hxM : x ∈ M
+    · have hθ1 : 1 ≤ θ x := hxM.2
+      have hθx0 : (θ x : ℝ) ≠ 0 := by
+        have : θ x ≠ 0 := by omega
+        exact_mod_cast this
+      simp only [Set.indicator_of_mem hxM, hξ, smul_smul, mul_inv_cancel₀ hθx0, one_smul]
+      exact hxG.1.symm
+    · rw [Set.indicator_of_notMem hxM]
+      obtain ⟨q₀, hq₀⟩ := hθ_good x hxZ
+      have hzero : ∀ q ≥ q₀, D q x = 0 := by
+        intro q hq
+        by_cases hxq : x ∈ (R q).carrier
+        · exfalso
+          apply hxM
+          refine ⟨⟨mem_iUnion.2 ⟨q, hxq⟩, hxZ⟩, ?_⟩
+          show 1 ≤ θ x
+          rw [← hq₀ q hq]
+          simp only [hb, Set.indicator_of_mem hxq]
+          exact (R q).mult_pos x hxq
+        · simp only [hD, Set.indicator_of_notMem hxq]
+      have h5 : Tendsto (fun q => D q x) atTop (𝓝 0) := by
+        apply tendsto_const_nhds.congr'
+        filter_upwards [eventually_ge_atTop q₀] with q hq
+        rw [hzero q hq]
+      exact tendsto_nhds_unique h5 hxG.2.1
+  refine ⟨R', hdens, fun ω => ?_⟩
+  show ∫ x in M, (θ x : ℝ) * ξ x (ω x) ∂μHE[n] = ∫ x, η x (ω x) ∂μHE[n]
+  rw [← integral_indicator hM_meas]
+  apply integral_congr_ae
+  filter_upwards [hdens] with x hx
+  rw [← hx]
+  by_cases hxM : x ∈ M
+  · simp only [Set.indicator_of_mem hxM, smul_apply, smul_eq_mul]
+  · simp only [Set.indicator_of_notMem hxM, zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
