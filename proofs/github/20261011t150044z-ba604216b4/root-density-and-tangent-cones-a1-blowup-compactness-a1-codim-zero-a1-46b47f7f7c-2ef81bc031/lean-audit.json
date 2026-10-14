@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3daac3445455b41bacecb6e35b21f9ea6f03bc3ac6f78e288667d6d1bdc9174f",
+  "git_delta": {
+    "base_commit": "3dd8de82811dbf575cf313925f402241effcbc31",
+    "candidate_commit": "ee58b87c9ba30587ecd228e2e18aeb7ca10fa11d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_isMinimizingIn_bump_form",
+    "diff_sha256": "c873fb27841bd9a3541a5fc95c8bc17660708ff35a562efef6ebe11b175ebe34",
+    "source_sha256": "66039fdc2ccd5701eede9ab3df0218cde5fef6cae085fbf1301f698f54a881fb",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_isMinimizingIn_bump_form",
+      "statement": "∀ (n : ℕ) (p : Euclid n) (r : ℝ), 0 < r → ∃ ω : TestFormOn (univ : Set (Euclid n)) n, tsupport (ω : DifferentialForm (Euclid n) n) ⊆ closedBall p r ∧ 0 < ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
