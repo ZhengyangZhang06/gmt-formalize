@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Injective area formula with the Gram-determinant Jacobian, and Borel measurability of that Jacobian",
+  "statement": "Let m, P ∈ ℕ and f : ℝ^m → ℝ^P. Let Df(x) := fderiv ℝ f x (the zero map where f is not differentiable), e_k := EuclideanSpace.single k 1, and Jf(x) := (det[⟨Df(x)e_k, Df(x)e_l⟩]_{k,l})^{1/2} (Real.sqrt). Then (i) Jf : ℝ^m → ℝ is Borel measurable; (ii) for every Borel s ⊆ ℝ^m such that f is differentiable at every x ∈ s with Df(x) injective and f is injective on s, and for every g : ℝ^P → [0, ∞] (no measurability required), ∫⁻_{f(s)} g dH^m = ∫⁻_s ofReal(Jf(x)) · g(f(x)) dλ(x), where H^m := μHE[m] on ℝ^P and λ := volume is Lebesgue measure on ℝ^m.",
+  "lean_statement": "∀ (m P : ℕ) (f : Euclid m → Euclid P), Measurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ f x (EuclideanSpace.single k 1)) (fderiv ℝ f x (EuclideanSpace.single l 1))))) ∧ ∀ s : Set (Euclid m), MeasurableSet s → (∀ x ∈ s, DifferentiableAt ℝ f x) → (∀ x ∈ s, Injective (fderiv ℝ f x)) → InjOn f s → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in f '' s, g y ∂μHE[m] = ∫⁻ x in s, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ f x (EuclideanSpace.single k 1)) (fderiv ℝ f x (EuclideanSpace.single l 1))))) * g (f x) ∂volume",
+  "lean_name": "codim1_lura_gram_area_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1"
+}
