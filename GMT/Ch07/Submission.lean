@@ -1514,6 +1514,59 @@ theorem Submission.codim1_hcp_un_cross_product : ∀ (P m : ℕ) (A₀ : Submodu
         exact A₀.orthogonalProjectionOnto_mem_subspace_eq_self (w' k)
     rw [← h1, ← hΩ, ← key, ← hN, hzero, inner_zero_left]
 
+/-- **Continuous unit normal from an orientation** (Simon 6.2.2; the normal `ν` of a hypersurface
+in an `(m+1)`-plane `A₀`).  If `T_xM ⊆ A₀` for `x ∈ M`, `dim A₀ = m + 1` and `ξ` orients `M`, then
+`ν₀(x) = Σ_k ξ(x)(β_k) e_k` is a continuous unit normal of `M` in `A₀`.  Here `N` is the cross
+product of `A₀` (an alternating `m`-linear map into `A₀`, orthogonal to its arguments, unit on
+orthonormal families in `A₀`) and `β_k = e_k · N(·)` are `m`-covectors, so `ν₀` is a continuous
+linear image of `ξ`.  At `x ∈ M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τ_m` for an orthonormal basis `τ` of `T_xM`
+gives `ν₀(x) = ±N(τ)`: a unit vector of `A₀` orthogonal to `span τ = T_xM`. -/
+theorem Submission.codim1_hcp_un_orientation_normal : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), Module.finrank ℝ A₀ = m + 1 → (∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P))) → IsOrientation m M ξ → ∃ ν₀ : Euclid P → Euclid P, ContinuousOn ν₀ M ∧ ∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0 := by
+  intro P m A₀ M ξ hA₀ hTA hξ
+  obtain ⟨hξc, hξo⟩ := hξ
+  -- step 1: the cross product `N` of `A₀`
+  obtain ⟨N, hNA, hNorth, hNunit, -⟩ := Submission.codim1_hcp_un_cross_product P m A₀ hA₀
+  -- step 2: the `m`-covectors `β_k = e_k · N(·)`
+  let β : Fin P → Covector (Euclid P) m := fun k =>
+    (EuclideanSpace.proj k : Euclid P →L[ℝ] ℝ).compContinuousAlternatingMap N
+  -- step 3: `ν₀(x)` has coordinates `ξ(x)(β_k)`; it is continuous on `M` since `ξ` is
+  let ν₀ : Euclid P → Euclid P := fun x =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm fun k => ξ x (β k)
+  refine ⟨ν₀, ?_, fun x hx => ?_⟩
+  · exact (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp_continuousOn
+      (continuousOn_pi.2 fun k => hξc.clm_apply continuousOn_const)
+  -- step 4: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τ_m` for an orthonormal basis `τ` of `Q = T_xM`, so `ν₀(x) = ±N(τ)`
+  obtain ⟨Q, hQ, τ, hτ, hspan, hor⟩ := hξo x hx
+  have hν : ν₀ x = N τ ∨ ν₀ x = -N τ := by
+    rcases hor with h | h
+    · left
+      ext k
+      simp [ν₀, β, h]
+    · right
+      ext k
+      simp [ν₀, β, h]
+  -- step 5: `τ_j ∈ Q = T_xM ⊆ A₀`, so `N(τ)` is a unit vector of `A₀`; it is orthogonal to
+  -- every `τ_j`, hence to `span τ = Q = T_xM`
+  have hτA : ∀ j, τ j ∈ A₀ := fun j => hTA x hx <| by
+    rw [← hQ, ← hspan]
+    exact Submodule.subset_span ⟨j, rfl⟩
+  have hNspan : ∀ v ∈ Submodule.span ℝ (range τ), inner ℝ (N τ) v = 0 := by
+    intro v hv
+    induction hv using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨j, rfl⟩ := hy
+      exact hNorth τ j
+    | zero => exact inner_zero_right _
+    | add y z _ _ hy hz => rw [inner_add_right, hy, hz, add_zero]
+    | smul c y _ hy => rw [inner_smul_right, hy, mul_zero]
+  have hNT : ∀ v ∈ tangentSpace M x, inner ℝ (N τ) v = 0 := fun v hv => hNspan v <| by
+    rw [hspan, ← SetLike.mem_coe, hQ]
+    exact hv
+  rcases hν with hν | hν <;> rw [hν]
+  · exact ⟨hNA τ, hNunit τ hτ hτA, hNT⟩
+  · refine ⟨neg_mem (hNA τ), by rw [norm_neg, hNunit τ hτ hτA], fun v hv => ?_⟩
+    rw [inner_neg_left, hNT v hv, neg_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
