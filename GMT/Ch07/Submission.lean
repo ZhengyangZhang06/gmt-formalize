@@ -1339,6 +1339,49 @@ theorem Submission.dor_lmbsf_pc_chart_patch_coarea : ∀ (P n : ℕ) (V B Z : Se
   simp only [himgt] at hmeas heq
   rw [himg] at heq
   exact ⟨hmeas, heq⟩
+/-- **Gluing countably many co-area pieces** (countable additivity of `∫⁻`).  Let `ψ` be continuous
+and injective on `Z = ⋃_q Z_q`, the `Z_q` pairwise disjoint Borel sets, and `F` Borel.  Images
+under `ψ` of Borel subsets of `Z` are Borel (Lusin–Souslin) and images of disjoint subsets of `Z`
+are disjoint, so `ψ(Z ∩ F⁻¹{t}) = ⋃_q ψ(Z_q ∩ F⁻¹{t})` and `ψ(Z) = ⋃_q ψ(Z_q)` are countable
+disjoint Borel unions.  Hence `∫_{ψ(Z ∩ F⁻¹{t})} φ dHⁿ = Σ_q ∫_{ψ(Z_q ∩ F⁻¹{t})} φ dHⁿ`, a countable
+sum of a.e.-measurable functions of `t`, and exchanging `∫ dt` with `Σ_q` turns the co-area
+identities of the pieces into `∫_ℝ ∫_{ψ(Z ∩ F⁻¹{t})} φ dHⁿ dt = Σ_q ∫_{ψ(Z_q)} g dH^{n+1}
+= ∫_{ψ(Z)} g dH^{n+1}`. -/
+theorem Submission.dor_lmbsf_pc_coarea_glue : ∀ (P n : ℕ) (Z : Set (Euclid (n + 1))) (Zs : ℕ → Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (φ g : Euclid P → ℝ≥0∞), ContinuousOn ψ Z → InjOn ψ Z → Measurable F → (∀ q, MeasurableSet (Zs q)) → Pairwise (fun p q => Disjoint (Zs p) (Zs q)) → (⋃ q, Zs q) = Z → (∀ q, AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Zs q, g x ∂μHE[n + 1]) → AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Z, g x ∂μHE[n + 1] := by
+  intro P n Z Zs ψ F φ g hψc hψinj hF hZsm hZsd hZsU hq
+  have hZsZ : ∀ q, Zs q ⊆ Z := fun q => hZsU ▸ subset_iUnion Zs q
+  -- images of Borel subsets of `Z` are Borel (Lusin–Souslin)
+  have himgm : ∀ A : Set (Euclid (n + 1)), MeasurableSet A → A ⊆ Z → MeasurableSet (ψ '' A) :=
+    fun A hA hAZ => hA.image_of_continuousOn_injOn (hψc.mono hAZ) (hψinj.mono hAZ)
+  -- images of disjoint subsets of `Z` are disjoint (`ψ` is injective on `Z`)
+  have himgd : ∀ A A' : Set (Euclid (n + 1)), A ⊆ Z → A' ⊆ Z → Disjoint A A' →
+      Disjoint (ψ '' A) (ψ '' A') := by
+    intro A A' hA hA' hd
+    rw [Set.disjoint_left]
+    rintro x ⟨a, ha, rfl⟩ ⟨b, hb, hab⟩
+    have := hψinj (hA' hb) (hA ha) hab
+    exact Set.disjoint_left.mp hd ha (this ▸ hb)
+  -- each slice integral is the sum of the slice integrals of the pieces
+  have hslice : ∀ t : ℝ, ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n] =
+      ∑' q, ∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n] := by
+    intro t
+    have hU : ψ '' (Z ∩ F ⁻¹' {t}) = ⋃ q, ψ '' (Zs q ∩ F ⁻¹' {t}) := by
+      rw [← image_iUnion, ← iUnion_inter, hZsU]
+    rw [hU, lintegral_iUnion
+      (fun q => himgm _ ((hZsm q).inter (hF (measurableSet_singleton t)))
+        (inter_subset_left.trans (hZsZ q)))
+      (fun p q hpq => himgd _ _ (inter_subset_left.trans (hZsZ p))
+        (inter_subset_left.trans (hZsZ q)) ((hZsd hpq).mono inter_subset_left inter_subset_left))]
+  -- likewise for the right-hand side
+  have hrhs : ∫⁻ x in ψ '' Z, g x ∂μHE[n + 1] = ∑' q, ∫⁻ x in ψ '' Zs q, g x ∂μHE[n + 1] := by
+    have hU : ψ '' Z = ⋃ q, ψ '' Zs q := by rw [← image_iUnion, hZsU]
+    rw [hU]
+    exact lintegral_iUnion (fun q => himgm _ (hZsm q) (hZsZ q))
+      (fun p q hpq => himgd _ _ (hZsZ p) (hZsZ q) (hZsd hpq)) g
+  simp only [hslice]
+  refine ⟨AEMeasurable.tsum (fun q => (hq q).1), ?_⟩
+  rw [lintegral_tsum (fun q => (hq q).1), hrhs]
+  exact tsum_congr (fun q => (hq q).2)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
