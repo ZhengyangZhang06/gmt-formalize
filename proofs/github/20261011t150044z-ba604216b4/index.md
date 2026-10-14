@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4789 | this PR | root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.lipschitz_localization-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.null_image-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_image_tangent-a1, root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.chosen_tangent_plane-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_tangent_plane-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.glue_pieces-a1 |

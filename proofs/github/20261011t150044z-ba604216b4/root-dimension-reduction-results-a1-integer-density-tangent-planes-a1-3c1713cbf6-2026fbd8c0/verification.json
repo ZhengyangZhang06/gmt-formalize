@@ -1,0 +1,26 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/4789",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "c6ec7686721b52d4eb85ae77b1b40a186b3b2abb",
+  "integrated_commit": "",
+  "proof_base_commit": "1d91497901e9a040bb92dab7cea2968379e0e3a2",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.lipschitz_localization-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.null_image-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_image_tangent-a1",
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.chosen_tangent_plane-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_tangent_plane-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.glue_pieces-a1"
+  ]
+}

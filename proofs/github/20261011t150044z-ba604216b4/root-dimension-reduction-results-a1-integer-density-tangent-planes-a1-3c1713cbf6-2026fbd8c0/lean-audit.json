@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e2e6f62803cad93cb19f039d2e8658c66480e64ea2d2b55a1a497acb2c6522ca",
+  "git_delta": {
+    "base_commit": "259a8a2babc55c0f4d0af32b8d61e273d37fc0da",
+    "candidate_commit": "c6ec7686721b52d4eb85ae77b1b40a186b3b2abb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b47efb566d4547f5c00468557d0d75ed857d39462d04d77712b8d2cf72b51f15",
+    "source_sha256": "2db626b4921e4215710d2470f33e2872653c141e91e942f05ecbefd312c384b9",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_carrier_area_formula",
+      "statement": "∀ (P n : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → Euclid n) (h : Euclid P → ℝ≥0∞), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[n].restrict M) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * h x ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
