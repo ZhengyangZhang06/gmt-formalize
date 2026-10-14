@@ -1142,6 +1142,101 @@ theorem Submission.codim1_hcp_lsa_tangent_projection_continuousOn : ∀ (P m : �
   exact (hcont.congr hPQ x₀ ⟨hx₀, hx₀W⟩).mono_of_mem_nhdsWithin
     (inter_mem_nhdsWithin M (hWo.mem_nhds hx₀W))
 
+/-- **Measurability of the tangential derivative of a Lipschitz function** (Simon Ch. 2, §4; used
+in 7.5).  Let `M ⊆ ℝᴾ` be an embedded `C¹` `m`-dimensional submanifold, `ζ` locally Lipschitz on
+`M`, and `P_x` the orthogonal projection onto `T_xM`.  Then `x ↦ d^M_xζ ∘ P_x` is `Hᵐ⌞M`-a.e.
+strongly measurable.  On a graph chart `G : B_r(0) → M ∩ W` about `p` with `pr(G(a) − p) = a`,
+`pr ∘ DG(a) = id` and `T_{G(a)}M = DG(a)(ℝᵐ)`, the map `Ψ(x) = D(ζ ∘ G)(pr(x − p)) ∘ pr ∘ P_x` is
+a.e. strongly measurable (`D(ζ ∘ G)` is Borel and `x ↦ P_x` is continuous on `M`).  Where `ζ` is
+differentiable within `M` (`Hᵐ`-a.e. on `M`, by Rademacher), the chain rule gives
+`D(ζ ∘ G)(a) = d^M_xζ ∘ DG(a)` and `P_xv = DG(a)(pr P_xv)`, so `Ψ(x) = d^M_xζ ∘ P_x`.  Countably
+many chart domains cover `M`. -/
+theorem Submission.codim1_hcp_lsa_tangential_derivative_aesm : ∀ (P m : ℕ) (M : Set (Euclid P)) (ζ : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M ζ → AEStronglyMeasurable (fun x => (fderivWithin ℝ ζ M x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection) (μHE[m].restrict M) := by
+  intro P m M ζ hM hζ
+  -- step 1: `M` is Borel, `ζ` is differentiable within `M` a.e. on `M`, `x ↦ P_x` is continuous
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  have hdiff := Submission.codim1_hcp_lsa_rademacher_on_submanifold P m M ζ hM hζ
+  have hPc := Submission.codim1_hcp_lsa_tangent_projection_continuousOn P m M hM
+  set F : Euclid P → (Euclid P →L[ℝ] ℝ) := fun x =>
+    (fderivWithin ℝ ζ M x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection with hF
+  -- step 2: `F` is a.e. strongly measurable on `M ∩ W` for a graph-chart domain `W ∋ p`
+  have hloc : ∀ p ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ p ∈ O ∧
+      AEStronglyMeasurable F (μHE[m].restrict (M ∩ O)) := by
+    intro p hp
+    obtain ⟨pr, G, r, W, -, -, hWo, hpW, -, -, hGc, -, hMW, hleft, hderiv, htan⟩ :=
+      Submission.codim1_hcp_lsa_c1_graph_chart P m M p hM hp
+    refine ⟨W, hWo, hpW, ?_⟩
+    have hMWm : MeasurableSet (M ∩ W) := hMmeas.inter hWo.measurableSet
+    -- (b) the chart representative `Ψ(x) = D(ζ ∘ G)(pr(x − p)) ∘ pr ∘ P_x` is measurable
+    set Ψ : Euclid P → (Euclid P →L[ℝ] ℝ) := fun x =>
+      (fderiv ℝ (ζ ∘ G) (pr (x - p))).comp
+        (pr.comp (Submodule.span ℝ (tangentSpace M x)).starProjection) with hΨ
+    have hΨm : AEStronglyMeasurable Ψ (μHE[m].restrict (M ∩ W)) := by
+      have h1 : Measurable (fun x : Euclid P => fderiv ℝ (ζ ∘ G) (pr (x - p))) :=
+        (measurable_fderiv ℝ (ζ ∘ G)).comp (by fun_prop)
+      have h2 : ContinuousOn (fun x => pr.comp (Submodule.span ℝ (tangentSpace M x)).starProjection)
+          (M ∩ W) :=
+        ((ContinuousLinearMap.compL ℝ (Euclid P) (Euclid P) (Euclid m) pr).continuous
+          |>.comp_continuousOn hPc).mono inter_subset_left
+      exact isBoundedBilinearMap_comp.continuous.comp_aestronglyMeasurable
+        (h1.aestronglyMeasurable.prodMk (h2.aestronglyMeasurable hMWm))
+    -- (c) `Ψ = F` at every `x ∈ M ∩ W` where `ζ` is differentiable within `M`
+    refine hΨm.congr ?_
+    have hdiff' : ∀ᵐ x ∂(μHE[m].restrict (M ∩ W)), DifferentiableWithinAt ℝ ζ M x :=
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left hdiff
+    filter_upwards [hdiff', ae_restrict_mem hMWm] with x hxd hxMW
+    -- `x = G a` with `a = pr (x - p)`
+    have hxMW' := hxMW
+    rw [hMW] at hxMW'
+    obtain ⟨a, ha, rfl⟩ := hxMW'
+    simp only [hΨ, hF]
+    rw [hleft a ha]
+    -- chain rule: `D(ζ ∘ G)(a) = d^M_{G a}ζ ∘ DG(a)`
+    have hGM : MapsTo G (ball 0 r) M :=
+      fun b hb => (hMW.symm ▸ mem_image_of_mem G hb : G b ∈ M ∩ W).1
+    have hGd : HasFDerivAt G (fderiv ℝ G a) a :=
+      ((hGc.contDiffAt (isOpen_ball.mem_nhds ha)).differentiableAt one_ne_zero).hasFDerivAt
+    have hcomp : HasFDerivAt (ζ ∘ G) ((fderivWithin ℝ ζ M (G a)).comp (fderiv ℝ G a)) a :=
+      (hxd.hasFDerivWithinAt.comp a hGd.hasFDerivWithinAt hGM).hasFDerivAt
+        (isOpen_ball.mem_nhds ha)
+    rw [hcomp.fderiv]
+    ext v
+    simp only [ContinuousLinearMap.comp_apply]
+    -- `P_x v ∈ T_{G a}M = DG(a)(ℝᵐ)`, so `P_x v = DG(a) h` and `pr (P_x v) = h`
+    have hmem0 := Submodule.starProjection_apply_mem (Submodule.span ℝ (tangentSpace M (G a))) v
+    have hle : Submodule.span ℝ (tangentSpace M (G a)) ≤
+        LinearMap.range ((fderiv ℝ G a : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) := by
+      rw [Submodule.span_le, htan a ha]
+      rintro _ ⟨y, rfl⟩
+      exact ⟨y, rfl⟩
+    have hmem : ∃ h, (fderiv ℝ G a) h =
+        (Submodule.span ℝ (tangentSpace M (G a))).starProjection v :=
+      LinearMap.mem_range.1 (hle hmem0)
+    obtain ⟨h, hh⟩ := hmem
+    rw [← hh]
+    congr 1
+    have := congrArg (fun L => L h) (hderiv a ha)
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at this
+    rw [this]
+  -- step 3: countably many chart domains `O p`, `p ∈ T`, cover `M`
+  choose! O hOo hpO hO using hloc
+  obtain ⟨T, hTM, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable M O hOo
+  have hcount : Countable T := hTc.to_subtype
+  have hMU : M = ⋃ i : T, M ∩ O i := by
+    ext x
+    simp only [mem_iUnion, mem_inter_iff]
+    constructor
+    · intro hx
+      have hxU : x ∈ ⋃ p ∈ M, O p := mem_iUnion₂.2 ⟨x, hx, hpO x hx⟩
+      rw [← hTU] at hxU
+      obtain ⟨p, hpT, hxO⟩ := mem_iUnion₂.1 hxU
+      exact ⟨⟨p, hpT⟩, hx, hxO⟩
+    · rintro ⟨i, hx, -⟩
+      exact hx
+  -- step 4: a.e. strong measurability passes to the countable union
+  rw [hMU]
+  exact aestronglyMeasurable_iUnion_iff.2 fun i => hO i.1 (hTM i.2)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
