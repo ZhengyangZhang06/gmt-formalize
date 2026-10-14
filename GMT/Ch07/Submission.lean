@@ -529,6 +529,68 @@ theorem Submission.dtc_blowUp_testForm_corr : ∀ (P n : ℕ) (U : Set (Euclid P
       Fintype.card_fin, show -(lam⁻¹ • x) + dilationCLM P lam y = dilation x lam y from rfl, ← hω y]
     simp
 
+/-- **`currentEval` of the blow-up `η_{x,λ#}T` is `currentEval T ∘ η^#`** (Simon 6.2.23 for the
+dilation `η = η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`, chapter-06.txt lines 403–413; used for
+`η_{x,λⱼ#}T ⇀ C` in the proof of 7.3.1, chapter-07.txt lines 329–337).  For every `n`-form `ω` on
+`ℝᴾ`, `currentEval (η_{x,λ#}T) ω = currentEval T (η^#ω)`.  By multilinearity
+`(η^#ω)(y) = ω(η(y)) ∘ (λ⁻¹ id) = λ⁻ⁿ ω(η(y))`.  If `ω ∈ 𝒟ⁿ(η(U))`, then `ω' = ω ∘ η ∈ 𝒟ⁿ(U)` and
+`η^#ω = λ⁻ⁿ ω' ∈ 𝒟ⁿ(U)`, so both sides are `λ⁻ⁿ T(ω')` (`Submission.dtc_blowUp_testForm_corr`).
+Otherwise `η^#ω ∉ 𝒟ⁿ(U)` and both sides are `0`: if `η^#ω ∈ 𝒟ⁿ(U)`, then `λⁿ η^#ω = ω ∘ η` gives
+`ω₁ ∈ 𝒟ⁿ(η(U))` with `ω₁ ∘ η = ω ∘ η`, and `ω₁ = ω` since `η(x + λz) = z`. -/
+theorem Submission.dimred_tr_bc_currentEval_blowUp : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω) := by
+  intro P n U T x lam hlam ω
+  have hne : lam ≠ 0 := hlam.ne'
+  obtain ⟨hA1, hA2, hA3⟩ := Submission.dtc_blowUp_testForm_corr P n U x lam hlam
+  -- Step 1 (multilinearity): `(η^#ω)(p) = ω(η(p))(λ⁻¹ ·, …, λ⁻¹ ·) = λ⁻ⁿ ω(η(p))`.
+  have hpull : ∀ p, affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω p =
+      lam⁻¹ ^ n • ω (dilation x lam p) := by
+    intro p
+    ext v
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    have hv : ⇑(dilationCLM P lam) ∘ v = fun i => lam⁻¹ • v i := by
+      funext i
+      simp [dilationCLM]
+    rw [hv, ContinuousAlternatingMap.map_smul_univ, Finset.prod_const, Finset.card_univ,
+      Fintype.card_fin]
+    rfl
+  -- Step 2: `η` is surjective, `η(x + λz) = z`.
+  have hsurj : ∀ z, dilation x lam (x + lam • z) = z := by
+    intro z
+    simp [dilation, dilationCLM, smul_add, smul_smul, hne]
+  unfold currentEval
+  by_cases h : IsTestForm ω ∧ tsupport ω ⊆ dilation x lam '' U
+  · -- Case 1: `ω ∈ 𝒟ⁿ(η(U))`.  With `ω' = ω ∘ η ∈ 𝒟ⁿ(U)` (part (a)), `η^#ω = λ⁻ⁿ ω'`, so
+    -- `T(η^#ω) = λ⁻ⁿ T(ω') = η_{x,λ#}T(ω)` (part (c)).
+    rw [dite_eq_left h]
+    obtain ⟨ω', hω'⟩ := hA1 ⟨ω, h⟩
+    have hν : affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω =
+        ((lam⁻¹ ^ n • ω' : TestFormOn U n) : DifferentialForm (Euclid P) n) := by
+      funext p
+      rw [hpull p, Submodule.coe_smul, Pi.smul_apply, hω' p]
+    have h' : IsTestForm (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω) ∧
+        tsupport (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω) ⊆ U := by
+      rw [hν]
+      exact (lam⁻¹ ^ n • ω').property
+    have hν' : (⟨affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω, h'⟩ : TestFormOn U n) =
+        lam⁻¹ ^ n • ω' := Subtype.ext hν
+    rw [dite_eq_left h', hA3 T ⟨ω, h⟩ ω' hω', hν', map_smul, smul_eq_mul]
+  · -- Case 2: `ω ∉ 𝒟ⁿ(η(U))`.  If `η^#ω ∈ 𝒟ⁿ(U)`, then part (b) applied to `λⁿ η^#ω = ω ∘ η`
+    -- gives `ω₁ ∈ 𝒟ⁿ(η(U))` with `ω₁ ∘ η = ω ∘ η`, hence `ω₁ = ω` by surjectivity of `η`.
+    rw [dite_eq_right h]
+    have h' : ¬(IsTestForm (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω) ∧
+        tsupport (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω) ⊆ U) := by
+      intro h'
+      obtain ⟨ω₁, hω₁⟩ := hA2 (lam ^ n • (⟨_, h'⟩ : TestFormOn U n))
+      have hω₁ω : (ω₁ : DifferentialForm (Euclid P) n) = ω := by
+        funext z
+        have hz := hω₁ (x + lam • z)
+        rw [hsurj z, Submodule.coe_smul, Pi.smul_apply] at hz
+        change lam ^ n • affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω (x + lam • z) =
+          (ω₁ : DifferentialForm (Euclid P) n) z at hz
+        rw [← hz, hpull, hsurj z, smul_smul, ← mul_pow, mul_inv_cancel₀ hne, one_pow, one_smul]
+      exact h (hω₁ω ▸ ω₁.property)
+    rw [dite_eq_right h']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
