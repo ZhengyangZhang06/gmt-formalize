@@ -12816,6 +12816,61 @@ theorem Submission.dor_ims_massOn_le_measure : ∀ (P n : ℕ) (U : Set (Euclid 
           ENNReal.ofReal_toReal hμK]
     _ ≤ R.measure W := measure_mono hωW
 
+/-- **Simon Ch. 3, 1.4 for one bi-Lipschitz Lipschitz piece** (the blow-up argument of the proof
+of 1.6 '⇒'): let `F : ℝⁿ → ℝᴾ` be `L`-Lipschitz, `B ⊆ ℝⁿ` Borel and `m > 0` with
+`m|a − a'| ≤ |F a − F a'|` on `B`, and let `F` be differentiable at every point of `B` with
+injective derivative.  Then for a.e. `b ∈ B`, `range DF(b)` is the approximate tangent space of
+`F(B)` at `F b`.
+`F` is injective on `B`, so the area formula holds on `B` with a Borel Jacobian `0 ≤ J ≤ Lⁿ`
+satisfying `Hⁿ(DF(a)(S)) = J(a) λ(S)`.  At every Lebesgue point `b ∈ B` of `1_B J`,
+`∫_{η_{F b,r}(F(B))} f dHⁿ = ∫ 1_B J(b + rc) f(r⁻¹(F(b + rc) − F b)) dc` tends to
+`J(b) ∫ f(DF(b)c) dc = ∫_{range DF(b)} f dHⁿ` as `r ↓ 0`. -/
+theorem Submission.codim1_lur_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F B L m hF hB hm hcolip hreg
+  -- 0(a): `F` is injective on `B` (`F a = F a'` forces `m|a − a'| ≤ 0`)
+  have hinjOn : InjOn F B := by
+    intro a ha a' ha' hFa
+    have h := hcolip a ha a' ha'
+    rw [hFa, sub_self, norm_zero] at h
+    have h' : ‖a - a'‖ ≤ 0 := by
+      by_contra hcon
+      have := mul_pos hm (not_le.1 hcon)
+      linarith
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  -- 0(b)–(c): Borel Jacobian `0 ≤ J ≤ Lⁿ`, area formula on `B`, `Hⁿ(DF(a)(S)) = J(a) λ(S)`
+  obtain ⟨J, hJmeas, hJ, harea, hJlin⟩ :=
+    Submission.codim1_lurpt_piece_area_jacobian P n F B L hF hB hinjOn
+  -- 1: `1_B J` is Borel and bounded by `Lⁿ`, hence locally integrable
+  have hloc : LocallyIntegrable (B.indicator J) volume := by
+    refine (locallyIntegrable_const ((L : ℝ) ^ n)).mono (hJmeas.indicator hB).aestronglyMeasurable
+      (Eventually.of_forall fun a => ?_)
+    have hLn : (0 : ℝ) ≤ (L : ℝ) ^ n := by positivity
+    calc ‖B.indicator J a‖ ≤ ‖J a‖ := norm_indicator_le_norm_self J a
+      _ = J a := Real.norm_of_nonneg (hJ a).1
+      _ ≤ (L : ℝ) ^ n := (hJ a).2
+      _ = ‖(L : ℝ) ^ n‖ := (Real.norm_of_nonneg hLn).symm
+  -- a.e. `b ∈ B` is a Lebesgue point of `1_B J`, in the rescaled form
+  filter_upwards [ae_restrict_mem hB,
+    ae_restrict_of_ae (Submission.doraggt_ae_rescaled_lebesgue_point n _ hloc)] with b hbB hleb
+  obtain ⟨hdb, hinj⟩ := hreg b hbB
+  have hJb : B.indicator J b = J b := Set.indicator_of_mem hbB J
+  refine ⟨?_, fun f => ?_⟩
+  · -- `dim range DF(b) = n`, `DF(b)` being injective
+    rw [LinearMap.finrank_range_of_inj (f := (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) hinj,
+      finrank_euclideanSpace_fin]
+  · -- 6: `∫_{range DF(b)} f dHⁿ = J(b) ∫ f(DF(b)c) dc`
+    rw [Submission.pit_setIntegral_range_linear P n (fderiv ℝ F b) (J b) f (hJ b).1 (hJlin b)
+      (map_continuous f)]
+    -- 2–5: the rescaled integrals tend to `J(b) ∫ f(DF(b)c) dc`
+    refine (Submission.codim1_lurpt_rescaled_integral_tendsto P n F B J ((L : ℝ) ^ n) m b f
+      hF.continuous hB hJmeas hJ hm (fun a ha => hcolip a ha b hbB) hdb hinj
+      (fun R hR => by simpa only [hJb] using hleb R hR) (map_continuous f)
+      f.hasCompactSupport).congr' ?_
+    -- 3: for `r > 0` they are the integrals over the blow-ups `η_{F b,r}(F(B))`
+    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
+    exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
+      hJmeas (fun a => (hJ a).1) harea hr (map_continuous f)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
