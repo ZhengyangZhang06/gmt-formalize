@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "det_succ_column_zero|det_eq_zero_of_row_eq_zero|orderEmbOfFin_unique|exists_succAbove_eq|succAbove_left_injective|strictMono_succAbove|curryLeft_apply_apply|extDeriv_apply|Continuous.matrix_det|theorem EuclideanSpace.norm_eq|theorem basisFun_apply|theorem sum_repr",
+        "theorem fderiv_mul_const|theorem DifferentiableAt.smul_const|def det|theorem det_apply|abbrev vecCons|def vecCons|succAbove_right_inj",
+        "cbr_ci_pw_ipf_coord_covector",
+        "cbr_ci_pw_ipf_covector_norm_eq",
+        "dgcr_bwd_extDeriv_smul_const",
+        "git show 9dcae6bdd56dfe358491f8344e7a8610f929bf88 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbrpw-independent-audit-7zs0_2z4/Check.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/SuccPred.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Fin/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-59d5577759/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-59d5577759/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2/isolated-comparator-result.json",
+        "/tmp/cbrpw-decomp-7f3a/T5.lean",
+        "/tmp/cbrpw-independent-audit-7zs0_2z4/Check.lean"
+      ],
+      "conclusion": "Verified the pinned definitions and supporting lemmas, package revisions, and byte-identical contract files. Neither new name has a DAG reservation. The reused calculus declaration is comparator-accepted with an identical frozen type. All three child propositions elaborate before their implementations. An isolated replay from the frozen contract definitions compiled successfully, including all supplied trial proofs and the exact selected parent assembly; each theorem uses only propext, Classical.choice, and Quot.sound. The split appropriately separates determinant construction, coefficient-norm computation, and differentiation. Dependencies are acyclic and correctly directed: the norm lemma assumes coordinate values rather than invoking its sibling. Together the children establish precisely the selected parent statement."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coord_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every binder and matches the standalone one-line Lean proposition. The bare name is fresh. The proof explicitly establishes determinant continuity, curries the first argument, and computes each coordinate value by Laplace expansion: the matching minor is the identity and every other minor has a zero row. Signs and the empty minor for d = 0 are correct. Matrix.of constructions elaborate correctly. The proof is complete and does not invoke the child or parent conclusion."
+    },
+    {
+      "key": "covector_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the coordinate-value hypothesis for arbitrary ε. The bare name is fresh. The proof correctly identifies strictly increasing maps with the injectively indexed succAbove maps using cardinality and increasing-enumeration uniqueness. Reindexing the actual coefficient-norm definition and cancelling squared signs gives the Euclidean L² norm, including d = 0. No construction-specific assumption or sibling theorem is needed; the empty dependency list is correct."
+    },
+    {
+      "key": "extderiv_smul_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose for arbitrary P, m, tuple w, and differentiability at x. The bare name legitimately reuses the comparator-accepted declaration with an identical frozen type. Independently, the supplied proof establishes differentiability of the covector-valued product, applies exteriorDerivative_apply, differentiates each scalar evaluation using fderiv_mul_const, and converts integer sign actions to real multiplication. It requires no additional regularity or dimension assumptions and has no circular reliance."
+    }
+  ],
+  "required_changes": []
+}

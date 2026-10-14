@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Submission.lean (identical)",
+        "rg -n '^theorem cramer_apply|^theorem cramer_one' mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean (lines 96, 120)",
+        "rg -n 'theorem det_eq_zero_of_column_eq_zero|^theorem det_apply ' mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean (lines 365, 66); rg -n 'def detRowAlternating' same file (line 53)",
+        "rg -n '^def updateCol' mathlib/Mathlib/LinearAlgebra/Matrix/RowCol.lean (line 205)",
+        "rg -n 'def mkContinuous' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean (line 150: AlternatingMap.mkContinuous f C H)",
+        "rg -n 'def compLinearMap|theorem compLinearMap_apply' mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean (lines 506, 515)",
+        "rg -n 'theorem orthonormal_iff_ite' mathlib/Mathlib/Analysis/InnerProductSpace/ (Orthonormal.lean:82); rg -n 'theorem abs_real_inner_le_norm' (InnerProductSpace/Basic.lean:471)",
+        "rg -n 'theorem continuous_of_finiteDimensional' mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean mathlib/Mathlib/Analysis/Normed (no match; continuity is taken from mkContinuous instead)",
+        "grep -n Covector lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean (line 31: abbrev Covector E n := E [⋀^Fin n]→L[ℝ] ℝ)",
+        "python3 -I scan of dag.json lean_statement fields for existential Covector witnesses involving det and inner, and for det-covector lean_names (found cmr_cc_det_covector_exists [coordinate minors], covectorEuclideanNorm_gram_bounds, dgoj_covector_eq_det_mul_of_mem_span, codim1_lur_det_covector_clm; none matches det(⟨u_a, w_b⟩) for an arbitrary frame w)",
+        "git show fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e:GMT/Ch07/Submission.lean (layout of accepted Submission.cmr_cc_det_covector_exists: detRowAlternating.compLinearMap plus mkContinuous with a Leibniz bound, declared inside namespace GMT.Ch07)",
+        "rg -n -t lean 'cramer|updateCol|Orthonormal ℝ' and 'span_le_of|span_eq_of' over snapshot project/GMT (only the IsUnitOrientationOf definitions in Ch06/Ch07 Contract/Submission; no helper lemmas)",
+        "rg -l -t lean 'cbr_ci_pw_pu_' over snapshot project, workspace GMT/ and lake-packages-25730c7c/simongmt/Poincare (no match); python3 -I scan of the 1523 DAG lean_names (both proposed names fresh)",
+        "python3 -I validate_lean_statement from verifier/lean_contract.py on both child types (both pass unchanged)",
+        "lake env lean /tmp/pu-decomp-claude/lean/Elab.lean, ChkA.lean, ChkB.lean, Combined.lean (child types elaborate; both children proved; exact frozen parent type proved from the two child declarations; axioms propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Adjugate.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/RowCol.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba0c2ebbf6/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/tmp/pu-decomp-claude/lean/Elab.lean",
+        "/tmp/pu-decomp-claude/lean/ChkA.lean",
+        "/tmp/pu-decomp-claude/lean/ChkB.lean",
+        "/tmp/pu-decomp-claude/lean/Combined.lean"
+      ],
+      "conclusion": "The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Submission.lean. The node's proof base adds no accepted lemmas, so only Mathlib and the frozen contract are available.\n\nThe snapshot project has no helper for Cramer, updateCol or span inclusion; its only Orthonormal occurrences are the IsUnitOrientationOf definitions. No accepted DAG declaration gives the inner-product determinant covector det(⟨u_a, w_b⟩) for an arbitrary frame w. The closest, cmr_cc_det_covector_exists, handles coordinate minors only. Child A is therefore a new obligation; its construction follows that accepted proof's detRowAlternating.compLinearMap plus mkContinuous pattern.\n\nAll Mathlib facts the child proofs cite exist in the snapshot: Matrix.cramer_apply, Matrix.cramer_one, Matrix.det_eq_zero_of_column_eq_zero, Matrix.det_apply, Matrix.updateCol, Matrix.detRowAlternating, AlternatingMap.compLinearMap, AlternatingMap.mkContinuous, orthonormal_iff_ite, abs_real_inner_le_norm. Covector E n is E [⋀^Fin n]→L[ℝ] ℝ (SimonGMT Chapter06/Forms.lean:31).\n\nBoth proposed names are fresh. Both child types elaborate and pass validate_lean_statement. Scratch Lean proofs of both children compile, and a combined file proves the exact frozen parent type from the two child declarations. All of these checks use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.plane_unique-a1.inner_det_covector-a1",
+  "subproblem": {
+    "key": "inner_det_covector",
+    "title": "Inner-product determinant covectors exist for every frame",
+    "statement": "Let P, n ∈ ℕ and let w = (w_1, …, w_n) be any family of n vectors in ℝ^P (w : Fin n → Euclid P). Then there is an n-covector β on ℝ^P, i.e. a continuous alternating n-linear form β : (ℝ^P)^n → ℝ (β ∈ Covector (Euclid P) n), such that for every u = (u_1, …, u_n) ∈ (ℝ^P)^n, β(u_1, …, u_n) = det(⟨u_a, w_b⟩)_{a,b}. Here (⟨u_a, w_b⟩)_{a,b} is the n×n real matrix whose entry in row a and column b is the Euclidean inner product ⟨u_a, w_b⟩, i.e. Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b)).",
+    "lean_statement": "∀ (P n : ℕ) (w : Fin n → Euclid P), ∃ β : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, β u = Matrix.det (Matrix.of fun a b => inner ℝ (u a) (w b))",
+    "lean_name": "cbr_ci_pw_pu_inner_det_covector",
+    "depends_on": [],
+    "natural_proof": "Notation: ⟨·,·⟩ is the Euclidean inner product on ℝ^P and ‖·‖ its norm. All matrices are n×n with rows and columns indexed by Fin n. The argument does not depend on n. For n = 0 every product below is empty (= 1), n! = 1, and the determinant of the empty matrix is 1.\n\n1. Linear row map. Define p_w : ℝ^P → ℝ^n by p_w(x) := (⟨x, w_1⟩, …, ⟨x, w_n⟩). The real inner product is linear in its first argument: ⟨x + x', w_b⟩ = ⟨x, w_b⟩ + ⟨x', w_b⟩ and ⟨c·x, w_b⟩ = c·⟨x, w_b⟩ (inner_add_left, inner_smul_left). Hence p_w is ℝ-linear.\n\n2. The alternating map. Let D := Matrix.detRowAlternating : (ℝ^n)^n → ℝ be the determinant viewed as a function of the n rows of a matrix; it is n-linear and alternating. Put β⁰ := D.compLinearMap p_w, i.e. β⁰(u_1, …, u_n) := D(p_w(u_1), …, p_w(u_n)). Precomposing every slot of an alternating n-linear map with one fixed linear map gives an alternating n-linear map (AlternatingMap.compLinearMap). So β⁰ : (ℝ^P)^n → ℝ is alternating and n-linear. The matrix whose a-th row is p_w(u_a) has entry ⟨u_a, w_b⟩ in row a and column b. Hence, by unfolding the definitions, β⁰(u) = det(⟨u_a, w_b⟩)_{a,b} = Matrix.det (Matrix.of fun a b => ⟨u_a, w_b⟩) for every u.\n\n3. The bound. Fix u. By the Leibniz formula det X = Σ_{σ ∈ Perm(Fin n)} sgn(σ)·Π_a X_{σ(a), a} (Matrix.det_apply), we have β⁰(u) = Σ_σ sgn(σ)·Π_a ⟨u_{σ(a)}, w_a⟩.\n(i) By the triangle inequality, |sgn σ| = 1 and |Π_a t_a| = Π_a |t_a|: |β⁰(u)| ≤ Σ_σ Π_a |⟨u_{σ(a)}, w_a⟩|.\n(ii) For each σ, Cauchy–Schwarz |⟨u_{σ(a)}, w_a⟩| ≤ ‖u_{σ(a)}‖·‖w_a‖ (abs_real_inner_le_norm) and monotonicity of products of nonnegative reals give Π_a |⟨u_{σ(a)}, w_a⟩| ≤ Π_a (‖u_{σ(a)}‖·‖w_a‖) = (Π_a ‖u_{σ(a)}‖)·(Π_a ‖w_a‖).\n(iii) Since σ is a bijection of Fin n, reindexing gives Π_a ‖u_{σ(a)}‖ = Π_a ‖u_a‖ (Equiv.prod_comp).\n(iv) There are n! permutations of Fin n (Fintype.card_perm). Summing the constant bound from (ii)–(iii) over σ gives |β⁰(u)| ≤ n!·(Π_b ‖w_b‖)·(Π_a ‖u_a‖) = C·Π_a ‖u_a‖, where C := n!·Π_b ‖w_b‖ does not depend on u.\n\n4. Continuity and conclusion. AlternatingMap.mkContinuous f C H turns an alternating n-linear map f with ‖f(u)‖ ≤ C·Π_a ‖u_a‖ for all u into a continuous alternating map with the same values. Let β := β⁰.mkContinuous C H, with H the bound of step 3. Then β is a continuous alternating n-linear form, i.e. β ∈ Covector (Euclid P) n. For every u, β(u) = β⁰(u) = det(⟨u_a, w_b⟩)_{a,b} by step 2. So β witnesses the existential. ∎",
+    "proof_key_steps": [
+      "The row map p_w(x) := (⟨x, w_b⟩)_b is ℝ-linear because the inner product is linear in its first argument.",
+      "β⁰ := Matrix.detRowAlternating.compLinearMap p_w is alternating n-linear, and β⁰(u) = Matrix.det (Matrix.of fun a b => ⟨u_a, w_b⟩) by unfolding the definitions.",
+      "The Leibniz formula, |sgn σ| = 1, Cauchy–Schwarz, reindexing along σ and n! permutations give |β⁰(u)| ≤ (n!·Π_b‖w_b‖)·Π_a‖u_a‖.",
+      "β := β⁰.mkContinuous (n!·Π_b‖w_b‖) is a Covector (Euclid P) n with the same values as β⁰, so it witnesses the claim."
+    ]
+  },
+  "audit": {
+    "key": "inner_det_covector",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and standalone one-line Lean proposition agree for arbitrary P, n and w. The supplied proof constructs the real-linear row map, composes with the alternating determinant, establishes the factorial/product norm bound by Leibniz expansion and Cauchy–Schwarz, and applies mkContinuous without changing evaluations. This proves the exact existential, including n = 0, without circular reliance or missing hypotheses. The bare lean_name is fresh; no child dependency is needed."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0a389bb9c9/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0a389bb9c9/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-0a389bb9c9/parent-supplied-natural-proof.json"
+}
