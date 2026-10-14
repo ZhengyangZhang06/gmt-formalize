@@ -1795,6 +1795,119 @@ theorem Submission.cmcdt_lpi_unit_orientation_span : ∀ (P n : ℕ) (v : Fin n 
       ← mul_assoc, hdε]
   · -- Step 7: two unit orientations of `V` differ by a sign
     exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n ξ ζ _ hunit hζ
+/-- **The sign between an orientation field and the oriented Jacobian** (step 5 (B2′) of the
+integrality of Lipschitz push-forwards, for one piece; Simon Ch. 6, 3.4–3.5).  Let
+`G : ℝⁿ → ℝᴺ`, `A ⊆ ℝⁿ` Borel with `DG(u)` injective for `u ∈ A`, `v(u) = (DG(u)eₐ)ₐ` and
+`J(u) = √det(⟨vₐ(u), v_b(u)⟩)`.  If `ζ` is `λ⌞A`-a.e. strongly measurable and, `λ⌞A`-a.e., a unit
+orientation of `span v(u)`, then some Borel `s = ±1` has `J(u) ⟨α, ζ(u)⟩ = s(u) α(v(u))` for
+`λ⌞A`-a.e. `u` and every `n`-covector `α`.  The evaluation `ev_z(α) = α(z)` is continuous in `z`,
+so `g(u) = J(u)⁻¹ ev_{v(u)}` is Borel; for a Borel version `ζ'` of `ζ` take `s = 1` on
+`{ζ' = g}` and `s = -1` off it.  At a.e. `u ∈ A`, `cmcdt_lpi_unit_orientation_span` gives
+`J(u) > 0` and a unit orientation `ξᵤ = g(u)` of `span v(u)` with `α(v(u)) = J(u) ⟨α, ξᵤ⟩`, and
+`ζ(u) = ±ξᵤ`. -/
+theorem Submission.cmcdt_lpi_pr_orientation_sign : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (ζ : Euclid n → MultiVector N n), MeasurableSet A → (∀ u ∈ A, Injective (fderiv ℝ G u)) → AEStronglyMeasurable ζ (volume.restrict A) → (∀ᵐ u ∂(volume.restrict A), IsUnitOrientationOf (ζ u) (Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))))) → ∃ s : Euclid n → ℤ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid N) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * ζ u α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) := by
+  intro N n G A ζ hA hinj hζ hor
+  classical
+  -- Step 1: the evaluation functional `ev_z(α) = α(z)` depends continuously on `z`
+  let ev : (Fin n → Euclid N) → MultiVector N n := fun z =>
+    ContinuousAlternatingMap.apply ℝ (Euclid N) ℝ z
+  have hevb : ∀ z z₀ : Fin n → Euclid N,
+      ‖ev z - ev z₀‖ ≤ n * (max ‖z‖ ‖z₀‖) ^ (n - 1) * ‖z - z₀‖ := by
+    intro z z₀
+    apply ContinuousLinearMap.opNorm_le_bound _ (by positivity)
+    intro α
+    have h := α.norm_image_sub_le z z₀
+    simp only [Fintype.card_fin] at h
+    calc ‖(ev z - ev z₀) α‖ = ‖α z - α z₀‖ := rfl
+      _ ≤ ‖α‖ * n * max ‖z‖ ‖z₀‖ ^ (n - 1) * ‖z - z₀‖ := h
+      _ = _ := by ring
+  -- continuity for the operator-norm topology, which is the topology of `MultiVector N n`
+  have hev : Continuous ev := by
+    have hc : @Continuous _ _ _ (PseudoMetricSpace.toUniformSpace.toTopologicalSpace) ev := by
+      rw [Metric.continuous_iff]
+      intro z₀ ε hε
+      have hcb : Continuous fun z : Fin n → Euclid N =>
+          (n : ℝ) * (max ‖z‖ ‖z₀‖) ^ (n - 1) * ‖z - z₀‖ := by fun_prop
+      obtain ⟨δ, hδ, hδε⟩ := Metric.continuous_iff.mp hcb z₀ ε hε
+      refine ⟨δ, hδ, fun z hz => ?_⟩
+      have h1 := hδε z hz
+      simp only [sub_self, norm_zero, mul_zero, Real.dist_eq, sub_zero] at h1
+      have h2 : dist (ev z) (ev z₀) = ‖ev z - ev z₀‖ := dist_eq_norm (E := MultiVector N n) _ _
+      rw [h2]
+      exact lt_of_le_of_lt (hevb z z₀) (lt_of_le_of_lt (le_abs_self _) h1)
+    exact hc
+  -- `MultiVector N n` is metrizable; instance search does not see its norm topology
+  have : TopologicalSpace.MetrizableSpace (MultiVector N n) := by
+    let : MetricSpace (MultiVector N n) := inferInstance
+    exact inferInstance
+  -- Step 2: `v(u) = (DG(u)eₐ)ₐ` and `J(u)` are Borel
+  have hvm : Measurable fun u => (fun a => fderiv ℝ G u (EuclideanSpace.single a 1) :
+      Fin n → Euclid N) := by
+    exact Measurable.of_eval fun a => measurable_fderiv_apply_const ℝ G _
+  have hJm : Measurable fun u => Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n =>
+      inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1))
+        (fderiv ℝ G u (EuclideanSpace.single b 1)))) := by
+    have hc : Continuous fun z : Fin n → Euclid N =>
+        Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (z a) (z b))) := by
+      refine Real.continuous_sqrt.comp (Continuous.matrix_det ?_)
+      refine continuous_matrix fun a b => ?_
+      fun_prop
+    exact hc.measurable.comp hvm
+  -- Step 3: `g(u) = J(u)⁻¹ ev_{v(u)}` is strongly measurable
+  have hgm : StronglyMeasurable fun u =>
+      (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n =>
+        inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1))
+          (fderiv ℝ G u (EuclideanSpace.single b 1)))))⁻¹ •
+        ev (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) :=
+    hJm.inv.stronglyMeasurable.smul (hev.comp_stronglyMeasurable hvm.stronglyMeasurable)
+  -- Step 4: `S = {ζ' = g}` is Borel for the strongly measurable version `ζ'` of `ζ`;
+  -- `s = 1` on `S` and `s = -1` off `S`
+  have hset := hζ.stronglyMeasurable_mk.measurableSet_eq_fun hgm
+  refine ⟨fun u => if hζ.mk ζ u = (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n =>
+        inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1))
+          (fderiv ℝ G u (EuclideanSpace.single b 1)))))⁻¹ •
+        ev (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) then 1 else -1, ?_, ?_, ?_⟩
+  · exact Measurable.ite hset measurable_const measurable_const
+  · intro u
+    dsimp only
+    split_ifs <;> simp
+  · -- Step 5: for a.e. `u`, `ζ(u) = ζ'(u)`, `ζ(u)` orients `span v(u)` and `u ∈ A`
+    filter_upwards [hζ.ae_eq_mk, hor, ae_restrict_mem hA] with u h1 h2 h3
+    -- Step 6: `v(u) = DG(u) ∘ e` is linearly independent
+    have hli : LinearIndependent ℝ (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) := by
+      have h0 := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.linearIndependent
+      have h4 := h0.map' (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid N)
+        (LinearMap.ker_eq_bot.mpr (hinj u h3))
+      convert h4 using 1
+      funext a
+      simp
+    -- Step 7: `J(u) > 0`, `α(v(u)) = J(u) ξᵤ(α)`, and the unit orientations are `±ξᵤ`
+    obtain ⟨hdet, -, ξu, -, hξu, huniq⟩ := Submission.cmcdt_lpi_unit_orientation_span N n _ hli
+    set J := Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n =>
+        inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1))
+          (fderiv ℝ G u (EuclideanSpace.single b 1))))
+    have hJpos : 0 < J := Real.sqrt_pos.mpr hdet
+    -- so `ξᵤ = g(u)`
+    have hξeq : ξu = J⁻¹ • ev (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) := by
+      ext α
+      simp only [smul_apply, smul_eq_mul, ev,
+        ContinuousAlternatingMap.apply_apply, hξu α]
+      field_simp
+    intro α
+    split_ifs with h
+    · -- Step 8: `u ∈ S`, so `ζ(u) = g(u)` and `s(u) = 1`
+      rw [h1, h]
+      simp only [smul_apply, smul_eq_mul, ev,
+        ContinuousAlternatingMap.apply_apply]
+      field_simp
+      push_cast
+      ring
+    · -- Step 9: `u ∉ S`, so `ζ(u) ≠ ξᵤ`; hence `ζ(u) = -ξᵤ` and `s(u) = -1`
+      rcases huniq (ζ u) h2 with h4 | h4
+      · exact absurd (by rw [← h1, h4, hξeq]) h
+      · rw [h4, neg_apply, hξu α]
+        push_cast
+        ring
 /-- **A common Borel orientation for countably many integer multiplicity pieces** (countable
 form of the orientation argument behind Simon Ch. 6, Remark 3.2(1); chapter-06.txt lines
 733–756, with Ch. 3, 1.4–1.5, chapter-03.txt lines 77–89).  Let `Rᵢ = (Mᵢ, θᵢ, ξᵢ)` be
