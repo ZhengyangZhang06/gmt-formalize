@@ -642,6 +642,80 @@ theorem Submission.cbr_ci_gp_density_comparison : ∀ (P n : ℕ) (μ : Measure 
       rw [hD, ← mul_assoc (ω / 2 ^ n), ENNReal.div_mul_cancel h2 h2top, ← mul_assoc,
         ENNReal.mul_div_cancel htω0 htωtop]
 
+/-- **Upper density bound for `Hⁿ⌞M`** (Simon Ch. 1, Theorem 3.26(1); chapter-01.txt lines
+1197–1215).  Assume (IB) `Hⁿ ≤ (ωₙ/2ⁿ) μH[n]` and let `M ⊆ ℝᴾ` be Borel with `Hⁿ(M) < ∞`.  Then
+`Θ*(x) = limsup_{r ↓ 0} Hⁿ(M ∩ B̄_r(x)) / (ωₙ rⁿ) ≤ 1` for `Hⁿ⌞M`-a.e. `x`.  For `1 < t < ∞` and
+`A_t = {x ∈ M : t < Θ*(x)}`, outer regularity of the finite measure `Hⁿ⌞M` gives, for each
+`ε > 0`, an open `U ⊇ A_t` with `Hⁿ(M ∩ U) < Hⁿ(A_t) + ε`.  On small closed balls about points of
+`A_t` the measure `Hⁿ⌞(M ∩ U)` agrees with `Hⁿ⌞M`, so the density comparison (Simon 3.3,
+`cbr_ci_gp_density_comparison`) gives `t Hⁿ(A_t) ≤ Hⁿ(M ∩ U) < Hⁿ(A_t) + ε`; hence `Hⁿ(A_t) = 0`.
+Finally `{x ∈ M : 1 < Θ*(x)} ⊆ ⋃ₖ A_{1 + (k+1)⁻¹}` is `Hⁿ`-null. -/
+theorem Submission.cbr_ci_gp_upper_density_le_one : ∀ (P n : ℕ) (M : Set (Euclid P)), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P)) → MeasurableSet M → μHE[n] M < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 := by
+  intro P n M hIB hM hMfin
+  set Θ : Euclid P → ℝ≥0∞ := fun x => limsup (fun r : ℝ => μHE[n] (M ∩ closedBall x r) /
+    (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) with hΘ
+  have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict M) :=
+    isFiniteMeasure_restrict.2 hMfin.ne
+  -- Step 2: each superlevel set `A_t`, `1 < t < ∞`, is null
+  have key : ∀ t : ℝ≥0∞, 1 < t → t ≠ ∞ → μHE[n] {x | x ∈ M ∧ t < Θ x} = 0 := by
+    intro t ht1 httop
+    set A := {x | x ∈ M ∧ t < Θ x} with hAdef
+    have hAM : A ⊆ M := fun x hx => hx.1
+    have hAfin : μHE[n] A ≠ ∞ := (lt_of_le_of_lt (measure_mono hAM) hMfin).ne
+    have hle : t * μHE[n] A ≤ μHE[n] A := by
+      refine ENNReal.le_of_forall_pos_le_add fun ε hε _ => ?_
+      have hlt : ((μHE[n] : Measure (Euclid P)).restrict M) A < μHE[n] A + ε := by
+        rw [Measure.restrict_apply' hM, inter_eq_left.2 hAM]
+        exact ENNReal.lt_add_right hAfin (by simpa using hε.ne')
+      obtain ⟨U, hUA, hUo, hU⟩ := Set.exists_isOpen_lt_of_lt A _ hlt
+      rw [Measure.restrict_apply hUo.measurableSet] at hU
+      have h := Submission.cbr_ci_gp_density_comparison P n ((μHE[n] : Measure (Euclid P)).restrict (M ∩ U)) A t hIB
+        (zero_lt_one.trans ht1) (fun x hx => ?_)
+      · rw [Measure.restrict_apply_univ, inter_comm] at h
+        exact h.trans hU.le
+      · obtain ⟨η, hη, hball⟩ := Metric.isOpen_iff.1 hUo x (hUA hx)
+        have heq : (fun r : ℝ => ((μHE[n] : Measure (Euclid P)).restrict (M ∩ U)) (closedBall x r) /
+              (unitBallVolume n * ENNReal.ofReal (r ^ n))) =ᶠ[𝓝[>] 0]
+            (fun r : ℝ => μHE[n] (M ∩ closedBall x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) := by
+          have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r < η :=
+            nhdsWithin_le_nhds (gt_mem_nhds hη)
+          filter_upwards [hsmall] with r hr
+          rw [Measure.restrict_apply measurableSet_closedBall]
+          have hsub : closedBall x r ⊆ U := (closedBall_subset_ball hr).trans hball
+          congr 2
+          ext y
+          constructor
+          · rintro ⟨hy, hyM, -⟩
+            exact ⟨hyM, hy⟩
+          · rintro ⟨hyM, hy⟩
+            exact ⟨hy, hyM, hsub hy⟩
+        rw [limsup_congr heq]
+        exact hx.2
+    by_contra hA0
+    have : μHE[n] A * 1 < μHE[n] A * t := ENNReal.mul_lt_mul_right hA0 hAfin ht1
+    rw [mul_one, mul_comm] at this
+    exact absurd hle (not_le.2 this)
+  -- Step 3: the exceptional set is a countable union of null sets
+  have hcover : {x | x ∈ M ∧ 1 < Θ x} ⊆
+      ⋃ k : ℕ, {x | x ∈ M ∧ 1 + ((k : ℝ≥0∞) + 1)⁻¹ < Θ x} := by
+    intro x hx
+    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt (tsub_pos_of_lt hx.2).ne'
+    refine mem_iUnion.2 ⟨k, hx.1, ?_⟩
+    have h1 : ((k : ℝ≥0∞) + 1)⁻¹ < Θ x - 1 :=
+      lt_of_le_of_lt (ENNReal.inv_le_inv.2 le_self_add) hk
+    rw [add_comm]
+    exact lt_tsub_iff_right.1 h1
+  have hnull : μHE[n] {x | x ∈ M ∧ 1 < Θ x} = 0 := by
+    refine measure_mono_null hcover (measure_iUnion_null fun k => key _ ?_ ?_)
+    · exact ENNReal.lt_add_right ENNReal.one_ne_top (ENNReal.inv_ne_zero.2
+        (ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top k, ENNReal.one_ne_top⟩))
+    · exact ENNReal.add_ne_top.2 ⟨ENNReal.one_ne_top, ENNReal.inv_ne_top.2 (by simp)⟩
+  -- Step 4: conclusion
+  rw [ae_iff, Measure.restrict_apply' hM]
+  refine measure_mono_null ?_ hnull
+  intro x hx
+  exact ⟨hx.2, not_le.1 hx.1⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
