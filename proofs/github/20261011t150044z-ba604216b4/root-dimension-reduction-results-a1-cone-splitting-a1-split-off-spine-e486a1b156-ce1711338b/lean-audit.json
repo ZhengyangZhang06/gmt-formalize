@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "e372e1908f0d28a44d19eb44ceae72d85fa1ac284f31df79b00130591ca9085e",
+  "git_delta": {
+    "base_commit": "ddf8e3c44d42069981b627d05a3dbb0b709eef00",
+    "candidate_commit": "025921177b6e0738a7dd1cae70511e24ed8e07fc",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "da0d69760c621233eb89aa2a65f8eb46a6d6fe648c1ddafd8a52fac626d8ccce",
+    "source_sha256": "8a84ccb06df926498bd76b7488b3f4d4c0c0750ae4a06880d229300e9c5fce69",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_radial_homotopy",
+      "statement": "∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
