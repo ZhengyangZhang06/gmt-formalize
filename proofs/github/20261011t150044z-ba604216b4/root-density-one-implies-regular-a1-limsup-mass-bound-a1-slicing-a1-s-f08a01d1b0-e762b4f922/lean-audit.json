@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "582a210a6ac69d64834e9783fa32b952ccbc98ec4e86e96d391e4e52131d5c9f",
+  "git_delta": {
+    "base_commit": "19890e4ecb972dac367f6a72b6feb1f7f81f6c28",
+    "candidate_commit": "4670f5e9aba10d63d43f53d550161e8f115d62a1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "765a29b1cea47c4186a7e367c115972c945fa0b8ac379a6b321dc63aa809dcfd",
+    "source_sha256": "b7e9d828b3792b2d7c0f4cf5fa7ea4c8d7b49a5deae1e9d4e917c74e10745877",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_piece_slice_approxTangent",
+      "statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ t : ℝ, CountablyRectifiable n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ∧ (μHE[n] (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ≠ ∞ → ∀ᵐ x ∂(μHE[n].restrict (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t})), ∀ y ∈ Y, ψ y = x → HasApproximateTangentSpaceAt n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) x (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ G x)ᗮ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
