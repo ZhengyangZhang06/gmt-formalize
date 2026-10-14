@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.chart_retraction-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "A C^∞ chart has a C^∞ ambient left inverse near each of its points (inverse function theorem, Simon Ch. 2, 4.4; parent steps 4 and 6)",
+  "statement": "Ambient retraction onto the chart parameters. Data: P, d ∈ ℕ; M, W ⊆ ℝ^P; V ⊆ ℝ^d; ψ : ℝ^d → ℝ^P; v₀ ∈ ℝ^d. Hypotheses: V and W are open; ψ is C^∞ on V (ContDiffOn ℝ (⊤ : ℕ∞) ψ V) and injective on V; ψ(V) = W ∩ M; V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; Dψ(z) = fderiv ℝ ψ z is injective for every z ∈ V; v₀ ∈ V. Conclusion: there are an open set O ⊆ ℝ^P with ψ(v₀) ∈ O and a map ρ : ℝ^P → ℝ^d that is C^∞ on O, maps O into V, and satisfies ψ(ρ(z)) = z for every z ∈ M ∩ O.",
+  "lean_statement": "∀ (P d : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ (⊤ : ℕ∞) ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (O : Set (Euclid P)) (ρ : Euclid P → Euclid d), IsOpen O ∧ ψ v₀ ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ρ O ∧ MapsTo ρ O V ∧ ∀ z ∈ M ∩ O, ψ (ρ z) = z",
+  "lean_name": "codim1_hcp_un_chart_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f55b03d912-a1"
+}

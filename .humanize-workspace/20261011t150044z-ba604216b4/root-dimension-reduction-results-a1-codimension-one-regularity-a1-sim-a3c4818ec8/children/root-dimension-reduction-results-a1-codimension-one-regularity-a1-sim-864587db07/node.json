@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.rademacher-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "Rademacher's theorem on an embedded C¹ submanifold: locally Lipschitz functions are differentiable within M at H^m-a.e. point",
+  "statement": "Let P, m ∈ ℕ, M ⊆ ℝ^P an embedded C¹ m-dimensional submanifold (IsEmbeddedSubmanifold 1 m M) and f : ℝ^P → ℝ locally Lipschitz on M. Then for μHE[m]⌞M-almost every x, f is differentiable within M at x.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M f → ∀ᵐ x ∂(μHE[m].restrict M), DifferentiableWithinAt ℝ f M x",
+  "lean_name": "codim1_hcp_sc_rademacher_submanifold",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-864587db07-a1"
+}

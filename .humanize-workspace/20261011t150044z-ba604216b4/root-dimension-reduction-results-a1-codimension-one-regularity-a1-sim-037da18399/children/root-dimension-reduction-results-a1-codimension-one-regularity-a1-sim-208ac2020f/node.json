@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.chart_gram_factor-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+  "depth": 6,
+  "title": "Gram-determinant factorization of D(Φ∘ψ) through the tangent space of a chart (Simon Ch. 2, 4.11–4.12; parent steps 1–2)",
+  "statement": "Let P, m, r ∈ ℕ with r ≥ 1. Let N, W ⊆ ℝ^P and V ⊆ ℝ^m, and let ψ : ℝ^m → ℝ^P be a local representation of N in the sense of Simon (4.1). That is: V and W are open; ψ is C^r on V and injective on V; ψ(V) = W ∩ N; V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; and Dψ(z) is injective for every z ∈ V. Let Q : ℝ^P → {linear subspaces of ℝ^P} satisfy Q(x) = T_xN as sets for every x ∈ N (T_xN = tangentSpace N x). Let Φ : ℝ^P → ℝ^P and v ∈ V, and assume Φ is differentiable at ψ(v). Write e_k := EuclideanSpace.single k 1 (k < m) for the standard basis of ℝ^m. For a linear map T : ℝ^m → ℝ^P put G(T) := det(⟨Te_k, Te_l⟩)_{k,l<m}. Put J(x) := (det(⟨DΦ(x)τ_i, DΦ(x)τ_j⟩)_{i,j<dim Q(x)})^{1/2}, where τ = stdOrthonormalBasis ℝ (Q x). Then G(Dψ(v)) > 0 and √G(D(Φ∘ψ)(v)) = J(ψ(v))·√G(Dψ(v)).",
+  "lean_statement": "∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P) (v : Euclid m), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → DifferentiableAt ℝ Φ (ψ v) → v ∈ V → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1))) ∧ Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single k 1)) (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single l 1)))) = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q (ψ v))) => inner ℝ (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) i)) (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) j)))) * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1))))",
+  "lean_name": "codim1_ac_saf_chart_gram_factor",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_chain-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_basis_invariance-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_chain-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-12e3a7fde6-a1",
+      "result_commit": "d596f85ab9a9c39c0c4c596dec42ece0e9d97b0a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_basis_invariance-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-3f0e6c2b24-a1",
+      "result_commit": "5ac0181ccf6907e2bf7e44738dbb0c64a7582b66",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-208ac2020f-a1"
+}

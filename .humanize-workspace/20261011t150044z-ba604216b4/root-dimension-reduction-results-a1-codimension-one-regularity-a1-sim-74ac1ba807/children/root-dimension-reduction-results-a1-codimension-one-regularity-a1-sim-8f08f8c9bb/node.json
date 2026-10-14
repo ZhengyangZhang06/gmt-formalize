@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1.det_second_order-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.stability-a1",
+  "depth": 6,
+  "title": "Uniform second-order expansion of det(I + tX + t²Y)",
+  "statement": "Uniform second-order expansion of a determinant. For all N ∈ ℕ and κ ∈ ℝ there is C ∈ ℝ such that for every n ≤ N, all real n×n matrices X and Y with |X_ij| ≤ κ and |Y_ij| ≤ κ for all i, j, and every t ∈ ℝ with |t| ≤ 1:\n |det(I + tX + t²Y) − (1 + t·tr X + t²(tr Y + ((tr X)² − tr(X·X))/2))| ≤ C|t|³.",
+  "lean_statement": "∀ (N : ℕ) (κ : ℝ), ∃ C : ℝ, ∀ n : ℕ, n ≤ N → ∀ X Y : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |X i j| ≤ κ) → (∀ i j, |Y i j| ≤ κ) → ∀ t : ℝ, |t| ≤ 1 → |(1 + t • X + t ^ 2 • Y).det - (1 + t * X.trace + t ^ 2 * (Y.trace + (X.trace ^ 2 - (X * X).trace) / 2))| ≤ C * |t| ^ 3",
+  "lean_name": "codim1_hcp_stab_det_second_order",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-8f08f8c9bb-a1"
+}

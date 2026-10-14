@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1.difference_data-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1",
+  "depth": 3,
+  "title": "Carrier, multiplicity and orientation of the difference of two integer multiplicity triples",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P, and let R₁ = (C₁, θ₁, ξ₁) and R₂ = (C₂, θ₂, ξ₂) be integer multiplicity triples in U (IMRep U n, Simon Ch. 6, 3.1). Write Hⁿ = μHE[n], and assume ξ₂(x) = ξ₁(x) or ξ₂(x) = −ξ₁(x) for Hⁿ-a.e. x ∈ C₁ ∩ C₂. Then there exist C ⊆ ℝ^P, θ : ℝ^P → ℕ and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) such that:\n- C is Borel and C ⊆ C₁ ∪ C₂;\n- θ is measurable, and for x ∈ C, θ(x) > 0 and θ(x) ≤ 1_{C₁}(x)θ₁(x) + 1_{C₂}(x)θ₂(x);\n- ξ is a.e. strongly measurable for Hⁿ⌞C;\n- ξ(x) = ±ξ₁(x) for Hⁿ-a.e. x ∈ C ∩ C₁, and ξ(x) = ±ξ₂(x) for Hⁿ-a.e. x ∈ C ∖ C₁;\n- for Hⁿ-a.e. x ∈ ℝ^P, 1_C(x)θ(x)ξ(x) = 1_{C₁}(x)θ₁(x)ξ₁(x) − 1_{C₂}(x)θ₂(x)ξ₂(x) in Λ_n(ℝ^P).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n), (∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x) → ∃ (C : Set (Euclid P)) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C ∧ C ⊆ R₁.carrier ∪ R₂.carrier ∧ Measurable θ ∧ (∀ x ∈ C, 0 < θ x) ∧ (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) ∧ AEStronglyMeasurable ξ (μHE[n].restrict C) ∧ (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) ∧ (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) ∧ ∀ᵐ x ∂μHE[n], C.indicator (fun y => (θ y : ℝ) • ξ y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x - R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+  "lean_name": "regcomp_ims_difference_data",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1-19c720d2d3-a1"
+}

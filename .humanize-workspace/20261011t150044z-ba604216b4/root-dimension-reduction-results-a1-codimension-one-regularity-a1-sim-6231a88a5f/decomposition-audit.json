@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "toOpenPartialHomeomorph|contDiffAt_symm|isOpen_injective|continuousOn_fderiv_of_isOpen|contDiffOn_infty|exists_leftInverse_of_injective|injective_iff_surjective",
+        "codim1_hcp_sc_(local_inverse_cr|left_inverse_immersion|graph_reparam|graph_contDiffOn)",
+        "git show d626082a69a01ae54fab73c0d6072850ddfab6ae:GMT/Ch07/Submission.lean",
+        "git show fe444362e7b3a74c2589e7fa4b1cb9588f469adc:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/smooth-charts-audit-igy3_axc/FullVerification.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6231a88a5f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6231a88a5f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/tmp/smooth-charts-audit-igy3_axc/chart_tangent_space_accepted.lean",
+        "/tmp/smooth-charts-audit-igy3_axc/chart_image_nhds_accepted.lean",
+        "/tmp/smooth-charts-audit-igy3_axc/FullVerification.lean",
+        "/tmp/smooth-charts-audit-igy3_axc/FullVerification.log"
+      ],
+      "conclusion": "The split is appropriate for the selected smooth-charts contract. Project and Mathlib revisions match the manifest; the frozen contract matches the workspace definitions. The snapshot supplies the inverse-function, inverse-regularity, derivative-openness and C∞ criteria used. Both reused declarations have identical comparator-accepted frozen types, matching accepted source hashes and compatible definitions. No other reservation of the four new names was found. All names are bare identifiers; all six types are standalone one-line propositions matching their prose. Proposed dependencies and the reused dependency closures are acyclic and do not return to the selected parent. Independent verification elaborated the contracts before introducing any child declarations and checked the regularity casts and continuous-linear composition. The combined verification, using actual accepted proofs instead of reused axioms, exited successfully: all six children and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The children establish one fixed C¹ graph, upgrade it to every finite regularity, and preserve all chart conditions required by the parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and identical accepted Lean type include all chart hypotheses. Bounded reparametrized curves prove one inclusion; properness gives inverse continuity, and the derivative lower bound controls the remainder for the reverse inclusion. Closedness of the derivative range completes the argument without circular reliance."
+    },
+    {
+      "key": "chart_image_nhds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the identical accepted type. The counterexample sequence stays in W, so properness yields a convergent preimage subsequence. Its limit remains outside V₀, while continuity and injectivity force it to equal v₀. No additional openness assumption on V is needed."
+    },
+    {
+      "key": "local_inverse_cr",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches all hypotheses and inverse identities in the prose. Continuity of the derivative gives an open invertibility neighbourhood; restricting the inverse-function-theorem homeomorphism gives the required domains. Pointwise inverse regularity proves C^r throughout the target. The proof is complete and independent."
+    },
+    {
+      "key": "left_inverse_immersion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition correctly uses continuous-linear composition. Openness turns differentiability on D into ambient differentiability and makes the projection identity hold locally. The chain rule and derivative uniqueness give π ∘ Dg = id, which proves derivative injectivity; the original identity proves injectivity on D."
+    },
+    {
+      "key": "graph_reparam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every stated hypothesis and conclusion matches the Lean proposition. The declared dependencies give the local inverse, relatively open image and injective immersion. The proof establishes properness through the compact slice N ∩ K and its continuous projection image. All dependency applications have their required hypotheses."
+    },
+    {
+      "key": "graph_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes every C¹ chart condition and the projection identity. Equality of tangent ranges and π ∘ DG = id establish injectivity of the projected C^r chart derivative. Reparametrization then gives a C^r graph agreeing with G on an open neighbourhood of each point. This proves the stated regularity and supplies the fixed-chart upgrade needed for the selected parent."
+    }
+  ],
+  "required_changes": []
+}

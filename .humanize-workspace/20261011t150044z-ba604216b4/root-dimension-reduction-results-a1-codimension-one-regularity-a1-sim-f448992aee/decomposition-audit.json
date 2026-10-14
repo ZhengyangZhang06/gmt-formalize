@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '1,460p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "HasApproximateTangentSpaceAt|def blowUpMap|CountablyRectifiable.mono|measurableSet_of_isSimonSubmanifold|countablyRectifiable_of_isSimonSubmanifold",
+        "injective_area_formula_of_injective_derivative|def IsSimon|continuous_normDet|isEmbedding_chartMap",
+        "lintegral_withDensity_eq_lintegral_mul_non_measurable₀|MeasurableEmbedding.lintegral_map|Continuous.measurableEmbedding|normDet_comp|normDet_sq_eq_det_gram|euclideanHausdorffMeasure_image_eq_normDet_mul_volume",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j2 -DautoImplicit=false /tmp/area-audit-qdb3s5fo/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j2 -DautoImplicit=false /tmp/area-audit-qdb3s5fo/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j1 -DautoImplicit=false /tmp/area-audit-qdb3s5fo/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-f448992aee/decomposition-v1.json",
+        "/tmp/area-audit-qdb3s5fo/Types.lean",
+        "/tmp/area-audit-qdb3s5fo/Assembly.lean",
+        "/tmp/area-audit-qdb3s5fo/LibraryAxioms.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_pushforward_current.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_pushforward_boundary.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_pullback_test_form.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_im_sub.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_orientation_pushforward.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_unit_orientation_dual.lean",
+        "/tmp/area-audit-qdb3s5fo/Accepted_chart_tangent_space.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected area-comparison theorem. Pins and inspected snapshot files match the compiler sources. All twelve one-line propositions elaborate without child implementations; the supplied assembly proves the exact frozen parent from the proposed obligations. Seven reused declarations have byte-identical frozen types, accepted comparator records, and successful independent recompilation with only propext, Classical.choice and Quot.sound. The relevant library results pass the same axiom checks. Five new names are bare and unreserved. Dependencies are correctly directed and acyclic; the accepted dependency closure contains no selected-parent reliance. Chapter03 provides no general C¹-submanifold approximate-tangent theorem, making that obligation substantive. The chart Jacobian argument also agrees with [Simon, Chapter 2 §4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf#page=36)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "perturbation_diffeo",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean match. Compact support bounds DZ; the two-sided estimate supplies a common Lipschitz/antilipschitz constant, contraction gives surjectivity, and the derivative-kernel estimate gives injectivity. The proof establishes every conjunct."
+    },
+    {
+      "key": "image_submanifold",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses suffice. The antilipschitz inverse gives a homeomorphism; transported charts preserve properness and injective derivatives. Applying the accepted chart-tangent theorem to both charts proves the stated tangent-space equality without circularity."
+    },
+    {
+      "key": "submanifold_approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes dimension m, localizes through chart properness, and applies the parametric area formula to rescaled charts. Its fixed integrable bound and pointwise limit justify dominated convergence for the exact compactly supported test-function definition. No global local-finiteness hypothesis is needed."
+    },
+    {
+      "key": "submanifold_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normDet identity removes dependence on the chosen orthonormal bases and proves Jacobian continuity through charts. Countable chart decomposition gives measure transport. The pinned measurable-embedding and finite-density integration lemmas justify arbitrary, possibly nonmeasurable g. Matrix.of correctly constructs the Gram matrices."
+    },
+    {
+      "key": "piece_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The six declared prerequisites construct the image IMRep, its current, integrability, the action formula and the coefficient-norm mass bound. For arbitrary W', the proof first bounds using the measurable test-form support, then uses monotonicity. All hypotheses are present and no extra measurability assumption is hidden."
+    },
+    {
+      "key": "pushforward_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. The proof gives measurable integrable pairings, linearity and sequential continuity using a uniform derivative bound and compactly localized multiplicity. It correctly requires neither openness of U nor bijectivity."
+    },
+    {
+      "key": "pushforward_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. The existing accepted smooth-approximation prerequisite supplies exactly the stated bounds and convergence. Pullback naturality followed by dominated convergence proves the C¹ boundary claim; degree zero is explicitly covered."
+    },
+    {
+      "key": "pullback_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. Smoothness follows from analytic composition on alternating maps. Vanishing outside the closed compact union establishes both the exact support inclusion and compact support."
+    },
+    {
+      "key": "im_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. Accepted tangent locality and uniqueness identify overlap orientations up to sign. The piecewise multiplicity and orientation construction preserves local integrability and represents S − T by splitting the integrals."
+    },
+    {
+      "key": "orientation_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. Basis independence and Gram–Schmidt yield positivity, the operator-norm bound and the normalized image orientation. Matrix.of is explicit, and the empty-dimensional case is covered."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. Coordinate expansion, the proved Cauchy–Binet identity and Cauchy–Schwarz establish the bound. The single continuous linear map L satisfies both remaining conclusions, including the stated degenerate cases."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical frozen type and permitted axioms. Bounded reparameterized curves prove one inclusion. Properness gives inverse continuity, and the secant estimate places every curve velocity in the closed derivative range, proving the reverse inclusion."
+    }
+  ],
+  "required_changes": []
+}
