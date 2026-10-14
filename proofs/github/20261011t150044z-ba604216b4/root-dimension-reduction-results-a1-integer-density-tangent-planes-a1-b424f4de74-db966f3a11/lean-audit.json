@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "457a068dfbcf8093321a46ad0d271e201d95e0503e5fed028ef779173d6b1dc1",
+  "git_delta": {
+    "base_commit": "cff99938582f089424fdb0a6297a868ccfefdf10",
+    "candidate_commit": "47a553eed2b37f125154b75736f9fc93ba95943b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "d7105cb62721d37be53cac87a3d24ece4a3fa60e81e1eb7322789bae0f70ca65",
+    "source_sha256": "34c876ce57e0b61572b932d412108681ed2855c5465181aff0dbd5d48dc3f95e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_tilt_excess_decay",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (m : ℕ) (β : Covector (Euclid P) 2), R.Represents C → β ![a, e] = 1 → (∀ᵐ x ∂R.measure, |R.orient x β| ≤ 1) → (∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧ c.natAbs = m ∧ ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → Tendsto (fun s' : ℝ => (∫⁻ x in ball a (3 * s'), ENNReal.ofReal (1 - |R.orient x β|) ∂R.measure) / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
