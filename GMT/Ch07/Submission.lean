@@ -3464,6 +3464,227 @@ theorem Submission.dtc_bc_lc_pfi_piece_orientation_sign : ∀ (P n : ℕ) (U : S
   · refine ⟨-1, Or.inr rfl, fun β => ?_⟩
     rw [h, neg_apply, smul_apply, ContinuousAlternatingMap.apply_apply, smul_eq_mul, mul_neg,
       mul_inv_cancel_left₀ hJ.ne', neg_one_mul]
+/-- **Push-forward of one bi-Lipschitz piece** (Simon Ch. 6, 3.4–3.7, for one piece `G(A)` of
+`M`).  `G` is Lipschitz, bi-Lipschitz on the Borel set `A` with injective `DG` there, `G(A) ⊆ M`,
+`∫_{G(A)} θ dHⁿ < ∞`, and `J_G(a) ξ(G(a)) = ±DG(a)_# e` for a.e. `a ∈ A`; `φ` is differentiable
+and `Λ`-Lipschitz, and `H = φ ∘ G`.  If `DH` is nowhere injective on `A`, then `DH(a)_# e = 0`,
+the integrand `θ ξ(β(φ) ∘ Dφ)` vanishes `Hⁿ`-a.e. on `G(A)`, and `N = ∅`.  If `H` is bi-Lipschitz
+on `A` with injective `DH`, take `N = H(A)`, `g = θ ∘ G ∘ H⁻¹` and
+`η = (J_G / J_H) ξ̃(G)(· ∘ Dφ(G)) ∘ H⁻¹`: `η(H(a)) = ±J_H(a)⁻¹ DH(a)_# e` orients `range DH(a)`,
+the approximate tangent space of `N` at `H(a)`; `J_H ≤ Λⁿ J_G` bounds the mass; and the area
+formula along `G` and along `H` turns both integrals into one integral over `A`. -/
+theorem Submission.dtc_bc_lc_pfi_piece_pushforward_image : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (κ : ℝ) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith L G → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ R.carrier → ∫⁻ x in G '' A, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ → (∀ᵐ a ∂(volume.restrict A), ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ∀ β : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ G a (EuclideanSpace.single k 1)) (fderiv ℝ G a (EuclideanSpace.single l 1)))) * R.orient (G a) β = σ * β (fun k => fderiv ℝ G a (EuclideanSpace.single k 1))) → Differentiable ℝ φ → LipschitzWith Λ φ → (((∃ κ' : ℝ, 0 < κ' ∧ ∀ a ∈ A, ∀ a' ∈ A, κ' * ‖a - a'‖ ≤ ‖φ (G a) - φ (G a')‖) ∧ ∀ a ∈ A, Injective (fderiv ℝ (φ ∘ G) a)) ∨ ∀ a ∈ A, ¬ Injective (fderiv ℝ (φ ∘ G) a)) → ∃ (N : Set (Euclid P)) (g : Euclid P → ℤ) (η : Euclid P → MultiVector P n), MeasurableSet N ∧ N ⊆ φ '' (G '' A) ∧ CountablyRectifiable n N ∧ Measurable g ∧ (∀ y ∈ N, g y ≠ 0) ∧ StronglyMeasurable η ∧ (∀ᵐ y ∂(μHE[n].restrict N), ∃ T : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n N y T ∧ IsUnitOrientationOf (η y) T) ∧ ∫⁻ y in N, ((g y).natAbs : ℝ≥0∞) ∂μHE[n] ≤ (Λ : ℝ≥0∞) ^ n * ∫⁻ x in G '' A, (R.mult x : ℝ≥0∞) ∂μHE[n] ∧ ∀ β : Euclid P → Covector (Euclid P) n, StronglyMeasurable β → ∫ x in G '' A, (R.mult x : ℝ) * R.orient x ((β (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] = ∫ y in N, (g y : ℝ) * η y (β y) ∂μHE[n] := by
+  intro P n U R G A L κ φ Λ hG hA hκ hbi hdiff hGA hfin hor hφd hφ hcase
+  obtain ⟨hJacI, hcov⟩ := Submission.dtc_bc_lc_pfi_area_change_of_variables P n
+  obtain ⟨-, -, horientInj, horientCrit⟩ := Submission.dtc_bc_lc_pfi_unitOrientation_algebra P n
+  -- Gram Jacobians `J_G` of `G` and `J_H` of `H = φ ∘ G`
+  obtain ⟨JG, hJG⟩ : ∃ JG : Euclid n → ℝ, ∀ x, JG x = Real.sqrt (Matrix.det (Matrix.of
+      fun k l : Fin n => inner ℝ (fderiv ℝ G x (EuclideanSpace.single k 1))
+        (fderiv ℝ G x (EuclideanSpace.single l 1)))) :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨JH, hJH⟩ : ∃ JH : Euclid n → ℝ, ∀ x, JH x = Real.sqrt (Matrix.det (Matrix.of
+      fun k l : Fin n => inner ℝ (fderiv ℝ (φ ∘ G) x (EuclideanSpace.single k 1))
+        (fderiv ℝ (φ ∘ G) x (EuclideanSpace.single l 1)))) :=
+    ⟨_, fun _ => rfl⟩
+  simp only [← hJG] at hor
+  -- Step 1(a): `G` is injective on `A`; change of variables along `G`
+  have hinjOn : ∀ (F : Euclid n → Euclid P) (m : ℝ), 0 < m →
+      (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → InjOn F A := by
+    intro F m hm hF a ha a' ha' heq
+    have h := hF a ha a' ha'
+    rw [heq, sub_self, norm_zero] at h
+    have h' : ‖a - a'‖ ≤ 0 := by nlinarith [norm_nonneg (a - a')]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h')
+  have hGinj : InjOn G A := hinjOn G κ hκ hbi
+  obtain ⟨-, -, hGpull, hGint⟩ := hcov G A hA hdiff hGinj
+  simp only [← hJG] at hGint
+  -- Step 1(b): the integrand `θ ξ(β(φ) ∘ Dφ)` is a.e. strongly measurable on `G(A)`
+  have hDφ : StronglyMeasurable (fderiv ℝ φ) := (measurable_fderiv ℝ φ).stronglyMeasurable
+  have hLHSm : ∀ β : Euclid P → Covector (Euclid P) n, StronglyMeasurable β →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) *
+        R.orient x ((β (φ x)).compContinuousLinearMap (fderiv ℝ φ x)))
+        (μHE[n].restrict (G '' A)) := by
+    intro β hβ
+    have hβφ : StronglyMeasurable (fun x => (β (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) := by
+      have hev : Continuous fun p : (Covector (Euclid P) n →L[ℝ] Covector (Euclid P) n) ×
+          Covector (Euclid P) n => p.1 p.2 := continuous_fst.clm_apply continuous_snd
+      exact hev.comp_stronglyMeasurable
+        ((ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp_stronglyMeasurable
+          hDφ).prodMk (hβ.comp_measurable hφd.continuous.measurable))
+    exact (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable.mul
+      ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable
+        ((R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono hGA le_rfl)).prodMk
+          hβφ.aestronglyMeasurable))
+  -- Step 1(d): a strongly measurable `ξ̃ = ξ` a.e. on `M`, hence `ξ̃(G(a)) = ξ(G(a))` a.e. on `A`
+  set ξ' := R.aestronglyMeasurable_orient.mk R.orient
+  have hξ'm : StronglyMeasurable ξ' := R.aestronglyMeasurable_orient.stronglyMeasurable_mk
+  have hξG : ∀ᵐ a ∂(volume.restrict A), R.orient (G a) = ξ' (G a) :=
+    hGpull (fun x => R.orient x = ξ' x)
+      (ae_restrict_of_ae_restrict_of_subset hGA R.aestronglyMeasurable_orient.ae_eq_mk)
+  rcases hcase with ⟨⟨κ', hκ', hbi'⟩, hinjH⟩ | hcrit
+  · -- Step 3: regular case, `N = H(A)`
+    have hdiffH : ∀ a ∈ A, DifferentiableAt ℝ (φ ∘ G) a ∧ Injective (fderiv ℝ (φ ∘ G) a) :=
+      fun a ha => ⟨(hφd (G a)).comp a (hdiff a ha).1, hinjH a ha⟩
+    have hHinj : InjOn (φ ∘ G) A := hinjOn (φ ∘ G) κ' hκ' hbi'
+    obtain ⟨hNm, hψm, -, hHint⟩ := hcov (φ ∘ G) A hA hdiffH hHinj
+    simp only [← hJH] at hHint
+    set ψ := Function.invFunOn (φ ∘ G) A
+    have hψH : ∀ a ∈ A, ψ ((φ ∘ G) a) = a := fun a ha => hHinj.leftInvOn_invFunOn ha
+    have hGψ : Measurable (fun y => G (ψ y)) := hG.continuous.measurable.comp hψm
+    -- Step 3(b): `g = θ ∘ G ∘ ψ` and `η = (J_G/J_H) ∘ ψ · ξ̃(G ∘ ψ)(· ∘ Dφ(G ∘ ψ))`
+    obtain ⟨g, hg⟩ : ∃ g : Euclid P → ℤ, ∀ y, g y = (R.mult (G (ψ y)) : ℤ) := ⟨_, fun _ => rfl⟩
+    obtain ⟨η, hη⟩ : ∃ η : Euclid P → MultiVector P n, ∀ y, η y = (JG (ψ y) / JH (ψ y)) •
+        (ξ' (G (ψ y))).comp (ContinuousAlternatingMap.compContinuousLinearMapCLM
+          (fderiv ℝ φ (G (ψ y)))) := ⟨_, fun _ => rfl⟩
+    have hgm : Measurable g := by
+      rw [show g = fun y => ((R.mult (G (ψ y)) : ℕ) : ℤ) from funext hg]
+      exact measurable_from_nat.comp (R.measurable_mult.comp hGψ)
+    have hg0 : ∀ y ∈ (φ ∘ G) '' A, g y ≠ 0 := by
+      rintro y ⟨a, ha, rfl⟩
+      rw [hg, hψH a ha]
+      exact Nat.cast_ne_zero.2 (R.mult_pos (G a) (hGA (mem_image_of_mem G ha))).ne'
+    have hηm : StronglyMeasurable η := by
+      have hJGm : Measurable JG := by
+        have h := (Submission.codim1_lura_gram_area_formula n P G).1
+        simp only [← hJG] at h
+        exact h
+      have hJHm : Measurable JH := by
+        have h := (Submission.codim1_lura_gram_area_formula n P (φ ∘ G)).1
+        simp only [← hJH] at h
+        exact h
+      rw [show η = fun y => (JG (ψ y) / JH (ψ y)) •
+          (ξ' (G (ψ y))).comp (ContinuousAlternatingMap.compContinuousLinearMapCLM
+            (fderiv ℝ φ (G (ψ y)))) from funext hη]
+      exact ((hJGm.comp hψm).div (hJHm.comp hψm)).stronglyMeasurable.smul
+        ((continuous_fst.clm_comp continuous_snd).comp_stronglyMeasurable
+          ((hξ'm.comp_measurable hGψ).prodMk
+            (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp_stronglyMeasurable
+              (hDφ.comp_measurable hGψ))))
+    -- Step 3(c): `J_H ≤ ‖Dφ(G a)‖ⁿ J_G ≤ Λⁿ J_G` and `0 < J_H` on `A`
+    have hJpos : ∀ a ∈ A, 0 < JH a := fun a ha => by
+      rw [hJH]; exact (horientInj _ (hinjH a ha)).1
+    have hJle : ∀ a ∈ A, JH a ≤ (Λ : ℝ) ^ n * JG a := by
+      intro a ha
+      have hcomp := fderiv_comp a (hφd (G a)) (hdiff a ha).1
+      have h1 := hJacI (fderiv ℝ G a) (fderiv ℝ φ (G a)) (by rw [← hcomp]; exact hinjH a ha)
+      rw [hJH, hJG, hcomp]
+      refine h1.trans ?_
+      gcongr
+      exact norm_fderiv_le_of_lipschitz ℝ hφ
+    -- Step 3(d): mass bound
+    have hmass : ∫⁻ y in (φ ∘ G) '' A, ((g y).natAbs : ℝ≥0∞) ∂μHE[n] ≤
+        (Λ : ℝ≥0∞) ^ n * ∫⁻ x in G '' A, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      have hareaH := (Submission.codim1_lura_gram_area_formula n P (φ ∘ G)).2 A hA
+        (fun a ha => (hdiffH a ha).1) (fun a ha => (hdiffH a ha).2) hHinj
+      have hareaG := (Submission.codim1_lura_gram_area_formula n P G).2 A hA
+        (fun a ha => (hdiff a ha).1) (fun a ha => (hdiff a ha).2) hGinj
+      simp only [← hJG] at hareaG
+      simp only [← hJH] at hareaH
+      rw [hareaH, hareaG, ← lintegral_const_mul' _ _ (ENNReal.pow_ne_top ENNReal.coe_ne_top)]
+      refine setLIntegral_mono' hA fun a ha => ?_
+      rw [hg, hψH a ha, Int.natAbs_natCast, ← mul_assoc]
+      gcongr
+      calc ENNReal.ofReal (JH a) ≤ ENNReal.ofReal ((Λ : ℝ) ^ n * JG a) :=
+            ENNReal.ofReal_le_ofReal (hJle a ha)
+        _ = (Λ : ℝ≥0∞) ^ n * ENNReal.ofReal (JG a) := by
+          rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_pow NNReal.zero_le_coe,
+            ENNReal.ofReal_coe_nnreal]
+    have hNfin : μHE[n] ((φ ∘ G) '' A) ≠ ∞ := by
+      refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) hfin)
+        (le_trans ?_ hmass)
+      calc μHE[n] ((φ ∘ G) '' A) = ∫⁻ _ in (φ ∘ G) '' A, 1 ∂μHE[n] := (setLIntegral_one _).symm
+        _ ≤ ∫⁻ y in (φ ∘ G) '' A, ((g y).natAbs : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono' hNm fun y hy => Nat.one_le_cast.2 (Int.natAbs_pos.2 (hg0 y hy))
+    -- Step 3(e): `Hⁿ⌞N`-a.e. properties come from a.e. properties on `A` (`Hⁿ(H(A₀)) = 0`)
+    have hpush : ∀ p : Euclid P → Prop, (∀ᵐ a ∂(volume.restrict A), p ((φ ∘ G) a)) →
+        ∀ᵐ y ∂(μHE[n].restrict ((φ ∘ G) '' A)), p y := by
+      intro p hp
+      have hTm := measurableSet_toMeasurable (volume.restrict A) {a | ¬ p ((φ ∘ G) a)}
+      have hT0 : volume (toMeasurable (volume.restrict A) {a | ¬ p ((φ ∘ G) a)} ∩ A) = 0 := by
+        rw [← Measure.restrict_apply hTm, measure_toMeasurable]
+        exact ae_iff.1 hp
+      have hHT : μHE[n] ((φ ∘ G) '' (toMeasurable (volume.restrict A) {a | ¬ p ((φ ∘ G) a)} ∩ A))
+          = 0 := by
+        have h := (Submission.codim1_lura_gram_area_formula n P (φ ∘ G)).2 _ (hTm.inter hA)
+          (fun a ha => (hdiffH a ha.2).1) (fun a ha => (hdiffH a ha.2).2)
+          (hHinj.mono inter_subset_right) (fun _ => 1)
+        rw [setLIntegral_one, setLIntegral_measure_zero _ _ hT0] at h
+        exact h
+      rw [ae_iff, Measure.restrict_apply' hNm]
+      refine measure_mono_null ?_ hHT
+      rintro y ⟨hy, a, ha, rfl⟩
+      refine ⟨a, ⟨?_, ha⟩, rfl⟩
+      by_contra haT
+      exact hy (not_not.1 fun h => haT (subset_toMeasurable _ _ h))
+    -- `H(A)` has approximate tangent space `range DH(a)` at `H(a)` for a.e. `a ∈ A`
+    have htan := Submission.dpf_approxTangent_ae_bilipschitz_piece P n univ ((φ ∘ G) '' A) (φ ∘ G)
+      A (Λ * L) κ' isOpen_univ hNm (subset_univ _)
+      (fun C _ _ => ne_top_of_le_ne_top hNfin (measure_mono inter_subset_left)) (hφ.comp hG) hA
+      hκ' hbi' hdiffH subset_rfl
+    -- `η(H(a)) = ±J_H(a)⁻¹ DH(a)_# e` orients `range DH(a)`
+    have hηor : ∀ a ∈ A, R.orient (G a) = ξ' (G a) → (∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
+        ∀ β : Covector (Euclid P) n, JG a * R.orient (G a) β =
+          σ * β (fun k => fderiv ℝ G a (EuclideanSpace.single k 1))) →
+        IsUnitOrientationOf (η ((φ ∘ G) a))
+          (LinearMap.range (fderiv ℝ (φ ∘ G) a : Euclid n →ₗ[ℝ] Euclid P)) := by
+      rintro a ha hξa ⟨σ, hσ, hσβ⟩
+      obtain ⟨-, τ, hτ, hspan, hτor⟩ := horientInj _ (hinjH a ha)
+      rw [← hJH a] at hτor
+      have hcomp := fderiv_comp a (hφd (G a)) (hdiff a ha).1
+      have key : ∀ α : Covector (Euclid P) n, η ((φ ∘ G) a) α =
+          σ * ((JH a)⁻¹ * α (fun k => fderiv ℝ (φ ∘ G) a (EuclideanSpace.single k 1))) := by
+        intro α
+        rw [hη, hψH a ha, smul_apply, ContinuousLinearMap.comp_apply,
+          ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, ← hξa, smul_eq_mul,
+          div_eq_inv_mul, mul_assoc, hσβ, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+          hcomp]
+        exact mul_left_comm _ _ _
+      have hζ : ∀ α : Covector (Euclid P) n, ((JH a)⁻¹ •
+          ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+            (fun k : Fin n => fderiv ℝ (φ ∘ G) a (EuclideanSpace.single k 1))) α =
+          (JH a)⁻¹ * α (fun k => fderiv ℝ (φ ∘ G) a (EuclideanSpace.single k 1)) := fun α => rfl
+      refine ⟨τ, hτ, hspan, ?_⟩
+      rcases hσ with rfl | rfl <;> rcases hτor with h | h
+      · exact Or.inl fun α => by rw [key, ← hζ, h, one_mul]
+      · exact Or.inr fun α => by rw [key, ← hζ, h, one_mul]
+      · exact Or.inr fun α => by rw [key, ← hζ, h, neg_one_mul]
+      · exact Or.inl fun α => by rw [key, ← hζ, h, neg_one_mul, neg_neg]
+    refine ⟨(φ ∘ G) '' A, g, η, hNm, (image_comp φ G A).subset,
+      (Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hφ.comp hG)).mono
+        (image_subset_range _ _), hgm, hg0, hηm, ?_, hmass, ?_⟩
+    · refine hpush _ ?_
+      filter_upwards [ae_restrict_mem hA, htan, hξG, hor] with a ha hta hξa hora
+      exact ⟨_, hta, hηor a ha hξa hora⟩
+    · -- Step 3(f): both sides are the same integral over `A`
+      intro β hβ
+      have hRHSm : AEStronglyMeasurable (fun y => (g y : ℝ) * η y (β y))
+          (μHE[n].restrict ((φ ∘ G) '' A)) :=
+        ((measurable_of_countable (Int.cast : ℤ → ℝ)).comp hgm).aestronglyMeasurable.mul
+          ((continuous_fst.clm_apply continuous_snd).comp_stronglyMeasurable
+            (hηm.prodMk hβ)).aestronglyMeasurable
+      rw [(hGint _ (hLHSm β hβ)).2, (hHint _ hRHSm).2]
+      refine integral_congr_ae ?_
+      filter_upwards [ae_restrict_mem hA, hξG] with a ha hξa
+      rw [hg, hη, hψH a ha, smul_apply, ContinuousLinearMap.comp_apply,
+        ContinuousAlternatingMap.compContinuousLinearMapCLM_apply, ← hξa, smul_eq_mul,
+        Int.cast_natCast, Function.comp_apply]
+      field_simp [(hJpos a ha).ne']
+  · -- Step 2: critical case, `N = ∅`
+    refine ⟨∅, fun _ => 0, fun _ => 0, MeasurableSet.empty, empty_subset _,
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty,
+      measurable_const, fun y hy => hy.elim, stronglyMeasurable_const, by simp, by simp,
+      fun β hβ => ?_⟩
+    rw [(hGint _ (hLHSm β hβ)).2, Measure.restrict_empty, integral_zero_measure]
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [ae_restrict_mem hA, hor] with a ha hora
+    obtain ⟨σ, -, hσβ⟩ := hora
+    have h0 : ((β (φ (G a))).compContinuousLinearMap (fderiv ℝ φ (G a)))
+        (fun k => fderiv ℝ G a (EuclideanSpace.single k 1)) = 0 := by
+      have h := horientCrit (fderiv ℝ (φ ∘ G) a) (hcrit a ha) (β (φ (G a)))
+      rw [fderiv_comp a (hφd (G a)) (hdiff a ha).1] at h
+      rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+      exact h
+    rw [Pi.zero_apply, mul_left_comm, hσβ, h0, mul_zero, mul_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
