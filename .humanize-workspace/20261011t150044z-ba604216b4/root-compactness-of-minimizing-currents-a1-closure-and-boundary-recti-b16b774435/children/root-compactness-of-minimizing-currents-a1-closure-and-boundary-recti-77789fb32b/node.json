@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1",
+  "depth": 4,
+  "title": "Besicovitch–Vitali covering inequality for set integrals of a bounded density",
+  "statement": "Let P ∈ ℕ, μ a Borel measure on ℝ^P with μ(K) < ∞ for every compact K, g : ℝ^P → ℝ μ-a.e. strongly measurable with |g(x)| ≤ 1 for μ-a.e. x, θ ∈ ℝ with θ ≤ 1, W ⊆ ℝ^P open with μ(W) < ∞, and E ⊆ W an arbitrary (not necessarily measurable) set. Assume that for every x ∈ E and every δ > 0 there is ρ ∈ (0, δ) with ∫_{B̄_ρ(x)} g dμ ≤ θ·μ(B̄_ρ(x)) (closed ball; μ(B̄_ρ(x)) read as a real number). Then ∫_W g dμ ≤ μ(W) − (1 − θ)·μ(E), where μ(E) ≤ μ(W) < ∞ is the (outer) measure of E and all measures are read as real numbers (ENNReal.toReal).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (E W : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → θ ≤ 1 → IsOpen W → E ⊆ W → μ W < ∞ → (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ ∫ y in closedBall x ρ, g y ∂μ ≤ θ * (μ (closedBall x ρ)).toReal) → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ E).toReal",
+  "lean_name": "cbrld_vitali_setIntegral_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-77789fb32b-a1"
+}

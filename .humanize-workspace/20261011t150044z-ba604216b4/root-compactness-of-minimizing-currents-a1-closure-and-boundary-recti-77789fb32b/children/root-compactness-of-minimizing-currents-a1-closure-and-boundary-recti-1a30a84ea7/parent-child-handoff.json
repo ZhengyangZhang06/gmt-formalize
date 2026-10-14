@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "grep -n 'exists_disjoint_closedBall_covering_ae|exists_closedBall_covering_tsum_measure_le' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean; sed -n 1,80p, 640,670p, 800,900p of that file",
+        "grep -rn 'instance.*HasBesicovitchCovering' mathlib/Mathlib/ (hit: Covering/BesicovitchVectorSpace.lean:499 instHasBesicovitchCovering); sed -n 490,505p",
+        "grep -rn 'theorem hasSum_integral_iUnion|theorem integral_iUnion|theorem hasSum_integral_iUnion_ae|theorem integral_iUnion_ae' mathlib/Mathlib/; sed -n 310,345p Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "grep -rn 'theorem tsum_toReal_eq|theorem summable_toReal' mathlib/Mathlib/ (Topology/Algebra/InfiniteSum/ENNReal.lean:350, 491)",
+        "grep -rn 'integrableOn_of_bounded' mathlib/Mathlib/MeasureTheory/ (Integral/IntegrableOn.lean:716 Measure.integrableOn_of_bounded)",
+        "#check integral_biUnion in Probe.lean (unknown identifier: no match; use integral/hasSum over the countable subtype instead)",
+        "Probe.lean: inferInstance for HasBesicovitchCovering (Euclid P), SFinite μ from IsFiniteMeasureOnCompacts μ, BorelSpace (Euclid P), SecondCountableTopology (Euclid P) (all succeed)",
+        "python3 -I scan of dag.json lean_statements for PairwiseDisjoint, 'closedBall x (r x)', Besicovitch, HasSum, tsum, ∑', 'IntegrableOn g', 'μ W < ∞', Countable, and of ids containing null_sets/covering/vitali",
+        "name-collision check of cbrldvc_exists_disjoint_closedBall_cover, cbrldvc_setIntegral_biUnion_le_mul_measure, cbrldvc_setIntegral_le_sub_of_subset against all 944 DAG lean_names, grep -rln cbrldvc over GMT/ and lake-packages-25730c7c/simongmt, and git log --all -S cbrldvc_",
+        "python3 -I scripts/scope.py: verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) and verifier/lean_contract.py validate_lean_statement on the 3 child statements",
+        "lake env lean /tmp/cbrldvc-decomp-k7q2/{Probe,Children,Assembly,FullCheck}.lean",
+        "grep -n -i besicovitch book/chapter-0*.txt; sed -n 770,880p book/chapter-01.txt (Simon Ch. 1 Remark 3.11(3), Lemma 3.12, Theorem 3.13)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-77789fb32b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-77789fb32b/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-77789fb32b/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/cbrldvc-decomp-k7q2/Probe.lean",
+        "/tmp/cbrldvc-decomp-k7q2/Children.lean",
+        "/tmp/cbrldvc-decomp-k7q2/Assembly.lean",
+        "/tmp/cbrldvc-decomp-k7q2/FullCheck.lean"
+      ],
+      "conclusion": "Pinned Mathlib supplies everything the child proofs need:\n- Besicovitch.exists_disjoint_closedBall_covering_ae: an s-finite measure, an arbitrary set s, admissible radii accumulating at 0 and a bound R give a countable t ⊆ s and r(x) ∈ f(x) ∩ (0, R(x)) with disjoint closed balls covering μ-almost all of s.\n- The instance HasBesicovitchCovering for finite-dimensional real normed spaces.\n- With IsFiniteMeasureOnCompacts μ, the instances SFinite, SecondCountableTopology and BorelSpace on Euclid P are inferred.\n- hasSum_integral_iUnion, measure_iUnion, ENNReal.tsum_toReal_eq, ENNReal.summable_toReal, hasSum_le, Measure.integrableOn_of_bounded, setIntegral_union, integral_mono_ae, measure_sdiff and ENNReal.toReal_sub_of_le.\nintegral_biUnion does not exist, so the countable index set is handled through its subtype.\n\nNo accepted DAG node and no project or SimonGMT lemma states the covering, summation or complement bound. The only Vitali-type node, dorag_lip_vitali_two_measure_bound, is a different bound using 5r-balls. The three new cbrldvc_ names have no collisions.\n\nAll three child types elaborate in the replayed contract scope and pass the verifier's lexical check. Each has a complete proof without sorry. Together they prove the frozen parent type with axioms propext, Classical.choice and Quot.sound only."
+    }
+  ],
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+  "child_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1.complement_bound-a1",
+  "subproblem": {
+    "key": "complement_bound",
+    "title": "Bounding the integral over W from a bound on a measurable subset V and |g| ≤ 1",
+    "statement": "Let P ∈ ℕ, let μ be a measure on the Borel σ-algebra of ℝ^P, and let g : ℝ^P → ℝ be μ-a.e. strongly measurable with |g(x)| ≤ 1 for μ-a.e. x. Let θ ∈ ℝ, and let V ⊆ W ⊆ ℝ^P with V measurable, W arbitrary and μ(W) < ∞. If ∫_V g dμ ≤ θ·μ(V), then ∫_W g dμ ≤ μ(W) − (1 − θ)·μ(V). All measures are read as real numbers via ENNReal.toReal, and set integrals are taken with respect to the restricted measure μ⌞S (μ.restrict S).",
+    "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (V W : Set (Euclid P)), AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → MeasurableSet V → V ⊆ W → μ W < ∞ → ∫ y in V, g y ∂μ ≤ θ * (μ V).toReal → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ V).toReal",
+    "lean_name": "cbrldvc_setIntegral_le_sub_of_subset",
+    "depends_on": [],
+    "natural_proof": "Source: Step 6 and the first part of Step 7 of the parent proof (∫_W g = ∫_{W∖V} g + ∫_V g ≤ μ(W) − μ(V) + θ·μ(V)), stated for an arbitrary measurable V ⊆ W. All measures are read as real numbers via ENNReal.toReal. For an arbitrary set S, ∫_S g dμ is the integral with respect to the restricted measure μ⌞S, whose total mass is μ(S).\n\n1. (Finiteness.) By monotonicity, μ(V) ≤ μ(W) < ∞ and μ(W ∖ V) ≤ μ(W) < ∞.\n\n2. (Integrability.) For every set S, the hypothesis |g| ≤ 1 μ-a.e. implies ‖g‖ = |g| ≤ 1 μ⌞S-a.e. (ae_restrict_of_ae). Since g is μ-a.e. strongly measurable, g is integrable on every S with μ(S) < ∞ (Measure.integrableOn_of_bounded with bound 1). In particular, g is integrable on V and on W ∖ V. The constant 1 is also integrable on W ∖ V (integrableOn_const, since μ(W ∖ V) < ∞).\n\n3. (Splitting.) The sets W ∖ V and V are disjoint (disjoint_sdiff_left), V is measurable, and (W ∖ V) ∪ V = W because V ⊆ W (sdiff_union_of_subset). setIntegral_union needs measurability only of the second set V, so it gives ∫_W g dμ = ∫_{W∖V} g dμ + ∫_V g dμ.\n\n4. (Bound on the complement.) μ⌞(W ∖ V)-a.e. we have g ≤ |g| ≤ 1, and both g and 1 are integrable on W ∖ V. By monotonicity of the integral (integral_mono_ae), ∫_{W∖V} g dμ ≤ ∫_{W∖V} 1 dμ = μ(W ∖ V).toReal.\n\n5. (Measure of the difference.) Since V ⊆ W, V is measurable and μ(V) < ∞, measure_sdiff gives μ(W ∖ V) = μ(W) − μ(V) in [0, ∞]. Since μ(V) ≤ μ(W) < ∞, ENNReal.toReal_sub_of_le gives (μ(W) − μ(V)).toReal = μ(W).toReal − μ(V).toReal.\n\n6. (Conclusion.) Combine Steps 3–5 with the hypothesis ∫_V g dμ ≤ θ·μ(V).toReal. By linear arithmetic, ∫_W g dμ ≤ (μ(W).toReal − μ(V).toReal) + θ·μ(V).toReal = μ(W).toReal − (1 − θ)·μ(V).toReal. ∎",
+    "proof_key_steps": [
+      "μ V ≤ μ W < ∞ and μ (W \\ V) ≤ μ W < ∞. Since |g| ≤ 1 a.e. and g is a.e. strongly measurable, g is integrable on V and on W \\ V (Measure.integrableOn_of_bounded).",
+      "Split ∫_W g = ∫_{W∖V} g + ∫_V g using setIntegral_union (V measurable, W = (W ∖ V) ∪ V).",
+      "∫_{W∖V} g ≤ ∫_{W∖V} 1 = (μ (W ∖ V)).toReal by integral_mono_ae.",
+      "(μ (W ∖ V)).toReal = (μ W).toReal − (μ V).toReal by measure_sdiff and ENNReal.toReal_sub_of_le.",
+      "Linear arithmetic with ∫_V g ≤ θ * (μ V).toReal."
+    ]
+  },
+  "audit": {
+    "key": "complement_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact type matches the prose, including arbitrary W. The global almost-everywhere hypotheses restrict to every set and give the required integrability. Measurability of V alone suffices for setIntegral_union and measure_sdiff; finiteness justifies toReal subtraction. Combining these identities with the complement bound proves the conclusion for arbitrary θ without circularity."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1a30a84ea7/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1a30a84ea7/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1a30a84ea7/parent-supplied-natural-proof.json"
+}

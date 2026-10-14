@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.radius-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1",
+  "depth": 4,
+  "title": "Good slicing radii below a low-density scale",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, μ a Borel measure on ℝ^P with μ(K) < ∞ for every compact K, x₁ ∈ ℝ^P, a > 0 and s > 0 with μ(B_s(x₁)) < (a·s)^n (open ball), and N ⊆ ℝ a Lebesgue-null set. Then there is ρ with 0 < ρ < s and ρ ∉ N such that μ(∂B_ρ(x₁)) = 0 (∂B_ρ(x₁) = sphere x₁ ρ) and liminf_{h→0, h>0} h⁻¹·μ({x : ρ − h < |x − x₁| < ρ}) ≤ 2na·F^{(n−1)/n}, where F = μ(B_ρ(x₁)) read as a real number (real power), the liminf is taken in [0, ∞] along 𝓝[>] 0 with ENNReal.ofReal h⁻¹, and the right side is ENNReal.ofReal of the real number 2na·F^{(n−1)/n}.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (a s : ℝ) (N : Set ℝ), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → 1 ≤ n → 0 < a → 0 < s → μ (ball x₁ s) < ENNReal.ofReal ((a * s) ^ n) → volume N = 0 → ∃ ρ : ℝ, 0 < ρ ∧ ρ < s ∧ ρ ∉ N ∧ μ (sphere x₁ ρ) = 0 ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal (2 * n * a * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n))",
+  "lean_name": "cbrld_exists_good_slice_radius",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03b7966d86-a1"
+}

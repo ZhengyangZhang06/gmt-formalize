@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.density_usc-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Monotonicity with bounded mean curvature (Simon 4.3.17): densities exist and are upper semicontinuous",
+  "statement": "Let P ∈ ℕ, n ≥ 1, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) represented by R = (M, θ, ξ) (IMRep U n), and suppose the varifold V = v(M, θ) has locally bounded generalized mean curvature in U (IMRep.HasLocallyBoundedMeanCurvature: there is H, a.e. strongly measurable for μ := μ_R, with ‖H‖ essentially bounded on every compact K ⊆ U, such that ∫_M θ div_M X dHⁿ = −∫ X·H dμ for every C¹ vector field X with compact support in U, div_M X(y) = trace(p_{T_yM}∘DX(y))). Then there is Θ : ℝ^P → ℝ such that HasMassDensity T x (Θ x) for every x ∈ U (Θ(x) ≥ 0 and M_{B_ρ(x)}(T)/(ω_nρⁿ) → Θ(x) as ρ ↓ 0, ω_n = unitBallVolume n) and Θ is upper semicontinuous on U.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → 0 < n → R.Represents T → R.HasLocallyBoundedMeanCurvature → ∃ Θ : Euclid P → ℝ, (∀ x ∈ U, HasMassDensity T x (Θ x)) ∧ UpperSemicontinuousOn Θ U",
+  "lean_name": "dtc_density_usc",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-density-usc-a1-a1"
+}
