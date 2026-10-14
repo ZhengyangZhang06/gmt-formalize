@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Isolation of a ray** (steps 2–3 of the proof of `idtp_fons_odc_ray_orientation`): for a
+finite set `F` of unit vectors, a unit vector `e` and `t₀ > 0`, some ball about `t₀e` meets the
+open rays `{te' : t > 0}`, `e' ∈ F`, only inside `{te : t > 0}`.  The closed rays
+`{se' : s ≥ 0}`, `e' ∈ F ∖ {e}`, are closed (`s ↦ se'` is an isometry of `ℝ`) and miss `t₀e`
+(comparing norms in `t₀e = se'` gives `s = t₀`, hence `e' = e`); take a ball about `t₀e` avoiding
+their finite union. -/
+theorem Submission.idtp_fons_odc_ro_ray_isolation : ∀ (P : ℕ) (F : Finset (Euclid P)) (e : Euclid P) (t₀ : ℝ), (∀ e' ∈ F, ‖e'‖ = 1) → ‖e‖ = 1 → 0 < t₀ → ∃ δ : ℝ, 0 < δ ∧ ball (t₀ • e) δ ∩ (⋃ e' ∈ F, (fun t : ℝ => t • e') '' Ioi 0) ⊆ (fun t : ℝ => t • e) '' Ioi 0 := by
+  classical
+  intro P F e t₀ hF he ht₀
+  -- `K`: the closed rays `{s • e' : s ≥ 0}` of the directions `e' ∈ F` other than `e`
+  have hK : IsClosed (⋃ e' ∈ F.erase e, (fun t : ℝ => t • e') '' Ici 0) := by
+    refine isClosed_biUnion_finset fun e' he' => ?_
+    -- `s ↦ s • e'` is an isometry of `ℝ` (as `‖e'‖ = 1`), hence a closed embedding
+    have hiso : Isometry fun t : ℝ => t • e' := Isometry.of_dist_eq fun s s' => by
+      rw [dist_eq_norm, ← sub_smul, norm_smul, hF e' (Finset.mem_of_mem_erase he'), mul_one,
+        Real.dist_eq, Real.norm_eq_abs]
+    exact hiso.isClosedEmbedding.isClosedMap _ isClosed_Ici
+  -- `t₀ • e ∉ K`: comparing norms in `s • e' = t₀ • e` gives `s = t₀`, hence `e' = e`
+  have hx : t₀ • e ∉ ⋃ e' ∈ F.erase e, (fun t : ℝ => t • e') '' Ici 0 := by
+    simp only [mem_iUnion, mem_image, mem_Ici, not_exists, not_and]
+    intro e' he' s hs hse
+    have hs' : s = t₀ := by
+      have h := congrArg norm hse
+      rwa [norm_smul, norm_smul, hF e' (Finset.mem_of_mem_erase he'), he, mul_one, mul_one,
+        Real.norm_of_nonneg hs, Real.norm_of_nonneg ht₀.le] at h
+    rw [hs'] at hse
+    exact (Finset.mem_erase.mp he').1 (smul_right_injective _ ht₀.ne' hse)
+  -- a ball about `t₀ • e` inside the open complement of `K`
+  obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.mp hK.isOpen_compl _ hx
+  refine ⟨δ, hδ, ?_⟩
+  rintro y ⟨hyB, hyU⟩
+  simp only [mem_iUnion, mem_image, mem_Ioi] at hyU
+  obtain ⟨e'', he'', t, ht, rfl⟩ := hyU
+  by_cases h : e'' = e
+  · subst h
+    exact ⟨t, ht, rfl⟩
+  · exfalso
+    refine hball hyB ?_
+    simp only [mem_iUnion, mem_image, mem_Ici]
+    exact ⟨e'', Finset.mem_erase.mpr ⟨h, he''⟩, t, ht.le, rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
