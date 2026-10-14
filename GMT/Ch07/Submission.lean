@@ -502,6 +502,53 @@ theorem Submission.cbr_ci_pw_pu_inner_det_covector : ∀ (P n : ℕ) (w : Fin n 
           ring
   -- Step 4: `β = β⁰.mkContinuous (n! ∏_b ‖w_b‖)` is an `n`-covector with the values of `β⁰`
   exact ⟨β₀.mkContinuous _ hbound, hβ₀⟩
+/-- Orthonormal frames `x`, `y` in `ℝᴾ` with `det(⟨x a, w b⟩) = det(⟨y a, w b⟩)` for every frame
+`w` satisfy `span y ⊆ span x`.  For each `i` the residual `e = y i - ∑ j, ⟨x j, y i⟩ • x j` is
+orthogonal to every `x a`.  Test the hypothesis on `w = update y i e`: `(⟨x a, w b⟩)` has zero
+column `i`, while `(⟨y a, w b⟩)` is the identity with column `i` replaced by `(⟨y a, e⟩)ₐ`, of
+determinant `⟨y i, e⟩` by Cramer's rule.  Hence `⟨y i, e⟩ = 0`, so `⟨e, e⟩ = 0`, `e = 0` and
+`y i ∈ span x`. -/
+theorem Submission.cbr_ci_pw_pu_span_le_of_inner_det_eq : ∀ (P n : ℕ) (x y : Fin n → Euclid P), Orthonormal ℝ x → Orthonormal ℝ y → (∀ w : Fin n → Euclid P, Matrix.det (Matrix.of fun a b => inner ℝ (x a) (w b)) = Matrix.det (Matrix.of fun a b => inner ℝ (y a) (w b))) → Submodule.span ℝ (Set.range y) ≤ Submodule.span ℝ (Set.range x) := by
+  intro P n x y hx hy hdet
+  -- step 1: it suffices to show `y i ∈ span x` for every index `i`
+  rw [Submodule.span_le]
+  rintro _ ⟨i, rfl⟩
+  -- step 2: the residual `e = y i - ∑ j, ⟨x j, y i⟩ • x j` is orthogonal to every `x a`
+  obtain ⟨e, he⟩ : ∃ e : Euclid P, e = y i - ∑ j, inner ℝ (x j) (y i) • x j := ⟨_, rfl⟩
+  have hxe : ∀ a, inner ℝ (x a) e = 0 := fun a => by
+    rw [he, inner_sub_right, hx.inner_right_fintype, sub_self]
+  -- step 3: test the hypothesis on the frame `w = update y i e`
+  -- (a) column `i` of `(⟨x a, w b⟩)` vanishes, so its determinant is `0`
+  have hxdet : Matrix.det (Matrix.of fun a b => inner ℝ (x a) (update y i e b)) = 0 :=
+    Matrix.det_eq_zero_of_column_eq_zero i fun a => by
+      rw [Matrix.of_apply, update_self, hxe a]
+  -- (b) `(⟨y a, w b⟩)` is the identity matrix with column `i` replaced by `(⟨y a, e⟩)ₐ`,
+  -- so by Cramer's rule its determinant is `⟨y i, e⟩`
+  have hydet : Matrix.det (Matrix.of fun a b => inner ℝ (y a) (update y i e b)) =
+      inner ℝ (y i) e := by
+    have hG : (Matrix.of fun a b => inner ℝ (y a) (update y i e b)) =
+        (1 : Matrix (Fin n) (Fin n) ℝ).updateCol i fun a => inner ℝ (y a) e := by
+      ext a b
+      rw [Matrix.of_apply, Matrix.updateCol_apply]
+      by_cases hb : b = i
+      · rw [hb, update_self, ite_eq_left rfl]
+      · rw [update_of_ne hb, ite_eq_right hb, Matrix.one_apply, orthonormal_iff_ite.mp hy]
+    rw [hG, ← Matrix.cramer_apply, Matrix.cramer_one, Module.End.one_apply]
+  -- (c) the hypothesis gives `⟨y i, e⟩ = 0`
+  have hye : inner ℝ (y i) e = 0 := by
+    rw [← hydet, ← hdet, hxdet]
+  -- step 4: `⟨e, e⟩ = ⟨y i, e⟩ - ∑ j, ⟨x j, y i⟩ ⟨x j, e⟩ = 0`, so `e = 0`
+  have hee : inner ℝ e e = 0 := by
+    calc inner ℝ e e = inner ℝ (y i - ∑ j, inner ℝ (x j) (y i) • x j) e := by rw [← he]
+      _ = 0 := by
+        rw [inner_sub_left, sum_inner, hye]
+        simp only [real_inner_smul_left, hxe, mul_zero, Finset.sum_const_zero, sub_zero]
+  have hyi : y i = ∑ j, inner ℝ (x j) (y i) • x j := by
+    rw [← sub_eq_zero, ← he]
+    exact inner_self_eq_zero.mp hee
+  -- step 5: `y i` is a linear combination of the `x j`, hence lies in `span x`
+  rw [SetLike.mem_coe, hyi]
+  exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
