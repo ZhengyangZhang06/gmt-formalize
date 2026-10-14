@@ -4690,6 +4690,28 @@ theorem Submission.dimred_mbl_fnd_null_of_representation : ∀ (P n : ℕ) (U : 
     exact Submission.cmr_measure_null_of_orient_ae_zero P (m + 1) U (thickening δ C) C T μ ξ
       hWo.measurableSet hC.measurableSet hCW hμW hTW hξ hT hξC
 
+/-- **Foundations** (Simon Ch. 6, 2.7–2.8 and 2.35–2.37; Ch. 3, 1.5(2) and 1.6; Ch. 6, 2.6, 2.9
+and 3.2(1)).
+(REP) A current `T ∈ 𝒟ₙ(U)` with `M_W(T) < ∞` for every open `W ⊂⊂ U` is `T(ω) = ∫ ⟨ω, ξ⟩ dμ`,
+where `μ(W) = M_W(T)` for open `W`, `μ(ℝᴾ ∖ U) = 0`, `μ` is finite on compact subsets of `U` and
+`|⟨α, ξ(x)⟩| ≤ |α|` (Riesz, 2.7–2.8).  If moreover `M_W(∂T) < ∞` for every open `W ⊂⊂ U`, then
+`μ` does not charge `Hⁿ`-null sets (2.36).
+(IMC) Tangent locality, restriction, differences and the orientation bound for integer
+multiplicity currents.
+
+Proof: the representation `(μ, ξ)` with its six properties is
+`dimred_mbl_fnd_exists_massRepresentation_core`; `dimred_mbl_fnd_null_of_representation`,
+applied to the same `(μ, ξ)`, gives the absolute continuity; (IMC) is
+`cmc_imRep_locality_restrict_sub`. -/
+theorem Submission.dimred_mbl_current_foundations : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) ∧ ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) := by
+  refine ⟨fun P n U T hU hmass => ?_, Submission.cmc_imRep_locality_restrict_sub⟩
+  -- `T = ξ μ` with `μ(W) = M_W(T)` for open `W` (2.7–2.8)
+  obtain ⟨μ, ξ, hμU, hμK, hμW, hξ, hξα, hTξ⟩ :=
+    Submission.dimred_mbl_fnd_exists_massRepresentation_core P n U T hU hmass
+  -- locally finite `M(∂T)`: `μ` vanishes on `Hⁿ`-null sets (2.36)
+  exact ⟨μ, ξ, hμU, hμK, hμW, hξ, hξα, hTξ, fun hbd =>
+    Submission.dimred_mbl_fnd_null_of_representation P n U T μ ξ hU hbd hμU hμK hμW hξ hξα hTξ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
