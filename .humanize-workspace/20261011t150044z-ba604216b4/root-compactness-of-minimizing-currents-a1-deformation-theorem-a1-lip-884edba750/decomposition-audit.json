@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "abbrev Euclid|abbrev Covector|def covectorEuclideanNorm|covectorEuclideanNorm_nonneg|covectorEuclideanNorm_zero|regcomp_covector_sq_sum_orthonormalBasis|regcomp_covector_eval_orthonormal_le|cmcdt_lp_covector",
+        "def curryLeft|curryLeft_apply_apply|curryLeft_compContinuousLinearMap",
+        "sum_inner_mul_inner|exists_orthonormalBasis_extension_of_card_eq|sum_sq_inner_right",
+        "toDual_symm_apply|def toDual|opNorm_comp_le|def consEquiv|theorem comp_cons|def apply|map_eq_zero_of_eq|map_eq_zero_of_not_injective|compContinuousLinearMap_apply|theorem map_perm",
+        "git show b7846b639953f647296619e6e73dec8a8a22ba73:GMT/Ch07/Submission.lean",
+        "git merge-base --is-ancestor 16144a475b272196ba8b2bd15f104028282dbcfc b7846b639953f647296619e6e73dec8a8a22ba73",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmcdt-lp-cb-decomp/lean/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/covector-independent-audit-rv42puj6/Contracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-884edba750/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/comparator-v1.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/comparator-v1.log",
+        "/tmp/cmcdt-lp-cb-decomp/lean/Final.lean",
+        "/tmp/covector-independent-audit-rv42puj6/Contracts.lean"
+      ],
+      "conclusion": "The split is appropriate: sq_sum supplies the common identity, and pullback_le, curry_le and eval_le establish exactly the selected parent's three conjuncts. Dependencies are correctly directed and acyclic, including the reused declarations' transitive obligations. Snapshot revisions match the manifest, and the workspace Submission matches the frozen contract. Covector, its coefficient norm, Euclidean vector norms, operator norms and curryLeft have the intended meanings; no matrix-unit instance ambiguity arises. Both reused declarations are comparator-accepted with byte-identical frozen types and candidate proof code. Both new names remain unreserved; all four names are bare identifiers. The independent Contracts.lean check successfully elaborated all four raw propositions without child declarations and assembled the exact parent from their types. Final.lean independently compiled the complete proofs and exact parent; its axiom output contains only propext, Classical.choice and Quot.sound. The requested parent contract digest was independently recomputed and matched."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches every stated hypothesis and conclusion. Slotwise Parseval establishes basis independence; repeated-index vanishing and the increasing-tuple/permutation bijection yield the factorial identity. The proof covers degree zero and degrees exceeding dimension without circularity. Reuse is valid: the accepted frozen type is identical and its dependencies do not reach the selected parent."
+    },
+    {
+      "key": "eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is exactly L3. Orthonormality supplies the dimension inequality and indexed basis extension. The injective family of permuted frames contributes n! times the squared evaluation; sq_sum and positive-factor cancellation prove the bound. All hypotheses are accounted for, including empty frames. Its declared dependency on sq_sum is correct, and the reused accepted type is identical."
+    },
+    {
+      "key": "pullback_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is exactly L1 and the bare name is fresh. Riesz–Parseval and operator-norm composition prove the one-slot estimate. The degree induction applies to lower-degree contractions, so it does not assume this child or the parent. First-slot reindexing, sq_sum and factorial cancellation complete the precise bound, including zero degree and zero-dimensional spaces. The supplied proof is ready for formalization."
+    },
+    {
+      "key": "curry_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is exactly L2 and the bare name is fresh. Homogeneity and the zero-vector case justify normalization and basis extension. Swap invariance equates position sums; tuples with repeated distinguished indices vanish, proving the multiplicity comparison. Applying sq_sum and cancelling the positive factorial factor gives the required bound. No dimension restriction, circular reliance or further proof-planning obligation is hidden."
+    }
+  ],
+  "required_changes": []
+}
