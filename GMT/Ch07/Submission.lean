@@ -451,6 +451,22 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A continuous `f` on `ℝᵏ` is bounded and integrable on the open unit cube
+`Q₁ = {0 < yᵢ < 1}`.  The closed cube `K = {0 ≤ yᵢ ≤ 1}`, the image of the compact box `Icc 0 1`
+of `Fin k → ℝ` under `toLp`, is compact and contains `Q₁`; a continuous function is bounded on
+`K` and integrable on `K` for the Haar measure `volume`, hence on `Q₁`. -/
+theorem Submission.cmcdt_cbm_bvt_cube_cont_bound : ∀ (k : ℕ) (f : Euclid k → ℝ), Continuous f → (∃ M : ℝ, ∀ y ∈ {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ M) ∧ IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} := by
+  intro k f hf
+  -- the closed cube `K = {0 ≤ yᵢ ≤ 1}` is the image of the compact box `Icc 0 1` of `Fin k → ℝ`
+  have hK : IsCompact (WithLp.toLp 2 '' Icc (0 : Fin k → ℝ) 1 : Set (Euclid k)) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  have hQK : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} ⊆ WithLp.toLp 2 '' Icc (0 : Fin k → ℝ) 1 :=
+    fun y hy => ⟨WithLp.ofLp y, ⟨fun i => (hy i).1.le, fun i => (hy i).2.le⟩, WithLp.toLp_ofLp 2 y⟩
+  -- `f` is bounded and integrable on the compact `K`, hence on `Q₁ ⊆ K`
+  obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
+  exact ⟨⟨M, fun y hy => by simpa only [Real.norm_eq_abs] using hM y (hQK hy)⟩,
+    (hf.continuousOn.integrableOn_compact hK).mono_set hQK⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
