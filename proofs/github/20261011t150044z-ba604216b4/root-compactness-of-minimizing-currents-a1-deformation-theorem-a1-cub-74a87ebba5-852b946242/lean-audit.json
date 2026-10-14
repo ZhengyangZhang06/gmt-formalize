@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4d10bf6bcfd48262514ce022dbdcc8c0ee78a99b572adcf1afd6df42ad582891",
+  "git_delta": {
+    "base_commit": "e07c5ac128e2db28a903b2d5e8249785b5b45e18",
+    "candidate_commit": "0cb442ba98ef7e631bcb05475f7974c726c47a56",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_bvp_mean_dev_le_osc",
+    "diff_sha256": "d167dbb7c166d66521b1fb34f07430cfcfef892f3cac1a2422b40d0afd8c0228",
+    "source_sha256": "1b3cfe5a3a8576c3677615f122d9d20910fcefb7e9716d0f7944cc06adde5159",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_bvp_mean_dev_le_osc",
+      "statement": "∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
