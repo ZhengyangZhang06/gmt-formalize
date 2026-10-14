@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "02f9c0ac3ffeb57813107631c1d67656af2b1fc86585f13e4c926d7df24fd60d",
+  "git_delta": {
+    "base_commit": "6c544db52af05d3fd9c90cc9fb2554e8664359ec",
+    "candidate_commit": "69f7f2a8c917933a789844d74581338b31f8fe2f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ro_line_orientation",
+    "diff_sha256": "af669bb7919504eaafb8e2a7680933b280535921654928e0225aa6acef7e1161",
+    "source_sha256": "95dcec6ceab836e074093f2f271dd292dbe776e82ed141282661260edc0d167a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ro_line_orientation",
+      "statement": "∀ (P : ℕ) (e : Euclid P) (ξ : MultiVector P 1), ‖e‖ = 1 → IsUnitOrientationOf ξ (Submodule.span ℝ {e}) → ξ = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ ξ = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
