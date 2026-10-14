@@ -545,6 +545,48 @@ theorem Submission.cmc_fc_gs_helly_no_concentration : ∀ (μ : ℕ → Measure 
     _ ≤ ENNReal.ofReal ε.toReal := ENNReal.ofReal_le_ofReal hj.le
     _ = ε := ENNReal.ofReal_toReal hε'
 
+/-- Choice of a good cutting level (the Helly extraction, Fatou's lemma for the slice masses and the
+choice of the level in the localization step of the proof of Simon 6.7.2, stated abstractly): if
+`νⱼ([a, b]) ≤ Λ`, `∫ Fⱼ ≤ Λ < ∞` and `Goodⱼ` holds a.e. for every `j`, then there are
+`s ∈ (a, b)`, a subsequence `φ` and `C < ∞` with `Goodⱼ(s)` for all `j`, `F_{φ j}(s) ≤ C`, and for
+every `ε > 0` some `δ > 0` with `ν_{φ j}([s - δ, s]) ≤ ε` for all large `j`.
+Helly selection gives `φ₁` and a countable `N`; by Fatou `h = liminf F_{φ₁ i}` has `∫ h ≤ Λ`, so
+a.e. `t` has every `Goodⱼ(t)`, `h(t) < ∞` and `t ∉ N`.  Such an `s` lies in `(a, b)`, and `φ₂`
+extracts `F_{φ₁ (φ₂ j)}(s) < h(s) + 1 = C`; `φ = φ₁ ∘ φ₂`. -/
+theorem Submission.dor_lmb_fcl_good_level : ∀ (ν : ℕ → Measure ℝ) (F : ℕ → ℝ → ℝ≥0∞) (Good : ℕ → ℝ → Prop) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, ν j (Icc a b) ≤ Λ) → (∀ j, AEMeasurable (F j)) → (∀ j, ∫⁻ t, F j t ≤ Λ) → (∀ j, ∀ᵐ t, Good j t) → ∃ s ∈ Ioo a b, ∃ (φ : ℕ → ℕ) (C : ℝ≥0∞), StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, Good j s) ∧ (∀ j, F (φ j) s ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, ν (φ j) (Icc (s - δ) s) ≤ ε := by
+  intro ν F Good a b Λ hab hΛ hν hF hFΛ hGood
+  -- Step 1 (Helly): `φ₁` and a countable `N` off which `ν_{φ₁ i}` does not concentrate
+  obtain ⟨φ₁, N, hφ₁, hN, hH⟩ := Submission.cmc_fc_gs_helly_no_concentration ν a b Λ hΛ hν
+  -- Step 2 (Fatou along `φ₁`): `∫ h ≤ liminf ∫ F_{φ₁ i} ≤ Λ` for `h = liminf F_{φ₁ i}`
+  have hmeas : ∀ i, AEMeasurable (F (φ₁ i)) := fun i => hF (φ₁ i)
+  have hfatou : ∫⁻ t, liminf (fun i => F (φ₁ i) t) atTop ≤ Λ :=
+    (lintegral_liminf_le' hmeas).trans
+      (liminf_le_of_frequently_le' (Frequently.of_forall fun i => hFΛ (φ₁ i)))
+  -- Step 3: `h` is a.e.-measurable with finite integral, hence finite a.e.
+  have hfin : ∀ᵐ t, liminf (fun i => F (φ₁ i) t) atTop < ∞ :=
+    ae_lt_top' (AEMeasurable.liminf hmeas) (hfatou.trans_lt hΛ.lt_top).ne
+  -- Step 4: a.e. `t` has `Goodⱼ(t)` for all `j`, `h(t) < ∞` and `t ∉ N` (`N` is countable)
+  have hae : ∀ᵐ t, (∀ j, Good j t) ∧ liminf (fun i => F (φ₁ i) t) atTop < ∞ ∧ t ∉ N := by
+    filter_upwards [ae_all_iff.2 hGood, hfin,
+      measure_eq_zero_iff_ae_notMem.1 (hN.measure_zero volume)] with t h1 h2 h3
+    exact ⟨h1, h2, h3⟩
+  -- Step 5: `(a, b)` has positive measure, so it meets this full-measure set
+  obtain ⟨s, hs, hGs, hhs, hsN⟩ : ∃ s ∈ Ioo a b,
+      (∀ j, Good j s) ∧ liminf (fun i => F (φ₁ i) s) atTop < ∞ ∧ s ∉ N := by
+    by_contra hcon
+    refine (ENNReal.ofReal_pos.2 (sub_pos.2 hab)).ne' ?_
+    rw [← Real.volume_Ioo]
+    exact measure_mono_null (fun t ht hPt => hcon ⟨t, ht, hPt⟩) (ae_iff.1 hae)
+  -- Step 6: `h(s) < h(s) + 1 = C`, so `F_{φ₁ i}(s) < C` frequently; extract `φ₂`
+  obtain ⟨φ₂, hφ₂, hC⟩ := extraction_of_frequently_atTop
+    (frequently_lt_of_liminf_lt (h := ENNReal.lt_add_right hhs.ne one_ne_zero))
+  -- Step 7: `φ = φ₁ ∘ φ₂`; no concentration passes to `φ` since `φ₂ j ≥ j`
+  refine ⟨s, hs, φ₁ ∘ φ₂, liminf (fun i => F (φ₁ i) s) atTop + 1, hφ₁.comp hφ₂,
+    ENNReal.add_ne_top.2 ⟨hhs.ne, ENNReal.one_ne_top⟩, hGs, fun j => (hC j).le, fun ε hε => ?_⟩
+  obtain ⟨δ, hδ, hev⟩ := hH s hs hsN ε hε
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 hev
+  exact ⟨δ, hδ, eventually_atTop.2 ⟨J, fun j hj => hJ (φ₂ j) (le_trans hj (hφ₂.id_le j))⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
